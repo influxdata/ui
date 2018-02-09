@@ -2,10 +2,19 @@ import React, {Component, PropTypes} from 'react'
 
 import Dropdown from 'shared/components/Dropdown'
 
-import {USERS_TABLE} from 'src/admin/constants/chronografTableSizing'
-import {USER_ROLES} from 'src/admin/constants/chronografAdmin'
+import {ALL_USERS_TABLE} from 'src/admin/constants/chronografTableSizing'
+const {
+  colOrganizations,
+  colProvider,
+  colScheme,
+  colSuperAdmin,
+  colActions,
+} = ALL_USERS_TABLE
 
-class UsersTableRowNew extends Component {
+const nullOrganization = {id: undefined, name: 'None'}
+const nullRole = {name: '*', organization: undefined}
+
+class AllUsersTableRowNew extends Component {
   constructor(props) {
     super(props)
 
@@ -13,7 +22,9 @@ class UsersTableRowNew extends Component {
       name: '',
       provider: '',
       scheme: 'oauth2',
-      role: this.props.organization.defaultRole,
+      role: {
+        ...nullRole,
+      },
     }
   }
 
@@ -22,21 +33,18 @@ class UsersTableRowNew extends Component {
   }
 
   handleConfirmCreateUser = () => {
-    const {onBlur, onCreateUser, organization} = this.props
-    const {name, provider, scheme, role} = this.state
-
+    const {onBlur, onCreateUser} = this.props
+    const {name, provider, scheme, role, superAdmin} = this.state
     const newUser = {
       name,
       provider,
       scheme,
-      roles: [
-        {
-          name: role,
-          organization: organization.id,
-        },
-      ],
+      superAdmin,
+      // since you can only choose one organization, there is only one role in a new row
+      // if no organization is selected ie the "None" organization,
+      // then set roles to an empty array
+      roles: role.organization === undefined ? [] : [role],
     }
-
     onCreateUser(newUser)
     onBlur()
   }
@@ -45,8 +53,19 @@ class UsersTableRowNew extends Component {
     e.target.select()
   }
 
-  handleSelectRole = newRole => {
-    this.setState({role: newRole.text})
+  handleSelectOrganization = newOrganization => {
+    // if "None" was selected for organization, create a "null role" from the predefined null role
+    // else create a new role with the organization as the newOrganization's id
+    const newRole =
+      newOrganization.id === undefined
+        ? {
+            ...nullRole,
+          }
+        : {
+            organization: newOrganization.id,
+            name: '*', // '*' causes the server to determine the current defaultRole of the selected organization
+          }
+    this.setState({role: newRole})
   }
 
   handleKeyDown = e => {
@@ -69,11 +88,20 @@ class UsersTableRowNew extends Component {
   }
 
   render() {
-    const {colRole, colProvider, colScheme, colActions} = USERS_TABLE
-    const {onBlur} = this.props
+    const {organizations, onBlur} = this.props
     const {name, provider, scheme, role} = this.state
 
-    const dropdownRolesItems = USER_ROLES.map(r => ({...r, text: r.name}))
+    const dropdownOrganizationsItems = [
+      {...nullOrganization},
+      ...organizations,
+    ].map(o => ({
+      ...o,
+      text: o.name,
+    }))
+    const selectedRole = dropdownOrganizationsItems.find(
+      o => role.organization === o.id
+    )
+
     const preventCreate = !name || !provider
 
     return (
@@ -89,11 +117,11 @@ class UsersTableRowNew extends Component {
             onKeyDown={this.handleKeyDown}
           />
         </td>
-        <td style={{width: colRole}}>
+        <td style={{width: colOrganizations}}>
           <Dropdown
-            items={dropdownRolesItems}
-            selected={role}
-            onChoose={this.handleSelectRole}
+            items={dropdownOrganizationsItems}
+            selected={selectedRole.text}
+            onChoose={this.handleSelectOrganization}
             buttonColor="btn-primary"
             buttonSize="btn-xs"
             className="dropdown-stretch"
@@ -118,6 +146,9 @@ class UsersTableRowNew extends Component {
             value={scheme}
           />
         </td>
+        <td style={{width: colSuperAdmin}} className="text-center">
+          &mdash;
+        </td>
         <td className="text-right" style={{width: colActions}}>
           <button className="btn btn-xs btn-square btn-info" onClick={onBlur}>
             <span className="icon remove" />
@@ -135,16 +166,18 @@ class UsersTableRowNew extends Component {
   }
 }
 
-const {func, shape, string} = PropTypes
+const {arrayOf, func, shape, string} = PropTypes
 
-UsersTableRowNew.propTypes = {
-  organization: shape({
-    id: string.isRequired,
-    name: string.isRequired,
-  }),
+AllUsersTableRowNew.propTypes = {
+  organizations: arrayOf(
+    shape({
+      id: string.isRequired,
+      name: string.isRequired,
+    })
+  ),
   onBlur: func.isRequired,
   onCreateUser: func.isRequired,
   notify: func.isRequired,
 }
 
-export default UsersTableRowNew
+export default AllUsersTableRowNew

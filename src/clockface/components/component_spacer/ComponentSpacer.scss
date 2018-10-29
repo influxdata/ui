@@ -1,0 +1,34 @@
+/*
+  Component Spacer Styles
+  ------------------------------------------------------------------------------
+*/
+
+.component-spacer {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.component-spacer--left {
+  justify-content: flex-start;
+
+  > * {
+    margin-right: $ix-marg-a;
+  }
+}
+
+.component-spacer--center {
+  justify-content: center;
+
+  > * {
+    margin: 0 ($ix-marg-a / 2);
+  }
+}
+
+.component-spacer--right {
+  justify-content: flex-end;
+
+  > * {
+    margin-left: $ix-marg-a;
+  }
+}

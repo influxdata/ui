@@ -1,13 +1,38 @@
-# InfluxData Platform [![CircleCI](https://circleci.com/gh/influxdata/platform.svg?style=svg)](https://circleci.com/gh/influxdata/platform)
+## Packages
+We are using [yarn](https://yarnpkg.com/en/docs/install) 0.19.1.
 
-This is the [monorepo](https://danluu.com/monorepo/) for InfluxData Platform, a.k.a. Influx 2.0 OSS.
+Run `yarn run` to see a list of available tasks.
 
-## Installation
+### Adding new packages
+To add a new package, run
 
-This project requires Go 1.11 and Go module support. Set `GO111MODULE=on` or build the project outside of your `GOPATH` for it to succeed.
+```sh
+yarn add packageName
+```
 
-For information about modules, please refer to the [wiki](https://github.com/golang/go/wiki/Modules).
+### Adding devDependency
 
-## Introducing Flux
+```sh
+yarn add --dev packageName
+```
 
-We recently announced Flux, the MIT-licensed data scripting language (and rename for IFQL). The source for Flux is [in this repository under `query`](query#flux---influx-data-language). Learn more about Flux from [CTO Paul Dix's presentation](https://speakerdeck.com/pauldix/flux-number-fluxlang-a-new-time-series-data-scripting-language).
+### Updating a package
+First, run
+
+```sh
+yarn outdated
+```
+
+... to determine which packages may need upgrading.
+
+We _really_ should not upgrade all packages at once, but, one at a time and make darn sure
+to test.
+
+To upgrade a single package named `packageName`:
+
+```sh
+yarn upgrade packageName
+```
+
+## Testing
+Tests can be run via command line with `yarn test`, from within the `/ui` directory. For more detailed reporting, use `yarn test -- --reporters=verbose`.

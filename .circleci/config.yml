@@ -26,7 +26,7 @@ jobs:
             - ~/.cache/yarn
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
-          command: docker run --net host -v ./build:/assets -v /var/run/docker.sock:/var/run/docker.sock quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true --assets-path=/assets
+          command: docker run --net host -v $PWD/build:/assets -v /var/run/docker.sock:/var/run/docker.sock quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true --assets-path=/assets
           background: true
       - run: yarn test:e2e
       - store_test_results:

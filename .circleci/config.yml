@@ -27,6 +27,7 @@ jobs:
       #     name: 'Save Yarn Package Cache'
       #     paths:
       #       - ~/.cache/yarn
+      - run: mkdir build # TODO: remove me when you actually build the js
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run: docker cp ${PWD}/build dac:/dummyAssets
       - run: docker cp ${PWD}/cypress dtc:/dummyTests

@@ -1,0 +1,5 @@
+.vscode
+.swp
+.swo
+node_modules
+src/client/generatedRoutes.ts

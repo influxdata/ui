@@ -1,0 +1,112 @@
+version: "2.1"
+
+commands:
+jobs:
+  e2e:
+    docker:
+      - image: circleci/golang:1.13-node-browsers
+    working_directory: /influxdata/ui
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - 'yarn-cached-packages-{{ checksum "yarn.lock" }}'
+          name: "Restore Yarn Package Cache"
+      - run:
+          command: |
+            set +e
+            yarn generate
+            yarn build:ci
+          name: "Build the frontend"
+      - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
+      - run:
+          command: docker run --net host -v ./build:/assets -v /var/run/docker.sock:/var/run/docker.sock quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true --assets-path=/assets
+          background: true
+      - run: yarn test:e2e
+      - store_test_results:
+          path: ./junit-results
+          destination: junit-results
+      - store_artifacts:
+          path: ./cypress/videos
+          destination: videos
+      - store_artifacts:
+          path: ./cypress/screenshots
+          destination: screenshots
+      - save_cache:
+          key: 'yarn-cached-packages-{{ checksum "yarn.lock" }}'
+          name: "Save Yarn Package Cache"
+          paths:
+            - ~/.cache/yarn
+  jstest:
+    docker:
+      - image: circleci/golang:1.13-node-browsers
+    working_directory: /influxdb/ui
+    parallelism: 8
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - 'yarn-cached-packages-{{ checksum "yarn.lock" }}'
+          name: "Restore Yarn Package Cache"
+      - run:
+          command: |
+            set +e
+            yarn install
+            yarn prettier
+          name: "Install Dependencies"
+      - run: yarn generate
+      - run:
+          name: parallel jest tests
+          command: |
+            set +e
+            TESTFILES=$(circleci tests glob "src/**/*.test.ts*" | circleci tests split --split-by=timings)
+            yarn test:circleci $TESTFILES
+      - store_test_results:
+          path: coverage
+      - store_artifacts:
+          path: coverage
+          destination: raw-test-output
+      - save_cache:
+          key: 'yarn-cached-packages-{{ checksum "yarn.lock" }}'
+          name: "Save Yarn Package Cache"
+          paths:
+            - ~/.cache/yarn
+  jslint:
+    docker:
+      - image: circleci/golang:1.13-node-browsers
+    working_directory: /influxdata/ui
+    parallelism: 8
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - 'yarn-cached-packages-{{ checksum "yarn.lock" }}'
+          name: "Restore Yarn Package Cache"
+      - run:
+          command: |
+            set +e
+            yarn install
+          name: "Install Dependencies"
+      - run: yarn generate
+      - run:
+          name: parallel eslint
+          command: |
+            set +e
+            TESTFILES=$(circleci tests glob "src/**/*.ts*" "cypress/**/*.ts*" | circleci tests split --split-by=filesize)
+            yarn eslint:circleci $TESTFILES
+      - save_cache:
+          key: 'yarn-cached-packages-{{ checksum "yarn.lock" }}'
+          name: "Save Yarn Package Cache"
+          paths:
+            - ~/.cache/yarn
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - jstest
+      - jslint
+      - build
+  e2e:
+    jobs:
+      - e2e

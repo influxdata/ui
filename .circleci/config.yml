@@ -26,11 +26,11 @@ jobs:
       #       - ~/.cache/yarn
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
-          name: Start and wait for influxd
-          command: |
-            docker run -d -p 9999:9999 --name influxd -v $PWD/build:/assets -v /var/run/docker.sock:/var/run/docker.sock quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true --assets-path=/assets
-            docker run --network container:influxd tutum/curl bash -c "while [[ \"$(curl -s --insecure -o /dev/null -w ''%{http_code}'' http://localhost:9999)\" != \"200\" ]]; do sleep 5; done"
-      - run: yarn test:e2e
+          name: Start influxd
+          command: docker run -d -p 9999:9999 --name influxd -v $PWD/build:/assets -v /var/run/docker.sock:/var/run/docker.sock quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true --assets-path=/assets
+      - run:
+          name: Run e2e tests
+          command: docker run --network container:influxd -v ${PWD}/cypress:/cypress circleci/golang:1.13-node-browsers yarn test:e2e
       - store_test_results:
           path: ./junit-results
           destination: junit-results

@@ -26,15 +26,11 @@ jobs:
             - ~/.cache/yarn
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
-          command: docker run --net host -v $PWD/build:/assets -v /var/run/docker.sock:/var/run/docker.sock quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true --assets-path=/assets
-          background: true
-      # wait for influxd to start responding. We expect Bad Request 400 once it starts listening.
-      # so override the shell and have the last command be the : { null } command to force exit code 0.
-      - run:
-          shell: /bin/sh
+          name: "Start Influx and check that it's running"
           command: |
-            wget --retry-connrefused --waitretry=1 -t 100 http://localhost:9999
-            :
+            docker run --net --name influxd host -v $PWD/build:/assets -v /var/run/docker.sock:/var/run/docker.sock quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true --assets-path=/assets
+            docker exec influxd curl --retry 20 --retry-connrefused http://localhost:9999
+          background: true
       - run: yarn test:e2e
       - store_test_results:
           path: ./junit-results

@@ -5,7 +5,7 @@ jobs:
   e2e:
     docker:
       - image: circleci/golang:1.13-node-browsers
-    working_directory: /influxdata/ui
+    working_directory: ~/influxdata/ui
     steps:
       - checkout
       - restore_cache:

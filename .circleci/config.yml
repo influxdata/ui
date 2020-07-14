@@ -27,8 +27,7 @@ jobs:
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
           name: Start influxd
-          command: docker run --net host -p 9999:9999 --name influxd -v $PWD/build:/assets -v /var/run/docker.sock:/var/run/docker.sock quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true --assets-path=/assets
-          background: true
+          command: docker run -d -p 9999:9999 --name influxd -v $PWD/build:/assets -v /var/run/docker.sock:/var/run/docker.sock quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true --assets-path=/assets
       - run:
           name: Wait for influxd
           command: docker run --network container:influxd appropriate/curl --retry 10 --retry-connrefused http://localhost:9999

@@ -30,7 +30,7 @@ jobs:
           command: docker run -d -p 9999:9999 --name influxd -v $PWD/build:/assets -v /var/run/docker.sock:/var/run/docker.sock quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true --assets-path=/assets
       - run:
           name: Run e2e tests
-          command: docker run --network container:influxd -v ${PWD}/cypress:/cypress circleci/golang:1.13-node-browsers yarn test:e2e
+          command: docker run --network container:influxd -v ${PWD}:/app circleci/golang:1.13-node-browsers cd app && yarn test:e2e
       - store_test_results:
           path: ./junit-results
           destination: junit-results

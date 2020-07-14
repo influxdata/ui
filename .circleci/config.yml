@@ -40,7 +40,7 @@ jobs:
   unit:
     docker:
       - image: circleci/golang:1.13-node-browsers
-    working_directory: /influxdb/ui
+    working_directory: ~/influxdata/ui
     parallelism: 8
     steps:
       - checkout

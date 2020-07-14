@@ -28,6 +28,13 @@ jobs:
       - run:
           command: docker run --net host -v $PWD/build:/assets -v /var/run/docker.sock:/var/run/docker.sock quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true --assets-path=/assets
           background: true
+      # wait for influxd to start responding. We expect Bad Request 400 once it starts listening.
+      # so override the shell and have the last command be the : { null } command to force exit code 0.
+      - run:
+          shell: /bin/sh
+          command: |
+            wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 10 http://localhost:9999
+            :
       - run: yarn test:e2e
       - store_test_results:
           path: ./junit-results

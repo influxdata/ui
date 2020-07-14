@@ -2,11 +2,13 @@ version: 2.1
 
 jobs:
   e2e:
+    machine: true
     docker:
       - image: circleci/golang:1.13-node-browsers
     working_directory: ~/influxdata/ui
     steps:
       - checkout
+      - setup_remote_docker
       - restore_cache:
           keys:
             - 'yarn-cached-packages-{{ checksum "yarn.lock" }}'

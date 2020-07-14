@@ -27,13 +27,16 @@ jobs:
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
           name: Start influxd
-          command: docker run --net host -p 9999:9999 -v $PWD/build:/assets -v /var/run/docker.sock:/var/run/docker.sock quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true --assets-path=/assets
+          command: docker run --net host -v $PWD/build:/assets -v /var/run/docker.sock:/var/run/docker.sock quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true --assets-path=/assets
           background: true
       - run:
           name: install dockerize
           command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
           environment:
             DOCKERIZE_VERSION: v0.6.1
+      - run:
+          name: Sanity
+          command: docker ps
       - run:
           name: Wait for influxd
           command: dockerize -wait http://localhost:9999 -timeout 1m

@@ -8,10 +8,10 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - restore_cache:
-          keys:
-            - 'yarn-cached-packages-{{ checksum "yarn.lock" }}'
-          name: 'Restore Yarn Package Cache'
+      # - restore_cache:
+      #     keys:
+      #       - 'yarn-cached-packages-{{ checksum "yarn.lock" }}'
+      #     name: 'Restore Yarn Package Cache'
       # - run:
       #     command: |
       #       set +e
@@ -27,7 +27,7 @@ jobs:
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
           name: Start influxd
-          command: docker run --net --name influxd host -v $PWD/build:/assets -v /var/run/docker.sock:/var/run/docker.sock quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true --assets-path=/assets
+          command: docker run --net host -v $PWD/build:/assets -v /var/run/docker.sock:/var/run/docker.sock quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true --assets-path=/assets
           background: true
       - run:
           name: install dockerize

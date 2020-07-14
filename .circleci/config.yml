@@ -106,7 +106,6 @@ workflows:
     jobs:
       - jstest
       - jslint
-      - build
   e2e:
     jobs:
       - e2e

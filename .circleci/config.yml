@@ -3,7 +3,8 @@ version: 2.1
 jobs:
   e2e:
     machine:
-      image: circleci/golang:1.13-node-browsers
+      image: ubuntu-1604:201903-01
+      docker_layer_caching: true
     working_directory: ~/influxdata/ui
     steps:
       - checkout

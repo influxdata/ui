@@ -30,14 +30,16 @@ jobs:
       - run: mkdir build # TODO: remove me when you actually build the js
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run: docker cp ${PWD}/build dac:/dummyAssets
-      - run: docker cp ${PWD}/cypress dtc:/dummyTests
+      - run: |
+          docker cp ${PWD}/cypress dtc:/dummyTests
+          docker cp ${PWD}/cypress.json dtc:/dummyTests
       - run:
           name: Start influxd
           command: docker run -d --volumes-from dac -p 9999:9999 --name influxd quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true --assets-path=/dummyAssets
       - run:
           name: Run e2e tests
           command: |
-            docker run --volumes-from dtc --network container:influxd -e CYPRESS_baseUrl=http://localhost:9999 cypress/browsers:node12.18.0-chrome83-ff77 bash -c "cd /dummyTests/cypress && npx cypress run --browser chrome --reporter junit --reporter-options 'mochaFile=junit-results/test-output-[hash].xml'"
+            docker run --volumes-from dtc --network container:influxd -e CYPRESS_baseUrl=http://localhost:9999 cypress/browsers:node12.18.0-chrome83-ff77 bash -c "cd /dummyTests && npx cypress run --browser chrome --reporter junit --reporter-options 'mochaFile=junit-results/test-output-[hash].xml'"
       - store_test_results:
           path: ./junit-results
           destination: junit-results

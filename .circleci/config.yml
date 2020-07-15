@@ -17,7 +17,16 @@ jobs:
           command: docker run -d --name prod_js e2e:latest /bin/true
       - run:
           name: Copy production js into temporary volume (so another container can use it see #TODO link to why we have to do this)
-          command: docker cp prod_js:/repo/build dummy_assets:/static
+          command: docker cp prod_js:/repo/build ./build
+      - run:
+          name: Build web server
+          command: docker build -t webserver:latest -f docker/Dockerfile.server .
+      - run:
+          name: Build ingress server
+          command: docker build -t ingress:latest -f docker/Dockerfile.ingress ./docker
+      - run:
+          name: Start influxd
+          command: docker run -d -p 9999:9999 --name influxd quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true
       # Build Dockerfile.server will build a webserver to utilize dummy_assets (not started yet)
       # Build ingress server
       # Start influxd on 9999

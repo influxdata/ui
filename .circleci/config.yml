@@ -37,7 +37,7 @@ jobs:
       - run:
           name: Run e2e tests
           command: |
-            docker run --volumes-from dtc --network container:influxd -e CYPRESS_baseUrl=http://localhost:9999 cypress/browsers:node12.18.0-chrome83-ff77 cd /dummyTests/cypress && npx cypress run --browser chrome --reporter junit --reporter-options 'mochaFile=junit-results/test-output-[hash].xml'
+            docker run --volumes-from dtc --network container:influxd -e CYPRESS_baseUrl=http://localhost:9999 cypress/browsers:node12.18.0-chrome83-ff77 bash -c "cd /dummyTests/cypress && npx cypress run --browser chrome --reporter junit --reporter-options 'mochaFile=junit-results/test-output-[hash].xml'"
       - store_test_results:
           path: ./junit-results
           destination: junit-results

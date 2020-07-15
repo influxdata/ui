@@ -1,6 +1,6 @@
 FROM nginx:alpine
 
-ENV CHRONOGRAF_BASE_PATH
+ENV CHRONOGRAF_BASE_PATH=/
 
 RUN apk add --update openssl netcat-openbsd && rm -rf /var/cache/apk/*
 

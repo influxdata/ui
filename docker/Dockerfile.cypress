@@ -4,4 +4,6 @@ COPY ./ /repo
 # NOTE: Mount repo root to /repo and output path to /repo/build before running
 WORKDIR /repo
 
-RUN yarn build
+RUN yarn install
+RUN yarn generate
+RUN yarn build:prod

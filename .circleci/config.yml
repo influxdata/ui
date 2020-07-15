@@ -7,7 +7,8 @@ jobs:
     working_directory: ~/influxdata/ui
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run: docker create -v /static --name dummy_assets alpine:3.4 /bin/true
       - run:
           name: Build Cypress image, js, and dependencies
@@ -27,11 +28,16 @@ jobs:
       - run:
           name: Start influxd
           command: docker run -d -p 9999:9999 --name influxd quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true
-      # Build Dockerfile.server will build a webserver to utilize dummy_assets (not started yet)
-      # Build ingress server
-      # Start influxd on 9999
-      # Start ingress server linked to influxd's network
-      # Start Dockerfile.server network serving minified js and linked to influxd's
+      - run:
+          name: Start ingress server and link to influxd
+          command: docker run -d --network container:influxd ingress:latest
+      - run:
+          name: Start web server server and link to influxd
+          command: docker run -d --network container:influxd webserver:latest
+      - run:
+          name: Run e2e tests
+          command: |
+            docker run --network container:influxd -e CYPRESS_baseUrl=https://localhost:443 e2e:latest bash -c "cd /repo yarn test:e2e:ci"
       # Run cypress
       # Profit?
       # - restore_cache:

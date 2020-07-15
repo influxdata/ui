@@ -8,9 +8,23 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: docker create -v /dummyAssets --name dac alpine:3.4 /bin/true
-      - run: docker create -v /dummyTests --name dtc alpine:3.4 /bin/true
-
+      - run: docker create -v /static --name dummy_assets alpine:3.4 /bin/true
+      - run:
+          name: Build Cypress image, js, and dependencies
+          command: docker build -t e2e:latest -f docker/Dockerfile.cypress
+      - run:
+          name: Run Cypress image to expose production js
+          command: docker run -d --name prod_js e2e:latest /bin/true
+      - run:
+          name: Copy production js into temporary volume (so another container can use it see #TODO link to why we have to do this)
+          command: docker cp prod_js:/repo/build dummy_assets:/static
+      # Build Dockerfile.server will build a webserver to utilize dummy_assets (not started yet)
+      # Build ingress server
+      # Start influxd on 9999
+      # Start ingress server linked to influxd's network
+      # Start Dockerfile.server network serving minified js and linked to influxd's
+      # Run cypress
+      # Profit?
       # - restore_cache:
       #     keys:
       #       - 'yarn-cached-packages-{{ checksum "yarn.lock" }}'
@@ -27,28 +41,28 @@ jobs:
       #     name: 'Save Yarn Package Cache'
       #     paths:
       #       - ~/.cache/yarn
-      - run: mkdir build # TODO: remove me when you actually build the js
-      - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - run: docker cp ${PWD}/build dac:/dummyAssets
-      - run: |
-          docker cp ${PWD}/cypress dtc:/dummyTests
-          docker cp ${PWD}/cypress.json dtc:/dummyTests
-      - run:
-          name: Start influxd
-          command: docker run -d --volumes-from dac -p 9999:9999 --name influxd quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true --assets-path=/dummyAssets
-      - run:
-          name: Run e2e tests
-          command: |
-            docker run --volumes-from dtc --network container:influxd -e CYPRESS_baseUrl=http://localhost:9999 cypress/browsers:node12.18.0-chrome83-ff77 bash -c "cd /dummyTests && npx cypress run --browser chrome --reporter junit --reporter-options 'mochaFile=junit-results/test-output-[hash].xml'"
-      - store_test_results:
-          path: ./junit-results
-          destination: junit-results
-      - store_artifacts:
-          path: ./cypress/videos
-          destination: videos
-      - store_artifacts:
-          path: ./cypress/screenshots
-          destination: screenshots
+      # - run: mkdir build # TODO: remove me when you actually build the js
+      # - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
+      # - run: docker cp ${PWD}/build dac:/dummy_assets
+      # - run: |
+      #     docker cp ${PWD}/cypress dtc:/dummyTests
+      #     docker cp ${PWD}/cypress.json dtc:/dummyTests
+      # - run:
+      #     name: Start influxd
+      #     command: docker run -d --volumes-from dac -p 9999:9999 --name influxd quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true --assets-path=/dummy_assets
+      # - run:
+      #     name: Run e2e tests
+      #     command: |
+      #       docker run --volumes-from dtc --network container:influxd -e CYPRESS_baseUrl=http://localhost:9999 cypress/browsers:node12.18.0-chrome83-ff77 bash -c "cd /dummyTests && npx cypress run --browser chrome --reporter junit --reporter-options 'mochaFile=junit-results/test-output-[hash].xml'"
+      # - store_test_results:
+      #     path: ./junit-results
+      #     destination: junit-results
+      # - store_artifacts:
+      #     path: ./cypress/videos
+      #     destination: videos
+      # - store_artifacts:
+      #     path: ./cypress/screenshots
+      #     destination: screenshots
   unit:
     docker:
       - image: circleci/golang:1.13-node-browsers

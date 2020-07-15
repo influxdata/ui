@@ -1,0 +1,7 @@
+FROM cypress/browsers:node12.14.1-chrome83-ff77
+
+# NOTE: Mount repo root to /repo and output path to /repo/build before running
+WORKDIR /repo
+
+RUN yarn build
+

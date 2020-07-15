@@ -6,4 +6,4 @@ WORKDIR /repo
 
 RUN yarn install
 RUN yarn generate
-RUN yarn build:prod
+RUN yarn build:fast

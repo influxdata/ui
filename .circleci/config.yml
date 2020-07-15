@@ -11,7 +11,7 @@ jobs:
       - run: docker create -v /static --name dummy_assets alpine:3.4 /bin/true
       - run:
           name: Build Cypress image, js, and dependencies
-          command: docker build -t e2e:latest -f docker/Dockerfile.cypress
+          command: docker build -t e2e:latest docker/Dockerfile.cypress
       - run:
           name: Run Cypress image to expose production js
           command: docker run -d --name prod_js e2e:latest /bin/true

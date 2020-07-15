@@ -37,7 +37,7 @@ jobs:
       - run:
           name: Run e2e tests
           command: |
-            docker run --network container:influxd -e CYPRESS_baseUrl=https://localhost:443 e2e:latest bash -c "cd /repo yarn test:e2e:ci"
+            docker run --network container:influxd -e CYPRESS_baseUrl=https://localhost:443 e2e:latest bash -c "cd /repo && yarn test:e2e:ci"
       # Run cypress
       # Profit?
       # - restore_cache:

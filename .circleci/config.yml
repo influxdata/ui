@@ -28,17 +28,17 @@ jobs:
           command: docker build -t ingress:latest -f docker/Dockerfile.ingress ./docker
       - run:
           name: Start influxd
-          command: docker run -d -p 9999:9999 --name influxd quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true
+          command: docker run -d --net=host -p 9999:9999 --name influxd quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true
       - run:
           name: Start ingress server and link to influxd
-          command: docker run -d -p 443:443 ingress:latest
+          command: docker run -d --net=host -p 443:443 ingress:latest
       - run:
           name: Start web server server and link to influxd
-          command: docker run -d -p 8080:8080 webserver:latest
+          command: docker run -d --net=host -p 8080:8080 webserver:latest
       - run:
           name: Run e2e tests
           command: |
-            docker run -v ${PWD}/test-artifacts:/repo/junit-results \
+            docker run --net=host -v ${PWD}/test-artifacts:/repo/junit-results \
             -e CYPRESS_baseUrl=https://localhost:443 e2e:latest \
             bash -c "yarn cypress run --browser chrome --spec "$(circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings --timings-type=classname | paste -sd "," -)" --reporter junit --reporter-options 'mochaFile=junit-results/test-output-[hash].xml'"
       - store_test_results:

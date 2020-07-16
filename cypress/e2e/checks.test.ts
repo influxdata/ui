@@ -184,7 +184,6 @@ describe('Checks', () => {
         .clear()
         .type('1s')
       cy.getByTestID('save-cell--button').click()
-      cy.getByTestID('check-card').should('have.length', 1)
       cy.getByTestID('notification-error').should('not.exist')
       cy.getByTestID('context-history-menu').click()
       cy.getByTestID('context-history-task').click()

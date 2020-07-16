@@ -11,14 +11,13 @@ jobs:
     steps:
       - checkout
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - run: curl -o- -L https://yarnpkg.com/install.sh | bash
       - run:
           name: Build js and dependencies
           command: |
             set +e
-            yarn install
-            yarn generate
-            yarn build:fast
+            npx yarn install
+            npx yarn generate
+            npx yarn build:fast
       - run:
           name: Build web server
           command: docker build -t webserver:latest -f docker/Dockerfile.server .
@@ -62,8 +61,8 @@ jobs:
       - run:
           command: |
             set +e
-            yarn install
-            yarn prettier
+            npx yarn install
+            npx yarn prettier
           name: 'Install Dependencies'
       - run: yarn generate
       - run:
@@ -71,7 +70,7 @@ jobs:
           command: |
             set +e
             TESTFILES=$(circleci tests glob "src/**/*.test.ts*" | circleci tests split --split-by=timings)
-            yarn test:circleci $TESTFILES
+            npx yarn test:circleci $TESTFILES
       - store_test_results:
           path: coverage
       - store_artifacts:

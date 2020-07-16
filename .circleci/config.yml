@@ -31,10 +31,10 @@ jobs:
           command: docker run -d -p 9999:9999 --name influxd quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true
       - run:
           name: Start ingress server and link to influxd
-          command: docker run -d ingress:latest
+          command: docker run -d -p 443:443 ingress:latest
       - run:
           name: Start web server server and link to influxd
-          command: docker run -d webserver:latest
+          command: docker run -d -p 8080:8080 webserver:latest
       - run:
           name: Run e2e tests
           command: |

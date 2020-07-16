@@ -2,17 +2,15 @@ version: 2.1
 
 jobs:
   e2e:
-    docker:
-      - image: circleci/golang:1.13-node-browsers
+    machine:
+      image: ubuntu-1604:202007-01
+      docker_layer_caching: true
     parallelism: 8
     working_directory: ~/influxdata/ui
     resource_class: large
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - run: docker create -v /test-artifacts --name artifacts alpine:3.4 /bin/true
       - run:
           name: Build Cypress image, js, and dependencies
           command: docker build -t e2e:latest -f docker/Dockerfile.cypress .
@@ -33,15 +31,16 @@ jobs:
           command: docker run -d -p 9999:9999 --name influxd quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true
       - run:
           name: Start ingress server and link to influxd
-          command: docker run -d --network container:influxd ingress:latest
+          command: docker run -d ingress:latest
       - run:
           name: Start web server server and link to influxd
-          command: docker run -d --network container:influxd webserver:latest
+          command: docker run -d webserver:latest
       - run:
           name: Run e2e tests
           command: |
-            docker run --network container:influxd --volumes-from artifacts -e CYPRESS_baseUrl=https://localhost:443 e2e:latest /repo/docker/conf/cypress.sh "$(circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings --timings-type=classname | paste -sd "," -)"
-      - run: docker cp artifacts:/test-artifacts ${PWD}/test-artifacts
+            docker run -v ${PWD}/test-artifacts:/repo/junit-results \
+            -e CYPRESS_baseUrl=https://localhost:443 e2e:latest \
+            bash -c "yarn cypress run --browser chrome --spec "$(circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings --timings-type=classname | paste -sd "," -)" --reporter junit --reporter-options 'mochaFile=junit-results/test-output-[hash].xml"
       - store_test_results:
           path: ./test-artifacts
       - store_artifacts:

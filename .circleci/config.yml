@@ -12,14 +12,12 @@ jobs:
       - checkout
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
-          name: Build Cypress image, js, and dependencies
-          command: docker build -t e2e:latest -f docker/Dockerfile.cypress .
-      - run:
-          name: Run Cypress image to expose production js
-          command: docker run -d --name prod_js e2e:latest /bin/true
-      - run:
-          name: Copy production js into temporary volume (so another container can use it see #TODO link to why we have to do this)
-          command: docker cp prod_js:/repo/build ./build
+          name: Build js and dependencies
+          command: |
+            set +e
+            yarn install
+            yarn generate
+            yarn build:fast
       - run:
           name: Build web server
           command: docker build -t webserver:latest -f docker/Dockerfile.server .
@@ -38,15 +36,17 @@ jobs:
       - run:
           name: Run e2e tests
           command: |
-            docker run --net=host -v ${PWD}/test-artifacts:/repo/junit-results \
-            -v /tmp/.X11-unix:/tmp/.X11-unix \
-            -e CYPRESS_baseUrl=https://localhost:443 e2e:latest \
-            bash -c "yarn cypress run --browser chrome --spec "$(circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings --timings-type=classname | paste -sd "," -)" --reporter junit --reporter-options 'mochaFile=junit-results/test-output-[hash].xml'"
+            CYPRESS_baseUrl=https://localhost:443 yarn cypress run --browser chrome --spec "$(circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings --timings-type=classname | paste -sd "," -)" --reporter junit --reporter-options 'mochaFile=junit-results/test-output-[hash].xml'
+      # - run:
+      #     name: Run e2e tests
+      #     command: |
+      #       docker run --net=host -v ${PWD}/test-artifacts:/repo/junit-results \
+      #       -e CYPRESS_baseUrl=https://localhost:443 e2e:latest \
+      #       bash -c "yarn cypress run --browser chrome --spec "$(circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings --timings-type=classname | paste -sd "," -)" --reporter junit --reporter-options 'mochaFile=junit-results/test-output-[hash].xml'"
       - store_test_results:
-          path: ./test-artifacts
+          path: ./junit-results
       - store_artifacts:
-          path: ./test-artifacts
-          destination: test_results
+          path: ./junit-results
   unit:
     docker:
       - image: circleci/golang:1.13-node-browsers

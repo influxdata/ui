@@ -5,7 +5,7 @@ const PAGE_LOAD_SLA = 10000
 
 const measurement = 'my_meas'
 const field = 'my_field'
-describe.skip('Checks', () => {
+describe('Checks', () => {
   beforeEach(() => {
     cy.flush()
 

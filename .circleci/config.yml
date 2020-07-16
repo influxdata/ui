@@ -40,7 +40,7 @@ jobs:
       - run:
           name: Run e2e tests
           command: |
-            docker run --network container:influxd --volumes-from artifacts -e CYPRESS_baseUrl=https://localhost:443 e2e:latest bash -c "cd /repo && yarn cypress run --browser chrome --spec "$(circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings | paste -sd "," -)" --reporter junit --reporter-options 'mochaFile=junit-results/test-output-[hash].xml'; cp -r /repo/junit-results /test-artifacts"
+            docker run --network container:influxd --volumes-from artifacts -e CYPRESS_baseUrl=https://localhost:443 e2e:latest /repo/docker/conf/cypress.sh
       - run: docker cp artifacts:/test-artifacts ${PWD}/test-artifacts
       - store_test_results:
           path: ./test-artifacts

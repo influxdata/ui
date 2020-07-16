@@ -36,17 +36,11 @@ jobs:
       - run:
           name: Run e2e tests
           command: |
-            CYPRESS_baseUrl=https://localhost:443 npx yarn cypress run --browser chrome --spec "$(circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings --timings-type=classname | paste -sd "," -)" --reporter junit --reporter-options 'mochaFile=junit-results/test-output-[hash].xml'
-      # - run:
-      #     name: Run e2e tests
-      #     command: |
-      #       docker run --net=host -v ${PWD}/test-artifacts:/repo/junit-results \
-      #       -e CYPRESS_baseUrl=https://localhost:443 e2e:latest \
-      #       bash -c "yarn cypress run --browser chrome --spec "$(circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings --timings-type=classname | paste -sd "," -)" --reporter junit --reporter-options 'mochaFile=junit-results/test-output-[hash].xml'"
+            CYPRESS_baseUrl=https://localhost:443 npx yarn cypress run --browser chrome --spec "$(circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings --timings-type=classname | paste -sd "," -)" --reporter cypress-circleci-reporter
       - store_test_results:
-          path: ./junit-results
+          path: test_results
       - store_artifacts:
-          path: ./junit-results
+          path: test_results
   unit:
     docker:
       - image: circleci/golang:1.13-node-browsers

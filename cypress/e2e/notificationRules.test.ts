@@ -1,6 +1,6 @@
 import {SlackNotificationEndpoint, Organization} from '../../src/types'
 
-describe.skip('NotificationRules', () => {
+describe('NotificationRules', () => {
   const name1 = 'Slack 1'
   const name2 = 'Slack 2'
   const name3 = 'Slack 3'

@@ -4,7 +4,7 @@ import {
   Organization,
 } from '../../src/types'
 
-describe.skip('Notification Endpoints', () => {
+describe('Notification Endpoints', () => {
   const endpoint: NotificationEndpoint = {
     orgID: '',
     name: 'Pre-Created Endpoint',

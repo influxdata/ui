@@ -4,7 +4,7 @@ const newLabelName = 'click-me'
 const dashboardName = 'Bee Happy'
 const dashSearchName = 'bEE'
 
-describe.skip('Dashboards', () => {
+describe('Dashboards', () => {
   beforeEach(() => {
     cy.flush()
 

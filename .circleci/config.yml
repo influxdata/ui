@@ -40,7 +40,7 @@ jobs:
           command: |
             docker run -v ${PWD}/test-artifacts:/repo/junit-results \
             -e CYPRESS_baseUrl=https://localhost:443 e2e:latest \
-            bash -c "yarn cypress run --browser chrome --spec "$(circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings --timings-type=classname | paste -sd "," -)" --reporter junit --reporter-options 'mochaFile=junit-results/test-output-[hash].xml"
+            bash -c "yarn cypress run --browser chrome --spec "$(circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings --timings-type=classname | paste -sd "," -)" --reporter junit --reporter-options 'mochaFile=junit-results/test-output-[hash].xml'"
       - store_test_results:
           path: ./test-artifacts
       - store_artifacts:

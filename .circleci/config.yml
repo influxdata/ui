@@ -11,6 +11,7 @@ jobs:
     steps:
       - checkout
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
+      - run: curl -o- -L https://yarnpkg.com/install.sh | bash
       - run:
           name: Build js and dependencies
           command: |

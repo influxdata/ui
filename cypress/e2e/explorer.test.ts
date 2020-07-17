@@ -367,7 +367,12 @@ describe('DataExplorer', () => {
     const field = 'my_field'
 
     beforeEach(() => {
-      cy.writeData([`${measurement} ${field}=0`, `${measurement} ${field}=1`])
+      cy.writeData([
+        `${measurement} ${field}=0`,
+        `${measurement} ${field}=1`,
+      ]).then(resp => {
+        console.log('resp: ', resp)
+      })
     })
 
     it('can switch to and from script editor mode', () => {

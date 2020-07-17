@@ -362,66 +362,6 @@ describe('DataExplorer', () => {
     })
   })
 
-  describe('editing mode switching', () => {
-    const measurement = 'my_meas'
-    const field = 'my_field'
-    const numLines = 360
-
-    beforeEach(() => {
-      cy.writeData([`${measurement} ${field}=0`, `${measurement} ${field}=1`])
-      cy.writeData(lines(numLines))
-    })
-
-    it('can switch to and from script editor mode', () => {
-      cy.reload()
-      cy.reload()
-      cy.reload()
-
-      cy.getByTestID('selector-list my_meas').click()
-      cy.getByTestID('selector-list my_field').click()
-
-      cy.getByTestID('switch-to-script-editor').click()
-      cy.getByTestID('flux-editor').should('exist')
-
-      // revert back to query builder mode (without confirmation)
-      cy.getByTestID('switch-to-query-builder').click()
-      cy.getByTestID('query-builder').should('exist')
-
-      // can revert back to query builder mode (with confirmation)
-      cy.getByTestID('switch-to-script-editor')
-        .should('be.visible')
-        .click()
-      cy.getByTestID('flux--aggregate.rate--inject').click()
-      // check to see if import is defaulted to the top
-      cy.get('.view-line')
-        .first()
-        .contains('import')
-      // check to see if new aggregate rate is at the bottom
-      cy.get('.view-line')
-        .last()
-        .contains('aggregate.')
-      cy.getByTestID('flux-editor').should('exist')
-      cy.getByTestID('flux-editor').within(() => {
-        cy.get('textarea').type('yoyoyoyoyo', {force: true})
-      })
-
-      // can hover over flux functions
-      cy.getByTestID('flux-docs--aggregateWindow').should('not.exist')
-      cy.getByTestID('flux--aggregateWindow').trigger('mouseover')
-      cy.getByTestID('flux-docs--aggregateWindow').should('exist')
-
-      cy.getByTestID('switch-query-builder-confirm--button').click()
-
-      cy.getByTestID('switch-query-builder-confirm--popover--contents').within(
-        () => {
-          cy.getByTestID('switch-query-builder-confirm--confirm-button').click()
-        }
-      )
-
-      cy.getByTestID('query-builder').should('exist')
-    })
-  })
-
   describe('raw script editing', () => {
     beforeEach(() => {
       cy.getByTestID('switch-to-script-editor')
@@ -429,21 +369,16 @@ describe('DataExplorer', () => {
         .click()
     })
 
-    it('shows flux errors', () => {
+    it('shows flux signatures and errors', () => {
       cy.getByTestID('time-machine--bottom').then(() => {
         cy.getByTestID('flux-editor').within(() => {
           cy.get('textarea').type('foo |> bar', {force: true})
 
           cy.get('.squiggly-error').should('be.visible')
-        })
-      })
-    })
 
-    it('shows flux signatures', () => {
-      cy.getByTestID('time-machine--bottom').then(() => {
-        cy.getByTestID('flux-editor').within(() => {
+          cy.get('textarea').type('{selectall} {backspace}', {force: true})
+
           cy.get('textarea').type('from(', {force: true})
-
           cy.get('.signature').should('be.visible')
         })
       })
@@ -703,6 +638,47 @@ describe('DataExplorer', () => {
         cy.getByTestID('raw-data--toggle').click()
         cy.getByTestID('raw-data-table').should('exist')
         cy.getByTestID('raw-data--toggle').click()
+
+        // switch to script editor
+        cy.getByTestID('switch-to-script-editor').click()
+        cy.getByTestID('flux-editor').should('exist')
+
+        // revert back to query builder mode (without confirmation)
+        cy.getByTestID('switch-to-query-builder').click()
+        cy.getByTestID('query-builder').should('exist')
+
+        // can revert back to query builder mode (with confirmation)
+        cy.getByTestID('switch-to-script-editor')
+          .should('be.visible')
+          .click()
+        cy.getByTestID('flux--aggregate.rate--inject').click()
+        // check to see if import is defaulted to the top
+        cy.get('.view-line')
+          .first()
+          .contains('import')
+        // check to see if new aggregate rate is at the bottom
+        cy.get('.view-line')
+          .last()
+          .contains('aggregate.')
+        cy.getByTestID('flux-editor').should('exist')
+        cy.getByTestID('flux-editor').within(() => {
+          cy.get('textarea').type('yoyoyoyoyo', {force: true})
+        })
+
+        // can hover over flux functions
+        cy.getByTestID('flux-docs--aggregateWindow').should('not.exist')
+        cy.getByTestID('flux--aggregateWindow').trigger('mouseover')
+        cy.getByTestID('flux-docs--aggregateWindow').should('exist')
+
+        cy.getByTestID('switch-query-builder-confirm--button').click()
+
+        cy.getByTestID(
+          'switch-query-builder-confirm--popover--contents'
+        ).within(() => {
+          cy.getByTestID('switch-query-builder-confirm--confirm-button').click()
+        })
+
+        cy.getByTestID('query-builder').should('exist')
       })
 
       it('can set min or max y-axis values', () => {

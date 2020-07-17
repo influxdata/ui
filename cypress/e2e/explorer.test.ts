@@ -365,9 +365,11 @@ describe('DataExplorer', () => {
   describe('editing mode switching', () => {
     const measurement = 'my_meas'
     const field = 'my_field'
+    const numLines = 360
 
     beforeEach(() => {
       cy.writeData([`${measurement} ${field}=0`, `${measurement} ${field}=1`])
+      cy.writeData(lines(numLines))
     })
 
     it('can switch to and from script editor mode', () => {

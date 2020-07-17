@@ -45,7 +45,7 @@ jobs:
       - run:
           name: Run e2e tests
           command: |
-            CYPRESS_baseUrl=https://localhost npx yarn cypress run --browser chrome --spec "$(circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings --timings-type=classname | paste -sd "," -)" --reporter cypress-circleci-reporter
+            CYPRESS_baseUrl=https://localhost npx yarn cypress run --browser chrome --spec "$(circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings | paste -sd "," -)" --reporter cypress-circleci-reporter
       - store_test_results:
           path: test_results
       - store_artifacts:
@@ -64,13 +64,13 @@ jobs:
       - restore_cache:
           keys:
             - 'yarn-cached-packages-{{ checksum "yarn.lock" }}'
-          name: 'Restore Yarn Package Cache'
+          name: "Restore Yarn Package Cache"
       - run:
           command: |
             set +e
             npx yarn install
             npx yarn prettier
-          name: 'Install Dependencies'
+          name: "Install Dependencies"
       - run: yarn generate
       - run:
           name: parallel jest tests
@@ -85,7 +85,7 @@ jobs:
           destination: raw-test-output
       - save_cache:
           key: 'yarn-cached-packages-{{ checksum "yarn.lock" }}'
-          name: 'Save Yarn Package Cache'
+          name: "Save Yarn Package Cache"
           paths:
             - ~/.cache/yarn
   lint:
@@ -98,12 +98,12 @@ jobs:
       - restore_cache:
           keys:
             - 'yarn-cached-packages-{{ checksum "yarn.lock" }}'
-          name: 'Restore Yarn Package Cache'
+          name: "Restore Yarn Package Cache"
       - run:
           command: |
             set +e
             yarn install
-          name: 'Install Dependencies'
+          name: "Install Dependencies"
       - run: yarn generate
       - run:
           name: parallel eslint
@@ -113,7 +113,7 @@ jobs:
             yarn eslint:circleci $TESTFILES
       - save_cache:
           key: 'yarn-cached-packages-{{ checksum "yarn.lock" }}'
-          name: 'Save Yarn Package Cache'
+          name: "Save Yarn Package Cache"
           paths:
             - ~/.cache/yarn
 

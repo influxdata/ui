@@ -1,9 +1,0 @@
-FROM cypress/browsers:node12.14.1-chrome83-ff77
-
-COPY ./ /repo
-# NOTE: Mount repo root to /repo and output path to /repo/build before running
-WORKDIR /repo
-
-RUN yarn install
-RUN yarn generate
-RUN yarn build:fast

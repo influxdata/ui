@@ -1,0 +1,18 @@
+FROM nginx:alpine
+
+ENV CHRONOGRAF_BASE_PATH=/
+
+RUN apk add --update openssl netcat-openbsd && rm -rf /var/cache/apk/*
+
+# here we are adding a self signed SSL cert to the image
+# to emulate a termination node on ingress. it gets generated
+# every time the the image is built
+WORKDIR /etc/ssl
+RUN openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 \
+    -subj "/C=US/ST=Denial/L=Springfield/O=IT/CN=*" \
+    -keyout server.key  -out server.crt
+
+COPY ./conf/ingress.conf /nginx.conf
+COPY ./conf/ingress.sh /entry.sh
+
+CMD ["/entry.sh"]

@@ -1,46 +1,63 @@
-version: "2.1"
+version: 2.1
 
-commands:
 jobs:
   e2e:
-    docker:
-      - image: circleci/golang:1.13-node-browsers
-    working_directory: /influxdata/ui
+    machine:
+      image: ubuntu-1604:202007-01
+      docker_layer_caching: true
+    parallelism: 8
+    working_directory: ~/influxdata/ui
+    resource_class: large
     steps:
       - checkout
+      - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - restore_cache:
+          name: Restore Yarn Package Cache
           keys:
-            - 'yarn-cached-packages-{{ checksum "yarn.lock" }}'
-          name: "Restore Yarn Package Cache"
+            - yarn-packages-{{ checksum "yarn.lock" }}
       - run:
+          name: Build js and dependencies
           command: |
             set +e
-            yarn generate
-            yarn build:ci
-          name: "Build the frontend"
-      - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - run:
-          command: docker run --net host -v ./build:/assets -v /var/run/docker.sock:/var/run/docker.sock quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true --assets-path=/assets
-          background: true
-      - run: yarn test:e2e
-      - store_test_results:
-          path: ./junit-results
-          destination: junit-results
-      - store_artifacts:
-          path: ./cypress/videos
-          destination: videos
-      - store_artifacts:
-          path: ./cypress/screenshots
-          destination: screenshots
+            npx yarn install
+            npx yarn generate
+            npx yarn build:fast
       - save_cache:
-          key: 'yarn-cached-packages-{{ checksum "yarn.lock" }}'
-          name: "Save Yarn Package Cache"
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
-  jstest:
+      - run:
+          name: Build web server
+          command: docker build -t webserver:latest -f docker/Dockerfile.server .
+      - run:
+          name: Build ingress server
+          command: docker build -t ingress:latest -f docker/Dockerfile.ingress ./docker
+      - run:
+          name: Start influxd
+          command: docker run -d --net=host -p 9999:9999 --name influxd quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true
+      - run:
+          name: Start ingress server and link to influxd
+          command: docker run -d --net=host -p 443:443 ingress:latest
+      - run:
+          name: Start web server server and link to influxd
+          command: docker run -d --net=host -p 8080:8080 webserver:latest
+      - run:
+          name: Run e2e tests
+          command: |
+            CYPRESS_baseUrl=https://localhost npx yarn cypress run --browser chrome --spec "$(circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings | paste -sd "," -)" --reporter cypress-circleci-reporter
+      - store_test_results:
+          path: test_results
+      - store_artifacts:
+          path: cypress/videos
+          destination: test_artifacts/videos
+      - store_artifacts:
+          path: cypress/screenshots
+          destination: test_artifacts/screenshots
+  unit:
     docker:
       - image: circleci/golang:1.13-node-browsers
-    working_directory: /influxdb/ui
+    working_directory: ~/influxdata/ui
     parallelism: 8
     steps:
       - checkout
@@ -51,8 +68,8 @@ jobs:
       - run:
           command: |
             set +e
-            yarn install
-            yarn prettier
+            npx yarn install
+            npx yarn prettier
           name: "Install Dependencies"
       - run: yarn generate
       - run:
@@ -60,7 +77,7 @@ jobs:
           command: |
             set +e
             TESTFILES=$(circleci tests glob "src/**/*.test.ts*" | circleci tests split --split-by=timings)
-            yarn test:circleci $TESTFILES
+            npx yarn test:circleci $TESTFILES
       - store_test_results:
           path: coverage
       - store_artifacts:
@@ -71,10 +88,10 @@ jobs:
           name: "Save Yarn Package Cache"
           paths:
             - ~/.cache/yarn
-  jslint:
+  lint:
     docker:
       - image: circleci/golang:1.13-node-browsers
-    working_directory: /influxdata/ui
+    working_directory: ~/influxdata/ui
     parallelism: 8
     steps:
       - checkout
@@ -104,9 +121,8 @@ workflows:
   version: 2
   build:
     jobs:
-      - jstest
-      - jslint
-      - build
+      - unit
+      - lint
   e2e:
     jobs:
       - e2e

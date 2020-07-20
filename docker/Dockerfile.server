@@ -1,0 +1,9 @@
+FROM nginx:stable-alpine
+
+# We hard copy these assets in so that the image can
+# be transported without a volume claim + cloud specific
+# storage mechanism. It does make images a little bigger
+COPY ./docker/conf/nginx.conf /etc/nginx/nginx.conf
+COPY ./build /usr/share/nginx/html/
+
+EXPOSE 9999

@@ -243,9 +243,7 @@ describe('Variables', () => {
   })
 
   it('can create and delete a label and filter a variable by label name & sort by variable name', () => {
-    cy.getByTestID('resource-card variable').within(() => {
-      cy.getByTestID('inline-labels--add').click()
-    })
+    cy.getByTestID('inline-labels--add').click({force: true})
 
     const labelName = 'label'
     cy.getByTestID('inline-labels--popover--contents').type(labelName)

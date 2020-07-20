@@ -431,21 +431,16 @@ describe('DataExplorer', () => {
         .click()
     })
 
-    it('shows flux errors', () => {
+    it('shows flux signatures and errors', () => {
       cy.getByTestID('time-machine--bottom').then(() => {
         cy.getByTestID('flux-editor').within(() => {
           cy.get('textarea').type('foo |> bar', {force: true})
 
           cy.get('.squiggly-error').should('be.visible')
-        })
-      })
-    })
 
-    it('shows flux signatures', () => {
-      cy.getByTestID('time-machine--bottom').then(() => {
-        cy.getByTestID('flux-editor').within(() => {
+          cy.get('textarea').type('{selectall} {backspace}', {force: true})
+
           cy.get('textarea').type('from(', {force: true})
-
           cy.get('.signature').should('be.visible')
         })
       })

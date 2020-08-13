@@ -3,7 +3,9 @@ import {Organization, Bucket} from '../../src/types'
 // a generous commitment to delivering this page in a loaded state
 const PAGE_LOAD_SLA = 10000
 
-describe('Scrapers', () => {
+// NOTE
+// this isn't supported in cloud mode
+describe.skip('Scrapers', () => {
   beforeEach(() => {
     cy.flush()
 

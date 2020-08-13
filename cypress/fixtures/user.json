@@ -1,6 +1,6 @@
 {
-  "username": "u1",
-  "password": "password",
+  "username": "dev_user",
+  "password": "CHECKMEOUTASUPERSECRETPASSWORD",
   "org": "deforg",
   "bucket": "defbuck"
 }

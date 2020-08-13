@@ -387,7 +387,7 @@ describe('tokens', () => {
   })
 
   it('can do sorting', () => {
-    cy.getByTestID("token-card u1's Token").within(() => {
+    cy.getByTestID("token-card dev_user's Token").within(() => {
       cy.getByTestID('context-menu').click()
 
       cy.getByTestID('delete-token')

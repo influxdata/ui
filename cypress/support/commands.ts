@@ -2,6 +2,7 @@ import {NotificationEndpoint} from '../../src/types'
 import 'cypress-file-upload'
 
 export const signin = (): Cypress.Chainable<Cypress.Response> => {
+  /*\ OSS login
   return cy.fixture('user').then(({username, password}) => {
     return cy.setupUser().then(body => {
       return cy
@@ -13,6 +14,18 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
         .then(() => {
           return cy.wrap(body)
         })
+    })
+  })
+  \*/
+
+  return cy.fixture('user').then(({username, password}) => {
+    return cy.setupUser().then(body => {
+      return cy.visit('/api/v2/signin')
+        .then(() => cy.get('#login').type(username))
+        .then(() => cy.get('#password').type(password))
+        .then(() => cy.get('#submit-login').click())
+        .then(() => cy.get('.theme-btn--success').click())
+        .then(() => cy.wrap(body))
     })
   })
 }
@@ -396,6 +409,7 @@ export const flush = () => {
     method: 'GET',
     url: '/debug/flush',
   })
+  cy.wait(500)
 }
 
 export const lines = (numLines = 3) => {

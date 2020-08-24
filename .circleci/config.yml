@@ -6,46 +6,30 @@ jobs:
       image: ubuntu-1604:202007-01
       docker_layer_caching: true
     parallelism: 8
-    working_directory: ~/influxdata/ui
+    working_directory: ~/influxdata
     resource_class: large
     steps:
       - checkout
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - restore_cache:
-          name: Restore Yarn Package Cache
-          keys:
-            - yarn-packages-{{ checksum "yarn.lock" }}
       - run:
-          name: Build js and dependencies
-          command: |
-            set +e
-            npx yarn install
-            npx yarn generate
-            npx yarn build:fast
-      - save_cache:
-          name: Save Yarn Package Cache
-          key: yarn-packages-{{ checksum "yarn.lock" }}
-          paths:
-            - ~/.cache/yarn
+          name: Grab compose files
+          command: git clone https://github.com/influxdata/monitor-ci.git
       - run:
-          name: Build web server
-          command: docker build -t webserver:latest -f docker/Dockerfile.server .
+          name: Grab influxdb files (remove when we switch to ui)
+          command: git clone https://github.com/influxdata/influxdb.git
       - run:
-          name: Build ingress server
-          command: docker build -t ingress:latest -f docker/Dockerfile.ingress ./docker
+          name: Copy over the testing variables
+          command: cp monitor-ci/env.testing monitor-ci/.env
       - run:
-          name: Start influxd
-          command: docker run -d --net=host -p 9999:9999 --name influxd quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true
+          name: Build the new UI (for idpe run make rebuild NODE=influxdb)
+          command: cd monitor-ci; make rebuild NODE=chronograf
       - run:
-          name: Start ingress server and link to influxd
-          command: docker run -d --net=host -p 443:443 ingress:latest
-      - run:
-          name: Start web server server and link to influxd
-          command: docker run -d --net=host -p 8080:8080 webserver:latest
+          name: Start the cluster
+          command: cd monitor-ci; make start
       - run:
           name: Run e2e tests
           command: |
-            CYPRESS_baseUrl=https://localhost npx yarn cypress run --browser chrome --spec "$(circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings | paste -sd "," -)" --reporter cypress-circleci-reporter
+            cd monitor-ci; make e2e TESTS="$(circleci tests glob "./influxdb/ui/cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings | paste -sd "," -)"
       - store_test_results:
           path: test_results
       - store_artifacts:

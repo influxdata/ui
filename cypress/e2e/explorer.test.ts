@@ -368,6 +368,9 @@ describe('DataExplorer', () => {
 
     beforeEach(() => {
       cy.writeData([`${measurement} ${field}=0`, `${measurement} ${field}=1`])
+      cy.getByTestID('selector-list _monitoring').click()
+      cy.wait(500) // wait for server to turn back on
+      cy.getByTestID('selector-list defbuck').click()
     })
 
     it('can switch to and from script editor mode', () => {

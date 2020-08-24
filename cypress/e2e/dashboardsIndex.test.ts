@@ -175,16 +175,9 @@ describe('Dashboards', () => {
     it('can clone a dashboard', () => {
       cy.getByTestID('dashboard-card').should('have.length', 2)
 
-      cy.getByTestID('dashboard-card')
-        .getByTestID('clone-dashboard')
+      cy.getByTestID('clone-dashboard')
         .first()
         .click({force: true})
-
-      cy.fixture('routes').then(({orgs}) => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.visit(`${orgs}/${id}/dashboards-list`)
-        })
-      })
 
       cy.getByTestID('dashboard-card').should('have.length', 3)
     })

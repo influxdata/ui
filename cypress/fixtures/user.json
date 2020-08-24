@@ -1,6 +1,6 @@
 {
   "username": "dev_user",
   "password": "CHECKMEOUTASUPERSECRETPASSWORD",
-  "org": "deforg",
+  "org": "InfluxData",
   "bucket": "defbuck"
 }

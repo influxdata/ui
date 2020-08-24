@@ -441,9 +441,8 @@ export const createToken = (
 export const setupUser = (): Cypress.Chainable<Cypress.Response> => {
   return cy.fixture('user').then(({username, password, org, bucket}) => {
     return cy.request({
-      method: 'POST',
-      url: '/api/v2/setup',
-      body: {username, password, org, bucket},
+      method: 'GET',
+      url: '/debug/provision',
     })
   })
 }

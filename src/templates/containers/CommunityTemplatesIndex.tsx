@@ -22,8 +22,6 @@ import {
   Heading,
   HeadingElement,
   Input,
-  LinkButton,
-  LinkTarget,
   Page,
   Panel,
   FlexDirection,
@@ -37,17 +35,22 @@ import {communityTemplatesImportPath} from 'src/templates/containers/TemplatesIn
 import GetResources from 'src/resources/components/GetResources'
 import {getOrg} from 'src/organizations/selectors'
 
+import {setStagedTemplateUrl} from 'src/templates/actions/creators'
+
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {
   getGithubUrlFromTemplateDetails,
-  getTemplateDetails,
+  getTemplateNameFromUrl,
 } from 'src/templates/utils'
 import {reportError} from 'src/shared/utils/errors'
 
 import {communityTemplateUnsupportedFormatError} from 'src/shared/copy/notifications'
+
 // Types
 import {AppState, ResourceType} from 'src/types'
+
+import {event} from 'src/cloud/utils/reporting'
 
 const communityTemplatesUrl =
   'https://github.com/influxdata/community-templates#templates'
@@ -107,11 +110,10 @@ class UnconnectedTemplatesIndex extends Component<Props> {
                   }
                   size={ComponentSize.Small}
                 >
-                  <LinkButton
+                  <Button
                     color={ComponentColor.Primary}
-                    href={communityTemplatesUrl}
                     size={ComponentSize.Large}
-                    target={LinkTarget.Blank}
+                    onClick={this.onClickBrowseCommunityTemplates}
                     text="Browse Community Templates"
                     testID="browse-template-button"
                     icon={IconFont.GitHub}
@@ -169,7 +171,7 @@ class UnconnectedTemplatesIndex extends Component<Props> {
         </Page>
         <Switch>
           <Route
-            path={`${templatesPath}/import/:directory/:templateName/:templateExtension`}
+            path={`${templatesPath}/import`}
             component={CommunityTemplateImportOverlay}
           />
         </Switch>
@@ -184,12 +186,14 @@ class UnconnectedTemplatesIndex extends Component<Props> {
     }
 
     try {
-      const {directory, templateExtension, templateName} = getTemplateDetails(
-        this.state.templateUrl
-      )
+      this.props.setStagedTemplateUrl(this.state.templateUrl)
+
+      event('template_click_lookup', {
+        templateName: getTemplateNameFromUrl(this.state.templateUrl).name,
+      })
 
       this.props.history.push(
-        `/orgs/${this.props.org.id}/settings/templates/import/${directory}/${templateName}/${templateExtension}`
+        `/orgs/${this.props.org.id}/settings/templates/import`
       )
     } catch (err) {
       this.props.notify(communityTemplateUnsupportedFormatError())
@@ -199,8 +203,14 @@ class UnconnectedTemplatesIndex extends Component<Props> {
     }
   }
 
-  private handleTemplateChange = event => {
-    this.setState({templateUrl: event.target.value})
+  private handleTemplateChange = evt => {
+    this.setState({templateUrl: evt.target.value})
+  }
+
+  private onClickBrowseCommunityTemplates = () => {
+    event('template_click_browse')
+
+    window.open(communityTemplatesUrl)
   }
 }
 
@@ -212,6 +222,7 @@ const mstp = (state: AppState) => {
 
 const mdtp = {
   notify,
+  setStagedTemplateUrl,
 }
 
 const connector = connect(mstp, mdtp)

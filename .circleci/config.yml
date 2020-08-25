@@ -6,10 +6,9 @@ jobs:
       image: ubuntu-1604:202007-01
       docker_layer_caching: true
     parallelism: 8
-    working_directory: ~/influxdata
+    working_directory: ~/
     resource_class: large
     steps:
-      - checkout
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
           name: Grab compose files
@@ -19,17 +18,17 @@ jobs:
           command: git clone git@github.com:influxdata/influxdb.git && cd influxdb && git checkout alex_cloud_tests
       - run:
           name: Copy over the testing variables
-          command: cp monitor-ci/env.testing monitor-ci/.env
+          command: cp ./monitor-ci/env.testing ./monitor-ci/.env
       - run:
           name: Build the new UI (for idpe run make rebuild NODE=influxdb)
-          command: cd monitor-ci; make rebuild NODE=chronograf
+          command: cd ./monitor-ci; make rebuild NODE=chronograf
       - run:
           name: Start the cluster
-          command: cd monitor-ci; make start
+          command: cd ./monitor-ci; make start
       - run:
           name: Run e2e tests
           command: |
-            cd monitor-ci; make e2e TESTS="$(circleci tests glob "./influxdb/ui/cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings | paste -sd "," -)"
+            cd ./monitor-ci; make e2e TESTS="$(circleci tests glob "./influxdb/ui/cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings | paste -sd "," -)"
       - store_test_results:
           path: test_results
       - store_artifacts:

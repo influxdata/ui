@@ -73,7 +73,7 @@ describe('Buckets', () => {
 
     describe('Searching and Sorting', () => {
       it('can sort by name and retention', () => {
-        const buckets = ['defbuck', '_tasks', '_monitoring']
+        const buckets = ['Website Monitoring Bucket', 'defbuck', '_tasks', '_monitoring']
         cy.getByTestID('resource-sorter--button')
           .click()
           .then(() => {

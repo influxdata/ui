@@ -5,7 +5,7 @@ jobs:
     machine:
       image: ubuntu-1604:202007-01
       docker_layer_caching: true
-    parallelism: 8
+    parallelism: 1
     working_directory: ~/
     resource_class: large
     steps:
@@ -28,7 +28,7 @@ jobs:
       - run:
           name: Run e2e tests
           command: |
-            cd ./monitor-ci; make e2e TESTS="$(circleci tests glob "../influxdb/ui/cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings | paste -sd "," -)"
+            cd ./monitor-ci; make e2e TESTS="$(circleci tests glob "./influxdb/ui/cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings | paste -sd "," -)"
       - store_test_results:
           path: test_results
       - store_artifacts:

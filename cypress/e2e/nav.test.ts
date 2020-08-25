@@ -80,9 +80,15 @@ describe('navigation', () => {
 
     \**/
 
+    /**\
+
+      OSS Only Feature
+
     // User Nav -- Log Out
     cy.getByTestID('user-nav').click()
     cy.getByTestID('user-nav-item-logout').click()
     cy.getByTestID('signin-page').should('exist')
+
+    \**/
   })
 })

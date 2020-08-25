@@ -24,7 +24,7 @@ jobs:
           command: cd ./monitor-ci; make rebuild NODE=chronograf
       - run:
           name: Busta Rhyme
-          command: cd ./monitor-ci; make rebuild NODE=ingress
+          command: cd ./monitor-ci; make rebuild NODE=cypress
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start

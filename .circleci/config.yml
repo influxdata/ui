@@ -23,9 +23,6 @@ jobs:
           name: Build the new UI (for idpe run make rebuild NODE=influxdb)
           command: cd ./monitor-ci; make rebuild NODE=chronograf
       - run:
-          name: Busta Rhyme
-          command: cd ./monitor-ci; make rebuild NODE=cypress
-      - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start
       - run:

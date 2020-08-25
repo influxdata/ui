@@ -32,10 +32,10 @@ jobs:
       - store_test_results:
           path: test_results
       - store_artifacts:
-          path: monitor-ci/test_artifacts/videos
+          path: monitor-ci/test-artifacts/videos
           destination: test_artifacts/videos
       - store_artifacts:
-          path: monitor-ci/test_artifacts/screenshots
+          path: monitor-ci/test-artifacts/screenshots
           destination: test_artifacts/screenshots
   unit:
     docker:

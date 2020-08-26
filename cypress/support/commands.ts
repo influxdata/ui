@@ -440,7 +440,7 @@ export const createToken = (
 
 // TODO: have to go through setup because we cannot create a user w/ a password via the user API
 export const setupUser = (): Cypress.Chainable<Cypress.Response> => {
-  return cy.fixture('user').then(({username, password, org, bucket}) => {
+  return cy.fixture('user').then(() => {
     return cy.request({
       method: 'GET',
       url: '/debug/provision',

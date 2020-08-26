@@ -43,7 +43,7 @@ describe('Orgs', () => {
         .contains(extraText)
         .should('have.length', 1)
 
-        /**\
+      /**\
 
           TODO: translate this test to cloud mode
 

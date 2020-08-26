@@ -20,7 +20,8 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
 
   return cy.fixture('user').then(({username, password}) => {
     return cy.setupUser().then(body => {
-      return cy.visit('/api/v2/signin')
+      return cy
+        .visit('/api/v2/signin')
         .then(() => cy.get('#login').type(username))
         .then(() => cy.get('#password').type(password))
         .then(() => cy.get('#submit-login').click())

@@ -25,7 +25,7 @@ import {event} from 'src/cloud/utils/reporting'
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
-class CommunityTemplateOverlayContentsUnconnected extends PureComponent<Props> {
+class CommunityTemplateResourceContentUnconnected extends PureComponent<Props> {
   render() {
     const {summary} = this.props
     if (!Object.keys(summary).length) {
@@ -251,6 +251,6 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export const CommunityTemplateOverlayContents = connector(
-  CommunityTemplateOverlayContentsUnconnected
+export const CommunityTemplateResourceContent = connector(
+  CommunityTemplateResourceContentUnconnected
 )

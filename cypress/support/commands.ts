@@ -1,6 +1,8 @@
 import {NotificationEndpoint} from '../../src/types'
+import 'cypress-file-upload'
 
 export const signin = (): Cypress.Chainable<Cypress.Response> => {
+  /*\ OSS login
   return cy.fixture('user').then(({username, password}) => {
     return cy.setupUser().then(body => {
       return cy
@@ -12,6 +14,18 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
         .then(() => {
           return cy.wrap(body)
         })
+    })
+  })
+  \*/
+
+  return cy.fixture('user').then(({username, password}) => {
+    return cy.setupUser().then(body => {
+      return cy.visit('/api/v2/signin')
+        .then(() => cy.get('#login').type(username))
+        .then(() => cy.get('#password').type(password))
+        .then(() => cy.get('#submit-login').click())
+        .then(() => cy.get('.theme-btn--success').click())
+        .then(() => cy.wrap(body))
     })
   })
 }
@@ -113,12 +127,14 @@ export const createDashboardTemplate = (
   })
 }
 
-export const createOrg = (): Cypress.Chainable<Cypress.Response> => {
+export const createOrg = (
+  name = 'test org'
+): Cypress.Chainable<Cypress.Response> => {
   return cy.request({
     method: 'POST',
     url: '/api/v2/orgs',
     body: {
-      name: 'test org',
+      name,
     },
   })
 }
@@ -356,6 +372,50 @@ export const createTelegraf = (
   })
 }
 
+export const createRule = (
+  orgID: string,
+  endpointID: string,
+  name = ''
+): Cypress.Chainable<Cypress.Response> => {
+  return cy.request({
+    method: 'POST',
+    url: 'api/v2/notificationRules',
+    body: genRule({endpointID, orgID, name}),
+  })
+}
+
+type RuleArgs = {
+  endpointID: string
+  orgID: string
+  type?: string
+  name?: string
+}
+
+const genRule = ({
+  endpointID,
+  orgID,
+  type = 'slack',
+  name = 'r1',
+}: RuleArgs) => ({
+  type,
+  every: '20m',
+  offset: '1m',
+  url: '',
+  orgID,
+  name,
+  activeStatus: 'active',
+  status: 'active',
+  endpointID,
+  tagRules: [],
+  labels: [],
+  statusRules: [
+    {currentLevel: 'CRIT', period: '1h', count: 1, previousLevel: 'INFO'},
+  ],
+  description: '',
+  messageTemplate: 'im a message',
+  channel: '',
+})
+
 /*
 [{action: 'write', resource: {type: 'views'}},
       {action: 'write', resource: {type: 'documents'}},
@@ -381,9 +441,8 @@ export const createToken = (
 export const setupUser = (): Cypress.Chainable<Cypress.Response> => {
   return cy.fixture('user').then(({username, password, org, bucket}) => {
     return cy.request({
-      method: 'POST',
-      url: '/api/v2/setup',
-      body: {username, password, org, bucket},
+      method: 'GET',
+      url: '/debug/provision',
     })
   })
 }
@@ -393,6 +452,7 @@ export const flush = () => {
     method: 'GET',
     url: '/debug/flush',
   })
+  cy.wait(500)
 }
 
 export const lines = (numLines = 3) => {
@@ -475,6 +535,8 @@ export const createEndpoint = (
 /* eslint-disable */
 // notification endpoints
 Cypress.Commands.add('createEndpoint', createEndpoint)
+// notification rules
+Cypress.Commands.add('createRule', createRule)
 
 // assertions
 Cypress.Commands.add('fluxEqual', fluxEqual)

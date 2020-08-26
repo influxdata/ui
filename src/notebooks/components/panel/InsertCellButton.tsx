@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useRef, useEffect} from 'react'
+import React, {FC, useRef, useContext} from 'react'
 
 // Components
 import {
@@ -12,57 +12,24 @@ import {
   FlexBox,
   FlexDirection,
   AlignItems,
+  PopoverPosition,
 } from '@influxdata/clockface'
 import AddButtons from 'src/notebooks/components/AddButtons'
+import {NotebookContext} from 'src/notebooks/context/notebook.current'
 
 // Styles
 import 'src/notebooks/components/panel/InsertCellButton.scss'
 
 interface Props {
-  index: number
+  id: string
 }
 
-const InsertCellButton: FC<Props> = ({index}) => {
+const InsertCellButton: FC<Props> = ({id}) => {
+  const {notebook} = useContext(NotebookContext)
   const dividerRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const popoverVisible = useRef<boolean>(false)
-  const buttonPositioningEnabled = useRef<boolean>(false)
-
-  useEffect(() => {
-    window.addEventListener('mousemove', handleMouseMove)
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-    }
-  }, [])
-
-  const handleMouseMove = (e: MouseEvent): void => {
-    if (!dividerRef.current || !buttonRef.current) {
-      return
-    }
-
-    if (
-      popoverVisible.current === false &&
-      buttonPositioningEnabled.current === true
-    ) {
-      const {pageX} = e
-      const {left, width} = dividerRef.current.getBoundingClientRect()
-
-      const minLeft = 0
-      const maxLeft = width
-
-      const buttonLeft = Math.min(Math.max(pageX - left, minLeft), maxLeft)
-      buttonRef.current.setAttribute('style', `left: ${buttonLeft}px`)
-    }
-  }
-
-  const handleMouseEnter = () => {
-    buttonPositioningEnabled.current = true
-  }
-
-  const handleMouseLeave = () => {
-    buttonPositioningEnabled.current = false
-  }
+  const index = notebook.data.indexOf(id)
 
   const handlePopoverShow = () => {
     popoverVisible.current = true
@@ -77,12 +44,7 @@ const InsertCellButton: FC<Props> = ({index}) => {
   }
 
   return (
-    <div
-      className="notebook-divider"
-      ref={dividerRef}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
+    <div className="notebook-divider" ref={dividerRef}>
       <SquareButton
         icon={IconFont.Plus}
         ref={buttonRef}
@@ -95,6 +57,7 @@ const InsertCellButton: FC<Props> = ({index}) => {
         appearance={Appearance.Outline}
         color={ComponentColor.Secondary}
         triggerRef={buttonRef}
+        position={PopoverPosition.Below}
         onShow={handlePopoverShow}
         onHide={handlePopoverHide}
         contents={onHide => (

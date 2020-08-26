@@ -17,7 +17,8 @@ describe('Onboarding Redirect', () => {
   })
 })
 
-describe('Onboarding', () => {
+// NOTE: important to test for OSS, not so much for cloud
+describe.skip('Onboarding', () => {
   let user: TestUser
 
   beforeEach(() => {

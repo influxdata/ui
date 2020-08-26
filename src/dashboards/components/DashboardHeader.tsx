@@ -26,7 +26,9 @@ import {
 } from 'src/dashboards/actions/ranges'
 
 // Utils
-import {fireDashboardViewedEvent} from 'src/shared/utils/analytics'
+import {event} from 'src/cloud/utils/reporting'
+import {resetQueryCache} from 'src/shared/apis/queryCache'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Selectors
 import {getTimeRange} from 'src/dashboards/selectors'
@@ -34,6 +36,7 @@ import {getByID} from 'src/resources/selectors'
 import {getOrg} from 'src/organizations/selectors'
 
 // Constants
+import {DemoDataDashboardNames} from 'src/cloud/constants'
 import {
   DEFAULT_DASHBOARD_NAME,
   DASHBOARD_NAME_MAX_LENGTH,
@@ -72,9 +75,12 @@ const DashboardHeader: FC<Props> = ({
   history,
   org,
 }) => {
+  const demoDataset = DemoDataDashboardNames[dashboard.name]
   useEffect(() => {
-    fireDashboardViewedEvent(dashboard.name)
-  }, [dashboard.id]) // eslint-disable-line react-hooks/exhaustive-deps
+    if (demoDataset) {
+      event('demoData_dashboardViewed', {demo_dataset: demoDataset})
+    }
+  }, [dashboard.id, demoDataset])
 
   const handleAddNote = () => {
     history.push(`/orgs/${org.id}/dashboards/${dashboard.id}/notes/new`)
@@ -100,6 +106,9 @@ const DashboardHeader: FC<Props> = ({
   }
 
   const handleChooseTimeRange = (timeRange: TimeRange) => {
+    if (isFlagEnabled('queryCacheForDashboards')) {
+      resetQueryCache()
+    }
     setDashboardTimeRange(dashboard.id, timeRange)
     updateQueryParams({
       lower: timeRange.lower,
@@ -119,6 +128,14 @@ const DashboardHeader: FC<Props> = ({
 
       onSetAutoRefreshStatus(dashboard.id, AutoRefreshStatus.Active)
     }
+  }
+
+  const resetCacheAndRefresh = (): void => {
+    // We want to invalidate the existing cache when a user manually refreshes the dashboard
+    if (isFlagEnabled('queryCacheForDashboards')) {
+      resetQueryCache()
+    }
+    onManualRefresh()
   }
 
   return (
@@ -165,7 +182,7 @@ const DashboardHeader: FC<Props> = ({
           <TimeZoneDropdown />
           <AutoRefreshDropdown
             onChoose={handleChooseAutoRefresh}
-            onManualRefresh={onManualRefresh}
+            onManualRefresh={resetCacheAndRefresh}
             selected={autoRefresh}
           />
           <TimeRangeDropdown

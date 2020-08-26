@@ -1,3 +1,4 @@
+const secondOrg = 'Second Org'
 describe('Orgs', () => {
   beforeEach(() => {
     cy.flush()
@@ -15,13 +16,14 @@ describe('Orgs', () => {
     it('forwards the user to the No Orgs Page', () => {
       cy.url().should('contain', 'no-org')
       cy.contains('Sign In').click()
-      cy.url().should('contain', 'signin')
+      cy.url().should('contain', 'dex')
     })
   })
 
-  describe('when user wants to rename an org', () => {
+  describe('updating and switching orgs', () => {
     beforeEach(() => {
       cy.signin().then(() => {
+        cy.createOrg(secondOrg)
         cy.visit('/')
       })
     })
@@ -40,6 +42,25 @@ describe('Orgs', () => {
       cy.get('.cf-tree-nav--team')
         .contains(extraText)
         .should('have.length', 1)
+
+        /**\
+
+          TODO: translate this test to cloud mode
+
+      // Switch Orgs
+      cy.getByTestID('user-nav').click()
+      cy.getByTestID('user-nav-item-switch-orgs').click()
+      cy.getByTestID('overlay--body').within(() => {
+        cy.contains(secondOrg).click()
+      })
+
+      cy.getByTestID('user-nav')
+        .click()
+        .contains(secondOrg)
+      cy.getByTestID('page').should('exist')
+      cy.getByTestID('page-header').should('exist')
+
+      \**/
     })
   })
 })

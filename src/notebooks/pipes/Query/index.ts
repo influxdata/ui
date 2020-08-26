@@ -4,12 +4,13 @@ import './style.scss'
 
 register({
   type: 'query',
+  family: 'transform',
   priority: 1,
   component: View,
   button: 'Flux Script',
   initial: {
     panelVisibility: 'visible',
-    panelHeight: 200,
+    panelHeight: 330,
     activeQuery: 0,
     queries: [
       {

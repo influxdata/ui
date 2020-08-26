@@ -52,10 +52,11 @@ import {
 } from 'src/dataLoaders/reducers/telegrafEditor'
 import {predicatesReducer} from 'src/shared/reducers/predicates'
 import alertBuilderReducer from 'src/alerting/reducers/alertBuilder'
+import perfReducer from 'src/perf/reducers'
+import {schemaReducer} from 'src/shared/reducers/schema'
 
 // Types
 import {AppState, LocalStorage} from 'src/types'
-import {queryCacheReducer} from 'src/queryCache/reducers'
 
 type ReducerState = Pick<AppState, Exclude<keyof AppState, 'timeRange'>>
 
@@ -81,12 +82,13 @@ export const rootReducer = (history: History) =>
     dataLoading: dataLoadingReducer,
     me: meReducer,
     flags: flagReducer,
+    notebook: schemaReducer,
     noteEditor: noteEditorReducer,
     onboarding: onboardingReducer,
     overlays: overlaysReducer,
+    perf: perfReducer,
     plugins: pluginsResourceReducer,
     predicates: predicatesReducer,
-    queryCache: queryCacheReducer,
     ranges: rangesReducer,
     resources: combineReducers({
       buckets: bucketsReducer,

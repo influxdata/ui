@@ -5,7 +5,7 @@ import {range} from 'lodash'
 
 // Components
 import TagSelector from 'src/timeMachine/components/TagSelector'
-import FunctionSelector from 'src/timeMachine/components/FunctionSelector'
+import AggregationSelector from 'src/timeMachine/components/AggregationSelector'
 import AddCardButton from 'src/timeMachine/components/AddCardButton'
 import BuilderCard from 'src/timeMachine/components/builderCard/BuilderCard'
 import BucketsSelector from 'src/timeMachine/components/queryBuilder/BucketsSelector'
@@ -16,7 +16,7 @@ import {loadBuckets, addTagSelector} from 'src/timeMachine/actions/queryBuilder'
 
 // Utils
 import {getActiveQuery, getActiveTimeMachine} from 'src/timeMachine/selectors'
-import {reportSimpleQueryPerformanceEvent} from 'src/cloud/utils/reporting'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {AppState} from 'src/types'
@@ -30,7 +30,7 @@ interface State {}
 class TimeMachineQueryBuilder extends PureComponent<Props, State> {
   constructor(props) {
     super(props)
-    reportSimpleQueryPerformanceEvent('TimeMachineQueryBuilder load start')
+    event('TimeMachineQueryBuilder load start')
   }
 
   public componentDidMount() {
@@ -69,7 +69,7 @@ class TimeMachineQueryBuilder extends PureComponent<Props, State> {
       return
     }
 
-    return <FunctionSelector />
+    return <AggregationSelector />
   }
 
   private get addButton(): JSX.Element {

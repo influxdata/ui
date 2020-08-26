@@ -19,10 +19,12 @@ describe('The Login Page', () => {
     cy.visit('/')
   })
 
-  it('can login and logout', () => {
-    cy.getByInputName('username').type(user.username)
-    cy.getByInputName('password').type(user.password)
-    cy.get('button[type=submit]').click()
+  // NOTE: we aren't currently loading the login page
+  // for dex
+  it.skip('can login and logout', () => {
+    cy.get('#username').type(user.username)
+    cy.get('#password').type(user.password)
+    cy.get('#submit-login').click()
 
     cy.getByTestID('tree-nav').should('exist')
 
@@ -39,17 +41,19 @@ describe('The Login Page', () => {
     cy.getByTestID('signin-page--content').should('exist')
   })
 
-  describe('login failure', () => {
+  // NOTE: we aren't currently loading the login page
+  // for dex
+  describe.skip('login failure', () => {
     it('if username is not present', () => {
-      cy.getByInputName('password').type(user.password)
-      cy.get('button[type=submit]').click()
+      cy.get('#password').type(user.password)
+      cy.get('#submit-login').click()
 
       cy.getByTestID('notification-error').should('exist')
     })
 
     it('if password is not present', () => {
-      cy.getByInputName('username').type(user.username)
-      cy.get('button[type=submit]').click()
+      cy.get('#username').type(user.username)
+      cy.get('#submit-login').click()
 
       cy.getByTestID('notification-error').should('exist')
     })

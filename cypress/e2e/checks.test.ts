@@ -36,6 +36,10 @@ describe('Checks', () => {
       .should('be.disabled')
       .and('not.contain', 'Group')
       .contains('Filter')
+    cy.getByTestID(`selector-list defbuck`)
+      .wait(1200)
+      .click()
+
     cy.getByTestID(`selector-list ${measurement}`).click()
 
     cy.getByTestID('save-cell--button').should('be.disabled')
@@ -74,6 +78,9 @@ describe('Checks', () => {
       // TODO: refactor into a request
       cy.getByTestID('create-check').click()
       cy.getByTestID('create-threshold-check').click()
+    cy.getByTestID(`selector-list defbuck`)
+      .wait(1200)
+      .click()
       cy.getByTestID(`selector-list ${measurement}`).click()
       cy.getByTestID('save-cell--button').should('be.disabled')
       cy.getByTestID(`selector-list ${field}`).click()
@@ -167,6 +174,9 @@ describe('Checks', () => {
       // TODO: refactor into a request with other before each
       cy.getByTestID('create-check').click()
       cy.getByTestID('create-threshold-check').click()
+    cy.getByTestID(`selector-list defbuck`)
+      .wait(1200)
+      .click()
       cy.getByTestID(`selector-list ${measurement}`).click()
       cy.getByTestID('save-cell--button').should('be.disabled')
       cy.getByTestID(`selector-list ${field}`).click()
@@ -197,6 +207,22 @@ describe('Checks', () => {
         .trigger('mousedown', {which: 1, pageX: 600, pageY: 100})
         .trigger('mousemove', {which: 1, pageX: 700, pageY: 100})
         .trigger('mouseup', {force: true})
+    })
+
+    it('accepts keyboard tabs as navigation', () => {
+      // have to make the viewport huge to get it not to switch to tablet size
+      cy.viewport(1800, 980)
+
+      cy.get('body').tab()
+      cy.getByTestID('filter--input checks').should('have.focus')
+
+      cy.focused()
+        .tab()
+        .tab()
+      cy.getByTestID('filter--input endpoints').should('have.focus')
+
+      cy.focused().tab()
+      cy.getByTestID('filter--input rules').should('have.focus')
     })
   })
 })

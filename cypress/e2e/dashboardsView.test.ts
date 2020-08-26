@@ -41,7 +41,7 @@ describe('Dashboard', () => {
     cy.getByTestID('dashboard-card').should('contain', newName)
   })
 
-  it('can create and destroy cells & toggle in and out of presentation mode', () => {
+  it('can create, clone and destroy cells & toggle in and out of presentation mode', () => {
     cy.get('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
@@ -150,12 +150,24 @@ describe('Dashboard', () => {
 
     // Remove Note cell
     cy.getByTestID('cell-context--toggle')
+      .last()
+      .click()
+    cy.getByTestID('cell-context--delete').click()
+    cy.getByTestID('cell-context--delete-confirm').click()
+    cy.wait(200)
+
+    // Clone View cell
+    cy.getByTestID('cell-context--toggle').click()
+    cy.getByTestID('cell-context--clone').click()
+
+    // Ensure that the clone exists
+    cy.getByTestID('cell Line Graph (Clone)').should('exist')
+    // Remove View cells
+    cy.getByTestID('cell-context--toggle')
       .first()
       .click()
     cy.getByTestID('cell-context--delete').click()
     cy.getByTestID('cell-context--delete-confirm').click()
-
-    // Remove View cell
     cy.getByTestID('cell-context--toggle').click()
     cy.getByTestID('cell-context--delete').click()
     cy.getByTestID('cell-context--delete-confirm').click()
@@ -338,7 +350,7 @@ describe('Dashboard', () => {
               `?lower=now%28%29%20-%201h&vars%5BbucketsCSV%5D=${defaultBucket}`
             )
 
-            // open CEO
+            // open VEO
             cy.getByTestID('cell-context--toggle').click()
             cy.getByTestID('cell-context--configure').click()
 
@@ -396,7 +408,7 @@ describe('Dashboard', () => {
               .pipe(getSelectedVariable(dashboard.id, 2))
               .should('equal', 'v2')
 
-            // open CEO
+            // open VEO
             cy.getByTestID('cell-context--toggle').click()
             cy.getByTestID('cell-context--configure').click()
             cy.getByTestID('toolbar-tab').should('be.visible')
@@ -514,16 +526,16 @@ describe('Dashboard', () => {
           .getByTestID('flux-editor')
           .should('be.visible')
           .click()
-          .focused().type(`// v.build
-from(bucket: v.static)
+          .focused().type(`from(bucket: v.static)
 |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
 |> filter(fn: (r) => r["_measurement"] == "test")
 |> filter(fn: (r) => r["_field"] == "dopeness")
-|> filter(fn: (r) => r["container_name"] == v.dependent)`)
+|> filter(fn: (r) => r["container_name"] == v.build)`)
 
         cy.getByTestID('save-cell--button').click()
 
-        // the default bucket selection should have no results
+        // the default bucket selection should have no results and load all three variables
+        // even though only two variables are being used (because 1 is dependent upon another)
         cy.getByTestID('variable-dropdown')
           .should('have.length', 3)
           .eq(0)
@@ -547,24 +559,25 @@ from(bucket: v.static)
           .eq(1)
           .should('contain', 'beans')
 
-        // and also load the second result
+        // and also load the third result
         cy.getByTestID('variable-dropdown--button')
-          .eq(1)
+          .eq(2)
+          .should('contain', 'beans')
           .click()
         cy.get(`#cool`).click()
 
-        // and also load the third result
+        // and also load the second result
         cy.getByTestID('variable-dropdown')
-          .eq(2)
+          .eq(1)
           .should('contain', 'cool')
 
-        // updating the second variable should update the third
+        // updating the third variable should update the second
         cy.getByTestID('variable-dropdown--button')
-          .eq(1)
+          .eq(2)
           .click()
         cy.get(`#beans`).click()
         cy.getByTestID('variable-dropdown')
-          .eq(2)
+          .eq(1)
           .should('contain', 'beans')
       })
     })

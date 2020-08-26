@@ -23,50 +23,60 @@ import InsertCellButton from 'src/notebooks/components/panel/InsertCellButton'
 import PanelVisibilityToggle from 'src/notebooks/components/panel/PanelVisibilityToggle'
 import MovePanelButton from 'src/notebooks/components/panel/MovePanelButton'
 import NotebookPanelTitle from 'src/notebooks/components/panel/NotebookPanelTitle'
+import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Types
 import {PipeContextProps} from 'src/notebooks'
 
 // Contexts
-import {NotebookContext, PipeMeta} from 'src/notebooks/context/notebook'
+import {NotebookContext} from 'src/notebooks/context/notebook.current'
+import {RefContext} from 'src/notebooks/context/refs'
 
 export interface Props extends PipeContextProps {
-  index: number
+  id: string
 }
 
 export interface HeaderProps {
-  index: number
+  id: string
   controls?: ReactNode
 }
 
-const NotebookPanelHeader: FC<HeaderProps> = ({index, controls}) => {
-  const {pipes, removePipe, movePipe} = useContext(NotebookContext)
+const NotebookPanelHeader: FC<HeaderProps> = ({id, controls}) => {
+  const {notebook} = useContext(NotebookContext)
+  const removePipe = () => {
+    notebook.data.remove(id)
+    notebook.meta.remove(id)
+  }
+  const index = notebook.data.indexOf(id)
   const canBeMovedUp = index > 0
-  const canBeMovedDown = index < pipes.length - 1
+  const canBeMovedDown = index < notebook.data.allIDs.length - 1
 
   const moveUp = useCallback(() => {
     if (canBeMovedUp) {
-      movePipe(index, index - 1)
+      notebook.data.move(id, index - 1)
     }
-  }, [index, canBeMovedUp, movePipe])
+  }, [index, canBeMovedUp, notebook.data])
 
   const moveDown = useCallback(() => {
     if (canBeMovedDown) {
-      movePipe(index, index + 1)
+      notebook.data.move(id, index + 1)
     }
-  }, [index, canBeMovedDown, movePipe])
+  }, [index, canBeMovedDown, notebook.data])
 
-  const remove = useCallback(() => removePipe(index), [removePipe, index])
+  const remove = useCallback(() => removePipe(), [removePipe, id])
 
   return (
     <div className="notebook-panel--header">
+      <div className="notebook-panel--node-wrapper">
+        <div className="notebook-panel--node" />
+      </div>
       <FlexBox
         className="notebook-panel--header-left"
         alignItems={AlignItems.Center}
         margin={ComponentSize.Small}
         justifyContent={JustifyContent.FlexStart}
       >
-        <NotebookPanelTitle index={index} />
+        <NotebookPanelTitle id={id} />
       </FlexBox>
       <FlexBox
         className="notebook-panel--header-right"
@@ -75,35 +85,32 @@ const NotebookPanelHeader: FC<HeaderProps> = ({index, controls}) => {
         justifyContent={JustifyContent.FlexEnd}
       >
         {controls}
-        <MovePanelButton
-          direction="up"
-          onClick={moveUp}
-          active={canBeMovedUp}
-        />
-        <MovePanelButton
-          direction="down"
-          onClick={moveDown}
-          active={canBeMovedDown}
-        />
-        <PanelVisibilityToggle index={index} />
+        <FeatureFlag name="notebook-move-cells">
+          <MovePanelButton
+            direction="up"
+            onClick={moveUp}
+            active={canBeMovedUp}
+          />
+          <MovePanelButton
+            direction="down"
+            onClick={moveDown}
+            active={canBeMovedDown}
+          />
+        </FeatureFlag>
+        <PanelVisibilityToggle id={id} />
         <RemovePanelButton onRemove={remove} />
       </FlexBox>
     </div>
   )
 }
 
-const NotebookPanel: FC<Props> = ({index, children, controls}) => {
-  const {meta, updateMeta} = useContext(NotebookContext)
+const NotebookPanel: FC<Props> = ({id, children, controls}) => {
+  const {notebook} = useContext(NotebookContext)
+  const refs = useContext(RefContext)
   const panelRef = useRef<HTMLDivElement>(null)
 
-  const isVisible = meta[index].visible
-  const isFocused = meta[index].focus
-
-  useEffect(() => {
-    updateMeta(index, {
-      panelRef,
-    } as PipeMeta)
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  const isVisible = notebook.meta.get(id).visible
+  const isFocused = refs.get(id).focus
 
   const panelClassName = classnames('notebook-panel', {
     [`notebook-panel__visible`]: isVisible,
@@ -111,13 +118,15 @@ const NotebookPanel: FC<Props> = ({index, children, controls}) => {
     'notebook-panel__focus': isFocused,
   })
 
+  useEffect(() => {
+    refs.update(id, {panel: panelRef})
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   const updatePanelFocus = useCallback(
     (focus: boolean): void => {
-      updateMeta(index, {
-        focus,
-      } as PipeMeta)
+      refs.update(id, {focus})
     },
-    [index, meta] // eslint-disable-line react-hooks/exhaustive-deps
+    [id, refs] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   const handleClick = (e: MouseEvent<HTMLDivElement>): void => {
@@ -129,16 +138,20 @@ const NotebookPanel: FC<Props> = ({index, children, controls}) => {
     updatePanelFocus(false)
   }
 
+  if (
+    notebook.readOnly &&
+    !/^(visualization|markdown)$/.test(notebook.data.get(id).type)
+  ) {
+    return null
+  }
   return (
-    <>
-      <ClickOutside onClickOutside={handleClickOutside}>
-        <div className={panelClassName} onClick={handleClick} ref={panelRef}>
-          <NotebookPanelHeader index={index} controls={controls} />
-          <div className="notebook-panel--body">{children}</div>
-        </div>
-      </ClickOutside>
-      <InsertCellButton index={index} />
-    </>
+    <ClickOutside onClickOutside={handleClickOutside}>
+      <div className={panelClassName} onClick={handleClick} ref={panelRef}>
+        <NotebookPanelHeader id={id} controls={controls} />
+        <div className="notebook-panel--body">{children}</div>
+        {!notebook.readOnly && <InsertCellButton id={id} />}
+      </div>
+    </ClickOutside>
   )
 }
 

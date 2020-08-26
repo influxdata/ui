@@ -4,12 +4,13 @@ import {
   ADD_TEMPLATE_SUMMARY,
   POPULATE_TEMPLATE_SUMMARIES,
   REMOVE_TEMPLATE_SUMMARY,
-  SET_COMMUNITY_TEMPLATE_TO_INSTALL,
   SET_EXPORT_TEMPLATE,
-  SET_TEMPLATE_SUMMARY,
-  SET_TEMPLATES_STATUS,
-  TOGGLE_TEMPLATE_RESOURCE_INSTALL,
   SET_STACKS,
+  SET_STAGED_TEMPLATE,
+  SET_STAGED_TEMPLATE_URL,
+  SET_TEMPLATES_STATUS,
+  SET_TEMPLATE_SUMMARY,
+  TOGGLE_TEMPLATE_RESOURCE_INSTALL,
 } from 'src/templates/actions/creators'
 import {
   CommunityTemplate,
@@ -31,11 +32,13 @@ const defaultCommunityTemplate = (): CommunityTemplate => {
     stackID: '',
     summary: {},
     diff: {},
+    resourcesToSkip: {},
   }
 }
 
 export const defaultState = (): TemplatesState => ({
-  communityTemplateToInstall: defaultCommunityTemplate(),
+  stagedCommunityTemplate: defaultCommunityTemplate(),
+  stagedTemplateUrl: '',
   status: RemoteDataState.NotStarted,
   byID: {},
   allIDs: [],
@@ -74,15 +77,22 @@ export const templatesReducer = (
         return
       }
 
-      case SET_COMMUNITY_TEMPLATE_TO_INSTALL: {
+      case SET_STAGED_TEMPLATE_URL: {
+        const {templateUrl} = action
+
+        draftState.stagedTemplateUrl = templateUrl
+        return
+      }
+
+      case SET_STAGED_TEMPLATE: {
         const {template} = action
 
-        const communityTemplateToInstall = {
+        const stagedCommunityTemplate = {
           ...defaultCommunityTemplate(),
           ...template,
         }
 
-        communityTemplateToInstall.summary.dashboards = (
+        stagedCommunityTemplate.summary.dashboards = (
           template.summary.dashboards || []
         ).map(dashboard => {
           if (!dashboard.hasOwnProperty('shouldInstall')) {
@@ -91,7 +101,7 @@ export const templatesReducer = (
           return dashboard
         })
 
-        communityTemplateToInstall.summary.telegrafConfigs = (
+        stagedCommunityTemplate.summary.telegrafConfigs = (
           template.summary.telegrafConfigs || []
         ).map(telegrafConfig => {
           if (!telegrafConfig.hasOwnProperty('shouldInstall')) {
@@ -100,7 +110,7 @@ export const templatesReducer = (
           return telegrafConfig
         })
 
-        communityTemplateToInstall.summary.buckets = (
+        stagedCommunityTemplate.summary.buckets = (
           template.summary.buckets || []
         ).map(bucket => {
           if (!bucket.hasOwnProperty('shouldInstall')) {
@@ -109,7 +119,7 @@ export const templatesReducer = (
           return bucket
         })
 
-        communityTemplateToInstall.summary.checks = (
+        stagedCommunityTemplate.summary.checks = (
           template.summary.checks || []
         ).map(check => {
           if (!check.hasOwnProperty('shouldInstall')) {
@@ -118,7 +128,7 @@ export const templatesReducer = (
           return check
         })
 
-        communityTemplateToInstall.summary.variables = (
+        stagedCommunityTemplate.summary.variables = (
           template.summary.variables || []
         ).map(variable => {
           if (!variable.hasOwnProperty('shouldInstall')) {
@@ -127,7 +137,7 @@ export const templatesReducer = (
           return variable
         })
 
-        communityTemplateToInstall.summary.notificationRules = (
+        stagedCommunityTemplate.summary.notificationRules = (
           template.summary.notificationRules || []
         ).map(notificationRule => {
           if (!notificationRule.hasOwnProperty('shouldInstall')) {
@@ -136,7 +146,7 @@ export const templatesReducer = (
           return notificationRule
         })
 
-        communityTemplateToInstall.summary.notificationEndpoints = (
+        stagedCommunityTemplate.summary.notificationEndpoints = (
           template.summary.notificationEndpoints || []
         ).map(notificationEndpoint => {
           if (!notificationEndpoint.hasOwnProperty('shouldInstall')) {
@@ -145,7 +155,7 @@ export const templatesReducer = (
           return notificationEndpoint
         })
 
-        communityTemplateToInstall.summary.labels = (
+        stagedCommunityTemplate.summary.labels = (
           template.summary.labels || []
         ).map(label => {
           if (!label.hasOwnProperty('shouldInstall')) {
@@ -154,7 +164,7 @@ export const templatesReducer = (
           return label
         })
 
-        communityTemplateToInstall.summary.summaryTask = (
+        stagedCommunityTemplate.summary.summaryTask = (
           template.summary.summaryTask || []
         ).map(summaryTask => {
           if (!summaryTask.hasOwnProperty('shouldInstall')) {
@@ -163,7 +173,7 @@ export const templatesReducer = (
           return summaryTask
         })
 
-        draftState.communityTemplateToInstall = communityTemplateToInstall
+        draftState.stagedCommunityTemplate = stagedCommunityTemplate
         return
       }
 
@@ -194,15 +204,26 @@ export const templatesReducer = (
       case TOGGLE_TEMPLATE_RESOURCE_INSTALL: {
         const {resourceType, shouldInstall, templateMetaName} = action
 
-        const templateToInstall = {...draftState.communityTemplateToInstall}
+        const templateToInstall = {...draftState.stagedCommunityTemplate}
 
         templateToInstall.summary[resourceType].forEach(resource => {
           if (resource.templateMetaName === templateMetaName) {
             resource.shouldInstall = shouldInstall
+            if (!shouldInstall) {
+              templateToInstall.resourcesToSkip[resource.templateMetaName] =
+                resource.kind
+            } else if (
+              templateToInstall.resourcesToSkip[resource.templateMetaName]
+            ) {
+              // if we re-check a resource that we un-checked, remove it from the skipped resources hash
+              delete templateToInstall.resourcesToSkip[
+                resource.templateMetaName
+              ]
+            }
           }
         })
 
-        draftState.communityTemplateToInstall = templateToInstall
+        draftState.stagedCommunityTemplate = templateToInstall
         return
       }
 

@@ -1,35 +1,36 @@
 // Libraries
-import React, {FC, useMemo} from 'react'
-
+import React, {FC} from 'react'
 // Types
 import {PipeProp} from 'src/notebooks'
 
-// Components
-import BucketSelector from 'src/notebooks/pipes/Data/BucketSelector'
-import TimeSelector from 'src/notebooks/pipes/Data/TimeSelector'
-import {FlexBox, ComponentSize} from '@influxdata/clockface'
+// Contexts
 import BucketProvider from 'src/notebooks/context/buckets'
+
+// Components
+import AggregateWindowSelector from 'src/notebooks/pipes/Data/AggregateWindowSelector'
+import BucketSelector from 'src/notebooks/pipes/Data/BucketSelector'
+import FieldsList from 'src/notebooks/pipes/Data/FieldsList'
+import SearchBar from 'src/notebooks/pipes/Data/SearchBar'
 
 // Styles
 import 'src/notebooks/pipes/Query/style.scss'
+import {SchemaProvider} from 'src/notebooks/context/schemaProvider'
+import FilterTags from './FilterTags'
 
-const DataSource: FC<PipeProp> = ({data, onUpdate, Context}) => {
-  return useMemo(() => {
-    return (
-      <BucketProvider>
-        <Context>
-          <FlexBox
-            margin={ComponentSize.Large}
-            stretchToFitWidth={true}
-            className="data-source"
-          >
-            <BucketSelector onUpdate={onUpdate} data={data} />
-            <TimeSelector onUpdate={onUpdate} data={data} />
-          </FlexBox>
-        </Context>
-      </BucketProvider>
-    )
-  }, [data, onUpdate])
-}
+const DataSource: FC<PipeProp> = ({Context}) => (
+  <BucketProvider>
+    <SchemaProvider>
+      <Context>
+        <div className="data-source--controls">
+          <BucketSelector />
+          <FilterTags />
+          <AggregateWindowSelector />
+        </div>
+        <SearchBar />
+        <FieldsList />
+      </Context>
+    </SchemaProvider>
+  </BucketProvider>
+)
 
 export default DataSource

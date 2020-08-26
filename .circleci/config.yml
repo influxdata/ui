@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  e2e:
+  cloud-e2e:
     machine:
       image: ubuntu-1604:202007-01
       docker_layer_caching: true
@@ -9,13 +9,12 @@ jobs:
     working_directory: ~/
     resource_class: large
     steps:
+      - checkout:
+          path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
           name: Grab compose files
           command: git clone git@github.com:influxdata/monitor-ci.git && cd monitor-ci && git checkout alex_cloud_version
-      - run:
-          name: Grab influxdb files (remove when we switch to ui)
-          command: git clone git@github.com:influxdata/influxdb.git && cd influxdb && git checkout alex_cloud_tests
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing ./monitor-ci/.env
@@ -27,18 +26,18 @@ jobs:
           command: cd ./monitor-ci && make build NODE=ingress && make build NODE=cypress
       - run:
           name: Build the new UI (for idpe run make rebuild NODE=influxdb)
-          command: cd ./monitor-ci; cp ./conf/chronograf/nginx.conf ../influxdb/ui/; make rebuild NODE=chronograf
+          command: cd ./monitor-ci; cp ./conf/chronograf/nginx.conf ../ui/; make rebuild NODE=chronograf
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start
       - run:
           name: sanity check
           command: |
-            echo "$(circleci tests glob "./influxdb/ui/cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings | paste -sd "," -)"
+            echo "$(circleci tests glob "./ui/cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings | paste -sd "," -)"
       - run:
           name: Run e2e tests
           command: |
-            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser chrome --spec "$(cd ../influxdb/ui; circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings | paste -sd "," -)" --reporter cypress-circleci-reporter
+            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser chrome --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings | paste -sd "," -)" --reporter cypress-circleci-reporter
       - store_test_results:
           path: test_results
       - store_artifacts:

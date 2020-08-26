@@ -117,4 +117,4 @@ workflows:
       - lint
   e2e:
     jobs:
-      - e2e
+      - cloud-e2e

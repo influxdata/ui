@@ -31,10 +31,6 @@ jobs:
           name: Start the cluster
           command: cd ./monitor-ci; make start
       - run:
-          name: sanity check
-          command: |
-            echo "$(circleci tests glob "./ui/cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings | paste -sd "," -)"
-      - run:
           name: Run e2e tests
           command: |
             cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser chrome --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings | paste -sd "," -)" --reporter cypress-circleci-reporter
@@ -50,7 +46,7 @@ jobs:
     docker:
       - image: circleci/golang:1.13-node-browsers
     working_directory: ~/influxdata/ui
-    parallelism: 8
+    parallelism: 4
     steps:
       - checkout
       - restore_cache:
@@ -84,7 +80,7 @@ jobs:
     docker:
       - image: circleci/golang:1.13-node-browsers
     working_directory: ~/influxdata/ui
-    parallelism: 8
+    parallelism: 4
     steps:
       - checkout
       - restore_cache:

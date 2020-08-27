@@ -32,6 +32,7 @@ jobs:
           command: cd ./monitor-ci; make start
       - run:
           name: Run e2e tests
+          no_output_timeout: 30m
           command: |
             cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser chrome --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings | paste -sd "," -)" --reporter cypress-circleci-reporter
       - store_test_results:

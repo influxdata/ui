@@ -14,7 +14,7 @@ jobs:
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
           name: Grab compose files
-          command: git clone git@github.com:influxdata/monitor-ci.git && cd monitor-ci && git checkout alex_cloud_version
+          command: git clone git@github.com:influxdata/monitor-ci.git
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing ./monitor-ci/.env

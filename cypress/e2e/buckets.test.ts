@@ -73,9 +73,24 @@ describe('Buckets', () => {
 
     describe('Searching and Sorting', () => {
       it('can sort by name and retention', () => {
-        const buckets = ['Website Monitoring Bucket', 'defbuck', '_tasks', '_monitoring']
-        const retentionDesc = ['_monitoring', 'Website Monitoring Bucket', '_tasks', 'defbuck']
-        const retentionAsc = ['defbuck', '_tasks', '_monitoring', 'Website Monitoring Bucket']
+        const buckets = [
+          'Website Monitoring Bucket',
+          'defbuck',
+          '_tasks',
+          '_monitoring',
+        ]
+        const retentionDesc = [
+          '_monitoring',
+          'Website Monitoring Bucket',
+          '_tasks',
+          'defbuck',
+        ]
+        const retentionAsc = [
+          'defbuck',
+          '_tasks',
+          '_monitoring',
+          'Website Monitoring Bucket',
+        ]
 
         cy.getByTestID('resource-sorter--button')
           .click()

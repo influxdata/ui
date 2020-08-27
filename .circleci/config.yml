@@ -1,64 +1,53 @@
 version: 2.1
 
 jobs:
-  e2e:
+  cloud-e2e:
     machine:
       image: ubuntu-1604:202007-01
       docker_layer_caching: true
-    parallelism: 8
-    working_directory: ~/influxdata/ui
+    parallelism: 10
+    working_directory: ~/
     resource_class: large
     steps:
-      - checkout
+      - checkout:
+          path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - restore_cache:
-          name: Restore Yarn Package Cache
-          keys:
-            - yarn-packages-{{ checksum "yarn.lock" }}
       - run:
-          name: Build js and dependencies
-          command: |
-            set +e
-            npx yarn install
-            npx yarn generate
-            npx yarn build:fast
-      - save_cache:
-          name: Save Yarn Package Cache
-          key: yarn-packages-{{ checksum "yarn.lock" }}
-          paths:
-            - ~/.cache/yarn
+          name: Grab compose files
+          command: git clone git@github.com:influxdata/monitor-ci.git && cd monitor-ci && git checkout alex_cloud_version
       - run:
-          name: Build web server
-          command: docker build -t webserver:latest -f docker/Dockerfile.server .
+          name: Copy over the testing variables
+          command: cp ./monitor-ci/env.testing ./monitor-ci/.env
       - run:
-          name: Build ingress server
-          command: docker build -t ingress:latest -f docker/Dockerfile.ingress ./docker
+          name: Update the images we're using
+          command: cd ./monitor-ci && make update
       - run:
-          name: Start influxd
-          command: docker run -d --net=host -p 9999:9999 --name influxd quay.io/influxdb/influxdb:2.0.0-beta influxd --store=memory --e2e-testing=true
+          name: Busting the cache
+          command: cd ./monitor-ci && make build NODE=ingress && make build NODE=cypress
       - run:
-          name: Start ingress server and link to influxd
-          command: docker run -d --net=host -p 443:443 ingress:latest
+          name: Build the new UI (for idpe run make rebuild NODE=influxdb)
+          command: cd ./monitor-ci; cp ./conf/chronograf/nginx.conf ../ui/; make rebuild NODE=chronograf
       - run:
-          name: Start web server server and link to influxd
-          command: docker run -d --net=host -p 8080:8080 webserver:latest
+          name: Start the cluster
+          command: cd ./monitor-ci; make start
       - run:
           name: Run e2e tests
+          no_output_timeout: 30m
           command: |
-            CYPRESS_baseUrl=https://localhost npx yarn cypress run --browser chrome --spec "$(circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings | paste -sd "," -)" --reporter cypress-circleci-reporter
+            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser chrome --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings | paste -sd "," -)" --reporter cypress-circleci-reporter
       - store_test_results:
           path: test_results
       - store_artifacts:
-          path: cypress/videos
+          path: monitor-ci/test-artifacts/videos
           destination: test_artifacts/videos
       - store_artifacts:
-          path: cypress/screenshots
+          path: monitor-ci/test-artifacts/screenshots
           destination: test_artifacts/screenshots
   unit:
     docker:
       - image: circleci/golang:1.13-node-browsers
     working_directory: ~/influxdata/ui
-    parallelism: 8
+    parallelism: 4
     steps:
       - checkout
       - restore_cache:
@@ -92,7 +81,7 @@ jobs:
     docker:
       - image: circleci/golang:1.13-node-browsers
     working_directory: ~/influxdata/ui
-    parallelism: 8
+    parallelism: 4
     steps:
       - checkout
       - restore_cache:
@@ -125,4 +114,4 @@ workflows:
       - lint
   e2e:
     jobs:
-      - e2e
+      - cloud-e2e

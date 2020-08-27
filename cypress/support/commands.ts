@@ -20,7 +20,8 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
 
   return cy.fixture('user').then(({username, password}) => {
     return cy.setupUser().then(body => {
-      return cy.visit('/api/v2/signin')
+      return cy
+        .visit('/api/v2/signin')
         .then(() => cy.get('#login').type(username))
         .then(() => cy.get('#password').type(password))
         .then(() => cy.get('#submit-login').click())
@@ -439,7 +440,7 @@ export const createToken = (
 
 // TODO: have to go through setup because we cannot create a user w/ a password via the user API
 export const setupUser = (): Cypress.Chainable<Cypress.Response> => {
-  return cy.fixture('user').then(({username, password, org, bucket}) => {
+  return cy.fixture('user').then(() => {
     return cy.request({
       method: 'GET',
       url: '/debug/provision',

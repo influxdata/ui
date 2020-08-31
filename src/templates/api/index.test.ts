@@ -212,7 +212,7 @@ describe('templates api calls', () => {
 
     expect(fetchMock).toHaveReturned()
     expect(mocked(fetchMock).mock.calls[0][0]).toBe(
-      'https://raw.githubusercontent.com/influxdata/community-templates/master/docker/README.md'
+      'https://raw.githubusercontent.com/influxdata/community-templates/master/docker/readme.md'
     )
   })
 

@@ -71,7 +71,7 @@ describe('templates api calls', () => {
       })
     })
 
-    await installTemplate(orgID, templateUrl, [])
+    await installTemplate(orgID, templateUrl, {})
     const [mockArguments] = mocked(postTemplatesApplyMock).mock.calls[0]
 
     expect(mockArguments.data.dryRun).toBeFalsy()
@@ -93,7 +93,7 @@ describe('templates api calls', () => {
     })
 
     try {
-      await installTemplate(orgID, templateUrl, [])
+      await installTemplate(orgID, templateUrl, {})
     } catch (error) {
       expect(error.message).toBe('whoops')
     }

@@ -4,7 +4,11 @@ import memoizeOne from 'memoize-one'
 import RawFluxDataGrid from 'src/timeMachine/components/RawFluxDataGrid'
 
 // Utils
-import {parseFiles} from 'src/timeMachine/utils/rawFluxDataTable'
+import {
+  parseFiles,
+  parseFilesWithObjects,
+} from 'src/timeMachine/utils/rawFluxDataTable'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {DapperScrollbars, FusionScrollEvent} from '@influxdata/clockface'
 
 interface Props {
@@ -23,11 +27,15 @@ class RawFluxDataTable extends PureComponent<Props, State> {
   public state = {scrollLeft: 0, scrollTop: 0}
 
   private parseFiles = memoizeOne(parseFiles)
+  private parseFilesWithObjects = memoizeOne(parseFilesWithObjects)
 
   public render() {
     const {width, height, files, disableVerticalScrolling} = this.props
+
     const {scrollTop, scrollLeft} = this.state
-    const {data, maxColumnCount} = this.parseFiles(files)
+    const {data, maxColumnCount} = isFlagEnabled('parseObjectsInCSV')
+      ? this.parseFilesWithObjects(files)
+      : this.parseFiles(files)
 
     const tableWidth = width
     const tableHeight = height

@@ -2,11 +2,16 @@ import React, {PureComponent} from 'react'
 import {Link} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
 import {get} from 'lodash'
+import {
+  Button,
+  ComponentSize,
+  Gradients,
+  Notification,
+} from '@influxdata/clockface'
 
-//Actions
+// Utils
+import {setFunctions} from 'src/timeMachine/actions/queryBuilder'
 import {dismissNotification as dismissNotificationAction} from 'src/shared/actions/notifications'
-
-import {Notification, ComponentSize, Gradients} from '@influxdata/clockface'
 
 //Types
 import {AppState, NotificationStyle} from 'src/types'
@@ -36,7 +41,16 @@ class Notifications extends PureComponent<Props> {
     return (
       <>
         {notifications.map(
-          ({id, style, icon, duration, message, link, linkText}) => {
+          ({
+            aggregateType,
+            duration,
+            icon,
+            id,
+            link,
+            linkText,
+            message,
+            style,
+          }) => {
             const gradient = matchGradientToColor(style)
 
             let button
@@ -49,6 +63,17 @@ class Notifications extends PureComponent<Props> {
                 >
                   {linkText}
                 </Link>
+              )
+            }
+
+            if (aggregateType) {
+              const handleClick = () => {
+                this.props.onSetFunctions(['last'])
+                this.props.dismissNotification(id)
+              }
+
+              button = (
+                <Button text="Update Aggregate Type" onClick={handleClick} />
               )
             }
 
@@ -81,6 +106,7 @@ const mstp = ({notifications}: AppState) => ({
 
 const mdtp = {
   dismissNotification: dismissNotificationAction,
+  onSetFunctions: setFunctions,
 }
 
 const connector = connect(mstp, mdtp)

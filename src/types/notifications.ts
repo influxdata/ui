@@ -12,6 +12,7 @@ export interface Notification {
   type?: string
   link?: string
   linkText?: string
+  aggregateType?: boolean
 }
 
 export enum NotificationStyle {

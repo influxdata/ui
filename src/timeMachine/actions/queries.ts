@@ -23,6 +23,7 @@ import {
   rateLimitReached,
   resultTooLarge,
   demoDataAvailability,
+  updateAggregateType,
 } from 'src/shared/copy/notifications'
 
 // Utils
@@ -36,6 +37,10 @@ import {
   isDemoDataAvailabilityError,
   demoDataError,
 } from 'src/cloud/utils/demoDataErrors'
+import {
+  aggregateTypeError,
+  isAggregateTypeError,
+} from 'src/utils/aggregateTypeErrors'
 import {event} from 'src/cloud/utils/reporting'
 
 // Types
@@ -260,6 +265,9 @@ export const executeQueries = (abortController?: AbortController) => async (
           dispatch(
             notify(demoDataAvailability(demoDataError(getOrg(state).id)))
           )
+        }
+        if (isAggregateTypeError(result.code, result.message)) {
+          dispatch(notify(updateAggregateType(aggregateTypeError())))
         }
 
         throw new Error(result.message)

@@ -12,12 +12,11 @@ describe('Flows', () => {
         cy.visit(`${orgs}/${id}`)
         cy.getByTestID('tree-nav')
 
-        cy.window().then((win) => {
+        cy.window().then(win => {
           win.influx.set('notebooks', true)
         })
 
-        cy.getByTestID('nav-item-flows')
-          .click()
+        cy.getByTestID('nav-item-flows').click()
       })
     })
   })
@@ -31,30 +30,23 @@ describe('Flows', () => {
     cy.getByTestID('page-title').click()
     cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
 
-    cy.getByTestID('add-flow-btn--query')
-      .click()
+    cy.getByTestID('add-flow-btn--query').click()
 
-    cy.getByTestID('panel-add-btn-0')
-      .click()
+    cy.getByTestID('panel-add-btn-0').click()
 
-    cy.getByTestID('add-flow-btn--visualization')
-      .click()
+    cy.getByTestID('add-flow-btn--visualization').click()
 
     cy.getByTestID('flows-delete-cell')
       .eq(1)
       .click()
 
-    cy.getByTestID('time-machine-submit-button')
-      .click()
+    cy.getByTestID('time-machine-submit-button').click()
 
-    cy.getByTestID('panel-add-btn-0')
-      .click()
+    cy.getByTestID('panel-add-btn-0').click()
 
-    cy.getByTestID('add-flow-btn--visualization')
-      .click()
+    cy.getByTestID('add-flow-btn--visualization').click()
 
-    cy.getByTestID('slide-toggle')
-      .click()
+    cy.getByTestID('slide-toggle').click()
 
     cy.get('.notebook-panel--header')
       .eq(0)
@@ -62,7 +54,6 @@ describe('Flows', () => {
 
     // test for presentation mode state
 
-    cy.getByTestID('slide-toggle')
-      .click()
+    cy.getByTestID('slide-toggle').click()
   })
 })

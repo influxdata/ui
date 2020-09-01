@@ -6,7 +6,10 @@ import {connect, ConnectedProps} from 'react-redux'
 import {CommunityTemplateOverlay} from 'src/templates/components/CommunityTemplateOverlay'
 
 // Actions
-import {setStagedCommunityTemplate} from 'src/templates/actions/creators'
+import {
+  setStagedCommunityTemplate,
+  setStagedTemplateUrl,
+} from 'src/templates/actions/creators'
 import {createTemplate, fetchAndSetStacks} from 'src/templates/actions/thunks'
 import {notify} from 'src/shared/actions/notifications'
 
@@ -128,6 +131,7 @@ class UnconnectedTemplateImportOverlay extends PureComponent<Props> {
       event('template_install', {templateName: templateDetails.name})
 
       this.props.notify(communityTemplateInstallSucceeded(templateDetails.name))
+      this.props.setStagedTemplateUrl('')
     } catch (err) {
       this.props.notify(communityTemplateRenameFailed())
       reportError(err, {name: 'The community template rename failed'})
@@ -187,9 +191,10 @@ const mstp = (state: AppState, props: RouterProps) => {
 
 const mdtp = {
   createTemplate,
+  fetchAndSetStacks,
   notify,
   setStagedCommunityTemplate,
-  fetchAndSetStacks,
+  setStagedTemplateUrl,
 }
 
 const connector = connect(mstp, mdtp)

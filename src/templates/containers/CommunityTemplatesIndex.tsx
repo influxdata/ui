@@ -64,10 +64,6 @@ type Props = ReduxProps & RouteComponentProps<{templateName: string}>
 
 @ErrorHandling
 class UnconnectedTemplatesIndex extends Component<Props> {
-  state = {
-    templateUrl: '',
-  }
-
   public componentDidMount() {
     // if this component mounts, and the install template is on the screen
     // (i.e. the user reloaded the page with the install template active)
@@ -81,13 +77,13 @@ class UnconnectedTemplatesIndex extends Component<Props> {
       match?.params?.templateName &&
       match?.params?.templateExtension
     ) {
-      this.setState({
-        templateUrl: getGithubUrlFromTemplateDetails(
+      this.props.setStagedTemplateUrl(
+        getGithubUrlFromTemplateDetails(
           match.params.directory,
           match.params.templateName,
           match.params.templateExtension
-        ),
-      })
+        )
+      )
     }
   }
 
@@ -139,7 +135,7 @@ class UnconnectedTemplatesIndex extends Component<Props> {
                     onChange={this.handleTemplateChange}
                     placeholder="Enter the URL of an InfluxDB Template..."
                     style={{flex: '1 0 0'}}
-                    value={this.state.templateUrl}
+                    value={this.props.stagedTemplateUrl}
                     testID="lookup-template-input"
                     size={ComponentSize.Large}
                   />
@@ -180,16 +176,14 @@ class UnconnectedTemplatesIndex extends Component<Props> {
   }
 
   private startTemplateInstall = () => {
-    if (!this.state.templateUrl) {
+    if (!this.props.stagedTemplateUrl) {
       this.props.notify(communityTemplateUnsupportedFormatError())
       return false
     }
 
     try {
-      this.props.setStagedTemplateUrl(this.state.templateUrl)
-
       event('template_click_lookup', {
-        templateName: getTemplateNameFromUrl(this.state.templateUrl).name,
+        templateName: getTemplateNameFromUrl(this.props.stagedTemplateUrl).name,
       })
 
       this.props.history.push(
@@ -203,8 +197,8 @@ class UnconnectedTemplatesIndex extends Component<Props> {
     }
   }
 
-  private handleTemplateChange = evt => {
-    this.setState({templateUrl: evt.target.value})
+  private handleTemplateChange = event => {
+    this.props.setStagedTemplateUrl(event.target.value)
   }
 
   private onClickBrowseCommunityTemplates = () => {
@@ -217,6 +211,7 @@ class UnconnectedTemplatesIndex extends Component<Props> {
 const mstp = (state: AppState) => {
   return {
     org: getOrg(state),
+    stagedTemplateUrl: state.resources.templates.stagedTemplateUrl,
   }
 }
 

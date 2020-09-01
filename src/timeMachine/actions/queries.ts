@@ -266,7 +266,10 @@ export const executeQueries = (abortController?: AbortController) => async (
             notify(demoDataAvailability(demoDataError(getOrg(state).id)))
           )
         }
-        if (isAggregateTypeError(result.code, result.message)) {
+        if (
+          isAggregateTypeError(result.code, result.message) &&
+          state.currentExplorer.isAutoFunction
+        ) {
           dispatch(notify(updateAggregateType(aggregateTypeError())))
         }
 

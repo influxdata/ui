@@ -116,6 +116,7 @@ class UnconnectedTemplateImportOverlay extends PureComponent<Props> {
     } catch (err) {
       this.props.notify(communityTemplateInstallFailed(err.message))
       reportError(err, {name: 'Failed to install community template'})
+      return
     }
 
     try {

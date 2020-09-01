@@ -94,6 +94,7 @@ const AddButtons: FC<Props> = ({index, onInsert, eventName}) => {
           className={`flows-add-cell-${def.type}`}
           key={def.type}
           text={def.button}
+          testID={`add-flow-btn--${def.type}`}
           onClick={() => {
             let data = def.initial
             if (typeof data === 'function') {

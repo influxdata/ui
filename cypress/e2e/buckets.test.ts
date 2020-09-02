@@ -295,10 +295,7 @@ describe('Buckets', () => {
         // writing a well-formed line is accepted
         cy.getByTestID('add-data--button').click()
         cy.getByTestID('bucket-add-client-library').click()
-        cy.location('pathname').should(
-          'be',
-          `/orgs/${orgID}/load-data/client-libraries`
-        )
+        cy.location('pathname').should('be', `/orgs/${orgID}/load-data/`)
         cy.go('back')
         cy.getByTestID('add-data--button').click()
 

@@ -82,7 +82,7 @@ const BucketCardActions: FC<Props> = ({
     onSetDataLoadersBucket(orgID, bucket.name, bucket.id)
     onSetDataLoadersType(DataLoaderType.ClientLibrary)
 
-    history.push(`/orgs/${orgID}/load-data/client-libraries`)
+    history.push(`/orgs/${orgID}/load-data/`)
   }
 
   const handleAddScraper = () => {

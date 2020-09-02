@@ -71,9 +71,9 @@ class CommunityTemplatesInstalledListUnconnected extends PureComponent<Props> {
   private renderStackSources(sources: string[]) {
     return sources.map(source => {
       if (source.includes('github') && source.includes('influxdata')) {
-        const directory = getTemplateNameFromUrl(source).directory
+        const name = getTemplateNameFromUrl(source).name
         return (
-          <CommunityTemplateReadMeOverlay key={source} directory={directory} />
+          <CommunityTemplateReadMeOverlay key={source} readme={this.props.communityTemplateReadMe[name]} />
         )
       }
 
@@ -199,6 +199,7 @@ class CommunityTemplatesInstalledListUnconnected extends PureComponent<Props> {
 
 const mstp = (state: AppState) => {
   return {
+    communityTemplateReadMe: state.resources.templates.communityTemplateReadMe,
     stacks: state.resources.templates.stacks.filter(
       stack => stack.eventType !== 'delete' && stack.eventType !== 'uninstall'
     ),

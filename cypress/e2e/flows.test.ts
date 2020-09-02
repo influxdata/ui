@@ -8,7 +8,7 @@ describe('Flows', () => {
       } = body
       cy.wrap(body.org).as('org')
       cy.wrap(bucket).as('bucket')
-      cy.fixture('routes').then(({orgs, flows}) => {
+      cy.fixture('routes').then(({orgs}) => {
         cy.visit(`${orgs}/${id}`)
         cy.getByTestID('tree-nav')
 

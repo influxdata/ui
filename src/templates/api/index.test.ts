@@ -22,9 +22,10 @@ describe('templates api calls', () => {
     mocked(postTemplatesApplyMock).mockReset()
   })
 
-  it('reviews a template successfully', async () => {
-    const orgID = '1234'
-    const templateUrl = 'http://example.com'
+  it('handles reviewing a template successfully', async () => {
+    const orgID = '90d314b476c1cc67'
+    const templateUrl =
+      'https://github.com/influxdata/community-templates/blob/master/docker/docker.yml'
 
     mocked(postTemplatesApplyMock).mockImplementation(() => {
       return Promise.resolve({
@@ -41,7 +42,7 @@ describe('templates api calls', () => {
     expect(mockArguments.data.remotes[0].url).toBe(templateUrl)
   })
 
-  it('reviews a template unsuccessfully', async () => {
+  it('handles attempting to review a template with bad data', async () => {
     const orgID = '1234'
     const templateUrl = 'http://example.com'
 
@@ -61,7 +62,7 @@ describe('templates api calls', () => {
     }
   })
 
-  it('can install template succsefully', async () => {
+  it('handles installing a template', async () => {
     const orgID = '1234'
     const templateUrl = 'http://example.com'
     mocked(postTemplatesApplyMock).mockImplementation(() => {
@@ -79,9 +80,10 @@ describe('templates api calls', () => {
     expect(mockArguments.data.remotes[0].url).toBe(templateUrl)
   })
 
-  it('installs a template unsuccessfully', async () => {
-    const orgID = '1234'
-    const templateUrl = 'http://example.com'
+  it('handles unsuccessfully installing a template when bad data is passed in', async () => {
+    const orgID = '90d314b476c1cc67'
+    const templateUrl =
+      'https://github.com/influxdata/community-templates/blob/master/docker/docker.yml'
 
     mocked(postTemplatesApplyMock).mockImplementation(() => {
       return Promise.resolve({
@@ -99,8 +101,8 @@ describe('templates api calls', () => {
     }
   })
 
-  it('fetchStacks pass', async () => {
-    const orgID = '1234'
+  it('fetches installed stacks', async () => {
+    const orgID = '90d314b476c1cc67'
     mocked(getStacksMock).mockImplementation(() => {
       return Promise.resolve({
         status: 200,
@@ -114,7 +116,7 @@ describe('templates api calls', () => {
     expect(mockArguments.query.orgID).toBe(orgID)
   })
 
-  it('fetchStack Fail', async () => {
+  it('handles failures while fetching stacks', async () => {
     const orgID = '1234'
     mocked(getStacksMock).mockImplementation(() => {
       return Promise.resolve({
@@ -132,9 +134,9 @@ describe('templates api calls', () => {
     }
   })
 
-  it('deleteStack pass', async () => {
-    const orgID = '1234'
-    const stackID = '63728'
+  it('deletes a stack', async () => {
+    const orgID = '90d314b476c1cc67'
+    const stackID = '063ea6d269ea4000'
     mocked(deleteStackMock).mockImplementation(() => {
       return Promise.resolve({
         status: 200,
@@ -149,7 +151,7 @@ describe('templates api calls', () => {
     expect(mockArguments.stack_id).toBe(stackID)
   })
 
-  it('deleteStack Fail', async () => {
+  it('handles failures to delete stacks', async () => {
     const orgID = '1234'
     const stackID = '63728'
     mocked(deleteStackMock).mockImplementation(() => {
@@ -168,9 +170,9 @@ describe('templates api calls', () => {
     }
   })
 
-  it('updateStackName', async () => {
+  it('updates the name of a stack', async () => {
     const name = 'test rule'
-    const stackID = '63728'
+    const stackID = '063ea6d269ea4000'
     mocked(patchStackMock).mockImplementation(() => {
       return Promise.resolve({
         status: 200,
@@ -185,7 +187,7 @@ describe('templates api calls', () => {
     expect(mockArguments.stack_id).toBe(stackID)
   })
 
-  it('updateStackName Fail', async () => {
+  it('handles failures when updating a stack name', async () => {
     const name = 'test rule'
     const stackID = '63728'
     mocked(patchStackMock).mockImplementation(() => {
@@ -204,7 +206,7 @@ describe('templates api calls', () => {
     }
   })
 
-  it('fetchReadMe pass', async () => {
+  it('fetches readmes', async () => {
     const name = 'docker'
     fetchMock.enableMocks()
 
@@ -216,7 +218,7 @@ describe('templates api calls', () => {
     )
   })
 
-  it('fetchReadMe fail', async () => {
+  it('handles failures when fetching readmes', async () => {
     const name = 'imABadName'
     fetchMock.mockReject(new Error('foo'))
 

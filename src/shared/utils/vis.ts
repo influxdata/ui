@@ -166,9 +166,7 @@ export const extent = (xs: number[]): [number, number] | null => {
   return [low, high]
 }
 
-export const checkResultsLength = (
-  giraffeResult: Omit<FromFluxResult, 'schema'>
-): boolean => {
+export const checkResultsLength = (giraffeResult: FromFluxResult): boolean => {
   return get(giraffeResult, 'table.length', 0) > 0
 }
 

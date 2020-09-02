@@ -9,6 +9,7 @@ import {
   FIVE_SECONDS,
   TEN_SECONDS,
   FIFTEEN_SECONDS,
+  INDEFINITE,
 } from 'src/shared/constants/index'
 import {QUICKSTART_SCRAPER_TARGET_URL} from 'src/dataLoaders/constants/pluginConfigs'
 import {QUICKSTART_DASHBOARD_NAME} from 'src/onboarding/constants/index'
@@ -985,6 +986,7 @@ export const communityTemplateInstallFailed = (
   errorMessage: string
 ): Notification => ({
   ...defaultErrorNotification,
+  duration: INDEFINITE,
   message: `There was a problem installing the template: ${errorMessage}`,
 })
 

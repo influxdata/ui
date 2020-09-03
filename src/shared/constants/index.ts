@@ -23,6 +23,8 @@ export const HTTP_UNAUTHORIZED = 401
 export const HTTP_FORBIDDEN = 403
 export const HTTP_NOT_FOUND = 404
 
+export const ALLOW_IMPORT_FROM_TEMPLATE = false
+
 export const AUTOREFRESH_DEFAULT_INTERVAL = 0 // in milliseconds
 export const AUTOREFRESH_DEFAULT_STATUS = AutoRefreshStatus.Paused
 export const AUTOREFRESH_DEFAULT = {

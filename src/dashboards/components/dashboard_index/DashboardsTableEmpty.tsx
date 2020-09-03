@@ -8,6 +8,8 @@ import AddResourceDropdown from 'src/shared/components/AddResourceDropdown'
 // Actions
 import {createDashboard} from 'src/dashboards/actions/thunks'
 
+import {ALLOW_IMPORT_FROM_TEMPLATE} from 'src/shared/constants' // spoiler alert: you can't import from templates
+
 interface ComponentProps {
   searchTerm?: string
   onCreateDashboard: typeof createDashboard
@@ -39,7 +41,7 @@ const DashboardsTableEmpty: FC<ComponentProps> = ({
         onSelectImport={summonImportOverlay}
         onSelectTemplate={summonImportFromTemplateOverlay}
         resourceName="Dashboard"
-        canImportFromTemplate={true}
+        canImportFromTemplate={ALLOW_IMPORT_FROM_TEMPLATE}
       />
     </EmptyState>
   )

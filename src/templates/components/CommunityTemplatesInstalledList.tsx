@@ -197,6 +197,7 @@ class CommunityTemplatesInstalledListUnconnected extends PureComponent<Props> {
 
 const mstp = (state: AppState) => {
   return {
+    communityTemplateReadMe: state.resources.templates.communityTemplateReadMe,
     stacks: state.resources.templates.stacks.filter(
       stack => stack.eventType !== 'delete' && stack.eventType !== 'uninstall'
     ),

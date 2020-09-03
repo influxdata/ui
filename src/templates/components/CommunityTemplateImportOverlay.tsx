@@ -89,6 +89,7 @@ class UnconnectedTemplateImportOverlay extends PureComponent<Props> {
       const summary = await reviewTemplate(orgID, templateUrl)
 
       this.props.setStagedCommunityTemplate(summary)
+      console.log(summary)
       return summary
     } catch (err) {
       this.props.notify(communityTemplateInstallFailed(err.message))
@@ -184,6 +185,7 @@ const mstp = (state: AppState, props: RouterProps) => {
     resourcesToSkip:
       state.resources.templates.stagedCommunityTemplate.resourcesToSkip,
     stagedTemplateUrl: state.resources.templates.stagedTemplateUrl,
+    communityTemplateReadMe: state.resources.templates.communityTemplateReadMe,
   }
 }
 

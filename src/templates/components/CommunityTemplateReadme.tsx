@@ -44,7 +44,7 @@ class CommunityTemplateReadmeUnconnected extends PureComponent<Props> {
   render = () => {
     return (
       <MarkdownRenderer
-        text={this.state.readMeData}
+        text={this.props.readMeData}
         className="markdown-format"
         cloudRenderers={{
           image: cloudImageRenderer,

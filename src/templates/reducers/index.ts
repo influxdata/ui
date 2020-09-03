@@ -27,6 +27,10 @@ import {
   setResource,
   setResourceAtID,
 } from 'src/resources/reducers/helpers'
+import {fetchReadMe} from 'src/templates/api'
+import {getTemplateNameFromUrl} from 'src/templates/utils'
+import {reportError} from 'src/shared/utils/errors'
+
 
 const defaultCommunityTemplate = (): CommunityTemplate => {
   return {
@@ -92,6 +96,21 @@ export const templatesReducer = (
         const {template} = action
 
         const envReferences = {}
+        const readme = {}
+        let readmestring = ""
+        const templateSplit = getTemplateNameFromUrl(template.sources[0])
+
+        // try {
+        //   readmestring = fetchReadMe(templateSplit.directory)
+        // } catch (error) {
+        //   reportError(error, {
+        //     name: 'The community template fetch github readme failed',
+        //   })
+        //   readmestring = "## We can't find the readme associated with this template"
+        // }
+
+        readme["docker"] = readmestring
+        draftState.communityTemplateReadMe = readme
 
         const stagedCommunityTemplate = {
           ...defaultCommunityTemplate(),
@@ -344,7 +363,7 @@ export const templatesReducer = (
 
       case SET_TEMPLATE_README: {
         const {templateName, readmeText} = action
-        const readme = {...draftState.communityTemplateReadme}         
+        const readme = {...draftState.communityTemplateReadme}
 
         readme[templateName] = readmeText
         draftState.communityTemplateReadme = readme

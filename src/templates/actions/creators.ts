@@ -24,6 +24,8 @@ export const UPDATE_TEMPLATE_ENV_REF = 'UPDATE_TEMPLATE_ENV_REF'
 
 export const SET_STACKS = 'SET_STACKS'
 export const DELETE_STACKS = 'DELETE_STACKS'
+export const SET_TEMPLATE_README = 'SET_TEMPLATE_README'
+
 
 export type EnvRefValue = string | number | boolean
 
@@ -40,6 +42,8 @@ export type Action =
   | ReturnType<typeof updateTemplateEnvReferences>
   | ReturnType<typeof setStacks>
   | ReturnType<typeof removeStack>
+  | ReturnType<typeof setTemplateReadMe>
+
 
 type TemplateSummarySchema<R extends string | string[]> = NormalizedSchema<
   TemplateSummaryEntities,
@@ -144,4 +148,11 @@ export const removeStack = (stackID: string) =>
   ({
     type: DELETE_STACKS,
     stackID,
+  } as const)
+
+export const setTemplateReadMe = (templateName: string, readmeText: string) =>
+  ({
+    type: SET_TEMPLATE_README,
+    templateName,
+    readmeText,
   } as const)

@@ -48,6 +48,7 @@ const InsertCellButton: FC<Props> = ({id}) => {
       <SquareButton
         icon={IconFont.Plus}
         ref={buttonRef}
+        testID={`panel-add-btn-${index}`}
         className="notebook-divider--button"
         color={ComponentColor.Secondary}
         active={popoverVisible.current}

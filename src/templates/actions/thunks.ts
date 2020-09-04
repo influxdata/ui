@@ -96,20 +96,6 @@ export const createTemplate = (template: DocumentCreate) => async (
   }
 }
 
-export const createTemplateFromResource = (
-  resource: DocumentCreate,
-  resourceName: string
-) => async (dispatch: Dispatch<Action>, getState: GetState) => {
-  try {
-    const org = getOrg(getState())
-    await client.templates.create({...resource, orgID: org.id})
-    dispatch(notify(copy.resourceSavedAsTemplate(resourceName)))
-  } catch (error) {
-    console.error(error)
-    dispatch(notify(copy.saveResourceAsTemplateFailed(resourceName, error)))
-  }
-}
-
 export const updateTemplate = (id: string, props: TemplateSummary) => async (
   dispatch: Dispatch<Action>,
   getState: GetState

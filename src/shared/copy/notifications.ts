@@ -496,6 +496,17 @@ export const demoDataAvailability = (error: {
   type: 'demoDataAvailabilityError',
 })
 
+export const updateAggregateType = (error: {
+  message: string
+  linkText?: string
+  link?: string
+}): Notification => ({
+  ...defaultErrorNotification,
+  ...error,
+  duration: TEN_SECONDS,
+  type: 'aggregateTypeError',
+})
+
 // Limits
 export const readWriteCardinalityLimitReached = (
   message: string

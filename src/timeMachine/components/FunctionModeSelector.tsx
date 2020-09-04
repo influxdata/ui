@@ -14,14 +14,13 @@ import {
 import BuilderCard from 'src/timeMachine/components//builderCard/BuilderCard'
 import SelectorList from 'src/timeMachine/components/SelectorList'
 
-//Actions
+// Utils
 import {
   multiSelectBuilderFunction,
   singleSelectBuilderFunction,
   setFunctions,
 } from 'src/timeMachine/actions/queryBuilder'
-
-// Utils
+import {setIsAutoFunction} from 'src/shared/actions/currentExplorer'
 import {getActiveQuery, getIsInCheckOverlay} from 'src/timeMachine/selectors'
 
 // Constants
@@ -38,6 +37,7 @@ const FunctionSelector: FunctionComponent<Props> = ({
   selectedFunctions,
   onSingleSelectBuilderFunction,
   onMultiSelectBuilderFunction,
+  onSetIsAutoFunction,
   isInCheckOverlay,
 }) => {
   const autoFunctions = AUTO_FUNCTIONS.map(f => f.name)
@@ -51,9 +51,14 @@ const FunctionSelector: FunctionComponent<Props> = ({
     ? autoFunctions
     : FUNCTIONS.map(f => f.name)
 
+  const handleSetAutoFunction = (bool: boolean): void => {
+    setIsAutoFunction(bool)
+    onSetIsAutoFunction(bool)
+  }
+
   const setFunctionSelectionMode = (mode: 'custom' | 'auto') => {
     if (mode === 'custom') {
-      setIsAutoFunction(false)
+      handleSetAutoFunction(false)
       return
     }
     const newFunctions = selectedFunctions.filter(f =>
@@ -66,8 +71,7 @@ const FunctionSelector: FunctionComponent<Props> = ({
     } else {
       onSetFunctions(newFunctions)
     }
-
-    setIsAutoFunction(true)
+    handleSetAutoFunction(true)
   }
 
   const onSelectFunction = isAutoFunction
@@ -155,6 +159,7 @@ const mdtp = {
   onMultiSelectBuilderFunction: multiSelectBuilderFunction,
   onSingleSelectBuilderFunction: singleSelectBuilderFunction,
   onSetFunctions: setFunctions,
+  onSetIsAutoFunction: setIsAutoFunction,
 }
 
 const connector = connect(mstp, mdtp)

@@ -4,6 +4,7 @@ import {AppState as AppPresentationState} from 'src/shared/reducers/app'
 import {MeState} from 'src/shared/reducers/me'
 import {FlagState} from 'src/shared/reducers/flags'
 import {CurrentDashboardState} from 'src/shared/reducers/currentDashboard'
+import {CurrentExplorerState} from 'src/shared/reducers/currentExplorer'
 import {NoteEditorState} from 'src/dashboards/reducers/notes'
 import {DataLoadingState} from 'src/dataLoaders/reducers'
 import {OnboardingState} from 'src/onboarding/reducers'
@@ -45,6 +46,7 @@ export interface AppState {
   }
   currentPage: CurrentPage
   currentDashboard: CurrentDashboardState
+  currentExplorer: CurrentExplorerState
   dataLoading: DataLoadingState
   flags: FlagState
   links: Links

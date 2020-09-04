@@ -13,6 +13,7 @@ import persistStateEnhancer from './persistStateEnhancer'
 import meReducer from 'src/shared/reducers/me'
 import flagReducer from 'src/shared/reducers/flags'
 import currentDashboardReducer from 'src/shared/reducers/currentDashboard'
+import currentExplorerReducer from 'src/shared/reducers/currentExplorer'
 import currentPageReducer from 'src/shared/reducers/currentPage'
 import tasksReducer from 'src/tasks/reducers'
 import rangesReducer from 'src/dashboards/reducers/ranges'
@@ -79,6 +80,7 @@ export const rootReducer = (history: History) =>
     }),
     currentPage: currentPageReducer,
     currentDashboard: currentDashboardReducer,
+    currentExplorer: currentExplorerReducer,
     dataLoading: dataLoadingReducer,
     me: meReducer,
     flags: flagReducer,

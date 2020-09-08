@@ -3,27 +3,24 @@ import 'cypress-file-upload'
 
 export const signin = (): Cypress.Chainable<Cypress.Response> => {
   /*\ OSS login
-  return cy.fixture('user').then(({username, password}) => {
     return cy.setupUser().then(body => {
       return cy
         .request({
           method: 'POST',
           url: '/api/v2/signin',
-          auth: {user: username, pass: password},
+          auth: {user: Cypress.env('username'), pass: Cypress.env('password')},
         })
         .then(() => {
           return cy.wrap(body)
         })
     })
-  })
   \*/
 
-  return cy.fixture('user').then(({username, password}) => {
     return cy.setupUser().then(body => {
       return cy
         .visit('/api/v2/signin')
-        .then(() => cy.get('#login').type(username))
-        .then(() => cy.get('#password').type(password))
+        .then(() => cy.get('#login').type(Cypress.env('username')))
+        .then(() => cy.get('#password').type(Cypress.env('password')))
         .then(() => cy.get('#submit-login').click())
         .then(() => cy.get('.theme-btn--success').click())
         .then(() => cy.wrap(body))
@@ -440,12 +437,10 @@ export const createToken = (
 
 // TODO: have to go through setup because we cannot create a user w/ a password via the user API
 export const setupUser = (): Cypress.Chainable<Cypress.Response> => {
-  return cy.fixture('user').then(() => {
     return cy.request({
       method: 'GET',
       url: '/debug/provision',
     })
-  })
 }
 
 export const flush = () => {
@@ -479,13 +474,11 @@ export const lines = (numLines = 3) => {
 export const writeData = (
   lines: string[]
 ): Cypress.Chainable<Cypress.Response> => {
-  return cy.fixture('user').then(({org, bucket}) => {
-    cy.request({
+    return cy.request({
       method: 'POST',
       url: '/api/v2/write?org=' + org + '&bucket=' + bucket,
       body: lines.join('\n'),
     })
-  })
 }
 
 // DOM node getters

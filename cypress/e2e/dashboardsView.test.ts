@@ -253,14 +253,11 @@ describe('Dashboard', () => {
     it('can manage variable state with a lot of pointing and clicking', () => {
       const bucketOne = 'b1'
       const bucketThree = 'b3'
-      let defaultBucket = ''
       cy.get('@org').then(({id: orgID}: Organization) => {
         cy.get<Dashboard>('@dashboard').then(({dashboard}) => {
-          cy.fixture('user').then(({bucket}) => {
-            defaultBucket = bucket
             cy.createCSVVariable(orgID, 'bucketsCSV', [
               bucketOne,
-              defaultBucket,
+              Cypress.env('bucket'),
               bucketThree,
             ])
           })
@@ -342,12 +339,12 @@ describe('Dashboard', () => {
             cy.getByTestID('variable-dropdown--button')
               .eq(0)
               .click()
-            cy.get(`#${defaultBucket}`).click()
+            cy.get(`#${Cypress.env('bucket')}`).click()
 
             // and that it updates the variable in the URL without breaking stuff
             cy.location('search').should(
               'eq',
-              `?lower=now%28%29%20-%201h&vars%5BbucketsCSV%5D=${defaultBucket}`
+              `?lower=now%28%29%20-%201h&vars%5BbucketsCSV%5D=${Cypress.env('bucket')}`
             )
 
             // open VEO
@@ -357,7 +354,7 @@ describe('Dashboard', () => {
             // selected value in cell context is 2nd value
             cy.window()
               .pipe(getSelectedVariable(dashboard.id, 0))
-              .should('equal', defaultBucket)
+              .should('equal', Cypress.env('bucket'))
 
             cy.getByTestID('toolbar-tab').click()
             cy.get('.flux-toolbar--list-item')
@@ -478,7 +475,7 @@ describe('Dashboard', () => {
             cy.getByTestID('variable-dropdown--button')
               .eq(0)
               .click()
-            cy.get(`#${defaultBucket}`).click()
+            cy.get(`#${Cypress.env('bucket')}`).click()
 
             // assert visualization appears
             cy.getByTestID('giraffe-layer-line').should('exist')

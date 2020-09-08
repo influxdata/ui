@@ -475,7 +475,7 @@ export const writeData = (
 ): Cypress.Chainable<Cypress.Response> => {
   return cy.request({
     method: 'POST',
-    url: '/api/v2/write?org=' + org + '&bucket=' + bucket,
+    url: '/api/v2/write?org=' + Cypress.env('org') + '&bucket=' + Cypress.env('bucket'),
     body: lines.join('\n'),
   })
 }

@@ -387,13 +387,15 @@ describe('tokens', () => {
   })
 
   it('can do sorting', () => {
-    cy.getByTestID(`token-card ${Cypress.env('username')}'s Token`).within(() => {
-      cy.getByTestID('context-menu').click()
+    cy.getByTestID(`token-card ${Cypress.env('username')}'s Token`).within(
+      () => {
+        cy.getByTestID('context-menu').click()
 
-      cy.getByTestID('delete-token')
-        .contains('Delete')
-        .click()
-    })
+        cy.getByTestID('delete-token')
+          .contains('Delete')
+          .click()
+      }
+    )
 
     // description asc
     cy.getByTestID('resource-sorter--button')

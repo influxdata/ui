@@ -255,12 +255,11 @@ describe('Dashboard', () => {
       const bucketThree = 'b3'
       cy.get('@org').then(({id: orgID}: Organization) => {
         cy.get<Dashboard>('@dashboard').then(({dashboard}) => {
-            cy.createCSVVariable(orgID, 'bucketsCSV', [
-              bucketOne,
-              Cypress.env('bucket'),
-              bucketThree,
-            ])
-          })
+          cy.createCSVVariable(orgID, 'bucketsCSV', [
+            bucketOne,
+            Cypress.env('bucket'),
+            bucketThree,
+          ])
 
           cy.createQueryVariable(orgID)
           cy.createMapVariable(orgID).then(() => {
@@ -344,7 +343,9 @@ describe('Dashboard', () => {
             // and that it updates the variable in the URL without breaking stuff
             cy.location('search').should(
               'eq',
-              `?lower=now%28%29%20-%201h&vars%5BbucketsCSV%5D=${Cypress.env('bucket')}`
+              `?lower=now%28%29%20-%201h&vars%5BbucketsCSV%5D=${Cypress.env(
+                'bucket'
+              )}`
             )
 
             // open VEO

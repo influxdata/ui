@@ -185,7 +185,7 @@ const mstp = (state: AppState, props: RouterProps) => {
     resourcesToSkip:
       state.resources.templates.stagedCommunityTemplate.resourcesToSkip,
     stagedTemplateUrl: state.resources.templates.stagedTemplateUrl,
-    communityTemplateReadMe: state.resources.templates.communityTemplateReadme,
+    communityTemplateReadmeCollection: state.resources.templates.communityTemplateReadmeCollection,
   }
 }
 

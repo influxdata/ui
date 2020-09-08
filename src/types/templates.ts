@@ -45,7 +45,7 @@ export interface TemplatesState extends NormalizedState<TemplateSummary> {
   exportTemplate: {status: RemoteDataState; item: DocumentCreate}
   stagedCommunityTemplate: CommunityTemplate
   stagedTemplateEnvReferences: {[key: string]: EnvReference}
-  communityTemplateReadme: {[key: string]: string}
+  communityTemplateReadmeCollection: {[key: string]: string}
   stagedTemplateUrl: string
   stacks: InstalledStack[]
 }

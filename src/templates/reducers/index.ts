@@ -42,7 +42,7 @@ export const defaultState = (): TemplatesState => ({
   stagedCommunityTemplate: defaultCommunityTemplate(),
   stagedTemplateEnvReferences: {},
   stagedTemplateUrl: '',
-  communityTemplateReadme: {},
+  communityTemplateReadmeCollection: {},
   status: RemoteDataState.NotStarted,
   byID: {},
   allIDs: [],
@@ -344,10 +344,10 @@ export const templatesReducer = (
 
       case SET_TEMPLATE_README: {
         const {templateName, readmeText} = action
-        const readme = {...draftState.communityTemplateReadme}
+        const readme = {...draftState.communityTemplateReadmeCollection}
 
         readme[templateName] = readmeText
-        draftState.communityTemplateReadme = readme
+        draftState.communityTemplateReadmeCollection = readme
         return
       }
     }

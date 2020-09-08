@@ -19,21 +19,21 @@ const cloudImageRenderer = (): any =>
 
 class CommunityTemplateReadmeUnconnected extends Component<Props> {
   componentDidMount = () => {
-    if (!this.props.communityTemplateReadmeCollection) {
+    if (!this.props.readme) {
       this.props.fetchAndSetReadme(this.props.name, this.props.directory)
     }
   }
 
   render = () => {
-    const {communityTemplateReadmeCollection} = this.props
+    const {readme} = this.props
 
-    if (!communityTemplateReadmeCollection) {
+    if (!readme) {
       return null
     }
 
     return (
       <MarkdownRenderer
-        text={communityTemplateReadmeCollection}
+        text={readme}
         className="markdown-format"
         cloudRenderers={{
           image: cloudImageRenderer,
@@ -49,7 +49,7 @@ const mstp = (state: AppState, props: any) => {
   return {
     directory: templateDetails.directory,
     name: templateDetails.name,
-    communityTemplateReadmeCollection:
+    readme:
       state.resources.templates.communityTemplateReadmeCollection[
         templateDetails.name
       ],

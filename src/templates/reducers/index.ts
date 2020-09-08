@@ -348,7 +348,6 @@ export const templatesReducer = (
 
         readme[templateName] = readmeText
         draftState.communityTemplateReadme = readme
-        console.log(draftState.communityTemplateReadme)
         return
       }
     }

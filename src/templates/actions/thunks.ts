@@ -300,7 +300,7 @@ export const fetchAndSetReadme = (name: string, directory: string) => async (
     dispatch(setTemplateReadMe(name, response))
   } catch (error) {
     reportError(error, {
-      name: 'The community template fetch github readme failed',
+      name: `The community template github readme fetch failed for ${name}`,
     })
     dispatch(
       setTemplateReadMe(

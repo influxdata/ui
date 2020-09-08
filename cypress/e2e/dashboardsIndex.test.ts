@@ -36,7 +36,7 @@ describe('Dashboards', () => {
     })
   })
 
-  it('can CRUD dashboards from empty state, header, and a Template', () => {
+  it('can CRUD dashboards from empty state, and a header', () => {
     // Create from empty state
     cy.getByTestID('empty-dashboards-list').within(() => {
       cy.getByTestID('add-resource-dropdown--button').click()
@@ -85,30 +85,9 @@ describe('Dashboards', () => {
       })
     })
 
-    // Create from Template
-    cy.get('@org').then(({id}: Organization) => {
-      cy.createDashboardTemplate(id)
-    })
-
-    cy.getByTestID('empty-dashboards-list').within(() => {
-      cy.getByTestID('add-resource-dropdown--button').click()
-      cy.getByTestID('add-resource-dropdown--template').click()
-    })
-    cy.getByTestID('template--Bashboard-Template').click()
-    cy.getByTestID('template-panel').should('exist')
-    cy.getByTestID('create-dashboard-button').click()
-
-    cy.getByTestID('dashboard-card').should('have.length', 3)
+    cy.getByTestID('dashboard-card').should('have.length', 2)
 
     // Delete dashboards
-    cy.getByTestID('dashboard-card')
-      .first()
-      .trigger('mouseover')
-      .within(() => {
-        cy.getByTestID('context-delete-menu').click()
-        cy.getByTestID('context-delete-dashboard').click()
-      })
-
     cy.getByTestID('dashboard-card')
       .first()
       .trigger('mouseover')

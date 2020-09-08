@@ -50,12 +50,10 @@ describe('Collectors', () => {
           .click()
       })
 
-      cy.fixture('user').then(({bucket}) => {
-        cy.getByTestID('resource-card')
-          .should('have.length', 1)
-          .and('contain', newConfig)
-          .and('contain', bucket)
-      })
+      cy.getByTestID('resource-card')
+        .should('have.length', 1)
+        .and('contain', newConfig)
+        .and('contain', Cypress.env('bucket'))
     })
 
     it('allows the user to view just the output', () => {
@@ -111,9 +109,12 @@ describe('Collectors', () => {
         const telegrafConfigName = 'New Config'
         const description = 'Config Description'
         cy.get('@org').then(({id}: Organization) => {
-          cy.fixture('user').then(({bucket}) => {
-            cy.createTelegraf(telegrafConfigName, description, id, bucket)
-          })
+          cy.createTelegraf(
+            telegrafConfigName,
+            description,
+            id,
+            Cypress.env('bucket')
+          )
         })
 
         cy.reload()

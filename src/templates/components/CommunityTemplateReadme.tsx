@@ -50,7 +50,9 @@ const mstp = (state: AppState, props: any) => {
     directory: templateDetails.directory,
     name: templateDetails.name,
     communityTemplateReadmeCollection:
-      state.resources.templates.communityTemplateReadmeCollection[templateDetails.name],
+      state.resources.templates.communityTemplateReadmeCollection[
+        templateDetails.name
+      ],
   }
 }
 

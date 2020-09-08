@@ -103,7 +103,7 @@ describe('templates reducer', () => {
       exportTemplate,
       stagedCommunityTemplate,
       stagedTemplateEnvReferences: {},
-      communityTemplateReadmeCollection:{},
+      communityTemplateReadmeCollection: {},
       stagedTemplateUrl: '',
       stacks: [],
     }

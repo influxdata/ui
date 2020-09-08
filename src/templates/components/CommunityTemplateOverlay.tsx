@@ -45,13 +45,7 @@ class CommunityTemplateOverlayUnconnected extends PureComponent<Props, State> {
   }
 
   public render() {
-    const {
-      isVisible,
-      onInstall,
-      resourceCount,
-      templateName,
-      url,
-    } = this.props
+    const {isVisible, onInstall, resourceCount, templateName, url} = this.props
 
     return (
       <Overlay visible={isVisible}>

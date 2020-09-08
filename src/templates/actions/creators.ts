@@ -26,7 +26,6 @@ export const SET_STACKS = 'SET_STACKS'
 export const DELETE_STACKS = 'DELETE_STACKS'
 export const SET_TEMPLATE_README = 'SET_TEMPLATE_README'
 
-
 export type EnvRefValue = string | number | boolean
 
 export type Action =
@@ -43,7 +42,6 @@ export type Action =
   | ReturnType<typeof setStacks>
   | ReturnType<typeof removeStack>
   | ReturnType<typeof setTemplateReadMe>
-
 
 type TemplateSummarySchema<R extends string | string[]> = NormalizedSchema<
   TemplateSummaryEntities,

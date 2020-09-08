@@ -206,7 +206,6 @@ const ViewSwitcher: FunctionComponent<Props> = ({
     case 'scatter':
       return (
         <ScatterPlot
-          timeRange={timeRange}
           table={table}
           viewProperties={properties}
           timeZone={timeZone}

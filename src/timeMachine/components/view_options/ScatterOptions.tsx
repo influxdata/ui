@@ -16,6 +16,7 @@ import {
   setAxisPrefix,
   setAxisSuffix,
   setColorHexes,
+  setXDomain,
   setYDomain,
   setXColumn,
   setYColumn,
@@ -76,10 +77,14 @@ const ScatterOptions: SFC<Props> = props => {
     onSetColors,
     onSetYAxisLabel,
     onSetXAxisLabel,
+    xPrefix,
+    xSuffix,
     yPrefix,
     ySuffix,
     onUpdateAxisSuffix,
     onUpdateAxisPrefix,
+    xDomain,
+    onSetXDomain,
     yDomain,
     onSetYDomain,
     xColumn,
@@ -173,6 +178,20 @@ const ScatterOptions: SFC<Props> = props => {
           onChange={e => onSetXAxisLabel(e.target.value)}
         />
       </Form.Element>
+      <Grid.Row>
+        <AxisAffixes
+          prefix={xPrefix}
+          suffix={xSuffix}
+          axisName="x"
+          onUpdateAxisPrefix={prefix => onUpdateAxisPrefix(prefix, 'x')}
+          onUpdateAxisSuffix={suffix => onUpdateAxisSuffix(suffix, 'x')}
+        />
+      </Grid.Row>
+      <AutoDomainInput
+        domain={xDomain as [number, number]}
+        onSetDomain={onSetXDomain}
+        label="X Axis Domain"
+      />
       <h5 className="view-options--header">Y Axis</h5>
       <Form.Element label="Y Axis Label">
         <Input
@@ -229,6 +248,7 @@ const mdtp = {
   onSetXAxisLabel: setXAxisLabel,
   onUpdateAxisPrefix: setAxisPrefix,
   onUpdateAxisSuffix: setAxisSuffix,
+  onSetXDomain: setXDomain,
   onSetYDomain: setYDomain,
   onSetXColumn: setXColumn,
   onSetYColumn: setYColumn,

@@ -4,3 +4,5 @@
 build
 node_modules
 src/client/generatedRoutes.ts
+.DS_Store
+.package.json.swp

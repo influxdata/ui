@@ -391,8 +391,12 @@ export const getDashboard = (
         creators.setDashboard(dashboardID, RemoteDataState.Done, normDash)
       )
       dispatch(updateTimeRangeFromQueryParams(dashboardID))
-      const skipCache = true
-      dispatch(hydrateVariables(skipCache, controller))
+
+      // prevent all the variables from being hydrated if the dashboard is empty
+      if (cellViews.length > 0) {
+        const skipCache = true
+        dispatch(hydrateVariables(skipCache, controller))
+      }
     }, 0)
   } catch (error) {
     if (error.name === 'AbortError') {

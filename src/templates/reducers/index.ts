@@ -12,6 +12,7 @@ import {
   SET_TEMPLATE_SUMMARY,
   TOGGLE_TEMPLATE_RESOURCE_INSTALL,
   UPDATE_TEMPLATE_ENV_REF,
+  SET_TEMPLATE_README,
 } from 'src/templates/actions/creators'
 import {
   CommunityTemplate,
@@ -41,6 +42,7 @@ export const defaultState = (): TemplatesState => ({
   stagedCommunityTemplate: defaultCommunityTemplate(),
   stagedTemplateEnvReferences: {},
   stagedTemplateUrl: '',
+  communityTemplateReadmeCollection: {},
   status: RemoteDataState.NotStarted,
   byID: {},
   allIDs: [],
@@ -337,6 +339,15 @@ export const templatesReducer = (
           value: newValue,
           valueType,
         }
+        return
+      }
+
+      case SET_TEMPLATE_README: {
+        const {templateName, readmeText} = action
+        const readme = {...draftState.communityTemplateReadmeCollection}
+
+        readme[templateName] = readmeText
+        draftState.communityTemplateReadmeCollection = readme
         return
       }
     }

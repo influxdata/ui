@@ -47,6 +47,7 @@ const stagedCommunityTemplate: CommunityTemplate = {}
 const initialState = () => ({
   stagedCommunityTemplate,
   stagedTemplateEnvReferences: {},
+  communityTemplateReadmeCollection: {},
   stagedTemplateUrl: '',
   status,
   byID: {
@@ -102,6 +103,7 @@ describe('templates reducer', () => {
       exportTemplate,
       stagedCommunityTemplate,
       stagedTemplateEnvReferences: {},
+      communityTemplateReadmeCollection: {},
       stagedTemplateUrl: '',
       stacks: [],
     }

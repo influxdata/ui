@@ -1,6 +1,5 @@
 import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {getTemplateNameFromUrl} from 'src/templates/utils'
 
 // Components
 import {
@@ -71,10 +70,7 @@ class CommunityTemplatesInstalledListUnconnected extends PureComponent<Props> {
   private renderStackSources(sources: string[]) {
     return sources.map(source => {
       if (source.includes('github') && source.includes('influxdata')) {
-        const directory = getTemplateNameFromUrl(source).directory
-        return (
-          <CommunityTemplateReadMeOverlay key={source} directory={directory} />
-        )
+        return <CommunityTemplateReadMeOverlay key={source} url={source} />
       }
 
       return source

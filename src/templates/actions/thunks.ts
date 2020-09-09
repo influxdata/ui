@@ -3,7 +3,7 @@ import {normalize} from 'normalizr'
 
 // APIs
 import {client} from 'src/utils/api'
-import {fetchStacks} from 'src/templates/api'
+import {fetchStacks, fetchReadMe} from 'src/templates/api'
 import {createDashboardFromTemplate} from 'src/dashboards/actions/thunks'
 import {createVariableFromTemplate} from 'src/variables/actions/thunks'
 import {createTaskFromTemplate} from 'src/tasks/actions/thunks'
@@ -21,6 +21,7 @@ import {
   setExportTemplate,
   setTemplatesStatus,
   setTemplateSummary,
+  setTemplateReadMe,
   Action as TemplateAction,
 } from 'src/templates/actions/creators'
 
@@ -48,6 +49,7 @@ import {
 import {templateToExport} from 'src/shared/utils/resourceToTemplate'
 import {getOrg} from 'src/organizations/selectors'
 import {getLabels, getStatus} from 'src/resources/selectors'
+import {reportError} from 'src/shared/utils/errors'
 
 type Action = TemplateAction | NotifyAction
 
@@ -273,5 +275,24 @@ export const fetchAndSetStacks = (orgID: string) => async (
     dispatch(setStacks(stacks))
   } catch (error) {
     console.error(error)
+  }
+}
+
+export const fetchAndSetReadme = (name: string, directory: string) => async (
+  dispatch: Dispatch<Action>
+): Promise<void> => {
+  try {
+    const response = await fetchReadMe(directory)
+    dispatch(setTemplateReadMe(name, response))
+  } catch (error) {
+    reportError(error, {
+      name: `The community template github readme fetch failed for ${name}`,
+    })
+    dispatch(
+      setTemplateReadMe(
+        name,
+        "## We can't find the readme associated with this template"
+      )
+    )
   }
 }

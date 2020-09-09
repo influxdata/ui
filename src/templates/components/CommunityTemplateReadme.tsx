@@ -34,7 +34,7 @@ class CommunityTemplateReadmeUnconnected extends Component<Props> {
     return (
       <MarkdownRenderer
         text={readme}
-        className="markdown-format"
+        className="markdown-format community-templates--readme"
         cloudRenderers={{
           image: cloudImageRenderer,
           imageReference: cloudImageRenderer,

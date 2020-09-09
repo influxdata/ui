@@ -291,7 +291,7 @@ export const fetchAndSetReadme = (name: string, directory: string) => async (
     dispatch(
       setTemplateReadMe(
         name,
-        "## We can't find the readme associated with this template"
+        "###### We can't find the readme associated with this template"
       )
     )
   }

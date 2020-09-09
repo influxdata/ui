@@ -122,7 +122,7 @@ class CommunityTemplatesInstalledListUnconnected extends PureComponent<Props> {
                 Install Date
               </Table.HeaderCell>
               <Table.HeaderCell style={{width: '210px'}}>
-                Source
+                Links
               </Table.HeaderCell>
               <Table.HeaderCell style={{width: '60px'}}>
                 &nbsp;

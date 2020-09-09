@@ -4,10 +4,14 @@ import {connect, ConnectedProps} from 'react-redux'
 // Components
 import {Input, InputType, Table} from '@influxdata/clockface'
 
-// Types
-import {AppState} from 'src/types'
+import BucketsDropdown from 'src/dataLoaders/components/BucketsDropdown'
 
+// Types
+import {AppState, Bucket, ResourceType} from 'src/types'
+
+// Redux
 import {updateTemplateEnvReferences} from 'src/templates/actions/creators'
+import {getAll} from 'src/resources/selectors'
 
 export type EnvRef = any
 
@@ -18,8 +22,123 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & OwnProps
 
-class CommunityTemplateEnvReferencesUnconnected extends PureComponent<Props> {
-  private handleChange = ref => {
+interface State {
+  selectedBucketID: string
+}
+
+class CommunityTemplateEnvReferencesUnconnected extends PureComponent<
+  Props,
+  State
+> {
+  state = {
+    selectedBucketID: 'default',
+  }
+
+  componentDidMount() {
+    // for the case when the user selected a bucket, then minimized the section, then re-opened the section
+    const previouslySelectedRef = this.props.resource.envReferences.find(
+      ref => {
+        if (this.getFieldType(ref) === 'bucket') {
+          if (
+            this.props.stagedTemplateEnvReferences[ref.envRefKey].value !==
+            ref.defaultValue
+          ) {
+            return true
+          }
+        }
+      }
+    )
+
+    if (previouslySelectedRef) {
+      const previouslySelectedBucket = this.props.buckets.find(bucket => {
+        if (
+          bucket.name ===
+          this.props.stagedTemplateEnvReferences[
+            previouslySelectedRef.envRefKey
+          ].value
+        ) {
+          return true
+        }
+      })
+
+      if (previouslySelectedBucket) {
+        this.setState({
+          selectedBucketID: previouslySelectedBucket.id,
+        })
+      }
+    }
+  }
+
+  render() {
+    return (
+      <Table>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell>Parameter</Table.HeaderCell>
+            <Table.HeaderCell>Value</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {this.props.resource.envReferences.map(ref => {
+            const fieldType = this.getFieldType(ref)
+            // this is a brittle way to do this, but it's the best we have now.
+            // when we have the ability to distinguish types on the flux side, we can remove this.
+            // this tech debt was brought to you by a higher up decision that we need this -now-.
+            if (fieldType === 'bucket') {
+              const {defaultValue} = ref
+              const defaultValueAsBucket = {
+                id: 'default',
+                name: defaultValue,
+              } as Bucket
+
+              return (
+                <Table.Row key={ref.envRefKey}>
+                  <Table.Cell>
+                    <strong>{fieldType}</strong>
+                  </Table.Cell>
+                  <Table.Cell>
+                    <BucketsDropdown
+                      selectedBucketID={this.state.selectedBucketID}
+                      buckets={[defaultValueAsBucket, ...this.props.buckets]}
+                      onSelectBucket={this.createRefBucketSelectHandler(ref)}
+                    />
+                  </Table.Cell>
+                </Table.Row>
+              )
+            }
+
+            return (
+              <Table.Row key={ref.envRefKey}>
+                <Table.Cell>
+                  <strong>{fieldType}</strong>
+                </Table.Cell>
+                <Table.Cell>{this.renderInputForEnvRef(ref)}</Table.Cell>
+              </Table.Row>
+            )
+          })}
+        </Table.Body>
+      </Table>
+    )
+  }
+
+  private createRefBucketSelectHandler = ref => {
+    return event => {
+      let selectedBucketID = ''
+      if (event.hasOwnProperty('id')) {
+        selectedBucketID = event.id
+      }
+
+      this.setState({selectedBucketID})
+      this.props.updateTemplateEnvReferences(
+        ref.envRefKey,
+        ref.resourceField,
+        event.name,
+        ref.valueType
+      )
+    }
+  }
+
+  private handleRefChange = ref => {
     return event => {
       this.props.updateTemplateEnvReferences(
         ref.envRefKey,
@@ -41,7 +160,7 @@ class CommunityTemplateEnvReferencesUnconnected extends PureComponent<Props> {
             value={
               this.props.stagedTemplateEnvReferences[ref.envRefKey].value as any
             }
-            onChange={this.handleChange(ref)}
+            onChange={this.handleRefChange(ref)}
           />
         )
       }
@@ -53,7 +172,7 @@ class CommunityTemplateEnvReferencesUnconnected extends PureComponent<Props> {
             value={
               this.props.stagedTemplateEnvReferences[ref.envRefKey].value as any
             }
-            onChange={this.handleChange(ref)}
+            onChange={this.handleRefChange(ref)}
           />
         )
       }
@@ -63,37 +182,13 @@ class CommunityTemplateEnvReferencesUnconnected extends PureComponent<Props> {
   private getFieldType(ref: EnvRef) {
     return ref.resourceField.split('.').pop()
   }
-
-  render() {
-    return (
-      <Table>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell>Parameter</Table.HeaderCell>
-            <Table.HeaderCell>Value</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {this.props.resource.envReferences.map(ref => {
-            return (
-              <Table.Row key={ref.envRefKey}>
-                <Table.Cell>
-                  <strong>{this.getFieldType(ref)}</strong>
-                </Table.Cell>
-                <Table.Cell>{this.renderInputForEnvRef(ref)}</Table.Cell>
-              </Table.Row>
-            )
-          })}
-        </Table.Body>
-      </Table>
-    )
-  }
 }
 
 const mstp = (state: AppState) => {
   return {
     stagedTemplateEnvReferences:
       state.resources.templates.stagedTemplateEnvReferences,
+    buckets: getAll<Bucket>(state, ResourceType.Buckets),
   }
 }
 

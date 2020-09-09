@@ -15,6 +15,8 @@ export const POPULATE_TEMPLATE_SUMMARIES = 'POPULATE_TEMPLATE_SUMMARIES'
 export const REMOVE_TEMPLATE_SUMMARY = 'REMOVE_TEMPLATE_SUMMARY'
 export const SET_STAGED_TEMPLATE = 'SET_STAGED_TEMPLATE'
 export const SET_STAGED_TEMPLATE_URL = 'SET_STAGED_TEMPLATE_URL'
+export const SET_STAGED_TEMPLATE_URL_VALIDATION =
+  'SET_STAGED_TEMPLATE_URL_VALIDATION'
 export const SET_EXPORT_TEMPLATE = 'SET_EXPORT_TEMPLATE'
 export const SET_TEMPLATE_SUMMARY = 'SET_TEMPLATE_SUMMARY'
 export const SET_TEMPLATES_STATUS = 'SET_TEMPLATES_STATUS'
@@ -37,6 +39,7 @@ export type Action =
   | ReturnType<typeof setTemplateSummary>
   | ReturnType<typeof setStagedCommunityTemplate>
   | ReturnType<typeof setStagedTemplateUrl>
+  | ReturnType<typeof setStagedTemplateUrlValidation>
   | ReturnType<typeof toggleTemplateResourceInstall>
   | ReturnType<typeof updateTemplateEnvReferences>
   | ReturnType<typeof setStacks>
@@ -108,6 +111,12 @@ export const setStagedTemplateUrl = (templateUrl: string) =>
   ({
     type: SET_STAGED_TEMPLATE_URL,
     templateUrl,
+  } as const)
+
+export const setStagedTemplateUrlValidation = (validation: string) =>
+  ({
+    type: SET_STAGED_TEMPLATE_URL_VALIDATION,
+    validation,
   } as const)
 
 export const updateTemplateEnvReferences = (

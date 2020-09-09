@@ -38,7 +38,10 @@ import {communityTemplatesImportPath} from 'src/templates/containers/TemplatesIn
 import GetResources from 'src/resources/components/GetResources'
 import {getOrg} from 'src/organizations/selectors'
 
-import {setStagedTemplateUrl} from 'src/templates/actions/creators'
+import {
+  setStagedTemplateUrl,
+  setStagedTemplateUrlValidation,
+} from 'src/templates/actions/creators'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -71,16 +74,8 @@ type Params = {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{templateName: string}>
 
-interface State {
-  urlInputFeedback: string
-}
-
 @ErrorHandling
-class UnconnectedTemplatesIndex extends Component<Props, State> {
-  public state = {
-    urlInputFeedback: '',
-  }
-
+class UnconnectedTemplatesIndex extends Component<Props> {
   public componentDidMount() {
     // if this component mounts, and the install template is on the screen
     // (i.e. the user reloaded the page with the install template active)
@@ -210,21 +205,24 @@ class UnconnectedTemplatesIndex extends Component<Props, State> {
   }
 
   private get inputFeedback(): JSX.Element | null {
-    const {urlInputFeedback} = this.state
+    const {stagedTemplateUrlValidation} = this.props
 
     const feedbackClassName = `community-templates-template-url--feedback community-templates-template-url--feedback__${this.inputStatus}`
 
-    if (urlInputFeedback) {
-      return <p className={feedbackClassName}>{urlInputFeedback}</p>
+    if (stagedTemplateUrlValidation) {
+      return <p className={feedbackClassName}>{stagedTemplateUrlValidation}</p>
     }
   }
 
   private get inputStatus(): ComponentStatus {
-    const {urlInputFeedback} = this.state
+    const {stagedTemplateUrlValidation} = this.props
 
-    if (urlInputFeedback === '' || urlInputFeedback === TEMPLATE_URL_WARN) {
+    if (
+      stagedTemplateUrlValidation === '' ||
+      stagedTemplateUrlValidation === TEMPLATE_URL_WARN
+    ) {
       return ComponentStatus.Default
-    } else if (urlInputFeedback === TEMPLATE_URL_VALID) {
+    } else if (stagedTemplateUrlValidation === TEMPLATE_URL_VALID) {
       return ComponentStatus.Valid
     }
 
@@ -254,9 +252,9 @@ class UnconnectedTemplatesIndex extends Component<Props, State> {
   }
 
   private handleTemplateChange = event => {
-    const urlInputFeedback = validateTemplateURL(event.target.value)
+    const validationMessage = validateTemplateURL(event.target.value)
 
-    this.setState({urlInputFeedback})
+    this.props.setStagedTemplateUrlValidation(validationMessage)
     this.props.setStagedTemplateUrl(event.target.value)
   }
 
@@ -271,12 +269,15 @@ const mstp = (state: AppState) => {
   return {
     org: getOrg(state),
     stagedTemplateUrl: state.resources.templates.stagedTemplateUrl,
+    stagedTemplateUrlValidation:
+      state.resources.templates.stagedTemplateUrlValidation,
   }
 }
 
 const mdtp = {
   notify,
   setStagedTemplateUrl,
+  setStagedTemplateUrlValidation,
 }
 
 const connector = connect(mstp, mdtp)

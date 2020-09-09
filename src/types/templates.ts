@@ -47,6 +47,7 @@ export interface TemplatesState extends NormalizedState<TemplateSummary> {
   stagedTemplateEnvReferences: {[key: string]: EnvReference}
   communityTemplateReadmeCollection: {[key: string]: string}
   stagedTemplateUrl: string
+  stagedTemplateUrlValidation: string
   stacks: InstalledStack[]
 }
 

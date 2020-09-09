@@ -168,7 +168,10 @@ describe('Community Templates', () => {
         .contains('Telegraf')
         .siblings('td')
         .click('left')
-      cy.url().should('include', 'load-data/telegrafs')
+      cy.url().should(
+        'match',
+        /.*\/load-data\/telegrafs\/[\w\d]+\/instructions/
+      )
       cy.go('back')
 
       cy.getByTestID('template-resource-link').click()

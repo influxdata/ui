@@ -170,6 +170,7 @@ class UnconnectedTemplatesIndex extends Component<Props> {
                       size={ComponentSize.Large}
                       text="Lookup Template"
                       testID="lookup-template-button"
+                      className="community-templates--browse"
                     />
                   </FlexBox>
                   {this.inputFeedback}

@@ -1,5 +1,5 @@
-/* 
-tslint:disable no-console 
+/*
+tslint:disable no-console
 tslint:disable max-classes-per-file
 */
 
@@ -10,7 +10,10 @@ import React, {Component, ErrorInfo} from 'react'
 import DefaultErrorMessage from 'src/shared/components/DefaultErrorMessage'
 
 // Utils
-import {reportError, parseComponentName} from 'src/shared/utils/errors'
+import {
+  reportErrorThroughHoneyBadger,
+  parseComponentName,
+} from 'src/shared/utils/errors'
 
 // Types
 import {ErrorMessageComponent} from 'src/types'
@@ -30,7 +33,9 @@ export function ErrorHandlingWith(Error: ErrorMessageComponent) {
         this.error = error
         this.forceUpdate()
 
-        reportError(error, {component: parseComponentName(errorInfo)})
+        reportErrorThroughHoneyBadger(error, {
+          component: parseComponentName(errorInfo),
+        })
       }
 
       public render() {

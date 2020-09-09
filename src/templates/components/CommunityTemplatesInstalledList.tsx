@@ -34,7 +34,7 @@ import {TemplateKind} from 'src/client'
 import {deleteStack} from 'src/templates/api'
 
 //Utils
-import {reportError} from 'src/shared/utils/errors'
+import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 import {event} from 'src/cloud/utils/reporting'
 
@@ -63,7 +63,9 @@ class CommunityTemplatesInstalledListUnconnected extends PureComponent<Props> {
       this.props.fetchAndSetStacks(this.props.orgID)
     } catch (err) {
       this.props.notify(communityTemplateFetchStackFailed(err.message))
-      reportError(err, {name: 'The community template fetch stack failed'})
+      reportErrorThroughHoneyBadger(err, {
+        name: 'The community template fetch stack failed',
+      })
     }
   }
 
@@ -90,7 +92,9 @@ class CommunityTemplatesInstalledListUnconnected extends PureComponent<Props> {
         this.props.notify(communityTemplateDeleteSucceeded(stackName))
       } catch (err) {
         this.props.notify(communityTemplateDeleteFailed(err.message))
-        reportError(err, {name: 'The community template delete failed'})
+        reportErrorThroughHoneyBadger(err, {
+          name: 'The community template delete failed',
+        })
       } finally {
         this.props.fetchAndSetStacks(this.props.orgID)
       }

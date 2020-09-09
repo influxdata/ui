@@ -22,7 +22,7 @@ import {ComponentStatus} from '@influxdata/clockface'
 // Utils
 import {getByID} from 'src/resources/selectors'
 import {getTemplateNameFromUrl} from 'src/templates/utils'
-import {reportError} from 'src/shared/utils/errors'
+import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 import {
   installTemplate,
@@ -93,7 +93,7 @@ class UnconnectedTemplateImportOverlay extends PureComponent<Props> {
       return summary
     } catch (err) {
       this.props.notify(communityTemplateInstallFailed(err.message))
-      reportError(err, {
+      reportErrorThroughHoneyBadger(err, {
         name: 'The community template fetch for preview failed',
       })
     }
@@ -117,7 +117,9 @@ class UnconnectedTemplateImportOverlay extends PureComponent<Props> {
       )
     } catch (err) {
       this.props.notify(communityTemplateInstallFailed(err.message))
-      reportError(err, {name: 'Failed to install community template'})
+      reportErrorThroughHoneyBadger(err, {
+        name: 'Failed to install community template',
+      })
       return
     }
 
@@ -133,7 +135,9 @@ class UnconnectedTemplateImportOverlay extends PureComponent<Props> {
       this.props.setStagedTemplateUrl('')
     } catch (err) {
       this.props.notify(communityTemplateRenameFailed())
-      reportError(err, {name: 'The community template rename failed'})
+      reportErrorThroughHoneyBadger(err, {
+        name: 'The community template rename failed',
+      })
     } finally {
       this.props.fetchAndSetStacks(this.props.org.id)
       this.onDismiss()

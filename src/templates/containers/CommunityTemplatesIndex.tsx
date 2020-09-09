@@ -43,7 +43,7 @@ import {
   getGithubUrlFromTemplateDetails,
   getTemplateNameFromUrl,
 } from 'src/templates/utils'
-import {reportError} from 'src/shared/utils/errors'
+import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 import {communityTemplateUnsupportedFormatError} from 'src/shared/copy/notifications'
 
@@ -191,7 +191,7 @@ class UnconnectedTemplatesIndex extends Component<Props> {
       )
     } catch (err) {
       this.props.notify(communityTemplateUnsupportedFormatError())
-      reportError(err, {
+      reportErrorThroughHoneyBadger(err, {
         name: 'The community template getTemplateDetails failed',
       })
     }

@@ -24,7 +24,7 @@ import {
 } from 'src/shared/copy/notifications'
 
 // Utils
-import {reportError} from 'src/shared/utils/errors'
+import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 import {getErrorMessage} from 'src/utils/api'
 import {event} from 'src/cloud/utils/reporting'
 
@@ -65,7 +65,7 @@ export const getDemoDataBuckets = () => async (
   } catch (error) {
     console.error(error)
 
-    reportError(error, {
+    reportErrorThroughHoneyBadger(error, {
       name: 'getDemoDataBuckets function',
     })
 
@@ -92,7 +92,7 @@ export const getDemoDataBucketMembership = ({
       notify(demoDataAddBucketFailed(bucketName, getErrorMessage(error)))
     )
 
-    reportError(error, {
+    reportErrorThroughHoneyBadger(error, {
       name: 'addDemoDataBucket failed in getDemoDataBucketMembership',
     })
 
@@ -119,7 +119,7 @@ export const getDemoDataBucketMembership = ({
     dispatch(notify(demoDataAddBucketFailed(bucketName, errorMessage)))
 
     if (errorMessage != 'creating dashboard would exceed quota') {
-      reportError(error, {
+      reportErrorThroughHoneyBadger(error, {
         name: 'addDemoDataDashboard failed in getDemoDataBucketMembership',
       })
     }
@@ -144,7 +144,7 @@ export const deleteDemoDataBucketMembership = (
   } catch (error) {
     dispatch(notify(demoDataDeleteBucketFailed(bucket.name, error)))
 
-    reportError(error, {
+    reportErrorThroughHoneyBadger(error, {
       name: 'deleteDemoDataBucket failed in deleteDemoDataBucketMembership',
     })
   }

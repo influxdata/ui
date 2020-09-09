@@ -22,7 +22,7 @@ interface HoneyBadgerAdditionalOptions {
   params?: {[key: string]: any}
 }
 
-export const reportError = (
+export const reportErrorThroughHoneyBadger = (
   error: Error,
   additionalOptions?: HoneyBadgerAdditionalOptions
 ): void => {

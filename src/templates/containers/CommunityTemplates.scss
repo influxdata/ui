@@ -1,11 +1,3 @@
-.community-templates-upload {
-  display: grid;
-  grid-column-gap: $ix-marg-b;
-  grid-row-gap: $ix-marg-b;
-  grid-template-columns: 1fr;
-  margin: $ix-marg-b 0;
-}
-
 /* The two styles below are a bandaid fix until the clockface dependency can be safely updated */
 .cf-panel.community-templates-panel
   .cf-panel--symbol-header.cf-panel--symbol-header__sm {

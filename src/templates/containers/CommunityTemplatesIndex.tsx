@@ -28,6 +28,7 @@ import {
   FlexBox,
   IconFont,
   ComponentStatus,
+  AlignItems,
 } from '@influxdata/clockface'
 import SettingsTabbedPage from 'src/settings/components/SettingsTabbedPage'
 import SettingsHeader from 'src/settings/components/SettingsHeader'
@@ -110,8 +111,12 @@ class UnconnectedTemplatesIndex extends Component<Props, State> {
         <Page titleTag={pageTitleSuffixer(['Templates', 'Settings'])}>
           <SettingsHeader />
           <SettingsTabbedPage activeTab="templates" orgID={org.id}>
-            {/* todo: maybe make this not a div */}
-            <div className="community-templates-upload">
+            <FlexBox
+              direction={FlexDirection.Column}
+              margin={ComponentSize.Small}
+              stretchToFitWidth={true}
+              alignItems={AlignItems.Stretch}
+            >
               <Panel className="community-templates-panel">
                 <Panel.SymbolHeader
                   symbol={<Bullet text={1} size={ComponentSize.Medium} />}
@@ -175,22 +180,23 @@ class UnconnectedTemplatesIndex extends Component<Props, State> {
                   {this.inputFeedback}
                 </Panel.Body>
               </Panel>
-              <GetResources
-                resources={[
-                  ResourceType.Buckets,
-                  ResourceType.Checks,
-                  ResourceType.Dashboards,
-                  ResourceType.Labels,
-                  ResourceType.NotificationEndpoints,
-                  ResourceType.NotificationRules,
-                  ResourceType.Tasks,
-                  ResourceType.Telegrafs,
-                  ResourceType.Variables,
-                ]}
-              >
-                <CommunityTemplatesInstalledList orgID={org.id} />
-              </GetResources>
-            </div>
+            </FlexBox>
+
+            <GetResources
+              resources={[
+                ResourceType.Buckets,
+                ResourceType.Checks,
+                ResourceType.Dashboards,
+                ResourceType.Labels,
+                ResourceType.NotificationEndpoints,
+                ResourceType.NotificationRules,
+                ResourceType.Tasks,
+                ResourceType.Telegrafs,
+                ResourceType.Variables,
+              ]}
+            >
+              <CommunityTemplatesInstalledList orgID={org.id} />
+            </GetResources>
           </SettingsTabbedPage>
         </Page>
         <Switch>

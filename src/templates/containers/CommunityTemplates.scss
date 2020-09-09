@@ -26,6 +26,20 @@
   margin-right: 15px;
 }
 
+.community-templates-template-url--feedback {
+  margin-top: $cf-marg-a;
+  font-weight: $cf-font-weight--medium;
+  padding-left: $cf-form-lg-padding;
+}
+
+.community-templates-template-url--feedback__error {
+  color: $c-dreamsicle;
+}
+
+.community-templates-template-url--feedback__valid {
+  color: $c-honeydew;
+}
+
 .community-templates-installer {
   margin-top: $ix-marg-c;
 }

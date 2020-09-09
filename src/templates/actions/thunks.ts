@@ -283,7 +283,13 @@ export const fetchAndSetReadme = (name: string, directory: string) => async (
 ): Promise<void> => {
   try {
     const response = await fetchReadMe(directory)
-    dispatch(setTemplateReadMe(name, response))
+    const setupInstuctions =
+      '## Setup Instructions' + response.split('Setup Instructions')[1]
+    setupInstuctions.replace(
+      'screenshot.png',
+      `https://raw.githubusercontent.com/influxdata/community-templates/master/${directory}/screenshot.png`
+    )
+    dispatch(setTemplateReadMe(name, setupInstuctions))
   } catch (error) {
     reportError(error, {
       name: `The community template github readme fetch failed for ${name}`,

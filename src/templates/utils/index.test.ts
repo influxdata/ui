@@ -1,10 +1,13 @@
 import {
-  getTemplateNameFromUrl,
   findIncludedsFromRelationships,
   findIncludedFromRelationship,
   findIncludedVariables,
   getTemplateDetails,
+  getTemplateNameFromUrl,
   getGithubUrlFromTemplateDetails,
+  TEMPLATE_URL_VALID,
+  TEMPLATE_URL_WARN,
+  validateTemplateURL,
 } from 'src/templates/utils/'
 import {TemplateType} from 'src/types'
 
@@ -161,5 +164,79 @@ describe('the Community Template url utilities', () => {
     expect(name).toBe('downsampling')
     expect(extension).toBe('yml')
     expect(directory).toBe('-------')
+  })
+})
+
+describe('validating template URLs', () => {
+  it('returns no validation message if there is no url', () => {
+    expect(validateTemplateURL('')).toBe('')
+  })
+
+  describe('determining whether the url is a community template and the file type is valid', () => {
+    it("notifies the user when it it's not a correct file type, but it is a community template", () => {
+      const communityTemplatesBaseUrl =
+        'https://github.com/influxdata/community-templates'
+      const rawCommunityTemplatesBaseUrl =
+        'https://raw.githubusercontent.com/influxdata/community-templates'
+
+      const errorMessage =
+        "This URL correctly points to the Community Templates repository but isn't pointing to a YAML or JSON file"
+      expect(validateTemplateURL(`${communityTemplatesBaseUrl}/foo.html`)).toBe(
+        errorMessage
+      )
+      expect(validateTemplateURL(`${communityTemplatesBaseUrl}/bar.faml`)).toBe(
+        errorMessage
+      )
+      expect(
+        validateTemplateURL(
+          `${rawCommunityTemplatesBaseUrl}/path/to/thing/bar.jsonet`
+        )
+      ).toBe(errorMessage)
+    })
+
+    it("notifies the user when it's not a correct community template, but it is a correct file type", () => {
+      expect(
+        validateTemplateURL(
+          'https://github.com/influxdata/influxdb/blob/master/pkger/testdata/checks.json'
+        )
+      ).toBe(TEMPLATE_URL_WARN)
+      expect(
+        validateTemplateURL(
+          'https://github.com/influxdata/influxdb/blob/master/pkger/testdata/dashboard_params.yml'
+        )
+      ).toBe(TEMPLATE_URL_WARN)
+      expect(validateTemplateURL('http://www.example.com/foo.jsonnet')).toBe(
+        TEMPLATE_URL_WARN
+      )
+    })
+
+    it("notifies the user when it's neither a correct community template nor a correct file type", () => {
+      const errorMessage = "We can't use that URL"
+      expect(validateTemplateURL('http://www.example.com')).toBe(errorMessage)
+      expect(validateTemplateURL('http://www.example.com/template.toml')).toBe(
+        errorMessage
+      )
+      expect(validateTemplateURL('Jackdaws love my big sphinx of quartz')).toBe(
+        errorMessage
+      )
+    })
+
+    it('notifies the user when everything is okeydokey', () => {
+      expect(
+        validateTemplateURL(
+          'https://github.com/influxdata/community-templates/blob/master/linux_system/linux_system.yml'
+        )
+      ).toBe(TEMPLATE_URL_VALID)
+      expect(
+        validateTemplateURL(
+          'https://github.com/influxdata/community-templates/blob/master/csgo/csgo.yml'
+        )
+      ).toBe(TEMPLATE_URL_VALID)
+      expect(
+        validateTemplateURL(
+          'https://raw.githubusercontent.com/influxdata/community-templates/master/speedtest/speedtest.yml'
+        )
+      ).toBe(TEMPLATE_URL_VALID)
+    })
   })
 })

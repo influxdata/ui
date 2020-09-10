@@ -2,7 +2,13 @@ import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
-import {Input, InputType, Table} from '@influxdata/clockface'
+import {
+  Input,
+  InputType,
+  Table,
+  BorderType,
+  ComponentSize,
+} from '@influxdata/clockface'
 
 import BucketsDropdown from 'src/dataLoaders/components/BucketsDropdown'
 
@@ -71,7 +77,7 @@ class CommunityTemplateEnvReferencesUnconnected extends PureComponent<
 
   render() {
     return (
-      <Table>
+      <Table borders={BorderType.None} cellPadding={ComponentSize.ExtraSmall}>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Parameter</Table.HeaderCell>

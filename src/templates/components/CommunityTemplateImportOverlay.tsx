@@ -42,12 +42,16 @@ interface State {
   status: ComponentStatus
 }
 
+interface OwnProps {
+  setTemplateUrlValidationMessage: (string) => void
+}
+
 type ReduxProps = ConnectedProps<typeof connector>
 type RouterProps = RouteComponentProps<{
   orgID: string
 }>
 
-type Props = ReduxProps & RouterProps
+type Props = OwnProps & ReduxProps & RouterProps
 
 class UnconnectedTemplateImportOverlay extends PureComponent<Props> {
   public state: State = {
@@ -133,6 +137,7 @@ class UnconnectedTemplateImportOverlay extends PureComponent<Props> {
 
       this.props.notify(communityTemplateInstallSucceeded(templateDetails.name))
       this.props.setStagedTemplateUrl('')
+      this.props.setTemplateUrlValidationMessage('')
     } catch (err) {
       this.props.notify(communityTemplateRenameFailed())
       reportErrorThroughHoneyBadger(err, {

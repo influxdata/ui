@@ -25,7 +25,10 @@ import {
   Page,
   Panel,
   FlexDirection,
+  FlexBox,
   IconFont,
+  ComponentStatus,
+  AlignItems,
 } from '@influxdata/clockface'
 import SettingsTabbedPage from 'src/settings/components/SettingsTabbedPage'
 import SettingsHeader from 'src/settings/components/SettingsHeader'
@@ -43,9 +46,15 @@ import {
   getGithubUrlFromTemplateDetails,
   getTemplateNameFromUrl,
 } from 'src/templates/utils'
-import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
+import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 import {communityTemplateUnsupportedFormatError} from 'src/shared/copy/notifications'
+
+import {
+  validateTemplateURL,
+  TEMPLATE_URL_VALID,
+  TEMPLATE_URL_WARN,
+} from 'src/templates/utils'
 
 // Types
 import {AppState, ResourceType} from 'src/types'
@@ -62,8 +71,16 @@ type Params = {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{templateName: string}>
 
+interface State {
+  validationMessage: string
+}
+
 @ErrorHandling
-class UnconnectedTemplatesIndex extends Component<Props> {
+class UnconnectedTemplatesIndex extends Component<Props, State> {
+  state = {
+    validationMessage: '',
+  }
+
   public componentDidMount() {
     // if this component mounts, and the install template is on the screen
     // (i.e. the user reloaded the page with the install template active)
@@ -94,8 +111,12 @@ class UnconnectedTemplatesIndex extends Component<Props> {
         <Page titleTag={pageTitleSuffixer(['Templates', 'Settings'])}>
           <SettingsHeader />
           <SettingsTabbedPage activeTab="templates" orgID={org.id}>
-            {/* todo: maybe make this not a div */}
-            <div className="community-templates-upload">
+            <FlexBox
+              direction={FlexDirection.Column}
+              margin={ComponentSize.Small}
+              stretchToFitWidth={true}
+              alignItems={AlignItems.Stretch}
+            >
               <Panel className="community-templates-panel">
                 <Panel.SymbolHeader
                   symbol={<Bullet text={1} size={ComponentSize.Medium} />}
@@ -121,58 +142,100 @@ class UnconnectedTemplatesIndex extends Component<Props> {
                   symbol={<Bullet text={2} size={ComponentSize.Medium} />}
                   title={
                     <Heading element={HeadingElement.H4}>
-                      Paste the Template's Github URL below
+                      Paste the URL of the Template's resource manifest file
                     </Heading>
                   }
                   size={ComponentSize.Small}
                 />
                 <Panel.Body
                   size={ComponentSize.Large}
-                  direction={FlexDirection.Row}
+                  direction={FlexDirection.Column}
                 >
-                  <Input
-                    className="community-templates-template-url"
-                    onChange={this.handleTemplateChange}
-                    placeholder="Enter the URL of an InfluxDB Template..."
-                    style={{flex: '1 0 0'}}
-                    value={this.props.stagedTemplateUrl}
-                    testID="lookup-template-input"
-                    size={ComponentSize.Large}
-                  />
-                  <Button
-                    onClick={this.startTemplateInstall}
-                    size={ComponentSize.Large}
-                    text="Lookup Template"
-                    testID="lookup-template-button"
-                  />
+                  <p>
+                    Every template has a file that controls what gets installed,
+                    which is usually a YAML or JSON file
+                  </p>
+                  <FlexBox
+                    direction={FlexDirection.Row}
+                    margin={ComponentSize.Large}
+                    stretchToFitWidth={true}
+                  >
+                    <Input
+                      className="community-templates-template-url"
+                      onChange={this.handleTemplateChange}
+                      placeholder="https://github.com/influxdata/community-templates/blob/master/example/example.yml"
+                      style={{flex: '1 0 0'}}
+                      value={this.props.stagedTemplateUrl}
+                      testID="lookup-template-input"
+                      size={ComponentSize.Large}
+                      status={this.inputStatus}
+                    />
+                    <Button
+                      onClick={this.startTemplateInstall}
+                      size={ComponentSize.Large}
+                      text="Lookup Template"
+                      testID="lookup-template-button"
+                      className="community-templates--browse"
+                    />
+                  </FlexBox>
+                  {this.inputFeedback}
                 </Panel.Body>
               </Panel>
-              <GetResources
-                resources={[
-                  ResourceType.Buckets,
-                  ResourceType.Checks,
-                  ResourceType.Dashboards,
-                  ResourceType.Labels,
-                  ResourceType.NotificationEndpoints,
-                  ResourceType.NotificationRules,
-                  ResourceType.Tasks,
-                  ResourceType.Telegrafs,
-                  ResourceType.Variables,
-                ]}
-              >
-                <CommunityTemplatesInstalledList orgID={org.id} />
-              </GetResources>
-            </div>
+            </FlexBox>
+
+            <GetResources
+              resources={[
+                ResourceType.Buckets,
+                ResourceType.Checks,
+                ResourceType.Dashboards,
+                ResourceType.Labels,
+                ResourceType.NotificationEndpoints,
+                ResourceType.NotificationRules,
+                ResourceType.Tasks,
+                ResourceType.Telegrafs,
+                ResourceType.Variables,
+              ]}
+            >
+              <CommunityTemplatesInstalledList orgID={org.id} />
+            </GetResources>
           </SettingsTabbedPage>
         </Page>
         <Switch>
           <Route
             path={`${templatesPath}/import`}
-            component={CommunityTemplateImportOverlay}
+            render={props => {
+              return (
+                <CommunityTemplateImportOverlay
+                  {...props}
+                  setTemplateUrlValidationMessage={this.setValidationMessage}
+                />
+              )
+            }}
           />
         </Switch>
       </>
     )
+  }
+
+  private get inputFeedback(): JSX.Element | null {
+    const feedbackClassName = `community-templates-template-url--feedback community-templates-template-url--feedback__${this.inputStatus}`
+
+    if (this.state.validationMessage) {
+      return <p className={feedbackClassName}>{this.state.validationMessage}</p>
+    }
+  }
+
+  private get inputStatus(): ComponentStatus {
+    if (
+      this.state.validationMessage === '' ||
+      this.state.validationMessage === TEMPLATE_URL_WARN
+    ) {
+      return ComponentStatus.Default
+    } else if (this.state.validationMessage === TEMPLATE_URL_VALID) {
+      return ComponentStatus.Valid
+    }
+
+    return ComponentStatus.Error
   }
 
   private startTemplateInstall = () => {
@@ -198,6 +261,9 @@ class UnconnectedTemplatesIndex extends Component<Props> {
   }
 
   private handleTemplateChange = event => {
+    const validationMessage = validateTemplateURL(event.target.value)
+
+    this.setValidationMessage(validationMessage)
     this.props.setStagedTemplateUrl(event.target.value)
   }
 
@@ -205,6 +271,10 @@ class UnconnectedTemplatesIndex extends Component<Props> {
     event('template_click_browse')
 
     window.open(communityTemplatesUrl)
+  }
+
+  private setValidationMessage = (validationMessage: string) => {
+    this.setState({validationMessage})
   }
 }
 

@@ -203,12 +203,11 @@ class UnconnectedTemplatesIndex extends Component<Props, State> {
         <Switch>
           <Route
             path={`${templatesPath}/import`}
-            component={() => {
+            render={props => {
               return (
                 <CommunityTemplateImportOverlay
-                  setTemplateUrlValidationMessage={
-                    this.setValidationMessage
-                  }
+                  {...props}
+                  setTemplateUrlValidationMessage={this.setValidationMessage}
                 />
               )
             }}

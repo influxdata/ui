@@ -283,7 +283,9 @@ export const fetchAndSetReadme = (name: string, directory: string) => async (
 ): Promise<void> => {
   try {
     const response = await fetchReadMe(directory)
-    dispatch(setTemplateReadMe(name, response))
+    const setupInstuctions =
+      '## Setup Instructions' + response.split('## Setup Instructions')[1]
+    dispatch(setTemplateReadMe(name, setupInstuctions))
   } catch (error) {
     reportErrorThroughHoneyBadger(error, {
       name: `The community template github readme fetch failed for ${name}`,

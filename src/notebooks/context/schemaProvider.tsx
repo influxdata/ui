@@ -53,7 +53,7 @@ export const SchemaProvider: FC<Props> = React.memo(({children}) => {
 
   useEffect(() => {
     dispatch(startWatchDog())
-  }, [startWatchDog])
+  }, [dispatch])
 
   const loading = useSelector(
     (state: AppState) =>

@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useContext} from 'react'
-import {connect} from 'react-redux'
+import {useSelector} from 'react-redux'
 
 // Contexts
 import {NotebookContext} from 'src/notebooks/context/notebook.current'
@@ -11,6 +11,7 @@ import {ScrollContext} from 'src/notebooks/context/scroll'
 import {DapperScrollbars} from '@influxdata/clockface'
 import MiniMapToggle from 'src/notebooks/components/minimap/MiniMapToggle'
 import MiniMapItem from 'src/notebooks/components/minimap/MiniMapItem'
+import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Types
 import {AppState, NotebookMiniMapState} from 'src/types'
@@ -18,20 +19,21 @@ import {AppState, NotebookMiniMapState} from 'src/types'
 // Styles
 import 'src/notebooks/components/minimap/MiniMap.scss'
 
-interface StateProps {
-  notebookMiniMapState: NotebookMiniMapState
-}
-
-const MiniMap: FC<StateProps> = ({notebookMiniMapState}) => {
+const MiniMap: FC = () => {
   const {notebook} = useContext(NotebookContext)
   const refs = useContext(RefContext)
   const {scrollToPipe} = useContext(ScrollContext)
+  const toggleState: NotebookMiniMapState = useSelector(
+    (state: AppState) => state.app.persisted.notebookMiniMapState
+  )
 
-  if (notebookMiniMapState === 'collapsed') {
+  if (toggleState === 'collapsed') {
     return (
-      <div className="notebook-minimap__collapsed">
-        <MiniMapToggle />
-      </div>
+      <FeatureFlag name="notebook-move-cells">
+        <div className="notebook-minimap__collapsed">
+          <MiniMapToggle />
+        </div>
+      </FeatureFlag>
     )
   }
 
@@ -54,25 +56,15 @@ const MiniMap: FC<StateProps> = ({notebookMiniMapState}) => {
   })
 
   return (
-    <div className="notebook-minimap">
-      <MiniMapToggle />
-      <DapperScrollbars className="notebook-minimap--scroll" autoHide={true}>
-        <div className="notebook-minimap--list">{pipes}</div>
-      </DapperScrollbars>
-    </div>
+    <FeatureFlag name="notebook-move-cells">
+      <div className="notebook-minimap">
+        <MiniMapToggle />
+        <DapperScrollbars className="notebook-minimap--scroll" autoHide={true}>
+          <div className="notebook-minimap--list">{pipes}</div>
+        </DapperScrollbars>
+      </div>
+    </FeatureFlag>
   )
 }
 
-const mstp = (state: AppState) => {
-  const {
-    app: {
-      persisted: {notebookMiniMapState},
-    },
-  } = state
-
-  return {
-    notebookMiniMapState,
-  }
-}
-
-export default connect<StateProps, {}>(mstp, null)(MiniMap)
+export default MiniMap

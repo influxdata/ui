@@ -42,7 +42,7 @@ export const SchemaContext = React.createContext<SchemaContextType>(
 )
 
 export const SchemaProvider: FC<Props> = React.memo(({children}) => {
-  const {data} = useContext(PipeContext)
+  const {data, update} = useContext(PipeContext)
   const [searchTerm, setSearchTerm] = useState('')
   const dispatch = useDispatch()
 
@@ -55,6 +55,15 @@ export const SchemaProvider: FC<Props> = React.memo(({children}) => {
   useEffect(() => {
     dispatch(startWatchDog())
   }, [dispatch])
+
+  useEffect(() => {
+    setSearchTerm('')
+    update({
+      field: '',
+      tags: {},
+      measurement: '',
+    })
+  }, [data.bucketName])
 
   useEffect(() => {
     if (loading !== RemoteDataState.NotStarted || !data.bucketName) {

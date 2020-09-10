@@ -13,7 +13,6 @@ import {
 // Contexts
 import {BucketContext} from 'src/notebooks/context/buckets'
 import {PipeContext} from 'src/notebooks/context/pipe'
-import {SchemaContext} from 'src/notebooks/context/schemaProvider'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -24,8 +23,6 @@ import {Bucket} from 'src/types'
 const BucketSelector: FC = () => {
   const {data, update} = useContext(PipeContext)
   const {buckets, loading} = useContext(BucketContext)
-  const {localFetchSchema} = useContext(SchemaContext)
-  const selectedBucketName = data?.bucketName
   let buttonText = 'Loading buckets...'
 
   const updateBucket = useCallback(
@@ -33,10 +30,9 @@ const BucketSelector: FC = () => {
       event('Updating Bucket Selection in Flow Query Builder', {
         bucket: updatedBucket.name,
       })
-      localFetchSchema(updatedBucket.name)
       update({bucketName: updatedBucket.name})
     },
-    [update, localFetchSchema]
+    [update]
   )
 
   let menuItems = (
@@ -53,7 +49,7 @@ const BucketSelector: FC = () => {
             key={bucket.name}
             value={bucket}
             onClick={updateBucket}
-            selected={bucket.name === selectedBucketName}
+            selected={bucket.name === data.bucketName}
             title={bucket.name}
             wrapText={true}
           >
@@ -64,10 +60,10 @@ const BucketSelector: FC = () => {
     )
   }
 
-  if (loading === RemoteDataState.Done && !selectedBucketName) {
+  if (loading === RemoteDataState.Done && !data.bucketName) {
     buttonText = 'Choose a bucket'
-  } else if (loading === RemoteDataState.Done && selectedBucketName) {
-    buttonText = selectedBucketName
+  } else if (loading === RemoteDataState.Done && data.bucketName) {
+    buttonText = data.bucketName
   }
 
   const button = (active, onClick) => (

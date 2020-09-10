@@ -139,21 +139,22 @@ export const normalizeSchema = (
 
   dedupedMeasurements.sort((a, b) => a.localeCompare(b))
 
-  const filteredTags = filterTags(dedupedTags, lowerCasedSearchTerm)
-    .map(tag => {
-        const key = Object.keys(tag)[0]
+  const filteredTags = filterTags(dedupedTags, lowerCasedSearchTerm).map(
+    tag => {
+      const key = Object.keys(tag)[0]
 
-        return {
-            [key]: tag[key].sort((a, b) => a.localeCompare(b))
-        }
-    })
+      return {
+        [key]: tag[key].sort((a, b) => a.localeCompare(b)),
+      }
+    }
+  )
 
   filteredFields.sort((a, b) => a.localeCompare(b))
   filteredTags.sort((a, b) => {
-      const keyA = Object.keys(a)[0].toLowerCase()
-      const keyB = Object.keys(b)[0].toLowerCase()
+    const keyA = Object.keys(a)[0].toLowerCase()
+    const keyB = Object.keys(b)[0].toLowerCase()
 
-      return keyA.localeCompare(keyB)
+    return keyA.localeCompare(keyB)
   })
 
   return {

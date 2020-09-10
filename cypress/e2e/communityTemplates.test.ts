@@ -73,7 +73,7 @@ describe('Community Templates', () => {
 
     //check that valid read me appears
     cy.getByTestID('community-templates-readme-tab').click()
-    cy.get('.markdown-format').should('contain', 'Downsampling Template')
+    cy.get('.markdown-format').should('contain', 'Setup Instructions')
   })
 
   describe('Opening the install overlay', () => {

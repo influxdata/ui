@@ -131,24 +131,26 @@ export const getGithubUrlFromTemplateDetails = (
   return `https://github.com/influxdata/community-templates/blob/master/${directory}/${templateName}.${templateExtension}`
 }
 
-export const TEMPLATE_URL_VALID = `You're good to go!`
-export const TEMPLATE_URL_WARN = `This URL does not point to our Community Templates repository. It may work but we cannot guarantee quality results.`
+export const TEMPLATE_URL_VALID = "You're good to go!"
+export const TEMPLATE_URL_WARN =
+  'This URL does not point to our Community Templates repository. It may work but we cannot guarantee quality results.'
 
 export const validateTemplateURL = (url): string => {
+  if (url === '') {
+    return ''
+  }
+
   const isCommunityTemplates =
     url.startsWith('https://github.com/influxdata/community-templates') ||
     url.startsWith(
       'https://raw.githubusercontent.com/influxdata/community-templates'
     )
 
-  const isCorrectFileType = url.endsWith('.yml') || url.endsWith('.json')
-
-  if (url === '') {
-    return ''
-  }
+  const isCorrectFileType =
+    url.endsWith('.yml') || url.endsWith('.json') || url.endsWith('.jsonnet')
 
   if (isCommunityTemplates && !isCorrectFileType) {
-    return `This URL correctly points to the Community Templates repository but isn't pointing to a YAML or JSON file`
+    return "This URL correctly points to the Community Templates repository but isn't pointing to a YAML or JSON file"
   }
 
   if (!isCommunityTemplates && isCorrectFileType) {
@@ -156,7 +158,7 @@ export const validateTemplateURL = (url): string => {
   }
 
   if (!isCommunityTemplates && !isCorrectFileType) {
-    return `We can't use that URL`
+    return "We can't use that URL"
   }
 
   return TEMPLATE_URL_VALID

@@ -231,7 +231,7 @@ describe('Community Templates', () => {
 
     it('takes you to github readme when you click on the Community Templates button', () => {
       cy.getByTestID('community-template-readme-overlay-button').click()
-      cy.get('.markdown-format').should('contain', 'Docker Monitoring template')
+      cy.get('.markdown-format').should('contain', 'Setup Instructions')
     })
 
     it('Can delete template', () => {

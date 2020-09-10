@@ -8,7 +8,7 @@ register({
   family: 'inputs',
   priority: 1,
   component: View,
-  button: 'Data',
+  button: 'Metric Selector',
   featureFlag: 'flowsQueryBuilder',
   initial: {
     bucketName: '',

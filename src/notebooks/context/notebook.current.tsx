@@ -42,6 +42,8 @@ const getHumanReadableName = (type: string): string => {
   switch (type) {
     case 'data':
       return `Bucket ${GENERATOR_INDEX}`
+    case 'queryBuilder':
+      return `Metric Selector ${GENERATOR_INDEX}`
     case 'visualization':
       return `Visualization ${GENERATOR_INDEX}`
     case 'markdown':

@@ -30,7 +30,8 @@ const BucketSelector: FC = () => {
       event('Updating Bucket Selection in Flow Query Builder', {
         bucket: updatedBucket.name,
       })
-      update({bucketName: updatedBucket.name})
+
+      update({bucket: updatedBucket})
     },
     [update]
   )
@@ -49,7 +50,7 @@ const BucketSelector: FC = () => {
             key={bucket.name}
             value={bucket}
             onClick={updateBucket}
-            selected={bucket.name === data.bucketName}
+            selected={bucket.name === data.bucket?.name}
             title={bucket.name}
             wrapText={true}
           >
@@ -60,10 +61,10 @@ const BucketSelector: FC = () => {
     )
   }
 
-  if (loading === RemoteDataState.Done && !data.bucketName) {
+  if (loading === RemoteDataState.Done && !data.bucket) {
     buttonText = 'Choose a bucket'
-  } else if (loading === RemoteDataState.Done && data.bucketName) {
-    buttonText = data.bucketName
+  } else if (loading === RemoteDataState.Done && data.bucket) {
+    buttonText = data.bucket.name
   }
 
   const button = (active, onClick) => (

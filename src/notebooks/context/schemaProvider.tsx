@@ -44,11 +44,12 @@ export const SchemaContext = React.createContext<SchemaContextType>(
 export const SchemaProvider: FC<Props> = React.memo(({children}) => {
   const {data, update} = useContext(PipeContext)
   const [searchTerm, setSearchTerm] = useState('')
+  const [lastBucket, setLastBucket] = useState(data.bucket)
   const dispatch = useDispatch()
 
   const loading = useSelector(
     (state: AppState) =>
-      state.notebook.schema[data.bucketName]?.status ||
+      state.notebook.schema[data.bucket?.name]?.status ||
       RemoteDataState.NotStarted
   )
 
@@ -57,24 +58,28 @@ export const SchemaProvider: FC<Props> = React.memo(({children}) => {
   }, [dispatch])
 
   useEffect(() => {
+    if (data.bucket === lastBucket) {
+      return
+    }
     setSearchTerm('')
     update({
       field: '',
       tags: {},
       measurement: '',
     })
-  }, [data.bucketName])
+    setLastBucket(data.bucket)
+  }, [data.bucket])
 
   useEffect(() => {
-    if (loading !== RemoteDataState.NotStarted || !data.bucketName) {
+    if (loading !== RemoteDataState.NotStarted || !data.bucket) {
       return
     }
 
-    dispatch(getAndSetBucketSchema(data.bucketName))
-  }, [data.bucketName, loading, dispatch])
+    dispatch(getAndSetBucketSchema(data.bucket))
+  }, [data.bucket, loading, dispatch])
 
   const schema = useSelector(
-    (state: AppState) => state.notebook.schema[data.bucketName]?.schema || {}
+    (state: AppState) => state.notebook.schema[data.bucket?.name]?.schema || {}
   )
 
   const {fields, measurements, tags} = normalizeSchema(schema, data, searchTerm)

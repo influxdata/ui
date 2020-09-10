@@ -14,7 +14,7 @@ import {checkSchema, arrayOfChecks} from 'src/schemas/checks'
 
 // Utils
 import {incrementCloneName} from 'src/utils/naming'
-import {reportError} from 'src/shared/utils/errors'
+import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 import {createView} from 'src/views/helpers'
 import {getOrg} from 'src/organizations/selectors'
 import {toPostCheck, builderToPostCheck} from 'src/checks/utils'
@@ -178,7 +178,7 @@ export const createCheckFromTimeMachine = () => async (
     const message = getErrorMessage(error)
     dispatch(notify(copy.createCheckFailed(message)))
     if (!message.includes(rename)) {
-      reportError(error, {
+      reportErrorThroughHoneyBadger(error, {
         context: {state: getState()},
         name: 'saveCheckFromTimeMachine function',
       })
@@ -222,7 +222,7 @@ export const updateCheckFromTimeMachine = () => async (
   } catch (error) {
     console.error(error)
     dispatch(notify(copy.updateCheckFailed(error.message)))
-    reportError(error, {
+    reportErrorThroughHoneyBadger(error, {
       context: {state: getState()},
       name: 'saveCheckFromTimeMachine function',
     })

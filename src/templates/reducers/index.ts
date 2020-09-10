@@ -8,7 +8,6 @@ import {
   SET_STACKS,
   SET_STAGED_TEMPLATE,
   SET_STAGED_TEMPLATE_URL,
-  SET_STAGED_TEMPLATE_URL_VALIDATION,
   SET_TEMPLATES_STATUS,
   SET_TEMPLATE_SUMMARY,
   TOGGLE_TEMPLATE_RESOURCE_INSTALL,
@@ -87,13 +86,6 @@ export const templatesReducer = (
         const {templateUrl} = action
 
         draftState.stagedTemplateUrl = templateUrl
-        return
-      }
-
-      case SET_STAGED_TEMPLATE_URL_VALIDATION: {
-        const {validation} = action
-
-        draftState.stagedTemplateUrlValidation = validation
         return
       }
 

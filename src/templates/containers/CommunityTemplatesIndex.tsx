@@ -38,10 +38,7 @@ import {communityTemplatesImportPath} from 'src/templates/containers/TemplatesIn
 import GetResources from 'src/resources/components/GetResources'
 import {getOrg} from 'src/organizations/selectors'
 
-import {
-  setStagedTemplateUrl,
-  setStagedTemplateUrlValidation,
-} from 'src/templates/actions/creators'
+import {setStagedTemplateUrl} from 'src/templates/actions/creators'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -74,8 +71,16 @@ type Params = {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{templateName: string}>
 
+interface State {
+  validationMessage: string
+}
+
 @ErrorHandling
 class UnconnectedTemplatesIndex extends Component<Props> {
+  state = {
+    validationMessage: '',
+  }
+
   public componentDidMount() {
     // if this component mounts, and the install template is on the screen
     // (i.e. the user reloaded the page with the install template active)
@@ -137,7 +142,7 @@ class UnconnectedTemplatesIndex extends Component<Props> {
                   symbol={<Bullet text={2} size={ComponentSize.Medium} />}
                   title={
                     <Heading element={HeadingElement.H4}>
-                      Paste the URL of the Template's YAML file
+                      Paste the URL of the Template's resource manifest file
                     </Heading>
                   }
                   size={ComponentSize.Small}
@@ -198,7 +203,15 @@ class UnconnectedTemplatesIndex extends Component<Props> {
         <Switch>
           <Route
             path={`${templatesPath}/import`}
-            component={CommunityTemplateImportOverlay}
+            component={() => {
+              return (
+                <CommunityTemplateImportOverlay
+                  setStagedTemplateUrlValidationMessage={
+                    this.setValidationMessage
+                  }
+                />
+              )
+            }}
           />
         </Switch>
       </>
@@ -206,24 +219,20 @@ class UnconnectedTemplatesIndex extends Component<Props> {
   }
 
   private get inputFeedback(): JSX.Element | null {
-    const {stagedTemplateUrlValidation} = this.props
-
     const feedbackClassName = `community-templates-template-url--feedback community-templates-template-url--feedback__${this.inputStatus}`
 
-    if (stagedTemplateUrlValidation) {
-      return <p className={feedbackClassName}>{stagedTemplateUrlValidation}</p>
+    if (this.state.validationMessage) {
+      return <p className={feedbackClassName}>{this.state.validationMessage}</p>
     }
   }
 
   private get inputStatus(): ComponentStatus {
-    const {stagedTemplateUrlValidation} = this.props
-
     if (
-      stagedTemplateUrlValidation === '' ||
-      stagedTemplateUrlValidation === TEMPLATE_URL_WARN
+      this.state.validationMessage === '' ||
+      this.state.validationMessage === TEMPLATE_URL_WARN
     ) {
       return ComponentStatus.Default
-    } else if (stagedTemplateUrlValidation === TEMPLATE_URL_VALID) {
+    } else if (this.state.validationMessage === TEMPLATE_URL_VALID) {
       return ComponentStatus.Valid
     }
 
@@ -255,7 +264,7 @@ class UnconnectedTemplatesIndex extends Component<Props> {
   private handleTemplateChange = event => {
     const validationMessage = validateTemplateURL(event.target.value)
 
-    this.props.setStagedTemplateUrlValidation(validationMessage)
+    this.setValidationMessage(validationMessage)
     this.props.setStagedTemplateUrl(event.target.value)
   }
 
@@ -264,21 +273,22 @@ class UnconnectedTemplatesIndex extends Component<Props> {
 
     window.open(communityTemplatesUrl)
   }
+
+  private setValidationMessage = (validationMessage: string) => {
+    this.setState({validationMessage})
+  }
 }
 
 const mstp = (state: AppState) => {
   return {
     org: getOrg(state),
     stagedTemplateUrl: state.resources.templates.stagedTemplateUrl,
-    stagedTemplateUrlValidation:
-      state.resources.templates.stagedTemplateUrlValidation,
   }
 }
 
 const mdtp = {
   notify,
   setStagedTemplateUrl,
-  setStagedTemplateUrlValidation,
 }
 
 const connector = connect(mstp, mdtp)

@@ -9,7 +9,6 @@ import {CommunityTemplateOverlay} from 'src/templates/components/CommunityTempla
 import {
   setStagedCommunityTemplate,
   setStagedTemplateUrl,
-  setStagedTemplateUrlValidation,
 } from 'src/templates/actions/creators'
 import {createTemplate, fetchAndSetStacks} from 'src/templates/actions/thunks'
 import {notify} from 'src/shared/actions/notifications'
@@ -43,12 +42,16 @@ interface State {
   status: ComponentStatus
 }
 
+interface OwnProps {
+  setStagedTemplateUrlValidationMessage: (string) => void
+}
+
 type ReduxProps = ConnectedProps<typeof connector>
 type RouterProps = RouteComponentProps<{
   orgID: string
 }>
 
-type Props = ReduxProps & RouterProps
+type Props = OwnProps & ReduxProps & RouterProps
 
 class UnconnectedTemplateImportOverlay extends PureComponent<Props> {
   public state: State = {
@@ -134,7 +137,7 @@ class UnconnectedTemplateImportOverlay extends PureComponent<Props> {
 
       this.props.notify(communityTemplateInstallSucceeded(templateDetails.name))
       this.props.setStagedTemplateUrl('')
-      this.props.setStagedTemplateUrlValidation('')
+      this.props.setStagedTemplateUrlValidationMessage('')
     } catch (err) {
       this.props.notify(communityTemplateRenameFailed())
       reportErrorThroughHoneyBadger(err, {
@@ -202,7 +205,6 @@ const mdtp = {
   notify,
   setStagedCommunityTemplate,
   setStagedTemplateUrl,
-  setStagedTemplateUrlValidation,
 }
 
 const connector = connect(mstp, mdtp)

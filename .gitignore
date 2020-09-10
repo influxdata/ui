@@ -1,8 +1,20 @@
-.vscode
-.swp
-.swo
-build
-node_modules
-src/client/generatedRoutes.ts
+# dotfiles
+.cache
 .DS_Store
+.netrc
 .package.json.swp
+.swo
+.swp
+.vs
+.vscode
+
+# directories
+build
+coverage
+node_modules
+vendor
+
+# files
+junit.xml
+npm-error.log
+src/client/generatedRoutes.ts

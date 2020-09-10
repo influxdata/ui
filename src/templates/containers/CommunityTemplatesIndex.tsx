@@ -76,7 +76,7 @@ interface State {
 }
 
 @ErrorHandling
-class UnconnectedTemplatesIndex extends Component<Props> {
+class UnconnectedTemplatesIndex extends Component<Props, State> {
   state = {
     validationMessage: '',
   }
@@ -206,7 +206,7 @@ class UnconnectedTemplatesIndex extends Component<Props> {
             component={() => {
               return (
                 <CommunityTemplateImportOverlay
-                  setStagedTemplateUrlValidationMessage={
+                  setTemplateUrlValidationMessage={
                     this.setValidationMessage
                   }
                 />

@@ -42,7 +42,6 @@ export const defaultState = (): TemplatesState => ({
   stagedCommunityTemplate: defaultCommunityTemplate(),
   stagedTemplateEnvReferences: {},
   stagedTemplateUrl: '',
-  stagedTemplateUrlValidation: '',
   communityTemplateReadmeCollection: {},
   status: RemoteDataState.NotStarted,
   byID: {},

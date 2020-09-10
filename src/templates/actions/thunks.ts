@@ -284,11 +284,7 @@ export const fetchAndSetReadme = (name: string, directory: string) => async (
   try {
     const response = await fetchReadMe(directory)
     const setupInstuctions =
-      '## Setup Instructions' + response.split('Setup Instructions')[1]
-    setupInstuctions.replace(
-      'screenshot.png',
-      `https://raw.githubusercontent.com/influxdata/community-templates/master/${directory}/screenshot.png`
-    )
+      '## Setup Instructions' + response.split('## Setup Instructions')[1]
     dispatch(setTemplateReadMe(name, setupInstuctions))
   } catch (error) {
     reportError(error, {

@@ -80,9 +80,11 @@ export const normalizeSchema = (
   const selectedMeasurement = data.measurement
   const selectedField = data.field
   const selectedTags = data?.tags
+
   const measurements = []
   let fieldResults = []
   let tagResults = []
+
   Object.entries(schema)
     .filter(([measurement, values]) => {
       if (!!selectedMeasurement) {
@@ -133,10 +135,29 @@ export const normalizeSchema = (
     data?.field
   )
 
+  const dedupedMeasurements = dedupeArray(measurements)
+
+  dedupedMeasurements.sort((a, b) => a.localeCompare(b))
+
   const filteredTags = filterTags(dedupedTags, lowerCasedSearchTerm)
+    .map(tag => {
+        const key = Object.keys(tag)[0]
+
+        return {
+            [key]: tag[key].sort((a, b) => a.localeCompare(b))
+        }
+    })
+
+  filteredFields.sort((a, b) => a.localeCompare(b))
+  filteredTags.sort((a, b) => {
+      const keyA = Object.keys(a)[0].toLowerCase()
+      const keyB = Object.keys(b)[0].toLowerCase()
+
+      return keyA.localeCompare(keyB)
+  })
 
   return {
-    measurements: dedupeArray(measurements),
+    measurements: dedupedMeasurements,
     fields: filteredFields,
     tags: filteredTags,
   }

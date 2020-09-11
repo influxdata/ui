@@ -276,7 +276,6 @@ class UnconnectedTemplatesIndex extends Component<Props, State> {
         return
       }
     } catch (error) {
-      console.log(error)
     }
 
     const validationMessage = validateTemplateURL(templateUrl)

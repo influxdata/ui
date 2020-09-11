@@ -262,15 +262,26 @@ class UnconnectedTemplatesIndex extends Component<Props, State> {
   }
 
   private handleTemplateChange = async event => {
-    const githuburl = await checkGithubFile(event.target.value.split('/').pop())
-    if (githuburl.value === true) {
-      const validationMessage = validateTemplateURL(githuburl.url)
-      this.setValidationMessage(validationMessage)
-      this.props.setStagedTemplateUrl(githuburl.url)
+    if (!event) {
+      return
     }
-    const validationMessage = validateTemplateURL(event.target.value)
+    const templateUrl = event.target.value
+
+    try {
+      const githubUrl = await checkGithubFile(templateUrl.split('/').pop())
+      if (githubUrl.value === true) {
+        const validationMessage = validateTemplateURL(githubUrl.url)
+        this.setValidationMessage(validationMessage)
+        this.props.setStagedTemplateUrl(githubUrl.url)
+        return
+      }
+    } catch (error) {
+      console.log(error)
+    }
+
+    const validationMessage = validateTemplateURL(templateUrl)
     this.setValidationMessage(validationMessage)
-    this.props.setStagedTemplateUrl(event.target.value)
+    this.props.setStagedTemplateUrl(templateUrl)
   }
 
   private onClickBrowseCommunityTemplates = () => {

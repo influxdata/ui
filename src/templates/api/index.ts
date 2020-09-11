@@ -576,25 +576,39 @@ export const checkGithubFile = async (name: string) => {
   let value = false
   let url = `https://github.com/influxdata/community-templates/tree/master/${name}/${name}`
 
-  const respyml = await fetch(`${url}.yml`)
-
-  if (respyml.status === 200) {
-    value = true
-    url = `${url}.yml`
+  try {
+    const respyml = await fetch(`${url}.yml`)
+    if (respyml.status === 200) {
+      value = true
+      url = `${url}.yml`
+      return {value, url}
+    }
+  } catch (error) {
+    console.log(error)
   }
 
-  const respjson = await fetch(`${url}.json`)
+  try {
+    const respjson = await fetch(`${url}.json`)
 
-  if (respjson.status === 200) {
-    value = true
-    url = `${url}.json`
+    if (respjson.status === 200) {
+      value = true
+      url = `${url}.json`
+      return {value, url}
+    }
+  } catch (error) {
+    console.log(error)
   }
 
-  const respjsonnet = await fetch(`${url}.jsonnet`)
+  try {
+    const respjsonnet = await fetch(`${url}.jsonnet`)
 
-  if (respjsonnet.status === 200) {
-    value = true
-    url = `${url}.jsonnet`
+    if (respjsonnet.status === 200) {
+      value = true
+      url = `${url}.jsonnet`
+      return {value, url}
+    }
+  } catch (error) {
+    console.log(error)
   }
 
   return {value, url}

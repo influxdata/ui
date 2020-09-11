@@ -32,12 +32,12 @@ describe('Community Templates', () => {
     cy.getByTestID('lookup-template-button').click()
     cy.getByTestID('notification-error').should('be.visible')
 
-    //lookup template errors on github folder
+    //should go and find github yml file from directory
     cy.getByTestID('lookup-template-input').type(
       'https://github.com/influxdata/community-templates/tree/master/kafka'
     )
     cy.getByTestID('lookup-template-button').click()
-    cy.getByTestID('notification-error').should('be.visible')
+    cy.getByTestID('notification-error').should('not.be.visible')
   })
 
   it.skip('Can install from CLI', () => {

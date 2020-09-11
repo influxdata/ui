@@ -82,7 +82,9 @@ describe('Community Templates', () => {
       cy.getByTestID('lookup-template-input').type(
         'https://github.com/influxdata/community-templates/blob/master/docker/docker.yml'
       )
-      cy.getByTestID('lookup-template-button').should('be.visible').click()
+      cy.getByTestID('lookup-template-button')
+        .should('be.visible')
+        .click()
       cy.getByTestID('template-install-overlay').should('be.visible')
     })
 

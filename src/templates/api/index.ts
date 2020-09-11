@@ -584,7 +584,6 @@ export const checkGithubFile = async (name: string) => {
       return {value, url}
     }
   } catch (error) {
-    console.log(error)
   }
 
   try {
@@ -596,7 +595,6 @@ export const checkGithubFile = async (name: string) => {
       return {value, url}
     }
   } catch (error) {
-    console.log(error)
   }
 
   try {
@@ -608,7 +606,6 @@ export const checkGithubFile = async (name: string) => {
       return {value, url}
     }
   } catch (error) {
-    console.log(error)
   }
 
   return {value, url}

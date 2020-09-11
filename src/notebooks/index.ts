@@ -1,4 +1,4 @@
-import {TypeRegistration} from 'src/types/notebooks'
+import { TypeRegistration } from 'src/types/notebooks'
 
 export interface TypeLookup {
   [key: string]: TypeRegistration

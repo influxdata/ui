@@ -1,8 +1,12 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC, useContext, useCallback, useState} from 'react'
 
 // Components
-import {IconFont} from '@influxdata/clockface'
+import {
+  SquareButton,
+  IconFont,
+  ComponentColor
+} from '@influxdata/clockface'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 import DashboardList from './DashboardList'
 import ViewSwitcher from 'src/shared/components/ViewSwitcher'
@@ -16,8 +20,8 @@ import {event} from 'src/cloud/utils/reporting'
 import {TYPE_DEFINITIONS} from 'src/notebooks/pipes/Visualization'
 
 // Types
-import {PipeProp} from 'src/types/notebooks'
-import {ViewType, ViewProperties} from 'src/types'
+import {PipeProp, PipeData} from 'src/types/notebooks'
+import {ViewType} from 'src/types'
 import {FromFluxResult} from '@influxdata/giraffe'
 
 // NOTE we dont want any pipe component to be directly dependent
@@ -106,6 +110,10 @@ export {_transform}
 const Visualization: FC<PipeProp> = ({Context}) => {
   const {timeZone} = useContext(AppSettingContext)
   const {data, update, loading, results} = useContext(PipeContext)
+  const [optionsVisibility, setOptionsVisibility] = useState(false)
+  const toggleOptions = useCallback(() => {
+      setOptionsVisibility(!optionsVisibility)
+  }, [optionsVisibility, setOptionsVisibility])
 
   const updateType = (type: ViewType) => {
     event('Notebook Visualization Type Changed', {
@@ -122,6 +130,13 @@ const Visualization: FC<PipeProp> = ({Context}) => {
       <ViewTypeDropdown
         viewType={data.properties.type}
         onUpdateType={updateType as any}
+      />
+      <SquareButton
+        icon={IconFont.CogThick}
+        onClick={toggleOptions}
+        color={optionsVisibility ? ComponentColor.Primary : ComponentColor.Default}
+        titleText="Configure Visualization"
+        className="flows-config-visualization-button"
       />
       <ExportVisualizationButton disabled={!results.source}>
         {onHidePopover => (

@@ -39,6 +39,7 @@ import GetResources from 'src/resources/components/GetResources'
 import {getOrg} from 'src/organizations/selectors'
 
 import {setStagedTemplateUrl} from 'src/templates/actions/creators'
+import {checkGithubFile} from 'src/templates/api'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -260,9 +261,14 @@ class UnconnectedTemplatesIndex extends Component<Props, State> {
     }
   }
 
-  private handleTemplateChange = event => {
+  private handleTemplateChange = async event => {
+    const githuburl = await checkGithubFile(event.target.value.split('/').pop())
+    if (githuburl.value === true) {
+      const validationMessage = validateTemplateURL(githuburl.url)
+      this.setValidationMessage(validationMessage)
+      this.props.setStagedTemplateUrl(githuburl.url)
+    }
     const validationMessage = validateTemplateURL(event.target.value)
-
     this.setValidationMessage(validationMessage)
     this.props.setStagedTemplateUrl(event.target.value)
   }

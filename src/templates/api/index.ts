@@ -571,3 +571,31 @@ export const fetchReadMe = async (directory: string) => {
 
   return resp.text()
 }
+
+export const checkGithubFile = async (name: string) => {
+  let value = false
+  let url = `https://github.com/influxdata/community-templates/tree/master/${name}/${name}`
+
+  const respyml = await fetch(`${url}.yml`)
+
+  if (respyml.status === 200) {
+    value = true
+    url = `${url}.yml`
+  }
+
+  const respjson = await fetch(`${url}.json`)
+
+  if (respjson.status === 200) {
+    value = true
+    url = `${url}.json`
+  }
+
+  const respjsonnet = await fetch(`${url}.jsonnet`)
+
+  if (respjsonnet.status === 200) {
+    value = true
+    url = `${url}.jsonnet`
+  }
+
+  return {value, url}
+}

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useCallback, useContext, useEffect, useState} from 'react'
+import React, {FC, useContext, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Contexts
@@ -14,32 +14,27 @@ import {
 
 // Types
 import {AppState, RemoteDataState} from 'src/types'
-import {PipeData} from 'src/notebooks'
 
 export type Props = {
   children: JSX.Element
 }
 
 export interface SchemaContextType {
-  data: PipeData
-  fields: string[]
-  localFetchSchema: (bucketName: string) => void
   loading: RemoteDataState
   measurements: string[]
+  fields: string[]
+  tags: any[]
   searchTerm: string
   setSearchTerm: (value: string) => void
-  tags: any[]
 }
 
 export const DEFAULT_CONTEXT: SchemaContextType = {
-  data: {},
-  fields: [],
-  localFetchSchema: (_: string): void => {},
   loading: RemoteDataState.NotStarted,
   measurements: [],
+  fields: [],
+  tags: [],
   searchTerm: '',
   setSearchTerm: (_: string) => {},
-  tags: [],
 }
 
 export const SchemaContext = React.createContext<SchemaContextType>(
@@ -47,54 +42,57 @@ export const SchemaContext = React.createContext<SchemaContextType>(
 )
 
 export const SchemaProvider: FC<Props> = React.memo(({children}) => {
-  const {data} = useContext(PipeContext)
+  const {data, update} = useContext(PipeContext)
   const [searchTerm, setSearchTerm] = useState('')
+  const [lastBucket, setLastBucket] = useState(data.bucket)
   const dispatch = useDispatch()
+
+  const loading = useSelector(
+    (state: AppState) =>
+      state.notebook.schema[data.bucket?.name]?.status ||
+      RemoteDataState.NotStarted
+  )
 
   useEffect(() => {
     dispatch(startWatchDog())
   }, [dispatch])
 
-  const loading = useSelector(
-    (state: AppState) =>
-      state.notebook.schema[data?.bucketName]?.status ||
-      RemoteDataState.NotStarted
-  )
-  const localFetchSchema = useCallback(
-    async (bucket: string) => {
-      if (loading !== RemoteDataState.NotStarted) {
-        return
-      }
-      if (bucket) {
-        await dispatch(getAndSetBucketSchema(bucket))
-      }
-    },
-    [data?.bucketName, loading, dispatch]
-  )
+  useEffect(() => {
+    if (data.bucket === lastBucket) {
+      return
+    }
+    setSearchTerm('')
+    update({
+      field: '',
+      tags: {},
+      measurement: '',
+    })
+    setLastBucket(data.bucket)
+  }, [data.bucket])
+
+  useEffect(() => {
+    if (loading !== RemoteDataState.NotStarted || !data.bucket) {
+      return
+    }
+
+    dispatch(getAndSetBucketSchema(data.bucket))
+  }, [data.bucket, loading, dispatch])
 
   const schema = useSelector(
-    (state: AppState) => state.notebook.schema[data?.bucketName]?.schema || {}
+    (state: AppState) => state.notebook.schema[data.bucket?.name]?.schema || {}
   )
 
-  const schemaCopy = {...schema}
-
-  const {fields, measurements, tags} = normalizeSchema(
-    schemaCopy,
-    data,
-    searchTerm
-  )
+  const {fields, measurements, tags} = normalizeSchema(schema, data, searchTerm)
 
   return (
     <SchemaContext.Provider
       value={{
-        data: schema,
-        fields,
         loading,
-        localFetchSchema,
         measurements,
+        fields,
+        tags,
         searchTerm,
         setSearchTerm,
-        tags,
       }}
     >
       {children}

@@ -6,10 +6,9 @@ import {fromFluxWithSchema} from '@influxdata/giraffe'
 import {runQuery} from 'src/shared/apis/query'
 
 // Types
-import {AppState, GetState, RemoteDataState, Schema} from 'src/types'
+import {AppState, Bucket, GetState, RemoteDataState, Schema} from 'src/types'
 
 // Utils
-import {getOrg} from 'src/organizations/selectors'
 import {getSchemaByBucketName} from 'src/shared/selectors/schemaSelectors'
 
 // Actions
@@ -26,10 +25,7 @@ import {TEN_MINUTES} from 'src/shared/reducers/schema'
 
 type Action = SchemaAction | NotifyAction
 
-export const fetchSchemaForBucket = async (
-  bucketName: string,
-  orgID: string
-): Promise<Schema> => {
+export const fetchSchemaForBucket = async (bucket: Bucket): Promise<Schema> => {
   /*
     -4d here is an arbitrary time range that fulfills the need to overfetch a bucket's meta data
     rather than underfetching the data. At the time of writing this comment, a timerange is
@@ -40,11 +36,11 @@ export const fetchSchemaForBucket = async (
     without having to provide a range
   */
 
-  const text = `from(bucket: "${bucketName}")
+  const text = `from(bucket: "${bucket.name}")
   |> range(start: -4d)
   |> first()`
 
-  const res = await runQuery(orgID, text)
+  const res = await runQuery(bucket.orgID, text)
     .promise.then(raw => {
       if (raw.type !== 'SUCCESS') {
         throw new Error(raw.message)
@@ -57,11 +53,8 @@ export const fetchSchemaForBucket = async (
   return res
 }
 
-const getUnexpiredSchema = (
-  state: AppState,
-  bucketName: string
-): Schema | null => {
-  const storedSchema = getSchemaByBucketName(state, bucketName)
+const getUnexpiredSchema = (state: AppState, bucket: Bucket): Schema | null => {
+  const storedSchema = getSchemaByBucketName(state, bucket.name)
 
   if (storedSchema?.schema && storedSchema?.exp > new Date().getTime()) {
     return storedSchema.schema
@@ -78,25 +71,24 @@ export const startWatchDog = () => (dispatch: Dispatch<Action>) => {
   dispatch(resetSchema())
 }
 
-export const getAndSetBucketSchema = (bucketName: string) => async (
+export const getAndSetBucketSchema = (bucket: Bucket) => async (
   dispatch: Dispatch<Action>,
   getState: GetState
 ) => {
   try {
     const state = getState()
     let validCachedResult = null
-    if (bucketName) {
-      validCachedResult = getUnexpiredSchema(state, bucketName)
+    if (bucket) {
+      validCachedResult = getUnexpiredSchema(state, bucket)
     }
     if (validCachedResult !== null) {
-      dispatch(setSchema(RemoteDataState.Done, bucketName, validCachedResult))
+      dispatch(setSchema(RemoteDataState.Done, bucket.name, validCachedResult))
       return
     } else {
-      dispatch(setSchema(RemoteDataState.Loading, bucketName, {}))
+      dispatch(setSchema(RemoteDataState.Loading, bucket.name, {}))
     }
-    const orgID = getOrg(state).id
-    const schema = await fetchSchemaForBucket(bucketName, orgID)
-    dispatch(setSchema(RemoteDataState.Done, bucketName, schema))
+    const schema = await fetchSchemaForBucket(bucket)
+    dispatch(setSchema(RemoteDataState.Done, bucket.name, schema))
   } catch (error) {
     console.error(error)
     dispatch(setSchema(RemoteDataState.Error))

@@ -11,12 +11,10 @@ import Selectors from 'src/notebooks/pipes/Data/Selectors'
 import {SchemaContext} from 'src/notebooks/context/schemaProvider'
 
 const FieldsList: FC = () => {
-  const {loading, data} = useContext(SchemaContext)
-
-  let body = <span />
+  const {loading} = useContext(SchemaContext)
 
   if (loading === RemoteDataState.Loading) {
-    body = (
+    return (
       <div className="data-source--list__empty">
         <TechnoSpinner strokeWidth={ComponentSize.Small} diameterPixels={32} />
       </div>
@@ -24,18 +22,18 @@ const FieldsList: FC = () => {
   }
 
   if (loading === RemoteDataState.Error) {
-    body = (
+    return (
       <div className="data-source--list__empty">
         <p>Could not fetch schema</p>
       </div>
     )
   }
 
-  if (loading === RemoteDataState.Done && Object.keys(data).length > 0) {
-    body = <Selectors />
+  if (loading === RemoteDataState.Done) {
+    return <Selectors />
   }
 
-  return body
+  return null
 }
 
 export default FieldsList

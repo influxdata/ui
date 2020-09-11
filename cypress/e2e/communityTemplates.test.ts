@@ -27,7 +27,7 @@ describe('Community Templates', () => {
     )
   })
 
-  it('The lookup template errors on invalid data', () => {
+  it.skip('The lookup template errors on invalid data', () => {
     //on empty
     cy.getByTestID('lookup-template-button').click()
     cy.getByTestID('notification-error').should('be.visible')

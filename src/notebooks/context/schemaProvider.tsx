@@ -14,7 +14,7 @@ import {
 
 // Types
 import {AppState, RemoteDataState} from 'src/types'
-import {PipeData} from 'src/notebooks'
+import {PipeData} from 'src/types/notebooks'
 
 export type Props = {
   children: JSX.Element

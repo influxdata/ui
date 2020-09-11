@@ -1,5 +1,5 @@
 import React, {FC, useContext, useEffect, useState} from 'react'
-import {FluxResult, Resource, ResourceManipulator} from 'src/notebooks'
+import {FluxResult, Resource, ResourceManipulator} from 'src/types/notebooks'
 import useResource from 'src/notebooks/context/resource.hook'
 import {NotebookContext} from 'src/notebooks/context/notebook.current'
 

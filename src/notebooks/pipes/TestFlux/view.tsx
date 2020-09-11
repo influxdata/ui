@@ -15,7 +15,7 @@ import fromFlux from 'src/shared/utils/fromFlux.legacy'
 import {checkResultsLength} from 'src/shared/utils/vis'
 
 // Types
-import {PipeProp, FluxResult} from 'src/notebooks'
+import {PipeProp, FluxResult} from 'src/types/notebooks'
 import {ViewType, RemoteDataState} from 'src/types'
 
 import {AppSettingContext} from 'src/notebooks/context/app'

@@ -1,6 +1,7 @@
 import {FC, createElement, useContext} from 'react'
 
-import {PIPE_DEFINITIONS, PipeProp} from 'src/notebooks'
+import {PIPE_DEFINITIONS} from 'src/notebooks'
+import {PipeProp} from 'src/types/notebooks'
 import {PipeContext} from 'src/notebooks/context/pipe'
 
 const Pipe: FC<PipeProp> = props => {

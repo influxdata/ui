@@ -8,7 +8,7 @@ import {SquareButton, IconFont} from '@influxdata/clockface'
 import {PipeContext} from 'src/notebooks/context/pipe'
 
 // Types
-import {PipeProp} from 'src/notebooks'
+import {PipeProp} from 'src/types/notebooks'
 
 const Spotify: FC<PipeProp> = ({Context}) => {
   const {data} = useContext(PipeContext)

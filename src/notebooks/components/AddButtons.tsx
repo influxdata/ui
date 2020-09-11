@@ -14,7 +14,7 @@ import {PIPE_DEFINITIONS} from 'src/notebooks'
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-import {TypeRegistration} from 'src/notebooks'
+import {TypeRegistration} from 'src/types/notebooks'
 
 // Styles
 import 'src/notebooks/components/AddButtons.scss'

@@ -26,7 +26,7 @@ import NotebookPanelTitle from 'src/notebooks/components/panel/NotebookPanelTitl
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Types
-import {PipeContextProps} from 'src/notebooks'
+import {PipeContextProps} from 'src/types/notebooks'
 
 // Contexts
 import {NotebookContext} from 'src/notebooks/context/notebook.current'

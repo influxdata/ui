@@ -275,8 +275,7 @@ class UnconnectedTemplatesIndex extends Component<Props, State> {
         this.props.setStagedTemplateUrl(githubUrl.url)
         return
       }
-    } catch (error) {
-    }
+    } catch (error) {}
 
     const validationMessage = validateTemplateURL(templateUrl)
     this.setValidationMessage(validationMessage)

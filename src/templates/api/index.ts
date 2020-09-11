@@ -583,8 +583,7 @@ export const checkGithubFile = async (name: string) => {
       url = `${url}.yml`
       return {value, url}
     }
-  } catch (error) {
-  }
+  } catch (error) {}
 
   try {
     const respjson = await fetch(`${url}.json`)
@@ -594,8 +593,7 @@ export const checkGithubFile = async (name: string) => {
       url = `${url}.json`
       return {value, url}
     }
-  } catch (error) {
-  }
+  } catch (error) {}
 
   try {
     const respjsonnet = await fetch(`${url}.jsonnet`)
@@ -605,8 +603,7 @@ export const checkGithubFile = async (name: string) => {
       url = `${url}.jsonnet`
       return {value, url}
     }
-  } catch (error) {
-  }
+  } catch (error) {}
 
   return {value, url}
 }

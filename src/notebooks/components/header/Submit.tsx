@@ -89,15 +89,9 @@ export const Submit: FC = () => {
               requirements: {},
             })
           } else if (pipe.type === 'queryBuilder') {
-            const {
-              aggregateFunction,
-              bucketName,
-              field,
-              measurement,
-              tags,
-            } = pipe
+            const {aggregateFunction, bucket, field, measurement, tags} = pipe
 
-            let text = `from(bucket: "${bucketName}")|>range(start: v.timeRangeStart, stop: v.timeRangeStop)`
+            let text = `from(bucket: "${bucket.name}")|>range(start: v.timeRangeStart, stop: v.timeRangeStop)`
             if (measurement) {
               text += `|> filter(fn: (r) => r["_measurement"] == "${measurement}")`
             }

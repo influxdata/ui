@@ -24,7 +24,9 @@ import {
   communityTemplateDeleteFailed,
   communityTemplateFetchStackFailed,
 } from 'src/shared/copy/notifications'
+
 import {fetchAndSetStacks} from 'src/templates/actions/thunks'
+import {getBuckets} from 'src/buckets/actions/thunks'
 
 // Types
 import {AppState} from 'src/types'
@@ -90,6 +92,7 @@ class CommunityTemplatesInstalledListUnconnected extends PureComponent<Props> {
         event('template_delete', {templateName: stackName})
 
         this.props.notify(communityTemplateDeleteSucceeded(stackName))
+        this.props.getBuckets()
       } catch (err) {
         this.props.notify(communityTemplateDeleteFailed(err.message))
         reportErrorThroughHoneyBadger(err, {
@@ -206,6 +209,7 @@ const mstp = (state: AppState) => {
 }
 
 const mdtp = {
+  getBuckets,
   fetchAndSetStacks,
   notify,
 }

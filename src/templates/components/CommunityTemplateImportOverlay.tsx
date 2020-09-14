@@ -10,8 +10,11 @@ import {
   setStagedCommunityTemplate,
   setStagedTemplateUrl,
 } from 'src/templates/actions/creators'
-import {createTemplate, fetchAndSetStacks} from 'src/templates/actions/thunks'
+
 import {notify} from 'src/shared/actions/notifications'
+
+import {createTemplate, fetchAndSetStacks} from 'src/templates/actions/thunks'
+import {getBuckets} from 'src/buckets/actions/thunks'
 
 import {getTotalResourceCount} from 'src/templates/selectors'
 
@@ -135,9 +138,11 @@ class UnconnectedTemplateImportOverlay extends PureComponent<Props> {
 
       event('template_install', {templateName: templateDetails.name})
 
-      this.props.notify(communityTemplateInstallSucceeded(templateDetails.name))
       this.props.setStagedTemplateUrl('')
       this.props.setTemplateUrlValidationMessage('')
+
+      this.props.getBuckets()
+      this.props.notify(communityTemplateInstallSucceeded(templateDetails.name))
     } catch (err) {
       this.props.notify(communityTemplateRenameFailed())
       reportErrorThroughHoneyBadger(err, {
@@ -201,6 +206,7 @@ const mstp = (state: AppState, props: RouterProps) => {
 
 const mdtp = {
   createTemplate,
+  getBuckets,
   fetchAndSetStacks,
   notify,
   setStagedCommunityTemplate,

@@ -20,8 +20,8 @@ import {event} from 'src/cloud/utils/reporting'
 import {TYPE_DEFINITIONS} from 'src/notebooks/pipes/Visualization'
 
 // Types
-import {PipeProp, PipeData} from 'src/types/notebooks'
-import {ViewType} from 'src/types'
+import {PipeProp} from 'src/types/notebooks'
+import {ViewType, ViewProperties} from 'src/types'
 import {FromFluxResult} from '@influxdata/giraffe'
 
 // NOTE we dont want any pipe component to be directly dependent

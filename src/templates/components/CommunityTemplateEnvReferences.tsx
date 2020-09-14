@@ -107,6 +107,7 @@ class CommunityTemplateEnvReferencesUnconnected extends PureComponent<
                       selectedBucketID={this.state.selectedBucketID}
                       buckets={[defaultValueAsBucket, ...this.props.buckets]}
                       onSelectBucket={this.createRefBucketSelectHandler(ref)}
+                      style={{width: '225px'}}
                     />
                   </Table.Cell>
                 </Table.Row>

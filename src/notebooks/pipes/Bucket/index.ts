@@ -1,7 +1,7 @@
-import {register} from 'src/notebooks'
 import View from './view'
 import './style.scss'
 
+export default (register) => {
 register({
   type: 'data',
   family: 'inputs',
@@ -12,3 +12,4 @@ register({
     bucketName: '',
   },
 })
+}

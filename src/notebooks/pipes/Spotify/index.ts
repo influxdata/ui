@@ -1,8 +1,7 @@
-import {register} from 'src/notebooks'
-
 import View from './view'
 import './style.scss'
 
+export default (register) => {
 register({
   type: 'spotify',
   family: 'test',
@@ -14,3 +13,4 @@ register({
     uri: 'spotify:track:55A8N3HXzIecctUSvru3Ch',
   },
 })
+}

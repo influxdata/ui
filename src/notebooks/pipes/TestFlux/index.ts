@@ -1,6 +1,6 @@
-import {register} from 'src/notebooks'
 import View from './view'
 
+export default (register) => {
 register({
   type: 'test',
   family: 'test',
@@ -43,3 +43,4 @@ register({
     },
   },
 })
+}

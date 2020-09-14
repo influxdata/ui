@@ -1,7 +1,7 @@
-import {register} from 'src/notebooks'
 import View from './view'
 import './style.scss'
 
+export default (register) => {
 register({
   type: 'query',
   family: 'transform',
@@ -26,3 +26,4 @@ register({
     ],
   },
 })
+}

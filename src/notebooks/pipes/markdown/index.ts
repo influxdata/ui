@@ -1,4 +1,3 @@
-import {register} from 'src/notebooks'
 import MarkdownPanel from './MarkdownPanel'
 import './style.scss'
 
@@ -165,6 +164,7 @@ $$I = \int \rho R^{2} dV$$
 And note that you can backslash-escape any punctuation characters
 which you wish to be displayed literally, ex.: \`foo\`, \*bar\*, etc.`
 
+export default (register) => {
 register({
   type: 'markdown',
   family: 'passThrough',
@@ -175,3 +175,4 @@ register({
     mode: 'edit',
   }),
 })
+}

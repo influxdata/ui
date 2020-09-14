@@ -1,4 +1,10 @@
 import React from 'react'
+import {NINETEEN_EIGHTY_FOUR} from '@influxdata/giraffe'
+import {
+  DEFAULT_FILLVALUES,
+  AGG_WINDOW_AUTO,
+} from 'src/timeMachine/constants/queryBuilder'
+import {MosaicViewProperties} from 'src/types'
 
 const icon = (
   <div className="vis-graphic" data-testid="vis-graphic--mosaic">
@@ -191,31 +197,46 @@ export default register => {
     graphic: icon,
     featureFlag: 'mosaicGraphType',
     initial: {
-      type: 'xy',
-      position: 'overlaid',
-      legend: {},
+      type: 'mosaic',
+      shape: 'chronograf-v2',
+
+      queries: [
+        {
+          name: '',
+          text: '',
+          editMode: 'builder',
+          builderConfig: {
+            buckets: [],
+            tags: [
+              {
+                key: '_measurement',
+                values: [],
+                aggregateFunctionType: 'filter',
+              },
+            ],
+            functions: [{name: 'mean'}],
+            aggregateWindow: {
+              period: AGG_WINDOW_AUTO,
+              fillValues: DEFAULT_FILLVALUES,
+            },
+          },
+        },
+      ],
+
+      colors: NINETEEN_EIGHTY_FOUR,
       note: '',
       showNoteWhenEmpty: false,
-      axes: {
-        x: {
-          bounds: ['', ''],
-          label: '',
-          prefix: '',
-          suffix: '',
-          base: '10',
-          scale: 'linear',
-        },
-        y: {
-          bounds: ['', ''],
-          label: '',
-          prefix: '',
-          suffix: '',
-          base: '10',
-          scale: 'linear',
-        },
-      },
-      geom: 'line',
-      shape: 'chronograf-v2',
-    },
+      fillColumns: null,
+      xColumn: null,
+      xDomain: null,
+      ySeriesColumns: null,
+      yDomain: null,
+      xAxisLabel: '',
+      yAxisLabel: '',
+      xPrefix: '',
+      xSuffix: '',
+      yPrefix: '',
+      ySuffix: '',
+    } as MosaicViewProperties,
   })
 }

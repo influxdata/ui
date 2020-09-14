@@ -1,4 +1,10 @@
 import React from 'react'
+import {NINETEEN_EIGHTY_FOUR} from '@influxdata/giraffe'
+import {
+  DEFAULT_FILLVALUES,
+  AGG_WINDOW_AUTO,
+} from 'src/timeMachine/constants/queryBuilder'
+import {ScatterViewProperties} from 'src/types'
 
 const icon = (
   <div className="vis-graphic" data-testid="vis-graphic--scatter">
@@ -90,31 +96,47 @@ export default register => {
     name: 'Scatter',
     graphic: icon,
     initial: {
-      type: 'xy',
-      position: 'overlaid',
-      legend: {},
+      type: 'scatter',
+      shape: 'chronograf-v2',
+
+      queries: [
+        {
+          name: '',
+          text: '',
+          editMode: 'builder',
+          builderConfig: {
+            buckets: [],
+            tags: [
+              {
+                key: '_measurement',
+                values: [],
+                aggregateFunctionType: 'filter',
+              },
+            ],
+            functions: [{name: 'mean'}],
+            aggregateWindow: {
+              period: AGG_WINDOW_AUTO,
+              fillValues: DEFAULT_FILLVALUES,
+            },
+          },
+        },
+      ],
+
+      colors: NINETEEN_EIGHTY_FOUR,
       note: '',
       showNoteWhenEmpty: false,
-      axes: {
-        x: {
-          bounds: ['', ''],
-          label: '',
-          prefix: '',
-          suffix: '',
-          base: '10',
-          scale: 'linear',
-        },
-        y: {
-          bounds: ['', ''],
-          label: '',
-          prefix: '',
-          suffix: '',
-          base: '10',
-          scale: 'linear',
-        },
-      },
-      geom: 'line',
-      shape: 'chronograf-v2',
-    },
+      fillColumns: null,
+      symbolColumns: null,
+      xColumn: null,
+      xDomain: null,
+      yColumn: null,
+      yDomain: null,
+      xAxisLabel: '',
+      yAxisLabel: '',
+      xPrefix: '',
+      xSuffix: '',
+      yPrefix: '',
+      ySuffix: '',
+    } as ScatterViewProperties,
   })
 }

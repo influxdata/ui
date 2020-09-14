@@ -1,4 +1,10 @@
 import React from 'react'
+import {
+  DEFAULT_FILLVALUES,
+  AGG_WINDOW_AUTO,
+} from 'src/timeMachine/constants/queryBuilder'
+import {DEFAULT_THRESHOLDS_LIST_COLORS} from 'src/shared/constants/thresholds'
+import {Color, SingleStatViewProperties} from 'src/types'
 
 const icon = (
   <div className="vis-graphic" data-testid="vis-graphic--single-stat">
@@ -46,31 +52,44 @@ export default register => {
     name: 'Single Stat',
     graphic: icon,
     initial: {
-      type: 'xy',
-      position: 'overlaid',
+      type: 'single-stat',
+      shape: 'chronograf-v2',
       legend: {},
+
+      queries: [
+        {
+          name: '',
+          text: '',
+          editMode: 'builder',
+          builderConfig: {
+            buckets: [],
+            tags: [
+              {
+                key: '_measurement',
+                values: [],
+                aggregateFunctionType: 'filter',
+              },
+            ],
+            functions: [{name: 'mean'}],
+            aggregateWindow: {
+              period: AGG_WINDOW_AUTO,
+              fillValues: DEFAULT_FILLVALUES,
+            },
+          },
+        },
+      ],
+
+      colors: DEFAULT_THRESHOLDS_LIST_COLORS as Color[],
+      prefix: '',
+      tickPrefix: '',
+      suffix: '',
+      tickSuffix: '',
       note: '',
       showNoteWhenEmpty: false,
-      axes: {
-        x: {
-          bounds: ['', ''],
-          label: '',
-          prefix: '',
-          suffix: '',
-          base: '10',
-          scale: 'linear',
-        },
-        y: {
-          bounds: ['', ''],
-          label: '',
-          prefix: '',
-          suffix: '',
-          base: '10',
-          scale: 'linear',
-        },
+      decimalPlaces: {
+        isEnforced: true,
+        digits: 2,
       },
-      geom: 'line',
-      shape: 'chronograf-v2',
-    },
+    } as SingleStatViewProperties,
   })
 }

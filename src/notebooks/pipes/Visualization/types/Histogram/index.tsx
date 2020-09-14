@@ -1,4 +1,6 @@
 import React from 'react'
+import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
+import {Color, HistogramViewProperties} from 'src/types'
 
 const icon = (
   <div className="vis-graphic" data-testid="vis-graphic--histogram">
@@ -236,31 +238,18 @@ export default register => {
     name: 'Histogram',
     graphic: icon,
     initial: {
-      type: 'xy',
-      position: 'overlaid',
-      legend: {},
+      queries: [],
+      type: 'histogram',
+      shape: 'chronograf-v2',
+      xColumn: '_value',
+      xDomain: null,
+      xAxisLabel: '',
+      fillColumns: null,
+      position: 'stacked',
+      binCount: 30,
+      colors: DEFAULT_LINE_COLORS as Color[],
       note: '',
       showNoteWhenEmpty: false,
-      axes: {
-        x: {
-          bounds: ['', ''],
-          label: '',
-          prefix: '',
-          suffix: '',
-          base: '10',
-          scale: 'linear',
-        },
-        y: {
-          bounds: ['', ''],
-          label: '',
-          prefix: '',
-          suffix: '',
-          base: '10',
-          scale: 'linear',
-        },
-      },
-      geom: 'line',
-      shape: 'chronograf-v2',
-    },
+    } as HistogramViewProperties,
   })
 }

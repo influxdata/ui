@@ -1,4 +1,10 @@
 import React from 'react'
+import {DEFAULT_GAUGE_COLORS} from 'src/shared/constants/thresholds'
+import {
+  DEFAULT_FILLVALUES,
+  AGG_WINDOW_AUTO,
+} from 'src/timeMachine/constants/queryBuilder'
+import {Color, GaugeViewProperties} from 'src/types'
 
 const icon = (
   <div className="vis-graphic" data-testid="vis-graphic--gauge">
@@ -147,31 +153,44 @@ export default register => {
     name: 'Gauge',
     graphic: icon,
     initial: {
-      type: 'xy',
-      position: 'overlaid',
+      type: 'gauge',
+      shape: 'chronograf-v2',
       legend: {},
+
+      queries: [
+        {
+          name: '',
+          text: '',
+          editMode: 'builder',
+          builderConfig: {
+            buckets: [],
+            tags: [
+              {
+                key: '_measurement',
+                values: [],
+                aggregateFunctionType: 'filter',
+              },
+            ],
+            functions: [{name: 'mean'}],
+            aggregateWindow: {
+              period: AGG_WINDOW_AUTO,
+              fillValues: DEFAULT_FILLVALUES,
+            },
+          },
+        },
+      ],
+
+      colors: DEFAULT_GAUGE_COLORS as Color[],
+      prefix: '',
+      tickPrefix: '',
+      suffix: '',
+      tickSuffix: '',
       note: '',
       showNoteWhenEmpty: false,
-      axes: {
-        x: {
-          bounds: ['', ''],
-          label: '',
-          prefix: '',
-          suffix: '',
-          base: '10',
-          scale: 'linear',
-        },
-        y: {
-          bounds: ['', ''],
-          label: '',
-          prefix: '',
-          suffix: '',
-          base: '10',
-          scale: 'linear',
-        },
+      decimalPlaces: {
+        isEnforced: true,
+        digits: 2,
       },
-      geom: 'line',
-      shape: 'chronograf-v2',
-    },
+    } as GaugeViewProperties,
   })
 }

@@ -1,4 +1,6 @@
 import React from 'react'
+import {INFERNO} from '@influxdata/giraffe'
+import {HeatmapViewProperties} from 'src/types'
 
 const icon = (
   <div className="vis-graphic" data-testid="vis-graphic--heatmap">
@@ -244,31 +246,23 @@ export default register => {
     name: 'Heatmap',
     graphic: icon,
     initial: {
-      type: 'xy',
-      position: 'overlaid',
-      legend: {},
+      queries: [],
+      type: 'heatmap',
+      shape: 'chronograf-v2',
+      xColumn: null,
+      yColumn: null,
+      xDomain: null,
+      yDomain: null,
+      xAxisLabel: '',
+      yAxisLabel: '',
+      xPrefix: '',
+      xSuffix: '',
+      yPrefix: '',
+      ySuffix: '',
+      colors: INFERNO,
+      binSize: 10,
       note: '',
       showNoteWhenEmpty: false,
-      axes: {
-        x: {
-          bounds: ['', ''],
-          label: '',
-          prefix: '',
-          suffix: '',
-          base: '10',
-          scale: 'linear',
-        },
-        y: {
-          bounds: ['', ''],
-          label: '',
-          prefix: '',
-          suffix: '',
-          base: '10',
-          scale: 'linear',
-        },
-      },
-      geom: 'line',
-      shape: 'chronograf-v2',
-    },
+    } as HeatmapViewProperties,
   })
 }

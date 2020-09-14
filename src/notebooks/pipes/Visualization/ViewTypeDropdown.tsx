@@ -8,7 +8,12 @@ import {ComponentStatus} from 'src/clockface'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-const ViewTypeDropdown: FC = ({viewType, onUpdateType}) => {
+export interface Props {
+  viewType: string
+  onUpdateType: (type: string) => void
+}
+
+const ViewTypeDropdown: FC<Props> = ({viewType, onUpdateType}) => {
   const items = Object.values(TYPE_DEFINITIONS)
     .filter(def => !def.disabled)
     .filter(def => !def.featureFlag || isFlagEnabled(def.featureFlag))

@@ -10,7 +10,7 @@ import {
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 import DashboardList from './DashboardList'
 import ViewSwitcher from 'src/shared/components/ViewSwitcher'
-import {ViewTypeDropdown} from 'src/timeMachine/components/view_options/ViewTypeDropdown'
+import ViewTypeDropdown from './ViewTypeDropdown'
 import Resizer from 'src/notebooks/shared/Resizer'
 
 // Utilities

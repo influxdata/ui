@@ -1,4 +1,4 @@
-import { TypeRegistration } from 'src/types/notebooks'
+import {TypeRegistration} from 'src/types/notebooks'
 
 export interface TypeLookup {
   [key: string]: TypeRegistration
@@ -12,14 +12,14 @@ const context = require.context('./pipes', true, /index\.(ts|tsx)$/)
 context.keys().forEach(key => {
   const module = context(key)
   module.default((definition: TypeRegistration) => {
-  if (PIPE_DEFINITIONS.hasOwnProperty(definition.type)) {
-    throw new Error(
-      `Pipe of type [${definition.type}] has already been registered`
-    )
-  }
+    if (PIPE_DEFINITIONS.hasOwnProperty(definition.type)) {
+      throw new Error(
+        `Pipe of type [${definition.type}] has already been registered`
+      )
+    }
 
-  PIPE_DEFINITIONS[definition.type] = {
-    ...definition,
-  }
+    PIPE_DEFINITIONS[definition.type] = {
+      ...definition,
+    }
   })
 })

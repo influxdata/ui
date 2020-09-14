@@ -9,6 +9,7 @@ import {runQuery} from 'src/shared/apis/query'
 import {AppState, Bucket, GetState, RemoteDataState, Schema} from 'src/types'
 
 // Utils
+import {getOrg} from 'src/organizations/selectors'
 import {getSchemaByBucketName} from 'src/shared/selectors/schemaSelectors'
 
 // Actions
@@ -25,7 +26,10 @@ import {TEN_MINUTES} from 'src/shared/reducers/schema'
 
 type Action = SchemaAction | NotifyAction
 
-export const fetchSchemaForBucket = async (bucket: Bucket): Promise<Schema> => {
+export const fetchSchemaForBucket = async (
+  bucket: Bucket,
+  orgID: string
+): Promise<Schema> => {
   /*
     -4d here is an arbitrary time range that fulfills the need to overfetch a bucket's meta data
     rather than underfetching the data. At the time of writing this comment, a timerange is
@@ -40,7 +44,7 @@ export const fetchSchemaForBucket = async (bucket: Bucket): Promise<Schema> => {
   |> range(start: -4d)
   |> first()`
 
-  const res = await runQuery(bucket.orgID, text)
+  const res = await runQuery(orgID, text)
     .promise.then(raw => {
       if (raw.type !== 'SUCCESS') {
         throw new Error(raw.message)
@@ -87,7 +91,11 @@ export const getAndSetBucketSchema = (bucket: Bucket) => async (
     } else {
       dispatch(setSchema(RemoteDataState.Loading, bucket.name, {}))
     }
-    const schema = await fetchSchemaForBucket(bucket)
+    let orgID = getOrg(state).id
+    if (bucket.orgID) {
+      orgID = bucket.orgID
+    }
+    const schema = await fetchSchemaForBucket(bucket, orgID)
     dispatch(setSchema(RemoteDataState.Done, bucket.name, schema))
   } catch (error) {
     console.error(error)

@@ -471,9 +471,9 @@ const GRAPHIC_SVGS = {
     </div>
   ),
   band: (
-    <div className="vis-graphic" data-testid="vis-graphic--band-chart">
+    <div className="vis-graphic" data-testid="vis-graphic--band">
       <svg
-        id="Band Chart"
+        id="Band"
         x="0px"
         y="0px"
         width="100%"

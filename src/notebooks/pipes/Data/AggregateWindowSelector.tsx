@@ -54,7 +54,7 @@ const AggregateFunctionSelector: FC = () => {
     <Dropdown.Menu onCollapse={onCollapse}>{menuItems}</Dropdown.Menu>
   )
 
-  return <Dropdown button={button} menu={menu} style={{width: '130px'}} />
+  return <Dropdown button={button} menu={menu} style={{width: '180px'}} />
 }
 
 export default AggregateFunctionSelector

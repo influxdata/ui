@@ -1,8 +1,8 @@
 // Libraries
-import React, {FC, useContext, useCallback, useState} from 'react'
+import React, {FC, useContext} from 'react'
 
 // Components
-import {SquareButton, IconFont, ComponentColor} from '@influxdata/clockface'
+import {IconFont} from '@influxdata/clockface'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 import DashboardList from './DashboardList'
 import ViewSwitcher from 'src/shared/components/ViewSwitcher'

@@ -83,7 +83,7 @@ describe('getMainColumnName', () => {
     lowerColumnName = 'min'
     expect(
       getMainColumnName([], upperColumnName, mainColumnName, lowerColumnName)
-    )
+    ).toEqual('')
   })
 
   it('returns mainColumnName when it is found in the selected aggregate functions', () => {

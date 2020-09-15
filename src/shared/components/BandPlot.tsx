@@ -43,7 +43,7 @@ import {
   Theme,
 } from 'src/types'
 
-interface PassedInProps {
+interface OwnProps {
   children: (config: Config) => JSX.Element
   fluxGroupKeyUnion: string[]
   timeRange?: TimeRange | null
@@ -54,7 +54,7 @@ interface PassedInProps {
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & PassedInProps
+type Props = ReduxProps & OwnProps
 
 const BandPlot: FC<Props> = ({
   children,

@@ -9,7 +9,6 @@ import BucketProvider from 'src/notebooks/context/buckets'
 // Components
 import AggregateWindowSelector from 'src/notebooks/pipes/Data/AggregateWindowSelector'
 import BucketSelector from 'src/notebooks/pipes/Data/BucketSelector'
-import FieldsList from 'src/notebooks/pipes/Data/FieldsList'
 import SearchBar from 'src/notebooks/pipes/Data/SearchBar'
 
 // Styles
@@ -27,7 +26,6 @@ const DataSource: FC<PipeProp> = ({Context}) => (
           <AggregateWindowSelector />
         </div>
         <SearchBar />
-        <FieldsList />
       </Context>
     </SchemaProvider>
   </BucketProvider>

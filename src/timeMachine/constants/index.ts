@@ -8,7 +8,7 @@ interface VisType {
 export const VIS_TYPES: VisType[] = [
   {
     type: 'band',
-    name: 'Band Plot',
+    name: 'Band',
   },
   {
     type: 'xy',

@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC, useMemo} from 'react'
+import {connect, ConnectedProps} from 'react-redux'
 import {Config, Table} from '@influxdata/giraffe'
 
 // Components
@@ -12,6 +13,7 @@ import {
 } from 'src/shared/utils/useVisDomainSettings'
 import {
   getFormatter,
+  getMainColumnName,
   geomToInterpolation,
   filterNoisyColumns,
   parseXBounds,
@@ -19,6 +21,7 @@ import {
   defaultXColumn,
   defaultYColumn,
 } from 'src/shared/utils/vis'
+import {getActiveQuery} from 'src/timeMachine/selectors'
 
 // Constants
 import {
@@ -32,9 +35,15 @@ import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {INVALID_DATA_COPY} from 'src/shared/copy/cell'
 
 // Types
-import {BandViewProperties, TimeZone, TimeRange, Theme} from 'src/types'
+import {
+  AppState,
+  BandViewProperties,
+  TimeZone,
+  TimeRange,
+  Theme,
+} from 'src/types'
 
-interface Props {
+interface OwnProps {
   children: (config: Config) => JSX.Element
   fluxGroupKeyUnion: string[]
   timeRange?: TimeRange | null
@@ -44,9 +53,13 @@ interface Props {
   theme: Theme
 }
 
+type ReduxProps = ConnectedProps<typeof connector>
+type Props = ReduxProps & OwnProps
+
 const BandPlot: FC<Props> = ({
   children,
   fluxGroupKeyUnion,
+  selectedFunctions,
   timeRange,
   table,
   timeZone,
@@ -57,6 +70,7 @@ const BandPlot: FC<Props> = ({
     yColumn: storedYColumn,
     upperColumn: upperColumnName,
     lowerColumn: lowerColumnName,
+    mainColumn,
     hoverDimension,
     axes: {
       x: {
@@ -78,6 +92,17 @@ const BandPlot: FC<Props> = ({
   },
   theme,
 }) => {
+  const mainColumnName = useMemo(
+    () =>
+      getMainColumnName(
+        selectedFunctions,
+        upperColumnName,
+        mainColumn,
+        lowerColumnName
+      ),
+    [selectedFunctions, upperColumnName, mainColumn, lowerColumnName]
+  )
+
   const storedXDomain = useMemo(() => parseXBounds(xBounds), [xBounds])
   const storedYDomain = useMemo(() => parseYBounds(yBounds), [yBounds])
   const xColumn = storedXColumn || defaultXColumn(table, '_time')
@@ -110,7 +135,7 @@ const BandPlot: FC<Props> = ({
 
   const memoizedYColumnData = useMemo(
     () => table.getColumn(yColumn, 'number'),
-    [table, yColumn, xColumn, colorHexes, groupKey]
+    [table, yColumn]
   )
 
   const [yDomain, onSetYDomain, onResetYDomain] = useVisYDomainSettings(
@@ -170,6 +195,7 @@ const BandPlot: FC<Props> = ({
         shadeOpacity: BAND_SHADE_OPACITY,
         hoverDimension,
         upperColumnName,
+        mainColumnName,
         lowerColumnName,
       },
     ],
@@ -182,4 +208,11 @@ const BandPlot: FC<Props> = ({
   return children(config)
 }
 
-export default BandPlot
+const mstp = (state: AppState) => {
+  const {builderConfig} = getActiveQuery(state)
+  const {functions} = builderConfig
+  return {selectedFunctions: functions.map(f => f.name)}
+}
+
+const connector = connect(mstp)
+export default connector(BandPlot)

@@ -434,6 +434,24 @@ export const timeMachineReducer = (
       return setViewProperties(state, {position})
     }
 
+    case 'SET_UPPER_COLUMN': {
+      const {upperColumn} = action.payload
+
+      return setViewProperties(state, {upperColumn})
+    }
+
+    case 'SET_MAIN_COLUMN': {
+      const {mainColumn} = action.payload
+
+      return setViewProperties(state, {mainColumn})
+    }
+
+    case 'SET_LOWER_COLUMN': {
+      const {lowerColumn} = action.payload
+
+      return setViewProperties(state, {lowerColumn})
+    }
+
     case 'SET_BIN_COUNT': {
       const {binCount} = action.payload
 

@@ -3,7 +3,7 @@ import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
-import {Grid, Form, Dropdown} from '@influxdata/clockface'
+import {Grid, Form, Dropdown, SelectDropdown} from '@influxdata/clockface'
 import Geom from 'src/timeMachine/components/view_options/Geom'
 import YAxisTitle from 'src/timeMachine/components/view_options/YAxisTitle'
 import AxisAffixes from 'src/timeMachine/components/view_options/AxisAffixes'
@@ -11,7 +11,6 @@ import ColorSelector from 'src/timeMachine/components/view_options/ColorSelector
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import YAxisBase from 'src/timeMachine/components/view_options/YAxisBase'
 import ColumnSelector from 'src/shared/components/ColumnSelector'
-import Checkbox from 'src/shared/components/Checkbox'
 import TimeFormat from 'src/timeMachine/components/view_options/TimeFormat'
 
 // Actions
@@ -25,18 +24,20 @@ import {
   setGeom,
   setXColumn,
   setYColumn,
-  setShadeBelow,
-  setLinePosition,
   setTimeFormat,
-  SetHoverDimension,
+  setHoverDimension,
+  setUpperColumn,
+  setMainColumn,
+  setLowerColumn,
 } from 'src/timeMachine/actions'
 
 // Utils
-import {parseYBounds} from 'src/shared/utils/vis'
+import {getMainColumnName, parseYBounds} from 'src/shared/utils/vis'
 import {
   getXColumnSelection,
   getYColumnSelection,
   getNumericColumns,
+  getActiveQuery,
   getActiveTimeMachine,
 } from 'src/timeMachine/selectors'
 
@@ -47,7 +48,7 @@ import {
   Axes,
   Color,
   NewView,
-  XYViewProperties,
+  BandViewProperties,
   ViewType,
 } from 'src/types'
 
@@ -56,12 +57,13 @@ interface OwnProps {
   axes: Axes
   geom?: XYGeom
   colors: Color[]
-  shadeBelow?: boolean
   hoverDimension?: 'auto' | 'x' | 'y' | 'xy'
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
+
+const REMOVE_COLUMN_TEXT = '(remove column)'
 
 class BandOptions extends PureComponent<Props> {
   public render() {
@@ -71,13 +73,11 @@ class BandOptions extends PureComponent<Props> {
       },
       colors,
       geom,
-      shadeBelow,
       onUpdateColors,
       onUpdateYAxisLabel,
       onUpdateAxisPrefix,
       onUpdateAxisSuffix,
       onUpdateYAxisBase,
-      onSetShadeBelow,
       onSetGeom,
       onSetYColumn,
       yColumn,
@@ -88,7 +88,14 @@ class BandOptions extends PureComponent<Props> {
       timeFormat,
       hoverDimension = 'auto',
       onSetHoverDimension,
+      selectedFunctions,
+      onSetMainColumn,
     } = this.props
+
+    const upperAndLowerColumnOptions = [
+      REMOVE_COLUMN_TEXT,
+      ...selectedFunctions,
+    ]
 
     return (
       <>
@@ -113,6 +120,30 @@ class BandOptions extends PureComponent<Props> {
               onTimeFormatChange={onSetTimeFormat}
             />
           </Form.Element>
+        </Grid.Column>
+        <Grid.Column>
+          <h5 className="view-options--header">Aggregate Functions</h5>
+          <Form.Element label="Upper Column Name">
+            <SelectDropdown
+              selectedOption={this.selectedUpperColumn}
+              options={upperAndLowerColumnOptions}
+              onSelect={this.onChangeUpperColumn}
+            />
+          </Form.Element>
+          <Form.Element label="Main Column Name">
+            <SelectDropdown
+              selectedOption={this.selectedMainColumn}
+              options={selectedFunctions}
+              onSelect={onSetMainColumn}
+            />
+          </Form.Element>
+          <Form.Element label="Lower Column Name">
+            <SelectDropdown
+              selectedOption={this.selectedLowerColumn}
+              options={upperAndLowerColumnOptions}
+              onSelect={this.onChangeLowerColumn}
+            />
+          </Form.Element>
           <h5 className="view-options--header">Options</h5>
         </Grid.Column>
         {geom && <Geom geom={geom} onSetGeom={onSetGeom} />}
@@ -120,13 +151,6 @@ class BandOptions extends PureComponent<Props> {
           colors={colors.filter(c => c.type === 'scale')}
           onUpdateColors={onUpdateColors}
         />
-        <Grid.Column>
-          <Checkbox
-            label="Shade Area Below Lines"
-            checked={!!shadeBelow}
-            onSetChecked={onSetShadeBelow}
-          />
-        </Grid.Column>
         <Grid.Column>
           <br />
           <Form.Element label="Hover Dimension">
@@ -202,6 +226,30 @@ class BandOptions extends PureComponent<Props> {
     return parseYBounds(this.props.axes.y.bounds)
   }
 
+  private selectedColumn = (columnType: string): string => {
+    const hasSelectedFunction = this.props.selectedFunctions.some(
+      funcName => funcName === this.props[columnType]
+    )
+    return hasSelectedFunction ? this.props[columnType] : ''
+  }
+
+  private get selectedUpperColumn(): string {
+    return this.selectedColumn('upperColumn')
+  }
+
+  private get selectedMainColumn(): string {
+    return getMainColumnName(
+      this.props.selectedFunctions,
+      this.selectedUpperColumn,
+      this.props.mainColumn,
+      this.selectedLowerColumn
+    )
+  }
+
+  private get selectedLowerColumn(): string {
+    return this.selectedColumn('lowerColumn')
+  }
+
   private setBoundValues = (value: number | null): string | null => {
     return value === null ? null : String(value)
   }
@@ -218,15 +266,42 @@ class BandOptions extends PureComponent<Props> {
 
     this.props.onUpdateYAxisBounds(bounds)
   }
+
+  private onChangeColumn = (columnSetter, selectedColumnName) => {
+    const REMOVED_COLUMN = REMOVE_COLUMN_TEXT || ''
+    if (selectedColumnName === REMOVED_COLUMN) {
+      columnSetter('')
+    } else {
+      columnSetter(selectedColumnName)
+    }
+  }
+
+  private onChangeUpperColumn = selectedUpperColumnName => {
+    this.onChangeColumn(this.props.onSetUpperColumn, selectedUpperColumnName)
+  }
+
+  private onChangeLowerColumn = selectedLowerColumnName =>
+    this.onChangeColumn(this.props.onSetLowerColumn, selectedLowerColumnName)
 }
 
 const mstp = (state: AppState) => {
+  const {builderConfig} = getActiveQuery(state)
+  const {functions} = builderConfig
   const xColumn = getXColumnSelection(state)
   const yColumn = getYColumnSelection(state)
   const numericColumns = getNumericColumns(state)
-  const view = getActiveTimeMachine(state).view as NewView<XYViewProperties>
-  const {timeFormat} = view.properties
-  return {xColumn, yColumn, numericColumns, timeFormat}
+  const view = getActiveTimeMachine(state).view as NewView<BandViewProperties>
+  const {timeFormat, upperColumn, mainColumn, lowerColumn} = view.properties
+  return {
+    numericColumns,
+    selectedFunctions: functions.map(f => f.name),
+    timeFormat,
+    xColumn,
+    yColumn,
+    upperColumn,
+    mainColumn,
+    lowerColumn,
+  }
 }
 
 const mdtp = {
@@ -237,12 +312,13 @@ const mdtp = {
   onUpdateYAxisBase: setYAxisBase,
   onSetXColumn: setXColumn,
   onSetYColumn: setYColumn,
-  onSetShadeBelow: setShadeBelow,
   onUpdateColors: setColors,
   onSetGeom: setGeom,
-  onSetPosition: setLinePosition,
   onSetTimeFormat: setTimeFormat,
-  onSetHoverDimension: SetHoverDimension,
+  onSetHoverDimension: setHoverDimension,
+  onSetUpperColumn: setUpperColumn,
+  onSetMainColumn: setMainColumn,
+  onSetLowerColumn: setLowerColumn,
 }
 
 const connector = connect(mstp, mdtp)

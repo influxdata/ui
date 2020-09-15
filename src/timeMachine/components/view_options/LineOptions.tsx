@@ -29,7 +29,7 @@ import {
   setShadeBelow,
   setLinePosition,
   setTimeFormat,
-  SetHoverDimension,
+  setHoverDimension,
 } from 'src/timeMachine/actions'
 
 // Utils
@@ -276,7 +276,7 @@ const mdtp = {
   onSetGeom: setGeom,
   onSetPosition: setLinePosition,
   onSetTimeFormat: setTimeFormat,
-  onSetHoverDimension: SetHoverDimension,
+  onSetHoverDimension: setHoverDimension,
 }
 
 const connector = connect(mstp, mdtp)

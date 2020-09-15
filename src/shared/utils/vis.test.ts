@@ -2,6 +2,7 @@
 import {
   defaultXColumn,
   defaultYColumn,
+  getMainColumnName,
   parseYBounds,
 } from 'src/shared/utils/vis'
 import {Table} from '@influxdata/giraffe'
@@ -64,5 +65,79 @@ describe('getting default columns', () => {
 
   it('does something for the default y column', () => {
     expect(defaultYColumn(table)).toBe('_value')
+  })
+})
+
+describe('getMainColumnName', () => {
+  it('returns empty string when no aggregate functions are selected', () => {
+    let upperColumnName = ''
+    let mainColumnName = ''
+    let lowerColumnName = ''
+
+    expect(
+      getMainColumnName([], upperColumnName, mainColumnName, lowerColumnName)
+    ).toEqual('')
+
+    upperColumnName = 'max'
+    mainColumnName = 'mean'
+    lowerColumnName = 'min'
+    expect(
+      getMainColumnName([], upperColumnName, mainColumnName, lowerColumnName)
+    ).toEqual('')
+  })
+
+  it('returns mainColumnName when it is found in the selected aggregate functions', () => {
+    const mainColumnName = 'mean'
+    expect(getMainColumnName(['mean'], '', mainColumnName, '')).toEqual('mean')
+  })
+
+  it('returns the first function name that is not the upper or lower column when mainColumnName is not in the selected aggregate functions', () => {
+    const upperColumnName = 'max'
+    let mainColumnName = ''
+    const lowerColumnName = 'min'
+
+    expect(
+      getMainColumnName(
+        ['mean'],
+        upperColumnName,
+        mainColumnName,
+        lowerColumnName
+      )
+    ).toEqual('mean')
+
+    mainColumnName = 'mean'
+    expect(
+      getMainColumnName(
+        ['median'],
+        upperColumnName,
+        mainColumnName,
+        lowerColumnName
+      )
+    ).toEqual('median')
+  })
+
+  it('returns empty string when mainColumnName is not in the selected aggregate functions', () => {
+    const upperColumnName = 'max'
+    let mainColumnName = 'median'
+    const lowerColumnName = 'min'
+
+    expect(
+      getMainColumnName(
+        [upperColumnName, lowerColumnName],
+        upperColumnName,
+        mainColumnName,
+        lowerColumnName
+      )
+    ).toEqual('')
+
+    mainColumnName = 'mean'
+    expect(
+      getMainColumnName(
+        [upperColumnName],
+        upperColumnName,
+        mainColumnName,
+        lowerColumnName
+      )
+    ).toEqual('')
   })
 })

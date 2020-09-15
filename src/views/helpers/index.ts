@@ -11,6 +11,7 @@ import {DEFAULT_CHECK_EVERY} from 'src/alerting/constants'
 import {
   DEFAULT_FILLVALUES,
   AGG_WINDOW_AUTO,
+  DEFAULT_AGGREGATE_FUNCTION,
 } from 'src/timeMachine/constants/queryBuilder'
 
 // Types
@@ -38,6 +39,7 @@ import {
   XYViewProperties,
   BandViewProperties,
 } from 'src/types'
+import {LineHoverDimension} from '@influxdata/giraffe/dist/types'
 
 export const defaultView = (name: string = DEFAULT_CELL_NAME) => {
   return {
@@ -59,7 +61,7 @@ export function defaultBuilderConfig(): BuilderConfig {
   return {
     buckets: [],
     tags: [{key: '_measurement', values: [], aggregateFunctionType: 'filter'}],
-    functions: [{name: 'mean'}],
+    functions: [{name: DEFAULT_AGGREGATE_FUNCTION}],
     aggregateWindow: {period: AGG_WINDOW_AUTO, fillValues: DEFAULT_FILLVALUES},
   }
 }
@@ -115,6 +117,10 @@ export function defaultBandViewProperties() {
         scale: 'linear',
       } as Axis,
     },
+    hoverDimension: 'auto' as LineHoverDimension,
+    upperColumn: '',
+    mainColumn: DEFAULT_AGGREGATE_FUNCTION,
+    lowerColumn: '',
   }
 }
 

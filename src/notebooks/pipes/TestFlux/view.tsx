@@ -4,7 +4,7 @@ import React, {FC, useState, useContext} from 'react'
 // Components
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 import ViewSwitcher from 'src/shared/components/ViewSwitcher'
-import {ViewTypeDropdown} from 'src/timeMachine/components/view_options/ViewTypeDropdown'
+import ViewTypeDropdown from 'src/notebooks/pipes/Visualization/ViewTypeDropdown'
 import Resizer from 'src/notebooks/shared/Resizer'
 
 // Components
@@ -15,13 +15,14 @@ import fromFlux from 'src/shared/utils/fromFlux.legacy'
 import {checkResultsLength} from 'src/shared/utils/vis'
 
 // Types
-import {PipeProp, FluxResult} from 'src/notebooks'
+import {PipeProp, FluxResult} from 'src/types/notebooks'
 import {ViewType, RemoteDataState} from 'src/types'
 
 import {AppSettingContext} from 'src/notebooks/context/app'
 import {PipeContext} from 'src/notebooks/context/pipe'
 
-import {updateVisualizationType} from 'src/notebooks/pipes/Visualization/view'
+import {TYPE_DEFINITIONS} from 'src/notebooks/pipes/Visualization'
+import {_transform} from 'src/notebooks/pipes/Visualization/view'
 
 const TestFlux: FC<PipeProp> = ({Context}) => {
   const {timeZone} = useContext(AppSettingContext)
@@ -63,7 +64,9 @@ const TestFlux: FC<PipeProp> = ({Context}) => {
   const [results, setResults] = useState({} as FluxResult)
 
   const updateType = (type: ViewType) => {
-    updateVisualizationType(type, results.parsed, update)
+    update({
+      properties: _transform(TYPE_DEFINITIONS[type].initial, results.parsed),
+    })
   }
 
   const controls = (

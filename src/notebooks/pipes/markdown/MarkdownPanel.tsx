@@ -10,7 +10,7 @@ import MarkdownMonacoEditor from 'src/shared/components/MarkdownMonacoEditor'
 import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
 import {ClickOutside} from '@influxdata/clockface'
 import {PipeContext} from 'src/notebooks/context/pipe'
-import {PipeProp} from 'src/notebooks'
+import {PipeProp} from 'src/types/notebooks'
 
 const MarkdownPanel: FC<PipeProp> = ({Context}) => {
   const {data, update} = useContext(PipeContext)

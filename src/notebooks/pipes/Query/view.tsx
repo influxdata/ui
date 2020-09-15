@@ -2,7 +2,7 @@
 import React, {FC, useMemo, useContext} from 'react'
 
 // Types
-import {PipeProp} from 'src/notebooks'
+import {PipeProp} from 'src/types/notebooks'
 
 // Components
 import FluxMonacoEditor from 'src/shared/components/FluxMonacoEditor'

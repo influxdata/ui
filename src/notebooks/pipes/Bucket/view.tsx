@@ -2,7 +2,7 @@
 import React, {FC} from 'react'
 
 // Types
-import {PipeProp} from 'src/notebooks'
+import {PipeProp} from 'src/types/notebooks'
 
 // Components
 import BucketSelector from 'src/notebooks/pipes/Bucket/BucketSelector'

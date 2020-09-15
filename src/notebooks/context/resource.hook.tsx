@@ -3,7 +3,7 @@ import {
   ResourceManipulator,
   ResourceUpdater,
   ResourceGenerator,
-} from 'src/notebooks'
+} from 'src/types/notebooks'
 
 function useResource<T>(
   resource: Resource<T>,

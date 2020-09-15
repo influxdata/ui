@@ -1,6 +1,6 @@
 import React, {FC, createElement, useMemo} from 'react'
 
-import {PipeContextProps} from 'src/notebooks'
+import {PipeContextProps} from 'src/types/notebooks'
 import Pipe from 'src/notebooks/components/Pipe'
 import NotebookPanel from 'src/notebooks/components/panel/NotebookPanel'
 import {PipeProvider} from 'src/notebooks/context/pipe'

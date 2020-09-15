@@ -1,5 +1,5 @@
 import React, {FC, useContext} from 'react'
-import {PipeData, FluxResult} from 'src/notebooks'
+import {PipeData, FluxResult} from 'src/types/notebooks'
 import {NotebookContext} from 'src/notebooks/context/notebook.current'
 import {ResultsContext} from 'src/notebooks/context/results'
 import {RemoteDataState} from 'src/types'

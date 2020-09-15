@@ -1,6 +1,6 @@
 import React, {FC, useContext, useEffect, useCallback, useMemo} from 'react'
 import createPersistedState from 'use-persisted-state'
-import {Notebook, PipeData} from 'src/notebooks'
+import {Notebook, PipeData} from 'src/types/notebooks'
 import {
   NotebookListContext,
   NotebookListProvider,

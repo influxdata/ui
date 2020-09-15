@@ -26,7 +26,7 @@ import NotebookPanelTitle from 'src/notebooks/components/panel/NotebookPanelTitl
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Types
-import {PipeContextProps} from 'src/notebooks'
+import {PipeContextProps} from 'src/types/notebooks'
 
 // Contexts
 import {NotebookContext} from 'src/notebooks/context/notebook.current'
@@ -78,28 +78,30 @@ const NotebookPanelHeader: FC<HeaderProps> = ({id, controls}) => {
       >
         <NotebookPanelTitle id={id} />
       </FlexBox>
-      <FlexBox
-        className="notebook-panel--header-right"
-        alignItems={AlignItems.Center}
-        margin={ComponentSize.Small}
-        justifyContent={JustifyContent.FlexEnd}
-      >
-        {controls}
-        <FeatureFlag name="notebook-move-cells">
-          <MovePanelButton
-            direction="up"
-            onClick={moveUp}
-            active={canBeMovedUp}
-          />
-          <MovePanelButton
-            direction="down"
-            onClick={moveDown}
-            active={canBeMovedDown}
-          />
-        </FeatureFlag>
-        <PanelVisibilityToggle id={id} />
-        <RemovePanelButton onRemove={remove} />
-      </FlexBox>
+      {!notebook.readOnly && (
+        <FlexBox
+          className="notebook-panel--header-right"
+          alignItems={AlignItems.Center}
+          margin={ComponentSize.Small}
+          justifyContent={JustifyContent.FlexEnd}
+        >
+          {controls}
+          <FeatureFlag name="notebook-move-cells">
+            <MovePanelButton
+              direction="up"
+              onClick={moveUp}
+              active={canBeMovedUp}
+            />
+            <MovePanelButton
+              direction="down"
+              onClick={moveDown}
+              active={canBeMovedDown}
+            />
+          </FeatureFlag>
+          <PanelVisibilityToggle id={id} />
+          <RemovePanelButton onRemove={remove} />
+        </FlexBox>
+      )}
     </div>
   )
 }

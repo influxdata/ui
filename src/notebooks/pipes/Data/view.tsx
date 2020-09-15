@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
 // Types
-import {PipeProp} from 'src/notebooks'
+import {PipeProp} from 'src/types/notebooks'
 
 // Contexts
 import BucketProvider from 'src/notebooks/context/buckets'

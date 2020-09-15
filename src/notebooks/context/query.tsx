@@ -11,7 +11,7 @@ import {NotebookContext} from 'src/notebooks/context/notebook.current'
 import {TimeContext} from 'src/notebooks/context/time'
 import {fromFlux as parse} from '@influxdata/giraffe'
 import {event} from 'src/cloud/utils/reporting'
-import {FluxResult} from 'src/notebooks'
+import {FluxResult} from 'src/types/notebooks'
 
 export interface QueryContextType {
   query: (text: string) => Promise<FluxResult>

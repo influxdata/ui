@@ -112,7 +112,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
   const {data, update, loading, results} = useContext(PipeContext)
   const [optionsVisibility, setOptionsVisibility] = useState(false)
   const toggleOptions = useCallback(() => {
-      setOptionsVisibility(!optionsVisibility)
+    setOptionsVisibility(!optionsVisibility)
   }, [optionsVisibility, setOptionsVisibility])
 
   const updateType = (type: ViewType) => {
@@ -150,8 +150,26 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     </>
   )
 
+  let options
+
+  if (optionsVisibility && TYPE_DEFINITIONS[data.properties.type].options) {
+    options = TYPE_DEFINITIONS[data.properties.type].options({
+      properties: data.properties,
+      results: results.parsed,
+      update: newProperties => {
+        update({
+          properties: {
+            ...data.properties,
+            ...newProperties,
+          },
+        })
+      },
+    })
+  }
+
   return (
     <Context controls={controls}>
+      {options}
       <Resizer
         resizingEnabled={!!results.raw}
         emptyText="This cell will visualize results from the previous cell"

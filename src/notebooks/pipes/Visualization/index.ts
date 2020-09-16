@@ -1,7 +1,14 @@
-import {FunctionComponent, ComponentClass} from 'react'
+import {FunctionComponent} from 'react'
 import {ViewProperties} from 'src/types'
+import {FromFluxResult} from '@influxdata/giraffe'
 import View from './view'
 import './style.scss'
+
+export interface VisOptionProps {
+  properties: ViewProperties
+  results: FromFluxResult
+  update: (obj: any) => void
+}
 
 export interface VisTypeRegistration {
   type: string // a unique string that identifies a visualization
@@ -10,7 +17,7 @@ export interface VisTypeRegistration {
   disabled?: boolean // if you should show it or not
   featureFlag?: string // designates a flag that should enable the panel type
   initial: ViewProperties // the default state
-  options?: FunctionComponent<any> | ComponentClass<any> // the view component for rendering the interface
+  options?: FunctionComponent<VisOptionProps> // the view component for rendering the interface
 }
 
 interface VisTypeRegistrationMap {

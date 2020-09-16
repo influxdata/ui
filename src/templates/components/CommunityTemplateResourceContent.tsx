@@ -14,8 +14,8 @@ import {
   AlignItems,
   Label,
 } from '@influxdata/clockface'
-import CommunityTemplateListItem from 'src/templates/components/CommunityTemplateListItem'
-import CommunityTemplateListGroup from 'src/templates/components/CommunityTemplateListGroup'
+import {CommunityTemplateListItem} from 'src/templates/components/CommunityTemplateListItem'
+import {CommunityTemplateListGroup} from 'src/templates/components/CommunityTemplateListGroup'
 
 import {CommunityTemplateParameters} from 'src/templates/components/CommunityTemplateParameters'
 

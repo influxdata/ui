@@ -23,7 +23,9 @@ const FlowsIndex = () => {
             <FlowCreateButton />
           </Page.ControlBarRight>
         </Page.ControlBar>
-        <FlowCards />
+        <Page.Contents fullWidth={false}>
+          <FlowCards />
+        </Page.Contents>
       </Page>
     </NotebookListProvider>
   )

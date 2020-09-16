@@ -11,11 +11,7 @@ const FlowCards = () => {
   return (
     <Grid>
       <Grid.Row>
-        <Grid.Column
-          widthXS={Columns.Twelve}
-          widthSM={Columns.Eight}
-          widthMD={Columns.Ten}
-        >
+        <Grid.Column widthXS={Columns.Twelve}>
           <ResourceList>
             <ResourceList.Body emptyState={<FlowsIndexEmpty />}>
               {Object.entries(notebooks).map(([id, {name}]) => {

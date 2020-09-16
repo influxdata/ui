@@ -16,8 +16,8 @@ const Selectors: FC = () => {
       <List
         className="data-source--list"
         backgroundColor={InfluxColors.Obsidian}
-        maxHeight="300px"
-        style={{height: '300px'}}
+        maxHeight="304px"
+        style={{height: '304px'}}
       >
         <MeasurementSelectors measurements={measurements} />
         <FieldSelectors fields={fields} />

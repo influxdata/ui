@@ -52,4 +52,4 @@ From the ui directory. Build the javascript with
 
 ## Starting Dev Server
 
-The assets are built by running `yarn start` from withing the `/ui` directory. The dev server with hot reloading runs at `localhost:8080`.
+Running `/ui` locally depends on `monitor-ci`. [See the monitor-ci Quickstart](https://github.com/influxdata/monitor-ci#quickstart-for-local-development)

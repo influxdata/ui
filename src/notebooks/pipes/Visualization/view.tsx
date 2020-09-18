@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useCallback, useState} from 'react'
+import React, {FC, useContext, useCallback, useMemo, useState} from 'react'
 
 // Components
 import {
@@ -114,6 +114,17 @@ const Visualization: FC<PipeProp> = ({Context}) => {
   const toggleOptions = useCallback(() => {
     setOptionsVisibility(!optionsVisibility)
   }, [optionsVisibility, setOptionsVisibility])
+  const updateProperties = useCallback(
+    properties => {
+      update({
+        properties: {
+          ...data.properties,
+          ...properties,
+        },
+      })
+    },
+    [data.properties, update]
+  )
 
   const updateType = (type: ViewType) => {
     event('Notebook Visualization Type Changed', {
@@ -150,22 +161,16 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     </>
   )
 
-  let options
-
-  if (optionsVisibility && TYPE_DEFINITIONS[data.properties.type].options) {
-    options = TYPE_DEFINITIONS[data.properties.type].options({
+  let options = useMemo(() => {
+    if (!optionsVisibility || !TYPE_DEFINITIONS[data.properties.type].options) {
+      return null
+    }
+    return TYPE_DEFINITIONS[data.properties.type].options({
       properties: data.properties,
       results: results.parsed,
-      update: newProperties => {
-        update({
-          properties: {
-            ...data.properties,
-            ...newProperties,
-          },
-        })
-      },
+      update: updateProperties,
     })
-  }
+  }, [optionsVisibility, data.properties, results.parsed, updateProperties])
 
   return (
     <Context controls={controls}>

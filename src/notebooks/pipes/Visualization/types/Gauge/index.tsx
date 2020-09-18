@@ -1,5 +1,6 @@
 import icon from './icon'
 import properties from './properties'
+import options from './options'
 
 export default register => {
   register({
@@ -7,5 +8,6 @@ export default register => {
     name: 'Gauge',
     graphic: icon,
     initial: properties,
+    options: options,
   })
 }

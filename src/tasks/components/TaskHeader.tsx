@@ -8,7 +8,7 @@ import {
   ComponentStatus,
   Page,
 } from '@influxdata/clockface'
-import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
+import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
 interface Props {
   title: string
@@ -24,7 +24,7 @@ export default class TaskHeader extends PureComponent<Props> {
       <>
         <Page.Header fullWidth={true}>
           <Page.Title title={title} />
-          <CloudUpgradeButton />
+          <RateLimitAlert />
         </Page.Header>
         <Page.ControlBar fullWidth={true}>
           <Page.ControlBarRight>

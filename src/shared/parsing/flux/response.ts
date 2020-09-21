@@ -46,11 +46,6 @@ export const parseResponse = (response: string): FluxTable[] => {
   return tables
 }
 
-export const genericResponseParser = (response: string): FluxTable[] => {
-  const parsed = fromFlux(response)
-  console.log('parsed: ', parsed)
-}
-
 // const genericTableCreator = (annotationData, nonAnnotationData): any => {
 //   const headerRow = nonAnnotationData[0]
 //   const tableColIndex = headerRow.findIndex(h => h === 'table')

@@ -51,6 +51,10 @@ class CommunityTemplateResourceContentUnconnected extends PureComponent<Props> {
         >
           {Array.isArray(summary.dashboards) &&
             summary.dashboards.map(dashboard => {
+              let chartCount = 0
+              if (dashboard.charts && dashboard.charts.length) {
+                chartCount = dashboard.charts.length
+              }
               return (
                 <FlexBox
                   margin={ComponentSize.Small}
@@ -74,7 +78,7 @@ class CommunityTemplateResourceContentUnconnected extends PureComponent<Props> {
                       title={dashboard.name}
                       description={dashboard.description}
                     >
-                      Charts: {dashboard.charts.length}
+                      Charts: {chartCount}
                     </CommunityTemplateListItem>
                   </FlexBox.Child>
 

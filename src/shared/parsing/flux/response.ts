@@ -46,66 +46,6 @@ export const parseResponse = (response: string): FluxTable[] => {
   return tables
 }
 
-// const genericTableCreator = (annotationData, nonAnnotationData): any => {
-//   const headerRow = nonAnnotationData[0]
-//   const tableColIndex = headerRow.findIndex(h => h === 'table')
-//   const resultColIndex = headerRow.findIndex(h => h === 'result')
-//   interface TableGroup {
-//     [tableId: string]: string[]
-//   }
-
-//   const tableGroup: TableGroup = groupBy(
-//     nonAnnotationData.slice(1),
-//     row => row[tableColIndex]
-//   )
-//   // Group rows by their table id
-//   const tablesData = Object.values(tableGroup)
-
-//   const groupRow = annotationData.find(row => row[0] === '#group')
-//   const defaultsRow = annotationData.find(row => row[0] === '#default')
-//   const dataTypeRow = annotationData.find(row => row[0] === '#datatype')
-
-//   const groupKeyIndices = groupRow.reduce((acc, value, i) => {
-//     if (value === 'true') {
-//       return [...acc, i]
-//     }
-
-//     return acc
-//   }, [])
-
-//   const tables = tablesData.map(tableData => {
-//     const dataRow = get(tableData, '0', defaultsRow)
-//     const result: string =
-//       get(dataRow, resultColIndex, '') || get(defaultsRow, resultColIndex, '')
-
-//     const groupKey = groupKeyIndices.reduce((acc, i) => {
-//       return {...acc, [headerRow[i]]: get(dataRow, i, '')}
-//     }, {})
-
-//     const name = Object.entries(groupKey)
-//       .filter(([k]) => !['_start', '_stop'].includes(k))
-//       .map(([k, v]) => `${k}=${v}`)
-//       .join(' ')
-
-//     const dataTypes = dataTypeRow.reduce((acc, dataType, i) => {
-//       return {
-//         ...acc,
-//         [headerRow[i]]: dataType,
-//       }
-//     }, {})
-//     return {
-//       // id: uuid.v4(),
-//       data: [[...headerRow], ...tableData],
-//       name,
-//       result,
-//       groupKey,
-//       dataTypes,
-//     } as FluxTable
-//   })
-
-//   return tables
-// }
-
 export const parseTables = (responseChunk: string): FluxTable[] => {
   const lines = responseChunk.split('\n')
   const annotationLines: string = lines

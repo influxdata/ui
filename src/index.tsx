@@ -73,10 +73,8 @@ class Root extends PureComponent {
       <Provider store={store}>
         <ConnectedRouter history={history}>
           <Route component={GetLinks} />
-          <Switch>
-            <Route component={Setup} />
-            <Route component={NotFound} />
-          </Switch>
+          <Route component={Setup} />
+          <Route component={NotFound} />
         </ConnectedRouter>
       </Provider>
     )

@@ -447,6 +447,7 @@ export const flush = () => {
     method: 'GET',
     url: '/debug/flush',
   })
+
   cy.wait(500)
 }
 

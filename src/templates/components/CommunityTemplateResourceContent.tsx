@@ -193,7 +193,7 @@ class CommunityTemplateResourceContentUnconnected extends PureComponent<Props> {
                           templateResourceType: 'tasks',
                         })
                         this.props.toggleTemplateResourceInstall(
-                          'tasks',
+                          'summaryTask',
                           task.templateMetaName,
                           !task.shouldInstall
                         )

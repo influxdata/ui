@@ -39,20 +39,20 @@ export const extractValues = (
 ): VariableValues => {
   if (isFlagEnabled('fromFluxParseResponse')) {
     const {table} = fromFlux(csv)
-    if (!table || !table?.columns?._value) {
+    if (!table || !table.getColumn('_value', 'string')) {
       return {
         values: [],
         valueType: 'string',
         selected: [],
       }
     }
-    let values = table?.columns?._value?.data || []
+    let values = table.getColumn('_value', 'string') || []
     values = [...new Set(values)]
     values.sort()
 
     return {
       values,
-      valueType: table?.columns?._value?.type as FluxColumnType,
+      valueType: table.getColumnType('_value') as FluxColumnType,
       selected: [resolveSelectedKey(values, prevSelection, defaultSelection)],
     }
   }

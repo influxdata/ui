@@ -61,7 +61,7 @@ import {format_from_js_file} from '@influxdata/flux'
 const parseQueryResponse = response => {
   if (isFlagEnabled('fromFluxParseResponse')) {
     const {table} = fromFlux(response.csv)
-    return table?.columns?.value?.data || []
+    return table.getColumn('_value', 'string') || []
   }
   const data = (parse(response.csv) || [{data: [{}]}])[0].data
   return data.slice(1).map(r => r[3])

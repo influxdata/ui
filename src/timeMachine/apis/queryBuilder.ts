@@ -139,7 +139,7 @@ export function extractBoxedCol(
 export function extractCol(csv: string, colName: string): string[] {
   if (isFlagEnabled('fromFluxParseResponse')) {
     const {table} = fromFlux(csv)
-    return table?.columns[colName]?.data || []
+    return table.getColumn(colName, 'string') || []
   }
   const tables = parseResponse(csv)
   const data = get(tables, '0.data', [])

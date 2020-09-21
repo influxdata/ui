@@ -1,7 +1,7 @@
 import React, {FC} from 'react'
 
 const NotFound: FC = () => (
-  <div className="container-fluid" data-testid="404">
+  <div className="container-fluid" data-testid="not-found">
     <div className="panel">
       <div className="panel-heading text-center">
         <h1 className="deluxe">404</h1>

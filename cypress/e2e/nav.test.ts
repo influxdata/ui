@@ -40,12 +40,13 @@ describe('navigation', () => {
 
     // 404
     cy.visit('/not-a-route')
-    cy.getByTestID('404').should('exist')
+    cy.getByTestID('not-found').should('exist')
     cy.visit('/')
+
     cy.getByTestID('user-nav').should('exist')
     cy.get('@orgID').then(orgID => {
       cy.visit(`/orgs/${orgID}/not-a-route`)
-      cy.getByTestID('404').should('exist')
+      cy.getByTestID('not-found').should('exist')
     })
 
     /**\

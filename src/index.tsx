@@ -5,7 +5,7 @@ import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
 import React, {PureComponent} from 'react'
 import {render} from 'react-dom'
 import {Provider} from 'react-redux'
-import {Route, Switch} from 'react-router-dom'
+import {Route} from 'react-router-dom'
 import {ConnectedRouter} from 'connected-react-router'
 
 // Stores

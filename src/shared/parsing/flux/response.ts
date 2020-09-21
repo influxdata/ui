@@ -1,9 +1,23 @@
 import Papa from 'papaparse'
 import _ from 'lodash'
 import uuid from 'uuid'
-import {fromFlux} from '@influxdata/giraffe'
 
 import {FluxTable} from 'src/types'
+
+export const parseResponseError = (response: string): FluxTable[] => {
+  const data = Papa.parse(response.trim()).data as string[][]
+
+  return [
+    {
+      id: uuid.v4(),
+      name: 'Error',
+      result: '',
+      groupKey: {},
+      dataTypes: {},
+      data,
+    },
+  ]
+}
 
 /*
   A Flux CSV response can contain multiple CSV files each joined by a newline.

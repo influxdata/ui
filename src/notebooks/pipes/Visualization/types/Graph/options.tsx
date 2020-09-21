@@ -101,7 +101,9 @@ const GraphViewOptions: FC<VisOptionProps> = ({
             <SelectDropdown
               options={numericColumns}
               selectedOption={xColumn || 'Build a query before selecting...'}
-              onSelect={() => {}}
+              onSelect={xColumn => {
+                update({xColumn})
+              }}
               testID={`dropdown-x`}
               buttonStatus={
                 numericColumns.length == 0
@@ -114,7 +116,9 @@ const GraphViewOptions: FC<VisOptionProps> = ({
             <SelectDropdown
               options={numericColumns}
               selectedOption={yColumn || 'Build a query before selecting...'}
-              onSelect={() => {}}
+              onSelect={yColumn => {
+                update({yColumn})
+              }}
               testID={`dropdown-y`}
               buttonStatus={
                 numericColumns.length == 0

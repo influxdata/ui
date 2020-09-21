@@ -2,11 +2,7 @@
 import React, {FC, useContext, useCallback, useMemo, useState} from 'react'
 
 // Components
-import {
-  SquareButton,
-  IconFont,
-  ComponentColor
-} from '@influxdata/clockface'
+import {SquareButton, IconFont, ComponentColor} from '@influxdata/clockface'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 import DashboardList from './DashboardList'
 import ViewSwitcher from 'src/shared/components/ViewSwitcher'
@@ -145,7 +141,9 @@ const Visualization: FC<PipeProp> = ({Context}) => {
       <SquareButton
         icon={IconFont.CogThick}
         onClick={toggleOptions}
-        color={optionsVisibility ? ComponentColor.Primary : ComponentColor.Default}
+        color={
+          optionsVisibility ? ComponentColor.Primary : ComponentColor.Default
+        }
         titleText="Configure Visualization"
         className="flows-config-visualization-button"
       />

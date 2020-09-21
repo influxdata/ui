@@ -15,6 +15,7 @@ node_modules
 vendor
 
 # files
+cypress.env.json
 junit.xml
 npm-error.log
 src/client/generatedRoutes.ts

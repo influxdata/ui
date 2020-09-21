@@ -46,7 +46,7 @@
     "tsc": "tsc -p ./tsconfig.json --noEmit --pretty --skipLibCheck",
     "tsc:cypress": "tsc -p ./cypress/tsconfig.json --noEmit --pretty --skipLibCheck",
     "cy": "CYPRESS_baseUrl=http://localhost:9999 cypress open",
-    "cy:dev": "CYPRESS_baseUrl=http://localhost:8080 cypress open",
+    "cy:dev": "CYPRESS_baseUrl=http://kubernetes.docker.internal:8080 cypress open",
     "generate": "oats https://raw.githubusercontent.com/influxdata/influxdb/master/http/swagger.yml > ./src/client/generatedRoutes.ts"
   },
   "author": "",

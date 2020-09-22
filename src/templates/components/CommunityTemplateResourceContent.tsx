@@ -187,7 +187,7 @@ class CommunityTemplateResourceContentUnconnected extends PureComponent<Props> {
                 >
                   <FlexBox.Child grow={1}>
                     <CommunityTemplateListItem
-                      shouldInstall={true}
+                      shouldInstall={task.shouldInstall}
                       handleToggle={() => {
                         event('template_resource_uncheck', {
                           templateResourceType: 'tasks',

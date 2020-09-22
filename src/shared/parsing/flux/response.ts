@@ -3,7 +3,7 @@ import _ from 'lodash'
 import uuid from 'uuid'
 
 import {FluxTable, GroupKey} from 'src/types'
-import {fromFlux} from '@influxdata/giraffe'
+import {fromFlux, GetColumn} from '@influxdata/giraffe'
 
 export const parseResponseError = (response: string): FluxTable[] => {
   const data = Papa.parse(response.trim()).data as string[][]
@@ -163,9 +163,9 @@ export const fromFluxTableTransformer = (response: string): FluxTable[] => {
   } = fromFlux(response)
 
   columnKeys.forEach(col => {
-    let type = table.getColumnType(col)
+    let type: GetColumn = table.getColumnType(col)
     const values = table.getColumn(col, type)
-    let [val] = values
+    let [val]: any = values
     if (type === 'time') {
       type = 'dateTime:RFC3339'
       val = new Date(val).toISOString()

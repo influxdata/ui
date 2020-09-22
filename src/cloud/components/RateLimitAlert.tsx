@@ -28,7 +28,7 @@ import {CLOUD} from 'src/shared/constants'
 // Types
 import {AppState} from 'src/types'
 import {LimitStatus} from 'src/cloud/actions/limits'
-import RateLimitAlertContent from './RateLimitAlertContent'
+import RateLimitAlertContent from 'src/cloud/components/RateLimitAlertContent'
 
 interface StateProps {
   resources: string[]
@@ -76,7 +76,7 @@ const RateLimitAlert: FC<Props> = ({
   }
 
   if (CLOUD && !alertOnly) {
-    return <CloudUpgradeButton />
+    return <CloudUpgradeButton className="upgrade-payg--button__header" />
   }
 
   return null

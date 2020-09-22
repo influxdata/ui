@@ -49,7 +49,7 @@ const CloudUpgradeNavBanner: FC<StateProps> = ({inView}) => {
             </Panel.Header>
             <Panel.Footer size={ComponentSize.ExtraSmall}>
               <a
-                className="cf-button cf-button-md cf-button-primary cf-button-stretch cloud-upgrade-banner--button"
+                className="cf-button cf-button-md cf-button-primary cf-button-stretch cloud-upgrade-banner--button upgrade-payg--button__nav"
                 href={`${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`}
                 target="_self"
               >

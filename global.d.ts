@@ -9,6 +9,7 @@ declare let monaco: MonacoType
 declare global {
   interface Window {
     monaco: MonacoType
+    flushAllPromises: () => Promise<typeof setImmediate>
   }
   declare module '*.png' {
     const value: any

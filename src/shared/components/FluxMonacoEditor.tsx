@@ -7,11 +7,13 @@ import MonacoEditor from 'react-monaco-editor'
 
 // Utils
 import FLUXLANGID from 'src/external/monaco.flux.syntax'
-import THEME_NAME from 'src/external/monaco.flux.theme'
+// import THEME_NAME from 'src/external/monaco.flux.theme'
 import loadServer, {LSPServer} from 'src/external/monaco.flux.server'
 import {comments, submit} from 'src/external/monaco.flux.hotkeys'
 import {registerAutogrow} from 'src/external/monaco.autogrow'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+const THEME_NAME = 'baseTheme'
 
 // Types
 import {OnChangeScript} from 'src/types/flux'

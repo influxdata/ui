@@ -6,13 +6,6 @@ import fetchMock from 'jest-fetch-mock'
 // global vars
 process.env.API_PREFIX = 'http://example.com/'
 
-declare global {
-  interface Window {
-    flushAllPromises: () => Promise<any>
-    MutationObserver: MutationObserver
-  }
-}
-
 // Adds MutationObserver as a polyfill for testing
 window.MutationObserver = MutationObserver
 

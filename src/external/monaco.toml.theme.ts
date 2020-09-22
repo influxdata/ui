@@ -1,6 +1,6 @@
 import {MonacoType} from 'src/types'
 
-const THEME_NAME = 'tomlTheme'
+export const THEME_NAME = 'tomlTheme'
 
 function addTheme(monaco: MonacoType) {
   monaco.editor.defineTheme(THEME_NAME, {
@@ -55,5 +55,3 @@ function addTheme(monaco: MonacoType) {
 }
 
 addTheme(window.monaco)
-
-export default THEME_NAME

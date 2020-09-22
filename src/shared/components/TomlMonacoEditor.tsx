@@ -3,12 +3,14 @@ import React, {FC} from 'react'
 
 // Components
 import MonacoEditor from 'react-monaco-editor'
-import THEME_NAME from 'src/external/monaco.toml.theme'
+// import {THEME_NAME} from 'src/external/monaco.toml.theme'
 import TOMLLANGID from 'src/external/monaco.toml.syntax'
 import {OnChangeScript} from 'src/types/flux'
 import * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api'
 
 import './FluxMonacoEditor.scss'
+
+const THEME_NAME = 'tomlTheme'
 
 interface Position {
   line: number

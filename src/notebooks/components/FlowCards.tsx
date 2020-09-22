@@ -8,6 +8,7 @@ import FlowCard from 'src/notebooks/components/FlowCard'
 
 const FlowCards = () => {
   const {notebooks} = useContext(NotebookListContext)
+
   return (
     <Grid>
       <Grid.Row>

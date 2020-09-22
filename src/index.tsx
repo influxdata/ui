@@ -60,9 +60,8 @@ declare global {
 }
 
 window.addEventListener('keyup', event => {
-  const escapeKeyCode = 27
   // fallback for browsers that don't support event.key
-  if (event.key === 'Escape' || event.keyCode === escapeKeyCode) {
+  if (event.key === 'Escape') {
     dispatch(disablePresentationMode())
   }
 })

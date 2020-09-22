@@ -46,7 +46,7 @@ const RateLimitAlertContent: FC<Props> = ({showUpgrade, className}) => {
           Oh no! You hit the{' '}
           <a
             href="https://v2.docs.influxdata.com/v2.0/reference/glossary/#series-cardinality"
-            data-trackid="rate-alert--docs-link"
+            className="rate-alert--docs-link"
             target="_blank"
           >
             series cardinality
@@ -69,7 +69,7 @@ const RateLimitAlertContent: FC<Props> = ({showUpgrade, className}) => {
         Data in has stopped because you've hit the{' '}
         <a
           href="https://v2.docs.influxdata.com/v2.0/reference/glossary/#series-cardinality"
-          data-trackid="rate-alert--docs-link"
+          className="rate-alert--docs-link"
           target="_blank"
         >
           series cardinality

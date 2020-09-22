@@ -2,7 +2,8 @@ import Papa from 'papaparse'
 import _ from 'lodash'
 import uuid from 'uuid'
 
-import {FluxTable} from 'src/types'
+import {FluxTable, GroupKey} from 'src/types'
+import {fromFlux} from '@influxdata/giraffe'
 
 export const parseResponseError = (response: string): FluxTable[] => {
   const data = Papa.parse(response.trim()).data as string[][]
@@ -147,4 +148,89 @@ export const parseTables = (responseChunk: string): FluxTable[] => {
   })
 
   return tables
+}
+
+export const fromFluxTableTransformer = (response: string): FluxTable[] => {
+  const dataTypes = {
+    '': '#datatype',
+  }
+  const groupKey = {}
+  const dataStore = {}
+
+  const {
+    table,
+    table: {columnKeys},
+  } = fromFlux(response)
+
+  columnKeys.forEach(col => {
+    let type = table.getColumnType(col)
+    const values = table.getColumn(col, type)
+    let [val] = values
+    if (type === 'time') {
+      type = 'dateTime:RFC3339'
+      val = new Date(val).toISOString()
+    }
+    if (col === 'table') {
+      type = 'long'
+    }
+    dataTypes[col] = type
+    if (!['result', '_time', '_value', 'table'].includes(col)) {
+      groupKey[col] = val
+    }
+    if (!['', 'result', 'table'].includes(col)) {
+      dataStore[col] = values
+    }
+  })
+
+  const headerRow = columnKeys.filter(c => c !== 'result' && c !== 'table')
+  const data = [headerRow].concat(mapTableData(headerRow, dataStore))
+
+  const [result] = `${table.getColumn('result')}`
+  const name = getNameByGroupKey(groupKey)
+
+  return [
+    {
+      id: uuid.v4(),
+      name,
+      data,
+      result,
+      groupKey,
+      dataTypes,
+    },
+  ]
+}
+
+const getNameByGroupKey = (groupKey: GroupKey): string =>
+  Object.entries(groupKey)
+    .filter(([k]) => !['_start', '_stop'].includes(k))
+    .map(([k, v]) => `${k}=${v}`)
+    .join(' ')
+
+const mapTableData = (headerRow: string[], data): string[][] => {
+  const tableData = []
+  for (let i = 0; i < data._start.length; i++) {
+    const rowData = getRowData(headerRow, data, i)
+    tableData.push(rowData)
+  }
+  return tableData
+}
+
+const getRowData = (headerRow: string[], data: any, index: number): any[] =>
+  headerRow.reduce((acc, col) => {
+    let colData = data[col][index]
+    if (needsTimestampConversion(col, colData)) {
+      colData = new Date(colData).toISOString()
+    }
+    acc.push(colData)
+    return acc
+  }, [])
+
+const needsTimestampConversion = (
+  col: string,
+  data: number | string
+): boolean => {
+  if (col !== '_start' && col !== '_stop') {
+    return false
+  }
+  return typeof data === 'number'
 }

@@ -151,6 +151,10 @@ export interface FluxLinks {
   ast: string
 }
 
+export type GroupKey = {
+  [columnName: string]: string
+}
+
 // FluxTable is the result of a request to Flux
 // https://github.com/influxdata/influxdb/blob/master/query/docs/SPEC.md#response-format
 export interface FluxTable {
@@ -158,9 +162,7 @@ export interface FluxTable {
   name: string
   data: string[][]
   result: string
-  groupKey: {
-    [columnName: string]: string
-  }
+  groupKey: GroupKey
   dataTypes: {
     [columnName: string]: string
   }

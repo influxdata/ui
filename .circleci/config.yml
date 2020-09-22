@@ -23,7 +23,7 @@ jobs:
           command: cd ./monitor-ci && make update
       - run:
           name: Busting the cache
-          command: cd ./monitor-ci && make build NODE=ingress && make build NODE=cypress
+          command: cd ./monitor-ci && make build NODE=debug && make build NODE=cypress
       - run:
           name: Build the new UI (for idpe run make rebuild NODE=influxdb)
           command: cd ./monitor-ci; cp ./conf/chronograf/nginx.conf ../ui/; make rebuild NODE=chronograf

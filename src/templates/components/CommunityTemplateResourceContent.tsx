@@ -332,6 +332,48 @@ class CommunityTemplateResourceContentUnconnected extends PureComponent<Props> {
               )
             })}
         </CommunityTemplateListGroup>
+
+        <CommunityTemplateListGroup
+          title="Notification Endpoints"
+          count={getResourceInstallCount(summary.notificationEndpoints)}
+        >
+          {Array.isArray(summary.notificationEndpoints) &&
+            summary.notificationEndpoints.map(notificationEndpoint => {
+              return (
+                <FlexBox
+                  margin={ComponentSize.Small}
+                  direction={FlexDirection.Row}
+                  alignItems={AlignItems.Stretch}
+                  key={notificationEndpoint.templateMetaName}
+                >
+                  <FlexBox.Child grow={1}>
+                    <CommunityTemplateListItem
+                      shouldInstall={notificationEndpoint.shouldInstall}
+                      handleToggle={() => {
+                        event('template_resource_uncheck', {
+                          templateResourceType: 'notification rules',
+                        })
+                        this.props.toggleTemplateResourceInstall(
+                          'notificationEndpoints',
+                          notificationEndpoint.templateMetaName,
+                          !notificationEndpoint.shouldInstall
+                        )
+                      }}
+                      key={notificationEndpoint.templateMetaName}
+                      title={notificationEndpoint.notificationEndpoint.name}
+                      description={notificationEndpoint.description}
+                    />
+                  </FlexBox.Child>
+                  {resourceHasEnvRefs(summary) && (
+                    <FlexBox.Child>
+                      <CommunityTemplateParameters resource={summary} />
+                    </FlexBox.Child>
+                  )}
+                </FlexBox>
+              )
+            })}
+        </CommunityTemplateListGroup>
+
         <CommunityTemplateListGroup
           title="Labels"
           count={getResourceInstallCount(summary.labels)}

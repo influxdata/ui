@@ -114,3 +114,9 @@ export const GIRAFFE_COLOR_SCHEMES = [
 export const BAND_LINE_OPACITY = 0.7
 export const BAND_LINE_WIDTH = 3
 export const BAND_SHADE_OPACITY = 0.3
+
+export const LEGEND_OPACITY_DEFAULT = 1.0
+export const LEGEND_OPACITY_MAXIMUM = 1.0
+export const LEGEND_OPACITY_MINIMUM = 0.2
+export const LEGEND_OPACITY_STEP = 0.01
+export const LEGEND_ORIENTATION_THRESHOLD_DEFAULT = 10

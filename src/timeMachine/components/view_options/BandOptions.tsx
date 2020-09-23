@@ -12,6 +12,7 @@ import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import YAxisBase from 'src/timeMachine/components/view_options/YAxisBase'
 import ColumnSelector from 'src/shared/components/ColumnSelector'
 import TimeFormat from 'src/timeMachine/components/view_options/TimeFormat'
+import LegendOrientation from 'src/timeMachine/components/view_options/LegendOrientation'
 
 // Actions
 import {
@@ -29,6 +30,8 @@ import {
   setUpperColumn,
   setMainColumn,
   setLowerColumn,
+  setLegendOpacity,
+  setLegendOrientationThreshold,
 } from 'src/timeMachine/actions'
 
 // Utils
@@ -90,6 +93,8 @@ class BandOptions extends PureComponent<Props> {
       onSetHoverDimension,
       selectedFunctions,
       onSetMainColumn,
+      onSetLegendOpacity,
+      onSetLegendOrientationThreshold,
     } = this.props
 
     const upperAndLowerColumnOptions = [
@@ -218,6 +223,10 @@ class BandOptions extends PureComponent<Props> {
             label="Y Axis Domain"
           />
         </Grid.Column>
+        <LegendOrientation
+          onLegendOpacityChange={onSetLegendOpacity}
+          onLegendOrientationThresholdChange={onSetLegendOrientationThreshold}
+        />
       </>
     )
   }
@@ -319,6 +328,8 @@ const mdtp = {
   onSetUpperColumn: setUpperColumn,
   onSetMainColumn: setMainColumn,
   onSetLowerColumn: setLowerColumn,
+  onSetLegendOpacity: setLegendOpacity,
+  onSetLegendOrientationThreshold: setLegendOrientationThreshold,
 }
 
 const connector = connect(mstp, mdtp)

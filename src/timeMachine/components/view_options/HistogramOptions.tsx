@@ -1,5 +1,5 @@
 // Libraries
-import React, {SFC} from 'react'
+import React, {FunctionComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import _ from 'lodash'
 
@@ -14,6 +14,7 @@ import {
 import ColorSchemeDropdown from 'src/shared/components/ColorSchemeDropdown'
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import BinCountInput from 'src/timeMachine/components/view_options/BinCountInput'
+import LegendOrientation from 'src/timeMachine/components/view_options/LegendOrientation'
 
 // Actions
 import {
@@ -24,6 +25,8 @@ import {
   setColors,
   setXDomain,
   setXAxisLabel,
+  setLegendOpacity,
+  setLegendOrientationThreshold,
 } from 'src/timeMachine/actions'
 
 // Utils
@@ -52,7 +55,7 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
-const HistogramOptions: SFC<Props> = props => {
+const HistogramOptions: FunctionComponent<Props> = props => {
   const {
     xColumn,
     fillColumns,
@@ -70,6 +73,8 @@ const HistogramOptions: SFC<Props> = props => {
     onSetColors,
     onSetXDomain,
     onSetXAxisLabel,
+    onSetLegendOpacity,
+    onSetLegendOrientationThreshold,
   } = props
 
   const groupDropdownStatus = availableGroupColumns.length
@@ -155,6 +160,10 @@ const HistogramOptions: SFC<Props> = props => {
         onSetDomain={onSetXDomain}
         label="X Axis Domain"
       />
+      <LegendOrientation
+        onLegendOpacityChange={onSetLegendOpacity}
+        onLegendOrientationThresholdChange={onSetLegendOrientationThreshold}
+      />
     </Grid.Column>
   )
 }
@@ -176,6 +185,8 @@ const mdtp = {
   onSetColors: setColors,
   onSetXDomain: setXDomain,
   onSetXAxisLabel: setXAxisLabel,
+  onSetLegendOpacity: setLegendOpacity,
+  onSetLegendOrientationThreshold: setLegendOrientationThreshold,
 }
 
 const connector = connect(mstp, mdtp)

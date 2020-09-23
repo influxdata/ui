@@ -1,16 +1,21 @@
 // Libraries
-import React, {FunctionComponent} from 'react'
+import React, {FunctionComponent, useMemo} from 'react'
 import {Config, Table} from '@influxdata/giraffe'
 
 // Components
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 
 // Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {useVisXDomainSettings} from 'src/shared/utils/useVisDomainSettings'
 import {getFormatter} from 'src/shared/utils/vis'
 
 // Constants
-import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
+import {
+  LEGEND_OPACITY_DEFAULT,
+  VIS_THEME,
+  VIS_THEME_LIGHT,
+} from 'src/shared/constants'
 import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {INVALID_DATA_COPY} from 'src/shared/copy/cell'
 
@@ -37,10 +42,26 @@ const HistogramPlot: FunctionComponent<Props> = ({
     colors,
     xAxisLabel,
     xDomain: storedXDomain,
+    legendOpacity,
+    legendOrientationThreshold,
   },
   theme,
 }) => {
   const columnKeys = table.columnKeys
+
+  const tooltipOpacity = useMemo(() => {
+    if (isFlagEnabled('legendOrientation')) {
+      return legendOpacity
+    }
+    return LEGEND_OPACITY_DEFAULT
+  }, [legendOpacity])
+
+  const tooltipOrientationThreshold = useMemo(() => {
+    if (isFlagEnabled('legendOrientation')) {
+      return legendOrientationThreshold
+    }
+    return undefined
+  }, [legendOrientationThreshold])
 
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
     storedXDomain,
@@ -73,6 +94,8 @@ const HistogramPlot: FunctionComponent<Props> = ({
     onSetXDomain,
     onResetXDomain,
     valueFormatters: {[xColumn]: xFormatter},
+    legendOpacity: tooltipOpacity,
+    legendOrientationThreshold: tooltipOrientationThreshold,
     layers: [
       {
         type: 'histogram',

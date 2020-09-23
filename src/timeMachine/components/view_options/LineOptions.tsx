@@ -14,6 +14,7 @@ import YAxisBase from 'src/timeMachine/components/view_options/YAxisBase'
 import ColumnSelector from 'src/shared/components/ColumnSelector'
 import Checkbox from 'src/shared/components/Checkbox'
 import TimeFormat from 'src/timeMachine/components/view_options/TimeFormat'
+import LegendOrientation from 'src/timeMachine/components/view_options/LegendOrientation'
 
 // Actions
 import {
@@ -30,6 +31,8 @@ import {
   setLinePosition,
   setTimeFormat,
   setHoverDimension,
+  setLegendOpacity,
+  setLegendOrientationThreshold,
 } from 'src/timeMachine/actions'
 
 // Utils
@@ -93,6 +96,8 @@ class LineOptions extends PureComponent<Props> {
       timeFormat,
       hoverDimension = 'auto',
       onSetHoverDimension,
+      onSetLegendOpacity,
+      onSetLegendOrientationThreshold,
     } = this.props
 
     return (
@@ -228,6 +233,10 @@ class LineOptions extends PureComponent<Props> {
             />
           </Form.Element>
         </Grid.Column>
+        <LegendOrientation
+          onLegendOpacityChange={onSetLegendOpacity}
+          onLegendOrientationThresholdChange={onSetLegendOrientationThreshold}
+        />
       </>
     )
   }
@@ -277,6 +286,8 @@ const mdtp = {
   onSetPosition: setLinePosition,
   onSetTimeFormat: setTimeFormat,
   onSetHoverDimension: setHoverDimension,
+  onSetLegendOpacity: setLegendOpacity,
+  onSetLegendOrientationThreshold: setLegendOrientationThreshold,
 }
 
 const connector = connect(mstp, mdtp)

@@ -1,10 +1,11 @@
 // Libraries
-import React, {SFC} from 'react'
+import React, {FunctionComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import {Form, Grid, Input} from '@influxdata/clockface'
 import TimeFormat from 'src/timeMachine/components/view_options/TimeFormat'
+import LegendOrientation from 'src/timeMachine/components/view_options/LegendOrientation'
 
 // Actions
 import {
@@ -16,6 +17,8 @@ import {
   setXColumn,
   setYSeriesColumns,
   setTimeFormat,
+  setLegendOpacity,
+  setLegendOrientationThreshold,
 } from 'src/timeMachine/actions'
 
 // Utils
@@ -52,7 +55,7 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
-const MosaicOptions: SFC<Props> = props => {
+const MosaicOptions: FunctionComponent<Props> = props => {
   const {
     fillColumns,
     yAxisLabel,
@@ -70,6 +73,8 @@ const MosaicOptions: SFC<Props> = props => {
     onSetYSeriesColumns,
     onSetTimeFormat,
     timeFormat,
+    onSetLegendOpacity,
+    onSetLegendOrientationThreshold,
   } = props
 
   const handleFillColumnSelect = (column: string): void => {
@@ -131,6 +136,10 @@ const MosaicOptions: SFC<Props> = props => {
           onChange={e => onSetYAxisLabel(e.target.value)}
         />
       </Form.Element>{' '}
+      <LegendOrientation
+        onLegendOpacityChange={onSetLegendOpacity}
+        onLegendOrientationThresholdChange={onSetLegendOrientationThreshold}
+      />
     </Grid.Column>
   )
 }
@@ -165,6 +174,8 @@ const mdtp = {
   onSetXColumn: setXColumn,
   onSetYSeriesColumns: setYSeriesColumns,
   onSetTimeFormat: setTimeFormat,
+  onSetLegendOpacity: setLegendOpacity,
+  onSetLegendOrientationThreshold: setLegendOrientationThreshold,
 }
 
 const connector = connect(mstp, mdtp)

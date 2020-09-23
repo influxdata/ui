@@ -21,6 +21,7 @@ import {defaultXColumn, defaultYColumn} from 'src/shared/utils/vis'
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import HexColorSchemeDropdown from 'src/shared/components/HexColorSchemeDropdown'
 
+import {HeatmapViewProperties} from 'src/types'
 import {VisOptionProps} from '../../'
 
 const HEATMAP_COLOR_SCHEMES = [
@@ -30,11 +31,11 @@ const HEATMAP_COLOR_SCHEMES = [
   {name: 'Plasma', colors: PLASMA},
 ]
 
-const HeatmapOptions: FC<VisOptionProps> = ({properties, results, update}) => {
-  if (properties.type !== 'heatmap') {
-    throw new Error('How did you get here?')
-  }
+interface Props extends VisOptionProps {
+    properties: HeatmapViewProperties
+}
 
+const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
   const [binInputStatus, setBinInputStatus] = useState(ComponentStatus.Default)
   const [binInput, setBinInput] = useState(properties.binSize)
 
@@ -128,12 +129,6 @@ const HeatmapOptions: FC<VisOptionProps> = ({properties, results, update}) => {
               }}
             />
           </Form.Element>
-        </Grid.Column>
-        <Grid.Column
-          widthXS={Columns.Twelve}
-          widthMD={Columns.Six}
-          widthLG={Columns.Four}
-        >
           <h5 className="view-options--header">Options</h5>
           <Form.Element label="Color Scheme">
             <HexColorSchemeDropdown
@@ -153,6 +148,12 @@ const HeatmapOptions: FC<VisOptionProps> = ({properties, results, update}) => {
               testID="bin-size-input"
             />
           </Form.Element>
+        </Grid.Column>
+        <Grid.Column
+          widthXS={Columns.Twelve}
+          widthMD={Columns.Six}
+          widthLG={Columns.Four}
+        >
           <h5 className="view-options--header">X Axis</h5>
           <Form.Element label="X Axis Label">
             <Input
@@ -162,8 +163,6 @@ const HeatmapOptions: FC<VisOptionProps> = ({properties, results, update}) => {
               }}
             />
           </Form.Element>
-        </Grid.Column>
-        <Grid.Column>
           <Grid.Row>
             <Grid.Column widthSM={Columns.Six}>
               <Form.Element label="X Tick Prefix">
@@ -186,12 +185,6 @@ const HeatmapOptions: FC<VisOptionProps> = ({properties, results, update}) => {
               </Form.Element>
             </Grid.Column>
           </Grid.Row>
-        </Grid.Column>
-        <Grid.Column
-          widthXS={Columns.Twelve}
-          widthMD={Columns.Six}
-          widthLG={Columns.Four}
-        >
           <AutoDomainInput
             domain={properties.xDomain as [number, number]}
             onSetDomain={domain => {
@@ -199,6 +192,12 @@ const HeatmapOptions: FC<VisOptionProps> = ({properties, results, update}) => {
             }}
             label="X Axis Domain"
           />
+        </Grid.Column>
+        <Grid.Column
+          widthXS={Columns.Twelve}
+          widthMD={Columns.Six}
+          widthLG={Columns.Four}
+        >
           <h5 className="view-options--header">Y Axis</h5>
           <Form.Element label="Y Axis Label">
             <Input

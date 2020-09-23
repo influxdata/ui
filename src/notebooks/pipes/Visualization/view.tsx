@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useCallback, useMemo, useState} from 'react'
+import React, {FC, createElement, useContext, useCallback, useMemo, useState} from 'react'
 
 // Components
 import {SquareButton, IconFont, ComponentColor} from '@influxdata/clockface'
@@ -163,7 +163,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     if (!optionsVisibility || !TYPE_DEFINITIONS[data.properties.type].options) {
       return null
     }
-    return TYPE_DEFINITIONS[data.properties.type].options({
+    return createElement(TYPE_DEFINITIONS[data.properties.type].options, {
       properties: data.properties,
       results: results.parsed,
       update: updateProperties,

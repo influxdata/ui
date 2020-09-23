@@ -93,6 +93,8 @@ class BandOptions extends PureComponent<Props> {
       onSetHoverDimension,
       selectedFunctions,
       onSetMainColumn,
+      upperColumn,
+      lowerColumn,
       onSetLegendOpacity,
       onSetLegendOrientationThreshold,
     } = this.props
@@ -130,7 +132,7 @@ class BandOptions extends PureComponent<Props> {
           <h5 className="view-options--header">Aggregate Functions</h5>
           <Form.Element label="Upper Column Name">
             <SelectDropdown
-              selectedOption={this.selectedUpperColumn}
+              selectedOption={upperColumn}
               options={upperAndLowerColumnOptions}
               onSelect={this.onChangeUpperColumn}
             />
@@ -144,7 +146,7 @@ class BandOptions extends PureComponent<Props> {
           </Form.Element>
           <Form.Element label="Lower Column Name">
             <SelectDropdown
-              selectedOption={this.selectedLowerColumn}
+              selectedOption={lowerColumn}
               options={upperAndLowerColumnOptions}
               onSelect={this.onChangeLowerColumn}
             />
@@ -235,28 +237,13 @@ class BandOptions extends PureComponent<Props> {
     return parseYBounds(this.props.axes.y.bounds)
   }
 
-  private selectedColumn = (columnType: string): string => {
-    const hasSelectedFunction = this.props.selectedFunctions.some(
-      funcName => funcName === this.props[columnType]
-    )
-    return hasSelectedFunction ? this.props[columnType] : ''
-  }
-
-  private get selectedUpperColumn(): string {
-    return this.selectedColumn('upperColumn')
-  }
-
   private get selectedMainColumn(): string {
     return getMainColumnName(
       this.props.selectedFunctions,
-      this.selectedUpperColumn,
+      this.props.upperColumn,
       this.props.mainColumn,
-      this.selectedLowerColumn
+      this.props.lowerColumn
     )
-  }
-
-  private get selectedLowerColumn(): string {
-    return this.selectedColumn('lowerColumn')
   }
 
   private setBoundValues = (value: number | null): string | null => {

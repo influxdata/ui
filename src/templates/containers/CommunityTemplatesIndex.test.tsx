@@ -1,5 +1,9 @@
 import React, {Component} from 'react'
 
-describe('the Community Templates integration test', () => {
+import {CommunityTemplatesIndex} from 'src/templates/containers/CommunityTemplatesIndex'
 
+describe('the Community Templates integration test', () => {
+  it('is super basic', () => {
+    expect(true).toBeTruthy()
+  })
 })

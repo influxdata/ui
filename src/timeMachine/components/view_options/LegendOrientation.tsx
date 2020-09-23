@@ -52,7 +52,11 @@ const LegendOrientation: FC<Props> = props => {
     legendOrientationThreshold
   )
 
-  const hanldeSetThreshold = (event: ChangeEvent<HTMLInputElement>): void => {
+  if (!isFlagEnabled('legendOrientation')) {
+    return null
+  }
+
+  const handleSetThreshold = (event: ChangeEvent<HTMLInputElement>): void => {
     const value = convertUserInputToNumOrNaN(event)
 
     setThresholdInput(value)
@@ -74,17 +78,17 @@ const LegendOrientation: FC<Props> = props => {
     }
   }
 
-  if (!isFlagEnabled('legendOrientation')) {
-    return null
-  }
   return (
     <Grid.Column>
       <h5 className="view-options--header">Legend</h5>
-      <Form.Element label="Horizontal Column Count Threshold">
+      <Form.Element
+        label="Rotation Threshold"
+        helpText="Legends with column count exceeding this threshold appear vertically instead of horizontally"
+      >
         <Input
           name="legend-columns"
-          onChange={hanldeSetThreshold}
-          onFocus={hanldeSetThreshold}
+          onChange={handleSetThreshold}
+          onFocus={handleSetThreshold}
           placeholder="Enter a number"
           status={thresholdInputStatus}
           type={InputType.Number}

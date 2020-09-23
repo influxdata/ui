@@ -1,6 +1,7 @@
 import Papa from 'papaparse'
 import HtmlEntities from 'he'
 import unraw from 'unraw'
+import {fromFlux} from '@influxdata/giraffe'
 
 import {parseChunks} from 'src/shared/parsing/flux/response'
 import {
@@ -12,6 +13,107 @@ import {
 export interface ParseFilesResult {
   data: string[][]
   maxColumnCount: number
+}
+
+export const parseFilesWithFromFlux = (
+  responses: string[]
+): ParseFilesResult => {
+  const chunks = parseChunks(responses.join('\n\n'))
+  const parsedChunks = chunks.map(c => fromFluxTableTransformer(c))
+  let data = []
+  parsedChunks.forEach((chunk, i) => {
+    data = data.concat(chunk)
+    if (i !== parsedChunks.length - 1) {
+      data.push([])
+    }
+  })
+  const maxColumnCount = Math.max(...parsedChunks.map(c => c[0].length))
+  return {data, maxColumnCount}
+}
+
+export const fromFluxTableTransformer = (response: string): string[][] => {
+  const dataTypes = ['#datatype']
+  const groupKey = {}
+  const dataStore = {}
+  const {
+    fluxGroupKeyUnion,
+    table,
+    table: {columnKeys},
+  } = fromFlux(response)
+
+  const groupSet = new Set(fluxGroupKeyUnion)
+  const groupRow = ['#group']
+  columnKeys.forEach(col => groupRow.push(`${groupSet.has(col)}`))
+
+  columnKeys.forEach(col => {
+    let type: any = table.getColumnType(col)
+    const values = table.getColumn(col, type)
+    let [val]: any = values
+    if (type === 'time') {
+      type = 'dateTime:RFC3339'
+      val = new Date(val).toISOString()
+    }
+    if (col === 'table') {
+      type = 'long'
+    }
+    if (!groupSet.has(col)) {
+      groupKey[col] = val
+    }
+    dataTypes.push(type)
+    dataStore[col] = values
+  })
+
+  const values = table.getColumn('result')
+  const defaultRow = ['#default', values[0]]
+  while (defaultRow.length < columnKeys.length) {
+    defaultRow.push('')
+  }
+  const data: any[] = [
+    groupRow,
+    dataTypes,
+    defaultRow,
+    ['', ...columnKeys],
+  ].concat(mapTableData(columnKeys, dataStore))
+
+  return data
+}
+
+const mapTableData = (headerRow: string[], data): string[][] => {
+  const tableData = []
+  for (let i = 0; i < data._start.length; i++) {
+    const rowData = getRowData(headerRow, data, i)
+    tableData.push(rowData)
+  }
+  return tableData
+}
+
+const getRowData = (headerRow: string[], data: any, index: number): any[] =>
+  headerRow.reduce(
+    (acc, col) => {
+      let colData = data[col][index]
+      if (needsTimestampConversion(col, colData)) {
+        colData = new Date(colData).toISOString()
+      }
+      if (col === 'result') {
+        // setting the column data for result as an empty string since the default
+        // value given is set in the default headers:
+        // https://github.com/influxdata/flux/blob/master/docs/SPEC.md#response-format
+        colData = ''
+      }
+      acc.push(`${colData}`)
+      return acc
+    },
+    ['']
+  )
+
+const needsTimestampConversion = (
+  col: string,
+  data: number | string
+): boolean => {
+  if (col !== '_start' && col !== '_stop') {
+    return false
+  }
+  return typeof data === 'number'
 }
 
 export const parseFiles = (responses: string[]): ParseFilesResult => {

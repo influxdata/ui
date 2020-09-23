@@ -9,6 +9,7 @@ export interface AppState {
   ephemeral: {
     inPresentationMode: boolean
     hasUpdatedTimeRangeInVEO: boolean
+    shouldShowCancelBtn: boolean
   }
   persisted: {
     autoRefresh: number
@@ -24,6 +25,7 @@ const initialState: AppState = {
   ephemeral: {
     inPresentationMode: false,
     hasUpdatedTimeRangeInVEO: false,
+    shouldShowCancelBtn: false,
   },
   persisted: {
     theme: 'dark',
@@ -70,6 +72,20 @@ const appEphemeralReducer = (
       return {
         ...state,
         hasUpdatedTimeRangeInVEO: false,
+      }
+    }
+
+    case ActionTypes.EnableCancelBtn: {
+      return {
+        ...state,
+        shouldShowCancelBtn: true,
+      }
+    }
+
+    case ActionTypes.DisableCancelBtn: {
+      return {
+        ...state,
+        shouldShowCancelBtn: false,
       }
     }
 

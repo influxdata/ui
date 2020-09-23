@@ -1,11 +1,17 @@
-import {PRESENTATION_MODE_ANIMATION_DELAY} from '../constants'
+// Constants
+import {
+  CANCEL_BTN_DELAY,
+  PRESENTATION_MODE_ANIMATION_DELAY, // NOTE: this needs to be imported at the top of the file otherwise the app doesn't compile properly due to a race condition
+} from 'src/shared/constants'
 
+// Utils
 import {
   notify,
   PublishNotificationAction,
 } from 'src/shared/actions/notifications'
 import {presentationMode} from 'src/shared/copy/notifications'
 
+// Types
 import {Dispatch} from 'redux'
 import {TimeZone, Theme, NavBarState, NotebookMiniMapState} from 'src/types'
 
@@ -14,6 +20,8 @@ export enum ActionTypes {
   DisablePresentationMode = 'DISABLE_PRESENTATION_MODE',
   EnableUpdatedTimeRangeInVEO = 'ENABLE_UPDATED_TIMERANGE_IN_VEO',
   DisableUpdatedTimeRangeInVEO = 'DISABLE_UPDATED_TIMERANGE_IN_VEO',
+  EnableCancelBtn = 'ENABLE_CANCEL_BTN',
+  DisableCancelBtn = 'DISABLE_CANCEL_BTN',
   SetNavBarState = 'SET_NAV_BAR_STATE',
   SetNotebookMiniMapState = 'SET_NOTEBOOK_MINI_MAP_STATE',
   SetAutoRefresh = 'SET_AUTOREFRESH',
@@ -27,6 +35,8 @@ export type Action =
   | ReturnType<typeof disablePresentationMode>
   | ReturnType<typeof enableUpdatedTimeRangeInVEO>
   | ReturnType<typeof disableUpdatedTimeRangeInVEO>
+  | ReturnType<typeof enableCancelBtn>
+  | ReturnType<typeof disableCancelBtn>
   | ReturnType<typeof setNavBarState>
   | ReturnType<typeof setNotebookMiniMapState>
   | ReturnType<typeof setAutoRefresh>
@@ -55,6 +65,16 @@ export const disableUpdatedTimeRangeInVEO = () =>
     type: ActionTypes.DisableUpdatedTimeRangeInVEO,
   } as const)
 
+export const enableCancelBtn = () =>
+  ({
+    type: ActionTypes.EnableCancelBtn,
+  } as const)
+
+export const disableCancelBtn = () =>
+  ({
+    type: ActionTypes.DisableCancelBtn,
+  } as const)
+
 export const delayEnablePresentationMode = () => (
   dispatch: Dispatch<
     ReturnType<typeof enablePresentationMode> | PublishNotificationAction
@@ -64,6 +84,13 @@ export const delayEnablePresentationMode = () => (
     dispatch(enablePresentationMode())
     dispatch(notify(presentationMode()))
   }, PRESENTATION_MODE_ANIMATION_DELAY)
+
+export const delayEnableCancelBtn = () => (
+  dispatch: Dispatch<ReturnType<typeof enableCancelBtn>>
+): NodeJS.Timer =>
+  setTimeout(() => {
+    dispatch(enableCancelBtn())
+  }, CANCEL_BTN_DELAY)
 
 // persistent state action creators
 

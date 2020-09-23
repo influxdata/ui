@@ -14,6 +14,7 @@ import {InfluxColors} from '@influxdata/clockface'
 import {AutoRefreshStatus} from 'src/types'
 
 export const DEFAULT_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss ZZ'
+export const CANCEL_BTN_DELAY = 2000
 
 export const DROPDOWN_MENU_MAX_HEIGHT = 240
 

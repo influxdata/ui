@@ -19,6 +19,7 @@ import {notify} from 'src/shared/actions/notifications'
 import {getActiveTimeMachine, getActiveQuery} from 'src/timeMachine/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {queryCancelRequest} from 'src/shared/copy/notifications'
+import {delayEnableCancelBtn} from 'src/shared/actions/app'
 
 // Types
 import {AppState, RemoteDataState} from 'src/types'
@@ -32,8 +33,6 @@ interface OwnProps {
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
-
-const DELAYTIME = 2000
 
 class SubmitQueryButton extends PureComponent<Props> {
   public static defaultProps = {
@@ -62,9 +61,16 @@ class SubmitQueryButton extends PureComponent<Props> {
   }
 
   public render() {
-    const {text, queryStatus, icon, testID, className} = this.props
+    const {
+      className,
+      icon,
+      queryStatus,
+      testID,
+      text,
+      shouldShowCancelBtn,
+    } = this.props
 
-    if (queryStatus === RemoteDataState.Loading && this.state.timer === true) {
+    if (queryStatus === RemoteDataState.Loading && shouldShowCancelBtn) {
       return (
         <Button
           text="Cancel"
@@ -116,9 +122,7 @@ class SubmitQueryButton extends PureComponent<Props> {
     // In order to allow for requests after cancellations:
     // https://stackoverflow.com/a/56548348/7963795
 
-    this.timer = setTimeout(() => {
-      this.setState({timer: true})
-    }, DELAYTIME)
+    this.timer = this.props.onSetCancelBtnTimer()
     this.abortController = new AbortController()
     this.props.onSubmit(this.abortController)
   }
@@ -137,13 +141,15 @@ class SubmitQueryButton extends PureComponent<Props> {
 export {SubmitQueryButton}
 
 const mstp = (state: AppState) => {
+  const {shouldShowCancelBtn} = state.app.ephemeral
   const submitButtonDisabled = getActiveQuery(state).text === ''
   const queryStatus = getActiveTimeMachine(state).queryResults.status
 
-  return {submitButtonDisabled, queryStatus}
+  return {shouldShowCancelBtn, submitButtonDisabled, queryStatus}
 }
 
 const mdtp = {
+  onSetCancelBtnTimer: delayEnableCancelBtn,
   onSubmit: saveAndExecuteQueries,
   onNotify: notify,
 }

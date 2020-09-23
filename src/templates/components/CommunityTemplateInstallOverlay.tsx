@@ -56,7 +56,7 @@ type RouterProps = RouteComponentProps<{
 
 type Props = OwnProps & ReduxProps & RouterProps
 
-class UnconnectedTemplateImportOverlay extends PureComponent<Props> {
+class CommunityTemplateInstallOverlayUnconnected extends PureComponent<Props> {
   public state: State = {
     status: ComponentStatus.Default,
   }
@@ -215,6 +215,6 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export const CommunityTemplateImportOverlay = connector(
-  withRouter(UnconnectedTemplateImportOverlay)
+export const CommunityTemplateInstallOverlay = connector(
+  withRouter(CommunityTemplateInstallOverlayUnconnected)
 )

@@ -11,7 +11,7 @@ import {notify} from 'src/shared/actions/notifications'
 
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
-import {CommunityTemplateImportOverlay} from 'src/templates/components/CommunityTemplateImportOverlay'
+import {CommunityTemplateInstallOverlay} from 'src/templates/components/CommunityTemplateInstallOverlay'
 import {CommunityTemplatesInstalledList} from 'src/templates/components/CommunityTemplatesInstalledList'
 
 import {
@@ -205,7 +205,7 @@ class UnconnectedTemplatesIndex extends Component<Props, State> {
             path={`${templatesPath}/import`}
             render={props => {
               return (
-                <CommunityTemplateImportOverlay
+                <CommunityTemplateInstallOverlay
                   {...props}
                   setTemplateUrlValidationMessage={this.setValidationMessage}
                 />

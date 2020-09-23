@@ -172,6 +172,7 @@ describe('Community Templates', () => {
     })
 
     it('links out to areas of the application where template resources were installed', () => {
+      cy.getByTestID('lookup-template-input').clear()
       cy.getByTestID('lookup-template-input').type(
         'https://github.com/influxdata/influxdb/blob/master/pkger/testdata/telegraf.yml'
       )

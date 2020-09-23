@@ -1,11 +1,12 @@
 // Libraries
-import React, {FunctionComponent} from 'react'
+import React, {FunctionComponent, useMemo} from 'react'
 import {Config, Table} from '@influxdata/giraffe'
 
 // Components
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 
 // Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   useVisXDomainSettings,
   useVisYDomainSettings,
@@ -17,7 +18,11 @@ import {
 } from 'src/shared/utils/vis'
 
 // Constants
-import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
+import {
+  LEGEND_OPACITY_DEFAULT,
+  VIS_THEME,
+  VIS_THEME_LIGHT,
+} from 'src/shared/constants'
 import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {INVALID_DATA_COPY} from 'src/shared/copy/cell'
 
@@ -52,6 +57,8 @@ const ScatterPlot: FunctionComponent<Props> = ({
     xColumn: storedXColumn,
     yColumn: storedYColumn,
     timeFormat,
+    legendOpacity,
+    legendOrientationThreshold,
   },
   theme,
 }) => {
@@ -62,6 +69,20 @@ const ScatterPlot: FunctionComponent<Props> = ({
   const yColumn = storedYColumn || defaultYColumn(table)
 
   const columnKeys = table.columnKeys
+
+  const tooltipOpacity = useMemo(() => {
+    if (isFlagEnabled('legendOrientation')) {
+      return legendOpacity
+    }
+    return LEGEND_OPACITY_DEFAULT
+  }, [legendOpacity])
+
+  const tooltipOrientationThreshold = useMemo(() => {
+    if (isFlagEnabled('legendOrientation')) {
+      return legendOrientationThreshold
+    }
+    return undefined
+  }, [legendOrientationThreshold])
 
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
     storedXDomain,
@@ -115,6 +136,8 @@ const ScatterPlot: FunctionComponent<Props> = ({
     yDomain,
     onSetYDomain,
     onResetYDomain,
+    legendOpacity: tooltipOpacity,
+    legendOrientationThreshold: tooltipOrientationThreshold,
     valueFormatters: {
       [xColumn]: xFormatter,
       [yColumn]: yFormatter,

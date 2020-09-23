@@ -185,7 +185,8 @@ export const fromFluxTableTransformer = (response: string): FluxTable[] => {
   const headerRow = columnKeys.filter(c => c !== 'result' && c !== 'table')
   const data = [headerRow].concat(mapTableData(headerRow, dataStore))
 
-  const [result] = `${table.getColumn('result')}`
+  let [result] = table.getColumn('result')
+  result = `${result}`
   const name = getNameByGroupKey(groupKey)
 
   return [

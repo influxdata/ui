@@ -4,7 +4,7 @@ import {CLOUD} from 'src/shared/constants'
 
 export const pageTitleSuffixer = (pageTitles: string[]): string => {
   const state = store.getState()
-  const {name} = getOrg(state) || null
+  const name = getOrg(state)?.name || null
   const title = CLOUD ? 'InfluxDB Cloud' : 'InfluxDB'
   const titles = [...pageTitles, name, title]
 

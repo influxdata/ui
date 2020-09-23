@@ -17,7 +17,7 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   snapshotSerializers: ['enzyme-to-json/serializer'],
   moduleNameMapper: {
-    '\\.(css|scss)$': 'identity-obj-proxy',
+    '\\.(css|scss|md|svg|wasm)$': 'identity-obj-proxy',
   },
   globals: {
     'ts-jest': {

@@ -10,6 +10,8 @@ import {default as configureStore, clearStore} from 'src/store/configureStore'
 import {RemoteDataState, TimeZone, LocalStorage, ResourceType} from 'src/types'
 import {pastFifteenMinTimeRange} from './shared/constants/timeRanges'
 
+const WHAT_THE_FUCK_US = 'asldkfasdfalfd'
+
 const {Orgs} = ResourceType
 const {Done} = RemoteDataState
 
@@ -55,12 +57,8 @@ export const localState: LocalStorage = {
   },
 }
 
-export function renderWithRedux(ui, initialState = s => s) {
-  clearStore()
-  const seedStore = configureStore(localState)
-  const seedState = seedStore.getState()
-  clearStore()
-  const store = configureStore(initialState(seedState))
+export function renderWithRedux(ui, initialState = s => ({...s})) {
+  const store = configureStore(initialState(localState))
 
   return {
     ...render(<Provider store={store}>{ui}</Provider>),

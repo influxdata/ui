@@ -10,6 +10,7 @@ declare global {
   interface Window {
     flushAllPromises: () => Promise<any>
     MutationObserver: MutationObserver
+    monaco: any
   }
 }
 
@@ -23,6 +24,16 @@ window.flushAllPromises = async () => {
 // mocks and stuff
 fetchMock.enableMocks()
 jest.mock('honeybadger-js', () => () => null)
+window.monaco = {
+  editor: {
+    defineTheme: jest.fn(),
+  },
+  languages: {
+    setLanguageConfiguration: jest.fn(),
+    setTokensProvider: jest.fn(),
+    register: jest.fn(),
+  },
+}
 
 // cleans up state between @testing-library/react tests
 afterEach(() => {

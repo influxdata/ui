@@ -1,5 +1,7 @@
 import * as allMonaco from 'monaco-editor/esm/vs/editor/editor.api'
 
+console.log('ALL MONACO', allMonaco)
+
 import * as lsp from '@influxdata/flux-lsp-browser'
 
 export type ServerResponse = lsp.ServerResponse

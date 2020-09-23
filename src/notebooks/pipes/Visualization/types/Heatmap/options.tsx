@@ -32,7 +32,7 @@ const HEATMAP_COLOR_SCHEMES = [
 ]
 
 interface Props extends VisOptionProps {
-    properties: HeatmapViewProperties
+  properties: HeatmapViewProperties
 }
 
 const HeatmapOptions: FC<Props> = ({properties, results, update}) => {

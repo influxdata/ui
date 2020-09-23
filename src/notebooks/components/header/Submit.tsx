@@ -92,7 +92,7 @@ export const Submit: FC = () => {
             const {aggregateFunction, bucket, field, measurement, tags} = pipe
 
             if (!bucket) {
-                return stages
+              return stages
             }
 
             let text = `from(bucket: "${bucket.name}")|>range(start: v.timeRangeStart, stop: v.timeRangeStop)`

@@ -1,5 +1,12 @@
 // Libraries
-import React, {FC, createElement, useContext, useCallback, useMemo, useState} from 'react'
+import React, {
+  FC,
+  createElement,
+  useContext,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react'
 
 // Components
 import {SquareButton, IconFont, ComponentColor} from '@influxdata/clockface'

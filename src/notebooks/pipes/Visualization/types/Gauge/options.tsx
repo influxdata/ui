@@ -20,12 +20,13 @@ import ThresholdsSettings from './ThresholdsSettings'
 import {MIN_DECIMAL_PLACES, MAX_DECIMAL_PLACES} from 'src/dashboards/constants'
 
 import {VisOptionProps} from '../../'
+import {GaugeViewProperties} from 'src/types'
 
-const GaugeOptions: FC<VisOptionProps> = ({properties, update}) => {
-  if (properties.type !== 'gauge') {
-    throw new Error('How did you get here?')
-  }
+interface Props extends VisOptionProps {
+  properties: GaugeViewProperties
+}
 
+const GaugeOptions: FC<Props> = ({properties, update}) => {
   return (
     <>
       <Grid.Column>

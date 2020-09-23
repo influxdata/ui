@@ -1,58 +1,57 @@
-// Libraries
-import React, {FC, ChangeEvent, useState} from 'react'
-import {VIRIDIS, MAGMA, INFERNO, PLASMA} from '@influxdata/giraffe'
+import React, {FC} from 'react'
+
 import {
-  Form,
-  Grid,
   Input,
+  Grid,
   Columns,
+  Form,
   SelectDropdown,
-  InputType,
   ComponentStatus,
+  MultiSelectDropdown,
 } from '@influxdata/clockface'
 
-// Utils
-import {FORMAT_OPTIONS} from 'src/dashboards/constants'
-import {resolveTimeFormat} from 'src/dashboards/utils/tableGraph'
-import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
-import {defaultXColumn, defaultYColumn} from 'src/shared/utils/vis'
-
-// Components
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import HexColorSchemeDropdown from 'src/shared/components/HexColorSchemeDropdown'
 
-import {HeatmapViewProperties} from 'src/types'
-import {VisOptionProps} from '../../'
+import {FORMAT_OPTIONS} from 'src/dashboards/constants'
+import {GIRAFFE_COLOR_SCHEMES} from 'src/shared/constants'
 
-const HEATMAP_COLOR_SCHEMES = [
-  {name: 'Magma', colors: MAGMA},
-  {name: 'Inferno', colors: INFERNO},
-  {name: 'Viridis', colors: VIRIDIS},
-  {name: 'Plasma', colors: PLASMA},
-]
+import {resolveTimeFormat} from 'src/dashboards/utils/tableGraph'
+import {defaultXColumn, defaultYColumn} from 'src/shared/utils/vis'
+import {VisOptionProps} from '../../'
+import {ScatterViewProperties} from 'src/types'
 
 interface Props extends VisOptionProps {
-  properties: HeatmapViewProperties
+  properties: ScatterViewProperties
 }
 
-const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
-  const [binInputStatus, setBinInputStatus] = useState(ComponentStatus.Default)
-  const [binInput, setBinInput] = useState(properties.binSize)
+const ScatterOptions: FC<Props> = ({properties, results, update}) => {
+  const availableGroupColumns = results.table.columnKeys.filter(
+    name => !['_value', '_time', 'table'].includes(name)
+  )
+
+  const groupDropdownStatus = availableGroupColumns.length
+    ? ComponentStatus.Default
+    : ComponentStatus.Disabled
 
   const xColumn = defaultXColumn(results.table, properties.xColumn)
   const yColumn = defaultYColumn(results.table, properties.yColumn)
 
-  const onSetBinSize = (e: ChangeEvent<HTMLInputElement>) => {
-    const val = convertUserInputToNumOrNaN(e)
-    setBinInput(val)
+  let fillColumns = availableGroupColumns
+  let symbolColumns = availableGroupColumns
 
-    if (isNaN(val) || val < 5) {
-      setBinInputStatus(ComponentStatus.Error)
-      return
-    }
+  if (
+    properties.fillColumns &&
+    properties.fillColumns.every(col => availableGroupColumns.includes(col))
+  ) {
+    fillColumns = properties.fillColumns
+  }
 
-    setBinInputStatus(ComponentStatus.Default)
-    update({binSize: val})
+  if (
+    properties.symbolColumns &&
+    properties.symbolColumns.every(col => availableGroupColumns.includes(col))
+  ) {
+    symbolColumns = properties.symbolColumns
   }
 
   const numericColumns = results.table.columnKeys.filter(key => {
@@ -64,6 +63,32 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
 
     return columnType === 'time' || columnType === 'number'
   })
+
+  const onSelectFillColumns = (option: string) => {
+    const columnExists = fillColumns.find(col => col === option)
+    let updatedColumns = fillColumns
+
+    if (columnExists) {
+      updatedColumns = fillColumns.filter(fc => fc !== option)
+    } else {
+      updatedColumns = [...fillColumns, option]
+    }
+
+    update({fillColumns: updatedColumns})
+  }
+
+  const onSelectSymbolColumns = (option: string) => {
+    const columnExists = symbolColumns.find(col => col === option)
+    let updatedColumns = symbolColumns
+
+    if (columnExists) {
+      updatedColumns = symbolColumns.filter(fc => fc !== option)
+    } else {
+      updatedColumns = [...symbolColumns, option]
+    }
+
+    update({symbolColumns: updatedColumns})
+  }
 
   const setDomain = (axis: string, domain: [number, number]): void => {
     let bounds: [string | null, string | null]
@@ -94,6 +119,22 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
           widthLG={Columns.Four}
         >
           <h5 className="view-options--header">Data</h5>
+          <Form.Element label="Symbol Column">
+            <MultiSelectDropdown
+              options={availableGroupColumns}
+              selectedOptions={symbolColumns}
+              onSelect={onSelectSymbolColumns}
+              buttonStatus={groupDropdownStatus}
+            />
+          </Form.Element>
+          <Form.Element label="Fill Column">
+            <MultiSelectDropdown
+              options={availableGroupColumns}
+              selectedOptions={fillColumns}
+              onSelect={onSelectFillColumns}
+              buttonStatus={groupDropdownStatus}
+            />
+          </Form.Element>
           <Form.Element label={`X Column`}>
             <SelectDropdown
               options={numericColumns}
@@ -116,7 +157,7 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
               onSelect={yColumn => {
                 update({yColumn})
               }}
-              testID={`dropdown-x`}
+              testID={`dropdown-y`}
               buttonStatus={
                 numericColumns.length == 0
                   ? ComponentStatus.Disabled
@@ -136,20 +177,11 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
           <h5 className="view-options--header">Options</h5>
           <Form.Element label="Color Scheme">
             <HexColorSchemeDropdown
-              colorSchemes={HEATMAP_COLOR_SCHEMES}
+              colorSchemes={GIRAFFE_COLOR_SCHEMES}
               selectedColorScheme={properties.colors}
               onSelectColorScheme={colors => {
                 update({colors})
               }}
-            />
-          </Form.Element>
-          <Form.Element label="Bin Size">
-            <Input
-              status={binInputStatus}
-              value={binInput}
-              type={InputType.Number}
-              onChange={onSetBinSize}
-              testID="bin-size-input"
             />
           </Form.Element>
         </Grid.Column>
@@ -246,4 +278,4 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
   )
 }
 
-export default HeatmapOptions
+export default ScatterOptions

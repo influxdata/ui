@@ -24,10 +24,15 @@ import {
 import ColorSchemeDropdown from 'src/shared/components/ColorSchemeDropdown'
 import Checkbox from 'src/shared/components/Checkbox'
 import {VisOptionProps} from '../../'
+import {XYViewProperties} from 'src/types'
 
 const {BASE_2, BASE_10} = AXES_SCALE_OPTIONS
 
-const GraphViewOptions: FC<VisOptionProps> = ({
+interface Props extends VisOptionProps {
+  properties: XYViewProperties
+}
+
+const GraphViewOptions: FC<Props> = ({
   properties,
   results,
   update,
@@ -83,6 +88,10 @@ const GraphViewOptions: FC<VisOptionProps> = ({
       ]
     } else {
       bounds = [null, null]
+    }
+
+    if (bounds[0] === null && bounds[1] === null) {
+        bounds = null
     }
 
     updateAxis('y', {bounds})

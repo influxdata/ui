@@ -67,6 +67,10 @@ const HistogramOptions: FC<Props> = ({properties, results, update}) => {
       bounds = [null, null]
     }
 
+    if (bounds[0] === null && bounds[1] === null) {
+        bounds = null
+    }
+
     update({[`${axis}Domain`]: bounds})
   }
 

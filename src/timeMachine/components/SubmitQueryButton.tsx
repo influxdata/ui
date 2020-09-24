@@ -20,12 +20,12 @@ import {getActiveTimeMachine, getActiveQuery} from 'src/timeMachine/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {queryCancelRequest} from 'src/shared/copy/notifications'
 import {delayEnableCancelBtn} from 'src/shared/actions/app'
+import {cancelPendingResults} from 'src/timeMachine/actions/queries'
 
 // Types
 import {AppState, RemoteDataState} from 'src/types'
 
 interface OwnProps {
-  abortController: AbortController
   text?: string
   icon?: IconFont
   testID?: string
@@ -112,28 +112,21 @@ class SubmitQueryButton extends PureComponent<Props> {
     return ComponentStatus.Default
   }
 
-  private abortController: AbortController
-
   private handleClick = (): void => {
-    console.log('did a thing')
     event('SubmitQueryButton click')
     // We need to instantiate a new AbortController per request
     // In order to allow for requests after cancellations:
     // https://stackoverflow.com/a/56548348/7963795
 
     this.timer = this.props.onSetCancelBtnTimer()
-    this.abortController = this.props.abortController
-    this.props.onSubmit(this.abortController)
+    this.props.onSubmit()
   }
 
   private handleCancelClick = (): void => {
     if (this.props.onNotify) {
       this.props.onNotify(queryCancelRequest())
     }
-    if (this.abortController) {
-      this.abortController.abort()
-      this.abortController = null
-    }
+    cancelPendingResults()
   }
 }
 

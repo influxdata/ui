@@ -9,7 +9,6 @@ import AutoRefreshDropdown from 'src/shared/components/dropdown_auto_refresh/Aut
 // Utils
 import {AutoRefresher} from 'src/utils/AutoRefresher'
 import {event} from 'src/cloud/utils/reporting'
-import {delayEnableCancelBtn} from 'src/shared/actions/app'
 
 // Actions
 import {executeQueries} from 'src/timeMachine/actions/queries'
@@ -19,12 +18,8 @@ import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 // Types
 import {AppState, AutoRefreshStatus, RemoteDataState} from 'src/types'
 
-interface OwnProps {
-  abortController: AbortController
-}
-
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps
+type Props = ReduxProps
 
 class TimeMachineRefreshDropdown extends PureComponent<Props> {
   private autoRefresher = new AutoRefresher()
@@ -38,18 +33,8 @@ class TimeMachineRefreshDropdown extends PureComponent<Props> {
     this.autoRefresher.subscribe(this.executeQueries)
   }
 
-  private timer
-
   public componentDidUpdate(prevProps) {
-    const {autoRefresh, queryStatus} = this.props
-    if (
-      queryStatus !== prevProps.queryStatus &&
-      prevProps.queryStatus === RemoteDataState.Loading &&
-      this.timer
-    ) {
-      clearTimeout(this.timer)
-      delete this.timer
-    }
+    const {autoRefresh} = this.props
 
     if (!isEqual(autoRefresh, prevProps.autoRefresh)) {
       if (autoRefresh.status === AutoRefreshStatus.Active) {
@@ -59,18 +44,6 @@ class TimeMachineRefreshDropdown extends PureComponent<Props> {
 
       this.autoRefresher.stopPolling()
     }
-
-    // if (
-    //   this.props.queryStatus !== prevProps.queryStatus &&
-    //   prevProps.queryStatus === RemoteDataState.Loading
-    // ) {
-    //   if (this.timer) {
-    //     clearTimeout(this.timer)
-    //     delete this.timer
-    //   }
-
-    //   this.setState({timer: false})
-    // }
   }
 
   public componentWillUnmount() {
@@ -108,32 +81,21 @@ class TimeMachineRefreshDropdown extends PureComponent<Props> {
       status: AutoRefreshStatus.Active,
     })
   }
-  private abortController: AbortController
+
   private executeQueries = () => {
     event('RefreshQueryButton click')
-    // We need to instantiate a new AbortController per request
-    // In order to allow for requests after cancellations:
-    // https://stackoverflow.com/a/56548348/7963795
-
-    this.timer = this.props.onSetCancelBtnTimer()
-    this.abortController = this.props.abortController
-    // maybe going to have to assign this to the reducer?
-    // This isn't going to work because of the same reason as the issue introduced above
-    this.props.onExecuteQueries(this.abortController)
+    this.props.onExecuteQueries()
   }
 }
 
 const mstp = (state: AppState) => {
-  const {shouldShowCancelBtn} = state.app.ephemeral
-  const queryStatus = getActiveTimeMachine(state).queryResults.status
   const {autoRefresh} = getActiveTimeMachine(state)
 
-  return {autoRefresh, queryStatus, shouldShowCancelBtn}
+  return {autoRefresh}
 }
 
 const mdtp = {
   onExecuteQueries: executeQueries,
-  onSetCancelBtnTimer: delayEnableCancelBtn,
   onSetAutoRefresh: setAutoRefresh,
 }
 

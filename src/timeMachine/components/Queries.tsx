@@ -48,7 +48,7 @@ type Props = ReduxProps & RouterProps
 class TimeMachineQueries extends PureComponent<Props> {
   public render() {
     const {timeRange, isInCheckOverlay, activeQuery} = this.props
-    // TODO(ariel): might need to pass in the abort controller from here?
+
     return (
       <div className="time-machine-queries">
         <div className="time-machine-queries--controls">
@@ -64,9 +64,7 @@ class TimeMachineQueries extends PureComponent<Props> {
             {!isInCheckOverlay && (
               <>
                 <CSVExportButton />
-                <TimeMachineRefreshDropdown
-                  abortController={this.abortController}
-                />
+                <TimeMachineRefreshDropdown />
                 <TimeRangeDropdown
                   timeRange={timeRange}
                   onSetTimeRange={this.handleSetTimeRange}
@@ -74,16 +72,12 @@ class TimeMachineQueries extends PureComponent<Props> {
                 <TimeMachineQueriesSwitcher />
               </>
             )}
-            <SubmitQueryButton abortController={this.abortController} />
+            <SubmitQueryButton />
           </FlexBox>
         </div>
         <div className="time-machine-queries--body">{this.queryEditor}</div>
       </div>
     )
-  }
-
-  private get abortController(): AbortController {
-    return new AbortController()
   }
 
   private handleSetTimeRange = (timeRange: TimeRange) => {

@@ -94,6 +94,14 @@ export const setQueryResults = (
 let pendingResults: Array<CancelBox<RunQueryResult>> = []
 let pendingCheckStatuses: CancelBox<StatusRow[][]> = null
 
+export const cancelPendingResults = (): void => {
+  pendingResults.forEach(({cancel}) => {
+    if (cancel) {
+      cancel()
+    }
+  })
+}
+
 export const getOrgIDFromBuckets = (
   text: string,
   allBuckets: Bucket[]
@@ -217,7 +225,7 @@ export const executeQueries = (abortController?: AbortController) => async (
     const startTime = window.performance.now()
     const startDate = Date.now()
 
-    pendingResults.forEach(({cancel}) => cancel())
+    cancelPendingResults()
 
     pendingResults = queries.map(({text}) => {
       event('executeQueries query', {}, {query: text})
@@ -242,9 +250,7 @@ export const executeQueries = (abortController?: AbortController) => async (
       }
       return runQuery(orgID, text, extern, abortController)
     })
-    console.log('pendingResults: ', pendingResults)
     const results = await Promise.all(pendingResults.map(r => r.promise))
-    console.log('results: ', results)
 
     const duration = window.performance.now() - startTime
 

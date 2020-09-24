@@ -19,7 +19,11 @@ import {notify} from 'src/shared/actions/notifications'
 import {getActiveTimeMachine, getActiveQuery} from 'src/timeMachine/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {queryCancelRequest} from 'src/shared/copy/notifications'
-import {delayEnableCancelBtn} from 'src/shared/actions/app'
+import {
+  clearCancelBtnTimeout,
+  delayEnableCancelBtn,
+  resetCancelBtnState,
+} from 'src/shared/actions/app'
 import {cancelPendingResults} from 'src/timeMachine/actions/queries'
 
 // Types
@@ -41,20 +45,21 @@ class SubmitQueryButton extends PureComponent<Props> {
     testID: 'time-machine-submit-button',
   }
 
-  public state = {
-    timer: false,
+  public componentDidMount() {
+    if (this.props.shouldShowCancelBtn) {
+      this.props.onResetCancelBtnState()
+      clearCancelBtnTimeout()
+    }
   }
-
-  private timer
 
   public componentDidUpdate(prevProps) {
     if (
       this.props.queryStatus !== prevProps.queryStatus &&
       prevProps.queryStatus === RemoteDataState.Loading &&
-      this.timer
+      this.props.shouldShowCancelBtn
     ) {
-      clearTimeout(this.timer)
-      delete this.timer
+      this.props.onResetCancelBtnState()
+      clearCancelBtnTimeout()
     }
   }
 
@@ -67,6 +72,8 @@ class SubmitQueryButton extends PureComponent<Props> {
       text,
       shouldShowCancelBtn,
     } = this.props
+
+    console.log('shouldShowCancelBtn: ', shouldShowCancelBtn)
 
     if (queryStatus === RemoteDataState.Loading && shouldShowCancelBtn) {
       return (
@@ -114,11 +121,7 @@ class SubmitQueryButton extends PureComponent<Props> {
 
   private handleClick = (): void => {
     event('SubmitQueryButton click')
-    // We need to instantiate a new AbortController per request
-    // In order to allow for requests after cancellations:
-    // https://stackoverflow.com/a/56548348/7963795
-
-    this.timer = this.props.onSetCancelBtnTimer()
+    this.props.onSetCancelBtnTimer()
     this.props.onSubmit()
   }
 
@@ -126,6 +129,8 @@ class SubmitQueryButton extends PureComponent<Props> {
     if (this.props.onNotify) {
       this.props.onNotify(queryCancelRequest())
     }
+    this.props.onResetCancelBtnState()
+    clearCancelBtnTimeout()
     cancelPendingResults()
   }
 }
@@ -141,6 +146,7 @@ const mstp = (state: AppState) => {
 }
 
 const mdtp = {
+  onResetCancelBtnState: resetCancelBtnState,
   onSetCancelBtnTimer: delayEnableCancelBtn,
   onSubmit: saveAndExecuteQueries,
   onNotify: notify,

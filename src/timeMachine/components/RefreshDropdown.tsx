@@ -9,6 +9,11 @@ import AutoRefreshDropdown from 'src/shared/components/dropdown_auto_refresh/Aut
 // Utils
 import {AutoRefresher} from 'src/utils/AutoRefresher'
 import {event} from 'src/cloud/utils/reporting'
+import {
+  clearCancelBtnTimeout,
+  delayEnableCancelBtn,
+  resetCancelBtnState,
+} from 'src/shared/actions/app'
 
 // Actions
 import {executeQueries} from 'src/timeMachine/actions/queries'
@@ -34,7 +39,20 @@ class TimeMachineRefreshDropdown extends PureComponent<Props> {
   }
 
   public componentDidUpdate(prevProps) {
-    const {autoRefresh} = this.props
+    const {
+      autoRefresh,
+      onResetCancelBtnState,
+      queryStatus,
+      shouldShowCancelBtn,
+    } = this.props
+    if (
+      queryStatus !== prevProps.queryStatus &&
+      prevProps.queryStatus === RemoteDataState.Loading &&
+      shouldShowCancelBtn
+    ) {
+      onResetCancelBtnState()
+      clearCancelBtnTimeout()
+    }
 
     if (!isEqual(autoRefresh, prevProps.autoRefresh)) {
       if (autoRefresh.status === AutoRefreshStatus.Active) {
@@ -84,18 +102,23 @@ class TimeMachineRefreshDropdown extends PureComponent<Props> {
 
   private executeQueries = () => {
     event('RefreshQueryButton click')
+    this.props.onSetCancelBtnTimer()
     this.props.onExecuteQueries()
   }
 }
 
 const mstp = (state: AppState) => {
+  const {shouldShowCancelBtn} = state.app.ephemeral
+  const queryStatus = getActiveTimeMachine(state).queryResults.status
   const {autoRefresh} = getActiveTimeMachine(state)
 
-  return {autoRefresh}
+  return {autoRefresh, queryStatus, shouldShowCancelBtn}
 }
 
 const mdtp = {
   onExecuteQueries: executeQueries,
+  onResetCancelBtnState: resetCancelBtnState,
+  onSetCancelBtnTimer: delayEnableCancelBtn,
   onSetAutoRefresh: setAutoRefresh,
 }
 

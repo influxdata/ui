@@ -82,7 +82,7 @@ const appEphemeralReducer = (
       }
     }
 
-    case ActionTypes.DisableCancelBtn: {
+    case ActionTypes.ResetCancelBtnState: {
       return {
         ...state,
         shouldShowCancelBtn: false,

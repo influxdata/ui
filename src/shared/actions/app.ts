@@ -21,7 +21,7 @@ export enum ActionTypes {
   EnableUpdatedTimeRangeInVEO = 'ENABLE_UPDATED_TIMERANGE_IN_VEO',
   DisableUpdatedTimeRangeInVEO = 'DISABLE_UPDATED_TIMERANGE_IN_VEO',
   EnableCancelBtn = 'ENABLE_CANCEL_BTN',
-  DisableCancelBtn = 'DISABLE_CANCEL_BTN',
+  ResetCancelBtnState = 'RESET_CANCEL_BTN_STATE',
   SetNavBarState = 'SET_NAV_BAR_STATE',
   SetNotebookMiniMapState = 'SET_NOTEBOOK_MINI_MAP_STATE',
   SetAutoRefresh = 'SET_AUTOREFRESH',
@@ -36,7 +36,7 @@ export type Action =
   | ReturnType<typeof enableUpdatedTimeRangeInVEO>
   | ReturnType<typeof disableUpdatedTimeRangeInVEO>
   | ReturnType<typeof enableCancelBtn>
-  | ReturnType<typeof disableCancelBtn>
+  | ReturnType<typeof resetCancelBtnState>
   | ReturnType<typeof setNavBarState>
   | ReturnType<typeof setNotebookMiniMapState>
   | ReturnType<typeof setAutoRefresh>
@@ -70,9 +70,9 @@ export const enableCancelBtn = () =>
     type: ActionTypes.EnableCancelBtn,
   } as const)
 
-export const disableCancelBtn = () =>
+export const resetCancelBtnState = () =>
   ({
-    type: ActionTypes.DisableCancelBtn,
+    type: ActionTypes.ResetCancelBtnState,
   } as const)
 
 export const delayEnablePresentationMode = () => (
@@ -85,13 +85,19 @@ export const delayEnablePresentationMode = () => (
     dispatch(notify(presentationMode()))
   }, PRESENTATION_MODE_ANIMATION_DELAY)
 
+let cancelBtnTimeout
+
 export const delayEnableCancelBtn = () => (
   dispatch: Dispatch<ReturnType<typeof enableCancelBtn>>
-): NodeJS.Timer =>
-  setTimeout(() => {
+): void => {
+  cancelBtnTimeout = setTimeout(() => {
     dispatch(enableCancelBtn())
   }, CANCEL_BTN_DELAY)
+}
 
+export const clearCancelBtnTimeout = () => {
+  clearTimeout(cancelBtnTimeout)
+}
 // persistent state action creators
 
 export const setTheme = (theme: Theme) => ({type: 'SET_THEME', theme} as const)

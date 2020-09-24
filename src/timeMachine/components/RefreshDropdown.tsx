@@ -14,6 +14,7 @@ import {
   delayEnableCancelBtn,
   resetCancelBtnState,
 } from 'src/shared/actions/app'
+import {shouldShowCancelBtnSelector} from 'src/shared/selectors/app'
 
 // Actions
 import {executeQueries} from 'src/timeMachine/actions/queries'
@@ -108,7 +109,7 @@ class TimeMachineRefreshDropdown extends PureComponent<Props> {
 }
 
 const mstp = (state: AppState) => {
-  const {shouldShowCancelBtn} = state.app.ephemeral
+  const shouldShowCancelBtn = shouldShowCancelBtnSelector(state)
   const queryStatus = getActiveTimeMachine(state).queryResults.status
   const {autoRefresh} = getActiveTimeMachine(state)
 

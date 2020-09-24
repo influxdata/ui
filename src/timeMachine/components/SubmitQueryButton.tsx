@@ -25,6 +25,7 @@ import {
   resetCancelBtnState,
 } from 'src/shared/actions/app'
 import {cancelPendingResults} from 'src/timeMachine/actions/queries'
+import {shouldShowCancelBtnSelector} from 'src/shared/selectors/app'
 
 // Types
 import {AppState, RemoteDataState} from 'src/types'
@@ -48,8 +49,15 @@ class SubmitQueryButton extends PureComponent<Props> {
   public componentDidMount() {
     if (this.props.shouldShowCancelBtn) {
       this.props.onResetCancelBtnState()
-      clearCancelBtnTimeout()
     }
+    clearCancelBtnTimeout()
+  }
+
+  public componentWillUnmount() {
+    if (this.props.shouldShowCancelBtn) {
+      this.props.onResetCancelBtnState()
+    }
+    clearCancelBtnTimeout()
   }
 
   public componentDidUpdate(prevProps) {
@@ -72,8 +80,6 @@ class SubmitQueryButton extends PureComponent<Props> {
       text,
       shouldShowCancelBtn,
     } = this.props
-
-    console.log('shouldShowCancelBtn: ', shouldShowCancelBtn)
 
     if (queryStatus === RemoteDataState.Loading && shouldShowCancelBtn) {
       return (
@@ -138,7 +144,7 @@ class SubmitQueryButton extends PureComponent<Props> {
 export {SubmitQueryButton}
 
 const mstp = (state: AppState) => {
-  const {shouldShowCancelBtn} = state.app.ephemeral
+  const shouldShowCancelBtn = shouldShowCancelBtnSelector(state)
   const submitButtonDisabled = getActiveQuery(state).text === ''
   const queryStatus = getActiveTimeMachine(state).queryResults.status
 

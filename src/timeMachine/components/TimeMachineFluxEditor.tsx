@@ -16,6 +16,11 @@ import {
   functionRequiresNewLine,
   generateImport,
 } from 'src/timeMachine/utils/insertFunction'
+import {
+  clearCancelBtnTimeout,
+  delayEnableCancelBtn,
+  resetCancelBtnState,
+} from 'src/shared/actions/app'
 
 // Types
 import {AppState, FluxToolbarFunction, EditorType} from 'src/types'
@@ -26,7 +31,9 @@ type Props = ReduxProps
 
 const TimeMachineFluxEditor: FC<Props> = ({
   activeQueryText,
+  onResetCancelBtnState,
   onSubmitQueries,
+  onSetCancelBtnTimer,
   onSetActiveQueryText,
   activeTab,
 }) => {
@@ -127,13 +134,24 @@ const TimeMachineFluxEditor: FC<Props> = ({
     onSetActiveQueryText(editorInstance.getValue())
   }
 
+  const handleSubmitQueries = () => {
+    // cancel any existing timeouts
+    clearCancelBtnTimeout()
+    // ensure that the cancel button is set to false
+    onResetCancelBtnState()
+    // start the delayed cancel button timer
+    onSetCancelBtnTimer()
+    // submit the query
+    onSubmitQueries()
+  }
+
   return (
     <div className="flux-editor">
       <div className="flux-editor--left-panel">
         <FluxEditor
           script={activeQueryText}
           onChangeScript={onSetActiveQueryText}
-          onSubmitScript={onSubmitQueries}
+          onSubmitScript={handleSubmitQueries}
           setEditorInstance={setEditorInstance}
         />
       </div>
@@ -158,7 +176,9 @@ const mstp = (state: AppState) => {
 }
 
 const mdtp = {
+  onResetCancelBtnState: resetCancelBtnState,
   onSetActiveQueryText: setActiveQueryText,
+  onSetCancelBtnTimer: delayEnableCancelBtn,
   onSubmitQueries: saveAndExecuteQueries,
 }
 

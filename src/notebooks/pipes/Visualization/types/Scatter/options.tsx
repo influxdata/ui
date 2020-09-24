@@ -135,14 +135,14 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
               buttonStatus={groupDropdownStatus}
             />
           </Form.Element>
-          <Form.Element label={`X Column`}>
+          <Form.Element label="X Column">
             <SelectDropdown
               options={numericColumns}
               selectedOption={xColumn || 'Build a query before selecting...'}
               onSelect={xColumn => {
                 update({xColumn})
               }}
-              testID={`dropdown-x`}
+              testID="dropdown-x"
               buttonStatus={
                 numericColumns.length == 0
                   ? ComponentStatus.Disabled
@@ -150,7 +150,7 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
               }
             />
           </Form.Element>
-          <Form.Element label={`Y Column`}>
+          <Form.Element label="Y Column">
             <SelectDropdown
               options={numericColumns}
               selectedOption={yColumn || 'Build a query before selecting...'}

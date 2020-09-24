@@ -105,7 +105,7 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
               onSelect={xColumn => {
                 update({xColumn})
               }}
-              testID={`dropdown-x`}
+              testID="dropdown-x"
               buttonStatus={
                 numericColumns.length == 0
                   ? ComponentStatus.Disabled
@@ -120,7 +120,7 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
               onSelect={yColumn => {
                 update({yColumn})
               }}
-              testID={`dropdown-y`}
+              testID="dropdown-y"
               buttonStatus={
                 numericColumns.length == 0
                   ? ComponentStatus.Disabled

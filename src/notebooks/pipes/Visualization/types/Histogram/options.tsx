@@ -105,14 +105,14 @@ const HistogramOptions: FC<Props> = ({properties, results, update}) => {
           widthLG={Columns.Four}
         >
           <h5 className="view-options--header">Data</h5>
-          <Form.Element label={`X Column`}>
+          <Form.Element label="X Column">
             <SelectDropdown
               options={numericColumns}
               selectedOption={xColumn || 'Build a query before selecting...'}
               onSelect={xColumn => {
                 update({xColumn})
               }}
-              testID={`dropdown-x`}
+              testID="dropdown-x"
               buttonStatus={
                 numericColumns.length == 0
                   ? ComponentStatus.Disabled

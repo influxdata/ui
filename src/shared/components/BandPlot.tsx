@@ -2,6 +2,7 @@
 import React, {FC, useMemo} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {Config, Table} from '@influxdata/giraffe'
+import {get} from 'lodash'
 
 // Components
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
@@ -22,7 +23,7 @@ import {
   defaultXColumn,
   defaultYColumn,
 } from 'src/shared/utils/vis'
-import {getActiveQuery} from 'src/timeMachine/selectors'
+import {getActiveQueryIndex} from 'src/timeMachine/selectors'
 
 // Constants
 import {
@@ -30,6 +31,7 @@ import {
   BAND_LINE_WIDTH,
   BAND_SHADE_OPACITY,
   LEGEND_OPACITY_DEFAULT,
+  QUERY_BUILDER_MODE,
   VIS_THEME,
   VIS_THEME_LIGHT,
 } from 'src/shared/constants'
@@ -59,9 +61,9 @@ type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & OwnProps
 
 const BandPlot: FC<Props> = ({
+  activeQueryIndex,
   children,
   fluxGroupKeyUnion,
-  selectedFunctions,
   timeRange,
   table,
   timeZone,
@@ -93,19 +95,29 @@ const BandPlot: FC<Props> = ({
       },
     },
     timeFormat,
+    queries,
   },
   theme,
 }) => {
-  const mainColumnName = useMemo(
-    () =>
-      getMainColumnName(
-        selectedFunctions,
-        upperColumnName,
-        mainColumn,
-        lowerColumnName
-      ),
-    [selectedFunctions, upperColumnName, mainColumn, lowerColumnName]
-  )
+  const mainColumnName = useMemo(() => {
+    const editMode = get(queries, `${activeQueryIndex}.editMode`, 'unknown')
+    if (editMode !== QUERY_BUILDER_MODE) {
+      return mainColumn
+    }
+
+    const aggregateFunctions = get(
+      queries,
+      `${activeQueryIndex}.builderConfig.functions`,
+      []
+    )
+    const selectedFunctions = aggregateFunctions.map(f => f.name)
+    return getMainColumnName(
+      selectedFunctions,
+      upperColumnName,
+      mainColumn,
+      lowerColumnName
+    )
+  }, [activeQueryIndex, queries, upperColumnName, mainColumn, lowerColumnName])
 
   const tooltipOpacity = useMemo(() => {
     if (isFlagEnabled('legendOrientation')) {
@@ -228,11 +240,9 @@ const BandPlot: FC<Props> = ({
   return children(config)
 }
 
-const mstp = (state: AppState) => {
-  const {builderConfig} = getActiveQuery(state)
-  const {functions} = builderConfig
-  return {selectedFunctions: functions.map(f => f.name)}
-}
+const mstp = (state: AppState) => ({
+  activeQueryIndex: getActiveQueryIndex(state),
+})
 
 const connector = connect(mstp)
 export default connector(BandPlot)

@@ -8,7 +8,10 @@ import {get} from 'lodash'
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {
+  useLegendOpacity,
+  useLegendOrientationThreshold,
+} from 'src/shared/utils/useLegendOrientation'
 import {
   useVisXDomainSettings,
   useVisYDomainSettings,
@@ -30,8 +33,6 @@ import {
   BAND_LINE_OPACITY,
   BAND_LINE_WIDTH,
   BAND_SHADE_OPACITY,
-  LEGEND_OPACITY_DEFAULT,
-  LEGEND_OPACITY_MINIMUM,
   QUERY_BUILDER_MODE,
   VIS_THEME,
   VIS_THEME_LIGHT,
@@ -120,22 +121,10 @@ const BandPlot: FC<Props> = ({
     )
   }, [activeQueryIndex, queries, upperColumnName, mainColumn, lowerColumnName])
 
-  const tooltipOpacity = Math.max(
-    useMemo(() => {
-      if (isFlagEnabled('legendOrientation')) {
-        return legendOpacity
-      }
-      return LEGEND_OPACITY_DEFAULT
-    }, [legendOpacity]),
-    LEGEND_OPACITY_MINIMUM
+  const tooltipOpacity = useLegendOpacity(legendOpacity)
+  const tooltipOrientationThreshold = useLegendOrientationThreshold(
+    legendOrientationThreshold
   )
-
-  const tooltipOrientationThreshold = useMemo(() => {
-    if (isFlagEnabled('legendOrientation')) {
-      return legendOrientationThreshold
-    }
-    return undefined
-  }, [legendOrientationThreshold])
 
   const storedXDomain = useMemo(() => parseXBounds(xBounds), [xBounds])
   const storedYDomain = useMemo(() => parseYBounds(yBounds), [yBounds])

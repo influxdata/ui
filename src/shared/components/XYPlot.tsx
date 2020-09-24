@@ -12,7 +12,10 @@ import {
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {
+  useLegendOpacity,
+  useLegendOrientationThreshold,
+} from 'src/shared/utils/useLegendOrientation'
 import {
   useVisXDomainSettings,
   useVisYDomainSettings,
@@ -28,12 +31,7 @@ import {
 } from 'src/shared/utils/vis'
 
 // Constants
-import {
-  LEGEND_OPACITY_DEFAULT,
-  LEGEND_OPACITY_MINIMUM,
-  VIS_THEME,
-  VIS_THEME_LIGHT,
-} from 'src/shared/constants'
+import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
 import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {INVALID_DATA_COPY} from 'src/shared/copy/cell'
 
@@ -86,22 +84,10 @@ const XYPlot: FC<Props> = ({
   },
   theme,
 }) => {
-  const tooltipOpacity = Math.max(
-    useMemo(() => {
-      if (isFlagEnabled('legendOrientation')) {
-        return legendOpacity
-      }
-      return LEGEND_OPACITY_DEFAULT
-    }, [legendOpacity]),
-    LEGEND_OPACITY_MINIMUM
+  const tooltipOpacity = useLegendOpacity(legendOpacity)
+  const tooltipOrientationThreshold = useLegendOrientationThreshold(
+    legendOrientationThreshold
   )
-
-  const tooltipOrientationThreshold = useMemo(() => {
-    if (isFlagEnabled('legendOrientation')) {
-      return legendOrientationThreshold
-    }
-    return undefined
-  }, [legendOrientationThreshold])
 
   const storedXDomain = useMemo(() => parseXBounds(xBounds), [xBounds])
   const storedYDomain = useMemo(() => parseYBounds(yBounds), [yBounds])

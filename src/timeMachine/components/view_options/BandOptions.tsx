@@ -348,20 +348,20 @@ class BandOptions extends PureComponent<Props, State> {
   private onChangeLowerColumn = selectedLowerColumnName =>
     this.onChangeColumn(this.props.onSetLowerColumn, selectedLowerColumnName)
 
-  private onTextChangeUpperColumn = (e: ChangeEvent<HTMLInputElement>) => {
-    const {value} = e.target
+  private onTextChangeUpperColumn = (event: ChangeEvent<HTMLInputElement>) => {
+    const {value} = event.target
     this.setState({upperColumn: value})
     this.props.onSetUpperColumn(value)
   }
 
-  private onTextChangeMainColumn = (e: ChangeEvent<HTMLInputElement>) => {
-    const {value} = e.target
+  private onTextChangeMainColumn = (event: ChangeEvent<HTMLInputElement>) => {
+    const {value} = event.target
     this.setState({mainColumn: value})
     this.props.onSetMainColumn(value)
   }
 
-  private onTextChangeLowerColumn = (e: ChangeEvent<HTMLInputElement>) => {
-    const {value} = e.target
+  private onTextChangeLowerColumn = (event: ChangeEvent<HTMLInputElement>) => {
+    const {value} = event.target
     this.setState({lowerColumn: value})
     this.props.onSetLowerColumn(value)
   }

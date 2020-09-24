@@ -1,12 +1,15 @@
 // Libraries
-import React, {FunctionComponent, useMemo} from 'react'
+import React, {FunctionComponent} from 'react'
 import {Config, Table} from '@influxdata/giraffe'
 
 // Components
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {
+  useLegendOpacity,
+  useLegendOrientationThreshold,
+} from 'src/shared/utils/useLegendOrientation'
 import {
   useVisXDomainSettings,
   useVisYDomainSettings,
@@ -14,11 +17,7 @@ import {
 import {getFormatter} from 'src/shared/utils/vis'
 
 // Constants
-import {
-  LEGEND_OPACITY_DEFAULT,
-  VIS_THEME,
-  VIS_THEME_LIGHT,
-} from 'src/shared/constants'
+import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
 import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {INVALID_DATA_COPY} from 'src/shared/copy/cell'
 
@@ -60,19 +59,10 @@ const HeatmapPlot: FunctionComponent<Props> = ({
 }) => {
   const columnKeys = table.columnKeys
 
-  const tooltipOpacity = useMemo(() => {
-    if (isFlagEnabled('legendOrientation')) {
-      return legendOpacity
-    }
-    return LEGEND_OPACITY_DEFAULT
-  }, [legendOpacity])
-
-  const tooltipOrientationThreshold = useMemo(() => {
-    if (isFlagEnabled('legendOrientation')) {
-      return legendOrientationThreshold
-    }
-    return undefined
-  }, [legendOrientationThreshold])
+  const tooltipOpacity = useLegendOpacity(legendOpacity)
+  const tooltipOrientationThreshold = useLegendOrientationThreshold(
+    legendOrientationThreshold
+  )
 
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
     storedXDomain,

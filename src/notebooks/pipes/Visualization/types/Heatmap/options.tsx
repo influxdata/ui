@@ -79,7 +79,7 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
     }
 
     if (bounds[0] === null && bounds[1] === null) {
-        bounds = null
+      bounds = null
     }
 
     update({[`${axis}Domain`]: bounds})
@@ -216,6 +216,7 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
               <Form.Element label="Y Tick Prefix">
                 <Input
                   value={properties.yPrefix}
+                  placeholder="%, MPH, etc."
                   onChange={evt => {
                     update({yPrefix: evt.target.value})
                   }}
@@ -226,6 +227,7 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
               <Form.Element label="Y Tick Suffix">
                 <Input
                   value={properties.ySuffix}
+                  placeholder="%, MPH, etc."
                   onChange={evt => {
                     update({ySuffix: evt.target.value})
                   }}

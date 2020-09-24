@@ -104,7 +104,7 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
     }
 
     if (bounds[0] === null && bounds[1] === null) {
-        bounds = null
+      bounds = null
     }
 
     update({[`${axis}Domain`]: bounds})

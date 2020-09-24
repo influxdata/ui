@@ -32,11 +32,7 @@ interface Props extends VisOptionProps {
   properties: XYViewProperties
 }
 
-const GraphViewOptions: FC<Props> = ({
-  properties,
-  results,
-  update,
-}) => {
+const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
   if (properties.type !== 'xy') {
     throw new Error('How did you get here?')
   }
@@ -91,7 +87,7 @@ const GraphViewOptions: FC<Props> = ({
     }
 
     if (bounds[0] === null && bounds[1] === null) {
-        bounds = null
+      bounds = null
     }
 
     updateAxis('y', {bounds})

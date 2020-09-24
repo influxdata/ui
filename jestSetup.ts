@@ -26,6 +26,7 @@ jest.mock('honeybadger-js', () => () => null)
 
 // cleans up state between @testing-library/react tests
 afterEach(() => {
+  window.localStorage.clear()
   cleanup()
   fetchMock.resetMocks()
 })

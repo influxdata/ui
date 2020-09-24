@@ -26,7 +26,7 @@ const FieldSelectors: FC<Props> = ({fields}) => {
       }
       update({field: updated})
     },
-    [update]
+    [update, selectedField]
   )
 
   return (

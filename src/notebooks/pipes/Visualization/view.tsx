@@ -166,7 +166,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     </>
   )
 
-  let options = useMemo(() => {
+  const options = useMemo(() => {
     if (!optionsVisibility || !TYPE_DEFINITIONS[data.properties.type].options) {
       return null
     }

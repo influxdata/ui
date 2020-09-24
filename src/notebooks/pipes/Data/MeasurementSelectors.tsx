@@ -27,7 +27,7 @@ const MeasurementSelectors: FC<Props> = ({measurements}) => {
 
       update({measurement: updated})
     },
-    [update]
+    [update, selectedMeasurement]
   )
   return (
     <>

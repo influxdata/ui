@@ -26,7 +26,7 @@ const p2m = new ProtocolToMonacoConverter()
 export interface EditorProps {
   script: string
   onChangeScript: OnChangeScript
-  onSubmitScript?: () => void
+  onSubmitScript?: (abortController?: AbortController) => void
   autogrow?: boolean
 }
 
@@ -67,7 +67,8 @@ const FluxEditorMonaco: FC<Props> = ({
     comments(editor)
     submit(editor, () => {
       if (onSubmitScript) {
-        onSubmitScript()
+        const abortController = new AbortController()
+        onSubmitScript(abortController)
       }
     })
 

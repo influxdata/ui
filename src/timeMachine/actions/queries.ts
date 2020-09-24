@@ -242,7 +242,9 @@ export const executeQueries = (abortController?: AbortController) => async (
       }
       return runQuery(orgID, text, extern, abortController)
     })
+    console.log('pendingResults: ', pendingResults)
     const results = await Promise.all(pendingResults.map(r => r.promise))
+    console.log('results: ', results)
 
     const duration = window.performance.now() - startTime
 

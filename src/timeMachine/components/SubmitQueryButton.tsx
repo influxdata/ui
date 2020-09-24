@@ -25,6 +25,7 @@ import {delayEnableCancelBtn} from 'src/shared/actions/app'
 import {AppState, RemoteDataState} from 'src/types'
 
 interface OwnProps {
+  abortController: AbortController
   text?: string
   icon?: IconFont
   testID?: string
@@ -49,14 +50,11 @@ class SubmitQueryButton extends PureComponent<Props> {
   public componentDidUpdate(prevProps) {
     if (
       this.props.queryStatus !== prevProps.queryStatus &&
-      prevProps.queryStatus === RemoteDataState.Loading
+      prevProps.queryStatus === RemoteDataState.Loading &&
+      this.timer
     ) {
-      if (this.timer) {
-        clearTimeout(this.timer)
-        delete this.timer
-      }
-
-      this.setState({timer: false})
+      clearTimeout(this.timer)
+      delete this.timer
     }
   }
 
@@ -117,13 +115,14 @@ class SubmitQueryButton extends PureComponent<Props> {
   private abortController: AbortController
 
   private handleClick = (): void => {
+    console.log('did a thing')
     event('SubmitQueryButton click')
     // We need to instantiate a new AbortController per request
     // In order to allow for requests after cancellations:
     // https://stackoverflow.com/a/56548348/7963795
 
     this.timer = this.props.onSetCancelBtnTimer()
-    this.abortController = new AbortController()
+    this.abortController = this.props.abortController
     this.props.onSubmit(this.abortController)
   }
 

@@ -46,9 +46,11 @@ const TomlEditorMonaco: FC<Props> = props => {
     )
 
     editor.onKeyUp((evt: monacoEditor.IKeyboardEvent) => {
+      console.log('should be seeing this')
       const {ctrlKey, code} = evt
       const {onSubmitScript} = props
       if (ctrlKey && code === 'Enter') {
+        console.log('in here')
         if (onSubmitScript) {
           onSubmitScript()
         }

@@ -8,6 +8,6 @@ export default register => {
     name: 'Single Stat',
     graphic: icon,
     initial: properties,
-    options: options
+    options: options,
   })
 }

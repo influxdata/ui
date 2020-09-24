@@ -33,10 +33,6 @@ interface Props extends VisOptionProps {
 }
 
 const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
-  if (properties.type !== 'xy') {
-    throw new Error('How did you get here?')
-  }
-
   const numericColumns = results.table.columnKeys.filter(key => {
     if (key === 'result' || key === 'table') {
       return false
@@ -102,7 +98,7 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
           widthLG={Columns.Four}
         >
           <h5 className="view-options--header">Data</h5>
-          <Form.Element label={`X Column`}>
+          <Form.Element label="X Column">
             <SelectDropdown
               options={numericColumns}
               selectedOption={xColumn || 'Build a query before selecting...'}
@@ -117,7 +113,7 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
               }
             />
           </Form.Element>
-          <Form.Element label={`Y Column`}>
+          <Form.Element label="Y Column">
             <SelectDropdown
               options={numericColumns}
               selectedOption={yColumn || 'Build a query before selecting...'}
@@ -313,7 +309,7 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
           </Form.Element>
           <Grid.Row>
             <Grid.Column widthXS={Columns.Six}>
-              <Form.Element label={`Y Axis Prefix`}>
+              <Form.Element label="Y Axis Prefix">
                 <Input
                   value={properties.axes.y.prefix}
                   onChange={evt => {
@@ -323,7 +319,7 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
               </Form.Element>
             </Grid.Column>
             <Grid.Column widthXS={Columns.Six}>
-              <Form.Element label={`Y Axis Suffix`}>
+              <Form.Element label="Y Axis Suffix">
                 <Input
                   value={properties.axes.y.suffix}
                   onChange={evt => {

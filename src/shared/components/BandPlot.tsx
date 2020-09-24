@@ -31,6 +31,7 @@ import {
   BAND_LINE_WIDTH,
   BAND_SHADE_OPACITY,
   LEGEND_OPACITY_DEFAULT,
+  LEGEND_OPACITY_MINIMUM,
   QUERY_BUILDER_MODE,
   VIS_THEME,
   VIS_THEME_LIGHT,
@@ -119,12 +120,15 @@ const BandPlot: FC<Props> = ({
     )
   }, [activeQueryIndex, queries, upperColumnName, mainColumn, lowerColumnName])
 
-  const tooltipOpacity = useMemo(() => {
-    if (isFlagEnabled('legendOrientation')) {
-      return legendOpacity
-    }
-    return LEGEND_OPACITY_DEFAULT
-  }, [legendOpacity])
+  const tooltipOpacity = Math.max(
+    useMemo(() => {
+      if (isFlagEnabled('legendOrientation')) {
+        return legendOpacity
+      }
+      return LEGEND_OPACITY_DEFAULT
+    }, [legendOpacity]),
+    LEGEND_OPACITY_MINIMUM
+  )
 
   const tooltipOrientationThreshold = useMemo(() => {
     if (isFlagEnabled('legendOrientation')) {

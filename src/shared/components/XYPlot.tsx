@@ -30,6 +30,7 @@ import {
 // Constants
 import {
   LEGEND_OPACITY_DEFAULT,
+  LEGEND_OPACITY_MINIMUM,
   VIS_THEME,
   VIS_THEME_LIGHT,
 } from 'src/shared/constants'
@@ -85,12 +86,15 @@ const XYPlot: FC<Props> = ({
   },
   theme,
 }) => {
-  const tooltipOpacity = useMemo(() => {
-    if (isFlagEnabled('legendOrientation')) {
-      return legendOpacity
-    }
-    return LEGEND_OPACITY_DEFAULT
-  }, [legendOpacity])
+  const tooltipOpacity = Math.max(
+    useMemo(() => {
+      if (isFlagEnabled('legendOrientation')) {
+        return legendOpacity
+      }
+      return LEGEND_OPACITY_DEFAULT
+    }, [legendOpacity]),
+    LEGEND_OPACITY_MINIMUM
+  )
 
   const tooltipOrientationThreshold = useMemo(() => {
     if (isFlagEnabled('legendOrientation')) {

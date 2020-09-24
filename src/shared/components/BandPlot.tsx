@@ -31,6 +31,8 @@ import {
   BAND_LINE_WIDTH,
   BAND_SHADE_OPACITY,
   LEGEND_OPACITY_DEFAULT,
+  QUERY_BUILDER_MODE,
+  SCRIPT_EDITOR_MODE,
   VIS_THEME,
   VIS_THEME_LIGHT,
 } from 'src/shared/constants'
@@ -99,6 +101,15 @@ const BandPlot: FC<Props> = ({
   theme,
 }) => {
   const mainColumnName = useMemo(() => {
+    const editMode = get(
+      queries,
+      `${activeQueryIndex}.editMode`,
+      QUERY_BUILDER_MODE
+    )
+    if (editMode === SCRIPT_EDITOR_MODE) {
+      return mainColumn
+    }
+
     const aggregateFunctions = get(
       queries,
       `${activeQueryIndex}.builderConfig.functions`,

@@ -1,11 +1,5 @@
 import React, {Component} from 'react'
-import {
-  withRouter,
-  matchPath,
-  RouteComponentProps,
-  Switch,
-  Route,
-} from 'react-router-dom'
+import {withRouter, RouteComponentProps, Switch, Route} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
 import {notify} from 'src/shared/actions/notifications'
 
@@ -33,8 +27,6 @@ import {
 import SettingsTabbedPage from 'src/settings/components/SettingsTabbedPage'
 import SettingsHeader from 'src/settings/components/SettingsHeader'
 
-import {communityTemplatesImportPath} from 'src/templates/containers/TemplatesIndex'
-
 import GetResources from 'src/resources/components/GetResources'
 import {getOrg} from 'src/organizations/selectors'
 
@@ -42,10 +34,7 @@ import {setStagedTemplateUrl} from 'src/templates/actions/creators'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import {
-  getGithubUrlFromTemplateDetails,
-  getTemplateNameFromUrl,
-} from 'src/templates/utils'
+import {getTemplateNameFromUrl} from 'src/templates/utils'
 
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 import {communityTemplateUnsupportedFormatError} from 'src/shared/copy/notifications'
@@ -65,11 +54,8 @@ const communityTemplatesUrl =
   'https://github.com/influxdata/community-templates#templates'
 const templatesPath = '/orgs/:orgID/settings/templates'
 
-type Params = {
-  params: {directory: string; templateName: string; templateExtension: string}
-}
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & RouteComponentProps<{templateName: string}>
+type Props = ReduxProps & RouteComponentProps
 
 interface State {
   validationMessage: string
@@ -79,29 +65,6 @@ interface State {
 class UnconnectedTemplatesIndex extends Component<Props, State> {
   state = {
     validationMessage: '',
-  }
-
-  public componentDidMount() {
-    // if this component mounts, and the install template is on the screen
-    // (i.e. the user reloaded the page with the install template active)
-    // grab the template name, and fill in the text input
-    const match = matchPath(this.props.location.pathname, {
-      path: communityTemplatesImportPath,
-    }) as Params
-
-    if (
-      match?.params?.directory &&
-      match?.params?.templateName &&
-      match?.params?.templateExtension
-    ) {
-      this.props.setStagedTemplateUrl(
-        getGithubUrlFromTemplateDetails(
-          match.params.directory,
-          match.params.templateName,
-          match.params.templateExtension
-        )
-      )
-    }
   }
 
   public render() {

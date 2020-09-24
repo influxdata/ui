@@ -157,7 +157,7 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
               onSelect={yColumn => {
                 update({yColumn})
               }}
-              testID={`dropdown-y`}
+              testID="dropdown-y"
               buttonStatus={
                 numericColumns.length == 0
                   ? ComponentStatus.Disabled

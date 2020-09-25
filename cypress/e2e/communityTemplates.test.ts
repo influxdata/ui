@@ -211,6 +211,8 @@ describe('Community Templates', () => {
     it.skip('takes you to github readme when you click on the Community Templates button', () => {
       cy.getByTestID('community-template-readme-overlay-button').click()
       cy.get('.markdown-format').should('contain', 'Setup Instructions')
+
+      //we should confirm the link works
     })
 
     it('deletes templates', () => {

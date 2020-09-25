@@ -64,7 +64,6 @@ import {event} from 'src/cloud/utils/reporting'
 const communityTemplatesUrl =
   'https://github.com/influxdata/community-templates#templates'
 const templatesPath = '/orgs/:orgID/settings/templates'
-const KEYBOARD_ENTER_KEY = 'Enter'
 
 type Params = {
   params: {directory: string; templateName: string; templateExtension: string}
@@ -270,7 +269,7 @@ class UnconnectedTemplatesIndex extends Component<Props, State> {
   }
 
   private handleInputKeyPress = event => {
-    if (event.key === KEYBOARD_ENTER_KEY) {
+    if (event.key === 'Enter') {
       this.startTemplateInstall()
     }
   }

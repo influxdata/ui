@@ -64,6 +64,7 @@ import {event} from 'src/cloud/utils/reporting'
 const communityTemplatesUrl =
   'https://github.com/influxdata/community-templates#templates'
 const templatesPath = '/orgs/:orgID/settings/templates'
+const KEYBOARD_ENTER_KEY = 'Enter'
 
 type Params = {
   params: {directory: string; templateName: string; templateExtension: string}
@@ -163,6 +164,7 @@ class UnconnectedTemplatesIndex extends Component<Props, State> {
                     <Input
                       className="community-templates-template-url"
                       onChange={this.handleTemplateChange}
+                      onKeyPress={this.handleInputKeyPress}
                       placeholder="https://github.com/influxdata/community-templates/blob/master/example/example.yml"
                       style={{flex: '1 0 0'}}
                       value={this.props.stagedTemplateUrl}
@@ -265,6 +267,12 @@ class UnconnectedTemplatesIndex extends Component<Props, State> {
 
     this.setValidationMessage(validationMessage)
     this.props.setStagedTemplateUrl(event.target.value)
+  }
+
+  private handleInputKeyPress = event => {
+    if (event.key === KEYBOARD_ENTER_KEY) {
+      this.startTemplateInstall()
+    }
   }
 
   private onClickBrowseCommunityTemplates = () => {

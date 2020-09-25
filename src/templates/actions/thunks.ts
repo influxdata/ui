@@ -284,7 +284,6 @@ export const fetchAndSetReadme = (name: string, directory: string) => async (
 ): Promise<void> => {
   try {
     const response = await fetchReadMe(directory)
-    console.log(response)
     const readme = readMeFormatter(response)
     dispatch(setTemplateReadMe(name, readme))
   } catch (error) {

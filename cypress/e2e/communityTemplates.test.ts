@@ -31,12 +31,20 @@ describe('Community Templates', () => {
     //on empty
     cy.getByTestID('lookup-template-button').click()
     cy.getByTestID('notification-error').should('be.visible')
+    cy.getByTestID('notification-error--dismiss').click()
+    cy.getByTestID('lookup-template-input').type('{enter}')
+    cy.getByTestID('notification-error').should('be.visible')
+    cy.getByTestID('notification-error--dismiss').click()
 
     //lookup template errors on github folder
     cy.getByTestID('lookup-template-input').type(
       'https://github.com/influxdata/community-templates/tree/master/kafka'
     )
     cy.getByTestID('lookup-template-button').click()
+    cy.getByTestID('notification-error').should('be.visible')
+    cy.getByTestID('notification-error--dismiss').click()
+    cy.get('.cf-overlay--dismiss').click()
+    cy.getByTestID('lookup-template-input').type('{enter}')
     cy.getByTestID('notification-error').should('be.visible')
   })
 
@@ -47,6 +55,37 @@ describe('Community Templates', () => {
         'https://raw.githubusercontent.com/influxdata/influxdb/master/pkger/testdata/dashboard_gauge.yml'
       )
       cy.getByTestID('lookup-template-button').click()
+      cy.getByTestID('template-install-overlay').should('be.visible')
+
+      //check that with 1 resource pluralization is correct
+      cy.getByTestID('template-install-title').should(
+        'contain',
+        'will create 1 resource'
+      )
+      cy.getByTestID('template-install-title').should(
+        'not.contain',
+        'resources'
+      )
+
+      //check that no resources check lead to disabled install button
+      cy.getByTestID('heading-Dashboards').click()
+      cy.getByTestID('template-install-button').should('exist')
+      cy.getByTestID('templates-toggle--dash-1').click()
+      cy.getByTestID('template-install-button').should('not.exist')
+
+      //and check that 0 resources pluralization is correct
+      cy.getByTestID('template-install-title').should(
+        'contain',
+        'will create 0 resources'
+      )
+    })
+
+    it('can install using the keyboard "Enter" key and without clicking "Lookup Template"', () => {
+      //The lookup template accepts github raw link
+      cy.getByTestID('lookup-template-input').type(
+        'https://raw.githubusercontent.com/influxdata/influxdb/master/pkger/testdata/dashboard_band.yml'
+      )
+      cy.getByTestID('lookup-template-input').type('{enter}')
       cy.getByTestID('template-install-overlay').should('be.visible')
 
       //check that with 1 resource pluralization is correct

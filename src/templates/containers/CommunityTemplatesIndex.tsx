@@ -163,6 +163,7 @@ class UnconnectedTemplatesIndex extends Component<Props, State> {
                     <Input
                       className="community-templates-template-url"
                       onChange={this.handleTemplateChange}
+                      onKeyPress={this.handleInputKeyPress}
                       placeholder="https://github.com/influxdata/community-templates/blob/master/example/example.yml"
                       style={{flex: '1 0 0'}}
                       value={this.props.stagedTemplateUrl}
@@ -265,6 +266,12 @@ class UnconnectedTemplatesIndex extends Component<Props, State> {
 
     this.setValidationMessage(validationMessage)
     this.props.setStagedTemplateUrl(event.target.value)
+  }
+
+  private handleInputKeyPress = event => {
+    if (event.key === 'Enter') {
+      this.startTemplateInstall()
+    }
   }
 
   private onClickBrowseCommunityTemplates = () => {

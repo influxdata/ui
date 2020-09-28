@@ -14,10 +14,7 @@ jobs:
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
           name: Grab post deployment tests
-          command: mkdir post_deployment && cd post_deployment && git clone git@github.com:influxdata/cloud-2-cypress.git
-      - run:
-          name: Copy smoke test
-          command: cp ./post_deployment/cloud-2-cypress/cypress/integration/cloud_2_login.spec.js ./ui/cypress/e2e/smoke.test.ts
+          command: git clone git@github.com:influxdata/cloud-2-cypress.git
       - run:
           name: Grab compose files
           command: git clone git@github.com:influxdata/monitor-ci.git
@@ -41,6 +38,11 @@ jobs:
           no_output_timeout: 30m
           command: |
             cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser chrome --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split --split-by=timings | paste -sd "," -)" --reporter cypress-circleci-reporter
+      - run:
+          name: Run smoke tests
+          no_output_timeout: 30m
+          command: |
+            cd ./cloud-2-cypress; export CYPRESS_E2E_TEST=1; npx cypress run --browser chrome --spec "$(circleci tests glob "./cypress/e2e/**/*.spec.js" | circleci tests split --split-by=timings | paste -sd "," -)" --reporter cypress-circleci-reporter
       - store_test_results:
           path: test_results
       - store_artifacts:

@@ -17,7 +17,7 @@ jobs:
           command: mkdir post_deployment && cd post_deployment && git clone git@github.com:influxdata/cloud-2-cypress.git
       - run:
           name: Copy smoke test
-          command: cp ./post_deployment/cypress/integration/cloud_2_login.spec.js ./cypress/e2e/smoke.test.ts
+          command: cp ./post_deployment/cypress/integration/cloud_2_login.spec.js ./ui/cypress/e2e/smoke.test.ts
       - run:
           name: Grab compose files
           command: git clone git@github.com:influxdata/monitor-ci.git

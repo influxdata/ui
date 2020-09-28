@@ -37,7 +37,7 @@ jobs:
           name: Run smoke tests
           no_output_timeout: 30m
           command: |
-            cd ./cloud-2-cypress; export CYPRESS_E2E_TEST=1; CYPRESS_baseUrl=http://ingress; npx cypress run --browser chrome --spec "$(circleci tests glob "./cypress/integration/**/*.spec.js" | circleci tests split --split-by=timings | paste -sd "," -)" --reporter cypress-circleci-reporter
+            cd ./cloud-2-cypress; export CYPRESS_E2E_TEST=1; export CYPRESS_baseUrl=http://ingress; npx cypress run --browser chrome --spec "$(circleci tests glob "./cypress/integration/**/*.spec.js" | circleci tests split --split-by=timings | paste -sd "," -)" --reporter cypress-circleci-reporter
       - run:
           name: Run e2e tests
           no_output_timeout: 30m

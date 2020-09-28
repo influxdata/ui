@@ -24,6 +24,8 @@ import PanelVisibilityToggle from 'src/notebooks/components/panel/PanelVisibilit
 import MovePanelButton from 'src/notebooks/components/panel/MovePanelButton'
 import NotebookPanelTitle from 'src/notebooks/components/panel/NotebookPanelTitle'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
+import Results from 'src/notebooks/components/panel/Results'
+import {PIPE_DEFINITIONS} from 'src/notebooks'
 
 // Types
 import {PipeContextProps} from 'src/types/notebooks'
@@ -140,17 +142,27 @@ const NotebookPanel: FC<Props> = ({id, children, controls}) => {
     updatePanelFocus(false)
   }
 
+  const showResults = ['inputs', 'test', 'transform'].includes(
+    PIPE_DEFINITIONS[notebook.data.get(id).type].family
+  )
+
   if (
     notebook.readOnly &&
     !/^(visualization|markdown)$/.test(notebook.data.get(id).type)
   ) {
     return null
   }
+
   return (
     <ClickOutside onClickOutside={handleClickOutside}>
       <div className={panelClassName} onClick={handleClick} ref={panelRef}>
         <NotebookPanelHeader id={id} controls={controls} />
         <div className="notebook-panel--body">{children}</div>
+        {showResults && (
+          <div className="notebook-panel--results">
+            <Results />
+          </div>
+        )}
         {!notebook.readOnly && <InsertCellButton id={id} />}
       </div>
     </ClickOutside>

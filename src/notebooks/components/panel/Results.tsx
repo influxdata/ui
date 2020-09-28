@@ -6,16 +6,25 @@ import {AutoSizer} from 'react-virtualized'
 import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
 import {ROW_HEIGHT} from 'src/timeMachine/components/RawFluxDataGrid'
 import Resizer from 'src/notebooks/shared/Resizer'
-import ResultsPagination from 'src/notebooks/pipes/Query/ResultsPagination'
+import ResultsPagination from 'src/notebooks/components/panel/ResultsPagination'
 
+import {NotebookContext} from 'src/notebooks/context/notebook.current'
 import {PipeContext} from 'src/notebooks/context/pipe'
 import {RemoteDataState} from 'src/types'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
+import {PipeMeta} from 'src/types/notebooks'
+
 const Results: FC = () => {
-  const {data, results, loading} = useContext(PipeContext)
+  const {notebook} = useContext(NotebookContext)
+  const {id, results} = useContext(PipeContext)
+  const meta = notebook.meta.get(id)
+  const update = (newMeta: Partial<PipeMeta>) => {
+    console.log('updating', newMeta)
+    notebook.meta.update(id, newMeta)
+  }
   const resultsExist =
     !!results && !!results.raw && !!results.parsed.table.length
   const raw = (results || {}).raw || ''
@@ -55,9 +64,9 @@ const Results: FC = () => {
   }
 
   let emptyText
-  if (loading === RemoteDataState.NotStarted) {
+  if (meta.loading === RemoteDataState.NotStarted) {
     emptyText = 'Run the Flow to See Results'
-  } else if (loading === RemoteDataState.Loading) {
+  } else if (meta.loading === RemoteDataState.Loading) {
     emptyText = 'Loading'
   } else {
     emptyText = 'No Data Returned'
@@ -70,6 +79,10 @@ const Results: FC = () => {
       error={results.error}
       hiddenText="Results hidden"
       toggleVisibilityEnabled={true}
+      height={meta.rawHeight}
+      onUpdateHeight={rawHeight => update({rawHeight})}
+      visibility={meta.rawVisibility}
+      onUpdateVisibility={rawVisibility => update({rawVisibility})}
     >
       <div className="query-results">
         <ResultsPagination
@@ -77,7 +90,7 @@ const Results: FC = () => {
           onClickNext={next}
           disablePrev={prevDisabled}
           disableNext={nextDisabled}
-          visible={resultsExist && data.panelVisibility === 'visible'}
+          visible={resultsExist && meta.rawVisibility === 'visible'}
           pageSize={pageSize}
           startRow={startRow}
         />

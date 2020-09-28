@@ -28,10 +28,14 @@ export interface PipeContextProps {
 
 export type PipeData = any
 
+export type Visibility = 'visible' | 'hidden'
+
 export interface PipeMeta {
   title: string
   visible: boolean
   loading: RemoteDataState
+  rawVisibility: Visibility
+  rawHeight: number
   error?: string
 }
 

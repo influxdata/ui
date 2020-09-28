@@ -57,7 +57,8 @@
 }
 
 .notebook-panel--header,
-.notebook-panel--body {
+.notebook-panel--body,
+.notebook-panel--results {
   transition: background-color 0.25s ease;
 }
 
@@ -163,7 +164,8 @@
 
 .notebook-panel__focus {
   .notebook-panel--header,
-  .notebook-panel--body {
+  .notebook-panel--body,
+  .notebook-panel--resutls {
     background-color: $notebook-panel--bg;
   }
 }
@@ -176,7 +178,8 @@
   top: -2px;
 }
 
-.notebook-panel--body {
+.notebook-panel--body,
+.notebook-panel--results {
   border-radius: 0 0 $cf-radius $cf-radius;
   padding: $cf-marg-b;
   padding-left: $notebook-panel--node-gap;
@@ -196,12 +199,6 @@
   padding-top: 0;
 }
 
-.notebook-panel--results {
-  width: 100%;
-  height: 320px;
-  position: relative;
-}
-
 /*
   Notebook Panel Modes
   ------------------------------------------------------------------------------
@@ -210,7 +207,8 @@
 .notebook-panel__hidden {
   height: $notebook-header-height + $notebook-divider-height;
 
-  .notebook-panel--body {
+  .notebook-panel--body,
+  .notebook-panel--results {
     display: none;
   }
 

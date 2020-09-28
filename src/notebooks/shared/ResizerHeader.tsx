@@ -6,7 +6,7 @@ import classnames from 'classnames'
 import {Icon, IconFont} from '@influxdata/clockface'
 
 // Types
-import {Visibility} from 'src/notebooks/shared/Resizer'
+import {Visibility} from 'src/types/notebooks'
 import {PipeContext} from 'src/notebooks/context/pipe'
 
 interface Props {

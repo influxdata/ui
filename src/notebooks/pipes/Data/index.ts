@@ -9,7 +9,6 @@ export default register => {
     priority: 1,
     component: View,
     button: 'Metric Selector',
-    featureFlag: 'flowsQueryBuilder',
     initial: {
       bucketName: '',
       field: '',

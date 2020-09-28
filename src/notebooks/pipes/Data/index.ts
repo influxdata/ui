@@ -11,7 +11,6 @@ export default register => {
     button: 'Metric Selector',
     featureFlag: 'flowsQueryBuilder',
     initial: {
-      bucketName: '',
       field: '',
       measurement: '',
       tags: {},

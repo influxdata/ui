@@ -18,6 +18,7 @@ module.exports = {
   snapshotSerializers: ['enzyme-to-json/serializer'],
   moduleNameMapper: {
     '\\.(css|scss)$': 'identity-obj-proxy',
+    'monaco-editor': 'node_modules/monaco-editor/esm/vs/editor/editor.api.js'
   },
   globals: {
     'ts-jest': {

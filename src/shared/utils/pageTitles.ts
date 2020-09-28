@@ -3,6 +3,7 @@ import {store} from 'src/index'
 import {CLOUD} from 'src/shared/constants'
 
 export const pageTitleSuffixer = (pageTitles: string[]): string => {
+  console.log('store', store.getState())
   const state = store.getState()
   const {name} = getOrg(state) || null
   const title = CLOUD ? 'InfluxDB Cloud' : 'InfluxDB'

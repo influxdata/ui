@@ -439,6 +439,7 @@ export const setupUser = (): Cypress.Chainable<Cypress.Response> => {
   return cy.request({
     method: 'GET',
     url: '/debug/provision',
+    timeout: 5 * 60 * 1000,
   })
 }
 

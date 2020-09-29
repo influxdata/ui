@@ -2,6 +2,7 @@ import {Organization} from '../../src/types'
 
 const newLabelName = 'click-me'
 const dashboardName = 'Bee Happy'
+const dashboardName2 = 'test dashboard'
 const dashSearchName = 'bEE'
 
 describe('Dashboards', () => {
@@ -36,7 +37,9 @@ describe('Dashboards', () => {
     })
   })
 
-  it('can CRUD dashboards from empty state, and a header', () => {
+  it('can CRUD dashboards from empty state, header, and a Template', () => {
+    const newName = 'new 🅱️ashboard'
+
     // Create from empty state
     cy.getByTestID('empty-dashboards-list').within(() => {
       cy.getByTestID('add-resource-dropdown--button').click()
@@ -51,8 +54,6 @@ describe('Dashboards', () => {
           })
         })
       })
-
-    const newName = 'new 🅱️ashboard'
 
     cy.getByTestID('dashboard-card').within(() => {
       cy.getByTestID('dashboard-card--name')
@@ -85,7 +86,20 @@ describe('Dashboards', () => {
       })
     })
 
-    cy.getByTestID('dashboard-card').should('have.length', 2)
+    // Create from Template
+    cy.get('@org').then(({id}: Organization) => {
+      cy.createDashboardTemplate(id)
+    })
+
+    cy.getByTestID('empty-dashboards-list').within(() => {
+      cy.getByTestID('add-resource-dropdown--button').click()
+      cy.getByTestID('add-resource-dropdown--template').click()
+    })
+    cy.getByTestID('template--Bashboard-Template').click()
+    cy.getByTestID('template-panel').should('exist')
+    cy.getByTestID('create-dashboard-button').click()
+
+    cy.getByTestID('dashboard-card').should('have.length', 3)
 
     // Delete dashboards
     cy.getByTestID('dashboard-card')
@@ -104,7 +118,110 @@ describe('Dashboards', () => {
         cy.getByTestID('context-delete-dashboard').click()
       })
 
+      const dashboardDescription = 'this dashboard contains secret information'
+
+      // change description
+      cy.getByTestID('resource-list--editable-description')
+        .click('topLeft')
+        .within(() => {
+          cy.getByTestID('input-field')
+            .type(dashboardDescription)
+            .type('{enter}')
+        })
+      cy.getByTestID('resource-list--editable-description').should(
+        'contain',
+        dashboardDescription
+      )
+  
+      // remove description
+      cy.getByTestID('resource-list--editable-description')
+        .click('topLeft')
+        .within(() => {
+          cy.getByTestID('input-field')
+            .clear()
+            .type('{enter}')
+        })
+      cy.getByTestID('resource-list--editable-description').should(
+        'not.contain',
+        dashboardDescription
+      )
+  
+    cy.getByTestID('dashboard-card')
+      .first()
+      .trigger('mouseover')
+      .within(() => {
+        cy.getByTestID('context-delete-menu').click()
+        cy.getByTestID('context-delete-dashboard').click()
+      })
+
     cy.getByTestID('empty-dashboards-list').should('exist')
+  })
+
+  it('can import as JSON or file', () => {
+    const checkImportedDashboard = () => {
+      // wait for importing done
+      cy.wait(100)
+      cy.getByTestID('dashboard-card--name')
+        .should('contain', 'IMPORT dashboard')
+        .click()
+      cy.getByTestID('markdown-cell--contents').should(
+        'contain',
+        'Note about no tea'
+      )
+      cy.getByTestID('cell cellll').should('exist')
+
+      // return to previous page
+      cy.fixture('routes').then(({orgs}) => {
+        cy.get('@org').then(({id}: Organization) => {
+          cy.visit(`${orgs}/${id}/dashboards-list`)
+        })
+      })
+    }
+
+    // import dashboard from file
+    cy.getByTestID('add-resource-dropdown--button')
+      .first()
+      .click()
+    cy.getByTestID('add-resource-dropdown--import').click()
+
+    cy.getByTestID('drag-and-drop--input').attachFile({
+      filePath: 'dashboard-import.json',
+    })
+
+    cy.getByTestID('submit-button Dashboard').click()
+    checkImportedDashboard()
+
+    // delete dashboard before reimport
+    cy.getByTestID('dashboard-card')
+      .first()
+      .trigger('mouseover')
+      .within(() => {
+        cy.getByTestID('context-delete-menu').click()
+        cy.getByTestID('context-delete-dashboard').click()
+      })
+
+    // dasboard no longer exists
+    cy.getByTestID('dashboard-card').should('not.exist')
+
+    // import dashboard as json
+    cy.getByTestID('add-resource-dropdown--button')
+      .first()
+      .click()
+    cy.getByTestID('add-resource-dropdown--import').click()
+
+    cy.getByTestID('select-group--option')
+      .contains('Paste')
+      .click()
+
+    cy.fixture('dashboard-import.json').then(json => {
+      cy.getByTestID('import-overlay--textarea')
+        .should('be.visible')
+        .click()
+        .type(JSON.stringify(json), {parseSpecialCharSequences: false})
+    })
+
+    cy.getByTestID('submit-button Dashboard').click()
+    checkImportedDashboard()
   })
 
   it('keeps user input in text area when attempting to import invalid JSON', () => {
@@ -139,7 +256,7 @@ describe('Dashboards', () => {
           cy.createAndAddLabel('dashboards', id, body.id, newLabelName)
         })
 
-        cy.createDashboard(id).then(({body}) => {
+        cy.createDashboard(id, dashboardName2).then(({body}) => {
           cy.createAndAddLabel('dashboards', id, body.id, 'bar')
         })
       })
@@ -157,6 +274,12 @@ describe('Dashboards', () => {
       cy.getByTestID('clone-dashboard')
         .first()
         .click({force: true})
+
+      cy.fixture('routes').then(({orgs}) => {
+        cy.get('@org').then(({id}: Organization) => {
+          cy.visit(`${orgs}/${id}/dashboards-list`)
+        })
+      })
 
       cy.getByTestID('dashboard-card').should('have.length', 3)
     })
@@ -377,21 +500,37 @@ describe('Dashboards', () => {
         cy.contains(dashboardName)
       })
     })
+
+    it('can list and search dashboards on home page', () => {
+      cy.getByTestID('tree-nav--header').click()
+
+      cy.getByTestID('recent-dashboards--panel').within(() => {
+        const dashboardIsVisible = (name: string, isVisible = true) => {
+          cy.contains(name).should((isVisible ? '' : 'not.') + 'visible')
+        }
+
+        dashboardIsVisible(dashboardName)
+        dashboardIsVisible(dashboardName2)
+
+        cy.get('input').type(dashSearchName)
+
+        dashboardIsVisible(dashboardName)
+        dashboardIsVisible(dashboardName2, false)
+      })
+    })
   })
 
-  describe('When a dashboard does not exist', () => {
-    it('should route the user to the dashboard index page', () => {
-      const nonexistentID = '/0499992503cd3700'
+  it('should redirect to the dashboard list when dashboard not exist', () => {
+    const nonexistentID = '0499992503cd3700'
 
-      // visiting the dashboard edit page
-      cy.get('@org').then(({id}: Organization) => {
-        cy.fixture('routes').then(({orgs, dashboards}) => {
-          cy.visit(`${orgs}/${id}${dashboards}${nonexistentID}`)
-          cy.url().should(
-            'eq',
-            `${Cypress.config().baseUrl}${orgs}/${id}/dashboards-list`
-          )
-        })
+    // visiting the dashboard edit page
+    cy.get('@org').then(({id}: Organization) => {
+      cy.fixture('routes').then(({orgs, dashboards}) => {
+        cy.visit(`${orgs}/${id}${dashboards}/${nonexistentID}`)
+        cy.url().should(
+          'eq',
+          `${Cypress.config().baseUrl}${orgs}/${id}/dashboards-list`
+        )
       })
     })
   })

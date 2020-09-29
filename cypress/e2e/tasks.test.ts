@@ -110,6 +110,95 @@ http.post(
     )
   })
 
+  it('can create a cron task', () => {
+    cy.getByTestID('empty-tasks-list').within(() => {
+      cy.getByTestID('add-resource-dropdown--button').click()
+    })
+
+    cy.getByTestID('add-resource-dropdown--new').click()
+
+    cy.getByTestID('flux-editor').within(() => {
+      cy.get('textarea.inputarea')
+        .click()
+        .type('from(bucket: "defbuck")\n' + '\t|> range(start: -2m)', {
+          force: true,
+          delay: 2,
+        })
+    })
+
+    cy.getByTestID('task-form-name')
+      .click()
+      .type('Cron task test')
+      .then(() => {
+        cy.getByTestID('task-card-cron-btn').click()
+        cy.getByTestID('task-form-schedule-input')
+          .click()
+          .type('0 4 8-14 * *')
+        cy.getByTestID('task-form-offset-input')
+          .click()
+          .type('10m')
+      })
+
+    cy.getByTestID('task-save-btn').click()
+
+    cy.getByTestID('task-card')
+      .contains('Cron task test')
+      .get('.cf-resource-meta--item')
+      .contains('Scheduled to run 0 4 8-14 * *')
+
+    cy.getByTestID('task-card')
+      .contains('Cron task test')
+      .click()
+      .then(() => {
+        cy.getByTestID('task-form-schedule-input').should(
+          'have.value',
+          '0 4 8-14 * *'
+        )
+      })
+  })
+
+  //skip until this issue is resolved
+  //https://github.com/influxdata/ui/issues/96
+  it.skip('can create a task with an option parameter', () => {
+    cy.getByTestID('empty-tasks-list').within(() => {
+      cy.getByTestID('add-resource-dropdown--button')
+        .click()
+        .then(() => {
+          cy.getByTestID('add-resource-dropdown--new').click()
+        })
+    })
+
+    cy.getByTestID('flux-editor').within(() => {
+      cy.get('textarea.inputarea')
+        .click()
+        .type(
+          'option task = \n' +
+          '{\n' +
+          'name: "Option Test", \n' +
+          'every: 24h, \n' +
+          'offset: 20m\n' +
+          '}\n' +
+          'from(bucket: "defbuck")\n' +
+          '\t|> range(start: -2m)'
+        )
+    })
+
+    cy.getByTestID('task-form-name')
+      .click()
+      .type('Option Test')
+      .then(() => {
+        cy.getByTestID('task-form-schedule-input')
+          .click()
+          .type('24h')
+        cy.getByTestID('task-form-offset-input')
+          .click()
+          .type('20m')
+      })
+
+    cy.getByTestID('task-save-btn').click()
+    cy.getByTestID('notification-success').should('exist')
+  })
+
   describe('When tasks already exist', () => {
     beforeEach(() => {
       cy.get('@org').then(({id}: Organization) => {
@@ -185,6 +274,155 @@ http.post(
                 })
             })
         })
+    })
+
+    //skipping until this issue is resolved
+    //https://github.com/influxdata/influxdb/issues/18478
+    it.skip('can clone a task and activate just the cloned one', () => {
+      cy.getByTestID('task-card').then(() => {
+        cy.get('.context-menu--container')
+          .eq(1)
+          .click()
+          .then(() => {
+            cy.getByTestID('context-menu-item')
+              .contains('Clone')
+              .click()
+          })
+      })
+
+      cy.getByTestID('task-card--slide-toggle')
+        .eq(0)
+        .should('have.class', 'active')
+        .then(() => {
+          cy.getByTestID('task-card--slide-toggle')
+            .eq(0)
+            .click()
+            .then(() => {
+              cy.getByTestID('task-card--slide-toggle')
+                .eq(0)
+                .should('not.have.class', 'active')
+              cy.getByTestID('task-card--slide-toggle')
+                .eq(1)
+                .should('have.class', 'active')
+            })
+        })
+    })
+
+    it('can clone a task and edit it', () => {
+      //clone a task
+      cy.getByTestID('task-card')
+        .first()
+        .trigger('mouseover')
+        .then(() => {
+          cy.get('.context-menu--container')
+            .eq(1)
+            .within(() => {
+              cy.getByTestID('context-menu')
+                .click()
+                .then(() => {
+                  cy.getByTestID('context-menu-item')
+                    .contains('Clone')
+                    .click()
+                })
+            })
+        })
+
+      cy.getByTestID('task-card').should('have.length', 2)
+
+      //assert the values of the task and change them
+      cy.getByTestID('task-card--name')
+        .eq(1)
+        .click()
+        .then(() => {
+          cy.getByTestID('task-form-name')
+            .should('have.value', '🦄ask')
+            .then(() => {
+              cy.getByTestID('task-form-name')
+                .click()
+                .clear()
+                .type('Copy task test')
+                .then(() => {
+                  cy.getByTestID('task-form-schedule-input')
+                    .should('have.value', '24h')
+                    .clear()
+                    .type('12h')
+                    .should('have.value', '12h')
+                  cy.getByTestID('task-form-offset-input')
+                    .should('have.value', '20m')
+                    .clear()
+                    .type('10m')
+                    .should('have.value', '10m')
+                  cy.getByTestID('task-save-btn').click()
+                })
+            })
+        })
+
+      //assert changed task name
+      cy.getByTestID('task-card--name').contains('Copy task test')
+    })
+
+    //skip until this issue is resolved
+    //https://github.com/influxdata/ui/issues/97
+    it.skip('can add a comment into a task', () => {
+      cy.getByTestID('task-card--name')
+        .first()
+        .click()
+
+      //assert textarea and write a comment
+      cy.getByTestID('flux-editor').within(() => {
+        cy.get('textarea.inputarea')
+          .should(
+            'have.value',
+            'option task = {\n' +
+            '    name: "🦄ask",\n' +
+            '    every: 24h,\n' +
+            '    offset: 20m\n' +
+            '  }\n' +
+            '  from(bucket: "defbuck")\n' +
+            '        |> range(start: -2m)'
+          )
+          .click()
+          .focused()
+          .type('{end} {enter} //this is a test comment')
+          .then(() => {
+            cy.get('textarea.inputarea').should(
+              'have.value',
+              'option task = {\n' +
+              '    name: "🦄ask",\n' +
+              '    every: 24h,\n' +
+              '    offset: 20m\n' +
+              '  }\n' +
+              '  from(bucket: "defbuck")\n' +
+              '        |> range(start: -2m) \n' +
+              '         //this is a test comment'
+            )
+          })
+      })
+
+      //save and assert notification
+      cy.getByTestID('task-save-btn')
+        .click()
+        .then(() => {
+          cy.getByTestID('notification-success').contains(
+            'Task was updated successfully'
+          )
+        })
+
+      cy.getByTestID('task-card--name')
+        .first()
+        .click()
+
+      //assert the comment
+      cy.getByTestID('flux-editor').within(() => {
+        cy.get('textarea.inputarea').should(
+          'have.value',
+          'option task = {name: "🦄ask", every: 24h, offset: 20m}\n' +
+          '\n' +
+          'from(bucket: "defbuck")\n' +
+          '\t|> range(start: -2m)\n' +
+          '    //this is a test comment'
+        )
+      })
     })
   })
 

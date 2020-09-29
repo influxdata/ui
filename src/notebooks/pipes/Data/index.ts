@@ -10,7 +10,6 @@ export default register => {
     component: View,
     button: 'Metric Selector',
     initial: {
-      bucketName: '',
       field: '',
       measurement: '',
       tags: {},

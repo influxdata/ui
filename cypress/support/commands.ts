@@ -16,7 +16,7 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
     })
   \*/
 
-  return cy.setupUser().then((body) => {
+  return cy.setupUser().then(body => {
     return cy
       .visit('/api/v2/signin')
       .then(() => cy.get('#login').type(Cypress.env('username')))
@@ -68,7 +68,7 @@ export const createView = (
   dbID: string,
   cellID: string
 ): Cypress.Chainable<Cypress.Response> => {
-  return cy.fixture('view').then((view) => {
+  return cy.fixture('view').then(view => {
     return cy.request({
       method: 'PATCH',
       url: `/api/v2/dashboards/${dbID}/cells/${cellID}/view`,
@@ -467,7 +467,7 @@ export const lines = (numLines = 3) => {
     .map((_, i) => i)
     .reverse()
 
-  const incrementingTimes = decendingValues.map((val) => {
+  const incrementingTimes = decendingValues.map(val => {
     return now - offset_ms * val
   })
 

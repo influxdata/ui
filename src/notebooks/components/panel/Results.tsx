@@ -22,7 +22,6 @@ const Results: FC = () => {
   const {id, results} = useContext(PipeContext)
   const meta = notebook.meta.get(id)
   const update = (newMeta: Partial<PipeMeta>) => {
-    console.log('updating', newMeta)
     notebook.meta.update(id, newMeta)
   }
   const resultsExist =

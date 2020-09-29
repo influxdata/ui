@@ -338,42 +338,47 @@ describe('tokens', () => {
             .should('be.visible')
         })
     })
+  })
 
-    it('can view a token', () => {
-      cy.getByTestID('token-card token test \u0950').click()
+  it('can view a token', () => {
+    const tknName = 'token test \u0950'
+    cy.getByTestID('token-name ' + tknName).click()
 
-      // title match
-      cy.getByTestID('overlay--container').should('be.visible')
-      cy.getByTestID('overlay--header').should('contain', 'token test \u0950')
+    // title match
+    cy.getByTestID('overlay--container').should('be.visible')
+    cy.getByTestID('overlay--header').should('contain', tknName)
+    cy.get('.code-snippet--label').should('contain', tknName)
 
-      // summary match
-      cy.getByTestID('permissions-section').should('have.length', 4)
-      cy.getByTestID('permissions-section')
-        .contains('views')
-        .should('be.visible')
-      cy.getByTestID('permissions-section')
-        .contains('documents')
-        .should('be.visible')
-      cy.getByTestID('permissions-section')
-        .contains('dashboards')
-        .should('be.visible')
-      cy.getByTestID('permissions-section')
-        .contains('buckets')
-        .should('be.visible')
+    // summary match
+    cy.getByTestID('permissions-section').should('have.length', 4)
+    cy.getByTestID('permissions-section')
+      .contains('views')
+      .should('be.visible')
+    cy.getByTestID('permissions-section')
+      .contains('documents')
+      .should('be.visible')
+    cy.getByTestID('permissions-section')
+      .contains('dashboards')
+      .should('be.visible')
+    cy.getByTestID('permissions-section')
+      .contains('buckets')
+      .should('be.visible')
 
+    /*
       // copy to clipboard + notification
       cy.getByTestID('button-copy').click()
       cy.getByTestID('notification-success').should($msg => {
-        expect($msg).to.contain('has been copied to clipboard')
-      })
-      // todo check system clipboard
+          expect($msg).to.contain('Token has been copied to clipboard')
+        })
+       */
 
-      // close button
-      cy.getByTestID('overlay--header').within(() => {
-        cy.get('button').click()
-      })
-      cy.getByTestID('overlay--container').should('not.be.visible')
+    // todo check system clipboard
+
+    // close button
+    cy.getByTestID('overlay--header').within(() => {
+      cy.get('.cf-overlay--dismiss').click()
     })
+    cy.getByTestID('overlay--container').should('not.be.visible')
   })
 
   it('can edit the description', () => {
@@ -459,6 +464,238 @@ describe('tokens', () => {
           const testID = val.attr('data-testid')
           expect(testID).to.contain(sortedtoken[index].description)
         })
+      })
+  })
+
+  it('can Select all buckets in Generate Read/Write token', () => {
+    // create some extra buckets
+    cy.get<Organization>('@org').then(({id, name}: Organization) => {
+      cy.createBucket(id, name, 'Magna Carta').then(() => {
+        cy.createBucket(id, name, 'Sicilsky Bull').then(() => {
+          cy.createBucket(id, name, 'A la Carta')
+        })
+      })
+    })
+
+    //"Select all" button function test
+    // open overlay
+    cy.getByTestID('dropdown-button--gen-token').click()
+    cy.getByTestIDSubStr('dropdown-item').should('have.length', 2)
+    cy.getByTestID('dropdown-item generate-token--read-write').click()
+    cy.getByTestID('overlay--container').should('be.visible')
+
+    //input token description
+    cy.getByTestID('input-field--descr')
+      .clear()
+      .type('Select all test')
+      .should('have.value', 'Select all test')
+
+    //select all buckets and save
+    cy.getByTestID('grid--column')
+      .eq(0)
+      .within(() => {
+        cy.getByTestID('selector-list--header').within(() => {
+          cy.getByTitle('Select All').click()
+        })
+      })
+
+    cy.getByTestID('grid--column')
+      .eq(1)
+      .within(() => {
+        cy.getByTestID('selector-list--header').within(() => {
+          cy.getByTitle('Select All').click()
+        })
+      })
+
+    //save and assert the notification
+    cy.getByTestID('button--save')
+      .click()
+      .then(() => {
+        cy.getByTestID('notification-success--children').contains(
+          'Token was created successfully'
+        )
+      })
+
+    cy.getByTestID('token-card Select all test')
+
+    //"All buckets" button function test
+    // open overlay
+    cy.getByTestID('dropdown-button--gen-token').click()
+    cy.getByTestID('dropdown-item generate-token--read-write').click()
+    cy.getByTestID('overlay--container').should('be.visible')
+
+    //input token description
+    cy.getByTestID('input-field--descr')
+      .clear()
+      .type('All buckets test')
+      .should('have.value', 'All buckets test')
+
+    //select all buckets with "All buckets" button and save
+    cy.getByTestID('select-group')
+      .eq(0)
+      .within(() => {
+        cy.getByTestID('select-group--option')
+          .contains('All Buckets')
+          .click()
+      })
+
+    cy.getByTestID('select-group')
+      .eq(1)
+      .within(() => {
+        cy.getByTestID('select-group--option')
+          .contains('All Buckets')
+          .click()
+      })
+
+    //save and assert the notification
+    cy.getByTestID('button--save')
+      .click()
+      .then(() => {
+        cy.getByTestID('notification-success--children').contains(
+          'Token was created successfully'
+        )
+      })
+
+    cy.getByTestID('token-name All buckets test').click()
+
+    //assert that there is read and write permission
+    cy.getByTestID('permissions-section')
+      .eq(0)
+      .contains('write')
+    cy.getByTestID('permissions-section')
+      .eq(0)
+      .contains('read')
+
+    cy.get('.cf-overlay--dismiss').click()
+
+    //select all - only write permission
+    // open overlay
+    cy.getByTestID('dropdown-button--gen-token').click()
+    cy.getByTestIDSubStr('dropdown-item').should('have.length', 2)
+    cy.getByTestID('dropdown-item generate-token--read-write').click()
+    cy.getByTestID('overlay--container').should('be.visible')
+
+    //input token description
+    cy.getByTestID('input-field--descr')
+      .clear()
+      .type('Write only test')
+      .should('have.value', 'Write only test')
+
+    //select all buckets
+    cy.getByTestID('grid--column')
+      .eq(0)
+      .within(() => {
+        cy.getByTestID('selector-list--header').within(() => {
+          cy.getByTitle('Select All').click()
+        })
+      })
+
+    cy.getByTestID('grid--column')
+      .eq(1)
+      .within(() => {
+        cy.getByTestID('selector-list--header').within(() => {
+          cy.getByTitle('Select All').click()
+        })
+      })
+
+    //deselect buckets in the read column
+    cy.getByTestID('grid--column')
+      .eq(0)
+      .within(() => {
+        cy.getByTestID('selector-list--header').within(() => {
+          cy.getByTitle('Deselect All').click()
+        })
+      })
+
+    //save and assert the notification
+    cy.getByTestID('button--save')
+      .click()
+      .then(() => {
+        cy.getByTestID('notification-success--children').contains(
+          'Token was created successfully'
+        )
+      })
+
+    cy.getByTestID('token-name Write only test').click()
+
+    //assert that there is only write permission
+    cy.getByTestID('permissions-section')
+      .eq(0)
+      .contains('write')
+      .then(() => {
+        cy.getByTestID('permissions-section')
+          .eq(0)
+          .within(() => {
+            cy.getByTestID('permissions--item')
+              .contains('read')
+              .should('not.exist')
+          })
+      })
+
+    cy.get('.cf-overlay--dismiss').click()
+
+    //select all - only read permission
+    // open overlay
+    cy.getByTestID('dropdown-button--gen-token').click()
+    cy.getByTestIDSubStr('dropdown-item').should('have.length', 2)
+    cy.getByTestID('dropdown-item generate-token--read-write').click()
+    cy.getByTestID('overlay--container').should('be.visible')
+
+    //input token description
+    cy.getByTestID('input-field--descr')
+      .clear()
+      .type('Read only test')
+      .should('have.value', 'Read only test')
+
+    //select all buckets
+    cy.getByTestID('grid--column')
+      .eq(0)
+      .within(() => {
+        cy.getByTestID('selector-list--header').within(() => {
+          cy.getByTitle('Select All').click()
+        })
+      })
+
+    cy.getByTestID('grid--column')
+      .eq(1)
+      .within(() => {
+        cy.getByTestID('selector-list--header').within(() => {
+          cy.getByTitle('Select All').click()
+        })
+      })
+
+    //deselect buckets in the read column
+    cy.getByTestID('grid--column')
+      .eq(1)
+      .within(() => {
+        cy.getByTestID('selector-list--header').within(() => {
+          cy.getByTitle('Deselect All').click()
+        })
+      })
+
+    //save and assert the notification
+    cy.getByTestID('button--save')
+      .click()
+      .then(() => {
+        cy.getByTestID('notification-success--children').contains(
+          'Token was created successfully'
+        )
+      })
+
+    cy.getByTestID('token-name Read only test').click()
+
+    //assert that there is only write permission
+    cy.getByTestID('permissions-section')
+      .eq(0)
+      .contains('read')
+      .then(() => {
+        cy.getByTestID('permissions-section')
+          .eq(0)
+          .within(() => {
+            cy.getByTestID('permissions--item')
+              .contains('write')
+              .should('not.exist')
+          })
       })
   })
 })

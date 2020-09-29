@@ -18,6 +18,7 @@ export const localState: LocalStorage = {
     ephemeral: {
       inPresentationMode: false,
       hasUpdatedTimeRangeInVEO: false,
+      shouldShowCancelBtn: false,
     },
     persisted: {
       autoRefresh: 0,

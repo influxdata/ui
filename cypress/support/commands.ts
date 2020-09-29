@@ -434,13 +434,15 @@ export const createToken = (
   })
 }
 
+const MINUTE_MS = 1000
+
 // TODO: have to go through setup because we cannot create a user w/ a password via the user API
 export const setupUser = (): Cypress.Chainable<Cypress.Response> => {
   return cy.fixture('user').then(() => {
     return cy.request({
       method: 'GET',
       url: '/debug/provision',
-      timeout: 6000 * 5,
+      timeout: 5 * 60 * MINUTE_MS,
     })
   })
 }

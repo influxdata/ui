@@ -9,6 +9,8 @@ import {queryStringConfig} from 'src/shared/middleware/queryStringConfig'
 import sharedReducers from 'src/shared/reducers'
 import persistStateEnhancer from './persistStateEnhancer'
 
+import {loadLocalStorage} from 'src/localStorage'
+
 // v2 reducers
 import meReducer from 'src/shared/reducers/me'
 import flagReducer from 'src/shared/reducers/flags'
@@ -122,22 +124,9 @@ export const rootReducer = (history: History) =>
 const composeEnhancers =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
-let _store
-
-// NOTE: just used to reset between tests
-export function clearStore() {
-  _store = null
-}
-
-export default function configureStore(
-  initialState?: LocalStorage
+function configureStore(
+  initialState: LocalStorage = loadLocalStorage()
 ): Store<AppState & LocalStorage> {
-  // NOTE: memoizing helps keep singular instances of the store
-  // after initialization, or else actions start failing for reasons
-  if (_store) {
-    return _store
-  }
-
   const routingMiddleware = routerMiddleware(history)
   const createPersistentStore = composeEnhancers(
     persistStateEnhancer(),
@@ -152,6 +141,18 @@ export default function configureStore(
   // https://github.com/elgerlambert/redux-localstorage/issues/42
   // createPersistentStore should ONLY take reducer and initialState
   // any store enhancers must be added to the compose() function.
-  _store = createPersistentStore(rootReducer(history), initialState)
-  return _store
+  return createPersistentStore(rootReducer(history), initialState)
+}
+
+let storeSingleton
+export const getStore = () => {
+  if (!storeSingleton) {
+    storeSingleton = configureStore()
+  }
+
+  return storeSingleton
+}
+
+export const configureStoreForTests = (initialState: LocalStorage) => {
+  return configureStore(initialState)
 }

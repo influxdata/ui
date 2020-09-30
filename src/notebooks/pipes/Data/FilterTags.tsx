@@ -64,36 +64,33 @@ const constructFilters = (value: string, type: string) => {
   }
 }
 
+interface SelectedTags {
+  [key: string]: string[]
+}
+
 const FilterTags: FC = () => {
   const {data, update} = useContext(PipeContext)
   const handleDeleteFilter = (type: string, name: string) => {
     event('Deleting the Filter Label in Flow Query Builder', {type})
     if (type === 'tags') {
       const [tagName, tagValue] = name.split(' = ')
-      let tagValues = []
-      const selectedTags = data?.tags
-      if (!selectedTags[tagName]) {
-        tagValues = [tagValue]
-      } else if (
-        selectedTags[tagName] &&
-        selectedTags[tagName].includes(tagValue)
-      ) {
-        tagValues = selectedTags[tagName].filter(v => v !== tagValue)
-      } else {
-        tagValues = [...selectedTags[tagName], tagValue]
-      }
-
-      let tags = {
-        ...selectedTags,
-        [tagName]: tagValues,
-      }
-
-      if (tagValues.length === 0) {
-        tags = {}
-      }
+      const selectedTags = (data?.tags || {}) as SelectedTags
 
       update({
-        tags,
+        tags: Object.entries(selectedTags).reduce((acc, [key, value]) => {
+          if (key !== tagName) {
+            acc[key] = value
+            return acc
+          }
+
+          acc[key] = value.filter(tag => tag !== tagValue)
+
+          if (!acc[key].length) {
+            delete acc[key]
+          }
+
+          return acc
+        }, {}),
       })
     } else {
       update({[type]: ''})

@@ -94,7 +94,7 @@ class LineOptions extends PureComponent<Props> {
       numericColumns,
       onSetTimeFormat,
       timeFormat,
-      hoverDimension = 'auto',
+      hoverDimension,
       onSetHoverDimension,
       onSetLegendOpacity,
       onSetLegendOrientationThreshold,

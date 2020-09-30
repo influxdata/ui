@@ -43,7 +43,7 @@ interface Props {
   additionalControls?: JSX.Element | JSX.Element[]
 }
 
-export const MINIMUM_RESIZER_HEIGHT = 180
+export const MINIMUM_RESIZER_HEIGHT = 360
 
 const Resizer: FC<Props> = ({
   children,

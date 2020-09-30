@@ -34,8 +34,6 @@ export interface PipeMeta {
   title: string
   visible: boolean
   loading: RemoteDataState
-  rawVisibility: Visibility
-  rawHeight: number
   error?: string
 }
 

@@ -10,20 +10,20 @@ import ResultsPagination from 'src/notebooks/components/panel/ResultsPagination'
 
 import {NotebookContext} from 'src/notebooks/context/notebook.current'
 import {PipeContext} from 'src/notebooks/context/pipe'
-import {RemoteDataState} from 'src/types'
+import {MINIMUM_RESIZER_HEIGHT} from 'src/notebooks/shared/Resizer'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
-import {PipeMeta} from 'src/types/notebooks'
+import {RemoteDataState} from 'src/types'
+import {Visibility} from 'src/types/notebooks'
 
 const Results: FC = () => {
   const {notebook} = useContext(NotebookContext)
   const {id, results} = useContext(PipeContext)
+  const [height, setHeight] = useState(MINIMUM_RESIZER_HEIGHT)
+  const [visibility, setVisibility] = useState('visible' as Visibility)
   const meta = notebook.meta.get(id)
-  const update = (newMeta: Partial<PipeMeta>) => {
-    notebook.meta.update(id, newMeta)
-  }
   const resultsExist =
     !!results && !!results.raw && !!results.parsed.table.length
   const raw = (results || {}).raw || ''
@@ -78,10 +78,10 @@ const Results: FC = () => {
       error={results.error}
       hiddenText="Results hidden"
       toggleVisibilityEnabled={true}
-      height={meta.rawHeight}
-      onUpdateHeight={rawHeight => update({rawHeight})}
-      visibility={meta.rawVisibility}
-      onUpdateVisibility={rawVisibility => update({rawVisibility})}
+      height={height}
+      onUpdateHeight={height => setHeight(height)}
+      visibility={visibility}
+      onUpdateVisibility={visibility => setVisibility(visibility)}
     >
       <div className="query-results">
         <ResultsPagination
@@ -89,7 +89,7 @@ const Results: FC = () => {
           onClickNext={next}
           disablePrev={prevDisabled}
           disableNext={nextDisabled}
-          visible={resultsExist && meta.rawVisibility === 'visible'}
+          visible={resultsExist && visibility === 'visible'}
           pageSize={pageSize}
           startRow={startRow}
         />

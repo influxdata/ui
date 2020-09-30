@@ -6,7 +6,6 @@ import {
   NotebookListProvider,
 } from 'src/notebooks/context/notebook.list'
 import {v4 as UUID} from 'uuid'
-import {MINIMUM_RESIZER_HEIGHT} from 'src/notebooks/shared/Resizer'
 import {RemoteDataState} from 'src/types'
 
 const useNotebookCurrentState = createPersistedState('current-notebook')
@@ -93,8 +92,6 @@ export const NotebookProvider: FC = ({children}) => {
       title: getHumanReadableName(initial.type),
       visible: true,
       loading: RemoteDataState.NotStarted,
-      rawHeight: MINIMUM_RESIZER_HEIGHT,
-      rawVisibility: 'visible',
     })
 
     if (typeof index !== 'undefined') {

@@ -29,12 +29,12 @@ export default register => {
       ],
     },
     generateFlux: (pipe, create, append) => {
-      let text = pipe.queries[pipe.activeQuery].text.replace(
+      const text = pipe.queries[pipe.activeQuery].text.replace(
         COMMENT_REMOVER,
         ''
-      )
+      ).replace(/\s/g, '')
 
-      if (!text.replace(/\s/g, '').length) {
+      if (!text.length) {
         append()
         return
       }

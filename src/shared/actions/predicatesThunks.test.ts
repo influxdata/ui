@@ -13,7 +13,7 @@ import {predicateDeleteSucceeded} from 'src/shared/copy/notifications'
 import {pastHourTimeRange} from 'src/shared/constants/timeRanges'
 
 // Actions
-import {deleteWithPredicate} from 'src/shared/actions/predicates'
+import {deleteWithPredicate} from 'src/shared/actions/predicatesThunks'
 import {convertTimeRangeToCustom} from '../utils/duration'
 
 const mockGetState = jest.fn(_ => {

@@ -8,10 +8,8 @@ import {Overlay, SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 import DeleteDataForm from 'src/shared/components/DeleteDataForm/DeleteDataForm'
 
 // Actions
-import {
-  resetPredicateState,
-  setBucketAndKeys,
-} from 'src/shared/actions/predicates'
+import {resetPredicateState} from 'src/shared/actions/predicates'
+import {setBucketAndKeys} from 'src/shared/actions/predicatesThunks'
 
 // Types
 import {Bucket, AppState, RemoteDataState, ResourceType} from 'src/types'

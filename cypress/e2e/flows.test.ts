@@ -13,7 +13,7 @@ describe('Flows', () => {
         cy.getByTestID('tree-nav')
 
         cy.window().then(win => {
-          win.influx.set('flows', true)
+          win.influx.set('notebooks', true)
         })
 
         cy.getByTestID('nav-item-flows').click()

@@ -13,7 +13,7 @@ describe('Flows', () => {
         cy.getByTestID('tree-nav')
 
         cy.window().then(win => {
-          win.influx.set('notebooks', true)
+          win.influx.set('flows', true)
         })
 
         cy.getByTestID('nav-item-flows').click()
@@ -48,7 +48,7 @@ describe('Flows', () => {
 
     cy.getByTestID('slide-toggle').click()
 
-    cy.get('.notebook-panel--header')
+    cy.get('.flow-panel--header')
       .eq(0)
       .click()
 

@@ -25,7 +25,7 @@ export const localState: LocalStorage = {
       navBarState: 'expanded',
       timeZone: 'Local' as TimeZone,
       theme: 'dark',
-      notebookMiniMapState: 'expanded',
+      flowMiniMapState: 'expanded',
     },
   },
   flags: {

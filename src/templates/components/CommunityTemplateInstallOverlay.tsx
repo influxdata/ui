@@ -122,7 +122,7 @@ class CommunityTemplateInstallOverlayUnconnected extends PureComponent<Props> {
         this.props.resourcesToSkip,
         this.props.stagedTemplateEnvReferences
       )
-      event('template_install', {templateID: this.props.org.id})
+      event('template_install', {templateUrl: this.props.stagedTemplateUrl})
     } catch (err) {
       this.props.notify(communityTemplateInstallFailed(err.message))
       reportErrorThroughHoneyBadger(err, {

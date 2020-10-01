@@ -136,11 +136,11 @@ const SetOrg: FC<Props> = ({
         />
 
         {/* Flows  */}
-        {isFlagEnabled('flows') && (
+        {isFlagEnabled('notebooks') && (
           <Route path={`${orgPath}/flows/:id`} component={Flow} />
         )}
 
-        {isFlagEnabled('flows') && (
+        {isFlagEnabled('notebooks') && (
           <Route path={`${orgPath}/flows`} component={FlowsIndex} />
         )}
 

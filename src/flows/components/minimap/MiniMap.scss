@@ -1,0 +1,101 @@
+@import '@influxdata/clockface/dist/variables.scss';
+@import '~src/flows/FlowVariables.scss';
+
+$flow-minimap--left-gutter: $cf-marg-d;
+$flow-minimap--collapsed: $cf-marg-d + $cf-marg-a;
+$flow-minimap--item-padding: $cf-marg-b;
+
+.flow-minimap,
+.flow-minimap__collapsed {
+  border-right: $cf-border solid $flow-divider-color;
+}
+
+.flow-minimap {
+  flex: 0 0 $flow-minimap--expanded;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.flow-minimap--scroll {
+  flex: 1 0 0;
+}
+
+.flow-minimap__collapsed {
+  flex: 0 0 ($flow-minimap--collapsed + $flow-minimap--left-gutter);
+}
+
+.flow-minimap--header {
+  margin-left: $flow-minimap--left-gutter;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: $cf-marg-d + $cf-marg-c;
+  border: none;
+  border-bottom: $cf-border solid $flow-divider-color;
+  margin-bottom: $cf-marg-b;
+  background-color: transparent;
+  outline: none;
+  color: $g15-platinum;
+  transition: color 0.25s ease, background-color 0.25s ease;
+  padding: 0 $flow-minimap--item-padding;
+
+  &:hover {
+    color: $g20-white;
+    background-color: $g2-kevlar;
+    cursor: pointer;
+  }
+
+  .flow-minimap__collapsed & {
+    padding: 0;
+    width: $flow-minimap--collapsed;
+  }
+}
+
+.flow-minimap--title {
+  font-family: $cf-text-font;
+  font-size: 14px;
+  font-weight: $cf-font-weight--medium;
+  user-select: none;
+  flex: 1 0 0;
+  text-align: left;
+  margin: 0;
+}
+
+.flow-minimap--icon {
+  opacity: 0.5;
+  font-size: 1.125em;
+}
+
+.flow-minimap--list {
+  padding-left: $flow-minimap--left-gutter;
+  padding-right: $cf-marg-b;
+}
+
+.flow-minimap--item {
+  font-size: 14px;
+  font-weight: $cf-font-weight--medium;
+  color: $g11-sidewalk;
+  transition: color 0.25s ease, background-color 0.25s ease;
+  margin-bottom: $cf-border;
+  height: $cf-marg-d;
+  line-height: $cf-marg-d;
+  padding: 0 $flow-minimap--item-padding;
+  border-radius: $cf-radius;
+  user-select: none;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.flow-minimap--item__hidden {
+  color: $g8-storm;
+  font-style: italic;
+}
+
+.flow-minimap--item:hover,
+.flow-minimap--item__focus {
+  color: $g18-cloud;
+  background-color: $g3-castle;
+}

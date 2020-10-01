@@ -12,7 +12,7 @@ import TaskEditPage from 'src/tasks/containers/TaskEditPage'
 import DataExplorerPage from 'src/dataExplorer/components/DataExplorerPage'
 import DashboardsIndex from 'src/dashboards/components/dashboard_index/DashboardsIndex'
 import DashboardContainer from 'src/dashboards/components/DashboardContainer'
-import NotebookPage from 'src/notebooks/components/Notebook'
+import Flow from 'src/flows/components/Flow'
 import BucketsIndex from 'src/buckets/containers/BucketsIndex'
 import TokensIndex from 'src/authorizations/containers/TokensIndex'
 import TelegrafsPage from 'src/telegrafs/containers/TelegrafsPage'
@@ -29,7 +29,7 @@ import MembersIndex from 'src/members/containers/MembersIndex'
 import RouteToDashboardList from 'src/dashboards/components/RouteToDashboardList'
 import ClientLibrariesPage from 'src/writeData/containers/ClientLibrariesPage'
 import TelegrafPluginsPage from 'src/writeData/containers/TelegrafPluginsPage'
-import FlowsIndex from 'src/notebooks/components/FlowsIndex'
+import FlowsIndex from 'src/flows/components/FlowsIndex'
 
 // Types
 import {AppState, Organization, ResourceType} from 'src/types'
@@ -137,7 +137,7 @@ const SetOrg: FC<Props> = ({
 
         {/* Flows  */}
         {isFlagEnabled('notebooks') && (
-          <Route path={`${orgPath}/notebooks/:id`} component={NotebookPage} />
+          <Route path={`${orgPath}/flows/:id`} component={Flow} />
         )}
 
         {isFlagEnabled('notebooks') && (

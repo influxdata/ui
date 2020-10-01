@@ -5,9 +5,9 @@ import {get, sortBy} from 'lodash'
 
 // Actions
 import {
-  getDemoDataBucketMembership as getDemoDataBucketMembershipAction,
+  getDemoDataBucketMembership,
   getDemoDataBuckets,
-} from 'src/cloud/actions/demodata'
+} from 'src/cloud/actions/thunks'
 
 // Components
 import {ComponentColor, Dropdown, Icon, IconFont} from '@influxdata/clockface'
@@ -108,7 +108,7 @@ const mstp = (state: AppState) => ({
 })
 
 const mdtp = {
-  getDemoDataBucketMembership: getDemoDataBucketMembershipAction,
+  getDemoDataBucketMembership,
 }
 
 const connector = connect(mstp, mdtp)

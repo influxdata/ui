@@ -6,5 +6,5 @@ export const getSchemaByBucketName = (
   state: AppState,
   bucketName: string
 ): BucketSchema | null => {
-  return state.notebook.schema[bucketName] || null
+  return state.flow.schema[bucketName] || null
 }

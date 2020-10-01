@@ -4,7 +4,7 @@ import {
   disablePresentationMode,
   setTheme,
   setNavBarState,
-  setNotebookMiniMapState,
+  setFlowMiniMapState,
   setAutoRefresh,
 } from 'src/shared/actions/app'
 import {TimeZone} from 'src/types'
@@ -20,7 +20,7 @@ describe('Shared.Reducers.appReducer', () => {
       autoRefresh: 0,
       showTemplateControlBar: false,
       navBarState: 'expanded',
-      notebookMiniMapState: 'expanded',
+      flowMiniMapState: 'expanded',
       timeZone: 'Local' as TimeZone,
       theme: 'dark',
     },
@@ -71,23 +71,23 @@ describe('Shared.Reducers.appReducer', () => {
   it('should handle SET_NOTEBOOK_MINI_MAP_STATE to collapsed', () => {
     const reducedState = appReducer(
       initialState,
-      setNotebookMiniMapState('collapsed')
+      setFlowMiniMapState('collapsed')
     )
 
-    expect(reducedState.persisted.notebookMiniMapState).toBe('collapsed')
+    expect(reducedState.persisted.flowMiniMapState).toBe('collapsed')
   })
 
   it('should handle SET_NOTEBOOK_MINI_MAP_STATE to expanded', () => {
     Object.assign(initialState, {
-      persisted: {notebookMiniMapState: 'collapsed'},
+      persisted: {flowMiniMapState: 'collapsed'},
     })
 
     const reducedState = appReducer(
       initialState,
-      setNotebookMiniMapState('expanded')
+      setFlowMiniMapState('expanded')
     )
 
-    expect(reducedState.persisted.notebookMiniMapState).toBe('expanded')
+    expect(reducedState.persisted.flowMiniMapState).toBe('expanded')
   })
 
   it('should handle SET_AUTOREFRESH', () => {

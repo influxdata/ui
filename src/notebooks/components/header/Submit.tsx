@@ -7,6 +7,7 @@ import {ResultsContext} from 'src/notebooks/context/results'
 import {TimeContext} from 'src/notebooks/context/time'
 import {IconFont} from '@influxdata/clockface'
 import {notify} from 'src/shared/actions/notifications'
+import {PIPE_DEFINITIONS} from 'src/notebooks'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -15,7 +16,6 @@ import {event} from 'src/cloud/utils/reporting'
 import {RemoteDataState} from 'src/types'
 
 const PREVIOUS_REGEXP = /__PREVIOUS_RESULT__/g
-const COMMENT_REMOVER = /(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm
 
 const fakeNotify = notify
 
@@ -42,96 +42,47 @@ export const Submit: FC = () => {
 
   const submit = () => {
     event('Notebook Submit Button Clicked')
-    let queryIncludesPreviousResult = false
     setLoading(RemoteDataState.Loading)
+
     Promise.all(
       notebook.data.allIDs
-        .reduce((stages, pipeID, index) => {
+        .reduce((stages, pipeID) => {
           notebook.meta.update(pipeID, {loading: RemoteDataState.Loading})
           const pipe = notebook.data.get(pipeID)
 
-          if (pipe.type === 'query') {
-            let text = pipe.queries[pipe.activeQuery].text.replace(
-              COMMENT_REMOVER,
-              ''
-            )
-            let requirements = {}
+          let stage = {
+            text: '',
+            instances: [pipeID],
+            requirements: {},
+          }
 
-            if (!text.replace(/\s/g, '').length) {
-              if (stages.length) {
-                stages[stages.length - 1].instances.push(pipeID)
+          const create = (text, loadPrevious) => {
+            if (loadPrevious && stages.length) {
+              stage.requirements = {
+                ...stages[stages.length - 1].requirements,
+                [`prev_${stages.length}`]: stages[stages.length - 1].text,
               }
-              return stages
+              stage.text = text.replace(
+                PREVIOUS_REGEXP,
+                `prev_${stages.length}`
+              )
+            } else {
+              stage.text = text
             }
 
-            if (PREVIOUS_REGEXP.test(text)) {
-              requirements = {
-                ...(index === 0 ? {} : stages[stages.length - 1].requirements),
-                [`prev_${index}`]: stages[stages.length - 1].text,
-              }
-              text = text.replace(PREVIOUS_REGEXP, `prev_${index}`)
-              queryIncludesPreviousResult = true
+            stages.push(stage)
+          }
+
+          const append = () => {
+            if (stages.length) {
+              stages[stages.length - 1].instances.push(pipeID)
             }
+          }
 
-            stages.push({
-              text,
-              instances: [pipeID],
-              requirements,
-            })
-          } else if (pipe.type === 'data') {
-            const {bucketName} = pipe
-
-            const text = `from(bucket: "${bucketName}")|>range(start: v.timeRangeStart, stop: v.timeRangeStop)`
-
-            stages.push({
-              text,
-              instances: [pipeID],
-              requirements: {},
-            })
-          } else if (pipe.type === 'queryBuilder') {
-            const {aggregateFunction, bucket, field, measurement, tags} = pipe
-
-            let text = `from(bucket: "${bucket.name}")|>range(start: v.timeRangeStart, stop: v.timeRangeStop)`
-            if (measurement) {
-              text += `|> filter(fn: (r) => r["_measurement"] == "${measurement}")`
-            }
-            if (field) {
-              text += `|> filter(fn: (r) => r["_field"] == "${field}")`
-            }
-            if (tags && Object.keys(tags)?.length > 0) {
-              Object.keys(tags)
-                .filter((tagName: string) => !!tags[tagName])
-                .forEach((tagName: string) => {
-                  const tagValues = tags[tagName]
-                  if (tagValues.length === 1) {
-                    text += `|> filter(fn: (r) => r["${tagName}"] == "${tagValues[0]}")`
-                  } else {
-                    tagValues.forEach((val, i) => {
-                      if (i === 0) {
-                        text += `|> filter(fn: (r) => r["${tagName}"] == "${val}"`
-                      }
-                      if (tagValues.length - 1 === i) {
-                        text += ` or r["${tagName}"] == "${val}")`
-                      } else {
-                        text += ` or r["${tagName}"] == "${val}"`
-                      }
-                    })
-                  }
-                })
-            }
-
-            if (aggregateFunction?.name) {
-              text += `  |> aggregateWindow(every: v.windowPeriod, fn: ${aggregateFunction.name}, createEmpty: false)
-              |> yield(name: "${aggregateFunction.name}")`
-            }
-
-            stages.push({
-              text,
-              instances: [pipeID],
-              requirements: {},
-            })
-          } else if (stages.length) {
-            stages[stages.length - 1].instances.push(pipeID)
+          if (PIPE_DEFINITIONS[pipe.type].generateFlux) {
+            PIPE_DEFINITIONS[pipe.type].generateFlux(pipe, create, append)
+          } else {
+            append()
           }
 
           return stages
@@ -162,12 +113,6 @@ export const Submit: FC = () => {
 
       .then(() => {
         event('Notebook Submit Resolved')
-
-        if (queryIncludesPreviousResult) {
-          event('flows_queryIncludesPreviousResult')
-        } else {
-          event('flows_queryExcludesPreviousResult')
-        }
 
         setLoading(RemoteDataState.Done)
       })

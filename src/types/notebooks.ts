@@ -120,4 +120,9 @@ export interface TypeRegistration {
   component: FunctionComponent<PipeProp> | ComponentClass<PipeProp> // the view component for rendering the interface
   button: string // a human readable string for appending the type
   initial: any // the default state for an add
+  generateFlux?: (
+    pipe: PipeData,
+    create: (text: string, loadPrevious?: boolean) => void,
+    append: () => void
+  ) => void // Generates the flux used to grab data from the backend
 }

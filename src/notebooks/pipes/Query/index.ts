@@ -1,6 +1,9 @@
 import View from './view'
 import './style.scss'
 
+const PREVIOUS_REGEXP = /__PREVIOUS_RESULT__/g
+const COMMENT_REMOVER = /(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm
+
 export default register => {
   register({
     type: 'query',
@@ -24,6 +27,19 @@ export default register => {
           },
         },
       ],
+    },
+    generateFlux: (pipe, create, append) => {
+      let text = pipe.queries[pipe.activeQuery].text.replace(
+        COMMENT_REMOVER,
+        ''
+      )
+
+      if (!text.replace(/\s/g, '').length) {
+        append()
+        return
+      }
+
+      create(text, PREVIOUS_REGEXP.test(text))
     },
   })
 }

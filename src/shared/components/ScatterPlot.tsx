@@ -7,6 +7,10 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 
 // Utils
 import {
+  useLegendOpacity,
+  useLegendOrientationThreshold,
+} from 'src/shared/utils/useLegendOrientation'
+import {
   useVisXDomainSettings,
   useVisYDomainSettings,
 } from 'src/shared/utils/useVisDomainSettings'
@@ -52,6 +56,8 @@ const ScatterPlot: FunctionComponent<Props> = ({
     xColumn: storedXColumn,
     yColumn: storedYColumn,
     timeFormat,
+    legendOpacity,
+    legendOrientationThreshold,
   },
   theme,
 }) => {
@@ -62,6 +68,11 @@ const ScatterPlot: FunctionComponent<Props> = ({
   const yColumn = storedYColumn || defaultYColumn(table)
 
   const columnKeys = table.columnKeys
+
+  const tooltipOpacity = useLegendOpacity(legendOpacity)
+  const tooltipOrientationThreshold = useLegendOrientationThreshold(
+    legendOrientationThreshold
+  )
 
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
     storedXDomain,
@@ -115,6 +126,8 @@ const ScatterPlot: FunctionComponent<Props> = ({
     yDomain,
     onSetYDomain,
     onResetYDomain,
+    legendOpacity: tooltipOpacity,
+    legendOrientationThreshold: tooltipOrientationThreshold,
     valueFormatters: {
       [xColumn]: xFormatter,
       [yColumn]: yFormatter,

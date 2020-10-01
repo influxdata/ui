@@ -19,6 +19,7 @@ import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import HexColorSchemeDropdown from 'src/shared/components/HexColorSchemeDropdown'
 import ColumnSelector from 'src/shared/components/ColumnSelector'
+import LegendOrientation from 'src/timeMachine/components/view_options/LegendOrientation'
 
 // Actions
 import {
@@ -33,6 +34,8 @@ import {
   setAxisPrefix,
   setAxisSuffix,
   setTimeFormat,
+  setLegendOpacity,
+  setLegendOrientationThreshold,
 } from 'src/timeMachine/actions'
 
 // Utils
@@ -185,6 +188,12 @@ const HeatmapOptions: FunctionComponent<Props> = props => {
         onSetDomain={props.onSetYDomain}
         label="Y Axis Domain"
       />
+      <LegendOrientation
+        onLegendOpacityChange={props.onSetLegendOpacity}
+        onLegendOrientationThresholdChange={
+          props.onSetLegendOrientationThreshold
+        }
+      />
     </Grid.Column>
   )
 }
@@ -212,6 +221,8 @@ const mdtp = {
   onSetPrefix: setAxisPrefix,
   onSetSuffix: setAxisSuffix,
   onSetTimeFormat: setTimeFormat,
+  onSetLegendOpacity: setLegendOpacity,
+  onSetLegendOrientationThreshold: setLegendOrientationThreshold,
 }
 
 const connector = connect(mstp, mdtp)

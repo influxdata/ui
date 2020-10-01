@@ -60,7 +60,7 @@ const TagSelectors: FC<Props> = ({tags}) => {
 
   const handleSubListItemClick = useCallback(
     (event: MouseEvent, tagName: string, tagValue: string) => {
-      if (event.metaKey) {
+      if (event.metaKey || event.ctrlKey) {
         handleSublistMultiSelect(tagName, tagValue)
         return
       }

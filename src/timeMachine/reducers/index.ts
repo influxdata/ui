@@ -452,6 +452,18 @@ export const timeMachineReducer = (
       return setViewProperties(state, {lowerColumn})
     }
 
+    case 'SET_LEGEND_OPACITY': {
+      const {legendOpacity} = action.payload
+
+      return setViewProperties(state, {legendOpacity})
+    }
+
+    case 'SET_LEGEND_ORIENTATION_THRESHOLD': {
+      const {legendOrientationThreshold} = action.payload
+
+      return setViewProperties(state, {legendOrientationThreshold})
+    }
+
     case 'SET_BIN_COUNT': {
       const {binCount} = action.payload
 

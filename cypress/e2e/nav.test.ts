@@ -38,6 +38,17 @@ describe('navigation', () => {
     cy.getByTestID('tree-nav--header').click()
     cy.getByTestID('home-page--header').should('exist')
 
+    // 404
+    cy.visit('/not-a-route')
+    cy.getByTestID('not-found').should('exist')
+    cy.visit('/')
+
+    cy.getByTestID('user-nav').should('exist')
+    cy.get('@orgID').then(orgID => {
+      cy.visit(`/orgs/${orgID}/not-a-route`)
+      cy.getByTestID('not-found').should('exist')
+    })
+
     /**\
 
       OSS Only Feature

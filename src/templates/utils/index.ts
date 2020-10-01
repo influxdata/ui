@@ -163,3 +163,14 @@ export const validateTemplateURL = (url): string => {
 
   return TEMPLATE_URL_VALID
 }
+
+export const readMeFormatter = (text: string) => {
+  const setupInstuctions =
+    '## Setup Instructions' + text.split('## Setup Instructions')[1]
+  const fixLink = setupInstuctions.replace(
+    '../docs/use_a_template.md',
+    'https://github.com/influxdata/community-templates/blob/master/docs/use_a_template.md'
+  )
+
+  return fixLink
+}

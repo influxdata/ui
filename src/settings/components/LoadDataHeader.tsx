@@ -8,7 +8,7 @@ const LoadDataHeader: FC = () => {
   return (
     <Page.Header fullWidth={false} testID="load-data--header">
       <Page.Title title="Load Data" />
-      <RateLimitAlert className="load-data--rate-alert" />
+      <RateLimitAlert />
     </Page.Header>
   )
 }

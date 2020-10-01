@@ -50,6 +50,7 @@ import {templateToExport} from 'src/shared/utils/resourceToTemplate'
 import {getOrg} from 'src/organizations/selectors'
 import {getLabels, getStatus} from 'src/resources/selectors'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
+import {readMeFormatter} from 'src/templates/utils'
 
 type Action = TemplateAction | NotifyAction
 
@@ -283,9 +284,8 @@ export const fetchAndSetReadme = (name: string, directory: string) => async (
 ): Promise<void> => {
   try {
     const response = await fetchReadMe(directory)
-    const setupInstuctions =
-      '## Setup Instructions' + response.split('## Setup Instructions')[1]
-    dispatch(setTemplateReadMe(name, setupInstuctions))
+    const readme = readMeFormatter(response)
+    dispatch(setTemplateReadMe(name, readme))
   } catch (error) {
     reportErrorThroughHoneyBadger(error, {
       name: `The community template github readme fetch failed for ${name}`,

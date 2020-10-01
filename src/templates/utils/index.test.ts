@@ -8,6 +8,7 @@ import {
   TEMPLATE_URL_VALID,
   TEMPLATE_URL_WARN,
   validateTemplateURL,
+  readMeFormatter,
 } from 'src/templates/utils/'
 import {TemplateType} from 'src/types'
 
@@ -237,6 +238,16 @@ describe('validating template URLs', () => {
           'https://raw.githubusercontent.com/influxdata/community-templates/master/speedtest/speedtest.yml'
         )
       ).toBe(TEMPLATE_URL_VALID)
+    })
+  })
+
+  describe('validating template readme Formatter', () => {
+    const example =
+      '# Currency Exchange Rates Sample Template #### InfluxDB UI ## Setup Instructions General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.The data for the dashboard is populated by the included Telegraf configuration. The Telegraf Configuration requires the following environment variables'
+    it('returns nothing above Setup Instructions and fixes template link', () => {
+      expect(readMeFormatter(example)).toBe(
+        '## Setup Instructions General instructions on using InfluxDB Templates can be found in the [use a template](https://github.com/influxdata/community-templates/blob/master/docs/use_a_template.md) document.The data for the dashboard is populated by the included Telegraf configuration. The Telegraf Configuration requires the following environment variables'
+      )
     })
   })
 })

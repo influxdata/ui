@@ -8,7 +8,7 @@ import {NotebookListContext} from 'src/notebooks/context/notebook.list'
 
 const FlowCreateButton = () => {
   const history = useHistory()
-  const {orgID} = useParams()
+  const {orgID} = useParams<{orgID: string}>()
   const {add} = useContext(NotebookListContext)
 
   const handleCreate = async () => {

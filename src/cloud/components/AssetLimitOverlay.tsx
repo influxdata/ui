@@ -54,7 +54,10 @@ const AssetLimitOverlay: FC<OwnProps & StateProps> = ({assetName, onClose}) => {
             </p>
           </Overlay.Body>
           <Overlay.Footer>
-            <CloudUpgradeButton size={ComponentSize.Large} />
+            <CloudUpgradeButton
+              size={ComponentSize.Large}
+              className="upgrade-payg--button__asset-create"
+            />
           </Overlay.Footer>
         </div>
       </GradientBox>

@@ -5,12 +5,11 @@ import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
 import React, {PureComponent} from 'react'
 import {render} from 'react-dom'
 import {Provider} from 'react-redux'
-import {Route, Switch} from 'react-router-dom'
+import {Route} from 'react-router-dom'
 import {ConnectedRouter} from 'connected-react-router'
 
 // Stores
-import configureStore from 'src/store/configureStore'
-import {loadLocalStorage} from 'src/localStorage'
+import {getStore} from 'src/store/configureStore'
 import {history} from 'src/store/history'
 
 // Components
@@ -41,11 +40,10 @@ updateReportingContext({
   session: cookieSession ? cookieSession[2].slice(5) : '',
 })
 
-export const store = configureStore(loadLocalStorage())
-const {dispatch} = store
+const {dispatch} = getStore()
 
 if (window['Cypress']) {
-  window['store'] = store
+  window['store'] = getStore()
 }
 
 history.listen(() => {
@@ -70,13 +68,11 @@ window.addEventListener('keyup', event => {
 class Root extends PureComponent {
   public render() {
     return (
-      <Provider store={store}>
+      <Provider store={getStore()}>
         <ConnectedRouter history={history}>
           <Route component={GetLinks} />
-          <Switch>
-            <Route component={Setup} />
-            <Route component={NotFound} />
-          </Switch>
+          <Route component={Setup} />
+          <Route component={NotFound} />
         </ConnectedRouter>
       </Provider>
     )

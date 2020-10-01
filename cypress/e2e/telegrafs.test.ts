@@ -1,7 +1,7 @@
 import {Organization} from '../../src/types'
 
 // a generous commitment to delivering this page in a loaded state
-const PAGE_LOAD_SLA = 10000
+const PAGE_LOAD_SLA = 80000
 
 describe('Collectors', () => {
   beforeEach(() => {

@@ -6,6 +6,10 @@ import {Config, Table} from '@influxdata/giraffe'
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 
 // Utils
+import {
+  useLegendOpacity,
+  useLegendOrientationThreshold,
+} from 'src/shared/utils/useLegendOrientation'
 import {useVisXDomainSettings} from 'src/shared/utils/useVisDomainSettings'
 import {getFormatter} from 'src/shared/utils/vis'
 
@@ -37,10 +41,17 @@ const HistogramPlot: FunctionComponent<Props> = ({
     colors,
     xAxisLabel,
     xDomain: storedXDomain,
+    legendOpacity,
+    legendOrientationThreshold,
   },
   theme,
 }) => {
   const columnKeys = table.columnKeys
+
+  const tooltipOpacity = useLegendOpacity(legendOpacity)
+  const tooltipOrientationThreshold = useLegendOrientationThreshold(
+    legendOrientationThreshold
+  )
 
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
     storedXDomain,
@@ -73,6 +84,8 @@ const HistogramPlot: FunctionComponent<Props> = ({
     onSetXDomain,
     onResetXDomain,
     valueFormatters: {[xColumn]: xFormatter},
+    legendOpacity: tooltipOpacity,
+    legendOrientationThreshold: tooltipOrientationThreshold,
     layers: [
       {
         type: 'histogram',

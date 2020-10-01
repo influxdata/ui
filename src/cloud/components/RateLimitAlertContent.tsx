@@ -10,7 +10,6 @@ import {
   JustifyContent,
   LinkButton,
   ComponentColor,
-  ButtonShape,
   ComponentSize,
 } from '@influxdata/clockface'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
@@ -40,51 +39,54 @@ const RateLimitAlertContent: FC<Props> = ({showUpgrade, className}) => {
 
   if (showUpgrade) {
     return (
-      <div className={`${rateLimitAlertContentClass} rate-alert--content_free`}>
+      <div
+        className={`${rateLimitAlertContentClass} rate-alert--content__free`}
+      >
         <span>
-          You've reached the maximum{' '}
+          Oh no! You hit the{' '}
           <a
             href="https://v2.docs.influxdata.com/v2.0/reference/glossary/#series-cardinality"
+            className="rate-alert--docs-link"
             target="_blank"
           >
             series cardinality
           </a>{' '}
-          available in your plan. Need to write more data?
+          limit and your data stopped writing. Don’t lose important metrics.
         </span>
         <FlexBox
           justifyContent={JustifyContent.Center}
           className="rate-alert--button"
         >
-          <CloudUpgradeButton />
+          <CloudUpgradeButton className="upgrade-payg--button__rate-alert" />
         </FlexBox>
       </div>
     )
   }
 
   return (
-    <div className={`${rateLimitAlertContentClass} rate-alert--content_payg`}>
+    <div className={`${rateLimitAlertContentClass} rate-alert--content__payg`}>
       <span>
-        You've reached the maximum{' '}
+        Data in has stopped because you've hit the{' '}
         <a
           href="https://v2.docs.influxdata.com/v2.0/reference/glossary/#series-cardinality"
+          className="rate-alert--docs-link"
           target="_blank"
         >
           series cardinality
         </a>{' '}
-        available in your plan. Need to write more data?
+        limit. Need some guidance?
       </span>
       <FlexBox
         justifyContent={JustifyContent.Center}
         className="rate-alert--button"
       >
         <LinkButton
-          className="contact-support--button"
+          className="rate-alert--contact-button"
           color={ComponentColor.Primary}
           size={ComponentSize.Small}
-          shape={ButtonShape.Default}
-          href="https://support.influxdata.com/s/"
+          text="Speak with an Expert"
+          href="https://calendly.com/c/CBCTLOTDNVLFUTZO"
           target="_blank"
-          text="Contact Support"
         />
       </FlexBox>
     </div>

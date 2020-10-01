@@ -88,6 +88,8 @@ export type Action =
   | ReturnType<typeof setUpperColumn>
   | ReturnType<typeof setMainColumn>
   | ReturnType<typeof setLowerColumn>
+  | ReturnType<typeof setLegendOpacity>
+  | ReturnType<typeof setLegendOrientationThreshold>
   | SetXDomainAction
   | SetYDomainAction
   | SetXAxisLabelAction
@@ -681,6 +683,18 @@ export const setMainColumn = (mainColumn: string) => ({
 export const setLowerColumn = (lowerColumn: string) => ({
   type: 'SET_LOWER_COLUMN' as 'SET_LOWER_COLUMN',
   payload: {lowerColumn},
+})
+
+export const setLegendOpacity = (legendOpacity: number) => ({
+  type: 'SET_LEGEND_OPACITY' as 'SET_LEGEND_OPACITY',
+  payload: {legendOpacity},
+})
+
+export const setLegendOrientationThreshold = (
+  legendOrientationThreshold: number
+) => ({
+  type: 'SET_LEGEND_ORIENTATION_THRESHOLD' as 'SET_LEGEND_ORIENTATION_THRESHOLD',
+  payload: {legendOrientationThreshold},
 })
 
 export const loadNewVEO = () => (

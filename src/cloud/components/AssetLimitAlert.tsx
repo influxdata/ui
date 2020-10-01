@@ -47,7 +47,10 @@ const AssetLimitAlert: FC<Props> = ({limitStatus, resourceName, className}) => {
               alignItems={AlignItems.FlexEnd}
               stretchToFitHeight={true}
             >
-              <CloudUpgradeButton buttonText={`Get more ${resourceName}`} />
+              <CloudUpgradeButton
+                buttonText={`Get more ${resourceName}`}
+                className="upgrade-payg--button__asset-alert"
+              />
             </FlexBox>
           </Panel.Body>
         </Panel>

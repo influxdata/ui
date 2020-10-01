@@ -1,5 +1,6 @@
 // APIs
 import {runQuery} from 'src/shared/apis/query'
+import {fromFlux} from '@influxdata/giraffe'
 
 // Utils
 import {resolveSelectedKey} from 'src/variables/utils/resolveSelectedValue'
@@ -7,6 +8,7 @@ import {formatVarsOption} from 'src/variables/utils/formatVarsOption'
 import {parseResponse} from 'src/shared/parsing/flux/response'
 import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {VariableAssignment, VariableValues, FluxColumnType} from 'src/types'
@@ -35,6 +37,25 @@ export const extractValues = (
   prevSelection?: string,
   defaultSelection?: string
 ): VariableValues => {
+  if (isFlagEnabled('fromFluxParseResponse')) {
+    const {table} = fromFlux(csv)
+    if (!table || !table.getColumn('_value', 'string')) {
+      return {
+        values: [],
+        valueType: 'string',
+        selected: [],
+      }
+    }
+    let values = table.getColumn('_value', 'string') || []
+    values = [...new Set(values)]
+    values.sort()
+
+    return {
+      values,
+      valueType: table.getColumnType('_value') as FluxColumnType,
+      selected: [resolveSelectedKey(values, prevSelection, defaultSelection)],
+    }
+  }
   const [table] = parseResponse(csv)
 
   if (!table || !table.data.length) {

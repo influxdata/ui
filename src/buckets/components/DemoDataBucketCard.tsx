@@ -26,7 +26,7 @@ import {
 import {Context} from 'src/clockface'
 
 // Actions
-import {deleteDemoDataBucketMembership} from 'src/cloud/actions/demodata'
+import {deleteDemoDataBucketMembership} from 'src/cloud/actions/thunks'
 import {notify as notifyAction} from 'src/shared/actions/notifications'
 
 // Types

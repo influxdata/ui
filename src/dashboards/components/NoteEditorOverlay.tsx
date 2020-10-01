@@ -19,8 +19,8 @@ import {
   createNoteCell,
   updateViewNote,
   loadNote,
-  resetNoteState,
-} from 'src/dashboards/actions/notes'
+} from 'src/dashboards/actions/thunks'
+import {resetNoteState} from 'src/dashboards/actions/notes'
 import {notify} from 'src/shared/actions/notifications'
 
 // Utils

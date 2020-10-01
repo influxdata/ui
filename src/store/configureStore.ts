@@ -86,7 +86,7 @@ export const rootReducer = (history: History) =>
     dataLoading: dataLoadingReducer,
     me: meReducer,
     flags: flagReducer,
-    notebook: schemaReducer,
+    flow: schemaReducer,
     noteEditor: noteEditorReducer,
     onboarding: onboardingReducer,
     overlays: overlaysReducer,

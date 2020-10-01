@@ -1,6 +1,6 @@
 import icon from './icon'
 import properties from './properties'
-import options from './options'
+import TableOptions from './TableOptions'
 
 export default register => {
   register({
@@ -8,6 +8,6 @@ export default register => {
     name: 'Table',
     graphic: icon,
     initial: properties,
-    options: options,
+    options: TableOptions,
   })
 }

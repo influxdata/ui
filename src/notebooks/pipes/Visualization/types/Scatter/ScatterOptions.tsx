@@ -18,8 +18,7 @@ import {GIRAFFE_COLOR_SCHEMES} from 'src/shared/constants'
 
 import {resolveTimeFormat} from 'src/dashboards/utils/tableGraph'
 import {defaultXColumn, defaultYColumn} from 'src/shared/utils/vis'
-import {VisOptionProps} from '../../'
-import {ScatterViewProperties} from 'src/types'
+import {ScatterViewProperties, VisOptionProps} from 'src/types'
 
 interface Props extends VisOptionProps {
   properties: ScatterViewProperties

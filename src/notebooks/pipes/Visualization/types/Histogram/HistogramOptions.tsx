@@ -17,8 +17,7 @@ import {
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import {defaultXColumn} from 'src/shared/utils/vis'
 import ColorSchemeDropdown from 'src/shared/components/ColorSchemeDropdown'
-import {VisOptionProps} from '../../'
-import {HistogramViewProperties} from 'src/types'
+import {HistogramViewProperties, VisOptionProps} from 'src/types'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 
 interface Props extends VisOptionProps {

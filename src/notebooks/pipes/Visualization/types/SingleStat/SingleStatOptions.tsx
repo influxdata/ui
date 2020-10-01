@@ -14,8 +14,7 @@ import {
 import {MIN_DECIMAL_PLACES, MAX_DECIMAL_PLACES} from 'src/dashboards/constants'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 
-import {SingleStatViewProperties} from 'src/types'
-import {VisOptionProps} from '../../'
+import {SingleStatViewProperties, VisOptionProps} from 'src/types'
 
 interface Props extends VisOptionProps {
   properties: SingleStatViewProperties

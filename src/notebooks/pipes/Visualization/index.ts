@@ -1,24 +1,6 @@
-import {FunctionComponent} from 'react'
-import {ViewProperties} from 'src/types'
-import {FromFluxResult} from '@influxdata/giraffe'
+import {VisTypeRegistration} from 'src/types'
 import View from './view'
 import './style.scss'
-
-export interface VisOptionProps {
-  properties: ViewProperties
-  results: FromFluxResult
-  update: (obj: any) => void
-}
-
-export interface VisTypeRegistration {
-  type: string // a unique string that identifies a visualization
-  name: string // the name that shows up in the dropdown
-  graphic: JSX.Element // the icon that shows up in the dropdown
-  disabled?: boolean // if you should show it or not
-  featureFlag?: string // designates a flag that should enable the panel type
-  initial: ViewProperties // the default state
-  options?: FunctionComponent<VisOptionProps> // the view component for rendering the interface
-}
 
 interface VisTypeRegistrationMap {
   [key: string]: VisTypeRegistration

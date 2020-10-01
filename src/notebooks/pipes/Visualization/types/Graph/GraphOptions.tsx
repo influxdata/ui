@@ -23,8 +23,7 @@ import {
 } from 'src/shared/utils/vis'
 import ColorSchemeDropdown from 'src/shared/components/ColorSchemeDropdown'
 import Checkbox from 'src/shared/components/Checkbox'
-import {VisOptionProps} from '../../'
-import {XYViewProperties} from 'src/types'
+import {XYViewProperties, VisOptionProps} from 'src/types'
 
 const {BASE_2, BASE_10} = AXES_SCALE_OPTIONS
 

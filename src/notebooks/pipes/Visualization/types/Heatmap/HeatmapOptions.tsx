@@ -21,8 +21,7 @@ import {defaultXColumn, defaultYColumn} from 'src/shared/utils/vis'
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import HexColorSchemeDropdown from 'src/shared/components/HexColorSchemeDropdown'
 
-import {HeatmapViewProperties} from 'src/types'
-import {VisOptionProps} from '../../'
+import {HeatmapViewProperties, VisOptionProps} from 'src/types'
 
 const HEATMAP_COLOR_SCHEMES = [
   {name: 'Magma', colors: MAGMA},

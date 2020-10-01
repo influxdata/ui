@@ -19,8 +19,7 @@ import {
 import ThresholdsSettings from './ThresholdsSettings'
 import {MIN_DECIMAL_PLACES, MAX_DECIMAL_PLACES} from 'src/dashboards/constants'
 
-import {VisOptionProps} from '../../'
-import {GaugeViewProperties} from 'src/types'
+import {GaugeViewProperties, VisOptionProps} from 'src/types'
 
 interface Props extends VisOptionProps {
   properties: GaugeViewProperties

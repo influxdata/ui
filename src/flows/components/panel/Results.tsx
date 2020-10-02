@@ -5,25 +5,25 @@ import {AutoSizer} from 'react-virtualized'
 // Components
 import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
 import {ROW_HEIGHT} from 'src/timeMachine/components/RawFluxDataGrid'
-import Resizer from 'src/notebooks/shared/Resizer'
-import ResultsPagination from 'src/notebooks/components/panel/ResultsPagination'
+import Resizer from 'src/flows/shared/Resizer'
+import ResultsPagination from 'src/flows/components/panel/ResultsPagination'
 
-import {NotebookContext} from 'src/notebooks/context/notebook.current'
-import {PipeContext} from 'src/notebooks/context/pipe'
-import {MINIMUM_RESIZER_HEIGHT} from 'src/notebooks/shared/Resizer'
+import {FlowContext} from 'src/flows/context/flow.current'
+import {PipeContext} from 'src/flows/context/pipe'
+import {MINIMUM_RESIZER_HEIGHT} from 'src/flows/shared/Resizer'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
 import {RemoteDataState} from 'src/types'
-import {Visibility} from 'src/types/notebooks'
+import {Visibility} from 'src/types/flows'
 
 const Results: FC = () => {
-  const {notebook} = useContext(NotebookContext)
+  const {flow} = useContext(FlowContext)
   const {id, results} = useContext(PipeContext)
   const [height, setHeight] = useState(MINIMUM_RESIZER_HEIGHT)
   const [visibility, setVisibility] = useState('visible' as Visibility)
-  const meta = notebook.meta.get(id)
+  const meta = flow.meta.get(id)
   const resultsExist =
     !!results && !!results.raw && !!results.parsed.table.length
   const raw = (results || {}).raw || ''

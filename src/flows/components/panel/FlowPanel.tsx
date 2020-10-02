@@ -24,8 +24,8 @@ import PanelVisibilityToggle from 'src/flows/components/panel/PanelVisibilityTog
 import MovePanelButton from 'src/flows/components/panel/MovePanelButton'
 import FlowPanelTitle from 'src/flows/components/panel/FlowPanelTitle'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
-import Results from 'src/notebooks/components/panel/Results'
-import {PIPE_DEFINITIONS} from 'src/notebooks'
+import Results from 'src/flows/components/panel/Results'
+import {PIPE_DEFINITIONS} from 'src/flows'
 
 // Types
 import {PipeContextProps} from 'src/types/flows'
@@ -143,7 +143,7 @@ const FlowPanel: FC<Props> = ({id, children, controls}) => {
   }
 
   const showResults = ['inputs', 'test', 'transform'].includes(
-    PIPE_DEFINITIONS[notebook.data.get(id).type].family
+    PIPE_DEFINITIONS[flow.data.get(id).type].family
   )
 
   if (

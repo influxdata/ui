@@ -36,7 +36,7 @@ import {
   rateLimitReached,
   resultTooLarge,
   setFilterKeyFailed,
-  setFilterValueFailed
+  setFilterValueFailed,
 } from 'src/shared/copy/notifications'
 
 // types

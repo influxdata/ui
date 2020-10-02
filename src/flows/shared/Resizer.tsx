@@ -14,7 +14,7 @@ import ResizerHeader from 'src/flows/shared/ResizerHeader'
 
 // Types
 import {IconFont} from '@influxdata/clockface'
-import {Visibility} from 'src/types/notebooks'
+import {Visibility} from 'src/types/flows'
 
 // Styles
 import 'src/flows/shared/Resizer.scss'

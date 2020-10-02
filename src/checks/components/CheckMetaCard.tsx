@@ -13,9 +13,10 @@ import DurationInput from 'src/shared/components/DurationInput'
 import {
   setOffset,
   removeTagSet,
-  selectCheckEvery,
   editTagSetByIndex,
 } from 'src/alerting/actions/alertBuilder'
+
+import {selectCheckEvery} from 'src/alerting/actions/thunks'
 
 // Constants
 import {CHECK_OFFSET_OPTIONS} from 'src/alerting/constants'

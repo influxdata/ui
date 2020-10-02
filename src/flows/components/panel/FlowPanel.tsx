@@ -142,7 +142,7 @@ const FlowPanel: FC<Props> = ({id, children, controls}) => {
     updatePanelFocus(false)
   }
 
-  const showResults = ['inputs', 'test', 'transform'].includes(
+  const showResults = ['inputs', 'transform'].includes(
     PIPE_DEFINITIONS[flow.data.get(id).type].family
   )
 

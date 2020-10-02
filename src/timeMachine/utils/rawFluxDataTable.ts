@@ -1,7 +1,7 @@
 import Papa from 'papaparse'
 import HtmlEntities from 'he'
 import unraw from 'unraw'
-import {fromFlux} from '@influxdata/giraffe'
+import {fromFlux, Table} from '@influxdata/giraffe'
 
 import {parseChunks} from 'src/shared/parsing/flux/response'
 import {
@@ -18,79 +18,142 @@ export interface ParseFilesResult {
 export const parseFilesWithFromFlux = (
   responses: string[]
 ): ParseFilesResult => {
-  const chunks = parseChunks(responses.join('\n\n'))
-  const parsedChunks = chunks.map(c => fromFluxTableTransformer(c))
-  let data = []
-  parsedChunks.forEach((chunk, i) => {
-    data = data.concat(chunk)
-    if (i !== parsedChunks.length - 1) {
-      data.push([])
-    }
-  })
-  const maxColumnCount = Math.max(...parsedChunks.map(c => c[0].length))
-  return {data, maxColumnCount}
+  const tables = responses.reduce((acc, curr) => {
+    return [...acc, ...fromFluxTableTransformer(curr)]
+  }, [])
+  const maxColumnCount = Math.max(...tables.map(c => c.length))
+  return {data: tables, maxColumnCount}
 }
 
 export const fromFluxTableTransformer = (response: string): string[][] => {
-  const dataTypes = ['#datatype']
-  const groupKey = {}
-  const dataStore = {}
   const {
     fluxGroupKeyUnion,
     table,
-    table: {columnKeys},
+    table: {columnKeys: keys},
   } = fromFlux(response)
 
-  const groupSet = new Set(fluxGroupKeyUnion)
-  const groupRow = ['#group']
-  columnKeys.forEach(col => groupRow.push(`${groupSet.has(col)}`))
+  const columnKeys = [
+    'result',
+    'table',
+    ...keys.filter(k => k !== 'result' && k !== 'table'),
+  ]
 
-  columnKeys.forEach(col => {
-    let type: any = table.getColumnType(col)
-    const values = table.getColumn(col, type)
-    let [val]: any = values
-    if (type === 'time') {
-      type = 'dateTime:RFC3339'
-      val = new Date(val).toISOString()
-    }
-    if (col === 'table') {
-      type = 'long'
-    }
-    if (!groupSet.has(col)) {
-      groupKey[col] = val
-    }
-    dataTypes.push(type)
-    dataStore[col] = values
-  })
-
+  const tables = table.getColumn('table')
   const values = table.getColumn('result')
-  const defaultRow = ['#default', values[0]]
-  while (defaultRow.length < columnKeys.length) {
-    defaultRow.push('')
-  }
-  const data: any[] = [
-    groupRow,
-    dataTypes,
-    defaultRow,
-    ['', ...columnKeys],
-  ].concat(mapTableData(columnKeys, dataStore))
-
-  return data
-}
-
-const mapTableData = (headerRow: string[], data): string[][] => {
+  let [currVal] = values
+  let [currTable] = tables
+  let columnHeaders = []
   const tableData = []
-  for (let i = 0; i < data._start.length; i++) {
-    const rowData = getRowData(headerRow, data, i)
-    tableData.push(rowData)
+  // find where the table splits based on yielded result names
+  const groupSet = new Set(fluxGroupKeyUnion)
+  let data = []
+  for (let i = 0; i < tables.length; i++) {
+    if (i === 0) {
+      // build out the columnHeader = chunk[3]
+      columnHeaders = columnKeys.filter(col =>
+        filterColumnHeaders(col, table, i)
+      )
+      const {groupHeaders, dataTypes, defaultRow} = getGroupDataDefaultHeaders(
+        columnHeaders,
+        table,
+        groupSet,
+        values[i]
+      )
+      tableData.push(groupHeaders, dataTypes, defaultRow, [
+        '',
+        ...columnHeaders,
+      ])
+    }
+    if (values[i] !== currVal || tables[i] !== currTable) {
+      // sets the boundaries for the chunk based on different yields or tables
+      currVal = values[i]
+      currTable = tables[i]
+      // create a chunk
+      if (columnHeaders.length > 0) {
+        tableData.push(...data, [])
+        // reset all data for the next chunk
+        data = []
+      }
+      // build out the columnHeader = chunk[3]
+      columnHeaders = columnKeys.filter(col =>
+        filterColumnHeaders(col, table, i)
+      )
+      const {groupHeaders, dataTypes, defaultRow} = getGroupDataDefaultHeaders(
+        columnHeaders,
+        table,
+        groupSet,
+        values[i]
+      )
+      tableData.push(groupHeaders, dataTypes, defaultRow, [
+        '',
+        ...columnHeaders,
+      ])
+    }
+    // construct the chunk of data for this given row
+    data.push(getRowData(columnHeaders, table, i))
   }
+
   return tableData
 }
 
-const getRowData = (headerRow: string[], data: any, index: number): any[] =>
-  headerRow.reduce(
+type Headers = {
+  groupHeaders: string[]
+  dataTypes: string[]
+  defaultRow: string[] // TODO(ariel): can this be a number or bool?
+}
+
+const getGroupDataDefaultHeaders = (
+  columnHeaders: string[],
+  table: Table,
+  groupSet: Set<string>,
+  value: string | number | boolean
+): Headers => {
+  // based on the columnHeader we can get the:
+  // #group, true, false ...(chunk[0])
+  const groupHeaders = buildGroupHeaders(columnHeaders, groupSet)
+  // #datatype, 'string', 'long' ...(chunk[1])
+  const dataTypes = [
+    '#datatype',
+    ...columnHeaders.map(col => table.getOriginalColumnType(col)),
+  ]
+  // #default, result, '', '' ...(chunk[2])
+  const defaultRow = ['#default', `${value}`]
+  while (defaultRow.length <= columnHeaders.length) {
+    defaultRow.push('')
+  }
+  return {
+    groupHeaders,
+    dataTypes,
+    defaultRow,
+  }
+}
+
+const filterColumnHeaders = (
+  column: string,
+  table: Table,
+  index: number
+): boolean => {
+  const columnType: any = table.getColumnType(column)
+  const values = table.getColumn(column, columnType)
+  return values[index] !== undefined
+}
+
+const buildGroupHeaders = (
+  columnHeaders: string[],
+  groupSet: Set<string>
+): string[] =>
+  columnHeaders.reduce(
     (acc, col) => {
-      let colData = data[col][index]
+      return [...acc, `${groupSet.has(col)}`]
+    },
+    ['#group']
+  )
+
+const getRowData = (row: string[], table: Table, index: number): any[] =>
+  row.reduce(
+    (acc, col) => {
+      const type: any = table.getColumnType(col)
+      let colData: any = table.getColumn(col, type)[index]
       if (needsTimestampConversion(col, colData)) {
         colData = new Date(colData).toISOString()
       }
@@ -113,6 +176,7 @@ const needsTimestampConversion = (
   if (col !== '_start' && col !== '_stop') {
     return false
   }
+  // TODO(ariel): refactor this when we get new types from giraffe
   return typeof data === 'number'
 }
 

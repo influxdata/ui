@@ -12,9 +12,10 @@ import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 interface Props {
   threshold: GreaterThreshold | LesserThreshold
   changeValue: (value: number) => void
+  level: string
 }
 
-const ThresholdValueStatement: FC<Props> = ({threshold, changeValue}) => {
+const ThresholdValueStatement: FC<Props> = ({threshold, changeValue, level}) => {
   const onChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     changeValue(convertUserInputToNumOrNaN(e))
   }
@@ -23,9 +24,9 @@ const ThresholdValueStatement: FC<Props> = ({threshold, changeValue}) => {
       <Input
         onChange={onChangeValue}
         name=""
-        testID="input-field"
         type={InputType.Number}
         value={threshold.value}
+        testID={`input-field-${level}`}
       />
     </FlexBox.Child>
   )

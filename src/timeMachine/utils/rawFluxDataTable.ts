@@ -46,7 +46,6 @@ export const fromFluxTableTransformer = (response: string): string[][] => {
   const tableData = []
   // find where the table splits based on yielded result names
   const groupSet = new Set(fluxGroupKeyUnion)
-  let data = []
   for (let i = 0; i < tables.length; i++) {
     if (i === 0) {
       // build out the columnHeader = chunk[3]
@@ -69,11 +68,6 @@ export const fromFluxTableTransformer = (response: string): string[][] => {
       currVal = values[i]
       currTable = tables[i]
       // create a chunk
-      if (columnHeaders.length > 0) {
-        tableData.push(...data, [])
-        // reset all data for the next chunk
-        data = []
-      }
       // build out the columnHeader = chunk[3]
       columnHeaders = columnKeys.filter(col =>
         filterColumnHeaders(col, table, i)
@@ -84,13 +78,13 @@ export const fromFluxTableTransformer = (response: string): string[][] => {
         groupSet,
         values[i]
       )
-      tableData.push(groupHeaders, dataTypes, defaultRow, [
+      tableData.push([], groupHeaders, dataTypes, defaultRow, [
         '',
         ...columnHeaders,
       ])
     }
     // construct the chunk of data for this given row
-    data.push(getRowData(columnHeaders, table, i))
+    tableData.push(getRowData(columnHeaders, table, i))
   }
 
   return tableData

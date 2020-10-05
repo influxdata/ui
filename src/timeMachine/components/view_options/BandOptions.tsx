@@ -1,9 +1,17 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {ChangeEvent, PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
-import {Grid, Form, Dropdown, SelectDropdown} from '@influxdata/clockface'
+import {
+  ComponentStatus,
+  Dropdown,
+  Form,
+  Grid,
+  Input,
+  InputType,
+  SelectDropdown,
+} from '@influxdata/clockface'
 import Geom from 'src/timeMachine/components/view_options/Geom'
 import YAxisTitle from 'src/timeMachine/components/view_options/YAxisTitle'
 import AxisAffixes from 'src/timeMachine/components/view_options/AxisAffixes'
@@ -12,6 +20,7 @@ import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import YAxisBase from 'src/timeMachine/components/view_options/YAxisBase'
 import ColumnSelector from 'src/shared/components/ColumnSelector'
 import TimeFormat from 'src/timeMachine/components/view_options/TimeFormat'
+import LegendOrientation from 'src/timeMachine/components/view_options/LegendOrientation'
 
 // Actions
 import {
@@ -29,6 +38,8 @@ import {
   setUpperColumn,
   setMainColumn,
   setLowerColumn,
+  setLegendOpacity,
+  setLegendOrientationThreshold,
 } from 'src/timeMachine/actions'
 
 // Utils
@@ -52,6 +63,9 @@ import {
   ViewType,
 } from 'src/types'
 
+// Constants
+import {QUERY_BUILDER_MODE} from 'src/shared/constants'
+
 interface OwnProps {
   type: ViewType
   axes: Axes
@@ -63,15 +77,30 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
-const REMOVE_COLUMN_TEXT = '(remove column)'
+interface State {
+  upperColumn: string
+  mainColumn: string
+  lowerColumn: string
+}
 
-class BandOptions extends PureComponent<Props> {
+const REMOVE_COLUMN_TEXT = '(remove column)'
+const UPPER_COLUMN_PLACEHOLDER = `Please enter upper column's function name`
+const MAIN_COLUMN_PLACEHOLDER = `Please enter main column's function name`
+const LOWER_COLUMN_PLACEHOLDER = `Please enter lower column's function name`
+
+class BandOptions extends PureComponent<Props, State> {
+  constructor(props: Props) {
+    super(props)
+    this.state = {upperColumn: '', mainColumn: '', lowerColumn: ''}
+  }
+
   public render() {
     const {
       axes: {
         y: {label, prefix, suffix, base},
       },
       colors,
+      editMode,
       geom,
       onUpdateColors,
       onUpdateYAxisLabel,
@@ -90,6 +119,10 @@ class BandOptions extends PureComponent<Props> {
       onSetHoverDimension,
       selectedFunctions,
       onSetMainColumn,
+      upperColumn,
+      lowerColumn,
+      onSetLegendOpacity,
+      onSetLegendOrientationThreshold,
     } = this.props
 
     const upperAndLowerColumnOptions = [
@@ -121,31 +154,67 @@ class BandOptions extends PureComponent<Props> {
             />
           </Form.Element>
         </Grid.Column>
-        <Grid.Column>
-          <h5 className="view-options--header">Aggregate Functions</h5>
-          <Form.Element label="Upper Column Name">
-            <SelectDropdown
-              selectedOption={this.selectedUpperColumn}
-              options={upperAndLowerColumnOptions}
-              onSelect={this.onChangeUpperColumn}
-            />
-          </Form.Element>
-          <Form.Element label="Main Column Name">
-            <SelectDropdown
-              selectedOption={this.selectedMainColumn}
-              options={selectedFunctions}
-              onSelect={onSetMainColumn}
-            />
-          </Form.Element>
-          <Form.Element label="Lower Column Name">
-            <SelectDropdown
-              selectedOption={this.selectedLowerColumn}
-              options={upperAndLowerColumnOptions}
-              onSelect={this.onChangeLowerColumn}
-            />
-          </Form.Element>
-          <h5 className="view-options--header">Options</h5>
-        </Grid.Column>
+        {editMode === QUERY_BUILDER_MODE ? (
+          <Grid.Column>
+            <h5 className="view-options--header">Aggregate Functions</h5>
+            <Form.Element label="Upper Column Name">
+              <SelectDropdown
+                selectedOption={upperColumn}
+                options={upperAndLowerColumnOptions}
+                onSelect={this.onChangeUpperColumn}
+              />
+            </Form.Element>
+            <Form.Element label="Main Column Name">
+              <SelectDropdown
+                selectedOption={this.selectedMainColumn}
+                options={selectedFunctions}
+                onSelect={onSetMainColumn}
+              />
+            </Form.Element>
+            <Form.Element label="Lower Column Name">
+              <SelectDropdown
+                selectedOption={lowerColumn}
+                options={upperAndLowerColumnOptions}
+                onSelect={this.onChangeLowerColumn}
+              />
+            </Form.Element>
+            <h5 className="view-options--header">Options</h5>
+          </Grid.Column>
+        ) : (
+          // SCRIPT EDITOR MODE
+          <Grid.Column>
+            <h5 className="view-options--header">Aggregate Functions</h5>
+            <Form.Element label="Upper Column Name">
+              <Input
+                onChange={this.onTextChangeUpperColumn}
+                onFocus={this.onTextChangeUpperColumn}
+                placeholder={UPPER_COLUMN_PLACEHOLDER}
+                type={InputType.Text}
+                value={this.state.upperColumn}
+              />
+            </Form.Element>
+            <Form.Element label="Main Column Name">
+              <Input
+                onChange={this.onTextChangeMainColumn}
+                onFocus={this.onTextChangeMainColumn}
+                placeholder={MAIN_COLUMN_PLACEHOLDER}
+                status={this.mainColumnTextStatus}
+                type={InputType.Text}
+                value={this.state.mainColumn}
+              />
+            </Form.Element>
+            <Form.Element label="Lower Column Name">
+              <Input
+                onChange={this.onTextChangeLowerColumn}
+                onFocus={this.onTextChangeLowerColumn}
+                placeholder={LOWER_COLUMN_PLACEHOLDER}
+                type={InputType.Text}
+                value={this.state.lowerColumn}
+              />
+            </Form.Element>
+            <h5 className="view-options--header">Options</h5>
+          </Grid.Column>
+        )}
         {geom && <Geom geom={geom} onSetGeom={onSetGeom} />}
         <ColorSelector
           colors={colors.filter(c => c.type === 'scale')}
@@ -218,6 +287,10 @@ class BandOptions extends PureComponent<Props> {
             label="Y Axis Domain"
           />
         </Grid.Column>
+        <LegendOrientation
+          onLegendOpacityChange={onSetLegendOpacity}
+          onLegendOrientationThresholdChange={onSetLegendOrientationThreshold}
+        />
       </>
     )
   }
@@ -226,28 +299,20 @@ class BandOptions extends PureComponent<Props> {
     return parseYBounds(this.props.axes.y.bounds)
   }
 
-  private selectedColumn = (columnType: string): string => {
-    const hasSelectedFunction = this.props.selectedFunctions.some(
-      funcName => funcName === this.props[columnType]
-    )
-    return hasSelectedFunction ? this.props[columnType] : ''
-  }
-
-  private get selectedUpperColumn(): string {
-    return this.selectedColumn('upperColumn')
-  }
-
   private get selectedMainColumn(): string {
     return getMainColumnName(
       this.props.selectedFunctions,
-      this.selectedUpperColumn,
+      this.props.upperColumn,
       this.props.mainColumn,
-      this.selectedLowerColumn
+      this.props.lowerColumn
     )
   }
 
-  private get selectedLowerColumn(): string {
-    return this.selectedColumn('lowerColumn')
+  private get mainColumnTextStatus(): ComponentStatus {
+    if (this.state.mainColumn.length > 0) {
+      return ComponentStatus.Default
+    }
+    return ComponentStatus.Error
   }
 
   private setBoundValues = (value: number | null): string | null => {
@@ -282,10 +347,29 @@ class BandOptions extends PureComponent<Props> {
 
   private onChangeLowerColumn = selectedLowerColumnName =>
     this.onChangeColumn(this.props.onSetLowerColumn, selectedLowerColumnName)
+
+  private onTextChangeUpperColumn = (event: ChangeEvent<HTMLInputElement>) => {
+    const {value} = event.target
+    this.setState({upperColumn: value})
+    this.props.onSetUpperColumn(value)
+  }
+
+  private onTextChangeMainColumn = (event: ChangeEvent<HTMLInputElement>) => {
+    const {value} = event.target
+    this.setState({mainColumn: value})
+    this.props.onSetMainColumn(value)
+  }
+
+  private onTextChangeLowerColumn = (event: ChangeEvent<HTMLInputElement>) => {
+    const {value} = event.target
+    this.setState({lowerColumn: value})
+    this.props.onSetLowerColumn(value)
+  }
 }
 
 const mstp = (state: AppState) => {
-  const {builderConfig} = getActiveQuery(state)
+  const activeQuery = getActiveQuery(state)
+  const {builderConfig, editMode} = activeQuery
   const {functions} = builderConfig
   const xColumn = getXColumnSelection(state)
   const yColumn = getYColumnSelection(state)
@@ -293,6 +377,7 @@ const mstp = (state: AppState) => {
   const view = getActiveTimeMachine(state).view as NewView<BandViewProperties>
   const {timeFormat, upperColumn, mainColumn, lowerColumn} = view.properties
   return {
+    editMode,
     numericColumns,
     selectedFunctions: functions.map(f => f.name),
     timeFormat,
@@ -319,6 +404,8 @@ const mdtp = {
   onSetUpperColumn: setUpperColumn,
   onSetMainColumn: setMainColumn,
   onSetLowerColumn: setLowerColumn,
+  onSetLegendOpacity: setLegendOpacity,
+  onSetLegendOrientationThreshold: setLegendOrientationThreshold,
 }
 
 const connector = connect(mstp, mdtp)

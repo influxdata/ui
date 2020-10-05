@@ -7,6 +7,10 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 
 // Utils
 import {
+  useLegendOpacity,
+  useLegendOrientationThreshold,
+} from 'src/shared/utils/useLegendOrientation'
+import {
   useVisXDomainSettings,
   useVisYDomainSettings,
 } from 'src/shared/utils/useVisDomainSettings'
@@ -45,6 +49,8 @@ const MosaicPlot: FunctionComponent<Props> = ({
     xColumn: storedXColumn,
     ySeriesColumns: storedYColumn,
     timeFormat,
+    legendOpacity,
+    legendOrientationThreshold,
   },
   theme,
 }) => {
@@ -57,6 +63,11 @@ const MosaicPlot: FunctionComponent<Props> = ({
     yColumn = mosaicYcolumn(table)
   }
   const columnKeys = table.columnKeys
+
+  const tooltipOpacity = useLegendOpacity(legendOpacity)
+  const tooltipOrientationThreshold = useLegendOrientationThreshold(
+    legendOrientationThreshold
+  )
 
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
     storedXDomain,
@@ -107,6 +118,8 @@ const MosaicPlot: FunctionComponent<Props> = ({
     yDomain,
     onSetYDomain,
     onResetYDomain,
+    legendOpacity: tooltipOpacity,
+    legendOrientationThreshold: tooltipOrientationThreshold,
     valueFormatters: {
       [xColumn]: xFormatter,
       [yColumn]: yFormatter,

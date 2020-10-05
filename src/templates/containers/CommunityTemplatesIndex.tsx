@@ -11,7 +11,7 @@ import {notify} from 'src/shared/actions/notifications'
 
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
-import {CommunityTemplateImportOverlay} from 'src/templates/components/CommunityTemplateImportOverlay'
+import {CommunityTemplateInstallOverlay} from 'src/templates/components/CommunityTemplateInstallOverlay'
 import {CommunityTemplatesInstalledList} from 'src/templates/components/CommunityTemplatesInstalledList'
 
 import {
@@ -163,6 +163,7 @@ class UnconnectedTemplatesIndex extends Component<Props, State> {
                     <Input
                       className="community-templates-template-url"
                       onChange={this.handleTemplateChange}
+                      onKeyPress={this.handleInputKeyPress}
                       placeholder="https://github.com/influxdata/community-templates/blob/master/example/example.yml"
                       style={{flex: '1 0 0'}}
                       value={this.props.stagedTemplateUrl}
@@ -205,7 +206,7 @@ class UnconnectedTemplatesIndex extends Component<Props, State> {
             path={`${templatesPath}/import`}
             render={props => {
               return (
-                <CommunityTemplateImportOverlay
+                <CommunityTemplateInstallOverlay
                   {...props}
                   setTemplateUrlValidationMessage={this.setValidationMessage}
                 />
@@ -265,6 +266,12 @@ class UnconnectedTemplatesIndex extends Component<Props, State> {
 
     this.setValidationMessage(validationMessage)
     this.props.setStagedTemplateUrl(event.target.value)
+  }
+
+  private handleInputKeyPress = event => {
+    if (event.key === 'Enter') {
+      this.startTemplateInstall()
+    }
   }
 
   private onClickBrowseCommunityTemplates = () => {

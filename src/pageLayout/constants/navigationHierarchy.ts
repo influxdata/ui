@@ -112,7 +112,7 @@ export const generateNavItems = (orgID: string): NavItem[] => {
       testID: 'nav-item-flows',
       icon: IconFont.Erlenmeyer,
       label: 'Flows',
-      featureFlag: 'notebooks',
+      featureFlag: 'notebooks', // TODO: update config cat, and idpe to 'flows'
       shortLabel: 'Flows',
       link: {
         type: 'link',
@@ -130,7 +130,7 @@ export const generateNavItems = (orgID: string): NavItem[] => {
         type: 'link',
         location: `${orgPrefix}/dashboards-list`,
       },
-      activeKeywords: ['dashboards'],
+      activeKeywords: ['dashboards', 'dashboards-list'],
     },
     {
       id: 'tasks',

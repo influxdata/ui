@@ -6,7 +6,7 @@ import {createMemoryHistory} from 'history'
 import {render} from '@testing-library/react'
 import {initialState as initialVariablesState} from 'src/variables/reducers'
 import {initialState as initialUserSettingsState} from 'src/userSettings/reducers'
-import {default as configureStore, clearStore} from 'src/store/configureStore'
+import {configureStoreForTests} from 'src/store/configureStore'
 import {RemoteDataState, TimeZone, LocalStorage, ResourceType} from 'src/types'
 import {pastFifteenMinTimeRange} from './shared/constants/timeRanges'
 
@@ -25,7 +25,7 @@ export const localState: LocalStorage = {
       navBarState: 'expanded',
       timeZone: 'Local' as TimeZone,
       theme: 'dark',
-      notebookMiniMapState: 'expanded',
+      flowMiniMapState: 'expanded',
     },
   },
   flags: {
@@ -56,11 +56,7 @@ export const localState: LocalStorage = {
 }
 
 export function renderWithRedux(ui, initialState = s => s) {
-  clearStore()
-  const seedStore = configureStore(localState)
-  const seedState = seedStore.getState()
-  clearStore()
-  const store = configureStore(initialState(seedState))
+  const store = configureStoreForTests(initialState(localState))
 
   return {
     ...render(<Provider store={store}>{ui}</Provider>),
@@ -69,12 +65,8 @@ export function renderWithRedux(ui, initialState = s => s) {
 }
 
 export function renderWithReduxAndRouter(ui, initialState = s => s) {
-  clearStore()
   const history = createMemoryHistory({initialEntries: ['/']})
-  const seedStore = configureStore(localState)
-  const seedState = seedStore.getState()
-  clearStore()
-  const store = configureStore(initialState(seedState))
+  const store = configureStoreForTests(initialState(localState))
 
   return {
     ...render(

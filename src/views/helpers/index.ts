@@ -3,6 +3,10 @@ import {INFERNO, NINETEEN_EIGHTY_FOUR} from '@influxdata/giraffe'
 import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {DEFAULT_CELL_NAME} from 'src/dashboards/constants'
 import {
+  LEGEND_OPACITY_DEFAULT,
+  LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+} from 'src/shared/constants'
+import {
   DEFAULT_GAUGE_COLORS,
   DEFAULT_THRESHOLDS_LIST_COLORS,
   DEFAULT_THRESHOLDS_TABLE_COLORS,
@@ -73,6 +77,8 @@ export function defaultLineViewProperties() {
     legend: {},
     note: '',
     showNoteWhenEmpty: false,
+    legendOpacity: LEGEND_OPACITY_DEFAULT,
+    legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
     axes: {
       x: {
         bounds: ['', ''],
@@ -91,6 +97,7 @@ export function defaultLineViewProperties() {
         scale: 'linear',
       } as Axis,
     },
+    hoverDimension: 'auto' as LineHoverDimension,
   }
 }
 
@@ -101,6 +108,8 @@ export function defaultBandViewProperties() {
     legend: {},
     note: '',
     showNoteWhenEmpty: false,
+    legendOpacity: LEGEND_OPACITY_DEFAULT,
+    legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
     axes: {
       x: {
         bounds: ['', ''],
@@ -198,6 +207,8 @@ const NEW_VIEW_CREATORS = {
       colors: DEFAULT_LINE_COLORS as Color[],
       note: '',
       showNoteWhenEmpty: false,
+      legendOpacity: LEGEND_OPACITY_DEFAULT,
+      legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
     },
   }),
   heatmap: (): NewView<HeatmapViewProperties> => ({
@@ -220,6 +231,8 @@ const NEW_VIEW_CREATORS = {
       binSize: 10,
       note: '',
       showNoteWhenEmpty: false,
+      legendOpacity: LEGEND_OPACITY_DEFAULT,
+      legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
     },
   }),
   'single-stat': (): NewView<SingleStatViewProperties> => ({
@@ -303,6 +316,8 @@ const NEW_VIEW_CREATORS = {
       xSuffix: '',
       yPrefix: '',
       ySuffix: '',
+      legendOpacity: LEGEND_OPACITY_DEFAULT,
+      legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
     },
   }),
   mosaic: (): NewView<MosaicViewProperties> => ({
@@ -325,6 +340,8 @@ const NEW_VIEW_CREATORS = {
       xSuffix: '',
       yPrefix: '',
       ySuffix: '',
+      legendOpacity: LEGEND_OPACITY_DEFAULT,
+      legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
     },
   }),
   threshold: (): NewView<CheckViewProperties> => ({

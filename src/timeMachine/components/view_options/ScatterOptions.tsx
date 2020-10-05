@@ -1,11 +1,12 @@
 // Libraries
-import React, {SFC} from 'react'
+import React, {FunctionComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import {Form, Input, Grid, MultiSelectDropdown} from '@influxdata/clockface'
 import AxisAffixes from 'src/timeMachine/components/view_options/AxisAffixes'
 import TimeFormat from 'src/timeMachine/components/view_options/TimeFormat'
+import LegendOrientation from 'src/timeMachine/components/view_options/LegendOrientation'
 
 // Actions
 import {
@@ -21,6 +22,8 @@ import {
   setXColumn,
   setYColumn,
   setTimeFormat,
+  setLegendOpacity,
+  setLegendOrientationThreshold,
 } from 'src/timeMachine/actions'
 
 // Utils
@@ -64,7 +67,7 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
-const ScatterOptions: SFC<Props> = props => {
+const ScatterOptions: FunctionComponent<Props> = props => {
   const {
     fillColumns,
     symbolColumns,
@@ -94,6 +97,8 @@ const ScatterOptions: SFC<Props> = props => {
     onSetYColumn,
     onSetTimeFormat,
     timeFormat,
+    onSetLegendOpacity,
+    onSetLegendOrientationThreshold,
   } = props
 
   const groupDropdownStatus = availableGroupColumns.length
@@ -213,6 +218,10 @@ const ScatterOptions: SFC<Props> = props => {
         onSetDomain={onSetYDomain}
         label="Y Axis Domain"
       />
+      <LegendOrientation
+        onLegendOpacityChange={onSetLegendOpacity}
+        onLegendOrientationThresholdChange={onSetLegendOrientationThreshold}
+      />
     </Grid.Column>
   )
 }
@@ -253,6 +262,8 @@ const mdtp = {
   onSetXColumn: setXColumn,
   onSetYColumn: setYColumn,
   onSetTimeFormat: setTimeFormat,
+  onSetLegendOpacity: setLegendOpacity,
+  onSetLegendOrientationThreshold: setLegendOrientationThreshold,
 }
 
 const connector = connect(mstp, mdtp)

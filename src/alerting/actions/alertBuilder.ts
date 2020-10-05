@@ -1,6 +1,3 @@
-// Actions
-import {executeQueries} from 'src/timeMachine/actions/queries'
-
 // Types
 import {
   RemoteDataState,
@@ -121,8 +118,3 @@ export const updateName = (name: string) => ({
   type: 'UPDATE_ALERT_BUILDER_NAME' as 'UPDATE_ALERT_BUILDER_NAME',
   payload: {name},
 })
-
-export const selectCheckEvery = (every: string) => dispatch => {
-  dispatch(setEvery(every))
-  dispatch(executeQueries())
-}

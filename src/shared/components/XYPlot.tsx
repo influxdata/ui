@@ -13,6 +13,10 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 
 // Utils
 import {
+  useLegendOpacity,
+  useLegendOrientationThreshold,
+} from 'src/shared/utils/useLegendOrientation'
+import {
   useVisXDomainSettings,
   useVisYDomainSettings,
 } from 'src/shared/utils/useVisDomainSettings'
@@ -57,6 +61,8 @@ const XYPlot: FC<Props> = ({
     yColumn: storedYColumn,
     shadeBelow,
     hoverDimension,
+    legendOpacity,
+    legendOrientationThreshold,
     axes: {
       x: {
         label: xAxisLabel,
@@ -78,6 +84,11 @@ const XYPlot: FC<Props> = ({
   },
   theme,
 }) => {
+  const tooltipOpacity = useLegendOpacity(legendOpacity)
+  const tooltipOrientationThreshold = useLegendOrientationThreshold(
+    legendOrientationThreshold
+  )
+
   const storedXDomain = useMemo(() => parseXBounds(xBounds), [xBounds])
   const storedYDomain = useMemo(() => parseYBounds(yBounds), [yBounds])
   const xColumn = storedXColumn || defaultXColumn(table, '_time')
@@ -163,6 +174,8 @@ const XYPlot: FC<Props> = ({
     onSetYDomain,
     onResetYDomain,
     legendColumns,
+    legendOpacity: tooltipOpacity,
+    legendOrientationThreshold: tooltipOrientationThreshold,
     valueFormatters: {
       [xColumn]: xFormatter,
       [yColumn]: yFormatter,

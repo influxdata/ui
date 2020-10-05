@@ -51,7 +51,7 @@ export interface AppState {
   flags: FlagState
   links: Links
   me: MeState
-  notebook: SchemaState
+  flow: SchemaState
   noteEditor: NoteEditorState
   notifications: Notification[]
   onboarding: OnboardingState

@@ -7,6 +7,10 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 
 // Utils
 import {
+  useLegendOpacity,
+  useLegendOrientationThreshold,
+} from 'src/shared/utils/useLegendOrientation'
+import {
   useVisXDomainSettings,
   useVisYDomainSettings,
 } from 'src/shared/utils/useVisDomainSettings'
@@ -47,11 +51,18 @@ const HeatmapPlot: FunctionComponent<Props> = ({
     colors: storedColors,
     binSize,
     timeFormat,
+    legendOpacity,
+    legendOrientationThreshold,
   },
   children,
   theme,
 }) => {
   const columnKeys = table.columnKeys
+
+  const tooltipOpacity = useLegendOpacity(legendOpacity)
+  const tooltipOrientationThreshold = useLegendOrientationThreshold(
+    legendOrientationThreshold
+  )
 
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
     storedXDomain,
@@ -106,6 +117,8 @@ const HeatmapPlot: FunctionComponent<Props> = ({
     yDomain,
     onSetYDomain,
     onResetYDomain,
+    legendOpacity: tooltipOpacity,
+    legendOrientationThreshold: tooltipOrientationThreshold,
     valueFormatters: {
       [xColumn]: xFormatter,
       [yColumn]: yFormatter,

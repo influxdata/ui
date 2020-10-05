@@ -52,11 +52,11 @@ export const QueryProvider: FC<Props> = ({children, variables, org}) => {
   }, [variables, time])
 
   const generateMap = (): Stage[] => {
-    return notebook.data.allIDs
+    return flow.data.allIDs
       .reduce((stages, pipeID) => {
-        const pipe = notebook.data.get(pipeID)
+        const pipe = flow.data.get(pipeID)
 
-        let stage = {
+        const stage = {
           text: '',
           instances: [pipeID],
           requirements: {},

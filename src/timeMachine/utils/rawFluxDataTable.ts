@@ -1,7 +1,7 @@
 import Papa from 'papaparse'
 import HtmlEntities from 'he'
 import unraw from 'unraw'
-import {fromFlux, Table} from '@influxdata/giraffe'
+import {fromFlux} from '@influxdata/giraffe'
 
 import {parseChunks} from 'src/shared/parsing/flux/response'
 import {
@@ -18,14 +18,20 @@ export interface ParseFilesResult {
 export const parseFilesWithFromFlux = (
   responses: string[]
 ): ParseFilesResult => {
-  const tables = responses.reduce((acc, curr) => {
-    return [...acc, ...fromFluxTableTransformer(curr)]
-  }, [])
-  const maxColumnCount = Math.max(...tables.map(c => c.length))
+  let maxColumnCount = 0
+  let tables = []
+  let curr: any
+  responses.forEach(response => {
+    curr = fromFluxTableTransformer(response)
+    maxColumnCount = Math.max(maxColumnCount, curr.max)
+    tables = tables.concat(curr.tableData)
+  })
   return {data: tables, maxColumnCount}
 }
 
-export const fromFluxTableTransformer = (response: string): string[][] => {
+export const fromFluxTableTransformer = (
+  response: string
+): {tableData: string[][]; max: number} => {
   const {
     fluxGroupKeyUnion,
     table,
@@ -40,138 +46,72 @@ export const fromFluxTableTransformer = (response: string): string[][] => {
 
   const tables = table.getColumn('table')
   const values = table.getColumn('result')
-  let [currVal] = values
-  let [currTable] = tables
+  let currVal = null
+  let currTable = null
   let columnHeaders = []
   const tableData = []
-  // find where the table splits based on yielded result names
+  let rowData: any[] = []
+  let rowType: any
+  let columnData: any
+  let column: any
   const groupSet = new Set(fluxGroupKeyUnion)
+  let max = 0
+
   for (let i = 0; i < tables.length; i++) {
-    if (i === 0) {
-      // build out the columnHeader = chunk[3]
-      columnHeaders = columnKeys.filter(col =>
-        filterColumnHeaders(col, table, i)
-      )
-      const {groupHeaders, dataTypes, defaultRow} = getGroupDataDefaultHeaders(
-        columnHeaders,
-        table,
-        groupSet,
-        values[i]
-      )
-      tableData.push(groupHeaders, dataTypes, defaultRow, [
-        '',
-        ...columnHeaders,
-      ])
-    }
     if (values[i] !== currVal || tables[i] !== currTable) {
       // sets the boundaries for the chunk based on different yields or tables
       currVal = values[i]
       currTable = tables[i]
-      // create a chunk
       // build out the columnHeader = chunk[3]
-      columnHeaders = columnKeys.filter(col =>
-        filterColumnHeaders(col, table, i)
-      )
-      const {groupHeaders, dataTypes, defaultRow} = getGroupDataDefaultHeaders(
-        columnHeaders,
-        table,
-        groupSet,
-        values[i]
-      )
+      columnHeaders = columnKeys.filter(col => {
+        const columnType: any = table.getColumnType(col)
+        const values = table.getColumn(col, columnType)
+        return values[i] !== undefined
+      })
+      // based on the columnHeader we can get the:
+      // #datatype, 'string', 'long' ...(chunk[1])
+      const dataTypes = ['#datatype']
+      // #default, result, '', '' ...(chunk[2])
+      const defaultRow = ['#default', `${values[i]}`]
+      // #group, true, false ...(chunk[0])
+      const groupHeaders = ['#group']
+      let curr
       tableData.push([], groupHeaders, dataTypes, defaultRow, [
         '',
         ...columnHeaders,
       ])
-    }
-    // construct the chunk of data for this given row
-    tableData.push(getRowData(columnHeaders, table, i))
-  }
-
-  return tableData
-}
-
-type Headers = {
-  groupHeaders: string[]
-  dataTypes: string[]
-  defaultRow: string[] // TODO(ariel): can this be a number or bool?
-}
-
-const getGroupDataDefaultHeaders = (
-  columnHeaders: string[],
-  table: Table,
-  groupSet: Set<string>,
-  value: string | number | boolean
-): Headers => {
-  // based on the columnHeader we can get the:
-  // #group, true, false ...(chunk[0])
-  const groupHeaders = buildGroupHeaders(columnHeaders, groupSet)
-  // #datatype, 'string', 'long' ...(chunk[1])
-  const dataTypes = [
-    '#datatype',
-    ...columnHeaders.map(col => table.getOriginalColumnType(col)),
-  ]
-  // #default, result, '', '' ...(chunk[2])
-  const defaultRow = ['#default', `${value}`]
-  while (defaultRow.length <= columnHeaders.length) {
-    defaultRow.push('')
-  }
-  return {
-    groupHeaders,
-    dataTypes,
-    defaultRow,
-  }
-}
-
-const filterColumnHeaders = (
-  column: string,
-  table: Table,
-  index: number
-): boolean => {
-  const columnType: any = table.getColumnType(column)
-  const values = table.getColumn(column, columnType)
-  return values[index] !== undefined
-}
-
-const buildGroupHeaders = (
-  columnHeaders: string[],
-  groupSet: Set<string>
-): string[] =>
-  columnHeaders.reduce(
-    (acc, col) => {
-      return [...acc, `${groupSet.has(col)}`]
-    },
-    ['#group']
-  )
-
-const getRowData = (row: string[], table: Table, index: number): any[] =>
-  row.reduce(
-    (acc, col) => {
-      const type: any = table.getColumnType(col)
-      let colData: any = table.getColumn(col, type)[index]
-      if (needsTimestampConversion(col, colData)) {
-        colData = new Date(colData).toISOString()
+      for (let j = 0; j < columnHeaders.length; j++) {
+        curr = columnHeaders[j]
+        groupHeaders.push(`${groupSet.has(curr)}`)
+        dataTypes.push(table.getOriginalColumnType(curr))
       }
-      if (col === 'result') {
+      max = Math.max(groupHeaders.length, dataTypes.length, max)
+    }
+    rowData = ['']
+    for (let index = 0; index < columnHeaders.length; index++) {
+      column = columnHeaders[index]
+      rowType = table.getColumnType(column)
+      columnData = table.getColumn(column, rowType)[i]
+      if (
+        (column === '_start' || column === '_stop' || column === '_time') &&
+        typeof columnData === 'number'
+      ) {
+        columnData = new Date(columnData).toISOString()
+      }
+      if (column === 'result') {
         // setting the column data for result as an empty string since the default
         // value given is set in the default headers:
         // https://github.com/influxdata/flux/blob/master/docs/SPEC.md#response-format
-        colData = ''
+        columnData = ''
       }
-      acc.push(`${colData}`)
-      return acc
-    },
-    ['']
-  )
-
-const needsTimestampConversion = (
-  col: string,
-  data: number | string
-): boolean => {
-  if (col !== '_start' && col !== '_stop') {
-    return false
+      rowData.push(`${columnData}`)
+    }
+    // construct the chunk of data for this given row
+    tableData.push(rowData)
   }
-  // TODO(ariel): refactor this when we get new types from giraffe
-  return typeof data === 'number'
+  // this removes the unnecessary [] that's prepended to the table
+  tableData.shift()
+  return {tableData, max}
 }
 
 export const parseFiles = (responses: string[]): ParseFilesResult => {

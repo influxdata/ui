@@ -97,6 +97,7 @@ export function defaultLineViewProperties() {
         scale: 'linear',
       } as Axis,
     },
+    hoverDimension: 'auto' as LineHoverDimension,
   }
 }
 

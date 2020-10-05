@@ -17,11 +17,8 @@ import {convertTimeRangeToCustom} from 'src/shared/utils/duration'
 import {AppState, ResourceType} from 'src/types'
 
 // Actions
-import {
-  resetPredicateState,
-  setTimeRange,
-  setBucketAndKeys,
-} from 'src/shared/actions/predicates'
+import {resetPredicateState, setTimeRange} from 'src/shared/actions/predicates'
+import {setBucketAndKeys} from 'src/shared/actions/predicatesThunks'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = RouteComponentProps<{orgID: string}> & ReduxProps

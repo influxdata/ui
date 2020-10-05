@@ -1,6 +1,6 @@
 // Types
 import {NormalizedSchema, NormalizedTag, Schema, Tag} from 'src/types'
-import {PipeData} from 'src/types/notebooks'
+import {PipeData} from 'src/types/flows'
 
 export const dedupeTags = (tags: Tag[]): NormalizedTag[] => {
   const cache = {}

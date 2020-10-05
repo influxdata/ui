@@ -48,7 +48,7 @@ describe('Flows', () => {
 
     cy.getByTestID('slide-toggle').click()
 
-    cy.get('.notebook-panel--header')
+    cy.get('.flow-panel--header')
       .eq(0)
       .click()
 

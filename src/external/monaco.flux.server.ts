@@ -27,7 +27,7 @@ import {getOrg} from 'src/organizations/selectors'
 import {fetchAllBuckets} from 'src/buckets/actions/thunks'
 import {event} from 'src/cloud/utils/reporting'
 
-import {store} from 'src/index'
+import {getStore} from 'src/store/configureStore'
 
 import {Store} from 'redux'
 import {
@@ -124,7 +124,7 @@ export class LSPServer {
   private documentVersions: {[key: string]: number} = {}
   public store: Store<AppState & LocalStorage>
 
-  constructor(server: WASMServer, reduxStore = store) {
+  constructor(server: WASMServer, reduxStore = getStore()) {
     this.server = server
     this.server.register_buckets_callback(this.getBuckets)
     this.server.register_measurements_callback(this.getMeasurements)

@@ -233,8 +233,7 @@ export const executeQueries = (abortController?: AbortController) => async (
 
       event('runQuery', {context: 'timeMachine'})
       if (
-        isCurrentPageDashboard(state) &&
-        isFlagEnabled('queryCacheForDashboards')
+        isCurrentPageDashboard(state)
       ) {
         // reset any existing matching query in the cache
         resetQueryCacheByQuery(text)

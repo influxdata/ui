@@ -122,6 +122,7 @@ class CommunityTemplateInstallOverlayUnconnected extends PureComponent<Props> {
         this.props.resourcesToSkip,
         this.props.stagedTemplateEnvReferences
       )
+      event('template_install', {templateUrl: this.props.stagedTemplateUrl})
     } catch (err) {
       this.props.notify(communityTemplateInstallFailed(err.message))
       reportErrorThroughHoneyBadger(err, {
@@ -136,7 +137,7 @@ class CommunityTemplateInstallOverlayUnconnected extends PureComponent<Props> {
       )
       await updateStackName(summary.stackID, templateDetails.name)
 
-      event('template_install', {templateName: templateDetails.name})
+      event('template_rename', {templateName: templateDetails.name})
 
       this.props.setStagedTemplateUrl('')
       this.props.setTemplateUrlValidationMessage('')

@@ -3,7 +3,6 @@ import React, {
   FC,
   useRef,
   useEffect,
-  useContext,
   ReactNode,
   useState,
   useCallback,
@@ -12,18 +11,20 @@ import classnames from 'classnames'
 
 // Components
 import ResizerHeader from 'src/flows/shared/ResizerHeader'
-import {PipeContext} from 'src/flows/context/pipe'
 
 // Types
 import {IconFont} from '@influxdata/clockface'
+import {Visibility} from 'src/types/flows'
 
 // Styles
 import 'src/flows/shared/Resizer.scss'
 
-export type Visibility = 'visible' | 'hidden'
-
 interface Props {
   children: ReactNode
+  height: number
+  onUpdateHeight: (height: number) => void
+  visibility: Visibility
+  onUpdateVisibility: (visible: Visibility) => void
   /** If true the resizer can be toggled between Hidden & Visible */
   toggleVisibilityEnabled: boolean
   /** If true the resizer cannot be resized, have its visibility toggled, and children will be hidden */
@@ -42,7 +43,7 @@ interface Props {
   additionalControls?: JSX.Element | JSX.Element[]
 }
 
-const MINIMUM_RESIZER_HEIGHT = 180
+export const MINIMUM_RESIZER_HEIGHT = 360
 
 const Resizer: FC<Props> = ({
   children,
@@ -51,21 +52,22 @@ const Resizer: FC<Props> = ({
   error,
   hiddenText = 'Hidden',
   minimumHeight = MINIMUM_RESIZER_HEIGHT,
+  height,
+  visibility,
+  onUpdateHeight,
+  onUpdateVisibility,
   resizingEnabled,
   additionalControls,
   toggleVisibilityEnabled,
 }) => {
-  const {data, update} = useContext(PipeContext)
-  const height = data.panelHeight
-  const visibility = data.panelVisibility
-
   const [size, updateSize] = useState<number>(height)
   const [isDragging, updateDragging] = useState<boolean>(false)
   const bodyRef = useRef<HTMLDivElement>(null)
   const dragHandleRef = useRef<HTMLDivElement>(null)
 
   const bodyClassName = classnames('panel-resizer--body', {
-    [`panel-resizer--body__${visibility}`]: resizingEnabled && visibility,
+    [`panel-resizer--body__${visibility}`]:
+      resizingEnabled && visibility === 'visible',
   })
 
   let _emptyIcon = emptyIcon
@@ -73,14 +75,6 @@ const Resizer: FC<Props> = ({
     _emptyIcon = IconFont.AlertTriangle
   } else {
     _emptyIcon = emptyIcon || IconFont.Zap
-  }
-
-  const handleUpdateVisibility = (panelVisibility: Visibility): void => {
-    update({panelVisibility})
-  }
-
-  const handleUpdateHeight = (panelHeight: number): void => {
-    update({panelHeight})
   }
 
   const updateResultsStyle = useCallback((): void => {
@@ -110,7 +104,7 @@ const Resizer: FC<Props> = ({
         dragHandleRef.current.classList.remove(
           'panel-resizer--drag-handle__dragging'
         )
-      handleUpdateHeight(size)
+      onUpdateHeight(size)
     }
   }, [isDragging]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -172,7 +166,7 @@ const Resizer: FC<Props> = ({
         dragHandleRef={dragHandleRef}
         resizingEnabled={resizingEnabled}
         additionalControls={additionalControls}
-        onUpdateVisibility={handleUpdateVisibility}
+        onUpdateVisibility={onUpdateVisibility}
         toggleVisibilityEnabled={toggleVisibilityEnabled}
       />
       <div className={bodyClassName} ref={bodyRef}>

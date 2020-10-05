@@ -34,14 +34,17 @@ import {getOrg} from 'src/organizations/selectors'
 // Actions
 import {
   deleteFilter,
-  deleteWithPredicate,
-  executePreviewQuery,
   resetFilters,
   setFilter,
   setIsSerious,
-  setBucketAndKeys,
   setTimeRange,
 } from 'src/shared/actions/predicates'
+
+import {
+  setBucketAndKeys,
+  deleteWithPredicate,
+  executePreviewQuery,
+} from 'src/shared/actions/predicatesThunks'
 
 interface OwnProps {
   handleDismiss: () => void

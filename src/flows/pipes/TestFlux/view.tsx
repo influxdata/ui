@@ -91,6 +91,10 @@ const TestFlux: FC<PipeProp> = ({Context}) => {
         emptyText="This cell will visualize results from uploaded CSVs"
         emptyIcon={IconFont.BarChart}
         toggleVisibilityEnabled={false}
+        height={data.panelHeight}
+        onUpdateHeight={panelHeight => update({panelHeight})}
+        visibility={data.panelVisibility}
+        onUpdateVisibility={panelVisibility => update({panelVisibility})}
       >
         <div className="flow-visualization">
           <div className="flow-visualization--view">

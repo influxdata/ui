@@ -1,5 +1,5 @@
 import fromFlux from 'src/shared/utils/fromFlux'
-import {newTable, FromFluxResult} from '@influxdata/giraffe'
+import {newTable, FluxDataType, FromFluxResult} from '@influxdata/giraffe'
 
 /*\
 
@@ -17,6 +17,7 @@ export default function fromFluxLegacy(csv: string): FromFluxResult {
       (table, [key, column]) => {
         return table.addColumn(
           key,
+          column.type as FluxDataType,
           column.type,
           column.data as string[],
           column.name

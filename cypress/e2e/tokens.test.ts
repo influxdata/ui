@@ -339,43 +339,44 @@ describe('tokens', () => {
         })
     })
 
-    it('can view a token', () => {
-      cy.getByTestID('token-card token test \u0950').click()
 
-      // title match
-      cy.getByTestID('overlay--container').should('be.visible')
-      cy.getByTestID('overlay--header').should('contain', 'token test \u0950')
-
-      // summary match
-      cy.getByTestID('permissions-section').should('have.length', 4)
-      cy.getByTestID('permissions-section')
-        .contains('views')
-        .should('be.visible')
-      cy.getByTestID('permissions-section')
-        .contains('documents')
-        .should('be.visible')
-      cy.getByTestID('permissions-section')
-        .contains('dashboards')
-        .should('be.visible')
-      cy.getByTestID('permissions-section')
-        .contains('buckets')
-        .should('be.visible')
-
-      // copy to clipboard + notification
-      cy.getByTestID('button-copy').click()
-      cy.getByTestID('notification-success').should($msg => {
-        expect($msg).to.contain('has been copied to clipboard')
-      })
-      // todo check system clipboard
-
-      // close button
-      cy.getByTestID('overlay--header').within(() => {
-        cy.get('button').click()
-      })
-      cy.getByTestID('overlay--container').should('not.be.visible')
-    })
   })
 
+it('can view a token', () => {
+    cy.getByTestID('token-name token test 03').click()
+
+    // title match
+    cy.getByTestID('overlay--container').should('be.visible')
+    cy.getByTestID('overlay--header').should('contain', 'token test 03')
+
+    // summary match
+    cy.getByTestID('permissions-section').should('have.length', 4)
+    cy.getByTestID('permissions-section')
+      .contains('views')
+      .should('be.visible')
+    cy.getByTestID('permissions-section')
+      .contains('documents')
+      .should('be.visible')
+    cy.getByTestID('permissions-section')
+      .contains('dashboards')
+      .should('be.visible')
+    cy.getByTestID('permissions-section')
+      .contains('buckets')
+      .should('be.visible')
+
+    // TODO:ZOE check system clipboard, copy to clipboard + notification
+    // cy.getByTestID('button-copy').click()
+    // cy.getByTestID('notification-success').should($msg => {
+    //   expect($msg).to.contain('has been copied to clipboard')
+    // })
+
+    // close button
+    cy.getByTestID('overlay--header').within(() => {
+      cy.get('button').click()
+    })
+    cy.getByTestID('overlay--container').should('not.be.visible')
+  })
+  
   it('can edit the description', () => {
     cy.getByTestID('token-card token test 02').within(() => {
       cy.getByTestID('resource-editable-name--button').click()

@@ -72,7 +72,7 @@ describe('Checks', () => {
     })
   })
 
-  describe.only('Check should be viewable once created', () => {
+  describe('Check should be viewable once created', () => {
     beforeEach(() => {
       // creates a check before each iteration
       // TODO: refactor into a request

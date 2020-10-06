@@ -22,7 +22,7 @@ describe('Flows', () => {
   })
 
   // TODO: unskip when no longer blocked by feature flag
-  it('CRUD a flow from the index page', () => {
+  it.skip('CRUD a flow from the index page', () => {
     cy.getByTestID('create-flow--button')
       .first()
       .click()

@@ -18,6 +18,7 @@ import {
 
 import ThresholdsSettings from './ThresholdsSettings'
 import {MIN_DECIMAL_PLACES, MAX_DECIMAL_PLACES} from 'src/dashboards/constants'
+import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 
 import {GaugeViewProperties, VisOptionProps} from 'src/types'
 
@@ -26,6 +27,21 @@ interface Props extends VisOptionProps {
 }
 
 const GaugeOptions: FC<Props> = ({properties, update}) => {
+  const setDigits = (digits: number | null) => {
+    update({
+      decimalPlaces: {
+        ...properties.decimalPlaces,
+        digits,
+      },
+    })
+  }
+  const handleChangeMode = (mode: AutoInputMode): void => {
+    if (mode === AutoInputMode.Auto) {
+      setDigits(null)
+    } else {
+      setDigits(2)
+    }
+  }
   return (
     <>
       <Grid.Column>
@@ -108,13 +124,14 @@ const GaugeOptions: FC<Props> = ({properties, update}) => {
                   ? AutoInputMode.Custom
                   : AutoInputMode.Auto
               }
-              onChangeMode={() => {}}
+              onChangeMode={handleChangeMode}
               inputComponent={
                 <Input
                   name="decimal-places"
                   placeholder="Enter a number"
-                  onFocus={() => {}}
-                  onChange={() => {}}
+                  onChange={evt => {
+                    setDigits(convertUserInputToNumOrNaN(evt))
+                  }}
                   value={properties.decimalPlaces.digits}
                   min={MIN_DECIMAL_PLACES}
                   max={MAX_DECIMAL_PLACES}

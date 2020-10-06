@@ -170,13 +170,11 @@ export const parseResponseWithFromFlux = (response: string): FluxTable[] => {
   const dataTypes = {
     '': '#datatype',
   }
-  let fluxData
   const groupSet = new Set(['result', ...fluxGroupKeyUnion])
   // build out the dataTypes here based on the columnKeys
-  for (let i = 0; i < columnKeys.length; i++) {
-    fluxData = table.getOriginalColumnType(columnKeys[i])
-    dataTypes[columnKeys[i]] = fluxData
-  }
+  columnKeys.forEach(col => {
+    dataTypes[col] = table.getOriginalColumnType(col)
+  })
   let columnType: any
   let columnValues
   // build out the columnHeaders

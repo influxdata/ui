@@ -174,9 +174,8 @@ export const parseResponseWithFromFlux = (response: string): FluxTable[] => {
   const groupSet = new Set(['result', ...fluxGroupKeyUnion])
   // build out the dataTypes here based on the columnKeys
   for (let i = 0; i < columnKeys.length; i++) {
-    const column = columnKeys[i]
-    fluxData = table.getOriginalColumnType(column)
-    dataTypes[column] = fluxData
+    fluxData = table.getOriginalColumnType(columnKeys[i])
+    dataTypes[columnKeys[i]] = fluxData
   }
   let columnType: any
   let columnValues
@@ -187,11 +186,12 @@ export const parseResponseWithFromFlux = (response: string): FluxTable[] => {
     return columnValues[valueIndex] !== undefined
   })
   let groupKey = {}
+  let currentValue: any
   // build out the current groupKey
   columnHeaders.forEach(column => {
     columnType = table.getColumnType(column)
     columnValues = table.getColumn(column, columnType)
-    let currentValue = columnValues[valueIndex]
+    currentValue = columnValues[valueIndex]
     if (
       (column === '_start' || column === '_stop') &&
       typeof currentValue === 'number'
@@ -252,7 +252,7 @@ export const parseResponseWithFromFlux = (response: string): FluxTable[] => {
       columnHeaders.forEach(col => {
         columnType = table.getColumnType(col)
         columnValues = table.getColumn(col, columnType)
-        let currentValue = columnValues[i]
+        currentValue = columnValues[i]
         if (
           (col === '_start' || col === '_stop') &&
           typeof currentValue === 'number'

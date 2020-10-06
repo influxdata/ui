@@ -5,7 +5,7 @@ import {
 } from '../../src/types'
 
 // skipping these tests until we have a local vault instance working
-describe.skip('Notification Endpoints', () => {
+describe('Notification Endpoints', () => {
   const endpoint: NotificationEndpoint = {
     orgID: '',
     name: 'Pre-Created Endpoint',

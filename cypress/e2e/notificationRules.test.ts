@@ -1,7 +1,7 @@
 import {SlackNotificationEndpoint, Organization} from '../../src/types'
 
 // skipping these tests until we have a local vault instance running
-describe.skip('NotificationRules', () => {
+describe('NotificationRules', () => {
   const name1 = 'Slack 1'
   const name2 = 'Slack 2'
   const name3 = 'Slack 3'

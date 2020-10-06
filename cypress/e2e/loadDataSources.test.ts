@@ -1,4 +1,4 @@
-describe.skip('Load Data Sources', () => {
+describe('Load Data Sources', () => {
   beforeEach(() => {
     cy.flush()
 

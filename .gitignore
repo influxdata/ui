@@ -13,6 +13,10 @@ build
 coverage
 node_modules
 vendor
+temp
+cypress/screenshots
+cypress/videos
+junit-results
 
 # files
 cypress.env.json

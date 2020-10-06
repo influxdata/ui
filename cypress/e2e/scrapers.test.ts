@@ -5,7 +5,7 @@ const PAGE_LOAD_SLA = 10000
 
 // NOTE
 // this isn't supported in cloud mode
-describe.skip('Scrapers', () => {
+describe('Scrapers', () => {
   beforeEach(() => {
     cy.flush()
 

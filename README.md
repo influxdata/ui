@@ -50,6 +50,12 @@ From the ui directory. Build the javascript with
  To run Cypress locally
 `$ yarn cy:dev`
 
+### Run against influxdb master
+ 1. `yarn build`
+ 1. `yarn script db:get` clone database with git and build it
+ 1. `yarn script db:run` starts database (don't close terminal)
+ 1. `yarn cy` with ui or `yarn test:e2e` only run tests
+
 ## Starting Dev Server
 
 Running `/ui` locally depends on `monitor-ci`. [See the monitor-ci Quickstart](https://github.com/influxdata/monitor-ci#quickstart-for-local-development)

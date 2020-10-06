@@ -20,6 +20,7 @@
     "mocks/**/*.ts",
     "mocks/**/*.tsx",
     "jestSetup.ts",
-    "global.d.ts"
+    "global.d.ts",
+    "scripts/**/*.ts"
   ]
 }

@@ -16,6 +16,7 @@
     "src": "./src"
   },
   "scripts": {
+    "script": "cd ./scripts && ts-node-script",
     "start": "yarn install && yarn generate && cross-env TS_NODE_PROJECT=\"webpack.tsconfig.json\" && yarn run build:vendor && yarn run start:dev",
     "start:cloud": "yarn install && yarn generate && cross-env TS_NODE_PROJECT=\"webpack.tsconfig.json\" && yarn run build:vendor && yarn run start:dev-cloud",
     "start:dev": "webpack-dev-server --config ./webpack.dev.ts --progress false",
@@ -30,7 +31,7 @@
     "test:watch": "jest --watch --verbose false",
     "test:update": "jest --updateSnapshot",
     "test:debug": "node --inspect-brk $(npm bin)/jest --runInBand --watch --verbose false",
-    "test:e2e": "CYPRESS_baseUrl=http://localhost:9999 cypress run --browser chrome --reporter junit --reporter-options 'mochaFile=junit-results/test-output-[hash].xml'",
+    "test:e2e": "CYPRESS_baseUrl=http://localhost:8086 cypress run --browser chrome --reporter junit --reporter-options 'mochaFile=junit-results/test-output-[hash].xml'",
     "test:e2e:ci": "CYPRESS_baseUrl=https://localhost:443 cypress run --parallel --browser chrome --reporter junit --reporter-options 'mochaFile=junit-results/test-output-[hash].xml'",
     "test:e2e:report": "junit-viewer --results=junit-results --save-file=cypress/site/junit-report.html",
     "test:e2e:clean": "rm junit-results/*.xml",
@@ -45,7 +46,7 @@
     "prettier:fix": "prettier --config .prettierrc.json --write '{src,cypress}/**/*.{ts,tsx}'",
     "tsc": "tsc -p ./tsconfig.json --noEmit --pretty --skipLibCheck",
     "tsc:cypress": "tsc -p ./cypress/tsconfig.json --noEmit --pretty --skipLibCheck",
-    "cy": "CYPRESS_baseUrl=http://localhost:9999 cypress open",
+    "cy": "CYPRESS_baseUrl=http://localhost:8086 cypress open",
     "cy:dev": "CYPRESS_baseUrl=http://kubernetes.docker.internal:8080 cypress open",
     "generate": "oats https://raw.githubusercontent.com/influxdata/influxdb/master/http/swagger.yml > ./src/client/generatedRoutes.ts"
   },

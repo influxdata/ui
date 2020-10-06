@@ -1,7 +1,7 @@
 const secondOrg = 'Second Org'
 
 // NOTE: this is dying for no reason in circleci
-describe.skip('Orgs', () => {
+describe('Orgs', () => {
   beforeEach(() => {
     cy.flush()
   })

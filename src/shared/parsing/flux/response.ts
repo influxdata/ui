@@ -2,7 +2,7 @@ import Papa from 'papaparse'
 import _ from 'lodash'
 import uuid from 'uuid'
 
-import {FluxTable, GroupKey} from 'src/types'
+import {FluxTable} from 'src/types'
 import {fromFlux} from '@influxdata/giraffe'
 
 export const parseResponseError = (response: string): FluxTable[] => {
@@ -150,88 +150,171 @@ export const parseTables = (responseChunk: string): FluxTable[] => {
   return tables
 }
 
-export const fromFluxTableTransformer = (response: string): FluxTable[] => {
+export const parseResponseWithFromFlux = (response: string): FluxTable[] => {
+  const {
+    fluxGroupKeyUnion,
+    table,
+    table: {columnKeys: keys},
+  } = fromFlux(response)
+
+  const columnKeys = [
+    'result',
+    'table',
+    ...keys.filter(k => k !== 'result' && k !== 'table'),
+  ]
+
+  const tables = table.getColumn('table')
+  const values = table.getColumn('result')
+  let valueIndex = 0
+  let tableIndex = 0
   const dataTypes = {
     '': '#datatype',
   }
-  const groupKey = {}
-  const dataStore = {}
-
-  const {
-    table,
-    table: {columnKeys},
-  } = fromFlux(response)
-
-  columnKeys.forEach(col => {
-    let type: any = table.getColumnType(col)
-    const values = table.getColumn(col, type)
-    let [val]: any = values
-    if (type === 'time') {
-      type = 'dateTime:RFC3339'
-      val = new Date(val).toISOString()
+  let fluxData
+  const groupSet = new Set(['result', ...fluxGroupKeyUnion])
+  // build out the dataTypes here based on the columnKeys
+  for (let i = 0; i < columnKeys.length; i++) {
+    const column = columnKeys[i]
+    fluxData = table.getOriginalColumnType(column)
+    dataTypes[column] = fluxData
+  }
+  let columnType: any
+  let columnValues
+  // build out the columnHeaders
+  let columnHeaders = columnKeys.filter(col => {
+    columnType = table.getColumnType(col)
+    columnValues = table.getColumn(col, columnType)
+    return columnValues[valueIndex] !== undefined
+  })
+  let groupKey = {}
+  // build out the current groupKey
+  columnHeaders.forEach(column => {
+    columnType = table.getColumnType(column)
+    columnValues = table.getColumn(column, columnType)
+    let currentValue = columnValues[valueIndex]
+    if (
+      (column === '_start' || column === '_stop') &&
+      typeof currentValue === 'number'
+    ) {
+      currentValue = new Date(currentValue).toISOString()
     }
-    if (col === 'table') {
-      type = 'long'
-    }
-    dataTypes[col] = type
-    if (!['result', '_time', '_value', 'table'].includes(col)) {
-      groupKey[col] = val
-    }
-    if (!['', 'result', 'table'].includes(col)) {
-      dataStore[col] = values
+    if (groupSet.has(column)) {
+      groupKey[column] = currentValue
     }
   })
 
-  const headerRow = columnKeys.filter(c => c !== 'result' && c !== 'table')
-  const data = [headerRow].concat(mapTableData(headerRow, dataStore))
+  columnHeaders.unshift('')
 
-  let [result] = table.getColumn('result')
-  result = `${result}`
-  const name = getNameByGroupKey(groupKey)
+  let data: string[][] = []
+  // set the columnHeaders as the beginning of the chunk
+  data.push(columnHeaders)
 
-  return [
-    {
-      id: uuid.v4(),
-      name,
-      data,
-      result,
-      groupKey,
-      dataTypes,
-    },
-  ]
-}
-
-const getNameByGroupKey = (groupKey: GroupKey): string =>
-  Object.entries(groupKey)
+  // get the current result
+  let result: string = `${values[valueIndex]}`
+  // build the name based on the groupKey
+  let name = Object.entries(groupKey)
     .filter(([k]) => !['_start', '_stop'].includes(k))
     .map(([k, v]) => `${k}=${v}`)
     .join(' ')
 
-const mapTableData = (headerRow: string[], data): string[][] => {
+  let tableResult = {
+    id: uuid.v4(),
+    name, // this is based on the groupKey
+    data, // based on all the columnHeaders
+    result, // based on the index
+    groupKey, // groupKey is based on the values for that chunk
+    dataTypes, // this will never change
+  }
+
+  // shared data for the transformations below
+  let rowData: any[] = []
+  let rowType: any
+  let columnData: any
+  let column: any
+
   const tableData = []
-  for (let i = 0; i < data._start.length; i++) {
-    const rowData = getRowData(headerRow, data, i)
-    tableData.push(rowData)
-  }
-  return tableData
-}
 
-const getRowData = (headerRow: string[], data: any, index: number): any[] =>
-  headerRow.reduce((acc, col) => {
-    let colData = data[col][index]
-    if (needsTimestampConversion(col, colData)) {
-      colData = new Date(colData).toISOString()
+  for (let i = 0; i < tables.length; i++) {
+    if (values[i] !== values[valueIndex] || tables[i] !== tables[tableIndex]) {
+      // push the chunk to the table
+      tableData.push(tableResult)
+      groupKey = {}
+
+      valueIndex = i
+      tableIndex = i
+      // reset the columnHeaders
+      columnHeaders = columnKeys.filter(col => {
+        columnType = table.getColumnType(col)
+        columnValues = table.getColumn(col, columnType)
+        return columnValues[i] !== undefined
+      })
+      // rebuild the groupKey based on the new headers
+      columnHeaders.forEach(col => {
+        columnType = table.getColumnType(col)
+        columnValues = table.getColumn(col, columnType)
+        let currentValue = columnValues[i]
+        if (
+          (col === '_start' || col === '_stop') &&
+          typeof currentValue === 'number'
+        ) {
+          currentValue = new Date(currentValue).toISOString()
+        }
+        if (groupSet.has(col)) {
+          groupKey[col] = currentValue
+        }
+      })
+
+      columnHeaders.unshift('')
+
+      data = []
+      // set the columnHeaders as the beginning of the chunk
+      data.push(columnHeaders)
+
+      // get the current result
+      result = `${values[i]}`
+      // build the name based on the groupKey
+      name = Object.entries(groupKey)
+        .filter(([k]) => !['_start', '_stop'].includes(k))
+        .map(([k, v]) => `${k}=${v}`)
+        .join(' ')
+
+      tableResult = {
+        id: uuid.v4(),
+        name, // this is based on the groupKey
+        data, // based on all the columnHeaders
+        result, // based on the index
+        groupKey, // groupKey is based on the values for that chunk
+        dataTypes, // this will never change
+      }
     }
-    acc.push(colData)
-    return acc
-  }, [])
-
-const needsTimestampConversion = (
-  col: string,
-  data: number | string
-): boolean => {
-  if (col !== '_start' && col !== '_stop') {
-    return false
+    // prepend an empty string onto the tables
+    rowData = ['']
+    for (let index = 0; index < columnHeaders.length; index++) {
+      column = columnHeaders[index]
+      if (column === '') {
+        continue
+      }
+      rowType = table.getColumnType(column)
+      columnData = table.getColumn(column, rowType)[i]
+      if (
+        (column === '_start' || column === '_stop' || column === '_time') &&
+        typeof columnData === 'number'
+      ) {
+        columnData = new Date(columnData).toISOString()
+      }
+      if (column === 'result') {
+        // setting the column data for result as an empty string since the default
+        // value given is set in the default headers:
+        // https://github.com/influxdata/flux/blob/master/docs/SPEC.md#response-format
+        columnData = ''
+      }
+      rowData.push(`${columnData}`)
+    }
+    // construct the chunk of data for this given row
+    data.push(rowData)
   }
-  return typeof data === 'number'
+
+  tableData.push(tableResult)
+
+  return tableData
 }

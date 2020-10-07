@@ -12,8 +12,6 @@ export default register => {
     component: View,
     button: 'Flux Script',
     initial: {
-      panelVisibility: 'visible',
-      panelHeight: 330,
       activeQuery: 0,
       queries: [
         {

@@ -16,7 +16,7 @@ import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 import {Filter} from 'src/types'
 
 // Actions
-import {setValuesByKey} from 'src/shared/actions/predicates'
+import {setValuesByKey} from 'src/shared/actions/predicatesThunks'
 
 interface OwnProps {
   bucket: string

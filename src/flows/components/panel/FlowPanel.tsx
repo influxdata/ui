@@ -24,6 +24,8 @@ import PanelVisibilityToggle from 'src/flows/components/panel/PanelVisibilityTog
 import MovePanelButton from 'src/flows/components/panel/MovePanelButton'
 import FlowPanelTitle from 'src/flows/components/panel/FlowPanelTitle'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
+import Results from 'src/flows/components/panel/Results'
+import {PIPE_DEFINITIONS} from 'src/flows'
 
 // Types
 import {PipeContextProps} from 'src/types/flows'
@@ -140,17 +142,27 @@ const FlowPanel: FC<Props> = ({id, children, controls}) => {
     updatePanelFocus(false)
   }
 
+  const showResults = ['inputs', 'transform'].includes(
+    PIPE_DEFINITIONS[flow.data.get(id).type].family
+  )
+
   if (
     flow.readOnly &&
     !/^(visualization|markdown)$/.test(flow.data.get(id).type)
   ) {
     return null
   }
+
   return (
     <ClickOutside onClickOutside={handleClickOutside}>
       <div className={panelClassName} onClick={handleClick} ref={panelRef}>
         <FlowPanelHeader id={id} controls={controls} />
         <div className="flow-panel--body">{children}</div>
+        {showResults && (
+          <div className="flow-panel--results">
+            <Results />
+          </div>
+        )}
         {!flow.readOnly && <InsertCellButton id={id} />}
       </div>
     </ClickOutside>

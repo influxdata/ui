@@ -5,6 +5,7 @@ import {ResultsContext} from 'src/flows/context/results'
 import {RemoteDataState} from 'src/types'
 
 export interface PipeContextType {
+  id: string
   data: PipeData
   update: (data: PipeData) => void
   loading: RemoteDataState
@@ -13,6 +14,7 @@ export interface PipeContextType {
 }
 
 export const DEFAULT_CONTEXT: PipeContextType = {
+  id: '',
   data: {},
   update: () => {},
   loading: RemoteDataState.NotStarted,
@@ -48,6 +50,7 @@ export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
   return (
     <PipeContext.Provider
       value={{
+        id: id,
         data: flow.data.get(id),
         update: updater,
         results: _result,

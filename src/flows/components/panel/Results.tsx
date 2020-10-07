@@ -6,16 +6,24 @@ import {AutoSizer} from 'react-virtualized'
 import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
 import {ROW_HEIGHT} from 'src/timeMachine/components/RawFluxDataGrid'
 import Resizer from 'src/flows/shared/Resizer'
-import ResultsPagination from 'src/flows/pipes/Query/ResultsPagination'
+import ResultsPagination from 'src/flows/components/panel/ResultsPagination'
 
+import {FlowContext} from 'src/flows/context/flow.current'
 import {PipeContext} from 'src/flows/context/pipe'
-import {RemoteDataState} from 'src/types'
+import {MINIMUM_RESIZER_HEIGHT} from 'src/flows/shared/Resizer'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
+import {RemoteDataState} from 'src/types'
+import {Visibility} from 'src/types/flows'
+
 const Results: FC = () => {
-  const {data, results, loading} = useContext(PipeContext)
+  const {flow} = useContext(FlowContext)
+  const {id, results} = useContext(PipeContext)
+  const [height, setHeight] = useState(MINIMUM_RESIZER_HEIGHT)
+  const [visibility, setVisibility] = useState('visible' as Visibility)
+  const meta = flow.meta.get(id)
   const resultsExist =
     !!results && !!results.raw && !!results.parsed.table.length
   const raw = (results || {}).raw || ''
@@ -55,9 +63,9 @@ const Results: FC = () => {
   }
 
   let emptyText
-  if (loading === RemoteDataState.NotStarted) {
+  if (meta.loading === RemoteDataState.NotStarted) {
     emptyText = 'Run the Flow to See Results'
-  } else if (loading === RemoteDataState.Loading) {
+  } else if (meta.loading === RemoteDataState.Loading) {
     emptyText = 'Loading'
   } else {
     emptyText = 'No Data Returned'
@@ -70,6 +78,10 @@ const Results: FC = () => {
       error={results.error}
       hiddenText="Results hidden"
       toggleVisibilityEnabled={true}
+      height={height}
+      onUpdateHeight={height => setHeight(height)}
+      visibility={visibility}
+      onUpdateVisibility={visibility => setVisibility(visibility)}
     >
       <div className="query-results">
         <ResultsPagination
@@ -77,7 +89,7 @@ const Results: FC = () => {
           onClickNext={next}
           disablePrev={prevDisabled}
           disableNext={nextDisabled}
-          visible={resultsExist && data.panelVisibility === 'visible'}
+          visible={resultsExist && visibility === 'visible'}
           pageSize={pageSize}
           startRow={startRow}
         />

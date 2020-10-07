@@ -7,6 +7,7 @@ import {Route, Switch} from 'react-router-dom'
 import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 import NoOrgsPage from 'src/organizations/containers/NoOrgsPage'
 import App from 'src/App'
+import NotFound from 'src/shared/components/NotFound'
 
 // Types
 import {RemoteDataState, AppState} from 'src/types'
@@ -32,6 +33,7 @@ const GetOrganizations: FunctionComponent<Props> = ({status}) => {
         <Route path="/no-orgs" component={NoOrgsPage} />
         <Route path="/orgs" component={App} />
         <Route exact path="/" component={RouteToOrg} />
+        <Route component={NotFound} />
       </Switch>
     </SpinnerContainer>
   )

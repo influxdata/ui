@@ -14,7 +14,6 @@ import {history} from 'src/store/history'
 
 // Components
 import Setup from 'src/Setup'
-import NotFound from 'src/shared/components/NotFound'
 import GetLinks from 'src/shared/containers/GetLinks'
 
 // Utilities
@@ -70,9 +69,9 @@ class Root extends PureComponent {
     return (
       <Provider store={getStore()}>
         <ConnectedRouter history={history}>
+          {/* <Switch></Switch> */}
           <Route component={GetLinks} />
           <Route component={Setup} />
-          <Route component={NotFound} />
         </ConnectedRouter>
       </Provider>
     )

@@ -77,6 +77,10 @@ class SubmitQueryButton extends PureComponent<Props> {
     }
   }
 
+  componentWillUnmount() {
+    cancelAllRunningQueries()
+  }
+
   public render() {
     const {text, queryStatus, icon, testID, className} = this.props
     if (queryStatus === RemoteDataState.Loading && this.state.timer) {

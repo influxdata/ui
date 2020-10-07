@@ -3,7 +3,11 @@ import {useMemo, FunctionComponent} from 'react'
 import {flatMap} from 'lodash'
 
 // Utils
-import {parseResponse} from 'src/shared/parsing/flux/response'
+import {
+  parseResponse,
+  parseResponseWithFromFlux,
+} from 'src/shared/parsing/flux/response'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {FluxTable} from 'src/types'
@@ -14,7 +18,11 @@ interface Props {
 }
 
 const FluxTablesTransform: FunctionComponent<Props> = ({files, children}) => {
-  const tables = useMemo(() => flatMap(files, parseResponse), [files])
+  let parserFunction = parseResponse
+  if (isFlagEnabled('fromFluxTableParser')) {
+    parserFunction = parseResponseWithFromFlux
+  }
+  const tables = useMemo(() => flatMap(files, parserFunction), [files])
   return children(tables)
 }
 

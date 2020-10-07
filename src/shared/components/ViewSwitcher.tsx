@@ -210,6 +210,7 @@ const ViewSwitcher: FunctionComponent<Props> = ({
           viewProperties={properties}
           timeZone={timeZone}
           theme={theme}
+          timeRange={timeRange}
         >
           {config => <Plot config={config} />}
         </ScatterPlot>

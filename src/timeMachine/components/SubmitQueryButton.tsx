@@ -19,6 +19,13 @@ import {notify} from 'src/shared/actions/notifications'
 import {getActiveTimeMachine, getActiveQuery} from 'src/timeMachine/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {queryCancelRequest} from 'src/shared/copy/notifications'
+import {
+  cancelQueryByHashID,
+  cancelAllRunningQueries,
+  generateHashedQueryID,
+} from 'src/timeMachine/actions/queries'
+import {getAllVariables} from 'src/variables/selectors'
+import {getOrg} from 'src/organizations/selectors'
 
 // Types
 import {AppState, RemoteDataState} from 'src/types'
@@ -50,6 +57,15 @@ class SubmitQueryButton extends PureComponent<Props> {
   public componentDidUpdate(prevProps) {
     if (
       this.props.queryStatus !== prevProps.queryStatus &&
+      this.props.queryStatus === RemoteDataState.Loading
+    ) {
+      this.timer = setTimeout(() => {
+        this.setState({timer: true})
+        delete this.timer
+      }, DELAYTIME)
+    }
+    if (
+      this.props.queryStatus !== prevProps.queryStatus &&
       prevProps.queryStatus === RemoteDataState.Loading
     ) {
       if (this.timer) {
@@ -63,13 +79,11 @@ class SubmitQueryButton extends PureComponent<Props> {
 
   public render() {
     const {text, queryStatus, icon, testID, className} = this.props
-
-    if (queryStatus === RemoteDataState.Loading && this.state.timer === true) {
+    if (queryStatus === RemoteDataState.Loading && this.state.timer) {
       return (
         <Button
           text="Cancel"
           className={className}
-          icon={icon}
           size={ComponentSize.Small}
           status={ComponentStatus.Default}
           onClick={this.handleCancelClick}
@@ -108,28 +122,20 @@ class SubmitQueryButton extends PureComponent<Props> {
     return ComponentStatus.Default
   }
 
-  private abortController: AbortController
-
   private handleClick = (): void => {
     event('SubmitQueryButton click')
-    // We need to instantiate a new AbortController per request
-    // In order to allow for requests after cancellations:
-    // https://stackoverflow.com/a/56548348/7963795
 
-    this.timer = setTimeout(() => {
-      this.setState({timer: true})
-    }, DELAYTIME)
-    this.abortController = new AbortController()
-    this.props.onSubmit(this.abortController)
+    this.props.onSubmit()
   }
 
   private handleCancelClick = (): void => {
     if (this.props.onNotify) {
       this.props.onNotify(queryCancelRequest())
     }
-    if (this.abortController) {
-      this.abortController.abort()
-      this.abortController = null
+    if (this.props.queryID) {
+      cancelQueryByHashID(this.props.queryID)
+    } else {
+      cancelAllRunningQueries()
     }
   }
 }
@@ -137,10 +143,16 @@ class SubmitQueryButton extends PureComponent<Props> {
 export {SubmitQueryButton}
 
 const mstp = (state: AppState) => {
-  const submitButtonDisabled = getActiveQuery(state).text === ''
   const queryStatus = getActiveTimeMachine(state).queryResults.status
 
-  return {submitButtonDisabled, queryStatus}
+  const activeQueryText = getActiveQuery(state).text
+  const submitButtonDisabled = activeQueryText === ''
+  const allVars = getAllVariables(state)
+  const orgID = getOrg(state).id
+
+  const queryID = generateHashedQueryID(activeQueryText, allVars, orgID)
+
+  return {queryID, submitButtonDisabled, queryStatus}
 }
 
 const mdtp = {

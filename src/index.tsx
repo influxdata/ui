@@ -69,7 +69,6 @@ class Root extends PureComponent {
     return (
       <Provider store={getStore()}>
         <ConnectedRouter history={history}>
-          {/* <Switch></Switch> */}
           <Route component={GetLinks} />
           <Route component={Setup} />
         </ConnectedRouter>

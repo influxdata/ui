@@ -17,7 +17,10 @@ export default register => {
     },
     generateFlux: (pipe, create, _append) => {
       const {aggregateFunction, bucket, field, measurement, tags} = pipe
-
+      if (!bucket) {
+        create('')
+        return
+      }
       let text = `from(bucket: "${bucket.name}")|>range(start: v.timeRangeStart, stop: v.timeRangeStop)`
       if (measurement) {
         text += `|> filter(fn: (r) => r["_measurement"] == "${measurement}")`

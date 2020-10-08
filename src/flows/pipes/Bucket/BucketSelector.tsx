@@ -30,7 +30,6 @@ const BucketSelector: FC = () => {
       event('Updating Bucket Selection in Flow Query Builder', {
         bucket: updatedBucket.name,
       })
-
       update({bucket: updatedBucket})
     },
     [update]

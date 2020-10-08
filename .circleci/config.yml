@@ -126,8 +126,6 @@ jobs:
     docker:
       - image: node:14.13.1-alpine
     working_directory: ~/influxdata/ui
-    requires:
-      - unit
     steps:
       - checkout
       - run: ls -a
@@ -166,6 +164,10 @@ workflows:
     jobs:
       - unit
       - lint
+      - unit
+      - collector:
+          requires:
+            - unit
   e2e:
     jobs:
       - cloud-e2e

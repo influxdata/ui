@@ -5,13 +5,14 @@ import {useParams} from 'react-router-dom'
 // Components
 import {ResultsProvider} from 'src/flows/context/results'
 import {RefProvider} from 'src/flows/context/refs'
-import CurrentFlowProvider, {FlowContext} from 'src/flows/context/flow.current'
+import CurrentFlowProvider from 'src/flows/context/flow.current'
+import {FlowListContext} from 'src/flows/context/flow.list'
 import {ScrollProvider} from 'src/flows/context/scroll'
 import FlowPage from 'src/flows/components/FlowPage'
 
 const FlowFromRoute = () => {
   const {id} = useParams()
-  const {change} = useContext(FlowContext)
+  const {change} = useContext(FlowListContext)
 
   useEffect(() => {
     change(id)

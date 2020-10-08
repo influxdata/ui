@@ -1,4 +1,4 @@
-import React, {FC} from 'react'
+import React, {FC, useCallback} from 'react'
 import createPersistedState from 'use-persisted-state'
 import {v4 as UUID} from 'uuid'
 import {
@@ -12,11 +12,14 @@ import {
 import {default as _asResource} from 'src/flows/context/resource.hook'
 
 const useFlowListState = createPersistedState('flows')
+const useFlowCurrentState = createPersistedState('current-flow')
 
 export interface FlowListContextType extends FlowList {
   add: (flow?: Flow) => string
   update: (id: string, flow: Flow) => void
   remove: (id: string) => void
+  currentID: string | null
+  change: (id: string) => void
 }
 
 export const EMPTY_NOTEBOOK: FlowState = {
@@ -37,6 +40,8 @@ export const DEFAULT_CONTEXT: FlowListContextType = {
   add: (_flow?: Flow) => {},
   update: (_id: string, _flow: Flow) => {},
   remove: (_id: string) => {},
+  change: (_id: string) => {},
+  currentID: null,
 } as FlowListContextType
 
 export const FlowListContext = React.createContext<FlowListContextType>(
@@ -45,6 +50,7 @@ export const FlowListContext = React.createContext<FlowListContextType>(
 
 export const FlowListProvider: FC = ({children}) => {
   const [flows, setFlows] = useFlowListState(DEFAULT_CONTEXT.flows)
+  const [currentID, setCurrentID] = useFlowCurrentState(null)
 
   const add = (flow?: Flow): string => {
     const id = UUID()
@@ -68,6 +74,8 @@ export const FlowListProvider: FC = ({children}) => {
       [id]: _flow,
     })
 
+    setCurrentID(id)
+
     return id
   }
 
@@ -87,12 +95,26 @@ export const FlowListProvider: FC = ({children}) => {
     })
   }
 
+  const change = useCallback(
+    (id: string) => {
+      if (!flows || !flows.hasOwnProperty(id)) {
+        throw new Error('Flow does note exist')
+      }
+
+      setCurrentID(id)
+    },
+    [currentID]
+  )
+
   const remove = (id: string) => {
     const _flows = {
       ...flows,
     }
 
     delete _flows[id]
+    if (currentID === id) {
+      setCurrentID(null)
+    }
 
     setFlows(_flows)
   }
@@ -132,6 +154,8 @@ export const FlowListProvider: FC = ({children}) => {
         add,
         update,
         remove,
+        currentID,
+        change,
       }}
     >
       {children}

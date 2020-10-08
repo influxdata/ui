@@ -118,6 +118,19 @@ jobs:
           name: 'Save Yarn Package Cache'
           paths:
             - ~/.cache/yarn
+      - persist_to_workspace:
+          root: /tmp/test_coverage
+          paths:
+            - coverage/*
+  collector:
+    docker:
+      - image: node:14.13.1-alpine
+    working_directory: ~/influxdata/ui
+    requires:
+      - unit
+    steps:
+      - checkout
+      - run: ls -a
   lint:
     docker:
       - image: circleci/golang:1.13-node-browsers

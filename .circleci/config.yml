@@ -119,9 +119,9 @@ jobs:
           paths:
             - ~/.cache/yarn
       - persist_to_workspace:
-          root: /tmp/test_coverage
+          root: coverage
           paths:
-            - coverage/*
+            - coverage
   collector:
     docker:
       - image: node:14.13.1-alpine

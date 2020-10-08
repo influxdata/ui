@@ -164,7 +164,6 @@ workflows:
     jobs:
       - unit
       - lint
-      - unit
       - collector:
           requires:
             - unit

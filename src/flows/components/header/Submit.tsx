@@ -93,6 +93,7 @@ export const Submit: FC = () => {
       queryStatus={isLoading}
       onSubmit={submit}
       onNotify={fakeNotify}
+      queryID=""
     />
   )
 }

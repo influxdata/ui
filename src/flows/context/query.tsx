@@ -13,7 +13,10 @@ import {fromFlux as parse} from '@influxdata/giraffe'
 import {event} from 'src/cloud/utils/reporting'
 import {FluxResult} from 'src/types/flows'
 import {PIPE_DEFINITIONS} from 'src/flows'
-import {generateHashedQueryID, setQueryByHashID} from 'src/timeMachine/actions/queries'
+import {
+  generateHashedQueryID,
+  setQueryByHashID,
+} from 'src/timeMachine/actions/queries'
 
 interface Stage {
   text: string
@@ -112,8 +115,8 @@ export const QueryProvider: FC<Props> = ({children, variables, org}) => {
     event('runQuery', {context: 'flows'})
     const result = runQuery(org.id, text, extern)
     setQueryByHashID(queryID, result)
-    return result
-      .promise.then(raw => {
+    return result.promise
+      .then(raw => {
         if (raw.type !== 'SUCCESS') {
           throw new Error(raw.message)
         }

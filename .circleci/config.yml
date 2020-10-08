@@ -125,7 +125,9 @@ jobs:
   collector:
     docker:
       - image: node:14.13.1-alpine
+    working_directory: ~/influxdata/ui
     steps:
+      - checkout
       - attach_workspace:
           at: coverage
       - run: ls -a

@@ -121,7 +121,7 @@ jobs:
       - persist_to_workspace:
           root: coverage
           paths:
-            - coverage/*
+            - ./*
   collector:
     docker:
       - image: node:14.13.1-alpine

@@ -45,6 +45,8 @@ const getHumanReadableName = (type: string): string => {
       return `Markdown ${GENERATOR_INDEX}`
     case 'query':
       return `Flux Script ${GENERATOR_INDEX}`
+    case 'bucket':
+      return `Output to Bucket ${GENERATOR_INDEX}`
     default:
       return `Cell ${GENERATOR_INDEX}`
   }

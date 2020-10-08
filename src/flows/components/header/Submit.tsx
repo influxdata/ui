@@ -25,9 +25,15 @@ export const Submit: FC = () => {
   const time = timeContext[id]
   const tr = !!time && time.range
 
+  const hasQueries = flow.data.all
+    .map(p => p.type)
+    .filter(p => p === 'query' || p === 'data' || p === 'queryBuilder').length
+
   useEffect(() => {
-    submit()
-  }, [tr]) // eslint-disable-line react-hooks/exhaustive-deps
+    if (!hasQueries) {
+      submit()
+    }
+  }, [tr, hasQueries]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const forceUpdate = (id, data) => {
     try {
@@ -79,10 +85,6 @@ export const Submit: FC = () => {
         throw e
       })
   }
-
-  const hasQueries = flow.data.all
-    .map(p => p.type)
-    .filter(p => p === 'query' || p === 'data' || p === 'queryBuilder').length
 
   return (
     <SubmitQueryButton

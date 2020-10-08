@@ -43,7 +43,7 @@ const SUPPORTED_FAMILIES = [
     family: 'test',
   },
   {
-    name: 'Output',
+    name: 'Outputs',
     family: 'output',
   },
   {

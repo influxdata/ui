@@ -8,7 +8,7 @@ import BucketProvider from 'src/flows/context/buckets'
 
 // Components
 import AggregateWindowSelector from 'src/flows/pipes/Data/AggregateWindowSelector'
-import BucketSelector from 'src/flows/pipes/Data/BucketSelector'
+import BucketSelector from 'src/flows/pipes/Bucket/BucketSelector'
 import FieldsList from 'src/flows/pipes/Data/FieldsList'
 import SearchBar from 'src/flows/pipes/Data/SearchBar'
 

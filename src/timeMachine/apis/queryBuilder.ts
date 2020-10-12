@@ -1,17 +1,14 @@
 // Libraries
-import {get} from 'lodash'
 import {fromFlux} from '@influxdata/giraffe'
 
 // APIs
 import {runQuery, RunQueryResult} from 'src/shared/apis/query'
-import {parseResponse} from 'src/shared/parsing/flux/response'
 
 // Utils
 import {getTimeRangeVars} from 'src/variables/utils/getTimeRangeVars'
 import {formatExpression} from 'src/variables/utils/formatExpression'
 import {tagToFlux} from 'src/timeMachine/utils/queryBuilder'
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {TimeRange, BuilderConfig} from 'src/types'
@@ -137,30 +134,8 @@ export function extractBoxedCol(
 }
 
 export function extractCol(csv: string, colName: string): string[] {
-  if (isFlagEnabled('fromFluxParseResponse')) {
-    const {table} = fromFlux(csv)
-    return table.getColumn(colName, 'string') || []
-  }
-  const tables = parseResponse(csv)
-  const data = get(tables, '0.data', [])
-
-  if (!data.length) {
-    return []
-  }
-
-  const colIndex = data[0].findIndex(d => d === colName)
-
-  if (colIndex === -1) {
-    throw new Error(`could not find column "${colName}" in response`)
-  }
-
-  const colValues: string[] = []
-
-  for (let i = 1; i < data.length; i++) {
-    colValues.push(data[i][colIndex])
-  }
-
-  return colValues
+  const {table} = fromFlux(csv)
+  return table.getColumn(colName, 'string') || []
 }
 
 export function formatTagFilterPredicate(

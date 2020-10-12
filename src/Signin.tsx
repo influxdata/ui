@@ -41,6 +41,7 @@ type Props = OwnProps & RouteComponentProps & ReduxProps
 
 const FETCH_WAIT = 60000
 
+const isE2ETest = !!window['Cypress']
 @ErrorHandling
 export class Signin extends PureComponent<Props, State> {
   public state: State = {loading: RemoteDataState.NotStarted, auth: false}
@@ -56,9 +57,11 @@ export class Signin extends PureComponent<Props, State> {
 
     if (this.hasMounted) {
       this.setState({loading: RemoteDataState.Done})
-      this.intervalID = setInterval(() => {
-        this.checkForLogin()
-      }, FETCH_WAIT)
+      if (!isE2ETest) {
+        this.intervalID = setInterval(() => {
+          this.checkForLogin()
+        }, FETCH_WAIT)
+      }
     }
   }
 

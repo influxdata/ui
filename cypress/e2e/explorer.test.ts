@@ -28,7 +28,7 @@ function getTimeMachineText() {
 }
 
 // NOTE: this crashes circle FOR NO REASON
-describe.skip('DataExplorer', () => {
+describe('DataExplorer', () => {
   beforeEach(() => {
     cy.flush()
 

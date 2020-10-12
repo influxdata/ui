@@ -22,7 +22,6 @@ import {AppState, LocalStorage} from 'src/types'
 import {getAllVariables, asAssignment} from 'src/variables/selectors'
 import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
 import {runQuery} from 'src/shared/apis/query'
-import {parseResponse as parse} from 'src/shared/parsing/flux/response'
 import {getOrg} from 'src/organizations/selectors'
 import {fetchAllBuckets} from 'src/buckets/actions/thunks'
 import {event} from 'src/cloud/utils/reporting'
@@ -43,7 +42,6 @@ import {
   TextEdit,
 } from 'monaco-languageclient/lib/services'
 import {Server} from '@influxdata/flux-lsp-browser'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 type BucketCallback = () => Promise<string[]>
 type MeasurementsCallback = (bucket: string) => Promise<string[]>
@@ -59,12 +57,8 @@ import {format_from_js_file} from '@influxdata/flux'
 
 // NOTE: parses table then select measurements from the _value column
 const parseQueryResponse = response => {
-  if (isFlagEnabled('fromFluxParseResponse')) {
-    const {table} = fromFlux(response.csv)
-    return table.getColumn('_value', 'string') || []
-  }
-  const data = (parse(response.csv) || [{data: [{}]}])[0].data
-  return data.slice(1).map(r => r[3])
+  const {table} = fromFlux(response.csv)
+  return table.getColumn('_value', 'string') || []
 }
 
 const queryMeasurements = async (orgID, bucket) => {

@@ -132,7 +132,7 @@ describe('Checks', () => {
       cy.focused().tab()
       cy.getByTestID('filter--input rules').should('have.focus')
     })
-    
+
     it('should allow created checks to be selected and routed to the edit page', () => {
       cy.getByTestID('check-card--name').should('have.length', 1)
       cy.getByTestID('check-card--name').click()
@@ -205,5 +205,4 @@ describe('Checks', () => {
       cy.getByTestID('inline-labels--empty').should('exist')
     })
   })
-
 })

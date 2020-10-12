@@ -15,7 +15,11 @@ interface Props {
   level: string
 }
 
-const ThresholdValueStatement: FC<Props> = ({threshold, changeValue, level}) => {
+const ThresholdValueStatement: FC<Props> = ({
+  threshold,
+  changeValue,
+  level,
+}) => {
   const onChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     changeValue(convertUserInputToNumOrNaN(e))
   }

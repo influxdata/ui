@@ -338,11 +338,9 @@ describe('tokens', () => {
             .should('be.visible')
         })
     })
-
-
   })
 
-it('can view a token', () => {
+  it('can view a token', () => {
     cy.getByTestID('token-name token test 03').click()
 
     // title match
@@ -376,7 +374,7 @@ it('can view a token', () => {
     })
     cy.getByTestID('overlay--container').should('not.be.visible')
   })
-  
+
   it('can edit the description', () => {
     cy.getByTestID('token-card token test 02').within(() => {
       cy.getByTestID('resource-editable-name--button').click()

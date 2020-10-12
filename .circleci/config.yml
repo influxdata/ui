@@ -7,7 +7,7 @@ jobs:
       docker_layer_caching: true
     parallelism: 10
     working_directory: ~/
-    resource_class: large
+    resource_class: 2xlarge+
     steps:
       - checkout:
           path: ./ui

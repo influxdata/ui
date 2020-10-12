@@ -69,10 +69,6 @@ export class Setup extends PureComponent<Props, State> {
   }
 
   async componentDidUpdate(prevProps: Props, prevState: State) {
-    if (window['Cypress']) {
-      return
-    }
-
     if (!prevState.allowed) {
       return
     }

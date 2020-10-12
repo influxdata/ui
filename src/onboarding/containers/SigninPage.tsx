@@ -44,11 +44,6 @@ class SigninPage extends PureComponent<Props, State> {
     }
   }
   public async componentDidMount() {
-    if (window['Cypress']) {
-      window.location.pathname = CLOUD_SIGNIN_PATHNAME
-      return
-    }
-
     const {allowed} = await client.setup.status()
 
     if (allowed) {

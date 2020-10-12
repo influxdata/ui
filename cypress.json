@@ -1,5 +1,5 @@
 {
-  "numTestsKeptInMemory": 25,
+  "numTestsKeptInMemory": 0,
   "integrationFolder": "cypress/e2e",
   "defaultCommandTimeout": 10000,
   "chromeWebSecurity": false,

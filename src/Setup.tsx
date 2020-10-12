@@ -48,6 +48,12 @@ export class Setup extends PureComponent<Props, State> {
   public async componentDidMount() {
     const {history} = this.props
 
+    if (window['Cypress']) {
+      this.setState({
+        loading: RemoteDataState.Done,
+      })
+    }
+
     if (isOnboardingURL()) {
       this.setState({
         loading: RemoteDataState.Done,
@@ -69,6 +75,10 @@ export class Setup extends PureComponent<Props, State> {
   }
 
   async componentDidUpdate(prevProps: Props, prevState: State) {
+    if (window['Cypress']) {
+      return
+    }
+
     if (!prevState.allowed) {
       return
     }

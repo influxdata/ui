@@ -622,14 +622,14 @@ describe('DataExplorer', () => {
       })
     })
 
-    describe.only('visualize with 360 lines', () => {
+    describe('visualize with 360 lines', () => {
       const numLines = 360
       beforeEach(() => {
         // POST 360 lines to the server
         cy.writeData(lines(numLines))
       })
 
-      it.only('can view time-series data', () => {
+      it('can view time-series data', () => {
         cy.log('can switch between editor modes')
         cy.getByTestID('selector-list _monitoring').should('be.visible')
         cy.getByTestID('selector-list _monitoring').click()
@@ -697,9 +697,15 @@ describe('DataExplorer', () => {
         cy.getByTestID('selector-list v').should('be.visible')
         cy.getByTestID('selector-list v').click()
 
-        cy.getByTestID('selector-list tv1').should('be.visible')
+        cy.getByTestID('selector-list tv1')
+          .scrollIntoView()
+          .should('be.visible')
         cy.getByTestID('selector-list tv1').click()
-        cy.getByTestID('selector-list last').click({force: true})
+
+        cy.getByTestID('selector-list last')
+          .scrollIntoView()
+          .should('be.visible')
+          .click({force: true})
 
         cy.getByTestID('time-machine-submit-button').click()
 

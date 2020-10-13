@@ -76,6 +76,62 @@ describe('DataExplorer', () => {
     })
   })
 
+  describe('editing mode switching', () => {
+    beforeEach(() => {
+      cy.writeData(lines())
+
+      cy.reload()
+
+      cy.getByTestID('selector-list _monitoring').click()
+      cy.getByTestID('selector-list defbuck').click()
+    })
+
+    it('can switch to and from script editor mode', () => {
+      cy.getByTestID('selector-list m').click()
+      cy.getByTestID('selector-list v').click()
+
+      cy.getByTestID('switch-to-script-editor').click()
+      cy.getByTestID('flux-editor').should('exist')
+
+      // revert back to query builder mode (without confirmation)
+      cy.getByTestID('switch-to-query-builder').click()
+      cy.getByTestID('query-builder').should('exist')
+
+      // can revert back to query builder mode (with confirmation)
+      cy.getByTestID('switch-to-script-editor')
+        .should('be.visible')
+        .click()
+      cy.getByTestID('flux--aggregate.rate--inject').click()
+      // check to see if import is defaulted to the top
+      cy.get('.view-line')
+        .first()
+        .contains('import')
+      // check to see if new aggregate rate is at the bottom
+      cy.get('.view-line')
+        .last()
+        .contains('aggregate.')
+      cy.getByTestID('flux-editor').should('exist')
+      cy.getByTestID('flux-editor').within(() => {
+        cy.get('textarea').type('yoyoyoyoyo', {force: true})
+      })
+
+      // can hover over flux functions
+      cy.getByTestID('flux-docs--aggregateWindow').should('not.exist')
+      cy.getByTestID('flux--aggregateWindow').trigger('mouseover')
+      cy.getByTestID('flux-docs--aggregateWindow').should('exist')
+
+      cy.getByTestID('switch-query-builder-confirm--button').click()
+
+      cy.getByTestID('switch-query-builder-confirm--popover--contents').within(
+        () => {
+          cy.getByTestID('switch-query-builder-confirm--confirm-button').click()
+        }
+      )
+
+      cy.getByTestID('query-builder').should('exist')
+    })
+  })
+
   describe('numeric input using custom bin sizes in Histograms', () => {
     beforeEach(() => {
       cy.getByTestID('view-type--dropdown').click()
@@ -205,7 +261,7 @@ describe('DataExplorer', () => {
     })
   })
 
-  describe('Optional suffix and prefix in gauge', () => {
+  describe('optional suffix and prefix in gauge', () => {
     beforeEach(() => {
       cy.getByTestID('view-type--dropdown').click()
       cy.getByTestID(`view-type--gauge`).click()
@@ -368,63 +424,6 @@ describe('DataExplorer', () => {
     })
   })
 
-  describe('editing mode switching', () => {
-    const measurement = 'my_meas'
-    const field = 'my_field'
-
-    beforeEach(() => {
-      cy.writeData([`${measurement} ${field}=0`, `${measurement} ${field}=1`])
-      cy.getByTestID('selector-list _monitoring').click()
-      cy.wait(500) // wait for server to turn back on
-      cy.getByTestID('selector-list defbuck').click()
-    })
-
-    it('can switch to and from script editor mode', () => {
-      cy.getByTestID('selector-list my_meas').click()
-      cy.getByTestID('selector-list my_field').click()
-
-      cy.getByTestID('switch-to-script-editor').click()
-      cy.getByTestID('flux-editor').should('exist')
-
-      // revert back to query builder mode (without confirmation)
-      cy.getByTestID('switch-to-query-builder').click()
-      cy.getByTestID('query-builder').should('exist')
-
-      // can revert back to query builder mode (with confirmation)
-      cy.getByTestID('switch-to-script-editor')
-        .should('be.visible')
-        .click()
-      cy.getByTestID('flux--aggregate.rate--inject').click()
-      // check to see if import is defaulted to the top
-      cy.get('.view-line')
-        .first()
-        .contains('import')
-      // check to see if new aggregate rate is at the bottom
-      cy.get('.view-line')
-        .last()
-        .contains('aggregate.')
-      cy.getByTestID('flux-editor').should('exist')
-      cy.getByTestID('flux-editor').within(() => {
-        cy.get('textarea').type('yoyoyoyoyo', {force: true})
-      })
-
-      // can hover over flux functions
-      cy.getByTestID('flux-docs--aggregateWindow').should('not.exist')
-      cy.getByTestID('flux--aggregateWindow').trigger('mouseover')
-      cy.getByTestID('flux-docs--aggregateWindow').should('exist')
-
-      cy.getByTestID('switch-query-builder-confirm--button').click()
-
-      cy.getByTestID('switch-query-builder-confirm--popover--contents').within(
-        () => {
-          cy.getByTestID('switch-query-builder-confirm--confirm-button').click()
-        }
-      )
-
-      cy.getByTestID('query-builder').should('exist')
-    })
-  })
-
   describe('raw script editing', () => {
     beforeEach(() => {
       cy.getByTestID('switch-to-script-editor')
@@ -432,7 +431,9 @@ describe('DataExplorer', () => {
         .click()
     })
 
-    it('shows flux signatures and errors', () => {
+    it('shows the proper errors and query button state', () => {
+      cy.getByTestID('time-machine-submit-button').should('be.disabled')
+
       cy.getByTestID('time-machine--bottom').then(() => {
         cy.getByTestID('flux-editor').within(() => {
           cy.get('textarea').type('foo |> bar', {force: true})
@@ -442,13 +443,13 @@ describe('DataExplorer', () => {
           cy.get('textarea').type('{selectall} {backspace}', {force: true})
 
           cy.get('textarea').type('from(', {force: true})
+
+          // error signature from lsp
           cy.get('.signature').should('be.visible')
         })
       })
-    })
 
-    it('enables the submit button when a query is typed', () => {
-      cy.getByTestID('time-machine-submit-button').should('be.disabled')
+      cy.getByTestID('time-machine-submit-button').should('not.be.disabled')
 
       cy.getByTestID('flux-editor').within(() => {
         cy.get('.react-monaco-editor-container')
@@ -456,28 +457,13 @@ describe('DataExplorer', () => {
           .click()
           .focused()
           .type('yo', {force: true, delay: TYPE_DELAY})
-        cy.getByTestID('time-machine-submit-button').should('not.be.disabled')
-      })
-    })
-
-    it('disables submit when a query is deleted', () => {
-      cy.getByTestID('time-machine--bottom').then(() => {
-        cy.get('.react-monaco-editor-container')
-          .should('be.visible')
-          .click()
-          .focused()
-          .type('from(bucket: "foo")', {force: true, delay: TYPE_DELAY})
-
-        cy.getByTestID('time-machine-submit-button').should('not.be.disabled')
-
-        cy.get('.react-monaco-editor-container')
-          .should('be.visible')
-          .click()
-          .focused()
-          .type('{selectall} {backspace}', {force: true, delay: TYPE_DELAY})
       })
 
-      cy.getByTestID('time-machine-submit-button').should('be.disabled')
+      cy.get('.react-monaco-editor-container')
+        .should('be.visible')
+        .click()
+        .focused()
+        .type('{selectall} {backspace}', {force: true, delay: TYPE_DELAY})
     })
 
     it('imports the appropriate packages to build a query', () => {
@@ -507,7 +493,15 @@ describe('DataExplorer', () => {
     })
 
     it('can use the function selector to build a query', () => {
-      cy.getByTestID('functions-toolbar-contents--functions').should('exist')
+      cy.getByTestID('input-field')
+        .clear()
+        .type('covariance')
+        .should('have.value', 'covariance')
+        .wait(1000)
+
+      cy.get('.flux-toolbar--list-item').should('have.length', 1)
+
+      cy.getByTestID('input-field').clear()
 
       cy.getByTestID('flux--from--inject').click()
 
@@ -532,14 +526,6 @@ describe('DataExplorer', () => {
 
         cy.fluxEqual(text, expected).should('be.true')
       })
-    })
-
-    it('can filter aggregation functions by name from script editor mode', () => {
-      cy.getByTestID('input-field')
-        .clear() //TODO (zoe) when cypress resolves bug remove clear  https://github.com/cypress-io/cypress/issues/5480
-        .type('covariance')
-        .should('have.value', 'covariance')
-      cy.get('.flux-toolbar--list-item').should('have.length', 1)
     })
 
     it('shows the empty state when the query returns no results', () => {
@@ -981,7 +967,7 @@ describe('DataExplorer', () => {
       cy.getByTestID('notification-success').should('have.length', 1)
     })
     // needs relevant data in order to test functionality
-    it.skip('should require key-value pairs when deleting predicate with filters', () => {
+    it('should require key-value pairs when deleting predicate with filters', () => {
       // confirm delete is disabled
       cy.getByTestID('add-filter-btn').click()
       // checks the consent input

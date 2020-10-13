@@ -50,6 +50,7 @@ describe('DataExplorer', () => {
       const fluxCode = 'from(bucket: "_monitoring")'
       cy.getByTestID('switch-to-script-editor').click()
       cy.get('.flux-editor').within(() => {
+        cy.get('.view-lines').should('be.visible')
         cy.get('.view-lines').type(fluxCode)
       })
       cy.contains('Submit').click()
@@ -62,6 +63,7 @@ describe('DataExplorer', () => {
       const fluxCode = 'from(bucket: "_monitoring")'
       cy.getByTestID('switch-to-script-editor').click()
       cy.get('.flux-editor').within(() => {
+        cy.get('.view-lines').should('be.visible')
         cy.get('.view-lines').type(fluxCode)
       })
       cy.contains('Submit').click()
@@ -72,62 +74,6 @@ describe('DataExplorer', () => {
         .contains('Buckets')
         .click()
       cy.getByTestID('bucket--card--name _tasks').click()
-      cy.getByTestID('query-builder').should('exist')
-    })
-  })
-
-  describe('editing mode switching', () => {
-    beforeEach(() => {
-      cy.writeData(lines())
-
-      cy.reload()
-
-      cy.getByTestID('selector-list _monitoring').click()
-      cy.getByTestID('selector-list defbuck').click()
-    })
-
-    it('can switch to and from script editor mode', () => {
-      cy.getByTestID('selector-list m').click()
-      cy.getByTestID('selector-list v').click()
-
-      cy.getByTestID('switch-to-script-editor').click()
-      cy.getByTestID('flux-editor').should('exist')
-
-      // revert back to query builder mode (without confirmation)
-      cy.getByTestID('switch-to-query-builder').click()
-      cy.getByTestID('query-builder').should('exist')
-
-      // can revert back to query builder mode (with confirmation)
-      cy.getByTestID('switch-to-script-editor')
-        .should('be.visible')
-        .click()
-      cy.getByTestID('flux--aggregate.rate--inject').click()
-      // check to see if import is defaulted to the top
-      cy.get('.view-line')
-        .first()
-        .contains('import')
-      // check to see if new aggregate rate is at the bottom
-      cy.get('.view-line')
-        .last()
-        .contains('aggregate.')
-      cy.getByTestID('flux-editor').should('exist')
-      cy.getByTestID('flux-editor').within(() => {
-        cy.get('textarea').type('yoyoyoyoyo', {force: true})
-      })
-
-      // can hover over flux functions
-      cy.getByTestID('flux-docs--aggregateWindow').should('not.exist')
-      cy.getByTestID('flux--aggregateWindow').trigger('mouseover')
-      cy.getByTestID('flux-docs--aggregateWindow').should('exist')
-
-      cy.getByTestID('switch-query-builder-confirm--button').click()
-
-      cy.getByTestID('switch-query-builder-confirm--popover--contents').within(
-        () => {
-          cy.getByTestID('switch-query-builder-confirm--confirm-button').click()
-        }
-      )
-
       cy.getByTestID('query-builder').should('exist')
     })
   })
@@ -493,15 +439,12 @@ describe('DataExplorer', () => {
     })
 
     it('can use the function selector to build a query', () => {
-      cy.getByTestID('input-field')
-        .clear()
-        .type('covariance')
-        .should('have.value', 'covariance')
-        .wait(1000)
+      cy.getByTestID('flux-toolbar-search--input').clear().type('covariance')
 
+      cy.get('.flux-toolbar--list-item').should('contain', 'covariance')
       cy.get('.flux-toolbar--list-item').should('have.length', 1)
 
-      cy.getByTestID('input-field').clear()
+      cy.getByTestID('flux-toolbar-search--input').clear()
 
       cy.getByTestID('flux--from--inject').click()
 
@@ -676,7 +619,57 @@ describe('DataExplorer', () => {
       })
 
       it('can view time-series data', () => {
+        cy.log('can switch between editor modes')
+        cy.getByTestID('selector-list _monitoring').click()
+        cy.getByTestID('selector-list defbuck').click()
+        cy.getByTestID('selector-list m').click()
+        cy.getByTestID('selector-list v').click()
+
+        cy.getByTestID('switch-to-script-editor').click()
+        cy.getByTestID('flux-editor').should('exist')
+
+        cy.log('revert back to query builder mode (without confirmation)')
+        cy.getByTestID('switch-to-query-builder').click()
+        cy.getByTestID('query-builder').should('exist')
+
+        cy.log('can revert back to query builder mode (with confirmation)')
+        cy.getByTestID('switch-to-script-editor')
+          .should('be.visible')
+          .click()
+        cy.getByTestID('flux--aggregate.rate--inject').click()
+
+        cy.log('check to see if import is defaulted to the top')
+        cy.get('.view-line')
+          .first()
+          .contains('import')
+
+        cy.log('check to see if new aggregate rate is at the bottom')
+        cy.get('.view-line')
+          .last()
+          .contains('aggregate.')
+        cy.getByTestID('flux-editor').should('exist')
+        cy.getByTestID('flux-editor').within(() => {
+          cy.get('textarea').type('yoyoyoyoyo', {force: true})
+        })
+
+        cy.log('can over over flux functions')
+        cy.getByTestID('flux-docs--aggregateWindow').should('not.exist')
+        cy.getByTestID('flux--aggregateWindow').trigger('mouseover')
+        cy.getByTestID('flux-docs--aggregateWindow').should('exist')
+
+        cy.getByTestID('switch-query-builder-confirm--button').click()
+
+        cy.getByTestID(
+          'switch-query-builder-confirm--popover--contents'
+        ).within(() => {
+          cy.getByTestID('switch-query-builder-confirm--confirm-button').click()
+        })
+
+        cy.getByTestID('query-builder').should('exist')
         // build the query to return data from beforeEach
+        cy.getByTestID('selector-list _monitoring').click()
+        cy.getByTestID('selector-list defbuck').click()
+
         cy.getByTestID(`selector-list m`).click()
         cy.getByTestID('selector-list v').click()
         cy.getByTestID(`selector-list tv1`).click()
@@ -744,42 +737,42 @@ describe('DataExplorer', () => {
         cy.getByTestID('time-machine-submit-button').click()
         cy.getByTestID('cog-cell--button').click()
 
-        // Check stop
+        // check stop
         cy.getByTestID('dropdown-x').click()
         cy.getByTitle('_stop').click()
         cy.getByTestID('dropdown-x').contains('_stop')
 
-        //check Value
+        // check Value
         cy.getByTestID('dropdown-x').click()
         cy.getByTitle('_value').click()
         cy.getByTestID('dropdown-x').contains('_value')
 
-        //check start
+        // check start
         cy.getByTestID('dropdown-x').click()
         cy.getByTitle('_start').click()
         cy.getByTestID('dropdown-x').contains('_start')
 
-        //check time
+        // check time
         cy.getByTestID('dropdown-x').click()
         cy.getByTitle('_time').click()
         cy.getByTestID('dropdown-x').contains('_time')
 
-        // Check stop
+        // check stop
         cy.getByTestID('dropdown-y').click()
         cy.getByTitle('_stop').click()
         cy.getByTestID('dropdown-y').contains('_stop')
 
-        //check Value
+        // check Value
         cy.getByTestID('dropdown-y').click()
         cy.getByTitle('_value').click()
         cy.getByTestID('dropdown-y').contains('_value')
 
-        //check start
+        // check start
         cy.getByTestID('dropdown-y').click()
         cy.getByTitle('_start').click()
         cy.getByTestID('dropdown-y').contains('_start')
 
-        //check time
+        // check time
         cy.getByTestID('dropdown-y').click()
         cy.getByTitle('_time').click()
         cy.getByTestID('dropdown-y').contains('_time')

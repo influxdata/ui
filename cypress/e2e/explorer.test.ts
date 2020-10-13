@@ -439,7 +439,9 @@ describe('DataExplorer', () => {
     })
 
     it('can use the function selector to build a query', () => {
-      cy.getByTestID('flux-toolbar-search--input').clear().type('covariance')
+      cy.getByTestID('flux-toolbar-search--input')
+        .clear()
+        .type('covariance')
 
       cy.get('.flux-toolbar--list-item').should('contain', 'covariance')
       cy.get('.flux-toolbar--list-item').should('have.length', 1)

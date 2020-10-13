@@ -245,15 +245,16 @@ describe('Variables', () => {
   })
 
   it('can create and delete a label and filter a variable by label name & sort by variable name', () => {
-    cy.getByTestID('resource-card variable').should('be.visible').within(() => {
-      cy.getByTestID('inline-labels--add').should('be.visible')
-      cy.getByTestID('inline-labels--add').click()
-    })
+    cy.getByTestID('resource-card variable')
+      .should('be.visible')
+      .within(() => {
+        cy.getByTestID('inline-labels--add').should('be.visible')
+        cy.getByTestID('inline-labels--add').click()
+      })
 
     const labelName = 'label'
     cy.getByTestID('inline-labels--popover--contents').type(labelName)
     cy.getByTestID('inline-labels--create-new').click()
-
 
     cy.getByTestID('create-label-form--submit').should('be.visible')
     cy.getByTestID('create-label-form--submit').click()

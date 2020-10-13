@@ -7,6 +7,8 @@ describe('Variables', () => {
       cy.createQueryVariable(body.org.id)
       cy.visit(`orgs/${body.org.id}/settings/variables`)
     })
+
+    cy.location('pathname').should('match', /\/variables$/)
   })
 
   it('can CRUD a CSV, upload, map, and query variable and search for variables based on names', () => {

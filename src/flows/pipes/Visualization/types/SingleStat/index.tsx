@@ -1,5 +1,6 @@
 import icon from './icon'
 import properties from './properties'
+import SingleStatOptions from './SingleStatOptions'
 
 export default register => {
   register({
@@ -7,5 +8,6 @@ export default register => {
     name: 'Single Stat',
     graphic: icon,
     initial: properties,
+    options: SingleStatOptions,
   })
 }

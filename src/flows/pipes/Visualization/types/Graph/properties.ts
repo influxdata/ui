@@ -13,6 +13,7 @@ export default {
   xColumn: null,
   yColumn: null,
   position: 'overlaid',
+  hoverDimension: 'auto',
 
   queries: [
     {

@@ -1,5 +1,6 @@
 import icon from './icon'
 import properties from './properties'
+import SingleStatWithLineOptions from './SingleStatWithLineOptions'
 
 export default register => {
   register({
@@ -7,5 +8,6 @@ export default register => {
     name: 'Graph + Single Stat',
     graphic: icon,
     initial: properties,
+    options: SingleStatWithLineOptions,
   })
 }

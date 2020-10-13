@@ -1,8 +1,15 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {
+  FC,
+  createElement,
+  useContext,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react'
 
 // Components
-import {IconFont} from '@influxdata/clockface'
+import {SquareButton, IconFont, ComponentColor} from '@influxdata/clockface'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 import DashboardList from './DashboardList'
 import ViewSwitcher from 'src/shared/components/ViewSwitcher'
@@ -106,6 +113,21 @@ export {_transform}
 const Visualization: FC<PipeProp> = ({Context}) => {
   const {timeZone} = useContext(AppSettingContext)
   const {data, update, loading, results} = useContext(PipeContext)
+  const [optionsVisibility, setOptionsVisibility] = useState(false)
+  const toggleOptions = useCallback(() => {
+    setOptionsVisibility(!optionsVisibility)
+  }, [optionsVisibility, setOptionsVisibility])
+  const updateProperties = useCallback(
+    properties => {
+      update({
+        properties: {
+          ...data.properties,
+          ...properties,
+        },
+      })
+    },
+    [data.properties, update]
+  )
 
   const updateType = (type: ViewType) => {
     event('Flow Visualization Type Changed', {
@@ -123,6 +145,15 @@ const Visualization: FC<PipeProp> = ({Context}) => {
         viewType={data.properties.type}
         onUpdateType={updateType as any}
       />
+      <SquareButton
+        icon={IconFont.CogThick}
+        onClick={toggleOptions}
+        color={
+          optionsVisibility ? ComponentColor.Primary : ComponentColor.Default
+        }
+        titleText="Configure Visualization"
+        className="flows-config-visualization-button"
+      />
       <ExportVisualizationButton disabled={!results.source}>
         {onHidePopover => (
           <DashboardList
@@ -135,8 +166,20 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     </>
   )
 
+  const options = useMemo(() => {
+    if (!optionsVisibility || !TYPE_DEFINITIONS[data.properties.type].options) {
+      return null
+    }
+    return createElement(TYPE_DEFINITIONS[data.properties.type].options, {
+      properties: data.properties,
+      results: results.parsed,
+      update: updateProperties,
+    })
+  }, [optionsVisibility, data.properties, results.parsed, updateProperties])
+
   return (
     <Context controls={controls}>
+      {options}
       <Resizer
         resizingEnabled={!!results.raw}
         emptyText="This cell will visualize results from the previous cell"

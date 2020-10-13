@@ -1,5 +1,6 @@
 import icon from './icon'
 import properties from './properties'
+import HeatmapOptions from './HeatmapOptions'
 
 export default register => {
   register({
@@ -7,5 +8,6 @@ export default register => {
     name: 'Heatmap',
     graphic: icon,
     initial: properties,
+    options: HeatmapOptions,
   })
 }

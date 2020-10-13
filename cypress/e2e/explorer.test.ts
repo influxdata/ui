@@ -638,7 +638,7 @@ describe('DataExplorer', () => {
         cy.getByTestID('selector-list defbuck').click()
 
         cy.getByTestID('selector-list m').should('be.visible')
-        cy.getByTestID('selector-list m').click()
+        cy.getByTestID('selector-list m').clickAttached()
 
         cy.getByTestID('selector-list v').should('be.visible')
         cy.getByTestID('selector-list v').click()
@@ -692,7 +692,7 @@ describe('DataExplorer', () => {
         cy.getByTestID('selector-list defbuck').click()
 
         cy.getByTestID('selector-list m').should('be.visible')
-        cy.getByTestID('selector-list m').click()
+        cy.getByTestID('selector-list m').clickAttached()
 
         cy.getByTestID('selector-list v').should('be.visible')
         cy.getByTestID('selector-list v').click()

@@ -33,6 +33,7 @@ import {
   createDashWithCell,
   createDashWithViewAndVar,
   createRule,
+  clickAttached,
 } from './support/commands'
 
 declare global {
@@ -40,6 +41,7 @@ declare global {
     interface Chainable {
       signin: typeof signin
       setupUser: typeof setupUser
+      clickAttached: typeof clickAttached
       createSource: typeof createSource
       createCSVVariable: typeof createCSVVariable
       createQueryVariable: typeof createQueryVariable

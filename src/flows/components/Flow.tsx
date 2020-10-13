@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, useContext, useEffect} from 'react'
 import {useParams} from 'react-router-dom'
+import {Switch, Route} from 'react-router-dom'
 
 // Components
 import {ResultsProvider} from 'src/flows/context/results'
@@ -9,6 +10,7 @@ import CurrentFlowProvider from 'src/flows/context/flow.current'
 import {FlowListContext} from 'src/flows/context/flow.list'
 import {ScrollProvider} from 'src/flows/context/scroll'
 import FlowPage from 'src/flows/components/FlowPage'
+import ExportTaskOverlay from 'src/flows/components/ExportTaskOverlay/ExportTaskOverlay'
 
 const FlowFromRoute = () => {
   const {id} = useParams()
@@ -32,6 +34,13 @@ const FlowContainer: FC = () => {
       <ResultsProvider>
         <RefProvider>
           <ScrollProvider>
+            <Switch>
+              {/* wrapping in a switch in anticipation of export to dashboard */}
+              <Route
+                path="/orgs/:orgID/flows/:id/export-task"
+                component={ExportTaskOverlay}
+              />
+            </Switch>
             <FlowPage />
           </ScrollProvider>
         </RefProvider>

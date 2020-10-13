@@ -439,9 +439,18 @@ describe('DataExplorer', () => {
     })
 
     it('can use the function selector to build a query', () => {
+      // wait for monaco to load so focus is not taken from flux-toolbar-search--input
+      cy.get('.view-line').should('be.visible')
+
       cy.getByTestID('flux-toolbar-search--input')
         .clear()
-        .type('covariance')
+        .type('covarianced') // purposefully misspell "covariance" so all functions are filtered out
+
+      cy.getByTestID('flux-toolbar--list').within(() => {
+        cy.getByTestID('empty-state').should('be.visible')
+      })
+
+      cy.getByTestID('flux-toolbar-search--input').type('{backspace}')
 
       cy.get('.flux-toolbar--list-item').should('contain', 'covariance')
       cy.get('.flux-toolbar--list-item').should('have.length', 1)
@@ -541,8 +550,8 @@ describe('DataExplorer', () => {
         cy.createBucket(id, name, 'newBucket')
       })
 
-      cy.getByTestID('selector-list defbuck').should('exist')
-      cy.getByTestID('selector-list newBucket').should('exist')
+      cy.getByTestID('selector-list defbuck').should('be.visible')
+      cy.getByTestID('selector-list newBucket').should('be.visible')
     })
 
     it('can delete a second query', () => {
@@ -613,26 +622,33 @@ describe('DataExplorer', () => {
       })
     })
 
-    describe('visualize with 360 lines', () => {
+    describe.only('visualize with 360 lines', () => {
       const numLines = 360
       beforeEach(() => {
         // POST 360 lines to the server
         cy.writeData(lines(numLines))
       })
 
-      it('can view time-series data', () => {
+      it.only('can view time-series data', () => {
         cy.log('can switch between editor modes')
+        cy.getByTestID('selector-list _monitoring').should('be.visible')
         cy.getByTestID('selector-list _monitoring').click()
+
+        cy.getByTestID('selector-list defbuck').should('be.visible')
         cy.getByTestID('selector-list defbuck').click()
+
+        cy.getByTestID('selector-list m').should('be.visible')
         cy.getByTestID('selector-list m').click()
+
+        cy.getByTestID('selector-list v').should('be.visible')
         cy.getByTestID('selector-list v').click()
 
         cy.getByTestID('switch-to-script-editor').click()
-        cy.getByTestID('flux-editor').should('exist')
+        cy.getByTestID('flux-editor').should('be.visible')
 
         cy.log('revert back to query builder mode (without confirmation)')
         cy.getByTestID('switch-to-query-builder').click()
-        cy.getByTestID('query-builder').should('exist')
+        cy.getByTestID('query-builder').should('be.visible')
 
         cy.log('can revert back to query builder mode (with confirmation)')
         cy.getByTestID('switch-to-script-editor')
@@ -669,12 +685,20 @@ describe('DataExplorer', () => {
 
         cy.getByTestID('query-builder').should('exist')
         // build the query to return data from beforeEach
+        cy.getByTestID('selector-list _monitoring').should('be.visible')
         cy.getByTestID('selector-list _monitoring').click()
+
+        cy.getByTestID('selector-list defbuck').should('be.visible')
         cy.getByTestID('selector-list defbuck').click()
 
-        cy.getByTestID(`selector-list m`).click()
+        cy.getByTestID('selector-list m').should('be.visible')
+        cy.getByTestID('selector-list m').click()
+
+        cy.getByTestID('selector-list v').should('be.visible')
         cy.getByTestID('selector-list v').click()
-        cy.getByTestID(`selector-list tv1`).click()
+
+        cy.getByTestID('selector-list tv1').should('be.visible')
+        cy.getByTestID('selector-list tv1').click()
         cy.getByTestID('selector-list last').click({force: true})
 
         cy.getByTestID('time-machine-submit-button').click()

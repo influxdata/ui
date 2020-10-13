@@ -245,7 +245,9 @@ describe('Variables', () => {
   })
 
   it('can create and delete a label and filter a variable by label name & sort by variable name', () => {
-    cy.getByTestID('inline-labels--add').click()
+    cy.getByTestID('inline-labels--add')
+      .should('be.visible')
+      .click()
 
     const labelName = 'label'
     cy.getByTestID('inline-labels--popover--contents').type(labelName)

@@ -1,20 +1,15 @@
-import React, {FC, useContext, useEffect, useCallback, useMemo} from 'react'
-import createPersistedState from 'use-persisted-state'
+import React, {FC, useContext, useCallback, useMemo} from 'react'
 import {Flow, PipeData} from 'src/types/flows'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import {v4 as UUID} from 'uuid'
 import {RemoteDataState} from 'src/types'
 
-const useFlowCurrentState = createPersistedState('current-flow')
-
 export interface FlowContextType {
   id: string | null
   name: string
   flow: Flow | null
-  change: (id: string) => void
   add: (data: Partial<PipeData>, index?: number) => string
   update: (flow: Partial<Flow>) => void
-  remove: () => void
 }
 
 export const DEFAULT_CONTEXT: FlowContextType = {
@@ -22,9 +17,7 @@ export const DEFAULT_CONTEXT: FlowContextType = {
   name: 'Name this Flow',
   flow: null,
   add: () => '',
-  change: () => {},
   update: () => {},
-  remove: () => {},
 }
 
 export const FlowContext = React.createContext<FlowContextType>(DEFAULT_CONTEXT)
@@ -45,25 +38,15 @@ const getHumanReadableName = (type: string): string => {
       return `Markdown ${GENERATOR_INDEX}`
     case 'query':
       return `Flux Script ${GENERATOR_INDEX}`
+    case 'bucket':
+      return `Output to Bucket ${GENERATOR_INDEX}`
     default:
       return `Cell ${GENERATOR_INDEX}`
   }
 }
 
 export const FlowProvider: FC = ({children}) => {
-  const [currentID, setCurrentID] = useFlowCurrentState(null)
-  const {flows, add, update, remove} = useContext(FlowListContext)
-
-  const change = useCallback(
-    (id: string) => {
-      if (!flows || !flows.hasOwnProperty(id)) {
-        throw new Error('Flow does note exist')
-      }
-
-      setCurrentID(id)
-    },
-    [currentID]
-  )
+  const {flows, update, currentID} = useContext(FlowListContext)
 
   const updateCurrent = useCallback(
     (flow: Flow) => {
@@ -74,10 +57,6 @@ export const FlowProvider: FC = ({children}) => {
     },
     [currentID]
   )
-
-  const removeCurrent = useCallback(() => {
-    remove(currentID)
-  }, [currentID])
 
   const addPipe = (initial: PipeData, index?: number) => {
     const id = UUID()
@@ -96,14 +75,6 @@ export const FlowProvider: FC = ({children}) => {
     return id
   }
 
-  useEffect(() => {
-    if (!currentID) {
-      const id = add()
-      setCurrentID(id)
-      return
-    }
-  }, [currentID])
-
   return useMemo(() => {
     if (!flows || !flows.hasOwnProperty(currentID)) {
       return null
@@ -117,8 +88,6 @@ export const FlowProvider: FC = ({children}) => {
           flow: flows[currentID],
           add: addPipe,
           update: updateCurrent,
-          remove: removeCurrent,
-          change,
         }}
       >
         {children}

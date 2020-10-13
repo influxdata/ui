@@ -67,7 +67,7 @@ export const MEASUREMENTS_RESPONSE = `#datatype,string,long,dateTime:RFC3339,dat
 
 `
 
-/* 
+/*
 From the following request:
 
     from(db: "telegraf")
@@ -119,6 +119,44 @@ export const MULTI_SCHEMA_RESPONSE = `#datatype,string,long,dateTime:RFC3339,dat
 
 
 `
+export const MULTI_YIELD_CSV = `#group,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false
+#datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,double,dateTime:RFC3339
+#default,mean,,,,,,,,,,,,,,,,,,,,,,,
+,result,table,_start,_stop,_field,_measurement,com.docker.compose.config-hash,com.docker.compose.container-number,com.docker.compose.oneoff,com.docker.compose.project,com.docker.compose.project.config_files,com.docker.compose.project.working_dir,com.docker.compose.service,com.docker.compose.version,container_image,container_name,container_status,container_version,cpu,engine_host,host,server_version,_value,_time
+,,0,2020-10-06T20:55:09.9842563Z,2020-10-06T21:00:09.9842563Z,usage_percent,docker_container_cpu,f8671f6468549a5e81739babf890629f328ca986e1ed1bd5fe7f2529250e812f,1,False,influx,"compose/fig.cloud.yml,compose/fig.chronograf.oss.yml,compose/fig.chronograf.cloud.yml,compose/fig.local.yml",/Users/asalem/go/src/github.com/monitor-ci/compose,influxdb,1.25.4,quay.io/influxdb/idpe-acceptance,influx_influxdb_1,running,latest,cpu-total,docker-desktop,82c47d81f234,19.03.8,2.169788866995074,2020-10-06T20:55:17.321Z
+
+#group,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false
+#datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,double,dateTime:RFC3339
+#default,foo,,,,,,,,,,,,,,,,,,,,,,,
+,result,table,_start,_stop,_field,_measurement,com.docker.compose.config-hash,com.docker.compose.container-number,com.docker.compose.oneoff,com.docker.compose.project,com.docker.compose.project.config_files,com.docker.compose.project.working_dir,com.docker.compose.service,com.docker.compose.version,container_image,container_name,container_status,container_version,cpu,engine_host,host,server_version,_value,_time
+,,0,2020-10-06T20:55:09.9842563Z,2020-10-06T21:00:09.9842563Z,usage_percent,docker_container_cpu,f8671f6468549a5e81739babf890629f328ca986e1ed1bd5fe7f2529250e812f,1,False,influx,"compose/fig.cloud.yml,compose/fig.chronograf.oss.yml,compose/fig.chronograf.cloud.yml,compose/fig.local.yml",/Users/asalem/go/src/github.com/monitor-ci/compose,influxdb,1.25.4,quay.io/influxdb/idpe-acceptance,influx_influxdb_1,running,latest,cpu-total,docker-desktop,82c47d81f234,19.03.8,2.169788866995074,2020-10-06T20:55:17.321Z
+,,0,2020-10-06T20:55:09.9842563Z,2020-10-06T21:00:09.9842563Z,usage_percent,docker_container_cpu,f8671f6468549a5e81739babf890629f328ca986e1ed1bd5fe7f2529250e812f,1,False,influx,"compose/fig.cloud.yml,compose/fig.chronograf.oss.yml,compose/fig.chronograf.cloud.yml,compose/fig.local.yml",/Users/asalem/go/src/github.com/monitor-ci/compose,influxdb,1.25.4,quay.io/influxdb/idpe-acceptance,influx_influxdb_1,running,latest,cpu-total,docker-desktop,82c47d81f234,19.03.8,2.0242590121457487,2020-10-06T20:55:27.317Z
+
+#group,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false
+#datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,double,dateTime:RFC3339
+#default,baz,,,,,,,,,,,,,,,,,,,,,,,
+,result,table,_start,_stop,_field,_measurement,com.docker.compose.config-hash,com.docker.compose.container-number,com.docker.compose.oneoff,com.docker.compose.project,com.docker.compose.project.config_files,com.docker.compose.project.working_dir,com.docker.compose.service,com.docker.compose.version,container_image,container_name,container_status,container_version,cpu,engine_host,host,server_version,_value,_time
+,,0,2020-10-06T20:55:09.9842563Z,2020-10-06T21:00:09.9842563Z,usage_percent,docker_container_cpu,f8671f6468549a5e81739babf890629f328ca986e1ed1bd5fe7f2529250e812f,1,False,influx,"compose/fig.cloud.yml,compose/fig.chronograf.oss.yml,compose/fig.chronograf.cloud.yml,compose/fig.local.yml",/Users/asalem/go/src/github.com/monitor-ci/compose,influxdb,1.25.4,quay.io/influxdb/idpe-acceptance,influx_influxdb_1,running,latest,cpu-total,docker-desktop,82c47d81f234,19.03.8,2.169788866995074,2020-10-06T20:55:17.321Z`
+
+export const MULTI_YIELD_AND_TABLE_CSV = `#group,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false
+#datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,double,dateTime:RFC3339
+#default,mean,,,,,,,,,,,,,,,,,,,,,,,
+,result,table,_start,_stop,_field,_measurement,com.docker.compose.config-hash,com.docker.compose.container-number,com.docker.compose.oneoff,com.docker.compose.project,com.docker.compose.project.config_files,com.docker.compose.project.working_dir,com.docker.compose.service,com.docker.compose.version,container_image,container_name,container_status,container_version,cpu,engine_host,host,server_version,_value,_time
+,,0,2020-10-06T20:55:09.9842563Z,2020-10-06T21:00:09.9842563Z,usage_percent,docker_container_cpu,f8671f6468549a5e81739babf890629f328ca986e1ed1bd5fe7f2529250e812f,1,False,influx,"compose/fig.cloud.yml,compose/fig.chronograf.oss.yml,compose/fig.chronograf.cloud.yml,compose/fig.local.yml",/Users/asalem/go/src/github.com/monitor-ci/compose,influxdb,1.25.4,quay.io/influxdb/idpe-acceptance,influx_influxdb_1,running,latest,cpu-total,docker-desktop,82c47d81f234,19.03.8,2.169788866995074,2020-10-06T20:55:17.321Z
+
+#group,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false
+#datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,double,dateTime:RFC3339
+#default,foo,,,,,,,,,,,,,,,,,,,,,,,
+,result,table,_start,_stop,_field,_measurement,com.docker.compose.config-hash,com.docker.compose.container-number,com.docker.compose.oneoff,com.docker.compose.project,com.docker.compose.project.config_files,com.docker.compose.project.working_dir,com.docker.compose.service,com.docker.compose.version,container_image,container_name,container_status,container_version,cpu,engine_host,host,server_version,_value,_time
+,,0,2020-10-06T20:55:09.9842563Z,2020-10-06T21:00:09.9842563Z,usage_percent,docker_container_cpu,f8671f6468549a5e81739babf890629f328ca986e1ed1bd5fe7f2529250e812f,1,False,influx,"compose/fig.cloud.yml,compose/fig.chronograf.oss.yml,compose/fig.chronograf.cloud.yml,compose/fig.local.yml",/Users/asalem/go/src/github.com/monitor-ci/compose,influxdb,1.25.4,quay.io/influxdb/idpe-acceptance,influx_influxdb_1,running,latest,cpu-total,docker-desktop,82c47d81f234,19.03.8,2.169788866995074,2020-10-06T20:55:17.321Z
+,,1,2020-10-06T20:55:09.9842563Z,2020-10-06T21:00:09.9842563Z,usage_percent,docker_container_cpu,f8671f6468549a5e81739babf890629f328ca986e1ed1bd5fe7f2529250e812f,1,False,influx,"compose/fig.cloud.yml,compose/fig.chronograf.oss.yml,compose/fig.chronograf.cloud.yml,compose/fig.local.yml",/Users/asalem/go/src/github.com/monitor-ci/compose,influxdb,1.25.4,quay.io/influxdb/idpe-acceptance,influx_influxdb_1,running,latest,cpu-total,docker-desktop,82c47d81f234,19.03.8,2.0242590121457487,2020-10-06T20:55:27.317Z
+
+#group,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false
+#datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,string,double,dateTime:RFC3339
+#default,baz,,,,,,,,,,,,,,,,,,,,,,,
+,result,table,_start,_stop,_field,_measurement,com.docker.compose.config-hash,com.docker.compose.container-number,com.docker.compose.oneoff,com.docker.compose.project,com.docker.compose.project.config_files,com.docker.compose.project.working_dir,com.docker.compose.service,com.docker.compose.version,container_image,container_name,container_status,container_version,cpu,engine_host,host,server_version,_value,_time
+,,0,2020-10-06T20:55:09.9842563Z,2020-10-06T21:00:09.9842563Z,usage_percent,docker_container_cpu,f8671f6468549a5e81739babf890629f328ca986e1ed1bd5fe7f2529250e812f,1,False,influx,"compose/fig.cloud.yml,compose/fig.chronograf.oss.yml,compose/fig.chronograf.cloud.yml,compose/fig.local.yml",/Users/asalem/go/src/github.com/monitor-ci/compose,influxdb,1.25.4,quay.io/influxdb/idpe-acceptance,influx_influxdb_1,running,latest,cpu-total,docker-desktop,82c47d81f234,19.03.8,2.169788866995074,2020-10-06T20:55:17.321Z`
+
 export const MULTI_VALUE_ROW = `
 #datatype,string,long,dateTime:RFC3339,double,double,string
 #group,false,false,false,false,false,true

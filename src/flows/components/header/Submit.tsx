@@ -14,13 +14,10 @@ import {event} from 'src/cloud/utils/reporting'
 // Types
 import {RemoteDataState} from 'src/types'
 
-const PREVIOUS_REGEXP = /__PREVIOUS_RESULT__/g
-const COMMENT_REMOVER = /(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm
-
 const fakeNotify = notify
 
 export const Submit: FC = () => {
-  const {query} = useContext(QueryContext)
+  const {query, generateMap} = useContext(QueryContext)
   const {id, flow} = useContext(FlowContext)
   const {add, update} = useContext(ResultsContext)
   const {timeContext} = useContext(TimeContext)
@@ -28,9 +25,15 @@ export const Submit: FC = () => {
   const time = timeContext[id]
   const tr = !!time && time.range
 
+  const hasQueries = flow.data.all
+    .map(p => p.type)
+    .filter(p => p === 'query' || p === 'data' || p === 'queryBuilder').length
+
   useEffect(() => {
-    submit()
-  }, [tr]) // eslint-disable-line react-hooks/exhaustive-deps
+    if (!hasQueries) {
+      submit()
+    }
+  }, [tr, hasQueries]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const forceUpdate = (id, data) => {
     try {
@@ -42,136 +45,35 @@ export const Submit: FC = () => {
 
   const submit = () => {
     event('Flow Submit Button Clicked')
-    let queryIncludesPreviousResult = false
     setLoading(RemoteDataState.Loading)
+
+    flow.data.allIDs.forEach(pipeID => {
+      flow.meta.update(pipeID, {loading: RemoteDataState.Loading})
+    })
+
+    const map = generateMap()
+
     Promise.all(
-      flow.data.allIDs
-        .reduce((stages, pipeID, index) => {
-          flow.meta.update(pipeID, {loading: RemoteDataState.Loading})
-          const pipe = flow.data.get(pipeID)
-
-          if (pipe.type === 'query') {
-            let text = pipe.queries[pipe.activeQuery].text.replace(
-              COMMENT_REMOVER,
-              ''
-            )
-            let requirements = {}
-
-            if (!text.replace(/\s/g, '').length) {
-              if (stages.length) {
-                stages[stages.length - 1].instances.push(pipeID)
-              }
-              return stages
-            }
-
-            if (PREVIOUS_REGEXP.test(text)) {
-              requirements = {
-                ...(index === 0 ? {} : stages[stages.length - 1].requirements),
-                [`prev_${index}`]: stages[stages.length - 1].text,
-              }
-              text = text.replace(PREVIOUS_REGEXP, `prev_${index}`)
-              queryIncludesPreviousResult = true
-            }
-
-            stages.push({
-              text,
-              instances: [pipeID],
-              requirements,
+      map.map(stage => {
+        return query(stage.text)
+          .then(response => {
+            stage.instances.forEach(pipeID => {
+              forceUpdate(pipeID, response)
+              flow.meta.update(pipeID, {loading: RemoteDataState.Done})
             })
-          } else if (pipe.type === 'data') {
-            const {bucketName} = pipe
-
-            const text = `from(bucket: "${bucketName}")|>range(start: v.timeRangeStart, stop: v.timeRangeStop)`
-
-            stages.push({
-              text,
-              instances: [pipeID],
-              requirements: {},
-            })
-          } else if (pipe.type === 'queryBuilder') {
-            const {aggregateFunction, bucket, field, measurement, tags} = pipe
-
-            if (!bucket) {
-              return stages
-            }
-
-            let text = `from(bucket: "${bucket.name}")|>range(start: v.timeRangeStart, stop: v.timeRangeStop)`
-            if (measurement) {
-              text += `|> filter(fn: (r) => r["_measurement"] == "${measurement}")`
-            }
-            if (field) {
-              text += `|> filter(fn: (r) => r["_field"] == "${field}")`
-            }
-            if (tags && Object.keys(tags)?.length > 0) {
-              Object.keys(tags)
-                .filter((tagName: string) => !!tags[tagName])
-                .forEach((tagName: string) => {
-                  const tagValues = tags[tagName]
-                  if (tagValues.length === 1) {
-                    text += `|> filter(fn: (r) => r["${tagName}"] == "${tagValues[0]}")`
-                  } else {
-                    tagValues.forEach((val, i) => {
-                      if (i === 0) {
-                        text += `|> filter(fn: (r) => r["${tagName}"] == "${val}"`
-                      }
-                      if (tagValues.length - 1 === i) {
-                        text += ` or r["${tagName}"] == "${val}")`
-                      } else {
-                        text += ` or r["${tagName}"] == "${val}"`
-                      }
-                    })
-                  }
-                })
-            }
-
-            if (aggregateFunction?.name) {
-              text += `  |> aggregateWindow(every: v.windowPeriod, fn: ${aggregateFunction.name}, createEmpty: false)
-              |> yield(name: "${aggregateFunction.name}")`
-            }
-
-            stages.push({
-              text,
-              instances: [pipeID],
-              requirements: {},
-            })
-          } else if (stages.length) {
-            stages[stages.length - 1].instances.push(pipeID)
-          }
-
-          return stages
-        }, [])
-        .map(queryStruct => {
-          const queryText =
-            Object.entries(queryStruct.requirements)
-              .map(([key, value]) => `${key} = (\n${value}\n)\n\n`)
-              .join('') + queryStruct.text
-
-          return query(queryText)
-            .then(response => {
-              queryStruct.instances.forEach(pipeID => {
-                forceUpdate(pipeID, response)
-                flow.meta.update(pipeID, {loading: RemoteDataState.Done})
+          })
+          .catch(e => {
+            stage.instances.forEach(pipeID => {
+              forceUpdate(pipeID, {
+                error: e.message,
               })
+              flow.meta.update(pipeID, {loading: RemoteDataState.Error})
             })
-            .catch(e => {
-              queryStruct.instances.forEach(pipeID => {
-                forceUpdate(pipeID, {
-                  error: e.message,
-                })
-                flow.meta.update(pipeID, {loading: RemoteDataState.Error})
-              })
-            })
-        })
+          })
+      })
     )
-
       .then(() => {
         event('Flow Submit Resolved')
-
-        if (queryIncludesPreviousResult) {
-          event('flows_queryIncludesPreviousResult')
-        } else {
-          event('flows_queryExcludesPreviousResult')
-        }
 
         setLoading(RemoteDataState.Done)
       })
@@ -184,10 +86,6 @@ export const Submit: FC = () => {
       })
   }
 
-  const hasQueries = flow.data.all
-    .map(p => p.type)
-    .filter(p => p === 'query' || p === 'data' || p === 'queryBuilder').length
-
   return (
     <SubmitQueryButton
       text="Run Flow"
@@ -197,6 +95,7 @@ export const Submit: FC = () => {
       queryStatus={isLoading}
       onSubmit={submit}
       onNotify={fakeNotify}
+      queryID=""
     />
   )
 }

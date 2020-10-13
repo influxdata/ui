@@ -30,6 +30,7 @@ import RouteToDashboardList from 'src/dashboards/components/RouteToDashboardList
 import ClientLibrariesPage from 'src/writeData/containers/ClientLibrariesPage'
 import TelegrafPluginsPage from 'src/writeData/containers/TelegrafPluginsPage'
 import FlowsIndex from 'src/flows/components/FlowsIndex'
+import NotFound from 'src/shared/components/NotFound'
 
 // Types
 import {AppState, Organization, ResourceType} from 'src/types'
@@ -207,6 +208,8 @@ const SetOrg: FC<Props> = ({
 
         {/* Getting Started */}
         <Route exact path="/orgs/:orgID" component={MePage} />
+
+        <Route component={NotFound} />
       </Switch>
     </SpinnerContainer>
   )

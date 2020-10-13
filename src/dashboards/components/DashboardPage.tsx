@@ -21,7 +21,6 @@ import {AddNoteOverlay, EditNoteOverlay} from 'src/overlays/components'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {event} from 'src/cloud/utils/reporting'
 import {resetQueryCache} from 'src/shared/apis/queryCache'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Selectors
 import {getByID} from 'src/resources/selectors'
@@ -49,17 +48,13 @@ const dashRoute = `/${ORGS}/${ORG_ID}/${DASHBOARDS}/${DASHBOARD_ID}`
 @ErrorHandling
 class DashboardPage extends Component<Props> {
   public componentDidMount() {
-    if (isFlagEnabled('queryCacheForDashboards')) {
-      resetQueryCache()
-    }
+    resetQueryCache()
 
     this.emitRenderCycleEvent()
   }
 
   public componentWillUnmount() {
-    if (isFlagEnabled('queryCacheForDashboards')) {
-      resetQueryCache()
-    }
+    resetQueryCache()
   }
 
   public render() {

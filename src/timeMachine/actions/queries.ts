@@ -1,6 +1,6 @@
 // Libraries
 import {parse} from 'src/external/parser'
-import {get} from 'lodash'
+import {get, sortBy} from 'lodash'
 
 // API
 import {
@@ -42,6 +42,8 @@ import {
   isAggregateTypeError,
 } from 'src/utils/aggregateTypeErrors'
 import {event} from 'src/cloud/utils/reporting'
+import {asSimplyKeyValueVariables, hashCode} from 'src/shared/apis/queryCache'
+import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
 
 // Types
 import {CancelBox} from 'src/types/promises'
@@ -54,6 +56,7 @@ import {
   Bucket,
   QueryEditMode,
   BuilderTagsType,
+  Variable,
 } from 'src/types'
 
 // Selectors
@@ -90,7 +93,7 @@ export const setQueryResults = (
     statuses,
   },
 })
-
+// TODO(ariel): delete this when cancelQueryUiExpansion feature is successful
 let pendingResults: Array<CancelBox<RunQueryResult>> = []
 let pendingCheckStatuses: CancelBox<StatusRow[][]> = null
 
@@ -186,6 +189,76 @@ const isFromTag = (node: Node) => {
   )
 }
 
+export const generateHashedQueryID = (
+  query: string,
+  vars: Variable[],
+  orgID: string
+): string => {
+  const hashedQuery = `${hashCode(query)}`
+  const usedVars = filterUnusedVarsBasedOnQuery(vars, [query])
+  const variables = sortBy(usedVars, ['name'])
+  const simplifiedVariables = variables.map(v => asSimplyKeyValueVariables(v))
+  const stringifiedVars = JSON.stringify(simplifiedVariables)
+  // create the queryID based on the query & vars
+  const hashedVariables = `${hashCode(stringifiedVars)}`
+
+  return `${hashedQuery}_${hashedVariables}_${hashCode(orgID)}`
+}
+
+const queryReference = {}
+
+export const cancelQueryByHashID = (queryID: string): void => {
+  if (queryID in queryReference) {
+    queryReference[queryID].cancel()
+    delete queryReference[queryID]
+  }
+}
+
+const cancelQuerysByHashIDs = (queryIDs?: string[]): void => {
+  if (queryIDs.length > 0) {
+    queryIDs.forEach(queryID => cancelQueryByHashID(queryID))
+  }
+  Object.keys(queryReference).forEach((queryID: string) => {
+    cancelQueryByHashID(queryID)
+  })
+}
+
+export const cancelAllRunningQueries = (): void => {
+  cancelQuerysByHashIDs(Object.keys(queryReference))
+}
+
+export const setQueryByHashID = (queryID: string, result: any): void => {
+  queryReference[queryID] = {
+    cancel: result.cancel,
+    issuedAt: Date.now(),
+    promise: result.promise,
+    status: RemoteDataState.Loading,
+  }
+  result.promise
+    .then(() => {
+      queryReference[queryID].status = RemoteDataState.Done
+    })
+    .catch(error => {
+      if (error.name === 'CancellationError' || error.name === 'AbortError') {
+        queryReference[queryID].status = RemoteDataState.Done
+        return
+      }
+      queryReference[queryID].status = RemoteDataState.Error
+    })
+}
+
+export const getQueryStatusByID = (queryID: string): any => {
+  if (queryID in queryReference) {
+    return queryReference[queryID]
+  }
+  return {
+    cancel: new AbortController(),
+    issuedAt: Date.now(),
+    promise: Promise.resolve(),
+    status: RemoteDataState.NotStarted,
+  }
+}
+
 export const executeQueries = (abortController?: AbortController) => async (
   dispatch,
   getState: GetState
@@ -206,18 +279,26 @@ export const executeQueries = (abortController?: AbortController) => async (
   }
 
   try {
+    // Cancel pending queries before issuing new ones
+    if (isFlagEnabled('cancelQueryUiExpansion')) {
+      cancelAllRunningQueries()
+    } else {
+      // TODO(ariel): delete when feature is a success
+      pendingResults.forEach(({cancel}) => cancel())
+    }
+
     dispatch(setQueryResults(RemoteDataState.Loading, [], null))
 
     await dispatch(hydrateVariables())
 
-    const variableAssignments = getAllVariables(state)
+    const allVariables = getAllVariables(state)
+
+    const variableAssignments = allVariables
       .map(v => asAssignment(v))
       .filter(v => !!v)
 
     const startTime = window.performance.now()
     const startDate = Date.now()
-
-    pendingResults.forEach(({cancel}) => cancel())
 
     pendingResults = queries.map(({text}) => {
       event('executeQueries query', {}, {query: text})
@@ -232,15 +313,23 @@ export const executeQueries = (abortController?: AbortController) => async (
       const extern = buildVarsOption(variableAssignments)
 
       event('runQuery', {context: 'timeMachine'})
-      if (
-        isCurrentPageDashboard(state) &&
-        isFlagEnabled('queryCacheForDashboards')
-      ) {
+
+      const queryID = generateHashedQueryID(text, allVariables, orgID)
+      if (isCurrentPageDashboard(state)) {
         // reset any existing matching query in the cache
         resetQueryCacheByQuery(text)
-        return getCachedResultsOrRunQuery(orgID, text, state)
+        const result = getCachedResultsOrRunQuery(orgID, text, state)
+        if (isFlagEnabled('cancelQueryUiExpansion')) {
+          setQueryByHashID(queryID, result)
+        }
+
+        return result
       }
-      return runQuery(orgID, text, extern, abortController)
+      const result = runQuery(orgID, text, extern, abortController)
+      if (isFlagEnabled('cancelQueryUiExpansion')) {
+        setQueryByHashID(queryID, result)
+      }
+      return result
     })
     const results = await Promise.all(pendingResults.map(r => r.promise))
 

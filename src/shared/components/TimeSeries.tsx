@@ -242,10 +242,7 @@ class TimeSeries extends Component<Props, State> {
         const windowVars = getWindowVars(text, vars)
         const extern = buildVarsOption([...vars, ...windowVars])
         event('runQuery', {context: 'TimeSeries'})
-        if (
-          isCurrentPageDashboard &&
-          isFlagEnabled('queryCacheForDashboards')
-        ) {
+        if (isCurrentPageDashboard) {
           return onGetCachedResultsThunk(orgID, text)
         }
         const queryID = hashCode(text)

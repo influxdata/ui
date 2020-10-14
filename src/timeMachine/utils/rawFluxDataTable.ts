@@ -32,11 +32,22 @@ export const parseFilesWithFromFlux = (
 export const fromFluxTableTransformer = (
   response: string
 ): {tableData: string[][]; max: number} => {
+  let parsedChunk
+  // TODO(ariel): kill this, since it's a stopgap to prevent improper data from
+  // crashing the app when fromFlux can't handle it
+  try {
+    parsedChunk = fromFlux(response)
+  } catch (error) {
+    return {
+      tableData: [[]],
+      max: 0,
+    }
+  }
   const {
     fluxGroupKeyUnion,
     table,
     table: {columnKeys: keys},
-  } = fromFlux(response)
+  } = parsedChunk
 
   const columnKeys = [
     'result',
@@ -52,6 +63,7 @@ export const fromFluxTableTransformer = (
   const tableData = []
   let rowData: any[] = []
   let rowType: any
+  let originalType: any
   let columnData: any
   let column: any
   const groupSet = new Set(fluxGroupKeyUnion)
@@ -91,9 +103,10 @@ export const fromFluxTableTransformer = (
     for (let index = 0; index < columnHeaders.length; index++) {
       column = columnHeaders[index]
       rowType = table.getColumnType(column)
+      originalType = table.getOriginalColumnType(column)
       columnData = table.getColumn(column, rowType)[i]
       if (
-        (column === '_start' || column === '_stop' || column === '_time') &&
+        originalType === 'dateTime:RFC3339' &&
         typeof columnData === 'number'
       ) {
         columnData = new Date(columnData).toISOString()

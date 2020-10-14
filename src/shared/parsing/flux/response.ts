@@ -182,6 +182,7 @@ export const parseResponseWithFromFlux = (response: string): FluxTable[] => {
 
   // assigning these variables here since they'll also be used by the transformation below
   let columnType: any
+  let originalType: any
   let columnValues
 
   // build out the columnHeaders. The columnHeaders are the basis for the groupKey & represent the first row of each data chunk
@@ -197,10 +198,11 @@ export const parseResponseWithFromFlux = (response: string): FluxTable[] => {
   // build out the current groupKey based on the columnHeaders
   columnHeaders.forEach(column => {
     columnType = table.getColumnType(column)
+    originalType = table.getOriginalColumnType(column)
     columnValues = table.getColumn(column, columnType)
     currentValue = columnValues[valueIndex]
     if (
-      (column === '_start' || column === '_stop') &&
+      originalType === 'dateTime:RFC3339' &&
       typeof currentValue === 'number'
     ) {
       currentValue = new Date(currentValue).toISOString()
@@ -236,6 +238,7 @@ export const parseResponseWithFromFlux = (response: string): FluxTable[] => {
   // shared data for the transformations below
   let rowData: any[] = []
   let rowType: any
+  let rowOriginalType: any
   let columnData: any
   let column: any
   // final table that will be returned
@@ -259,10 +262,11 @@ export const parseResponseWithFromFlux = (response: string): FluxTable[] => {
       // rebuild the groupKey based on the new headers
       columnHeaders.forEach(col => {
         columnType = table.getColumnType(col)
+        originalType = table.getOriginalColumnType(column)
         columnValues = table.getColumn(col, columnType)
         currentValue = columnValues[i]
         if (
-          (col === '_start' || col === '_stop') &&
+          originalType === 'dateTime:RFC3339' &&
           typeof currentValue === 'number'
         ) {
           currentValue = new Date(currentValue).toISOString()
@@ -305,10 +309,11 @@ export const parseResponseWithFromFlux = (response: string): FluxTable[] => {
       }
 
       rowType = table.getColumnType(column)
+      rowOriginalType = table.getOriginalColumnType(column)
       columnData = table.getColumn(column, rowType)[i]
 
       if (
-        (column === '_start' || column === '_stop' || column === '_time') &&
+        rowOriginalType === 'dateTime:RFC3339' &&
         typeof columnData === 'number'
       ) {
         columnData = new Date(columnData).toISOString()

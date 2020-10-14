@@ -20,7 +20,7 @@ import Resizer from 'src/flows/shared/Resizer'
 import {checkResultsLength} from 'src/shared/utils/vis'
 import ExportVisualizationButton from 'src/flows/pipes/Visualization/ExportVisualizationButton'
 import {event} from 'src/cloud/utils/reporting'
-import {TYPE_DEFINITIONS} from 'src/flows/pipes/Visualization'
+import {TYPE_DEFINITIONS} from 'src/shared/visualization'
 
 // Types
 import {PipeProp} from 'src/types/flows'

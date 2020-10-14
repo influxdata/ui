@@ -287,6 +287,19 @@ there",5
     expect(parseFilesWithFromFlux([CSV])).toEqual(expected)
   })
 
+  test('does not crash when passed in an incomplete CSV', () => {
+    const CSV = `#group,false,false,true,true,false,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true`
+
+    const expected = {
+      data: [[]],
+      maxColumnCount: 0,
+    }
+    expect(() => {
+      parseFilesWithFromFlux([CSV])
+    }).not.toThrow()
+
+    expect(parseFilesWithFromFlux([CSV])).toEqual(expected)
+  })
   test('can parse objects in CSV', () => {
     const CSV = `#group,false,false,true,true,false,false,true,true,true,true,true,true,true,true,true,true,true
 #datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,dateTime:RFC3339,string,string,string,string,string,string,string,string,string,string,string,string

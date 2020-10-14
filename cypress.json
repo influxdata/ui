@@ -1,4 +1,8 @@
 {
+  "retries": {
+    "runMode": 2,
+    "openMode": 0
+  },
   "numTestsKeptInMemory": 25,
   "integrationFolder": "cypress/e2e",
   "defaultCommandTimeout": 10000,
@@ -9,9 +13,5 @@
     "password": "CHECKMEOUTASUPERSECRETPASSWORD",
     "org": "InfluxData",
     "bucket": "defbuck"
-  },
-  "retries": {
-    "runMode": 2,
-    "openMode": 0
   }
 }

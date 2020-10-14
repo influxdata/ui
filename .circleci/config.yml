@@ -1,11 +1,10 @@
 version: 2.1
 
 jobs:
-  cloud-e2e:
+  build-image:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202008-01
       docker_layer_caching: true
-    parallelism: 10
     working_directory: ~/
     resource_class: large
     steps:
@@ -19,14 +18,112 @@ jobs:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing ./monitor-ci/.env
       - run:
+          name: Build the ui docker image
+          command: |
+            cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
+            docker build \
+              --build-arg INFLUXDB_SHA=testing \
+              --build-arg CLOUD_URL=http://localhost/auth \
+              --build-arg WEBPACK_FILE=fast \
+              -t quay.io/influxdb/ui-acceptance:$CIRCLE_BRANCH \
+              -f ./monitor-ci/docker/Dockerfile.chronograf.prod \
+              ./ui
+            mkdir -p docker-cache
+            docker save -o docker-cache/image.tar quay.io/influxdb/ui-acceptance:$CIRCLE_BRANCH
+      - save_cache:
+          key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - docker-cache
+  build-prod-image:
+    machine:
+      image: ubuntu-2004:202008-01
+      docker_layer_caching: true
+    working_directory: ~/
+    resource_class: large
+    steps:
+      - checkout:
+          path: ./ui
+      - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
+      - run:
+          name: Grab compose files
+          command: git clone git@github.com:influxdata/monitor-ci.git
+      - run:
+          name: Build the ui docker image
+          command: |
+            cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
+            docker build \
+              --build-arg HONEYBADGER_KEY=${HONEYBADGER_KEY} \
+              --build-arg INJECT_HEADER="<script>(function (w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' }); var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f); })(window, document, 'script', 'dataLayer', '${GTM_ID}'); </script>" \
+              --build-arg INJECT_BODY="<!-- Google Tag Manager (noscript) --> <noscript><iframe src=\"https://www.googletagmanager.com/ns.html?id=${GTM_ID}\" height=\"0\" width=\"0\" style=\"display:none;visibility:hidden\"></iframe></noscript> <!-- End Google Tag Manager (noscript) -->" \
+              --build-arg INFLUXDB_SHA=${CIRCLE_SHA1} \
+              --build-arg CLOUD_URL=/auth \
+              -t quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1} \
+              -f ./monitor-ci/docker/Dockerfile.chronograf.prod \
+              ./ui
+            mkdir -p docker-cache
+            docker save -o docker-cache/image.tar quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1}
+      - save_cache:
+          key: UI_PROD_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - docker-cache
+  deploy:
+    docker:
+      - image: circleci/golang:1.15-node
+    working_directory: ~/
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - checkout:
+          path: ./ui
+      - restore_cache:
+          key: UI_PROD_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
+      - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
+      - run:
+          name: Grab deploy files
+          command: git clone git@github.com:influxdata/monitor-ci.git
+      - run:
+          name: Load the prod image
+          command: |
+            docker load < ~/docker-cache/image.tar
+      - run:
+          name: Load hash of image into env vars
+          command: |
+            echo 'export DIGEST=$(docker image inspect quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1} --format '{{.Id}}' | tr -d '\n')' >> $BASH_ENV
+      - run:
+          name: Push the image to quay
+          command: |
+            docker push quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1}
+      - run:
+          name: Deploy the image
+          command: |
+            cd ./monitor-ci/c2updater
+            GO111MODULE=on GOPATH=/go C2UPDATER_SIGNING_KEY=${ARGO_KEY} go mod download && \
+            go run ./ ${CIRCLE_SHA1} quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1} quay.io/influxdb/influxdb-ui@${DIGEST}
+  cloud-e2e:
+    machine:
+      image: ubuntu-2004:202008-01
+      docker_layer_caching: true
+    parallelism: 10
+    working_directory: ~/
+    resource_class: large
+    steps:
+      - restore_cache:
+          key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
+      - checkout:
+          path: ./ui
+      - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
+      - run:
+          name: Grab compose files
+          command: git clone git@github.com:influxdata/monitor-ci.git
+      - run:
+          name: Copy over the testing variables
+          command: cp ./monitor-ci/env.testing ./monitor-ci/.env
+      - run:
           name: Update the images we're using
-          command: cd ./monitor-ci && make update
-      - run:
-          name: Busting the cache
-          command: cd ./monitor-ci && make build NODE=debug && make build NODE=cypress
-      - run:
-          name: Build the new UI (for idpe run make rebuild NODE=influxdb)
-          command: cd ./monitor-ci; cp ./conf/chronograf/nginx.conf ../ui/; make rebuild NODE=chronograf
+          command: |
+            cd ./monitor-ci && make update
+            docker load < ~/docker-cache/image.tar
+            docker tag quay.io/influxdb/ui-acceptance:$CIRCLE_BRANCH quay.io/influxdb/ui-acceptance:latest
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start
@@ -45,11 +142,13 @@ jobs:
           destination: test_artifacts/screenshots
   smoke:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202008-01
       docker_layer_caching: true
     working_directory: ~/
     resource_class: large
     steps:
+      - restore_cache:
+          key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
@@ -61,13 +160,10 @@ jobs:
           command: cp ./monitor-ci/env.testing ./monitor-ci/.env
       - run:
           name: Update the images we're using
-          command: cd ./monitor-ci && make update && docker pull quay.io/influxdb/ui-tests:latest
-      - run:
-          name: Busting the cache
-          command: cd ./monitor-ci && make build NODE=ingress && make build NODE=cypress
-      - run:
-          name: Build the new UI (for idpe run make rebuild NODE=influxdb)
-          command: cd ./monitor-ci; cp ./conf/chronograf/nginx.conf ../ui/; make rebuild NODE=chronograf
+          command: |
+            cd ./monitor-ci && make update
+            docker load < ~/docker-cache/image.tar
+            docker tag quay.io/influxdb/ui-acceptance:$CIRCLE_BRANCH quay.io/influxdb/ui-acceptance:latest
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start
@@ -86,7 +182,7 @@ jobs:
           destination: test_artifacts/screenshots
   unit:
     docker:
-      - image: circleci/golang:1.13-node-browsers
+      - image: circleci/golang:1.15-node
     working_directory: ~/influxdata/ui
     parallelism: 4
     steps:
@@ -120,7 +216,7 @@ jobs:
             - ~/.cache/yarn
   lint:
     docker:
-      - image: circleci/golang:1.13-node-browsers
+      - image: circleci/golang:1.15-node
     working_directory: ~/influxdata/ui
     parallelism: 4
     steps:
@@ -151,9 +247,27 @@ workflows:
   version: 2
   build:
     jobs:
+      - build-image
+      - build-prod-image:
+          filters:
+            branches:
+              only:
+                - master
       - unit
       - lint
-  e2e:
-    jobs:
-      - cloud-e2e
-      - smoke
+      - cloud-e2e:
+          requires:
+            - build-image
+      - smoke:
+          requires:
+            - build-image
+      - deploy:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - build-prod-image
+            - unit
+            - lint
+            - smoke

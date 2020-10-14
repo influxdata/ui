@@ -1,9 +1,10 @@
 // Libraries
-import React, {ChangeEvent, FC, useEffect, useState} from 'react'
+import React, {ChangeEvent, FC, useEffect, useState, Component} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
 
 // Components
+import FluxEditor from 'src/shared/components/FluxMonacoEditor'
 import {
   Form,
   InputType,
@@ -23,6 +24,8 @@ import {
   Gradients,
   Tabs,
   Orientation,
+  FlexDirection,
+  Icon,
   IconFont,
 } from '@influxdata/clockface'
 
@@ -132,29 +135,33 @@ const ExportTaskOverlay: FC = () => {
                           <Panel.Body
                             justifyContent={JustifyContent.FlexStart}
                             alignItems={AlignItems.Center}
+                            direction={FlexDirection.Row}
+                            margin={ComponentSize.Large}
+                            size={ComponentSize.ExtraSmall}
                           >
-                            <Grid.Row>
-                              <Grid.Column widthXS={Columns.One}>
-                                <Button
-                                  status={ComponentStatus.Disabled}
-                                  size={ComponentSize.ExtraSmall}
-                                  color={ComponentColor.Secondary}
-                                  icon={IconFont.AlertTriangle}
-                                />
-                              </Grid.Column>
-                              <Grid.Column widthXS={Columns.Eleven}>
-                                <p>
-                                  Note: changes made to an existing task cannot
-                                  be undone
-                                </p>
-                              </Grid.Column>
-                            </Grid.Row>
+                            <Icon glyph={IconFont.AlertTriangle} />
+                            <p className="margin-zero">
+                              &nbsp;Note: changes made to an existing task
+                              cannot be undone
+                            </p>
                           </Panel.Body>
                         </Panel>
                       </Grid.Column>
                     )}
-                    <Grid.Column widthXS={Columns.Twelve}>
-                      <code>Hello world |> this feels weird</code>
+                    <Grid.Column>
+                      {/**add in a set height and relative position */}
+                      <Form.Element style={{height: 300, position: 'relative'}}>
+                        <div className="flux-editor">
+                          <div className="flux-editor--left-panel">
+                            <FluxEditor
+                              script={'here is a randoms string'}
+                              onChangeScript={() => {}}
+                              onSubmitScript={() => {}}
+                              setEditorInstance={() => {}}
+                            />
+                          </div>
+                        </div>
+                      </Form.Element>
                     </Grid.Column>
                     <Grid.Column widthXS={Columns.Twelve}>
                       <Form.Footer>

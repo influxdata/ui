@@ -5,9 +5,9 @@ jobs:
     machine:
       image: ubuntu-1604:202007-01
       docker_layer_caching: true
-    parallelism: 30
+    parallelism: 10
     working_directory: ~/
-    resource_class: 2xlarge
+    resource_class: large
     steps:
       - checkout:
           path: ./ui

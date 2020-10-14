@@ -268,7 +268,7 @@ describe('Buckets', () => {
         cy.fixture('routes').then(({orgs, buckets}) => {
           const idThatDoesntExist = '261234d1a7f932e4'
           cy.visit(`${orgs}/${id}${buckets}/${idThatDoesntExist}/edit`)
-          cy.location('pathname').should('be', `${orgs}/${id}${buckets}/`)
+          cy.location('pathname').should('contain', `${orgs}/${id}${buckets}/`)
         })
       })
     })
@@ -295,7 +295,7 @@ describe('Buckets', () => {
         // writing a well-formed line is accepted
         cy.getByTestID('add-data--button').click()
         cy.getByTestID('bucket-add-client-library').click()
-        cy.location('pathname').should('be', `/orgs/${orgID}/load-data/`)
+        cy.location('pathname').should('contain', `/orgs/${orgID}/load-data/`)
         cy.go('back')
         cy.getByTestID('add-data--button').click()
 

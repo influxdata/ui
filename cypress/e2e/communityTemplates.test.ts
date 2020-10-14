@@ -207,7 +207,7 @@ describe('Community Templates', () => {
       cy.getByTestID('template-install-button').should('exist')
       cy.getByTestID('template-install-button').click()
       cy.getByTestID('notification-success').should('be.visible')
-      cy.getByTestID('installed-template-list').should('have', '2')
+      cy.getByTestID('installed-template-list').should('have.length', 2)
     })
 
     it('links out to areas of the application where template resources were installed', () => {

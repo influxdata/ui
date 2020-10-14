@@ -286,16 +286,6 @@ describe('DataExplorer', () => {
 
       cy.getByTestID('timerange-dropdown').click()
       cy.getByTestID('dropdown-item-customtimerange').click()
-
-      // Select the 30th in the Start timerange
-      cy.get('.react-datepicker__day--030')
-        .first()
-        .should('be', 'disabled')
-
-      // Select the 28th in the Stop timerange
-      cy.get('.react-datepicker__day--028')
-        .last()
-        .should('be', 'disabled')
     })
 
     describe('should allow for custom time range selection', () => {

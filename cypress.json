@@ -9,5 +9,9 @@
     "password": "CHECKMEOUTASUPERSECRETPASSWORD",
     "org": "InfluxData",
     "bucket": "defbuck"
+  },
+  "retries": {
+    "runMode": 2,
+    "openMode": 0
   }
 }

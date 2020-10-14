@@ -86,19 +86,17 @@ jobs:
           command: |
             docker load < ~/docker-cache/image.tar
       - run:
-          name: Load hash of image into env vars
-          command: |
-            echo 'export DIGEST=$(docker image inspect quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1} --format '{{.Id}}' | tr -d '\n')' >> $BASH_ENV
-      - run:
           name: Push the image to quay
           command: |
+            docker tag quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1} quay.io/influxdb/influxdb-ui:latest
             docker push quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1}
+            docker push quay.io/influxdb/influxdb-ui:latest
       - run:
           name: Deploy the image
           command: |
             cd ./monitor-ci/c2updater
-            GO111MODULE=on GOPATH=/go C2UPDATER_SIGNING_KEY=${ARGO_KEY} go mod download && \
-            go run ./ ${CIRCLE_SHA1} quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1} quay.io/influxdb/influxdb-ui@${DIGEST}
+            export C2UPDATER_SIGNING_KEY=${ARGO_KEY}
+            GO111MODULE=on GOPATH=/go go mod download && go run ./ ${CIRCLE_SHA1} quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1} quay.io/influxdb/influxdb-ui@$(docker image inspect quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1} --format '{{.Id}}' | tr -d '\n')
   cloud-e2e:
     machine:
       image: ubuntu-2004:202008-01

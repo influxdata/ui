@@ -641,7 +641,7 @@ describe('DataExplorer', () => {
         cy.getByTestID('selector-list m').clickAttached()
 
         cy.getByTestID('selector-list v').should('be.visible')
-        cy.getByTestID('selector-list v').click()
+        cy.getByTestID('selector-list v').clickAttached()
 
         cy.getByTestID('switch-to-script-editor').click()
         cy.getByTestID('flux-editor').should('be.visible')
@@ -695,12 +695,12 @@ describe('DataExplorer', () => {
         cy.getByTestID('selector-list m').clickAttached()
 
         cy.getByTestID('selector-list v').should('be.visible')
-        cy.getByTestID('selector-list v').click()
+        cy.getByTestID('selector-list v').clickAttached()
 
         cy.getByTestID('selector-list tv1')
           .scrollIntoView()
           .should('be.visible')
-        cy.getByTestID('selector-list tv1').click()
+        cy.getByTestID('selector-list tv1').clickAttached()
 
         cy.getByTestID('selector-list last')
           .scrollIntoView()

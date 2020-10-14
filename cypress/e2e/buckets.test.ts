@@ -262,7 +262,7 @@ describe('Buckets', () => {
     })
   })
 
-  describe('Routing directly to the edit overlay', () => {
+  describe('routing directly to the edit overlay', () => {
     it('reroutes to buckets view if bucket does not exist', () => {
       cy.get('@org').then(({id}: Organization) => {
         cy.fixture('routes').then(({orgs, buckets}) => {
@@ -279,7 +279,7 @@ describe('Buckets', () => {
           cy.get('@bucket').then(({id: bucketID}: Bucket) => {
             cy.visit(`${orgs}/${orgID}${buckets}/${bucketID}/edit`)
             cy.location('pathname').should(
-              'be',
+              'contain',
               `${orgs}/${orgID}${buckets}/${bucketID}/edit`
             )
           })

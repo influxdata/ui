@@ -5,7 +5,7 @@ import {
 } from '@influxdata/giraffe'
 import {FromFluxResult} from '@influxdata/giraffe'
 import {FunctionComponent, ComponentClass, ReactNode} from 'react'
-import {RemoteDataState} from 'src/types'
+import {RemoteDataState, ViewProperties} from 'src/types'
 
 export interface Tag extends GenTag {}
 export interface Schema extends GenSchema {}
@@ -101,6 +101,22 @@ export interface FlowList {
   flows: {
     [key: string]: Flow
   }
+}
+
+export interface VisOptionProps {
+  properties: ViewProperties
+  results: FromFluxResult
+  update: (obj: any) => void
+}
+
+export interface VisTypeRegistration {
+  type: string // a unique string that identifies a visualization
+  name: string // the name that shows up in the dropdown
+  graphic: JSX.Element // the icon that shows up in the dropdown
+  disabled?: boolean // if you should show it or not
+  featureFlag?: string // designates a flag that should enable the panel type
+  initial: ViewProperties // the default state
+  options?: FunctionComponent<VisOptionProps> // the view component for rendering the interface
 }
 
 // NOTE: keep this interface as small as possible and

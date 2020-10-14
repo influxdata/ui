@@ -1,5 +1,6 @@
 import icon from './icon'
 import properties from './properties'
+import ScatterOptions from './ScatterOptions'
 
 export default register => {
   register({
@@ -7,5 +8,6 @@ export default register => {
     name: 'Scatter',
     graphic: icon,
     initial: properties,
+    options: ScatterOptions,
   })
 }

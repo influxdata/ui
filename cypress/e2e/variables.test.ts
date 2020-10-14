@@ -244,7 +244,7 @@ describe('Variables', () => {
     cy.getByTestID('import-overlay--textarea').contains('this is invalid')
   })
 
-  it('can create and delete a label and filter a variable by label name & sort by variable name', () => {
+  it.skip('can create and delete a label and filter a variable by label name & sort by variable name', () => {
     cy.getByTestID('inline-labels--add').should('be.visible')
     cy.getByTestID('inline-labels--add').clickAttached()
 

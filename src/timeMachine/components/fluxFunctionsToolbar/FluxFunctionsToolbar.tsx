@@ -45,7 +45,7 @@ class FluxFunctionsToolbar extends PureComponent<Props, State> {
           resourceName="Functions"
         />
         <DapperScrollbars className="flux-toolbar--scroll-area">
-          <div className="flux-toolbar--list">
+          <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
             <TransformToolbarFunctions
               funcs={FLUX_FUNCTIONS}
               searchTerm={searchTerm}

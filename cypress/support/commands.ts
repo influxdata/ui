@@ -530,6 +530,24 @@ export const createEndpoint = (
   return cy.request('POST', 'api/v2/notificationEndpoints', endpoint)
 }
 
+// helpers
+// Re-query elements that are found 'detached' from the DOM
+// https://github.com/cypress-io/cypress/issues/7306
+export const clickAttached = (subject?: JQuery<HTMLElement>) => {
+  if (!subject) {
+    console.error('no element provided to "clickAttached"')
+    return
+  }
+
+  cy.wrap(subject).should($el => {
+    // ensure the element is attached
+    expect(Cypress.dom.isDetached($el)).to.be.false
+
+    // using Jquery click here so no queuing from cypress side and not chance for the element to detach
+    $el.trigger('click')
+  })
+}
+
 /* eslint-disable */
 // notification endpoints
 Cypress.Commands.add('createEndpoint', createEndpoint)
@@ -593,4 +611,7 @@ Cypress.Commands.add('createAndAddLabel', createAndAddLabel)
 
 // test
 Cypress.Commands.add('writeData', writeData)
+
+// helpers
+Cypress.Commands.add('clickAttached', {prevSubject: 'element'}, clickAttached)
 /* eslint-enable */

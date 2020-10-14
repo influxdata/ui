@@ -7,6 +7,8 @@ describe('Variables', () => {
       cy.createQueryVariable(body.org.id)
       cy.visit(`orgs/${body.org.id}/settings/variables`)
     })
+
+    cy.location('pathname').should('match', /\/variables$/)
   })
 
   it('can CRUD a CSV, upload, map, and query variable and search for variables based on names', () => {
@@ -243,22 +245,28 @@ describe('Variables', () => {
   })
 
   it('can create and delete a label and filter a variable by label name & sort by variable name', () => {
-    cy.getByTestID('inline-labels--add').click({force: true})
+    cy.getByTestID('inline-labels--add').should('be.visible')
+    cy.getByTestID('inline-labels--add').clickAttached()
 
     const labelName = 'label'
     cy.getByTestID('inline-labels--popover--contents').type(labelName)
     cy.getByTestID('inline-labels--create-new').click()
+
+    cy.getByTestID('create-label-form--submit').should('be.visible')
     cy.getByTestID('create-label-form--submit').click()
 
     cy.getByTestID('overlay--children').should('not.exist')
 
+    cy.getByTestID('add-resource-dropdown--button').should('be.visible')
     cy.getByTestID('add-resource-dropdown--button').click()
 
-    cy.getByTestID('add-resource-dropdown--new').should('have.length', 1)
-
+    cy.getByTestID('add-resource-dropdown--new').should('be.visible')
     cy.getByTestID('add-resource-dropdown--new').click()
 
+    cy.getByTestID('variable-type-dropdown--button').should('be.visible')
     cy.getByTestID('variable-type-dropdown--button').click()
+
+    cy.getByTestID('variable-type-dropdown--button').should('be.visible')
     cy.getByTestID('variable-type-dropdown-constant').click()
 
     // Create a CSV variable

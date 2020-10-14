@@ -1,5 +1,5 @@
 {
-  "numTestsKeptInMemory": 1,
+  "numTestsKeptInMemory": 25,
   "integrationFolder": "cypress/e2e",
   "defaultCommandTimeout": 10000,
   "videoUploadOnPasses": false,

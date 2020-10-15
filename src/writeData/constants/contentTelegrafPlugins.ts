@@ -65,6 +65,8 @@ import httpMarkdown from 'src/writeData/components/telegrafPlugins/http.md'
 import icinga2Markdown from 'src/writeData/components/telegrafPlugins/icinga2.md'
 import infinibandMarkdown from 'src/writeData/components/telegrafPlugins/infiniband.md'
 import influxdb_listenerMarkdown from 'src/writeData/components/telegrafPlugins/influxdb_listener.md'
+import influxdb_v2_listenerMarkdown from 'src/writeData/components/telegrafPlugins/influxdb_v2_listener.md'
+import intel_rdtMarkdown from 'src/writeData/components/telegrafPlugins/intel_rdt.md'
 import influxdbMarkdown from 'src/writeData/components/telegrafPlugins/influxdb.md'
 import internalMarkdown from 'src/writeData/components/telegrafPlugins/internal.md'
 import interruptsMarkdown from 'src/writeData/components/telegrafPlugins/interrupts.md'
@@ -113,12 +115,14 @@ import nginx_plusMarkdown from 'src/writeData/components/telegrafPlugins/nginx_p
 import nginx_stsMarkdown from 'src/writeData/components/telegrafPlugins/nginx_sts.md'
 import nginx_upstream_checkMarkdown from 'src/writeData/components/telegrafPlugins/nginx_upstream_check.md'
 import nginx_vtsMarkdown from 'src/writeData/components/telegrafPlugins/nginx_vts.md'
+import nsdMarkdown from 'src/writeData/components/telegrafPlugins/nsd.md'
 import nginxMarkdown from 'src/writeData/components/telegrafPlugins/nginx.md'
 import nsq_consumerMarkdown from 'src/writeData/components/telegrafPlugins/nsq_consumer.md'
 import nsqMarkdown from 'src/writeData/components/telegrafPlugins/nsq.md'
 import nstatMarkdown from 'src/writeData/components/telegrafPlugins/nstat.md'
 import ntpqMarkdown from 'src/writeData/components/telegrafPlugins/ntpq.md'
 import nvidia_smiMarkdown from 'src/writeData/components/telegrafPlugins/nvidia_smi.md'
+import opcuaMarkdown from 'src/writeData/components/telegrafPlugins/opcua.md'
 import openldapMarkdown from 'src/writeData/components/telegrafPlugins/openldap.md'
 import openntpdMarkdown from 'src/writeData/components/telegrafPlugins/openntpd.md'
 import opensmtpdMarkdown from 'src/writeData/components/telegrafPlugins/opensmtpd.md'
@@ -140,6 +144,7 @@ import proxmoxMarkdown from 'src/writeData/components/telegrafPlugins/proxmox.md
 import puppetagentMarkdown from 'src/writeData/components/telegrafPlugins/puppetagent.md'
 import rabbitmqMarkdown from 'src/writeData/components/telegrafPlugins/rabbitmq.md'
 import raindropsMarkdown from 'src/writeData/components/telegrafPlugins/raindrops.md'
+import rasMarkdown from 'src/writeData/components/telegrafPlugins/ras.md'
 import redfishMarkdown from 'src/writeData/components/telegrafPlugins/redfish.md'
 import redisMarkdown from 'src/writeData/components/telegrafPlugins/redis.md'
 import rethinkdbMarkdown from 'src/writeData/components/telegrafPlugins/rethinkdb.md'
@@ -175,6 +180,7 @@ import uwsgiMarkdown from 'src/writeData/components/telegrafPlugins/uwsgi.md'
 import varnishMarkdown from 'src/writeData/components/telegrafPlugins/varnish.md'
 import vsphereMarkdown from 'src/writeData/components/telegrafPlugins/vsphere.md'
 import webhooksMarkdown from 'src/writeData/components/telegrafPlugins/webhooks.md'
+import win_eventlogMarkdown from 'src/writeData/components/telegrafPlugins/win_eventlog.md'
 import win_perf_countersMarkdown from 'src/writeData/components/telegrafPlugins/win_perf_counters.md'
 import win_servicesMarkdown from 'src/writeData/components/telegrafPlugins/win_services.md'
 import wireguardMarkdown from 'src/writeData/components/telegrafPlugins/wireguard.md'
@@ -245,6 +251,8 @@ import httpLogo from 'src/writeData/graphics/http.svg'
 import icinga2Logo from 'src/writeData/graphics/icinga2.svg'
 import infinibandLogo from 'src/writeData/graphics/infiniband.svg'
 import influxdb_listenerLogo from 'src/writeData/graphics/influxdb_listener.svg'
+import influxdb_v2_listenerLogo from 'src/writeData/graphics/influxdb_v2_listener.svg'
+import intel_rdtLogo from 'src/writeData/graphics/intel_rdt.svg'
 import influxdbLogo from 'src/writeData/graphics/influxdb.svg'
 import internalLogo from 'src/writeData/graphics/internal.svg'
 import interruptsLogo from 'src/writeData/graphics/interrupts.svg'
@@ -293,12 +301,14 @@ import nginx_plusLogo from 'src/writeData/graphics/nginx_plus.svg'
 import nginx_stsLogo from 'src/writeData/graphics/nginx_sts.svg'
 import nginx_upstream_checkLogo from 'src/writeData/graphics/nginx_upstream_check.svg'
 import nginx_vtsLogo from 'src/writeData/graphics/nginx_vts.svg'
+import nsdLogo from 'src/writeData/graphics/nsd.svg'
 import nginxLogo from 'src/writeData/graphics/nginx.svg'
 import nsq_consumerLogo from 'src/writeData/graphics/nsq_consumer.svg'
 import nsqLogo from 'src/writeData/graphics/nsq.svg'
 import nstatLogo from 'src/writeData/graphics/nstat.svg'
 import ntpqLogo from 'src/writeData/graphics/ntpq.svg'
 import nvidia_smiLogo from 'src/writeData/graphics/nvidia_smi.svg'
+import opcuaLogo from 'src/writeData/graphics/opcua.svg'
 import openldapLogo from 'src/writeData/graphics/openldap.svg'
 import openntpdLogo from 'src/writeData/graphics/openntpd.svg'
 import opensmtpdLogo from 'src/writeData/graphics/opensmtpd.svg'
@@ -320,6 +330,7 @@ import proxmoxLogo from 'src/writeData/graphics/proxmox.svg'
 import puppetagentLogo from 'src/writeData/graphics/puppetagent.svg'
 import rabbitmqLogo from 'src/writeData/graphics/rabbitmq.svg'
 import raindropsLogo from 'src/writeData/graphics/raindrops.svg'
+import rasLogo from 'src/writeData/graphics/ras.svg'
 import redfishLogo from 'src/writeData/graphics/redfish.svg'
 import redisLogo from 'src/writeData/graphics/redis.svg'
 import rethinkdbLogo from 'src/writeData/graphics/rethinkdb.svg'
@@ -355,6 +366,7 @@ import uwsgiLogo from 'src/writeData/graphics/uwsgi.svg'
 import varnishLogo from 'src/writeData/graphics/varnish.svg'
 import vsphereLogo from 'src/writeData/graphics/vsphere.svg'
 import webhooksLogo from 'src/writeData/graphics/webhooks.svg'
+import win_eventlogLogo from 'src/writeData/graphics/win_eventlog.svg'
 import win_perf_countersLogo from 'src/writeData/graphics/win_perf_counters.svg'
 import win_servicesLogo from 'src/writeData/graphics/win_services.svg'
 import wireguardLogo from 'src/writeData/graphics/wireguard.svg'
@@ -793,6 +805,20 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: WriteDataItem[] = [
     image: influxdb_listenerLogo,
   },
   {
+    id: 'influxdb_v2_listener',
+    name: 'InfluxDB V2 Listener',
+    url: `${TELEGRAF_PLUGINS}/influxdb_v2_listener`,
+    markdown: influxdb_v2_listenerMarkdown,
+    image: influxdb_v2_listenerLogo,
+  },
+  {
+    id: 'intel_rdt',
+    name: 'Intel RDT',
+    url: `${TELEGRAF_PLUGINS}/intel_rdt`,
+    markdown: intel_rdtMarkdown,
+    image: intel_rdtLogo,
+  },
+  {
     id: 'internal',
     name: 'Telegraf Internal',
     url: `${TELEGRAF_PLUGINS}/internal`,
@@ -1129,6 +1155,13 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: WriteDataItem[] = [
     image: nginx_vtsLogo,
   },
   {
+    id: 'nsd',
+    name: 'NSD',
+    url: `${TELEGRAF_PLUGINS}/nsd`,
+    markdown: nsdMarkdown,
+    image: nsdLogo,
+  },
+  {
     id: 'nsq',
     name: 'NSQ',
     url: `${TELEGRAF_PLUGINS}/nsq`,
@@ -1162,6 +1195,13 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: WriteDataItem[] = [
     url: `${TELEGRAF_PLUGINS}/nvidia_smi`,
     markdown: nvidia_smiMarkdown,
     image: nvidia_smiLogo,
+  },
+  {
+    id: 'opcua',
+    name: 'OPC UA Client',
+    url: `${TELEGRAF_PLUGINS}/opcua`,
+    markdown: opcuaMarkdown,
+    image: opcuaLogo,
   },
   {
     id: 'openldap',
@@ -1309,6 +1349,13 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: WriteDataItem[] = [
     url: `${TELEGRAF_PLUGINS}/raindrops`,
     markdown: raindropsMarkdown,
     image: raindropsLogo,
+  },
+  {
+    id: 'ras',
+    name: 'RAS Daemon',
+    url: `${TELEGRAF_PLUGINS}/ras`,
+    markdown: rasMarkdown,
+    image: rasLogo,
   },
   {
     id: 'redfish',
@@ -1554,6 +1601,13 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: WriteDataItem[] = [
     url: `${TELEGRAF_PLUGINS}/webhooks`,
     markdown: webhooksMarkdown,
     image: webhooksLogo,
+  },
+  {
+    id: 'win_eventlog',
+    name: 'Windows Eventlog',
+    url: `${TELEGRAF_PLUGINS}/win_eventlog`,
+    markdown: win_eventlogMarkdown,
+    image: win_eventlogLogo,
   },
   {
     id: 'win_perf_counters',

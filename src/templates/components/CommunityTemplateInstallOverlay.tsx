@@ -13,7 +13,7 @@ import {
 
 import {notify} from 'src/shared/actions/notifications'
 
-import {createTemplate, fetchAndSetStacks} from 'src/templates/actions/thunks'
+import {fetchAndSetStacks} from 'src/templates/actions/thunks'
 import {getBuckets} from 'src/buckets/actions/thunks'
 
 import {getTotalResourceCount} from 'src/templates/selectors'
@@ -206,7 +206,6 @@ const mstp = (state: AppState, props: RouterProps) => {
 }
 
 const mdtp = {
-  createTemplate,
   getBuckets,
   fetchAndSetStacks,
   notify,

@@ -97,6 +97,28 @@ jobs:
             cd ./monitor-ci/c2updater
             export C2UPDATER_SIGNING_KEY=${ARGO_KEY}
             GO111MODULE=on GOPATH=/go go mod download && go run ./ ${CIRCLE_SHA1} quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1} quay.io/influxdb/influxdb-ui@$(docker image inspect quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1} --format '{{.Id}}' | tr -d '\n')
+  share-testing-image:
+    docker:
+      - image: circleci/golang:1.15-node
+    working_directory: ~/
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - checkout:
+          path: ./ui
+      - restore_cache:
+          key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
+      - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
+      - run:
+          name: Load the prod image
+          command: |
+            docker load < ~/docker-cache/image.tar
+      - run:
+          name: Push the image to quay
+          command: |
+            docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
+            docker push quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1}
+            docker push quay.io/influxdb/ui-acceptance:latest
   cloud-e2e:
     machine:
       image: ubuntu-2004:202008-01
@@ -119,7 +141,7 @@ jobs:
       - run:
           name: Update the images we're using
           command: |
-            cd ./monitor-ci && make update
+            cd ./monitor-ci && make update && make build NODE=cypress
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - run:
@@ -266,6 +288,16 @@ workflows:
                 - master
           requires:
             - build-prod-image
+            - unit
+            - lint
+            - smoke
+      - share-testing-image:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - build-image
             - unit
             - lint
             - smoke

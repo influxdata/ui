@@ -33,8 +33,6 @@ import {
 import SettingsTabbedPage from 'src/settings/components/SettingsTabbedPage'
 import SettingsHeader from 'src/settings/components/SettingsHeader'
 
-import {communityTemplatesImportPath} from 'src/templates/containers/TemplatesIndex'
-
 import GetResources from 'src/resources/components/GetResources'
 import {getOrg} from 'src/organizations/selectors'
 
@@ -64,6 +62,7 @@ import {event} from 'src/cloud/utils/reporting'
 const communityTemplatesUrl =
   'https://github.com/influxdata/community-templates#templates'
 const templatesPath = '/orgs/:orgID/settings/templates'
+const communityTemplatesImportPath = `${templatesPath}/import/:directory/:templateName/:templateExtension`
 
 type Params = {
   params: {directory: string; templateName: string; templateExtension: string}
@@ -76,7 +75,7 @@ interface State {
 }
 
 @ErrorHandling
-class UnconnectedTemplatesIndex extends Component<Props, State> {
+class UnconnectedCommunityTemplatesIndex extends Component<Props, State> {
   state = {
     validationMessage: '',
   }
@@ -300,5 +299,5 @@ const mdtp = {
 const connector = connect(mstp, mdtp)
 
 export const CommunityTemplatesIndex = connector(
-  withRouter(UnconnectedTemplatesIndex)
+  withRouter(UnconnectedCommunityTemplatesIndex)
 )

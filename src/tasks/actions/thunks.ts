@@ -196,14 +196,12 @@ export const updateTaskName = (name: string, taskID: string) => async (
 type UpdateTaskParams = {
   script: string
   preamble: string
-  name: string
   task: Task
   interval: string
 }
 
 export const updateTask = ({
   script,
-  name,
   interval,
   preamble,
   task,
@@ -212,19 +210,14 @@ export const updateTask = ({
     const fluxScript = await insertPreambleInScript(script, preamble)
     const resp = await api.patchTask({
       taskID: task.id,
-      data: {name, offset: '0s', every: interval, flux: fluxScript},
+      data: {...task, offset: '0s', every: interval, flux: fluxScript},
     })
 
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
     }
 
-    const normTask = normalize<Task, TaskEntities, string>(
-      resp.data,
-      taskSchema
-    )
-
-    dispatch(editTask(normTask))
+    dispatch(goToTasks())
     dispatch(notify(copy.taskUpdateSuccess()))
   } catch (e) {
     console.error(e)

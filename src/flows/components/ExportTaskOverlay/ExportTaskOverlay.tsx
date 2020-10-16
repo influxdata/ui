@@ -27,7 +27,7 @@ import {getAllTasks as getAllTasksSelector} from 'src/resources/selectors'
 import {saveNewScript, updateTask} from 'src/tasks/actions/thunks'
 import {getOrg} from 'src/organizations/selectors'
 import {getTasks} from 'src/tasks/actions/thunks'
-import {TimeRange} from 'src/types'
+import {TimeRange, Task} from 'src/types'
 
 enum ExportAsTask {
   Create = 'create',
@@ -211,15 +211,15 @@ const ExportTaskOverlay: FC = () => {
   }
 
   const onUpdate = () => {
-    // TODO(ariel)
-    const taskOption: string = `option task = { \n  name: "${selectedTask.name}",\n  every: ${interval},\n  offset: 0s\n}`
-    const preamble = `${buildOutVariables(timeRange)}\n\n${taskOption}`
-    const trimmedOrgName = org.name.trim()
-    const script: string = `${formattedQueryText}\n  |> to(bucket: "${bucket?.name.trim()}", org: "${trimmedOrgName}")`
-    dispatch(updateTask(script, preamble))
+    if (selectedTask?.name) {
+      const task = selectedTask as Task
+      const taskOption: string = `option task = { \n  name: "${task.name}",\n  every: ${interval},\n  offset: 0s\n}`
+      const preamble = `${buildOutVariables(timeRange)}\n\n${taskOption}`
+      const trimmedOrgName = org.name.trim()
+      const script: string = `${formattedQueryText}\n  |> to(bucket: "${bucket?.name.trim()}", org: "${trimmedOrgName}")`
+      dispatch(updateTask({script, preamble, interval, task}))
+    }
   }
-
-  console.log('selectedTask: ', selectedTask)
 
   const onSubmit = activeTab === ExportAsTask.Create ? onCreate : onUpdate
 

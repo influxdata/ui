@@ -203,7 +203,8 @@ export const parseResponseWithFromFlux = (response: string): FluxTable[] => {
     currentValue = columnValues[valueIndex]
     if (
       originalType === 'dateTime:RFC3339' &&
-      typeof currentValue === 'number'
+      typeof currentValue === 'number' &&
+      !isNaN(currentValue)
     ) {
       currentValue = new Date(currentValue).toISOString()
     }
@@ -267,7 +268,8 @@ export const parseResponseWithFromFlux = (response: string): FluxTable[] => {
         currentValue = columnValues[i]
         if (
           originalType === 'dateTime:RFC3339' &&
-          typeof currentValue === 'number'
+          typeof currentValue === 'number' &&
+          !isNaN(currentValue)
         ) {
           currentValue = new Date(currentValue).toISOString()
         }
@@ -314,7 +316,8 @@ export const parseResponseWithFromFlux = (response: string): FluxTable[] => {
 
       if (
         rowOriginalType === 'dateTime:RFC3339' &&
-        typeof columnData === 'number'
+        typeof columnData === 'number' &&
+        !isNaN(columnData)
       ) {
         columnData = new Date(columnData).toISOString()
       }

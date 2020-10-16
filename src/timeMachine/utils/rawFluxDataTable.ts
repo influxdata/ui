@@ -105,10 +105,13 @@ export const fromFluxTableTransformer = (
       rowType = table.getColumnType(column)
       originalType = table.getOriginalColumnType(column)
       columnData = table.getColumn(column, rowType)[i]
+      console.log('columnDataOutside: ', columnData)
       if (
         originalType === 'dateTime:RFC3339' &&
         typeof columnData === 'number'
+        && !isNaN(columnData)
       ) {
+        console.log('columnData: ', columnData)
         columnData = new Date(columnData).toISOString()
       }
       if (column === 'result') {

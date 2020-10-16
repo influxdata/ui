@@ -100,8 +100,4 @@ export const Submit: FC = () => {
   )
 }
 
-export default () => (
-  <QueryProvider>
-    <Submit />
-  </QueryProvider>
-)
+export default Submit

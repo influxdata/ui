@@ -2,7 +2,13 @@
 import {get} from 'lodash'
 
 // Types
-import {AppState, ResourceType, RemoteDataState, Label} from 'src/types'
+import {
+  AppState,
+  ResourceType,
+  RemoteDataState,
+  Label,
+  TaskOptions,
+} from 'src/types'
 
 export const getStatus = (
   {resources}: AppState,
@@ -20,7 +26,7 @@ export const getAll = <R>(
   return allIDs.map(id => byID[id])
 }
 
-export const getAllTasks = <R>(state: AppState): R[] =>
+export const getAllTasks = (state: AppState): TaskOptions[] =>
   getAll(state, ResourceType.Tasks)
 
 export const getToken = (state: AppState): string =>

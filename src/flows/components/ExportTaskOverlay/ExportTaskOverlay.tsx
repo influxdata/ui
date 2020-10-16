@@ -1,51 +1,191 @@
 // Libraries
-import React, {ChangeEvent, FC, useEffect, useState, Component} from 'react'
+import React, {ChangeEvent, FC, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {useHistory} from 'react-router-dom'
+import {useHistory, useLocation} from 'react-router-dom'
 
 // Components
-import FluxEditor from 'src/shared/components/FluxMonacoEditor'
+import TaskDropdown from './TaskDropdown'
+import QueryTextPreview from './QueryTextPreview'
+import ExportTaskButtons from './ExportTaskButtons'
+import WarningPanel from './WarningPanel'
 import {
+  EmptyState,
   Form,
   InputType,
   Input,
-  Button,
   Grid,
-  JustifyContent,
-  AlignItems,
   Alignment,
   Columns,
   ComponentSize,
-  ButtonType,
-  ComponentColor,
-  ComponentStatus,
   Overlay,
-  Panel,
-  Gradients,
   Tabs,
   Orientation,
-  FlexDirection,
-  Icon,
-  IconFont,
 } from '@influxdata/clockface'
 
 // Utils
-import {saveNewScript} from 'src/tasks/actions/thunks'
+import {getAllTasks as getAllTasksSelector} from 'src/resources/selectors'
+import {saveNewScript, updateTask} from 'src/tasks/actions/thunks'
 import {getOrg} from 'src/organizations/selectors'
 import {getTasks} from 'src/tasks/actions/thunks'
-import {getAllTasks as getAllTasksSelector} from 'src/resources/selectors'
+import {TimeRange} from 'src/types'
 
 enum ExportAsTask {
   Create = 'create',
   Update = 'update',
 }
 
+const buildOutVariables = (timeRange: TimeRange | null): string => {
+  if (timeRange === null) {
+    return ''
+  }
+  const windowPeriod = `${timeRange.windowPeriod}ms`
+  let {lower, upper} = timeRange
+  if (upper === null) {
+    upper = 'now()'
+    lower = `-${timeRange.duration}`
+  }
+  return `option v = {\n  timeRangeStart: ${lower},\n  timeRangeStop: ${upper},\n  windowPeriod: ${windowPeriod}\n}`
+}
+
+const CreateTask = ({
+  setTaskName,
+  taskName,
+  interval,
+  setEveryInterval,
+  formattedQueryText,
+}) => {
+  return (
+    <>
+      <Grid.Column widthXS={Columns.Nine}>
+        <Form.Element label="Name">
+          <Input
+            name="name"
+            placeholder="Name your task"
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              setTaskName(event.target.value)
+            }
+            value={taskName}
+            testID="task-form-name"
+          />
+        </Form.Element>
+      </Grid.Column>
+      <Grid.Column widthXS={Columns.Three}>
+        <Form.Element label="Run Every">
+          <Input
+            name="schedule"
+            type={InputType.Text}
+            placeholder="3h30s"
+            value={interval}
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              setEveryInterval(event.target.value)
+            }
+            testID="task-form-schedule-input"
+          />
+        </Form.Element>
+      </Grid.Column>
+      <Grid.Column>
+        <QueryTextPreview formattedQueryText={formattedQueryText} />
+      </Grid.Column>
+    </>
+  )
+}
+
+const UpdateTask = ({
+  interval,
+  setEveryInterval,
+  formattedQueryText,
+  tasks,
+  selectedTask,
+  setTask,
+}) => {
+  if (tasks.length === 0) {
+    return (
+      <EmptyState size={ComponentSize.Medium}>
+        <EmptyState.Text>You haven’t created any Tasks yet</EmptyState.Text>
+      </EmptyState>
+    )
+  }
+  return (
+    <>
+      <Grid.Column widthXS={Columns.Nine}>
+        <Form.Element label="Name">
+          <TaskDropdown
+            tasks={tasks}
+            setTask={setTask}
+            selectedTask={selectedTask}
+          />
+        </Form.Element>
+      </Grid.Column>
+      <Grid.Column widthXS={Columns.Three}>
+        <Form.Element label="Run Every">
+          <Input
+            name="schedule"
+            type={InputType.Text}
+            placeholder="3h30s"
+            value={interval}
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              setEveryInterval(event.target.value)
+            }
+            testID="task-form-schedule-input"
+          />
+        </Form.Element>
+      </Grid.Column>
+      <Grid.Column>
+        <WarningPanel />
+      </Grid.Column>
+      <Grid.Column>
+        <QueryTextPreview formattedQueryText={formattedQueryText} />
+      </Grid.Column>
+    </>
+  )
+}
+
+const ExportTaskBody = ({
+  activeTab,
+  taskName,
+  setTaskName,
+  setEveryInterval,
+  interval,
+  formattedQueryText,
+  tasks,
+  setTask,
+  selectedTask,
+}) => {
+  if (activeTab === ExportAsTask.Create) {
+    return (
+      <CreateTask
+        setTaskName={setTaskName}
+        taskName={taskName}
+        setEveryInterval={setEveryInterval}
+        interval={interval}
+        formattedQueryText={formattedQueryText}
+      />
+    )
+  }
+  return (
+    <UpdateTask
+      setEveryInterval={setEveryInterval}
+      interval={interval}
+      formattedQueryText={formattedQueryText}
+      tasks={tasks}
+      setTask={setTask}
+      selectedTask={selectedTask}
+    />
+  )
+}
+
 const ExportTaskOverlay: FC = () => {
   const [activeTab, setActiveTab] = useState(ExportAsTask.Create)
-  const [taskName, setTaskName] = useState('')
-  const [interval, setInterval] = useState('')
-  const history = useHistory()
+  const [selectedTask, setTask] = useState({})
   const tasks = useSelector(getAllTasksSelector)
+  const [taskName, setTaskName] = useState('')
+  const [interval, setEveryInterval] = useState('')
+
+  const history = useHistory()
+  const location = useLocation()
+
+  //<{bucket: Bucket, queryText: string}>
+  const [{bucket, queryText, timeRange}] = location.state
   const org = useSelector(getOrg)
 
   const dispatch = useDispatch()
@@ -57,16 +197,38 @@ const ExportTaskOverlay: FC = () => {
     history.goBack()
   }
 
-  const onSubmit = () => {
-    const task: string = `option task = { \n  name: "${taskName}",\n   every: ${interval},\n offset: 0s\n`
-    const trimmedOrgName = org.name.trim()
-    const trimmedBucketName = org.name.trim()
-    const script: string = `${task}\n  |> to(bucket: "${trimmedBucketName}", org: "${trimmedOrgName}")`
-    const preamble = `${task}`
+  const formattedQueryText = queryText
+    .trim()
+    .split('|>')
+    .join('\n  |>')
 
+  const onCreate = () => {
+    const taskOption: string = `option task = { \n  name: "${taskName}",\n  every: ${interval},\n  offset: 0s\n}`
+    const preamble = `${buildOutVariables(timeRange)}\n\n${taskOption}`
+    const trimmedOrgName = org.name.trim()
+    const script: string = `${formattedQueryText}\n  |> to(bucket: "${bucket?.name.trim()}", org: "${trimmedOrgName}")`
     dispatch(saveNewScript(script, preamble))
   }
-  const canSubmit = true
+
+  const onUpdate = () => {
+    // TODO(ariel)
+    const taskOption: string = `option task = { \n  name: "${selectedTask.name}",\n  every: ${interval},\n  offset: 0s\n}`
+    const preamble = `${buildOutVariables(timeRange)}\n\n${taskOption}`
+    const trimmedOrgName = org.name.trim()
+    const script: string = `${formattedQueryText}\n  |> to(bucket: "${bucket?.name.trim()}", org: "${trimmedOrgName}")`
+    dispatch(updateTask(script, preamble))
+  }
+
+  console.log('selectedTask: ', selectedTask)
+
+  const onSubmit = activeTab === ExportAsTask.Create ? onCreate : onUpdate
+
+  const canSubmit = () => {
+    if (activeTab === ExportAsTask.Create) {
+      return !!taskName && interval !== ''
+    }
+    return interval !== '' && !!selectedTask?.name
+  }
 
   return (
     <Overlay visible={true}>
@@ -98,92 +260,23 @@ const ExportTaskOverlay: FC = () => {
               <Form>
                 <Grid>
                   <Grid.Row>
-                    <Grid.Column widthXS={Columns.Nine}>
-                      <Form.Element label="Name">
-                        <Input
-                          name="name"
-                          placeholder="Name your task"
-                          onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                            setTaskName(event.target.value)
-                          }
-                          value={taskName}
-                          testID="task-form-name"
-                        />
-                      </Form.Element>
-                    </Grid.Column>
-                    <Grid.Column widthXS={Columns.Three}>
-                      <Form.Element label="Run Every">
-                        <Input
-                          name="schedule"
-                          type={InputType.Text}
-                          placeholder="3h30s"
-                          value={interval}
-                          onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                            setInterval(event.target.value)
-                          }
-                          testID="task-form-schedule-input"
-                        />
-                      </Form.Element>
-                    </Grid.Column>
-                    {activeTab === ExportAsTask.Update && (
-                      <Grid.Column widthXS={Columns.Twelve}>
-                        <Panel
-                          gradient={Gradients.LostGalaxy}
-                          testID="panel"
-                          style={{border: '1px #513CC6 solid'}}
-                        >
-                          <Panel.Body
-                            justifyContent={JustifyContent.FlexStart}
-                            alignItems={AlignItems.Center}
-                            direction={FlexDirection.Row}
-                            margin={ComponentSize.Large}
-                            size={ComponentSize.ExtraSmall}
-                          >
-                            <Icon glyph={IconFont.AlertTriangle} />
-                            <p className="margin-zero">
-                              &nbsp;Note: changes made to an existing task
-                              cannot be undone
-                            </p>
-                          </Panel.Body>
-                        </Panel>
-                      </Grid.Column>
-                    )}
-                    <Grid.Column>
-                      {/**add in a set height and relative position */}
-                      <Form.Element style={{height: 300, position: 'relative'}}>
-                        <div className="flux-editor">
-                          <div className="flux-editor--left-panel">
-                            <FluxEditor
-                              script={'here is a randoms string'}
-                              onChangeScript={() => {}}
-                              onSubmitScript={() => {}}
-                              setEditorInstance={() => {}}
-                            />
-                          </div>
-                        </div>
-                      </Form.Element>
-                    </Grid.Column>
+                    <ExportTaskBody
+                      setEveryInterval={setEveryInterval}
+                      activeTab={activeTab}
+                      interval={interval}
+                      setTaskName={setTaskName}
+                      taskName={taskName}
+                      formattedQueryText={formattedQueryText}
+                      tasks={tasks}
+                      selectedTask={selectedTask}
+                      setTask={setTask}
+                    />
                     <Grid.Column widthXS={Columns.Twelve}>
-                      <Form.Footer>
-                        <Button
-                          text="Cancel"
-                          onClick={onDismiss}
-                          titleText="Cancel"
-                          type={ButtonType.Button}
-                        />
-                        <Button
-                          text="Export Task"
-                          color={ComponentColor.Success}
-                          type={ButtonType.Submit}
-                          onClick={onSubmit}
-                          status={
-                            canSubmit
-                              ? ComponentStatus.Default
-                              : ComponentStatus.Disabled
-                          }
-                          testID="task-form-export"
-                        />
-                      </Form.Footer>
+                      <ExportTaskButtons
+                        onDismiss={onDismiss}
+                        canSubmit={canSubmit}
+                        onSubmit={onSubmit}
+                      />
                     </Grid.Column>
                   </Grid.Row>
                 </Grid>

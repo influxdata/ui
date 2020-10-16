@@ -66,7 +66,7 @@ const FlowPanelHeader: FC<HeaderProps> = ({id, controls}) => {
   }, [index, canBeMovedDown, flow.data])
 
   const remove = useCallback(() => removePipe(), [removePipe, id])
-
+  console.log('flow: ', flow)
   return (
     <div className="flow-panel--header">
       <div className="flow-panel--node-wrapper">

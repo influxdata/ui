@@ -192,6 +192,83 @@ describe('parseFilesWithFromFlux', () => {
     const result = parseFilesWithFromFlux([CSV])
     expect(result).toEqual(expected)
   })
+  test('should not convert NaN timestamps', () => {
+    const CSV = `
+#group,false,false,false,false,false,false,false,false
+#datatype,string,long,string,string,dateTime:RFC3339,dateTime:RFC3339,dateTime:RFC3339,double
+#default,_result,,,,,,,,,,,,,,
+,result,table,_field_key2,_measurement_key2,_start_key2,_stop_key2,_time,_value_key2
+,,0,gauge,kube_pod_container_resource_requests_cpu_cores,2020-10-16T15:41:21.798083141Z,2020-10-16T16:41:21.798083141Z,2020-10-16T15:41:57Z,0.1
+,,0,gauge,kube_pod_container_resource_requests_cpu_cores,2020-10-16T15:41:21.798083141Z,2020-10-16T16:41:21.798083141Z,,0.1
+`.trim()
+
+    const expectedData = [
+      [
+        '#group',
+        'false',
+        'false',
+        'false',
+        'false',
+        'false',
+        'false',
+        'false',
+        'false',
+      ],
+      [
+        '#datatype',
+        'string',
+        'long',
+        'string',
+        'string',
+        'dateTime:RFC3339',
+        'dateTime:RFC3339',
+        'dateTime:RFC3339',
+        'double',
+      ],
+      ['#default', '_result'],
+      [
+        '',
+        'result',
+        'table',
+        '_field_key2',
+        '_measurement_key2',
+        '_start_key2',
+        '_stop_key2',
+        '_time',
+        '_value_key2',
+      ],
+      [
+        '',
+        '',
+        '0',
+        'gauge',
+        'kube_pod_container_resource_requests_cpu_cores',
+        '2020-10-16T15:41:21.798Z',
+        '2020-10-16T16:41:21.798Z',
+        '2020-10-16T15:41:57.000Z',
+        '0.1',
+      ],
+      [
+        '',
+        '',
+        '0',
+        'gauge',
+        'kube_pod_container_resource_requests_cpu_cores',
+        '2020-10-16T15:41:21.798Z',
+        '2020-10-16T16:41:21.798Z',
+        'NaN',
+        '0.1',
+      ],
+    ]
+
+    const expected = {
+      data: expectedData,
+      maxColumnCount: 9,
+    }
+
+    const result = parseFilesWithFromFlux([CSV])
+    expect(result).toEqual(expected)
+  })
   test('splits the csv chunks based on results', () => {
     const CSV = `
 #group,false,false,false,false

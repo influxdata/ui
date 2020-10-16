@@ -107,7 +107,8 @@ export const fromFluxTableTransformer = (
       columnData = table.getColumn(column, rowType)[i]
       if (
         originalType === 'dateTime:RFC3339' &&
-        typeof columnData === 'number'
+        typeof columnData === 'number' &&
+        !isNaN(columnData)
       ) {
         columnData = new Date(columnData).toISOString()
       }

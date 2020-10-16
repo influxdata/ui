@@ -456,14 +456,6 @@ describe('DataExplorer', () => {
       })
     })
 
-    it('can filter aggregation functions by name from script editor mode', () => {
-      cy.getByTestID('input-field')
-        .clear()
-        .type('covariance')
-        .should('have.value', 'covariance')
-      cy.get('.flux-toolbar--list-item').should('have.length', 1)
-    })
-
     it('shows the empty state when the query returns no results', () => {
       cy.getByTestID('time-machine--bottom').within(() => {
         cy.get('.react-monaco-editor-container')

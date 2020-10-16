@@ -62,7 +62,7 @@ describe('labels', () => {
     // open create - and proceed with overlay
     cy.getByTestID('button-create-initial').click()
 
-    // Try to save without name (required field) button she be disabled
+    // Try to save without name (required field) button should be disabled
     cy.getByTestID('create-label-form--submit').should('be.disabled')
 
     // enter name

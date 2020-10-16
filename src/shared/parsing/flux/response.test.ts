@@ -114,7 +114,7 @@ describe('parseResponseWithFromFlux', () => {
 ,,0,gauge,kube_pod_container_resource_requests_cpu_cores,2020-10-16T15:41:21.798083141Z,2020-10-16T16:41:21.798083141Z,,0.1
 `.trim()
 
-    const expectedData = [
+    const expected = [
       [
         '',
         'result',
@@ -149,11 +149,6 @@ describe('parseResponseWithFromFlux', () => {
         '0.1',
       ],
     ]
-
-    const expected = {
-      data: expectedData,
-      maxColumnCount: 16,
-    }
 
     const result = parseResponseWithFromFlux(CSV)
     expect(result[0].data).toEqual(expected)

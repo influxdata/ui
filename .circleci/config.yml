@@ -291,6 +291,7 @@ workflows:
             - unit
             - lint
             - smoke
+            - cloud-e2e
       - share-testing-image:
           filters:
             branches:
@@ -301,3 +302,4 @@ workflows:
             - unit
             - lint
             - smoke
+            - cloud-e2e

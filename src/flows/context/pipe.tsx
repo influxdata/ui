@@ -41,7 +41,7 @@ export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
   const {generateMap} = useContext(QueryContext)
 
   const stages = useMemo(() => generateMap(), [generateMap, flow.data.get(id)])
-  const queryText = stages.filter(stage => stage.instances.includes(id))[0].text
+  const queryText = stages.filter(stage => stage.instances.includes(id))[0]?.text || ''
 
   const updater = (_data: PipeData) => {
     flow.data.update(id, _data)

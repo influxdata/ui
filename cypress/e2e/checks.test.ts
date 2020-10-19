@@ -99,18 +99,18 @@ describe('Checks', () => {
       cy.getByTestID('notification-error').should('not.exist')
     })
 
-    it('After check creation confirm history page has graph', () => {
+    it('after check creation confirm history page has graph', () => {
       cy.getByTestID('context-history-menu').click()
       cy.getByTestID('context-history-task').click()
       cy.getByTestID('giraffe-axes').should('be.visible')
 
-      //Clicking the check status input results in dropdown and clicking outside removes dropdown
+      // Clicking the check status input results in dropdown and clicking outside removes dropdown
       cy.getByTestID('check-status-input').click()
       cy.getByTestID('check-status-dropdown').should('be.visible')
       cy.getByTestID('alert-history-title').click()
       cy.getByTestID('check-status-dropdown').should('not.exist')
 
-      //Minimize the graph by dragging
+      // Minimize the graph by dragging
       cy.get('.threshold-marker--area.threshold-marker--crit')
         .trigger('mousedown', {which: 1, pageX: 600, pageY: 100})
         .trigger('mousemove', {which: 1, pageX: 700, pageY: 100})

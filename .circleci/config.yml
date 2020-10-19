@@ -167,8 +167,6 @@ jobs:
     working_directory: ~/
     resource_class: medium
     steps:
-      - restore_cache:
-          key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
@@ -182,7 +180,6 @@ jobs:
           name: Update the images we're using
           command: |
             cd ./monitor-ci && make update && make build NODE=cypress
-            docker load < ~/docker-cache/image.tar
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start

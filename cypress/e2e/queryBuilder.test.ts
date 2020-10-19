@@ -83,8 +83,8 @@ describe('The Query Builder', () => {
       cy.getByTestID('nav-item-dashboards').click()
 
       cy.contains('Basic Ole Dashboard').click()
-      cy.getByTestID('giraffe-layer-line').should('exist')
-      cy.getByTestID('cell-context--toggle').should('exist')
+      cy.getByTestID('giraffe-layer-line').should('be.visible')
+      cy.getByTestID('cell-context--toggle').should('be.visible')
       cy.getByTestID('cell-context--toggle').click()
       cy.contains('Configure').click()
 

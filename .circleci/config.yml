@@ -348,7 +348,4 @@ workflows:
               only:
                 - master
     jobs:
-      - build-image
-      - cloud-e2e-nightly:
-          requires:
-            - build-image
+      - cloud-e2e-nightly

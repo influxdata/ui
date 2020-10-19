@@ -21,8 +21,7 @@ import {ViewType, RemoteDataState} from 'src/types'
 import {AppSettingContext} from 'src/flows/context/app'
 import {PipeContext} from 'src/flows/context/pipe'
 
-import {TYPE_DEFINITIONS} from 'src/shared/visualization'
-import {_transform} from 'src/flows/pipes/Visualization/view'
+import {TYPE_DEFINITIONS, _transform} from 'src/shared/visualization'
 
 const TestFlux: FC<PipeProp> = ({Context}) => {
   const {timeZone} = useContext(AppSettingContext)

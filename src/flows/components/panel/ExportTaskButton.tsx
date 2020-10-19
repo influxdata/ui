@@ -1,35 +1,43 @@
 // Libraries
 import React, {FC, useContext} from 'react'
+import {useHistory, useParams} from 'react-router-dom'
+import {
+  ButtonType,
+  ComponentColor,
+  ComponentStatus,
+} from '@influxdata/clockface'
 
 // Components
-import {SquareButton, IconFont} from '@influxdata/clockface'
-import {FlowContext} from 'src/flows/context/flow.current'
+import {Button} from '@influxdata/clockface'
+import {PipeContext} from 'src/flows/context/pipe'
+import {TimeContext} from 'src/flows/context/time'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
-export interface Props {
-  id: string
-}
-
-const ExportTaskButton: FC<Props> = ({id}) => {
-  const {flow} = useContext(FlowContext)
-  const meta = flow.meta.get(id)
-
-  const icon = meta.visible ? IconFont.EyeOpen : IconFont.EyeClosed
-  const title = meta.visible ? 'Collapse cell' : 'Expand cell'
-
-  const handleClick = (): void => {
-    event('Panel Visibility Toggled', {
-      state: !meta.visible ? 'true' : 'false',
-    })
-
-    flow.meta.update(id, {
-      visible: !meta.visible,
-    })
+const ExportTaskButton: FC = () => {
+  const history = useHistory()
+  const {data, queryText} = useContext(PipeContext)
+  const {timeContext} = useContext(TimeContext)
+  const {orgID, id} = useParams<{orgID: string; id: string}>()
+  const timeRange = timeContext[id]
+  const onClick = () => {
+    event('Export Task Clicked')
+    history.push(`/orgs/${orgID}/flows/${id}/export-task`, [
+      {bucket: data.bucket, queryText, timeRange: timeRange.range},
+    ])
   }
-
-  return <SquareButton icon={icon} onClick={handleClick} titleText={title} />
+  return (
+    <Button
+      text="Export as Task"
+      color={ComponentColor.Success}
+      type={ButtonType.Submit}
+      onClick={onClick}
+      status={data.bucket ? ComponentStatus.Default : ComponentStatus.Disabled}
+      testID="task-form-save"
+      style={{opacity: 1}}
+    />
+  )
 }
 
 export default ExportTaskButton

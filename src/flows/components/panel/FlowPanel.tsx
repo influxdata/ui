@@ -18,6 +18,7 @@ import {
   JustifyContent,
   ClickOutside,
 } from '@influxdata/clockface'
+import ExportTaskButton from 'src/flows/components/panel/ExportTaskButton'
 import RemovePanelButton from 'src/flows/components/panel/RemovePanelButton'
 import InsertCellButton from 'src/flows/components/panel/InsertCellButton'
 import PanelVisibilityToggle from 'src/flows/components/panel/PanelVisibilityToggle'
@@ -36,14 +37,16 @@ import {RefContext} from 'src/flows/context/refs'
 
 export interface Props extends PipeContextProps {
   id: string
+  shouldShow?: boolean
 }
 
 export interface HeaderProps {
   id: string
   controls?: ReactNode
+  shouldShow?: boolean
 }
 
-const FlowPanelHeader: FC<HeaderProps> = ({id, controls}) => {
+const FlowPanelHeader: FC<HeaderProps> = ({id, controls, shouldShow}) => {
   const {flow} = useContext(FlowContext)
   const removePipe = () => {
     flow.data.remove(id)
@@ -66,7 +69,6 @@ const FlowPanelHeader: FC<HeaderProps> = ({id, controls}) => {
   }, [index, canBeMovedDown, flow.data])
 
   const remove = useCallback(() => removePipe(), [removePipe, id])
-  console.log('flow: ', flow)
   return (
     <div className="flow-panel--header">
       <div className="flow-panel--node-wrapper">
@@ -100,6 +102,7 @@ const FlowPanelHeader: FC<HeaderProps> = ({id, controls}) => {
               active={canBeMovedDown}
             />
           </FeatureFlag>
+          {shouldShow && <ExportTaskButton />}
           <PanelVisibilityToggle id={id} />
           <RemovePanelButton onRemove={remove} />
         </FlexBox>
@@ -108,7 +111,7 @@ const FlowPanelHeader: FC<HeaderProps> = ({id, controls}) => {
   )
 }
 
-const FlowPanel: FC<Props> = ({id, children, controls}) => {
+const FlowPanel: FC<Props> = ({id, children, controls, shouldShow}) => {
   const {flow} = useContext(FlowContext)
   const refs = useContext(RefContext)
   const panelRef = useRef<HTMLDivElement>(null)
@@ -156,7 +159,7 @@ const FlowPanel: FC<Props> = ({id, children, controls}) => {
   return (
     <ClickOutside onClickOutside={handleClickOutside}>
       <div className={panelClassName} onClick={handleClick} ref={panelRef}>
-        <FlowPanelHeader id={id} controls={controls} />
+        <FlowPanelHeader id={id} controls={controls} shouldShow={shouldShow} />
         <div className="flow-panel--body">{children}</div>
         {showResults && (
           <div className="flow-panel--results">

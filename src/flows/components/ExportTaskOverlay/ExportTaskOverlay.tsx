@@ -1,7 +1,7 @@
 // Libraries
 import React, {ChangeEvent, FC, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {useHistory, useLocation} from 'react-router-dom'
+import {RouteProps, useHistory, useLocation} from 'react-router-dom'
 
 // Components
 import TaskDropdown from './TaskDropdown'
@@ -9,6 +9,7 @@ import QueryTextPreview from './QueryTextPreview'
 import ExportTaskButtons from './ExportTaskButtons'
 import WarningPanel from './WarningPanel'
 import {
+  ComponentStatus,
   EmptyState,
   Form,
   InputType,
@@ -27,7 +28,7 @@ import {getAllTasks as getAllTasksSelector} from 'src/resources/selectors'
 import {saveNewScript, updateTask} from 'src/tasks/actions/thunks'
 import {getOrg} from 'src/organizations/selectors'
 import {getTasks} from 'src/tasks/actions/thunks'
-import {TimeRange, Task} from 'src/types'
+import {SelectableDurationTimeRange, TimeRange, Task} from 'src/types'
 
 enum ExportAsTask {
   Create = 'create',
@@ -38,16 +39,22 @@ const buildOutVariables = (timeRange: TimeRange | null): string => {
   if (timeRange === null) {
     return ''
   }
-  const windowPeriod = `${timeRange.windowPeriod}ms`
-  let {lower, upper} = timeRange
-  if (upper === null) {
+  if (timeRange.type === 'custom') {
+    return `option v = {\n  timeRangeStart: ${timeRange.lower},\n  timeRangeStop: ${timeRange.upper}\n}`
+  }
+  const range = timeRange as SelectableDurationTimeRange
+  const windowPeriod = `${range.windowPeriod}ms`
+  let {lower} = timeRange
+  let upper = ''
+  if (timeRange.upper === null) {
     upper = 'now()'
-    lower = `-${timeRange.duration}`
+    lower = `-${range.duration}`
   }
   return `option v = {\n  timeRangeStart: ${lower},\n  timeRangeStop: ${upper},\n  windowPeriod: ${windowPeriod}\n}`
 }
 
 const CreateTask = ({
+  hasError,
   setTaskName,
   taskName,
   interval,
@@ -57,7 +64,10 @@ const CreateTask = ({
   return (
     <>
       <Grid.Column widthXS={Columns.Nine}>
-        <Form.Element label="Name">
+        <Form.Element
+          label="Name"
+          errorMessage={hasError && 'This field cannot be empty'}
+        >
           <Input
             name="name"
             placeholder="Name your task"
@@ -66,11 +76,15 @@ const CreateTask = ({
             }
             value={taskName}
             testID="task-form-name"
+            status={hasError ? ComponentStatus.Error : ComponentStatus.Default}
           />
         </Form.Element>
       </Grid.Column>
       <Grid.Column widthXS={Columns.Three}>
-        <Form.Element label="Run Every">
+        <Form.Element
+          label="Run Every"
+          errorMessage={hasError && 'Invalid Time'}
+        >
           <Input
             name="schedule"
             type={InputType.Text}
@@ -80,6 +94,7 @@ const CreateTask = ({
               setEveryInterval(event.target.value)
             }
             testID="task-form-schedule-input"
+            status={hasError ? ComponentStatus.Error : ComponentStatus.Default}
           />
         </Form.Element>
       </Grid.Column>
@@ -97,6 +112,7 @@ const UpdateTask = ({
   tasks,
   selectedTask,
   setTask,
+  hasError,
 }) => {
   if (tasks.length === 0) {
     return (
@@ -108,7 +124,10 @@ const UpdateTask = ({
   return (
     <>
       <Grid.Column widthXS={Columns.Nine}>
-        <Form.Element label="Name">
+        <Form.Element
+          label="Name"
+          errorMessage={hasError && 'This field cannot be empty'}
+        >
           <TaskDropdown
             tasks={tasks}
             setTask={setTask}
@@ -117,7 +136,10 @@ const UpdateTask = ({
         </Form.Element>
       </Grid.Column>
       <Grid.Column widthXS={Columns.Three}>
-        <Form.Element label="Run Every">
+        <Form.Element
+          label="Run Every"
+          errorMessage={hasError && 'Invalid Time'}
+        >
           <Input
             name="schedule"
             type={InputType.Text}
@@ -127,6 +149,7 @@ const UpdateTask = ({
               setEveryInterval(event.target.value)
             }
             testID="task-form-schedule-input"
+            status={hasError ? ComponentStatus.Error : ComponentStatus.Default}
           />
         </Form.Element>
       </Grid.Column>
@@ -142,6 +165,7 @@ const UpdateTask = ({
 
 const ExportTaskBody = ({
   activeTab,
+  hasError,
   taskName,
   setTaskName,
   setEveryInterval,
@@ -154,6 +178,7 @@ const ExportTaskBody = ({
   if (activeTab === ExportAsTask.Create) {
     return (
       <CreateTask
+        hasError={hasError}
         setTaskName={setTaskName}
         taskName={taskName}
         setEveryInterval={setEveryInterval}
@@ -164,6 +189,7 @@ const ExportTaskBody = ({
   }
   return (
     <UpdateTask
+      hasError={hasError}
       setEveryInterval={setEveryInterval}
       interval={interval}
       formattedQueryText={formattedQueryText}
@@ -176,16 +202,36 @@ const ExportTaskBody = ({
 
 const ExportTaskOverlay: FC = () => {
   const [activeTab, setActiveTab] = useState(ExportAsTask.Create)
-  const [selectedTask, setTask] = useState({})
+  const [selectedTask, setTask] = useState<Task>(undefined)
+  const [hasError, setHasError] = useState(false)
   const tasks = useSelector(getAllTasksSelector)
   const [taskName, setTaskName] = useState('')
   const [interval, setEveryInterval] = useState('')
 
-  const history = useHistory()
-  const location = useLocation()
+  const handleSetTaskName = (value: string): void => {
+    if (hasError) {
+      setHasError(false)
+    }
+    setTaskName(value)
+  }
+  const handleSetTask = (task: Task): void => {
+    if (hasError) {
+      setHasError(false)
+    }
+    setTask(task)
+  }
+  const handleSetEveryInterval = (value: string): void => {
+    if (hasError) {
+      setHasError(false)
+    }
+    setEveryInterval(value)
+  }
 
-  //<{bucket: Bucket, queryText: string}>
-  const [{bucket, queryText, timeRange}] = location.state
+  const history = useHistory()
+  const location: RouteProps['location'] = useLocation()
+
+  const params = location.state
+  const {bucket, queryText, timeRange} = params[0]
   const org = useSelector(getOrg)
 
   const dispatch = useDispatch()
@@ -203,6 +249,10 @@ const ExportTaskOverlay: FC = () => {
     .join('\n  |>')
 
   const onCreate = () => {
+    if (!/\d/.test(interval)) {
+      setHasError(true)
+      return
+    }
     const taskOption: string = `option task = { \n  name: "${taskName}",\n  every: ${interval},\n  offset: 0s\n}`
     const preamble = `${buildOutVariables(timeRange)}\n\n${taskOption}`
     const trimmedOrgName = org.name.trim()
@@ -211,14 +261,15 @@ const ExportTaskOverlay: FC = () => {
   }
 
   const onUpdate = () => {
-    if (selectedTask?.name) {
-      const task = selectedTask as Task
-      const taskOption: string = `option task = { \n  name: "${task.name}",\n  every: ${interval},\n  offset: 0s\n}`
-      const preamble = `${buildOutVariables(timeRange)}\n\n${taskOption}`
-      const trimmedOrgName = org.name.trim()
-      const script: string = `${formattedQueryText}\n  |> to(bucket: "${bucket?.name.trim()}", org: "${trimmedOrgName}")`
-      dispatch(updateTask({script, preamble, interval, task}))
+    if (!/\d/.test(interval) || !selectedTask?.name) {
+      setHasError(true)
+      return
     }
+    const taskOption: string = `option task = { \n  name: "${selectedTask.name}",\n  every: ${interval},\n  offset: 0s\n}`
+    const preamble = `${buildOutVariables(timeRange)}\n\n${taskOption}`
+    const trimmedOrgName = org.name.trim()
+    const script: string = `${formattedQueryText}\n  |> to(bucket: "${bucket?.name.trim()}", org: "${trimmedOrgName}")`
+    dispatch(updateTask({script, preamble, interval, task: selectedTask}))
   }
 
   const onSubmit = activeTab === ExportAsTask.Create ? onCreate : onUpdate
@@ -261,15 +312,16 @@ const ExportTaskOverlay: FC = () => {
                 <Grid>
                   <Grid.Row>
                     <ExportTaskBody
-                      setEveryInterval={setEveryInterval}
+                      setEveryInterval={handleSetEveryInterval}
                       activeTab={activeTab}
                       interval={interval}
-                      setTaskName={setTaskName}
+                      setTaskName={handleSetTaskName}
                       taskName={taskName}
                       formattedQueryText={formattedQueryText}
                       tasks={tasks}
                       selectedTask={selectedTask}
-                      setTask={setTask}
+                      setTask={handleSetTask}
+                      hasError={hasError}
                     />
                     <Grid.Column widthXS={Columns.Twelve}>
                       <ExportTaskButtons

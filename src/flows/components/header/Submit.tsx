@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, useContext, useState, useEffect} from 'react'
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
-import QueryProvider, {QueryContext} from 'src/flows/context/query'
+import {QueryContext} from 'src/flows/context/query'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {ResultsContext} from 'src/flows/context/results'
 import {TimeContext} from 'src/flows/context/time'

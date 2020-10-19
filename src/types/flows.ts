@@ -24,6 +24,7 @@ export interface NormalizedSchema {
 export interface PipeContextProps {
   children?: ReactNode
   controls?: ReactNode
+  shouldShow?: boolean
 }
 
 export type PipeData = any

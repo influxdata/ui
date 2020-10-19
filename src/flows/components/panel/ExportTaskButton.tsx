@@ -36,6 +36,9 @@ const ExportTaskButton: FC = () => {
       status={data.bucket ? ComponentStatus.Default : ComponentStatus.Disabled}
       testID="task-form-save"
       style={{opacity: 1}}
+      titleText={
+        data.bucket ? 'Export As Task' : 'Select a bucket to enable export'
+      }
     />
   )
 }

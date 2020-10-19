@@ -27,7 +27,6 @@ function getTimeMachineText() {
     .invoke('text')
 }
 
-// NOTE: this crashes circle FOR NO REASON
 describe('DataExplorer', () => {
   beforeEach(() => {
     cy.flush()
@@ -295,9 +294,7 @@ describe('DataExplorer', () => {
         cy.getByTestID('timerange-popover--dialog').should('have.length', 1)
       })
 
-      it.skip('should error when submitting stop dates that are before start dates', () => {
-        // TODO: complete with issue #15632
-        // https://github.com/influxdata/influxdb/issues/15632
+      it('should error when submitting stop dates that are before start dates', () => {
         cy.get('input[title="Start"]')
           .should('have.length', 1)
           .clear()
@@ -311,16 +308,12 @@ describe('DataExplorer', () => {
         // click button and see if time range has been selected
         cy.getByTestID('daterange--apply-btn').click()
 
-        // TODO: complete test once functionality is fleshed out
-
-        // cy.get('.cf-dropdown--selected')
-        //   .contains('2019-10-01 00:00 - 2019-10-31 00:00')
-        //   .should('have.length', 1)
+        cy.getByTestID('timerange-dropdown').contains(
+          '2019-10-31 00:00 - 2019-10-29 00:00'
+        )
       })
 
-      it.skip('should error when invalid dates are input', () => {
-        // TODO: complete with issue #15632
-        // https://github.com/influxdata/influxdb/issues/15632
+      it('should error when invalid dates are input', () => {
         // default inputs should be valid
         cy.getByTestID('input-error').should('not.exist')
 
@@ -331,7 +324,7 @@ describe('DataExplorer', () => {
           .type('2019-10')
 
         // invalid date errors
-        cy.getByTestID('input-error').should('have.length', 1)
+        cy.getByTestID('form--element-error').should('exist')
 
         // modifies the input to be valid
         cy.get('input[title="Start"]').type('-01')
@@ -346,16 +339,7 @@ describe('DataExplorer', () => {
           .type('2019-10-')
 
         // invalid date errors
-        cy.getByTestID('input-error').should('have.length', 1)
-
-        // try submitting invalid date
-        cy.getByTestID('daterange--apply-btn').click()
-
-        // TODO: complete test once functionality is fleshed out
-
-        // cy.get('.cf-dropdown--selected')
-        //   .contains('2019-10-01 00:00 - 2019-10-31 00:00')
-        //   .should('have.length', 1)
+        cy.getByTestID('form--element-error').should('exist')
       })
     })
   })

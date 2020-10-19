@@ -137,24 +137,18 @@ describe.skip('Buckets', () => {
       })
     })
 
-    // Currently producing a false negative
-    it.skip('can delete a bucket', () => {
-      const bucket1 = 'newbucket1'
-      cy.get<Organization>('@org').then(({id, name}: Organization) => {
-        cy.createBucket(id, name, bucket1)
-      })
+    // TODO: ZOE Come back and fix race condition
+    // it('can delete a bucket', () => {
+    //   const bucket1 = 'newbucket1'
+    //   cy.get<Organization>('@org').then(({id, name}: Organization) => {
+    //     cy.createBucket(id, name, bucket1)
+    //   })
 
-      cy.getByTestID(`context-delete-menu ${bucket1}`).click()
-      cy.getByTestID(`context-delete-bucket ${bucket1}`).click()
+    //   cy.getByTestID(`context-delete-menu ${bucket1}`).click()
+    //   cy.getByTestID(`context-delete-bucket ${bucket1}`).click()
 
-      // normally we would assert for empty state here
-      // but we cannot because of the default system buckets
-      // since cypress selectors are so fast, that sometimes a bucket
-      // that is deleted will be selected before it gets deleted
-      cy.wait(10000)
-
-      cy.getByTestID(`bucket--card--name ${bucket1}`).should('not.exist')
-    })
+    //   cy.getByTestID(`bucket--card--name ${bucket1}`).should('not.exist')
+    // })
   })
 
   // skipping until feature flag feature is removed for deleteWithPredicate

@@ -87,12 +87,50 @@ describe('Checks', () => {
       cy.getByTestID('save-cell--button').should('be.disabled')
       cy.getByTestID('checkeo--header alerting-tab').click()
       cy.getByTestID('add-threshold-condition-WARN').click()
-      cy.getByTestID('input-field')
+      cy.getByTestID('input-field-WARN')
+        .clear()
+        .type('5s')
+      cy.getByTestID('add-threshold-condition-CRIT').click()
+      cy.getByTestID('input-field-CRIT')
         .clear()
         .type('0')
       cy.getByTestID('save-cell--button').click()
       cy.getByTestID('check-card').should('have.length', 1)
       cy.getByTestID('notification-error').should('not.exist')
+    })
+
+    it('after check creation confirm history page has graph', () => {
+      cy.getByTestID('context-history-menu').click()
+      cy.getByTestID('context-history-task').click()
+      cy.getByTestID('giraffe-axes').should('be.visible')
+
+      // Clicking the check status input results in dropdown and clicking outside removes dropdown
+      cy.getByTestID('check-status-input').click()
+      cy.getByTestID('check-status-dropdown').should('be.visible')
+      cy.getByTestID('alert-history-title').click()
+      cy.getByTestID('check-status-dropdown').should('not.exist')
+
+      // Minimize the graph by dragging
+      cy.get('.threshold-marker--area.threshold-marker--crit')
+        .trigger('mousedown', {which: 1, pageX: 600, pageY: 100})
+        .trigger('mousemove', {which: 1, pageX: 700, pageY: 100})
+        .trigger('mouseup', {force: true})
+    })
+
+    it('accepts keyboard tabs as navigation', () => {
+      // have to make the viewport huge to get it not to switch to tablet size
+      cy.viewport(1800, 980)
+
+      cy.get('body').tab()
+      cy.getByTestID('filter--input checks').should('have.focus')
+
+      cy.focused()
+        .tab()
+        .tab()
+      cy.getByTestID('filter--input endpoints').should('have.focus')
+
+      cy.focused().tab()
+      cy.getByTestID('filter--input rules').should('have.focus')
     })
 
     it('should allow created checks to be selected and routed to the edit page', () => {
@@ -120,10 +158,10 @@ describe('Checks', () => {
       cy.getByTestID('check-card--name').should('have.length', 1)
       cy.getByTestID('check-card--name').click()
       // ensures that the check WARN value is set to 0
-      cy.getByTestID('input-field')
-        .should('have.value', '0')
+      cy.getByTestID('input-field-WARN')
+        .should('have.value', '5')
         .clear()
-        .type('7')
+        .type('0')
       // renames the check
       cy.getByTestID('page-title')
         .contains('Name this Check')
@@ -165,64 +203,6 @@ describe('Checks', () => {
       // delete the label
       cy.getByTestID(`label--pill--delete ${labelName}`).click({force: true})
       cy.getByTestID('inline-labels--empty').should('exist')
-    })
-  })
-
-  describe('Access alert history page', () => {
-    it('After check creation confirm history page has graph', () => {
-      // creates a check before each iteration
-      // TODO: refactor into a request with other before each
-      cy.getByTestID('create-check').click()
-      cy.getByTestID('create-threshold-check').click()
-      cy.getByTestID(`selector-list defbuck`)
-        .wait(1200)
-        .click()
-      cy.getByTestID(`selector-list ${measurement}`).click()
-      cy.getByTestID('save-cell--button').should('be.disabled')
-      cy.getByTestID(`selector-list ${field}`).click()
-      cy.getByTestID('save-cell--button').should('be.disabled')
-      cy.getByTestID('checkeo--header alerting-tab').click()
-      cy.getByTestID('add-threshold-condition-CRIT').click()
-      cy.getByTestID('input-field')
-        .clear()
-        .type('0')
-      cy.getByTestID('add-threshold-condition-WARN').click()
-      cy.getByTestID('schedule-check')
-        .clear()
-        .type('5s')
-      cy.getByTestID('save-cell--button').click()
-      cy.getByTestID('notification-error').should('not.exist')
-      cy.getByTestID('context-history-menu').click()
-      cy.getByTestID('context-history-task').click()
-      cy.getByTestID('giraffe-axes').should('be.visible')
-
-      //Clicking the check status input results in dropdown and clicking outside removes dropdown
-      cy.getByTestID('check-status-input').click()
-      cy.getByTestID('check-status-dropdown').should('be.visible')
-      cy.getByTestID('alert-history-title').click()
-      cy.getByTestID('check-status-dropdown').should('not.exist')
-
-      //Minimize the graph by dragging
-      cy.get('.threshold-marker--area.threshold-marker--crit')
-        .trigger('mousedown', {which: 1, pageX: 600, pageY: 100})
-        .trigger('mousemove', {which: 1, pageX: 700, pageY: 100})
-        .trigger('mouseup', {force: true})
-    })
-
-    it('accepts keyboard tabs as navigation', () => {
-      // have to make the viewport huge to get it not to switch to tablet size
-      cy.viewport(1800, 980)
-
-      cy.get('body').tab()
-      cy.getByTestID('filter--input checks').should('have.focus')
-
-      cy.focused()
-        .tab()
-        .tab()
-      cy.getByTestID('filter--input endpoints').should('have.focus')
-
-      cy.focused().tab()
-      cy.getByTestID('filter--input rules').should('have.focus')
     })
   })
 })

@@ -31,8 +31,7 @@ describe('The Query Builder', () => {
   })
 
   describe('from the Data Explorer', () => {
-    // NOTE: this crashes in circleci, please re-enable
-    it.skip('creates a query, edits it to add another field, then views its results with pride and satisfaction', () => {
+    it('creates a query, edits it to add another field, then views its results with pride and satisfaction', () => {
       cy.get('@org').then((org: Organization) => {
         cy.visit(`orgs/${org.id}/data-explorer`)
       })
@@ -70,6 +69,8 @@ describe('The Query Builder', () => {
       cy.getByTestID('nav-item-dashboards').click()
 
       cy.contains('Basic Ole Dashboard').click()
+      cy.getByTestID('giraffe-layer-line').should('exist')
+      cy.getByTestID('cell-context--toggle').should('exist')
       cy.getByTestID('cell-context--toggle').click()
       cy.contains('Configure').click()
 
@@ -82,6 +83,8 @@ describe('The Query Builder', () => {
       cy.getByTestID('nav-item-dashboards').click()
 
       cy.contains('Basic Ole Dashboard').click()
+      cy.getByTestID('giraffe-layer-line').should('be.visible')
+      cy.getByTestID('cell-context--toggle').should('be.visible')
       cy.getByTestID('cell-context--toggle').click()
       cy.contains('Configure').click()
 
@@ -185,9 +188,7 @@ describe('The Query Builder', () => {
     })
   })
 
-  // This is flaky in prod
-  // https://circleci.com/gh/influxdata/influxdb/74628#artifacts/containers/0
-  describe.skip('from the Dashboard view', () => {
+  describe('from the Dashboard view', () => {
     beforeEach(() => {
       cy.get('@org').then((org: Organization) => {
         cy.createDashboard(org.id).then(({body}) => {
@@ -222,11 +223,6 @@ describe('The Query Builder', () => {
       cy.get('[placeholder="Name this Cell"]').type('A better name!')
       cy.get('.veo-contents').click() // click out of inline editor
       cy.getByTestID('save-cell--button').click()
-
-      // A race condition exists between saving the cell's updated name and re-opening the cell.
-      // Will replace this with a cy.wait(@updateCell) when Cypress supports
-      // waiting on window.fetch responses: https://github.com/cypress-io/cypress/issues/95
-      // resolves: https://github.com/influxdata/influxdb/issues/16141
 
       cy.get<ResourceIDs>('@resourceIDs').then(({orgID, dbID, cellID}) => {
         cy.visit(`orgs/${orgID}/dashboards/${dbID}/cells/${cellID}/edit`)

@@ -2,8 +2,12 @@
 import React, {PureComponent} from 'react'
 
 // Components
-import {Context} from 'src/clockface'
-import {IconFont, ComponentColor} from '@influxdata/clockface'
+import {
+  IconFont,
+  ComponentColor,
+  ConfirmationButton,
+  ComponentSize,
+} from '@influxdata/clockface'
 
 // Types
 import {Label} from 'src/types'
@@ -18,20 +22,17 @@ export default class LabelContextMenu extends PureComponent<Props> {
     const {label, onDelete} = this.props
 
     return (
-      <Context>
-        <Context.Menu
-          icon={IconFont.Trash}
-          color={ComponentColor.Danger}
-          testID="context-delete-menu"
-        >
-          <Context.Item
-            label="Delete"
-            action={onDelete}
-            value={label.id}
-            testID="context-delete-label"
-          />
-        </Context.Menu>
-      </Context>
+      <ConfirmationButton
+        size={ComponentSize.ExtraSmall}
+        text="Delete"
+        color={ComponentColor.Danger}
+        icon={IconFont.Trash}
+        confirmationLabel="Are you sure? This cannot be undone"
+        confirmationButtonText="Confirm"
+        returnValue={label.id}
+        onConfirm={onDelete}
+        testID="context-delete"
+      />
     )
   }
 }

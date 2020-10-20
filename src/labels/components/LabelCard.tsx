@@ -42,6 +42,7 @@ export default class LabelCard extends PureComponent<Props> {
     return (
       <ResourceCard
         testID="label-card"
+        contextMenuInteraction="alwaysVisible"
         contextMenu={<LabelContextMenu label={label} onDelete={onDelete} />}
         direction={FlexDirection.Row}
         alignItems={AlignItems.Center}

@@ -246,10 +246,10 @@ http.post(
         .first()
         .trigger('mouseover')
         .then(() => {
-          cy.getByTestID('context-delete-menu')
+          cy.getByTestID('context-delete--button')
             .click()
             .then(() => {
-              cy.getByTestID('context-delete-task')
+              cy.getByTestID('context-delete--confirm-button')
                 .click()
                 .then(() => {
                   cy.getByTestID('empty-tasks-list').should('exist')

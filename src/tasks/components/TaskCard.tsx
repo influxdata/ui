@@ -5,6 +5,7 @@ import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
 import {
+  Button,
   SlideToggle,
   ComponentSize,
   ResourceCard,
@@ -13,8 +14,8 @@ import {
   FlexBox,
   AlignItems,
   FlexDirection,
+  ConfirmationButton,
 } from '@influxdata/clockface'
-import {Context} from 'src/clockface'
 import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
 import LastRunTaskStatus from 'src/shared/components/lastRunTaskStatus/LastRunTaskStatus'
 
@@ -52,6 +53,7 @@ export class TaskCard extends PureComponent<
         testID="task-card"
         disabled={!this.isTaskActive}
         contextMenu={this.contextMenu}
+        contextMenuInteraction="alwaysVisible"
         alignItems={AlignItems.Center}
         margin={ComponentSize.Large}
         direction={FlexDirection.Row}
@@ -101,34 +103,46 @@ export class TaskCard extends PureComponent<
   }
 
   private get contextMenu(): JSX.Element {
-    const {task, onClone, onDelete, onRunTask} = this.props
+    const {task, onDelete} = this.props
 
     return (
-      <Context>
-        <Context.Menu icon={IconFont.CogThick}>
-          <Context.Item label="Export" action={this.handleExport} />
-          <Context.Item label="View Task Runs" action={this.handleViewRuns} />
-          <Context.Item label="Run Task" action={onRunTask} value={task.id} />
-        </Context.Menu>
-        <Context.Menu
+      <FlexBox margin={ComponentSize.Small}>
+        <Button
+          text="Export"
+          icon={IconFont.Export}
+          size={ComponentSize.ExtraSmall}
+          onClick={this.handleExport}
+        />
+        <Button
+          text="Run"
+          icon={IconFont.Play}
+          size={ComponentSize.ExtraSmall}
+          onClick={this.handleRun}
+        />
+        <Button
+          text="Run Logs"
+          icon={IconFont.Play}
+          size={ComponentSize.ExtraSmall}
+          onClick={this.handleViewRuns}
+        />
+        <Button
+          text="Clone"
           icon={IconFont.Duplicate}
-          color={ComponentColor.Secondary}
-        >
-          <Context.Item label="Clone" action={onClone} value={task} />
-        </Context.Menu>
-        <Context.Menu
-          icon={IconFont.Trash}
+          size={ComponentSize.ExtraSmall}
+          onClick={this.handleClone}
+        />
+        <ConfirmationButton
+          size={ComponentSize.ExtraSmall}
+          text="Delete"
           color={ComponentColor.Danger}
-          testID="context-delete-menu"
-        >
-          <Context.Item
-            label="Delete"
-            action={onDelete}
-            value={task}
-            testID="context-delete-task"
-          />
-        </Context.Menu>
-      </Context>
+          icon={IconFont.Trash}
+          confirmationLabel="Are you sure? This cannot be undone"
+          confirmationButtonText="Confirm"
+          returnValue={task}
+          onConfirm={onDelete}
+          testID="context-delete"
+        />
+      </FlexBox>
     )
   }
 
@@ -158,6 +172,16 @@ export class TaskCard extends PureComponent<
       },
     } = this.props
     history.push(`/orgs/${orgID}/tasks/${task.id}/runs`)
+  }
+
+  private handleRun = () => {
+    const {task, onRunTask} = this.props
+    onRunTask(task.id)
+  }
+
+  private handleClone = () => {
+    const {task, onClone} = this.props
+    onClone(task)
   }
 
   private handleRenameTask = (name: string) => {

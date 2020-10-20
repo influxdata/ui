@@ -2,8 +2,16 @@
 import React, {PureComponent} from 'react'
 
 // Components
-import {Context} from 'src/clockface'
-import {IconFont, ComponentColor} from '@influxdata/clockface'
+import {
+  Button,
+  IconFont,
+  ComponentColor,
+  ConfirmationButton,
+  ComponentSize,
+  FlexBox,
+  FlexDirection,
+  AlignItems,
+} from '@influxdata/clockface'
 
 // Types
 import {Variable} from 'src/types'
@@ -20,28 +28,36 @@ export default class VariableContextMenu extends PureComponent<Props> {
     const {variable, onExport, onRename, onDelete} = this.props
 
     return (
-      <Context>
-        <Context.Menu icon={IconFont.CogThick}>
-          <Context.Item label="Export" action={onExport} />
-          <Context.Item
-            label="Rename"
-            action={onRename}
-            testID="context-rename-variable"
-          />
-        </Context.Menu>
-        <Context.Menu
-          icon={IconFont.Trash}
+      <FlexBox
+        alignItems={AlignItems.Center}
+        direction={FlexDirection.Row}
+        margin={ComponentSize.Small}
+      >
+        <Button
+          onClick={onRename}
+          text="Rename"
+          icon={IconFont.Pencil}
+          size={ComponentSize.ExtraSmall}
+          testID="context-rename-variable"
+        />
+        <Button
+          onClick={onExport}
+          text="Export"
+          icon={IconFont.Export}
+          size={ComponentSize.ExtraSmall}
+        />
+        <ConfirmationButton
+          size={ComponentSize.ExtraSmall}
           color={ComponentColor.Danger}
-          testID="context-delete-menu"
-        >
-          <Context.Item
-            label="Delete"
-            action={onDelete}
-            value={variable}
-            testID="context-delete-variable"
-          />
-        </Context.Menu>
-      </Context>
+          icon={IconFont.Trash}
+          text="Delete"
+          confirmationLabel="Are you sure? This cannot be undone"
+          confirmationButtonText="Confirm Delete"
+          returnValue={variable}
+          onConfirm={onDelete}
+          testID="context-delete"
+        />
+      </FlexBox>
     )
   }
 }

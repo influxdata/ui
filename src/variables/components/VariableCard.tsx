@@ -38,6 +38,7 @@ class VariableCard extends PureComponent<
       <ErrorBoundary>
         <ResourceCard
           testID="resource-card variable"
+          contextMenuInteraction="alwaysVisible"
           contextMenu={
             <VariableContextMenu
               variable={variable}

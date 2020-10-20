@@ -4,8 +4,12 @@ import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps, Link} from 'react-router-dom'
 
 // Components
-import {Context} from 'src/clockface'
-import {ResourceCard, IconFont} from '@influxdata/clockface'
+import {
+  ResourceCard,
+  IconFont,
+  ConfirmationButton,
+  ComponentSize,
+} from '@influxdata/clockface'
 import {ComponentColor} from '@influxdata/clockface'
 import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
 
@@ -44,6 +48,7 @@ class CollectorRow extends PureComponent<
       <ResourceCard
         key={`telegraf-id--${collector.id}`}
         testID="resource-card"
+        contextMenuInteraction="alwaysVisible"
         contextMenu={this.contextMenu}
       >
         <ResourceCard.EditableName
@@ -79,19 +84,16 @@ class CollectorRow extends PureComponent<
 
   private get contextMenu(): JSX.Element {
     return (
-      <Context>
-        <Context.Menu
-          testID="telegraf-delete-menu"
-          icon={IconFont.Trash}
-          color={ComponentColor.Danger}
-        >
-          <Context.Item
-            testID="telegraf-delete-button"
-            label="Delete"
-            action={this.handleDeleteConfig}
-          />
-        </Context.Menu>
-      </Context>
+      <ConfirmationButton
+        size={ComponentSize.ExtraSmall}
+        text="Delete"
+        color={ComponentColor.Danger}
+        icon={IconFont.Trash}
+        confirmationLabel="Are you sure? This cannot be undone"
+        confirmationButtonText="Confirm"
+        onConfirm={this.handleDeleteConfig}
+        testID="telegraf-delete"
+      />
     )
   }
 

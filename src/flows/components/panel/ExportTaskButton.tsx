@@ -10,7 +10,6 @@ import {
 // Components
 import {Button} from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
-import {TimeContext} from 'src/flows/context/time'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -18,13 +17,11 @@ import {event} from 'src/cloud/utils/reporting'
 const ExportTaskButton: FC = () => {
   const history = useHistory()
   const {data, queryText} = useContext(PipeContext)
-  const {timeContext} = useContext(TimeContext)
   const {orgID, id} = useParams<{orgID: string; id: string}>()
-  const timeRange = timeContext[id]
   const onClick = () => {
     event('Export Task Clicked')
     history.push(`/orgs/${orgID}/flows/${id}/export-task`, [
-      {bucket: data.bucket, queryText, timeRange: timeRange.range},
+      {bucket: data.bucket, queryText},
     ])
   }
   return (

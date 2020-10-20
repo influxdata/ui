@@ -22,25 +22,6 @@ import {
 // Utils
 import {saveNewScript, updateTask} from 'src/tasks/actions/thunks'
 import {getOrg} from 'src/organizations/selectors'
-import {SelectableDurationTimeRange, TimeRange} from 'src/types'
-
-const buildOutVariables = (timeRange: TimeRange | null): string => {
-  if (timeRange === null) {
-    return ''
-  }
-  if (timeRange.type === 'custom') {
-    return `option v = {\n  timeRangeStart: ${timeRange.lower},\n  timeRangeStop: ${timeRange.upper}\n}`
-  }
-  const range = timeRange as SelectableDurationTimeRange
-  const windowPeriod = `${range.windowPeriod}ms`
-  let {lower} = timeRange
-  let upper = ''
-  if (timeRange.upper === null) {
-    upper = 'now()'
-    lower = `-${range.duration}`
-  }
-  return `option v = {\n  timeRangeStart: ${lower},\n  timeRangeStop: ${upper},\n  windowPeriod: ${windowPeriod}\n}`
-}
 
 const ExportTaskOverlay: FC = () => {
   const {
@@ -54,7 +35,7 @@ const ExportTaskOverlay: FC = () => {
 
   const location: RouteProps['location'] = useLocation()
   const params = location.state
-  const {bucket, queryText, timeRange} = params[0]
+  const {bucket, queryText} = params[0]
 
   const formattedQueryText = queryText
     .trim()
@@ -70,7 +51,8 @@ const ExportTaskOverlay: FC = () => {
       return
     }
     const taskOption: string = `option task = { \n  name: "${taskName}",\n  every: ${interval},\n  offset: 0s\n}`
-    const preamble = `${buildOutVariables(timeRange)}\n\n${taskOption}`
+    const variable: string = `option v = {\n  timeRangeStart: -${interval},\n  timeRangeStop: now()\n}`
+    const preamble = `${variable}\n\n${taskOption}`
     const trimmedOrgName = org.name.trim()
     const script: string = `${formattedQueryText}\n  |> to(bucket: "${bucket?.name.trim()}", org: "${trimmedOrgName}")`
     dispatch(saveNewScript(script, preamble))
@@ -82,7 +64,8 @@ const ExportTaskOverlay: FC = () => {
       return
     }
     const taskOption: string = `option task = { \n  name: "${selectedTask.name}",\n  every: ${interval},\n  offset: 0s\n}`
-    const preamble = `${buildOutVariables(timeRange)}\n\n${taskOption}`
+    const variable: string = `option v = {\n  timeRangeStart: -${interval},\n  timeRangeStop: now()\n}`
+    const preamble = `${variable}\n\n${taskOption}`
     const trimmedOrgName = org.name.trim()
     const script: string = `${formattedQueryText}\n  |> to(bucket: "${bucket?.name.trim()}", org: "${trimmedOrgName}")`
     dispatch(updateTask({script, preamble, interval, task: selectedTask}))

@@ -190,11 +190,9 @@ describe('tokens', () => {
     cy.get('.cf-resource-card').should('have.length', 4)
 
     cy.getByTestID('token-card token test 03').within(() => {
-      cy.getByTestID('context-menu').click()
+      cy.getByTestID('delete-token--button').click()
 
-      cy.getByTestID('delete-token')
-        .contains('Delete')
-        .click()
+      cy.getByTestID('delete-token--confirm-button').click()
     })
 
     cy.get('.cf-resource-card').should('have.length', 3)
@@ -205,31 +203,28 @@ describe('tokens', () => {
     cy.get('.cf-resource-card')
       .first()
       .within(() => {
-        cy.getByTestID('context-menu').click()
+        cy.getByTestID('delete-token--button').click()
 
-        cy.getByTestID('delete-token')
-          .contains('Delete')
-          .click()
+        cy.getByTestID('delete-token--confirm-button')
+        .click()
       })
 
     cy.get('.cf-resource-card')
       .first()
       .within(() => {
-        cy.getByTestID('context-menu').click()
+        cy.getByTestID('delete-token--button').click()
 
-        cy.getByTestID('delete-token')
-          .contains('Delete')
-          .click()
+        cy.getByTestID('delete-token--confirm-button')
+        .click()
       })
 
     cy.get('.cf-resource-card')
       .first()
       .within(() => {
-        cy.getByTestID('context-menu').click()
+        cy.getByTestID('delete-token--button').click()
 
-        cy.getByTestID('delete-token')
-          .contains('Delete')
-          .click()
+        cy.getByTestID('delete-token--confirm-button')
+        .click()
       })
 
     // Assert empty state
@@ -388,11 +383,10 @@ describe('tokens', () => {
   it('can do sorting', () => {
     cy.getByTestID(`token-card ${Cypress.env('username')}'s Token`).within(
       () => {
-        cy.getByTestID('context-menu').click()
+        cy.getByTestID('delete-token--button').click()
 
-        cy.getByTestID('delete-token')
-          .contains('Delete')
-          .click()
+        cy.getByTestID('delete-token--confirm-button')
+        .click()
       }
     )
 

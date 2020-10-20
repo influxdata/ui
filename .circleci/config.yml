@@ -154,7 +154,7 @@ jobs:
           name: Run e2e tests
           no_output_timeout: 10m
           command: |
-            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress DEBUG=cypress:* ./node_modules/.bin/cypress run --browser firefox --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split | paste -sd "," -)"
+            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser firefox --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split | paste -sd "," -)"
       - store_test_results:
           path: monitor-ci/test-artifacts/results
       - store_artifacts:
@@ -193,7 +193,7 @@ jobs:
           name: Run e2e tests
           no_output_timeout: 5m
           command: |
-            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress DEBUG=cypress:* ./node_modules/.bin/cypress run --browser firefox --headless --config numTestsKeptInMemory=1
+            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser firefox --headless --config numTestsKeptInMemory=1
       - store_test_results:
           path: monitor-ci/test-artifacts/results
       - store_artifacts:

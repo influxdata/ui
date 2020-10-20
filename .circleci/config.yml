@@ -187,7 +187,7 @@ jobs:
           name: Run e2e tests
           no_output_timeout: 30m
           command: |
-            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser firefox --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/**/*.test.ts" | paste -sd "," -)"
+            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser firefox --config numTestsKeptInMemory=1
       - store_test_results:
           path: monitor-ci/test-artifacts/results
       - store_artifacts:
@@ -340,12 +340,12 @@ workflows:
             - smoke
             - cloud-e2e
   nightly:
-    triggers:
-      - schedule:
-          cron: "0 0 * * *"
-          filters:
-            branches:
-              only:
-                - master
+  #   triggers:
+  #     - schedule:
+  #         cron: "0 0 * * *"
+  #         filters:
+  #           branches:
+  #             only:
+  #               - master
     jobs:
       - cloud-e2e-nightly

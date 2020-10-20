@@ -1,11 +1,23 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {PureComponent, createRef, RefObject} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
-import {IconFont, ComponentColor, ResourceCard} from '@influxdata/clockface'
-import {Context} from 'src/clockface'
+import {
+  IconFont,
+  ComponentColor,
+  ResourceCard,
+  ConfirmationButton,
+  FlexBox,
+  ComponentSize,
+  ButtonShape,
+  SquareButton,
+  ButtonRef,
+  Popover,
+  Appearance,
+  List,
+} from '@influxdata/clockface'
 import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
 
 // Actions
@@ -40,6 +52,8 @@ type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps & RouteComponentProps<{orgID: string}>
 
 class DashboardCard extends PureComponent<Props> {
+  private contextOptionsRef: RefObject<ButtonRef> = createRef()
+
   public render() {
     const {
       id,
@@ -55,6 +69,7 @@ class DashboardCard extends PureComponent<Props> {
         key={`dashboard-id--${id}`}
         testID="dashboard-card"
         contextMenu={this.contextMenu}
+        contextMenuInteraction="alwaysVisible"
       >
         <ResourceCard.EditableName
           onUpdate={this.handleUpdateDashboard}
@@ -89,44 +104,60 @@ class DashboardCard extends PureComponent<Props> {
     onUpdateDashboard(id, {name})
   }
 
-  private handleCloneDashboard = () => {
+  private handleCloneDashboard = (onHide: () => void) => () => {
     const {id, name, onCloneDashboard} = this.props
 
+    onHide()
     onCloneDashboard(id, name)
   }
 
   private get contextMenu(): JSX.Element {
     return (
-      <Context>
-        <Context.Menu icon={IconFont.CogThick}>
-          <Context.Item
-            label="Export"
-            action={this.handleExport}
-            testID="context-menu-item-export"
+      <>
+        <FlexBox margin={ComponentSize.Small}>
+          <SquareButton
+            icon={IconFont.CogThick}
+            size={ComponentSize.ExtraSmall}
+            testID="context-options"
+            ref={this.contextOptionsRef}
           />
-        </Context.Menu>
-        <Context.Menu
-          icon={IconFont.Duplicate}
-          color={ComponentColor.Secondary}
-        >
-          <Context.Item
-            label="Clone"
-            action={this.handleCloneDashboard}
-            testID="clone-dashboard"
+          <ConfirmationButton
+            size={ComponentSize.ExtraSmall}
+            shape={ButtonShape.Square}
+            color={ComponentColor.Danger}
+            icon={IconFont.Trash}
+            confirmationLabel="Are you sure? This cannot be undone"
+            confirmationButtonText="Confirm"
+            onConfirm={this.handleDeleteDashboard}
+            testID="context-delete"
           />
-        </Context.Menu>
-        <Context.Menu
-          icon={IconFont.Trash}
-          color={ComponentColor.Danger}
-          testID="context-delete-menu"
-        >
-          <Context.Item
-            label="Delete"
-            action={this.handleDeleteDashboard}
-            testID="context-delete-dashboard"
-          />
-        </Context.Menu>
-      </Context>
+        </FlexBox>
+        <Popover
+          triggerRef={this.contextOptionsRef}
+          appearance={Appearance.Outline}
+          enableDefaultStyles={false}
+          contents={onHide => (
+            <List style={{width: '86px'}}>
+              <List.Item
+                size={ComponentSize.ExtraSmall}
+                testID="context-export"
+                onClick={this.handleExport(onHide)}
+              >
+                <List.Icon glyph={IconFont.Export} />
+                Export
+              </List.Item>
+              <List.Item
+                size={ComponentSize.ExtraSmall}
+                testID="context-clone"
+                onClick={this.handleCloneDashboard(onHide)}
+              >
+                <List.Icon glyph={IconFont.Duplicate} />
+                Clone
+              </List.Item>
+            </List>
+          )}
+        />
+      </>
     )
   }
 
@@ -172,7 +203,7 @@ class DashboardCard extends PureComponent<Props> {
     onRemoveDashboardLabel(id, label)
   }
 
-  private handleExport = () => {
+  private handleExport = (onHide: () => void) => () => {
     const {
       history,
       match: {
@@ -181,6 +212,7 @@ class DashboardCard extends PureComponent<Props> {
       id,
     } = this.props
 
+    onHide()
     history.push(`/orgs/${orgID}/dashboards-list/${id}/export`)
   }
 }

@@ -71,7 +71,11 @@ describe('Dashboards', () => {
     cy.getByTestID('dashboard-card').should('contain', newName)
 
     // Open Export overlay
-    cy.getByTestID('context-menu-item-export').click({force: true})
+    cy.getByTestID('context-options')
+      .click()
+      .then(() => {
+        cy.getByTestID('context-export').click()
+      })
     cy.getByTestID('export-overlay--text-area').should('exist')
     cy.get('.cf-overlay--dismiss').click()
 
@@ -90,18 +94,20 @@ describe('Dashboards', () => {
     // Delete dashboards
     cy.getByTestID('dashboard-card')
       .first()
-      .trigger('mouseover')
       .within(() => {
-        cy.getByTestID('context-delete-menu').click()
-        cy.getByTestID('context-delete-dashboard').click()
+        cy.getByTestID('context-delete--button').click()
+      })
+      .then(() => {
+        cy.getByTestID('context-delete--confirm-button').click()
       })
 
     cy.getByTestID('dashboard-card')
       .first()
-      .trigger('mouseover')
       .within(() => {
-        cy.getByTestID('context-delete-menu').click()
-        cy.getByTestID('context-delete-dashboard').click()
+        cy.getByTestID('context-delete--button').click()
+      })
+      .then(() => {
+        cy.getByTestID('context-delete--confirm-button').click()
       })
 
     cy.getByTestID('empty-dashboards-list').should('exist')
@@ -154,9 +160,12 @@ describe('Dashboards', () => {
     it('can clone a dashboard', () => {
       cy.getByTestID('dashboard-card').should('have.length', 2)
 
-      cy.getByTestID('clone-dashboard')
+      cy.getByTestID('context-options')
         .first()
-        .click({force: true})
+        .click()
+        .then(() => {
+          cy.getByTestID('context-clone').click()
+        })
 
       cy.getByTestID('dashboard-card').should('have.length', 3)
     })

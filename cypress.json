@@ -7,7 +7,6 @@
   "integrationFolder": "cypress/e2e",
   "defaultCommandTimeout": 10000,
   "videoUploadOnPasses": false,
-  "chromeWebSecurity": false,
   "env": {
     "username": "dev_user",
     "password": "CHECKMEOUTASUPERSECRETPASSWORD",

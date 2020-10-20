@@ -148,6 +148,9 @@ jobs:
           name: Start the cluster
           command: cd ./monitor-ci; make start
       - run:
+          name: Set Some Env Vars
+          command: export MOZ_FORCE_DISABLE_E10S=1
+      - run:
           name: Run e2e tests
           no_output_timeout: 10m
           command: |
@@ -183,6 +186,9 @@ jobs:
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start
+      - run:
+          name: Set Some Env Vars
+          command: export MOZ_FORCE_DISABLE_E10S=1
       - run:
           name: Run e2e tests
           no_output_timeout: 5m

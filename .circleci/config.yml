@@ -341,4 +341,7 @@ workflows:
             - cloud-e2e
   nightly:
     jobs:
-      - cloud-e2e-nightly
+      - build-image
+      - cloud-e2e-nightly:
+          requires:
+            - build-image

@@ -189,11 +189,13 @@ describe('tokens', () => {
   it('can delete a token', () => {
     cy.get('.cf-resource-card').should('have.length', 4)
 
-    cy.getByTestID('token-card token test 03').within(() => {
-      cy.getByTestID('delete-token--button').click()
-
-      cy.getByTestID('delete-token--confirm-button').click()
-    })
+    cy.getByTestID('token-card token test 03')
+      .within(() => {
+        cy.getByTestID('delete-token--button').click()
+      })
+      .then(() => {
+        cy.getByTestID('delete-token--confirm-button').click()
+      })
 
     cy.get('.cf-resource-card').should('have.length', 3)
 
@@ -204,27 +206,27 @@ describe('tokens', () => {
       .first()
       .within(() => {
         cy.getByTestID('delete-token--button').click()
-
-        cy.getByTestID('delete-token--confirm-button')
-        .click()
+      })
+      .then(() => {
+        cy.getByTestID('delete-token--confirm-button').click()
       })
 
     cy.get('.cf-resource-card')
       .first()
       .within(() => {
         cy.getByTestID('delete-token--button').click()
-
-        cy.getByTestID('delete-token--confirm-button')
-        .click()
+      })
+      .then(() => {
+        cy.getByTestID('delete-token--confirm-button').click()
       })
 
     cy.get('.cf-resource-card')
       .first()
       .within(() => {
         cy.getByTestID('delete-token--button').click()
-
-        cy.getByTestID('delete-token--confirm-button')
-        .click()
+      })
+      .then(() => {
+        cy.getByTestID('delete-token--confirm-button').click()
       })
 
     // Assert empty state
@@ -385,8 +387,7 @@ describe('tokens', () => {
       () => {
         cy.getByTestID('delete-token--button').click()
 
-        cy.getByTestID('delete-token--confirm-button')
-        .click()
+        cy.getByTestID('delete-token--confirm-button').click()
       }
     )
 

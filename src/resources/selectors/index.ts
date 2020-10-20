@@ -21,7 +21,7 @@ export const getAll = <R>(
 }
 
 export const getAllTasks = (state: AppState): Task[] =>
-  getAll(state, ResourceType.Tasks)
+  getAll(state, ResourceType.Tasks) || []
 
 export const getToken = (state: AppState): string =>
   get(state, 'dataLoading.dataLoaders.token', '') || ''

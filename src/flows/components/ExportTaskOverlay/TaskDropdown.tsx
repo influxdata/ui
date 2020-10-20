@@ -1,19 +1,14 @@
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
 import {
   ComponentSize,
   IconFont,
   TechnoSpinner,
   Dropdown,
 } from '@influxdata/clockface'
-import {Task} from 'src/types'
+import {OverlayContext} from 'src/flows/context/overlay'
 
-type Props = {
-  tasks: Task[]
-  selectedTask: Task
-  setTask: (task: Task) => void
-}
-
-const TaskDropdown: FC<Props> = ({tasks, selectedTask, setTask}) => {
+const TaskDropdown: FC = () => {
+  const {tasks, handleSetTask, selectedTask} = useContext(OverlayContext)
   let buttonText = 'Loading tasks...'
 
   let menuItems = (
@@ -29,7 +24,7 @@ const TaskDropdown: FC<Props> = ({tasks, selectedTask, setTask}) => {
           <Dropdown.Item
             key={task.name}
             value={task}
-            onClick={task => setTask(task)}
+            onClick={task => handleSetTask(task)}
             selected={task.name === selectedTask?.name}
             title={task.name}
             wrapText={true}

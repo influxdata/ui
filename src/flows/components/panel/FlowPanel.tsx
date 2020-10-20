@@ -18,7 +18,6 @@ import {
   JustifyContent,
   ClickOutside,
 } from '@influxdata/clockface'
-import ExportTaskButton from 'src/flows/components/panel/ExportTaskButton'
 import RemovePanelButton from 'src/flows/components/panel/RemovePanelButton'
 import InsertCellButton from 'src/flows/components/panel/InsertCellButton'
 import PanelVisibilityToggle from 'src/flows/components/panel/PanelVisibilityToggle'
@@ -37,16 +36,20 @@ import {RefContext} from 'src/flows/context/refs'
 
 export interface Props extends PipeContextProps {
   id: string
-  shouldShow?: boolean
+  persistentControl?: ReactNode
 }
 
 export interface HeaderProps {
   id: string
   controls?: ReactNode
-  shouldShow?: boolean
+  persistentControl?: ReactNode
 }
 
-const FlowPanelHeader: FC<HeaderProps> = ({id, controls, shouldShow}) => {
+const FlowPanelHeader: FC<HeaderProps> = ({
+  id,
+  controls,
+  persistentControl,
+}) => {
   const {flow} = useContext(FlowContext)
   const removePipe = () => {
     flow.data.remove(id)
@@ -102,16 +105,16 @@ const FlowPanelHeader: FC<HeaderProps> = ({id, controls, shouldShow}) => {
               active={canBeMovedDown}
             />
           </FeatureFlag>
-          {shouldShow && <ExportTaskButton />}
           <PanelVisibilityToggle id={id} />
           <RemovePanelButton onRemove={remove} />
+          {persistentControl}
         </FlexBox>
       )}
     </div>
   )
 }
 
-const FlowPanel: FC<Props> = ({id, children, controls, shouldShow}) => {
+const FlowPanel: FC<Props> = ({id, children, controls, persistentControl}) => {
   const {flow} = useContext(FlowContext)
   const refs = useContext(RefContext)
   const panelRef = useRef<HTMLDivElement>(null)
@@ -159,7 +162,11 @@ const FlowPanel: FC<Props> = ({id, children, controls, shouldShow}) => {
   return (
     <ClickOutside onClickOutside={handleClickOutside}>
       <div className={panelClassName} onClick={handleClick} ref={panelRef}>
-        <FlowPanelHeader id={id} controls={controls} shouldShow={shouldShow} />
+        <FlowPanelHeader
+          id={id}
+          controls={controls}
+          persistentControl={persistentControl}
+        />
         <div className="flow-panel--body">{children}</div>
         {showResults && (
           <div className="flow-panel--results">

@@ -121,10 +121,10 @@ describe('Variables', () => {
     // Delete a variable
     cy.getByTestID('context-delete--button')
       .first()
-      .click({force: true})
+      .click()
     cy.getByTestID('context-delete--confirm-button')
       .first()
-      .click({force: true})
+      .click()
 
     cy.getByTestID('notification-success--dismiss').should('exist')
     cy.getByTestID('notification-success--dismiss').click()
@@ -136,11 +136,7 @@ describe('Variables', () => {
       .contains('Little Variable')
 
     // Rename the variable
-    cy.getByTestID('context-menu')
-      .first()
-      .click({force: true})
-
-    cy.getByTestID('context-rename-variable').click({force: true})
+    cy.getByTestID('context-rename-variable').click()
 
     cy.getByTestID('danger-confirmation-button').click()
 

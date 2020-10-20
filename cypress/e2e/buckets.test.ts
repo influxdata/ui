@@ -137,6 +137,11 @@ describe.skip('Buckets', () => {
       })
     })
 
+    // NOTE: the components for deleting a bucket are slightly different
+    // button testID: 'context-delete--button'
+    // button confirmation popover testID: 'context-delete--popover'
+    // confirmation button testID: 'context-delete--confirm-button'
+    //
     // TODO: ZOE Come back and fix race condition
     // it('can delete a bucket', () => {
     //   const bucket1 = 'newbucket1'

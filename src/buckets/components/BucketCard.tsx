@@ -40,6 +40,7 @@ const BucketCard: FC<Props & RouteComponentProps<{orgID: string}>> = ({
   return (
     <ResourceCard
       testID={`bucket-card ${bucket.name}`}
+      contextMenuInteraction="alwaysVisible"
       contextMenu={
         !isSystemBucket(bucket.name) && (
           <BucketContextMenu bucket={bucket} onDeleteBucket={onDeleteBucket} />

@@ -4,28 +4,26 @@ import userEvent from '@testing-library/user-event'
 import {renderWithReduxAndRouter} from 'src/mockState'
 
 // Components
-import FlowCards from 'src/flows/components/FlowCards'
+import FlowsIndex from 'src/flows/components/FlowsIndex'
 import FlowListProvider from 'src/flows/context/flow.list'
 
 const setup = (override = {}) => {
   const wrapper = renderWithReduxAndRouter(
     <FlowListProvider {...override}>
-      <FlowCards />
+      <FlowsIndex />
     </FlowListProvider>
   )
 
   return {wrapper}
 }
 
-describe('FlowCards', () => {
+describe('FlowsIndex', () => {
   test('empty state', () => {
     const {wrapper} = setup()
-
     const emptyState = wrapper.findByTestId('empty-state')
 
     expect(emptyState).toBeTruthy()
   })
-
   test('create a flow', () => {
     const {wrapper} = setup()
 

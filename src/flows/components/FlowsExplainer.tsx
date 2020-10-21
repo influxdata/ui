@@ -13,10 +13,7 @@ const FlowsExplainer: FC = () => (
       <p>
         Flows is a tool to help you explore, visualize, and process your data.
         Learn how to downsample data and other handy tutorials in the{' '}
-        <a
-          href="https://v2.docs.influxdata.com/v2.0/write-data/"
-          target="_blank"
-        >
+        <a href="" target="_blank">
           Flows Documentation
         </a>
       </p>

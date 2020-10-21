@@ -437,13 +437,13 @@ export const demoDataSucceeded = (
   buttonElement,
 })
 
-export const demoDataAvailability = (error: {
-  message: string
-  linkText?: string
-  link?: string
-}): Notification => ({
+export const demoDataAvailability = (
+  message: string,
+  buttonElement?: JSX.Element
+): Notification => ({
   ...defaultErrorNotification,
-  ...error,
+  message,
+  buttonElement,
   duration: TEN_SECONDS,
   type: 'demoDataAvailabilityError',
 })

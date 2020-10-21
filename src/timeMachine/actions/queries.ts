@@ -35,13 +35,16 @@ import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
 import {findNodes} from 'src/shared/utils/ast'
 import {
   isDemoDataAvailabilityError,
-  demoDataError,
+  demoDataErrorMessage,
 } from 'src/cloud/utils/demoDataErrors'
 import {isAggregateTypeError} from 'src/utils/aggregateTypeErrors'
 import {event} from 'src/cloud/utils/reporting'
 import {asSimplyKeyValueVariables, hashCode} from 'src/shared/apis/queryCache'
 import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
-import {getAggregateTypeErrorButton} from 'src/shared/components/notifications/NotificationButtons'
+import {
+  getAggregateTypeErrorButton,
+  getDemoDataErrorButton,
+} from 'src/shared/components/notifications/NotificationButtons'
 
 // Types
 import {CancelBox} from 'src/types/promises'
@@ -349,9 +352,9 @@ export const executeQueries = (abortController?: AbortController) => async (
     for (const result of results) {
       if (result.type === 'UNKNOWN_ERROR') {
         if (isDemoDataAvailabilityError(result.code, result.message)) {
-          dispatch(
-            notify(demoDataAvailability(demoDataError(getOrg(state).id)))
-          )
+          const message = demoDataErrorMessage()
+          const buttonElement = getDemoDataErrorButton()
+          dispatch(notify(demoDataAvailability(message, buttonElement)))
         }
         if (
           isAggregateTypeError(result.code, result.message) &&

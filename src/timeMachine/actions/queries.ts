@@ -37,13 +37,11 @@ import {
   isDemoDataAvailabilityError,
   demoDataError,
 } from 'src/cloud/utils/demoDataErrors'
-import {
-  aggregateTypeError,
-  isAggregateTypeError,
-} from 'src/utils/aggregateTypeErrors'
+import {isAggregateTypeError} from 'src/utils/aggregateTypeErrors'
 import {event} from 'src/cloud/utils/reporting'
 import {asSimplyKeyValueVariables, hashCode} from 'src/shared/apis/queryCache'
 import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
+import {getAggregateTypeErrorButton} from 'src/shared/components/notifications/NotificationButtons'
 
 // Types
 import {CancelBox} from 'src/types/promises'
@@ -359,7 +357,9 @@ export const executeQueries = (abortController?: AbortController) => async (
           isAggregateTypeError(result.code, result.message) &&
           state.currentExplorer.isAutoFunction
         ) {
-          dispatch(notify(updateAggregateType(aggregateTypeError())))
+          const message = `It looks like you're trying to apply a number-based aggregate function to a string, which cannot be processed. You can fix this by selecting the Aggregate Function "Last"`
+          const buttonElement = getAggregateTypeErrorButton()
+          dispatch(notify(updateAggregateType(message, buttonElement)))
         }
 
         throw new Error(result.message)

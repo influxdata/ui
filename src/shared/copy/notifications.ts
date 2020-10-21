@@ -449,13 +449,13 @@ export const demoDataAvailability = (error: {
   type: 'demoDataAvailabilityError',
 })
 
-export const updateAggregateType = (error: {
-  message: string
-  linkText?: string
-  link?: string
-}): Notification => ({
+export const updateAggregateType = (
+  message: string,
+  buttonElement?: JSX.Element
+): Notification => ({
   ...defaultErrorNotification,
-  ...error,
+  message,
+  buttonElement,
   duration: TEN_SECONDS,
   type: 'aggregateTypeError',
 })

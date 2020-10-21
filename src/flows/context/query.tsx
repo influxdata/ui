@@ -17,7 +17,6 @@ import {
   generateHashedQueryID,
   setQueryByHashID,
 } from 'src/timeMachine/actions/queries'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Stage {
   text: string
@@ -115,9 +114,7 @@ export const QueryProvider: FC<Props> = ({children, variables, org}) => {
 
     event('runQuery', {context: 'flows'})
     const result = runQuery(org.id, text, extern)
-    if (isFlagEnabled('cancelQueryUiExpansion')) {
-      setQueryByHashID(queryID, result)
-    }
+    setQueryByHashID(queryID, result)
     return result.promise
       .then(raw => {
         if (raw.type !== 'SUCCESS') {

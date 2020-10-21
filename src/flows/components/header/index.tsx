@@ -3,8 +3,9 @@ import React, {FC, useContext, useCallback} from 'react'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
-import {TimeProvider, TimeContext, TimeBlock} from 'src/flows/context/time'
+import {TimeContext, TimeBlock} from 'src/flows/context/time'
 import AppSettingProvider from 'src/flows/context/app'
+import QueryProvider from 'src/flows/context/query'
 
 // Components
 import {Page} from '@influxdata/clockface'
@@ -56,7 +57,9 @@ const FlowHeader: FC = () => {
       </Page.Header>
       <Page.ControlBar fullWidth={FULL_WIDTH}>
         <Page.ControlBarLeft>
-          <Submit />
+          <QueryProvider>
+            <Submit />
+          </QueryProvider>
         </Page.ControlBarLeft>
         <Page.ControlBarRight>
           <PresentationMode />
@@ -70,9 +73,7 @@ const FlowHeader: FC = () => {
 }
 
 export default () => (
-  <TimeProvider>
-    <AppSettingProvider>
-      <FlowHeader />
-    </AppSettingProvider>
-  </TimeProvider>
+  <AppSettingProvider>
+    <FlowHeader />
+  </AppSettingProvider>
 )

@@ -59,14 +59,14 @@ describe('The Query Builder', () => {
       cy.getByTestID('save-as-dashboard-cell--submit').click()
 
       // wait for the notification since it's highly animated
-      // we close the notification since it contains the name of the dashboard and interfers with cy.contains
+      // we close the notification since it contains the name of the dashboard and interferes with cy.contains
       cy.wait(250)
       cy.get('.cf-notification--dismiss').click()
       cy.wait(250)
 
       // force a click on the hidden dashboard nav item (cypress can't do the hover)
       // i assure you i spent a nonzero amount of time trying to do this the way a user would
-      cy.getByTestID('nav-item-dashboards').click()
+      cy.getByTestID('nav-item-dashboards').click({force: true})
 
       cy.contains('Basic Ole Dashboard').click()
       cy.getByTestID('giraffe-layer-line').should('exist')

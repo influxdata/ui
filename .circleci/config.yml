@@ -160,6 +160,42 @@ jobs:
       - store_artifacts:
           path: monitor-ci/test-artifacts/screenshots
           destination: test_artifacts/screenshots
+  cloud-e2e-nightly: # runs firefox
+    machine:
+      image: ubuntu-2004:202008-01
+      docker_layer_caching: true
+    working_directory: ~/
+    resource_class: medium
+    steps:
+      - checkout:
+          path: ./ui
+      - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
+      - run:
+          name: Grab compose files
+          command: git clone git@github.com:influxdata/monitor-ci.git
+      - run:
+          name: Copy over the testing variables
+          command: cp ./monitor-ci/env.testing ./monitor-ci/.env
+      - run:
+          name: Update the images we're using
+          command: |
+            cd ./monitor-ci && make update && make build NODE=cypress
+      - run:
+          name: Start the cluster
+          command: cd ./monitor-ci; make start
+      - run:
+          name: Run e2e tests
+          no_output_timeout: 30m
+          command: |
+            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser firefox --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/**/*.test.ts" | paste -sd "," -)"
+      - store_test_results:
+          path: monitor-ci/test-artifacts/results
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/videos
+          destination: test_artifacts/videos
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/screenshots
+          destination: test_artifacts/screenshots
   smoke:
     machine:
       image: ubuntu-2004:202008-01
@@ -303,3 +339,13 @@ workflows:
             - lint
             - smoke
             - cloud-e2e
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - cloud-e2e-nightly

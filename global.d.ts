@@ -1,7 +1,7 @@
 import {MonacoType} from 'src/types'
 
 //
-// got some globals here that only exist during compilation
+// Got some globals here that only exist during compilation
 //
 
 declare let monaco: MonacoType

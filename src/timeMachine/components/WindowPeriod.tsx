@@ -39,6 +39,7 @@ type Props = ReduxProps
 const WindowPeriod: FunctionComponent<Props> = ({
   period,
   autoWindowPeriod,
+  everyWindowPeriod,
   onSetWindowPeriodSelectionMode,
   onSelectAggregateWindow,
   isInCheckOverlay,
@@ -49,7 +50,9 @@ const WindowPeriod: FunctionComponent<Props> = ({
 
   if (!period || isAutoWindowPeriod) {
     durationDisplay = autoWindowPeriod
-      ? `${AGG_WINDOW_AUTO} (${autoWindowPeriod})`
+      ? isInCheckOverlay
+        ? `${AGG_WINDOW_AUTO} (${everyWindowPeriod})`
+        : `${AGG_WINDOW_AUTO} (${autoWindowPeriod})`
       : AGG_WINDOW_AUTO
   }
 
@@ -114,11 +117,13 @@ const mstp = (state: AppState) => {
   const {
     aggregateWindow: {period},
   } = builderConfig
+  const everyWindowPeriod = state.alertBuilder.every
 
   return {
     period,
     isInCheckOverlay: getIsInCheckOverlay(state),
     autoWindowPeriod: getWindowPeriodFromTimeRange(state),
+    everyWindowPeriod,
   }
 }
 

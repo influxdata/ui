@@ -27,10 +27,11 @@ import {getAll} from 'src/resources/selectors'
 import {getOrgIDFromBuckets} from 'src/timeMachine/actions/queries'
 import {
   isDemoDataAvailabilityError,
-  demoDataError,
+  demoDataErrorMessage,
 } from 'src/cloud/utils/demoDataErrors'
 import {hashCode} from 'src/shared/apis/queryCache'
 import {RunQueryPromiseMutex} from 'src/shared/apis/singleQuery'
+import {getDemoDataErrorButton} from 'src/shared/components/notifications/NotificationButtons'
 
 // Constants
 import {
@@ -273,9 +274,10 @@ class TimeSeries extends Component<Props, State> {
       for (const result of results) {
         if (result.type === 'UNKNOWN_ERROR') {
           if (isDemoDataAvailabilityError(result.code, result.message)) {
-            notify(
-              demoDataAvailability(demoDataError(this.props.match.params.orgID))
-            )
+            const message = demoDataErrorMessage()
+            const buttonElement = getDemoDataErrorButton()
+
+            notify(demoDataAvailability(message, buttonElement))
           }
           errorMessage = result.message
           throw new Error(result.message)

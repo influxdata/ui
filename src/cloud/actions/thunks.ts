@@ -130,7 +130,9 @@ export const deleteDemoDataBucketMembership = (
     dispatch(removeBucket(bucket.id))
     event('demoData_bucketDeleted', {demo_dataset: bucket.name})
   } catch (error) {
-    dispatch(notify(demoDataDeleteBucketFailed(bucket.name, error)))
+    const errorMessage = getErrorMessage(error)
+
+    dispatch(notify(demoDataDeleteBucketFailed(bucket.name, errorMessage)))
 
     reportErrorThroughHoneyBadger(error, {
       name: 'deleteDemoDataBucket failed in deleteDemoDataBucketMembership',

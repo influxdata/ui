@@ -9,9 +9,10 @@ export interface Notification {
   icon: IconFont
   duration?: number
   message: string
+  buttonElement?: JSX.Element
+  // We probably do not need type here
+  // It is not being read anywhere, seems like metadata?
   type?: string
-  link?: string
-  linkText?: string
   aggregateType?: boolean
 }
 

@@ -29,6 +29,7 @@ import {DemoDataTemplates} from 'src/cloud/constants'
 
 // utils
 import {getErrorMessage} from 'src/utils/api'
+import {getDemoDataSuccessButton} from 'src/shared/components/notifications/NotificationButtons'
 
 // types
 import {DemoBucket, GetState, RemoteDataState} from 'src/types'
@@ -96,9 +97,11 @@ export const getDemoDataBucketMembership = ({
 
     const createdDashboard = await createDashboardFromTemplate(template, orgID)
 
-    const url = `/orgs/${orgID}/dashboards/${createdDashboard.id}`
+    const buttonElement = getDemoDataSuccessButton(
+      `/orgs/${orgID}/dashboards/${createdDashboard.id}`
+    )
 
-    dispatch(notify(demoDataSucceeded(bucketName, url)))
+    dispatch(notify(demoDataSucceeded(bucketName, buttonElement)))
 
     event('demoData_bucketAdded', {demo_dataset: bucketName})
   } catch (error) {

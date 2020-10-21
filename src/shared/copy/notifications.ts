@@ -429,13 +429,12 @@ export const demoDataDeleteBucketFailed = (
 
 export const demoDataSucceeded = (
   bucketName: string,
-  link: string
+  buttonElement: JSX.Element
 ): Notification => ({
   ...defaultSuccessNotification,
   message: `Successfully added demodata bucket ${bucketName}, and demodata dashboard.`,
   duration: FIFTEEN_SECONDS,
-  linkText: 'Go to dashboard',
-  link,
+  buttonElement,
 })
 
 export const demoDataAvailability = (error: {

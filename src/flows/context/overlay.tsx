@@ -1,8 +1,5 @@
-import React, {FC, useEffect, useState, useCallback} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
-import {getAllTasks as getAllTasksSelector} from 'src/resources/selectors'
+import React, {FC, useState, useCallback} from 'react'
 import {Task} from 'src/types'
-import {getTasks} from 'src/tasks/actions/thunks'
 
 export enum ExportAsTask {
   Create = 'create',
@@ -21,7 +18,6 @@ export interface OverlayContext {
   interval: string
   selectedTask: Task | undefined
   taskName: string
-  tasks: Task[]
 }
 
 export const DEFAULT_CONTEXT: OverlayContext = {
@@ -36,7 +32,6 @@ export const DEFAULT_CONTEXT: OverlayContext = {
   interval: '',
   selectedTask: undefined,
   taskName: '',
-  tasks: [],
 }
 
 export const OverlayContext = React.createContext<OverlayContext>(
@@ -47,14 +42,8 @@ const OverlayProvider: FC = ({children}) => {
   const [activeTab, setActiveTab] = useState(ExportAsTask.Create)
   const [selectedTask, setTask] = useState<Task>(undefined)
   const [hasError, setHasError] = useState(false)
-  const tasks = useSelector(getAllTasksSelector)
   const [taskName, setTaskName] = useState('')
   const [interval, setEveryInterval] = useState('')
-
-  const dispatch = useDispatch()
-  useEffect(() => {
-    dispatch(getTasks())
-  }, [dispatch])
 
   const handleSetActiveTab = useCallback((tab: ExportAsTask): void => {
     setActiveTab(tab)
@@ -111,7 +100,6 @@ const OverlayProvider: FC = ({children}) => {
         interval,
         selectedTask,
         taskName,
-        tasks,
       }}
     >
       {children}

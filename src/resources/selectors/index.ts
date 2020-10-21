@@ -23,6 +23,9 @@ export const getAll = <R>(
 export const getAllTasks = (state: AppState): Task[] =>
   getAll(state, ResourceType.Tasks) || []
 
+export const hasNoTasks = (state: AppState): boolean =>
+  getAll(state, ResourceType.Tasks).length === 0
+
 export const getToken = (state: AppState): string =>
   get(state, 'dataLoading.dataLoaders.token', '') || ''
 

@@ -1,4 +1,5 @@
 import React, {ChangeEvent, FC, useContext} from 'react'
+import {useSelector} from 'react-redux'
 import {
   Columns,
   ComponentSize,
@@ -13,17 +14,20 @@ import TaskDropdown from 'src/flows/components/ExportTaskOverlay/TaskDropdown'
 import WarningPanel from 'src/flows/components/ExportTaskOverlay/WarningPanel'
 import QueryTextPreview from 'src/flows/components/ExportTaskOverlay/QueryTextPreview'
 import {OverlayContext} from 'src/flows/context/overlay'
+import {hasNoTasks as hasNoTasksSelector} from 'src/resources/selectors'
 
 type Props = {
   formattedQueryText: string
 }
 
 const UpdateTaskBody: FC<Props> = ({formattedQueryText}) => {
-  const {interval, handleSetEveryInterval, hasError, tasks} = useContext(
+  const {interval, handleSetEveryInterval, hasError} = useContext(
     OverlayContext
   )
 
-  if (tasks.length === 0) {
+  const hasNoTasks = useSelector(hasNoTasksSelector)
+
+  if (hasNoTasks) {
     return (
       <EmptyState size={ComponentSize.Medium}>
         <EmptyState.Text>You haven’t created any Tasks yet</EmptyState.Text>

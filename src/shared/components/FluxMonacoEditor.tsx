@@ -28,6 +28,7 @@ export interface EditorProps {
   onChangeScript: OnChangeScript
   onSubmitScript?: () => void
   autogrow?: boolean
+  readOnly?: boolean
 }
 
 interface Props extends EditorProps {
@@ -40,6 +41,7 @@ const FluxEditorMonaco: FC<Props> = ({
   onSubmitScript,
   setEditorInstance,
   autogrow,
+  readOnly,
 }) => {
   const lspServer = useRef<LSPServer>(null)
   const [editorInst, seteditorInst] = useState<EditorType | null>(null)
@@ -88,7 +90,9 @@ const FluxEditorMonaco: FC<Props> = ({
         })
         editor.focus()
       } else {
-        editor.focus()
+        if (!readOnly) {
+          editor.focus()
+        }
       }
     } catch (e) {
       // TODO: notify user that lsp failed
@@ -124,6 +128,7 @@ const FluxEditorMonaco: FC<Props> = ({
           },
           overviewRulerBorder: false,
           automaticLayout: true,
+          readOnly: readOnly || false,
         }}
         editorDidMount={editorDidMount}
       />

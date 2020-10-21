@@ -4,7 +4,6 @@ import {get} from 'lodash'
 import {ComponentSize, Gradients, Notification} from '@influxdata/clockface'
 
 // Utils
-import {setFunctions} from 'src/timeMachine/actions/queryBuilder'
 import {dismissNotification as dismissNotificationAction} from 'src/shared/actions/notifications'
 
 //Types
@@ -67,7 +66,6 @@ const mstp = ({notifications}: AppState) => ({
 
 const mdtp = {
   dismissNotification: dismissNotificationAction,
-  onSetFunctions: setFunctions,
 }
 
 const connector = connect(mstp, mdtp)

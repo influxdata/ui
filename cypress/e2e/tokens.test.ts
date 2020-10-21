@@ -1,4 +1,5 @@
 import {Organization} from '../../src/types'
+import {sortBy} from 'lodash'
 
 // a generous commitment to delivering this page in a loaded state
 const PAGE_LOAD_SLA = 10000
@@ -6,16 +7,14 @@ const all_access_token_name = 'the prince and the frog'
 
 describe('tokens', () => {
   let authData: {description: string; status: boolean; id: string}[]
-  let testTokens: {
-    id: string
-    description: string
-    status: string
-    permissions: object[]
-  }[]
 
   beforeEach(() => {
     cy.flush()
 
+    // this is bad
+    // use a cypress alias instead
+    // docs.cypress.io/guides/core-concepts/variables-and-aliases.html#Avoiding-the-use-of-this
+    // docs.cypress.io/guides/core-concepts/variables-and-aliases.html#Aliases
     authData = []
 
     cy.signin().then(({body}) => {
@@ -23,42 +22,6 @@ describe('tokens', () => {
         org: {id},
       } = body
       cy.wrap(body.org).as('org')
-
-      testTokens = [
-        {
-          id: id,
-          description: 'token test \u0950',
-          status: 'active',
-          permissions: [
-            {action: 'write', resource: {type: 'views'}},
-            {action: 'write', resource: {type: 'documents'}},
-            {action: 'write', resource: {type: 'dashboards'}},
-            {action: 'write', resource: {type: 'buckets'}},
-          ],
-        },
-        {
-          id: id,
-          description: 'token test 02',
-          status: 'inactive',
-          permissions: [
-            {action: 'write', resource: {type: 'views'}},
-            {action: 'write', resource: {type: 'documents'}},
-            {action: 'write', resource: {type: 'dashboards'}},
-            {action: 'write', resource: {type: 'buckets'}},
-          ],
-        },
-        {
-          id: id,
-          description: 'token test 03',
-          status: 'inactive',
-          permissions: [
-            {action: 'read', resource: {type: 'views'}},
-            {action: 'read', resource: {type: 'documents'}},
-            {action: 'read', resource: {type: 'dashboards'}},
-            {action: 'read', resource: {type: 'buckets'}},
-          ],
-        },
-      ]
 
       // check out array.reduce for the nested calls here
       cy.request('api/v2/authorizations').then(resp => {
@@ -69,18 +32,20 @@ describe('tokens', () => {
           id: resp.body.authorizations[0].id,
         })
 
-        testTokens.forEach(token => {
-          cy.createToken(
-            token.id,
-            token.description,
-            token.status,
-            token.permissions
-          ).then(resp => {
-            expect(resp.body).to.exist
-            authData.push({
-              description: resp.body.description,
-              status: resp.body.status === 'active',
-              id: resp.body.id,
+        cy.fixture('tokens.json').then(({tokens}) => {
+          tokens.forEach(token => {
+            cy.createToken(
+              id,
+              token.description,
+              token.status,
+              token.permissions
+            ).then(resp => {
+              expect(resp.body).to.exist
+              authData.push({
+                description: resp.body.description,
+                status: resp.body.status === 'active',
+                id: resp.body.id,
+              })
             })
           })
         })
@@ -396,67 +361,81 @@ describe('tokens', () => {
       }
     )
 
-    // description asc
+    cy.log('sort by Description (Asc)')
+
     cy.getByTestID('resource-sorter--button')
       .click()
       .then(() => {
         cy.getByTestID('resource-sorter--description-asc').click()
       })
       .then(() => {
-        const sortedtoken = testTokens.sort((a, b) =>
-          a.description > b.description ? 1 : -1
-        )
-        cy.get('[data-testid*="token-card"]').each((val, index) => {
-          const testID = val.attr('data-testid')
-          expect(testID).to.contain(sortedtoken[index].description)
+        cy.fixture('tokens.json').then(({tokens}) => {
+          const sorted = sortBy(tokens, 'description')
+
+          cy.get('[data-testid*="token-card"]').each((val, index) => {
+            const testID = val.attr('data-testid')
+            expect(testID).to.contain(sorted[index].description)
+          })
         })
       })
 
-    //description desc
+    cy.log('sort by Description (Desc)')
+
     cy.getByTestID('resource-sorter--button')
       .click()
       .then(() => {
         cy.getByTestID('resource-sorter--description-desc').click()
       })
       .then(() => {
-        const sortedtoken = testTokens
-          .sort((a, b) => (a.description > b.description ? 1 : -1))
-          .reverse()
-        cy.get('[data-testid*="token-card"]').each((val, index) => {
-          const testID = val.attr('data-testid')
-          expect(testID).to.contain(sortedtoken[index].description)
+        cy.fixture('tokens.json').then(({tokens}) => {
+          const sorted = sortBy(tokens, 'description').reverse()
+
+          cy.get('[data-testid*="token-card"]').each((val, index) => {
+            const testID = val.attr('data-testid')
+            expect(testID).to.contain(sorted[index].description)
+          })
         })
       })
 
-    //status asc
+    cy.log('sort by Status (Active)')
+
     cy.getByTestID('resource-sorter--button')
       .click()
       .then(() => {
         cy.getByTestID('resource-sorter--status-asc').click()
       })
       .then(() => {
-        const sortedtoken = testTokens.sort((a, b) =>
-          a.status > b.status ? 1 : -1
-        )
-        cy.get('[data-testid*="token-card"]').each((val, index) => {
-          const testID = val.attr('data-testid')
-          expect(testID).to.contain(sortedtoken[index].description)
+        cy.fixture('tokens.json').then(({tokens}) => {
+          cy.getByTestIDSubStr('token-card')
+            .first()
+            .should('contain', tokens[0].description)
+
+          cy.getByTestIDSubStr('token-card')
+            .last()
+            .should('contain', tokens[2].description)
+
+          cy.getByTestIDSubStr('token-card').should('have.length', 3)
         })
       })
 
-    //status desc
+    cy.log('sort by Status (Inactive)')
+
     cy.getByTestID('resource-sorter--button')
       .click()
       .then(() => {
         cy.getByTestID('resource-sorter--status-desc').click()
       })
       .then(() => {
-        const sortedtoken = testTokens
-          .sort((a, b) => (a.status > b.status ? 1 : -1))
-          .reverse()
-        cy.get('[data-testid*="token-card"]').each((val, index) => {
-          const testID = val.attr('data-testid')
-          expect(testID).to.contain(sortedtoken[index].description)
+        cy.fixture('tokens.json').then(({tokens}) => {
+          cy.getByTestIDSubStr('token-card')
+            .first()
+            .should('contain', tokens[1].description)
+
+          cy.getByTestIDSubStr('token-card')
+            .last()
+            .should('contain', tokens[0].description)
+
+          cy.getByTestIDSubStr('token-card').should('have.length', 3)
         })
       })
   })

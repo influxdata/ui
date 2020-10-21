@@ -160,12 +160,13 @@ jobs:
       - store_artifacts:
           path: monitor-ci/test-artifacts/screenshots
           destination: test_artifacts/screenshots
-  cloud-e2e-nightly: # runs firefox
+  cloud-e2e-nightly-firefox:
     machine:
       image: ubuntu-2004:202008-01
       docker_layer_caching: true
+    parallelism: 10
     working_directory: ~/
-    resource_class: medium
+    resource_class: large
     steps:
       - checkout:
           path: ./ui
@@ -187,7 +188,7 @@ jobs:
           name: Run e2e tests
           no_output_timeout: 30m
           command: |
-            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser firefox --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/**/*.test.ts" | paste -sd "," -)"
+            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser firefox --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split | paste -sd "," -)"
       - store_test_results:
           path: monitor-ci/test-artifacts/results
       - store_artifacts:
@@ -348,4 +349,4 @@ workflows:
               only:
                 - master
     jobs:
-      - cloud-e2e-nightly
+      - cloud-e2e-nightly-firefox

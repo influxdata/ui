@@ -26,7 +26,6 @@ import {
 } from 'src/timeMachine/actions/queries'
 import {getAllVariables} from 'src/variables/selectors'
 import {getOrg} from 'src/organizations/selectors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {AppState, RemoteDataState} from 'src/types'
@@ -57,7 +56,6 @@ class SubmitQueryButton extends PureComponent<Props> {
 
   public componentDidUpdate(prevProps) {
     if (
-      isFlagEnabled('cancelQueryUiExpansion') &&
       this.props.queryStatus !== prevProps.queryStatus &&
       this.props.queryStatus === RemoteDataState.Loading
     ) {
@@ -80,9 +78,7 @@ class SubmitQueryButton extends PureComponent<Props> {
   }
 
   componentWillUnmount() {
-    if (isFlagEnabled('cancelQueryUiExpansion')) {
-      cancelAllRunningQueries()
-    }
+    cancelAllRunningQueries()
   }
 
   public render() {
@@ -130,42 +126,20 @@ class SubmitQueryButton extends PureComponent<Props> {
     return ComponentStatus.Default
   }
 
-  // TODO(ariel): delete when cancelQueryUiExpansion is successful
-  private abortController: AbortController
-
   private handleClick = (): void => {
     event('SubmitQueryButton click')
 
-    if (isFlagEnabled('cancelQueryUiExpansion')) {
-      this.props.onSubmit()
-    } else {
-      // We need to instantiate a new AbortController per request
-      // In order to allow for requests after cancellations:	    this.props.onSubmit()
-      // https://stackoverflow.com/a/56548348/7963795
-
-      this.timer = setTimeout(() => {
-        this.setState({timer: true})
-      }, DELAYTIME)
-      this.abortController = new AbortController()
-      this.props.onSubmit(this.abortController)
-    }
+    this.props.onSubmit()
   }
 
   private handleCancelClick = (): void => {
     if (this.props.onNotify) {
       this.props.onNotify(queryCancelRequest())
     }
-    if (isFlagEnabled('cancelQueryUiExpansion')) {
-      if (this.props.queryID) {
-        cancelQueryByHashID(this.props.queryID)
-      } else {
-        cancelAllRunningQueries()
-      }
+    if (this.props.queryID) {
+      cancelQueryByHashID(this.props.queryID)
     } else {
-      if (this.abortController) {
-        this.abortController.abort()
-        this.abortController = null
-      }
+      cancelAllRunningQueries()
     }
   }
 }

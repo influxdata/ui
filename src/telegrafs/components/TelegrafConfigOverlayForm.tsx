@@ -17,6 +17,7 @@ import {
   AlignItems,
   JustifyContent,
   IconFont,
+  ConfirmationButton,
 } from '@influxdata/clockface'
 
 // Utils
@@ -110,10 +111,13 @@ const TelegrafConfigOverlayForm: FC<Props> = ({
           text="Cancel"
           onClick={onClose}
         />
-        <Button
+        <ConfirmationButton
           color={ComponentColor.Success}
           text="Save Changes"
-          onClick={handleSaveConfig}
+          onConfirm={handleSaveConfig}
+          confirmationButtonText="Save"
+          confirmationButtonColor={ComponentColor.Success}
+          confirmationLabel="This cannot be undone, are you sure?"
         />
       </Overlay.Footer>
     </>

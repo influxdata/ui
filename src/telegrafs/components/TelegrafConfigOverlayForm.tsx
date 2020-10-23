@@ -106,7 +106,7 @@ const TelegrafConfigOverlayForm: FC<Props> = ({
           />
         </div>
       </Overlay.Body>
-      <FeatureFlag name="edit-telegrafs">
+      <FeatureFlag name="editTelegrafs">
         <Overlay.Footer>
           <Button
             color={ComponentColor.Default}

@@ -7,13 +7,13 @@ import DataExplorer from 'src/dataExplorer/components/DataExplorer'
 import {Page} from '@influxdata/clockface'
 import SaveAsButton from 'src/dataExplorer/components/SaveAsButton'
 import VisOptionsButton from 'src/timeMachine/components/VisOptionsButton'
-import ViewTypeDropdown from 'src/timeMachine/components/view_options/ViewTypeDropdown'
 import GetResources from 'src/resources/components/GetResources'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import DeleteDataButton from 'src/dataExplorer/components/DeleteDataButton'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import SaveAsOverlay from 'src/dataExplorer/components/SaveAsOverlay'
 import DEDeleteDataOverlay from 'src/dataExplorer/components/DeleteDataOverlay'
+import Visualization from 'src/timeMachine/components/visualization/view'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -44,7 +44,7 @@ const DataExplorerPage: FC = () => {
         </Page.Header>
         <Page.ControlBar fullWidth={true}>
           <Page.ControlBarLeft>
-            <ViewTypeDropdown />
+            <Visualization />
             <VisOptionsButton />
           </Page.ControlBarLeft>
           <Page.ControlBarRight>

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FunctionComponent} from 'react'
+import React, {FunctionComponent, createContext} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Types
@@ -22,6 +22,18 @@ import {dismissOverlay} from 'src/overlays/actions/overlays'
 type ReduxProps = ConnectedProps<typeof connector>
 type OverlayControllerProps = ReduxProps
 
+export interface OverlayContextType {
+  onClose: () => void
+}
+
+export const DEFAULT_OVERLAY_CONTEXT = {
+  onClose: () => {},
+}
+
+export const OverlayContext = createContext<OverlayContextType>(
+  DEFAULT_OVERLAY_CONTEXT
+)
+
 const OverlayController: FunctionComponent<OverlayControllerProps> = props => {
   let activeOverlay = <></>
   let visibility = true
@@ -35,6 +47,10 @@ const OverlayController: FunctionComponent<OverlayControllerProps> = props => {
     }
   }
 
+  // TODO: Alex Paxton
+  // Probably should refactor these overlays to use the context instead of prop
+  // drilling onClose into them
+
   switch (overlayID) {
     case 'add-note':
     case 'edit-note':
@@ -47,7 +63,7 @@ const OverlayController: FunctionComponent<OverlayControllerProps> = props => {
       activeOverlay = <BucketsTokenOverlay onClose={closer} />
       break
     case 'telegraf-config':
-      activeOverlay = <TelegrafConfigOverlay onClose={closer} />
+      activeOverlay = <TelegrafConfigOverlay />
       break
     case 'telegraf-output':
       activeOverlay = <TelegrafOutputOverlay onClose={closer} />
@@ -65,7 +81,11 @@ const OverlayController: FunctionComponent<OverlayControllerProps> = props => {
       visibility = false
   }
 
-  return <Overlay visible={visibility}>{activeOverlay}</Overlay>
+  return (
+    <OverlayContext.Provider value={{onClose: closer}}>
+      <Overlay visible={visibility}>{activeOverlay}</Overlay>
+    </OverlayContext.Provider>
+  )
 }
 
 const mstp = (state: AppState) => {

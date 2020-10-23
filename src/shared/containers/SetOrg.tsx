@@ -19,6 +19,7 @@ import TelegrafsPage from 'src/telegrafs/containers/TelegrafsPage'
 import ScrapersIndex from 'src/scrapers/containers/ScrapersIndex'
 import WriteDataPage from 'src/writeData/containers/WriteDataPage'
 import VariablesIndex from 'src/variables/containers/VariablesIndex'
+import AnnotationsIndex from 'src/annotations/containers/AnnotationsIndex'
 import LabelsIndex from 'src/labels/containers/LabelsIndex'
 import OrgProfilePage from 'src/organizations/containers/OrgProfilePage'
 import AlertingIndex from 'src/alerting/components/AlertingIndex'
@@ -41,6 +42,15 @@ import {
   LOAD_DATA,
   TELEGRAF_PLUGINS,
   CLIENT_LIBS,
+  SETTINGS,
+  ANNOTATIONS,
+  VARIABLES,
+  LABELS,
+  BUCKETS,
+  SCRAPERS,
+  TEMPLATES,
+  TOKENS,
+  TELEGRAFS,
 } from 'src/shared/constants/routes'
 
 // Actions
@@ -166,37 +176,45 @@ const SetOrg: FC<Props> = ({
           component={WriteDataPage}
         />
         <Route
-          path={`${orgPath}/${LOAD_DATA}/scrapers`}
+          path={`${orgPath}/${LOAD_DATA}/${SCRAPERS}`}
           component={ScrapersIndex}
         />
         <Route
-          path={`${orgPath}/${LOAD_DATA}/telegrafs`}
+          path={`${orgPath}/${LOAD_DATA}/${TELEGRAFS}`}
           component={TelegrafsPage}
         />
         <Route
-          path={`${orgPath}/${LOAD_DATA}/tokens`}
+          path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
           component={TokensIndex}
         />
         <Route
-          path={`${orgPath}/${LOAD_DATA}/buckets`}
+          path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
           component={BucketsIndex}
         />
 
         {/* Settings */}
         <Route
-          path={`${orgPath}/settings/variables`}
+          path={`${orgPath}/${SETTINGS}/${ANNOTATIONS}`}
+          component={AnnotationsIndex}
+        />
+        <Route
+          path={`${orgPath}/${SETTINGS}/${VARIABLES}`}
           component={VariablesIndex}
         />
         <Route
-          path={`${orgPath}/settings/templates`}
+          path={`${orgPath}/${SETTINGS}/${TEMPLATES}`}
           component={CommunityTemplatesIndex}
         />
         <Route
           exact
-          path={`${orgPath}/settings/labels`}
+          path={`${orgPath}/${SETTINGS}/${LABELS}`}
           component={LabelsIndex}
         />
-        <Route exact path={`${orgPath}/settings`} component={VariablesIndex} />
+        <Route
+          exact
+          path={`${orgPath}/${SETTINGS}`}
+          component={VariablesIndex}
+        />
 
         {/* Members */}
         {!CLOUD && (

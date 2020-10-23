@@ -41,6 +41,10 @@ class SettingsNavigation extends PureComponent<Props> {
         text: 'Labels',
         id: 'labels',
       },
+      {
+        text: 'Annotations',
+        id: 'annotations',
+      },
     ]
 
     return (

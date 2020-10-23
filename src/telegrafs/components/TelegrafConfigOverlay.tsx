@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
 import _ from 'lodash'
 
 // Components
@@ -9,25 +8,14 @@ import GetResources from 'src/resources/components/GetResources'
 import TelegrafConfigOverlayForm from 'src/telegrafs/components/TelegrafConfigOverlayForm'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-// Actions
-import {updateTelegraf} from 'src/telegrafs/actions/thunks'
-
 // Types
-import {ResourceType, Telegraf} from 'src/types'
+import {ResourceType} from 'src/types'
 
-interface OwnProps {
+interface Props {
   onClose: () => void
 }
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps
-
-const TelegrafConfigOverlay: FC<Props> = ({onUpdateTelegraf, onClose}) => {
-  const handleUpdateTelegraf = (telegraf: Telegraf): void => {
-    onUpdateTelegraf(telegraf)
-    onClose()
-  }
-
+const TelegrafConfigOverlay: FC<Props> = ({onClose}) => {
   const titleVerb = isFlagEnabled('editTelegrafs') ? 'Edit ' : ''
 
   return (
@@ -37,19 +25,10 @@ const TelegrafConfigOverlay: FC<Props> = ({onUpdateTelegraf, onClose}) => {
         onDismiss={onClose}
       />
       <GetResources resources={[ResourceType.Telegrafs]}>
-        <TelegrafConfigOverlayForm
-          onClose={onClose}
-          onUpdateTelegraf={handleUpdateTelegraf}
-        />
+        <TelegrafConfigOverlayForm onClose={onClose} />
       </GetResources>
     </Overlay.Container>
   )
 }
 
-const mdtp = {
-  onUpdateTelegraf: updateTelegraf,
-}
-
-const connector = connect(null, mdtp)
-
-export default connector(TelegrafConfigOverlay)
+export default TelegrafConfigOverlay

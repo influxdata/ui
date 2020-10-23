@@ -21,6 +21,9 @@ import {
 } from '@influxdata/clockface'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
+// Actions
+import {updateTelegraf} from 'src/telegrafs/actions/thunks'
+
 // Utils
 import {downloadTextFile} from 'src/shared/utils/download'
 
@@ -32,7 +35,6 @@ import {getAll} from 'src/resources/selectors'
 
 interface OwnProps {
   onClose: () => void
-  onUpdateTelegraf: (telegraf: Telegraf) => void
 }
 
 type Params = {orgID: string; id: string}
@@ -75,6 +77,7 @@ const TelegrafConfigOverlayForm: FC<Props> = ({
 
   const handleSaveConfig = (): void => {
     onUpdateTelegraf({...telegraf, config: workingConfig})
+    onClose()
   }
 
   const handleChangeConfig = (config: string): void => {
@@ -133,6 +136,10 @@ const mstp = (state: AppState) => {
   }
 }
 
-const connector = connect(mstp)
+const mdtp = {
+  onUpdateTelegraf: updateTelegraf,
+}
+
+const connector = connect(mstp, mdtp)
 
 export default connector(withRouter(TelegrafConfigOverlayForm))

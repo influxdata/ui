@@ -395,7 +395,10 @@ describe('Collectors', () => {
       cy.contains('Your configurations have been saved')
 
       cy.contains('Label 1').click()
-      cy.contains('Telegraf Configuration - Label 1').should('exist')
+
+      cy.getByTestID('telegraf-overlay').within(() => {
+        cy.contains('Label 1').should('exist')
+      })
     })
 
     describe('Label creation and searching', () => {

@@ -31,7 +31,7 @@ const TelegrafConfigOverlay: FC<Props> = ({onUpdateTelegraf, onClose}) => {
   const titleVerb = isFlagEnabled('editTelegrafs') ? 'Edit ' : ''
 
   return (
-    <Overlay.Container maxWidth={1200}>
+    <Overlay.Container maxWidth={1200} testID="telegraf-overlay">
       <Overlay.Header
         title={`${titleVerb}Telegraf Configuration`}
         onDismiss={onClose}

@@ -193,10 +193,12 @@ const SetOrg: FC<Props> = ({
         />
 
         {/* Settings */}
-        <Route
-          path={`${orgPath}/${SETTINGS}/${ANNOTATIONS}`}
-          component={AnnotationsIndex}
-        />
+        {isFlagEnabled('annotations') && (
+          <Route
+            path={`${orgPath}/${SETTINGS}/${ANNOTATIONS}`}
+            component={AnnotationsIndex}
+          />
+        )}
         <Route
           path={`${orgPath}/${SETTINGS}/${VARIABLES}`}
           component={VariablesIndex}

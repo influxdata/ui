@@ -47,6 +47,10 @@ const OverlayController: FunctionComponent<OverlayControllerProps> = props => {
     }
   }
 
+  // TODO: Alex Paxton
+  // Probably should refactor these overlays to use the context instead of prop
+  // drilling onClose into them
+
   switch (overlayID) {
     case 'add-note':
     case 'edit-note':

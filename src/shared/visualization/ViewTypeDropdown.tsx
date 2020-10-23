@@ -1,5 +1,5 @@
 import React, {FC} from 'react'
-import {TYPE_DEFINITIONS} from 'src/flows/pipes/Visualization'
+import {TYPE_DEFINITIONS} from 'src/shared/visualization'
 
 // Components
 import {Dropdown, DropdownMenuTheme} from '@influxdata/clockface'

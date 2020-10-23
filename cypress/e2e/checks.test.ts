@@ -86,14 +86,6 @@ describe('Checks', () => {
     cy.getByTestID(`selector-list ${field}`).click()
 
     cy.log('name the check; save')
-    cy.getByTestID('overlay').within(() => {
-      cy.getByTestID('page-title')
-        .contains('Name this Check')
-        .click()
-      cy.getByTestID('renamable-page-title--input')
-        .clear()
-        .type('Beta{enter}')
-    })
     cy.getByTestID('save-cell--button').click()
 
     cy.log('assert the number of check cards')
@@ -109,6 +101,85 @@ describe('Checks', () => {
     cy.log('clear filter and assert the number of check cards again')
     cy.getByTestID('filter--input checks').clear()
     cy.getByTestID('check-card').should('have.length', 2)
+  })
+
+  it('can validate a deadman check', () => {
+    //create deadman check
+    cy.getByTestID('create-check').click()
+    cy.getByTestID('create-deadman-check').click()
+
+    //checklist popover and save button check
+    cy.get('.query-checklist--popover').should('be.visible')
+    cy.getByTestID('save-cell--button').should('be.disabled')
+
+    //select measurement and field - checklist popover should disappear, save button should activate
+    cy.getByTestID(`selector-list defbuck`).click()
+    cy.getByTestID(`selector-list ${measurement}`).click()
+    cy.getByTestID('save-cell--button').should('be.disabled')
+    cy.getByTestID(`selector-list ${field}`).click()
+    cy.get('.query-checklist--popover').should('not.exist')
+    cy.getByTestID('save-cell--button').should('be.enabled')
+
+    //submit the graph
+    cy.getByTestID('empty-graph--no-queries')
+    cy.getByTestID('time-machine-submit-button').click()
+    cy.getByTestID('giraffe-axes').should('exist')
+
+    //navigate to configure check tab
+    cy.getByTestID('checkeo--header alerting-tab').click()
+
+    //conditions inputs check
+    cy.getByTestID('builder-conditions')
+      .should('contain', 'Deadman')
+      .within(() => {
+        cy.getByTestID('duration-input')
+          .first()
+          .click()
+        cy.get('.duration-input--menu').should('exist')
+        cy.getByTestID('duration-input')
+          .first()
+          .clear()
+          .type('60s')
+
+        cy.getByTestID('builder-card--header').click()
+        cy.get('.duration-input--menu').should('not.exist')
+
+        cy.getByTestID('duration-input')
+          .last()
+          .click()
+        cy.get('.duration-input--menu').should('exist')
+        cy.getByTestID('duration-input')
+          .last()
+          .clear()
+          .type('660s')
+        cy.getByTestID('builder-card--header').click()
+        cy.get('.duration-input--menu').should('not.exist')
+
+        cy.getByTestID('check-levels--dropdown--button').click()
+        cy.getByTestID('dropdown-menu')
+          .should('be.visible')
+          .within(() => {
+            cy.getByTestID('check-levels--dropdown-item OK').click()
+          })
+        cy.get('.color-dropdown--name').should('have.text', 'OK')
+      })
+
+    //name the check; save
+    cy.getByTestID('overlay').within(() => {
+      cy.getByTestID('page-title')
+        .contains('Name this Check')
+        .click()
+      cy.getByTestID('renamable-page-title--input')
+        .clear()
+        .type('Deadman check test{enter}')
+    })
+
+    cy.getByTestID('save-cell--button').click()
+
+    //assert the check card
+    cy.getByTestID('check-card--name')
+      .contains('Deadman check test')
+      .should('exist')
   })
 
   describe('When a check does not exist', () => {

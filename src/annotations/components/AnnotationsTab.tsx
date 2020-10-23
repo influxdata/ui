@@ -5,6 +5,8 @@ import {useSelector} from 'react-redux'
 
 // Components
 import {
+  Grid,
+  Columns,
   EmptyState,
   ComponentSize,
   Sort,
@@ -17,6 +19,7 @@ import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader
 import AnnotationsList from 'src/annotations/components/AnnotationsList'
 import Filter from 'src/shared/components/FilterList'
 import GetResources from 'src/resources/components/GetResources'
+import Explainer from 'src/annotations/components/Explainer'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
@@ -72,23 +75,42 @@ const AnnotationsTab: FC = () => {
         childrenLeft={leftHeaderItems}
         childrenRight={rightHeaderItems}
       />
-      <GetResources resources={[ResourceType.Labels]}>
-        <FilterList
-          searchTerm={searchTerm}
-          searchKeys={['name']}
-          list={MOCK_ANNOTATION_STREAMS}
-        >
-          {annotationStreams => (
-            <AnnotationsList
-              annotationStreams={annotationStreams}
-              emptyState={<AnnotationsTabEmptyState searchTerm={searchTerm} />}
-              sortKey={sortKey}
-              sortDirection={sortDirection}
-              sortType={sortType}
-            />
-          )}
-        </FilterList>
-      </GetResources>
+      <Grid>
+        <Grid.Row>
+          <Grid.Column
+            widthXS={Columns.Twelve}
+            widthSM={Columns.Eight}
+            widthMD={Columns.Ten}
+          >
+            <GetResources resources={[ResourceType.Labels]}>
+              <FilterList
+                searchTerm={searchTerm}
+                searchKeys={['name']}
+                list={MOCK_ANNOTATION_STREAMS}
+              >
+                {annotationStreams => (
+                  <AnnotationsList
+                    annotationStreams={annotationStreams}
+                    emptyState={
+                      <AnnotationsTabEmptyState searchTerm={searchTerm} />
+                    }
+                    sortKey={sortKey}
+                    sortDirection={sortDirection}
+                    sortType={sortType}
+                  />
+                )}
+              </FilterList>
+            </GetResources>
+          </Grid.Column>
+          <Grid.Column
+            widthXS={Columns.Twelve}
+            widthSM={Columns.Four}
+            widthMD={Columns.Two}
+          >
+            <Explainer />
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
     </>
   )
 }

@@ -56,7 +56,7 @@ const TelegrafConfigOverlayForm: FC<Props> = ({
 
   let telegraf
 
-  if (match && match.params && match.params.id) {
+  if (match?.params?.id) {
     telegraf = telegrafs.find(tel => tel.id === match.params.id)
   }
 

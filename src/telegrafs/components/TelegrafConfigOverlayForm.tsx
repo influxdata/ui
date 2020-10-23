@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, useState, useContext} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
-import {withRouter, RouteComponentProps, useRouteMatch} from 'react-router-dom'
+import {useSelector, useDispatch} from 'react-redux'
+import {useRouteMatch} from 'react-router-dom'
 import _ from 'lodash'
 
 // Components
@@ -41,13 +41,12 @@ interface Match {
   params: Params
 }
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & RouteComponentProps
-
-const TelegrafConfigOverlayForm: FC<Props> = ({
-  telegrafs,
-  onUpdateTelegraf,
-}) => {
+const TelegrafConfigOverlayForm: FC = () => {
+  const dispatch = useDispatch()
+  const getTelegrafs = (state: AppState): Telegraf[] => {
+    return getAll<Telegraf>(state, ResourceType.Telegrafs)
+  }
+  const telegrafs = useSelector(getTelegrafs)
   const {onClose} = useContext(OverlayContext)
   const match: Match = useRouteMatch({
     path: '/orgs/:orgID/load-data/telegrafs/:id/view',
@@ -75,7 +74,7 @@ const TelegrafConfigOverlayForm: FC<Props> = ({
   }
 
   const handleSaveConfig = (): void => {
-    onUpdateTelegraf({...telegraf, config: workingConfig})
+    dispatch(updateTelegraf({...telegraf, config: workingConfig}))
     onClose()
   }
 
@@ -129,16 +128,4 @@ const TelegrafConfigOverlayForm: FC<Props> = ({
   )
 }
 
-const mstp = (state: AppState) => {
-  return {
-    telegrafs: getAll<Telegraf>(state, ResourceType.Telegrafs),
-  }
-}
-
-const mdtp = {
-  onUpdateTelegraf: updateTelegraf,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(withRouter(TelegrafConfigOverlayForm))
+export default TelegrafConfigOverlayForm

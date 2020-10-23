@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState} from 'react'
+import React, {FC, useState, useContext} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps, useRouteMatch} from 'react-router-dom'
 import _ from 'lodash'
@@ -21,6 +21,9 @@ import {
 } from '@influxdata/clockface'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
+// Contexts
+import {OverlayContext} from 'src/overlays/components/OverlayController'
+
 // Actions
 import {updateTelegraf} from 'src/telegrafs/actions/thunks'
 
@@ -33,23 +36,19 @@ import {AppState, ResourceType, Telegraf} from 'src/types'
 // Selectors
 import {getAll} from 'src/resources/selectors'
 
-interface OwnProps {
-  onClose: () => void
-}
-
 type Params = {orgID: string; id: string}
 interface Match {
   params: Params
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps & RouteComponentProps
+type Props = ReduxProps & RouteComponentProps
 
 const TelegrafConfigOverlayForm: FC<Props> = ({
   telegrafs,
   onUpdateTelegraf,
-  onClose,
 }) => {
+  const {onClose} = useContext(OverlayContext)
   const match: Match = useRouteMatch({
     path: '/orgs/:orgID/load-data/telegrafs/:id/view',
     exact: true,

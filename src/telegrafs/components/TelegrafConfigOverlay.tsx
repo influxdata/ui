@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
 import _ from 'lodash'
 
 // Components
@@ -8,14 +8,14 @@ import GetResources from 'src/resources/components/GetResources'
 import TelegrafConfigOverlayForm from 'src/telegrafs/components/TelegrafConfigOverlayForm'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
+// Contexts
+import {OverlayContext} from 'src/overlays/components/OverlayController'
+
 // Types
 import {ResourceType} from 'src/types'
 
-interface Props {
-  onClose: () => void
-}
-
-const TelegrafConfigOverlay: FC<Props> = ({onClose}) => {
+const TelegrafConfigOverlay: FC = () => {
+  const {onClose} = useContext(OverlayContext)
   const titleVerb = isFlagEnabled('editTelegrafs') ? 'Edit ' : ''
 
   return (
@@ -25,7 +25,7 @@ const TelegrafConfigOverlay: FC<Props> = ({onClose}) => {
         onDismiss={onClose}
       />
       <GetResources resources={[ResourceType.Telegrafs]}>
-        <TelegrafConfigOverlayForm onClose={onClose} />
+        <TelegrafConfigOverlayForm />
       </GetResources>
     </Overlay.Container>
   )

@@ -19,6 +19,7 @@ import {
   IconFont,
   ConfirmationButton,
 } from '@influxdata/clockface'
+import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Utils
 import {downloadTextFile} from 'src/shared/utils/download'
@@ -105,21 +106,23 @@ const TelegrafConfigOverlayForm: FC<Props> = ({
           />
         </div>
       </Overlay.Body>
-      <Overlay.Footer>
-        <Button
-          color={ComponentColor.Default}
-          text="Cancel"
-          onClick={onClose}
-        />
-        <ConfirmationButton
-          color={ComponentColor.Success}
-          text="Save Changes"
-          onConfirm={handleSaveConfig}
-          confirmationButtonText="Save"
-          confirmationButtonColor={ComponentColor.Success}
-          confirmationLabel="This cannot be undone, are you sure?"
-        />
-      </Overlay.Footer>
+      <FeatureFlag name="edit-telegrafs">
+        <Overlay.Footer>
+          <Button
+            color={ComponentColor.Default}
+            text="Cancel"
+            onClick={onClose}
+          />
+          <ConfirmationButton
+            color={ComponentColor.Success}
+            text="Save Changes"
+            onConfirm={handleSaveConfig}
+            confirmationButtonText="Save"
+            confirmationButtonColor={ComponentColor.Success}
+            confirmationLabel="This cannot be undone, are you sure?"
+          />
+        </Overlay.Footer>
+      </FeatureFlag>
     </>
   )
 }

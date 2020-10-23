@@ -7,6 +7,7 @@ import _ from 'lodash'
 import {Overlay} from '@influxdata/clockface'
 import GetResources from 'src/resources/components/GetResources'
 import TelegrafConfigOverlayForm from 'src/telegrafs/components/TelegrafConfigOverlayForm'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Actions
 import {updateTelegraf} from 'src/telegrafs/actions/thunks'
@@ -27,9 +28,14 @@ const TelegrafConfigOverlay: FC<Props> = ({onUpdateTelegraf, onClose}) => {
     onClose()
   }
 
+  const titleVerb = isFlagEnabled('edit-telegrafs') ? 'Edit ' : ''
+
   return (
     <Overlay.Container maxWidth={1200}>
-      <Overlay.Header title="Edit Telegraf Configuration" onDismiss={onClose} />
+      <Overlay.Header
+        title={`${titleVerb}Telegraf Configuration`}
+        onDismiss={onClose}
+      />
       <GetResources resources={[ResourceType.Telegrafs]}>
         <TelegrafConfigOverlayForm
           onClose={onClose}

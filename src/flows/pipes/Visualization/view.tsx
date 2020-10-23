@@ -13,7 +13,7 @@ import {SquareButton, IconFont, ComponentColor} from '@influxdata/clockface'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 import DashboardList from './DashboardList'
 import ViewSwitcher from 'src/shared/components/ViewSwitcher'
-import ViewTypeDropdown from './ViewTypeDropdown'
+import ViewTypeDropdown from 'src/shared/visualization/ViewTypeDropdown'
 import Resizer from 'src/flows/shared/Resizer'
 
 // Utilities

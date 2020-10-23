@@ -4,7 +4,7 @@ import React, {FC, useState, useContext} from 'react'
 // Components
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 import ViewSwitcher from 'src/shared/components/ViewSwitcher'
-import ViewTypeDropdown from 'src/flows/pipes/Visualization/ViewTypeDropdown'
+import ViewTypeDropdown from 'src/shared/visualization/ViewTypeDropdown'
 import Resizer from 'src/flows/shared/Resizer'
 
 // Components

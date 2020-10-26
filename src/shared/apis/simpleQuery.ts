@@ -1,5 +1,5 @@
 import {fromFlux} from '@influxdata/giraffe'
-import {File, Query, Variable} from 'src/types'
+import {Query, Variable} from 'src/types'
 import {API_BASE_PATH} from 'src/shared/constants'
 import {
   RATE_LIMIT_ERROR_STATUS,
@@ -86,7 +86,7 @@ export default (orgID: string, query: string, variables?: Variable[]) => {
         })()
       } else {
         return (async () => {
-          let data = await response.text()
+          const data = await response.text()
           return fromFlux(data)
         })()
       }

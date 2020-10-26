@@ -1,5 +1,6 @@
 // Libraries
-import React, {SFC} from 'react'
+import React, {FC} from 'react'
+import memoizeOne from 'memoize-one'
 import {connect, ConnectedProps} from 'react-redux'
 import {AutoSizer} from 'react-virtualized'
 import classnames from 'classnames'
@@ -12,6 +13,11 @@ import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 // Utils
+import {
+  parseFiles,
+  parseFilesWithObjects,
+  parseFilesWithFromFlux,
+} from 'src/timeMachine/utils/rawFluxDataTable'
 import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 import {checkResultsLength} from 'src/shared/utils/vis'
 import {
@@ -21,6 +27,7 @@ import {
   getFillColumnsSelection,
   getSymbolColumnsSelection,
 } from 'src/timeMachine/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getTimeRangeWithTimezone, getTimeZone} from 'src/dashboards/selectors'
 
 // Types
@@ -32,7 +39,7 @@ import {getActiveTimeRange} from 'src/timeMachine/selectors/index'
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
-const TimeMachineVis: SFC<Props> = ({
+const TimeMachineVis: FC<Props> = ({
   loading,
   errorMessage,
   timeRange,
@@ -83,16 +90,41 @@ const TimeMachineVis: SFC<Props> = ({
         >
           {isViewingRawData ? (
             <AutoSizer>
-              {({width, height}) =>
-                width &&
-                height && (
+              {({width, height}) => {
+                if (isFlagEnabled('flowsUiPagination')) {
+                  const memoizedParseFilesWithFromFlux = memoizeOne(
+                    parseFilesWithFromFlux
+                  )
+                  const memoizedParseFiles = memoizeOne(parseFiles)
+                  const memoizedParseFilesWithObjects = memoizeOne(
+                    parseFilesWithObjects
+                  )
+
+                  let parseFunction = memoizedParseFiles
+                  if (isFlagEnabled('parseObjectsInCSV')) {
+                    parseFunction = memoizedParseFilesWithObjects
+                  }
+                  if (isFlagEnabled('rawCsvFromfluxParser')) {
+                    parseFunction = memoizedParseFilesWithFromFlux
+                  }
+                  const {data, maxColumnCount} = parseFunction(files)
+                  return (
+                    <RawFluxDataTable
+                      data={data}
+                      maxColumnCount={maxColumnCount}
+                      width={width}
+                      height={height}
+                    />
+                  )
+                }
+                return (
                   <RawFluxDataTable
                     files={files}
                     width={width}
                     height={height}
                   />
                 )
-              }
+              }}
             </AutoSizer>
           ) : (
             <ViewSwitcher

@@ -17,6 +17,7 @@ import {
 } from '@influxdata/clockface'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import Toolbar from 'src/shared/components/toolbar/Toolbar'
+import AnnotationPills from 'src/annotations/components/controlBar/AnnotationPills'
 
 // Selectors
 import {getAnnotationControlsVisibility} from 'src/annotations/selectors'
@@ -71,7 +72,7 @@ const AnnotationsControlBar: FC = () => {
           />
         </FlexBoxChild>
         <FlexBoxChild grow={1}>
-          <span>Labels</span>
+          <AnnotationPills />
         </FlexBoxChild>
         <FlexBox margin={ComponentSize.Small}>
           <Button

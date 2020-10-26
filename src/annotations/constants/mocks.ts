@@ -21,8 +21,6 @@ export interface AnnotationStream {
   }
 }
 
-export type AnnotationStreamSortKey = keyof AnnotationStream
-
 export const MOCK_ANNOTATION_STREAMS: AnnotationStream[] = [
   {
     id: 'anno1',

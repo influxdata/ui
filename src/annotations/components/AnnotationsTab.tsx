@@ -32,7 +32,6 @@ import {SortTypes} from 'src/shared/utils/sort'
 import {
   AnnotationStream,
   MOCK_ANNOTATION_STREAMS,
-  AnnotationStreamSortKey,
 } from 'src/annotations/constants/mocks'
 
 const FilterList = Filter<AnnotationStream>()

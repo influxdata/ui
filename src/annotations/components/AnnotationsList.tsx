@@ -13,15 +13,12 @@ import {Sort} from '@influxdata/clockface'
 import {getSortedResources} from 'src/shared/utils/sort'
 
 // Mocks
-import {
-  AnnotationStream,
-  AnnotationStreamSortKey,
-} from 'src/annotations/constants/mocks'
+import {AnnotationStream} from 'src/annotations/constants/mocks'
 
 interface Props {
   annotationStreams: AnnotationStream[]
   emptyState: JSX.Element
-  sortKey: AnnotationStreamSortKey
+  sortKey: string
   sortDirection: Sort
   sortType: SortTypes
 }

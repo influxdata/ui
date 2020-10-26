@@ -14,6 +14,9 @@ import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import SaveAsOverlay from 'src/dataExplorer/components/SaveAsOverlay'
 import DEDeleteDataOverlay from 'src/dataExplorer/components/DeleteDataOverlay'
 import Visualization from 'src/timeMachine/components/visualization/view'
+import AnnotationsToggleButton from 'src/annotations/components/AnnotationsToggleButton'
+import {FeatureFlag} from 'src/shared/utils/featureFlag'
+import AnnotationsControlBar from 'src/annotations/components/controlBar/AnnotationsControlBar'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -46,6 +49,9 @@ const DataExplorerPage: FC = () => {
           <Page.ControlBarLeft>
             <Visualization />
             <VisOptionsButton />
+            <FeatureFlag name="annotations">
+              <AnnotationsToggleButton />
+            </FeatureFlag>
           </Page.ControlBarLeft>
           <Page.ControlBarRight>
             <DeleteDataButton />
@@ -53,6 +59,9 @@ const DataExplorerPage: FC = () => {
             <SaveAsButton />
           </Page.ControlBarRight>
         </Page.ControlBar>
+        <FeatureFlag name="annotations">
+          <AnnotationsControlBar />
+        </FeatureFlag>
         <Page.Contents fullWidth={true} scrollable={false}>
           <DataExplorer />
         </Page.Contents>

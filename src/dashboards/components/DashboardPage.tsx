@@ -11,11 +11,13 @@ import DashboardComponent from 'src/dashboards/components/Dashboard'
 import ManualRefresh from 'src/shared/components/ManualRefresh'
 import {HoverTimeProvider} from 'src/dashboards/utils/hoverTime'
 import VariablesControlBar from 'src/dashboards/components/variablesControlBar/VariablesControlBar'
+import AnnotationsControlBar from 'src/annotations/components/controlBar/AnnotationsControlBar'
 import LimitChecker from 'src/cloud/components/LimitChecker'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import EditVEO from 'src/dashboards/components/EditVEO'
 import NewVEO from 'src/dashboards/components/NewVEO'
 import {AddNoteOverlay, EditNoteOverlay} from 'src/overlays/components'
+import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -71,6 +73,9 @@ class DashboardPage extends Component<Props> {
               />
               <RateLimitAlert alertOnly={true} />
               <VariablesControlBar />
+              <FeatureFlag name="annotations">
+                <AnnotationsControlBar />
+              </FeatureFlag>
               <DashboardComponent manualRefresh={manualRefresh} />
             </HoverTimeProvider>
           </LimitChecker>

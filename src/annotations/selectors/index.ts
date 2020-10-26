@@ -20,3 +20,13 @@ export const getVisibleAnnotationStreams = (
     visibleStreams.includes(stream.id)
   )
 }
+
+export const getHiddenAnnotationStreams = (
+  state: AppState
+): AnnotationStream[] => {
+  const visibleStreams = state.annotations.visibleStreamsByID
+
+  return MOCK_ANNOTATION_STREAMS.filter(
+    stream => !visibleStreams.includes(stream.id)
+  )
+}

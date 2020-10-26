@@ -30,6 +30,8 @@ const AnnotationPill: FC<Props> = ({id, name, description, color}) => {
       onDelete={handleDisable}
       description={description}
       size={ComponentSize.ExtraSmall}
+      className="annotation-pill"
+      testID={`annotation-pill ${id}`}
     />
   )
 }

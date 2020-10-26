@@ -8,11 +8,14 @@ import {getVisibleAnnotationStreams} from 'src/annotations/selectors'
 // Components
 import AnnotationPill from 'src/annotations/components/controlBar/AnnotationPill'
 
+// Styles
+import 'src/annotations/components/controlBar/AnnotationPills.scss'
+
 const AnnotationPills: FC = () => {
   const visibleStreams = useSelector(getVisibleAnnotationStreams)
 
   return (
-    <>
+    <div className="annotation-pills" data-testid="annotation-pills">
       {visibleStreams.map(stream => (
         <AnnotationPill
           key={stream.id}
@@ -22,7 +25,7 @@ const AnnotationPills: FC = () => {
           color={stream.display.color}
         />
       ))}
-    </>
+    </div>
   )
 }
 

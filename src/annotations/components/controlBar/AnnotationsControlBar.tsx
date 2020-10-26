@@ -9,7 +9,6 @@ import {
   SquareButton,
   IconFont,
   JustifyContent,
-  Input,
   FlexBox,
   FlexBoxChild,
   ComponentSize,
@@ -18,6 +17,7 @@ import {
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import Toolbar from 'src/shared/components/toolbar/Toolbar'
 import AnnotationPills from 'src/annotations/components/controlBar/AnnotationPills'
+import AnnotationsSearchBar from 'src/annotations/components/controlBar/AnnotationsSearchBar'
 
 // Selectors
 import {getAnnotationControlsVisibility} from 'src/annotations/selectors'
@@ -66,10 +66,7 @@ const AnnotationsControlBar: FC = () => {
         margin={ComponentSize.Large}
       >
         <FlexBoxChild basis={300} grow={0}>
-          <Input
-            placeholder="Add annotation streams..."
-            icon={IconFont.Search}
-          />
+          <AnnotationsSearchBar />
         </FlexBoxChild>
         <FlexBoxChild grow={1}>
           <AnnotationPills />

@@ -1,8 +1,8 @@
-import {Query, Variable} from 'src/types'
+import {Variable} from 'src/types'
 import {FromFluxResult} from '@influxdata/giraffe'
 import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
 import {event} from 'src/cloud/utils/reporting'
-import query from 'src/shared/apis/simpleQuery'
+import simpleQuery from 'src/shared/apis/simpleQuery'
 
 export const TIME_INVALIDATION = 1000 * 60 * 10 // 10 minutes
 
@@ -92,7 +92,7 @@ export function clear() {
   event('Query Cache Cleared')
 
   Object.entries(cache).forEach(([queryID, queryCache]) => {
-    Object.entries(queryCache).forEach(([variableID, resultEntry]) => {
+    Object.entries(queryCache).forEach(([_, resultEntry]) => {
       if (resultEntry.status === RemoteDataState.Loading) {
         resultEntry.cancel()
       }
@@ -132,12 +132,13 @@ export default function(orgID: string, query: string, variables?: Variable[]) {
     }
   }
 
-  let entry = cache[hash.query][hash.variable]
+  const entry = cache[hash.query][hash.variable]
   let fauxPromise
 
   // Got a cache hit. Lets save some data!
   if (entry.results) {
     event('Query Cache Hit')
+
     fauxPromise = new Promise(resolve => {
       resolve(entry.results)
     })
@@ -157,7 +158,7 @@ export default function(orgID: string, query: string, variables?: Variable[]) {
   if (entry.status === RemoteDataState.NotStarted) {
     entry.status = RemoteDataState.Loading
 
-    const _query = query(orgID, query, variables)
+    const _query = simpleQuery(orgID, query, variables)
       .then(results => {
         let curr
 

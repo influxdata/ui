@@ -2,6 +2,7 @@ import Papa from 'papaparse'
 import HtmlEntities from 'he'
 import unraw from 'unraw'
 import {fromFlux, FromFluxResult} from '@influxdata/giraffe'
+import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 import {parseChunks} from 'src/shared/parsing/flux/response'
 import {
@@ -32,12 +33,11 @@ export const parseFilesWithFromFlux = (
 export const fromFluxTableTransformer = (
   response: string
 ): {tableData: string[][]; max: number} => {
-  let parsedChunk
-  // TODO(ariel): kill this, since it's a stopgap to prevent improper data from
-  // crashing the app when fromFlux can't handle it
-  try {
-    parsedChunk = fromFlux(response)
-  } catch (error) {
+  const parsedChunk = fromFlux(response)
+  if (parsedChunk.error) {
+    reportErrorThroughHoneyBadger(parsedChunk.error, {
+      name: 'fromFluxTableTransformed function',
+    })
     return {
       tableData: [[]],
       max: 0,

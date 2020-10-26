@@ -1,8 +1,9 @@
 // Libraries
-import React, {FC, useMemo} from 'react'
+import React, {FC} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {AutoSizer} from 'react-virtualized'
 import classnames from 'classnames'
+import {fromFlux} from '@influxdata/giraffe'
 
 // Components
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
@@ -12,12 +13,6 @@ import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 // Utils
-import {
-  parseFiles,
-  parseFilesWithObjects,
-  parseFilesWithFromFlux,
-} from 'src/timeMachine/utils/rawFluxDataTable'
-import {fromFlux} from '@influxdata/giraffe'
 import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 import {checkResultsLength} from 'src/shared/utils/vis'
 import {

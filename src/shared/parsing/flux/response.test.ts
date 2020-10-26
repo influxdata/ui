@@ -589,8 +589,7 @@ describe('parseResponseWithFromFlux', () => {
   describe('partial responses', () => {
     test('should discard tables without any non-annotation rows', () => {
       const actual = parseResponseWithFromFlux(TRUNCATED_RESPONSE)
-
-      expect(actual).toHaveLength(2)
+      expect(actual).toHaveLength(0)
     })
   })
 })

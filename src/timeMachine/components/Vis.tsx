@@ -1,6 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
-import memoizeOne from 'memoize-one'
+import React, {FC, useMemo} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {AutoSizer} from 'react-virtualized'
 import classnames from 'classnames'
@@ -18,6 +17,7 @@ import {
   parseFilesWithObjects,
   parseFilesWithFromFlux,
 } from 'src/timeMachine/utils/rawFluxDataTable'
+import {fromFlux} from '@influxdata/giraffe'
 import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 import {checkResultsLength} from 'src/shared/utils/vis'
 import {
@@ -92,26 +92,10 @@ const TimeMachineVis: FC<Props> = ({
             <AutoSizer>
               {({width, height}) => {
                 if (isFlagEnabled('flowsUiPagination')) {
-                  const memoizedParseFilesWithFromFlux = memoizeOne(
-                    parseFilesWithFromFlux
-                  )
-                  const memoizedParseFiles = memoizeOne(parseFiles)
-                  const memoizedParseFilesWithObjects = memoizeOne(
-                    parseFilesWithObjects
-                  )
-
-                  let parseFunction = memoizedParseFiles
-                  if (isFlagEnabled('parseObjectsInCSV')) {
-                    parseFunction = memoizedParseFilesWithObjects
-                  }
-                  if (isFlagEnabled('rawCsvFromfluxParser')) {
-                    parseFunction = memoizedParseFilesWithFromFlux
-                  }
-                  const {data, maxColumnCount} = parseFunction(files)
+                  const [parsedResults] = files.flatMap(fromFlux)
                   return (
                     <RawFluxDataTable
-                      data={data}
-                      maxColumnCount={maxColumnCount}
+                      parsedResults={parsedResults}
                       width={width}
                       height={height}
                     />

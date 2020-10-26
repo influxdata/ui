@@ -1,7 +1,7 @@
 import Papa from 'papaparse'
 import HtmlEntities from 'he'
 import unraw from 'unraw'
-import {fromFlux} from '@influxdata/giraffe'
+import {fromFlux, FromFluxResult} from '@influxdata/giraffe'
 
 import {parseChunks} from 'src/shared/parsing/flux/response'
 import {
@@ -43,6 +43,12 @@ export const fromFluxTableTransformer = (
       max: 0,
     }
   }
+  return parseFromFluxResults(parsedChunk)
+}
+
+export const parseFromFluxResults = (
+  parsedChunk: FromFluxResult
+): {tableData: string[][]; max: number} => {
   const {
     fluxGroupKeyUnion,
     table,

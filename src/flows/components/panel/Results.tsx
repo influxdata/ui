@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, useEffect, useState, useContext, useMemo} from 'react'
 import {AutoSizer} from 'react-virtualized'
-import memoizeOne from 'memoize-one'
+import {fromFlux} from '@influxdata/giraffe'
 
 // Components
 import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
@@ -14,11 +14,6 @@ import {PipeContext} from 'src/flows/context/pipe'
 import {MINIMUM_RESIZER_HEIGHT} from 'src/flows/shared/Resizer'
 
 // Utils
-import {
-  parseFiles,
-  parseFilesWithObjects,
-  parseFilesWithFromFlux,
-} from 'src/timeMachine/utils/rawFluxDataTable'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
@@ -107,30 +102,14 @@ const Results: FC = () => {
                 return false
               }
 
-              const memoizeParseFilesWithFromFlux = memoizeOne(
-                parseFilesWithFromFlux
-              )
-              const memoizeParseFiles = memoizeOne(parseFiles)
-              const memoizeParseFilesWithObjects = memoizeOne(
-                parseFilesWithObjects
-              )
-
               const page = Math.floor(height / ROW_HEIGHT)
               setPageSize(page)
 
-              let parseFunction = memoizeParseFiles
-              if (isFlagEnabled('parseObjectsInCSV')) {
-                parseFunction = memoizeParseFilesWithObjects
-              }
-              if (isFlagEnabled('rawCsvFromfluxParser')) {
-                parseFunction = memoizeParseFilesWithFromFlux
-              }
-              const {data, maxColumnCount} = parseFunction([raw])
               if (isFlagEnabled('flowsUiPagination')) {
+                const parsedResults = fromFlux(raw)
                 return (
                   <RawFluxDataTable
-                    data={data}
-                    maxColumnCount={maxColumnCount}
+                    parsedResults={parsedResults}
                     startRow={startRow}
                     width={width}
                     height={page * ROW_HEIGHT}

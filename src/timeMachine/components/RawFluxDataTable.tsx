@@ -2,22 +2,21 @@
 import React, {PureComponent} from 'react'
 import memoizeOne from 'memoize-one'
 import RawFluxDataGrid from 'src/timeMachine/components/RawFluxDataGrid'
+import {FromFluxResult} from '@influxdata/giraffe'
 
 // Utils
 import {
   parseFiles,
   parseFilesWithObjects,
   parseFilesWithFromFlux,
+  parseFromFluxResults,
 } from 'src/timeMachine/utils/rawFluxDataTable'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {DapperScrollbars, FusionScrollEvent} from '@influxdata/clockface'
 
-// TODO(ariel): remove files and make data and maxColumnCount mandatory when
-// turning the flowsUiPagination feature flag off
 interface Props {
   files?: string[]
-  data?: string[][]
-  maxColumnCount?: number
+  parsedResults?: FromFluxResult
   width: number
   height: number
   disableVerticalScrolling?: boolean
@@ -32,7 +31,6 @@ interface State {
 class RawFluxDataTable extends PureComponent<Props, State> {
   public state = {scrollLeft: 0, scrollTop: 0}
 
-  // TODO(ariel): remove all this when flowsUiPagination is lifted
   private parseFilesWithFromFlux = memoizeOne(parseFilesWithFromFlux)
   private parseFiles = memoizeOne(parseFiles)
   private parseFilesWithObjects = memoizeOne(parseFilesWithObjects)
@@ -45,54 +43,31 @@ class RawFluxDataTable extends PureComponent<Props, State> {
       disableVerticalScrolling,
       startRow,
     } = this.props
-    let {data, maxColumnCount} = this.props
 
     const {scrollTop, scrollLeft} = this.state
 
     const tableWidth = width
     const tableHeight = height
 
-    if (isFlagEnabled('flowsUiPagination')) {
-      return (
-        <div className="raw-flux-data-table" data-testid="raw-data-table">
-          <DapperScrollbars
-            style={{
-              overflowY: 'hidden',
-              width: tableWidth,
-              height: tableHeight,
-            }}
-            autoHide={false}
-            scrollTop={scrollTop}
-            scrollLeft={scrollLeft}
-            testID="rawdata-table--scrollbar"
-            onScroll={this.onScrollbarsScroll}
-            noScrollY={disableVerticalScrolling}
-          >
-            <RawFluxDataGrid
-              scrollTop={scrollTop}
-              scrollLeft={scrollLeft}
-              width={tableWidth}
-              height={tableHeight}
-              maxColumnCount={maxColumnCount}
-              data={data}
-              startRow={startRow}
-            />
-          </DapperScrollbars>
-        </div>
-      )
-    }
-
-    // TODO(ariel): remove this when flowsUiPagination is lifted
+    const {parsedResults} = this.props
+    let data
+    let maxColumnCount
     let parseFunction = this.parseFiles
-    if (isFlagEnabled('parseObjectsInCSV')) {
-      parseFunction = this.parseFilesWithObjects
+    if (parsedResults) {
+      const parsed = parseFromFluxResults(parsedResults)
+      data = parsed.tableData
+      maxColumnCount = parsed.max
+    } else {
+      if (isFlagEnabled('parseObjectsInCSV')) {
+        parseFunction = this.parseFilesWithObjects
+      }
+      if (isFlagEnabled('rawCsvFromfluxParser')) {
+        parseFunction = this.parseFilesWithFromFlux
+      }
+      const parsed = parseFunction(files)
+      data = parsed.data
+      maxColumnCount = parsed.maxColumnCount
     }
-    if (isFlagEnabled('rawCsvFromfluxParser')) {
-      parseFunction = this.parseFilesWithFromFlux
-    }
-    const parsed = parseFunction(files)
-    data = parsed.data
-    maxColumnCount = parsed.maxColumnCount
 
     return (
       <div className="raw-flux-data-table" data-testid="raw-data-table">
@@ -116,7 +91,7 @@ class RawFluxDataTable extends PureComponent<Props, State> {
             height={tableHeight}
             maxColumnCount={maxColumnCount}
             data={data}
-            key={files[0]}
+            startRow={startRow}
           />
         </DapperScrollbars>
       </div>

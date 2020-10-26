@@ -1,7 +1,10 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
+$toolbar-padding-sm: $cf-marg-a + $cf-marg-b;
+$toolbar-padding-md: $cf-marg-d;
+
 .toolbar {
-  padding: 0 $cf-marg-d;
+  padding: 0 $toolbar-padding-sm;
   margin-bottom: $cf-marg-a;
 
   &:last-of-type,
@@ -10,12 +13,18 @@
   }
 }
 
+@media only screen and (min-width: $cf-grid--breakpoint-sm) {
+  .toolbar {
+    padding: 0 $toolbar-padding-md;
+  }
+}
+
 .toolbar__presentation-mode {
-  padding: 0 $cf-marg-a + $cf-marg-b;
+  padding: 0 $toolbar-padding-sm;
 
   .cf-page-header + &,
   .cf-page-control-bar + & {
-    padding-top: $cf-marg-a + $cf-marg-b;
+    padding-top: $toolbar-padding-sm;
   }
 
   &:last-of-type,
@@ -24,7 +33,7 @@
   }
 }
 
-.toolbar-contents {
+.toolbar--contents {
   background-color: $g0-obsidian;
   padding: $cf-marg-b;
   border-radius: $cf-radius;

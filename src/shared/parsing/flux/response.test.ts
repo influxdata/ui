@@ -552,10 +552,12 @@ describe('parseResponseWithFromFlux', () => {
   })
 
   describe('headers', () => {
-    test('throws when no metadata is present', () => {
+    test('does not throw when no metadata is present', () => {
       expect(() => {
         parseResponseWithFromFlux(RESPONSE_NO_METADATA)
-      }).toThrow()
+      }).not.toThrow()
+      const actual = parseResponseWithFromFlux(RESPONSE_NO_METADATA)
+      expect(actual).toEqual([])
     })
 
     test('can parse headers when metadata is present', () => {

@@ -36,7 +36,7 @@ export const fromFluxTableTransformer = (
   const parsedChunk = fromFlux(response)
   if (parsedChunk.error) {
     reportErrorThroughHoneyBadger(parsedChunk.error, {
-      name: 'fromFluxTableTransformed function',
+      name: 'fromFluxTableTransformer function',
     })
     return {
       tableData: [[]],

@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
 import {useSelector} from 'react-redux'
-import {useHistory, useRouteMatch} from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 
 // Components
 import {
@@ -23,39 +23,37 @@ import AnnotationsSearchBar from 'src/annotations/components/controlBar/Annotati
 import {getAnnotationControlsVisibility} from 'src/annotations/selectors'
 
 // Constants
-import {ORGS, SETTINGS, DASHBOARDS} from 'src/shared/constants/routes'
-
-interface DashboardRouteMatch {
-  params: {
-    orgID: string
-    dashboardID: string
-  }
-}
+import {
+  ORGS,
+  SETTINGS,
+  DASHBOARDS,
+  ANNOTATIONS,
+  DATA_EXPLORER,
+} from 'src/shared/constants/routes'
 
 const AnnotationsControlBar: FC = () => {
   const history = useHistory()
   const isVisible = useSelector(getAnnotationControlsVisibility)
-  const match: DashboardRouteMatch = useRouteMatch({
-    path: '/orgs/:orgID/dashboards/:dashboardID',
-    strict: true,
-  })
+  const {orgID, dashboardID} = useParams<{orgID: string; dashboardID: string}>()
 
   if (!isVisible) {
     return null
   }
 
   const handleSettingsClick = (): void => {
-    if (match?.params?.orgID) {
-      history.push(`/${ORGS}/${match.params.orgID}/${SETTINGS}/annotations`)
-    }
+    history.push(`/${ORGS}/${orgID}/${SETTINGS}/${ANNOTATIONS}`)
   }
 
   const handleAnnotateClick = (): void => {
-    if (match?.params?.orgID && match?.params?.dashboardID) {
-      history.push(
-        `/${ORGS}/${match.params.orgID}/${DASHBOARDS}/${match.params.dashboardID}/add-annotation`
-      )
-    }
+    // Using presence of dashboardID to determine whether the user is viewing
+    // a dashboard or the data explorer
+    // This is brittle af
+
+    const addAnnotationRoute = dashboardID
+      ? `/${ORGS}/${orgID}/${DASHBOARDS}/${dashboardID}/add-annotation`
+      : `/${ORGS}/${orgID}/${DATA_EXPLORER}/add-annotation`
+
+    history.push(addAnnotationRoute)
   }
 
   return (

@@ -23,8 +23,13 @@ const hashString = (rawText: string): string => {
   return `${hash}`
 }
 
-const generateHash = (orgID: string, query: string, variables: Variable[]) => {
-  const queryHash = hashString(`org[${orgID}]:${query}`)
+const generateHash = (
+  url: string,
+  orgID: string,
+  query: string,
+  variables: Variable[]
+) => {
+  const queryHash = hashString(`url[${url}]:org[${orgID}]:${query}`)
   const variableHash = hashString(
     filterUnusedVarsBasedOnQuery(variables, [query])
       .sort((a: Variable, b: Variable) => a.name.localeCompare(b.name))
@@ -108,8 +113,13 @@ export function clear() {
   })
 }
 
-export function status(orgID: string, query: string, variables?: Variable[]) {
-  const hash = generateHash(orgID, query, variables)
+export function status(
+  url: string,
+  orgID: string,
+  query: string,
+  variables?: Variable[]
+) {
+  const hash = generateHash(url, orgID, query, variables)
 
   if (!cache.hasOwnProperty(hash.query)) {
     return RemoteDataState.NotStarted
@@ -122,8 +132,13 @@ export function status(orgID: string, query: string, variables?: Variable[]) {
   return cache[hash.query][hash.variable].status
 }
 
-export default function(orgID: string, query: string, variables?: Variable[]) {
-  const hash = generateHash(orgID, query, variables)
+export default function(
+  url: string,
+  orgID: string,
+  query: string,
+  variables?: Variable[]
+) {
+  const hash = generateHash(url, orgID, query, variables)
 
   if (!cache.hasOwnProperty(hash.query)) {
     cache[hash.query] = {}
@@ -165,7 +180,7 @@ export default function(orgID: string, query: string, variables?: Variable[]) {
   if (entry.status === RemoteDataState.NotStarted) {
     entry.status = RemoteDataState.Loading
 
-    const _query = simpleQuery(orgID, query, variables)
+    const _query = simpleQuery(url, orgID, query, variables)
 
     _query
       .then(results => {

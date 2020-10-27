@@ -1,12 +1,12 @@
 import {fromFlux, FromFluxResult} from '@influxdata/giraffe'
 import {Query, Variable} from 'src/types'
-import {API_BASE_PATH} from 'src/shared/constants'
+
 import {asAssignment} from 'src/variables/selectors'
 import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
-import {
-  RATE_LIMIT_ERROR_STATUS,
-  RATE_LIMIT_ERROR_TEXT,
-} from 'src/cloud/constants'
+
+const RATE_LIMIT_ERROR_STATUS = 429
+const RATE_LIMIT_ERROR_TEXT =
+  'Oops. It looks like you have exceeded the query limits allowed as part of your plan. If you would like to increase your query limits, reach out to support@influxdata.com.'
 
 interface NetworkErrorMessage {
   status: number
@@ -38,7 +38,7 @@ class CancelError extends NetworkError {
 
 export {NetworkError, RateError, CancelError}
 
-interface CancelPromise<T> extends Promise<T> {
+export interface CancelPromise<T> extends Promise<T> {
   cancel: () => void
 }
 
@@ -47,7 +47,7 @@ function makeCancelable(
   promise: Promise<FromFluxResult>,
   controller: AbortController
 ): CancelPromise<FromFluxResult> {
-  let localPromise = promise as CancelPromise<FromFluxResult>
+  const localPromise = promise as CancelPromise<FromFluxResult>
 
   localPromise.cancel = () => controller.abort()
 
@@ -55,12 +55,12 @@ function makeCancelable(
 }
 
 export default (
+  url: string,
   orgID: string,
   query: string,
   variables?: Variable[]
 ): CancelPromise<FromFluxResult> => {
-  // TODO: make this configurable for multiple instances
-  const url = `${API_BASE_PATH}api/v2/query?${new URLSearchParams({orgID})}`
+  const _url = `${url}?${new URLSearchParams({orgID})}`
 
   const headers = {
     'Content-Type': 'application/json',
@@ -77,7 +77,7 @@ export default (
 
   const controller = new AbortController()
 
-  const request = fetch(url, {
+  const request = fetch(_url, {
     method: 'POST',
     headers,
     body: JSON.stringify(body),

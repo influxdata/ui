@@ -17,6 +17,7 @@ import CreateBucketOverlay from 'src/buckets/components/CreateBucketOverlay'
 import AssetLimitOverlay from 'src/cloud/components/AssetLimitOverlay'
 import CreateAnnotationStreamOverlay from 'src/annotations/components/overlay/CreateAnnotationStreamOverlay'
 import UpdateAnnotationStreamOverlay from 'src/annotations/components/overlay/UpdateAnnotationStreamOverlay'
+import AddAnnotationOverlay from 'src/annotations/components/addAnnotation/AddAnnotationOverlay'
 
 // Actions
 import {dismissOverlay} from 'src/overlays/actions/overlays'
@@ -84,6 +85,9 @@ const OverlayController: FunctionComponent<OverlayControllerProps> = props => {
       break
     case 'update-annotation-stream':
       activeOverlay = <UpdateAnnotationStreamOverlay />
+      break
+    case 'add-annotation':
+      activeOverlay = <AddAnnotationOverlay />
       break
     default:
       visibility = false

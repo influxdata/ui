@@ -16,6 +16,7 @@ export type OverlayID =
   | 'asset-limit'
   | 'create-annotation-stream'
   | 'update-annotation-stream'
+  | 'add-annotation'
 
 export interface OverlayParams {
   [key: string]: string

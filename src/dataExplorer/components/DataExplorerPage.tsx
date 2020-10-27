@@ -17,6 +17,7 @@ import Visualization from 'src/timeMachine/components/visualization/view'
 import AnnotationsToggleButton from 'src/annotations/components/AnnotationsToggleButton'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
 import AnnotationsControlBar from 'src/annotations/components/controlBar/AnnotationsControlBar'
+import {AddAnnotationDEOverlay} from 'src/overlays/components/index'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -38,6 +39,10 @@ const DataExplorerPage: FC = () => {
         <Route
           path="/orgs/:orgID/data-explorer/delete-data"
           component={DEDeleteDataOverlay}
+        />
+        <Route
+          path="/orgs/:orgID/data-explorer/add-annotation"
+          component={AddAnnotationDEOverlay}
         />
       </Switch>
       <GetResources resources={[ResourceType.Variables]}>

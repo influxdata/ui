@@ -16,7 +16,11 @@ import LimitChecker from 'src/cloud/components/LimitChecker'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import EditVEO from 'src/dashboards/components/EditVEO'
 import NewVEO from 'src/dashboards/components/NewVEO'
-import {AddNoteOverlay, EditNoteOverlay} from 'src/overlays/components'
+import {
+  AddNoteOverlay,
+  EditNoteOverlay,
+  AddAnnotationDashboardOverlay,
+} from 'src/overlays/components'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Utils
@@ -87,6 +91,10 @@ class DashboardPage extends Component<Props> {
           <Route
             path={`${dashRoute}/notes/:cellID/edit`}
             component={EditNoteOverlay}
+          />
+          <Route
+            path={`${dashRoute}/add-annotation`}
+            component={AddAnnotationDashboardOverlay}
           />
         </Switch>
       </>

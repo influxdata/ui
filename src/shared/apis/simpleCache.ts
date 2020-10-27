@@ -3,6 +3,7 @@ import {FromFluxResult} from '@influxdata/giraffe'
 import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
 import {event} from 'src/cloud/utils/reporting'
 import simpleQuery from 'src/shared/apis/simpleQuery'
+import {RemoteDataState} from 'src/types'
 
 export const TIME_INVALIDATION = 1000 * 60 * 10 // 10 minutes
 
@@ -44,11 +45,16 @@ const generateHash = (orgID: string, query: string, variables: Variable[]) => {
   }
 }
 
+interface Callback {
+  [0]: (response: FromFluxResult) => any
+  [1]: (error: Error) => void
+}
+
 interface CacheEntry {
-  running: boolean
+  status: RemoteDataState
   resolved: number | null
   cancel: () => void
-  pending: Promise[]
+  pending: Callback[]
   results: FromFluxResult | null
 }
 
@@ -58,7 +64,8 @@ interface Cache {
   }
 }
 
-const cache: Cache = {}(() => {
+const cache: Cache = {}
+;(() => {
   const clean = () => {
     const now = Date.now()
 
@@ -122,7 +129,7 @@ export default function(orgID: string, query: string, variables?: Variable[]) {
     cache[hash.query] = {}
   }
 
-  if (!cache[hash.query].hasOwnProperties(hash.variable)) {
+  if (!cache[hash.query].hasOwnProperty(hash.variable)) {
     cache[hash.query][hash.variable] = {
       resolved: null,
       status: RemoteDataState.NotStarted,
@@ -159,6 +166,8 @@ export default function(orgID: string, query: string, variables?: Variable[]) {
     entry.status = RemoteDataState.Loading
 
     const _query = simpleQuery(orgID, query, variables)
+
+    _query
       .then(results => {
         let curr
 
@@ -176,7 +185,7 @@ export default function(orgID: string, query: string, variables?: Variable[]) {
         let curr
 
         entry.results = null
-        entry.resolve = Date.now()
+        entry.resolved = Date.now()
         entry.cancel = () => {}
         entry.status = RemoteDataState.Error
 

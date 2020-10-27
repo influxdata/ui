@@ -1,17 +1,65 @@
-import {fromFlux} from '@influxdata/giraffe'
+import {fromFlux, FromFluxResult} from '@influxdata/giraffe'
 import {Query, Variable} from 'src/types'
 import {API_BASE_PATH} from 'src/shared/constants'
+import {asAssignment} from 'src/variables/selectors'
+import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
 import {
   RATE_LIMIT_ERROR_STATUS,
   RATE_LIMIT_ERROR_TEXT,
 } from 'src/cloud/constants'
 
-class RateError extends Error {}
-class NetworkError extends Error {}
-class CancelError extends Error {}
+interface NetworkErrorMessage {
+  status: number
+  message: string
+  retry?: number
+}
+
+class NetworkError extends Error {
+  status
+  retry
+
+  constructor(msg: NetworkErrorMessage) {
+    super(`[${msg.status}]: ${msg.message}`)
+    this.status = msg.status
+    this.retry = msg.retry
+  }
+}
+
+class RateError extends NetworkError {}
+
+class CancelError extends NetworkError {
+  constructor() {
+    super({
+      status: 499,
+      message: 'Request canceled by user',
+    })
+  }
+}
+
 export {NetworkError, RateError, CancelError}
 
-export default (orgID: string, query: string, variables?: Variable[]) => {
+interface CancelPromise<T> extends Promise<T> {
+  cancel: () => void
+}
+
+// NOTE: this is only to make types work and I hate it (alex)
+function makeCancelable(
+  promise: Promise<FromFluxResult>,
+  controller: AbortController
+): CancelPromise<FromFluxResult> {
+  let localPromise = promise as CancelPromise<FromFluxResult>
+
+  localPromise.cancel = () => controller.abort()
+
+  return localPromise
+}
+
+export default (
+  orgID: string,
+  query: string,
+  variables?: Variable[]
+): CancelPromise<FromFluxResult> => {
+  // TODO: make this configurable for multiple instances
   const url = `${API_BASE_PATH}api/v2/query?${new URLSearchParams({orgID})}`
 
   const headers = {
@@ -40,6 +88,7 @@ export default (orgID: string, query: string, variables?: Variable[]) => {
         const retryAfter = response.headers.get('Retry-After')
 
         throw new RateError({
+          status: response.status,
           message: RATE_LIMIT_ERROR_TEXT,
           retry: retryAfter ? parseInt(retryAfter, 10) : null,
         })
@@ -97,7 +146,5 @@ export default (orgID: string, query: string, variables?: Variable[]) => {
         : Promise.reject(e)
     )
 
-  request.cancel = () => controller.abort()
-
-  return request
+  return makeCancelable(request, controller)
 }

@@ -1,12 +1,12 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
-.annotations-pills {
+.annotation-pills {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
   padding: $cf-border;
 }
 
-.annotations-pill {
+.annotation-pill {
   margin: $cf-border;
 }

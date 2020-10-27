@@ -33,7 +33,7 @@ export const Submit: FC = () => {
   const {add, update} = useContext(ResultsContext)
   const {timeContext} = useContext(TimeContext)
   const [isLoading, setLoading] = useState(RemoteDataState.NotStarted)
-  const [buttonText, setButtonText] = useState('Preview')
+  const [isRunning, setIsRunning] = useState(false)
   const time = timeContext[id]
   const tr = !!time && time.range
 
@@ -63,7 +63,7 @@ export const Submit: FC = () => {
       flow.meta.update(pipeID, {loading: RemoteDataState.Loading})
     })
 
-    const map = generateMap()
+    const map = generateMap(isRunning)
 
     Promise.all(
       map.map(stage => {
@@ -105,7 +105,7 @@ export const Submit: FC = () => {
     return (
       <ButtonGroup>
         <SubmitQueryButton
-          text={buttonText}
+          text={isRunning ? 'Run' : 'Preview'}
           className="flows--submit-button"
           icon={IconFont.Play}
           submitButtonDisabled={!hasQueries}
@@ -129,10 +129,10 @@ export const Submit: FC = () => {
       <List.Item
         key="Preview"
         value="Preview"
-        onClick={setButtonText}
+        onClick={() => setIsRunning(false)}
         className="submit-btn--item"
         testID="flow-preview-button"
-        selected={buttonText === 'Preview'}
+        selected={!isRunning}
         gradient={Gradients.PolarExpress}
       >
         <div className="submit-btn--item-details">
@@ -145,10 +145,10 @@ export const Submit: FC = () => {
       <List.Item
         key="Run"
         value="Run"
-        onClick={setButtonText}
+        onClick={() => setIsRunning(true)}
         className="submit-btn--item"
         testID="flow-run-button"
-        selected={buttonText === 'Run'}
+        selected={isRunning}
         gradient={Gradients.PolarExpress}
       >
         <div className="submit-btn--item-details">

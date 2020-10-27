@@ -14,6 +14,7 @@ interface Props {
   height: number
   scrollLeft: number
   scrollTop: number
+  startRow?: number
 }
 
 interface State {
@@ -87,8 +88,9 @@ export default class extends PureComponent<Props, State> {
   }
 
   private renderCell = ({columnIndex, key, rowIndex, style}) => {
-    const datum = this.getCellData(rowIndex, columnIndex)
-
+    const {startRow} = this.props
+    const base = Number(startRow) || 0
+    const datum = this.getCellData(base + rowIndex, columnIndex)
     return (
       <div
         key={key}

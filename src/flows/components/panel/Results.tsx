@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, useEffect, useState, useContext, useMemo} from 'react'
 import {AutoSizer} from 'react-virtualized'
+import {fromFlux} from '@influxdata/giraffe'
 
 // Components
 import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
@@ -13,6 +14,7 @@ import {PipeContext} from 'src/flows/context/pipe'
 import {MINIMUM_RESIZER_HEIGHT} from 'src/flows/shared/Resizer'
 
 // Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
 import {RemoteDataState} from 'src/types'
@@ -103,6 +105,18 @@ const Results: FC = () => {
               const page = Math.floor(height / ROW_HEIGHT)
               setPageSize(page)
 
+              if (isFlagEnabled('flowsUiPagination')) {
+                const parsedResults = fromFlux(raw)
+                return (
+                  <RawFluxDataTable
+                    parsedResults={parsedResults}
+                    startRow={startRow}
+                    width={width}
+                    height={page * ROW_HEIGHT}
+                    disableVerticalScrolling={true}
+                  />
+                )
+              }
               return (
                 <RawFluxDataTable
                   files={[rows.slice(startRow, startRow + page).join('\n')]}

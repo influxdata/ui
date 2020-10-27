@@ -93,7 +93,7 @@ class SubmitQueryButton extends PureComponent<Props> {
           onClick={this.handleCancelClick}
           color={ComponentColor.Danger}
           testID={testID}
-          style={{width: '100px'}}
+          style={{minWidth: '100px'}}
         />
       )
     }
@@ -107,7 +107,7 @@ class SubmitQueryButton extends PureComponent<Props> {
         onClick={this.handleClick}
         color={ComponentColor.Primary}
         testID={testID}
-        style={{width: '100px'}}
+        style={{minWidth: '100px'}}
       />
     )
   }

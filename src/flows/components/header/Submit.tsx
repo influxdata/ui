@@ -1,13 +1,12 @@
 // Libraries
 import React, {FC, MouseEvent, useContext, useState, useEffect} from 'react'
-import * as clockface from '@influxdata/clockface'
 import {
   Dropdown,
   IconFont,
   ComponentColor,
-  ComponentStatus,
+  Gradients,
   SquareButton,
-  Button,
+  List,
   ButtonGroup,
 } from '@influxdata/clockface'
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
@@ -22,6 +21,9 @@ import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {RemoteDataState} from 'src/types'
+
+// Styles
+import 'src/flows/components/header/Submit.scss'
 
 const fakeNotify = notify
 
@@ -100,18 +102,12 @@ export const Submit: FC = () => {
     active: boolean,
     onClick: (e: MouseEvent<HTMLButtonElement>) => void
   ) => {
-    console.log('clockface: ', clockface)
-    console.log('clockface.ButtonGroup: ', clockface.ButtonGroup)
-    if (!ButtonGroup) {
-      return <div />
-    }
-    console.log('ButtonGroup: ', ButtonGroup)
     return (
       <ButtonGroup>
         <SubmitQueryButton
           text={buttonText}
-          className="flows-run-flow"
-          icon={IconFont.Stop}
+          className="flows--submit-button"
+          icon={IconFont.Play}
           submitButtonDisabled={!hasQueries}
           queryStatus={isLoading}
           onSubmit={submit}
@@ -130,44 +126,46 @@ export const Submit: FC = () => {
 
   const DropdownMenu = (onCollapse: () => void) => (
     <Dropdown.Menu onCollapse={onCollapse}>
-      <Dropdown.Item
+      <List.Item
+        key="Preview"
         value="Preview"
         onClick={setButtonText}
+        className="submit-btn--item"
         testID="flow-preview-button"
+        selected={buttonText === 'Preview'}
+        gradient={Gradients.PolarExpress}
       >
-        Preview
-      </Dropdown.Item>
-      <Dropdown.Item
+        <div className="submit-btn--item-details">
+          <span className="submit-btn--item-name">Preview</span>
+          <span className="submit-btn--item-desc">
+            See results of each cell, no data will be written
+          </span>
+        </div>
+      </List.Item>
+      <List.Item
+        key="Run"
         value="Run"
         onClick={setButtonText}
+        className="submit-btn--item"
         testID="flow-run-button"
+        selected={buttonText === 'Run'}
+        gradient={Gradients.PolarExpress}
       >
-        Run
-      </Dropdown.Item>
+        <div className="submit-btn--item-details">
+          <span className="submit-btn--item-name">Run</span>
+          <span className="submit-btn--item-desc">
+            See results of each cell, outputs will write data to buckets
+          </span>
+        </div>
+      </List.Item>
     </Dropdown.Menu>
   )
-
-  // if (isLoading === RemoteDataState.Loading) {
-  //   // TODO(get this to be in the cancel state)
-  //   return (
-  //     <SubmitQueryButton
-  //       text="Cancel"
-  //       className="flows-run-flow"
-  //       icon={IconFont.Stop}
-  //       submitButtonDisabled={false}
-  //       queryStatus={isLoading}
-  //       onSubmit={submit}
-  //       onNotify={fakeNotify}
-  //       queryID=""
-  //     />
-  //   )
-  // }
 
   return (
     <Dropdown
       button={DropdownButton}
       menu={DropdownMenu}
-      style={{width: '164px'}}
+      style={{width: '205px'}}
     />
   )
 }

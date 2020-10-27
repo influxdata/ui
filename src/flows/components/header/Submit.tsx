@@ -1,11 +1,20 @@
 // Libraries
-import React, {FC, useContext, useState, useEffect} from 'react'
+import React, {FC, MouseEvent, useContext, useState, useEffect} from 'react'
+import * as clockface from '@influxdata/clockface'
+import {
+  Dropdown,
+  IconFont,
+  ComponentColor,
+  ComponentStatus,
+  SquareButton,
+  Button,
+  ButtonGroup,
+} from '@influxdata/clockface'
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
 import {QueryContext} from 'src/flows/context/query'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {ResultsContext} from 'src/flows/context/results'
 import {TimeContext} from 'src/flows/context/time'
-import {IconFont} from '@influxdata/clockface'
 import {notify} from 'src/shared/actions/notifications'
 
 // Utils
@@ -22,6 +31,7 @@ export const Submit: FC = () => {
   const {add, update} = useContext(ResultsContext)
   const {timeContext} = useContext(TimeContext)
   const [isLoading, setLoading] = useState(RemoteDataState.NotStarted)
+  const [buttonText, setButtonText] = useState('Preview')
   const time = timeContext[id]
   const tr = !!time && time.range
 
@@ -86,16 +96,78 @@ export const Submit: FC = () => {
       })
   }
 
+  const DropdownButton = (
+    active: boolean,
+    onClick: (e: MouseEvent<HTMLButtonElement>) => void
+  ) => {
+    console.log('clockface: ', clockface)
+    console.log('clockface.ButtonGroup: ', clockface.ButtonGroup)
+    if (!ButtonGroup) {
+      return <div />
+    }
+    console.log('ButtonGroup: ', ButtonGroup)
+    return (
+      <ButtonGroup>
+        <SubmitQueryButton
+          text={buttonText}
+          className="flows-run-flow"
+          icon={IconFont.Stop}
+          submitButtonDisabled={!hasQueries}
+          queryStatus={isLoading}
+          onSubmit={submit}
+          onNotify={fakeNotify}
+          queryID=""
+        />
+        <SquareButton
+          active={active}
+          onClick={onClick}
+          icon={IconFont.CaretDown}
+          color={ComponentColor.Primary}
+        />
+      </ButtonGroup>
+    )
+  }
+
+  const DropdownMenu = (onCollapse: () => void) => (
+    <Dropdown.Menu onCollapse={onCollapse}>
+      <Dropdown.Item
+        value="Preview"
+        onClick={setButtonText}
+        testID="flow-preview-button"
+      >
+        Preview
+      </Dropdown.Item>
+      <Dropdown.Item
+        value="Run"
+        onClick={setButtonText}
+        testID="flow-run-button"
+      >
+        Run
+      </Dropdown.Item>
+    </Dropdown.Menu>
+  )
+
+  // if (isLoading === RemoteDataState.Loading) {
+  //   // TODO(get this to be in the cancel state)
+  //   return (
+  //     <SubmitQueryButton
+  //       text="Cancel"
+  //       className="flows-run-flow"
+  //       icon={IconFont.Stop}
+  //       submitButtonDisabled={false}
+  //       queryStatus={isLoading}
+  //       onSubmit={submit}
+  //       onNotify={fakeNotify}
+  //       queryID=""
+  //     />
+  //   )
+  // }
+
   return (
-    <SubmitQueryButton
-      text="Run Flow"
-      className="flows-run-flow"
-      icon={IconFont.Play}
-      submitButtonDisabled={!hasQueries}
-      queryStatus={isLoading}
-      onSubmit={submit}
-      onNotify={fakeNotify}
-      queryID=""
+    <Dropdown
+      button={DropdownButton}
+      menu={DropdownMenu}
+      style={{width: '164px'}}
     />
   )
 }

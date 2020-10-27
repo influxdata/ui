@@ -1,8 +1,9 @@
 // Libraries
-import React, {SFC} from 'react'
+import React, {FC} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {AutoSizer} from 'react-virtualized'
 import classnames from 'classnames'
+import {fromFlux} from '@influxdata/giraffe'
 
 // Components
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
@@ -21,6 +22,7 @@ import {
   getFillColumnsSelection,
   getSymbolColumnsSelection,
 } from 'src/timeMachine/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getTimeRangeWithTimezone, getTimeZone} from 'src/dashboards/selectors'
 
 // Types
@@ -32,7 +34,7 @@ import {getActiveTimeRange} from 'src/timeMachine/selectors/index'
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
-const TimeMachineVis: SFC<Props> = ({
+const TimeMachineVis: FC<Props> = ({
   loading,
   errorMessage,
   timeRange,
@@ -83,16 +85,25 @@ const TimeMachineVis: SFC<Props> = ({
         >
           {isViewingRawData ? (
             <AutoSizer>
-              {({width, height}) =>
-                width &&
-                height && (
+              {({width, height}) => {
+                if (isFlagEnabled('flowsUiPagination')) {
+                  const [parsedResults] = files.flatMap(fromFlux)
+                  return (
+                    <RawFluxDataTable
+                      parsedResults={parsedResults}
+                      width={width}
+                      height={height}
+                    />
+                  )
+                }
+                return (
                   <RawFluxDataTable
                     files={files}
                     width={width}
                     height={height}
                   />
                 )
-              }
+              }}
             </AutoSizer>
           ) : (
             <ViewSwitcher

@@ -371,6 +371,7 @@ there",5
       data: [[]],
       maxColumnCount: 0,
     }
+
     expect(() => {
       parseFilesWithFromFlux([CSV])
     }).not.toThrow()

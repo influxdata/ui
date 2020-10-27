@@ -15,6 +15,8 @@ import TelegrafOutputOverlay from 'src/telegrafs/components/TelegrafOutputOverla
 import OrgSwitcherOverlay from 'src/pageLayout/components/OrgSwitcherOverlay'
 import CreateBucketOverlay from 'src/buckets/components/CreateBucketOverlay'
 import AssetLimitOverlay from 'src/cloud/components/AssetLimitOverlay'
+import CreateAnnotationStreamOverlay from 'src/annotations/components/overlay/CreateAnnotationStreamOverlay'
+import UpdateAnnotationStreamOverlay from 'src/annotations/components/overlay/UpdateAnnotationStreamOverlay'
 
 // Actions
 import {dismissOverlay} from 'src/overlays/actions/overlays'
@@ -76,6 +78,12 @@ const OverlayController: FunctionComponent<OverlayControllerProps> = props => {
       break
     case 'asset-limit':
       activeOverlay = <AssetLimitOverlay onClose={closer} />
+      break
+    case 'create-annotation-stream':
+      activeOverlay = <CreateAnnotationStreamOverlay />
+      break
+    case 'update-annotation-stream':
+      activeOverlay = <UpdateAnnotationStreamOverlay />
       break
     default:
       visibility = false

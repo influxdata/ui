@@ -21,7 +21,13 @@ export const TOKENS = 'tokens'
 
 export const VARIABLES = 'variables'
 
+export const ANNOTATIONS = 'annotations'
+
+export const TEMPLATES = 'templates'
+
 export const LOAD_DATA = 'load-data'
+
+export const LABELS = 'labels'
 
 export const CLIENT_LIBS = 'client-libraries'
 export const TELEGRAF_PLUGINS = 'telegraf-plugins'

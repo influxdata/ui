@@ -76,11 +76,14 @@ const ScatterPlot: FunctionComponent<Props> = ({
     legendOrientationThreshold
   )
 
-  const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
-    storedXDomain,
-    table.getColumn(xColumn, 'number'),
-    timeRange
-  )
+  let timerange = null
+
+  if(xColumn === '_time')
+  {
+    timerange = timeRange
+  }
+
+  const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(storedXDomain, table.getColumn(xColumn, 'number'), ...timerange)
 
   const [yDomain, onSetYDomain, onResetYDomain] = useVisYDomainSettings(
     storedYDomain,

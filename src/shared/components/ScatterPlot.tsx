@@ -26,7 +26,7 @@ import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {INVALID_DATA_COPY} from 'src/shared/copy/cell'
 
 // Types
-import {ScatterViewProperties, TimeZone,  TimeRange,Theme} from 'src/types'
+import {ScatterViewProperties, TimeZone, TimeRange, Theme} from 'src/types'
 
 interface Props {
   children: (config: Config) => JSX.Element
@@ -78,12 +78,15 @@ const ScatterPlot: FunctionComponent<Props> = ({
 
   let timerange = null
 
-  if(xColumn === '_time')
-  {
+  if (xColumn === '_time') {
     timerange = timeRange
   }
 
-  const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(storedXDomain, table.getColumn(xColumn, 'number'), ...timerange)
+  const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
+    storedXDomain,
+    table.getColumn(xColumn, 'number'),
+    ...timerange
+  )
 
   const [yDomain, onSetYDomain, onResetYDomain] = useVisYDomainSettings(
     storedYDomain,

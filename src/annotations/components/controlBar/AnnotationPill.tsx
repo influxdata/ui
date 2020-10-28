@@ -6,7 +6,7 @@ import {useDispatch} from 'react-redux'
 import {disableAnnotationStream} from 'src/annotations/actions'
 
 // Components
-import {Label, ComponentSize} from '@influxdata/clockface'
+import {Icon, IconFont} from '@influxdata/clockface'
 
 interface Props {
   id: string
@@ -23,16 +23,20 @@ const AnnotationPill: FC<Props> = ({id, name, description, color}) => {
   }
 
   return (
-    <Label
-      name={name}
-      color={color}
-      id={id}
-      onDelete={handleDisable}
-      description={description}
-      size={ComponentSize.ExtraSmall}
-      className="annotation-pill"
-      testID={`annotation-pill ${id}`}
-    />
+    <div className="annotation-pill" title={description}>
+      <div
+        className="annotation-pill--swatch"
+        style={{backgroundColor: color}}
+      />
+      <div className="annotation-pill--label">{name}</div>
+      <button
+        className="annotation-pill--button"
+        data-testid={`annotation-pill ${id}`}
+        onClick={handleDisable}
+      >
+        <Icon glyph={IconFont.Remove} />
+      </button>
+    </div>
   )
 }
 

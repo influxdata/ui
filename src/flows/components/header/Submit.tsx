@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useState, useEffect} from 'react'
+import React, {FC, useContext, useMemo, useState, useEffect} from 'react'
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
 import {QueryContext} from 'src/flows/context/query'
 import {FlowContext} from 'src/flows/context/flow.current'
@@ -25,12 +25,14 @@ export const Submit: FC = () => {
   const time = timeContext[id]
   const tr = !!time && time.range
 
-  const hasQueries = flow.data.all
-    .map(p => p.type)
-    .filter(p => p === 'query' || p === 'data' || p === 'queryBuilder').length
+  const hasQueries = useMemo(() => {
+    return flow.data.all
+      .map(p => p.type)
+      .filter(p => p === 'query' || p === 'queryBuilder').length
+  }, [flow.data])
 
   useEffect(() => {
-    if (!hasQueries) {
+    if (hasQueries) {
       submit()
     }
   }, [tr, hasQueries]) // eslint-disable-line react-hooks/exhaustive-deps

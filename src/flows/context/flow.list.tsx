@@ -101,25 +101,6 @@ export function hydrate(data) {
   return flow
 }
 
-const dataExploder = hydrate({
-  name: 'Name this Flow',
-  readOnly: false,
-  pipes: [
-    {
-      title: 'Select a Metric',
-      visible: true,
-      type: 'queryBuilder',
-      ...PIPE_DEFINITIONS['queryBuilder'].initial,
-    },
-    {
-      title: 'Visualize the Result',
-      visible: true,
-      type: 'visualization',
-      ...PIPE_DEFINITIONS['visualization'].initial,
-    },
-  ],
-})
-
 export const FlowListProvider: FC = ({children}) => {
   const [flows, setFlows] = useFlowListState(DEFAULT_CONTEXT.flows)
   const [currentID, setCurrentID] = useFlowCurrentState(null)
@@ -129,7 +110,24 @@ export const FlowListProvider: FC = ({children}) => {
 
     if (!flow) {
       _flow = {
-        ...dataExploder,
+        ...hydrate({
+          name: 'Name this Flow',
+          readOnly: false,
+          pipes: [
+            {
+              title: 'Select a Metric',
+              visible: true,
+              type: 'queryBuilder',
+              ...PIPE_DEFINITIONS['queryBuilder'].initial,
+            },
+            {
+              title: 'Visualize the Result',
+              visible: true,
+              type: 'visualization',
+              ...PIPE_DEFINITIONS['visualization'].initial,
+            },
+          ],
+        }),
       }
     } else {
       _flow = {

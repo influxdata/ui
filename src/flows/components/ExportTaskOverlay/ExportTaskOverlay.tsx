@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useContext} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
+import {useDispatch} from 'react-redux'
 import {RouteProps, useHistory, useLocation} from 'react-router-dom'
 
 // Components
@@ -21,7 +21,6 @@ import {
 
 // Utils
 import {saveNewScript, updateTask} from 'src/tasks/actions/thunks'
-import {getOrg} from 'src/organizations/selectors'
 
 const ExportTaskOverlay: FC = () => {
   const {
@@ -35,7 +34,7 @@ const ExportTaskOverlay: FC = () => {
 
   const location: RouteProps['location'] = useLocation()
   const params = location.state
-  const {bucket, queryText} = params[0]
+  const {queryText} = params[0]
 
   const formattedQueryText = queryText
     .trim()
@@ -43,7 +42,6 @@ const ExportTaskOverlay: FC = () => {
     .join('\n  |>')
 
   const dispatch = useDispatch()
-  const org = useSelector(getOrg)
 
   const onCreate = () => {
     if (!/\d/.test(interval)) {
@@ -53,9 +51,7 @@ const ExportTaskOverlay: FC = () => {
     const taskOption: string = `option task = { \n  name: "${taskName}",\n  every: ${interval},\n  offset: 0s\n}`
     const variable: string = `option v = {\n  timeRangeStart: -${interval},\n  timeRangeStop: now()\n}`
     const preamble = `${variable}\n\n${taskOption}`
-    const trimmedOrgName = org.name.trim()
-    const script: string = `${formattedQueryText}\n  |> to(bucket: "${bucket?.name.trim()}", org: "${trimmedOrgName}")`
-    dispatch(saveNewScript(script, preamble))
+    dispatch(saveNewScript(formattedQueryText, preamble))
   }
 
   const onUpdate = () => {
@@ -66,9 +62,14 @@ const ExportTaskOverlay: FC = () => {
     const taskOption: string = `option task = { \n  name: "${selectedTask.name}",\n  every: ${interval},\n  offset: 0s\n}`
     const variable: string = `option v = {\n  timeRangeStart: -${interval},\n  timeRangeStop: now()\n}`
     const preamble = `${variable}\n\n${taskOption}`
-    const trimmedOrgName = org.name.trim()
-    const script: string = `${formattedQueryText}\n  |> to(bucket: "${bucket?.name.trim()}", org: "${trimmedOrgName}")`
-    dispatch(updateTask({script, preamble, interval, task: selectedTask}))
+    dispatch(
+      updateTask({
+        script: formattedQueryText,
+        preamble,
+        interval,
+        task: selectedTask,
+      })
+    )
   }
 
   const onSubmit = activeTab === ExportAsTask.Create ? onCreate : onUpdate

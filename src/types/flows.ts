@@ -142,6 +142,7 @@ export interface TypeRegistration {
   generateFlux?: (
     pipe: PipeData,
     create: (text: string, loadPrevious?: boolean) => void,
-    append: () => void
+    append: () => void,
+    withSideEffects?: boolean
   ) => void // Generates the flux used to grab data from the backend
 }

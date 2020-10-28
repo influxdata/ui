@@ -25,7 +25,7 @@ interface Stage {
 
 export interface QueryContextType {
   query: (text: string) => Promise<FluxResult>
-  generateMap: () => Stage[]
+  generateMap: (withSideEffects?: boolean) => Stage[]
 }
 
 export const DEFAULT_CONTEXT: QueryContextType = {
@@ -55,7 +55,7 @@ export const QueryProvider: FC<Props> = ({children, variables, org}) => {
     variables.map(v => asAssignment(v))
   }, [variables, time])
 
-  const generateMap = (): Stage[] => {
+  const generateMap = (withSideEffects?: boolean): Stage[] => {
     return flow.data.allIDs
       .reduce((stages, pipeID) => {
         const pipe = flow.data.get(pipeID)
@@ -87,7 +87,12 @@ export const QueryProvider: FC<Props> = ({children, variables, org}) => {
         }
 
         if (PIPE_DEFINITIONS[pipe.type].generateFlux) {
-          PIPE_DEFINITIONS[pipe.type].generateFlux(pipe, create, append)
+          PIPE_DEFINITIONS[pipe.type].generateFlux(
+            pipe,
+            create,
+            append,
+            withSideEffects
+          )
         } else {
           append()
         }

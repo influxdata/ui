@@ -46,6 +46,12 @@ export const Submit: FC = () => {
   }
 
   const submit = () => {
+    const map = generateMap()
+
+    if (!map.length) {
+      return
+    }
+
     event('Flow Submit Button Clicked')
     setLoading(RemoteDataState.Loading)
 
@@ -53,12 +59,11 @@ export const Submit: FC = () => {
       flow.meta.update(pipeID, {loading: RemoteDataState.Loading})
     })
 
-    const map = generateMap()
-
     Promise.all(
       map.map(stage => {
         return query(stage.text)
           .then(response => {
+            console.log(stage)
             stage.instances.forEach(pipeID => {
               forceUpdate(pipeID, response)
               flow.meta.update(pipeID, {loading: RemoteDataState.Done})

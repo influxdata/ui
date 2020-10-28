@@ -9,13 +9,15 @@ import {
   PipeData,
   PipeMeta,
 } from 'src/types/flows'
+import {RemoteDataState} from 'src/types'
 import {default as _asResource} from 'src/flows/context/resource.hook'
+import {PIPE_DEFINITIONS} from 'src/flows'
 
 const useFlowListState = createPersistedState('flows')
 const useFlowCurrentState = createPersistedState('current-flow')
 
 export interface FlowListContextType extends FlowList {
-  add: (flow?: Flow) => string
+  add: (flow?: Flow) => Promise<string>
   update: (id: string, flow: Flow) => void
   remove: (id: string) => void
   currentID: string | null
@@ -48,35 +50,111 @@ export const FlowListContext = React.createContext<FlowListContextType>(
   DEFAULT_CONTEXT
 )
 
+// NOTE: these have no utility, i'm just confused on how we are going to be getting
+// data from the api as a contract hasn't come forward, so i'm trying to be pre-emptive
+// on capabilities to speed integration. Remove the next two functions when that
+// data contract gets some ground and shows up (alex)
+export function serialize(flow) {
+  const apiFlow = {
+    name: flow.name,
+    readOnly: flow.readOnly,
+    pipes: flow.data.allIDs.map(id => {
+      const meta = flow.meta.byID[id]
+
+      return {
+        ...flow.data.byID[id],
+        title: meta.title,
+        visible: meta.visible,
+      }
+    }),
+  }
+
+  return apiFlow
+}
+
+export function hydrate(data) {
+  const flow = {
+    ...EMPTY_NOTEBOOK,
+    name: data.name,
+    readOnly: data.readOnly,
+  }
+
+  data.pipes.forEach(pipe => {
+    const id = pipe.id || UUID()
+
+    flow.data.allIDs.push(id)
+    flow.meta.allIDs.push(id)
+
+    const meta = {
+      title: pipe.title,
+      visible: pipe.visible,
+      loading: RemoteDataState.NotStarted,
+    }
+
+    delete pipe.title
+    delete pipe.visible
+
+    flow.data.byID[id] = pipe
+    flow.meta.byID[id] = meta
+  })
+
+  return flow
+}
+
+const dataExploder = hydrate({
+  name: 'Name this Flow',
+  readOnly: false,
+  pipes: [
+    {
+      title: 'Select a Metric',
+      visible: true,
+      type: 'queryBuilder',
+      ...PIPE_DEFINITIONS['queryBuilder'].initial,
+    },
+    {
+      title: 'Visualize the Result',
+      visible: true,
+      type: 'visualization',
+      ...PIPE_DEFINITIONS['visualization'].initial,
+    },
+  ],
+})
+
 export const FlowListProvider: FC = ({children}) => {
   const [flows, setFlows] = useFlowListState(DEFAULT_CONTEXT.flows)
   const [currentID, setCurrentID] = useFlowCurrentState(null)
 
-  const add = (flow?: Flow): string => {
-    const id = UUID()
+  const add = (flow?: Flow): Promise<string> => {
     let _flow
 
     if (!flow) {
       _flow = {
-        ...EMPTY_NOTEBOOK,
+        ...dataExploder,
       }
     } else {
       _flow = {
         name: flow.name,
-        data: flow.data.serialize(),
-        meta: flow.meta.serialize(),
+        data: flow.data,
+        meta: flow.meta,
         readOnly: flow.readOnly,
       }
     }
 
-    setFlows({
-      ...flows,
-      [id]: _flow,
+    // console.log('add to the api', serialize(data))
+    return new Promise(resolve => {
+      setTimeout(() => {
+        const id = UUID()
+
+        setFlows({
+          ...flows,
+          [id]: _flow,
+        })
+
+        setCurrentID(id)
+
+        resolve(id)
+      }, 200)
     })
-
-    setCurrentID(id)
-
-    return id
   }
 
   const update = (id: string, flow: Flow) => {
@@ -84,15 +162,19 @@ export const FlowListProvider: FC = ({children}) => {
       throw new Error('Flow not found')
     }
 
+    const data = {
+      name: flow.name,
+      data: flow.data.serialize(),
+      meta: flow.meta.serialize(),
+      readOnly: flow.readOnly,
+    }
+
     setFlows({
       ...flows,
-      [id]: {
-        name: flow.name,
-        data: flow.data.serialize(),
-        meta: flow.meta.serialize(),
-        readOnly: flow.readOnly,
-      },
+      [id]: data,
     })
+
+    // console.log('update the api', serialize(data))
   }
 
   const change = useCallback(

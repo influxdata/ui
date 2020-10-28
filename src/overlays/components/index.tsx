@@ -87,3 +87,19 @@ export const AddAnnotationDashboardOverlay = RouteOverlay(
     history.push(`/${ORGS}/${params.orgID}/${DASHBOARDS}/${params.dashboardID}`)
   }
 )
+
+export const EditAnnotationDEOverlay = RouteOverlay(
+  OverlayHandler,
+  'edit-annotation',
+  (history, params) => {
+    history.push(`/${ORGS}/${params.orgID}/${DATA_EXPLORER}`)
+  }
+)
+
+export const EditAnnotationDashboardOverlay = RouteOverlay(
+  OverlayHandler,
+  'edit-annotation',
+  (history, params) => {
+    history.push(`/${ORGS}/${params.orgID}/${DASHBOARDS}/${params.dashboardID}`)
+  }
+)

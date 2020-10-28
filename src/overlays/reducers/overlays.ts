@@ -17,6 +17,7 @@ export type OverlayID =
   | 'create-annotation-stream'
   | 'update-annotation-stream'
   | 'add-annotation'
+  | 'edit-annotation'
 
 export interface OverlayParams {
   [key: string]: string

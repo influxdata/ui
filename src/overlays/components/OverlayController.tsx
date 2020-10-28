@@ -18,6 +18,7 @@ import AssetLimitOverlay from 'src/cloud/components/AssetLimitOverlay'
 import CreateAnnotationStreamOverlay from 'src/annotations/components/overlay/CreateAnnotationStreamOverlay'
 import UpdateAnnotationStreamOverlay from 'src/annotations/components/overlay/UpdateAnnotationStreamOverlay'
 import AddAnnotationOverlay from 'src/annotations/components/addAnnotation/AddAnnotationOverlay'
+import EditAnnotationOverlay from 'src/annotations/components/addAnnotation/EditAnnotationOverlay'
 
 // Actions
 import {dismissOverlay} from 'src/overlays/actions/overlays'
@@ -88,6 +89,9 @@ const OverlayController: FunctionComponent<OverlayControllerProps> = props => {
       break
     case 'add-annotation':
       activeOverlay = <AddAnnotationOverlay />
+      break
+    case 'edit-annotation':
+      activeOverlay = <EditAnnotationOverlay />
       break
     default:
       visibility = false

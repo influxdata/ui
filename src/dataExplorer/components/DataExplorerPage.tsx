@@ -18,6 +18,7 @@ import AnnotationsToggleButton from 'src/annotations/components/AnnotationsToggl
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
 import AnnotationsControlBar from 'src/annotations/components/controlBar/AnnotationsControlBar'
 import {AddAnnotationDEOverlay} from 'src/overlays/components/index'
+import {EditAnnotationDEOverlay} from 'src/overlays/components/index'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -43,6 +44,10 @@ const DataExplorerPage: FC = () => {
         <Route
           path="/orgs/:orgID/data-explorer/add-annotation"
           component={AddAnnotationDEOverlay}
+        />
+        <Route
+          path="/orgs/:orgID/data-explorer/edit-annotation"
+          component={EditAnnotationDEOverlay}
         />
       </Switch>
       <GetResources resources={[ResourceType.Variables]}>

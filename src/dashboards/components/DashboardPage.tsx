@@ -20,6 +20,7 @@ import {
   AddNoteOverlay,
   EditNoteOverlay,
   AddAnnotationDashboardOverlay,
+  EditAnnotationDashboardOverlay,
 } from 'src/overlays/components'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
@@ -95,6 +96,10 @@ class DashboardPage extends Component<Props> {
           <Route
             path={`${dashRoute}/add-annotation`}
             component={AddAnnotationDashboardOverlay}
+          />
+          <Route
+            path={`${dashRoute}/edit-annotation`}
+            component={EditAnnotationDashboardOverlay}
           />
         </Switch>
       </>

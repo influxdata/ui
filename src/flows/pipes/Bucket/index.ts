@@ -11,7 +11,7 @@ export default register => {
     generateFlux: (data, create, append, withSideEffects) => {
       if (withSideEffects && data?.bucket) {
         const query = `__PREVIOUS_RESULT__ |> to(bucket: "${data.bucket?.name.trim()}")`
-        create(query, true)
+        create(query)
       } else {
         append()
       }

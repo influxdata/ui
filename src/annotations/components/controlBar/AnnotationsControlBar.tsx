@@ -46,10 +46,9 @@ const AnnotationsControlBar: FC = () => {
 
   const handleAnnotateClick = (): void => {
     // NOTE: these values should come from the interaction with the graph
-    // You should get 2 timestamps and can infer type by comparing them
-    const startTime = 'startTime'
-    const stopTime = 'startTime'
-    const type = startTime === stopTime ? 'point' : 'range'
+    // You should get 2 timestamps
+    const timeStart = 'today, right now'
+    const timeStop = 'today, right now'
 
     // Using presence of dashboardID to determine whether the user is viewing
     // a dashboard or the data explorer
@@ -59,8 +58,8 @@ const AnnotationsControlBar: FC = () => {
     // to the overlay without having to stick in it state for a brief moment
 
     const addAnnotationRoute = dashboardID
-      ? `/${ORGS}/${orgID}/${DASHBOARDS}/${dashboardID}/add-annotation?type=${type}&startTime=${startTime}&stopTime=${stopTime}`
-      : `/${ORGS}/${orgID}/${DATA_EXPLORER}/add-annotation?type=${type}&startTime=${startTime}&stopTime=${stopTime}`
+      ? `/${ORGS}/${orgID}/${DASHBOARDS}/${dashboardID}/add-annotation?timeStart=${timeStart}&timeStop=${timeStop}`
+      : `/${ORGS}/${orgID}/${DATA_EXPLORER}/add-annotation?timeStart=${timeStart}&timeStop=${timeStop}`
 
     history.push(addAnnotationRoute)
   }

@@ -27,7 +27,7 @@ const EditAnnotationOverlay: FC = () => {
   }
 
   // NOTE: This value should come from the annotation being edited
-  // Could use query params like the add overlay
+  // Could use query strings like the add overlay
   // or a different approach
   const annotation = MOCK_ANNOTATION
 

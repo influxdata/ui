@@ -15,10 +15,11 @@ import 'src/annotations/components/addAnnotation/AnnotationStreamSelector.scss'
 
 interface Props {
   streamID: string
+  error: string
   onChange: (stream: AnnotationStream) => void
 }
 
-const AnnotationStreamSelector: FC<Props> = ({streamID, onChange}) => {
+const AnnotationStreamSelector: FC<Props> = ({streamID, error, onChange}) => {
   // Normally get this from redux with useSelector + ResourceType.AnnotationStream
   const streams = MOCK_ANNOTATION_STREAMS
   const selectedStream = streams.find(stream => stream.id === streamID)
@@ -46,7 +47,7 @@ const AnnotationStreamSelector: FC<Props> = ({streamID, onChange}) => {
   }
 
   return (
-    <Form.Element label="Stream" required={true}>
+    <Form.Element label="Stream" required={true} errorMessage={error}>
       <Panel>
         <Panel.Body size={ComponentSize.Small}>
           <Dropdown

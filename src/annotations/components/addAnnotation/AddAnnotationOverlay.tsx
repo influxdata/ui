@@ -26,6 +26,7 @@ import {
   annotationReducer,
   getInitialAnnotationState,
   AnnotationType,
+  annotationFormIsValid,
 } from 'src/annotations/reducers/annotationReducer'
 
 // Types
@@ -59,6 +60,12 @@ const AddAnnotationOverlay: FC = () => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
+
+    const formIsValid = annotationFormIsValid(state, dispatch)
+
+    if (formIsValid) {
+      // actually submit the form
+    }
   }
 
   const handleSummaryChange = (e: ChangeEvent<InputRef>): void => {
@@ -134,6 +141,7 @@ const AddAnnotationOverlay: FC = () => {
             <Grid.Row>
               <Grid.Column widthXS={Columns.Twelve}>
                 <AnnotationStreamSelector
+                  error={state.streamIDError}
                   streamID={state.streamID}
                   onChange={handleStreamChange}
                 />

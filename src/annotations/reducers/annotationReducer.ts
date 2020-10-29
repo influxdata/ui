@@ -2,6 +2,7 @@
 import {ComponentStatus} from '@influxdata/clockface'
 
 // Types
+import {Dispatch} from 'react'
 import {AnnotationStream} from 'src/annotations/constants/mocks'
 
 export type AnnotationType = 'point' | 'range'
@@ -28,7 +29,8 @@ export interface ReducerState {
     error: string
   }
   // These fields are for where to write the annotation once it's done
-  streamID?: string
+  streamID: string
+  streamIDError: string
   bucketName?: string
   measurement?: string
   tags: {
@@ -66,6 +68,11 @@ interface UpdateStreamAction {
   payload: AnnotationStream
 }
 
+interface UpdateStreamErrorAction {
+  type: 'updateStreamError'
+  payload: string
+}
+
 export type ReducerActionType =
   | UpdateSummaryAction
   | UpdateTypeAction
@@ -73,6 +80,7 @@ export type ReducerActionType =
   | UpdateTimeStopAction
   | UpdateMessageAction
   | UpdateStreamAction
+  | UpdateStreamErrorAction
 
 export const getInitialAnnotationState = (
   type: AnnotationType,
@@ -112,6 +120,8 @@ export const getInitialAnnotationState = (
     timeStop,
     message,
     tags: {},
+    streamID: '',
+    streamIDError: '',
   }
 }
 
@@ -190,9 +200,41 @@ export const annotationReducer = (
       return {
         ...state,
         streamID: action.payload.id,
+        streamIDError: '',
         bucketName: action.payload.query.bucketName,
         measurement: action.payload.query.measurement,
         tags: action.payload.query.tags,
       }
+
+    case 'updateStreamError':
+      return {
+        ...state,
+        streamIDError: action.payload,
+      }
   }
+}
+
+export const annotationFormIsValid = (
+  state: ReducerState,
+  dispatch: Dispatch<ReducerActionType>
+): boolean => {
+  const {summary, timeStart, timeStop, streamID} = state
+
+  dispatch({
+    type: 'updateStreamError',
+    payload: streamID ? '' : 'Choose a stream to insert this annotation into',
+  })
+
+  // When submit is clicked
+  // force required inputs into error or valid state (instead of initial)
+  // so user can resolve the form errors and submit again
+  dispatch({type: 'updateSummary', payload: summary.value})
+  dispatch({type: 'updateTimeStart', payload: timeStart.value})
+  dispatch({type: 'updateTimeStop', payload: timeStop.value})
+
+  if (summary.error || timeStart.error || timeStop.error || !streamID) {
+    return false
+  }
+
+  return true
 }

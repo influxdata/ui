@@ -18,14 +18,14 @@ import {
 } from '@influxdata/clockface'
 
 // Hooks
-import {useAnnotationForm} from 'src/annotations/utils/useAnnotationForm'
+import useAnnotationState from 'src/annotations/reducers/useAnnotationState'
 
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
 const AddAnnotationOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
-  const {values, errors, statuses, set, validate} = useAnnotationForm('point')
+  const {values, errors, statuses, set, validate} = useAnnotationState('point')
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault()

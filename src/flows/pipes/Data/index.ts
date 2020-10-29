@@ -51,7 +51,7 @@ export default register => {
       }
 
       if (aggregateFunction?.name) {
-        text += `|> aggregateWindow(every: v.windowPeriod, fn: ${aggregateFunction.name}, createEmpty: false)`
+        text += ` |> aggregateWindow(every: v.windowPeriod, fn: ${aggregateFunction.name}, createEmpty: false)`
       }
 
       create(text)

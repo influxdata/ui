@@ -90,8 +90,7 @@ const ScatterPlot: FunctionComponent<Props> = ({
 
   const [yDomain, onSetYDomain, onResetYDomain] = useVisYDomainSettings(
     storedYDomain,
-    table.getColumn(yColumn, 'number'),
-    timeRange
+    table.getColumn(yColumn, 'number')
   )
 
   const isValidView =

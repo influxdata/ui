@@ -2,7 +2,7 @@
 import React, {FC, useContext} from 'react'
 
 // Components
-import AnnotationOverlay from 'src/annotations/components/addAnnotation/AnnotationOverlay'
+import AnnotationOverlay from 'src/annotations/components/annotationForm/AnnotationOverlay'
 import {Overlay, Button, ComponentColor} from '@influxdata/clockface'
 
 // Contexts

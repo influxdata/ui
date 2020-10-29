@@ -35,7 +35,7 @@ import {AnnotationStream} from 'src/annotations/constants/mocks'
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
-const AddAnnotationOverlay: FC = () => {
+const AnnotationForm: FC = () => {
   // NOTE:
   // these values should come from the interaction on a graph
   // in which the user draws an annotation.
@@ -162,4 +162,4 @@ const AddAnnotationOverlay: FC = () => {
   )
 }
 
-export default AddAnnotationOverlay
+export default AnnotationForm

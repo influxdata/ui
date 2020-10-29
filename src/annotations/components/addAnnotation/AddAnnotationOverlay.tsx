@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, FormEvent, useContext} from 'react'
+import React, {ChangeEvent, FC, FormEvent, useContext, useReducer} from 'react'
 
 // Components
 import AnnotationOverlay from 'src/annotations/components/addAnnotation/AnnotationOverlay'
@@ -10,31 +10,71 @@ import {
   Form,
   Grid,
   Columns,
-  Input,
-  TextArea,
+  InputRef,
+  TextAreaRef,
   ButtonType,
-  SelectGroup,
-  ButtonShape,
 } from '@influxdata/clockface'
+import AnnotationSummaryInput from 'src/annotations/components/addAnnotation/AnnotationSummaryInput'
+import AnnotationTimeStartInput from 'src/annotations/components/addAnnotation/AnnotationTimeStartInput'
+import AnnotationTimeStopInput from 'src/annotations/components/addAnnotation/AnnotationTimeStopInput'
+import AnnotationMessageInput from 'src/annotations/components/addAnnotation/AnnotationMessageInput'
+import AnnotationTypeToggle from 'src/annotations/components/addAnnotation/AnnotationTypeToggle'
 
 // Hooks
-import useAnnotationState from 'src/annotations/reducers/useAnnotationState'
+import {
+  annotationReducer,
+  getInitialAnnotationState,
+  AnnotationType,
+} from 'src/annotations/reducers/annotationReducer'
 
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
 const AddAnnotationOverlay: FC = () => {
+  // NOTE:
+  // these values should come from the interaction on a graph
+  // in which the user draws an annotation.
+  // We can infer type by comparing start & stop
+  // If they are the same then type = 'point', else type = 'range'
+  const startTime = 'startTime'
+  const stopTime = 'startTime'
+  const type = startTime === stopTime ? 'point' : 'range'
+
+  const initialAnnotationState = getInitialAnnotationState(
+    type,
+    startTime,
+    stopTime
+  )
+
+  const [state, dispatch] = useReducer(
+    annotationReducer,
+    initialAnnotationState
+  )
+
   const {onClose} = useContext(OverlayContext)
-  const {values, errors, statuses, set, validate} = useAnnotationState('point')
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
+  }
 
-    const formState = validate()
+  const handleSummaryChange = (e: ChangeEvent<InputRef>): void => {
+    dispatch({type: 'updateSummary', payload: e.target.value})
+  }
 
-    if (formState === 'valid') {
-      // Submit form using values
-    }
+  const handleTypeChange = (payload: AnnotationType): void => {
+    dispatch({type: 'updateType', payload})
+  }
+
+  const handleTimeStartChange = (e: ChangeEvent<InputRef>): void => {
+    dispatch({type: 'updateTimeStart', payload: e.target.value})
+  }
+
+  const handleTimeStopChange = (e: ChangeEvent<InputRef>): void => {
+    dispatch({type: 'updateTimeStop', payload: e.target.value})
+  }
+
+  const handleMessageChange = (e: ChangeEvent<TextAreaRef>): void => {
+    dispatch({type: 'updateMessage', payload: e.target.value})
   }
 
   return (
@@ -44,83 +84,43 @@ const AddAnnotationOverlay: FC = () => {
           <Grid>
             <Grid.Row>
               <Grid.Column widthXS={Columns.Seven}>
-                <Form.Element
-                  label="Summary"
-                  required={true}
-                  errorMessage={errors.summary}
-                >
-                  <Input
-                    placeholder="ex: Deployed update"
-                    value={values.summary}
-                    onChange={set('summary')}
-                    status={statuses.summary}
-                  />
-                </Form.Element>
+                <AnnotationSummaryInput
+                  {...state.summary}
+                  onChange={handleSummaryChange}
+                />
               </Grid.Column>
               <Grid.Column widthXS={Columns.Five}>
-                <Form.Element label="Type">
-                  <SelectGroup shape={ButtonShape.StretchToFit}>
-                    <SelectGroup.Option
-                      id="point"
-                      value="point"
-                      active={values.type === 'point'}
-                      onClick={set('type')}
-                    >
-                      Point
-                    </SelectGroup.Option>
-                    <SelectGroup.Option
-                      id="range"
-                      value="range"
-                      active={values.type === 'range'}
-                      onClick={set('type')}
-                    >
-                      Range
-                    </SelectGroup.Option>
-                  </SelectGroup>
-                </Form.Element>
+                <AnnotationTypeToggle
+                  type={state.type}
+                  onChange={handleTypeChange}
+                />
               </Grid.Column>
             </Grid.Row>
             <Grid.Row>
               <Grid.Column
-                widthXS={values.type === 'range' ? Columns.Six : Columns.Twelve}
+                widthXS={state.type === 'range' ? Columns.Six : Columns.Twelve}
               >
-                <Form.Element
-                  label={values.type === 'range' ? 'Start' : 'Timestamp'}
-                  required={true}
-                  errorMessage={errors.startTime}
-                >
-                  <Input
-                    value={values.startTime}
-                    onChange={set('startTime')}
-                    status={statuses.startTime}
-                  />
-                </Form.Element>
+                <AnnotationTimeStartInput
+                  {...state.timeStart}
+                  type={state.type}
+                  onChange={handleTimeStartChange}
+                />
               </Grid.Column>
-              {values.type === 'range' && (
+              {state.type === 'range' && (
                 <Grid.Column widthXS={Columns.Six}>
-                  <Form.Element
-                    label="Stop"
-                    required={true}
-                    errorMessage={errors.stopTime}
-                  >
-                    <Input
-                      value={values.stopTime}
-                      onChange={set('stopTime')}
-                      status={statuses.stopTime}
-                    />
-                  </Form.Element>
+                  <AnnotationTimeStopInput
+                    {...state.timeStop}
+                    onChange={handleTimeStopChange}
+                  />
                 </Grid.Column>
               )}
             </Grid.Row>
             <Grid.Row>
               <Grid.Column widthXS={Columns.Twelve}>
-                <Form.Element label="Message">
-                  <TextArea
-                    value={values.message}
-                    onChange={set('message')}
-                    style={{height: '80px', minHeight: '80px'}}
-                  />
-                </Form.Element>
+                <AnnotationMessageInput
+                  {...state.message}
+                  onChange={handleMessageChange}
+                />
               </Grid.Column>
             </Grid.Row>
           </Grid>

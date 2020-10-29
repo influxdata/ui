@@ -1,125 +1,197 @@
 // Libraries
-import {useState} from 'react'
 import {ComponentStatus} from '@influxdata/clockface'
 
-type AnnotationField =
-  | 'summary'
-  | 'type'
-  | 'startTime'
-  | 'stopTime'
-  | 'message'
-  | 'stream'
+// Types
+import {AnnotationStream} from 'src/annotations/constants/mocks'
 
-type AnnotationType = 'point' | 'range'
+export type AnnotationType = 'point' | 'range'
+export interface ReducerState {
+  summary: {
+    value: string
+    status: ComponentStatus
+    error: string
+  }
+  type: AnnotationType
+  timeStart: {
+    value: string
+    status: ComponentStatus
+    error: string
+  }
+  timeStop: {
+    value: string
+    status: ComponentStatus
+    error: string
+  }
+  message: {
+    value: string
+    status: ComponentStatus
+    error: string
+  }
+  // These fields are for where to write the annotation once it's done
+  streamID?: string
+  bucketName?: string
+  measurement?: string
+  tags?: {
+    [key: string]: string
+  }
+}
 
-type FormState = 'initial' | 'valid' | 'errors'
+interface UpdateSummaryAction {
+  type: 'updateSummary'
+  payload: string
+}
 
-export const useAnnotationForm = (annotationType: AnnotationType) => {
-  // Values
-  const [summary, updateSummary] = useState<string>('')
-  const [type, updateType] = useState<AnnotationType>(annotationType)
-  const [startTime, updateStartTime] = useState<string>('')
-  const [stopTime, updateStopTime] = useState<string>('')
-  const [message, updateMessage] = useState<string>('')
-  const [stream, updateStream] = useState<string>('')
+interface UpdateTypeAction {
+  type: 'updateType'
+  payload: AnnotationType
+}
 
-  // Errors
-  const [summaryError, updateSummaryError] = useState<string>('')
-  const [startTimeError, updateStartTimeError] = useState<string>('')
-  const [stopTimeError, updateStopTimeError] = useState<string>('')
+interface UpdateTimeStartAction {
+  type: 'updateTimeStart'
+  payload: string
+}
 
-  // Statuses
-  const [summaryStatus, updateSummaryStatus] = useState<ComponentStatus>(
-    ComponentStatus.Default
-  )
-  const [startTimeStatus, updateStartTimeStatus] = useState<ComponentStatus>(
-    ComponentStatus.Default
-  )
-  const [stopTimeStatus, updateStopTimeStatus] = useState<ComponentStatus>(
-    ComponentStatus.Default
-  )
+interface UpdateTimeStopAction {
+  type: 'updateTimeStop'
+  payload: string
+}
 
-  const values = {
-    summary,
-    type,
-    startTime,
-    stopTime,
-    message,
-    stream,
+interface UpdateMessageAction {
+  type: 'updateMessage'
+  payload: string
+}
+
+interface UpdateStreamAction {
+  type: 'updateStream'
+  payload: AnnotationStream
+}
+
+export type ReducerActionType =
+  | UpdateSummaryAction
+  | UpdateTypeAction
+  | UpdateTimeStartAction
+  | UpdateTimeStopAction
+  | UpdateMessageAction
+  | UpdateStreamAction
+
+export const getInitialAnnotationState = (
+  type: AnnotationType,
+  start: string,
+  stop: string,
+  summaryText?: string,
+  messageText?: string
+): ReducerState => {
+  const summary = {
+    value: summaryText || '',
+    status: ComponentStatus.Default,
+    error: '',
   }
 
-  const errors = {
-    summary: summaryError,
-    startTime: startTimeError,
-    stopTime: stopTimeError,
+  const timeStart = {
+    value: start,
+    status: ComponentStatus.Default,
+    error: '',
   }
 
-  const statuses = {
-    summary: summaryStatus,
-    startTime: startTimeStatus,
-    stopTime: stopTimeStatus,
+  const timeStop = {
+    value: stop,
+    status: ComponentStatus.Default,
+    error: '',
   }
 
-  const set = (field: AnnotationField) => (value: any): void => {
-    switch (field) {
-      case 'summary':
-        return updateSummary(value.target.value)
-      case 'type':
-        return updateType(value)
-      case 'startTime':
-        if (type === 'point') {
-          updateStartTime(value.target.value)
-          updateStopTime(value.target.value)
-        } else if (type === 'range') {
-          updateStartTime(value.target.value)
-        }
-        return
-      case 'stopTime':
-        return updateStopTime(value.target.value)
-      case 'message':
-        return updateMessage(value.target.value)
-      case 'stream':
-        return updateStream(value)
-    }
-  }
-
-  const validate = (): FormState => {
-    let errorCount = 0
-    if (summary === '') {
-      updateSummaryError('This field cannot be blank')
-      updateSummaryStatus(ComponentStatus.Error)
-      errorCount++
-    } else {
-      updateSummaryError('')
-      updateSummaryStatus(ComponentStatus.Valid)
-    }
-
-    if (startTime === '') {
-      updateStartTimeError('This field cannot be blank')
-      updateStartTimeStatus(ComponentStatus.Error)
-      errorCount++
-    } else {
-      updateStartTimeError('')
-      updateStartTimeStatus(ComponentStatus.Valid)
-    }
-
-    if (stopTime === '') {
-      updateStopTimeError('This field cannot be blank')
-      updateStopTimeStatus(ComponentStatus.Error)
-      errorCount++
-    } else {
-      updateStopTimeError('')
-      updateStopTimeStatus(ComponentStatus.Valid)
-    }
-
-    return errorCount === 0 ? 'valid' : 'errors'
+  const message = {
+    value: messageText || '',
+    status: ComponentStatus.Default,
+    error: '',
   }
 
   return {
-    values,
-    errors,
-    statuses,
-    set,
-    validate,
+    summary,
+    type,
+    timeStart,
+    timeStop,
+    message,
+  }
+}
+
+export const annotationReducer = (
+  state: ReducerState,
+  action: ReducerActionType
+) => {
+  switch (action.type) {
+    case 'updateSummary':
+      let summary = state.summary
+      if (action.payload === '') {
+        summary = {
+          ...state.summary,
+          value: action.payload,
+          status: ComponentStatus.Error,
+          error: 'This field is required',
+        }
+      } else if (action.payload !== '') {
+        summary = {
+          ...state.summary,
+          value: action.payload,
+          status: ComponentStatus.Valid,
+          error: '',
+        }
+      }
+      return {...state, summary}
+
+    case 'updateType':
+      return {...state, type: action.payload}
+
+    case 'updateTimeStart':
+      let timeStart = state.timeStart
+      if (action.payload === '') {
+        timeStart = {
+          ...state.timeStart,
+          value: action.payload,
+          status: ComponentStatus.Error,
+          error: 'This field is required',
+        }
+      } else if (action.payload !== '') {
+        timeStart = {
+          ...state.timeStart,
+          value: action.payload,
+          status: ComponentStatus.Valid,
+          error: '',
+        }
+      }
+      return {...state, timeStart}
+
+    case 'updateTimeStop':
+      let timeStop = state.timeStop
+      if (action.payload === '') {
+        timeStop = {
+          ...state.timeStop,
+          value: action.payload,
+          status: ComponentStatus.Error,
+          error: 'This field is required',
+        }
+      } else if (action.payload !== '') {
+        timeStop = {
+          ...state.timeStop,
+          value: action.payload,
+          status: ComponentStatus.Valid,
+          error: '',
+        }
+      }
+      return {...state, timeStop}
+
+    case 'updateMessage':
+      return {
+        ...state,
+        message: {...state.message, value: action.payload},
+      }
+
+    case 'updateStream':
+      return {
+        ...state,
+        streamID: action.payload.id,
+        bucketName: action.payload.query.bucketName,
+        measurement: action.payload.query.measurement,
+        tags: action.payload.query.tags,
+      }
   }
 }

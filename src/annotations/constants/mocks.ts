@@ -16,6 +16,9 @@ export interface AnnotationStream {
     timeStopCol: string
   }
   query: {
+    tags?: {
+      [key: string]: string
+    }
     measurement: string
     bucketName: string
   }

@@ -28,6 +28,7 @@ import {FeatureFlag} from 'src/shared/utils/featureFlag'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {event} from 'src/cloud/utils/reporting'
 import {resetQueryCache} from 'src/shared/apis/queryCache'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Selectors
 import {getByID} from 'src/resources/selectors'
@@ -93,14 +94,18 @@ class DashboardPage extends Component<Props> {
             path={`${dashRoute}/notes/:cellID/edit`}
             component={EditNoteOverlay}
           />
-          <Route
-            path={`${dashRoute}/add-annotation`}
-            component={AddAnnotationDashboardOverlay}
-          />
-          <Route
-            path={`${dashRoute}/edit-annotation`}
-            component={EditAnnotationDashboardOverlay}
-          />
+          {isFlagEnabled('annotations') && (
+            <Route
+              path={`${dashRoute}/add-annotation`}
+              component={AddAnnotationDashboardOverlay}
+            />
+          )}
+          {isFlagEnabled('annotations') && (
+            <Route
+              path={`${dashRoute}/edit-annotation`}
+              component={EditAnnotationDashboardOverlay}
+            />
+          )}
         </Switch>
       </>
     )

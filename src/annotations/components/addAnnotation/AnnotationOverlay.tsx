@@ -15,10 +15,12 @@ interface Props {
 const AnnotationOverlay: FC<Props> = ({children, title}) => {
   const {onClose} = useContext(OverlayContext)
 
+  // TODO: Wrap children with getResources ResourceType.AnnotationStream
+  // in case this overlay is accessed via URL and streams aren't in redux yet
+
   return (
     <Overlay.Container maxWidth={560}>
       <Overlay.Header title={title} onDismiss={onClose} />
-      {/* TODO: wrap children in GetResources with ResourceType.AnnotationStreams */}
       {children}
     </Overlay.Container>
   )

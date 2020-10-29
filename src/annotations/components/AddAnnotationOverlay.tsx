@@ -7,8 +7,8 @@ import qs from 'qs'
 import AnnotationForm from 'src/annotations/components/annotationForm/AnnotationForm'
 import AnnotationErrorOverlay from 'src/annotations/components/AnnotationErrorOverlay'
 
-// Type
-import {Annotation} from 'src/annotations/reducers/annotationReducer'
+// Types
+// import {Annotation} from 'src/annotations/reducers/annotationReducer'
 
 const AddAnnotationOverlay: FC = () => {
   // NOTE: using query search strings to pass some information from
@@ -29,7 +29,8 @@ const AddAnnotationOverlay: FC = () => {
       !!timeStart && !!timeStop && timeStart === timeStop ? 'point' : 'range'
   }
 
-  const handleSubmit = (annotation: Annotation): void => {
+  // const handleSubmit = (annotation: Annotation): void => {
+  const handleSubmit = (): void => {
     // Use the values of annotation to construct a line protocol string and
     // then execute it
   }

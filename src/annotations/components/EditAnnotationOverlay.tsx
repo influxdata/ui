@@ -4,7 +4,7 @@ import React, {FC} from 'react'
 // Components
 import AnnotationForm from 'src/annotations/components/annotationForm/AnnotationForm'
 
-// Type
+// Types
 import {Annotation} from 'src/annotations/reducers/annotationReducer'
 
 const MOCK_ANNOTATION: Annotation = {
@@ -22,8 +22,10 @@ const MOCK_ANNOTATION: Annotation = {
 }
 
 const EditAnnotationOverlay: FC = () => {
-  const handleSubmit = (annotation: Annotation): void => {
-    console.log(annotation)
+  // const handleSubmit = (annotation: Annotation): void => {
+  const handleSubmit = (): void => {
+    // Use the values of annotation to construct a line protocol string and
+    // then execute it
   }
 
   // NOTE: This value should come from the annotation being edited

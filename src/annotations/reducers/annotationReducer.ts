@@ -31,7 +31,7 @@ export interface ReducerState {
   streamID?: string
   bucketName?: string
   measurement?: string
-  tags?: {
+  tags: {
     [key: string]: string
   }
 }
@@ -111,6 +111,7 @@ export const getInitialAnnotationState = (
     timeStart,
     timeStop,
     message,
+    tags: {},
   }
 }
 

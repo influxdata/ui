@@ -19,13 +19,17 @@ import AnnotationTimeStartInput from 'src/annotations/components/addAnnotation/A
 import AnnotationTimeStopInput from 'src/annotations/components/addAnnotation/AnnotationTimeStopInput'
 import AnnotationMessageInput from 'src/annotations/components/addAnnotation/AnnotationMessageInput'
 import AnnotationTypeToggle from 'src/annotations/components/addAnnotation/AnnotationTypeToggle'
+import AnnotationStreamSelector from 'src/annotations/components/addAnnotation/AnnotationStreamSelector'
 
-// Hooks
+// Form State
 import {
   annotationReducer,
   getInitialAnnotationState,
   AnnotationType,
 } from 'src/annotations/reducers/annotationReducer'
+
+// Types
+import {AnnotationStream} from 'src/annotations/constants/mocks'
 
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
@@ -77,6 +81,10 @@ const AddAnnotationOverlay: FC = () => {
     dispatch({type: 'updateMessage', payload: e.target.value})
   }
 
+  const handleStreamChange = (payload: AnnotationStream): void => {
+    dispatch({type: 'updateStream', payload})
+  }
+
   return (
     <AnnotationOverlay title="Add Annotation">
       <Form onSubmit={handleSubmit}>
@@ -123,10 +131,15 @@ const AddAnnotationOverlay: FC = () => {
                 />
               </Grid.Column>
             </Grid.Row>
+            <Grid.Row>
+              <Grid.Column widthXS={Columns.Twelve}>
+                <AnnotationStreamSelector
+                  streamID={state.streamID}
+                  onChange={handleStreamChange}
+                />
+              </Grid.Column>
+            </Grid.Row>
           </Grid>
-
-          <p>Add annotation!!1</p>
-          {/* TODO: wrap children in GetResources with ResourceType.AnnotationStreams */}
         </Overlay.Body>
         <Overlay.Footer>
           <Button text="Cancel" onClick={onClose} />

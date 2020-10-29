@@ -66,13 +66,12 @@ export const QueryProvider: FC<Props> = ({children, variables, org}) => {
           requirements: {},
         }
 
-        const create = (text, loadPrevious) => {
-          if (loadPrevious && stages.length) {
-            stage.requirements = {
-              ...stages[stages.length - 1].requirements,
-              [`prev_${stages.length}`]: stages[stages.length - 1].text,
-            }
-            stage.text = text.replace(PREVIOUS_REGEXP, `prev_${stages.length}`)
+        const create = text => {
+          if (text && PREVIOUS_REGEXP.test(text) && stages.length) {
+            stage.text = text.replace(
+              PREVIOUS_REGEXP,
+              stages[stages.length - 1].text
+            )
           } else {
             stage.text = text
           }

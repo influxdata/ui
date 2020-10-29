@@ -2,7 +2,6 @@
 import React, {ChangeEvent, FC, FormEvent, useContext, useReducer} from 'react'
 
 // Components
-import AnnotationOverlay from 'src/annotations/components/annotationForm/AnnotationOverlay'
 import {
   Overlay,
   Button,
@@ -27,6 +26,8 @@ import {
   getInitialAnnotationState,
   AnnotationType,
   annotationFormIsValid,
+  Annotation,
+  getAnnotationFromDraft,
 } from 'src/annotations/reducers/annotationReducer'
 
 // Types
@@ -35,20 +36,34 @@ import {AnnotationStream} from 'src/annotations/constants/mocks'
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
-const AnnotationForm: FC = () => {
-  // NOTE:
-  // these values should come from the interaction on a graph
-  // in which the user draws an annotation.
-  // We can infer type by comparing start & stop
-  // If they are the same then type = 'point', else type = 'range'
-  const startTime = 'startTime'
-  const stopTime = 'startTime'
-  const type = startTime === stopTime ? 'point' : 'range'
+interface Props {
+  title: 'Edit' | 'Add'
+  type: AnnotationType
+  timeStart: string
+  timeStop: string
+  summaryText?: string
+  messageText?: string
+  streamID?: string
+  onSubmit: (Annotation: Annotation) => void
+}
 
+const AnnotationForm: FC<Props> = ({
+  title,
+  type,
+  timeStart,
+  timeStop,
+  summaryText,
+  messageText,
+  streamID,
+  onSubmit,
+}) => {
   const initialAnnotationState = getInitialAnnotationState(
     type,
-    startTime,
-    stopTime
+    timeStart,
+    timeStop,
+    summaryText,
+    messageText,
+    streamID
   )
 
   const [state, dispatch] = useReducer(
@@ -64,7 +79,8 @@ const AnnotationForm: FC = () => {
     const formIsValid = annotationFormIsValid(state, dispatch)
 
     if (formIsValid) {
-      // actually submit the form
+      onSubmit(getAnnotationFromDraft(state))
+      onClose()
     }
   }
 
@@ -93,7 +109,8 @@ const AnnotationForm: FC = () => {
   }
 
   return (
-    <AnnotationOverlay title="Add Annotation">
+    <Overlay.Container maxWidth={560}>
+      <Overlay.Header title={`${title} Annotation`} onDismiss={onClose} />
       <Form onSubmit={handleSubmit}>
         <Overlay.Body>
           <Grid>
@@ -158,7 +175,7 @@ const AnnotationForm: FC = () => {
           />
         </Overlay.Footer>
       </Form>
-    </AnnotationOverlay>
+    </Overlay.Container>
   )
 }
 

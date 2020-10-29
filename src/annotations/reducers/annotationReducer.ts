@@ -6,7 +6,22 @@ import {Dispatch} from 'react'
 import {AnnotationStream} from 'src/annotations/constants/mocks'
 
 export type AnnotationType = 'point' | 'range'
-export interface ReducerState {
+
+export interface Annotation {
+  summary: string
+  type: AnnotationType
+  timeStart: string
+  timeStop: string
+  message: string
+  streamID: string
+  bucketName?: string
+  measurement?: string
+  tags: {
+    [key: string]: string
+  }
+}
+
+export interface AnnotationDraft {
   summary: {
     value: string
     status: ComponentStatus
@@ -87,8 +102,9 @@ export const getInitialAnnotationState = (
   start: string,
   stop: string,
   summaryText?: string,
-  messageText?: string
-): ReducerState => {
+  messageText?: string,
+  streamID?: string
+): AnnotationDraft => {
   const summary = {
     value: summaryText || '',
     status: ComponentStatus.Default,
@@ -120,13 +136,13 @@ export const getInitialAnnotationState = (
     timeStop,
     message,
     tags: {},
-    streamID: '',
+    streamID,
     streamIDError: '',
   }
 }
 
 export const annotationReducer = (
-  state: ReducerState,
+  state: AnnotationDraft,
   action: ReducerActionType
 ) => {
   switch (action.type) {
@@ -215,7 +231,7 @@ export const annotationReducer = (
 }
 
 export const annotationFormIsValid = (
-  state: ReducerState,
+  state: AnnotationDraft,
   dispatch: Dispatch<ReducerActionType>
 ): boolean => {
   const {summary, timeStart, timeStop, streamID} = state
@@ -237,4 +253,18 @@ export const annotationFormIsValid = (
   }
 
   return true
+}
+
+export const getAnnotationFromDraft = (draft: AnnotationDraft): Annotation => {
+  return {
+    summary: draft.summary.value,
+    type: draft.type,
+    timeStart: draft.timeStart.value,
+    timeStop: draft.timeStop.value,
+    message: draft.message.value,
+    streamID: draft.streamID,
+    bucketName: draft.bucketName,
+    measurement: draft.measurement,
+    tags: draft.tags,
+  }
 }

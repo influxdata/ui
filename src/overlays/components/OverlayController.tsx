@@ -17,8 +17,8 @@ import CreateBucketOverlay from 'src/buckets/components/CreateBucketOverlay'
 import AssetLimitOverlay from 'src/cloud/components/AssetLimitOverlay'
 import CreateAnnotationStreamOverlay from 'src/annotations/components/overlay/CreateAnnotationStreamOverlay'
 import UpdateAnnotationStreamOverlay from 'src/annotations/components/overlay/UpdateAnnotationStreamOverlay'
-import AddAnnotationOverlay from 'src/annotations/components/annotationForm/AddAnnotationOverlay'
-import EditAnnotationOverlay from 'src/annotations/components/annotationForm/EditAnnotationOverlay'
+import AddAnnotationOverlay from 'src/annotations/components/AddAnnotationOverlay'
+import EditAnnotationOverlay from 'src/annotations/components/EditAnnotationOverlay'
 
 // Actions
 import {dismissOverlay} from 'src/overlays/actions/overlays'

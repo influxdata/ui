@@ -47,6 +47,11 @@ export const cleanTags = (data: Point): Point => {
         return acc
       }
 
+      if (!val) {
+        acc[key] = val
+        return acc
+      }
+
       // if it's made it this far, it's a string, cast it explicitly so typescript will stfu
       acc[key] = (val as string).trim()
       return acc

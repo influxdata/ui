@@ -70,4 +70,14 @@ describe('cleaning tags before sending to app-metrics', () => {
       })
     })
   })
+
+  describe('no tags', () => {
+    const point = {
+      measurement: 'Minus the Bear',
+      fields: {songTitle: 'Houston, we have uh oh'},
+      tags: {},
+    }
+
+    expect(cleanTags(point).tags).toEqual({})
+  })
 })

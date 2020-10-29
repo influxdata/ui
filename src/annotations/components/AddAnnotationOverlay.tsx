@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
 import {useLocation} from 'react-router-dom'
+import qs from 'qs'
 
 // Components
 import AnnotationForm from 'src/annotations/components/annotationForm/AnnotationForm'
@@ -20,21 +21,17 @@ const AddAnnotationOverlay: FC = () => {
   let type
 
   if (location && location.search) {
-    // There has to be a better way to do this
-    const searchTimeStart = location.search.match(/timeStart=([^&]*)/g)
-    const searchTimeStop = location.search.match(/timeStop=([^&]*)/g)
-    timeStart = searchTimeStart
-      ? `${searchTimeStart}`.replace('timeStart=', '')
-      : undefined
-    timeStop = searchTimeStop
-      ? `${searchTimeStop}`.replace('timeStop=', '')
-      : undefined
+    // Slicing off the ? from the beginning of search
+    const parsedSearch = qs.parse(location.search.slice(1))
+    timeStart = parsedSearch['timeStart']
+    timeStop = parsedSearch['timeStop']
     type =
       !!timeStart && !!timeStop && timeStart === timeStop ? 'point' : 'range'
   }
 
   const handleSubmit = (annotation: Annotation): void => {
-    console.log(annotation)
+    // Use the values of annotation to construct a line protocol string and
+    // then execute it
   }
 
   if (!timeStart || !timeStop) {

@@ -22,8 +22,7 @@ const MOCK_ANNOTATION: Annotation = {
 }
 
 const EditAnnotationOverlay: FC = () => {
-  // const handleSubmit = (annotation: Annotation): void => {
-  const handleSubmit = (): void => {
+  const handleSubmit = (_annotation: Annotation): void => {
     // Use the values of annotation to construct a line protocol string and
     // then execute it
   }

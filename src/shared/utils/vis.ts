@@ -72,13 +72,23 @@ export const getFormatter = (
     })
   }
 
-  if (columnType === 'number') {
+  if (columnType === 'number' && base === '10') {
     return siPrefixFormatter({
       prefix,
       suffix,
       significantDigits: VIS_SIG_DIGITS,
       trimZeros,
       format,
+    })
+  }
+
+  if(columnType === 'number' && base === ''){
+    return siPrefixFormatter({
+      prefix,
+      suffix,
+      significantDigits: VIS_SIG_DIGITS,
+      trimZeros,
+      format:true,
     })
   }
 

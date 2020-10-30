@@ -22,7 +22,7 @@ jobs:
           command: |
             cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
             docker build \
-              --build-arg INFLUXDB_SHA=testing \
+              --build-arg UI_SHA=testing \
               --build-arg CLOUD_URL=http://localhost/auth \
               --build-arg WEBPACK_FILE=fast \
               -t quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} \
@@ -55,7 +55,7 @@ jobs:
               --build-arg HONEYBADGER_KEY=${HONEYBADGER_KEY} \
               --build-arg INJECT_HEADER="<script>(function (w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' }); var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f); })(window, document, 'script', 'dataLayer', '${GTM_ID}'); </script>" \
               --build-arg INJECT_BODY="<!-- Google Tag Manager (noscript) --> <noscript><iframe src=\"https://www.googletagmanager.com/ns.html?id=${GTM_ID}\" height=\"0\" width=\"0\" style=\"display:none;visibility:hidden\"></iframe></noscript> <!-- End Google Tag Manager (noscript) -->" \
-              --build-arg INFLUXDB_SHA=${CIRCLE_SHA1} \
+              --build-arg UI_SHA=${CIRCLE_SHA1} \
               --build-arg CLOUD_URL=/auth \
               -t quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1} \
               -f ./monitor-ci/docker/Dockerfile.chronograf.prod \

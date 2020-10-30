@@ -25,7 +25,7 @@ interface Stage {
 
 export interface QueryContextType {
   query: (text: string) => Promise<FluxResult>
-  generateMap: () => Stage[]
+  generateMap: (withSideEffects?: boolean) => Stage[]
 }
 
 export const DEFAULT_CONTEXT: QueryContextType = {
@@ -55,7 +55,7 @@ export const QueryProvider: FC<Props> = ({children, variables, org}) => {
     variables.map(v => asAssignment(v))
   }, [variables, time])
 
-  const generateMap = (): Stage[] => {
+  const generateMap = (withSideEffects?: boolean): Stage[] => {
     return flow.data.allIDs
       .reduce((stages, pipeID) => {
         const pipe = flow.data.get(pipeID)
@@ -66,13 +66,12 @@ export const QueryProvider: FC<Props> = ({children, variables, org}) => {
           requirements: {},
         }
 
-        const create = (text, loadPrevious) => {
-          if (loadPrevious && stages.length) {
-            stage.requirements = {
-              ...stages[stages.length - 1].requirements,
-              [`prev_${stages.length}`]: stages[stages.length - 1].text,
-            }
-            stage.text = text.replace(PREVIOUS_REGEXP, `prev_${stages.length}`)
+        const create = text => {
+          if (text && PREVIOUS_REGEXP.test(text) && stages.length) {
+            stage.text = text.replace(
+              PREVIOUS_REGEXP,
+              stages[stages.length - 1].text
+            )
           } else {
             stage.text = text
           }
@@ -87,7 +86,12 @@ export const QueryProvider: FC<Props> = ({children, variables, org}) => {
         }
 
         if (PIPE_DEFINITIONS[pipe.type].generateFlux) {
-          PIPE_DEFINITIONS[pipe.type].generateFlux(pipe, create, append)
+          PIPE_DEFINITIONS[pipe.type].generateFlux(
+            pipe,
+            create,
+            append,
+            withSideEffects
+          )
         } else {
           append()
         }

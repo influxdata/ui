@@ -118,13 +118,17 @@ export const FlowListProvider: FC = ({children}) => {
               title: 'Select a Metric',
               visible: true,
               type: 'queryBuilder',
-              ...JSON.parse(JSON.stringify(PIPE_DEFINITIONS['queryBuilder'].initial)),
+              ...JSON.parse(
+                JSON.stringify(PIPE_DEFINITIONS['queryBuilder'].initial)
+              ),
             },
             {
               title: 'Visualize the Result',
               visible: true,
               type: 'visualization',
-              ...JSON.parse(JSON.stringify(PIPE_DEFINITIONS['visualization'].initial)),
+              ...JSON.parse(
+                JSON.stringify(PIPE_DEFINITIONS['visualization'].initial)
+              ),
             },
           ],
         }),

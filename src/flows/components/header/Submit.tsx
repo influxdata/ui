@@ -1,5 +1,12 @@
 // Libraries
-import React, {FC, MouseEvent, useMemo, useContext, useState, useEffect} from 'react'
+import React, {
+  FC,
+  MouseEvent,
+  useMemo,
+  useContext,
+  useState,
+  useEffect,
+} from 'react'
 import {
   Dropdown,
   IconFont,

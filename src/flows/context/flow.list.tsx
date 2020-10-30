@@ -74,7 +74,7 @@ export function serialize(flow) {
 
 export function hydrate(data) {
   const flow = {
-    ...EMPTY_NOTEBOOK,
+    ...JSON.parse(JSON.stringify(EMPTY_NOTEBOOK)),
     name: data.name,
     readOnly: data.readOnly,
   }
@@ -118,13 +118,13 @@ export const FlowListProvider: FC = ({children}) => {
               title: 'Select a Metric',
               visible: true,
               type: 'queryBuilder',
-              ...PIPE_DEFINITIONS['queryBuilder'].initial,
+              ...JSON.parse(JSON.stringify(PIPE_DEFINITIONS['queryBuilder'].initial)),
             },
             {
               title: 'Visualize the Result',
               visible: true,
               type: 'visualization',
-              ...PIPE_DEFINITIONS['visualization'].initial,
+              ...JSON.parse(JSON.stringify(PIPE_DEFINITIONS['visualization'].initial)),
             },
           ],
         }),

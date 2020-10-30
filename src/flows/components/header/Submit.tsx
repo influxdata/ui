@@ -63,7 +63,6 @@ export const Submit: FC = () => {
       map.map(stage => {
         return query(stage.text)
           .then(response => {
-            console.log(stage)
             stage.instances.forEach(pipeID => {
               forceUpdate(pipeID, response)
               flow.meta.update(pipeID, {loading: RemoteDataState.Done})

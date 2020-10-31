@@ -20,13 +20,13 @@ import AnnotationStreamSelector from 'src/annotations/components/annotationForm/
 
 // Form State
 import {
-  annotationReducer,
+  annotationFormReducer,
   getInitialAnnotationState,
   AnnotationType,
   annotationFormIsValid,
   Annotation,
   getAnnotationFromDraft,
-} from 'src/annotations/reducers/annotationReducer'
+} from 'src/annotations/reducers/annotationFormReducer'
 
 // Actions
 import {updateAnnotationDraft} from 'src/annotations/actions/annotationFormActions'
@@ -68,7 +68,7 @@ const AnnotationForm: FC<Props> = ({
   )
 
   const [state, dispatch] = useReducer(
-    annotationReducer,
+    annotationFormReducer,
     initialAnnotationState
   )
 

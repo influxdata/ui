@@ -72,7 +72,7 @@ export const getInitialAnnotationState = (
   }
 }
 
-export const annotationReducer = (
+export const annotationFormReducer = (
   state: AnnotationDraft,
   action: AnnotationActionType
 ) => {

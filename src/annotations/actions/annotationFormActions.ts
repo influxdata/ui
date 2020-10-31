@@ -1,5 +1,5 @@
 // Types
-import {AnnotationDraft} from 'src/annotations/reducers/annotationReducer'
+import {AnnotationDraft} from 'src/annotations/reducers/annotationFormReducer'
 
 export interface UpdateAnnotationDraftAction {
   type: 'updateAnnotationDraft'

@@ -5,7 +5,7 @@ import React, {FC} from 'react'
 import AnnotationForm from 'src/annotations/components/annotationForm/AnnotationForm'
 
 // Types
-import {Annotation} from 'src/annotations/reducers/annotationReducer'
+import {Annotation} from 'src/annotations/reducers/annotationFormReducer'
 
 const MOCK_ANNOTATION: Annotation = {
   summary: 'I am an annotation',

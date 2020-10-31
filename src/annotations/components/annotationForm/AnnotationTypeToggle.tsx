@@ -5,7 +5,7 @@ import React, {FC} from 'react'
 import {SelectGroup, Form, ButtonShape} from '@influxdata/clockface'
 
 // Types
-import {AnnotationType} from 'src/annotations/reducers/annotationReducer'
+import {AnnotationType} from 'src/annotations/reducers/annotationFormReducer'
 
 interface Props {
   type: AnnotationType

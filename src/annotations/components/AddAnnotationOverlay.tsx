@@ -8,7 +8,7 @@ import AnnotationForm from 'src/annotations/components/annotationForm/Annotation
 import AnnotationErrorOverlay from 'src/annotations/components/AnnotationErrorOverlay'
 
 // Types
-import {Annotation} from 'src/annotations/reducers/annotationReducer'
+import {Annotation} from 'src/annotations/reducers/annotationFormReducer'
 
 const AddAnnotationOverlay: FC = () => {
   // NOTE: using query search strings to pass some information from

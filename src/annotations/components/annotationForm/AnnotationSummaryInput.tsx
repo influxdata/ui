@@ -20,6 +20,7 @@ const AnnotationSummaryInput: FC<Props> = ({
   return (
     <Form.Element label="Summary" required={true} errorMessage={error}>
       <Input
+        name="summary"
         placeholder="ex: Deployed update"
         value={value}
         onChange={onChange}

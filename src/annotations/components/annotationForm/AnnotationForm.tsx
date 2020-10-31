@@ -9,8 +9,6 @@ import {
   Form,
   Grid,
   Columns,
-  InputRef,
-  TextAreaRef,
   ButtonType,
 } from '@influxdata/clockface'
 import AnnotationSummaryInput from 'src/annotations/components/annotationForm/AnnotationSummaryInput'
@@ -29,6 +27,9 @@ import {
   Annotation,
   getAnnotationFromDraft,
 } from 'src/annotations/reducers/annotationReducer'
+
+// Actions
+import {updateAnnotationDraft} from 'src/annotations/actions/annotationFormActions'
 
 // Types
 import {AnnotationStream} from 'src/annotations/constants/mocks'
@@ -84,28 +85,23 @@ const AnnotationForm: FC<Props> = ({
     }
   }
 
-  const handleSummaryChange = (e: ChangeEvent<InputRef>): void => {
-    dispatch({type: 'updateSummary', payload: e.target.value})
+  const handleInputChange = (e: ChangeEvent<any>): void => {
+    const data = {}
+    data[`${e.target.name}`] = e.target.value
+    dispatch(updateAnnotationDraft(data))
   }
 
-  const handleTypeChange = (payload: AnnotationType): void => {
-    dispatch({type: 'updateType', payload})
+  const handleTypeChange = (type: AnnotationType): void => {
+    dispatch(updateAnnotationDraft({type}))
   }
 
-  const handleTimeStartChange = (e: ChangeEvent<InputRef>): void => {
-    dispatch({type: 'updateTimeStart', payload: e.target.value})
-  }
-
-  const handleTimeStopChange = (e: ChangeEvent<InputRef>): void => {
-    dispatch({type: 'updateTimeStop', payload: e.target.value})
-  }
-
-  const handleMessageChange = (e: ChangeEvent<TextAreaRef>): void => {
-    dispatch({type: 'updateMessage', payload: e.target.value})
-  }
-
-  const handleStreamChange = (payload: AnnotationStream): void => {
-    dispatch({type: 'updateStream', payload})
+  const handleStreamChange = (stream: AnnotationStream): void => {
+    dispatch(
+      updateAnnotationDraft({
+        streamID: stream.id,
+        ...stream.query,
+      })
+    )
   }
 
   return (
@@ -117,8 +113,10 @@ const AnnotationForm: FC<Props> = ({
             <Grid.Row>
               <Grid.Column widthXS={Columns.Seven}>
                 <AnnotationSummaryInput
-                  {...state.summary}
-                  onChange={handleSummaryChange}
+                  value={state.summary}
+                  error={state.summaryError}
+                  status={state.summaryStatus}
+                  onChange={handleInputChange}
                 />
               </Grid.Column>
               <Grid.Column widthXS={Columns.Five}>
@@ -133,16 +131,20 @@ const AnnotationForm: FC<Props> = ({
                 widthXS={state.type === 'range' ? Columns.Six : Columns.Twelve}
               >
                 <AnnotationTimeStartInput
-                  {...state.timeStart}
+                  value={state.timeStart}
+                  error={state.timeStartError}
+                  status={state.timeStartStatus}
                   type={state.type}
-                  onChange={handleTimeStartChange}
+                  onChange={handleInputChange}
                 />
               </Grid.Column>
               {state.type === 'range' && (
                 <Grid.Column widthXS={Columns.Six}>
                   <AnnotationTimeStopInput
-                    {...state.timeStop}
-                    onChange={handleTimeStopChange}
+                    value={state.timeStop}
+                    error={state.timeStopError}
+                    status={state.timeStopStatus}
+                    onChange={handleInputChange}
                   />
                 </Grid.Column>
               )}
@@ -150,8 +152,8 @@ const AnnotationForm: FC<Props> = ({
             <Grid.Row>
               <Grid.Column widthXS={Columns.Twelve}>
                 <AnnotationMessageInput
-                  {...state.message}
-                  onChange={handleMessageChange}
+                  value={state.message}
+                  onChange={handleInputChange}
                 />
               </Grid.Column>
             </Grid.Row>

@@ -22,7 +22,12 @@ const AnnotationTimeStartInput: FC<Props> = ({
   const label = type === 'range' ? 'Start' : 'Timestamp'
   return (
     <Form.Element label={label} required={true} errorMessage={error}>
-      <Input value={value} onChange={onChange} status={status} />
+      <Input
+        name="timeStart"
+        value={value}
+        onChange={onChange}
+        status={status}
+      />
     </Form.Element>
   )
 }

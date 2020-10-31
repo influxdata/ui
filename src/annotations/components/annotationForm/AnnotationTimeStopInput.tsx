@@ -19,7 +19,12 @@ const AnnotationTimeStopInput: FC<Props> = ({
 }) => {
   return (
     <Form.Element label="Stop Time" required={true} errorMessage={error}>
-      <Input value={value} onChange={onChange} status={status} />
+      <Input
+        name="timeStop"
+        value={value}
+        onChange={onChange}
+        status={status}
+      />
     </Form.Element>
   )
 }

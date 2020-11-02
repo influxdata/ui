@@ -5,7 +5,12 @@ import {
 } from '@influxdata/giraffe'
 import {FromFluxResult} from '@influxdata/giraffe'
 import {FunctionComponent, ComponentClass, ReactNode} from 'react'
-import {RemoteDataState, ViewProperties} from 'src/types'
+import {
+  AutoRefresh,
+  RemoteDataState,
+  TimeRange,
+  ViewProperties,
+} from 'src/types'
 
 export interface Tag extends GenTag {}
 export interface Schema extends GenSchema {}
@@ -79,6 +84,8 @@ export interface ResourceManipulator<T> {
 
 export interface FlowState {
   name: string
+  range: TimeRange
+  refresh: AutoRefresh
   data: Resource<PipeData>
   meta: Resource<PipeMeta>
   readOnly?: boolean
@@ -86,6 +93,8 @@ export interface FlowState {
 
 export interface Flow {
   name: string
+  range: TimeRange
+  refresh: AutoRefresh
   data: ResourceManipulator<PipeData>
   meta: ResourceManipulator<PipeMeta>
   results: FluxResult

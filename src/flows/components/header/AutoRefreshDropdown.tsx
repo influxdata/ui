@@ -1,14 +1,13 @@
-import React, {FC, useMemo, useCallback} from 'react'
+import React, {FC, useMemo, useCallback, useContext} from 'react'
 import {default as StatelessAutoRefreshDropdown} from 'src/shared/components/dropdown_auto_refresh/AutoRefreshDropdown'
-import {TimeContextProps} from 'src/flows/components/header'
-import {TimeBlock} from 'src/flows/context/time'
+import {FlowContext} from 'src/flows/context/flow.current'
 import {AutoRefreshStatus} from 'src/types'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
-const AutoRefreshDropdown: FC<TimeContextProps> = ({context, update}) => {
-  const {refresh} = context
+const AutoRefreshDropdown: FC = () => {
+  const {update, flow} = useContext(FlowContext)
 
   const updateRefresh = useCallback(
     (interval: number) => {
@@ -24,7 +23,7 @@ const AutoRefreshDropdown: FC<TimeContextProps> = ({context, update}) => {
           status,
           interval,
         },
-      } as TimeBlock)
+      })
     },
     [update]
   )
@@ -32,12 +31,12 @@ const AutoRefreshDropdown: FC<TimeContextProps> = ({context, update}) => {
   return useMemo(() => {
     return (
       <StatelessAutoRefreshDropdown
-        selected={refresh}
+        selected={flow.refresh}
         onChoose={updateRefresh}
         showManualRefresh={false}
       />
     )
-  }, [refresh, updateRefresh])
+  }, [flow, updateRefresh])
 }
 
 export default AutoRefreshDropdown

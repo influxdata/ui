@@ -1,7 +1,7 @@
 import fromFlux from 'src/shared/utils/fromFlux'
 import {newTable, FluxDataType, FromFluxResult} from '@influxdata/giraffe'
 
-/*\
+/* \
 
   This module translates interfaces between giraffe and influxdb
   as we migrate the flux parsing over from the vis library, closer

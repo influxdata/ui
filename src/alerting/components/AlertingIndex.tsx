@@ -2,7 +2,7 @@
 import React, {FunctionComponent, useState} from 'react'
 import {Switch, Route} from 'react-router-dom'
 
-//Components
+// Components
 import {Page, SelectGroup, ButtonShape} from '@influxdata/clockface'
 import ChecksColumn from 'src/checks/components/ChecksColumn'
 import RulesColumn from 'src/notifications/rules/components/RulesColumn'

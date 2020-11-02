@@ -187,11 +187,11 @@ describe('Dashboards', () => {
         cy.contains(
           "Looks like there aren't any Variables, why not create one?"
         )
-        //return to dashboards page
+        // return to dashboards page
         cy.contains('Boards').click()
       })
 
-      //assert dashboard order remains the same
+      // assert dashboard order remains the same
       cy.get('span[data-testid*="dashboard-card--name"]').each((val, index) => {
         cy.wrap(val).contains(expectedDashboardOrder[index])
       })

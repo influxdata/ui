@@ -29,7 +29,8 @@ module.exports = {
     },
   },
   rules: {
-    'curly': ['error', 'all'],
+    'spaced-comment': ['error', 'always'],
+    curly: ['error', 'all'],
     'no-console': ['error', {allow: ['warn', 'error']}],
     'no-empty': 'off',
     'getter-return': 'off',

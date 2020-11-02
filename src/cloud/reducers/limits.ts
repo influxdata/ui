@@ -1,6 +1,6 @@
 import {produce} from 'immer'
 
-//Types
+// Types
 import {Actions, ActionTypes} from 'src/cloud/actions/limits'
 import {RemoteDataState} from 'src/types'
 import {LimitStatus} from 'src/cloud/actions/limits'

@@ -417,7 +417,7 @@ describe.skip('Buckets', () => {
 
       cy.getByTestID('daterange--apply-btn').click()
 
-      //TODO replace this with proper health checks
+      // TODO replace this with proper health checks
       cy.wait(1000)
       cy.getByTestID(`selector-list ${Cypress.env('bucket')}`).click()
       // mymeasurement comes from fixtures/data.txt

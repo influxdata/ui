@@ -212,7 +212,7 @@ describe('tokens', () => {
     cy.getByTestID('dropdown-item generate-token--all-access').click()
     cy.getByTestID('overlay--container').should('be.visible')
 
-    //create token
+    // create token
     cy.getByTestID('all-access-token-input').type(all_access_token_name)
     cy.getByTestID('button--save').click()
 

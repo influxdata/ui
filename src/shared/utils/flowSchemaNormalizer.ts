@@ -135,7 +135,9 @@ export const normalizeSchema = (
     data?.field
   )
 
-  const dedupedMeasurements = dedupeArray(measurements)
+  const dedupedMeasurements = dedupeArray(measurements).filter(a =>
+    a.toLowerCase().includes(lowerCasedSearchTerm)
+  )
 
   dedupedMeasurements.sort((a, b) => a.localeCompare(b))
 
@@ -149,13 +151,21 @@ export const normalizeSchema = (
     }
   )
 
-  filteredFields.sort((a, b) => a.localeCompare(b))
-  filteredTags.sort((a, b) => {
-    const keyA = Object.keys(a)[0].toLowerCase()
-    const keyB = Object.keys(b)[0].toLowerCase()
+  filteredFields
+    .filter(a => a.toLowerCase().includes(lowerCasedSearchTerm))
+    .sort((a, b) => a.localeCompare(b))
+  filteredTags
+    .filter(a =>
+      Object.keys(a)[0]
+        .toLowerCase()
+        .includes(lowerCasedSearchTerm)
+    )
+    .sort((a, b) => {
+      const keyA = Object.keys(a)[0].toLowerCase()
+      const keyB = Object.keys(b)[0].toLowerCase()
 
-    return keyA.localeCompare(keyB)
-  })
+      return keyA.localeCompare(keyB)
+    })
 
   return {
     measurements: dedupedMeasurements,

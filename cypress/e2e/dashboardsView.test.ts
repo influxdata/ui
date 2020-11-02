@@ -732,7 +732,7 @@ describe('Dashboard', () => {
       })
   })
 
-  //based on issue #18339
+  // based on issue #18339
   it('should save a time format change and show in the dashboard cell card', () => {
     const numLines = 360
     cy.writeData(lines(numLines))
@@ -746,7 +746,7 @@ describe('Dashboard', () => {
     const timeFormatOriginal = 'YYYY-MM-DD HH:mm:ss ZZ'
     const timeFormatNew = 'hh:mm a'
 
-    //creating new dashboard cell
+    cy.log('creating new dashboard cell')
     cy.getByTestID('add-cell--button').click()
     cy.getByTestID(`selector-list m`).click()
     cy.getByTestID('selector-list v').click()
@@ -755,12 +755,12 @@ describe('Dashboard', () => {
     cy.getByTestID('view-type--dropdown').click()
     cy.getByTestID('view-type--line-plus-single-stat').click()
 
-    //asserting default graph time format, saving
+    cy.log('asserting default graph time format, saving')
     cy.getByTestID('cog-cell--button').click()
     cy.getByTestID('dropdown--button').should('contain', timeFormatOriginal)
     cy.getByTestID(`save-cell--button`).click()
 
-    //changing graph time format
+    cy.log('changing graph time format')
     cy.getByTestID(`cell-context--toggle`).click()
     cy.getByTestID(`cell-context--configure`).click()
     cy.getByTestID('dropdown--button').should('contain', timeFormatOriginal)
@@ -773,7 +773,7 @@ describe('Dashboard', () => {
     cy.getByTestID('dropdown--button').should('contain', timeFormatNew)
     cy.getByTestID(`save-cell--button`).click()
 
-    //asserting the time format hasn't changed after saving the cell
+    cy.log('asserting the time format has not changed after saving the cell')
     cy.getByTestID(`cell-context--toggle`).click()
     cy.getByTestID(`cell-context--configure`).click()
     cy.getByTestID('dropdown--button').should('contain', timeFormatNew)

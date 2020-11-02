@@ -21,7 +21,7 @@ const FlowHeader: FC = () => {
   const {update, flow} = useContext(FlowContext)
 
   const handleRename = (name: string) => {
-    update({...flow, name})
+    update({name})
   }
 
   return (

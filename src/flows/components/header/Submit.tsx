@@ -45,7 +45,7 @@ export const Submit: FC = () => {
   const tr = !!time && time.range
 
   const hasQueries = useMemo(() => {
-    return flow.data.all
+    return !!flow.data.all
       .map(p => p.type)
       .filter(p => p === 'query' || p === 'queryBuilder').length
   }, [flow.data])

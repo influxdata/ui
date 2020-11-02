@@ -3,13 +3,19 @@ import {IconFont} from '@influxdata/clockface'
 
 export type NotificationAction = Action
 
+export type NotificationDismiss = () => void
+
+export type NotificationButtonElement = (
+  onDismiss?: NotificationDismiss
+) => JSX.Element
+
 export interface Notification {
   id?: string
   style: NotificationStyle
   icon: IconFont
   duration?: number
   message: string
-  buttonElement?: JSX.Element
+  buttonElement?: NotificationButtonElement
   // We probably do not need type here
   // It is not being read anywhere, seems like metadata?
   type?: string

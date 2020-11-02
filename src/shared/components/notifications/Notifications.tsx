@@ -29,13 +29,17 @@ class Notifications extends PureComponent<Props> {
   }
 
   public render() {
-    const {notifications} = this.props
+    const {notifications, dismissNotification} = this.props
 
     return (
       <>
         {notifications.map(
           ({duration, icon, id, message, style, buttonElement}) => {
             const gradient = matchGradientToColor(style)
+
+            const handleDismiss = (): void => {
+              dismissNotification(id)
+            }
 
             return (
               <Notification
@@ -45,12 +49,12 @@ class Notifications extends PureComponent<Props> {
                 duration={duration}
                 size={ComponentSize.ExtraSmall}
                 gradient={gradient}
-                onTimeout={this.props.dismissNotification}
-                onDismiss={this.props.dismissNotification}
+                onTimeout={dismissNotification}
+                onDismiss={dismissNotification}
                 testID={`notification-${style}`}
               >
                 <span className="notification--message">{message}</span>
-                {buttonElement}
+                {buttonElement(handleDismiss)}
               </Notification>
             )
           }

@@ -56,6 +56,7 @@ import {
   DashboardQuery,
   AppState,
   CancelBox,
+  NotificationButtonElement,
 } from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
 
@@ -275,7 +276,8 @@ class TimeSeries extends Component<Props, State> {
         if (result.type === 'UNKNOWN_ERROR') {
           if (isDemoDataAvailabilityError(result.code, result.message)) {
             const message = demoDataErrorMessage()
-            const buttonElement = getDemoDataErrorButton()
+            const buttonElement: NotificationButtonElement = onDismiss =>
+              getDemoDataErrorButton(onDismiss)
 
             notify(demoDataAvailability(message, buttonElement))
           }

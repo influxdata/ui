@@ -33,6 +33,7 @@ import {getDemoDataSuccessButton} from 'src/shared/components/notifications/Noti
 
 // types
 import {DemoBucket, GetState, RemoteDataState} from 'src/types'
+import {NotificationButtonElement} from 'src/types/notifications'
 
 export const getDemoDataBuckets = () => async (
   dispatch,
@@ -97,9 +98,11 @@ export const getDemoDataBucketMembership = ({
 
     const createdDashboard = await createDashboardFromTemplate(template, orgID)
 
-    const buttonElement = getDemoDataSuccessButton(
-      `/orgs/${orgID}/dashboards/${createdDashboard.id}`
-    )
+    const buttonElement: NotificationButtonElement = onDismiss =>
+      getDemoDataSuccessButton(
+        `/orgs/${orgID}/dashboards/${createdDashboard.id}`,
+        onDismiss
+      )
 
     dispatch(notify(demoDataSucceeded(bucketName, buttonElement)))
 

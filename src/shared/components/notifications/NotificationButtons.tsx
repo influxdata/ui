@@ -7,21 +7,38 @@ import {useDispatch, useSelector} from 'react-redux'
 // Utils
 import {setFunctions} from 'src/timeMachine/actions/queryBuilder'
 
+// Types
+import {NotificationDismiss} from 'src/types'
+
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 
-export const getDemoDataSuccessButton = (url: string): JSX.Element => {
+export const getDemoDataSuccessButton = (
+  url: string,
+  onDismiss: NotificationDismiss
+): JSX.Element => {
   return (
-    <Link to={url} className="cf-button cf-button-xs cf-button-default">
+    <Link
+      to={url}
+      className="cf-button cf-button-xs cf-button-default"
+      onClick={onDismiss}
+    >
       <span className="cf-button--label">Go to dashboard</span>
     </Link>
   )
 }
 
-export const AggregateTypeErrorButton: FC = () => {
+interface AggregateTypeErrorButtonProps {
+  onDismiss: NotificationDismiss
+}
+
+export const AggregateTypeErrorButton: FC<AggregateTypeErrorButtonProps> = ({
+  onDismiss,
+}) => {
   const dispatch = useDispatch()
   const onClick = () => {
     dispatch(setFunctions(['last']))
+    onDismiss()
   }
 
   return (
@@ -33,16 +50,25 @@ export const AggregateTypeErrorButton: FC = () => {
   )
 }
 
-export const getAggregateTypeErrorButton = (): JSX.Element => {
-  return <AggregateTypeErrorButton />
+export const getAggregateTypeErrorButton = (
+  onDismiss: NotificationDismiss
+): JSX.Element => {
+  return <AggregateTypeErrorButton onDismiss={onDismiss} />
 }
 
-export const DemoDataErrorButton: FC = () => {
+interface DemoDataErrorButtonProps {
+  onDismiss: NotificationDismiss
+}
+
+export const DemoDataErrorButton: FC<DemoDataErrorButtonProps> = ({
+  onDismiss,
+}) => {
   const org = useSelector(getOrg)
   const {id} = org
 
   return (
     <Link
+      onClick={onDismiss}
       to={`/orgs/${id}/load-data/buckets`}
       className="cf-button cf-button-xs cf-button-default"
     >
@@ -51,6 +77,8 @@ export const DemoDataErrorButton: FC = () => {
   )
 }
 
-export const getDemoDataErrorButton = (): JSX.Element => {
-  return <DemoDataErrorButton />
+export const getDemoDataErrorButton = (
+  onDismiss: NotificationDismiss
+): JSX.Element => {
+  return <DemoDataErrorButton onDismiss={onDismiss} />
 }

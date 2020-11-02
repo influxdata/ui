@@ -2,7 +2,11 @@
 import {binaryPrefixFormatter} from '@influxdata/giraffe'
 
 // Types
-import {Notification, NotificationStyle} from 'src/types'
+import {
+  Notification,
+  NotificationStyle,
+  NotificationButtonElement,
+} from 'src/types'
 
 // Constants
 import {
@@ -429,7 +433,7 @@ export const demoDataDeleteBucketFailed = (
 
 export const demoDataSucceeded = (
   bucketName: string,
-  buttonElement: JSX.Element
+  buttonElement: NotificationButtonElement
 ): Notification => ({
   ...defaultSuccessNotification,
   message: `Successfully added demodata bucket ${bucketName}, and demodata dashboard.`,
@@ -439,7 +443,7 @@ export const demoDataSucceeded = (
 
 export const demoDataAvailability = (
   message: string,
-  buttonElement?: JSX.Element
+  buttonElement?: NotificationButtonElement
 ): Notification => ({
   ...defaultErrorNotification,
   message,
@@ -450,7 +454,7 @@ export const demoDataAvailability = (
 
 export const updateAggregateType = (
   message: string,
-  buttonElement?: JSX.Element
+  buttonElement?: NotificationButtonElement
 ): Notification => ({
   ...defaultErrorNotification,
   message,

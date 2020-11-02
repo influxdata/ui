@@ -58,6 +58,7 @@ import {
   QueryEditMode,
   BuilderTagsType,
   Variable,
+  NotificationButtonElement,
 } from 'src/types'
 
 // Selectors
@@ -353,7 +354,8 @@ export const executeQueries = (abortController?: AbortController) => async (
       if (result.type === 'UNKNOWN_ERROR') {
         if (isDemoDataAvailabilityError(result.code, result.message)) {
           const message = demoDataErrorMessage()
-          const buttonElement = getDemoDataErrorButton()
+          const buttonElement: NotificationButtonElement = onDismiss =>
+            getDemoDataErrorButton(onDismiss)
           dispatch(notify(demoDataAvailability(message, buttonElement)))
         }
         if (
@@ -361,7 +363,8 @@ export const executeQueries = (abortController?: AbortController) => async (
           state.currentExplorer.isAutoFunction
         ) {
           const message = `It looks like you're trying to apply a number-based aggregate function to a string, which cannot be processed. You can fix this by selecting the Aggregate Function "Last"`
-          const buttonElement = getAggregateTypeErrorButton()
+          const buttonElement: NotificationButtonElement = onDismiss =>
+            getAggregateTypeErrorButton(onDismiss)
           dispatch(notify(updateAggregateType(message, buttonElement)))
         }
 

@@ -12,8 +12,18 @@ import {Annotation} from 'src/annotations/reducers/annotationFormReducer'
 const AddAnnotationOverlay: FC = () => {
   const location: RouteProps['location'] = useLocation()
   const params = location.state
-  const {timeStart, timeStop} = params[0]
-  const type = timeStart === timeStop ? 'point' : 'range'
+  let timeStart = ''
+  let timeStop = ''
+  let type
+
+  if (params && params[0]) {
+    timeStart = params[0].timeStart
+    timeStop = params[0].timeStop
+  }
+
+  if (timeStart && timeStart) {
+    type = timeStart === timeStop ? 'point' : 'range'
+  }
 
   const handleSubmit = (_annotation: Annotation): void => {
     // Use the values of annotation to construct a line protocol string and

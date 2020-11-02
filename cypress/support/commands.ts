@@ -16,10 +16,20 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
     })
   \*/
 
+  let userName = Cypress.env('username')
+
+  if (false) {
+    // if context is UIe2e haven't decided how to set this up yet
+    cy.task('incrementLoginCounter').then(count => {
+      userName = count + userName
+      console.log(count + userName)
+    })
+  }
+
   return cy.setupUser().then(body => {
     return cy
       .visit('/api/v2/signin')
-      .then(() => cy.get('#login').type(Cypress.env('username')))
+      .then(() => cy.get('#login').type(userName))
       .then(() => cy.get('#password').type(Cypress.env('password')))
       .then(() => cy.get('#submit-login').click())
       .then(() => cy.get('.theme-btn--success').click())

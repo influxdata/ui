@@ -6,4 +6,12 @@ module.exports = (on, config) => {
 
     return launchOptions
   })
+
+  loginCount = 0
+  on('task', {
+    incrementLoginCounter() {
+      loginCount += 1
+      return loginCount.toString()
+    },
+  })
 }

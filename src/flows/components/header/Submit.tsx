@@ -1,5 +1,12 @@
 // Libraries
-import React, {FC, MouseEvent, useContext, useState, useEffect} from 'react'
+import React, {
+  FC,
+  MouseEvent,
+  useMemo,
+  useContext,
+  useState,
+  useEffect,
+} from 'react'
 import {
   Dropdown,
   IconFont,
@@ -37,12 +44,14 @@ export const Submit: FC = () => {
   const time = timeContext[id]
   const tr = !!time && time.range
 
-  const hasQueries = flow.data.all
-    .map(p => p.type)
-    .filter(p => p === 'query' || p === 'data' || p === 'queryBuilder').length
+  const hasQueries = useMemo(() => {
+    return flow.data.all
+      .map(p => p.type)
+      .filter(p => p === 'query' || p === 'queryBuilder').length
+  }, [flow.data])
 
   useEffect(() => {
-    if (!hasQueries) {
+    if (hasQueries) {
       submit()
     }
   }, [tr, hasQueries]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -56,14 +65,18 @@ export const Submit: FC = () => {
   }
 
   const submit = () => {
+    const map = generateMap(isRunning)
+
+    if (!map.length) {
+      return
+    }
+
     event('Flow Submit Button Clicked')
     setLoading(RemoteDataState.Loading)
 
     flow.data.allIDs.forEach(pipeID => {
       flow.meta.update(pipeID, {loading: RemoteDataState.Loading})
     })
-
-    const map = generateMap(isRunning)
 
     Promise.all(
       map.map(stage => {

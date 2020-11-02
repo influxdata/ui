@@ -154,13 +154,13 @@ http.post(
         .click()
         .type(
           'option task = \n' +
-          '{\n' +
-          'name: "Option Test", \n' +
-          'every: 24h, \n' +
-          'offset: 20m\n' +
-          '}\n' +
-          'from(bucket: "defbuck")\n' +
-          '\t|> range(start: -2m)'
+            '{\n' +
+            'name: "Option Test", \n' +
+            'every: 24h, \n' +
+            'offset: 20m\n' +
+            '}\n' +
+            'from(bucket: "defbuck")\n' +
+            '\t|> range(start: -2m)'
         )
     })
 
@@ -355,12 +355,12 @@ http.post(
           .should(
             'have.value',
             'option task = {\n' +
-            '    name: "🦄ask",\n' +
-            '    every: 24h,\n' +
-            '    offset: 20m\n' +
-            '  }\n' +
-            '  from(bucket: "defbuck")\n' +
-            '        |> range(start: -2m)'
+              '    name: "🦄ask",\n' +
+              '    every: 24h,\n' +
+              '    offset: 20m\n' +
+              '  }\n' +
+              '  from(bucket: "defbuck")\n' +
+              '        |> range(start: -2m)'
           )
           .click()
           .focused()
@@ -369,13 +369,13 @@ http.post(
             cy.get('textarea.inputarea').should(
               'have.value',
               'option task = {\n' +
-              '    name: "🦄ask",\n' +
-              '    every: 24h,\n' +
-              '    offset: 20m\n' +
-              '  }\n' +
-              '  from(bucket: "defbuck")\n' +
-              '        |> range(start: -2m) \n' +
-              '         //this is a test comment'
+                '    name: "🦄ask",\n' +
+                '    every: 24h,\n' +
+                '    offset: 20m\n' +
+                '  }\n' +
+                '  from(bucket: "defbuck")\n' +
+                '        |> range(start: -2m) \n' +
+                '         //this is a test comment'
             )
           })
       })
@@ -398,10 +398,10 @@ http.post(
         cy.get('textarea.inputarea').should(
           'have.value',
           'option task = {name: "🦄ask", every: 24h, offset: 20m}\n' +
-          '\n' +
-          'from(bucket: "defbuck")\n' +
-          '\t|> range(start: -2m)\n' +
-          '    //this is a test comment'
+            '\n' +
+            'from(bucket: "defbuck")\n' +
+            '\t|> range(start: -2m)\n' +
+            '    //this is a test comment'
         )
       })
     })

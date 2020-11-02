@@ -50,7 +50,7 @@ export const Submit: FC = () => {
     if (hasQueries) {
       submit()
     }
-  }, [flow?.range, hasQueries]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [flow.range, hasQueries]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const forceUpdate = (id, data) => {
     try {

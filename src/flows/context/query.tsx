@@ -8,7 +8,6 @@ import {getTimeRangeVars} from 'src/variables/utils/getTimeRangeVars'
 import {getVariables, asAssignment} from 'src/variables/selectors'
 import {getOrg} from 'src/organizations/selectors'
 import {FlowContext} from 'src/flows/context/flow.current'
-import {TimeContext} from 'src/flows/context/time'
 import {fromFlux as parse} from '@influxdata/giraffe'
 import {event} from 'src/cloud/utils/reporting'
 import {FluxResult} from 'src/types/flows'
@@ -41,19 +40,17 @@ const PREVIOUS_REGEXP = /__PREVIOUS_RESULT__/g
 
 type Props = StateProps
 export const QueryProvider: FC<Props> = ({children, variables, org}) => {
-  const {id, flow} = useContext(FlowContext)
-  const {timeContext} = useContext(TimeContext)
-  const time = timeContext[id]
+  const {flow} = useContext(FlowContext)
 
   const vars = useMemo(() => {
-    if (time && time.range) {
+    if (flow && flow?.range) {
       return variables
         .map(v => asAssignment(v))
-        .concat(getTimeRangeVars(time.range))
+        .concat(getTimeRangeVars(flow.range))
     }
 
     variables.map(v => asAssignment(v))
-  }, [variables, time])
+  }, [variables, flow])
 
   const generateMap = (withSideEffects?: boolean): Stage[] => {
     return flow.data.allIDs
@@ -137,7 +134,7 @@ export const QueryProvider: FC<Props> = ({children, variables, org}) => {
       })
   }
 
-  if (!time) {
+  if (!flow?.range) {
     return null
   }
 

@@ -12,6 +12,8 @@ import {
 import {RemoteDataState} from 'src/types'
 import {default as _asResource} from 'src/flows/context/resource.hook'
 import {PIPE_DEFINITIONS} from 'src/flows'
+import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
+import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 
 const useFlowListState = createPersistedState('flows')
 const useFlowCurrentState = createPersistedState('current-flow')
@@ -26,6 +28,8 @@ export interface FlowListContextType extends FlowList {
 
 export const EMPTY_NOTEBOOK: FlowState = {
   name: 'Name this Flow',
+  range: DEFAULT_TIME_RANGE,
+  refresh: AUTOREFRESH_DEFAULT,
   data: {
     byID: {},
     allIDs: [],
@@ -58,6 +62,8 @@ export function serialize(flow) {
   const apiFlow = {
     name: flow.name,
     readOnly: flow.readOnly,
+    range: flow.range,
+    refresh: flow.refresh,
     pipes: flow.data.allIDs.map(id => {
       const meta = flow.meta.byID[id]
 
@@ -76,6 +82,8 @@ export function hydrate(data) {
   const flow = {
     ...JSON.parse(JSON.stringify(EMPTY_NOTEBOOK)),
     name: data.name,
+    range: data.range,
+    refresh: data.refresh,
     readOnly: data.readOnly,
   }
 
@@ -113,6 +121,8 @@ export const FlowListProvider: FC = ({children}) => {
         ...hydrate({
           name: 'Name this Flow',
           readOnly: false,
+          range: DEFAULT_TIME_RANGE,
+          refresh: AUTOREFRESH_DEFAULT,
           pipes: [
             {
               title: 'Select a Metric',
@@ -136,6 +146,8 @@ export const FlowListProvider: FC = ({children}) => {
     } else {
       _flow = {
         name: flow.name,
+        range: flow.range,
+        refresh: flow.refresh,
         data: flow.data,
         meta: flow.meta,
         readOnly: flow.readOnly,
@@ -166,6 +178,8 @@ export const FlowListProvider: FC = ({children}) => {
 
     const data = {
       name: flow.name,
+      range: flow.range,
+      refresh: flow.refresh,
       data: flow.data.serialize(),
       meta: flow.meta.serialize(),
       readOnly: flow.readOnly,
@@ -187,7 +201,7 @@ export const FlowListProvider: FC = ({children}) => {
 
       setCurrentID(id)
     },
-    [currentID]
+    [currentID, setCurrentID, flows]
   )
 
   const remove = (id: string) => {
@@ -219,6 +233,8 @@ export const FlowListProvider: FC = ({children}) => {
 
     acc[curr] = {
       name: flows[curr].name,
+      range: flows[curr].range,
+      refresh: flows[curr].refresh,
       data: _asResource(flows[curr].data, data => {
         stateUpdater('data', data)
       }),

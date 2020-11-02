@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
-import {useLocation} from 'react-router-dom'
-import qs from 'qs'
+import {RouteProps, useLocation} from 'react-router-dom'
 
 // Components
 import AnnotationForm from 'src/annotations/components/annotationForm/AnnotationForm'
@@ -11,23 +10,10 @@ import AnnotationErrorOverlay from 'src/annotations/components/AnnotationErrorOv
 import {Annotation} from 'src/annotations/reducers/annotationFormReducer'
 
 const AddAnnotationOverlay: FC = () => {
-  // NOTE: using query search strings to pass some information from
-  // the visualization components up to this overlay
-  // without having to stick anything in state
-  const location = useLocation()
-
-  let timeStart
-  let timeStop
-  let type
-
-  if (location && location.search) {
-    // Slicing off the ? from the beginning of search
-    const parsedSearch = qs.parse(location.search.slice(1))
-    timeStart = parsedSearch['timeStart']
-    timeStop = parsedSearch['timeStop']
-    type =
-      !!timeStart && !!timeStop && timeStart === timeStop ? 'point' : 'range'
-  }
+  const location: RouteProps['location'] = useLocation()
+  const params = location.state
+  const {timeStart, timeStop} = params[0]
+  const type = timeStart === timeStop ? 'point' : 'range'
 
   const handleSubmit = (_annotation: Annotation): void => {
     // Use the values of annotation to construct a line protocol string and

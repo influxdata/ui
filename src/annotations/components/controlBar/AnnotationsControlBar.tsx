@@ -54,14 +54,14 @@ const AnnotationsControlBar: FC = () => {
     // a dashboard or the data explorer
     // This is brittle af
 
-    // Query params are used here to pass some key information along
-    // to the overlay without having to stick in it state for a brief moment
-
     const addAnnotationRoute = dashboardID
-      ? `/${ORGS}/${orgID}/${DASHBOARDS}/${dashboardID}/add-annotation?timeStart=${timeStart}&timeStop=${timeStop}`
-      : `/${ORGS}/${orgID}/${DATA_EXPLORER}/add-annotation?timeStart=${timeStart}&timeStop=${timeStop}`
+      ? `/${ORGS}/${orgID}/${DASHBOARDS}/${dashboardID}/add-annotation`
+      : `/${ORGS}/${orgID}/${DATA_EXPLORER}/add-annotation`
 
-    history.push(addAnnotationRoute)
+    // Using the second argument of history.push to pass some state along
+    // to the overlay without having to expose it in the URL
+
+    history.push(addAnnotationRoute, [{timeStart, timeStop}])
   }
 
   return (

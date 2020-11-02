@@ -60,17 +60,6 @@ const filterTags = (
       }).length !== 0
   )
 
-const dedupeArray = (array: string[]): string[] => {
-  const cache = {}
-  return array.filter(m => {
-    if (m in cache) {
-      return false
-    }
-    cache[m] = true
-    return true
-  })
-}
-
 export const normalizeSchema = (
   schema: Schema,
   data: PipeData,
@@ -130,12 +119,12 @@ export const normalizeSchema = (
 
   const dedupedTags = dedupeTags(tagResults)
   const filteredFields = filterFields(
-    dedupeArray(fieldResults),
+    [...new Set(fieldResults)],
     lowerCasedSearchTerm,
     data?.field
   )
 
-  const dedupedMeasurements = dedupeArray(measurements).filter(a =>
+  const dedupedMeasurements = [...new Set(measurements)].filter(a =>
     a.toLowerCase().includes(lowerCasedSearchTerm)
   )
 

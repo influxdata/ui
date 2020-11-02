@@ -2,7 +2,6 @@ import {
   RESET_SCHEMA,
   SET_SCHEMA,
   Action,
-  REMOVE_SCHEMA,
 } from 'src/shared/actions/schemaCreator'
 // Types
 import {RemoteDataState, Schema} from 'src/types'
@@ -38,6 +37,7 @@ export const schemaReducer = (
       return {
         ...state,
         schema: {
+          ...state.schema,
           [bucketName]: {
             exp: new Date().getTime() + TEN_MINUTES,
             schema,
@@ -47,14 +47,6 @@ export const schemaReducer = (
       }
     }
 
-    case REMOVE_SCHEMA: {
-      const {bucketName} = action
-      const {schema} = state
-      if (bucketName in schema) {
-        delete schema[bucketName]
-      }
-      return state
-    }
     case RESET_SCHEMA: {
       const {schema} = state
       const now = Date.now()

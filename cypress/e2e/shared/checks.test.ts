@@ -358,8 +358,8 @@ describe('Checks', () => {
     })
 
     it('after check creation confirm history page has graph', () => {
-      cy.getByTestID('context-history-menu').click()
-      cy.getByTestID('context-history-task').click()
+      cy.getByTestID('context-check-options').click()
+      cy.getByTestID('context-check-history').click()
       cy.getByTestID('giraffe-axes').should('be.visible')
 
       // Clicking the check status input results in dropdown and clicking outside removes dropdown

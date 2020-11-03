@@ -86,6 +86,14 @@ describe('Checks', () => {
     cy.getByTestID(`selector-list ${field}`).click()
 
     cy.log('name the check; save')
+    cy.getByTestID('overlay').within(() => {
+      cy.getByTestID('page-title')
+        .contains('Name this Check')
+        .click()
+      cy.getByTestID('renamable-page-title--input')
+        .clear()
+        .type('Beta{enter}')
+    })
     cy.getByTestID('save-cell--button').click()
 
     cy.log('assert the number of check cards')

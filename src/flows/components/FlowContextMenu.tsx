@@ -2,8 +2,13 @@
 import React, {FC, useContext} from 'react'
 
 // Components
-import {Context} from 'src/clockface'
-import {ButtonShape, ComponentColor, IconFont} from '@influxdata/clockface'
+import {
+  ButtonShape,
+  ComponentColor,
+  IconFont,
+  ConfirmationButton,
+  ComponentSize,
+} from '@influxdata/clockface'
 import {FlowListContext} from 'src/flows/context/flow.list'
 
 interface Props {
@@ -19,19 +24,16 @@ const FlowContextMenu: FC<Props> = ({id, name}) => {
   }
 
   return (
-    <Context.Menu
+    <ConfirmationButton
       icon={IconFont.Trash}
+      onConfirm={handleDelete}
+      shape={ButtonShape.Square}
+      size={ComponentSize.ExtraSmall}
       color={ComponentColor.Danger}
-      shape={ButtonShape.Default}
-      text="Delete Flow"
-      testID={`context-delete-menu ${name}`}
-    >
-      <Context.Item
-        label="Confirm"
-        action={handleDelete}
-        testID={`context-delete-flow ${name}`}
-      />
-    </Context.Menu>
+      confirmationButtonText="Confirm"
+      confirmationLabel="Really delete Flow?"
+      testID={`${name} delete-flow`}
+    />
   )
 }
 

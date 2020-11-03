@@ -108,6 +108,7 @@ const EndpointCard: FC<Props> = ({
   return (
     <ResourceCard
       key={id}
+      contextMenuInteraction="alwaysVisible"
       contextMenu={contextMenu}
       disabled={activeStatus === 'inactive'}
       direction={FlexDirection.Row}

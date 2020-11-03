@@ -122,6 +122,7 @@ const CheckCard: FC<Props> = ({
       direction={FlexDirection.Row}
       alignItems={AlignItems.Center}
       margin={ComponentSize.Large}
+      contextMenuInteraction="alwaysVisible"
       contextMenu={
         <CheckCardContext
           onView={onView}

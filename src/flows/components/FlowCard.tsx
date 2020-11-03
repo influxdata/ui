@@ -24,6 +24,7 @@ const FlowCard: FC<Props> = ({id, name}) => {
   return (
     <ResourceCard
       key={`flow-card--${id}`}
+      contextMenuInteraction="alwaysVisible"
       contextMenu={contextMenu}
       testID={`flow-card--${name}`}
     >

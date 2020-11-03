@@ -66,28 +66,6 @@ jobs:
           key: UI_PROD_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - docker-cache
-  build-and-push-idpe-e2e-test-image:
-    machine:
-      image: ubuntu-2004:202008-01
-      docker_layer_caching: true
-    steps:
-      - checkout:
-          path: ./ui
-      - run:
-          name: Docker login to quay
-          command: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - run:
-          name: Clone monitor-ci repo
-          command: git clone git@github.com:influxdata/monitor-ci.git
-      - run:
-          name: Build the ui-e2e cypress tests docker image
-          command: |
-            docker build \
-              -t quay.io/influxdb/ui-e2e:latest \
-              -f ./monitor-ci/docker/Dockerfile.cypress \
-              ./ui
-            docker push quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
-            docker push quay.io/influxdb/ui-e2e:latest
   deploy:
     docker:
       - image: circleci/golang:1.15-node
@@ -339,7 +317,6 @@ workflows:
             branches:
               only:
                 - master
-      - build-and-push-idpe-e2e-test-image
       - unit
       - lint
       - cloud-e2e:

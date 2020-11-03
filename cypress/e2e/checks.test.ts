@@ -55,11 +55,67 @@ describe('Checks', () => {
     cy.getByTestID('save-cell--button').should('be.enabled')
   })
 
+  it('can create and filter checks', () => {
+    cy.log('create first check')
+    cy.getByTestID('create-check').click()
+    cy.getByTestID('create-deadman-check').click()
+
+    cy.log('select measurement and field')
+    cy.getByTestID(`selector-list defbuck`).click()
+    cy.getByTestID(`selector-list ${measurement}`).click()
+    cy.getByTestID(`selector-list ${field}`).click()
+
+    cy.log('name the check; save')
+    cy.getByTestID('overlay').within(() => {
+      cy.getByTestID('page-title')
+        .contains('Name this Check')
+        .click()
+      cy.getByTestID('renamable-page-title--input')
+        .clear()
+        .type('Alpha{enter}')
+    })
+    cy.getByTestID('save-cell--button').click()
+
+    cy.log('create second check')
+    cy.getByTestID('create-check').click()
+    cy.getByTestID('create-deadman-check').click()
+
+    cy.log('select measurement and field')
+    cy.getByTestID(`selector-list defbuck`).click()
+    cy.getByTestID(`selector-list ${measurement}`).click()
+    cy.getByTestID(`selector-list ${field}`).click()
+
+    cy.log('name the check; save')
+    cy.getByTestID('overlay').within(() => {
+      cy.getByTestID('page-title')
+        .contains('Name this Check')
+        .click()
+      cy.getByTestID('renamable-page-title--input')
+        .clear()
+        .type('Beta{enter}')
+    })
+    cy.getByTestID('save-cell--button').click()
+
+    cy.log('assert the number of check cards')
+    cy.getByTestID('check-card').should('have.length', 2)
+
+    cy.log('filter checks')
+    cy.getByTestID('filter--input checks').type('Al')
+    cy.getByTestID('check-card--name')
+      .contains('Alpha')
+      .should('be.visible')
+    cy.getByTestID('check-card').should('have.length', 1)
+
+    cy.log('clear filter and assert the number of check cards again')
+    cy.getByTestID('filter--input checks').clear()
+    cy.getByTestID('check-card').should('have.length', 2)
+  })
+
   describe('When a check does not exist', () => {
     it('should route the user to the alerting index page', () => {
       const nonexistentID = '046cd86a2030f000'
 
-      // visitng the check edit overlay
+      // visiting the check edit overlay
       cy.get('@org').then(({id}: Organization) => {
         cy.fixture('routes').then(({orgs, alerting, checks}) => {
           cy.visit(`${orgs}/${id}${alerting}${checks}/${nonexistentID}/edit`)

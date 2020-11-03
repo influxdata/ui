@@ -121,6 +121,7 @@ const RuleCard: FC<Props> = ({
       direction={FlexDirection.Row}
       alignItems={AlignItems.Center}
       margin={ComponentSize.Large}
+      contextMenuInteraction="alwaysVisible"
       contextMenu={
         <NotificationRuleCardContext
           onView={onView}

@@ -287,8 +287,8 @@ describe.skip('NotificationRules', () => {
 
     // Delete the rule
     cy.getByTestID('rules--column').within(() => {
-      cy.getByTestID(`context-delete-menu`).click()
-      cy.getByTestID(`context-delete-task`).click()
+      cy.getByTestID(`context-delete-rule--button`).click()
+      cy.getByTestID(`context-delete-rule--confirm-button`).click()
     })
 
     // Remove the filter

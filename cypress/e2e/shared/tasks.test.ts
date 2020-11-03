@@ -246,10 +246,10 @@ http.post(
         .first()
         .trigger('mouseover')
         .then(() => {
-          cy.getByTestID('context-delete--button')
+          cy.getByTestID('task-context--delete--button')
             .click()
             .then(() => {
-              cy.getByTestID('context-delete--confirm-button')
+              cy.getByTestID('task-context--delete--confirm-button')
                 .click()
                 .then(() => {
                   cy.getByTestID('empty-tasks-list').should('exist')
@@ -262,13 +262,10 @@ http.post(
     // https://github.com/influxdata/influxdb/issues/18478
     it.skip('can clone a task and activate just the cloned one', () => {
       cy.getByTestID('task-card').then(() => {
-        cy.get('.context-menu--container')
+        cy.getByTestID('task-context-menu')
           .eq(1)
-          .click()
-          .then(() => {
-            cy.getByTestID('context-menu-item')
-              .contains('Clone')
-              .click()
+          .within(() => {
+            cy.getByTestID('task-context--clone').click()
           })
       })
 
@@ -294,20 +291,14 @@ http.post(
       // clone a task
       cy.getByTestID('task-card')
         .first()
-        .trigger('mouseover')
         .then(() => {
-          cy.get('.context-menu--container')
+          cy.getByTestID('task-context-menu')
             .eq(1)
             .within(() => {
-              cy.getByTestID('context-menu')
-                .click()
-                .then(() => {
-                  cy.getByTestID('context-menu-item')
-                    .contains('Clone')
-                    .click()
-                })
+              cy.getByTestID('task-context--clone').click()
             })
         })
+      })
 
       cy.getByTestID('task-card').should('have.length', 2)
 

@@ -106,30 +106,34 @@ export class TaskCard extends PureComponent<
     const {task, onDelete} = this.props
 
     return (
-      <FlexBox margin={ComponentSize.Small}>
+      <FlexBox margin={ComponentSize.Small} testID="task-context-menu">
         <Button
           text="Export"
           icon={IconFont.Export}
           size={ComponentSize.ExtraSmall}
           onClick={this.handleExport}
+          testID="task-context--export"
         />
         <Button
           text="Run"
           icon={IconFont.Play}
           size={ComponentSize.ExtraSmall}
           onClick={this.handleRun}
+          testID="task-context--run"
         />
         <Button
           text="Run Logs"
           icon={IconFont.Play}
           size={ComponentSize.ExtraSmall}
           onClick={this.handleViewRuns}
+          testID="task-context--run-logs"
         />
         <Button
           text="Clone"
           icon={IconFont.Duplicate}
           size={ComponentSize.ExtraSmall}
           onClick={this.handleClone}
+          testID="task-context--clone"
         />
         <ConfirmationButton
           size={ComponentSize.ExtraSmall}
@@ -140,7 +144,7 @@ export class TaskCard extends PureComponent<
           confirmationButtonText="Confirm"
           returnValue={task}
           onConfirm={onDelete}
-          testID="context-delete"
+          testID="task-context--delete"
         />
       </FlexBox>
     )

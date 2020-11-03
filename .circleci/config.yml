@@ -15,9 +15,6 @@ jobs:
           name: Grab compose files
           command: git clone git@github.com:influxdata/monitor-ci.git
       - run:
-          name: Copy over the testing variables
-          command: cp ./monitor-ci/env.testing ./monitor-ci/.env
-      - run:
           name: Build the ui docker image
           command: |
             cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
@@ -34,6 +31,36 @@ jobs:
           key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - docker-cache
+
+  build-oss-image:
+    machine:
+      image: ubuntu-2004:202008-01
+      docker_layer_caching: true
+    working_directory: ~/
+    resource_class: large
+    steps:
+      - checkout:
+          path: ./ui
+      - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
+      - run:
+          name: Grab compose files
+          command: git clone git@github.com:influxdata/monitor-ci.git
+      - run:
+          name: Build the ui docker image
+          command: |
+            cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
+            docker build \
+              --build-arg UI_SHA=${CIRCLE_SHA1} \
+              -t quay.io/influxdb/ui-oss:${CIRCLE_SHA1} \
+              -f ./monitor-ci/docker/Dockerfile.chronograf.prod \
+              ./ui
+            mkdir -p docker-cache
+            docker save -o docker-cache/image.tar quay.io/influxdb/ui-oss:${CIRCLE_SHA1}
+      - save_cache:
+          key: UI_OSS_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - docker-cache
+
   build-prod-image:
     machine:
       image: ubuntu-2004:202008-01
@@ -66,6 +93,7 @@ jobs:
           key: UI_PROD_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - docker-cache
+
   deploy:
     docker:
       - image: circleci/golang:1.15-node
@@ -97,6 +125,7 @@ jobs:
             cd ./monitor-ci/c2updater
             export C2UPDATER_SIGNING_KEY=${ARGO_KEY}
             GO111MODULE=on GOPATH=/go go mod download && go run ./ ${CIRCLE_SHA1} quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1} quay.io/influxdb/influxdb-ui@$(docker image inspect quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1} --format '{{.Id}}' | tr -d '\n')
+
   share-testing-image:
     docker:
       - image: circleci/golang:1.15-node
@@ -119,6 +148,49 @@ jobs:
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
             docker push quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1}
             docker push quay.io/influxdb/ui-acceptance:latest
+
+  oss-e2e:
+    machine:
+      image: ubuntu-2004:202008-01
+      docker_layer_caching: true
+    parallelism: 10
+    working_directory: ~/
+    resource_class: large
+    steps:
+      - restore_cache:
+          key: UI_OSS_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
+      - checkout:
+          path: ./ui
+      - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
+      - run:
+          name: Grab compose files
+          command: git clone git@github.com:influxdata/monitor-ci.git
+      - run:
+          name: Copy over the testing variables
+          command: cp ./monitor-ci/env.testing.oss ./monitor-ci/.env
+      - run:
+          name: Update the images we're using
+          command: |
+            cd ./monitor-ci && make update && make build NODE=cypress
+            docker load < ~/docker-cache/image.tar
+            docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-oss:latest
+      - run:
+          name: Start the cluster
+          command: cd ./monitor-ci; make start
+      - run:
+          name: Run e2e tests
+          no_output_timeout: 30m
+          command: |
+            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser chrome --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/(shared|oss)/**/*.test.ts" | circleci tests split | paste -sd "," -)"
+      - store_test_results:
+          path: monitor-ci/test-artifacts/results
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/videos
+          destination: test_artifacts/videos
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/screenshots
+          destination: test_artifacts/screenshots
+
   cloud-e2e:
     machine:
       image: ubuntu-2004:202008-01
@@ -137,7 +209,7 @@ jobs:
           command: git clone git@github.com:influxdata/monitor-ci.git
       - run:
           name: Copy over the testing variables
-          command: cp ./monitor-ci/env.testing ./monitor-ci/.env
+          command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
       - run:
           name: Update the images we're using
           command: |
@@ -151,7 +223,7 @@ jobs:
           name: Run e2e tests
           no_output_timeout: 30m
           command: |
-            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser chrome --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split | paste -sd "," -)"
+            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser chrome --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/(shared|cloud)/**/*.test.ts" | circleci tests split | paste -sd "," -)"
       - store_test_results:
           path: monitor-ci/test-artifacts/results
       - store_artifacts:
@@ -160,6 +232,7 @@ jobs:
       - store_artifacts:
           path: monitor-ci/test-artifacts/screenshots
           destination: test_artifacts/screenshots
+
   cloud-e2e-nightly-firefox:
     machine:
       image: ubuntu-2004:202008-01
@@ -176,7 +249,7 @@ jobs:
           command: git clone git@github.com:influxdata/monitor-ci.git
       - run:
           name: Copy over the testing variables
-          command: cp ./monitor-ci/env.testing ./monitor-ci/.env
+          command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
       - run:
           name: Update the images we're using
           command: |
@@ -188,7 +261,7 @@ jobs:
           name: Run e2e tests
           no_output_timeout: 30m
           command: |
-            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser firefox --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split | paste -sd "," -)"
+            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser firefox --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/(shared|cloud)/**/*.test.ts" | circleci tests split | paste -sd "," -)"
       - store_test_results:
           path: monitor-ci/test-artifacts/results
       - store_artifacts:
@@ -197,6 +270,7 @@ jobs:
       - store_artifacts:
           path: monitor-ci/test-artifacts/screenshots
           destination: test_artifacts/screenshots
+
   smoke:
     machine:
       image: ubuntu-2004:202008-01
@@ -237,6 +311,7 @@ jobs:
       - store_artifacts:
           path: monitor-ci/test-artifacts/screenshots
           destination: test_artifacts/screenshots
+
   unit:
     docker:
       - image: circleci/golang:1.15-node
@@ -271,6 +346,7 @@ jobs:
           name: 'Save Yarn Package Cache'
           paths:
             - ~/.cache/yarn
+
   lint:
     docker:
       - image: circleci/golang:1.15-node
@@ -305,6 +381,7 @@ workflows:
   build:
     jobs:
       - build-image
+      - build-oss-image
       - build-prod-image:
           filters:
             branches:
@@ -312,6 +389,9 @@ workflows:
                 - master
       - unit
       - lint
+      - oss-e2e:
+          requires:
+            - build-oss-image
       - cloud-e2e:
           requires:
             - build-image
@@ -328,6 +408,7 @@ workflows:
             - unit
             - lint
             - smoke
+            - oss-e2e
             - cloud-e2e
       - share-testing-image:
           filters:
@@ -339,6 +420,7 @@ workflows:
             - unit
             - lint
             - smoke
+            - oss-e2e
             - cloud-e2e
   nightly:
     triggers:

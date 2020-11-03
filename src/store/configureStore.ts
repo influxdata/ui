@@ -36,6 +36,7 @@ import {authsReducer} from 'src/authorizations/reducers'
 import templatesReducer from 'src/templates/reducers'
 import {scrapersReducer} from 'src/scrapers/reducers'
 import {userSettingsReducer} from 'src/userSettings/reducers'
+import {annotationsReducer} from 'src/annotations/reducers'
 import {membersReducer} from 'src/members/reducers'
 import {autoRefreshReducer} from 'src/shared/reducers/autoRefresh'
 import {limitsReducer, LimitsState} from 'src/cloud/reducers/limits'
@@ -65,8 +66,12 @@ type ReducerState = Pick<AppState, Exclude<keyof AppState, 'timeRange'>>
 
 import {history} from 'src/store/history'
 
-export const rootReducer = (history: History) =>
-  combineReducers<ReducerState>({
+export const rootReducer = (history: History) => (state, action) => {
+  if (action.type === 'USER_LOGGED_OUT') {
+    state = undefined
+  }
+
+  return combineReducers<ReducerState>({
     router: connectRouter(history),
     ...sharedReducers,
     autoRefresh: autoRefreshReducer,
@@ -119,7 +124,9 @@ export const rootReducer = (history: History) =>
     userSettings: userSettingsReducer,
     variableEditor: variableEditorReducer,
     VERSION: () => '',
-  })
+    annotations: annotationsReducer,
+  })(state, action)
+}
 
 const composeEnhancers =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose

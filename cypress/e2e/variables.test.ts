@@ -205,10 +205,13 @@ describe('Variables', () => {
 
     cy.getByTestID('add-resource-dropdown--import').click()
 
-    const yourFixturePath = 'data-for-variable.json'
-    cy.get('.drag-and-drop').attachFile(yourFixturePath, {
-      subjectType: 'drag-n-drop',
-    })
+    const filePath = 'data-for-variable.json'
+    cy.get('.drag-and-drop').attachFile(
+      {filePath, mimeType: 'json'},
+      {
+        subjectType: 'drag-n-drop',
+      }
+    )
 
     cy.getByTestID('submit-button Variable').click()
 

@@ -780,20 +780,20 @@
   resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-2.3.5.tgz#0af1a6a77b30235b39c97e527c32503b406d55de"
   integrity sha512-l2ArlDCs7O+Af8xp+81a3Zs1FD77Dr4c66L40TgZsIfxveTRD9F0SDkhFQL+X+t0WoPBP/2nQlpAZL8AUl3l6w==
 
-"@influxdata/flux-lsp-browser@^0.5.11":
-  version "0.5.11"
-  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.5.11.tgz#65168541edf57bbbee86161524bd57dc87950ebe"
-  integrity sha512-lpU8v3HY5cUzG/XrDnyR509WdQouhZ4l/+rRoJHvC1neyhHIPEjZYN0gwMuPuAFnvzdOFyTbn6X5TAOhC53AWw==
+"@influxdata/flux-lsp-browser@^0.5.21":
+  version "0.5.21"
+  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.5.21.tgz#d5632f45e925c09bae9501a00fbef2ed55567f9e"
+  integrity sha512-lcUwKX1yj0QqGiusQFOVi7UPsvp6+qNX7Cwf9qqS5/dRwoh7c++nFVRdGNrSWlsbyRrPaAWBoZWEnghSnIf6DQ==
 
 "@influxdata/flux@^0.5.1":
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/@influxdata/flux/-/flux-0.5.1.tgz#e39e7a7af9163fc9494422c8fed77f3ae1b68f56"
   integrity sha512-GHlkXBhSdJ2m56JzDkbnKPAqLj3/lexPooacu14AWTO4f2sDGLmzM7r0AxgdtU1M2x7EXNBwgGOI5EOAdN6mkw==
 
-"@influxdata/giraffe@0.36.0":
-  version "0.36.0"
-  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-0.36.0.tgz#1f45767df0384494b54dfbec9b56e3c7cf5994ed"
-  integrity sha512-8g/AMbgUIbKqFZgTrd2YSLPK6+0UcrK+DRRDoEhlkgRLI3QyzWIts5ry8UWcRXYpdbfYpkJzdi0oKkX3CvChmQ==
+"@influxdata/giraffe@0.40.0":
+  version "0.40.0"
+  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-0.40.0.tgz#7b811b5c470152c3d6c30431c3a156fb4773070b"
+  integrity sha512-gt6QYoqy4f5wiA2IWtcgeVpv2xQxj/gnyEozJbcfpyjw2Kj5GEPEhiej+RJTEIfb1mRKJ3YsGZJosGQdc/DGXA==
 
 "@influxdata/influx@0.5.5":
   version "0.5.5"
@@ -3688,10 +3688,10 @@ cyclist@^1.0.1:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
   integrity sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=
 
-cypress-file-upload@^4.0.7:
-  version "4.0.7"
-  resolved "https://registry.yarnpkg.com/cypress-file-upload/-/cypress-file-upload-4.0.7.tgz#1136139bb3c660b9c39a69f231ac1da7785acaae"
-  integrity sha512-rFFmnoZ2bWyWFpSV09AhkSUgYEiVy70pcQ6nf/mGTMTrVHvKCCCIfRu3TbgVYHbgBq+0hqjfjQrtz4IbgH7qZA==
+cypress-file-upload@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/cypress-file-upload/-/cypress-file-upload-4.1.1.tgz#952713c8104ab7008de99c65bd63f74b244fe4df"
+  integrity sha512-tX6UhuJ63rNgjdzxglpX+ZYf/bM6PDhFMtt1qCBljLtAgdearqyfD1AHqyh59rOHCjfM+bf6FA3o9b/mdaX6pw==
   dependencies:
     mime "^2.4.4"
 
@@ -3707,10 +3707,10 @@ cypress-plugin-tab@^1.0.5:
   dependencies:
     ally.js "^1.4.1"
 
-cypress@5.3.0:
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/cypress/-/cypress-5.3.0.tgz#91122219ae66ab910058970dbf36619ab0fbde6c"
-  integrity sha512-XgebyqL7Th6/8YenE1ddb7+d4EiCG2Jvg/5c8+HPfFFY/gXnOVhoCVUU3KW8qg3JL7g0B+iJbHd5hxuCqbd1RQ==
+cypress@5.4.0:
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/cypress/-/cypress-5.4.0.tgz#8833a76e91129add601f823d43c53eb512d162c5"
+  integrity sha512-BJR+u3DRSYMqaBS1a3l1rbh5AkMRHugbxcYYzkl+xYlO6dzcJVE8uAhghzVI/hxijCyBg1iuSe4TRp/g1PUg8Q==
   dependencies:
     "@cypress/listr-verbose-renderer" "^0.4.1"
     "@cypress/request" "^2.88.5"

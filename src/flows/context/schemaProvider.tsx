@@ -67,15 +67,18 @@ export const SchemaProvider: FC<Props> = React.memo(({children}) => {
       measurement: '',
     })
     setLastBucket(data.bucket)
-  }, [data.bucket])
+  }, [data.bucket, lastBucket, update])
 
   useEffect(() => {
-    if (loading !== RemoteDataState.NotStarted || !data.bucket) {
+    if (!data.bucket) {
+      return
+    }
+    if (data.bucket === lastBucket) {
       return
     }
 
     dispatch(getAndSetBucketSchema(data.bucket))
-  }, [data.bucket, loading, dispatch])
+  }, [data.bucket, lastBucket, dispatch])
 
   const schema = useSelector(
     (state: AppState) => state.flow.schema[data.bucket?.name]?.schema || {}

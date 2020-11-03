@@ -2,7 +2,6 @@
 import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {isEmpty} from 'lodash'
-import classnames from 'classnames'
 
 // Components
 import {
@@ -11,6 +10,7 @@ import {
   SpinnerContainer,
 } from '@influxdata/clockface'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+import Toolbar from 'src/shared/components/toolbar/Toolbar'
 
 // Utils
 import {
@@ -55,16 +55,12 @@ class VariablesControlBar extends PureComponent<Props, State> {
   }
 
   render() {
-    const {show, inPresentationMode} = this.props
+    const {show} = this.props
     if (!show) {
       return false
     }
     return (
-      <div
-        className={classnames('variables-control-bar', {
-          'presentation-mode': inPresentationMode,
-        })}
-      >
+      <Toolbar testID="variables-control-bar" className="variables-control-bar">
         <SpinnerContainer
           loading={this.state.initialLoading}
           spinnerComponent={<TechnoSpinner diameterPixels={50} />}
@@ -72,17 +68,14 @@ class VariablesControlBar extends PureComponent<Props, State> {
         >
           {this.bar}
         </SpinnerContainer>
-      </div>
+      </Toolbar>
     )
   }
 
   private get emptyBar(): JSX.Element {
     return (
-      <EmptyState
-        size={ComponentSize.ExtraSmall}
-        className="variables-control-bar--empty"
-      >
-        <EmptyState.Text>
+      <EmptyState size={ComponentSize.ExtraSmall}>
+        <EmptyState.Text className="margin-zero">
           This dashboard doesn't have any cells with defined variables.{' '}
           <a
             href="https://v2.docs.influxdata.com/v2.0/visualize-data/variables/"
@@ -98,7 +91,7 @@ class VariablesControlBar extends PureComponent<Props, State> {
   private get barContents(): JSX.Element {
     const {variables, variablesStatus} = this.props
     return (
-      <div className="variables-control-bar--full">
+      <div className="variables-control-bar--grid">
         {variables.map((v, i) => (
           <ErrorBoundary key={v.id}>
             <DraggableDropdown
@@ -145,12 +138,6 @@ const mstp = (state: AppState) => {
   const variablesStatus = getDashboardVariablesStatus(state)
   const show = state.userSettings.showVariablesControls
 
-  const {
-    app: {
-      ephemeral: {inPresentationMode},
-    },
-  } = state
-
   const varsInUse = filterUnusedVars(
     variables,
     Object.values(state.resources.views.byID).filter(
@@ -161,7 +148,6 @@ const mstp = (state: AppState) => {
   return {
     variables: varsInUse,
     variablesStatus,
-    inPresentationMode,
     show,
   }
 }

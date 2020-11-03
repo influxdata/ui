@@ -33,7 +33,7 @@ export const toNano = (ms: number) => Math.round(ms * 1000000)
 
 // NOTE: typescript can't follow the API results for flags,
 // so we need to convert them to strings here
-const cleanTags = (data: Point): Point => {
+export const cleanTags = (data: Point): Point => {
   return {
     ...data,
     tags: Object.entries(data.tags).reduce((acc, [key, val]) => {
@@ -47,7 +47,13 @@ const cleanTags = (data: Point): Point => {
         return acc
       }
 
-      acc[key] = val
+      if (!val) {
+        acc[key] = val
+        return acc
+      }
+
+      // if it's made it this far, it's a string, cast it explicitly so typescript will stfu
+      acc[key] = (val as string).trim()
       return acc
     }, {}),
   }

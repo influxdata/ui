@@ -1,7 +1,6 @@
 import View from './view'
 import './style.scss'
 
-const PREVIOUS_REGEXP = /__PREVIOUS_RESULT__/g
 const COMMENT_REMOVER = /(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm
 
 export default register => {
@@ -36,7 +35,7 @@ export default register => {
         return
       }
 
-      create(text, PREVIOUS_REGEXP.test(text))
+      create(text)
     },
   })
 }

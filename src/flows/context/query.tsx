@@ -8,7 +8,6 @@ import {getTimeRangeVars} from 'src/variables/utils/getTimeRangeVars'
 import {getVariables, asAssignment} from 'src/variables/selectors'
 import {getOrg} from 'src/organizations/selectors'
 import {FlowContext} from 'src/flows/context/flow.current'
-import {TimeContext} from 'src/flows/context/time'
 import {fromFlux as parse} from '@influxdata/giraffe'
 import {event} from 'src/cloud/utils/reporting'
 import {FluxResult} from 'src/types/flows'
@@ -17,7 +16,6 @@ import {
   generateHashedQueryID,
   setQueryByHashID,
 } from 'src/timeMachine/actions/queries'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Stage {
   text: string
@@ -26,7 +24,7 @@ interface Stage {
 
 export interface QueryContextType {
   query: (text: string) => Promise<FluxResult>
-  generateMap: () => Stage[]
+  generateMap: (withSideEffects?: boolean) => Stage[]
 }
 
 export const DEFAULT_CONTEXT: QueryContextType = {
@@ -42,21 +40,19 @@ const PREVIOUS_REGEXP = /__PREVIOUS_RESULT__/g
 
 type Props = StateProps
 export const QueryProvider: FC<Props> = ({children, variables, org}) => {
-  const {id, flow} = useContext(FlowContext)
-  const {timeContext} = useContext(TimeContext)
-  const time = timeContext[id]
+  const {flow} = useContext(FlowContext)
 
   const vars = useMemo(() => {
-    if (time && time.range) {
+    if (flow && flow?.range) {
       return variables
         .map(v => asAssignment(v))
-        .concat(getTimeRangeVars(time.range))
+        .concat(getTimeRangeVars(flow.range))
     }
 
     variables.map(v => asAssignment(v))
-  }, [variables, time])
+  }, [variables, flow])
 
-  const generateMap = (): Stage[] => {
+  const generateMap = (withSideEffects?: boolean): Stage[] => {
     return flow.data.allIDs
       .reduce((stages, pipeID) => {
         const pipe = flow.data.get(pipeID)
@@ -67,13 +63,12 @@ export const QueryProvider: FC<Props> = ({children, variables, org}) => {
           requirements: {},
         }
 
-        const create = (text, loadPrevious) => {
-          if (loadPrevious && stages.length) {
-            stage.requirements = {
-              ...stages[stages.length - 1].requirements,
-              [`prev_${stages.length}`]: stages[stages.length - 1].text,
-            }
-            stage.text = text.replace(PREVIOUS_REGEXP, `prev_${stages.length}`)
+        const create = text => {
+          if (text && PREVIOUS_REGEXP.test(text) && stages.length) {
+            stage.text = text.replace(
+              PREVIOUS_REGEXP,
+              stages[stages.length - 1].text
+            )
           } else {
             stage.text = text
           }
@@ -88,7 +83,12 @@ export const QueryProvider: FC<Props> = ({children, variables, org}) => {
         }
 
         if (PIPE_DEFINITIONS[pipe.type].generateFlux) {
-          PIPE_DEFINITIONS[pipe.type].generateFlux(pipe, create, append)
+          PIPE_DEFINITIONS[pipe.type].generateFlux(
+            pipe,
+            create,
+            append,
+            withSideEffects
+          )
         } else {
           append()
         }
@@ -115,9 +115,7 @@ export const QueryProvider: FC<Props> = ({children, variables, org}) => {
 
     event('runQuery', {context: 'flows'})
     const result = runQuery(org.id, text, extern)
-    if (isFlagEnabled('cancelQueryUiExpansion')) {
-      setQueryByHashID(queryID, result)
-    }
+    setQueryByHashID(queryID, result)
     return result.promise
       .then(raw => {
         if (raw.type !== 'SUCCESS') {
@@ -136,7 +134,7 @@ export const QueryProvider: FC<Props> = ({children, variables, org}) => {
       })
   }
 
-  if (!time) {
+  if (!flow?.range) {
     return null
   }
 

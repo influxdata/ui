@@ -2,6 +2,7 @@ import React, {FC, useContext, useEffect, useState} from 'react'
 import {FluxResult, Resource, ResourceManipulator} from 'src/types/flows'
 import useResource from 'src/flows/context/resource.hook'
 import {FlowContext} from 'src/flows/context/flow.current'
+import {PIPE_DEFINITIONS} from 'src/flows'
 
 export type ResultsContextType = ResourceManipulator<FluxResult>
 
@@ -44,6 +45,9 @@ export const ResultsProvider: FC = ({children}) => {
       try {
         if (result) {
           manipulator.add(id, result)
+          return
+        }
+        if (PIPE_DEFINITIONS[flow.data.get(id).type].family === 'inputs') {
           return
         }
         const ref = flow.data.allIDs

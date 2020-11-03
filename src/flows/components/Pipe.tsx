@@ -9,7 +9,6 @@ const Pipe: FC<PipeProp> = props => {
 
   if (!PIPE_DEFINITIONS.hasOwnProperty(data.type)) {
     throw new Error(`Pipe type [${data.type}] not registered`)
-    return null
   }
 
   return createElement(PIPE_DEFINITIONS[data.type].component, props)

@@ -1,11 +1,12 @@
 // Libraries
+import {Dispatch} from 'react'
 import {ComponentStatus} from '@influxdata/clockface'
 
 // Types
-import {Dispatch} from 'react'
 import {
   AnnotationActionType,
   updateAnnotationDraft,
+  UpdateAnnotationDraftAction,
 } from 'src/annotations/actions/annotationFormActions'
 
 export type AnnotationType = 'point' | 'range'
@@ -46,6 +47,10 @@ export interface AnnotationDraft {
   }
 }
 
+export interface AnnotationContextType extends AnnotationDraft {
+  dispatch: Dispatch<UpdateAnnotationDraftAction>
+}
+
 export const getInitialAnnotationState = (
   type: AnnotationType,
   timeStart: string,
@@ -70,6 +75,11 @@ export const getInitialAnnotationState = (
     streamID: stream || '',
     streamIDError: '',
   }
+}
+
+export const DEFAULT_ANNOTATION_CONTEXT: AnnotationContextType = {
+  ...getInitialAnnotationState('point', '', '', '', '', ''),
+  dispatch: () => {},
 }
 
 export const annotationFormReducer = (

@@ -1,34 +1,41 @@
 // Libraries
-import React, {FC, ChangeEvent} from 'react'
+import React, {FC, ChangeEvent, useContext} from 'react'
 
 // Components
-import {ComponentStatus, Form, Input, InputRef} from '@influxdata/clockface'
+import {Grid, Form, Input, InputRef, Columns} from '@influxdata/clockface'
 
-interface Props {
-  value: string
-  status: ComponentStatus
-  error: string
-  type: string
-  onChange: (e: ChangeEvent<InputRef>) => void
-}
+// Actions
+import {updateAnnotationDraft} from 'src/annotations/actions/annotationFormActions'
 
-const AnnotationTimeStartInput: FC<Props> = ({
-  value,
-  status,
-  error,
-  type,
-  onChange,
-}) => {
+// Contexts
+import {AnnotationFormContext} from 'src/annotations/components/annotationForm/AnnotationForm'
+
+const AnnotationTimeStartInput: FC = () => {
+  const {
+    timeStart,
+    timeStartStatus,
+    timeStartError,
+    type,
+    dispatch,
+  } = useContext(AnnotationFormContext)
+
   const label = type === 'range' ? 'Start' : 'Timestamp'
+
+  const handleChange = (e: ChangeEvent<InputRef>): void => {
+    dispatch(updateAnnotationDraft({timeStart: e.target.value}))
+  }
+
   return (
-    <Form.Element label={label} required={true} errorMessage={error}>
-      <Input
-        name="timeStart"
-        value={value}
-        onChange={onChange}
-        status={status}
-      />
-    </Form.Element>
+    <Grid.Column widthXS={type === 'range' ? Columns.Six : Columns.Twelve}>
+      <Form.Element label={label} required={true} errorMessage={timeStartError}>
+        <Input
+          name="timeStart"
+          value={timeStart}
+          onChange={handleChange}
+          status={timeStartStatus}
+        />
+      </Form.Element>
+    </Grid.Column>
   )
 }
 

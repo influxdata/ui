@@ -1,5 +1,11 @@
 // Libraries
-import React, {ChangeEvent, FC, FormEvent, useContext, useReducer} from 'react'
+import React, {
+  FC,
+  FormEvent,
+  useContext,
+  useReducer,
+  createContext,
+} from 'react'
 
 // Components
 import {
@@ -8,7 +14,6 @@ import {
   ComponentColor,
   Form,
   Grid,
-  Columns,
   ButtonType,
 } from '@influxdata/clockface'
 import AnnotationSummaryInput from 'src/annotations/components/annotationForm/AnnotationSummaryInput'
@@ -26,13 +31,9 @@ import {
   annotationFormIsValid,
   Annotation,
   getAnnotationFromDraft,
+  AnnotationContextType,
+  DEFAULT_ANNOTATION_CONTEXT,
 } from 'src/annotations/reducers/annotationFormReducer'
-
-// Actions
-import {updateAnnotationDraft} from 'src/annotations/actions/annotationFormActions'
-
-// Types
-import {AnnotationStream} from 'src/annotations/constants/mocks'
 
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
@@ -47,6 +48,10 @@ interface Props {
   streamID?: string
   onSubmit: (Annotation: Annotation) => void
 }
+
+export const AnnotationFormContext = createContext<AnnotationContextType>(
+  DEFAULT_ANNOTATION_CONTEXT
+)
 
 const AnnotationForm: FC<Props> = ({
   title,
@@ -85,99 +90,40 @@ const AnnotationForm: FC<Props> = ({
     }
   }
 
-  const handleInputChange = (e: ChangeEvent<any>): void => {
-    const data = {}
-    data[`${e.target.name}`] = e.target.value
-    dispatch(updateAnnotationDraft(data))
-  }
-
-  const handleTypeChange = (type: AnnotationType): void => {
-    dispatch(updateAnnotationDraft({type}))
-  }
-
-  const handleStreamChange = (stream: AnnotationStream): void => {
-    dispatch(
-      updateAnnotationDraft({
-        streamID: stream.id,
-        ...stream.query,
-      })
-    )
-  }
-
   return (
-    <Overlay.Container maxWidth={560}>
-      <Overlay.Header title={`${title} Annotation`} onDismiss={onClose} />
-      <Form onSubmit={handleSubmit}>
-        <Overlay.Body>
-          <Grid>
-            <Grid.Row>
-              <Grid.Column widthXS={Columns.Seven}>
-                <AnnotationSummaryInput
-                  value={state.summary}
-                  error={state.summaryError}
-                  status={state.summaryStatus}
-                  onChange={handleInputChange}
-                />
-              </Grid.Column>
-              <Grid.Column widthXS={Columns.Five}>
-                <AnnotationTypeToggle
-                  type={state.type}
-                  onChange={handleTypeChange}
-                />
-              </Grid.Column>
-            </Grid.Row>
-            <Grid.Row>
-              <Grid.Column
-                widthXS={state.type === 'range' ? Columns.Six : Columns.Twelve}
-              >
-                <AnnotationTimeStartInput
-                  value={state.timeStart}
-                  error={state.timeStartError}
-                  status={state.timeStartStatus}
-                  type={state.type}
-                  onChange={handleInputChange}
-                />
-              </Grid.Column>
-              {state.type === 'range' && (
-                <Grid.Column widthXS={Columns.Six}>
-                  <AnnotationTimeStopInput
-                    value={state.timeStop}
-                    error={state.timeStopError}
-                    status={state.timeStopStatus}
-                    onChange={handleInputChange}
-                  />
-                </Grid.Column>
-              )}
-            </Grid.Row>
-            <Grid.Row>
-              <Grid.Column widthXS={Columns.Twelve}>
-                <AnnotationMessageInput
-                  value={state.message}
-                  onChange={handleInputChange}
-                />
-              </Grid.Column>
-            </Grid.Row>
-            <Grid.Row>
-              <Grid.Column widthXS={Columns.Twelve}>
-                <AnnotationStreamSelector
-                  error={state.streamIDError}
-                  streamID={state.streamID}
-                  onChange={handleStreamChange}
-                />
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
-        </Overlay.Body>
-        <Overlay.Footer>
-          <Button text="Cancel" onClick={onClose} />
-          <Button
-            text="Add Annotation"
-            color={ComponentColor.Primary}
-            type={ButtonType.Submit}
-          />
-        </Overlay.Footer>
-      </Form>
-    </Overlay.Container>
+    <AnnotationFormContext.Provider value={{...state, dispatch}}>
+      <Overlay.Container maxWidth={560}>
+        <Overlay.Header title={`${title} Annotation`} onDismiss={onClose} />
+        <Form onSubmit={handleSubmit}>
+          <Overlay.Body>
+            <Grid>
+              <Grid.Row>
+                <AnnotationSummaryInput />
+                <AnnotationTypeToggle />
+              </Grid.Row>
+              <Grid.Row>
+                <AnnotationTimeStartInput />
+                <AnnotationTimeStopInput />
+              </Grid.Row>
+              <Grid.Row>
+                <AnnotationMessageInput />
+              </Grid.Row>
+              <Grid.Row>
+                <AnnotationStreamSelector />
+              </Grid.Row>
+            </Grid>
+          </Overlay.Body>
+          <Overlay.Footer>
+            <Button text="Cancel" onClick={onClose} />
+            <Button
+              text="Add Annotation"
+              color={ComponentColor.Primary}
+              type={ButtonType.Submit}
+            />
+          </Overlay.Footer>
+        </Form>
+      </Overlay.Container>
+    </AnnotationFormContext.Provider>
   )
 }
 

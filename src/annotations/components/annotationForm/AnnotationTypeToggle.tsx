@@ -1,39 +1,54 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
 
 // Components
-import {SelectGroup, Form, ButtonShape} from '@influxdata/clockface'
+import {
+  Grid,
+  Columns,
+  SelectGroup,
+  Form,
+  ButtonShape,
+} from '@influxdata/clockface'
 
 // Types
 import {AnnotationType} from 'src/annotations/reducers/annotationFormReducer'
 
-interface Props {
-  type: AnnotationType
-  onChange: (type: AnnotationType) => void
-}
+// Actions
+import {updateAnnotationDraft} from 'src/annotations/actions/annotationFormActions'
 
-const AnnotationTypeToggle: FC<Props> = ({type, onChange}) => {
+// Contexts
+import {AnnotationFormContext} from 'src/annotations/components/annotationForm/AnnotationForm'
+
+const AnnotationTypeToggle: FC = () => {
+  const {type, dispatch} = useContext(AnnotationFormContext)
+
+  const handleChange = (type: AnnotationType): void => {
+    dispatch(updateAnnotationDraft({type}))
+  }
+
   return (
-    <Form.Element label="Type" required={false}>
-      <SelectGroup shape={ButtonShape.StretchToFit}>
-        <SelectGroup.Option
-          id="point"
-          value="point"
-          active={type === 'point'}
-          onClick={onChange}
-        >
-          Point
-        </SelectGroup.Option>
-        <SelectGroup.Option
-          id="range"
-          value="range"
-          active={type === 'range'}
-          onClick={onChange}
-        >
-          Range
-        </SelectGroup.Option>
-      </SelectGroup>
-    </Form.Element>
+    <Grid.Column widthXS={Columns.Five}>
+      <Form.Element label="Type" required={false}>
+        <SelectGroup shape={ButtonShape.StretchToFit}>
+          <SelectGroup.Option
+            id="point"
+            value="point"
+            active={type === 'point'}
+            onClick={handleChange}
+          >
+            Point
+          </SelectGroup.Option>
+          <SelectGroup.Option
+            id="range"
+            value="range"
+            active={type === 'range'}
+            onClick={handleChange}
+          >
+            Range
+          </SelectGroup.Option>
+        </SelectGroup>
+      </Form.Element>
+    </Grid.Column>
   )
 }
 

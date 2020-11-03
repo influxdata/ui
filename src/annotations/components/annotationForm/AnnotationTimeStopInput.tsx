@@ -1,31 +1,43 @@
 // Libraries
-import React, {FC, ChangeEvent} from 'react'
+import React, {FC, ChangeEvent, useContext} from 'react'
 
 // Components
-import {ComponentStatus, Form, Input, InputRef} from '@influxdata/clockface'
+import {Grid, Form, Input, InputRef, Columns} from '@influxdata/clockface'
 
-interface Props {
-  value: string
-  status: ComponentStatus
-  error: string
-  onChange: (e: ChangeEvent<InputRef>) => void
-}
+// Actions
+import {updateAnnotationDraft} from 'src/annotations/actions/annotationFormActions'
 
-const AnnotationTimeStopInput: FC<Props> = ({
-  value,
-  status,
-  error,
-  onChange,
-}) => {
+// Contexts
+import {AnnotationFormContext} from 'src/annotations/components/annotationForm/AnnotationForm'
+
+const AnnotationTimeStopInput: FC = () => {
+  const {timeStop, timeStopStatus, timeStopError, type, dispatch} = useContext(
+    AnnotationFormContext
+  )
+
+  const handleChange = (e: ChangeEvent<InputRef>): void => {
+    dispatch(updateAnnotationDraft({timeStop: e.target.value}))
+  }
+
+  if (type === 'point') {
+    return null
+  }
+
   return (
-    <Form.Element label="Stop Time" required={true} errorMessage={error}>
-      <Input
-        name="timeStop"
-        value={value}
-        onChange={onChange}
-        status={status}
-      />
-    </Form.Element>
+    <Grid.Column widthXS={Columns.Six}>
+      <Form.Element
+        label="Stop Time"
+        required={true}
+        errorMessage={timeStopError}
+      >
+        <Input
+          name="timeStop"
+          value={timeStop}
+          onChange={handleChange}
+          status={timeStopStatus}
+        />
+      </Form.Element>
+    </Grid.Column>
   )
 }
 

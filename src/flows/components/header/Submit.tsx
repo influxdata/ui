@@ -20,7 +20,6 @@ import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
 import {QueryContext} from 'src/flows/context/query'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {ResultsContext} from 'src/flows/context/results'
-import {TimeContext} from 'src/flows/context/time'
 import {notify} from 'src/shared/actions/notifications'
 
 // Utils
@@ -36,16 +35,13 @@ const fakeNotify = notify
 
 export const Submit: FC = () => {
   const {query, generateMap} = useContext(QueryContext)
-  const {id, flow} = useContext(FlowContext)
+  const {flow} = useContext(FlowContext)
   const {add, update} = useContext(ResultsContext)
-  const {timeContext} = useContext(TimeContext)
   const [isLoading, setLoading] = useState(RemoteDataState.NotStarted)
   const [isRunning, setIsRunning] = useState(false)
-  const time = timeContext[id]
-  const tr = !!time && time.range
 
   const hasQueries = useMemo(() => {
-    return flow.data.all
+    return !!flow.data.all
       .map(p => p.type)
       .filter(p => p === 'query' || p === 'queryBuilder').length
   }, [flow.data])
@@ -54,7 +50,7 @@ export const Submit: FC = () => {
     if (hasQueries) {
       submit()
     }
-  }, [tr, hasQueries]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [flow.range, hasQueries]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const forceUpdate = (id, data) => {
     try {

@@ -5,6 +5,7 @@ import React, {
   ChangeEvent,
   MouseEvent,
   useState,
+  useEffect,
 } from 'react'
 import classnames from 'classnames'
 
@@ -29,6 +30,10 @@ const RenamablePageTitle: FC<Props> = ({
 }) => {
   const [isEditing, setEditingState] = useState<boolean>(false)
   const [workingName, setWorkingName] = useState<string>(name)
+
+  useEffect(() => {
+    setWorkingName(name)
+  }, [name])
 
   const handleStartEditing = (): void => {
     setEditingState(true)

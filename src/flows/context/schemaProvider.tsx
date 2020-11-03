@@ -70,7 +70,7 @@ export const SchemaProvider: FC<Props> = React.memo(({children}) => {
   }, [data.bucket, lastBucket, update])
 
   useEffect(() => {
-    if (loading !== RemoteDataState.NotStarted || !data.bucket) {
+    if (!data.bucket) {
       return
     }
     if (data.bucket === lastBucket) {
@@ -78,7 +78,7 @@ export const SchemaProvider: FC<Props> = React.memo(({children}) => {
     }
 
     dispatch(getAndSetBucketSchema(data.bucket))
-  }, [data.bucket, lastBucket, loading, dispatch])
+  }, [data.bucket, lastBucket, dispatch])
 
   const schema = useSelector(
     (state: AppState) => state.flow.schema[data.bucket?.name]?.schema || {}

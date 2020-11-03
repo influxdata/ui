@@ -19,7 +19,7 @@ const AnnotationTimeStartInput: FC = () => {
     dispatch,
   } = useContext(AnnotationFormContext)
 
-  const label = type === 'range' ? 'Start' : 'Timestamp'
+  const label = type === 'range' ? 'Start Time' : 'Timestamp'
 
   const handleChange = (e: ChangeEvent<InputRef>): void => {
     dispatch(updateAnnotationDraft({timeStart: e.target.value}))

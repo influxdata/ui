@@ -14,10 +14,16 @@ import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import SaveAsOverlay from 'src/dataExplorer/components/SaveAsOverlay'
 import DEDeleteDataOverlay from 'src/dataExplorer/components/DeleteDataOverlay'
 import Visualization from 'src/timeMachine/components/visualization/view'
+import AnnotationsToggleButton from 'src/annotations/components/AnnotationsToggleButton'
+import {FeatureFlag} from 'src/shared/utils/featureFlag'
+import AnnotationsControlBar from 'src/annotations/components/controlBar/AnnotationsControlBar'
+import {AddAnnotationDEOverlay} from 'src/overlays/components/index'
+import {EditAnnotationDEOverlay} from 'src/overlays/components/index'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {useLoadTimeReporting} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {ResourceType} from 'src/types'
@@ -36,6 +42,18 @@ const DataExplorerPage: FC = () => {
           path="/orgs/:orgID/data-explorer/delete-data"
           component={DEDeleteDataOverlay}
         />
+        {isFlagEnabled('annotations') && (
+          <Route
+            path="/orgs/:orgID/data-explorer/add-annotation"
+            component={AddAnnotationDEOverlay}
+          />
+        )}
+        {isFlagEnabled('annotations') && (
+          <Route
+            path="/orgs/:orgID/data-explorer/edit-annotation"
+            component={EditAnnotationDEOverlay}
+          />
+        )}
       </Switch>
       <GetResources resources={[ResourceType.Variables]}>
         <Page.Header fullWidth={true} testID="data-explorer--header">
@@ -46,6 +64,9 @@ const DataExplorerPage: FC = () => {
           <Page.ControlBarLeft>
             <Visualization />
             <VisOptionsButton />
+            <FeatureFlag name="annotations">
+              <AnnotationsToggleButton />
+            </FeatureFlag>
           </Page.ControlBarLeft>
           <Page.ControlBarRight>
             <DeleteDataButton />
@@ -53,6 +74,9 @@ const DataExplorerPage: FC = () => {
             <SaveAsButton />
           </Page.ControlBarRight>
         </Page.ControlBar>
+        <FeatureFlag name="annotations">
+          <AnnotationsControlBar />
+        </FeatureFlag>
         <Page.Contents fullWidth={true} scrollable={false}>
           <DataExplorer />
         </Page.Contents>

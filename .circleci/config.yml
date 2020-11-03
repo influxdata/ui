@@ -84,7 +84,7 @@ jobs:
           command: |
             docker build \
               -t quay.io/influxdb/ui-e2e:latest \
-              -f ./monitor-ci/docker/Dockerfile.idpe-e2e-test \
+              -f ./monitor-ci/docker/Dockerfile.cypress \
               ./ui
             docker push quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
             docker push quay.io/influxdb/ui-e2e:latest

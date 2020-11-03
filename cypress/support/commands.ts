@@ -17,8 +17,9 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
   \*/
 
   let userName = Cypress.env('username')
+  const runningAgainstIDPE = Cypress.env('runningAgainstIDPE') || false
 
-  if (false) {
+  if (runningAgainstIDPE) {
     // if context is UIe2e haven't decided how to set this up yet
     cy.task('incrementLoginCounter').then(count => {
       userName = count + userName

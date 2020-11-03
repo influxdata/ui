@@ -23,7 +23,6 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
     // if context is UIe2e haven't decided how to set this up yet
     cy.task('incrementLoginCounter').then(count => {
       userName = count + userName
-      console.log(count + userName)
     })
   }
 

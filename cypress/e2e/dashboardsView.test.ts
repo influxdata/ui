@@ -731,4 +731,96 @@ describe('Dashboard', () => {
           })
       })
   })
+
+  // based on issue #18339
+  it('should save a time format change and show in the dashboard cell card', () => {
+    const numLines = 360
+    cy.writeData(lines(numLines))
+    cy.get('@org').then(({id: orgID}: Organization) => {
+      cy.createDashboard(orgID).then(({body}) => {
+        cy.fixture('routes').then(({orgs}) => {
+          cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+        })
+      })
+    })
+    const timeFormatOriginal = 'YYYY-MM-DD HH:mm:ss ZZ'
+    const timeFormatNew = 'hh:mm a'
+
+    cy.log('creating new dashboard cell')
+    cy.getByTestID('add-cell--button').click()
+    cy.getByTestID(`selector-list m`).click()
+    cy.getByTestID('selector-list v').click()
+    cy.getByTestID(`selector-list tv1`).click()
+    cy.getByTestID('time-machine-submit-button').click()
+    cy.getByTestID('view-type--dropdown').click()
+    cy.getByTestID('view-type--line-plus-single-stat').click()
+
+    cy.log('asserting default graph time format, saving')
+    cy.getByTestID('cog-cell--button').click()
+    cy.getByTestID('dropdown--button').should('contain', timeFormatOriginal)
+    cy.getByTestID(`save-cell--button`).click()
+
+    cy.log('changing graph time format')
+    cy.getByTestID(`cell-context--toggle`).click()
+    cy.getByTestID(`cell-context--configure`).click()
+    cy.getByTestID('dropdown--button').should('contain', timeFormatOriginal)
+    cy.getByTestID('dropdown--button')
+      .contains(timeFormatOriginal)
+      .click()
+    cy.getByTestID('dropdown-item')
+      .contains(timeFormatNew)
+      .click()
+    cy.getByTestID('dropdown--button').should('contain', timeFormatNew)
+    cy.getByTestID(`save-cell--button`).click()
+
+    cy.log('asserting the time format has not changed after saving the cell')
+    cy.getByTestID(`cell-context--toggle`).click()
+    cy.getByTestID(`cell-context--configure`).click()
+    cy.getByTestID('dropdown--button').should('contain', timeFormatNew)
+  })
+
+  it('can sort values in a dashboard cell', () => {
+    const numLines = 360
+    cy.writeData(lines(numLines))
+    cy.get('@org').then(({id: orgID}: Organization) => {
+      cy.createDashboard(orgID).then(({body}) => {
+        cy.fixture('routes').then(({orgs}) => {
+          cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+        })
+      })
+    })
+
+    //creating new dashboard cell
+    cy.getByTestID('add-cell--button')
+      .click()
+      .then(() => {
+        cy.getByTestID(`selector-list m`)
+          .click()
+          .getByTestID('selector-list v')
+          .click()
+          .getByTestID(`selector-list tv1`)
+          .click()
+          .then(() => {
+            cy.getByTestID('time-machine-submit-button').click()
+          })
+      })
+
+    //change to table graph type
+    cy.getByTestID('view-type--dropdown')
+      .click()
+      .then(() => {
+        cy.getByTestID('view-type--table').click()
+      })
+    cy.getByTestID(`save-cell--button`).click()
+
+    //assert sorting
+    cy.getByTestID(`cell Name this Cell`).then(() => {
+      cy.getByTestID('_value-table-header')
+        .should('have.class', 'table-graph-cell')
+        .click()
+        .should('have.class', 'table-graph-cell__sort-asc')
+        .click()
+        .should('have.class', 'table-graph-cell__sort-desc')
+    })
+  })
 })

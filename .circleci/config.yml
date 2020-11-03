@@ -332,11 +332,7 @@ workflows:
             branches:
               only:
                 - master
-      - build-and-push-idpe-e2e-test-image:
-          filters:
-            branches:
-              only:
-                - master
+      - build-and-push-idpe-e2e-test-image
       - unit
       - lint
       - cloud-e2e:

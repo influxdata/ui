@@ -341,4 +341,24 @@ describe('Checks', () => {
       cy.getByTestID('inline-labels--empty').should('exist')
     })
   })
+
+  describe('Invoke external links', () => {
+    it('can visit documentation through a link on the checks page', () => {
+      cy.getByTestID('Checks--question-mark')
+        .trigger('mouseover')
+        .then(() => {
+          cy.getByTestID('Checks--question-mark--tooltip--contents').within(
+            () => {
+              cy.get('a')
+                .invoke('removeAttr', 'target')
+                .click()
+              cy.url().should(
+                'include',
+                'https://docs.influxdata.com/influxdb/v2.0/monitor-alert/checks/create/'
+              )
+            }
+          )
+        })
+    })
+  })
 })

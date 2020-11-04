@@ -43,7 +43,6 @@ const PREVIOUS_REGEXP = /__PREVIOUS_RESULT__/g
 
 const findOrgID = (text, buckets) => {
   const ast = parse(text)
-  debugger
 
   const _search = (node, acc = []) => {
     if (!node) {

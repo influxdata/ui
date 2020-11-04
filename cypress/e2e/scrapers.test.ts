@@ -24,8 +24,7 @@ describe.skip('Scrapers', () => {
     cy.get('[data-testid="resource-list--body"]', {timeout: PAGE_LOAD_SLA})
   })
 
-  // skipping until https://github.com/influxdata/ui/pull/64#discussion_r497827373 is addressed
-  describe.skip('from the org settings', () => {
+  describe('from the org settings', () => {
     it('can create a scraper from the create button in the page header', () => {
       const newScraper = '🐍craper'
       const newURL = 'http://google.com'

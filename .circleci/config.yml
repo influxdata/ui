@@ -173,7 +173,7 @@ jobs:
           command: |
             cd ./monitor-ci && make update && make build NODE=cypress
             docker load < ~/docker-cache/image.tar
-            docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-oss:latest
+            docker tag quay.io/influxdb/ui-oss:latest quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1}
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start

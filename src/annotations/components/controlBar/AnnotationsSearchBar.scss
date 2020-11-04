@@ -1,0 +1,46 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.annotations-searchbar {
+  position: relative;
+}
+
+.annotations-searchbar--suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 9999;
+}
+
+.annotations-searchbar--item {
+  align-items: flex-start;
+}
+
+.annotations-searchbar--swatch {
+  width: 10px;
+  height: 10px;
+  margin-right: $cf-marg-b;
+  margin-top: $cf-marg-a + $cf-border + $cf-border / 2;
+}
+
+.annotations-searchbar--item-details {
+  flex: 1 0 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.annotations-searchbar--item-name {
+  width: 100%;
+  margin-top: $cf-marg-a;
+
+  &:only-child {
+    margin-bottom: $cf-marg-a;
+  }
+}
+
+.annotations-searchbar--item-desc {
+  margin-top: $cf-border;
+  width: 100%;
+  opacity: 0.666;
+  margin-bottom: $cf-marg-a;
+  font-weight: $cf-font-weight--regular;
+}

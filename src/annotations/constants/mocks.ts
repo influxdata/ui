@@ -16,6 +16,9 @@ export interface AnnotationStream {
     timeStopCol: string
   }
   query: {
+    tags?: {
+      [key: string]: string
+    }
     measurement: string
     bucketName: string
   }
@@ -38,6 +41,9 @@ export const MOCK_ANNOTATION_STREAMS: AnnotationStream[] = [
       timeStopCol: '_timeStop',
     },
     query: {
+      tags: {
+        _field: 'deployments',
+      },
       measurement: 'annotations',
       bucketName: 'defBuck',
     },
@@ -58,6 +64,9 @@ export const MOCK_ANNOTATION_STREAMS: AnnotationStream[] = [
       timeStopCol: '_timeStop',
     },
     query: {
+      tags: {
+        _field: 'snacks',
+      },
       measurement: 'annotations',
       bucketName: 'defBuck',
     },
@@ -78,6 +87,11 @@ export const MOCK_ANNOTATION_STREAMS: AnnotationStream[] = [
       timeStopCol: '_timeStop',
     },
     query: {
+      tags: {
+        _field: 'hydrohomies',
+        water: 'filtered',
+        flavor: 'awesome',
+      },
       measurement: 'annotations',
       bucketName: 'defBuck',
     },

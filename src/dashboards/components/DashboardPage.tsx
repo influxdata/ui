@@ -11,16 +11,24 @@ import DashboardComponent from 'src/dashboards/components/Dashboard'
 import ManualRefresh from 'src/shared/components/ManualRefresh'
 import {HoverTimeProvider} from 'src/dashboards/utils/hoverTime'
 import VariablesControlBar from 'src/dashboards/components/variablesControlBar/VariablesControlBar'
+import AnnotationsControlBar from 'src/annotations/components/controlBar/AnnotationsControlBar'
 import LimitChecker from 'src/cloud/components/LimitChecker'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import EditVEO from 'src/dashboards/components/EditVEO'
 import NewVEO from 'src/dashboards/components/NewVEO'
-import {AddNoteOverlay, EditNoteOverlay} from 'src/overlays/components'
+import {
+  AddNoteOverlay,
+  EditNoteOverlay,
+  AddAnnotationDashboardOverlay,
+  EditAnnotationDashboardOverlay,
+} from 'src/overlays/components'
+import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {event} from 'src/cloud/utils/reporting'
 import {resetQueryCache} from 'src/shared/apis/queryCache'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Selectors
 import {getByID} from 'src/resources/selectors'
@@ -71,6 +79,9 @@ class DashboardPage extends Component<Props> {
               />
               <RateLimitAlert alertOnly={true} />
               <VariablesControlBar />
+              <FeatureFlag name="annotations">
+                <AnnotationsControlBar />
+              </FeatureFlag>
               <DashboardComponent manualRefresh={manualRefresh} />
             </HoverTimeProvider>
           </LimitChecker>
@@ -83,6 +94,18 @@ class DashboardPage extends Component<Props> {
             path={`${dashRoute}/notes/:cellID/edit`}
             component={EditNoteOverlay}
           />
+          {isFlagEnabled('annotations') && (
+            <Route
+              path={`${dashRoute}/add-annotation`}
+              component={AddAnnotationDashboardOverlay}
+            />
+          )}
+          {isFlagEnabled('annotations') && (
+            <Route
+              path={`${dashRoute}/edit-annotation`}
+              component={EditAnnotationDashboardOverlay}
+            />
+          )}
         </Switch>
       </>
     )

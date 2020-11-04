@@ -1,14 +1,17 @@
-import React, {FC, useContext, useMemo} from 'react'
-import {connect} from 'react-redux'
-import {AppState, Variable, Organization} from 'src/types'
+import React, {FC, useContext, useMemo, useEffect} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
+import {AppState, ResourceType, RemoteDataState} from 'src/types'
+import {parse} from 'src/external/parser'
 import {runQuery} from 'src/shared/apis/query'
 import {getWindowVars} from 'src/variables/utils/getWindowVars'
 import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
 import {getTimeRangeVars} from 'src/variables/utils/getTimeRangeVars'
 import {getVariables, asAssignment} from 'src/variables/selectors'
-import {getOrg} from 'src/organizations/selectors'
+import {getBuckets} from 'src/buckets/actions/thunks'
+import {getSortedBuckets} from 'src/buckets/selectors'
+import {getStatus} from 'src/resources/selectors'
 import {FlowContext} from 'src/flows/context/flow.current'
-import {fromFlux as parse} from '@influxdata/giraffe'
+import {fromFlux} from '@influxdata/giraffe'
 import {event} from 'src/cloud/utils/reporting'
 import {FluxResult} from 'src/types/flows'
 import {PIPE_DEFINITIONS} from 'src/flows'
@@ -38,9 +41,59 @@ export const QueryContext = React.createContext<QueryContextType>(
 
 const PREVIOUS_REGEXP = /__PREVIOUS_RESULT__/g
 
-type Props = StateProps
-export const QueryProvider: FC<Props> = ({children, variables, org}) => {
+const findOrgID = (text, buckets) => {
+  const ast = parse(text)
+
+  const _search = (node, acc = []) => {
+    if (!node) {
+      return acc
+    }
+    if (
+      node?.type === 'CallExpression' &&
+      node?.callee?.type === 'Identifier' &&
+      node?.callee?.name === 'from' &&
+      node?.arguments[0]?.properties[0]?.key?.name === 'bucket'
+    ) {
+      acc.push(node)
+    }
+
+    Object.values(node).forEach(val => {
+      if (Array.isArray(val)) {
+        val.forEach(_val => {
+          _search(_val, acc)
+        })
+      } else if (typeof val === 'object') {
+        _search(val, acc)
+      }
+    })
+
+    return acc
+  }
+
+  const queryBuckets = _search(ast).map(
+    node => node?.arguments[0]?.properties[0]?.value.value
+  )
+
+  const bucket = buckets.find(buck => queryBuckets.includes(buck.name))
+
+  return bucket?.orgID
+}
+
+export const QueryProvider: FC = ({children}) => {
   const {flow} = useContext(FlowContext)
+  const variables = useSelector((state: AppState) => getVariables(state))
+  const buckets = useSelector((state: AppState) => getSortedBuckets(state))
+  const bucketsLoadingState = useSelector((state: AppState) =>
+    getStatus(state, ResourceType.Buckets)
+  )
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (bucketsLoadingState === RemoteDataState.NotStarted) {
+      dispatch(getBuckets())
+    }
+  }, [bucketsLoadingState, dispatch])
 
   const vars = useMemo(() => {
     if (flow && flow?.range) {
@@ -109,12 +162,13 @@ export const QueryProvider: FC<Props> = ({children, variables, org}) => {
   }
 
   const query = (text: string) => {
+    const orgID = findOrgID(text, buckets)
     const windowVars = getWindowVars(text, vars)
     const extern = buildVarsOption([...vars, ...windowVars])
-    const queryID = generateHashedQueryID(text, variables, org.id)
+    const queryID = generateHashedQueryID(text, variables, orgID)
 
     event('runQuery', {context: 'flows'})
-    const result = runQuery(org.id, text, extern)
+    const result = runQuery(orgID, text, extern)
     setQueryByHashID(queryID, result)
     return result.promise
       .then(raw => {
@@ -128,13 +182,13 @@ export const QueryProvider: FC<Props> = ({children, variables, org}) => {
         return {
           source: text,
           raw: raw.csv,
-          parsed: parse(raw.csv),
+          parsed: fromFlux(raw.csv),
           error: null,
         }
       })
   }
 
-  if (!flow?.range) {
+  if (!flow?.range || bucketsLoadingState !== RemoteDataState.Done) {
     return null
   }
 
@@ -145,21 +199,4 @@ export const QueryProvider: FC<Props> = ({children, variables, org}) => {
   )
 }
 
-interface StateProps {
-  variables: Variable[]
-  org: Organization
-}
-
-const mstp = (state: AppState) => {
-  const variables = getVariables(state)
-  const org = getOrg(state)
-
-  return {
-    org,
-    variables,
-  }
-}
-
-const ConnectedQueryProvider = connect<StateProps>(mstp)(QueryProvider)
-
-export default ConnectedQueryProvider
+export default QueryProvider

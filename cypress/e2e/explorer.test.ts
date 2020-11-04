@@ -36,7 +36,7 @@ type GraphSnapshot = {
   name: string
 }
 
-const makeGraphSnapshot = (() => {
+const makeGraphSnapshot = () => {
   // local properties for makeGraphSnapshot function
   let lastGraphSnapsotIndex = 0
   const getNameAxes = (name: string) => `${name}-axes`
@@ -80,7 +80,7 @@ const makeGraphSnapshot = (() => {
       },
     }
   }
-})
+}
 
 describe('DataExplorer', () => {
   beforeEach(() => {

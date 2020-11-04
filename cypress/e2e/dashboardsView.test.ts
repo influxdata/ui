@@ -187,7 +187,7 @@ describe('Dashboard', () => {
     cy.getByTestID('cell-context--delete').click()
     cy.getByTestID('cell-context--delete-confirm').click()
     cy.wait(200)
-    
+
     // Clone View cell
     cy.getByTestID('cell-context--toggle').click()
     cy.getByTestID('cell-context--clone').click()

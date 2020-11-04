@@ -28,7 +28,8 @@ export const MarkdownRenderer: FC<Props> = ({
           if (cloudRenderers?.image) {
             return cloudRenderers.image
           }
-          return `${html.match(/"([^"]+)"/)[0]}`
+          const url = html.match(/"([^"]+)"/)[0]
+          return `![](${url})`
         }
         return html
       },

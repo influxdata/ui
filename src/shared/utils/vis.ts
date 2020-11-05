@@ -82,13 +82,13 @@ export const getFormatter = (
     })
   }
 
-  if(columnType === 'number' && base === ''){
+  if (columnType === 'number' && base === '') {
     return siPrefixFormatter({
       prefix,
       suffix,
       significantDigits: VIS_SIG_DIGITS,
       trimZeros,
-      format:true,
+      format: true,
     })
   }
 

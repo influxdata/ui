@@ -83,3 +83,9 @@ export const getCheckForView = (
 
   return viewType === 'check' ? state.resources.checks.byID[checkID] : null
 }
+
+export const getAllDashboards = (state: AppState): Dashboard[] =>
+  Object.values(state.resources.dashboards.byID)
+
+export const hasNoDashboards = (state: AppState): boolean =>
+  state.resources.dashboards.allIDs.length === 0

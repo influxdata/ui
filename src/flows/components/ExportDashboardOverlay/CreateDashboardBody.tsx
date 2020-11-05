@@ -5,53 +5,51 @@ import {
   Form,
   Grid,
   Input,
-  InputType,
 } from '@influxdata/clockface'
 import QueryTextPreview from 'src/flows/components/QueryTextPreview'
-import {OverlayContext} from 'src/flows/context/overlay'
+import {DashboardOverlayContext} from 'src/flows/context/dashboardOverlay'
 
 const CreateTaskBody: FC = () => {
   const {
-    handleSetEveryInterval,
-    handleSetTaskName,
+    cellName,
+    handleSetCellName,
+    handleSetDashboardName,
     hasError,
-    interval,
-    taskName,
-  } = useContext(OverlayContext)
+    dashboardName,
+  } = useContext(DashboardOverlayContext)
 
   return (
     <>
-      <Grid.Column widthXS={Columns.Nine}>
+      <Grid.Column widthXS={Columns.Twelve}>
         <Form.Element
-          label="Name"
+          label="New Dashboard Name"
           errorMessage={hasError && 'This field cannot be empty'}
         >
           <Input
-            name="name"
-            placeholder="Name your task"
+            name="dashboard"
+            placeholder="Name your dashboard"
             onChange={(event: ChangeEvent<HTMLInputElement>) =>
-              handleSetTaskName(event.target.value)
+              handleSetDashboardName(event.target.value)
             }
-            value={taskName}
-            testID="task-form-name"
+            value={dashboardName}
+            testID="dashboard-form-name"
             status={hasError ? ComponentStatus.Error : ComponentStatus.Default}
           />
         </Form.Element>
       </Grid.Column>
-      <Grid.Column widthXS={Columns.Three}>
+      <Grid.Column widthXS={Columns.Twelve}>
         <Form.Element
-          label="Run Every"
-          errorMessage={hasError && 'Invalid Time'}
+          label="New Cell Name"
+          errorMessage={hasError && 'This field cannot be empty'}
         >
           <Input
-            name="schedule"
-            type={InputType.Text}
-            placeholder="3h30s"
-            value={interval}
+            name="cell"
+            placeholder="Name your cell"
             onChange={(event: ChangeEvent<HTMLInputElement>) =>
-              handleSetEveryInterval(event.target.value)
+              handleSetCellName(event.target.value)
             }
-            testID="task-form-schedule-input"
+            value={cellName}
+            testID="dashboard-form-cellname"
             status={hasError ? ComponentStatus.Error : ComponentStatus.Default}
           />
         </Form.Element>

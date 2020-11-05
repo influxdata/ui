@@ -3,10 +3,13 @@ import React, {FC, useContext} from 'react'
 import {useHistory} from 'react-router-dom'
 
 // Components
-import ExportTaskButtons from './ExportTaskButtons'
-import UpdateTaskBody from './UpdateTaskBody'
-import CreateTaskBody from './CreateTaskBody'
-import {OverlayContext, ExportAsTask} from 'src/flows/context/overlay'
+import ExportDashboardButtons from './ExportDashboardButtons'
+import UpdateDashboardBody from './UpdateDashboardBody'
+import CreateDashboardBody from './CreateDashboardBody'
+import {
+  DashboardOverlayContext,
+  ExportToDashboard,
+} from 'src/flows/context/dashboardOverlay'
 import {
   Form,
   Grid,
@@ -18,8 +21,8 @@ import {
   Orientation,
 } from '@influxdata/clockface'
 
-const ExportTaskOverlay: FC = () => {
-  const {activeTab, handleSetActiveTab} = useContext(OverlayContext)
+const ExportDashboardOverlay: FC = () => {
+  const {activeTab, handleSetActiveTab} = useContext(DashboardOverlayContext)
 
   const history = useHistory()
 
@@ -27,7 +30,7 @@ const ExportTaskOverlay: FC = () => {
     <Overlay visible={true}>
       <Overlay.Container maxWidth={600}>
         <Overlay.Header
-          title="Export As Task"
+          title="Export To Dashboard"
           onDismiss={() => history.goBack()}
           testID="export-as-overlay--header"
         />
@@ -35,31 +38,31 @@ const ExportTaskOverlay: FC = () => {
           <Tabs.Container orientation={Orientation.Horizontal}>
             <Tabs alignment={Alignment.Left} size={ComponentSize.Small}>
               <Tabs.Tab
-                id={ExportAsTask.Create}
+                id={ExportToDashboard.Create}
                 text="Create New"
                 testID="task--radio-button"
-                onClick={() => handleSetActiveTab(ExportAsTask.Create)}
-                active={activeTab === ExportAsTask.Create}
+                onClick={() => handleSetActiveTab(ExportToDashboard.Create)}
+                active={activeTab === ExportToDashboard.Create}
               />
               <Tabs.Tab
-                id={ExportAsTask.Update}
+                id={ExportToDashboard.Update}
                 text="Update Existing"
                 testID="variable-radio-button"
-                onClick={() => handleSetActiveTab(ExportAsTask.Update)}
-                active={activeTab === ExportAsTask.Update}
+                onClick={() => handleSetActiveTab(ExportToDashboard.Update)}
+                active={activeTab === ExportToDashboard.Update}
               />
             </Tabs>
             <Tabs.TabContents>
               <Form>
                 <Grid>
                   <Grid.Row>
-                    {activeTab === ExportAsTask.Create ? (
-                      <CreateTaskBody />
+                    {activeTab === ExportToDashboard.Create ? (
+                      <CreateDashboardBody />
                     ) : (
-                      <UpdateTaskBody />
+                      <UpdateDashboardBody />
                     )}
                     <Grid.Column widthXS={Columns.Twelve}>
-                      <ExportTaskButtons />
+                      <ExportDashboardButtons />
                     </Grid.Column>
                   </Grid.Row>
                 </Grid>
@@ -72,4 +75,4 @@ const ExportTaskOverlay: FC = () => {
   )
 }
 
-export default ExportTaskOverlay
+export default ExportDashboardOverlay

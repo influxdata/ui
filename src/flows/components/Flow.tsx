@@ -10,8 +10,10 @@ import CurrentFlowProvider from 'src/flows/context/flow.current'
 import {FlowListContext} from 'src/flows/context/flow.list'
 import {ScrollProvider} from 'src/flows/context/scroll'
 import OverlayProvider from 'src/flows/context/overlay'
+import DashboardOverlayProvider from 'src/flows/context/dashboardOverlay'
 import FlowPage from 'src/flows/components/FlowPage'
 import ExportTaskOverlay from 'src/flows/components/ExportTaskOverlay/ExportTaskOverlay'
+import ExportDashboardOverlay from 'src/flows/components/ExportDashboardOverlay/ExportDashboardOverlay'
 
 const FlowFromRoute = () => {
   const {id} = useParams()
@@ -36,13 +38,18 @@ const FlowContainer: FC = () => {
         <RefProvider>
           <ScrollProvider>
             <OverlayProvider>
-              <Switch>
-                {/* wrapping in a switch in anticipation of export to dashboard */}
-                <Route
-                  path="/orgs/:orgID/flows/:id/export-task"
-                  component={ExportTaskOverlay}
-                />
-              </Switch>
+              <DashboardOverlayProvider>
+                <Switch>
+                  <Route
+                    path="/orgs/:orgID/flows/:id/export-task"
+                    component={ExportTaskOverlay}
+                  />
+                  <Route
+                    path="/orgs/:orgID/flows/:id/export-dashboard"
+                    component={ExportDashboardOverlay}
+                  />
+                </Switch>
+              </DashboardOverlayProvider>
             </OverlayProvider>
             <FlowPage />
           </ScrollProvider>

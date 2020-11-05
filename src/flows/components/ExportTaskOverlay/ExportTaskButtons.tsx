@@ -1,5 +1,6 @@
 import React, {FC, useContext} from 'react'
-import {useHistory} from 'react-router-dom'
+import {useDispatch} from 'react-redux'
+import {RouteProps, useHistory, useLocation} from 'react-router-dom'
 import {
   Button,
   ButtonType,
@@ -7,15 +8,67 @@ import {
   ComponentStatus,
   Form,
 } from '@influxdata/clockface'
-import {OverlayContext} from 'src/flows/context/overlay'
+import {ExportAsTask, OverlayContext} from 'src/flows/context/overlay'
 
-type Props = {
-  onSubmit: () => void
-}
+// Utils
+import {saveNewScript, updateTask} from 'src/tasks/actions/thunks'
+import {event} from 'src/cloud/utils/reporting'
 
-const ExportTaskButtons: FC<Props> = ({onSubmit}) => {
+const ExportTaskButtons: FC = () => {
   const history = useHistory()
-  const {canSubmit} = useContext(OverlayContext)
+
+  const {
+    activeTab,
+    canSubmit,
+    handleSetError,
+    interval,
+    selectedTask,
+    taskName,
+  } = useContext(OverlayContext)
+
+  const location: RouteProps['location'] = useLocation()
+  const params = location.state
+  const {queryText} = params[0]
+
+  const formattedQueryText = queryText
+    .trim()
+    .split('|>')
+    .join('\n  |>')
+
+  const dispatch = useDispatch()
+
+  const onCreate = () => {
+    if (!/\d/.test(interval)) {
+      handleSetError(true)
+      return
+    }
+    event('Save Flow as Task')
+    const taskOption: string = `option task = { \n  name: "${taskName}",\n  every: ${interval},\n  offset: 0s\n}`
+    const variable: string = `option v = {\n  timeRangeStart: -${interval},\n  timeRangeStop: now()\n}`
+    const preamble = `${variable}\n\n${taskOption}`
+    dispatch(saveNewScript(formattedQueryText, preamble))
+  }
+
+  const onUpdate = () => {
+    if (!/\d/.test(interval) || !selectedTask?.name) {
+      handleSetError(true)
+      return
+    }
+    event('Update Task from Flow')
+    const taskOption: string = `option task = { \n  name: "${selectedTask.name}",\n  every: ${interval},\n  offset: 0s\n}`
+    const variable: string = `option v = {\n  timeRangeStart: -${interval},\n  timeRangeStop: now()\n}`
+    const preamble = `${variable}\n\n${taskOption}`
+    dispatch(
+      updateTask({
+        script: formattedQueryText,
+        preamble,
+        interval,
+        task: selectedTask,
+      })
+    )
+  }
+
+  const onSubmit = activeTab === ExportAsTask.Create ? onCreate : onUpdate
 
   return (
     <Form.Footer>

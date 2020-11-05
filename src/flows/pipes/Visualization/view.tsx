@@ -9,7 +9,8 @@ import React, {
 } from 'react'
 
 // Components
-import {SquareButton, IconFont, ComponentColor} from '@influxdata/clockface'
+import {ComponentColor, IconFont, SquareButton} from '@influxdata/clockface'
+import ExportButton from 'src/flows/components/panel/ExportDashboardButton'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 import DashboardList from './DashboardList'
 import ViewSwitcher from 'src/shared/components/ViewSwitcher'
@@ -113,7 +114,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
   }, [loading])
 
   return (
-    <Context controls={controls}>
+    <Context controls={controls} persistentControl={<ExportButton />}>
       {options}
       <Resizer
         resizingEnabled={!!results.raw}

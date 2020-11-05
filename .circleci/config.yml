@@ -173,15 +173,20 @@ jobs:
           command: |
             cd ./monitor-ci && make update && make build NODE=cypress
             docker load < ~/docker-cache/image.tar
-            docker tag quay.io/influxdb/ui-oss:latest quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1}
+            docker tag quay.io/influxdb/ui-oss:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start
       - run:
-          name: Run e2e tests
+          name: Run shared e2e tests
           no_output_timeout: 30m
           command: |
-            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser chrome --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/(shared|oss)/**/*.test.ts" | circleci tests split | paste -sd "," -)"
+            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser chrome --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/shared/**/*.test.ts" | circleci tests split | paste -sd "," -)"
+      - run:
+          name: Run oss e2e tests
+          no_output_timeout: 30m
+          command: |
+            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser chrome --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/oss/**/*.test.ts" | circleci tests split | paste -sd "," -)"
       - store_test_results:
           path: monitor-ci/test-artifacts/results
       - store_artifacts:
@@ -220,10 +225,15 @@ jobs:
           name: Start the cluster
           command: cd ./monitor-ci; make start
       - run:
-          name: Run e2e tests
+          name: Run shared e2e tests
           no_output_timeout: 30m
           command: |
-            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser chrome --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/(shared|cloud)/**/*.test.ts" | circleci tests split | paste -sd "," -)"
+            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser chrome --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/shared/**/*.test.ts" | circleci tests split | paste -sd "," -)"
+      - run:
+          name: Run cloud e2e tests
+          no_output_timeout: 30m
+          command: |
+            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser chrome --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/cloud/**/*.test.ts" | circleci tests split | paste -sd "," -)"
       - store_test_results:
           path: monitor-ci/test-artifacts/results
       - store_artifacts:

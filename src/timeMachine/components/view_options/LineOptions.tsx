@@ -15,6 +15,7 @@ import ColumnSelector from 'src/shared/components/ColumnSelector'
 import Checkbox from 'src/shared/components/Checkbox'
 import TimeFormat from 'src/timeMachine/components/view_options/TimeFormat'
 import LegendOrientation from 'src/timeMachine/components/view_options/LegendOrientation'
+import AxisTicksGenerator from 'src/shared/components/axisTicks/AxisTicksGenerator'
 
 // Actions
 import {
@@ -33,6 +34,14 @@ import {
   setHoverDimension,
   setLegendOpacity,
   setLegendOrientationThreshold,
+  setGenerateXAxisTicks,
+  setXTotalTicks,
+  setXTickStart,
+  setXTickStep,
+  setGenerateYAxisTicks,
+  setYTotalTicks,
+  setYTickStart,
+  setYTickStep,
 } from 'src/timeMachine/actions'
 
 // Utils
@@ -98,6 +107,14 @@ class LineOptions extends PureComponent<Props> {
       onSetHoverDimension,
       onSetLegendOpacity,
       onSetLegendOrientationThreshold,
+      onSetGenerateXAxisTicks,
+      onSetXTotalTicks,
+      onSetXTickStart,
+      onSetXTickStep,
+      onSetGenerateYAxisTicks,
+      onSetYTotalTicks,
+      onSetYTickStart,
+      onSetYTickStep,
     } = this.props
 
     return (
@@ -198,6 +215,17 @@ class LineOptions extends PureComponent<Props> {
           onUpdateAxisSuffix={suffix => onUpdateAxisSuffix(suffix, 'y')}
         />
         <Grid.Column>
+          <AxisTicksGenerator
+            axisName="y"
+            columnType={yColumn}
+            label="Y Axis Tick Generator"
+            onSetGenerateAxisTicks={onSetGenerateYAxisTicks}
+            onSetTotalTicks={onSetYTotalTicks}
+            onSetTickStart={onSetYTickStart}
+            onSetTickStep={onSetYTickStep}
+          />
+        </Grid.Column>
+        <Grid.Column>
           <AutoDomainInput
             domain={this.yDomain}
             onSetDomain={this.handleSetYDomain}
@@ -232,6 +260,20 @@ class LineOptions extends PureComponent<Props> {
               )}
             />
           </Form.Element>
+        </Grid.Column>
+        <Grid.Column>
+          <h5 className="view-options--header">X Axis</h5>
+        </Grid.Column>
+        <Grid.Column>
+          <AxisTicksGenerator
+            axisName="x"
+            columnType={xColumn}
+            label="X Axis Tick Generator"
+            onSetGenerateAxisTicks={onSetGenerateXAxisTicks}
+            onSetTotalTicks={onSetXTotalTicks}
+            onSetTickStart={onSetXTickStart}
+            onSetTickStep={onSetXTickStep}
+          />
         </Grid.Column>
         <LegendOrientation
           onLegendOpacityChange={onSetLegendOpacity}
@@ -288,6 +330,14 @@ const mdtp = {
   onSetHoverDimension: setHoverDimension,
   onSetLegendOpacity: setLegendOpacity,
   onSetLegendOrientationThreshold: setLegendOrientationThreshold,
+  onSetGenerateXAxisTicks: setGenerateXAxisTicks,
+  onSetXTotalTicks: setXTotalTicks,
+  onSetXTickStart: setXTickStart,
+  onSetXTickStep: setXTickStep,
+  onSetGenerateYAxisTicks: setGenerateYAxisTicks,
+  onSetYTotalTicks: setYTotalTicks,
+  onSetYTickStart: setYTickStart,
+  onSetYTickStep: setYTickStep,
 }
 
 const connector = connect(mstp, mdtp)

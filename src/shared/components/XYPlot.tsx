@@ -12,6 +12,7 @@ import {
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 
 // Utils
+import {useAxisTicksGenerator} from 'src/shared/utils/useAxisTicksGenerator'
 import {
   useLegendOpacity,
   useLegendOrientationThreshold,
@@ -63,6 +64,12 @@ const XYPlot: FC<Props> = ({
     hoverDimension,
     legendOpacity,
     legendOrientationThreshold,
+    xTotalTicks,
+    xTickStart,
+    xTickStep,
+    yTotalTicks,
+    yTickStart,
+    yTickStep,
     axes: {
       x: {
         label: xAxisLabel,
@@ -84,6 +91,14 @@ const XYPlot: FC<Props> = ({
   },
   theme,
 }) => {
+  const axisTicksOptions = useAxisTicksGenerator({
+    xTotalTicks,
+    xTickStart,
+    xTickStep,
+    yTotalTicks,
+    yTickStart,
+    yTickStep,
+  })
   const tooltipOpacity = useLegendOpacity(legendOpacity)
   const tooltipOrientationThreshold = useLegendOrientationThreshold(
     legendOrientationThreshold
@@ -173,6 +188,7 @@ const XYPlot: FC<Props> = ({
     yDomain,
     onSetYDomain,
     onResetYDomain,
+    ...axisTicksOptions,
     legendColumns,
     legendOpacity: tooltipOpacity,
     legendOrientationThreshold: tooltipOrientationThreshold,

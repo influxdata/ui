@@ -190,8 +190,8 @@ http.post(
       cy.reload()
     })
 
-    it('can edit a task', () => {
-      // Disabling the test
+    it('can edit and delete a task', () => {
+      // Disabling the task
       cy.getByTestID('task-card--slide-toggle')
         .should('have.class', 'active')
         .then(() => {
@@ -238,17 +238,21 @@ http.post(
       // Delete the label
       cy.getByTestID(`label--pill--delete ${labelName}`).click({force: true})
       cy.getByTestID('inline-labels--empty').should('exist')
-    })
 
-    it('can delete a task', () => {
+      // Now delete the task
       cy.getByTestID('task-card')
+        // Commenting out .first() makes this pass locally, but
+        // according to
         // .first()
         .within(() => {
           cy.getByTestID('task-context--delete--button').click()
         })
         .then(() => {
-          cy.getByTestID('task-context--delete--confirm-button')
+          cy.getByTestID('task-context--delete--confirm-button').click()
         })
+
+      // Empty state should appear when no tasks are present
+      cy.getByTestID('empty-tasks-list').should('exist')
     })
 
     //skipping until this issue is resolved

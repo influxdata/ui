@@ -23,16 +23,25 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
     cy.task('incrementLoginCounter').then(count => {
       userName = count + userName
     })
-    cy.visit('/')
+
     cy.log(userName)
-    cy.get('[name="login"]').type(userName)
-    cy.get('[name="password"]').type(Cypress.env('password'))
-    cy.get('button')
-      .contains('Login')
-      .click()
-    cy.get('button')
-      .contains('Grant Access')
-      .click()
+
+    cy.visit('/api/v2/signin')
+      .then(() => cy.get('#login').type(userName))
+      .then(() => cy.get('#password').type(Cypress.env('password')))
+      .then(() => cy.get('#submit-login').click())
+      .then(() => cy.get('.theme-btn--success').click())
+
+    // cy.visit('/')
+    // cy.log(userName)
+    // cy.get('[name="login"]').type(userName)
+    // cy.get('[name="password"]').type(Cypress.env('password'))
+    // cy.get('button')
+    //   .contains('Login')
+    //   .click()
+    // cy.get('button')
+    //   .contains('Grant Access')
+    //   .click()
   } else {
     return cy.setupUser().then(body => {
       return cy

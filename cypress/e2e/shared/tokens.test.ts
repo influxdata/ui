@@ -168,6 +168,9 @@ describe('tokens', () => {
       .first()
       .within(() => {
         cy.getByTestID('delete-token--button').click()
+      })
+      .then(() => {
+        cy.getByTestID('delete-token--confirm-button').should('be.visible')
 
         cy.getByTestID('delete-token--confirm-button').click()
       })
@@ -176,6 +179,9 @@ describe('tokens', () => {
       .first()
       .within(() => {
         cy.getByTestID('delete-token--button').click()
+      })
+      .then(() => {
+        cy.getByTestID('delete-token--confirm-button').should('be.visible')
 
         cy.getByTestID('delete-token--confirm-button').click()
       })
@@ -184,6 +190,9 @@ describe('tokens', () => {
       .first()
       .within(() => {
         cy.getByTestID('delete-token--button').click()
+      })
+      .then(() => {
+        cy.getByTestID('delete-token--confirm-button').should('be.visible')
 
         cy.getByTestID('delete-token--confirm-button').click()
       })

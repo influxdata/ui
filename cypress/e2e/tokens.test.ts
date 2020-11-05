@@ -354,13 +354,15 @@ describe('tokens', () => {
   })
 
   it('can do sorting', () => {
-    cy.getByTestID(`token-card ${Cypress.env('username')}'s Token`).within(
-      () => {
+    cy.getByTestID(`token-card ${Cypress.env('username')}'s Token`)
+      .within(() => {
+        cy.getByTestID('delete-token--button').should('be.visible')
         cy.getByTestID('delete-token--button').click()
-
+      })
+      .then(() => {
+        cy.getByTestID('delete-token--confirm-button').should('be.visible')
         cy.getByTestID('delete-token--confirm-button').click()
-      }
-    )
+      })
 
     cy.log('sort by Description (Asc)')
 

@@ -15,9 +15,6 @@ jobs:
           name: Grab compose files
           command: git clone git@github.com:influxdata/monitor-ci.git
       - run:
-          name: Copy over the testing variables
-          command: cp ./monitor-ci/env.testing ./monitor-ci/.env
-      - run:
           name: Build the ui docker image
           command: |
             cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
@@ -32,6 +29,33 @@ jobs:
             docker save -o docker-cache/image.tar quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1}
       - save_cache:
           key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - docker-cache
+  build-cypress-image:
+    machine:
+      image: ubuntu-2004:202008-01
+      docker_layer_caching: true
+    parallelism: 10
+    working_directory: ~/
+    resource_class: large
+    steps:
+      - checkout:
+          path: ./ui
+      - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
+      - run:
+          name: Grab compose files
+          command: git clone git@github.com:influxdata/monitor-ci.git
+      - run:
+          name: Build the cypress docker image
+          command: |
+            docker build \
+              -t quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} \
+              -f ./monitor-ci/docker/Dockerfile.cypress \
+              ./ui
+            mkdir -p docker-cache
+            docker save -o docker-cache/image.tar quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
+      - save_cache:
+          key: UI_CYPRESS_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - docker-cache
   build-prod-image:
@@ -119,6 +143,26 @@ jobs:
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
             docker push quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1}
             docker push quay.io/influxdb/ui-acceptance:latest
+  share-cypress-image:
+    docker:
+      - image: circleci/golang:1.15-node
+    working_directory: ~/
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - restore_cache:
+          key: UI_CYPRESS_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
+      - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
+      - run:
+          name: Load the prod image
+          command: |
+            docker load < ~/docker-cache/image.tar
+      - run:
+          name: Push the image to quay
+          command: |
+            docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} quay.io/influxdb/ui-e2e:latest
+            docker push quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
+            docker push quay.io/influxdb/ui-e2e:latest
   cloud-e2e:
     machine:
       image: ubuntu-2004:202008-01
@@ -127,8 +171,6 @@ jobs:
     working_directory: ~/
     resource_class: large
     steps:
-      - restore_cache:
-          key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
@@ -141,11 +183,21 @@ jobs:
       - run:
           name: Update the images we're using
           command: |
-            cd ./monitor-ci && make update && make build NODE=cypress
-            docker tag local/cypress:latest quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
-            docker tag local/cypress:latest quay.io/influxdb/ui-e2e:latest
+            cd ./monitor-ci && make update
+      - restore_cache:
+          key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Load image from cache
+          command: |
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
+      - restore_cache:
+          key: UI_CYPRESS_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Load image from cache
+          command: |
+            docker load < ~/docker-cache/image.tar
+            docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} local/cypress:latest
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start
@@ -187,7 +239,21 @@ jobs:
       - run:
           name: Update the images we're using
           command: |
-            cd ./monitor-ci && make update && make build NODE=cypress
+            cd ./monitor-ci && make update
+      - restore_cache:
+          key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Load image from cache
+          command: |
+            docker load < ~/docker-cache/image.tar
+            docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
+      - restore_cache:
+          key: UI_CYPRESS_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Load image from cache
+          command: |
+            docker load < ~/docker-cache/image.tar
+            docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} local/cypress:latest
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start
@@ -211,8 +277,6 @@ jobs:
     working_directory: ~/
     resource_class: large
     steps:
-      - restore_cache:
-          key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
@@ -226,8 +290,20 @@ jobs:
           name: Update the images we're using
           command: |
             cd ./monitor-ci && make update
+      - restore_cache:
+          key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Load image from cache
+          command: |
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
+      - restore_cache:
+          key: UI_CYPRESS_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Load image from cache
+          command: |
+            docker load < ~/docker-cache/image.tar
+            docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} local/cypress:latest
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start
@@ -312,6 +388,7 @@ workflows:
   build:
     jobs:
       - build-image
+      - build-cypress-image
       - build-prod-image:
           filters:
             branches:
@@ -322,9 +399,11 @@ workflows:
       - cloud-e2e:
           requires:
             - build-image
+            - build-cypress-image
       - smoke:
           requires:
             - build-image
+            - build-cypress-image
       - deploy:
           filters:
             branches:
@@ -343,6 +422,17 @@ workflows:
                 - master
           requires:
             - build-image
+            - unit
+            - lint
+            - smoke
+            - cloud-e2e
+      - share-cypress-image:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - build-cypress-image
             - unit
             - lint
             - smoke

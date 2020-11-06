@@ -1,10 +1,7 @@
 // Libraries
-import React, {FC, useContext, useEffect, useState} from 'react'
+import React, {FC, useCallback, useContext, useEffect, useState} from 'react'
 import {RouteProps, useLocation} from 'react-router-dom'
-import {
-  ComponentSize,
-  TechnoSpinner,
-} from '@influxdata/clockface'
+import {ComponentSize, TechnoSpinner} from '@influxdata/clockface'
 
 // Components
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
@@ -25,16 +22,19 @@ const Visualization: FC = () => {
   const {queryText, properties} = params[0]
   const {query} = useContext(QueryContext)
 
-  const queryAndSetResults = async (text: string) => {
-    setLoading(RemoteDataState.Loading)
-    const result = await query(text)
-    setLoading(RemoteDataState.Done)
-    setResults(result)
-  }
+  const queryAndSetResults = useCallback(
+    async (text: string) => {
+      setLoading(RemoteDataState.Loading)
+      const result = await query(text)
+      setLoading(RemoteDataState.Done)
+      setResults(result)
+    },
+    [setLoading, setResults, query]
+  )
 
   useEffect(() => {
     queryAndSetResults(queryText)
-  }, [queryText])
+  }, [queryText, queryAndSetResults])
 
   let body = (
     <TechnoSpinner strokeWidth={ComponentSize.Small} diameterPixels={32} />
@@ -73,4 +73,3 @@ export default () => (
     <Visualization />
   </QueryProvider>
 )
-

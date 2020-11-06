@@ -13,17 +13,13 @@ const CreateTaskBody: FC = () => {
     cellName,
     handleSetCellName,
     handleSetDashboardName,
-    hasError,
     dashboardName,
   } = useContext(DashboardOverlayContext)
 
   return (
     <>
       <Grid.Column widthXS={Columns.Twelve}>
-        <Form.Element
-          label="New Dashboard Name"
-          errorMessage={hasError && 'This field cannot be empty'}
-        >
+        <Form.Element label="New Dashboard Name">
           <Input
             name="dashboard"
             placeholder="Name your dashboard"
@@ -32,15 +28,12 @@ const CreateTaskBody: FC = () => {
             }
             value={dashboardName}
             testID="dashboard-form-name"
-            status={hasError ? ComponentStatus.Error : ComponentStatus.Default}
+            status={ComponentStatus.Default}
           />
         </Form.Element>
       </Grid.Column>
       <Grid.Column widthXS={Columns.Twelve}>
-        <Form.Element
-          label="New Cell Name"
-          errorMessage={hasError && 'This field cannot be empty'}
-        >
+        <Form.Element label="New Cell Name">
           <Input
             name="cell"
             placeholder="Name your cell"
@@ -49,7 +42,7 @@ const CreateTaskBody: FC = () => {
             }
             value={cellName}
             testID="dashboard-form-cellname"
-            status={hasError ? ComponentStatus.Error : ComponentStatus.Default}
+            status={ComponentStatus.Default}
           />
         </Form.Element>
       </Grid.Column>

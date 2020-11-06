@@ -49,7 +49,6 @@ const ExportDashboardButtons: FC = () => {
   const {
     activeTab,
     canSubmit,
-    handleSetError,
     selectedCell,
     selectedDashboard,
     cellName,

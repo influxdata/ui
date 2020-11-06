@@ -12,12 +12,10 @@ export interface DashboardOverlayContext {
   activeTab: ExportToDashboard
   canSubmit: () => boolean
   handleSetActiveTab: (tab: ExportToDashboard) => void
-  handleSetError: (value: boolean) => void
   handleSetCell: (cell: View) => void
   handleSetCellName: (value: string) => void
   handleSetDashboard: (dashboard: Dashboard) => void
   handleSetDashboardName: (value: string) => void
-  hasError: boolean
   cellName: string
   selectedCell: View | undefined
   selectedDashboard: Dashboard | undefined
@@ -28,12 +26,10 @@ export const DEFAULT_CONTEXT: DashboardOverlayContext = {
   activeTab: ExportToDashboard.Create,
   canSubmit: () => false,
   handleSetActiveTab: () => {},
-  handleSetError: () => {},
   handleSetCell: () => {},
   handleSetCellName: () => {},
   handleSetDashboard: () => {},
   handleSetDashboardName: () => {},
-  hasError: false,
   cellName: '',
   selectedCell: undefined,
   selectedDashboard: undefined,
@@ -50,7 +46,6 @@ const DashboardOverlayProvider: FC = ({children}) => {
   const [activeTab, setActiveTab] = useState(ExportToDashboard.Create)
   const [selectedDashboard, setDashboard] = useState<Dashboard>(undefined)
   const [selectedCell, setCell] = useState<View>(undefined)
-  const [hasError, setHasError] = useState(false)
   const [dashboardName, setDashboardName] = useState('')
   const [cellName, setCellName] = useState('')
 
@@ -64,34 +59,21 @@ const DashboardOverlayProvider: FC = ({children}) => {
     setActiveTab(tab)
   }, [])
 
-  const handleSetError = useCallback((value: boolean): void => {
-    setHasError(value)
-  }, [])
-
   const handleSetCellName = useCallback(
     (value: string): void => {
-      if (hasError) {
-        setHasError(false)
-      }
       setCellName(value)
     },
-    [hasError]
+    [setCellName]
   )
   const handleSetDashboardName = useCallback(
     (value: string): void => {
-      if (hasError) {
-        setHasError(false)
-      }
       setDashboardName(value)
     },
-    [hasError]
+    [setDashboardName]
   )
 
   const handleSetDashboard = useCallback(
     (dashboard: Dashboard): void => {
-      if (hasError) {
-        setHasError(false)
-      }
       if (dashboard?.id !== selectedDashboard?.id) {
         setDashboard(dashboard)
         // reset the selected cell when the dashboard selection changes
@@ -99,16 +81,13 @@ const DashboardOverlayProvider: FC = ({children}) => {
         setCellName('')
       }
     },
-    [hasError, selectedDashboard]
+    [setCell, selectedDashboard]
   )
   const handleSetCell = useCallback(
     (cell: View): void => {
-      if (hasError) {
-        setHasError(false)
-      }
       setCell(cell)
     },
-    [hasError]
+    [setCell]
   )
 
   const canSubmit = useCallback(() => {
@@ -127,12 +106,10 @@ const DashboardOverlayProvider: FC = ({children}) => {
         activeTab,
         canSubmit,
         handleSetActiveTab,
-        handleSetError,
         handleSetCell,
         handleSetCellName,
         handleSetDashboard,
         handleSetDashboardName,
-        hasError,
         cellName,
         selectedCell,
         selectedDashboard,

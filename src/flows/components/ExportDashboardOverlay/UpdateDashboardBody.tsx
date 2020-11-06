@@ -19,7 +19,7 @@ import {
 import {hasNoDashboards as hasNoDashboardsSelector} from 'src/dashboards/selectors'
 
 const UpdateDashboardBody: FC = () => {
-  const {hasError, cellName, handleSetCellName, selectedCell} = useContext(
+  const {cellName, handleSetCellName, selectedCell} = useContext(
     DashboardOverlayContext
   )
 
@@ -37,27 +37,18 @@ const UpdateDashboardBody: FC = () => {
   return (
     <>
       <Grid.Column widthXS={Columns.Twelve}>
-        <Form.Element
-          label="Destination Dashboard"
-          errorMessage={hasError && 'This field cannot be empty'}
-        >
+        <Form.Element label="Destination Dashboard">
           <DashboardDropdown />
         </Form.Element>
       </Grid.Column>
       <Grid.Column widthXS={Columns.Twelve}>
-        <Form.Element
-          label="Destination Cell"
-          errorMessage={hasError && 'This field cannot be empty'}
-        >
+        <Form.Element label="Destination Cell">
           <CellsDropdown />
         </Form.Element>
       </Grid.Column>
       {selectedCell && selectedCell.id === CREATE_CELL && (
         <Grid.Column widthXS={Columns.Twelve}>
-          <Form.Element
-            label="New Cell Name"
-            errorMessage={hasError && 'This field cannot be empty'}
-          >
+          <Form.Element label="New Cell Name">
             <Input
               name="cell"
               placeholder="Name your cell"
@@ -66,9 +57,7 @@ const UpdateDashboardBody: FC = () => {
               }
               value={cellName}
               testID="dashboard-form-cellname"
-              status={
-                hasError ? ComponentStatus.Error : ComponentStatus.Default
-              }
+              status={ComponentStatus.Default}
             />
           </Form.Element>
         </Grid.Column>

@@ -27,15 +27,15 @@ const Notifications: FC = () => {
   const notifications = useSelector(getNotifications)
   const dispatch = useDispatch()
 
-  const handleDismiss = (id?: string): void => {
-    dispatch(dismissNotification(id))
-  }
-
   return (
     <>
       {notifications.map(
         ({duration, icon, id, message, style, buttonElement}) => {
           const gradient = matchGradientToColor(style)
+
+          const handleDismiss = (): void => {
+            dispatch(dismissNotification(id))
+          }
 
           return (
             <Notification
@@ -45,8 +45,8 @@ const Notifications: FC = () => {
               duration={duration}
               size={ComponentSize.ExtraSmall}
               gradient={gradient}
-              onTimeout={dismissNotification}
-              onDismiss={dismissNotification}
+              onTimeout={handleDismiss}
+              onDismiss={handleDismiss}
               testID={`notification-${style}`}
             >
               <span className="notification--message">{message}</span>

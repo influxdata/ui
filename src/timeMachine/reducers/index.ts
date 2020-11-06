@@ -799,9 +799,10 @@ export const timeMachineReducer = (
     case 'SET_BUILDER_TAG_KEYS': {
       return produce(state, draftState => {
         const {index, keys} = action.payload
-
-        draftState.queryBuilder.tags[index].keys = keys
-        draftState.queryBuilder.tags[index].keysStatus = RemoteDataState.Done
+        if (draftState.queryBuilder.tags[index] !== undefined) {
+          draftState.queryBuilder.tags[index].keys = keys
+          draftState.queryBuilder.tags[index].keysStatus = RemoteDataState.Done
+        }
       })
     }
 
@@ -809,13 +810,14 @@ export const timeMachineReducer = (
       return produce(state, draftState => {
         const {index, status} = action.payload
         const tags = draftState.queryBuilder.tags
+        if (tags[index] !== undefined) {
+          tags[index].keysStatus = status
 
-        tags[index].keysStatus = status
-
-        if (status === RemoteDataState.Loading) {
-          tags[index].valuesStatus = RemoteDataState.NotStarted
-          for (let i = index + 1; i < tags.length; i++) {
-            tags[i].keysStatus = RemoteDataState.NotStarted
+          if (status === RemoteDataState.Loading) {
+            tags[index].valuesStatus = RemoteDataState.NotStarted
+            for (let i = index + 1; i < tags.length; i++) {
+              tags[i].keysStatus = RemoteDataState.NotStarted
+            }
           }
         }
       })
@@ -824,17 +826,20 @@ export const timeMachineReducer = (
     case 'SET_BUILDER_TAG_VALUES': {
       return produce(state, draftState => {
         const {index, values} = action.payload
-
-        draftState.queryBuilder.tags[index].values = values
-        draftState.queryBuilder.tags[index].valuesStatus = RemoteDataState.Done
+        if (draftState.queryBuilder.tags[index] !== undefined) {
+          draftState.queryBuilder.tags[index].values = values
+          draftState.queryBuilder.tags[index].valuesStatus =
+            RemoteDataState.Done
+        }
       })
     }
 
     case 'SET_BUILDER_TAG_VALUES_STATUS': {
       return produce(state, draftState => {
         const {index, status} = action.payload
-
-        draftState.queryBuilder.tags[index].valuesStatus = status
+        if (draftState.queryBuilder.tags[index] !== undefined) {
+          draftState.queryBuilder.tags[index].valuesStatus = status
+        }
       })
     }
 
@@ -863,16 +868,18 @@ export const timeMachineReducer = (
     case 'SET_BUILDER_VALUES_SEARCH_TERM': {
       return produce(state, draftState => {
         const {index, searchTerm} = action.payload
-
-        draftState.queryBuilder.tags[index].valuesSearchTerm = searchTerm
+        if (draftState.queryBuilder.tags[index] !== undefined) {
+          draftState.queryBuilder.tags[index].valuesSearchTerm = searchTerm
+        }
       })
     }
 
     case 'SET_BUILDER_KEYS_SEARCH_TERM': {
       return produce(state, draftState => {
         const {index, searchTerm} = action.payload
-
-        draftState.queryBuilder.tags[index].keysSearchTerm = searchTerm
+        if (draftState.queryBuilder.tags[index] !== undefined) {
+          draftState.queryBuilder.tags[index].keysSearchTerm = searchTerm
+        }
       })
     }
 

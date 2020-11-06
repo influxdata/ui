@@ -7,19 +7,15 @@ import {
   Input,
   InputType,
 } from '@influxdata/clockface'
-import QueryTextPreview from 'src/flows/components/ExportTaskOverlay/QueryTextPreview'
+import QueryTextPreview from 'src/flows/components/QueryTextPreview'
 import {OverlayContext} from 'src/flows/context/overlay'
 
-type Props = {
-  formattedQueryText: string
-}
-
-const CreateTaskBody: FC<Props> = ({formattedQueryText}) => {
+const CreateTaskBody: FC = () => {
   const {
-    interval,
     handleSetEveryInterval,
     handleSetTaskName,
     hasError,
+    interval,
     taskName,
   } = useContext(OverlayContext)
 
@@ -61,7 +57,7 @@ const CreateTaskBody: FC<Props> = ({formattedQueryText}) => {
         </Form.Element>
       </Grid.Column>
       <Grid.Column>
-        <QueryTextPreview formattedQueryText={formattedQueryText} />
+        <QueryTextPreview />
       </Grid.Column>
     </>
   )

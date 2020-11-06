@@ -30,19 +30,24 @@ type NotificationExcludingMessage = Pick<
   Exclude<keyof Notification, 'message'>
 >
 
+const defaultButtonElement = () => null
+
 const defaultErrorNotification: NotificationExcludingMessage = {
+  buttonElement: defaultButtonElement,
   style: NotificationStyle.Error,
   icon: IconFont.AlertTriangle,
   duration: TEN_SECONDS,
 }
 
 const defaultSuccessNotification: NotificationExcludingMessage = {
+  buttonElement: defaultButtonElement,
   style: NotificationStyle.Success,
   icon: IconFont.Checkmark,
   duration: FIVE_SECONDS,
 }
 
 const defaultDeletionNotification: NotificationExcludingMessage = {
+  buttonElement: defaultButtonElement,
   style: NotificationStyle.Primary,
   icon: IconFont.Trash,
   duration: FIVE_SECONDS,
@@ -52,6 +57,7 @@ const defaultDeletionNotification: NotificationExcludingMessage = {
 //  ----------------------------------------------------------------------------
 
 export const newVersion = (version: string): Notification => ({
+  ...defaultSuccessNotification,
   style: NotificationStyle.Info,
   icon: IconFont.Cubouniform,
   message: `Welcome to the latest Chronograf${version}. Local settings cleared.`,
@@ -63,6 +69,7 @@ export const loadLocalSettingsFailed = (error: string): Notification => ({
 })
 
 export const presentationMode = (): Notification => ({
+  ...defaultSuccessNotification,
   style: NotificationStyle.Primary,
   icon: IconFont.ExpandB,
   duration: 7500,
@@ -70,14 +77,15 @@ export const presentationMode = (): Notification => ({
 })
 
 export const sessionTimedOut = (): Notification => ({
+  ...defaultSuccessNotification,
   style: NotificationStyle.Primary,
   icon: IconFont.Triangle,
+  duration: FIFTEEN_SECONDS,
   message: 'Your session has timed out. Log in again to continue.',
 })
 
 export const resultTooLarge = (bytesRead: number): Notification => ({
-  style: NotificationStyle.Error,
-  icon: IconFont.Triangle,
+  ...defaultErrorNotification,
   duration: FIVE_SECONDS,
   message: `Large response truncated to first ${bytesFormatter(bytesRead)}`,
 })

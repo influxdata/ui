@@ -13,6 +13,7 @@ import {ExportAsTask, OverlayContext} from 'src/flows/context/overlay'
 // Utils
 import {saveNewScript, updateTask} from 'src/tasks/actions/thunks'
 import {event} from 'src/cloud/utils/reporting'
+import {formatQueryText} from 'src/flows/shared/utils'
 
 const ExportTaskButtons: FC = () => {
   const history = useHistory()
@@ -30,10 +31,7 @@ const ExportTaskButtons: FC = () => {
   const params = location.state
   const {queryText} = params[0]
 
-  const formattedQueryText = queryText
-    .trim()
-    .split('|>')
-    .join('\n  |>')
+  const formattedQueryText = formatQueryText(queryText)
 
   const dispatch = useDispatch()
 

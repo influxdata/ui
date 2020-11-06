@@ -6,6 +6,8 @@ import {useHistory} from 'react-router-dom'
 import ExportDashboardButtons from './ExportDashboardButtons'
 import UpdateDashboardBody from './UpdateDashboardBody'
 import CreateDashboardBody from './CreateDashboardBody'
+import QueryTextPreview from 'src/flows/components/QueryTextPreview'
+import Visualization from 'src/flows/components/ExportDashboardOverlay/Visualization'
 import {
   DashboardOverlayContext,
   ExportToDashboard,
@@ -61,6 +63,14 @@ const ExportDashboardOverlay: FC = () => {
                     ) : (
                       <UpdateDashboardBody />
                     )}
+                    <Grid.Column widthXS={Columns.Twelve}>
+                      <Form.Element label="Preview">
+                        <Visualization />
+                      </Form.Element>
+                    </Grid.Column>
+                    <Grid.Column widthXS={Columns.Twelve}>
+                      <QueryTextPreview />
+                    </Grid.Column>
                     <Grid.Column widthXS={Columns.Twelve}>
                       <ExportDashboardButtons />
                     </Grid.Column>

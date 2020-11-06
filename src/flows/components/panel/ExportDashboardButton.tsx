@@ -21,7 +21,7 @@ const ExportDashboardButton: FC = () => {
   const onClick = () => {
     event('Export to Dashboard Clicked')
     history.push(`/orgs/${orgID}/flows/${id}/export-dashboard`, [
-      {bucket: data.bucket, queryText, properties: data.properties},
+      {queryText, properties: data.properties},
     ])
   }
   return (

@@ -1,6 +1,6 @@
 import React, {FC, useState, useCallback, useEffect} from 'react'
 import {useDispatch} from 'react-redux'
-import {Cell, Dashboard} from 'src/types'
+import {View, Dashboard} from 'src/types'
 import {getDashboards} from 'src/dashboards/actions/thunks'
 
 export enum ExportToDashboard {
@@ -13,13 +13,13 @@ export interface DashboardOverlayContext {
   canSubmit: () => boolean
   handleSetActiveTab: (tab: ExportToDashboard) => void
   handleSetError: (value: boolean) => void
-  handleSetCell: (cell: Cell) => void
+  handleSetCell: (cell: View) => void
   handleSetCellName: (value: string) => void
   handleSetDashboard: (dashboard: Dashboard) => void
   handleSetDashboardName: (value: string) => void
   hasError: boolean
   cellName: string
-  selectedCell: Cell | undefined
+  selectedCell: View | undefined
   selectedDashboard: Dashboard | undefined
   dashboardName: string
 }
@@ -49,7 +49,7 @@ export const CREATE_CELL = 'CREATE_CELL'
 const DashboardOverlayProvider: FC = ({children}) => {
   const [activeTab, setActiveTab] = useState(ExportToDashboard.Create)
   const [selectedDashboard, setDashboard] = useState<Dashboard>(undefined)
-  const [selectedCell, setCell] = useState<Cell>(undefined)
+  const [selectedCell, setCell] = useState<View>(undefined)
   const [hasError, setHasError] = useState(false)
   const [dashboardName, setDashboardName] = useState('')
   const [cellName, setCellName] = useState('')
@@ -102,7 +102,7 @@ const DashboardOverlayProvider: FC = ({children}) => {
     [hasError, selectedDashboard]
   )
   const handleSetCell = useCallback(
-    (cell: Cell): void => {
+    (cell: View): void => {
       if (hasError) {
         setHasError(false)
       }

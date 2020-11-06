@@ -6,7 +6,6 @@ import {
   Grid,
   Input,
 } from '@influxdata/clockface'
-import QueryTextPreview from 'src/flows/components/QueryTextPreview'
 import {DashboardOverlayContext} from 'src/flows/context/dashboardOverlay'
 
 const CreateTaskBody: FC = () => {
@@ -53,9 +52,6 @@ const CreateTaskBody: FC = () => {
             status={hasError ? ComponentStatus.Error : ComponentStatus.Default}
           />
         </Form.Element>
-      </Grid.Column>
-      <Grid.Column>
-        <QueryTextPreview />
       </Grid.Column>
     </>
   )

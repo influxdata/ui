@@ -12,7 +12,6 @@ import {
 import DashboardDropdown from 'src/flows/components/ExportDashboardOverlay/DashboardDropdown'
 import CellsDropdown from 'src/flows/components/ExportDashboardOverlay/CellsDropdown'
 import WarningPanel from 'src/flows/components/ExportDashboardOverlay/WarningPanel'
-import QueryTextPreview from 'src/flows/components/QueryTextPreview'
 import {
   DashboardOverlayContext,
   CREATE_CELL,
@@ -75,13 +74,10 @@ const UpdateDashboardBody: FC = () => {
         </Grid.Column>
       )}
       {selectedCell && selectedCell.id !== CREATE_CELL && (
-        <Grid.Column>
+        <Grid.Column widthXS={Columns.Twelve}>
           <WarningPanel />
         </Grid.Column>
       )}
-      <Grid.Column>
-        <QueryTextPreview />
-      </Grid.Column>
     </>
   )
 }

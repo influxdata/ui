@@ -17,6 +17,7 @@ import {
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {formatQueryText} from 'src/flows/shared/utils'
 import {notify} from 'src/shared/actions/notifications'
 import {getOrg} from 'src/organizations/selectors'
 import {updateView} from 'src/dashboards/apis'
@@ -59,10 +60,7 @@ const ExportDashboardButtons: FC = () => {
   const params = location.state
   const {queryText, properties} = params[0]
 
-  const formattedQueryText = queryText
-    .trim()
-    .split('|>')
-    .join('\n  |>')
+  const formattedQueryText = formatQueryText(queryText)
 
   const dispatch = useDispatch()
   const org = useSelector(getOrg)
@@ -70,7 +68,7 @@ const ExportDashboardButtons: FC = () => {
   const onCreate = () => {
     event('Save Visualization to Dashboard')
     const view = {
-      name: cellName || DEFAULT_CELL_NAME, // TODO: move meta.name to pipe.name so that we can route the name through
+      name: cellName || DEFAULT_CELL_NAME,
       properties: {
         ...properties,
         queries: [
@@ -82,7 +80,10 @@ const ExportDashboardButtons: FC = () => {
         ],
       },
     } as View
-    if (activeTab === ExportToDashboard.Create) {
+    if (activeTab === ExportToDashboard.Update) {
+      dispatch(createCellWithView(selectedDashboard.id, view))
+      dispatch(notify(ExportConfirmationNotification(selectedDashboard.name)))
+    } else {
       dispatch(
         createDashboardWithView(
           org.id,
@@ -90,13 +91,9 @@ const ExportDashboardButtons: FC = () => {
           view
         )
       )
-      dispatch(notify(ExportConfirmationNotification(selectedDashboard.name)))
-      history.goBack()
-    } else {
-      dispatch(createCellWithView(selectedDashboard.id, view))
-      dispatch(notify(ExportConfirmationNotification(selectedDashboard.name)))
-      history.push(`/orgs/${org.id}/dashboards/${selectedDashboard.id}`)
+      dispatch(notify(ExportConfirmationNotification(dashboardName)))
     }
+    history.goBack()
   }
 
   const onUpdate = () => {
@@ -117,7 +114,7 @@ const ExportDashboardButtons: FC = () => {
 
     updateView(selectedDashboard.id, selectedCell.id, view)
     notify(ExportConfirmationNotification(selectedDashboard.name))
-    history.push(`/orgs/${org.id}/dashboards/${selectedDashboard.id}`)
+    history.goBack()
   }
 
   let onSubmit = onCreate

@@ -49,7 +49,7 @@ describe('navigation', () => {
       cy.getByTestID('not-found').should('exist')
     })
 
-    /**\
+    /** \
 
       OSS Only Feature
 
@@ -67,7 +67,7 @@ describe('navigation', () => {
     cy.getByTestID('member-page--header').should('exist')
     cy.url().should('contain', 'about')
 
-    /**\
+    /** \
 
       OSS Only Feature
 
@@ -79,7 +79,7 @@ describe('navigation', () => {
 
     \**/
 
-    /**\
+    /** \
 
       OSS Only Feature
 
@@ -91,7 +91,7 @@ describe('navigation', () => {
 
     \**/
 
-    /**\
+    /** \
 
       OSS Only Feature
 

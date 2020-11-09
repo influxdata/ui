@@ -94,9 +94,9 @@ describe('fromFlux', () => {
 
     expect(actual.table.columns['table'].data).toEqual([0, 1, 2, 3])
 
-    //expect(actual.table.getColumnName('_value (number)')).toEqual('_value')
+    // expect(actual.table.getColumnName('_value (number)')).toEqual('_value')
 
-    //expect(actual.table.getColumnName('_value (string)')).toEqual('_value')
+    // expect(actual.table.getColumnName('_value (string)')).toEqual('_value')
 
     expect(actual.fluxGroupKeyUnion).toEqual([
       '_value (number)',

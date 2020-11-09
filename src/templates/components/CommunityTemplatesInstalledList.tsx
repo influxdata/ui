@@ -35,7 +35,7 @@ import {TemplateKind} from 'src/client'
 // API
 import {deleteStack} from 'src/templates/api'
 
-//Utils
+// Utils
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 import {event} from 'src/cloud/utils/reporting'

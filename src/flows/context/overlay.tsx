@@ -1,5 +1,7 @@
-import React, {FC, useState, useCallback} from 'react'
+import React, {FC, useState, useCallback, useEffect} from 'react'
+import {useDispatch} from 'react-redux'
 import {Task} from 'src/types'
+import {getTasks} from 'src/tasks/actions/thunks'
 
 export enum ExportAsTask {
   Create = 'create',
@@ -45,12 +47,20 @@ const OverlayProvider: FC = ({children}) => {
   const [taskName, setTaskName] = useState('')
   const [interval, setEveryInterval] = useState('')
 
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(getTasks())
+  }, [dispatch])
+
   const handleSetActiveTab = useCallback((tab: ExportAsTask): void => {
     setActiveTab(tab)
   }, [])
+
   const handleSetError = useCallback((value: boolean): void => {
     setHasError(value)
   }, [])
+
   const handleSetEveryInterval = useCallback(
     (value: string): void => {
       if (hasError) {
@@ -60,6 +70,7 @@ const OverlayProvider: FC = ({children}) => {
     },
     [hasError]
   )
+
   const handleSetTaskName = useCallback(
     (value: string): void => {
       if (hasError) {
@@ -69,6 +80,7 @@ const OverlayProvider: FC = ({children}) => {
     },
     [hasError]
   )
+
   const handleSetTask = useCallback(
     (task: Task): void => {
       if (hasError) {

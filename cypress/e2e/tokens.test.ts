@@ -212,7 +212,7 @@ describe('tokens', () => {
     cy.getByTestID('dropdown-item generate-token--all-access').click()
     cy.getByTestID('overlay--container').should('be.visible')
 
-    //create token
+    // create token
     cy.getByTestID('all-access-token-input').type(all_access_token_name)
     cy.getByTestID('button--save').click()
 
@@ -440,8 +440,8 @@ describe('tokens', () => {
       })
   })
 
-  //skip until this issue is resolved
-  //https://github.com/influxdata/influxdb/issues/18887
+  // skip until this issue is resolved
+  // https://github.com/influxdata/influxdb/issues/18887
   it.skip('can Select all buckets in Generate Read/Write token', () => {
     // create some extra buckets
     cy.get<Organization>('@org').then(({id, name}: Organization) => {
@@ -452,20 +452,20 @@ describe('tokens', () => {
       })
     })
 
-    //"Select all" button function test
+    // "Select all" button function test
     // open overlay
     cy.getByTestID('dropdown-button--gen-token').click()
     cy.getByTestIDSubStr('dropdown-item').should('have.length', 2)
     cy.getByTestID('dropdown-item generate-token--read-write').click()
     cy.getByTestID('overlay--container').should('be.visible')
 
-    //input token description
+    // input token description
     cy.getByTestID('input-field--descr')
       .clear()
       .type('Select all test')
       .should('have.value', 'Select all test')
 
-    //select all buckets and save
+    // select all buckets and save
     cy.getByTestID('grid--column')
       .eq(0)
       .within(() => {
@@ -482,7 +482,7 @@ describe('tokens', () => {
         })
       })
 
-    //save and assert the notification
+    // save and assert the notification
     cy.getByTestID('button--save')
       .click()
       .then(() => {
@@ -493,19 +493,19 @@ describe('tokens', () => {
 
     cy.getByTestID('token-card Select all test')
 
-    //"All buckets" button function test
+    // "All buckets" button function test
     // open overlay
     cy.getByTestID('dropdown-button--gen-token').click()
     cy.getByTestID('dropdown-item generate-token--read-write').click()
     cy.getByTestID('overlay--container').should('be.visible')
 
-    //input token description
+    // input token description
     cy.getByTestID('input-field--descr')
       .clear()
       .type('All buckets test')
       .should('have.value', 'All buckets test')
 
-    //select all buckets with "All buckets" button and save
+    // select all buckets with "All buckets" button and save
     cy.getByTestID('select-group')
       .eq(0)
       .within(() => {
@@ -522,7 +522,7 @@ describe('tokens', () => {
           .click()
       })
 
-    //save and assert the notification
+    // save and assert the notification
     cy.getByTestID('button--save')
       .click()
       .then(() => {
@@ -533,7 +533,7 @@ describe('tokens', () => {
 
     cy.getByTestID('token-name All buckets test').click()
 
-    //assert that there is read and write permission
+    // assert that there is read and write permission
     cy.getByTestID('permissions-section')
       .eq(0)
       .contains('write')
@@ -543,20 +543,20 @@ describe('tokens', () => {
 
     cy.get('.cf-overlay--dismiss').click()
 
-    //select all - only write permission
+    // select all - only write permission
     // open overlay
     cy.getByTestID('dropdown-button--gen-token').click()
     cy.getByTestIDSubStr('dropdown-item').should('have.length', 2)
     cy.getByTestID('dropdown-item generate-token--read-write').click()
     cy.getByTestID('overlay--container').should('be.visible')
 
-    //input token description
+    // input token description
     cy.getByTestID('input-field--descr')
       .clear()
       .type('Write only test')
       .should('have.value', 'Write only test')
 
-    //select all buckets
+    // select all buckets
     cy.getByTestID('grid--column')
       .eq(0)
       .within(() => {
@@ -573,7 +573,7 @@ describe('tokens', () => {
         })
       })
 
-    //deselect buckets in the read column
+    // deselect buckets in the read column
     cy.getByTestID('grid--column')
       .eq(0)
       .within(() => {
@@ -582,7 +582,7 @@ describe('tokens', () => {
         })
       })
 
-    //save and assert the notification
+    // save and assert the notification
     cy.getByTestID('button--save')
       .click()
       .then(() => {
@@ -593,7 +593,7 @@ describe('tokens', () => {
 
     cy.getByTestID('token-name Write only test').click()
 
-    //assert that there is only write permission
+    // assert that there is only write permission
     cy.getByTestID('permissions-section')
       .eq(0)
       .contains('write')
@@ -609,20 +609,20 @@ describe('tokens', () => {
 
     cy.get('.cf-overlay--dismiss').click()
 
-    //select all - only read permission
+    // select all - only read permission
     // open overlay
     cy.getByTestID('dropdown-button--gen-token').click()
     cy.getByTestIDSubStr('dropdown-item').should('have.length', 2)
     cy.getByTestID('dropdown-item generate-token--read-write').click()
     cy.getByTestID('overlay--container').should('be.visible')
 
-    //input token description
+    // input token description
     cy.getByTestID('input-field--descr')
       .clear()
       .type('Read only test')
       .should('have.value', 'Read only test')
 
-    //select all buckets
+    // select all buckets
     cy.getByTestID('grid--column')
       .eq(0)
       .within(() => {
@@ -639,7 +639,7 @@ describe('tokens', () => {
         })
       })
 
-    //deselect buckets in the read column
+    // deselect buckets in the read column
     cy.getByTestID('grid--column')
       .eq(1)
       .within(() => {
@@ -648,7 +648,7 @@ describe('tokens', () => {
         })
       })
 
-    //save and assert the notification
+    // save and assert the notification
     cy.getByTestID('button--save')
       .click()
       .then(() => {
@@ -659,7 +659,7 @@ describe('tokens', () => {
 
     cy.getByTestID('token-name Read only test').click()
 
-    //assert that there is only write permission
+    // assert that there is only write permission
     cy.getByTestID('permissions-section')
       .eq(0)
       .contains('read')

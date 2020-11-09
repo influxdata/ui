@@ -107,7 +107,7 @@ export const getOrgIDFromBuckets = (
   return get(bucketMatch, 'orgID', null)
 }
 
-//We only need a minimum of one bucket, function, and tag,
+// We only need a minimum of one bucket, function, and tag,
 export const getQueryFromFlux = (text: string) => {
   const ast = parse(text)
 

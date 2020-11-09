@@ -12,15 +12,11 @@ import {
 } from '@influxdata/clockface'
 import TaskDropdown from 'src/flows/components/ExportTaskOverlay/TaskDropdown'
 import WarningPanel from 'src/flows/components/ExportTaskOverlay/WarningPanel'
-import QueryTextPreview from 'src/flows/components/ExportTaskOverlay/QueryTextPreview'
+import QueryTextPreview from 'src/flows/components/QueryTextPreview'
 import {OverlayContext} from 'src/flows/context/overlay'
 import {hasNoTasks as hasNoTasksSelector} from 'src/resources/selectors'
 
-type Props = {
-  formattedQueryText: string
-}
-
-const UpdateTaskBody: FC<Props> = ({formattedQueryText}) => {
+const UpdateTaskBody: FC = () => {
   const {interval, handleSetEveryInterval, hasError} = useContext(
     OverlayContext
   )
@@ -66,7 +62,7 @@ const UpdateTaskBody: FC<Props> = ({formattedQueryText}) => {
         <WarningPanel />
       </Grid.Column>
       <Grid.Column>
-        <QueryTextPreview formattedQueryText={formattedQueryText} />
+        <QueryTextPreview />
       </Grid.Column>
     </>
   )

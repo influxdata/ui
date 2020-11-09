@@ -107,7 +107,7 @@ describe('Dashboard', () => {
       cy.getByTestID('save-note--button').click()
     })
 
-    //Note Cell controls
+    // Note Cell controls
     cy.getByTestID('add-note--button').click()
     cy.getByTestID('note-editor--overlay').should('be.visible')
     cy.getByTestID('cancel-note--button').click()
@@ -302,7 +302,7 @@ describe('Dashboard', () => {
               .pipe(getSelectedVariable(dashboard.id, 0))
               .should('equal', bucketOne)
 
-            //testing variable controls
+            // testing variable controls
             cy.getByTestID('variable-dropdown')
               .eq(0)
               .should('contain', bucketOne)
@@ -580,7 +580,7 @@ describe('Dashboard', () => {
       })
     })
 
-    /*\
+    /* \
     built to approximate an instance with docker metrics,
     operating with the variables:
         depbuck:
@@ -790,7 +790,7 @@ describe('Dashboard', () => {
       })
     })
 
-    //creating new dashboard cell
+    // creating new dashboard cell
     cy.getByTestID('add-cell--button')
       .click()
       .then(() => {
@@ -805,7 +805,7 @@ describe('Dashboard', () => {
           })
       })
 
-    //change to table graph type
+    // change to table graph type
     cy.getByTestID('view-type--dropdown')
       .click()
       .then(() => {
@@ -813,7 +813,7 @@ describe('Dashboard', () => {
       })
     cy.getByTestID(`save-cell--button`).click()
 
-    //assert sorting
+    // assert sorting
     cy.getByTestID(`cell Name this Cell`).then(() => {
       cy.getByTestID('_value-table-header')
         .should('have.class', 'table-graph-cell')

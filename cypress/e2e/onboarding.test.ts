@@ -21,31 +21,31 @@ describe.skip('Onboarding', () => {
   it('Can Onboard to Quick Start', () => {
     cy.server()
 
-    //Will want to capture response from this
+    // Will want to capture response from this
     cy.route('POST', 'api/v2/setup').as('orgSetup')
 
-    //Check and visit splash page
+    // Check and visit splash page
     cy.getByTestID('init-step--head-main').contains('Welcome to InfluxDB 2.0')
     cy.getByTestID('credits').contains('Powered by')
     cy.getByTestID('credits').contains('InfluxData')
 
-    //Continue
+    // Continue
     cy.getByTestID('onboarding-get-started').click()
 
     cy.location('pathname').should('include', 'onboarding/1')
 
-    //Check navigation bar
+    // Check navigation bar
     cy.getByTestID('nav-step--welcome').click()
 
-    //Check splash page
+    // Check splash page
     cy.getByTestID('init-step--head-main').contains('Welcome to InfluxDB 2.0')
     cy.getByTestID('credits').contains('Powered by')
     cy.getByTestID('credits').contains('InfluxData')
 
-    //Continue
+    // Continue
     cy.getByTestID('onboarding-get-started').click()
 
-    //Check onboarding page - nav bar
+    // Check onboarding page - nav bar
     cy.getByTestID('nav-step--welcome').contains('Welcome')
     cy.getByTestID('nav-step--welcome')
       .parent()
@@ -65,7 +65,7 @@ describe.skip('Onboarding', () => {
         expect($el).to.have.class('unclickable')
       })
 
-    //Check onboarding page headers and controls
+    // Check onboarding page headers and controls
     cy.getByTestID('admin-step--head-main').contains('Setup Initial User')
 
     cy.getByTestID('next').should('be.disabled')
@@ -74,7 +74,7 @@ describe.skip('Onboarding', () => {
       .children('.cf-button--label')
       .contains('Continue')
 
-    //Input fields
+    // Input fields
     cy.getByTestID('input-field--username').type(Cypress.env('username'))
     cy.getByTestID('input-field--password').type(Cypress.env('password'))
     cy.getByTestID('input-field--password-chk').type(Cypress.env('password'))
@@ -94,10 +94,10 @@ describe.skip('Onboarding', () => {
     cy.get('@orgSetup').then(xhr => {
       const orgId: string = xhr.responseBody.org.id
 
-      //wait for new page to load
+      // wait for new page to load
       cy.location('pathname').should('include', 'onboarding/2')
 
-      //check navbar
+      // check navbar
       cy.getByTestID('nav-step--complete').should('have.class', 'current')
 
       cy.getByTestID('nav-step--welcome').should('have.class', 'checkmark')
@@ -107,7 +107,7 @@ describe.skip('Onboarding', () => {
 
       cy.getByTestID('button--conf-later').should('be.visible')
 
-      //advance to Quick Start
+      // advance to Quick Start
       cy.getByTestID('button--quick-start').click()
 
       cy.location('pathname').should('equal', '/orgs/' + orgId)
@@ -119,11 +119,11 @@ describe.skip('Onboarding', () => {
 
     cy.route('POST', 'api/v2/setup').as('orgSetup')
 
-    //Continue
+    // Continue
     cy.getByTestID('onboarding-get-started').click()
     cy.location('pathname').should('include', 'onboarding/1')
 
-    //Input fields
+    // Input fields
     cy.getByTestID('input-field--username').type(Cypress.env('username'))
     cy.getByTestID('input-field--password').type(Cypress.env('password'))
     cy.getByTestID('input-field--password-chk').type(Cypress.env('password'))
@@ -137,13 +137,13 @@ describe.skip('Onboarding', () => {
     cy.get('@orgSetup').then(xhr => {
       const orgId: string = xhr.responseBody.org.id
 
-      //wait for new page to load
+      // wait for new page to load
       cy.location('pathname').should('include', 'onboarding/2')
 
-      //advance to Advanced
+      // advance to Advanced
       cy.getByTestID('button--advanced').click()
 
-      //wait for new page to load
+      // wait for new page to load
 
       cy.location('pathname').should('match', /orgs\/.*\/buckets/)
 
@@ -156,11 +156,11 @@ describe.skip('Onboarding', () => {
 
     cy.route('POST', 'api/v2/setup').as('orgSetup')
 
-    //Continue
+    // Continue
     cy.getByTestID('onboarding-get-started').click()
     cy.location('pathname').should('include', 'onboarding/1')
 
-    //Input fields
+    // Input fields
     cy.getByTestID('input-field--username').type(Cypress.env('username'))
     cy.getByTestID('input-field--password').type(Cypress.env('password'))
     cy.getByTestID('input-field--password-chk').type(Cypress.env('password'))
@@ -173,11 +173,11 @@ describe.skip('Onboarding', () => {
 
     cy.get('@orgSetup').then(xhr => {
       const orgId: string = xhr.responseBody.org.id
-      //wait for new page to load
+      // wait for new page to load
 
       cy.location('pathname').should('include', 'onboarding/2')
 
-      //advance to Advanced
+      // advance to Advanced
       cy.getByTestID('button--conf-later').click()
 
       cy.location('pathname').should('include', orgId)
@@ -185,7 +185,7 @@ describe.skip('Onboarding', () => {
   })
 
   it('respects field requirements', () => {
-    //Continue
+    // Continue
     cy.getByTestID('onboarding-get-started').click()
 
     cy.getByTestID('input-field--username').type(Cypress.env('username'))
@@ -204,7 +204,7 @@ describe.skip('Onboarding', () => {
 
     cy.getByTestID('input-field--password-chk').type('drowssap')
 
-    //check password mismatch
+    // check password mismatch
     cy.getByTestID('form--element-error').should(
       'have.text',
       'Passwords do not match'
@@ -249,7 +249,7 @@ describe.skip('Onboarding', () => {
       .children('.cf-button--label')
       .contains('Continue')
 
-    //check cleared username
+    // check cleared username
     cy.getByTestID('input-field--username').clear()
 
     cy.getByTestID('next')
@@ -264,7 +264,7 @@ describe.skip('Onboarding', () => {
       .children('.cf-button--label')
       .contains('Continue')
 
-    //check cleared password
+    // check cleared password
     cy.getByTestID('input-field--password').clear()
 
     cy.getByTestID('form--element-error').should(
@@ -290,7 +290,7 @@ describe.skip('Onboarding', () => {
       .children('.cf-button--label')
       .contains('Continue')
 
-    //check cleared org name
+    // check cleared org name
     cy.getByTestID('input-field--orgname').clear()
 
     cy.getByTestID('next')
@@ -305,7 +305,7 @@ describe.skip('Onboarding', () => {
       .children('.cf-button--label')
       .contains('Continue')
 
-    //check cleared bucket name
+    // check cleared bucket name
     cy.getByTestID('input-field--bucketname').clear()
 
     cy.getByTestID('next')

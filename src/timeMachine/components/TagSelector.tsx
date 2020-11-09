@@ -275,14 +275,21 @@ class TagSelector extends PureComponent<Props> {
 
 const mstp = (state: AppState, ownProps: OwnProps) => {
   const activeQueryBuilder = getActiveTimeMachine(state).queryBuilder
-
-  const {
-    keys,
-    keysSearchTerm,
-    keysStatus,
-    valuesSearchTerm,
-    valuesStatus,
-  } = activeQueryBuilder.tags[ownProps.index]
+  let keys = []
+  let keysSearchTerm = ''
+  let keysStatus = RemoteDataState.NotStarted
+  let valuesSearchTerm = ''
+  let valuesStatus = RemoteDataState.NotStarted
+  let values = []
+  if (activeQueryBuilder?.tags[ownProps?.index]) {
+    const currentTags = activeQueryBuilder.tags[ownProps.index]
+    keys = currentTags.keys
+    keysSearchTerm = currentTags.keysSearchTerm
+    keysStatus = currentTags.keysStatus
+    valuesSearchTerm = currentTags.valuesSearchTerm
+    valuesStatus = currentTags.valuesStatus
+    values = currentTags.values
+  }
 
   const tags = getActiveQuery(state).builderConfig.tags
 
@@ -298,7 +305,6 @@ const mstp = (state: AppState, ownProps: OwnProps) => {
     aggregateFunctionType,
   } = tags[ownProps.index]
 
-  let {values} = activeQueryBuilder.tags[ownProps.index]
   if (aggregateFunctionType === 'group') {
     values = [...ADDITIONAL_GROUP_BY_COLUMNS, ...tags.map(tag => tag.key)]
   }

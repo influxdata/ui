@@ -1,4 +1,4 @@
-//Types
+// Types
 import {Actions} from 'src/cloud/actions/demodata'
 import {RemoteDataState, Bucket} from 'src/types'
 

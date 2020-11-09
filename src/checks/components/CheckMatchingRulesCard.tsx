@@ -21,7 +21,7 @@ import {ruleToDraftRule} from 'src/notifications/rules/utils'
 // API
 import {getNotificationRules as apiGetNotificationRules} from 'src/client'
 
-//Types
+// Types
 import {
   NotificationRule,
   AppState,

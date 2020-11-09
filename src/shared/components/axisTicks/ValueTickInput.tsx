@@ -2,7 +2,7 @@
 import React, {ChangeEvent, FC, useState} from 'react'
 
 // Utils
-import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
+import {convertUserInputValueToNumOrNaN} from 'src/shared/utils/convertUserInput'
 
 // Components
 import {
@@ -28,7 +28,7 @@ export const ValueTickInput: FC<ValueTickInputProps> = props => {
     tickOptions,
     initialTickOptionValue,
     label,
-    placeholder = 'Enter a number',
+    placeholder,
     setOptions,
   } = props
   const [tickOptionInput, setTickOptionInput] = useState(
@@ -40,10 +40,13 @@ export const ValueTickInput: FC<ValueTickInputProps> = props => {
     ComponentStatus
   >(ComponentStatus.Default)
 
-  const changeTickOption = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
     setTickOptionInput(event.target.value)
     setTickOptionInputStatus(ComponentStatus.Default)
-    const convertedValue = convertUserInputToNumOrNaN(event)
+  }
+
+  const updateTickOption = () => {
+    const convertedValue = convertUserInputValueToNumOrNaN(tickOptionInput)
     const tickOptionNameWithoutAxis = label.split(' ').join('')
     const tickOptionNameWithAxis = `${axisName.toLowerCase()}${tickOptionNameWithoutAxis}`
     const filteredTickOptions = Array.isArray(tickOptions)
@@ -57,9 +60,17 @@ export const ValueTickInput: FC<ValueTickInputProps> = props => {
       ])
     } else {
       setOptions('GenerateAxisTicks', filteredTickOptions)
-      if (event.target.value !== '') {
+      if (tickOptionInput !== '') {
         setTickOptionInputStatus(ComponentStatus.Error)
       }
+    }
+  }
+
+  const handleOnBlur = () => updateTickOption()
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      updateTickOption()
     }
   }
 
@@ -68,8 +79,10 @@ export const ValueTickInput: FC<ValueTickInputProps> = props => {
       <Form.Element label={label}>
         <Input
           placeholder={placeholder}
-          onChange={changeTickOption}
-          onFocus={changeTickOption}
+          onChange={handleInput}
+          onFocus={handleInput}
+          onBlur={handleOnBlur}
+          onKeyPress={handleKeyPress}
           value={tickOptionInput}
           status={tickOptionInputStatus}
         />

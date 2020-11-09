@@ -46,7 +46,7 @@ export const TimeTicksOptions: FC<TimeTicksOptionsProps> = props => {
           tickOptions={tickOptions}
           initialTickOptionValue={tickStep}
           label="Tick Step"
-          placeholder="Enter milliseconds"
+          placeholder="milliseconds"
           setOptions={setOptions}
         />
       </Grid.Row>

@@ -1,8 +1,20 @@
 // Libraries
-import React, {ChangeEvent, createRef, FC, RefObject, useState} from 'react'
+import React, {
+  ChangeEvent,
+  createRef,
+  CSSProperties,
+  FC,
+  RefObject,
+  useState,
+} from 'react'
+
+// Utils
+import {useOneWayState} from 'src/shared/utils/useOneWayState'
+import {convertUserInputValueToNumOrNaN} from 'src/shared/utils/convertUserInput'
 
 // Components
 import DatePicker from 'src/shared/components/dateRangePicker/DatePicker'
+import {ClickOutside} from 'src/shared/components/ClickOutside'
 import {
   Appearance,
   Button,
@@ -14,6 +26,7 @@ import {
   Form,
   Grid,
   Input,
+  IconFont,
   Popover,
   PopoverInteraction,
   PopoverPosition,
@@ -34,11 +47,11 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
     tickOptions,
     initialTickOptionValue,
     label,
-    placeholder = 'RFC3339 timestamp',
+    placeholder = 'RFC3339',
     setOptions,
   } = props
 
-  const [tickOptionInput, setTickOptionInput] = useState(
+  const [tickOptionInput, setTickOptionInput] = useOneWayState(
     initialTickOptionValue === initialTickOptionValue
       ? initialTickOptionValue
       : ''
@@ -50,13 +63,17 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
 
   const [isDatePickerOpen, setIsDatePickerOpen] = useState<boolean>(false)
 
+  const [
+    isOnClickOutsideHandlerActive,
+    setIsOnClickOutsideHandlerActive,
+  ] = useState<boolean>(true)
+
   const triggerRef: RefObject<ButtonRef> = createRef()
 
-  const changeTickOption = (value: string) => {
-    setTickOptionInput(value)
-    setTickOptionInputStatus(ComponentStatus.Default)
-    const date = new Date(value)
-    const convertedValue = date.valueOf()
+  const updateTickOption = (value?: string | number) => {
+    const convertedValue = convertUserInputValueToNumOrNaN(
+      value === undefined ? tickOptionInput : value
+    )
     const tickOptionNameWithoutAxis = label.split(' ').join('')
     const tickOptionNameWithAxis = `${axisName.toLowerCase()}${tickOptionNameWithoutAxis}`
     const filteredTickOptions = Array.isArray(tickOptions)
@@ -70,40 +87,90 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
       ])
     } else {
       setOptions('GenerateAxisTicks', filteredTickOptions)
-      if (value !== '') {
+      if (tickOptionInput !== '') {
         setTickOptionInputStatus(ComponentStatus.Error)
       }
     }
   }
 
-  const handleUseDatePicker = () => {
-    setIsDatePickerOpen(true)
+  const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
+    setTickOptionInput(event.target.value)
+    setTickOptionInputStatus(ComponentStatus.Default)
+  }
+
+  const handleBlur = () => updateTickOption()
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      updateTickOption()
+    }
+  }
+
+  const getDatePickerDateTime = () => {
+    const date = new Date(tickOptionInput)
+    if (date.valueOf() === date.valueOf()) {
+      return date.toISOString()
+    }
+    return new Date().toISOString()
+  }
+
+  const handleReset = () => {
+    setTickOptionInput('')
+    updateTickOption('')
+  }
+
+  const showDatePicker = () => setIsDatePickerOpen(true)
+  const hideDatePicker = () => setIsDatePickerOpen(false)
+
+  const toggleDatePicker = () => {
+    if (isDatePickerOpen) {
+      hideDatePicker()
+    } else {
+      showDatePicker()
+    }
   }
 
   const handleSelectDate = (date: string) => {
-    changeTickOption(date)
-    setIsDatePickerOpen(false)
+    const dateRFC3339 = new Date(date).valueOf()
+    setTickOptionInput(dateRFC3339 === dateRFC3339 ? String(dateRFC3339) : '')
+    setTickOptionInputStatus(ComponentStatus.Default)
+    updateTickOption(dateRFC3339)
   }
 
-  const handleChangeTickOption = (event: ChangeEvent<HTMLInputElement>) => {
-    changeTickOption(event.target.value)
+  const onClickOutside = () => {
+    if (isOnClickOutsideHandlerActive) {
+      hideDatePicker()
+    }
   }
+
+  const allowOnClickOutside = () => setIsOnClickOutsideHandlerActive(true)
+  const suppressOnClickOutside = () => setIsOnClickOutsideHandlerActive(false)
+
+  const style: CSSProperties = isDatePickerOpen
+    ? {position: 'relative'}
+    : {
+        top: `${window.innerHeight / 2}px`,
+        left: `${window.innerWidth / 2}px`,
+        transform: `translate(-50%, -50%)`,
+      }
 
   return (
     <>
       <Grid.Column widthXS={Columns.Six}>
-        <Form.Element label={label}>
+        <Form.Element label="Tick Start">
           <Input
             placeholder={placeholder}
-            onChange={handleChangeTickOption}
-            onFocus={handleChangeTickOption}
+            onChange={handleInput}
+            onFocus={handleInput}
+            onBlur={handleBlur}
+            onKeyPress={handleKeyPress}
             value={tickOptionInput}
             status={tickOptionInputStatus}
           />
         </Form.Element>
       </Grid.Column>
       <Grid.Column widthXS={Columns.Six}>
-        <Form.Element label="Tick Start">
+        <Form.Element label="Date Picker">
           <Popover
             appearance={Appearance.Outline}
             position={PopoverPosition.ToTheLeft}
@@ -115,25 +182,53 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
             testID="timerange-popover"
             enableDefaultStyles={false}
             contents={() => (
-              <div
-                className="range-picker--date-pickers"
-                style={{position: 'relative'}}
-              >
-                <DatePicker
-                  dateTime={new Date().toISOString()}
-                  onSelectDate={handleSelectDate}
-                  label="Tick Start"
-                />
-              </div>
+              <ClickOutside onClickOutside={onClickOutside}>
+                <div
+                  className="range-picker react-datepicker-ignore-onclickoutside"
+                  style={{...style}}
+                >
+                  <button
+                    className="range-picker--dismiss"
+                    onClick={hideDatePicker}
+                  />
+                  <div className="range-picker--date-pickers">
+                    <DatePicker
+                      dateTime={getDatePickerDateTime()}
+                      onSelectDate={handleSelectDate}
+                      label="Tick Start"
+                    />
+                  </div>
+                  <Button
+                    color={ComponentColor.Danger}
+                    onClick={handleReset}
+                    size={ComponentSize.Small}
+                    text="Reset"
+                  />
+                </div>
+              </ClickOutside>
             )}
           />
-          <Button
-            ref={triggerRef}
-            color={ComponentColor.Primary}
-            onClick={handleUseDatePicker}
-            size={ComponentSize.Small}
-            text="Use Date Picker"
-          />
+          {isDatePickerOpen ? (
+            <Button
+              ref={triggerRef}
+              color={ComponentColor.Danger}
+              onClick={hideDatePicker}
+              onMouseEnter={suppressOnClickOutside}
+              onMouseLeave={allowOnClickOutside}
+              size={ComponentSize.Small}
+              icon={IconFont.Calendar}
+            />
+          ) : (
+            <Button
+              ref={triggerRef}
+              color={ComponentColor.Primary}
+              onClick={toggleDatePicker}
+              onMouseEnter={suppressOnClickOutside}
+              onMouseLeave={allowOnClickOutside}
+              size={ComponentSize.Small}
+              icon={IconFont.Calendar}
+            />
+          )}
         </Form.Element>
       </Grid.Column>
     </>

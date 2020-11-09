@@ -10,7 +10,7 @@ import {gaEvent, updateReportingContext} from 'src/cloud/utils/reporting'
 // actions
 import {setMe} from 'src/shared/actions/me'
 
-//reducers
+// reducers
 import {MeState} from 'src/shared/reducers/me'
 
 export const getMe = () => async dispatch => {

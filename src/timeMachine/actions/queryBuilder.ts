@@ -34,7 +34,7 @@ import {
   getWindowPeriodFromTimeRange,
 } from 'src/timeMachine/selectors'
 
-//Actions
+// Actions
 import {editActiveQueryWithBuilderSync} from 'src/timeMachine/actions'
 import {setBuckets} from 'src/buckets/actions/creators'
 

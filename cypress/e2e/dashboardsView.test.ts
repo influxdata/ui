@@ -790,7 +790,7 @@ describe('Dashboard', () => {
       })
     })
 
-    //creating new dashboard cell
+    // creating new dashboard cell
     cy.getByTestID('add-cell--button')
       .click()
       .then(() => {
@@ -805,7 +805,7 @@ describe('Dashboard', () => {
           })
       })
 
-    //change to table graph type
+    // change to table graph type
     cy.getByTestID('view-type--dropdown')
       .click()
       .then(() => {
@@ -813,7 +813,7 @@ describe('Dashboard', () => {
       })
     cy.getByTestID(`save-cell--button`).click()
 
-    //assert sorting
+    // assert sorting
     cy.getByTestID(`cell Name this Cell`).then(() => {
       cy.getByTestID('_value-table-header')
         .should('have.class', 'table-graph-cell')

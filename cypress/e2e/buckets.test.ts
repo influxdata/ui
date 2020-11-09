@@ -53,7 +53,7 @@ describe.skip('Buckets', () => {
       const newBucket = '🅱️ucket'
       cy.getByTestID(`bucket-card ${newBucket}`).should('not.exist')
 
-      //create bucket with retention
+      // create bucket with retention
       cy.getByTestID('Create Bucket').click()
       cy.getByTestID('overlay--container').within(() => {
         cy.getByInputName('name').type(newBucket)
@@ -66,7 +66,7 @@ describe.skip('Buckets', () => {
           })
       })
 
-      //assert bucket with retention
+      // assert bucket with retention
       cy.getByTestID(`bucket-card ${newBucket}`)
         .should('exist')
         .within(() => {
@@ -157,16 +157,16 @@ describe.skip('Buckets', () => {
             })
           })
 
-        //assert buckets amount
+        // assert buckets amount
         cy.get('.cf-resource-card').should('have.length', 4)
 
-        //filter a bucket
+        // filter a bucket
         cy.getByTestID('search-widget').type('def')
         cy.get('.cf-resource-card')
           .should('have.length', 1)
           .should('contain', 'defbuck')
 
-        //clear filter and assert all buckets are visible
+        // clear filter and assert all buckets are visible
         cy.getByTestID('search-widget').clear()
         cy.get('.cf-resource-card').should('have.length', 4)
       })
@@ -425,16 +425,16 @@ describe.skip('Buckets', () => {
     })
 
     it('configure telegraf agent', () => {
-      //click "add data" and choose Configure Telegraf Agent
+      // click "add data" and choose Configure Telegraf Agent
       cy.getByTestID('add-data--button').click()
       cy.get('.bucket-add-data--option')
         .contains('Configure Telegraf Agent')
         .click()
 
-      //assert default bucket
+      // assert default bucket
       cy.getByTestID('bucket-dropdown--button').should('contain', 'defbuck')
 
-      //filter plugins and choose system
+      // filter plugins and choose system
       cy.getByTestID('input-field')
         .type('sys')
         .then(() => {
@@ -448,7 +448,7 @@ describe.skip('Buckets', () => {
       cy.getByTestID('telegraf-plugins--System').click()
       cy.getByTestID('next').click()
 
-      //add telegraf name and description
+      // add telegraf name and description
       cy.getByTitle('Telegraf Configuration Name')
         .clear()
         .type('Telegraf from bucket')
@@ -457,7 +457,7 @@ describe.skip('Buckets', () => {
         .type('This is a telegraf description')
       cy.getByTestID('next').click()
 
-      //assert notifications
+      // assert notifications
       cy.getByTestID('notification-success').should(
         'contain',
         'Your configurations have been saved'
@@ -468,7 +468,7 @@ describe.skip('Buckets', () => {
       )
       cy.getByTestID('next').click()
 
-      //assert telegraf card parameters
+      // assert telegraf card parameters
       cy.getByTestID('collector-card--name').should(
         'contain',
         'Telegraf from bucket'

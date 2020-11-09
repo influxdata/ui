@@ -61,6 +61,41 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  "/orgs/{orgID}/invites":
+    post:
+      operationId: PostOrgsIDInvites
+      tags:
+        - Invites
+        - Organizations
+      summary: Creates an invite to an organization
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+        - in: path
+          name: orgID
+          schema:
+            type: string
+          required: true
+          description: The organization ID.
+      requestBody:
+        description: Invite to be sent
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Invite"
+      responses:
+        "201":
+          description: Invite sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invite"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 components:
   parameters:
     TraceSpan:
@@ -100,6 +135,45 @@ components:
           description: Message is a human-readable message.
           type: string
       required: [code, message]
+    Invite:
+      properties:
+        id:
+          description: the idpe id of the invite
+          readOnly: true
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum:
+            - member
+            - owner
+        expiresAt:
+          format: date-time
+          type: string
+        links:
+          type: object
+          readOnly: true
+          example:
+            self: "/unity/v2/invites/1"
+          properties:
+            self:
+              type: string
+              format: uri
+      required: [id, email, role]
+    Invites:
+      type: object
+      properties:
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+              format: uri
+        invites:
+          type: array
+          items:
+            $ref: "#/components/schemas/Invite"
     User:
       properties:
         id:

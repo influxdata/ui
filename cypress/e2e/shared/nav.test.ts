@@ -47,17 +47,14 @@ describe('navigation', () => {
       cy.getByTestID('not-found').should('exist')
     })
 
-    /** \
-
-      OSS Only Feature
-
-    // User Nav -- Members
-    cy.getByTestID('user-nav').click()
-    cy.getByTestID('user-nav-item-members').click()
-    cy.getByTestID('member-page--header').should('exist')
-    cy.url().should('contain', 'members')
-
-    \**/
+    /**\
+     OSS Only Feature
+     // User Nav -- Members
+     cy.getByTestID('user-nav').click()
+     cy.getByTestID('user-nav-item-members').click()
+     cy.getByTestID('member-page--header').should('exist')
+     cy.url().should('contain', 'members')
+     \**/
 
     // User Nav -- About
     cy.getByTestID('user-nav').click()
@@ -65,46 +62,60 @@ describe('navigation', () => {
     cy.getByTestID('member-page--header').should('exist')
     cy.url().should('contain', 'about')
 
-    /** \
-
-      OSS Only Feature
-
-    // User Nav -- Switch Orgs
-    cy.getByTestID('user-nav').click()
-    cy.getByTestID('user-nav-item-switch-orgs').click()
-    cy.getByTestID('switch-overlay--header').should('exist')
-    cy.get('.cf-overlay--dismiss').click()
-
-    \**/
-
-    /** \
-
-      OSS Only Feature
-
-    // User Nav -- Create Orgs
-    cy.getByTestID('user-nav').click()
-    cy.getByTestID('user-nav-item-create-orgs').click()
-    cy.getByTestID('create-org-overlay--header').should('exist')
-    cy.get('.cf-overlay--dismiss').click()
-
-    \**/
-
-    /** \
-
-      OSS Only Feature
-
-    // User Nav -- Log Out
-    cy.getByTestID('user-nav').click()
-    cy.getByTestID('user-nav-item-logout').click()
-    cy.getByTestID('signin-page').should('exist')
-  })
+    /**\
+     OSS Only Feature
+     // User Nav -- Switch Orgs
+     cy.getByTestID('user-nav').click()
+     cy.getByTestID('user-nav-item-switch-orgs').click()
+     cy.getByTestID('switch-overlay--header').should('exist')
+     cy.get('.cf-overlay--dismiss').click()
      \**/
-  it('can navigate to pages from homepage', () =>
-    ['load-data', 'dashboards', 'alerting'].forEach(card => {
-      cy.getByTestID('tree-nav--header').click()
-      cy.getByTestID(`getting-started--${card}--button`).click()
-      cy.url().should('contain', card)
-    }))
+
+    /**\
+     OSS Only Feature
+     // User Nav -- Create Orgs
+     cy.getByTestID('user-nav').click()
+     cy.getByTestID('user-nav-item-create-orgs').click()
+     cy.getByTestID('create-org-overlay--header').should('exist')
+     cy.get('.cf-overlay--dismiss').click()
+     \**/
+
+    /**\
+     OSS Only Feature
+     // User Nav -- Log Out
+     cy.getByTestID('user-nav').click()
+     cy.getByTestID('user-nav-item-logout').click()
+     cy.getByTestID('signin-page').should('exist')
+     \**/
+  })
+
+  it('can navigate in tabs of data page', () => {
+    cy.getByTestID('nav-item-load-data').click()
+
+    // buckets tab
+    cy.getByTestID('tabs--tab')
+      .contains('Buckets')
+      .click()
+    cy.url().should('contain', 'buckets')
+
+    // telegraf tab
+    cy.getByTestID('tabs--tab')
+      .contains('Telegraf')
+      .click()
+    cy.url().should('contain', 'telegraf')
+
+    // tokens tab
+    cy.getByTestID('tabs--tab')
+      .contains('Tokens')
+      .click()
+    cy.url().should('contain', 'tokens')
+
+    // sources tab
+    cy.getByTestID('tabs--tab')
+      .contains('Sources')
+      .click()
+    cy.url().should('contain', 'sources')
+  })
 
   const exploreTabs = (tabs: string[]) => {
     tabs.forEach(tab => {
@@ -112,11 +123,6 @@ describe('navigation', () => {
       cy.url().should('contain', tab)
     })
   }
-
-  it('can navigate in tabs of data page', () => {
-    cy.getByTestID('nav-item-load-data').click()
-    exploreTabs(['buckets', 'telegrafs', 'scrapers', 'tokens', 'sources'])
-  })
 
   it('can navigate in tabs of settings page', () => {
     cy.getByTestID('nav-item-settings').click()
@@ -138,7 +144,6 @@ describe('navigation', () => {
       'sources',
       'buckets',
       'telegrafs',
-      'scrapers',
       'tokens',
       'history',
       'variables',

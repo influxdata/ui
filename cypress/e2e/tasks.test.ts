@@ -100,7 +100,7 @@ http.post(
 
     cy.getByTestID('flux-editor').within(() => {
       cy.get('textarea.inputarea')
-        .click()
+        .click({force: true})
         .type('from(bucket: "defbuck")\n' + '\t|> range(start: -2m)', {
           force: true,
           delay: 2,

@@ -117,6 +117,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
       {options}
       <Resizer
         resizingEnabled={!!results.raw}
+        minimumHeight={200}
         emptyText={loadingText}
         emptyIcon={IconFont.BarChart}
         toggleVisibilityEnabled={false}

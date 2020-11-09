@@ -11,7 +11,7 @@ const FlowPage = () => (
   <Page titleTag="Flows">
     <FlowHeader />
     <QueryProvider>
-      <Page.Contents fullWidth={true} scrollable={false} className="flow-page">
+      <Page.Contents fullWidth={true} scrollable={true} className="flow-page">
         <div className="flow">
           <MiniMap />
           <PipeList />

@@ -172,18 +172,20 @@ describe('Buckets', () => {
       })
     })
 
-    // TODO: ZOE Come back and fix race condition
-    // it('can delete a bucket', () => {
-    //   const bucket1 = 'newbucket1'
-    //   cy.get<Organization>('@org').then(({id, name}: Organization) => {
-    //     cy.createBucket(id, name, bucket1)
-    //   })
+    it('can delete a bucket', () => {
+      const bucket1 = 'newbucket1'
+      cy.get<Organization>('@org').then(({id, name}: Organization) => {
+        cy.createBucket(id, name, bucket1)
+      })
 
-    //   cy.getByTestID(`context-delete-menu ${bucket1}`).click()
-    //   cy.getByTestID(`context-delete-bucket ${bucket1}`).click()
+      cy.getByTestID(`context-delete-menu ${bucket1}`).click()
+      cy.getByTestID(`context-delete-bucket ${bucket1}`).should('be.visible')
+      .wait(500)
+      .contains(`${bucket1}`)
+      .click()
 
-    //   cy.getByTestID(`bucket--card--name ${bucket1}`).should('not.exist')
-    // })
+      cy.getByTestID(`bucket--card--name ${bucket1}`).should('not.exist')
+    })
   })
 
   // skipping until feature flag feature is removed for deleteWithPredicate

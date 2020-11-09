@@ -200,7 +200,7 @@ describe('Variables', () => {
       queryVariableName
     )
 
-    //create variable by uploader
+    // create variable by uploader
     cy.getByTestID('add-resource-dropdown--button').click()
 
     cy.getByTestID('add-resource-dropdown--import').click()

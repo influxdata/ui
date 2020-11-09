@@ -13,7 +13,7 @@ import {
 import {setFunctions} from 'src/timeMachine/actions/queryBuilder'
 import {dismissNotification as dismissNotificationAction} from 'src/shared/actions/notifications'
 
-//Types
+// Types
 import {AppState, NotificationStyle} from 'src/types'
 
 type ReduxProps = ConnectedProps<typeof connector>

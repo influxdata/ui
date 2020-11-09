@@ -118,15 +118,15 @@ describe('Checks', () => {
   })
 
   it('can validate a deadman check', () => {
-    //create deadman check
+    // create deadman check
     cy.getByTestID('create-check').click()
     cy.getByTestID('create-deadman-check').click()
 
-    //checklist popover and save button check
+    // checklist popover and save button check
     cy.get('.query-checklist--popover').should('be.visible')
     cy.getByTestID('save-cell--button').should('be.disabled')
 
-    //select measurement and field - checklist popover should disappear, save button should activate
+    // select measurement and field - checklist popover should disappear, save button should activate
     cy.getByTestID(`selector-list defbuck`).click()
     cy.getByTestID(`selector-list ${measurement}`).click()
     cy.getByTestID('save-cell--button').should('be.disabled')
@@ -134,15 +134,15 @@ describe('Checks', () => {
     cy.get('.query-checklist--popover').should('not.exist')
     cy.getByTestID('save-cell--button').should('be.enabled')
 
-    //submit the graph
+    // submit the graph
     cy.getByTestID('empty-graph--no-queries')
     cy.getByTestID('time-machine-submit-button').click()
     cy.getByTestID('giraffe-axes').should('exist')
 
-    //navigate to configure check tab
+    // navigate to configure check tab
     cy.getByTestID('checkeo--header alerting-tab').click()
 
-    //conditions inputs check
+    // conditions inputs check
     cy.getByTestID('builder-conditions')
       .should('contain', 'Deadman')
       .within(() => {
@@ -178,7 +178,7 @@ describe('Checks', () => {
         cy.get('.color-dropdown--name').should('have.text', 'OK')
       })
 
-    //name the check; save
+    // name the check; save
     cy.getByTestID('overlay').within(() => {
       cy.getByTestID('page-title')
         .contains('Name this Check')
@@ -190,7 +190,7 @@ describe('Checks', () => {
 
     cy.getByTestID('save-cell--button').click()
 
-    //assert the check card
+    // assert the check card
     cy.getByTestID('check-card--name')
       .contains('Deadman check test')
       .should('exist')

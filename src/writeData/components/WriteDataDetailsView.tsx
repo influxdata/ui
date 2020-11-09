@@ -27,6 +27,10 @@ interface Props {
   children?: ReactNode
 }
 
+// marked JS is the new library we are using to render markdown in order to fix idpe#8810.
+// This new issue (ui#257) tracks the work that needs to be done in order to update the plugins
+// to use the new library instead of React markdown: ui#257.
+
 const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => {
   return <WriteDataCodeSnippet code={props.value} language={props.language} />
 }

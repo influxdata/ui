@@ -260,7 +260,7 @@ export const cloneTask = (task: Task) => async (dispatch: Dispatch<Action>) => {
     }
 
     const normTask = normalize<Task, TaskEntities, string>(
-      resp.data,
+      newTask.data,
       taskSchema
     )
 

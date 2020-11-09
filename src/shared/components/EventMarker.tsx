@@ -8,7 +8,7 @@ import {isInDomain} from 'src/shared/utils/vis'
 // Components
 import BoxTooltip from './BoxTooltip'
 
-//Types
+// Types
 import {StatusRow, LowercaseCheckStatusLevel} from 'src/types'
 import EventMarkerTooltip from './EventMarkerTooltip'
 

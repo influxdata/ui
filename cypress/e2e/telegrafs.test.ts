@@ -83,7 +83,7 @@ describe('Collectors', () => {
             const text = $el.text()
 
             expect(text.includes('[[outputs.influxdb_v2]]')).to.be.true
-            //expect a default sort to be applied
+            // expect a default sort to be applied
             expect(text.includes(`bucket = "${buckets[0]}"`)).to.be.true
           })
 

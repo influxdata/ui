@@ -100,7 +100,7 @@ http.post(
 
     cy.getByTestID('flux-editor').within(() => {
       cy.get('textarea.inputarea')
-        .click()
+        .click({force: true})
         .type('from(bucket: "defbuck")\n' + '\t|> range(start: -2m)', {
           force: true,
           delay: 2,
@@ -138,8 +138,8 @@ http.post(
       })
   })
 
-  //skip until this issue is resolved
-  //https://github.com/influxdata/ui/issues/96
+  // skip until this issue is resolved
+  // https://github.com/influxdata/ui/issues/96
   it.skip('can create a task with an option parameter', () => {
     cy.getByTestID('empty-tasks-list').within(() => {
       cy.getByTestID('add-resource-dropdown--button')
@@ -255,8 +255,8 @@ http.post(
       cy.getByTestID('empty-tasks-list').should('exist')
     })
 
-    //skipping until this issue is resolved
-    //https://github.com/influxdata/influxdb/issues/18478
+    // skipping until this issue is resolved
+    // https://github.com/influxdata/influxdb/issues/18478
     it.skip('can clone a task and activate just the cloned one', () => {
       cy.getByTestID('task-card').then(() => {
         cy.getByTestID('task-context-menu').within(() => {
@@ -283,7 +283,7 @@ http.post(
     })
 
     it('can clone a task and edit it', () => {
-      //clone a task
+      // clone a task
       cy.getByTestID('task-card').then(() => {
         cy.getByTestID('task-context-menu').within(() => {
           cy.getByTestID('task-context--clone').click()
@@ -292,7 +292,7 @@ http.post(
 
       cy.getByTestID('task-card').should('have.length', 2)
 
-      //assert the values of the task and change them
+      // assert the values of the task and change them
       cy.getByTestID('task-card--name')
         .eq(1)
         .click()
@@ -320,18 +320,18 @@ http.post(
             })
         })
 
-      //assert changed task name
+      // assert changed task name
       cy.getByTestID('task-card--name').contains('Copy task test')
     })
 
-    //skip until this issue is resolved
-    //https://github.com/influxdata/ui/issues/97
+    // skip until this issue is resolved
+    // https://github.com/influxdata/ui/issues/97
     it.skip('can add a comment into a task', () => {
       cy.getByTestID('task-card--name')
         .first()
         .click()
 
-      //assert textarea and write a comment
+      // assert textarea and write a comment
       cy.getByTestID('flux-editor').within(() => {
         cy.get('textarea.inputarea')
           .should(
@@ -362,7 +362,7 @@ http.post(
           })
       })
 
-      //save and assert notification
+      // save and assert notification
       cy.getByTestID('task-save-btn')
         .click()
         .then(() => {
@@ -375,7 +375,7 @@ http.post(
         .first()
         .click()
 
-      //assert the comment
+      // assert the comment
       cy.getByTestID('flux-editor').within(() => {
         cy.get('textarea.inputarea').should(
           'have.value',

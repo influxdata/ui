@@ -70,6 +70,40 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  "/orgs/{orgID}/invites/{inviteID}/resend":
+    post:
+      operationId: DeleteOrgsIDInviteID
+      tags:
+        - Invites
+        - Organizations
+      summary: Re-sends an invite
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+        - in: path
+          name: inviteID
+          schema:
+            type: string
+          required: true
+          description: The ID of the invite to resend.
+        - in: path
+          name: orgID
+          schema:
+            type: string
+          required: true
+          description: The organization ID.
+      responses:
+        "200":
+          description: Invite resent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invite"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   "/orgs/{orgID}/users":
       get:
         operationId: GetUsers

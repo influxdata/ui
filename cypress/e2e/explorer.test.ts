@@ -80,7 +80,7 @@ const makeGraphSnapshot = (() => {
       },
     }
   }
-})
+})()
 
 describe('DataExplorer', () => {
   beforeEach(() => {
@@ -724,9 +724,6 @@ describe('DataExplorer', () => {
         cy.getByTestID('selector-list v').should('be.visible')
         cy.getByTestID('selector-list v').clickAttached()
 
-        cy.getByTestID('selector-list tv1')
-          .scrollIntoView()
-          .should('be.visible')
         cy.getByTestID('selector-list tv1').clickAttached()
 
         cy.getByTestID('selector-list last')
@@ -849,10 +846,15 @@ describe('DataExplorer', () => {
         cy.getByTestID('giraffe-layer-line').then(([canvas]) => {
           const {width, height} = canvas
 
-          cy.wrap(canvas).trigger('mousedown', {x: width / 3, y: height / 2})
+          cy.wrap(canvas).trigger('mousedown', {
+            x: width / 3,
+            y: height / 2,
+            force: true,
+          })
           cy.wrap(canvas).trigger('mousemove', {
             x: (width * 2) / 3,
             y: height / 2,
+            force: true,
           })
           cy.wrap(canvas).trigger('mouseup', {force: true})
         })
@@ -876,10 +878,15 @@ describe('DataExplorer', () => {
         cy.getByTestID('giraffe-layer-line').then(([canvas]) => {
           const {width, height} = canvas
 
-          cy.wrap(canvas).trigger('mousedown', {x: width / 2, y: height / 3})
+          cy.wrap(canvas).trigger('mousedown', {
+            x: width / 2,
+            y: height / 3,
+            force: true,
+          })
           cy.wrap(canvas).trigger('mousemove', {
             x: width / 2,
             y: (height * 2) / 3,
+            force: true,
           })
           cy.wrap(canvas).trigger('mouseup', {force: true})
         })
@@ -907,7 +914,7 @@ describe('DataExplorer', () => {
         cy.wait(100)
         cy.getByTestID('giraffe-layer-line').trigger('mousemove', {force: true})
 
-        cy.getByTestID('giraffe-tooltip').should('visible')
+        cy.getByTestID('giraffe-tooltip').should('be.visible')
         cy.getByTestID('giraffe-layer-line').trigger('mouseout', {force: true})
         cy.getByTestID('giraffe-tooltip').should('not.visible')
       })
@@ -1033,11 +1040,12 @@ describe('DataExplorer', () => {
 
       // graph will slightly move
       cy.wait(200)
-      cy.getByTestID('autorefresh-dropdown-refresh').click()
+      cy.get('.autorefresh-dropdown--pause').click()
       makeGraphSnapshot().shouldBeSameAs(snapshot, false)
     })
 
-    it('auto refresh', () => {
+    //skip until the auto-refresh feature is added back
+    it.skip('auto refresh', () => {
       const snapshot = makeGraphSnapshot()
       cy.getByTestID('autorefresh-dropdown--button').click()
       cy.getByTestID('auto-refresh-5s').click()
@@ -1076,9 +1084,9 @@ describe('DataExplorer', () => {
       // test all tabs
       cy.getByTestID('task--radio-button').click()
       cy.getByTestID('task-form-name').should('be.visible')
-      cy.getByTestID('variable--radio-button').click()
+      cy.getByTestID('variable-radio-button').click()
       cy.getByTestID('flux-editor').should('be.visible')
-      cy.getByTestID('cell--radio-button').click()
+      cy.getByTestID('cell-radio-button').click()
       cy.getByTestID('save-as-dashboard-cell--dropdown').should('be.visible')
 
       // close save as
@@ -1102,10 +1110,11 @@ describe('DataExplorer', () => {
           })
         })
 
-        // setup query for saving and open dasboard dialog
+        // setup query for saving and open dashboard dialog
         cy.getByTestID(`selector-list m`).click()
+        cy.getByTestID(`time-machine-submit-button`).click()
         cy.getByTestID('save-query-as').click()
-        cy.getByTestID('cell--radio-button').click()
+        cy.getByTestID('cell-radio-button').click()
       })
 
       it('can save as cell into multiple dashboards', () => {
@@ -1120,6 +1129,7 @@ describe('DataExplorer', () => {
         cy.getByTestID('save-as-dashboard-cell--cell-name').type(cellName)
 
         cy.getByTestID('save-as-dashboard-cell--submit').click()
+        cy.wait(250)
 
         // ensure cell exists at dashboards
         cy.get('@org').then(({id: orgID}: Organization) => {
@@ -1290,20 +1300,21 @@ describe('DataExplorer', () => {
         cy.getByTestID('nav-item-data-explorer').click({force: true})
         cy.getByTestID(`selector-list m`).click()
         cy.getByTestID('save-query-as').click({force: true})
-        cy.getByTestID('variable--radio-button').click()
+        cy.getByTestID('variable-radio-button').click()
       })
 
       it('can save and enable/disable submit button', () => {
-        cy.getByTestID('variable-form-save').should('be.disabled')
-        cy.getByTestID('variable-name-input').type(variableName)
-        cy.getByTestID('variable-form-save').should('be.enabled')
-        cy.getByTestID('variable-name-input').clear()
-        cy.getByTestID('variable-form-save').should('be.disabled')
-        cy.getByTestID('variable-name-input').type(variableName)
-        cy.getByTestID('variable-form-save').should('be.enabled')
+        cy.getByTestID('overlay--container').within(() => {
+          cy.get('.cf-button-success').should('be.disabled')
+          cy.getByTestID('input-field').type(variableName)
+          cy.get('.cf-button-success').should('be.enabled')
+          cy.getByTestID('input-field').clear()
+          cy.get('.cf-button-success').should('be.disabled')
+          cy.getByTestID('input-field').type(variableName)
+          cy.get('.cf-button-success').should('be.enabled')
 
-        cy.getByTestID('variable-form-save').click()
-
+          cy.get('.cf-button-success').click()
+        })
         visitVariables()
         cy.getByTestID(`variable-card--name ${variableName}`).should('exist')
       })

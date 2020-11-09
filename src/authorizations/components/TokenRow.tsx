@@ -1,6 +1,7 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
+import moment from 'moment'
 
 // Actions
 import {
@@ -23,7 +24,10 @@ import {Context} from 'src/clockface'
 
 // Types
 import {Authorization} from 'src/types'
-import {DEFAULT_TOKEN_DESCRIPTION} from 'src/dashboards/constants'
+import {
+  DEFAULT_TOKEN_DESCRIPTION,
+  UPDATED_AT_TIME_FORMAT,
+} from 'src/dashboards/constants'
 
 interface OwnProps {
   auth: Authorization
@@ -52,7 +56,12 @@ class TokenRow extends PureComponent<Props> {
           testID={`token-name ${auth.description}`}
         />
         <ResourceCard.Meta>
-          {[<>Created at: {auth.createdAt}</>]}
+          {[
+            <React.Fragment key={auth.id}>
+              Created at:{' '}
+              {moment(auth.createdAt).format(UPDATED_AT_TIME_FORMAT)}
+            </React.Fragment>,
+          ]}
         </ResourceCard.Meta>
         <FlexBox margin={ComponentSize.Small}>
           <SlideToggle

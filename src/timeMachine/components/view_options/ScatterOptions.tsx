@@ -7,6 +7,7 @@ import {Form, Input, Grid, MultiSelectDropdown} from '@influxdata/clockface'
 import AxisAffixes from 'src/timeMachine/components/view_options/AxisAffixes'
 import TimeFormat from 'src/timeMachine/components/view_options/TimeFormat'
 import LegendOrientation from 'src/timeMachine/components/view_options/LegendOrientation'
+import AxisTicksGenerator from 'src/shared/components/axisTicks/AxisTicksGenerator'
 
 // Actions
 import {
@@ -24,6 +25,14 @@ import {
   setTimeFormat,
   setLegendOpacity,
   setLegendOrientationThreshold,
+  setGenerateXAxisTicks,
+  setXTotalTicks,
+  setXTickStart,
+  setXTickStep,
+  setGenerateYAxisTicks,
+  setYTotalTicks,
+  setYTickStart,
+  setYTickStep,
 } from 'src/timeMachine/actions'
 
 // Utils
@@ -99,6 +108,14 @@ const ScatterOptions: FunctionComponent<Props> = props => {
     timeFormat,
     onSetLegendOpacity,
     onSetLegendOrientationThreshold,
+    onSetGenerateXAxisTicks,
+    onSetXTotalTicks,
+    onSetXTickStart,
+    onSetXTickStep,
+    onSetGenerateYAxisTicks,
+    onSetYTotalTicks,
+    onSetYTickStart,
+    onSetYTickStep,
   } = props
 
   const groupDropdownStatus = availableGroupColumns.length
@@ -192,6 +209,15 @@ const ScatterOptions: FunctionComponent<Props> = props => {
           onUpdateAxisSuffix={suffix => onUpdateAxisSuffix(suffix, 'x')}
         />
       </Grid.Row>
+      <AxisTicksGenerator
+        axisName="x"
+        columnType={xColumn}
+        label="X Axis Tick Generator"
+        onSetGenerateAxisTicks={onSetGenerateXAxisTicks}
+        onSetTotalTicks={onSetXTotalTicks}
+        onSetTickStart={onSetXTickStart}
+        onSetTickStep={onSetXTickStep}
+      />
       <AutoDomainInput
         domain={xDomain as [number, number]}
         onSetDomain={onSetXDomain}
@@ -213,6 +239,15 @@ const ScatterOptions: FunctionComponent<Props> = props => {
           onUpdateAxisSuffix={suffix => onUpdateAxisSuffix(suffix, 'y')}
         />
       </Grid.Row>
+      <AxisTicksGenerator
+        axisName="y"
+        columnType={yColumn}
+        label="Y Axis Tick Generator"
+        onSetGenerateAxisTicks={onSetGenerateYAxisTicks}
+        onSetTotalTicks={onSetYTotalTicks}
+        onSetTickStart={onSetYTickStart}
+        onSetTickStep={onSetYTickStep}
+      />
       <AutoDomainInput
         domain={yDomain as [number, number]}
         onSetDomain={onSetYDomain}
@@ -264,6 +299,14 @@ const mdtp = {
   onSetTimeFormat: setTimeFormat,
   onSetLegendOpacity: setLegendOpacity,
   onSetLegendOrientationThreshold: setLegendOrientationThreshold,
+  onSetGenerateXAxisTicks: setGenerateXAxisTicks,
+  onSetXTotalTicks: setXTotalTicks,
+  onSetXTickStart: setXTickStart,
+  onSetXTickStep: setXTickStep,
+  onSetGenerateYAxisTicks: setGenerateYAxisTicks,
+  onSetYTotalTicks: setYTotalTicks,
+  onSetYTickStart: setYTickStart,
+  onSetYTickStep: setYTickStep,
 }
 
 const connector = connect(mstp, mdtp)

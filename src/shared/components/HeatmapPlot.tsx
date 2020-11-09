@@ -6,6 +6,7 @@ import {Config, Table} from '@influxdata/giraffe'
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 
 // Utils
+import {useAxisTicksGenerator} from 'src/shared/utils/useAxisTicksGenerator'
 import {
   useLegendOpacity,
   useLegendOrientationThreshold,
@@ -53,12 +54,26 @@ const HeatmapPlot: FunctionComponent<Props> = ({
     timeFormat,
     legendOpacity,
     legendOrientationThreshold,
+    xTotalTicks,
+    xTickStart,
+    xTickStep,
+    yTotalTicks,
+    yTickStart,
+    yTickStep,
   },
   children,
   theme,
 }) => {
   const columnKeys = table.columnKeys
 
+  const axisTicksOptions = useAxisTicksGenerator({
+    xTotalTicks,
+    xTickStart,
+    xTickStep,
+    yTotalTicks,
+    yTickStart,
+    yTickStep,
+  })
   const tooltipOpacity = useLegendOpacity(legendOpacity)
   const tooltipOrientationThreshold = useLegendOrientationThreshold(
     legendOrientationThreshold
@@ -117,6 +132,7 @@ const HeatmapPlot: FunctionComponent<Props> = ({
     yDomain,
     onSetYDomain,
     onResetYDomain,
+    ...axisTicksOptions,
     legendOpacity: tooltipOpacity,
     legendOrientationThreshold: tooltipOrientationThreshold,
     valueFormatters: {

@@ -109,54 +109,52 @@ const AxisTicksGenerator: FC<Props> = props => {
 
   return (
     <Form.Element label={label} className="tick-generator-input">
-      <Grid>
-        <Grid.Row>
-          <Grid.Column widthXS={Columns.Twelve}>
-            <SelectGroup shape={ButtonShape.StretchToFit}>
-              <SelectGroup.Option
-                name="tick-generator"
-                id="radio_auto"
-                titleText="Auto"
-                active={!showInputs}
-                onClick={handleChooseAuto}
-                value="Auto"
-              >
-                Auto
-              </SelectGroup.Option>
-              <SelectGroup.Option
-                name="tick-generator"
-                id="radio_custom"
-                titleText="Custom"
-                active={showInputs}
-                onClick={handleChooseCustom}
-                value="Custom"
-              >
-                Custom
-              </SelectGroup.Option>
-            </SelectGroup>
-          </Grid.Column>
-        </Grid.Row>
-        {showInputs &&
-          (isTimeColumn ? (
-            <TimeTicksOptions
-              axisName={axisName}
-              tickOptions={generateAxisTicks}
-              totalTicks={totalTicks}
-              tickStart={tickStart}
-              tickStep={tickStep}
-              setOptions={onSetTicksGeneratorOptions}
-            />
-          ) : (
-            <ValueTicksOptions
-              axisName={axisName}
-              tickOptions={generateAxisTicks}
-              totalTicks={totalTicks}
-              tickStart={tickStart}
-              tickStep={tickStep}
-              setOptions={onSetTicksGeneratorOptions}
-            />
-          ))}
-      </Grid>
+      <Grid.Row>
+        <Grid.Column widthXS={Columns.Twelve}>
+          <SelectGroup shape={ButtonShape.StretchToFit}>
+            <SelectGroup.Option
+              name="tick-generator"
+              id="radio_auto"
+              titleText="Auto"
+              active={!showInputs}
+              onClick={handleChooseAuto}
+              value="Auto"
+            >
+              Auto
+            </SelectGroup.Option>
+            <SelectGroup.Option
+              name="tick-generator"
+              id="radio_custom"
+              titleText="Custom"
+              active={showInputs}
+              onClick={handleChooseCustom}
+              value="Custom"
+            >
+              Custom
+            </SelectGroup.Option>
+          </SelectGroup>
+        </Grid.Column>
+      </Grid.Row>
+      {showInputs &&
+        (isTimeColumn ? (
+          <TimeTicksOptions
+            axisName={axisName}
+            tickOptions={generateAxisTicks}
+            totalTicks={totalTicks}
+            tickStart={tickStart}
+            tickStep={tickStep}
+            setOptions={onSetTicksGeneratorOptions}
+          />
+        ) : (
+          <ValueTicksOptions
+            axisName={axisName}
+            tickOptions={generateAxisTicks}
+            totalTicks={totalTicks}
+            tickStart={tickStart}
+            tickStep={tickStep}
+            setOptions={onSetTicksGeneratorOptions}
+          />
+        ))}
     </Form.Element>
   )
 }

@@ -203,6 +203,20 @@ class LineOptions extends PureComponent<Props> {
           </Form.Element>
         </Grid.Column>
         <Grid.Column>
+          <h5 className="view-options--header">X Axis</h5>
+        </Grid.Column>
+        <Grid.Column>
+          <AxisTicksGenerator
+            axisName="x"
+            columnType={xColumn}
+            label="X Axis Tick Generator"
+            onSetGenerateAxisTicks={onSetGenerateXAxisTicks}
+            onSetTotalTicks={onSetXTotalTicks}
+            onSetTickStart={onSetXTickStart}
+            onSetTickStep={onSetXTickStep}
+          />
+        </Grid.Column>
+        <Grid.Column>
           <h5 className="view-options--header">Y Axis</h5>
         </Grid.Column>
         <YAxisTitle label={label} onUpdateYAxisLabel={onUpdateYAxisLabel} />
@@ -260,20 +274,6 @@ class LineOptions extends PureComponent<Props> {
               )}
             />
           </Form.Element>
-        </Grid.Column>
-        <Grid.Column>
-          <h5 className="view-options--header">X Axis</h5>
-        </Grid.Column>
-        <Grid.Column>
-          <AxisTicksGenerator
-            axisName="x"
-            columnType={xColumn}
-            label="X Axis Tick Generator"
-            onSetGenerateAxisTicks={onSetGenerateXAxisTicks}
-            onSetTotalTicks={onSetXTotalTicks}
-            onSetTickStart={onSetXTickStart}
-            onSetTickStep={onSetXTickStep}
-          />
         </Grid.Column>
         <LegendOrientation
           onLegendOpacityChange={onSetLegendOpacity}

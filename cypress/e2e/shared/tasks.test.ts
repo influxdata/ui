@@ -242,9 +242,7 @@ http.post(
 
       // Now delete the task
       cy.getByTestID('task-card')
-        // Commenting out .first() makes this pass locally, but
-        // according to
-        // .first()
+        .first()
         .within(() => {
           cy.getByTestID('task-context--delete--button').click()
         })

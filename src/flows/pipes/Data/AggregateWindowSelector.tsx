@@ -2,7 +2,7 @@
 import React, {FC, useContext, useCallback} from 'react'
 
 // Components
-import {Dropdown} from '@influxdata/clockface'
+import {Dropdown, IconFont} from '@influxdata/clockface'
 
 // Contexts
 import {PipeContext} from 'src/flows/context/pipe'
@@ -45,7 +45,11 @@ const AggregateFunctionSelector: FC = () => {
   )
 
   const button = (active, onClick) => (
-    <Dropdown.Button onClick={onClick} active={active}>
+    <Dropdown.Button
+      onClick={onClick}
+      active={active}
+      icon={IconFont.FunnelSolid}
+    >
       {selectedFunction.name}
     </Dropdown.Button>
   )

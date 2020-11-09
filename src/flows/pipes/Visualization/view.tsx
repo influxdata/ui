@@ -9,7 +9,12 @@ import React, {
 } from 'react'
 
 // Components
-import {SquareButton, IconFont, ComponentColor} from '@influxdata/clockface'
+import {
+  SquareButton,
+  IconFont,
+  ComponentColor,
+  ComponentStatus,
+} from '@influxdata/clockface'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 import DashboardList from './DashboardList'
 import ViewSwitcher from 'src/shared/components/ViewSwitcher'
@@ -62,6 +67,14 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     })
   }
 
+  const dataExists = Object.entries(results.parsed).length
+  const configureButtonStatus = dataExists
+    ? ComponentStatus.Default
+    : ComponentStatus.Disabled
+  const configureButtonTitleText = dataExists
+    ? 'Configure Visualization'
+    : 'No data to visualize yet'
+
   const controls = (
     <>
       <ViewTypeDropdown
@@ -71,10 +84,11 @@ const Visualization: FC<PipeProp> = ({Context}) => {
       <SquareButton
         icon={IconFont.CogThick}
         onClick={toggleOptions}
+        status={configureButtonStatus}
         color={
           optionsVisibility ? ComponentColor.Primary : ComponentColor.Default
         }
-        titleText="Configure Visualization"
+        titleText={configureButtonTitleText}
         className="flows-config-visualization-button"
       />
       <ExportVisualizationButton disabled={!results.source}>
@@ -90,15 +104,30 @@ const Visualization: FC<PipeProp> = ({Context}) => {
   )
 
   const options = useMemo(() => {
-    if (!optionsVisibility || !TYPE_DEFINITIONS[data.properties.type].options) {
+    if (
+      !optionsVisibility ||
+      !TYPE_DEFINITIONS[data.properties.type].options ||
+      !dataExists
+    ) {
       return null
     }
-    return createElement(TYPE_DEFINITIONS[data.properties.type].options, {
-      properties: data.properties,
-      results: results.parsed,
-      update: updateProperties,
-    })
-  }, [optionsVisibility, data.properties, results.parsed, updateProperties])
+
+    return (
+      <div className="flow-visualization--options">
+        {createElement(TYPE_DEFINITIONS[data.properties.type].options, {
+          properties: data.properties,
+          results: results.parsed,
+          update: updateProperties,
+        })}
+      </div>
+    )
+  }, [
+    optionsVisibility,
+    data.properties,
+    results.parsed,
+    updateProperties,
+    dataExists,
+  ])
 
   const loadingText = useMemo(() => {
     if (loading === RemoteDataState.Loading) {
@@ -114,7 +143,6 @@ const Visualization: FC<PipeProp> = ({Context}) => {
 
   return (
     <Context controls={controls}>
-      {options}
       <Resizer
         resizingEnabled={!!results.raw}
         minimumHeight={200}
@@ -145,6 +173,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
           </div>
         </div>
       </Resizer>
+      {options}
     </Context>
   )
 }

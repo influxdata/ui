@@ -44,3 +44,14 @@
   color: $g11-sidewalk;
   margin-bottom: $cf-marg-b;
 }
+
+.flow-visualization--options {
+  background-color: $g2-kevlar;
+  border-radius: $cf-radius;
+  margin-top: $cf-marg-b;
+  padding: $cf-marg-c;
+
+  h5.view-options--header {
+    margin-top: 0;
+  }
+}

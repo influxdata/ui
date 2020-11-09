@@ -5,6 +5,71 @@ info:
 servers:
   - url: /unity/v2 # to be determined
 paths:
+  "/orgs/{orgID}/invites":
+    post:
+      operationId: PostOrgsIDInvites
+      tags:
+        - Invites
+        - Organizations
+      summary: Creates an invite to an organization
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+        - in: path
+          name: orgID
+          schema:
+            type: string
+          required: true
+          description: The organization ID.
+      requestBody:
+        description: Invite to be sent
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Invite"
+      responses:
+        "201":
+          description: Invite sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invite"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  "/orgs/{orgID}/invites/{inviteID}":
+    delete:
+      operationId: DeleteOrgsIDInviteID
+      tags:
+        - Invites
+        - Organizations
+      summary: Remove an invite to an organization
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+        - in: path
+          name: inviteID
+          schema:
+            type: string
+          required: true
+          description: The ID of the invite to remove.
+        - in: path
+          name: orgID
+          schema:
+            type: string
+          required: true
+          description: The organization ID.
+      responses:
+        "204":
+          description: Invite removed
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   "/orgs/{orgID}/users":
       get:
         operationId: GetUsers
@@ -55,41 +120,6 @@ paths:
       responses:
         "204":
           description: User removed
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  "/orgs/{orgID}/invites":
-    post:
-      operationId: PostOrgsIDInvites
-      tags:
-        - Invites
-        - Organizations
-      summary: Creates an invite to an organization
-      parameters:
-        - $ref: "#/components/parameters/TraceSpan"
-        - in: path
-          name: orgID
-          schema:
-            type: string
-          required: true
-          description: The organization ID.
-      requestBody:
-        description: Invite to be sent
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Invite"
-      responses:
-        "201":
-          description: Invite sent
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Invite"
         default:
           description: Unexpected error
           content:

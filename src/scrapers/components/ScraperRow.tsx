@@ -14,7 +14,6 @@ import {Scraper} from 'src/types'
 
 // Constants
 import {DEFAULT_SCRAPER_NAME} from 'src/dashboards/constants'
-import {} from '@influxdata/clockface'
 
 interface Props {
   scraper: Scraper

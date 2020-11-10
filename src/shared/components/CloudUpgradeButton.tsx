@@ -6,6 +6,7 @@ import classnames from 'classnames'
 
 // Components
 import {
+  IconFont,
   LinkButton,
   ComponentColor,
   ComponentSize,
@@ -47,6 +48,7 @@ const CloudUpgradeButton: FC<StateProps & OwnProps> = ({
     <CloudOnly>
       {inView && (
         <LinkButton
+          icon={IconFont.Upgrade}
           className={cloudUpgradeButtonClass}
           color={ComponentColor.Success}
           size={size}

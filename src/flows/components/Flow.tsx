@@ -7,7 +7,6 @@ import {ResultsProvider} from 'src/flows/context/results'
 import {RefProvider} from 'src/flows/context/refs'
 import CurrentFlowProvider from 'src/flows/context/flow.current'
 import {FlowListContext} from 'src/flows/context/flow.list'
-import {ScrollProvider} from 'src/flows/context/scroll'
 import FlowPage from 'src/flows/components/FlowPage'
 import {PopupDrawer, PopupProvider} from 'src/flows/context/popup'
 
@@ -33,9 +32,7 @@ const FlowContainer: FC = () => {
       <PopupProvider>
         <ResultsProvider>
           <RefProvider>
-            <ScrollProvider>
               <FlowPage />
-            </ScrollProvider>
           </RefProvider>
         </ResultsProvider>
         <PopupDrawer />

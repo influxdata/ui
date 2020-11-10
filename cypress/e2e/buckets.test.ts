@@ -172,6 +172,7 @@ describe('Buckets', () => {
       })
     })
 
+    // TODO: ZOE Come back and fix race condition
     it('can delete a bucket', () => {
       const bucket1 = 'newbucket1'
       cy.get<Organization>('@org').then(({id, name}: Organization) => {
@@ -181,10 +182,8 @@ describe('Buckets', () => {
       cy.getByTestID(`context-delete-menu ${bucket1}`).click()
       cy.getByTestID(`context-delete-bucket ${bucket1}`)
         .should('be.visible')
-        .wait(500)
-        .contains(`${bucket1}`)
         .click()
-
+        .wait(500)
       cy.getByTestID(`bucket--card--name ${bucket1}`).should('not.exist')
     })
   })

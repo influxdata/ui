@@ -37,11 +37,19 @@
   @include gradient-v($g5-pepper, $c-amethyst);
 }
 
+.flow-panel__hidden.flow-panel .flow-divider {
+  transform: translateY(37%);
+}
+
+.flow-panel__hidden.flow-panel:last-child .flow-divider {
+  transform: translateY(100%);
+}
+
 .flow-panel__hidden.flow-panel:last-child .flow-divider:after {
   height: 50%;
 }
 
-.flow-divider--button {
+.cf-button.flow-divider--button {
   border-radius: 50%;
   position: absolute;
   top: 50%;

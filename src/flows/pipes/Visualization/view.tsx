@@ -9,17 +9,20 @@ import React, {
 } from 'react'
 
 // Components
-import {ComponentColor, IconFont, SquareButton} from '@influxdata/clockface'
+import {
+  ComponentColor,
+  ComponentStatus,
+  IconFont,
+  SquareButton,
+} from '@influxdata/clockface'
 import ExportButton from 'src/flows/components/panel/ExportDashboardButton'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
-import DashboardList from './DashboardList'
 import ViewSwitcher from 'src/shared/components/ViewSwitcher'
 import ViewTypeDropdown from 'src/shared/visualization/ViewTypeDropdown'
 import Resizer from 'src/flows/shared/Resizer'
 
 // Utilities
 import {checkResultsLength} from 'src/shared/utils/vis'
-import ExportVisualizationButton from 'src/flows/pipes/Visualization/ExportVisualizationButton'
 import {event} from 'src/cloud/utils/reporting'
 import {TYPE_DEFINITIONS, _transform} from 'src/shared/visualization'
 
@@ -63,6 +66,14 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     })
   }
 
+  const dataExists = Object.entries(results.parsed).length
+  const configureButtonStatus = dataExists
+    ? ComponentStatus.Default
+    : ComponentStatus.Disabled
+  const configureButtonTitleText = dataExists
+    ? 'Configure Visualization'
+    : 'No data to visualize yet'
+
   const controls = (
     <>
       <ViewTypeDropdown
@@ -72,34 +83,41 @@ const Visualization: FC<PipeProp> = ({Context}) => {
       <SquareButton
         icon={IconFont.CogThick}
         onClick={toggleOptions}
+        status={configureButtonStatus}
         color={
           optionsVisibility ? ComponentColor.Primary : ComponentColor.Default
         }
-        titleText="Configure Visualization"
+        titleText={configureButtonTitleText}
         className="flows-config-visualization-button"
       />
-      <ExportVisualizationButton disabled={!results.source}>
-        {onHidePopover => (
-          <DashboardList
-            query={results.source}
-            onClose={onHidePopover}
-            properties={data.properties}
-          />
-        )}
-      </ExportVisualizationButton>
     </>
   )
 
   const options = useMemo(() => {
-    if (!optionsVisibility || !TYPE_DEFINITIONS[data.properties.type].options) {
+    if (
+      !optionsVisibility ||
+      !TYPE_DEFINITIONS[data.properties.type].options ||
+      !dataExists
+    ) {
       return null
     }
-    return createElement(TYPE_DEFINITIONS[data.properties.type].options, {
-      properties: data.properties,
-      results: results.parsed,
-      update: updateProperties,
-    })
-  }, [optionsVisibility, data.properties, results.parsed, updateProperties])
+
+    return (
+      <div className="flow-visualization--options">
+        {createElement(TYPE_DEFINITIONS[data.properties.type].options, {
+          properties: data.properties,
+          results: results.parsed,
+          update: updateProperties,
+        })}
+      </div>
+    )
+  }, [
+    optionsVisibility,
+    data.properties,
+    results.parsed,
+    updateProperties,
+    dataExists,
+  ])
 
   const loadingText = useMemo(() => {
     if (loading === RemoteDataState.Loading) {
@@ -115,9 +133,9 @@ const Visualization: FC<PipeProp> = ({Context}) => {
 
   return (
     <Context controls={controls} persistentControl={<ExportButton />}>
-      {options}
       <Resizer
         resizingEnabled={!!results.raw}
+        minimumHeight={200}
         emptyText={loadingText}
         emptyIcon={IconFont.BarChart}
         toggleVisibilityEnabled={false}
@@ -145,6 +163,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
           </div>
         </div>
       </Resizer>
+      {options}
     </Context>
   )
 }

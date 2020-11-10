@@ -172,7 +172,6 @@ describe('Buckets', () => {
       })
     })
 
-    // TODO: ZOE Come back and fix race condition
     it('can delete a bucket', () => {
       const bucket1 = 'newbucket1'
       cy.get<Organization>('@org').then(({id, name}: Organization) => {

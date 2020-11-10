@@ -160,7 +160,7 @@ jobs:
       - store_artifacts:
           path: monitor-ci/test-artifacts/screenshots
           destination: test_artifacts/screenshots
-  cloud-e2e-nightly-firefox:
+  cloud-e2e-firefox:
     machine:
       image: ubuntu-2004:202008-01
       docker_layer_caching: true
@@ -318,6 +318,9 @@ workflows:
       - smoke:
           requires:
             - build-image
+      - cloud-e2e-firefox:
+          requires:
+            - build-image
       - deploy:
           filters:
             branches:
@@ -340,13 +343,3 @@ workflows:
             - lint
             - smoke
             - cloud-e2e
-  nightly:
-    triggers:
-      - schedule:
-          cron: "0 0 * * *"
-          filters:
-            branches:
-              only:
-                - master
-    jobs:
-      - cloud-e2e-nightly-firefox

@@ -245,18 +245,6 @@ export const setQueryByHashID = (queryID: string, result: any): void => {
     })
 }
 
-export const getQueryStatusByID = (queryID: string): any => {
-  if (queryID in queryReference) {
-    return queryReference[queryID]
-  }
-  return {
-    cancel: new AbortController(),
-    issuedAt: Date.now(),
-    promise: Promise.resolve(),
-    status: RemoteDataState.NotStarted,
-  }
-}
-
 export const executeQueries = (abortController?: AbortController) => async (
   dispatch,
   getState: GetState

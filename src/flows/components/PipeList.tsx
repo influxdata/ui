@@ -20,7 +20,7 @@ const PipeList: FC = () => {
     return <FlowPipe key={`pipe-${id}`} id={id} />
   })
 
-  return <>{_pipes}</>
+  return <div className="flow">{_pipes}</div>
 }
 
 export default PipeList

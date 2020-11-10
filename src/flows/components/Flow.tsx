@@ -1,44 +1,21 @@
-// Libraries
-import React, {FC, useContext, useEffect} from 'react'
-import {useParams} from 'react-router-dom'
+import React from 'react'
 
 // Components
-import {ResultsProvider} from 'src/flows/context/results'
+import PipeList from 'src/flows/components/PipeList'
+import QueryProvider from 'src/flows/context/query'
 import {RefProvider} from 'src/flows/context/refs'
-import CurrentFlowProvider from 'src/flows/context/flow.current'
-import {FlowListContext} from 'src/flows/context/flow.list'
-import FlowPage from 'src/flows/components/FlowPage'
 import {PopupDrawer, PopupProvider} from 'src/flows/context/popup'
 
-const FlowFromRoute = () => {
-  const {id} = useParams()
-  const {change} = useContext(FlowListContext)
-
-  useEffect(() => {
-    change(id)
-  }, [id, change])
-
-  return null
-}
-// NOTE: uncommon, but using this to scope the project
-// within the page and not bleed it's dependencies outside
-// of the feature flag
-import 'src/flows/style.scss'
-
-const FlowContainer: FC = () => {
-  return (
-    <CurrentFlowProvider>
-      <FlowFromRoute />
+// NOTE: requires a FlowProvider and ResultsProvider
+const Flow = () => (
+  <QueryProvider>
+    <RefProvider>
       <PopupProvider>
-        <ResultsProvider>
-          <RefProvider>
-              <FlowPage />
-          </RefProvider>
-        </ResultsProvider>
+        <PipeList />
         <PopupDrawer />
       </PopupProvider>
-    </CurrentFlowProvider>
-  )
-}
+    </RefProvider>
+  </QueryProvider>
+)
 
-export default FlowContainer
+export default Flow

@@ -64,9 +64,11 @@ const XYPlot: FC<Props> = ({
     hoverDimension,
     legendOpacity,
     legendOrientationThreshold,
+    generateXAxisTicks,
     xTotalTicks,
     xTickStart,
     xTickStep,
+    generateYAxisTicks,
     yTotalTicks,
     yTickStart,
     yTickStep,
@@ -92,9 +94,11 @@ const XYPlot: FC<Props> = ({
   theme,
 }) => {
   const axisTicksOptions = useAxisTicksGenerator({
+    generateXAxisTicks,
     xTotalTicks,
     xTickStart,
     xTickStep,
+    generateYAxisTicks,
     yTotalTicks,
     yTickStart,
     yTickStep,

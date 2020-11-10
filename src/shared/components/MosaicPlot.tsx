@@ -52,6 +52,7 @@ const MosaicPlot: FunctionComponent<Props> = ({
     timeFormat,
     legendOpacity,
     legendOrientationThreshold,
+    generateXAxisTicks,
     xTotalTicks,
     xTickStart,
     xTickStep,
@@ -69,9 +70,11 @@ const MosaicPlot: FunctionComponent<Props> = ({
   const columnKeys = table.columnKeys
 
   const axisTicksOptions = useAxisTicksGenerator({
+    generateXAxisTicks,
     xTotalTicks,
     xTickStart,
     xTickStep,
+    generateYAxisTicks: [],
     yTotalTicks: null,
     yTickStart: null,
     yTickStep: null,

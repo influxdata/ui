@@ -81,9 +81,11 @@ const BandPlot: FC<Props> = ({
     hoverDimension,
     legendOpacity,
     legendOrientationThreshold,
+    generateXAxisTicks,
     xTotalTicks,
     xTickStart,
     xTickStep,
+    generateYAxisTicks,
     yTotalTicks,
     yTickStart,
     yTickStep,
@@ -129,9 +131,11 @@ const BandPlot: FC<Props> = ({
   }, [activeQueryIndex, queries, upperColumnName, mainColumn, lowerColumnName])
 
   const axisTicksOptions = useAxisTicksGenerator({
+    generateXAxisTicks,
     xTotalTicks,
     xTickStart,
     xTickStep,
+    generateYAxisTicks,
     yTotalTicks,
     yTickStart,
     yTickStep,

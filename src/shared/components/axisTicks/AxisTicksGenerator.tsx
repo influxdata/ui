@@ -168,10 +168,9 @@ const mstp = (state: AppState, ownProps: AxisTicksGeneratorProps) => {
   const tickStart = properties[`${axisName}TickStart`]
   const tickStep = properties[`${axisName}TickStep`]
 
-  let hasTotalTicks =
-    typeof totalTicks === 'number' && totalTicks === totalTicks
-  let hasTickStart = typeof tickStart === 'number' && tickStart === tickStart
-  let hasTickStep = typeof tickStep === 'number' && tickStep === tickStep
+  let hasTotalTicks = false
+  let hasTickStart = false
+  let hasTickStep = false
 
   if (Array.isArray(generateAxisTicks)) {
     generateAxisTicks.forEach(tickOption => {

@@ -54,9 +54,11 @@ const HeatmapPlot: FunctionComponent<Props> = ({
     timeFormat,
     legendOpacity,
     legendOrientationThreshold,
+    generateXAxisTicks,
     xTotalTicks,
     xTickStart,
     xTickStep,
+    generateYAxisTicks,
     yTotalTicks,
     yTickStart,
     yTickStep,
@@ -67,9 +69,11 @@ const HeatmapPlot: FunctionComponent<Props> = ({
   const columnKeys = table.columnKeys
 
   const axisTicksOptions = useAxisTicksGenerator({
+    generateXAxisTicks,
     xTotalTicks,
     xTickStart,
     xTickStep,
+    generateYAxisTicks,
     yTotalTicks,
     yTickStart,
     yTickStep,

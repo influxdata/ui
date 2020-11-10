@@ -1,31 +1,28 @@
 import {useMemo} from 'react'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-export const useAxisTicksGenerator = ({
-  xTotalTicks,
-  xTickStart,
-  xTickStep,
-  yTotalTicks,
-  yTickStart,
-  yTickStep,
-}) =>
+export const useAxisTicksGenerator = options =>
   useMemo(() => {
-    if (!isFlagEnabled('axisTicksGenerator')) {
-      return {
-        xTotalTicks: null,
-        xTickStart: null,
-        xTickStep: null,
-        yTotalTicks: null,
-        yTickStart: null,
-        yTickStep: null,
+    const {generateXAxisTicks, generateYAxisTicks} = options
+    const result = {
+      xTotalTicks: null,
+      xTickStart: null,
+      xTickStep: null,
+      yTotalTicks: null,
+      yTickStart: null,
+      yTickStep: null,
+    }
+    if (isFlagEnabled('axisTicksGenerator')) {
+      if (Array.isArray(generateXAxisTicks)) {
+        generateXAxisTicks.forEach(
+          tickOption => (result[tickOption] = options[tickOption])
+        )
+      }
+      if (Array.isArray(generateYAxisTicks)) {
+        generateYAxisTicks.forEach(
+          tickOption => (result[tickOption] = options[tickOption])
+        )
       }
     }
-    return {
-      xTotalTicks,
-      xTickStart,
-      xTickStep,
-      yTotalTicks,
-      yTickStart,
-      yTickStep,
-    }
-  }, [xTotalTicks, xTickStart, xTickStep, yTotalTicks, yTickStart, yTickStep])
+    return result
+  }, [options])

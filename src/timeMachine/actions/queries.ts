@@ -31,15 +31,16 @@ import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
 import {findNodes} from 'src/shared/utils/ast'
 import {
   isDemoDataAvailabilityError,
-  demoDataError,
+  demoDataErrorMessage,
 } from 'src/cloud/utils/demoDataErrors'
-import {
-  aggregateTypeError,
-  isAggregateTypeError,
-} from 'src/utils/aggregateTypeErrors'
+import {isAggregateTypeError} from 'src/utils/aggregateTypeErrors'
 import {event} from 'src/cloud/utils/reporting'
 import {asSimplyKeyValueVariables, hashCode} from 'src/shared/apis/queryCache'
 import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
+import {
+  getAggregateTypeErrorButton,
+  getDemoDataErrorButton,
+} from 'src/shared/components/notifications/NotificationButtons'
 
 // Types
 import {CancelBox} from 'src/types/promises'
@@ -53,6 +54,7 @@ import {
   QueryEditMode,
   BuilderTagsType,
   Variable,
+  NotificationButtonElement,
 } from 'src/types'
 
 // Selectors
@@ -337,15 +339,19 @@ export const executeQueries = (abortController?: AbortController) => async (
     for (const result of results) {
       if (result.type === 'UNKNOWN_ERROR') {
         if (isDemoDataAvailabilityError(result.code, result.message)) {
-          dispatch(
-            notify(demoDataAvailability(demoDataError(getOrg(state).id)))
-          )
+          const message = demoDataErrorMessage()
+          const buttonElement: NotificationButtonElement = onDismiss =>
+            getDemoDataErrorButton(onDismiss)
+          dispatch(notify(demoDataAvailability(message, buttonElement)))
         }
         if (
           isAggregateTypeError(result.code, result.message) &&
           state.currentExplorer.isAutoFunction
         ) {
-          dispatch(notify(updateAggregateType(aggregateTypeError())))
+          const message = `It looks like you're trying to apply a number-based aggregate function to a string, which cannot be processed. You can fix this by selecting the Aggregate Function "Last"`
+          const buttonElement: NotificationButtonElement = onDismiss =>
+            getAggregateTypeErrorButton(onDismiss)
+          dispatch(notify(updateAggregateType(message, buttonElement)))
         }
 
         throw new Error(result.message)

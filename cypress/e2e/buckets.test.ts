@@ -179,10 +179,11 @@ describe('Buckets', () => {
       })
 
       cy.getByTestID(`context-delete-menu ${bucket1}`).click()
-      cy.getByTestID(`context-delete-bucket ${bucket1}`).should('be.visible')
-      .wait(500)
-      .contains(`${bucket1}`)
-      .click()
+      cy.getByTestID(`context-delete-bucket ${bucket1}`)
+        .should('be.visible')
+        .wait(500)
+        .contains(`${bucket1}`)
+        .click()
 
       cy.getByTestID(`bucket--card--name ${bucket1}`).should('not.exist')
     })

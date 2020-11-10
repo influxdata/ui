@@ -7,7 +7,7 @@ import {
 import {presentationMode} from 'src/shared/copy/notifications'
 
 import {Dispatch} from 'redux'
-import {TimeZone, Theme, NavBarState, FlowMiniMapState} from 'src/types'
+import {TimeZone, Theme, NavBarState} from 'src/types'
 
 export enum ActionTypes {
   EnablePresentationMode = 'ENABLE_PRESENTATION_MODE',
@@ -15,7 +15,6 @@ export enum ActionTypes {
   EnableUpdatedTimeRangeInVEO = 'ENABLE_UPDATED_TIMERANGE_IN_VEO',
   DisableUpdatedTimeRangeInVEO = 'DISABLE_UPDATED_TIMERANGE_IN_VEO',
   SetNavBarState = 'SET_NAV_BAR_STATE',
-  SetFlowMiniMapState = 'SET_NOTEBOOK_MINI_MAP_STATE',
   SetAutoRefresh = 'SET_AUTOREFRESH',
   SetTimeZone = 'SET_APP_TIME_ZONE',
   TemplateControlBarVisibilityToggled = 'TemplateControlBarVisibilityToggledAction',
@@ -28,7 +27,6 @@ export type Action =
   | ReturnType<typeof enableUpdatedTimeRangeInVEO>
   | ReturnType<typeof disableUpdatedTimeRangeInVEO>
   | ReturnType<typeof setNavBarState>
-  | ReturnType<typeof setFlowMiniMapState>
   | ReturnType<typeof setAutoRefresh>
   | ReturnType<typeof setTimeZone>
   | ReturnType<typeof setTheme>
@@ -73,12 +71,6 @@ export const setNavBarState = (navBarState: NavBarState) =>
   ({
     type: ActionTypes.SetNavBarState,
     navBarState,
-  } as const)
-
-export const setFlowMiniMapState = (flowMiniMapState: FlowMiniMapState) =>
-  ({
-    type: ActionTypes.SetFlowMiniMapState,
-    flowMiniMapState,
   } as const)
 
 export const setAutoRefresh = (milliseconds: number) =>

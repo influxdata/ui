@@ -1,7 +1,6 @@
 // Libraries
-import React, {PureComponent} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
-import {isEmpty} from 'lodash'
+import React, {FC, useRef, useEffect} from 'react'
+import {useSelector, useDispatch} from 'react-redux'
 
 // Components
 import {
@@ -14,83 +13,65 @@ import Toolbar from 'src/shared/components/toolbar/Toolbar'
 
 // Utils
 import {
-  getVariables,
   getDashboardVariablesStatus,
+  getControlBarVisibility,
+  getVariablesForDashboard,
 } from 'src/variables/selectors'
-import {filterUnusedVars} from 'src/shared/utils/filterUnusedVars'
 
 // Actions
 import {moveVariable} from 'src/variables/actions/thunks'
 
 // Types
-import {AppState} from 'src/types'
 import {ComponentSize} from '@influxdata/clockface'
 
 // Decorators
-import {ErrorHandling} from 'src/shared/decorators/errors'
 import {RemoteDataState} from 'src/types'
 import DraggableDropdown from 'src/dashboards/components/variablesControlBar/DraggableDropdown'
 import withDragDropContext from 'src/shared/decorators/withDragDropContext'
 
-interface State {
-  initialLoading: RemoteDataState
-}
+const VariablesControlBar: FC = () => {
+  const initialLoadingState = useRef<RemoteDataState>(RemoteDataState.Loading)
+  const dispatch = useDispatch()
+  const variables = useSelector(getVariablesForDashboard)
+  const variablesStatus = useSelector(getDashboardVariablesStatus)
+  const isVisible = useSelector(getControlBarVisibility)
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps
-
-@ErrorHandling
-class VariablesControlBar extends PureComponent<Props, State> {
-  public state: State = {initialLoading: RemoteDataState.Loading}
-
-  static getDerivedStateFromProps(props: Props, state: State) {
+  useEffect(() => {
     if (
-      props.variablesStatus === RemoteDataState.Done &&
-      state.initialLoading !== RemoteDataState.Done
+      variablesStatus === RemoteDataState.Done &&
+      initialLoadingState.current === RemoteDataState.Loading
     ) {
-      return {initialLoading: RemoteDataState.Done}
+      initialLoadingState.current = RemoteDataState.Done
     }
+  }, [variablesStatus])
 
-    return {}
+  if (!isVisible) {
+    return null
   }
 
-  render() {
-    const {show} = this.props
-    if (!show) {
-      return false
-    }
-    return (
-      <Toolbar testID="variables-control-bar" className="variables-control-bar">
-        <SpinnerContainer
-          loading={this.state.initialLoading}
-          spinnerComponent={<TechnoSpinner diameterPixels={50} />}
-          className="variables-spinner-container"
+  const handleMoveDropdown = (
+    originalIndex: number,
+    newIndex: number
+  ): void => {
+    dispatch(moveVariable(originalIndex, newIndex))
+  }
+
+  let toolbarContents = (
+    <EmptyState size={ComponentSize.ExtraSmall}>
+      <EmptyState.Text className="margin-zero">
+        This dashboard doesn't have any cells with defined variables.{' '}
+        <a
+          href="https://v2.docs.influxdata.com/v2.0/visualize-data/variables/"
+          target="_blank"
         >
-          {this.bar}
-        </SpinnerContainer>
-      </Toolbar>
-    )
-  }
+          Learn How
+        </a>
+      </EmptyState.Text>
+    </EmptyState>
+  )
 
-  private get emptyBar(): JSX.Element {
-    return (
-      <EmptyState size={ComponentSize.ExtraSmall}>
-        <EmptyState.Text className="margin-zero">
-          This dashboard doesn't have any cells with defined variables.{' '}
-          <a
-            href="https://v2.docs.influxdata.com/v2.0/visualize-data/variables/"
-            target="_blank"
-          >
-            Learn How
-          </a>
-        </EmptyState.Text>
-      </EmptyState>
-    )
-  }
-
-  private get barContents(): JSX.Element {
-    const {variables, variablesStatus} = this.props
-    return (
+  if (variables.length) {
+    toolbarContents = (
       <div className="variables-control-bar--grid">
         {variables.map((v, i) => (
           <ErrorBoundary key={v.id}>
@@ -98,7 +79,7 @@ class VariablesControlBar extends PureComponent<Props, State> {
               name={v.name}
               id={v.id}
               index={i}
-              moveDropdown={this.handleMoveDropdown}
+              moveDropdown={handleMoveDropdown}
             />
           </ErrorBoundary>
         ))}
@@ -109,49 +90,17 @@ class VariablesControlBar extends PureComponent<Props, State> {
     )
   }
 
-  private get bar(): JSX.Element {
-    const {variables} = this.props
-
-    if (isEmpty(variables)) {
-      return this.emptyBar
-    }
-
-    return this.barContents
-  }
-
-  private handleMoveDropdown = (
-    originalIndex: number,
-    newIndex: number
-  ): void => {
-    const {moveVariable} = this.props
-    moveVariable(originalIndex, newIndex)
-  }
-}
-
-const mdtp = {
-  moveVariable,
-}
-
-const mstp = (state: AppState) => {
-  const dashboardID = state.currentDashboard.id
-  const variables = getVariables(state)
-  const variablesStatus = getDashboardVariablesStatus(state)
-  const show = state.userSettings.showVariablesControls
-
-  const varsInUse = filterUnusedVars(
-    variables,
-    Object.values(state.resources.views.byID).filter(
-      variable => variable.dashboardID === dashboardID
-    )
+  return (
+    <Toolbar testID="variables-control-bar" className="variables-control-bar">
+      <SpinnerContainer
+        loading={initialLoadingState.current}
+        spinnerComponent={<TechnoSpinner diameterPixels={50} />}
+        className="variables-spinner-container"
+      >
+        {toolbarContents}
+      </SpinnerContainer>
+    </Toolbar>
   )
-
-  return {
-    variables: varsInUse,
-    variablesStatus,
-    show,
-  }
 }
 
-const connector = connect(mstp, mdtp)
-
-export default withDragDropContext(connector(VariablesControlBar))
+export default withDragDropContext(VariablesControlBar)

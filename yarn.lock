@@ -1253,13 +1253,6 @@
   resolved "https://registry.yarnpkg.com/@types/qs/-/qs-6.5.1.tgz#a38f69c62528d56ba7bd1f91335a8004988d72f7"
   integrity sha512-mNhVdZHdtKHMMxbqzNK3RzkBcN1cux3AvuCYGTvjEIQT2uheH3eCAyYsbMbh2Bq8nXkeOWs1kyDiF7geWRFQ4Q==
 
-"@types/react-beautiful-dnd@^13.0.0":
-  version "13.0.0"
-  resolved "https://registry.yarnpkg.com/@types/react-beautiful-dnd/-/react-beautiful-dnd-13.0.0.tgz#e60d3d965312fcf1516894af92dc3e9249587db4"
-  integrity sha512-by80tJ8aTTDXT256Gl+RfLRtFjYbUWOnZuEigJgNsJrSEGxvFe5eY6k3g4VIvf0M/6+xoLgfYWoWonlOo6Wqdg==
-  dependencies:
-    "@types/react" "*"
-
 "@types/react-datepicker@^2.8.1":
   version "2.8.1"
   resolved "https://registry.yarnpkg.com/@types/react-datepicker/-/react-datepicker-2.8.1.tgz#37b52655695c2494810e7258528aace79f6a2a46"

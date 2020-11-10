@@ -8,7 +8,6 @@ import {ResultsProvider} from 'src/flows/context/results'
 import {RefProvider} from 'src/flows/context/refs'
 import CurrentFlowProvider from 'src/flows/context/flow.current'
 import {FlowListContext} from 'src/flows/context/flow.list'
-import {ScrollProvider} from 'src/flows/context/scroll'
 import OverlayProvider from 'src/flows/context/overlay'
 import DashboardOverlayProvider from 'src/flows/context/dashboardOverlay'
 import FlowPage from 'src/flows/components/FlowPage'
@@ -36,23 +35,21 @@ const FlowContainer: FC = () => {
       <FlowFromRoute />
       <ResultsProvider>
         <RefProvider>
-          <ScrollProvider>
-            <OverlayProvider>
-              <DashboardOverlayProvider>
-                <Switch>
-                  <Route
-                    path="/orgs/:orgID/flows/:id/export-task"
-                    component={ExportTaskOverlay}
-                  />
-                  <Route
-                    path="/orgs/:orgID/flows/:id/export-dashboard"
-                    component={ExportDashboardOverlay}
-                  />
-                </Switch>
-              </DashboardOverlayProvider>
-            </OverlayProvider>
-            <FlowPage />
-          </ScrollProvider>
+          <OverlayProvider>
+            <DashboardOverlayProvider>
+              <Switch>
+                <Route
+                  path="/orgs/:orgID/flows/:id/export-task"
+                  component={ExportTaskOverlay}
+                />
+                <Route
+                  path="/orgs/:orgID/flows/:id/export-dashboard"
+                  component={ExportDashboardOverlay}
+                />
+              </Switch>
+            </DashboardOverlayProvider>
+          </OverlayProvider>
+          <FlowPage />
         </RefProvider>
       </ResultsProvider>
     </CurrentFlowProvider>

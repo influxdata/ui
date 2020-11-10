@@ -15,7 +15,7 @@ import {
   setTaskOption,
   clearTask,
 } from 'src/tasks/actions/creators'
-import {saveNewScript, cancel} from 'src/tasks/actions/thunks'
+import {saveNewScript, goToTasks, cancel} from 'src/tasks/actions/thunks'
 
 // Utils
 import {
@@ -104,7 +104,9 @@ class TaskPage extends PureComponent<Props> {
     const script: string = addDestinationToFluxScript(newScript, taskOptions)
     const preamble = `${taskOption}`
 
-    this.props.saveNewScript(script, preamble)
+    this.props.saveNewScript(script, preamble).then(() => {
+      this.props.goToTasks()
+    })
   }
 
   private handleCancel = () => {
@@ -134,6 +136,7 @@ const mdtp = {
   saveNewScript,
   setTaskOption,
   clearTask,
+  goToTasks,
   cancel,
 }
 

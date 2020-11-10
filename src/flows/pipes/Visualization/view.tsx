@@ -10,16 +10,14 @@ import React, {
 
 // Components
 import {ComponentColor, IconFont, SquareButton} from '@influxdata/clockface'
-import ExportButton from 'src/flows/components/panel/ExportDashboardButton'
+import ExportButton from 'src/flows/pipes/Visualization/ExportDashboardButton'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
-import DashboardList from './DashboardList'
 import ViewSwitcher from 'src/shared/components/ViewSwitcher'
 import ViewTypeDropdown from 'src/shared/visualization/ViewTypeDropdown'
 import Resizer from 'src/flows/shared/Resizer'
 
 // Utilities
 import {checkResultsLength} from 'src/shared/utils/vis'
-import ExportVisualizationButton from 'src/flows/pipes/Visualization/ExportVisualizationButton'
 import {event} from 'src/cloud/utils/reporting'
 import {TYPE_DEFINITIONS, _transform} from 'src/shared/visualization'
 
@@ -78,15 +76,6 @@ const Visualization: FC<PipeProp> = ({Context}) => {
         titleText="Configure Visualization"
         className="flows-config-visualization-button"
       />
-      <ExportVisualizationButton disabled={!results.source}>
-        {onHidePopover => (
-          <DashboardList
-            query={results.source}
-            onClose={onHidePopover}
-            properties={data.properties}
-          />
-        )}
-      </ExportVisualizationButton>
     </>
   )
 

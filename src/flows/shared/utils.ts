@@ -1,5 +1,5 @@
 export const formatQueryText = (queryText: string): string => {
-  return queryText
+  return (queryText || '')
     .trim()
     .split('|>')
     .join('\n  |>')

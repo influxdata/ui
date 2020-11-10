@@ -1,6 +1,5 @@
 import React, {FC, useContext} from 'react'
 import {useDispatch} from 'react-redux'
-import {RouteProps, useHistory, useLocation} from 'react-router-dom'
 import {
   Button,
   ButtonType,
@@ -8,7 +7,11 @@ import {
   ComponentStatus,
   Form,
 } from '@influxdata/clockface'
-import {ExportAsTask, OverlayContext} from 'src/flows/context/overlay'
+import {
+  ExportAsTask,
+  Context,
+} from 'src/flows/pipes/Bucket/ExportTaskOverlay/context'
+import {PopupContext} from 'src/flows/context/popup'
 
 // Utils
 import {saveNewScript, updateTask} from 'src/tasks/actions/thunks'
@@ -16,8 +19,6 @@ import {event} from 'src/cloud/utils/reporting'
 import {formatQueryText} from 'src/flows/shared/utils'
 
 const ExportTaskButtons: FC = () => {
-  const history = useHistory()
-
   const {
     activeTab,
     canSubmit,
@@ -25,13 +26,10 @@ const ExportTaskButtons: FC = () => {
     interval,
     selectedTask,
     taskName,
-  } = useContext(OverlayContext)
+  } = useContext(Context)
+  const {data, closeFn} = useContext(PopupContext)
 
-  const location: RouteProps['location'] = useLocation()
-  const params = location.state
-  const {queryText} = params[0]
-
-  const formattedQueryText = formatQueryText(queryText)
+  const formattedQueryText = formatQueryText(data.query)
 
   const dispatch = useDispatch()
 
@@ -44,6 +42,7 @@ const ExportTaskButtons: FC = () => {
     const taskOption: string = `option task = { \n  name: "${taskName}",\n  every: ${interval},\n  offset: 0s\n}`
     const variable: string = `option v = {\n  timeRangeStart: -${interval},\n  timeRangeStop: now()\n}`
     const preamble = `${variable}\n\n${taskOption}`
+
     dispatch(saveNewScript(formattedQueryText, preamble))
   }
 
@@ -52,10 +51,13 @@ const ExportTaskButtons: FC = () => {
       handleSetError(true)
       return
     }
+
     event('Update Task from Flow')
+
     const taskOption: string = `option task = { \n  name: "${selectedTask.name}",\n  every: ${interval},\n  offset: 0s\n}`
     const variable: string = `option v = {\n  timeRangeStart: -${interval},\n  timeRangeStop: now()\n}`
     const preamble = `${variable}\n\n${taskOption}`
+
     dispatch(
       updateTask({
         script: formattedQueryText,
@@ -72,7 +74,7 @@ const ExportTaskButtons: FC = () => {
     <Form.Footer>
       <Button
         text="Cancel"
-        onClick={() => history.goBack()}
+        onClick={closeFn}
         titleText="Cancel"
         type={ButtonType.Button}
       />

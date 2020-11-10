@@ -217,7 +217,6 @@ export const updateTask = ({
       throw new Error(resp.data.message)
     }
 
-    dispatch(goToTasks())
     dispatch(notify(copy.taskUpdateSuccess()))
   } catch (e) {
     console.error(e)
@@ -391,7 +390,6 @@ export const saveNewScript = (script: string, preamble: string) => async (
 
     dispatch(setNewScript(''))
     dispatch(clearTask())
-    dispatch(goToTasks())
     dispatch(notify(copy.taskCreatedSuccess()))
     dispatch(checkTaskLimits())
   } catch (error) {

@@ -216,7 +216,7 @@
 */
 
 .flow-panel__hidden {
-  height: $flow-header-height + $flow-divider-height;
+  height: $flow-header-height + ($cf-border * 2);
 
   .flow-panel--body,
   .flow-panel--results {

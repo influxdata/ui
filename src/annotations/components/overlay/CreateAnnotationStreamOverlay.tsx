@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useState, useMemo} from 'react'
+import React, {FC, useContext, useEffect, useState, useMemo} from 'react'
 import {v4 as UUID} from 'uuid'
 
 // Components
@@ -19,7 +19,7 @@ import {FlowContext, getHumanReadableName} from 'src/flows/context/flow.current'
 import {hydrate} from 'src/flows/context/flow.list'
 import {RemoteDataState, Flow} from 'src/types'
 
-const DEFAULT_FLOW = hydrate({
+const DEFAULT_FLOW = JSON.stringify({
   name: 'Annotation',
   readOnly: false,
   range: DEFAULT_TIME_RANGE,
@@ -41,7 +41,7 @@ const DEFAULT_FLOW = hydrate({
 })
 
 const FlowProvider: FC = ({children}) => {
-  const [flow, setFlow] = useState({...DEFAULT_FLOW})
+  const [flow, setFlow] = useState(hydrate(JSON.parse(DEFAULT_FLOW)))
   const fullFlow = useMemo(() => {
     return {
       ...flow,
@@ -59,6 +59,10 @@ const FlowProvider: FC = ({children}) => {
       }),
     }
   }, [flow])
+
+  useEffect(() => {
+    setFlow(hydrate(JSON.parse(DEFAULT_FLOW)))
+  }, [])
 
   const add = (initial, index?: number) => {
     const id = UUID()

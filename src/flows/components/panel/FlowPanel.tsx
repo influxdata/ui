@@ -36,14 +36,20 @@ import {RefContext} from 'src/flows/context/refs'
 
 export interface Props extends PipeContextProps {
   id: string
+  persistentControl?: ReactNode
 }
 
 export interface HeaderProps {
   id: string
   controls?: ReactNode
+  persistentControl?: ReactNode
 }
 
-const FlowPanelHeader: FC<HeaderProps> = ({id, controls}) => {
+const FlowPanelHeader: FC<HeaderProps> = ({
+  id,
+  controls,
+  persistentControl,
+}) => {
   const {flow} = useContext(FlowContext)
   const removePipe = () => {
     flow.data.remove(id)
@@ -66,7 +72,6 @@ const FlowPanelHeader: FC<HeaderProps> = ({id, controls}) => {
   }, [index, canBeMovedDown, flow.data])
 
   const remove = useCallback(() => removePipe(), [removePipe, id])
-
   return (
     <div className="flow-panel--header">
       <div className="flow-panel--node-wrapper">
@@ -102,13 +107,14 @@ const FlowPanelHeader: FC<HeaderProps> = ({id, controls}) => {
           </FeatureFlag>
           <PanelVisibilityToggle id={id} />
           <RemovePanelButton onRemove={remove} />
+          {persistentControl}
         </FlexBox>
       )}
     </div>
   )
 }
 
-const FlowPanel: FC<Props> = ({id, children, controls}) => {
+const FlowPanel: FC<Props> = ({id, children, controls, persistentControl}) => {
   const {flow} = useContext(FlowContext)
   const refs = useContext(RefContext)
   const panelRef = useRef<HTMLDivElement>(null)
@@ -156,7 +162,11 @@ const FlowPanel: FC<Props> = ({id, children, controls}) => {
   return (
     <ClickOutside onClickOutside={handleClickOutside}>
       <div className={panelClassName} onClick={handleClick} ref={panelRef}>
-        <FlowPanelHeader id={id} controls={controls} />
+        <FlowPanelHeader
+          id={id}
+          controls={controls}
+          persistentControl={persistentControl}
+        />
         <div className="flow-panel--body">{children}</div>
         {showResults && (
           <div className="flow-panel--results">

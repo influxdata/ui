@@ -49,6 +49,31 @@ describe.skip('Buckets', () => {
       cy.getByTestID('inline-labels--empty').should('exist')
     })
 
+    it('can create a bucket with retention', () => {
+      const newBucket = '🅱️ucket'
+      cy.getByTestID(`bucket-card ${newBucket}`).should('not.exist')
+
+      // create bucket with retention
+      cy.getByTestID('Create Bucket').click()
+      cy.getByTestID('overlay--container').within(() => {
+        cy.getByInputName('name').type(newBucket)
+        cy.getByTestID('retention-intervals--button').click()
+        cy.getByTestID('duration-selector--button').click()
+        cy.getByTestID('duration-selector--12h')
+          .click()
+          .then(() => {
+            cy.getByTestID('bucket-form-submit').click()
+          })
+      })
+
+      // assert bucket with retention
+      cy.getByTestID(`bucket-card ${newBucket}`)
+        .should('exist')
+        .within(() => {
+          cy.getByTestID('bucket-retention').should('contain', '12 hours')
+        })
+    })
+
     it("can update a bucket's retention rules", () => {
       cy.get<Bucket>('@bucket').then(({name}: Bucket) => {
         cy.getByTestID(`bucket-settings`).click()
@@ -132,8 +157,18 @@ describe.skip('Buckets', () => {
             })
           })
 
-        cy.getByTestID('search-widget').type('tasks')
-        cy.get('.cf-resource-card').should('have.length', 1)
+        // assert buckets amount
+        cy.get('.cf-resource-card').should('have.length', 4)
+
+        // filter a bucket
+        cy.getByTestID('search-widget').type('def')
+        cy.get('.cf-resource-card')
+          .should('have.length', 1)
+          .should('contain', 'defbuck')
+
+        // clear filter and assert all buckets are visible
+        cy.getByTestID('search-widget').clear()
+        cy.get('.cf-resource-card').should('have.length', 4)
       })
     })
 
@@ -382,11 +417,67 @@ describe.skip('Buckets', () => {
 
       cy.getByTestID('daterange--apply-btn').click()
 
-      //TODO replace this with proper health checks
+      // TODO replace this with proper health checks
       cy.wait(1000)
       cy.getByTestID(`selector-list ${Cypress.env('bucket')}`).click()
       // mymeasurement comes from fixtures/data.txt
       cy.getByTestID('selector-list mymeasurement').should('exist')
+    })
+
+    it('configure telegraf agent', () => {
+      // click "add data" and choose Configure Telegraf Agent
+      cy.getByTestID('add-data--button').click()
+      cy.get('.bucket-add-data--option')
+        .contains('Configure Telegraf Agent')
+        .click()
+
+      // assert default bucket
+      cy.getByTestID('bucket-dropdown--button').should('contain', 'defbuck')
+
+      // filter plugins and choose system
+      cy.getByTestID('input-field')
+        .type('sys')
+        .then(() => {
+          cy.getByTestID('square-grid--card').should('have.length', 1)
+          cy.getByTestID('input-field')
+            .clear()
+            .then(() => {
+              cy.getByTestID('square-grid--card').should('have.length', 5)
+            })
+        })
+      cy.getByTestID('telegraf-plugins--System').click()
+      cy.getByTestID('next').click()
+
+      // add telegraf name and description
+      cy.getByTitle('Telegraf Configuration Name')
+        .clear()
+        .type('Telegraf from bucket')
+      cy.getByTitle('Telegraf Configuration Description')
+        .clear()
+        .type('This is a telegraf description')
+      cy.getByTestID('next').click()
+
+      // assert notifications
+      cy.getByTestID('notification-success').should(
+        'contain',
+        'Your configurations have been saved'
+      )
+      cy.getByTestID('notification-success').should(
+        'contain',
+        'Successfully created dashboards for telegraf plugin: system.'
+      )
+      cy.getByTestID('next').click()
+
+      // assert telegraf card parameters
+      cy.getByTestID('collector-card--name').should(
+        'contain',
+        'Telegraf from bucket'
+      )
+      cy.getByTestID('resource-list--editable-description').should(
+        'contain',
+        'This is a telegraf description'
+      )
+      cy.getByTestID('bucket-name').should('contain', 'defbuck')
     })
   })
 })

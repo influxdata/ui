@@ -28,7 +28,7 @@ describe('Community Templates', () => {
   })
 
   it('displays an error when invalid data is submitted through the field', () => {
-    //on empty
+    // on empty
     cy.getByTestID('lookup-template-button').click()
     cy.getByTestID('notification-error').should('be.visible')
     cy.getByTestID('notification-error--dismiss').click()
@@ -36,7 +36,7 @@ describe('Community Templates', () => {
     cy.getByTestID('notification-error').should('be.visible')
     cy.getByTestID('notification-error--dismiss').click()
 
-    //lookup template errors on github folder
+    // lookup template errors on github folder
     cy.getByTestID('lookup-template-input').type(
       'https://github.com/influxdata/community-templates/tree/master/kafka'
     )
@@ -50,14 +50,14 @@ describe('Community Templates', () => {
 
   describe('installing a community template from the web', () => {
     it('accepts raw github and pluralizes resources properly', () => {
-      //The lookup template accepts github raw link
+      // The lookup template accepts github raw link
       cy.getByTestID('lookup-template-input').type(
         'https://raw.githubusercontent.com/influxdata/influxdb/master/pkger/testdata/dashboard_gauge.yml'
       )
       cy.getByTestID('lookup-template-button').click()
       cy.getByTestID('template-install-overlay').should('be.visible')
 
-      //check that with 1 resource pluralization is correct
+      // check that with 1 resource pluralization is correct
       cy.getByTestID('template-install-title').should(
         'contain',
         'will create 1 resource'
@@ -67,13 +67,13 @@ describe('Community Templates', () => {
         'resources'
       )
 
-      //check that no resources check lead to disabled install button
+      // check that no resources check lead to disabled install button
       cy.getByTestID('heading-Dashboards').click()
       cy.getByTestID('template-install-button').should('exist')
       cy.getByTestID('templates-toggle--dash-1').click()
       cy.getByTestID('template-install-button').should('not.exist')
 
-      //and check that 0 resources pluralization is correct
+      // and check that 0 resources pluralization is correct
       cy.getByTestID('template-install-title').should(
         'contain',
         'will create 0 resources'
@@ -81,14 +81,14 @@ describe('Community Templates', () => {
     })
 
     it('can install using the keyboard "Enter" key and without clicking "Lookup Template"', () => {
-      //The lookup template accepts github raw link
+      // The lookup template accepts github raw link
       cy.getByTestID('lookup-template-input').type(
         'https://raw.githubusercontent.com/influxdata/influxdb/master/pkger/testdata/dashboard_band.yml'
       )
       cy.getByTestID('lookup-template-input').type('{enter}')
       cy.getByTestID('template-install-overlay').should('be.visible')
 
-      //check that with 1 resource pluralization is correct
+      // check that with 1 resource pluralization is correct
       cy.getByTestID('template-install-title').should(
         'contain',
         'will create 1 resource'
@@ -98,13 +98,13 @@ describe('Community Templates', () => {
         'resources'
       )
 
-      //check that no resources check lead to disabled install button
+      // check that no resources check lead to disabled install button
       cy.getByTestID('heading-Dashboards').click()
       cy.getByTestID('template-install-button').should('exist')
       cy.getByTestID('templates-toggle--dash-1').click()
       cy.getByTestID('template-install-button').should('not.exist')
 
-      //and check that 0 resources pluralization is correct
+      // and check that 0 resources pluralization is correct
       cy.getByTestID('template-install-title').should(
         'contain',
         'will create 0 resources'
@@ -251,7 +251,7 @@ describe('Community Templates', () => {
       cy.getByTestID('community-template-readme-overlay-button').click()
       cy.get('.markdown-format').should('contain', 'Setup Instructions')
 
-      //we should confirm the link works
+      // we should confirm the link works
     })
 
     it('deletes templates', () => {

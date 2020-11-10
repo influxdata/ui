@@ -86,7 +86,6 @@ export const getAndSetBucketSchema = (bucket: Bucket) => async (
       validCachedResult = getUnexpiredSchema(state, bucket)
     }
     if (validCachedResult !== null) {
-      dispatch(setSchema(RemoteDataState.Done, bucket.name, validCachedResult))
       return
     } else {
       dispatch(setSchema(RemoteDataState.Loading, bucket.name, {}))

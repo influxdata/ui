@@ -2,7 +2,7 @@ import {NotificationEndpoint} from '../../src/types'
 import 'cypress-file-upload'
 
 export const signin = (): Cypress.Chainable<Cypress.Response> => {
-  /*\ OSS login
+  /* \ OSS login
     return cy.setupUser().then(body => {
       return cy
         .request({

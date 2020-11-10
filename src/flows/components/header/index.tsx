@@ -1,10 +1,10 @@
 // Libraries
-import React, {FC, useContext, useCallback} from 'react'
+import React, {FC, useContext} from 'react'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
-import {TimeProvider, TimeContext, TimeBlock} from 'src/flows/context/time'
 import AppSettingProvider from 'src/flows/context/app'
+import QueryProvider from 'src/flows/context/query'
 
 // Components
 import {Page} from '@influxdata/clockface'
@@ -17,31 +17,11 @@ import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
 
 const FULL_WIDTH = true
 
-export interface TimeContextProps {
-  context: TimeBlock
-  update: (data: TimeBlock) => void
-}
-
 const FlowHeader: FC = () => {
-  const {id, update, flow} = useContext(FlowContext)
-  const {timeContext, addTimeContext, updateTimeContext} = useContext(
-    TimeContext
-  )
-
-  const updateTime = useCallback(
-    (data: TimeBlock) => {
-      updateTimeContext(id, data)
-    },
-    [id, updateTimeContext]
-  )
-
-  if (!timeContext.hasOwnProperty(id)) {
-    addTimeContext(id)
-    return null
-  }
+  const {update, flow} = useContext(FlowContext)
 
   const handleRename = (name: string) => {
-    update({...flow, name})
+    update({name})
   }
 
   return (
@@ -56,13 +36,15 @@ const FlowHeader: FC = () => {
       </Page.Header>
       <Page.ControlBar fullWidth={FULL_WIDTH}>
         <Page.ControlBarLeft>
-          <Submit />
+          <QueryProvider>
+            <Submit />
+          </QueryProvider>
         </Page.ControlBarLeft>
         <Page.ControlBarRight>
           <PresentationMode />
           <TimeZoneDropdown />
-          <TimeRangeDropdown context={timeContext[id]} update={updateTime} />
-          <AutoRefreshDropdown context={timeContext[id]} update={updateTime} />
+          <TimeRangeDropdown />
+          <AutoRefreshDropdown />
         </Page.ControlBarRight>
       </Page.ControlBar>
     </>
@@ -70,9 +52,7 @@ const FlowHeader: FC = () => {
 }
 
 export default () => (
-  <TimeProvider>
-    <AppSettingProvider>
-      <FlowHeader />
-    </AppSettingProvider>
-  </TimeProvider>
+  <AppSettingProvider>
+    <FlowHeader />
+  </AppSettingProvider>
 )

@@ -495,7 +495,7 @@ describe('DataExplorer', () => {
       cy.getByTestID('variable--timeRangeStart')
       cy.getByTestID('variable--timeRangeStop')
       cy.getByTestID('variable--windowPeriod')
-      //insert variable name by clicking on variable
+      // insert variable name by clicking on variable
       cy.get('.flux-toolbar--variable')
         .first()
         .within(() => {
@@ -545,7 +545,7 @@ describe('DataExplorer', () => {
         'cf-right-click--menu-item__disabled'
       )
 
-      //rename the first tab
+      // rename the first tab
       cy.get('.query-tab')
         .first()
         .trigger('contextmenu')
@@ -686,7 +686,7 @@ describe('DataExplorer', () => {
         // cycle through all the visualizations of the data
         VIS_TYPES.forEach(({type}) => {
           if (type !== 'mosaic' && type !== 'band') {
-            //mosaic graph is behind feature flag
+            // mosaic graph is behind feature flag
             cy.getByTestID('view-type--dropdown').click()
             cy.getByTestID(`view-type--${type}`).click()
             cy.getByTestID(`vis-graphic--${type}`).should('exist')

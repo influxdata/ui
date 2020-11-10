@@ -9,7 +9,7 @@ interface Props {
   onScroll: (e: MouseEvent) => void
 }
 
-const cloudImageRenderer = (): any =>
+const cloudImageRenderer =
   "We don't support images in markdown for security purposes"
 
 const NoteEditorPreview: SFC<Props> = props => {
@@ -26,7 +26,6 @@ const NoteEditorPreview: SFC<Props> = props => {
             className="markdown-format"
             cloudRenderers={{
               image: cloudImageRenderer,
-              imageReference: cloudImageRenderer,
             }}
           />
         </div>

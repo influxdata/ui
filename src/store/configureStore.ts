@@ -36,6 +36,7 @@ import {authsReducer} from 'src/authorizations/reducers'
 import templatesReducer from 'src/templates/reducers'
 import {scrapersReducer} from 'src/scrapers/reducers'
 import {userSettingsReducer} from 'src/userSettings/reducers'
+import {annotationsReducer} from 'src/annotations/reducers'
 import {membersReducer} from 'src/members/reducers'
 import {autoRefreshReducer} from 'src/shared/reducers/autoRefresh'
 import {limitsReducer, LimitsState} from 'src/cloud/reducers/limits'
@@ -123,6 +124,7 @@ export const rootReducer = (history: History) => (state, action) => {
     userSettings: userSettingsReducer,
     variableEditor: variableEditorReducer,
     VERSION: () => '',
+    annotations: annotationsReducer,
   })(state, action)
 }
 

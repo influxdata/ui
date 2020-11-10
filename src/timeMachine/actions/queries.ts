@@ -3,11 +3,7 @@ import {parse} from 'src/external/parser'
 import {get, sortBy} from 'lodash'
 
 // API
-import {
-  runQuery,
-  RunQueryResult,
-  RunQuerySuccessResult,
-} from 'src/shared/apis/query'
+import {runQuery, RunQuerySuccessResult} from 'src/shared/apis/query'
 import {
   getCachedResultsOrRunQuery,
   resetQueryCacheByQuery,
@@ -95,8 +91,7 @@ export const setQueryResults = (
     statuses,
   },
 })
-// TODO(ariel): delete this when cancelQueryUiExpansion feature is successful
-let pendingResults: Array<CancelBox<RunQueryResult>> = []
+
 let pendingCheckStatuses: CancelBox<StatusRow[][]> = null
 
 export const getOrgIDFromBuckets = (
@@ -114,7 +109,7 @@ export const getOrgIDFromBuckets = (
   return get(bucketMatch, 'orgID', null)
 }
 
-//We only need a minimum of one bucket, function, and tag,
+// We only need a minimum of one bucket, function, and tag,
 export const getQueryFromFlux = (text: string) => {
   const ast = parse(text)
 
@@ -282,12 +277,7 @@ export const executeQueries = (abortController?: AbortController) => async (
 
   try {
     // Cancel pending queries before issuing new ones
-    if (isFlagEnabled('cancelQueryUiExpansion')) {
-      cancelAllRunningQueries()
-    } else {
-      // TODO(ariel): delete when feature is a success
-      pendingResults.forEach(({cancel}) => cancel())
-    }
+    cancelAllRunningQueries()
 
     dispatch(setQueryResults(RemoteDataState.Loading, [], null))
 
@@ -302,7 +292,7 @@ export const executeQueries = (abortController?: AbortController) => async (
     const startTime = window.performance.now()
     const startDate = Date.now()
 
-    pendingResults = queries.map(({text}) => {
+    const pendingResults = queries.map(({text}) => {
       event('executeQueries query', {}, {query: text})
       const orgID = getOrgIDFromBuckets(text, allBuckets) || getOrg(state).id
 
@@ -321,16 +311,12 @@ export const executeQueries = (abortController?: AbortController) => async (
         // reset any existing matching query in the cache
         resetQueryCacheByQuery(text)
         const result = getCachedResultsOrRunQuery(orgID, text, state)
-        if (isFlagEnabled('cancelQueryUiExpansion')) {
-          setQueryByHashID(queryID, result)
-        }
+        setQueryByHashID(queryID, result)
 
         return result
       }
       const result = runQuery(orgID, text, extern, abortController)
-      if (isFlagEnabled('cancelQueryUiExpansion')) {
-        setQueryByHashID(queryID, result)
-      }
+      setQueryByHashID(queryID, result)
       return result
     })
     const results = await Promise.all(pendingResults.map(r => r.promise))

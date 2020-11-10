@@ -14,6 +14,10 @@ export type OverlayID =
   | 'switch-organizations'
   | 'create-bucket'
   | 'asset-limit'
+  | 'create-annotation-stream'
+  | 'update-annotation-stream'
+  | 'add-annotation'
+  | 'edit-annotation'
 
 export interface OverlayParams {
   [key: string]: string

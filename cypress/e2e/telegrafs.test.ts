@@ -83,7 +83,7 @@ describe('Collectors', () => {
             const text = $el.text()
 
             expect(text.includes('[[outputs.influxdb_v2]]')).to.be.true
-            //expect a default sort to be applied
+            // expect a default sort to be applied
             expect(text.includes(`bucket = "${buckets[0]}"`)).to.be.true
           })
 
@@ -395,7 +395,10 @@ describe('Collectors', () => {
       cy.contains('Your configurations have been saved')
 
       cy.contains('Label 1').click()
-      cy.contains('Telegraf Configuration - Label 1').should('exist')
+
+      cy.getByTestID('telegraf-overlay').within(() => {
+        cy.contains('Label 1').should('exist')
+      })
     })
 
     describe('Label creation and searching', () => {

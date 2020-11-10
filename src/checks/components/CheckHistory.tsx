@@ -12,7 +12,7 @@ import EventTable from 'src/eventViewer/components/EventTable'
 import GetResources from 'src/resources/components/GetResources'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
-//Context
+// Context
 import {ResourceIDsContext} from 'src/alerting/components/AlertHistoryIndex'
 
 // Constants

@@ -17,14 +17,12 @@ import {Columns, Form, Grid, SelectGroup} from '@influxdata/clockface'
 import {AppState} from 'src/types'
 import {ButtonShape} from '@influxdata/clockface'
 
-const getGenerateAxisTicksOptionsNames = (axisName: string) => {
-  const result = []
-  result.push(`generate${axisName.toUpperCase()}AxisTicks`)
-  result.push(`${axisName.toLowerCase()}TotalTicks`)
-  result.push(`${axisName.toLowerCase()}TickStart`)
-  result.push(`${axisName.toLowerCase()}TickStep`)
-  return result
-}
+const getGenerateAxisTicksOptionsNames = (axisName: string) => [
+  `generate${axisName.toUpperCase()}AxisTicks`,
+  `${axisName.toLowerCase()}TotalTicks`,
+  `${axisName.toLowerCase()}TickStart`,
+  `${axisName.toLowerCase()}TickStep`,
+]
 
 interface AxisTicksGeneratorProps {
   axisName: string
@@ -54,7 +52,7 @@ const AxisTicksGenerator: FC<Props> = props => {
     tickStep,
   } = props
 
-  const [showInputs, setShowInputs] = useState(
+  const [shouldShowInputs, setShouldShowInputs] = useState(
     generateAxisTicks.reduce((total, optionName) => {
       getGenerateAxisTicksOptionsNames(axisName).forEach(axisTickOption => {
         if (axisTickOption === optionName) {
@@ -65,19 +63,19 @@ const AxisTicksGenerator: FC<Props> = props => {
     }, 0) > 0
   )
 
-  const isTimeColumn = columnType === '_time' ? true : false
-
   if (!isFlagEnabled('axisTicksGenerator')) {
     return null
   }
 
+  const isTimeColumn = columnType === '_time' ? true : false
+
   const handleChooseAuto = () => {
-    setShowInputs(false)
+    setShouldShowInputs(false)
     onSetGenerateAxisTicks([])
   }
 
   const handleChooseCustom = () => {
-    setShowInputs(true)
+    setShouldShowInputs(true)
   }
 
   const onSetTicksGeneratorOptions = (
@@ -116,7 +114,7 @@ const AxisTicksGenerator: FC<Props> = props => {
               name="tick-generator"
               id="radio_auto"
               titleText="Auto"
-              active={!showInputs}
+              active={!shouldShowInputs}
               onClick={handleChooseAuto}
               value="Auto"
             >
@@ -126,7 +124,7 @@ const AxisTicksGenerator: FC<Props> = props => {
               name="tick-generator"
               id="radio_custom"
               titleText="Custom"
-              active={showInputs}
+              active={shouldShowInputs}
               onClick={handleChooseCustom}
               value="Custom"
             >
@@ -135,7 +133,7 @@ const AxisTicksGenerator: FC<Props> = props => {
           </SelectGroup>
         </Grid.Column>
       </Grid.Row>
-      {showInputs &&
+      {shouldShowInputs &&
         (isTimeColumn ? (
           <TimeTicksOptions
             axisName={axisName}

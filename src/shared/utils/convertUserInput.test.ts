@@ -73,64 +73,44 @@ describe('convertUserInputToNumOrNaN', () => {
 
 describe('convertUserInputValueToNumOrNaN', () => {
   it('should convert undefined to NaN', () => {
-    let result = convertUserInputValueToNumOrNaN()
-    expect(typeof result === 'number')
-    expect(result !== result)
-
-    result = convertUserInputValueToNumOrNaN(undefined)
-    expect(typeof result === 'number')
-    expect(result !== result)
+    expect(Number.isNaN(convertUserInputValueToNumOrNaN())).toBeTruthy()
+    expect(
+      Number.isNaN(convertUserInputValueToNumOrNaN(undefined))
+    ).toBeTruthy()
   })
 
   it('should convert an object to NaN', () => {
-    const result = convertUserInputValueToNumOrNaN({})
-    expect(typeof result === 'number')
-    expect(result !== result)
-  })
-
-  it('should convert an array to NaN', () => {
-    const result = convertUserInputValueToNumOrNaN([])
-    expect(typeof result === 'number')
-    expect(result !== result)
+    expect(Number.isNaN(convertUserInputValueToNumOrNaN({}))).toBeTruthy()
   })
 
   it('should convert a function to NaN', () => {
-    const result = convertUserInputValueToNumOrNaN(() => {})
-    expect(typeof result === 'number')
-    expect(result !== result)
+    expect(Number.isNaN(convertUserInputValueToNumOrNaN(() => {}))).toBeTruthy()
   })
 
-  it('should convert a boolean to NaN', () => {
-    let result = convertUserInputValueToNumOrNaN(true)
-    expect(typeof result === 'number')
-    expect(result !== result)
-
-    result = convertUserInputValueToNumOrNaN(false)
-    expect(typeof result === 'number')
-    expect(result !== result)
+  it('should convert a boolean to the appropriate number', () => {
+    expect(convertUserInputValueToNumOrNaN(false)).toEqual(0)
+    expect(convertUserInputValueToNumOrNaN(true)).toEqual(1)
   })
 
   it('should convert an empty string to NaN', () => {
-    const result = convertUserInputValueToNumOrNaN('')
-    expect(typeof result === 'number')
-    expect(result !== result)
+    expect(Number.isNaN(convertUserInputValueToNumOrNaN(''))).toBeTruthy()
   })
 
   it('should convert a non-empty, non-numeric string to NaN', () => {
-    const result = convertUserInputValueToNumOrNaN('abcd')
-    expect(typeof result === 'number')
-    expect(result !== result)
+    expect(Number.isNaN(convertUserInputValueToNumOrNaN('abcd'))).toBeTruthy()
+  })
+
+  it('should convert an array to 0', () => {
+    expect(convertUserInputValueToNumOrNaN([])).toEqual(0)
   })
 
   it('should convert null to numeric 0', () => {
-    const result = convertUserInputValueToNumOrNaN(null)
-    expect(typeof result === 'number')
-    expect(result === 0)
+    expect(convertUserInputValueToNumOrNaN(null)).toEqual(0)
   })
 
-  it('should convert a non-empty, numeric string to a number', () => {
+  it('should convert a non-empty, numeric string to a number that is not NaN', () => {
     const result = convertUserInputValueToNumOrNaN('270')
-    expect(typeof result === 'number')
-    expect(result === result)
+    expect(typeof result).toEqual('number')
+    expect(Number.isNaN(result)).toBeFalsy()
   })
 })

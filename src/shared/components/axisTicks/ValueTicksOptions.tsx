@@ -24,30 +24,28 @@ export const ValueTicksOptions: FC<ValueTicksOptionsProps> = props => {
     setOptions,
   } = props
   return (
-    <>
-      <Grid.Row className="tick-generator-input--custom">
-        <ValueTickInput
-          axisName={axisName}
-          tickOptions={tickOptions}
-          initialTickOptionValue={totalTicks}
-          label="Total Ticks"
-          setOptions={setOptions}
-        />
-        <ValueTickInput
-          axisName={axisName}
-          tickOptions={tickOptions}
-          initialTickOptionValue={tickStart}
-          label="Tick Start"
-          setOptions={setOptions}
-        />
-        <ValueTickInput
-          axisName={axisName}
-          tickOptions={tickOptions}
-          initialTickOptionValue={tickStep}
-          label="Tick Step"
-          setOptions={setOptions}
-        />
-      </Grid.Row>
-    </>
+    <Grid.Row className="tick-generator-input--custom">
+      <ValueTickInput
+        axisName={axisName}
+        tickOptions={tickOptions}
+        initialTickOptionValue={totalTicks}
+        label="Total Ticks"
+        setOptions={setOptions}
+      />
+      <ValueTickInput
+        axisName={axisName}
+        tickOptions={tickOptions}
+        initialTickOptionValue={tickStart}
+        label="Tick Start"
+        setOptions={setOptions}
+      />
+      <ValueTickInput
+        axisName={axisName}
+        tickOptions={tickOptions}
+        initialTickOptionValue={tickStep}
+        label="Tick Step"
+        setOptions={setOptions}
+      />
+    </Grid.Row>
   )
 }

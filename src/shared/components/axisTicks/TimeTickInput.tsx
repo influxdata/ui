@@ -37,7 +37,7 @@ interface TimeTickInputProps {
   tickOptions: string[]
   initialTickOptionValue: number | string
   label: string
-  placeholder?: string
+  dateFormatPlaceholder?: string
   setOptions: (optionName: string, arg: string[] | number) => void
 }
 
@@ -47,7 +47,7 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
     tickOptions,
     initialTickOptionValue,
     label,
-    placeholder = 'RFC3339',
+    dateFormatPlaceholder = 'RFC3339',
     setOptions,
   } = props
 
@@ -76,21 +76,16 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
     )
     const tickOptionNameWithoutAxis = label.split(' ').join('')
     const tickOptionNameWithAxis = `${axisName.toLowerCase()}${tickOptionNameWithoutAxis}`
-    const filteredTickOptions = Array.isArray(tickOptions)
+    const computedTickOptions = Array.isArray(tickOptions)
       ? tickOptions.filter(option => option !== tickOptionNameWithAxis)
       : []
     setOptions(tickOptionNameWithoutAxis, convertedValue)
-    if (convertedValue === convertedValue) {
-      setOptions('GenerateAxisTicks', [
-        ...filteredTickOptions,
-        tickOptionNameWithAxis,
-      ])
-    } else {
-      setOptions('GenerateAxisTicks', filteredTickOptions)
-      if (tickOptionInput !== '') {
-        setTickOptionInputStatus(ComponentStatus.Error)
-      }
+    if (!Number.isNaN(convertedValue)) {
+      computedTickOptions.push(tickOptionNameWithAxis)
+    } else if (tickOptionInput !== '') {
+      setTickOptionInputStatus(ComponentStatus.Error)
     }
+    setOptions('GenerateAxisTicks', computedTickOptions)
   }
 
   const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
@@ -108,7 +103,7 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
 
   const getDatePickerDateTime = () => {
     const date = new Date(tickOptionInput)
-    if (date.valueOf() === date.valueOf()) {
+    if (!Number.isNaN(date.valueOf())) {
       return date.toISOString()
     }
     return new Date().toISOString()
@@ -146,7 +141,7 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
   const allowOnClickOutside = () => setIsOnClickOutsideHandlerActive(true)
   const suppressOnClickOutside = () => setIsOnClickOutsideHandlerActive(false)
 
-  const style: CSSProperties = isDatePickerOpen
+  const styles: CSSProperties = isDatePickerOpen
     ? {position: 'relative'}
     : {
         top: `${window.innerHeight / 2}px`,
@@ -159,7 +154,7 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
       <Grid.Column widthXS={Columns.Six}>
         <Form.Element label="Tick Start">
           <Input
-            placeholder={placeholder}
+            placeholder={dateFormatPlaceholder}
             onChange={handleInput}
             onFocus={handleInput}
             onBlur={handleBlur}
@@ -185,7 +180,7 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
               <ClickOutside onClickOutside={onClickOutside}>
                 <div
                   className="range-picker react-datepicker-ignore-onclickoutside"
-                  style={{...style}}
+                  style={{...styles}}
                 >
                   <button
                     className="range-picker--dismiss"

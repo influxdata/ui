@@ -88,7 +88,7 @@ class SaveAsTaskForm extends PureComponent<
   }
 
   private handleSubmit = () => {
-    const {saveNewScript, newScript, taskOptions} = this.props
+    const {saveNewScript, newScript, taskOptions, goToTasks} = this.props
 
     // Don't embed variables that are not used in the script
     const vars = [...this.props.userDefinedVars].filter(assignment =>

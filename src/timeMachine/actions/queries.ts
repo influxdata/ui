@@ -220,8 +220,9 @@ const cancelQuerysByHashIDs = (queryIDs?: string[]): void => {
   })
 }
 
-export const cancelAllRunningQueries = (): void => {
+export const cancelAllRunningQueries = () => dispatch => {
   cancelQuerysByHashIDs(Object.keys(queryReference))
+  dispatch(setQueryResults(RemoteDataState.Done, null, null))
 }
 
 export const setQueryByHashID = (queryID: string, result: any): void => {

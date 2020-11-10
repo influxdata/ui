@@ -24,6 +24,7 @@ import {notify} from 'src/shared/actions/notifications'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {cancelAllRunningQueries} from 'src/timeMachine/actions/queries'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -122,6 +123,7 @@ export const Submit: FC = () => {
           onSubmit={submit}
           onNotify={fakeNotify}
           queryID=""
+          cancelAllRunningQueries={cancelAllRunningQueries}
         />
         <SquareButton
           active={active}

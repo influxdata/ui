@@ -1,4 +1,4 @@
-import {Bucket, Organization} from '../../src/types'
+import {Bucket, Organization} from '../../../src/types'
 
 describe.skip('Buckets', () => {
   beforeEach(() => {

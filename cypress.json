@@ -5,6 +5,7 @@
   },
   "numTestsKeptInMemory": 25,
   "integrationFolder": "cypress/e2e",
+  "testFiles": "{oss,shared}/**/*.*",
   "defaultCommandTimeout": 10000,
   "videoUploadOnPasses": false,
   "chromeWebSecurity": false,

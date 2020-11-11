@@ -84,20 +84,37 @@ describe('Dashboards', () => {
       })
     })
 
-    // Create from Template
-    cy.get('@org').then(({id}: Organization) => {
-      cy.createDashboardTemplate(id)
-    })
+    cy.getByTestID('dashboard-card').should('have.length', 2)
 
-    cy.getByTestID('empty-dashboards-list').within(() => {
-      cy.getByTestID('add-resource-dropdown--button').click()
-      cy.getByTestID('add-resource-dropdown--template').click()
-    })
-    cy.getByTestID('template--Bashboard-Template').click()
-    cy.getByTestID('template-panel').should('exist')
-    cy.getByTestID('create-dashboard-button').click()
+    const dashboardDescription = 'this dashboard contains secret information'
 
-    cy.getByTestID('dashboard-card').should('have.length', 3)
+    // change description
+    cy.getByTestID('resource-list--editable-description')
+      .first()
+      .click('topLeft')
+      .within(() => {
+        cy.getByTestID('input-field')
+          .type(dashboardDescription)
+          .type('{enter}')
+      })
+    cy.getByTestID('resource-list--editable-description').should(
+      'contain',
+      dashboardDescription
+    )
+
+    // remove description
+    cy.getByTestID('resource-list--editable-description')
+      .first()
+      .click('topLeft')
+      .within(() => {
+        cy.getByTestID('input-field')
+          .clear()
+          .type('{enter}')
+      })
+    cy.getByTestID('resource-list--editable-description').should(
+      'not.contain',
+      dashboardDescription
+    )
 
     // Delete dashboards
     cy.getByTestID('dashboard-card')
@@ -116,56 +133,22 @@ describe('Dashboards', () => {
         cy.getByTestID('context-delete-dashboard').click()
       })
 
-    const dashboardDescription = 'this dashboard contains secret information'
-
-    // change description
-    cy.getByTestID('resource-list--editable-description')
-      .click('topLeft')
-      .within(() => {
-        cy.getByTestID('input-field')
-          .type(dashboardDescription)
-          .type('{enter}')
-      })
-    cy.getByTestID('resource-list--editable-description').should(
-      'contain',
-      dashboardDescription
-    )
-
-    // remove description
-    cy.getByTestID('resource-list--editable-description')
-      .click('topLeft')
-      .within(() => {
-        cy.getByTestID('input-field')
-          .clear()
-          .type('{enter}')
-      })
-    cy.getByTestID('resource-list--editable-description').should(
-      'not.contain',
-      dashboardDescription
-    )
-
-    cy.getByTestID('dashboard-card')
-      .first()
-      .trigger('mouseover')
-      .within(() => {
-        cy.getByTestID('context-delete-menu').click()
-        cy.getByTestID('context-delete-dashboard').click()
-      })
-
     cy.getByTestID('empty-dashboards-list').should('exist')
   })
 
   it('can import as JSON or file', () => {
     const checkImportedDashboard = () => {
       // wait for importing done
-      cy.wait(100)
+      cy.wait(200)
       cy.getByTestID('dashboard-card--name')
         .should('contain', 'IMPORT dashboard')
         .click()
-      cy.getByTestID('markdown-cell--contents').should(
-        'contain',
-        'Note about no tea'
-      )
+      cy.getByTestID('cell Name this Cell').within(() => {
+        cy.get('.markdown-cell--contents').should(
+          'contain',
+          'Note about no tea'
+        )
+      })
       cy.getByTestID('cell cellll').should('exist')
 
       // return to previous page
@@ -494,19 +477,21 @@ describe('Dashboards', () => {
     it('can list and search dashboards on home page', () => {
       cy.getByTestID('tree-nav--header').click()
 
-      cy.getByTestID('recent-dashboards--panel').within(() => {
-        const dashboardIsVisible = (name: string, isVisible = true) => {
-          cy.contains(name).should((isVisible ? '' : 'not.') + 'visible')
-        }
+      cy.get('.recent-dashboards--filter')
+        .parent()
+        .within(() => {
+          const dashboardIsVisible = (name: string, isVisible = true) => {
+            cy.contains(name).should((isVisible ? 'be.' : 'not.') + 'visible')
+          }
 
-        dashboardIsVisible(dashboardName)
-        dashboardIsVisible(dashboardName2)
+          dashboardIsVisible(dashboardName)
+          dashboardIsVisible(dashboardName2)
 
-        cy.get('input').type(dashSearchName)
+          cy.get('.recent-dashboards--filter').type(dashSearchName)
 
-        dashboardIsVisible(dashboardName)
-        dashboardIsVisible(dashboardName2, false)
-      })
+          dashboardIsVisible(dashboardName)
+          dashboardIsVisible(dashboardName2, false)
+        })
     })
   })
 

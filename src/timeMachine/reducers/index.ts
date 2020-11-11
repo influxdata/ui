@@ -494,6 +494,54 @@ export const timeMachineReducer = (
       return setViewProperties(state, {yDomain})
     }
 
+    case 'SET_GENERATE_X_AXIS_TICKS': {
+      const {generateXAxisTicks} = action.payload
+
+      return setViewProperties(state, {generateXAxisTicks})
+    }
+
+    case 'SET_GENERATE_Y_AXIS_TICKS': {
+      const {generateYAxisTicks} = action.payload
+
+      return setViewProperties(state, {generateYAxisTicks})
+    }
+
+    case 'SET_X_TOTAL_TICKS': {
+      const {xTotalTicks} = action.payload
+
+      return setViewProperties(state, {xTotalTicks})
+    }
+
+    case 'SET_X_TICK_START': {
+      const {xTickStart} = action.payload
+
+      return setViewProperties(state, {xTickStart})
+    }
+
+    case 'SET_X_TICK_STEP': {
+      const {xTickStep} = action.payload
+
+      return setViewProperties(state, {xTickStep})
+    }
+
+    case 'SET_Y_TOTAL_TICKS': {
+      const {yTotalTicks} = action.payload
+
+      return setViewProperties(state, {yTotalTicks})
+    }
+
+    case 'SET_Y_TICK_START': {
+      const {yTickStart} = action.payload
+
+      return setViewProperties(state, {yTickStart})
+    }
+
+    case 'SET_Y_TICK_STEP': {
+      const {yTickStep} = action.payload
+
+      return setViewProperties(state, {yTickStep})
+    }
+
     case 'SET_PREFIX': {
       const {prefix} = action.payload
 

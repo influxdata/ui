@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useContext} from 'react'
-import {useHistory, useParams} from 'react-router-dom'
 import {
   ButtonType,
   ComponentColor,
@@ -10,20 +9,24 @@ import {
 // Components
 import {Button} from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
+import {PopupContext} from 'src/flows/context/popup'
+import ExportTaskOverlay from 'src/flows/pipes/Bucket/ExportTaskOverlay'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
 const ExportTaskButton: FC = () => {
-  const history = useHistory()
   const {data, queryText} = useContext(PipeContext)
-  const {orgID, id} = useParams<{orgID: string; id: string}>()
+  const {launch} = useContext(PopupContext)
+
   const onClick = () => {
     event('Export Task Clicked')
-    history.push(`/orgs/${orgID}/flows/${id}/export-task`, [
-      {bucket: data.bucket, queryText},
-    ])
+    launch(<ExportTaskOverlay />, {
+      bucket: data.bucket,
+      query: queryText,
+    })
   }
+
   return (
     <Button
       text="Export as Task"

@@ -8,7 +8,7 @@ export enum ExportAsTask {
   Update = 'update',
 }
 
-export interface OverlayContext {
+interface ContextType {
   activeTab: ExportAsTask
   canSubmit: () => boolean
   handleSetActiveTab: (tab: ExportAsTask) => void
@@ -22,7 +22,7 @@ export interface OverlayContext {
   taskName: string
 }
 
-export const DEFAULT_CONTEXT: OverlayContext = {
+const DEFAULT_CONTEXT: ContextType = {
   activeTab: ExportAsTask.Create,
   canSubmit: () => false,
   handleSetActiveTab: () => {},
@@ -36,11 +36,9 @@ export const DEFAULT_CONTEXT: OverlayContext = {
   taskName: '',
 }
 
-export const OverlayContext = React.createContext<OverlayContext>(
-  DEFAULT_CONTEXT
-)
+export const Context = React.createContext<ContextType>(DEFAULT_CONTEXT)
 
-const OverlayProvider: FC = ({children}) => {
+export const Provider: FC = ({children}) => {
   const [activeTab, setActiveTab] = useState(ExportAsTask.Create)
   const [selectedTask, setTask] = useState<Task>(undefined)
   const [hasError, setHasError] = useState(false)
@@ -99,7 +97,7 @@ const OverlayProvider: FC = ({children}) => {
   }, [activeTab, taskName, interval, selectedTask])
 
   return (
-    <OverlayContext.Provider
+    <Context.Provider
       value={{
         activeTab,
         canSubmit,
@@ -115,8 +113,6 @@ const OverlayProvider: FC = ({children}) => {
       }}
     >
       {children}
-    </OverlayContext.Provider>
+    </Context.Provider>
   )
 }
-
-export default OverlayProvider

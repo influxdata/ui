@@ -67,7 +67,11 @@ const BucketSelector: FC = () => {
   }
 
   const button = (active, onClick) => (
-    <Dropdown.Button onClick={onClick} active={active} icon={IconFont.Disks}>
+    <Dropdown.Button
+      onClick={onClick}
+      active={active}
+      icon={IconFont.BucketSolid}
+    >
       {buttonText}
     </Dropdown.Button>
   )

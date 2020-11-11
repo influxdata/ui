@@ -6,9 +6,9 @@ import {
   Dropdown,
 } from '@influxdata/clockface'
 import {
+  Context,
   CREATE_CELL,
-  DashboardOverlayContext,
-} from 'src/flows/context/dashboardOverlay'
+} from 'src/flows/pipes/Visualization/ExportDashboardOverlay/context'
 import {ComponentStatus} from 'src/clockface'
 import {getDashboard, CellsWithViewProperties} from 'src/client'
 import {viewsFromCells} from 'src/schemas/dashboards'
@@ -43,9 +43,7 @@ const getViewsForDashboard = async (dashboardID: string) => {
 }
 
 const CellsDropdown: FC = () => {
-  const {handleSetCell, selectedDashboard, selectedCell} = useContext(
-    DashboardOverlayContext
-  )
+  const {handleSetCell, selectedDashboard, selectedCell} = useContext(Context)
 
   const [cells, setCells] = useState([])
 

@@ -6,6 +6,7 @@ import {Config, Table} from '@influxdata/giraffe'
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 
 // Utils
+import {useAxisTicksGenerator} from 'src/shared/utils/useAxisTicksGenerator'
 import {
   useLegendOpacity,
   useLegendOrientationThreshold,
@@ -60,6 +61,14 @@ const ScatterPlot: FunctionComponent<Props> = ({
     timeFormat,
     legendOpacity,
     legendOrientationThreshold,
+    generateXAxisTicks,
+    xTotalTicks,
+    xTickStart,
+    xTickStep,
+    generateYAxisTicks,
+    yTotalTicks,
+    yTickStart,
+    yTickStep,
   },
   theme,
 }) => {
@@ -71,6 +80,16 @@ const ScatterPlot: FunctionComponent<Props> = ({
 
   const columnKeys = table.columnKeys
 
+  const axisTicksOptions = useAxisTicksGenerator({
+    generateXAxisTicks,
+    xTotalTicks,
+    xTickStart,
+    xTickStep,
+    generateYAxisTicks,
+    yTotalTicks,
+    yTickStart,
+    yTickStep,
+  })
   const tooltipOpacity = useLegendOpacity(legendOpacity)
   const tooltipOrientationThreshold = useLegendOrientationThreshold(
     legendOrientationThreshold
@@ -135,6 +154,7 @@ const ScatterPlot: FunctionComponent<Props> = ({
     yDomain,
     onSetYDomain,
     onResetYDomain,
+    ...axisTicksOptions,
     legendOpacity: tooltipOpacity,
     legendOrientationThreshold: tooltipOrientationThreshold,
     valueFormatters: {

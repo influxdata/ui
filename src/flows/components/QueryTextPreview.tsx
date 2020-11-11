@@ -1,14 +1,13 @@
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
 import {Form} from '@influxdata/clockface'
 import FluxEditor from 'src/shared/components/FluxMonacoEditor'
-import {RouteProps, useLocation} from 'react-router-dom'
 import {formatQueryText} from 'src/flows/shared/utils'
+import {PopupContext} from 'src/flows/context/popup'
 
 const QueryTextPreview: FC = () => {
-  const location: RouteProps['location'] = useLocation()
-  const params = location.state
-  const {queryText} = params[0]
-  const formattedQueryText = formatQueryText(queryText)
+  const {data} = useContext(PopupContext)
+
+  const formattedQueryText = formatQueryText(data.query)
 
   return (
     <Form.Element label="" style={{height: 300, position: 'relative'}}>

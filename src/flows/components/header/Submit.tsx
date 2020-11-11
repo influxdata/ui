@@ -1,11 +1,25 @@
 // Libraries
-import React, {FC, useContext, useState, useEffect} from 'react'
+import React, {
+  FC,
+  MouseEvent,
+  useMemo,
+  useContext,
+  useState,
+  useEffect,
+} from 'react'
+import {
+  Dropdown,
+  IconFont,
+  ComponentColor,
+  Gradients,
+  SquareButton,
+  List,
+  ButtonGroup,
+} from '@influxdata/clockface'
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
 import {QueryContext} from 'src/flows/context/query'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {ResultsContext} from 'src/flows/context/results'
-import {TimeContext} from 'src/flows/context/time'
-import {IconFont} from '@influxdata/clockface'
 import {notify} from 'src/shared/actions/notifications'
 
 // Utils
@@ -14,26 +28,29 @@ import {event} from 'src/cloud/utils/reporting'
 // Types
 import {RemoteDataState} from 'src/types'
 
+// Styles
+import 'src/flows/components/header/Submit.scss'
+
 const fakeNotify = notify
 
 export const Submit: FC = () => {
   const {query, generateMap} = useContext(QueryContext)
-  const {id, flow} = useContext(FlowContext)
+  const {flow} = useContext(FlowContext)
   const {add, update} = useContext(ResultsContext)
-  const {timeContext} = useContext(TimeContext)
   const [isLoading, setLoading] = useState(RemoteDataState.NotStarted)
-  const time = timeContext[id]
-  const tr = !!time && time.range
+  const [isRunning, setIsRunning] = useState(false)
 
-  const hasQueries = flow.data.all
-    .map(p => p.type)
-    .filter(p => p === 'query' || p === 'data' || p === 'queryBuilder').length
+  const hasQueries = useMemo(() => {
+    return !!flow.data.all
+      .map(p => p.type)
+      .filter(p => p === 'query' || p === 'queryBuilder').length
+  }, [flow.data])
 
   useEffect(() => {
-    if (!hasQueries) {
+    if (hasQueries) {
       submit()
     }
-  }, [tr, hasQueries]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [flow.range, hasQueries]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const forceUpdate = (id, data) => {
     try {
@@ -44,14 +61,18 @@ export const Submit: FC = () => {
   }
 
   const submit = () => {
+    const map = generateMap(isRunning)
+
+    if (!map.length) {
+      return
+    }
+
     event('Flow Submit Button Clicked')
     setLoading(RemoteDataState.Loading)
 
     flow.data.allIDs.forEach(pipeID => {
       flow.meta.update(pipeID, {loading: RemoteDataState.Loading})
     })
-
-    const map = generateMap()
 
     Promise.all(
       map.map(stage => {
@@ -86,16 +107,74 @@ export const Submit: FC = () => {
       })
   }
 
+  const DropdownButton = (
+    active: boolean,
+    onClick: (e: MouseEvent<HTMLButtonElement>) => void
+  ) => {
+    return (
+      <ButtonGroup>
+        <SubmitQueryButton
+          text={isRunning ? 'Run' : 'Preview'}
+          className="flows--submit-button"
+          icon={IconFont.Play}
+          submitButtonDisabled={!hasQueries}
+          queryStatus={isLoading}
+          onSubmit={submit}
+          onNotify={fakeNotify}
+          queryID=""
+        />
+        <SquareButton
+          active={active}
+          onClick={onClick}
+          icon={IconFont.CaretDown}
+          color={ComponentColor.Primary}
+        />
+      </ButtonGroup>
+    )
+  }
+
+  const DropdownMenu = (onCollapse: () => void) => (
+    <Dropdown.Menu onCollapse={onCollapse}>
+      <List.Item
+        key="Preview"
+        value="Preview"
+        onClick={() => setIsRunning(false)}
+        className="submit-btn--item"
+        testID="flow-preview-button"
+        selected={!isRunning}
+        gradient={Gradients.PolarExpress}
+      >
+        <div className="submit-btn--item-details">
+          <span className="submit-btn--item-name">Preview</span>
+          <span className="submit-btn--item-desc">
+            See results of each cell, no data will be written
+          </span>
+        </div>
+      </List.Item>
+      <List.Item
+        key="Run"
+        value="Run"
+        onClick={() => setIsRunning(true)}
+        className="submit-btn--item"
+        testID="flow-run-button"
+        selected={isRunning}
+        gradient={Gradients.PolarExpress}
+      >
+        <div className="submit-btn--item-details">
+          <span className="submit-btn--item-name">Run</span>
+          <span className="submit-btn--item-desc">
+            See results of each cell, outputs will write data to buckets
+          </span>
+        </div>
+      </List.Item>
+    </Dropdown.Menu>
+  )
+
   return (
-    <SubmitQueryButton
-      text="Run Flow"
-      className="flows-run-flow"
-      icon={IconFont.Play}
-      submitButtonDisabled={!hasQueries}
-      queryStatus={isLoading}
-      onSubmit={submit}
-      onNotify={fakeNotify}
-      queryID=""
+    <Dropdown
+      button={DropdownButton}
+      menu={DropdownMenu}
+      style={{width: '205px'}}
     />
   )
 }

@@ -1,5 +1,5 @@
 import {getRootNode} from 'src/utils/nodes'
-import {BASE_PATH, API_BASE_PATH} from 'src/shared/constants'
+import {STATIC_PREFIX, API_BASE_PATH} from 'src/shared/constants'
 
 export const getBrowserBasepath = () => {
   const rootNode = getRootNode()
@@ -11,11 +11,11 @@ export const getBrowserBasepath = () => {
 }
 
 export const getBasepath = () => {
-  if (!BASE_PATH || BASE_PATH === '/') {
+  if (!STATIC_PREFIX || STATIC_PREFIX === '/') {
     return ''
   }
 
-  return BASE_PATH.slice(0, -1)
+  return STATIC_PREFIX.slice(0, -1)
 }
 
 export const getAPIBasepath = () => {

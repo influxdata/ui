@@ -1,5 +1,5 @@
-import React, {FC, useContext, useEffect} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
+import React, {FC, useContext} from 'react'
+import {useSelector} from 'react-redux'
 import {
   ComponentSize,
   IconFont,
@@ -7,7 +7,6 @@ import {
   Dropdown,
 } from '@influxdata/clockface'
 import {OverlayContext} from 'src/flows/context/overlay'
-import {getTasks} from 'src/tasks/actions/thunks'
 import {getAllTasks as getAllTasksSelector} from 'src/resources/selectors'
 
 const TaskDropdown: FC = () => {
@@ -22,11 +21,6 @@ const TaskDropdown: FC = () => {
       <TechnoSpinner strokeWidth={ComponentSize.Small} diameterPixels={32} />
     </Dropdown.ItemEmpty>
   )
-
-  const dispatch = useDispatch()
-  useEffect(() => {
-    dispatch(getTasks())
-  }, [dispatch])
 
   if (tasks.length) {
     menuItems = (

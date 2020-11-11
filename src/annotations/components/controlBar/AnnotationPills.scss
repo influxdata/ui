@@ -1,0 +1,66 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.annotation-pills {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 $cf-border;
+}
+
+.annotation-pill {
+  margin: $cf-border;
+  height: $cf-form-sm-height - $cf-marg-a;
+  display: flex;
+  align-items: center;
+  padding: 0 $cf-marg-b;
+  border-radius: ($cf-form-sm-height - $cf-marg-a) / 2;
+  background-color: $g4-onyx;
+
+  &:hover {
+    cursor: default;
+  }
+}
+
+.annotation-pill--swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: $cf-marg-a;
+}
+
+.annotation-pill--label {
+  font-size: $cf-form-sm-font;
+  font-weight: $cf-font-weight--medium;
+  color: $g15-platinum;
+  line-height: $cf-form-sm-height;
+  margin-right: $cf-marg-a;
+  user-select: none;
+}
+
+.annotation-pill--button {
+  border: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+  background-color: transparent;
+  color: $g8-storm;
+  transition: color 0.25s ease;
+
+  &:hover {
+    cursor: pointer;
+    color: $g18-cloud;
+  }
+
+  &:active {
+    color: $c-dreamsicle;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}

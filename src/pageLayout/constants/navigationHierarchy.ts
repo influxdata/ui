@@ -203,6 +203,16 @@ export const generateNavItems = (orgID: string): NavItem[] => {
             location: `${orgPrefix}/settings/labels`,
           },
         },
+        {
+          id: 'annotations',
+          testID: 'nav-subitem-annotations',
+          label: 'Annotations',
+          featureFlag: 'annotations',
+          link: {
+            type: 'link',
+            location: `${orgPrefix}/settings/annotations`,
+          },
+        },
       ],
     },
   ]

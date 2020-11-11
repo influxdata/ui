@@ -13,6 +13,13 @@ import {InfluxColors} from '@influxdata/clockface'
 
 import {AutoRefreshStatus} from 'src/types'
 
+function formatConstant(constant: string) {
+  if (!constant) {
+    return ''
+  }
+  return constant.trim()
+}
+
 export const DEFAULT_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss ZZ'
 
 export const DROPDOWN_MENU_MAX_HEIGHT = 240
@@ -52,15 +59,19 @@ export const MIN_HANDLE_PIXELS = 20
 export const MAX_SIZE = 1
 export const MIN_SIZE = 0
 
-export const VERSION = process.env.npm_package_version
-export const GIT_SHA = process.env.GIT_SHA
-export const BASE_PATH = process.env.STATIC_PREFIX
-export const API_BASE_PATH = process.env.API_PREFIX
+export const VERSION = formatConstant(process.env.npm_package_version)
+export const GIT_SHA = formatConstant(process.env.GIT_SHA)
+export const STATIC_PREFIX = formatConstant(process.env.STATIC_PREFIX)
+export const HONEYBADGER_KEY = formatConstant(process.env.HONEYBADGER_KEY)
+export const HONEYBADGER_ENV = formatConstant(process.env.HONEYBADGER_ENV)
+export const API_BASE_PATH = formatConstant(process.env.API_PREFIX)
+
+export const UI_SHA = formatConstant(process.env.UI_SHA)
 
 export const CLOUD = !!process.env.CLOUD_URL
 export const CLOUD_SIGNIN_PATHNAME = '/api/v2/signin'
 export const CLOUD_BILLING_VISIBLE = CLOUD
-export const CLOUD_URL = process.env.CLOUD_URL
+export const CLOUD_URL = formatConstant(process.env.CLOUD_URL)
 export const CLOUD_CHECKOUT_PATH = '/checkout'
 export const CLOUD_BILLING_PATH = '/billing'
 export const CLOUD_USAGE_PATH = '/usage'

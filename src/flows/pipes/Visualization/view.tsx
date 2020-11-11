@@ -9,7 +9,8 @@ import React, {
 } from 'react'
 
 // Components
-import {SquareButton, IconFont, ComponentColor} from '@influxdata/clockface'
+import {ComponentColor, IconFont, SquareButton} from '@influxdata/clockface'
+import ExportButton from 'src/flows/components/panel/ExportDashboardButton'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 import DashboardList from './DashboardList'
 import ViewSwitcher from 'src/shared/components/ViewSwitcher'
@@ -23,7 +24,7 @@ import {event} from 'src/cloud/utils/reporting'
 import {TYPE_DEFINITIONS, _transform} from 'src/shared/visualization'
 
 // Types
-import {ViewType} from 'src/types'
+import {ViewType, RemoteDataState} from 'src/types'
 import {PipeProp} from 'src/types/flows'
 
 // NOTE we dont want any pipe component to be directly dependent
@@ -100,12 +101,24 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     })
   }, [optionsVisibility, data.properties, results.parsed, updateProperties])
 
+  const loadingText = useMemo(() => {
+    if (loading === RemoteDataState.Loading) {
+      return 'Loading'
+    }
+
+    if (loading === RemoteDataState.NotStarted) {
+      return 'This cell will visualize results from the previous cell'
+    }
+
+    return 'No Data Returned'
+  }, [loading])
+
   return (
-    <Context controls={controls}>
+    <Context controls={controls} persistentControl={<ExportButton />}>
       {options}
       <Resizer
         resizingEnabled={!!results.raw}
-        emptyText="This cell will visualize results from the previous cell"
+        emptyText={loadingText}
         emptyIcon={IconFont.BarChart}
         toggleVisibilityEnabled={false}
         height={data.panelHeight}

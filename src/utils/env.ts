@@ -1,8 +1,10 @@
 module.exports = (() => {
+  const UI_SHA = (process.env.UI_SHA || '').trim()
+
   const GIT_SHA =
-    process.env.UI_SHA ||
+    UI_SHA ||
     require('child_process')
-      .execSync('git rev-parse HEAD')
+      .execSync('git rev-parse --sq HEAD')
       .toString()
 
   // Webpack has some specific rules about formatting

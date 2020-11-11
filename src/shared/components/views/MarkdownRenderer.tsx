@@ -1,24 +1,19 @@
 // Libraries
 import React, {FC} from 'react'
-import ReactMarkdown, {Renderer, Renderers} from 'react-markdown'
+const marked = require('marked')
 
 import {CLOUD} from 'src/shared/constants/index'
 
 interface Props {
   className?: string
-  cloudRenderers?: Renderers
+  cloudRenderers?: any
   text: string
 }
 
 // In cloud environments, we want to render the literal markdown image tag
-// but ReactMarkdown expects a React element wrapping an image to be returned,
-// so we use any
-// see: https://github.com/rexxars/react-markdown/blob/master/index.d.ts#L101
-const imageRenderer: Renderer<HTMLImageElement> = (
-  props: HTMLImageElement
-): any => {
-  return `![](${props.src})`
-}
+// but marked JS expects a React element wrapping an image to be returned,
+// so we use return literal image string for renderer
+// see: https://marked.js.org/using_pro#renderer
 
 export const MarkdownRenderer: FC<Props> = ({
   className = '',
@@ -27,16 +22,43 @@ export const MarkdownRenderer: FC<Props> = ({
 }) => {
   // don't parse images in cloud environments to prevent arbitrary script execution via images
   if (CLOUD) {
-    const renderers = {image: imageRenderer, imageReference: imageRenderer}
+    const renderer = {
+      html(html) {
+        if (html.includes('<img')) {
+          if (cloudRenderers?.image) {
+            return cloudRenderers.image
+          }
+          const url = html.match(/"([^"]+)"/)[0]
+          return `![](${url})`
+        }
+        return html
+      },
+      image(href) {
+        if (cloudRenderers?.image) {
+          return cloudRenderers.image
+        }
+        return `![](${href})`
+      },
+    }
+
+    marked.use({renderer})
+
     return (
-      <ReactMarkdown
-        source={text}
+      <div
         className={className}
-        renderers={{...renderers, ...cloudRenderers}}
-      />
+        dangerouslySetInnerHTML={{
+          __html: marked(text),
+        }}
+      ></div>
     )
   }
 
-  // load images locally to your heart's content. caveat emptor
-  return <ReactMarkdown source={text} className={className} />
+  return (
+    <div
+      className={className}
+      dangerouslySetInnerHTML={{
+        __html: marked(text),
+      }}
+    ></div>
+  )
 }

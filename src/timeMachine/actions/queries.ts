@@ -220,8 +220,9 @@ const cancelQuerysByHashIDs = (queryIDs?: string[]): void => {
   })
 }
 
-export const cancelAllRunningQueries = (): void => {
+export const cancelAllRunningQueries = () => dispatch => {
   cancelQuerysByHashIDs(Object.keys(queryReference))
+  dispatch(setQueryResults(RemoteDataState.Done, null, null))
 }
 
 export const setQueryByHashID = (queryID: string, result: any): void => {
@@ -242,18 +243,6 @@ export const setQueryByHashID = (queryID: string, result: any): void => {
       }
       queryReference[queryID].status = RemoteDataState.Error
     })
-}
-
-export const getQueryStatusByID = (queryID: string): any => {
-  if (queryID in queryReference) {
-    return queryReference[queryID]
-  }
-  return {
-    cancel: new AbortController(),
-    issuedAt: Date.now(),
-    promise: Promise.resolve(),
-    status: RemoteDataState.NotStarted,
-  }
 }
 
 export const executeQueries = (abortController?: AbortController) => async (

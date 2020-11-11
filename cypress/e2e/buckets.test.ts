@@ -4,16 +4,12 @@ describe.skip('Buckets', () => {
   beforeEach(() => {
     cy.flush()
 
-    cy.signin().then(({body}) => {
-      const {
-        org: {id},
-        bucket,
-      } = body
-      cy.wrap(body.org).as('org')
-      cy.wrap(bucket).as('bucket')
-      cy.fixture('routes').then(({orgs, buckets}) => {
-        cy.visit(`${orgs}/${id}${buckets}`)
-      })
+    cy.signin().then(() => {
+      cy.get('@org').then(({id}: Organization) =>
+        cy.fixture('routes').then(({orgs, buckets}) => {
+          cy.visit(`${orgs}/${id}${buckets}`)
+        })
+      )
     })
   })
 

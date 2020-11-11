@@ -9,17 +9,12 @@ describe.skip('Scrapers', () => {
   beforeEach(() => {
     cy.flush()
 
-    cy.signin().then(({body}) => {
-      const {
-        org: {id},
-        bucket,
-      } = body
-      cy.wrap(body.org).as('org')
-      cy.wrap(bucket).as('bucket')
-
-      cy.fixture('routes').then(({orgs}) => {
-        cy.visit(`${orgs}/${id}/load-data/scrapers`)
-      })
+    cy.signin().then(() => {
+      cy.get('@org').then(({id}: Organization) =>
+        cy.fixture('routes').then(({orgs}) => {
+          cy.visit(`${orgs}/${id}/load-data/scrapers`)
+        })
+      )
     })
     cy.get('[data-testid="resource-list--body"]', {timeout: PAGE_LOAD_SLA})
   })

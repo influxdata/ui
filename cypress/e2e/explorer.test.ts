@@ -31,15 +31,12 @@ describe('DataExplorer', () => {
   beforeEach(() => {
     cy.flush()
 
-    cy.signin().then(({body}) => {
-      cy.wrap(body.org).as('org')
-      cy.createMapVariable(body.org.id)
-      cy.wrap(body.bucket).as('bucket')
-    })
-
-    cy.fixture('routes').then(({orgs, explorer}) => {
-      cy.get<Organization>('@org').then(({id}) => {
-        cy.visit(`${orgs}/${id}${explorer}`)
+    cy.signin().then(() => {
+      cy.get('@org').then(({id}: Organization) => {
+        cy.createMapVariable(id)
+        cy.fixture('routes').then(({orgs, explorer}) => {
+          cy.visit(`${orgs}/${id}${explorer}`)
+        })
       })
     })
   })

@@ -1,3 +1,4 @@
+import {Organization} from '../../src/types'
 const secondOrg = 'Second Org'
 
 describe('Orgs', () => {
@@ -7,8 +8,8 @@ describe('Orgs', () => {
 
   describe('when there is a user with no orgs', () => {
     beforeEach(() => {
-      cy.signin().then(({body}) => {
-        cy.deleteOrg(body.org.id)
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) => cy.deleteOrg(id))
       })
 
       cy.visit('/')

@@ -1,7 +1,8 @@
 import {NotificationEndpoint} from '../../src/types'
 import 'cypress-file-upload'
+import {Organization} from '../../src/types'
 
-export const signin = (): Cypress.Chainable<Cypress.Response> => {
+export const signin = (): Cypress.Chainable<Organization> => {
   /*\ OSS login
     return cy.setupUser().then(body => {
       return cy
@@ -23,36 +24,33 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
     cy.task('incrementLoginCounter').then(count => {
       userName = count + userName
     })
-
-    cy.log(userName)
-
-    cy.visit('/api/v2/signin')
-      .then(() => cy.get('#login').type(userName))
-      .then(() => cy.get('#password').type(Cypress.env('password')))
-      .then(() => cy.get('#submit-login').click())
-      .then(() => cy.get('.theme-btn--success').click())
-
-    // cy.visit('/')
-    // cy.log(userName)
-    // cy.get('[name="login"]').type(userName)
-    // cy.get('[name="password"]').type(Cypress.env('password'))
-    // cy.get('button')
-    //   .contains('Login')
-    //   .click()
-    // cy.get('button')
-    //   .contains('Grant Access')
-    //   .click()
-  } else {
-    return cy.setupUser().then(body => {
-      return cy
-        .visit('/api/v2/signin')
-        .then(() => cy.get('#login').type(userName))
-        .then(() => cy.get('#password').type(Cypress.env('password')))
-        .then(() => cy.get('#submit-login').click())
-        .then(() => cy.get('.theme-btn--success').click())
-        .then(() => cy.wrap(body))
-    })
   }
+
+  return cy
+    .setupUser()
+    .then(() => cy.visit('/api/v2/signin'))
+    .then(() => cy.get('#login').type(userName))
+    .then(() => cy.get('#password').type(Cypress.env('password')))
+    .then(() => cy.get('#submit-login').click())
+    .then(() => cy.get('.theme-btn--success').click())
+    .then(() =>
+      cy.request({
+        method: 'GET',
+        url: '/api/v2/orgs',
+      })
+    )
+    .then(response => {
+      cy.wrap(response.body.orgs[0]).as('org')
+    })
+    .then(() =>
+      cy.request({
+        method: 'GET',
+        url: '/api/v2/buckets',
+      })
+    )
+    .then(response => {
+      cy.wrap(response.body.buckets[0]).as('bucket')
+    })
 }
 
 export const createDashboard = (

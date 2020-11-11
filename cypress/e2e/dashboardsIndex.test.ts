@@ -8,15 +8,13 @@ describe('Dashboards', () => {
   beforeEach(() => {
     cy.flush()
 
-    cy.signin().then(({body}) => {
-      cy.wrap(body.org).as('org')
-    })
-
-    cy.fixture('routes').then(({orgs}) => {
-      cy.get('@org').then(({id}: Organization) => {
-        cy.visit(`${orgs}/${id}/dashboards-list`)
+    cy.signin().then(({body}) =>
+      cy.fixture('routes').then(({orgs}) => {
+        cy.get('@org').then(({id}: Organization) => {
+          cy.visit(`${orgs}/${id}/dashboards-list`)
+        })
       })
-    })
+    )
   })
 
   it('empty state should have a header with text and a button to create a dashboard', () => {

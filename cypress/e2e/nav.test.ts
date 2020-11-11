@@ -1,12 +1,10 @@
+import {Organization} from '../../src/types'
+
 describe('navigation', () => {
   beforeEach(() => {
     cy.flush()
 
-    cy.signin().then(({body}) => {
-      cy.wrap(body.org.id).as('orgID')
-    })
-
-    cy.visit('/')
+    cy.signin().then(() => cy.visit('/'))
   })
 
   it('can navigate to each page', () => {
@@ -44,8 +42,8 @@ describe('navigation', () => {
     cy.visit('/')
 
     cy.getByTestID('user-nav').should('exist')
-    cy.get('@orgID').then(orgID => {
-      cy.visit(`/orgs/${orgID}/not-a-route`)
+    cy.get('@org').then(({id}: Organization) => {
+      cy.visit(`/orgs/${id}/not-a-route`)
       cy.getByTestID('not-found').should('exist')
     })
 

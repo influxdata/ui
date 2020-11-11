@@ -104,6 +104,7 @@ describe('Buckets', () => {
       })
       cy.reload()
       cy.intercept('DELETE', '/buckets').as('deleteBucket')
+      cy.get('.cf-resource-card').should('have.length', 5)
       cy.getByTestID(`bucket-card ${bucket1}`)
         .trigger('mouseover')
         .within(() => {
@@ -116,6 +117,7 @@ describe('Buckets', () => {
 
       cy.wait('@deleteBucket')
 
+      cy.get('.cf-resource-card').should('have.length', 4)
       cy.getByTestID(`bucket-card ${bucket1}`).should('not.exist')
     })
   })

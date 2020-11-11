@@ -1,35 +1,24 @@
 import React, {ChangeEvent, FC, useContext} from 'react'
-import {useSelector} from 'react-redux'
 import {
   Columns,
-  ComponentSize,
   ComponentStatus,
-  EmptyState,
   Form,
   Grid,
   Input,
   InputType,
 } from '@influxdata/clockface'
-import TaskDropdown from 'src/flows/components/ExportTaskOverlay/TaskDropdown'
-import WarningPanel from 'src/flows/components/ExportTaskOverlay/WarningPanel'
 import QueryTextPreview from 'src/flows/components/QueryTextPreview'
-import {OverlayContext} from 'src/flows/context/overlay'
-import {hasNoTasks as hasNoTasksSelector} from 'src/resources/selectors'
+import {Context} from 'src/flows/pipes/Bucket/ExportTaskOverlay/context'
 
-const UpdateTaskBody: FC = () => {
-  const {interval, handleSetEveryInterval, hasError} = useContext(
-    OverlayContext
-  )
+const CreateTaskBody: FC = () => {
+  const {
+    handleSetEveryInterval,
+    handleSetTaskName,
+    hasError,
+    interval,
+    taskName,
+  } = useContext(Context)
 
-  const hasNoTasks = useSelector(hasNoTasksSelector)
-
-  if (hasNoTasks) {
-    return (
-      <EmptyState size={ComponentSize.Medium}>
-        <EmptyState.Text>You haven’t created any Tasks yet</EmptyState.Text>
-      </EmptyState>
-    )
-  }
   return (
     <>
       <Grid.Column widthXS={Columns.Nine}>
@@ -37,7 +26,16 @@ const UpdateTaskBody: FC = () => {
           label="Name"
           errorMessage={hasError && 'This field cannot be empty'}
         >
-          <TaskDropdown />
+          <Input
+            name="name"
+            placeholder="Name your task"
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              handleSetTaskName(event.target.value)
+            }
+            value={taskName}
+            testID="task-form-name"
+            status={hasError ? ComponentStatus.Error : ComponentStatus.Default}
+          />
         </Form.Element>
       </Grid.Column>
       <Grid.Column widthXS={Columns.Three}>
@@ -59,13 +57,10 @@ const UpdateTaskBody: FC = () => {
         </Form.Element>
       </Grid.Column>
       <Grid.Column>
-        <WarningPanel />
-      </Grid.Column>
-      <Grid.Column>
         <QueryTextPreview />
       </Grid.Column>
     </>
   )
 }
 
-export default UpdateTaskBody
+export default CreateTaskBody

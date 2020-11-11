@@ -1,12 +1,12 @@
 // Libraries
 import React, {FC, useContext} from 'react'
-import {useHistory} from 'react-router-dom'
 
 // Components
 import ExportTaskButtons from './ExportTaskButtons'
 import UpdateTaskBody from './UpdateTaskBody'
 import CreateTaskBody from './CreateTaskBody'
-import {OverlayContext, ExportAsTask} from 'src/flows/context/overlay'
+import {Provider, Context, ExportAsTask} from './context'
+import {PopupContext} from 'src/flows/context/popup'
 import {
   Form,
   Grid,
@@ -19,16 +19,15 @@ import {
 } from '@influxdata/clockface'
 
 const ExportTaskOverlay: FC = () => {
-  const {activeTab, handleSetActiveTab} = useContext(OverlayContext)
-
-  const history = useHistory()
+  const {activeTab, handleSetActiveTab} = useContext(Context)
+  const {closeFn} = useContext(PopupContext)
 
   return (
     <Overlay visible={true}>
       <Overlay.Container maxWidth={600}>
         <Overlay.Header
           title="Export As Task"
-          onDismiss={() => history.goBack()}
+          onDismiss={closeFn}
           testID="export-as-overlay--header"
         />
         <Overlay.Body>
@@ -72,4 +71,8 @@ const ExportTaskOverlay: FC = () => {
   )
 }
 
-export default ExportTaskOverlay
+export default () => (
+  <Provider>
+    <ExportTaskOverlay />
+  </Provider>
+)

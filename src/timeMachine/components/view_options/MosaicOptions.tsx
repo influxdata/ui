@@ -6,6 +6,7 @@ import {connect, ConnectedProps} from 'react-redux'
 import {Form, Grid, Input} from '@influxdata/clockface'
 import TimeFormat from 'src/timeMachine/components/view_options/TimeFormat'
 import LegendOrientation from 'src/timeMachine/components/view_options/LegendOrientation'
+import AxisTicksGenerator from 'src/shared/components/axisTicks/AxisTicksGenerator'
 
 // Actions
 import {
@@ -19,6 +20,10 @@ import {
   setTimeFormat,
   setLegendOpacity,
   setLegendOrientationThreshold,
+  setGenerateXAxisTicks,
+  setXTotalTicks,
+  setXTickStart,
+  setXTickStep,
 } from 'src/timeMachine/actions'
 
 // Utils
@@ -75,6 +80,10 @@ const MosaicOptions: FunctionComponent<Props> = props => {
     timeFormat,
     onSetLegendOpacity,
     onSetLegendOrientationThreshold,
+    onSetGenerateXAxisTicks,
+    onSetXTotalTicks,
+    onSetXTickStart,
+    onSetXTickStep,
   } = props
 
   const handleFillColumnSelect = (column: string): void => {
@@ -129,6 +138,15 @@ const MosaicOptions: FunctionComponent<Props> = props => {
           onChange={e => onSetXAxisLabel(e.target.value)}
         />
       </Form.Element>
+      <AxisTicksGenerator
+        axisName="x"
+        columnType={xColumn}
+        label="X Axis Tick Generator"
+        onSetGenerateAxisTicks={onSetGenerateXAxisTicks}
+        onSetTotalTicks={onSetXTotalTicks}
+        onSetTickStart={onSetXTickStart}
+        onSetTickStep={onSetXTickStep}
+      />
       <h5 className="view-options--header">Y Axis</h5>
       <Form.Element label="Y Axis Label">
         <Input
@@ -176,6 +194,10 @@ const mdtp = {
   onSetTimeFormat: setTimeFormat,
   onSetLegendOpacity: setLegendOpacity,
   onSetLegendOrientationThreshold: setLegendOrientationThreshold,
+  onSetGenerateXAxisTicks: setGenerateXAxisTicks,
+  onSetXTotalTicks: setXTotalTicks,
+  onSetXTickStart: setXTickStart,
+  onSetXTickStep: setXTickStep,
 }
 
 const connector = connect(mstp, mdtp)

@@ -9,7 +9,7 @@ import BucketProvider from 'src/flows/context/buckets'
 
 // Components
 import BucketSelector from 'src/flows/pipes/Bucket/BucketSelector'
-import ExportTaskButton from 'src/flows/components/panel/ExportTaskButton'
+import ExportTaskButton from 'src/flows/pipes/Bucket/ExportTaskButton'
 // Styles
 import 'src/flows/pipes/Query/style.scss'
 

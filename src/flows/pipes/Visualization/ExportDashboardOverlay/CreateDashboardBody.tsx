@@ -6,7 +6,7 @@ import {
   Grid,
   Input,
 } from '@influxdata/clockface'
-import {DashboardOverlayContext} from 'src/flows/context/dashboardOverlay'
+import {Context} from 'src/flows/pipes/Visualization/ExportDashboardOverlay/context'
 
 const CreateTaskBody: FC = () => {
   const {
@@ -14,7 +14,7 @@ const CreateTaskBody: FC = () => {
     handleSetCellName,
     handleSetDashboardName,
     dashboardName,
-  } = useContext(DashboardOverlayContext)
+  } = useContext(Context)
 
   return (
     <>

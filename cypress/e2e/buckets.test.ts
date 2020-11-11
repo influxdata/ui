@@ -1,6 +1,6 @@
 import {Bucket, Organization} from '../../src/types'
 
-describe.skip('Buckets', () => {
+describe('Buckets', () => {
   beforeEach(() => {
     cy.flush()
 
@@ -172,23 +172,20 @@ describe.skip('Buckets', () => {
       })
     })
 
-    // NOTE: the components for deleting a bucket are slightly different
-    // button testID: 'context-delete--button'
-    // button confirmation popover testID: 'context-delete--popover'
-    // confirmation button testID: 'context-delete--confirm-button'
-    //
-    // TODO: ZOE Come back and fix race condition
-    // it('can delete a bucket', () => {
-    //   const bucket1 = 'newbucket1'
-    //   cy.get<Organization>('@org').then(({id, name}: Organization) => {
-    //     cy.createBucket(id, name, bucket1)
-    //   })
+    it('can delete a bucket', () => {
+      const bucket1 = 'newbucket1'
+      cy.get<Organization>('@org').then(({id, name}: Organization) => {
+        cy.createBucket(id, name, bucket1)
+      })
 
-    //   cy.getByTestID(`context-delete-menu ${bucket1}`).click()
-    //   cy.getByTestID(`context-delete-bucket ${bucket1}`).click()
 
-    //   cy.getByTestID(`bucket--card--name ${bucket1}`).should('not.exist')
-    // })
+      cy.getByTestID(`context-delete-menu ${bucket1}`).click()
+      cy.getByTestID(`context-delete-bucket ${bucket1}`)
+        .should('be.visible')
+        .click()
+        .wait(500)
+      cy.getByTestID(`bucket--card--name ${bucket1}`).should('not.exist')
+    })
   })
 
   // skipping until feature flag feature is removed for deleteWithPredicate

@@ -5,7 +5,7 @@
   width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: stretch;
 }
 
@@ -35,15 +35,18 @@
   flex-direction: column;
   align-items: stretch;
   border-radius: $cf-radius;
-  margin: 0 $flow-panel--gutter;
+  border: $cf-border solid transparent;
+  transition: border-color 0.25s ease;
 
+  // Vertical line on left side of panel
   &::after {
     content: '';
     position: absolute;
     width: $cf-border;
     background-color: $g5-pepper;
-    bottom: 0;
-    top: 0;
+    // Ensures there is no visible gap
+    bottom: -$cf-border;
+    top: -$cf-border;
     left: ($flow-panel--node-gap / 2) - ($cf-border / 2);
   }
 
@@ -78,7 +81,6 @@
 }
 
 .flow-panel--header-right > * {
-  transition: all 0.25s ease;
   opacity: 0;
 }
 
@@ -163,9 +165,13 @@
 }
 
 .flow-panel__focus {
+  border-color: $g5-pepper;
+}
+
+.flow-panel__focus {
   .flow-panel--header,
   .flow-panel--body,
-  .flow-panel--resutls {
+  .flow-panel--results {
     background-color: $flow-panel--bg;
   }
 }
@@ -210,7 +216,7 @@
 */
 
 .flow-panel__hidden {
-  height: $flow-header-height + $flow-divider-height;
+  height: $flow-header-height + ($cf-border * 2);
 
   .flow-panel--body,
   .flow-panel--results {

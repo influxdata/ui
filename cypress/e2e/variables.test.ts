@@ -57,6 +57,7 @@ describe('Variables', () => {
       .click()
 
     cy.getByTestID(`variable-card--name ${variableName}`).click()
+    cy.getByTestID('notification-success--dismiss').should('exist')
     cy.getByTestID('notification-success--dismiss').click()
 
     // Change it to a Query variable
@@ -78,6 +79,7 @@ describe('Variables', () => {
         .click()
     })
 
+    cy.getByTestID('notification-success--dismiss').should('exist')
     cy.getByTestID('notification-success--dismiss').click()
     cy.getByTestID(`variable-card--name ${variableName}`).click()
 
@@ -100,6 +102,7 @@ describe('Variables', () => {
         .click()
     })
 
+    cy.getByTestID('notification-success--dismiss').should('exist')
     cy.getByTestID('notification-success--dismiss').click()
 
     cy.getByTestID('resource-card variable').should('have.length', 2)
@@ -119,6 +122,7 @@ describe('Variables', () => {
       .first()
       .click()
 
+    cy.getByTestID('notification-success--dismiss').should('exist')
     cy.getByTestID('notification-success--dismiss').click()
 
     cy.getByTestID('search-widget').clear()
@@ -136,6 +140,7 @@ describe('Variables', () => {
 
     cy.getByTestID('rename-variable-submit').click()
 
+    cy.getByTestID('notification-success--dismiss').should('exist')
     cy.getByTestID('notification-success--dismiss').click()
 
     cy.getByTestID(`variable-card--name Little Variable-renamed`).contains(
@@ -165,6 +170,7 @@ describe('Variables', () => {
       .contains('Create')
       .click()
 
+    cy.getByTestID('notification-success--dismiss').should('exist')
     cy.getByTestID('notification-success--dismiss').click()
     cy.getByTestID(`variable-card--name ${mapVariableName}`).should('exist')
 
@@ -195,6 +201,7 @@ describe('Variables', () => {
       .contains('Create')
       .click()
 
+    cy.getByTestID('notification-success--dismiss').should('exist')
     cy.getByTestID('notification-success--dismiss').click()
     cy.getByTestID(`variable-card--name ${queryVariableName}`).contains(
       queryVariableName

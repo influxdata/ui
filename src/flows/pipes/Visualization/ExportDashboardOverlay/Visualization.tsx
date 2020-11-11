@@ -1,12 +1,12 @@
 // Libraries
 import React, {FC, useCallback, useContext, useEffect, useState} from 'react'
-import {RouteProps, useLocation} from 'react-router-dom'
 import {ComponentSize, TechnoSpinner} from '@influxdata/clockface'
 
 // Components
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 import ViewSwitcher from 'src/shared/components/ViewSwitcher'
 import QueryProvider, {QueryContext} from 'src/flows/context/query'
+import {PopupContext} from 'src/flows/context/popup'
 
 // Utilities
 import {checkResultsLength} from 'src/shared/utils/vis'
@@ -15,11 +15,9 @@ import {checkResultsLength} from 'src/shared/utils/vis'
 import {RemoteDataState, TimeZone} from 'src/types'
 
 const Visualization: FC = () => {
-  const location: RouteProps['location'] = useLocation()
   const [results, setResults] = useState(undefined)
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
-  const params = location.state
-  const {queryText, properties} = params[0]
+  const {data} = useContext(PopupContext)
   const {query} = useContext(QueryContext)
 
   const queryAndSetResults = useCallback(
@@ -33,8 +31,8 @@ const Visualization: FC = () => {
   )
 
   useEffect(() => {
-    queryAndSetResults(queryText)
-  }, [queryText, queryAndSetResults])
+    queryAndSetResults(data.query)
+  }, [data.query, queryAndSetResults])
 
   let body = (
     <TechnoSpinner strokeWidth={ComponentSize.Small} diameterPixels={32} />
@@ -45,7 +43,7 @@ const Visualization: FC = () => {
       <ViewSwitcher
         giraffeResult={results.parsed}
         files={[results.raw]}
-        properties={properties}
+        properties={data.properties}
         timeZone={'Local' as TimeZone}
         theme="dark"
       />

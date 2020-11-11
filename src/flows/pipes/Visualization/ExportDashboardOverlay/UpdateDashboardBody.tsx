@@ -9,19 +9,17 @@ import {
   Grid,
   Input,
 } from '@influxdata/clockface'
-import DashboardDropdown from 'src/flows/components/ExportDashboardOverlay/DashboardDropdown'
-import CellsDropdown from 'src/flows/components/ExportDashboardOverlay/CellsDropdown'
-import WarningPanel from 'src/flows/components/ExportDashboardOverlay/WarningPanel'
+import DashboardDropdown from 'src/flows/pipes/Visualization/ExportDashboardOverlay/DashboardDropdown'
+import CellsDropdown from 'src/flows/pipes/Visualization/ExportDashboardOverlay/CellsDropdown'
+import WarningPanel from 'src/flows/pipes/Visualization/ExportDashboardOverlay/WarningPanel'
 import {
-  DashboardOverlayContext,
+  Context,
   CREATE_CELL,
-} from 'src/flows/context/dashboardOverlay'
+} from 'src/flows/pipes/Visualization/ExportDashboardOverlay/context'
 import {hasNoDashboards as hasNoDashboardsSelector} from 'src/dashboards/selectors'
 
 const UpdateDashboardBody: FC = () => {
-  const {cellName, handleSetCellName, selectedCell} = useContext(
-    DashboardOverlayContext
-  )
+  const {cellName, handleSetCellName, selectedCell} = useContext(Context)
 
   const hasNoDashboards = useSelector(hasNoDashboardsSelector)
 

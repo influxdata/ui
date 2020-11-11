@@ -21,6 +21,7 @@ import YAxisBase from 'src/timeMachine/components/view_options/YAxisBase'
 import ColumnSelector from 'src/shared/components/ColumnSelector'
 import TimeFormat from 'src/timeMachine/components/view_options/TimeFormat'
 import LegendOrientation from 'src/timeMachine/components/view_options/LegendOrientation'
+import AxisTicksGenerator from 'src/shared/components/axisTicks/AxisTicksGenerator'
 
 // Actions
 import {
@@ -40,6 +41,14 @@ import {
   setLowerColumn,
   setLegendOpacity,
   setLegendOrientationThreshold,
+  setGenerateXAxisTicks,
+  setXTotalTicks,
+  setXTickStart,
+  setXTickStep,
+  setGenerateYAxisTicks,
+  setYTotalTicks,
+  setYTickStart,
+  setYTickStep,
 } from 'src/timeMachine/actions'
 
 // Utils
@@ -123,6 +132,14 @@ class BandOptions extends PureComponent<Props, State> {
       lowerColumn,
       onSetLegendOpacity,
       onSetLegendOrientationThreshold,
+      onSetGenerateXAxisTicks,
+      onSetXTotalTicks,
+      onSetXTickStart,
+      onSetXTickStep,
+      onSetGenerateYAxisTicks,
+      onSetYTotalTicks,
+      onSetYTickStart,
+      onSetYTickStep,
     } = this.props
 
     const upperAndLowerColumnOptions = [
@@ -269,6 +286,20 @@ class BandOptions extends PureComponent<Props, State> {
           </Form.Element>
         </Grid.Column>
         <Grid.Column>
+          <h5 className="view-options--header">X Axis</h5>
+        </Grid.Column>
+        <Grid.Column>
+          <AxisTicksGenerator
+            axisName="x"
+            columnType={xColumn}
+            label="X Axis Tick Generator"
+            onSetGenerateAxisTicks={onSetGenerateXAxisTicks}
+            onSetTotalTicks={onSetXTotalTicks}
+            onSetTickStart={onSetXTickStart}
+            onSetTickStep={onSetXTickStep}
+          />
+        </Grid.Column>
+        <Grid.Column>
           <h5 className="view-options--header">Y Axis</h5>
         </Grid.Column>
         <YAxisTitle label={label} onUpdateYAxisLabel={onUpdateYAxisLabel} />
@@ -280,6 +311,17 @@ class BandOptions extends PureComponent<Props, State> {
           onUpdateAxisPrefix={prefix => onUpdateAxisPrefix(prefix, 'y')}
           onUpdateAxisSuffix={suffix => onUpdateAxisSuffix(suffix, 'y')}
         />
+        <Grid.Column>
+          <AxisTicksGenerator
+            axisName="y"
+            columnType={yColumn}
+            label="Y Axis Tick Generator"
+            onSetGenerateAxisTicks={onSetGenerateYAxisTicks}
+            onSetTotalTicks={onSetYTotalTicks}
+            onSetTickStart={onSetYTickStart}
+            onSetTickStep={onSetYTickStep}
+          />
+        </Grid.Column>
         <Grid.Column>
           <AutoDomainInput
             domain={this.yDomain}
@@ -406,6 +448,14 @@ const mdtp = {
   onSetLowerColumn: setLowerColumn,
   onSetLegendOpacity: setLegendOpacity,
   onSetLegendOrientationThreshold: setLegendOrientationThreshold,
+  onSetGenerateXAxisTicks: setGenerateXAxisTicks,
+  onSetXTotalTicks: setXTotalTicks,
+  onSetXTickStart: setXTickStart,
+  onSetXTickStep: setXTickStep,
+  onSetGenerateYAxisTicks: setGenerateYAxisTicks,
+  onSetYTotalTicks: setYTotalTicks,
+  onSetYTickStart: setYTickStart,
+  onSetYTickStep: setYTickStep,
 }
 
 const connector = connect(mstp, mdtp)

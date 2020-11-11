@@ -1,17 +1,18 @@
 // Libraries
 import React, {FC, useContext} from 'react'
-import {useHistory} from 'react-router-dom'
 
 // Components
 import ExportDashboardButtons from './ExportDashboardButtons'
 import UpdateDashboardBody from './UpdateDashboardBody'
 import CreateDashboardBody from './CreateDashboardBody'
 import QueryTextPreview from 'src/flows/components/QueryTextPreview'
-import Visualization from 'src/flows/components/ExportDashboardOverlay/Visualization'
+import Visualization from 'src/flows/pipes/Visualization/ExportDashboardOverlay/Visualization'
 import {
-  DashboardOverlayContext,
+  Context,
+  Provider,
   ExportToDashboard,
-} from 'src/flows/context/dashboardOverlay'
+} from 'src/flows/pipes/Visualization/ExportDashboardOverlay/context'
+import {PopupContext} from 'src/flows/context/popup'
 import {
   Form,
   Grid,
@@ -24,16 +25,15 @@ import {
 } from '@influxdata/clockface'
 
 const ExportDashboardOverlay: FC = () => {
-  const {activeTab, handleSetActiveTab} = useContext(DashboardOverlayContext)
-
-  const history = useHistory()
+  const {activeTab, handleSetActiveTab} = useContext(Context)
+  const {closeFn} = useContext(PopupContext)
 
   return (
     <Overlay visible={true}>
       <Overlay.Container maxWidth={600}>
         <Overlay.Header
           title="Export To Dashboard"
-          onDismiss={() => history.goBack()}
+          onDismiss={closeFn}
           testID="export-as-overlay--header"
         />
         <Overlay.Body>
@@ -85,4 +85,8 @@ const ExportDashboardOverlay: FC = () => {
   )
 }
 
-export default ExportDashboardOverlay
+export default () => (
+  <Provider>
+    <ExportDashboardOverlay />
+  </Provider>
+)

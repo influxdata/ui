@@ -1,4 +1,4 @@
-import {Organization} from '../../src/types'
+import {Organization} from '../../../src/types'
 import {sortBy} from 'lodash'
 
 // a generous commitment to delivering this page in a loaded state

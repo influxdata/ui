@@ -1,4 +1,4 @@
-import {SlackNotificationEndpoint, Organization} from '../../src/types'
+import {SlackNotificationEndpoint, Organization} from '../../../src/types'
 
 // skipping these tests until we have a local vault instance running
 describe.skip('NotificationRules', () => {

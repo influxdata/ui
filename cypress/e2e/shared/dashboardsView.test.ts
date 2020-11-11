@@ -1,5 +1,5 @@
-import {Organization, AppState, Dashboard} from '../../src/types'
-import {lines} from '../support/commands'
+import {Organization, AppState, Dashboard} from '../../../src/types'
+import {lines} from '../../support/commands'
 
 describe('Dashboard', () => {
   beforeEach(() => {

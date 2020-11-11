@@ -1,4 +1,4 @@
-import {Organization, Bucket} from '../../src/types'
+import {Organization, Bucket} from '../../../src/types'
 
 describe('Tasks', () => {
   beforeEach(() => {

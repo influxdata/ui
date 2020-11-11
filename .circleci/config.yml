@@ -154,11 +154,12 @@ jobs:
           no_output_timeout: 30m
           command: |
             cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser chrome --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/**/*.test.ts" | circleci tests split | paste -sd "," -)"
-      - run:
-          name: Push IDPE UI E2E images
-          command: |
-            docker push quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
-            docker push quay.io/influxdb/ui-e2e:latest
+      - when:
+          condition:
+            equal: [ deniz-add-idpe-ui-e2e-tests, << pipeline.git.branch >> ]
+          steps:
+            - run: docker push quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
+            - run: docker push quay.io/influxdb/ui-e2e:latest
       - store_test_results:
           path: monitor-ci/test-artifacts/results
       - store_artifacts:

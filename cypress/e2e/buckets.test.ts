@@ -174,21 +174,27 @@ describe('Buckets', () => {
 
     it('can delete a bucket', () => {
       const bucket1 = 'newbucket1'
-      cy.get<Organization>('@org').then(({id, name}: Organization) => {
-        cy.createBucket(id, name, bucket1)
-      })
-
-      cy.getByTestID(`bucket-card ${bucket1}`)
-        .within(() => {
-          cy.getByTestID(`context-delete--button`).click()
+      cy.get<Organization>('@org')
+        .then(({id, name}: Organization) => {
+          cy.createBucket(id, name, bucket1)
         })
         .then(() => {
-          cy.getByTestID('context-delete--confirm-button').should('be.visible')
-          cy.getByTestID('context-delete--confirm-button').click()
-        })
-        .wait(500)
+          cy.get('.cf-resource-card').should('have.length', 5)
+          cy.getByTestID(`bucket-card ${bucket1}`)
+            .within(() => {
+              cy.getByTestID(`context-delete--button`).click()
+            })
+            .then(() => {
+              cy.getByTestID('context-delete--confirm-button').should(
+                'be.visible'
+              )
+              cy.getByTestID('context-delete--confirm-button').click()
+            })
+            .wait(500)
 
-      cy.getByTestID(`bucket-card ${bucket1}`).should('not.exist')
+          cy.get('.cf-resource-card').should('have.length', 4)
+          cy.getByTestID(`bucket-card ${bucket1}`).should('not.exist')
+        })
     })
   })
 

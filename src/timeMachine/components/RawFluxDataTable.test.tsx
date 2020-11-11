@@ -32,9 +32,9 @@ describe('RawFluxDataTable', () => {
 
     const cells = wrapper.find('.raw-flux-data-table--cell')
 
-    expect(cells.at(0).text()).toEqual('#datatype')
-    expect(cells.at(14).text()).toEqual('#group')
+    expect(cells.at(0).text()).toEqual('#group')
+    expect(cells.at(14).text()).toEqual('#datatype')
     expect(cells.at(41).text()).toEqual('')
-    expect(cells.at(59).text()).toEqual('1677-09-21T00:12:43.145224192Z')
+    expect(cells.at(59).text()).toEqual('1677-09-21T00:12:43.145Z')
   })
 })

@@ -116,8 +116,7 @@ describe('Buckets', () => {
 
       cy.wait('@deleteBucket')
 
-      // Asserting that empty state exists rather than cards not existing
-      cy.getByTestID('buckets-empty').should('exist')
+      cy.getByTestID(`bucket-card ${bucket1}`).should('not.exist')
     })
   })
 

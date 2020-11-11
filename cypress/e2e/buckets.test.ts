@@ -178,13 +178,18 @@ describe('Buckets', () => {
         cy.createBucket(id, name, bucket1)
       })
 
-
-      cy.getByTestID(`context-delete-menu ${bucket1}`).click()
-      cy.getByTestID(`context-delete-bucket ${bucket1}`)
-        .should('be.visible')
-        .click()
+      cy.getByTestID(`bucket-card ${bucket1}`)
+        .within(() => {
+          cy.getByTestID(`context-delete--button`).click()
+        })
+        .then(() => {
+          cy.getByTestID('context-delete--confirm-bucket').should('be.visible')
+          cy.getByTestID('context-delete--confirm-bucket').click()
+        })
         .wait(500)
-      cy.getByTestID(`bucket--card--name ${bucket1}`).should('not.exist')
+
+      // Asserting that empty state exists rather than cards not existing
+      cy.getByTestID('buckets-empty').should('exist')
     })
   })
 

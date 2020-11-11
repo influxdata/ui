@@ -110,8 +110,8 @@ describe('Buckets', () => {
           cy.getByTestID(`context-delete--button`).click()
         })
         .then(() => {
-          cy.getByTestID('context-delete--confirm-bucket').should('be.visible')
-          cy.getByTestID('context-delete--confirm-bucket').click()
+          cy.getByTestID('context-delete--confirm-button').should('be.visible')
+          cy.getByTestID('context-delete--confirm-button').click()
         })
 
       cy.wait('@deleteBucket')

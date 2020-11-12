@@ -3,18 +3,20 @@ import React, {FC} from 'react'
 
 // Components
 import {Panel, Gradients} from '@influxdata/clockface'
+import {PROJECT_NAME_PLURAL} from 'src/flows'
 
 const FlowsExplainer: FC = () => (
   <Panel gradient={Gradients.PolarExpress} border={true}>
     <Panel.Header>
-      <h5>What is Flows?</h5>
+      <h5>What is {PROJECT_NAME_PLURAL}?</h5>
     </Panel.Header>
     <Panel.Body>
       <p>
-        Flows is a tool to help you explore, visualize, and process your data.
-        Learn how to downsample data and other handy tutorials in the{' '}
+        {PROJECT_NAME_PLURAL} is a tool to help you explore, visualize, and
+        process your data. Learn how to downsample data and other handy
+        tutorials in the{' '}
         <a href="" target="_blank">
-          Flows Documentation
+          Documentation
         </a>
       </p>
     </Panel.Body>

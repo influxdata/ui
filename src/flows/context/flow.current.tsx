@@ -3,6 +3,7 @@ import {Flow, PipeData} from 'src/types/flows'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import {v4 as UUID} from 'uuid'
 import {RemoteDataState} from 'src/types'
+import {PROJECT_NAME} from 'src/flows'
 
 export interface FlowContextType {
   id: string | null
@@ -14,7 +15,7 @@ export interface FlowContextType {
 
 export const DEFAULT_CONTEXT: FlowContextType = {
   id: null,
-  name: 'Name this Flow',
+  name: `Name this ${PROJECT_NAME}`,
   flow: null,
   add: () => '',
   update: () => {},

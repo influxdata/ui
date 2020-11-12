@@ -9,13 +9,17 @@ import FlowCards from 'src/flows/components/FlowCards'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
+import {PROJECT_NAME_PLURAL} from 'src/flows'
 
 const FlowsIndex = () => {
   return (
     <FlowListProvider>
-      <Page titleTag={pageTitleSuffixer(['Flows'])} testID="flows-index">
+      <Page
+        titleTag={pageTitleSuffixer([PROJECT_NAME_PLURAL])}
+        testID="flows-index"
+      >
         <PageHeader fullWidth={false}>
-          <Page.Title title="Flows" />
+          <Page.Title title={PROJECT_NAME_PLURAL} />
         </PageHeader>
         <Page.ControlBar fullWidth={false}>
           <Page.ControlBarLeft></Page.ControlBarLeft>

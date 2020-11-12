@@ -38,6 +38,7 @@ import {AppState, Organization, ResourceType} from 'src/types'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
+import {PROJECT_NAME_PLURAL} from 'src/flows'
 import {
   LOAD_DATA,
   TELEGRAF_PLUGINS,
@@ -148,11 +149,17 @@ const SetOrg: FC<Props> = ({
 
         {/* Flows  */}
         {isFlagEnabled('notebooks') && (
-          <Route path={`${orgPath}/flows/:id`} component={FlowPage} />
+          <Route
+            path={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}/:id`}
+            component={FlowPage}
+          />
         )}
 
         {isFlagEnabled('notebooks') && (
-          <Route path={`${orgPath}/flows`} component={FlowsIndex} />
+          <Route
+            path={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}`}
+            component={FlowsIndex}
+          />
         )}
 
         {/* Write Data */}

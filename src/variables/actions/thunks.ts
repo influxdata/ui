@@ -334,12 +334,12 @@ export const deleteVariable = (id: string) => async (
   }
 }
 
-export const moveVariable = (originalIndex: number, newIndex: number) => async (
+export const moveVariable = (originalId: string, newId: string) => async (
   dispatch,
   getState: GetState
 ) => {
   const contextID = currentContext(getState())
-  await dispatch(moveVariableInState(originalIndex, newIndex, contextID))
+  await dispatch(moveVariableInState(originalId, newId, contextID))
 }
 
 export const convertToTemplate = (variableID: string) => async (

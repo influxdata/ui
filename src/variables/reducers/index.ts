@@ -92,7 +92,11 @@ export const variablesReducer = (
       }
 
       case MOVE_VARIABLE: {
-        const {originalIndex, newIndex, contextID} = action
+        const {originalId, newId, contextID} = action
+        // newOrder contains all the variables, not just the ones used in
+        // a given dashboard. This means we cannot rely on the indexes
+        // passed up from the drag interaction and instead are using
+        // id to determine index within this scope
         let newOrder = get(draftState, `values.${contextID}.order`)
 
         // if no order, take it from allIDs
@@ -102,11 +106,11 @@ export const variablesReducer = (
 
         newOrder = newOrder.slice(0)
 
-        const idToMove = newOrder[originalIndex]
-        const idToSwap = newOrder[newIndex]
+        const originalIndex = newOrder.findIndex(id => id === originalId)
+        const newIndex = newOrder.findIndex(id => id === newId)
 
-        newOrder[originalIndex] = idToSwap
-        newOrder[newIndex] = idToMove
+        newOrder[originalIndex] = newId
+        newOrder[newIndex] = originalId
 
         draftState.values[contextID] = {
           ...(draftState.values[contextID] || {

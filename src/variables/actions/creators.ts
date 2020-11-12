@@ -57,14 +57,14 @@ export const removeVariable = (id: string) =>
   } as const)
 
 export const moveVariable = (
-  originalIndex: number,
-  newIndex: number,
+  originalId: string,
+  newId: string,
   contextID: string
 ) =>
   ({
     type: MOVE_VARIABLE,
-    originalIndex,
-    newIndex,
+    originalId,
+    newId,
     contextID,
   } as const)
 

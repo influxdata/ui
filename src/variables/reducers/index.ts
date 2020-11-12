@@ -93,8 +93,8 @@ export const variablesReducer = (
 
       case MOVE_VARIABLE: {
         const {originalId, newId, contextID} = action
-        // newOrder contains all the variables, not just the ones used in
-        // a given dashboard. This means we cannot rely on the indexes
+        // newOrder sometimes contains a stale list of variables
+        // This means we cannot rely on the indexes
         // passed up from the drag interaction and instead are using
         // id to determine index within this scope
         let newOrder = get(draftState, `values.${contextID}.order`)
@@ -108,6 +108,12 @@ export const variablesReducer = (
 
         const originalIndex = newOrder.findIndex(id => id === originalId)
         const newIndex = newOrder.findIndex(id => id === newId)
+
+        if (originalIndex === -1 || newIndex === -1) {
+          return console.error(
+            'Unable to find variables by ID in variables list'
+          )
+        }
 
         newOrder[originalIndex] = newId
         newOrder[newIndex] = originalId

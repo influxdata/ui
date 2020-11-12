@@ -60,23 +60,28 @@ const makeGraphSnapshot = (() => {
       name,
       shouldBeSameAs: ({name: nameOther}, same = true, part = 'both') => {
         const assert = (str: any, str2: any, same: boolean) => {
-          if (same) expect(str).to.eq(str2)
-          else expect(str).to.not.eq(str2)
+          if (same) {
+            expect(str).to.eq(str2)
+          } else {
+            expect(str).to.not.eq(str2)
+          }
         }
 
-        if (part === 'both' || part === 'axes')
+        if (part === 'both' || part === 'axes') {
           cy.get(`@${getNameAxes(name)}`).then(axes => {
             cy.get(`@${getNameAxes(nameOther)}`).then(axesOther => {
               assert(axes, axesOther, same)
             })
           })
+        }
 
-        if (part === 'both' || part === 'layer')
+        if (part === 'both' || part === 'layer') {
           cy.get(`@${getNameLayer(name)}`).then(layer => {
             cy.get(`@${getNameLayer(nameOther)}`).then(layerOther => {
               assert(layer, layerOther, same)
             })
           })
+        }
       },
     }
   }
@@ -1041,7 +1046,7 @@ describe('DataExplorer', () => {
       makeGraphSnapshot().shouldBeSameAs(snapshot, false)
     })
 
-    //skip until the auto-refresh feature is added back
+    // skip until the auto-refresh feature is added back
     it.skip('auto refresh', () => {
       const snapshot = makeGraphSnapshot()
       cy.getByTestID('autorefresh-dropdown--button').click()
@@ -1187,7 +1192,9 @@ describe('DataExplorer', () => {
       ) => {
         const checkAndType = (target: string, text: string | undefined) => {
           cy.getByTestID(target).clear()
-          if (text) cy.getByTestID(target).type(text)
+          if (text) {
+            cy.getByTestID(target).type(text)
+          }
         }
         const {offset, taskName, time} = texts
 

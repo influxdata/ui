@@ -72,11 +72,10 @@ const FlowPanelHeader: FC<HeaderProps> = ({
   }, [index, canBeMovedDown, flow.data])
 
   const title = PIPE_DEFINITIONS[flow.data.get(id).type] ? (
-        <FlowPanelTitle id={id} />
+    <FlowPanelTitle id={id} />
   ) : (
-      <div className="flow-panel--editable-title">Error</div>
+    <div className="flow-panel--editable-title">Error</div>
   )
-
 
   const remove = useCallback(() => removePipe(), [removePipe, id])
   return (
@@ -84,13 +83,13 @@ const FlowPanelHeader: FC<HeaderProps> = ({
       <div className="flow-panel--node-wrapper">
         <div className="flow-panel--node" />
       </div>
-        <FlexBox
+      <FlexBox
         className="flow-panel--header-left"
         alignItems={AlignItems.Center}
         margin={ComponentSize.Small}
         justifyContent={JustifyContent.FlexStart}
       >
-            { title }
+        {title}
       </FlexBox>
       {!flow.readOnly && (
         <FlexBox
@@ -155,9 +154,11 @@ const FlowPanel: FC<Props> = ({id, children, controls, persistentControl}) => {
     updatePanelFocus(false)
   }
 
-  const showResults = PIPE_DEFINITIONS[flow.data.get(id).type] && ['inputs', 'transform'].includes(
-    PIPE_DEFINITIONS[flow.data.get(id).type].family
-  )
+  const showResults =
+    PIPE_DEFINITIONS[flow.data.get(id).type] &&
+    ['inputs', 'transform'].includes(
+      PIPE_DEFINITIONS[flow.data.get(id).type].family
+    )
 
   if (
     flow.readOnly &&

@@ -4,7 +4,7 @@ import {FUNCTIONS} from 'src/timeMachine/constants/queryBuilder'
 
 export default register => {
   register({
-    type: 'queryBuilder',
+    type: 'metricSelector',
     family: 'inputs',
     priority: 1,
     component: View,
@@ -20,12 +20,12 @@ export default register => {
       if (!bucket) {
         return
       }
-      let text = `from(bucket: "${bucket.name}")|>range(start: v.timeRangeStart, stop: v.timeRangeStop)`
+      let text = `from(bucket: "${bucket.name}") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)`
       if (measurement) {
-        text += `|> filter(fn: (r) => r["_measurement"] == "${measurement}")`
+        text += ` |> filter(fn: (r) => r["_measurement"] == "${measurement}")`
       }
       if (field) {
-        text += `|> filter(fn: (r) => r["_field"] == "${field}")`
+        text += ` |> filter(fn: (r) => r["_field"] == "${field}")`
       }
       if (tags && Object.keys(tags)?.length > 0) {
         Object.keys(tags)
@@ -33,11 +33,11 @@ export default register => {
           .forEach((tagName: string) => {
             const tagValues = tags[tagName]
             if (tagValues.length === 1) {
-              text += `|> filter(fn: (r) => r["${tagName}"] == "${tagValues[0]}")`
+              text += ` |> filter(fn: (r) => r["${tagName}"] == "${tagValues[0]}")`
             } else {
               tagValues.forEach((val, i) => {
                 if (i === 0) {
-                  text += `|> filter(fn: (r) => r["${tagName}"] == "${val}"`
+                  text += ` |> filter(fn: (r) => r["${tagName}"] == "${val}"`
                 }
                 if (tagValues.length - 1 === i) {
                   text += ` or r["${tagName}"] == "${val}")`

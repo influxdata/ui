@@ -127,9 +127,9 @@ export const FlowListProvider: FC = ({children}) => {
             {
               title: 'Select a Metric',
               visible: true,
-              type: 'queryBuilder',
+              type: 'metricSelector',
               ...JSON.parse(
-                JSON.stringify(PIPE_DEFINITIONS['queryBuilder'].initial)
+                JSON.stringify(PIPE_DEFINITIONS['metricSelector'].initial)
               ),
             },
             {

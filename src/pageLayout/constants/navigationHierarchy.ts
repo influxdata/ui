@@ -117,7 +117,7 @@ export const generateNavItems = (orgID: string): NavItem[] => {
       shortLabel: PROJECT_NAME_PLURAL,
       link: {
         type: 'link',
-        location: `${orgPrefix}/${PROJECT_NAME_PLURAL.toLowerCase()}`
+        location: `${orgPrefix}/${PROJECT_NAME_PLURAL.toLowerCase()}`,
       },
       activeKeywords: [PROJECT_NAME_PLURAL.toLowerCase()],
     },

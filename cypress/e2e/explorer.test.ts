@@ -650,7 +650,7 @@ describe('DataExplorer', () => {
     })
 
     const numLines = 360
-    describe.only(`visualize with ${numLines} lines`, () => {
+    describe(`visualize with ${numLines} lines`, () => {
       beforeEach(() => {
         // POST 360 lines to the server
         cy.writeData(lines(numLines))

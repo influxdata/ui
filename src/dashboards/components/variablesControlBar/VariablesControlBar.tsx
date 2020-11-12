@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useRef, useEffect} from 'react'
-import {useSelector, useDispatch} from 'react-redux'
+import {useSelector} from 'react-redux'
 
 // Components
 import {
@@ -8,7 +8,6 @@ import {
   TechnoSpinner,
   SpinnerContainer,
 } from '@influxdata/clockface'
-import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import Toolbar from 'src/shared/components/toolbar/Toolbar'
 
 // Utils
@@ -18,20 +17,15 @@ import {
   getVariablesForDashboard,
 } from 'src/variables/selectors'
 
-// Actions
-import {moveVariable} from 'src/variables/actions/thunks'
-
 // Types
 import {ComponentSize} from '@influxdata/clockface'
 
 // Decorators
 import {RemoteDataState} from 'src/types'
-import DraggableDropdown from 'src/dashboards/components/variablesControlBar/DraggableDropdown'
-import withDragDropContext from 'src/shared/decorators/withDragDropContext'
+import VariablesControlBarList from 'src/dashboards/components/variablesControlBar/VariablesControlBarList'
 
 const VariablesControlBar: FC = () => {
   const initialLoadingState = useRef<RemoteDataState>(RemoteDataState.Loading)
-  const dispatch = useDispatch()
   const variables = useSelector(getVariablesForDashboard)
   const variablesStatus = useSelector(getDashboardVariablesStatus)
   const isVisible = useSelector(getControlBarVisibility)
@@ -49,13 +43,6 @@ const VariablesControlBar: FC = () => {
     return null
   }
 
-  const handleMoveDropdown = (
-    originalIndex: number,
-    newIndex: number
-  ): void => {
-    dispatch(moveVariable(originalIndex, newIndex))
-  }
-
   let toolbarContents = (
     <EmptyState size={ComponentSize.ExtraSmall}>
       <EmptyState.Text className="margin-zero">
@@ -71,23 +58,7 @@ const VariablesControlBar: FC = () => {
   )
 
   if (variables.length) {
-    toolbarContents = (
-      <div className="variables-control-bar--grid">
-        {variables.map((v, i) => (
-          <ErrorBoundary key={v.id}>
-            <DraggableDropdown
-              name={v.name}
-              id={v.id}
-              index={i}
-              moveDropdown={handleMoveDropdown}
-            />
-          </ErrorBoundary>
-        ))}
-        {variablesStatus === RemoteDataState.Loading && (
-          <TechnoSpinner diameterPixels={18} />
-        )}
-      </div>
-    )
+    toolbarContents = <VariablesControlBarList variables={variables} />
   }
 
   return (
@@ -103,4 +74,4 @@ const VariablesControlBar: FC = () => {
   )
 }
 
-export default withDragDropContext(VariablesControlBar)
+export default VariablesControlBar

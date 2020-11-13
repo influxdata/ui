@@ -92,11 +92,7 @@ export const variablesReducer = (
       }
 
       case MOVE_VARIABLE: {
-        const {originalId, newId, contextID} = action
-        // newOrder sometimes contains a stale list of variables
-        // This means we cannot rely on the indexes
-        // passed up from the drag interaction and instead are using
-        // id to determine index within this scope
+        const {originalIndex, newIndex, contextID} = action
         let newOrder = get(draftState, `values.${contextID}.order`)
 
         // if no order, take it from allIDs
@@ -106,17 +102,10 @@ export const variablesReducer = (
 
         newOrder = newOrder.slice(0)
 
-        const originalIndex = newOrder.findIndex(id => id === originalId)
-        const newIndex = newOrder.findIndex(id => id === newId)
-
-        if (originalIndex === -1 || newIndex === -1) {
-          return console.error(
-            'Unable to find variables by ID in variables list'
-          )
-        }
-
-        newOrder[originalIndex] = newId
-        newOrder[newIndex] = originalId
+        // Pull out variable and insert at new location
+        const variable = newOrder[originalIndex]
+        newOrder.splice(originalIndex, 1)
+        newOrder.splice(newIndex, 0, variable)
 
         draftState.values[contextID] = {
           ...(draftState.values[contextID] || {

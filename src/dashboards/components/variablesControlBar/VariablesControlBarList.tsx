@@ -37,10 +37,7 @@ const VariablesControlBarList: FC<Props> = ({variables}) => {
       return
     }
 
-    const sourceID = variables[source.index].id
-    const destinationID = variables[destination.index].id
-
-    dispatch(moveVariable(sourceID, destinationID))
+    dispatch(moveVariable(source.index, destination.index))
   }
 
   const getGridClassName = (isDraggingOver: boolean): CSSProperties =>

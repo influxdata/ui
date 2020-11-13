@@ -558,7 +558,7 @@ describe('DataExplorer', () => {
         })
 
       cy.getByTestID('save-query-as').click()
-      cy.getByTestID('task--radio-button').click()
+      cy.get('[id="task"]').click()
       cy.getByTestID('task-form-name').type(taskName)
       cy.getByTestID('task-form-schedule-input').type('4h')
       cy.getByTestID('task-form-save').click()
@@ -1084,11 +1084,11 @@ describe('DataExplorer', () => {
       cy.getByTestID('overlay--container').should('be.visible')
 
       // test all tabs
-      cy.getByTestID('task--radio-button').click()
+      cy.get('[id="task"]').click()
       cy.getByTestID('task-form-name').should('be.visible')
-      cy.getByTestID('variable-radio-button').click()
+      cy.get('[id="variable"]').click()
       cy.getByTestID('flux-editor').should('be.visible')
-      cy.getByTestID('cell-radio-button').click()
+      cy.get('[id="dashboard"]').click()
       cy.getByTestID('save-as-dashboard-cell--dropdown').should('be.visible')
 
       // close save as
@@ -1116,7 +1116,7 @@ describe('DataExplorer', () => {
         cy.getByTestID(`selector-list m`).click()
         cy.getByTestID(`time-machine-submit-button`).click()
         cy.getByTestID('save-query-as').click()
-        cy.getByTestID('cell-radio-button').click()
+        cy.get('[id="dashboard"]').click()
       })
 
       it('can save as cell into multiple dashboards', () => {
@@ -1221,7 +1221,7 @@ describe('DataExplorer', () => {
         cy.getByTestID('nav-item-data-explorer').click({force: true})
         cy.getByTestID(`selector-list m`).click()
         cy.getByTestID('save-query-as').click({force: true})
-        cy.getByTestID('task--radio-button').click()
+        cy.get('[id="task"]').click()
       })
 
       // TODO: enable when problem with switching cron/every is fixed
@@ -1304,7 +1304,7 @@ describe('DataExplorer', () => {
         cy.getByTestID('nav-item-data-explorer').click({force: true})
         cy.getByTestID(`selector-list m`).click()
         cy.getByTestID('save-query-as').click({force: true})
-        cy.getByTestID('variable-radio-button').click()
+        cy.get('[id="variable"]').click()
       })
 
       it('can save and enable/disable submit button', () => {

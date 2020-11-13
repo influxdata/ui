@@ -100,29 +100,29 @@ describe('navigation', () => {
   it('can navigate in tabs of data page', () => {
     cy.getByTestID('nav-item-load-data').click()
 
-    // buckets tab
-    cy.getByTestID('tabs--tab')
-      .contains('Buckets')
-      .click()
-    cy.url().should('contain', 'buckets')
+    cy.getByTestID('tabs').within(() => {
+      // buckets tab
+      cy.get('[id="buckets"]').click()
+      cy.url().should('contain', 'buckets')
+    })
 
-    // telegraf tab
-    cy.getByTestID('tabs--tab')
-      .contains('Telegraf')
-      .click()
-    cy.url().should('contain', 'telegraf')
+    cy.getByTestID('tabs').within(() => {
+      // telegraf tab
+      cy.get('[id="telegrafs"]').click()
+      cy.url().should('contain', 'telegraf')
+    })
 
-    // tokens tab
-    cy.getByTestID('tabs--tab')
-      .contains('Tokens')
-      .click()
-    cy.url().should('contain', 'tokens')
+    cy.getByTestID('tabs').within(() => {
+      // tokens tab
+      cy.get('[id="tokens"]').click()
+      cy.url().should('contain', 'tokens')
+    })
 
-    // sources tab
-    cy.getByTestID('tabs--tab')
-      .contains('Sources')
-      .click()
-    cy.url().should('contain', 'sources')
+    cy.getByTestID('tabs').within(() => {
+      // sources tab
+      cy.get('[id="sources"]').click()
+      cy.url().should('contain', 'sources')
+    })
   })
 
   const exploreTabs = (tabs: string[]) => {

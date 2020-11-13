@@ -29,17 +29,15 @@ export const getHumanReadableName = (type: string): string => {
   ++GENERATOR_INDEX
 
   switch (type) {
-    case 'data':
-      return `Bucket ${GENERATOR_INDEX}`
-    case 'queryBuilder':
+    case 'metricSelector':
       return `Metric Selector ${GENERATOR_INDEX}`
     case 'visualization':
       return `Visualization ${GENERATOR_INDEX}`
     case 'markdown':
       return `Markdown ${GENERATOR_INDEX}`
-    case 'query':
+    case 'rawFluxEditor':
       return `Flux Script ${GENERATOR_INDEX}`
-    case 'bucket':
+    case 'toBucket':
       return `Output to Bucket ${GENERATOR_INDEX}`
     default:
       return `Cell ${GENERATOR_INDEX}`

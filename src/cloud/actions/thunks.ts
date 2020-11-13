@@ -29,9 +29,11 @@ import {DemoDataTemplates} from 'src/cloud/constants'
 
 // utils
 import {getErrorMessage} from 'src/utils/api'
+import {getDemoDataSuccessButton} from 'src/shared/components/notifications/NotificationButtons'
 
 // types
 import {DemoBucket, GetState, RemoteDataState} from 'src/types'
+import {NotificationButtonElement} from 'src/types/notifications'
 
 export const getDemoDataBuckets = () => async (
   dispatch,
@@ -96,9 +98,13 @@ export const getDemoDataBucketMembership = ({
 
     const createdDashboard = await createDashboardFromTemplate(template, orgID)
 
-    const url = `/orgs/${orgID}/dashboards/${createdDashboard.id}`
+    const buttonElement: NotificationButtonElement = onDismiss =>
+      getDemoDataSuccessButton(
+        `/orgs/${orgID}/dashboards/${createdDashboard.id}`,
+        onDismiss
+      )
 
-    dispatch(notify(demoDataSucceeded(bucketName, url)))
+    dispatch(notify(demoDataSucceeded(bucketName, buttonElement)))
 
     event('demoData_bucketAdded', {demo_dataset: bucketName})
   } catch (error) {
@@ -130,7 +136,9 @@ export const deleteDemoDataBucketMembership = (
     dispatch(removeBucket(bucket.id))
     event('demoData_bucketDeleted', {demo_dataset: bucket.name})
   } catch (error) {
-    dispatch(notify(demoDataDeleteBucketFailed(bucket.name, error)))
+    const errorMessage = getErrorMessage(error)
+
+    dispatch(notify(demoDataDeleteBucketFailed(bucket.name, errorMessage)))
 
     reportErrorThroughHoneyBadger(error, {
       name: 'deleteDemoDataBucket failed in deleteDemoDataBucketMembership',

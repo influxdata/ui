@@ -8,7 +8,7 @@ export enum ExportToDashboard {
   Update = 'update',
 }
 
-export interface DashboardOverlayContext {
+interface ContextType {
   activeTab: ExportToDashboard
   canSubmit: () => boolean
   handleSetActiveTab: (tab: ExportToDashboard) => void
@@ -22,7 +22,7 @@ export interface DashboardOverlayContext {
   dashboardName: string
 }
 
-export const DEFAULT_CONTEXT: DashboardOverlayContext = {
+const DEFAULT_CONTEXT: ContextType = {
   activeTab: ExportToDashboard.Create,
   canSubmit: () => false,
   handleSetActiveTab: () => {},
@@ -36,13 +36,11 @@ export const DEFAULT_CONTEXT: DashboardOverlayContext = {
   dashboardName: '',
 }
 
-export const DashboardOverlayContext = React.createContext<
-  DashboardOverlayContext
->(DEFAULT_CONTEXT)
+export const Context = React.createContext<ContextType>(DEFAULT_CONTEXT)
 
 export const CREATE_CELL = 'CREATE_CELL'
 
-const DashboardOverlayProvider: FC = ({children}) => {
+export const Provider: FC = ({children}) => {
   const [activeTab, setActiveTab] = useState(ExportToDashboard.Create)
   const [selectedDashboard, setDashboard] = useState<Dashboard>(undefined)
   const [selectedCell, setCell] = useState<View>(undefined)
@@ -101,7 +99,7 @@ const DashboardOverlayProvider: FC = ({children}) => {
   }, [activeTab, dashboardName, cellName, selectedCell, selectedDashboard])
 
   return (
-    <DashboardOverlayContext.Provider
+    <Context.Provider
       value={{
         activeTab,
         canSubmit,
@@ -117,8 +115,6 @@ const DashboardOverlayProvider: FC = ({children}) => {
       }}
     >
       {children}
-    </DashboardOverlayContext.Provider>
+    </Context.Provider>
   )
 }
-
-export default DashboardOverlayProvider

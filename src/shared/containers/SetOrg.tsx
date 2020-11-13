@@ -12,7 +12,7 @@ import TaskEditPage from 'src/tasks/containers/TaskEditPage'
 import DataExplorerPage from 'src/dataExplorer/components/DataExplorerPage'
 import DashboardsIndex from 'src/dashboards/components/dashboard_index/DashboardsIndex'
 import DashboardContainer from 'src/dashboards/components/DashboardContainer'
-import Flow from 'src/flows/components/Flow'
+import FlowPage from 'src/flows/components/FlowPage'
 import BucketsIndex from 'src/buckets/containers/BucketsIndex'
 import TokensIndex from 'src/authorizations/containers/TokensIndex'
 import TelegrafsPage from 'src/telegrafs/containers/TelegrafsPage'
@@ -148,7 +148,7 @@ const SetOrg: FC<Props> = ({
 
         {/* Flows  */}
         {isFlagEnabled('notebooks') && (
-          <Route path={`${orgPath}/flows/:id`} component={Flow} />
+          <Route path={`${orgPath}/flows/:id`} component={FlowPage} />
         )}
 
         {isFlagEnabled('notebooks') && (

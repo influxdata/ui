@@ -1,23 +1,16 @@
-import React, {PureComponent} from 'react'
-import {Link} from 'react-router-dom'
-import {connect, ConnectedProps} from 'react-redux'
+import React, {FC} from 'react'
+import {useSelector, useDispatch} from 'react-redux'
 import {get} from 'lodash'
-import {
-  Button,
-  ComponentSize,
-  Gradients,
-  Notification,
-} from '@influxdata/clockface'
+import {ComponentSize, Gradients, Notification} from '@influxdata/clockface'
 
 // Utils
-import {setFunctions} from 'src/timeMachine/actions/queryBuilder'
-import {dismissNotification as dismissNotificationAction} from 'src/shared/actions/notifications'
+import {dismissNotification} from 'src/shared/actions/notifications'
 
 // Types
-import {AppState, NotificationStyle} from 'src/types'
+import {NotificationStyle} from 'src/types'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps
+// Selectors
+import {getNotifications} from 'src/shared/selectors/notifications'
 
 const matchGradientToColor = (style: NotificationStyle): Gradients => {
   const converter = {
@@ -30,85 +23,40 @@ const matchGradientToColor = (style: NotificationStyle): Gradients => {
   return get(converter, style, Gradients.DefaultLight)
 }
 
-class Notifications extends PureComponent<Props> {
-  public static defaultProps = {
-    notifications: [],
-  }
+const Notifications: FC = () => {
+  const notifications = useSelector(getNotifications)
+  const dispatch = useDispatch()
 
-  public render() {
-    const {notifications} = this.props
+  return (
+    <>
+      {notifications.map(
+        ({duration, icon, id, message, style, buttonElement}) => {
+          const gradient = matchGradientToColor(style)
 
-    return (
-      <>
-        {notifications.map(
-          ({
-            aggregateType,
-            duration,
-            icon,
-            id,
-            link,
-            linkText,
-            message,
-            style,
-          }) => {
-            const gradient = matchGradientToColor(style)
-
-            let button
-
-            if (link && linkText) {
-              button = (
-                <Link
-                  to={link}
-                  className="notification--button cf-button cf-button-xs cf-button-default"
-                >
-                  {linkText}
-                </Link>
-              )
-            }
-
-            if (aggregateType) {
-              const handleClick = () => {
-                this.props.onSetFunctions(['last'])
-                this.props.dismissNotification(id)
-              }
-
-              button = (
-                <Button text="Update Aggregate Type" onClick={handleClick} />
-              )
-            }
-
-            return (
-              <Notification
-                key={id}
-                id={id}
-                icon={icon}
-                duration={duration}
-                size={ComponentSize.ExtraSmall}
-                gradient={gradient}
-                onTimeout={this.props.dismissNotification}
-                onDismiss={this.props.dismissNotification}
-                testID={`notification-${style}`}
-              >
-                <span className="notification--message">{message}</span>
-                {button}
-              </Notification>
-            )
+          const handleDismiss = (): void => {
+            dispatch(dismissNotification(id))
           }
-        )}
-      </>
-    )
-  }
+
+          return (
+            <Notification
+              key={id}
+              id={id}
+              icon={icon}
+              duration={duration}
+              size={ComponentSize.ExtraSmall}
+              gradient={gradient}
+              onTimeout={handleDismiss}
+              onDismiss={handleDismiss}
+              testID={`notification-${style}`}
+            >
+              <span className="notification--message">{message}</span>
+              {buttonElement && buttonElement(handleDismiss)}
+            </Notification>
+          )
+        }
+      )}
+    </>
+  )
 }
 
-const mstp = ({notifications}: AppState) => ({
-  notifications,
-})
-
-const mdtp = {
-  dismissNotification: dismissNotificationAction,
-  onSetFunctions: setFunctions,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(Notifications)
+export default Notifications

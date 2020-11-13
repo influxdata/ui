@@ -1,6 +1,5 @@
 import React, {FC, useContext} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {RouteProps, useHistory, useLocation} from 'react-router-dom'
 import {
   Button,
   ButtonType,
@@ -11,9 +10,10 @@ import {
 } from '@influxdata/clockface'
 import {
   ExportToDashboard,
-  DashboardOverlayContext,
+  Context,
   CREATE_CELL,
-} from 'src/flows/context/dashboardOverlay'
+} from 'src/flows/pipes/Visualization/ExportDashboardOverlay/context'
+import {PopupContext} from 'src/flows/context/popup'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -45,7 +45,6 @@ const ExportConfirmationNotification = (
 }
 
 const ExportDashboardButtons: FC = () => {
-  const history = useHistory()
   const {
     activeTab,
     canSubmit,
@@ -53,23 +52,21 @@ const ExportDashboardButtons: FC = () => {
     selectedDashboard,
     cellName,
     dashboardName,
-  } = useContext(DashboardOverlayContext)
+  } = useContext(Context)
+  const {data, closeFn} = useContext(PopupContext)
 
-  const location: RouteProps['location'] = useLocation()
-  const params = location.state
-  const {queryText, properties} = params[0]
-
-  const formattedQueryText = formatQueryText(queryText)
+  const formattedQueryText = formatQueryText(data.query)
 
   const dispatch = useDispatch()
   const org = useSelector(getOrg)
 
   const onCreate = () => {
     event('Save Visualization to Dashboard')
+
     const view = {
       name: cellName || DEFAULT_CELL_NAME,
       properties: {
-        ...properties,
+        ...data.properties,
         queries: [
           {
             text: formattedQueryText,
@@ -79,6 +76,7 @@ const ExportDashboardButtons: FC = () => {
         ],
       },
     } as View
+
     if (activeTab === ExportToDashboard.Update) {
       dispatch(createCellWithView(selectedDashboard.id, view))
       dispatch(notify(ExportConfirmationNotification(selectedDashboard.name)))
@@ -92,15 +90,17 @@ const ExportDashboardButtons: FC = () => {
       )
       dispatch(notify(ExportConfirmationNotification(dashboardName)))
     }
-    history.goBack()
+
+    closeFn()
   }
 
   const onUpdate = () => {
     event('Update Visualization to Dashboard')
+
     const view = {
       name: selectedCell?.name || DEFAULT_CELL_NAME, // TODO: fix this to handle overwriting or creating one
       properties: {
-        ...properties,
+        ...data.properties,
         queries: [
           {
             text: formattedQueryText,
@@ -113,10 +113,12 @@ const ExportDashboardButtons: FC = () => {
 
     updateView(selectedDashboard.id, selectedCell.id, view)
     notify(ExportConfirmationNotification(selectedDashboard.name))
-    history.goBack()
+
+    closeFn()
   }
 
   let onSubmit = onCreate
+
   if (
     activeTab === ExportToDashboard.Update &&
     selectedCell?.id !== CREATE_CELL
@@ -128,7 +130,7 @@ const ExportDashboardButtons: FC = () => {
     <Form.Footer>
       <Button
         text="Cancel"
-        onClick={() => history.goBack()}
+        onClick={closeFn}
         titleText="Cancel"
         type={ButtonType.Button}
       />

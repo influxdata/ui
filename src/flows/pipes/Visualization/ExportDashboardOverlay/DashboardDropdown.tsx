@@ -6,14 +6,12 @@ import {
   TechnoSpinner,
   Dropdown,
 } from '@influxdata/clockface'
-import {DashboardOverlayContext} from 'src/flows/context/dashboardOverlay'
+import {Context} from 'src/flows/pipes/Visualization/ExportDashboardOverlay/context'
 
 import {getAllDashboards} from 'src/dashboards/selectors'
 
 const DashboardDropdown: FC = () => {
-  const {handleSetDashboard, selectedDashboard} = useContext(
-    DashboardOverlayContext
-  )
+  const {handleSetDashboard, selectedDashboard} = useContext(Context)
 
   const dashboards = useSelector(getAllDashboards)
 

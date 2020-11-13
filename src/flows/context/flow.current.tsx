@@ -24,7 +24,7 @@ export const FlowContext = React.createContext<FlowContextType>(DEFAULT_CONTEXT)
 
 let GENERATOR_INDEX = 0
 
-const getHumanReadableName = (type: string): string => {
+export const getHumanReadableName = (type: string): string => {
   ++GENERATOR_INDEX
 
   switch (type) {

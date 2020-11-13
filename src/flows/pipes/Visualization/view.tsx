@@ -15,7 +15,7 @@ import {
   IconFont,
   SquareButton,
 } from '@influxdata/clockface'
-import ExportButton from 'src/flows/components/panel/ExportDashboardButton'
+import ExportButton from 'src/flows/pipes/Visualization/ExportDashboardButton'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 import ViewSwitcher from 'src/shared/components/ViewSwitcher'
 import ViewTypeDropdown from 'src/shared/visualization/ViewTypeDropdown'

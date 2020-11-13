@@ -18,17 +18,10 @@ export const isDemoDataAvailabilityError = (
   return false
 }
 
-export const demoDataError = (orgID: string) => {
+export const demoDataErrorMessage = () => {
   if (isFlagEnabled('demodata')) {
-    return {
-      message:
-        'It looks like this query requires a demo data bucket to be available. You can add demodata buckets on the buckets tab',
-      linkText: 'Go to buckets',
-      link: `/orgs/${orgID}/load-data/buckets`,
-    }
+    return 'It looks like this query requires a demo data bucket to be available. You can add demodata buckets on the buckets tab'
   }
-  return {
-    message:
-      'Demo data buckets are temporarily unavailable. Please try again later.',
-  }
+
+  return 'Demo data buckets are temporarily unavailable. Please try again later.'
 }

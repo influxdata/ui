@@ -9,6 +9,7 @@ import Flow from 'src/flows/components/Flow'
 import {Page} from '@influxdata/clockface'
 import FlowHeader from 'src/flows/components/header'
 import {ResultsProvider} from 'src/flows/context/results'
+import {PROJECT_NAME_PLURAL} from 'src/flows'
 
 const FlowFromRoute = () => {
   const {id} = useParams()
@@ -29,7 +30,7 @@ const FlowContainer: FC = () => (
   <CurrentFlowProvider>
     <FlowFromRoute />
     <ResultsProvider>
-      <Page titleTag="Flows">
+      <Page titleTag={PROJECT_NAME_PLURAL}>
         <FlowHeader />
         <Page.Contents fullWidth={true} scrollable={true} className="flow-page">
           <Flow />

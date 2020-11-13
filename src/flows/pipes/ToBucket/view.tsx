@@ -8,12 +8,10 @@ import {PipeProp} from 'src/types/flows'
 import BucketProvider from 'src/flows/context/buckets'
 
 // Components
-import BucketSelector from 'src/flows/pipes/Bucket/BucketSelector'
-import ExportTaskButton from 'src/flows/pipes/Bucket/ExportTaskButton'
-// Styles
-import 'src/flows/pipes/Query/style.scss'
+import BucketSelector from 'src/flows/shared/BucketSelector'
+import ExportTaskButton from 'src/flows/pipes/ToBucket/ExportTaskButton'
 
-const BucketSource: FC<PipeProp> = ({Context}) => (
+const ToBucket: FC<PipeProp> = ({Context}) => (
   <BucketProvider>
     <Context persistentControl={<ExportTaskButton />}>
       <div className="data-source--controls">
@@ -23,4 +21,4 @@ const BucketSource: FC<PipeProp> = ({Context}) => (
   </BucketProvider>
 )
 
-export default BucketSource
+export default ToBucket

@@ -9,7 +9,7 @@ import FluxMonacoEditor from 'src/shared/components/FluxMonacoEditor'
 import {PipeContext} from 'src/flows/context/pipe'
 
 // Styles
-import 'src/flows/pipes/Query/style.scss'
+import 'src/flows/pipes/RawFluxEditor/style.scss'
 
 const Query: FC<PipeProp> = ({Context}) => {
   const {data, update} = useContext(PipeContext)

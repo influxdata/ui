@@ -61,9 +61,7 @@ class RawFluxDataTable extends PureComponent<Props, State> {
       if (isFlagEnabled('parseObjectsInCSV')) {
         parseFunction = this.parseFilesWithObjects
       }
-      if (isFlagEnabled('rawCsvFromfluxParser')) {
-        parseFunction = this.parseFilesWithFromFlux
-      }
+      parseFunction = this.parseFilesWithFromFlux
       const parsed = parseFunction(files)
       data = parsed.data
       maxColumnCount = parsed.maxColumnCount

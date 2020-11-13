@@ -135,7 +135,10 @@ export const QueryProvider: FC = ({children}) => {
           }
         }
 
-        if (PIPE_DEFINITIONS[pipe.type].generateFlux) {
+        if (
+          PIPE_DEFINITIONS[pipe.type] &&
+          PIPE_DEFINITIONS[pipe.type].generateFlux
+        ) {
           PIPE_DEFINITIONS[pipe.type].generateFlux(
             pipe,
             create,

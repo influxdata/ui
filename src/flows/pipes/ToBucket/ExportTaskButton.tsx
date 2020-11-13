@@ -10,7 +10,7 @@ import {
 import {Button} from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 import {PopupContext} from 'src/flows/context/popup'
-import ExportTaskOverlay from 'src/flows/pipes/Bucket/ExportTaskOverlay'
+import ExportTaskOverlay from 'src/flows/pipes/ToBucket/ExportTaskOverlay'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'

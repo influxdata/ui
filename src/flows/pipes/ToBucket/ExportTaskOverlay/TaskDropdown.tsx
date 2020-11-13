@@ -6,7 +6,7 @@ import {
   TechnoSpinner,
   Dropdown,
 } from '@influxdata/clockface'
-import {Context} from 'src/flows/pipes/Bucket/ExportTaskOverlay/context'
+import {Context} from 'src/flows/pipes/ToBucket/ExportTaskOverlay/context'
 import {getAllTasks as getAllTasksSelector} from 'src/resources/selectors'
 
 const TaskDropdown: FC = () => {

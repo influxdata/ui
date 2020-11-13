@@ -3,9 +3,9 @@ import React, {FC, useContext} from 'react'
 
 // Components
 import {InfluxColors, List, EmptyState} from '@influxdata/clockface'
-import MeasurementSelectors from 'src/flows/pipes/Data/MeasurementSelectors'
-import FieldSelectors from 'src/flows/pipes/Data/FieldSelectors'
-import TagSelectors from 'src/flows/pipes/Data/TagSelectors'
+import MeasurementSelectors from 'src/flows/pipes/MetricSelector/MeasurementSelectors'
+import FieldSelectors from 'src/flows/pipes/MetricSelector/FieldSelectors'
+import TagSelectors from 'src/flows/pipes/MetricSelector/TagSelectors'
 import {SchemaContext} from 'src/flows/context/schemaProvider'
 
 const Selectors: FC = () => {

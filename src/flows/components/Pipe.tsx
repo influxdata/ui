@@ -8,7 +8,7 @@ const Pipe: FC<PipeProp> = props => {
   const {data} = useContext(PipeContext)
 
   if (!PIPE_DEFINITIONS.hasOwnProperty(data.type)) {
-    throw new Error(`Pipe type [${data.type}] not registered`)
+    return createElement(PIPE_DEFINITIONS['missing'].component, props)
   }
 
   return createElement(PIPE_DEFINITIONS[data.type].component, props)

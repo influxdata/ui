@@ -1,9 +1,8 @@
 import View from './view'
-import '../Data/style.scss'
 
 export default register => {
   register({
-    type: 'bucket',
+    type: 'toBucket',
     family: 'output',
     priority: 1,
     component: View,

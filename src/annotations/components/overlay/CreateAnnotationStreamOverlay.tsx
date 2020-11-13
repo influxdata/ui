@@ -28,8 +28,8 @@ const DEFAULT_FLOW = JSON.stringify({
     {
       title: 'Select a Metric',
       visible: true,
-      type: 'queryBuilder',
-      ...JSON.parse(JSON.stringify(PIPE_DEFINITIONS['queryBuilder'].initial)),
+      type: 'metricSelector',
+      ...JSON.parse(JSON.stringify(PIPE_DEFINITIONS['metricSelector'].initial)),
     },
     {
       title: 'Visualize the Result',

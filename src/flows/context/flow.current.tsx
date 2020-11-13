@@ -3,6 +3,7 @@ import {Flow, PipeData} from 'src/types/flows'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import {v4 as UUID} from 'uuid'
 import {RemoteDataState} from 'src/types'
+import {PROJECT_NAME} from 'src/flows'
 
 export interface FlowContextType {
   id: string | null
@@ -14,7 +15,7 @@ export interface FlowContextType {
 
 export const DEFAULT_CONTEXT: FlowContextType = {
   id: null,
-  name: 'Name this Flow',
+  name: `Name this ${PROJECT_NAME}`,
   flow: null,
   add: () => '',
   update: () => {},
@@ -28,17 +29,15 @@ export const getHumanReadableName = (type: string): string => {
   ++GENERATOR_INDEX
 
   switch (type) {
-    case 'data':
-      return `Bucket ${GENERATOR_INDEX}`
-    case 'queryBuilder':
+    case 'metricSelector':
       return `Metric Selector ${GENERATOR_INDEX}`
     case 'visualization':
       return `Visualization ${GENERATOR_INDEX}`
     case 'markdown':
       return `Markdown ${GENERATOR_INDEX}`
-    case 'query':
+    case 'rawFluxEditor':
       return `Flux Script ${GENERATOR_INDEX}`
-    case 'bucket':
+    case 'toBucket':
       return `Output to Bucket ${GENERATOR_INDEX}`
     default:
       return `Cell ${GENERATOR_INDEX}`

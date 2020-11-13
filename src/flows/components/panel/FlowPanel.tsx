@@ -71,6 +71,12 @@ const FlowPanelHeader: FC<HeaderProps> = ({
     }
   }, [index, canBeMovedDown, flow.data])
 
+  const title = PIPE_DEFINITIONS[flow.data.get(id).type] ? (
+    <FlowPanelTitle id={id} />
+  ) : (
+    <div className="flow-panel--editable-title">Error</div>
+  )
+
   const remove = useCallback(() => removePipe(), [removePipe, id])
   return (
     <div className="flow-panel--header">
@@ -83,7 +89,7 @@ const FlowPanelHeader: FC<HeaderProps> = ({
         margin={ComponentSize.Small}
         justifyContent={JustifyContent.FlexStart}
       >
-        <FlowPanelTitle id={id} />
+        {title}
       </FlexBox>
       {!flow.readOnly && (
         <FlexBox
@@ -148,9 +154,11 @@ const FlowPanel: FC<Props> = ({id, children, controls, persistentControl}) => {
     updatePanelFocus(false)
   }
 
-  const showResults = ['inputs', 'transform'].includes(
-    PIPE_DEFINITIONS[flow.data.get(id).type].family
-  )
+  const showResults =
+    PIPE_DEFINITIONS[flow.data.get(id).type] &&
+    ['inputs', 'transform'].includes(
+      PIPE_DEFINITIONS[flow.data.get(id).type].family
+    )
 
   if (
     flow.readOnly &&

@@ -2,11 +2,16 @@
 import React, {FC, useContext} from 'react'
 
 // Components
-import ExportTaskButtons from './ExportTaskButtons'
-import UpdateTaskBody from './UpdateTaskBody'
-import CreateTaskBody from './CreateTaskBody'
-import {Provider, Context, ExportAsTask} from './context'
+import ExportTaskButtons from 'src/flows/pipes/ToBucket/ExportTaskOverlay/ExportTaskButtons'
+import UpdateTaskBody from 'src/flows/pipes/ToBucket/ExportTaskOverlay/UpdateTaskBody'
+import CreateTaskBody from 'src/flows/pipes/ToBucket/ExportTaskOverlay/CreateTaskBody'
+import {
+  Provider,
+  Context,
+  ExportAsTask,
+} from 'src/flows/pipes/ToBucket/ExportTaskOverlay/context'
 import {PopupContext} from 'src/flows/context/popup'
+
 import {
   Form,
   Grid,

@@ -12,6 +12,7 @@ import ResultsPagination from 'src/flows/components/panel/ResultsPagination'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {PipeContext} from 'src/flows/context/pipe'
 import {MINIMUM_RESIZER_HEIGHT} from 'src/flows/shared/Resizer'
+import {PROJECT_NAME} from 'src/flows'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -66,7 +67,7 @@ const Results: FC = () => {
 
   let emptyText
   if (meta.loading === RemoteDataState.NotStarted) {
-    emptyText = 'Run the Flow to See Results'
+    emptyText = `Run the ${PROJECT_NAME} to See Results`
   } else if (meta.loading === RemoteDataState.Loading) {
     emptyText = 'Loading'
   } else {

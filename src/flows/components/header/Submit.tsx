@@ -21,6 +21,7 @@ import {QueryContext} from 'src/flows/context/query'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {ResultsContext} from 'src/flows/context/results'
 import {notify} from 'src/shared/actions/notifications'
+import {PIPE_DEFINITIONS} from 'src/flows'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -43,8 +44,9 @@ export const Submit: FC = () => {
 
   const hasQueries = useMemo(() => {
     return !!flow.data.all
-      .map(p => p.type)
-      .filter(p => p === 'query' || p === 'queryBuilder').length
+      .map(p => PIPE_DEFINITIONS[p.type])
+      .filter(p => p && (p.family === 'transform' || p.family === 'inputs'))
+      .length
   }, [flow.data])
 
   useEffect(() => {

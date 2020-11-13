@@ -5,7 +5,7 @@ const COMMENT_REMOVER = /(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm
 
 export default register => {
   register({
-    type: 'query',
+    type: 'rawFluxEditor',
     family: 'transform',
     priority: 1,
     component: View,
@@ -15,7 +15,7 @@ export default register => {
       queries: [
         {
           text:
-            '// Write Flux script here\n// use __PREVIOUS_RESULT__ to continue building from the previous cell',
+            '// Use __PREVIOUS_RESULT__ to continue building from the previous cell\n// Write Flux script here',
           editMode: 'advanced',
           builderConfig: {
             buckets: [],

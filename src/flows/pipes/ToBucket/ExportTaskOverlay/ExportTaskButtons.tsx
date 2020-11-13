@@ -10,7 +10,7 @@ import {
 import {
   ExportAsTask,
   Context,
-} from 'src/flows/pipes/Bucket/ExportTaskOverlay/context'
+} from 'src/flows/pipes/ToBucket/ExportTaskOverlay/context'
 import {PopupContext} from 'src/flows/context/popup'
 
 // Utils
@@ -39,6 +39,7 @@ const ExportTaskButtons: FC = () => {
       return
     }
     event('Save Flow as Task')
+
     const taskOption: string = `option task = { \n  name: "${taskName}",\n  every: ${interval},\n  offset: 0s\n}`
     const variable: string = `option v = {\n  timeRangeStart: -${interval},\n  timeRangeStop: now()\n}`
     const preamble = `${variable}\n\n${taskOption}`

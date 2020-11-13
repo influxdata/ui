@@ -5,17 +5,14 @@ import {PipeProp} from 'src/types/flows'
 
 // Contexts
 import BucketProvider from 'src/flows/context/buckets'
+import {SchemaProvider} from 'src/flows/context/schemaProvider'
 
 // Components
-import AggregateWindowSelector from 'src/flows/pipes/Data/AggregateWindowSelector'
-import BucketSelector from 'src/flows/pipes/Bucket/BucketSelector'
-import FieldsList from 'src/flows/pipes/Data/FieldsList'
-import SearchBar from 'src/flows/pipes/Data/SearchBar'
-
-// Styles
-import 'src/flows/pipes/Query/style.scss'
-import {SchemaProvider} from 'src/flows/context/schemaProvider'
-import FilterTags from './FilterTags'
+import AggregateWindowSelector from 'src/flows/pipes/MetricSelector/AggregateWindowSelector'
+import BucketSelector from 'src/flows/shared/BucketSelector'
+import FieldsList from 'src/flows/pipes/MetricSelector/FieldsList'
+import FilterTags from 'src/flows/pipes/MetricSelector/FilterTags'
+import SearchBar from 'src/flows/pipes/MetricSelector/SearchBar'
 
 const DataSource: FC<PipeProp> = ({Context}) => (
   <BucketProvider>

@@ -10,6 +10,7 @@ import {
   ComponentSize,
 } from '@influxdata/clockface'
 import {FlowListContext} from 'src/flows/context/flow.list'
+import {PROJECT_NAME} from 'src/flows'
 
 interface Props {
   id: string
@@ -31,7 +32,7 @@ const FlowContextMenu: FC<Props> = ({id, name}) => {
       size={ComponentSize.ExtraSmall}
       color={ComponentColor.Danger}
       confirmationButtonText="Confirm"
-      confirmationLabel="Really delete Flow?"
+      confirmationLabel={`Really delete ${PROJECT_NAME}?`}
       testID={`${name} delete-flow`}
     />
   )

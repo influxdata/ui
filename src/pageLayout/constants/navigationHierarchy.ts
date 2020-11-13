@@ -1,4 +1,5 @@
 import {IconFont} from '@influxdata/clockface'
+import {PROJECT_NAME_PLURAL} from 'src/flows'
 
 export interface NavItemLink {
   type: 'link' | 'href'
@@ -111,14 +112,14 @@ export const generateNavItems = (orgID: string): NavItem[] => {
       id: 'flows',
       testID: 'nav-item-flows',
       icon: IconFont.Erlenmeyer,
-      label: 'Flows',
+      label: PROJECT_NAME_PLURAL,
       featureFlag: 'notebooks', // TODO: update config cat, and idpe to 'flows'
-      shortLabel: 'Flows',
+      shortLabel: PROJECT_NAME_PLURAL,
       link: {
         type: 'link',
-        location: `${orgPrefix}/flows`,
+        location: `${orgPrefix}/${PROJECT_NAME_PLURAL.toLowerCase()}`,
       },
-      activeKeywords: ['flows'],
+      activeKeywords: [PROJECT_NAME_PLURAL.toLowerCase()],
     },
     {
       id: 'dashboards',

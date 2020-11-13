@@ -7,7 +7,7 @@ import {
   ComponentSize,
   RemoteDataState,
 } from '@influxdata/clockface'
-import Selectors from 'src/flows/pipes/Data/Selectors'
+import Selectors from 'src/flows/pipes/MetricSelector/Selectors'
 import {SchemaContext} from 'src/flows/context/schemaProvider'
 
 const FieldsList: FC = () => {

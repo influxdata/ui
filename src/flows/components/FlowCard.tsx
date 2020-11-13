@@ -4,6 +4,7 @@ import {useParams, useHistory} from 'react-router-dom'
 // Components
 import {ResourceCard} from '@influxdata/clockface'
 import FlowContextMenu from 'src/flows/components/FlowContextMenu'
+import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
 
 interface Props {
   id: string
@@ -15,7 +16,7 @@ const FlowCard: FC<Props> = ({id, name}) => {
   const history = useHistory()
 
   const handleClick = () => {
-    history.push(`/orgs/${orgID}/flows/${id}`)
+    history.push(`/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${id}`)
   }
 
   const contextMenu = <FlowContextMenu id={id} name={name} />
@@ -28,7 +29,7 @@ const FlowCard: FC<Props> = ({id, name}) => {
       testID={`flow-card--${name}`}
     >
       <ResourceCard.Name
-        name={name || 'Name this flow'}
+        name={name || `Name this ${PROJECT_NAME}`}
         onClick={handleClick}
       />
     </ResourceCard>

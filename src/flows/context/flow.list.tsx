@@ -14,6 +14,7 @@ import {default as _asResource} from 'src/flows/context/resource.hook'
 import {PIPE_DEFINITIONS} from 'src/flows'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
+import {PROJECT_NAME} from 'src/flows'
 
 const useFlowListState = createPersistedState('flows')
 const useFlowCurrentState = createPersistedState('current-flow')
@@ -27,7 +28,7 @@ export interface FlowListContextType extends FlowList {
 }
 
 export const EMPTY_NOTEBOOK: FlowState = {
-  name: 'Name this Flow',
+  name: `Name this ${PROJECT_NAME}`,
   range: DEFAULT_TIME_RANGE,
   refresh: AUTOREFRESH_DEFAULT,
   data: {
@@ -119,7 +120,7 @@ export const FlowListProvider: FC = ({children}) => {
     if (!flow) {
       _flow = {
         ...hydrate({
-          name: 'Name this Flow',
+          name: `Name this ${PROJECT_NAME}`,
           readOnly: false,
           range: DEFAULT_TIME_RANGE,
           refresh: AUTOREFRESH_DEFAULT,
@@ -127,9 +128,9 @@ export const FlowListProvider: FC = ({children}) => {
             {
               title: 'Select a Metric',
               visible: true,
-              type: 'queryBuilder',
+              type: 'metricSelector',
               ...JSON.parse(
-                JSON.stringify(PIPE_DEFINITIONS['queryBuilder'].initial)
+                JSON.stringify(PIPE_DEFINITIONS['metricSelector'].initial)
               ),
             },
             {
@@ -173,7 +174,7 @@ export const FlowListProvider: FC = ({children}) => {
 
   const update = (id: string, flow: Flow) => {
     if (!flows.hasOwnProperty(id)) {
-      throw new Error('Flow not found')
+      throw new Error(`${PROJECT_NAME} not found`)
     }
 
     const data = {
@@ -196,7 +197,7 @@ export const FlowListProvider: FC = ({children}) => {
   const change = useCallback(
     (id: string) => {
       if (!flows || !flows.hasOwnProperty(id)) {
-        throw new Error('Flow does note exist')
+        throw new Error(`${PROJECT_NAME} does note exist`)
       }
 
       setCurrentID(id)

@@ -14,6 +14,7 @@ import AutoRefreshDropdown from 'src/flows/components/header/AutoRefreshDropdown
 import Submit from 'src/flows/components/header/Submit'
 import PresentationMode from 'src/flows/components/header/PresentationMode'
 import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
+import {PROJECT_NAME} from 'src/flows'
 
 const FULL_WIDTH = true
 
@@ -30,7 +31,7 @@ const FlowHeader: FC = () => {
         <RenamablePageTitle
           onRename={handleRename}
           name={flow.name}
-          placeholder="Name this Flow"
+          placeholder={`Name this ${PROJECT_NAME}`}
           maxLength={50}
         />
       </Page.Header>

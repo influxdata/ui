@@ -14,7 +14,7 @@ const UserListContainer: FC = () => {
 
   return (
     <Page titleTag="Users">
-      <Page.Header fullWidth={true} testID="data-explorer--header">
+      <Page.Header fullWidth={true} testID="users-page--header">
         <Page.Title title="Organization" />
         <RateLimitAlert />
       </Page.Header>

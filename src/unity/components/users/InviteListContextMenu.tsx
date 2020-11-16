@@ -1,4 +1,4 @@
-import React, {FC, useState, useContext} from 'react'
+import React, {useState, useContext} from 'react'
 
 import {
   RemoteDataState,
@@ -14,7 +14,7 @@ import {
   ConfirmationButton,
   ComponentStatus,
 } from '@influxdata/clockface'
-import {UserListContext, UserListContextResult} from './UserListContainer'
+import {UserListContext, UserListContextResult} from './UsersPage'
 
 // Thunks
 import {withdrawInvite, resendInvite} from 'src/unity/thunks'
@@ -26,26 +26,16 @@ interface Props {
   invite: Invite
 }
 
-const InviteListContextMenu: FC<Props> = ({invite}) => {
-  const [isHover, useHover] = useState(true)
-  const [{organizationID}, dispatch] = useContext<UserListContextResult>(
-    UserListContext
-  )
+function InviteListContextMenu({invite}: Props) {
+  const [isHover, setHover] = useState(true)
+  const [{orgID}, dispatch] = useContext<UserListContextResult>(UserListContext)
 
   const handleRemove = () => {
-    withdrawInvite(dispatch, organizationID, invite)
+    withdrawInvite(dispatch, orgID, invite)
   }
 
   const handleResend = () => {
-    resendInvite(dispatch, organizationID, invite.id)
-  }
-
-  const handleShow = () => {
-    useHover(false)
-  }
-
-  const handleHide = () => {
-    useHover(true)
+    resendInvite(dispatch, orgID, invite.id)
   }
 
   const componentStatus =
@@ -72,8 +62,8 @@ const InviteListContextMenu: FC<Props> = ({invite}) => {
         />
         <ConfirmationButton
           icon={IconFont.Trash}
-          onShow={handleShow}
-          onHide={handleHide}
+          onShow={() => setHover(false)}
+          onHide={() => setHover(true)}
           confirmationLabel="This action will invalidate the invitation link sent to this user"
           confirmationButtonText="Withdraw Invitation"
           titleText="Withdraw Invitation"

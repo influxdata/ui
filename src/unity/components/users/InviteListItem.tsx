@@ -18,7 +18,7 @@ const getDate = datetime => {
 }
 
 const InviteListItem: FC<Props> = ({invite}) => {
-  const {email, role, expires_at} = invite
+  const {email, role, expiresAt} = invite
 
   return (
     <IndexList.Row brighten={true}>
@@ -31,7 +31,7 @@ const InviteListItem: FC<Props> = ({invite}) => {
         {capitalize(role)}
       </IndexList.Cell>
       <IndexList.Cell className="user-list-cell-status">
-        <div>Invite expiration {getDate(expires_at)}</div>
+        <div>Invite expiration {getDate(expiresAt)}</div>
       </IndexList.Cell>
       <InviteListContextMenu invite={invite} />
     </IndexList.Row>

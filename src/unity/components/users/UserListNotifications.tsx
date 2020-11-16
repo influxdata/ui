@@ -9,7 +9,7 @@ import {
   Notification,
   RemoteDataState,
 } from '@influxdata/clockface'
-import {UserListContext} from './UserListContainer'
+import {UserListContext} from './UsersPage'
 
 // Actions
 import {

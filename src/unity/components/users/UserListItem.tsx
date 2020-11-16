@@ -13,7 +13,7 @@ import {
   RemoteDataState,
   ComponentStatus,
 } from '@influxdata/clockface'
-import {UserListContext, UserListContextResult} from './UserListContainer'
+import {UserListContext, UserListContextResult} from './UsersPage'
 
 // Thunks
 import {removeUser} from 'src/unity/thunks'
@@ -45,9 +45,9 @@ interface Props {
 
 const UserListItem: FC<Props> = ({user}) => {
   const {id, email, role} = user
-  const [{organizationID, currentUserID}, dispatch] = useContext<
-    UserListContextResult
-  >(UserListContext)
+  const [{orgID, currentUserID}, dispatch] = useContext<UserListContextResult>(
+    UserListContext
+  )
 
   const isCurrentUser = id === currentUserID
   const [revealOnHover, toggleRevealOnHover] = useState(true)
@@ -60,8 +60,8 @@ const UserListItem: FC<Props> = ({user}) => {
     toggleRevealOnHover(true)
   }
 
-  const handleRemove = async () => {
-    removeUser(dispatch, user, organizationID)
+  const handleRemove = () => {
+    removeUser(dispatch, user, orgID)
   }
 
   const status =

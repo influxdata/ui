@@ -3,7 +3,7 @@ import React, {FC, useContext} from 'react'
 
 // Components
 import {Dropdown, ComponentColor} from '@influxdata/clockface'
-import {UserListContext} from './UserListContainer'
+import {UserListContext} from './UsersPage'
 
 // Constants
 import {roles} from 'src/unity/constants'

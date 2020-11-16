@@ -2,7 +2,7 @@
 import React, {ChangeEvent, FC, useContext, useState} from 'react'
 import {get} from 'lodash'
 // Components
-import {UserListContext} from './UserListContainer'
+import {UserListContext} from './UsersPage'
 import UserRoleDropdown from './UserRoleDropdown'
 import UserInviteSubmit from './UserInviteSubmit'
 import {

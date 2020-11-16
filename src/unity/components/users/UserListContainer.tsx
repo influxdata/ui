@@ -1,57 +1,16 @@
 // Libraries
-import React, {FC, useReducer, Dispatch} from 'react'
+import React, {FC} from 'react'
 import {useParams} from 'react-router'
-import {useSelector} from 'react-redux'
 
-import {
-  Page,
-  Tabs,
-  Orientation,
-  ComponentSize,
-  RemoteDataState,
-} from '@influxdata/clockface'
-import {CloudUser as User, Invite} from 'src/types'
+import {Page, Tabs, Orientation, ComponentSize} from '@influxdata/clockface'
 
 // Components
 import UserList from './UserList'
 import UserListInviteForm from './UserListInviteForm'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
-// Selectors
-import {getMe} from 'src/me/selectors'
-
-import {
-  UserListState,
-  Action,
-  userListReducer,
-  UserListReducer,
-  initialState,
-} from 'src/unity/reducers'
-
-export const UserListContext = React.createContext(null)
-export type UserListContextResult = [UserListState, Dispatch<Action>]
-
-interface Props {
-  users: User[]
-  invites: Invite[]
-}
-
-const UserListContainer: FC<Props> = ({users = [], invites = []}) => {
+const UserListContainer: FC = () => {
   const {orgID} = useParams<{orgID: string}>()
-  const {id} = useSelector(getMe)
-
-  const [state, dispatch] = useReducer<UserListReducer>(
-    userListReducer,
-    initialState({
-      currentUserID: id,
-      users: users.map(user => ({...user, status: RemoteDataState.Done})),
-      invites: invites.map(invite => ({
-        ...invite,
-        status: RemoteDataState.Done,
-      })),
-      organizationID: orgID,
-    })
-  )
 
   return (
     <Page titleTag="Users">
@@ -67,10 +26,7 @@ const UserListContainer: FC<Props> = ({users = [], invites = []}) => {
               text="Users"
               active={true}
               linkElement={className => (
-                <a
-                  className={className}
-                  href={`/organizations/${orgID}/users`}
-                />
+                <a className={className} href={`/orgs/${orgID}/users`} />
               )}
             />
             <Tabs.Tab
@@ -78,15 +34,13 @@ const UserListContainer: FC<Props> = ({users = [], invites = []}) => {
               text="About"
               active={false}
               linkElement={className => (
-                <a className={className} href="/about" />
+                <a className={className} href={`/orgs/${orgID}/about`} />
               )}
             />
           </Tabs>
           <Tabs.TabContents>
-            <UserListContext.Provider value={[state, dispatch]}>
-              <UserListInviteForm />
-              <UserList />
-            </UserListContext.Provider>
+            <UserListInviteForm />
+            <UserList />
           </Tabs.TabContents>
         </Tabs.Container>
       </Page.Contents>

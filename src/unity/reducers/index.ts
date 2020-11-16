@@ -7,8 +7,9 @@ export interface UserListState {
   users: User[]
   invites: Invite[]
   draftInvite: DraftInvite
-  organizationID?: string
-  currentUserID: number
+  status: RemoteDataState
+  currentUserID: string
+  orgID: string
   removeUserStatus: RemoteDataState
   removeInviteStatus: RemoteDataState
   resendInviteStatus: RemoteDataState
@@ -25,13 +26,19 @@ export const editDraftInvite = (draftInvite: DraftInvite) =>
     draftInvite,
   } as const)
 
+export const setUsers = (users: User[]) =>
+  ({
+    type: 'SET_USERS',
+    users,
+  } as const)
+
 export const setInvites = (invites: Invite[]) =>
   ({
     type: 'SET_INVITES',
     invites,
   } as const)
 
-export const removeUser = (id: number) =>
+export const removeUser = (id: string) =>
   ({
     type: 'REMOVE_USER',
     id,
@@ -43,7 +50,7 @@ export const removeUserStatus = (status: RemoteDataState) =>
     status,
   } as const)
 
-export const removeInvite = (id: number) =>
+export const removeInvite = (id: string) =>
   ({
     type: 'REMOVE_INVITE',
     id,
@@ -73,9 +80,23 @@ export const updateUser = (user: User) =>
     user,
   } as const)
 
+export const setAll = (
+  users: User[],
+  invites: Invite[],
+  status: RemoteDataState
+) =>
+  ({
+    type: 'SET_ALL',
+    users,
+    invites,
+    status,
+  } as const)
+
 export type Action =
   | ReturnType<typeof editDraftInvite>
   | ReturnType<typeof setInvites>
+  | ReturnType<typeof setUsers>
+  | ReturnType<typeof setAll>
   | ReturnType<typeof removeUser>
   | ReturnType<typeof removeInvite>
   | ReturnType<typeof resetDraftInvite>
@@ -90,24 +111,26 @@ export type UserListReducer = React.Reducer<UserListState, Action>
 export const initialState = ({
   invites = [],
   users = [],
-  organizationID = null,
-  currentUserID = null,
+  currentUserID,
+  orgID,
+  status = RemoteDataState.NotStarted,
   removeUserStatus = RemoteDataState.NotStarted,
   removeInviteStatus = RemoteDataState.NotStarted,
   resendInviteStatus = RemoteDataState.NotStarted,
 }): UserListState => ({
   users,
   invites,
-  organizationID,
   draftInvite,
+  status,
   currentUserID,
+  orgID,
   removeUserStatus,
   removeInviteStatus,
   resendInviteStatus,
 })
 
 export const userListReducer = (
-  state: UserListState = initialState({}),
+  state: UserListState,
   action: Action
 ): UserListState => {
   switch (action.type) {
@@ -115,8 +138,23 @@ export const userListReducer = (
       return {...state, draftInvite: action.draftInvite}
     }
 
+    case 'SET_USERS': {
+      return {...state, users: action.users}
+    }
+
     case 'SET_INVITES': {
       return {...state, invites: action.invites}
+    }
+
+    case 'SET_ALL': {
+      const {invites, users, status} = action
+
+      return {
+        ...state,
+        invites,
+        users,
+        status,
+      }
     }
 
     case 'REMOVE_USER': {

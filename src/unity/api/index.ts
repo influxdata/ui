@@ -1,14 +1,42 @@
 import axios, {AxiosResponse} from 'axios'
 
-import {DraftInvite, Invite} from 'src/types'
+import {DraftInvite, GetOrgsInvitesResult, Invite} from 'src/types'
 
-import {CloudUser as User} from 'src/types'
+import {CloudUser as User, GetOrgsUsersResult} from 'src/types'
 
 export interface InviteJSON {
   invite: Invite
 }
 
 export const privateAPI = (path: string) => `/api/v2private/${path}`
+
+export const getOrgsUsers = (): Promise<GetOrgsUsersResult> => {
+  return Promise.resolve({
+    status: 200,
+    headers: new Headers({'Content-Type': 'application/json'}),
+    data: [
+      {id: 'u1', email: 'watts@influxdata.com', role: 'owner'},
+      {id: 'u2', email: 'randy@influxdata.com', role: 'owner'},
+      {id: 'u3', email: 'iris@influxdata.com', role: 'owner'},
+    ],
+  })
+}
+
+export const getOrgsInvites = (): Promise<GetOrgsInvitesResult> => {
+  const date = new Date()
+  date.setDate(date.getDate() + 2)
+  const expiresAt = date.toDateString()
+
+  return Promise.resolve({
+    status: 200,
+    headers: new Headers({'Content-Type': 'application/json'}),
+    data: [
+      {id: 'i1', email: 'ari@influxdata.com', role: 'owner', expiresAt},
+      {id: 'i2', email: 'deniz@influxdata.com', role: 'owner', expiresAt},
+      {id: 'i3', email: 'palak@influxdata.com', role: 'owner', expiresAt},
+    ],
+  })
+}
 
 export const createOrgInvite = async (
   orgID: number,
@@ -28,7 +56,7 @@ export const createOrgInvite = async (
 
 export const deleteOrgInvite = async (
   orgID: string,
-  id: number
+  id: string
 ): Promise<void> => {
   await axios({
     method: 'delete',
@@ -38,7 +66,7 @@ export const deleteOrgInvite = async (
 
 export const resendOrgInvite = async (
   orgID: string,
-  id: number
+  id: string
 ): Promise<Invite> => {
   const {
     data: {invite},
@@ -52,7 +80,7 @@ export const resendOrgInvite = async (
 
 export const deleteOrgUser = async (
   orgID: string,
-  id: number
+  id: string
 ): Promise<void> => {
   await axios({
     method: 'delete',

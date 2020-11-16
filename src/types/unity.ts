@@ -1,35 +1,16 @@
 import {RemoteDataState} from '@influxdata/clockface'
+import {User as GenUser, Invite as GenInvite} from 'src/client/unityRoutes'
 
 export type Role = 'owner' | 'member'
 
-export interface CloudUser {
-  id: number
-  email: string
-  role: Role
-  firstName: string | null
-  lastName: string | null
+export interface CloudUser extends GenUser {
+  status: RemoteDataState
+}
+export interface Invite extends GenInvite {
   status: RemoteDataState
 }
 
-export interface Invite {
-  id: number
-  email: string
-  role: Role
-  expires_at: string
-  status: RemoteDataState
-}
-
-export interface LimitStatuses {
-  cardinality: LimitStatus
-  read: LimitStatus
-  write: LimitStatus
-}
-
-export interface LimitStatus {
-  status: string
-}
-
-export type DraftInvite = Omit<Invite, 'id' | 'status' | 'expires_at'>
+export type DraftInvite = Omit<GenInvite, 'id' | 'status' | 'expiresAt'>
 
 export interface InviteErrors {
   email?: string[]
@@ -37,4 +18,37 @@ export interface InviteErrors {
 
 export interface InviteErrorsJSON {
   errors: InviteErrors
+}
+
+export type GetOrgsUsersResult =
+  | GetOrgsUsersOKResult
+  | GetOrgsUsersDefaultResult
+
+// TODO(watts): remove these when removing the mock calls to unity api
+interface GetOrgsUsersOKResult {
+  status: 200
+  headers: Headers
+  data: GenUser[]
+}
+
+interface GetOrgsUsersDefaultResult {
+  status: 500
+  headers: Headers
+  data: Error
+}
+
+export type GetOrgsInvitesResult =
+  | GetOrgsInvitesOKResult
+  | GetOrgsInvitesDefaultResult
+
+interface GetOrgsInvitesOKResult {
+  status: 200
+  headers: Headers
+  data: GenInvite[]
+}
+
+interface GetOrgsInvitesDefaultResult {
+  status: 500
+  headers: Headers
+  data: Error
 }

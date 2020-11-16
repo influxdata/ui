@@ -2,10 +2,17 @@
 import {Dispatch} from 'react'
 
 // API
-import {resendOrgInvite, deleteOrgInvite, deleteOrgUser} from 'src/unity/api'
+import {
+  getOrgsInvites,
+  getOrgsUsers,
+  resendOrgInvite,
+  deleteOrgInvite,
+  deleteOrgUser,
+} from 'src/unity/api'
 
 // Actions
 import {
+  setAll,
   updateUser,
   updateInvite,
   removeInvite,
@@ -23,10 +30,36 @@ import {Invite, CloudUser as User} from 'src/types'
 // Constants
 import {GTM_USER_REMOVED} from 'src/unity/constants'
 
+export const getUsersAndInvites = async (dispatch: Dispatch<Action>) => {
+  try {
+    const userResp = await getOrgsUsers()
+    const inviteResp = await getOrgsInvites()
+
+    if (userResp.status !== 200) {
+      throw new Error(userResp.data.message)
+    }
+
+    if (inviteResp.status !== 200) {
+      throw new Error(inviteResp.data.message)
+    }
+
+    const users = userResp.data.map(u => ({...u, status: RemoteDataState.Done}))
+    const invites = inviteResp.data.map(i => ({
+      ...i,
+      status: RemoteDataState.Done,
+    }))
+
+    dispatch(setAll(users, invites, RemoteDataState.Done))
+  } catch (error) {
+    dispatch(setAll([], [], RemoteDataState.Error))
+    console.error(error)
+  }
+}
+
 export const resendInvite = async (
   dispatch: Dispatch<Action>,
   orgID: string,
-  id: number
+  id: string
 ) => {
   try {
     dispatch(resendInviteStatus(RemoteDataState.Loading))

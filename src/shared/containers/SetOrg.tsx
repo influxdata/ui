@@ -31,7 +31,7 @@ import ClientLibrariesPage from 'src/writeData/containers/ClientLibrariesPage'
 import TelegrafPluginsPage from 'src/writeData/containers/TelegrafPluginsPage'
 import FlowsIndex from 'src/flows/components/FlowsIndex'
 import NotFound from 'src/shared/components/NotFound'
-import UserListContainer from 'src/unity/components/users/UserListContainer'
+import UsersPage from 'src/unity/components/users/UsersPage'
 import {CommunityTemplatesIndex} from 'src/templates/containers/CommunityTemplatesIndex'
 
 // Types
@@ -227,10 +227,7 @@ const SetOrg: FC<Props> = ({
         />
 
         {CLOUD && isFlagEnabled('unity') && (
-          <Route
-            path={`${orgPath}/unity-users`}
-            component={UserListContainer}
-          />
+          <Route path={`${orgPath}/unity-users`} component={UsersPage} />
         )}
 
         {/* Members */}

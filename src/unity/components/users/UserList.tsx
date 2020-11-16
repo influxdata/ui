@@ -3,7 +3,7 @@ import React, {Dispatch, FC, useContext, useState} from 'react'
 
 // Components
 import {Columns, Grid, IconFont, IndexList, Input} from '@influxdata/clockface'
-import {UserListContext} from './UserListContainer'
+import {UserListContext} from './UsersPage'
 import UserListItem from './UserListItem'
 import InviteListItem from './InviteListItem'
 import UserListNotifications from './UserListNotifications'

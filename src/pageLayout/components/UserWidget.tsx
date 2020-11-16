@@ -25,6 +25,7 @@ import {AppState} from 'src/types'
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 import {getNavItemActivation} from '../utils'
+import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
@@ -78,6 +79,16 @@ const UserWidget: FC<Props> = ({
             />
           )}
         />
+        <FeatureFlag name="unity">
+          <TreeNav.UserItem
+            id="unity-users"
+            label="Unity Users"
+            testID="user-nav-item-unity-users"
+            linkElement={className => (
+              <a className={className} href={`/orgs/${org.id}/unity-users`} />
+            )}
+          />
+        </FeatureFlag>
         <TreeNav.UserItem
           id="about"
           label="About"

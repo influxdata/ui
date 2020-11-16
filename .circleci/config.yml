@@ -51,7 +51,7 @@ jobs:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing.oss ./monitor-ci/.env
       - run:
-          name: Build the ui docker image
+          name: Build the ui oss docker image
           command: |
             cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
             docker build \
@@ -63,7 +63,7 @@ jobs:
             mkdir -p docker-cache-oss
             docker save -o docker-cache-oss/image.tar quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1}
       - save_cache:
-          key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
+          key: UI_OSS_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - docker-cache-oss
   build-prod-image:
@@ -201,7 +201,7 @@ jobs:
     resource_class: large
     steps:
       - restore_cache:
-          key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
+          key: UI_OSS_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io

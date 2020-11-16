@@ -1,22 +1,14 @@
 // Libraries
 import React, {PureComponent} from 'react'
-import memoizeOne from 'memoize-one'
 import RawFluxDataGrid from 'src/timeMachine/components/RawFluxDataGrid'
 import {FromFluxResult} from '@influxdata/giraffe'
 
 // Utils
-import {
-  parseFiles,
-  parseFilesWithObjects,
-  parseFilesWithFromFlux,
-  parseFromFluxResults,
-} from 'src/timeMachine/utils/rawFluxDataTable'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {parseFromFluxResults} from 'src/timeMachine/utils/rawFluxDataTable'
 import {DapperScrollbars, FusionScrollEvent} from '@influxdata/clockface'
 
 interface Props {
-  files?: string[]
-  parsedResults?: FromFluxResult
+  parsedResults: FromFluxResult
   width: number
   height: number
   disableVerticalScrolling?: boolean
@@ -31,18 +23,8 @@ interface State {
 class RawFluxDataTable extends PureComponent<Props, State> {
   public state = {scrollLeft: 0, scrollTop: 0}
 
-  private parseFilesWithFromFlux = memoizeOne(parseFilesWithFromFlux)
-  private parseFiles = memoizeOne(parseFiles)
-  private parseFilesWithObjects = memoizeOne(parseFilesWithObjects)
-
   public render() {
-    const {
-      width,
-      height,
-      files,
-      disableVerticalScrolling,
-      startRow,
-    } = this.props
+    const {width, height, disableVerticalScrolling, startRow} = this.props
 
     const {scrollTop, scrollLeft} = this.state
 
@@ -50,22 +32,9 @@ class RawFluxDataTable extends PureComponent<Props, State> {
     const tableHeight = height
 
     const {parsedResults} = this.props
-    let data
-    let maxColumnCount
-    let parseFunction = this.parseFiles
-    if (parsedResults) {
-      const parsed = parseFromFluxResults(parsedResults)
-      data = parsed.tableData
-      maxColumnCount = parsed.max
-    } else {
-      if (isFlagEnabled('parseObjectsInCSV')) {
-        parseFunction = this.parseFilesWithObjects
-      }
-      parseFunction = this.parseFilesWithFromFlux
-      const parsed = parseFunction(files)
-      data = parsed.data
-      maxColumnCount = parsed.maxColumnCount
-    }
+    const parsed = parseFromFluxResults(parsedResults)
+    const data = parsed.tableData
+    const maxColumnCount = parsed.max
 
     return (
       <div className="raw-flux-data-table" data-testid="raw-data-table">

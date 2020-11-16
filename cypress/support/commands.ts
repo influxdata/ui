@@ -17,12 +17,18 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
   \*/
 
   return cy.setupUser().then(body => {
-    return cy
-      .visit('/api/v2/signin')
+    cy.visit('/api/v2/signin')
       .then(() => cy.get('#login').type(Cypress.env('username')))
       .then(() => cy.get('#password').type(Cypress.env('password')))
       .then(() => cy.get('#submit-login').click())
-      .then(() => cy.get('.theme-btn--success').click())
+
+    return cy
+      .get('body')
+      .then($body => {
+        if ($body.find('.theme-btn--success').length) {
+          cy.get('.theme-btn--success').click()
+        }
+      })
       .then(() => cy.wrap(body))
   })
 }

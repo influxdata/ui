@@ -1,5 +1,6 @@
 import {NotificationEndpoint} from '../../src/types'
 import 'cypress-file-upload'
+import {Organization} from '../../src/types'
 
 export const signin = (): Cypress.Chainable<Cypress.Response> => {
   /* \ OSS login
@@ -16,15 +17,22 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
     })
   \*/
 
-  return cy.setupUser().then(body => {
-    return cy
-      .visit('/api/v2/signin')
-      .then(() => cy.get('#login').type(Cypress.env('username')))
-      .then(() => cy.get('#password').type(Cypress.env('password')))
-      .then(() => cy.get('#submit-login').click())
-      .then(() => cy.get('.theme-btn--success').click())
-      .then(() => cy.wrap(body))
-  })
+  return cy
+    .setupUser()
+    .then(() => cy.visit('/api/v2/signin'))
+    .then(() => cy.get('#login').type(Cypress.env('username')))
+    .then(() => cy.get('#password').type(Cypress.env('password')))
+    .then(() => cy.get('#submit-login').click())
+    .then(() => cy.get('.theme-btn--success').click())
+    .then(() =>
+      cy.request({
+        method: 'GET',
+        url: '/api/v2/orgs',
+      })
+    )
+    .then(response => {
+      cy.wrap(response.body.orgs[0]).as('org')
+    })
 }
 
 export const createDashboard = (

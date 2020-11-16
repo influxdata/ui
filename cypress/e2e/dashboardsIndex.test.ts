@@ -283,9 +283,7 @@ describe('Dashboards', () => {
           .first()
           .click()
 
-        cy.getByTestID('inline-labels--popover--contents').should(
-          'be.visible'
-        )
+        cy.getByTestID('inline-labels--popover--contents').should('be.visible')
         cy.getByTestID(`inline-labels--popover-field`)
           .type(labelName)
           .type('{enter}')
@@ -302,9 +300,7 @@ describe('Dashboards', () => {
           .first()
           .click()
 
-        cy.getByTestID('inline-labels--popover--contents').should(
-          'be.visible'
-        )
+        cy.getByTestID('inline-labels--popover--contents').should('be.visible')
 
         cy.getByTestID(`inline-labels--popover-field`).type(labelName)
 

@@ -19,6 +19,7 @@ import {
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
 import {QueryContext} from 'src/flows/context/query'
 import {FlowContext} from 'src/flows/context/flow.current'
+import {RunModeContext, RunMode} from 'src/flows/context/runMode'
 import {ResultsContext} from 'src/flows/context/results'
 import {notify} from 'src/shared/actions/notifications'
 import {PIPE_DEFINITIONS} from 'src/flows'
@@ -37,10 +38,10 @@ const fakeNotify = notify
 
 export const Submit: FC = () => {
   const {query, generateMap} = useContext(QueryContext)
+  const {runMode, setRunMode} = useContext(RunModeContext)
   const {flow} = useContext(FlowContext)
   const {add, update} = useContext(ResultsContext)
   const [isLoading, setLoading] = useState(RemoteDataState.NotStarted)
-  const [isRunning, setIsRunning] = useState(false)
 
   const hasQueries = useMemo(() => {
     return !!flow.data.all
@@ -64,7 +65,7 @@ export const Submit: FC = () => {
   }
 
   const submit = () => {
-    const map = generateMap(isRunning)
+    const map = generateMap(runMode === RunMode.Run)
 
     if (!map.length) {
       return
@@ -117,7 +118,7 @@ export const Submit: FC = () => {
     return (
       <ButtonGroup>
         <SubmitQueryButton
-          text={isRunning ? 'Run' : 'Preview'}
+          text={runMode}
           className="flows--submit-button"
           icon={IconFont.Play}
           submitButtonDisabled={!hasQueries}
@@ -142,10 +143,10 @@ export const Submit: FC = () => {
       <List.Item
         key="Preview"
         value="Preview"
-        onClick={() => setIsRunning(false)}
+        onClick={() => setRunMode(RunMode.Preview)}
         className="submit-btn--item"
         testID="flow-preview-button"
-        selected={!isRunning}
+        selected={runMode === RunMode.Preview}
         gradient={Gradients.PolarExpress}
       >
         <div className="submit-btn--item-details">
@@ -158,10 +159,10 @@ export const Submit: FC = () => {
       <List.Item
         key="Run"
         value="Run"
-        onClick={() => setIsRunning(true)}
+        onClick={() => setRunMode(RunMode.Run)}
         className="submit-btn--item"
         testID="flow-run-button"
-        selected={isRunning}
+        selected={runMode === RunMode.Run}
         gradient={Gradients.PolarExpress}
       >
         <div className="submit-btn--item-details">

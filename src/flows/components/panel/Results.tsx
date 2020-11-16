@@ -11,8 +11,8 @@ import ResultsPagination from 'src/flows/components/panel/ResultsPagination'
 
 import {FlowContext} from 'src/flows/context/flow.current'
 import {PipeContext} from 'src/flows/context/pipe'
+import {RunModeContext} from 'src/flows/context/runMode'
 import {MINIMUM_RESIZER_HEIGHT} from 'src/flows/shared/Resizer'
-import {PROJECT_NAME} from 'src/flows'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -24,6 +24,7 @@ import {Visibility} from 'src/types/flows'
 const Results: FC = () => {
   const {flow} = useContext(FlowContext)
   const {id, results} = useContext(PipeContext)
+  const {runMode} = useContext(RunModeContext)
   const [height, setHeight] = useState(MINIMUM_RESIZER_HEIGHT)
   const [visibility, setVisibility] = useState('visible' as Visibility)
   const meta = flow.meta.get(id)
@@ -67,9 +68,9 @@ const Results: FC = () => {
 
   let emptyText
   if (meta.loading === RemoteDataState.NotStarted) {
-    emptyText = `Run the ${PROJECT_NAME} to See Results`
+    emptyText = `Click ${runMode} to see results`
   } else if (meta.loading === RemoteDataState.Loading) {
-    emptyText = 'Loading'
+    emptyText = 'Loading...'
   } else {
     emptyText = 'No Data Returned'
   }

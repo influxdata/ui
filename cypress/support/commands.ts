@@ -1,6 +1,5 @@
 import {NotificationEndpoint} from '../../src/types'
 import 'cypress-file-upload'
-import {Organization} from '../../src/types'
 
 export const signin = (): Cypress.Chainable<Cypress.Response> => {
   /* \ OSS login

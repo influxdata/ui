@@ -8,7 +8,7 @@ describe('Dashboards', () => {
   beforeEach(() => {
     cy.flush()
 
-    cy.signin().then(({body}) =>
+    cy.signin().then(() =>
       cy.fixture('routes').then(({orgs}) => {
         cy.get('@org').then(({id}: Organization) => {
           cy.visit(`${orgs}/${id}/dashboards-list`)

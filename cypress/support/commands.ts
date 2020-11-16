@@ -25,6 +25,14 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
     return cy
       .get('body')
       .then($body => {
+        /**
+         * we are conditionally rendering this test case since it's only
+         * relevant to CLOUD tests in order to click the `Grant Access` button
+         * that's rendered by Dex in the CLOUD development environment.
+         *
+         * We are using this conditional test based on the following doc suggestions:
+         * https://docs.cypress.io/guides/core-concepts/conditional-testing.html#Element-existence
+         **/
         if ($body.find('.theme-btn--success').length) {
           cy.get('.theme-btn--success').click()
         }

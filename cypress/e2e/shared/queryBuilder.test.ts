@@ -17,9 +17,7 @@ describe('The Query Builder', () => {
   beforeEach(() => {
     cy.flush()
 
-    cy.signin().then(({body}) => {
-      cy.wrap(body.org).as('org')
-    })
+    cy.signin()
 
     cy.writeData([
       `mem,host=thrillbo-swaggins active=${generateRandomSixDigitNumber()}`,

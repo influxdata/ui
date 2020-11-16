@@ -1,16 +1,15 @@
+import {Organization} from '../../src/types'
+
 describe.skip('Load Data Sources', () => {
   beforeEach(() => {
     cy.flush()
 
-    cy.signin().then(({body}) => {
-      const {
-        org: {id},
-      } = body
-      cy.wrap(body.org).as('org')
-
-      cy.fixture('routes').then(({orgs}) => {
-        cy.visit(`${orgs}/${id}/load-data/sources`)
-      })
+    cy.signin().then(() => {
+      cy.get('@org').then(({id}: Organization) =>
+        cy.fixture('routes').then(({orgs}) => {
+          cy.visit(`${orgs}/${id}/load-data/sources`)
+        })
+      )
     })
   })
 

@@ -9,24 +9,23 @@ describe.skip('NotificationRules', () => {
   beforeEach(() => {
     cy.flush()
 
-    cy.signin().then(({body}) => {
-      const {
-        org: {id},
-      } = body
-      cy.wrap(body.org).as('org')
-
-      // create the notification endpoints
-      cy.fixture('endpoints').then(({slack}) => {
-        cy.createEndpoint({...slack, name: name1, orgID: id})
-        cy.createEndpoint({...slack, name: name2, orgID: id}).then(({body}) => {
-          cy.wrap(body).as('selectedEndpoint')
+    cy.signin().then(() => {
+      cy.get('@org').then(({id}: Organization) => {
+        // create the notification endpoints
+        cy.fixture('endpoints').then(({slack}) => {
+          cy.createEndpoint({...slack, name: name1, orgID: id})
+          cy.createEndpoint({...slack, name: name2, orgID: id}).then(
+            ({body}) => {
+              cy.wrap(body).as('selectedEndpoint')
+            }
+          )
+          cy.createEndpoint({...slack, name: name3, orgID: id})
         })
-        cy.createEndpoint({...slack, name: name3, orgID: id})
-      })
 
-      // visit the alerting index
-      cy.fixture('routes').then(({orgs, alerting}) => {
-        cy.visit(`${orgs}/${id}${alerting}`)
+        // visit the alerting index
+        cy.fixture('routes').then(({orgs, alerting}) => {
+          cy.visit(`${orgs}/${id}${alerting}`)
+        })
       })
     })
   })

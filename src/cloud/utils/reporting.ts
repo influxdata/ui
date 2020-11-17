@@ -184,3 +184,23 @@ export const useLoadTimeReporting = (measurement: string) => {
     })
   }, [measurement, loadStartTime])
 }
+
+export const getExperimentVariantId = (experimentID: string, activationEvent: string = 'optimize.activate'): string => {
+  const activateOptimize = async (activationEvent: string) => {
+    if (window.dataLayer) {
+      await window.dataLayer.push({event: activationEvent})
+    }
+  }
+  activateOptimize(activationEvent)
+
+  const getVariant = (): string => {
+    const googleOptimize = window['google_optimize']
+    if (googleOptimize) {
+      const variantID = googleOptimize.get(experimentID)
+      return variantID
+    } else {
+      setTimeout(getVariant, 100)
+    }
+  }
+  return getVariant()
+}

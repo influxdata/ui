@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useEffect, useState} from 'react'
 import {connect} from 'react-redux'
 import {get, find} from 'lodash'
 import classnames from 'classnames'
@@ -24,6 +24,9 @@ import {
 // Types
 import {AppState, OrgSetting} from 'src/types'
 
+// Utils
+import {getExperimentVariantId} from 'src/cloud/utils/reporting'
+
 interface StateProps {
   inView: boolean
 }
@@ -44,11 +47,21 @@ const CloudUpgradeButton: FC<StateProps & OwnProps> = ({
     [`${className}`]: className,
   })
 
+  const [iconVariant, setIconVariant] = useState<IconFont>(IconFont.Upgrade)
+
+  useEffect(() => {
+    const variantID = getExperimentVariantId('e44rY7GjQN-ASmGeWLs_pA')
+    
+    if (variantID) {
+      setIconVariant([IconFont.Upgrade, IconFont.CrownSolid, IconFont.Star][variantID])
+    }
+  })
+
   return (
     <CloudOnly>
       {inView && (
         <LinkButton
-          icon={IconFont.Upgrade}
+          icon={iconVariant}
           className={cloudUpgradeButtonClass}
           color={ComponentColor.Success}
           size={size}

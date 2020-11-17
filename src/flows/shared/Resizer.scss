@@ -12,15 +12,13 @@ $panel-resizer--drag-handle: 30px;
   border: $cf-border solid $g2-kevlar;
   background-color: $g2-kevlar;
   border-radius: $cf-radius 0 0 $cf-radius;
+  position: relative;
 }
+
 .panel-resizer--error-state {
   .panel-resizer--header {
     color: $c-dreamsicle;
   }
-}
-
-.panel-resizer__loading {
-  position: relative;
 }
 
 .panel-resizer--header {

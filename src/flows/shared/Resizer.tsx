@@ -162,10 +162,12 @@ const Resizer: FC<Props> = ({
     'panel-resizer__loading': loading === RemoteDataState.Loading,
   })
 
+  const resizerDiameter = Math.min(100, height)
+
   return (
     <div className={resizerClass}>
       <div className="panel-resizer--loading-mask">
-        <TechnoSpinner diameterPixels={100} />
+        <TechnoSpinner diameterPixels={resizerDiameter} />
       </div>
       <ResizerHeader
         emptyIcon={_emptyIcon}

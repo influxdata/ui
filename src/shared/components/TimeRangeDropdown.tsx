@@ -8,6 +8,7 @@ import {
   PopoverPosition,
   PopoverInteraction,
   Appearance,
+  IconFont,
 } from '@influxdata/clockface'
 import DateRangePicker from 'src/shared/components/dateRangePicker/DateRangePicker'
 
@@ -33,6 +34,7 @@ import {
 interface Props {
   timeRange: TimeRange
   onSetTimeRange: (timeRange: TimeRange) => void
+  width?: number
 }
 
 interface State {
@@ -79,14 +81,18 @@ class TimeRangeDropdown extends PureComponent<Props, State> {
             style={{width: `${this.dropdownWidth}px`}}
             testID="timerange-dropdown"
             button={(active, onClick) => (
-              <Dropdown.Button active={active} onClick={onClick}>
+              <Dropdown.Button
+                active={active}
+                onClick={onClick}
+                icon={IconFont.Clock}
+              >
                 {timeRangeLabel}
               </Dropdown.Button>
             )}
             menu={onCollapse => (
               <Dropdown.Menu
                 onCollapse={onCollapse}
-                style={{width: `${this.dropdownWidth + 50}px`}}
+                style={{width: `${this.dropdownWidth}px`}}
               >
                 <Dropdown.Divider
                   key="Time Range"
@@ -128,9 +134,14 @@ class TimeRangeDropdown extends PureComponent<Props, State> {
 
   private get dropdownWidth(): number {
     if (this.props.timeRange.type === 'custom') {
-      return 250
+      return 282
     }
-    return 100
+
+    if (this.props.width) {
+      return this.props.width
+    }
+
+    return 158
   }
 
   private get timeRange(): CustomTimeRange | SelectableDurationTimeRange {

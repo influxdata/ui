@@ -185,7 +185,10 @@ export const useLoadTimeReporting = (measurement: string) => {
   }, [measurement, loadStartTime])
 }
 
-export const getExperimentVariantId = (experimentID: string, activationEvent: string = 'optimize.activate'): string => {
+export const getExperimentVariantId = (
+  experimentID: string,
+  activationEvent: string = 'optimize.activate'
+): string => {
   const activateOptimize = async (activationEvent: string) => {
     if (window.dataLayer) {
       await window.dataLayer.push({event: activationEvent})

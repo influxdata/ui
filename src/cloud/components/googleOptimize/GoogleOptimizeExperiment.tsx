@@ -19,12 +19,14 @@ const GoogleOptimizeExperiment: FC<Props> = ({
   experimentID,
   activationEvent,
   original = null,
-  variants
+  variants,
 }) => {
   const [variantID, setExperimentVariantId] = useState<string>('')
 
   useEffect(() => {
-    setExperimentVariantId(getExperimentVariantId(experimentID, activationEvent))
+    setExperimentVariantId(
+      getExperimentVariantId(experimentID, activationEvent)
+    )
   })
 
   if (variantID) {

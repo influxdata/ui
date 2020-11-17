@@ -51,9 +51,11 @@ const CloudUpgradeButton: FC<StateProps & OwnProps> = ({
 
   useEffect(() => {
     const variantID = getExperimentVariantId('e44rY7GjQN-ASmGeWLs_pA')
-    
+
     if (variantID) {
-      setIconVariant([IconFont.Upgrade, IconFont.CrownSolid, IconFont.Star][variantID])
+      setIconVariant(
+        [IconFont.Upgrade, IconFont.CrownSolid, IconFont.Star][variantID]
+      )
     }
   })
 

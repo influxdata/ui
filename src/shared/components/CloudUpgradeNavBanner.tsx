@@ -68,7 +68,7 @@ const CloudUpgradeNavBanner: FC<StateProps> = ({inView}) => {
               original={<Icon glyph={IconFont.Upgrade} />}
               variants={[
                 <Icon glyph={IconFont.CrownSolid} />,
-                <Icon glyph={IconFont.Star} />
+                <Icon glyph={IconFont.Star} />,
               ]}
             />
             <Heading element={HeadingElement.H5}>Upgrade Now</Heading>

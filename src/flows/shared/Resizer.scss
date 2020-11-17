@@ -15,8 +15,12 @@ $panel-resizer--drag-handle: 30px;
 }
 .panel-resizer--error-state {
   .panel-resizer--header {
-    color: $c-dreamsicle
+    color: $c-dreamsicle;
   }
+}
+
+.panel-resizer__loading {
+  position: relative;
 }
 
 .panel-resizer--header {
@@ -144,4 +148,27 @@ body.panel-resizer-dragging:hover {
 
 .panel-resizer--drag-handle__dragging .panel-resizer--drag-icon {
   background-color: $c-pool;
+}
+
+/*
+  Loading Styles
+  ------------------------------------------------------------------------------
+*/
+
+.panel-resizer--loading-mask {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba($g2-kevlar, 0.75);
+  z-index: 2;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+}
+
+.panel-resizer__loading .panel-resizer--loading-mask {
+  display: flex;
 }

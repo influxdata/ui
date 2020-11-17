@@ -77,6 +77,7 @@ const Results: FC = () => {
 
   return (
     <Resizer
+      loading={meta.loading}
       resizingEnabled={resultsExist}
       emptyText={emptyText}
       error={results.error}

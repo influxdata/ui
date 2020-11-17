@@ -11,10 +11,11 @@ import classnames from 'classnames'
 
 // Components
 import ResizerHeader from 'src/flows/shared/ResizerHeader'
+import {TechnoSpinner, IconFont} from '@influxdata/clockface'
 
 // Types
-import {IconFont} from '@influxdata/clockface'
 import {Visibility} from 'src/types/flows'
+import {RemoteDataState} from 'src/types'
 
 // Styles
 import 'src/flows/shared/Resizer.scss'
@@ -41,11 +42,14 @@ interface Props {
   minimumHeight?: number
   /** Renders this element beneath the visibility toggle in the header */
   additionalControls?: JSX.Element | JSX.Element[]
+  /** Loading state */
+  loading?: RemoteDataState
 }
 
 export const MINIMUM_RESIZER_HEIGHT = 360
 
 const Resizer: FC<Props> = ({
+  loading = RemoteDataState.NotStarted,
   children,
   emptyIcon,
   emptyText,
@@ -153,12 +157,16 @@ const Resizer: FC<Props> = ({
     }
   }
 
-  const klass = classnames('panel-resizer', {
+  const resizerClass = classnames('panel-resizer', {
     'panel-resizer--error-state': error,
+    'panel-resizer__loading': loading === RemoteDataState.Loading,
   })
 
   return (
-    <div className={klass}>
+    <div className={resizerClass}>
+      <div className="panel-resizer--loading-mask">
+        <TechnoSpinner diameterPixels={100} />
+      </div>
       <ResizerHeader
         emptyIcon={_emptyIcon}
         visibility={visibility}

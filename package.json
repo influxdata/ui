@@ -46,7 +46,7 @@
     "tsc": "tsc -p ./tsconfig.json --noEmit --pretty --skipLibCheck",
     "tsc:cypress": "tsc -p ./cypress/tsconfig.json --noEmit --pretty --skipLibCheck",
     "cy": "CYPRESS_baseUrl=http://localhost:9999 cypress open",
-    "cy:dev": "source ../monitor-ci/.env && CYPRESS_baseUrl=http://kubernetes.docker.internal:$PORT_HTTPS cypress open --config testFiles='shared/**/*.*'",
+    "cy:dev": "source ../monitor-ci/.env && CYPRESS_baseUrl=http://kubernetes.docker.internal:$PORT_HTTPS cypress open --config testFiles='{cloud,shared}/**/*.*'",
     "cy:dev-oss": "source ../monitor-ci/.env && CYPRESS_baseUrl=http://kubernetes.docker.internal:$PORT_HTTPS cypress open --config testFiles='{oss,shared}/**/*.*'",
     "generate": "oats https://raw.githubusercontent.com/influxdata/influxdb/master/http/swagger.yml > ./src/client/generatedRoutes.ts",
     "unity": "oats ./src/client/unity.yml > ./src/client/unityRoutes.ts"

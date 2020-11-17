@@ -134,6 +134,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
   return (
     <Context controls={controls} persistentControl={<ExportButton />}>
       <Resizer
+        loading={loading}
         resizingEnabled={!!results.raw}
         minimumHeight={200}
         emptyText={loadingText}

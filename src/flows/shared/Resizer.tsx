@@ -69,9 +69,15 @@ const Resizer: FC<Props> = ({
   const bodyRef = useRef<HTMLDivElement>(null)
   const dragHandleRef = useRef<HTMLDivElement>(null)
 
-  const bodyClassName = classnames('panel-resizer--body', {
+  const resizerBodyClass = classnames('panel-resizer--body', {
     [`panel-resizer--body__${visibility}`]:
       resizingEnabled && visibility === 'visible',
+  })
+
+  const resizerContainerClass = classnames('panel-resizer', {
+    'panel-resizer--error-state': error,
+    'panel-resizer__loading': loading === RemoteDataState.Loading,
+    [`panel-resizer__${visibility}`]: true,
   })
 
   let _emptyIcon = emptyIcon
@@ -157,15 +163,10 @@ const Resizer: FC<Props> = ({
     }
   }
 
-  const resizerClass = classnames('panel-resizer', {
-    'panel-resizer--error-state': error,
-    'panel-resizer__loading': loading === RemoteDataState.Loading,
-  })
-
-  const resizerDiameter = Math.min(100, height)
+  const resizerDiameter = visibility === 'visible' ? Math.min(100, height) : 30
 
   return (
-    <div className={resizerClass}>
+    <div className={resizerContainerClass}>
       <div className="panel-resizer--loading-mask">
         <TechnoSpinner diameterPixels={resizerDiameter} />
       </div>
@@ -179,7 +180,7 @@ const Resizer: FC<Props> = ({
         onUpdateVisibility={onUpdateVisibility}
         toggleVisibilityEnabled={toggleVisibilityEnabled}
       />
-      <div className={bodyClassName} ref={bodyRef}>
+      <div className={resizerBodyClass} ref={bodyRef}>
         {body}
       </div>
     </div>

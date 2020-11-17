@@ -1,36 +1,47 @@
-import axios from 'axios'
 import uuid from 'uuid'
 
 import {
+  GetOrgsUsersResult,
+  DeleteOrgsInviteResult,
+  DeleteOrgsUserResult,
   PostOrgsInvitesResendResult,
+  PostOrgsInviteResult,
   DraftInvite,
   GetOrgsInvitesResult,
   Invite,
 } from 'src/types'
 
-import {
-  CloudUser as User,
-  GetOrgsUsersResult,
-  DeleteOrgsInviteResult,
-} from 'src/types'
 import {RemoteDataState} from '@influxdata/clockface'
 
-export interface InviteJSON {
-  invite: Invite
+export const users = [
+  'watts@influxdata.com',
+  'randy@influxdata.com',
+  'iris@influxdata.com',
+]
+
+export const invites = [
+  'ari@influxdata.com',
+  'deniz@influxdata.com',
+  'palak@influxdata.com',
+]
+
+const makeResponse = (status, data, respName, ...args) => {
+  console.log(respName) // eslint-disable-line no-console
+  for (let i = 0; i < args.length; i++) {
+    console.log(args[i]) // eslint-disable-line no-console
+  }
+
+  return Promise.resolve({
+    status,
+    headers: new Headers({'Content-Type': 'application/json'}),
+    data,
+  })
 }
 
-export const privateAPI = (path: string) => `/api/v2private/${path}`
-
 export const getOrgsUsers = (): Promise<GetOrgsUsersResult> => {
-  return Promise.resolve({
-    status: 200,
-    headers: new Headers({'Content-Type': 'application/json'}),
-    data: [
-      {id: 'u1', email: 'watts@influxdata.com', role: 'owner'},
-      {id: 'u2', email: 'randy@influxdata.com', role: 'owner'},
-      {id: 'u3', email: 'iris@influxdata.com', role: 'owner'},
-    ],
-  })
+  const data = users.map(email => ({id: uuid.v4(), email, role: 'owner'}))
+
+  return makeResponse(200, data, 'getOrgUsers')
 }
 
 const makeInvite = (email: string): Invite => {
@@ -48,35 +59,24 @@ const makeInvite = (email: string): Invite => {
 }
 
 export const getOrgsInvites = (): Promise<GetOrgsInvitesResult> => {
-  return Promise.resolve({
-    status: 200,
-    headers: new Headers({'Content-Type': 'application/json'}),
-    data: [
-      'ari@influxdata.com',
-      'deniz@influxdata.com',
-      'palak@influxdata.com',
-    ].map(makeInvite),
-  })
+  const data = invites.map(makeInvite)
+
+  return makeResponse(200, data, 'getOrgsInvites')
 }
 
 export const createOrgInvite = async (
   orgID: string,
   draftInvite: DraftInvite
-): Promise<Invite> => {
-  console.log('createOrgInvite', orgID) // eslint-disable-line no-console
-  return Promise.resolve(makeInvite(draftInvite.email))
+): Promise<PostOrgsInviteResult> => {
+  const data = makeInvite(draftInvite.email)
+  return makeResponse(201, data, 'createOrgInvite', orgID, draftInvite)
 }
 
 export const deleteOrgInvite = async (
   orgID: string,
   id: string
 ): Promise<DeleteOrgsInviteResult> => {
-  console.log('deleteOrgInvite', orgID, id) // eslint-disable-line no-console
-  return Promise.resolve({
-    status: 204,
-    headers: new Headers({'Content-Type': 'application/json'}),
-    data: null,
-  })
+  return makeResponse(204, null, 'deleteOrgInvite', orgID, id)
 }
 
 export const resendOrgInvite = async (
@@ -84,23 +84,12 @@ export const resendOrgInvite = async (
   id: string,
   invite: Invite // TODO(watts): delete this argument when un-mocking
 ): Promise<PostOrgsInvitesResendResult> => {
-  console.log('resendOrgInvite', orgID, id, invite) // eslint-disable-line no-console
-  return Promise.resolve({
-    status: 200,
-    headers: new Headers({'Contents-Type': 'application/json'}),
-    data: invite,
-  })
+  return makeResponse(200, invite, 'resendOrgInvite', orgID, id, invite)
 }
 
 export const deleteOrgUser = async (
   orgID: string,
   id: string
-): Promise<void> => {
-  await axios({
-    method: 'delete',
-    url: privateAPI(`orgs/${orgID}/users/${id}`),
-  })
+): Promise<DeleteOrgsUserResult> => {
+  return makeResponse(204, null, 'deleteOrgUser', orgID, id)
 }
-
-export const getUsers = async () =>
-  (await axios.get(privateAPI('operator/users'))).data.users as User[]

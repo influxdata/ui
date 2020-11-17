@@ -1,4 +1,5 @@
 import {Organization} from '../../src/types'
+import {users, invites} from '../../src/unity/api'
 
 describe('Users Page', () => {
   beforeEach(() => {
@@ -11,7 +12,7 @@ describe('Users Page', () => {
     })
   })
 
-  it('can CRUD Invites', () => {
+  it('can CRUD Invites and Users', () => {
     const email = 'plerps@influxdata.com'
     cy.log('creating an invite')
     cy.getByTestID('email--input').type(email)
@@ -24,6 +25,16 @@ describe('Users Page', () => {
       cy.contains('owner', {matchCase: false})
       cy.contains('expiration', {matchCase: false})
     })
+
+    cy.log('resending an invite')
+    cy.getByTestID(`invite-list-item ${email}`).within(() => {
+      cy.getByTestID('invite-row-context').trigger('mouseover')
+      cy.getByTestID('resend-invite').should('be.visible')
+      cy.getByTestID('resend-invite').click()
+    })
+
+    cy.getByTestID('invitation-sent').should('be.visible')
+    cy.getByTestID('invitation-sent--dismiss').click()
 
     cy.log('withdrawing an invite')
     cy.getByTestID(`invite-list-item ${email}`).within(() => {
@@ -38,6 +49,26 @@ describe('Users Page', () => {
     cy.getByTestID('invitation-withdrawn').should('be.visible')
     cy.getByTestID('invitation-withdrawn--dismiss').click()
 
-    cy.getByTestIDSubStr('invite-list-item').should('have.length', 3)
+    cy.getByTestIDSubStr('invite-list-item').should(
+      'have.length',
+      invites.length - 1
+    )
+
+    cy.getByTestID(`user-list-item iris@influxdata.com`).within(() => {
+      cy.getByTestID('delete-user--button').trigger('mouseover')
+      cy.getByTestID('delete-user--button').should('be.visible')
+      cy.getByTestID('delete-user--button').click()
+    })
+
+    cy.getByTestID('delete-user--confirm-button').should('be.visible')
+    cy.getByTestID('delete-user--confirm-button').click()
+
+    cy.getByTestID('user-removed').should('be.visible')
+    cy.getByTestID('user-removed--dismiss').click()
+
+    cy.getByTestIDSubStr('user-list-item').should(
+      'have.length',
+      users.length - 1
+    )
   })
 })

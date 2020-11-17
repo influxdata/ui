@@ -94,6 +94,7 @@ export default function UserListNotifications() {
         onTimeout={hideRemoveUserNotify}
         visible={removeUserStatus === RemoteDataState.Done}
         duration={2000}
+        testID="user-removed"
       >
         User Removed
       </Notification>

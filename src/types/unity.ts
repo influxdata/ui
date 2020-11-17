@@ -85,3 +85,35 @@ interface PostOrgsInvitesResendDefaultResult {
   headers: Headers
   data: Error
 }
+
+export type DeleteOrgsUserResult =
+  | DeleteOrgsUserNoContentResult
+  | DeleteOrgsUserDefaultResult
+
+interface DeleteOrgsUserNoContentResult {
+  status: 204
+  headers: Headers
+  data: null
+}
+
+interface DeleteOrgsUserDefaultResult {
+  status: 500
+  headers: Headers
+  data: Error
+}
+
+export type PostOrgsInviteResult =
+  | PostOrgsInviteCreatedResult
+  | PostOrgsInviteDefaultResult
+
+interface PostOrgsInviteCreatedResult {
+  status: 201
+  headers: Headers
+  data: Invite
+}
+
+interface PostOrgsInviteDefaultResult {
+  status: 500
+  headers: Headers
+  data: Error
+}

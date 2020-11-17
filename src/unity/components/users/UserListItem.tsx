@@ -98,6 +98,7 @@ const UserListItem: FC<Props> = ({user}) => {
             color={ComponentColor.Danger}
             shape={ButtonShape.Square}
             onConfirm={handleRemove}
+            testID="delete-user"
           />
         )}
       </IndexList.Cell>

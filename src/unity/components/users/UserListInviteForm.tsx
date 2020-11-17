@@ -1,6 +1,6 @@
 // Libraries
 import React, {ChangeEvent, FC, useContext, useState} from 'react'
-import {get} from 'lodash'
+
 // Components
 import {UserListContext, UserListContextResult} from './UsersPage'
 import UserRoleDropdown from './UserRoleDropdown'
@@ -26,9 +26,6 @@ import {gaEvent} from 'src/cloud/utils/reporting'
 // Actions
 import {editDraftInvite, resetDraftInvite, setInvites} from 'src/unity/reducers'
 
-// Types
-import {InviteErrorsJSON} from 'src/types'
-
 // Constants
 import {GTM_INVITE_SENT} from 'src/unity/constants'
 
@@ -50,29 +47,19 @@ const UserListInviteForm: FC = () => {
     dispatch(resetDraftInvite())
 
     try {
-      const data = await createOrgInvite(orgID, draftInvite)
+      const resp = await createOrgInvite(orgID, draftInvite)
 
-      dispatch(setInvites([data, ...invites]))
+      if (resp.status !== 201) {
+        throw new Error(resp.data.message)
+      }
+
+      dispatch(setInvites([resp.data, ...invites]))
       show()
 
       // Google Tag Manager event for sending an invitation
       gaEvent(GTM_INVITE_SENT)
     } catch (error) {
       console.error(error)
-
-      if (!error.response) {
-        return
-      }
-
-      const {status, data} = error.response
-
-      if (status === 422) {
-        const {errors}: InviteErrorsJSON = data
-
-        setErrors({
-          email: get(errors, ['email', '0'], ''),
-        })
-      }
     }
   }
 

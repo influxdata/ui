@@ -35,6 +35,7 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
           cy.get('.theme-btn--success').click()
         }
       })
+      cy.wait(1000)
     })
     .then(() => cy.location('pathname').should('not.eq', '/signin'))
     .then(() =>

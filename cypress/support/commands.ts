@@ -22,7 +22,6 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
     .then(() => cy.get('#password').type(Cypress.env('password')))
     .then(() => cy.get('#submit-login').click())
     .then(() => {
-      cy.wait(1000)
       cy.get('body').then($body => {
         /**
          * we are conditionally rendering this test case since it's only
@@ -37,6 +36,7 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
         }
       })
     })
+    .then(() => cy.location('pathname').should('not.eq', '/signin'))
     .then(() =>
       cy.request({
         method: 'GET',

@@ -1,8 +1,10 @@
 import axios, {AxiosResponse} from 'axios'
+import uuid from 'uuid'
 
 import {DraftInvite, GetOrgsInvitesResult, Invite} from 'src/types'
 
 import {CloudUser as User, GetOrgsUsersResult} from 'src/types'
+import {RemoteDataState} from '@influxdata/clockface'
 
 export interface InviteJSON {
   invite: Invite
@@ -22,36 +24,37 @@ export const getOrgsUsers = (): Promise<GetOrgsUsersResult> => {
   })
 }
 
-export const getOrgsInvites = (): Promise<GetOrgsInvitesResult> => {
+const makeInvite = (email: string): Invite => {
   const date = new Date()
   date.setDate(date.getDate() + 2)
   const expiresAt = date.toDateString()
 
+  return {
+    id: uuid.v4(),
+    email,
+    role: 'owner',
+    expiresAt,
+    status: RemoteDataState.Done,
+  }
+}
+
+export const getOrgsInvites = (): Promise<GetOrgsInvitesResult> => {
   return Promise.resolve({
     status: 200,
     headers: new Headers({'Content-Type': 'application/json'}),
     data: [
-      {id: 'i1', email: 'ari@influxdata.com', role: 'owner', expiresAt},
-      {id: 'i2', email: 'deniz@influxdata.com', role: 'owner', expiresAt},
-      {id: 'i3', email: 'palak@influxdata.com', role: 'owner', expiresAt},
-    ],
+      'ari@influxdata.com',
+      'deniz@influxdata.com',
+      'palak@influxdata.com',
+    ].map(makeInvite),
   })
 }
 
 export const createOrgInvite = async (
-  orgID: number,
+  _orgID: string,
   draftInvite: DraftInvite
 ): Promise<Invite> => {
-  const {
-    data: {invite},
-  } = await axios.post<{invite: DraftInvite}, AxiosResponse<InviteJSON>>(
-    privateAPI(`orgs/${orgID}/invites`),
-    {
-      invite: draftInvite,
-    }
-  )
-
-  return invite
+  return Promise.resolve(makeInvite(draftInvite.email))
 }
 
 export const deleteOrgInvite = async (

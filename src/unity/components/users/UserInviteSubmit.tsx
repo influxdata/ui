@@ -46,6 +46,7 @@ const UserInviteSubmit: FC<Props> = ({draftInvite}) => {
       type={ButtonType.Submit}
       titleText={getTitleText()}
       className="user-list-invite--button"
+      testID="user-list-invite--button"
     />
   )
 }

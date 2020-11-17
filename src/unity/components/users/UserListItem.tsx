@@ -70,7 +70,7 @@ const UserListItem: FC<Props> = ({user}) => {
       : ComponentStatus.Default
 
   return (
-    <IndexList.Row brighten={true}>
+    <IndexList.Row brighten={true} testID={`user-list-item ${email}`}>
       <IndexList.Cell>
         <span className="user-list-email">{email}</span>
       </IndexList.Cell>

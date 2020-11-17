@@ -2,7 +2,7 @@
 import React, {ChangeEvent, FC, useContext, useState} from 'react'
 import {get} from 'lodash'
 // Components
-import {UserListContext} from './UsersPage'
+import {UserListContext, UserListContextResult} from './UsersPage'
 import UserRoleDropdown from './UserRoleDropdown'
 import UserInviteSubmit from './UserInviteSubmit'
 import {
@@ -42,15 +42,15 @@ interface InviteErrors {
 const UserListInviteForm: FC = () => {
   const [errors, setErrors] = useState<InviteErrors>({})
   const [notify, {show, hide}] = useNotify()
-  const [{draftInvite, organizationID, invites}, dispatch] = useContext(
-    UserListContext
-  )
+  const [{draftInvite, orgID, invites}, dispatch] = useContext<
+    UserListContextResult
+  >(UserListContext)
 
   const onInviteUser = async () => {
     dispatch(resetDraftInvite())
 
     try {
-      const data = await createOrgInvite(organizationID, draftInvite)
+      const data = await createOrgInvite(orgID, draftInvite)
 
       dispatch(setInvites([data, ...invites]))
       show()
@@ -110,6 +110,7 @@ const UserListInviteForm: FC = () => {
                     errorMessage={errors.email}
                   >
                     <Input
+                      testID="email--input"
                       placeholder="email address"
                       onChange={onChangeInvitee}
                       value={draftInvite.email}

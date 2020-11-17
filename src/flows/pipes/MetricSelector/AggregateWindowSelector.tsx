@@ -2,7 +2,7 @@
 import React, {FC, useContext, useCallback} from 'react'
 
 // Components
-import {Dropdown, IconFont} from '@influxdata/clockface'
+import {Dropdown, IconFont, Icon} from '@influxdata/clockface'
 
 // Contexts
 import {PipeContext} from 'src/flows/context/pipe'
@@ -37,6 +37,15 @@ const AggregateFunctionSelector: FC = () => {
 
   const menuItems = (
     <>
+      <div className="data-source--agg-info">
+        <p>
+          {`The window period ${windowPeriodText} is determined by`}
+          <br />
+          <Icon glyph={IconFont.Clock} />
+          <strong>Time Range</strong>
+        </p>
+      </div>
+      <Dropdown.Divider />
       {FUNCTIONS.map(func => (
         <Dropdown.Item
           key={func.name}

@@ -1,26 +1,29 @@
 // Libraries
 import React, {FC, useContext, useCallback} from 'react'
-import {useSelector} from 'react-redux'
 
 // Components
 import {Dropdown, IconFont} from '@influxdata/clockface'
 
 // Contexts
 import {PipeContext} from 'src/flows/context/pipe'
+import {FlowContext} from 'src/flows/context/flow.current'
 
 // Constants
 import {FUNCTIONS, QueryFn} from 'src/timeMachine/constants/queryBuilder'
 
-// Selectors
-import {getWindowPeriodFromTimeRange} from 'src/timeMachine/selectors'
-
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-
+import {millisecondsToDuration} from 'src/shared/utils/duration'
 const AggregateFunctionSelector: FC = () => {
-  const windowPeriod = useSelector(getWindowPeriodFromTimeRange)
+  const {flow} = useContext(FlowContext)
   const {data, update} = useContext(PipeContext)
   const selectedFunction = data?.aggregateFunction || FUNCTIONS[0]
+
+  const windowPeriod = flow?.range?.windowPeriod
+  let windowPeriodText = ''
+  if (windowPeriod) {
+    windowPeriodText = ` (${millisecondsToDuration(windowPeriod)})`
+  }
 
   const updateSelectedFunction = useCallback(
     (aggregateFunction: QueryFn): void => {
@@ -55,7 +58,7 @@ const AggregateFunctionSelector: FC = () => {
       active={active}
       icon={IconFont.FunnelSolid}
     >
-      {`${selectedFunction.name} (${windowPeriod})`}
+      {`${selectedFunction.name}${windowPeriodText}`}
     </Dropdown.Button>
   )
 

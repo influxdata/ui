@@ -8,7 +8,7 @@ import {FunctionComponent, ComponentClass, ReactNode} from 'react'
 import {
   AutoRefresh,
   RemoteDataState,
-  TimeRange,
+  SelectableDurationTimeRange,
   ViewProperties,
 } from 'src/types'
 
@@ -84,7 +84,7 @@ export interface ResourceManipulator<T> {
 
 export interface FlowState {
   name: string
-  range: TimeRange
+  range: SelectableDurationTimeRange
   refresh: AutoRefresh
   data: Resource<PipeData>
   meta: Resource<PipeMeta>
@@ -93,7 +93,7 @@ export interface FlowState {
 
 export interface Flow {
   name: string
-  range: TimeRange
+  range: SelectableDurationTimeRange
   refresh: AutoRefresh
   data: ResourceManipulator<PipeData>
   meta: ResourceManipulator<PipeMeta>

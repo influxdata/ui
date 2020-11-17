@@ -84,7 +84,7 @@ const Resizer: FC<Props> = ({
   if (error) {
     _emptyIcon = IconFont.AlertTriangle
   } else {
-    _emptyIcon = emptyIcon || IconFont.Zap
+    _emptyIcon = emptyIcon || IconFont.Play
   }
 
   const updateResultsStyle = useCallback((): void => {

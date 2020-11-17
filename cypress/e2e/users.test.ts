@@ -24,5 +24,20 @@ describe('Users Page', () => {
       cy.contains('owner', {matchCase: false})
       cy.contains('expiration', {matchCase: false})
     })
+
+    cy.log('withdrawing an invite')
+    cy.getByTestID(`invite-list-item ${email}`).within(() => {
+      cy.getByTestID('invite-row-context').trigger('mouseover')
+      cy.getByTestID('withdraw-invite--button').should('be.visible')
+      cy.getByTestID('withdraw-invite--button').click()
+    })
+
+    cy.getByTestID('withdraw-invite--confirm-button').should('be.visible')
+    cy.getByTestID('withdraw-invite--confirm-button').click()
+
+    cy.getByTestID('invitation-withdrawn').should('be.visible')
+    cy.getByTestID('invitation-withdrawn--dismiss').click()
+
+    cy.getByTestIDSubStr('invite-list-item').should('have.length', 3)
   })
 })

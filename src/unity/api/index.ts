@@ -1,9 +1,18 @@
-import axios, {AxiosResponse} from 'axios'
+import axios from 'axios'
 import uuid from 'uuid'
 
-import {DraftInvite, GetOrgsInvitesResult, Invite} from 'src/types'
+import {
+  PostOrgsInvitesResendResult,
+  DraftInvite,
+  GetOrgsInvitesResult,
+  Invite,
+} from 'src/types'
 
-import {CloudUser as User, GetOrgsUsersResult} from 'src/types'
+import {
+  CloudUser as User,
+  GetOrgsUsersResult,
+  DeleteOrgsInviteResult,
+} from 'src/types'
 import {RemoteDataState} from '@influxdata/clockface'
 
 export interface InviteJSON {
@@ -51,34 +60,36 @@ export const getOrgsInvites = (): Promise<GetOrgsInvitesResult> => {
 }
 
 export const createOrgInvite = async (
-  _orgID: string,
+  orgID: string,
   draftInvite: DraftInvite
 ): Promise<Invite> => {
+  console.log('createOrgInvite', orgID) // eslint-disable-line no-console
   return Promise.resolve(makeInvite(draftInvite.email))
 }
 
 export const deleteOrgInvite = async (
   orgID: string,
   id: string
-): Promise<void> => {
-  await axios({
-    method: 'delete',
-    url: privateAPI(`orgs/${orgID}/invites/${id}`),
+): Promise<DeleteOrgsInviteResult> => {
+  console.log('deleteOrgInvite', orgID, id) // eslint-disable-line no-console
+  return Promise.resolve({
+    status: 204,
+    headers: new Headers({'Content-Type': 'application/json'}),
+    data: null,
   })
 }
 
 export const resendOrgInvite = async (
   orgID: string,
-  id: string
-): Promise<Invite> => {
-  const {
-    data: {invite},
-  } = (await axios({
-    method: 'post',
-    url: privateAPI(`orgs/${orgID}/invites/${id}/resend`),
-  })) as AxiosResponse<InviteJSON>
-
-  return invite
+  id: string,
+  invite: Invite // TODO(watts): delete this argument when un-mocking
+): Promise<PostOrgsInvitesResendResult> => {
+  console.log('resendOrgInvite', orgID, id, invite) // eslint-disable-line no-console
+  return Promise.resolve({
+    status: 200,
+    headers: new Headers({'Contents-Type': 'application/json'}),
+    data: invite,
+  })
 }
 
 export const deleteOrgUser = async (

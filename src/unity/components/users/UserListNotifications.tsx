@@ -48,6 +48,7 @@ export default function UserListNotifications() {
         onTimeout={hideWithdrawNotify}
         visible={removeInviteStatus === RemoteDataState.Done}
         duration={5000}
+        testID="invitation-withdrawn"
       >
         Invitation Withdrawn
       </Notification>
@@ -70,6 +71,7 @@ export default function UserListNotifications() {
         onTimeout={hideResendInviteStatus}
         visible={resendInviteStatus === RemoteDataState.Done}
         duration={5000}
+        testID="invitation-sent"
       >
         Invitation Sent
       </Notification>

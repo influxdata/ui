@@ -140,6 +140,7 @@ const UserListInviteForm: FC = () => {
         onTimeout={hide}
         visible={notify}
         duration={5000}
+        testID="invite-sent-success"
       >
         Invitation Sent
       </Notification>

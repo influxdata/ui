@@ -35,7 +35,7 @@ function InviteListContextMenu({invite}: Props) {
   }
 
   const handleResend = () => {
-    resendInvite(dispatch, orgID, invite.id)
+    resendInvite(dispatch, orgID, invite.id, invite)
   }
 
   const componentStatus =
@@ -52,13 +52,18 @@ function InviteListContextMenu({invite}: Props) {
   }
 
   return (
-    <IndexList.Cell revealOnHover={isHover} alignment={Alignment.Right}>
+    <IndexList.Cell
+      revealOnHover={isHover}
+      alignment={Alignment.Right}
+      testID="invite-row-context"
+    >
       <FlexBox margin={ComponentSize.Small}>
         <SquareButton
           titleText="Resend Invitation"
           icon={IconFont.Refresh}
           color={ComponentColor.Secondary}
           onClick={handleResend}
+          testID="resend-invite"
         />
         <ConfirmationButton
           icon={IconFont.Trash}
@@ -72,6 +77,7 @@ function InviteListContextMenu({invite}: Props) {
           shape={ButtonShape.Square}
           onConfirm={handleRemove}
           status={componentStatus}
+          testID="withdraw-invite"
         />
       </FlexBox>
     </IndexList.Cell>

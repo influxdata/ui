@@ -59,13 +59,18 @@ export const getUsersAndInvites = async (dispatch: Dispatch<Action>) => {
 export const resendInvite = async (
   dispatch: Dispatch<Action>,
   orgID: string,
-  id: string
+  id: string,
+  invite: Invite // TODO(watts): delete this argument when un-mocking
 ) => {
   try {
     dispatch(resendInviteStatus(RemoteDataState.Loading))
-    const invite = await resendOrgInvite(orgID, id)
+    const resp = await resendOrgInvite(orgID, id, invite)
 
-    dispatch(updateInvite(invite))
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
+    }
+
+    dispatch(updateInvite(resp.data))
     dispatch(resendInviteStatus(RemoteDataState.Done))
   } catch (error) {
     dispatch(resendInviteStatus(RemoteDataState.Error))
@@ -81,7 +86,11 @@ export const withdrawInvite = async (
   try {
     dispatch(updateInvite({...invite, status: RemoteDataState.Loading}))
 
-    await deleteOrgInvite(orgID, invite.id)
+    const resp = await deleteOrgInvite(orgID, invite.id)
+
+    if (resp.status !== 204) {
+      throw new Error(resp.data.message)
+    }
 
     dispatch(removeInvite(invite.id))
     dispatch(removeInviteStatus(RemoteDataState.Done))

@@ -24,7 +24,8 @@ export type GetOrgsUsersResult =
   | GetOrgsUsersOKResult
   | GetOrgsUsersDefaultResult
 
-// TODO(watts): remove these when removing the mock calls to unity api
+// TODO(watts): delete everything below this line
+// once the mock API's are replaced with actual calls the Quartz
 interface GetOrgsUsersOKResult {
   status: 200
   headers: Headers
@@ -48,6 +49,38 @@ interface GetOrgsInvitesOKResult {
 }
 
 interface GetOrgsInvitesDefaultResult {
+  status: 500
+  headers: Headers
+  data: Error
+}
+
+export type DeleteOrgsInviteResult =
+  | DeleteOrgsInviteNoContentResult
+  | DeleteOrgsInviteDefaultResult
+
+export interface DeleteOrgsInviteNoContentResult {
+  status: 204
+  headers: Headers
+  data: any
+}
+
+export interface DeleteOrgsInviteDefaultResult {
+  status: 500
+  headers: Headers
+  data: Error
+}
+
+export type PostOrgsInvitesResendResult =
+  | PostOrgsInvitesResendOKResult
+  | PostOrgsInvitesResendDefaultResult
+
+interface PostOrgsInvitesResendOKResult {
+  status: 200
+  headers: Headers
+  data: Invite
+}
+
+interface PostOrgsInvitesResendDefaultResult {
   status: 500
   headers: Headers
   data: Error

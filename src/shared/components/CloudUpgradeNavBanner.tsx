@@ -65,9 +65,17 @@ const CloudUpgradeNavBanner: FC<StateProps> = ({inView}) => {
           >
             <GoogleOptimizeExperiment
               experimentID="e44rY7GjQN-ASmGeWLs_pA"
-              original={<Icon key="e44rY7GjQN-ASmGeWLs_pA--v0" glyph={IconFont.Upgrade} />}
+              original={
+                <Icon
+                  key="e44rY7GjQN-ASmGeWLs_pA--v0"
+                  glyph={IconFont.Upgrade}
+                />
+              }
               variants={[
-                <Icon key="e44rY7GjQN-ASmGeWLs_pA--v1" glyph={IconFont.CrownSolid} />,
+                <Icon
+                  key="e44rY7GjQN-ASmGeWLs_pA--v1"
+                  glyph={IconFont.CrownSolid}
+                />,
                 <Icon key="e44rY7GjQN-ASmGeWLs_pA--v2" glyph={IconFont.Star} />,
               ]}
             />

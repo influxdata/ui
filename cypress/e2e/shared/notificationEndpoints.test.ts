@@ -2,7 +2,7 @@ import {
   NotificationEndpoint,
   SlackNotificationEndpoint,
   Organization,
-} from '../../src/types'
+} from '../../../src/types'
 
 // skipping these tests until we have a local vault instance working
 describe.skip('Notification Endpoints', () => {

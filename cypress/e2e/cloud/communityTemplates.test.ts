@@ -1,4 +1,4 @@
-import {Organization} from '../../src/types'
+import {Organization} from '../../../src/types'
 
 describe('Community Templates', () => {
   beforeEach(() => {

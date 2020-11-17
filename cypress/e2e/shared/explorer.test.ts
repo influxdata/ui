@@ -1,6 +1,6 @@
-import {Organization} from '../../src/types'
-import {VIS_TYPES} from '../../src/timeMachine/constants'
-import {lines} from '../support/commands'
+import {Organization} from '../../../src/types'
+import {VIS_TYPES} from '../../../src/timeMachine/constants'
+import {lines} from '../../support/commands'
 import {
   FROM,
   RANGE,
@@ -9,7 +9,7 @@ import {
   MATH_FLOOR,
   STRINGS_TITLE,
   STRINGS_TRIM,
-} from '../../src/shared/constants/fluxFunctions'
+} from '../../../src/shared/constants/fluxFunctions'
 
 const TYPE_DELAY = 0
 

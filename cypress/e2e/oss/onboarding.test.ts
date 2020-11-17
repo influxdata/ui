@@ -10,8 +10,8 @@ describe('Onboarding Redirect', () => {
   })
 })
 
-// NOTE: important to test for OSS, not so much for cloud
-describe.skip('Onboarding', () => {
+// NOTE: important to test for OSS
+describe('Onboarding', () => {
   beforeEach(() => {
     cy.flush()
 

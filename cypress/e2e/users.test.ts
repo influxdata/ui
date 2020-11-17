@@ -26,6 +26,11 @@ describe('Users Page', () => {
       cy.contains('expiration', {matchCase: false})
     })
 
+    cy.getByTestIDSubStr('invite-list-item').should(
+      'have.length',
+      invites.length + 1
+    )
+
     cy.log('resending an invite')
     cy.getByTestID(`invite-list-item ${email}`).within(() => {
       cy.getByTestID('invite-row-context').trigger('mouseover')
@@ -51,7 +56,7 @@ describe('Users Page', () => {
 
     cy.getByTestIDSubStr('invite-list-item').should(
       'have.length',
-      invites.length - 1
+      invites.length
     )
 
     cy.getByTestID(`user-list-item iris@influxdata.com`).within(() => {

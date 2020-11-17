@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC, useContext, useCallback} from 'react'
+import {useSelector} from 'react-redux'
 
 // Components
 import {Dropdown, IconFont} from '@influxdata/clockface'
@@ -10,10 +11,14 @@ import {PipeContext} from 'src/flows/context/pipe'
 // Constants
 import {FUNCTIONS, QueryFn} from 'src/timeMachine/constants/queryBuilder'
 
+// Selectors
+import {getWindowPeriodFromTimeRange} from 'src/timeMachine/selectors'
+
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
 const AggregateFunctionSelector: FC = () => {
+  const windowPeriod = useSelector(getWindowPeriodFromTimeRange)
   const {data, update} = useContext(PipeContext)
   const selectedFunction = data?.aggregateFunction || FUNCTIONS[0]
 
@@ -50,7 +55,7 @@ const AggregateFunctionSelector: FC = () => {
       active={active}
       icon={IconFont.FunnelSolid}
     >
-      {selectedFunction.name}
+      {`${selectedFunction.name} (${windowPeriod})`}
     </Dropdown.Button>
   )
 

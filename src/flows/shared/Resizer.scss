@@ -104,7 +104,10 @@ $panel-resizer--drag-handle: 30px;
 }
 
 .panel-resizer--error {
+  height: 46px;
+  line-height: 46px;
   color: $c-dreamsicle;
+  padding: 0;
 }
 
 .panel-resizer--drag-handle {

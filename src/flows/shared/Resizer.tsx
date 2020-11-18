@@ -88,12 +88,17 @@ const Resizer: FC<Props> = ({
   }
 
   const updateResultsStyle = useCallback((): void => {
-    if (bodyRef.current && resizingEnabled && visibility === 'visible') {
+    if (
+      bodyRef.current &&
+      resizingEnabled &&
+      visibility === 'visible' &&
+      !error
+    ) {
       bodyRef.current.setAttribute('style', `height: ${size}px`)
     } else {
       bodyRef.current.setAttribute('style', '')
     }
-  }, [size, resizingEnabled, visibility])
+  }, [size, resizingEnabled, visibility, error])
 
   // Ensure styles update when state & props update
   useEffect(() => {
@@ -176,7 +181,7 @@ const Resizer: FC<Props> = ({
         visibility={visibility}
         onStartDrag={handleMouseDown}
         dragHandleRef={dragHandleRef}
-        resizingEnabled={resizingEnabled}
+        resizingEnabled={resizingEnabled && !error}
         additionalControls={additionalControls}
         onUpdateVisibility={onUpdateVisibility}
         toggleVisibilityEnabled={toggleVisibilityEnabled}

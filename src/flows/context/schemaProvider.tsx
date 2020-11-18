@@ -46,7 +46,7 @@ export const SchemaProvider: FC<Props> = React.memo(({children}) => {
   const {data, update} = useContext(PipeContext)
   const {flow} = useContext(FlowContext)
   const [searchTerm, setSearchTerm] = useState('')
-  const [lastBucket, setLastBucket] = useState(data.bucket)
+  const [lastBucket, setLastBucket] = useState(null)
   const dispatch = useDispatch()
 
   const loading = useSelector(

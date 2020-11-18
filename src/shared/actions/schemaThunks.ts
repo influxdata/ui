@@ -47,7 +47,9 @@ export const fetchSchemaForBucket = async (
 
   const text = `from(bucket: "${bucket.name}")
   |> range(${range})
-  |> first()`
+  |> first()
+  |> drop(columns: ["_value"])
+  |> group()`
 
   const res = await runQuery(orgID, text)
     .promise.then(raw => {

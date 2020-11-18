@@ -58,7 +58,7 @@ const InsertCellButton: FC<Props> = ({id}) => {
         appearance={Appearance.Outline}
         color={ComponentColor.Secondary}
         triggerRef={buttonRef}
-        position={PopoverPosition.Below}
+        position={PopoverPosition.ToTheRight}
         onShow={handlePopoverShow}
         onHide={handlePopoverHide}
         contents={onHide => (

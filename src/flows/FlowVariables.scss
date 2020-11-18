@@ -4,10 +4,14 @@ $flow-header-height: 46px;
 
 $flow-panel--gutter: $cf-marg-d;
 $flow-panel--bg: mix($g1-raven, $g2-kevlar, 50%);
+
 $flow-panel--node-gap: $cf-marg-d + $cf-marg-b;
-$flow-panel--node-dot: 20px;
+$flow-panel--node-dot: 16px;
 
-$flow-divider-height: ($cf-marg-a * 2) + $cf-border;
-$flow-divider-color: $g2-kevlar;
+$flow-panel--insert-gap: (
+    $flow-panel--node-gap + $cf-marg-b - $cf-form-sm-height
+  ) / 2;
 
-$flow-minimap--expanded: 270px;
+$flow-panel--insert-connector: (
+    ($flow-header-height - $flow-panel--node-dot) / 2
+  ) + $flow-panel--insert-gap;

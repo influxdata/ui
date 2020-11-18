@@ -35,8 +35,7 @@
   flex-direction: column;
   align-items: stretch;
   border-radius: $cf-radius;
-  border: $cf-border solid transparent;
-  transition: border-color 0.25s ease;
+  background-color: $flow-panel--bg;
 
   // Vertical line on left side of panel
   &::after {
@@ -45,8 +44,8 @@
     width: $cf-border;
     background-color: $g5-pepper;
     // Ensures there is no visible gap
-    bottom: -$cf-border;
-    top: -$cf-border;
+    bottom: 0;
+    top: 0;
     left: ($flow-panel--node-gap / 2) - ($cf-border / 2);
   }
 
@@ -98,29 +97,9 @@
   width: $flow-panel--node-dot;
   height: $flow-panel--node-dot;
   border-radius: 50%;
-  background-color: $g1-raven;
+  background-color: $flow-panel--bg;
   border: $cf-border solid $g5-pepper;
   position: relative;
-
-  &:after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    border-radius: 50%;
-    background-color: $c-laser;
-    transform: translate(-50%, -50%) scale(1.5, 1.5);
-    width: $cf-marg-b;
-    height: $cf-marg-b;
-    box-shadow: 0 0 8px 2px $c-void, 0 0 4px 2px $c-pool, 0 0 1px 1px$c-laser;
-    transition: transform 0.25s ease, opacity 0.25s ease;
-    opacity: 0;
-  }
-
-  .flow-panel__focus &:after {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1, 1);
-  }
 }
 
 .flow-panel--title,
@@ -161,18 +140,6 @@
 .flow-panel:hover {
   .flow-panel--header-right > * {
     opacity: 1;
-  }
-}
-
-.flow-panel__focus {
-  border-color: $g5-pepper;
-}
-
-.flow-panel__focus {
-  .flow-panel--header,
-  .flow-panel--body,
-  .flow-panel--results {
-    background-color: $flow-panel--bg;
   }
 }
 

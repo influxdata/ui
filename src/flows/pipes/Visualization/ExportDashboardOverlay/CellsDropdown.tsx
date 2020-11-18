@@ -1,10 +1,5 @@
 import React, {FC, useContext, useEffect, useState} from 'react'
-import {
-  ComponentSize,
-  IconFont,
-  TechnoSpinner,
-  Dropdown,
-} from '@influxdata/clockface'
+import {ComponentSize, TechnoSpinner, Dropdown} from '@influxdata/clockface'
 import {
   Context,
   CREATE_CELL,
@@ -90,9 +85,9 @@ const CellsDropdown: FC = () => {
 
   const button = (active, onClick) => (
     <Dropdown.Button
+      size={ComponentSize.Medium}
       onClick={onClick}
       active={active}
-      icon={IconFont.Disks}
       status={
         selectedDashboard ? ComponentStatus.Default : ComponentStatus.Disabled
       }

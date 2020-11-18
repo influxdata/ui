@@ -34,12 +34,12 @@ const UpdateDashboardBody: FC = () => {
   }
   return (
     <>
-      <Grid.Column widthXS={Columns.Twelve}>
+      <Grid.Column widthXS={Columns.Six}>
         <Form.Element label="Destination Dashboard">
           <DashboardDropdown />
         </Form.Element>
       </Grid.Column>
-      <Grid.Column widthXS={Columns.Twelve}>
+      <Grid.Column widthXS={Columns.Six}>
         <Form.Element label="Destination Cell">
           <CellsDropdown />
         </Form.Element>

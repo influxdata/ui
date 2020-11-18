@@ -9,8 +9,8 @@ $panel-resizer--drag-handle: 30px;
   flex-direction: row;
   align-items: stretch;
   width: 100%;
-  border: $cf-border solid $g2-kevlar;
-  background-color: $g2-kevlar;
+  border: $cf-border solid $g0-obsidian;
+  background-color: $g0-obsidian;
   border-radius: $cf-radius 0 0 $cf-radius;
   position: relative;
 }
@@ -160,7 +160,7 @@ body.panel-resizer-dragging:hover {
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: rgba($g2-kevlar, 0.75);
+  background-color: rgba($g0-obsidian, 0.75);
   z-index: 2;
   align-items: center;
   justify-content: center;

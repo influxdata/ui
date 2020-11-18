@@ -7,9 +7,11 @@ describe('Users Page', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.turnOnFeature('unity').then(() => {
-          cy.visit(`/orgs/${id}/unity-users`)
+        cy.window().then((w) => {
+          w.influx.set('unity', true)
         })
+
+        cy.visit(`/orgs/${id}/unity-users`)
       })
     })
 

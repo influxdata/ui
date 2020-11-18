@@ -538,30 +538,6 @@ export const clickAttached = (subject?: JQuery<HTMLElement>) => {
   })
 }
 
-export const turnOnFeature = (flag: string): Cypress.Chainable => {
-  const state = window.localStorage.getItem('state')
-  if (state) {
-    const obj = JSON.parse(state)
-    obj.flags.override[flag] = true
-    window.localStorage.setItem('state', JSON.stringify(obj))
-    console.log(`turning on feature ${flag}`) // eslint-disable-line no-console
-  }
-
-  // getting the set item ensures the flag has been set. so, you can chain off
-  // of this command `turnOnFeature('myFlag').then(() => ...)` and be guaranteed
-  // the state is as you so desire
-  const newState = window.localStorage.getItem('state')
-  if (newState) {
-    const newObj = JSON.parse(newState)
-    const flagState = newObj.flags.override[flag]
-    console.log(`feature ${flag} has been set to ${flagState}`) // eslint-disable-line no-console
-
-    return cy.wrap({[flag]: true})
-  }
-
-  return cy.wrap('no flag set')
-}
-
 /* eslint-disable */
 // notification endpoints
 Cypress.Commands.add('createEndpoint', createEndpoint)
@@ -627,5 +603,4 @@ Cypress.Commands.add('writeData', writeData)
 
 // helpers
 Cypress.Commands.add('clickAttached', {prevSubject: 'element'}, clickAttached)
-Cypress.Commands.add('turnOnFeature', turnOnFeature)
 /* eslint-enable */

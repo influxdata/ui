@@ -33,10 +33,14 @@ import {
   createDashWithViewAndVar,
   createRule,
   clickAttached,
-  turnOnFeature,
 } from './support/commands'
 
 declare global {
+  interface Window extends Window {
+    influx: {
+      set: (flag: string, value: boolean) => void
+    }
+  }
   namespace Cypress {
     interface Chainable {
       signin: typeof signin
@@ -70,7 +74,6 @@ declare global {
       writeData: typeof writeData
       createEndpoint: typeof createEndpoint
       createRule: typeof createRule
-      turnOnFeature: typeof turnOnFeature
     }
   }
 }

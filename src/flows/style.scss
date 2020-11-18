@@ -52,10 +52,6 @@
   &:first-child::after {
     top: ($flow-header-height - $flow-panel--node-dot) / 2;
   }
-
-  &:last-child {
-    margin-bottom: 25vh;
-  }
 }
 
 .flow-panel--header,

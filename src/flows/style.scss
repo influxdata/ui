@@ -114,21 +114,55 @@
   color: $c-laser;
 }
 
-.flow-panel--editable-title {
+.flow-panel--title {
+  width: 350px;
+  height: $cf-form-sm-height;
+  position: relative;
+}
+
+.flow-panel--title-input {
   background-color: transparent;
-  border: 0;
+  border: $cf-border solid $flow-panel--bg;
   color: $g15-platinum;
   font-size: 14px;
   font-family: $cf-text-font;
   font-weight: $cf-font-weight--medium;
-  transition: color 0.25s ease, background-color 0.25s ease;
+  transition: color 0.25s ease, background-color 0.25s ease,
+    border-color 0.25s ease, box-shadow 0.25s ease;
   outline: none;
-  width: 350px;
+  width: 100%;
+  height: $cf-form-sm-height;
+  border-radius: $cf-radius;
+
+  &:hover {
+    border-color: $g5-pepper;
+  }
 
   &:hover,
   &:focus {
     color: $g20-white;
   }
+
+  &:focus {
+    background-color: $cf-input-background--focused;
+    border-color: $cf-input-border--focused;
+    box-shadow: $cf-input--box-shadow;
+  }
+}
+
+.flow-panel--title-icon {
+  position: absolute;
+  top: 50%;
+  right: $cf-form-sm-height / 2;
+  transform: translate(50%, -50%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+  color: $g11-sidewalk;
+}
+
+.flow-panel--title:hover .flow-panel--title-icon {
+  opacity: 1;
 }
 
 // Focus state

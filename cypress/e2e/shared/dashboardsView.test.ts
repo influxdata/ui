@@ -1,19 +1,17 @@
-import {Organization, AppState, Dashboard} from '../../src/types'
-import {lines} from '../support/commands'
+import {Organization, AppState, Dashboard} from '../../../src/types'
+import {lines} from '../../support/commands'
 
 describe('Dashboard', () => {
   beforeEach(() => {
     cy.flush()
 
-    cy.signin().then(({body}) => {
-      cy.wrap(body.org).as('org')
-    })
-
-    cy.fixture('routes').then(({orgs}) => {
-      cy.get('@org').then(({id: orgID}: Organization) => {
-        cy.visit(`${orgs}/${orgID}/dashboards-list`)
+    cy.signin().then(() =>
+      cy.fixture('routes').then(({orgs}) => {
+        cy.get('@org').then(({id: orgID}: Organization) => {
+          cy.visit(`${orgs}/${orgID}/dashboards-list`)
+        })
       })
-    })
+    )
   })
 
   it("can edit a dashboard's name", () => {

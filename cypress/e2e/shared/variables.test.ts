@@ -1,11 +1,14 @@
+import {Organization} from '../../../src/types'
+
 describe('Variables', () => {
   beforeEach(() => {
     cy.flush()
 
-    cy.signin().then(({body}) => {
-      cy.wrap(body.org).as('org')
-      cy.createQueryVariable(body.org.id)
-      cy.visit(`orgs/${body.org.id}/settings/variables`)
+    cy.signin().then(() => {
+      cy.get('@org').then(({id}: Organization) => {
+        cy.createQueryVariable(id)
+        cy.visit(`orgs/${id}/settings/variables`)
+      })
     })
 
     cy.location('pathname').should('match', /\/variables$/)

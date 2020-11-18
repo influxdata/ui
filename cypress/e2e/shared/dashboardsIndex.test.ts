@@ -1,4 +1,4 @@
-import {Organization} from '../../src/types'
+import {Organization} from '../../../src/types'
 
 const newLabelName = 'click-me'
 const dashboardName = 'Bee Happy'
@@ -8,15 +8,13 @@ describe('Dashboards', () => {
   beforeEach(() => {
     cy.flush()
 
-    cy.signin().then(({body}) => {
-      cy.wrap(body.org).as('org')
-    })
-
-    cy.fixture('routes').then(({orgs}) => {
-      cy.get('@org').then(({id}: Organization) => {
-        cy.visit(`${orgs}/${id}/dashboards-list`)
+    cy.signin().then(() =>
+      cy.fixture('routes').then(({orgs}) => {
+        cy.get('@org').then(({id}: Organization) => {
+          cy.visit(`${orgs}/${id}/dashboards-list`)
+        })
       })
-    })
+    )
   })
 
   it('empty state should have a header with text and a button to create a dashboard', () => {
@@ -281,45 +279,37 @@ describe('Dashboards', () => {
       it('typing a new label name and pressing ENTER starts label creation flow, closes popover', () => {
         const labelName = 'choco'
 
-        cy.get('@org').then(() => {
-          cy.getByTestID(`inline-labels--add`)
-            .first()
-            .click()
+        cy.getByTestID(`inline-labels--add`)
+          .first()
+          .click()
 
-          cy.getByTestID('inline-labels--popover--contents').should(
-            'be.visible'
-          )
-          cy.getByTestID(`inline-labels--popover-field`)
-            .type(labelName)
-            .type('{enter}')
-          cy.getByTestID('overlay--body').should('be.visible')
-          cy.getByTestID('inline-labels--popover--contents').should(
-            'not.be.visible'
-          )
-        })
+        cy.getByTestID('inline-labels--popover--contents').should('be.visible')
+        cy.getByTestID(`inline-labels--popover-field`)
+          .type(labelName)
+          .type('{enter}')
+        cy.getByTestID('overlay--body').should('be.visible')
+        cy.getByTestID('inline-labels--popover--contents').should(
+          'not.be.visible'
+        )
       })
       it('typing a new label name and clicking name starts label creation flow, closes popover', () => {
         // https://github.com/influxdata/influxdb/issues/17964
         const labelName = 'the new new'
 
-        cy.get('@org').then(() => {
-          cy.getByTestID(`inline-labels--add`)
-            .first()
-            .click()
+        cy.getByTestID(`inline-labels--add`)
+          .first()
+          .click()
 
-          cy.getByTestID('inline-labels--popover--contents').should(
-            'be.visible'
-          )
+        cy.getByTestID('inline-labels--popover--contents').should('be.visible')
 
-          cy.getByTestID(`inline-labels--popover-field`).type(labelName)
+        cy.getByTestID(`inline-labels--popover-field`).type(labelName)
 
-          cy.getByTestID(`inline-labels--create-new`).click()
+        cy.getByTestID(`inline-labels--create-new`).click()
 
-          cy.getByTestID('overlay--body').should('be.visible')
-          cy.getByTestID('inline-labels--popover--contents').should(
-            'not.be.visible'
-          )
-        })
+        cy.getByTestID('overlay--body').should('be.visible')
+        cy.getByTestID('inline-labels--popover--contents').should(
+          'not.be.visible'
+        )
       })
 
       it('can create a label and add to a dashboard', () => {

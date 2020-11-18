@@ -2,7 +2,7 @@ import {
   NotificationEndpoint,
   SlackNotificationEndpoint,
   Organization,
-} from '../../src/types'
+} from '../../../src/types'
 
 // skipping these tests until we have a local vault instance working
 describe.skip('Notification Endpoints', () => {
@@ -20,20 +20,18 @@ describe.skip('Notification Endpoints', () => {
   beforeEach(() => {
     cy.flush()
 
-    cy.signin().then(({body}) => {
-      const {
-        org: {id},
-      } = body
-      cy.wrap(body.org).as('org')
-      cy.fixture('routes').then(({orgs, alerting}) => {
-        cy.createEndpoint({...endpoint, orgID: id}).then(({body}) => {
-          cy.wrap(body).as('endpoint')
-        })
-        cy.visit(`${orgs}/${id}${alerting}`)
+    cy.signin().then(() => {
+      cy.get('@org').then(({id}: Organization) =>
+        cy.fixture('routes').then(({orgs, alerting}) => {
+          cy.createEndpoint({...endpoint, orgID: id}).then(({body}) => {
+            cy.wrap(body).as('endpoint')
+          })
+          cy.visit(`${orgs}/${id}${alerting}`)
 
-        // User can only see all panels at once on large screens
-        cy.getByTestID('alerting-tab--endpoints').click({force: true})
-      })
+          // User can only see all panels at once on large screens
+          cy.getByTestID('alerting-tab--endpoints').click({force: true})
+        })
+      )
     })
   })
 

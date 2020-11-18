@@ -1,6 +1,6 @@
-import {Organization} from '../../src/types'
-import {VIS_TYPES} from '../../src/timeMachine/constants'
-import {lines} from '../support/commands'
+import {Organization} from '../../../src/types'
+import {VIS_TYPES} from '../../../src/timeMachine/constants'
+import {lines} from '../../support/commands'
 import {
   FROM,
   RANGE,
@@ -9,7 +9,7 @@ import {
   MATH_FLOOR,
   STRINGS_TITLE,
   STRINGS_TRIM,
-} from '../../src/shared/constants/fluxFunctions'
+} from '../../../src/shared/constants/fluxFunctions'
 
 const TYPE_DELAY = 0
 
@@ -31,15 +31,12 @@ describe('DataExplorer', () => {
   beforeEach(() => {
     cy.flush()
 
-    cy.signin().then(({body}) => {
-      cy.wrap(body.org).as('org')
-      cy.createMapVariable(body.org.id)
-      cy.wrap(body.bucket).as('bucket')
-    })
-
-    cy.fixture('routes').then(({orgs, explorer}) => {
-      cy.get<Organization>('@org').then(({id}) => {
-        cy.visit(`${orgs}/${id}${explorer}`)
+    cy.signin().then(() => {
+      cy.get('@org').then(({id}: Organization) => {
+        cy.createMapVariable(id)
+        cy.fixture('routes').then(({orgs, explorer}) => {
+          cy.visit(`${orgs}/${id}${explorer}`)
+        })
       })
     })
   })

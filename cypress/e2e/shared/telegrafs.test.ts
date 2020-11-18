@@ -1,4 +1,4 @@
-import {Organization} from '../../src/types'
+import {Organization} from '../../../src/types'
 
 // a generous commitment to delivering this page in a loaded state
 const PAGE_LOAD_SLA = 80000
@@ -7,15 +7,12 @@ describe('Collectors', () => {
   beforeEach(() => {
     cy.flush()
 
-    cy.signin().then(({body}) => {
-      const {
-        org: {id},
-      } = body
-      cy.wrap(body.org).as('org')
-
-      cy.fixture('routes').then(({orgs, telegrafs}) => {
-        cy.visit(`${orgs}/${id}${telegrafs}`)
-      })
+    cy.signin().then(() => {
+      cy.get('@org').then(({id}: Organization) =>
+        cy.fixture('routes').then(({orgs, telegrafs}) => {
+          cy.visit(`${orgs}/${id}${telegrafs}`)
+        })
+      )
     })
 
     cy.get('[data-testid="resource-list--body"]', {timeout: PAGE_LOAD_SLA})

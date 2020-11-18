@@ -1,18 +1,15 @@
-import {Organization} from '../../src/types'
+import {Organization} from '../../../src/types'
 
 describe('labels', () => {
   beforeEach(() => {
     cy.flush()
 
-    cy.signin().then(({body}) => {
-      const {
-        org: {id},
-      } = body
-      cy.wrap(body.org).as('org')
-
-      cy.fixture('routes').then(({orgs}) => {
-        cy.visit(`${orgs}/${id}/settings/labels`)
-      })
+    cy.signin().then(() => {
+      cy.get('@org').then(({id}: Organization) =>
+        cy.fixture('routes').then(({orgs}) => {
+          cy.visit(`${orgs}/${id}/settings/labels`)
+        })
+      )
     })
   })
 
@@ -258,7 +255,7 @@ describe('labels', () => {
       {name: 'Lemur', description: 'Madagascar primate', color: '#BBBBBB'},
     ]
 
-    cy.get<Organization>('@org').then(({id}) => {
+    cy.get('@org').then(({id}: Organization) => {
       names.forEach(n => {
         cy.createLabel(n.name, id, {description: n.description, color: n.color})
       })

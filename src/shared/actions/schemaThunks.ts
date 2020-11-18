@@ -11,6 +11,7 @@ import {AppState, Bucket, GetState, RemoteDataState, Schema} from 'src/types'
 // Utils
 import {getOrg} from 'src/organizations/selectors'
 import {getSchemaByBucketName} from 'src/shared/selectors/schemaSelectors'
+import {formatTimeRangeArguments} from 'src/timeMachine/apis/queryBuilder'
 
 // Actions
 import {
@@ -24,11 +25,15 @@ import {notify, Action as NotifyAction} from 'src/shared/actions/notifications'
 import {getBucketsFailed} from 'src/shared/copy/notifications'
 import {TEN_MINUTES} from 'src/shared/reducers/schema'
 
+// Types
+import {TimeRange} from 'src/types'
+
 type Action = SchemaAction | NotifyAction
 
 export const fetchSchemaForBucket = async (
   bucket: Bucket,
-  orgID: string
+  orgID: string,
+  range: string
 ): Promise<Schema> => {
   /*
     -4d here is an arbitrary time range that fulfills the need to overfetch a bucket's meta data
@@ -41,7 +46,7 @@ export const fetchSchemaForBucket = async (
   */
 
   const text = `from(bucket: "${bucket.name}")
-  |> range(start: -4d)
+  |> range(${range})
   |> first()`
 
   const res = await runQuery(orgID, text)
@@ -75,10 +80,10 @@ export const startWatchDog = () => (dispatch: Dispatch<Action>) => {
   dispatch(resetSchema())
 }
 
-export const getAndSetBucketSchema = (bucket: Bucket) => async (
-  dispatch: Dispatch<Action>,
-  getState: GetState
-) => {
+export const getAndSetBucketSchema = (
+  bucket: Bucket,
+  timeRange: TimeRange
+) => async (dispatch: Dispatch<Action>, getState: GetState) => {
   try {
     const state = getState()
     let validCachedResult = null
@@ -94,7 +99,8 @@ export const getAndSetBucketSchema = (bucket: Bucket) => async (
     if (bucket.orgID) {
       orgID = bucket.orgID
     }
-    const schema = await fetchSchemaForBucket(bucket, orgID)
+    const timeRangeArguments = formatTimeRangeArguments(timeRange)
+    const schema = await fetchSchemaForBucket(bucket, orgID, timeRangeArguments)
     dispatch(setSchema(RemoteDataState.Done, bucket.name, schema))
   } catch (error) {
     console.error(error)

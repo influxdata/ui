@@ -2,6 +2,7 @@ import React, {ChangeEvent, FC, useContext} from 'react'
 import {
   Columns,
   ComponentStatus,
+  ComponentSize,
   Form,
   Grid,
   Input,
@@ -18,9 +19,10 @@ const CreateTaskBody: FC = () => {
 
   return (
     <>
-      <Grid.Column widthXS={Columns.Twelve}>
+      <Grid.Column widthXS={Columns.Six}>
         <Form.Element label="New Dashboard Name">
           <Input
+            size={ComponentSize.Medium}
             name="dashboard"
             placeholder="Name your dashboard"
             onChange={(event: ChangeEvent<HTMLInputElement>) =>
@@ -32,9 +34,10 @@ const CreateTaskBody: FC = () => {
           />
         </Form.Element>
       </Grid.Column>
-      <Grid.Column widthXS={Columns.Twelve}>
+      <Grid.Column widthXS={Columns.Six}>
         <Form.Element label="New Cell Name">
           <Input
+            size={ComponentSize.Medium}
             name="cell"
             placeholder="Name your cell"
             onChange={(event: ChangeEvent<HTMLInputElement>) =>

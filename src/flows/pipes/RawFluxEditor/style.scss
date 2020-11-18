@@ -15,10 +15,10 @@
   flex-direction: column;
   align-items: stretch;
   background-color: $g0-obsidian;
+  position: relative;
 }
 
 .query-results--pagination {
-  background-color: $g2-kevlar;
   flex: 0 0 45px;
   height: 45px;
   display: flex;

@@ -2,20 +2,28 @@
 import React, {FC, useContext, useCallback} from 'react'
 
 // Components
-import {Dropdown, IconFont} from '@influxdata/clockface'
+import {Dropdown, IconFont, Icon} from '@influxdata/clockface'
 
 // Contexts
 import {PipeContext} from 'src/flows/context/pipe'
+import {FlowContext} from 'src/flows/context/flow.current'
 
 // Constants
 import {FUNCTIONS, QueryFn} from 'src/timeMachine/constants/queryBuilder'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-
+import {millisecondsToDuration} from 'src/shared/utils/duration'
 const AggregateFunctionSelector: FC = () => {
+  const {flow} = useContext(FlowContext)
   const {data, update} = useContext(PipeContext)
   const selectedFunction = data?.aggregateFunction || FUNCTIONS[0]
+
+  const windowPeriod = flow?.range?.windowPeriod
+  let windowPeriodText = ''
+  if (windowPeriod) {
+    windowPeriodText = ` (${millisecondsToDuration(windowPeriod)})`
+  }
 
   const updateSelectedFunction = useCallback(
     (aggregateFunction: QueryFn): void => {
@@ -29,6 +37,15 @@ const AggregateFunctionSelector: FC = () => {
 
   const menuItems = (
     <>
+      <div className="data-source--agg-info">
+        <p>
+          {`The window period ${windowPeriodText} is determined by`}
+          <br />
+          <Icon glyph={IconFont.Clock} />
+          <strong>Time Range</strong>
+        </p>
+      </div>
+      <Dropdown.Divider />
       {FUNCTIONS.map(func => (
         <Dropdown.Item
           key={func.name}
@@ -50,7 +67,7 @@ const AggregateFunctionSelector: FC = () => {
       active={active}
       icon={IconFont.FunnelSolid}
     >
-      {selectedFunction.name}
+      {`${selectedFunction.name}${windowPeriodText}`}
     </Dropdown.Button>
   )
 

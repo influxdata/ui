@@ -125,7 +125,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     }
 
     if (loading === RemoteDataState.NotStarted) {
-      return 'This cell will visualize results from the previous cell'
+      return 'This cell will display results from the previous cell'
     }
 
     return 'No Data Returned'
@@ -134,6 +134,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
   return (
     <Context controls={controls} persistentControl={<ExportButton />}>
       <Resizer
+        loading={loading}
         resizingEnabled={!!results.raw}
         minimumHeight={200}
         emptyText={loadingText}

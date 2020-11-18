@@ -12,7 +12,7 @@ const FlowsExplainer: FC = () => (
     </Panel.Header>
     <Panel.Body>
       <p>
-        {PROJECT_NAME_PLURAL} is a tool to help you explore, visualize, and
+        {PROJECT_NAME_PLURAL} are a tool to help you explore, visualize, and
         process your data. Learn how to downsample data and other handy
         tutorials in the{' '}
         <a href="" target="_blank">

@@ -27,6 +27,7 @@ const TimeRangeDropdown: FC = () => {
       <StatelessTimeRangeDropdown
         timeRange={flow.range}
         onSetTimeRange={updateRange}
+        width={200}
       />
     )
   }, [flow, updateRange])

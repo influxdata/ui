@@ -4,6 +4,7 @@ import {
   ButtonType,
   ComponentColor,
   ComponentStatus,
+  IconFont,
 } from '@influxdata/clockface'
 
 // Components
@@ -36,6 +37,7 @@ const ExportTaskButton: FC = () => {
       status={data.bucket ? ComponentStatus.Default : ComponentStatus.Disabled}
       testID="task-form-save"
       style={{opacity: 1}}
+      icon={IconFont.Export}
       titleText={
         data.bucket ? 'Export As Task' : 'Select a bucket to enable export'
       }

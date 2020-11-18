@@ -8,9 +8,7 @@ import FlowCard from 'src/flows/components/FlowCard'
 
 const FlowCards = () => {
   const {flows} = useContext(FlowListContext)
-  // const floows = Object.entries(flows)
 
-  const floows = []
   return (
     <Grid>
       <Grid.Row>
@@ -21,7 +19,7 @@ const FlowCards = () => {
         >
           <ResourceList>
             <ResourceList.Body emptyState={<FlowsIndexEmpty />}>
-              {floows.map(([id, {name}]) => {
+              {Object.entries(flows).map(([id, {name}]) => {
                 return <FlowCard key={id} id={id} name={name} />
               })}
             </ResourceList.Body>

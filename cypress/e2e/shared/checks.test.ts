@@ -79,8 +79,11 @@ describe('Checks', () => {
     cy.getByTestID('create-deadman-check').click()
 
     cy.log('select measurement and field')
+    cy.getByTestID(`selector-list defbuck`).should('be.visible')
     cy.getByTestID(`selector-list defbuck`).click()
+    cy.getByTestID(`selector-list ${measurement}`).should('be.visible')
     cy.getByTestID(`selector-list ${measurement}`).click()
+    cy.getByTestID(`selector-list ${field}`).should('be.visible')
     cy.getByTestID(`selector-list ${field}`).click()
 
     cy.log('name the check; save')

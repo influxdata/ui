@@ -66,7 +66,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     })
   }
 
-  const dataExists = Object.entries(results.parsed).length
+  const dataExists = results.parsed && Object.entries(results.parsed).length
   const configureButtonStatus = dataExists
     ? ComponentStatus.Default
     : ComponentStatus.Disabled

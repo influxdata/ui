@@ -227,7 +227,9 @@ const SetOrg: FC<Props> = ({
         />
 
         {/* Users */}
-        <Route path={`${orgPath}/unity-users`} component={UsersPage} />
+        {CLOUD && isFlagEnabled('unity') && (
+          <Route path={`${orgPath}/unity-users`} component={UsersPage} />
+        )}
 
         {/* Members */}
         {!CLOUD && (

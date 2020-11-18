@@ -7,9 +7,13 @@ describe('Users Page', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.visit(`/orgs/${id}/unity-users`)
+        cy.turnOnFeature('unity').then(() => {
+          cy.visit(`/orgs/${id}/unity-users`)
+        })
       })
     })
+
+    cy.getByTestID('users-page--header').should('be.visible')
   })
 
   it('can CRUD Invites and Users', () => {

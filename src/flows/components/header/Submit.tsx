@@ -16,6 +16,8 @@ import {
   List,
   ButtonGroup,
 } from '@influxdata/clockface'
+import {useDispatch} from 'react-redux'
+
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
 import {QueryContext} from 'src/flows/context/query'
 import {FlowContext} from 'src/flows/context/flow.current'
@@ -28,6 +30,13 @@ import {PIPE_DEFINITIONS} from 'src/flows'
 import {event} from 'src/cloud/utils/reporting'
 import {cancelAllRunningQueries} from 'src/timeMachine/actions/queries'
 
+// Constants
+import {
+  notebookRunSuccess,
+  notebookRunFail,
+} from 'src/shared/copy/notifications'
+import {PROJECT_NAME} from 'src/flows'
+
 // Types
 import {RemoteDataState} from 'src/types'
 
@@ -37,6 +46,7 @@ import 'src/flows/components/header/Submit.scss'
 const fakeNotify = notify
 
 export const Submit: FC = () => {
+  const dispatch = useDispatch()
   const {query, generateMap} = useContext(QueryContext)
   const {runMode, setRunMode} = useContext(RunModeContext)
   const {flow} = useContext(FlowContext)
@@ -99,11 +109,13 @@ export const Submit: FC = () => {
     )
       .then(() => {
         event('Flow Submit Resolved')
+        dispatch(notify(notebookRunSuccess(runMode, PROJECT_NAME)))
 
         setLoading(RemoteDataState.Done)
       })
       .catch(e => {
         event('Flow Submit Resolved')
+        dispatch(notify(notebookRunFail(runMode, PROJECT_NAME)))
 
         // NOTE: this shouldn't fire, but lets wrap it for completeness
         setLoading(RemoteDataState.Error)

@@ -163,7 +163,8 @@ const Resizer: FC<Props> = ({
     }
   }
 
-  const resizerDiameter = visibility === 'visible' ? Math.min(100, height) : 30
+  const resizerDiameter =
+    visibility === 'visible' && resizingEnabled ? Math.min(100, height) : 30
 
   return (
     <div className={resizerContainerClass}>

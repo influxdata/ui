@@ -1,5 +1,5 @@
-import {Organization} from '../../src/types'
-import {users, invites} from '../../src/unity/api'
+import {Organization} from '../../../src/types'
+import {users, invites} from '../../../src/unity/api'
 
 describe('Users Page', () => {
   beforeEach(() => {

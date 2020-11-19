@@ -47,13 +47,15 @@ const CloudUpgradeButton: FC<StateProps & OwnProps> = ({
     [`${className}`]: className,
   })
 
-  const [iconVariant, setIconVariant] = useState<IconFont>(IconFont.Upgrade)
+  const [assignedIconVariant, setAssignedIconVariant] = useState<IconFont>(
+    IconFont.Upgrade
+  )
 
   useEffect(() => {
     const variantID = getExperimentVariantId('e44rY7GjQN-ASmGeWLs_pA')
 
     if (variantID) {
-      setIconVariant(
+      setAssignedIconVariant(
         [IconFont.Upgrade, IconFont.CrownSolid, IconFont.Star][variantID]
       )
     }
@@ -63,7 +65,7 @@ const CloudUpgradeButton: FC<StateProps & OwnProps> = ({
     <CloudOnly>
       {inView && (
         <LinkButton
-          icon={iconVariant}
+          icon={assignedIconVariant}
           className={cloudUpgradeButtonClass}
           color={ComponentColor.Success}
           size={size}

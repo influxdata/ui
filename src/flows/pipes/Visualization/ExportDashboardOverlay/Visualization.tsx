@@ -25,7 +25,6 @@ const Visualization: FC = () => {
   const [results, setResults] = useState(undefined)
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
   const {data} = useContext(PopupContext)
-  const dataQuery = data.query
   const {query} = useContext(QueryContext)
   const queryText = useRef<string>('')
 
@@ -39,11 +38,11 @@ const Visualization: FC = () => {
   useEffect(() => {
     // data.query gets updated often but doesn't actually change
     // this limits querying to when the query actually changes
-    if (dataQuery !== queryText.current || !queryText.current) {
-      queryText.current = dataQuery
+    if (!queryText.current) {
+      queryText.current = data.query
       queryAndSetResults()
     }
-  }, [dataQuery, queryAndSetResults])
+  }, [data, data.query, queryAndSetResults])
 
   let body = (
     <TechnoSpinner strokeWidth={ComponentSize.Small} diameterPixels={32} />

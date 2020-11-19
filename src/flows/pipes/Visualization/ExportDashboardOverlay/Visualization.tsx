@@ -1,5 +1,12 @@
 // Libraries
-import React, {FC, useCallback, useContext, useEffect, useState} from 'react'
+import React, {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+} from 'react'
 import {ComponentSize, TechnoSpinner} from '@influxdata/clockface'
 
 // Components
@@ -18,21 +25,25 @@ const Visualization: FC = () => {
   const [results, setResults] = useState(undefined)
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
   const {data} = useContext(PopupContext)
+  const dataQuery = data.query
   const {query} = useContext(QueryContext)
+  const queryText = useRef<string>('')
 
-  const queryAndSetResults = useCallback(
-    async (text: string) => {
-      setLoading(RemoteDataState.Loading)
-      const result = await query(text)
-      setLoading(RemoteDataState.Done)
-      setResults(result)
-    },
-    [setLoading, setResults, query]
-  )
+  const queryAndSetResults = useCallback(async () => {
+    setLoading(RemoteDataState.Loading)
+    const result = await query(queryText.current)
+    setLoading(RemoteDataState.Done)
+    setResults(result)
+  }, [setLoading, setResults, query])
 
   useEffect(() => {
-    queryAndSetResults(data.query)
-  }, [data.query, queryAndSetResults])
+    // data.query gets updated often but doesn't actually change
+    // this limits querying to when the query actually changes
+    if (dataQuery !== queryText.current || !queryText.current) {
+      queryText.current = dataQuery
+      queryAndSetResults()
+    }
+  }, [dataQuery, queryAndSetResults])
 
   let body = (
     <TechnoSpinner strokeWidth={ComponentSize.Small} diameterPixels={32} />

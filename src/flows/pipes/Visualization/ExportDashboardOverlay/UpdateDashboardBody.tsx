@@ -54,6 +54,7 @@ const UpdateDashboardBody: FC = () => {
                 handleSetCellName(event.target.value)
               }
               value={cellName}
+              size={ComponentSize.Medium}
               testID="dashboard-form-cellname"
               status={ComponentStatus.Default}
             />

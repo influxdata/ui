@@ -29,3 +29,16 @@
     margin-top: 0;
   }
 }
+
+.flow-visualization--script-preview {
+  position: relative;
+  width: 100%;
+}
+
+.flow-visualization--export-warning {
+  margin: $cf-marg-b 0;
+
+  > .cf-panel--body {
+    padding: $cf-marg-b $cf-marg-c;
+  }
+}

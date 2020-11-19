@@ -95,6 +95,7 @@ export const Provider: FC = ({children}) => {
     (dashboard: Dashboard): void => {
       if (dashboard?.id !== selectedDashboard?.id) {
         setDashboard(dashboard)
+        setSelectedDashboardError('')
         // reset the selected cell when the dashboard selection changes
         setCell(undefined)
         setCellName('')
@@ -102,8 +103,10 @@ export const Provider: FC = ({children}) => {
     },
     [setCell, selectedDashboard]
   )
+
   const handleSetCell = useCallback(
     (cell: View): void => {
+      setSelectedCellError('')
       setCell(cell)
     },
     [setCell]

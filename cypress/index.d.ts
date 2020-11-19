@@ -36,6 +36,11 @@ import {
 } from './support/commands'
 
 declare global {
+  interface Window extends Window {
+    influx: {
+      set: (flag: string, value: boolean) => void
+    }
+  }
   namespace Cypress {
     interface Chainable {
       signin: typeof signin

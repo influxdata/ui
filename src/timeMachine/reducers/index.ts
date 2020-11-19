@@ -1173,7 +1173,7 @@ export const buildActiveQuery = (draftState: TimeMachineState) => {
 
   if (isConfigValid(draftQuery.builderConfig)) {
     draftQuery.text = buildQuery(draftQuery.builderConfig)
-  } else if (!draftQuery.text) {
+  } else {
     draftQuery.text = ''
   }
 }

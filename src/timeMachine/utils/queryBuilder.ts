@@ -165,6 +165,10 @@ const convertTagsToFluxFunctionString = function convertTagsToFluxFunctionString
   }
 
   if (tag.aggregateFunctionType === 'group') {
+    if (!tag.values.length) {
+      return ''
+    }
+
     const quotedValues = tag.values.map(value => `"${value}"`) // wrap the value in double quotes
 
     if (quotedValues.length) {

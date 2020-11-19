@@ -15,7 +15,7 @@ import {PopupContext} from 'src/flows/context/popup'
 import {EditorType} from 'src/types'
 
 // Constants
-const MONACO_LINE_EL_CLASS = 'view-line'
+import {MONACO_LINE_HEIGHT} from 'src/shared/constants/fluxEditor'
 const MAX_PREVIEW_HEIGHT = 300
 
 const QueryTextPreview: FC = () => {
@@ -28,11 +28,10 @@ const QueryTextPreview: FC = () => {
 
   const {text, lineCount} = formatQueryText(data.query)
 
-  const {height} = document
-    .getElementsByClassName(MONACO_LINE_EL_CLASS)[0]
-    .getBoundingClientRect()
-
-  const heightPixels = Math.min(height * (lineCount + 1), MAX_PREVIEW_HEIGHT)
+  const heightPixels = Math.min(
+    MONACO_LINE_HEIGHT * (lineCount + 1),
+    MAX_PREVIEW_HEIGHT
+  )
 
   return (
     <Form.Element label="">

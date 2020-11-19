@@ -61,3 +61,5 @@ export const EXCLUDED_KEYS = [
 
 export const DEFAULT_SCRIPT =
   'from(db: "pick a db")\n\t|> filter(fn: (r) => r._measurement == "your value here")\n\t|> range(start: -1m)\n\t|> yield(name: "Results")\n\n'
+
+export const MONACO_LINE_HEIGHT = 22

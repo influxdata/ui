@@ -32,8 +32,10 @@ import {GTM_USER_REMOVED} from 'src/unity/constants'
 
 export const getUsersAndInvites = async (dispatch: Dispatch<Action>) => {
   try {
-    const userResp = await getOrgsUsers()
-    const inviteResp = await getOrgsInvites()
+    const [userResp, inviteResp] = await Promise.all([
+      getOrgsUsers(),
+      getOrgsInvites(),
+    ])
 
     if (userResp.status !== 200) {
       throw new Error(userResp.data.message)

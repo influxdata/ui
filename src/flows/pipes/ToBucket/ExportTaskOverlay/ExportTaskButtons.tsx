@@ -29,7 +29,7 @@ const ExportTaskButtons: FC = () => {
   } = useContext(Context)
   const {data, closeFn} = useContext(PopupContext)
 
-  const formattedQueryText = formatQueryText(data.query)
+  const {text} = formatQueryText(data.query)
 
   const dispatch = useDispatch()
 
@@ -44,7 +44,7 @@ const ExportTaskButtons: FC = () => {
     const variable: string = `option v = {\n  timeRangeStart: -${interval},\n  timeRangeStop: now()\n}`
     const preamble = `${variable}\n\n${taskOption}`
 
-    dispatch(saveNewScript(formattedQueryText, preamble))
+    dispatch(saveNewScript(text, preamble))
   }
 
   const onUpdate = () => {
@@ -61,7 +61,7 @@ const ExportTaskButtons: FC = () => {
 
     dispatch(
       updateTask({
-        script: formattedQueryText,
+        script: text,
         preamble,
         interval,
         task: selectedTask,

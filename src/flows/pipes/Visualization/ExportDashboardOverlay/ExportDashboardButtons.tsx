@@ -55,7 +55,7 @@ const ExportDashboardButtons: FC = () => {
   } = useContext(Context)
   const {data, closeFn} = useContext(PopupContext)
 
-  const formattedQueryText = formatQueryText(data.query)
+  const {text} = formatQueryText(data.query)
 
   const dispatch = useDispatch()
   const org = useSelector(getOrg)
@@ -69,7 +69,7 @@ const ExportDashboardButtons: FC = () => {
         ...data.properties,
         queries: [
           {
-            text: formattedQueryText,
+            text,
             editMode: 'advanced',
             name: '',
           },
@@ -103,7 +103,7 @@ const ExportDashboardButtons: FC = () => {
         ...data.properties,
         queries: [
           {
-            text: formattedQueryText,
+            text,
             editMode: 'advanced',
             name: '',
           },

@@ -30,7 +30,7 @@ export const GoogleOptimizeExperiment: FC<Props> = ({
   })
 
   if (variantID) {
-    return [original, ...variants][variantID]
+    return [original, ...variants][variantID] || original
   }
 
   return original

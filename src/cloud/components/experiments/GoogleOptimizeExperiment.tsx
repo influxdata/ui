@@ -2,7 +2,7 @@
 import {FC, useEffect, useState} from 'react'
 
 // Utils
-import {getExperimentVariantId} from 'src/cloud/utils/reporting'
+import {getExperimentVariantId} from 'src/cloud/utils/experiments'
 
 interface Props {
   /** Experiment ID found in the Measurements and Objectives section of the Google Optimize experiment Details page */
@@ -15,7 +15,7 @@ interface Props {
   variants: JSX.Element[]
 }
 
-const GoogleOptimizeExperiment: FC<Props> = ({
+export const GoogleOptimizeExperiment: FC<Props> = ({
   experimentID,
   activationEvent,
   original = null,
@@ -35,5 +35,3 @@ const GoogleOptimizeExperiment: FC<Props> = ({
 
   return original
 }
-
-export default GoogleOptimizeExperiment

@@ -25,7 +25,7 @@ import {
 import {AppState, OrgSetting} from 'src/types'
 
 // Utils
-import {getExperimentVariantId} from 'src/cloud/utils/reporting'
+import {getExperimentVariantId} from 'src/cloud/utils/experiments'
 
 interface StateProps {
   inView: boolean

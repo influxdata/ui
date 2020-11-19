@@ -19,7 +19,6 @@ import {
 } from '@influxdata/clockface'
 
 const ExportDashboardOverlay: FC = () => {
-
   return (
     <Overlay visible={true}>
       <Overlay.Container maxWidth={700}>

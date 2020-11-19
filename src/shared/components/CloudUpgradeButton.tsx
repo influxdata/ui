@@ -56,7 +56,8 @@ const CloudUpgradeButton: FC<StateProps & OwnProps> = ({
 
     if (variantID) {
       setAssignedIconVariant(
-        [IconFont.Upgrade, IconFont.CrownSolid, IconFont.Star][variantID] || IconFont.Upgrade
+        [IconFont.Upgrade, IconFont.CrownSolid, IconFont.Star][variantID] ||
+          IconFont.Upgrade
       )
     }
   })

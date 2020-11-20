@@ -48,7 +48,7 @@
     "cy": "CYPRESS_baseUrl=http://localhost:9999 cypress open",
     "cy:dev": "source ../monitor-ci/.env && CYPRESS_baseUrl=http://kubernetes.docker.internal:$PORT_HTTPS cypress open --config testFiles='{cloud,shared}/**/*.*'",
     "cy:dev-oss": "source ../monitor-ci/.env && CYPRESS_baseUrl=http://kubernetes.docker.internal:$PORT_HTTPS cypress open --config testFiles='{oss,shared}/**/*.*'",
-    "generate": "oats https://raw.githubusercontent.com/influxdata/influxdb/master/http/swagger.yml > ./src/client/generatedRoutes.ts",
+    "generate": "oats https://raw.githubusercontent.com/influxdata/influxdb/master/http/swagger.yml > ./src/client/generatedRoutes.ts && yarn unity",
     "unity": "oats ./src/client/unity.yml > ./src/client/unityRoutes.ts"
   },
   "author": "",
@@ -141,7 +141,7 @@
     "@influxdata/clockface": "2.3.5",
     "@influxdata/flux": "^0.5.1",
     "@influxdata/flux-lsp-browser": "^0.5.23",
-    "@influxdata/giraffe": "1.0.0",
+    "@influxdata/giraffe": "1.0.1",
     "@influxdata/influx": "0.5.5",
     "@influxdata/influxdb-templates": "0.9.0",
     "@influxdata/react-custom-scrollbars": "4.3.8",

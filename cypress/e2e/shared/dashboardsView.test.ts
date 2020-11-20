@@ -146,6 +146,35 @@ describe('Dashboard', () => {
       key: 'Escape',
     })
 
+    // Edit note cell
+    cy.getByTestID('cell-context--toggle')
+      .last()
+      .click()
+    cy.getByTestID('cell-context--note').click()
+
+    // Note cell
+    const noteText2 = 'changed text'
+    const headerPrefix2 = '-'
+
+    cy.getByTestID('note-editor--overlay').within(() => {
+      cy.get('.CodeMirror')
+        .then($codeMirror => {
+          const len = $codeMirror[0].innerText.length
+          cy.wrap($codeMirror).type('{backspace}'.repeat(len))
+        })
+        .type(`${headerPrefix2} ${noteText2}`)
+      cy.getByTestID('note-editor--preview').contains(noteText2)
+      cy.getByTestID('note-editor--preview').should(
+        'not.contain',
+        headerPrefix2
+      )
+
+      cy.getByTestID('save-note--button').click()
+    })
+
+    cy.getByTestID('cell Name this Cell').should('not.contain', noteText)
+    cy.getByTestID('cell Name this Cell').should('contain', noteText2)
+
     // Remove Note cell
     cy.getByTestID('cell-context--toggle')
       .last()

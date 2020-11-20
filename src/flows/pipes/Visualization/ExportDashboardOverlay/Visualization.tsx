@@ -20,9 +20,10 @@ import {checkResultsLength} from 'src/shared/utils/vis'
 
 // Types
 import {RemoteDataState, TimeZone} from 'src/types'
+import {FluxResult} from 'src/types/flows'
 
 const Visualization: FC = () => {
-  const [results, setResults] = useState(undefined)
+  const [results, setResults] = useState<FluxResult>(null)
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
   const {data} = useContext(PopupContext)
   const {query} = useContext(QueryContext)

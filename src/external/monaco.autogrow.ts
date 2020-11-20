@@ -38,4 +38,7 @@ export const registerAutogrow = editor => {
     updateEditorHeight() // typing
     requestAnimationFrame(updateEditorHeight) // folding
   })
+
+  // Set height on first render
+  updateEditorHeight()
 }

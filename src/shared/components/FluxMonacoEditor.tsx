@@ -82,21 +82,6 @@ const FluxEditorMonaco: FC<Props> = ({
     })
 
     if (autogrow) {
-      // This code sets the initial height of the editor so there is not
-      // jitter when the user focuses on the editor
-      // Options are stored via index
-      // You can't directly get the value by name
-      const lineHeightIndex = window.monaco.editor.EditorOption.lineHeight
-      const layoutInfoIndex = window.monaco.editor.EditorOption.layoutInfo
-
-      const lineCount = editor.getModel()?.getLineCount()
-      const lineHeight = editor.getOptions()['_values'][lineHeightIndex]
-
-      // Update layout to match lines
-      const height = lineCount * lineHeight
-      const {width} = editor.getOptions()['_values'][layoutInfoIndex]
-      editor.layout({height, width})
-
       registerAutogrow(editor)
     }
 

@@ -53,7 +53,7 @@ const ExportDashboardButtons: FC = () => {
   } = useContext(Context)
   const {data, closeFn} = useContext(PopupContext)
 
-  const {text} = formatQueryText(data.query)
+  const text = formatQueryText(data.query)
 
   const dispatch = useDispatch()
   const org = useSelector(getOrg)

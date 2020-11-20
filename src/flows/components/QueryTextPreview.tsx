@@ -13,12 +13,12 @@ import {PopupContext} from 'src/flows/context/popup'
 
 const QueryTextPreview: FC = () => {
   const {data} = useContext(PopupContext)
-  const {text} = formatQueryText(data.query)
+  const script = formatQueryText(data.query)
 
   return (
     <Form.Element label="">
       <FluxEditorMonaco
-        script={text}
+        script={script}
         onChangeScript={() => {}}
         readOnly
         autogrow

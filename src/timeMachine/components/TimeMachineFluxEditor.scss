@@ -28,6 +28,14 @@
   left: 0;
   width: 100%;
   height: 100%;
+
+  &.flux-editor--monaco__autogrow {
+    position: initial;
+    top: initial;
+    left: initial;
+    width: initial;
+    height: initial;
+  }
 }
 
 .time-machine-editor--embedded {

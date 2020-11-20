@@ -61,9 +61,9 @@ const CellsDropdown: FC = () => {
   if (cells.length) {
     menuItems = (
       <>
-        {cells.map(cell => (
+        {cells.map((cell, i) => (
           <Dropdown.Item
-            key={cell.name}
+            key={`${cell.name}${i}`}
             value={cell}
             onClick={cell => handleSetCell(cell)}
             selected={cell.name === selectedCell?.name}

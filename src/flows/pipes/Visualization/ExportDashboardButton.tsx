@@ -27,6 +27,7 @@ const ExportDashboardButton: FC = () => {
       query: queryText,
     })
   }
+
   const status = data.queryText
     ? ComponentStatus.Disabled
     : ComponentStatus.Default

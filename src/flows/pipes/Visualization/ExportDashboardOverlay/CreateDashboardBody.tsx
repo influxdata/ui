@@ -12,15 +12,21 @@ import {Context} from 'src/flows/pipes/Visualization/ExportDashboardOverlay/cont
 const CreateTaskBody: FC = () => {
   const {
     cellName,
+    cellNameError,
     handleSetCellName,
     handleSetDashboardName,
     dashboardName,
+    dashboardNameError,
   } = useContext(Context)
 
   return (
     <>
       <Grid.Column widthXS={Columns.Six}>
-        <Form.Element label="New Dashboard Name">
+        <Form.Element
+          label="New Dashboard Name"
+          required={true}
+          errorMessage={dashboardNameError}
+        >
           <Input
             size={ComponentSize.Medium}
             name="dashboard"
@@ -30,12 +36,20 @@ const CreateTaskBody: FC = () => {
             }
             value={dashboardName}
             testID="dashboard-form-name"
-            status={ComponentStatus.Default}
+            status={
+              dashboardNameError
+                ? ComponentStatus.Error
+                : ComponentStatus.Default
+            }
           />
         </Form.Element>
       </Grid.Column>
       <Grid.Column widthXS={Columns.Six}>
-        <Form.Element label="New Cell Name">
+        <Form.Element
+          label="New Cell Name"
+          required={true}
+          errorMessage={cellNameError}
+        >
           <Input
             size={ComponentSize.Medium}
             name="cell"
@@ -45,7 +59,9 @@ const CreateTaskBody: FC = () => {
             }
             value={cellName}
             testID="dashboard-form-cellname"
-            status={ComponentStatus.Default}
+            status={
+              cellNameError ? ComponentStatus.Error : ComponentStatus.Default
+            }
           />
         </Form.Element>
       </Grid.Column>

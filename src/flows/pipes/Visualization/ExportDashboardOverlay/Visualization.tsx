@@ -13,15 +13,16 @@ import {checkResultsLength} from 'src/shared/utils/vis'
 
 // Types
 import {RemoteDataState, TimeZone} from 'src/types'
+import {FluxResult} from 'src/types/flows'
 
 const Visualization: FC = () => {
-  const [results, setResults] = useState(undefined)
+  const [results, setResults] = useState<FluxResult>(null)
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
   const {data} = useContext(PopupContext)
   const {query} = useContext(QueryContext)
 
   const queryAndSetResults = useCallback(
-    async (text: string) => {
+    async text => {
       setLoading(RemoteDataState.Loading)
       const result = await query(text)
       setLoading(RemoteDataState.Done)
@@ -32,7 +33,7 @@ const Visualization: FC = () => {
 
   useEffect(() => {
     queryAndSetResults(data.query)
-  }, [data.query, queryAndSetResults])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   let body = (
     <TechnoSpinner strokeWidth={ComponentSize.Small} diameterPixels={32} />

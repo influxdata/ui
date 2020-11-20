@@ -1,25 +1,28 @@
+// Libraries
 import React, {FC, useContext} from 'react'
+
+// Components
 import {Form} from '@influxdata/clockface'
-import FluxEditor from 'src/shared/components/FluxMonacoEditor'
+import FluxEditorMonaco from 'src/shared/components/FluxMonacoEditor'
+
+// Utils
 import {formatQueryText} from 'src/flows/shared/utils'
+
+// Contexts
 import {PopupContext} from 'src/flows/context/popup'
 
 const QueryTextPreview: FC = () => {
   const {data} = useContext(PopupContext)
-
-  const formattedQueryText = formatQueryText(data.query)
+  const script = formatQueryText(data.query)
 
   return (
-    <Form.Element label="" style={{height: 300, position: 'relative'}}>
-      <div className="flux-editor">
-        <div className="flux-editor--left-panel">
-          <FluxEditor
-            script={formattedQueryText}
-            onChangeScript={() => {}}
-            readOnly={true}
-          />
-        </div>
-      </div>
+    <Form.Element label="">
+      <FluxEditorMonaco
+        script={script}
+        onChangeScript={() => {}}
+        readOnly
+        autogrow
+      />
     </Form.Element>
   )
 }

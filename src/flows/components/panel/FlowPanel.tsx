@@ -176,7 +176,7 @@ const FlowPanel: FC<Props> = ({id, children, controls, persistentControl}) => {
             controls={controls}
             persistentControl={persistentControl}
           />
-          <div className="flow-panel--body">{children}</div>
+          {isVisible && <div className="flow-panel--body">{children}</div>}
           {showResults && (
             <div className="flow-panel--results">
               <Results />

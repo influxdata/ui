@@ -19,7 +19,14 @@ import {
 import {hasNoDashboards as hasNoDashboardsSelector} from 'src/dashboards/selectors'
 
 const UpdateDashboardBody: FC = () => {
-  const {cellName, handleSetCellName, selectedCell} = useContext(Context)
+  const {
+    cellName,
+    cellNameError,
+    handleSetCellName,
+    selectedCell,
+    selectedCellError,
+    selectedDashboardError,
+  } = useContext(Context)
 
   const hasNoDashboards = useSelector(hasNoDashboardsSelector)
 
@@ -35,18 +42,30 @@ const UpdateDashboardBody: FC = () => {
   return (
     <>
       <Grid.Column widthXS={Columns.Six}>
-        <Form.Element label="Destination Dashboard">
+        <Form.Element
+          label="Destination Dashboard"
+          required={true}
+          errorMessage={selectedDashboardError}
+        >
           <DashboardDropdown />
         </Form.Element>
       </Grid.Column>
       <Grid.Column widthXS={Columns.Six}>
-        <Form.Element label="Destination Cell">
+        <Form.Element
+          label="Destination Cell"
+          required={true}
+          errorMessage={selectedCellError}
+        >
           <CellsDropdown />
         </Form.Element>
       </Grid.Column>
       {selectedCell && selectedCell.id === CREATE_CELL && (
         <Grid.Column widthXS={Columns.Twelve}>
-          <Form.Element label="New Cell Name">
+          <Form.Element
+            label="New Cell Name"
+            required={true}
+            errorMessage={cellNameError}
+          >
             <Input
               name="cell"
               placeholder="Name your cell"
@@ -54,6 +73,7 @@ const UpdateDashboardBody: FC = () => {
                 handleSetCellName(event.target.value)
               }
               value={cellName}
+              size={ComponentSize.Medium}
               testID="dashboard-form-cellname"
               status={ComponentStatus.Default}
             />

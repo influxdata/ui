@@ -19,9 +19,6 @@ import {OnChangeScript} from 'src/types/flux'
 import {EditorType} from 'src/types'
 import {editor as monacoEditor} from 'monaco-editor'
 
-// Constants
-import {MONACO_LINE_HEIGHT} from 'src/shared/constants/fluxEditor'
-
 import './FluxMonacoEditor.scss'
 import {Diagnostic} from 'monaco-languageclient/lib/services'
 
@@ -127,7 +124,6 @@ const FluxEditorMonaco: FC<Props> = ({
         onChange={onChange}
         options={{
           fontSize: 13,
-          lineHeight: MONACO_LINE_HEIGHT,
           fontFamily: '"IBMPlexMono", monospace',
           cursorWidth: 2,
           lineNumbersMinChars: 4,

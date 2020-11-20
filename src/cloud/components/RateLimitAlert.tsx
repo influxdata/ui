@@ -15,8 +15,8 @@ import {
   BannerPanel,
 } from '@influxdata/clockface'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
-import {GoogleOptimizeExperiment} from './experiments/GoogleOptimizeExperiment'
-import {CustomerSuccessLinkHeader} from './experiments/variants/CustomerSuccessLinkHeader'
+import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
+import {CustomerSuccessLinkHeader} from 'src/cloud/components/experiments/variants/CustomerSuccessLinkHeader'
 
 // Utils
 import {

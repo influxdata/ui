@@ -70,8 +70,8 @@ export const fetchSchemaForBucket = async (
 
     const out = fromFlux(raw.csv).table as any
     const len = out.length
-    const measurements = out.columns._measurement.data
-    const fields = out.columns._field.data
+    const measurements = out.columns._measurement?.data
+    const fields = out.columns._field?.data
     const columns = out.columnKeys.filter(key => {
       return filtered.reduce((acc, curr) => {
         return acc && !curr.test(key)

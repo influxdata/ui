@@ -20,7 +20,7 @@ const QueryTextPreview: FC = () => {
       <FluxEditorMonaco
         script={text}
         onChangeScript={() => {}}
-        readOnly={true}
+        readOnly
         autogrow
       />
     </Form.Element>

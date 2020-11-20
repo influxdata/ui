@@ -33,8 +33,7 @@ const Visualization: FC = () => {
 
   useEffect(() => {
     queryAndSetResults(data.query)
-    // Ignore the ts warning, this needs to run only once
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   let body = (
     <TechnoSpinner strokeWidth={ComponentSize.Small} diameterPixels={32} />

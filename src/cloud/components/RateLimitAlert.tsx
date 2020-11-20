@@ -84,7 +84,7 @@ const RateLimitAlert: FC<Props> = ({
         original={
           <CloudUpgradeButton className="upgrade-payg--button__header" />
         }
-        variants={[<CustomerSuccessLinkHeader />]}
+        variants={[<CustomerSuccessLinkHeader key="v1" />]}
       />
     )
   }

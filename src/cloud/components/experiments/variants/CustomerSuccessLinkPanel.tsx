@@ -24,7 +24,7 @@ export const CustomerSuccessLinkPanel: FC<{}> = () => {
           shape={ButtonShape.Default}
           size={ComponentSize.Small}
           text="Speak with an Expert"
-          href="https://calendly.com/c/EDCUW4IQ7Z4ZWYSB"
+          href="https://calendly.com/c/DFDSVZN2HL475XUF"
           target="_blank"
         />
       </Panel.Body>

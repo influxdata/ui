@@ -62,7 +62,7 @@ class ResourceLists extends PureComponent<Props> {
         </Panel>
         <GoogleOptimizeExperiment
           experimentID="hABJwA89QlyQFi6QGBIysg"
-          variants={[<CustomerSuccessLinkPanel />]}
+          variants={[<CustomerSuccessLinkPanel key="v1" />]}
         />
       </FlexBox>
     )

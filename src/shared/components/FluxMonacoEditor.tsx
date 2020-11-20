@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, useRef, useState} from 'react'
 import {ProtocolToMonacoConverter} from 'monaco-languageclient/lib/monaco-converter'
+import classnames from 'classnames'
 
 // Components
 import MonacoEditor from 'react-monaco-editor'
@@ -50,6 +51,10 @@ const FluxEditorMonaco: FC<Props> = ({
   const [editorInst, seteditorInst] = useState<EditorType | null>(null)
   const [docVersion, setdocVersion] = useState(2)
   const [docURI, setDocURI] = useState('')
+
+  const wrapperClassName = classnames('flux-editor--monaco', {
+    'flux-editor--monaco__autogrow': autogrow,
+  })
 
   const updateDiagnostics = (diagnostics: Diagnostic[]) => {
     if (editorInst) {
@@ -129,7 +134,7 @@ const FluxEditorMonaco: FC<Props> = ({
   }
 
   return (
-    <div className="flux-editor--monaco" data-testid="flux-editor">
+    <div className={wrapperClassName} data-testid="flux-editor">
       <MonacoEditor
         language={FLUXLANGID}
         theme={THEME_NAME}

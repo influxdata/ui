@@ -16,12 +16,12 @@ import {
   Grid,
   ButtonType,
 } from '@influxdata/clockface'
-import AnnotationSummaryInput from 'src/annotations/components/annotationForm/AnnotationSummaryInput'
-import AnnotationTimeStartInput from 'src/annotations/components/annotationForm/AnnotationTimeStartInput'
-import AnnotationTimeStopInput from 'src/annotations/components/annotationForm/AnnotationTimeStopInput'
-import AnnotationMessageInput from 'src/annotations/components/annotationForm/AnnotationMessageInput'
-import AnnotationTypeToggle from 'src/annotations/components/annotationForm/AnnotationTypeToggle'
-import AnnotationStreamSelector from 'src/annotations/components/annotationForm/AnnotationStreamSelector'
+import {AnnotationSummaryInput} from 'src/annotations/components/annotationForm/AnnotationSummaryInput'
+import {AnnotationTimeStartInput} from 'src/annotations/components/annotationForm/AnnotationTimeStartInput'
+import {AnnotationTimeStopInput} from 'src/annotations/components/annotationForm/AnnotationTimeStopInput'
+import {AnnotationMessageInput} from 'src/annotations/components/annotationForm/AnnotationMessageInput'
+import {AnnotationTypeToggle} from 'src/annotations/components/annotationForm/AnnotationTypeToggle'
+import {AnnotationStreamSelector} from 'src/annotations/components/annotationForm/AnnotationStreamSelector'
 
 // Form State
 import {
@@ -53,7 +53,7 @@ export const AnnotationFormContext = createContext<AnnotationContextType>(
   DEFAULT_ANNOTATION_CONTEXT
 )
 
-const AnnotationForm: FC<Props> = ({
+export const AnnotationForm: FC<Props> = ({
   title,
   type,
   timeStart,
@@ -126,5 +126,3 @@ const AnnotationForm: FC<Props> = ({
     </AnnotationFormContext.Provider>
   )
 }
-
-export default AnnotationForm

@@ -26,8 +26,8 @@ describe('Checks', () => {
   })
 
   it('can validate a threshold check', () => {
+    cy.log('Create threshold check')
     cy.getByTestID('create-check').click()
-
     cy.getByTestID('create-threshold-check').click()
     // added test to disable group on check query builder
     cy.getByTestID('dropdown--button')
@@ -38,19 +38,58 @@ describe('Checks', () => {
       .wait(1200)
       .click()
 
+    cy.log(
+      'Select measurement and field; assert checklist popover and save button'
+    )
+    cy.get('.query-checklist--popover').should('be.visible')
+    cy.getByTestID('save-cell--button').should('be.disabled')
     cy.getByTestID(`selector-list ${measurement}`).click()
-
-    cy.getByTestID('save-cell--button').should('be.disabled')
-
     cy.getByTestID(`selector-list ${field}`).click()
-
+    cy.get('.query-checklist--popover').should('be.visible')
     cy.getByTestID('save-cell--button').should('be.disabled')
 
+    cy.log('Assert "Window Period" placeholder')
+    cy.get('.duration-input').within(() => {
+      cy.getByTitle('This input is disabled').should('have.value', 'auto (1m)')
+    })
+
+    cy.log(
+      'Navigate to "Configure Check" tab; add threshold condition; assert checklist popover and save button'
+    )
     cy.getByTestID('checkeo--header alerting-tab').click()
-
     cy.getByTestID('add-threshold-condition-WARN').click()
-
+    cy.get('.query-checklist--popover').should('not.visible')
     cy.getByTestID('save-cell--button').should('be.enabled')
+
+    cy.log(
+      'Change "Schedule Every" parameter and assert its change in "Window Period" placeholder'
+    )
+    cy.getByTestID('schedule-check')
+      .clear()
+      .type('135s')
+    cy.getByTestID('select-group--option').click()
+    cy.get('.duration-input').within(() => {
+      cy.getByTitle('This input is disabled').should(
+        'have.value',
+        'auto (135s)'
+      )
+    })
+
+    cy.log('Name the check; save')
+    cy.getByTestID('overlay').within(() => {
+      cy.getByTestID('page-title')
+        .contains('Name this Check')
+        .click()
+      cy.getByTestID('renamable-page-title--input')
+        .clear()
+        .type('Threshold check test{enter}')
+    })
+    cy.getByTestID('save-cell--button').click()
+
+    cy.log('Assert the check card')
+    cy.getByTestID('check-card--name')
+      .contains('Threshold check test')
+      .should('exist')
   })
 
   it('can create and filter checks', () => {

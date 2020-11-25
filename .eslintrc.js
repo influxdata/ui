@@ -31,7 +31,7 @@ module.exports = {
   rules: {
     'spaced-comment': ['error', 'always'],
     curly: ['error', 'all'],
-    'no-console': ['error', {allow: ['warn', 'error']}],
+    'no-console': ['error', {allow: ['warn', 'error', 'info']}],
     'no-empty': 'off',
     'getter-return': 'off',
     'no-extra-boolean-cast': 'off',

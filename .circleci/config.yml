@@ -379,7 +379,69 @@ jobs:
           name: 'Save Yarn Package Cache'
           paths:
             - ~/.cache/yarn
-
+  cloud-lighthouse:
+    machine:
+      image: ubuntu-2004:202008-01
+      docker_layer_caching: true
+    parallelism: 10
+    working_directory: ~/
+    resource_class: large
+    steps:
+      - restore_cache:
+          key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
+      - checkout:
+          path: ./ui
+      - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
+      - run:
+          name: Grab compose files
+          command: git clone git@github.com:influxdata/monitor-ci.git
+      - run:
+          name: Update the images we're using
+          command: |
+            cd ./monitor-ci && make update && make build NODE=cypress && make build NODE=ingress
+            docker load < ~/docker-cache/image.tar
+            docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
+      - run:
+          name: Copy over the testing variables
+          command: |
+            cp ./monitor-ci/env.testing ./monitor-ci/.env;
+            sed -i -e 's/INGRESS_HOST=.*/INGRESS_HOST=kubernetes.docker.internal/g' ./monitor-ci/.env;
+            sed -i -e 's/DEV_MODE_CYPRESS=1/DEV_MODE_CYPRESS=0/g' ./monitor-ci/.env;
+      - run:
+          name: Install packages
+          command: |
+            cd ./ui
+            yarn
+      - run:
+          name: Add ingress entry to /etc/hosts
+          command: |
+            grep -qxF '0.0.0.0 ingress' /etc/hosts || sudo -- sh -c "echo '0.0.0.0 ingress' >> /etc/hosts";
+            grep -qxF '127.0.0.1 ingress' /etc/hosts || sudo -- sh -c "echo '127.0.0.1 ingress' >> /etc/hosts";
+            grep -qxF '0.0.0.0 kubernetes.docker.internal' /etc/hosts || sudo -- sh -c "echo '0.0.0.0 kubernetes.docker.internal' >> /etc/hosts";
+            grep -qxF '127.0.0.1 kubernetes.docker.internal' /etc/hosts || sudo -- sh -c "echo '127.0.0.1 kubernetes.docker.internal' >> /etc/hosts";
+      - run:
+          name: Start the cluster
+          command: cd ./monitor-ci; make start;
+      - run:
+          name: Run lighthouse
+          no_output_timeout: 10m
+          command: |
+            DEX_USERNAME=$(cat ./monitor-ci/.env | grep DEFAULT_USER= | cut -d '=' -f2);
+            DEX_PASSWORD=$(cat ./monitor-ci/.env | grep DEFAULT_PASSWORD= | cut -d '=' -f2);
+            DEX_PORT_HTTPS=$(cat ./monitor-ci/.env | grep PORT_HTTPS= | cut -d '=' -f2);
+            DEX_INGRESS_HOST=$(cat ./monitor-ci/.env | grep INGRESS_HOST= | cut -d '=' -f2);
+            ./ui/lighthouse/waitScript.sh $DEX_INGRESS_HOST $DEX_PORT_HTTPS;
+            node ./ui/lighthouse/login.js \
+              --username $DEX_USERNAME \
+              --password $DEX_PASSWORD \
+              --port $DEX_PORT_HTTPS \
+              --host $DEX_INGRESS_HOST \
+              --pr $CIRCLE_PULL_REQUEST \
+              --token $HERCULES_TOKEN;
+      - store_artifacts:
+          path: ui/lighthouse/artifacts/results.html
+      - store_artifacts:
+          path: ui/lighthouse/artifacts/results.json
 workflows:
   version: 2
   build:
@@ -393,6 +455,9 @@ workflows:
                 - master
       - unit
       - lint
+      - cloud-lighthouse:
+          requires:
+            - build-image
       - cloud-e2e:
           requires:
             - build-image

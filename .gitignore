@@ -21,3 +21,6 @@ junit.xml
 npm-error.log
 src/client/generatedRoutes.ts
 src/client/unityRoutes.ts
+
+# lighthouse artifacts
+lighthouse/artifacts/results.*

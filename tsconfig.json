@@ -39,7 +39,8 @@
     "src/**/*.test.ts",
     "src/**/*.test.tsx",
     "src/**/mocks.ts",
-    "coverage"
+    "coverage",
+    "lighthouse"
   ],
   "include": [
     "src/**/*.ts",

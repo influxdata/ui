@@ -38,6 +38,8 @@ import {NotificationRuleDraft, Label, AlertHistoryType} from 'src/types'
 
 // Utilities
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
+import {ErrorHandling} from "../../../shared/decorators/errors";
+import ErrorBoundary from "../../../shared/components/ErrorBoundary";
 
 interface OwnProps {
   rule: NotificationRuleDraft
@@ -46,6 +48,7 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & RouteComponentProps<{orgID: string}> & ReduxProps
 
+@ErrorHandling
 const RuleCard: FC<Props> = ({
   rule,
   onUpdateRuleProperties,
@@ -114,70 +117,72 @@ const RuleCard: FC<Props> = ({
   }
 
   return (
-    <ResourceCard
-      key={`rule-id--${id}`}
-      testID={`rule-card ${name}`}
-      disabled={activeStatus === 'inactive'}
-      direction={FlexDirection.Row}
-      alignItems={AlignItems.Center}
-      margin={ComponentSize.Large}
-      contextMenu={
-        <NotificationRuleCardContext
-          onView={onView}
-          onClone={onClone}
-          onDelete={onDelete}
-        />
-      }
-    >
-      <FlexBox
-        direction={FlexDirection.Column}
-        justifyContent={JustifyContent.Center}
-        margin={ComponentSize.Medium}
-        alignItems={AlignItems.FlexStart}
-      >
-        <SlideToggle
-          active={activeStatus === 'active'}
-          size={ComponentSize.ExtraSmall}
-          onChange={onToggle}
-          testID="rule-card--slide-toggle"
-          style={{flexBasis: '16px'}}
-        />
-        <LastRunTaskStatus
-          key={2}
-          lastRunError={lastRunError}
-          lastRunStatus={lastRunStatus}
-        />
-      </FlexBox>
-      <FlexBox
-        direction={FlexDirection.Column}
-        margin={ComponentSize.Small}
-        alignItems={AlignItems.FlexStart}
-      >
-        <ResourceCard.EditableName
-          onUpdate={onUpdateName}
-          onClick={onRuleClick}
-          name={name}
-          noNameString={DEFAULT_NOTIFICATION_RULE_NAME}
-          testID="rule-card--name"
-          buttonTestID="rule-card--name-button"
-          inputTestID="rule-card--input"
-        />
-        <ResourceCard.EditableDescription
-          onUpdate={onUpdateDescription}
-          description={description}
-          placeholder={`Describe ${name}`}
-        />
-        <ResourceCard.Meta>
-          <>Last completed at {latestCompleted}</>
-          <>{relativeTimestampFormatter(rule.updatedAt, 'Last updated ')}</>
-        </ResourceCard.Meta>
-        <InlineLabels
-          selectedLabelIDs={rule.labels}
-          onAddLabel={handleAddRuleLabel}
-          onRemoveLabel={handleRemoveRuleLabel}
-        />
-      </FlexBox>
-    </ResourceCard>
+      <ErrorBoundary>
+        <ResourceCard
+            key={`rule-id--${id}`}
+            testID={`rule-card ${name}`}
+            disabled={activeStatus === 'inactive'}
+            direction={FlexDirection.Row}
+            alignItems={AlignItems.Center}
+            margin={ComponentSize.Large}
+            contextMenu={
+              <NotificationRuleCardContext
+                  onView={onView}
+                  onClone={onClone}
+                  onDelete={onDelete}
+              />
+            }
+        >
+          <FlexBox
+              direction={FlexDirection.Column}
+              justifyContent={JustifyContent.Center}
+              margin={ComponentSize.Medium}
+              alignItems={AlignItems.FlexStart}
+          >
+            <SlideToggle
+                active={activeStatus === 'active'}
+                size={ComponentSize.ExtraSmall}
+                onChange={onToggle}
+                testID="rule-card--slide-toggle"
+                style={{flexBasis: '16px'}}
+            />
+            <LastRunTaskStatus
+                key={2}
+                lastRunError={lastRunError}
+                lastRunStatus={lastRunStatus}
+            />
+          </FlexBox>
+          <FlexBox
+              direction={FlexDirection.Column}
+              margin={ComponentSize.Small}
+              alignItems={AlignItems.FlexStart}
+          >
+            <ResourceCard.EditableName
+                onUpdate={onUpdateName}
+                onClick={onRuleClick}
+                name={name}
+                noNameString={DEFAULT_NOTIFICATION_RULE_NAME}
+                testID="rule-card--name"
+                buttonTestID="rule-card--name-button"
+                inputTestID="rule-card--input"
+            />
+            <ResourceCard.EditableDescription
+                onUpdate={onUpdateDescription}
+                description={description}
+                placeholder={`Describe ${name}`}
+            />
+            <ResourceCard.Meta>
+              <>Last completed at {latestCompleted}</>
+              <>{relativeTimestampFormatter(rule.updatedAt, 'Last updated ')}</>
+            </ResourceCard.Meta>
+            <InlineLabels
+                selectedLabelIDs={rule.labels}
+                onAddLabel={handleAddRuleLabel}
+                onRemoveLabel={handleRemoveRuleLabel}
+            />
+          </FlexBox>
+        </ResourceCard>
+      </ErrorBoundary>
   )
 }
 

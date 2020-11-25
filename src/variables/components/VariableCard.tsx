@@ -16,6 +16,8 @@ import {
   addVariableLabelAsync,
   removeVariableLabelAsync,
 } from 'src/variables/actions/thunks'
+import {ErrorHandling} from "../../shared/decorators/errors";
+import ErrorBoundary from "../../shared/components/ErrorBoundary";
 
 interface OwnProps {
   variable: Variable
@@ -27,6 +29,7 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
+@ErrorHandling
 class VariableCard extends PureComponent<
   Props & RouteComponentProps<{orgID: string}>
 > {
@@ -34,27 +37,29 @@ class VariableCard extends PureComponent<
     const {variable, onDeleteVariable} = this.props
 
     return (
-      <ResourceCard
-        testID="resource-card variable"
-        contextMenu={
-          <VariableContextMenu
-            variable={variable}
-            onExport={this.handleExport}
-            onRename={this.handleRenameVariable}
-            onDelete={onDeleteVariable}
-          />
-        }
-      >
-        <ResourceCard.Name
-          onClick={this.handleNameClick}
-          name={variable.name}
-          testID={`variable-card--name ${variable.name}`}
-        />
-        <ResourceCard.Meta>
-          <>Type: {variable.arguments.type}</>
-        </ResourceCard.Meta>
-        {this.labels}
-      </ResourceCard>
+        <ErrorBoundary>
+          <ResourceCard
+              testID="resource-card variable"
+              contextMenu={
+                <VariableContextMenu
+                    variable={variable}
+                    onExport={this.handleExport}
+                    onRename={this.handleRenameVariable}
+                    onDelete={onDeleteVariable}
+                />
+              }
+          >
+            <ResourceCard.Name
+                onClick={this.handleNameClick}
+                name={variable.name}
+                testID={`variable-card--name ${variable.name}`}
+            />
+            <ResourceCard.Meta>
+              <>Type: {variable.arguments.type}</>
+            </ResourceCard.Meta>
+            {this.labels}
+          </ResourceCard>
+        </ErrorBoundary>
     )
   }
 

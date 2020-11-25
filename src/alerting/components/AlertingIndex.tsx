@@ -23,11 +23,14 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Types
 import {ResourceType} from 'src/types'
+import {ErrorHandling} from "../../shared/decorators/errors";
+import ErrorBoundary from "../../shared/components/ErrorBoundary";
 
 const alertsPath = '/orgs/:orgID/alerting'
 
 type ActiveColumn = 'checks' | 'endpoints' | 'rules'
 
+@ErrorHandling
 const AlertingIndex: FunctionComponent = () => {
   const [activeColumn, setActiveColumn] = useState<ActiveColumn>('checks')
 
@@ -42,7 +45,9 @@ const AlertingIndex: FunctionComponent = () => {
       <Page titleTag={pageTitleSuffixer(['Alerts'])}>
         <Page.Header fullWidth={true} testID="alerts-page--header">
           <Page.Title title="Alerts" />
-          <RateLimitAlert />
+          <ErrorBoundary>
+            <RateLimitAlert/>
+          </ErrorBoundary>
         </Page.Header>
         <Page.Contents
           fullWidth={true}
@@ -51,6 +56,7 @@ const AlertingIndex: FunctionComponent = () => {
         >
           <GetResources resources={[ResourceType.Labels, ResourceType.Buckets]}>
             <GetAssetLimits>
+
               <SelectGroup
                 className="alerting-index--selector"
                 shape={ButtonShape.StretchToFit}
@@ -91,13 +97,19 @@ const AlertingIndex: FunctionComponent = () => {
               </SelectGroup>
               <div className="alerting-index--columns">
                 <GetResources resources={[ResourceType.Checks]}>
-                  <ChecksColumn tabIndex={1} />
+                  <ErrorBoundary>
+                    <ChecksColumn tabIndex={1}/>
+                  </ErrorBoundary>
                 </GetResources>
                 <GetResources resources={[ResourceType.NotificationEndpoints]}>
-                  <EndpointsColumn tabIndex={2} />
+                  <ErrorBoundary>
+                    <EndpointsColumn tabIndex={2}/>
+                  </ErrorBoundary>
                 </GetResources>
                 <GetResources resources={[ResourceType.NotificationRules]}>
-                  <RulesColumn tabIndex={3} />
+                  <ErrorBoundary>
+                    <RulesColumn tabIndex={3}/>
+                  </ErrorBoundary>
                 </GetResources>
               </div>
             </GetAssetLimits>

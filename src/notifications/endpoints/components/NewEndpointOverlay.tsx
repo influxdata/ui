@@ -14,7 +14,7 @@ import EndpointOverlayContents from 'src/notifications/endpoints/components/Endp
 // Constants
 import {NEW_ENDPOINT_DRAFT} from 'src/alerting/constants'
 import {NotificationEndpoint} from 'src/types'
-import ErrorBoundary from "../../../shared/components/ErrorBoundary";
+import ErrorBoundary from '../../../shared/components/ErrorBoundary'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = RouteComponentProps<{orgID: string}> & ReduxProps
@@ -40,13 +40,13 @@ const NewRuleOverlay: FC<Props> = ({match, history, onCreateEndpoint}) => {
         <Overlay.Container maxWidth={666}>
           <ErrorBoundary>
             <Overlay.Header
-                title="Create a Notification Endpoint"
-                onDismiss={handleDismiss}
+              title="Create a Notification Endpoint"
+              onDismiss={handleDismiss}
             />
             <EndpointOverlayContents
-                onSave={handleCreateEndpoint}
-                onCancel={handleDismiss}
-                saveButtonText="Create Notification Endpoint"
+              onSave={handleCreateEndpoint}
+              onCancel={handleDismiss}
+              saveButtonText="Create Notification Endpoint"
             />
           </ErrorBoundary>
         </Overlay.Container>

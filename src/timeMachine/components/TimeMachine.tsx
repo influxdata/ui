@@ -16,7 +16,7 @@ import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 
 // Types
 import {AppState, TimeMachineTab} from 'src/types'
-import ErrorBoundary from "../../shared/components/ErrorBoundary";
+import ErrorBoundary from '../../shared/components/ErrorBoundary'
 
 const INITIAL_RESIZER_HANDLE = 0.5
 
@@ -61,8 +61,8 @@ const TimeMachine: FunctionComponent<StateProps> = ({
           <DraggableResizer.Panel>
             <ErrorBoundary>
               <div
-                  className="time-machine--bottom"
-                  data-testid="time-machine--bottom"
+                className="time-machine--bottom"
+                data-testid="time-machine--bottom"
               >
                 <div className="time-machine--bottom-contents">
                   {bottomContents}

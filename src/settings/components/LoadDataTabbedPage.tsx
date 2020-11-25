@@ -4,7 +4,7 @@ import _ from 'lodash'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
-import ErrorBoundary from "../../shared/components/ErrorBoundary";
+import ErrorBoundary from '../../shared/components/ErrorBoundary'
 import LoadDataNavigation from 'src/settings/components/LoadDataNavigation'
 import {Tabs, Orientation, Page} from '@influxdata/clockface'
 

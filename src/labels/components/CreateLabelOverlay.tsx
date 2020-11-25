@@ -14,7 +14,7 @@ import {EMPTY_LABEL} from 'src/labels/constants'
 
 // Decorators
 import {ErrorHandling} from 'src/shared/decorators/errors'
-import ErrorBoundary from "../../shared/components/ErrorBoundary";
+import ErrorBoundary from '../../shared/components/ErrorBoundary'
 
 interface Props {
   isVisible: boolean
@@ -62,19 +62,19 @@ class CreateLabelOverlay extends Component<Props, State> {
           <Overlay.Body>
             <ErrorBoundary>
               <LabelOverlayForm
-                  data-testid="create-label--overlay"
-                  id={label.id}
-                  name={label.name}
-                  onCloseModal={onDismiss}
-                  buttonText="Create Label"
-                  onSubmit={this.handleSubmit}
-                  isFormValid={this.isFormValid}
-                  color={label.properties.color}
-                  onNameValidation={onNameValidation}
-                  onInputChange={this.handleInputChange}
-                  onLabelPropertyChange={this.handleLabelPropertyChange}
-                  onColorChange={this.handleColorChange}
-                  description={label.properties.description}
+                data-testid="create-label--overlay"
+                id={label.id}
+                name={label.name}
+                onCloseModal={onDismiss}
+                buttonText="Create Label"
+                onSubmit={this.handleSubmit}
+                isFormValid={this.isFormValid}
+                color={label.properties.color}
+                onNameValidation={onNameValidation}
+                onInputChange={this.handleInputChange}
+                onLabelPropertyChange={this.handleLabelPropertyChange}
+                onColorChange={this.handleColorChange}
+                description={label.properties.description}
               />
             </ErrorBoundary>
           </Overlay.Body>

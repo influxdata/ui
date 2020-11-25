@@ -50,7 +50,7 @@ import {
   DASHBOARDS,
   DASHBOARD_ID,
 } from 'src/shared/constants/routes'
-import ErrorBoundary from "../../shared/components/ErrorBoundary";
+import ErrorBoundary from '../../shared/components/ErrorBoundary'
 
 const dashRoute = `/${ORGS}/${ORG_ID}/${DASHBOARDS}/${DASHBOARD_ID}`
 
@@ -76,39 +76,42 @@ class DashboardPage extends Component<Props> {
             <LimitChecker>
               <HoverTimeProvider>
                 <DashboardHeader
-                    autoRefresh={autoRefresh}
-                    onManualRefresh={onManualRefresh}
+                  autoRefresh={autoRefresh}
+                  onManualRefresh={onManualRefresh}
                 />
-                <RateLimitAlert alertOnly={true}/>
-                <VariablesControlBar/>
+                <RateLimitAlert alertOnly={true} />
+                <VariablesControlBar />
                 <FeatureFlag name="annotations">
-                  <AnnotationsControlBar/>
+                  <AnnotationsControlBar />
                 </FeatureFlag>
                 <ErrorBoundary>
-                  <DashboardComponent manualRefresh={manualRefresh}/>
+                  <DashboardComponent manualRefresh={manualRefresh} />
                 </ErrorBoundary>
               </HoverTimeProvider>
             </LimitChecker>
           </Page>
           <Switch>
-            <Route path={`${dashRoute}/cells/new`} component={NewVEO}/>
-            <Route path={`${dashRoute}/cells/:cellID/edit`} component={EditVEO}/>
-            <Route path={`${dashRoute}/notes/new`} component={AddNoteOverlay}/>
+            <Route path={`${dashRoute}/cells/new`} component={NewVEO} />
             <Route
-                path={`${dashRoute}/notes/:cellID/edit`}
-                component={EditNoteOverlay}
+              path={`${dashRoute}/cells/:cellID/edit`}
+              component={EditVEO}
+            />
+            <Route path={`${dashRoute}/notes/new`} component={AddNoteOverlay} />
+            <Route
+              path={`${dashRoute}/notes/:cellID/edit`}
+              component={EditNoteOverlay}
             />
             {isFlagEnabled('annotations') && (
-                <Route
-                    path={`${dashRoute}/add-annotation`}
-                    component={AddAnnotationDashboardOverlay}
-                />
+              <Route
+                path={`${dashRoute}/add-annotation`}
+                component={AddAnnotationDashboardOverlay}
+              />
             )}
             {isFlagEnabled('annotations') && (
-                <Route
-                    path={`${dashRoute}/edit-annotation`}
-                    component={EditAnnotationDashboardOverlay}
-                />
+              <Route
+                path={`${dashRoute}/edit-annotation`}
+                component={EditAnnotationDashboardOverlay}
+              />
             )}
           </Switch>
         </ErrorBoundary>

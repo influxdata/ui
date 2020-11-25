@@ -10,7 +10,7 @@ import {IconFont} from '@influxdata/clockface'
 
 // Decorators
 import {ErrorHandling} from 'src/shared/decorators/errors'
-import ErrorBoundary from "../ErrorBoundary";
+import ErrorBoundary from '../ErrorBoundary'
 
 interface Props {
   onSearch: (searchTerm: string) => void
@@ -54,17 +54,17 @@ class SearchWidget extends Component<Props, State> {
     const {searchTerm} = this.state
 
     return (
-        <ErrorBoundary>
-          <Input
-              icon={IconFont.Search}
-              placeholder={placeholderText}
-              value={searchTerm}
-              onChange={this.handleChange}
-              onBlur={this.handleBlur}
-              testID={testID}
-              className="search-widget-input"
-          />
-        </ErrorBoundary>
+      <ErrorBoundary>
+        <Input
+          icon={IconFont.Search}
+          placeholder={placeholderText}
+          value={searchTerm}
+          onChange={this.handleChange}
+          onBlur={this.handleBlur}
+          testID={testID}
+          className="search-widget-input"
+        />
+      </ErrorBoundary>
     )
   }
 

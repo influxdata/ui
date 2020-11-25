@@ -9,8 +9,8 @@ import GetResources from 'src/resources/components/GetResources'
 
 // Types
 import {ResourceType} from 'src/types'
-import ErrorBoundary from "../../shared/components/ErrorBoundary";
-import {ErrorHandling} from "../../shared/decorators/errors";
+import ErrorBoundary from '../../shared/components/ErrorBoundary'
+import {ErrorHandling} from '../../shared/decorators/errors'
 
 type Props = RouteComponentProps<{orgID: string}>
 
@@ -22,12 +22,12 @@ class CreateVariableOverlay extends PureComponent<Props> {
         <Overlay.Container maxWidth={1000}>
           <ErrorBoundary>
             <Overlay.Header
-                title="Create Variable"
-                onDismiss={this.handleHideOverlay}
+              title="Create Variable"
+              onDismiss={this.handleHideOverlay}
             />
             <Overlay.Body>
               <GetResources resources={[ResourceType.Variables]}>
-                <VariableFormContext onHideOverlay={this.handleHideOverlay}/>
+                <VariableFormContext onHideOverlay={this.handleHideOverlay} />
               </GetResources>
             </Overlay.Body>
           </ErrorBoundary>

@@ -23,7 +23,7 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Types
 import {ResourceType} from 'src/types'
-import ErrorBoundary from "../../shared/components/ErrorBoundary";
+import ErrorBoundary from '../../shared/components/ErrorBoundary'
 
 const alertsPath = '/orgs/:orgID/alerting'
 
@@ -44,7 +44,7 @@ const AlertingIndex: FunctionComponent = () => {
         <Page.Header fullWidth={true} testID="alerts-page--header">
           <Page.Title title="Alerts" />
           <ErrorBoundary>
-            <RateLimitAlert/>
+            <RateLimitAlert />
           </ErrorBoundary>
         </Page.Header>
         <Page.Contents
@@ -54,7 +54,6 @@ const AlertingIndex: FunctionComponent = () => {
         >
           <GetResources resources={[ResourceType.Labels, ResourceType.Buckets]}>
             <GetAssetLimits>
-
               <SelectGroup
                 className="alerting-index--selector"
                 shape={ButtonShape.StretchToFit}
@@ -96,17 +95,17 @@ const AlertingIndex: FunctionComponent = () => {
               <div className="alerting-index--columns">
                 <GetResources resources={[ResourceType.Checks]}>
                   <ErrorBoundary>
-                    <ChecksColumn tabIndex={1}/>
+                    <ChecksColumn tabIndex={1} />
                   </ErrorBoundary>
                 </GetResources>
                 <GetResources resources={[ResourceType.NotificationEndpoints]}>
                   <ErrorBoundary>
-                    <EndpointsColumn tabIndex={2}/>
+                    <EndpointsColumn tabIndex={2} />
                   </ErrorBoundary>
                 </GetResources>
                 <GetResources resources={[ResourceType.NotificationRules]}>
                   <ErrorBoundary>
-                    <RulesColumn tabIndex={3}/>
+                    <RulesColumn tabIndex={3} />
                   </ErrorBoundary>
                 </GetResources>
               </div>

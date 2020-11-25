@@ -23,14 +23,12 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Types
 import {ResourceType} from 'src/types'
-import {ErrorHandling} from "../../shared/decorators/errors";
 import ErrorBoundary from "../../shared/components/ErrorBoundary";
 
 const alertsPath = '/orgs/:orgID/alerting'
 
 type ActiveColumn = 'checks' | 'endpoints' | 'rules'
 
-@ErrorHandling
 const AlertingIndex: FunctionComponent = () => {
   const [activeColumn, setActiveColumn] = useState<ActiveColumn>('checks')
 

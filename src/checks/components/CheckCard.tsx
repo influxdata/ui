@@ -37,7 +37,6 @@ import {Check, Label} from 'src/types'
 
 // Utilities
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
-import {ErrorHandling} from "../../shared/decorators/errors";
 import ErrorBoundary from "../../shared/components/ErrorBoundary";
 
 interface OwnProps {
@@ -47,7 +46,6 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps & RouteComponentProps<{orgID: string}>
 
-@ErrorHandling
 const CheckCard: FC<Props> = ({
   onRemoveCheckLabel,
   onAddCheckLabel,

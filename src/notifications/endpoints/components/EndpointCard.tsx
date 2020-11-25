@@ -35,7 +35,6 @@ import {NotificationEndpoint, Label, AlertHistoryType} from 'src/types'
 
 // Utilities
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
-import {ErrorHandling} from "../../../shared/decorators/errors";
 import ErrorBoundary from "../../../shared/components/ErrorBoundary";
 
 interface OwnProps {
@@ -45,7 +44,6 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & RouteComponentProps<{orgID: string}> & ReduxProps
 
-@ErrorHandling
 const EndpointCard: FC<Props> = ({
   history,
   match: {

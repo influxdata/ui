@@ -342,22 +342,24 @@ describe('Checks', () => {
     })
   })
 
-  describe('Invoke external links', () => {
-    it('can visit documentation through a link on the checks page', () => {
+  describe('External links', () => {
+    it('can assert the link on the checks page points to "Create checks" article in documentation ', () => {
       cy.getByTestID('Checks--question-mark')
         .trigger('mouseover')
         .then(() => {
-          cy.getByTestID('Checks--question-mark--tooltip--contents').within(
-            () => {
-              cy.get('a')
-                .invoke('removeAttr', 'target')
-                .click()
-              cy.url().should(
-                'include',
-                'https://docs.influxdata.com/influxdb/v2.0/monitor-alert/checks/create/'
-              )
-            }
-          )
+          cy.getByTestID('Checks--question-mark--tooltip--contents')
+            .should('be.visible')
+            .within(() => {
+              cy.get('a').then($a => {
+                const url = $a.prop('href')
+                cy.request(url)
+                  .its('body')
+                  .should(
+                    'include',
+                    'https://docs.influxdata.com/influxdb/v2.0/monitor-alert/checks/create/'
+                  )
+              })
+            })
         })
     })
   })

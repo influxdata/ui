@@ -1,9 +1,10 @@
 // Libraries
-import React, {FunctionComponent} from 'react'
-import {Plot, FromFluxResult} from '@influxdata/giraffe'
+import React, { FunctionComponent } from 'react'
+import { Plot, FromFluxResult, GaugeMiniLayerConfig } from '@influxdata/giraffe'
 
 // Components
 import GaugeChart from 'src/shared/components/GaugeChart'
+import GaugeMiniChart from "./GaugeMiniChart"
 import SingleStat from 'src/shared/components/SingleStat'
 import TableGraphs from 'src/shared/components/tables/TableGraphs'
 import HistogramPlot from 'src/shared/components/HistogramPlot'
@@ -13,6 +14,7 @@ import FluxTablesTransform from 'src/shared/components/FluxTablesTransform'
 import XYPlot from 'src/shared/components/XYPlot'
 import ScatterPlot from 'src/shared/components/ScatterPlot'
 import LatestValueTransform from 'src/shared/components/LatestValueTransform'
+import { LatestMultipleValueTransform } from "./LatestMultipleValueTransform"
 import CheckPlot from 'src/shared/components/CheckPlot'
 import BandPlot from 'src/shared/components/BandPlot'
 
@@ -46,7 +48,7 @@ const ViewSwitcher: FunctionComponent<Props> = ({
   properties,
   timeRange,
   files,
-  giraffeResult: {table, fluxGroupKeyUnion},
+  giraffeResult: { table, fluxGroupKeyUnion },
   timeZone,
   statuses,
   checkType = null,
@@ -92,6 +94,26 @@ const ViewSwitcher: FunctionComponent<Props> = ({
             />
           )}
         </LatestValueTransform>
+      )
+    // todo: regenerate swagger, remove 'as any's
+    case 'gauge-mini' as any:
+      console.log({table, theme, properties})
+      return (
+        <LatestMultipleValueTransform 
+        table={table}
+        columns={
+          (properties as any as Required<GaugeMiniLayerConfig>)
+            .barsDefinitions.groupByColumns
+        }
+        >
+          {latestValues => (
+            // <div>{JSON.stringify(latestValues)}</div>
+            <GaugeMiniChart
+              values={latestValues as any}
+              theme={properties as any}
+            />
+          )}
+        </LatestMultipleValueTransform>
       )
     case 'xy':
       return (

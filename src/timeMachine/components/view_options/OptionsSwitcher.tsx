@@ -1,10 +1,11 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, { PureComponent } from 'react'
 
 // Components
 import BandOptions from 'src/timeMachine/components/view_options/BandOptions'
 import LineOptions from 'src/timeMachine/components/view_options/LineOptions'
 import GaugeOptions from 'src/timeMachine/components/view_options/GaugeOptions'
+import GaugeMiniOptions from 'src/timeMachine/components/view_options/GaugeMiniOptions'
 import SingleStatOptions from 'src/timeMachine/components/view_options/SingleStatOptions'
 import TableOptions from 'src/timeMachine/components/view_options/TableOptions'
 import HistogramOptions from 'src/timeMachine/components/view_options/HistogramOptions'
@@ -37,6 +38,9 @@ class OptionsSwitcher extends PureComponent<Props> {
         return <BandOptions {...view.properties} />
       case 'gauge':
         return <GaugeOptions {...view.properties} />
+      // todo: regenerate swagger and remove "as any"s
+      case 'gauge-mini' as any:
+        return <GaugeMiniOptions {...view.properties as any} />
       case 'single-stat':
         return <SingleStatOptions />
       case 'table':

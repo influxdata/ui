@@ -33,7 +33,6 @@ import {
   createDashWithViewAndVar,
   createRule,
   clickAttached,
-  ensureMe,
 } from './support/commands'
 
 declare global {

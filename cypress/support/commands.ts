@@ -47,7 +47,7 @@ export const ensureMe = () => {
   const checkMe = (): any => {
     retries++
     cy.log(`checking authentication status ${retries} time(s)`)
-    return cy.request('api/v2/me', {failOnStatusCode: false}).then(resp => {
+    return cy.request('/api/v2/me', {failOnStatusCode: false}).then(resp => {
       try {
         if (resp.status !== 200) {
           throw new Error()

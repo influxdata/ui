@@ -1,6 +1,7 @@
 # dotfiles
 .cache
 .DS_Store
+.idea
 .netrc
 .package.json.swp
 .swo

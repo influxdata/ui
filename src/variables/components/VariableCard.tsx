@@ -16,8 +16,7 @@ import {
   addVariableLabelAsync,
   removeVariableLabelAsync,
 } from 'src/variables/actions/thunks'
-import {ErrorHandling} from '../../shared/decorators/errors'
-import ErrorBoundary from '../../shared/components/ErrorBoundary'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 interface OwnProps {
   variable: Variable
@@ -29,7 +28,6 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
-@ErrorHandling
 class VariableCard extends PureComponent<
   Props & RouteComponentProps<{orgID: string}>
 > {

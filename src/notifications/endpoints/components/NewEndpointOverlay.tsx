@@ -19,7 +19,6 @@ import ErrorBoundary from '../../../shared/components/ErrorBoundary'
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = RouteComponentProps<{orgID: string}> & ReduxProps
 
-@ErrorHandling
 const NewRuleOverlay: FC<Props> = ({match, history, onCreateEndpoint}) => {
   const {orgID} = match.params
 

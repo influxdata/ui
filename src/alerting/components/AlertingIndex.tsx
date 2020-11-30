@@ -23,7 +23,7 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Types
 import {ResourceType} from 'src/types'
-import ErrorBoundary from '../../shared/components/ErrorBoundary'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 const alertsPath = '/orgs/:orgID/alerting'
 

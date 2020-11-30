@@ -23,7 +23,6 @@ type StateProps = ConnectedProps<typeof connector>
 
 type Props = ComponentProps & StateProps
 
-@ErrorHandling
 const LoadDataTabbedPage: FC<Props> = ({activeTab, orgID, children}) => {
   return (
     <Page.Contents fullWidth={false} scrollable={true}>

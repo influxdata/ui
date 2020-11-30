@@ -10,7 +10,7 @@ import {IconFont} from '@influxdata/clockface'
 
 // Decorators
 import {ErrorHandling} from 'src/shared/decorators/errors'
-import ErrorBoundary from '../ErrorBoundary'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 interface Props {
   onSearch: (searchTerm: string) => void

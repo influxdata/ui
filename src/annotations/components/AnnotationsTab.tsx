@@ -20,7 +20,7 @@ import Filter from 'src/shared/components/FilterList'
 import GetResources from 'src/resources/components/GetResources'
 
 import {AnnotationsList} from 'src/annotations/components/AnnotationsList'
-import {Explainer} from 'src/annotations/components/Explainer'
+import {AnnotationsExplainer} from 'src/annotations/components/AnnotationsExplainer'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
@@ -132,7 +132,7 @@ export const AnnotationsTab: FC = () => {
             widthSM={Columns.Four}
             widthMD={Columns.Two}
           >
-            <Explainer />
+            <AnnotationsExplainer />
           </Grid.Column>
         </Grid.Row>
       </Grid>

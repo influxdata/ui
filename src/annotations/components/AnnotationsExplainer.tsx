@@ -4,7 +4,7 @@ import React, {FC} from 'react'
 // Components
 import {Panel, Gradients} from '@influxdata/clockface'
 
-export const Explainer: FC = () => (
+export const AnnotationsExplainer: FC = () => (
   <Panel gradient={Gradients.PolarExpress} border={true}>
     <Panel.Header>
       <h5>How to use Annotations</h5>

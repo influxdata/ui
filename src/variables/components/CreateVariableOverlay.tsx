@@ -18,17 +18,17 @@ class CreateVariableOverlay extends PureComponent<Props> {
     return (
       <Overlay visible={true}>
         <Overlay.Container maxWidth={1000}>
-            <Overlay.Header
-              title="Create Variable"
-              onDismiss={this.handleHideOverlay}
-            />
-            <Overlay.Body>
-              <GetResources resources={[ResourceType.Variables]}>
+          <Overlay.Header
+            title="Create Variable"
+            onDismiss={this.handleHideOverlay}
+          />
+          <Overlay.Body>
+            <GetResources resources={[ResourceType.Variables]}>
               <ErrorBoundary>
                 <VariableFormContext onHideOverlay={this.handleHideOverlay} />
               </ErrorBoundary>
-              </GetResources>
-            </Overlay.Body>
+            </GetResources>
+          </Overlay.Body>
         </Overlay.Container>
       </Overlay>
     )

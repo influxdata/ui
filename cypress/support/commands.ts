@@ -38,7 +38,7 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
 
     cy.location('pathname').should('not.eq', '/signin')
 
-    cy.ensureMe()
+    return cy.ensureMe()
   })
 }
 

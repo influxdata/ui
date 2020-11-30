@@ -47,23 +47,25 @@ export const ensureMe = () => {
   const checkMe = (): any => {
     retries++
     cy.log(`checking authentication status ${retries} time(s)`)
-    return cy.request('/api/v2/me', {failOnStatusCode: false}).then(resp => {
-      try {
-        if (resp.status !== 200) {
-          throw new Error()
+    return cy
+      .request({url: '/api/v2/me', failOnStatusCode: false})
+      .then(resp => {
+        try {
+          if (resp.status !== 200) {
+            throw new Error()
+          }
+        } catch (err) {
+          if (retries > 5) {
+            throw new Error(`retried too many times (${--retries})`)
+          }
+
+          cy.wait(200)
+
+          return checkMe()
         }
-      } catch (err) {
-        if (retries > 5) {
-          throw new Error(`retried too many times (${--retries})`)
-        }
 
-        cy.wait(200)
-
-        return checkMe()
-      }
-
-      return resp
-    })
+        return resp
+      })
   }
 
   return checkMe()

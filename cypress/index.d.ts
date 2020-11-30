@@ -33,6 +33,7 @@ import {
   createDashWithViewAndVar,
   createRule,
   clickAttached,
+  ensureMe,
 } from './support/commands'
 
 declare global {
@@ -74,6 +75,7 @@ declare global {
       writeData: typeof writeData
       createEndpoint: typeof createEndpoint
       createRule: typeof createRule
+      ensureMe: typeof ensureMe
     }
   }
 }

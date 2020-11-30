@@ -5,9 +5,13 @@ import React, {
   useEffect,
   ReactNode,
   useState,
+  useContext,
   useCallback,
 } from 'react'
 import classnames from 'classnames'
+
+// Contexts
+import {PipeContext} from 'src/flows/context/pipe'
 
 // Components
 import ResizerHeader from 'src/flows/shared/ResizerHeader'
@@ -16,6 +20,12 @@ import {TechnoSpinner, IconFont} from '@influxdata/clockface'
 // Types
 import {Visibility} from 'src/types/flows'
 import {RemoteDataState} from 'src/types'
+
+// Utils
+import {makeErrorHumanFriendly} from 'src/flows/shared/utils'
+
+// Constants
+import {FUNCTIONS} from 'src/timeMachine/constants/queryBuilder'
 
 // Styles
 import 'src/flows/shared/Resizer.scss'
@@ -64,6 +74,9 @@ const Resizer: FC<Props> = ({
   additionalControls,
   toggleVisibilityEnabled,
 }) => {
+  const {data} = useContext(PipeContext)
+  const selectedFunction = data?.aggregateFunction || FUNCTIONS[0]
+
   const [size, updateSize] = useState<number>(height)
   const [isDragging, updateDragging] = useState<boolean>(false)
   const bodyRef = useRef<HTMLDivElement>(null)
@@ -157,7 +170,11 @@ const Resizer: FC<Props> = ({
   let body = children
 
   if (error) {
-    body = <div className="panel-resizer--error">{error}</div>
+    body = (
+      <div className="panel-resizer--error">
+        {makeErrorHumanFriendly(error, selectedFunction.name)}
+      </div>
+    )
   } else {
     if (!resizingEnabled) {
       body = <div className="panel-resizer--empty">{emptyText}</div>

@@ -18,17 +18,6 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
   return cy.setupUser().then(response => {
     cy.wrap(response.body.org).as('org')
 
-    cy.request({
-      method: 'POST',
-      url: '/api/v2/signin',
-      body: {
-        auth: {user: Cypress.env('username'), pass: Cypress.env('password')},
-      },
-    }).then(() => {
-      return response
-    })
-
-    /*
     cy.visit('/api/v2/signin')
     cy.get('#login').type(Cypress.env('username'))
     cy.get('#password').type(Cypress.env('password'))
@@ -42,34 +31,12 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
        * We are using this conditional test based on the following doc suggestions:
        * https://docs.cypress.io/guides/core-concepts/conditional-testing.html#Element-existence
        **/
-    /*
       if ($body.find('.theme-btn--success').length) {
         cy.get('.theme-btn--success').click()
       }
     })
+
     cy.location('pathname').should('not.eq', '/signin')
-
-
-        let retries = -1;
-
-    function makeRequest () {
-        retries++;
-        return cy.request(options)
-            .then( resp => {
-                try {
-                    expect( resp.body ).to.be.gt( someComparisonValue );
-                } catch ( err ) {
-
-                    if ( retries > 5 ) throw new Error(`retried too many times (${--retries})`)
-                    return makeRequest();
-                }
-                return resp;
-            });
-    }
-
-    return makeRequest();
-    cy.request('/api/v2/me').its('status').should('equal', 200)
-   */
   })
 }
 

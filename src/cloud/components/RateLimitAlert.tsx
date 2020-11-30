@@ -15,6 +15,8 @@ import {
   BannerPanel,
 } from '@influxdata/clockface'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
+import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
+import {CustomerSuccessLinkHeader} from 'src/cloud/components/experiments/variants/CustomerSuccessLinkHeader'
 
 // Utils
 import {
@@ -76,7 +78,15 @@ const RateLimitAlert: FC<Props> = ({
   }
 
   if (CLOUD && !alertOnly) {
-    return <CloudUpgradeButton className="upgrade-payg--button__header" />
+    return (
+      <GoogleOptimizeExperiment
+        experimentID="hABJwA89QlyQFi6QGBIysg"
+        original={
+          <CloudUpgradeButton className="upgrade-payg--button__header" />
+        }
+        variants={[<CustomerSuccessLinkHeader key="v1" />]}
+      />
+    )
   }
 
   return null

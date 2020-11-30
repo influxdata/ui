@@ -60,7 +60,7 @@ export const ensureMe = () => {
     })
   }
 
-  checkMe()
+  return checkMe()
 }
 
 export const createDashboard = (

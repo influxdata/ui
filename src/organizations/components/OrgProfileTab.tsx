@@ -59,7 +59,9 @@ class OrgProfileTab extends PureComponent<Props> {
                       justifyContent={JustifyContent.SpaceBetween}
                     >
                       <div>
-                        <h5 style={{marginBottom: '0'}}>Rename Organization</h5>
+                        <h5 style={{marginBottom: '0'}}>
+                          Rename Organization {this.props.org.name}
+                        </h5>
                         <p style={{marginTop: '2px'}}>
                           This action can have wide-reaching unintended
                           consequences.
@@ -86,12 +88,12 @@ class OrgProfileTab extends PureComponent<Props> {
             <Panel.Body>
               <CodeSnippet
                 copyText={this.props.me.id}
-                label="My User Id"
+                label={`${this.props.me.name} | User Id`}
                 onCopyText={this.generateCopyText('User Id')}
               />
               <CodeSnippet
                 copyText={this.props.org.id}
-                label="Organization Id"
+                label={`${this.props.org.name} | Organization Id`}
                 onCopyText={this.generateCopyText('Organization Id')}
               />
             </Panel.Body>

@@ -37,38 +37,7 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
     })
 
     cy.location('pathname').should('not.eq', '/signin')
-
-    cy.ensureMe()
   })
-}
-
-export const ensureMe = () => {
-  let retries = 0
-  const checkMe = (): any => {
-    retries++
-    cy.log(`checking authentication status ${retries} time(s)`)
-    return cy
-      .request({url: '/api/v2/me', failOnStatusCode: false})
-      .then(resp => {
-        try {
-          if (resp.status !== 200) {
-            throw new Error()
-          }
-        } catch (err) {
-          if (retries > 5) {
-            throw new Error(`retried too many times (${--retries})`)
-          }
-
-          cy.wait(200)
-
-          return checkMe()
-        }
-
-        return resp
-      })
-  }
-
-  return checkMe()
 }
 
 export const createDashboard = (
@@ -626,5 +595,4 @@ Cypress.Commands.add('writeData', writeData)
 
 // helpers
 Cypress.Commands.add('clickAttached', {prevSubject: 'element'}, clickAttached)
-Cypress.Commands.add('ensureMe', ensureMe)
 /* eslint-enable */

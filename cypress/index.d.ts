@@ -75,7 +75,6 @@ declare global {
       writeData: typeof writeData
       createEndpoint: typeof createEndpoint
       createRule: typeof createRule
-      ensureMe: typeof ensureMe
     }
   }
 }

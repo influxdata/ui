@@ -38,7 +38,7 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
 
     cy.location('pathname').should('not.eq', '/signin')
 
-    return cy.ensureMe()
+    cy.ensureMe()
   })
 }
 
@@ -49,13 +49,19 @@ export const ensureMe = () => {
     cy.log(`checking authentication status ${retries} time(s)`)
     return cy.request('api/v2/me', {failOnStatusCode: false}).then(resp => {
       try {
-        expect(resp.status).to.equal(200)
+        if (resp.status !== 200) {
+          throw new Error()
+        }
       } catch (err) {
         if (retries > 5) {
           throw new Error(`retried too many times (${--retries})`)
         }
+
+        cy.wait(200)
+
         return checkMe()
       }
+
       return resp
     })
   }

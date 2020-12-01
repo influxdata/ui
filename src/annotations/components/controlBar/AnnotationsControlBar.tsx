@@ -16,8 +16,8 @@ import {
 } from '@influxdata/clockface'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import Toolbar from 'src/shared/components/toolbar/Toolbar'
-import AnnotationPills from 'src/annotations/components/controlBar/AnnotationPills'
-import AnnotationsSearchBar from 'src/annotations/components/controlBar/AnnotationsSearchBar'
+import {AnnotationPills} from 'src/annotations/components/controlBar/AnnotationPills'
+import {AnnotationsSearchBar} from 'src/annotations/components/controlBar/AnnotationsSearchBar'
 
 // Selectors
 import {getAnnotationControlsVisibility} from 'src/annotations/selectors'
@@ -31,7 +31,7 @@ import {
   DATA_EXPLORER,
 } from 'src/shared/constants/routes'
 
-const AnnotationsControlBar: FC = () => {
+export const AnnotationsControlBar: FC = () => {
   const history = useHistory()
   const isVisible = useSelector(getAnnotationControlsVisibility)
   const {orgID, dashboardID} = useParams<{orgID: string; dashboardID: string}>()
@@ -95,5 +95,3 @@ const AnnotationsControlBar: FC = () => {
     </ErrorBoundary>
   )
 }
-
-export default AnnotationsControlBar

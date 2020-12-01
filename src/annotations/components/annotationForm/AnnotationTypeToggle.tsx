@@ -19,7 +19,7 @@ import {updateAnnotationDraft} from 'src/annotations/actions/annotationFormActio
 // Contexts
 import {AnnotationFormContext} from 'src/annotations/components/annotationForm/AnnotationForm'
 
-const AnnotationTypeToggle: FC = () => {
+export const AnnotationTypeToggle: FC = () => {
   const {type, dispatch} = useContext(AnnotationFormContext)
 
   const handleChange = (type: AnnotationType): void => {
@@ -51,5 +51,3 @@ const AnnotationTypeToggle: FC = () => {
     </Grid.Column>
   )
 }
-
-export default AnnotationTypeToggle

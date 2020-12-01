@@ -12,7 +12,7 @@ interface Props {
   title: string
 }
 
-const AnnotationStreamOverlay: FC<Props> = ({children, title}) => {
+export const AnnotationStreamOverlay: FC<Props> = ({children, title}) => {
   const {onClose} = useContext(OverlayContext)
 
   return (
@@ -23,5 +23,3 @@ const AnnotationStreamOverlay: FC<Props> = ({children, title}) => {
     </Overlay.Container>
   )
 }
-
-export default AnnotationStreamOverlay

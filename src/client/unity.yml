@@ -54,7 +54,7 @@ paths:
               $ref: "#/components/schemas/BillingNotifySettings"
       responses:
         "200":
-          description: billing contact updated
+          description: billing notification settings updated
           content:
             application/json:
               schema:
@@ -86,7 +86,7 @@ paths:
     put:
       operationId: PutBillingContact
       tags:
-        - PaymentMethods
+        - BillingContact
       requestBody:
         description: BillingContact to update
         required: true

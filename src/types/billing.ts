@@ -132,12 +132,9 @@ interface BillingNotifySettings {
 }
 
 // Current PayAsYouGo Props
-// Since the BillingPage did not take advantage of TypeScript
-// I searched to see if the types were used somewhere! Looks like they
-// were!
 export interface Props {
   region: Region
-  account: Account //
+  account: Account // could we possibly combine Account with BillingContact?
   invoices: Invoices // separate endpoint [X]
   paymentMethods: PaymentMethods // separate endpoint [X]
   ccPageParams: CreditCardParams // separate endpoint [X]

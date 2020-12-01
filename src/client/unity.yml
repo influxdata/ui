@@ -72,7 +72,7 @@ paths:
         - BillingContact
       responses:
         "200":
-          description: A Credit Card parameter object
+          description: A billing contact object
           content:
             application/json:
               schema:
@@ -88,7 +88,7 @@ paths:
       tags:
         - PaymentMethods
       requestBody:
-        description: Billing Contact to Update
+        description: BillingContact to update
         required: true
         content:
           application/json:
@@ -114,7 +114,7 @@ paths:
         - CreditCards
       responses:
         "200":
-          description: A Credit Card parameter object
+          description: A CreditCard parameter object
           content:
             application/json:
               schema:
@@ -149,7 +149,7 @@ paths:
       tags:
         - PaymentMethods
       requestBody:
-        description: Invite to be sent
+        description: PaymentMethod to update
         required: true
         content:
           application/json:

@@ -168,8 +168,6 @@ jobs:
           name: Grab compose files
           command: |
             git clone git@github.com:influxdata/monitor-ci.git
-            cd monitor-ci
-            git checkout alex_test_ssl_fix
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
@@ -253,8 +251,6 @@ jobs:
           name: Grab compose files
           command: |
             git clone git@github.com:influxdata/monitor-ci.git
-            cd monitor-ci
-            git checkout alex_test_ssl_fix
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
@@ -296,8 +292,6 @@ jobs:
           name: Grab compose files
           command: |
             git clone git@github.com:influxdata/monitor-ci.git
-            cd monitor-ci
-            git checkout alex_test_ssl_fix
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env

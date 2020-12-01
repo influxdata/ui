@@ -52,6 +52,8 @@ const RateLimitAlert: FC<Props> = ({
     [`${className}`]: className,
   })
 
+  const isLoadDataPage = !!window.location.pathname.match(/\/load-data/)
+
   if (
     CLOUD &&
     status === LimitStatus.EXCEEDED &&
@@ -77,7 +79,7 @@ const RateLimitAlert: FC<Props> = ({
     )
   }
 
-  if (CLOUD && !alertOnly) {
+  if (CLOUD && isLoadDataPage) {
     return (
       <GoogleOptimizeExperiment
         experimentID="hABJwA89QlyQFi6QGBIysg"
@@ -87,6 +89,10 @@ const RateLimitAlert: FC<Props> = ({
         variants={[<CustomerSuccessLinkHeader key="v1" />]}
       />
     )
+  }
+
+  if (CLOUD && !alertOnly) {
+    return <CloudUpgradeButton className="upgrade-payg--button__header" />
   }
 
   return null

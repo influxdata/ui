@@ -5,6 +5,24 @@ info:
 servers:
   - url: /unity/v2 # to be determined
 paths:
+  "/billing/account":
+    get:
+      operationId: GetAccount
+      tags:
+        - Account
+      responses:
+        "200":
+          description: Account info for billing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   "/billing/notify_settings":
     get:
       operationId: GetBillingNotifySettings
@@ -387,6 +405,21 @@ components:
           description: Message is a human-readable message.
           type: string
       required: [code, message]
+    Account:
+      properties:
+        id:
+          type: number
+          description: id of the account
+        type:
+          type: string
+          description: type of the account
+          enum:
+            - free
+            - cancelled
+            - pay_as_you_go
+        updatedAt:
+          type: string
+          description: date of last update to account
     BillingContact:
       properties:
         companyName:

@@ -1,4 +1,3 @@
-import {CloudUser as User} from 'src/types/unity'
 // can we just get this from IDPE
 // directly or does Quartz have special
 // permissions / knowledge?
@@ -97,14 +96,8 @@ export interface MarketplaceSubscription {
 
 interface Account {
   id: number
-  users: User[]
-  organizations: object[]
-  balance: number
-  type: string
-  marketplaceSubscription: MarketplaceSubscription
-  billingContact: BillingContact
-  zuoraAccountId: string
-  deletable: boolean
+  type: AccountType
+  updatedAt: string
 }
 
 interface PaymentMethod {
@@ -132,7 +125,7 @@ export interface Props {
   orgLimits: OrgLimit
 }
 
-interface BillingAlertSettings {
+interface BillingNotifySettings {
   isNotify: boolean
   balanceThreshold: number
   notifyEmail: string
@@ -144,14 +137,13 @@ interface BillingAlertSettings {
 // were!
 export interface Props {
   region: Region
-  account: Account
-  accountType: AccountType
+  account: Account //
   invoices: Invoices // separate endpoint [X]
   paymentMethods: PaymentMethods // separate endpoint [X]
   ccPageParams: CreditCardParams // separate endpoint [X]
   contact: BillingContact // separate endpoint (get, put)
-  email: string
-  billingAlertSettings: BillingAlertSettings // separate endpoint w/ put
+  email: string // where does this come from?
+  billingNotifySettings: BillingNotifySettings // separate endpoint w/ put [x]
   orgLimits: OrgLimit // get from IDPE
   limitStatuses: LimitStatuses // get from IDPE
 }

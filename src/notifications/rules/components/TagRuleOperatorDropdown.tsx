@@ -16,6 +16,7 @@ export type Operator = TagRuleDraft['value']['operator']
 
 const operators: {operator: Operator; display: string}[] = [
   {operator: 'equal', display: '=='},
+  {operator: 'notequal', display: '!='},
 ]
 
 const TagRuleOperatorDropdown: FC<Props> = ({selectedOperator, onSelect}) => {

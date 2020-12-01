@@ -176,6 +176,8 @@ jobs:
             cd ./monitor-ci && make update && make build NODE=cypress && make build NODE=ingress
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
+            docker pull quay.io/influxdb/idpe-acceptance:NOV10.60cefcd3c5ca54790fa5fc5d884dfdec82838aa7
+            docker tag quay.io/influxdb/idpe-acceptance:NOV10.60cefcd3c5ca54790fa5fc5d884dfdec82838aa7 quay.io/influxdb/idpe-acceptance:latest
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start
@@ -241,6 +243,8 @@ jobs:
     working_directory: ~/
     resource_class: large
     steps:
+      - restore_cache:
+          key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
@@ -254,6 +258,10 @@ jobs:
           name: Update the images we're using
           command: |
             cd ./monitor-ci && make update && make build NODE=cypress && make build NODE=ingress
+            docker load < ~/docker-cache/image.tar
+            docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
+            docker pull quay.io/influxdb/idpe-acceptance:NOV10.60cefcd3c5ca54790fa5fc5d884dfdec82838aa7
+            docker tag quay.io/influxdb/idpe-acceptance:NOV10.60cefcd3c5ca54790fa5fc5d884dfdec82838aa7 quay.io/influxdb/idpe-acceptance:latest
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start
@@ -294,6 +302,8 @@ jobs:
             cd ./monitor-ci && make update && make build NODE=ingress
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
+            docker pull quay.io/influxdb/idpe-acceptance:NOV10.60cefcd3c5ca54790fa5fc5d884dfdec82838aa7
+            docker tag quay.io/influxdb/idpe-acceptance:NOV10.60cefcd3c5ca54790fa5fc5d884dfdec82838aa7 quay.io/influxdb/idpe-acceptance:latest
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start

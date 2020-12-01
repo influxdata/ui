@@ -1,3 +1,4 @@
+import {CloudUser as User} from 'src/types/unity'
 // can we just get this from IDPE
 // directly or does Quartz have special
 // permissions / knowledge?
@@ -75,9 +76,9 @@ interface BillingContact {
   postalCode: number
 }
 
-interface ZuoraParams {
+interface CreditCardParams {
   id: string
-  tenantId: string
+  tenantID: string
   key: string
   signature: string
   token: string
@@ -96,7 +97,7 @@ export interface MarketplaceSubscription {
 
 interface Account {
   id: number
-  users: object[]
+  users: User[]
   organizations: object[]
   balance: number
   type: string
@@ -106,14 +107,11 @@ interface Account {
   deletable: boolean
 }
 
-interface PaymentSummary {
+interface PaymentMethod {
   cardType: string
   cardNumber: string
   expirationMonth: string
   expirationYear: string
-}
-
-interface PaymentMethod extends PaymentSummary {
   defaultPaymentMethod: boolean
 }
 
@@ -134,22 +132,26 @@ export interface Props {
   orgLimits: OrgLimit
 }
 
+interface BillingAlertSettings {
+  isNotify: boolean
+  balanceThreshold: number
+  notifyEmail: string
+}
+
 // Current PayAsYouGo Props
 // Since the BillingPage did not take advantage of TypeScript
 // I searched to see if the types were used somewhere! Looks like they
 // were!
 export interface Props {
-  email: string
-  invoices: Invoices
-  paymentMethods: PaymentMethods
+  region: Region
   account: Account
   accountType: AccountType
-  orgLimits: OrgLimit
-  ccPageParams: ZuoraParams
-  contact: BillingContact
-  balanceThreshold: number
-  isNotify: boolean
-  notifyEmail: string
-  limitStatuses: LimitStatuses
-  region: Region
+  invoices: Invoices // separate endpoint [X]
+  paymentMethods: PaymentMethods // separate endpoint [X]
+  ccPageParams: CreditCardParams // separate endpoint [X]
+  contact: BillingContact // separate endpoint (get, put)
+  email: string
+  billingAlertSettings: BillingAlertSettings // separate endpoint w/ put
+  orgLimits: OrgLimit // get from IDPE
+  limitStatuses: LimitStatuses // get from IDPE
 }

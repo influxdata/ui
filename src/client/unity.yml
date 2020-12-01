@@ -5,6 +5,85 @@ info:
 servers:
   - url: /unity/v2 # to be determined
 paths:
+  "/billing/cc":
+    get:
+      operationId: GetCCPageParams
+      tags:
+        - CreditCards
+      responses:
+        "200":
+          description: A Credit Card parameter object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreditCardParams"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  "/billing/payment_methods":
+    get:
+      operationId: GetPaymentMethods
+      tags:
+        - PaymentMethods
+      responses:
+        "200":
+          description: A list of PaymentMethods
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentMethods"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  "/billing/payment_method":
+    put:
+      operationId: PutPaymentMethod
+      tags:
+        - PaymentMethods
+      requestBody:
+        description: Invite to be sent
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentMethodPut"
+      responses:
+        "200":
+          description: Payment method updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentMethods"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  "/invoices":
+    get:
+      operationId: GetInvoices
+      tags:
+        - Invoices
+      responses:
+        "200":
+          description: A list of invoices
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invoices"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   "/orgs/{orgID}/invites":
     get:
       operationId: GetInvites
@@ -263,6 +342,102 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Invite"
+    PaymentMethodPut:
+      properties:
+        paymentMethodID:
+          type: string
+          description: ref id from Zuora
+          readOnly: true
+    CreditCardParams:
+      properties:
+        id:
+          description: id of the page displayed
+          readOnly: true
+          type: string
+        tenantID:
+          description: id of our account with the payment processor
+          type: string
+          readOnly: true
+        key:
+          description: payment processor secret key
+          readOnly: true
+          type: string
+        signature:
+          description: signature of the key or token
+          readOnly: true
+          type: string
+        token:
+          description: api token of the payment processor
+          readOnly: true
+          type: string
+        style:
+          description: way payment form gets displayed
+          type: string
+          readOnly: true
+        submitEnabled:
+          description: boolean string 'true' or 'false' which allows us to handle submits from our form
+          type: string
+          readOnly: true
+        url:
+          type: string
+          readOnly: true
+          description: uri of the embedded iframe
+      required: [id, tenantID, key, signature, token, style, submitEnabled, url]
+    PaymentMethod:
+      properties:
+        cardType:
+          description: name of credit card vendor
+          readOnly: true
+          type: string
+        cardNumber:
+          description: masked credit card number
+          type: string
+          readOnly: true
+        expirationMonth:
+          description: month of expiration
+          readOnly: true
+          type: string
+        expirationYear:
+          description: year of expiration
+          readOnly: true
+          type: string
+        defaultPaymentMethod:
+          description: this the default payment method
+          readOnly: true
+          type: boolean
+      required: [cardType, cardNumber, expirationMonth, expirationYear]
+    PaymentMethods:
+      type: object
+      properties:
+        invoices:
+          type: array
+          items:
+            $ref: "#/components/schemas/PaymentMethod"
+    Invoice:
+      properties:
+        status:
+          description: status of the invoice
+          readOnly: true
+          type: string
+        amount:
+          description: amount of invoice in dollars
+          type: number
+          readOnly: true
+        targetDate:
+          description: date of invoice
+          readOnly: true
+          type: string
+        filesID:
+          description: id of the invoice file
+          type: string
+      required: [status, amount, targetDate, filesID]
+    Invoices:
+      type: object
+      properties:
+        invoices:
+          type: array
+          items:
+            $ref: "#/components/schemas/Invoice"
     User:
       properties:
         id:

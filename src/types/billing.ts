@@ -54,16 +54,13 @@ interface LimitStatus {
   status: string
 }
 
-enum AWSRegion {
-  USWest2 = 'us-west-2',
-  EUCentral1 = 'eu-central-1',
+interface Region {
+  title: string
+  isBeta: boolean
+  isAvailable: boolean
+  provider: string
+  region: string
 }
-
-enum GCPRegion {
-  USCentral1 = 'us-central1',
-}
-
-type Region = AWSRegion | GCPRegion
 
 interface BillingContact {
   companyName: string
@@ -89,7 +86,7 @@ interface ZuoraParams {
   url: string
 }
 
-type AccountType = 'fee' | 'cancelled' | 'pay_as_you_go'
+type AccountType = 'free' | 'cancelled' | 'pay_as_you_go'
 
 export interface MarketplaceSubscription {
   marketplace: string
@@ -142,19 +139,13 @@ export interface Props {
 // I searched to see if the types were used somewhere! Looks like they
 // were!
 export interface Props {
-  influxdbURL: string // won't need :)
-  organizationID: string // won't need :)
   email: string
-  payments: any // looks like this isn't used
   invoices: Invoices
   paymentMethods: PaymentMethods
   account: Account
-  subscription: any // looks like this isn't used
   accountType: AccountType
   orgLimits: OrgLimit
   ccPageParams: ZuoraParams
-  countries: string[] // we can hard code these on the FE
-  states: string[] // we can hard code these on the FE
   contact: BillingContact
   balanceThreshold: number
   isNotify: boolean

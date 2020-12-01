@@ -5,6 +5,48 @@ info:
 servers:
   - url: /unity/v2 # to be determined
 paths:
+  "/billing/contact":
+    get:
+      operationId: GetBillingContact
+      tags:
+        - BillingContact
+      responses:
+        "200":
+          description: A Credit Card parameter object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BillingContact"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      operationId: PutBillingContact
+      tags:
+        - PaymentMethods
+      requestBody:
+        description: Billing Contact to Update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BillingContact"
+      responses:
+        "200":
+          description: billing contact updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BillingContact"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   "/billing/cc":
     get:
       operationId: GetCCPageParams
@@ -303,6 +345,36 @@ components:
           description: Message is a human-readable message.
           type: string
       required: [code, message]
+    BillingContact:
+      properties:
+        companyName:
+          type: string
+          description: name of the company billed
+        email:
+          type: string
+          description: billing email
+        firstName:
+          type: string
+          description: first name of billing contact
+        lastName:
+          type: string
+          description: last name of billing contact
+        country:
+          type: string
+          description: country of billing contact
+        street1:
+          type: string
+          description: street of billing contact
+        street2:
+          type: string
+          description: additional street info
+        subdivision:
+          type: string
+          description: subdivision
+        postalCode:
+          type: number
+          description: postal code of billing contact
+      required: [companyName, email, firstName, lastName, country, street1, postalCode]
     Invite:
       properties:
         id:

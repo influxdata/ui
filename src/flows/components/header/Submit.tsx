@@ -60,11 +60,21 @@ export const Submit: FC = () => {
       .length
   }, [flow.data])
 
+  // Returns a string to avoid array deep comparison woes
+  // Triggers a re-run any time any aggregate function is changed
+  const aggregateOfAggregates = useMemo(() => {
+    const aggNameList =
+      flow.data.all
+        .filter(p => p.type === 'metricSelector')
+        ?.map(p => p.aggregateFunction.name) || []
+    return aggNameList.join('')
+  }, [flow.data])
+
   useEffect(() => {
     if (hasQueries) {
       submit()
     }
-  }, [flow.range, hasQueries]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [flow.range, hasQueries, aggregateOfAggregates]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const forceUpdate = (id, data) => {
     try {

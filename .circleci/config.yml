@@ -176,8 +176,8 @@ jobs:
             cd ./monitor-ci && make update && make build NODE=cypress && make build NODE=ingress
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
-            docker pull quay.io/influxdb/idpe-acceptance:NOV16.967059341dcf5014464703bfcfea5272f029f349
-            docker tag quay.io/influxdb/idpe-acceptance:NOV16.967059341dcf5014464703bfcfea5272f029f349 quay.io/influxdb/idpe-acceptance:latest
+            docker pull quay.io/influxdb/idpe-acceptance:nov16-maybe-d1dc95f027a1f482c2f46fa609cb58321c2c655c
+            docker tag quay.io/influxdb/idpe-acceptance:nov16-maybe-d1dc95f027a1f482c2f46fa609cb58321c2c655c quay.io/influxdb/idpe-acceptance:latest
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start

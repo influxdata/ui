@@ -5,6 +5,48 @@ info:
 servers:
   - url: /unity/v2 # to be determined
 paths:
+  "/billing/notify_settings":
+    get:
+      operationId: GetBillingNotifySettings
+      tags:
+        - BillingNotifySettings
+      responses:
+        "200":
+          description: Settings for billing notifications
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BillingNotifySettings"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      operationId: PutBillingContact
+      tags:
+        - PaymentMethods
+      requestBody:
+        description: Billing Contact to Update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BillingNotifySettings"
+      responses:
+        "200":
+          description: billing contact updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BillingNotifySettings"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   "/billing/contact":
     get:
       operationId: GetBillingContact
@@ -375,6 +417,16 @@ components:
           type: number
           description: postal code of billing contact
       required: [companyName, email, firstName, lastName, country, street1, postalCode]
+    BillingNotifySettings:
+      properties:
+        isNotify:
+          type: boolean
+        balanceThreshold:
+          type: number
+          description: threshold that when passed will trigger a notification
+        notifyEmail:
+          type: string
+          description: email to send billing notification
     Invite:
       properties:
         id:

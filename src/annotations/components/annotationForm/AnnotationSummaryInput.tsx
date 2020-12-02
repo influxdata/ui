@@ -10,7 +10,7 @@ import {updateAnnotationDraft} from 'src/annotations/actions/annotationFormActio
 // Contexts
 import {AnnotationFormContext} from 'src/annotations/components/annotationForm/AnnotationForm'
 
-const AnnotationSummaryInput: FC = () => {
+export const AnnotationSummaryInput: FC = () => {
   const {summary, summaryStatus, summaryError, dispatch} = useContext(
     AnnotationFormContext
   )

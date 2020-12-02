@@ -868,7 +868,7 @@ describe('DataExplorer', () => {
         makeGraphSnapshot().shouldBeSameAs(snapshot)
       })
 
-      it('can zoom and unzoom vertical axis', () => {
+      it.skip('can zoom and unzoom vertical axis', () => {
         cy.getByTestID(`selector-list m`).click()
         cy.getByTestID('selector-list v').click()
         cy.getByTestID(`selector-list tv1`).click()

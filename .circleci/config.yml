@@ -166,10 +166,11 @@ jobs:
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
           name: Grab compose files
-          command: git clone git@github.com:influxdata/monitor-ci.git
+          command: |
+            git clone git@github.com:influxdata/monitor-ci.git
       - run:
           name: Copy over the testing variables
-          command: cp ./monitor-ci/env.testing ./monitor-ci/.env
+          command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
       - run:
           name: Update the images we're using
           command: |
@@ -241,19 +242,24 @@ jobs:
     working_directory: ~/
     resource_class: large
     steps:
+      - restore_cache:
+          key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
           name: Grab compose files
-          command: git clone git@github.com:influxdata/monitor-ci.git
+          command: |
+            git clone git@github.com:influxdata/monitor-ci.git
       - run:
           name: Copy over the testing variables
-          command: cp ./monitor-ci/env.testing ./monitor-ci/.env
+          command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
       - run:
           name: Update the images we're using
           command: |
             cd ./monitor-ci && make update && make build NODE=cypress && make build NODE=ingress
+            docker load < ~/docker-cache/image.tar
+            docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start
@@ -284,10 +290,11 @@ jobs:
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
           name: Grab compose files
-          command: git clone git@github.com:influxdata/monitor-ci.git
+          command: |
+            git clone git@github.com:influxdata/monitor-ci.git
       - run:
           name: Copy over the testing variables
-          command: cp ./monitor-ci/env.testing ./monitor-ci/.env
+          command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
       - run:
           name: Update the images we're using
           command: |

@@ -6,12 +6,12 @@ import {useSelector} from 'react-redux'
 import {getVisibleAnnotationStreams} from 'src/annotations/selectors'
 
 // Components
-import AnnotationPill from 'src/annotations/components/controlBar/AnnotationPill'
+import {AnnotationPill} from 'src/annotations/components/controlBar/AnnotationPill'
 
 // Styles
 import 'src/annotations/components/controlBar/AnnotationPills.scss'
 
-const AnnotationPills: FC = () => {
+export const AnnotationPills: FC = () => {
   const visibleStreams = useSelector(getVisibleAnnotationStreams)
 
   return (
@@ -28,5 +28,3 @@ const AnnotationPills: FC = () => {
     </div>
   )
 }
-
-export default AnnotationPills

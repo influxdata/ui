@@ -15,6 +15,8 @@ import {
   BannerPanel,
 } from '@influxdata/clockface'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
+import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
+import {CustomerSuccessLinkHeader} from 'src/cloud/components/experiments/variants/CustomerSuccessLinkHeader'
 
 // Utils
 import {
@@ -50,6 +52,8 @@ const RateLimitAlert: FC<Props> = ({
     [`${className}`]: className,
   })
 
+  const isLoadDataPage = !!window.location.pathname.match(/\/load-data/)
+
   if (
     CLOUD &&
     status === LimitStatus.EXCEEDED &&
@@ -72,6 +76,18 @@ const RateLimitAlert: FC<Props> = ({
           <RateLimitAlertContent />
         </BannerPanel>
       </FlexBox>
+    )
+  }
+
+  if (CLOUD && isLoadDataPage) {
+    return (
+      <GoogleOptimizeExperiment
+        experimentID="hABJwA89QlyQFi6QGBIysg"
+        original={
+          <CloudUpgradeButton className="upgrade-payg--button__header" />
+        }
+        variants={[<CustomerSuccessLinkHeader key="v1" />]}
+      />
     )
   }
 

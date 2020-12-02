@@ -16,10 +16,11 @@ import {
 } from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
-import AnnotationsList from 'src/annotations/components/AnnotationsList'
 import Filter from 'src/shared/components/FilterList'
 import GetResources from 'src/resources/components/GetResources'
-import Explainer from 'src/annotations/components/Explainer'
+
+import {AnnotationsList} from 'src/annotations/components/AnnotationsList'
+import {AnnotationsExplainer} from 'src/annotations/components/AnnotationsExplainer'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
@@ -36,7 +37,32 @@ import {
 
 const FilterList = Filter<AnnotationStream>()
 
-const AnnotationsTab: FC = () => {
+interface AnnotationsTabEmptyStateProps {
+  searchTerm?: string
+}
+
+const AnnotationsTabEmptyState: FC<AnnotationsTabEmptyStateProps> = ({
+  searchTerm,
+}) => {
+  if (!searchTerm) {
+    return (
+      <EmptyState size={ComponentSize.Large}>
+        <EmptyState.Text>
+          Looks like there aren't any <b>Annotation Streams</b>, why not create
+          one?
+        </EmptyState.Text>
+      </EmptyState>
+    )
+  }
+
+  return (
+    <EmptyState size={ComponentSize.Large}>
+      <EmptyState.Text>No Annotation Streams match your query</EmptyState.Text>
+    </EmptyState>
+  )
+}
+
+export const AnnotationsTab: FC = () => {
   const org = useSelector(getOrg)
   const history = useHistory()
 
@@ -106,37 +132,10 @@ const AnnotationsTab: FC = () => {
             widthSM={Columns.Four}
             widthMD={Columns.Two}
           >
-            <Explainer />
+            <AnnotationsExplainer />
           </Grid.Column>
         </Grid.Row>
       </Grid>
     </>
-  )
-}
-
-export default AnnotationsTab
-
-interface AnnotationsTabEmptyStateProps {
-  searchTerm?: string
-}
-
-const AnnotationsTabEmptyState: FC<AnnotationsTabEmptyStateProps> = ({
-  searchTerm,
-}) => {
-  if (!searchTerm) {
-    return (
-      <EmptyState size={ComponentSize.Large}>
-        <EmptyState.Text>
-          Looks like there aren't any <b>Annotation Streams</b>, why not create
-          one?
-        </EmptyState.Text>
-      </EmptyState>
-    )
-  }
-
-  return (
-    <EmptyState size={ComponentSize.Large}>
-      <EmptyState.Text>No Annotation Streams match your query</EmptyState.Text>
-    </EmptyState>
   )
 }

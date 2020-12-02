@@ -3,7 +3,7 @@ import React, {FC, useContext, useEffect, useState, useMemo} from 'react'
 import {v4 as UUID} from 'uuid'
 
 // Components
-import AnnotationStreamOverlay from 'src/annotations/components/overlay/AnnotationStreamOverlay'
+import {AnnotationStreamOverlay} from 'src/annotations/components/overlay/AnnotationStreamOverlay'
 import {Overlay, Button, ComponentColor} from '@influxdata/clockface'
 import FlowBuilder from 'src/flows/components/Flow'
 import _asResource from 'src/flows/context/resource.hook'
@@ -103,7 +103,7 @@ const FlowProvider: FC = ({children}) => {
   )
 }
 
-const CreateAnnotationStreamOverlay: FC = () => {
+export const CreateAnnotationStreamOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
 
   return (
@@ -126,5 +126,3 @@ const CreateAnnotationStreamOverlay: FC = () => {
     </AnnotationStreamOverlay>
   )
 }
-
-export default CreateAnnotationStreamOverlay

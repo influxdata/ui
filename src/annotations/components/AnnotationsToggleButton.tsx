@@ -11,7 +11,7 @@ import {toggleShowAnnotationsControls} from 'src/userSettings/actions'
 // Components
 import {Button, ComponentColor, IconFont} from '@influxdata/clockface'
 
-const AnnotationsToggleButton: FC = () => {
+export const AnnotationsToggleButton: FC = () => {
   const dispatch = useDispatch()
   const isVisible = useSelector(getAnnotationControlsVisibility)
 
@@ -38,5 +38,3 @@ const AnnotationsToggleButton: FC = () => {
     />
   )
 }
-
-export default AnnotationsToggleButton

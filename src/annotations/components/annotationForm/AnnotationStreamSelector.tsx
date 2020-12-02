@@ -27,7 +27,7 @@ import {AnnotationFormContext} from 'src/annotations/components/annotationForm/A
 // Styles
 import 'src/annotations/components/annotationForm/AnnotationStreamSelector.scss'
 
-const AnnotationStreamSelector: FC = () => {
+export const AnnotationStreamSelector: FC = () => {
   const {streamID, streamIDError, dispatch} = useContext(AnnotationFormContext)
 
   const handleChange = (stream: AnnotationStream): void => {
@@ -99,5 +99,3 @@ const AnnotationStreamSelector: FC = () => {
     </Grid.Column>
   )
 }
-
-export default AnnotationStreamSelector

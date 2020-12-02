@@ -10,7 +10,7 @@ import {updateAnnotationDraft} from 'src/annotations/actions/annotationFormActio
 // Contexts
 import {AnnotationFormContext} from 'src/annotations/components/annotationForm/AnnotationForm'
 
-const AnnotationMessageInput: FC = () => {
+export const AnnotationMessageInput: FC = () => {
   const {message, dispatch} = useContext(AnnotationFormContext)
 
   const handleChange = (e: ChangeEvent<TextAreaRef>): void => {
@@ -30,5 +30,3 @@ const AnnotationMessageInput: FC = () => {
     </Grid.Column>
   )
 }
-
-export default AnnotationMessageInput

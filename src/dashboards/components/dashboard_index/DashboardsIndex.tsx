@@ -34,7 +34,7 @@ import {SortTypes} from 'src/shared/utils/sort'
 import {DashboardSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 
 import {ALLOW_IMPORT_FROM_TEMPLATE} from 'src/shared/constants' // spoiler alert: you can't import from templates
-import ErrorBoundary from '../../../shared/components/ErrorBoundary'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{orgID: string}>

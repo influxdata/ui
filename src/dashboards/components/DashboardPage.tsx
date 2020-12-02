@@ -50,7 +50,7 @@ import {
   DASHBOARDS,
   DASHBOARD_ID,
 } from 'src/shared/constants/routes'
-import ErrorBoundary from '../../shared/components/ErrorBoundary'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 const dashRoute = `/${ORGS}/${ORG_ID}/${DASHBOARDS}/${DASHBOARD_ID}`
 

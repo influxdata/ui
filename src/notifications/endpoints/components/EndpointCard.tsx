@@ -35,7 +35,7 @@ import {NotificationEndpoint, Label, AlertHistoryType} from 'src/types'
 
 // Utilities
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
-import ErrorBoundary from '../../../shared/components/ErrorBoundary'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 interface OwnProps {
   endpoint: NotificationEndpoint

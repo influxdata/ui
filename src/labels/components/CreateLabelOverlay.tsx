@@ -14,7 +14,7 @@ import {EMPTY_LABEL} from 'src/labels/constants'
 
 // Decorators
 import {ErrorHandling} from 'src/shared/decorators/errors'
-import ErrorBoundary from '../../shared/components/ErrorBoundary'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 interface Props {
   isVisible: boolean

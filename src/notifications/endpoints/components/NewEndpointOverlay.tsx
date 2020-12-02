@@ -14,7 +14,7 @@ import EndpointOverlayContents from 'src/notifications/endpoints/components/Endp
 // Constants
 import {NEW_ENDPOINT_DRAFT} from 'src/alerting/constants'
 import {NotificationEndpoint} from 'src/types'
-import ErrorBoundary from '../../../shared/components/ErrorBoundary'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = RouteComponentProps<{orgID: string}> & ReduxProps

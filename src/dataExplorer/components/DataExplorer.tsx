@@ -14,7 +14,7 @@ import {setBuilderBucketIfExists} from 'src/timeMachine/actions/queryBuilder'
 import {HoverTimeProvider} from 'src/dashboards/utils/hoverTime'
 import {queryBuilderFetcher} from 'src/timeMachine/apis/QueryBuilderFetcher'
 import {readQueryParams} from 'src/shared/utils/queryParams'
-import ErrorBoundary from '../../shared/components/ErrorBoundary'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 const DataExplorer: FC = () => {
   const dispatch = useDispatch()

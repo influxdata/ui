@@ -25,7 +25,7 @@ interface Props {
   annotationStream: AnnotationStream
 }
 
-const AnnotationCard: FC<Props> = ({annotationStream}) => {
+export const AnnotationCard: FC<Props> = ({annotationStream}) => {
   const org = useSelector(getOrg)
   const history = useHistory()
 
@@ -79,5 +79,3 @@ const AnnotationCard: FC<Props> = ({annotationStream}) => {
     </ResourceCard>
   )
 }
-
-export default AnnotationCard

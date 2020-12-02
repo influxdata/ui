@@ -7,11 +7,11 @@ import {Switch, Route} from 'react-router-dom'
 import SettingsTabbedPage from 'src/settings/components/SettingsTabbedPage'
 import SettingsHeader from 'src/settings/components/SettingsHeader'
 import {Page} from '@influxdata/clockface'
-import AnnotationsTab from 'src/annotations/components/AnnotationsTab'
 import {
   CreateAnnotationStreamOverlay,
   UpdateAnnotationStreamOverlay,
 } from 'src/overlays/components'
+import {AnnotationsTab} from 'src/annotations/components/AnnotationsTab'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
@@ -23,7 +23,7 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {ORGS, ORG_ID, SETTINGS, ANNOTATIONS} from 'src/shared/constants/routes'
 const annotationsPath = `/${ORGS}/${ORG_ID}/${SETTINGS}/${ANNOTATIONS}`
 
-const AnnotationsIndex: FC = () => {
+export const AnnotationsIndex: FC = () => {
   const org = useSelector(getOrg)
 
   return (
@@ -50,5 +50,3 @@ const AnnotationsIndex: FC = () => {
     </>
   )
 }
-
-export default AnnotationsIndex

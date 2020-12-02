@@ -8,6 +8,7 @@ export const initialState = (): AnnotationsState => ({
   visibleStreamsByID: [],
 })
 
+// TODO: use immer
 export const annotationsReducer = (
   state = initialState(),
   action: ActionTypes

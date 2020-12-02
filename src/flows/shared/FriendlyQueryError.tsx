@@ -22,7 +22,7 @@ const FriendlyQueryError: FC<Props> = ({error}) => {
   const selectedFunction = data?.aggregateFunction || FUNCTIONS[0]
   // NOTE: Using string matching for errors because flux doesn't
   // return error codes yet
-  const isAggTypeError = error.startsWith('unsupported aggregate')
+  const isAggTypeError = error.includes('unsupported aggregate')
   const isStringType = error.includes('type string')
 
   const updateSelectedFunction = (aggregateFunction: QueryFn) => () => {

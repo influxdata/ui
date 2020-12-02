@@ -6,7 +6,6 @@ export interface TypeLookup {
 
 export const PIPE_DEFINITIONS: TypeLookup = {}
 export const PROJECT_NAME: string = 'notebook'
-export const PROJECT_NAME_SHORT: string = 'books'
 export const PROJECT_NAME_PLURAL: string = 'notebooks'
 
 // NOTE: this loads in all the modules under the current directory

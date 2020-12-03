@@ -2,7 +2,7 @@
 import React from 'react'
 
 // Components
-import {Page, PageHeader} from '@influxdata/clockface'
+import {Page, PageHeader, Button, IconFont} from '@influxdata/clockface'
 import FlowCreateButton from 'src/flows/components/FlowCreateButton'
 import FlowListProvider from 'src/flows/context/flow.list'
 import FlowCards from 'src/flows/components/FlowCards'
@@ -12,6 +12,13 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {PROJECT_NAME_PLURAL} from 'src/flows'
 
 const FlowsIndex = () => {
+  const handleFeedbackClick = (): void => {
+    window.open(
+      'https://w2.influxdata.com/feedback-notebooks-early-access/',
+      '_blank'
+    )
+  }
+
   return (
     <FlowListProvider>
       <Page
@@ -22,7 +29,14 @@ const FlowsIndex = () => {
           <Page.Title title={PROJECT_NAME_PLURAL} />
         </PageHeader>
         <Page.ControlBar fullWidth={false}>
-          <Page.ControlBarLeft></Page.ControlBarLeft>
+          <Page.ControlBarLeft>
+            <Button
+              onClick={handleFeedbackClick}
+              text="Tell us your thoughts"
+              icon={IconFont.Chat}
+            />
+            <p className="flows-early-access-feedback">{`You've been given early access to ${PROJECT_NAME_PLURAL}, your feedback is a gift`}</p>
+          </Page.ControlBarLeft>
           <Page.ControlBarRight>
             <FlowCreateButton />
           </Page.ControlBarRight>

@@ -110,6 +110,10 @@ $panel-resizer--drag-handle: 30px;
   padding: 0;
 }
 
+.panel-resizer--error-button {
+  margin-left: $cf-marg-b;
+}
+
 .panel-resizer--drag-handle {
   width: $panel-resizer--drag-handle;
   height: $panel-resizer--drag-handle;

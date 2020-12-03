@@ -34,6 +34,7 @@ import {SortTypes} from 'src/shared/utils/sort'
 import {DashboardSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 
 import {ALLOW_IMPORT_FROM_TEMPLATE} from 'src/shared/constants' // spoiler alert: you can't import from templates
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{orgID: string}>
@@ -67,46 +68,50 @@ class DashboardIndex extends PureComponent<Props, State> {
             <RateLimitAlert />
           </Page.Header>
           <Page.ControlBar fullWidth={false}>
-            <Page.ControlBarLeft>
-              <SearchWidget
-                placeholderText="Filter dashboards..."
-                onSearch={this.handleFilterDashboards}
-                searchTerm={searchTerm}
-              />
-              <ResourceSortDropdown
-                resourceType={ResourceType.Dashboards}
-                sortDirection={sortOptions.sortDirection}
-                sortKey={sortOptions.sortKey}
-                sortType={sortOptions.sortType}
-                onSelect={this.handleSort}
-              />
-            </Page.ControlBarLeft>
-            <Page.ControlBarRight>
-              <AddResourceDropdown
-                onSelectNew={createDashboard}
-                onSelectImport={this.summonImportOverlay}
-                onSelectTemplate={this.summonImportFromTemplateOverlay}
-                resourceName="Dashboard"
-                canImportFromTemplate={ALLOW_IMPORT_FROM_TEMPLATE}
-                limitStatus={limitStatus}
-              />
-            </Page.ControlBarRight>
+            <ErrorBoundary>
+              <Page.ControlBarLeft>
+                <SearchWidget
+                  placeholderText="Filter dashboards..."
+                  onSearch={this.handleFilterDashboards}
+                  searchTerm={searchTerm}
+                />
+                <ResourceSortDropdown
+                  resourceType={ResourceType.Dashboards}
+                  sortDirection={sortOptions.sortDirection}
+                  sortKey={sortOptions.sortKey}
+                  sortType={sortOptions.sortType}
+                  onSelect={this.handleSort}
+                />
+              </Page.ControlBarLeft>
+              <Page.ControlBarRight>
+                <AddResourceDropdown
+                  onSelectNew={createDashboard}
+                  onSelectImport={this.summonImportOverlay}
+                  onSelectTemplate={this.summonImportFromTemplateOverlay}
+                  resourceName="Dashboard"
+                  canImportFromTemplate={ALLOW_IMPORT_FROM_TEMPLATE}
+                  limitStatus={limitStatus}
+                />
+              </Page.ControlBarRight>
+            </ErrorBoundary>
           </Page.ControlBar>
-          <Page.Contents
-            className="dashboards-index__page-contents"
-            fullWidth={false}
-            scrollable={true}
-          >
-            <GetAssetLimits>
-              <DashboardsIndexContents
-                searchTerm={searchTerm}
-                onFilterChange={this.handleFilterDashboards}
-                sortDirection={sortOptions.sortDirection}
-                sortType={sortOptions.sortType}
-                sortKey={sortOptions.sortKey}
-              />
-            </GetAssetLimits>
-          </Page.Contents>
+          <ErrorBoundary>
+            <Page.Contents
+              className="dashboards-index__page-contents"
+              fullWidth={false}
+              scrollable={true}
+            >
+              <GetAssetLimits>
+                <DashboardsIndexContents
+                  searchTerm={searchTerm}
+                  onFilterChange={this.handleFilterDashboards}
+                  sortDirection={sortOptions.sortDirection}
+                  sortType={sortOptions.sortType}
+                  sortKey={sortOptions.sortKey}
+                />
+              </GetAssetLimits>
+            </Page.Contents>
+          </ErrorBoundary>
         </Page>
         <Switch>
           <Route

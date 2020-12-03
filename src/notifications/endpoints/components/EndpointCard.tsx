@@ -35,6 +35,7 @@ import {NotificationEndpoint, Label, AlertHistoryType} from 'src/types'
 
 // Utilities
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 interface OwnProps {
   endpoint: NotificationEndpoint
@@ -106,51 +107,55 @@ const EndpointCard: FC<Props> = ({
   }
 
   return (
-    <ResourceCard
-      key={id}
-      contextMenu={contextMenu}
-      disabled={activeStatus === 'inactive'}
-      direction={FlexDirection.Row}
-      alignItems={AlignItems.Center}
-      margin={ComponentSize.Large}
-      testID={`endpoint-card ${name}`}
-    >
-      <SlideToggle
-        active={activeStatus === 'active'}
-        size={ComponentSize.ExtraSmall}
-        onChange={handleToggle}
-        testID="endpoint-card--slide-toggle"
-      />
-      <FlexBox
-        direction={FlexDirection.Column}
-        alignItems={AlignItems.FlexStart}
-        margin={ComponentSize.Small}
+    <ErrorBoundary>
+      <ResourceCard
+        key={id}
+        contextMenu={contextMenu}
+        disabled={activeStatus === 'inactive'}
+        direction={FlexDirection.Row}
+        alignItems={AlignItems.Center}
+        margin={ComponentSize.Large}
+        testID={`endpoint-card ${name}`}
       >
-        <ResourceCard.EditableName
-          key={id}
-          name={name}
-          onClick={handleClick}
-          onUpdate={handleUpdateName}
-          testID={`endpoint-card--name ${name}`}
-          inputTestID="endpoint-card--input"
-          buttonTestID="endpoint-card--name-button"
-          noNameString="Name this notification endpoint"
+        <SlideToggle
+          active={activeStatus === 'active'}
+          size={ComponentSize.ExtraSmall}
+          onChange={handleToggle}
+          testID="endpoint-card--slide-toggle"
         />
-        <ResourceCard.EditableDescription
-          onUpdate={handleUpdateDescription}
-          description={description}
-          placeholder={`Describe ${name}`}
-        />
-        <ResourceCard.Meta>
-          <>{relativeTimestampFormatter(endpoint.updatedAt, 'Last updated ')}</>
-        </ResourceCard.Meta>
-        <InlineLabels
-          selectedLabelIDs={endpoint.labels}
-          onAddLabel={handleAddEndpointLabel}
-          onRemoveLabel={handleRemoveEndpointLabel}
-        />
-      </FlexBox>
-    </ResourceCard>
+        <FlexBox
+          direction={FlexDirection.Column}
+          alignItems={AlignItems.FlexStart}
+          margin={ComponentSize.Small}
+        >
+          <ResourceCard.EditableName
+            key={id}
+            name={name}
+            onClick={handleClick}
+            onUpdate={handleUpdateName}
+            testID={`endpoint-card--name ${name}`}
+            inputTestID="endpoint-card--input"
+            buttonTestID="endpoint-card--name-button"
+            noNameString="Name this notification endpoint"
+          />
+          <ResourceCard.EditableDescription
+            onUpdate={handleUpdateDescription}
+            description={description}
+            placeholder={`Describe ${name}`}
+          />
+          <ResourceCard.Meta>
+            <>
+              {relativeTimestampFormatter(endpoint.updatedAt, 'Last updated ')}
+            </>
+          </ResourceCard.Meta>
+          <InlineLabels
+            selectedLabelIDs={endpoint.labels}
+            onAddLabel={handleAddEndpointLabel}
+            onRemoveLabel={handleRemoveEndpointLabel}
+          />
+        </FlexBox>
+      </ResourceCard>
+    </ErrorBoundary>
   )
 }
 

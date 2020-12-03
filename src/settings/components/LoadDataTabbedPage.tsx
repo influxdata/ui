@@ -4,6 +4,7 @@ import _ from 'lodash'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import LoadDataNavigation from 'src/settings/components/LoadDataNavigation'
 import {Tabs, Orientation, Page} from '@influxdata/clockface'
 
@@ -27,7 +28,9 @@ const LoadDataTabbedPage: FC<Props> = ({activeTab, orgID, children}) => {
     <Page.Contents fullWidth={false} scrollable={true}>
       <Tabs.Container orientation={Orientation.Horizontal}>
         <LoadDataNavigation activeTab={activeTab} orgID={orgID} />
-        <Tabs.TabContents>{children}</Tabs.TabContents>
+        <ErrorBoundary>
+          <Tabs.TabContents>{children}</Tabs.TabContents>
+        </ErrorBoundary>
       </Tabs.Container>
     </Page.Contents>
   )

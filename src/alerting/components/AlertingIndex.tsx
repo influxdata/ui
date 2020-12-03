@@ -23,6 +23,7 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Types
 import {ResourceType} from 'src/types'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 const alertsPath = '/orgs/:orgID/alerting'
 
@@ -42,7 +43,9 @@ const AlertingIndex: FunctionComponent = () => {
       <Page titleTag={pageTitleSuffixer(['Alerts'])}>
         <Page.Header fullWidth={true} testID="alerts-page--header">
           <Page.Title title="Alerts" />
-          <RateLimitAlert />
+          <ErrorBoundary>
+            <RateLimitAlert />
+          </ErrorBoundary>
         </Page.Header>
         <Page.Contents
           fullWidth={true}
@@ -91,13 +94,19 @@ const AlertingIndex: FunctionComponent = () => {
               </SelectGroup>
               <div className="alerting-index--columns">
                 <GetResources resources={[ResourceType.Checks]}>
-                  <ChecksColumn tabIndex={1} />
+                  <ErrorBoundary>
+                    <ChecksColumn tabIndex={1} />
+                  </ErrorBoundary>
                 </GetResources>
                 <GetResources resources={[ResourceType.NotificationEndpoints]}>
-                  <EndpointsColumn tabIndex={2} />
+                  <ErrorBoundary>
+                    <EndpointsColumn tabIndex={2} />
+                  </ErrorBoundary>
                 </GetResources>
                 <GetResources resources={[ResourceType.NotificationRules]}>
-                  <RulesColumn tabIndex={3} />
+                  <ErrorBoundary>
+                    <RulesColumn tabIndex={3} />
+                  </ErrorBoundary>
                 </GetResources>
               </div>
             </GetAssetLimits>

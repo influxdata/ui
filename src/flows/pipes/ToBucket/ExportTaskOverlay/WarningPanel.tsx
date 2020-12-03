@@ -12,7 +12,7 @@ import {
 
 const WarningPanel: FC = () => (
   <Panel
-    gradient={Gradients.DocScott}
+    gradient={Gradients.LostGalaxy}
     testID="panel"
     border={true}
     style={{marginBottom: '8px'}}

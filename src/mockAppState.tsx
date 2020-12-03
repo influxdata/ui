@@ -30,11 +30,13 @@ export const mockAppState = {
   },
   resources: {
     orgs: {
+      status: RemoteDataState.Done,
       org: {
         id: '674b23253171ee69',
       },
     },
     variables: {
+      status: RemoteDataState.Done,
       byID: {
         '054b7476389f1000': {
           id: '054b7476389f1000',

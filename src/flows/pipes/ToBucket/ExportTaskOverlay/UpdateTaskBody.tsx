@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FC, useContext} from 'react'
+import React, {FC, useContext} from 'react'
 import {useSelector} from 'react-redux'
 
 import {
@@ -20,7 +20,12 @@ import QueryTextPreview from 'src/flows/components/QueryTextPreview'
 import {hasNoTasks as hasNoTasksSelector} from 'src/resources/selectors'
 
 const UpdateTaskBody: FC = () => {
-  const {interval, handleSetEveryInterval, hasError} = useContext(Context)
+  const {
+    interval,
+    intervalError,
+    handleInputChange,
+    selectedTaskError,
+  } = useContext(Context)
 
   const hasNoTasks = useSelector(hasNoTasksSelector)
 
@@ -36,7 +41,8 @@ const UpdateTaskBody: FC = () => {
       <Grid.Column widthXS={Columns.Nine}>
         <Form.Element
           label="Name"
-          errorMessage={hasError && 'This field cannot be empty'}
+          required={true}
+          errorMessage={selectedTaskError}
         >
           <TaskDropdown />
         </Form.Element>
@@ -44,26 +50,28 @@ const UpdateTaskBody: FC = () => {
       <Grid.Column widthXS={Columns.Three}>
         <Form.Element
           label="Run Every"
-          errorMessage={hasError && 'Invalid Time'}
+          required={true}
+          errorMessage={intervalError}
         >
           <Input
-            name="schedule"
+            name="interval"
             type={InputType.Text}
-            placeholder="3h30s"
+            placeholder="ex: 3h30s"
             value={interval}
-            onChange={(event: ChangeEvent<HTMLInputElement>) =>
-              handleSetEveryInterval(event.target.value)
-            }
+            onChange={handleInputChange}
             testID="task-form-schedule-input"
-            status={hasError ? ComponentStatus.Error : ComponentStatus.Default}
+            size={ComponentSize.Medium}
+            status={
+              intervalError ? ComponentStatus.Error : ComponentStatus.Default
+            }
           />
         </Form.Element>
       </Grid.Column>
       <Grid.Column>
         <WarningPanel />
-      </Grid.Column>
-      <Grid.Column>
-        <QueryTextPreview />
+        <Form.Element label="Preview">
+          <QueryTextPreview />
+        </Form.Element>
       </Grid.Column>
     </>
   )

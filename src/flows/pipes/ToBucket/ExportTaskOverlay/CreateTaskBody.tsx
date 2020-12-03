@@ -1,4 +1,7 @@
-import React, {ChangeEvent, FC, useContext} from 'react'
+// Libraries
+import React, {FC, useContext} from 'react'
+
+// Components
 import {
   Columns,
   ComponentStatus,
@@ -6,58 +9,63 @@ import {
   Grid,
   Input,
   InputType,
+  ComponentSize,
 } from '@influxdata/clockface'
 import QueryTextPreview from 'src/flows/components/QueryTextPreview'
+
+// Contexts
 import {Context} from 'src/flows/pipes/ToBucket/ExportTaskOverlay/context'
 
 const CreateTaskBody: FC = () => {
   const {
-    handleSetEveryInterval,
-    handleSetTaskName,
-    hasError,
+    handleInputChange,
     interval,
+    intervalError,
     taskName,
+    taskNameError,
   } = useContext(Context)
 
   return (
     <>
       <Grid.Column widthXS={Columns.Nine}>
-        <Form.Element
-          label="Name"
-          errorMessage={hasError && 'This field cannot be empty'}
-        >
+        <Form.Element label="Name" required={true} errorMessage={taskNameError}>
           <Input
-            name="name"
+            name="taskName"
             placeholder="Name your task"
-            onChange={(event: ChangeEvent<HTMLInputElement>) =>
-              handleSetTaskName(event.target.value)
-            }
+            onChange={handleInputChange}
             value={taskName}
             testID="task-form-name"
-            status={hasError ? ComponentStatus.Error : ComponentStatus.Default}
+            status={
+              taskNameError ? ComponentStatus.Error : ComponentStatus.Default
+            }
+            size={ComponentSize.Medium}
           />
         </Form.Element>
       </Grid.Column>
       <Grid.Column widthXS={Columns.Three}>
         <Form.Element
           label="Run Every"
-          errorMessage={hasError && 'Invalid Time'}
+          required={true}
+          errorMessage={intervalError}
         >
           <Input
-            name="schedule"
+            name="interval"
             type={InputType.Text}
-            placeholder="3h30s"
+            placeholder="ex: 3h30s"
             value={interval}
-            onChange={(event: ChangeEvent<HTMLInputElement>) =>
-              handleSetEveryInterval(event.target.value)
-            }
+            onChange={handleInputChange}
             testID="task-form-schedule-input"
-            status={hasError ? ComponentStatus.Error : ComponentStatus.Default}
+            status={
+              intervalError ? ComponentStatus.Error : ComponentStatus.Default
+            }
+            size={ComponentSize.Medium}
           />
         </Form.Element>
       </Grid.Column>
       <Grid.Column>
-        <QueryTextPreview />
+        <Form.Element label="Preview">
+          <QueryTextPreview />
+        </Form.Element>
       </Grid.Column>
     </>
   )

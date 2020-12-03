@@ -421,6 +421,14 @@ export const getBucketFailed = (
   message: `Failed to fetch bucket with id ${bucketID}: ${error}`,
 })
 
+export const getSchemaFailed = (
+  bucketName: string,
+  error: string
+): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to fetch schema for bucket with id ${bucketName}: ${error}`,
+})
+
 // Demodata buckets
 
 export const demoDataAddBucketFailed = (

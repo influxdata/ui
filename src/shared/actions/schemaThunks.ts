@@ -21,7 +21,7 @@ import {
 import {notify, Action as NotifyAction} from 'src/shared/actions/notifications'
 
 // Constants
-import {getBucketsFailed} from 'src/shared/copy/notifications'
+import {getSchemaFailed} from 'src/shared/copy/notifications'
 import {TEN_MINUTES} from 'src/shared/reducers/schema'
 
 // Types
@@ -161,6 +161,6 @@ export const getAndSetBucketSchema = (
   } catch (error) {
     console.error(error)
     dispatch(setSchema(RemoteDataState.Error))
-    dispatch(notify(getBucketsFailed()))
+    dispatch(notify(getSchemaFailed(bucket.name, error.message)))
   }
 }

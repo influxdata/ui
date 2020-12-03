@@ -115,6 +115,16 @@ export const Provider: FC = ({children}) => {
     setSelectedTaskError('')
   }, [])
 
+  const validateTimeValue = (value: string): boolean => {
+    if (value === '') {
+      return false
+    }
+
+    const cleanValue = value.match(/(?:(\d+(mo|s|m|w|h){1}))/g)?.join('')
+
+    return value !== cleanValue
+  }
+
   const handleInputChange = (e: ChangeEvent<InputRef>): void => {
     const {name, value} = e.target
 
@@ -122,8 +132,8 @@ export const Provider: FC = ({children}) => {
       setInterval(value)
       if (value === '') {
         setIntervalError('Cannot be empty')
-      } else if (!/\d/.test(value)) {
-        setIntervalError('Invalid format')
+      } else if (validateTimeValue(value)) {
+        setIntervalError('Invalid time')
       } else {
         setIntervalError('')
       }
@@ -152,8 +162,8 @@ export const Provider: FC = ({children}) => {
     if (interval === '') {
       setIntervalError('Cannot be empty')
       formIsValid = false
-    } else if (!/\d/.test(interval)) {
-      setIntervalError('Invalid format')
+    } else if (validateTimeValue(interval)) {
+      setIntervalError('Invalid time')
       formIsValid = false
     } else {
       setIntervalError('')
@@ -168,8 +178,8 @@ export const Provider: FC = ({children}) => {
     if (interval === '') {
       setIntervalError('Cannot be empty')
       formIsValid = false
-    } else if (!/\d/.test(interval)) {
-      setIntervalError('Invalid format')
+    } else if (validateTimeValue(interval)) {
+      setIntervalError('Invalid time')
       formIsValid = false
     } else {
       setIntervalError('')

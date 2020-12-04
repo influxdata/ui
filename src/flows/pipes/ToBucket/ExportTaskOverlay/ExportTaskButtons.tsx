@@ -45,6 +45,7 @@ const ExportTaskButtons: FC = () => {
     const preamble = `${variable}\n\n${taskOption}`
 
     dispatch(saveNewScript(script, preamble))
+    closeFn()
   }
 
   const onUpdate = () => {
@@ -67,6 +68,7 @@ const ExportTaskButtons: FC = () => {
         task: selectedTask,
       })
     )
+    closeFn()
   }
 
   const onSubmit = activeTab === ExportAsTask.Create ? onCreate : onUpdate

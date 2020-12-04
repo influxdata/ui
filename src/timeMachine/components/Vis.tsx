@@ -86,19 +86,10 @@ const TimeMachineVis: FC<Props> = ({
           {isViewingRawData ? (
             <AutoSizer>
               {({width, height}) => {
-                if (isFlagEnabled('flowsUiPagination')) {
-                  const [parsedResults] = files.flatMap(fromFlux)
-                  return (
-                    <RawFluxDataTable
-                      parsedResults={parsedResults}
-                      width={width}
-                      height={height}
-                    />
-                  )
-                }
+                const [parsedResults] = files.flatMap(fromFlux)
                 return (
                   <RawFluxDataTable
-                    files={files}
+                    parsedResults={parsedResults}
                     width={width}
                     height={height}
                   />

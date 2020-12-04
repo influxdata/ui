@@ -1,4 +1,6 @@
 ## Packages
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Finfluxdata%2Fui.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Finfluxdata%2Fui?ref=badge_shield)
+
 
 ### Adding new packages
 
@@ -53,3 +55,7 @@ From the ui directory. Build the javascript with
 ## Starting Dev Server
 
 Running `/ui` locally depends on `monitor-ci`. [See the monitor-ci Quickstart](https://github.com/influxdata/monitor-ci#quickstart-for-local-development)
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Finfluxdata%2Fui.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Finfluxdata%2Fui?ref=badge_large)

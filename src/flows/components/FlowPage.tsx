@@ -4,6 +4,7 @@ import {useParams} from 'react-router-dom'
 
 // Components
 import CurrentFlowProvider from 'src/flows/context/flow.current'
+import {RunModeProvider} from 'src/flows/context/runMode'
 import {FlowListContext} from 'src/flows/context/flow.list'
 import Flow from 'src/flows/components/Flow'
 import {Page} from '@influxdata/clockface'
@@ -28,15 +29,21 @@ import 'src/flows/style.scss'
 
 const FlowContainer: FC = () => (
   <CurrentFlowProvider>
-    <FlowFromRoute />
-    <ResultsProvider>
-      <Page titleTag={PROJECT_NAME_PLURAL}>
-        <FlowHeader />
-        <Page.Contents fullWidth={true} scrollable={true} className="flow-page">
-          <Flow />
-        </Page.Contents>
-      </Page>
-    </ResultsProvider>
+    <RunModeProvider>
+      <FlowFromRoute />
+      <ResultsProvider>
+        <Page titleTag={PROJECT_NAME_PLURAL}>
+          <FlowHeader />
+          <Page.Contents
+            fullWidth={true}
+            scrollable={true}
+            className="flow-page"
+          >
+            <Flow />
+          </Page.Contents>
+        </Page>
+      </ResultsProvider>
+    </RunModeProvider>
   </CurrentFlowProvider>
 )
 

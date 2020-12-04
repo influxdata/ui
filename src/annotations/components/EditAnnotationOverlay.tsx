@@ -2,7 +2,7 @@
 import React, {FC} from 'react'
 
 // Components
-import AnnotationForm from 'src/annotations/components/annotationForm/AnnotationForm'
+import {AnnotationForm} from 'src/annotations/components/annotationForm/AnnotationForm'
 
 // Types
 import {Annotation} from 'src/annotations/reducers/annotationFormReducer'
@@ -21,7 +21,7 @@ const MOCK_ANNOTATION: Annotation = {
   },
 }
 
-const EditAnnotationOverlay: FC = () => {
+export const EditAnnotationOverlay: FC = () => {
   const handleSubmit = (_annotation: Annotation): void => {
     // Use the values of annotation to construct a line protocol string and
     // then execute it
@@ -34,5 +34,3 @@ const EditAnnotationOverlay: FC = () => {
 
   return <AnnotationForm title="Edit" onSubmit={handleSubmit} {...annotation} />
 }
-
-export default EditAnnotationOverlay

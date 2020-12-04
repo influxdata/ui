@@ -1,68 +1,36 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC} from 'react'
 
 // Components
-import ExportDashboardButtons from './ExportDashboardButtons'
-import UpdateDashboardBody from './UpdateDashboardBody'
-import CreateDashboardBody from './CreateDashboardBody'
+import ExportDashboardButtons from 'src/flows/pipes/Visualization/ExportDashboardOverlay/ExportDashboardButtons'
+import ExportDashboardOverlayHeader from 'src/flows/pipes/Visualization/ExportDashboardOverlay/ExportDashboardOverlayHeader'
+import ExportDashboardOverlayBody from 'src/flows/pipes/Visualization/ExportDashboardOverlay/ExportDashboardOverlayBody'
 import QueryTextPreview from 'src/flows/components/QueryTextPreview'
 import Visualization from 'src/flows/pipes/Visualization/ExportDashboardOverlay/Visualization'
-import {
-  Context,
-  Provider,
-  ExportToDashboard,
-} from 'src/flows/pipes/Visualization/ExportDashboardOverlay/context'
-import {PopupContext} from 'src/flows/context/popup'
+import ExportDashboardOverlayTabs from 'src/flows/pipes/Visualization/ExportDashboardOverlay/ExportDashboardOverlayTabs'
+import {Provider} from 'src/flows/pipes/Visualization/ExportDashboardOverlay/context'
 import {
   Form,
   Grid,
-  Alignment,
   Columns,
-  ComponentSize,
   Overlay,
   Tabs,
   Orientation,
 } from '@influxdata/clockface'
 
 const ExportDashboardOverlay: FC = () => {
-  const {activeTab, handleSetActiveTab} = useContext(Context)
-  const {closeFn} = useContext(PopupContext)
-
   return (
     <Overlay visible={true}>
-      <Overlay.Container maxWidth={600}>
-        <Overlay.Header
-          title="Export To Dashboard"
-          onDismiss={closeFn}
-          testID="export-as-overlay--header"
-        />
+      <Overlay.Container maxWidth={700}>
+        <ExportDashboardOverlayHeader />
         <Overlay.Body>
           <Tabs.Container orientation={Orientation.Horizontal}>
-            <Tabs alignment={Alignment.Left} size={ComponentSize.Small}>
-              <Tabs.Tab
-                id={ExportToDashboard.Create}
-                text="Create New"
-                testID="task--radio-button"
-                onClick={() => handleSetActiveTab(ExportToDashboard.Create)}
-                active={activeTab === ExportToDashboard.Create}
-              />
-              <Tabs.Tab
-                id={ExportToDashboard.Update}
-                text="Update Existing"
-                testID="variable-radio-button"
-                onClick={() => handleSetActiveTab(ExportToDashboard.Update)}
-                active={activeTab === ExportToDashboard.Update}
-              />
-            </Tabs>
+            <ExportDashboardOverlayTabs />
             <Tabs.TabContents>
               <Form>
                 <Grid>
                   <Grid.Row>
-                    {activeTab === ExportToDashboard.Create ? (
-                      <CreateDashboardBody />
-                    ) : (
-                      <UpdateDashboardBody />
-                    )}
+                    <ExportDashboardOverlayBody />
                     <Grid.Column widthXS={Columns.Twelve}>
                       <Form.Element label="Preview">
                         <Visualization />

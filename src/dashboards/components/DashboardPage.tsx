@@ -11,7 +11,7 @@ import DashboardComponent from 'src/dashboards/components/Dashboard'
 import ManualRefresh from 'src/shared/components/ManualRefresh'
 import {HoverTimeProvider} from 'src/dashboards/utils/hoverTime'
 import VariablesControlBar from 'src/dashboards/components/variablesControlBar/VariablesControlBar'
-import AnnotationsControlBar from 'src/annotations/components/controlBar/AnnotationsControlBar'
+import {AnnotationsControlBar} from 'src/annotations/components/controlBar/AnnotationsControlBar'
 import LimitChecker from 'src/cloud/components/LimitChecker'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import EditVEO from 'src/dashboards/components/EditVEO'
@@ -50,6 +50,7 @@ import {
   DASHBOARDS,
   DASHBOARD_ID,
 } from 'src/shared/constants/routes'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 const dashRoute = `/${ORGS}/${ORG_ID}/${DASHBOARDS}/${DASHBOARD_ID}`
 
@@ -70,43 +71,50 @@ class DashboardPage extends Component<Props> {
 
     return (
       <>
-        <Page titleTag={this.pageTitle}>
-          <LimitChecker>
-            <HoverTimeProvider>
-              <DashboardHeader
-                autoRefresh={autoRefresh}
-                onManualRefresh={onManualRefresh}
+        <ErrorBoundary>
+          <Page titleTag={this.pageTitle}>
+            <LimitChecker>
+              <HoverTimeProvider>
+                <DashboardHeader
+                  autoRefresh={autoRefresh}
+                  onManualRefresh={onManualRefresh}
+                />
+                <RateLimitAlert alertOnly={true} />
+                <VariablesControlBar />
+                <FeatureFlag name="annotations">
+                  <AnnotationsControlBar />
+                </FeatureFlag>
+                <ErrorBoundary>
+                  <DashboardComponent manualRefresh={manualRefresh} />
+                </ErrorBoundary>
+              </HoverTimeProvider>
+            </LimitChecker>
+          </Page>
+          <Switch>
+            <Route path={`${dashRoute}/cells/new`} component={NewVEO} />
+            <Route
+              path={`${dashRoute}/cells/:cellID/edit`}
+              component={EditVEO}
+            />
+            <Route path={`${dashRoute}/notes/new`} component={AddNoteOverlay} />
+            <Route
+              path={`${dashRoute}/notes/:cellID/edit`}
+              component={EditNoteOverlay}
+            />
+            {isFlagEnabled('annotations') && (
+              <Route
+                path={`${dashRoute}/add-annotation`}
+                component={AddAnnotationDashboardOverlay}
               />
-              <RateLimitAlert alertOnly={true} />
-              <VariablesControlBar />
-              <FeatureFlag name="annotations">
-                <AnnotationsControlBar />
-              </FeatureFlag>
-              <DashboardComponent manualRefresh={manualRefresh} />
-            </HoverTimeProvider>
-          </LimitChecker>
-        </Page>
-        <Switch>
-          <Route path={`${dashRoute}/cells/new`} component={NewVEO} />
-          <Route path={`${dashRoute}/cells/:cellID/edit`} component={EditVEO} />
-          <Route path={`${dashRoute}/notes/new`} component={AddNoteOverlay} />
-          <Route
-            path={`${dashRoute}/notes/:cellID/edit`}
-            component={EditNoteOverlay}
-          />
-          {isFlagEnabled('annotations') && (
-            <Route
-              path={`${dashRoute}/add-annotation`}
-              component={AddAnnotationDashboardOverlay}
-            />
-          )}
-          {isFlagEnabled('annotations') && (
-            <Route
-              path={`${dashRoute}/edit-annotation`}
-              component={EditAnnotationDashboardOverlay}
-            />
-          )}
-        </Switch>
+            )}
+            {isFlagEnabled('annotations') && (
+              <Route
+                path={`${dashRoute}/edit-annotation`}
+                component={EditAnnotationDashboardOverlay}
+              />
+            )}
+          </Switch>
+        </ErrorBoundary>
       </>
     )
   }

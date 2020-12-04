@@ -23,7 +23,7 @@ const SearchBar: FC = () => {
       icon={IconFont.Search}
       size={ComponentSize.Medium}
       value={searchTerm}
-      placeholder="Filter data by Measurement, Field, or Tag ..."
+      placeholder="Filter data by measurement, field, or tag ..."
       onChange={e => handleSetSearch(e.target.value)}
     />
   )

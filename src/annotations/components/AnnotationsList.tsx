@@ -3,7 +3,7 @@ import React, {FC} from 'react'
 
 // Components
 import {ResourceList} from '@influxdata/clockface'
-import AnnotationCard from 'src/annotations/components/AnnotationCard'
+import {AnnotationCard} from 'src/annotations/components/AnnotationCard'
 
 // Types
 import {SortTypes} from 'src/shared/utils/sort'
@@ -23,7 +23,7 @@ interface Props {
   sortType: SortTypes
 }
 
-const AnnotationsList: FC<Props> = ({
+export const AnnotationsList: FC<Props> = ({
   annotationStreams,
   emptyState,
   sortKey,
@@ -48,5 +48,3 @@ const AnnotationsList: FC<Props> = ({
     </ResourceList>
   )
 }
-
-export default AnnotationsList

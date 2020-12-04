@@ -11,17 +11,22 @@ import {
 } from '@influxdata/clockface'
 
 const WarningPanel: FC = () => (
-  <Panel gradient={Gradients.LostGalaxy} testID="panel" border={true}>
+  <Panel
+    gradient={Gradients.LostGalaxy}
+    testID="panel"
+    border={true}
+    className="flow-visualization--export-warning"
+  >
     <Panel.Body
       justifyContent={JustifyContent.FlexStart}
       alignItems={AlignItems.Center}
       direction={FlexDirection.Row}
-      margin={ComponentSize.Large}
+      margin={ComponentSize.Medium}
       size={ComponentSize.ExtraSmall}
     >
       <Icon glyph={IconFont.AlertTriangle} />
       <p className="margin-zero">
-        &nbsp;Note: changes made to existing dashboard cells cannot be undone
+        Note: changes made to existing dashboard cells cannot be undone
       </p>
     </Panel.Body>
   </Panel>

@@ -35,7 +35,7 @@ const SUPPORTED_FAMILIES = [
     family: 'transform',
   },
   {
-    name: 'Pass Throughs',
+    name: 'Pass-through',
     family: 'passThrough',
   },
   {
@@ -43,7 +43,7 @@ const SUPPORTED_FAMILIES = [
     family: 'test',
   },
   {
-    name: 'Outputs',
+    name: 'Output',
     family: 'output',
   },
   {

@@ -3,12 +3,12 @@ import React, {FC} from 'react'
 import {RouteProps, useLocation} from 'react-router-dom'
 
 // Components
-import AnnotationForm from 'src/annotations/components/annotationForm/AnnotationForm'
+import {AnnotationForm} from 'src/annotations/components/annotationForm/AnnotationForm'
 
 // Types
 import {Annotation} from 'src/annotations/reducers/annotationFormReducer'
 
-const AddAnnotationOverlay: FC = () => {
+export const AddAnnotationOverlay: FC = () => {
   const location: RouteProps['location'] = useLocation()
   const params = location.state
   let timeStart = ''
@@ -36,5 +36,3 @@ const AddAnnotationOverlay: FC = () => {
     />
   )
 }
-
-export default AddAnnotationOverlay

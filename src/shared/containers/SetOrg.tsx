@@ -19,7 +19,6 @@ import TelegrafsPage from 'src/telegrafs/containers/TelegrafsPage'
 import ScrapersIndex from 'src/scrapers/containers/ScrapersIndex'
 import WriteDataPage from 'src/writeData/containers/WriteDataPage'
 import VariablesIndex from 'src/variables/containers/VariablesIndex'
-import AnnotationsIndex from 'src/annotations/containers/AnnotationsIndex'
 import LabelsIndex from 'src/labels/containers/LabelsIndex'
 import OrgProfilePage from 'src/organizations/containers/OrgProfilePage'
 import AlertingIndex from 'src/alerting/components/AlertingIndex'
@@ -31,7 +30,9 @@ import ClientLibrariesPage from 'src/writeData/containers/ClientLibrariesPage'
 import TelegrafPluginsPage from 'src/writeData/containers/TelegrafPluginsPage'
 import FlowsIndex from 'src/flows/components/FlowsIndex'
 import NotFound from 'src/shared/components/NotFound'
+import UsersPage from 'src/unity/components/users/UsersPage'
 import {CommunityTemplatesIndex} from 'src/templates/containers/CommunityTemplatesIndex'
+import {AnnotationsIndex} from 'src/annotations/containers/AnnotationsIndex'
 
 // Types
 import {AppState, Organization, ResourceType} from 'src/types'
@@ -224,6 +225,11 @@ const SetOrg: FC<Props> = ({
           path={`${orgPath}/${SETTINGS}`}
           component={VariablesIndex}
         />
+
+        {/* Users */}
+        {CLOUD && isFlagEnabled('unity') && (
+          <Route path={`${orgPath}/unity-users`} component={UsersPage} />
+        )}
 
         {/* Members */}
         {!CLOUD && (

@@ -421,6 +421,14 @@ export const getBucketFailed = (
   message: `Failed to fetch bucket with id ${bucketID}: ${error}`,
 })
 
+export const getSchemaFailed = (
+  bucketName: string,
+  error: string
+): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to fetch schema for bucket with id ${bucketName}: ${error}`,
+})
+
 // Demodata buckets
 
 export const demoDataAddBucketFailed = (
@@ -983,4 +991,22 @@ export const communityTemplateUnsupportedFormatError = (): Notification => ({
 export const communityTemplateRenameFailed = (): Notification => ({
   ...defaultErrorNotification,
   message: `We've successfully installed your template but weren't able to name it properly. It may appear as a blank template.`,
+})
+
+// Notebooks
+
+export const notebookRunSuccess = (
+  runMode: string,
+  projectName: string
+): Notification => ({
+  ...defaultSuccessNotification,
+  message: `${projectName} ${runMode.toLowerCase()} successful!`,
+})
+
+export const notebookRunFail = (
+  runMode: string,
+  projectName: string
+): Notification => ({
+  ...defaultErrorNotification,
+  message: `${projectName} ${runMode.toLowerCase()} failed`,
 })

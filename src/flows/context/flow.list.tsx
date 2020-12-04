@@ -89,7 +89,7 @@ export function hydrate(data) {
   }
 
   data.pipes.forEach(pipe => {
-    const id = pipe.id || UUID()
+    const id = pipe.id || `local_${UUID()}`
 
     flow.data.allIDs.push(id)
     flow.meta.allIDs.push(id)
@@ -158,7 +158,7 @@ export const FlowListProvider: FC = ({children}) => {
     // console.log('add to the api', serialize(data))
     return new Promise(resolve => {
       setTimeout(() => {
-        const id = UUID()
+        const id = `local_${UUID()}`
 
         setFlows({
           ...flows,

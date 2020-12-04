@@ -58,7 +58,7 @@ export const FlowProvider: FC = ({children}) => {
   )
 
   const addPipe = (initial: PipeData, index?: number) => {
-    const id = UUID()
+    const id = `local_${UUID()}`
 
     flows[currentID].data.add(id, initial)
     flows[currentID].meta.add(id, {

@@ -111,17 +111,17 @@ class InlineLabelsEditor extends Component<Props, State> {
     return (
       <ClickOutside onClickOutside={this.onClickOutside}>
         <InlineLabelPopover
-            searchTerm={searchTerm}
-            triggerRef={this.popoverTrigger}
-            selectedItemID={selectedItemID}
-            onUpdateSelectedItemID={this.handleUpdateSelectedItemID}
-            allLabelsUsed={labelsUsed}
-            onStartCreatingLabel={this.handleStartCreatingLabel}
-            onInputChange={this.handleInputChange}
-            filteredLabels={this.filterLabels(searchTerm)}
-            onAddLabel={this.handleAddLabel}
-            visible={isPopoverVisible}
-            onEscapePress={this.hidePopover}
+          searchTerm={searchTerm}
+          triggerRef={this.popoverTrigger}
+          selectedItemID={selectedItemID}
+          onUpdateSelectedItemID={this.handleUpdateSelectedItemID}
+          allLabelsUsed={labelsUsed}
+          onStartCreatingLabel={this.handleStartCreatingLabel}
+          onInputChange={this.handleInputChange}
+          filteredLabels={this.filterLabels(searchTerm)}
+          onAddLabel={this.handleAddLabel}
+          visible={isPopoverVisible}
+          onEscapePress={this.hidePopover}
         />
       </ClickOutside>
     )
@@ -167,7 +167,7 @@ class InlineLabelsEditor extends Component<Props, State> {
       return
     }
 
-    this.hidePopover();
+    this.hidePopover()
   }
 
   private handleAddLabel = async (labelID: string) => {
@@ -272,7 +272,7 @@ class InlineLabelsEditor extends Component<Props, State> {
   }
 
   private hidePopover = (): void => {
-    this.setState({isPopoverVisible: false});
+    this.setState({isPopoverVisible: false})
   }
 
   private handleStopCreatingLabel = (): void => {

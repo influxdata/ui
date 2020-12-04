@@ -42,7 +42,7 @@ interface Props {
   onInputChange: (e: ChangeEvent<HTMLInputElement>) => void
   filteredLabels: Label[]
   onAddLabel: (labelID: string) => void
-  onEscapePress : () => void
+  onEscapePress: () => void
   visible: boolean
 }
 
@@ -60,7 +60,7 @@ export default class InlineLabelPopover extends PureComponent<Props> {
       onInputChange,
       filteredLabels,
       visible,
-    } = this.props;
+    } = this.props
 
     return (
       <Popover
@@ -103,32 +103,37 @@ export default class InlineLabelPopover extends PureComponent<Props> {
   }
 
   private handleKeyDown = (e: KeyboardEvent<HTMLInputElement>): void => {
-    const {selectedItemID, onAddLabel, onStartCreatingLabel, onEscapePress} = this.props;
+    const {
+      selectedItemID,
+      onAddLabel,
+      onStartCreatingLabel,
+      onEscapePress,
+    } = this.props
 
     switch (e.key) {
       case 'Enter':
-        e.preventDefault();
-        e.stopPropagation();
+        e.preventDefault()
+        e.stopPropagation()
         if (selectedItemID === ADD_NEW_LABEL_ITEM_ID) {
-          onStartCreatingLabel();
-          break;
+          onStartCreatingLabel()
+          break
         }
 
         if (selectedItemID) {
-          onAddLabel(selectedItemID);
-          break;
+          onAddLabel(selectedItemID)
+          break
         }
       case 'ArrowUp':
-        this.handleHighlightAdjacentItem(ArrowDirection.Up);
-        break;
+        this.handleHighlightAdjacentItem(ArrowDirection.Up)
+        break
       case 'ArrowDown':
-        this.handleHighlightAdjacentItem(ArrowDirection.Down);
-        break;
+        this.handleHighlightAdjacentItem(ArrowDirection.Down)
+        break
       case 'Escape':
-        onEscapePress();
-        break;
+        onEscapePress()
+        break
       default:
-        break;
+        break
     }
   }
 

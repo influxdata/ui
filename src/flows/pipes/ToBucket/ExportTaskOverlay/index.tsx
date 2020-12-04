@@ -29,7 +29,7 @@ const ExportTaskOverlay: FC = () => {
 
   return (
     <Overlay visible={true}>
-      <Overlay.Container maxWidth={600}>
+      <Overlay.Container maxWidth={700}>
         <Overlay.Header
           title="Export As Task"
           onDismiss={closeFn}

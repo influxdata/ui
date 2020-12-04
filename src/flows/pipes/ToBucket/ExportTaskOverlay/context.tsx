@@ -69,7 +69,7 @@ export const Provider: FC = ({children}) => {
   const [taskNameError, setTaskNameError] = useState<string>('')
   const [interval, setInterval] = useState<string>('')
   const [intervalError, setIntervalError] = useState<string>('')
-  const {data} = useContext(PopupContext)
+  const {data, closeFn} = useContext(PopupContext)
 
   const script = formatQueryText(data.query)
 
@@ -215,6 +215,8 @@ export const Provider: FC = ({children}) => {
     } else {
       handleUpdateTask()
     }
+
+    closeFn()
   }
 
   return (

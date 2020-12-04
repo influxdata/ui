@@ -12,7 +12,7 @@ import GraphTips from 'src/shared/components/graph_tips/GraphTips'
 import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import {Button, IconFont, ComponentColor, Page} from '@influxdata/clockface'
-import AnnotationsToggleButton from 'src/annotations/components/AnnotationsToggleButton'
+import {AnnotationsToggleButton} from 'src/annotations/components/AnnotationsToggleButton'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Actions

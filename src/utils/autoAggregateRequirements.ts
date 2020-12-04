@@ -1,4 +1,4 @@
-//Utils
+// Utils
 import {buildQuery} from 'src/timeMachine/utils/queryBuilder'
 import {get, isNull} from 'lodash'
 

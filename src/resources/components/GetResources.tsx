@@ -18,7 +18,7 @@ import {getTelegrafs} from 'src/telegrafs/actions/thunks'
 import {getTemplates} from 'src/templates/actions/thunks'
 import {getVariables} from 'src/variables/actions/thunks'
 
-//Utils
+// Utils
 import {event} from 'src/cloud/utils/reporting'
 
 // Types

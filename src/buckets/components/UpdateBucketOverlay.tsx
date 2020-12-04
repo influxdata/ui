@@ -31,7 +31,7 @@ import * as api from 'src/client'
 import {DEFAULT_SECONDS} from 'src/buckets/components/Retention'
 import {getBucketFailed} from 'src/shared/copy/notifications'
 
-//Types
+// Types
 import {OwnBucket} from 'src/types'
 
 interface DispatchProps {

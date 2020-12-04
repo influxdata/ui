@@ -15,7 +15,7 @@ interface Props {
   color: string
 }
 
-const AnnotationPill: FC<Props> = ({id, name, description, color}) => {
+export const AnnotationPill: FC<Props> = ({id, name, description, color}) => {
   const dispatch = useDispatch()
 
   const handleDisable = (): void => {
@@ -39,5 +39,3 @@ const AnnotationPill: FC<Props> = ({id, name, description, color}) => {
     </div>
   )
 }
-
-export default AnnotationPill

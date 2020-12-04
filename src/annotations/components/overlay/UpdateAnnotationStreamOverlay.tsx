@@ -2,13 +2,13 @@
 import React, {FC, useContext} from 'react'
 
 // Components
-import AnnotationStreamOverlay from 'src/annotations/components/overlay/AnnotationStreamOverlay'
+import {AnnotationStreamOverlay} from 'src/annotations/components/overlay/AnnotationStreamOverlay'
 import {Overlay, Button, ComponentColor} from '@influxdata/clockface'
 
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
-const UpdateAnnotationStreamOverlay: FC = () => {
+export const UpdateAnnotationStreamOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
 
   return (
@@ -27,5 +27,3 @@ const UpdateAnnotationStreamOverlay: FC = () => {
     </AnnotationStreamOverlay>
   )
 }
-
-export default UpdateAnnotationStreamOverlay

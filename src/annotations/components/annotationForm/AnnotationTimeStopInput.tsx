@@ -10,7 +10,7 @@ import {updateAnnotationDraft} from 'src/annotations/actions/annotationFormActio
 // Contexts
 import {AnnotationFormContext} from 'src/annotations/components/annotationForm/AnnotationForm'
 
-const AnnotationTimeStopInput: FC = () => {
+export const AnnotationTimeStopInput: FC = () => {
   const {timeStop, timeStopStatus, timeStopError, type, dispatch} = useContext(
     AnnotationFormContext
   )
@@ -40,5 +40,3 @@ const AnnotationTimeStopInput: FC = () => {
     </Grid.Column>
   )
 }
-
-export default AnnotationTimeStopInput

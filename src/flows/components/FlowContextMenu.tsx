@@ -5,6 +5,7 @@ import React, {FC, useContext} from 'react'
 import {Context} from 'src/clockface'
 import {ButtonShape, ComponentColor, IconFont} from '@influxdata/clockface'
 import {FlowListContext} from 'src/flows/context/flow.list'
+import {PROJECT_NAME} from 'src/flows'
 
 interface Props {
   id: string
@@ -23,7 +24,7 @@ const FlowContextMenu: FC<Props> = ({id, name}) => {
       icon={IconFont.Trash}
       color={ComponentColor.Danger}
       shape={ButtonShape.Default}
-      text="Delete Flow"
+      text={`Delete ${PROJECT_NAME}`}
       testID={`context-delete-menu ${name}`}
     >
       <Context.Item

@@ -12,14 +12,13 @@ import TaskEditPage from 'src/tasks/containers/TaskEditPage'
 import DataExplorerPage from 'src/dataExplorer/components/DataExplorerPage'
 import DashboardsIndex from 'src/dashboards/components/dashboard_index/DashboardsIndex'
 import DashboardContainer from 'src/dashboards/components/DashboardContainer'
-import Flow from 'src/flows/components/Flow'
+import FlowPage from 'src/flows/components/FlowPage'
 import BucketsIndex from 'src/buckets/containers/BucketsIndex'
 import TokensIndex from 'src/authorizations/containers/TokensIndex'
 import TelegrafsPage from 'src/telegrafs/containers/TelegrafsPage'
 import ScrapersIndex from 'src/scrapers/containers/ScrapersIndex'
 import WriteDataPage from 'src/writeData/containers/WriteDataPage'
 import VariablesIndex from 'src/variables/containers/VariablesIndex'
-import AnnotationsIndex from 'src/annotations/containers/AnnotationsIndex'
 import LabelsIndex from 'src/labels/containers/LabelsIndex'
 import OrgProfilePage from 'src/organizations/containers/OrgProfilePage'
 import AlertingIndex from 'src/alerting/components/AlertingIndex'
@@ -31,13 +30,16 @@ import ClientLibrariesPage from 'src/writeData/containers/ClientLibrariesPage'
 import TelegrafPluginsPage from 'src/writeData/containers/TelegrafPluginsPage'
 import FlowsIndex from 'src/flows/components/FlowsIndex'
 import NotFound from 'src/shared/components/NotFound'
+import UsersPage from 'src/unity/components/users/UsersPage'
 import {CommunityTemplatesIndex} from 'src/templates/containers/CommunityTemplatesIndex'
+import {AnnotationsIndex} from 'src/annotations/containers/AnnotationsIndex'
 
 // Types
 import {AppState, Organization, ResourceType} from 'src/types'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
+import {PROJECT_NAME_PLURAL} from 'src/flows'
 import {
   LOAD_DATA,
   TELEGRAF_PLUGINS,
@@ -148,11 +150,17 @@ const SetOrg: FC<Props> = ({
 
         {/* Flows  */}
         {isFlagEnabled('notebooks') && (
-          <Route path={`${orgPath}/flows/:id`} component={Flow} />
+          <Route
+            path={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}/:id`}
+            component={FlowPage}
+          />
         )}
 
         {isFlagEnabled('notebooks') && (
-          <Route path={`${orgPath}/flows`} component={FlowsIndex} />
+          <Route
+            path={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}`}
+            component={FlowsIndex}
+          />
         )}
 
         {/* Write Data */}
@@ -217,6 +225,11 @@ const SetOrg: FC<Props> = ({
           path={`${orgPath}/${SETTINGS}`}
           component={VariablesIndex}
         />
+
+        {/* Users */}
+        {CLOUD && isFlagEnabled('unity') && (
+          <Route path={`${orgPath}/unity-users`} component={UsersPage} />
+        )}
 
         {/* Members */}
         {!CLOUD && (

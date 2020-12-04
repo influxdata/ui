@@ -90,6 +90,14 @@ export type Action =
   | ReturnType<typeof setLowerColumn>
   | ReturnType<typeof setLegendOpacity>
   | ReturnType<typeof setLegendOrientationThreshold>
+  | ReturnType<typeof setGenerateXAxisTicks>
+  | ReturnType<typeof setGenerateYAxisTicks>
+  | ReturnType<typeof setXTotalTicks>
+  | ReturnType<typeof setXTickStart>
+  | ReturnType<typeof setXTickStep>
+  | ReturnType<typeof setYTotalTicks>
+  | ReturnType<typeof setYTickStart>
+  | ReturnType<typeof setYTickStep>
   | SetXDomainAction
   | SetYDomainAction
   | SetXAxisLabelAction
@@ -695,6 +703,46 @@ export const setLegendOrientationThreshold = (
 ) => ({
   type: 'SET_LEGEND_ORIENTATION_THRESHOLD' as 'SET_LEGEND_ORIENTATION_THRESHOLD',
   payload: {legendOrientationThreshold},
+})
+
+export const setGenerateXAxisTicks = (generateXAxisTicks: string[]) => ({
+  type: 'SET_GENERATE_X_AXIS_TICKS' as 'SET_GENERATE_X_AXIS_TICKS',
+  payload: {generateXAxisTicks},
+})
+
+export const setGenerateYAxisTicks = (generateYAxisTicks: string[]) => ({
+  type: 'SET_GENERATE_Y_AXIS_TICKS' as 'SET_GENERATE_Y_AXIS_TICKS',
+  payload: {generateYAxisTicks},
+})
+
+export const setXTotalTicks = (xTotalTicks: number) => ({
+  type: 'SET_X_TOTAL_TICKS' as 'SET_X_TOTAL_TICKS',
+  payload: {xTotalTicks},
+})
+
+export const setXTickStart = (xTickStart: number) => ({
+  type: 'SET_X_TICK_START' as 'SET_X_TICK_START',
+  payload: {xTickStart},
+})
+
+export const setXTickStep = (xTickStep: number) => ({
+  type: 'SET_X_TICK_STEP' as 'SET_X_TICK_STEP',
+  payload: {xTickStep},
+})
+
+export const setYTotalTicks = (yTotalTicks: number) => ({
+  type: 'SET_Y_TOTAL_TICKS' as 'SET_Y_TOTAL_TICKS',
+  payload: {yTotalTicks},
+})
+
+export const setYTickStart = (yTickStart: number) => ({
+  type: 'SET_Y_TICK_START' as 'SET_Y_TICK_START',
+  payload: {yTickStart},
+})
+
+export const setYTickStep = (yTickStep: number) => ({
+  type: 'SET_Y_TICK_STEP' as 'SET_Y_TICK_STEP',
+  payload: {yTickStep},
 })
 
 export const loadNewVEO = () => (

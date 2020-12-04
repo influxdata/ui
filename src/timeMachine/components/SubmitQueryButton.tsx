@@ -20,7 +20,6 @@ import {getActiveTimeMachine, getActiveQuery} from 'src/timeMachine/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {queryCancelRequest} from 'src/shared/copy/notifications'
 import {
-  cancelQueryByHashID,
   cancelAllRunningQueries,
   generateHashedQueryID,
 } from 'src/timeMachine/actions/queries'
@@ -78,7 +77,7 @@ class SubmitQueryButton extends PureComponent<Props> {
   }
 
   componentWillUnmount() {
-    cancelAllRunningQueries()
+    this.props.cancelAllRunningQueries()
   }
 
   public render() {
@@ -136,11 +135,7 @@ class SubmitQueryButton extends PureComponent<Props> {
     if (this.props.onNotify) {
       this.props.onNotify(queryCancelRequest())
     }
-    if (this.props.queryID) {
-      cancelQueryByHashID(this.props.queryID)
-    } else {
-      cancelAllRunningQueries()
-    }
+    this.props.cancelAllRunningQueries()
   }
 }
 
@@ -162,6 +157,7 @@ const mstp = (state: AppState) => {
 const mdtp = {
   onSubmit: saveAndExecuteQueries,
   onNotify: notify,
+  cancelAllRunningQueries: cancelAllRunningQueries,
 }
 
 const connector = connect(mstp, mdtp)

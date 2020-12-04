@@ -1,6 +1,7 @@
 # dotfiles
 .cache
 .DS_Store
+.idea
 .netrc
 .package.json.swp
 .swo
@@ -19,3 +20,4 @@ cypress.env.json
 junit.xml
 npm-error.log
 src/client/generatedRoutes.ts
+src/client/unityRoutes.ts

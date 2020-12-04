@@ -16,14 +16,26 @@ import {
   List,
   ButtonGroup,
 } from '@influxdata/clockface'
+import {useDispatch} from 'react-redux'
+
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
 import {QueryContext} from 'src/flows/context/query'
 import {FlowContext} from 'src/flows/context/flow.current'
+import {RunModeContext, RunMode} from 'src/flows/context/runMode'
 import {ResultsContext} from 'src/flows/context/results'
 import {notify} from 'src/shared/actions/notifications'
+import {PIPE_DEFINITIONS} from 'src/flows'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {cancelAllRunningQueries} from 'src/timeMachine/actions/queries'
+
+// Constants
+import {
+  notebookRunSuccess,
+  notebookRunFail,
+} from 'src/shared/copy/notifications'
+import {PROJECT_NAME} from 'src/flows'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -34,23 +46,34 @@ import 'src/flows/components/header/Submit.scss'
 const fakeNotify = notify
 
 export const Submit: FC = () => {
+  const dispatch = useDispatch()
   const {query, generateMap} = useContext(QueryContext)
+  const {runMode, setRunMode} = useContext(RunModeContext)
   const {flow} = useContext(FlowContext)
   const {add, update} = useContext(ResultsContext)
   const [isLoading, setLoading] = useState(RemoteDataState.NotStarted)
-  const [isRunning, setIsRunning] = useState(false)
 
   const hasQueries = useMemo(() => {
     return !!flow.data.all
-      .map(p => p.type)
-      .filter(p => p === 'query' || p === 'queryBuilder').length
+      .map(p => PIPE_DEFINITIONS[p.type])
+      .filter(p => p && (p.family === 'transform' || p.family === 'inputs'))
+      .length
+  }, [flow.data])
+
+  // Returns a string to avoid array deep comparison woes
+  // Triggers a re-run any time any aggregate function is changed
+  const aggregateOfAggregates = useMemo(() => {
+    return flow.data.all
+      .map(p => p.aggregateFunction?.name)
+      .filter(p => !!p)
+      .join('')
   }, [flow.data])
 
   useEffect(() => {
     if (hasQueries) {
       submit()
     }
-  }, [flow.range, hasQueries]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [flow.range, hasQueries, aggregateOfAggregates]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const forceUpdate = (id, data) => {
     try {
@@ -61,7 +84,7 @@ export const Submit: FC = () => {
   }
 
   const submit = () => {
-    const map = generateMap(isRunning)
+    const map = generateMap(runMode === RunMode.Run)
 
     if (!map.length) {
       return
@@ -95,11 +118,13 @@ export const Submit: FC = () => {
     )
       .then(() => {
         event('Flow Submit Resolved')
+        dispatch(notify(notebookRunSuccess(runMode, PROJECT_NAME)))
 
         setLoading(RemoteDataState.Done)
       })
       .catch(e => {
         event('Flow Submit Resolved')
+        dispatch(notify(notebookRunFail(runMode, PROJECT_NAME)))
 
         // NOTE: this shouldn't fire, but lets wrap it for completeness
         setLoading(RemoteDataState.Error)
@@ -114,7 +139,7 @@ export const Submit: FC = () => {
     return (
       <ButtonGroup>
         <SubmitQueryButton
-          text={isRunning ? 'Run' : 'Preview'}
+          text={runMode}
           className="flows--submit-button"
           icon={IconFont.Play}
           submitButtonDisabled={!hasQueries}
@@ -122,6 +147,7 @@ export const Submit: FC = () => {
           onSubmit={submit}
           onNotify={fakeNotify}
           queryID=""
+          cancelAllRunningQueries={cancelAllRunningQueries}
         />
         <SquareButton
           active={active}
@@ -138,10 +164,10 @@ export const Submit: FC = () => {
       <List.Item
         key="Preview"
         value="Preview"
-        onClick={() => setIsRunning(false)}
+        onClick={() => setRunMode(RunMode.Preview)}
         className="submit-btn--item"
         testID="flow-preview-button"
-        selected={!isRunning}
+        selected={runMode === RunMode.Preview}
         gradient={Gradients.PolarExpress}
       >
         <div className="submit-btn--item-details">
@@ -154,10 +180,10 @@ export const Submit: FC = () => {
       <List.Item
         key="Run"
         value="Run"
-        onClick={() => setIsRunning(true)}
+        onClick={() => setRunMode(RunMode.Run)}
         className="submit-btn--item"
         testID="flow-run-button"
-        selected={isRunning}
+        selected={runMode === RunMode.Run}
         gradient={Gradients.PolarExpress}
       >
         <div className="submit-btn--item-details">

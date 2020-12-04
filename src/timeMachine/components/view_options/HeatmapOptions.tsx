@@ -20,6 +20,7 @@ import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import HexColorSchemeDropdown from 'src/shared/components/HexColorSchemeDropdown'
 import ColumnSelector from 'src/shared/components/ColumnSelector'
 import LegendOrientation from 'src/timeMachine/components/view_options/LegendOrientation'
+import AxisTicksGenerator from 'src/shared/components/axisTicks/AxisTicksGenerator'
 
 // Actions
 import {
@@ -36,6 +37,14 @@ import {
   setTimeFormat,
   setLegendOpacity,
   setLegendOrientationThreshold,
+  setGenerateXAxisTicks,
+  setXTotalTicks,
+  setXTickStart,
+  setXTickStep,
+  setGenerateYAxisTicks,
+  setYTotalTicks,
+  setYTickStart,
+  setYTickStep,
 } from 'src/timeMachine/actions'
 
 // Utils
@@ -73,6 +82,17 @@ type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & OwnProps
 
 const HeatmapOptions: FunctionComponent<Props> = props => {
+  const {
+    onSetGenerateXAxisTicks,
+    onSetXTotalTicks,
+    onSetXTickStart,
+    onSetXTickStep,
+    onSetGenerateYAxisTicks,
+    onSetYTotalTicks,
+    onSetYTickStart,
+    onSetYTickStep,
+  } = props
+
   const [binInputStatus, setBinInputStatus] = useState(ComponentStatus.Default)
   const [binInput, setBinInput] = useState(props.binSize)
 
@@ -153,6 +173,15 @@ const HeatmapOptions: FunctionComponent<Props> = props => {
           </Form.Element>
         </Grid.Column>
       </Grid.Row>
+      <AxisTicksGenerator
+        axisName="x"
+        columnType={props.xColumn}
+        label="X Axis Tick Generator"
+        onSetGenerateAxisTicks={onSetGenerateXAxisTicks}
+        onSetTotalTicks={onSetXTotalTicks}
+        onSetTickStart={onSetXTickStart}
+        onSetTickStep={onSetXTickStep}
+      />
       <AutoDomainInput
         domain={props.xDomain as [number, number]}
         onSetDomain={props.onSetXDomain}
@@ -183,6 +212,15 @@ const HeatmapOptions: FunctionComponent<Props> = props => {
           </Form.Element>
         </Grid.Column>
       </Grid.Row>
+      <AxisTicksGenerator
+        axisName="y"
+        columnType={props.yColumn}
+        label="Y Axis Tick Generator"
+        onSetGenerateAxisTicks={onSetGenerateYAxisTicks}
+        onSetTotalTicks={onSetYTotalTicks}
+        onSetTickStart={onSetYTickStart}
+        onSetTickStep={onSetYTickStep}
+      />
       <AutoDomainInput
         domain={props.yDomain as [number, number]}
         onSetDomain={props.onSetYDomain}
@@ -223,6 +261,14 @@ const mdtp = {
   onSetTimeFormat: setTimeFormat,
   onSetLegendOpacity: setLegendOpacity,
   onSetLegendOrientationThreshold: setLegendOrientationThreshold,
+  onSetGenerateXAxisTicks: setGenerateXAxisTicks,
+  onSetXTotalTicks: setXTotalTicks,
+  onSetXTickStart: setXTickStart,
+  onSetXTickStep: setXTickStep,
+  onSetGenerateYAxisTicks: setGenerateYAxisTicks,
+  onSetYTotalTicks: setYTotalTicks,
+  onSetYTickStart: setYTickStart,
+  onSetYTickStep: setYTickStep,
 }
 
 const connector = connect(mstp, mdtp)

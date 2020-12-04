@@ -2,17 +2,55 @@
 @import '~src/flows/FlowVariables.scss';
 
 .flow-divider {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: $flow-panel--node-gap;
-  height: $flow-panel--node-gap;
-  opacity: 0;
-  transition: opacity 0.25s ease;
-  z-index: 2;
+  position: relative;
+  width: 100%;
+  height: $flow-panel--node-gap + $cf-marg-b;
+  opacity: 1;
 
-  &:hover {
-    cursor: pointer;
+  // Vertical lines
+  &:before,
+  &:after {
+    content: '';
+    position: absolute;
+    left: $flow-panel--node-gap / 2;
+    width: $cf-border;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  &:before {
+    top: $flow-panel--insert-gap;
+    height: $flow-panel--insert-connector;
+    transform: translate(-50%, -100%);
+    @include gradient-v($g5-pepper, $c-amethyst);
+  }
+
+  &:after {
+    bottom: $flow-panel--insert-gap;
+    height: $flow-panel--insert-connector;
+    transform: translate(-50%, 100%);
+    @include gradient-v($c-amethyst, $g5-pepper);
+  }
+
+  &:last-child {
+    margin-bottom: 25vh;
+  }
+}
+
+.flow-divider:last-child:after {
+  display: none;
+}
+
+.cf-button.flow-divider--button {
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: $flow-panel--node-gap / 2;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+
+  &:after {
+    border-radius: 50%;
   }
 }
 
@@ -20,38 +58,6 @@
 .flow-panel:last-child .flow-divider,
 .flow-divider__popped {
   opacity: 1;
-}
-
-.flow-panel:last-child .flow-divider {
-  transform: translateY(100%);
-}
-
-.flow-panel:last-child .flow-divider:after {
-  content: '';
-  width: $cf-border;
-  position: absolute;
-  left: 50%;
-  top: 5px;
-  height: 150%;
-  transform: translate(-50%, -100%);
-  @include gradient-v($g5-pepper, $c-amethyst);
-}
-
-.flow-panel__hidden.flow-panel:last-child .flow-divider:after {
-  height: 50%;
-}
-
-.flow-divider--button {
-  border-radius: 50%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  cursor: pointer;
-
-  &:after {
-    border-radius: 50%;
-  }
 }
 
 .insert-cell-menu {

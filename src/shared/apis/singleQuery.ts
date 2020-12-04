@@ -1,7 +1,7 @@
 import {File, CancelBox} from 'src/types'
 import {runQuery} from 'src/shared/apis/query'
 
-/*\
+/* \
 
     Declare this at the module level to create a CancelBox mutex
     for runQuery. this will allow only one query to be run at a time, and

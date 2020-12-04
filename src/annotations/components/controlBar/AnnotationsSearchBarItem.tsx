@@ -12,7 +12,7 @@ interface Props {
   onClick: (id: string) => void
 }
 
-const AnnotationsSearchBarItem: FC<Props> = ({
+export const AnnotationsSearchBarItem: FC<Props> = ({
   id,
   name,
   description,
@@ -42,5 +42,3 @@ const AnnotationsSearchBarItem: FC<Props> = ({
     </List.Item>
   )
 }
-
-export default AnnotationsSearchBarItem

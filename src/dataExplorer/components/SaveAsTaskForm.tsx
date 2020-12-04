@@ -7,7 +7,7 @@ import {withRouter, RouteComponentProps} from 'react-router-dom'
 import TaskForm from 'src/tasks/components/TaskForm'
 
 // Actions
-import {saveNewScript} from 'src/tasks/actions/thunks'
+import {saveNewScript, goToTasks} from 'src/tasks/actions/thunks'
 import {
   setTaskOption,
   clearTask,
@@ -88,7 +88,7 @@ class SaveAsTaskForm extends PureComponent<
   }
 
   private handleSubmit = () => {
-    const {saveNewScript, newScript, taskOptions} = this.props
+    const {saveNewScript, newScript, taskOptions, goToTasks} = this.props
 
     // Don't embed variables that are not used in the script
     const vars = [...this.props.userDefinedVars].filter(assignment =>
@@ -100,7 +100,9 @@ class SaveAsTaskForm extends PureComponent<
     const preamble = `${varOption}\n\n${taskOption}`
     const script = addDestinationToFluxScript(newScript, taskOptions)
 
-    saveNewScript(script, preamble)
+    saveNewScript(script, preamble).then(() => {
+      goToTasks()
+    })
   }
 
   private handleChangeToBucketName = (bucketName: string) => {
@@ -146,6 +148,7 @@ const mdtp = {
   setTaskOption,
   clearTask,
   setNewScript,
+  goToTasks,
 }
 
 const connector = connect(mstp, mdtp)

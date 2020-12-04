@@ -4,7 +4,7 @@ describe('cleaning tags before sending to app-metrics', () => {
   // this throws a typescript error because tags cannot have boolean values. Is checking for boolean values necessary?
   describe.skip('tags with boolean values', () => {
     it('casts booleans as strings', () => {
-      /*const point = {measurement: 'Minus the Bear', fields: {songTitle: 'Pantsuit, ugghhh'}, tags: {truthy: true}}
+      /* const point = {measurement: 'Minus the Bear', fields: {songTitle: 'Pantsuit, ugghhh'}, tags: {truthy: true}}
 
     expect(cleanTags(point).tags).toEqual({truthy: 'true'})
 

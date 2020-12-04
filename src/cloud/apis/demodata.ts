@@ -3,10 +3,10 @@ import {get} from 'lodash'
 import {getBuckets, getBucket} from 'src/client'
 import AJAX from 'src/utils/ajax'
 
-//Utils
+// Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-//Types
+// Types
 import {Bucket, DemoBucket, BucketEntities} from 'src/types'
 import {LIMIT} from 'src/resources/constants'
 import {normalize} from 'normalizr'
@@ -16,7 +16,7 @@ import {NormalizedSchema} from 'normalizr'
 const baseURL = '/api/v2/experimental/sampledata'
 
 export const getDemoDataBuckets = async (): Promise<Bucket[]> => {
-  //todo (deniz) convert to fetch
+  // todo (deniz) convert to fetch
   const {data} = await AJAX({
     method: 'GET',
     url: `${baseURL}/buckets`,

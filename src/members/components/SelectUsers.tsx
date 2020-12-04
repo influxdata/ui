@@ -1,7 +1,7 @@
 // Libraries
 import React, {PureComponent} from 'react'
 
-//Components
+// Components
 import {Dropdown} from '@influxdata/clockface'
 
 // Types

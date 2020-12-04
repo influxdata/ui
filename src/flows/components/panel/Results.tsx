@@ -15,7 +15,6 @@ import {RunModeContext} from 'src/flows/context/runMode'
 import {MINIMUM_RESIZER_HEIGHT} from 'src/flows/shared/Resizer'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
 import {RemoteDataState} from 'src/types'
@@ -108,21 +107,11 @@ const Results: FC = () => {
               const page = Math.floor(height / ROW_HEIGHT)
               setPageSize(page)
 
-              if (isFlagEnabled('flowsUiPagination')) {
-                const parsedResults = fromFlux(raw)
-                return (
-                  <RawFluxDataTable
-                    parsedResults={parsedResults}
-                    startRow={startRow}
-                    width={width}
-                    height={page * ROW_HEIGHT}
-                    disableVerticalScrolling={true}
-                  />
-                )
-              }
+              const parsedResults = fromFlux(raw)
               return (
                 <RawFluxDataTable
-                  files={[rows.slice(startRow, startRow + page).join('\n')]}
+                  parsedResults={parsedResults}
+                  startRow={startRow}
                   width={width}
                   height={page * ROW_HEIGHT}
                   disableVerticalScrolling={true}

@@ -22,7 +22,6 @@ import {
   getFillColumnsSelection,
   getSymbolColumnsSelection,
 } from 'src/timeMachine/selectors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getTimeRangeWithTimezone, getTimeZone} from 'src/dashboards/selectors'
 
 // Types
@@ -86,19 +85,10 @@ const TimeMachineVis: FC<Props> = ({
           {isViewingRawData ? (
             <AutoSizer>
               {({width, height}) => {
-                if (isFlagEnabled('flowsUiPagination')) {
-                  const [parsedResults] = files.flatMap(fromFlux)
-                  return (
-                    <RawFluxDataTable
-                      parsedResults={parsedResults}
-                      width={width}
-                      height={height}
-                    />
-                  )
-                }
+                const [parsedResults] = files.flatMap(fromFlux)
                 return (
                   <RawFluxDataTable
-                    files={files}
+                    parsedResults={parsedResults}
                     width={width}
                     height={height}
                   />

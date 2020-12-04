@@ -120,7 +120,7 @@ export const Provider: FC = ({children}) => {
       return false
     }
 
-    const cleanValue = value.match(/(?:(\d+(mo|s|m|w|h){1}))/g)?.join('')
+    const cleanValue = value.match(/(?:(\d+(y|mo|s|m|w|h){1}))/g)?.join('')
 
     return value !== cleanValue
   }

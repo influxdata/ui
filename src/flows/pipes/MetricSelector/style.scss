@@ -109,3 +109,21 @@
     color: #7cfc00;
   }
 }
+
+.data-source--agg-info {
+  font-size: 13px;
+  padding: $cf-marg-b;
+  user-select: none;
+  color: $g13-mist;
+  cursor: default;
+
+  > p {
+    margin: 0;
+  }
+
+  .cf-icon {
+    display: inline-block;
+    margin-right: $cf-marg-a;
+    line-height: 1em;
+  }
+}

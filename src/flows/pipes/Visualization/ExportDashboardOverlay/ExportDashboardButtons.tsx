@@ -4,14 +4,12 @@ import {
   Button,
   ButtonType,
   ComponentColor,
-  ComponentStatus,
   Form,
   IconFont,
 } from '@influxdata/clockface'
 import {
   ExportToDashboard,
   Context,
-  CREATE_CELL,
 } from 'src/flows/pipes/Visualization/ExportDashboardOverlay/context'
 import {PopupContext} from 'src/flows/context/popup'
 
@@ -47,7 +45,7 @@ const ExportConfirmationNotification = (
 const ExportDashboardButtons: FC = () => {
   const {
     activeTab,
-    canSubmit,
+    validateForm,
     selectedCell,
     selectedDashboard,
     cellName,
@@ -55,7 +53,7 @@ const ExportDashboardButtons: FC = () => {
   } = useContext(Context)
   const {data, closeFn} = useContext(PopupContext)
 
-  const formattedQueryText = formatQueryText(data.query)
+  const text = formatQueryText(data.query)
 
   const dispatch = useDispatch()
   const org = useSelector(getOrg)
@@ -69,7 +67,7 @@ const ExportDashboardButtons: FC = () => {
         ...data.properties,
         queries: [
           {
-            text: formattedQueryText,
+            text,
             editMode: 'advanced',
             name: '',
           },
@@ -103,7 +101,7 @@ const ExportDashboardButtons: FC = () => {
         ...data.properties,
         queries: [
           {
-            text: formattedQueryText,
+            text,
             editMode: 'advanced',
             name: '',
           },
@@ -117,13 +115,14 @@ const ExportDashboardButtons: FC = () => {
     closeFn()
   }
 
-  let onSubmit = onCreate
+  const onSubmit = (): void => {
+    const submitFunc =
+      activeTab === ExportToDashboard.Update ? onUpdate : onCreate
+    const formIsValid = validateForm()
 
-  if (
-    activeTab === ExportToDashboard.Update &&
-    selectedCell?.id !== CREATE_CELL
-  ) {
-    onSubmit = onUpdate
+    if (formIsValid) {
+      submitFunc()
+    }
   }
 
   return (
@@ -139,9 +138,6 @@ const ExportDashboardButtons: FC = () => {
         color={ComponentColor.Success}
         type={ButtonType.Submit}
         onClick={onSubmit}
-        status={
-          canSubmit() ? ComponentStatus.Default : ComponentStatus.Disabled
-        }
         testID="button--dashboard-export"
       />
     </Form.Footer>

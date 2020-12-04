@@ -80,7 +80,13 @@ const BucketSelector: FC = () => {
     <Dropdown.Menu onCollapse={onCollapse}>{menuItems}</Dropdown.Menu>
   )
 
-  return <Dropdown button={button} menu={menu} style={{width: '250px'}} />
+  return (
+    <Dropdown
+      button={button}
+      menu={menu}
+      style={{width: '250px', flex: '0 0 250px'}}
+    />
+  )
 }
 
 export default BucketSelector

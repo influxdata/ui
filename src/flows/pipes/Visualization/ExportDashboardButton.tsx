@@ -4,6 +4,7 @@ import {
   ButtonType,
   ComponentColor,
   ComponentStatus,
+  IconFont,
 } from '@influxdata/clockface'
 
 // Components
@@ -26,6 +27,7 @@ const ExportDashboardButton: FC = () => {
       query: queryText,
     })
   }
+
   const status = data.queryText
     ? ComponentStatus.Disabled
     : ComponentStatus.Default
@@ -40,6 +42,7 @@ const ExportDashboardButton: FC = () => {
       testID="flow-export--dashboard"
       style={{opacity: 1}}
       titleText="Export to Dashboard"
+      icon={IconFont.Export}
     />
   )
 }

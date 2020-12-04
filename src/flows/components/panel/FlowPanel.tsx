@@ -168,22 +168,24 @@ const FlowPanel: FC<Props> = ({id, children, controls, persistentControl}) => {
   }
 
   return (
-    <ClickOutside onClickOutside={handleClickOutside}>
-      <div className={panelClassName} onClick={handleClick} ref={panelRef}>
-        <FlowPanelHeader
-          id={id}
-          controls={controls}
-          persistentControl={persistentControl}
-        />
-        <div className="flow-panel--body">{children}</div>
-        {showResults && (
-          <div className="flow-panel--results">
-            <Results />
-          </div>
-        )}
-        {!flow.readOnly && <InsertCellButton id={id} />}
-      </div>
-    </ClickOutside>
+    <>
+      <ClickOutside onClickOutside={handleClickOutside}>
+        <div className={panelClassName} onClick={handleClick} ref={panelRef}>
+          <FlowPanelHeader
+            id={id}
+            controls={controls}
+            persistentControl={persistentControl}
+          />
+          {isVisible && <div className="flow-panel--body">{children}</div>}
+          {showResults && (
+            <div className="flow-panel--results">
+              <Results />
+            </div>
+          )}
+        </div>
+      </ClickOutside>
+      {!flow.readOnly && <InsertCellButton id={id} />}
+    </>
   )
 }
 

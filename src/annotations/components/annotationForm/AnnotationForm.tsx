@@ -16,19 +16,18 @@ import {
   Grid,
   ButtonType,
 } from '@influxdata/clockface'
-import AnnotationSummaryInput from 'src/annotations/components/annotationForm/AnnotationSummaryInput'
-import AnnotationTimeStartInput from 'src/annotations/components/annotationForm/AnnotationTimeStartInput'
-import AnnotationTimeStopInput from 'src/annotations/components/annotationForm/AnnotationTimeStopInput'
-import AnnotationMessageInput from 'src/annotations/components/annotationForm/AnnotationMessageInput'
-import AnnotationTypeToggle from 'src/annotations/components/annotationForm/AnnotationTypeToggle'
-import AnnotationStreamSelector from 'src/annotations/components/annotationForm/AnnotationStreamSelector'
+import {AnnotationSummaryInput} from 'src/annotations/components/annotationForm/AnnotationSummaryInput'
+import {AnnotationTimeStartInput} from 'src/annotations/components/annotationForm/AnnotationTimeStartInput'
+import {AnnotationTimeStopInput} from 'src/annotations/components/annotationForm/AnnotationTimeStopInput'
+import {AnnotationMessageInput} from 'src/annotations/components/annotationForm/AnnotationMessageInput'
+import {AnnotationTypeToggle} from 'src/annotations/components/annotationForm/AnnotationTypeToggle'
+import {AnnotationStreamSelector} from 'src/annotations/components/annotationForm/AnnotationStreamSelector'
 
 // Form State
 import {
   annotationFormReducer,
   getInitialAnnotationState,
   AnnotationType,
-  annotationFormIsValid,
   Annotation,
   getAnnotationFromDraft,
   AnnotationContextType,
@@ -37,6 +36,10 @@ import {
 
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
+
+import {updateAnnotationDraft} from 'src/annotations/actions/annotationFormActions'
+
+import {annotationFormIsValid} from 'src/annotations/utils/form'
 
 interface Props {
   title: 'Edit' | 'Add'
@@ -53,7 +56,7 @@ export const AnnotationFormContext = createContext<AnnotationContextType>(
   DEFAULT_ANNOTATION_CONTEXT
 )
 
-const AnnotationForm: FC<Props> = ({
+export const AnnotationForm: FC<Props> = ({
   title,
   type,
   timeStart,
@@ -82,7 +85,10 @@ const AnnotationForm: FC<Props> = ({
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
 
-    const formIsValid = annotationFormIsValid(state, dispatch)
+    // force required inputs into error or valid state (instead of initial)
+    // so user can resolve the form errors and submit again
+    dispatch(updateAnnotationDraft(state))
+    const formIsValid = annotationFormIsValid(state)
 
     if (formIsValid) {
       onSubmit(getAnnotationFromDraft(state))
@@ -126,5 +132,3 @@ const AnnotationForm: FC<Props> = ({
     </AnnotationFormContext.Provider>
   )
 }
-
-export default AnnotationForm

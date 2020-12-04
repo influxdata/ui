@@ -15,6 +15,7 @@ import {
   IconFont,
 } from '@influxdata/clockface'
 import CloudOnly from 'src/shared/components/cloud/CloudOnly'
+import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
 
 // Constants
 import {CLOUD_URL, CLOUD_CHECKOUT_PATH} from 'src/shared/constants'
@@ -62,7 +63,22 @@ const CloudUpgradeNavBanner: FC<StateProps> = ({inView}) => {
             href={`${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`}
             target="_self"
           >
-            <Icon glyph={IconFont.Upgrade} />
+            <GoogleOptimizeExperiment
+              experimentID="e44rY7GjQN-ASmGeWLs_pA"
+              original={
+                <Icon
+                  key="e44rY7GjQN-ASmGeWLs_pA--v0"
+                  glyph={IconFont.Upgrade}
+                />
+              }
+              variants={[
+                <Icon
+                  key="e44rY7GjQN-ASmGeWLs_pA--v1"
+                  glyph={IconFont.CrownSolid}
+                />,
+                <Icon key="e44rY7GjQN-ASmGeWLs_pA--v2" glyph={IconFont.Star} />,
+              ]}
+            />
             <Heading element={HeadingElement.H5}>Upgrade Now</Heading>
           </a>
         </CloudOnly>

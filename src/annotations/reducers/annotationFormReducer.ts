@@ -2,15 +2,15 @@
 import {Dispatch} from 'react'
 import {ComponentStatus} from '@influxdata/clockface'
 
-// Types
+// Actions
 import {
   AnnotationActionType,
-  updateAnnotationDraft,
   UpdateAnnotationDraftAction,
 } from 'src/annotations/actions/annotationFormActions'
 
 export type AnnotationType = 'point' | 'range'
 
+// TODO: this is a first pass based on a mockup, it's not set in stone
 export interface Annotation {
   summary: string
   type: AnnotationType
@@ -25,6 +25,7 @@ export interface Annotation {
   }
 }
 
+// TODO: this is a first pass based on a mockup, it's not set in stone
 export interface AnnotationDraft {
   summary: string
   summaryError: string
@@ -82,6 +83,7 @@ export const DEFAULT_ANNOTATION_CONTEXT: AnnotationContextType = {
   dispatch: () => {},
 }
 
+// TODO: use immer
 export const annotationFormReducer = (
   state: AnnotationDraft,
   action: AnnotationActionType
@@ -144,24 +146,6 @@ export const annotationFormReducer = (
 
       return updatedState
   }
-}
-
-export const annotationFormIsValid = (
-  state: AnnotationDraft,
-  dispatch: Dispatch<AnnotationActionType>
-): boolean => {
-  const {summaryError, timeStartError, timeStopError, streamID} = state
-
-  // When submit is clicked
-  // force required inputs into error or valid state (instead of initial)
-  // so user can resolve the form errors and submit again
-  dispatch(updateAnnotationDraft(state))
-
-  if (summaryError || timeStartError || timeStopError || !streamID) {
-    return false
-  }
-
-  return true
 }
 
 export const getAnnotationFromDraft = (draft: AnnotationDraft): Annotation => {

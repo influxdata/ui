@@ -1,7 +1,7 @@
-//Libraries
+// Libraries
 import produce from 'immer'
 
-//Actions
+// Actions
 import {Actions, SET_ME} from 'src/me/actions/creators'
 
 export interface MeLinks {

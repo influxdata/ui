@@ -15,7 +15,6 @@ import {RunModeContext} from 'src/flows/context/runMode'
 import {MINIMUM_RESIZER_HEIGHT} from 'src/flows/shared/Resizer'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
 import {RemoteDataState} from 'src/types'

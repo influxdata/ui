@@ -1,4 +1,8 @@
-import {Actions, SET_ME} from 'src/me/actions'
+//Libraries
+import produce from 'immer'
+
+//Actions
+import {Actions, SET_ME} from 'src/me/actions/creators'
 
 export interface MeLinks {
   self: string
@@ -20,14 +24,15 @@ export const initialState: MeState = {
   },
 }
 
-export default (state = initialState, action: Actions): MeState => {
-  switch (action.type) {
-    case SET_ME:
-      return {
-        ...state,
-        ...action.payload.me,
+export default (state = initialState, action: Actions): MeState =>
+  produce(state, draftState => {
+    switch (action.type) {
+      case SET_ME: {
+        draftState.id = action.me.id
+        draftState.name = action.me.name
+        draftState.links = action.me.links
+
+        return
       }
-    default:
-      return state
-  }
-}
+    }
+  })

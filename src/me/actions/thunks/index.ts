@@ -8,7 +8,7 @@ import {client} from 'src/utils/api'
 import {gaEvent, updateReportingContext} from 'src/cloud/utils/reporting'
 
 // Actions
-import {setMe} from 'src/me/actions'
+import {setMe} from 'src/me/actions/creators'
 
 // Reducers
 import {MeState} from 'src/me/reducers'

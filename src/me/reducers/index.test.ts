@@ -2,7 +2,7 @@
 import reducer from 'src/me/reducers'
 
 // Actions
-import {setMe} from 'src/me/actions'
+import {setMe} from 'src/me/actions/creators'
 
 // Mocks
 import {me} from 'src/me/mockUserData'

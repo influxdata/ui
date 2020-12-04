@@ -7,7 +7,5 @@ export type Actions = ReturnType<typeof setMe>
 export const setMe = (me: MeState) =>
   ({
     type: SET_ME,
-    payload: {
-      me,
-    },
+    me
   } as const)

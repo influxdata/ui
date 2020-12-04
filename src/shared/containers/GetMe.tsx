@@ -11,7 +11,7 @@ import GetFlags from 'src/shared/containers/GetFlags'
 import {RemoteDataState} from 'src/types'
 
 // Actions
-import {getMe} from 'src/me/thunks'
+import {getMe} from 'src/me/actions/thunks'
 
 // Decorators
 import {ErrorHandling} from 'src/shared/decorators/errors'

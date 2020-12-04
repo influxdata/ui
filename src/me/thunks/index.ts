@@ -1,17 +1,17 @@
-// libraries
+// Libraries
 import HoneyBadger from 'honeybadger-js'
 
-// api
+// API
 import {client} from 'src/utils/api'
 
-// utils
+// Utils
 import {gaEvent, updateReportingContext} from 'src/cloud/utils/reporting'
 
-// actions
-import {setMe} from 'src/shared/actions/me'
+// Actions
+import {setMe} from 'src/me/actions'
 
-// reducers
-import {MeState} from 'src/shared/reducers/me'
+// Reducers
+import {MeState} from 'src/me/reducers'
 
 export const getMe = () => async dispatch => {
   try {

@@ -1,4 +1,4 @@
-import {MeState} from 'src/shared/reducers/me'
+import {MeState} from 'src/me/reducers'
 
 export const SET_ME = 'SET_ME'
 

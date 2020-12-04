@@ -10,7 +10,7 @@ import {me} from 'src/me/mockUserData'
 describe('me reducer', () => {
   it('can set me', () => {
     const expected = me
-    const actual = reducer(undefined, setMe(expected))
+    const actual = reducer(undefined, setMe(me))
 
     expect(actual).toEqual(expected)
   })

@@ -11,7 +11,7 @@ export interface MeState {
   links: MeLinks
 }
 
-const defaultState: MeState = {
+export const initialState: MeState = {
   id: '',
   name: '',
   links: {
@@ -20,7 +20,7 @@ const defaultState: MeState = {
   },
 }
 
-export default (state = defaultState, action: Actions): MeState => {
+export default (state = initialState, action: Actions): MeState => {
   switch (action.type) {
     case SET_ME:
       return {

@@ -7,9 +7,6 @@ import {FlowContext} from 'src/flows/context/flow.current'
 // Components
 import {Icon, IconFont} from '@influxdata/clockface'
 
-// Utils
-import {event} from 'src/cloud/utils/reporting'
-
 interface Props {
   id: string
 }
@@ -18,7 +15,6 @@ const FlowPanelTitle: FC<Props> = ({id}) => {
   const {flow} = useContext(FlowContext)
   const title = flow.meta.get(id).title
   const onTitleChange = (value: string) => {
-    event('rename_notebook_cell')
     flow.meta.update(id, {
       title: value,
     })

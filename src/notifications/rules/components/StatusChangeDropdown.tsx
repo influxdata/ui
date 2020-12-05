@@ -24,7 +24,7 @@ const StatusChangeDropdown: FC<Props> = ({status}) => {
 
   const statusChange = (s, c) =>
     dispatch({
-      type: 'UPDATE_STATUS_RULES',
+      type: 'UPDATE_STATUS_RULE',
       statusRule: changeStatusRule(s, c),
     })
 

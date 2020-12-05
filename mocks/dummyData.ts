@@ -36,6 +36,7 @@ import {
 import {SortTypes} from 'src/shared/utils/sort'
 import {Sort} from '@influxdata/clockface'
 import {DashboardSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
+import {RuleState} from 'src/notifications/rules/components/RuleOverlay.reducer'
 
 export const links: Links = {
   authorizations: '/api/v2/authorizations',
@@ -931,6 +932,52 @@ export const auth: Authorization = {
     self: '/api/v2/authorizations/03c03a8a64728000',
     user: '/api/v2/users/039edab303789000',
   },
+}
+
+export const notificationRule: RuleState = {
+  id: "06ac23e52f736000",
+  name: "Random",
+  endpointID: "06ac20db03ad7000",
+  orgID: "784badd403df730a",
+  ownerID: "06a4b3dfd2ed7000",
+  every: "10m",
+  offset: "0s",
+  runbookLink: "",
+  tagRules: [
+    {
+      cid: "795fbc64-e1d3-4d90-a6a4-382049d1aa78",
+      value: {
+        key: "key",
+        value: "value",
+        operator: "notequal"
+      }
+    }
+  ],
+  statusRules: [
+    {
+      cid: "ea61e44e-7d3e-4269-acb7-70b78ffc77ad",
+      value: {
+        currentLevel: "CRIT",
+        previousLevel: null
+      }
+    }
+  ],
+  createdAt: "2020-11-25T18:02:29.4371087Z",
+  updatedAt: "2020-11-25T18:20:18.7753018Z",
+  channel: "",
+  messageTemplate: "Notification Rule: ${ r._notification_rule_name } triggered by check: ${ r._check_name }: ${ r._message }",
+  type: "slack",
+  labels: [],
+  links: {
+    self: "/api/v2/notificationRules/06ac23e52f736000",
+    labels: "/api/v2/notificationRules/06ac23e52f736000/labels",
+    members: "/api/v2/notificationRules/06ac23e52f736000/members",
+    owners: "/api/v2/notificationRules/06ac23e52f736000/owners",
+    query: "/api/v2/notificationRules/06ac23e52f736000/query"
+  },
+  status: RemoteDataState.Done,
+  latestCompleted: "2020-11-25T18:02:29Z",
+  activeStatus: "active" 
 }
 
 export const viewProperties: ViewProperties = {

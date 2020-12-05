@@ -31,19 +31,6 @@ export const reducer = (state: RuleState, action: Action) => {
       return {...newState, [schedule]: ''}
     }
 
-    case 'UPDATE_STATUS_RULES': {
-      const {statusRule} = action
-      const statusRules = state.statusRules.map(s => {
-        if (s.cid !== statusRule.cid) {
-          return s
-        }
-
-        return statusRule
-      })
-
-      return {...state, statusRules}
-    }
-
     case 'ADD_TAG_RULE': {
       const {tagRule} = action
       return {
@@ -52,7 +39,7 @@ export const reducer = (state: RuleState, action: Action) => {
       }
     }
 
-    case 'UPDATE_TAG_RULES': {
+    case 'UPDATE_TAG_RULE': {
       const {tagRule} = action
       const tagRules = state.tagRules.map(t => {
         if (t.cid !== tagRule.cid) {
@@ -65,16 +52,23 @@ export const reducer = (state: RuleState, action: Action) => {
       return {...state, tagRules}
     }
 
-    case 'DELETE_STATUS_RULE': {
-      const {statusRuleID} = action
-      const statusRules = state.statusRules.filter(s => {
-        return s.cid !== statusRuleID
+    case 'SET_TAG_RULE_OPERATOR': {
+      const {tagRuleID, operator} = action
+      const tagRules = state.tagRules.map(tagRule => {
+        if (tagRule.cid !== tagRuleID) {
+          return tagRule
+        }
+
+        return {
+          ...tagRule,
+          value: {
+            ...tagRule.value,
+            operator,
+          },
+        }
       })
 
-      return {
-        ...state,
-        statusRules,
-      }
+      return {...state, tagRules}
     }
 
     case 'DELETE_TAG_RULE': {
@@ -85,6 +79,19 @@ export const reducer = (state: RuleState, action: Action) => {
       })
 
       return {...state, tagRules}
+    }
+
+    case 'UPDATE_STATUS_RULE': {
+      const {statusRule} = action
+      const statusRules = state.statusRules.map(s => {
+        if (s.cid !== statusRule.cid) {
+          return s
+        }
+
+        return statusRule
+      })
+
+      return {...state, statusRules}
     }
 
     case 'UPDATE_STATUS_LEVEL': {
@@ -106,23 +113,16 @@ export const reducer = (state: RuleState, action: Action) => {
       return {...state, statusRules}
     }
 
-    case 'SET_TAG_RULE_OPERATOR': {
-      const {tagRuleID, operator} = action
-      const tagRules = state.tagRules.map(tagRule => {
-        if (tagRule.cid !== tagRuleID) {
-          return tagRule
-        }
-
-        return {
-          ...tagRule,
-          value: {
-            ...tagRule.value,
-            operator,
-          },
-        }
+    case 'DELETE_STATUS_RULE': {
+      const {statusRuleID} = action
+      const statusRules = state.statusRules.filter(s => {
+        return s.cid !== statusRuleID
       })
 
-      return {...state, tagRules}
+      return {
+        ...state,
+        statusRules,
+      }
     }
 
     default:

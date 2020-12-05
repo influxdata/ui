@@ -57,7 +57,7 @@ const CheckTagRow: FC<Props> = ({
           </FlexBox.Child>
           <FlexBox.Child grow={1}>
             <Input
-              testID="tag-rule-key--input"
+              testID="tag-rule-value--input"
               placeholder="Value"
               value={tagSet.value}
               name="value"

@@ -12,8 +12,8 @@ import React, {
 import {Action} from './RuleOverlay.actions'
 import {RuleState, reducer} from './RuleOverlay.reducer'
 
-const RuleStateContext = createContext<RuleState>(null)
-const RuleDispatchContext = createContext<Dispatch<Action>>(null)
+export const RuleStateContext = createContext<RuleState>(null)
+export const RuleDispatchContext = createContext<Dispatch<Action>>(null)
 
 export const useRuleState = (): RuleState => {
   return useContext(RuleStateContext)

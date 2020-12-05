@@ -41,7 +41,7 @@ const TagRule: FC<Props> = ({tagRule}) => {
     }
 
     dispatch({
-      type: 'UPDATE_TAG_RULES',
+      type: 'UPDATE_TAG_RULE',
       tagRule: {
         ...tagRule,
         value: newValue,
@@ -92,7 +92,7 @@ const TagRule: FC<Props> = ({tagRule}) => {
           </FlexBox.Child>
           <FlexBox.Child grow={1}>
             <Input
-              testID="tag-rule-key--input"
+              testID="tag-rule-value--input"
               placeholder="Value"
               value={value}
               name="value"

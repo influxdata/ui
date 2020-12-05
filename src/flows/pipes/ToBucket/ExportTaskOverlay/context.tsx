@@ -78,7 +78,7 @@ export const Provider: FC = ({children}) => {
   }, [dispatch])
 
   const handleCreateTask = () => {
-    event('Save Flow as Task')
+    event('notebook_export_task', {exportType: 'create'})
 
     const taskOption: string = `option task = { \n  name: "${taskName}",\n  every: ${interval},\n  offset: 0s\n}`
     const variable: string = `option v = {\n  timeRangeStart: -${interval},\n  timeRangeStop: now()\n}`
@@ -88,7 +88,7 @@ export const Provider: FC = ({children}) => {
   }
 
   const handleUpdateTask = () => {
-    event('Update Task from Flow')
+    event('notebook_export_task', {exportType: 'update'})
 
     const taskOption: string = `option task = { \n  name: "${selectedTask.name}",\n  every: ${interval},\n  offset: 0s\n}`
     const variable: string = `option v = {\n  timeRangeStart: -${interval},\n  timeRangeStop: now()\n}`

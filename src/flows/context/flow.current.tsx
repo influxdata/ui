@@ -4,6 +4,7 @@ import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import {v4 as UUID} from 'uuid'
 import {RemoteDataState} from 'src/types'
 import {PROJECT_NAME} from 'src/flows'
+import {event} from 'src/cloud/utils/reporting'
 
 export interface FlowContextType {
   id: string | null
@@ -70,6 +71,8 @@ export const FlowProvider: FC = ({children}) => {
     if (typeof index !== 'undefined') {
       flows[currentID].data.move(id, index + 1)
     }
+
+    event('insert_notebook_cell', {notebooksCellType: initial.type})
 
     return id
   }

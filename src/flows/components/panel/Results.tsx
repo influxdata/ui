@@ -43,7 +43,7 @@ const Results: FC = () => {
   const nextDisabled = startRow + pageSize >= rows.length
 
   const prev = () => {
-    event('Query Pagination Previous Button Clicked')
+    event('notebook_paginate_results_click')
 
     const index = startRow - pageSize
     if (index <= 0) {
@@ -54,7 +54,7 @@ const Results: FC = () => {
   }
 
   const next = () => {
-    event('Query Pagination Next Button Clicked')
+    event('notebook_paginate_results_click')
 
     const index = startRow + pageSize
     const max = rows.length - pageSize

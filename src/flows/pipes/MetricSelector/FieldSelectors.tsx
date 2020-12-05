@@ -19,9 +19,11 @@ const FieldSelectors: FC<Props> = ({fields}) => {
     (field: string): void => {
       let updated = field
       if (updated === selectedField) {
+        event('metric_selector_add_filter')
         event('Deselecting Field in Flow Query Builder')
         updated = ''
       } else {
+        event('metric_selector_remove_filter')
         event('Selecting Field in Flow Query Builder', {field})
       }
       update({field: updated})

@@ -69,11 +69,7 @@ const InsertCellButton: FC<Props> = ({id}) => {
             className="insert-cell-menu"
           >
             <p className="insert-cell-menu--title">Insert Cell Here</p>
-            <AddButtons
-              index={index}
-              onInsert={onHide}
-              eventName="Flow Insert Cell Inline"
-            />
+            <AddButtons index={index} onInsert={onHide} />
           </FlexBox>
         )}
       />

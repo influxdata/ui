@@ -21,7 +21,7 @@ const EmptyPipeList: FC = () => {
         Get started by <strong>Adding a Cell</strong> below
       </p>
       <div className="flow-empty--buttons">
-        <AddButtons eventName="Add from empty" />
+        <AddButtons />
       </div>
     </div>
   )

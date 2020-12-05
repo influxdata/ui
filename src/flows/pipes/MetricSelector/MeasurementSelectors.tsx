@@ -19,9 +19,11 @@ const MeasurementSelectors: FC<Props> = ({measurements}) => {
     (measurement: string): void => {
       let updated = measurement
       if (updated === selectedMeasurement) {
+        event('metric_selector_add_filter')
         event('Deselecting Measurement in Flow Query Builder')
         updated = ''
       } else {
+        event('metric_selector_remove_filter')
         event('Selecting Measurement in Flow Query Builder', {measurement})
       }
 

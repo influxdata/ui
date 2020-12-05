@@ -7,6 +7,9 @@ import {ButtonShape, ComponentColor, IconFont} from '@influxdata/clockface'
 import {FlowListContext} from 'src/flows/context/flow.list'
 import {PROJECT_NAME} from 'src/flows'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 interface Props {
   id: string
   name: string
@@ -16,6 +19,7 @@ const FlowContextMenu: FC<Props> = ({id, name}) => {
   const {remove} = useContext(FlowListContext)
 
   const handleDelete = () => {
+    event('delete_notebook')
     remove(id)
   }
 

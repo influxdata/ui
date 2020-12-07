@@ -54,7 +54,7 @@ export const FlowProvider: FC = ({children}) => {
         ...flow,
       })
     },
-    [currentID]
+    [currentID, flows[currentID]]
   )
 
   const addPipe = (initial: PipeData, index?: number) => {
@@ -74,25 +74,23 @@ export const FlowProvider: FC = ({children}) => {
     return id
   }
 
-  return useMemo(() => {
-    if (!flows || !flows.hasOwnProperty(currentID)) {
+  if (!flows || !flows.hasOwnProperty(currentID)) {
       return null
-    }
+  }
 
-    return (
+  return (
       <FlowContext.Provider
-        value={{
-          id: currentID,
-          name,
-          flow: flows[currentID],
-          add: addPipe,
-          update: updateCurrent,
-        }}
+          value={{
+              id: currentID,
+              name,
+              flow: flows[currentID],
+              add: addPipe,
+              update: updateCurrent,
+          }}
       >
-        {children}
+          {children}
       </FlowContext.Provider>
-    )
-  }, [currentID, (flows || {})[currentID]])
+  )
 }
 
 const CurrentFlow: FC = ({children}) => {

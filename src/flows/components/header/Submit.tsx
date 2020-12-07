@@ -69,11 +69,16 @@ export const Submit: FC = () => {
       .join('')
   }, [flow.data])
 
+  const _range = useMemo(() => (
+      `${flow.range.lower} to ${flow.range.upper || 'now'}`
+  ), [flow.range])
+
   useEffect(() => {
     if (hasQueries) {
+        console.log('damn use effect')
       submit()
     }
-  }, [flow.range, hasQueries, aggregateOfAggregates]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [_range, hasQueries, aggregateOfAggregates]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const forceUpdate = (id, data) => {
     try {
@@ -84,6 +89,10 @@ export const Submit: FC = () => {
   }
 
   const submit = () => {
+    if (isLoading === RemoteDataState.Loading) {
+        return
+    }
+
     const map = generateMap(runMode === RunMode.Run)
 
     if (!map.length) {
@@ -102,8 +111,8 @@ export const Submit: FC = () => {
         return query(stage.text)
           .then(response => {
             stage.instances.forEach(pipeID => {
-              forceUpdate(pipeID, response)
               flow.meta.update(pipeID, {loading: RemoteDataState.Done})
+              forceUpdate(pipeID, response)
             })
           })
           .catch(e => {

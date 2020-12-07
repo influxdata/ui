@@ -59,7 +59,7 @@ export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
     _result = {...DEFAULT_CONTEXT.results}
   }
 
-  return (
+  return useMemo(() => (
     <PipeContext.Provider
       value={{
         id: id,
@@ -73,5 +73,5 @@ export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
     >
       {children}
     </PipeContext.Provider>
-  )
+  ), [flow, results, flow.meta.get(id).loading])
 }

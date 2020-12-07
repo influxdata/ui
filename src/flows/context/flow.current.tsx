@@ -54,7 +54,7 @@ export const FlowProvider: FC = ({children}) => {
         ...flow,
       })
     },
-    [currentID]
+    [currentID, flows[currentID]]
   )
 
   const addPipe = (initial: PipeData, index?: number) => {

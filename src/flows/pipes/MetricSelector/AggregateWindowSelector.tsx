@@ -27,7 +27,7 @@ const AggregateFunctionSelector: FC = () => {
 
   const updateSelectedFunction = useCallback(
     (aggregateFunction: QueryFn): void => {
-      event(`Updating the Aggregate function in the Flow Query Builder`, {
+      event(`metric_selector_change_aggregate`, {
         function: aggregateFunction.name,
       })
       update({aggregateFunction})

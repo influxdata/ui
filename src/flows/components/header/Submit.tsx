@@ -117,13 +117,13 @@ export const Submit: FC = () => {
       })
     )
       .then(() => {
-        event('Flow Submit Resolved')
+        event('run_notebook_success', {runMode})
         dispatch(notify(notebookRunSuccess(runMode, PROJECT_NAME)))
 
         setLoading(RemoteDataState.Done)
       })
       .catch(e => {
-        event('Flow Submit Resolved')
+        event('run_notebook_fail', {runMode})
         dispatch(notify(notebookRunFail(runMode, PROJECT_NAME)))
 
         // NOTE: this shouldn't fire, but lets wrap it for completeness

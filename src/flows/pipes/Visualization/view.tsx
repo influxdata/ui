@@ -57,8 +57,8 @@ const Visualization: FC<PipeProp> = ({Context}) => {
   )
 
   const updateType = (type: ViewType) => {
-    event('Flow Visualization Type Changed', {
-      type,
+    event('notebook_change_visualization_type', {
+      viewType: type,
     })
 
     update({

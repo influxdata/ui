@@ -15,7 +15,10 @@ const FlowsExplainer: FC = () => (
         {PROJECT_NAME_PLURAL} are a tool to help you explore, visualize, and
         process your data. Learn how to downsample data and other handy
         tutorials in the{' '}
-        <a href="" target="_blank">
+        <a
+          href="https://docs.influxdata.com/influxdb/cloud/notebooks/create-notebook/"
+          target="_blank"
+        >
           Documentation
         </a>
       </p>

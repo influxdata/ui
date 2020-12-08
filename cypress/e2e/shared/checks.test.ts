@@ -94,13 +94,24 @@ describe('Checks', () => {
 
   it('can create and filter checks', () => {
     cy.log('create first check')
-    cy.getByTestID('create-check').click()
-    cy.getByTestID('create-deadman-check').click()
-
-    cy.log('select measurement and field')
-    cy.getByTestID(`selector-list defbuck`).click()
-    cy.getByTestID(`selector-list ${measurement}`).click()
-    cy.getByTestID(`selector-list ${field}`).click()
+    cy.getByTestID('create-check')
+      .click()
+      .then(() => {
+        cy.getByTestID('create-deadman-check')
+          .click()
+          .then(() => {
+            cy.log('select measurement and field')
+            cy.getByTestID(`selector-list defbuck`)
+              .click()
+              .then(() => {
+                cy.getByTestID(`selector-list ${measurement}`)
+                  .click()
+                  .then(() => {
+                    cy.getByTestID(`selector-list ${field}`).click()
+                  })
+              })
+          })
+      })
 
     cy.log('name the check; save')
     cy.getByTestID('overlay').within(() => {

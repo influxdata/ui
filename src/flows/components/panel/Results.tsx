@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC, useEffect, useState, useContext, useMemo} from 'react'
 import {AutoSizer} from 'react-virtualized'
-import {fromFlux} from '@influxdata/giraffe'
 
 // Components
 import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'

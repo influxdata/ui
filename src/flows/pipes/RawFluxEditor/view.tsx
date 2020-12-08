@@ -40,7 +40,7 @@ const Query: FC<PipeProp> = ({Context}) => {
         />
       </Context>
     ),
-    [query.text, updateText, Context]
+    [query.text, updateText]
   )
 }
 

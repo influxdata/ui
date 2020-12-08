@@ -73,7 +73,6 @@ const Results: FC = () => {
     emptyText = 'No Data Returned'
   }
 
-
   return (
     <Resizer
       loading={meta.loading}
@@ -107,7 +106,7 @@ const Results: FC = () => {
               const page = Math.floor(height / ROW_HEIGHT)
 
               if (page !== pageSize) {
-                  setPageSize(page)
+                setPageSize(page)
               }
 
               return (

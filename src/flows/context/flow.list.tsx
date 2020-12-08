@@ -114,8 +114,6 @@ export const FlowListProvider: FC = ({children}) => {
   const [flows, setFlows] = useFlowListState(DEFAULT_CONTEXT.flows)
   const [currentID, setCurrentID] = useFlowCurrentState(null)
 
-  //console.log(flows[currentID].meta.byID['local_87978d33-d27b-4de1-8dc4-59cac25c3883'])
-
   const add = (flow?: Flow): Promise<string> => {
     let _flow
 
@@ -188,13 +186,6 @@ export const FlowListProvider: FC = ({children}) => {
       readOnly: flow.readOnly,
     }
 
-    if (id === 'local_b68fa287-e81d-454a-ae25-f79147a9696d') {
-        console.log(data)
-    }
-    if (data.meta.byID['local_87978d33-d27b-4de1-8dc4-59cac25c3883'].loading === RemoteDataState.Loading) {
-        debugger
-    }
-
     setFlows({
       ...flows,
       [id]: data,
@@ -229,9 +220,6 @@ export const FlowListProvider: FC = ({children}) => {
 
   const flowList = Object.keys(flows).reduce((acc, curr) => {
     const stateUpdater = (field, data) => {
-        if (field === 'meta') {
-        console.log('neat', field, data.byID['local_87978d33-d27b-4de1-8dc4-59cac25c3883'], flows[curr].meta.byID['local_87978d33-d27b-4de1-8dc4-59cac25c3883'])
-        }
       const _flow = {
         ...flows[curr],
       }

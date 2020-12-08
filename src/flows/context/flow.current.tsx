@@ -75,21 +75,21 @@ export const FlowProvider: FC = ({children}) => {
   }
 
   if (!flows || !flows.hasOwnProperty(currentID)) {
-      return null
+    return null
   }
 
   return (
-      <FlowContext.Provider
-          value={{
-              id: currentID,
-              name,
-              flow: flows[currentID],
-              add: addPipe,
-              update: updateCurrent,
-          }}
-      >
-          {children}
-      </FlowContext.Provider>
+    <FlowContext.Provider
+      value={{
+        id: currentID,
+        name,
+        flow: flows[currentID],
+        add: addPipe,
+        update: updateCurrent,
+      }}
+    >
+      {children}
+    </FlowContext.Provider>
   )
 }
 

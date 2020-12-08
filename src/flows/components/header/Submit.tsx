@@ -69,13 +69,13 @@ export const Submit: FC = () => {
       .join('')
   }, [flow.data])
 
-  const _range = useMemo(() => (
-      `${flow.range.lower} to ${flow.range.upper || 'now'}`
-  ), [flow.range])
+  const _range = useMemo(
+    () => `${flow.range.lower} to ${flow.range.upper || 'now'}`,
+    [flow.range]
+  )
 
   useEffect(() => {
     if (hasQueries) {
-        console.log('damn use effect')
       submit()
     }
   }, [_range, hasQueries, aggregateOfAggregates]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -90,7 +90,7 @@ export const Submit: FC = () => {
 
   const submit = () => {
     if (isLoading === RemoteDataState.Loading) {
-        return
+      return
     }
 
     const map = generateMap(runMode === RunMode.Run)

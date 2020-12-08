@@ -945,11 +945,35 @@ export const notificationRule: RuleState = {
   runbookLink: "",
   tagRules: [
     {
-      cid: "795fbc64-e1d3-4d90-a6a4-382049d1aa78",
+      cid: "795fbc64-e1d3-4d90-a6a4-382049d1aa71",
+      value: {
+        key: "key",
+        value: "value",
+        operator: "equal"
+      }
+    },
+    {
+      cid: "795fbc64-e1d3-4d90-a6a4-382049d1aa72",
       value: {
         key: "key",
         value: "value",
         operator: "notequal"
+      }
+    },
+    {
+      cid: "795fbc64-e1d3-4d90-a6a4-382049d1aa73",
+      value: {
+        key: "key",
+        value: "value",
+        operator: "equalregex"
+      }
+    },
+    {
+      cid: "795fbc64-e1d3-4d90-a6a4-382049d1aa74",
+      value: {
+        key: "key",
+        value: "value",
+        operator: "notequalregex"
       }
     }
   ],

@@ -54,7 +54,7 @@ const RuleMessage: FC<Props> = ({endpoints, rule}) => {
     <Grid.Row>
       <Grid.Column widthSM={Columns.Two}>Message</Grid.Column>
       <Grid.Column widthSM={Columns.Ten}>
-        <Panel>
+        <Panel testID="rule-message">
           <Panel.Body>
             <Form.Element label="Notification Endpoint">
               <RuleEndpointDropdown

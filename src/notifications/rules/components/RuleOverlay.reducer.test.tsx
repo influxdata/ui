@@ -93,9 +93,8 @@ describe('rule overlay reducer', () => {
 
   each([['equal'], ['notequal'], ['equalregex'], ['notequalregex']]).it(
     'can set tag rule operator',
-    () => {
+    operator => {
       const tagRuleID = notificationRule.tagRules[0].cid
-      const operator = 'equal'
 
       expect(
         reducer(

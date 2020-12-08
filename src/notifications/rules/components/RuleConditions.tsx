@@ -63,6 +63,7 @@ const RuleConditions: FC<Props> = ({rule}) => {
             onClick={addTagRule}
             color={ComponentColor.Primary}
             size={ComponentSize.Small}
+            testID="add-tag-filter--button"
           />
         </FlexBox>
       </Grid.Column>

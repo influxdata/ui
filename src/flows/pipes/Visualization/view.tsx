@@ -44,6 +44,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
   const toggleOptions = useCallback(() => {
     setOptionsVisibility(!optionsVisibility)
   }, [optionsVisibility, setOptionsVisibility])
+
   const updateProperties = useCallback(
     properties => {
       update({

@@ -1,4 +1,4 @@
-import React, {FC, useContext, useCallback, useMemo} from 'react'
+import React, {FC, useContext, useCallback} from 'react'
 import {Flow, PipeData} from 'src/types/flows'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import {v4 as UUID} from 'uuid'
@@ -77,25 +77,23 @@ export const FlowProvider: FC = ({children}) => {
     return id
   }
 
-  return useMemo(() => {
-    if (!flows || !flows.hasOwnProperty(currentID)) {
-      return null
-    }
+  if (!flows || !flows.hasOwnProperty(currentID)) {
+    return null
+  }
 
-    return (
-      <FlowContext.Provider
-        value={{
-          id: currentID,
-          name,
-          flow: flows[currentID],
-          add: addPipe,
-          update: updateCurrent,
-        }}
-      >
-        {children}
-      </FlowContext.Provider>
-    )
-  }, [currentID, (flows || {})[currentID]])
+  return (
+    <FlowContext.Provider
+      value={{
+        id: currentID,
+        name,
+        flow: flows[currentID],
+        add: addPipe,
+        update: updateCurrent,
+      }}
+    >
+      {children}
+    </FlowContext.Provider>
+  )
 }
 
 const CurrentFlow: FC = ({children}) => {

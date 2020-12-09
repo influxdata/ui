@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC, useEffect, useState, useContext, useMemo} from 'react'
 import {AutoSizer} from 'react-virtualized'
-import {fromFlux} from '@influxdata/giraffe'
 
 // Components
 import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
@@ -29,15 +28,14 @@ const Results: FC = () => {
   const meta = flow.meta.get(id)
   const resultsExist =
     !!results && !!results.raw && !!results.parsed.table.length
-  const raw = (results || {}).raw || ''
 
-  const rows = useMemo(() => raw.split('\n'), [raw])
+  const rows = useMemo(() => results.raw.split('\n'), [results.raw])
   const [startRow, setStartRow] = useState<number>(0)
   const [pageSize, setPageSize] = useState<number>(0)
 
   useEffect(() => {
     setStartRow(0)
-  }, [raw])
+  }, [results.parsed])
 
   const prevDisabled = startRow <= 0
   const nextDisabled = startRow + pageSize >= rows.length
@@ -105,12 +103,14 @@ const Results: FC = () => {
               }
 
               const page = Math.floor(height / ROW_HEIGHT)
-              setPageSize(page)
 
-              const parsedResults = fromFlux(raw)
+              if (page !== pageSize) {
+                setPageSize(page)
+              }
+
               return (
                 <RawFluxDataTable
-                  parsedResults={parsedResults}
+                  parsedResults={results.parsed}
                   startRow={startRow}
                   width={width}
                   height={page * ROW_HEIGHT}

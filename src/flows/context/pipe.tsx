@@ -59,19 +59,22 @@ export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
     _result = {...DEFAULT_CONTEXT.results}
   }
 
-  return (
-    <PipeContext.Provider
-      value={{
-        id: id,
-        data: flow.data.get(id),
-        queryText,
-        update: updater,
-        results: _result,
-        loading: flow.meta.get(id).loading,
-        readOnly: flow.readOnly,
-      }}
-    >
-      {children}
-    </PipeContext.Provider>
+  return useMemo(
+    () => (
+      <PipeContext.Provider
+        value={{
+          id: id,
+          data: flow.data.get(id),
+          queryText,
+          update: updater,
+          results: _result,
+          loading: flow.meta.get(id).loading,
+          readOnly: flow.readOnly,
+        }}
+      >
+        {children}
+      </PipeContext.Provider>
+    ),
+    [flow, results, flow.meta.get(id).loading]
   )
 }

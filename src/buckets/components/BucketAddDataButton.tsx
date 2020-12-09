@@ -16,6 +16,7 @@ import {
 
 interface Props {
   onAddCollector: () => void
+  onAddCsv: () => void
   onAddLineProtocol: () => void
   onAddClientLibrary: () => void
   onAddScraper: () => void
@@ -27,6 +28,7 @@ export default class BucketAddDataButton extends PureComponent<Props> {
   public render() {
     const {
       onAddCollector,
+      onAddCsv,
       onAddLineProtocol,
       onAddClientLibrary,
       onAddScraper,
@@ -62,6 +64,17 @@ export default class BucketAddDataButton extends PureComponent<Props> {
                 </div>
                 <div className="bucket-add-data--option-desc">
                   Quickly load an existing line protocol file.
+                </div>
+              </div>
+              <div className="bucket-add-data--option" onClick={onAddCsv}>
+                <div
+                  className="bucket-add-data--option-header"
+                  data-testid="bucket-add-line-protocol"
+                >
+                  CSV Upload
+                </div>
+                <div className="bucket-add-data--option-desc">
+                  Quickly load an existing csv file.
                 </div>
               </div>
               <div

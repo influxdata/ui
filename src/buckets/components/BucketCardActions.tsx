@@ -78,6 +78,14 @@ const BucketCardActions: FC<Props> = ({
     )
   }
 
+  const handleCSVUploader = () => {
+    onSetDataLoadersBucket(orgID, bucket.name, bucket.id)
+
+    history.push(
+      `/orgs/${orgID}/load-data/buckets/${bucket.id}/csv-uploader/new`
+    )
+  }
+
   const handleAddClientLibrary = (): void => {
     onSetDataLoadersBucket(orgID, bucket.name, bucket.id)
     onSetDataLoadersType(DataLoaderType.ClientLibrary)
@@ -107,6 +115,7 @@ const BucketCardActions: FC<Props> = ({
       <BucketAddDataButton
         onAddCollector={handleAddCollector}
         onAddLineProtocol={handleAddLineProtocol}
+        onAddCsv={handleCSVUploader}
         onAddClientLibrary={handleAddClientLibrary}
         onAddScraper={handleAddScraper}
       />

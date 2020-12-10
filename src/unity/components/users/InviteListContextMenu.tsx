@@ -82,8 +82,6 @@ function InviteListContextMenu({invite}: Props) {
       </FlexBox>
     </IndexList.Cell>
   )
-
-  return
 }
 
 export default InviteListContextMenu

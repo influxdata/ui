@@ -1,5 +1,5 @@
 // Libraries
-import React, {useReducer, useState, Dispatch} from 'react'
+import React, {useReducer, useCallback, useState, Dispatch} from 'react'
 import {useHistory, useParams} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 import {
@@ -14,11 +14,11 @@ import {
 
 // Components
 import {getByID} from 'src/resources/selectors'
-import DragAndDrop from 'src/buckets/components/lineProtocol/configure/DragAndDrop'
+import CsvUploaderBody from 'src/buckets/components/csvUploader/CsvUploaderBody'
+import CsvUploaderSuccess from 'src/buckets/components/csvUploader/CsvUploaderSuccess'
 
 // Actions
-import {writeLineProtocolAction} from 'src/buckets/components/lineProtocol/LineProtocol.thunks'
-import {runQuery} from 'src/shared/apis/query'
+import {postWrite as apiPostWrite} from 'src/client'
 
 // Reducers
 import reducer, {
@@ -27,11 +27,12 @@ import reducer, {
 } from 'src/buckets/components/lineProtocol/LineProtocol.reducer'
 
 // Types
-import {ResourceType, AppState, Bucket} from 'src/types'
+import {ResourceType, AppState, Bucket, WritePrecision} from 'src/types'
 import {Action} from 'src/buckets/components/lineProtocol/LineProtocol.creators'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
+import fromFlux from 'src/shared/utils/fromFlux'
 
 type LineProtocolContext = [LineProtocolState, Dispatch<Action>]
 export const Context = React.createContext<LineProtocolContext>(null)
@@ -42,39 +43,104 @@ const getState = (bucketID: string) => (state: AppState) => {
   return {bucket: bucket?.name || '', org}
 }
 
+const MAX_CHUNK_SIZE = 1750
+
 const CsvUploaderWizard = () => {
   const history = useHistory()
   const {bucketID, orgID} = useParams()
-  const [query, setQuery] = useState('')
+  const [_, setMax] = useState(0)
+  const [value, setValue] = useState(0)
+  const [hasFile, setHasFile] = useState(false)
+  const [uploadFinished, setUploadFinished] = useState(false)
   const {bucket, org} = useSelector(getState(bucketID))
 
   const [state, dispatch] = useReducer(reducer, initialState())
-  const {body, precision} = state
 
-  const handleDismiss = () => {
+  const handleDismiss = useCallback(() => {
     history.push(`/orgs/${orgID}/load-data/buckets`)
-  }
+  }, [history, orgID])
 
-  const handleSubmit = () => {
-    console.log('query: ', query)
-    const result = runQuery(orgID, query)
-    result.promise
-      .then(res => {
-        console.log('res: ', res)
-      })
-      .catch(error => console.error('error: ', error))
-      .then(() => handleDismiss())
-    // writeLineProtocolAction(dispatch, org, bucket, body, precision)
-  }
+  const handleDrop = useCallback(
+    (csv: string) => {
+      setHasFile(true)
+      setTimeout(() => {
+        const {table} = fromFlux(csv)
+        const filtered = [
+          /^_start$/,
+          /^_stop$/,
+          /^_time$/,
+          /^_value/,
+          /^_measurement$/,
+          /^_field$/,
+          /^table$/,
+          /^result$/,
+        ]
 
-  const handleDrop = (csv: string) => {
-    console.log('csv: ', csv)
-    const text = `import "csv"
-  csv.from(csv: ${JSON.stringify(csv)})
-  |> to(bucket: "${bucket.trim()}")`
-    console.log('text: ', text)
-    setQuery(text)
-  }
+        const columns = table.columnKeys.filter(key => {
+          return filtered.reduce((acc, curr) => {
+            return acc && !curr.test(key)
+          }, true)
+        })
+
+        const length = table.length
+
+        let chunk = ''
+
+        let measurement: any = ''
+        let field: any = ''
+        let time: any = ''
+        let tags: any = ''
+        let line: any = ''
+
+        let counter = 0
+        let progress = 0
+
+        const pendingWrites = []
+        for (let i = 0; i < length; i++) {
+          if (i !== 0 && i % MAX_CHUNK_SIZE === 0) {
+            const resp = apiPostWrite({
+              data: chunk,
+              query: {org, bucket, precision: WritePrecision.Ms},
+            }).then(() => {
+              const percent = (++progress / counter) * 100
+              setValue(Math.floor(percent))
+            })
+            pendingWrites.push(resp)
+            counter++
+            chunk = ''
+          }
+          measurement = table.columns['_measurement'].data[i]
+          field = table.columns['_field'].data[i]
+          time = table.columns['_time'].data[i] // TODO(ariel): this may need to be BigInt
+          tags = columns
+            .filter(col => !!table.columns[col].data[i])
+            .map(col => `${col}=${table.columns[col].data[i]}`)
+            .join(',')
+            .trim()
+            .replace(/(\r\n|\n|\r)/gm, '')
+          line = `${measurement},${tags} ${field}="${field}" ${time}`
+          chunk = `${line}\n${chunk}`
+        }
+        if (chunk) {
+          const resp = apiPostWrite({
+            data: chunk,
+            query: {org, bucket, precision: WritePrecision.Ms},
+          }).then(() => {
+            const percent = (++progress / counter) * 100
+            setValue(Math.floor(percent))
+          })
+          pendingWrites.push(resp)
+          counter++
+        }
+        setMax(counter)
+        chunk = ''
+        Promise.all(pendingWrites).finally(() => {
+          setUploadFinished(true)
+        })
+      }, 0)
+    },
+    [bucket, org]
+  )
 
   return (
     <Context.Provider value={[state, dispatch]}>
@@ -86,11 +152,15 @@ const CsvUploaderWizard = () => {
           />
           <Form>
             <Overlay.Body style={{textAlign: 'center'}}>
-              <DragAndDrop
-                className="line-protocol--content"
-                onSubmit={handleSubmit}
-                onSetBody={handleDrop}
-              />
+              {uploadFinished ? (
+                <CsvUploaderSuccess />
+              ) : (
+                <CsvUploaderBody
+                  value={value}
+                  hasFile={hasFile}
+                  handleDrop={handleDrop}
+                />
+              )}
             </Overlay.Body>
           </Form>
           <OverlayFooter>

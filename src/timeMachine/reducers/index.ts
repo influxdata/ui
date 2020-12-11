@@ -779,7 +779,6 @@ export const timeMachineReducer = (
         const {index, builderAggregateFunctionType} = action.payload
         const draftQuery = draftState.draftQueries[draftState.activeQueryIndex]
 
-        buildActiveQuery(draftState)
         if (
           draftQuery &&
           draftQuery.builderConfig &&
@@ -793,6 +792,7 @@ export const timeMachineReducer = (
             index
           ].aggregateFunctionType = builderAggregateFunctionType
         }
+        buildActiveQuery(draftState)
       })
     }
 
@@ -1173,7 +1173,7 @@ export const buildActiveQuery = (draftState: TimeMachineState) => {
 
   if (isConfigValid(draftQuery.builderConfig)) {
     draftQuery.text = buildQuery(draftQuery.builderConfig)
-  } else {
+  } else if (!draftQuery.text) {
     draftQuery.text = ''
   }
 }

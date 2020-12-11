@@ -18,10 +18,7 @@ import {AGG_WINDOW_AUTO} from 'src/timeMachine/constants/queryBuilder'
 export function isConfigValid(builderConfig: BuilderConfig): boolean {
   const {buckets, tags} = builderConfig
 
-  const isConfigValid =
-    buckets.length >= 1 &&
-    tags.length >= 1 &&
-    tags.some(({key, values}) => key && values.length > 0)
+  const isConfigValid = buckets.length >= 1 && tags.length >= 1
 
   return isConfigValid
 }

@@ -54,4 +54,4 @@ class Influx {
 
 module.exports = {
     Influx
-};
+}

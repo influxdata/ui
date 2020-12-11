@@ -29,4 +29,4 @@ class APIWaiter {
 
 module.exports = {
     APIWaiter
-};
+}

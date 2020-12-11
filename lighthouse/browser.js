@@ -13,7 +13,7 @@ class Browser {
         this.chrome = null
         this.agent = agent
     }
-    
+
     async initialize() {
         this.chrome = await chromeLauncher.launch(this.options)
         this.browser = await this._createBrowser()

@@ -3,8 +3,8 @@ class ScoresFormatter {
         const formatted = []
         formatted.push('Metric | Score | Level')
         formatted.push('------------ | ------------- | ------------- ')
-    
-        Object.keys(scores).forEach(category => {    
+
+        Object.keys(scores).forEach(category => {
             let icon = ''
             if (scores[category] > 80) {
                 icon = ':green_circle:'
@@ -15,10 +15,10 @@ class ScoresFormatter {
             } else {
                 icon = ':hankey:'
             }
-            
+
             formatted.push(`${category} | ${scores[category]} | ${icon}`)
         })
-    
+
         return formatted.join("\n")
     }
 }

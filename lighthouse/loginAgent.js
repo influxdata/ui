@@ -30,14 +30,14 @@ class Influx {
         try {
             await page.setViewport(this.dimensions)
             await page.goto(this.urls.login, {waitUntil: 'networkidle0'})
-    
+
             await page.waitForSelector('#login', {visible: true})
             await page.type('[id="login"]', this.credentials.username)
             await page.type('[id="password"]', this.credentials.password)
             await page.evaluate(() => {
                 document.querySelector('[id="submit-login"]').click()
             })
-    
+
             await page.waitForNavigation({ waitUntil: 'networkidle2' })
             await page.click('body > div.dex-container > div > div:nth-child(5) > div:nth-child(1) > form > button')
             await page.waitForNavigation({waitUntil: 'networkidle2'})

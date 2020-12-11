@@ -47,7 +47,7 @@ class LighouseReport {
     async run() {
         await this.waiter.wait()
         await this.browser.login()
-    
+
         await this._generateReport()
 
         await this.browser.logout()
@@ -60,7 +60,7 @@ class LighouseReport {
             if (c.score === null) {
                 throw new Error('Scores are null')
             }
-            
+
             scores[c.id.toUpperCase()] = Math.floor(c.score * 100).toFixed(2)
         })
 
@@ -74,7 +74,7 @@ class LighouseReport {
         } catch (error) {
             console.error(error)
         }
-    
+
         if (scores !== null) {
             try {
                 await this.pullRequest.comment(scores)

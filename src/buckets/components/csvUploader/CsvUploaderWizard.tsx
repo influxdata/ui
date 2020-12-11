@@ -48,7 +48,6 @@ const MAX_CHUNK_SIZE = 1750
 const CsvUploaderWizard = () => {
   const history = useHistory()
   const {bucketID, orgID} = useParams()
-  const [_, setMax] = useState(0)
   const [value, setValue] = useState(0)
   const [hasFile, setHasFile] = useState(false)
   const [uploadFinished, setUploadFinished] = useState(false)
@@ -132,7 +131,6 @@ const CsvUploaderWizard = () => {
           pendingWrites.push(resp)
           counter++
         }
-        setMax(counter)
         chunk = ''
         Promise.all(pendingWrites).finally(() => {
           setUploadFinished(true)

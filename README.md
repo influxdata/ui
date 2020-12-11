@@ -53,3 +53,17 @@ From the ui directory. Build the javascript with
 ## Starting Dev Server
 
 Running `/ui` locally depends on `monitor-ci`. [See the monitor-ci Quickstart](https://github.com/influxdata/monitor-ci#quickstart-for-local-development)
+
+
+## Running Lighthouse Report Locally
+```
+## Usage:
+# --username <USERNAME> : Username to login to your local UI
+# --password <PASSWORD> : Password to login to your local UI
+# --host <HOSTNAME> : Hostname where your UI is accessible. i.e. kubernetes.docker.internal
+# --port <PORT> : Port on which your UI is accessible. i.e. 8080 or 8448. Take a look at .env or env.testing files
+# --pr <PULL_REQUEST_URL> : UI repo's pull request url
+# --token <GITHUB_TOKEN> : Github token which rights to write PR comments
+
+node lighthouse/login.js --username <USERNAME> --password <PASSWORD> --port <PORT> --host <HOSTNAME> --pr <PULL_REQUEST_URL> --token <GITHUB_TOKEN>
+```

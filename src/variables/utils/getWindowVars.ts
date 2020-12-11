@@ -88,7 +88,7 @@ export const getWindowPeriodVariable = (
 ): Variable[] | null => {
   const total = getWindowPeriod(query, variables)
 
-  if (total === null) {
+  if (total === null || total === Infinity) {
     return null
   }
 

@@ -21,6 +21,26 @@ describe('getWindowPeriodVariable', () => {
     expect(actual).toEqual(null)
   })
 
+  test('should return null when timeRange is identical', () => {
+    const query = `from(bucket: "Go Pack Go")
+    |> range(start: 2020-12-10T17:00:00Z, stop: 2020-12-10T17:00:00Z)
+    |> filter(fn: (r) => r["_measurement"] == "query_request_duration")
+    |> filter(fn: (r) => r["_field"] == "success_rate")`
+
+    const actual = getWindowPeriodVariable(query, defaultVariableAssignments)
+    expect(actual).toEqual(null)
+  })
+
+  test('should return null when timeRange is negative', () => {
+    const query = `from(bucket: "Go Pack Go")
+    |> range(start: 2020-12-10T17:00:00Z, stop: 2020-12-09T17:00:00Z)
+    |> filter(fn: (r) => r["_measurement"] == "query_request_duration")
+    |> filter(fn: (r) => r["_field"] == "success_rate")`
+
+    const actual = getWindowPeriodVariable(query, defaultVariableAssignments)
+    expect(actual).toEqual(null)
+  })
+
   test('should return a dynamic windowPeriod depending on the timeRange that is input', () => {
     jest.mock('src/external/parser', () => {
       return {

@@ -23,6 +23,7 @@ const GaugeMiniChart: FunctionComponent<Props> = (props: Props) => {
   const themeOrDefault: Required<GaugeMiniLayerConfig> = {
     ...GAUGE_MINI_THEME_BULLET_DARK,
     ...theme,
+    ...((theme as any) ? {gaugeColors : (theme as any).colors} : {}),
   }
 
   return (

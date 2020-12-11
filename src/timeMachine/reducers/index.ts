@@ -613,8 +613,9 @@ export const timeMachineReducer = (
     case 'SET_COLORS': {
       const {colors} = action.payload
 
-      switch (state.view.properties.type) {
+      switch (state.view.properties.type as any) {
         case 'gauge':
+        case 'gauge-mini':
         case 'table':
         case 'single-stat':
         case 'scatter':
@@ -630,6 +631,12 @@ export const timeMachineReducer = (
         default:
           return state
       }
+    }
+
+    case 'SET_GAUGE_MINI_PROP' as any: {
+      return setViewProperties(state, {
+        ...(action as any).payload
+      })
     }
 
     case 'SET_DECIMAL_PLACES': {

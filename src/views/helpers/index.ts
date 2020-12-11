@@ -171,6 +171,8 @@ function defaultGaugeMiniViewProperties() {
   return {
     queries: [defaultViewQuery()],
     ...GAUGE_MINI_THEME_BULLET_DARK,
+    defaultTheme: "GAUGE_MINI_THEME_BULLET_DARK",
+    colors: DEFAULT_GAUGE_COLORS as Color[],
   }
 }
 

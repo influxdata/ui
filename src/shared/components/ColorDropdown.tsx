@@ -75,7 +75,6 @@ const ColorDropdown: FC<Props> = props => {
 
 ColorDropdown.defaultProps = {
   disabled: false,
-  style: {flex: '0 0 120px'},
 }
 
 export default ColorDropdown

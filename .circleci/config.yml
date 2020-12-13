@@ -411,6 +411,8 @@ jobs:
           command: |
             cd ./ui
             yarn
+            cd ./ui/lighthouse
+            yarn
       - run:
           name: Add ingress entry to /etc/hosts
           command: |

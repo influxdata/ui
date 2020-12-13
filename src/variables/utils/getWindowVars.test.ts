@@ -21,6 +21,9 @@ describe('getWindowPeriodVariable', () => {
     expect(actual).toEqual(null)
   })
 
+  /* The following two tests are checking that this issue: https://github.com/influxdata/ui/issues/422 is resolved.
+    (Summary: The windowPeriod calculation was returning infinity for identical or negative ranges)
+  */
   test('should return null when timeRange is identical', () => {
     const query = `from(bucket: "Go Pack Go")
     |> range(start: 2020-12-10T17:00:00Z, stop: 2020-12-10T17:00:00Z)

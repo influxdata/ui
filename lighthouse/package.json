@@ -1,0 +1,21 @@
+{
+  "name": "lighthousereporting",
+  "version": "1.0.0",
+  "description": "",
+  "main": "login.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chrome-launcher": "^0.13.4",
+    "fs": "^0.0.1-security",
+    "lighthouse": "^6.5.0",
+    "minimist": "^1.2.5",
+    "node-fetch": "^2.6.1",
+    "puppeteer": "^5.5.0",
+    "request": "^2.88.2",
+    "util": "^0.12.3"
+  }
+}

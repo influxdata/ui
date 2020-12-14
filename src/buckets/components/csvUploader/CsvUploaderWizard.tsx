@@ -1,7 +1,7 @@
 // Libraries
-import React, {useContext, useCallback} from 'react'
+import React, {useContext, useCallback, useEffect} from 'react'
 import {useSelector} from 'react-redux'
-import {useHistory} from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 import {
   Button,
   ButtonType,
@@ -23,8 +23,13 @@ import CsvUploaderBody from 'src/buckets/components/csvUploader/CsvUploaderBody'
 import CsvUploaderSuccess from 'src/buckets/components/csvUploader/CsvUploaderSuccess'
 
 const CsvUploaderWizard = () => {
-  const {uploadFinished} = useContext(CsvUploaderContext)
+  const {setBucket, uploadFinished} = useContext(CsvUploaderContext)
   const history = useHistory()
+  const {bucketID} = useParams()
+
+  useEffect(() => {
+    setBucket(bucketID)
+  }, [bucketID, setBucket])
 
   const org = useSelector(getOrg)
   const handleDismiss = useCallback(() => {

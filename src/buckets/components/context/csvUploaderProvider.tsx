@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC, useCallback, useState} from 'react'
 import {fromFlux} from '@influxdata/giraffe'
-import {useParams} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
 // Utils
@@ -21,6 +20,7 @@ export type Props = {
 export interface CsvUploaderContextType {
   hasFile: boolean
   progress: number
+  setBucket: (id: string) => void
   uploadCsv: (csv: string) => void
   uploadFinished: boolean
 }
@@ -28,6 +28,7 @@ export interface CsvUploaderContextType {
 export const DEFAULT_CONTEXT: CsvUploaderContextType = {
   hasFile: false,
   progress: 0,
+  setBucket: (_: string) => '',
   uploadCsv: (_: string) => {},
   uploadFinished: false,
 }
@@ -40,7 +41,7 @@ const MAX_CHUNK_SIZE = 1750
 
 export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
   const [progress, setProgress] = useState(0)
-  const {bucketID} = useParams()
+  const [bucketID, setBucket] = useState('')
   const [hasFile, setHasFile] = useState(false)
   const [uploadFinished, setUploadFinished] = useState(false)
 
@@ -48,11 +49,15 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
     useSelector((state: AppState) =>
       getByID<Bucket>(state, ResourceType.Buckets, bucketID)
     )?.name ?? ''
+
   const org = useSelector(getOrg)
 
-  const normalizeTimes = useCallback((time: number): BigInt => {
-    const t = `${time}` + Array(19 - `${time}`.length + 1).join('0')
-    return BigInt(t)
+  const normalizeTimes = useCallback((time: number): string => {
+    /**
+     * Normalizes times to Nanosecond precision. This requires making
+     * the numbers 19 digits long.
+     */
+    return `${time}` + Array(20 - `${time}`.length).join('0')
   }, [])
 
   const uploadCsv = useCallback(
@@ -105,6 +110,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
             counter++
             chunk = ''
           }
+
           measurement = table.getColumn('_measurement')[i]
           field = table.getColumn('_field')[i]
           time = table.getColumn('_time')[i]
@@ -114,9 +120,11 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
             .join(',')
             .trim()
             .replace(/(\r\n|\n|\r)/gm, '')
+
           line = `${measurement},${tags} ${field}="${field}" ${normalizeTimes(
             time
           )}`
+
           chunk = `${line}\n${chunk}`
         }
         if (chunk) {
@@ -130,13 +138,14 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
           pendingWrites.push(resp)
           counter++
         }
+
         chunk = ''
         Promise.all(pendingWrites).finally(() => {
           setUploadFinished(true)
         })
       }, 0)
     },
-    [bucket, org]
+    [bucket, normalizeTimes, org]
   )
 
   return (
@@ -144,6 +153,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
       value={{
         hasFile,
         progress,
+        setBucket,
         uploadCsv,
         uploadFinished,
       }}

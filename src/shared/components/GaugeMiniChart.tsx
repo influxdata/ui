@@ -1,17 +1,16 @@
 // Libraries
-import React, { FunctionComponent } from 'react'
+import React, {FunctionComponent} from 'react'
 import _ from 'lodash'
 import {AutoSizer} from 'react-virtualized'
-import { GaugeMiniLayerConfig } from "@influxdata/giraffe"
-import { GAUGE_MINI_THEME_BULLET_DARK } from "../constants/gaugeMiniSpecs"
-import { GaugeMini } from "./GaugeMini"
+import {GaugeMiniLayerConfig} from '@influxdata/giraffe'
+import {GAUGE_MINI_THEME_BULLET_DARK} from '../constants/gaugeMiniSpecs'
+import {GaugeMini} from './GaugeMini'
 
 // Components
 
 // Types
 
 // Constants
-
 
 interface Props {
   values: {colsMString: string; value: number}[]
@@ -23,7 +22,7 @@ const GaugeMiniChart: FunctionComponent<Props> = (props: Props) => {
   const themeOrDefault: Required<GaugeMiniLayerConfig> = {
     ...GAUGE_MINI_THEME_BULLET_DARK,
     ...theme,
-    ...((theme as any) ? {gaugeColors : (theme as any).colors} : {}),
+    ...((theme as any) ? {gaugeColors: (theme as any).colors} : {}),
   }
 
   return (

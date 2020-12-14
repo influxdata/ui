@@ -1,5 +1,5 @@
 // Libraries
-import React, { PureComponent } from 'react'
+import React, {PureComponent} from 'react'
 
 // Components
 import BandOptions from 'src/timeMachine/components/view_options/BandOptions'
@@ -40,7 +40,7 @@ class OptionsSwitcher extends PureComponent<Props> {
         return <GaugeOptions {...view.properties} />
       // todo: regenerate swagger and remove "as any"s
       case 'gauge-mini' as any:
-        return <GaugeMiniOptions {...view.properties as any} />
+        return <GaugeMiniOptions {...(view.properties as any)} />
       case 'single-stat':
         return <SingleStatOptions />
       case 'table':

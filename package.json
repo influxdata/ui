@@ -38,6 +38,7 @@
     "test:circleci": "yarn run test:ci --maxWorkers=2",
     "test:ci": "JEST_JUNIT_OUTPUT_DIR=\"./coverage\" jest --ci --coverage",
     "lint": "yarn tsc && yarn prettier && yarn eslint",
+    "lint:fix": "yarn tsc && yarn prettier:fix && yarn eslint:fix",
     "eslint": "eslint '{src,cypress}/**/*.{ts,tsx}'",
     "eslint:circleci": "eslint",
     "eslint:fix": "eslint --fix '{src,cypress}/**/*.{ts,tsx}'",

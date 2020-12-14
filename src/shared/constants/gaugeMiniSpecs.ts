@@ -1,5 +1,5 @@
-import { GaugeMiniLayerConfig, InfluxColors } from "@influxdata/giraffe"
-import { Color } from 'src/types/colors'
+import {GaugeMiniLayerConfig, InfluxColors} from '@influxdata/giraffe'
+import {Color} from 'src/types/colors'
 
 export const GAUGE_MINI_THEME_BULLET_DARK: Required<GaugeMiniLayerConfig> = {
   type: 'gauge mini',

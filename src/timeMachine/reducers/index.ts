@@ -635,7 +635,7 @@ export const timeMachineReducer = (
 
     case 'SET_GAUGE_MINI_PROP' as any: {
       return setViewProperties(state, {
-        ...(action as any).payload
+        ...(action as any).payload,
       })
     }
 

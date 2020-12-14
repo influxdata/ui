@@ -5,9 +5,8 @@ import {range} from 'd3-array'
 import {scaleLinear} from 'd3-scale'
 
 // Types
-import { GaugeMiniLayerConfig } from "@influxdata/giraffe"
+import {GaugeMiniLayerConfig} from '@influxdata/giraffe'
 import {Color} from 'src/types/colors'
-
 
 const throwReturn = <T extends unknown>(msg: string): T => {
   throw new Error(msg)
@@ -25,7 +24,9 @@ export const createColsMString = <T extends {[key: string]: true}>(
   groupedBy: T,
   col: {[key in keyof T]: string}
 ): string => {
-  const columns = Object.keys(groupedBy).sort()
+  const columns = Object.keys(groupedBy)
+    .filter(x => groupedBy[x])
+    .sort()
   const columnValues = columns.map(x => col[x])
   /**
    * replacing - with -- will ensures that rows

@@ -44,7 +44,7 @@ import {
   BandViewProperties,
 } from 'src/types'
 import {LineHoverDimension} from '@influxdata/giraffe/dist/types'
-import { GAUGE_MINI_THEME_BULLET_DARK } from "src/shared/constants/gaugeMiniSpecs"
+import {GAUGE_MINI_THEME_BULLET_DARK} from 'src/shared/constants/gaugeMiniSpecs'
 
 export const defaultView = (name: string = DEFAULT_CELL_NAME) => {
   return {
@@ -171,7 +171,7 @@ function defaultGaugeMiniViewProperties() {
   return {
     queries: [defaultViewQuery()],
     ...GAUGE_MINI_THEME_BULLET_DARK,
-    defaultTheme: "GAUGE_MINI_THEME_BULLET_DARK",
+    defaultTheme: 'GAUGE_MINI_THEME_BULLET_DARK',
     colors: DEFAULT_GAUGE_COLORS as Color[],
   }
 }
@@ -291,7 +291,7 @@ const NEW_VIEW_CREATORS = {
     ...defaultView(),
     properties: {
       ...defaultGaugeMiniViewProperties(),
-      type: 'gauge-mini' ,
+      type: 'gauge-mini',
       shape: 'chronograf-v2',
       legend: {},
       // todo: regenerate swagger, remove as any

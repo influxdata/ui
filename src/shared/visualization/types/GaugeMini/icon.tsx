@@ -37,11 +37,12 @@ value color replaced with classes
 */
 
 const icon = (
-  <div className="vis-graphic" data-testid="vis-graphic--gauge"
+  <div
+    className="vis-graphic"
+    data-testid="vis-graphic--gauge"
     // todo: JSX elements, not svg string
     dangerouslySetInnerHTML={{
-      __html:
-        `
+      __html: `
 <svg width="100%" height="100%" version="1.1" id="Bar" x="0px" y="0px" viewBox="0 0 150 150"
 preserveAspectRatio="none meet">
 <g transform="translate(0,2)" refreshToken="2">
@@ -95,7 +96,7 @@ preserveAspectRatio="none meet">
   </g>
 </g>
 </svg>
-`
+`,
     }}
   />
 )

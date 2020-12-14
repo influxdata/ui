@@ -1,9 +1,9 @@
 // Libraries
-import React, { useMemo, FunctionComponent } from 'react'
-import { Table } from '@influxdata/giraffe'
+import React, {useMemo, FunctionComponent} from 'react'
+import {Table} from '@influxdata/giraffe'
 
 // Utils
-import { createColsMString } from "./GaugeMini"
+import {createColsMString} from './GaugeMini'
 
 interface SelectedColumns {
   [key: string]: true
@@ -90,8 +90,14 @@ export const LatestMultipleValueTransform: FunctionComponent<Props> = ({
   quiet = false,
   children,
 }) => {
-  const latestValues = useMemo(() => getLatestValuesGrouped(table, columns), [
+  const trueCols = {}
+  Object.keys(columns)
+    .filter(x => columns[x])
+    .forEach(x => (trueCols[x] = true))
+
+  const latestValues = useMemo(() => getLatestValuesGrouped(table, trueCols), [
     table,
+    trueCols,
   ])
 
   if (latestValues.length === 0 && quiet) {

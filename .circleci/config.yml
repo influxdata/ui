@@ -382,7 +382,41 @@ jobs:
           name: 'Save Yarn Package Cache'
           paths:
             - ~/.cache/yarn
-
+  cloud-lighthouse:
+    machine:
+      image: ubuntu-2004:202008-01
+      docker_layer_caching: true
+    working_directory: ~/
+    resource_class: large
+    steps:
+      - restore_cache:
+          key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
+      - checkout:
+          path: ./ui
+      - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
+      - run:
+          name: Grab compose files
+          command: git clone git@github.com:influxdata/monitor-ci.git
+      - run:
+          name: Copy over the lighthouse variables
+          command: |
+            cp ./monitor-ci/env.lighthouse ./monitor-ci/.env;
+      - run:
+          name: Update the images we're using
+          command: |
+            cd ./monitor-ci && make update && make build NODE=ingress
+            docker load < ~/docker-cache/image.tar
+            docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
+      - run:
+          name: Run lighthouse
+          no_output_timeout: 10m
+          command: |
+            cd monitor-ci;
+            make lhr PR="$CIRCLE_PULL_REQUEST" GITHUB_TOKEN="$HERCULES_TOKEN";
+      - store_artifacts:
+          path: monitor-ci/services/lighthouse/artifacts/results.html
+      - store_artifacts:
+          path: monitor-ci/services/lighthouse/artifacts/results.json
 workflows:
   version: 2
   build:
@@ -396,6 +430,9 @@ workflows:
                 - master
       - unit
       - lint
+      - cloud-lighthouse:
+          requires:
+            - build-image
       - cloud-e2e:
           requires:
             - build-image

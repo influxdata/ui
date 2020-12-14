@@ -42,7 +42,7 @@ const MAX_CHUNK_SIZE = 1750
 
 export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
   const [value, setValue] = useState(0)
-  const {bucketID, orgID} = useParams()
+  const {bucketID} = useParams()
   const [hasFile, setHasFile] = useState(false)
   const [uploadFinished, setUploadFinished] = useState(false)
 
@@ -50,13 +50,13 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
     useSelector((state: AppState) =>
       getByID<Bucket>(state, ResourceType.Buckets, bucketID)
     )?.name ?? ''
-  const org = useSelector(getOrg).name
+  const org = useSelector(getOrg)
 
   const history = useHistory()
 
   const handleDismiss = useCallback(() => {
-    history.push(`/orgs/${orgID}/load-data/buckets`)
-  }, [history, orgID])
+    history.push(`/orgs/${org.id}/load-data/buckets`)
+  }, [history, org.id])
 
   const handleDrop = useCallback(
     (csv: string) => {
@@ -116,7 +116,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
             }
             const resp = postWrite({
               data: chunk,
-              query: {org, bucket, precision},
+              query: {org: org.name, bucket, precision},
             }).then(() => {
               const percent = (++progress / counter) * 100
               setValue(Math.floor(percent))
@@ -156,7 +156,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
           }
           const resp = postWrite({
             data: chunk,
-            query: {org, bucket, precision},
+            query: {org: org.name, bucket, precision},
           }).then(() => {
             const percent = (++progress / counter) * 100
             setValue(Math.floor(percent))

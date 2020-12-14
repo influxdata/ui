@@ -11,26 +11,30 @@ import {getOrg} from 'src/organizations/selectors'
 import {getByID} from 'src/resources/selectors'
 
 // Types
-import {AppState, Bucket, ResourceType, WritePrecision} from 'src/types'
+import {
+  AppState,
+  Bucket,
+  RemoteDataState,
+  ResourceType,
+  WritePrecision,
+} from 'src/types'
 
 export type Props = {
   children: JSX.Element
 }
 
 export interface CsvUploaderContextType {
-  hasFile: boolean
   progress: number
   setBucket: (id: string) => void
   uploadCsv: (csv: string) => void
-  uploadFinished: boolean
+  uploadState: RemoteDataState
 }
 
 export const DEFAULT_CONTEXT: CsvUploaderContextType = {
-  hasFile: false,
   progress: 0,
   setBucket: (_: string) => '',
   uploadCsv: (_: string) => {},
-  uploadFinished: false,
+  uploadState: RemoteDataState.NotStarted,
 }
 
 export const CsvUploaderContext = React.createContext<CsvUploaderContextType>(
@@ -42,8 +46,7 @@ const MAX_CHUNK_SIZE = 1750
 export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
   const [progress, setProgress] = useState(0)
   const [bucketID, setBucket] = useState('')
-  const [hasFile, setHasFile] = useState(false)
-  const [uploadFinished, setUploadFinished] = useState(false)
+  const [uploadState, setUploadState] = useState(RemoteDataState.NotStarted)
 
   const bucket =
     useSelector((state: AppState) =>
@@ -62,7 +65,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
 
   const uploadCsv = useCallback(
     (csv: string) => {
-      setHasFile(true)
+      setUploadState(RemoteDataState.Loading)
       setTimeout(() => {
         const {table} = fromFlux(csv)
         const filtered = [
@@ -141,7 +144,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
 
         chunk = ''
         Promise.all(pendingWrites).finally(() => {
-          setUploadFinished(true)
+          setUploadState(RemoteDataState.Done)
         })
       }, 0)
     },
@@ -151,11 +154,10 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
   return (
     <CsvUploaderContext.Provider
       value={{
-        hasFile,
         progress,
         setBucket,
         uploadCsv,
-        uploadFinished,
+        uploadState,
       }}
     >
       {children}

@@ -50,10 +50,10 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
     )?.name ?? ''
   const org = useSelector(getOrg)
 
-  const normalizeTimes = (time: number): BigInt => {
+  const normalizeTimes = useCallback((time: number): BigInt => {
     const t = `${time}` + Array(19 - `${time}`.length + 1).join('0')
     return BigInt(t)
-  }
+  }, [])
 
   const uploadCsv = useCallback(
     (csv: string) => {

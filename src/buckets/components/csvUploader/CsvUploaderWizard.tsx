@@ -1,5 +1,5 @@
 // Libraries
-import React, {useContext, useCallback, useEffect} from 'react'
+import React, {useContext, useCallback} from 'react'
 import {useSelector} from 'react-redux'
 import {useHistory, useParams} from 'react-router-dom'
 import {
@@ -26,13 +26,8 @@ import CsvUploaderSuccess from 'src/buckets/components/csvUploader/CsvUploaderSu
 import {RemoteDataState} from 'src/types'
 
 const CsvUploaderWizard = () => {
-  const {setBucket, uploadState} = useContext(CsvUploaderContext)
+  const {uploadState} = useContext(CsvUploaderContext)
   const history = useHistory()
-  const {bucketID} = useParams()
-
-  useEffect(() => {
-    setBucket(bucketID)
-  }, [bucketID, setBucket])
 
   const org = useSelector(getOrg)
   const handleDismiss = useCallback(() => {

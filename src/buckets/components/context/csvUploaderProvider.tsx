@@ -8,16 +8,9 @@ import {postWrite} from 'src/client'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
-import {getByID} from 'src/resources/selectors'
 
 // Types
-import {
-  AppState,
-  Bucket,
-  RemoteDataState,
-  ResourceType,
-  WritePrecision,
-} from 'src/types'
+import {RemoteDataState, WritePrecision} from 'src/types'
 
 export type Props = {
   children: JSX.Element
@@ -25,15 +18,13 @@ export type Props = {
 
 export interface CsvUploaderContextType {
   progress: number
-  setBucket: (id: string) => void
-  uploadCsv: (csv: string) => void
+  uploadCsv: (csv: string, bucket: string) => void
   uploadState: RemoteDataState
 }
 
 export const DEFAULT_CONTEXT: CsvUploaderContextType = {
   progress: 0,
-  setBucket: (_: string) => '',
-  uploadCsv: (_: string) => {},
+  uploadCsv: (_: string, __: string) => {},
   uploadState: RemoteDataState.NotStarted,
 }
 
@@ -45,13 +36,7 @@ const MAX_CHUNK_SIZE = 1750
 
 export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
   const [progress, setProgress] = useState(0)
-  const [bucketID, setBucket] = useState('')
   const [uploadState, setUploadState] = useState(RemoteDataState.NotStarted)
-
-  const bucket =
-    useSelector((state: AppState) =>
-      getByID<Bucket>(state, ResourceType.Buckets, bucketID)
-    )?.name ?? ''
 
   const org = useSelector(getOrg)
 
@@ -64,7 +49,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
   }, [])
 
   const uploadCsv = useCallback(
-    (csv: string) => {
+    (csv: string, bucket: string) => {
       setUploadState(RemoteDataState.Loading)
       setTimeout(() => {
         const {table} = fromFlux(csv)
@@ -148,14 +133,13 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
         })
       }, 0)
     },
-    [bucket, normalizeTimes, org]
+    [normalizeTimes, org]
   )
 
   return (
     <CsvUploaderContext.Provider
       value={{
         progress,
-        setBucket,
         uploadCsv,
         uploadState,
       }}

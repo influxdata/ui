@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, useCallback, useState} from 'react'
 import {fromFlux} from '@influxdata/giraffe'
-import {useHistory, useParams} from 'react-router-dom'
+import {useParams} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
 // Utils
@@ -19,19 +19,17 @@ export type Props = {
 }
 
 export interface CsvUploaderContextType {
-  handleDismiss: () => void
-  handleDrop: (csv: string) => void
   hasFile: boolean
+  progress: number
+  uploadCsv: (csv: string) => void
   uploadFinished: boolean
-  value: number
 }
 
 export const DEFAULT_CONTEXT: CsvUploaderContextType = {
-  handleDismiss: () => {},
-  handleDrop: (_: string) => {},
   hasFile: false,
+  progress: 0,
+  uploadCsv: (_: string) => {},
   uploadFinished: false,
-  value: 0,
 }
 
 export const CsvUploaderContext = React.createContext<CsvUploaderContextType>(
@@ -41,7 +39,7 @@ export const CsvUploaderContext = React.createContext<CsvUploaderContextType>(
 const MAX_CHUNK_SIZE = 1750
 
 export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
-  const [value, setValue] = useState(0)
+  const [progress, setProgress] = useState(0)
   const {bucketID} = useParams()
   const [hasFile, setHasFile] = useState(false)
   const [uploadFinished, setUploadFinished] = useState(false)
@@ -52,13 +50,12 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
     )?.name ?? ''
   const org = useSelector(getOrg)
 
-  const history = useHistory()
+  const normalizeTimes = (time: number): BigInt => {
+    const t = `${time}` + Array(19 - `${time}`.length + 1).join('0')
+    return BigInt(t)
+  }
 
-  const handleDismiss = useCallback(() => {
-    history.push(`/orgs/${org.id}/load-data/buckets`)
-  }, [history, org.id])
-
-  const handleDrop = useCallback(
+  const uploadCsv = useCallback(
     (csv: string) => {
       setHasFile(true)
       setTimeout(() => {
@@ -94,32 +91,15 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
         let progress = 0
 
         const pendingWrites = []
-        let precision = WritePrecision.Ms
 
         for (let i = 0; i < length; i++) {
           if (i !== 0 && i % MAX_CHUNK_SIZE === 0) {
-            // second range
-            if (`${time}`.length === 10) {
-              precision = WritePrecision.S
-            }
-            // millisecond range
-            if (`${time}`.length === 13) {
-              precision = WritePrecision.Ms
-            }
-            // microsecond range
-            if (`${time}`.length === 16) {
-              precision = WritePrecision.Us
-            }
-            // nanosecond range
-            if (`${time}`.length === 19) {
-              precision = WritePrecision.Ns
-            }
             const resp = postWrite({
               data: chunk,
-              query: {org: org.name, bucket, precision},
+              query: {org: org.name, bucket, precision: WritePrecision.Ns},
             }).then(() => {
               const percent = (++progress / counter) * 100
-              setValue(Math.floor(percent))
+              setProgress(Math.floor(percent))
             })
             pendingWrites.push(resp)
             counter++
@@ -134,32 +114,18 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
             .join(',')
             .trim()
             .replace(/(\r\n|\n|\r)/gm, '')
-          line = `${measurement},${tags} ${field}="${field}" ${time}`
+          line = `${measurement},${tags} ${field}="${field}" ${normalizeTimes(
+            time
+          )}`
           chunk = `${line}\n${chunk}`
         }
         if (chunk) {
-          // second range
-          if (`${time}`.length === 10) {
-            precision = WritePrecision.S
-          }
-          // millisecond range
-          if (`${time}`.length === 13) {
-            precision = WritePrecision.Ms
-          }
-          // microsecond range
-          if (`${time}`.length === 16) {
-            precision = WritePrecision.Us
-          }
-          // nanosecond range
-          if (`${time}`.length === 19) {
-            precision = WritePrecision.Ns
-          }
           const resp = postWrite({
             data: chunk,
-            query: {org: org.name, bucket, precision},
+            query: {org: org.name, bucket, precision: WritePrecision.Ns},
           }).then(() => {
             const percent = (++progress / counter) * 100
-            setValue(Math.floor(percent))
+            setProgress(Math.floor(percent))
           })
           pendingWrites.push(resp)
           counter++
@@ -176,11 +142,10 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
   return (
     <CsvUploaderContext.Provider
       value={{
-        handleDismiss,
-        handleDrop,
         hasFile,
+        progress,
+        uploadCsv,
         uploadFinished,
-        value,
       }}
     >
       {children}

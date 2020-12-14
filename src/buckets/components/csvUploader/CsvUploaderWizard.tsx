@@ -1,5 +1,7 @@
 // Libraries
-import React, {useContext} from 'react'
+import React, {useContext, useCallback} from 'react'
+import {useSelector} from 'react-redux'
+import {useHistory} from 'react-router-dom'
 import {
   Button,
   ButtonType,
@@ -10,6 +12,9 @@ import {
   OverlayFooter,
 } from '@influxdata/clockface'
 
+// Utils
+import {getOrg} from 'src/organizations/selectors'
+
 // Context
 import {CsvUploaderContext} from 'src/buckets/components/context/csvUploaderProvider'
 
@@ -18,7 +23,13 @@ import CsvUploaderBody from 'src/buckets/components/csvUploader/CsvUploaderBody'
 import CsvUploaderSuccess from 'src/buckets/components/csvUploader/CsvUploaderSuccess'
 
 const CsvUploaderWizard = () => {
-  const {handleDismiss, uploadFinished} = useContext(CsvUploaderContext)
+  const {uploadFinished} = useContext(CsvUploaderContext)
+  const history = useHistory()
+
+  const org = useSelector(getOrg)
+  const handleDismiss = useCallback(() => {
+    history.push(`/orgs/${org.id}/load-data/buckets`)
+  }, [history, org.id])
 
   return (
     <Overlay visible={true}>

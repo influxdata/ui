@@ -16,8 +16,8 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
     })
   \*/
   return cy.setupUser().then(({body}) => {
-    cy.visit(Cypress.env('baseUrl') + '/api/v2/signin')
-      .then(() => cy.get('#login').type(body.username))
+    cy.visit(Cypress.config().baseUrl + '/api/v2/signin')
+      .then(() => cy.get('#login').type(body.user.name))
       .then(() => cy.get('#password').type(Cypress.env('password')))
       .then(() => cy.get('#submit-login').click())
       .then(() => {

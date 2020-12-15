@@ -1,7 +1,7 @@
 import View from './view'
 import './style.scss'
 
-import {TYPE_DEFINITIONS} from 'src/shared/visualization'
+import {TYPE_DEFINITIONS} from 'src/visualization'
 
 export default register => {
   register({

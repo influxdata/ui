@@ -4,7 +4,7 @@ import React, {FC, useState, useContext} from 'react'
 // Components
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 import ViewSwitcher from 'src/shared/components/ViewSwitcher'
-import ViewTypeDropdown from 'src/shared/visualization/ViewTypeDropdown'
+import ViewTypeDropdown from 'src/visualization/components/ViewTypeDropdown'
 import Resizer from 'src/flows/shared/Resizer'
 
 // Components
@@ -21,7 +21,7 @@ import {ViewType, RemoteDataState} from 'src/types'
 import {AppSettingContext} from 'src/flows/context/app'
 import {PipeContext} from 'src/flows/context/pipe'
 
-import {TYPE_DEFINITIONS, _transform} from 'src/shared/visualization'
+import {TYPE_DEFINITIONS, _transform} from 'src/visualization'
 
 const TestFlux: FC<PipeProp> = ({Context}) => {
   const {timeZone} = useContext(AppSettingContext)

@@ -3,7 +3,7 @@ import React, {FC, useCallback} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Components
-import ViewTypeDropdown from 'src/shared/visualization/ViewTypeDropdown'
+import ViewTypeDropdown from 'src/visualization/components/ViewTypeDropdown'
 
 // Selectors
 import {getActiveTimeMachine} from 'src/timeMachine/selectors'

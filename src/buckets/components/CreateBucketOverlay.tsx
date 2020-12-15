@@ -1,10 +1,13 @@
 // Libraries
-import React, {FC, ChangeEvent, FormEvent, useReducer} from 'react'
+import React, {FC, ChangeEvent, FormEvent, useReducer, useContext} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import {Overlay} from '@influxdata/clockface'
 import BucketOverlayForm from 'src/buckets/components/BucketOverlayForm'
+
+// Contexts
+import {OverlayContext} from 'src/overlays/components/OverlayController'
 
 // Utils
 import {extractBucketMaxRetentionSeconds} from 'src/cloud/utils/limits'
@@ -24,19 +27,15 @@ import {
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 
-interface OwnProps {
-  onClose: () => void
-}
-
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps
+type Props = ReduxProps
 
 const CreateBucketOverlay: FC<Props> = ({
   org,
   isRetentionLimitEnforced,
   createBucket,
-  onClose,
 }) => {
+  const {onClose} = useContext(OverlayContext)
   const [state, dispatch] = useReducer(
     createBucketReducer,
     initialBucketState(isRetentionLimitEnforced, org.id)

@@ -1,11 +1,9 @@
 export {Bucket as GenBucket} from 'src/client'
 
 import {Bucket as GenBucket} from 'src/client'
-import {RemoteDataState} from 'src/types'
 export interface OwnBucket extends Omit<GenBucket, 'labels'> {
   labels?: string[]
   readableRetention: string
-  status: RemoteDataState
 }
 
 export interface DemoBucket extends Omit<OwnBucket, 'type'> {

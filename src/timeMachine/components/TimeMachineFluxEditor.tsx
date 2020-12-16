@@ -1,9 +1,13 @@
 // Libraries
 import React, {FC, lazy, Suspense, useState} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
+import {
+  RemoteDataState,
+  SpinnerContainer,
+  TechnoSpinner,
+} from '@influxdata/clockface'
 
 // Components
-// import FluxEditor from 'src/shared/components/FluxMonacoEditor'
 import FluxToolbar from 'src/timeMachine/components/FluxToolbar'
 
 // Actions
@@ -132,7 +136,14 @@ const TimeMachineFluxEditor: FC<Props> = ({
   return (
     <div className="flux-editor">
       <div className="flux-editor--left-panel">
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense
+          fallback={
+            <SpinnerContainer
+              loading={RemoteDataState.Loading}
+              spinnerComponent={<TechnoSpinner />}
+            />
+          }
+        >
           <FluxEditor
             script={activeQueryText}
             onChangeScript={onSetActiveQueryText}

@@ -92,7 +92,10 @@ export const getBuckets = () => async (
   }
 }
 
-export const createBucket = (bucket: OwnBucket) => async (
+export const createBucket = (
+  bucket: OwnBucket,
+  callback?: (bucket: Bucket) => void
+) => async (
   dispatch: Dispatch<Action | ReturnType<typeof checkBucketLimits>>,
   getState: GetState
 ) => {
@@ -112,6 +115,8 @@ export const createBucket = (bucket: OwnBucket) => async (
 
     dispatch(addBucket(newBucket))
     dispatch(checkBucketLimits())
+
+    callback && callback(resp.data as Bucket)
   } catch (error) {
     console.error(error)
     const message = getErrorMessage(error)

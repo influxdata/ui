@@ -12,14 +12,17 @@ import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 // Utils
 import {getBucketLimitStatus} from 'src/cloud/utils/limits'
 
+// Types
+import {Bucket} from 'src/types'
+
 // Constants
 import {CLOUD} from 'src/shared/constants'
 
 interface Props {
-  onClick?: () => void
+  onCreateBucket: (bucket: Bucket) => void
 }
 
-const CreateBucketDropdownItem: FC<Props> = ({onClick}) => {
+const CreateBucketDropdownItem: FC<Props> = ({onCreateBucket}) => {
   const limitStatus = useSelector(getBucketLimitStatus)
   const dispatch = useDispatch()
   useEffect(() => {
@@ -31,10 +34,8 @@ const CreateBucketDropdownItem: FC<Props> = ({onClick}) => {
     if (CLOUD && limitStatus === LimitStatus.EXCEEDED) {
       dispatch(showOverlay('asset-limit', {asset: 'Buckets'}, dismissOverlay))
     } else {
-      dispatch(showOverlay('create-bucket', null, dismissOverlay))
+      dispatch(showOverlay('create-bucket', {onCreateBucket}, dismissOverlay))
     }
-
-    onClick && onClick()
   }
 
   return (
@@ -43,7 +44,7 @@ const CreateBucketDropdownItem: FC<Props> = ({onClick}) => {
       onClick={handleItemClick}
       testID="Create Bucket"
     >
-      Create Bucket
+      + Create Bucket
     </Dropdown.Item>
   )
 }

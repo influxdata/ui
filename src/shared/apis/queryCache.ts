@@ -9,10 +9,20 @@ import {event} from 'src/cloud/utils/reporting'
 import {getWindowVars} from 'src/variables/utils/getWindowVars'
 
 // Types
-import {RunQueryResult} from 'src/shared/apis/query'
+import {
+  RunQueryErrorResult,
+  RunQueryLimitResult,
+  RunQueryResult,
+  RunQuerySuccessResult,
+} from 'src/shared/apis/query'
 import {CancelBox} from 'src/types/promises'
-import {AppState, GetState, Variable, VariableAssignment} from 'src/types'
-import {RunQueryPromiseMutex} from './singleQuery'
+import {
+  GetState,
+  RemoteDataState,
+  Variable,
+  VariableAssignment,
+} from 'src/types'
+import {RunQueryPromiseMutex} from 'src/shared/apis/singleQuery'
 
 // Constants
 import {WINDOW_PERIOD} from 'src/variables/constants'
@@ -44,8 +54,22 @@ export const hashCode = (rawText: string): string => {
   return `${hash}`
 }
 
+type CacheValue = {
+  dateSet: number
+  hashedVariables: string
+  isCustomTime: boolean
+  mutex: ReturnType<typeof RunQueryPromiseMutex>
+  status: RemoteDataState
+  error?: string
+  values?: RunQuerySuccessResult | null
+}
+
+type Cache = {
+  [queryID: string]: CacheValue
+}
+
 class QueryCache {
-  cache = {}
+  cache: Cache = {}
 
   private cleanExpiredQueries = (): void => {
     const now = Date.now()
@@ -99,6 +123,7 @@ class QueryCache {
       hashedVariables,
       isCustomTime,
       mutex: RunQueryPromiseMutex<RunQueryResult>(),
+      status: RemoteDataState.Loading,
     }
     return this.cache[queryID]
   }
@@ -120,10 +145,21 @@ class QueryCache {
     values: RunQueryResult
   ): void => {
     event('Query Cache was Set', {context: 'queryCache', queryID})
-    this.cache[queryID] = {
-      ...this.initializeCacheByID(queryID, hashedVariables),
-      dateSet: Date.now(),
-      values,
+    if (values.type === 'SUCCESS') {
+      this.cache[queryID] = {
+        ...this.initializeCacheByID(queryID, hashedVariables),
+        dateSet: Date.now(),
+        values,
+        status: RemoteDataState.Done,
+      }
+    } else {
+      this.cache[queryID] = {
+        ...this.initializeCacheByID(queryID, hashedVariables),
+        dateSet: Date.now(),
+        values: null,
+        status: RemoteDataState.Error,
+        error: values.message,
+      }
     }
   }
 
@@ -191,15 +227,20 @@ export const getCachedResultsOrRunQuery = (
   const extern = buildVarsOption([...variableAssignments, ...windowVars])
   const {mutex} = queryCache.initializeCacheByID(queryID, hashedVariables)
   const results = mutex.run(orgID, query, extern)
-  results.promise = results.promise.then(res => {
-    // TODO(ariel): handle custom time range
-    // if the timeRange is non-relative (i.e. a custom timeRange or the query text has a set time range)
-    // we will need to pass an additional parameter to ensure that the cached data is treated differently
-    // set the resolved promise results in the cache
-    queryCache.setCacheByID(queryID, hashedVariables, res)
-    // non-variable start / stop should
-    return res
-  })
+  results.promise = results.promise
+    .then((res: RunQuerySuccessResult) => {
+      // TODO(ariel): handle custom time range
+      // if the timeRange is non-relative (i.e. a custom timeRange or the query text has a set time range)
+      // we will need to pass an additional parameter to ensure that the cached data is treated differently
+      // set the resolved promise results in the cache
+      queryCache.setCacheByID(queryID, hashedVariables, res)
+      // non-variable start / stop should
+      return res
+    })
+    .catch((error: RunQueryErrorResult | RunQueryLimitResult) => {
+      queryCache.setCacheByID(queryID, hashedVariables, error)
+      return error
+    })
 
   return results
 }

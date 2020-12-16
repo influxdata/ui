@@ -1,6 +1,7 @@
 export {Bucket as GenBucket} from 'src/client'
 
 import {Bucket as GenBucket} from 'src/client'
+
 export interface OwnBucket extends Omit<GenBucket, 'labels'> {
   labels?: string[]
   readableRetention: string

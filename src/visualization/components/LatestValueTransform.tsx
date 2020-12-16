@@ -1,7 +1,6 @@
 // Libraries
 import React, {useMemo, FunctionComponent} from 'react'
 import {Table} from '@influxdata/giraffe'
-import {isString} from 'lodash'
 
 // Components
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
@@ -36,11 +35,11 @@ const LatestValueTransform: FunctionComponent<Props> = ({
 
   const latestValue = latestValues[0]
 
-  if (isString(latestValue) && !allowString && quiet) {
+  if (typeof latestValue === 'string' && !allowString && quiet) {
     return null
   }
 
-  if (isString(latestValue) && !allowString) {
+  if (typeof latestValue === 'string' && !allowString) {
     return (
       <EmptyGraphMessage message="String value cannot be displayed in this graph type" />
     )

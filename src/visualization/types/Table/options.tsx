@@ -1,7 +1,6 @@
 import React, {FC, useMemo, useCallback} from 'react'
 import HTML5Backend from 'react-dnd-html5-backend'
 import {DndProvider} from 'react-dnd'
-import {get} from 'lodash'
 
 import {
   Input,
@@ -146,11 +145,7 @@ const TableViewOptions: FC<Props> = ({properties, update}) => {
     [update, properties.fieldOptions]
   )
 
-  const activeSetting = get(
-    properties.colors.filter(color => color.type !== 'scale'),
-    '0.type',
-    'text'
-  )
+  const activeSetting = properties.colors.filter(color => color.type !== 'scale')[0]?.type || 'text'
 
   const draggableColumns = useMemo(
     () =>

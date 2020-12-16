@@ -1,6 +1,5 @@
 // Libraries
 import React, {Component} from 'react'
-import _ from 'lodash'
 
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
@@ -89,21 +88,10 @@ class Gauge extends Component<Props> {
       return
     }
 
+
     // Distill out max and min values
-    const minValue = Number(
-      _.get(
-        colors.find(color => color.type === COLOR_TYPE_MIN),
-        'value',
-        DEFAULT_VALUE_MIN
-      )
-    )
-    const maxValue = Number(
-      _.get(
-        colors.find(color => color.type === COLOR_TYPE_MAX),
-        'value',
-        DEFAULT_VALUE_MAX
-      )
-    )
+    const minValue = colors.find(color => color.type === COLOR_TYPE_MIN)?.value || DEFAULT_VALUE_MIN
+    const maxValue = colors.find(color => color.type === COLOR_TYPE_MAX)?.value || DEFAULT_VALUE_MAX
 
     // The following functions must be called in the specified order
     if (colors.length === MIN_THRESHOLDS) {
@@ -144,7 +132,7 @@ class Gauge extends Component<Props> {
 
   private drawGradientGauge = (ctx, xc, yc, r, gradientThickness) => {
     const {colors} = this.props
-    const sortedColors = _.sortBy(colors, color => Number(color.value))
+    const sortedColors = colors.sort((a, b) => b.value - a.value)
 
     const arcStart = Math.PI * 0.75
     const arcEnd = arcStart + Math.PI * 1.5
@@ -176,7 +164,7 @@ class Gauge extends Component<Props> {
     gradientThickness
   ) => {
     const {colors} = this.props
-    const sortedColors = _.sortBy(colors, color => Number(color.value))
+    const sortedColors = colors.sort((a, b) => b.value - a.value)
 
     const trueValueRange = Math.abs(maxValue - minValue)
     const totalArcLength = Math.PI * 1.5
@@ -290,8 +278,9 @@ class Gauge extends Component<Props> {
     let {prefix, suffix} = this.props
     const {degree, lineCount, labelColor, labelFontSize} = this.props.theme
 
+    const tickSplit = Math.abs(maxValue - minValue) / lineCount
     const tickValues = [
-      ..._.range(minValue, maxValue, Math.abs(maxValue - minValue) / lineCount),
+        ...Array(Math.floor(Math.abs(maxValue - minValue) / tickSplit)).map((_, idx) => (minValue + (idx * tickSplit)))
       maxValue,
     ]
 

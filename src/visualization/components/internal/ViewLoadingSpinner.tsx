@@ -1,6 +1,5 @@
 // Libraries
 import React, {FunctionComponent, useState, useEffect} from 'react'
-import {round} from 'lodash'
 import classnames from 'classnames'
 
 // Types
@@ -52,7 +51,7 @@ const ViewLoadingSpinner: FunctionComponent<Props> = ({loading}) => {
     return (
       <div className="view-loading-spinner">
         <TechnoSpinner diameterPixels={66} strokeWidth={ComponentSize.Medium} />
-        <div className={timerElementClass}>{`${round(seconds, 1)}s`}</div>
+        <div className={timerElementClass}>{`${Math.round(seconds * 10) / 10}s`}</div>
       </div>
     )
   }

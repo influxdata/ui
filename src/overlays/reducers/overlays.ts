@@ -20,7 +20,7 @@ export type OverlayID =
   | 'edit-annotation'
 
 export interface OverlayParams {
-  [key: string]: string
+  [key: string]: any
 }
 
 export interface OverlayState {

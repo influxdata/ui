@@ -1,5 +1,8 @@
 // Libraries
-import React, {FC, lazy, Suspense} from 'react'
+import React, {FC} from 'react'
+
+// Components
+import MonacoEditor from 'react-monaco-editor'
 
 // Utils
 import LANGID from 'src/external/monaco.markdown.syntax'
@@ -13,8 +16,6 @@ import {EditorType} from 'src/types'
 import './FluxMonacoEditor.scss'
 
 import {EditorProps} from 'src/shared/components/FluxMonacoEditor'
-
-const MonacoEditor = lazy(() => import('react-monaco-editor'))
 
 const MarkdownMonacoEditor: FC<EditorProps> = ({
   script,
@@ -43,32 +44,28 @@ const MarkdownMonacoEditor: FC<EditorProps> = ({
   }
 
   return (
-    <Suspense
-      fallback={<div className="markdown-editor--monaco">loading...</div>}
-    >
-      <div className="markdown-editor--monaco" data-testid="markdown-editor">
-        <MonacoEditor
-          language={LANGID}
-          theme={THEME_NAME}
-          value={script}
-          onChange={onChange}
-          options={{
-            fontSize: 13,
-            fontFamily: '"IBMPlexMono", monospace',
-            cursorWidth: 2,
-            lineNumbersMinChars: 4,
-            lineDecorationsWidth: 0,
-            minimap: {
-              renderCharacters: false,
-            },
-            contextmenu: false,
-            overviewRulerBorder: false,
-            automaticLayout: true,
-          }}
-          editorDidMount={editorDidMount}
-        />
-      </div>
-    </Suspense>
+    <div className="markdown-editor--monaco" data-testid="markdown-editor">
+      <MonacoEditor
+        language={LANGID}
+        theme={THEME_NAME}
+        value={script}
+        onChange={onChange}
+        options={{
+          fontSize: 13,
+          fontFamily: '"IBMPlexMono", monospace',
+          cursorWidth: 2,
+          lineNumbersMinChars: 4,
+          lineDecorationsWidth: 0,
+          minimap: {
+            renderCharacters: false,
+          },
+          contextmenu: false,
+          overviewRulerBorder: false,
+          automaticLayout: true,
+        }}
+        editorDidMount={editorDidMount}
+      />
+    </div>
   )
 }
 

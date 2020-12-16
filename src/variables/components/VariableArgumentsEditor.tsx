@@ -1,14 +1,16 @@
-import React, {PureComponent} from 'react'
+import React, {lazy, PureComponent, Suspense} from 'react'
 
 // Components
 import MapVariableBuilder from 'src/variables/components/MapVariableBuilder'
 import CSVVariableBuilder from 'src/variables/components/CSVVariableBuilder'
 import {Form} from '@influxdata/clockface'
 
-import FluxEditor from 'src/shared/components/FluxMonacoEditor'
-
 // Types
 import {KeyValueMap, VariableProperties} from 'src/types'
+
+const FluxMonacoEditor = lazy(() =>
+  import('src/shared/components/FluxMonacoEditor')
+)
 
 interface Props {
   args: VariableProperties
@@ -24,12 +26,16 @@ class VariableArgumentsEditor extends PureComponent<Props> {
       case 'query':
         return (
           <Form.Element label="Script">
-            <div className="overlay-flux-editor">
-              <FluxEditor
-                script={args.values.query}
-                onChangeScript={this.handleChangeQuery}
-              />
-            </div>
+            <Suspense
+              fallback={<div className="overlay-flux-editor">loading...</div>}
+            >
+              <div className="overlay-flux-editor">
+                <FluxMonacoEditor
+                  script={args.values.query}
+                  onChangeScript={this.handleChangeQuery}
+                />
+              </div>
+            </Suspense>
           </Form.Element>
         )
       case 'map':

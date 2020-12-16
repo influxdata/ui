@@ -1,5 +1,5 @@
 // Libraries
-import React, {PureComponent, ChangeEvent} from 'react'
+import React, {lazy, Suspense, PureComponent, ChangeEvent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {RouteComponentProps} from 'react-router-dom'
 
@@ -7,8 +7,6 @@ import {RouteComponentProps} from 'react-router-dom'
 import TaskForm from 'src/tasks/components/TaskForm'
 import TaskHeader from 'src/tasks/components/TaskHeader'
 import {Page} from '@influxdata/clockface'
-
-import FluxEditor from 'src/shared/components/FluxMonacoEditor'
 
 // Actions
 import {
@@ -28,6 +26,10 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Types
 import {AppState, TaskOptionKeys, TaskSchedule} from 'src/types'
+
+const FluxMonacoEditor = lazy(() =>
+  import('src/shared/components/FluxMonacoEditor')
+)
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{id: string}>
@@ -72,12 +74,16 @@ class TaskEditPage extends PureComponent<Props> {
                 onChangeScheduleType={this.handleChangeScheduleType}
               />
             </div>
-            <div className="task-form--editor">
-              <FluxEditor
-                script={currentScript}
-                onChangeScript={this.handleChangeScript}
-              />
-            </div>
+            <Suspense
+              fallback={<div className="task-form--editor">loading...</div>}
+            >
+              <div className="task-form--editor">
+                <FluxMonacoEditor
+                  script={currentScript}
+                  onChangeScript={this.handleChangeScript}
+                />
+              </div>
+            </Suspense>
           </div>
         </Page.Contents>
       </Page>

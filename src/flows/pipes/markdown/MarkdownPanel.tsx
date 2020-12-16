@@ -1,16 +1,19 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC, lazy, Suspense, useContext} from 'react'
 
 // Types
 import {MarkdownMode} from './'
 
 // Components
 import MarkdownModeToggle from './MarkdownModeToggle'
-import MarkdownMonacoEditor from 'src/shared/components/MarkdownMonacoEditor'
 import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
 import {ClickOutside} from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 import {PipeProp} from 'src/types/flows'
+
+const MarkdownMonacoEditor = lazy(() =>
+  import('src/shared/components/MarkdownMonacoEditor')
+)
 
 const MarkdownPanel: FC<PipeProp> = ({Context}) => {
   const {data, update} = useContext(PipeContext)
@@ -36,11 +39,13 @@ const MarkdownPanel: FC<PipeProp> = ({Context}) => {
 
   let panelContents = (
     <ClickOutside onClickOutside={handleClickOutside}>
-      <MarkdownMonacoEditor
-        script={data.text}
-        onChangeScript={handleChange}
-        autogrow
-      />
+      <Suspense fallback={<div>loading...</div>}>
+        <MarkdownMonacoEditor
+          script={data.text}
+          onChangeScript={handleChange}
+          autogrow
+        />
+      </Suspense>
     </ClickOutside>
   )
 

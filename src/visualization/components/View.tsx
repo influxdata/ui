@@ -20,10 +20,10 @@ interface Props {
     result?: FromFluxResult
     loading: RemoteDataState
     error?: string
-    isInitial: boolean
+    isInitial?: boolean
     timeRange: TimeRange
-    timeZone: TimeZone
-    theme: Theme
+    timeZone?: TimeZone
+    theme?: Theme
 }
 const View: FC<Props> = ({
     properties,
@@ -81,7 +81,7 @@ const View: FC<Props> = ({
                 errorMessage={error}
                 errorFormat={ErrorFormat.Scroll}
                 hasResults={hasResults}
-                isInitialFetch={isInitial}
+                isInitialFetch={isInitial || false}
                 fallbackNote={fallbackNote}
               >
                   {
@@ -89,8 +89,8 @@ const View: FC<Props> = ({
             result: result,
             properties: properties,
             timeRange,
-            theme,
-            timeZone,
+            theme: theme || ('dark' as Theme),
+            timeZone: timeZone || ('Local' as TimeZone),
         })
 }
               </EmptyQueryView>

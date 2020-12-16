@@ -16,13 +16,11 @@ import {
   SquareButton,
 } from '@influxdata/clockface'
 import ExportButton from 'src/flows/pipes/Visualization/ExportDashboardButton'
-import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
-import ViewSwitcher from 'src/shared/components/ViewSwitcher'
 import ViewTypeDropdown from 'src/visualization/components/ViewTypeDropdown'
 import Resizer from 'src/flows/shared/Resizer'
+import View from 'src/visualization/components/View'
 
 // Utilities
-import {checkResultsLength} from 'src/shared/utils/vis'
 import {event} from 'src/cloud/utils/reporting'
 import {TYPE_DEFINITIONS, _transform} from 'src/visualization'
 
@@ -148,20 +146,12 @@ const Visualization: FC<PipeProp> = ({Context}) => {
       >
         <div className="flow-visualization">
           <div className="flow-visualization--view">
-            <EmptyQueryView
+          <View
               loading={loading}
-              errorMessage={results.error}
-              errorFormat={ErrorFormat.Scroll}
-              hasResults={checkResultsLength(results.parsed)}
-            >
-              <ViewSwitcher
-                giraffeResult={results.parsed}
-                files={[results.raw]}
-                properties={data.properties}
-                timeZone={timeZone}
-                theme="dark"
-              />
-            </EmptyQueryView>
+              error={results?.error}
+              properties={data.properties}
+              result={results.parsed}
+                timeZone={timeZone} />
           </div>
         </div>
       </Resizer>

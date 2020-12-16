@@ -1,7 +1,7 @@
 // Libraries
-import React, {FunctionComponent} from 'react'
+import React, {FC} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {Config, Table} from '@influxdata/giraffe'
+import {Plot} from '@influxdata/giraffe'
 import {flatMap} from 'lodash'
 
 // Components
@@ -13,14 +13,13 @@ import EventMarkers from 'src/shared/components/EventMarkers'
 import {getFormatter, filterNoisyColumns} from 'src/shared/utils/vis'
 
 // Constants
-import {VIS_THEME} from 'src/shared/constants'
+import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
 import {INVALID_DATA_COPY} from 'src/shared/copy/cell'
 import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 
 // Types
 import {
   CheckViewProperties,
-  TimeZone,
   CheckType,
   StatusRow,
   Threshold,
@@ -28,40 +27,37 @@ import {
 import {useCheckYDomain} from 'src/alerting/utils/vis'
 import {updateThresholds} from 'src/alerting/actions/alertBuilder'
 
+// Types
+import {VisProps} from 'src/visualization'
+
+interface OwnProps extends VisProps {
+  properties: CheckViewProperties
+}
+
 const X_COLUMN = '_time'
 const Y_COLUMN = '_value'
-
-interface OwnProps {
-  table: Table
-  checkType: CheckType
-  thresholds: Threshold[]
-  fluxGroupKeyUnion: string[]
-  timeZone: TimeZone
-  viewProperties: CheckViewProperties
-  children: (config: Config) => JSX.Element
-  statuses: StatusRow[][]
-}
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
-const CheckPlot: FunctionComponent<Props> = ({
-  table,
-  fluxGroupKeyUnion,
-  children,
+const CheckPlot: FC<Props> = ({
+  properties,
+  result,
+  timeRange,
   timeZone,
+  theme,
+
   statuses,
   checkType,
   thresholds,
   onUpdateThresholds,
-  viewProperties: {colors},
 }) => {
   const [yDomain, onSetYDomain, onResetYDomain] = useCheckYDomain(
-    table.getColumn(Y_COLUMN, 'number'),
+    result.table.getColumn(Y_COLUMN, 'number'),
     thresholds
   )
 
-  const columnKeys = table.columnKeys
+  const columnKeys = result.table.columnKeys
   const isValidView =
     columnKeys.includes(X_COLUMN) && columnKeys.includes(Y_COLUMN)
 
@@ -69,21 +65,21 @@ const CheckPlot: FunctionComponent<Props> = ({
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
   }
 
-  const groupKey = [...fluxGroupKeyUnion, 'result']
+  const groupKey = [...result.fluxGroupKeyUnion, 'result']
 
-  const xFormatter = getFormatter(table.getColumnType(X_COLUMN), {
+  const xFormatter = getFormatter(result.table.getColumnType(X_COLUMN), {
     timeZone,
     trimZeros: false,
   })
 
-  const yFormatter = getFormatter(table.getColumnType(Y_COLUMN), {
+  const yFormatter = getFormatter(result.table.getColumnType(Y_COLUMN), {
     timeZone,
     trimZeros: false,
   })
 
   const legendColumns = filterNoisyColumns(
     [...groupKey, X_COLUMN, Y_COLUMN],
-    table
+    result.table
   )
 
   const thresholdValues = flatMap(thresholds, (t: any) => [
@@ -95,13 +91,17 @@ const CheckPlot: FunctionComponent<Props> = ({
   const yTicks = thresholdValues.length ? thresholdValues : null
 
   const colorHexes =
-    colors && colors.length
-      ? colors.map(c => c.hex)
+    properties.colors && properties.colors.length
+      ? properties.colors.map(c => c.hex)
       : DEFAULT_LINE_COLORS.map(c => c.hex)
 
-  const config: Config = {
-    ...VIS_THEME,
-    table,
+  const currentTheme = theme === 'light' ? VIS_THEME_LIGHT : VIS_THEME
+
+  return (
+    <div className="time-series-container time-series-container--alert-check">
+        <Plot config={{
+    ...currentTheme,
+    table: result.table,
     legendColumns,
     yTicks,
     yDomain,
@@ -145,11 +145,7 @@ const CheckPlot: FunctionComponent<Props> = ({
         ),
       },
     ],
-  }
-
-  return (
-    <div className="time-series-container time-series-container--alert-check">
-      {children(config)}
+            }} />
     </div>
   )
 }

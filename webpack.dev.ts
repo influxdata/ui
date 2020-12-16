@@ -7,7 +7,7 @@ const PUBLIC = process.env.PUBLIC || undefined
 const {
   BASE_PATH,
 } = require('./src/utils/env')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const webpack = require('webpack')
 
 module.exports = merge(common, {

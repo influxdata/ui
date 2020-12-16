@@ -14,7 +14,7 @@ import {VisProps} from 'src/visualization'
 import {
   GAUGE_THEME_LIGHT,
   GAUGE_THEME_DARK,
-} from 'src/shared/constants/gaugeSpecs'
+} from './constants'
 
 import {ErrorHandling} from 'src/shared/decorators/errors'
 

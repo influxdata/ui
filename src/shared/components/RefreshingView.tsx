@@ -81,7 +81,7 @@ class RefreshingView extends PureComponent<Props, State> {
               <View
                   loading={loading}
                   error={errorMessage}
-                  isInitialFetch={isInitialFetch}
+                  isInitial={isInitialFetch}
                     properties={properties}
                     result={giraffeResult}
                     timeRange={ranges}

@@ -8,7 +8,7 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 import {formatStatValue} from 'src/shared/utils/formatStatValue'
 
 // Constants
-import {GAUGE_THEME_DARK, GaugeTheme} from 'src/shared/constants/gaugeSpecs'
+import {GAUGE_THEME_DARK, GaugeTheme} from './constants'
 import {
   COLOR_TYPE_MIN,
   COLOR_TYPE_MAX,

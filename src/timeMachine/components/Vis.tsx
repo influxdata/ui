@@ -90,7 +90,7 @@ const TimeMachineVis: FC<Props> = ({
         <View
             loading={loading}
             error={errorMessage}
-            isInitialFetch={isInitialFetch}
+            isInitial={isInitialFetch}
             properties={resolvedViewProperties}
             result={giraffeResult}
             timeRange={timeRange}

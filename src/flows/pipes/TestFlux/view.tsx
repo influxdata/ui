@@ -2,17 +2,15 @@
 import React, {FC, useState, useContext} from 'react'
 
 // Components
-import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
-import ViewSwitcher from 'src/shared/components/ViewSwitcher'
 import ViewTypeDropdown from 'src/visualization/components/ViewTypeDropdown'
 import Resizer from 'src/flows/shared/Resizer'
 
 // Components
 import {SquareButton, IconFont} from '@influxdata/clockface'
+import View from 'src/visualization/components/View'
 
 // Utilities
 import fromFlux from 'src/shared/utils/fromFlux.legacy'
-import {checkResultsLength} from 'src/shared/utils/vis'
 
 // Types
 import {PipeProp, FluxResult} from 'src/types/flows'
@@ -97,20 +95,12 @@ const TestFlux: FC<PipeProp> = ({Context}) => {
       >
         <div className="flow-visualization">
           <div className="flow-visualization--view">
-            <EmptyQueryView
+          <View
               loading={RemoteDataState.Done}
-              errorMessage={results.error}
-              errorFormat={ErrorFormat.Scroll}
-              hasResults={checkResultsLength(results.parsed)}
-            >
-              <ViewSwitcher
-                giraffeResult={results.parsed}
-                files={[results.raw]}
-                properties={data.properties}
-                timeZone={timeZone}
-                theme="dark"
-              />
-            </EmptyQueryView>
+              error={results?.error}
+              properties={data.properties}
+              result={results.parsed}
+                timeZone={timeZone} />
           </div>
         </div>
       </Resizer>

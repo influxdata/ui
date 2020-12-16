@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useCallback, useRef, useEffect} from 'react'
+import React, {FC, useContext, useCallback} from 'react'
 
 // Components
 import {
@@ -9,7 +9,7 @@ import {
   Dropdown,
   IconFont,
 } from '@influxdata/clockface'
-import CreateBucketDropdownItem from 'src/buckets/components/CreateBucketDropdownItem'
+import CreateBucketDropdownItem from 'src/flows/shared/BucketSelector/CreateBucketDropdownItem'
 
 // Contexts
 import {BucketContext} from 'src/flows/context/buckets'
@@ -17,7 +17,6 @@ import {PipeContext} from 'src/flows/context/pipe'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {getNewestBucket} from 'src/flows/shared/utils'
 
 // Types
 import {Bucket} from 'src/types'
@@ -25,8 +24,6 @@ import {Bucket} from 'src/types'
 const BucketSelector: FC = () => {
   const {data, update} = useContext(PipeContext)
   const {buckets, loading} = useContext(BucketContext)
-  const prevBuckets = useRef<Bucket[]>(buckets)
-  const autoSelectNewBucket = useRef<boolean>(false)
   let buttonText = 'Loading buckets...'
 
   const updateBucket = useCallback(
@@ -39,23 +36,6 @@ const BucketSelector: FC = () => {
     [update]
   )
 
-  useEffect(() => {
-    if (autoSelectNewBucket.current) {
-      const newBucket = getNewestBucket(prevBuckets.current, buckets)
-
-      if (newBucket) {
-        updateBucket(newBucket)
-        autoSelectNewBucket.current = false
-      }
-    }
-
-    prevBuckets.current = buckets
-  }, [buckets, updateBucket])
-
-  const handleCreateNewBucket = (): void => {
-    autoSelectNewBucket.current = true
-  }
-
   let menuItems = (
     <Dropdown.ItemEmpty>
       <TechnoSpinner strokeWidth={ComponentSize.Small} diameterPixels={32} />
@@ -65,7 +45,7 @@ const BucketSelector: FC = () => {
   if (loading === RemoteDataState.Done && buckets.length) {
     menuItems = (
       <>
-        <CreateBucketDropdownItem onClick={handleCreateNewBucket} />
+        <CreateBucketDropdownItem onCreateBucket={updateBucket} />
         <Dropdown.Divider />
         {buckets.map(bucket => (
           <Dropdown.Item

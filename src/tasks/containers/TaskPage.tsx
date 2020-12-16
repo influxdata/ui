@@ -1,6 +1,11 @@
 // Libraries
 import React, {lazy, Suspense, PureComponent, ChangeEvent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
+import {
+  RemoteDataState,
+  SpinnerContainer,
+  TechnoSpinner,
+} from '@influxdata/clockface'
 
 // Components
 import TaskForm from 'src/tasks/components/TaskForm'
@@ -69,16 +74,21 @@ class TaskPage extends PureComponent<Props> {
                 onChangeScheduleType={this.handleChangeScheduleType}
               />
             </div>
-            <Suspense
-              fallback={<div className="task-form--editor">loading...</div>}
-            >
-              <div className="task-form--editor">
+            <div className="task-form--editor">
+              <Suspense
+                fallback={
+                  <SpinnerContainer
+                    loading={RemoteDataState.Loading}
+                    spinnerComponent={<TechnoSpinner />}
+                  />
+                }
+              >
                 <FluxMonacoEditor
                   script={newScript}
                   onChangeScript={this.handleChangeScript}
                 />
-              </div>
-            </Suspense>
+              </Suspense>
+            </div>
           </div>
         </Page.Contents>
       </Page>

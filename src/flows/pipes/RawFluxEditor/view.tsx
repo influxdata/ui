@@ -7,6 +7,11 @@ import React, {
   useContext,
   useCallback,
 } from 'react'
+import {
+  RemoteDataState,
+  SpinnerContainer,
+  TechnoSpinner,
+} from '@influxdata/clockface'
 
 // Types
 import {PipeProp} from 'src/types/flows'
@@ -41,16 +46,23 @@ const Query: FC<PipeProp> = ({Context}) => {
 
   return useMemo(
     () => (
-      <Suspense fallback={<div>loading...</div>}>
-        <Context>
+      <Context>
+        <Suspense
+          fallback={
+            <SpinnerContainer
+              loading={RemoteDataState.Loading}
+              spinnerComponent={<TechnoSpinner />}
+            />
+          }
+        >
           <FluxMonacoEditor
             script={query.text}
             onChangeScript={updateText}
             onSubmitScript={() => {}}
             autogrow
           />
-        </Context>
-      </Suspense>
+        </Suspense>
+      </Context>
     ),
     [query.text, updateText]
   )

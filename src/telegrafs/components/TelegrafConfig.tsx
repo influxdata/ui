@@ -1,5 +1,10 @@
 // Libraries
 import React, {lazy, PureComponent, Suspense} from 'react'
+import {
+  RemoteDataState,
+  SpinnerContainer,
+  TechnoSpinner,
+} from '@influxdata/clockface'
 
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
@@ -20,7 +25,14 @@ export class TelegrafConfig extends PureComponent<Props> {
     const {config, onChangeConfig} = this.props
 
     return (
-      <Suspense fallback={<div>loading...</div>}>
+      <Suspense
+        fallback={
+          <SpinnerContainer
+            loading={RemoteDataState.Loading}
+            spinnerComponent={<TechnoSpinner />}
+          />
+        }
+      >
         <Editor
           script={config}
           onChangeScript={onChangeConfig}

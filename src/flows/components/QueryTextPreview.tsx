@@ -1,5 +1,10 @@
 // Libraries
 import React, {FC, lazy, Suspense, useContext} from 'react'
+import {
+  RemoteDataState,
+  SpinnerContainer,
+  TechnoSpinner,
+} from '@influxdata/clockface'
 
 // Components
 import {Form} from '@influxdata/clockface'
@@ -20,7 +25,14 @@ const QueryTextPreview: FC = () => {
 
   return (
     <Form.Element label="">
-      <Suspense fallback={<div>loading...</div>}>
+      <Suspense
+        fallback={
+          <SpinnerContainer
+            loading={RemoteDataState.Loading}
+            spinnerComponent={<TechnoSpinner />}
+          />
+        }
+      >
         <FluxMonacoEditor
           script={script}
           onChangeScript={() => {}}

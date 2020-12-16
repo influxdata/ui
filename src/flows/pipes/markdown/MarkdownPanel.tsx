@@ -1,5 +1,10 @@
 // Libraries
 import React, {FC, lazy, Suspense, useContext} from 'react'
+import {
+  RemoteDataState,
+  SpinnerContainer,
+  TechnoSpinner,
+} from '@influxdata/clockface'
 
 // Types
 import {MarkdownMode} from './'
@@ -39,7 +44,14 @@ const MarkdownPanel: FC<PipeProp> = ({Context}) => {
 
   let panelContents = (
     <ClickOutside onClickOutside={handleClickOutside}>
-      <Suspense fallback={<div>loading...</div>}>
+      <Suspense
+        fallback={
+          <SpinnerContainer
+            loading={RemoteDataState.Loading}
+            spinnerComponent={<TechnoSpinner />}
+          />
+        }
+      >
         <MarkdownMonacoEditor
           script={data.text}
           onChangeScript={handleChange}

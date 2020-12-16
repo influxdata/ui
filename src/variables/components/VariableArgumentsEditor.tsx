@@ -1,4 +1,9 @@
 import React, {lazy, PureComponent, Suspense} from 'react'
+import {
+  RemoteDataState,
+  SpinnerContainer,
+  TechnoSpinner,
+} from '@influxdata/clockface'
 
 // Components
 import MapVariableBuilder from 'src/variables/components/MapVariableBuilder'
@@ -26,16 +31,21 @@ class VariableArgumentsEditor extends PureComponent<Props> {
       case 'query':
         return (
           <Form.Element label="Script">
-            <Suspense
-              fallback={<div className="overlay-flux-editor">loading...</div>}
-            >
-              <div className="overlay-flux-editor">
+            <div className="overlay-flux-editor">
+              <Suspense
+                fallback={
+                  <SpinnerContainer
+                    loading={RemoteDataState.Loading}
+                    spinnerComponent={<TechnoSpinner />}
+                  />
+                }
+              >
                 <FluxMonacoEditor
                   script={args.values.query}
                   onChangeScript={this.handleChangeQuery}
                 />
-              </div>
-            </Suspense>
+              </Suspense>
+            </div>
           </Form.Element>
         )
       case 'map':

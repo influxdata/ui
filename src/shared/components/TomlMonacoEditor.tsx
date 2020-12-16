@@ -1,14 +1,15 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, lazy, Suspense} from 'react'
 
 // Components
-import MonacoEditor from 'react-monaco-editor'
 import THEME_NAME from 'src/external/monaco.toml.theme'
 import TOMLLANGID from 'src/external/monaco.toml.syntax'
 import {OnChangeScript} from 'src/types/flux'
 import * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api'
 
 import './FluxMonacoEditor.scss'
+
+const MonacoEditor = lazy(() => import('react-monaco-editor'))
 
 interface Position {
   line: number
@@ -64,28 +65,32 @@ const TomlEditorMonaco: FC<Props> = props => {
   const className = props.className || 'time-machine-editor--embedded'
 
   return (
-    <div className={className} data-testid={testID}>
-      <MonacoEditor
-        language={TOMLLANGID}
-        theme={THEME_NAME}
-        value={script}
-        onChange={onChangeScript}
-        options={{
-          fontSize: 13,
-          fontFamily: '"IBMPlexMono", monospace',
-          cursorWidth: 2,
-          lineNumbersMinChars: 4,
-          lineDecorationsWidth: 0,
-          minimap: {
-            renderCharacters: false,
-          },
-          overviewRulerBorder: false,
-          automaticLayout: true,
-          readOnly: readOnly || false,
-        }}
-        editorDidMount={editorDidMount}
-      />
-    </div>
+    <Suspense
+      fallback={<div className="markdown-editor--monaco">loading...</div>}
+    >
+      <div className={className} data-testid={testID}>
+        <MonacoEditor
+          language={TOMLLANGID}
+          theme={THEME_NAME}
+          value={script}
+          onChange={onChangeScript}
+          options={{
+            fontSize: 13,
+            fontFamily: '"IBMPlexMono", monospace',
+            cursorWidth: 2,
+            lineNumbersMinChars: 4,
+            lineDecorationsWidth: 0,
+            minimap: {
+              renderCharacters: false,
+            },
+            overviewRulerBorder: false,
+            automaticLayout: true,
+            readOnly: readOnly || false,
+          }}
+          editorDidMount={editorDidMount}
+        />
+      </div>
+    </Suspense>
   )
 }
 

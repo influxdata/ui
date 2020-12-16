@@ -1,10 +1,7 @@
 // Libraries
-import React, {FC, useRef, useState} from 'react'
+import React, {FC, lazy, Suspense, useRef, useState} from 'react'
 import {ProtocolToMonacoConverter} from 'monaco-languageclient/lib/monaco-converter'
 import classnames from 'classnames'
-
-// Components
-import MonacoEditor from 'react-monaco-editor'
 
 // Utils
 import FLUXLANGID from 'src/external/monaco.flux.syntax'
@@ -23,6 +20,8 @@ import './FluxMonacoEditor.scss'
 import {Diagnostic} from 'monaco-languageclient/lib/services'
 
 const p2m = new ProtocolToMonacoConverter()
+
+const MonacoEditor = lazy(() => import('react-monaco-editor'))
 
 export interface EditorProps {
   script: string
@@ -116,28 +115,32 @@ const FluxEditorMonaco: FC<Props> = ({
   }
 
   return (
-    <div className={wrapperClassName} data-testid="flux-editor">
-      <MonacoEditor
-        language={FLUXLANGID}
-        theme={THEME_NAME}
-        value={script}
-        onChange={onChange}
-        options={{
-          fontSize: 13,
-          fontFamily: '"IBMPlexMono", monospace',
-          cursorWidth: 2,
-          lineNumbersMinChars: 4,
-          lineDecorationsWidth: 0,
-          minimap: {
-            renderCharacters: false,
-          },
-          overviewRulerBorder: false,
-          automaticLayout: true,
-          readOnly: readOnly || false,
-        }}
-        editorDidMount={editorDidMount}
-      />
-    </div>
+    <Suspense
+      fallback={<div className="markdown-editor--monaco">loading...</div>}
+    >
+      <div className={wrapperClassName} data-testid="flux-editor">
+        <MonacoEditor
+          language={FLUXLANGID}
+          theme={THEME_NAME}
+          value={script}
+          onChange={onChange}
+          options={{
+            fontSize: 13,
+            fontFamily: '"IBMPlexMono", monospace',
+            cursorWidth: 2,
+            lineNumbersMinChars: 4,
+            lineDecorationsWidth: 0,
+            minimap: {
+              renderCharacters: false,
+            },
+            overviewRulerBorder: false,
+            automaticLayout: true,
+            readOnly: readOnly || false,
+          }}
+          editorDidMount={editorDidMount}
+        />
+      </div>
+    </Suspense>
   )
 }
 

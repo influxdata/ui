@@ -13,7 +13,6 @@ import {OverlayContext} from 'src/overlays/components/OverlayController'
 import {createBucket} from 'src/buckets/actions/thunks'
 
 // Types
-import {AppState, Bucket} from 'src/types'
 import {
   createBucketReducer,
   RuleType,
@@ -27,9 +26,6 @@ import {getBucketRetentionLimit} from 'src/cloud/utils/limits'
 
 const CreateBucketOverlay: FC = () => {
   const org = useSelector(getOrg)
-  const onCreateBucket = useSelector((state: AppState) => {
-    return state.overlays?.params?.onCreateBucket
-  })
   const isRetentionLimitEnforced = useSelector(getBucketRetentionLimit)
   const reduxDispatch = useDispatch()
   const {onClose} = useContext(OverlayContext)
@@ -64,12 +60,8 @@ const CreateBucketOverlay: FC = () => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
 
-    reduxDispatch(createBucket(state, handleCreateBucketSuccess))
+    reduxDispatch(createBucket(state))
     onClose()
-  }
-
-  const handleCreateBucketSuccess = (bucket: Bucket): void => {
-    onCreateBucket(bucket)
   }
 
   const handleChangeInput = (e: ChangeEvent<HTMLInputElement>): void => {

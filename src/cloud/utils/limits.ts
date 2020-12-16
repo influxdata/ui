@@ -26,6 +26,11 @@ export const extractBucketMaxRetentionSeconds = (
   return get(limits, 'buckets.maxRetentionSeconds', null)
 }
 
+export const getBucketRetentionLimit = (state: AppState): boolean => {
+  const maxSeconds = state.cloud?.limits?.buckets?.maxRetentionSeconds
+  return !!maxSeconds
+}
+
 export const extractDashboardLimits = (limits: LimitsState): LimitStatus => {
   return get(limits, 'dashboards.limitStatus')
 }

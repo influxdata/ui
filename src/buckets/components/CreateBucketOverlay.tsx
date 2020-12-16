@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, ChangeEvent, FormEvent, useReducer, useContext} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 
 // Components
 import {Overlay} from '@influxdata/clockface'
@@ -9,14 +9,11 @@ import BucketOverlayForm from 'src/buckets/components/BucketOverlayForm'
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
-// Utils
-import {extractBucketMaxRetentionSeconds} from 'src/cloud/utils/limits'
-
 // Actions
 import {createBucket} from 'src/buckets/actions/thunks'
 
 // Types
-import {AppState} from 'src/types'
+import {AppState, Bucket} from 'src/types'
 import {
   createBucketReducer,
   RuleType,
@@ -26,15 +23,15 @@ import {
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
+import {getBucketRetentionLimit} from 'src/cloud/utils/limits'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps
-
-const CreateBucketOverlay: FC<Props> = ({
-  org,
-  isRetentionLimitEnforced,
-  createBucket,
-}) => {
+const CreateBucketOverlay: FC = () => {
+  const org = useSelector(getOrg)
+  const onCreateBucket = useSelector((state: AppState) => {
+    return state.overlays?.params?.onCreateBucket
+  })
+  const isRetentionLimitEnforced = useSelector(getBucketRetentionLimit)
+  const reduxDispatch = useDispatch()
   const {onClose} = useContext(OverlayContext)
   const [state, dispatch] = useReducer(
     createBucketReducer,
@@ -67,8 +64,12 @@ const CreateBucketOverlay: FC<Props> = ({
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
 
-    createBucket(state)
+    reduxDispatch(createBucket(state, handleCreateBucketSuccess))
     onClose()
+  }
+
+  const handleCreateBucketSuccess = (bucket: Bucket): void => {
+    onCreateBucket(bucket)
   }
 
   const handleChangeInput = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -100,22 +101,4 @@ const CreateBucketOverlay: FC<Props> = ({
   )
 }
 
-const mstp = (state: AppState) => {
-  const org = getOrg(state)
-  const isRetentionLimitEnforced = !!extractBucketMaxRetentionSeconds(
-    state.cloud.limits
-  )
-
-  return {
-    org,
-    isRetentionLimitEnforced,
-  }
-}
-
-const mdtp = {
-  createBucket,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(CreateBucketOverlay)
+export default CreateBucketOverlay

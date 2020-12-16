@@ -15,7 +15,14 @@ import {getBucketLimitStatus} from 'src/cloud/utils/limits'
 // Constants
 import {CLOUD} from 'src/shared/constants'
 
-const CreateBucketDropdownItem: FC = () => {
+// Types
+import {Bucket} from 'src/types'
+
+interface Props {
+  onUpdateBucket: (bucket: Bucket) => void
+}
+
+const CreateBucketDropdownItem: FC<Props> = ({onUpdateBucket}) => {
   const limitStatus = useSelector(getBucketLimitStatus)
   const dispatch = useDispatch()
   useEffect(() => {
@@ -27,7 +34,7 @@ const CreateBucketDropdownItem: FC = () => {
     if (CLOUD && limitStatus === LimitStatus.EXCEEDED) {
       dispatch(showOverlay('asset-limit', {asset: 'Buckets'}, dismissOverlay))
     } else {
-      dispatch(showOverlay('create-bucket', null, dismissOverlay))
+      dispatch(showOverlay('create-bucket', {onUpdateBucket}, dismissOverlay))
     }
   }
 

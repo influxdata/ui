@@ -45,7 +45,7 @@ const BucketSelector: FC = () => {
   if (loading === RemoteDataState.Done && buckets.length) {
     menuItems = (
       <>
-        <CreateBucketDropdownItem />
+        <CreateBucketDropdownItem onUpdateBucket={updateBucket} />
         <Dropdown.Divider />
         {buckets.map(bucket => (
           <Dropdown.Item

@@ -14,6 +14,8 @@ import {viewSchema} from 'src/schemas'
 
 // Utils
 import applyAutoAggregateRequirements from 'src/utils/autoAggregateRequirements'
+import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
+import {getAllVariables} from 'src/variables/selectors'
 
 // Actions
 import {notify} from 'src/shared/actions/notifications'
@@ -132,7 +134,10 @@ export const getViewAndResultsForVEO = (
     }
     const {id: orgID} = getOrg(state)
     const pendingResults = queries.map(({text}) => {
-      return getCachedResultsOrRunQuery(orgID, text, state)
+      const usedVars = filterUnusedVarsBasedOnQuery(getAllVariables(state), [
+        text,
+      ])
+      return getCachedResultsOrRunQuery(orgID, text, usedVars)
     })
 
     // Wait for new queries to complete

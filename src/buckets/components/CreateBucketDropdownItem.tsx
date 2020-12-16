@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useEffect} from 'react'
-import {connect, ConnectedProps, useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {Dropdown} from '@influxdata/clockface'
@@ -10,27 +10,17 @@ import {checkBucketLimits, LimitStatus} from 'src/cloud/actions/limits'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Utils
-import {extractBucketLimits} from 'src/cloud/utils/limits'
-
-// Types
-import {AppState} from 'src/types'
+import {getBucketLimitStatus} from 'src/cloud/utils/limits'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
 
-interface OwnProps {
+interface Props {
   onClick?: () => void
 }
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps
-
-const CreateBucketDropdownItem: FC<Props> = ({
-  limitStatus,
-  onShowOverlay,
-  onDismissOverlay,
-  onClick,
-}) => {
+const CreateBucketDropdownItem: FC<Props> = ({onClick}) => {
+  const limitStatus = useSelector(getBucketLimitStatus)
   const dispatch = useDispatch()
   useEffect(() => {
     // Check bucket limits when component mounts
@@ -39,9 +29,9 @@ const CreateBucketDropdownItem: FC<Props> = ({
 
   const handleItemClick = (): void => {
     if (CLOUD && limitStatus === LimitStatus.EXCEEDED) {
-      onShowOverlay('asset-limit', {asset: 'Buckets'}, onDismissOverlay)
+      dispatch(showOverlay('asset-limit', {asset: 'Buckets'}, dismissOverlay))
     } else {
-      onShowOverlay('create-bucket', null, onDismissOverlay)
+      dispatch(showOverlay('create-bucket', null, dismissOverlay))
     }
 
     onClick && onClick()
@@ -58,17 +48,4 @@ const CreateBucketDropdownItem: FC<Props> = ({
   )
 }
 
-const mstp = (state: AppState) => {
-  return {
-    limitStatus: extractBucketLimits(state.cloud.limits),
-  }
-}
-
-const mdtp = {
-  onShowOverlay: showOverlay,
-  onDismissOverlay: dismissOverlay,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(CreateBucketDropdownItem)
+export default CreateBucketDropdownItem

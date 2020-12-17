@@ -37,7 +37,7 @@ import {PipeContext} from 'src/flows/context/pipe'
 
 const Visualization: FC<PipeProp> = ({Context}) => {
   const {timeZone} = useContext(AppSettingContext)
-  const {data, update, loading, results} = useContext(PipeContext)
+  const {data, range, update, loading, results} = useContext(PipeContext)
   const [optionsVisibility, setOptionsVisibility] = useState(false)
   const toggleOptions = useCallback(() => {
     setOptionsVisibility(!optionsVisibility)
@@ -151,6 +151,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
               error={results?.error}
               properties={data.properties}
               result={results.parsed}
+              timeRange={range}
               timeZone={timeZone}
             />
           </div>

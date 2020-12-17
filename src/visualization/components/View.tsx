@@ -4,6 +4,7 @@ import React, {FC, createElement} from 'react'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import {TYPE_DEFINITIONS} from 'src/visualization'
+import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 
 import ViewLoadingSpinner from 'src/visualization/components/internal/ViewLoadingSpinner'
 import {FromFluxResult} from '@influxdata/giraffe'
@@ -21,11 +22,12 @@ interface Props {
   loading: RemoteDataState
   error?: string
   isInitial?: boolean
-  timeRange: TimeRange
+  timeRange?: TimeRange
   timeZone?: TimeZone
   theme?: Theme
 }
-const View: FC<Props> = ({
+
+const InnerView: FC<Props> = ({
   properties,
   result,
   loading,
@@ -35,12 +37,37 @@ const View: FC<Props> = ({
   timeZone,
   theme,
 }) => {
+  if (!TYPE_DEFINITIONS[properties.type]?.component) {
+    throw new Error('Unknown view type in <View /> ')
+  }
+
   const fallbackNote =
     properties.type !== 'check' && properties['showNoteWhenEmpty']
       ? properties.note
       : null
   const hasResults = !!(result?.table?.length || 0)
 
+  return (
+    <EmptyQueryView
+      loading={loading}
+      errorMessage={error}
+      errorFormat={ErrorFormat.Scroll}
+      hasResults={hasResults}
+      isInitialFetch={isInitial || false}
+      fallbackNote={fallbackNote}
+    >
+      {createElement(TYPE_DEFINITIONS[properties.type].component, {
+        result: result,
+        properties: properties,
+        timeRange: timeRange || DEFAULT_TIME_RANGE,
+        theme: theme || ('dark' as Theme),
+        timeZone: timeZone || ('Local' as TimeZone),
+      })}
+    </EmptyQueryView>
+  )
+}
+
+const View: FC<Props> = props => {
   /*
     if (properties.type === 'table') {
       visual = (
@@ -55,46 +82,13 @@ const View: FC<Props> = ({
           )}
         </FluxTablesTransform>
       )
-    } else if (properties.type === 'check') {
-      visual = (
-        <CheckPlot
-          checkType={checkType}
-          thresholds={checkThresholds}
-          table={giraffeResult.table}
-          fluxGroupKeyUnion={giraffeResult.fluxGroupKeyUnion}
-          timeZone={timeZone}
-          viewProperties={properties}
-          statuses={statuses}
-        >
-          {config => <Plot config={config} />}
-        </CheckPlot>
-      )
     }
      */
 
-  if (!TYPE_DEFINITIONS[properties.type]?.component) {
-    throw new Error('Unknown view type in <View /> ')
-  }
-
   return (
     <ErrorBoundary>
-      <ViewLoadingSpinner loading={loading} />
-      <EmptyQueryView
-        loading={loading}
-        errorMessage={error}
-        errorFormat={ErrorFormat.Scroll}
-        hasResults={hasResults}
-        isInitialFetch={isInitial || false}
-        fallbackNote={fallbackNote}
-      >
-        {createElement(TYPE_DEFINITIONS[properties.type].component, {
-          result: result,
-          properties: properties,
-          timeRange,
-          theme: theme || ('dark' as Theme),
-          timeZone: timeZone || ('Local' as TimeZone),
-        })}
-      </EmptyQueryView>
+      <ViewLoadingSpinner loading={props.loading} />
+      <InnerView {...props} />
     </ErrorBoundary>
   )
 }

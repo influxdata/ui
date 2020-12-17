@@ -40,6 +40,7 @@ const Visualization: FC = () => {
           error={results?.error}
           properties={data.properties}
           result={results.parsed}
+          timeRange={data.range}
           timeZone={timeZone}
         />
       </div>

@@ -23,7 +23,7 @@ import {TYPE_DEFINITIONS, _transform} from 'src/visualization'
 
 const TestFlux: FC<PipeProp> = ({Context}) => {
   const {timeZone} = useContext(AppSettingContext)
-  const {data, update} = useContext(PipeContext)
+  const {data, range, update} = useContext(PipeContext)
   const uploadRef: React.RefObject<HTMLInputElement> = React.createRef()
   const startUpload = () => {
     uploadRef.current.click()
@@ -100,6 +100,7 @@ const TestFlux: FC<PipeProp> = ({Context}) => {
               error={results?.error}
               properties={data.properties}
               result={results.parsed}
+              timeRange={range}
               timeZone={timeZone}
             />
           </div>

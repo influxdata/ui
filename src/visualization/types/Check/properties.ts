@@ -9,6 +9,7 @@ import {Axis, Base, Color, CheckViewProperties} from 'src/types'
 export default {
   type: 'check',
   shape: 'chronograf-v2',
+  checkID: '',
   geom: 'line',
   xColumn: null,
   yColumn: null,

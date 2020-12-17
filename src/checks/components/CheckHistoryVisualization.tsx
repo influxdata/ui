@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, createContext, useState} from 'react'
-import {get} from 'lodash'
 
 // Components
 import TimeSeries from 'src/shared/components/TimeSeries'
@@ -23,7 +22,7 @@ interface OwnProps {
 type Props = OwnProps
 
 const CheckHistoryVisualization: FC<Props> = ({check, timeZone}) => {
-  const view = createView<CheckViewProperties>(get(check, 'threshold'))
+  const view = createView<CheckViewProperties>(check?.threshold)
 
   const [submitToken] = useState(0)
   const [manualRefresh] = useState(0)
@@ -42,7 +41,6 @@ const CheckHistoryVisualization: FC<Props> = ({check, timeZone}) => {
           isInitial={isInitialFetch}
           properties={view.properties}
           result={giraffeResult}
-          timeRange={ranges}
           timeZone={timeZone}
         />
       )}

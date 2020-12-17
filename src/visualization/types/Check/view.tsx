@@ -38,7 +38,6 @@ type Props = OwnProps & ReduxProps
 const CheckPlot: FC<Props> = ({
   properties,
   result,
-  timeRange,
   timeZone,
   theme,
 

@@ -22,6 +22,7 @@ import auth0js, {WebAuth} from 'auth0-js'
 import {LoginForm} from 'src/onboarding/components/LoginForm'
 import {SocialButton} from 'src/shared/components/SocialButton'
 import {GoogleLogo} from 'src/shared/graphics/GoogleLogo'
+import {MicrosoftLogo} from 'src/shared/graphics/MicrosoftLogo'
 
 // Types
 import {Auth0Connection, FormFieldValidation} from 'src/types'
@@ -31,6 +32,7 @@ import {notify} from 'src/shared/actions/notifications'
 import {passwordResetSuccessfully} from 'src/shared/copy/notifications'
 import {getAuth0Config} from 'src/authorizations/apis'
 import {getFromLocalStorage} from 'src/localStorage'
+import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 interface ErrorObject {
   emailError?: string
@@ -120,10 +122,22 @@ class LoginPageContents extends PureComponent<Props> {
                     handleClick={() => {
                       this.handleSocialClick(Auth0Connection.Google)
                     }}
+                    className="sign-up--google"
                     buttonText="Google"
                   >
                     <GoogleLogo className="signup-icon" />
                   </SocialButton>
+                  <FeatureFlag name="azureSSO">
+                    <SocialButton
+                      className="sign-up--microsoft"
+                      handleClick={() => {
+                        this.handleSocialClick(Auth0Connection.Microsoft)
+                      }}
+                      buttonText="Microsoft"
+                    >
+                      <MicrosoftLogo className="signup-icon" />
+                    </SocialButton>
+                  </FeatureFlag>
                 </FlexBox>
               </Grid.Row>
             </Grid>

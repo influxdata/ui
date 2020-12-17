@@ -85,8 +85,10 @@ export class Setup extends PureComponent<Props, State> {
 
     return (
       <SpinnerContainer loading={loading} spinnerComponent={<TechnoSpinner />}>
-        {allowed && (
+        <Route path={'/foo'} component={LoginPage} />
+        {/* {allowed && (
           <Route path="/onboarding/:stepID" component={OnboardingWizardPage} />
+
         )}
         {!allowed && (
           <Switch>
@@ -99,7 +101,7 @@ export class Setup extends PureComponent<Props, State> {
             <Route path={LOGOUT} component={Logout} />
             <Route component={Signin} />
           </Switch>
-        )}
+        )} */}
       </SpinnerContainer>
     )
   }

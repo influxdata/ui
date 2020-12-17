@@ -80,3 +80,43 @@
     top: $icon-margin;
   }
 }
+
+.sign-up--social-button-group {
+  .sign-up--google {
+    background: #fff;
+    color: #444;
+
+    &:active,
+    &:focus,
+    &:active:hover,
+    &.active,
+    &.active:hover,
+    &:hover,
+    &.cf-button-default:hover {
+      color: #444;
+    }
+
+    &:after {
+      background: #fff;
+    }
+  }
+
+  .sign-up--microsoft {
+    background: #fff;
+    color: #5e5e5e;
+
+    &:active,
+    &:focus,
+    &:active:hover,
+    &.active,
+    &.active:hover,
+    &:hover,
+    &.cf-button-default:hover {
+      color: #5e5e5e;
+    }
+
+    &:after {
+      background: #fff;
+    }
+  }
+}

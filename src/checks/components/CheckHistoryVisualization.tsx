@@ -36,14 +36,15 @@ const CheckHistoryVisualization: FC<Props> = ({check, timeZone}) => {
       check={check}
     >
       {({giraffeResult, loading, errorMessage, isInitialFetch, statuses}) => (
-              <View
-                  loading={loading}
-                  error={errorMessage}
-                  isInitial={isInitialFetch}
-                    properties={view.properties}
-                    result={giraffeResult}
-                    timeRange={ranges}
-                    timeZone={timeZone} />
+        <View
+          loading={loading}
+          error={errorMessage}
+          isInitial={isInitialFetch}
+          properties={view.properties}
+          result={giraffeResult}
+          timeRange={ranges}
+          timeZone={timeZone}
+        />
       )}
     </TimeSeries>
   )

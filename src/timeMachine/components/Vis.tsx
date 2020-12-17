@@ -65,36 +65,37 @@ const TimeMachineVis: FC<Props> = ({
   })
 
   if (isViewingRawData) {
-      return (
-    <div className={timeMachineViewClassName}>
-      <ErrorBoundary>
-            <AutoSizer>
-              {({width, height}) => {
-                const [parsedResults] = files.flatMap(fromFlux)
-                return (
-                  <RawFluxDataTable
-                    parsedResults={parsedResults}
-                    width={width}
-                    height={height}
-                  />
-                )
-              }}
-            </AutoSizer>
-      </ErrorBoundary>
-    </div>
-      )
+    return (
+      <div className={timeMachineViewClassName}>
+        <ErrorBoundary>
+          <AutoSizer>
+            {({width, height}) => {
+              const [parsedResults] = files.flatMap(fromFlux)
+              return (
+                <RawFluxDataTable
+                  parsedResults={parsedResults}
+                  width={width}
+                  height={height}
+                />
+              )
+            }}
+          </AutoSizer>
+        </ErrorBoundary>
+      </div>
+    )
   }
 
   return (
     <div className={timeMachineViewClassName}>
-        <View
-            loading={loading}
-            error={errorMessage}
-            isInitial={isInitialFetch}
-            properties={resolvedViewProperties}
-            result={giraffeResult}
-            timeRange={timeRange}
-            timeZone={timeZone} />
+      <View
+        loading={loading}
+        error={errorMessage}
+        isInitial={isInitialFetch}
+        properties={resolvedViewProperties}
+        result={giraffeResult}
+        timeRange={timeRange}
+        timeZone={timeZone}
+      />
     </div>
   )
 }
@@ -104,12 +105,7 @@ const mstp = (state: AppState) => {
   const {
     isViewingRawData,
     view: {properties: viewProperties},
-    queryResults: {
-      status: loading,
-      errorMessage,
-      isInitialFetch,
-      files,
-    },
+    queryResults: {status: loading, errorMessage, isInitialFetch, files},
   } = activeTimeMachine
   const timeRange = getTimeRangeWithTimezone(state)
 

@@ -146,12 +146,13 @@ const Visualization: FC<PipeProp> = ({Context}) => {
       >
         <div className="flow-visualization">
           <div className="flow-visualization--view">
-          <View
+            <View
               loading={loading}
               error={results?.error}
               properties={data.properties}
               result={results.parsed}
-                timeZone={timeZone} />
+              timeZone={timeZone}
+            />
           </div>
         </div>
       </Resizer>

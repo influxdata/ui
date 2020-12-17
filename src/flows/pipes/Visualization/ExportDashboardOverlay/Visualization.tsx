@@ -35,12 +35,13 @@ const Visualization: FC = () => {
   return (
     <div className="flow-visualization" style={{height: 220}}>
       <div className="flow-visualization--view">
-          <View
-              loading={loading}
-              error={results?.error}
-              properties={data.properties}
-              result={results.parsed}
-              timeZone={timeZone} />
+        <View
+          loading={loading}
+          error={results?.error}
+          properties={data.properties}
+          result={results.parsed}
+          timeZone={timeZone}
+        />
       </div>
     </div>
   )

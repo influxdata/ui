@@ -88,10 +88,13 @@ class Gauge extends Component<Props> {
       return
     }
 
-
     // Distill out max and min values
-    const minValue = colors.find(color => color.type === COLOR_TYPE_MIN)?.value || DEFAULT_VALUE_MIN
-    const maxValue = colors.find(color => color.type === COLOR_TYPE_MAX)?.value || DEFAULT_VALUE_MAX
+    const minValue =
+      colors.find(color => color.type === COLOR_TYPE_MIN)?.value ||
+      DEFAULT_VALUE_MIN
+    const maxValue =
+      colors.find(color => color.type === COLOR_TYPE_MAX)?.value ||
+      DEFAULT_VALUE_MAX
 
     // The following functions must be called in the specified order
     if (colors.length === MIN_THRESHOLDS) {
@@ -280,7 +283,9 @@ class Gauge extends Component<Props> {
 
     const tickSplit = Math.abs(maxValue - minValue) / lineCount
     const tickValues = [
-        ...Array(Math.floor(Math.abs(maxValue - minValue) / tickSplit)).map((_, idx) => (minValue + (idx * tickSplit)))
+      ...Array(Math.floor(Math.abs(maxValue - minValue) / tickSplit)).map(
+        (_, idx) => minValue + idx * tickSplit
+      ),
       maxValue,
     ]
 

@@ -11,10 +11,7 @@ import {GaugeViewProperties} from 'src/types/dashboards'
 import {VisProps} from 'src/visualization'
 
 // Constants
-import {
-  GAUGE_THEME_LIGHT,
-  GAUGE_THEME_DARK,
-} from './constants'
+import {GAUGE_THEME_LIGHT, GAUGE_THEME_DARK} from './constants'
 
 import {ErrorHandling} from 'src/shared/decorators/errors'
 

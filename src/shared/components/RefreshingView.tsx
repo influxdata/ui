@@ -72,23 +72,18 @@ class RefreshingView extends PureComponent<Props, State> {
         queries={this.queries}
         key={manualRefresh}
       >
-        {({
-          giraffeResult,
-          loading,
-          errorMessage,
-          isInitialFetch,
-        }) => (
-              <View
-                  loading={loading}
-                  error={errorMessage}
-                  isInitial={isInitialFetch}
-                    properties={properties}
-                    result={giraffeResult}
-                    timeRange={ranges}
-                    timeZone={timeZone}
-                  theme={theme} />
-          )
-        }
+        {({giraffeResult, loading, errorMessage, isInitialFetch}) => (
+          <View
+            loading={loading}
+            error={errorMessage}
+            isInitial={isInitialFetch}
+            properties={properties}
+            result={giraffeResult}
+            timeRange={ranges}
+            timeZone={timeZone}
+            theme={theme}
+          />
+        )}
       </TimeSeries>
     )
   }

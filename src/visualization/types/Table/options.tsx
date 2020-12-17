@@ -145,7 +145,8 @@ const TableViewOptions: FC<Props> = ({properties, update}) => {
     [update, properties.fieldOptions]
   )
 
-  const activeSetting = properties.colors.filter(color => color.type !== 'scale')[0]?.type || 'text'
+  const activeSetting =
+    properties.colors.filter(color => color.type !== 'scale')[0]?.type || 'text'
 
   const draggableColumns = useMemo(
     () =>

@@ -18,12 +18,7 @@ import {INVALID_DATA_COPY} from 'src/shared/copy/cell'
 import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 
 // Types
-import {
-  CheckViewProperties,
-  CheckType,
-  StatusRow,
-  Threshold,
-} from 'src/types'
+import {CheckViewProperties, CheckType, StatusRow, Threshold} from 'src/types'
 import {useCheckYDomain} from 'src/alerting/utils/vis'
 import {updateThresholds} from 'src/alerting/actions/alertBuilder'
 
@@ -99,53 +94,55 @@ const CheckPlot: FC<Props> = ({
 
   return (
     <div className="time-series-container time-series-container--alert-check">
-        <Plot config={{
-    ...currentTheme,
-    table: result.table,
-    legendColumns,
-    yTicks,
-    yDomain,
-    onSetYDomain,
-    onResetYDomain,
-    valueFormatters: {
-      [X_COLUMN]: xFormatter,
-      [Y_COLUMN]: yFormatter,
-    },
-    layers: [
-      {
-        type: 'line',
-        x: X_COLUMN,
-        y: Y_COLUMN,
-        fill: groupKey,
-        interpolation: 'linear',
-        colors: colorHexes,
-      },
-      {
-        type: 'custom',
-        render: ({yScale, yDomain}) => (
-          <ThresholdMarkers
-            key="thresholds"
-            thresholds={checkType === 'threshold' ? thresholds : []}
-            onSetThresholds={onUpdateThresholds}
-            yScale={yScale}
-            yDomain={yDomain}
-          />
-        ),
-      },
-      {
-        type: 'custom',
-        render: ({xScale, xDomain}) => (
-          <EventMarkers
-            key="events"
-            eventsArray={statuses}
-            xScale={xScale}
-            xDomain={xDomain}
-            xFormatter={xFormatter}
-          />
-        ),
-      },
-    ],
-            }} />
+      <Plot
+        config={{
+          ...currentTheme,
+          table: result.table,
+          legendColumns,
+          yTicks,
+          yDomain,
+          onSetYDomain,
+          onResetYDomain,
+          valueFormatters: {
+            [X_COLUMN]: xFormatter,
+            [Y_COLUMN]: yFormatter,
+          },
+          layers: [
+            {
+              type: 'line',
+              x: X_COLUMN,
+              y: Y_COLUMN,
+              fill: groupKey,
+              interpolation: 'linear',
+              colors: colorHexes,
+            },
+            {
+              type: 'custom',
+              render: ({yScale, yDomain}) => (
+                <ThresholdMarkers
+                  key="thresholds"
+                  thresholds={checkType === 'threshold' ? thresholds : []}
+                  onSetThresholds={onUpdateThresholds}
+                  yScale={yScale}
+                  yDomain={yDomain}
+                />
+              ),
+            },
+            {
+              type: 'custom',
+              render: ({xScale, xDomain}) => (
+                <EventMarkers
+                  key="events"
+                  eventsArray={statuses}
+                  xScale={xScale}
+                  xDomain={xDomain}
+                  xFormatter={xFormatter}
+                />
+              ),
+            },
+          ],
+        }}
+      />
     </div>
   )
 }

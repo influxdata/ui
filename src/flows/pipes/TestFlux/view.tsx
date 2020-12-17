@@ -95,12 +95,13 @@ const TestFlux: FC<PipeProp> = ({Context}) => {
       >
         <div className="flow-visualization">
           <div className="flow-visualization--view">
-          <View
+            <View
               loading={RemoteDataState.Done}
               error={results?.error}
               properties={data.properties}
               result={results.parsed}
-                timeZone={timeZone} />
+              timeZone={timeZone}
+            />
           </div>
         </div>
       </Resizer>

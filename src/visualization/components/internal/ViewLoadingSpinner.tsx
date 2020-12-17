@@ -51,7 +51,8 @@ const ViewLoadingSpinner: FunctionComponent<Props> = ({loading}) => {
     return (
       <div className="view-loading-spinner">
         <TechnoSpinner diameterPixels={66} strokeWidth={ComponentSize.Medium} />
-        <div className={timerElementClass}>{`${Math.round(seconds * 10) / 10}s`}</div>
+        <div className={timerElementClass}>{`${Math.round(seconds * 10) /
+          10}s`}</div>
       </div>
     )
   }

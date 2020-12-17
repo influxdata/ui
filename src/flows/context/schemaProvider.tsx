@@ -1,6 +1,6 @@
 // Libraries
-import React, {FC, useContext, useEffect, useState} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
+import React, {FC, useCallback, useContext, useEffect, useState} from 'react'
+import {fromFlux} from '@influxdata/giraffe'
 
 // Contexts
 import {PipeContext} from 'src/flows/context/pipe'
@@ -8,13 +8,13 @@ import {FlowContext} from 'src/flows/context/flow.current'
 
 // Utils
 import {normalizeSchema} from 'src/shared/utils/flowSchemaNormalizer'
-import {
-  getAndSetBucketSchema,
-  startWatchDog,
-} from 'src/shared/actions/schemaThunks'
+import {formatTimeRangeArguments} from 'src/timeMachine/apis/queryBuilder'
+import {findOrgID} from 'src/flows/shared/utils'
 
 // Types
-import {AppState, RemoteDataState} from 'src/types'
+import {NormalizedSchema, NormalizedTag, RemoteDataState} from 'src/types'
+import {getCachedResultsOrRunQuery} from 'src/shared/apis/queryCache'
+import {RunQueryResult} from 'src/shared/apis/query'
 
 export type Props = {
   children: JSX.Element
@@ -24,7 +24,7 @@ export interface SchemaContextType {
   loading: RemoteDataState
   measurements: string[]
   fields: string[]
-  tags: any[]
+  tags: NormalizedTag[]
   searchTerm: string
   setSearchTerm: (value: string) => void
 }
@@ -42,17 +42,78 @@ export const SchemaContext = React.createContext<SchemaContextType>(
   DEFAULT_CONTEXT
 )
 
+const csvToSchema = (result: RunQueryResult): unknown => {
+  let ni, no
+  const filtered = [
+    /^_start$/,
+    /^_stop$/,
+    /^_time$/,
+    /^_value/,
+    /^_measurement$/,
+    /^_field$/,
+    /^table$/,
+    /^result$/,
+  ]
+  if (!result) {
+    return
+  }
+  if (result?.type !== 'SUCCESS') {
+    throw new Error(result.message)
+  }
+
+  const out = fromFlux(result.csv).table as any
+  const len = out.length
+  const measurements = out.columns._measurement?.data
+  const fields = out.columns._field?.data
+  const columns = out.columnKeys.filter(key => {
+    return filtered.reduce((acc, curr) => {
+      return acc && !curr.test(key)
+    }, true)
+  })
+  const colLen = columns.length
+  const schema = {} as any
+
+  for (ni = 0; ni < len; ni++) {
+    if (!schema.hasOwnProperty(measurements[ni])) {
+      schema[measurements[ni]] = {
+        fields: new Set(),
+        tags: {},
+      }
+    }
+
+    schema[measurements[ni]].fields.add(fields[ni])
+
+    for (no = 0; no < colLen; no++) {
+      if (!out.columns[columns[no]].data[ni]) {
+        continue
+      }
+
+      if (!schema[measurements[ni]].tags.hasOwnProperty(columns[no])) {
+        schema[measurements[ni]].tags[columns[no]] = new Set()
+      }
+      schema[measurements[ni]].tags[columns[no]].add(
+        out.columns[columns[no]].data[ni]
+      )
+    }
+  }
+
+  Object.entries(schema).forEach(([key, val]) => {
+    schema[key].fields = Array.from((val as any).fields)
+  })
+
+  return schema
+}
+
 export const SchemaProvider: FC<Props> = React.memo(({children}) => {
   const {data, update} = useContext(PipeContext)
   const {flow} = useContext(FlowContext)
   const [searchTerm, setSearchTerm] = useState('')
   const [lastBucket, setLastBucket] = useState(data?.bucket?.id)
-  const dispatch = useDispatch()
-
-  const loading = useSelector(
-    (state: AppState) =>
-      state.flow.schema[data.bucket?.name]?.status || RemoteDataState.NotStarted
-  )
+  const [schema, setSchema] = useState({})
+  const [loading, setLoading] = useState(RemoteDataState.NotStarted)
+  const [fields, setFields] = useState([])
+  const [measurements, setMeasurements] = useState([])
+  const [tags, setTags] = useState([])
 
   useEffect(() => {
     if (data?.bucket?.id === lastBucket) {
@@ -69,22 +130,41 @@ export const SchemaProvider: FC<Props> = React.memo(({children}) => {
   }, [data?.bucket?.id, lastBucket, update])
 
   useEffect(() => {
-    dispatch(startWatchDog())
-  }, [dispatch])
-
-  useEffect(() => {
-    if (!data.bucket) {
+    if (!data?.bucket) {
       return
     }
 
-    dispatch(getAndSetBucketSchema(data.bucket, flow.range))
-  }, [data?.bucket, dispatch, flow?.range])
+    setLoading(RemoteDataState.Loading)
 
-  const schema = useSelector(
-    (state: AppState) => state.flow.schema[data.bucket?.name]?.schema || {}
-  )
+    const range = formatTimeRangeArguments(flow?.range)
 
-  const {fields, measurements, tags} = normalizeSchema(schema, data, searchTerm)
+    const query = `from(bucket: "${data.bucket.name}")
+|> range(${range})
+|> first()
+|> drop(columns: ["_value"])
+|> group()`
+
+    const orgID = findOrgID(query, [data.bucket])
+    const result = getCachedResultsOrRunQuery(orgID, query, [])
+    result.promise
+      .then((res: RunQueryResult) => {
+        const schemaForBucket = csvToSchema(res)
+        setSchema(schemaForBucket)
+        setLoading(RemoteDataState.Done)
+      })
+      .catch((error: RunQueryResult) => {
+        console.error('error: ', error)
+        setLoading(RemoteDataState.Error)
+        setSchema({})
+      })
+  }, [data?.bucket?.name, data?.bucket, flow?.range])
+
+  useEffect(() => {
+    const normalized = normalizeSchema(schema, data, searchTerm)
+    setFields(normalized.fields)
+    setMeasurements(normalized.measurements)
+    setTags(normalized.tags)
+  }, [data, searchTerm, schema])
 
   return (
     <SchemaContext.Provider

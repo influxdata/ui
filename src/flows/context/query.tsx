@@ -19,6 +19,7 @@ import {
   generateHashedQueryID,
   setQueryByHashID,
 } from 'src/timeMachine/actions/queries'
+import {findOrgID} from 'src/flows/shared/utils'
 
 interface Stage {
   text: string
@@ -40,44 +41,6 @@ export const QueryContext = React.createContext<QueryContextType>(
 )
 
 const PREVIOUS_REGEXP = /__PREVIOUS_RESULT__/g
-
-const findOrgID = (text, buckets) => {
-  const ast = parse(text)
-
-  const _search = (node, acc = []) => {
-    if (!node) {
-      return acc
-    }
-    if (
-      node?.type === 'CallExpression' &&
-      node?.callee?.type === 'Identifier' &&
-      node?.callee?.name === 'from' &&
-      node?.arguments[0]?.properties[0]?.key?.name === 'bucket'
-    ) {
-      acc.push(node)
-    }
-
-    Object.values(node).forEach(val => {
-      if (Array.isArray(val)) {
-        val.forEach(_val => {
-          _search(_val, acc)
-        })
-      } else if (typeof val === 'object') {
-        _search(val, acc)
-      }
-    })
-
-    return acc
-  }
-
-  const queryBuckets = _search(ast).map(
-    node => node?.arguments[0]?.properties[0]?.value.value
-  )
-
-  const bucket = buckets.find(buck => queryBuckets.includes(buck.name))
-
-  return bucket?.orgID
-}
 
 export const QueryProvider: FC = ({children}) => {
   const {flow} = useContext(FlowContext)

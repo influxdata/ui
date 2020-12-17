@@ -57,7 +57,6 @@ import {
 import {predicatesReducer} from 'src/shared/reducers/predicates'
 import alertBuilderReducer from 'src/alerting/reducers/alertBuilder'
 import perfReducer from 'src/perf/reducers'
-import {schemaReducer} from 'src/shared/reducers/schema'
 
 // Types
 import {AppState, LocalStorage} from 'src/types'
@@ -91,7 +90,6 @@ export const rootReducer = (history: History) => (state, action) => {
     dataLoading: dataLoadingReducer,
     me: meReducer,
     flags: flagReducer,
-    flow: schemaReducer,
     noteEditor: noteEditorReducer,
     onboarding: onboardingReducer,
     overlays: overlaysReducer,

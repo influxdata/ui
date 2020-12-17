@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useCallback, useContext, useEffect, useState} from 'react'
+import React, {FC, useContext, useEffect, useState} from 'react'
 import {fromFlux} from '@influxdata/giraffe'
 
 // Contexts
@@ -12,7 +12,7 @@ import {formatTimeRangeArguments} from 'src/timeMachine/apis/queryBuilder'
 import {findOrgID} from 'src/flows/shared/utils'
 
 // Types
-import {NormalizedSchema, NormalizedTag, RemoteDataState} from 'src/types'
+import {NormalizedTag, RemoteDataState} from 'src/types'
 import {getCachedResultsOrRunQuery} from 'src/shared/apis/queryCache'
 import {RunQueryResult} from 'src/shared/apis/query'
 

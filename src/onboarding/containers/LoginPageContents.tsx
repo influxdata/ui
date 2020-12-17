@@ -7,14 +7,12 @@ import {
   ComponentStatus,
   FlexBox,
   FlexDirection,
-  FontWeight,
   Grid,
   Heading,
   HeadingElement,
   JustifyContent,
   Method,
   Panel,
-  Typeface,
 } from '@influxdata/clockface'
 import auth0js, {WebAuth} from 'auth0-js'
 
@@ -99,12 +97,7 @@ class LoginPageContents extends PureComponent<Props> {
             size={ComponentSize.Large}
             justifyContent={JustifyContent.Center}
           >
-            <Heading
-              element={HeadingElement.H5}
-              type={Typeface.Rubik}
-              weight={FontWeight.Regular}
-              className="heading--margins"
-            >
+            <Heading element={HeadingElement.P} className="heading--margins">
               Continue with
             </Heading>
           </Panel.Header>
@@ -142,10 +135,8 @@ class LoginPageContents extends PureComponent<Props> {
               </Grid.Row>
             </Grid>
             <Heading
-              element={HeadingElement.H5}
-              type={Typeface.Rubik}
-              weight={FontWeight.Regular}
-              className="heading--margins"
+              element={HeadingElement.P}
+              className="sign-up--form-separator"
             >
               OR
             </Heading>

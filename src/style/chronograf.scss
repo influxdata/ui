@@ -100,6 +100,7 @@
 @import 'src/shared/components/search_widget/SearchWidget.scss';
 @import 'src/templates/components/createFromTemplateOverlay/CreateFromTemplateOverlay.scss';
 @import 'src/onboarding/components/SigninForm.scss';
+@import 'src/onboarding/containers/LoginPage.scss';
 @import 'src/shared/components/ThresholdsSettings.scss';
 @import 'src/shared/components/ThresholdMarkers.scss';
 @import 'src/shared/components/EventMarkers.scss';
@@ -133,5 +134,3 @@
 .cf-resource-card {
   margin-bottom: $cf-border;
 }
-
-@import 'src/onboarding/containers/LoginPage.scss';

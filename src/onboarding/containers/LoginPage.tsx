@@ -6,7 +6,6 @@ import {
   FunnelPage,
   Heading,
   HeadingElement,
-  InfluxColors,
   InfluxDBCloudLogo,
   Typeface,
 } from '@influxdata/clockface'
@@ -21,9 +20,6 @@ export const LoginPage: FC = () => (
     <AppWrapper>
       <Notifications />
       <FunnelPage
-        accentColorA={InfluxColors.Magenta}
-        accentColorB={InfluxColors.Amethyst}
-        backgroundColor={InfluxColors.DeepPurple}
         enableGraphic={true}
         logo={<InfluxDBCloudLogo cloud={true} className="login-page--logo" />}
       >

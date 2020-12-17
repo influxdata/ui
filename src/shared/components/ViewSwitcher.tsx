@@ -94,6 +94,8 @@ const ViewSwitcher: FunctionComponent<Props> = ({
         </LatestValueTransform>
       )
     case 'xy':
+      console.log('setting props to the xy plot...', properties)
+
       return (
         <XYPlot
           timeRange={timeRange}

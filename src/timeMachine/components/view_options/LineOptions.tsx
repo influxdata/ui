@@ -34,6 +34,7 @@ import {
   setHoverDimension,
   setLegendOpacity,
   setLegendOrientationThreshold,
+  setLegendColorizeRows,
   setGenerateXAxisTicks,
   setXTotalTicks,
   setXTickStart,
@@ -107,7 +108,10 @@ class LineOptions extends PureComponent<Props> {
       onSetHoverDimension,
       onSetLegendOpacity,
       onSetLegendOrientationThreshold,
-      onSetGenerateXAxisTicks,
+        onSetLegendColorizeRows,
+
+
+        onSetGenerateXAxisTicks,
       onSetXTotalTicks,
       onSetXTickStart,
       onSetXTickStep,
@@ -117,6 +121,7 @@ class LineOptions extends PureComponent<Props> {
       onSetYTickStep,
     } = this.props
 
+    console.log('is this defined? a1:', onSetLegendColorizeRows)
     return (
       <>
         <Grid.Column>
@@ -278,6 +283,7 @@ class LineOptions extends PureComponent<Props> {
         <LegendOrientation
           onLegendOpacityChange={onSetLegendOpacity}
           onLegendOrientationThresholdChange={onSetLegendOrientationThreshold}
+          onLegendColorizeRowsChange={onSetLegendColorizeRows}
         />
       </>
     )
@@ -330,6 +336,7 @@ const mdtp = {
   onSetHoverDimension: setHoverDimension,
   onSetLegendOpacity: setLegendOpacity,
   onSetLegendOrientationThreshold: setLegendOrientationThreshold,
+  onSetLegendColorizeRows: setLegendColorizeRows,
   onSetGenerateXAxisTicks: setGenerateXAxisTicks,
   onSetXTotalTicks: setXTotalTicks,
   onSetXTickStart: setXTickStart,

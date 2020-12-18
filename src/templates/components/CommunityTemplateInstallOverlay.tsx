@@ -114,7 +114,9 @@ class CommunityTemplateInstallOverlayUnconnected extends PureComponent<Props> {
     this.setState(() => ({status}))
 
   private handleInstallTemplate = async () => {
+    console.log("we reach me")
     let summary
+    console.log(summary)
     try {
       summary = await installTemplate(
         this.props.org.id,

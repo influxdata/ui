@@ -14,9 +14,6 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
-const cloudImageRenderer =
-  "We don't support images in markdown for security purposes"
-
 class CommunityTemplateReadmeUnconnected extends Component<Props> {
   componentDidMount = () => {
     if (!this.props.readme) {
@@ -34,9 +31,6 @@ class CommunityTemplateReadmeUnconnected extends Component<Props> {
     return (
       <MarkdownRenderer
         text={readme}
-        cloudRenderers={{
-          image: cloudImageRenderer,
-        }}
         className="markdown-format community-templates--readme"
       />
     )

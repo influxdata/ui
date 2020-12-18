@@ -69,16 +69,16 @@ type Cache = {
 }
 
 class QueryCache {
-  cache: Cache = {}
+  #cache: Cache = {}
 
   private cleanExpiredQueries = (): void => {
     const now = Date.now()
-    for (const id in this.cache) {
+    for (const id in this.#cache) {
       // TODO(ariel): need to implement specific rules for custom time ranges
-      if (this.cache[id].isCustomTime) {
+      if (this.#cache[id].isCustomTime) {
         continue
       }
-      if (now - this.cache[id].dateSet > TIME_INVALIDATION) {
+      if (now - this.#cache[id].dateSet > TIME_INVALIDATION) {
         this.resetCacheByID(id)
       }
     }
@@ -89,25 +89,25 @@ class QueryCache {
     hashedVariables: string
   ): RunQueryResult | null => {
     // no existing query match
-    if (!this.cache[id]) {
+    if (!this.#cache[id]) {
       return null
     }
     // query match with no existing variable match
-    if (this.cache[id].hashedVariables !== hashedVariables) {
+    if (this.#cache[id].hashedVariables !== hashedVariables) {
       this.resetCacheByID(id)
       return null
     }
     // query has been initialized but the result has not been set
-    if (this.cache[id].values === undefined) {
+    if (this.#cache[id].values === undefined) {
       return null
     }
     // query & variable match with an expired result
-    if (Date.now() - this.cache[id].dateSet > TIME_INVALIDATION) {
+    if (Date.now() - this.#cache[id].dateSet > TIME_INVALIDATION) {
       this.resetCacheByID(id)
       return null
     }
     event('Query Cache successful Get', {context: 'queryCache', queryID: id})
-    return this.cache[id].values
+    return this.#cache[id].values
   }
 
   initializeCacheByID = (
@@ -115,28 +115,28 @@ class QueryCache {
     hashedVariables: string,
     isCustomTime: boolean = false
   ) => {
-    if (this.cache[queryID]) {
-      return this.cache[queryID]
+    if (this.#cache[queryID]) {
+      return this.#cache[queryID]
     }
-    this.cache[queryID] = {
+    this.#cache[queryID] = {
       dateSet: Date.now(),
       hashedVariables,
       isCustomTime,
       mutex: RunQueryPromiseMutex<RunQueryResult>(),
       status: RemoteDataState.Loading,
     }
-    return this.cache[queryID]
+    return this.#cache[queryID]
   }
 
   resetCacheByID = (id: string): void => {
-    if (!this.cache[id]) {
+    if (!this.#cache[id]) {
       return
     }
-    delete this.cache[id]
+    delete this.#cache[id]
   }
 
   resetCache = (): void => {
-    this.cache = {}
+    this.#cache = {}
   }
 
   setCacheByID = (
@@ -145,22 +145,20 @@ class QueryCache {
     values: RunQueryResult
   ): void => {
     event('Query Cache was Set', {context: 'queryCache', queryID})
-    if (values.type === 'SUCCESS') {
-      this.cache[queryID] = {
-        ...this.initializeCacheByID(queryID, hashedVariables),
-        dateSet: Date.now(),
-        values,
-        status: RemoteDataState.Done,
-      }
-    } else {
-      this.cache[queryID] = {
-        ...this.initializeCacheByID(queryID, hashedVariables),
-        dateSet: Date.now(),
-        values: null,
-        status: RemoteDataState.Error,
-        error: values.message,
-      }
+    const cacheResults = {
+      ...this.initializeCacheByID(queryID, hashedVariables),
+      dateSet: Date.now(),
+      status: RemoteDataState.Done,
+      values: null,
     }
+    if (values.type === 'SUCCESS') {
+      cacheResults.values = values
+      this.#cache[queryID] = cacheResults
+      return
+    }
+    cacheResults.error = values.message
+    cacheResults.status = RemoteDataState.Error
+    this.#cache[queryID] = cacheResults
   }
 
   startWatchDog = () => {
@@ -191,10 +189,13 @@ const hasWindowVars = (variables: VariableAssignment[]): boolean =>
 export const getCachedResultsOrRunQuery = (
   orgID: string,
   query: string,
-  usedVars: Variable[]
+  allVars: Variable[]
 ): CancelBox<RunQueryResult> => {
   const queryID = `${hashCode(query)}`
   event('Starting Query Cache Process ', {context: 'queryCache', queryID})
+  const usedVars = filterUnusedVarsBasedOnQuery(allVars, [
+    query,
+  ])
   const variables = sortBy(usedVars, ['name'])
   const simplifiedVariables = variables.map(v => asSimplyKeyValueVariables(v))
   const stringifiedVars = JSON.stringify(simplifiedVariables)
@@ -248,9 +249,4 @@ export const getCachedResultsOrRunQuery = (
 export const getCachedResultsThunk = (orgID: string, query: string) => (
   _,
   getState: GetState
-): CancelBox<RunQueryResult> => {
-  const usedVars = filterUnusedVarsBasedOnQuery(getAllVariables(getState()), [
-    query,
-  ])
-  return getCachedResultsOrRunQuery(orgID, query, usedVars)
-}
+): CancelBox<RunQueryResult> => getCachedResultsOrRunQuery(orgID, query, getAllVariables(getState()))

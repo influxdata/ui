@@ -299,10 +299,11 @@ export const executeQueries = (abortController?: AbortController) => async (
       if (isCurrentPageDashboard(state)) {
         // reset any existing matching query in the cache
         resetQueryCacheByQuery(text)
-        const usedVars = filterUnusedVarsBasedOnQuery(getAllVariables(state), [
+        const result = getCachedResultsOrRunQuery(
+          orgID,
           text,
-        ])
-        const result = getCachedResultsOrRunQuery(orgID, text, usedVars)
+          getAllVariables(state)
+        )
         setQueryByHashID(queryID, result)
 
         return result

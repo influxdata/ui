@@ -133,12 +133,9 @@ export const getViewAndResultsForVEO = (
       dispatch(setQueryResults(RemoteDataState.Done, [], null))
     }
     const {id: orgID} = getOrg(state)
-    const pendingResults = queries.map(({text}) => {
-      const usedVars = filterUnusedVarsBasedOnQuery(getAllVariables(state), [
-        text,
-      ])
-      return getCachedResultsOrRunQuery(orgID, text, usedVars)
-    })
+    const pendingResults = queries.map(({text}) =>
+      getCachedResultsOrRunQuery(orgID, text, getAllVariables(state))
+    )
 
     // Wait for new queries to complete
     const results = await Promise.all(pendingResults.map(r => r.promise))

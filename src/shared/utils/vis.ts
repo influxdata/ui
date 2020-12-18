@@ -311,7 +311,7 @@ export const defaultYColumn = (
   return null
 }
 
-export const mosaicYcolumn = (
+export const mosaicYColumn = (
   table: Table,
   preferredColumnKey?: string
 ): string | null => {

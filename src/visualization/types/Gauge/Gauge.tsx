@@ -283,9 +283,9 @@ class Gauge extends Component<Props> {
 
     const tickSplit = Math.abs(maxValue - minValue) / lineCount
     const tickValues = [
-      ...Array(lineCount).fill(0).map(
-        (_, idx) => minValue + idx * tickSplit
-      ),
+      ...Array(lineCount)
+        .fill(0)
+        .map((_, idx) => minValue + idx * tickSplit),
       maxValue,
     ]
 

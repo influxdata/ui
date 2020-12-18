@@ -33,6 +33,7 @@ const HistogramPlot: FunctionComponent<Props> = ({
   theme,
 }) => {
   const columnKeys = result.table.columnKeys
+  const fillColumns = properties.fillColumns || result.fluxGroupKeyUnion
 
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
   const tooltipOrientationThreshold = useLegendOrientationThreshold(
@@ -47,7 +48,7 @@ const HistogramPlot: FunctionComponent<Props> = ({
   const isValidView =
     properties.xColumn &&
     columnKeys.includes(properties.xColumn) &&
-    properties.fillColumns.every(col => columnKeys.includes(col))
+    fillColumns.every(col => columnKeys.includes(col))
 
   if (!isValidView) {
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
@@ -82,7 +83,7 @@ const HistogramPlot: FunctionComponent<Props> = ({
             type: 'histogram',
             x: properties.xColumn,
             colors: colorHexes,
-            fill: properties.fillColumns,
+            fill: properties.fillColumns || [],
             binCount: properties.binCount,
             position: properties.position,
           },

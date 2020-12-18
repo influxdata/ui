@@ -38,6 +38,16 @@ const HeatmapPlot: FunctionComponent<Props> = ({
   theme,
 }) => {
   const columnKeys = result.table.columnKeys
+  const xColumn =
+    properties.xColumn ||
+    ['_time', '_start', '_stop'].filter(field =>
+      result.table.columnKeys.includes(field)
+    )[0] ||
+    result.table.columnKeys[0]
+  const yColumn =
+    properties.yColumn ||
+    ['_value'].filter(field => result.table.columnKeys.includes(field))[0] ||
+    result.table.columnKeys[0]
 
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
@@ -47,20 +57,20 @@ const HeatmapPlot: FunctionComponent<Props> = ({
 
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
     properties.xDomain,
-    result.table.getColumn(properties.xColumn, 'number'),
+    result.table.getColumn(xColumn, 'number'),
     timeRange
   )
 
   const [yDomain, onSetYDomain, onResetYDomain] = useVisYDomainSettings(
     properties.yDomain,
-    result.table.getColumn(properties.yColumn, 'number')
+    result.table.getColumn(yColumn, 'number')
   )
 
   const isValidView =
-    properties.xColumn &&
-    properties.yColumn &&
-    columnKeys.includes(properties.yColumn) &&
-    columnKeys.includes(properties.xColumn)
+    xColumn &&
+    yColumn &&
+    columnKeys.includes(yColumn) &&
+    columnKeys.includes(xColumn)
 
   if (!isValidView) {
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
@@ -71,25 +81,19 @@ const HeatmapPlot: FunctionComponent<Props> = ({
       ? properties.colors
       : DEFAULT_LINE_COLORS.map(c => c.hex)
 
-  const xFormatter = getFormatter(
-    result.table.getColumnType(properties.xColumn),
-    {
-      prefix: properties.xPrefix,
-      suffix: properties.xSuffix,
-      timeZone,
-      timeFormat: properties.timeFormat,
-    }
-  )
+  const xFormatter = getFormatter(result.table.getColumnType(xColumn), {
+    prefix: properties.xPrefix,
+    suffix: properties.xSuffix,
+    timeZone,
+    timeFormat: properties.timeFormat,
+  })
 
-  const yFormatter = getFormatter(
-    result.table.getColumnType(properties.yColumn),
-    {
-      prefix: properties.yPrefix,
-      suffix: properties.ySuffix,
-      timeZone,
-      timeFormat: properties.timeFormat,
-    }
-  )
+  const yFormatter = getFormatter(result.table.getColumnType(yColumn), {
+    prefix: properties.yPrefix,
+    suffix: properties.ySuffix,
+    timeZone,
+    timeFormat: properties.timeFormat,
+  })
 
   const currentTheme = theme === 'light' ? VIS_THEME_LIGHT : VIS_THEME
 
@@ -110,14 +114,14 @@ const HeatmapPlot: FunctionComponent<Props> = ({
         legendOpacity: tooltipOpacity,
         legendOrientationThreshold: tooltipOrientationThreshold,
         valueFormatters: {
-          [properties.xColumn]: xFormatter,
-          [properties.yColumn]: yFormatter,
+          [xColumn]: xFormatter,
+          [yColumn]: yFormatter,
         },
         layers: [
           {
             type: 'heatmap',
-            x: properties.xColumn,
-            y: properties.yColumn,
+            x: xColumn,
+            y: yColumn,
             colors,
             binSize: properties.binSize,
           },

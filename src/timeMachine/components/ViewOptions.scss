@@ -2,6 +2,7 @@
   View Options Styles
   ------------------------------------------------------------------------------
 */
+@import "src/style/modules";
 
 .view-options {
   flex: 0 0 (420px - $cf-marg-b);
@@ -13,6 +14,10 @@
 
 .view-options--container {
   padding: $cf-marg-d;
+
+  > .cf-grid--container > .cf-grid--row > .cf-grid--column {
+      width: 100% !important;
+  }
 }
 
 .view-options--header {
@@ -45,4 +50,9 @@ h5.view-options--header {
 
 .view-options--checkbox {
   margin-bottom: $cf-marg-c;
+}
+
+.column-option {
+  font-family: $cf-code-font;
+  font-size: 11px;
 }

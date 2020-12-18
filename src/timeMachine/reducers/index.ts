@@ -323,6 +323,12 @@ export const timeMachineReducer = (
       return {...state, isViewingVisOptions: !state.isViewingVisOptions}
     }
 
+    case 'SET_VIEW_PROPERTIES': {
+      const {properties} = action.payload
+
+      return setViewProperties(state, properties)
+    }
+
     case 'SET_GEOM': {
       const {geom} = action.payload
 

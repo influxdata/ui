@@ -76,43 +76,6 @@ const _transform = (
     }
   }
 
-  if (properties.type === 'histogram') {
-    return {
-      ...properties,
-      fillColumns: results.fluxGroupKeyUnion,
-    }
-  }
-
-  if (properties.type === 'heatmap') {
-    return {
-      ...properties,
-      xColumn:
-        ['_time', '_start', '_stop'].filter(field =>
-          results.table.columnKeys.includes(field)
-        )[0] || results.table.columnKeys[0],
-      yColumn:
-        ['_value'].filter(field =>
-          results.table.columnKeys.includes(field)
-        )[0] || results.table.columnKeys[0],
-    }
-  }
-
-  if (properties.type === 'scatter') {
-    return {
-      ...properties,
-      fillColumns: results.fluxGroupKeyUnion,
-      symbolColumns: results.fluxGroupKeyUnion,
-      xColumn:
-        ['_time', '_start', '_stop'].filter(field =>
-          results.table.columnKeys.includes(field)
-        )[0] || results.table.columnKeys[0],
-      yColumn:
-        ['_value'].filter(field =>
-          results.table.columnKeys.includes(field)
-        )[0] || results.table.columnKeys[0],
-    }
-  }
-
   return properties
 }
 

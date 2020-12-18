@@ -33,7 +33,7 @@ interface Props extends VisOptionProps {
 }
 
 const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
-  const numericColumns = results.table.columnKeys.filter(key => {
+  const numericColumns = (results?.table?.columnKeys || []).filter(key => {
     if (key === 'result' || key === 'table') {
       return false
     }
@@ -43,8 +43,8 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
     return columnType === 'time' || columnType === 'number'
   })
 
-  const xColumn = defaultXColumn(results.table, properties.xColumn)
-  const yColumn = defaultYColumn(results.table, properties.yColumn)
+  const xColumn = defaultXColumn(results?.table, properties.xColumn)
+  const yColumn = defaultYColumn(results?.table, properties.yColumn)
   const getGeomLabel = (geom: string): string => {
     switch (geom) {
       case 'monotoneX':

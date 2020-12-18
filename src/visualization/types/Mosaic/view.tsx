@@ -15,7 +15,7 @@ import {
   useVisXDomainSettings,
   useVisYDomainSettings,
 } from 'src/shared/utils/useVisDomainSettings'
-import {getFormatter, defaultXColumn, mosaicYcolumn} from 'src/shared/utils/vis'
+import {getFormatter, defaultXColumn, mosaicYColumn} from 'src/shared/utils/vis'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -43,7 +43,7 @@ const MosaicPlot: FunctionComponent<Props> = ({
   if (properties.ySeriesColumns) {
     yColumn = properties.ySeriesColumns[0]
   } else {
-    yColumn = mosaicYcolumn(result.table)
+    yColumn = mosaicYColumn(result.table)
   }
   const columnKeys = result.table.columnKeys
 

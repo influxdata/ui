@@ -41,8 +41,9 @@ const ScatterPlot: FunctionComponent<Props> = ({
   timeZone,
   theme,
 }) => {
-  const fillColumns = properties.fillColumns || []
-  const symbolColumns = properties.symbolColumns || []
+  const fillColumns = properties.fillColumns || result.fluxGroupKeyUnion || []
+  const symbolColumns =
+    properties.symbolColumns || result.fluxGroupKeyUnion || []
 
   const xColumn = properties.xColumn || defaultXColumn(result.table)
   const yColumn = properties.yColumn || defaultYColumn(result.table)

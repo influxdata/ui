@@ -3,7 +3,7 @@ import React, {FC, useCallback} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Components
-import ViewTypeDropdown from 'src/visualization/components/ViewTypeDropdown'
+import {ViewTypeDropdown} from 'src/visualization'
 
 // Selectors
 import {getActiveTimeMachine} from 'src/timeMachine/selectors'
@@ -14,7 +14,7 @@ import {AppState} from 'src/types'
 // Actions
 import {setType} from 'src/timeMachine/actions'
 
-export const Visualization: FC<{}> = () => {
+export const TimeMachineViewTypeDropdown: FC<{}> = () => {
   const dispatch = useDispatch()
 
   const viewType = useSelector((state: AppState) => {
@@ -35,4 +35,4 @@ export const Visualization: FC<{}> = () => {
   )
 }
 
-export default Visualization
+export default TimeMachineViewTypeDropdown

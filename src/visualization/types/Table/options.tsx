@@ -36,11 +36,30 @@ import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 import ThresholdsSettings from 'src/shared/components/ThresholdsSettings'
 import {move} from 'src/shared/utils/move'
 
+import './options.scss'
+
 interface Props extends VisOptionProps {
   properties: TableViewProperties
 }
 
-const TableViewOptions: FC<Props> = ({properties, update}) => {
+const TableViewOptions: FC<Props> = ({properties, results, update}) => {
+  const existing = (properties.fieldOptions || []).reduce((prev, curr) => {
+    prev[curr.internalName] = curr
+    return prev
+  }, {})
+
+  results.table.columnKeys
+    .filter(o => !existing.hasOwnProperty(o))
+    .filter(o => !['result', '', 'table', 'time'].includes(o))
+    .forEach(o => {
+      existing[o] = {
+        internalName: o,
+        displayName: o,
+        visible: true,
+      }
+    })
+  const fieldOptions = Object.keys(existing).map(e => existing[e])
+
   const setDigits = useCallback(
     (digits: number | null) => {
       update({
@@ -118,7 +137,7 @@ const TableViewOptions: FC<Props> = ({properties, update}) => {
   const updateColumn = useCallback(
     (fieldOption: FieldOption) => {
       update({
-        fieldOptions: properties.fieldOptions.map(option => {
+        fieldOptions: fieldOptions.map(option => {
           if (option.internalName !== fieldOption.internalName) {
             return option
           }
@@ -129,20 +148,20 @@ const TableViewOptions: FC<Props> = ({properties, update}) => {
         }),
       })
     },
-    [update, properties.fieldOptions]
+    [update, fieldOptions]
   )
 
   const moveColumn = useCallback(
     (dragIndex: number, hoverIndex: number) => {
       update({
         fieldOptions: move(
-          properties.fieldOptions.filter(shouldSeeColumn),
+          fieldOptions.filter(shouldSeeColumn),
           dragIndex,
           hoverIndex
         ),
       })
     },
-    [update, properties.fieldOptions]
+    [update, fieldOptions]
   )
 
   const activeSetting =
@@ -150,7 +169,7 @@ const TableViewOptions: FC<Props> = ({properties, update}) => {
 
   const draggableColumns = useMemo(
     () =>
-      properties.fieldOptions
+      fieldOptions
         .filter(shouldSeeColumn)
         .map((column: FieldOption, idx: number) => (
           <DraggableColumn
@@ -164,7 +183,7 @@ const TableViewOptions: FC<Props> = ({properties, update}) => {
             onMoveColumn={moveColumn}
           />
         )),
-    [properties.fieldOptions]
+    [fieldOptions]
   )
 
   return (
@@ -183,7 +202,7 @@ const TableViewOptions: FC<Props> = ({properties, update}) => {
               )}
               menu={onCollapse => (
                 <Dropdown.Menu onCollapse={onCollapse}>
-                  {properties.fieldOptions
+                  {fieldOptions
                     .filter(field => !!field.internalName)
                     .map(field => (
                       <Dropdown.Item

@@ -6,7 +6,7 @@ import classnames from 'classnames'
 import {fromFlux} from '@influxdata/giraffe'
 
 // Components
-import View from 'src/visualization/components/View'
+import {View} from 'src/visualization'
 import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 

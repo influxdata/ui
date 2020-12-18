@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 
 // Components
 import TimeSeries from 'src/shared/components/TimeSeries'
-import View from 'src/visualization/components/View'
+import {View} from 'src/visualization'
 
 // Utils
 import {GlobalAutoRefresher} from 'src/utils/AutoRefresher'

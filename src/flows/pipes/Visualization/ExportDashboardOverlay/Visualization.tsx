@@ -5,7 +5,7 @@ import React, {FC, useCallback, useContext, useEffect, useState} from 'react'
 import QueryProvider, {QueryContext} from 'src/flows/context/query'
 import {PopupContext} from 'src/flows/context/popup'
 import {AppSettingContext} from 'src/flows/context/app'
-import View from 'src/visualization/components/View'
+import {View} from 'src/visualization'
 
 // Types
 import {RemoteDataState} from 'src/types'

@@ -1,7 +1,6 @@
 import React, {FC, useContext, useMemo, useEffect} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {AppState, ResourceType, RemoteDataState} from 'src/types'
-import {parse} from 'src/external/parser'
 import {runQuery} from 'src/shared/apis/query'
 import {getWindowVars} from 'src/variables/utils/getWindowVars'
 import {buildVarsOption} from 'src/variables/utils/buildVarsOption'

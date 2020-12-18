@@ -103,3 +103,11 @@ export const EditAnnotationDashboardOverlay = RouteOverlay(
     history.push(`/${ORGS}/${params.orgID}/${DASHBOARDS}/${params.dashboardID}`)
   }
 )
+
+export const ThresholdCheckOverlay = RouteOverlay(
+  OverlayHandler,
+  'check-threshold',
+  (history, params) => {
+    history.push(`/${ORGS}/${params.orgID}/alerting`)
+  }
+)

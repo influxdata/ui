@@ -11,7 +11,10 @@ import TreeNav from 'src/pageLayout/containers/TreeNav'
 import TooltipPortal from 'src/portals/TooltipPortal'
 import NotesPortal from 'src/portals/NotesPortal'
 import Notifications from 'src/shared/components/notifications/Notifications'
-import OverlayController from 'src/overlays/components/OverlayController'
+import {
+  OverlayProviderComp,
+  OverlayController,
+} from 'src/overlays/components/OverlayController'
 import SetOrg from 'src/shared/containers/SetOrg'
 import CreateOrgOverlay from './organizations/components/CreateOrgOverlay'
 
@@ -35,7 +38,9 @@ const App: SFC<Props> = ({inPresentationMode, currentPage, theme}) => {
       <Notifications />
       <TooltipPortal />
       <NotesPortal />
-      <OverlayController />
+      <OverlayProviderComp>
+        <OverlayController />
+      </OverlayProviderComp>
       <TreeNav />
       <Switch>
         <Route path="/orgs/new" component={CreateOrgOverlay} />

@@ -7,6 +7,7 @@ import {setViewProperties} from 'src/timeMachine/actions'
 
 // Components
 import {DapperScrollbars} from '@influxdata/clockface'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 // Utils
 import {getActiveTimeMachine, getVisTable} from 'src/timeMachine/selectors'
@@ -38,13 +39,15 @@ const ViewOptions: FC = () => {
     }
 
     return (
-      <div className="view-options--container">
-        {createElement(TYPE_DEFINITIONS[view.properties.type].options, {
-          properties: view.properties,
-          results,
-          update: update,
-        })}
-      </div>
+      <ErrorBoundary>
+        <div className="view-options--container">
+          {createElement(TYPE_DEFINITIONS[view.properties.type].options, {
+            properties: view.properties,
+            results,
+            update: update,
+          })}
+        </div>
+      </ErrorBoundary>
     )
   }, [view.properties, results, update])
 

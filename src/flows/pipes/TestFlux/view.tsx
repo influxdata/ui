@@ -2,12 +2,10 @@
 import React, {FC, useState, useContext} from 'react'
 
 // Components
-import ViewTypeDropdown from 'src/visualization/components/ViewTypeDropdown'
 import Resizer from 'src/flows/shared/Resizer'
 
 // Components
 import {SquareButton, IconFont} from '@influxdata/clockface'
-import View from 'src/visualization/components/View'
 
 // Utilities
 import fromFlux from 'src/shared/utils/fromFlux.legacy'
@@ -19,7 +17,7 @@ import {ViewType, RemoteDataState} from 'src/types'
 import {AppSettingContext} from 'src/flows/context/app'
 import {PipeContext} from 'src/flows/context/pipe'
 
-import {TYPE_DEFINITIONS, _transform} from 'src/visualization'
+import {TYPE_DEFINITIONS, View, ViewTypeDropdown} from 'src/visualization'
 
 const TestFlux: FC<PipeProp> = ({Context}) => {
   const {timeZone} = useContext(AppSettingContext)
@@ -62,7 +60,7 @@ const TestFlux: FC<PipeProp> = ({Context}) => {
 
   const updateType = (type: ViewType) => {
     update({
-      properties: _transform(TYPE_DEFINITIONS[type].initial, results.parsed),
+      properties: TYPE_DEFINITIONS[type].initial,
     })
   }
 

@@ -16,13 +16,11 @@ import {
   SquareButton,
 } from '@influxdata/clockface'
 import ExportButton from 'src/flows/pipes/Visualization/ExportDashboardButton'
-import ViewTypeDropdown from 'src/visualization/components/ViewTypeDropdown'
 import Resizer from 'src/flows/shared/Resizer'
-import View from 'src/visualization/components/View'
 
 // Utilities
 import {event} from 'src/cloud/utils/reporting'
-import {TYPE_DEFINITIONS, _transform} from 'src/visualization'
+import {TYPE_DEFINITIONS, View, ViewTypeDropdown} from 'src/visualization'
 
 // Types
 import {ViewType, RemoteDataState} from 'src/types'
@@ -61,7 +59,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     })
 
     update({
-      properties: _transform(TYPE_DEFINITIONS[type].initial, results.parsed),
+      properties: TYPE_DEFINITIONS[type].initial,
     })
   }
 

@@ -41,11 +41,14 @@ context.keys().forEach(key => {
   })
 })
 
+export {default as View} from 'src/visualization/components/View'
+export {default as ViewTypeDropdown} from 'src/visualization/components/ViewTypeDropdown'
+
 // TODO: all of this needs to be removed by refactoring
 // the underlying logic. Managing state like this is a
 // recipe for long dev cycles, stale logic, and many bugs
 // these default value mechanisms should exist within giraffe
-
+/*
 const _transform = (
   properties: ViewProperties,
   results: FromFluxResult
@@ -78,5 +81,4 @@ const _transform = (
 
   return properties
 }
-
-export {_transform}
+*/

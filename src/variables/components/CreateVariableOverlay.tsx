@@ -16,7 +16,7 @@ type Props = RouteComponentProps<{orgID: string}>
 class CreateVariableOverlay extends PureComponent<Props> {
   public render() {
     return (
-      <Overlay visible={true}>
+      <Overlay visible={true} onEscape={this.handleHideOverlay}>
         <Overlay.Container maxWidth={1000}>
           <Overlay.Header
             title="Create Variable"
@@ -35,6 +35,7 @@ class CreateVariableOverlay extends PureComponent<Props> {
   }
 
   private handleHideOverlay = () => {
+    console.log('helo')
     const {
       history,
       match: {

@@ -14,7 +14,7 @@ import DashboardsIndex from 'src/dashboards/components/dashboard_index/Dashboard
 import DashboardContainer from 'src/dashboards/components/DashboardContainer'
 import FlowPage from 'src/flows/components/FlowPage'
 import BucketsIndex from 'src/buckets/containers/BucketsIndex'
-import TokensIndex from 'src/authorizations/containers/TokensIndex'
+import {TokensIndex} from 'src/authorizations/containers/TokensIndex'
 import TelegrafsPage from 'src/telegrafs/containers/TelegrafsPage'
 import ScrapersIndex from 'src/scrapers/containers/ScrapersIndex'
 import WriteDataPage from 'src/writeData/containers/WriteDataPage'

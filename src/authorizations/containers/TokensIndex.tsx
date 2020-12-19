@@ -26,24 +26,21 @@ const tokensPath = `/${ORGS}/${ORG_ID}/load-data/${TOKENS}/generate`
 export const TokensIndex: FC = () => {
   return (
     <>
-    <Page titleTag={pageTitleSuffixer(['Tokens', 'Load Data'])}>
-      <LoadDataHeader />
-      <LoadDataTabbedPage activeTab="tokens">
-        <GetResources resources={[ResourceType.Authorizations]}>
-          <TokensTab />
-        </GetResources>
-      </LoadDataTabbedPage>
-    </Page>
-    <Switch>
-      <Route
-        path={`${tokensPath}/all-access`}
-        component={AllAccessTokenOverlay}
-      />
-      <Route
-        path={`${tokensPath}/buckets`}
-        component={BucketsTokenOverlay}
-      />
-    </Switch>
-  </>
+      <Page titleTag={pageTitleSuffixer(['Tokens', 'Load Data'])}>
+        <LoadDataHeader />
+        <LoadDataTabbedPage activeTab="tokens">
+          <GetResources resources={[ResourceType.Authorizations]}>
+            <TokensTab />
+          </GetResources>
+        </LoadDataTabbedPage>
+      </Page>
+      <Switch>
+        <Route
+          path={`${tokensPath}/all-access`}
+          component={AllAccessTokenOverlay}
+        />
+        <Route path={`${tokensPath}/buckets`} component={BucketsTokenOverlay} />
+      </Switch>
+    </>
   )
 }

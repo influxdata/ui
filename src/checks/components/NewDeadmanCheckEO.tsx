@@ -1,12 +1,13 @@
 // Libraries
-import React, {FunctionComponent, useEffect} from 'react'
-import {connect, ConnectedProps, useDispatch} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import React, {FunctionComponent, useEffect, useContext} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
+import {withRouter} from 'react-router-dom'
 
 // Components
-import {Overlay, SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
+import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 import CheckEOHeader from 'src/checks/components/CheckEOHeader'
 import TimeMachine from 'src/timeMachine/components/TimeMachine'
+import {OverlayContext} from 'src/overlays/components/OverlayController'
 
 // Actions
 import {createCheckFromTimeMachine} from 'src/checks/actions/thunks'
@@ -23,22 +24,12 @@ import {createView} from 'src/views/helpers'
 // Types
 import {AppState, RemoteDataState, CheckViewProperties} from 'src/types'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & RouteComponentProps<{orgID: string}>
-
-const NewCheckOverlay: FunctionComponent<Props> = ({
-  match: {
-    params: {orgID},
-  },
-  status,
-  checkName,
-  history,
-  onSaveCheckFromTimeMachine,
-  onResetAlertBuilder,
-  onUpdateAlertBuilderName,
-}) => {
+const NewCheckOverlay: FunctionComponent = () => {
+  const {onClose} = useContext(OverlayContext)
   const dispatch = useDispatch()
-
+  const {status, name: checkName} = useSelector(
+    (state: AppState) => state.alertBuilder
+  )
   useEffect(() => {
     const view = createView<CheckViewProperties>('deadman')
     dispatch(initializeAlertBuilder('deadman'))
@@ -47,12 +38,8 @@ const NewCheckOverlay: FunctionComponent<Props> = ({
         view,
       })
     )
+    return () => dispatch(resetAlertBuilder)
   }, [dispatch])
-
-  const handleClose = () => {
-    history.push(`/orgs/${orgID}/alerting`)
-    onResetAlertBuilder()
-  }
 
   return (
     <div className="veo-overlay">
@@ -64,9 +51,9 @@ const NewCheckOverlay: FunctionComponent<Props> = ({
           <CheckEOHeader
             key={checkName}
             name={checkName}
-            onSetName={onUpdateAlertBuilderName}
-            onCancel={handleClose}
-            onSave={onSaveCheckFromTimeMachine}
+            onSetName={updateName}
+            onCancel={onClose}
+            onSave={createCheckFromTimeMachine}
           />
           <div className="veo-contents">
             <TimeMachine />
@@ -77,16 +64,4 @@ const NewCheckOverlay: FunctionComponent<Props> = ({
   )
 }
 
-const mstp = ({alertBuilder: {name, status}}: AppState) => {
-  return {checkName: name, status}
-}
-
-const mdtp = {
-  onSaveCheckFromTimeMachine: createCheckFromTimeMachine,
-  onResetAlertBuilder: resetAlertBuilder,
-  onUpdateAlertBuilderName: updateName,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(withRouter(NewCheckOverlay))
+export default withRouter(NewCheckOverlay)

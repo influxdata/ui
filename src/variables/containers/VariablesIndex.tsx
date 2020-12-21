@@ -10,12 +10,12 @@ import SettingsHeader from 'src/settings/components/SettingsHeader'
 import {Page} from '@influxdata/clockface'
 import VariablesTab from 'src/variables/components/VariablesTab'
 import GetResources from 'src/resources/components/GetResources'
-import VariableExportOverlay from 'src/variables/components/VariableExportOverlay'
 import {
   CreateVariableOverlay,
   VariableImportOverlay,
   RenameVariableOverlay,
   UpdateVariableOverlay,
+  ExportVariableOverlay,
 } from 'src/overlays/components'
 
 // Utils
@@ -54,7 +54,7 @@ class VariablesIndex extends Component<StateProps> {
           />
           <Route
             path={`${varsPath}/:id/export`}
-            component={VariableExportOverlay}
+            component={ExportVariableOverlay}
           />
           <Route path={`${varsPath}/new`} component={CreateVariableOverlay} />
           <Route

@@ -30,6 +30,7 @@ import CreateVariableOverlay from 'src/variables/components/CreateVariableOverla
 import RenameVariableOverlay from 'src/variables/components/RenameVariableOverlay'
 import ImportVariableOverlay from 'src/variables/components/VariableImportOverlay'
 import UpdateVariableOverlay from 'src/variables/components/UpdateVariableOverlay'
+import ExportVariableOverlay from 'src/variables/components/VariableExportOverlay'
 import NewThresholdCheckEO from 'src/checks/components/NewThresholdCheckEO'
 
 // Actions
@@ -107,6 +108,9 @@ export const OverlayController: FunctionComponent = () => {
         break
       case 'update-variable':
         activeOverlay.current = <UpdateVariableOverlay />
+        break
+      case 'export-variable':
+        activeOverlay.current = <ExportVariableOverlay />
         break
       default:
         activeOverlay.current = null

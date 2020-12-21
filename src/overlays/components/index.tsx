@@ -111,3 +111,27 @@ export const ThresholdCheckOverlay = RouteOverlay(
     history.push(`/${ORGS}/${params.orgID}/alerting`)
   }
 )
+
+export const CreateVariableOverlay = RouteOverlay(
+  OverlayHandler,
+  'create-variable',
+  (history, params) => {
+    history.push(`/orgs/${params.orgID}/settings/variables`)
+  }
+)
+
+export const VariableImportOverlay = RouteOverlay(
+  OverlayHandler,
+  'import-variable',
+  history => {
+    history.goBack()
+  }
+)
+
+export const RenameVariableOverlay = RouteOverlay(
+  OverlayHandler,
+  'rename-variable',
+  (history, params) => {
+    history.push(`/orgs/${params.orgID}/settings/variables`)
+  }
+)

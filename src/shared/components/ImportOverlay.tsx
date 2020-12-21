@@ -51,48 +51,46 @@ class ImportOverlay extends PureComponent<Props, State> {
   }
 
   public render() {
-    const {isVisible, resourceName} = this.props
+    const {resourceName} = this.props
     const {selectedImportOption} = this.state
 
     return (
-      <Overlay visible={isVisible} testID="task-import--overlay">
-        <Overlay.Container maxWidth={800}>
-          <Form onSubmit={this.submit}>
-            <Overlay.Header
-              title={`Import ${resourceName}`}
-              onDismiss={this.onDismiss}
-            />
-            <Overlay.Body>
-              <div className="import--options">
-                <SelectGroup>
-                  <SelectGroup.Option
-                    name="import-mode"
-                    id={ImportOption.Upload}
-                    active={selectedImportOption === ImportOption.Upload}
-                    value={ImportOption.Upload}
-                    onClick={this.handleSetImportOption}
-                    titleText="Upload"
-                  >
-                    Upload File
-                  </SelectGroup.Option>
-                  <SelectGroup.Option
-                    name="import-mode"
-                    id={ImportOption.Paste}
-                    active={selectedImportOption === ImportOption.Paste}
-                    value={ImportOption.Paste}
-                    onClick={this.handleSetImportOption}
-                    titleText="Paste"
-                  >
-                    Paste JSON
-                  </SelectGroup.Option>
-                </SelectGroup>
-              </div>
-              {this.importBody}
-            </Overlay.Body>
-            <Overlay.Footer>{this.submitButton}</Overlay.Footer>
-          </Form>
-        </Overlay.Container>
-      </Overlay>
+      <Overlay.Container maxWidth={800}>
+        <Form onSubmit={this.submit}>
+          <Overlay.Header
+            title={`Import ${resourceName}`}
+            onDismiss={this.onDismiss}
+          />
+          <Overlay.Body>
+            <div className="import--options">
+              <SelectGroup>
+                <SelectGroup.Option
+                  name="import-mode"
+                  id={ImportOption.Upload}
+                  active={selectedImportOption === ImportOption.Upload}
+                  value={ImportOption.Upload}
+                  onClick={this.handleSetImportOption}
+                  titleText="Upload"
+                >
+                  Upload File
+                </SelectGroup.Option>
+                <SelectGroup.Option
+                  name="import-mode"
+                  id={ImportOption.Paste}
+                  active={selectedImportOption === ImportOption.Paste}
+                  value={ImportOption.Paste}
+                  onClick={this.handleSetImportOption}
+                  titleText="Paste"
+                >
+                  Paste JSON
+                </SelectGroup.Option>
+              </SelectGroup>
+            </div>
+            {this.importBody}
+          </Overlay.Body>
+          <Overlay.Footer>{this.submitButton}</Overlay.Footer>
+        </Form>
+      </Overlay.Container>
     )
   }
 

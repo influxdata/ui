@@ -2,7 +2,7 @@
 import OverlayHandler, {
   RouteOverlay,
 } from 'src/overlays/components/RouteOverlay'
-
+import {withRouter} from 'react-router-dom'
 // Constants
 import {
   ORGS,
@@ -123,14 +123,22 @@ export const CreateVariableOverlay = RouteOverlay(
 export const VariableImportOverlay = RouteOverlay(
   OverlayHandler,
   'import-variable',
-  history => {
-    history.goBack()
+  (history, params) => {
+    history.push(`/orgs/${params.orgID}/settings/variables`)
   }
 )
 
 export const RenameVariableOverlay = RouteOverlay(
   OverlayHandler,
   'rename-variable',
+  (history, params) => {
+    history.push(`/orgs/${params.orgID}/settings/variables`)
+  }
+)
+
+export const UpdateVariableOverlay = RouteOverlay(
+  OverlayHandler,
+  'update-variable',
   (history, params) => {
     history.push(`/orgs/${params.orgID}/settings/variables`)
   }

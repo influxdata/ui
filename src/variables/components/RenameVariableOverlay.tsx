@@ -17,8 +17,11 @@ const effectedItems = (): string[] => {
   return ['Queries', 'Dashboards', 'Telegraf Configurations', 'Templates']
 }
 
-const RenameVariableOverlay: FC<RouteComponentProps<{orgID: string}>> = () => {
+const RenameVariableOverlay: FC<RouteComponentProps<{
+  orgID: string
+}>> = () => {
   const {onClose} = useContext(OverlayContext)
+
   return (
     <DangerConfirmationOverlay
       title="Rename Variable"

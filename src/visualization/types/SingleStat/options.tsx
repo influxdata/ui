@@ -13,6 +13,7 @@ import {
 // Utils
 import {MIN_DECIMAL_PLACES, MAX_DECIMAL_PLACES} from 'src/dashboards/constants'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
+import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
 
 import {SingleStatViewProperties} from 'src/types'
 import {VisOptionProps} from 'src/visualization'
@@ -36,6 +37,10 @@ const SingleStatOptions: FC<Props> = ({properties, update}) => {
     } else {
       setDigits(2)
     }
+  }
+
+  const setColors = (colors: Color[]): void => {
+    update({colors})
   }
 
   return (
@@ -89,6 +94,14 @@ const SingleStatOptions: FC<Props> = ({properties, update}) => {
                   type={InputType.Number}
                 />
               }
+            />
+          </Form.Element>
+        </Grid.Column>
+        <Grid.Column widthXS={Columns.Twelve} widthMD={Columns.Six}>
+          <Form.Element label="Colorized Thresholds">
+            <ThresholdsSettings
+              thresholds={properties.colors.filter(c => c.type !== 'scale')}
+              onSetThresholds={setColors}
             />
           </Form.Element>
         </Grid.Column>

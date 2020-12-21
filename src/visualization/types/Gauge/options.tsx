@@ -16,7 +16,7 @@ import {
   ComponentSize,
 } from '@influxdata/clockface'
 
-import ThresholdsSettings from './ThresholdsSettings'
+import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
 import {MIN_DECIMAL_PLACES, MAX_DECIMAL_PLACES} from 'src/dashboards/constants'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 
@@ -143,16 +143,15 @@ const GaugeOptions: FC<Props> = ({properties, update}) => {
             </Form.Element>
           )}
         </Grid.Column>
-        <Grid.Column>
-          <h4 className="view-options--header">Colorized Thresholds</h4>
-        </Grid.Column>
-        <Grid.Column>
-          <ThresholdsSettings
-            thresholds={properties.colors}
-            onSetThresholds={colors => {
-              update({colors})
-            }}
-          />
+        <Grid.Column widthXS={Columns.Twelve} widthMD={Columns.Six}>
+          <Form.Element label="Colorized Thresholds">
+            <ThresholdsSettings
+              thresholds={properties.colors}
+              onSetThresholds={colors => {
+                update({colors})
+              }}
+            />
+          </Form.Element>
         </Grid.Column>
       </Grid.Row>
     </Grid>

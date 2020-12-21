@@ -135,7 +135,7 @@ class Gauge extends Component<Props> {
 
   private drawGradientGauge = (ctx, xc, yc, r, gradientThickness) => {
     const {colors} = this.props
-    const sortedColors = colors.sort((a, b) => b.value - a.value)
+    const sortedColors = colors.sort((a, b) => a.value - b.value)
 
     const arcStart = Math.PI * 0.75
     const arcEnd = arcStart + Math.PI * 1.5
@@ -167,7 +167,7 @@ class Gauge extends Component<Props> {
     gradientThickness
   ) => {
     const {colors} = this.props
-    const sortedColors = colors.sort((a, b) => b.value - a.value)
+    const sortedColors = colors.sort((a, b) => a.value - b.value)
 
     const trueValueRange = Math.abs(maxValue - minValue)
     const totalArcLength = Math.PI * 1.5

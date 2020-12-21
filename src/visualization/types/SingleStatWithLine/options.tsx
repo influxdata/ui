@@ -28,6 +28,7 @@ import {
 } from 'src/shared/utils/vis'
 import ColorSchemeDropdown from 'src/shared/components/ColorSchemeDropdown'
 import Checkbox from 'src/shared/components/Checkbox'
+import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
 import {LinePlusSingleStatProperties} from 'src/types'
 import {VisOptionProps} from 'src/visualization'
 
@@ -102,6 +103,23 @@ const SingleStatWithLineOptions: FC<Props> = ({
       setDigits(2)
     }
   }
+  const setColors = (colors: Color[]): void => {
+    if (colors[0]?.type === 'scale') {
+      update({
+        colors: [
+          ...properties.colors.filter(c => c.type !== 'scale'),
+          ...colors,
+        ],
+      })
+    } else {
+      update({
+        colors: [
+          ...properties.colors.filter(c => c.type === 'scale'),
+          ...colors,
+        ],
+      })
+    }
+  }
 
   return (
     <Grid>
@@ -161,9 +179,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
           <Form.Element label="Line Colors">
             <ColorSchemeDropdown
               value={properties.colors.filter(c => c.type === 'scale')}
-              onChange={colors => {
-                update({colors})
-              }}
+              onChange={setColors}
             />
           </Form.Element>
 
@@ -388,6 +404,14 @@ const SingleStatWithLineOptions: FC<Props> = ({
                   type={InputType.Number}
                 />
               }
+            />
+          </Form.Element>
+        </Grid.Column>
+        <Grid.Column widthXS={Columns.Twelve} widthMD={Columns.Six}>
+          <Form.Element label="Colorized Thresholds">
+            <ThresholdsSettings
+              thresholds={properties.colors.filter(c => c.type !== 'scale')}
+              onSetThresholds={setColors}
             />
           </Form.Element>
         </Grid.Column>

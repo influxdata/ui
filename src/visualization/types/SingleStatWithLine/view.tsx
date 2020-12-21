@@ -192,7 +192,7 @@ const SingleStatWithLine: FC<Props> = ({
             bgColor: backgroundColor,
             textColor,
           } = generateThresholdsListHexs({
-            colors: _colors,
+            colors: properties.colors.filter(c => c.type !== 'scale'),
             lastValue: latestValue,
             cellType: 'single-stat',
           })

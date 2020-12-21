@@ -1,4 +1,5 @@
 import {DEFAULT_THRESHOLDS_LIST_COLORS} from 'src/shared/constants/thresholds'
+import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {
   DEFAULT_FILLVALUES,
   AGG_WINDOW_AUTO,
@@ -57,7 +58,10 @@ export default {
       scale: 'linear',
     } as Axis,
   },
-  colors: DEFAULT_THRESHOLDS_LIST_COLORS as Color[],
+  colors: [
+    ...(DEFAULT_LINE_COLORS as Color[]),
+    ...(DEFAULT_THRESHOLDS_LIST_COLORS as Color[]),
+  ],
   prefix: '',
   tickPrefix: '',
   suffix: '',

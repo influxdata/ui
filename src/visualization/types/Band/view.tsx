@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useMemo} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
 import {Plot} from '@influxdata/giraffe'
 
 // Components
@@ -38,55 +37,24 @@ import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {INVALID_DATA_COPY} from 'src/shared/copy/cell'
 
 // Types
-import {AppState, BandViewProperties} from 'src/types'
+import {BandViewProperties} from 'src/types'
 import {VisProps} from 'src/visualization'
 
-interface OwnProps extends VisProps {
+interface Props extends VisProps {
   properties: BandViewProperties
 }
-
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & OwnProps
 
 const BAND_LINE_OPACITY = 0.7
 const BAND_LINE_WIDTH = 3
 const BAND_SHADE_OPACITY = 0.3
 
 const BandPlot: FC<Props> = ({
-  activeQueryIndex,
   properties,
   result,
   timeRange,
   timeZone,
   theme,
 }) => {
-  // TODO: there's a lot of weight required for getting a string here.
-  // We have to pass around all of the queries, assume redux is set up
-  // and has an active query context (not the case in notebooks), etc.
-  // maybe move to a new level?
-  const mainColumnName = useMemo(() => {
-    const editMode = properties.queries[activeQueryIndex]?.editMode || 'unknown'
-    if (editMode !== QUERY_BUILDER_MODE) {
-      return properties.mainColumn
-    }
-
-    const aggregateFunctions =
-      properties.queries[activeQueryIndex]?.builderConfig?.functions || []
-    const selectedFunctions = aggregateFunctions.map(f => f.name)
-    return getMainColumnName(
-      selectedFunctions,
-      properties.upperColumn,
-      properties.mainColumn,
-      properties.lowerColumn
-    )
-  }, [
-    activeQueryIndex,
-    properties.queries,
-    properties.upperColumn,
-    properties.mainColumn,
-    properties.lowerColumn,
-  ])
-
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
   const tooltipOrientationThreshold = useLegendOrientationThreshold(
@@ -199,7 +167,7 @@ const BandPlot: FC<Props> = ({
             shadeOpacity: BAND_SHADE_OPACITY,
             hoverDimension: properties.hoverDimension,
             upperColumnName: properties.upperColumn,
-            mainColumnName,
+            mainColumnName: properties.mainColumnName,
             lowerColumnName: properties.lowerColumn,
           },
         ],
@@ -208,9 +176,4 @@ const BandPlot: FC<Props> = ({
   )
 }
 
-const mstp = (state: AppState) => ({
-  activeQueryIndex: getActiveQueryIndex(state),
-})
-
-const connector = connect(mstp)
-export default connector(BandPlot)
+export default BandPlot

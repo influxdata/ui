@@ -15,7 +15,7 @@ import {MIN_DECIMAL_PLACES, MAX_DECIMAL_PLACES} from 'src/dashboards/constants'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
 
-import {SingleStatViewProperties} from 'src/types'
+import {SingleStatViewProperties, Color} from 'src/types'
 import {VisOptionProps} from 'src/visualization'
 
 interface Props extends VisOptionProps {

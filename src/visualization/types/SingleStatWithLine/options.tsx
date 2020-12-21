@@ -29,7 +29,7 @@ import {
 import ColorSchemeDropdown from 'src/shared/components/ColorSchemeDropdown'
 import Checkbox from 'src/shared/components/Checkbox'
 import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
-import {LinePlusSingleStatProperties} from 'src/types'
+import {LinePlusSingleStatProperties, Color} from 'src/types'
 import {VisOptionProps} from 'src/visualization'
 
 const {BASE_2, BASE_10} = AXES_SCALE_OPTIONS

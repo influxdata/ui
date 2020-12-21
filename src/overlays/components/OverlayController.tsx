@@ -29,6 +29,7 @@ import {EditAnnotationOverlay} from 'src/annotations/components/EditAnnotationOv
 import CreateVariableOverlay from 'src/variables/components/CreateVariableOverlay'
 import RenameVariableOverlay from 'src/variables/components/RenameVariableOverlay'
 import ImportVariableOverlay from 'src/variables/components/VariableImportOverlay'
+import UpdateVariableOverlay from 'src/variables/components/UpdateVariableOverlay'
 import NewThresholdCheckEO from 'src/checks/components/NewThresholdCheckEO'
 
 // Actions
@@ -104,6 +105,9 @@ export const OverlayController: FunctionComponent = () => {
       case 'rename-variable':
         activeOverlay.current = <RenameVariableOverlay />
         break
+      case 'update-variable':
+        activeOverlay.current = <UpdateVariableOverlay />
+        break
       default:
         activeOverlay.current = null
         break
@@ -111,7 +115,7 @@ export const OverlayController: FunctionComponent = () => {
 
     return activeOverlay.current
   }, [onClose, overlayID])
-  // console.log(overlayID, 'IN CONTROLLER')
+
   return (
     <Overlay visible={!!overlayID} onEscape={onClose}>
       {activeOverlay.current}

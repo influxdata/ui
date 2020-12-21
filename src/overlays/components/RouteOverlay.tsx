@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, Component, ComponentClass, useEffect, memo} from 'react'
+import React, {FC, Component, ComponentClass, useEffect} from 'react'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {useDispatch} from 'react-redux'
 import {OverlayID} from 'src/overlays/reducers/overlays'
@@ -24,6 +24,7 @@ type OverlayHandlerProps = OwnProps & RouteComponentProps
 
 const OverlayHandler: FC<OverlayHandlerProps> = props => {
   const {overlayID, onClose, match, history} = props
+  console.log(match)
   const dispatch = useDispatch()
 
   useEffect(() => {

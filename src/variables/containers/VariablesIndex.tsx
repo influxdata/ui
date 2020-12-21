@@ -15,8 +15,8 @@ import {
   CreateVariableOverlay,
   VariableImportOverlay,
   RenameVariableOverlay,
+  UpdateVariableOverlay,
 } from 'src/overlays/components'
-import UpdateVariableOverlay from 'src/variables/components/UpdateVariableOverlay'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'

@@ -55,7 +55,7 @@ const NewCheckOverlay: FunctionComponent<Props> = ({
   }
 
   return (
-    <Overlay visible={true} className="veo-overlay">
+    <div className="veo-overlay">
       <div className="veo">
         <SpinnerContainer
           spinnerComponent={<TechnoSpinner />}
@@ -73,7 +73,7 @@ const NewCheckOverlay: FunctionComponent<Props> = ({
           </div>
         </SpinnerContainer>
       </div>
-    </Overlay>
+    </div>
   )
 }
 

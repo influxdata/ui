@@ -32,7 +32,7 @@ import ImportVariableOverlay from 'src/variables/components/VariableImportOverla
 import UpdateVariableOverlay from 'src/variables/components/UpdateVariableOverlay'
 import ExportVariableOverlay from 'src/variables/components/VariableExportOverlay'
 import NewThresholdCheckEO from 'src/checks/components/NewThresholdCheckEO'
-
+import NewDeadmanCheckEO from 'src/checks/components/NewDeadmanCheckEO'
 // Actions
 import {dismissOverlay} from 'src/overlays/actions/overlays'
 
@@ -96,6 +96,9 @@ export const OverlayController: FunctionComponent = () => {
         break
       case 'check-threshold':
         activeOverlay.current = <NewThresholdCheckEO />
+        break
+      case 'deadman-check':
+        activeOverlay.current = <NewDeadmanCheckEO />
         break
       case 'create-variable':
         activeOverlay.current = <CreateVariableOverlay />

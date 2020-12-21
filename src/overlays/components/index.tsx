@@ -2,7 +2,7 @@
 import OverlayHandler, {
   RouteOverlay,
 } from 'src/overlays/components/RouteOverlay'
-import {withRouter} from 'react-router-dom'
+
 // Constants
 import {
   ORGS,
@@ -107,6 +107,14 @@ export const EditAnnotationDashboardOverlay = RouteOverlay(
 export const ThresholdCheckOverlay = RouteOverlay(
   OverlayHandler,
   'check-threshold',
+  (history, params) => {
+    history.push(`/${ORGS}/${params.orgID}/alerting`)
+  }
+)
+
+export const DeadmanCheckOverlay = RouteOverlay(
+  OverlayHandler,
+  'deadman-check',
   (history, params) => {
     history.push(`/${ORGS}/${params.orgID}/alerting`)
   }

@@ -24,7 +24,6 @@ type OverlayHandlerProps = OwnProps & RouteComponentProps
 
 const OverlayHandler: FC<OverlayHandlerProps> = props => {
   const {overlayID, onClose, match, history} = props
-  console.log(match)
   const dispatch = useDispatch()
 
   useEffect(() => {

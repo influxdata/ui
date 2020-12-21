@@ -10,10 +10,12 @@ import SettingsHeader from 'src/settings/components/SettingsHeader'
 import {Page} from '@influxdata/clockface'
 import VariablesTab from 'src/variables/components/VariablesTab'
 import GetResources from 'src/resources/components/GetResources'
-import VariableImportOverlay from 'src/variables/components/VariableImportOverlay'
 import VariableExportOverlay from 'src/variables/components/VariableExportOverlay'
-import CreateVariableOverlay from 'src/variables/components/CreateVariableOverlay'
-import RenameVariableOverlay from 'src/variables/components/RenameVariableOverlay'
+import {
+  CreateVariableOverlay,
+  VariableImportOverlay,
+  RenameVariableOverlay,
+} from 'src/overlays/components'
 import UpdateVariableOverlay from 'src/variables/components/UpdateVariableOverlay'
 
 // Utils

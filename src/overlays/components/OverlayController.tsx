@@ -26,6 +26,9 @@ import {CreateAnnotationStreamOverlay} from 'src/annotations/components/overlay/
 import {UpdateAnnotationStreamOverlay} from 'src/annotations/components/overlay/UpdateAnnotationStreamOverlay'
 import {AddAnnotationOverlay} from 'src/annotations/components/AddAnnotationOverlay'
 import {EditAnnotationOverlay} from 'src/annotations/components/EditAnnotationOverlay'
+import CreateVariableOverlay from 'src/variables/components/CreateVariableOverlay'
+import RenameVariableOverlay from 'src/variables/components/RenameVariableOverlay'
+import ImportVariableOverlay from 'src/variables/components/VariableImportOverlay'
 import NewThresholdCheckEO from 'src/checks/components/NewThresholdCheckEO'
 
 // Actions
@@ -92,6 +95,15 @@ export const OverlayController: FunctionComponent = () => {
       case 'check-threshold':
         activeOverlay.current = <NewThresholdCheckEO />
         break
+      case 'create-variable':
+        activeOverlay.current = <CreateVariableOverlay />
+        break
+      case 'import-variable':
+        activeOverlay.current = <ImportVariableOverlay />
+        break
+      case 'rename-variable':
+        activeOverlay.current = <RenameVariableOverlay />
+        break
       default:
         activeOverlay.current = null
         break
@@ -126,10 +138,6 @@ const OverlayProvider: FunctionComponent = props => {
       onClose()
     }
   }, [onClose, dispatch])
-
-  // TODO: Alex Paxton
-  // Probably should refactor these overlays to use the context instead of prop
-  // drilling onClose into them
 
   return (
     <OverlayContext.Provider

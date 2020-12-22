@@ -24,27 +24,28 @@ import AxisTicksGenerator from 'src/shared/components/axisTicks/AxisTicksGenerat
 
 // Actions
 import {
-  setXColumn,
-  setYColumn,
-  setBinSize,
-  setColorHexes,
-  setXDomain,
-  setYDomain,
-  setXAxisLabel,
-  setYAxisLabel,
-  setAxisPrefix,
-  setAxisSuffix,
-  setTimeFormat,
-  setLegendOpacity,
-  setLegendOrientationThreshold,
-  setGenerateXAxisTicks,
-  setXTotalTicks,
-  setXTickStart,
-  setXTickStep,
-  setGenerateYAxisTicks,
-  setYTotalTicks,
-  setYTickStart,
-  setYTickStep,
+    setXColumn,
+    setYColumn,
+    setBinSize,
+    setColorHexes,
+    setXDomain,
+    setYDomain,
+    setXAxisLabel,
+    setYAxisLabel,
+    setAxisPrefix,
+    setAxisSuffix,
+    setTimeFormat,
+    setLegendOpacity,
+    setLegendOrientationThreshold,
+    setLegendColorizeRows,
+    setGenerateXAxisTicks,
+    setXTotalTicks,
+    setXTickStart,
+    setXTickStep,
+    setGenerateYAxisTicks,
+    setYTotalTicks,
+    setYTickStart,
+    setYTickStep,
 } from 'src/timeMachine/actions'
 
 // Utils
@@ -228,9 +229,8 @@ const HeatmapOptions: FunctionComponent<Props> = props => {
       />
       <LegendOrientation
         onLegendOpacityChange={props.onSetLegendOpacity}
-        onLegendOrientationThresholdChange={
-          props.onSetLegendOrientationThreshold
-        }
+        onLegendOrientationThresholdChange={props.onSetLegendOrientationThreshold}
+        onLegendColorizeRowsChange={props.onSetLegendColorizeRows}
       />
     </Grid.Column>
   )
@@ -261,6 +261,7 @@ const mdtp = {
   onSetTimeFormat: setTimeFormat,
   onSetLegendOpacity: setLegendOpacity,
   onSetLegendOrientationThreshold: setLegendOrientationThreshold,
+    onSetLegendColorizeRows: setLegendColorizeRows,
   onSetGenerateXAxisTicks: setGenerateXAxisTicks,
   onSetXTotalTicks: setXTotalTicks,
   onSetXTickStart: setXTickStart,

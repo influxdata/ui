@@ -80,7 +80,7 @@ const WriteDataDetailsContextProvider: FC<Props> = ({
 }
 
 const mstp = (state: AppState) => {
-  const buckets = getAll<Bucket>(state, ResourceType.Buckets) ?? []
+  const buckets = getAll<Bucket>(state, ResourceType.Buckets)
   const tokens = getAll<Authorization>(state, ResourceType.Authorizations)
   const organization = getOrg(state)
 

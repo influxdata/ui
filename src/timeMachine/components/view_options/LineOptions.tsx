@@ -109,8 +109,6 @@ class LineOptions extends PureComponent<Props> {
       onSetLegendOpacity,
       onSetLegendOrientationThreshold,
         onSetLegendColorizeRows,
-
-
         onSetGenerateXAxisTicks,
       onSetXTotalTicks,
       onSetXTickStart,
@@ -121,7 +119,7 @@ class LineOptions extends PureComponent<Props> {
       onSetYTickStep,
     } = this.props
 
-    console.log('is this defined? a1:', onSetLegendColorizeRows)
+    console.log('in LineOptions.....is this defined? a1:', onSetLegendColorizeRows)
     return (
       <>
         <Grid.Column>

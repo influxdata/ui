@@ -41,6 +41,7 @@ import {
   setLowerColumn,
   setLegendOpacity,
   setLegendOrientationThreshold,
+  setLegendColorizeRows,
   setGenerateXAxisTicks,
   setXTotalTicks,
   setXTickStart,
@@ -132,6 +133,7 @@ class BandOptions extends PureComponent<Props, State> {
       lowerColumn,
       onSetLegendOpacity,
       onSetLegendOrientationThreshold,
+      onSetLegendColorizeRows,
       onSetGenerateXAxisTicks,
       onSetXTotalTicks,
       onSetXTickStart,
@@ -141,6 +143,8 @@ class BandOptions extends PureComponent<Props, State> {
       onSetYTickStart,
       onSetYTickStep,
     } = this.props
+
+    console.log('a1:  in bandoptions (j-1)');
 
     const upperAndLowerColumnOptions = [
       REMOVE_COLUMN_TEXT,
@@ -332,6 +336,7 @@ class BandOptions extends PureComponent<Props, State> {
         <LegendOrientation
           onLegendOpacityChange={onSetLegendOpacity}
           onLegendOrientationThresholdChange={onSetLegendOrientationThreshold}
+          onLegendColorizeRowsChange={onSetLegendColorizeRows}
         />
       </>
     )
@@ -448,6 +453,7 @@ const mdtp = {
   onSetLowerColumn: setLowerColumn,
   onSetLegendOpacity: setLegendOpacity,
   onSetLegendOrientationThreshold: setLegendOrientationThreshold,
+  onSetLegendColorizeRows: setLegendColorizeRows,
   onSetGenerateXAxisTicks: setGenerateXAxisTicks,
   onSetXTotalTicks: setXTotalTicks,
   onSetXTickStart: setXTickStart,

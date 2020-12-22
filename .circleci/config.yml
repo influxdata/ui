@@ -208,7 +208,7 @@ jobs:
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
           name: Grab compose files
-          command: git clone git@github.com:influxdata/monitor-ci.git
+          command: git clone --branch jfried-oss-e2e-fix git@github.com:influxdata/monitor-ci.git
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing.oss ./monitor-ci/.env

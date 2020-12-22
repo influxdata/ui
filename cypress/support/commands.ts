@@ -16,35 +16,68 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
     })
   \*/
   return cy.setupUser().then(({body}) => {
-    cy.visit(Cypress.config().baseUrl + 'api/v2/signin')
-      .then(() => cy.get('#login').type(body.user.name))
-      .then(() => cy.get('#password').type(Cypress.env('password')))
-      .then(() => cy.get('#submit-login').click())
-      .then(() => {
-        cy.get('body').then($body => {
-          /**
-           * we are conditionally rendering this test case since it's only
-           * relevant to CLOUD tests in order to click the `Grant Access` button
-           * that's rendered by Dex in the CLOUD development environment.
-           *
-           * We are using this conditional test based on the following doc suggestions:
-           * https://docs.cypress.io/guides/core-concepts/conditional-testing.html#Element-existence
-           **/
-          if ($body.find('.theme-btn--success').length) {
-            cy.get('.theme-btn--success').click()
-          }
-        })
-      })
-      .then(() => cy.location('pathname').should('not.eq', '/signin'))
-      .then(() =>
-        cy.request({
+    cy.request({
+      method: 'GET',
+      url:
+        'https://twodotoh.a.influxcloud.dev.local/api/v2/signin?redirectTo=https://twodotoh.a.influxcloud.dev.local/',
+      followRedirect: false,
+    }).then(resp =>
+      cy
+        .request({
+          url: resp.headers.location,
+          followRedirect: false,
           method: 'GET',
-          url: '/api/v2/orgs',
         })
-      )
-      .then(response => {
-        cy.wrap(response.body.orgs[0]).as('org')
-      })
+        .then(secondResp =>
+          cy
+            .request({
+              url:
+                'http://dex.twodotoh-dev.svc.cluster.local:8081' +
+                secondResp.headers.location,
+              method: 'POST',
+              form: true,
+              body: {login: body.user.name, password: 'password'},
+              followRedirect: false,
+            })
+            .then(thirdResp => {
+              const req = thirdResp.headers.location.split('/approval?req=')[1]
+              cy.request({
+                url: thirdResp.redirectedToUrl,
+                followRedirect: true,
+                form: true,
+                method: 'POST',
+                body: {req: req, approval: 'approve'},
+              }).then(fourthResp => {
+                cy.visit('/')
+                cy.getCookie('session').should('exist')
+                cy.request({
+                  method: 'GET',
+                  url: '/api/v2/orgs',
+                }).then(response => {
+                  cy.wrap(response.body.orgs[0]).as('org')
+                })
+              })
+            })
+        )
+    )
+  })
+}
+
+// TODO: have to go through setup because we cannot create a user w/ a password via the user API
+export const setupUser = (): Cypress.Chainable<Cypress.Response> => {
+  return cy.request({
+    method: 'GET',
+    url: '/debug/provision',
+  })
+}
+
+export const logIn = (
+  userName: string
+): Cypress.Chainable<Cypress.Response> => {
+  return cy.request({
+    method: 'POST',
+    url: 'http://dex.twodotoh-dev.svc.cluster.local:8081/auth/local',
+    body: 'login=' + userName + '&password=password',
   })
 }
 
@@ -421,14 +454,6 @@ export const createToken = (
     description: description,
     status: status,
     permissions: permissions,
-  })
-}
-
-// TODO: have to go through setup because we cannot create a user w/ a password via the user API
-export const setupUser = (): Cypress.Chainable<Cypress.Response> => {
-  return cy.request({
-    method: 'GET',
-    url: '/debug/provision',
   })
 }
 

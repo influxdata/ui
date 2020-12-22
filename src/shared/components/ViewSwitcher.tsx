@@ -97,7 +97,6 @@ const ViewSwitcher: FunctionComponent<Props> = ({
       )
     // todo: regenerate swagger, remove 'as any's
     case 'gauge-mini' as any:
-      console.log({table, theme, properties})
       return (
         <LatestMultipleValueTransform
           table={table}
@@ -107,7 +106,6 @@ const ViewSwitcher: FunctionComponent<Props> = ({
           }
         >
           {latestValues => (
-            // <div>{JSON.stringify(latestValues)}</div>
             <GaugeMiniChart
               values={latestValues as any}
               theme={properties as any}

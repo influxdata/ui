@@ -81,7 +81,8 @@ class Cells extends Component<Props> {
           w: c.w,
           i: c.id,
         }
-        if (get(view, 'properties.type') === 'gauge') {
+        const type = get(view, 'properties.type');
+        if (type === 'gauge' || type === 'gauge-mini') {
           cell.minW = 5
           cell.minH = 2.5
           cell.maxW = 20

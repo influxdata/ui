@@ -231,10 +231,6 @@ class GaugeMiniOptions extends PureComponent<Props> {
 
     return (
       <>
-        <pre>
-          {// todo: remove when developement done
-          JSON.stringify(this.props, undefined, 2)}
-        </pre>
         <h4 className="view-options--header">Customize Gauge MINI</h4>
 
         {renderFields([

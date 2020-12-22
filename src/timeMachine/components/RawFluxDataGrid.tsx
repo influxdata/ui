@@ -119,6 +119,9 @@ export default class extends PureComponent<Props, State> {
 
   private getCellData(row, column) {
     const {data} = this.props
-    return data[row][column]
+    if (data[row] && data[row][column]) {
+      return data[row][column]
+    }
+    return ''
   }
 }

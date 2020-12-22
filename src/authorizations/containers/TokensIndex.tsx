@@ -18,11 +18,12 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Types
 import {ResourceType} from 'src/types'
-
+import {ErrorHandling} from 'src/shared/decorators/errors'
 import {ORGS, ORG_ID, TOKENS} from 'src/shared/constants/routes'
 
 const tokensPath = `/${ORGS}/${ORG_ID}/load-data/${TOKENS}/generate`
 
+ErrorHandling
 export const TokensIndex: FC = () => {
   return (
     <>

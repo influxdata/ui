@@ -25,6 +25,7 @@ import {
   setTimeFormat,
   setLegendOpacity,
   setLegendOrientationThreshold,
+  setLegendColorizeRows,
   setGenerateXAxisTicks,
   setXTotalTicks,
   setXTickStart,
@@ -108,6 +109,7 @@ const ScatterOptions: FunctionComponent<Props> = props => {
     timeFormat,
     onSetLegendOpacity,
     onSetLegendOrientationThreshold,
+    onSetLegendColorizeRows,
     onSetGenerateXAxisTicks,
     onSetXTotalTicks,
     onSetXTickStart,
@@ -256,6 +258,7 @@ const ScatterOptions: FunctionComponent<Props> = props => {
       <LegendOrientation
         onLegendOpacityChange={onSetLegendOpacity}
         onLegendOrientationThresholdChange={onSetLegendOrientationThreshold}
+        onLegendColorizeRowsChange={onSetLegendColorizeRows}
       />
     </Grid.Column>
   )
@@ -299,6 +302,7 @@ const mdtp = {
   onSetTimeFormat: setTimeFormat,
   onSetLegendOpacity: setLegendOpacity,
   onSetLegendOrientationThreshold: setLegendOrientationThreshold,
+  onSetLegendColorizeRows: setLegendColorizeRows,
   onSetGenerateXAxisTicks: setGenerateXAxisTicks,
   onSetXTotalTicks: setXTotalTicks,
   onSetXTickStart: setXTickStart,

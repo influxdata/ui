@@ -106,10 +106,7 @@ const XYPlot: FC<Props> = ({
     yTickStep,
   })
   const tooltipOpacity = useLegendOpacity(legendOpacity)
-  const tooltipOrientationThreshold = useLegendOrientationThreshold(
-    legendOrientationThreshold
-  )
-
+  const tooltipOrientationThreshold = useLegendOrientationThreshold(legendOrientationThreshold)
   const tooltipColorize = useLegendColorizeRows(legendColorizeRows)
 
   const storedXDomain = useMemo(() => parseXBounds(xBounds), [xBounds])

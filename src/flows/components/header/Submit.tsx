@@ -53,20 +53,17 @@ export const Submit: FC = () => {
     queryAll()
   }
 
-  const status = flow.meta.all.reduce((_, curr) => {
-    switch (curr?.loading) {
-      case RemoteDataState.Error:
-        return RemoteDataState.Error
-      case RemoteDataState.NotStarted:
-        return RemoteDataState.NotStarted
-      case RemoteDataState.Loading:
-        return RemoteDataState.Loading
-      case RemoteDataState.Done:
-        return RemoteDataState.Done
-      default:
-        return RemoteDataState.NotStarted
-    }
-  }, RemoteDataState.NotStarted)
+  const statuses = flow.meta.all.map(({loading}) => loading)
+
+  let status = RemoteDataState.Done
+
+  if (statuses.every(s => s === RemoteDataState.NotStarted)) {
+    status = RemoteDataState.NotStarted
+  } else if (statuses.includes(RemoteDataState.Error)) {
+    status = RemoteDataState.Error
+  } else if (statuses.includes(RemoteDataState.Loading)) {
+    status = RemoteDataState.Loading
+  }
 
   const DropdownButton = (
     active: boolean,

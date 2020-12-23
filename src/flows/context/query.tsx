@@ -207,9 +207,6 @@ export const QueryProvider: FC = ({children}) => {
           error: null,
         }
       })
-      .catch(error => {
-        console.error('error: ', error)
-      })
   }
 
   const forceUpdate = (id, data) => {
@@ -230,8 +227,6 @@ export const QueryProvider: FC = ({children}) => {
     if (!map.length) {
       return
     }
-
-    console.log('map: ', map)
 
     event('Flow Submit Button Clicked')
     setLoading(RemoteDataState.Loading)

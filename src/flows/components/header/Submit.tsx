@@ -18,17 +18,20 @@ import {FlowContext} from 'src/flows/context/flow.current'
 
 // Utils
 import {cancelAllRunningQueries} from 'src/timeMachine/actions/queries'
-import {PIPE_DEFINITIONS} from 'src/flows'
+import {event} from 'src/cloud/utils/reporting'
 
 // Styles
 import 'src/flows/components/header/Submit.scss'
+
+// Types
+import {RemoteDataState} from 'src/types'
 
 const fakeNotify = notify
 
 export const Submit: FC = () => {
   const {flow} = useContext(FlowContext)
   const {runMode, setRunMode} = useContext(RunModeContext)
-  const {isLoading, queryAll} = useContext(QueryContext)
+  const {generateMap, queryAll} = useContext(QueryContext)
 
   const _range = useMemo(
     () => `${flow.range.lower} to ${flow.range.upper || 'now'}`,
@@ -36,24 +39,34 @@ export const Submit: FC = () => {
   )
 
   const hasQueries = useMemo(() => {
-    return !!flow.data.all
-      .filter(p => {
-        // this condition ensures that empty metric selectors are filtered out
-        if (p?.type === 'metricSelector') {
-          return !!p?.bucket
-        }
-        return true
-      })
-      .map(p => PIPE_DEFINITIONS[p.type])
-      .filter(p => p && (p.family === 'transform' || p.family === 'inputs'))
-      .length
-  }, [flow.data])
+    return generateMap().length > 0
+  }, [generateMap])
 
   useEffect(() => {
     if (hasQueries) {
       queryAll()
     }
   }, [_range, hasQueries]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleSubmit = () => {
+    event('Notebook Submit Button Clicked')
+    queryAll()
+  }
+
+  const status = flow.meta.all.reduce((_, curr) => {
+    switch (curr?.loading) {
+      case RemoteDataState.Error:
+        return RemoteDataState.Error
+      case RemoteDataState.NotStarted:
+        return RemoteDataState.NotStarted
+      case RemoteDataState.Loading:
+        return RemoteDataState.Loading
+      case RemoteDataState.Done:
+        return RemoteDataState.Done
+      default:
+        return RemoteDataState.NotStarted
+    }
+  }, RemoteDataState.NotStarted)
 
   const DropdownButton = (
     active: boolean,
@@ -66,8 +79,8 @@ export const Submit: FC = () => {
           className="flows--submit-button"
           icon={IconFont.Play}
           submitButtonDisabled={hasQueries === false}
-          queryStatus={isLoading}
-          onSubmit={queryAll}
+          queryStatus={status}
+          onSubmit={handleSubmit}
           onNotify={fakeNotify}
           queryID=""
           cancelAllRunningQueries={cancelAllRunningQueries}

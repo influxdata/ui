@@ -1,4 +1,4 @@
-import React, {FC, useContext, useMemo, useEffect, useState} from 'react'
+import React, {FC, useContext, useMemo, useEffect} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {parse} from 'src/external/parser'
 import {runQuery} from 'src/shared/apis/query'
@@ -38,14 +38,12 @@ interface Stage {
 
 export interface QueryContextType {
   generateMap: (withSideEffects?: boolean) => Stage[]
-  isLoading: RemoteDataState
   query: (text: string) => Promise<FluxResult>
   queryAll: () => void
 }
 
 export const DEFAULT_CONTEXT: QueryContextType = {
   generateMap: () => [],
-  isLoading: RemoteDataState.NotStarted,
   query: (_: string) => Promise.resolve({} as FluxResult),
   queryAll: () => {},
 }
@@ -103,7 +101,6 @@ export const QueryProvider: FC = ({children}) => {
   const bucketsLoadingState = useSelector((state: AppState) =>
     getStatus(state, ResourceType.Buckets)
   )
-  const [isLoading, setLoading] = useState(RemoteDataState.NotStarted)
 
   const dispatch = useDispatch()
 
@@ -217,8 +214,23 @@ export const QueryProvider: FC = ({children}) => {
     }
   }
 
+  const status = flow.meta.all.reduce((_, curr) => {
+    switch (curr?.loading) {
+      case RemoteDataState.Error:
+        return RemoteDataState.Error
+      case RemoteDataState.NotStarted:
+        return RemoteDataState.NotStarted
+      case RemoteDataState.Loading:
+        return RemoteDataState.Loading
+      case RemoteDataState.Done:
+        return RemoteDataState.Done
+      default:
+        return RemoteDataState.NotStarted
+    }
+  }, RemoteDataState.NotStarted)
+
   const queryAll = () => {
-    if (isLoading === RemoteDataState.Loading) {
+    if (status === RemoteDataState.Loading) {
       return
     }
 
@@ -228,8 +240,7 @@ export const QueryProvider: FC = ({children}) => {
       return
     }
 
-    event('Flow Submit Button Clicked')
-    setLoading(RemoteDataState.Loading)
+    event('Running Notebook QueryAll')
 
     Promise.all(
       map.map(stage => {
@@ -256,16 +267,13 @@ export const QueryProvider: FC = ({children}) => {
       .then(() => {
         event('run_notebook_success', {runMode})
         dispatch(notify(notebookRunSuccess(runMode, PROJECT_NAME)))
-
-        setLoading(RemoteDataState.Done)
       })
       .catch(e => {
         event('run_notebook_fail', {runMode})
         dispatch(notify(notebookRunFail(runMode, PROJECT_NAME)))
 
         // NOTE: this shouldn't fire, but lets wrap it for completeness
-        setLoading(RemoteDataState.Error)
-        // throw e
+        throw e
       })
   }
 
@@ -274,7 +282,7 @@ export const QueryProvider: FC = ({children}) => {
   }
 
   return (
-    <QueryContext.Provider value={{query, generateMap, isLoading, queryAll}}>
+    <QueryContext.Provider value={{query, generateMap, queryAll}}>
       {children}
     </QueryContext.Provider>
   )

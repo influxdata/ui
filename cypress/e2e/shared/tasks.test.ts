@@ -122,17 +122,17 @@ http.post(
     })
 
     cy.getByTestID('task-form-name')
-        .click()
-        .type('Cron task test')
-        .then(() => {
-          cy.getByTestID('task-card-cron-btn').click()
-          cy.getByTestID('task-form-schedule-input')
-              .click()
-              .type('0 4 8-14 * *')
-          cy.getByTestID('task-form-offset-input')
-              .click()
-              .type('10m')
-        })
+      .click()
+      .type('Cron task test')
+      .then(() => {
+        cy.getByTestID('task-card-cron-btn').click()
+        cy.getByTestID('task-form-schedule-input')
+          .click()
+          .type('0 4 8-14 * *')
+        cy.getByTestID('task-form-offset-input')
+          .click()
+          .type('10m')
+      })
 
     cy.getByTestID('task-save-btn').click()
 

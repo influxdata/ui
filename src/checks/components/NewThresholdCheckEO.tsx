@@ -39,18 +39,20 @@ const NewCheckOverlay: FunctionComponent = () => {
   }, [dispatch])
 
   return (
-    <Overlay.Container className="veo">
-      <CheckEOHeader
-        key={checkName}
-        name={checkName}
-        onSetName={() => dispatch(updateName)}
-        onCancel={onClose}
-        onSave={() => dispatch(createCheckFromTimeMachine as any)}
-      />
-      <div className="veo-contents">
-        <TimeMachine />
+    <div className="veo-overlay">
+      <div className="veo">
+        <CheckEOHeader
+          key={checkName}
+          name={checkName}
+          onSetName={() => dispatch(updateName)}
+          onCancel={onClose}
+          onSave={() => dispatch(createCheckFromTimeMachine)}
+        />
+        <div className="veo-contents">
+          <TimeMachine />
+        </div>
       </div>
-    </Overlay.Container>
+    </div>
   )
 }
 

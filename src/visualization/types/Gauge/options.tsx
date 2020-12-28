@@ -17,7 +17,10 @@ import {
 } from '@influxdata/clockface'
 
 import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
-import {MIN_DECIMAL_PLACES, MAX_DECIMAL_PLACES} from 'src/dashboards/constants'
+import {
+  MIN_DECIMAL_PLACES,
+  MAX_DECIMAL_PLACES,
+} from 'src/visualization/constants'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 
 import {GaugeViewProperties} from 'src/types'

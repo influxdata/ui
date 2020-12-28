@@ -12,7 +12,10 @@ import {
 } from '@influxdata/clockface'
 
 // Utils
-import {FORMAT_OPTIONS, resolveTimeFormat} from 'src/visualization/utils/timeFormat'
+import {
+  FORMAT_OPTIONS,
+  resolveTimeFormat,
+} from 'src/visualization/utils/timeFormat'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 import {defaultXColumn, defaultYColumn} from 'src/shared/utils/vis'
 

@@ -352,4 +352,3 @@ export const findTableNameHeaders = (tables: FluxTable[], name: string) => {
 
   return _.get(foundTable, 'data.0', [])
 }
-

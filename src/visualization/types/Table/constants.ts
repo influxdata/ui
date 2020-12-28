@@ -2,6 +2,7 @@ export const COLUMN_MIN_WIDTH = 100
 export const CELL_HORIZONTAL_PADDING = 30
 export const ROW_HEIGHT = 30
 export const DEFAULT_FIX_FIRST_COLUMN = true
+export const DEFAULT_VERTICAL_TIME_AXIS = true
 export const ASCENDING = 'asc'
 export const DESCENDING = 'desc'
 export const DEFAULT_SORT_DIRECTION = ASCENDING

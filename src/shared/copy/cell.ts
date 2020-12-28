@@ -7,6 +7,3 @@ const emptyFunny = [
 ]
 
 export const emptyGraphCopy = _.sample(emptyFunny)
-
-export const INVALID_DATA_COPY =
-  "The data returned from the query can't be visualized with this graph type."

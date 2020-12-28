@@ -87,9 +87,6 @@ export enum CEOTabs {
   Vis = 'Visualization',
 }
 
-export const MIN_DECIMAL_PLACES = 0
-export const MAX_DECIMAL_PLACES = 10
-
 // used in importing dashboards and mapping sources
 export const DYNAMIC_SOURCE = 'dynamic'
 export const DYNAMIC_SOURCE_INFO = {

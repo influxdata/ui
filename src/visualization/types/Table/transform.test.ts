@@ -1,7 +1,4 @@
-import {
-  findHoverTimeIndex,
-  getUnixISODiff,
-} from 'src/dashboards/utils/tableGraph'
+import {findHoverTimeIndex, getUnixISODiff} from './transform'
 
 describe('Dashboards.utils.tableGraph', () => {
   describe('findHoverTimeIndex', () => {

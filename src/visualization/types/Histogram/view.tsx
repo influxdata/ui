@@ -9,14 +9,14 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 import {
   useLegendOpacity,
   useLegendOrientationThreshold,
-} from 'src/shared/utils/useLegendOrientation'
-import {useVisXDomainSettings} from 'src/shared/utils/useVisDomainSettings'
+} from 'src/visualization/utils/useLegendOrientation'
+import {useVisXDomainSettings} from 'src/visualization/utils/useVisDomainSettings'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
 import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
-import {INVALID_DATA_COPY} from 'src/shared/copy/cell'
+import {INVALID_DATA_COPY} from 'src/visualization/constants'
 
 // Types
 import {HistogramViewProperties} from 'src/types'

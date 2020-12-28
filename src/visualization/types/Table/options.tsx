@@ -22,7 +22,10 @@ import {
   EmptyState,
 } from '@influxdata/clockface'
 
-import {FORMAT_OPTIONS, resolveTimeFormat} from 'src/visualization/utils/timeFormat'
+import {
+  FORMAT_OPTIONS,
+  resolveTimeFormat,
+} from 'src/visualization/utils/timeFormat'
 import {
   THRESHOLD_TYPE_TEXT,
   THRESHOLD_TYPE_BG,
@@ -30,7 +33,10 @@ import {
 import DraggableColumn from 'src/shared/components/draggable_column/DraggableColumn'
 import {TableViewProperties, FieldOption} from 'src/types'
 import {VisOptionProps} from 'src/visualization'
-import {MIN_DECIMAL_PLACES, MAX_DECIMAL_PLACES} from 'src/dashboards/constants'
+import {
+  MIN_DECIMAL_PLACES,
+  MAX_DECIMAL_PLACES,
+} from 'src/visualization/constants'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 import ThresholdsSettings from 'src/shared/components/ThresholdsSettings'
 import {move} from 'src/shared/utils/move'

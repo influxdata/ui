@@ -13,8 +13,11 @@ import {
 } from '@influxdata/clockface'
 
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
-import {AXES_SCALE_OPTIONS} from 'src/dashboards/constants/cellEditor'
-import {FORMAT_OPTIONS, resolveTimeFormat} from 'src/visualization/utils/timeFormat'
+import {AXES_SCALE_OPTIONS} from 'src/visualization/constants'
+import {
+  FORMAT_OPTIONS,
+  resolveTimeFormat,
+} from 'src/visualization/utils/timeFormat'
 import {
   defaultXColumn,
   defaultYColumn,

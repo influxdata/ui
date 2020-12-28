@@ -9,10 +9,12 @@ import {ASCENDING, DEFAULT_TIME_FIELD} from './constants'
 import {generateThresholdsListHexs} from 'src/shared/constants/colorOperations'
 
 // Types
-import {SortOptions, FieldOption, TableViewProperties} from 'src/types/dashboards'
 import {
-  PropsMultiGrid,
-} from 'src/visualization/types/Table/MultiGrid'
+  SortOptions,
+  FieldOption,
+  TableViewProperties,
+} from 'src/types/dashboards'
+import {PropsMultiGrid} from 'src/visualization/types/Table/MultiGrid'
 
 export interface CellRendererProps {
   columnIndex: number

@@ -11,7 +11,10 @@ import {
   Columns,
 } from '@influxdata/clockface'
 import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
-import {FORMAT_OPTIONS, resolveTimeFormat} from 'src/visualization/utils/timeFormat'
+import {
+  FORMAT_OPTIONS,
+  resolveTimeFormat,
+} from 'src/visualization/utils/timeFormat'
 import {defaultXColumn, mosaicYColumn} from 'src/shared/utils/vis'
 
 // Types

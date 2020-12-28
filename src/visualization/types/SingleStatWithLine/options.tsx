@@ -16,10 +16,16 @@ import {
 } from '@influxdata/clockface'
 
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
-import {MIN_DECIMAL_PLACES, MAX_DECIMAL_PLACES} from 'src/dashboards/constants'
+import {
+  AXES_SCALE_OPTIONS,
+  MIN_DECIMAL_PLACES,
+  MAX_DECIMAL_PLACES,
+} from 'src/visualization/constants'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
-import {AXES_SCALE_OPTIONS} from 'src/dashboards/constants/cellEditor'
-import {FORMAT_OPTIONS, resolveTimeFormat} from 'src/visualization/utils/timeFormat'
+import {
+  FORMAT_OPTIONS,
+  resolveTimeFormat,
+} from 'src/visualization/utils/timeFormat'
 import {
   defaultXColumn,
   defaultYColumn,

@@ -68,4 +68,3 @@ export const getFormatter = (
 
   return null
 }
-

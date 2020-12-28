@@ -1,9 +1,5 @@
 // Libraries
-import {
-  Table,
-  LineInterpolation,
-  FromFluxResult,
-} from '@influxdata/giraffe'
+import {Table, LineInterpolation, FromFluxResult} from '@influxdata/giraffe'
 
 // Types
 import {XYGeom, Axis} from 'src/types'

@@ -5,7 +5,7 @@ import React, {Component} from 'react'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 
 // Utils
-import {formatStatValue} from 'src/shared/utils/formatStatValue'
+import {formatStatValue} from 'src/visualization/utils/formatStatValue'
 
 // Constants
 import {GAUGE_THEME_DARK, GaugeTheme} from './constants'

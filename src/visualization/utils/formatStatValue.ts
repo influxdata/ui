@@ -5,7 +5,7 @@ import {isNumber, isString} from 'lodash'
 import {DecimalPlaces} from 'src/types/dashboards'
 
 // Constants
-import {MAX_DECIMAL_PLACES} from 'src/dashboards/constants'
+import {MAX_DECIMAL_PLACES} from 'src/visualization/constants'
 
 // Utils
 import {preventNegativeZero} from 'src/shared/utils/preventNegativeZero'

@@ -13,7 +13,10 @@ import {
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import HexColorSchemeDropdown from 'src/visualization/components/internal/HexColorSchemeDropdown'
 
-import {FORMAT_OPTIONS, resolveTimeFormat} from 'src/visualization/utils/timeFormat'
+import {
+  FORMAT_OPTIONS,
+  resolveTimeFormat,
+} from 'src/visualization/utils/timeFormat'
 import {GIRAFFE_COLOR_SCHEMES} from 'src/shared/constants'
 
 import {defaultXColumn, defaultYColumn} from 'src/shared/utils/vis'

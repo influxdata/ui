@@ -15,8 +15,8 @@ import {filterNoisyColumns} from 'src/shared/utils/vis'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
-import {INVALID_DATA_COPY} from 'src/shared/copy/cell'
 import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
+import {INVALID_DATA_COPY} from 'src/visualization/constants'
 
 // Types
 import {CheckViewProperties, CheckType, StatusRow, Threshold} from 'src/types'

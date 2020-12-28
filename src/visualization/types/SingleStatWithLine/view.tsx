@@ -14,14 +14,15 @@ import LatestValueTransform from 'src/visualization/components/LatestValueTransf
 // Utils
 import {useAxisTicksGenerator} from 'src/visualization/utils/useAxisTicksGenerator'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
+import {formatStatValue} from 'src/visualization/utils/formatStatValue'
 import {
   useLegendOpacity,
   useLegendOrientationThreshold,
-} from 'src/shared/utils/useLegendOrientation'
+} from 'src/visualization/utils/useLegendOrientation'
 import {
   useVisXDomainSettings,
   useVisYDomainSettings,
-} from 'src/shared/utils/useVisDomainSettings'
+} from 'src/visualization/utils/useVisDomainSettings'
 import {
   geomToInterpolation,
   filterNoisyColumns,
@@ -31,12 +32,11 @@ import {
   defaultYColumn,
 } from 'src/shared/utils/vis'
 import {generateThresholdsListHexs} from 'src/shared/constants/colorOperations'
-import {formatStatValue} from 'src/shared/utils/formatStatValue'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
 import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
-import {INVALID_DATA_COPY} from 'src/shared/copy/cell'
+import {INVALID_DATA_COPY} from 'src/visualization/constants'
 
 // Types
 import {LinePlusSingleStatProperties} from 'src/types'

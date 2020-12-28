@@ -10,10 +10,13 @@ import TableCell from 'src/visualization/types/Table/TableCell'
 
 // Utils
 import {transformTableData} from 'src/visualization/types/Table/transform'
+import {resolveTimeFormat} from 'src/visualization/utils/timeFormat'
 import {
-    COLUMN_MIN_WIDTH,
-    ROW_HEIGHT,
-    DEFAULT_FIX_FIRST_COLUMN,
+  COLUMN_MIN_WIDTH,
+  ROW_HEIGHT,
+  DEFAULT_FIX_FIRST_COLUMN,
+  DEFAULT_VERTICAL_TIME_AXIS,
+  DEFAULT_TIME_FIELD,
 } from './constants'
 
 // Types
@@ -52,6 +55,7 @@ const Table: FC<Props> = ({
           ...o,
           dataType: table.dataTypes[o.internalName],
         })),
+        properties.tableOptions,
         properties.timeFormat,
         properties.decimalPlaces
       ),
@@ -68,6 +72,10 @@ const Table: FC<Props> = ({
 
   const tableClassName = classnames('time-machine-table', {
     'time-machine-table__light-mode': theme === 'light',
+  })
+  const formatter = timeFormatter({
+    timeZone: timeZone === 'Local' ? undefined : timeZone,
+    format: resolveTimeFormat(properties.timeFormat),
   })
   const colCount = transformed?.transformedData[0]?.length || 0
   const rowCount =
@@ -92,6 +100,12 @@ const Table: FC<Props> = ({
 
     return false
   }, [properties.tableOptions, transformed])
+  const isVertical =
+    properties.tableOptions.verticalTimeAxis || DEFAULT_VERTICAL_TIME_AXIS
+  const timeVisible =
+    transformed.resolvedFieldOptions.find(
+      f => f.internalName === DEFAULT_TIME_FIELD.internalName
+    )[0]?.visible || false
 
   const calculate = useCallback(
     width => column => {
@@ -163,7 +177,7 @@ const Table: FC<Props> = ({
                             {...props}
                             sortOptions={transformed.sortOptions}
                             onHover={this.handleHover}
-                            isTimeVisible={this.isTimeVisible}
+                            isTimeVisible={timeVisible}
                             data={
                               transformed.transformedData[props.rowIndex][
                                 props.columnIndex
@@ -183,9 +197,9 @@ const Table: FC<Props> = ({
                             }
                             hoveredColumnIndex={this.hoveredColumnIndex}
                             isFirstColumnFixed={needsFixing}
-                            isVerticalTimeAxis={this.isVerticalTimeAxis}
+                            isVerticalTimeAxis={isVertical}
                             onClickFieldName={updateSort}
-                            timeFormatter={this.timeFormatter}
+                            timeFormatter={formatter}
                           />
                         )
                       }}

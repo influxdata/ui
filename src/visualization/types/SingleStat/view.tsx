@@ -4,7 +4,7 @@ import React, {FC} from 'react'
 // Utils
 import LatestValueTransform from 'src/visualization/components/LatestValueTransform'
 import {generateThresholdsListHexs} from 'src/shared/constants/colorOperations'
-import {formatStatValue} from 'src/shared/utils/formatStatValue'
+import {formatStatValue} from 'src/visualization/utils/formatStatValue'
 
 // Types
 import {SingleStatViewProperties} from 'src/types/dashboards'

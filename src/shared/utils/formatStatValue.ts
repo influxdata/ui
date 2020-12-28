@@ -10,7 +10,7 @@ import {MAX_DECIMAL_PLACES} from 'src/dashboards/constants'
 // Utils
 import {preventNegativeZero} from 'src/shared/utils/preventNegativeZero'
 
-interface FormatStatValueOptions {
+export interface FormatStatValueOptions {
   decimalPlaces?: DecimalPlaces
   prefix?: string
   suffix?: string

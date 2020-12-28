@@ -178,7 +178,7 @@ class GaugeMiniOptions extends PureComponent<Props> {
             ...theme.barsDefinitions.groupByColumns,
             [option]: !res,
           },
-        },
+        } as any,
       })
     }
 

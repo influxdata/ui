@@ -12,6 +12,7 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 
 // Utils
 import {useAxisTicksGenerator} from 'src/visualization/utils/useAxisTicksGenerator'
+import {getFormatter} from 'src/visualization/utils/getFormatter'
 import {
   useLegendOpacity,
   useLegendOrientationThreshold,
@@ -21,7 +22,6 @@ import {
   useVisYDomainSettings,
 } from 'src/shared/utils/useVisDomainSettings'
 import {
-  getFormatter,
   geomToInterpolation,
   filterNoisyColumns,
   parseXBounds,

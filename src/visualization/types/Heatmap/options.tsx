@@ -12,14 +12,13 @@ import {
 } from '@influxdata/clockface'
 
 // Utils
-import {FORMAT_OPTIONS} from 'src/dashboards/constants'
-import {resolveTimeFormat} from 'src/dashboards/utils/tableGraph'
+import {FORMAT_OPTIONS, resolveTimeFormat} from 'src/visualization/utils/timeFormat'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 import {defaultXColumn, defaultYColumn} from 'src/shared/utils/vis'
 
 // Components
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
-import HexColorSchemeDropdown from 'src/shared/components/HexColorSchemeDropdown'
+import HexColorSchemeDropdown from 'src/visualization/components/internal/HexColorSchemeDropdown'
 
 import {HeatmapViewProperties} from 'src/types'
 import {VisOptionProps} from 'src/visualization'

@@ -6,7 +6,6 @@ import {FluxTable} from 'src/types'
 import {fromFlux, FromFluxResult} from '@influxdata/giraffe'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
-
 /*
   A Flux CSV response can contain multiple CSV files each joined by a newline.
   This function splits up a CSV response into these individual CSV files.

@@ -10,7 +10,8 @@ import ThresholdMarkers from 'src/shared/components/ThresholdMarkers'
 import EventMarkers from 'src/shared/components/EventMarkers'
 
 // Utils
-import {getFormatter, filterNoisyColumns} from 'src/shared/utils/vis'
+import {getFormatter} from 'src/visualization/utils/getFormatter'
+import {filterNoisyColumns} from 'src/shared/utils/vis'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'

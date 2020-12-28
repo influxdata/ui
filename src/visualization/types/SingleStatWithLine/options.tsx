@@ -19,14 +19,13 @@ import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import {MIN_DECIMAL_PLACES, MAX_DECIMAL_PLACES} from 'src/dashboards/constants'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 import {AXES_SCALE_OPTIONS} from 'src/dashboards/constants/cellEditor'
-import {FORMAT_OPTIONS} from 'src/dashboards/constants'
-import {resolveTimeFormat} from 'src/dashboards/utils/tableGraph'
+import {FORMAT_OPTIONS, resolveTimeFormat} from 'src/visualization/utils/timeFormat'
 import {
   defaultXColumn,
   defaultYColumn,
   parseYBounds,
 } from 'src/shared/utils/vis'
-import ColorSchemeDropdown from 'src/shared/components/ColorSchemeDropdown'
+import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
 import Checkbox from 'src/shared/components/Checkbox'
 import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
 import {LinePlusSingleStatProperties, Color} from 'src/types'

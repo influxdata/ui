@@ -1,9 +1,9 @@
 // Libraries
-import React, {SFC} from 'react'
+import React, {FC} from 'react'
 
 // Components
 import {Dropdown, DropdownMenuTheme} from '@influxdata/clockface'
-import ColorSchemeDropdownItem from 'src/shared/components/ColorSchemeDropdownItem'
+import ColorSchemeDropdownItem from 'src/visualization/components/internal/ColorSchemeDropdownItem'
 
 // Constants
 import {LINE_COLOR_SCALES} from 'src/shared/constants/graphColorPalettes'
@@ -36,7 +36,7 @@ const findSelectedScale = (colors: Color[]): Scale => {
   }
 }
 
-const ColorSchemeDropdown: SFC<Props> = ({value, onChange}) => {
+const ColorSchemeDropdown: FC<Props> = ({value, onChange}) => {
   const selectedScale = findSelectedScale(value)
 
   return (

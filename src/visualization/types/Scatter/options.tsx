@@ -11,12 +11,11 @@ import {
 } from '@influxdata/clockface'
 
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
-import HexColorSchemeDropdown from 'src/shared/components/HexColorSchemeDropdown'
+import HexColorSchemeDropdown from 'src/visualization/components/internal/HexColorSchemeDropdown'
 
-import {FORMAT_OPTIONS} from 'src/dashboards/constants'
+import {FORMAT_OPTIONS, resolveTimeFormat} from 'src/visualization/utils/timeFormat'
 import {GIRAFFE_COLOR_SCHEMES} from 'src/shared/constants'
 
-import {resolveTimeFormat} from 'src/dashboards/utils/tableGraph'
 import {defaultXColumn, defaultYColumn} from 'src/shared/utils/vis'
 import {ScatterViewProperties} from 'src/types'
 import {VisOptionProps} from 'src/visualization'

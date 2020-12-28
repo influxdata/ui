@@ -10,9 +10,8 @@ import {
   ComponentStatus,
   Columns,
 } from '@influxdata/clockface'
-import ColorSchemeDropdown from 'src/shared/components/ColorSchemeDropdown'
-import {FORMAT_OPTIONS} from 'src/dashboards/constants'
-import {resolveTimeFormat} from 'src/dashboards/utils/tableGraph'
+import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
+import {FORMAT_OPTIONS, resolveTimeFormat} from 'src/visualization/utils/timeFormat'
 import {defaultXColumn, mosaicYColumn} from 'src/shared/utils/vis'
 
 // Types

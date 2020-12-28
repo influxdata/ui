@@ -7,6 +7,7 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 
 // Utils
 import {useAxisTicksGenerator} from 'src/visualization/utils/useAxisTicksGenerator'
+import {getFormatter} from 'src/visualization/utils/getFormatter'
 import {
   useLegendOpacity,
   useLegendOrientationThreshold,
@@ -15,7 +16,7 @@ import {
   useVisXDomainSettings,
   useVisYDomainSettings,
 } from 'src/shared/utils/useVisDomainSettings'
-import {getFormatter, defaultXColumn, mosaicYColumn} from 'src/shared/utils/vis'
+import {defaultXColumn, mosaicYColumn} from 'src/shared/utils/vis'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'

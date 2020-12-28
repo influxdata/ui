@@ -16,7 +16,7 @@ import {
 
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import {defaultXColumn} from 'src/shared/utils/vis'
-import ColorSchemeDropdown from 'src/shared/components/ColorSchemeDropdown'
+import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
 import {HistogramViewProperties} from 'src/types'
 import {VisOptionProps} from 'src/visualization'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'

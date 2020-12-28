@@ -1,9 +1,9 @@
 // Libraries
-import React, {FunctionComponent} from 'react'
+import React, {FC} from 'react'
 
 // Components
 import {Dropdown, DropdownMenuTheme} from '@influxdata/clockface'
-import ColorSchemeDropdownItem from 'src/shared/components/ColorSchemeDropdownItem'
+import ColorSchemeDropdownItem from 'src/visualization/components/internal/ColorSchemeDropdownItem'
 
 interface Props {
   colorSchemes: Array<{name: string; colors: string[]}>
@@ -11,7 +11,7 @@ interface Props {
   onSelectColorScheme: (scheme: string[]) => void
 }
 
-const HexColorSchemeDropdown: FunctionComponent<Props> = ({
+const HexColorSchemeDropdown: FC<Props> = ({
   colorSchemes,
   selectedColorScheme,
   onSelectColorScheme,

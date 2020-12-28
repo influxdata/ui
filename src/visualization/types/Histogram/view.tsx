@@ -11,7 +11,7 @@ import {
   useLegendOrientationThreshold,
 } from 'src/shared/utils/useLegendOrientation'
 import {useVisXDomainSettings} from 'src/shared/utils/useVisDomainSettings'
-import {getFormatter} from 'src/shared/utils/vis'
+import {getFormatter} from 'src/visualization/utils/getFormatter'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'

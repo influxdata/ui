@@ -53,7 +53,7 @@ const NewCheckOverlay: FunctionComponent = () => {
             name={checkName}
             onSetName={updateName}
             onCancel={onClose}
-            onSave={createCheckFromTimeMachine}
+            onSave={() => dispatch(createCheckFromTimeMachine())}
           />
           <div className="veo-contents">
             <TimeMachine />

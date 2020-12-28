@@ -107,7 +107,7 @@ describe('Checks', () => {
                 cy.getByTestID(`selector-list ${measurement}`)
                   .click()
                   .then(() => {
-                    cy.getByTestID(`selector-list ${field}`).click()
+                    cy.getByTestID(`selector-list ${field}`).click({force: true})
                   })
               })
           })

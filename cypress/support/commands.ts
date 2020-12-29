@@ -18,8 +18,7 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
   return cy.setupUser().then(({body}) => {
     cy.request({
       method: 'GET',
-      url:
-        'https://twodotoh.a.influxcloud.dev.local/api/v2/signin?redirectTo=https://twodotoh.a.influxcloud.dev.local/',
+      url: '/api/v2/signin?redirectTo=' + Cypress.config().baseUrl,
       followRedirect: false,
     }).then(resp =>
       cy
@@ -47,14 +46,20 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
                 form: true,
                 method: 'POST',
                 body: {req: req, approval: 'approve'},
-              }).then(fourthResp => {
+              }).then(() => {
                 cy.visit('/')
                 cy.getCookie('session').should('exist')
                 cy.request({
                   method: 'GET',
                   url: '/api/v2/orgs',
                 }).then(response => {
-                  cy.wrap(response.body.orgs[0]).as('org')
+                  const org = response.body.orgs[0]
+                  cy.wrap(org).as('org')
+                  cy.visit(`/orgs/${org.id}`).then(() => {
+                    cy.wait(500).then(() => {
+                      cy.getByTestID('home-page--header').should('exist')
+                    })
+                  })
                 })
               })
             })

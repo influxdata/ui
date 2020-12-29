@@ -4,7 +4,13 @@ describe('navigation', () => {
   beforeEach(() => {
     cy.flush()
 
-    cy.signin().then(() => cy.visit('/'))
+    cy.signin() //.then(() =>
+    // cy.get('@org').then(({id}: Organization) =>
+    //   cy.fixture('routes').then(({orgs}) => {
+    //     cy.visit(`${orgs}/${id}`)
+    //   })
+    // )
+    // )
   })
 
   it('can navigate to each page from left nav', () => {

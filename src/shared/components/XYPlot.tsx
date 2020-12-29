@@ -106,7 +106,9 @@ const XYPlot: FC<Props> = ({
     yTickStep,
   })
   const tooltipOpacity = useLegendOpacity(legendOpacity)
-  const tooltipOrientationThreshold = useLegendOrientationThreshold(legendOrientationThreshold)
+  const tooltipOrientationThreshold = useLegendOrientationThreshold(
+    legendOrientationThreshold
+  )
   const tooltipColorize = useLegendColorizeRows(legendColorizeRows)
 
   const storedXDomain = useMemo(() => parseXBounds(xBounds), [xBounds])
@@ -181,8 +183,6 @@ const XYPlot: FC<Props> = ({
   })
 
   const currentTheme = theme === 'light' ? VIS_THEME_LIGHT : VIS_THEME
-
-  console.log('in xy plot, in config; tooltipColorize?', tooltipColorize)
 
   const config: Config = {
     ...currentTheme,

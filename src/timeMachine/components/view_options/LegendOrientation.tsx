@@ -45,8 +45,6 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
-
-
 const LegendOrientation: FC<Props> = props => {
   const {
     legendOpacity,
@@ -56,8 +54,6 @@ const LegendOrientation: FC<Props> = props => {
     legendColorizeRows,
     onLegendColorizeRowsChange,
   } = props
-
-  console.log('type Props (a1-1)', props);
 
   const [thresholdInputStatus, setThresholdInputStatus] = useState(
     ComponentStatus.Default
@@ -101,8 +97,7 @@ const LegendOrientation: FC<Props> = props => {
 
   const toggleStyle = {marginTop: 4}
 
-  const toggleLabelStyle={color: '#999dab',
-  }
+  const toggleLabelStyle = {color: '#999dab'}
 
   return (
     <Grid.Column>
@@ -130,23 +125,20 @@ const LegendOrientation: FC<Props> = props => {
           onChange={handleSetOpacity}
         />
       </Form.Element>
-
-      <Form.Element>
-        <FlexBox
-          direction={FlexDirection.Row}
-          alignItems={AlignItems.Center}
-          margin={ComponentSize.Medium}
-          stretchToFitWidth={true}
-          style={toggleStyle}
-        >
-          <SlideToggle
-            active={colorizeRowsInput}
-            size={ComponentSize.ExtraSmall}
-            onChange={handleSetColorization}
-          />
-          <InputLabel style={toggleLabelStyle}>Colorize Rows</InputLabel>
-        </FlexBox>
-      </Form.Element>
+      <FlexBox
+        direction={FlexDirection.Row}
+        alignItems={AlignItems.Center}
+        margin={ComponentSize.Medium}
+        stretchToFitWidth={true}
+        style={toggleStyle}
+      >
+        <SlideToggle
+          active={colorizeRowsInput}
+          size={ComponentSize.ExtraSmall}
+          onChange={handleSetColorization}
+        />
+        <InputLabel style={toggleLabelStyle}>Colorize Rows</InputLabel>
+      </FlexBox>
     </Grid.Column>
   )
 }

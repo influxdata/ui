@@ -12,7 +12,7 @@ import {useAxisTicksGenerator} from 'src/shared/utils/useAxisTicksGenerator'
 import {
   useLegendOpacity,
   useLegendOrientationThreshold,
-    useLegendColorizeRows,
+  useLegendColorizeRows,
 } from 'src/shared/utils/useLegendOrientation'
 import {
   useVisXDomainSettings,
@@ -81,7 +81,7 @@ const BandPlot: FC<Props> = ({
     mainColumn,
     hoverDimension,
     legendOpacity,
-      legendColorizeRows,
+    legendColorizeRows,
     legendOrientationThreshold,
     generateXAxisTicks,
     xTotalTicks,
@@ -146,7 +146,7 @@ const BandPlot: FC<Props> = ({
   const tooltipOrientationThreshold = useLegendOrientationThreshold(
     legendOrientationThreshold
   )
-  const tooltipColorize = useLegendColorizeRows(legendColorizeRows);
+  const tooltipColorize = useLegendColorizeRows(legendColorizeRows)
 
   const storedXDomain = useMemo(() => parseXBounds(xBounds), [xBounds])
   const storedYDomain = useMemo(() => parseYBounds(yBounds), [yBounds])

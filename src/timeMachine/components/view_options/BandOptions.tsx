@@ -144,8 +144,6 @@ class BandOptions extends PureComponent<Props, State> {
       onSetYTickStep,
     } = this.props
 
-    console.log('a1:  in bandoptions (j-1)');
-
     const upperAndLowerColumnOptions = [
       REMOVE_COLUMN_TEXT,
       ...selectedFunctions,

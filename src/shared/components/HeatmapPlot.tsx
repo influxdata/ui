@@ -10,7 +10,7 @@ import {useAxisTicksGenerator} from 'src/shared/utils/useAxisTicksGenerator'
 import {
   useLegendOpacity,
   useLegendOrientationThreshold,
-    useLegendColorizeRows,
+  useLegendColorizeRows,
 } from 'src/shared/utils/useLegendOrientation'
 import {
   useVisXDomainSettings,
@@ -55,7 +55,7 @@ const HeatmapPlot: FunctionComponent<Props> = ({
     timeFormat,
     legendOpacity,
     legendOrientationThreshold,
-      legendColorizeRows,
+    legendColorizeRows,
     generateXAxisTicks,
     xTotalTicks,
     xTickStart,

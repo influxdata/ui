@@ -10,7 +10,7 @@ import {useAxisTicksGenerator} from 'src/shared/utils/useAxisTicksGenerator'
 import {
   useLegendOpacity,
   useLegendOrientationThreshold,
-    useLegendColorizeRows,
+  useLegendColorizeRows,
 } from 'src/shared/utils/useLegendOrientation'
 import {
   useVisXDomainSettings,
@@ -93,7 +93,9 @@ const ScatterPlot: FunctionComponent<Props> = ({
     yTickStep,
   })
   const tooltipOpacity = useLegendOpacity(legendOpacity)
-  const tooltipOrientationThreshold = useLegendOrientationThreshold(legendOrientationThreshold)
+  const tooltipOrientationThreshold = useLegendOrientationThreshold(
+    legendOrientationThreshold
+  )
   const tooltipColorize = useLegendColorizeRows(legendColorizeRows)
 
   let timerange

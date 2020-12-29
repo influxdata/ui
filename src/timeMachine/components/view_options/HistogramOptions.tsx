@@ -27,7 +27,7 @@ import {
   setXAxisLabel,
   setLegendOpacity,
   setLegendOrientationThreshold,
-    setLegendColorizeRows,
+  setLegendColorizeRows,
 } from 'src/timeMachine/actions'
 
 // Utils
@@ -76,7 +76,7 @@ const HistogramOptions: FunctionComponent<Props> = props => {
     onSetXAxisLabel,
     onSetLegendOpacity,
     onSetLegendOrientationThreshold,
-      onSetLegendColorizeRows,
+    onSetLegendColorizeRows,
   } = props
 
   const groupDropdownStatus = availableGroupColumns.length
@@ -190,7 +190,7 @@ const mdtp = {
   onSetXAxisLabel: setXAxisLabel,
   onSetLegendOpacity: setLegendOpacity,
   onSetLegendOrientationThreshold: setLegendOrientationThreshold,
-    onSetLegendColorizeRows: setLegendColorizeRows,
+  onSetLegendColorizeRows: setLegendColorizeRows,
 }
 
 const connector = connect(mstp, mdtp)

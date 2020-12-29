@@ -219,6 +219,9 @@ jobs:
             docker load < ~/docker-cache-oss/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - run:
+          name: Rebuild Ingress (may be removable after some time?)
+          command: cd ./monitor-ci; make rebuild NODE=ingress
+      - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start
       - run:

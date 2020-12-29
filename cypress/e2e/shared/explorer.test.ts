@@ -47,7 +47,7 @@ const makeGraphSnapshot = (() => {
     const name = `graph-snapshot-${lastGraphSnapsotIndex++}`
 
     // wait for drawing done
-    cy.wait(150)
+    cy.wait(500)
     cy.get('[data-testid|=giraffe-layer]')
       .then($layer => ($layer[0] as HTMLCanvasElement).toDataURL('image/jpeg'))
       .as(getNameLayer(name))

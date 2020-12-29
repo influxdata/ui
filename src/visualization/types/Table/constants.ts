@@ -7,6 +7,7 @@ export const ASCENDING = 'asc'
 export const DESCENDING = 'desc'
 export const DEFAULT_SORT_DIRECTION = ASCENDING
 export const KEYS_I_HATE = ['_start', '_stop']
+export const NULL_ARRAY_INDEX = -1
 
 export interface TimeField {
   internalName: string

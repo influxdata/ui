@@ -9,7 +9,10 @@ import MultiGrid from 'src/visualization/types/Table/MultiGrid'
 import TableCell from 'src/visualization/types/Table/TableCell'
 
 // Utils
-import {transformTableData} from 'src/visualization/types/Table/transform'
+import {
+  transformTableData,
+  findHoverTimeIndex,
+} from 'src/visualization/types/Table/transform'
 import {resolveTimeFormat} from 'src/visualization/utils/timeFormat'
 import {
   COLUMN_MIN_WIDTH,
@@ -17,6 +20,7 @@ import {
   DEFAULT_FIX_FIRST_COLUMN,
   DEFAULT_VERTICAL_TIME_AXIS,
   DEFAULT_TIME_FIELD,
+  NULL_ARRAY_INDEX,
 } from './constants'
 
 // Types
@@ -69,6 +73,9 @@ const Table: FC<Props> = ({
   )
 
   const [tableWidth, setTableWidth] = useState(0)
+  const [hoverColumn, setHoverColumn] = useState(NULL_ARRAY_INDEX)
+  const [hoverRow, setHoverRow] = useState(NULL_ARRAY_INDEX)
+  const [hoverTime, setHoverTime] = useState(0)
 
   const tableClassName = classnames('time-machine-table', {
     'time-machine-table__light-mode': theme === 'light',
@@ -131,6 +138,57 @@ const Table: FC<Props> = ({
     },
     [needsFixing, transformed, tableWidth, colCount]
   )
+  const handleHover = useCallback(
+    (e: React.MouseEvent<HTMLElement>) => {
+      const {dataset} = e.target as HTMLElement
+
+      if (isVertical && parseFloat(dataset.rowIndex) === 0) {
+        return
+      }
+
+      if (timeVisible) {
+        const hoverTime = isVertical
+          ? transformed.sortedTimeVals[dataset.rowIndex]
+          : transformed.sortedTimeVals[dataset.columnIndex]
+
+        setHoverTime(Date.parse(hoverTime))
+      }
+
+      setHoverColumn(parseFloat(dataset.columnIndex))
+      setHoverRow(parseFloat(dataset.rowIndex))
+    },
+    [
+      transformed,
+      setHoverColumn,
+      setHoverRow,
+      setHoverTime,
+      isVertical,
+      timeVisible,
+    ]
+  )
+
+  const handleMouseLeave = useCallback((): void => {
+    setHoverTime(0)
+
+    setHoverColumn(NULL_ARRAY_INDEX)
+    setHoverRow(NULL_ARRAY_INDEX)
+  }, [setHoverColumn, setHoverRow, setHoverTime])
+
+  const [scrollToColumn, scrollToRow] = useMemo(() => {
+    if (!hoverTime || hoverColumn !== NULL_ARRAY_INDEX || !timeVisible) {
+      return [0, -1]
+    }
+
+    const index = findHoverTimeIndex(transformed.sortedTimeVals, hoverTime)
+
+    return [isVertical ? -1 : index, isVertical ? index : null]
+  }, [
+    transformed.sortedTimeVals,
+    hoverTime,
+    hoverColumn,
+    timeVisible,
+    isVertical,
+  ])
 
   if (!table) {
     return null
@@ -139,8 +197,12 @@ const Table: FC<Props> = ({
   return (
     <div
       className={tableClassName}
-      ref={gridContainer => setTableWidth(gridContainer.clientWidth)}
-      onMouseLeave={this.handleMouseLeave}
+      ref={gridContainer => {
+        if (gridContainer) {
+          setTableWidth(gridContainer.clientWidth)
+        }
+      }}
+      onMouseLeave={handleMouseLeave}
     >
       {rowCount > 0 && (
         <AutoSizer>
@@ -168,15 +230,14 @@ const Table: FC<Props> = ({
                       scrollToColumn={scrollToColumn}
                       fixedColumnCount={needsFixing && colCount > 1 ? 1 : 0}
                       cellRenderer={(props: CellRendererProps) => {
-                        const {scrollToRow} = this.scrollToColRow
                         const hoverIndex =
-                          scrollToRow >= 0 ? scrollToRow : this.hoveredRowIndex
+                          scrollToRow >= 0 ? scrollToRow : hoverRow
 
                         return (
                           <TableCell
                             {...props}
                             sortOptions={transformed.sortOptions}
-                            onHover={this.handleHover}
+                            onHover={handleHover}
                             isTimeVisible={timeVisible}
                             data={
                               transformed.transformedData[props.rowIndex][
@@ -195,7 +256,7 @@ const Table: FC<Props> = ({
                             resolvedFieldOptions={
                               transformed.resolvedFieldOptions
                             }
-                            hoveredColumnIndex={this.hoveredColumnIndex}
+                            hoveredColumnIndex={hoverColumn}
                             isFirstColumnFixed={needsFixing}
                             isVerticalTimeAxis={isVertical}
                             onClickFieldName={updateSort}

@@ -2,7 +2,7 @@ export {Authorization, Permission} from 'src/client'
 
 export enum Auth0Connection {
   Google = 'google-oauth2',
-  Github = 'github',
+  Microsoft = 'windowslive',
   Authentication = 'Username-Password-Authentication',
 }
 

@@ -4,6 +4,8 @@ import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import {
+  AutoInput,
+  AutoInputMode,
   Button,
   ButtonShape,
   FormElement,
@@ -36,6 +38,8 @@ import {
 } from 'src/shared/constants/gaugeMiniSpecs'
 import {getGroupableColumns} from 'src/timeMachine/selectors'
 import {ComponentStatus} from 'src/clockface'
+import {MIN_DECIMAL_PLACES, MAX_DECIMAL_PLACES} from 'src/dashboards/constants'
+import {FormatStatValueOptions} from 'src/client/generatedRoutes'
 
 type ThemeString =
   | 'GAUGE_MINI_THEME_BULLET_DARK'
@@ -229,6 +233,84 @@ class GaugeMiniOptions extends PureComponent<Props> {
       </Row>
     )
 
+    const renderFormater = (
+      name: keyof Pick<GaugeMiniLayerConfig, 'axesFormater' | 'valueFormater'>
+    ) => {
+      const formater = theme[name] as FormatStatValueOptions | undefined
+      const onUpdateFormaterProp = <T extends keyof typeof formater>(
+        field: T,
+        value: typeof formater[T]
+      ) => {
+        onUpdateProp({[name]: {...formater, [field]: value}})
+      }
+
+      return (
+        <>
+          <Grid.Row>
+            <Grid.Column widthXS={6}>
+              <FormElement label="Prefix">
+                <Input
+                  type={InputType.Text}
+                  value={formater?.prefix || ''}
+                  onChange={e => {
+                    onUpdateFormaterProp('prefix', e.target.value)
+                  }}
+                  placeholder="%, MPH, etc."
+                />
+              </FormElement>
+            </Grid.Column>
+            <Grid.Column widthXS={6}>
+              <FormElement label="Suffix">
+                <Input
+                  type={InputType.Text}
+                  value={formater?.suffix || ''}
+                  onChange={e => {
+                    onUpdateFormaterProp('suffix', e.target.value)
+                  }}
+                  placeholder="%, MPH, etc."
+                />
+              </FormElement>
+            </Grid.Column>
+          </Grid.Row>
+          <FormElement label="Decimal Places">
+            <AutoInput
+              mode={
+                formater?.decimalPlaces?.isEnforced
+                  ? AutoInputMode.Custom
+                  : AutoInputMode.Auto
+              }
+              onChangeMode={(mode: AutoInputMode) => {
+                onUpdateFormaterProp('decimalPlaces', {
+                  ...formater?.decimalPlaces,
+                  isEnforced: mode === AutoInputMode.Custom,
+                })
+              }}
+              inputComponent={
+                <Input
+                  name="decimal-places"
+                  placeholder="Enter a number"
+                  onChange={e => {
+                    onUpdateFormaterProp('decimalPlaces', {
+                      ...formater?.decimalPlaces,
+                      digits: +e.target.value,
+                    })
+                  }}
+                  value={formater?.decimalPlaces?.digits || 0}
+                  min={MIN_DECIMAL_PLACES}
+                  max={MAX_DECIMAL_PLACES}
+                  type={InputType.Number}
+                />
+              }
+            />
+          </FormElement>
+        </>
+      )
+    }
+
+    const axesInputs = <>
+    
+    </>
+
     return (
       <>
         <h4 className="view-options--header">Customize Gauge MINI</h4>
@@ -318,9 +400,7 @@ class GaugeMiniOptions extends PureComponent<Props> {
             type: 'element',
             jsx: (
               <FormElement label="valueFormater">
-                {
-                  // todo
-                }
+                {renderFormater('valueFormater')}
               </FormElement>
             ),
           },
@@ -330,9 +410,7 @@ class GaugeMiniOptions extends PureComponent<Props> {
             type: 'element',
             jsx: (
               <FormElement label="axesSteps">
-                {
-                  // todo
-                }
+                {axesInputs}
               </FormElement>
             ),
           },
@@ -342,9 +420,7 @@ class GaugeMiniOptions extends PureComponent<Props> {
             type: 'element',
             jsx: (
               <FormElement label="axesFormater">
-                {
-                  // todo
-                }
+                {renderFormater('axesFormater')}
               </FormElement>
             ),
           },

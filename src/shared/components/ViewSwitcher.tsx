@@ -1,6 +1,6 @@
 // Libraries
-import React, { FunctionComponent } from 'react'
-import { Plot, FromFluxResult, GaugeMiniLayerConfig } from '@influxdata/giraffe'
+import React, {FunctionComponent} from 'react'
+import {Plot, FromFluxResult, GaugeMiniLayerConfig} from '@influxdata/giraffe'
 
 // Components
 import GaugeChart from 'src/shared/components/GaugeChart'
@@ -14,7 +14,7 @@ import FluxTablesTransform from 'src/shared/components/FluxTablesTransform'
 import XYPlot from 'src/shared/components/XYPlot'
 import ScatterPlot from 'src/shared/components/ScatterPlot'
 import LatestValueTransform from 'src/shared/components/LatestValueTransform'
-import { LatestMultipleValueTransform } from './LatestMultipleValueTransform'
+import {LatestMultipleValueTransform} from './LatestMultipleValueTransform'
 import CheckPlot from 'src/shared/components/CheckPlot'
 import BandPlot from 'src/shared/components/BandPlot'
 
@@ -31,7 +31,7 @@ import {
   Threshold,
   Theme,
 } from 'src/types'
-import { getGaugeMiniBarsDefinitions } from "../utils/gaugeMiniThemeNormalize"
+import {getGaugeMiniBarsDefinitions} from '../utils/gaugeMiniThemeNormalize'
 
 interface Props {
   giraffeResult: FromFluxResult
@@ -49,7 +49,7 @@ const ViewSwitcher: FunctionComponent<Props> = ({
   properties,
   timeRange,
   files,
-  giraffeResult: { table, fluxGroupKeyUnion },
+  giraffeResult: {table, fluxGroupKeyUnion},
   timeZone,
   statuses,
   checkType = null,
@@ -103,7 +103,7 @@ const ViewSwitcher: FunctionComponent<Props> = ({
           table={table}
           columns={
             getGaugeMiniBarsDefinitions(
-              (properties as unknown as Required<GaugeMiniLayerConfig>)
+              ((properties as unknown) as Required<GaugeMiniLayerConfig>)
                 .barsDefinitions
             ).groupByColumns
           }

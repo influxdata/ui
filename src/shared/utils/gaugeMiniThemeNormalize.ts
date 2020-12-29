@@ -1,8 +1,12 @@
 import {formatStatValue, FormatStatValueOptions} from './formatStatValue'
 import {color as d3Color} from 'd3-color'
 import {range} from 'd3-array'
-import { GaugeMiniLayerConfig } from "@influxdata/giraffe"
-import { GaugeMiniBarsDefinitions, GaugeMiniColors, GaugeMiniBarsDefinitionsArr } from "@influxdata/giraffe/dist/types"
+import {GaugeMiniLayerConfig} from '@influxdata/giraffe'
+import {
+  GaugeMiniBarsDefinitions,
+  GaugeMiniColors,
+  GaugeMiniBarsDefinitionsArr,
+} from '@influxdata/giraffe/dist/types'
 
 export const throwReturn = <T extends unknown>(msg: string): T => {
   throw new Error(msg)

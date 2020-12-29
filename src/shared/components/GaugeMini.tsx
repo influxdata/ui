@@ -5,9 +5,11 @@ import {scaleLinear} from 'd3-scale'
 
 // Types
 import {GaugeMiniLayerConfig} from '@influxdata/giraffe'
-import { gaugeMiniNormalizeTheme, GaugeMiniThemeNormalized } from "../utils/gaugeMiniThemeNormalize"
-import { GaugeMiniColors } from "@influxdata/giraffe/dist/types"
-
+import {
+  gaugeMiniNormalizeTheme,
+  GaugeMiniThemeNormalized,
+} from '../utils/gaugeMiniThemeNormalize'
+import {GaugeMiniColors} from '@influxdata/giraffe/dist/types'
 
 interface Props {
   width: number

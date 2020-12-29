@@ -1,6 +1,6 @@
 import icon from './icon'
 import properties from './properties'
-import GaugeMiniOptions from "./GaugeMiniOptions"
+import GaugeMiniOptions from './GaugeMiniOptions'
 
 export default register => {
   register({

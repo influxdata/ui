@@ -1,8 +1,4 @@
-import {
-  parseFiles,
-  parseFilesWithFromFlux,
-  parseFilesWithObjects,
-} from './rawFluxDataTable'
+import {parseFiles, parseFilesWithFromFlux} from './rawFluxDataTable'
 import {CSV_WITH_OBJECTS} from 'src/shared/parsing/flux/constants'
 
 describe('parseFiles', () => {

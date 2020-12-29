@@ -1,15 +1,8 @@
 import Papa from 'papaparse'
-import HtmlEntities from 'he'
-import unraw from 'unraw'
 import {fromFlux, FromFluxResult} from '@influxdata/giraffe'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 import {parseChunks} from 'src/shared/parsing/flux/response'
-import {
-  CSV_OBJECT_BASE_NAME,
-  CSV_OBJECT_START_STRING,
-  CSV_OBJECT_END_STRING,
-} from 'src/shared/constants/rawFluxData'
 
 export interface ParseFilesResult {
   data: string[][]

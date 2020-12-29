@@ -1,19 +1,18 @@
 // Libraries
 import React, {FC, useContext, useEffect, useState} from 'react'
-import {fromFlux} from '@influxdata/giraffe'
 
 // Contexts
+import {QueryContext} from 'src/flows/context/query'
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowContext} from 'src/flows/context/flow.current'
 
 // Utils
 import {normalizeSchema} from 'src/shared/utils/flowSchemaNormalizer'
 import {formatTimeRangeArguments} from 'src/timeMachine/apis/queryBuilder'
-import {findOrgID} from 'src/flows/shared/utils'
 
 // Types
-import {NormalizedTag, RemoteDataState} from 'src/types'
-import {getCachedResultsOrRunQuery} from 'src/shared/apis/queryCache'
+import {FluxResult, NormalizedTag, RemoteDataState} from 'src/types'
+import {FromFluxResult} from '@influxdata/giraffe'
 import {RunQueryResult} from 'src/shared/apis/query'
 
 export type Props = {
@@ -42,7 +41,7 @@ export const SchemaContext = React.createContext<SchemaContextType>(
   DEFAULT_CONTEXT
 )
 
-const csvToSchema = (result: RunQueryResult): unknown => {
+const parsedResultToSchema = (parsed: FromFluxResult): unknown => {
   let ni, no
   const filtered = [
     /^_start$/,
@@ -54,14 +53,11 @@ const csvToSchema = (result: RunQueryResult): unknown => {
     /^table$/,
     /^result$/,
   ]
-  if (!result) {
+  if (!parsed) {
     return
   }
-  if (result?.type !== 'SUCCESS') {
-    throw new Error(result.message)
-  }
 
-  const out = fromFlux(result.csv).table as any
+  const out = parsed.table as any
   const len = out.length
   const measurements = out.columns._measurement?.data
   const fields = out.columns._field?.data
@@ -107,6 +103,7 @@ const csvToSchema = (result: RunQueryResult): unknown => {
 export const SchemaProvider: FC<Props> = React.memo(({children}) => {
   const {data, update} = useContext(PipeContext)
   const {flow} = useContext(FlowContext)
+  const {query} = useContext(QueryContext)
   const [searchTerm, setSearchTerm] = useState('')
   const [lastBucket, setLastBucket] = useState(data?.bucket?.id)
   const [schema, setSchema] = useState({})
@@ -138,17 +135,16 @@ export const SchemaProvider: FC<Props> = React.memo(({children}) => {
 
     const range = formatTimeRangeArguments(flow?.range)
 
-    const query = `from(bucket: "${data.bucket.name}")
+    const text = `from(bucket: "${data.bucket.name}")
 |> range(${range})
 |> first()
 |> drop(columns: ["_value"])
 |> group()`
 
-    const orgID = findOrgID(query, [data.bucket])
-    const result = getCachedResultsOrRunQuery(orgID, query, [])
-    result.promise
-      .then((res: RunQueryResult) => {
-        const schemaForBucket = csvToSchema(res)
+    const result = query(text)
+    result
+      .then((response: FluxResult) => {
+        const schemaForBucket = parsedResultToSchema(response.parsed)
         setSchema(schemaForBucket)
         setLoading(RemoteDataState.Done)
       })
@@ -157,7 +153,7 @@ export const SchemaProvider: FC<Props> = React.memo(({children}) => {
         setLoading(RemoteDataState.Error)
         setSchema({})
       })
-  }, [data?.bucket?.name, data?.bucket, flow?.range])
+  }, [data?.bucket?.name, data?.bucket, flow?.range, query])
 
   useEffect(() => {
     const normalized = normalizeSchema(schema, data, searchTerm)

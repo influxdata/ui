@@ -33,7 +33,6 @@ class CreateVariableOverlay extends PureComponent<Props> {
   }
 
   private handleHideOverlay = () => {
-    console.log('helo')
     const {
       history,
       match: {

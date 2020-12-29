@@ -3,7 +3,6 @@ import React, {FunctionComponent, useEffect, useContext} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Components
-import {Overlay} from '@influxdata/clockface'
 import CheckEOHeader from 'src/checks/components/CheckEOHeader'
 import TimeMachine from 'src/timeMachine/components/TimeMachine'
 import {OverlayContext} from 'src/overlays/components/OverlayController'

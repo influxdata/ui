@@ -1,7 +1,6 @@
 // Types
 import {AppState} from 'src/types'
-import {MeState} from 'src/shared/reducers/me'
 
-export const getMe = (state: AppState): MeState => {
+export const getMe = (state: AppState): AppState['me'] => {
   return state.me
 }

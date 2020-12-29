@@ -2,7 +2,7 @@
 import {
   getValidRange,
   getRemainingRange,
-} from 'src/shared/utils/useVisDomainSettings'
+} from 'src/visualization/utils/useVisDomainSettings'
 
 // Types
 import {numericColumnData as data} from 'mocks/dummyData'

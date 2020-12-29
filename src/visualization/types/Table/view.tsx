@@ -31,7 +31,9 @@ const TableGraphs: FC<Props> = ({properties, result, timeZone, theme}) => {
   const [selectedTable, setSelectedTable] = useState(tables[0])
   const [search, setSearch] = useState('')
   const [sortOptions, setSortOptions] = useState({
-    field: properties.tableOptions?.sortBy?.internalName || DEFAULT_TIME_FIELD,
+    field:
+      properties.tableOptions?.sortBy?.internalName ||
+      DEFAULT_TIME_FIELD.internalName,
     direction: ASCENDING,
   })
 

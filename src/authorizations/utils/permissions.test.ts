@@ -1,4 +1,4 @@
-import {allAccessPermissions} from './permissions'
+import {allAccessPermissions, toggleSelectedBucket} from './permissions'
 import {Permission} from 'src/types'
 
 const hvhs: Permission[] = [
@@ -251,4 +251,18 @@ const hvhs: Permission[] = [
 
 test('all-access tokens/authorizations production test', () => {
   expect(allAccessPermissions('bulldogs', 'mario')).toMatchObject(hvhs)
+})
+
+test('toggleSelectedBucket test', () => {
+  const myBuckets: string[] = ['bucket1', 'bucket2', 'bucket3']
+
+  expect(toggleSelectedBucket('bucket4', myBuckets)).toEqual([
+    ...myBuckets,
+    'bucket4',
+  ])
+
+  expect(toggleSelectedBucket('bucket2', myBuckets)).toEqual([
+    'bucket1',
+    'bucket3',
+  ])
 })

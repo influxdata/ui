@@ -268,7 +268,6 @@ describe('query', () => {
         variable => variable.id === '05aeb0ad75aca000'
       )
       const [selected] = variables[index].selected
-      console.log('selected: ', selected)
       const result = getCachedResultsOrRunQuery(orgID, queryText, variables)
       expect(runQuery).toHaveBeenCalledTimes(1)
       result.promise

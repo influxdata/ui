@@ -7,6 +7,7 @@ export default register => {
     type: 'gauge-mini',
     name: 'Gauge mini',
     graphic: icon,
+    featureFlag: 'gaugeMini',
     initial: properties,
     options: GaugeMiniOptions,
   })

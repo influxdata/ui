@@ -1,12 +1,10 @@
 // Libraries
-import React, {FunctionComponent, useState} from 'react'
+import React, {FC, useMemo, useState} from 'react'
 import RawFluxDataGrid from 'src/timeMachine/components/RawFluxDataGrid'
 import {FromFluxResult} from '@influxdata/giraffe'
 
 // Utils
-import {
-  parseFromFluxResults,
-} from 'src/timeMachine/utils/rawFluxDataTable'
+import {parseFromFluxResults} from 'src/timeMachine/utils/rawFluxDataTable'
 import {DapperScrollbars, FusionScrollEvent} from '@influxdata/clockface'
 
 interface Props {
@@ -17,37 +15,32 @@ interface Props {
   startRow?: number
 }
 
-const RawFluxDataTable: FunctionComponent<Props> = ({
+const RawFluxDataTable: FC<Props> = ({
   width,
   height,
   parsedResults,
   disableVerticalScrolling,
-  startRow
+  startRow,
 }) => {
-  const [scrollLeft, setScrollLeft] = useState(0);
-  const [scrollTop, setScrollTop] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0)
+  const [scrollTop, setScrollTop] = useState(0)
   const onScrollbarsScroll = (e: FusionScrollEvent) => {
     const {scrollTop: sTop, scrollLeft: sLeft} = e
     setScrollLeft(sLeft)
     setScrollTop(sTop)
   }
 
-  const tableWidth = width
-  const tableHeight = height
-
-  let data
-  let maxColumnCount
-  const parsed = parseFromFluxResults(parsedResults)
-  data = parsed.tableData
-  maxColumnCount = parsed.max
+  const {tableData, max} = useMemo(() => parseFromFluxResults(parsedResults), [
+    parsedResults,
+  ])
 
   return (
     <div className="raw-flux-data-table" data-testid="raw-data-table">
       <DapperScrollbars
         style={{
           overflowY: 'hidden',
-          width: tableWidth,
-          height: tableHeight,
+          width,
+          height,
         }}
         autoHide={false}
         scrollTop={scrollTop}
@@ -59,17 +52,15 @@ const RawFluxDataTable: FunctionComponent<Props> = ({
         <RawFluxDataGrid
           scrollTop={scrollTop}
           scrollLeft={scrollLeft}
-          width={tableWidth}
-          height={tableHeight}
-          maxColumnCount={maxColumnCount}
-          data={data}
+          width={width}
+          height={height}
+          maxColumnCount={max}
+          data={tableData}
           startRow={startRow}
         />
       </DapperScrollbars>
     </div>
   )
-
-
 }
 
 export default RawFluxDataTable

@@ -117,6 +117,5 @@ export default class extends PureComponent<Props, State> {
     )
   }
 
-  private getCellData = (row, column) =>
-    this.props.data[row] ? this.props.data[row][column] : ''
+  private getCellData = (row, column) => this.props.data?.[row]?.[column] ?? ''
 }

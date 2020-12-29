@@ -17,6 +17,7 @@ import {
   ASCENDING,
   DESCENDING,
   DEFAULT_SORT_DIRECTION,
+  DEFAULT_TIME_FIELD,
   KEYS_I_HATE,
 } from './constants'
 
@@ -30,7 +31,7 @@ const TableGraphs: FC<Props> = ({properties, result, timeZone, theme}) => {
   const [selectedTable, setSelectedTable] = useState(tables[0])
   const [search, setSearch] = useState('')
   const [sortOptions, setSortOptions] = useState({
-    field: properties.tableOptions.sortBy.internalName,
+    field: properties.tableOptions?.sortBy?.internalName || DEFAULT_TIME_FIELD,
     direction: ASCENDING,
   })
 

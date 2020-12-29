@@ -193,8 +193,10 @@ export const getCachedResultsOrRunQuery = (
 ): CancelBox<RunQueryResult> => {
   const queryID = `${hashCode(query)}`
   event('Starting Query Cache Process ', {context: 'queryCache', queryID})
+
   const usedVars = filterUnusedVarsBasedOnQuery(allVars, [query])
   const variables = sortBy(usedVars, ['name'])
+
   const simplifiedVariables = variables.map(v => asSimplyKeyValueVariables(v))
   const stringifiedVars = JSON.stringify(simplifiedVariables)
   // create the queryID based on the query & vars

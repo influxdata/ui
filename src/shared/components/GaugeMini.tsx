@@ -477,6 +477,8 @@ export const GaugeMini: FunctionComponent<Props> = ({
     labelBarsFontColor,
     labelBarsFontSize,
     colors,
+    axesSteps,
+    axesFontSize,
   } = theme
   const [barLabelsWidth] = useState<number[]>([])
 
@@ -502,7 +504,19 @@ export const GaugeMini: FunctionComponent<Props> = ({
   const [autocenterToken, setAutocenterToken] = useState(0)
   useEffect(() => {
     setAutocenterToken(x => x + 1)
-  }, [barLabelWidth, sidePaddings, valueHeight, width, height])
+  }, [
+    width,
+    height,
+    barLabelWidth,
+    barsDefinitions,
+    valueHeight,
+    gaugeHeight,
+    barPaddings,
+    sidePaddings,
+    labelMainFontSize,
+    axesSteps,
+    axesFontSize,
+  ])
 
   /** return value as fraction 0->min 1->max */
   const getFrac = (val: number): number => (val - colors.min.value) / colorLen

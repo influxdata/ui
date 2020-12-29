@@ -1,5 +1,5 @@
 import {File, CancelBox} from 'src/types'
-import {runQuery, RunQueryResult} from 'src/shared/apis/query'
+import {runQuery} from 'src/shared/apis/query'
 
 /* \
 
@@ -20,11 +20,7 @@ export function RunQueryPromiseMutex<T>() {
   let processing = false
 
   const ret = {
-    run: (
-      orgID: string,
-      query: string,
-      extern?: File
-    ): CancelBox<RunQueryResult> => {
+    run: (orgID: string, query: string, extern?: File): CancelBox<T> => {
       return {
         promise: new Promise((resolve, reject) => {
           if (processing) {

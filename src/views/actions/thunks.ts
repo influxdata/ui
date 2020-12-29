@@ -14,7 +14,6 @@ import {viewSchema} from 'src/schemas'
 
 // Utils
 import applyAutoAggregateRequirements from 'src/utils/autoAggregateRequirements'
-import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
 import {getAllVariables} from 'src/variables/selectors'
 
 // Actions

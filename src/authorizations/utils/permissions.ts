@@ -94,6 +94,8 @@ export const allAccessPermissions = (
   return allPermissionTypes.flatMap(withOrgID)
 }
 
+// add a permission string ('read' or 'write' is the second argument)
+// to a list of buckets (the first argument)
 export const specificBucketsPermissions = (
   buckets: Bucket[],
   permission: Permission['action']
@@ -110,6 +112,8 @@ export const specificBucketsPermissions = (
   })
 }
 
+// assign permission string ('read' or 'write' is the second argument)
+// to all the buckets that have a particular orgID (the first argument)
 export const allBucketsPermissions = (
   orgID: string,
   permission: Permission['action']
@@ -122,7 +126,7 @@ export const allBucketsPermissions = (
   ]
 }
 
-export const selectBucket = (
+export const toggleSelectedBucket = (
   bucketName: string,
   selectedBuckets: string[]
 ): string[] => {

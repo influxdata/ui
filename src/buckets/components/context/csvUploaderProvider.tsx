@@ -18,12 +18,14 @@ export type Props = {
 
 export interface CsvUploaderContextType {
   progress: number
+  resetUploadState: () => void
   uploadCsv: (csv: string, bucket: string) => void
   uploadState: RemoteDataState
 }
 
 export const DEFAULT_CONTEXT: CsvUploaderContextType = {
   progress: 0,
+  resetUploadState: () => {},
   uploadCsv: (_: string, __: string) => {},
   uploadState: RemoteDataState.NotStarted,
 }
@@ -32,7 +34,13 @@ export const CsvUploaderContext = React.createContext<CsvUploaderContextType>(
   DEFAULT_CONTEXT
 )
 
-const MAX_CHUNK_SIZE = 1750
+/**
+ * This is an arbitrary number that should be capped out at 1750.
+ * For now, the number is set to 500 since there were significant performance issues
+ * that had cropped up when writing 1750 lines on tools that took ~20s for a write query
+ * to resolve
+ */
+const MAX_CHUNK_SIZE = 500
 
 export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
   const [progress, setProgress] = useState(0)
@@ -47,6 +55,9 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
      */
     return `${time}` + Array(20 - `${time}`.length).join('0')
   }, [])
+
+  const resetUploadState = (): void =>
+    setUploadState(RemoteDataState.NotStarted)
 
   const uploadCsv = useCallback(
     (csv: string, bucket: string) => {
@@ -77,6 +88,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
         let measurement: any = ''
         let field: any = ''
         let time: any = ''
+        let value: any = ''
         let tags: any = ''
         let line: any = ''
 
@@ -102,6 +114,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
           measurement = table.getColumn('_measurement')[i]
           field = table.getColumn('_field')[i]
           time = table.getColumn('_time')[i]
+          value = table.getColumn('_value')[i]
           tags = columns
             .filter(col => !!table.getColumn(col)[i])
             .map(col => `${col}=${table.getColumn(col)[i]}`)
@@ -109,7 +122,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
             .trim()
             .replace(/(\r\n|\n|\r)/gm, '')
 
-          line = `${measurement},${tags} ${field}="${field}" ${normalizeTimes(
+          line = `${measurement},${tags} ${field}=${value} ${normalizeTimes(
             time
           )}`
 
@@ -140,6 +153,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
     <CsvUploaderContext.Provider
       value={{
         progress,
+        resetUploadState,
         uploadCsv,
         uploadState,
       }}

@@ -1,5 +1,6 @@
 import React from 'react'
 import {mount} from 'enzyme'
+import {fromFlux} from '@influxdata/giraffe'
 
 import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
 
@@ -22,12 +23,9 @@ export const MULTI_SCHEMA_RESPONSE = `#datatype,string,long,dateTime:RFC3339,dat
 
 describe('RawFluxDataTable', () => {
   test('it can render a simple grid from a flux response', () => {
+    const data = fromFlux(MULTI_SCHEMA_RESPONSE)
     const wrapper = mount(
-      <RawFluxDataTable
-        files={[MULTI_SCHEMA_RESPONSE]}
-        width={10000}
-        height={10000}
-      />
+      <RawFluxDataTable parsedResults={data} width={10000} height={10000} />
     )
 
     const cells = wrapper.find('.raw-flux-data-table--cell')

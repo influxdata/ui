@@ -20,6 +20,7 @@ import {
   setTimeFormat,
   setLegendOpacity,
   setLegendOrientationThreshold,
+  setLegendColorizeRows,
   setGenerateXAxisTicks,
   setXTotalTicks,
   setXTickStart,
@@ -80,6 +81,7 @@ const MosaicOptions: FunctionComponent<Props> = props => {
     timeFormat,
     onSetLegendOpacity,
     onSetLegendOrientationThreshold,
+    onSetLegendColorizeRows,
     onSetGenerateXAxisTicks,
     onSetXTotalTicks,
     onSetXTickStart,
@@ -157,6 +159,7 @@ const MosaicOptions: FunctionComponent<Props> = props => {
       <LegendOrientation
         onLegendOpacityChange={onSetLegendOpacity}
         onLegendOrientationThresholdChange={onSetLegendOrientationThreshold}
+        onLegendColorizeRowsChange={onSetLegendColorizeRows}
       />
     </Grid.Column>
   )
@@ -194,6 +197,7 @@ const mdtp = {
   onSetTimeFormat: setTimeFormat,
   onSetLegendOpacity: setLegendOpacity,
   onSetLegendOrientationThreshold: setLegendOrientationThreshold,
+  onSetLegendColorizeRows: setLegendColorizeRows,
   onSetGenerateXAxisTicks: setGenerateXAxisTicks,
   onSetXTotalTicks: setXTotalTicks,
   onSetXTickStart: setXTickStart,

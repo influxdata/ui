@@ -99,7 +99,10 @@ const LegendOrientation: FC<Props> = props => {
     onLegendColorizeRowsChange(value)
   }
 
-  const sliderStyle = {marginTop: 4}
+  const toggleStyle = {marginTop: 4}
+
+  const toggleLabelStyle={color: '#999dab',
+  }
 
   return (
     <Grid.Column>
@@ -134,14 +137,14 @@ const LegendOrientation: FC<Props> = props => {
           alignItems={AlignItems.Center}
           margin={ComponentSize.Medium}
           stretchToFitWidth={true}
-          style={sliderStyle}
+          style={toggleStyle}
         >
           <SlideToggle
             active={colorizeRowsInput}
             size={ComponentSize.ExtraSmall}
             onChange={handleSetColorization}
           />
-          <InputLabel>Colorize Rows</InputLabel>
+          <InputLabel style={toggleLabelStyle}>Colorize Rows</InputLabel>
         </FlexBox>
       </Form.Element>
     </Grid.Column>

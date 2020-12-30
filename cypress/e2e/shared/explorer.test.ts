@@ -410,6 +410,10 @@ describe('DataExplorer', () => {
       cy.getByTestID('time-machine-submit-button').should('be.disabled')
 
       cy.getByTestID('time-machine--bottom').then(() => {
+        // Assert that the lazy loading state should exist
+        cy.getByTestID('spinner-container').should('exist')
+        // Wait for monaco editor to load after lazy loading
+        cy.wait(500)
         cy.getByTestID('flux-editor').within(() => {
           cy.get('textarea').type('foo |> bar', {force: true})
 
@@ -442,13 +446,18 @@ describe('DataExplorer', () => {
     })
 
     it('imports the appropriate packages to build a query', () => {
+      // Assert that the lazy loading state should exist
+      cy.getByTestID('spinner-container').should('exist')
+      // Wait for monaco editor to load after lazy loading
+      cy.wait(300)
+      cy.getByTestID('flux-editor').should('exist')
       cy.getByTestID('functions-toolbar-contents--functions').should('exist')
-      cy.getByTestID('flux--from--inject').click()
-      cy.getByTestID('flux--range--inject').click()
-      cy.getByTestID('flux--math.abs--inject').click()
-      cy.getByTestID('flux--math.floor--inject').click()
-      cy.getByTestID('flux--strings.title--inject').click()
-      cy.getByTestID('flux--strings.trim--inject').click()
+      cy.getByTestID('flux--from--inject').click({force: true})
+      cy.getByTestID('flux--range--inject').click({force: true})
+      cy.getByTestID('flux--math.abs--inject').click({force: true})
+      cy.getByTestID('flux--math.floor--inject').click({force: true})
+      cy.getByTestID('flux--strings.title--inject').click({force: true})
+      cy.getByTestID('flux--strings.trim--inject').click({force: true})
 
       cy.wait(100)
 
@@ -513,6 +522,10 @@ describe('DataExplorer', () => {
 
     it('shows the empty state when the query returns no results', () => {
       cy.getByTestID('time-machine--bottom').within(() => {
+        // Assert that the lazy loading state should exist
+        cy.getByTestID('spinner-container').should('exist')
+        // Wait for monaco editor to load after lazy loading
+        cy.wait(500)
         cy.get('.react-monaco-editor-container')
           .should('be.visible')
           .click()
@@ -642,9 +655,10 @@ describe('DataExplorer', () => {
             cy.getByTestID('time-machine-submit-button').click()
             cy.getByTestID('empty-graph--error').should('exist')
           })
-          cy.get('.react-monaco-editor-container')
-            .click()
+          cy.getByTestID('flux-editor')
+            .click({force: true})
             .focused()
+            .clear()
             .type('from(', {force: true, delay: 2})
           cy.getByTestID('time-machine-submit-button').click()
         })

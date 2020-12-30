@@ -102,9 +102,6 @@ http.post(
     )
   })
 
-  // This test is not typing all of the text into the text box causing test failures.
-  // Skipping for now so that we can merge code (a simple wait did not fix it)
-  // Issue at: https://github.com/influxdata/ui/issues/466
   it('can create a cron task', () => {
     cy.getByTestID('empty-tasks-list').within(() => {
       cy.getByTestID('add-resource-dropdown--button').click()

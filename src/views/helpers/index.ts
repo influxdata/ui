@@ -28,6 +28,7 @@ import {
   Color,
   DashboardQuery,
   GaugeViewProperties,
+  GaugeMiniViewProperties,
   HeatmapViewProperties,
   HistogramViewProperties,
   LinePlusSingleStatProperties,
@@ -171,9 +172,11 @@ function defaultGaugeMiniViewProperties() {
   return {
     queries: [defaultViewQuery()],
     ...GAUGE_MINI_THEME_BULLET_DARK,
-    defaultTheme: 'GAUGE_MINI_THEME_BULLET_DARK',
     colors: DEFAULT_GAUGE_COLORS as Color[],
-  }
+    note: '',
+    shape: 'chronograf-v2',
+    showNoteWhenEmpty: false,
+  } as GaugeMiniViewProperties
 }
 
 function defaultSingleStatViewProperties() {
@@ -287,15 +290,12 @@ const NEW_VIEW_CREATORS = {
       legend: {},
     },
   }),
-  'gauge-mini': (): NewView<GaugeViewProperties> => ({
+  'gauge-mini': (): NewView<GaugeMiniViewProperties> => ({
     ...defaultView(),
     properties: {
       ...defaultGaugeMiniViewProperties(),
       type: 'gauge-mini',
-      shape: 'chronograf-v2',
-      legend: {},
-      // todo: regenerate swagger, remove as any
-    } as any,
+    },
   }),
   'line-plus-single-stat': (): NewView<LinePlusSingleStatProperties> => ({
     ...defaultView(),

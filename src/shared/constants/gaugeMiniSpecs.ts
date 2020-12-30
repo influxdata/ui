@@ -1,8 +1,26 @@
 import {GaugeMiniLayerConfig, InfluxColors} from '@influxdata/giraffe'
 import {Color} from 'src/types/colors'
 
+export type GaugeMiniThemeString =
+  | 'GAUGE_MINI_THEME_BULLET_DARK'
+  | 'GAUGE_MINI_THEME_PROGRESS_DARK'
+
+export const gaugeMiniThemeStrings: GaugeMiniThemeString[] = [
+  'GAUGE_MINI_THEME_BULLET_DARK',
+  'GAUGE_MINI_THEME_PROGRESS_DARK',
+]
+
+export const gaugeMiniGetTheme = (theme: GaugeMiniThemeString) => {
+  switch (theme) {
+    case 'GAUGE_MINI_THEME_BULLET_DARK':
+      return GAUGE_MINI_THEME_BULLET_DARK
+    case 'GAUGE_MINI_THEME_PROGRESS_DARK':
+      return GAUGE_MINI_THEME_PROGRESS_DARK
+  }
+}
+
 export const GAUGE_MINI_THEME_BULLET_DARK: Required<GaugeMiniLayerConfig> = {
-  type: 'gauge mini',
+  type: 'gauge-mini',
   mode: 'bullet',
   textMode: 'follow',
   barsDefinitions: {groupByColumns: {_field: true}},
@@ -43,7 +61,7 @@ export const GAUGE_MINI_THEME_BULLET_DARK: Required<GaugeMiniLayerConfig> = {
 }
 
 export const GAUGE_MINI_THEME_PROGRESS_DARK: Required<GaugeMiniLayerConfig> = {
-  type: 'gauge mini',
+  type: 'gauge-mini',
   mode: 'progress',
   textMode: 'follow',
   barsDefinitions: {groupByColumns: {_field: true}},
@@ -75,7 +93,7 @@ export const GAUGE_MINI_THEME_PROGRESS_DARK: Required<GaugeMiniLayerConfig> = {
   valueFontColorOutside: InfluxColors.Cloud,
   valueFormater: (val: number) => val.toFixed(0),
 
-  axesSteps: undefined as any,
+  axesSteps: undefined,
   axesFontSize: 11,
   axesFontColor: InfluxColors.Forge,
   axesFormater: (val: number) => val.toFixed(0),

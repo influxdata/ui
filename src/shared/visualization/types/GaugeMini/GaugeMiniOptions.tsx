@@ -12,11 +12,13 @@ import {
   InputType,
   MultiSelectDropdown,
   SelectDropdown,
+  AutoInput,
+  AutoInputMode,
 } from '@influxdata/clockface'
 const {Row, Column} = Grid
 
 // Actions
-import {setColors} from 'src/timeMachine/actions'
+import {setColors, setGaugeMiniProp} from 'src/timeMachine/actions'
 
 // Types
 import {AppState, ViewType} from 'src/types'
@@ -31,18 +33,20 @@ import {
 import ThresholdsSettings from 'src/shared/components/ThresholdsSettings'
 import {GaugeMiniLayerConfig} from '@influxdata/giraffe'
 import {
-  GAUGE_MINI_THEME_BULLET_DARK,
-  GAUGE_MINI_THEME_PROGRESS_DARK,
+  gaugeMiniGetTheme,
+  GaugeMiniThemeString,
+  gaugeMiniThemeStrings,
 } from 'src/shared/constants/gaugeMiniSpecs'
 import {getGroupableColumns} from 'src/timeMachine/selectors'
 import {ComponentStatus} from 'src/clockface'
 
-type ThemeString =
-  | 'GAUGE_MINI_THEME_BULLET_DARK'
-  | 'GAUGE_MINI_THEME_PROGRESS_DARK'
+import {MIN_DECIMAL_PLACES, MAX_DECIMAL_PLACES} from 'src/dashboards/constants'
+import {FormatStatValueOptions} from 'src/client/generatedRoutes'
+import {SelectGroup as _SelectGroup} from '@influxdata/clockface'
+import {GaugeMiniAxesInputs} from './GaugeMiniAxesInputs'
 
 interface OwnProps {
-  defaultTheme: ThemeString
+  defaultTheme: GaugeMiniThemeString
   type: ViewType
   colors: Color[]
   decimalPlaces?: DecimalPlaces
@@ -77,21 +81,6 @@ type Field =
       label: string
       options: string[]
     }
-
-// todo: move action to /ui/src/timeMachine/actions/index.ts
-interface SetGaugeMiniPropAction {
-  type: 'SET_GAUGE_MINI_PROP'
-  payload: Partial<GaugeMiniLayerConfig>
-}
-
-export const setGaugeMiniProp = (
-  props: Partial<GaugeMiniLayerConfig> & {
-    defaultTheme?: ThemeString
-  }
-): SetGaugeMiniPropAction => ({
-  type: 'SET_GAUGE_MINI_PROP',
-  payload: props,
-})
 
 class GaugeMiniOptions extends PureComponent<Props> {
   public render() {
@@ -197,15 +186,10 @@ class GaugeMiniOptions extends PureComponent<Props> {
       <Row>
         <Column widthXS={8}>
           <SelectDropdown
-            options={
-              [
-                'GAUGE_MINI_THEME_BULLET_DARK',
-                'GAUGE_MINI_THEME_PROGRESS_DARK',
-              ] as ThemeString[]
-            }
+            options={gaugeMiniThemeStrings}
             selectedOption={this.props.defaultTheme}
             onSelect={x => {
-              onUpdateProp({defaultTheme: x as ThemeString})
+              onUpdateProp({defaultTheme: x as GaugeMiniThemeString})
             }}
           />
         </Column>
@@ -215,9 +199,7 @@ class GaugeMiniOptions extends PureComponent<Props> {
             text="Apply"
             onClick={() => {
               onUpdateProp({
-                ...(this.props.defaultTheme === 'GAUGE_MINI_THEME_PROGRESS_DARK'
-                  ? GAUGE_MINI_THEME_PROGRESS_DARK
-                  : GAUGE_MINI_THEME_BULLET_DARK),
+                ...gaugeMiniGetTheme(this.props.defaultTheme),
                 ...({
                   colors: DEFAULT_GAUGE_COLORS,
                   type: 'gauge-mini',
@@ -228,6 +210,80 @@ class GaugeMiniOptions extends PureComponent<Props> {
         </Column>
       </Row>
     )
+
+    const renderFormater = (
+      name: keyof Pick<GaugeMiniLayerConfig, 'axesFormater' | 'valueFormater'>
+    ) => {
+      const formater = theme[name] as FormatStatValueOptions | undefined
+      const onUpdateFormaterProp = <T extends keyof typeof formater>(
+        field: T,
+        value: typeof formater[T]
+      ) => {
+        onUpdateProp({[name]: {...formater, [field]: value}})
+      }
+
+      return (
+        <>
+          <Grid.Row>
+            <Grid.Column widthXS={6}>
+              <FormElement label="Prefix">
+                <Input
+                  type={InputType.Text}
+                  value={formater?.prefix || ''}
+                  onChange={e => {
+                    onUpdateFormaterProp('prefix', e.target.value)
+                  }}
+                  placeholder="%, MPH, etc."
+                />
+              </FormElement>
+            </Grid.Column>
+            <Grid.Column widthXS={6}>
+              <FormElement label="Suffix">
+                <Input
+                  type={InputType.Text}
+                  value={formater?.suffix || ''}
+                  onChange={e => {
+                    onUpdateFormaterProp('suffix', e.target.value)
+                  }}
+                  placeholder="%, MPH, etc."
+                />
+              </FormElement>
+            </Grid.Column>
+          </Grid.Row>
+          <FormElement label="Decimal Places">
+            <AutoInput
+              mode={
+                formater?.decimalPlaces?.isEnforced
+                  ? AutoInputMode.Custom
+                  : AutoInputMode.Auto
+              }
+              onChangeMode={(mode: AutoInputMode) => {
+                onUpdateFormaterProp('decimalPlaces', {
+                  ...formater?.decimalPlaces,
+                  isEnforced: mode === AutoInputMode.Custom,
+                })
+              }}
+              inputComponent={
+                <Input
+                  name="decimal-places"
+                  placeholder="Enter a number"
+                  onChange={e => {
+                    onUpdateFormaterProp('decimalPlaces', {
+                      ...formater?.decimalPlaces,
+                      digits: +e.target.value,
+                    })
+                  }}
+                  value={formater?.decimalPlaces?.digits || 0}
+                  min={MIN_DECIMAL_PLACES}
+                  max={MAX_DECIMAL_PLACES}
+                  type={InputType.Number}
+                />
+              }
+            />
+          </FormElement>
+        </>
+      )
+    }
 
     return (
       <>
@@ -318,9 +374,7 @@ class GaugeMiniOptions extends PureComponent<Props> {
             type: 'element',
             jsx: (
               <FormElement label="valueFormater">
-                {
-                  // todo
-                }
+                {renderFormater('valueFormater')}
               </FormElement>
             ),
           },
@@ -330,9 +384,10 @@ class GaugeMiniOptions extends PureComponent<Props> {
             type: 'element',
             jsx: (
               <FormElement label="axesSteps">
-                {
-                  // todo
-                }
+                <GaugeMiniAxesInputs
+                  axesSteps={theme?.axesSteps}
+                  onUpdateProp={onUpdateProp}
+                />
               </FormElement>
             ),
           },
@@ -342,9 +397,7 @@ class GaugeMiniOptions extends PureComponent<Props> {
             type: 'element',
             jsx: (
               <FormElement label="axesFormater">
-                {
-                  // todo
-                }
+                {renderFormater('axesFormater')}
               </FormElement>
             ),
           },

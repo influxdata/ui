@@ -4,27 +4,21 @@ import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import {
-  AlignItems,
-  AutoInput,
-  AutoInputMode,
   Button,
   ButtonShape,
-  ComponentSize,
-  FlexBox,
-  FlexDirection,
   FormElement,
   Grid,
-  IconFont,
   Input,
   InputType,
   MultiSelectDropdown,
   SelectDropdown,
-  SquareButton,
+  AutoInput,
+  AutoInputMode,
 } from '@influxdata/clockface'
 const {Row, Column} = Grid
 
 // Actions
-import {setColors} from 'src/timeMachine/actions'
+import {setColors, setGaugeMiniProp} from 'src/timeMachine/actions'
 
 // Types
 import {AppState, ViewType} from 'src/types'
@@ -39,22 +33,20 @@ import {
 import ThresholdsSettings from 'src/shared/components/ThresholdsSettings'
 import {GaugeMiniLayerConfig} from '@influxdata/giraffe'
 import {
-  GAUGE_MINI_THEME_BULLET_DARK,
-  GAUGE_MINI_THEME_PROGRESS_DARK,
+  gaugeMiniGetTheme,
+  GaugeMiniThemeString,
+  gaugeMiniThemeStrings,
 } from 'src/shared/constants/gaugeMiniSpecs'
 import {getGroupableColumns} from 'src/timeMachine/selectors'
 import {ComponentStatus} from 'src/clockface'
+
 import {MIN_DECIMAL_PLACES, MAX_DECIMAL_PLACES} from 'src/dashboards/constants'
 import {FormatStatValueOptions} from 'src/client/generatedRoutes'
 import {SelectGroup as _SelectGroup} from '@influxdata/clockface'
-const {SelectGroup, Option: SelectGroupOption} = _SelectGroup
-
-type ThemeString =
-  | 'GAUGE_MINI_THEME_BULLET_DARK'
-  | 'GAUGE_MINI_THEME_PROGRESS_DARK'
+import {GaugeMiniAxesInputs} from './GaugeMiniAxesInputs'
 
 interface OwnProps {
-  defaultTheme: ThemeString
+  defaultTheme: GaugeMiniThemeString
   type: ViewType
   colors: Color[]
   decimalPlaces?: DecimalPlaces
@@ -89,21 +81,6 @@ type Field =
       label: string
       options: string[]
     }
-
-// todo: move action to /ui/src/timeMachine/actions/index.ts
-interface SetGaugeMiniPropAction {
-  type: 'SET_GAUGE_MINI_PROP'
-  payload: Partial<GaugeMiniLayerConfig>
-}
-
-export const setGaugeMiniProp = (
-  props: Partial<GaugeMiniLayerConfig> & {
-    defaultTheme?: ThemeString
-  }
-): SetGaugeMiniPropAction => ({
-  type: 'SET_GAUGE_MINI_PROP',
-  payload: props,
-})
 
 class GaugeMiniOptions extends PureComponent<Props> {
   public render() {
@@ -209,15 +186,10 @@ class GaugeMiniOptions extends PureComponent<Props> {
       <Row>
         <Column widthXS={8}>
           <SelectDropdown
-            options={
-              [
-                'GAUGE_MINI_THEME_BULLET_DARK',
-                'GAUGE_MINI_THEME_PROGRESS_DARK',
-              ] as ThemeString[]
-            }
+            options={gaugeMiniThemeStrings}
             selectedOption={this.props.defaultTheme}
             onSelect={x => {
-              onUpdateProp({defaultTheme: x as ThemeString})
+              onUpdateProp({defaultTheme: x as GaugeMiniThemeString})
             }}
           />
         </Column>
@@ -227,9 +199,7 @@ class GaugeMiniOptions extends PureComponent<Props> {
             text="Apply"
             onClick={() => {
               onUpdateProp({
-                ...(this.props.defaultTheme === 'GAUGE_MINI_THEME_PROGRESS_DARK'
-                  ? GAUGE_MINI_THEME_PROGRESS_DARK
-                  : GAUGE_MINI_THEME_BULLET_DARK),
+                ...gaugeMiniGetTheme(this.props.defaultTheme),
                 ...({
                   colors: DEFAULT_GAUGE_COLORS,
                   type: 'gauge-mini',
@@ -314,113 +284,6 @@ class GaugeMiniOptions extends PureComponent<Props> {
         </>
       )
     }
-
-    const {axesSteps} = theme
-    const axesInputs = (
-      <>
-        <SelectGroup shape={ButtonShape.StretchToFit}>
-          <SelectGroupOption
-            active={axesSteps === undefined}
-            id={`select-group--axes-steps--none`}
-            titleText="No axes"
-            value={undefined}
-            onClick={() => {
-              onUpdateProp({axesSteps: undefined})
-            }}
-          >
-            None
-          </SelectGroupOption>
-          <SelectGroupOption
-            active={axesSteps === 'thresholds'}
-            id={`select-group--axes-steps--thresholds`}
-            titleText="Axes same as thresholds"
-            value={AutoInputMode.Auto}
-            onClick={() => {
-              onUpdateProp({axesSteps: 'thresholds'})
-            }}
-          >
-            Thresholds
-          </SelectGroupOption>
-          <SelectGroupOption
-            active={typeof axesSteps === 'number'}
-            id={`select-group--axes-steps--Steps`}
-            titleText="Evenly spaced steps"
-            value={AutoInputMode.Custom}
-            onClick={() => {
-              onUpdateProp({axesSteps: 2})
-            }}
-          >
-            Steps
-          </SelectGroupOption>
-          <SelectGroupOption
-            active={Array.isArray(axesSteps)}
-            id={`select-group--axes-steps--Custom`}
-            titleText="Specify every one value"
-            value={AutoInputMode.Custom}
-            onClick={() => {
-              onUpdateProp({axesSteps: []})
-            }}
-          >
-            Custom
-          </SelectGroupOption>
-        </SelectGroup>
-        {typeof axesSteps === 'number' && (
-          <Input
-            type={InputType.Number}
-            value={axesSteps}
-            onChange={e => onUpdateProp({axesSteps: +e.target.value})}
-          />
-        )}
-        {Array.isArray(axesSteps) && (
-          <>
-            <FlexBox
-              direction={FlexDirection.Column}
-              alignItems={AlignItems.Stretch}
-              margin={ComponentSize.Medium}
-              testID="threshold-settings"
-            >
-              <Button
-                shape={ButtonShape.StretchToFit}
-                icon={IconFont.Plus}
-                text="Add point"
-                onClick={() => {
-                  onUpdateProp({axesSteps: [...axesSteps, 0]})
-                }}
-              />
-              {axesSteps.map((step, stepIndex) => (
-                <FlexBox
-                  direction={FlexDirection.Row}
-                  alignItems={AlignItems.Center}
-                  margin={ComponentSize.Small}
-                >
-                  <Input
-                    id={`axes-step-input-${stepIndex}`}
-                    type={InputType.Number}
-                    value={step}
-                    onChange={e => {
-                      onUpdateProp({
-                        axesSteps: axesSteps.map((x, i) =>
-                          i !== stepIndex ? x : +e.target.value
-                        ),
-                      })
-                    }}
-                  />
-                  <SquareButton
-                    icon={IconFont.Remove}
-                    onClick={() => {
-                      onUpdateProp({
-                        axesSteps: axesSteps.filter((_, i) => i !== stepIndex),
-                      })
-                    }}
-                    style={{flex: '0 0 30px'}}
-                  />
-                </FlexBox>
-              ))}
-            </FlexBox>
-          </>
-        )}
-      </>
-    )
 
     return (
       <>
@@ -519,7 +382,14 @@ class GaugeMiniOptions extends PureComponent<Props> {
           {type: 'heading', label: 'Axes'},
           {
             type: 'element',
-            jsx: <FormElement label="axesSteps">{axesInputs}</FormElement>,
+            jsx: (
+              <FormElement label="axesSteps">
+                <GaugeMiniAxesInputs
+                  axesSteps={theme?.axesSteps}
+                  onUpdateProp={onUpdateProp}
+                />
+              </FormElement>
+            ),
           },
           {type: 'number', name: 'axesFontSize', label: 'axesFontSize'},
           {type: 'color', name: 'axesFontColor', label: 'axesFontColor'},

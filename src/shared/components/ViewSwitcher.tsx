@@ -96,8 +96,7 @@ const ViewSwitcher: FunctionComponent<Props> = ({
           )}
         </LatestValueTransform>
       )
-    // todo: regenerate swagger, remove 'as any's
-    case 'gauge-mini' as any:
+    case 'gauge-mini':
       return (
         <LatestMultipleValueTransform
           table={table}
@@ -109,10 +108,7 @@ const ViewSwitcher: FunctionComponent<Props> = ({
           }
         >
           {latestValues => (
-            <GaugeMiniChart
-              values={latestValues as any}
-              theme={properties as any}
-            />
+            <GaugeMiniChart values={latestValues} theme={properties as any} />
           )}
         </LatestMultipleValueTransform>
       )

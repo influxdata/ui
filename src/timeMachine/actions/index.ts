@@ -38,7 +38,12 @@ import {
   GetState,
 } from 'src/types'
 import {Color} from 'src/types/colors'
-import {HistogramPosition, LinePosition} from '@influxdata/giraffe'
+import {
+  GaugeMiniLayerConfig,
+  HistogramPosition,
+  LinePosition,
+} from '@influxdata/giraffe'
+import {GaugeMiniThemeString} from 'src/shared/constants/gaugeMiniSpecs'
 
 export type Action =
   | QueryBuilderAction
@@ -336,6 +341,20 @@ export const setDecimalPlaces = (
 ): SetDecimalPlaces => ({
   type: 'SET_DECIMAL_PLACES',
   payload: {decimalPlaces},
+})
+
+interface SetGaugeMiniPropAction {
+  type: 'SET_GAUGE_MINI_PROP'
+  payload: Partial<GaugeMiniLayerConfig>
+}
+
+export const setGaugeMiniProp = (
+  props: Partial<GaugeMiniLayerConfig> & {
+    defaultTheme?: GaugeMiniThemeString
+  }
+): SetGaugeMiniPropAction => ({
+  type: 'SET_GAUGE_MINI_PROP',
+  payload: props,
 })
 
 interface SetBackgroundThresholdColoringAction {

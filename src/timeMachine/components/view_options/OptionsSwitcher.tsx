@@ -38,8 +38,7 @@ class OptionsSwitcher extends PureComponent<Props> {
         return <BandOptions {...view.properties} />
       case 'gauge':
         return <GaugeOptions {...view.properties} />
-      // todo: regenerate swagger and remove "as any"s
-      case 'gauge-mini' as any:
+      case 'gauge-mini':
         return <GaugeMiniOptions {...(view.properties as any)} />
       case 'single-stat':
         return <SingleStatOptions />

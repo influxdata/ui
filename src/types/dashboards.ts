@@ -86,6 +86,7 @@ export {
   SingleStatViewProperties,
   HistogramViewProperties,
   GaugeViewProperties,
+  GaugeMiniViewProperties,
   TableViewProperties,
   MarkdownViewProperties,
   CheckViewProperties,

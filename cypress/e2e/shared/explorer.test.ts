@@ -421,7 +421,7 @@ describe('DataExplorer', () => {
 
           cy.get('textarea').type('{selectall} {backspace}', {force: true})
 
-          cy.get('textarea').type('from', {force: true})
+          cy.get('textarea').type('from ', {force: true})
 
           // error signature from lsp
           cy.get('.signature').should('be.visible')

@@ -328,7 +328,7 @@ http.post(
           // Assert that the lazy loading state should exist
           cy.getByTestID('spinner-container').should('exist')
           // Wait for monaco editor to load after lazy loading
-          cy.wait(500)
+          cy.wait(1000)
           cy.getByTestID('flux-editor')
             .contains('option task = {')
             .then(() => {

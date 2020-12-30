@@ -105,7 +105,7 @@ http.post(
   // This test is not typing all of the text into the text box causing test failures.
   // Skipping for now so that we can merge code (a simple wait did not fix it)
   // Issue at: https://github.com/influxdata/ui/issues/466
-  it.skip('can create a cron task', () => {
+  it('can create a cron task', () => {
     cy.getByTestID('empty-tasks-list').within(() => {
       cy.getByTestID('add-resource-dropdown--button').click()
     })
@@ -114,9 +114,8 @@ http.post(
 
     cy.getByTestID('flux-editor').within(() => {
       cy.get('textarea.inputarea')
-        .click({force: true})
+        .focus()
         .type('from(bucket: "defbuck")\n' + '\t|> range(start: -2m)', {
-          force: true,
           delay: 2,
         })
     })

@@ -421,7 +421,7 @@ describe('DataExplorer', () => {
 
           cy.get('textarea').type('{selectall} {backspace}', {force: true})
 
-          cy.get('textarea').type('from(', {force: true})
+          cy.get('textarea').type('from', {force: true})
 
           // error signature from lsp
           cy.get('.signature').should('be.visible')
@@ -525,7 +525,7 @@ describe('DataExplorer', () => {
         // Assert that the lazy loading state should exist
         cy.getByTestID('spinner-container').should('exist')
         // Wait for monaco editor to load after lazy loading
-        cy.wait(500)
+        cy.wait(300)
         cy.get('.react-monaco-editor-container')
           .should('be.visible')
           .click()

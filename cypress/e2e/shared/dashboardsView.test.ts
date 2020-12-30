@@ -305,7 +305,7 @@ describe('Dashboard', () => {
             cy.get('.flux-toolbar--list-item')
               .first()
               .within(() => {
-                cy.get('.cf-button').click({force: true})
+                cy.get('.cf-button').focus()
               })
 
             cy.getByTestID('flux-editor')
@@ -316,7 +316,7 @@ describe('Dashboard', () => {
             cy.get('.flux-toolbar--list-item')
               .eq(2)
               .within(() => {
-                cy.get('.cf-button').click({force: true})
+                cy.get('.cf-button').focus()
               })
             cy.getByTestID('save-cell--button').click()
 

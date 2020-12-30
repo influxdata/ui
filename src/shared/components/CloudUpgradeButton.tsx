@@ -60,7 +60,7 @@ const CloudUpgradeButton: FC<StateProps & OwnProps> = ({
           IconFont.Upgrade
       )
     }
-  })
+  }, [setAssignedIconVariant])
 
   return (
     <CloudOnly>

@@ -35,12 +35,9 @@ export const CsvUploaderContext = React.createContext<CsvUploaderContextType>(
 )
 
 /**
- * This is an arbitrary number that should be capped out at 1750.
- * For now, the number is set to 500 since there were significant performance issues
- * that had cropped up when writing 1750 lines on tools that took ~20s for a write query
- * to resolve
+ * This is an arbitrary number that should be capped out at 1750 due to max data sizes
  */
-const MAX_CHUNK_SIZE = 500
+const MAX_CHUNK_SIZE = 1750
 
 export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
   const [progress, setProgress] = useState(0)

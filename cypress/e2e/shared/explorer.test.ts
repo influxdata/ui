@@ -1161,7 +1161,7 @@ describe('DataExplorer', () => {
         })
       })
 
-      it('can create new dasboard as saving target', () => {
+      it('can create new dashboard as saving target', () => {
         // select and input new dashboard name and cell name
         cy.getByTestID('save-as-dashboard-cell--dropdown').click()
         cy.getByTestID('save-as-dashboard-cell--create-new-dash').click()
@@ -1175,8 +1175,8 @@ describe('DataExplorer', () => {
         cy.getByTestID('save-as-dashboard-cell--submit').click()
 
         // wait some time for save
-        cy.wait(100)
-        // ensure dasboard created with cell
+        cy.wait(200)
+        // ensure dashboard created with cell
         cy.get('@org').then(({id: orgID}: Organization) => {
           cy.fixture('routes').then(({orgs}) => {
             cy.visit(`${orgs}/${orgID}/dashboards/`)

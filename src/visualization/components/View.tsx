@@ -67,30 +67,11 @@ const InnerView: FC<Props> = ({
   )
 }
 
-const View: FC<Props> = props => {
-  /*
-    if (properties.type === 'table') {
-      visual = (
-        <FluxTablesTransform files={files}>
-          {tables => (
-            <TableGraphs
-              tables={tables}
-              properties={properties}
-              timeZone={timeZone}
-              theme={theme}
-            />
-          )}
-        </FluxTablesTransform>
-      )
-    }
-     */
-
-  return (
-    <ErrorBoundary>
-      <ViewLoadingSpinner loading={props.loading} />
-      <InnerView {...props} />
-    </ErrorBoundary>
-  )
-}
+const View: FC<Props> = props => (
+  <ErrorBoundary>
+    <ViewLoadingSpinner loading={props.loading} />
+    <InnerView {...props} />
+  </ErrorBoundary>
+)
 
 export default View

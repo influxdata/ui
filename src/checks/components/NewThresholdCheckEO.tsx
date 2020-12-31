@@ -7,6 +7,7 @@ import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {Overlay, SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 import CheckEOHeader from 'src/checks/components/CheckEOHeader'
 import TimeMachine from 'src/timeMachine/components/TimeMachine'
+import {AlertProvider} from 'src/checks/utils/context'
 
 // Actions
 import {createCheckFromTimeMachine} from 'src/checks/actions/thunks'
@@ -68,9 +69,11 @@ const NewCheckOverlay: FunctionComponent<Props> = ({
             onCancel={handleClose}
             onSave={onSaveCheckFromTimeMachine}
           />
-          <div className="veo-contents">
-            <TimeMachine />
-          </div>
+          <AlertProvider>
+            <div className="veo-contents">
+              <TimeMachine />
+            </div>
+          </AlertProvider>
         </SpinnerContainer>
       </div>
     </Overlay>

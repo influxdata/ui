@@ -1,6 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
+import React, {FC, useContext} from 'react'
 import {Plot} from '@influxdata/giraffe'
 import {flatMap} from 'lodash'
 
@@ -12,6 +11,7 @@ import EventMarkers from 'src/shared/components/EventMarkers'
 // Utils
 import {getFormatter} from 'src/visualization/utils/getFormatter'
 import {filterNoisyColumns} from 'src/shared/utils/vis'
+import {CheckContext} from 'src/checks/utils/context'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -19,34 +19,22 @@ import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {INVALID_DATA_COPY} from 'src/visualization/constants'
 
 // Types
-import {CheckViewProperties, CheckType, StatusRow, Threshold} from 'src/types'
+import {CheckViewProperties} from 'src/types'
 import {useCheckYDomain} from 'src/alerting/utils/vis'
-import {updateThresholds} from 'src/alerting/actions/alertBuilder'
 
 // Types
 import {VisProps} from 'src/visualization'
 
-interface OwnProps extends VisProps {
+interface Props extends VisProps {
   properties: CheckViewProperties
 }
 
 const X_COLUMN = '_time'
 const Y_COLUMN = '_value'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps
+const CheckPlot: FC<Props> = ({properties, result, timeZone, theme}) => {
+  const {statuses, thresholds, updateThresholds} = useContext(CheckContext)
 
-const CheckPlot: FC<Props> = ({
-  properties,
-  result,
-  timeZone,
-  theme,
-
-  statuses,
-  checkType,
-  thresholds,
-  onUpdateThresholds,
-}) => {
   const [yDomain, onSetYDomain, onResetYDomain] = useCheckYDomain(
     result.table.getColumn(Y_COLUMN, 'number'),
     thresholds
@@ -121,8 +109,8 @@ const CheckPlot: FC<Props> = ({
               render: ({yScale, yDomain}) => (
                 <ThresholdMarkers
                   key="thresholds"
-                  thresholds={checkType === 'threshold' ? thresholds : []}
-                  onSetThresholds={onUpdateThresholds}
+                  thresholds={thresholds}
+                  onSetThresholds={updateThresholds}
                   yScale={yScale}
                   yDomain={yDomain}
                 />
@@ -147,10 +135,4 @@ const CheckPlot: FC<Props> = ({
   )
 }
 
-const mdtp = {
-  onUpdateThresholds: updateThresholds,
-}
-
-const connector = connect(null, mdtp)
-
-export default connector(CheckPlot)
+export default CheckPlot

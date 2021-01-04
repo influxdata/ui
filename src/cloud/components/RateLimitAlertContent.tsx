@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
-import {connect} from 'react-redux'
+import {connect, ConnectedProps} from 'react-redux'
 import {get, find} from 'lodash'
 import classnames from 'classnames'
 
@@ -8,6 +8,7 @@ import classnames from 'classnames'
 import {
   FlexBox,
   JustifyContent,
+  Button,
   LinkButton,
   ComponentColor,
   ComponentSize,
@@ -20,24 +21,28 @@ import {
   PAID_ORG_HIDE_UPGRADE_SETTING,
 } from 'src/cloud/constants'
 
+// Actions
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+
 // Types
 import {AppState, OrgSetting} from 'src/types'
-
-interface StateProps {
-  showUpgrade: boolean
-}
 
 interface OwnProps {
   className?: string
 }
-type Props = StateProps & OwnProps
 
-const RateLimitAlertContent: FC<Props> = ({showUpgrade, className}) => {
+type ReduxProps = ConnectedProps<typeof connector>
+
+const RateLimitAlertContent: FC<OwnProps & ReduxProps> = ({className, showUpgrade, onShowOverlay, onDismissOverlay}) => {
   const rateLimitAlertContentClass = classnames('rate-alert--content', {
     [`${className}`]: className,
   })
 
-  if (showUpgrade) {
+  const handleShowOverlay = () => {
+    onShowOverlay('rate-limit', null, onDismissOverlay)
+  }
+
+  if (!showUpgrade) { // NOPE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~NOPE
     return (
       <div
         className={`${rateLimitAlertContentClass} rate-alert--content__free`}
@@ -80,17 +85,45 @@ const RateLimitAlertContent: FC<Props> = ({showUpgrade, className}) => {
         justifyContent={JustifyContent.Center}
         className="rate-alert--button"
       >
-        <LinkButton
-          className="rate-alert--contact-button"
+        <Button
+          className="rate-alert-overlay-button"
           color={ComponentColor.Primary}
           size={ComponentSize.Small}
-          text="Speak with an Expert"
-          href="https://calendly.com/c/CBCTLOTDNVLFUTZO"
-          target="_blank"
+          onClick={handleShowOverlay}
+          text="Optimize My Schema"
         />
       </FlexBox>
     </div>
   )
+
+  // return (
+  //   <div className={`${rateLimitAlertContentClass} rate-alert--content__payg`}>
+  //     <span>
+  //       Data in has stopped because you've hit the{' '}
+  //       <a
+  //         href="https://v2.docs.influxdata.com/v2.0/reference/glossary/#series-cardinality"
+  //         className="rate-alert--docs-link"
+  //         target="_blank"
+  //       >
+  //         series cardinality
+  //       </a>{' '}
+  //       limit. Need some guidance?
+  //     </span>
+  //     <FlexBox
+  //       justifyContent={JustifyContent.Center}
+  //       className="rate-alert--button"
+  //     >
+  //       <LinkButton
+  //         className="rate-alert--contact-button"
+  //         color={ComponentColor.Primary}
+  //         size={ComponentSize.Small}
+  //         text="Speak with an Expert"
+  //         href="https://calendly.com/c/CBCTLOTDNVLFUTZO"
+  //         target="_blank"
+  //       />
+  //     </FlexBox>
+  //   </div>
+  // )
 }
 
 const mstp = (state: AppState) => {
@@ -108,4 +141,11 @@ const mstp = (state: AppState) => {
   return {showUpgrade: false}
 }
 
-export default connect<StateProps>(mstp)(RateLimitAlertContent)
+const mdtp = {
+  onShowOverlay: showOverlay,
+  onDismissOverlay: dismissOverlay,
+}
+
+const connector = connect(mstp, mdtp)
+
+export default connector(RateLimitAlertContent)

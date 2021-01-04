@@ -10,7 +10,7 @@ import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 import {notify} from 'src/shared/actions/notifications'
-import {csvUploaderNotification} from 'src/shared/copy/notifications'
+import {csvUploaderErrorNotification} from 'src/shared/copy/notifications'
 
 // Types
 import {RemoteDataState, WritePrecision} from 'src/types'
@@ -163,7 +163,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
             name: 'uploadCsv function',
           })
           const message = getErrorMessage(error)
-          dispatch(notify(message))
+          dispatch(notify(csvUploaderErrorNotification(message)))
         }
       }, 0)
     },

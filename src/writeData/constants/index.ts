@@ -24,9 +24,9 @@ export interface WriteDataSection {
 
 // Sections
 export const WRITE_DATA_SECTIONS: WriteDataSection[] = [
+  WRITE_DATA_INTEGRATIONS_SECTION,
   WRITE_DATA_CLIENT_LIBRARIES_SECTION,
   WRITE_DATA_TELEGRAF_PLUGINS_SECTION,
-  WRITE_DATA_INTEGRATIONS_SECTION,
   WRITE_DATA_DEVELOPER_TOOLS_SECTION,
   WRITE_DATA_FLUX_SOURCES_SECTION,
 ]
@@ -46,7 +46,7 @@ export const sectionContainsMatchingItems = (
   section: WriteDataSection,
   searchTerm: string
 ): boolean => {
-  const matches = section.items.filter(item =>
+  const matches = section.items.filter((item) =>
     doesItemMatchSearchTerm(item.name, searchTerm)
   )
 

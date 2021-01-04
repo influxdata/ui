@@ -6,9 +6,9 @@ import {WriteDataItem, WriteDataSection} from 'src/writeData/constants'
 
 export const WRITE_DATA_INTEGRATIONS: WriteDataItem[] = [
   {
-    id: 'my-cool-integration',
-    name: 'My Cool Integration',
-    url: `${INTEGRATIONS}/my-cool-integration`,
+    id: 'fitbit',
+    name: 'Fitbit',
+    url: `${INTEGRATIONS}/fitbit`,
   },
 ]
 

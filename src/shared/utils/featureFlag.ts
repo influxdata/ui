@@ -16,6 +16,11 @@ export const isFlagEnabled = (flagName: string, equals?: string | boolean) => {
     return flags[flagName] === _equals
   }
 
+  // is Hack
+  if (flagName === 'load-data-integrations') {
+    return true
+  }
+
   return false
 }
 

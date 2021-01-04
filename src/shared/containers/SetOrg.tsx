@@ -28,6 +28,7 @@ import MembersIndex from 'src/members/containers/MembersIndex'
 import RouteToDashboardList from 'src/dashboards/components/RouteToDashboardList'
 import ClientLibrariesPage from 'src/writeData/containers/ClientLibrariesPage'
 import TelegrafPluginsPage from 'src/writeData/containers/TelegrafPluginsPage'
+import IntegrationsPage from 'src/writeData/containers/IntegrationsPage'
 import FlowsIndex from 'src/flows/components/FlowsIndex'
 import NotFound from 'src/shared/components/NotFound'
 import UsersPage from 'src/unity/components/users/UsersPage'
@@ -53,6 +54,7 @@ import {
   TEMPLATES,
   TOKENS,
   TELEGRAFS,
+  INTEGRATIONS,
 } from 'src/shared/constants/routes'
 
 // Actions
@@ -175,6 +177,10 @@ const SetOrg: FC<Props> = ({
         <Route
           path={`${orgPath}/${LOAD_DATA}/${TELEGRAF_PLUGINS}`}
           component={TelegrafPluginsPage}
+        />
+        <Route
+          path={`${orgPath}/${LOAD_DATA}/${INTEGRATIONS}`}
+          component={IntegrationsPage}
         />
 
         {/* Load Data */}

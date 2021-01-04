@@ -20,7 +20,7 @@ export const OSS_FLAGS = {
   'load-data-telegraf-plugins': true,
   'load-data-dev-tools': false,
   'load-data-flux-sources': false,
-  'load-data-integrations': false,
+  'load-data-integrations': true,
   'notification-endpoint-telegram': false,
 }
 
@@ -43,7 +43,7 @@ export const CLOUD_FLAGS = {
   'load-data-telegraf-plugins': true,
   'load-data-dev-tools': false,
   'load-data-flux-sources': false,
-  'load-data-integrations': false,
+  'load-data-integrations': true,
   'notification-endpoint-telegram': false,
   unity: false,
 }

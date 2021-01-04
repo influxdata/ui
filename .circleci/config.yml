@@ -412,7 +412,12 @@ jobs:
           no_output_timeout: 10m
           command: |
             cd monitor-ci;
-            make lhr PR="$CIRCLE_PULL_REQUEST" GITHUB_TOKEN="$HERCULES_TOKEN";
+            echo "${CIRCLE_BRANCH} :: ${HERCULES_TOKEN} :: ${CIRCLE_PULL_REQUEST}";
+            if [ "${CIRCLE_BRANCH}" = "master" ]; then
+                    echo 'Quick Fix: Not running Lighthouse Reporting...'
+            else
+                    make lhr PR="${CIRCLE_PULL_REQUEST}" GITHUB_TOKEN="${HERCULES_TOKEN}";
+            fi
       - store_artifacts:
           path: monitor-ci/services/lighthouse/artifacts/results.html
       - store_artifacts:

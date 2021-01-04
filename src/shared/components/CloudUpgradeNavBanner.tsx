@@ -63,21 +63,8 @@ const CloudUpgradeNavBanner: FC<StateProps> = ({inView}) => {
             href={`${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`}
             target="_self"
           >
-            <GoogleOptimizeExperiment
-              experimentID="e44rY7GjQN-ASmGeWLs_pA"
-              original={
-                <Icon
-                  key="e44rY7GjQN-ASmGeWLs_pA--v0"
-                  glyph={IconFont.Upgrade}
-                />
-              }
-              variants={[
-                <Icon
-                  key="e44rY7GjQN-ASmGeWLs_pA--v1"
-                  glyph={IconFont.CrownSolid}
-                />,
-                <Icon key="e44rY7GjQN-ASmGeWLs_pA--v2" glyph={IconFont.Star} />,
-              ]}
+            <Icon
+              glyph={IconFont.CrownSolid}
             />
             <Heading element={HeadingElement.H5}>Upgrade Now</Heading>
           </a>

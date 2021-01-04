@@ -1,7 +1,7 @@
 import {SlackNotificationEndpoint, Organization} from '../../../src/types'
 
 // skipping these tests until we have a local vault instance running
-describe.skip('NotificationRules', () => {
+describe('NotificationRules', () => {
   const name1 = 'Slack 1'
   const name2 = 'Slack 2'
   const name3 = 'Slack 3'
@@ -61,20 +61,20 @@ describe.skip('NotificationRules', () => {
         cy.getByTestID('add-threshold-condition-CRIT').click()
         cy.getByTestID('builder-conditions').within(() => {
           cy.getByTestID('panel').within(() => {
-            cy.getByTestID('input-field')
+            cy.getByTestID('input-field-CRIT')
               .click()
               .type('{backspace}{backspace}')
               .invoke('attr', 'type')
               .should('equal', 'text')
-              .getByTestID('input-field--error')
+              .getByTestID('input-field-CRIT--error')
               .should('have.length', 1)
               .and('have.value', '')
-            cy.getByTestID('input-field')
+            cy.getByTestID('input-field-CRIT')
               .click()
               .type('somerangetext')
               .invoke('val')
               .should('equal', '')
-              .getByTestID('input-field--error')
+              .getByTestID('input-field-CRIT--error')
               .should('have.length', 1)
           })
         })
@@ -85,7 +85,7 @@ describe.skip('NotificationRules', () => {
         cy.getByTestID('add-threshold-condition-CRIT').click()
         cy.getByTestID('builder-conditions').within(() => {
           cy.getByTestID('panel').within(() => {
-            cy.getByTestID('input-field')
+            cy.getByTestID('input-field-CRIT')
               .click()
               .type('{backspace}{backspace}9')
               .invoke('val')

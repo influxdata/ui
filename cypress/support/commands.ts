@@ -56,7 +56,7 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
                   const org = response.body.orgs[0]
                   cy.wrap(org).as('org')
                   cy.visit(`/orgs/${org.id}`).then(() => {
-                    cy.wait(500).then(() => {
+                    cy.wait(800).then(() => {
                       cy.getByTestID('home-page--header').should('exist')
                     })
                   })

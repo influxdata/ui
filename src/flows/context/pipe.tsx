@@ -40,7 +40,10 @@ export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
   const results = useContext(ResultsContext)
   const {generateMap} = useContext(QueryContext)
 
-  const stages = useMemo(() => generateMap(), [generateMap, flow.data.get(id)])
+  const stages = useMemo(() => generateMap(true), [
+    generateMap,
+    flow.data.get(id),
+  ])
   const queryText =
     stages.filter(stage => stage.instances.includes(id))[0]?.text || ''
 
@@ -56,19 +59,22 @@ export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
     _result = {...DEFAULT_CONTEXT.results}
   }
 
-  return (
-    <PipeContext.Provider
-      value={{
-        id: id,
-        data: flow.data.get(id),
-        queryText,
-        update: updater,
-        results: _result,
-        loading: flow.meta.get(id).loading,
-        readOnly: flow.readOnly,
-      }}
-    >
-      {children}
-    </PipeContext.Provider>
+  return useMemo(
+    () => (
+      <PipeContext.Provider
+        value={{
+          id: id,
+          data: flow.data.get(id),
+          queryText,
+          update: updater,
+          results: _result,
+          loading: flow.meta.get(id).loading,
+          readOnly: flow.readOnly,
+        }}
+      >
+        {children}
+      </PipeContext.Provider>
+    ),
+    [flow, results, flow.meta.get(id).loading]
   )
 }

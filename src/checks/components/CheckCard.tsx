@@ -37,6 +37,7 @@ import {Check, Label} from 'src/types'
 
 // Utilities
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 interface OwnProps {
   check: Check
@@ -115,70 +116,72 @@ const CheckCard: FC<Props> = ({
   }
 
   return (
-    <ResourceCard
-      key={`check-id--${id}`}
-      testID="check-card"
-      disabled={activeStatus === 'inactive'}
-      direction={FlexDirection.Row}
-      alignItems={AlignItems.Center}
-      margin={ComponentSize.Large}
-      contextMenu={
-        <CheckCardContext
-          onView={onView}
-          onDelete={onDelete}
-          onClone={onClone}
-        />
-      }
-    >
-      <FlexBox
-        direction={FlexDirection.Column}
-        justifyContent={JustifyContent.Center}
-        margin={ComponentSize.Medium}
-        alignItems={AlignItems.FlexStart}
+    <ErrorBoundary>
+      <ResourceCard
+        key={`check-id--${id}`}
+        testID="check-card"
+        disabled={activeStatus === 'inactive'}
+        direction={FlexDirection.Row}
+        alignItems={AlignItems.Center}
+        margin={ComponentSize.Large}
+        contextMenu={
+          <CheckCardContext
+            onView={onView}
+            onDelete={onDelete}
+            onClone={onClone}
+          />
+        }
       >
-        <SlideToggle
-          active={activeStatus === 'active'}
-          size={ComponentSize.ExtraSmall}
-          onChange={onToggle}
-          testID="check-card--slide-toggle"
-          style={{flexBasis: '16px'}}
-        />
-        <LastRunTaskStatus
-          key={2}
-          lastRunError={check.lastRunError}
-          lastRunStatus={check.lastRunStatus}
-        />
-      </FlexBox>
-      <FlexBox
-        direction={FlexDirection.Column}
-        margin={ComponentSize.Small}
-        alignItems={AlignItems.FlexStart}
-      >
-        <ResourceCard.EditableName
-          onUpdate={onUpdateName}
-          onClick={onCheckClick}
-          name={check.name}
-          noNameString={DEFAULT_CHECK_NAME}
-          testID="check-card--name"
-          buttonTestID="check-card--name-button"
-          inputTestID="check-card--input"
-        />
-        <ResourceCard.EditableDescription
-          onUpdate={onUpdateDescription}
-          description={description}
-          placeholder={`Describe ${name}`}
-        />
-        <ResourceCard.Meta>
-          <>Last completed at {check.latestCompleted}</>
-          <>{relativeTimestampFormatter(check.updatedAt, 'Last updated ')}</>
-        </ResourceCard.Meta>
-        <InlineLabels
-          selectedLabelIDs={check.labels}
-          onAddLabel={handleAddCheckLabel}
-          onRemoveLabel={handleRemoveCheckLabel}
-        />
-      </FlexBox>
-    </ResourceCard>
+        <FlexBox
+          direction={FlexDirection.Column}
+          justifyContent={JustifyContent.Center}
+          margin={ComponentSize.Medium}
+          alignItems={AlignItems.FlexStart}
+        >
+          <SlideToggle
+            active={activeStatus === 'active'}
+            size={ComponentSize.ExtraSmall}
+            onChange={onToggle}
+            testID="check-card--slide-toggle"
+            style={{flexBasis: '16px'}}
+          />
+          <LastRunTaskStatus
+            key={2}
+            lastRunError={check.lastRunError}
+            lastRunStatus={check.lastRunStatus}
+          />
+        </FlexBox>
+        <FlexBox
+          direction={FlexDirection.Column}
+          margin={ComponentSize.Small}
+          alignItems={AlignItems.FlexStart}
+        >
+          <ResourceCard.EditableName
+            onUpdate={onUpdateName}
+            onClick={onCheckClick}
+            name={check.name}
+            noNameString={DEFAULT_CHECK_NAME}
+            testID="check-card--name"
+            buttonTestID="check-card--name-button"
+            inputTestID="check-card--input"
+          />
+          <ResourceCard.EditableDescription
+            onUpdate={onUpdateDescription}
+            description={description}
+            placeholder={`Describe ${name}`}
+          />
+          <ResourceCard.Meta>
+            <>Last completed at {check.latestCompleted}</>
+            <>{relativeTimestampFormatter(check.updatedAt, 'Last updated ')}</>
+          </ResourceCard.Meta>
+          <InlineLabels
+            selectedLabelIDs={check.labels}
+            onAddLabel={handleAddCheckLabel}
+            onRemoveLabel={handleRemoveCheckLabel}
+          />
+        </FlexBox>
+      </ResourceCard>
+    </ErrorBoundary>
   )
 }
 

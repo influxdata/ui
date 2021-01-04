@@ -5,3 +5,6 @@ export const timeZone = (state: AppState): TimeZone =>
 
 export const hasUpdatedTimeRangeInVEO = (state: AppState): boolean =>
   state.app.ephemeral.hasUpdatedTimeRangeInVEO || false
+
+export const getPresentationMode = (state: AppState): boolean =>
+  state.app.ephemeral.inPresentationMode || false

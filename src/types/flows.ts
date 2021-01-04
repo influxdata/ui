@@ -1,15 +1,25 @@
-import {
-  Tag as GenTag,
-  Schema as GenSchema,
-  SchemaValues as GenSchemaValues,
-} from '@influxdata/giraffe'
 import {FromFluxResult} from '@influxdata/giraffe'
 import {FunctionComponent, ComponentClass, ReactNode} from 'react'
-import {RemoteDataState, ViewProperties} from 'src/types'
+import {
+  AutoRefresh,
+  RemoteDataState,
+  SelectableDurationTimeRange,
+  ViewProperties,
+} from 'src/types'
 
-export interface Tag extends GenTag {}
-export interface Schema extends GenSchema {}
-export interface SchemaValues extends GenSchemaValues {}
+export interface Tag {
+  [tagName: string]: Set<string | number>
+}
+
+export interface SchemaValues {
+  fields: string[]
+  tags: Tag
+  type?: string
+}
+
+export interface Schema {
+  [measurement: string]: SchemaValues
+}
 
 export interface NormalizedTag {
   [tagName: string]: string[] | number[]
@@ -79,6 +89,8 @@ export interface ResourceManipulator<T> {
 
 export interface FlowState {
   name: string
+  range: SelectableDurationTimeRange
+  refresh: AutoRefresh
   data: Resource<PipeData>
   meta: Resource<PipeMeta>
   readOnly?: boolean
@@ -86,6 +98,8 @@ export interface FlowState {
 
 export interface Flow {
   name: string
+  range: SelectableDurationTimeRange
+  refresh: AutoRefresh
   data: ResourceManipulator<PipeData>
   meta: ResourceManipulator<PipeMeta>
   results: FluxResult
@@ -142,6 +156,7 @@ export interface TypeRegistration {
   generateFlux?: (
     pipe: PipeData,
     create: (text: string, loadPrevious?: boolean) => void,
-    append: () => void
+    append: () => void,
+    withSideEffects?: boolean
   ) => void // Generates the flux used to grab data from the backend
 }

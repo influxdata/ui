@@ -2,7 +2,7 @@
 import React, {PureComponent} from 'react'
 import _ from 'lodash'
 
-//Components
+// Components
 import {Overlay, IndexList, DapperScrollbars} from '@influxdata/clockface'
 import RunLogRow from 'src/tasks/components/RunLogRow'
 

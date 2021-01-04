@@ -21,7 +21,7 @@ import CellContextDangerItem from 'src/shared/components/cells/CellContextDanger
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Actions
-import {deleteCell, createCellWithView} from 'src/cells/actions/thunks'
+import {deleteCellAndView, createCellWithView} from 'src/cells/actions/thunks'
 
 // Types
 import {Cell, View} from 'src/types'
@@ -58,9 +58,10 @@ const CellContext: FC<Props> = ({
   }
 
   const handleDeleteCell = (): void => {
+    const viewID = view.id
     const {dashboardID, id} = cell
 
-    onDeleteCell(dashboardID, id)
+    onDeleteCell(dashboardID, id, viewID)
   }
 
   const handleEditNote = () => {
@@ -169,7 +170,7 @@ const CellContext: FC<Props> = ({
 }
 
 const mdtp = {
-  onDeleteCell: deleteCell,
+  onDeleteCell: deleteCellAndView,
   onCloneCell: createCellWithView,
 }
 

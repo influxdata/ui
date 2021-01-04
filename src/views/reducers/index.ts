@@ -3,6 +3,7 @@ import {produce} from 'immer'
 
 // Types
 import {
+  REMOVE_VIEW,
   RESET_VIEWS,
   SET_VIEW,
   SET_VIEWS,
@@ -13,7 +14,11 @@ import {SET_DASHBOARD} from 'src/dashboards/actions/creators'
 import {View, RemoteDataState, ResourceState, ResourceType} from 'src/types'
 
 // Helpers
-import {setResource, setResourceAtID} from 'src/resources/reducers/helpers'
+import {
+  setResource,
+  setResourceAtID,
+  removeResource,
+} from 'src/resources/reducers/helpers'
 
 export type ViewsState = ResourceState['views']
 
@@ -53,6 +58,11 @@ const viewsReducer = (
       }
       case RESET_VIEWS: {
         return initialState()
+      }
+      case REMOVE_VIEW: {
+        removeResource<View>(draftState, action)
+
+        return
       }
     }
   })

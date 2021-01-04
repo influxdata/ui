@@ -21,10 +21,18 @@ export const TOKENS = 'tokens'
 
 export const VARIABLES = 'variables'
 
+export const ANNOTATIONS = 'annotations'
+
+export const TEMPLATES = 'templates'
+
 export const LOAD_DATA = 'load-data'
+
+export const LABELS = 'labels'
 
 export const CLIENT_LIBS = 'client-libraries'
 export const TELEGRAF_PLUGINS = 'telegraf-plugins'
 export const DEVELOPER_TOOLS = 'developer-tools'
 export const FLUX_SOURCES = 'flux-sources'
 export const INTEGRATIONS = 'integrations'
+
+export const DATA_EXPLORER = 'data-explorer'

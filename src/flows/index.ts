@@ -5,6 +5,12 @@ export interface TypeLookup {
 }
 
 export const PIPE_DEFINITIONS: TypeLookup = {}
+export const PROJECT_NAME: string = 'Notebook'
+export const PROJECT_NAME_SHORT: string = 'Books'
+export const PROJECT_NAME_PLURAL: string = `${PROJECT_NAME}s`
+
+export const NOTEBOOKS_DOCUMENTATION_LINK =
+  'https://docs.influxdata.com/influxdb/cloud/notebooks/create-notebook/'
 
 // NOTE: this loads in all the modules under the current directory
 // to make it easier to add new types

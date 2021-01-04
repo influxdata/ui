@@ -6,6 +6,7 @@ import {Config, Table} from '@influxdata/giraffe'
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 
 // Utils
+import {useAxisTicksGenerator} from 'src/shared/utils/useAxisTicksGenerator'
 import {
   useLegendOpacity,
   useLegendOrientationThreshold,
@@ -26,13 +27,14 @@ import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {INVALID_DATA_COPY} from 'src/shared/copy/cell'
 
 // Types
-import {ScatterViewProperties, TimeZone, Theme} from 'src/types'
+import {ScatterViewProperties, TimeZone, TimeRange, Theme} from 'src/types'
 
 interface Props {
   children: (config: Config) => JSX.Element
   fluxGroupKeyUnion?: string[]
   table: Table
   timeZone: TimeZone
+  timeRange?: TimeRange | null
   viewProperties: ScatterViewProperties
   theme?: Theme
 }
@@ -41,6 +43,7 @@ const ScatterPlot: FunctionComponent<Props> = ({
   children,
   timeZone,
   table,
+  timeRange,
   viewProperties: {
     xAxisLabel,
     yAxisLabel,
@@ -58,6 +61,14 @@ const ScatterPlot: FunctionComponent<Props> = ({
     timeFormat,
     legendOpacity,
     legendOrientationThreshold,
+    generateXAxisTicks,
+    xTotalTicks,
+    xTickStart,
+    xTickStep,
+    generateYAxisTicks,
+    yTotalTicks,
+    yTickStart,
+    yTickStep,
   },
   theme,
 }) => {
@@ -69,14 +80,31 @@ const ScatterPlot: FunctionComponent<Props> = ({
 
   const columnKeys = table.columnKeys
 
+  const axisTicksOptions = useAxisTicksGenerator({
+    generateXAxisTicks,
+    xTotalTicks,
+    xTickStart,
+    xTickStep,
+    generateYAxisTicks,
+    yTotalTicks,
+    yTickStart,
+    yTickStep,
+  })
   const tooltipOpacity = useLegendOpacity(legendOpacity)
   const tooltipOrientationThreshold = useLegendOrientationThreshold(
     legendOrientationThreshold
   )
 
+  let timerange
+
+  if (xColumn === '_time') {
+    timerange = timeRange
+  }
+
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
     storedXDomain,
-    table.getColumn(xColumn, 'number')
+    table.getColumn(xColumn, 'number'),
+    timerange
   )
 
   const [yDomain, onSetYDomain, onResetYDomain] = useVisYDomainSettings(
@@ -126,6 +154,7 @@ const ScatterPlot: FunctionComponent<Props> = ({
     yDomain,
     onSetYDomain,
     onResetYDomain,
+    ...axisTicksOptions,
     legendOpacity: tooltipOpacity,
     legendOrientationThreshold: tooltipOrientationThreshold,
     valueFormatters: {

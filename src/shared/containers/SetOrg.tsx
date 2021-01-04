@@ -12,7 +12,7 @@ import TaskEditPage from 'src/tasks/containers/TaskEditPage'
 import DataExplorerPage from 'src/dataExplorer/components/DataExplorerPage'
 import DashboardsIndex from 'src/dashboards/components/dashboard_index/DashboardsIndex'
 import DashboardContainer from 'src/dashboards/components/DashboardContainer'
-import Flow from 'src/flows/components/Flow'
+import FlowPage from 'src/flows/components/FlowPage'
 import BucketsIndex from 'src/buckets/containers/BucketsIndex'
 import TokensIndex from 'src/authorizations/containers/TokensIndex'
 import TelegrafsPage from 'src/telegrafs/containers/TelegrafsPage'
@@ -30,17 +30,29 @@ import ClientLibrariesPage from 'src/writeData/containers/ClientLibrariesPage'
 import TelegrafPluginsPage from 'src/writeData/containers/TelegrafPluginsPage'
 import FlowsIndex from 'src/flows/components/FlowsIndex'
 import NotFound from 'src/shared/components/NotFound'
+import UsersPage from 'src/unity/components/users/UsersPage'
 import {CommunityTemplatesIndex} from 'src/templates/containers/CommunityTemplatesIndex'
+import {AnnotationsIndex} from 'src/annotations/containers/AnnotationsIndex'
 
 // Types
 import {AppState, Organization, ResourceType} from 'src/types'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
+import {PROJECT_NAME_PLURAL} from 'src/flows'
 import {
   LOAD_DATA,
   TELEGRAF_PLUGINS,
   CLIENT_LIBS,
+  SETTINGS,
+  ANNOTATIONS,
+  VARIABLES,
+  LABELS,
+  BUCKETS,
+  SCRAPERS,
+  TEMPLATES,
+  TOKENS,
+  TELEGRAFS,
 } from 'src/shared/constants/routes'
 
 // Actions
@@ -138,11 +150,17 @@ const SetOrg: FC<Props> = ({
 
         {/* Flows  */}
         {isFlagEnabled('notebooks') && (
-          <Route path={`${orgPath}/flows/:id`} component={Flow} />
+          <Route
+            path={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}/:id`}
+            component={FlowPage}
+          />
         )}
 
         {isFlagEnabled('notebooks') && (
-          <Route path={`${orgPath}/flows`} component={FlowsIndex} />
+          <Route
+            path={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}`}
+            component={FlowsIndex}
+          />
         )}
 
         {/* Write Data */}
@@ -166,37 +184,52 @@ const SetOrg: FC<Props> = ({
           component={WriteDataPage}
         />
         <Route
-          path={`${orgPath}/${LOAD_DATA}/scrapers`}
+          path={`${orgPath}/${LOAD_DATA}/${SCRAPERS}`}
           component={ScrapersIndex}
         />
         <Route
-          path={`${orgPath}/${LOAD_DATA}/telegrafs`}
+          path={`${orgPath}/${LOAD_DATA}/${TELEGRAFS}`}
           component={TelegrafsPage}
         />
         <Route
-          path={`${orgPath}/${LOAD_DATA}/tokens`}
+          path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
           component={TokensIndex}
         />
         <Route
-          path={`${orgPath}/${LOAD_DATA}/buckets`}
+          path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
           component={BucketsIndex}
         />
 
         {/* Settings */}
+        {isFlagEnabled('annotations') && (
+          <Route
+            path={`${orgPath}/${SETTINGS}/${ANNOTATIONS}`}
+            component={AnnotationsIndex}
+          />
+        )}
         <Route
-          path={`${orgPath}/settings/variables`}
+          path={`${orgPath}/${SETTINGS}/${VARIABLES}`}
           component={VariablesIndex}
         />
         <Route
-          path={`${orgPath}/settings/templates`}
+          path={`${orgPath}/${SETTINGS}/${TEMPLATES}`}
           component={CommunityTemplatesIndex}
         />
         <Route
           exact
-          path={`${orgPath}/settings/labels`}
+          path={`${orgPath}/${SETTINGS}/${LABELS}`}
           component={LabelsIndex}
         />
-        <Route exact path={`${orgPath}/settings`} component={VariablesIndex} />
+        <Route
+          exact
+          path={`${orgPath}/${SETTINGS}`}
+          component={VariablesIndex}
+        />
+
+        {/* Users */}
+        {CLOUD && isFlagEnabled('unity') && (
+          <Route path={`${orgPath}/unity-users`} component={UsersPage} />
+        )}
 
         {/* Members */}
         {!CLOUD && (

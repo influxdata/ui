@@ -8,6 +8,7 @@ import {get} from 'lodash'
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 
 // Utils
+import {useAxisTicksGenerator} from 'src/shared/utils/useAxisTicksGenerator'
 import {
   useLegendOpacity,
   useLegendOrientationThreshold,
@@ -80,6 +81,14 @@ const BandPlot: FC<Props> = ({
     hoverDimension,
     legendOpacity,
     legendOrientationThreshold,
+    generateXAxisTicks,
+    xTotalTicks,
+    xTickStart,
+    xTickStep,
+    generateYAxisTicks,
+    yTotalTicks,
+    yTickStart,
+    yTickStep,
     axes: {
       x: {
         label: xAxisLabel,
@@ -121,6 +130,16 @@ const BandPlot: FC<Props> = ({
     )
   }, [activeQueryIndex, queries, upperColumnName, mainColumn, lowerColumnName])
 
+  const axisTicksOptions = useAxisTicksGenerator({
+    generateXAxisTicks,
+    xTotalTicks,
+    xTickStart,
+    xTickStep,
+    generateYAxisTicks,
+    yTotalTicks,
+    yTickStart,
+    yTickStep,
+  })
   const tooltipOpacity = useLegendOpacity(legendOpacity)
   const tooltipOrientationThreshold = useLegendOrientationThreshold(
     legendOrientationThreshold
@@ -200,6 +219,7 @@ const BandPlot: FC<Props> = ({
     yDomain,
     onSetYDomain,
     onResetYDomain,
+    ...axisTicksOptions,
     legendColumns,
     legendOpacity: tooltipOpacity,
     legendOrientationThreshold: tooltipOrientationThreshold,

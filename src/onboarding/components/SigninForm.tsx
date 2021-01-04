@@ -65,6 +65,7 @@ class SigninForm extends PureComponent<Props, State> {
                   size={ComponentSize.Medium}
                   autoFocus={true}
                   testID="username"
+                  id="login"
                 />
               </Form.Element>
             </Grid.Column>
@@ -77,6 +78,7 @@ class SigninForm extends PureComponent<Props, State> {
                   size={ComponentSize.Medium}
                   type={InputType.Password}
                   testID="password"
+                  id="password"
                 />
               </Form.Element>
             </Grid.Column>
@@ -87,6 +89,7 @@ class SigninForm extends PureComponent<Props, State> {
                   text="Sign In"
                   size={ComponentSize.Medium}
                   type={ButtonType.Submit}
+                  id="submit-login"
                 />
               </Form.Footer>
             </Grid.Column>

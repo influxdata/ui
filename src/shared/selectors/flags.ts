@@ -11,8 +11,6 @@ export const OSS_FLAGS = {
   fluxParser: false,
   matchingNotificationRules: false,
   flows: false,
-  parseObjectsInCSV: false,
-  telegrafEditor: false,
   streamEvents: false,
   'flow-move-cells': false,
   'flow-panel--spotify': false,
@@ -36,8 +34,6 @@ export const CLOUD_FLAGS = {
   fluxParser: false,
   matchingNotificationRules: false,
   flows: false,
-  parseObjectsInCSV: false,
-  telegrafEditor: false,
   streamEvents: false,
   'flow-move-cells': false,
   'flow-panel--spotify': false,
@@ -49,6 +45,7 @@ export const CLOUD_FLAGS = {
   'load-data-flux-sources': false,
   'load-data-integrations': false,
   'notification-endpoint-telegram': false,
+  unity: false,
 }
 
 export const activeFlags = (state: AppState): FlagMap => {

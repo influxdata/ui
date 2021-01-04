@@ -4,6 +4,7 @@ import {useDispatch, useSelector} from 'react-redux'
 
 // Contexts
 import {PipeContext} from 'src/flows/context/pipe'
+import {FlowContext} from 'src/flows/context/flow.current'
 
 // Utils
 import {normalizeSchema} from 'src/shared/utils/flowSchemaNormalizer'
@@ -43,8 +44,9 @@ export const SchemaContext = React.createContext<SchemaContextType>(
 
 export const SchemaProvider: FC<Props> = React.memo(({children}) => {
   const {data, update} = useContext(PipeContext)
+  const {flow} = useContext(FlowContext)
   const [searchTerm, setSearchTerm] = useState('')
-  const [lastBucket, setLastBucket] = useState(data.bucket)
+  const [lastBucket, setLastBucket] = useState(data?.bucket?.id)
   const dispatch = useDispatch()
 
   const loading = useSelector(
@@ -53,29 +55,30 @@ export const SchemaProvider: FC<Props> = React.memo(({children}) => {
   )
 
   useEffect(() => {
-    dispatch(startWatchDog())
-  }, [dispatch])
-
-  useEffect(() => {
-    if (data.bucket === lastBucket) {
+    if (data?.bucket?.id === lastBucket) {
       return
     }
+
+    setLastBucket(data?.bucket?.id)
     setSearchTerm('')
     update({
       field: '',
       tags: {},
       measurement: '',
     })
-    setLastBucket(data.bucket)
-  }, [data.bucket])
+  }, [data?.bucket?.id, lastBucket, update])
 
   useEffect(() => {
-    if (loading !== RemoteDataState.NotStarted || !data.bucket) {
+    dispatch(startWatchDog())
+  }, [dispatch])
+
+  useEffect(() => {
+    if (!data.bucket) {
       return
     }
 
-    dispatch(getAndSetBucketSchema(data.bucket))
-  }, [data.bucket, loading, dispatch])
+    dispatch(getAndSetBucketSchema(data.bucket, flow.range))
+  }, [data?.bucket, dispatch, flow?.range])
 
   const schema = useSelector(
     (state: AppState) => state.flow.schema[data.bucket?.name]?.schema || {}

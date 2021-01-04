@@ -25,7 +25,7 @@ import {
   millisecondsToDuration,
 } from 'src/shared/utils/duration'
 
-//Selectors
+// Selectors
 import {getAllVariables, asAssignment} from 'src/variables/selectors'
 import {getTimeRange} from 'src/dashboards/selectors'
 
@@ -204,15 +204,15 @@ export const getFillColumnsSelection = (state: AppState): string[] => {
   )
 
   if (graphType === 'mosaic') {
-    //user hasn't selected a fill column yet
+    // user hasn't selected a fill column yet
     if (preference === null) {
-      //check if value is a string[]
+      // check if value is a string[]
       for (const key of validFillColumns) {
         if (key.startsWith('_value')) {
           return [key]
         }
       }
-      //check if value is a numeric column
+      // check if value is a numeric column
       if (table.columnKeys.includes('_value')) {
         return []
       }

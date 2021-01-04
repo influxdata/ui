@@ -11,6 +11,8 @@ import GetResources from 'src/resources/components/GetResources'
 import GetAssetLimits from 'src/cloud/components/GetAssetLimits'
 import LimitChecker from 'src/cloud/components/LimitChecker'
 import LineProtocolWizard from 'src/buckets/components/lineProtocol/LineProtocolWizard'
+import CsvUploaderWizard from 'src/buckets/components/csvUploader/CsvUploaderWizard'
+import CsvUploaderProvider from 'src/buckets/components/context/csvUploaderProvider'
 import CollectorsWizard from 'src/dataLoaders/components/collectorsWizard/CollectorsWizard'
 import UpdateBucketOverlay from 'src/buckets/components/UpdateBucketOverlay'
 import RenameBucketOverlay from 'src/buckets/components/RenameBucketOverlay'
@@ -20,6 +22,7 @@ import {Page} from '@influxdata/clockface'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {ORGS, ORG_ID, BUCKETS, BUCKET_ID} from 'src/shared/constants/routes'
@@ -57,6 +60,14 @@ class BucketsIndex extends Component {
             path={`${bucketsPath}/line-protocols/new`}
             component={LineProtocolWizard}
           />
+          {isFlagEnabled('csvUploader') && (
+            <CsvUploaderProvider>
+              <Route
+                path={`${bucketsPath}/csv-uploader/new`}
+                component={CsvUploaderWizard}
+              />
+            </CsvUploaderProvider>
+          )}
           <Route
             path={`${bucketsPath}/telegrafs/new`}
             component={CollectorsWizard}

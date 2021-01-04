@@ -1,33 +1,50 @@
-import React from 'react'
+// Libraries
+import React, {FC, useContext, useEffect} from 'react'
+import {useParams} from 'react-router-dom'
 
 // Components
+import CurrentFlowProvider from 'src/flows/context/flow.current'
+import {RunModeProvider} from 'src/flows/context/runMode'
+import {FlowListContext} from 'src/flows/context/flow.list'
+import Flow from 'src/flows/components/Flow'
 import {Page} from '@influxdata/clockface'
 import FlowHeader from 'src/flows/components/header'
-import PipeList from 'src/flows/components/PipeList'
-import MiniMap from 'src/flows/components/minimap/MiniMap'
-import QueryProvider from 'src/flows/context/query'
-import {TimeProvider} from 'src/flows/context/time'
+import {ResultsProvider} from 'src/flows/context/results'
+import {PROJECT_NAME_PLURAL} from 'src/flows'
 
-const FlowPage = () => {
-  return (
-    <TimeProvider>
-      <Page titleTag="Flows">
-        <FlowHeader />
-        <QueryProvider>
+const FlowFromRoute = () => {
+  const {id} = useParams()
+  const {change} = useContext(FlowListContext)
+
+  useEffect(() => {
+    change(id)
+  }, [id, change])
+
+  return null
+}
+// NOTE: uncommon, but using this to scope the project
+// within the page and not bleed it's dependencies outside
+// of the feature flag
+import 'src/flows/style.scss'
+
+const FlowContainer: FC = () => (
+  <CurrentFlowProvider>
+    <RunModeProvider>
+      <FlowFromRoute />
+      <ResultsProvider>
+        <Page titleTag={PROJECT_NAME_PLURAL}>
+          <FlowHeader />
           <Page.Contents
             fullWidth={true}
-            scrollable={false}
+            scrollable={true}
             className="flow-page"
           >
-            <div className="flow">
-              <MiniMap />
-              <PipeList />
-            </div>
+            <Flow />
           </Page.Contents>
-        </QueryProvider>
-      </Page>
-    </TimeProvider>
-  )
-}
+        </Page>
+      </ResultsProvider>
+    </RunModeProvider>
+  </CurrentFlowProvider>
+)
 
-export default FlowPage
+export default FlowContainer

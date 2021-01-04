@@ -11,10 +11,12 @@ import classnames from 'classnames'
 
 // Components
 import ResizerHeader from 'src/flows/shared/ResizerHeader'
+import {TechnoSpinner, IconFont} from '@influxdata/clockface'
+import FriendlyQueryError from 'src/flows/shared/FriendlyQueryError'
 
 // Types
-import {IconFont} from '@influxdata/clockface'
 import {Visibility} from 'src/types/flows'
+import {RemoteDataState} from 'src/types'
 
 // Styles
 import 'src/flows/shared/Resizer.scss'
@@ -41,11 +43,14 @@ interface Props {
   minimumHeight?: number
   /** Renders this element beneath the visibility toggle in the header */
   additionalControls?: JSX.Element | JSX.Element[]
+  /** Loading state */
+  loading?: RemoteDataState
 }
 
 export const MINIMUM_RESIZER_HEIGHT = 360
 
 const Resizer: FC<Props> = ({
+  loading = RemoteDataState.NotStarted,
   children,
   emptyIcon,
   emptyText,
@@ -65,25 +70,36 @@ const Resizer: FC<Props> = ({
   const bodyRef = useRef<HTMLDivElement>(null)
   const dragHandleRef = useRef<HTMLDivElement>(null)
 
-  const bodyClassName = classnames('panel-resizer--body', {
+  const resizerBodyClass = classnames('panel-resizer--body', {
     [`panel-resizer--body__${visibility}`]:
       resizingEnabled && visibility === 'visible',
+  })
+
+  const resizerContainerClass = classnames('panel-resizer', {
+    'panel-resizer--error-state': error,
+    'panel-resizer__loading': loading === RemoteDataState.Loading,
+    [`panel-resizer__${visibility}`]: true,
   })
 
   let _emptyIcon = emptyIcon
   if (error) {
     _emptyIcon = IconFont.AlertTriangle
   } else {
-    _emptyIcon = emptyIcon || IconFont.Zap
+    _emptyIcon = emptyIcon || IconFont.Play
   }
 
   const updateResultsStyle = useCallback((): void => {
-    if (bodyRef.current && resizingEnabled && visibility === 'visible') {
+    if (
+      bodyRef.current &&
+      resizingEnabled &&
+      visibility === 'visible' &&
+      !error
+    ) {
       bodyRef.current.setAttribute('style', `height: ${size}px`)
     } else {
       bodyRef.current.setAttribute('style', '')
     }
-  }, [size, resizingEnabled, visibility])
+  }, [size, resizingEnabled, visibility, error])
 
   // Ensure styles update when state & props update
   useEffect(() => {
@@ -142,7 +158,7 @@ const Resizer: FC<Props> = ({
   let body = children
 
   if (error) {
-    body = <div className="panel-resizer--error">{error}</div>
+    body = <FriendlyQueryError error={error} />
   } else {
     if (!resizingEnabled) {
       body = <div className="panel-resizer--empty">{emptyText}</div>
@@ -153,23 +169,25 @@ const Resizer: FC<Props> = ({
     }
   }
 
-  const klass = classnames('panel-resizer', {
-    'panel-resizer--error-state': error,
-  })
+  const resizerDiameter =
+    visibility === 'visible' && resizingEnabled ? Math.min(100, height) : 30
 
   return (
-    <div className={klass}>
+    <div className={resizerContainerClass}>
+      <div className="panel-resizer--loading-mask">
+        <TechnoSpinner diameterPixels={resizerDiameter} />
+      </div>
       <ResizerHeader
         emptyIcon={_emptyIcon}
         visibility={visibility}
         onStartDrag={handleMouseDown}
         dragHandleRef={dragHandleRef}
-        resizingEnabled={resizingEnabled}
+        resizingEnabled={resizingEnabled && !error}
         additionalControls={additionalControls}
         onUpdateVisibility={onUpdateVisibility}
         toggleVisibilityEnabled={toggleVisibilityEnabled}
       />
-      <div className={bodyClassName} ref={bodyRef}>
+      <div className={resizerBodyClass} ref={bodyRef}>
         {body}
       </div>
     </div>

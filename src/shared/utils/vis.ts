@@ -48,6 +48,7 @@ interface GetFormatterOptions {
   timeZone?: TimeZone
   trimZeros?: boolean
   timeFormat?: string
+  format?: boolean
 }
 
 export const getFormatter = (
@@ -59,6 +60,7 @@ export const getFormatter = (
     timeZone,
     trimZeros = true,
     timeFormat = DEFAULT_TIME_FORMAT,
+    format,
   }: GetFormatterOptions = {}
 ): null | ((x: any) => string) => {
   if (columnType === 'number' && base === '2') {
@@ -66,15 +68,27 @@ export const getFormatter = (
       prefix,
       suffix,
       significantDigits: VIS_SIG_DIGITS,
+      format,
     })
   }
 
-  if (columnType === 'number') {
+  if (columnType === 'number' && base === '10') {
     return siPrefixFormatter({
       prefix,
       suffix,
       significantDigits: VIS_SIG_DIGITS,
       trimZeros,
+      format,
+    })
+  }
+
+  if (columnType === 'number' && base === '') {
+    return siPrefixFormatter({
+      prefix,
+      suffix,
+      significantDigits: VIS_SIG_DIGITS,
+      trimZeros,
+      format: true,
     })
   }
 

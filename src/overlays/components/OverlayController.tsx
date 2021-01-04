@@ -1,5 +1,5 @@
 // Libraries
-import React, {FunctionComponent} from 'react'
+import React, {FunctionComponent, createContext} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Types
@@ -15,12 +15,28 @@ import TelegrafOutputOverlay from 'src/telegrafs/components/TelegrafOutputOverla
 import OrgSwitcherOverlay from 'src/pageLayout/components/OrgSwitcherOverlay'
 import CreateBucketOverlay from 'src/buckets/components/CreateBucketOverlay'
 import AssetLimitOverlay from 'src/cloud/components/AssetLimitOverlay'
+import {CreateAnnotationStreamOverlay} from 'src/annotations/components/overlay/CreateAnnotationStreamOverlay'
+import {UpdateAnnotationStreamOverlay} from 'src/annotations/components/overlay/UpdateAnnotationStreamOverlay'
+import {AddAnnotationOverlay} from 'src/annotations/components/AddAnnotationOverlay'
+import {EditAnnotationOverlay} from 'src/annotations/components/EditAnnotationOverlay'
 
 // Actions
 import {dismissOverlay} from 'src/overlays/actions/overlays'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type OverlayControllerProps = ReduxProps
+
+export interface OverlayContextType {
+  onClose: () => void
+}
+
+export const DEFAULT_OVERLAY_CONTEXT = {
+  onClose: () => {},
+}
+
+export const OverlayContext = createContext<OverlayContextType>(
+  DEFAULT_OVERLAY_CONTEXT
+)
 
 const OverlayController: FunctionComponent<OverlayControllerProps> = props => {
   let activeOverlay = <></>
@@ -35,6 +51,10 @@ const OverlayController: FunctionComponent<OverlayControllerProps> = props => {
     }
   }
 
+  // TODO: Alex Paxton
+  // Probably should refactor these overlays to use the context instead of prop
+  // drilling onClose into them
+
   switch (overlayID) {
     case 'add-note':
     case 'edit-note':
@@ -47,7 +67,7 @@ const OverlayController: FunctionComponent<OverlayControllerProps> = props => {
       activeOverlay = <BucketsTokenOverlay onClose={closer} />
       break
     case 'telegraf-config':
-      activeOverlay = <TelegrafConfigOverlay onClose={closer} />
+      activeOverlay = <TelegrafConfigOverlay />
       break
     case 'telegraf-output':
       activeOverlay = <TelegrafOutputOverlay onClose={closer} />
@@ -61,11 +81,27 @@ const OverlayController: FunctionComponent<OverlayControllerProps> = props => {
     case 'asset-limit':
       activeOverlay = <AssetLimitOverlay onClose={closer} />
       break
+    case 'create-annotation-stream':
+      activeOverlay = <CreateAnnotationStreamOverlay />
+      break
+    case 'update-annotation-stream':
+      activeOverlay = <UpdateAnnotationStreamOverlay />
+      break
+    case 'add-annotation':
+      activeOverlay = <AddAnnotationOverlay />
+      break
+    case 'edit-annotation':
+      activeOverlay = <EditAnnotationOverlay />
+      break
     default:
       visibility = false
   }
 
-  return <Overlay visible={visibility}>{activeOverlay}</Overlay>
+  return (
+    <OverlayContext.Provider value={{onClose: closer}}>
+      <Overlay visible={visibility}>{activeOverlay}</Overlay>
+    </OverlayContext.Provider>
+  )
 }
 
 const mstp = (state: AppState) => {

@@ -4,6 +4,7 @@ import uuid from 'uuid'
 
 import {FluxTable} from 'src/types'
 import {fromFlux} from '@influxdata/giraffe'
+import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 export const parseResponseError = (response: string): FluxTable[] => {
   const data = Papa.parse(response.trim()).data as string[][]
@@ -151,11 +152,20 @@ export const parseTables = (responseChunk: string): FluxTable[] => {
 }
 
 export const parseResponseWithFromFlux = (response: string): FluxTable[] => {
+  const parsed = fromFlux(response)
+
+  if (parsed.error) {
+    reportErrorThroughHoneyBadger(parsed.error, {
+      name: 'parseResponseWithFromFlux function',
+    })
+    return []
+  }
+
   const {
     fluxGroupKeyUnion,
     table,
     table: {columnKeys: keys},
-  } = fromFlux(response)
+  } = parsed
 
   const columnKeys = [
     'result',

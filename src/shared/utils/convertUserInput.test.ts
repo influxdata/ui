@@ -1,5 +1,8 @@
 import React from 'react'
-import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
+import {
+  convertUserInputToNumOrNaN,
+  convertUserInputValueToNumOrNaN,
+} from 'src/shared/utils/convertUserInput'
 
 describe('convertUserInputToNumOrNaN', () => {
   let value
@@ -65,5 +68,49 @@ describe('convertUserInputToNumOrNaN', () => {
       },
     } as React.ChangeEvent<HTMLInputElement>
     expect(convertUserInputToNumOrNaN(event)).toEqual(0)
+  })
+})
+
+describe('convertUserInputValueToNumOrNaN', () => {
+  it('should convert undefined to NaN', () => {
+    expect(Number.isNaN(convertUserInputValueToNumOrNaN())).toBeTruthy()
+    expect(
+      Number.isNaN(convertUserInputValueToNumOrNaN(undefined))
+    ).toBeTruthy()
+  })
+
+  it('should convert an object to NaN', () => {
+    expect(Number.isNaN(convertUserInputValueToNumOrNaN({}))).toBeTruthy()
+  })
+
+  it('should convert a function to NaN', () => {
+    expect(Number.isNaN(convertUserInputValueToNumOrNaN(() => {}))).toBeTruthy()
+  })
+
+  it('should convert a boolean to the appropriate number', () => {
+    expect(convertUserInputValueToNumOrNaN(false)).toEqual(0)
+    expect(convertUserInputValueToNumOrNaN(true)).toEqual(1)
+  })
+
+  it('should convert an empty string to NaN', () => {
+    expect(Number.isNaN(convertUserInputValueToNumOrNaN(''))).toBeTruthy()
+  })
+
+  it('should convert a non-empty, non-numeric string to NaN', () => {
+    expect(Number.isNaN(convertUserInputValueToNumOrNaN('abcd'))).toBeTruthy()
+  })
+
+  it('should convert an array to 0', () => {
+    expect(convertUserInputValueToNumOrNaN([])).toEqual(0)
+  })
+
+  it('should convert null to numeric 0', () => {
+    expect(convertUserInputValueToNumOrNaN(null)).toEqual(0)
+  })
+
+  it('should convert a non-empty, numeric string to a number that is not NaN', () => {
+    const result = convertUserInputValueToNumOrNaN('270')
+    expect(typeof result).toEqual('number')
+    expect(Number.isNaN(result)).toBeFalsy()
   })
 })

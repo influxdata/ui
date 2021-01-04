@@ -1,6 +1,11 @@
-import {createStore, applyMiddleware, compose} from 'redux'
+import {
+  createStore,
+  applyMiddleware,
+  compose,
+  combineReducers,
+  Store,
+} from 'redux'
 import {History} from 'history'
-import {combineReducers, Store} from 'redux'
 import {connectRouter, routerMiddleware} from 'connected-react-router'
 import thunkMiddleware from 'redux-thunk'
 
@@ -12,7 +17,7 @@ import persistStateEnhancer from './persistStateEnhancer'
 import {loadLocalStorage} from 'src/localStorage'
 
 // v2 reducers
-import meReducer from 'src/shared/reducers/me'
+import meReducer from 'src/me/reducers'
 import flagReducer from 'src/shared/reducers/flags'
 import currentDashboardReducer from 'src/shared/reducers/currentDashboard'
 import currentExplorerReducer from 'src/shared/reducers/currentExplorer'
@@ -36,6 +41,7 @@ import {authsReducer} from 'src/authorizations/reducers'
 import templatesReducer from 'src/templates/reducers'
 import {scrapersReducer} from 'src/scrapers/reducers'
 import {userSettingsReducer} from 'src/userSettings/reducers'
+import {annotationsReducer} from 'src/annotations/reducers'
 import {membersReducer} from 'src/members/reducers'
 import {autoRefreshReducer} from 'src/shared/reducers/autoRefresh'
 import {limitsReducer, LimitsState} from 'src/cloud/reducers/limits'
@@ -123,6 +129,7 @@ export const rootReducer = (history: History) => (state, action) => {
     userSettings: userSettingsReducer,
     variableEditor: variableEditorReducer,
     VERSION: () => '',
+    annotations: annotationsReducer,
   })(state, action)
 }
 

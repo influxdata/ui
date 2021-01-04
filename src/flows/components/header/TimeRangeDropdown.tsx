@@ -1,27 +1,23 @@
-import React, {FC, useMemo, useCallback} from 'react'
+import React, {FC, useMemo, useCallback, useContext} from 'react'
 import {default as StatelessTimeRangeDropdown} from 'src/shared/components/TimeRangeDropdown'
-import {TimeContextProps} from 'src/flows/components/header'
-import {TimeBlock} from 'src/flows/context/time'
+import {FlowContext} from 'src/flows/context/flow.current'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
-const TimeRangeDropdown: FC<TimeContextProps> = ({context, update}) => {
-  const {range} = context
+const TimeRangeDropdown: FC = () => {
+  const {update, flow} = useContext(FlowContext)
 
   const updateRange = useCallback(
     range => {
       event(
-        'Time Range Updated',
+        'update_notebook_time_range',
         {
           type: range.type,
         },
-        {upper: range.upper as string, lower: range.lower}
+        {upper: range.upper, lower: range.lower}
       )
-
-      update({
-        range,
-      } as TimeBlock)
+      update({range})
     },
     [update]
   )
@@ -29,11 +25,12 @@ const TimeRangeDropdown: FC<TimeContextProps> = ({context, update}) => {
   return useMemo(() => {
     return (
       <StatelessTimeRangeDropdown
-        timeRange={range}
+        timeRange={flow.range}
         onSetTimeRange={updateRange}
+        width={200}
       />
     )
-  }, [range, updateRange])
+  }, [flow, updateRange])
 }
 
 export default TimeRangeDropdown

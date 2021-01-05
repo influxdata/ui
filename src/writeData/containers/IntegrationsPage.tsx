@@ -5,6 +5,7 @@ import {Switch, Route} from 'react-router-dom'
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import FitbitPage from 'src/writeData/components/Integrations/FitbitIndex'
+import FitbitViewer from 'src/writeData/components/Integrations/FitbitViewer'
 
 // Constants
 import {ORGS, ORG_ID, INTEGRATIONS} from 'src/shared/constants/routes'
@@ -20,6 +21,10 @@ class IntegrationsPage extends PureComponent {
       <>
         <Switch>
           {/* <Route path={integrationPath} exact component={ClientLibrariesIndex} /> */}
+          <Route
+            path={`${integrationPath}/:contentID/view`}
+            component={FitbitViewer}
+          />
           <Route
             path={`${integrationPath}/:contentID`}
             component={FitbitPage}

@@ -6,7 +6,11 @@ import {
   TechnoSpinner,
 } from '@influxdata/clockface'
 import {useLocation} from 'react-router-dom'
-import {FITBIT_CLIENT_ID, FITBIT_CLIENT_SECRET} from 'src/shared/constants'
+import {
+  FITBIT_CLIENT_ID,
+  FITBIT_CLIENT_SECRET,
+  FITBIT_REDIRECT_URI,
+} from 'src/shared/constants'
 
 function useQuery() {
   return new URLSearchParams(useLocation().search)
@@ -23,7 +27,8 @@ const getToken = async (code: string) => {
     'Content-Type': 'application/x-www-form-urlencoded',
     Authorization: `Basic ${encodedSecrets}`,
   }
-  const body = `client_id=${FITBIT_CLIENT_ID}&redirect_uri=https%3A%2F%2Fkubernetes.docker.internal%3A8080%2Ffitbit-api-callback&grant_type=authorization_code&code=${code}`
+  const redirect_uri = encodeURIComponent(FITBIT_REDIRECT_URI)
+  const body = `client_id=${FITBIT_CLIENT_ID}&redirect_uri=${redirect_uri}&grant_type=authorization_code&code=${code}`
 
   await fetch(URL, {method: 'POST', headers, body})
 }

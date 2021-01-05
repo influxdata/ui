@@ -5,7 +5,7 @@ import React, {PureComponent} from 'react'
 import {Page, Form, CTAButton, ButtonType} from '@influxdata/clockface'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import {FITBIT_CLIENT_ID} from 'src/shared/constants'
+import {FITBIT_CLIENT_ID, FITBIT_REDIRECT_URI} from 'src/shared/constants'
 
 @ErrorHandling
 class FitbitPage extends PureComponent {
@@ -28,7 +28,8 @@ class FitbitPage extends PureComponent {
   }
 
   private handleSubmit = () => {
-    window.location.href = `https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=${FITBIT_CLIENT_ID}&redirect_uri=https%3A%2F%2Fkubernetes.docker.internal%3A8080%2Ffitbit-api-callback&scope=activity%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight&expires_in=604800`
+    const redirect_uri = encodeURIComponent(FITBIT_REDIRECT_URI)
+    window.location.href = `https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=${FITBIT_CLIENT_ID}&redirect_uri=${redirect_uri}&scope=activity%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight&expires_in=604800`
   }
 }
 

@@ -16,6 +16,7 @@ import {RemoteDataState, AppState} from 'src/types'
 import {getOrganizations} from 'src/organizations/actions/thunks'
 import RouteToOrg from './RouteToOrg'
 import FitbitCallback from 'src/writeData/components/Integrations/FitbitCallback'
+import {FITIBIT_REDIRECT_PATH} from '../constants'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
@@ -32,7 +33,7 @@ const GetOrganizations: FunctionComponent<Props> = ({status}) => {
     <SpinnerContainer loading={status} spinnerComponent={<TechnoSpinner />}>
       <Switch>
         <Route path="/no-orgs" component={NoOrgsPage} />
-        <Route path="/fitbit-api-callback" component={FitbitCallback} />
+        <Route path={FITIBIT_REDIRECT_PATH} component={FitbitCallback} />
         <Route path="/orgs" component={App} />
         <Route exact path="/" component={RouteToOrg} />
         <Route component={NotFound} />

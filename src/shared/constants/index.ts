@@ -79,6 +79,8 @@ export const CLOUD_USERS_PATH = '/users'
 // integrations
 export const FITBIT_CLIENT_SECRET = 'secret'
 export const FITBIT_CLIENT_ID = 'id'
+export const FITIBIT_REDIRECT_PATH = '/fitbit-api-callback'
+export const FITBIT_REDIRECT_URI = `https://kubernetes.docker.internal:8080${FITIBIT_REDIRECT_PATH}`
 
 export const FLUX_RESPONSE_BYTES_LIMIT = CLOUD
   ? 27 * 1024 * 1024 // 27 MiB  (desa: this was determined by looking at queries responses in the cloud app)

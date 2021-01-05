@@ -1,63 +1,151 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {useEffect, FC, useState} from 'react'
 
 // Components
-import {Page, Form, CTAButton, ButtonType} from '@influxdata/clockface'
-import {ErrorHandling} from 'src/shared/decorators/errors'
+import {Page} from '@influxdata/clockface'
+import {get} from 'lodash'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {Plot, newTable} from '@influxdata/giraffe'
-// import {FITBIT_CLIENT_ID, FITBIT_REDIRECT_URI} from 'src/shared/constants'
+import {AppState} from 'src/types'
+import {connect} from 'react-redux'
 
-@ErrorHandling
-class FitbitPage extends PureComponent {
-  public render() {
-    const style = {
-      width: 'calc(70vw - 20px)',
-      height: 'calc(70vh - 20px)',
-      margin: '40px',
-    }
-    const lineLayer = {
-      type: 'line',
-      x: '_time',
-      y: '_value',
-    }
-    const table = newTable(3)
-      .addColumn('_time', 'dateTime:RFC3339', 'time', [
-        1589838401244,
-        1589838461244,
-        1589838521244,
-      ])
-      .addColumn('_value', 'double', 'number', [2.58, 7.11, 4.79])
-    const config = {
-      table,
-      layers: [lineLayer],
-    }
+const resources = [
+  {path: 'activities/calories', key: 'activities-calories'},
+  {path: 'activities/caloriesBMR', key: 'activities-caloriesBMR'},
+  {path: 'activities/steps', key: 'activities-steps'},
+  {path: 'activities/distance', key: 'activities-distance'},
+  {path: 'activities/minutesSedentary', key: 'activities-minutesSedentary'},
+]
 
-    /*
-     * make request to get date range sleep when click button
-     * parse for value and time to create table
-     * display in plot
-     */
+const getData = async (resourceInfo, accessToken: string) => {
+  const URL = `https://api.fitbit.com/1/user/-/${resourceInfo.path}/date/today/1m.json`
 
-    return (
-      <Page titleTag={pageTitleSuffixer(['Fitbit', 'Load Data'])}>
-        <Page.Header fullWidth={false}>
-          <Page.Title title="Fitbit" />
-        </Page.Header>
-        <Page.Contents fullWidth={false} scrollable={true}>
-          <Form onSubmit={this.handleSubmit}>
-            <h1> Whatcha wanna look at? </h1>
-            <CTAButton text="Lookit" type={ButtonType.Submit} />
-          </Form>
-          <Plot config={config} style={style} />
-        </Page.Contents>
-      </Page>
-    )
+  const headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    Authorization: `Bearer ${accessToken}`,
   }
-
-  private handleSubmit = () => {
-    console.log('submittin')
-  }
+  const resp = await fetch(URL, {method: 'GET', headers})
+  const respBody = await resp.json()
+  console.log(respBody)
+  return get(respBody, resourceInfo.key, [])
 }
 
-export default FitbitPage
+interface StateProps {
+  accessToken: string
+}
+
+interface StepLog {
+  dateTime: string
+  value: number
+}
+
+interface State {
+  stepsData: StepLog[]
+}
+
+const toDate = stringDate => {
+  return Date.parse(stringDate)
+}
+
+const buildTable = data => {
+  const timeValues = data.map(({dateTime}) => toDate(dateTime))
+  const values = data.map(({value}) => parseInt(value))
+  const table = newTable(data.length)
+    .addColumn('_time', 'dateTime:RFC3339', 'time', timeValues)
+    .addColumn('_value', 'double', 'number', values)
+
+  return table
+}
+
+const FitbitViewer: FC<StateProps> = ({accessToken}) => {
+  const [caloriesData, setCaloriesData] = useState([])
+  const [caloriesBMRData, setCaloriesBMRData] = useState([])
+  const [stepsData, setStepsData] = useState([])
+  const [distanceData, setDistanceData] = useState([])
+  const [sedentaryData, setSedentaryData] = useState([])
+
+  const lineLayer = {
+    type: 'line',
+    x: '_time',
+    y: '_value',
+  }
+
+  const stepsConfig = {
+    table: buildTable(stepsData),
+    layers: [lineLayer],
+  }
+
+  const distanceConfig = {
+    table: buildTable(distanceData),
+    layers: [lineLayer],
+  }
+
+  const caloriesConfig = {
+    table: buildTable(caloriesData),
+    layers: [lineLayer],
+  }
+
+  const caloriesBMRConfig = {
+    table: buildTable(caloriesBMRData),
+    layers: [lineLayer],
+  }
+
+  const sedentaryConfig = {
+    table: buildTable(sedentaryData),
+    layers: [lineLayer],
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await Promise.all(
+        resources.map(r => getData(r, accessToken))
+      )
+      const [calories, caloriesBMR, steps, distance, sedentary] = data
+      setCaloriesData(calories)
+      setCaloriesBMRData(caloriesBMR)
+      setStepsData(steps)
+      setDistanceData(distance)
+      setSedentaryData(sedentary)
+    }
+    fetchData()
+  }, [])
+
+  const style = {height: '300px', width: '500px', paddingBottom: '32px'}
+
+  return (
+    <Page titleTag={pageTitleSuffixer(['Fitbit', 'Load Data'])}>
+      <Page.Header fullWidth={false}>
+        <Page.Title title="Fitbit" />
+      </Page.Header>
+      <Page.Contents fullWidth={false} scrollable={true}>
+        <div style={style}>
+          <h2>Daily Steps past 30 days</h2>
+          <Plot config={stepsConfig} style={style} />
+        </div>
+        <div style={style}>
+          <h2>Daily Distance past 30 days</h2>
+          <Plot config={distanceConfig} style={style} />
+        </div>
+        <div style={style}>
+          <h2>Daily Calories past 30 days</h2>
+          <Plot config={caloriesConfig} style={style} />
+        </div>
+        <div style={style}>
+          <h2>Daily Calories BMR past 30 days</h2>
+          <Plot config={caloriesBMRConfig} style={style} />
+        </div>
+        <div style={style}>
+          <h2>Daily Sedentary past 30 days</h2>
+          <Plot config={sedentaryConfig} style={style} />
+        </div>
+      </Page.Contents>
+    </Page>
+  )
+}
+const mstp = (state: AppState) => {
+  const accessToken = get(state, 'integrations.fitbit', '')
+
+  return {accessToken}
+}
+
+export default connect<StateProps>(mstp)(FitbitViewer)

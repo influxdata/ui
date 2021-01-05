@@ -15,7 +15,7 @@ export const WRITE_DATA_INTEGRATIONS: WriteDataItem[] = [
 const WRITE_DATA_INTEGRATIONS_SECTION: WriteDataSection = {
   id: INTEGRATIONS,
   name: 'Integrations',
-  description: 'Description goes here',
+  description: 'integrate with other datasources',
   items: WRITE_DATA_INTEGRATIONS,
   featureFlag: 'load-data-integrations',
 }

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useRef} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {AutoSizer} from 'react-virtualized'
 import classnames from 'classnames'
@@ -70,6 +70,11 @@ const TimeMachineVis: FC<Props> = ({
     'time-machine--view__empty': noQueries,
   })
 
+  const axesCanvasRef = useRef(null)
+  const layerCanvasRef = useRef(null)
+
+  console.log('vis', axesCanvasRef, layerCanvasRef)
+
   return (
     <div className={timeMachineViewClassName}>
       <ErrorBoundary>
@@ -97,6 +102,7 @@ const TimeMachineVis: FC<Props> = ({
             </AutoSizer>
           ) : (
             <ViewSwitcher
+              refs={{axesCanvasRef, layerCanvasRef}}
               giraffeResult={giraffeResult}
               timeRange={timeRange}
               files={files}

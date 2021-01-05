@@ -1,6 +1,6 @@
 // Libraries
 import React, {FunctionComponent} from 'react'
-import {Plot, FromFluxResult} from '@influxdata/giraffe'
+import {Plot, FromFluxResult, exportImage} from '@influxdata/giraffe'
 
 // Components
 import GaugeChart from 'src/shared/components/GaugeChart'
@@ -40,6 +40,7 @@ interface Props {
   checkType?: CheckType
   checkThresholds?: Threshold[]
   theme: Theme
+  refs?: any
 }
 
 const ViewSwitcher: FunctionComponent<Props> = ({
@@ -52,7 +53,9 @@ const ViewSwitcher: FunctionComponent<Props> = ({
   checkType = null,
   checkThresholds = [],
   theme,
+  refs,
 }) => {
+  console.log('refs', refs)
   switch (properties.type) {
     case 'single-stat':
       return (
@@ -93,19 +96,26 @@ const ViewSwitcher: FunctionComponent<Props> = ({
           )}
         </LatestValueTransform>
       )
-    case 'xy':
-      return (
-        <XYPlot
-          timeRange={timeRange}
-          fluxGroupKeyUnion={fluxGroupKeyUnion}
-          table={table}
-          timeZone={timeZone}
-          viewProperties={properties}
-          theme={theme}
-        >
-          {config => <Plot config={config} />}
-        </XYPlot>
-      )
+    case 'xy':{
+          return (
+            <XYPlot
+              timeRange={timeRange}
+              fluxGroupKeyUnion={fluxGroupKeyUnion}
+              table={table}
+              timeZone={timeZone}
+              viewProperties={properties}
+              theme={theme}
+            >
+              {config => (
+                <Plot
+                  config={config}
+                  axesCanvasRef={refs?.axesCanvasRef}
+                  layerCanvasRef={refs?.layerCanvasRef}
+                />
+              )}
+            </XYPlot>
+          )
+      }
     case 'band':
       return (
         <BandPlot

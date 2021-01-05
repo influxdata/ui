@@ -132,3 +132,6 @@ export const LEGEND_ORIENTATION_THRESHOLD_DEFAULT = 10
 
 export const QUERY_BUILDER_MODE = 'builder'
 export const SCRIPT_EDITOR_MODE = 'advanced'
+
+export const MARKDOWN_UNSUPPORTED_IMAGE =
+  "We don't support images in markdown for security purposes"

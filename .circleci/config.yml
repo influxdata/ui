@@ -414,14 +414,14 @@ jobs:
             cd monitor-ci;
             echo "${CIRCLE_BRANCH} :: ${HERCULES_TOKEN} :: ${CIRCLE_PULL_REQUEST}";
             if [ "${CIRCLE_BRANCH}" = "master" ]; then
-                    echo 'Quick Fix: Not running Lighthouse Reporting...'
+                    make lhr MASTER_BRANCH=1 GITHUB_TOKEN="${HERCULES_TOKEN}";
             else
                     make lhr PR="${CIRCLE_PULL_REQUEST}" GITHUB_TOKEN="${HERCULES_TOKEN}";
             fi
       - store_artifacts:
-          path: monitor-ci/services/lighthouse/artifacts/results.html
+          path: /tmp/results.html
       - store_artifacts:
-          path: monitor-ci/services/lighthouse/artifacts/results.json
+          path: /tmp/results.json
 workflows:
   version: 2
   build:

@@ -39,9 +39,15 @@ export const CsvUploaderContext = React.createContext<CsvUploaderContextType>(
 )
 
 /**
- * This is an arbitrary number that should be capped out at 1750 due to max data sizes
+ * The typical average number of concurrent requests to an API endpoint from a specific point
+ * of origin is typically capped out at 6 concurrent connections. This variable is set
+ * here in order to make concurrent writes to the API while limiting the number of
+ * writes to the average max number of concurrent requests. More info on browser connection limitations
+ * can be found here:
+ *
+ * https://docs.pushtechnology.com/cloud/latest/manual/html/designguide/solution/support/connection_limitations.html
  */
-const MAX_CHUNK_SIZE = 1750
+const CONCURRENT_REQUEST_LIMIT = 6
 
 export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
   const [progress, setProgress] = useState(0)
@@ -102,7 +108,10 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
           const pendingWrites = []
 
           for (let i = 0; i < length; i++) {
-            if (i !== 0 && i % MAX_CHUNK_SIZE === 0) {
+            if (
+              i !== 0 &&
+              i % Math.round(length / CONCURRENT_REQUEST_LIMIT) === 0
+            ) {
               const resp = postWrite({
                 data: chunk,
                 query: {org: org.name, bucket, precision: WritePrecision.Ns},

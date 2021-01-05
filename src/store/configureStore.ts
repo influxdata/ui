@@ -63,6 +63,7 @@ import {predicatesReducer} from 'src/shared/reducers/predicates'
 import alertBuilderReducer from 'src/alerting/reducers/alertBuilder'
 import perfReducer from 'src/perf/reducers'
 import {schemaReducer} from 'src/shared/reducers/schema'
+import integrationsReducer from 'src/writeData/reducers'
 
 // Types
 import {AppState, LocalStorage} from 'src/types'
@@ -128,6 +129,7 @@ export const rootReducer = (history: History) => (state, action) => {
     timeMachines: timeMachinesReducer,
     userSettings: userSettingsReducer,
     variableEditor: variableEditorReducer,
+    integrations: integrationsReducer,
     VERSION: () => '',
     annotations: annotationsReducer,
   })(state, action)

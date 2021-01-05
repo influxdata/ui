@@ -34,6 +34,7 @@ import {OrgSettingsState} from 'src/cloud/reducers/orgsettings'
 import {PerfState} from 'src/perf/reducers'
 import {SchemaState} from 'src/shared/reducers/schema'
 import {MeState} from 'src/me/reducers'
+import {IntegrationsState} from 'src/writeData/reducers'
 
 export interface AppState {
   router: RouterState
@@ -71,6 +72,7 @@ export interface AppState {
   variableEditor: VariableEditorState
   VERSION: string
   annotations: AnnotationsState
+  integrations: IntegrationsState
 }
 
 export type GetState = () => AppState

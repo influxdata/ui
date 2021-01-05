@@ -11,6 +11,9 @@ import {
   FITBIT_CLIENT_SECRET,
   FITBIT_REDIRECT_URI,
 } from 'src/shared/constants'
+import {useDispatch} from 'react-redux'
+import {setIntegrationToken} from 'src/writeData/actions'
+import {get} from 'lodash'
 
 function useQuery() {
   return new URLSearchParams(useLocation().search)
@@ -30,18 +33,25 @@ const getToken = async (code: string) => {
   const redirect_uri = encodeURIComponent(FITBIT_REDIRECT_URI)
   const body = `client_id=${FITBIT_CLIENT_ID}&redirect_uri=${redirect_uri}&grant_type=authorization_code&code=${code}`
 
-  await fetch(URL, {method: 'POST', headers, body})
+  const resp = await fetch(URL, {method: 'POST', headers, body})
+  const respBody = await resp.json()
+
+  return get(respBody, 'access_token', '')
 }
 
 const FitbitCallback: FC = () => {
   const [loading, setLoading] = useState(RemoteDataState.Loading)
   const query = useQuery()
   const code = query.get('code')
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    const fetchToken = async () => await getToken(code)
-    console.log(fetchToken())
+    const fetchToken = async () => {
+      const token = await getToken(code)
+      dispatch(setIntegrationToken('fitbit', token))
+    }
 
+    fetchToken()
     setLoading(RemoteDataState.Done)
   }, [])
 

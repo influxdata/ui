@@ -15,7 +15,6 @@ import {
   IconFont,
 } from '@influxdata/clockface'
 import CloudOnly from 'src/shared/components/cloud/CloudOnly'
-import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
 
 // Constants
 import {CLOUD_URL, CLOUD_CHECKOUT_PATH} from 'src/shared/constants'

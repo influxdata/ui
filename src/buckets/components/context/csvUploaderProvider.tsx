@@ -52,9 +52,7 @@ export const CsvUploaderContext = React.createContext<CsvUploaderContextType>(
  */
 const CONCURRENT_REQUEST_LIMIT = 6
 
-const pendingWrites: CancelBox<{
-  promise: Promise<any>
-}>[] = []
+const pendingWrites = []
 
 export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
   const [progress, setProgress] = useState(0)

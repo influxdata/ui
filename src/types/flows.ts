@@ -1,8 +1,3 @@
-import {
-  Tag as GenTag,
-  Schema as GenSchema,
-  SchemaValues as GenSchemaValues,
-} from '@influxdata/giraffe'
 import {FromFluxResult} from '@influxdata/giraffe'
 import {FunctionComponent, ComponentClass, ReactNode} from 'react'
 import {
@@ -11,9 +6,19 @@ import {
   SelectableDurationTimeRange,
 } from 'src/types'
 
-export interface Tag extends GenTag {}
-export interface Schema extends GenSchema {}
-export interface SchemaValues extends GenSchemaValues {}
+export interface Tag {
+  [tagName: string]: Set<string | number>
+}
+
+export interface SchemaValues {
+  fields: string[]
+  tags: Tag
+  type?: string
+}
+
+export interface Schema {
+  [measurement: string]: SchemaValues
+}
 
 export interface NormalizedTag {
   [tagName: string]: string[] | number[]

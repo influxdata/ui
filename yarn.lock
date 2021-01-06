@@ -797,10 +797,10 @@
   resolved "https://registry.yarnpkg.com/@influxdata/flux/-/flux-0.5.1.tgz#e39e7a7af9163fc9494422c8fed77f3ae1b68f56"
   integrity sha512-GHlkXBhSdJ2m56JzDkbnKPAqLj3/lexPooacu14AWTO4f2sDGLmzM7r0AxgdtU1M2x7EXNBwgGOI5EOAdN6mkw==
 
-"@influxdata/giraffe@1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-1.0.2.tgz#a49c5cfbdb2b8fcbd34ab86118faa08bb238a885"
-  integrity sha512-153NFBRMdBICKk6LX4zqIUa8iwe0sbvEMuG2XM8q6FkvVpK7qzTvsOYBiI566bettWCpU8E3viKSfFm5n6lIZA==
+"@influxdata/giraffe@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.0.0.tgz#274f787890457f2703619832fa02f2bccdbe92e7"
+  integrity sha512-GwK+3SNkFwj/qikIMgdIG6F+Aq/KaqG5SGXkElbkaY9O+/ZBeD08HDy5ab+GNDJitOTCrB2jRDAvCzxb+p+1Dw==
 
 "@influxdata/influx@0.5.5":
   version "0.5.5"
@@ -5817,7 +5817,7 @@ html-minify@^0.3.1:
     iconv-lite "~0.4.13"
     uglify-js "~2.6.2"
 
-html-to-react@^1.3.3:
+html-to-react@1.3.4, html-to-react@^1.3.3:
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/html-to-react/-/html-to-react-1.3.4.tgz#647b3a54fdec73a6461864b129fb0d1eec7d4589"
   integrity sha512-/tWDdb/8Koi/QEP5YUY1653PcDpBnnMblXRhotnTuhFDjI1Fc6Wzox5d4sw73Xk5rM2OdM5np4AYjT/US/Wj7Q==
@@ -7670,11 +7670,6 @@ markdown-escapes@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/markdown-escapes/-/markdown-escapes-1.0.2.tgz#e639cbde7b99c841c0bacc8a07982873b46d2122"
   integrity sha512-lbRZ2mE3Q9RtLjxZBZ9+IMl68DKIXaVAhwvwn9pmjnPLS0h/6kyBMgNhqi1xFJ/2yv6cSyv0jbiZavZv93JkkA==
-
-marked@^1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/marked/-/marked-1.2.2.tgz#5d77ffb789c4cb0ae828bfe76250f7140b123f70"
-  integrity sha512-5jjKHVl/FPo0Z6ocP3zYhKiJLzkwJAw4CZoLjv57FkvbUuwOX4LIBBGGcXjAY6ATcd1q9B8UTj5T9Umauj0QYQ==
 
 md5.js@^1.3.4:
   version "1.3.5"

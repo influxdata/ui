@@ -29,7 +29,7 @@ const Results: FC = () => {
   const resultsExist =
     !!results && !!results.raw && !!results.parsed.table.length
 
-  const rows = useMemo(() => results.raw.split('\n'), [results.raw])
+  const rows = useMemo(() => results?.raw?.split('\n') ?? '', [results?.raw])
   const [startRow, setStartRow] = useState<number>(0)
   const [pageSize, setPageSize] = useState<number>(0)
 

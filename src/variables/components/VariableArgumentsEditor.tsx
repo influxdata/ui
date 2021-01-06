@@ -1,14 +1,21 @@
-import React, {PureComponent} from 'react'
+import React, {lazy, PureComponent, Suspense} from 'react'
+import {
+  RemoteDataState,
+  SpinnerContainer,
+  TechnoSpinner,
+} from '@influxdata/clockface'
 
 // Components
 import MapVariableBuilder from 'src/variables/components/MapVariableBuilder'
 import CSVVariableBuilder from 'src/variables/components/CSVVariableBuilder'
 import {Form} from '@influxdata/clockface'
 
-import FluxEditor from 'src/shared/components/FluxMonacoEditor'
-
 // Types
 import {KeyValueMap, VariableProperties} from 'src/types'
+
+const FluxMonacoEditor = lazy(() =>
+  import('src/shared/components/FluxMonacoEditor')
+)
 
 interface Props {
   args: VariableProperties
@@ -25,10 +32,19 @@ class VariableArgumentsEditor extends PureComponent<Props> {
         return (
           <Form.Element label="Script">
             <div className="overlay-flux-editor">
-              <FluxEditor
-                script={args.values.query}
-                onChangeScript={this.handleChangeQuery}
-              />
+              <Suspense
+                fallback={
+                  <SpinnerContainer
+                    loading={RemoteDataState.Loading}
+                    spinnerComponent={<TechnoSpinner />}
+                  />
+                }
+              >
+                <FluxMonacoEditor
+                  script={args.values.query}
+                  onChangeScript={this.handleChangeQuery}
+                />
+              </Suspense>
             </div>
           </Form.Element>
         )

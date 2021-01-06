@@ -4,11 +4,14 @@ import {INTEGRATIONS} from 'src/shared/constants/routes'
 // Types
 import {WriteDataItem, WriteDataSection} from 'src/writeData/constants'
 
+import fitbitLogo from 'src/writeData/graphics/fitbitLogo.svg'
+
 export const WRITE_DATA_INTEGRATIONS: WriteDataItem[] = [
   {
     id: 'fitbit',
     name: 'Fitbit',
     url: `${INTEGRATIONS}/fitbit`,
+    image: fitbitLogo,
   },
 ]
 

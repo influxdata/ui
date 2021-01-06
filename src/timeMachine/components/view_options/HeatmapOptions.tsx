@@ -37,6 +37,7 @@ import {
   setTimeFormat,
   setLegendOpacity,
   setLegendOrientationThreshold,
+  setLegendColorizeRows,
   setGenerateXAxisTicks,
   setXTotalTicks,
   setXTickStart,
@@ -231,6 +232,7 @@ const HeatmapOptions: FunctionComponent<Props> = props => {
         onLegendOrientationThresholdChange={
           props.onSetLegendOrientationThreshold
         }
+        onLegendColorizeRowsChange={props.onSetLegendColorizeRows}
       />
     </Grid.Column>
   )
@@ -261,6 +263,7 @@ const mdtp = {
   onSetTimeFormat: setTimeFormat,
   onSetLegendOpacity: setLegendOpacity,
   onSetLegendOrientationThreshold: setLegendOrientationThreshold,
+  onSetLegendColorizeRows: setLegendColorizeRows,
   onSetGenerateXAxisTicks: setGenerateXAxisTicks,
   onSetXTotalTicks: setXTotalTicks,
   onSetXTickStart: setXTickStart,

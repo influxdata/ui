@@ -1,12 +1,6 @@
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC, useEffect} from 'react'
 import {
-  AlignItems,
   AppWrapper,
-  ComponentSize,
-  CTAButton,
-  FlexBox,
-  FlexDirection,
-  JustifyContent,
   Page,
   RemoteDataState,
   SpinnerContainer,
@@ -66,7 +60,6 @@ interface StateProps {
 type Props = StateProps & RouteComponentProps
 
 const FitbitCallback: FC<Props> = ({org, orgs, history}) => {
-  const [loading, setLoading] = useState(RemoteDataState.Loading)
   const query = useQuery()
   const code = query.get('code')
   const dispatch = useDispatch()
@@ -80,7 +73,7 @@ const FitbitCallback: FC<Props> = ({org, orgs, history}) => {
     }
 
     fetchToken()
-    setLoading(RemoteDataState.Done)
+    linkToFitbitViewer()
   }, [])
 
   const fitbitPath = orgID =>
@@ -109,19 +102,9 @@ const FitbitCallback: FC<Props> = ({org, orgs, history}) => {
         </Page.Header>
         <Page.Contents fullWidth={false} scrollable={true}>
           <SpinnerContainer
-            loading={loading}
+            loading={RemoteDataState.Loading}
             spinnerComponent={<TechnoSpinner />}
-          >
-            <FlexBox
-              direction={FlexDirection.Column}
-              alignItems={AlignItems.Center}
-              justifyContent={JustifyContent.Center}
-              margin={ComponentSize.Large}
-            >
-              <h1>You have been authorized!</h1>
-              <CTAButton onClick={linkToFitbitViewer} text="View My Data" />
-            </FlexBox>
-          </SpinnerContainer>
+          />
         </Page.Contents>
       </Page>
     </AppWrapper>

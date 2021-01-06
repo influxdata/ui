@@ -68,7 +68,7 @@ const FitbitGraph: FC<Props> = ({accessToken, resource}) => {
       setData(data)
     }
     fetchData()
-  }, [])
+  }, [accessToken])
 
   const style = {height: '300px', padding: '32px 0'}
 

@@ -26,14 +26,17 @@ import CsvUploaderSuccess from 'src/buckets/components/csvUploader/CsvUploaderSu
 import {RemoteDataState} from 'src/types'
 
 const CsvUploaderWizard = () => {
-  const {resetUploadState, uploadState} = useContext(CsvUploaderContext)
+  const {cancelUpload, resetUploadState, uploadState} = useContext(
+    CsvUploaderContext
+  )
   const history = useHistory()
 
   const org = useSelector(getOrg)
   const handleDismiss = useCallback(() => {
+    cancelUpload()
     history.push(`/orgs/${org.id}/load-data/buckets`)
     resetUploadState()
-  }, [history, org.id, resetUploadState])
+  }, [cancelUpload, history, org.id, resetUploadState])
 
   return (
     <Overlay visible={true}>

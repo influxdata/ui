@@ -15,12 +15,14 @@ import {csvUploaderErrorNotification} from 'src/shared/copy/notifications'
 // Types
 import {RemoteDataState, WritePrecision} from 'src/types'
 import {getErrorMessage} from 'src/utils/api'
+import {CancelBox} from 'src/types/promises'
 
 export type Props = {
   children: JSX.Element
 }
 
 export interface CsvUploaderContextType {
+  cancelUpload: () => void
   progress: number
   resetUploadState: () => void
   uploadCsv: (csv: string, bucket: string) => void
@@ -28,6 +30,7 @@ export interface CsvUploaderContextType {
 }
 
 export const DEFAULT_CONTEXT: CsvUploaderContextType = {
+  cancelUpload: () => {},
   progress: 0,
   resetUploadState: () => {},
   uploadCsv: (_: string, __: string) => {},
@@ -49,6 +52,10 @@ export const CsvUploaderContext = React.createContext<CsvUploaderContextType>(
  */
 const CONCURRENT_REQUEST_LIMIT = 6
 
+const pendingWrites: CancelBox<{
+  promise: Promise<any>
+}>[] = []
+
 export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
   const [progress, setProgress] = useState(0)
   const [uploadState, setUploadState] = useState(RemoteDataState.NotStarted)
@@ -67,6 +74,17 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
 
   const resetUploadState = (): void =>
     setUploadState(RemoteDataState.NotStarted)
+
+  const cancelPendingRequests = () => {
+    pendingWrites.forEach(({cancel}, i) => {
+      if (cancel) {
+        cancel()
+      }
+      if (i + 1 === pendingWrites.length) {
+        setUploadState(RemoteDataState.Done)
+      }
+    })
+  }
 
   const uploadCsv = useCallback(
     (csv: string, bucket: string) => {
@@ -105,21 +123,27 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
           let counter = 0
           let progress = 0
 
-          const pendingWrites = []
-
           for (let i = 0; i < length; i++) {
             if (
               i !== 0 &&
               i % Math.round(length / CONCURRENT_REQUEST_LIMIT) === 0
             ) {
-              const resp = postWrite({
-                data: chunk,
-                query: {org: org.name, bucket, precision: WritePrecision.Ns},
-              }).then(() => {
+              const controller = new AbortController()
+
+              const resp = postWrite(
+                {
+                  data: chunk,
+                  query: {org: org.name, bucket, precision: WritePrecision.Ns},
+                },
+                controller
+              ).then(() => {
                 const percent = (++progress / counter) * 100
                 setProgress(Math.floor(percent))
               })
-              pendingWrites.push(resp)
+              pendingWrites.push({
+                promise: resp,
+                cancel: () => controller.abort(),
+              })
               counter++
               chunk = ''
             }
@@ -152,14 +176,21 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
             chunk = `${line}\n${chunk}`
           }
           if (chunk) {
-            const resp = postWrite({
-              data: chunk,
-              query: {org: org.name, bucket, precision: WritePrecision.Ns},
-            }).then(() => {
+            const controller = new AbortController()
+            const resp = postWrite(
+              {
+                data: chunk,
+                query: {org: org.name, bucket, precision: WritePrecision.Ns},
+              },
+              controller
+            ).then(() => {
               const percent = (++progress / counter) * 100
               setProgress(Math.floor(percent))
             })
-            pendingWrites.push(resp)
+            pendingWrites.push({
+              promise: resp,
+              cancel: () => controller.abort(),
+            })
             counter++
           }
 
@@ -168,6 +199,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
             setUploadState(RemoteDataState.Done)
           })
         } catch (error) {
+          console.error('error in the catch: ', error)
           reportErrorThroughHoneyBadger(error, {
             name: 'uploadCsv function',
           })
@@ -182,6 +214,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
   return (
     <CsvUploaderContext.Provider
       value={{
+        cancelUpload: cancelPendingRequests,
         progress,
         resetUploadState,
         uploadCsv,

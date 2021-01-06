@@ -2,7 +2,7 @@
 import React, {FC} from 'react'
 
 // Components
-import {Page} from '@influxdata/clockface'
+import {Grid, Page} from '@influxdata/clockface'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import FitbitGraph from './FitbitGraph'
 
@@ -45,9 +45,11 @@ const FitbitViewer: FC<StateProps> = () => {
         <Page.Title title="Fitbit" />
       </Page.Header>
       <Page.Contents fullWidth={false} scrollable={true}>
-        {resources.map(resource => (
-          <FitbitGraph resource={resource} key={resource.key} />
-        ))}
+        <Grid>
+          {resources.map(resource => (
+            <FitbitGraph resource={resource} key={resource.key} />
+          ))}
+        </Grid>
       </Page.Contents>
     </Page>
   )

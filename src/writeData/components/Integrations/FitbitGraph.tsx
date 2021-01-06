@@ -6,6 +6,7 @@ import {get} from 'lodash'
 import {Plot, newTable} from '@influxdata/giraffe'
 import {AppState} from 'src/types'
 import {connect} from 'react-redux'
+import {Columns, Grid} from '@influxdata/clockface'
 
 const getData = async (resourceInfo, accessToken: string) => {
   const URL = `https://api.fitbit.com/1/user/-/${resourceInfo.path}/date/today/1m.json`
@@ -72,10 +73,12 @@ const FitbitGraph: FC<Props> = ({accessToken, resource}) => {
   const style = {height: '300px', padding: '32px 0'}
 
   return (
-    <div style={style}>
-      <h2>{resource.title}</h2>
-      <Plot config={config} style={style} />
-    </div>
+    <Grid.Column widthMD={Columns.Four}>
+      <div style={style}>
+        <h2>{resource.title}</h2>
+        <Plot config={config} style={style} />
+      </div>
+    </Grid.Column>
   )
 }
 const mstp = (state: AppState) => {

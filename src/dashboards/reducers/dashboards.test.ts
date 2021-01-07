@@ -23,36 +23,36 @@ import {DEFAULT_DASHBOARD_SORT_OPTIONS} from 'src/dashboards/constants'
 import {RemoteDataState, DashboardEntities, Dashboard} from 'src/types'
 
 const initialState = () => ({
-    status: RemoteDataState.Done,
-    byID: {
-        ['1']: {
-            id: '1',
-            name: 'd1',
-            orgID: '1',
-            cells: ['1'],
-            status: RemoteDataState.Done,
-            labels: [],
-            links: {
-                self: '/v2/dashboards/1',
-                cells: '/v2/dashboards/cells',
-            },
-            sortOptions: DEFAULT_DASHBOARD_SORT_OPTIONS,
-        },
-        ['2']: {
-            id: '2',
-            name: 'd2',
-            orgID: '1',
-            cells: ['2'],
-            status: RemoteDataState.Done,
-            labels: [],
-            links: {
-                self: '/v2/dashboards/2',
-                cells: '/v2/dashboards/cells',
-            },
-            sortOptions: DEFAULT_DASHBOARD_SORT_OPTIONS,
-        },
+  status: RemoteDataState.Done,
+  byID: {
+    ['1']: {
+      id: '1',
+      name: 'd1',
+      orgID: '1',
+      cells: ['1'],
+      status: RemoteDataState.Done,
+      labels: [],
+      links: {
+        self: '/v2/dashboards/1',
+        cells: '/v2/dashboards/cells',
+      },
+      sortOptions: DEFAULT_DASHBOARD_SORT_OPTIONS,
     },
-    allIDs: ['1', '2'],
+    ['2']: {
+      id: '2',
+      name: 'd2',
+      orgID: '1',
+      cells: ['2'],
+      status: RemoteDataState.Done,
+      labels: [],
+      links: {
+        self: '/v2/dashboards/2',
+        cells: '/v2/dashboards/cells',
+      },
+      sortOptions: DEFAULT_DASHBOARD_SORT_OPTIONS,
+    },
+  },
+  allIDs: ['1', '2'],
 })
 
 describe('dashboards reducer', () => {

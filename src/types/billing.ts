@@ -2,49 +2,10 @@
 // directly or does Quartz have special
 // permissions / knowledge?
 import {Account as GenAccount} from 'src/client/unityRoutes'
-import {RemoteDataState} from 'src/types'
+import {RemoteDataState, Limits} from 'src/types'
 
-export interface OrgLimit {
-  bucket: BucketLimit
-  check: CheckLimit
-  dashboard: DashboardLimit
-  notificationEndpoint: NotificationEndpointLimit
-  notificationRule: NotificationRuleLimit
-  orgID: string
-  rate: RateLimit
-  task: TaskLimit
-}
-
-interface BucketLimit {
-  maxBuckets: number
-  maxRetentionDuration: number
-}
-
-interface CheckLimit {
-  maxChecks: number
-}
-
-interface DashboardLimit {
-  maxDashboards: number
-}
-
-interface NotificationEndpointLimit {
-  blockedNotificationEndpoints: string
-}
-
-interface NotificationRuleLimit {
-  blockedNotificationRules: string
-  maxNotifications: number
-}
-
-interface RateLimit {
-  cardinality: number
-  readKBs: number
-  writeKBs: number
-}
-
-interface TaskLimit {
-  maxTasks: number
+export interface OrgLimits extends Limits {
+  status: RemoteDataState
 }
 
 interface LimitStatuses {

@@ -1,23 +1,40 @@
-import React, {FC} from 'react'
+import React, {FC, useEffect} from 'react'
 import {Grid, Columns} from '@influxdata/clockface'
 import FreePanel from './FreePanel'
 import PAYGConversion from './PAYGConversion'
-import {Limits} from 'src/types'
+import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 
-interface Props {
-  isRegionBeta: boolean
-  orgLimits: Limits
-}
+// Thunks
+import {getOrgLimits} from 'src/billing/thunks'
 
-const BillingFree: FC<Props> = ({orgLimits, isRegionBeta}) => {
+// Hooks
+import {useBilling} from 'src/billing/components/BillingPage'
+
+// Types
+import {RemoteDataState} from 'src/types'
+
+const BillingFree: FC = () => {
+  const [{orgLimits}, dispatch] = useBilling()
+
+  useEffect(() => {
+    getOrgLimits(dispatch)
+  }, [dispatch])
+
+  const loading = orgLimits?.status ?? RemoteDataState.NotStarted
+
   return (
     <Grid>
       <Grid.Row>
         <Grid.Column widthXS={Columns.Twelve}>
-          <FreePanel orgLimits={orgLimits} />
+          <SpinnerContainer
+            spinnerComponent={<TechnoSpinner />}
+            loading={loading}
+          >
+            <FreePanel orgLimits={orgLimits} />
+          </SpinnerContainer>
         </Grid.Column>
       </Grid.Row>
-      {isRegionBeta || <PAYGConversion />}
+      <PAYGConversion />
     </Grid>
   )
 }

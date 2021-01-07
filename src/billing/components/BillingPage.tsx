@@ -1,7 +1,5 @@
 // Libraries
-import React, {useReducer, Dispatch, useEffect} from 'react'
-import {useSelector} from 'react-redux'
-import {useParams} from 'react-router'
+import React, {useContext, useReducer, Dispatch, useEffect} from 'react'
 
 // Components
 import {
@@ -22,22 +20,27 @@ import {
 } from 'src/billing/reducers'
 
 // Thunks
-import {getBilling, getAccount} from 'src/billing/thunks'
+import {getAccount} from 'src/billing/thunks'
 
 export const BillingPageContext = React.createContext(null)
 export type BillingPageContextResult = [BillingState, Dispatch<Action>]
 
-function UsersPage() {
+export const useBilling = (): BillingPageContextResult =>
+  useContext(BillingPageContext)
+
+function BillingPage() {
   const [state, dispatch] = useReducer<BillingReducer>(
     billingReducer,
     initialState()
   )
-
+  console.log({state})
   useEffect(() => {
     getAccount(dispatch)
   }, [dispatch])
 
-  const loading = state ? state?.account?.status : RemoteDataState.NotStarted
+  const loading = state?.account
+    ? state?.account?.status
+    : RemoteDataState.NotStarted
 
   return (
     <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
@@ -48,4 +51,4 @@ function UsersPage() {
   )
 }
 
-export default UsersPage
+export default BillingPage

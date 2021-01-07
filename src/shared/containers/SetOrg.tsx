@@ -31,7 +31,7 @@ import TelegrafPluginsPage from 'src/writeData/containers/TelegrafPluginsPage'
 import FlowsIndex from 'src/flows/components/FlowsIndex'
 import NotFound from 'src/shared/components/NotFound'
 import UsersPage from 'src/unity/components/users/UsersPage'
-import BillingPageContents from 'src/billing/components/BillingPageContents'
+import BillingPage from 'src/billing/components/BillingPage'
 import {CommunityTemplatesIndex} from 'src/templates/containers/CommunityTemplatesIndex'
 import {AnnotationsIndex} from 'src/annotations/containers/AnnotationsIndex'
 
@@ -232,10 +232,7 @@ const SetOrg: FC<Props> = ({
           <Route path={`${orgPath}/unity-users`} component={UsersPage} />
         )}
         {CLOUD && isFlagEnabled('unity-billing') && (
-          <Route
-            path={`${orgPath}/unity-billing`}
-            component={BillingPageContents}
-          />
+          <Route path={`${orgPath}/unity-billing`} component={BillingPage} />
         )}
 
         {/* Members */}

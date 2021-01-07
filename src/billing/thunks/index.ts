@@ -3,9 +3,10 @@ import {
   Action,
   setAccount,
   setAccountStatus,
-  setAll,
+  setOrgLimits,
+  setOrgLimitStatus,
 } from 'src/billing/reducers'
-import {getBillingAccount} from 'src/billing/api'
+import {getBillingAccount, getOrgRateLimits} from 'src/billing/api'
 import {RemoteDataState} from 'src/types'
 
 export const getAccount = async (dispatch: Dispatch<Action>) => {
@@ -25,20 +26,19 @@ export const getAccount = async (dispatch: Dispatch<Action>) => {
   }
 }
 
-export const getBilling = async (dispatch: Dispatch<Action>) => {
+export const getOrgLimits = async (dispatch: Dispatch<Action>) => {
   try {
-    // const [userResp, inviteResp] = await Promise.all([
-    //   getOrgsUsers(),
-    //   getOrgsInvites(),
-    // ])
-    // if (userResp.status !== 200) {
-    //   throw new Error(userResp.data.message)
-    // }
-    // if (inviteResp.status !== 200) {
-    //   throw new Error(inviteResp.data.message)
-    // }
-    // dispatch(setAll(billing))
+    dispatch(setOrgLimitStatus(RemoteDataState.Loading))
+    const resp = await getOrgRateLimits()
+
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
+    }
+
+    dispatch(setOrgLimits({...resp.data, status: RemoteDataState.Done}))
   } catch (error) {
     console.error(error)
+
+    dispatch(setOrgLimitStatus(RemoteDataState.Error))
   }
 }

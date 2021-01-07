@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useEffect, useState} from 'react'
+import React, {FC, useContext, useEffect, useMemo, useState} from 'react'
 
 // Contexts
 import {QueryContext} from 'src/flows/context/query'
@@ -105,35 +105,32 @@ export const SchemaProvider: FC<Props> = React.memo(({children}) => {
   const {flow} = useContext(FlowContext)
   const {query} = useContext(QueryContext)
   const [searchTerm, setSearchTerm] = useState('')
-  const [lastBucket, setLastBucket] = useState(data?.bucket?.id)
+  const [lastBucket, setLastBucket] = useState(data?.bucket)
   const [schema, setSchema] = useState({})
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
-  const [fields, setFields] = useState([])
-  const [measurements, setMeasurements] = useState([])
-  const [tags, setTags] = useState([])
 
   useEffect(() => {
-    if (data?.bucket?.id === lastBucket) {
+    if (!data?.bucket || data?.bucket?.id === lastBucket?.id) {
       return
     }
 
-    setLastBucket(data?.bucket?.id)
+    setLastBucket(data?.bucket)
     setSearchTerm('')
     update({
       field: '',
       tags: {},
       measurement: '',
     })
-  }, [data?.bucket?.id, lastBucket, update])
+  }, [data?.bucket?.id, lastBucket?.id, update]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const range = formatTimeRangeArguments(flow?.range)
 
   useEffect(() => {
-    if (!data?.bucket) {
+    if (!data?.bucket || loading !== RemoteDataState.NotStarted) {
       return
     }
 
     setLoading(RemoteDataState.Loading)
-
-    const range = formatTimeRangeArguments(flow?.range)
 
     const text = `from(bucket: "${data.bucket.name}")
 |> range(${range})
@@ -153,22 +150,21 @@ export const SchemaProvider: FC<Props> = React.memo(({children}) => {
         setLoading(RemoteDataState.Error)
         setSchema({})
       })
-  }, [data?.bucket?.name, data?.bucket, flow?.range, query])
+  }, [data?.bucket?.name, lastBucket?.id, query, range]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    const normalized = normalizeSchema(schema, data, searchTerm)
-    setFields(normalized.fields)
-    setMeasurements(normalized.measurements)
-    setTags(normalized.tags)
-  }, [data, searchTerm, schema])
+  const normalized = useMemo(() => normalizeSchema(schema, data, searchTerm), [
+    data,
+    schema,
+    searchTerm,
+  ])
 
   return (
     <SchemaContext.Provider
       value={{
         loading,
-        measurements,
-        fields,
-        tags,
+        measurements: normalized?.measurements ?? [],
+        fields: normalized?.fields ?? [],
+        tags: normalized?.tags ?? [],
         searchTerm,
         setSearchTerm,
       }}

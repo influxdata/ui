@@ -96,11 +96,21 @@ export const QueryProvider: FC = ({children}) => {
   const {flow} = useContext(FlowContext)
   const {runMode} = useContext(RunModeContext)
   const {add, update} = useContext(ResultsContext)
+
   const variables = useSelector((state: AppState) => getVariables(state))
   const buckets = useSelector((state: AppState) => getSortedBuckets(state))
   const bucketsLoadingState = useSelector((state: AppState) =>
     getStatus(state, ResourceType.Buckets)
   )
+
+  const _range = useMemo(
+    () => `${flow?.range.lower} to ${flow?.range.upper || 'now'}`,
+    [flow?.range]
+  )
+
+  useEffect(() => {
+    queryAll()
+  }, [_range]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const dispatch = useDispatch()
 
@@ -111,14 +121,14 @@ export const QueryProvider: FC = ({children}) => {
   }, [bucketsLoadingState, dispatch])
 
   const vars = useMemo(() => {
-    if (flow && flow?.range) {
+    if (flow?.range) {
       return variables
         .map(v => asAssignment(v))
         .concat(getTimeRangeVars(flow.range))
     }
 
     variables.map(v => asAssignment(v))
-  }, [variables, flow])
+  }, [variables, flow?.range])
 
   const generateMap = (withSideEffects?: boolean): Stage[] => {
     return flow.data.allIDs
@@ -184,7 +194,6 @@ export const QueryProvider: FC = ({children}) => {
     const windowVars = getWindowVars(text, vars)
     const extern = buildVarsOption([...vars, ...windowVars])
     const queryID = generateHashedQueryID(text, variables, orgID)
-
     event('runQuery', {context: 'flows'})
     const result = runQuery(orgID, text, extern)
     setQueryByHashID(queryID, result)

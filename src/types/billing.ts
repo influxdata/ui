@@ -1,7 +1,10 @@
 // can we just get this from IDPE
 // directly or does Quartz have special
 // permissions / knowledge?
-interface OrgLimit {
+import {Account as GenAccount} from 'src/client/unityRoutes'
+import {RemoteDataState} from 'src/types'
+
+export interface OrgLimit {
   bucket: BucketLimit
   check: CheckLimit
   dashboard: DashboardLimit
@@ -54,7 +57,7 @@ interface LimitStatus {
   status: string
 }
 
-interface Region {
+export interface Region {
   title: string
   isBeta: boolean
   isAvailable: boolean
@@ -86,18 +89,14 @@ interface CreditCardParams {
   url: string
 }
 
-type AccountType = 'free' | 'cancelled' | 'pay_as_you_go'
-
 export interface MarketplaceSubscription {
   marketplace: string
   subscriberId: string
   status: string
 }
 
-interface Account {
-  id: number
-  type: AccountType
-  updatedAt: string
+export interface Account extends GenAccount {
+  status: RemoteDataState
 }
 
 interface PaymentMethod {
@@ -108,7 +107,7 @@ interface PaymentMethod {
   defaultPaymentMethod: boolean
 }
 
-type PaymentMethods = PaymentMethod[]
+export type PaymentMethods = PaymentMethod[]
 
 interface Invoice {
   status: string
@@ -117,7 +116,7 @@ interface Invoice {
   filesID: string
 }
 
-type Invoices = Invoice[]
+export type Invoices = Invoice[]
 
 // Current FreePage Props
 export interface Props {
@@ -125,7 +124,7 @@ export interface Props {
   orgLimits: OrgLimit
 }
 
-interface BillingNotifySettings {
+export interface BillingNotifySettings {
   isNotify: boolean
   balanceThreshold: number
   notifyEmail: string
@@ -133,14 +132,14 @@ interface BillingNotifySettings {
 
 // Current PayAsYouGo Props
 export interface Props {
-  region: Region
   account: Account // could we possibly combine Account with BillingContact?
-  invoices: Invoices // separate endpoint [X]
-  paymentMethods: PaymentMethods // separate endpoint [X]
+  billingNotifySettings: BillingNotifySettings // separate endpoint w/ put [x]
   ccPageParams: CreditCardParams // separate endpoint [X]
   contact: BillingContact // separate endpoint (get, put)
   email: string // where does this come from?
-  billingNotifySettings: BillingNotifySettings // separate endpoint w/ put [x]
-  orgLimits: OrgLimit // get from IDPE
+  invoices: Invoices // separate endpoint [X]
   limitStatuses: LimitStatuses // get from IDPE
+  paymentMethods: PaymentMethods // separate endpoint [X]
+  orgLimits: OrgLimit // get from IDPE
+  region: Region
 }

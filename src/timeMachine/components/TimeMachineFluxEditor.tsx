@@ -1,9 +1,13 @@
 // Libraries
-import React, {FC, useState} from 'react'
+import React, {FC, lazy, Suspense, useState} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
+import {
+  RemoteDataState,
+  SpinnerContainer,
+  TechnoSpinner,
+} from '@influxdata/clockface'
 
 // Components
-import FluxEditor from 'src/shared/components/FluxMonacoEditor'
 import FluxToolbar from 'src/timeMachine/components/FluxToolbar'
 
 // Actions
@@ -20,6 +24,8 @@ import {
 // Types
 import {AppState, FluxToolbarFunction, EditorType} from 'src/types'
 import * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api'
+
+const FluxEditor = lazy(() => import('src/shared/components/FluxMonacoEditor'))
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
@@ -130,12 +136,21 @@ const TimeMachineFluxEditor: FC<Props> = ({
   return (
     <div className="flux-editor">
       <div className="flux-editor--left-panel">
-        <FluxEditor
-          script={activeQueryText}
-          onChangeScript={onSetActiveQueryText}
-          onSubmitScript={onSubmitQueries}
-          setEditorInstance={setEditorInstance}
-        />
+        <Suspense
+          fallback={
+            <SpinnerContainer
+              loading={RemoteDataState.Loading}
+              spinnerComponent={<TechnoSpinner />}
+            />
+          }
+        >
+          <FluxEditor
+            script={activeQueryText}
+            onChangeScript={onSetActiveQueryText}
+            onSubmitScript={onSubmitQueries}
+            setEditorInstance={setEditorInstance}
+          />
+        </Suspense>
       </div>
       <div className="flux-editor--right-panel">
         <FluxToolbar

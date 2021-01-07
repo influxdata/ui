@@ -102,10 +102,7 @@ http.post(
     )
   })
 
-  // This test is not typing all of the text into the text box causing test failures.
-  // Skipping for now so that we can merge code (a simple wait did not fix it)
-  // Issue at: https://github.com/influxdata/ui/issues/466
-  it.skip('can create a cron task', () => {
+  it('can create a cron task', () => {
     cy.getByTestID('empty-tasks-list').within(() => {
       cy.getByTestID('add-resource-dropdown--button').click()
     })
@@ -114,9 +111,8 @@ http.post(
 
     cy.getByTestID('flux-editor').within(() => {
       cy.get('textarea.inputarea')
-        .click({force: true})
+        .focus()
         .type('from(bucket: "defbuck")\n' + '\t|> range(start: -2m)', {
-          force: true,
           delay: 2,
         })
     })
@@ -329,25 +325,33 @@ http.post(
         .eq(1)
         .click()
         .then(() => {
-          cy.getByTestID('task-form-name')
-            .should('have.value', '🦄ask')
+          // Assert that the lazy loading state should exist
+          cy.getByTestID('spinner-container').should('exist')
+          // Wait for monaco editor to load after lazy loading
+          cy.wait(1000)
+          cy.getByTestID('flux-editor')
+            .contains('option task = {')
             .then(() => {
               cy.getByTestID('task-form-name')
-                .click()
-                .clear()
-                .type('Copy task test')
+                .should('have.value', '🦄ask')
                 .then(() => {
-                  cy.getByTestID('task-form-schedule-input')
-                    .should('have.value', '24h')
+                  cy.getByTestID('task-form-name')
+                    .focus()
                     .clear()
-                    .type('12h')
-                    .should('have.value', '12h')
-                  cy.getByTestID('task-form-offset-input')
-                    .should('have.value', '20m')
-                    .clear()
-                    .type('10m')
-                    .should('have.value', '10m')
-                  cy.getByTestID('task-save-btn').click()
+                    .type('Copy task test')
+                    .then(() => {
+                      cy.getByTestID('task-form-schedule-input')
+                        .should('have.value', '24h')
+                        .clear()
+                        .type('12h')
+                        .should('have.value', '12h')
+                      cy.getByTestID('task-form-offset-input')
+                        .should('have.value', '20m')
+                        .clear()
+                        .type('10m')
+                        .should('have.value', '10m')
+                      cy.getByTestID('task-save-btn').click()
+                    })
                 })
             })
         })

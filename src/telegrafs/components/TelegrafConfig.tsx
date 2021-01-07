@@ -1,12 +1,18 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {lazy, PureComponent, Suspense} from 'react'
+import {
+  RemoteDataState,
+  SpinnerContainer,
+  TechnoSpinner,
+} from '@influxdata/clockface'
 
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
-import Editor from 'src/shared/components/TomlMonacoEditor'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+const Editor = lazy(() => import('src/shared/components/TomlMonacoEditor'))
 
 interface Props {
   config: string
@@ -19,11 +25,20 @@ export class TelegrafConfig extends PureComponent<Props> {
     const {config, onChangeConfig} = this.props
 
     return (
-      <Editor
-        script={config}
-        onChangeScript={onChangeConfig}
-        readOnly={isFlagEnabled('editTelegrafs') === false}
-      />
+      <Suspense
+        fallback={
+          <SpinnerContainer
+            loading={RemoteDataState.Loading}
+            spinnerComponent={<TechnoSpinner />}
+          />
+        }
+      >
+        <Editor
+          script={config}
+          onChangeScript={onChangeConfig}
+          readOnly={isFlagEnabled('editTelegrafs') === false}
+        />
+      </Suspense>
     )
   }
 }

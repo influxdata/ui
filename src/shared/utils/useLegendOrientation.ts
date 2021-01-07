@@ -4,6 +4,7 @@ import {
   LEGEND_OPACITY_DEFAULT,
   LEGEND_OPACITY_MINIMUM,
   LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+  LEGEND_COLORIZE_ROWS_DEFAULT,
 } from 'src/shared/constants'
 
 export const useLegendOpacity = (legendOpacity: number) =>
@@ -26,3 +27,11 @@ export const useLegendOrientationThreshold = (
     }
     return legendOrientationThreshold
   }, [legendOrientationThreshold])
+
+export const useLegendColorizeRows = (legendColorizeRows: boolean) =>
+  useMemo(() => {
+    if (!isFlagEnabled('legendOrientation')) {
+      return LEGEND_COLORIZE_ROWS_DEFAULT
+    }
+    return legendColorizeRows
+  }, [legendColorizeRows])

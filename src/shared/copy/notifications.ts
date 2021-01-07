@@ -1010,3 +1010,10 @@ export const notebookRunFail = (
   ...defaultErrorNotification,
   message: `${projectName} ${runMode.toLowerCase()} failed`,
 })
+
+export const csvUploaderErrorNotification = (
+  message: string
+): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to upload the selected CSV: ${message}`,
+})

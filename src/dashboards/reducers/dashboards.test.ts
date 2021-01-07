@@ -76,7 +76,7 @@ describe('dashboards reducer', () => {
 
   it('can remove a dashboard', () => {
     const state = initialState()
-    const actual = reducer(state, removeDashboard(state.allIDs['dashOne']))
+    const actual = reducer(state, removeDashboard('dashOne'))
 
     expect(actual.allIDs.length).toEqual(1)
     expect(actual.allIDs[0]).toEqual('dashTwo')

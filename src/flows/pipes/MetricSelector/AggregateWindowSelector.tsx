@@ -81,6 +81,7 @@ const AggregateFunctionSelector: FC = () => {
 
   return (
     <Dropdown
+      className="data-source--aggregate"
       button={button}
       menu={menu}
       style={{width: '180px', flex: '0 0 180px'}}

@@ -15,6 +15,7 @@ import ScatterPlot from 'src/shared/components/ScatterPlot'
 import LatestValueTransform from 'src/shared/components/LatestValueTransform'
 import CheckPlot from 'src/shared/components/CheckPlot'
 import BandPlot from 'src/shared/components/BandPlot'
+import GeoPlot from 'src/shared/components/GeoPlot'
 
 // Types
 import {
@@ -214,6 +215,13 @@ const ViewSwitcher: FunctionComponent<Props> = ({
         >
           {config => <Plot config={config} />}
         </ScatterPlot>
+      )
+
+    case 'geo':
+      return (
+        <GeoPlot table={table} viewProperties={properties}>
+          {config => <Plot config={config} />}
+        </GeoPlot>
       )
 
     case 'check':

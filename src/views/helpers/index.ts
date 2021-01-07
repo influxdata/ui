@@ -43,6 +43,7 @@ import {
   ViewType,
   XYViewProperties,
   BandViewProperties,
+  GeoViewProperties,
 } from 'src/types'
 import {LineHoverDimension} from '@influxdata/giraffe/dist/types'
 
@@ -362,6 +363,26 @@ const NEW_VIEW_CREATORS = {
       xSuffix: '',
       yPrefix: '',
       ySuffix: '',
+    },
+  }),
+  geo: (): NewView<GeoViewProperties> => ({
+    ...defaultView(),
+    properties: {
+      type: 'geo',
+      shape: 'chronograf-v2',
+      queries: [defaultViewQuery()],
+      colors: [],
+      note: '',
+      showNoteWhenEmpty: false,
+      center: {
+        lat: 0,
+        lon: 0,
+      },
+      zoom: 0,
+      allowPanAndZoom: false,
+      detectCoordinateFields: false,
+      mapStyle: '',
+      layers: [],
     },
   }),
   threshold: (): NewView<CheckViewProperties> => ({

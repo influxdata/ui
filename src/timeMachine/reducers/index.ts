@@ -470,6 +470,12 @@ export const timeMachineReducer = (
       return setViewProperties(state, {legendOrientationThreshold})
     }
 
+    case 'SET_LEGEND_COLORIZE_ROWS': {
+      const {legendColorizeRows} = action.payload
+
+      return setViewProperties(state, {legendColorizeRows})
+    }
+
     case 'SET_BIN_COUNT': {
       const {binCount} = action.payload
 

@@ -10,12 +10,18 @@ import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 
 // Components
 import {
+  ComponentSize,
   ComponentStatus,
   Form,
   Grid,
   Input,
+  InputLabel,
   InputType,
   RangeSlider,
+  SlideToggle,
+  FlexBox,
+  FlexDirection,
+  AlignItems,
 } from '@influxdata/clockface'
 
 // Types
@@ -27,11 +33,13 @@ import {
   LEGEND_OPACITY_MAXIMUM,
   LEGEND_OPACITY_MINIMUM,
   LEGEND_OPACITY_STEP,
+  LEGEND_COLORIZE_ROWS_DEFAULT,
 } from 'src/shared/constants'
 
 interface OwnProps {
   onLegendOpacityChange: (opacity: number) => void
   onLegendOrientationThresholdChange: (threshold: number) => void
+  onLegendColorizeRowsChange: (colorize: boolean) => void
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -43,6 +51,8 @@ const LegendOrientation: FC<Props> = props => {
     onLegendOpacityChange,
     legendOrientationThreshold,
     onLegendOrientationThresholdChange,
+    legendColorizeRows,
+    onLegendColorizeRowsChange,
   } = props
 
   const [thresholdInputStatus, setThresholdInputStatus] = useState(
@@ -51,6 +61,7 @@ const LegendOrientation: FC<Props> = props => {
   const [thresholdInput, setThresholdInput] = useState(
     legendOrientationThreshold
   )
+  const [colorizeRowsInput, setColorizeRowsInput] = useState(legendColorizeRows)
 
   if (!isFlagEnabled('legendOrientation')) {
     return null
@@ -78,6 +89,16 @@ const LegendOrientation: FC<Props> = props => {
     }
   }
 
+  const handleSetColorization = (): void => {
+    const value = !colorizeRowsInput
+    setColorizeRowsInput(value)
+    onLegendColorizeRowsChange(value)
+  }
+
+  const toggleStyle = {marginTop: 4}
+
+  const toggleLabelStyle = {color: '#999dab'}
+
   return (
     <Grid.Column>
       <h5 className="view-options--header">Legend</h5>
@@ -104,6 +125,20 @@ const LegendOrientation: FC<Props> = props => {
           onChange={handleSetOpacity}
         />
       </Form.Element>
+      <FlexBox
+        direction={FlexDirection.Row}
+        alignItems={AlignItems.Center}
+        margin={ComponentSize.Medium}
+        stretchToFitWidth={true}
+        style={toggleStyle}
+      >
+        <SlideToggle
+          active={colorizeRowsInput}
+          size={ComponentSize.ExtraSmall}
+          onChange={handleSetColorization}
+        />
+        <InputLabel style={toggleLabelStyle}>Colorize Rows</InputLabel>
+      </FlexBox>
     </Grid.Column>
   )
 }
@@ -120,7 +155,13 @@ const mstp = (state: AppState) => {
     'view.properties.legendOpacity',
     LEGEND_OPACITY_DEFAULT
   )
-  return {legendOpacity, legendOrientationThreshold}
+  const legendColorizeRows: boolean = get(
+    timeMachine,
+    'view.properties.legendColorizeRows',
+    LEGEND_COLORIZE_ROWS_DEFAULT
+  )
+
+  return {legendOpacity, legendOrientationThreshold, legendColorizeRows}
 }
 
 const connector = connect(mstp)

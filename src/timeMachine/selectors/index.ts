@@ -13,6 +13,7 @@ import {
   getGroupableColumns as getGroupableColumnsUtil,
   getStringColumns as getStringColumnsUtil,
   getMainColumnName,
+  getTimeColumns,
 } from 'src/shared/utils/vis'
 import {
   getWindowPeriod,
@@ -139,12 +140,23 @@ export const getGroupableColumns = (state: AppState): string[] => {
 
 export const getXColumnSelection = (state: AppState): string => {
   const {table} = getVisTable(state)
+
   const preferredXColumnKey = get(
     getActiveTimeMachine(state),
     'view.properties.xColumn'
   )
 
   return defaultXColumn(table, preferredXColumnKey)
+}
+
+export const getXColumnTimeDomainBounds = (
+  state: AppState
+): [number, number] => {
+  const {table} = getVisTable(state)
+
+  const times = table.getColumn('_time')
+  console.log(times)
+  return [times[0] as number, times[times.length - 1] as number]
 }
 
 export const getYColumnSelection = (state: AppState): string => {

@@ -3,6 +3,7 @@ import React, {useContext, useReducer, Dispatch, useEffect} from 'react'
 
 // Components
 import {
+  Page,
   RemoteDataState,
   SpinnerContainer,
   TechnoSpinner,
@@ -33,7 +34,7 @@ function BillingPage() {
     billingReducer,
     initialState()
   )
-  console.log({state})
+
   useEffect(() => {
     getAccount(dispatch)
   }, [dispatch])
@@ -42,9 +43,40 @@ function BillingPage() {
     ? state?.account?.status
     : RemoteDataState.NotStarted
 
+  // TODO(ariel): refactor this to match Quartz
+
   return (
     <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
       <BillingPageContext.Provider value={[state, dispatch]}>
+        <Page titleTag="Billing">
+          <Page.Header fullWidth={false}>
+            <Page.Title title="Billing" />
+            {!isCancelled && (
+              <RateLimitAlert
+                accountType={accountType}
+                limitStatuses={limitStatuses}
+              />
+            )}
+          </Page.Header>
+          <Page.Contents scrollable={true}>
+            {isCancelled && <AlertStatusCancelled />}
+            <BillingPageContext.Provider
+              value={{ccPageParams, contact, countries, states}}
+            >
+              <BillingPageContents
+                accountType={accountType}
+                invoices={invoices}
+                paymentMethods={paymentMethods}
+                account={account}
+                orgLimits={orgLimits}
+                balanceThreshold={balanceThreshold}
+                isNotify={isNotify}
+                notifyEmail={notifyEmail}
+                region={region}
+              />
+            </BillingPageContext.Provider>
+          </Page.Contents>
+        </Page>
         <BillingPageContents />
       </BillingPageContext.Provider>
     </SpinnerContainer>

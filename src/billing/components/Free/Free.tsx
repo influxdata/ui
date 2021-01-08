@@ -30,7 +30,7 @@ const BillingFree: FC = () => {
             spinnerComponent={<TechnoSpinner />}
             loading={loading}
           >
-            <FreePanel orgLimits={orgLimits} />
+            <FreePanel />
           </SpinnerContainer>
         </Grid.Column>
       </Grid.Row>

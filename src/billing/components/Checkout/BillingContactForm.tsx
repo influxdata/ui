@@ -270,13 +270,11 @@ class BillingContactForm extends React.Component {
   }
 
   handleSubmitContactInfo = async contact => {
-    const {basePath} = this.props
     const payload = {
       contact: convertKeysToSnakecase(contact),
-      _csrf_token: this.csrf_token,
     }
     this.setState({isSubmittingContact: true})
-    await axios.put(`${basePath}/billing_contact`, payload)
+    await axios.put(`APIPrivate/billing_contact`, payload)
     this.setState({isSubmittingContact: false})
   }
 

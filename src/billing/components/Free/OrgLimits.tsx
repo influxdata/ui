@@ -1,12 +1,11 @@
 import React, {FC} from 'react'
-import {flatMap} from 'lodash'
 import {Grid, Columns} from '@influxdata/clockface'
-import OrgLimitStat from './OrgLimitStat'
+import OrgLimitStat from 'src/billing/components/Free/OrgLimitStat'
 import {Limits} from 'src/types'
 
-interface Props {
-  orgLimits: Limits
-}
+// Hooks
+import {useBilling} from 'src/billing/components/BillingPage'
+
 type KV = [string, string | number]
 
 const excludeOrgID = (limitEntries: KV[]): KV[] => {
@@ -27,13 +26,14 @@ const rejectConcurrencyLimits = (limitEntries: KV[]): KV[] => {
 
 const limits = (orgLimits: Limits): KV[] => {
   const limitsByCategory = excludeOrgID(Object.entries(orgLimits))
-
-  return flatMap(limitsByCategory, ([_category, limits]) =>
+  return limitsByCategory.flatMap(([_category, limits]) =>
     rejectConcurrencyLimits(Object.entries(limits))
   )
 }
 
-const OrgLimits: FC<Props> = ({orgLimits}) => {
+const OrgLimits: FC = () => {
+  const [{orgLimits}] = useBilling()
+
   return (
     <Grid>
       {limits(orgLimits).map(([name, value]) => {

@@ -77,7 +77,6 @@ class BillingContactInfo extends React.Component {
             states={states}
             contact={contact}
             onSubmit={this.handleSubmitEditForm}
-            basePath={basePath}
           />
         ) : (
           <BillingContactDisplay

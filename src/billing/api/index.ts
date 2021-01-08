@@ -58,5 +58,5 @@ export const getOrgRateLimits = (): Promise<any> => {
     },
   }
 
-  return makeResponse(200, orgLimit, 'getBillingAccount')
+  return makeResponse(200, orgLimit, 'getOrgRateLimits')
 }

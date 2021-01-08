@@ -7,7 +7,7 @@ import {useBilling} from 'src/billing/components/BillingPage'
 
 const BillingPageContents: FC = () => {
   const [{account}] = useBilling()
-  console.log({account})
+
   switch (account.type) {
     case 'free':
       return <BillingFree />

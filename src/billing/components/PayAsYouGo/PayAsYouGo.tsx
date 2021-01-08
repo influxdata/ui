@@ -45,7 +45,6 @@ class BillingPayAsYouGo extends Component {
           states={states}
           contact={contact}
           hide={false}
-          basePath={'privateAPI/billing'}
         />
         <NotificationPanel
           balanceThreshold={balanceThreshold}

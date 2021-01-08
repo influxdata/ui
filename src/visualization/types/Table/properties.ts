@@ -33,11 +33,6 @@ export default {
   ],
 
   colors: DEFAULT_THRESHOLDS_TABLE_COLORS as Color[],
-  tableOptions: {
-    verticalTimeAxis: true,
-    sortBy: DEFAULT_TIME_FIELD,
-    fixFirstColumn: false,
-  },
   fieldOptions: [],
   decimalPlaces: {
     isEnforced: false,

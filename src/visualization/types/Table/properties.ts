@@ -3,7 +3,6 @@ import {
   AGG_WINDOW_AUTO,
 } from 'src/timeMachine/constants/queryBuilder'
 import {DEFAULT_THRESHOLDS_TABLE_COLORS} from 'src/shared/constants/thresholds'
-import {DEFAULT_TIME_FIELD} from './constants'
 import {Color, TableViewProperties} from 'src/types'
 
 export default {

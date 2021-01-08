@@ -17,7 +17,6 @@ import {
   ASCENDING,
   DESCENDING,
   DEFAULT_SORT_DIRECTION,
-  DEFAULT_TIME_FIELD,
   KEYS_I_HATE,
 } from './constants'
 

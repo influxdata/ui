@@ -1,4 +1,5 @@
-import {OverlayParams, OverlayID} from 'src/overlays/reducers/overlays'
+import {OverlayID} from 'src/overlays/reducers/overlays'
+import {OverlayParams} from 'src/types'
 
 export enum ActionTypes {
   ShowOverlay = 'SHOW_OVERLAY',

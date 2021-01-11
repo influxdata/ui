@@ -29,7 +29,7 @@ import {getOverlayParams} from 'src/overlays/selectors'
 const CreateBucketOverlay: FC = () => {
   const org = useSelector(getOrg)
   const isRetentionLimitEnforced = useSelector(getBucketRetentionLimit)
-  const {onUpdateBucket} = useSelector(getOverlayParams)
+  const overlayParams = useSelector(getOverlayParams)
   const reduxDispatch = useDispatch()
   const {onClose} = useContext(OverlayContext)
   const [state, dispatch] = useReducer(
@@ -68,7 +68,9 @@ const CreateBucketOverlay: FC = () => {
   }
 
   const handleUpdateBucket = (bucket: Bucket): void => {
-    onUpdateBucket && onUpdateBucket(bucket)
+    if (overlayParams?.onUpdateBucket) {
+      overlayParams.onUpdateBucket(bucket)
+    }
   }
 
   const handleChangeInput = (e: ChangeEvent<HTMLInputElement>): void => {

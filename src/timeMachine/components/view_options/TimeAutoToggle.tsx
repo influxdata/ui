@@ -7,28 +7,31 @@ import {getXColumnTimeDomainBounds} from 'src/timeMachine/selectors'
 interface Props {
   onSetDomain: (xDomain: [number, number]) => void
 }
+
 const TimeDomainAutoToggle: FC<Props> = ({onSetDomain}) => {
   const [isActive, setIsActive] = useState<boolean>(false)
 
-  const [start, end] = useSelector(getXColumnTimeDomainBounds)
+  const timeDomain = useSelector(getXColumnTimeDomainBounds)
 
   const handleClick = (): void => {
     if (!isActive) {
-      onSetDomain([start, end])
+      onSetDomain([timeDomain[0], timeDomain[1]])
     } else {
       onSetDomain(null)
     }
     setIsActive(!isActive)
   }
   return (
-    <>
+    <div data-testid="time-domain-toggle">
       <SlideToggle
         style={{height: 'auto'}}
         size={ComponentSize.ExtraSmall}
         active={isActive}
         onChange={handleClick}
+        disabled={!timeDomain}
+        testID="time-domain-toggle-slide"
       />
-    </>
+    </div>
   )
 }
 

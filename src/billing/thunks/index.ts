@@ -3,10 +3,25 @@ import {
   Action,
   setAccount,
   setAccountStatus,
+  setBillingSettings,
+  setBillingSettingsStatus,
+  setInvoices,
+  setInvoicesStatus,
+  setLimitsStatus,
+  setLimitsStateStatus,
   setOrgLimits,
   setOrgLimitStatus,
+  setRegion,
+  setRegionStatus,
 } from 'src/billing/reducers'
-import {getBillingAccount, getOrgRateLimits} from 'src/billing/api'
+import {
+  getBillingAccount,
+  getBillingNotificationSettings,
+  getLimitsStatus as apiGetLimitsStatus,
+  getInvoices as apiGetInvoices,
+  getRegion as apiGetRegion,
+  getOrgRateLimits,
+} from 'src/billing/api'
 import {RemoteDataState} from 'src/types'
 
 export const getAccount = async (dispatch: Dispatch<Action>) => {
@@ -26,6 +41,57 @@ export const getAccount = async (dispatch: Dispatch<Action>) => {
   }
 }
 
+export const getBillingSettings = async (dispatch: Dispatch<Action>) => {
+  try {
+    dispatch(setBillingSettingsStatus(RemoteDataState.Loading))
+    const resp = await getBillingNotificationSettings()
+
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
+    }
+
+    dispatch(setBillingSettings({...resp.data, status: RemoteDataState.Done}))
+  } catch (error) {
+    console.error(error)
+
+    dispatch(setBillingSettingsStatus(RemoteDataState.Error))
+  }
+}
+
+export const getInvoices = async (dispatch: Dispatch<Action>) => {
+  try {
+    dispatch(setInvoicesStatus(RemoteDataState.Loading))
+    const resp = await apiGetInvoices()
+
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
+    }
+
+    dispatch(setInvoices(resp.data, RemoteDataState.Done))
+  } catch (error) {
+    console.error(error)
+
+    dispatch(setInvoicesStatus(RemoteDataState.Error))
+  }
+}
+
+export const getLimitsStatus = async (dispatch: Dispatch<Action>) => {
+  try {
+    dispatch(setLimitsStateStatus(RemoteDataState.Loading))
+    const resp = await apiGetLimitsStatus()
+
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
+    }
+
+    dispatch(setLimitsStatus({...resp.data, status: RemoteDataState.Done}))
+  } catch (error) {
+    console.error(error)
+
+    dispatch(setLimitsStateStatus(RemoteDataState.Error))
+  }
+}
+
 export const getOrgLimits = async (dispatch: Dispatch<Action>) => {
   try {
     dispatch(setOrgLimitStatus(RemoteDataState.Loading))
@@ -40,5 +106,22 @@ export const getOrgLimits = async (dispatch: Dispatch<Action>) => {
     console.error(error)
 
     dispatch(setOrgLimitStatus(RemoteDataState.Error))
+  }
+}
+
+export const getRegion = async (dispatch: Dispatch<Action>) => {
+  try {
+    dispatch(setRegionStatus(RemoteDataState.Loading))
+    const resp = await apiGetRegion()
+
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
+    }
+
+    dispatch(setRegion({...resp.data, status: RemoteDataState.Done}))
+  } catch (error) {
+    console.error(error)
+
+    dispatch(setRegionStatus(RemoteDataState.Error))
   }
 }

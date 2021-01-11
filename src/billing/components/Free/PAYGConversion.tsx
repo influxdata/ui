@@ -12,6 +12,9 @@ import {
   CTALinkButton,
 } from '@influxdata/clockface'
 
+// Constants
+import {CLOUD_URL, CLOUD_CHECKOUT_PATH} from 'src/shared/constants'
+
 const PAYGConversion: FC = () => {
   return (
     <Fragment>
@@ -55,7 +58,7 @@ const PAYGConversion: FC = () => {
                   color={ComponentColor.Primary}
                   text="Upgrade to a Usage-Based Plan"
                   className="conversion-panel--cta"
-                  href="/checkout"
+                  href={`${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`}
                 />
               </Panel.Footer>
             </Panel>

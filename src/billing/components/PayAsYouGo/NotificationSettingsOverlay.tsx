@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 
 import {
   Overlay,
@@ -14,18 +14,43 @@ import {
   ComponentColor,
   ComponentStatus,
 } from '@influxdata/clockface'
+import {useBilling} from 'src/billing/components/BillingPage'
+import axios from 'axios'
 
-const NotificationSettingsOverlay = ({
-  onHideOverlay,
-  isOverlayVisible,
-  notifyEmail,
-  balanceThreshold,
-  onEmailChange,
-  onBalanceThresholdChange,
-  isNotifyActive,
-  onToggleChange,
-  onSubmitThreshold,
-}) => {
+const NotificationSettingsOverlay = ({onHideOverlay, isOverlayVisible}) => {
+  const [{billingSettings}] = useBilling()
+  const [isNotifyActive, setIsNotifyActive] = useState(billingSettings.isNotify)
+  const [balanceThreshold, setBalanceThreshold] = useState(
+    billingSettings.balanceThreshold
+  )
+
+  const onSubmitThreshold = () => {
+    const payload = {
+      notifyEmail,
+      balanceThreshold: balanceThreshold.toString(),
+      isNotify: isNotifyActive,
+    }
+    const url = 'privateAPI/balance_threshold'
+    axios.put(url, payload).then(() => {
+      onHideOverlay()
+      // TODO(ariel): query the billingSettings to get the latest data in the parent
+    })
+  }
+
+  const [notifyEmail, setNotifyEmail] = useState(billingSettings.notifyEmail)
+
+  const onToggleChange = () => {
+    setIsNotifyActive(prevState => !prevState)
+  }
+
+  const onEmailChange = e => {
+    setNotifyEmail(e.target.value)
+  }
+
+  const onBalanceThresholdChange = e => {
+    setBalanceThreshold(e.target.value)
+  }
+
   const saveStatus =
     balanceThreshold < 10 ? ComponentStatus.Disabled : ComponentStatus.Default
 
@@ -38,7 +63,7 @@ const NotificationSettingsOverlay = ({
         />
         <Overlay.Body>
           <Form>
-            <Form.Element>
+            <Form.Element label="">
               <FlexBox
                 direction={FlexDirection.Row}
                 alignItems={AlignItems.Center}

@@ -1,8 +1,12 @@
+// Libraries
 import React, {FC} from 'react'
 
+// Components
 import BillingFree from 'src/billing/components/Free/Free'
 import BillingPayAsYouGo from 'src/billing/components/PayAsYouGo/PayAsYouGo'
 import BillingCancelled from 'src/billing/components/Cancelled/Cancelled'
+
+// Utils
 import {useBilling} from 'src/billing/components/BillingPage'
 
 const BillingPageContents: FC = () => {

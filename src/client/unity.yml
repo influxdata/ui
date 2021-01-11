@@ -410,6 +410,18 @@ components:
         id:
           type: number
           description: id of the account
+        balance:
+          type: number
+          description: account balance
+        billingContact:
+          type: '#/components/schemas/BillingContact'
+          description: marketplace subscription
+        deletable:
+          type: boolean
+          description: boolean of for whether the account can be deleted
+        marketplaceSubscription:
+          type: '#/components/schemas/MarketplaceSubscription'
+          description: marketplace subscription
         type:
           type: string
           description: type of the account
@@ -420,7 +432,36 @@ components:
         updatedAt:
           type: string
           description: date of last update to account
-      required: ['id', 'type', 'updatedAt']
+        users:
+          type: object
+          description: array of user objects
+        zuoraAccountId:
+          type: string
+          description: id of zuora account
+      required:
+        [
+          id,
+          balance,
+          billingContact,
+          deletable,
+          marketplaceSubscription,
+          type,
+          updatedAt,
+          users,
+          zuoraAccountId,
+        ]
+    MarketplaceSubscription:
+      properties:
+        marketplace:
+          description: marketplace name
+          type: string
+        subscriberId:
+          description: id of subscriber
+          type: string
+        status:
+          type: string
+          description: status of marketplace subscription
+      required: [marketplace, subscriberId, status]
     BillingContact:
       properties:
         companyName:
@@ -462,6 +503,7 @@ components:
         notifyEmail:
           type: string
           description: email to send billing notification
+      required: [isNotify, balanceThreshold, notifyEmail]
     Invite:
       properties:
         id:

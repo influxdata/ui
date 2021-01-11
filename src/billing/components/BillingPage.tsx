@@ -10,6 +10,8 @@ import {
 } from '@influxdata/clockface'
 
 import BillingPageContents from 'src/billing/components/BillingPageContents'
+import RateLimitAlert from 'src/billing/components/Notifications/RateLimitAlert'
+import AlertStatusCancelled from 'src/billing/components/Usage/AlertStatusCancelled'
 
 // Reducers
 import {
@@ -21,7 +23,7 @@ import {
 } from 'src/billing/reducers'
 
 // Thunks
-import {getAccount} from 'src/billing/thunks'
+import {getAccount, getLimitsStatus} from 'src/billing/thunks'
 
 export const BillingPageContext = React.createContext(null)
 export type BillingPageContextResult = [BillingState, Dispatch<Action>]
@@ -37,47 +39,40 @@ function BillingPage() {
 
   useEffect(() => {
     getAccount(dispatch)
+    getLimitsStatus(dispatch)
   }, [dispatch])
 
-  const loading = state?.account
-    ? state?.account?.status
+  const accountLoading = state?.account?.status
+    ? state.account?.status
     : RemoteDataState.NotStarted
 
-  // TODO(ariel): refactor this to match Quartz
+  const limitLoading = state?.limitsStatus?.status
+    ? state.limitsStatus?.status
+    : RemoteDataState.NotStarted
+
+  const isCancelled = state?.account && state.account?.type === 'cancelled'
 
   return (
-    <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
+    <SpinnerContainer
+      spinnerComponent={<TechnoSpinner />}
+      loading={accountLoading}
+    >
       <BillingPageContext.Provider value={[state, dispatch]}>
         <Page titleTag="Billing">
           <Page.Header fullWidth={false}>
             <Page.Title title="Billing" />
-            {!isCancelled && (
-              <RateLimitAlert
-                accountType={accountType}
-                limitStatuses={limitStatuses}
-              />
-            )}
+            <SpinnerContainer
+              spinnerComponent={<TechnoSpinner />}
+              loading={limitLoading}
+            >
+              {!isCancelled && <RateLimitAlert />}
+            </SpinnerContainer>
           </Page.Header>
           <Page.Contents scrollable={true}>
             {isCancelled && <AlertStatusCancelled />}
-            <BillingPageContext.Provider
-              value={{ccPageParams, contact, countries, states}}
-            >
-              <BillingPageContents
-                accountType={accountType}
-                invoices={invoices}
-                paymentMethods={paymentMethods}
-                account={account}
-                orgLimits={orgLimits}
-                balanceThreshold={balanceThreshold}
-                isNotify={isNotify}
-                notifyEmail={notifyEmail}
-                region={region}
-              />
-            </BillingPageContext.Provider>
+            <BillingPageContents />
           </Page.Contents>
         </Page>
-        <BillingPageContents />
       </BillingPageContext.Provider>
     </SpinnerContainer>
   )

@@ -1,9 +1,9 @@
-import React, {FunctionComponent} from 'react'
+import React, {FC} from 'react'
 import classnames from 'classnames'
 
 import {FlexBox, FlexDirection, JustifyContent} from '@influxdata/clockface'
 
-import {Invoice} from 'js/types'
+import {Invoice} from 'src/types/billing'
 
 interface Props {
   invoice: Invoice
@@ -15,14 +15,13 @@ const getPreviousMonth = date => {
   return date.toLocaleString('default', {month: 'long'})
 }
 
-const InvoiceHistoryRow: FunctionComponent<Props> = ({
-  invoice: {status, amount, target_date, files_id},
+const InvoiceHistoryRow: FC<Props> = ({
+  invoice: {status, amount, targetDate, filesID},
 }) => {
-  const targetDate = new Date(target_date)
-  const invoiceName = `${getPreviousMonth(
+  const invoiceName = `${getPreviousMonth(new Date(targetDate))} ${new Date(
     targetDate
-  )} ${targetDate.getFullYear()} Invoice`
-  const link = `/billing/invoices/${files_id}`
+  ).getFullYear()} Invoice`
+  const link = `/billing/invoices/${filesID}`
   const statusClassName = classnames('invoice-details invoice-status', {
     ['paid']: status === 'Paid',
   })

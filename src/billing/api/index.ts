@@ -1,7 +1,13 @@
 import {getBillingAccount as getBillingAccountGenerated} from 'src/client/unityRoutes'
 
 import {RemoteDataState} from 'src/types'
-import {OrgLimits} from 'src/types/billing'
+import {
+  Invoices,
+  OrgLimits,
+  LimitStatus,
+  Region,
+  BillingNotifySettings,
+} from 'src/types/billing'
 import {Account} from 'src/client/unityRoutes'
 
 const makeResponse = (status, data, respName, ...args) => {
@@ -20,8 +26,36 @@ const makeResponse = (status, data, respName, ...args) => {
 export const getBillingAccount = (): ReturnType<typeof getBillingAccountGenerated> => {
   const account: Account = {
     id: 1234,
-    type: 'free',
+    balance: 100,
+    billingContact: {
+      companyName: 'InfluxDB',
+      email: 'info@influxdata.com',
+      firstName: 'Paul',
+      lastName: 'Dix',
+      country: 'USA',
+      street1: '123 Powers St, Brooklyn NY',
+      postalCode: 30000,
+    },
+    deletable: false,
+    marketplaceSubscription: {
+      marketplace: 'us-west',
+      subscriberId: 'id123',
+      status: 'paid',
+    },
+    type: 'pay_as_you_go',
     updatedAt: new Date().toString(),
+    users: [{}],
+    zuoraAccountId: 'zID123',
+  }
+  return makeResponse(200, account, 'getBillingAccount')
+}
+
+export const getBillingNotificationSettings = (): ReturnType<typeof getBillingAccountGenerated> => {
+  const account: BillingNotifySettings = {
+    isNotify: true,
+    balanceThreshold: 1000000,
+    notifyEmail: 'asalem@influxdata.com',
+    status: RemoteDataState.Done,
   }
   return makeResponse(200, account, 'getBillingAccount')
 }
@@ -59,4 +93,71 @@ export const getOrgRateLimits = (): Promise<any> => {
   }
 
   return makeResponse(200, orgLimit, 'getOrgRateLimits')
+}
+
+export const getLimitsStatus = (): Promise<any> => {
+  const limitsStatus: LimitStatus = {
+    read: {
+      status: 'exceeded',
+    },
+    write: {
+      status: 'exceeded',
+    },
+    cardinality: {
+      status: 'exceeded',
+    },
+    status: RemoteDataState.Done,
+  }
+
+  return makeResponse(200, limitsStatus, 'getLimitsStatus')
+}
+
+export const getInvoices = (): Promise<any> => {
+  const invoices: Invoices = [
+    {
+      amount: 0,
+      filesID: 'abc123',
+      status: 'status-fied',
+      targetDate: new Date().toString(),
+    },
+    {
+      amount: 10,
+      filesID: '10E->405N',
+      status: 'cruise',
+      targetDate: new Date().toString(),
+    },
+    {
+      amount: 405,
+      filesID: '405N->101N',
+      status: 'traffic',
+      targetDate: new Date().toString(),
+    },
+    {
+      amount: 101,
+      filesID: '101N->1N',
+      status: 'more_traffic',
+      targetDate: new Date().toString(),
+    },
+    {
+      amount: 1,
+      filesID: '1N',
+      status: 'traffic_with_view',
+      targetDate: new Date().toString(),
+    },
+  ]
+
+  return makeResponse(200, invoices, 'getInvoicesStatus')
+}
+
+export const getRegion = (): Promise<any> => {
+  const region: Region = {
+    title: 'region',
+    isBeta: false,
+    isAvailable: true,
+    provider: 'AWS',
+    region: 'us-west',
+    status: RemoteDataState.Done,
+  }
+
+  return makeResponse(200, region, 'getRegion')
 }

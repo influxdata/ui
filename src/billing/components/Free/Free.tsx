@@ -1,7 +1,8 @@
+// Libraries
 import React, {FC, useEffect} from 'react'
 import {Grid, Columns} from '@influxdata/clockface'
-import FreePanel from './FreePanel'
-import PAYGConversion from './PAYGConversion'
+import FreePanel from 'src/billing/components/Free/FreePanel'
+import PAYGConversion from 'src/billing/components/Free/PAYGConversion'
 import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 
 // Thunks

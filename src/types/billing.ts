@@ -1,21 +1,23 @@
 // can we just get this from IDPE
 // directly or does Quartz have special
 // permissions / knowledge?
-import {Account as GenAccount} from 'src/client/unityRoutes'
-import {RemoteDataState, Limits} from 'src/types'
+import {
+  Account as GenAccount,
+  BillingNotifySettings as GenBillingNotifySettings,
+  Invoice as GenInvoice,
+} from 'src/client/unityRoutes'
+import {
+  RemoteDataState,
+  Limits,
+  LimitsStatus as GenLimitsStatus,
+} from 'src/types'
 
 export interface OrgLimits extends Limits {
   status: RemoteDataState
 }
 
-interface LimitStatuses {
-  cardinality: LimitStatus
-  read: LimitStatus
-  write: LimitStatus
-}
-
-interface LimitStatus {
-  status: string
+export interface LimitStatus extends GenLimitsStatus {
+  status: RemoteDataState
 }
 
 export interface Region {
@@ -24,6 +26,7 @@ export interface Region {
   isAvailable: boolean
   provider: string
   region: string
+  status: RemoteDataState
 }
 
 interface BillingContact {
@@ -70,25 +73,18 @@ interface PaymentMethod {
 
 export type PaymentMethods = PaymentMethod[]
 
-interface Invoice {
-  status: string
-  amount: number
-  targetDate: string
-  filesID: string
-}
+export interface Invoice extends GenInvoice {}
 
 export type Invoices = Invoice[]
 
 // Current FreePage Props
 export interface Props {
   isRegionBeta: boolean
-  orgLimits: OrgLimit
+  orgLimits: OrgLimits
 }
 
-export interface BillingNotifySettings {
-  isNotify: boolean
-  balanceThreshold: number
-  notifyEmail: string
+export interface BillingNotifySettings extends GenBillingNotifySettings {
+  status: RemoteDataState
 }
 
 // Current PayAsYouGo Props
@@ -99,8 +95,8 @@ export interface Props {
   contact: BillingContact // separate endpoint (get, put)
   email: string // where does this come from?
   invoices: Invoices // separate endpoint [X]
-  limitStatuses: LimitStatuses // get from IDPE
+  limitStatuses: LimitStatus // get from IDPE
   paymentMethods: PaymentMethods // separate endpoint [X]
-  orgLimits: OrgLimit // get from IDPE
+  orgLimits: OrgLimits // get from IDPE
   region: Region
 }

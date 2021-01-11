@@ -22,6 +22,7 @@ import {defaultXColumn, defaultYColumn} from 'src/shared/utils/vis'
 // Components
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import HexColorSchemeDropdown from 'src/visualization/components/internal/HexColorSchemeDropdown'
+import LegendOrientation from 'src/visualization/components/internal/LegendOrientation'
 
 import {HeatmapViewProperties} from 'src/types'
 import {VisOptionProps} from 'src/visualization'
@@ -243,6 +244,18 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
               setDomain('y', domain)
             }}
             label="Y Axis Domain"
+          />
+        </Grid.Column>
+        <Grid.Column
+          widthXS={Columns.Twelve}
+          widthMD={Columns.Six}
+          widthLG={Columns.Four}
+        >
+          <h5 className="view-options--header">Legend</h5>
+          <LegendOrientation
+            properties={properties}
+            results={results}
+            update={update}
           />
         </Grid.Column>
       </Grid.Row>

@@ -11,6 +11,7 @@ import {
   Columns,
 } from '@influxdata/clockface'
 import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
+import LegendOrientation from 'src/visualization/components/internal/LegendOrientation'
 import {
   FORMAT_OPTIONS,
   resolveTimeFormat,
@@ -161,6 +162,18 @@ const MosaicOptions: FC<Props> = ({properties, results, update}) => {
               onChange={e => update({yAxisLabel: e.target.value})}
             />
           </Form.Element>
+        </Grid.Column>
+        <Grid.Column
+          widthXS={Columns.Twelve}
+          widthMD={Columns.Six}
+          widthLG={Columns.Four}
+        >
+          <h5 className="view-options--header">Legend</h5>
+          <LegendOrientation
+            properties={properties}
+            results={results}
+            update={update}
+          />
         </Grid.Column>
       </Grid.Row>
     </Grid>

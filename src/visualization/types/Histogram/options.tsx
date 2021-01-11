@@ -17,6 +17,7 @@ import {
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import {defaultXColumn} from 'src/shared/utils/vis'
 import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
+import LegendOrientation from 'src/visualization/components/internal/LegendOrientation'
 import {HistogramViewProperties} from 'src/types'
 import {VisOptionProps} from 'src/visualization'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
@@ -217,6 +218,18 @@ const HistogramOptions: FC<Props> = ({properties, results, update}) => {
               setDomain('x', domain)
             }}
             label="X Axis Domain"
+          />
+        </Grid.Column>
+        <Grid.Column
+          widthXS={Columns.Twelve}
+          widthMD={Columns.Six}
+          widthLG={Columns.Four}
+        >
+          <h5 className="view-options--header">Legend</h5>
+          <LegendOrientation
+            properties={properties}
+            results={results}
+            update={update}
           />
         </Grid.Column>
       </Grid.Row>

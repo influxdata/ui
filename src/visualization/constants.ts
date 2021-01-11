@@ -12,3 +12,9 @@ export const AXES_SCALE_OPTIONS = {
 
 export const INVALID_DATA_COPY =
   "The data returned from the query can't be visualized with this graph type."
+
+export const LEGEND_OPACITY_MINIMUM = 0.2
+export const LEGEND_OPACITY_MAXIMUM = 1.0
+export const LEGEND_OPACITY_DEFAULT = LEGEND_OPACITY_MAXIMUM
+export const LEGEND_OPACITY_STEP = 0.01
+export const LEGEND_ORIENTATION_THRESHOLD_DEFAULT = 10

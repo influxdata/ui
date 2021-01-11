@@ -4,6 +4,10 @@ import {
   DEFAULT_FILLVALUES,
   AGG_WINDOW_AUTO,
 } from 'src/timeMachine/constants/queryBuilder'
+import {
+  LEGEND_OPACITY_DEFAULT,
+  LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+} from 'src/visualization/constants'
 
 import {Axis, Base, Color, LinePlusSingleStatProperties} from 'src/types'
 
@@ -38,6 +42,9 @@ export default {
   ],
 
   legend: {},
+  legendOpacity: LEGEND_OPACITY_DEFAULT,
+  legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+
   note: '',
   showNoteWhenEmpty: false,
   axes: {

@@ -3,6 +3,10 @@ import {
   DEFAULT_FILLVALUES,
   AGG_WINDOW_AUTO,
 } from 'src/timeMachine/constants/queryBuilder'
+import {
+  LEGEND_OPACITY_DEFAULT,
+  LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+} from 'src/visualization/constants'
 import {MosaicViewProperties} from 'src/types'
 
 export default {
@@ -33,6 +37,9 @@ export default {
   ],
 
   colors: NINETEEN_EIGHTY_FOUR,
+  legendOpacity: LEGEND_OPACITY_DEFAULT,
+  legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+
   note: '',
   showNoteWhenEmpty: false,
   fillColumns: null,

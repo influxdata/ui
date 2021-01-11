@@ -5,6 +5,10 @@ import {
 } from 'src/timeMachine/constants/queryBuilder'
 
 import {Axis, Base, Color, XYViewProperties} from 'src/types'
+import {
+  LEGEND_OPACITY_DEFAULT,
+  LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+} from 'src/visualization/constants'
 
 export default {
   type: 'xy',
@@ -40,8 +44,12 @@ export default {
 
   colors: DEFAULT_LINE_COLORS as Color[],
   legend: {},
+  legendOpacity: LEGEND_OPACITY_DEFAULT,
+  legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+
   note: '',
   showNoteWhenEmpty: false,
+
   axes: {
     x: {
       bounds: ['', ''],

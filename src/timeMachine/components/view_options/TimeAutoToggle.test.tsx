@@ -43,7 +43,7 @@ describe('Time Domain Auto Toggle', () => {
       return copyMockState
     })
   }
-  describe('render condition', () => {
+  describe('the toggle to auto scale time domain', () => {
     beforeEach(() => {
       mocked(getGroupableColumns).mockImplementation(() => [])
       mocked(getNumericColumns).mockImplementation(() => [])
@@ -63,11 +63,11 @@ describe('Time Domain Auto Toggle', () => {
       mocked(defaultXColumn).mockImplementation(() => '_time')
       const {queryByTestId} = setup()
 
-      expect(queryByTestId('time-domain-toggle')).toBeTruthy()
+      expect(queryByTestId('time-domain-toggle')).toBeInTheDocument()
     })
   })
 
-  describe('click event', () => {
+  describe('the time domain toggle slider', () => {
     const useSelectorMock = jest.spyOn(reactRedux, 'useSelector')
     beforeEach(() => {
       useSelectorMock.mockClear()

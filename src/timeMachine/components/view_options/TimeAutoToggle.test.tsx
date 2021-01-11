@@ -38,7 +38,7 @@ describe('Time Domain Auto Toggle', () => {
       showNoteWhenEmpty: false,
       ...options,
     }
-    return renderWithRedux(<ScatterOptions {...props} />, s => {
+    return renderWithRedux(<ScatterOptions {...props} />, () => {
       const copyMockState = {...mockAppState}
       return copyMockState
     })

@@ -299,11 +299,6 @@ describe('Dashboard', () => {
             cy.getByTestID('switch-to-script-editor').click()
             cy.getByTestID('toolbar-tab').click()
 
-            // Assert that the lazy loading state should exist
-            cy.getByTestID('spinner-container').should('exist')
-            // Wait for monaco editor to load after lazy loading
-            cy.wait(500)
-
             // check to see if the default timeRange variables are available
             cy.get('.flux-toolbar--list-item').contains('timeRangeStart')
             cy.get('.flux-toolbar--list-item').contains('timeRangeStop')

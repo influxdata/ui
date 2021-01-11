@@ -13,7 +13,6 @@ import {
   getGroupableColumns as getGroupableColumnsUtil,
   getStringColumns as getStringColumnsUtil,
   getMainColumnName,
-  getTimeColumns,
 } from 'src/shared/utils/vis'
 import {
   getWindowPeriod,

@@ -14,8 +14,6 @@ import {
   AlignItems,
 } from '@influxdata/clockface'
 import VersionInfo from 'src/shared/components/VersionInfo'
-import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
-import {CustomerSuccessLinkPanel} from 'src/cloud/components/experiments/variants/CustomerSuccessLinkPanel'
 
 // Types
 import {AppState, ResourceType} from 'src/types'
@@ -60,10 +58,6 @@ class ResourceLists extends PureComponent<Props> {
             <VersionInfo />
           </Panel.Footer>
         </Panel>
-        <GoogleOptimizeExperiment
-          experimentID="hABJwA89QlyQFi6QGBIysg"
-          variants={[<CustomerSuccessLinkPanel key="v1" />]}
-        />
       </FlexBox>
     )
   }

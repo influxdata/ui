@@ -17,7 +17,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 // Types
 import {OnChangeScript} from 'src/types/flux'
 import {EditorType} from 'src/types'
-import {editor as monacoEditor} from 'monaco-editor'
+import {editor as monacoEditor} from 'monaco-editor/esm/vs/editor/editor.api.js'
 
 import './FluxMonacoEditor.scss'
 import {Diagnostic} from 'monaco-languageclient/lib/services'

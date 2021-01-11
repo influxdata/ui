@@ -130,5 +130,10 @@ export const LEGEND_OPACITY_DEFAULT = LEGEND_OPACITY_MAXIMUM
 export const LEGEND_OPACITY_STEP = 0.01
 export const LEGEND_ORIENTATION_THRESHOLD_DEFAULT = 10
 
+export const LEGEND_COLORIZE_ROWS_DEFAULT = true
+
 export const QUERY_BUILDER_MODE = 'builder'
 export const SCRIPT_EDITOR_MODE = 'advanced'
+
+export const MARKDOWN_UNSUPPORTED_IMAGE =
+  "We don't support images in markdown for security purposes"

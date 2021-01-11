@@ -34,8 +34,8 @@
 }
 
 .helper-link-text {
-  font-size: 0.85em; // TODO(ariel): remove when clockface font resolves HeadingElement.H6 styling
-  a {
+  a:link {
+    font-size: 0.85em; // TODO(ariel): remove when clockface font resolves HeadingElement.H6 styling
     font-weight: 400;
   }
 }
@@ -57,9 +57,17 @@
   height: 100%;
 }
 
+.cf-heading.sign-up--form-separator {
+  color: $g8-storm;
+  margin: $ix-marg-c 0;
+}
+
 @media screen and (min-width: $cf-grid--breakpoint-md) {
   .sign-up--form-panel {
     max-width: 100%;
+  }
+  .cf-heading.sign-up--form-separator {
+    margin: $cf-marg-d 0 $cf-marg-c 0;
   }
 }
 
@@ -68,15 +76,55 @@
 
   .signup-text {
     position: relative;
-    right: $ix-marg-c;
   }
 
   .signup-icon {
-    width: $form-sm-height;
-    height: $form-sm-height;
+    width: $cf-form-xs-height;
+    height: auto;
     background: transparent;
-    position: relative;
-    float: left;
-    top: $icon-margin;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    left: 30px;
+  }
+}
+
+.sign-up--social-button-group {
+  .sign-up--google {
+    background: #fff;
+    color: #444;
+
+    &:active,
+    &:focus,
+    &:active:hover,
+    &.active,
+    &.active:hover,
+    &:hover,
+    &.cf-button-default:hover {
+      color: #444;
+    }
+
+    &:after {
+      background: #fff;
+    }
+  }
+
+  .sign-up--microsoft {
+    background: #fff;
+    color: #5e5e5e;
+
+    &:active,
+    &:focus,
+    &:active:hover,
+    &.active,
+    &.active:hover,
+    &:hover,
+    &.cf-button-default:hover {
+      color: #5e5e5e;
+    }
+
+    &:after {
+      background: #fff;
+    }
   }
 }

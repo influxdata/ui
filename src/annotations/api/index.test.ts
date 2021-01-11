@@ -2,7 +2,6 @@
 
 import {mocked} from 'ts-jest/utils'
 import {writeAnnotation} from 'src/annotations/api'
-import {API_BASE_PATH} from 'src/shared/constants'
 import axios from 'axios'
 
 jest.mock('axios')
@@ -13,8 +12,7 @@ describe('annotations api calls', () => {
       const data = [
         {
           summary: 'GO PACK GO',
-          'start-time': 'beginning of time',
-          'end-time': Date.now(),
+          startTime: Date.now(),
           stream: 'Lambeau Field',
         },
       ]
@@ -28,17 +26,6 @@ describe('annotations api calls', () => {
 
       expect(response).toEqual(data)
     })
-    it('makes a post request with annotations in the body of the request', async () => {
-      const data = [{summary: 'Hey there'}]
-      mocked(axios.post).mockImplementationOnce(() =>
-        Promise.resolve({status: 200, data})
-      )
-      await writeAnnotation(data)
-      expect(axios.post).toHaveBeenCalledWith(
-        `${API_BASE_PATH}api/v2private/annotations`,
-        data
-      )
-    })
 
     it('handles an error and returns the error message', async () => {
       const message = 'OOPS YOU DONE MESSED UP SON'
@@ -49,19 +36,6 @@ describe('annotations api calls', () => {
 
       await expect(writeAnnotation([{summary: 'Hey there'}])).rejects.toThrow(
         message
-      )
-    })
-
-    it('responds with an error if the status of the response is not 200', async () => {
-      const data = {
-        status: 400,
-        message: 'OOPS YOU DONE MESSED UP SON',
-      }
-
-      mocked(axios.post).mockImplementationOnce(() => Promise.resolve({data}))
-
-      await expect(writeAnnotation([{summary: 'Hey there'}])).rejects.toThrow(
-        data.message
       )
     })
   })

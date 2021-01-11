@@ -1,7 +1,6 @@
 export interface PostAnnotationResponse {
   stream: string
-  'start-time': string
-  'end-time': string
+  startTime: string
   summary: string
   stickers?: any
 }

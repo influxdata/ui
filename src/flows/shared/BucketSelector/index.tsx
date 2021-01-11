@@ -21,7 +21,11 @@ import {event} from 'src/cloud/utils/reporting'
 // Types
 import {Bucket} from 'src/types'
 
-const BucketSelector: FC = () => {
+interface Props {
+  testID?: string
+}
+
+const BucketSelector: FC<Props> = ({testID = 'flow-bucket-slector'}) => {
   const {data, update} = useContext(PipeContext)
   const {buckets, loading} = useContext(BucketContext)
   let buttonText = 'Loading buckets...'
@@ -45,7 +49,10 @@ const BucketSelector: FC = () => {
   if (loading === RemoteDataState.Done && buckets.length) {
     menuItems = (
       <>
-        <CreateBucketDropdownItem onUpdateBucket={updateBucket} />
+        <CreateBucketDropdownItem
+          onUpdateBucket={updateBucket}
+          testID={`${testID}--create`}
+        />
         <Dropdown.Divider />
         {buckets.map(bucket => (
           <Dropdown.Item
@@ -55,6 +62,7 @@ const BucketSelector: FC = () => {
             selected={bucket.name === data.bucket?.name}
             title={bucket.name}
             wrapText={true}
+            testID={`${testID}--${bucket.name}`}
           >
             {bucket.name}
           </Dropdown.Item>
@@ -74,6 +82,7 @@ const BucketSelector: FC = () => {
       onClick={onClick}
       active={active}
       icon={IconFont.BucketSolid}
+      testID={testID}
     >
       {buttonText}
     </Dropdown.Button>

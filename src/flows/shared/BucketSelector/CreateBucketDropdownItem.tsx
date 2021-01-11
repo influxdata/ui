@@ -20,9 +20,10 @@ import {Bucket} from 'src/types'
 
 interface Props {
   onUpdateBucket: (bucket: Bucket) => void
+  testID: string
 }
 
-const CreateBucketDropdownItem: FC<Props> = ({onUpdateBucket}) => {
+const CreateBucketDropdownItem: FC<Props> = ({onUpdateBucket, testID}) => {
   const limitStatus = useSelector(getBucketLimitStatus)
   const dispatch = useDispatch()
   useEffect(() => {
@@ -42,7 +43,7 @@ const CreateBucketDropdownItem: FC<Props> = ({onUpdateBucket}) => {
     <Dropdown.Item
       title="Click to create a bucket"
       onClick={handleItemClick}
-      testID="Create Bucket"
+      testID={testID}
     >
       + Create Bucket
     </Dropdown.Item>

@@ -1,5 +1,5 @@
 import {Organization} from '../../../src/types'
-import {VIS_TYPES} from '../../../src/timeMachine/constants'
+import {TYPE_DEFINITIONS} from '../../../src/visualization'
 import {lines} from '../../support/commands'
 import {
   FROM,
@@ -752,7 +752,7 @@ describe('DataExplorer', () => {
         cy.getByTestID('time-machine-submit-button').click()
 
         // cycle through all the visualizations of the data
-        VIS_TYPES.forEach(({type}) => {
+        Object.values(TYPE_DEFINITIONS).forEach(({type}) => {
           if (type !== 'mosaic' && type !== 'band') {
             // mosaic graph is behind feature flag
             cy.getByTestID('view-type--dropdown').click()

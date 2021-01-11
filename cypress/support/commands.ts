@@ -476,8 +476,13 @@ export const writeData = (
 }
 
 // DOM node getters
-export const getByTestID = (dataTest: string): Cypress.Chainable => {
-  return cy.get(`[data-testid="${dataTest}"]`)
+export const getByTestID = (
+  dataTest: string,
+  options?: Partial<
+    Cypress.Loggable & Cypress.Timeoutable & Cypress.Withinable & Cypress.Shadow
+  >
+): Cypress.Chainable => {
+  return cy.get(`[data-testid="${dataTest}"]`, options)
 }
 
 export const getByTestIDSubStr = (dataTest: string): Cypress.Chainable => {

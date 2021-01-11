@@ -1326,15 +1326,17 @@ describe('DataExplorer', () => {
 
       it('can save and enable/disable submit button', () => {
         cy.getByTestID('overlay--container').within(() => {
-          cy.get('.cf-button-success').should('be.disabled')
-          cy.get('[placeholder="Give your variable a name"]').type(variableName)
-          cy.get('.cf-button-success').should('be.enabled')
-          cy.get('[placeholder="Give your variable a name"]').clear()
-          cy.get('.cf-button-success').should('be.disabled')
-          cy.get('[placeholder="Give your variable a name"]').type(variableName)
-          cy.get('.cf-button-success').should('be.enabled')
+          cy.getByTestID('variable-form-save').should('be.disabled')
+          cy.getByTestID('flux-editor').should('be.visible')
+          cy.getByTestID('variable-name-input').type(variableName)
+          cy.getByTestID('variable-form-save').should('be.enabled')
+          cy.getByTestID('variable-name-input').clear()
+          cy.getByTestID('variable-form-save').should('be.disabled')
+          cy.getByTestID('flux-editor').should('be.visible')
+          cy.getByTestID('variable-name-input').type(variableName)
+          cy.getByTestID('variable-form-save').should('be.enabled')
 
-          cy.get('.cf-button-success').click()
+          cy.getByTestID('variable-form-save').click()
         })
         visitVariables()
         cy.getByTestID(`variable-card--name ${variableName}`).should('exist')

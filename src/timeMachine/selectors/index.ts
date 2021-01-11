@@ -109,7 +109,7 @@ const getVisTableMemoized = memoizeOne(fromFlux)
 export const getVisTable = (
   state: AppState
 ): {table: Table; fluxGroupKeyUnion: string[]} => {
-  const files = getActiveTimeMachine(state).queryResults.files || []
+  const files = getActiveTimeMachine(state).queryResults?.files || []
   const {table, fluxGroupKeyUnion} = getVisTableMemoized(files.join('\n\n'))
 
   return {table, fluxGroupKeyUnion}
@@ -155,8 +155,8 @@ export const getXColumnTimeDomainBounds = (
   const {table} = getVisTable(state)
 
   const times = table.getColumn('_time')
-  console.log(times)
-  return [times[0] as number, times[times.length - 1] as number]
+
+  return times ? [times[0] as number, times[times.length - 1] as number] : null
 }
 
 export const getYColumnSelection = (state: AppState): string => {

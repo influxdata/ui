@@ -105,6 +105,7 @@ describe('Checks', () => {
               .click()
               .then(() => {
                 cy.getByTestID(`selector-list ${measurement}`)
+                  .should('be.visible')
                   .click()
                   .then(() => {
                     cy.getByTestID(`selector-list ${field}`).click({

@@ -1,5 +1,5 @@
 import {NotificationEndpoint} from '../../src/types'
-import {Bucket} from '../../src/client'
+import {Bucket, Organization} from '../../src/client'
 import 'cypress-file-upload'
 
 export const signin = (): Cypress.Chainable<Cypress.Response> => {
@@ -56,7 +56,7 @@ export const wrapOrgAndBucket = (): Cypress.Chainable<Cypress.Response> => {
       url: '/api/v2/orgs',
     })
     .then(orgsResponse => {
-      const org = orgsResponse.body.orgs[0]
+      const org = orgsResponse.body.orgs[0] as Organization
       cy.wrap(org).as('org')
 
       cy.request({
@@ -65,7 +65,12 @@ export const wrapOrgAndBucket = (): Cypress.Chainable<Cypress.Response> => {
         qs: {orgID: org.id},
       }).then(bucketsResponse => {
         const buckets = bucketsResponse.body.buckets as Array<Bucket>
-        const bucket = buckets.find(b => b.name === 'defbuck')
+        const bucket = buckets.find(
+          b =>
+            b.orgID === org.id &&
+            b.name !== '_tasks' &&
+            b.name !== '_monitoring'
+        )
         cy.wrap(bucket).as('bucket')
       })
     })
@@ -485,14 +490,16 @@ export const lines = (numLines = 3) => {
 }
 
 export const writeData = (
-  lines: string[],
-  orgName: string,
-  bucketName: string = 'defbuck'
+  lines: string[]
 ): Cypress.Chainable<Cypress.Response> => {
-  return cy.request({
-    method: 'POST',
-    url: '/api/v2/write?org=' + orgName + '&bucket=' + bucketName,
-    body: lines.join('\n'),
+  return cy.get<Organization>('@org').then((org: Organization) => {
+    return cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
+      return cy.request({
+        method: 'POST',
+        url: '/api/v2/write?org=' + org.name + '&bucket=' + bucket.name,
+        body: lines.join('\n'),
+      })
+    })
   })
 }
 

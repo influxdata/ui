@@ -9,9 +9,6 @@ interface Props {
   onScroll: (e: MouseEvent) => void
 }
 
-const cloudImageRenderer =
-  "We don't support images in markdown for security purposes"
-
 const NoteEditorPreview: SFC<Props> = props => {
   return (
     <div className="note-editor--preview" data-testid="note-editor--preview">
@@ -21,13 +18,7 @@ const NoteEditorPreview: SFC<Props> = props => {
         onScroll={props.onScroll}
       >
         <div className="note-editor--markdown-container">
-          <MarkdownRenderer
-            text={props.note}
-            className="markdown-format"
-            cloudRenderers={{
-              image: cloudImageRenderer,
-            }}
-          />
+          <MarkdownRenderer text={props.note} className="markdown-format" />
         </div>
       </DapperScrollbars>
     </div>

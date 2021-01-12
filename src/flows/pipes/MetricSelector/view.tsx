@@ -19,7 +19,9 @@ const DataSource: FC<PipeProp> = ({Context}) => (
     <SchemaProvider>
       <Context>
         <div className="data-source--controls">
-          <BucketSelector />
+          <div className="data-source--bucket">
+            <BucketSelector />
+          </div>
           <FilterTags />
           <AggregateWindowSelector />
         </div>

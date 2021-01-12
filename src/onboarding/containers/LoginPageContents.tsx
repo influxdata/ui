@@ -30,7 +30,6 @@ import {notify} from 'src/shared/actions/notifications'
 import {passwordResetSuccessfully} from 'src/shared/copy/notifications'
 import {getAuth0Config} from 'src/authorizations/apis'
 import {getFromLocalStorage} from 'src/localStorage'
-import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 interface ErrorObject {
   emailError?: string
@@ -120,17 +119,15 @@ class LoginPageContents extends PureComponent<Props> {
                   >
                     <GoogleLogo className="signup-icon" />
                   </SocialButton>
-                  <FeatureFlag name="azureSSO">
-                    <SocialButton
-                      className="sign-up--microsoft"
-                      handleClick={() => {
-                        this.handleSocialClick(Auth0Connection.Microsoft)
-                      }}
-                      buttonText="Microsoft"
-                    >
-                      <MicrosoftLogo className="signup-icon" />
-                    </SocialButton>
-                  </FeatureFlag>
+                  <SocialButton
+                    className="sign-up--microsoft"
+                    handleClick={() => {
+                      this.handleSocialClick(Auth0Connection.Microsoft)
+                    }}
+                    buttonText="Microsoft"
+                  >
+                    <MicrosoftLogo className="signup-icon" />
+                  </SocialButton>
                 </FlexBox>
               </Grid.Row>
             </Grid>

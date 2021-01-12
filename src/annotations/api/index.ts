@@ -20,11 +20,12 @@ export const writeAnnotation = async (
   }
 
   const transformedResponse = res.data.map(d => {
-    const {'start-time': startTime, 'end-time': endTime, ...props} = d
     const newData = {
-      startTime,
-      endTime,
-      ...props,
+      startTime: d['start-time'],
+      endTime: d['end-time'],
+      stream: d.stream,
+      summary: d.summary,
+      stickers: d.stickers,
     }
 
     return newData

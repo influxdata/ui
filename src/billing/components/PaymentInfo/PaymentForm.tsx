@@ -9,18 +9,26 @@ import {
   TechnoSpinner,
 } from '@influxdata/clockface'
 // Types
-import {ZuoraParams, ZuoraResponse} from 'js/types'
+import {CreditCardParams} from 'src/types/billing'
+import {useBilling} from 'src/billing/components/BillingPage'
 
 interface Props {
-  hostedPage: ZuoraParams
-  onSubmit: (response: ZuoraResponse) => void
+  onSubmit: (response: any) => void
   errorMessage: string
 }
 
-const PaymentForm: FC<Props> = ({hostedPage, onSubmit, errorMessage}) => {
-  useEffect(
-    () => typeof Z !== 'undefined' && Z.render(hostedPage, {}, onSubmit)
-  )
+const PaymentForm: FC<Props> = ({onSubmit, errorMessage}) => {
+  const [{creditCards}] = useBilling()
+
+  /**
+   * For context, Z is a globally defined ZuoraClient in Quartz
+   * that is set when the ZuoraAPI is queried. In this case, Z serves as a
+   * a hosted iframe to render a credit card form to the UI
+   */
+  // TODO(ariel): uncomment this when we get to define Z
+  // useEffect(
+  //   () => typeof Z !== 'undefined' && Z.render(creditCards, {}, onSubmit)
+  // )
 
   return (
     <>

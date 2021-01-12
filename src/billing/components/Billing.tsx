@@ -7,7 +7,6 @@ import ErrorBoundary from '@honeybadger-io/react'
 import Nav from 'src/billing/components/Nav/Nav'
 import BillingPageContents from './BillingPageContents.jsx'
 import HBContext from 'js/honeyBadgerContext.js'
-import BillingPageContext from 'src/billing/components/BillingPageContext'
 import AppPageHeader from 'src/billing/components/AppPageHeader'
 import AlertStatusCancelled from 'src/billing/components/Usage/AlertStatusCancelled'
 import RateLimitAlert from 'src/billing/components/Notifications/RateLimitAlert'
@@ -48,31 +47,16 @@ class Billing extends Component {
           />
           <Page titleTag="Billing">
             <AppPageHeader title="Billing">
-              {!isCancelled && (
-                <RateLimitAlert
-                  accountType={accountType}
-                  limitStatuses={limitStatuses}
-                />
-              )}
+              {!isCancelled && <RateLimitAlert />}
             </AppPageHeader>
             <Page.Contents scrollable={true}>
               {isCancelled && <AlertStatusCancelled />}
               <ErrorBoundary honeybadger={this.context}>
-                <BillingPageContext.Provider
+                {/* <BillingPageContext.Provider
                   value={{ccPageParams, contact, countries, states}}
-                >
-                  <BillingPageContents
-                    accountType={accountType}
-                    invoices={invoices}
-                    paymentMethods={paymentMethods}
-                    account={account}
-                    orgLimits={orgLimits}
-                    balanceThreshold={balanceThreshold}
-                    isNotify={isNotify}
-                    notifyEmail={notifyEmail}
-                    region={region}
-                  />
-                </BillingPageContext.Provider>
+                > */}
+                <BillingPageContents />
+                {/* </BillingPageContext.Provider> */}
               </ErrorBoundary>
             </Page.Contents>
           </Page>

@@ -7,17 +7,26 @@ import {
   SpinnerContainer,
   TechnoSpinner,
 } from '@influxdata/clockface'
+
+// Types
 import {RemoteDataState} from 'src/types'
 
-import PlanTypePanel from './PlanTypePanel'
-import StoredPaymentMethod from 'src/billing/components/PaymentInfo/StoredPaymentMethod'
-import CancellationPanel from './CancellationPanel'
+// Components
+import PlanTypePanel from 'src/billing/components/PayAsYouGo/PlanTypePanel'
+import PaymentPanel from 'src/billing/components/PaymentInfo/PaymentPanel'
 import BillingContactInfo from 'src/billing/components/BillingContactInfo'
-import BillingPageContext from 'src/billing/components/BillingPageContext'
-import NotificationPanel from './NotificationPanel'
-import InvoiceHistory from './InvoiceHistory'
+import InvoiceHistory from 'src/billing/components/PayAsYouGo/InvoiceHistory'
+import CancellationPanel from 'src/billing/components/PayAsYouGo/CancellationPanel'
+import NotificationPanel from 'src/billing/components/PayAsYouGo/NotificationPanel'
+
+// Utils
 import {useBilling} from 'src/billing/components/BillingPage'
-import {getBillingSettings, getInvoices, getRegion} from 'src/billing/thunks'
+import {
+  getBillingSettings,
+  getInvoices,
+  getPaymentMethods,
+  getRegion,
+} from 'src/billing/thunks'
 
 const BillingPayAsYouGo: FC = () => {
   const [state, dispatch] = useBilling()
@@ -26,6 +35,7 @@ const BillingPayAsYouGo: FC = () => {
     getInvoices(dispatch)
     getRegion(dispatch)
     getBillingSettings(dispatch)
+    getPaymentMethods(dispatch)
   }, [dispatch])
 
   const invoiceLoading = state?.invoicesStatus ?? RemoteDataState.NotStarted
@@ -35,19 +45,8 @@ const BillingPayAsYouGo: FC = () => {
   const billingLoading = state?.billingSettings?.status
     ? state?.billingSettings?.status
     : RemoteDataState.NotStarted
-
-  // static contextType = BillingPageContext
-  // render() {
-  //   const {
-  //     region,
-  //     account,
-  //     invoices,
-  //     paymentMethods,
-  //     balanceThreshold,
-  //     isNotify,
-  //     notifyEmail,
-  //   } = this.props
-  //   const {contact, countries, states, ccPageParams} = this.context
+  const paymentMethodLoading =
+    state?.paymentMethodsStatus ?? RemoteDataState.NotStarted
 
   return (
     <FlexBox
@@ -67,16 +66,13 @@ const BillingPayAsYouGo: FC = () => {
       >
         <InvoiceHistory />
       </SpinnerContainer>
-      {/* <StoredPaymentMethod
-        paymentMethods={paymentMethods}
-        hostedPage={ccPageParams}
-      />
-      <BillingContactInfo
-        countries={countries}
-        states={states}
-        contact={contact}
-        hide={false}
-      /> */}
+      <SpinnerContainer
+        spinnerComponent={<TechnoSpinner />}
+        loading={paymentMethodLoading}
+      >
+        <PaymentPanel />
+      </SpinnerContainer>
+      <BillingContactInfo />
       <SpinnerContainer
         spinnerComponent={<TechnoSpinner />}
         loading={billingLoading}

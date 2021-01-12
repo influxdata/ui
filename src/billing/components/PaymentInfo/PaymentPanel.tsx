@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useState} from 'react'
 
 // Components
 import {Panel} from '@influxdata/clockface'
@@ -7,52 +7,32 @@ import PaymentPanelHeader from './PaymentPanelHeader'
 import PaymentPanelBody from './PaymentPanelBody'
 
 // Types
-import {PaymentSummary, ZuoraParams, ZuoraResponse} from 'js/types'
+import {useBilling} from 'src/billing/components/BillingPage'
 
-interface Props {
-  className?: string
-  paymentSummary: PaymentSummary
-  cardMessage: string
-  isEditing: boolean
-  hasExistingPayment: boolean
-  errorMessage: string
-  hostedPage: ZuoraParams
-  onEdit: () => void
-  onCancel: () => void
-  onSubmit: (response: ZuoraResponse) => Promise<void>
-  footer?: () => JSX.Element
-}
+const PaymentPanel: FC = () => {
+  const [{paymentMethods}] = useBilling()
 
-const PaymentPanel: FC<Props> = ({
-  className = 'payment-method-panel',
-  cardMessage,
-  onEdit,
-  onCancel,
-  footer,
-  paymentSummary,
-  hasExistingPayment,
-  isEditing,
-  errorMessage,
-  hostedPage,
-  onSubmit,
-}) => {
+  const [isEditing, setIsEditing] = useState(!paymentMethods.length)
+
+  const hasExistingPayment = !!paymentMethods.length
+
+  const onEdit = (): void => {
+    setIsEditing(true)
+  }
+
+  const onCancel = (): void => {
+    setIsEditing(false)
+  }
+
   return (
-    <Panel className={className}>
+    <Panel className="checkout-panel payment-method-panel">
       <PaymentPanelHeader
         onEdit={onEdit}
         onCancel={onCancel}
         isEditing={isEditing}
         hasExistingPayment={hasExistingPayment}
       />
-      <PaymentPanelBody
-        paymentSummary={paymentSummary}
-        cardMessage={cardMessage}
-        isEditing={isEditing}
-        errorMessage={errorMessage}
-        hostedPage={hostedPage}
-        onSubmit={onSubmit}
-      />
-      {footer && footer()}
+      <PaymentPanelBody isEditing={isEditing} onCancel={onCancel} />
     </Panel>
   )
 }

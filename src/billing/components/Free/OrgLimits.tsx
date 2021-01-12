@@ -34,8 +34,6 @@ const limits = (orgLimits: Limits): KV[] => {
 const OrgLimits: FC = () => {
   const [{orgLimits}] = useBilling()
 
-  console.log('orgLimits: ', orgLimits)
-
   return (
     <Grid>
       {limits(orgLimits).map(([name, value]) => {

@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {FC, useState} from 'react'
 
 import {
   Panel,
@@ -7,71 +7,42 @@ import {
   Button,
 } from '@influxdata/clockface'
 
-import CancellationOverlay from './CancellationOverlay'
+import CancellationOverlay from 'src/billing/components/PayAsYouGo/CancellationOverlay'
 
-class CancellationPanel extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      isOverlayVisible: false,
-    }
+const CancellationPanel: FC = () => {
+  const [isOverlayVisible, setIsOverlayVisible] = useState(false)
+  const handleShowOverlay = () => {
+    setIsOverlayVisible(true)
   }
 
-  render() {
-    return (
-      <>
-        <Panel>
-          <Panel.Header size={ComponentSize.Medium}>
-            <h4>Cancel Service</h4>
-            {this.cancelButton()}
-          </Panel.Header>
-          <Panel.Body size={ComponentSize.Medium}>
-            {this.cancelText()}
-          </Panel.Body>
-        </Panel>
-        {this.cancelOverlay()}
-      </>
-    )
+  const handleHideOverlay = () => {
+    setIsOverlayVisible(false)
   }
-
-  cancelButton() {
-    return (
-      <Button
-        color={ComponentColor.Default}
-        onClick={this.handleShowOverlay}
-        text="Cancel Service"
-        size={ComponentSize.Small}
-      />
-    )
-  }
-
-  cancelText() {
-    return (
-      <p>
-        You only pay for what you use. To temporarily pause your service, just
-        shut off your writes and queries.
-      </p>
-    )
-  }
-
-  cancelOverlay() {
-    const {isOverlayVisible} = this.state
-    return (
+  return (
+    <>
+      <Panel>
+        <Panel.Header size={ComponentSize.Medium}>
+          <h4>Cancel Service</h4>
+          <Button
+            color={ComponentColor.Default}
+            onClick={handleShowOverlay}
+            text="Cancel Service"
+            size={ComponentSize.Small}
+          />
+        </Panel.Header>
+        <Panel.Body size={ComponentSize.Medium}>
+          <p>
+            You only pay for what you use. To temporarily pause your service,
+            just shut off your writes and queries.
+          </p>
+        </Panel.Body>
+      </Panel>
       <CancellationOverlay
         isOverlayVisible={isOverlayVisible}
-        onHideOverlay={this.handleHideOverlay}
+        onHideOverlay={handleHideOverlay}
       />
-    )
-  }
-
-  handleShowOverlay = () => {
-    this.setState({isOverlayVisible: true})
-  }
-
-  handleHideOverlay = () => {
-    this.setState({isOverlayVisible: false})
-  }
+    </>
+  )
 }
 
 export default CancellationPanel

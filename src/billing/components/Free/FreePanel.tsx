@@ -1,6 +1,6 @@
 import React, {FC} from 'react'
 import {Panel} from '@influxdata/clockface'
-import OrgLimits from './OrgLimits'
+import OrgLimits from 'src/billing/components/Free/OrgLimits'
 
 const FreePanel: FC = () => {
   return (

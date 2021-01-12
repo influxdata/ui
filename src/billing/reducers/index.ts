@@ -30,20 +30,65 @@ export interface BillingState {
 export const initialState = (): BillingState => ({
   account: {
     status: RemoteDataState.NotStarted,
+    id: null,
+    balance: null,
+    billingContact: null,
+    deletable: false,
+    marketplaceSubscription: null,
+    type: 'free',
+    updatedAt: '',
+    users: [],
+    zuoraAccountId: '',
   },
-  creditCardParams: null,
   billingSettings: {
     balanceThreshold: 0,
     isNotify: false,
     notifyEmail: '',
     status: RemoteDataState.NotStarted,
   },
+  creditCards: null,
   invoices: null,
   invoicesStatus: RemoteDataState.NotStarted,
   limitsStatus: {
+    read: {
+      status: '',
+    },
+    write: {
+      status: '',
+    },
+    cardinality: {
+      status: '',
+    },
     status: RemoteDataState.NotStarted,
   },
   orgLimits: {
+    rate: {
+      readKBs: null,
+      concurrentReadRequests: null,
+      writeKBs: null,
+      concurrentWriteRequests: null,
+      cardinality: null,
+    },
+    check: {
+      maxChecks: null,
+    },
+    notificationRule: {
+      maxNotifications: null,
+      blockedNotificationRules: '',
+    },
+    notificationEndpoint: {
+      blockedNotificationEndpoints: '',
+    },
+    bucket: {
+      maxBuckets: null,
+      maxRetentionDuration: null, // nanoseconds
+    },
+    task: {
+      maxTasks: null,
+    },
+    dashboard: {
+      maxDashboards: null,
+    },
     status: RemoteDataState.NotStarted,
   },
   paymentMethodsStatus: RemoteDataState.NotStarted,

@@ -1,5 +1,6 @@
 import {
   getBillingAccount as getBillingAccountGenerated,
+  getBillingNotifySettings,
   getBillingPaymentMethods,
   getBillingCc,
 } from 'src/client/unityRoutes'
@@ -92,7 +93,7 @@ export const getBillingCreditCard = (): ReturnType<typeof getBillingCc> => {
   return makeResponse(200, cc, 'getBillingCreditCard')
 }
 
-export const getBillingNotificationSettings = (): ReturnType<typeof getBillingAccountGenerated> => {
+export const getBillingNotificationSettings = (): ReturnType<typeof getBillingNotifySettings> => {
   const account: BillingNotifySettings = {
     isNotify: true,
     balanceThreshold: 1000000,

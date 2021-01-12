@@ -8,7 +8,7 @@ import PaymentDisplay from './PaymentDisplay'
 import PaymentForm from './PaymentForm'
 
 // Types
-import {CreditCardParams} from 'src/types/billing'
+import {ZuoraResponse} from 'src/types/billing'
 
 interface Props {
   isEditing: boolean
@@ -18,14 +18,14 @@ interface Props {
 const PaymentPanelBody: FC<Props> = ({isEditing, onCancel}) => {
   const [errorMessage, setErrorMessage] = useState('')
 
-  const onSubmit = async (response: CreditCardParams): Promise<void> => {
+  const onSubmit = (response: ZuoraResponse): void => {
     const error = 'Could not add card, please try again.'
-    if (response.success) {
+    if (response?.success) {
       try {
-        const url = 'privateAPI/billing/payment_method'
-        const {data} = await axios.put(url, {
-          paymentMethodId: response.refId,
-        })
+        // const url = 'privateAPI/billing/payment_method'
+        // const {data} = await axios.put(url, {
+        //   paymentMethodId: response.refId,
+        // })
         onCancel()
         setErrorMessage('')
         // this.setState({

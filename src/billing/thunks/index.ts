@@ -1,4 +1,6 @@
 import {Dispatch} from 'react'
+
+// Reducer
 import {
   Action,
   setAccount,
@@ -16,6 +18,8 @@ import {
   setRegion,
   setRegionStatus,
 } from 'src/billing/reducers'
+
+// API
 import {
   getBillingAccount,
   getBillingCreditCard,
@@ -26,7 +30,10 @@ import {
   getRegion as apiGetRegion,
   getOrgRateLimits,
 } from 'src/billing/api'
+
+// Types
 import {RemoteDataState} from 'src/types'
+import {CreditCardParams, PaymentMethods} from 'src/types/billing'
 
 export const getAccount = async (dispatch: Dispatch<Action>) => {
   try {
@@ -132,8 +139,8 @@ export const getPaymentMethods = async (dispatch: Dispatch<Action>) => {
 
     dispatch(
       setPaymentMethods(
-        paymentMethodsResp.data,
-        ccResp.data,
+        paymentMethodsResp.data as PaymentMethods,
+        ccResp.data as CreditCardParams,
         RemoteDataState.Done
       )
     )

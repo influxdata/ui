@@ -15,12 +15,10 @@ const BillingContactSubdivision = props => {
       return (
         <Form.Element label="State" required={true} errorMessage={errorMessage}>
           <SelectDropdown
-            titleText="Select a State"
             selectedOption={subdivision}
             options={states}
             onSelect={onChange}
             buttonColor={ComponentColor.Default}
-            disabled={false}
           />
         </Form.Element>
       )

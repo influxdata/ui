@@ -42,10 +42,12 @@ const OrgLimitStat: FC<Props> = ({name, value}) => {
   return (
     <Panel backgroundColor={InfluxColors.Onyx} className="org-limit">
       <Panel.Header size={ComponentSize.ExtraSmall}>
-        <h5>{getName(name)}</h5>
+        <h5 data-testid="title-header--name">{getName(name)}</h5>
       </Panel.Header>
       <Panel.Body size={ComponentSize.ExtraSmall}>
-        <div className="org-limit--stat">{getStat(name, value)}</div>
+        <div className="org-limit--stat" data-testid="title-header--value">
+          {getStat(name, value)}
+        </div>
       </Panel.Body>
     </Panel>
   )

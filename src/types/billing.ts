@@ -95,3 +95,9 @@ export interface Props {
   orgLimits: OrgLimits // get from IDPE
   region: Region
 }
+
+export interface ZuoraResponse {
+  success: boolean
+  responseFrom: string
+  refId: string
+}

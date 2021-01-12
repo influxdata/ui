@@ -68,7 +68,10 @@ function BillingPage() {
               {!isCancelled && <RateLimitAlert />}
             </SpinnerContainer>
           </Page.Header>
-          <Page.Contents scrollable={true}>
+          <Page.Contents
+            scrollable={true}
+            testID="billing-page-contents--scroll"
+          >
             {isCancelled && <AlertStatusCancelled />}
             <BillingPageContents />
           </Page.Contents>

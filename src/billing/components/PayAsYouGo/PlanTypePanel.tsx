@@ -1,12 +1,14 @@
 import React, {FC} from 'react'
 
+// Components
 import {
-  Panel,
+  AlignItems,
   ComponentSize,
   InfluxColors,
-  AlignItems,
-  FlexDirection,
+  Panel,
 } from '@influxdata/clockface'
+
+// Utils
 import {useBilling} from 'src/billing/components/BillingPage'
 
 const TimeOptions = {
@@ -46,7 +48,7 @@ const PlanTypePanel: FC = () => {
           </Panel.Header>
           <Panel.Body size={ComponentSize.ExtraSmall}>
             <span className="money">
-              {parseFloat(account.balance).toFixed(2)}
+              {parseFloat(`${account.balance}`).toFixed(2)}
             </span>
           </Panel.Body>
         </Panel>

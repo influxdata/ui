@@ -25,7 +25,7 @@ const PAYGConversion: FC = () => {
       >
         Need more wiggle room?
       </Heading>
-      <Grid>
+      <Grid testID="payg-grid--container">
         <Grid.Row>
           <Grid.Column widthSM={Columns.Eight} offsetSM={Columns.Two}>
             <Panel gradient={Gradients.HotelBreakfast}>
@@ -53,7 +53,10 @@ const PAYGConversion: FC = () => {
                   when you don’t need it.
                 </p>
               </Panel.Body>
-              <Panel.Footer size={ComponentSize.Medium}>
+              <Panel.Footer
+                size={ComponentSize.Medium}
+                testID="payg-button--upgrade"
+              >
                 <CTALinkButton
                   color={ComponentColor.Primary}
                   text="Upgrade to a Usage-Based Plan"

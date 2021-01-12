@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect} from 'react'
+import React, {FC} from 'react'
 import {
   Alert,
   ComponentColor,
@@ -8,17 +8,20 @@ import {
   SpinnerContainer,
   TechnoSpinner,
 } from '@influxdata/clockface'
+
+// Utils
+// import {useBilling} from 'src/billing/components/BillingPage'
+
 // Types
-import {CreditCardParams} from 'src/types/billing'
-import {useBilling} from 'src/billing/components/BillingPage'
+// import {CreditCardParams} from 'src/types/billing'
 
 interface Props {
   onSubmit: (response: any) => void
   errorMessage: string
 }
 
-const PaymentForm: FC<Props> = ({onSubmit, errorMessage}) => {
-  const [{creditCards}] = useBilling()
+const PaymentForm: FC<Props> = ({errorMessage}) => {
+  // const [{creditCards}] = useBilling()
 
   /**
    * For context, Z is a globally defined ZuoraClient in Quartz

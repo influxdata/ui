@@ -410,24 +410,22 @@ describe('DataExplorer', () => {
       cy.getByTestID('time-machine-submit-button').should('be.disabled')
 
       cy.getByTestID('time-machine--bottom').then(() => {
-        // Assert that the lazy loading state should exist
-        cy.getByTestID('spinner-container').should('exist')
-        // Wait for monaco editor to load after lazy loading
-        cy.wait(500)
-        cy.getByTestID('flux-editor').within(() => {
-          cy.get('textarea').type('foo |> bar', {force: true})
+        cy.getByTestID('flux-editor', {timeout: 30000})
+          .should('be.visible')
+          .within(() => {
+            cy.get('textarea').type('foo |> bar', {force: true})
 
-          cy.get('.squiggly-error').should('be.visible')
+            cy.get('.squiggly-error').should('be.visible')
 
-          cy.get('textarea').type('{selectall} {backspace}', {force: true})
+            cy.get('textarea').type('{selectall} {backspace}', {force: true})
 
-          cy.get('textarea').type('from(bucket: )', {force: true})
+            cy.get('textarea').type('from(bucket: )', {force: true})
 
-          // error signature from lsp
-          // TODO(ariel): need to resolve this test. The issue for it is here:
-          // https://github.com/influxdata/ui/issues/481
-          // cy.get('.signature').should('be.visible')
-        })
+            // error signature from lsp
+            // TODO(ariel): need to resolve this test. The issue for it is here:
+            // https://github.com/influxdata/ui/issues/481
+            // cy.get('.signature').should('be.visible')
+          })
       })
 
       cy.getByTestID('time-machine-submit-button').should('not.be.disabled')
@@ -448,11 +446,7 @@ describe('DataExplorer', () => {
     })
 
     it('imports the appropriate packages to build a query', () => {
-      // Assert that the lazy loading state should exist
-      cy.getByTestID('spinner-container').should('exist')
-      // Wait for monaco editor to load after lazy loading
-      cy.wait(300)
-      cy.getByTestID('flux-editor').should('exist')
+      cy.getByTestID('flux-editor', {timeout: 30000}).should('be.visible')
       cy.getByTestID('functions-toolbar-contents--functions').should('exist')
       cy.getByTestID('flux--from--inject').click({force: true})
       cy.getByTestID('flux--range--inject').click({force: true})
@@ -524,11 +518,7 @@ describe('DataExplorer', () => {
 
     it('shows the empty state when the query returns no results', () => {
       cy.getByTestID('time-machine--bottom').within(() => {
-        // Assert that the lazy loading state should exist
-        cy.getByTestID('spinner-container').should('exist')
-        // Wait for monaco editor to load after lazy loading
-        cy.wait(300)
-        cy.get('.react-monaco-editor-container')
+        cy.getByTestID('flux-editor')
           .should('be.visible')
           .click()
           .focused()
@@ -1326,15 +1316,17 @@ describe('DataExplorer', () => {
 
       it('can save and enable/disable submit button', () => {
         cy.getByTestID('overlay--container').within(() => {
-          cy.get('.cf-button-success').should('be.disabled')
-          cy.get('[placeholder="Give your variable a name"]').type(variableName)
-          cy.get('.cf-button-success').should('be.enabled')
-          cy.get('[placeholder="Give your variable a name"]').clear()
-          cy.get('.cf-button-success').should('be.disabled')
-          cy.get('[placeholder="Give your variable a name"]').type(variableName)
-          cy.get('.cf-button-success').should('be.enabled')
+          cy.getByTestID('variable-form-save').should('be.disabled')
+          cy.getByTestID('flux-editor').should('be.visible')
+          cy.getByTestID('variable-name-input').type(variableName)
+          cy.getByTestID('variable-form-save').should('be.enabled')
+          cy.getByTestID('variable-name-input').clear()
+          cy.getByTestID('variable-form-save').should('be.disabled')
+          cy.getByTestID('flux-editor').should('be.visible')
+          cy.getByTestID('variable-name-input').type(variableName)
+          cy.getByTestID('variable-form-save').should('be.enabled')
 
-          cy.get('.cf-button-success').click()
+          cy.getByTestID('variable-form-save').click()
         })
         visitVariables()
         cy.getByTestID(`variable-card--name ${variableName}`).should('exist')

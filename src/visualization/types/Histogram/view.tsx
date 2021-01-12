@@ -9,6 +9,7 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 import {
   useLegendOpacity,
   useLegendOrientationThreshold,
+  useLegendColorizeRows,
 } from 'src/visualization/utils/useLegendOrientation'
 import {useVisXDomainSettings} from 'src/visualization/utils/useVisDomainSettings'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
@@ -36,6 +37,7 @@ const HistogramPlot: FunctionComponent<Props> = ({
   const fillColumns = properties.fillColumns || result.fluxGroupKeyUnion
 
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
+  const tooltipColorize = useLegendColorizeRows(properties.legendColorizeRows)
   const tooltipOrientationThreshold = useLegendOrientationThreshold(
     properties.legendOrientationThreshold
   )
@@ -78,6 +80,7 @@ const HistogramPlot: FunctionComponent<Props> = ({
         valueFormatters: {[properties.xColumn]: xFormatter},
         legendOpacity: tooltipOpacity,
         legendOrientationThreshold: tooltipOrientationThreshold,
+        legendColorizeRows: tooltipColorize,
         layers: [
           {
             type: 'histogram',

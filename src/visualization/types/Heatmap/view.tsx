@@ -11,6 +11,7 @@ import {getFormatter} from 'src/visualization/utils/getFormatter'
 import {
   useLegendOpacity,
   useLegendOrientationThreshold,
+  useLegendColorizeRows,
 } from 'src/visualization/utils/useLegendOrientation'
 import {
   useVisXDomainSettings,
@@ -51,6 +52,7 @@ const HeatmapPlot: FunctionComponent<Props> = ({
 
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
+  const tooltipColorize = useLegendColorizeRows(properties.legendColorizeRows)
   const tooltipOrientationThreshold = useLegendOrientationThreshold(
     properties.legendOrientationThreshold
   )
@@ -113,6 +115,7 @@ const HeatmapPlot: FunctionComponent<Props> = ({
         ...axisTicksOptions,
         legendOpacity: tooltipOpacity,
         legendOrientationThreshold: tooltipOrientationThreshold,
+        legendColorizeRows: tooltipColorize,
         valueFormatters: {
           [xColumn]: xFormatter,
           [yColumn]: yFormatter,

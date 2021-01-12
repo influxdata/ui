@@ -7,11 +7,17 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Components
 import {
+  ComponentSize,
   ComponentStatus,
   Form,
   Input,
+  InputLabel,
   InputType,
   RangeSlider,
+  SlideToggle,
+  FlexBox,
+  FlexDirection,
+  AlignItems,
 } from '@influxdata/clockface'
 
 // Types
@@ -27,7 +33,6 @@ import {
 
 // Constants
 import {
-  LEGEND_OPACITY_DEFAULT,
   LEGEND_OPACITY_MAXIMUM,
   LEGEND_OPACITY_MINIMUM,
   LEGEND_OPACITY_STEP,
@@ -44,14 +49,10 @@ interface Props extends VisOptionProps {
 }
 
 const LegendOrientation: FC<Props> = ({properties, update}) => {
-  const legendOpacity = properties?.legendOpacity || LEGEND_OPACITY_DEFAULT
-  const legendOrientationThreshold = properties?.legendOrientationThreshold
+  const legendOpacity = properties?.legendOpacity
 
   const [thresholdInputStatus, setThresholdInputStatus] = useState(
     ComponentStatus.Default
-  )
-  const [thresholdInput, setThresholdInput] = useState(
-    legendOrientationThreshold
   )
 
   if (!isFlagEnabled('legendOrientation')) {
@@ -61,7 +62,6 @@ const LegendOrientation: FC<Props> = ({properties, update}) => {
   const handleSetThreshold = (event: ChangeEvent<HTMLInputElement>): void => {
     const value = convertUserInputToNumOrNaN(event)
 
-    setThresholdInput(value)
     if (isNaN(value)) {
       setThresholdInputStatus(ComponentStatus.Error)
     } else {
@@ -86,6 +86,15 @@ const LegendOrientation: FC<Props> = ({properties, update}) => {
     }
   }
 
+  const handleSetColorization = (): void => {
+    update({
+      legendColorizeRows: !properties.legendColorizeRows,
+    })
+  }
+
+  const toggleStyle = {marginTop: 4}
+  const toggleLabelStyle = {color: '#999dab'}
+
   return (
     <>
       <Form.Element
@@ -99,7 +108,7 @@ const LegendOrientation: FC<Props> = ({properties, update}) => {
           placeholder="Enter a number"
           status={thresholdInputStatus}
           type={InputType.Number}
-          value={thresholdInput}
+          value={properties.legendOrientationThreshold}
         />
       </Form.Element>
       <Form.Element label={`Opacity: ${legendOpacity.toFixed(2)}`}>
@@ -111,6 +120,20 @@ const LegendOrientation: FC<Props> = ({properties, update}) => {
           onChange={handleSetOpacity}
         />
       </Form.Element>
+      <FlexBox
+        direction={FlexDirection.Row}
+        alignItems={AlignItems.Center}
+        margin={ComponentSize.Medium}
+        stretchToFitWidth={true}
+        style={toggleStyle}
+      >
+        <SlideToggle
+          active={properties.legendColorizeRows}
+          size={ComponentSize.ExtraSmall}
+          onChange={handleSetColorization}
+        />
+        <InputLabel style={toggleLabelStyle}>Colorize Rows</InputLabel>
+      </FlexBox>
     </>
   )
 }

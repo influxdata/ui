@@ -18,6 +18,7 @@ import {formatStatValue} from 'src/visualization/utils/formatStatValue'
 import {
   useLegendOpacity,
   useLegendOrientationThreshold,
+  useLegendColorizeRows,
 } from 'src/visualization/utils/useLegendOrientation'
 import {
   useVisXDomainSettings,
@@ -55,6 +56,7 @@ const SingleStatWithLine: FC<Props> = ({
 }) => {
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
+  const tooltipColorize = useLegendColorizeRows(properties.legendColorizeRows)
   const tooltipOrientationThreshold = useLegendOrientationThreshold(
     properties.legendOrientationThreshold
   )
@@ -166,6 +168,7 @@ const SingleStatWithLine: FC<Props> = ({
         legendColumns,
         legendOpacity: tooltipOpacity,
         legendOrientationThreshold: tooltipOrientationThreshold,
+        legendColorizeRows: tooltipColorize,
         valueFormatters: {
           [xColumn]: xFormatter,
           [yColumn]: yFormatter,

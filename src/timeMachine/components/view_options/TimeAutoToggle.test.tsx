@@ -6,7 +6,7 @@ import {fireEvent, render} from '@testing-library/react'
 
 // Components
 import ScatterOptions from 'src/timeMachine/components/view_options/ScatterOptions'
-import TimeAutoToggle from 'src/timeMachine/components/view_options/TimeAutoToggle'
+import {TimeDomainAutoToggle} from 'src/timeMachine/components/view_options/TimeAutoToggle'
 
 // Utilities
 import {renderWithRedux} from 'src/mockState'
@@ -16,6 +16,7 @@ import {
   getGroupableColumns,
   getNumericColumns,
 } from 'src/shared/utils/vis'
+import * as visDomainSettings from 'src/shared/utils/useVisDomainSettings'
 
 jest.mock('src/shared/utils/vis')
 
@@ -69,31 +70,36 @@ describe('Time Domain Auto Toggle', () => {
 
   describe('the time domain toggle slider', () => {
     const useSelectorMock = jest.spyOn(reactRedux, 'useSelector')
+    const useVisMock = jest.spyOn(visDomainSettings, 'useVisXDomainSettings')
+
     beforeEach(() => {
       useSelectorMock.mockClear()
+      useVisMock.mockClear()
     })
     afterEach(() => {
       jest.clearAllMocks()
     })
 
     it('is disabled if time domain is not available', () => {
-      useSelectorMock.mockReturnValue(null)
+      useSelectorMock.mockReturnValue({table: {getColumn: () => {}}})
+      useVisMock.mockReturnValue([])
       const setDomainMock = jest.fn()
 
       const {getByTestId} = render(
-        <TimeAutoToggle onSetDomain={setDomainMock} />
+        <TimeDomainAutoToggle setDomain={setDomainMock} xDom={null} />
       )
 
       fireEvent.click(getByTestId('time-domain-toggle-slide'))
 
       expect(setDomainMock).not.toHaveBeenCalled()
     })
-    it('fires onSetDomain call to set time with range if clicked from off to on, then resets when going from on to off', () => {
-      useSelectorMock.mockReturnValue([0, 20])
+    it('fires setDomain call to set time with range if clicked from off to on, then resets when going from on to off', () => {
+      useSelectorMock.mockReturnValue({table: {getColumn: () => {}}})
+      useVisMock.mockReturnValue([[0, 20]])
       const setDomainMock = jest.fn()
 
       const {getByTestId} = render(
-        <TimeAutoToggle onSetDomain={setDomainMock} />
+        <TimeDomainAutoToggle setDomain={setDomainMock} xDom={null} />
       )
 
       fireEvent.click(getByTestId('time-domain-toggle-slide'))

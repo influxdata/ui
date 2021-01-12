@@ -167,7 +167,7 @@ jobs:
       - run:
           name: Grab compose files
           command: |
-            git clone git@github.com:influxdata/monitor-ci.git
+            git clone --branch cypress_networking git@github.com:influxdata/monitor-ci.git
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
@@ -188,6 +188,12 @@ jobs:
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start
+      - run:
+          name: Make CI Accessible to this Service
+          command: |
+            INGRESS_HOST=$(grep "INGRESS_HOST=" ./monitor-ci/.env | cut -d '=' -f2);
+            grep -qxF "127.0.0.1 ${INGRESS_HOST}" /etc/hosts || sudo -- sh -c "echo \"127.0.0.1 ${INGRESS_HOST}\" >> /etc/hosts";
+            ps -ef | grep Xvfb | grep -v grep | awk '{print $2}' | sudo xargs kill -9
       - run:
           name: Run e2e tests
           no_output_timeout: 30m
@@ -216,7 +222,7 @@ jobs:
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
           name: Grab compose files
-          command: git clone git@github.com:influxdata/monitor-ci.git
+          command: git clone --branch cypress_networking git@github.com:influxdata/monitor-ci.git
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing.oss ./monitor-ci/.env
@@ -232,6 +238,12 @@ jobs:
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start
+      - run:
+          name: Make CI Accessible to this Service
+          command: |
+            INGRESS_HOST=$(grep "INGRESS_HOST=" ./monitor-ci/.env | cut -d '=' -f2);
+            grep -qxF "127.0.0.1 ${INGRESS_HOST}" /etc/hosts || sudo -- sh -c "echo \"127.0.0.1 ${INGRESS_HOST}\" >> /etc/hosts";
+            ps -ef | grep Xvfb | grep -v grep | awk '{print $2}' | sudo xargs kill -9
       - run:
           name: Run e2e tests
           no_output_timeout: 30m
@@ -261,7 +273,7 @@ jobs:
       - run:
           name: Grab compose files
           command: |
-            git clone git@github.com:influxdata/monitor-ci.git
+            git clone --branch cypress_networking git@github.com:influxdata/monitor-ci.git
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
@@ -274,6 +286,12 @@ jobs:
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start
+      - run:
+          name: Make CI Accessible to this Service
+          command: |
+            INGRESS_HOST=$(grep "INGRESS_HOST=" ./monitor-ci/.env | cut -d '=' -f2);
+            grep -qxF "127.0.0.1 ${INGRESS_HOST}" /etc/hosts || sudo -- sh -c "echo \"127.0.0.1 ${INGRESS_HOST}\" >> /etc/hosts";
+            ps -ef | grep Xvfb | grep -v grep | awk '{print $2}' | sudo xargs kill -9
       - run:
           name: Run e2e tests
           no_output_timeout: 30m
@@ -302,7 +320,7 @@ jobs:
       - run:
           name: Grab compose files
           command: |
-            git clone git@github.com:influxdata/monitor-ci.git
+            git clone --branch cypress_networking git@github.com:influxdata/monitor-ci.git
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
@@ -315,6 +333,12 @@ jobs:
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start
+      - run:
+          name: Make CI Accessible to this Service
+          command: |
+            INGRESS_HOST=$(grep "INGRESS_HOST=" ./monitor-ci/.env | cut -d '=' -f2);
+            grep -qxF "127.0.0.1 ${INGRESS_HOST}" /etc/hosts || sudo -- sh -c "echo \"127.0.0.1 ${INGRESS_HOST}\" >> /etc/hosts";
+            ps -ef | grep Xvfb | grep -v grep | awk '{print $2}' | sudo xargs kill -9
       - run:
           name: Run smoke tests
           no_output_timeout: 30m
@@ -410,10 +434,11 @@ jobs:
           command: |
             cp ./monitor-ci/env.lighthouse ./monitor-ci/.env;
       - run:
-          name: Add Ingress Host to /etc/hosts File
+          name: Make CI Accessible to this Service
           command: |
             INGRESS_HOST=$(grep "INGRESS_HOST=" ./monitor-ci/.env | cut -d '=' -f2);
             grep -qxF "127.0.0.1 ${INGRESS_HOST}" /etc/hosts || sudo -- sh -c "echo \"127.0.0.1 ${INGRESS_HOST}\" >> /etc/hosts";
+            ps -ef | grep Xvfb | grep -v grep | awk '{print $2}' | sudo xargs kill -9
       - run:
           name: Update the images we're using
           command: |

@@ -709,9 +709,10 @@ describe('Dashboard', () => {
         .should('contain', 'beans')
 
       // and cause the rest to exist in loading states
-      cy.getByTestIDSubStr('variable-dropdown')
-        .eq(1)
-        .should('contain', 'Loading')
+      cy.getByTestIDSubStr('variable-dropdown--dependent').should(
+        'contain',
+        'Loading'
+      )
 
       cy.getByTestIDSubStr('cell--view-empty')
 
@@ -722,9 +723,7 @@ describe('Dashboard', () => {
       cy.get(`#defbuck`).click()
 
       // default select the first result
-      cy.getByTestIDSubStr('variable-dropdown')
-        .eq(1)
-        .should('contain', 'beans')
+      cy.getByTestID('variable-dropdown--dependent').should('contain', 'beans')
 
       // and also load the second result
       cy.getByTestID('variable-dropdown--button')

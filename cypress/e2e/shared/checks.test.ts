@@ -108,9 +108,9 @@ describe('Checks', () => {
                   .should('be.visible')
                   .click()
                   .then(() => {
-                    cy.getByTestID(`selector-list ${field}`).click({
-                      force: true,
-                    })
+                    cy.getByTestID(`selector-list ${field}`)
+                      .should('be.visible')
+                      .click()
                   })
               })
           })

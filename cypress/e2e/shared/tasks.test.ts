@@ -325,8 +325,9 @@ http.post(
         .eq(1)
         .click()
         .then(() => {
-          // Wait for monaco editor to load after lazy loading
-          cy.getByTestID('flux-editor', {timeout: 30000})
+          // focused() waits for monoco editor to get input focus
+          cy.focused()
+          cy.getByTestID('flux-editor')
             .should('be.visible')
             .contains('option task = {')
             .then(() => {
@@ -335,7 +336,6 @@ http.post(
                 .then(() => {
                   cy.getByTestID('task-form-name')
                     .should('be.visible')
-                    .focus()
                     .clear()
                     .type('Copy task test')
                     .then(() => {

@@ -50,7 +50,7 @@ export const getBillingAccount = (): ReturnType<typeof getBillingAccountGenerate
       subscriberId: 'id123',
       status: 'paid',
     },
-    type: 'cancelled',
+    type: 'pay_as_you_go',
     updatedAt: new Date().toString(),
     users: [{}],
     zuoraAccountId: 'zID123',

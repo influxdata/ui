@@ -99,8 +99,8 @@ describe('Dashboard', () => {
     cy.getByTestID('add-note--button').click()
     cy.getByTestID('note-editor--overlay').within(() => {
       cy.getByTestID('markdown-editor').within(() => {
-          cy.get('textarea').type(`${headerPrefix} ${noteText}`, {force: true})
-        })
+        cy.get('textarea').type(`${headerPrefix} ${noteText}`, {force: true})
+      })
 
       cy.getByTestID('note-editor--preview').contains(noteText)
       cy.getByTestID('note-editor--preview').should('not.contain', headerPrefix)
@@ -161,9 +161,9 @@ describe('Dashboard', () => {
 
     cy.getByTestID('note-editor--overlay').within(() => {
       cy.getByTestID('markdown-editor').within(() => {
-          cy.get('textarea')
-            .clear()
-            .type(`${headerPrefix2} ${noteText2}`)
+        cy.get('textarea')
+          .clear()
+          .type(`${headerPrefix2} ${noteText2}`)
       })
       cy.getByTestID('note-editor--preview').contains(noteText2)
       cy.getByTestID('note-editor--preview').should(

@@ -404,7 +404,7 @@ jobs:
       - run:
           name: Add Ingress Host to /etc/hosts File
           command: |
-            INGRESS_HOST=$(cat ./monitor-ci/.env | grep INGRESS_HOST= | cut -d '=' -f2);
+            INGRESS_HOST=$(grep "INGRESS_HOST=" ./monitor-ci/.env | cut -d '=' -f2);
             grep -qxF "127.0.0.1 ${INGRESS_HOST}" /etc/hosts || sudo -- sh -c "echo \"127.0.0.1 ${INGRESS_HOST}\" >> /etc/hosts";
       - run:
           name: Update the images we're using

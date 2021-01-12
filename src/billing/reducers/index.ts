@@ -141,7 +141,7 @@ export const setInvoicesStatus = (status: RemoteDataState) =>
     invoiceStatus: status,
   } as const)
 
-export const setLimitsStatus = (limitsStatus: OrgLimits) =>
+export const setLimitsStatus = (limitsStatus: LimitStatus) =>
   ({
     type: 'SET_LIMITS_STATUS',
     limitsStatus,

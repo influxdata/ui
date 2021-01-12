@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useState} from 'react'
-import axios from 'axios'
+// import axios from 'axios'
 
 // Components
 import {Panel, ComponentSize} from '@influxdata/clockface'

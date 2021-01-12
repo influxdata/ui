@@ -40,7 +40,7 @@ const App: FC<Props> = ({inPresentationMode, currentPage, theme}) => {
       <NotesPortal />
       <OverlayController />
       <TreeNav />
-      <Suspense fallback={<PageSpinner/>}>
+      <Suspense fallback={<PageSpinner />}>
         <Switch>
           <Route path="/orgs/new" component={CreateOrgOverlay} />
           <Route path="/orgs/:orgID" component={SetOrg} />

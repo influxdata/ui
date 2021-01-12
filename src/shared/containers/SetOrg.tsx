@@ -1,45 +1,41 @@
 // Libraries
-import React, {useEffect, useState, FC, Suspense, lazy} from 'react'
+import React, {useEffect, useState, FC, Suspense} from 'react'
 import {connect, ConnectedProps, useDispatch} from 'react-redux'
 import {Route, Switch} from 'react-router-dom'
 
 // Components
-import {MePage} from 'src/me'
-import DashboardsIndex from 'src/dashboards/components/dashboard_index/DashboardsIndex'
-import DashboardContainer from 'src/dashboards/components/DashboardContainer'
-import FlowPage from 'src/flows/components/FlowPage'
-import BucketsIndex from 'src/buckets/containers/BucketsIndex'
-import TokensIndex from 'src/authorizations/containers/TokensIndex'
-import TelegrafsPage from 'src/telegrafs/containers/TelegrafsPage'
-import ScrapersIndex from 'src/scrapers/containers/ScrapersIndex'
-import WriteDataPage from 'src/writeData/containers/WriteDataPage'
-import VariablesIndex from 'src/variables/containers/VariablesIndex'
-import LabelsIndex from 'src/labels/containers/LabelsIndex'
-import OrgProfilePage from 'src/organizations/containers/OrgProfilePage'
-import MembersIndex from 'src/members/containers/MembersIndex'
-import RouteToDashboardList from 'src/dashboards/components/RouteToDashboardList'
-import ClientLibrariesPage from 'src/writeData/containers/ClientLibrariesPage'
-import TelegrafPluginsPage from 'src/writeData/containers/TelegrafPluginsPage'
-import FlowsIndex from 'src/flows/components/FlowsIndex'
-import NotFound from 'src/shared/components/NotFound'
-import UsersPage from 'src/unity/components/users/UsersPage'
 import {CommunityTemplatesIndex} from 'src/templates/containers/CommunityTemplatesIndex'
 import {AnnotationsIndex} from 'src/annotations/containers/AnnotationsIndex'
 import PageSpinner from 'src/perf/components/PageSpinner'
-const AlertingIndex = lazy(() =>
-  import('src/alerting/components/AlertingIndex')
-)
-const AlertHistoryIndex = lazy(() =>
-  import('src/alerting/components/AlertHistoryIndex')
-)
-const CheckHistory = lazy(() => import('src/checks/components/CheckHistory'))
-const TaskRunsPage = lazy(() => import('src/tasks/components/TaskRunsPage'))
-const TaskEditPage = lazy(() => import('src/tasks/containers/TaskEditPage'))
-const TaskPage = lazy(() => import('src/tasks/containers/TaskPage'))
-const TasksPage = lazy(() => import('src/tasks/containers/TasksPage'))
-const DataExplorerPage = lazy(() =>
-  import('src/dataExplorer/components/DataExplorerPage')
-)
+import {
+  MePage,
+  TasksPage,
+  TaskPage,
+  TaskRunsPage,
+  TaskEditPage,
+  DashboardsIndex,
+  DataExplorerPage,
+  DashboardContainer,
+  FlowPage,
+  BucketsIndex,
+  TokensIndex,
+  TelegrafsPage,
+  ScrapersIndex,
+  WriteDataPage,
+  VariablesIndex,
+  LabelsIndex,
+  OrgProfilePage,
+  AlertingIndex,
+  AlertHistoryIndex,
+  CheckHistory,
+  MembersIndex,
+  RouteToDashboardList,
+  ClientLibrariesPage,
+  TelegrafPluginsPage,
+  FlowsIndex,
+  NotFound,
+  UsersPage,
+} from 'src/shared/containers'
 
 // Types
 import {AppState, Organization, ResourceType} from 'src/types'
@@ -117,8 +113,8 @@ const SetOrg: FC<Props> = ({
   const orgPath = '/orgs/:orgID'
 
   return (
-    <Suspense fallback={<PageSpinner />}>
-      <PageSpinner loading={loading}>
+    <PageSpinner loading={loading}>
+      <Suspense fallback={<PageSpinner />}>
         <Switch>
           {/* Alerting */}
           <Route path={`${orgPath}/alerting`} component={AlertingIndex} />
@@ -251,8 +247,8 @@ const SetOrg: FC<Props> = ({
 
           <Route component={NotFound} />
         </Switch>
-      </PageSpinner>
-    </Suspense>
+      </Suspense>
+    </PageSpinner>
   )
 }
 

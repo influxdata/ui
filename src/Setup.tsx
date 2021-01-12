@@ -1,5 +1,5 @@
 // Libraries
-import React, {ReactElement, PureComponent, Suspense} from 'react'
+import React, {ReactElement, PureComponent, Suspense, lazy} from 'react'
 import {Switch, Route, RouteComponentProps} from 'react-router-dom'
 
 // APIs
@@ -7,12 +7,14 @@ import {client} from 'src/utils/api'
 
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
-import Signin from 'src/Signin'
-import OnboardingWizardPage from 'src/onboarding/containers/OnboardingWizardPage'
-import SigninPage from 'src/onboarding/containers/SigninPage'
-import {LoginPage} from 'src/onboarding/containers/LoginPage'
-import Logout from 'src/Logout'
 import PageSpinner from 'src/perf/components/PageSpinner'
+import {LoginPage} from 'src/onboarding/containers/LoginPage'
+const Signin = lazy(() => import('src/Signin'))
+const OnboardingWizardPage = lazy(() =>
+  import('src/onboarding/containers/OnboardingWizardPage')
+)
+const SigninPage = lazy(() => import('src/onboarding/containers/SigninPage'))
+const Logout = lazy(() => import('src/Logout'))
 
 // Constants
 import {LOGIN, SIGNIN, LOGOUT} from 'src/shared/constants/routes'

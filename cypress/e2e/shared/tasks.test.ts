@@ -325,18 +325,17 @@ http.post(
         .eq(1)
         .click()
         .then(() => {
-          // Assert that the lazy loading state should exist
-          cy.getByTestID('spinner-container').should('exist')
-          // Wait for monaco editor to load after lazy loading
-          cy.wait(1000)
+          // focused() waits for monoco editor to get input focus
+          cy.focused()
           cy.getByTestID('flux-editor')
+            .should('be.visible')
             .contains('option task = {')
             .then(() => {
               cy.getByTestID('task-form-name')
                 .should('have.value', '🦄ask')
                 .then(() => {
                   cy.getByTestID('task-form-name')
-                    .focus()
+                    .should('be.visible')
                     .clear()
                     .type('Copy task test')
                     .then(() => {

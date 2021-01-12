@@ -780,6 +780,11 @@ describe('DataExplorer', () => {
           }
         })
 
+        // force the last selected visualization to be a graph for the next test
+        cy.getByTestID('view-type--dropdown').click()
+        cy.getByTestID(`view-type--xy`).click()
+        cy.getByTestID(`vis-graphic--xy`).should('exist')
+
         // view raw data table
         cy.getByTestID('raw-data--toggle').click()
         cy.getByTestID('raw-data-table').should('exist')

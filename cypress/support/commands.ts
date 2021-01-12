@@ -16,54 +16,37 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
         })
     })
   \*/
-
-  if (Cypress.env('inkind')) {
-    return cy.setupUser().then(response => {
-      cy.visit('/')
-      cy.get('[name="login"]').type(response.body.user.name)
-      cy.get('[name="password"]').type(Cypress.env('password'))
-      cy.get('button')
-        .contains('Login')
-        .click()
-      cy.get('button')
-        .contains('Grant Access')
-        .click()
-
-      cy.get('[href="/logout"]', {timeout: 60000}).then(() =>
-        cy.wrapOrgAndBucket()
-      )
-    })
-  }
-
-  return cy
-    .setupUser()
-    .then(resp => {
-      Object.entries(resp.body).forEach(([k, v]) => {
-        cy.log(k, JSON.stringify(v))
+  return cy.setupUser().then(response => {
+    // const route = Cypress.env('inkind') ? '/' : '/api/v2/signin'
+    cy.visit('/')
+      .then(() => {
+        const username = Cypress._.get(
+          response,
+          'body.user.name',
+          Cypress.env('username')
+        )
+        cy.get('#login').type(username)
       })
-      // cy.log('user setup response', JSON.stringify(resp, null, 2))
-      cy.visit('/api/v2/signin')
-    })
-    .then(() => cy.get('#login').type(Cypress.env('username')))
-    .then(() => cy.get('#password').type(Cypress.env('password')))
-    .then(() => cy.get('#submit-login').click())
-    .then(() => {
-      cy.get('body').then($body => {
-        /**
-         * we are conditionally rendering this test case since it's only
-         * relevant to CLOUD tests in order to click the `Grant Access` button
-         * that's rendered by Dex in the CLOUD development environment.
-         *
-         * We are using this conditional test based on the following doc suggestions:
-         * https://docs.cypress.io/guides/core-concepts/conditional-testing.html#Element-existence
-         **/
-        if ($body.find('.theme-btn--success').length) {
-          cy.get('.theme-btn--success').click()
-        }
+      .then(() => cy.get('#password').type(Cypress.env('password')))
+      .then(() => cy.get('#submit-login').click())
+      .then(() => {
+        cy.get('body').then($body => {
+          /**
+           * we are conditionally rendering this test case since it's only
+           * relevant to CLOUD tests in order to click the `Grant Access` button
+           * that's rendered by Dex in the CLOUD development environment.
+           *
+           * We are using this conditional test based on the following doc suggestions:
+           * https://docs.cypress.io/guides/core-concepts/conditional-testing.html#Element-existence
+           **/
+          if ($body.find('.theme-btn--success').length) {
+            cy.get('.theme-btn--success').click()
+          }
+        })
       })
-    })
-    .then(() => cy.location('pathname').should('not.eq', '/signin'))
-    .then(() => cy.wrapOrgAndBucket())
+      .then(() => cy.location('pathname').should('not.eq', '/signin'))
+      .then(() => cy.wrapOrgAndBucket())
+  })
 }
 
 export const wrapOrgAndBucket = (): Cypress.Chainable<Cypress.Response> => {

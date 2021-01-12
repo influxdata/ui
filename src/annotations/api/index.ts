@@ -76,7 +76,7 @@ export const getAnnotation = async (
 ): Promise<AxiosResponse<GetAnnotationResponse[]>> => {
   const formattedQueryString = formatAnnotationQueryString(data)
   const appendedURL = url + formattedQueryString
-  console.log(appendedURL, 'THIS IS THE URL')
+
   const res = await axios.get(appendedURL)
 
   if (res.status >= 300) {

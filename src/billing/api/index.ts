@@ -48,9 +48,9 @@ export const getBillingAccount = (): ReturnType<typeof getBillingAccountGenerate
     marketplaceSubscription: {
       marketplace: 'us-west',
       subscriberId: 'id123',
-      status: 'paid',
+      status: 'Paid',
     },
-    type: 'pay_as_you_go',
+    type: 'free',
     updatedAt: new Date().toString(),
     users: [{}],
     zuoraAccountId: 'zID123',
@@ -106,7 +106,7 @@ export const getOrgRateLimits = (): Promise<any> => {
   const orgLimit: OrgLimits = {
     bucket: {
       maxBuckets: 2,
-      maxRetentionDuration: 30,
+      maxRetentionDuration: 1555000000000000,
     },
     check: {
       maxChecks: 2,
@@ -159,32 +159,32 @@ export const getInvoices = (): Promise<any> => {
     {
       amount: 0,
       filesID: 'abc123',
-      status: 'status-fied',
-      targetDate: new Date().toString(),
+      status: 'Paid',
+      targetDate: new Date('01/01/2020').toString(),
     },
     {
       amount: 10,
       filesID: '10E->405N',
-      status: 'cruise',
-      targetDate: new Date().toString(),
+      status: 'Unpaid',
+      targetDate: new Date('01/02/2020').toString(),
     },
     {
       amount: 405,
       filesID: '405N->101N',
-      status: 'traffic',
-      targetDate: new Date().toString(),
+      status: 'Paid',
+      targetDate: new Date('01/03/2020').toString(),
     },
     {
       amount: 101,
       filesID: '101N->1N',
-      status: 'more_traffic',
-      targetDate: new Date().toString(),
+      status: 'Unpaid',
+      targetDate: new Date('01/04/2020').toString(),
     },
     {
       amount: 1,
       filesID: '1N',
-      status: 'traffic_with_view',
-      targetDate: new Date().toString(),
+      status: 'Paid',
+      targetDate: new Date('01/05/2020').toString(),
     },
   ]
 

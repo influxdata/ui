@@ -15,7 +15,7 @@ interface Props {
   onCancel: () => void
 }
 
-const PaymentPanelBody: FC<Props> = ({cardMessage, isEditing, onCancel}) => {
+const PaymentPanelBody: FC<Props> = ({isEditing, onCancel}) => {
   const [errorMessage, setErrorMessage] = useState('')
 
   const onSubmit = async (response: CreditCardParams): Promise<void> => {

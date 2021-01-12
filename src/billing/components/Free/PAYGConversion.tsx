@@ -1,4 +1,4 @@
-import React, {FC, Fragment} from 'react'
+import React, {FC} from 'react'
 import {
   Panel,
   ComponentSize,
@@ -17,7 +17,7 @@ import {CLOUD_URL, CLOUD_CHECKOUT_PATH} from 'src/shared/constants'
 
 const PAYGConversion: FC = () => {
   return (
-    <Fragment>
+    <>
       <Heading
         element={HeadingElement.H2}
         weight={FontWeight.Regular}
@@ -65,7 +65,7 @@ const PAYGConversion: FC = () => {
           </Grid.Column>
         </Grid.Row>
       </Grid>
-    </Fragment>
+    </>
   )
 }
 

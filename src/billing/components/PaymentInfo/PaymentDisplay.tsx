@@ -1,16 +1,12 @@
 import React, {FC} from 'react'
 import {useBilling} from 'src/billing/components/BillingPage'
 
-interface Props {
-  className?: string
-}
-
-const PaymentDisplay: FC<Props> = ({className}) => {
+const PaymentDisplay: FC = () => {
   const [{paymentMethods}] = useBilling()
   const paymentMethod =
     paymentMethods.find(p => p.defaultPaymentMethod) || paymentMethods[0]
   return (
-    <div className={className} data-testid="payment-display">
+    <div data-testid="payment-display">
       <p>
         Your current payment card is {paymentMethod.cardType}{' '}
         <strong>{paymentMethod.cardNumber}</strong> &mdash; Expiring{' '}

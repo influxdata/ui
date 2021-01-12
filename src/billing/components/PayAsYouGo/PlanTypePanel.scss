@@ -1,9 +1,17 @@
 /* Cards */
 
 .plan-type-panel {
+  .cf-panel--body.cf-flex-box__column {
+    flex-direction: column;
+  }
   .plan-type-panel--detail {
+    flex-grow: 1;
+    flex-basis: 100%;
     margin-bottom: $cf-marg-a;
-    height: 100%;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
 
     .cf-panel--body {
       font-weight: 500;
@@ -17,7 +25,6 @@
     }
 
     .billing--update-frequency {
-      height: 100%;
       font-size: $cf-text-tiny;
       text-align: right;
       color: $g8-storm;
@@ -26,7 +33,7 @@
 }
 
 /* Section Headers */
-.section-header {
+.cf-heading.section-header {
   width: 100%;
   font-size: $cf-text-base-5;
   margin: $cf-marg-d 0;
@@ -47,12 +54,22 @@
 /* ------- Legal Agreement --------- */
 @media screen and (min-width: $cf-grid--breakpoint-sm) {
   .plan-type-panel {
+    .cf-panel--body.cf-flex-box__column {
+      flex-direction: row;
+    }
     .cf-grid--row {
       display: inline-flex;
     }
 
     .plan-type-panel--detail {
+      flex-grow: 1;
       margin-bottom: 0;
+      margin-right: $cf-marg-c;
+
+      &:last-child {
+        margin-bottom: 0;
+        margin-right: 0;
+      }
     }
   }
 }

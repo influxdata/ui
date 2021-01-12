@@ -10,7 +10,7 @@ type KV = [string, string | number]
 
 const excludeOrgID = (limitEntries: KV[]): KV[] => {
   return limitEntries.filter(
-    ([limitName, _limitValue]) => limitName !== 'orgID'
+    ([limitName]) => limitName !== 'orgID' && limitName !== 'status'
   )
 }
 
@@ -25,7 +25,9 @@ const rejectConcurrencyLimits = (limitEntries: KV[]): KV[] => {
 }
 
 const limits = (orgLimits: Limits): KV[] => {
+  console.log({orgLimits})
   const limitsByCategory = excludeOrgID(Object.entries(orgLimits))
+  console.log({limitsByCategory})
   return limitsByCategory.flatMap(([_category, limits]) =>
     rejectConcurrencyLimits(Object.entries(limits))
   )
@@ -33,6 +35,8 @@ const limits = (orgLimits: Limits): KV[] => {
 
 const OrgLimits: FC = () => {
   const [{orgLimits}] = useBilling()
+
+  console.log('orgLimits: ', orgLimits)
 
   return (
     <Grid>

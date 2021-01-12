@@ -2,37 +2,51 @@ import React, {FC, useState} from 'react'
 import {useSelector} from 'react-redux'
 import {SlideToggle, ComponentSize} from '@influxdata/clockface'
 
-import {getXColumnTimeDomainBounds} from 'src/timeMachine/selectors'
+import {getVisTable} from 'src/timeMachine/selectors'
+
+import {useVisXDomainSettings} from 'src/shared/utils/useVisDomainSettings'
 
 interface Props {
-  onSetDomain: (xDomain: [number, number]) => void
+  setDomain: (xDomain: [number, number]) => void
+  xDom: number[] | null
 }
 
-const TimeDomainAutoToggle: FC<Props> = ({onSetDomain}) => {
+const isValidXDomain = xDomain => {
+  return (
+    xDomain &&
+    xDomain.length === 2 &&
+    typeof xDomain[0] === 'number' &&
+    typeof xDomain[1] === 'number'
+  )
+}
+
+export const TimeDomainAutoToggle: FC<Props> = ({setDomain, xDom}) => {
   const [isActive, setIsActive] = useState<boolean>(false)
 
-  const timeDomain = useSelector(getXColumnTimeDomainBounds)
+  const {table} = useSelector(getVisTable)
 
-  const handleClick = (): void => {
+  const [xDomain] = useVisXDomainSettings(
+    xDom,
+    table.getColumn('_time', 'number')
+  )
+
+  const toggleActiveDomain = (): void => {
     if (!isActive) {
-      onSetDomain([timeDomain[0], timeDomain[1]])
+      setDomain([xDomain[0], xDomain[1]])
     } else {
-      onSetDomain(null)
+      setDomain(null)
     }
     setIsActive(!isActive)
   }
   return (
     <div data-testid="time-domain-toggle">
       <SlideToggle
-        style={{height: 'auto'}}
         size={ComponentSize.ExtraSmall}
         active={isActive}
-        onChange={handleClick}
-        disabled={!timeDomain}
+        onChange={toggleActiveDomain}
+        disabled={!isValidXDomain(xDomain)}
         testID="time-domain-toggle-slide"
       />
     </div>
   )
 }
-
-export default TimeDomainAutoToggle

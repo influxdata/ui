@@ -148,16 +148,6 @@ export const getXColumnSelection = (state: AppState): string => {
   return defaultXColumn(table, preferredXColumnKey)
 }
 
-export const getXColumnTimeDomainBounds = (
-  state: AppState
-): [number, number] => {
-  const {table} = getVisTable(state)
-
-  const times = table.getColumn('_time')
-
-  return times ? [times[0] as number, times[times.length - 1] as number] : null
-}
-
 export const getYColumnSelection = (state: AppState): string => {
   const {table} = getVisTable(state)
   const tm = getActiveTimeMachine(state)

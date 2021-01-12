@@ -56,7 +56,7 @@ import {AppState, NewView, ScatterViewProperties} from 'src/types'
 import HexColorSchemeDropdown from 'src/shared/components/HexColorSchemeDropdown'
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import ColumnSelector from 'src/shared/components/ColumnSelector'
-import TimeDomainAutoToggle from 'src/timeMachine/components/view_options/TimeAutoToggle'
+import {TimeDomainAutoToggle} from 'src/timeMachine/components/view_options/TimeAutoToggle'
 
 interface OwnProps {
   xColumn: string
@@ -178,7 +178,7 @@ const ScatterOptions: FunctionComponent<Props> = props => {
       />
       {xColumn === '_time' && (
         <Form.Element label="Auto Scale Domain">
-          <TimeDomainAutoToggle onSetDomain={onSetXDomain} />
+          <TimeDomainAutoToggle setDomain={onSetXDomain} xDom={xDomain} />
         </Form.Element>
       )}
       <ColumnSelector

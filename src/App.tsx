@@ -12,6 +12,7 @@ import TooltipPortal from 'src/portals/TooltipPortal'
 import NotesPortal from 'src/portals/NotesPortal'
 import Notifications from 'src/shared/components/notifications/Notifications'
 import OverlayController from 'src/overlays/components/OverlayController'
+import PageSpinner from 'src/perf/components/PageSpinner'
 const SetOrg = lazy(() => import('src/shared/containers/SetOrg'))
 const CreateOrgOverlay = lazy(() =>
   import('src/organizations/components/CreateOrgOverlay')
@@ -39,7 +40,7 @@ const App: FC<Props> = ({inPresentationMode, currentPage, theme}) => {
       <NotesPortal />
       <OverlayController />
       <TreeNav />
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<PageSpinner/>}>
         <Switch>
           <Route path="/orgs/new" component={CreateOrgOverlay} />
           <Route path="/orgs/:orgID" component={SetOrg} />

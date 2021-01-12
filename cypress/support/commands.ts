@@ -1,4 +1,5 @@
 import {NotificationEndpoint} from '../../src/types'
+import {Bucket} from '../../src/client'
 import 'cypress-file-upload'
 
 export const signin = (): Cypress.Chainable<Cypress.Response> => {
@@ -15,6 +16,25 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
         })
     })
   \*/
+
+  if (Cypress.env('inkind')) {
+    return cy.setupUser().then(response => {
+      cy.visit('/')
+      cy.get('[name="login"]').type(response.body.user.name)
+      cy.get('[name="password"]').type(Cypress.env('password'))
+      cy.get('button')
+        .contains('Login')
+        .click()
+      cy.get('button')
+        .contains('Grant Access')
+        .click()
+
+      cy.get('[href="/logout"]', {timeout: 60000}).then(() =>
+        cy.wrapOrgAndBucket()
+      )
+    })
+  }
+
   return cy
     .setupUser()
     .then(resp => {
@@ -43,14 +63,28 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
       })
     })
     .then(() => cy.location('pathname').should('not.eq', '/signin'))
-    .then(() =>
+    .then(() => cy.wrapOrgAndBucket())
+}
+
+export const wrapOrgAndBucket = (): Cypress.Chainable<Cypress.Response> => {
+  return cy
+    .request({
+      method: 'GET',
+      url: '/api/v2/orgs',
+    })
+    .then(orgsResponse => {
+      const org = orgsResponse.body.orgs[0]
+      cy.wrap(org).as('org')
+
       cy.request({
         method: 'GET',
-        url: '/api/v2/orgs',
+        url: '/api/v2/buckets',
+        qs: {orgID: org.id},
+      }).then(bucketsResponse => {
+        const buckets = bucketsResponse.body.buckets as Array<Bucket>
+        const bucket = buckets.find(b => b.name === 'defbuck')
+        cy.wrap(bucket).as('bucket')
       })
-    )
-    .then(response => {
-      cy.wrap(response.body.orgs[0]).as('org')
     })
 }
 

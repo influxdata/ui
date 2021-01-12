@@ -396,7 +396,7 @@ jobs:
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
           name: Grab compose files
-          command: git clone --branch story132 git@github.com:influxdata/monitor-ci.git
+          command: git clone git@github.com:influxdata/monitor-ci.git
       - run:
           name: Copy over the lighthouse variables
           command: |

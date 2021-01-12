@@ -59,7 +59,7 @@ function BillingPage() {
     >
       <BillingPageContext.Provider value={[state, dispatch]}>
         <Page titleTag="Billing">
-          <Page.Header fullWidth={false}>
+          <Page.Header fullWidth={false} testID="billing-page--header">
             <Page.Title title="Billing" />
             <SpinnerContainer
               spinnerComponent={<TechnoSpinner />}

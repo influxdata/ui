@@ -25,9 +25,7 @@ const rejectConcurrencyLimits = (limitEntries: KV[]): KV[] => {
 }
 
 const limits = (orgLimits: Limits): KV[] => {
-  console.log({orgLimits})
   const limitsByCategory = excludeOrgID(Object.entries(orgLimits))
-  console.log({limitsByCategory})
   return limitsByCategory.flatMap(([_category, limits]) =>
     rejectConcurrencyLimits(Object.entries(limits))
   )

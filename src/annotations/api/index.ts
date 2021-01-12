@@ -19,5 +19,18 @@ export const writeAnnotation = async (
     throw new Error(res.data?.message)
   }
 
-  return res.data
+  const transformedResponse = res.data.map(d => {
+    const newData = {
+      ...d,
+      startTime: d['start-time'],
+      endTime: d['end-time'],
+    }
+
+    delete newData['start-time']
+    delete newData['end-time']
+
+    return newData
+  })
+
+  return transformedResponse
 }

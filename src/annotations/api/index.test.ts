@@ -8,11 +8,21 @@ jest.mock('axios')
 
 describe('annotations api calls', () => {
   describe('POST - write annotations api calls', () => {
-    it('can write an annotation successfully and return the array of annotations', async () => {
+    it('can write an annotation successfully and return the array of annotations with camelcased response properties', async () => {
       const data = [
         {
           summary: 'GO PACK GO',
+          'start-time': Date.now(),
+          'end-time': Date.now(),
+          stream: 'Lambeau Field',
+        },
+      ]
+
+      const transformedData = [
+        {
+          summary: 'GO PACK GO',
           startTime: Date.now(),
+          endTime: Date.now(),
           stream: 'Lambeau Field',
         },
       ]
@@ -24,7 +34,7 @@ describe('annotations api calls', () => {
 
       expect(axios.post).toHaveBeenCalledTimes(1)
 
-      expect(response).toEqual(data)
+      expect(response).toEqual(transformedData)
     })
 
     it('handles an error and returns the error message', async () => {

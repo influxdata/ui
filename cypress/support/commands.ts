@@ -18,7 +18,10 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
   return cy
     .setupUser()
     .then(resp => {
-      cy.log('user setup response', JSON.stringify(resp, null, 2))
+      Object.entries(resp.body).forEach(([k, v]) => {
+        cy.log(k, JSON.stringify(v))
+      })
+      // cy.log('user setup response', JSON.stringify(resp, null, 2))
       cy.visit('/api/v2/signin')
     })
     .then(() => cy.get('#login').type(Cypress.env('username')))

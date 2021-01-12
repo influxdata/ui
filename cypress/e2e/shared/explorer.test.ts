@@ -765,7 +765,7 @@ describe('DataExplorer', () => {
         cy.getByTestID('time-machine-submit-button').click()
 
         // cycle through all the visualizations of the data
-        VIS_TYPES.forEach(({type}) => {
+        VIS_TYPES.forEach(type => {
           if (type !== 'mosaic' && type !== 'band') {
             // mosaic graph is behind feature flag
             cy.getByTestID('view-type--dropdown').click()

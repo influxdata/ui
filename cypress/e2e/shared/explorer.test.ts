@@ -661,7 +661,9 @@ describe('DataExplorer', () => {
     describe(`visualize with ${numLines} lines`, () => {
       beforeEach(() => {
         // POST 360 lines to the server
-        cy.writeData(lines(numLines))
+        cy.get('@org').then(({name: orgName}: Organization) => {
+          cy.writeData(lines(numLines), orgName, 'defbuck')
+        })
       })
 
       it('can view time-series data', () => {
@@ -1036,7 +1038,10 @@ describe('DataExplorer', () => {
 
   describe('refresh', () => {
     beforeEach(() => {
-      cy.writeData(lines(10))
+      cy.get('@org').then(({name: orgName}: Organization) => {
+        cy.writeData(lines(10), orgName, 'defbuck')
+      })
+
       cy.getByTestID(`selector-list m`).click()
       cy.getByTestID('time-machine-submit-button').click()
 
@@ -1082,7 +1087,9 @@ describe('DataExplorer', () => {
 
   describe('saving', () => {
     beforeEach(() => {
-      cy.writeData(lines(10))
+      cy.get('@org').then(({name: orgName}: Organization) => {
+        cy.writeData(lines(10), orgName, 'defbuck')
+      })
     })
 
     it('can open/close save as dialog and navigate inside', () => {

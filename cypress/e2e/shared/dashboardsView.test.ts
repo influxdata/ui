@@ -269,8 +269,8 @@ describe('Dashboard', () => {
   describe('variable interractions', () => {
     beforeEach(() => {
       const numLines = 360
-      cy.writeData(lines(numLines))
-      cy.get('@org').then(({id: orgID}: Organization) => {
+      cy.get('@org').then(({id: orgID, name: orgName}: Organization) => {
+        cy.writeData(lines(numLines), orgName, 'defbuck')
         cy.createDashboard(orgID).then(({body: dashboard}) => {
           cy.wrap({dashboard}).as('dashboard')
         })
@@ -533,15 +533,19 @@ describe('Dashboard', () => {
     })
 
     it('ensures that dependent variables load one another accordingly', () => {
-      cy.get('@org').then(({id: orgID}: Organization) => {
+      cy.get('@org').then(({id: orgID, name: orgName}: Organization) => {
         cy.createDashboard(orgID).then(({body: dashboard}) => {
           const now = Date.now()
-          cy.writeData([
-            `test,container_name=cool dopeness=12 ${now - 1000}000000`,
-            `test,container_name=beans dopeness=18 ${now - 1200}000000`,
-            `test,container_name=cool dopeness=14 ${now - 1400}000000`,
-            `test,container_name=beans dopeness=10 ${now - 1600}000000`,
-          ])
+          cy.writeData(
+            [
+              `test,container_name=cool dopeness=12 ${now - 1000}000000`,
+              `test,container_name=beans dopeness=18 ${now - 1200}000000`,
+              `test,container_name=cool dopeness=14 ${now - 1400}000000`,
+              `test,container_name=beans dopeness=10 ${now - 1600}000000`,
+            ],
+            orgName,
+            'defbuck'
+          )
           cy.createCSVVariable(orgID, 'static', ['beans', 'defbuck'])
           cy.createQueryVariable(
             orgID,
@@ -659,15 +663,19 @@ describe('Dashboard', () => {
     with only 4 api queries being sent to fulfill it all
   \*/
     it('can load dependent queries without much fuss', () => {
-      cy.get('@org').then(({id: orgID}: Organization) => {
+      cy.get('@org').then(({id: orgID, name: orgName}: Organization) => {
         cy.createDashboard(orgID).then(({body: dashboard}) => {
           const now = Date.now()
-          cy.writeData([
-            `test,container_name=cool dopeness=12 ${now - 1000}000000`,
-            `test,container_name=beans dopeness=18 ${now - 1200}000000`,
-            `test,container_name=cool dopeness=14 ${now - 1400}000000`,
-            `test,container_name=beans dopeness=10 ${now - 1600}000000`,
-          ])
+          cy.writeData(
+            [
+              `test,container_name=cool dopeness=12 ${now - 1000}000000`,
+              `test,container_name=beans dopeness=18 ${now - 1200}000000`,
+              `test,container_name=cool dopeness=14 ${now - 1400}000000`,
+              `test,container_name=beans dopeness=10 ${now - 1600}000000`,
+            ],
+            orgName,
+            'defbuck'
+          )
           cy.createCSVVariable(orgID, 'static', ['beans', 'defbuck'])
           cy.createQueryVariable(
             orgID,
@@ -782,8 +790,8 @@ describe('Dashboard', () => {
   // based on issue #18339
   it('should save a time format change and show in the dashboard cell card', () => {
     const numLines = 360
-    cy.writeData(lines(numLines))
-    cy.get('@org').then(({id: orgID}: Organization) => {
+    cy.get('@org').then(({id: orgID, name: orgName}: Organization) => {
+      cy.writeData(lines(numLines), orgName, 'defbuck')
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
@@ -828,8 +836,8 @@ describe('Dashboard', () => {
 
   it('can sort values in a dashboard cell', () => {
     const numLines = 360
-    cy.writeData(lines(numLines))
-    cy.get('@org').then(({id: orgID}: Organization) => {
+    cy.get('@org').then(({id: orgID, name: orgName}: Organization) => {
+      cy.writeData(lines(numLines), orgName, 'defbuck')
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)

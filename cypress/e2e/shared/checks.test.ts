@@ -10,14 +10,17 @@ describe('Checks', () => {
     cy.flush()
 
     cy.signin().then(() => {
-      cy.writeData([`${measurement} ${field}=0`, `${measurement} ${field}=1`])
-
       // visit the alerting index
-      cy.get('@org').then(({id}: Organization) =>
+      cy.get('@org').then(({id: orgID, name: orgName}: Organization) => {
+        cy.writeData(
+          [`${measurement} ${field}=0`, `${measurement} ${field}=1`],
+          orgName,
+          'defbuck'
+        )
         cy.fixture('routes').then(({orgs, alerting}) => {
-          cy.visit(`${orgs}/${id}${alerting}`)
+          cy.visit(`${orgs}/${orgID}${alerting}`)
         })
-      )
+      })
     })
     cy.get('[data-testid="resource-list--body"]', {timeout: PAGE_LOAD_SLA})
 

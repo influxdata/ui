@@ -15,7 +15,7 @@ export default register => {
       queries: [
         {
           text:
-            '// Use __PREVIOUS_RESULT__ to continue building from the previous cell\n// Write Flux script here',
+            '// Uncomment the following line to continue building from the previous cell\n// __PREVIOUS_RESULT__\n',
           editMode: 'advanced',
           builderConfig: {
             buckets: [],

@@ -19,19 +19,13 @@ describe('The Query Builder', () => {
 
     cy.signin()
 
-    cy.get('@org').then(({name: orgName}: Organization) => {
-      cy.writeData(
-        [
-          `mem,host=thrillbo-swaggins active=${generateRandomSixDigitNumber()}`,
-          `mem,host=thrillbo-swaggins cached=${generateRandomSixDigitNumber()}`,
+    cy.writeData([
+      `mem,host=thrillbo-swaggins active=${generateRandomSixDigitNumber()}`,
+      `mem,host=thrillbo-swaggins cached=${generateRandomSixDigitNumber()}`,
 
-          `mem,host=thrillbo-swaggins active=${generateRandomSixDigitNumber()}`,
-          `mem,host=thrillbo-swaggins cached=${generateRandomSixDigitNumber()}`,
-        ],
-        orgName,
-        'defbuck'
-      )
-    })
+      `mem,host=thrillbo-swaggins active=${generateRandomSixDigitNumber()}`,
+      `mem,host=thrillbo-swaggins cached=${generateRandomSixDigitNumber()}`,
+    ])
   })
 
   describe('from the Data Explorer', () => {

@@ -12,11 +12,7 @@ describe('Checks', () => {
     cy.signin().then(() => {
       // visit the alerting index
       cy.get('@org').then(({id: orgID, name: orgName}: Organization) => {
-        cy.writeData(
-          [`${measurement} ${field}=0`, `${measurement} ${field}=1`],
-          orgName,
-          'defbuck'
-        )
+        cy.writeData([`${measurement} ${field}=0`, `${measurement} ${field}=1`])
         cy.fixture('routes').then(({orgs, alerting}) => {
           cy.visit(`${orgs}/${orgID}${alerting}`)
         })

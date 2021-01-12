@@ -245,10 +245,13 @@ describe('Checks', () => {
       cy.get('@org').then(({id}: Organization) => {
         cy.fixture('routes').then(({orgs, alerting, checks}) => {
           cy.visit(`${orgs}/${id}${alerting}${checks}/${nonexistentID}/edit`)
-          cy.url().should(
-            'eq',
-            `${Cypress.config().baseUrl}${orgs}/${id}${alerting}`
-          )
+
+          const baseUrl = Cypress.config().baseUrl || ''
+          const sanitizedBaseUrl = baseUrl.endsWith('/')
+            ? baseUrl.substring(0, baseUrl.length - 1)
+            : baseUrl
+
+          cy.url().should('eq', `${sanitizedBaseUrl}${orgs}/${id}${alerting}`)
         })
       })
     })

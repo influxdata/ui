@@ -12,6 +12,7 @@ import {
 } from '@influxdata/clockface'
 import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
 import LegendOrientation from 'src/visualization/components/internal/LegendOrientation'
+import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksGenerator'
 import {
   FORMAT_OPTIONS,
   resolveTimeFormat,
@@ -155,6 +156,14 @@ const MosaicOptions: FC<Props> = ({properties, results, update}) => {
               onChange={e => update({xAxisLabel: e.target.value})}
             />
           </Form.Element>
+          <AxisTicksGenerator
+            axisName="x"
+            columnType={xColumn}
+            label="X Axis Tick Generator"
+            properties={properties}
+            results={results}
+            update={update}
+          />
           <h5 className="view-options--header">Y Axis</h5>
           <Form.Element label="Y Axis Label">
             <Input

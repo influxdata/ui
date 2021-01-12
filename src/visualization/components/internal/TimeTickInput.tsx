@@ -38,7 +38,7 @@ interface TimeTickInputProps {
   initialTickOptionValue: number | string
   label: string
   dateFormatPlaceholder?: string
-  setOptions: (optionName: string, arg: string[] | number) => void
+  update: (data: any) => void
 }
 
 export const TimeTickInput: FC<TimeTickInputProps> = props => {
@@ -48,7 +48,7 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
     initialTickOptionValue,
     label,
     dateFormatPlaceholder = 'RFC3339',
-    setOptions,
+    update,
   } = props
 
   const [tickOptionInput, setTickOptionInput] = useOneWayState(
@@ -79,13 +79,16 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
     const computedTickOptions = Array.isArray(tickOptions)
       ? tickOptions.filter(option => option !== tickOptionNameWithAxis)
       : []
-    setOptions(tickOptionNameWithoutAxis, convertedValue)
+
     if (!Number.isNaN(convertedValue)) {
       computedTickOptions.push(tickOptionNameWithAxis)
     } else if (tickOptionInput !== '') {
       setTickOptionInputStatus(ComponentStatus.Error)
     }
-    setOptions('GenerateAxisTicks', computedTickOptions)
+    update({
+      [tickOptionNameWithAxis]: convertedValue,
+      [`generate${axisName.toUpperCase()}AxisTicks`]: computedTickOptions,
+    })
   }
 
   const handleInput = (event: ChangeEvent<HTMLInputElement>) => {

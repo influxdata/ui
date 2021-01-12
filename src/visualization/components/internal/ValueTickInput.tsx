@@ -19,7 +19,7 @@ interface ValueTickInputProps {
   initialTickOptionValue: number | string
   label: string
   placeholder?: string
-  setOptions: (optionName: string, arg: string[] | number) => void
+  update: (data: any) => void
 }
 
 export const ValueTickInput: FC<ValueTickInputProps> = props => {
@@ -29,7 +29,7 @@ export const ValueTickInput: FC<ValueTickInputProps> = props => {
     initialTickOptionValue,
     label,
     placeholder,
-    setOptions,
+    update,
   } = props
   const [tickOptionInput, setTickOptionInput] = useState(
     initialTickOptionValue === initialTickOptionValue
@@ -52,14 +52,20 @@ export const ValueTickInput: FC<ValueTickInputProps> = props => {
     const filteredTickOptions = Array.isArray(tickOptions)
       ? tickOptions.filter(option => option !== tickOptionNameWithAxis)
       : []
-    setOptions(tickOptionNameWithoutAxis, convertedValue)
+
     if (convertedValue === convertedValue) {
-      setOptions('GenerateAxisTicks', [
-        ...filteredTickOptions,
-        tickOptionNameWithAxis,
-      ])
+      update({
+        [tickOptionNameWithAxis]: convertedValue,
+        [`generate${axisName.toUpperCase()}AxisTicks`]: [
+          ...filteredTickOptions,
+          tickOptionNameWithAxis,
+        ],
+      })
     } else {
-      setOptions('GenerateAxisTicks', filteredTickOptions)
+      update({
+        [tickOptionNameWithAxis]: convertedValue,
+        [`generate${axisName.toUpperCase()}AxisTicks`]: filteredTickOptions,
+      })
       if (tickOptionInput !== '') {
         setTickOptionInputStatus(ComponentStatus.Error)
       }

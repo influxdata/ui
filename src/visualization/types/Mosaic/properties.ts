@@ -53,4 +53,12 @@ export default {
   xSuffix: '',
   yPrefix: '',
   ySuffix: '',
+  generateXAxisTicks: [],
+  generateYAxisTicks: [],
+  xTotalTicks: null,
+  xTickStart: null,
+  xTickStep: null,
+  yTotalTicks: null,
+  yTickStart: null,
+  yTickStep: null,
 } as MosaicViewProperties

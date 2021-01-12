@@ -32,6 +32,7 @@ import {
   parseYBounds,
 } from 'src/shared/utils/vis'
 import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
+import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksGenerator'
 import Checkbox from 'src/shared/components/Checkbox'
 import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
 import LegendOrientation from 'src/visualization/components/internal/LegendOrientation'
@@ -252,6 +253,16 @@ const SingleStatWithLineOptions: FC<Props> = ({
           </Form.Element>
         </Grid.Column>
         <Grid.Column widthXS={Columns.Twelve} widthLG={Columns.Four}>
+          <AxisTicksGenerator
+            axisName="x"
+            columnType={xColumn}
+            label="X Axis Tick Generator"
+            properties={properties}
+            results={results}
+            update={update}
+          />
+        </Grid.Column>
+        <Grid.Column widthXS={Columns.Twelve} widthLG={Columns.Four}>
           <h5 className="view-options--header">Y Axis</h5>
           <Form.Element label="Y Axis Label">
             <Input
@@ -323,6 +334,14 @@ const SingleStatWithLineOptions: FC<Props> = ({
               </Form.Element>
             </Grid.Column>
           </Grid.Row>
+          <AxisTicksGenerator
+            axisName="y"
+            columnType={yColumn}
+            label="Y Axis Tick Generator"
+            properties={properties}
+            results={results}
+            update={update}
+          />
           <AutoDomainInput
             domain={parseYBounds(properties.axes.y.bounds)}
             onSetDomain={handleSetYDomain}

@@ -68,4 +68,13 @@ export default {
       scale: 'linear',
     } as Axis,
   },
+
+  generateXAxisTicks: [],
+  generateYAxisTicks: [],
+  xTotalTicks: null,
+  xTickStart: null,
+  xTickStep: null,
+  yTotalTicks: null,
+  yTickStart: null,
+  yTickStep: null,
 } as XYViewProperties

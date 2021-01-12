@@ -77,4 +77,12 @@ export default {
     isEnforced: true,
     digits: 2,
   },
+  generateXAxisTicks: [],
+  generateYAxisTicks: [],
+  xTotalTicks: null,
+  xTickStart: null,
+  xTickStep: null,
+  yTotalTicks: null,
+  yTickStart: null,
+  yTickStep: null,
 } as LinePlusSingleStatProperties

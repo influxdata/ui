@@ -26,4 +26,13 @@ export default {
   binSize: 10,
   note: '',
   showNoteWhenEmpty: false,
+
+  generateXAxisTicks: [],
+  generateYAxisTicks: [],
+  xTotalTicks: null,
+  xTickStart: null,
+  xTickStep: null,
+  yTotalTicks: null,
+  yTickStart: null,
+  yTickStep: null,
 } as HeatmapViewProperties

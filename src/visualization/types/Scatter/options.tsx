@@ -13,6 +13,7 @@ import {
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import HexColorSchemeDropdown from 'src/visualization/components/internal/HexColorSchemeDropdown'
 import LegendOrientation from 'src/visualization/components/internal/LegendOrientation'
+import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksGenerator'
 
 import {
   FORMAT_OPTIONS,
@@ -224,6 +225,14 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
               </Form.Element>
             </Grid.Column>
           </Grid.Row>
+          <AxisTicksGenerator
+            axisName="x"
+            columnType={xColumn}
+            label="X Axis Tick Generator"
+            properties={properties}
+            results={results}
+            update={update}
+          />
           <AutoDomainInput
             domain={properties.xDomain as [number, number]}
             onSetDomain={domain => {
@@ -268,6 +277,14 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
               </Form.Element>
             </Grid.Column>
           </Grid.Row>
+          <AxisTicksGenerator
+            axisName="y"
+            columnType={yColumn}
+            label="Y Axis Tick Generator"
+            properties={properties}
+            results={results}
+            update={update}
+          />
           <AutoDomainInput
             domain={properties.yDomain as [number, number]}
             onSetDomain={domain => {

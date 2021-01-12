@@ -20,14 +20,13 @@ export const writeAnnotation = async (
   }
 
   const transformedResponse = res.data.map(d => {
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    const {'start-time': startTime, 'end-time': endTime, ...props} = d
     const newData = {
-      ...d,
       startTime: d['start-time'],
       endTime: d['end-time'],
+      ...props,
     }
-
-    delete newData['start-time']
-    delete newData['end-time']
 
     return newData
   })

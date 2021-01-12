@@ -30,7 +30,6 @@ const PlanTypePanel: FC = () => {
           <Grid.Row>
             <Grid.Column widthSM={Columns.Four}>
               <Panel
-                size={ComponentSize.ExtraSmall}
                 backgroundColor={InfluxColors.Onyx}
                 className="plan-type-panel--detail"
               >
@@ -42,7 +41,6 @@ const PlanTypePanel: FC = () => {
             </Grid.Column>
             <Grid.Column widthSM={Columns.Four}>
               <Panel
-                size={ComponentSize.ExtraSmall}
                 backgroundColor={InfluxColors.Onyx}
                 className="plan-type-panel--detail"
               >

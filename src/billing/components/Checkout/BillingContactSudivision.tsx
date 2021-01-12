@@ -34,7 +34,7 @@ const BillingContactSubdivision = props => {
           <Input
             onChange={({target}) => onChange(target.value)}
             name="subdivision"
-            title="Subdivision"
+            titleText="Subdivision"
             value={subdivision}
           />
         </Form.Element>

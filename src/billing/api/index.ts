@@ -193,7 +193,7 @@ export const getInvoices = (): Promise<any> => {
 
 export const getRegion = (): Promise<any> => {
   const region: Region = {
-    title: 'region',
+    title: 'EU Frankfurt',
     isBeta: false,
     isAvailable: true,
     provider: 'AWS',

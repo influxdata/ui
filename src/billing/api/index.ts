@@ -1,12 +1,18 @@
-import {getBillingAccount as getBillingAccountGenerated} from 'src/client/unityRoutes'
+import {
+  getBillingAccount as getBillingAccountGenerated,
+  getBillingPaymentMethods,
+  getBillingCc,
+} from 'src/client/unityRoutes'
 
 import {RemoteDataState} from 'src/types'
 import {
   Invoices,
+  CreditCardParams,
   OrgLimits,
   LimitStatus,
   Region,
   BillingNotifySettings,
+  PaymentMethods,
 } from 'src/types/billing'
 import {Account} from 'src/client/unityRoutes'
 
@@ -30,10 +36,12 @@ export const getBillingAccount = (): ReturnType<typeof getBillingAccountGenerate
     billingContact: {
       companyName: 'InfluxDB',
       email: 'info@influxdata.com',
-      firstName: 'Paul',
-      lastName: 'Dix',
+      firstName: 'Boatie',
+      lastName: 'McBoatface',
       country: 'USA',
-      street1: '123 Powers St, Brooklyn NY',
+      street1: '123 Powers St',
+      subdivision: 'NY',
+      city: 'Brooklyn',
       postalCode: 30000,
     },
     deletable: false,
@@ -50,6 +58,40 @@ export const getBillingAccount = (): ReturnType<typeof getBillingAccountGenerate
   return makeResponse(200, account, 'getBillingAccount')
 }
 
+export const getPaymentMethods = (): ReturnType<typeof getBillingPaymentMethods> => {
+  const account: PaymentMethods = [
+    {
+      cardType: 'Visa',
+      cardNumber: '4242424242424242',
+      expirationMonth: '04',
+      expirationYear: '22',
+      defaultPaymentMethod: true,
+    },
+    {
+      cardType: 'MasterCard',
+      cardNumber: '5242424242424242',
+      expirationMonth: '05',
+      expirationYear: '25',
+      defaultPaymentMethod: false,
+    },
+  ]
+  return makeResponse(200, account, 'getPaymentMethods')
+}
+
+export const getBillingCreditCard = (): ReturnType<typeof getBillingCc> => {
+  const cc: CreditCardParams = {
+    id: 'id123',
+    tenantID: 'tenant123',
+    key: 'key123',
+    signature: 'John Hancock',
+    token: 't0k3n',
+    style: 'fresh',
+    submitEnabled: 'true',
+    url: 'you-are-el',
+  }
+  return makeResponse(200, cc, 'getBillingCreditCard')
+}
+
 export const getBillingNotificationSettings = (): ReturnType<typeof getBillingAccountGenerated> => {
   const account: BillingNotifySettings = {
     isNotify: true,
@@ -57,7 +99,7 @@ export const getBillingNotificationSettings = (): ReturnType<typeof getBillingAc
     notifyEmail: 'asalem@influxdata.com',
     status: RemoteDataState.Done,
   }
-  return makeResponse(200, account, 'getBillingAccount')
+  return makeResponse(200, account, 'getBillingNotificationSettings')
 }
 
 export const getOrgRateLimits = (): Promise<any> => {

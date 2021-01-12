@@ -1,39 +1,42 @@
 import React, {Fragment} from 'react'
-import {Panel, Grid, GridRow, ComponentSize} from '@influxdata/clockface'
+import {Panel, Grid, ComponentSize} from '@influxdata/clockface'
 
-import BillingContactItem from './BillingContactItem'
-import BillingPanelFooter from './BillingPanelFooter'
+import BillingContactItem from 'src/billing/components/BillingContactItem'
+import {useBilling} from 'src/billing/components/BillingPage'
 
-const BillingContactDisplay = ({contact, isShowingNext, onNextStep}) => {
-  const isFooterDisabled =
-    isShowingNext === undefined && onNextStep == undefined
+const BillingContactDisplay = () => {
+  const [
+    {
+      account: {billingContact: contact},
+    },
+  ] = useBilling()
 
   return (
     <Fragment>
       <Panel.Body size={ComponentSize.Large} testID="billing-contact">
         <Grid>
-          <GridRow>
+          <Grid.Row>
             <BillingContactItem header="First Name">
               {contact.firstName}
             </BillingContactItem>
             <BillingContactItem header="Last Name">
               {contact.lastName}
             </BillingContactItem>
-          </GridRow>
-          <GridRow>
+          </Grid.Row>
+          <Grid.Row>
             <BillingContactItem header="Company Name">
               {contact.companyName}
             </BillingContactItem>
             <BillingContactItem header="Country">
               {contact.country}
             </BillingContactItem>
-          </GridRow>
-          <GridRow>
+          </Grid.Row>
+          <Grid.Row>
             <BillingContactItem header="Physical Address">
               {contact.street1}, {contact.street2}
             </BillingContactItem>
-          </GridRow>
-          <GridRow>
+          </Grid.Row>
+          <Grid.Row>
             <BillingContactItem header="City">
               {contact.city}
             </BillingContactItem>
@@ -43,16 +46,9 @@ const BillingContactDisplay = ({contact, isShowingNext, onNextStep}) => {
             <BillingContactItem header="Postal Code">
               {contact.postalCode}
             </BillingContactItem>
-          </GridRow>
+          </Grid.Row>
         </Grid>
       </Panel.Body>
-      {!isFooterDisabled && (
-        <BillingPanelFooter
-          confirmText="Next"
-          onNextStep={onNextStep}
-          hide={!isShowingNext}
-        />
-      )}
     </Fragment>
   )
 }

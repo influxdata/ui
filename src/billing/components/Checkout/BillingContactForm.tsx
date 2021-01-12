@@ -1,14 +1,13 @@
-import React, {Fragment} from 'react'
+import React, {FC, useState} from 'react'
 import {
   Form,
   Input,
+  Columns,
   SelectDropdown,
   ComponentColor,
   Button,
   ComponentStatus,
   Grid,
-  GridRow,
-  GridColumn,
   Panel,
   ComponentSize,
   FlexBox,
@@ -18,267 +17,107 @@ import {
 } from '@influxdata/clockface'
 
 import BillingContactSubdivision from 'src/billing/components/Checkout/BillingContactSudivision'
+import {states, countries} from 'src/billing/constants'
 
 import 'babel-polyfill'
 import axios from 'axios'
 import {convertKeysToSnakecase} from 'src/billing/utils/checkout'
+import {useBilling} from 'src/billing/components/BillingPage'
 
-class BillingContactForm extends React.Component {
-  constructor(props) {
-    super(props)
+type Props = {
+  onSubmitForm: () => void
+}
 
-    this.state = this.defaultState()
+const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
+  const [
+    {
+      account: {billingContact},
+    },
+  ] = useBilling()
+
+  const [firstName, setFirstName] = useState(billingContact.firstName)
+  const [lastName, setLastName] = useState(billingContact.lastName)
+  const [companyName, setCompanyName] = useState(billingContact.companyName)
+  const [country, setCountry] = useState(billingContact.country)
+  const [street1, setStreet1] = useState(billingContact.street1)
+  const [street2, setStreet2] = useState(billingContact.street2)
+  const [city, setCity] = useState(billingContact.city)
+  const [subdivision, setSubdivision] = useState(billingContact.subdivision)
+  const [postalCode, setPostalCode] = useState(billingContact.postalCode)
+
+  const [firstNameError, setFirstNameError] = useState(false)
+  const [lastNameError, setLastNameError] = useState(false)
+  const [companyNameError, setCompanyNameError] = useState(false)
+  const [countryError, setCountryError] = useState(false)
+  const [cityError, setCityError] = useState(false)
+  const [subdivisionError, setSubdivisionError] = useState(false)
+  const [isSubmittingContact, setIsSubmittingContact] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+
+  const requiredErrorText = 'This is a required field'
+
+  const handleSetFirstName = (e): void => {
+    const {value} = e.target
+    setFirstNameError(value.trim() === '')
+    setFirstName(value)
   }
 
-  render() {
-    const {
-      firstName,
-      lastName,
-      companyName,
-      country,
-      street1,
-      street2,
-      subdivision,
-      city,
-      postalCode,
-      firstNameError,
-      lastNameError,
-      companyNameError,
-      countryError,
-      subdivisionError,
-      cityError,
-      isSubmittingContact,
-      errorMessage,
-    } = this.state
-
-    const {states, countries} = this.props
-
-    const requiredErrorText = 'This is a required field'
-
-    return (
-      <Fragment>
-        <Panel.Body size={ComponentSize.Large}>
-          {errorMessage && (
-            <Alert
-              color={ComponentColor.Danger}
-              icon={IconFont.AlertTriangle}
-              className="billing-contact--alert"
-            >
-              {errorMessage}
-            </Alert>
-          )}
-          <Form>
-            <Grid>
-              <GridRow>
-                <GridColumn widthXS="12" widthSM="4">
-                  <Form.Element
-                    label="First Name"
-                    required={true}
-                    errorMessage={firstNameError && requiredErrorText}
-                  >
-                    <Input
-                      autoFocus={true}
-                      onChange={this.handleRequiredInputChange}
-                      name="firstName"
-                      title="First Name"
-                      value={firstName}
-                    />
-                  </Form.Element>
-                </GridColumn>
-                <GridColumn widthXS="12" widthSM="4">
-                  <Form.Element
-                    label="Last Name"
-                    required={true}
-                    errorMessage={lastNameError && requiredErrorText}
-                  >
-                    <Input
-                      onChange={this.handleRequiredInputChange}
-                      name="lastName"
-                      title="Last Name"
-                      value={lastName}
-                    />
-                  </Form.Element>
-                </GridColumn>
-              </GridRow>
-              <GridRow>
-                <GridColumn widthXS="12" widthSM="4">
-                  <Form.Element
-                    label="Company Name"
-                    required={true}
-                    errorMessage={companyNameError && requiredErrorText}
-                  >
-                    <Input
-                      onChange={this.handleRequiredInputChange}
-                      name="companyName"
-                      title="Company Name"
-                      value={companyName}
-                    />
-                  </Form.Element>
-                </GridColumn>
-                <GridColumn widthXS="12" widthSM="4">
-                  <Form.Element
-                    label="Country"
-                    required={true}
-                    errorMessage={countryError && requiredErrorText}
-                  >
-                    <SelectDropdown
-                      titleText="Country"
-                      options={countries}
-                      selectedOption={country}
-                      onSelect={this.handleChangeCountry}
-                      buttonColor={ComponentColor.Default}
-                    />
-                  </Form.Element>
-                </GridColumn>
-              </GridRow>
-              <GridRow>
-                <GridColumn widthXS="12" widthSM="4">
-                  <Form.Element label="Address Street 1">
-                    <Input
-                      onChange={this.handleInputChange}
-                      name="street1"
-                      title="Address Street 1"
-                      value={street1}
-                    />
-                  </Form.Element>
-                </GridColumn>
-                <GridColumn widthXS="12" widthSM="4">
-                  <Form.Element label="Address Street 2">
-                    <Input
-                      onChange={this.handleInputChange}
-                      name="street2"
-                      title="Address Street 2"
-                      value={street2}
-                    />
-                  </Form.Element>
-                </GridColumn>
-              </GridRow>
-              <GridRow>
-                <GridColumn widthXS="12" widthSM="4">
-                  <Form.Element
-                    label="City"
-                    required={true}
-                    errorMessage={cityError && requiredErrorText}
-                  >
-                    <Input
-                      onChange={this.handleRequiredInputChange}
-                      name="city"
-                      title="City"
-                      value={city}
-                    />
-                  </Form.Element>
-                </GridColumn>
-                <GridColumn widthXS="12" widthSM="4">
-                  <BillingContactSubdivision
-                    states={states}
-                    country={country}
-                    subdivision={subdivision}
-                    errorMessage={subdivisionError && requiredErrorText}
-                    onChange={this.handleChangeSubdivision}
-                  />
-                </GridColumn>
-                <GridColumn widthXS="12" widthSM="4">
-                  <Form.Element label="Postal Code">
-                    <Input
-                      onChange={this.handleInputChange}
-                      name="postalCode"
-                      title="Postal Code"
-                      value={postalCode}
-                    />
-                  </Form.Element>
-                </GridColumn>
-              </GridRow>
-            </Grid>
-          </Form>
-        </Panel.Body>
-        <Panel.Footer>
-          <FlexBox justifyContent={JustifyContent.Center}>
-            <Button
-              text="Save Contact Info"
-              onClick={this.handleConfirmContactInfo}
-              color={ComponentColor.Primary}
-              size={ComponentSize.Large}
-              status={
-                isSubmittingContact
-                  ? ComponentStatus.Loading
-                  : ComponentStatus.Default
-              }
-            />
-          </FlexBox>
-        </Panel.Footer>
-      </Fragment>
-    )
+  const handleSetLastName = (e): void => {
+    const {value} = e.target
+    setLastNameError(value.trim() === '')
+    setLastName(value)
   }
 
-  defaultState() {
-    const contact = this.props.contact
-    return {
-      firstName: contact ? contact.firstName : '',
-      firstNameError: false,
-      lastName: contact ? contact.lastName : '',
-      lastNameError: false,
-      companyName: contact ? contact.companyName : '',
-      companyNameError: false,
-      street1: (contact && contact.street1) || '',
-      street2: (contact && contact.street2) || '',
-      postalCode: (contact && contact.postalCode) || '',
-      country: (contact && contact.country) || 'United States',
-      countryError: false,
-      city: (contact && contact.city) || '',
-      cityError: false,
-      subdivision: (contact && contact.subdivision) || this.props.states[0],
-      subdivisionError: false,
-      errorMessage: '',
-    }
+  const handleCityChange = (e): void => {
+    const {value} = e.target
+    setCityError(value.trim() === '')
+    setCity(value)
   }
 
-  handleRequiredInputChange = e => {
-    const {name, value} = e.target
-
-    const errorField = `${name}Error`
-    const isError = value.trim() === ''
-
-    this.setState({
-      [name]: value,
-      [errorField]: isError,
-    })
+  const handleStreet1Change = (e): void => {
+    const {value} = e.target
+    setStreet1(value)
   }
 
-  handleInputChange = e => {
-    const {name, value} = e.target
-    this.setState({
-      [name]: value,
-    })
+  const handleStreet2Change = (e): void => {
+    const {value} = e.target
+    setStreet2(value)
   }
 
-  handleChangeSubdivision = subdivision => {
-    this.setState({
-      subdivision,
-      subdivisionError: subdivision === '',
-    })
+  const handlePostalCodeChange = (e): void => {
+    const {value} = e.target
+    setPostalCode(value)
   }
 
-  handleChangeCountry = country => {
-    const subdivision = country === 'United States' ? this.props.states[0] : ''
-
-    this.setState({
-      country,
-      countryError: country === '',
-      subdivision,
-      subdivisionError: subdivision === '',
-    })
+  const handleSetCompanyName = (e): void => {
+    const {value} = e.target
+    setCompanyNameError(value.trim() === '')
+    setCompanyName(value)
   }
 
-  handleSubmitContactInfo = async contact => {
+  const handleChangeSubdivision = subdivision => {
+    setSubdivisionError(subdivision === '')
+    setSubdivision(subdivision)
+  }
+
+  const handleChangeCountry = (nation: string) => {
+    const state = nation === 'United States' ? states[0] : ''
+    setCountry(nation)
+    setCountryError(country === '')
+    setSubdivision(state)
+    setSubdivisionError(state === '')
+  }
+
+  const handleSubmitContactInfo = async contact => {
     const payload = {
       contact: convertKeysToSnakecase(contact),
     }
-    this.setState({isSubmittingContact: true})
+    setIsSubmittingContact(true)
     await axios.put(`APIPrivate/billing_contact`, payload)
-    this.setState({isSubmittingContact: false})
+    setIsSubmittingContact(false)
   }
 
-  isContactInfoValid = ({
+  const isContactInfoValid = ({
     firstName,
     lastName,
     companyName,
@@ -287,52 +126,41 @@ class BillingContactForm extends React.Component {
     subdivision,
   }) => {
     if (firstName.trim() === '') {
-      this.setState({firstNameError: true})
+      setFirstNameError(true)
       return false
     }
 
     if (lastName.trim() === '') {
-      this.setState({lastNameError: true})
+      setLastNameError(true)
       return false
     }
 
     if (companyName.trim() === '') {
-      this.setState({companyNameError: true})
+      setCompanyNameError(true)
       return false
     }
 
     if (country.trim() === '') {
-      this.setState({countryError: true})
+      setCountryError(true)
       return false
     }
 
     if (city.trim() === '') {
-      this.setState({cityError: true})
+      setCityError(true)
       return false
     }
 
     if (subdivision.trim() === '') {
-      this.setState({subdivisionError: true})
+      setSubdivisionError(true)
       return false
     }
 
     return true
   }
 
-  handleConfirmContactInfo = async e => {
+  const handleConfirmContactInfo = async e => {
     e.preventDefault()
 
-    const {
-      firstName,
-      lastName,
-      companyName,
-      country,
-      street1,
-      street2,
-      city,
-      subdivision,
-      postalCode,
-    } = this.state
     const contact = {
       firstName,
       lastName,
@@ -345,19 +173,171 @@ class BillingContactForm extends React.Component {
       postalCode,
     }
 
-    if (this.isContactInfoValid(contact)) {
+    if (isContactInfoValid(contact)) {
       try {
-        await this.handleSubmitContactInfo(contact)
-        this.props.onSubmit(contact)
+        await handleSubmitContactInfo(contact)
+        onSubmitForm()
       } catch (_e) {
-        this.setState({
-          errorMessage:
-            'Could not update contact information, please try again.',
-          isSubmittingContact: false,
-        })
+        setErrorMessage(
+          'Could not update contact information, please try again.'
+        )
+        setIsSubmittingContact(false)
       }
     }
   }
+
+  return (
+    <>
+      <Panel.Body size={ComponentSize.Large}>
+        {errorMessage && (
+          <Alert
+            color={ComponentColor.Danger}
+            icon={IconFont.AlertTriangle}
+            className="billing-contact--alert"
+          >
+            {errorMessage}
+          </Alert>
+        )}
+        <Form>
+          <Grid>
+            <Grid.Row>
+              <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
+                <Form.Element
+                  label="First Name"
+                  required={true}
+                  errorMessage={firstNameError && requiredErrorText}
+                >
+                  <Input
+                    autoFocus={true}
+                    onChange={handleSetFirstName}
+                    name="firstName"
+                    titleText="First Name"
+                    value={firstName}
+                  />
+                </Form.Element>
+              </Grid.Column>
+              <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
+                <Form.Element
+                  label="Last Name"
+                  required={true}
+                  errorMessage={lastNameError && requiredErrorText}
+                >
+                  <Input
+                    onChange={handleSetLastName}
+                    name="lastName"
+                    titleText="Last Name"
+                    value={lastName}
+                  />
+                </Form.Element>
+              </Grid.Column>
+            </Grid.Row>
+            <Grid.Row>
+              <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
+                <Form.Element
+                  label="Company Name"
+                  required={true}
+                  errorMessage={companyNameError && requiredErrorText}
+                >
+                  <Input
+                    onChange={handleSetCompanyName}
+                    name="companyName"
+                    titleText="Company Name"
+                    value={companyName}
+                  />
+                </Form.Element>
+              </Grid.Column>
+              <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
+                <Form.Element
+                  label="Country"
+                  required={true}
+                  errorMessage={countryError && requiredErrorText}
+                >
+                  <SelectDropdown
+                    options={countries}
+                    selectedOption={country}
+                    onSelect={handleChangeCountry}
+                    buttonColor={ComponentColor.Default}
+                  />
+                </Form.Element>
+              </Grid.Column>
+            </Grid.Row>
+            <Grid.Row>
+              <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
+                <Form.Element label="Address Street 1">
+                  <Input
+                    onChange={handleStreet1Change}
+                    name="street1"
+                    titleText="Address Street 1"
+                    value={street1}
+                  />
+                </Form.Element>
+              </Grid.Column>
+              <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
+                <Form.Element label="Address Street 2">
+                  <Input
+                    onChange={handleStreet2Change}
+                    name="street2"
+                    titleText="Address Street 2"
+                    value={street2}
+                  />
+                </Form.Element>
+              </Grid.Column>
+            </Grid.Row>
+            <Grid.Row>
+              <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
+                <Form.Element
+                  label="City"
+                  required={true}
+                  errorMessage={cityError && requiredErrorText}
+                >
+                  <Input
+                    onChange={handleCityChange}
+                    name="city"
+                    titleText="City"
+                    value={city}
+                  />
+                </Form.Element>
+              </Grid.Column>
+              <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
+                <BillingContactSubdivision
+                  states={states}
+                  country={country}
+                  subdivision={subdivision}
+                  errorMessage={subdivisionError && requiredErrorText}
+                  onChange={handleChangeSubdivision}
+                />
+              </Grid.Column>
+              <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
+                <Form.Element label="Postal Code">
+                  <Input
+                    onChange={handlePostalCodeChange}
+                    name="postalCode"
+                    titleText="Postal Code"
+                    value={postalCode}
+                  />
+                </Form.Element>
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        </Form>
+      </Panel.Body>
+      <Panel.Footer>
+        <FlexBox justifyContent={JustifyContent.Center}>
+          <Button
+            text="Save Contact Info"
+            onClick={handleConfirmContactInfo}
+            color={ComponentColor.Primary}
+            size={ComponentSize.Large}
+            status={
+              isSubmittingContact
+                ? ComponentStatus.Loading
+                : ComponentStatus.Default
+            }
+          />
+        </FlexBox>
+      </Panel.Footer>
+    </>
+  )
 }
 
 export default BillingContactForm

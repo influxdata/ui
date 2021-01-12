@@ -11,12 +11,16 @@ import {
   setLimitsStateStatus,
   setOrgLimits,
   setOrgLimitStatus,
+  setPaymentMethods,
+  setPaymentMethodsStatus,
   setRegion,
   setRegionStatus,
 } from 'src/billing/reducers'
 import {
   getBillingAccount,
+  getBillingCreditCard,
   getBillingNotificationSettings,
+  getPaymentMethods as apiGetPaymentMethods,
   getLimitsStatus as apiGetLimitsStatus,
   getInvoices as apiGetInvoices,
   getRegion as apiGetRegion,
@@ -106,6 +110,37 @@ export const getOrgLimits = async (dispatch: Dispatch<Action>) => {
     console.error(error)
 
     dispatch(setOrgLimitStatus(RemoteDataState.Error))
+  }
+}
+
+export const getPaymentMethods = async (dispatch: Dispatch<Action>) => {
+  try {
+    dispatch(setPaymentMethodsStatus(RemoteDataState.Loading))
+
+    const [paymentMethodsResp, ccResp] = await Promise.all([
+      apiGetPaymentMethods(),
+      getBillingCreditCard(),
+    ])
+
+    if (paymentMethodsResp.status !== 200) {
+      throw new Error(paymentMethodsResp.data.message)
+    }
+
+    if (ccResp.status !== 200) {
+      throw new Error(ccResp.data.message)
+    }
+
+    dispatch(
+      setPaymentMethods(
+        paymentMethodsResp.data,
+        ccResp.data,
+        RemoteDataState.Done
+      )
+    )
+  } catch (error) {
+    console.error(error)
+
+    dispatch(setPaymentMethodsStatus(RemoteDataState.Error))
   }
 }
 

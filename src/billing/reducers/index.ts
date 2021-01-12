@@ -6,6 +6,7 @@ import {RemoteDataState} from 'src/types'
 import {
   Account,
   BillingNotifySettings,
+  CreditCardParams,
   Invoices,
   LimitStatus,
   OrgLimits,
@@ -16,11 +17,13 @@ import {
 export interface BillingState {
   account: Account
   billingSettings: BillingNotifySettings
+  creditCards: CreditCardParams
   invoices: Invoices
   invoicesStatus: RemoteDataState
   limitsStatus: LimitStatus
   orgLimits: OrgLimits
   paymentMethods: PaymentMethods
+  paymentMethodsStatus: RemoteDataState
   region: Region
 }
 
@@ -28,6 +31,7 @@ export const initialState = (): BillingState => ({
   account: {
     status: RemoteDataState.NotStarted,
   },
+  creditCardParams: null,
   billingSettings: {
     balanceThreshold: 0,
     isNotify: false,
@@ -42,6 +46,7 @@ export const initialState = (): BillingState => ({
   orgLimits: {
     status: RemoteDataState.NotStarted,
   },
+  paymentMethodsStatus: RemoteDataState.NotStarted,
   paymentMethods: null,
   region: null,
 })
@@ -115,6 +120,26 @@ export const setOrgLimitStatus = (status: RemoteDataState) =>
     status,
   } as const)
 
+export const setPaymentMethods = (
+  paymentMethods: PaymentMethods,
+  creditCards: CreditCardParams,
+  paymentMethodsStatus: RemoteDataState
+) =>
+  ({
+    type: 'SET_PAYMENT_METHODS',
+    paymentMethods,
+    creditCards,
+    paymentMethodsStatus,
+  } as const)
+
+export const setPaymentMethodsStatus = (
+  paymentMethodsStatus: RemoteDataState
+) =>
+  ({
+    type: 'SET_PAYMENT_METHODS_STATUS',
+    paymentMethodsStatus,
+  } as const)
+
 export const setRegion = (region: Region) =>
   ({
     type: 'SET_REGION',
@@ -139,6 +164,8 @@ export type Action =
   | ReturnType<typeof setLimitsStateStatus>
   | ReturnType<typeof setOrgLimits>
   | ReturnType<typeof setOrgLimitStatus>
+  | ReturnType<typeof setPaymentMethods>
+  | ReturnType<typeof setPaymentMethodsStatus>
   | ReturnType<typeof setRegion>
   | ReturnType<typeof setRegionStatus>
 
@@ -226,6 +253,18 @@ export const billingReducer = (
         }
 
         draftState.orgLimits.status = action.status
+        return
+      }
+      case 'SET_PAYMENT_METHODS': {
+        draftState.paymentMethods = action.paymentMethods
+        draftState.creditCards = action.creditCards
+        draftState.paymentMethodsStatus = action.paymentMethodsStatus
+
+        return
+      }
+      case 'SET_PAYMENT_METHODS_STATUS': {
+        draftState.paymentMethodsStatus = action.paymentMethodsStatus
+
         return
       }
       case 'SET_REGION': {

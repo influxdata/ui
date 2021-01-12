@@ -5,6 +5,7 @@ import {
   Account as GenAccount,
   BillingNotifySettings as GenBillingNotifySettings,
   Invoice as GenInvoice,
+  PaymentMethod as GenPaymentMethod,
 } from 'src/client/unityRoutes'
 import {
   RemoteDataState,
@@ -42,7 +43,7 @@ interface BillingContact {
   postalCode: number
 }
 
-interface CreditCardParams {
+export interface CreditCardParams {
   id: string
   tenantID: string
   key: string
@@ -63,13 +64,7 @@ export interface Account extends GenAccount {
   status: RemoteDataState
 }
 
-interface PaymentMethod {
-  cardType: string
-  cardNumber: string
-  expirationMonth: string
-  expirationYear: string
-  defaultPaymentMethod: boolean
-}
+export interface PaymentMethod extends GenPaymentMethod {}
 
 export type PaymentMethods = PaymentMethod[]
 

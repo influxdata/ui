@@ -20,7 +20,7 @@ class BillingCancelled extends Component {
 
   render() {
     const {region, account, invoices, paymentMethods} = this.props
-    const {contact, countries, states, ccPageParams} = this.context
+    const {ccPageParams} = this.context
 
     return (
       <FlexBox
@@ -34,13 +34,7 @@ class BillingCancelled extends Component {
           paymentMethods={paymentMethods}
           hostedPage={ccPageParams}
         />
-        <BillingContactInfo
-          countries={countries}
-          states={states}
-          contact={contact}
-          hide={false}
-          basePath={'privateAPI/billing'}
-        />
+        <BillingContactInfo />
       </FlexBox>
     )
   }

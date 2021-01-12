@@ -13,6 +13,7 @@ import {
   Button,
   ComponentColor,
   ComponentStatus,
+  InputType,
 } from '@influxdata/clockface'
 import {useBilling} from 'src/billing/components/BillingPage'
 import axios from 'axios'
@@ -85,14 +86,14 @@ const NotificationSettingsOverlay = ({onHideOverlay, isOverlayVisible}) => {
               <>
                 <Form.Element label="Email Address">
                   <Input
-                    type="text"
+                    type={InputType.Text}
                     value={notifyEmail}
                     onChange={onEmailChange}
                   />
                 </Form.Element>
                 <Form.Element label="Send email when usage bill exceeds">
                   <Input
-                    type="number"
+                    type={InputType.Number}
                     min={10}
                     value={balanceThreshold}
                     onChange={onBalanceThresholdChange}

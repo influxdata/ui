@@ -588,23 +588,18 @@ components:
       properties:
         cardType:
           description: name of credit card vendor
-          readOnly: true
           type: string
         cardNumber:
           description: masked credit card number
           type: string
-          readOnly: true
         expirationMonth:
           description: month of expiration
-          readOnly: true
           type: string
         expirationYear:
           description: year of expiration
-          readOnly: true
           type: string
         defaultPaymentMethod:
           description: this the default payment method
-          readOnly: true
           type: boolean
       required: [cardType, cardNumber, expirationMonth, expirationYear]
     PaymentMethods:

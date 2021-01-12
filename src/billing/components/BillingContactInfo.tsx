@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {FC, useState} from 'react'
 import classnames from 'classnames'
 import {
   Button,
@@ -9,101 +9,62 @@ import {
 
 import BillingContactForm from 'src/billing/components/Checkout/BillingContactForm'
 import BillingContactDisplay from 'src/billing/components/BillingContactDisplay'
+import {useBilling} from 'src/billing/components/BillingPage'
 
 import 'babel-polyfill'
 
-class BillingContactInfo extends React.Component {
-  constructor(props) {
-    super(props)
+const BillingContactInfo: FC = () => {
+  const [
+    {
+      account: {billingContact},
+    },
+  ] = useBilling()
 
-    // Contact is created during signup but city (required) is not collected then
-    const isFirstContactSaved = props.contact && props.contact.city
+  // Contact is created during signup but city (required) is not collected then
+  const isFirstContactSaved = billingContact && billingContact.city
 
-    this.state = {
-      isEditing: !isFirstContactSaved,
-      contact: this.props.contact,
-      isFirstContactSaved,
-    }
+  const [isEditing, setIsEditing] = useState(!isFirstContactSaved)
 
-    this.csrf_token = document.querySelector('meta[name=csrf]').content
+  const handleSubmitEditForm = () => {
+    setIsEditing(false)
+    // TODO(ariel): make a request to get the most updated info
   }
 
-  render() {
-    const {isEditing, contact, isFirstContactSaved} = this.state
-    const {
-      countries,
-      states,
-      showNext,
-      onNextStep,
-      basePath,
-      className,
-    } = this.props
+  const panelClass = classnames('checkout-panel billing-contact-panel', {
+    hide: false,
+  })
 
-    const panelClass = classnames(
-      'checkout-panel billing-contact-panel',
-      className,
-      {
-        hide: this.props.hide,
-      }
-    )
-
-    return (
-      <Panel className={panelClass}>
-        <Panel.Header size={ComponentSize.Large}>
-          <h4>
-            {isEditing ? 'Enter Contact Information' : 'Contact Information'}
-          </h4>
-          {isEditing ? (
-            isFirstContactSaved && (
-              <Button
-                color={ComponentColor.Default}
-                onClick={this.handleCancelEditing}
-                text="Cancel Change"
-                size={ComponentSize.Small}
-              />
-            )
-          ) : (
+  return (
+    <Panel className={panelClass}>
+      <Panel.Header size={ComponentSize.Large}>
+        <h4>
+          {isEditing ? 'Enter Contact Information' : 'Contact Information'}
+        </h4>
+        {isEditing ? (
+          isFirstContactSaved && (
             <Button
               color={ComponentColor.Default}
-              onClick={this.handleStartEditing}
-              text="Edit Information"
+              onClick={() => setIsEditing(false)}
+              text="Cancel Change"
               size={ComponentSize.Small}
             />
-          )}
-        </Panel.Header>
-        {isEditing ? (
-          <BillingContactForm
-            countries={countries}
-            states={states}
-            contact={contact}
-            onSubmit={this.handleSubmitEditForm}
-          />
+          )
         ) : (
-          <BillingContactDisplay
-            isShowingNext={showNext}
-            onNextStep={onNextStep}
-            contact={contact}
+          <Button
+            color={ComponentColor.Default}
+            onClick={() => setIsEditing(true)}
+            text="Edit Information"
+            size={ComponentSize.Small}
           />
         )}
-      </Panel>
-    )
-  }
-
-  handleSubmitEditForm = contact => {
-    this.setState({isEditing: false, contact, isFirstContactSaved: true})
-
-    if (this.props.onNextStep) {
-      this.props.onNextStep()
-    }
-  }
-
-  handleStartEditing = () => {
-    this.setState({isEditing: true})
-  }
-
-  handleCancelEditing = () => {
-    this.setState({isEditing: false})
-  }
+      </Panel.Header>
+      {isEditing ? (
+        <BillingContactForm onSubmitForm={handleSubmitEditForm} />
+      ) : (
+        <BillingContactDisplay />
+      )}
+    </Panel>
+  )
 }
 
 export default BillingContactInfo

@@ -1,14 +1,14 @@
 import React from 'react'
 
-import {GridColumn, Form} from '@influxdata/clockface'
+import {Columns, Grid, Form} from '@influxdata/clockface'
 
 const BillingContactItem = ({header, children}) => {
   return (
-    <GridColumn widthXS="12" widthSM="4">
+    <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
       <Form.Element label={header}>
         <div className="billing--contact-info">{children}</div>
       </Form.Element>
-    </GridColumn>
+    </Grid.Column>
   )
 }
 

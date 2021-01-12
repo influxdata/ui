@@ -602,6 +602,7 @@ Cypress.Commands.add('signin', signin)
 
 // setup
 Cypress.Commands.add('setupUser', setupUser)
+Cypress.Commands.add('wrapOrgAndBucket', wrapOrgAndBucket)
 
 // dashboards
 Cypress.Commands.add('createDashboard', createDashboard)

@@ -18,7 +18,7 @@ const VIS_TYPES = [
   'xy',
   'heatmap',
   'histogram',
-  'map',
+  //  'map',
   'mosaic',
   'scatter',
   'single-stat',

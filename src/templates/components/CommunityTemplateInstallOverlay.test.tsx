@@ -1,7 +1,7 @@
 // Installed libraries
 import React from 'react'
 import {createStore} from 'redux'
-import {fireEvent, screen} from '@testing-library/react'
+import {findByTitle, fireEvent, screen, waitFor} from '@testing-library/react'
 import {normalize} from 'normalizr'
 import {mocked} from 'ts-jest/utils'
 
@@ -75,7 +75,7 @@ describe('the Community Templates Install Overlay', () => {
   })
 
   describe('handling the template install process', () => {
-    it('opens the install overlay when the template url is valid', () => {
+    it('opens the install overlay when the template url is valid', async () => {
       const {getByTitle, store} = setup()
 
       // This successful call opens the Community Templates Installer overlay which requires orgs to be set
@@ -108,10 +108,21 @@ describe('the Community Templates Install Overlay', () => {
       const [eventName, eventMetaData] = eventCallArguments
       expect(eventName).toBe('template_click_lookup')
       expect(eventMetaData).toEqual({templateName: 'fn-template'})
-      expect(screen.getByText('Template Installer')).toBeVisible()
+      
+      await waitFor(() => {
+        expect(screen.queryByText('Template Installer')).toBeVisible()
+      })
 
-      // const installButton = getByTitle('Install Template')
-      // fireEvent.click(installButton)
+      await waitFor(() => {
+        // expect(screen.getByTitle('Install Template')).toBeVisible()
+        const installButton = getByTitle('Install Template')
+        fireEvent.click(installButton)
+        const [eventCallArguments] = mocked(event).mock.calls
+        const [eventName, eventMetaData] = eventCallArguments
+        expect(eventName).toBe('template_install')
+      })
+
+      
     })
 
     //     it('opens the install overlay when the template url is valid', () => {

@@ -25,7 +25,7 @@ interface Props {
   testID?: string
 }
 
-const BucketSelector: FC<Props> = ({testID = 'flow-bucket-slector'}) => {
+const BucketSelector: FC<Props> = ({testID = 'flow-bucket-selector'}) => {
   const {data, update} = useContext(PipeContext)
   const {buckets, loading} = useContext(BucketContext)
   let buttonText = 'Loading buckets...'

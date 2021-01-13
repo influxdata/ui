@@ -61,10 +61,10 @@ describe('Flows', () => {
       .first()
       .click()
 
-    cy.getByTestID('flow-bucket-slector')
+    cy.getByTestID('flow-bucket-selector')
       .click()
       .then(() => {
-        cy.getByTestID('flow-bucket-slector--create').click()
+        cy.getByTestID('flow-bucket-selector--create').click()
       })
 
     cy.getByTestID('overlay').should('exist')
@@ -73,7 +73,7 @@ describe('Flows', () => {
     cy.getByTestID('bucket-form-submit')
       .click()
       .then(() => {
-        cy.getByTestID('flow-bucket-slector').within(() => {
+        cy.getByTestID('flow-bucket-selector').within(() => {
           cy.contains(newBucketName).should('exist')
         })
       })

@@ -1,5 +1,8 @@
 // can we just get this from IDPE
 // directly or does Quartz have special
+
+import {RemoteDataState} from 'src/types'
+
 // permissions / knowledge?
 interface OrgLimit {
   bucket: BucketLimit
@@ -129,6 +132,12 @@ interface BillingNotifySettings {
   isNotify: boolean
   balanceThreshold: number
   notifyEmail: string
+}
+
+export interface BillingDate {
+  date: Date | string
+  time: Date | string
+  status: RemoteDataState
 }
 
 // Current PayAsYouGo Props

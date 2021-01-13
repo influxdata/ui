@@ -57,6 +57,16 @@ const UserWidget: FC<Props> = ({
             <a className={className} href={`${CLOUD_URL}${CLOUD_USAGE_PATH}`} />
           )}
         />
+        <FeatureFlag name="unity-usage">
+          <TreeNav.UserItem
+            id="unity-usage"
+            label="Unity Usage"
+            testID="user-nav-item-unity-usage"
+            linkElement={className => (
+              <a className={className} href={`/orgs/${org.id}/unity-usage`} />
+            )}
+          />
+        </FeatureFlag>
         <TreeNav.UserItem
           id="billing"
           label="Billing"

@@ -35,6 +35,7 @@ import {
   FlowsIndex,
   NotFound,
   UsersPage,
+  UsagePage,
 } from 'src/shared/containers'
 
 // Types
@@ -232,6 +233,11 @@ const SetOrg: FC<Props> = ({
           {/* Users */}
           {CLOUD && isFlagEnabled('unity') && (
             <Route path={`${orgPath}/unity-users`} component={UsersPage} />
+          )}
+
+          {/* Users */}
+          {CLOUD && isFlagEnabled('unity-usage') && (
+            <Route path={`${orgPath}/unity-usage`} component={UsagePage} />
           )}
 
           {/* Members */}

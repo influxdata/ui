@@ -77,6 +77,17 @@ const legendProps = {
   legendColorizeRows: LEGEND_COLORIZE_ROWS_DEFAULT,
 }
 
+const tickProps = {
+  generateXAxisTicks: [],
+  generateYAxisTicks: [],
+  xTotalTicks: null,
+  xTickStart: null,
+  xTickStep: null,
+  yTotalTicks: null,
+  yTickStart: null,
+  yTickStep: null,
+}
+
 export function defaultLineViewProperties() {
   return {
     ...legendProps,
@@ -85,14 +96,7 @@ export function defaultLineViewProperties() {
     legend: {},
     note: '',
     showNoteWhenEmpty: false,
-    generateXAxisTicks: [],
-    generateYAxisTicks: [],
-    xTotalTicks: null,
-    xTickStart: null,
-    xTickStep: null,
-    yTotalTicks: null,
-    yTickStart: null,
-    yTickStep: null,
+    ...tickProps,
     axes: {
       x: {
         bounds: ['', ''],
@@ -123,14 +127,7 @@ export function defaultBandViewProperties() {
     legend: {},
     note: '',
     showNoteWhenEmpty: false,
-    generateXAxisTicks: [],
-    generateYAxisTicks: [],
-    xTotalTicks: null,
-    xTickStart: null,
-    xTickStep: null,
-    yTotalTicks: null,
-    yTickStart: null,
-    yTickStep: null,
+    ...tickProps,
     axes: {
       x: {
         bounds: ['', ''],
@@ -252,14 +249,7 @@ const NEW_VIEW_CREATORS = {
       binSize: 10,
       note: '',
       showNoteWhenEmpty: false,
-      generateXAxisTicks: [],
-      generateYAxisTicks: [],
-      xTotalTicks: null,
-      xTickStart: null,
-      xTickStep: null,
-      yTotalTicks: null,
-      yTickStart: null,
-      yTickStep: null,
+      ...tickProps,
     },
   }),
   'single-stat': (): NewView<SingleStatViewProperties> => ({
@@ -332,14 +322,7 @@ const NEW_VIEW_CREATORS = {
       colors: NINETEEN_EIGHTY_FOUR,
       note: '',
       showNoteWhenEmpty: false,
-      generateXAxisTicks: [],
-      generateYAxisTicks: [],
-      xTotalTicks: null,
-      xTickStart: null,
-      xTickStep: null,
-      yTotalTicks: null,
-      yTickStart: null,
-      yTickStep: null,
+      ...tickProps,
       fillColumns: null,
       symbolColumns: null,
       xColumn: null,

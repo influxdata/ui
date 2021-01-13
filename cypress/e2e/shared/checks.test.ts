@@ -58,7 +58,7 @@ describe('Checks', () => {
     )
     cy.getByTestID('checkeo--header alerting-tab').click()
     cy.getByTestID('add-threshold-condition-WARN').click()
-    cy.get('.query-checklist--popover').should('not.visible')
+    cy.get('.query-checklist--popover').should('not.exist')
     cy.getByTestID('save-cell--button').should('be.enabled')
 
     cy.log(
@@ -98,12 +98,12 @@ describe('Checks', () => {
     cy.getByTestID('create-deadman-check').click()
 
     cy.log('select measurement and field')
-    cy.intercept('POST', /\/query\?orgID=.*/, req => {
+    cy.intercept('POST', '/query', req => {
       if (req.body.query.includes('_measurement')) {
         req.alias = 'measurementQuery'
       }
     })
-    cy.intercept('POST', /\/query\?orgID=.*/, req => {
+    cy.intercept('POST', '/query', req => {
       if (req.body.query.includes('distinct(column: "_field")')) {
         req.alias = 'fieldQuery'
       }
@@ -127,6 +127,20 @@ describe('Checks', () => {
     })
     cy.getByTestID('save-cell--button').click()
 
+    cy.getByTestID('overlay').should('not.exist')
+    // bust the /query cache
+    cy.reload()
+    cy.intercept('POST', '/query', req => {
+      if (req.body.query.includes('_measurement')) {
+        req.alias = 'measurementQueryBeta'
+      }
+    })
+    cy.intercept('POST', '/query', req => {
+      if (req.body.query.includes('distinct(column: "_field")')) {
+        req.alias = 'fieldQueryBeta'
+      }
+    })
+
     cy.log('create second check')
     cy.getByTestID('create-check').click()
     cy.getByTestID('create-deadman-check').click()
@@ -134,8 +148,10 @@ describe('Checks', () => {
     cy.log('select measurement and field')
     cy.getByTestID(`selector-list defbuck`).should('be.visible')
     cy.getByTestID(`selector-list defbuck`).click()
+    cy.wait('@measurementQueryBeta')
     cy.getByTestID(`selector-list ${measurement}`).should('be.visible')
     cy.getByTestID(`selector-list ${measurement}`).click()
+    cy.wait('@fieldQueryBeta')
     cy.getByTestID(`selector-list ${field}`).should('be.visible')
     cy.getByTestID(`selector-list ${field}`).click()
 

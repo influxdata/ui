@@ -17,12 +17,7 @@ import {
 } from 'src/types/billing'
 import {Account} from 'src/client/unityRoutes'
 
-const makeResponse = (status, data, respName, ...args) => {
-  console.log(respName) // eslint-disable-line no-console
-  for (let i = 0; i < args.length; i++) {
-    console.log(args[i]) // eslint-disable-line no-console
-  }
-
+const makeResponse = (status, data) => {
   return Promise.resolve({
     status,
     headers: new Headers({'Content-Type': 'application/json'}),
@@ -56,11 +51,11 @@ export const getBillingAccount = (): ReturnType<typeof getBillingAccountGenerate
     users: [{}],
     zuoraAccountId: 'zID123',
   }
-  return makeResponse(200, account, 'getBillingAccount')
+  return makeResponse(200, account)
 }
 
 export const getPaymentMethods = (): ReturnType<typeof getBillingPaymentMethods> => {
-  const account: PaymentMethods = [
+  const paymentMethods: PaymentMethods = [
     {
       cardType: 'Visa',
       cardNumber: '4242424242424242',
@@ -76,7 +71,7 @@ export const getPaymentMethods = (): ReturnType<typeof getBillingPaymentMethods>
       defaultPaymentMethod: false,
     },
   ]
-  return makeResponse(200, account, 'getPaymentMethods')
+  return makeResponse(200, paymentMethods)
 }
 
 export const getBillingCreditCard = (): ReturnType<typeof getBillingCc> => {
@@ -90,17 +85,17 @@ export const getBillingCreditCard = (): ReturnType<typeof getBillingCc> => {
     submitEnabled: 'true',
     url: 'you-are-el',
   }
-  return makeResponse(200, cc, 'getBillingCreditCard')
+  return makeResponse(200, cc)
 }
 
 export const getBillingNotificationSettings = (): ReturnType<typeof getBillingNotifySettings> => {
-  const account: BillingNotifySettings = {
+  const billingNotifySettings: BillingNotifySettings = {
     isNotify: true,
     balanceThreshold: 1000000,
     notifyEmail: 'asalem@influxdata.com',
     status: RemoteDataState.Done,
   }
-  return makeResponse(200, account, 'getBillingNotificationSettings')
+  return makeResponse(200, billingNotifySettings)
 }
 
 export const getOrgRateLimits = (): Promise<any> => {
@@ -135,7 +130,7 @@ export const getOrgRateLimits = (): Promise<any> => {
     },
   }
 
-  return makeResponse(200, orgLimit, 'getOrgRateLimits')
+  return makeResponse(200, orgLimit)
 }
 
 export const getLimitsStatus = (): Promise<any> => {
@@ -152,7 +147,7 @@ export const getLimitsStatus = (): Promise<any> => {
     status: RemoteDataState.Done,
   }
 
-  return makeResponse(200, limitsStatus, 'getLimitsStatus')
+  return makeResponse(200, limitsStatus)
 }
 
 export const getInvoices = (): Promise<any> => {
@@ -189,7 +184,7 @@ export const getInvoices = (): Promise<any> => {
     },
   ]
 
-  return makeResponse(200, invoices, 'getInvoicesStatus')
+  return makeResponse(200, invoices)
 }
 
 export const getRegion = (): Promise<any> => {
@@ -202,5 +197,5 @@ export const getRegion = (): Promise<any> => {
     status: RemoteDataState.Done,
   }
 
-  return makeResponse(200, region, 'getRegion')
+  return makeResponse(200, region)
 }

@@ -1,5 +1,4 @@
 import {Organization} from '../../../src/types'
-// import {users, invites} from '../../../src/billing/api'
 
 describe('Billing Page', () => {
   beforeEach(() => {

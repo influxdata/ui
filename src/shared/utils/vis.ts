@@ -9,6 +9,7 @@ import {
   LineInterpolation,
   FromFluxResult,
 } from '@influxdata/giraffe'
+import {S2} from 's2-geometry'
 
 import {VIS_SIG_DIGITS, DEFAULT_TIME_FORMAT} from 'src/shared/constants'
 
@@ -375,4 +376,38 @@ export const getMainColumnName = (
     }
   }
   return ''
+}
+
+const getS2CellID = (table, index: number): string => {
+  const column = table.getColumn("s2_cell_id")
+  if (!column) {
+    return null
+  }
+  const value = column[index]
+  if (typeof value !== 'string') {
+    return null
+  }
+  return value
+}
+
+export const PRECISION_TRIMMING_TABLE = [BigInt(1)]
+for (let i = 1; i < 17; i++) {
+  PRECISION_TRIMMING_TABLE[i] = PRECISION_TRIMMING_TABLE[i - 1] * BigInt(16)
+}
+
+export const getLatLon = (table, index: number) => {
+  const cellId = getS2CellID(table, index)
+  if (cellId === null || cellId.length > 16) {
+    return null
+  }
+  if (cellId === null || cellId.length > 16) {
+    return null
+  }
+  const fixed =
+    BigInt('0x' + cellId) * PRECISION_TRIMMING_TABLE[16 - cellId.length]
+  const latLng = S2.idToLatLng(fixed.toString())
+  return {
+    lon: latLng.lng,
+    lat: latLng.lat,
+  }
 }

@@ -235,7 +235,6 @@ describe('tokens', () => {
 
       // check cancel
       cy.getByTestID('button--cancel').click()
-      cy.getByTestID('overlay--container').should('not.be.visible')
       cy.get('.cf-resource-card').should('have.length', 4)
 
       // open overlay - again
@@ -292,9 +291,10 @@ describe('tokens', () => {
         .parent()
         .within(() => {
           cy.getByTestID('permissions--item').should('have.length', 1)
-          cy.getByTestID('permissions--item')
-            .contains('write')
-            .should('not.be.visible')
+          cy.getByTestID('permissions--item').should(
+            'not.contain.value',
+            'write'
+          )
           cy.getByTestID('permissions--item')
             .contains('read')
             .should('be.visible')
@@ -334,7 +334,6 @@ describe('tokens', () => {
     cy.getByTestID('overlay--header').within(() => {
       cy.get('button').click()
     })
-    cy.getByTestID('overlay--container').should('not.be.visible')
   })
 
   it('can edit the description', () => {

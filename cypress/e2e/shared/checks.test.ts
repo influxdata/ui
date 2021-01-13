@@ -25,7 +25,8 @@ describe('Checks', () => {
     cy.getByTestID('alerting-tab--checks').click({force: true})
   })
 
-  it('can validate a threshold check', () => {
+  // TODO(watts): resolve flakeyness caused by detached elements with: https://github.com/influxdata/ui/pull/515
+  it.skip('can validate a threshold check', () => {
     cy.log('Create threshold check')
     cy.getByTestID('create-check').click()
     cy.getByTestID('create-threshold-check').click()
@@ -92,7 +93,8 @@ describe('Checks', () => {
       .should('exist')
   })
 
-  it('can create and filter checks', () => {
+  // TODO(watts): resolve flakeyness caused by detached elements with: https://github.com/influxdata/ui/pull/515
+  it.skip('can create and filter checks', () => {
     cy.log('create first check')
     cy.getByTestID('create-check').click()
     cy.getByTestID('create-deadman-check').click()

@@ -98,9 +98,21 @@ describe('Checks', () => {
     cy.getByTestID('create-deadman-check').click()
 
     cy.log('select measurement and field')
+    cy.intercept('POST', /\/query\?orgID=.*/, req => {
+      if (req.body.query.includes('_measurement')) {
+        req.alias = 'measurementQuery'
+      }
+    })
+    cy.intercept('POST', /\/query\?orgID=.*/, req => {
+      if (req.body.query.includes('distinct(column: "_field")')) {
+        req.alias = 'fieldQuery'
+      }
+    })
     cy.getByTestID(`selector-list defbuck`).click()
+    cy.wait('@measurementQuery')
     cy.getByTestID(`selector-list ${measurement}`).should('be.visible')
     cy.getByTestID(`selector-list ${measurement}`).click()
+    cy.wait('@fieldQuery')
     cy.getByTestID(`selector-list ${field}`).should('be.visible')
     cy.getByTestID(`selector-list ${field}`).click()
 

@@ -23,6 +23,7 @@ import {
 // Types
 import {VisOptionProps} from 'src/visualization'
 import {
+  BandViewProperties,
   XYViewProperties,
   LinePlusSingleStatProperties,
   HeatmapViewProperties,
@@ -40,6 +41,7 @@ import {
 
 interface Props extends VisOptionProps {
   properties:
+    | BandViewProperties
     | XYViewProperties
     | LinePlusSingleStatProperties
     | HeatmapViewProperties

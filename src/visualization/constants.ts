@@ -13,6 +13,10 @@ export const AXES_SCALE_OPTIONS = {
 export const INVALID_DATA_COPY =
   "The data returned from the query can't be visualized with this graph type."
 
+export const BAND_LINE_OPACITY = 0.7
+export const BAND_LINE_WIDTH = 3
+export const BAND_SHADE_OPACITY = 0.3
+
 export const LEGEND_OPACITY_MINIMUM = 0.2
 export const LEGEND_OPACITY_MAXIMUM = 1.0
 export const LEGEND_OPACITY_DEFAULT = LEGEND_OPACITY_MAXIMUM

@@ -13,6 +13,7 @@ import {Columns, Form, Grid, SelectGroup} from '@influxdata/clockface'
 import {ButtonShape} from '@influxdata/clockface'
 import {VisOptionProps} from 'src/visualization'
 import {
+  BandViewProperties,
   XYViewProperties,
   LinePlusSingleStatProperties,
   HeatmapViewProperties,
@@ -30,6 +31,7 @@ const getGenerateAxisTicksOptionsNames = (axisName: string) => [
 
 interface Props extends VisOptionProps {
   properties:
+    | BandViewProperties
     | XYViewProperties
     | LinePlusSingleStatProperties
     | HeatmapViewProperties

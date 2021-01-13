@@ -1,7 +1,9 @@
 import {camelCase, snakeCase} from 'lodash'
 
 export const convertKeysToSnakecase = data => {
-  if (!data) return null
+  if (!data) {
+    return null
+  }
 
   return Object.entries(data).reduce((acc, entry) => {
     const [key, value] = entry
@@ -13,7 +15,9 @@ export const convertKeysToSnakecase = data => {
 }
 
 export const convertKeysToCamelCase = data => {
-  if (!data) return null
+  if (!data) {
+    return null
+  }
 
   return Object.entries(data).reduce((acc, entry) => {
     const [key, value] = entry

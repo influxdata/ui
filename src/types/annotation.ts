@@ -8,4 +8,6 @@ export interface PostAnnotationResponse {
 
 export interface PostAnnotationPayload {
   summary: string
+  startTime?: string
+  endTime?: string
 }

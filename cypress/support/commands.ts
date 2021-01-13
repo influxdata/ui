@@ -17,7 +17,13 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
   \*/
   return cy
     .setupUser()
-    .then(() => cy.visit('/api/v2/signin'))
+    .then(resp => {
+      Object.entries(resp.body).forEach(([k, v]) => {
+        cy.log(k, JSON.stringify(v))
+      })
+      // cy.log('user setup response', JSON.stringify(resp, null, 2))
+      cy.visit('/api/v2/signin')
+    })
     .then(() => cy.get('#login').type(Cypress.env('username')))
     .then(() => cy.get('#password').type(Cypress.env('password')))
     .then(() => cy.get('#submit-login').click())
@@ -476,8 +482,13 @@ export const writeData = (
 }
 
 // DOM node getters
-export const getByTestID = (dataTest: string): Cypress.Chainable => {
-  return cy.get(`[data-testid="${dataTest}"]`)
+export const getByTestID = (
+  dataTest: string,
+  options?: Partial<
+    Cypress.Loggable & Cypress.Timeoutable & Cypress.Withinable & Cypress.Shadow
+  >
+): Cypress.Chainable => {
+  return cy.get(`[data-testid="${dataTest}"]`, options)
 }
 
 export const getByTestIDSubStr = (dataTest: string): Cypress.Chainable => {

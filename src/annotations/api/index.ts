@@ -1,8 +1,8 @@
-// Types
-import {PostAnnotationResponse, PostAnnotationPayload} from 'src/types'
-
 // Libraries
 import axios, {AxiosResponse} from 'axios'
+
+// Types
+import {PostAnnotationResponse, PostAnnotationPayload} from 'src/types'
 
 // Constants
 import {API_BASE_PATH} from 'src/shared/constants'

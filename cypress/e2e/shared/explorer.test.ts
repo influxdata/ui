@@ -1086,7 +1086,7 @@ describe('DataExplorer', () => {
 
     it('can open/close save as dialog and navigate inside', () => {
       // open save as
-      cy.getByTestID('overlay--container').should('not.be.visible')
+      cy.getByTestID('overlay--container').should('not.exist')
       cy.getByTestID('save-query-as').click()
       cy.getByTestID('overlay--container').should('be.visible')
 
@@ -1102,7 +1102,7 @@ describe('DataExplorer', () => {
       cy.getByTestID('save-as-overlay--header').within(() => {
         cy.get('button').click()
       })
-      cy.getByTestID('overlay--container').should('not.be.visible')
+      cy.getByTestID('overlay--container').should('not.exist')
     })
 
     describe('as dashboard cell', () => {

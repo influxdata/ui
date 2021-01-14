@@ -11,8 +11,6 @@ import BillingContactForm from 'src/billing/components/Checkout/BillingContactFo
 import BillingContactDisplay from 'src/billing/components/BillingContactDisplay'
 import {useBilling} from 'src/billing/components/BillingPage'
 
-import 'babel-polyfill'
-
 const BillingContactInfo: FC = () => {
   const [
     {

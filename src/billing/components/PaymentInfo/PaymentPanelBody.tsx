@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useState} from 'react'
-// import axios from 'axios'
 
 // Components
 import {Panel, ComponentSize} from '@influxdata/clockface'
@@ -18,20 +17,22 @@ interface Props {
 const PaymentPanelBody: FC<Props> = ({isEditing, onCancel}) => {
   const [errorMessage, setErrorMessage] = useState('')
 
-  const onSubmit = (response: ZuoraResponse): void => {
+  const onSubmit = async (response: ZuoraResponse): Promise<void> => {
     const error = 'Could not add card, please try again.'
     if (response?.success) {
       try {
-        // const url = 'privateAPI/billing/payment_method'
-        // const {data} = await axios.put(url, {
-        //   paymentMethodId: response.refId,
-        // })
+        const url = 'privateAPI/billing/payment_method'
+        const data = await fetch(url, {
+          method: 'PUT',
+          body: JSON.stringify({
+            paymentMethodId: response.refId,
+          }),
+        })
         onCancel()
         setErrorMessage('')
-        // this.setState({
-        //   paymentMethods: data,
-        // })
-      } catch (_e) {
+        // TODO(ariel): refetch the updated payment methods elsewhere once this has resolved
+        console.log(data) // eslint-disable-line no-console
+      } catch {
         setErrorMessage(error)
       }
     } else {

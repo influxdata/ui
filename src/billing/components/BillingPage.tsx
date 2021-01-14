@@ -10,7 +10,7 @@ import {
 } from '@influxdata/clockface'
 
 import BillingPageContents from 'src/billing/components/BillingPageContents'
-import RateLimitAlert from 'src/billing/components/Notifications/RateLimitAlert'
+import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import AlertStatusCancelled from 'src/billing/components/Usage/AlertStatusCancelled'
 
 // Reducers

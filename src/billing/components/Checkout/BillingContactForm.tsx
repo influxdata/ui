@@ -19,8 +19,6 @@ import {
 import BillingContactSubdivision from 'src/billing/components/Checkout/BillingContactSudivision'
 import {states, countries} from 'src/billing/constants'
 
-import 'babel-polyfill'
-import axios from 'axios'
 import {convertKeysToSnakecase} from 'src/billing/utils/checkout'
 import {useBilling} from 'src/billing/components/BillingPage'
 
@@ -113,7 +111,10 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
       contact: convertKeysToSnakecase(contact),
     }
     setIsSubmittingContact(true)
-    await axios.put(`APIPrivate/billing_contact`, payload)
+    await fetch(`APIPrivate/billing_contact`, {
+      method: 'PUT',
+      body: JSON.stringify(payload),
+    })
     setIsSubmittingContact(false)
   }
 

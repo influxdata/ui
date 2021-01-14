@@ -16,7 +16,6 @@ import {
   InputType,
 } from '@influxdata/clockface'
 import {useBilling} from 'src/billing/components/BillingPage'
-import axios from 'axios'
 
 const NotificationSettingsOverlay = ({onHideOverlay, isOverlayVisible}) => {
   const [{billingSettings}] = useBilling()
@@ -32,7 +31,7 @@ const NotificationSettingsOverlay = ({onHideOverlay, isOverlayVisible}) => {
       isNotify: isNotifyActive,
     }
     const url = 'privateAPI/balance_threshold'
-    axios.put(url, payload).then(() => {
+    fetch(url, {method: 'PUT', body: JSON.stringify(payload)}).then(() => {
       onHideOverlay()
       // TODO(ariel): query the billingSettings to get the latest data in the parent
     })

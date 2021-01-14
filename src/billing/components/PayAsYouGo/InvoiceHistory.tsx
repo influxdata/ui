@@ -5,13 +5,12 @@ import {
   EmptyState,
   ResourceList,
   Sort,
-  DapperScrollbars,
   FlexDirection,
   JustifyContent,
   FlexBox,
 } from '@influxdata/clockface'
 
-import InvoiceHistoryRow from 'src/billing/components/PayAsYouGo/InvoiceHistoryRow'
+import InvoiceHistoryRows from 'src/billing/components/PayAsYouGo/InvoiceHistoryRows'
 import {getSortedResources, SortTypes} from 'src/shared/utils/sort'
 import {Invoice} from 'src/types/billing'
 import {useBilling} from 'src/billing/components/BillingPage'
@@ -41,22 +40,7 @@ const InvoiceHistory: FC = () => {
   let invoiceRows = null
 
   if (invoices.length) {
-    invoiceRows = (
-      <DapperScrollbars
-        autoHide
-        autoSize
-        style={{
-          maxHeight: '350px',
-          minWidth: '100%',
-          maxWidth: '100%',
-          width: '100%',
-        }}
-      >
-        {sortedInvoices.map(invoice => (
-          <InvoiceHistoryRow key={invoice.targetDate} invoice={invoice} />
-        ))}
-      </DapperScrollbars>
-    )
+    invoiceRows = <InvoiceHistoryRows sortedInvoices={sortedInvoices} />
   }
 
   const handleSort = (nextSortDirection: Sort, sKey: string) => {

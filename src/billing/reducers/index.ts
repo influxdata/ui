@@ -98,12 +98,6 @@ export const initialState = (): BillingState => ({
 
 export type BillingReducer = React.Reducer<BillingState, Action>
 
-export const setAll = (billing: BillingState) =>
-  ({
-    type: 'SET_ALL',
-    billing,
-  } as const)
-
 export const setAccount = (account: Account) =>
   ({
     type: 'SET_ACCOUNT',
@@ -198,7 +192,6 @@ export const setRegionStatus = (status: RemoteDataState) =>
   } as const)
 
 export type Action =
-  | ReturnType<typeof setAll>
   | ReturnType<typeof setAccount>
   | ReturnType<typeof setAccountStatus>
   | ReturnType<typeof setBillingSettings>

@@ -280,9 +280,13 @@ describe('Dashboard', () => {
     it('can manage variable state with a lot of pointing and clicking', () => {
       const bucketOne = 'b1'
       const bucketThree = 'b3'
+      const bucketVarName = 'bucketsCSV'
+      const mapTypeVarName = 'mapTypeVar'
+      const bucketVarIndex = 0
+      const mapTypeVarIndex = 2
       cy.get('@org').then(({id: orgID}: Organization) => {
         cy.get<Dashboard>('@dashboard').then(({dashboard}) => {
-          cy.createCSVVariable(orgID, 'bucketsCSV', [
+          cy.createCSVVariable(orgID, bucketVarName, [
             bucketOne,
             Cypress.env('bucket'),
             bucketThree,
@@ -302,11 +306,6 @@ describe('Dashboard', () => {
             // check to see if the default timeRange variables are available
             cy.get('.flux-toolbar--list-item').contains('timeRangeStart')
             cy.get('.flux-toolbar--list-item').contains('timeRangeStop')
-            cy.get('.flux-toolbar--list-item')
-              .first()
-              .within(() => {
-                cy.get('.cf-button').click()
-              })
 
             cy.getByTestID('flux-editor')
               .should('be.visible')
@@ -314,7 +313,7 @@ describe('Dashboard', () => {
               .focused()
               .type(' ')
             cy.get('.flux-toolbar--list-item')
-              .eq(2)
+              .eq(bucketVarIndex)
               .within(() => {
                 cy.get('.cf-button').click()
               })
@@ -322,35 +321,42 @@ describe('Dashboard', () => {
 
             // TESTING CSV VARIABLE
             // selected value in dashboard is 1st value
-            cy.getByTestID('variable-dropdown')
-              .eq(0)
-              .should('contain', bucketOne)
+            cy.getByTestID(`variable-dropdown--${bucketVarName}`).should(
+              'contain',
+              bucketOne
+            )
             cy.window()
               .pipe(getSelectedVariable(dashboard.id, 0))
               .should('equal', bucketOne)
 
             // testing variable controls
-            cy.getByTestID('variable-dropdown')
-              .eq(0)
-              .should('contain', bucketOne)
+            cy.getByTestID(`variable-dropdown--${bucketVarName}`).should(
+              'contain',
+              bucketOne
+            )
             cy.getByTestID('variables--button').click()
-            cy.getByTestID('variable-dropdown').should('not.exist')
+            cy.getByTestID(`variable-dropdown--${bucketVarName}`).should(
+              'not.exist'
+            )
             cy.getByTestID('variables--button').click()
-            cy.getByTestID('variable-dropdown').should('exist')
+            cy.getByTestID(`variable-dropdown--${bucketVarName}`).should(
+              'exist'
+            )
 
             // sanity check on the url before beginning
             cy.location('search').should('eq', '?lower=now%28%29%20-%201h')
 
             // select 3rd value in dashboard
             cy.getByTestID('variable-dropdown--button')
-              .eq(0)
+              .first()
               .click()
             cy.get(`#${bucketThree}`).click()
 
             // selected value in dashboard is 3rd value
-            cy.getByTestID('variable-dropdown')
-              .eq(0)
-              .should('contain', bucketThree)
+            cy.getByTestID(`variable-dropdown--${bucketVarName}`).should(
+              'contain',
+              bucketThree
+            )
             cy.window()
               .pipe(getSelectedVariable(dashboard.id, 0))
               .should('equal', bucketThree)
@@ -363,7 +369,7 @@ describe('Dashboard', () => {
 
             // select 2nd value in dashboard
             cy.getByTestID('variable-dropdown--button')
-              .eq(0)
+              .first()
               .click()
             cy.get(`#${Cypress.env('bucket')}`).click()
 
@@ -396,6 +402,12 @@ describe('Dashboard', () => {
                 .first()
                 .click()
             })
+            // injecting mapTypeVar into query
+            cy.get('.flux-toolbar--list-item')
+              .eq(mapTypeVarIndex)
+              .within(() => {
+                cy.get('.cf-button').click()
+              })
             // save cell
             cy.getByTestID('save-cell--button').click()
 
@@ -405,16 +417,20 @@ describe('Dashboard', () => {
               .should('equal', bucketOne)
 
             // selected value in dashboard is 1st value
-            cy.getByTestID('variable-dropdown').should('contain', bucketOne)
+            cy.getByTestID(`variable-dropdown--${bucketVarName}`).should(
+              'contain',
+              bucketOne
+            )
             cy.window()
               .pipe(getSelectedVariable(dashboard.id, 0))
               .should('equal', bucketOne)
 
             // TESTING MAP VARIABLE
             // selected value in dashboard is 1st value
-            cy.getByTestID('variable-dropdown')
-              .eq(1)
-              .should('contain', 'k1')
+            cy.getByTestID(`variable-dropdown--${mapTypeVarName}`).should(
+              'contain',
+              'k1'
+            )
             cy.window()
               .pipe(getSelectedVariable(dashboard.id, 2))
               .should('equal', 'v1')
@@ -426,9 +442,10 @@ describe('Dashboard', () => {
             cy.get(`#k2`).click()
 
             // selected value in dashboard is 2nd value
-            cy.getByTestID('variable-dropdown')
-              .eq(1)
-              .should('contain', 'k2')
+            cy.getByTestID(`variable-dropdown--${mapTypeVarName}`).should(
+              'contain',
+              'k2'
+            )
             cy.window()
               .pipe(getSelectedVariable(dashboard.id, 2))
               .should('equal', 'v2')
@@ -464,7 +481,10 @@ describe('Dashboard', () => {
               .should('equal', 'v1')
 
             // selected value in dashboard is 1st value
-            cy.getByTestID('variable-dropdown').should('contain', 'k1')
+            cy.getByTestID(`variable-dropdown--${mapTypeVarName}`).should(
+              'contain',
+              'k1'
+            )
             cy.window()
               .pipe(getSelectedVariable(dashboard.id, 2))
               .should('equal', 'v1')
@@ -561,15 +581,13 @@ describe('Dashboard', () => {
 
         // the default bucket selection should have no results and load all three variables
         // even though only two variables are being used (because 1 is dependent upon another)
-        cy.getByTestID('variable-dropdown')
-          .should('have.length', 3)
-          .eq(0)
-          .should('contain', 'beans')
+        cy.getByTestID('variable-dropdown--static').should('contain', 'beans')
 
         // and cause the rest to exist in loading states
-        cy.getByTestID('variable-dropdown')
-          .eq(1)
-          .should('contain', 'Loading')
+        cy.getByTestIDSubStr('variable-dropdown--build').should(
+          'contain',
+          'Loading'
+        )
 
         cy.getByTestIDSubStr('cell--view-empty')
 
@@ -580,9 +598,10 @@ describe('Dashboard', () => {
         cy.get(`#defbuck`).click()
 
         // default select the first result
-        cy.getByTestID('variable-dropdown')
-          .eq(1)
-          .should('contain', 'beans')
+        cy.getByTestIDSubStr('variable-dropdown--build').should(
+          'contain',
+          'beans'
+        )
 
         // and also load the third result
         cy.getByTestID('variable-dropdown--button')
@@ -592,18 +611,20 @@ describe('Dashboard', () => {
         cy.get(`#cool`).click()
 
         // and also load the second result
-        cy.getByTestID('variable-dropdown')
-          .eq(1)
-          .should('contain', 'cool')
+        cy.getByTestIDSubStr('variable-dropdown--dependent').should(
+          'contain',
+          'cool'
+        )
 
         // updating the third variable should update the second
         cy.getByTestID('variable-dropdown--button')
           .eq(2)
           .click()
         cy.get(`#beans`).click()
-        cy.getByTestID('variable-dropdown')
-          .eq(1)
-          .should('contain', 'beans')
+        cy.getByTestIDSubStr('variable-dropdown--build').should(
+          'contain',
+          'beans'
+        )
       })
     })
 
@@ -683,14 +704,15 @@ describe('Dashboard', () => {
       cy.getByTestID('save-cell--button').click()
 
       // the default bucket selection should have no results
-      cy.getByTestID('variable-dropdown')
+      cy.getByTestIDSubStr('variable-dropdown')
         .eq(0)
         .should('contain', 'beans')
 
       // and cause the rest to exist in loading states
-      cy.getByTestID('variable-dropdown')
-        .eq(1)
-        .should('contain', 'Loading')
+      cy.getByTestIDSubStr('variable-dropdown--dependent').should(
+        'contain',
+        'Loading'
+      )
 
       cy.getByTestIDSubStr('cell--view-empty')
 
@@ -701,9 +723,7 @@ describe('Dashboard', () => {
       cy.get(`#defbuck`).click()
 
       // default select the first result
-      cy.getByTestID('variable-dropdown')
-        .eq(1)
-        .should('contain', 'beans')
+      cy.getByTestID('variable-dropdown--dependent').should('contain', 'beans')
 
       // and also load the second result
       cy.getByTestID('variable-dropdown--button')

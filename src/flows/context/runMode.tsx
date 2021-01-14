@@ -1,6 +1,9 @@
 // Libraries
 import React, {FC, useState, createContext} from 'react'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 export enum RunMode {
   Run = 'Run',
   Preview = 'Preview',
@@ -23,8 +26,13 @@ export const RunModeContext = createContext<RunModeContextType>(
 export const RunModeProvider: FC = ({children}) => {
   const [runMode, setRunMode] = useState<RunMode>(RunMode.Preview)
 
+  const handleSetRunMode = (mode: RunMode): void => {
+    event('change_notebook_run_mode', {runMode: mode})
+    setRunMode(mode)
+  }
+
   return (
-    <RunModeContext.Provider value={{runMode, setRunMode}}>
+    <RunModeContext.Provider value={{runMode, setRunMode: handleSetRunMode}}>
       {children}
     </RunModeContext.Provider>
   )

@@ -24,6 +24,7 @@ import {setView} from 'src/views/actions/creators'
 import {notify} from 'src/shared/actions/notifications'
 import {setDashboard} from 'src/dashboards/actions/creators'
 import {setCells, setCell, removeCell} from 'src/cells/actions/creators'
+import {removeView} from 'src/views/actions/creators'
 
 // Constants
 import * as copy from 'src/shared/copy/notifications'
@@ -47,14 +48,17 @@ import {
 import {getNewDashboardCell} from 'src/dashboards/utils/cellGetters'
 import {getByID} from 'src/resources/selectors'
 
-export const deleteCell = (dashboardID: string, cellID: string) => async (
-  dispatch
-): Promise<void> => {
+export const deleteCellAndView = (
+  dashboardID: string,
+  cellID: string,
+  viewID: string
+) => async (dispatch): Promise<void> => {
   try {
     await Promise.all([
       deleteDashboardsCell({dashboardID: dashboardID, cellID: cellID}),
     ])
 
+    dispatch(removeView(viewID))
     dispatch(removeCell({dashboardID, id: cellID}))
     dispatch(notify(copy.cellDeleted()))
   } catch (error) {

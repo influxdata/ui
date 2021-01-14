@@ -1,7 +1,10 @@
 // Libraries
 import React, {FC, ChangeEvent, useContext} from 'react'
+
+// Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
 
+// Components
 import {Icon, IconFont} from '@influxdata/clockface'
 
 interface Props {

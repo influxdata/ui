@@ -121,6 +121,7 @@ class InlineLabelsEditor extends Component<Props, State> {
           filteredLabels={this.filterLabels(searchTerm)}
           onAddLabel={this.handleAddLabel}
           visible={isPopoverVisible}
+          onEscapePress={this.hidePopover}
         />
       </ClickOutside>
     )
@@ -166,9 +167,7 @@ class InlineLabelsEditor extends Component<Props, State> {
       return
     }
 
-    this.setState({
-      isPopoverVisible: false,
-    })
+    this.hidePopover()
   }
 
   private handleAddLabel = async (labelID: string) => {
@@ -270,6 +269,10 @@ class InlineLabelsEditor extends Component<Props, State> {
 
   private handleStartCreatingLabel = (): void => {
     this.setState({isCreatingLabel: OverlayState.Open, isPopoverVisible: false})
+  }
+
+  private hidePopover = (): void => {
+    this.setState({isPopoverVisible: false})
   }
 
   private handleStopCreatingLabel = (): void => {

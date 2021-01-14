@@ -1,9 +1,10 @@
-import React, {FC, useContext, useCallback, useMemo} from 'react'
+import React, {FC, useContext, useCallback} from 'react'
 import {Flow, PipeData} from 'src/types/flows'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import {v4 as UUID} from 'uuid'
 import {RemoteDataState} from 'src/types'
 import {PROJECT_NAME} from 'src/flows'
+import {event} from 'src/cloud/utils/reporting'
 
 export interface FlowContextType {
   id: string | null
@@ -54,7 +55,7 @@ export const FlowProvider: FC = ({children}) => {
         ...flow,
       })
     },
-    [currentID]
+    [currentID, flows[currentID]]
   )
 
   const addPipe = (initial: PipeData, index?: number) => {
@@ -71,28 +72,28 @@ export const FlowProvider: FC = ({children}) => {
       flows[currentID].data.move(id, index + 1)
     }
 
+    event('insert_notebook_cell', {notebooksCellType: initial.type})
+
     return id
   }
 
-  return useMemo(() => {
-    if (!flows || !flows.hasOwnProperty(currentID)) {
-      return null
-    }
+  if (!flows || !flows.hasOwnProperty(currentID)) {
+    return null
+  }
 
-    return (
-      <FlowContext.Provider
-        value={{
-          id: currentID,
-          name,
-          flow: flows[currentID],
-          add: addPipe,
-          update: updateCurrent,
-        }}
-      >
-        {children}
-      </FlowContext.Provider>
-    )
-  }, [currentID, (flows || {})[currentID]])
+  return (
+    <FlowContext.Provider
+      value={{
+        id: currentID,
+        name,
+        flow: flows[currentID],
+        add: addPipe,
+        update: updateCurrent,
+      }}
+    >
+      {children}
+    </FlowContext.Provider>
+  )
 }
 
 const CurrentFlow: FC = ({children}) => {

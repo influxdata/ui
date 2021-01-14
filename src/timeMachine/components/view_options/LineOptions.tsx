@@ -34,6 +34,7 @@ import {
   setHoverDimension,
   setLegendOpacity,
   setLegendOrientationThreshold,
+  setLegendColorizeRows,
   setGenerateXAxisTicks,
   setXTotalTicks,
   setXTickStart,
@@ -107,6 +108,7 @@ class LineOptions extends PureComponent<Props> {
       onSetHoverDimension,
       onSetLegendOpacity,
       onSetLegendOrientationThreshold,
+      onSetLegendColorizeRows,
       onSetGenerateXAxisTicks,
       onSetXTotalTicks,
       onSetXTickStart,
@@ -278,6 +280,7 @@ class LineOptions extends PureComponent<Props> {
         <LegendOrientation
           onLegendOpacityChange={onSetLegendOpacity}
           onLegendOrientationThresholdChange={onSetLegendOrientationThreshold}
+          onLegendColorizeRowsChange={onSetLegendColorizeRows}
         />
       </>
     )
@@ -330,6 +333,7 @@ const mdtp = {
   onSetHoverDimension: setHoverDimension,
   onSetLegendOpacity: setLegendOpacity,
   onSetLegendOrientationThreshold: setLegendOrientationThreshold,
+  onSetLegendColorizeRows: setLegendColorizeRows,
   onSetGenerateXAxisTicks: setGenerateXAxisTicks,
   onSetXTotalTicks: setXTotalTicks,
   onSetXTickStart: setXTickStart,

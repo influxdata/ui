@@ -11,7 +11,7 @@ const TimeRangeDropdown: FC = () => {
   const updateRange = useCallback(
     range => {
       event(
-        'Time Range Updated',
+        'update_notebook_time_range',
         {
           type: range.type,
         },

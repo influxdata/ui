@@ -3,6 +3,10 @@ import './style.scss'
 
 export type MarkdownMode = 'edit' | 'preview'
 
+export const MARKDOWN_PIPE_PLACEHOLDER =
+  'Why not leave a note explaining your work so far?'
+export const MARKDOWN_PIPE_INITIAL = ''
+
 const TEST_MODE = false
 const TESTCASE = ` An h1 header
 ============
@@ -171,7 +175,7 @@ export default register => {
     component: MarkdownPanel,
     button: 'Markdown',
     initial: () => ({
-      text: TEST_MODE ? TESTCASE : 'Type markdown here',
+      text: TEST_MODE ? TESTCASE : MARKDOWN_PIPE_INITIAL,
       mode: 'edit',
     }),
   })

@@ -16,6 +16,7 @@ import {useAxisTicksGenerator} from 'src/shared/utils/useAxisTicksGenerator'
 import {
   useLegendOpacity,
   useLegendOrientationThreshold,
+  useLegendColorizeRows,
 } from 'src/shared/utils/useLegendOrientation'
 import {
   useVisXDomainSettings,
@@ -30,6 +31,10 @@ import {
   defaultXColumn,
   defaultYColumn,
 } from 'src/shared/utils/vis'
+
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+import {writeAnnotation} from 'src/annotations/api'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -64,6 +69,7 @@ const XYPlot: FC<Props> = ({
     hoverDimension,
     legendOpacity,
     legendOrientationThreshold,
+    legendColorizeRows,
     generateXAxisTicks,
     xTotalTicks,
     xTickStart,
@@ -107,6 +113,7 @@ const XYPlot: FC<Props> = ({
   const tooltipOrientationThreshold = useLegendOrientationThreshold(
     legendOrientationThreshold
   )
+  const tooltipColorize = useLegendColorizeRows(legendColorizeRows)
 
   const storedXDomain = useMemo(() => parseXBounds(xBounds), [xBounds])
   const storedYDomain = useMemo(() => parseYBounds(yBounds), [yBounds])
@@ -196,6 +203,7 @@ const XYPlot: FC<Props> = ({
     legendColumns,
     legendOpacity: tooltipOpacity,
     legendOrientationThreshold: tooltipOrientationThreshold,
+    legendColorizeRows: tooltipColorize,
     valueFormatters: {
       [xColumn]: xFormatter,
       [yColumn]: yFormatter,
@@ -218,6 +226,25 @@ const XYPlot: FC<Props> = ({
 
   if (!isValidView) {
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
+  }
+
+  if (isFlagEnabled('annotations')) {
+    const doubleClickHandler = plotInteraction => {
+      const annotationTime = new Date(plotInteraction.valueX).toISOString()
+      writeAnnotation([
+        {
+          summary: 'hi',
+          startTime: annotationTime,
+          endTime: annotationTime,
+        },
+      ])
+    }
+
+    const interactionHandlers = {
+      doubleClick: doubleClickHandler,
+    }
+
+    config.interactionHandlers = interactionHandlers
   }
 
   return children(config)

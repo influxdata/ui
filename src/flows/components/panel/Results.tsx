@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC, useEffect, useState, useContext, useMemo} from 'react'
 import {AutoSizer} from 'react-virtualized'
-import {fromFlux} from '@influxdata/giraffe'
 
 // Components
 import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
@@ -15,7 +14,6 @@ import {RunModeContext} from 'src/flows/context/runMode'
 import {MINIMUM_RESIZER_HEIGHT} from 'src/flows/shared/Resizer'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
 import {RemoteDataState} from 'src/types'
@@ -30,21 +28,20 @@ const Results: FC = () => {
   const meta = flow.meta.get(id)
   const resultsExist =
     !!results && !!results.raw && !!results.parsed.table.length
-  const raw = (results || {}).raw || ''
 
-  const rows = useMemo(() => raw.split('\n'), [raw])
+  const rows = useMemo(() => results?.raw?.split('\n') ?? '', [results?.raw])
   const [startRow, setStartRow] = useState<number>(0)
   const [pageSize, setPageSize] = useState<number>(0)
 
   useEffect(() => {
     setStartRow(0)
-  }, [raw])
+  }, [results.parsed])
 
   const prevDisabled = startRow <= 0
   const nextDisabled = startRow + pageSize >= rows.length
 
   const prev = () => {
-    event('Query Pagination Previous Button Clicked')
+    event('notebook_paginate_results_click')
 
     const index = startRow - pageSize
     if (index <= 0) {
@@ -55,7 +52,7 @@ const Results: FC = () => {
   }
 
   const next = () => {
-    event('Query Pagination Next Button Clicked')
+    event('notebook_paginate_results_click')
 
     const index = startRow + pageSize
     const max = rows.length - pageSize
@@ -106,23 +103,15 @@ const Results: FC = () => {
               }
 
               const page = Math.floor(height / ROW_HEIGHT)
-              setPageSize(page)
 
-              if (isFlagEnabled('flowsUiPagination')) {
-                const parsedResults = fromFlux(raw)
-                return (
-                  <RawFluxDataTable
-                    parsedResults={parsedResults}
-                    startRow={startRow}
-                    width={width}
-                    height={page * ROW_HEIGHT}
-                    disableVerticalScrolling={true}
-                  />
-                )
+              if (page !== pageSize) {
+                setPageSize(page)
               }
+
               return (
                 <RawFluxDataTable
-                  files={[rows.slice(startRow, startRow + page).join('\n')]}
+                  parsedResults={results.parsed}
+                  startRow={startRow}
                   width={width}
                   height={page * ROW_HEIGHT}
                   disableVerticalScrolling={true}

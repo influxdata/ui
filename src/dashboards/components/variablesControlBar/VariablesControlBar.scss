@@ -1,16 +1,15 @@
-.variables-control-bar {
-  .toolbar--contents {
-    padding: $cf-marg-b - $cf-border;
-  }
-}
-
-.variable-dropdown--container {
-  position: relative;
-  margin: $cf-border;
+.variables-control-bar .toolbar--contents {
+  padding: 0;
 }
 
 .variables-control-bar--grid {
+  border-radius: $cf-radius;
+  padding: $cf-marg-b - $cf-border;
   width: 100%;
   display: flex;
-  flex-wrap: wrap;
+  transition: box-shadow 0.25s ease;
+}
+
+.variables-control-bar--grid__dragging-over {
+  box-shadow: 0 0 4px 1px $c-void;
 }

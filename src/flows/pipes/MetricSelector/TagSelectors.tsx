@@ -41,11 +41,13 @@ const TagSelectors: FC<Props> = ({tags}) => {
       }
 
       if (tagValues.length < selectedTags[tagName]?.length) {
+        reportEvent('metric_selector_add_filter')
         reportEvent(deselectEventText, {
           type: 'multi-select',
           tags: JSON.stringify(updatedTags),
         })
       } else {
+        reportEvent('metric_selector_remove_filter')
         reportEvent(selectEventText, {
           type: 'multi-select',
           tags: JSON.stringify(updatedTags),

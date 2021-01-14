@@ -39,7 +39,7 @@ const WriteDataCodeSnippet: FC<Props> = ({code, language}) => {
 
   const vars = {
     token: token ? token.token : '<TOKEN GOES HERE>',
-    bucket: bucket.name,
+    bucket: bucket?.name ?? '',
     server: origin,
     org: organization.name,
   }

@@ -59,7 +59,7 @@ const ExportDashboardButtons: FC = () => {
   const org = useSelector(getOrg)
 
   const onCreate = () => {
-    event('Save Visualization to Dashboard')
+    event('notebook_export_to_dashboard', {exportType: 'create'})
 
     const view = {
       name: cellName || DEFAULT_CELL_NAME,
@@ -93,7 +93,7 @@ const ExportDashboardButtons: FC = () => {
   }
 
   const onUpdate = () => {
-    event('Update Visualization to Dashboard')
+    event('notebook_export_to_dashboard', {exportType: 'update'})
 
     const view = {
       name: selectedCell?.name || DEFAULT_CELL_NAME, // TODO: fix this to handle overwriting or creating one

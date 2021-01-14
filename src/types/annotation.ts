@@ -1,30 +1,32 @@
-export interface PostAnnotationResponse {
-  stream: string
-  endTime: string
-  startTime: string
+export interface Annotation {
+  end: string
+  start: string
   summary: string
   stickers?: any
+  stream?: string
+  message?: string
 }
 
-export interface PostAnnotationPayload {
-  summary: string
-}
-
-type Annotation = {
-  endTime: string
-  startTime: string
-  summary: string
-  stickers?: any
-}
 export interface GetAnnotationResponse {
   stream: string
   annotations: Annotation[]
 }
 
 export interface GetAnnotationPayload {
+  stream?: string
+  start?: string
+  end?: string
+  stickers?: any
+}
+
+export interface DeleteAnnotation {
   stream: string
-  startTime: string
-  endTime: string
-  summary: string
-  sticker: any
+  start: string
+  end: string
+  stickers?: any
+}
+
+export interface UpdateAnnotationPayload {
+  new: Annotation
+  old: DeleteAnnotation
 }

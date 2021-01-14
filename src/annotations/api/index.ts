@@ -1,9 +1,9 @@
 // Types
 import {
-  PostAnnotationResponse,
-  PostAnnotationPayload,
+  Annotation,
   GetAnnotationResponse,
   GetAnnotationPayload,
+  DeleteAnnotation,
 } from 'src/types'
 
 // Libraries
@@ -11,59 +11,49 @@ import axios, {AxiosResponse} from 'axios'
 
 // Constants
 import {API_BASE_PATH} from 'src/shared/constants'
+import {UpdateAnnotationPayload} from 'src/types/annotation'
 
 // URL
 const url = `${API_BASE_PATH}api/v2private/annotations`
 
 export const writeAnnotation = async (
-  annotations: PostAnnotationPayload[]
-): Promise<AxiosResponse<PostAnnotationResponse[]>> => {
+  annotations: Annotation[]
+): Promise<AxiosResponse<Annotation[]>> => {
   const res = await axios.post(url, annotations)
 
   if (res.status >= 300) {
     throw new Error(res.data?.message)
   }
 
-  const transformedResponse = res.data.map(d => {
-    const newData = {
-      startTime: d['start'],
-      endTime: d['end'],
-      stream: d.stream,
-      summary: d.summary,
-      stickers: d.stickers,
-    }
-
-    return newData
-  })
-
-  return transformedResponse
+  return res.data
 }
 
-const formatAnnotationQueryString = (data: GetAnnotationPayload): string => {
+export const formatAnnotationQueryString = (
+  data: GetAnnotationPayload,
+  requestType?: string
+): string => {
   let qs: string = ''
 
-  const {stream, startTime, endTime, summary, sticker} = data
+  const {stream, start, end, stickers} = data
 
   if (stream) {
-    qs += `${qs.length ? '&' : '?'}stream=${stream}`
+    qs += `${qs.length ? '&' : '?'}${
+      requestType === 'delete' ? 'stream' : 'streamIncludes'
+    }=${encodeURI(stream)}`
   }
 
-  if (startTime) {
-    qs += `${qs.length ? '&' : '?'}start=${startTime}`
+  if (start) {
+    qs += `${qs.length ? '&' : '?'}start=${start}`
   }
 
-  if (endTime) {
-    qs += `${qs.length ? '&' : '?'}end=${endTime}`
+  if (end) {
+    qs += `${qs.length ? '&' : '?'}end=${end}`
   }
 
-  if (summary) {
-    qs += `${qs.length ? '&' : '?'}summary=${encodeURI(summary)}`
-  }
-
-  if (sticker) {
-    Object.keys(sticker).forEach((s: string) => {
-      qs += `${qs.length ? '&' : '?'}sticker-includes[${s}]=${encodeURI(
-        sticker[s]
+  if (stickers) {
+    Object.keys(stickers).forEach((s: string) => {
+      qs += `${qs.length ? '&' : '?'}stickerIncludes[${s}]=${encodeURI(
+        stickers[s]
       )}`
     })
   }
@@ -75,6 +65,7 @@ export const getAnnotation = async (
   data: GetAnnotationPayload
 ): Promise<AxiosResponse<GetAnnotationResponse[]>> => {
   const formattedQueryString = formatAnnotationQueryString(data)
+  console.log(formattedQueryString)
   const appendedURL = url + formattedQueryString
 
   const res = await axios.get(appendedURL)
@@ -83,18 +74,34 @@ export const getAnnotation = async (
     throw new Error(res.data?.message)
   }
 
-  const transformedResponse = res.data.map(d => {
-    const newDataBlock = {
-      stream: d?.stream,
-      annotations: d.annotations.map(a => ({
-        startTime: a['start'],
-        endTime: a['end'],
-        summary: a.summary,
-        stickers: a.stickers,
-      })),
-    }
-    return newDataBlock
-  })
+  return res.data
+}
 
-  return transformedResponse
+export const updateAnnotation = async (
+  oldAnnotation: UpdateAnnotationPayload['old'],
+  newAnnotation: UpdateAnnotationPayload['new']
+): Promise<AxiosResponse<Annotation>> => {
+  const res = await axios.put(url, {old: oldAnnotation, new: newAnnotation})
+
+  if (res.status >= 300) {
+    throw new Error(res.data?.message)
+  }
+
+  return res.data
+}
+
+export const deleteAnnotation = async (
+  deleteAnnotation: DeleteAnnotation
+): Promise<number> => {
+  const formattedQueryString = formatAnnotationQueryString(
+    deleteAnnotation,
+    'delete'
+  )
+  const res = await axios.delete(url + formattedQueryString)
+
+  if (res.status >= 300) {
+    throw new Error(res.data?.message)
+  }
+
+  return res.status
 }

@@ -2,6 +2,7 @@ import React, {FC} from 'react'
 
 import {
   Input,
+  InputType,
   Grid,
   Columns,
   Form,
@@ -31,6 +32,9 @@ import {BandViewProperties} from 'src/types'
 import {VisOptionProps} from 'src/visualization'
 
 const {BASE_2, BASE_10} = AXES_SCALE_OPTIONS
+const UPPER_COLUMN_PLACEHOLDER = `Please enter upper column's function name`
+const MAIN_COLUMN_PLACEHOLDER = `Please enter main column's function name`
+const LOWER_COLUMN_PLACEHOLDER = `Please enter lower column's function name`
 
 interface Props extends VisOptionProps {
   properties: BandViewProperties
@@ -93,6 +97,24 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
     updateAxis('y', {bounds})
   }
 
+  const updateUpperColumn = evt => {
+    update({
+      upperColumn: evt.target.value,
+    })
+  }
+
+  const updateMainColumn = evt => {
+    update({
+      mainColumn: evt.target.value,
+    })
+  }
+
+  const updateLowerColumn = evt => {
+    update({
+      lowerColumn: evt.target.value,
+    })
+  }
+
   return (
     <Grid>
       <Grid.Row>
@@ -139,6 +161,45 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
               onSelect={(format: string) => {
                 update({timeFormat: format})
               }}
+            />
+          </Form.Element>
+        </Grid.Column>
+        <Grid.Column
+          widthXS={Columns.Twelve}
+          widthMD={Columns.Six}
+          widthLG={Columns.Four}
+        >
+          <h5 className="view-options--header">Aggregate Functions</h5>
+          <Form.Element label="Upper Column Name">
+            <Input
+              onChange={updateUpperColumn}
+              onFocus={updateUpperColumn}
+              placeholder={UPPER_COLUMN_PLACEHOLDER}
+              type={InputType.Text}
+              value={properties.upperColumn}
+            />
+          </Form.Element>
+          <Form.Element label="Main Column Name">
+            <Input
+              onChange={updateMainColumn}
+              onFocus={updateMainColumn}
+              placeholder={MAIN_COLUMN_PLACEHOLDER}
+              status={
+                properties.mainColumn.length
+                  ? ComponentStatus.Default
+                  : ComponentStatus.Error
+              }
+              type={InputType.Text}
+              value={properties.mainColumn}
+            />
+          </Form.Element>
+          <Form.Element label="Lower Column Name">
+            <Input
+              onChange={updateLowerColumn}
+              onFocus={updateLowerColumn}
+              placeholder={LOWER_COLUMN_PLACEHOLDER}
+              type={InputType.Text}
+              value={properties.lowerColumn}
             />
           </Form.Element>
         </Grid.Column>

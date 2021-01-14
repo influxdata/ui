@@ -1,5 +1,6 @@
 // Libraries
-import React, {Component} from 'react'
+import React, {FC, useState} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 import {
   ComponentSize,
   FlexBox,
@@ -25,68 +26,109 @@ import {
   QUERY_RESULTS_STATUS_TIMEOUT,
   PANEL_CONTENTS_WIDTHS,
 } from 'src/usage/Constants'
+import {getTimeRange} from 'src/dashboards/selectors'
+import {setTimeRange} from 'src/timeMachine/actions'
 
-class UsageToday extends Component {
-  constructor(props) {
-    super(props)
+// Types
+import {TimeRange} from 'src/types'
 
-    this.ranges = {
-      h24: 'Past 24 Hours',
-      d7: 'Past 7 Days',
-      d30: 'Past 30 Days',
-    }
+// Hooks
+import {useUsage} from 'src/usage/UsagePage'
 
-    this.state = {
-      selectedUsageID: 'Data In (MB)',
-    }
+const UsageToday: FC = () => {
+  const [{account, billingStart}] = useUsage()
+
+  const timeRange = useSelector(getTimeRange)
+  const dispatch = useDispatch()
+
+  const handleSetTimeRange = (range: TimeRange) => {
+    dispatch(setTimeRange(range))
   }
 
-  render() {
-    const {history, selectedRange, billingStart, pricingVersion} = this.props
+  //   const getUsageSparkline = () => {
+  //     // const {history} = props
+  //     const graphInfo = GRAPH_INFO.usage_stats.find(
+  //       stat => stat.title === selectedUsageID
+  //     )
+  //     const {table, status} = csvToTable(history[graphInfo.column])
 
-    const {table: billingTable, status: billingStatus} = this.csvToTable(
-      history.billing_stats
-    )
-    const {table: limitsTable, status: limitsStatus} = this.csvToTable(
-      history.rate_limits
-    )
-    const {selectedUsageID} = this.state
+  //     return (
+  //       <PanelSectionBody
+  //         table={table}
+  //         status={status}
+  //         graphInfo={graphInfo}
+  //         widths={PANEL_CONTENTS_WIDTHS.usage}
+  //         key={graphInfo.title}
+  //       />
+  //     )
+  //   }
 
-    return (
-      <FlexBox
-        alignItems={AlignItems.Stretch}
-        direction={FlexDirection.Column}
-        margin={ComponentSize.Small}
-      >
-        <BillingStatsPanel
-          table={billingTable}
-          status={billingStatus}
-          billingStart={billingStart}
-          widths={PANEL_CONTENTS_WIDTHS.billing_stats}
-          pricingVersion={pricingVersion}
-        />
-        <TimeRangeDropdown
-          selectedTimeRange={this.ranges[selectedRange]}
-          dropdownOptions={this.ranges}
-          onSelect={this.handleTimeRangeChange}
-        />
-        <Panel className="usage--panel">
-          <Panel.Header>
-            <h4>{`Usage ${this.ranges[selectedRange]}`}</h4>
-            <UsageDropdown
-              selectedUsage={selectedUsageID}
-              onSelect={this.handleUsageChange}
-              pricingVersion={pricingVersion}
-            />
-          </Panel.Header>
-          <PanelSection>{this.getUsageSparkline()}</PanelSection>
-        </Panel>
-        <Panel className="usage--panel">
-          <Panel.Header>
-            <h4>{`Rate Limits ${this.ranges[selectedRange]}`}</h4>
-          </Panel.Header>
-          <PanelSection>
-            {GRAPH_INFO.rate_limits.map(graphInfo => {
+  //   const csvToTable = csv => {
+  //     const {table} = fromFlux(csv)
+
+  //     if (!table || !table.columns || table.columns.error) {
+  //       if (
+  //         table.columns.error.data.length &&
+  //         table.columns.error.data[0] === 'Usage Query Timeout'
+  //       ) {
+  //         return {
+  //           status: QUERY_RESULTS_STATUS_TIMEOUT,
+  //           table: {columns: {}, length: 0},
+  //         }
+  //       }
+
+  //       return {
+  //         status: QUERY_RESULTS_STATUS_ERROR,
+  //         table: {columns: {}, length: 0},
+  //       }
+  //     }
+
+  //     if (!table.length) {
+  //       return {
+  //         status: QUERY_RESULTS_STATUS_EMPTY,
+  //         table: {columns: {}, length: 0},
+  //       }
+  //     }
+
+  //     return {status: QUERY_RESULTS_STATUS_SUCCESS, table}
+  //   }
+
+  //   const {table: billingTable, status: billingStatus} = csvToTable(
+  //     history.billing_stats
+  //   )
+  //   const {table: limitsTable, status: limitsStatus} = csvToTable(
+  //     history.rate_limits
+  //   )
+
+  return (
+    <FlexBox
+      alignItems={AlignItems.Stretch}
+      direction={FlexDirection.Column}
+      margin={ComponentSize.Small}
+    >
+      <BillingStatsPanel
+        // table={billingTable}
+        // status={billingStatus}
+        widths={PANEL_CONTENTS_WIDTHS.billing_stats}
+      />
+      <TimeRangeDropdown
+        onSetTimeRange={handleSetTimeRange}
+        timeRange={timeRange}
+      />
+      <Panel className="usage--panel">
+        <Panel.Header>
+          {/* TODO(Ariel): make this label work */}
+          <h4>{`Usage ${timeRange.label}`}</h4>
+          <UsageDropdown />
+        </Panel.Header>
+        {/* <PanelSection>{getUsageSparkline()}</PanelSection> */}
+      </Panel>
+      <Panel className="usage--panel">
+        <Panel.Header>
+          <h4>{`Rate Limits ${timeRange.label}`}</h4>
+        </Panel.Header>
+        <PanelSection>
+          {/* {GRAPH_INFO.rate_limits.map(graphInfo => {
               return (
                 <PanelSectionBody
                   table={limitsTable}
@@ -96,66 +138,11 @@ class UsageToday extends Component {
                   key={graphInfo.title}
                 />
               )
-            })}
-          </PanelSection>
-        </Panel>
-      </FlexBox>
-    )
-  }
-
-  getUsageSparkline() {
-    const {history} = this.props
-    const {selectedUsageID} = this.state
-
-    const graphInfo = GRAPH_INFO.usage_stats.find(
-      stat => stat.title === selectedUsageID
-    )
-    const {table, status} = this.csvToTable(history[graphInfo.column])
-
-    return (
-      <PanelSectionBody
-        table={table}
-        status={status}
-        graphInfo={graphInfo}
-        widths={PANEL_CONTENTS_WIDTHS.usage}
-        key={graphInfo.title}
-      />
-    )
-  }
-
-  handleUsageChange = v => {
-    this.setState({selectedUsageID: v})
-  }
-
-  csvToTable = csv => {
-    const {table} = fromFlux(csv)
-
-    if (!table || !table.columns || table.columns.error) {
-      if (
-        table.columns.error.data.length &&
-        table.columns.error.data[0] === 'Usage Query Timeout'
-      ) {
-        return {
-          status: QUERY_RESULTS_STATUS_TIMEOUT,
-          table: {columns: {}, length: 0},
-        }
-      }
-
-      return {
-        status: QUERY_RESULTS_STATUS_ERROR,
-        table: {columns: {}, length: 0},
-      }
-    }
-
-    if (!table.length) {
-      return {
-        status: QUERY_RESULTS_STATUS_EMPTY,
-        table: {columns: {}, length: 0},
-      }
-    }
-
-    return {status: QUERY_RESULTS_STATUS_SUCCESS, table}
-  }
+            })} */}
+        </PanelSection>
+      </Panel>
+    </FlexBox>
+  )
 }
 
 export default UsageToday

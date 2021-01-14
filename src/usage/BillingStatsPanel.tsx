@@ -12,6 +12,8 @@ import PanelSection from 'src/usage/PanelSection'
 import PanelSectionBody from 'src/usage/PanelSectionBody'
 
 import {GRAPH_INFO} from 'src/usage/Constants'
+import {useUsage} from 'src/usage/UsagePage'
+import {DUMMY_PRICING_VERSION_TO_DELETE} from 'src/usage/utils'
 
 const billingStats = (pricingVersion = 3) => {
   return GRAPH_INFO.billing_stats.filter(stat =>
@@ -19,13 +21,13 @@ const billingStats = (pricingVersion = 3) => {
   )
 }
 
-const BillingStatsPanel = ({
-  table,
-  status,
-  widths,
-  billingStart: {date: billingStartDate, time: billingStartTime},
-  pricingVersion,
-}) => {
+const BillingStatsPanel = ({table, status, widths}) => {
+  const [
+    {
+      billingStart: {date: billingStartDate, time: billingStartTime},
+    },
+  ] = useUsage()
+
   const today = new Date().toISOString()
   const dateRange = `${billingStartTime} UTC to ${today} UTC`
 
@@ -63,7 +65,7 @@ const BillingStatsPanel = ({
         />
       </Panel.Header>
       <PanelSection>
-        {billingStats(pricingVersion).map(graphInfo => {
+        {/* {billingStats(DUMMY_PRICING_VERSION_TO_DELETE).map(graphInfo => {
           return (
             <PanelSectionBody
               table={table}
@@ -73,7 +75,7 @@ const BillingStatsPanel = ({
               key={graphInfo.title}
             />
           )
-        })}
+        })} */}
       </PanelSection>
     </Panel>
   )

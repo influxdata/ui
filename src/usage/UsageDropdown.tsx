@@ -1,41 +1,27 @@
-import React, {Component} from 'react'
+import React, {FC, useState} from 'react'
 
 import {SelectDropdown, ComponentColor} from '@influxdata/clockface'
 import {GRAPH_INFO} from 'src/usage/Constants'
+import {DUMMY_PRICING_VERSION_TO_DELETE} from 'src/usage/utils'
 
-class UsageDropdown extends Component {
-  constructor(props) {
-    super(props)
+const UsageDropdown: FC = () => {
+  const [selectedUsage, setSelectedUsageID] = useState('Data In (MB)')
 
-    this.options = GRAPH_INFO.usage_stats
-      .filter(stat => stat.pricingVersions.includes(props.pricingVersion))
-      .map(stat => stat.title)
-  }
-
-  render() {
-    const {selectedUsage} = this.props
-
-    return (
-      <SelectDropdown
-        titleText="Usage"
-        selectedOption={selectedUsage}
-        options={this.options}
-        onSelect={this.handleSelect}
-        buttonColor={ComponentColor.Default}
-        style={{width: '200px'}}
-      />
+  const options = GRAPH_INFO.usage_stats
+    .filter(stat =>
+      stat.pricingVersions.includes(DUMMY_PRICING_VERSION_TO_DELETE)
     )
-  }
+    .map(stat => stat.title)
 
-  handleSelect = v => {
-    const {onSelect} = this.props
-
-    this.setState({selectedUsage: v}, () => {
-      if (onSelect) {
-        onSelect(v)
-      }
-    })
-  }
+  return (
+    <SelectDropdown
+      selectedOption={selectedUsage}
+      options={options}
+      onSelect={setSelectedUsageID}
+      buttonColor={ComponentColor.Default}
+      style={{width: '200px'}}
+    />
+  )
 }
 
 export default UsageDropdown

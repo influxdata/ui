@@ -9,7 +9,6 @@ import {RemoteDataState} from 'src/types'
 import {
   Invoices,
   CreditCardParams,
-  OrgLimits,
   LimitStatus,
   Region,
   BillingNotifySettings,
@@ -96,41 +95,6 @@ export const getBillingNotificationSettings = (): ReturnType<typeof getBillingNo
     status: RemoteDataState.Done,
   }
   return makeResponse(200, billingNotifySettings)
-}
-
-export const getOrgRateLimits = (): Promise<any> => {
-  const orgLimit: OrgLimits = {
-    bucket: {
-      maxBuckets: 2,
-      maxRetentionDuration: 1555000000000000,
-    },
-    check: {
-      maxChecks: 2,
-    },
-    dashboard: {
-      maxDashboards: 2,
-    },
-    notificationEndpoint: {
-      blockedNotificationEndpoints: 'what',
-    },
-    notificationRule: {
-      blockedNotificationRules: 'what',
-      maxNotifications: 2,
-    },
-    rate: {
-      cardinality: 2,
-      concurrentReadRequests: 2,
-      concurrentWriteRequests: 2,
-      readKBs: 2,
-      writeKBs: 2,
-    },
-    status: RemoteDataState.Done,
-    task: {
-      maxTasks: 2,
-    },
-  }
-
-  return makeResponse(200, orgLimit)
 }
 
 export const getLimitsStatus = (): Promise<any> => {

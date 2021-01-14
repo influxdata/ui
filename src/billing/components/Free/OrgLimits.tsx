@@ -1,42 +1,55 @@
 import React, {FC} from 'react'
+import {useSelector} from 'react-redux'
 import {Grid, Columns} from '@influxdata/clockface'
 import OrgLimitStat from 'src/billing/components/Free/OrgLimitStat'
-import {Limits} from 'src/types'
-
-// Hooks
-import {useBilling} from 'src/billing/components/BillingPage'
+import {AppState} from 'src/types'
+import {LimitsState} from 'src/cloud/reducers/limits'
 
 type KV = [string, string | number]
 
-const excludeOrgID = (limitEntries: KV[]): KV[] => {
+const excludeOrgIDAndStatus = (limitEntries: KV[]): KV[] => {
   return limitEntries.filter(
     ([limitName]) => limitName !== 'orgID' && limitName !== 'status'
   )
 }
 
-const rejectConcurrencyLimits = (limitEntries: KV[]): KV[] => {
-  const excludedLimits = [
-    'blockedNotificationRules',
-    'blockedNotificationEndpoints',
-  ]
-  return limitEntries.filter(
-    ([limitName, _limitValue]) => !excludedLimits.includes(limitName)
-  )
-}
+// TODO(ariel): get these rejections hooked up
+// const rejectConcurrencyLimits = (limitEntries: KV[]): KV[] => {
+//   const excludedLimits = [
+//     'blockedNotificationRules',
+//     'blockedNotificationEndpoints',
+//   ]
+//   console.log({limitEntries})
+//   return limitEntries.filter(
+//     ([limitName, _limitValue]) => !excludedLimits.includes(limitName)
+//   )
+// }
 
-const limits = (orgLimits: Limits): KV[] => {
-  const limitsByCategory = excludeOrgID(Object.entries(orgLimits))
-  return limitsByCategory.flatMap(([_category, limits]) =>
-    rejectConcurrencyLimits(Object.entries(limits))
-  )
+const limits = (orgLimits: LimitsState | {}): KV[] => {
+  return excludeOrgIDAndStatus(Object.entries(orgLimits))
 }
 
 const OrgLimits: FC = () => {
-  const [{orgLimits}] = useBilling()
-
+  const orgLimits =
+    useSelector((state: AppState): LimitsState => state?.cloud?.limits) ?? {}
   return (
     <Grid>
-      {limits(orgLimits).map(([name, value]) => {
+      {limits(orgLimits).flatMap(([name, value]) => {
+        if (name === 'rate') {
+          return Object.entries(value).map(([n, v]) => {
+            return (
+              <Grid.Column
+                key={n}
+                widthXS={Columns.Twelve}
+                widthSM={Columns.Six}
+                widthMD={Columns.Four}
+                widthLG={Columns.Three}
+              >
+                <OrgLimitStat name={n} value={v} />
+              </Grid.Column>
+            )
+          })
+        }
         return (
           <Grid.Column
             key={name}

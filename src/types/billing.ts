@@ -7,15 +7,7 @@ import {
   Invoice as GenInvoice,
   PaymentMethod as GenPaymentMethod,
 } from 'src/client/unityRoutes'
-import {
-  RemoteDataState,
-  Limits,
-  LimitsStatus as GenLimitsStatus,
-} from 'src/types'
-
-export interface OrgLimits extends Limits {
-  status: RemoteDataState
-}
+import {RemoteDataState, LimitsStatus as GenLimitsStatus} from 'src/types'
 
 export interface LimitStatus extends GenLimitsStatus {
   status: RemoteDataState

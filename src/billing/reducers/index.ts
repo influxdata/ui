@@ -9,7 +9,6 @@ import {
   CreditCardParams,
   Invoices,
   LimitStatus,
-  OrgLimits,
   PaymentMethods,
   Region,
 } from 'src/types/billing'
@@ -21,7 +20,6 @@ export interface BillingState {
   invoices: Invoices
   invoicesStatus: RemoteDataState
   limitsStatus: LimitStatus
-  orgLimits: OrgLimits
   paymentMethods: PaymentMethods
   paymentMethodsStatus: RemoteDataState
   region: Region
@@ -58,36 +56,6 @@ export const initialState = (): BillingState => ({
     },
     cardinality: {
       status: '',
-    },
-    status: RemoteDataState.NotStarted,
-  },
-  orgLimits: {
-    rate: {
-      readKBs: null,
-      concurrentReadRequests: null,
-      writeKBs: null,
-      concurrentWriteRequests: null,
-      cardinality: null,
-    },
-    check: {
-      maxChecks: null,
-    },
-    notificationRule: {
-      maxNotifications: null,
-      blockedNotificationRules: '',
-    },
-    notificationEndpoint: {
-      blockedNotificationEndpoints: '',
-    },
-    bucket: {
-      maxBuckets: null,
-      maxRetentionDuration: null, // nanoseconds
-    },
-    task: {
-      maxTasks: null,
-    },
-    dashboard: {
-      maxDashboards: null,
     },
     status: RemoteDataState.NotStarted,
   },
@@ -147,18 +115,6 @@ export const setLimitsStateStatus = (status: RemoteDataState) =>
     status,
   } as const)
 
-export const setOrgLimits = (orgLimits: OrgLimits) =>
-  ({
-    type: 'SET_ORG_LIMITS',
-    orgLimits,
-  } as const)
-
-export const setOrgLimitStatus = (status: RemoteDataState) =>
-  ({
-    type: 'SET_ORG_LIMITS_STATUS',
-    status,
-  } as const)
-
 export const setPaymentMethods = (
   paymentMethods: PaymentMethods,
   creditCards: CreditCardParams,
@@ -200,8 +156,6 @@ export type Action =
   | ReturnType<typeof setInvoicesStatus>
   | ReturnType<typeof setLimitsStatus>
   | ReturnType<typeof setLimitsStateStatus>
-  | ReturnType<typeof setOrgLimits>
-  | ReturnType<typeof setOrgLimitStatus>
   | ReturnType<typeof setPaymentMethods>
   | ReturnType<typeof setPaymentMethodsStatus>
   | ReturnType<typeof setRegion>
@@ -273,24 +227,6 @@ export const billingReducer = (
         }
 
         draftState.limitsStatus.status = action.status
-        return
-      }
-      case 'SET_ORG_LIMITS': {
-        draftState.orgLimits = action.orgLimits
-
-        return
-      }
-      case 'SET_ORG_LIMITS_STATUS': {
-        if (!draftState.orgLimits?.status) {
-          draftState.orgLimits = {
-            ...draftState.orgLimits,
-            status: action.status,
-          }
-
-          return
-        }
-
-        draftState.orgLimits.status = action.status
         return
       }
       case 'SET_PAYMENT_METHODS': {

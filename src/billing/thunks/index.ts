@@ -11,8 +11,6 @@ import {
   setInvoicesStatus,
   setLimitsStatus,
   setLimitsStateStatus,
-  setOrgLimits,
-  setOrgLimitStatus,
   setPaymentMethods,
   setPaymentMethodsStatus,
   setRegion,
@@ -28,7 +26,6 @@ import {
   getLimitsStatus as apiGetLimitsStatus,
   getInvoices as apiGetInvoices,
   getRegion as apiGetRegion,
-  getOrgRateLimits,
 } from 'src/billing/api'
 
 // Types
@@ -100,23 +97,6 @@ export const getLimitsStatus = async (dispatch: Dispatch<Action>) => {
     console.error(error)
 
     dispatch(setLimitsStateStatus(RemoteDataState.Error))
-  }
-}
-
-export const getOrgLimits = async (dispatch: Dispatch<Action>) => {
-  try {
-    dispatch(setOrgLimitStatus(RemoteDataState.Loading))
-    const resp = await getOrgRateLimits()
-
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
-
-    dispatch(setOrgLimits({...resp.data, status: RemoteDataState.Done}))
-  } catch (error) {
-    console.error(error)
-
-    dispatch(setOrgLimitStatus(RemoteDataState.Error))
   }
 }
 

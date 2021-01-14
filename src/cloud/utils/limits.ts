@@ -2,6 +2,7 @@ import {get} from 'lodash'
 import {ASSET_LIMIT_ERROR_STATUS} from 'src/cloud/constants/index'
 import {LimitsState} from 'src/cloud/reducers/limits'
 import {LimitStatus} from 'src/cloud/actions/limits'
+import {AppState} from 'src/types'
 
 export const isLimitError = (error): boolean => {
   return get(error, 'response.status', '') === ASSET_LIMIT_ERROR_STATUS
@@ -10,6 +11,11 @@ export const isLimitError = (error): boolean => {
 export const extractBucketLimits = (limits: LimitsState): LimitStatus => {
   return get(limits, 'buckets.limitStatus')
 }
+
+export const getBucketLimitStatus = (state: AppState): LimitStatus => {
+  return state.cloud?.limits?.buckets?.limitStatus
+}
+
 export const extractBucketMax = (limits: LimitsState): number => {
   return get(limits, 'buckets.maxAllowed') || Infinity // if maxAllowed == 0, there are no limits on asset
 }
@@ -18,6 +24,11 @@ export const extractBucketMaxRetentionSeconds = (
   limits: LimitsState
 ): number => {
   return get(limits, 'buckets.maxRetentionSeconds', null)
+}
+
+export const getBucketRetentionLimit = (state: AppState): boolean => {
+  const maxSeconds = state.cloud?.limits?.buckets?.maxRetentionSeconds
+  return !!maxSeconds
 }
 
 export const extractDashboardLimits = (limits: LimitsState): LimitStatus => {

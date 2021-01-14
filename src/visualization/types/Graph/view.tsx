@@ -30,6 +30,9 @@ import {
   defaultXColumn,
   defaultYColumn,
 } from 'src/shared/utils/vis'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+import {writeAnnotation} from 'src/annotations/api'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -143,6 +146,21 @@ const XYPlot: FC<Props> = ({
 
   const currentTheme = theme === 'light' ? VIS_THEME_LIGHT : VIS_THEME
 
+  const doubleClickHandler = plotInteraction => {
+    const annotationTime = new Date(plotInteraction.valueX).toISOString()
+    writeAnnotation([
+      {
+        summary: 'hi',
+        startTime: annotationTime,
+        endTime: annotationTime,
+      },
+    ])
+  }
+
+  const interactionHandlers = {
+    doubleClick: doubleClickHandler,
+  }
+
   if (!isValidView) {
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
   }
@@ -169,6 +187,9 @@ const XYPlot: FC<Props> = ({
           [xColumn]: xFormatter,
           [yColumn]: yFormatter,
         },
+        interactionHandlers: isFlagEnabled('annotations')
+          ? interactionHandlers
+          : null,
         layers: [
           {
             type: 'line',

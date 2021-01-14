@@ -214,7 +214,7 @@ export const QueryProvider: FC = ({children}) => {
     }
   }
 
-  const statuses = flow.meta.all.map(({loading}) => loading)
+  const statuses = flow ? flow.meta.all.map(({loading}) => loading) : []
 
   let status = RemoteDataState.Done
 

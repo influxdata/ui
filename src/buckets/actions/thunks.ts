@@ -119,6 +119,37 @@ export const createBucket = (bucket: OwnBucket) => async (
   }
 }
 
+export const createBucketAndUpdate = (
+  bucket: OwnBucket,
+  update: (bucket: Bucket) => void
+) => async (
+  dispatch: Dispatch<Action | ReturnType<typeof checkBucketLimits>>,
+  getState: GetState
+) => {
+  try {
+    const org = getOrg(getState())
+
+    const resp = await api.postBucket({data: {...bucket, orgID: org.id}})
+
+    if (resp.status !== 201) {
+      throw new Error(resp.data.message)
+    }
+
+    const newBucket = normalize<Bucket, BucketEntities, string>(
+      resp.data,
+      bucketSchema
+    )
+
+    dispatch(addBucket(newBucket))
+    dispatch(checkBucketLimits())
+    update(newBucket.entities.buckets[resp.data.id])
+  } catch (error) {
+    console.error(error)
+    const message = getErrorMessage(error)
+    dispatch(notify(bucketCreateFailed(message)))
+  }
+}
+
 export const updateBucket = (bucket: OwnBucket) => async (
   dispatch: Dispatch<Action>,
   getState: GetState

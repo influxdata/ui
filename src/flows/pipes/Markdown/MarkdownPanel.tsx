@@ -5,6 +5,7 @@ import {
   SpinnerContainer,
   TechnoSpinner,
 } from '@influxdata/clockface'
+import classnames from 'classnames'
 
 // Types
 import {MarkdownMode} from './'
@@ -16,22 +17,46 @@ import {ClickOutside} from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 import {PipeProp} from 'src/types/flows'
 
+import {
+  MARKDOWN_PIPE_PLACEHOLDER,
+  MARKDOWN_PIPE_INITIAL,
+} from 'src/flows/pipes/markdown/index'
+
 const MarkdownMonacoEditor = lazy(() =>
   import('src/shared/components/MarkdownMonacoEditor')
 )
 
 const MarkdownPanel: FC<PipeProp> = ({Context}) => {
   const {data, update} = useContext(PipeContext)
+
+  const showPlaceholder = (): void => {
+    if (data.text === MARKDOWN_PIPE_INITIAL) {
+      update({text: MARKDOWN_PIPE_PLACEHOLDER})
+    }
+  }
+
+  const hidePlaceholder = (): void => {
+    if (data.text === MARKDOWN_PIPE_PLACEHOLDER) {
+      update({text: MARKDOWN_PIPE_INITIAL})
+    }
+  }
+
   const handleToggleMode = (mode: MarkdownMode): void => {
+    if (mode === 'preview') {
+      showPlaceholder()
+    } else if (mode === 'edit') {
+      hidePlaceholder()
+    }
+
     update({mode})
   }
 
   const handleClickOutside = (): void => {
-    update({mode: 'preview'})
+    handleToggleMode('preview')
   }
 
   const handlePreviewClick = (): void => {
-    update({mode: 'edit'})
+    handleToggleMode('edit')
   }
 
   const controls = (
@@ -62,11 +87,15 @@ const MarkdownPanel: FC<PipeProp> = ({Context}) => {
   )
 
   if (data.mode === 'preview') {
+    const markdownClassname = classnames(
+      'flow-panel--markdown markdown-format',
+      {
+        'flow-panel--markdown__placeholder':
+          data.text === MARKDOWN_PIPE_PLACEHOLDER,
+      }
+    )
     panelContents = (
-      <div
-        className="flow-panel--markdown markdown-format"
-        onClick={handlePreviewClick}
-      >
+      <div className={markdownClassname} onClick={handlePreviewClick}>
         <MarkdownRenderer text={data.text} />
       </div>
     )

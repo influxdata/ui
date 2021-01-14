@@ -54,4 +54,28 @@ describe('Flows', () => {
 
     cy.getByTestID('slide-toggle').click()
   })
+
+  it('can create a bucket from the metric selector and verify it is selected', () => {
+    const newBucketName = 'IDontGiveABuck'
+    cy.getByTestID('create-flow--button')
+      .first()
+      .click()
+
+    cy.getByTestID('flow-bucket-selector')
+      .click()
+      .then(() => {
+        cy.getByTestID('flow-bucket-selector--create').click()
+      })
+
+    cy.getByTestID('overlay').should('exist')
+
+    cy.getByTestID('bucket-form-name').type(newBucketName)
+    cy.getByTestID('bucket-form-submit')
+      .click()
+      .then(() => {
+        cy.getByTestID('flow-bucket-selector').within(() => {
+          cy.contains(newBucketName).should('exist')
+        })
+      })
+  })
 })

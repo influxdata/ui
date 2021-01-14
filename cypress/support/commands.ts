@@ -1,4 +1,5 @@
 import {NotificationEndpoint} from '../../src/types'
+import {Bucket, Organization} from '../../src/client'
 import 'cypress-file-upload'
 
 export const signin = (): Cypress.Chainable<Cypress.Response> => {
@@ -15,42 +16,63 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
         })
     })
   \*/
+  return cy.setupUser().then(response => {
+    // const route = Cypress.env('inkind') ? '/' : '/api/v2/signin'
+    cy.visit('/')
+      .then(() => {
+        const username = Cypress._.get(
+          response,
+          'body.user.name',
+          Cypress.env('username')
+        )
+        cy.get('#login').type(username)
+      })
+      .then(() => cy.get('#password').type(Cypress.env('password')))
+      .then(() => cy.get('#submit-login').click())
+      .then(() => {
+        cy.get('body').then($body => {
+          /**
+           * we are conditionally rendering this test case since it's only
+           * relevant to CLOUD tests in order to click the `Grant Access` button
+           * that's rendered by Dex in the CLOUD development environment.
+           *
+           * We are using this conditional test based on the following doc suggestions:
+           * https://docs.cypress.io/guides/core-concepts/conditional-testing.html#Element-existence
+           **/
+          if ($body.find('.theme-btn--success').length) {
+            cy.get('.theme-btn--success').click()
+          }
+        })
+      })
+      .then(() => cy.location('pathname').should('not.eq', '/signin'))
+      .then(() => cy.wrapOrgAndBucket())
+  })
+}
+
+export const wrapOrgAndBucket = (): Cypress.Chainable<Cypress.Response> => {
   return cy
-    .setupUser()
-    .then(resp => {
-      Object.entries(resp.body).forEach(([k, v]) => {
-        cy.log(k, JSON.stringify(v))
-      })
-      // cy.log('user setup response', JSON.stringify(resp, null, 2))
-      cy.visit('/api/v2/signin')
+    .request({
+      method: 'GET',
+      url: '/api/v2/orgs',
     })
-    .then(() => cy.get('#login').type(Cypress.env('username')))
-    .then(() => cy.get('#password').type(Cypress.env('password')))
-    .then(() => cy.get('#submit-login').click())
-    .then(() => {
-      cy.get('body').then($body => {
-        /**
-         * we are conditionally rendering this test case since it's only
-         * relevant to CLOUD tests in order to click the `Grant Access` button
-         * that's rendered by Dex in the CLOUD development environment.
-         *
-         * We are using this conditional test based on the following doc suggestions:
-         * https://docs.cypress.io/guides/core-concepts/conditional-testing.html#Element-existence
-         **/
-        if ($body.find('.theme-btn--success').length) {
-          cy.get('.theme-btn--success').click()
-        }
-      })
-    })
-    .then(() => cy.location('pathname').should('not.eq', '/signin'))
-    .then(() =>
+    .then(orgsResponse => {
+      const org = orgsResponse.body.orgs[0] as Organization
+      cy.wrap(org).as('org')
+
       cy.request({
         method: 'GET',
-        url: '/api/v2/orgs',
+        url: '/api/v2/buckets',
+        qs: {orgID: org.id},
+      }).then(bucketsResponse => {
+        const buckets = bucketsResponse.body.buckets as Array<Bucket>
+        const bucket = buckets.find(
+          b =>
+            b.orgID === org.id &&
+            b.name !== '_tasks' &&
+            b.name !== '_monitoring'
+        )
+        cy.wrap(bucket).as('bucket')
       })
-    )
-    .then(response => {
-      cy.wrap(response.body.orgs[0]).as('org')
     })
 }
 
@@ -470,14 +492,14 @@ export const lines = (numLines = 3) => {
 export const writeData = (
   lines: string[]
 ): Cypress.Chainable<Cypress.Response> => {
-  return cy.request({
-    method: 'POST',
-    url:
-      '/api/v2/write?org=' +
-      Cypress.env('org') +
-      '&bucket=' +
-      Cypress.env('bucket'),
-    body: lines.join('\n'),
+  return cy.get<Organization>('@org').then((org: Organization) => {
+    return cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
+      return cy.request({
+        method: 'POST',
+        url: '/api/v2/write?org=' + org.name + '&bucket=' + bucket.name,
+        body: lines.join('\n'),
+      })
+    })
   })
 }
 
@@ -570,6 +592,7 @@ Cypress.Commands.add('signin', signin)
 
 // setup
 Cypress.Commands.add('setupUser', setupUser)
+Cypress.Commands.add('wrapOrgAndBucket', wrapOrgAndBucket)
 
 // dashboards
 Cypress.Commands.add('createDashboard', createDashboard)

@@ -9,9 +9,6 @@ import {
 // Libraries
 import axios, {AxiosResponse} from 'axios'
 
-// Types
-import {PostAnnotationResponse, PostAnnotationPayload} from 'src/types'
-
 // Constants
 import {API_BASE_PATH} from 'src/shared/constants'
 import {UpdateAnnotationPayload} from 'src/types/annotation'
@@ -68,7 +65,6 @@ export const getAnnotation = async (
   data: GetAnnotationPayload
 ): Promise<AxiosResponse<GetAnnotationResponse[]>> => {
   const formattedQueryString = formatAnnotationQueryString(data)
-  console.log(formattedQueryString)
   const appendedURL = url + formattedQueryString
 
   const res = await axios.get(appendedURL)

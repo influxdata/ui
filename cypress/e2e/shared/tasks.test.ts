@@ -4,29 +4,19 @@ describe('Tasks', () => {
   beforeEach(() => {
     cy.flush()
 
-    cy.signin()
-      .then(() =>
-        cy.request({
-          method: 'GET',
-          url: '/api/v2/buckets',
-        })
+    cy.signin().then(() => {
+      cy.get('@org').then(({id: orgID}: Organization) =>
+        cy
+          .createToken(orgID, 'test token', 'active', [
+            {action: 'write', resource: {type: 'views', orgID}},
+            {action: 'write', resource: {type: 'documents', orgID}},
+            {action: 'write', resource: {type: 'tasks', orgID}},
+          ])
+          .then(({body}) => {
+            cy.wrap(body.token).as('token')
+          })
       )
-      .then(response => {
-        cy.wrap(response.body.buckets[0]).as('bucket')
-      })
-      .then(() => {
-        cy.get('@org').then(({id}: Organization) =>
-          cy
-            .createToken(id, 'test token', 'active', [
-              {action: 'write', resource: {type: 'views'}},
-              {action: 'write', resource: {type: 'documents'}},
-              {action: 'write', resource: {type: 'tasks'}},
-            ])
-            .then(({body}) => {
-              cy.wrap(body.token).as('token')
-            })
-        )
-      })
+    })
 
     cy.fixture('routes').then(({orgs}) => {
       cy.get('@org').then(({id}: Organization) => {

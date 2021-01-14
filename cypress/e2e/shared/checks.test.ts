@@ -10,14 +10,13 @@ describe('Checks', () => {
     cy.flush()
 
     cy.signin().then(() => {
-      cy.writeData([`${measurement} ${field}=0`, `${measurement} ${field}=1`])
-
       // visit the alerting index
-      cy.get('@org').then(({id}: Organization) =>
+      cy.get('@org').then(({id: orgID}: Organization) => {
+        cy.writeData([`${measurement} ${field}=0`, `${measurement} ${field}=1`])
         cy.fixture('routes').then(({orgs, alerting}) => {
-          cy.visit(`${orgs}/${id}${alerting}`)
+          cy.visit(`${orgs}/${orgID}${alerting}`)
         })
-      )
+      })
     })
     cy.get('[data-testid="resource-list--body"]', {timeout: PAGE_LOAD_SLA})
 
@@ -270,10 +269,8 @@ describe('Checks', () => {
       cy.get('@org').then(({id}: Organization) => {
         cy.fixture('routes').then(({orgs, alerting, checks}) => {
           cy.visit(`${orgs}/${id}${alerting}${checks}/${nonexistentID}/edit`)
-          cy.url().should(
-            'eq',
-            `${Cypress.config().baseUrl}${orgs}/${id}${alerting}`
-          )
+
+          cy.url().should('include', `${orgs}/${id}${alerting}`)
         })
       })
     })

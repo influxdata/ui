@@ -37,8 +37,10 @@ const TimeMachineFluxEditor: FC<Props> = ({
   activeTab,
 }) => {
   const [editorInstance, setEditorInstance] = useState<EditorType>(null)
-
   const handleInsertVariable = (variableName: string): void => {
+    if (!editorInstance) {
+      return null
+    }
     const p = editorInstance.getPosition()
     editorInstance.executeEdits('', [
       {
@@ -73,6 +75,9 @@ const TimeMachineFluxEditor: FC<Props> = ({
   const getFluxTextAndRange = (
     func: FluxToolbarFunction
   ): {text: string; range: monacoEditor.Range} => {
+    if (!editorInstance) {
+      return null
+    }
     const p = editorInstance.getPosition()
     const insertLineNumber = getInsertLineNumber(p.lineNumber)
 
@@ -111,6 +116,9 @@ const TimeMachineFluxEditor: FC<Props> = ({
   }
 
   const handleInsertFluxFunction = (func: FluxToolbarFunction): void => {
+    if (!editorInstance) {
+      return
+    }
     const {text, range} = getFluxTextAndRange(func)
 
     const edits = [

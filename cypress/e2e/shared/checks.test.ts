@@ -11,7 +11,7 @@ describe('Checks', () => {
 
     cy.signin().then(() => {
       // visit the alerting index
-      cy.get('@org').then(({id: orgID, name: orgName}: Organization) => {
+      cy.get('@org').then(({id: orgID}: Organization) => {
         cy.writeData([`${measurement} ${field}=0`, `${measurement} ${field}=1`])
         cy.fixture('routes').then(({orgs, alerting}) => {
           cy.visit(`${orgs}/${orgID}${alerting}`)
@@ -242,12 +242,7 @@ describe('Checks', () => {
         cy.fixture('routes').then(({orgs, alerting, checks}) => {
           cy.visit(`${orgs}/${id}${alerting}${checks}/${nonexistentID}/edit`)
 
-          const baseUrl = Cypress.config().baseUrl || ''
-          const sanitizedBaseUrl = baseUrl.endsWith('/')
-            ? baseUrl.substring(0, baseUrl.length - 1)
-            : baseUrl
-
-          cy.url().should('eq', `${sanitizedBaseUrl}${orgs}/${id}${alerting}`)
+          cy.url().should('include', `${orgs}/${id}${alerting}`)
         })
       })
     })

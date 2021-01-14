@@ -379,7 +379,7 @@ export const getMainColumnName = (
 }
 
 const getS2CellID = (table, index: number): string => {
-  const column = table.getColumn("s2_cell_id")
+  const column = table.getColumn('s2_cell_id')
   if (!column) {
     return null
   }

@@ -384,13 +384,13 @@ const NEW_VIEW_CREATORS = {
       mapStyle: '',
       layers: [
         {
-          type: "pointMap",
-          colorDimension: { label: "Duration" },
-          colorField: "duration",
+          type: 'pointMap',
+          colorDimension: {label: 'Duration'},
+          colorField: 'duration',
           colors: [
-            { type: "min", hex: "#ff0000" },
-            { value: 50, hex: "#343aeb" },
-            { type: "max", hex: "#343aeb" },
+            {type: 'min', hex: '#ff0000'},
+            {value: 50, hex: '#343aeb'},
+            {type: 'max', hex: '#343aeb'},
           ],
           isClustered: false,
         },

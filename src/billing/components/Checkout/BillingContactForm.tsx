@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react'
+import React, {ChangeEvent, FC, useState} from 'react'
 import {
   Form,
   Input,
@@ -33,15 +33,18 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
     },
   ] = useBilling()
 
-  const [firstName, setFirstName] = useState(billingContact.firstName)
-  const [lastName, setLastName] = useState(billingContact.lastName)
-  const [companyName, setCompanyName] = useState(billingContact.companyName)
+  const [inputs, setInputs] = useState({
+    firstName: billingContact.firstName,
+    lastName: billingContact.lastName,
+    companyName: billingContact.companyName,
+    street1: billingContact.street1,
+    street2: billingContact.street2,
+    city: billingContact.city,
+    postalCode: billingContact.postalCode,
+  })
+
   const [country, setCountry] = useState(billingContact.country)
-  const [street1, setStreet1] = useState(billingContact.street1)
-  const [street2, setStreet2] = useState(billingContact.street2)
-  const [city, setCity] = useState(billingContact.city)
   const [subdivision, setSubdivision] = useState(billingContact.subdivision)
-  const [postalCode, setPostalCode] = useState(billingContact.postalCode)
 
   const [firstNameError, setFirstNameError] = useState(false)
   const [lastNameError, setLastNameError] = useState(false)
@@ -54,43 +57,20 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
 
   const requiredErrorText = 'This is a required field'
 
-  const handleSetFirstName = (e): void => {
-    const {value} = e.target
-    setFirstNameError(value.trim() === '')
-    setFirstName(value)
-  }
-
-  const handleSetLastName = (e): void => {
-    const {value} = e.target
-    setLastNameError(value.trim() === '')
-    setLastName(value)
-  }
-
-  const handleCityChange = (e): void => {
-    const {value} = e.target
-    setCityError(value.trim() === '')
-    setCity(value)
-  }
-
-  const handleStreet1Change = (e): void => {
-    const {value} = e.target
-    setStreet1(value)
-  }
-
-  const handleStreet2Change = (e): void => {
-    const {value} = e.target
-    setStreet2(value)
-  }
-
-  const handlePostalCodeChange = (e): void => {
-    const {value} = e.target
-    setPostalCode(value)
-  }
-
-  const handleSetCompanyName = (e): void => {
-    const {value} = e.target
-    setCompanyNameError(value.trim() === '')
-    setCompanyName(value)
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const {name, value} = e.target
+    switch (name) {
+      case 'firstName':
+        setFirstNameError(value.trim() === '')
+      case 'lastName':
+        setLastNameError(value.trim() === '')
+      case 'city':
+        setCityError(value.trim() === '')
+      case 'companyName':
+        setCompanyNameError(value.trim() === '')
+    }
+    const inputState = {...inputs, [name]: value}
+    setInputs(inputState)
   }
 
   const handleChangeSubdivision = subdivision => {
@@ -163,15 +143,15 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
     e.preventDefault()
 
     const contact = {
-      firstName,
-      lastName,
-      companyName,
+      firstName: inputs.firstName,
+      lastName: inputs.lastName,
+      companyName: inputs.companyName,
       country,
-      street1,
-      street2,
-      city,
+      street1: inputs.street1,
+      street2: inputs.street2,
+      city: inputs.city,
       subdivision,
-      postalCode,
+      postalCode: inputs.postalCode,
     }
 
     if (isContactInfoValid(contact)) {
@@ -210,10 +190,10 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
                 >
                   <Input
                     autoFocus={true}
-                    onChange={handleSetFirstName}
+                    onChange={handleInputChange}
                     name="firstName"
                     titleText="First Name"
-                    value={firstName}
+                    value={inputs.firstName}
                   />
                 </Form.Element>
               </Grid.Column>
@@ -224,10 +204,10 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
                   errorMessage={lastNameError && requiredErrorText}
                 >
                   <Input
-                    onChange={handleSetLastName}
+                    onChange={handleInputChange}
                     name="lastName"
                     titleText="Last Name"
-                    value={lastName}
+                    value={inputs.lastName}
                   />
                 </Form.Element>
               </Grid.Column>
@@ -240,10 +220,10 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
                   errorMessage={companyNameError && requiredErrorText}
                 >
                   <Input
-                    onChange={handleSetCompanyName}
+                    onChange={handleInputChange}
                     name="companyName"
                     titleText="Company Name"
-                    value={companyName}
+                    value={inputs.companyName}
                   />
                 </Form.Element>
               </Grid.Column>
@@ -266,20 +246,20 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
               <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
                 <Form.Element label="Address Street 1">
                   <Input
-                    onChange={handleStreet1Change}
+                    onChange={handleInputChange}
                     name="street1"
                     titleText="Address Street 1"
-                    value={street1}
+                    value={inputs.street1}
                   />
                 </Form.Element>
               </Grid.Column>
               <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
                 <Form.Element label="Address Street 2">
                   <Input
-                    onChange={handleStreet2Change}
+                    onChange={handleInputChange}
                     name="street2"
                     titleText="Address Street 2"
-                    value={street2}
+                    value={inputs.street2}
                   />
                 </Form.Element>
               </Grid.Column>
@@ -292,10 +272,10 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
                   errorMessage={cityError && requiredErrorText}
                 >
                   <Input
-                    onChange={handleCityChange}
+                    onChange={handleInputChange}
                     name="city"
                     titleText="City"
-                    value={city}
+                    value={inputs.city}
                   />
                 </Form.Element>
               </Grid.Column>
@@ -311,10 +291,10 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
               <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
                 <Form.Element label="Postal Code">
                   <Input
-                    onChange={handlePostalCodeChange}
+                    onChange={handleInputChange}
                     name="postalCode"
                     titleText="Postal Code"
-                    value={postalCode}
+                    value={inputs.postalCode}
                   />
                 </Form.Element>
               </Grid.Column>

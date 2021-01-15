@@ -20,7 +20,7 @@ import {PipeProp} from 'src/types/flows'
 import {
   MARKDOWN_PIPE_PLACEHOLDER,
   MARKDOWN_PIPE_INITIAL,
-} from 'src/flows/pipes/markdown/index'
+} from 'src/flows/pipes/Markdown/index'
 
 const MarkdownMonacoEditor = lazy(() =>
   import('src/shared/components/MarkdownMonacoEditor')

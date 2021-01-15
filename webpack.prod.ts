@@ -49,6 +49,7 @@ module.exports = merge(common, {
       analyzerMode: 'static',
       reportFilename: 'bundle-report.html',
       openAnalyzer: false,
+      generateStatsFile: true,
     }),
   ],
 })

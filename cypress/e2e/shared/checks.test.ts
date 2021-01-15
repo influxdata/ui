@@ -346,9 +346,7 @@ describe('Checks', () => {
             Cypress.minimatch(
               url,
               `
-                ${
-                  Cypress.config().baseUrl
-                }${orgs}/${id}${alerting}${checks}/*/edit
+                *${orgs}/${id}${alerting}${checks}/*/edit
               `
             )
           })

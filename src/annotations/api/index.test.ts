@@ -4,7 +4,6 @@ import {mocked} from 'ts-jest/utils'
 import {
   writeAnnotation,
   getAnnotation,
-  formatAnnotationQueryString,
   deleteAnnotation,
   updateAnnotation,
 } from 'src/annotations/api'
@@ -12,39 +11,10 @@ import axios from 'axios'
 
 jest.mock('axios')
 
-describe('query string formatting function', () => {
-  it('properly handles all potential properties for get/delete requests for annotations', () => {
-    const query = {
-      stream: 'default stream',
-      start: Date.now().toString(),
-      end: Date.now().toString(),
-      summary: 'look ma, no spaces!',
-      stickers: {
-        foo: 'bar',
-      },
-    }
-
-    const queryString = formatAnnotationQueryString(query)
-
-    // Starts with question mark for query string
-    expect(queryString[0]).toEqual('?')
-
-    // Handles spaces
-    expect(queryString.indexOf(' ')).toEqual(-1)
-    expect(queryString.includes('default%20stream')).toBeTruthy()
-
-    // Only uses ? symbol in beginning, following queryString params use &
-    expect(queryString.lastIndexOf('?')).toEqual(0)
-    expect(queryString.split('').filter(a => a === '&').length).toEqual(3)
-
-    // Handles encoding of object params for stickers
-    expect(queryString.includes('&stickerIncludes[foo]=bar')).toBeTruthy()
-  })
-})
 describe('annotations api calls', () => {
   describe('POST - write annotations api calls', () => {
-    it('can write an annotation successfully and return the array of annotations with camelcased response properties', async () => {
-      const data = [
+    it('can write an annotation successfully and return the array of annotations', async () => {
+      const annotationResponse = [
         {
           summary: 'GO PACK GO',
           start: Date.now().toString(),
@@ -54,18 +24,18 @@ describe('annotations api calls', () => {
       ]
 
       mocked(axios.post).mockImplementationOnce(() =>
-        Promise.resolve({status: 200, data})
+        Promise.resolve({status: 200, data: annotationResponse})
       )
 
-      const response = await writeAnnotation(data)
+      const response = await writeAnnotation(annotationResponse)
 
       expect(axios.post).toHaveBeenCalledTimes(1)
 
-      expect(response).toEqual(data)
+      expect(response).toEqual(annotationResponse)
     })
 
     it('handles an error and returns the error message', async () => {
-      const data = [
+      const annotationResponse = [
         {
           summary: 'GO PACK GO',
           start: Date.now().toString(),
@@ -79,7 +49,7 @@ describe('annotations api calls', () => {
         Promise.reject(new Error(message))
       )
 
-      await expect(writeAnnotation(data)).rejects.toThrow(message)
+      await expect(writeAnnotation(annotationResponse)).rejects.toThrow(message)
     })
   })
 
@@ -108,8 +78,9 @@ describe('annotations api calls', () => {
     ]
 
     it('retrieves annotations and returns them categorized by annotation stream', async () => {
+      const [lambeau] = annotationResponse
       mocked(axios.get).mockImplementationOnce(() =>
-        Promise.resolve({data: [annotationResponse[0]]})
+        Promise.resolve({data: [lambeau]})
       )
       const response = await getAnnotation({
         start: Date.now().toString(),
@@ -117,7 +88,7 @@ describe('annotations api calls', () => {
         stream: 'Lambeau Field',
       })
 
-      expect(response).toEqual([annotationResponse[0]])
+      expect(response).toEqual([lambeau])
     })
 
     it('handles an error and returns the error message', async () => {
@@ -151,7 +122,7 @@ describe('annotations api calls', () => {
       summary: 'Palpatine did nothing wrong',
     }
 
-    it('return an updated annotation if correct parameters (old annotation to update and new annotation structure) are passed', async () => {
+    it('returns an updated annotation if correct parameters are passed', async () => {
       mocked(axios.put).mockImplementationOnce(() =>
         Promise.resolve({data: newAnnotation})
       )

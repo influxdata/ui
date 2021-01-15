@@ -16,6 +16,9 @@ import {API_BASE_PATH} from 'src/shared/constants'
 // URL
 const url = `${API_BASE_PATH}api/v2private/annotations`
 
+// Utils
+import {formatAnnotationQueryString} from 'src/annotations/utils/formatQueryString'
+
 export const writeAnnotation = async (
   annotations: Annotation[]
 ): Promise<Annotation[]> => {
@@ -38,39 +41,6 @@ export const writeAnnotation = async (
   ]
 }
 
-export const formatAnnotationQueryString = (
-  annotation: GetAnnotationPayload,
-  requestType?: string
-): string => {
-  let queryString: string = ''
-
-  const {stream, start, end, stickers} = annotation
-
-  if (stream) {
-    queryString += `${queryString.length ? '&' : '?'}${
-      requestType === 'delete' ? 'stream' : 'streamIncludes'
-    }=${encodeURI(stream)}`
-  }
-
-  if (start) {
-    queryString += `${queryString.length ? '&' : '?'}start=${start}`
-  }
-
-  if (end) {
-    queryString += `${queryString.length ? '&' : '?'}end=${end}`
-  }
-
-  if (stickers) {
-    Object.keys(stickers).forEach((s: string) => {
-      queryString += `${
-        queryString.length ? '&' : '?'
-      }stickerIncludes[${s}]=${encodeURI(stickers[s])}`
-    })
-  }
-
-  return queryString
-}
-
 export const getAnnotation = async (
   annotation: GetAnnotationPayload
 ): Promise<GetAnnotationResponse[]> => {
@@ -83,9 +53,9 @@ export const getAnnotation = async (
     throw new Error(res.data?.message)
   }
 
-  return res.data.map((anno: GetAnnotationResponse) => ({
-    stream: anno.stream,
-    annotations: anno.annotations,
+  return res.data.map((retrievedAnnotation: GetAnnotationResponse) => ({
+    stream: retrievedAnnotation.stream,
+    annotations: retrievedAnnotation.annotations,
   }))
 }
 

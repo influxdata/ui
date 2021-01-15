@@ -6,6 +6,7 @@ import {
   DeleteAnnotation,
 } from 'src/types'
 
+/* Note: Axios will be removed from here as part of #511, which is the next ticket to be worked on the annotations API */
 // Libraries
 import axios from 'axios'
 

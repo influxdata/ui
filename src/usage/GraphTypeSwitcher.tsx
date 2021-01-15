@@ -1,8 +1,9 @@
-import React, {Component} from 'react'
+import React, {FC} from 'react'
 
 import SparkLine from 'src/usage/SparkLine'
 import SingleStat from 'src/usage/SingleStat'
-import EmptyGraph from 'src/usage/components/EmptyGraph'
+import EmptyGraph from 'src/usage/EmptyGraph'
+import {Table} from '@influxdata/giraffe'
 
 import {
   QUERY_RESULTS_STATUS_ERROR,
@@ -10,37 +11,40 @@ import {
   QUERY_RESULTS_STATUS_TIMEOUT,
 } from 'src/usage/Constants'
 
-export default class GraphTypeSwitcher extends Component {
-  render() {
-    return <div />
-    // const {graphInfo, status, table} = this.props
+interface OwnProps {
+  graphInfo: any
+  status: string
+  table: Table
+}
 
-    // switch (status) {
-    //   case QUERY_RESULTS_STATUS_ERROR:
-    //     return <EmptyGraph title={graphInfo.title} isError={true} />
+const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, status, table}) => {
+  switch (status) {
+    case QUERY_RESULTS_STATUS_ERROR:
+      return <EmptyGraph title={graphInfo.title} isError={true} />
 
-    //   case QUERY_RESULTS_STATUS_TIMEOUT:
-    //     return (
-    //       <EmptyGraph
-    //         title={graphInfo.title}
-    //         isError={true}
-    //         errorMessage="Query has timed out"
-    //       />
-    //     )
+    case QUERY_RESULTS_STATUS_TIMEOUT:
+      return (
+        <EmptyGraph
+          title={graphInfo.title}
+          isError={true}
+          errorMessage="Query has timed out"
+        />
+      )
 
-    //   case QUERY_RESULTS_STATUS_EMPTY:
-    //     return <EmptyGraph title={graphInfo.title} isError={false} />
+    case QUERY_RESULTS_STATUS_EMPTY:
+      return <EmptyGraph title={graphInfo.title} isError={false} />
 
-    //   default:
-    //     if (graphInfo.type === 'sparkline') {
-    //       return <SparkLine {...graphInfo} table={table} />
-    //     }
+    default:
+      if (graphInfo.type === 'sparkline') {
+        return <SparkLine {...graphInfo} table={table} />
+      }
 
-    //     if (graphInfo.type === 'stat') {
-    //       return <SingleStat {...graphInfo} table={table} />
-    //     }
+      if (graphInfo.type === 'stat') {
+        return <SingleStat {...graphInfo} table={table} />
+      }
 
-    //     return <div />
-    // }
+      return <div />
   }
 }
+
+export default GraphTypeSwitcher

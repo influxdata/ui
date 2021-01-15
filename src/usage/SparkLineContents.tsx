@@ -1,5 +1,6 @@
-import React, {Component} from 'react'
-// import {Plot} from '@influxdata/vis'
+import React, {FC} from 'react'
+import {Plot, Table, ColumnType, Config} from '@influxdata/giraffe'
+import { MosaicLayerConfig } from '@influxdata/giraffe/dist/types'
 
 const DEFAULT_CONFIG = {
   axisColor: '#545667',
@@ -23,47 +24,57 @@ const DEFAULT_LAYER = {
   y: '_value',
 }
 
-class SparkLineContents extends Component {
-  render() {
-    return (
-      <div className="usage--plot">
-        Hello world
-        {/* <Plot config={this.getConfig()} /> */}
-      </div>
-    )
-  }
+interface OwnProps {
+  isGrouped: boolean
+  groupColumns: boolean
+  column: ColumnType
+  table: Table
+  yFormatter: Function
+}
 
-  getConfig() {
-    const {isGrouped, groupColumns, column, table, yFormatter} = this.props
-    if (isGrouped && groupColumns) {
-      const legendColumns = ['_time', column, ...groupColumns]
+const SparkLineContents: FC<OwnProps> = ({
+  isGrouped,
+  groupColumns,
+  column,
+  table,
+  yFormatter,
+}) => {
+  return (
+    <div className="usage--plot">
+      <Plot config={getConfig(isGrouped, groupColumns, column, table, yFormatter)} />
+    </div>
+  )
+}
 
-      return {
-        ...DEFAULT_CONFIG,
-        legendColumns,
-        layers: [
-          {
-            ...DEFAULT_LAYER,
-            y: column,
-            fill: groupColumns,
-          },
-        ],
-        yTickFormatter: yFormatter,
-        table,
-      }
-    }
+const getConfig = (isGrouped, groupColumns, column, table, yFormatter): Config => {
+  if (isGrouped && groupColumns) {
+    const legendColumns = ['_time', column, ...groupColumns]
 
     return {
       ...DEFAULT_CONFIG,
+      legendColumns,
       layers: [
         {
           ...DEFAULT_LAYER,
           y: column,
-        },
+          fill: groupColumns,
+        } as MosaicLayerConfig,
       ],
-      yTickFormatter: yFormatter,
+      // yTickFormatter: yFormatter,
       table,
     }
+  }
+
+  return {
+    ...DEFAULT_CONFIG,
+    layers: [
+      {
+        ...DEFAULT_LAYER,
+        y: column,
+      } as MosaicLayerConfig,
+    ],
+    // yTickFormatter: yFormatter,
+    table,
   }
 }
 

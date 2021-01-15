@@ -16,7 +16,12 @@ import {
 } from 'src/usage/reducers'
 
 // Thunks
-import {getBillingDate, getAccount, getLimitsStatus} from 'src/usage/thunks'
+import {
+  getBillingDate,
+  getAccount,
+  getLimitsStatus,
+  getHistory,
+} from 'src/usage/thunks'
 
 export const UsageContext = React.createContext(null)
 export type UsageContextResult = [UsageState, Dispatch<Action>]
@@ -33,6 +38,7 @@ const Usage: FC = () => {
     getBillingDate(dispatch)
     getAccount(dispatch)
     getLimitsStatus(dispatch)
+    getHistory(dispatch)
   }, [dispatch])
 
   const billingStartLoading = state?.billingStart?.status
@@ -46,6 +52,10 @@ const Usage: FC = () => {
   const limitLoading = state?.limitsStatus?.status
     ? state.limitsStatus?.status
     : RemoteDataState.NotStarted
+
+  // const historyLoading = state?.history?.status
+  //   ? state.history?.status
+  //   : RemoteDataState.NotStarted
 
   const isCancelled = state?.account && state.account?.type === 'cancelled'
 
@@ -63,9 +73,7 @@ const Usage: FC = () => {
           <Page.Contents scrollable={true}>
             {isCancelled && <div />} {/*<AlertStatusCancelled />*/}
             <PageSpinner loading={billingStartLoading}>
-              <UsageToday
-              // history={history}
-              />
+              <UsageToday history={state.history} />
             </PageSpinner>
           </Page.Contents>
         </Page>

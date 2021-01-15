@@ -47,13 +47,14 @@ interface TaskLimit {
   maxTasks: number
 }
 
-interface LimitStatuses {
+export interface LimitStatuses {
   cardinality: LimitStatus
   read: LimitStatus
   write: LimitStatus
+  status: RemoteDataState
 }
 
-interface LimitStatus {
+export interface LimitStatus {
   status: string
 }
 
@@ -97,10 +98,17 @@ export interface MarketplaceSubscription {
   status: string
 }
 
-interface Account {
+export interface Account {
   id: number
   type: AccountType
   updatedAt: string
+  status: RemoteDataState
+}
+
+export interface History {
+  billingStats: string
+  rateLimits: string
+  status: RemoteDataState
 }
 
 interface PaymentMethod {
@@ -152,4 +160,5 @@ export interface Props {
   billingNotifySettings: BillingNotifySettings // separate endpoint w/ put [x]
   orgLimits: OrgLimit // get from IDPE
   limitStatuses: LimitStatuses // get from IDPE
+  history: History
 }

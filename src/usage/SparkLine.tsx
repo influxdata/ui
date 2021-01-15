@@ -1,34 +1,49 @@
-import React, {Component} from 'react'
+import React, {FC} from 'react'
 
 import {Panel, ComponentSize, InfluxColors} from '@influxdata/clockface'
 import SparkLineContents from 'src/usage/SparkLineContents'
+import {ColumnType, Table} from '@influxdata/giraffe'
 
-class SparkLine extends Component {
-  render() {
-    const {table, title, status, column, groupColumns, isGrouped} = this.props
+interface OwnProps {
+  table: Table
+  title: string
+  status: string
+  column: ColumnType
+  groupColumns: boolean
+  isGrouped: boolean
+  units: string
+}
 
-    return (
-      <Panel backgroundColor={InfluxColors.Onyx}>
-        <Panel.Header size={ComponentSize.ExtraSmall}>
-          <h5>{title}</h5>
-        </Panel.Header>
-        <Panel.Body size={ComponentSize.ExtraSmall}>
-          <SparkLineContents
-            table={table}
-            column={column}
-            groupColumns={groupColumns}
-            yFormatter={this.formatYValue}
-            status={status}
-            isGrouped={isGrouped}
-          />
-        </Panel.Body>
-      </Panel>
-    )
-  }
+const SparkLine: FC<OwnProps> = ({
+  table,
+  title,
+  status,
+  column,
+  groupColumns,
+  isGrouped,
+  units
+}) => {
+  return (
+    <Panel backgroundColor={InfluxColors.Onyx}>
+      <Panel.Header size={ComponentSize.ExtraSmall}>
+        <h5>{title}</h5>
+      </Panel.Header>
+      <Panel.Body size={ComponentSize.ExtraSmall}>
+        <SparkLineContents
+          table={table}
+          column={column}
+          groupColumns={groupColumns}
+          yFormatter={(value) => formatYValue(value, units)}
+          status={status}
+          isGrouped={isGrouped}
+        />
+      </Panel.Body>
+    </Panel>
+  )
+}
 
-  formatYValue = value => {
-    return `${value} ${this.props.units}`
-  }
+const formatYValue = (value, units) => {
+  return `${value} ${units}`
 }
 
 export default SparkLine

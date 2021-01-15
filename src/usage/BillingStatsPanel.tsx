@@ -65,7 +65,7 @@ const BillingStatsPanel = ({table, status, widths}) => {
         />
       </Panel.Header>
       <PanelSection>
-        {/* {billingStats(DUMMY_PRICING_VERSION_TO_DELETE).map(graphInfo => {
+        {billingStats(DUMMY_PRICING_VERSION_TO_DELETE).map(graphInfo => {
           return (
             <PanelSectionBody
               table={table}
@@ -75,7 +75,7 @@ const BillingStatsPanel = ({table, status, widths}) => {
               key={graphInfo.title}
             />
           )
-        })} */}
+        })}
       </PanelSection>
     </Panel>
   )

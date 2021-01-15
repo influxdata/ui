@@ -6,6 +6,7 @@ import {
   getBillingAccount,
   getLimitsStatus as apiGetLimitsStatus,
   getBillingDate as apiGetBillingDate,
+  getHistory as apiGetHistory,
 } from 'src/usage/api'
 
 // Actions
@@ -16,13 +17,13 @@ import {
   setBillingDateStatus,
   setLimitsStatus,
   setLimitsStateStatus,
+  setHistory,
+  setHistoryStatus,
   Action,
 } from 'src/usage/reducers'
 
 // Types
 import {RemoteDataState} from 'src/types'
-// import // LimitStatus,
-// 'src/types/billing'
 
 export const getBillingDate = async (dispatch: Dispatch<Action>) => {
   try {
@@ -32,7 +33,6 @@ export const getBillingDate = async (dispatch: Dispatch<Action>) => {
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
     }
-
     dispatch(setBillingDate({...resp.data, status: RemoteDataState.Done}))
   } catch (error) {
     dispatch(setBillingDateStatus(RemoteDataState.Error))
@@ -71,5 +71,21 @@ export const getLimitsStatus = async (dispatch: Dispatch<Action>) => {
     console.error(error)
 
     dispatch(setLimitsStateStatus(RemoteDataState.Error))
+  }
+}
+
+export const getHistory = async (dispatch: Dispatch<Action>) => {
+  try {
+    dispatch(setHistoryStatus(RemoteDataState.Loading))
+    const resp = await apiGetHistory()
+
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
+    }
+    dispatch(setHistory({...resp.data, status: RemoteDataState.Done}))
+  } catch (error) {
+    console.error(error)
+
+    dispatch(setHistoryStatus(RemoteDataState.Error))
   }
 }

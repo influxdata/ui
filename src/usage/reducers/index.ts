@@ -2,12 +2,13 @@
 import {produce} from 'immer'
 // Types
 import {RemoteDataState} from 'src/types'
-import {Account, BillingDate, LimitStatus} from 'src/types/billing'
+import {Account, BillingDate, LimitStatuses, History} from 'src/types/billing'
 
 export interface UsageState {
   account: Account
   billingStart: BillingDate
-  limitsStatus: LimitStatus
+  limitsStatus: LimitStatuses
+  history: History
 }
 
 export const setAccount = (account: Account) =>
@@ -34,7 +35,7 @@ export const setBillingDate = (billingStart: BillingDate) =>
     billingStart,
   } as const)
 
-export const setLimitsStatus = (limitsStatus: LimitStatus) =>
+export const setLimitsStatus = (limitsStatus: LimitStatuses) =>
   ({
     type: 'SET_LIMITS_STATUS',
     limitsStatus,
@@ -46,6 +47,18 @@ export const setLimitsStateStatus = (status: RemoteDataState) =>
     status,
   } as const)
 
+export const setHistoryStatus = (status: RemoteDataState) =>
+  ({
+    type: 'SET_HISTORY_STATUS',
+    status,
+  } as const)
+
+export const setHistory = (history: History) =>
+  ({
+    type: 'SET_HISTORY',
+    history,
+  } as const)
+
 export type Action =
   | ReturnType<typeof setAccount>
   | ReturnType<typeof setAccountStatus>
@@ -53,6 +66,8 @@ export type Action =
   | ReturnType<typeof setBillingDateStatus>
   | ReturnType<typeof setLimitsStatus>
   | ReturnType<typeof setLimitsStateStatus>
+  | ReturnType<typeof setHistoryStatus>
+  | ReturnType<typeof setHistory>
 
 export const initialState = (): UsageState => ({
   account: {
@@ -83,6 +98,11 @@ export const initialState = (): UsageState => ({
       status: '',
     },
     status: RemoteDataState.NotStarted,
+  },
+  history: {
+    status: RemoteDataState.NotStarted,
+    rateLimits: '',
+    billingStats: '',
   },
 })
 
@@ -143,6 +163,18 @@ export const usageReducer = (
         }
 
         draftState.limitsStatus.status = action.status
+        return
+      }
+      case 'SET_HISTORY': {
+        draftState.history = action.history
+        return
+      }
+      case 'SET_HISTORY_STATUS': {
+        if (!draftState.history?.status) {
+          draftState.history = {...draftState.history, status: action.status}
+          return
+        }
+        draftState.history.status = action.status
         return
       }
     }

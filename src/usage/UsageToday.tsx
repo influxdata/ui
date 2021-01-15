@@ -1,6 +1,6 @@
 // Libraries
-import React, {FC, useState} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
+import React, {FC} from 'react'
+import {useDispatch, useSelector, connect} from 'react-redux'
 import {
   ComponentSize,
   FlexBox,
@@ -8,7 +8,7 @@ import {
   FlexDirection,
   Panel,
 } from '@influxdata/clockface'
-import {fromFlux} from '@influxdata/giraffe'
+import {fromFlux, Table} from '@influxdata/giraffe'
 
 // Components
 import PanelSection from 'src/usage/PanelSection'
@@ -31,13 +31,19 @@ import {setTimeRange} from 'src/timeMachine/actions'
 
 // Types
 import {TimeRange} from 'src/types'
+import {History} from 'src/types/billing'
 
-// Hooks
-import {useUsage} from 'src/usage/UsagePage'
+interface StateProps {
+  selectedUsageID: string
+}
 
-const UsageToday: FC = () => {
-  const [{account, billingStart}] = useUsage()
+interface OwnProps {
+  history: History
+}
 
+type Props = OwnProps & StateProps
+
+const UsageToday: FC<Props> = ({history, selectedUsageID}) => {
   const timeRange = useSelector(getTimeRange)
   const dispatch = useDispatch()
 
@@ -45,60 +51,63 @@ const UsageToday: FC = () => {
     dispatch(setTimeRange(range))
   }
 
-  //   const getUsageSparkline = () => {
-  //     // const {history} = props
-  //     const graphInfo = GRAPH_INFO.usage_stats.find(
-  //       stat => stat.title === selectedUsageID
-  //     )
-  //     const {table, status} = csvToTable(history[graphInfo.column])
+  const getUsageSparkline = () => {
+    const graphInfo = GRAPH_INFO.usage_stats.find(
+      stat => stat.title === selectedUsageID
+    )
+    const {table, status} = csvToTable(history[graphInfo.column])
 
-  //     return (
-  //       <PanelSectionBody
-  //         table={table}
-  //         status={status}
-  //         graphInfo={graphInfo}
-  //         widths={PANEL_CONTENTS_WIDTHS.usage}
-  //         key={graphInfo.title}
-  //       />
-  //     )
-  //   }
+    return (
+      <PanelSectionBody
+        table={table}
+        status={status}
+        graphInfo={graphInfo}
+        widths={PANEL_CONTENTS_WIDTHS.usage}
+        key={graphInfo.title}
+      />
+    )
+  }
 
-  //   const csvToTable = csv => {
-  //     const {table} = fromFlux(csv)
+  const csvToTable = (csv): {table: Table; status: string} => {
+    const {table} = fromFlux(csv)
 
-  //     if (!table || !table.columns || table.columns.error) {
-  //       if (
-  //         table.columns.error.data.length &&
-  //         table.columns.error.data[0] === 'Usage Query Timeout'
-  //       ) {
-  //         return {
-  //           status: QUERY_RESULTS_STATUS_TIMEOUT,
-  //           table: {columns: {}, length: 0},
-  //         }
-  //       }
+    if (!table || !table.columns || table.columns.error) {
+      if (
+        table.columns.error.data.length &&
+        table.columns.error.data[0] === 'Usage Query Timeout'
+      ) {
+        return {
+          status: QUERY_RESULTS_STATUS_TIMEOUT,
+          table: {} as Table,
+        }
+      }
 
-  //       return {
-  //         status: QUERY_RESULTS_STATUS_ERROR,
-  //         table: {columns: {}, length: 0},
-  //       }
-  //     }
+      return {
+        status: QUERY_RESULTS_STATUS_ERROR,
+        table: {} as Table,
+      }
+    }
 
-  //     if (!table.length) {
-  //       return {
-  //         status: QUERY_RESULTS_STATUS_EMPTY,
-  //         table: {columns: {}, length: 0},
-  //       }
-  //     }
+    if (!table.length) {
+      return {
+        status: QUERY_RESULTS_STATUS_EMPTY,
+        table: {} as Table,
+      }
+    }
 
-  //     return {status: QUERY_RESULTS_STATUS_SUCCESS, table}
-  //   }
+    return {status: QUERY_RESULTS_STATUS_SUCCESS, table}
+  }
 
-  //   const {table: billingTable, status: billingStatus} = csvToTable(
-  //     history.billing_stats
-  //   )
-  //   const {table: limitsTable, status: limitsStatus} = csvToTable(
-  //     history.rate_limits
-  //   )
+  const {table: billingTable, status: billingStatus} = csvToTable(
+    history.billingStats
+  )
+  const {table: limitsTable, status: limitsStatus} = csvToTable(
+    history.rateLimits
+  )
+  const timeRangeLabel =
+    timeRange.label ?? `from ${timeRange.lower} to ${timeRange.upper}`
+
+  console.log("billing", billingTable)
 
   return (
     <FlexBox
@@ -107,8 +116,8 @@ const UsageToday: FC = () => {
       margin={ComponentSize.Small}
     >
       <BillingStatsPanel
-        // table={billingTable}
-        // status={billingStatus}
+        table={billingTable}
+        status={billingStatus}
         widths={PANEL_CONTENTS_WIDTHS.billing_stats}
       />
       <TimeRangeDropdown
@@ -117,32 +126,37 @@ const UsageToday: FC = () => {
       />
       <Panel className="usage--panel">
         <Panel.Header>
-          {/* TODO(Ariel): make this label work */}
-          <h4>{`Usage ${timeRange.label}`}</h4>
+          <h4>{`Usage ${timeRangeLabel}`}</h4>
           <UsageDropdown />
         </Panel.Header>
-        {/* <PanelSection>{getUsageSparkline()}</PanelSection> */}
+        <PanelSection>{getUsageSparkline()}</PanelSection>
       </Panel>
       <Panel className="usage--panel">
         <Panel.Header>
-          <h4>{`Rate Limits ${timeRange.label}`}</h4>
+          <h4>{`Rate Limits ${timeRangeLabel}`}</h4>
         </Panel.Header>
         <PanelSection>
-          {/* {GRAPH_INFO.rate_limits.map(graphInfo => {
-              return (
-                <PanelSectionBody
-                  table={limitsTable}
-                  status={limitsStatus}
-                  graphInfo={graphInfo}
-                  widths={PANEL_CONTENTS_WIDTHS.rate_limits}
-                  key={graphInfo.title}
-                />
-              )
-            })} */}
+          {GRAPH_INFO.rate_limits.map(graphInfo => {
+            return (
+              <PanelSectionBody
+                table={limitsTable}
+                status={limitsStatus}
+                graphInfo={graphInfo}
+                widths={PANEL_CONTENTS_WIDTHS.rate_limits}
+                key={graphInfo.title}
+              />
+            )
+          })}
         </PanelSection>
       </Panel>
     </FlexBox>
   )
 }
 
-export default UsageToday
+const mstp = () => {
+  return {
+    selectedUsageID: 'Data In (MB)',
+  }
+}
+
+export default connect<StateProps>(mstp)(UsageToday)

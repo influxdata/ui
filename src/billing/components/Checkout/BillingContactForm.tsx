@@ -65,8 +65,13 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
   ]
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target
+
     if (requiredFields.includes(name) && value.trim() === '') {
       setErrorType(name)
+    }
+
+    if (errorType === name && value.trim() !== '') {
+      setErrorType('')
     }
     const inputState = {...inputs, [name]: value}
     setInputs(inputState)
@@ -138,6 +143,11 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
         )
         setIsSubmittingContact(false)
       }
+    } else {
+      setErrorMessage(
+        'Looks like your billing information is incomplete. Please complete the form before resubmitting.'
+      )
+      setIsSubmittingContact(false)
     }
   }
 
@@ -175,7 +185,7 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
                 <Form.Element
                   label="Last Name"
                   required={true}
-                  errorMessage={errorType === 'lastname' && requiredErrorText}
+                  errorMessage={errorType === 'lastName' && requiredErrorText}
                 >
                   <Input
                     onChange={handleInputChange}

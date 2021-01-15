@@ -2,26 +2,33 @@
 import {GetAnnotationPayload} from 'src/types'
 
 export const formatAnnotationQueryString = (
-  annotation: GetAnnotationPayload,
+  annotation?: GetAnnotationPayload,
   requestType?: string
 ): string => {
-  const {stream, start, end, stickers} = annotation
+  const getAnnotationParams = new URLSearchParams({})
 
-  const getAnnotationParams = new URLSearchParams(
-    JSON.parse(JSON.stringify({start, end}))
-  )
-
-  if (stream) {
-    const streamParam = requestType === 'delete' ? 'stream' : 'streamIncludes'
-
-    getAnnotationParams.append(streamParam, stream)
+  if (annotation.start) {
+    getAnnotationParams.append('start', annotation.start)
   }
 
-  if (stickers) {
-    Object.keys(stickers).forEach((s: string) => {
-      getAnnotationParams.append(`stickerIncludes[${s}]`, stickers[s])
+  if (annotation.end) {
+    getAnnotationParams.append('end', annotation.end)
+  }
+
+  if (annotation?.stream) {
+    const streamParam = requestType === 'delete' ? 'stream' : 'streamIncludes'
+
+    getAnnotationParams.append(streamParam, annotation.stream)
+  }
+
+  if (annotation?.stickers) {
+    Object.keys(annotation.stickers).forEach((s: string) => {
+      getAnnotationParams.append(
+        `stickerIncludes[${s}]`,
+        annotation.stickers[s]
+      )
     })
   }
 
-  return `?${getAnnotationParams.toString()}`
+  return `${getAnnotationParams.toString()}`
 }

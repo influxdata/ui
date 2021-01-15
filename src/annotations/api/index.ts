@@ -45,7 +45,7 @@ export const getAnnotation = async (
   annotation: GetAnnotationPayload
 ): Promise<GetAnnotationResponse[]> => {
   const formattedQueryString = formatAnnotationQueryString(annotation)
-  const appendedURL = url + formattedQueryString
+  const appendedURL = `${url}?${formattedQueryString}`
 
   const res = await axios.get(appendedURL)
 
@@ -87,7 +87,10 @@ export const deleteAnnotation = async (
     deleteAnnotation,
     'delete'
   )
-  const res = await axios.delete(url + formattedQueryString)
+
+  const appendedURL = `${url}?${formattedQueryString}`
+
+  const res = await axios.delete(appendedURL)
 
   if (res.status >= 300) {
     throw new Error(res.data?.message)

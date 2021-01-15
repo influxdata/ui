@@ -67,7 +67,6 @@ export type Invoices = Invoice[]
 // Current FreePage Props
 export interface Props {
   isRegionBeta: boolean
-  orgLimits: OrgLimits
 }
 
 export interface BillingNotifySettings extends GenBillingNotifySettings {

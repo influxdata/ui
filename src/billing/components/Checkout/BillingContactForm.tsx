@@ -43,31 +43,30 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
     postalCode: billingContact.postalCode,
   })
 
+  const [errorType, setErrorType] = useState('')
+
   const [country, setCountry] = useState(billingContact.country)
   const [subdivision, setSubdivision] = useState(billingContact.subdivision)
 
-  const [firstNameError, setFirstNameError] = useState(false)
-  const [lastNameError, setLastNameError] = useState(false)
-  const [companyNameError, setCompanyNameError] = useState(false)
   const [countryError, setCountryError] = useState(false)
-  const [cityError, setCityError] = useState(false)
   const [subdivisionError, setSubdivisionError] = useState(false)
+
   const [isSubmittingContact, setIsSubmittingContact] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
 
   const requiredErrorText = 'This is a required field'
 
+  const requiredFields = [
+    'firstName',
+    'lastName',
+    'city',
+    'companyName',
+    'postalCode',
+  ]
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target
-    switch (name) {
-      case 'firstName':
-        setFirstNameError(value.trim() === '')
-      case 'lastName':
-        setLastNameError(value.trim() === '')
-      case 'city':
-        setCityError(value.trim() === '')
-      case 'companyName':
-        setCompanyNameError(value.trim() === '')
+    if (requiredFields.includes(name) && value.trim() === '') {
+      setErrorType(name)
     }
     const inputState = {...inputs, [name]: value}
     setInputs(inputState)
@@ -98,36 +97,9 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
     setIsSubmittingContact(false)
   }
 
-  const isContactInfoValid = ({
-    firstName,
-    lastName,
-    companyName,
-    country,
-    city,
-    subdivision,
-  }) => {
-    if (firstName.trim() === '') {
-      setFirstNameError(true)
-      return false
-    }
-
-    if (lastName.trim() === '') {
-      setLastNameError(true)
-      return false
-    }
-
-    if (companyName.trim() === '') {
-      setCompanyNameError(true)
-      return false
-    }
-
+  const isContactInfoValid = () => {
     if (country.trim() === '') {
       setCountryError(true)
-      return false
-    }
-
-    if (city.trim() === '') {
-      setCityError(true)
       return false
     }
 
@@ -136,7 +108,9 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
       return false
     }
 
-    return true
+    return requiredFields.every(field => {
+      return inputs[field].trim() !== ''
+    })
   }
 
   const handleConfirmContactInfo = async e => {
@@ -154,7 +128,7 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
       postalCode: inputs.postalCode,
     }
 
-    if (isContactInfoValid(contact)) {
+    if (isContactInfoValid()) {
       try {
         await handleSubmitContactInfo(contact)
         onSubmitForm()
@@ -186,7 +160,7 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
                 <Form.Element
                   label="First Name"
                   required={true}
-                  errorMessage={firstNameError && requiredErrorText}
+                  errorMessage={errorType === 'firstName' && requiredErrorText}
                 >
                   <Input
                     autoFocus={true}
@@ -201,7 +175,7 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
                 <Form.Element
                   label="Last Name"
                   required={true}
-                  errorMessage={lastNameError && requiredErrorText}
+                  errorMessage={errorType === 'lastname' && requiredErrorText}
                 >
                   <Input
                     onChange={handleInputChange}
@@ -217,7 +191,9 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
                 <Form.Element
                   label="Company Name"
                   required={true}
-                  errorMessage={companyNameError && requiredErrorText}
+                  errorMessage={
+                    errorType === 'companyName' && requiredErrorText
+                  }
                 >
                   <Input
                     onChange={handleInputChange}
@@ -269,7 +245,7 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
                 <Form.Element
                   label="City"
                   required={true}
-                  errorMessage={cityError && requiredErrorText}
+                  errorMessage={errorType === 'city' && requiredErrorText}
                 >
                   <Input
                     onChange={handleInputChange}
@@ -289,7 +265,11 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
                 />
               </Grid.Column>
               <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
-                <Form.Element label="Postal Code">
+                <Form.Element
+                  label="Postal Code"
+                  required={true}
+                  errorMessage={errorType === 'postalCode' && requiredErrorText}
+                >
                   <Input
                     onChange={handleInputChange}
                     name="postalCode"

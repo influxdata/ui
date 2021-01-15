@@ -4,7 +4,6 @@ import {Config, Table} from '@influxdata/giraffe'
 
 // Types
 import {GeoViewProperties} from 'src/types'
-import {getLatLon} from '../utils/vis'
 
 interface Props {
   children: (config: Config) => JSX.Element
@@ -30,7 +29,7 @@ const GeoPlot: FunctionComponent<Props> = ({
     bingKey: '',
   }
 
-  const {lat, lon} = getLatLon(table, 0)
+  const {lat, lon} = viewProperties.center
 
   const config: Config = {
     table,

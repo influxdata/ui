@@ -85,6 +85,17 @@
   height: 304px;
 }
 
+.data-source--list__no-results {
+  color: $g8-storm;
+  justify-content: center;
+  background-color: $g0-obsidian;
+  border-radius: $cf-radius;
+
+  > * {
+    margin: $cf-marg-a;
+  }
+}
+
 /*
   Selectors
 */

@@ -1037,6 +1037,7 @@ describe('DataExplorer', () => {
   describe('refresh', () => {
     beforeEach(() => {
       cy.writeData(lines(10))
+
       cy.getByTestID(`selector-list m`).click()
       cy.getByTestID('time-machine-submit-button').click()
 

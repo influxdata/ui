@@ -1,5 +1,3 @@
-const secondOrg = 'Second Org'
-
 describe('Orgs', () => {
   beforeEach(() => {
     cy.flush()
@@ -8,7 +6,6 @@ describe('Orgs', () => {
   describe('updating and switching orgs', () => {
     beforeEach(() => {
       cy.signin().then(() => {
-        cy.createOrg(secondOrg)
         cy.visit('/')
       })
     })

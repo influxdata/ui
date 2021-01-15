@@ -502,10 +502,7 @@ describe('Dashboards', () => {
     cy.get('@org').then(({id}: Organization) => {
       cy.fixture('routes').then(({orgs, dashboards}) => {
         cy.visit(`${orgs}/${id}${dashboards}/${nonexistentID}`)
-        cy.url().should(
-          'eq',
-          `${Cypress.config().baseUrl}${orgs}/${id}/dashboards-list`
-        )
+        cy.url().should('include', `${orgs}/${id}/dashboards-list`)
       })
     })
   })

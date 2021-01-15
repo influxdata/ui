@@ -13,7 +13,7 @@ import {ResultsProvider} from 'src/flows/context/results'
 import {PROJECT_NAME_PLURAL} from 'src/flows'
 
 const FlowFromRoute = () => {
-  const {id} = useParams()
+  const {id} = useParams<{id: string}>()
   const {change} = useContext(FlowListContext)
 
   useEffect(() => {

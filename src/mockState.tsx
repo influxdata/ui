@@ -2,6 +2,7 @@ import React from 'react'
 import {Provider} from 'react-redux'
 import {Router} from 'react-router-dom'
 import {createMemoryHistory} from 'history'
+import {createStore} from 'redux'
 
 import {render} from '@testing-library/react'
 import {initialState as initialVariablesState} from 'src/variables/reducers'
@@ -9,6 +10,10 @@ import {initialState as initialUserSettingsState} from 'src/userSettings/reducer
 import {configureStoreForTests} from 'src/store/configureStore'
 import {RemoteDataState, TimeZone, LocalStorage, ResourceType} from 'src/types'
 import {pastFifteenMinTimeRange} from './shared/constants/timeRanges'
+import {mockAppState} from 'src/mockAppState'
+
+// Redux
+import {templatesReducer} from 'src/templates/reducers/index'
 
 const {Orgs} = ResourceType
 const {Done} = RemoteDataState
@@ -64,6 +69,13 @@ export function renderWithRedux(ui, initialState = s => s) {
 }
 
 export function renderWithReduxAndRouter(ui, initialState = s => s) {
+  const templatesStore = createStore(templatesReducer)
+  const defaultInitialState = function () {
+    const appState = {...mockAppState} as any
+    appState.resources.templates = templatesStore.getState()
+    return appState
+  }
+  initialState = initialState ?? defaultInitialState
   const history = createMemoryHistory({initialEntries: ['/']})
   const store = configureStoreForTests(initialState(localState))
 

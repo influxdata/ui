@@ -108,14 +108,16 @@ describe('annotations api calls', () => {
     ]
 
     it('retrieves annotations and returns them categorized by annotation stream', async () => {
-      mocked(axios.get).mockImplementationOnce(() => Promise.resolve({data}))
+      mocked(axios.get).mockImplementationOnce(() =>
+        Promise.resolve({data: [data[0]]})
+      )
       const response = await getAnnotation({
         start: Date.now().toString(),
         end: Date.now().toString(),
         stream: 'Lambeau Field',
       })
 
-      expect(response).toEqual(data)
+      expect(response).toEqual([data[0]])
     })
 
     it('handles an error and returns the error message', async () => {

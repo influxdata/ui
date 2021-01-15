@@ -11,7 +11,6 @@ import axios from 'axios'
 
 // Constants
 import {API_BASE_PATH} from 'src/shared/constants'
-import {UpdateAnnotationPayload} from 'src/types/annotation'
 
 // URL
 const url = `${API_BASE_PATH}api/v2private/annotations`
@@ -90,8 +89,8 @@ export const getAnnotation = async (
 }
 
 export const updateAnnotation = async (
-  oldAnnotation: UpdateAnnotationPayload['old'],
-  newAnnotation: UpdateAnnotationPayload['new']
+  oldAnnotation: DeleteAnnotation,
+  newAnnotation: Annotation
 ): Promise<Annotation> => {
   const res = await axios.put(url, {old: oldAnnotation, new: newAnnotation})
 

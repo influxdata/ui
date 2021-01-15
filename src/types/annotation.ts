@@ -25,8 +25,3 @@ export interface DeleteAnnotation {
   end: string
   stickers?: any
 }
-
-export interface UpdateAnnotationPayload {
-  new: Annotation
-  old: DeleteAnnotation
-}

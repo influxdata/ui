@@ -53,9 +53,21 @@ const Usage: FC = () => {
     ? state.limitsStatus?.status
     : RemoteDataState.NotStarted
 
-  // const historyLoading = state?.history?.status
-  //   ? state.history?.status
-  //   : RemoteDataState.NotStarted
+  const historyLoading = state?.history?.status
+    ? state.history?.status
+    : RemoteDataState.NotStarted
+
+  const statuses = [historyLoading, billingStartLoading]
+
+  let loading = RemoteDataState.NotStarted
+
+  if (statuses.every(s => s === RemoteDataState.Done)) {
+    loading = RemoteDataState.Done
+  } else if (statuses.includes(RemoteDataState.Error)) {
+    loading = RemoteDataState.Error
+  } else if (statuses.includes(RemoteDataState.Loading)) {
+    loading = RemoteDataState.Loading
+  }
 
   const isCancelled = state?.account && state.account?.type === 'cancelled'
 
@@ -72,8 +84,8 @@ const Usage: FC = () => {
           </Page.Header>
           <Page.Contents scrollable={true}>
             {isCancelled && <div />} {/*<AlertStatusCancelled />*/}
-            <PageSpinner loading={billingStartLoading}>
-              <UsageToday history={state.history} />
+            <PageSpinner loading={loading}>
+              <UsageToday />
             </PageSpinner>
           </Page.Contents>
         </Page>

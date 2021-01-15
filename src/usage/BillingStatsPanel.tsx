@@ -14,6 +14,7 @@ import PanelSectionBody from 'src/usage/PanelSectionBody'
 import {GRAPH_INFO} from 'src/usage/Constants'
 import {useUsage} from 'src/usage/UsagePage'
 import {DUMMY_PRICING_VERSION_TO_DELETE} from 'src/usage/utils'
+import {PANEL_CONTENTS_WIDTHS} from 'src/usage/Constants'
 
 const billingStats = (pricingVersion = 3) => {
   return GRAPH_INFO.billing_stats.filter(stat =>
@@ -21,13 +22,18 @@ const billingStats = (pricingVersion = 3) => {
   )
 }
 
-const BillingStatsPanel = ({table, status, widths}) => {
+const BillingStatsPanel = () => {
   const [
     {
       billingStart: {date: billingStartDate, time: billingStartTime},
+      history,
     },
   ] = useUsage()
 
+  const widths = PANEL_CONTENTS_WIDTHS.billing_stats
+
+  const csvs = history.billingStats.split('\n\n')
+  console.log({csvs})
   const today = new Date().toISOString()
   const dateRange = `${billingStartTime} UTC to ${today} UTC`
 
@@ -65,11 +71,11 @@ const BillingStatsPanel = ({table, status, widths}) => {
         />
       </Panel.Header>
       <PanelSection>
-        {billingStats(DUMMY_PRICING_VERSION_TO_DELETE).map(graphInfo => {
+        {/* TODO(ariel): fix this so that we map over the parsed CSV and pass in a table for each version */}
+        {billingStats(DUMMY_PRICING_VERSION_TO_DELETE).map((graphInfo, i) => {
           return (
             <PanelSectionBody
-              table={table}
-              status={status}
+              csv={csvs[i].trim()}
               graphInfo={graphInfo}
               widths={widths}
               key={graphInfo.title}

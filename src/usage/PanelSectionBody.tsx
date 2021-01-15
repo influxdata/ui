@@ -1,26 +1,26 @@
 import React, {FC} from 'react'
-import {Grid} from '@influxdata/clockface'
+import {Columns, Grid} from '@influxdata/clockface'
 import GraphTypeSwitcher from 'src/usage/GraphTypeSwitcher'
-import {Table} from '@influxdata/giraffe'
 
 interface OwnProps {
-  table: Table
-  status: string
+  csv: string
   graphInfo: any
-  widths: any
+  widths: {
+    XS: Columns
+    SM: Columns
+    MD: Columns
+  }
 }
 
-const PanelSectionBody: FC<OwnProps> = ({table, status, graphInfo, widths}) => {
-  return (
-    <Grid.Column
-      widthXS={widths.XS}
-      widthSM={widths.SM}
-      widthMD={widths.MD}
-      key={graphInfo.title}
-    >
-      <GraphTypeSwitcher graphInfo={graphInfo} table={table} status={status} />
-    </Grid.Column>
-  )
-}
+const PanelSectionBody: FC<OwnProps> = ({csv, graphInfo, widths}) => (
+  <Grid.Column
+    widthXS={widths.XS}
+    widthSM={widths.SM}
+    widthMD={widths.MD}
+    key={graphInfo.title}
+  >
+    <GraphTypeSwitcher graphInfo={graphInfo} csv={csv} />
+  </Grid.Column>
+)
 
 export default PanelSectionBody

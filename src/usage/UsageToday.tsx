@@ -8,7 +8,6 @@ import {
   FlexDirection,
   Panel,
 } from '@influxdata/clockface'
-import {fromFlux, Table} from '@influxdata/giraffe'
 
 // Components
 import PanelSection from 'src/usage/PanelSection'
@@ -19,31 +18,22 @@ import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
 
 // Constants
 import {GRAPH_INFO} from 'src/usage/Constants'
-import {
-  QUERY_RESULTS_STATUS_EMPTY,
-  QUERY_RESULTS_STATUS_ERROR,
-  QUERY_RESULTS_STATUS_SUCCESS,
-  QUERY_RESULTS_STATUS_TIMEOUT,
-  PANEL_CONTENTS_WIDTHS,
-} from 'src/usage/Constants'
+import {PANEL_CONTENTS_WIDTHS} from 'src/usage/Constants'
 import {getTimeRange} from 'src/dashboards/selectors'
 import {setTimeRange} from 'src/timeMachine/actions'
+import {useUsage} from 'src/usage/UsagePage'
 
 // Types
 import {TimeRange} from 'src/types'
-import {History} from 'src/types/billing'
 
 interface StateProps {
   selectedUsageID: string
 }
 
-interface OwnProps {
-  history: History
-}
+type Props = StateProps
 
-type Props = OwnProps & StateProps
-
-const UsageToday: FC<Props> = ({history, selectedUsageID}) => {
+const UsageToday: FC<Props> = ({selectedUsageID}) => {
+  const [{history}] = useUsage()
   const timeRange = useSelector(getTimeRange)
   const dispatch = useDispatch()
 
@@ -55,59 +45,19 @@ const UsageToday: FC<Props> = ({history, selectedUsageID}) => {
     const graphInfo = GRAPH_INFO.usage_stats.find(
       stat => stat.title === selectedUsageID
     )
-    const {table, status} = csvToTable(history[graphInfo.column])
+    const csv = history[graphInfo.column]
 
     return (
       <PanelSectionBody
-        table={table}
-        status={status}
+        csv={csv}
         graphInfo={graphInfo}
         widths={PANEL_CONTENTS_WIDTHS.usage}
-        key={graphInfo.title}
       />
     )
   }
 
-  const csvToTable = (csv): {table: Table; status: string} => {
-    const {table} = fromFlux(csv)
-
-    if (!table || !table.columns || table.columns.error) {
-      if (
-        table.columns.error.data.length &&
-        table.columns.error.data[0] === 'Usage Query Timeout'
-      ) {
-        return {
-          status: QUERY_RESULTS_STATUS_TIMEOUT,
-          table: {} as Table,
-        }
-      }
-
-      return {
-        status: QUERY_RESULTS_STATUS_ERROR,
-        table: {} as Table,
-      }
-    }
-
-    if (!table.length) {
-      return {
-        status: QUERY_RESULTS_STATUS_EMPTY,
-        table: {} as Table,
-      }
-    }
-
-    return {status: QUERY_RESULTS_STATUS_SUCCESS, table}
-  }
-
-  const {table: billingTable, status: billingStatus} = csvToTable(
-    history.billingStats
-  )
-  const {table: limitsTable, status: limitsStatus} = csvToTable(
-    history.rateLimits
-  )
   const timeRangeLabel =
     timeRange.label ?? `from ${timeRange.lower} to ${timeRange.upper}`
-
-  console.log("billing", billingTable)
 
   return (
     <FlexBox
@@ -115,11 +65,7 @@ const UsageToday: FC<Props> = ({history, selectedUsageID}) => {
       direction={FlexDirection.Column}
       margin={ComponentSize.Small}
     >
-      <BillingStatsPanel
-        table={billingTable}
-        status={billingStatus}
-        widths={PANEL_CONTENTS_WIDTHS.billing_stats}
-      />
+      <BillingStatsPanel />
       <TimeRangeDropdown
         onSetTimeRange={handleSetTimeRange}
         timeRange={timeRange}
@@ -139,8 +85,7 @@ const UsageToday: FC<Props> = ({history, selectedUsageID}) => {
           {GRAPH_INFO.rate_limits.map(graphInfo => {
             return (
               <PanelSectionBody
-                table={limitsTable}
-                status={limitsStatus}
+                csv={history.rateLimits}
                 graphInfo={graphInfo}
                 widths={PANEL_CONTENTS_WIDTHS.rate_limits}
                 key={graphInfo.title}

@@ -9,7 +9,6 @@ import {
   LineInterpolation,
   FromFluxResult,
 } from '@influxdata/giraffe'
-import {S2} from 's2-geometry'
 
 import {VIS_SIG_DIGITS, DEFAULT_TIME_FORMAT} from 'src/shared/constants'
 

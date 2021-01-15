@@ -25,7 +25,7 @@ const GeoPlot: FunctionComponent<Props> = ({
     mapStyle,
   } = viewProperties
   const tileServerConfiguration = {
-    tileServerUrl: 'mapboxurlhere',
+    tileServerUrl: '',
     bingKey: '',
   }
 

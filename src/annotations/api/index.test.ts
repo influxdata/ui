@@ -38,7 +38,7 @@ describe('query string formatting function', () => {
     expect(qs.split('').filter(a => a === '&').length).toEqual(3)
 
     // Handles encoding of object params for stickers
-    expect(qs.includes('&sticker-includes[foo]=bar')).toBeTruthy()
+    expect(qs.includes('&stickerIncludes[foo]=bar')).toBeTruthy()
   })
 })
 describe('annotations api calls', () => {

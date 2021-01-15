@@ -127,6 +127,10 @@
 @import 'src/shared/components/notifications/Notification.scss';
 @import 'src/unity/components/users/UserList.scss';
 @import 'src/usage/GraphTypeSwitcher.scss';
+@import 'src/billing/components/PayAsYouGo/cancellation-overlay.scss';
+@import 'src/billing/components/Usage/AlertStatusCancelled.scss';
+@import 'src/billing/components/PayAsYouGo/PlanTypePanel.scss';
+@import 'src/billing/components/BillingPage.scss';
 
 // External
 @import '../../node_modules/@influxdata/react-custom-scrollbars/dist/styles.css';

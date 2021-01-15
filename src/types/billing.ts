@@ -1,69 +1,31 @@
 // can we just get this from IDPE
 // directly or does Quartz have special
-
-import {RemoteDataState} from 'src/types'
-
 // permissions / knowledge?
-interface OrgLimit {
-  bucket: BucketLimit
-  check: CheckLimit
-  dashboard: DashboardLimit
-  notificationEndpoint: NotificationEndpointLimit
-  notificationRule: NotificationRuleLimit
-  orgID: string
-  rate: RateLimit
-  task: TaskLimit
-}
+import {
+  Account as GenAccount,
+  BillingNotifySettings as GenBillingNotifySettings,
+  Invoice as GenInvoice,
+  PaymentMethod as GenPaymentMethod,
+} from 'src/client/unityRoutes'
+import {RemoteDataState, LimitsStatus as GenLimitsStatus} from 'src/types'
 
-interface BucketLimit {
-  maxBuckets: number
-  maxRetentionDuration: number
-}
-
-interface CheckLimit {
-  maxChecks: number
-}
-
-interface DashboardLimit {
-  maxDashboards: number
-}
-
-interface NotificationEndpointLimit {
-  blockedNotificationEndpoints: string
-}
-
-interface NotificationRuleLimit {
-  blockedNotificationRules: string
-  maxNotifications: number
-}
-
-interface RateLimit {
-  cardinality: number
-  readKBs: number
-  writeKBs: number
-}
-
-interface TaskLimit {
-  maxTasks: number
-}
-
-export interface LimitStatuses {
+interface LimitStatuses {
   cardinality: LimitStatus
   read: LimitStatus
   write: LimitStatus
+}
+
+export interface LimitStatus extends GenLimitsStatus {
   status: RemoteDataState
 }
 
-export interface LimitStatus {
-  status: string
-}
-
-interface Region {
+export interface Region {
   title: string
   isBeta: boolean
   isAvailable: boolean
   provider: string
   region: string
+  status: RemoteDataState
 }
 
 interface BillingContact {
@@ -79,7 +41,7 @@ interface BillingContact {
   postalCode: number
 }
 
-interface CreditCardParams {
+export interface CreditCardParams {
   id: string
   tenantID: string
   key: string
@@ -90,19 +52,10 @@ interface CreditCardParams {
   url: string
 }
 
-type AccountType = 'free' | 'cancelled' | 'pay_as_you_go'
-
 export interface MarketplaceSubscription {
   marketplace: string
   subscriberId: string
   status: string
-}
-
-export interface Account {
-  id: number
-  type: AccountType
-  updatedAt: string
-  status: RemoteDataState
 }
 
 export interface History {
@@ -110,36 +63,25 @@ export interface History {
   rateLimits: string
   status: RemoteDataState
 }
-
-interface PaymentMethod {
-  cardType: string
-  cardNumber: string
-  expirationMonth: string
-  expirationYear: string
-  defaultPaymentMethod: boolean
+export interface Account extends GenAccount {
+  status: RemoteDataState
 }
 
-type PaymentMethods = PaymentMethod[]
+export interface PaymentMethod extends GenPaymentMethod {}
 
-interface Invoice {
-  status: string
-  amount: number
-  targetDate: string
-  filesID: string
-}
+export type PaymentMethods = PaymentMethod[]
 
-type Invoices = Invoice[]
+export interface Invoice extends GenInvoice {}
+
+export type Invoices = Invoice[]
 
 // Current FreePage Props
 export interface Props {
   isRegionBeta: boolean
-  orgLimits: OrgLimit
 }
 
-interface BillingNotifySettings {
-  isNotify: boolean
-  balanceThreshold: number
-  notifyEmail: string
+export interface BillingNotifySettings extends GenBillingNotifySettings {
+  status: RemoteDataState
 }
 
 export interface BillingDate {
@@ -150,15 +92,20 @@ export interface BillingDate {
 
 // Current PayAsYouGo Props
 export interface Props {
-  region: Region
   account: Account // could we possibly combine Account with BillingContact?
-  invoices: Invoices // separate endpoint [X]
-  paymentMethods: PaymentMethods // separate endpoint [X]
+  billingNotifySettings: BillingNotifySettings // separate endpoint w/ put [x]
   ccPageParams: CreditCardParams // separate endpoint [X]
   contact: BillingContact // separate endpoint (get, put)
   email: string // where does this come from?
-  billingNotifySettings: BillingNotifySettings // separate endpoint w/ put [x]
-  orgLimits: OrgLimit // get from IDPE
-  limitStatuses: LimitStatuses // get from IDPE
   history: History
+  invoices: Invoices // separate endpoint [X]
+  limitStatuses: LimitStatus // get from IDPE
+  paymentMethods: PaymentMethods // separate endpoint [X]
+  region: Region
+}
+
+export interface ZuoraResponse {
+  success: boolean
+  responseFrom: string
+  refId: string
 }

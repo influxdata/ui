@@ -75,13 +75,15 @@ const UsageToday: FC<Props> = ({selectedUsageID}) => {
           <h4>{`Usage ${timeRangeLabel}`}</h4>
           <UsageDropdown />
         </Panel.Header>
-        <PanelSection>{getUsageSparkline()}</PanelSection>
+        <Panel.Body alignItems={AlignItems.Stretch}>
+          {getUsageSparkline()}
+        </Panel.Body>
       </Panel>
       <Panel className="usage--panel">
         <Panel.Header>
           <h4>{`Rate Limits ${timeRangeLabel}`}</h4>
         </Panel.Header>
-        <PanelSection>
+        <Panel.Body alignItems={AlignItems.Stretch}>
           {GRAPH_INFO.rate_limits.map(graphInfo => {
             return (
               <PanelSectionBody
@@ -92,7 +94,7 @@ const UsageToday: FC<Props> = ({selectedUsageID}) => {
               />
             )
           })}
-        </PanelSection>
+        </Panel.Body>
       </Panel>
     </FlexBox>
   )

@@ -56,6 +56,7 @@ const CloudUpgradeButton: FC<StateProps & OwnProps> = ({
           href={`${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`}
           target="_self"
           text={buttonText}
+          testID="cloud-upgrade--button"
         />
       )}
     </CloudOnly>

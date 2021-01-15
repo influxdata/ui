@@ -38,10 +38,7 @@ describe('NotificationRules', () => {
       cy.get('@org').then(({id}: Organization) => {
         cy.fixture('routes').then(({orgs, alerting, rules}) => {
           cy.visit(`${orgs}/${id}${alerting}${rules}/${nonexistentID}/edit`)
-          cy.url().should(
-            'eq',
-            `${Cypress.config().baseUrl}${orgs}/${id}${alerting}`
-          )
+          cy.url().should('include', `${orgs}/${id}${alerting}`)
         })
       })
     })

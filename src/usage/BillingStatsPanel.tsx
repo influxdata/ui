@@ -1,6 +1,7 @@
 import React from 'react'
 
 import {
+  AlignItems,
   Panel,
   ReflessPopover,
   PopoverInteraction,
@@ -70,7 +71,7 @@ const BillingStatsPanel = () => {
           }
         />
       </Panel.Header>
-      <PanelSection>
+      <Panel.Body alignItems={AlignItems.Stretch}>
         {/* TODO(ariel): fix this so that we map over the parsed CSV and pass in a table for each version */}
         {billingStats(DUMMY_PRICING_VERSION_TO_DELETE).map((graphInfo, i) => {
           return (
@@ -82,7 +83,7 @@ const BillingStatsPanel = () => {
             />
           )
         })}
-      </PanelSection>
+      </Panel.Body>
     </Panel>
   )
 }

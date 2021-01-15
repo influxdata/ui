@@ -24,21 +24,21 @@ describe('query string formatting function', () => {
       },
     }
 
-    const qs = formatAnnotationQueryString(query)
+    const queryString = formatAnnotationQueryString(query)
 
     // Starts with question mark for query string
-    expect(qs[0]).toEqual('?')
+    expect(queryString[0]).toEqual('?')
 
     // Handles spaces
-    expect(qs.indexOf(' ')).toEqual(-1)
-    expect(qs.includes('default%20stream')).toBeTruthy()
+    expect(queryString.indexOf(' ')).toEqual(-1)
+    expect(queryString.includes('default%20stream')).toBeTruthy()
 
-    // Only uses ? symbol in beginning, following qs params use &
-    expect(qs.lastIndexOf('?')).toEqual(0)
-    expect(qs.split('').filter(a => a === '&').length).toEqual(3)
+    // Only uses ? symbol in beginning, following queryString params use &
+    expect(queryString.lastIndexOf('?')).toEqual(0)
+    expect(queryString.split('').filter(a => a === '&').length).toEqual(3)
 
     // Handles encoding of object params for stickers
-    expect(qs.includes('&stickerIncludes[foo]=bar')).toBeTruthy()
+    expect(queryString.includes('&stickerIncludes[foo]=bar')).toBeTruthy()
   })
 })
 describe('annotations api calls', () => {
@@ -84,7 +84,7 @@ describe('annotations api calls', () => {
   })
 
   describe('GET - retrieve annotations api calls', () => {
-    const data = [
+    const annotationResponse = [
       {
         stream: 'Lambeau Field',
         annotations: [
@@ -109,7 +109,7 @@ describe('annotations api calls', () => {
 
     it('retrieves annotations and returns them categorized by annotation stream', async () => {
       mocked(axios.get).mockImplementationOnce(() =>
-        Promise.resolve({data: [data[0]]})
+        Promise.resolve({data: [annotationResponse[0]]})
       )
       const response = await getAnnotation({
         start: Date.now().toString(),
@@ -117,11 +117,11 @@ describe('annotations api calls', () => {
         stream: 'Lambeau Field',
       })
 
-      expect(response).toEqual([data[0]])
+      expect(response).toEqual([annotationResponse[0]])
     })
 
     it('handles an error and returns the error message', async () => {
-      const data = {
+      const annotation = {
         start: Date.now().toString(),
         end: Date.now().toString(),
         stream: 'Lambeau Field',
@@ -132,7 +132,7 @@ describe('annotations api calls', () => {
         Promise.reject(new Error(message))
       )
 
-      await expect(getAnnotation(data)).rejects.toThrow(message)
+      await expect(getAnnotation(annotation)).rejects.toThrow(message)
     })
   })
 

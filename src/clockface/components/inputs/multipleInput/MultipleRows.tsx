@@ -19,7 +19,7 @@ interface RowsProps {
 
 const Rows: SFC<RowsProps> = ({tags, onDeleteTag, onChange}) => {
   return (
-    <div className="input-tag-list">
+    <div className="input-tag-list" data-testid="multiple-rows">
       {tags.map(item => {
         return (
           <Row

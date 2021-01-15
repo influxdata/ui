@@ -83,7 +83,6 @@ export interface Props {
   invoices: Invoices // separate endpoint [X]
   limitStatuses: LimitStatus // get from IDPE
   paymentMethods: PaymentMethods // separate endpoint [X]
-  orgLimits: OrgLimits // get from IDPE
   region: Region
 }
 

@@ -3,24 +3,6 @@
   position: relative;
 }
 
-// .usage--panel {
-//   .panel--body {
-//     position: relative;
-//   }
-// }
-
-// .billing-stats--panel {
-//   margin-bottom: $cf-marg-c !important;
-
-//   .cf-panel {
-//     margin-bottom: $cf-marg-a;
-//   }
-// }
-
-// @media screen and (min-width: $cf-grid--breakpoint-md) {
-//   .billing-stats--panel {
-//     .cf-panel {
-//       margin-bottom: 0;
-//     }
-//   }
-// }
+.panel-body--size.usage-plot {
+  height: 250px;
+}

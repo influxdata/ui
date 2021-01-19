@@ -1,4 +1,4 @@
-import {BillingDate, History, LimitStatuses} from 'src/types/billing'
+import {BillingDate, History, LimitStatus} from 'src/types/billing'
 import {RemoteDataState} from 'src/types'
 import {Account} from 'src/client/unityRoutes'
 
@@ -48,6 +48,23 @@ export const getBillingDate = (): Promise<any> => {
   }
 
   return makeResponse(200, billingDate)
+}
+
+export const getLimitsStatus = (): Promise<any> => {
+  const limitsStatus: LimitStatus = {
+    read: {
+      status: 'exceeded',
+    },
+    write: {
+      status: 'exceeded',
+    },
+    cardinality: {
+      status: 'exceeded',
+    },
+    status: RemoteDataState.Done,
+  }
+
+  return makeResponse(200, limitsStatus)
 }
 
 export const getHistory = (): Promise<any> => {

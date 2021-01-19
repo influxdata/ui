@@ -1,12 +1,5 @@
 // Libraries
-import React, {
-  FC,
-  createElement,
-  useContext,
-  useCallback,
-  useMemo,
-  useState,
-} from 'react'
+import React, {FC, useContext, useCallback, useMemo, useState} from 'react'
 
 // Components
 import {
@@ -20,7 +13,12 @@ import Resizer from 'src/flows/shared/Resizer'
 
 // Utilities
 import {event} from 'src/cloud/utils/reporting'
-import {TYPE_DEFINITIONS, View, ViewTypeDropdown} from 'src/visualization'
+import {
+  TYPE_DEFINITIONS,
+  View,
+  ViewOptions,
+  ViewTypeDropdown,
+} from 'src/visualization'
 
 // Types
 import {ViewType, RemoteDataState} from 'src/types'
@@ -90,32 +88,6 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     </>
   )
 
-  const options = useMemo(() => {
-    if (
-      !optionsVisibility ||
-      !TYPE_DEFINITIONS[data.properties.type].options ||
-      !dataExists
-    ) {
-      return null
-    }
-
-    return (
-      <div className="flow-visualization--options">
-        {createElement(TYPE_DEFINITIONS[data.properties.type].options, {
-          properties: data.properties,
-          results: results.parsed,
-          update: updateProperties,
-        })}
-      </div>
-    )
-  }, [
-    optionsVisibility,
-    data.properties,
-    results.parsed,
-    updateProperties,
-    dataExists,
-  ])
-
   const loadingText = useMemo(() => {
     if (loading === RemoteDataState.Loading) {
       return 'Loading'
@@ -155,7 +127,13 @@ const Visualization: FC<PipeProp> = ({Context}) => {
           </div>
         </div>
       </Resizer>
-      {options}
+      {optionsVisibility && dataExists && (
+        <ViewOptions
+          properties={data.properties}
+          results={results.parsed}
+          update={updateProperties}
+        />
+      )}
     </Context>
   )
 }

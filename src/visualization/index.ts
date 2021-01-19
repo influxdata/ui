@@ -42,43 +42,5 @@ context.keys().forEach(key => {
 })
 
 export {default as View} from 'src/visualization/components/View'
+export {default as ViewOptions} from 'src/visualization/components/ViewOptions'
 export {default as ViewTypeDropdown} from 'src/visualization/components/ViewTypeDropdown'
-
-// TODO: all of this needs to be removed by refactoring
-// the underlying logic. Managing state like this is a
-// recipe for long dev cycles, stale logic, and many bugs
-// these default value mechanisms should exist within giraffe
-/*
-const _transform = (
-  properties: ViewProperties,
-  results: FromFluxResult
-): ViewProperties => {
-  if (!results) {
-    return properties
-  }
-
-  if (properties.type === 'table') {
-    const existing = (properties.fieldOptions || []).reduce((prev, curr) => {
-      prev[curr.internalName] = curr
-      return prev
-    }, {})
-
-    results.table.columnKeys
-      .filter(o => !existing.hasOwnProperty(o))
-      .filter(o => !['result', '', 'table', 'time'].includes(o))
-      .forEach(o => {
-        existing[o] = {
-          internalName: o,
-          displayName: o,
-          visible: true,
-        }
-      })
-    return {
-      ...properties,
-      fieldOptions: Object.keys(existing).map(e => existing[e]),
-    }
-  }
-
-  return properties
-}
-*/

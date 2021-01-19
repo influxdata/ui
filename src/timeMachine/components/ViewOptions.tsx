@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useMemo, useCallback, createElement} from 'react'
+import React, {FC, useCallback} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 
 // Actions
@@ -7,11 +7,10 @@ import {setViewProperties} from 'src/timeMachine/actions'
 
 // Components
 import {DapperScrollbars} from '@influxdata/clockface'
-import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 // Utils
 import {getActiveTimeMachine, getVisTable} from 'src/timeMachine/selectors'
-import {TYPE_DEFINITIONS} from 'src/visualization'
+import {ViewOptions as Options} from 'src/visualization'
 
 // Types
 import {ViewProperties} from 'src/types'
@@ -33,31 +32,17 @@ const ViewOptions: FC = () => {
     [dispatch, view.properties]
   )
 
-  const options = useMemo(() => {
-    if (!TYPE_DEFINITIONS[view.properties.type].options) {
-      return null
-    }
-
-    return (
-      <ErrorBoundary>
-        <div className="view-options--container">
-          {createElement(TYPE_DEFINITIONS[view.properties.type].options, {
-            properties: view.properties,
-            results,
-            update: update,
-          })}
-        </div>
-      </ErrorBoundary>
-    )
-  }, [view.properties, results, update])
-
   return (
-    <div className="view-options">
+    <div className="view-options--wrap">
       <DapperScrollbars
         autoHide={false}
         style={{width: '100%', height: '100%'}}
       >
-        {options}
+        <Options
+          properties={view.properties}
+          results={results}
+          update={update}
+        />
       </DapperScrollbars>
     </div>
   )

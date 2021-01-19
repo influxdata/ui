@@ -1,7 +1,6 @@
 import icon from './icon'
 import properties from './properties'
 import view from './view'
-import options from './options'
 
 export default register => {
   register({
@@ -11,6 +10,5 @@ export default register => {
     featureFlag: 'mapGeo',
     initial: properties,
     component: view,
-    options,
   })
 }

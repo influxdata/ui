@@ -45,7 +45,7 @@ const UsageToday: FC<Props> = ({selectedUsageID}) => {
     )
     // TODO(ariel): make sure that the CSV is an actual CSV and not the rateLimits (it might be rateLimits, but i'm not sure)
     // const csv = history[graphInfo.column]
-    const csv = history.rateLimits
+    const csv = history.usageStats
     return <GraphTypeSwitcher csv={csv} graphInfo={graphInfo} />
   }
 

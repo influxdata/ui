@@ -20,6 +20,7 @@ const SearchBar: FC = () => {
 
   return (
     <Input
+      testID="schema-filter-input"
       icon={IconFont.Search}
       size={ComponentSize.Medium}
       value={searchTerm}

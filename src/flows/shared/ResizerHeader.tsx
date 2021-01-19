@@ -74,7 +74,7 @@ const ResizerHeader: FC<Props> = ({
   if (toggleVisibilityEnabled) {
     visibilityToggle = (
       <div onClick={handleToggleVisibility}>
-        <Icon className="panel-resizer--vis-toggle" glyph={glyph} />
+        <Icon className="panel-resizer--vis-toggle" testID="panel-resizer--vis-toggle" glyph={glyph} />
       </div>
     )
   }

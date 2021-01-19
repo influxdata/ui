@@ -117,6 +117,7 @@ const FilterTags: FC = () => {
         return (
           <LabelComponent
             className="data-source--filter"
+            testID={`selected-filter--${f.id}`}
             id={f.id}
             key={f.id}
             name={f.name}
@@ -132,7 +133,7 @@ const FilterTags: FC = () => {
   return (
     <div className="data-source--filters">
       <p className="data-source--filters-label">Filters:</p>
-      <div className="data-source--filters-list">{currentFilters()}</div>
+      <div className="data-source--filters-list" data-testid="selected-filters-list">{currentFilters()}</div>
     </div>
   )
 }

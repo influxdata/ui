@@ -16,6 +16,7 @@ const Selectors: FC = () => {
   let list = (
     <List
       className="data-source--list"
+      testID="schema-fields-list"
       backgroundColor={InfluxColors.Obsidian}
       maxHeight="304px"
       style={{height: '304px'}}

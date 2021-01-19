@@ -131,6 +131,7 @@ export const Submit: FC = () => {
 
   return (
     <Dropdown
+      testID="notebook-submit-button"
       button={DropdownButton}
       menu={DropdownMenu}
       style={{width: '205px'}}

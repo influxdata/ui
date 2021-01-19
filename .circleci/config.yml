@@ -13,7 +13,7 @@ jobs:
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
           name: Grab compose files
-          command: git clone git@github.com:influxdata/monitor-ci.git
+          command: git clone --branch cypress_networking git@github.com:influxdata/monitor-ci.git
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing ./monitor-ci/.env
@@ -46,7 +46,7 @@ jobs:
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
           name: Grab compose files
-          command: git clone git@github.com:influxdata/monitor-ci.git
+          command: git clone --branch cypress_networking git@github.com:influxdata/monitor-ci.git
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing.oss ./monitor-ci/.env
@@ -78,7 +78,7 @@ jobs:
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
           name: Grab compose files
-          command: git clone git@github.com:influxdata/monitor-ci.git
+          command: git clone --branch cypress_networking git@github.com:influxdata/monitor-ci.git
       - run:
           name: Build the ui docker image
           command: |
@@ -112,7 +112,7 @@ jobs:
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
           name: Grab deploy files
-          command: git clone git@github.com:influxdata/monitor-ci.git
+          command: git clone --branch cypress_networking git@github.com:influxdata/monitor-ci.git
       - run:
           name: Load the prod image
           command: |
@@ -428,7 +428,7 @@ jobs:
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
           name: Grab compose files
-          command: git clone git@github.com:influxdata/monitor-ci.git
+          command: git clone --branch cypress_networking git@github.com:influxdata/monitor-ci.git
       - run:
           name: Copy over the lighthouse variables
           command: |

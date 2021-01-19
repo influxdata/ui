@@ -69,7 +69,11 @@ const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv}) => {
   })
 
   return (
-    <Panel backgroundColor={InfluxColors.Raven} className="graph-type--panel">
+    <Panel
+      backgroundColor={InfluxColors.Raven}
+      className="graph-type--panel"
+      testID="graph-type--panel"
+    >
       <Panel.Header size={ComponentSize.ExtraSmall}>
         <h5>{graphInfo.title}</h5>
       </Panel.Header>

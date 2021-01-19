@@ -45,8 +45,8 @@ export const getBillingAccount = (): ReturnType<typeof getBillingAccountGenerate
 
 export const getBillingDate = (): Promise<any> => {
   const billingDate: BillingDate = {
-    date: new Date().toString(),
-    time: '12:00:00pm',
+    date: new Date().toLocaleDateString(),
+    time: new Date().toLocaleString(),
     status: RemoteDataState.Done,
   }
 

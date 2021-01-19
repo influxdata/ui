@@ -75,7 +75,7 @@ const UsageToday: FC<Props> = ({selectedUsageID}) => {
       />
       <Panel className="usage--panel">
         <Panel.Header>
-          <h4>{`Usage ${timeRangeLabel}`}</h4>
+          <h4 data-testid="usage-header--timerange">{`Usage ${timeRangeLabel}`}</h4>
           <UsageDropdown />
         </Panel.Header>
         <Panel.Body
@@ -88,7 +88,7 @@ const UsageToday: FC<Props> = ({selectedUsageID}) => {
       </Panel>
       <Panel className="usage--panel">
         <Panel.Header>
-          <h4>{`Rate Limits ${timeRangeLabel}`}</h4>
+          <h4 data-testid="rate-limits-header--timerange">{`Rate Limits ${timeRangeLabel}`}</h4>
         </Panel.Header>
         <Panel.Body
           direction={FlexDirection.Column}

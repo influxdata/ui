@@ -43,10 +43,15 @@ const BillingStatsPanel = () => {
         <ReflessPopover
           appearance={Appearance.Outline}
           distanceFromTrigger={16}
-          contents={() => <>{dateRange}</>}
+          contents={() => (
+            <React.Fragment data-testid="usage-billing--popover">
+              {dateRange}
+            </React.Fragment>
+          )}
           position={PopoverPosition.ToTheRight}
           showEvent={PopoverInteraction.Hover}
           hideEvent={PopoverInteraction.Hover}
+          data-testid="usage-billing--title"
         >
           <h4 className="usage--billing-date-range">
             {`Billing Stats For ${billingStartDate} to Today`}
@@ -75,6 +80,7 @@ const BillingStatsPanel = () => {
         direction={FlexDirection.Column}
         margin={ComponentSize.Small}
         alignItems={AlignItems.Stretch}
+        testID="billing-stats--graphs"
       >
         {/* TODO(ariel): fix this so that we map over the parsed CSV and pass in a table for each version */}
         {billingStats(DUMMY_PRICING_VERSION_TO_DELETE).map((graphInfo, i) => {

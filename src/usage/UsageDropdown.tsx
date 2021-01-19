@@ -20,6 +20,7 @@ const UsageDropdown: FC = () => {
       onSelect={setSelectedUsageID}
       buttonColor={ComponentColor.Default}
       style={{width: '200px'}}
+      testID="usage-page--dropdown"
     />
   )
 }

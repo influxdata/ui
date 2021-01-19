@@ -68,7 +68,7 @@ const Usage: FC = () => {
     <UsageContext.Provider value={[state, dispatch]}>
       <PageSpinner loading={accountLoading}>
         <Page titleTag="Usage">
-          <Page.Header fullWidth={false} testID="billing-page--header">
+          <Page.Header fullWidth={false} testID="usage-page--header">
             <Page.Title title="Usage" />
             <LimitChecker>{!isCancelled && <RateLimitAlert />}</LimitChecker>
           </Page.Header>

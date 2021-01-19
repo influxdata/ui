@@ -34,6 +34,7 @@ export const initialState = (): BillingState => ({
     type: 'free',
     updatedAt: '',
     users: [],
+    pricingVersion: null,
     zuoraAccountId: '',
   },
   billingSettings: {

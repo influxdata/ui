@@ -44,6 +44,7 @@ export const getBillingAccount = (): ReturnType<typeof getBillingAccountGenerate
       subscriberId: 'id123',
       status: 'Paid',
     },
+    pricingVersion: 4,
     type: 'free',
     updatedAt: new Date().toString(),
     users: [{}],

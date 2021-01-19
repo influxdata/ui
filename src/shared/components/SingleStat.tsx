@@ -24,8 +24,6 @@ const SingleStat: FC<Props> = ({stat, properties}) => {
     cellType: 'single-stat',
   })
 
-  console.log({stat})
-
   const formattedValue = formatStatValue(stat, {decimalPlaces, prefix, suffix})
 
   return (

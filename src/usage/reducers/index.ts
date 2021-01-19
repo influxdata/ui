@@ -65,6 +65,7 @@ export const initialState = (): UsageState => ({
     type: 'free',
     updatedAt: '',
     users: [],
+    pricingVersion: null,
     zuoraAccountId: '',
   },
   billingStart: {
@@ -76,6 +77,7 @@ export const initialState = (): UsageState => ({
     status: RemoteDataState.NotStarted,
     rateLimits: '',
     billingStats: '',
+    usageStats: '',
   },
 })
 
@@ -118,24 +120,6 @@ export const usageReducer = (
         }
 
         draftState.billingStart.status = action.status
-        return
-      }
-      case 'SET_LIMITS_STATUS': {
-        draftState.limitsStatus = action.limitsStatus
-
-        return
-      }
-      case 'SET_LIMITS_STATE_STATUS': {
-        if (!draftState.limitsStatus?.status) {
-          draftState.limitsStatus = {
-            ...draftState.limitsStatus,
-            status: action.status,
-          }
-
-          return
-        }
-
-        draftState.limitsStatus.status = action.status
         return
       }
       case 'SET_HISTORY': {

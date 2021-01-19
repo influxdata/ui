@@ -2,6 +2,7 @@ import React from 'react'
 
 import {
   AlignItems,
+  Appearance,
   ComponentSize,
   FlexDirection,
   Panel,
@@ -40,6 +41,7 @@ const BillingStatsPanel = () => {
     <Panel className="plan-type-panel usage--panel billing-stats--panel">
       <Panel.Header className="usage--billing-header">
         <ReflessPopover
+          appearance={Appearance.Outline}
           distanceFromTrigger={16}
           contents={() => <>{dateRange}</>}
           position={PopoverPosition.ToTheRight}

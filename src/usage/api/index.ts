@@ -1,6 +1,9 @@
 import {BillingDate, History} from 'src/types/billing'
 import {RemoteDataState} from 'src/types'
-import {Account} from 'src/client/unityRoutes'
+import {
+  Account,
+  getBillingAccount as getBillingAccountGenerated,
+} from 'src/client/unityRoutes'
 
 const makeResponse = (status, data) => {
   return Promise.resolve({
@@ -658,6 +661,50 @@ export const getHistory = (): Promise<any> => {
 ,,0,limited_write,2021-01-15T21:55:00Z,45
 ,,0,limited_write,2021-01-15T22:00:00Z,45
 ,,0,limited_write,2021-01-15T22:01:46.746172314Z,18`,
+    usageStats: `#group,false,false,true,false,false
+#datatype,string,long,string,dateTime:RFC3339,long
+#default,limits,,,,
+,result,table,_field,_time,_value
+,,0,limited_write,2021-01-13T22:05:00Z,0
+,,0,limited_write,2021-01-13T22:10:00Z,0
+,,0,limited_write,2021-01-13T22:15:00Z,0
+,,0,limited_write,2021-01-13T22:20:00Z,0
+,,0,limited_write,2021-01-13T22:25:00Z,0
+,,0,limited_write,2021-01-13T22:30:00Z,0
+,,0,limited_write,2021-01-13T22:35:00Z,0
+,,0,limited_write,2021-01-13T22:40:00Z,0
+,,0,limited_write,2021-01-13T22:45:00Z,0
+,,0,limited_write,2021-01-13T22:50:00Z,0
+,,0,limited_write,2021-01-13T22:55:00Z,0
+,,0,limited_write,2021-01-13T23:00:00Z,0
+,,0,limited_write,2021-01-13T23:05:00Z,0
+,,0,limited_write,2021-01-13T23:10:00Z,0
+,,0,limited_write,2021-01-13T23:15:00Z,0
+,,0,limited_write,2021-01-13T23:20:00Z,0
+,,0,limited_write,2021-01-13T23:25:00Z,0
+,,0,limited_write,2021-01-13T23:30:00Z,0
+,,0,limited_write,2021-01-13T23:35:00Z,0
+,,0,limited_write,2021-01-13T23:40:00Z,0
+,,0,limited_write,2021-01-13T23:45:00Z,0
+,,0,limited_write,2021-01-13T23:50:00Z,0
+,,0,limited_write,2021-01-13T23:55:00Z,0
+,,0,limited_write,2021-01-14T00:00:00Z,0
+,,0,limited_write,2021-01-14T00:05:00Z,0
+,,0,limited_write,2021-01-14T00:10:00Z,0
+,,0,limited_write,2021-01-14T00:15:00Z,0
+,,0,limited_write,2021-01-14T00:20:00Z,0
+,,0,limited_write,2021-01-14T00:25:00Z,0
+,,0,limited_write,2021-01-14T00:30:00Z,0
+,,0,limited_write,2021-01-14T00:35:00Z,0
+,,0,limited_write,2021-01-14T00:40:00Z,0
+,,0,limited_write,2021-01-14T00:45:00Z,0
+,,0,limited_write,2021-01-14T00:50:00Z,0
+,,0,limited_write,2021-01-14T00:55:00Z,0
+,,0,limited_write,2021-01-14T01:00:00Z,0
+,,0,limited_write,2021-01-14T01:05:00Z,0
+,,0,limited_write,2021-01-14T01:10:00Z,0
+,,0,limited_write,2021-01-14T01:15:00Z,0
+,,0,limited_write,2021-01-14T01:20:00Z,0`,
     status: RemoteDataState.Done,
   }
 

@@ -422,6 +422,9 @@ components:
         marketplaceSubscription:
           type: '#/components/schemas/MarketplaceSubscription'
           description: marketplace subscription
+        pricingVersion:
+          type: number
+          description: pricing version for the account
         type:
           type: string
           description: type of the account
@@ -445,6 +448,7 @@ components:
           billingContact,
           deletable,
           marketplaceSubscription,
+          pricingVersion,
           type,
           updatedAt,
           users,

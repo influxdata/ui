@@ -51,6 +51,7 @@ export interface MarketplaceSubscription {
 export interface History {
   billingStats: string
   rateLimits: string
+  usageStats: string
   status: RemoteDataState
 }
 export interface Account extends GenAccount {

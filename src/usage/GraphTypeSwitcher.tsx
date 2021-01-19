@@ -15,11 +15,23 @@ import {getTimeRangeWithTimezone, getTimeZone} from 'src/dashboards/selectors'
 
 // Types
 import {RemoteDataState} from 'src/types'
-import {SingleStatViewProperties, XYViewProperties} from 'src/client'
+import {SingleStatViewProperties, XYViewProperties} from 'src/types'
 
 interface OwnProps {
   graphInfo: any
   csv: string
+}
+
+const GENERIC_PROPERTY_DEFAULTS = {
+  colors: [],
+  queries: [],
+  note: 'No Date to Display',
+  showNoteWhenEmpty: true,
+  prefix: '',
+  suffix: '',
+  tickPrefix: '',
+  tickSuffix: '',
+  legend: undefined,
 }
 
 const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv}) => {
@@ -28,19 +40,17 @@ const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv}) => {
   const timeRange = useSelector(getTimeRangeWithTimezone)
   const timeZone = useSelector(getTimeZone)
 
-  const singleStatProperties = {
+  const singleStatProperties: SingleStatViewProperties = {
+    ...GENERIC_PROPERTY_DEFAULTS,
     type: 'single-stat',
-    colors: [],
     shape: 'chronograf-v2',
-    showNoteWhenEmpty: false,
-    prefix: '',
     suffix: ` ${graphInfo?.units ?? ''}`,
-    decimalPlaces: [{isEnforced: true, digits: 2}],
+    decimalPlaces: {isEnforced: true, digits: 2},
   }
 
-  const xyProperties = {
+  const xyProperties: XYViewProperties = {
+    ...GENERIC_PROPERTY_DEFAULTS,
     type: 'xy',
-    // queries: DashboardQuery[]
     shape: 'chronograf-v2',
     axes: {
       x: {},
@@ -59,7 +69,7 @@ const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv}) => {
   })
 
   return (
-    <Panel backgroundColor={InfluxColors.Kevlar} className="graph-type--panel">
+    <Panel backgroundColor={InfluxColors.Raven} className="graph-type--panel">
       <Panel.Header size={ComponentSize.ExtraSmall}>
         <h5>{graphInfo.title}</h5>
       </Panel.Header>

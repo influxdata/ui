@@ -47,10 +47,10 @@ const ViewTypeDropdown: FC<Props> = ({viewType, onUpdateType}) => {
           }
         >
           <div className="view-type-dropdown--graphic">
-            {TYPE_DEFINITIONS[viewType].graphic}
+            {TYPE_DEFINITIONS[viewType]?.graphic}
           </div>
           <div className="view-type-dropdown--name">
-            {TYPE_DEFINITIONS[viewType].name}
+            {TYPE_DEFINITIONS[viewType]?.name}
           </div>
         </Dropdown.Button>
       )}

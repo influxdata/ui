@@ -14,8 +14,11 @@ import {checkResultsLength} from 'src/shared/utils/vis'
 import {getTimeRangeWithTimezone, getTimeZone} from 'src/dashboards/selectors'
 
 // Types
-import {RemoteDataState} from 'src/types'
-import {SingleStatViewProperties, XYViewProperties} from 'src/types'
+import {
+  SingleStatViewProperties,
+  RemoteDataState,
+  XYViewProperties,
+} from 'src/types'
 
 interface OwnProps {
   graphInfo: any

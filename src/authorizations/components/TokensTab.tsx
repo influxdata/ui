@@ -87,14 +87,8 @@ class TokensTab extends PureComponent<Props, State> {
         />
         <FilterAuthorizations
           list={tokens}
-          emptyState={this.emptyState}
           searchTerm={searchTerm}
           searchKeys={this.searchKeys}
-          sortKey={sortKey}
-          sortDirection={sortDirection}
-          sortType={sortType}
-          onClickColumn={this.handleClickColumn}
-        />
         >
           {filteredAuths => (
             <TokenList

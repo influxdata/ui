@@ -114,13 +114,9 @@ const WindowPeriod: FunctionComponent<Props> = ({
 
 const mstp = (state: AppState) => {
   const {builderConfig} = getActiveQuery(state)
-  const {
-    aggregateWindow: {period},
-  } = builderConfig
   const everyWindowPeriod = state.alertBuilder.every
-
   return {
-    period,
+    period: builderConfig?.aggregateWindow?.period ?? '',
     isInCheckOverlay: getIsInCheckOverlay(state),
     autoWindowPeriod: getWindowPeriodFromTimeRange(state),
     everyWindowPeriod,

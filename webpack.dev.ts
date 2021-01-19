@@ -48,7 +48,6 @@ module.exports = merge(common, {
       analyzerHost: '0.0.0.0',
       analyzerPort: '9998',
       openAnalyzer: false,
-      generateStatsFile: true,
     }),
   ],
 })

@@ -8,7 +8,6 @@ import {isEmpty} from 'lodash'
 import {Sort, ComponentSize, EmptyState} from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import TokenList from 'src/authorizations/components/TokenList'
-import FilterList from 'src/shared/components/FilterList'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
 import GenerateTokenDropdown from 'src/authorizations/components/GenerateTokenDropdown'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
@@ -41,7 +40,6 @@ type SortKey = keyof Authorization
 
 type Props = StateProps & RouteComponentProps<{orgID: string}>
 
-const FilterAuthorizations = FilterList<Authorization>()
 
 class TokensTab extends PureComponent<Props, State> {
   constructor(props) {
@@ -85,23 +83,16 @@ class TokensTab extends PureComponent<Props, State> {
           childrenLeft={leftHeaderItems}
           childrenRight={rightHeaderItems}
         />
-        <FilterAuthorizations
+        <TokenList
           list={tokens}
+          emptyState={this.emptyState}
           searchTerm={searchTerm}
           searchKeys={this.searchKeys}
-        >
-          {filteredAuths => (
-            <TokenList
-              auths={filteredAuths}
-              emptyState={this.emptyState}
-              searchTerm={searchTerm}
-              sortKey={sortKey}
-              sortDirection={sortDirection}
-              sortType={sortType}
-              onClickColumn={this.handleClickColumn}
-            />
-          )}
-        </FilterAuthorizations>
+          sortKey={sortKey}
+          sortDirection={sortDirection}
+          sortType={sortType}
+          onClickColumn={this.handleClickColumn}
+        />
       </>
     )
   }

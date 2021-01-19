@@ -4,7 +4,6 @@ import {
   Organization,
 } from '../../../src/types'
 
-// skipping these tests until we have a local vault instance working
 describe('Notification Endpoints', () => {
   const endpoint: NotificationEndpoint = {
     orgID: '',
@@ -93,7 +92,6 @@ describe('Notification Endpoints', () => {
     cy.getByTestID('endpoint-save--button').click()
 
     cy.getByTestID(`endpoint-card ${name}`).should('exist')
-    cy.getByTestID('endpoint--overlay').should('not.be.visible')
   })
 
   it('can create a notification endpoint pager duty with client url', () => {
@@ -132,7 +130,6 @@ describe('Notification Endpoints', () => {
     cy.getByTestID('endpoint-save--button').click()
 
     cy.getByTestID(`endpoint-card ${name}`).should('exist')
-    cy.getByTestID('endpoint--overlay').should('not.be.visible')
   })
 
   it('can create a notification endpoint pager duty without client url', () => {
@@ -168,7 +165,6 @@ describe('Notification Endpoints', () => {
     cy.getByTestID('endpoint-save--button').click()
 
     cy.getByTestID(`endpoint-card ${name}`).should('exist')
-    cy.getByTestID('endpoint--overlay').should('not.be.visible')
   })
 
   it('can edit a notification endpoint', () => {
@@ -221,8 +217,6 @@ describe('Notification Endpoints', () => {
 
       cy.getByTestID('endpoint-save--button').click()
 
-      cy.getByTestID('endpoint--overlay').should('not.be.visible')
-
       // Create a label
       cy.getByTestID(`endpoint-card ${newName}`).within(() => {
         cy.getByTestID('inline-labels--add').click()
@@ -263,10 +257,7 @@ describe('Notification Endpoints', () => {
       cy.get('@org').then(({id}: Organization) => {
         cy.fixture('routes').then(({orgs, alerting, endpoints}) => {
           cy.visit(`${orgs}/${id}${alerting}${endpoints}/${nonexistentID}/edit`)
-          cy.url().should(
-            'eq',
-            `${Cypress.config().baseUrl}${orgs}/${id}${alerting}`
-          )
+          cy.url().should('include', `${orgs}/${id}${alerting}`)
         })
       })
     })

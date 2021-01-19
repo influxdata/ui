@@ -32,6 +32,10 @@ import {
   defaultYColumn,
 } from 'src/shared/utils/vis'
 
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+import {writeAnnotation} from 'src/annotations/api'
+
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
 import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
@@ -222,6 +226,25 @@ const XYPlot: FC<Props> = ({
 
   if (!isValidView) {
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
+  }
+
+  if (isFlagEnabled('annotations')) {
+    const doubleClickHandler = plotInteraction => {
+      const annotationTime = new Date(plotInteraction.valueX).toISOString()
+      writeAnnotation([
+        {
+          summary: 'hi',
+          start: annotationTime,
+          end: annotationTime,
+        },
+      ])
+    }
+
+    const interactionHandlers = {
+      doubleClick: doubleClickHandler,
+    }
+
+    config.interactionHandlers = interactionHandlers
   }
 
   return children(config)

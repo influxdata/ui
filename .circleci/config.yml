@@ -175,8 +175,16 @@ jobs:
           name: Update the images we're using
           command: |
             cd ./monitor-ci && make update && make build NODE=cypress && make build NODE=ingress && make build NODE=dex
+            docker tag local/cypress:latest quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
+      - when:
+          condition:
+            equal: [ master, << pipeline.git.branch >> ]
+          steps:
+            - run: docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} quay.io/influxdb/ui-e2e:latest
+            - run: docker push quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
+            - run: docker push quay.io/influxdb/ui-e2e:latest
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start
@@ -402,9 +410,14 @@ jobs:
           command: |
             cp ./monitor-ci/env.lighthouse ./monitor-ci/.env;
       - run:
+          name: Add Ingress Host to /etc/hosts File
+          command: |
+            INGRESS_HOST=$(grep "INGRESS_HOST=" ./monitor-ci/.env | cut -d '=' -f2);
+            grep -qxF "127.0.0.1 ${INGRESS_HOST}" /etc/hosts || sudo -- sh -c "echo \"127.0.0.1 ${INGRESS_HOST}\" >> /etc/hosts";
+      - run:
           name: Update the images we're using
           command: |
-            cd ./monitor-ci && make update && make build NODE=ingress
+            cd ./monitor-ci && sudo rm -rf .persist/certs/ && make update && make build NODE=ingress
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - run:

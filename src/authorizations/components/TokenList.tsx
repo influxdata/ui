@@ -7,6 +7,7 @@ import memoizeOne from 'memoize-one'
 import {Overlay, ResourceList} from '@influxdata/clockface'
 import TokenRow from 'src/authorizations/components/TokenRow'
 import ViewTokenOverlay from 'src/authorizations/components/ViewTokenOverlay'
+import FilterList from 'src/shared/components/FilterList'
 
 // Types
 import {Authorization} from 'src/types'
@@ -19,9 +20,10 @@ import {getSortedResources} from 'src/shared/utils/sort'
 type SortKey = keyof Authorization
 
 interface Props {
-  auths: Authorization[]
   emptyState: JSX.Element
   searchTerm: string
+  searchKeys: any
+  list: Authorization[]
   sortKey: string
   sortDirection: Sort
   sortType: SortTypes
@@ -32,6 +34,9 @@ interface State {
   isTokenOverlayVisible: boolean
   authInView: Authorization
 }
+
+const FilterAuthorizations = FilterList<Authorization>()
+
 
 export default class TokenList extends PureComponent<Props, State> {
   private memGetSortedResources = memoizeOne<typeof getSortedResources>(
@@ -71,22 +76,29 @@ export default class TokenList extends PureComponent<Props, State> {
   }
 
   private get rows(): JSX.Element[] {
-    const {auths, sortDirection, sortKey, sortType} = this.props
+    const {list, sortDirection, sortKey,searchKeys, sortType} = this.props
     const sortedAuths = this.memGetSortedResources(
       auths,
       sortKey,
       sortDirection,
       sortType
     )
-
-    return sortedAuths.map(auth => (
-      <TokenRow
-        key={auth.id}
-        auth={auth}
-        onClickDescription={this.handleClickDescription}
-      />
-    ))
+    return (
+    <FilterAuthorizations>
+        {filteredAuths => (
+  sortedAuths.map(auth => (
+    <TokenRow
+      key={auth.id}
+      auth={auth}
+      onClickDescription={this.handleClickDescription}
+    />
+          )}
+    </FilterAuthorizations>
+    )
+   
   }
+
+  ))
 
   private handleDismissOverlay = () => {
     this.setState({isTokenOverlayVisible: false})

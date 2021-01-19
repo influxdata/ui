@@ -7,7 +7,7 @@ import {GeoViewProperties} from 'src/types'
 import {VisProps} from 'src/visualization'
 
 interface Props extends VisProps {
-  properties: GaugeViewProperties
+  properties: GeoViewProperties
 }
 
 const GeoPlot: FC<Props> = ({result, properties}) => {

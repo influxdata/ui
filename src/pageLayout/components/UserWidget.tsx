@@ -89,6 +89,16 @@ const UserWidget: FC<Props> = ({
             )}
           />
         </FeatureFlag>
+        <FeatureFlag name="unity-billing">
+          <TreeNav.UserItem
+            id="unity-billing"
+            label="Unity billing"
+            testID="user-nav-item-unity-billing"
+            linkElement={className => (
+              <a className={className} href={`/orgs/${org.id}/unity-billing`} />
+            )}
+          />
+        </FeatureFlag>
         <TreeNav.UserItem
           id="about"
           label="About"

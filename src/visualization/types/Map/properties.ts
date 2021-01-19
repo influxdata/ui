@@ -1,27 +1,44 @@
+import {
+  DEFAULT_FILLVALUES,
+  AGG_WINDOW_AUTO,
+} from 'src/timeMachine/constants/queryBuilder'
+import {GeoViewProperties} from 'src/types'
+
 export default {
-  type: 'xy',
-  position: 'overlaid',
-  legend: {},
+  type: 'geo',
+  queries: [
+    {
+      text: '',
+      editMode: 'builder',
+      name: '',
+      builderConfig: {
+        buckets: [],
+        tags: [
+          {
+            key: '_measurement',
+            values: [],
+            aggregateFunctionType: 'filter',
+          },
+        ],
+        functions: [{name: 'mean'}],
+        aggregateWindow: {
+          period: AGG_WINDOW_AUTO,
+          fillValues: DEFAULT_FILLVALUES,
+        },
+      },
+    },
+  ],
+  shape: 'chronograf-v2',
+  center: {
+    lat: 0,
+    lon: 0,
+  },
+  zoom: 0,
+  allowPanAndZoom: false,
+  detectCoordinateFields: false,
+  mapStyle: '',
   note: '',
   showNoteWhenEmpty: false,
-  axes: {
-    x: {
-      bounds: ['', ''],
-      label: '',
-      prefix: '',
-      suffix: '',
-      base: '10',
-      scale: 'linear',
-    },
-    y: {
-      bounds: ['', ''],
-      label: '',
-      prefix: '',
-      suffix: '',
-      base: '10',
-      scale: 'linear',
-    },
-  },
-  geom: 'line',
-  shape: 'chronograf-v2',
-}
+  colors: null,
+  layers: [],
+} as GeoViewProperties

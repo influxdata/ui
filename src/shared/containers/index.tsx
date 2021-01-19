@@ -69,3 +69,6 @@ export const NotFound = lazy(() => import('src/shared/components/NotFound'))
 export const UsersPage = lazy(() =>
   import('src/unity/components/users/UsersPage')
 )
+export const BillingPage = lazy(() =>
+  import('src/billing/components/BillingPage')
+)

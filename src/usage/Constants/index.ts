@@ -93,21 +93,3 @@ export const GRAPH_INFO = {
     },
   ],
 }
-
-export const PANEL_CONTENTS_WIDTHS = {
-  usage: {
-    XS: Columns.Twelve,
-    SM: Columns.Twelve,
-    MD: Columns.Twelve,
-  },
-  rate_limits: {
-    XS: Columns.Twelve,
-    SM: Columns.Twelve,
-    MD: Columns.Twelve,
-  },
-  billing_stats: {
-    XS: Columns.Twelve,
-    SM: Columns.Six,
-    MD: Columns.Two,
-  },
-}

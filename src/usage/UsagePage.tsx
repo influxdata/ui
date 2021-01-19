@@ -37,7 +37,6 @@ const Usage: FC = () => {
   useEffect(() => {
     getBillingDate(dispatch)
     getAccount(dispatch)
-    getLimitsStatus(dispatch)
     getHistory(dispatch)
   }, [dispatch])
 
@@ -47,10 +46,6 @@ const Usage: FC = () => {
 
   const accountLoading = state?.account?.status
     ? state.account?.status
-    : RemoteDataState.NotStarted
-
-  const limitLoading = state?.limitsStatus?.status
-    ? state.limitsStatus?.status
     : RemoteDataState.NotStarted
 
   const historyLoading = state?.history?.status

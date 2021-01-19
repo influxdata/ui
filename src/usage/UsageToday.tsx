@@ -10,15 +10,13 @@ import {
 } from '@influxdata/clockface'
 
 // Components
-import PanelSection from 'src/usage/PanelSection'
 import UsageDropdown from 'src/usage/UsageDropdown'
-import PanelSectionBody from 'src/usage/PanelSectionBody'
 import BillingStatsPanel from 'src/usage/BillingStatsPanel'
 import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
+import GraphTypeSwitcher from 'src/usage/GraphTypeSwitcher'
 
 // Constants
 import {GRAPH_INFO} from 'src/usage/Constants'
-import {PANEL_CONTENTS_WIDTHS} from 'src/usage/Constants'
 import {getTimeRange} from 'src/dashboards/selectors'
 import {setTimeRange} from 'src/timeMachine/actions'
 import {useUsage} from 'src/usage/UsagePage'
@@ -45,15 +43,11 @@ const UsageToday: FC<Props> = ({selectedUsageID}) => {
     const graphInfo = GRAPH_INFO.usage_stats.find(
       stat => stat.title === selectedUsageID
     )
-    const csv = history[graphInfo.column]
-
-    return (
-      <PanelSectionBody
-        csv={csv}
-        graphInfo={graphInfo}
-        widths={PANEL_CONTENTS_WIDTHS.usage}
-      />
-    )
+    // TODO(ariel): make sure that the CSV is an actual CSV and not the rateLimits (it might be rateLimits, but i'm not sure)
+    // const csv = history[graphInfo.column]
+    const csv = history.rateLimits
+    console.log({csv, graphInfo})
+    return <GraphTypeSwitcher csv={csv} graphInfo={graphInfo} />
   }
 
   const timeRangeLabel =
@@ -75,7 +69,11 @@ const UsageToday: FC<Props> = ({selectedUsageID}) => {
           <h4>{`Usage ${timeRangeLabel}`}</h4>
           <UsageDropdown />
         </Panel.Header>
-        <Panel.Body alignItems={AlignItems.Stretch}>
+        <Panel.Body
+          direction={FlexDirection.Column}
+          margin={ComponentSize.Small}
+          alignItems={AlignItems.Stretch}
+        >
           {getUsageSparkline()}
         </Panel.Body>
       </Panel>
@@ -83,13 +81,16 @@ const UsageToday: FC<Props> = ({selectedUsageID}) => {
         <Panel.Header>
           <h4>{`Rate Limits ${timeRangeLabel}`}</h4>
         </Panel.Header>
-        <Panel.Body alignItems={AlignItems.Stretch}>
+        <Panel.Body
+          direction={FlexDirection.Column}
+          margin={ComponentSize.Small}
+          alignItems={AlignItems.Stretch}
+        >
           {GRAPH_INFO.rate_limits.map(graphInfo => {
             return (
-              <PanelSectionBody
+              <GraphTypeSwitcher
                 csv={history.rateLimits}
                 graphInfo={graphInfo}
-                widths={PANEL_CONTENTS_WIDTHS.rate_limits}
                 key={graphInfo.title}
               />
             )

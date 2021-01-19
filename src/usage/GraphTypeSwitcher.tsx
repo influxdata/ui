@@ -13,14 +13,14 @@ import {getTimeRangeWithTimezone, getTimeZone} from 'src/dashboards/selectors'
 import {decimalPlaces, lineColors} from 'src/dashboards/resources'
 
 import {RemoteDataState} from 'src/types'
+import {SingleStatViewProperties} from 'src/client'
 
 interface OwnProps {
   graphInfo: any
-  status: string
   csv: string
 }
 
-const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, status, csv}) => {
+const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv}) => {
   const giraffeResult = fromFlux(csv)
 
   const timeRange = useSelector(getTimeRangeWithTimezone)
@@ -34,7 +34,7 @@ const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, status, csv}) => {
     prefix: '',
     suffix: ` ${graphInfo?.units ?? ''}`,
     decimalPlaces: [{isEnforced: true, digits: 2}],
-  }
+  } as SingleStatViewProperties
 
   // const xyProperties = {
   //   type: 'xy',
@@ -69,9 +69,8 @@ const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, status, csv}) => {
   //   type: graphInfo.type === 'stat' ? 'single-stat' : 'xy',
   // }
   if (graphInfo.type === 'stat') {
-    console.log({graphInfo, giraffeResult})
     return (
-      <Panel backgroundColor={InfluxColors.Onyx}>
+      <Panel backgroundColor={InfluxColors.Onyx} className="graph-type--panel">
         <Panel.Header size={ComponentSize.ExtraSmall}>
           <h5>{graphInfo.title}</h5>
         </Panel.Header>
@@ -95,6 +94,10 @@ const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, status, csv}) => {
         </Panel.Body>
       </Panel>
     )
+  }
+  if (graphInfo.type === 'xy') {
+    console.log({graphInfo})
+    console.log({csv})
   }
   return <div />
   // switch (status) {

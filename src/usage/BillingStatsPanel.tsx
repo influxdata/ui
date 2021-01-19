@@ -2,6 +2,8 @@ import React from 'react'
 
 import {
   AlignItems,
+  ComponentSize,
+  FlexDirection,
   Panel,
   ReflessPopover,
   PopoverInteraction,
@@ -9,13 +11,11 @@ import {
   QuestionMarkTooltip,
 } from '@influxdata/clockface'
 
-import PanelSection from 'src/usage/PanelSection'
-import PanelSectionBody from 'src/usage/PanelSectionBody'
+import GraphTypeSwitcher from 'src/usage/GraphTypeSwitcher'
 
 import {GRAPH_INFO} from 'src/usage/Constants'
 import {useUsage} from 'src/usage/UsagePage'
 import {DUMMY_PRICING_VERSION_TO_DELETE} from 'src/usage/utils'
-import {PANEL_CONTENTS_WIDTHS} from 'src/usage/Constants'
 
 const billingStats = (pricingVersion = 3) => {
   return GRAPH_INFO.billing_stats.filter(stat =>
@@ -31,15 +31,13 @@ const BillingStatsPanel = () => {
     },
   ] = useUsage()
 
-  const widths = PANEL_CONTENTS_WIDTHS.billing_stats
-
   const csvs = history.billingStats.split('\n\n')
-  console.log({csvs})
+
   const today = new Date().toISOString()
   const dateRange = `${billingStartTime} UTC to ${today} UTC`
 
   return (
-    <Panel className="usage--panel billing-stats--panel">
+    <Panel className="plan-type-panel usage--panel billing-stats--panel">
       <Panel.Header className="usage--billing-header">
         <ReflessPopover
           distanceFromTrigger={16}
@@ -71,15 +69,18 @@ const BillingStatsPanel = () => {
           }
         />
       </Panel.Header>
-      <Panel.Body alignItems={AlignItems.Stretch}>
+      <Panel.Body
+        direction={FlexDirection.Column}
+        margin={ComponentSize.Small}
+        alignItems={AlignItems.Stretch}
+      >
         {/* TODO(ariel): fix this so that we map over the parsed CSV and pass in a table for each version */}
         {billingStats(DUMMY_PRICING_VERSION_TO_DELETE).map((graphInfo, i) => {
           return (
-            <PanelSectionBody
-              csv={csvs[i].trim()}
-              graphInfo={graphInfo}
-              widths={widths}
+            <GraphTypeSwitcher
               key={graphInfo.title}
+              graphInfo={graphInfo}
+              csv={csvs[i].trim()}
             />
           )
         })}

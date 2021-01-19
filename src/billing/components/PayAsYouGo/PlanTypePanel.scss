@@ -71,5 +71,15 @@
         margin-right: 0;
       }
     }
+    .graph-type--panel {
+      flex-grow: 1;
+      margin-bottom: 0;
+      margin-right: $cf-marg-c;
+
+      &:last-child {
+        margin-bottom: 0;
+        margin-right: 0;
+      }
+    }
   }
 }

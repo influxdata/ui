@@ -35,7 +35,7 @@ export const setBillingDate = (billingStart: BillingDate) =>
     billingStart,
   } as const)
 
-export const setLimitsStatus = (limitsStatus: LimitStatuses) =>
+export const setLimitsStatus = (limitsStatus: LimitStatus) =>
   ({
     type: 'SET_LIMITS_STATUS',
     limitsStatus,

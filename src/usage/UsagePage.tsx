@@ -12,6 +12,7 @@ import PageSpinner from 'src/perf/components/PageSpinner'
 import UsageToday from 'src/usage/UsageToday'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import AlertStatusCancelled from 'src/billing/components/Usage/AlertStatusCancelled'
+import LimitChecker from 'src/cloud/components/LimitChecker'
 
 // Reducers
 import {
@@ -23,12 +24,7 @@ import {
 } from 'src/usage/reducers'
 
 // Thunks
-import {
-  getBillingDate,
-  getAccount,
-  getLimitsStatus,
-  getHistory,
-} from 'src/usage/thunks'
+import {getBillingDate, getAccount, getHistory} from 'src/usage/thunks'
 
 export const UsageContext = React.createContext(null)
 export type UsageContextResult = [UsageState, Dispatch<Action>]
@@ -44,7 +40,6 @@ const Usage: FC = () => {
   useEffect(() => {
     getBillingDate(dispatch)
     getAccount(dispatch)
-    getLimitsStatus(dispatch)
     getHistory(dispatch)
   }, [dispatch])
 
@@ -54,10 +49,6 @@ const Usage: FC = () => {
 
   const accountLoading = state?.account?.status
     ? state.account?.status
-    : RemoteDataState.NotStarted
-
-  const limitLoading = state?.limitsStatus?.status
-    ? state.limitsStatus?.status
     : RemoteDataState.NotStarted
 
   const historyLoading = state?.history?.status
@@ -84,14 +75,7 @@ const Usage: FC = () => {
         <Page titleTag="Usage">
           <Page.Header fullWidth={false} testID="billing-page--header">
             <Page.Title title="Usage" />
-            <PageSpinner loading={limitLoading}>
-              <SpinnerContainer
-                spinnerComponent={<TechnoSpinner />}
-                loading={limitLoading}
-              >
-                {!isCancelled && <RateLimitAlert />}
-              </SpinnerContainer>
-            </PageSpinner>
+            <LimitChecker>{!isCancelled && <RateLimitAlert />}</LimitChecker>
           </Page.Header>
           <Page.Contents scrollable={true}>
             {isCancelled && <AlertStatusCancelled />}

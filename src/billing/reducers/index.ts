@@ -8,7 +8,6 @@ import {
   BillingNotifySettings,
   CreditCardParams,
   Invoices,
-  LimitStatus,
   PaymentMethods,
   Region,
 } from 'src/types/billing'
@@ -19,7 +18,6 @@ export interface BillingState {
   creditCards: CreditCardParams
   invoices: Invoices
   invoicesStatus: RemoteDataState
-  limitsStatus: LimitStatus
   paymentMethods: PaymentMethods
   paymentMethodsStatus: RemoteDataState
   region: Region
@@ -47,18 +45,6 @@ export const initialState = (): BillingState => ({
   creditCards: null,
   invoices: null,
   invoicesStatus: RemoteDataState.NotStarted,
-  limitsStatus: {
-    read: {
-      status: '',
-    },
-    write: {
-      status: '',
-    },
-    cardinality: {
-      status: '',
-    },
-    status: RemoteDataState.NotStarted,
-  },
   paymentMethodsStatus: RemoteDataState.NotStarted,
   paymentMethods: null,
   region: null,
@@ -103,18 +89,6 @@ export const setInvoicesStatus = (status: RemoteDataState) =>
     invoiceStatus: status,
   } as const)
 
-export const setLimitsStatus = (limitsStatus: LimitStatus) =>
-  ({
-    type: 'SET_LIMITS_STATUS',
-    limitsStatus,
-  } as const)
-
-export const setLimitsStateStatus = (status: RemoteDataState) =>
-  ({
-    type: 'SET_LIMITS_STATE_STATUS',
-    status,
-  } as const)
-
 export const setPaymentMethods = (
   paymentMethods: PaymentMethods,
   creditCards: CreditCardParams,
@@ -154,8 +128,6 @@ export type Action =
   | ReturnType<typeof setBillingSettingsStatus>
   | ReturnType<typeof setInvoices>
   | ReturnType<typeof setInvoicesStatus>
-  | ReturnType<typeof setLimitsStatus>
-  | ReturnType<typeof setLimitsStateStatus>
   | ReturnType<typeof setPaymentMethods>
   | ReturnType<typeof setPaymentMethodsStatus>
   | ReturnType<typeof setRegion>
@@ -209,24 +181,6 @@ export const billingReducer = (
       case 'SET_INVOICES_STATUS': {
         draftState.invoicesStatus = action.invoiceStatus
 
-        return
-      }
-      case 'SET_LIMITS_STATUS': {
-        draftState.limitsStatus = action.limitsStatus
-
-        return
-      }
-      case 'SET_LIMITS_STATE_STATUS': {
-        if (!draftState.limitsStatus?.status) {
-          draftState.limitsStatus = {
-            ...draftState.limitsStatus,
-            status: action.status,
-          }
-
-          return
-        }
-
-        draftState.limitsStatus.status = action.status
         return
       }
       case 'SET_PAYMENT_METHODS': {

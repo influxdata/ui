@@ -97,23 +97,6 @@ export const getBillingNotificationSettings = (): ReturnType<typeof getBillingNo
   return makeResponse(200, billingNotifySettings)
 }
 
-export const getLimitsStatus = (): Promise<any> => {
-  const limitsStatus: LimitStatus = {
-    read: {
-      status: 'exceeded',
-    },
-    write: {
-      status: 'exceeded',
-    },
-    cardinality: {
-      status: 'exceeded',
-    },
-    status: RemoteDataState.Done,
-  }
-
-  return makeResponse(200, limitsStatus)
-}
-
 export const getInvoices = (): Promise<any> => {
   const invoices: Invoices = [
     {

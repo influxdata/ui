@@ -4,7 +4,6 @@ import {Dispatch} from 'react'
 // API
 import {
   getBillingAccount,
-  getLimitsStatus as apiGetLimitsStatus,
   getBillingDate as apiGetBillingDate,
   getHistory as apiGetHistory,
 } from 'src/usage/api'
@@ -15,8 +14,6 @@ import {
   setAccountStatus,
   setBillingDate,
   setBillingDateStatus,
-  setLimitsStatus,
-  setLimitsStateStatus,
   setHistory,
   setHistoryStatus,
   Action,
@@ -54,23 +51,6 @@ export const getAccount = async (dispatch: Dispatch<Action>) => {
     console.error(error)
 
     dispatch(setAccountStatus(RemoteDataState.Error))
-  }
-}
-
-export const getLimitsStatus = async (dispatch: Dispatch<Action>) => {
-  try {
-    dispatch(setLimitsStateStatus(RemoteDataState.Loading))
-    const resp = await apiGetLimitsStatus()
-
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
-
-    dispatch(setLimitsStatus({...resp.data, status: RemoteDataState.Done}))
-  } catch (error) {
-    console.error(error)
-
-    dispatch(setLimitsStateStatus(RemoteDataState.Error))
   }
 }
 

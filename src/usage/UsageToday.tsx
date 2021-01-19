@@ -49,8 +49,18 @@ const UsageToday: FC<Props> = ({selectedUsageID}) => {
     return <GraphTypeSwitcher csv={csv} graphInfo={graphInfo} />
   }
 
-  const timeRangeLabel =
-    timeRange.label ?? `from ${timeRange.lower} to ${timeRange.upper}`
+  const getTimeRangeLabel = () => {
+    switch (timeRange.type) {
+      case 'selectable-duration':
+        return timeRange.label
+      case 'duration':
+        return `from ${timeRange.lower} to now`
+      default:
+        return `from ${timeRange.lower} to ${timeRange.upper}`
+    }
+  }
+
+  const timeRangeLabel = getTimeRangeLabel()
 
   return (
     <FlexBox

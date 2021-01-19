@@ -1,10 +1,3 @@
-import {Columns} from '@influxdata/clockface'
-
-export const QUERY_RESULTS_STATUS_EMPTY = 'empty'
-export const QUERY_RESULTS_STATUS_ERROR = 'error'
-export const QUERY_RESULTS_STATUS_SUCCESS = 'success'
-export const QUERY_RESULTS_STATUS_TIMEOUT = 'timeout'
-
 export const GRAPH_INFO = {
   rate_limits: [
     {

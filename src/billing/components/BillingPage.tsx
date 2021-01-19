@@ -12,6 +12,7 @@ import {
 import BillingPageContents from 'src/billing/components/BillingPageContents'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import AlertStatusCancelled from 'src/billing/components/Usage/AlertStatusCancelled'
+import LimitChecker from 'src/cloud/components/LimitChecker'
 
 // Reducers
 import {
@@ -23,7 +24,7 @@ import {
 } from 'src/billing/reducers'
 
 // Thunks
-import {getAccount, getLimitsStatus} from 'src/billing/thunks'
+import {getAccount} from 'src/billing/thunks'
 
 export const BillingPageContext = React.createContext(null)
 export type BillingPageContextResult = [BillingState, Dispatch<Action>]
@@ -39,34 +40,21 @@ function BillingPage() {
 
   useEffect(() => {
     getAccount(dispatch)
-    getLimitsStatus(dispatch)
   }, [dispatch])
 
-  const accountLoading = state?.account?.status
+  const loading = state?.account?.status
     ? state.account?.status
-    : RemoteDataState.NotStarted
-
-  const limitLoading = state?.limitsStatus?.status
-    ? state.limitsStatus?.status
     : RemoteDataState.NotStarted
 
   const isCancelled = state?.account && state.account?.type === 'cancelled'
 
   return (
-    <SpinnerContainer
-      spinnerComponent={<TechnoSpinner />}
-      loading={accountLoading}
-    >
+    <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
       <BillingPageContext.Provider value={[state, dispatch]}>
         <Page titleTag="Billing">
           <Page.Header fullWidth={false} testID="billing-page--header">
             <Page.Title title="Billing" />
-            <SpinnerContainer
-              spinnerComponent={<TechnoSpinner />}
-              loading={limitLoading}
-            >
-              {!isCancelled && <RateLimitAlert />}
-            </SpinnerContainer>
+            <LimitChecker>{!isCancelled && <RateLimitAlert />}</LimitChecker>
           </Page.Header>
           <Page.Contents
             scrollable={true}

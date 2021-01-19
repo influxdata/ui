@@ -1,8 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
-import {
-  Plot
-} from '@influxdata/giraffe'
+import {Plot} from '@influxdata/giraffe'
 
 // Types
 import {GeoViewProperties} from 'src/types'
@@ -12,10 +10,7 @@ interface Props extends VisProps {
   properties: GaugeViewProperties
 }
 
-const GeoPlot: FC<Props> = ({
-    result,
-    properties
-}) => {
+const GeoPlot: FC<Props> = ({result, properties}) => {
   const {
     layers,
     zoom,
@@ -31,23 +26,25 @@ const GeoPlot: FC<Props> = ({
   const {lat, lon} = properties.center
 
   return (
-      <Plot config={{
-      table: result.table,
-    showAxes: false,
-    layers: [
-      {
-        type: 'geo',
-        lat,
-        lon,
-        zoom,
-        allowPanAndZoom,
-        detectCoordinateFields,
-        mapStyle,
-        layers,
-        tileServerConfiguration: tileServerConfiguration,
-      },
-    ],
-      }}/>
+    <Plot
+      config={{
+        table: result.table,
+        showAxes: false,
+        layers: [
+          {
+            type: 'geo',
+            lat,
+            lon,
+            zoom,
+            allowPanAndZoom,
+            detectCoordinateFields,
+            mapStyle,
+            layers,
+            tileServerConfiguration: tileServerConfiguration,
+          },
+        ],
+      }}
+    />
   )
 }
 

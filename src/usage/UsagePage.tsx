@@ -1,11 +1,6 @@
 // Libraries
 import React, {Dispatch, FC, useContext, useEffect, useReducer} from 'react'
-import {
-  Page,
-  RemoteDataState,
-  SpinnerContainer,
-  TechnoSpinner,
-} from '@influxdata/clockface'
+import {Page, RemoteDataState} from '@influxdata/clockface'
 
 // Components
 import PageSpinner from 'src/perf/components/PageSpinner'

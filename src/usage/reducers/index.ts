@@ -2,12 +2,11 @@
 import {produce} from 'immer'
 // Types
 import {RemoteDataState} from 'src/types'
-import {Account, BillingDate, LimitStatus, History} from 'src/types/billing'
+import {Account, BillingDate, History} from 'src/types/billing'
 
 export interface UsageState {
   account: Account
   billingStart: BillingDate
-  limitsStatus: LimitStatus
   history: History
 }
 
@@ -35,18 +34,6 @@ export const setBillingDate = (billingStart: BillingDate) =>
     billingStart,
   } as const)
 
-export const setLimitsStatus = (limitsStatus: LimitStatus) =>
-  ({
-    type: 'SET_LIMITS_STATUS',
-    limitsStatus,
-  } as const)
-
-export const setLimitsStateStatus = (status: RemoteDataState) =>
-  ({
-    type: 'SET_LIMITS_STATE_STATUS',
-    status,
-  } as const)
-
 export const setHistoryStatus = (status: RemoteDataState) =>
   ({
     type: 'SET_HISTORY_STATUS',
@@ -64,8 +51,6 @@ export type Action =
   | ReturnType<typeof setAccountStatus>
   | ReturnType<typeof setBillingDate>
   | ReturnType<typeof setBillingDateStatus>
-  | ReturnType<typeof setLimitsStatus>
-  | ReturnType<typeof setLimitsStateStatus>
   | ReturnType<typeof setHistoryStatus>
   | ReturnType<typeof setHistory>
 
@@ -85,18 +70,6 @@ export const initialState = (): UsageState => ({
   billingStart: {
     date: '01/01/1970',
     time: '00:00',
-    status: RemoteDataState.NotStarted,
-  },
-  limitsStatus: {
-    read: {
-      status: '',
-    },
-    write: {
-      status: '',
-    },
-    cardinality: {
-      status: '',
-    },
     status: RemoteDataState.NotStarted,
   },
   history: {

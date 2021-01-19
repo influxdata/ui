@@ -1,14 +1,9 @@
 // Libraries
 import React, {useContext, useReducer, Dispatch, useEffect} from 'react'
+import {Page} from '@influxdata/clockface'
 
 // Components
-import {
-  Page,
-  RemoteDataState,
-  SpinnerContainer,
-  TechnoSpinner,
-} from '@influxdata/clockface'
-
+import PageSpinner from 'src/perf/components/PageSpinner'
 import BillingPageContents from 'src/billing/components/BillingPageContents'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import AlertStatusCancelled from 'src/billing/components/Usage/AlertStatusCancelled'
@@ -25,6 +20,9 @@ import {
 
 // Thunks
 import {getAccount} from 'src/billing/thunks'
+
+// Types
+import {RemoteDataState} from 'src/types'
 
 export const BillingPageContext = React.createContext(null)
 export type BillingPageContextResult = [BillingState, Dispatch<Action>]
@@ -49,7 +47,7 @@ function BillingPage() {
   const isCancelled = state?.account && state.account?.type === 'cancelled'
 
   return (
-    <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
+    <PageSpinner loading={loading}>
       <BillingPageContext.Provider value={[state, dispatch]}>
         <Page titleTag="Billing">
           <Page.Header fullWidth={false} testID="billing-page--header">
@@ -65,7 +63,7 @@ function BillingPage() {
           </Page.Contents>
         </Page>
       </BillingPageContext.Provider>
-    </SpinnerContainer>
+    </PageSpinner>
   )
 }
 

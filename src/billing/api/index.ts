@@ -9,7 +9,6 @@ import {RemoteDataState} from 'src/types'
 import {
   Invoices,
   CreditCardParams,
-  LimitStatus,
   Region,
   BillingNotifySettings,
   PaymentMethods,

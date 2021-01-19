@@ -89,7 +89,6 @@ export interface Props {
   email: string // where does this come from?
   history: History
   invoices: Invoices // separate endpoint [X]
-  limitStatuses: LimitStatus // get from IDPE
   paymentMethods: PaymentMethods // separate endpoint [X]
   region: Region
 }

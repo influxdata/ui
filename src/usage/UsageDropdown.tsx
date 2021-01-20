@@ -1,12 +1,15 @@
-import React, {FC, useState} from 'react'
+import React, {FC} from 'react'
 
 import {SelectDropdown, ComponentColor} from '@influxdata/clockface'
 import {GRAPH_INFO} from 'src/usage/Constants'
 import {DUMMY_PRICING_VERSION_TO_DELETE} from 'src/usage/Constants'
 
-const UsageDropdown: FC = () => {
-  const [selectedUsage, setSelectedUsageID] = useState('Data In (MB)')
+type Props = {
+  selectedUsage: string
+  setSelectedUsage: (usage: string) => void
+}
 
+const UsageDropdown: FC<Props> = ({selectedUsage, setSelectedUsage}) => {
   const options = GRAPH_INFO.usageStats
     .filter(stat =>
       stat.pricingVersions.includes(DUMMY_PRICING_VERSION_TO_DELETE)
@@ -17,7 +20,7 @@ const UsageDropdown: FC = () => {
     <SelectDropdown
       selectedOption={selectedUsage}
       options={options}
-      onSelect={setSelectedUsageID}
+      onSelect={setSelectedUsage}
       buttonColor={ComponentColor.Default}
       style={{width: '200px'}}
       testID="usage-page--dropdown"

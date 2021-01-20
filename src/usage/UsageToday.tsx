@@ -1,6 +1,6 @@
 // Libraries
-import React, {FC} from 'react'
-import {useDispatch, useSelector, connect} from 'react-redux'
+import React, {FC, useState} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 import {
   ComponentSize,
   FlexBox,
@@ -24,12 +24,10 @@ import {useUsage} from 'src/usage/UsagePage'
 // Types
 import {TimeRange} from 'src/types'
 
-interface Props {
-  selectedUsageID: string
-}
-
-const UsageToday: FC<Props> = ({selectedUsageID}) => {
+const UsageToday: FC = () => {
   const [{history}] = useUsage()
+  const [selectedUsage, setSelectedUsage] = useState('Data In (MB)')
+
   const timeRange = useSelector(getTimeRange)
   const dispatch = useDispatch()
 
@@ -39,7 +37,7 @@ const UsageToday: FC<Props> = ({selectedUsageID}) => {
 
   const getUsageSparkline = () => {
     const graphInfo = GRAPH_INFO.usageStats.find(
-      stat => stat.title === selectedUsageID
+      stat => stat.title === selectedUsage
     )
     // TODO(ariel): make sure that the CSV is an actual CSV and not the rateLimits (it might be rateLimits, but i'm not sure)
     // const csv = history[graphInfo.column]
@@ -76,7 +74,10 @@ const UsageToday: FC<Props> = ({selectedUsageID}) => {
       <Panel className="usage--panel">
         <Panel.Header>
           <h4 data-testid="usage-header--timerange">{`Usage ${timeRangeLabel}`}</h4>
-          <UsageDropdown />
+          <UsageDropdown
+            selectedUsage={selectedUsage}
+            setSelectedUsage={setSelectedUsage}
+          />
         </Panel.Header>
         <Panel.Body
           direction={FlexDirection.Column}
@@ -110,10 +111,4 @@ const UsageToday: FC<Props> = ({selectedUsageID}) => {
   )
 }
 
-const mstp = () => {
-  return {
-    selectedUsageID: 'Data In (MB)',
-  }
-}
-
-export default connect<Props>(mstp)(UsageToday)
+export default UsageToday

@@ -69,8 +69,8 @@ export const initialState = (): UsageState => ({
     zuoraAccountId: '',
   },
   billingStart: {
-    date: '01/01/1970',
-    time: '00:00',
+    date: '',
+    time: '',
     status: RemoteDataState.NotStarted,
   },
   history: {

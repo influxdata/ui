@@ -6,11 +6,11 @@ import {
   BillingNotifySettings as GenBillingNotifySettings,
   Region as GenRegion,
   History as GenHistory,
-  CreditCardParams as GenCreditCardParams,
   BillingDate as GenBillingDate,
 } from 'src/client/unityRoutes'
 export {
   BillingContact,
+  CreditCardParams,
   Invoice,
   Invoices,
   PaymentMethod,
@@ -18,7 +18,6 @@ export {
 } from 'src/client/unityRoutes'
 import {RemoteDataState} from 'src/types'
 
-export interface CreditCardParams extends GenCreditCardParams {}
 export interface Region extends GenRegion {
   status: RemoteDataState
 }
@@ -40,10 +39,8 @@ export interface BillingDate extends GenBillingDate {
 
 // Current PayAsYouGo Props
 export interface Props {
-  isRegionBeta: boolean // Current FreePage Props
   account: Account // could we possibly combine Account with BillingContact?
   billingNotifySettings: BillingNotifySettings // separate endpoint w/ put [x]
-  ccPageParams: CreditCardParams // separate endpoint [X]
   email: string // where does this come from?
   history: History
   region: Region

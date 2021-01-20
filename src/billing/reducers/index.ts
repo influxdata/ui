@@ -53,6 +53,7 @@ export const initialState = (): BillingState => ({
 
 export type BillingReducer = React.Reducer<BillingState, Action>
 
+// TODO(ariel): consolidate this with the account in usage
 export const setAccount = (account: Account) =>
   ({
     type: 'SET_ACCOUNT',

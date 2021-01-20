@@ -6,7 +6,7 @@ import {scaleLinear} from 'd3-scale'
 // Types
 import {GaugeMiniLayerConfig} from '@influxdata/giraffe'
 import {
-  gaugeMiniNormalizeTheme,
+  gaugeMiniNormalizeThemeMemoized,
   GaugeMiniThemeNormalized,
 } from '../utils/gaugeMiniThemeNormalize'
 import {GaugeMiniColors} from '@influxdata/giraffe/dist/types'
@@ -464,7 +464,7 @@ export const GaugeMini: FunctionComponent<Props> = ({
   width,
   height,
 }) => {
-  const theme = gaugeMiniNormalizeTheme(_theme)
+  const theme = gaugeMiniNormalizeThemeMemoized(_theme)
 
   const {
     gaugeHeight,

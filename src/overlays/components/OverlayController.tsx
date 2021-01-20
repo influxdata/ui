@@ -77,7 +77,7 @@ export const OverlayController: FunctionComponent = () => {
         activeOverlay.current = <OrgSwitcherOverlay onClose={onClose} />
         break
       case 'create-bucket':
-        activeOverlay.current = <CreateBucketOverlay onClose={onClose} />
+        activeOverlay.current = <CreateBucketOverlay />
         break
       case 'asset-limit':
         activeOverlay.current = <AssetLimitOverlay onClose={onClose} />

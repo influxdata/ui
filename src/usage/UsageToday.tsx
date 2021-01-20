@@ -24,11 +24,9 @@ import {useUsage} from 'src/usage/UsagePage'
 // Types
 import {TimeRange} from 'src/types'
 
-interface StateProps {
+interface Props {
   selectedUsageID: string
 }
-
-type Props = StateProps
 
 const UsageToday: FC<Props> = ({selectedUsageID}) => {
   const [{history}] = useUsage()
@@ -40,7 +38,7 @@ const UsageToday: FC<Props> = ({selectedUsageID}) => {
   }
 
   const getUsageSparkline = () => {
-    const graphInfo = GRAPH_INFO.usage_stats.find(
+    const graphInfo = GRAPH_INFO.usageStats.find(
       stat => stat.title === selectedUsageID
     )
     // TODO(ariel): make sure that the CSV is an actual CSV and not the rateLimits (it might be rateLimits, but i'm not sure)
@@ -56,7 +54,9 @@ const UsageToday: FC<Props> = ({selectedUsageID}) => {
       case 'duration':
         return `from ${timeRange.lower} to now`
       default:
-        return `from ${timeRange.lower} to ${timeRange.upper}`
+        return `from ${new Date(timeRange.lower).toISOString()} to ${new Date(
+          timeRange.upper
+        ).toISOString()}`
     }
   }
 
@@ -95,7 +95,7 @@ const UsageToday: FC<Props> = ({selectedUsageID}) => {
           margin={ComponentSize.Small}
           alignItems={AlignItems.Stretch}
         >
-          {GRAPH_INFO.rate_limits.map(graphInfo => {
+          {GRAPH_INFO.rateLimits.map(graphInfo => {
             return (
               <GraphTypeSwitcher
                 csv={history.rateLimits}
@@ -116,4 +116,4 @@ const mstp = () => {
   }
 }
 
-export default connect<StateProps>(mstp)(UsageToday)
+export default connect<Props>(mstp)(UsageToday)

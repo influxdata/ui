@@ -7,7 +7,7 @@ import {DUMMY_PRICING_VERSION_TO_DELETE} from 'src/usage/utils'
 const UsageDropdown: FC = () => {
   const [selectedUsage, setSelectedUsageID] = useState('Data In (MB)')
 
-  const options = GRAPH_INFO.usage_stats
+  const options = GRAPH_INFO.usageStats
     .filter(stat =>
       stat.pricingVersions.includes(DUMMY_PRICING_VERSION_TO_DELETE)
     )

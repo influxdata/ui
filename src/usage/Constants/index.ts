@@ -1,5 +1,5 @@
 export const GRAPH_INFO = {
-  rate_limits: [
+  rateLimits: [
     {
       title: 'Limit Events',
       groupColumns: ['_field'],
@@ -9,7 +9,7 @@ export const GRAPH_INFO = {
       type: 'sparkline',
     },
   ],
-  billing_stats: [
+  billingStats: [
     {
       title: 'Data In',
       groupColumns: [],
@@ -47,7 +47,7 @@ export const GRAPH_INFO = {
       pricingVersions: [4],
     },
   ],
-  usage_stats: [
+  usageStats: [
     {
       title: 'Data In (MB)',
       groupColumns: [],

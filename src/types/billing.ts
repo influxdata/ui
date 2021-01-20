@@ -6,52 +6,21 @@ import {
   BillingNotifySettings as GenBillingNotifySettings,
   Invoice as GenInvoice,
   PaymentMethod as GenPaymentMethod,
+  Region as GenRegion,
+  BillingContact,
+  History as GenHistory,
+  CreditCardParams as GenCreditCardParams,
+  BillingDate as GenBillingDate,
 } from 'src/client/unityRoutes'
+export {MarketplaceSubscription} from 'src/client/unityRoutes'
 import {RemoteDataState} from 'src/types'
 
-export interface Region {
-  title: string
-  isBeta: boolean
-  isAvailable: boolean
-  provider: string
-  region: string
+export interface CreditCardParams extends GenCreditCardParams {}
+export interface Region extends GenRegion {
   status: RemoteDataState
 }
 
-interface BillingContact {
-  companyName: string
-  email: string
-  firstName: string
-  lastName: string
-  country: string
-  street1: string
-  street2: string
-  city: string
-  subdivision: string
-  postalCode: number
-}
-
-export interface CreditCardParams {
-  id: string
-  tenantID: string
-  key: string
-  signature: string
-  token: string
-  style: string
-  submitEnabled: 'true' | 'false' // Zuora wants the literal string true or false
-  url: string
-}
-
-export interface MarketplaceSubscription {
-  marketplace: string
-  subscriberId: string
-  status: string
-}
-
-export interface History {
-  billingStats: string
-  rateLimits: string
-  usageStats: string
+export interface History extends GenHistory {
   status: RemoteDataState
 }
 export interface Account extends GenAccount {
@@ -75,9 +44,7 @@ export interface BillingNotifySettings extends GenBillingNotifySettings {
   status: RemoteDataState
 }
 
-export interface BillingDate {
-  date: Date | string
-  time: Date | string
+export interface BillingDate extends GenBillingDate {
   status: RemoteDataState
 }
 

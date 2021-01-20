@@ -3,6 +3,8 @@ import {RemoteDataState} from 'src/types'
 import {
   Account,
   getBillingAccount as getBillingAccountGenerated,
+  getBillingDate as getBillingDateGenerated,
+  getAccountHistory,
 } from 'src/client/unityRoutes'
 
 const makeResponse = (status, data) => {
@@ -43,7 +45,7 @@ export const getBillingAccount = (): ReturnType<typeof getBillingAccountGenerate
   return makeResponse(200, account)
 }
 
-export const getBillingDate = (): Promise<any> => {
+export const getBillingDate = (): ReturnType<typeof getBillingDateGenerated> => {
   const billingDate: BillingDate = {
     date: new Date().toLocaleDateString(),
     time: new Date().toLocaleString(),
@@ -53,7 +55,7 @@ export const getBillingDate = (): Promise<any> => {
   return makeResponse(200, billingDate)
 }
 
-export const getHistory = (): Promise<any> => {
+export const getHistory = (): ReturnType<typeof getAccountHistory> => {
   const history: History = {
     billingStats: `
 #group,false,false,true,true,false

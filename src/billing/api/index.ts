@@ -3,6 +3,8 @@ import {
   getBillingNotifySettings,
   getBillingPaymentMethods,
   getBillingCc,
+  getInvoices as getInvoicesGenerated,
+  getBillingRegion,
 } from 'src/client/unityRoutes'
 
 import {RemoteDataState} from 'src/types'
@@ -97,7 +99,7 @@ export const getBillingNotificationSettings = (): ReturnType<typeof getBillingNo
   return makeResponse(200, billingNotifySettings)
 }
 
-export const getInvoices = (): Promise<any> => {
+export const getInvoices = (): ReturnType<typeof getInvoicesGenerated> => {
   const invoices: Invoices = [
     {
       amount: 0,
@@ -134,7 +136,7 @@ export const getInvoices = (): Promise<any> => {
   return makeResponse(200, invoices)
 }
 
-export const getRegion = (): Promise<any> => {
+export const getRegion = (): ReturnType<typeof getBillingRegion> => {
   const region: Region = {
     title: 'EU Frankfurt',
     isBeta: false,

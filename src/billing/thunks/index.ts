@@ -27,7 +27,7 @@ import {
 
 // Types
 import {RemoteDataState} from 'src/types'
-import {CreditCardParams, PaymentMethods} from 'src/types/billing'
+import {Invoice, PaymentMethod} from 'src/types/billing'
 
 export const getAccount = async (dispatch: Dispatch<Action>) => {
   try {
@@ -72,7 +72,7 @@ export const getInvoices = async (dispatch: Dispatch<Action>) => {
       throw new Error(resp.data.message)
     }
 
-    dispatch(setInvoices(resp.data, RemoteDataState.Done))
+    dispatch(setInvoices(resp.data as Invoice[], RemoteDataState.Done))
   } catch (error) {
     console.error(error)
 
@@ -99,8 +99,8 @@ export const getPaymentMethods = async (dispatch: Dispatch<Action>) => {
 
     dispatch(
       setPaymentMethods(
-        paymentMethodsResp.data as PaymentMethods,
-        ccResp.data as CreditCardParams,
+        paymentMethodsResp.data as PaymentMethod[],
+        ccResp.data,
         RemoteDataState.Done
       )
     )

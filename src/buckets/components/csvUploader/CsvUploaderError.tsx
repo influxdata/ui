@@ -12,13 +12,13 @@ const CsvUploaderError = () => (
     </p>
     <SparkleSpinner loading={RemoteDataState.Error} sizePixels={220} />
     <p className="line-protocol--status error">
-      Make sure your CSV is{' '}
+      Please make sure that CSV was in
       <a
         target="_blank"
-        href="https://docs.influxdata.com/influxdb/v2.0/write-data/developer-tools/csv/"
+        href="https://docs.influxdata.com/influxdb/v2.0/write-data/developer-tools/csv/#csv-annotations"
       >
-        properly formatted
-      </a>{' '}
+        &nbsp;Annotated Format&nbsp;
+      </a>
       and try again
     </p>
   </div>

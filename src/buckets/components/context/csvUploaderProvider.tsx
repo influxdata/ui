@@ -77,26 +77,15 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
     dispatch(notify(csvUploaderErrorNotification(message)))
   }
 
-  const parseTagStringValue = (value: string): string => {
-    // Replaces special characters in accordance to Line Protocol standards
-    // https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/#special-characters
-    return value
-      ? value
-          .replace(/,/g, '\\,')
-          .replace(/ /g, '\\ ')
-          .replace(/=/g, '\\=')
-      : '""'
-  }
-
   const uploadCsv = useCallback(
     (csv: string, bucket: string) => {
       setUploadState(RemoteDataState.Loading)
       setTimeout(() => {
         try {
-          const {table} = fromFlux(csv)
-          if (!table.length) {
+          const {table, error} = fromFlux(csv)
+          if (!table.length || error) {
             throw new Error(
-              `The CSV could not be parsed. Make sure to include _measurement and _field columns`
+              `The CSV could not be parsed. Please make sure that CSV was in Annotated Format`
             )
           }
           const filtered = [
@@ -168,7 +157,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
             // https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/#quotes
             value =
               table.getColumnType('_value') === 'string' && value
-                ? '"' + value + '"'
+                ? `"${value}"`
                 : value
             tags = columns
               .filter(col => !!table.getColumn(col)[i])
@@ -176,7 +165,12 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
                 col =>
                   `${col}=${
                     table.getColumnType(col) === 'string'
-                      ? parseTagStringValue(table.getColumn(col)[i] as string)
+                      ? // Replaces special characters in accordance to Line Protocol standards
+                        // https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/#special-characters
+                        (table.getColumn(col)[i] as string)
+                          .replace(/,/g, '\\,')
+                          .replace(/ /g, '\\ ')
+                          .replace(/=/g, '\\=')
                       : table.getColumn(col)[i]
                   }`
               )
@@ -207,7 +201,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
             .then(values => {
               if (values.find(v => v.status >= 400)) {
                 throw new Error(
-                  `The CSV data could not be written to the bucket`
+                  `Looks like some of the CSV data could not be written to the bucket. Please make sure that CSV was in Annotated Format`
                 )
               }
               setUploadState(RemoteDataState.Done)

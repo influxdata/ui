@@ -10,11 +10,11 @@ import {
 
 import {RemoteDataState} from 'src/types'
 import {
-  Invoices,
+  Invoice,
   CreditCardParams,
   Region,
   BillingNotifySettings,
-  PaymentMethods,
+  PaymentMethod,
 } from 'src/types/billing'
 
 const makeResponse = (status, data) => {
@@ -56,7 +56,7 @@ export const getBillingAccount = (): ReturnType<typeof getBillingAccountGenerate
 }
 
 export const getPaymentMethods = (): ReturnType<typeof getBillingPaymentMethods> => {
-  const paymentMethods: PaymentMethods = [
+  const paymentMethods: PaymentMethod[] = [
     {
       cardType: 'Visa',
       cardNumber: '4242424242424242',
@@ -100,7 +100,7 @@ export const getBillingNotificationSettings = (): ReturnType<typeof getBillingNo
 }
 
 export const getInvoices = (): ReturnType<typeof getInvoicesGenerated> => {
-  const invoices: Invoices = [
+  const invoices: Invoice[] = [
     {
       amount: 0,
       filesID: 'abc123',

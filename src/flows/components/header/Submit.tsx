@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, MouseEvent, useContext, useEffect, useMemo} from 'react'
+import React, {FC, MouseEvent, useContext, useMemo} from 'react'
 import {
   Dropdown,
   IconFont,
@@ -33,20 +33,7 @@ export const Submit: FC = () => {
   const {runMode, setRunMode} = useContext(RunModeContext)
   const {generateMap, queryAll} = useContext(QueryContext)
 
-  const _range = useMemo(
-    () => `${flow.range.lower} to ${flow.range.upper || 'now'}`,
-    [flow.range]
-  )
-
-  const hasQueries = useMemo(() => {
-    return generateMap().length > 0
-  }, [generateMap])
-
-  useEffect(() => {
-    if (hasQueries) {
-      queryAll()
-    }
-  }, [_range, hasQueries]) // eslint-disable-line react-hooks/exhaustive-deps
+  const hasQueries = useMemo(() => generateMap().length > 0, [generateMap])
 
   const handleSubmit = () => {
     event('Notebook Submit Button Clicked')

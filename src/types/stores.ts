@@ -32,7 +32,6 @@ import {CurrentPage} from 'src/shared/reducers/currentPage'
 import {DemoDataState} from 'src/cloud/reducers/demodata'
 import {OrgSettingsState} from 'src/cloud/reducers/orgsettings'
 import {PerfState} from 'src/perf/reducers'
-import {SchemaState} from 'src/shared/reducers/schema'
 import {MeState} from 'src/me/reducers'
 
 export interface AppState {
@@ -52,7 +51,6 @@ export interface AppState {
   flags: FlagState
   links: Links
   me: MeState
-  flow: SchemaState
   noteEditor: NoteEditorState
   notifications: Notification[]
   onboarding: OnboardingState

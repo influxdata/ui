@@ -190,7 +190,6 @@ export const FlowListProvider: FC = ({children}) => {
       ...flows,
       [id]: data,
     })
-
     // console.log('update the api', serialize(data))
   }
 

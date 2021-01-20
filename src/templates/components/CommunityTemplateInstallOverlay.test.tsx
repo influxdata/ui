@@ -1,7 +1,7 @@
 // Installed libraries
 import React from 'react'
 import {createStore} from 'redux'
-import {findByTitle, fireEvent, screen, waitFor} from '@testing-library/react'
+import {fireEvent, screen, waitFor} from '@testing-library/react'
 import {normalize} from 'normalizr'
 import {mocked} from 'ts-jest/utils'
 
@@ -11,29 +11,28 @@ jest.mock('src/resources/components/GetResources')
 jest.mock('src/shared/actions/notifications')
 jest.mock('src/shared/utils/errors')
 
-jest.mock('src/templates/selectors/index.ts', ()=>{
+jest.mock('src/templates/selectors/index.ts', () => {
   return {
-    getTotalResourceCount: jest.fn(()=>{
+    getTotalResourceCount: jest.fn(() => {
       return 1
     }),
-    getResourceInstallCount: jest.fn(()=>{
+    getResourceInstallCount: jest.fn(() => {
       return 1
-    })
+    }),
   }
 })
 
-
-jest.mock('src/templates/utils/index.ts',()=>{
+jest.mock('src/templates/utils/index.ts', () => {
   return {
     getTemplateNameFromUrl: jest.fn(() => {
-      return {name: 'fn-template', extension: 'ext', directory:'directory'}
+      return {name: 'fn-template', extension: 'ext', directory: 'directory'}
     }),
   }
 })
 
-jest.mock('src/buckets/actions/thunks.ts', ()=>{
+jest.mock('src/buckets/actions/thunks.ts', () => {
   return {
-    getBuckets: jest.fn(()=> {
+    getBuckets: jest.fn(() => {
       return jest.fn()
     }),
   }
@@ -57,10 +56,9 @@ jest.mock('src/templates/api', () => {
 })
 
 // Imported mocks - don't import these until after mocking the functionality contained therein
-import {installTemplate,updateStackName} from 'src/templates/api'
+import {installTemplate, updateStackName} from 'src/templates/api'
 import {event} from 'src/cloud/utils/reporting'
 import {notify} from 'src/shared/actions/notifications'
-import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 // Mock State
 import {renderWithReduxAndRouter} from 'src/mockState'
@@ -140,10 +138,9 @@ describe('the Community Templates Install Overlay', () => {
       const [eventName, eventMetaData] = templateClickEventCallArguments
       expect(eventName).toBe('template_click_lookup')
       expect(eventMetaData).toEqual({templateName: 'fn-template'})
-      
+
       await waitFor(() => {
         expect(screen.queryByText('Template Installer')).toBeVisible()
-
       })
 
       await waitFor(() => {
@@ -151,24 +148,24 @@ describe('the Community Templates Install Overlay', () => {
         expect(installButton).toBeVisible()
         fireEvent.click(installButton)
       })
-      
+
       expect(installTemplate).toHaveBeenCalled()
 
-      const [,installEventCallArguments] = mocked(event).mock.calls
+      const [, installEventCallArguments] = mocked(event).mock.calls
       const [eventName2] = installEventCallArguments
       expect(eventName2).toBe('template_install')
-      
 
       expect(updateStackName).toHaveBeenCalled()
 
-      const [,,renameEventCallArguments] = mocked(event).mock.calls
+      const [, , renameEventCallArguments] = mocked(event).mock.calls
       const [eventName3] = renameEventCallArguments
       expect(eventName3).toBe('template_rename')
 
-
       const [notifyCallArguments] = mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
-      expect(notifyMessage).toEqual(communityTemplateInstallSucceeded('fn-template'))
+      expect(notifyMessage).toEqual(
+        communityTemplateInstallSucceeded('fn-template')
+      )
     })
   })
 })

@@ -142,7 +142,7 @@ class CommunityTemplateInstallOverlayUnconnected extends PureComponent<Props> {
       this.props.setStagedTemplateUrl('')
       this.props.setTemplateUrlValidationMessage('')
       this.props.getBuckets()
-      
+
       this.props.notify(communityTemplateInstallSucceeded(templateDetails.name))
     } catch (err) {
       this.props.notify(communityTemplateRenameFailed())

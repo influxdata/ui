@@ -164,6 +164,12 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
             }
             time = table.getColumn('_time')?.[i] ?? Date.now()
             value = table.getColumn('_value')?.[i] ?? field ?? ''
+            // Adds quotes to values if _value is of string type
+            // https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/#quotes
+            value =
+              table.getColumnType('_value') === 'string' && value
+                ? '"' + value + '"'
+                : value
             tags = columns
               .filter(col => !!table.getColumn(col)[i])
               .map(

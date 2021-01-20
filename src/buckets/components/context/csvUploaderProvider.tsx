@@ -68,13 +68,24 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
   const resetUploadState = (): void =>
     setUploadState(RemoteDataState.NotStarted)
 
-  const handleError = (error): void => {
+  const handleError = (error: Error): void => {
     setUploadState(RemoteDataState.Error)
     reportErrorThroughHoneyBadger(error, {
       name: 'uploadCsv function',
     })
     const message = getErrorMessage(error)
     dispatch(notify(csvUploaderErrorNotification(message)))
+  }
+
+  const parseTagStringValue = (value: string): string => {
+    // Replaces special characters in accordance to Line Protocol standards
+    // https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/#special-characters
+    return value
+      ? value
+          .replace(/,/g, '\\,')
+          .replace(/ /g, '\\ ')
+          .replace(/=/g, '\\=')
+      : '""'
   }
 
   const uploadCsv = useCallback(
@@ -155,7 +166,14 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
             value = table.getColumn('_value')?.[i] ?? field ?? ''
             tags = columns
               .filter(col => !!table.getColumn(col)[i])
-              .map(col => `${col}=${table.getColumn(col)[i]}`)
+              .map(
+                col =>
+                  `${col}=${
+                    table.getColumnType(col) === 'string'
+                      ? parseTagStringValue(table.getColumn(col)[i] as string)
+                      : table.getColumn(col)[i]
+                  }`
+              )
               .join(',')
               .trim()
               .replace(/(\r\n|\n|\r)/gm, '')
@@ -178,12 +196,13 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
             pendingWrites.push(resp)
             counter++
           }
-
           chunk = ''
           Promise.all(pendingWrites)
             .then(values => {
               if (values.find(v => v.status >= 400)) {
-                throw new Error(`The CSV data could not be written to the bucket`)
+                throw new Error(
+                  `The CSV data could not be written to the bucket`
+                )
               }
               setUploadState(RemoteDataState.Done)
             })

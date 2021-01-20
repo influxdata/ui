@@ -3,7 +3,7 @@ import React, {
   FC,
   lazy,
   Suspense,
-  useMemo,
+  useState,
   useContext,
   useCallback,
 } from 'react'
@@ -11,6 +11,9 @@ import {
   RemoteDataState,
   SpinnerContainer,
   TechnoSpinner,
+  SquareButton,
+  IconFont,
+  ComponentColor,
 } from '@influxdata/clockface'
 
 // Types
@@ -18,6 +21,7 @@ import {PipeProp} from 'src/types/flows'
 
 // Components
 import {PipeContext} from 'src/flows/context/pipe'
+import Functions from 'src/flows/pipes/RawFluxEditor/functions'
 
 // Styles
 import 'src/flows/pipes/RawFluxEditor/style.scss'
@@ -28,6 +32,7 @@ const FluxMonacoEditor = lazy(() =>
 
 const Query: FC<PipeProp> = ({Context}) => {
   const {data, update} = useContext(PipeContext)
+  const [showFn, setShowFn] = useState(false)
   const {queries, activeQuery} = data
   const query = queries[activeQuery]
 
@@ -44,9 +49,27 @@ const Query: FC<PipeProp> = ({Context}) => {
     [update, queries, activeQuery]
   )
 
-  return useMemo(
-    () => (
-      <Context>
+  const toggleFn = useCallback(() => {
+      setShowFn(!showFn)
+  }, [setShowFn, showFn])
+  const inject = (fn) => {
+      console.log('oh neat', fn)
+  }
+
+  const controls = (
+      <SquareButton
+        icon={IconFont.Function}
+        onClick={toggleFn}
+        color={
+          showFn ? ComponentColor.Primary : ComponentColor.Default
+        }
+        titleText="Function Reference"
+        className="flows-config-function-button"
+      />
+  )
+
+  return (
+      <Context controls={controls}>
         <Suspense
           fallback={
             <SpinnerContainer
@@ -62,10 +85,11 @@ const Query: FC<PipeProp> = ({Context}) => {
             autogrow
           />
         </Suspense>
+          {showFn && (
+              <Functions onSelect={inject} />
+          )}
       </Context>
-    ),
-    [query.text, updateText]
-  )
+    )
 }
 
 export default Query

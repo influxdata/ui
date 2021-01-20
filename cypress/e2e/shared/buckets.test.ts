@@ -4,23 +4,13 @@ describe('Buckets', () => {
   beforeEach(() => {
     cy.flush()
 
-    cy.signin()
-      .then(() =>
-        cy.request({
-          method: 'GET',
-          url: '/api/v2/buckets',
+    cy.signin().then(() => {
+      cy.get('@org').then(({id}: Organization) =>
+        cy.fixture('routes').then(({orgs, buckets}) => {
+          cy.visit(`${orgs}/${id}${buckets}`)
         })
       )
-      .then(response => {
-        cy.wrap(response.body.buckets[0]).as('bucket')
-      })
-      .then(() => {
-        cy.get('@org').then(({id}: Organization) =>
-          cy.fixture('routes').then(({orgs, buckets}) => {
-            cy.visit(`${orgs}/${id}${buckets}`)
-          })
-        )
-      })
+    })
   })
 
   describe('from the buckets index page', () => {
@@ -108,11 +98,11 @@ describe('Buckets', () => {
         cy.createBucket(id, name, bucket1)
       })
 
+      cy.getByTestID(`bucket-card ${bucket1}`).trigger('mouseover')
       cy.getByTestID(`context-delete-menu ${bucket1}`).click()
-      cy.getByTestID(`context-delete-bucket ${bucket1}`)
-        .should('be.visible')
-        .click()
-        .wait(500)
+      cy.intercept('DELETE', '/buckets').as('deleteBucket')
+      cy.getByTestID(`context-delete-bucket ${bucket1}`).click({force: true})
+      cy.wait('@deleteBucket')
       cy.getByTestID(`bucket--card--name ${bucket1}`).should('not.exist')
     })
   })

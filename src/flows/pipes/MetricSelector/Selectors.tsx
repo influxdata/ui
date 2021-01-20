@@ -11,8 +11,7 @@ import {SchemaContext} from 'src/flows/context/schemaProvider'
 const Selectors: FC = () => {
   const {fields, measurements, tags, searchTerm} = useContext(SchemaContext)
 
-  const noSearchResults =
-    searchTerm && !fields.length && !measurements.length && !tags.length
+  const noResults = !fields.length && !measurements.length && !tags.length
 
   let list = (
     <List
@@ -27,10 +26,23 @@ const Selectors: FC = () => {
     </List>
   )
 
-  if (noSearchResults) {
+  if (noResults && searchTerm) {
     list = (
-      <EmptyState style={{height: '304px'}}>
+      <EmptyState
+        style={{height: '304px'}}
+        className="data-source--list__no-results"
+      >
         <p>{`No fields, meausurements, or tags match "${searchTerm}"`}</p>
+      </EmptyState>
+    )
+  } else if (noResults && !searchTerm) {
+    list = (
+      <EmptyState
+        style={{height: '304px'}}
+        className="data-source--list__no-results"
+      >
+        <h5>No tags found in the selected time range</h5>
+        <p>Try selecting a different time range</p>
       </EmptyState>
     )
   }

@@ -1,5 +1,5 @@
 // Libraries
-import React, {SFC} from 'react'
+import React, {FC, Suspense, lazy} from 'react'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
 import classnames from 'classnames'
@@ -15,8 +15,11 @@ import {
   OverlayProviderComp,
   OverlayController,
 } from 'src/overlays/components/OverlayController'
-import SetOrg from 'src/shared/containers/SetOrg'
-import CreateOrgOverlay from './organizations/components/CreateOrgOverlay'
+import PageSpinner from 'src/perf/components/PageSpinner'
+const SetOrg = lazy(() => import('src/shared/containers/SetOrg'))
+const CreateOrgOverlay = lazy(() =>
+  import('src/organizations/components/CreateOrgOverlay')
+)
 
 // Types
 import {AppState} from 'src/types'
@@ -25,7 +28,7 @@ type ReduxProps = ConnectedProps<typeof connector>
 type RouterProps = RouteComponentProps
 type Props = ReduxProps & RouterProps
 
-const App: SFC<Props> = ({inPresentationMode, currentPage, theme}) => {
+const App: FC<Props> = ({inPresentationMode, currentPage, theme}) => {
   const appWrapperClass = classnames('', {
     'dashboard-light-mode': currentPage === 'dashboard' && theme === 'light',
   })
@@ -42,10 +45,12 @@ const App: SFC<Props> = ({inPresentationMode, currentPage, theme}) => {
         <OverlayController />
       </OverlayProviderComp>
       <TreeNav />
-      <Switch>
-        <Route path="/orgs/new" component={CreateOrgOverlay} />
-        <Route path="/orgs/:orgID" component={SetOrg} />
-      </Switch>
+      <Suspense fallback={<PageSpinner />}>
+        <Switch>
+          <Route path="/orgs/new" component={CreateOrgOverlay} />
+          <Route path="/orgs/:orgID" component={SetOrg} />
+        </Switch>
+      </Suspense>
     </AppWrapper>
   )
 }

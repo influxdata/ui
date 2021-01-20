@@ -1,9 +1,13 @@
 // Libraries
-import React, {FC, useState} from 'react'
+import React, {FC, lazy, Suspense, useState} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
+import {
+  RemoteDataState,
+  SpinnerContainer,
+  TechnoSpinner,
+} from '@influxdata/clockface'
 
 // Components
-import FluxEditor from 'src/shared/components/FluxMonacoEditor'
 import FluxToolbar from 'src/timeMachine/components/FluxToolbar'
 
 // Actions
@@ -21,6 +25,8 @@ import {
 import {AppState, FluxToolbarFunction, EditorType} from 'src/types'
 import * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api'
 
+const FluxEditor = lazy(() => import('src/shared/components/FluxMonacoEditor'))
+
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
@@ -31,8 +37,10 @@ const TimeMachineFluxEditor: FC<Props> = ({
   activeTab,
 }) => {
   const [editorInstance, setEditorInstance] = useState<EditorType>(null)
-
   const handleInsertVariable = (variableName: string): void => {
+    if (!editorInstance) {
+      return null
+    }
     const p = editorInstance.getPosition()
     editorInstance.executeEdits('', [
       {
@@ -67,6 +75,9 @@ const TimeMachineFluxEditor: FC<Props> = ({
   const getFluxTextAndRange = (
     func: FluxToolbarFunction
   ): {text: string; range: monacoEditor.Range} => {
+    if (!editorInstance) {
+      return null
+    }
     const p = editorInstance.getPosition()
     const insertLineNumber = getInsertLineNumber(p.lineNumber)
 
@@ -105,6 +116,9 @@ const TimeMachineFluxEditor: FC<Props> = ({
   }
 
   const handleInsertFluxFunction = (func: FluxToolbarFunction): void => {
+    if (!editorInstance) {
+      return
+    }
     const {text, range} = getFluxTextAndRange(func)
 
     const edits = [
@@ -130,12 +144,21 @@ const TimeMachineFluxEditor: FC<Props> = ({
   return (
     <div className="flux-editor">
       <div className="flux-editor--left-panel">
-        <FluxEditor
-          script={activeQueryText}
-          onChangeScript={onSetActiveQueryText}
-          onSubmitScript={onSubmitQueries}
-          setEditorInstance={setEditorInstance}
-        />
+        <Suspense
+          fallback={
+            <SpinnerContainer
+              loading={RemoteDataState.Loading}
+              spinnerComponent={<TechnoSpinner />}
+            />
+          }
+        >
+          <FluxEditor
+            script={activeQueryText}
+            onChangeScript={onSetActiveQueryText}
+            onSubmitScript={onSubmitQueries}
+            setEditorInstance={setEditorInstance}
+          />
+        </Suspense>
       </div>
       <div className="flux-editor--right-panel">
         <FluxToolbar

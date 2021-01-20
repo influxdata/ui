@@ -96,6 +96,7 @@ export const QueryProvider: FC = ({children}) => {
   const {flow} = useContext(FlowContext)
   const {runMode} = useContext(RunModeContext)
   const {add, update} = useContext(ResultsContext)
+
   const variables = useSelector((state: AppState) => getVariables(state))
   const buckets = useSelector((state: AppState) => getSortedBuckets(state))
   const bucketsLoadingState = useSelector((state: AppState) =>
@@ -111,14 +112,14 @@ export const QueryProvider: FC = ({children}) => {
   }, [bucketsLoadingState, dispatch])
 
   const vars = useMemo(() => {
-    if (flow && flow?.range) {
+    if (flow?.range) {
       return variables
         .map(v => asAssignment(v))
         .concat(getTimeRangeVars(flow.range))
     }
 
     variables.map(v => asAssignment(v))
-  }, [variables, flow])
+  }, [variables, flow?.range])
 
   const generateMap = (withSideEffects?: boolean): Stage[] => {
     return flow.data.allIDs
@@ -179,12 +180,11 @@ export const QueryProvider: FC = ({children}) => {
       })
   }
 
-  const query = (text: string) => {
+  const query = (text: string): Promise<FluxResult> => {
     const orgID = findOrgID(text, buckets)
     const windowVars = getWindowVars(text, vars)
     const extern = buildVarsOption([...vars, ...windowVars])
     const queryID = generateHashedQueryID(text, variables, orgID)
-
     event('runQuery', {context: 'flows'})
     const result = runQuery(orgID, text, extern)
     setQueryByHashID(queryID, result)
@@ -202,7 +202,7 @@ export const QueryProvider: FC = ({children}) => {
           raw: raw.csv,
           parsed: fromFlux(raw.csv),
           error: null,
-        }
+        } as FluxResult
       })
   }
 
@@ -214,7 +214,7 @@ export const QueryProvider: FC = ({children}) => {
     }
   }
 
-  const statuses = flow.meta.all.map(({loading}) => loading)
+  const statuses = flow ? flow.meta.all.map(({loading}) => loading) : []
 
   let status = RemoteDataState.Done
 

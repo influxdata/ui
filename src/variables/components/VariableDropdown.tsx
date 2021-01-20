@@ -29,7 +29,7 @@ type Props = OwnProps & ReduxProps
 
 class VariableDropdown extends PureComponent<Props> {
   render() {
-    const {selectedValue, values} = this.props
+    const {selectedValue, values, name} = this.props
 
     const dropdownStatus =
       values.length === 0 ? ComponentStatus.Disabled : ComponentStatus.Default
@@ -46,7 +46,7 @@ class VariableDropdown extends PureComponent<Props> {
       <Dropdown
         style={{width: '140px'}}
         className="variable-dropdown--dropdown"
-        testID={this.props.testID || 'variable-dropdown'}
+        testID={this.props.testID || `variable-dropdown--${name}`}
         button={(active, onClick) => (
           <Dropdown.Button
             active={active}
@@ -125,6 +125,7 @@ const mstp = (state: AppState, props: OwnProps) => {
     status: variable.status,
     values: normalizeValues(variable),
     selectedValue: selected,
+    name: variable.name,
   }
 }
 

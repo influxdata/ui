@@ -33,7 +33,9 @@ jest.mock('src/templates/utils/index.ts',()=>{
 
 jest.mock('src/buckets/actions/thunks.ts', ()=>{
   return {
-    getBuckets: jest.fn()
+    getBuckets: jest.fn(()=> {
+      return jest.fn()
+    }),
   }
 })
 
@@ -164,9 +166,9 @@ describe('the Community Templates Install Overlay', () => {
       expect(eventName3).toBe('template_rename')
 
 
-      // const [notifyCallArguments] = mocked(notify).mock.calls
-      // const [notifyMessage] = notifyCallArguments
-      // expect(notifyMessage).toEqual(communityTemplateInstallSucceeded())
+      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyMessage] = notifyCallArguments
+      expect(notifyMessage).toEqual(communityTemplateInstallSucceeded('fn-template'))
     })
   })
 })

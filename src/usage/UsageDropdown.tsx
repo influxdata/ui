@@ -2,7 +2,7 @@ import React, {FC, useState} from 'react'
 
 import {SelectDropdown, ComponentColor} from '@influxdata/clockface'
 import {GRAPH_INFO} from 'src/usage/Constants'
-import {DUMMY_PRICING_VERSION_TO_DELETE} from 'src/usage/utils'
+import {DUMMY_PRICING_VERSION_TO_DELETE} from 'src/usage/Constants'
 
 const UsageDropdown: FC = () => {
   const [selectedUsage, setSelectedUsageID] = useState('Data In (MB)')

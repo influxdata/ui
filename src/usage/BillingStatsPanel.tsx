@@ -16,7 +16,7 @@ import GraphTypeSwitcher from 'src/usage/GraphTypeSwitcher'
 
 import {GRAPH_INFO} from 'src/usage/Constants'
 import {useUsage} from 'src/usage/UsagePage'
-import {DUMMY_PRICING_VERSION_TO_DELETE} from 'src/usage/utils'
+import {DUMMY_PRICING_VERSION_TO_DELETE} from 'src/usage/Constants'
 
 const billingStats = (pricingVersion = 3) => {
   return GRAPH_INFO.billingStats.filter(stat =>

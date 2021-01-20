@@ -13,7 +13,7 @@ export const getAllUsedVars = (
   variables: Variable[],
   usedVars: Variable[],
   cache: {[name: string]: boolean}
-) => {
+): Variable[] => {
   const vars = usedVars.slice()
   let varsInUse = []
   usedVars.forEach((vari: Variable) => {
@@ -51,7 +51,7 @@ export const createdUsedVarsCache = (variables: Variable[]) => {
 export const filterUnusedVarsBasedOnQuery = (
   variables: Variable[],
   queryTexts: string[]
-) => {
+): Variable[] => {
   const varsInUse = variables.filter(variable =>
     queryTexts.some(text => isInQuery(text, variable))
   )
@@ -65,7 +65,10 @@ export const filterUnusedVarsBasedOnQuery = (
   Given a collection variables and a collection of views, return only the
   variables that are used in at least one of the view queries.
 */
-export const filterUnusedVars = (variables: Variable[], views: View[]) => {
+export const filterUnusedVars = (
+  variables: Variable[],
+  views: View[]
+): Variable[] => {
   const viewProperties = views.map(v => v.properties).filter(vp => !!vp)
   const queryViewProperties = viewProperties.filter(isQueryViewProperties)
 

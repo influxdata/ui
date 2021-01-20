@@ -32,7 +32,7 @@ const sortFunc = (a: Bucket, b: Bucket) => {
   return 0
 }
 
-export const getSortedBuckets = (state: AppState) => {
+export const getSortedBuckets = (state: AppState): Bucket[] => {
   const systemBuckets = []
   const otherBuckets = []
   const buckets = getAll<Bucket>(state, ResourceType.Buckets)

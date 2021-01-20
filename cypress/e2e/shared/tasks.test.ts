@@ -4,29 +4,19 @@ describe('Tasks', () => {
   beforeEach(() => {
     cy.flush()
 
-    cy.signin()
-      .then(() =>
-        cy.request({
-          method: 'GET',
-          url: '/api/v2/buckets',
-        })
+    cy.signin().then(() => {
+      cy.get('@org').then(({id: orgID}: Organization) =>
+        cy
+          .createToken(orgID, 'test token', 'active', [
+            {action: 'write', resource: {type: 'views', orgID}},
+            {action: 'write', resource: {type: 'documents', orgID}},
+            {action: 'write', resource: {type: 'tasks', orgID}},
+          ])
+          .then(({body}) => {
+            cy.wrap(body.token).as('token')
+          })
       )
-      .then(response => {
-        cy.wrap(response.body.buckets[0]).as('bucket')
-      })
-      .then(() => {
-        cy.get('@org').then(({id}: Organization) =>
-          cy
-            .createToken(id, 'test token', 'active', [
-              {action: 'write', resource: {type: 'views'}},
-              {action: 'write', resource: {type: 'documents'}},
-              {action: 'write', resource: {type: 'tasks'}},
-            ])
-            .then(({body}) => {
-              cy.wrap(body.token).as('token')
-            })
-        )
-      })
+    })
 
     cy.fixture('routes').then(({orgs}) => {
       cy.get('@org').then(({id}: Organization) => {
@@ -111,9 +101,8 @@ http.post(
 
     cy.getByTestID('flux-editor').within(() => {
       cy.get('textarea.inputarea')
-        .click({force: true})
+        .focus()
         .type('from(bucket: "defbuck")\n' + '\t|> range(start: -2m)', {
-          force: true,
           delay: 2,
         })
     })
@@ -326,25 +315,32 @@ http.post(
         .eq(1)
         .click()
         .then(() => {
-          cy.getByTestID('task-form-name')
-            .should('have.value', '🦄ask')
+          // focused() waits for monoco editor to get input focus
+          cy.focused()
+          cy.getByTestID('flux-editor')
+            .should('be.visible')
+            .contains('option task = {')
             .then(() => {
               cy.getByTestID('task-form-name')
-                .click()
-                .clear()
-                .type('Copy task test')
+                .should('have.value', '🦄ask')
                 .then(() => {
-                  cy.getByTestID('task-form-schedule-input')
-                    .should('have.value', '24h')
+                  cy.getByTestID('task-form-name')
+                    .should('be.visible')
                     .clear()
-                    .type('12h')
-                    .should('have.value', '12h')
-                  cy.getByTestID('task-form-offset-input')
-                    .should('have.value', '20m')
-                    .clear()
-                    .type('10m')
-                    .should('have.value', '10m')
-                  cy.getByTestID('task-save-btn').click()
+                    .type('Copy task test')
+                    .then(() => {
+                      cy.getByTestID('task-form-schedule-input')
+                        .should('have.value', '24h')
+                        .clear()
+                        .type('12h')
+                        .should('have.value', '12h')
+                      cy.getByTestID('task-form-offset-input')
+                        .should('have.value', '20m')
+                        .clear()
+                        .type('10m')
+                        .should('have.value', '10m')
+                      cy.getByTestID('task-save-btn').click()
+                    })
                 })
             })
         })

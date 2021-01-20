@@ -9,6 +9,7 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 import {
   useLegendOpacity,
   useLegendOrientationThreshold,
+  useLegendColorizeRows,
 } from 'src/shared/utils/useLegendOrientation'
 import {useVisXDomainSettings} from 'src/shared/utils/useVisDomainSettings'
 import {getFormatter} from 'src/shared/utils/vis'
@@ -43,6 +44,7 @@ const HistogramPlot: FunctionComponent<Props> = ({
     xDomain: storedXDomain,
     legendOpacity,
     legendOrientationThreshold,
+    legendColorizeRows,
   },
   theme,
 }) => {
@@ -52,6 +54,7 @@ const HistogramPlot: FunctionComponent<Props> = ({
   const tooltipOrientationThreshold = useLegendOrientationThreshold(
     legendOrientationThreshold
   )
+  const tooltipColorize = useLegendColorizeRows(legendColorizeRows)
 
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
     storedXDomain,
@@ -86,6 +89,7 @@ const HistogramPlot: FunctionComponent<Props> = ({
     valueFormatters: {[xColumn]: xFormatter},
     legendOpacity: tooltipOpacity,
     legendOrientationThreshold: tooltipOrientationThreshold,
+    legendColorizeRows: tooltipColorize,
     layers: [
       {
         type: 'histogram',

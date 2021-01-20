@@ -14,6 +14,7 @@ import {viewSchema} from 'src/schemas'
 
 // Utils
 import applyAutoAggregateRequirements from 'src/utils/autoAggregateRequirements'
+import {getAllVariables} from 'src/variables/selectors'
 
 // Actions
 import {notify} from 'src/shared/actions/notifications'
@@ -131,9 +132,9 @@ export const getViewAndResultsForVEO = (
       dispatch(setQueryResults(RemoteDataState.Done, [], null))
     }
     const {id: orgID} = getOrg(state)
-    const pendingResults = queries.map(({text}) => {
-      return getCachedResultsOrRunQuery(orgID, text, state)
-    })
+    const pendingResults = queries.map(({text}) =>
+      getCachedResultsOrRunQuery(orgID, text, getAllVariables(state))
+    )
 
     // Wait for new queries to complete
     const results = await Promise.all(pendingResults.map(r => r.promise))

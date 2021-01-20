@@ -102,11 +102,10 @@ export const variablesReducer = (
 
         newOrder = newOrder.slice(0)
 
-        const idToMove = newOrder[originalIndex]
-        const idToSwap = newOrder[newIndex]
-
-        newOrder[originalIndex] = idToSwap
-        newOrder[newIndex] = idToMove
+        // Pull out variable and insert at new location
+        const variable = newOrder[originalIndex]
+        newOrder.splice(originalIndex, 1)
+        newOrder.splice(newIndex, 0, variable)
 
         draftState.values[contextID] = {
           ...(draftState.values[contextID] || {

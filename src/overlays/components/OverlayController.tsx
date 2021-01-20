@@ -76,7 +76,7 @@ const OverlayController: FunctionComponent<OverlayControllerProps> = props => {
       activeOverlay = <OrgSwitcherOverlay onClose={closer} />
       break
     case 'create-bucket':
-      activeOverlay = <CreateBucketOverlay onClose={closer} />
+      activeOverlay = <CreateBucketOverlay />
       break
     case 'asset-limit':
       activeOverlay = <AssetLimitOverlay onClose={closer} />

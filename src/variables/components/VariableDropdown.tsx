@@ -29,7 +29,7 @@ type Props = OwnProps & ReduxProps
 
 class VariableDropdown extends PureComponent<Props> {
   render() {
-    const {selectedValue, values} = this.props
+    const {selectedValue, values, name} = this.props
 
     const dropdownStatus =
       values.length === 0 ? ComponentStatus.Disabled : ComponentStatus.Default
@@ -43,47 +43,44 @@ class VariableDropdown extends PureComponent<Props> {
     const widthLength = Math.max(140, longestItemWidth)
 
     return (
-      <div className="variable-dropdown">
-        {/* TODO: Add variable description to title attribute when it is ready */}
-        <Dropdown
-          style={{width: `${140}px`}}
-          className="variable-dropdown--dropdown"
-          testID={this.props.testID || 'variable-dropdown'}
-          button={(active, onClick) => (
-            <Dropdown.Button
-              active={active}
-              onClick={onClick}
-              testID="variable-dropdown--button"
-              status={dropdownStatus}
-            >
-              {this.selectedText}
-            </Dropdown.Button>
-          )}
-          menu={onCollapse => (
-            <Dropdown.Menu
-              style={{width: `${widthLength}px`}}
-              onCollapse={onCollapse}
-              theme={DropdownMenuTheme.Amethyst}
-            >
-              {values.map(val => {
-                return (
-                  <Dropdown.Item
-                    key={val}
-                    id={val}
-                    value={val}
-                    onClick={this.handleSelect}
-                    selected={val === selectedValue}
-                    testID="variable-dropdown--item"
-                    className="variable-dropdown--item"
-                  >
-                    {val}
-                  </Dropdown.Item>
-                )
-              })}
-            </Dropdown.Menu>
-          )}
-        />
-      </div>
+      <Dropdown
+        style={{width: '140px'}}
+        className="variable-dropdown--dropdown"
+        testID={this.props.testID || `variable-dropdown--${name}`}
+        button={(active, onClick) => (
+          <Dropdown.Button
+            active={active}
+            onClick={onClick}
+            testID="variable-dropdown--button"
+            status={dropdownStatus}
+          >
+            {this.selectedText}
+          </Dropdown.Button>
+        )}
+        menu={onCollapse => (
+          <Dropdown.Menu
+            style={{width: `${widthLength}px`}}
+            onCollapse={onCollapse}
+            theme={DropdownMenuTheme.Amethyst}
+          >
+            {values.map(val => {
+              return (
+                <Dropdown.Item
+                  key={val}
+                  id={val}
+                  value={val}
+                  onClick={this.handleSelect}
+                  selected={val === selectedValue}
+                  testID="variable-dropdown--item"
+                  className="variable-dropdown--item"
+                >
+                  {val}
+                </Dropdown.Item>
+              )
+            })}
+          </Dropdown.Menu>
+        )}
+      />
     )
   }
 
@@ -128,6 +125,7 @@ const mstp = (state: AppState, props: OwnProps) => {
     status: variable.status,
     values: normalizeValues(variable),
     selectedValue: selected,
+    name: variable.name,
   }
 }
 

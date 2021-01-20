@@ -27,6 +27,7 @@ import {
   setXAxisLabel,
   setLegendOpacity,
   setLegendOrientationThreshold,
+  setLegendColorizeRows,
 } from 'src/timeMachine/actions'
 
 // Utils
@@ -75,6 +76,7 @@ const HistogramOptions: FunctionComponent<Props> = props => {
     onSetXAxisLabel,
     onSetLegendOpacity,
     onSetLegendOrientationThreshold,
+    onSetLegendColorizeRows,
   } = props
 
   const groupDropdownStatus = availableGroupColumns.length
@@ -163,6 +165,7 @@ const HistogramOptions: FunctionComponent<Props> = props => {
       <LegendOrientation
         onLegendOpacityChange={onSetLegendOpacity}
         onLegendOrientationThresholdChange={onSetLegendOrientationThreshold}
+        onLegendColorizeRowsChange={onSetLegendColorizeRows}
       />
     </Grid.Column>
   )
@@ -187,6 +190,7 @@ const mdtp = {
   onSetXAxisLabel: setXAxisLabel,
   onSetLegendOpacity: setLegendOpacity,
   onSetLegendOrientationThreshold: setLegendOrientationThreshold,
+  onSetLegendColorizeRows: setLegendColorizeRows,
 }
 
 const connector = connect(mstp, mdtp)

@@ -1,122 +1,45 @@
 // Libraries
-import * as React from 'react'
-import {
-  DragSource,
-  DropTarget,
-  ConnectDropTarget,
-  ConnectDragSource,
-  ConnectDragPreview,
-  DropTargetConnector,
-  DragSourceConnector,
-  DragSourceMonitor,
-} from 'react-dnd'
+import React, {FC, CSSProperties} from 'react'
 import classnames from 'classnames'
+import {Draggable} from 'react-beautiful-dnd'
 
 // Components
 import VariableDropdown from 'src/variables/components/VariableDropdown'
-
-// Constants
-const dropdownType = 'dropdown'
-
-const dropdownSource = {
-  beginDrag(props: Props) {
-    return {
-      id: props.id,
-      index: props.index,
-    }
-  },
-}
 
 interface Props {
   id: string
   index: number
   name: string
-  moveDropdown: (dragIndex: number, hoverIndex: number) => void
 }
 
-interface DropdownSourceCollectedProps {
-  isDragging: boolean
-  connectDragSource: ConnectDragSource
-  connectDragPreview: ConnectDragPreview
-}
-
-interface DropdownTargetCollectedProps {
-  connectDropTarget?: ConnectDropTarget
-}
-
-const dropdownTarget = {
-  hover(props, monitor, component) {
-    if (!component) {
-      return null
-    }
-    const dragIndex = monitor.getItem().index
-    const hoverIndex = props.index
-
-    // Don't replace items with themselves
-    if (dragIndex === hoverIndex) {
-      return
-    }
-
-    // Time to actually perform the action
-    props.moveDropdown(dragIndex, hoverIndex)
-
-    monitor.getItem().index = hoverIndex
-  },
-}
-
-class Dropdown extends React.Component<
-  Props & DropdownSourceCollectedProps & DropdownTargetCollectedProps
-> {
-  public render() {
-    const {
-      name,
-      id,
-      isDragging,
-      connectDragSource,
-      connectDropTarget,
-      connectDragPreview,
-    } = this.props
-
-    const className = classnames('variable-dropdown', {
+const DraggableDropdown: FC<Props> = ({id, index, name}) => {
+  const getClassName = (isDragging: boolean): CSSProperties =>
+    classnames('variable-dropdown', {
       'variable-dropdown__dragging': isDragging,
     })
 
-    return connectDropTarget(
-      <div className="variable-dropdown--container">
-        {connectDragPreview(
-          <div className={className}>
-            {/* TODO: Add variable description to title attribute when it is ready */}
-            <div className="variable-dropdown--label">
-              {connectDragSource(
-                <div className="variable-dropdown--drag">
-                  <span className="hamburger" />
-                </div>
-              )}
-              <span>{name}</span>
-            </div>
-            <VariableDropdown variableID={id} />
+  return (
+    <Draggable index={index} draggableId={id}>
+      {(provided, snapshot) => (
+        <div
+          className={getClassName(snapshot.isDragging)}
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+        >
+          <div
+            className="variable-dropdown--drag"
+            {...provided.dragHandleProps}
+          >
+            <span className="hamburger" />
           </div>
-        )}
-        <div className="variable-dropdown--placeholder" />
-      </div>
-    )
-  }
+          <div className="variable-dropdown--label">
+            <span>{name}</span>
+          </div>
+          <VariableDropdown variableID={id} />
+        </div>
+      )}
+    </Draggable>
+  )
 }
 
-export default DropTarget<Props, DropdownTargetCollectedProps>(
-  dropdownType,
-  dropdownTarget,
-  (connect: DropTargetConnector) => ({
-    connectDropTarget: connect.dropTarget(),
-  })
-)(
-  DragSource<Props, DropdownSourceCollectedProps>(
-    dropdownType,
-    dropdownSource,
-    (connect: DragSourceConnector, monitor: DragSourceMonitor) => ({
-      connectDragSource: connect.dragSource(),
-      connectDragPreview: connect.dragPreview(),
-      isDragging: monitor.isDragging(),
-    })
-  )(Dropdown)
-)
+export default DraggableDropdown

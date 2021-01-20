@@ -7,18 +7,26 @@ import {CellSchema} from 'src/cells/actions/creators'
 import {setDashboard} from 'src/dashboards/actions/creators'
 
 export type Action =
+  | ReturnType<typeof removeView>
   | ReturnType<typeof resetViews>
   | ReturnType<typeof setView>
   | ReturnType<typeof setViews>
   | ReturnType<typeof setViewsAndCells>
   | ReturnType<typeof setDashboard>
 
+export const REMOVE_VIEW = 'REMOVE_VIEW'
 export const RESET_VIEWS = 'RESET_VIEWS'
 export const SET_VIEW = 'SET_VIEW'
 export const SET_VIEWS = 'SET_VIEWS'
 export const SET_VIEWS_AND_CELLS = 'SET_VIEWS_AND_CELLS'
 
 type ViewSchema<R extends string | string[]> = NormalizedSchema<ViewEntities, R>
+
+export const removeView = (id: string) =>
+  ({
+    type: REMOVE_VIEW,
+    id,
+  } as const)
 
 export const resetViews = () =>
   ({

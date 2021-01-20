@@ -23,7 +23,7 @@ import GetResources from 'src/resources/components/GetResources'
 // Utils
 import {
   specificBucketsPermissions,
-  selectBucket,
+  toggleSelectedBucket,
   allBucketsPermissions,
   BucketTab,
 } from 'src/authorizations/utils/permissions'
@@ -163,13 +163,16 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
   }
 
   private handleSelectReadBucket = (bucketName: string): void => {
-    const readBuckets = selectBucket(bucketName, this.state.readBuckets)
+    const readBuckets = toggleSelectedBucket(bucketName, this.state.readBuckets)
 
     this.setState({readBuckets})
   }
 
   private handleSelectWriteBucket = (bucketName: string): void => {
-    const writeBuckets = selectBucket(bucketName, this.state.writeBuckets)
+    const writeBuckets = toggleSelectedBucket(
+      bucketName,
+      this.state.writeBuckets
+    )
 
     this.setState({writeBuckets})
   }

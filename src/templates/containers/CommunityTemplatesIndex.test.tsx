@@ -1,7 +1,7 @@
 // Installed libraries
 import React from 'react'
 import {createStore} from 'redux'
-import {fireEvent, screen} from '@testing-library/react'
+import {fireEvent, screen, waitFor} from '@testing-library/react'
 import {normalize} from 'normalizr'
 import {mocked} from 'ts-jest/utils'
 
@@ -108,6 +108,8 @@ describe('the Community Templates index', () => {
           'https://github.com/influxdata/community-templates/blob/master/fortnite/fn-template.yml',
       })
 
+      expect(screen.queryByText('Template Installer')).not.toBeInTheDocument()
+
       const templateButton = getByTitle('Lookup Template')
 
       fireEvent.click(templateButton)
@@ -116,7 +118,10 @@ describe('the Community Templates index', () => {
       const [eventName, eventMetaData] = eventCallArguments
       expect(eventName).toBe('template_click_lookup')
       expect(eventMetaData).toEqual({templateName: 'fn-template'})
-      expect(screen.getByText('Template Installer')).toBeInTheDocument()
+
+      waitFor(() => {
+        expect(screen.queryByText('Template Installer')).toBeVisible()
+      })
     })
 
     it('handles failures', () => {

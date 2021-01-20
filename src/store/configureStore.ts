@@ -1,6 +1,11 @@
-import {createStore, applyMiddleware, compose} from 'redux'
+import {
+  createStore,
+  applyMiddleware,
+  compose,
+  combineReducers,
+  Store,
+} from 'redux'
 import {History} from 'history'
-import {combineReducers, Store} from 'redux'
 import {connectRouter, routerMiddleware} from 'connected-react-router'
 import thunkMiddleware from 'redux-thunk'
 
@@ -12,7 +17,7 @@ import persistStateEnhancer from './persistStateEnhancer'
 import {loadLocalStorage} from 'src/localStorage'
 
 // v2 reducers
-import meReducer from 'src/shared/reducers/me'
+import meReducer from 'src/me/reducers'
 import flagReducer from 'src/shared/reducers/flags'
 import currentDashboardReducer from 'src/shared/reducers/currentDashboard'
 import currentExplorerReducer from 'src/shared/reducers/currentExplorer'
@@ -57,7 +62,6 @@ import {
 import {predicatesReducer} from 'src/shared/reducers/predicates'
 import alertBuilderReducer from 'src/alerting/reducers/alertBuilder'
 import perfReducer from 'src/perf/reducers'
-import {schemaReducer} from 'src/shared/reducers/schema'
 
 // Types
 import {AppState, LocalStorage} from 'src/types'
@@ -91,7 +95,6 @@ export const rootReducer = (history: History) => (state, action) => {
     dataLoading: dataLoadingReducer,
     me: meReducer,
     flags: flagReducer,
-    flow: schemaReducer,
     noteEditor: noteEditorReducer,
     onboarding: onboardingReducer,
     overlays: overlaysReducer,

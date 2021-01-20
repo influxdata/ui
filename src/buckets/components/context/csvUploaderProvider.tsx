@@ -68,12 +68,26 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
   const resetUploadState = (): void =>
     setUploadState(RemoteDataState.NotStarted)
 
+  const handleError = (error): void => {
+    setUploadState(RemoteDataState.Error)
+    reportErrorThroughHoneyBadger(error, {
+      name: 'uploadCsv function',
+    })
+    const message = getErrorMessage(error)
+    dispatch(notify(csvUploaderErrorNotification(message)))
+  }
+
   const uploadCsv = useCallback(
     (csv: string, bucket: string) => {
       setUploadState(RemoteDataState.Loading)
       setTimeout(() => {
         try {
           const {table} = fromFlux(csv)
+          if (!table.length) {
+            throw new Error(
+              `The CSV could not be parsed. Make sure to include _measurement and _field columns`
+            )
+          }
           const filtered = [
             /^_start$/,
             /^_stop$/,
@@ -115,9 +129,10 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
               const resp = postWrite({
                 data: chunk,
                 query: {org: org.name, bucket, precision: WritePrecision.Ns},
-              }).then(() => {
+              }).then(v => {
                 const percent = (++progress / counter) * 100
                 setProgress(Math.floor(percent))
+                return v
               })
               pendingWrites.push(resp)
               counter++
@@ -155,24 +170,28 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
             const resp = postWrite({
               data: chunk,
               query: {org: org.name, bucket, precision: WritePrecision.Ns},
-            }).then(() => {
+            }).then(v => {
               const percent = (++progress / counter) * 100
               setProgress(Math.floor(percent))
+              return v
             })
             pendingWrites.push(resp)
             counter++
           }
 
           chunk = ''
-          Promise.all(pendingWrites).finally(() => {
-            setUploadState(RemoteDataState.Done)
-          })
+          Promise.all(pendingWrites)
+            .then(values => {
+              if (values.find(v => v.status >= 400)) {
+                throw new Error(`The CSV data could not be written to the bucket`)
+              }
+              setUploadState(RemoteDataState.Done)
+            })
+            .catch(error => {
+              handleError(error)
+            })
         } catch (error) {
-          reportErrorThroughHoneyBadger(error, {
-            name: 'uploadCsv function',
-          })
-          const message = getErrorMessage(error)
-          dispatch(notify(csvUploaderErrorNotification(message)))
+          handleError(error)
         }
       }, 0)
     },

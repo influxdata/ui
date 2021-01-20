@@ -103,15 +103,6 @@ export const QueryProvider: FC = ({children}) => {
     getStatus(state, ResourceType.Buckets)
   )
 
-  const _range = useMemo(
-    () => `${flow?.range.lower} to ${flow?.range.upper || 'now'}`,
-    [flow?.range]
-  )
-
-  useEffect(() => {
-    queryAll()
-  }, [_range]) // eslint-disable-line react-hooks/exhaustive-deps
-
   const dispatch = useDispatch()
 
   useEffect(() => {

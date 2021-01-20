@@ -116,6 +116,7 @@ export const SchemaProvider: FC<Props> = React.memo(({children}) => {
 
     setLastBucket(data?.bucket)
     setSearchTerm('')
+    setLoading(RemoteDataState.NotStarted)
     update({
       field: '',
       tags: {},

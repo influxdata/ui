@@ -5,6 +5,7 @@ import {
   getBillingCc,
   getInvoices as getInvoicesGenerated,
   getBillingRegion,
+  Account,
 } from 'src/client/unityRoutes'
 
 import {RemoteDataState} from 'src/types'
@@ -15,7 +16,6 @@ import {
   BillingNotifySettings,
   PaymentMethods,
 } from 'src/types/billing'
-import {Account} from 'src/client/unityRoutes'
 
 const makeResponse = (status, data) => {
   return Promise.resolve({

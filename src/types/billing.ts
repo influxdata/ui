@@ -12,7 +12,6 @@ import {
   CreditCardParams as GenCreditCardParams,
   BillingDate as GenBillingDate,
 } from 'src/client/unityRoutes'
-export {MarketplaceSubscription} from 'src/client/unityRoutes'
 import {RemoteDataState} from 'src/types'
 
 export interface CreditCardParams extends GenCreditCardParams {}

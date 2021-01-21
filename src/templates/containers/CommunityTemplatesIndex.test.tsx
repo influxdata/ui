@@ -45,7 +45,7 @@ import {communityTemplateUnsupportedFormatError} from 'src/shared/copy/notificat
 // The file under test, imported last
 import {CommunityTemplatesIndex} from 'src/templates/containers/CommunityTemplatesIndex'
 
-const defaultProps = {
+const defaultProps: any = {
   ...withRouterProps,
   notify: jest.fn(),
   setStagedTemplateUrl: jest.fn(),

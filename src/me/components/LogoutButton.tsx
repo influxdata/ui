@@ -1,11 +1,11 @@
 // Libraries
-import React, {SFC} from 'react'
+import React, {FC} from 'react'
 import {Link} from 'react-router-dom'
 
 // Components
 import {Button, ComponentSize} from '@influxdata/clockface'
 
-const LogoutButton: SFC = () => (
+const LogoutButton: FC = () => (
   <>
     <Link to="/logout">
       <Button

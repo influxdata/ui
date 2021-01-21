@@ -23,6 +23,60 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  '/billing/date':
+    get:
+      operationId: GetBillingDate
+      tags:
+        - BillingDate
+      responses:
+        '200':
+          description: Billing Date for Account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingDate'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/billing/region':
+    get:
+      operationId: GetRegion
+      tags:
+        - Region
+      responses:
+        '200':
+          description: Account region for billing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Region'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/account/history':
+    get:
+      operationId: GetHistory
+      tags:
+        - History
+      responses:
+        '200':
+          description: Account history for billing, rates and usage
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/History'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   '/billing/notify_settings':
     get:
       operationId: GetBillingNotifySettings
@@ -405,6 +459,18 @@ components:
           description: Message is a human-readable message.
           type: string
       required: [code, message]
+    MarketplaceSubscription:
+      properties:
+        marketplace:
+          description: marketplace name
+          type: string
+        subscriberId:
+          description: id of subscriber
+          type: string
+        status:
+          type: string
+          description: status of marketplace subscription
+      required: [marketplace, subscriberId, status]
     Account:
       properties:
         id:
@@ -415,13 +481,16 @@ components:
           description: account balance
         billingContact:
           type: '#/components/schemas/BillingContact'
-          description: marketplace subscription
+          description: billing contact information for the account
         deletable:
           type: boolean
           description: boolean of for whether the account can be deleted
         marketplaceSubscription:
           type: '#/components/schemas/MarketplaceSubscription'
           description: marketplace subscription
+        pricingVersion:
+          type: number
+          description: pricing version for the account
         type:
           type: string
           description: type of the account
@@ -445,23 +514,51 @@ components:
           billingContact,
           deletable,
           marketplaceSubscription,
+          pricingVersion,
           type,
           updatedAt,
           users,
           zuoraAccountId,
         ]
-    MarketplaceSubscription:
+    Region:
       properties:
-        marketplace:
-          description: marketplace name
+        title:
           type: string
-        subscriberId:
-          description: id of subscriber
+          description: title of the region
+        isBeta:
+          type: boolean
+          description: boolean whether the region is beta or not
+        isAvailable:
+          type: boolean
+          description: boolean whether the region is available or not
+        provider:
           type: string
-        status:
+          description: name of the provider
+        region:
           type: string
-          description: status of marketplace subscription
-      required: [marketplace, subscriberId, status]
+          description: name of the region
+      required: [title, isBeta, isAvailable, provider, region]
+    History:
+      properties:
+        billingStats:
+          type: string
+          description: csv string of the billing_stats
+        rateLimits:
+          type: string
+          description: csv string of the rate_limits
+        usageStats:
+          type: string
+          description: csv string of the usage_stats
+      required: [billingStats, rateLimits, usageStats]
+    BillingDate:
+      properties:
+        date:
+          type: string
+          description: date representing the start billing date
+        time:
+          type: string
+          description: time representing the start billing date time
+      required: [date, time]
     BillingContact:
       properties:
         companyName:
@@ -578,6 +675,9 @@ components:
         submitEnabled:
           description: boolean string 'true' or 'false' which allows us to handle submits from our form
           type: string
+          enum:
+            - 'true'
+            - 'false'
           readOnly: true
         url:
           type: string

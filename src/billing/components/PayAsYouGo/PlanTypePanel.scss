@@ -1,5 +1,4 @@
 /* Cards */
-
 .plan-type-panel {
   .cf-panel--body.cf-flex-box__column {
     flex-direction: column;
@@ -62,6 +61,26 @@
     }
 
     .plan-type-panel--detail {
+      flex-grow: 1;
+      margin-bottom: 0;
+      margin-right: $cf-marg-c;
+
+      &:last-child {
+        margin-bottom: 0;
+        margin-right: 0;
+      }
+    }
+    .usage--plot {
+      min-height: 250px;
+    }
+    .usage--plot::after {
+      content: '';
+      display: block;
+      width: 100%;
+      padding-top: 38%;
+    }
+
+    .graph-type--panel {
       flex-grow: 1;
       margin-bottom: 0;
       margin-right: $cf-marg-c;

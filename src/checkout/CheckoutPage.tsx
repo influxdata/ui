@@ -1,5 +1,4 @@
 import React, {FC, useContext} from 'react'
-// import {Formik} from 'formik'
 import {
   RemoteDataState,
   Notification,
@@ -36,7 +35,7 @@ const CheckoutV2: FC<Props> = () => {
       {/* <SuccessOverlay
           url={onSuccessUrl}
           visible={checkoutStatus == RemoteDataState.Done}
-        /> */}
+      />*/}
       <CheckoutForm />
     </>
   )

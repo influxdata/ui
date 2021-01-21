@@ -32,54 +32,7 @@ import {CheckoutContext} from 'src/checkout/context/checkout'
 // Types
 
 const CheckoutForm: FC = () => {
-  const {zuoraParams, handleSetInputs, handleSubmit, isSubmitting} = useContext(
-    CheckoutContext
-  )
-
-  // const {
-  //   isSubmitting,
-  //   setFieldValue,
-  //   setFieldTouched,
-  //   submitForm,
-  //   validateForm,
-  //   initialValues,
-  //   values,
-  // } = formikContext
-
-  // const onZuoraSuccess = async (paymentMethodId: string) => {
-  //   await handleSetInputs('paymentMethodId', paymentMethodId)
-
-  //   try {
-  //     await submitForm()
-  //   } catch (error) {
-  //     console.error(error)
-  //   }
-  // }
-
-  // async function resetNotificationSettingsIfDisabled() {
-  //   // Solve for the edge case where a user enables settings,
-  //   // deletes the values in the name and threshold fields,
-  //   // disables settings, and then submits the form.
-
-  //   if (!values.shouldNotify) {
-  //     await resetIfEmpty('notifyEmail')
-  //     await resetIfEmpty('balanceThreshold')
-  //   }
-  // }
-
-  // const validateQuartzForms = async (): Promise<boolean> => {
-  //   await resetNotificationSettingsIfDisabled()
-
-  //   const errors = await validateForm()
-
-  //   if (Object.keys(errors).length === 0) {
-  //     return true
-  //   } else {
-  //     // Touch all error fields on submit so we show the message
-  //     // https://github.com/formium/formik/issues/2734#issuecomment-690810715
-  //     return false
-  //   }
-  // }
+  const {handleSubmit, isSubmitting} = useContext(CheckoutContext)
 
   return (
     <Form noValidate onSubmit={handleSubmit}>
@@ -142,12 +95,7 @@ const CheckoutForm: FC = () => {
               }
             />
             <Panel.Body size={ComponentSize.Medium}>
-              {/* <ZuoraPaymentForm
-                zuoraParams={zuoraParams}
-                client={Z}
-                onSuccess={onZuoraSuccess}
-                onFocus={() => setFieldTouched('paymentMethodId', true, false)}
-              /> */}
+              <ZuoraPaymentForm />
             </Panel.Body>
           </Panel>
           <Panel>

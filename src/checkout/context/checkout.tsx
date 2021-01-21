@@ -144,6 +144,33 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     [setCheckoutStatus]
   )
 
+  /**
+   *
+   *   // async function resetNotificationSettingsIfDisabled() {
+  //   // Solve for the edge case where a user enables settings,
+  //   // deletes the values in the name and threshold fields,
+  //   // disables settings, and then submits the form.
+
+  //   if (!values.shouldNotify) {
+  //     await resetIfEmpty('notifyEmail')
+  //     await resetIfEmpty('balanceThreshold')
+  //   }
+  // }
+
+  // const validateQuartzForms = async (): Promise<boolean> => {
+  //   await resetNotificationSettingsIfDisabled()
+
+  //   const errors = await validateForm()
+
+  //   if (Object.keys(errors).length === 0) {
+  //     return true
+  //   } else {
+  //     // Touch all error fields on submit so we show the message
+  //     // https://github.com/formium/formik/issues/2734#issuecomment-690810715
+  //     return false
+  //   }
+  // }
+   */
   const validateForm = useCallback(() => {
     console.log({inputs})
     /**

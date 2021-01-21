@@ -51,7 +51,7 @@ const NewCheckOverlay: FunctionComponent = () => {
           <CheckEOHeader
             key={checkName}
             name={checkName}
-            onSetName={updateName}
+            onSetName={(newName: string) => dispatch(updateName(newName))}
             onCancel={onClose}
             onSave={() => dispatch(createCheckFromTimeMachine())}
           />

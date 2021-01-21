@@ -78,16 +78,22 @@ const Query: FC<PipeProp> = ({Context}) => {
             />
           }
         >
+            <div style={{display: 'flex', flexDirection: 'column'}}>
+                <div style={{flexGrow: 1, flexBasis: '100%'}}>
           <FluxMonacoEditor
             script={query.text}
             onChangeScript={updateText}
             onSubmitScript={() => {}}
             autogrow
           />
-        </Suspense>
-          {showFn && (
+                </div>
+                {showFn && (
+                <div style={{flex: '0 300px'}}>
               <Functions onSelect={inject} />
-          )}
+                </div>
+                )}
+                </div>
+        </Suspense>
       </Context>
     )
 }

@@ -1,5 +1,5 @@
 // Libraries
-import React, {SFC} from 'react'
+import React, {FC} from 'react'
 
 // Utils
 import {generateThresholdsListHexs} from 'src/shared/constants/colorOperations'
@@ -15,7 +15,7 @@ interface Props {
   theme: Theme
 }
 
-const SingleStat: SFC<Props> = ({stat, properties}) => {
+const SingleStat: FC<Props> = ({stat, properties}) => {
   const {prefix, suffix, colors, decimalPlaces} = properties
 
   const {bgColor: backgroundColor, textColor} = generateThresholdsListHexs({

@@ -45,7 +45,7 @@ export const generateThresholdsListHexs = ({
 
   const lastValueNumber = Number(lastValue) || 0
 
-  if (!colors.length) {
+  if (!colors || !colors.length) {
     return defaultColoring
   }
 

@@ -1,0 +1,33 @@
+.usage--billing-date-range {
+  font-size: 16px;
+}
+
+.usage--billing-header.cf-panel--header {
+  justify-content: flex-start;
+}
+
+.usage--panel {
+  .panel--body {
+    position: relative;
+  }
+}
+
+.billing-stats--panel {
+  margin-bottom: $cf-marg-c !important;
+
+  .cf-panel {
+    margin-bottom: $cf-marg-a;
+  }
+}
+
+@media screen and (min-width: $cf-grid--breakpoint-md) {
+  .billing-stats--panel {
+    .cf-panel {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.usage-tooltip {
+  margin-left: $cf-marg-b;
+}

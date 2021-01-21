@@ -193,7 +193,7 @@ jobs:
           command: |
             INGRESS_HOST=$(grep "INGRESS_HOST=" ./monitor-ci/.env | cut -d '=' -f2);
             grep -qxF "127.0.0.1 ${INGRESS_HOST}" /etc/hosts || sudo -- sh -c "echo \"127.0.0.1 ${INGRESS_HOST}\" >> /etc/hosts";
-            make rebuild NODE=dex;
+            cd ./monitor-ci;make rebuild NODE=dex;
             ps -ef | grep Xvfb | grep -v grep | awk '{print $2}' | sudo xargs kill -9
       - run:
           name: Run e2e tests
@@ -244,7 +244,7 @@ jobs:
           command: |
             INGRESS_HOST=$(grep "INGRESS_HOST=" ./monitor-ci/.env | cut -d '=' -f2);
             grep -qxF "127.0.0.1 ${INGRESS_HOST}" /etc/hosts || sudo -- sh -c "echo \"127.0.0.1 ${INGRESS_HOST}\" >> /etc/hosts";
-            make rebuild NODE=dex;
+            cd ./monitor-ci;make rebuild NODE=dex;
             ps -ef | grep Xvfb | grep -v grep | awk '{print $2}' | sudo xargs kill -9
       - run:
           name: Run e2e tests
@@ -293,7 +293,7 @@ jobs:
           command: |
             INGRESS_HOST=$(grep "INGRESS_HOST=" ./monitor-ci/.env | cut -d '=' -f2);
             grep -qxF "127.0.0.1 ${INGRESS_HOST}" /etc/hosts || sudo -- sh -c "echo \"127.0.0.1 ${INGRESS_HOST}\" >> /etc/hosts";
-            make rebuild NODE=dex;
+            cd ./monitor-ci;make rebuild NODE=dex;
             ps -ef | grep Xvfb | grep -v grep | awk '{print $2}' | sudo xargs kill -9
       - run:
           name: Run e2e tests
@@ -441,7 +441,7 @@ jobs:
           command: |
             INGRESS_HOST=$(grep "INGRESS_HOST=" ./monitor-ci/.env | cut -d '=' -f2);
             grep -qxF "127.0.0.1 ${INGRESS_HOST}" /etc/hosts || sudo -- sh -c "echo \"127.0.0.1 ${INGRESS_HOST}\" >> /etc/hosts";
-            make rebuild NODE=dex;
+            cd ./monitor-ci;make rebuild NODE=dex;
             ps -ef | grep Xvfb | grep -v grep | awk '{print $2}' | sudo xargs kill -9
       - run:
           name: Update the images we're using

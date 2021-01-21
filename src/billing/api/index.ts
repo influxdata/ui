@@ -11,8 +11,11 @@ import {
   Account,
   Invoice,
   CreditCardParams,
-  BillingNotifySettings,
   BillingInfo,
+  Region,
+  BillingNotifySettings,
+  PaymentMethod,
+  ZuoraParams,
 } from 'src/types/billing'
 
 const makeResponse = (status, data) => {

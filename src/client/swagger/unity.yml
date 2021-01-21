@@ -775,7 +775,7 @@ components:
           type: string
           description: ref id from Zuora
           readOnly: true
-    CreditCardParams:
+    ZuoraParams:
       properties:
         id:
           description: id of the page displayed

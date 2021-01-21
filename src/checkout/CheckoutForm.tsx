@@ -19,17 +19,19 @@ import {
   Panel,
 } from '@influxdata/clockface'
 
+// Components
+import ContactForm from 'src/checkout/ContactForm'
+import CancelButton from 'src/checkout/CancelButton'
+import NotificationSettingsForm from 'src/checkout/NotificationSettingsForm'
+import ZuoraPaymentForm from 'src/checkout/ZuoraPaymentForm'
+import LogoWithCubo from 'src/checkout/LogoWithCubo'
+import PoweredByStripeLogo from 'src/checkout/PoweredByStripeLogo'
+
+// Utils
+import {Checkout} from 'src/checkout/utils/checkout'
+
+// Types
 import {ZuoraParams} from 'src/types/billing'
-
-import {Checkout} from './utils/checkout'
-import ContactForm from './ContactForm'
-import CancelButton from './CancelButton'
-
-import NotificationSettingsForm from './NotificationSettingsForm'
-
-import ZuoraPaymentForm from './ZuoraPaymentForm'
-import LogoWithCubo from './LogoWithCubo'
-import PoweredByStripeLogo from './PoweredByStripeLogo'
 
 interface Props {
   zuoraParams: ZuoraParams
@@ -93,7 +95,8 @@ const CheckoutForm: FC<Props> = ({zuoraParams}) => {
   const onSubmit = async () => {
     try {
       if (await validateQuartzForms()) {
-        Z.submit()
+        // TODO(ariel): uncomment once the Zuora client is defined
+        // Z.submit()
       }
     } catch (error) {
       console.error(error)

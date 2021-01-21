@@ -1,8 +1,8 @@
 import React, {FC} from 'react'
 import {useFormikContext} from 'formik'
 import {Columns, Grid} from '@influxdata/clockface'
-import FormInput from 'js/components/shared/forms/FormInput'
-import FormSelectDropdown from 'js/components/shared/forms/FormSelectDropdown'
+import FormInput from 'src/checkout/shared/FormInput'
+import FormSelectDropdown from 'src/checkout/shared/FormSelectDropdown'
 import {states, countries} from 'src/billing/constants'
 
 const UsContactForm: FC = () => (

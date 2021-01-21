@@ -9,9 +9,9 @@ import {
   InputType,
 } from '@influxdata/clockface'
 
-import FormInput from 'js/components/shared/forms/FormInput'
-import FormToggle from 'js/components/shared/forms/FormToggle'
-import {minimumBalanceThreshold} from './utils/notificationSettings'
+import FormInput from 'src/checkout/shared/FormInput'
+import FormToggle from 'src/checkout/shared/FormToggle'
+import {minimumBalanceThreshold} from 'src/checkout/utils/notificationSettings'
 
 const NotificationSettingsForm: FC = () => {
   const {

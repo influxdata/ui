@@ -7,8 +7,10 @@ import {
   Account,
   BillingInfo,
   BillingNotifySettings,
-  CreditCardParams,
   Invoice,
+  PaymentMethod,
+  Region,
+  ZuoraParams,
 } from 'src/types/billing'
 
 export interface BillingState {
@@ -16,6 +18,7 @@ export interface BillingState {
   billingInfo: BillingInfo
   billingSettings: BillingNotifySettings
   creditCard: CreditCardParams
+  creditCards: ZuoraParams
   invoices: Invoice[]
   invoicesStatus: RemoteDataState
 }
@@ -96,6 +99,38 @@ export const setInvoicesStatus = (status: RemoteDataState) =>
   ({
     type: 'SET_INVOICES_STATUS',
     invoiceStatus: status,
+  } as const)
+
+export const setPaymentMethods = (
+  paymentMethods: PaymentMethod[],
+  creditCards: ZuoraParams,
+  paymentMethodsStatus: RemoteDataState
+) =>
+  ({
+    type: 'SET_PAYMENT_METHODS',
+    paymentMethods,
+    creditCards,
+    paymentMethodsStatus,
+  } as const)
+
+export const setPaymentMethodsStatus = (
+  paymentMethodsStatus: RemoteDataState
+) =>
+  ({
+    type: 'SET_PAYMENT_METHODS_STATUS',
+    paymentMethodsStatus,
+  } as const)
+
+export const setRegion = (region: Region) =>
+  ({
+    type: 'SET_REGION',
+    region,
+  } as const)
+
+export const setRegionStatus = (status: RemoteDataState) =>
+  ({
+    type: 'SET_REGION_STATUS',
+    status,
   } as const)
 
 export const setCreditCard = (creditCard: CreditCardParams) =>

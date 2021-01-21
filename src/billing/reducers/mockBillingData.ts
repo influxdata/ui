@@ -3,8 +3,10 @@ import {
   Account,
   BillingInfo,
   BillingNotifySettings,
-  CreditCardParams,
   Invoice,
+  PaymentMethod,
+  Region,
+  ZuoraParams,
 } from 'src/types/billing'
 
 export const mockAccount: Account = {
@@ -60,6 +62,32 @@ export const mockInvoices: Invoice[] = [
     filesId: 'xyz123',
   },
 ]
+
+export const mockPaymentMethods: PaymentMethod[] = [
+  {
+    cardType: 'visa',
+    cardNumber: '4242424242424242',
+    expirationMonth: '02',
+    expirationYear: '2024',
+    defaultPaymentMethod: true,
+  },
+  {
+    cardType: 'mastercard',
+    cardNumber: '5242424242424242',
+    expirationMonth: '03',
+    expirationYear: '2023',
+    defaultPaymentMethod: false,
+  },
+]
+
+export const mockRegion: Region = {
+  title: 'EU Central',
+  isBeta: false,
+  isAvailable: true,
+  provider: 'aws',
+  region: 'eu-central',
+  status: RemoteDataState.Done,
+}
 
 export const mockCreditCard: CreditCardParams = {
   id: 'cc-123',

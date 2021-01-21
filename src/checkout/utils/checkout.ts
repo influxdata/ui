@@ -4,13 +4,45 @@ import {
   Contact,
   makeInitial as makeInitialContact,
   isUS,
-  validationSchema as contactSchema,
 } from 'src/checkout/utils/contact'
 import {
   NotificationSettings,
   makeInitial as makeInitialNotificationSettings,
-  validationSchema as notificationSettingsSchema,
 } from 'src/checkout/utils/notificationSettings'
+
+const requiredMessage = 'This is a required field'
+
+export const minimumBalanceThreshold = 1
+
+export const notificationSettingsSchema: yup.ObjectSchema<NotificationSettings> = yup.object(
+  {
+    shouldNotify: yup.boolean().required(requiredMessage),
+    notifyEmail: yup.string().required(requiredMessage),
+    balanceThreshold: yup
+      .number()
+      .min(minimumBalanceThreshold, 'Please enter a value of ${min} or greater')
+      .required(requiredMessage)
+      .transform(value => (isNaN(value) ? undefined : value)),
+  }
+)
+
+export const contactSchema: yup.ObjectSchema<Contact> = yup.object({
+  street1: yup.string(),
+  street2: yup.string(),
+  city: yup.string().required(requiredMessage),
+  country: yup.string().required(requiredMessage),
+  intlSubdivision: yup.string().notRequired(),
+  usSubdivision: yup.string().when('country', {
+    is: isUS,
+    then: yup.string().required(requiredMessage),
+    otherwise: yup.string().notRequired(),
+  }),
+  postalCode: yup.string().when('country', {
+    is: isUS,
+    then: yup.string().required(requiredMessage),
+    otherwise: yup.string().notRequired(),
+  }),
+})
 
 interface CheckoutBase {
   paymentMethodId?: string

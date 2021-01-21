@@ -1,0 +1,27 @@
+.checkout-overlay--title {
+  color: $g16-pearl;
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: $cf-marg-b;
+  text-align: center;
+  @include no-user-select();
+}
+
+.checkout-overlay--sub-title {
+  color: $g16-pearl;
+  font-size: 14px;
+  font-weight: 400;
+  margin-top: $cf-marg-b;
+  margin-bottom: $cf-marg-d;
+  text-align: center;
+  @include no-user-select();
+}
+
+.checkout-overlay--view__empty {
+  background-image: url('~images/checkout-overlay--success.svg');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 230px;
+  margin: $cf-marg-c 0;
+}

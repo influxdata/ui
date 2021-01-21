@@ -18,7 +18,7 @@ describe('CheckoutV2.ContactForm', () => {
   const states = ['Bar', 'Baz']
 
   const render = (extraFormikProps = {}, defaultOverrides = {}) =>
-    renderForm(<ContactForm countries={countries} states={states} />, {
+    renderForm(<ContactForm />, {
       initialValues: {...makeInitial(countries, states), ...defaultOverrides},
       validationSchema,
       ...extraFormikProps,

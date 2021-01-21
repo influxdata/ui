@@ -1,9 +1,11 @@
-import React, {FC} from 'react'
-import {useFormikContext} from 'formik'
+import React, {FC, useContext} from 'react'
 import {Columns, Grid} from '@influxdata/clockface'
 import FormInput from 'src/checkout/shared/FormInput'
 import FormSelectDropdown from 'src/checkout/shared/FormSelectDropdown'
 import {states, countries} from 'src/billing/constants'
+
+// Context
+import {CheckoutContext} from 'src/checkout/context/checkout'
 
 const UsContactForm: FC = () => (
   <Grid>
@@ -113,11 +115,9 @@ const IntlContactForm: FC = () => (
 )
 
 const ContactForm: FC = () => {
-  const {
-    values: {country},
-  } = useFormikContext()
+  const {inputs} = useContext(CheckoutContext)
 
-  switch (country) {
+  switch (inputs.country) {
     case 'United States':
       return <UsContactForm />
     case 'Canada':

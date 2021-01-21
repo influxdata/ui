@@ -1,5 +1,4 @@
-import React, {FC} from 'react'
-import {FormikTouched, setNestedObjectValues, useFormikContext} from 'formik'
+import React, {FC, useContext} from 'react'
 import {
   AppWrapper,
   AlignItems,
@@ -27,84 +26,63 @@ import ZuoraPaymentForm from 'src/checkout/ZuoraPaymentForm'
 import LogoWithCubo from 'src/checkout/LogoWithCubo'
 import PoweredByStripeLogo from 'src/checkout/PoweredByStripeLogo'
 
-// Utils
-import {Checkout} from 'src/checkout/utils/checkout'
+// Context
+import {CheckoutContext} from 'src/checkout/context/checkout'
 
 // Types
-import {ZuoraParams} from 'src/types/billing'
 
-interface Props {
-  zuoraParams: ZuoraParams
-}
+const CheckoutForm: FC = () => {
+  const {zuoraParams, handleSetInputs, handleSubmit, isSubmitting} = useContext(
+    CheckoutContext
+  )
 
-const CheckoutForm: FC<Props> = ({zuoraParams}) => {
-  const formikContext = useFormikContext<Checkout>()
-  const {
-    isSubmitting,
-    setFieldValue,
-    setFieldTouched,
-    setTouched,
-    submitForm,
-    validateForm,
-    initialValues,
-    values,
-  } = formikContext
+  // const {
+  //   isSubmitting,
+  //   setFieldValue,
+  //   setFieldTouched,
+  //   submitForm,
+  //   validateForm,
+  //   initialValues,
+  //   values,
+  // } = formikContext
 
-  const onZuoraSuccess = async paymentMethodId => {
-    await setFieldValue('paymentMethodId', paymentMethodId)
+  // const onZuoraSuccess = async (paymentMethodId: string) => {
+  //   await handleSetInputs('paymentMethodId', paymentMethodId)
 
-    try {
-      await submitForm()
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  //   try {
+  //     await submitForm()
+  //   } catch (error) {
+  //     console.error(error)
+  //   }
+  // }
 
-  async function resetIfEmpty(field) {
-    if (values[field] === '') {
-      await setFieldValue(field, initialValues[field])
-    }
-  }
+  // async function resetNotificationSettingsIfDisabled() {
+  //   // Solve for the edge case where a user enables settings,
+  //   // deletes the values in the name and threshold fields,
+  //   // disables settings, and then submits the form.
 
-  async function resetNotificationSettingsIfDisabled() {
-    // Solve for the edge case where a user enables settings,
-    // deletes the values in the name and threshold fields,
-    // disables settings, and then submits the form.
+  //   if (!values.shouldNotify) {
+  //     await resetIfEmpty('notifyEmail')
+  //     await resetIfEmpty('balanceThreshold')
+  //   }
+  // }
 
-    if (!values.shouldNotify) {
-      await resetIfEmpty('notifyEmail')
-      await resetIfEmpty('balanceThreshold')
-    }
-  }
+  // const validateQuartzForms = async (): Promise<boolean> => {
+  //   await resetNotificationSettingsIfDisabled()
 
-  const validateQuartzForms = async (): Promise<boolean> => {
-    await resetNotificationSettingsIfDisabled()
+  //   const errors = await validateForm()
 
-    const errors = await validateForm()
-
-    if (Object.keys(errors).length === 0) {
-      return true
-    } else {
-      // Touch all error fields on submit so we show the message
-      // https://github.com/formium/formik/issues/2734#issuecomment-690810715
-      setTouched(setNestedObjectValues<FormikTouched<Checkout>>(errors, true))
-      return false
-    }
-  }
-
-  const onSubmit = async () => {
-    try {
-      if (await validateQuartzForms()) {
-        // TODO(ariel): uncomment once the Zuora client is defined
-        // Z.submit()
-      }
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  //   if (Object.keys(errors).length === 0) {
+  //     return true
+  //   } else {
+  //     // Touch all error fields on submit so we show the message
+  //     // https://github.com/formium/formik/issues/2734#issuecomment-690810715
+  //     return false
+  //   }
+  // }
 
   return (
-    <Form noValidate onSubmit={onSubmit}>
+    <Form noValidate onSubmit={handleSubmit}>
       <AppWrapper type="funnel">
         <FunnelPage logo={<LogoWithCubo />} enableGraphic={true}>
           <h1 className="cf-funnel-page--title checkout-header">
@@ -164,12 +142,12 @@ const CheckoutForm: FC<Props> = ({zuoraParams}) => {
               }
             />
             <Panel.Body size={ComponentSize.Medium}>
-              <ZuoraPaymentForm
+              {/* <ZuoraPaymentForm
                 zuoraParams={zuoraParams}
                 client={Z}
                 onSuccess={onZuoraSuccess}
                 onFocus={() => setFieldTouched('paymentMethodId', true, false)}
-              />
+              /> */}
             </Panel.Body>
           </Panel>
           <Panel>

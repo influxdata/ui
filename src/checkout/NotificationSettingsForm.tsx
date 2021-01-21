@@ -1,5 +1,4 @@
-import React, {FC} from 'react'
-import {useFormikContext} from 'formik'
+import React, {FC, useContext} from 'react'
 import {
   Columns,
   Form,
@@ -9,14 +8,15 @@ import {
   InputType,
 } from '@influxdata/clockface'
 
+// Components
 import FormInput from 'src/checkout/shared/FormInput'
 import FormToggle from 'src/checkout/shared/FormToggle'
-import {minimumBalanceThreshold} from 'src/checkout/utils/notificationSettings'
+
+// Context
+import {CheckoutContext} from 'src/checkout/context/checkout'
 
 const NotificationSettingsForm: FC = () => {
-  const {
-    values: {shouldNotify},
-  } = useFormikContext()
+  const {inputs} = useContext(CheckoutContext)
 
   return (
     <>
@@ -27,7 +27,7 @@ const NotificationSettingsForm: FC = () => {
         tabIndex={0}
         type={InputToggleType.Checkbox}
       />
-      {shouldNotify && (
+      {inputs.shouldNotify && (
         <Form.Box>
           <Grid.Row>
             <Grid.Column widthSM={Columns.Six}>
@@ -41,8 +41,8 @@ const NotificationSettingsForm: FC = () => {
             <Grid.Column widthSM={Columns.Three}>
               <FormInput
                 id="balanceThreshold"
-                label={`Limit ($${minimumBalanceThreshold} minimum)`}
-                min={minimumBalanceThreshold}
+                label="Limit ($0 minimum)"
+                min={0}
                 required
                 step={0.01}
                 type={InputType.Number}

@@ -37,7 +37,9 @@ import {
   UsersPage,
   UsagePage,
   BillingPage,
+  CheckoutPage,
 } from 'src/shared/containers'
+import {CheckoutProvider} from 'src/checkout/context/checkout'
 
 // Types
 import {AppState, Organization, ResourceType} from 'src/types'
@@ -250,6 +252,16 @@ const SetOrg: FC<Props> = ({
           {/* Managed Functions */}
           {CLOUD && isFlagEnabled('managed-functions') && (
             <Route path={`${orgPath}/functions`} component={FunctionsRouter} />
+          )}
+
+          {/* Checkout */}
+          {CLOUD && isFlagEnabled('unity-checkout') && (
+            <CheckoutProvider>
+              <Route
+                path={`${orgPath}/unity-checkout`}
+                component={CheckoutPage}
+              />
+            </CheckoutProvider>
           )}
 
           {/* Members */}

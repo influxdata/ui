@@ -1,5 +1,5 @@
-import React, {FC, useState} from 'react'
-import {Formik} from 'formik'
+import React, {FC, useContext} from 'react'
+// import {Formik} from 'formik'
 import {
   RemoteDataState,
   Notification,
@@ -7,54 +7,38 @@ import {
   Gradients,
 } from '@influxdata/clockface'
 
-import {CheckoutClient} from 'src/checkout/client/checkoutClient'
-import {ZuoraParams} from 'src/types/billing'
-
-import {makeInitial, validationSchema} from 'src/checkout/utils/checkout'
+// Context
+import {CheckoutContext} from 'src/checkout/context/checkout'
+// import {makeInitial, validationSchema} from 'src/checkout/utils/checkout'
 
 // Components
 import CheckoutForm from 'src/checkout/CheckoutForm'
 import SuccessOverlay from 'src/checkout/SuccessOverlay'
 
+// Types
 interface Props {
-  email: string
-  onSuccessUrl: string
-  zuoraParams: ZuoraParams
+  // email: string
+  // onSuccessUrl: string
 }
 
-const CheckoutV2: FC<Props> = ({email, onSuccessUrl, zuoraParams}) => {
-  const checkoutClient = new CheckoutClient()
-
-  const [checkoutStatus, setCheckoutStatus] = useState(
-    RemoteDataState.NotStarted
-  )
-
-  const completeCheckout = async formValues => {
-    setCheckoutStatus(await checkoutClient.completePurchase(formValues))
-  }
-
+const CheckoutV2: FC<Props> = () => {
+  const {checkoutStatus, handleSetCheckoutStatus} = useContext(CheckoutContext)
   return (
-    <Formik
-      onSubmit={completeCheckout}
-      initialValues={makeInitial(email, states)}
-      validationSchema={validationSchema}
-    >
-      <>
-        <Notification
-          size={ComponentSize.ExtraSmall}
-          gradient={Gradients.JustPeachy}
-          visible={checkoutStatus == RemoteDataState.Error}
-          onDismiss={() => setCheckoutStatus(RemoteDataState.NotStarted)}
-        >
-          There was an error submitting the upgrade request, please try again.
-        </Notification>
-        <SuccessOverlay
+    <>
+      <Notification
+        size={ComponentSize.ExtraSmall}
+        gradient={Gradients.JustPeachy}
+        visible={checkoutStatus == RemoteDataState.Error}
+        onDismiss={() => handleSetCheckoutStatus(RemoteDataState.NotStarted)}
+      >
+        There was an error submitting the upgrade request, please try again.
+      </Notification>
+      {/* <SuccessOverlay
           url={onSuccessUrl}
           visible={checkoutStatus == RemoteDataState.Done}
-        />
-        <CheckoutForm zuoraParams={zuoraParams} />
-      </>
-    </Formik>
+        /> */}
+      <CheckoutForm />
+    </>
   )
 }
 

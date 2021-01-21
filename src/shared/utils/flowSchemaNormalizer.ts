@@ -65,6 +65,13 @@ export const normalizeSchema = (
   data: PipeData,
   searchTerm: string
 ): NormalizedSchema => {
+  if (!schema) {
+    return {
+      measurements: [],
+      fields: [],
+      tags: [],
+    }
+  }
   const lowerCasedSearchTerm = searchTerm.toLowerCase()
   const selectedMeasurement = data.measurement
   const selectedField = data.field

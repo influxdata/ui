@@ -13,7 +13,10 @@ import {SchemaContext} from 'src/flows/context/schemaProvider'
 const FieldsList: FC = () => {
   const {loading} = useContext(SchemaContext)
 
-  if (loading === RemoteDataState.Loading) {
+  if (
+    loading === RemoteDataState.NotStarted ||
+    loading === RemoteDataState.Loading
+  ) {
     return (
       <div className="data-source--list__empty">
         <TechnoSpinner strokeWidth={ComponentSize.Small} diameterPixels={32} />

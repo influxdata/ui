@@ -63,13 +63,10 @@ const FillValues: FunctionComponent<Props> = ({
 
 const mstp = (state: AppState) => {
   const {builderConfig} = getActiveQuery(state)
-  const {
-    aggregateWindow: {fillValues},
-  } = builderConfig
 
   return {
     isInCheckOverlay: getIsInCheckOverlay(state),
-    fillValues,
+    fillValues: builderConfig?.aggregateWindow?.fillValues ?? false,
   }
 }
 

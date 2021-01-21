@@ -6,12 +6,11 @@ import classnames from 'classnames'
 
 // Components
 import {
-  FlexBox,
-  JustifyContent,
   Button,
-  LinkButton,
-  ComponentColor,
+  FlexBox,
   ComponentSize,
+  JustifyContent,
+  ComponentColor,
 } from '@influxdata/clockface'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 
@@ -33,7 +32,12 @@ interface OwnProps {
 
 type ReduxProps = ConnectedProps<typeof connector>
 
-const RateLimitAlertContent: FC<OwnProps & ReduxProps> = ({className, showUpgrade, onShowOverlay, onDismissOverlay}) => {
+const RateLimitAlertContent: FC<OwnProps & ReduxProps> = ({
+  className,
+  showUpgrade,
+  onShowOverlay,
+  onDismissOverlay,
+}) => {
   const rateLimitAlertContentClass = classnames('rate-alert--content', {
     [`${className}`]: className,
   })
@@ -42,7 +46,7 @@ const RateLimitAlertContent: FC<OwnProps & ReduxProps> = ({className, showUpgrad
     onShowOverlay('rate-limit', null, onDismissOverlay)
   }
 
-  if (!showUpgrade) { // NOPE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~NOPE
+  if (showUpgrade) {
     return (
       <div
         className={`${rateLimitAlertContentClass} rate-alert--content__free`}
@@ -50,7 +54,7 @@ const RateLimitAlertContent: FC<OwnProps & ReduxProps> = ({className, showUpgrad
         <span>
           Oh no! You hit the{' '}
           <a
-            href="https://v2.docs.influxdata.com/v2.0/reference/glossary/#series-cardinality"
+            href="https://docs.influxdata.com/influxdb/v2.0/write-data/best-practices/resolve-high-cardinality/"
             className="rate-alert--docs-link"
             target="_blank"
           >
@@ -73,13 +77,13 @@ const RateLimitAlertContent: FC<OwnProps & ReduxProps> = ({className, showUpgrad
       <span>
         Data in has stopped because you've hit the{' '}
         <a
-          href="https://v2.docs.influxdata.com/v2.0/reference/glossary/#series-cardinality"
+          href="https://docs.influxdata.com/influxdb/v2.0/write-data/best-practices/resolve-high-cardinality/"
           className="rate-alert--docs-link"
           target="_blank"
         >
           series cardinality
         </a>{' '}
-        limit. Need some guidance?
+        limit. Let's get it flowing again.
       </span>
       <FlexBox
         justifyContent={JustifyContent.Center}
@@ -90,40 +94,11 @@ const RateLimitAlertContent: FC<OwnProps & ReduxProps> = ({className, showUpgrad
           color={ComponentColor.Primary}
           size={ComponentSize.Small}
           onClick={handleShowOverlay}
-          text="Optimize My Schema"
+          text="Inspect Series Cardinality"
         />
       </FlexBox>
     </div>
   )
-
-  // return (
-  //   <div className={`${rateLimitAlertContentClass} rate-alert--content__payg`}>
-  //     <span>
-  //       Data in has stopped because you've hit the{' '}
-  //       <a
-  //         href="https://v2.docs.influxdata.com/v2.0/reference/glossary/#series-cardinality"
-  //         className="rate-alert--docs-link"
-  //         target="_blank"
-  //       >
-  //         series cardinality
-  //       </a>{' '}
-  //       limit. Need some guidance?
-  //     </span>
-  //     <FlexBox
-  //       justifyContent={JustifyContent.Center}
-  //       className="rate-alert--button"
-  //     >
-  //       <LinkButton
-  //         className="rate-alert--contact-button"
-  //         color={ComponentColor.Primary}
-  //         size={ComponentSize.Small}
-  //         text="Speak with an Expert"
-  //         href="https://calendly.com/c/CBCTLOTDNVLFUTZO"
-  //         target="_blank"
-  //       />
-  //     </FlexBox>
-  //   </div>
-  // )
 }
 
 const mstp = (state: AppState) => {

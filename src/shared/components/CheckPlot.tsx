@@ -72,7 +72,10 @@ const CheckPlot: FunctionComponent<Props> = ({
 
   if (!isYNumeric) {
     return (
-      <EmptyGraphMessage message="Checks only support numeric values. Please try choosing another field." />
+      <EmptyGraphMessage
+        message="Checks only support numeric values. Please try choosing another field."
+        testID="empty-graph--numeric"
+      />
     )
   }
 

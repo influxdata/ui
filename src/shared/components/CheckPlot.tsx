@@ -64,9 +64,19 @@ const CheckPlot: FunctionComponent<Props> = ({
   const columnKeys = table.columnKeys
   const isValidView =
     columnKeys.includes(X_COLUMN) && columnKeys.includes(Y_COLUMN)
+  const isYNumeric = table.getColumnType(Y_COLUMN) === 'number'
 
   if (!isValidView) {
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
+  }
+
+  if (!isYNumeric) {
+    return (
+      <EmptyGraphMessage
+        message="Checks only support numeric values. Please try choosing another field."
+        testID="empty-graph--numeric"
+      />
+    )
   }
 
   const groupKey = [...fluxGroupKeyUnion, 'result']

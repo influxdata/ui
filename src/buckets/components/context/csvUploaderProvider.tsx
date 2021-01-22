@@ -113,6 +113,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
           let field: any = ''
           let time: any = ''
           let value: any = ''
+          let valueColumn: string = '_value'
           let tags: any = ''
           let line: any = ''
 
@@ -152,11 +153,20 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
               )
             }
             time = table.getColumn('_time')?.[i] ?? Date.now()
-            value = table.getColumn('_value')?.[i] ?? field ?? ''
+            table.columnKeys
+              // Matches _value, _value ('number'), _value ('string'), etc. to find value
+              // https://github.com/influxdata/giraffe/blob/master/giraffe/src/utils/fromFlux.ts#L62
+              .filter(c => /_value( \('\w*'\))?/g.test(c))
+              .forEach(c => {
+                if (table.getColumn(c)?.[i]) {
+                  value = table.getColumn(c)[i]
+                  valueColumn = c
+                }
+              })
             // Adds quotes to values if _value is of string type
             // https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/#quotes
             value =
-              table.getColumnType('_value') === 'string' && value
+              table.getColumnType(valueColumn) === 'string' && value
                 ? `"${value}"`
                 : value
             tags = columns

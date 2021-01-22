@@ -1,4 +1,5 @@
 @import '@influxdata/clockface/dist/variables.scss';
+@import '~src/flows/FlowVariables.scss';
 
 .query-results {
   width: 100%;
@@ -39,4 +40,14 @@
 
 .query-results--container .cf-dapper-scrollbars--track-x {
   background-color: rgba($g3-castle, 0.5) !important;
+}
+
+.flow-panel--body .flux-toolbar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 300px;
+  flex-direction: column;
+  background-color: $flow-panel--bg;
 }

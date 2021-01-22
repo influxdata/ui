@@ -17,7 +17,9 @@ import {
 } from '@influxdata/clockface'
 
 // Types
+import {EditorType} from 'src/types'
 import {PipeProp} from 'src/types/flows'
+import * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api'
 
 // Components
 import {PipeContext} from 'src/flows/context/pipe'
@@ -33,6 +35,7 @@ const FluxMonacoEditor = lazy(() =>
 const Query: FC<PipeProp> = ({Context}) => {
   const {data, update} = useContext(PipeContext)
   const [showFn, setShowFn] = useState(false)
+  const [editorInstance, setEditorInstance] = useState<EditorType>(null)
   const {queries, activeQuery} = data
   const query = queries[activeQuery]
 
@@ -49,12 +52,66 @@ const Query: FC<PipeProp> = ({Context}) => {
     [update, queries, activeQuery]
   )
 
+  const inject = useCallback((fn: FluxToolbarFunction): void => {
+      if (!editorInstance) {
+          return
+      }
+    const p = editorInstance.getPosition()
+    const split = query.text.split('\n')
+    let row = p.lineNumber
+    let text = ''
+
+    if ((split[row] || split[split.length - 1]).trim()) {
+        row = p.lineNumber + 1
+    }
+
+    const [currentRange] = editorInstance.getVisibleRanges()
+    // Determines whether the new insert line is beyond the current range
+    let shouldInsertOnLastLine = row > currentRange.endLineNumber
+    // edge case for when user toggles to the script editor
+    // this defaults the cursor to the initial position (top-left, 1:1 position)
+    if (p.lineNumber === 1 && p.column === 1) {
+      // adds the function to the end of the query
+      shouldInsertOnLastLine = true
+      row = currentRange.endLineNumber + 1
+    }
+
+    if (shouldInsertOnLastLine) {
+      text = `\n  |> ${fn.example}`
+    } else {
+      text = `  |> ${fn.example}\n`
+    }
+
+    if (fn.name === 'from' || fn.name === 'union') {
+      text = `\n${func.example}\n`
+    }
+
+    const range = new window.monaco.Range(
+      row, 1,
+      row, 1
+    )
+
+    const edits = [
+      {
+        range,
+        text,
+      },
+    ]
+
+    if (fn.package && !query.text.includes(`import "${fn.package}"`)) {
+        edits.unshift({
+            range: new window.monaco.Range(1,1,1,1),
+            text: `import "${fn.package}"\n`
+        })
+    }
+
+    editorInstance.executeEdits('', edits)
+    updateText(editorInstance.getValue())
+  }, [editorInstance, query.text])
+
   const toggleFn = useCallback(() => {
       setShowFn(!showFn)
   }, [setShowFn, showFn])
-  const inject = (fn) => {
-      console.log('oh neat', fn)
-  }
 
   const controls = (
       <SquareButton
@@ -78,22 +135,17 @@ const Query: FC<PipeProp> = ({Context}) => {
             />
           }
         >
-            <div style={{display: 'flex', flexDirection: 'column'}}>
-                <div style={{flexGrow: 1, flexBasis: '100%'}}>
           <FluxMonacoEditor
             script={query.text}
             onChangeScript={updateText}
             onSubmitScript={() => {}}
+            setEditorInstance={setEditorInstance}
             autogrow
           />
-                </div>
-                {showFn && (
-                <div style={{flex: '0 300px'}}>
-              <Functions onSelect={inject} />
-                </div>
-                )}
-                </div>
         </Suspense>
+                {showFn && (
+              <Functions onSelect={inject} />
+                )}
       </Context>
     )
 }

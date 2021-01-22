@@ -1,4 +1,4 @@
-import React, {FC, useState, useCallback, ChangeEvent} from 'react'
+import React, {FC, useState, useMemo, useCallback, ChangeEvent} from 'react'
 
 import {
     Input,
@@ -19,20 +19,10 @@ const Functions: FC = ({
         setSearch(e.target.value)
     }, [search, setSearch])
 
-    const filteredFunctions = FLUX_FUNCTIONS.filter(fn => {
-        return search.length && fn.name.toLowerCase().includes(search.toLowerCase())
-    })
-
-    let fnComponent
-
-    if (!filteredFunctions.length) {
-        fnComponent = (
-      <EmptyState size={ComponentSize.ExtraSmall}>
-        <EmptyState.Text>No functions match your search</EmptyState.Text>
-      </EmptyState>
-        )
-    } else {
-        fnComponent = Object.entries(filteredFunctions.reduce((acc, fn) => {
+    const filteredFunctions = useMemo(() => (
+        FLUX_FUNCTIONS.filter(fn => {
+            return !search.length || fn.name.toLowerCase().includes(search.toLowerCase())
+        }).reduce((acc, fn) => {
             if (!acc[fn.category]) {
                 acc[fn.category] = []
             }
@@ -40,8 +30,20 @@ const Functions: FC = ({
             acc[fn.category].push(fn)
 
             return acc
-        }, {}))
-            .map(([category, fns]) => (
+        }, {})
+    ), [search])
+
+
+    let fnComponent
+
+    if (!Object.keys(filteredFunctions).length) {
+        fnComponent = (
+      <EmptyState size={ComponentSize.ExtraSmall}>
+        <EmptyState.Text>No functions match your search</EmptyState.Text>
+      </EmptyState>
+        )
+    } else {
+        fnComponent = Object.entries(filteredFunctions).map(([category, fns]) => (
     <dl className="flux-toolbar--category"
         key={category}>
       <dt className="flux-toolbar--heading">{category}</dt>

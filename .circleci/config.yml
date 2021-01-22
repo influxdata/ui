@@ -174,7 +174,7 @@ jobs:
       - run:
           name: Update the images we're using
           command: |
-            cd ./monitor-ci && make update && make build NODE=ingress && make build NODE=dex
+            cd ./monitor-ci && make update && make build NODE=ingress && make cypress-build && make build NODE=dex
             docker tag local/cypress:latest quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
@@ -230,7 +230,7 @@ jobs:
       - run:
           name: Update the images we're using
           command: |
-            cd ./monitor-ci && make update && make build NODE=ingress
+            cd ./monitor-ci && make update && make cypress-build && make build NODE=ingress
             docker load < ~/docker-cache-oss/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - run:
@@ -281,7 +281,7 @@ jobs:
       - run:
           name: Update the images we're using
           command: |
-            cd ./monitor-ci && make update && make build NODE=ingress && make build NODE=dex
+            cd ./monitor-ci && make update && make build NODE=ingress && make cypress-build && make build NODE=dex
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - run:

@@ -41,8 +41,8 @@ const NotificationSettingsForm: FC = () => {
             <Grid.Column widthSM={Columns.Three}>
               <FormInput
                 id="balanceThreshold"
-                label="Limit ($0 minimum)"
-                min={0}
+                label="Limit ($1 minimum)"
+                min={1}
                 required
                 step={0.01}
                 type={InputType.Number}

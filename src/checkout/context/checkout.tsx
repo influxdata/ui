@@ -1,14 +1,17 @@
 // Libraries
 import React, {FC, useCallback, useState} from 'react'
+import {useDispatch} from 'react-redux'
 
-// Types
-import {RemoteDataState} from 'src/types'
+// Utils
+import {notify} from 'src/shared/actions/notifications'
 
 // Constants
 import {states} from 'src/billing/constants'
 import {CheckoutClient} from 'src/checkout/client/checkoutClient'
+import {submitError} from 'src/shared/copy/notifications'
 
 // Types
+import {RemoteDataState} from 'src/types'
 import {ZuoraParams} from 'src/types/billing'
 
 export type Props = {
@@ -32,7 +35,9 @@ export type Inputs = {
 export interface CheckoutContextType {
   checkoutStatus: RemoteDataState
   completeCheckout: (value: string) => void
+  errors: object
   handleSetCheckoutStatus: (status: RemoteDataState) => void
+  handleSetError: (name: string, value: boolean) => void
   handleSetInputs: (name: string, value: string | number | boolean) => void
   handleSubmit: () => void
   inputs: Inputs
@@ -43,13 +48,15 @@ export interface CheckoutContextType {
 export const DEFAULT_CONTEXT: CheckoutContextType = {
   checkoutStatus: RemoteDataState.NotStarted,
   completeCheckout: (_: string) => {},
+  errors: {},
   handleSetCheckoutStatus: (_: RemoteDataState) => {},
+  handleSetError: (_: string, __: boolean) => {},
   handleSetInputs: (_: string, __: string | number | boolean) => {},
   handleSubmit: () => {},
   inputs: {
     paymentMethodId: null,
     notifyEmail: '', // TODO(ariel): set notifyEmail by user's email
-    balanceThreshold: 0,
+    balanceThreshold: 1,
     shouldNotify: true,
     street1: '',
     street2: '',
@@ -77,6 +84,7 @@ export const CheckoutContext = React.createContext<CheckoutContextType>(
 )
 
 export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
+  const dispatch = useDispatch()
   const checkoutClient = new CheckoutClient()
 
   const zuoraParams: ZuoraParams = {
@@ -94,7 +102,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   const [inputs, setInputs] = useState<Inputs>({
     paymentMethodId: null,
     notifyEmail: '', // TODO(ariel): set notifyEmail by user's email
-    balanceThreshold: 0,
+    balanceThreshold: 1, // TODO(ariel): set balanceThreshold by user's data
     shouldNotify: true,
     street1: '',
     street2: '',
@@ -106,14 +114,10 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   })
 
   const [errors, setErrors] = useState({
-    notifyEmail: false, // TODO(ariel): set notifyEmail by user's email
+    notifyEmail: false,
     balanceThreshold: false,
-    paymentMethodId: false,
-    street1: false,
-    street2: false,
     city: false,
     country: false,
-    intlSubdivision: false,
     usSubdivision: false,
     postalCode: false,
   })
@@ -144,35 +148,26 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     [setCheckoutStatus]
   )
 
-  /**
-   *
-   *   // async function resetNotificationSettingsIfDisabled() {
-  //   // Solve for the edge case where a user enables settings,
-  //   // deletes the values in the name and threshold fields,
-  //   // disables settings, and then submits the form.
+  const handleSetError = (name: string, value: boolean): void => {
+    setErrors({
+      ...errors,
+      [name]: value,
+    })
+  }
 
-  //   if (!values.shouldNotify) {
-  //     await resetIfEmpty('notifyEmail')
-  //     await resetIfEmpty('balanceThreshold')
-  //   }
-  // }
+  const handleSetErrors = (errorFields: string[]): void => {
+    const errObj = {}
+    errorFields.forEach(fieldName => {
+      errObj[fieldName] = true
+    })
+    setErrors({
+      ...errors,
+      ...errObj,
+    })
+  }
 
-  // const validateQuartzForms = async (): Promise<boolean> => {
-  //   await resetNotificationSettingsIfDisabled()
-
-  //   const errors = await validateForm()
-
-  //   if (Object.keys(errors).length === 0) {
-  //     return true
-  //   } else {
-  //     // Touch all error fields on submit so we show the message
-  //     // https://github.com/formium/formik/issues/2734#issuecomment-690810715
-  //     return false
-  //   }
-  // }
-   */
-  const validateForm = useCallback(() => {
-    console.log({inputs})
+  const invalidFields = useCallback(() => {
+    const fields = {...inputs}
     /**
      * This function should:
      * 1. Check the inputs for any invalid fields
@@ -180,27 +175,79 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
      * 2. Render relevant error messages for the fields that are invalid
      * 3. Return true/false if there are/aren't errors
      */
+    const {shouldNotify} = inputs
+    if (!shouldNotify) {
+      // reset notifyEmail & balanceThreshold to default
+      /**
+       *
+       * fields.notifyEmail = default user email
+       * fields.balanceThreshold = default balance threshold
+       */
+    }
+
+    return Object.entries(fields).filter(([key, value]) => {
+      if (shouldNotify && key === 'notifyEmail' && value === '') {
+        return true
+      }
+      if (shouldNotify && key === 'balanceThreshold' && value === '') {
+        return true
+      }
+      if (
+        key === 'usSubdivision' &&
+        fields.country === 'United States' &&
+        value === ''
+      ) {
+        return true
+      }
+      if (
+        key === 'postalCode' &&
+        fields.country === 'United States' &&
+        value === ''
+      ) {
+        return true
+      }
+      if (key === 'city' && value === '') {
+        return true
+      }
+      return false
+    })
   }, [inputs])
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = () => {
+    console.log('being clicked?')
     /**
      * this function should:
      * 1. Check to see if the form is valid using the validate form
      * 2. Z.submit where Z is the Zuora Client IF the form is valid
      */
     setIsSubmitting(true)
+    const errs = invalidFields()
+    try {
+      if (errs.length === 0) {
+        // TODO(ariel): uncomment once the Zuora client is defined
+        // Z.submit()
+      } else {
+        // setError
+        const errorFields = errs.flatMap(([err]) => err)
+        handleSetErrors(errorFields)
+      }
+    } catch (error) {
+      console.error({error})
+      // send a toast notification with this error:
+      dispatch(notify(submitError()))
+    }
     // if ()
-    // TODO(ariel): uncomment once the Zuora client is defined
-    // Z.submit()
     setIsSubmitting(false)
-  }, [])
+  }
 
   return (
     <CheckoutContext.Provider
       value={{
         checkoutStatus,
         completeCheckout,
+        errors,
         handleSetCheckoutStatus,
+        handleSetError,
         handleSetInputs,
         handleSubmit,
         inputs,

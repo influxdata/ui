@@ -7,7 +7,7 @@ import {
   TIME_INVALIDATION,
 } from 'src/shared/apis/queryCache'
 import {RunQuerySuccessResult} from 'src/shared/apis/query'
-import {Variable} from 'src/types'
+import {Variable, RemoteDataState} from 'src/types'
 
 jest.mock('src/shared/apis/query')
 
@@ -25,6 +25,9 @@ const promise = new Promise(res => {
 const variables: Variable[] = [
   {
     id: '054b7476389f1000',
+    orgID: '',
+    status: RemoteDataState.Done,
+    labels: [],
     name: 'bucket',
     selected: ['Homeward Bound'],
     arguments: {
@@ -38,6 +41,9 @@ const variables: Variable[] = [
   },
   {
     id: '05782ef09ddb8000',
+    orgID: '',
+    status: RemoteDataState.Done,
+    labels: [],
     name: 'base_query',
     selected: [],
     arguments: {
@@ -51,6 +57,9 @@ const variables: Variable[] = [
   },
   {
     id: '05aeb0ad75aca000',
+    orgID: '',
+    status: RemoteDataState.Done,
+    labels: [],
     name: 'values',
     selected: ['system'],
     arguments: {
@@ -63,6 +72,9 @@ const variables: Variable[] = [
   },
   {
     id: '05ba3253105a5000',
+    orgID: '',
+    status: RemoteDataState.Done,
+    labels: [],
     name: 'broker_host',
     selected: [],
     arguments: {
@@ -76,6 +88,9 @@ const variables: Variable[] = [
   },
   {
     id: '05e6e4df2287b000',
+    orgID: '',
+    status: RemoteDataState.Done,
+    labels: [],
     name: 'deployment',
     selected: [],
     arguments: {
@@ -89,6 +104,9 @@ const variables: Variable[] = [
   },
   {
     id: '05e6e4fb0887b000',
+    orgID: '',
+    status: RemoteDataState.Done,
+    labels: [],
     name: 'build',
     selected: [],
     arguments: {

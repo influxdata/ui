@@ -22,19 +22,16 @@ const CreateVariableOverlay: FC = () => {
   }
 
   return (
-      <Overlay.Container maxWidth={1000}>
-        <Overlay.Header
-          title="Create Variable"
-          onDismiss={handleHide}
-        />
-        <Overlay.Body>
-          <GetResources resources={[ResourceType.Variables]}>
-            <ErrorBoundary>
-              <VariableFormContext onHideOverlay={handleHide} />
-            </ErrorBoundary>
-          </GetResources>
-        </Overlay.Body>
-      </Overlay.Container>
+    <Overlay.Container maxWidth={1000}>
+      <Overlay.Header title="Create Variable" onDismiss={handleHide} />
+      <Overlay.Body>
+        <GetResources resources={[ResourceType.Variables]}>
+          <ErrorBoundary>
+            <VariableFormContext onHideOverlay={handleHide} />
+          </ErrorBoundary>
+        </GetResources>
+      </Overlay.Body>
+    </Overlay.Container>
   )
 }
 

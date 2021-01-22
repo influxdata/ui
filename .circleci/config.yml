@@ -348,6 +348,7 @@ jobs:
       - run: yarn generate
       - run:
           name: parallel jest tests
+          no_output_timeout: 20m
           command: |
             set +e
             TESTFILES=$(circleci tests glob "src/**/*.test.ts*" | circleci tests split --split-by=timings)

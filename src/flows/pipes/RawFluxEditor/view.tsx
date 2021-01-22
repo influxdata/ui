@@ -52,102 +52,98 @@ const Query: FC<PipeProp> = ({Context}) => {
     [update, queries, activeQuery]
   )
 
-  const inject = useCallback((fn: FluxToolbarFunction): void => {
+  const inject = useCallback(
+    (fn: FluxToolbarFunction): void => {
       if (!editorInstance) {
-          return
+        return
       }
-    const p = editorInstance.getPosition()
-    const split = query.text.split('\n')
-    let row = p.lineNumber
-    let text = ''
+      const p = editorInstance.getPosition()
+      const split = query.text.split('\n')
+      let row = p.lineNumber
+      let text = ''
 
-    if ((split[row] || split[split.length - 1]).trim()) {
+      if ((split[row] || split[split.length - 1]).trim()) {
         row = p.lineNumber + 1
-    }
+      }
 
-    const [currentRange] = editorInstance.getVisibleRanges()
-    // Determines whether the new insert line is beyond the current range
-    let shouldInsertOnLastLine = row > currentRange.endLineNumber
-    // edge case for when user toggles to the script editor
-    // this defaults the cursor to the initial position (top-left, 1:1 position)
-    if (p.lineNumber === 1 && p.column === 1) {
-      // adds the function to the end of the query
-      shouldInsertOnLastLine = true
-      row = currentRange.endLineNumber + 1
-    }
+      const [currentRange] = editorInstance.getVisibleRanges()
+      // Determines whether the new insert line is beyond the current range
+      let shouldInsertOnLastLine = row > currentRange.endLineNumber
+      // edge case for when user toggles to the script editor
+      // this defaults the cursor to the initial position (top-left, 1:1 position)
+      if (p.lineNumber === 1 && p.column === 1) {
+        // adds the function to the end of the query
+        shouldInsertOnLastLine = true
+        row = currentRange.endLineNumber + 1
+      }
 
-    if (shouldInsertOnLastLine) {
-      text = `\n  |> ${fn.example}`
-    } else {
-      text = `  |> ${fn.example}\n`
-    }
+      if (shouldInsertOnLastLine) {
+        text = `\n  |> ${fn.example}`
+      } else {
+        text = `  |> ${fn.example}\n`
+      }
 
-    if (fn.name === 'from' || fn.name === 'union') {
-      text = `\n${func.example}\n`
-    }
+      if (fn.name === 'from' || fn.name === 'union') {
+        text = `\n${func.example}\n`
+      }
 
-    const range = new window.monaco.Range(
-      row, 1,
-      row, 1
-    )
+      const range = new window.monaco.Range(row, 1, row, 1)
 
-    const edits = [
-      {
-        range,
-        text,
-      },
-    ]
+      const edits = [
+        {
+          range,
+          text,
+        },
+      ]
 
-    if (fn.package && !query.text.includes(`import "${fn.package}"`)) {
+      if (fn.package && !query.text.includes(`import "${fn.package}"`)) {
         edits.unshift({
-            range: new window.monaco.Range(1,1,1,1),
-            text: `import "${fn.package}"\n`
+          range: new window.monaco.Range(1, 1, 1, 1),
+          text: `import "${fn.package}"\n`,
         })
-    }
+      }
 
-    editorInstance.executeEdits('', edits)
-    updateText(editorInstance.getValue())
-  }, [editorInstance, query.text])
+      editorInstance.executeEdits('', edits)
+      updateText(editorInstance.getValue())
+    },
+    [editorInstance, query.text]
+  )
 
   const toggleFn = useCallback(() => {
-      setShowFn(!showFn)
+    setShowFn(!showFn)
   }, [setShowFn, showFn])
 
   const controls = (
-      <SquareButton
-        icon={IconFont.Function}
-        onClick={toggleFn}
-        color={
-          showFn ? ComponentColor.Primary : ComponentColor.Default
-        }
-        titleText="Function Reference"
-        className="flows-config-function-button"
-      />
+    <SquareButton
+      icon={IconFont.Function}
+      onClick={toggleFn}
+      color={showFn ? ComponentColor.Primary : ComponentColor.Default}
+      titleText="Function Reference"
+      className="flows-config-function-button"
+    />
   )
 
   return (
-      <Context controls={controls}>
-        <Suspense
-          fallback={
-            <SpinnerContainer
-              loading={RemoteDataState.Loading}
-              spinnerComponent={<TechnoSpinner />}
-            />
-          }
-        >
-          <FluxMonacoEditor
-            script={query.text}
-            onChangeScript={updateText}
-            onSubmitScript={() => {}}
-            setEditorInstance={setEditorInstance}
-            autogrow
+    <Context controls={controls}>
+      <Suspense
+        fallback={
+          <SpinnerContainer
+            loading={RemoteDataState.Loading}
+            spinnerComponent={<TechnoSpinner />}
           />
-        </Suspense>
-                {showFn && (
-              <Functions onSelect={inject} />
-                )}
-      </Context>
-    )
+        }
+      >
+        <FluxMonacoEditor
+          script={query.text}
+          onChangeScript={updateText}
+          onSubmitScript={() => {}}
+          setEditorInstance={setEditorInstance}
+          autogrow
+        />
+      </Suspense>
+      {showFn && <Functions onSelect={inject} />}
+    </Context>
+  )
 }
 
 export default Query

@@ -1,65 +1,68 @@
 import React, {FC, useState, useMemo, useCallback, ChangeEvent} from 'react'
 
 import {
-    Input,
-    InputType,
-    IconFont,
-    DapperScrollbars,
-    EmptyState,
-    ComponentSize
+  Input,
+  InputType,
+  IconFont,
+  DapperScrollbars,
+  EmptyState,
+  ComponentSize,
 } from '@influxdata/clockface'
 import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
 import Fn from './function'
 
-const Functions: FC = ({
-    onSelect
-}) => {
-    const [search, setSearch] = useState('')
-    const updateSearch = useCallback((e: ChangeEvent) => {
-        setSearch(e.target.value)
-    }, [search, setSearch])
+const Functions: FC = ({onSelect}) => {
+  const [search, setSearch] = useState('')
+  const updateSearch = useCallback(
+    (e: ChangeEvent) => {
+      setSearch(e.target.value)
+    },
+    [search, setSearch]
+  )
 
-    const filteredFunctions = useMemo(() => (
-        FLUX_FUNCTIONS.filter(fn => {
-            return !search.length || fn.name.toLowerCase().includes(search.toLowerCase())
-        }).reduce((acc, fn) => {
-            if (!acc[fn.category]) {
-                acc[fn.category] = []
-            }
+  const filteredFunctions = useMemo(
+    () =>
+      FLUX_FUNCTIONS.filter(fn => {
+        return (
+          !search.length || fn.name.toLowerCase().includes(search.toLowerCase())
+        )
+      }).reduce((acc, fn) => {
+        if (!acc[fn.category]) {
+          acc[fn.category] = []
+        }
 
-            acc[fn.category].push(fn)
+        acc[fn.category].push(fn)
 
-            return acc
-        }, {})
-    ), [search])
+        return acc
+      }, {}),
+    [search]
+  )
 
+  let fnComponent
 
-    let fnComponent
-
-    if (!Object.keys(filteredFunctions).length) {
-        fnComponent = (
+  if (!Object.keys(filteredFunctions).length) {
+    fnComponent = (
       <EmptyState size={ComponentSize.ExtraSmall}>
         <EmptyState.Text>No functions match your search</EmptyState.Text>
       </EmptyState>
-        )
-    } else {
-        fnComponent = Object.entries(filteredFunctions).map(([category, fns]) => (
-    <dl className="flux-toolbar--category"
-        key={category}>
-      <dt className="flux-toolbar--heading">{category}</dt>
-      {fns.map(fn => (
-        <Fn
-          onClickFunction={onSelect}
-          key={`${fn.name}_${fn.desc}`}
-          func={fn}
-          testID={fn.name}
-        />
-      ))}
-    </dl>
-            ))
-    }
+    )
+  } else {
+    fnComponent = Object.entries(filteredFunctions).map(([category, fns]) => (
+      <dl className="flux-toolbar--category" key={category}>
+        <dt className="flux-toolbar--heading">{category}</dt>
+        {fns.map(fn => (
+          <Fn
+            onClickFunction={onSelect}
+            key={`${fn.name}_${fn.desc}`}
+            func={fn}
+            testID={fn.name}
+          />
+        ))}
+      </dl>
+    ))
+  }
 
-    return (
+  return (
     <div className="flux-toolbar">
       <div className="flux-toolbar--search">
         <Input
@@ -73,11 +76,11 @@ const Functions: FC = ({
       </div>
       <DapperScrollbars className="flux-toolbar--scroll-area">
         <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
-            {fnComponent}
+          {fnComponent}
         </div>
       </DapperScrollbars>
     </div>
-    )
+  )
 }
 
 export default Functions

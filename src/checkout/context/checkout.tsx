@@ -1,9 +1,10 @@
 // Libraries
-import React, {FC, useCallback, useState} from 'react'
+import React, {FC, useCallback, useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
 
 // Utils
 import {notify} from 'src/shared/actions/notifications'
+import {getBillingNotificationSettings} from 'src/billing/api'
 
 // Constants
 import {states} from 'src/billing/constants'
@@ -22,7 +23,7 @@ export type Inputs = {
   paymentMethodId: number
   notifyEmail: string
   balanceThreshold: number
-  shouldNotify: true
+  shouldNotify: boolean
   street1: string
   street2: string
   city: string
@@ -57,7 +58,7 @@ export const DEFAULT_CONTEXT: CheckoutContextType = {
     paymentMethodId: null,
     notifyEmail: '', // TODO(ariel): set notifyEmail by user's email
     balanceThreshold: 1,
-    shouldNotify: true,
+    shouldNotify: false,
     street1: '',
     street2: '',
     city: '',
@@ -66,7 +67,7 @@ export const DEFAULT_CONTEXT: CheckoutContextType = {
     usSubdivision: states[0],
     postalCode: '',
   },
-  isSubmitting: false,
+  isSubmitting: true,
   zuoraParams: {
     id: '',
     tenantID: '',
@@ -113,6 +114,25 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     postalCode: '',
   })
 
+  const getBillingSettings = useCallback(
+    async (fields = inputs) => {
+      const resp = await getBillingNotificationSettings()
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+      setInputs({
+        ...fields,
+        balanceThreshold: resp.data.balanceThreshold,
+        notifyEmail: resp.data.notifyEmail,
+      })
+    },
+    [getBillingNotificationSettings]
+  )
+
+  useEffect(() => {
+    getBillingSettings()
+  }, [getBillingSettings])
+
   const [errors, setErrors] = useState({
     notifyEmail: false,
     balanceThreshold: false,
@@ -122,7 +142,6 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     postalCode: false,
   })
 
-  // TODO(ariel): error states
   const [checkoutStatus, setCheckoutStatus] = useState(
     RemoteDataState.NotStarted
   )
@@ -168,16 +187,10 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
 
   const invalidFields = useCallback(() => {
     const fields = {...inputs}
-    /**
-     * This function should:
-     * 1. Check the inputs for any invalid fields
-     *   a. Form validation should mimic what is currently happening in Quartz since it's pretty conditional based on certain selections
-     * 2. Render relevant error messages for the fields that are invalid
-     * 3. Return true/false if there are/aren't errors
-     */
+
     const {shouldNotify} = inputs
     if (!shouldNotify) {
-      // reset notifyEmail & balanceThreshold to default
+      getBillingSettings(fields)
       /**
        *
        * fields.notifyEmail = default user email
@@ -211,11 +224,11 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
       }
       return false
     })
-  }, [inputs])
+  }, [getBillingSettings, inputs])
 
   const handleSubmit = () => {
-    // Check to see if the form is valid using the validate form
     setIsSubmitting(true)
+    // Check to see if the form is valid using the validate form
     const errs = invalidFields()
     try {
       if (errs.length === 0) {
@@ -223,7 +236,8 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
         // TODO(ariel): uncomment once the Zuora client is defined
         // Z.submit()
       } else {
-        const errorFields = errs.flatMap(([err]) => err)
+        console.log({errs})
+        const errorFields = errs?.flatMap(([err]) => err)
         handleSetErrors(errorFields)
       }
     } catch (error) {

@@ -10,6 +10,7 @@ interface FormToggleProps extends Omit<ToggleProps, 'onChange'> {
 
 const FormToggle: FC<FormToggleProps> = ({label, ...props}) => {
   const {inputs, handleSetInputs} = useContext(CheckoutContext)
+
   return (
     <Toggle
       {...props}

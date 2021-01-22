@@ -11,6 +11,33 @@ jest.mock('src/resources/components/GetResources')
 jest.mock('src/shared/actions/notifications')
 jest.mock('src/shared/utils/errors')
 
+jest.mock('src/templates/selectors/index.ts', () => {
+  return {
+    getTotalResourceCount: jest.fn(() => {
+      return 1
+    }),
+    getResourceInstallCount: jest.fn(() => {
+      return 1
+    }),
+  }
+})
+
+jest.mock('src/templates/utils/index.ts', () => {
+  return {
+    getTemplateNameFromUrl: jest.fn(() => {
+      return {name: 'fn-template', extension: 'ext', directory: 'directory'}
+    }),
+  }
+})
+
+jest.mock('src/buckets/actions/thunks.ts', () => {
+  return {
+    getBuckets: jest.fn(() => {
+      return jest.fn()
+    }),
+  }
+})
+
 jest.mock('src/templates/api', () => {
   return {
     fetchStacks: jest.fn(() => {
@@ -19,13 +46,19 @@ jest.mock('src/templates/api', () => {
     reviewTemplate: jest.fn(() => {
       return {summary: {}}
     }),
+    installTemplate: jest.fn(() => {
+      return {summary: {}}
+    }),
+    updateStackName: jest.fn(() => {
+      return Promise.resolve({summary: {}})
+    }),
   }
 })
 
 // Imported mocks - don't import these until after mocking the functionality contained therein
+import {installTemplate, updateStackName} from 'src/templates/api'
 import {event} from 'src/cloud/utils/reporting'
 import {notify} from 'src/shared/actions/notifications'
-import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 // Mock State
 import {renderWithReduxAndRouter} from 'src/mockState'
@@ -40,7 +73,7 @@ import {arrayOfOrgs} from 'src/schemas'
 import {templatesReducer} from 'src/templates/reducers/index'
 
 // What have you
-import {communityTemplateUnsupportedFormatError} from 'src/shared/copy/notifications'
+import {communityTemplateInstallSucceeded} from 'src/shared/copy/notifications'
 
 // The file under test, imported last
 import {CommunityTemplatesIndex} from 'src/templates/containers/CommunityTemplatesIndex'
@@ -66,24 +99,13 @@ const setup = (props = defaultProps) => {
   )
 }
 
-describe('the Community Templates index', () => {
+describe('the Community Templates Install Overlay', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
-  describe('starting the template install process', () => {
-    it('notifies the user when there is no template url to lookup', () => {
-      const {getByTitle} = setup()
-      const templateButton = getByTitle('Lookup Template')
-
-      fireEvent.click(templateButton)
-
-      const [notifyCallArguments] = mocked(notify).mock.calls
-      const [notifyMessage] = notifyCallArguments
-      expect(notifyMessage).toEqual(communityTemplateUnsupportedFormatError())
-    })
-
-    it('opens the install overlay when the template url is valid', () => {
+  describe('handling the template install process', () => {
+    it('opens the install overlay when the template url is valid', async () => {
       const {getByTitle, store} = setup()
 
       // This successful call opens the Community Templates Installer overlay which requires orgs to be set
@@ -108,49 +130,42 @@ describe('the Community Templates index', () => {
           'https://github.com/influxdata/community-templates/blob/master/fortnite/fn-template.yml',
       })
 
-      expect(screen.queryByText('Template Installer')).not.toBeInTheDocument()
-
       const templateButton = getByTitle('Lookup Template')
 
       fireEvent.click(templateButton)
 
-      const [eventCallArguments] = mocked(event).mock.calls
-      const [eventName, eventMetaData] = eventCallArguments
+      const [templateClickEventCallArguments] = mocked(event).mock.calls
+      const [eventName, eventMetaData] = templateClickEventCallArguments
       expect(eventName).toBe('template_click_lookup')
       expect(eventMetaData).toEqual({templateName: 'fn-template'})
 
-      waitFor(() => {
+      await waitFor(() => {
         expect(screen.queryByText('Template Installer')).toBeVisible()
       })
-    })
 
-    it('handles failures', () => {
-      const {getByTitle, store} = setup()
-
-      store.dispatch({
-        type: 'SET_STAGED_TEMPLATE_URL',
-        templateUrl:
-          'https://github.com/influxdata/community-templates/blob/master/fortnite/fn-template.yml',
+      await waitFor(() => {
+        const installButton = screen.queryByTitle('Install Template')
+        expect(installButton).toBeVisible()
+        fireEvent.click(installButton)
       })
 
-      mocked(event).mockImplementation(() => {
-        throw new Error()
-      })
+      expect(installTemplate).toHaveBeenCalled()
 
-      const templateButton = getByTitle('Lookup Template')
+      const [, installEventCallArguments] = mocked(event).mock.calls
+      const [eventName2] = installEventCallArguments
+      expect(eventName2).toBe('template_install')
 
-      fireEvent.click(templateButton)
+      expect(updateStackName).toHaveBeenCalled()
+
+      const [, , renameEventCallArguments] = mocked(event).mock.calls
+      const [eventName3] = renameEventCallArguments
+      expect(eventName3).toBe('template_rename')
 
       const [notifyCallArguments] = mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
-      expect(notifyMessage).toEqual(communityTemplateUnsupportedFormatError())
-
-      const [honeyBadgerCallArguments] = mocked(
-        reportErrorThroughHoneyBadger
-      ).mock.calls
-      expect(honeyBadgerCallArguments[1]).toEqual({
-        name: 'The community template getTemplateDetails failed',
-      })
+      expect(notifyMessage).toEqual(
+        communityTemplateInstallSucceeded('fn-template')
+      )
     })
   })
 })

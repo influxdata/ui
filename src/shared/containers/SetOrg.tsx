@@ -37,9 +37,7 @@ import {
   UsersPage,
   UsagePage,
   BillingPage,
-  CheckoutPage,
 } from 'src/shared/containers'
-import {CheckoutProvider} from 'src/checkout/context/checkout'
 
 // Types
 import {AppState, Organization, ResourceType} from 'src/types'

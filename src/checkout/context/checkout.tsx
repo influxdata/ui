@@ -214,29 +214,22 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   }, [inputs])
 
   const handleSubmit = () => {
-    console.log('being clicked?')
-    /**
-     * this function should:
-     * 1. Check to see if the form is valid using the validate form
-     * 2. Z.submit where Z is the Zuora Client IF the form is valid
-     */
+    // Check to see if the form is valid using the validate form
     setIsSubmitting(true)
     const errs = invalidFields()
     try {
       if (errs.length === 0) {
+        // Z.submit where Z is the Zuora Client IF the form is valid
         // TODO(ariel): uncomment once the Zuora client is defined
         // Z.submit()
       } else {
-        // setError
         const errorFields = errs.flatMap(([err]) => err)
         handleSetErrors(errorFields)
       }
     } catch (error) {
       console.error({error})
-      // send a toast notification with this error:
       dispatch(notify(submitError()))
     }
-    // if ()
     setIsSubmitting(false)
   }
 

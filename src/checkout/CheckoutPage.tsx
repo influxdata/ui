@@ -1,11 +1,9 @@
-import React, {FC, useContext} from 'react'
-
-// Context
-import {CheckoutContext} from 'src/checkout/context/checkout'
+import React, {FC} from 'react'
 
 // Components
 import CheckoutForm from 'src/checkout/CheckoutForm'
 import SuccessOverlay from 'src/checkout/SuccessOverlay'
+import CheckoutProvider from 'src/checkout/context/checkout'
 
 // Types
 interface Props {
@@ -14,15 +12,14 @@ interface Props {
 }
 
 const CheckoutV2: FC<Props> = () => {
-  const {checkoutStatus, handleSetCheckoutStatus} = useContext(CheckoutContext)
   return (
-    <>
+    <CheckoutProvider>
       {/* <SuccessOverlay
           url={onSuccessUrl}
           visible={checkoutStatus == RemoteDataState.Done}
       />*/}
       <CheckoutForm />
-    </>
+    </CheckoutProvider>
   )
 }
 

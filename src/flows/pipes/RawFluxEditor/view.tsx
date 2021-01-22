@@ -19,7 +19,6 @@ import {
 // Types
 import {EditorType} from 'src/types'
 import {PipeProp} from 'src/types/flows'
-import * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api'
 
 // Components
 import {PipeContext} from 'src/flows/context/pipe'

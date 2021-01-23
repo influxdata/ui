@@ -18,6 +18,7 @@ import {
 
 // Types
 import {EditorType} from 'src/types'
+import {FluxToolbarFunction} from 'src/types/shared'
 import {PipeProp} from 'src/types/flows'
 
 // Components
@@ -83,7 +84,7 @@ const Query: FC<PipeProp> = ({Context}) => {
       }
 
       if (fn.name === 'from' || fn.name === 'union') {
-        text = `\n${func.example}\n`
+        text = `\n${fn.example}\n`
       }
 
       const range = new window.monaco.Range(row, 1, row, 1)

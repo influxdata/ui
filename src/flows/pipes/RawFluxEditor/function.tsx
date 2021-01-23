@@ -22,44 +22,50 @@ interface Props {
   testID: string
 }
 
+interface TooltipProps {
+  func: FluxToolbarFunction
+}
+
 const defaultProps = {
   testID: 'flux-function',
 }
 
-const FunctionTooltipContents: FunctionComponent<Props> = ({
-  func: {desc, args, example, link, name},
-}) => {
-  let _args = <div className="flux-function-docs--arguments">None</div>
+const FunctionTooltipContents: FC<TooltipProps> = ({func}) => {
+  let argComponent = <div className="flux-function-docs--arguments">None</div>
 
-  if (args.length > 0) {
-    _args = args.map(a => (
-      <div className="flux-function-docs--arguments" key={a.name}>
-        <span>{a.name}:</span>
-        <span>{a.type}</span>
-        <div>{a.desc}</div>
-      </div>
-    ))
+  if (func.args.length > 0) {
+    argComponent = (
+      <>
+        {func.args.map(a => (
+          <div className="flux-function-docs--arguments" key={a.name}>
+            <span>{a.name}:</span>
+            <span>{a.type}</span>
+            <div>{a.desc}</div>
+          </div>
+        ))}
+      </>
+    )
   }
 
   return (
-    <div className="flux-function-docs" data-testid={`flux-docs--${name}`}>
+    <div className="flux-function-docs" data-testid={`flux-docs--${func.name}`}>
       <DapperScrollbars autoHide={false}>
         <div className="flux-toolbar--popover">
           <article className="flux-functions-toolbar--description">
             <div className="flux-function-docs--heading">Description</div>
-            <span>{desc}</span>
+            <span>{func.desc}</span>
           </article>
           <article>
             <div className="flux-function-docs--heading">Arguments</div>
-            <div className="flux-function-docs--snippet">{_args}</div>
+            <div className="flux-function-docs--snippet">{argComponent}</div>
           </article>
           <article>
             <div className="flux-function-docs--heading">Example</div>
-            <div className="flux-function-docs--snippet">{example}</div>
+            <div className="flux-function-docs--snippet">{func.example}</div>
           </article>
           <p className="tooltip--link">
             Still have questions? Check out the{' '}
-            <a target="_blank" href={link}>
+            <a target="_blank" href={func.link}>
               Flux Docs
             </a>
             .
@@ -75,6 +81,7 @@ const ToolbarFunction: FC<Props> = ({func, onClickFunction, testID}) => {
   const handleClickFunction = () => {
     onClickFunction(func)
   }
+
   return (
     <>
       <Popover

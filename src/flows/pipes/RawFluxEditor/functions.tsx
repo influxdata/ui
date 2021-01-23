@@ -1,4 +1,4 @@
-import React, {FC, useState, useMemo, useCallback, ChangeEvent} from 'react'
+import React, {FC, useState, useMemo, useCallback} from 'react'
 
 import {
   Input,
@@ -9,18 +9,27 @@ import {
   ComponentSize,
 } from '@influxdata/clockface'
 import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
+import {FluxToolbarFunction} from 'src/types/shared'
 import Fn from './function'
 
-const Functions: FC = ({onSelect}) => {
+interface Props {
+  onSelect: (fn: FluxToolbarFunction) => void
+}
+
+interface FilteredFn {
+  [key: string]: FluxToolbarFunction[]
+}
+
+const Functions: FC<Props> = ({onSelect}) => {
   const [search, setSearch] = useState('')
   const updateSearch = useCallback(
-    (e: ChangeEvent) => {
+    e => {
       setSearch(e.target.value)
     },
     [search, setSearch]
   )
 
-  const filteredFunctions = useMemo(
+  const filteredFunctions: FilteredFn = useMemo(
     () =>
       FLUX_FUNCTIONS.filter(fn => {
         return (
@@ -28,7 +37,7 @@ const Functions: FC = ({onSelect}) => {
         )
       }).reduce((acc, fn) => {
         if (!acc[fn.category]) {
-          acc[fn.category] = []
+          acc[fn.category] = [] as FluxToolbarFunction[]
         }
 
         acc[fn.category].push(fn)

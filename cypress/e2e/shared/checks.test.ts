@@ -5,6 +5,7 @@ const PAGE_LOAD_SLA = 10000
 
 const measurement = 'my_meas'
 const field = 'my_field'
+const stringField = 'string_field'
 describe('Checks', () => {
   beforeEach(() => {
     cy.flush()
@@ -12,7 +13,10 @@ describe('Checks', () => {
     cy.signin().then(() => {
       // visit the alerting index
       cy.get('@org').then(({id: orgID}: Organization) => {
-        cy.writeData([`${measurement} ${field}=0`, `${measurement} ${field}=1`])
+        cy.writeData([
+          `${measurement} ${field}=0,${stringField}="string1"`,
+          `${measurement} ${field}=1,${stringField}="string2"`,
+        ])
         cy.fixture('routes').then(({orgs, alerting}) => {
           cy.visit(`${orgs}/${orgID}${alerting}`)
         })
@@ -259,6 +263,31 @@ describe('Checks', () => {
     cy.getByTestID('check-card--name')
       .contains('Deadman check test')
       .should('exist')
+  })
+
+  it('checks only allow numeric fields', () => {
+    // create deadman check
+    cy.getByTestID('create-check').click()
+    cy.getByTestID('create-deadman-check').click()
+
+    // checklist popover and save button check
+    cy.get('.query-checklist--popover').should('be.visible')
+    cy.getByTestID('save-cell--button').should('be.disabled')
+
+    // select measurement and field - checklist popover should disappear, save button should activate
+    cy.getByTestID(`selector-list defbuck`).click()
+    cy.getByTestID(`selector-list ${measurement}`).click()
+    cy.getByTestID('save-cell--button').should('be.disabled')
+    cy.getByTestID(`selector-list ${stringField}`).click()
+    cy.get('.query-checklist--popover').should('not.exist')
+    cy.getByTestID('save-cell--button').should('be.enabled')
+
+    // submit the graph
+    cy.getByTestID('empty-graph--no-queries')
+    cy.getByTestID('time-machine-submit-button').click()
+
+    // check for error message
+    cy.getByTestID('empty-graph--numeric').should('exist')
   })
 
   describe('When a check does not exist', () => {

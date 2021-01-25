@@ -21,9 +21,21 @@ import {CsvUploaderContext} from 'src/buckets/components/context/csvUploaderProv
 // Components
 import CsvUploaderBody from 'src/buckets/components/csvUploader/CsvUploaderBody'
 import CsvUploaderSuccess from 'src/buckets/components/csvUploader/CsvUploaderSuccess'
+import CsvUploaderError from 'src/buckets/components/csvUploader/CsvUploaderError'
 
 // Types
 import {RemoteDataState} from 'src/types'
+
+const getCsvBody = uploadState => {
+  switch (uploadState) {
+    case RemoteDataState.Done:
+      return <CsvUploaderSuccess />
+    case RemoteDataState.Error:
+      return <CsvUploaderError />
+    default:
+      return <CsvUploaderBody />
+  }
+}
 
 const CsvUploaderWizard = () => {
   const {resetUploadState, uploadState} = useContext(CsvUploaderContext)
@@ -44,11 +56,7 @@ const CsvUploaderWizard = () => {
         />
         <Form>
           <Overlay.Body style={{textAlign: 'center'}}>
-            {uploadState === RemoteDataState.Done ? (
-              <CsvUploaderSuccess />
-            ) : (
-              <CsvUploaderBody />
-            )}
+            {getCsvBody(uploadState)}
           </Overlay.Body>
         </Form>
         <OverlayFooter>

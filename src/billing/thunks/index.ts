@@ -9,8 +9,6 @@ import {
   setBillingSettingsStatus,
   setInvoices,
   setInvoicesStatus,
-  setLimitsStatus,
-  setLimitsStateStatus,
   setPaymentMethods,
   setPaymentMethodsStatus,
   setRegion,
@@ -23,14 +21,13 @@ import {
   getBillingCreditCard,
   getBillingNotificationSettings,
   getPaymentMethods as apiGetPaymentMethods,
-  getLimitsStatus as apiGetLimitsStatus,
   getInvoices as apiGetInvoices,
   getRegion as apiGetRegion,
 } from 'src/billing/api'
 
 // Types
 import {RemoteDataState} from 'src/types'
-import {CreditCardParams, PaymentMethods} from 'src/types/billing'
+import {Invoice, PaymentMethod} from 'src/types/billing'
 
 export const getAccount = async (dispatch: Dispatch<Action>) => {
   try {
@@ -75,28 +72,11 @@ export const getInvoices = async (dispatch: Dispatch<Action>) => {
       throw new Error(resp.data.message)
     }
 
-    dispatch(setInvoices(resp.data, RemoteDataState.Done))
+    dispatch(setInvoices(resp.data as Invoice[], RemoteDataState.Done))
   } catch (error) {
     console.error(error)
 
     dispatch(setInvoicesStatus(RemoteDataState.Error))
-  }
-}
-
-export const getLimitsStatus = async (dispatch: Dispatch<Action>) => {
-  try {
-    dispatch(setLimitsStateStatus(RemoteDataState.Loading))
-    const resp = await apiGetLimitsStatus()
-
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
-
-    dispatch(setLimitsStatus({...resp.data, status: RemoteDataState.Done}))
-  } catch (error) {
-    console.error(error)
-
-    dispatch(setLimitsStateStatus(RemoteDataState.Error))
   }
 }
 
@@ -119,8 +99,8 @@ export const getPaymentMethods = async (dispatch: Dispatch<Action>) => {
 
     dispatch(
       setPaymentMethods(
-        paymentMethodsResp.data as PaymentMethods,
-        ccResp.data as CreditCardParams,
+        paymentMethodsResp.data as PaymentMethod[],
+        ccResp.data,
         RemoteDataState.Done
       )
     )

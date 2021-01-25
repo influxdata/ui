@@ -38,7 +38,7 @@ export default class EmptyTasksLists extends PureComponent<Props> {
       return (
         <EmptyState testID="empty-tasks-list" size={ComponentSize.Large}>
           <EmptyState.Text>
-            Looks like you don't have any <b>Tasks</b>, why not create one?"
+            Looks like you don't have any <b>Tasks</b>, why not create one?
           </EmptyState.Text>
           <AddResourceDropdown
             canImportFromTemplate

@@ -174,7 +174,8 @@ jobs:
       - run:
           name: Update the images we're using
           command: |
-            cd ./monitor-ci && make update && make build NODE=ingress && make cypress-build && make build NODE=dex
+            cd ./monitor-ci && sudo rm -rf .persist/certs/ && make update && make build NODE=ingress && make cypress-build;
+            make build NODE=dex;
             docker tag local/cypress:latest quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
@@ -193,7 +194,6 @@ jobs:
           command: |
             INGRESS_HOST=$(grep "INGRESS_HOST=" ./monitor-ci/.env | cut -d '=' -f2);
             grep -qxF "127.0.0.1 ${INGRESS_HOST}" /etc/hosts || sudo -- sh -c "echo \"127.0.0.1 ${INGRESS_HOST}\" >> /etc/hosts";
-            cd ./monitor-ci;make rebuild NODE=dex;
             ps -ef | grep Xvfb | grep -v grep | awk '{print $2}' | sudo xargs kill -9
       - run:
           name: Run e2e tests
@@ -230,7 +230,8 @@ jobs:
       - run:
           name: Update the images we're using
           command: |
-            cd ./monitor-ci && make update && make cypress-build && make build NODE=ingress
+            cd ./monitor-ci && sudo rm -rf .persist/certs/ && make update && make build NODE=ingress && make cypress-build;
+            make build NODE=dex;
             docker load < ~/docker-cache-oss/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - run:
@@ -281,7 +282,8 @@ jobs:
       - run:
           name: Update the images we're using
           command: |
-            cd ./monitor-ci && make update && make build NODE=ingress && make cypress-build && make build NODE=dex
+            cd ./monitor-ci && sudo rm -rf .persist/certs/ && make update && make build NODE=ingress && make cypress-build;
+            make build NODE=dex;
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - run:
@@ -292,7 +294,6 @@ jobs:
           command: |
             INGRESS_HOST=$(grep "INGRESS_HOST=" ./monitor-ci/.env | cut -d '=' -f2);
             grep -qxF "127.0.0.1 ${INGRESS_HOST}" /etc/hosts || sudo -- sh -c "echo \"127.0.0.1 ${INGRESS_HOST}\" >> /etc/hosts";
-            cd ./monitor-ci;make rebuild NODE=dex;
             ps -ef | grep Xvfb | grep -v grep | awk '{print $2}' | sudo xargs kill -9
       - run:
           name: Run e2e tests
@@ -329,7 +330,8 @@ jobs:
       - run:
           name: Update the images we're using
           command: |
-            cd ./monitor-ci && make update && make build NODE=ingress && make build NODE=dex
+            cd ./monitor-ci && sudo rm -rf .persist/certs/ && make update && make build NODE=ingress && make cypress-build;
+            make build NODE=dex;
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - run:
@@ -436,18 +438,18 @@ jobs:
           command: |
             cp ./monitor-ci/env.lighthouse ./monitor-ci/.env;
       - run:
+          name: Update the images we're using
+          command: |
+            cd ./monitor-ci && sudo rm -rf .persist/certs/ && make update && make build NODE=ingress;
+            make build NODE=dex;
+            docker load < ~/docker-cache/image.tar
+            docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
+      - run:
           name: Make CI Accessible to this Service
           command: |
             INGRESS_HOST=$(grep "INGRESS_HOST=" ./monitor-ci/.env | cut -d '=' -f2);
             grep -qxF "127.0.0.1 ${INGRESS_HOST}" /etc/hosts || sudo -- sh -c "echo \"127.0.0.1 ${INGRESS_HOST}\" >> /etc/hosts";
-            cd ./monitor-ci;make rebuild NODE=dex;
             ps -ef | grep Xvfb | grep -v grep | awk '{print $2}' | sudo xargs kill -9
-      - run:
-          name: Update the images we're using
-          command: |
-            cd ./monitor-ci && sudo rm -rf .persist/certs/ && make update && make build NODE=ingress
-            docker load < ~/docker-cache/image.tar
-            docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - run:
           name: Run lighthouse
           no_output_timeout: 10m

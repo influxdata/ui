@@ -1,5 +1,5 @@
 // Libraries
-import React, {Component, ErrorInfo, memo} from 'react'
+import React, {Component, ErrorInfo, memo, ReactChild} from 'react'
 import {isEqual} from 'lodash'
 
 // Components
@@ -16,6 +16,7 @@ import {ErrorMessageComponent} from 'src/types'
 
 interface ErrorBoundaryProps {
   errorComponent: ErrorMessageComponent
+  children: ReactChild | ReactChild[]
 }
 
 interface ErrorBoundaryState {

@@ -1,9 +1,10 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, memo} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {AutoSizer} from 'react-virtualized'
 import classnames from 'classnames'
 import {fromFlux} from '@influxdata/giraffe'
+import {isEqual} from 'lodash'
 
 // Components
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
@@ -161,4 +162,6 @@ const mstp = (state: AppState) => {
 
 const connector = connect(mstp)
 
-export default connector(TimeMachineVis)
+export default connector(
+  memo(TimeMachineVis, (prev, next) => isEqual(prev, next))
+)

@@ -1,6 +1,6 @@
 // Libraries
-import React, {Component, ErrorInfo} from 'react'
-import _ from 'lodash'
+import React, {Component, ErrorInfo, memo} from 'react'
+import {isEqual} from 'lodash'
 
 // Components
 import DefaultErrorMessage from 'src/shared/components/DefaultErrorMessage'
@@ -37,8 +37,6 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     })
   }
 
-  public shouldComponentUpdate = next => !_.isEqual(this.props, next)
-
   public render() {
     const {error} = this.state
 
@@ -50,4 +48,4 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   }
 }
 
-export default ErrorBoundary
+export default memo(ErrorBoundary, (prev, next) => isEqual(prev, next))

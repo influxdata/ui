@@ -1,10 +1,10 @@
 // Libraries
-import React, {Component} from 'react'
+import React, {FC, memo} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {AutoSizer} from 'react-virtualized'
 import classnames from 'classnames'
 import {fromFlux} from '@influxdata/giraffe'
-import _ from 'lodash'
+import {isEqual} from 'lodash'
 
 // Components
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
@@ -34,90 +34,85 @@ import {getActiveTimeRange} from 'src/timeMachine/selectors/index'
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
-class TimeMachineVis extends Component<Props> {
-  shouldComponentUpdate = next => !_.isEqual(this.props, next)
-
-  render() {
-    const {
-      loading,
-      errorMessage,
-      timeRange,
-      isInitialFetch,
-      isViewingRawData,
-      files,
-      checkType,
-      checkThresholds,
-      viewProperties,
-      giraffeResult,
-      xColumn,
-      yColumn,
-      fillColumns,
-      symbolColumns,
-      timeZone,
-      statuses,
-    } = this.props
-    // If the current selections for `xColumn`/`yColumn`/ etc. are invalid given
-    // the current Flux response, attempt to make a valid selection instead. This
-    // fallback logic is contained within the selectors that supply each of these
-    // props. Note that in a dashboard context, we display an error instead of
-    // attempting to fall back to an valid selection.
-    const resolvedViewProperties = {
-      ...viewProperties,
-      xColumn,
-      yColumn,
-      fillColumns,
-      symbolColumns,
-    }
-
-    const noQueries =
-      loading === RemoteDataState.NotStarted || !viewProperties.queries.length
-    const timeMachineViewClassName = classnames('time-machine--view', {
-      'time-machine--view__empty': noQueries,
-    })
-
-    return (
-      <div className={timeMachineViewClassName}>
-        <ErrorBoundary>
-          <ViewLoadingSpinner loading={loading} />
-          <EmptyQueryView
-            loading={loading}
-            errorFormat={ErrorFormat.Scroll}
-            errorMessage={errorMessage}
-            isInitialFetch={isInitialFetch}
-            queries={viewProperties.queries}
-            hasResults={checkResultsLength(giraffeResult)}
-          >
-            {isViewingRawData ? (
-              <AutoSizer>
-                {({width, height}) => {
-                  const [parsedResults] = files.flatMap(fromFlux)
-                  return (
-                    <RawFluxDataTable
-                      parsedResults={parsedResults}
-                      width={width}
-                      height={height}
-                    />
-                  )
-                }}
-              </AutoSizer>
-            ) : (
-              <ViewSwitcher
-                giraffeResult={giraffeResult}
-                timeRange={timeRange}
-                files={files}
-                properties={resolvedViewProperties}
-                checkType={checkType}
-                checkThresholds={checkThresholds}
-                timeZone={timeZone}
-                statuses={statuses}
-                theme="dark"
-              />
-            )}
-          </EmptyQueryView>
-        </ErrorBoundary>
-      </div>
-    )
+const TimeMachineVis: FC<Props> = ({
+  loading,
+  errorMessage,
+  timeRange,
+  isInitialFetch,
+  isViewingRawData,
+  files,
+  checkType,
+  checkThresholds,
+  viewProperties,
+  giraffeResult,
+  xColumn,
+  yColumn,
+  fillColumns,
+  symbolColumns,
+  timeZone,
+  statuses,
+}) => {
+  // If the current selections for `xColumn`/`yColumn`/ etc. are invalid given
+  // the current Flux response, attempt to make a valid selection instead. This
+  // fallback logic is contained within the selectors that supply each of these
+  // props. Note that in a dashboard context, we display an error instead of
+  // attempting to fall back to an valid selection.
+  const resolvedViewProperties = {
+    ...viewProperties,
+    xColumn,
+    yColumn,
+    fillColumns,
+    symbolColumns,
   }
+
+  const noQueries =
+    loading === RemoteDataState.NotStarted || !viewProperties.queries.length
+  const timeMachineViewClassName = classnames('time-machine--view', {
+    'time-machine--view__empty': noQueries,
+  })
+
+  return (
+    <div className={timeMachineViewClassName}>
+      <ErrorBoundary>
+        <ViewLoadingSpinner loading={loading} />
+        <EmptyQueryView
+          loading={loading}
+          errorFormat={ErrorFormat.Scroll}
+          errorMessage={errorMessage}
+          isInitialFetch={isInitialFetch}
+          queries={viewProperties.queries}
+          hasResults={checkResultsLength(giraffeResult)}
+        >
+          {isViewingRawData ? (
+            <AutoSizer>
+              {({width, height}) => {
+                const [parsedResults] = files.flatMap(fromFlux)
+                return (
+                  <RawFluxDataTable
+                    parsedResults={parsedResults}
+                    width={width}
+                    height={height}
+                  />
+                )
+              }}
+            </AutoSizer>
+          ) : (
+            <ViewSwitcher
+              giraffeResult={giraffeResult}
+              timeRange={timeRange}
+              files={files}
+              properties={resolvedViewProperties}
+              checkType={checkType}
+              checkThresholds={checkThresholds}
+              timeZone={timeZone}
+              statuses={statuses}
+              theme="dark"
+            />
+          )}
+        </EmptyQueryView>
+      </ErrorBoundary>
+    </div>
+  )
 }
 
 const mstp = (state: AppState) => {
@@ -167,4 +162,6 @@ const mstp = (state: AppState) => {
 
 const connector = connect(mstp)
 
-export default connector(TimeMachineVis)
+export default connector(
+  memo(TimeMachineVis, (prev, next) => isEqual(prev, next))
+)

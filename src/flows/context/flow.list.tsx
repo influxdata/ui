@@ -1,4 +1,5 @@
 import React, {FC, useCallback} from 'react'
+import {useParams} from 'react-router-dom'
 import createPersistedState from 'use-persisted-state'
 import {v4 as UUID} from 'uuid'
 import {
@@ -15,6 +16,14 @@ import {PIPE_DEFINITIONS} from 'src/flows'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 import {PROJECT_NAME} from 'src/flows'
+import {
+  postApiV2privateFlowsOrgsFlow,
+  PostApiV2privateFlowsOrgsFlowParams,
+  patchApiV2privateFlowsOrgsFlow,
+  PatchApiV2privateFlowsOrgsFlowParams,
+  deleteApiV2privateFlowsOrgsFlow,
+  getApiV2privateFlowsOrgsFlows,
+} from 'src/client/flowsRoutes'
 
 const useFlowListState = createPersistedState('flows')
 const useFlowCurrentState = createPersistedState('current-flow')
@@ -25,6 +34,7 @@ export interface FlowListContextType extends FlowList {
   remove: (id: string) => void
   currentID: string | null
   change: (id: string) => void
+  getAll: () => void
 }
 
 export const EMPTY_NOTEBOOK: FlowState = {
@@ -48,6 +58,7 @@ export const DEFAULT_CONTEXT: FlowListContextType = {
   update: (_id: string, _flow: Flow) => {},
   remove: (_id: string) => {},
   change: (_id: string) => {},
+  getAll: () => {},
   currentID: null,
 } as FlowListContextType
 
@@ -59,25 +70,25 @@ export const FlowListContext = React.createContext<FlowListContextType>(
 // data from the api as a contract hasn't come forward, so i'm trying to be pre-emptive
 // on capabilities to speed integration. Remove the next two functions when that
 // data contract gets some ground and shows up (alex)
-export function serialize(flow) {
-  const apiFlow = {
-    name: flow.name,
-    readOnly: flow.readOnly,
-    range: flow.range,
-    refresh: flow.refresh,
-    pipes: flow.data.allIDs.map(id => {
-      const meta = flow.meta.byID[id]
+// export function serialize(flow: Flow): PostApiV2privateFlowsOrgsFlowParams {
+// const apiFlow = {
+//   name: flow.name,
+//   readOnly: flow.readOnly,
+//   range: flow.range,
+//   refresh: flow.refresh,
+//   pipes: flow.data.allIDs.map(id => {
+//     const meta = flow.meta.byID[id]
 
-      return {
-        ...flow.data.byID[id],
-        title: meta.title,
-        visible: meta.visible,
-      }
-    }),
-  }
+//     return {
+//       ...flow.data.byID[id],
+//       title: meta.title,
+//       visible: meta.visible,
+//     }
+//   }),
+// }
 
-  return apiFlow
-}
+//   return apiFlow
+// }
 
 export function hydrate(data) {
   const flow = {
@@ -87,34 +98,49 @@ export function hydrate(data) {
     refresh: data.refresh,
     readOnly: data.readOnly,
   }
+  if (data.spec) {
+    Object.keys(data.spec.byID).forEach(key => {
+      const pipe = data.spec.byID[key]
+      const id = pipe.id || `local_${UUID()}`
 
-  data.pipes.forEach(pipe => {
-    const id = pipe.id || `local_${UUID()}`
+      flow.data.allIDs.push(id)
+      flow.meta.allIDs.push(id)
 
-    flow.data.allIDs.push(id)
-    flow.meta.allIDs.push(id)
+      const meta = {
+        title: pipe.title,
+        visible: pipe.visible,
+        loading: RemoteDataState.NotStarted,
+      }
 
-    const meta = {
-      title: pipe.title,
-      visible: pipe.visible,
-      loading: RemoteDataState.NotStarted,
-    }
+      delete pipe.title
+      delete pipe.visible
 
-    delete pipe.title
-    delete pipe.visible
-
-    flow.data.byID[id] = pipe
-    flow.meta.byID[id] = meta
-  })
-
+      flow.data.byID[id] = pipe
+      flow.meta.byID[id] = meta
+    })
+  }
   return flow
 }
 
 export const FlowListProvider: FC = ({children}) => {
   const [flows, setFlows] = useFlowListState(DEFAULT_CONTEXT.flows)
   const [currentID, setCurrentID] = useFlowCurrentState(null)
+  const {orgID} = useParams<{orgID: string}>()
 
-  const add = (flow?: Flow): Promise<string> => {
+  const getAll = useCallback(async (): Promise<void> => {
+    const res = await getApiV2privateFlowsOrgsFlows({orgID})
+    if (res.status != 200) {
+      throw new Error(res.data.message)
+    }
+
+    if (res.data.flows) {
+      const _flows = {}
+      res.data.flows.forEach(f => _flows[f.id] = hydrate(f))
+      setFlows(_flows)
+    }
+  }, [orgID, setFlows])
+
+  const add = async (flow?: Flow): Promise<string> => {
     let _flow
 
     if (!flow) {
@@ -155,24 +181,35 @@ export const FlowListProvider: FC = ({children}) => {
       }
     }
 
-    // console.log('add to the api', serialize(data))
+    const apiFlow: PostApiV2privateFlowsOrgsFlowParams = {
+      orgID: orgID,
+      data: {
+        orgID: orgID,
+        name: _flow.name,
+        spec: _flow.data,
+      },
+    }
+    const res = await postApiV2privateFlowsOrgsFlow(apiFlow)
+
+    if (res.status != 200) {
+      throw new Error(res.data.message)
+    }
+
     return new Promise(resolve => {
       setTimeout(() => {
-        const id = `local_${UUID()}`
-
         setFlows({
           ...flows,
-          [id]: _flow,
+          [res.data.id]: _flow,
         })
 
-        setCurrentID(id)
+        setCurrentID(res.data.id)
 
-        resolve(id)
+        resolve(res.data.id)
       }, 200)
     })
   }
 
-  const update = (id: string, flow: Flow) => {
+  const update = async (id: string, flow: Flow) => {
     if (!flows.hasOwnProperty(id)) {
       throw new Error(`${PROJECT_NAME} not found`)
     }
@@ -190,7 +227,19 @@ export const FlowListProvider: FC = ({children}) => {
       ...flows,
       [id]: data,
     })
-    // console.log('update the api', serialize(data))
+    const apiFlow: PatchApiV2privateFlowsOrgsFlowParams = {
+      orgID: orgID,
+      id,
+      data: {
+        orgID: orgID,
+        name: {value: flow.name},
+        spec: flow.data,
+      },
+    }
+    const res = await patchApiV2privateFlowsOrgsFlow(apiFlow)
+    if (res.status != 200) {
+      throw new Error(res.data.message)
+    }
   }
 
   const change = useCallback(
@@ -201,12 +250,17 @@ export const FlowListProvider: FC = ({children}) => {
 
       setCurrentID(id)
     },
-    [currentID, setCurrentID, flows]
+    [setCurrentID, flows]
   )
 
-  const remove = (id: string) => {
+  const remove = async (id: string) => {
     const _flows = {
       ...flows,
+    }
+    const res = await deleteApiV2privateFlowsOrgsFlow({orgID, id})
+
+    if (res.status != 200) {
+      throw new Error(res.data.message)
     }
 
     delete _flows[id]
@@ -254,6 +308,7 @@ export const FlowListProvider: FC = ({children}) => {
         add,
         update,
         remove,
+        getAll,
         currentID,
         change,
       }}

@@ -80,7 +80,7 @@ describe('Checks', () => {
     })
 
     cy.log('Name the check; save')
-    cy.getByTestID('overlay').within(() => {
+    cy.getByTestID('overlay--container').within(() => {
       cy.getByTestID('page-title')
         .contains('Name this Check')
         .click()

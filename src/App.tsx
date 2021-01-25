@@ -11,7 +11,10 @@ import TreeNav from 'src/pageLayout/containers/TreeNav'
 import TooltipPortal from 'src/portals/TooltipPortal'
 import NotesPortal from 'src/portals/NotesPortal'
 import Notifications from 'src/shared/components/notifications/Notifications'
-import OverlayController from 'src/overlays/components/OverlayController'
+import {
+  OverlayProviderComp,
+  OverlayController,
+} from 'src/overlays/components/OverlayController'
 import PageSpinner from 'src/perf/components/PageSpinner'
 const SetOrg = lazy(() => import('src/shared/containers/SetOrg'))
 const CreateOrgOverlay = lazy(() =>
@@ -38,7 +41,9 @@ const App: FC<Props> = ({inPresentationMode, currentPage, theme}) => {
       <Notifications />
       <TooltipPortal />
       <NotesPortal />
-      <OverlayController />
+      <OverlayProviderComp>
+        <OverlayController />
+      </OverlayProviderComp>
       <TreeNav />
       <Suspense fallback={<PageSpinner />}>
         <Switch>

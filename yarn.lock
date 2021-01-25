@@ -782,10 +782,10 @@
     debug "^3.1.0"
     lodash.once "^4.1.1"
 
-"@influxdata/clockface@2.3.7":
-  version "2.3.7"
-  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-2.3.7.tgz#a06ac309e845893d1aa7e18096cbec375e3c3723"
-  integrity sha512-GJH+btBpvMgn+FjdC3Ee49iyfcrRgDo+B29/gU3z1S+WaKJCpaAIIhLuaAZQGM/4TbTZlPID+/vAVrdNolxKGQ==
+"@influxdata/clockface@^2.4.1":
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-2.4.1.tgz#67c61d89782dea07a149dd35e45b9eb13ad63a5f"
+  integrity sha512-p1YEnB73wOkzS6PqKr2P3jf0jRLP4mJZBbyOZsDlkYsuy3PrGnGCscshecb/f2XNiTbbbShXy40SzPreM07wQw==
 
 "@influxdata/flux-lsp-browser@^0.5.28":
   version "0.5.28"

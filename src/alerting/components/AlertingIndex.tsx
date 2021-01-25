@@ -10,13 +10,15 @@ import EndpointsColumn from 'src/notifications/endpoints/components/EndpointsCol
 import GetAssetLimits from 'src/cloud/components/GetAssetLimits'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import GetResources from 'src/resources/components/GetResources'
-import NewThresholdCheckEO from 'src/checks/components/NewThresholdCheckEO'
-import NewDeadmanCheckEO from 'src/checks/components/NewDeadmanCheckEO'
 import EditCheckEO from 'src/checks/components/EditCheckEO'
 import NewRuleOverlay from 'src/notifications/rules/components/NewRuleOverlay'
 import EditRuleOverlay from 'src/notifications/rules/components/EditRuleOverlay'
 import NewEndpointOverlay from 'src/notifications/endpoints/components/NewEndpointOverlay'
 import EditEndpointOverlay from 'src/notifications/endpoints/components/EditEndpointOverlay'
+import {
+  ThresholdCheckOverlay,
+  DeadmanCheckOverlay as NewDeadmanCheckEO,
+} from 'src/overlays/components'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -116,7 +118,7 @@ const AlertingIndex: FunctionComponent = () => {
       <Switch>
         <Route
           path={`${alertsPath}/checks/new-threshold`}
-          component={NewThresholdCheckEO}
+          component={ThresholdCheckOverlay}
         />
         <Route
           path={`${alertsPath}/checks/new-deadman`}

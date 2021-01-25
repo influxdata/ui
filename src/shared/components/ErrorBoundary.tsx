@@ -1,5 +1,6 @@
 // Libraries
 import React, {Component, ErrorInfo} from 'react'
+import _ from 'lodash'
 
 // Components
 import DefaultErrorMessage from 'src/shared/components/DefaultErrorMessage'
@@ -35,6 +36,8 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
       component: parseComponentName(errorInfo),
     })
   }
+
+  public shouldComponentUpdate = next => !_.isEqual(this.props, next)
 
   public render() {
     const {error} = this.state

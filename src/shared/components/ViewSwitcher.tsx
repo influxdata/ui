@@ -1,6 +1,6 @@
 // Libraries
 import React, {FunctionComponent} from 'react'
-import {Plot, FromFluxResult, GaugeMiniLayerConfig} from '@influxdata/giraffe'
+import {Plot, FromFluxResult} from '@influxdata/giraffe'
 
 // Components
 import GaugeChart from 'src/shared/components/GaugeChart'
@@ -31,7 +31,6 @@ import {
   Threshold,
   Theme,
 } from 'src/types'
-import {getGaugeMiniBarsDefinitions} from '../utils/gaugeMiniThemeNormalize'
 
 interface Props {
   giraffeResult: FromFluxResult
@@ -98,15 +97,7 @@ const ViewSwitcher: FunctionComponent<Props> = ({
       )
     case 'gauge-mini':
       return (
-        <LatestMultipleValueTransform
-          table={table}
-          columns={
-            getGaugeMiniBarsDefinitions(
-              ((properties as unknown) as Required<GaugeMiniLayerConfig>)
-                .barsDefinitions
-            ).groupByColumns
-          }
-        >
+        <LatestMultipleValueTransform table={table}>
           {latestValues => (
             <GaugeMiniChart values={latestValues} theme={properties as any} />
           )}

@@ -32,7 +32,7 @@ export const GaugeMiniAxesInputs: FC<Prop> = ({axesSteps, onUpdateProp}) => (
     <SelectGroup shape={ButtonShape.StretchToFit}>
       <SelectGroupOption
         active={axesSteps === undefined}
-        id={`select-group--axes-steps--none`}
+        id="select-group--axes-steps--none"
         titleText="No axes"
         value={undefined}
         onClick={() => {
@@ -43,7 +43,7 @@ export const GaugeMiniAxesInputs: FC<Prop> = ({axesSteps, onUpdateProp}) => (
       </SelectGroupOption>
       <SelectGroupOption
         active={axesSteps === 'thresholds'}
-        id={`select-group--axes-steps--thresholds`}
+        id="select-group--axes-steps--thresholds"
         titleText="Axes same as thresholds"
         value={AutoInputMode.Auto}
         onClick={() => {
@@ -54,7 +54,7 @@ export const GaugeMiniAxesInputs: FC<Prop> = ({axesSteps, onUpdateProp}) => (
       </SelectGroupOption>
       <SelectGroupOption
         active={typeof axesSteps === 'number'}
-        id={`select-group--axes-steps--Steps`}
+        id="select-group--axes-steps--Steps"
         titleText="Evenly spaced steps"
         value={AutoInputMode.Custom}
         onClick={() => {
@@ -65,7 +65,7 @@ export const GaugeMiniAxesInputs: FC<Prop> = ({axesSteps, onUpdateProp}) => (
       </SelectGroupOption>
       <SelectGroupOption
         active={Array.isArray(axesSteps)}
-        id={`select-group--axes-steps--Custom`}
+        id="select-group--axes-steps--Custom"
         titleText="Specify every one value"
         value={AutoInputMode.Custom}
         onClick={() => {

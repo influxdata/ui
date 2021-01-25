@@ -20,10 +20,9 @@ export const gaugeMiniGetTheme = (theme: GaugeMiniThemeString) => {
 }
 
 export const GAUGE_MINI_THEME_BULLET_DARK: Required<GaugeMiniLayerConfig> = {
-  type: 'gauge-mini',
+  type: 'gauge mini',
   mode: 'bullet',
   textMode: 'follow',
-  barsDefinitions: {groupByColumns: {_field: true}},
 
   valueHeight: 18,
   gaugeHeight: 25,
@@ -45,6 +44,7 @@ export const GAUGE_MINI_THEME_BULLET_DARK: Required<GaugeMiniLayerConfig> = {
   labelMainFontSize: 13,
   labelMainFontColor: InfluxColors.Ghost,
 
+  labelBarsEnabled: false,
   labelBarsFontSize: 11,
   labelBarsFontColor: InfluxColors.Forge,
 
@@ -61,10 +61,9 @@ export const GAUGE_MINI_THEME_BULLET_DARK: Required<GaugeMiniLayerConfig> = {
 }
 
 export const GAUGE_MINI_THEME_PROGRESS_DARK: Required<GaugeMiniLayerConfig> = {
-  type: 'gauge-mini',
+  type: 'gauge mini',
   mode: 'progress',
   textMode: 'follow',
-  barsDefinitions: {groupByColumns: {_field: true}},
 
   valueHeight: 20,
   gaugeHeight: 20,
@@ -84,6 +83,7 @@ export const GAUGE_MINI_THEME_PROGRESS_DARK: Required<GaugeMiniLayerConfig> = {
   labelMainFontSize: 13,
   labelMainFontColor: InfluxColors.Ghost,
 
+  labelBarsEnabled: false,
   labelBarsFontSize: 11,
   labelBarsFontColor: InfluxColors.Forge,
 

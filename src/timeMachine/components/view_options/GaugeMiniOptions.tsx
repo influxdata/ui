@@ -10,7 +10,6 @@ import {
   Grid,
   Input,
   InputType,
-  MultiSelectDropdown,
   SelectDropdown,
   AutoInput,
   AutoInputMode,
@@ -37,13 +36,12 @@ import {
   GaugeMiniThemeString,
   gaugeMiniThemeStrings,
 } from 'src/shared/constants/gaugeMiniSpecs'
-import {getGroupableColumns} from 'src/timeMachine/selectors'
-import {ComponentStatus} from 'src/clockface'
 
 import {MIN_DECIMAL_PLACES, MAX_DECIMAL_PLACES} from 'src/dashboards/constants'
 import {FormatStatValueOptions} from 'src/client/generatedRoutes'
 import {SelectGroup as _SelectGroup} from '@influxdata/clockface'
 import {GaugeMiniAxesInputs} from './GaugeMiniAxesInputs'
+import Checkbox from 'src/shared/components/Checkbox'
 
 interface OwnProps {
   defaultTheme: GaugeMiniThemeString
@@ -62,7 +60,7 @@ type Props = OwnProps & ReduxProps
 type Field =
   | {
       /** type of input field */
-      type: 'text' | 'number' | 'color'
+      type: 'text' | 'number' | 'color' | 'boolean'
       /** JSON key of theme property */
       name: keyof GaugeMiniLayerConfig
       label: string
@@ -84,7 +82,7 @@ type Field =
 
 class GaugeMiniOptions extends PureComponent<Props> {
   public render() {
-    const {availableGroupColumns, onUpdateColors, onUpdateProp} = this.props
+    const {onUpdateColors, onUpdateProp} = this.props
 
     const theme: GaugeMiniLayerConfig = this.props as any
 
@@ -119,6 +117,17 @@ class GaugeMiniOptions extends PureComponent<Props> {
               </FormElement>
             )
 
+          case 'boolean':
+            return (
+              <div style={{margin: '0px 0px 16px 8px'}}>
+                <Checkbox
+                  label={x.label}
+                  checked={!!theme[x.name]}
+                  onSetChecked={e => onUpdateProp({[x.name]: e})}
+                />
+              </div>
+            )
+
           case 'select':
             return (
               <FormElement label={x.label}>
@@ -149,38 +158,6 @@ class GaugeMiniOptions extends PureComponent<Props> {
             )
         }
       })
-
-    const groupDropdownStatus = availableGroupColumns.length
-      ? ComponentStatus.Default
-      : ComponentStatus.Disabled
-
-    const columns = Object.keys(theme.barsDefinitions.groupByColumns).filter(
-      x => theme.barsDefinitions.groupByColumns[x]
-    )
-
-    const onSelectMulti = (option: string) => {
-      const res = columns.some(x => option === x)
-      onUpdateProp({
-        barsDefinitions: {
-          ...theme.barsDefinitions,
-          groupByColumns: {
-            ...theme.barsDefinitions.groupByColumns,
-            [option]: !res,
-          },
-        } as any,
-      })
-    }
-
-    const grupby = (
-      <FormElement label="Group By">
-        <MultiSelectDropdown
-          options={availableGroupColumns}
-          selectedOptions={columns}
-          onSelect={onSelectMulti}
-          buttonStatus={groupDropdownStatus}
-        />
-      </FormElement>
-    )
 
     const defaultThemesSelector = (
       <Row>
@@ -300,14 +277,6 @@ class GaugeMiniOptions extends PureComponent<Props> {
             options: ['follow', 'left'] as GaugeMiniLayerConfig['textMode'][],
             label: 'textMode',
           },
-          {
-            type: 'element',
-            jsx: <FormElement label="Bar definitions">{grupby}</FormElement>,
-          },
-          {
-            type: 'element',
-            jsx: <div> show text? </div>,
-          },
           {type: 'heading', label: 'Gauge colors'},
           {
             type: 'element',
@@ -346,6 +315,11 @@ class GaugeMiniOptions extends PureComponent<Props> {
           },
 
           {type: 'heading', label: 'Bar labels'},
+          {
+            type: 'boolean',
+            name: 'labelBarsEnabled',
+            label: 'labelBarsEnabled',
+          },
           {
             type: 'number',
             name: 'labelBarsFontSize',
@@ -407,11 +381,7 @@ class GaugeMiniOptions extends PureComponent<Props> {
   }
 }
 
-const mstp = (state: AppState) => {
-  const availableGroupColumns = getGroupableColumns(state)
-
-  return {availableGroupColumns}
-}
+const mstp = (_state: AppState) => {}
 
 const mdtp = {
   onUpdateColors: setColors,

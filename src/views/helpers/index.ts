@@ -169,14 +169,18 @@ function defaultGaugeViewProperties() {
 }
 
 function defaultGaugeMiniViewProperties() {
-  return {
+  const props: GaugeMiniViewProperties = {
     queries: [defaultViewQuery()],
     ...GAUGE_MINI_THEME_BULLET_DARK,
+    axesFormater: {},
+    valueFormater: {},
+    type: 'gauge-mini',
     colors: DEFAULT_GAUGE_COLORS as Color[],
     note: '',
     shape: 'chronograf-v2',
     showNoteWhenEmpty: false,
-  } as GaugeMiniViewProperties
+  }
+  return props
 }
 
 function defaultSingleStatViewProperties() {

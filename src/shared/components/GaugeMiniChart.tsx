@@ -5,6 +5,7 @@ import {AutoSizer} from 'react-virtualized'
 import {GaugeMiniLayerConfig} from '@influxdata/giraffe'
 import {GAUGE_MINI_THEME_BULLET_DARK} from '../constants/gaugeMiniSpecs'
 import {GaugeMini} from './GaugeMini'
+import {GroupedData} from './LatestMultipleValueTransform'
 
 // Components
 
@@ -13,7 +14,7 @@ import {GaugeMini} from './GaugeMini'
 // Constants
 
 interface Props {
-  values: {colsMString: string; value: number}[]
+  values: GroupedData
   theme: GaugeMiniLayerConfig
 }
 

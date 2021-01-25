@@ -1,0 +1,221 @@
+---
+swagger: '2.0'
+info:
+  title: transport.proto
+  version: version not set
+consumes:
+- application/json
+produces:
+- application/json
+servers:
+  - url: '' # required by Oats
+paths:
+  "/api/v2private/flows/orgs/{orgID}/flows":
+    get:
+      operationId: FlowAPI_ListFlows
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            "$ref": "#/definitions/transportFlowList"
+        default:
+          description: An unexpected error response
+          schema:
+            "$ref": "#/definitions/runtimeError"
+      parameters:
+      - name: orgID
+        in: path
+        required: true
+        type: string
+      - name: limit
+        in: query
+        required: false
+        type: integer
+        format: int64
+      - name: pageToken
+        in: query
+        required: false
+        type: string
+      tags:
+      - FlowAPI
+    post:
+      operationId: FlowAPI_CreateFlow
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            "$ref": "#/definitions/transportFlow"
+        default:
+          description: An unexpected error response
+          schema:
+            "$ref": "#/definitions/runtimeError"
+      parameters:
+      - name: orgID
+        in: path
+        required: true
+        type: string
+      - name: body
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/transportFlowCreateRequest"
+      tags:
+      - FlowAPI
+  "/api/v2private/flows/orgs/{orgID}/flows/{id}":
+    get:
+      operationId: FlowAPI_GetFlow
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            "$ref": "#/definitions/transportFlow"
+        default:
+          description: An unexpected error response
+          schema:
+            "$ref": "#/definitions/runtimeError"
+      parameters:
+      - name: orgID
+        in: path
+        required: true
+        type: string
+      - name: id
+        in: path
+        required: true
+        type: string
+      tags:
+      - FlowAPI
+    delete:
+      operationId: FlowAPI_DeleteFlow
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            properties: {}
+        default:
+          description: An unexpected error response
+          schema:
+            "$ref": "#/definitions/runtimeError"
+      parameters:
+      - name: orgID
+        in: path
+        required: true
+        type: string
+      - name: id
+        in: path
+        required: true
+        type: string
+      tags:
+      - FlowAPI
+    patch:
+      operationId: FlowAPI_UpdateFlow
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            "$ref": "#/definitions/transportFlow"
+        default:
+          description: An unexpected error response
+          schema:
+            "$ref": "#/definitions/runtimeError"
+      parameters:
+      - name: orgID
+        in: path
+        required: true
+        type: string
+      - name: id
+        in: path
+        required: true
+        type: string
+      - name: body
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/transportFlowUpdateRequest"
+      tags:
+      - FlowAPI
+definitions:
+  protobufAny:
+    type: object
+    properties:
+      type_url:
+        type: string
+      value:
+        type: string
+        format: byte
+  protobufNullValue:
+    type: string
+    enum:
+    - NULL_VALUE
+    default: NULL_VALUE
+    description: |-
+      `NullValue` is a singleton enumeration to represent the null value for the
+      `Value` type union.
+
+       The JSON representation for `NullValue` is JSON `null`.
+
+       - NULL_VALUE: Null value.
+  runtimeError:
+    type: object
+    properties:
+      error:
+        type: string
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      details:
+        type: array
+        items:
+          "$ref": "#/definitions/protobufAny"
+  transportFlow:
+    type: object
+    properties:
+      orgID:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      spec:
+        type: object
+      createdAt:
+        type: string
+        format: date-time
+      updatedAt:
+        type: string
+        format: date-time
+  transportFlowCreateRequest:
+    type: object
+    properties:
+      orgID:
+        type: string
+      name:
+        type: string
+      spec:
+        type: object
+  transportFlowList:
+    type: object
+    properties:
+      flows:
+        type: array
+        items:
+          "$ref": "#/definitions/transportFlow"
+      nextPageToken:
+        type: string
+  transportFlowUpdateRequest:
+    type: object
+    properties:
+      orgID:
+        type: string
+      id:
+        type: string
+      name:
+        "$ref": "#/definitions/transportString"
+      spec:
+        type: object
+  transportString:
+    type: object
+    properties:
+      value:
+        type: string

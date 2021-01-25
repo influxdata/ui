@@ -231,7 +231,6 @@ jobs:
           name: Update the images we're using
           command: |
             cd ./monitor-ci && sudo rm -rf .persist/certs/ && make update && make build NODE=ingress && make cypress-build;
-            make build NODE=dex;
             docker load < ~/docker-cache-oss/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - run:

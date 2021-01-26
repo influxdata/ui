@@ -5,7 +5,7 @@ import {variablesReducer} from 'src/variables/reducers'
 import {moveVariable} from 'src/variables/actions/creators'
 
 // Types
-import {RemoteDataState, VariablesState} from 'src/types'
+import {RemoteDataState, VariablesState, VariableValues} from 'src/types'
 
 const contextID = '123123'
 const initialState = (): VariablesState => ({
@@ -18,10 +18,10 @@ const initialState = (): VariablesState => ({
       values: {
         '123': {
           a: 1,
-        },
+        } as VariableValues,
         '456': {
           a: 2,
-        },
+        } as VariableValues,
       },
       order: ['123', '456'],
     },

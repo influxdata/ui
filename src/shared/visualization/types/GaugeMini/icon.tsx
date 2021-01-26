@@ -37,68 +37,159 @@ value color replaced with classes
 */
 
 const icon = (
-  <div
-    className="vis-graphic"
-    data-testid="vis-graphic--gauge"
-    // todo: JSX elements, not svg string
-    dangerouslySetInnerHTML={{
-      __html: `
-<svg width="100%" height="100%" version="1.1" id="Bar" x="0px" y="0px" viewBox="0 0 150 150"
-preserveAspectRatio="none meet">
-<g transform="translate(0,2)" refreshToken="2">
-  <g transform="translate(5,0)" refreshToken="2">
-    <g class="gauge-mini-bar">
-      <g transform="translate(0,0)">
-        <defs>
-          <clipPath id="rounded-bar-w-140-h-45-r-15">
-            <rect rx="15" width="140" height="45" y="0"></rect>
-          </clipPath>
-        </defs>
-        <rect height="45" x="0" width="140" fill="#0f0e15" clip-path="url(#rounded-bar-w-140-h-45-r-15)" y="0">
-        </rect>
-        <rect class="value-rect vis-graphic--fill-b" rx="15" height="45" width="28" x="0" y="0"></rect>
-        <g transform="translate(0,22.5)"><text x="33" text-anchor="start" font-size="45" fill="#999dab"
-          alignment-baseline="central">20</text></g>
+  <div className="vis-graphic" data-testid="vis-graphic--gauge">
+    <svg
+      width="100%"
+      height="100%"
+      version="1.1"
+      id="Bar"
+      x="0px"
+      y="0px"
+      viewBox="0 0 150 150"
+      preserveAspectRatio="none meet"
+    >
+      <g transform="translate(0,2)">
+        <g transform="translate(5,0)">
+          <g className="gauge-mini-bar">
+            <g transform="translate(0,0)">
+              <defs>
+                <clipPath id="rounded-bar-w-140-h-45-r-15">
+                  <rect rx="15" width="140" height="45" y="0"></rect>
+                </clipPath>
+              </defs>
+              <rect
+                height="45"
+                x="0"
+                width="140"
+                fill="#0f0e15"
+                clipPath="url(#rounded-bar-w-140-h-45-r-15)"
+                y="0"
+              ></rect>
+              <rect
+                className="value-rect vis-graphic--fill-b"
+                rx="15"
+                height="45"
+                width="28"
+                x="0"
+                y="0"
+              ></rect>
+              <g transform="translate(0,22.5)">
+                <text
+                  x="33"
+                  textAnchor="start"
+                  fontSize="45"
+                  fill="#999dab"
+                  alignmentBaseline="central"
+                >
+                  20
+                </text>
+              </g>
+            </g>
+          </g>
+          <text
+            y="22.5"
+            x="-10"
+            alignmentBaseline="central"
+            textAnchor="end"
+            fontSize="11"
+            fill="#a4a8b6"
+          ></text>
+        </g>
+        <g transform="translate(5,50)">
+          <g className="gauge-mini-bar">
+            <g transform="translate(0,0)">
+              <defs>
+                <clipPath id="rounded-bar-w-140-h-45-r-15">
+                  <rect rx="15" width="140" height="45" y="0"></rect>
+                </clipPath>
+              </defs>
+              <rect
+                height="45"
+                x="0"
+                width="140"
+                fill="#0f0e15"
+                clipPath="url(#rounded-bar-w-140-h-45-r-15)"
+                y="0"
+              ></rect>
+              <rect
+                className="value-rect vis-graphic--fill-a"
+                rx="15"
+                height="45"
+                width="84"
+                x="0"
+                y="0"
+              ></rect>
+              <g transform="translate(0,22.5)">
+                <text
+                  x="79"
+                  textAnchor="end"
+                  fontSize="45"
+                  fill="#181820"
+                  alignmentBaseline="central"
+                >
+                  60
+                </text>
+              </g>
+            </g>
+          </g>
+          <text
+            y="22.5"
+            x="-10"
+            alignmentBaseline="central"
+            textAnchor="end"
+            fontSize="11"
+            fill="#a4a8b6"
+          ></text>
+        </g>
+        <g transform="translate(5,100)">
+          <g className="gauge-mini-bar">
+            <g transform="translate(0,0)">
+              <defs>
+                <clipPath id="rounded-bar-w-140-h-45-r-15">
+                  <rect rx="15" width="140" height="45" y="0"></rect>
+                </clipPath>
+              </defs>
+              <rect
+                height="45"
+                x="0"
+                width="140"
+                fill="#0f0e15"
+                clipPath="url(#rounded-bar-w-140-h-45-r-15)"
+                y="0"
+              ></rect>
+              <rect
+                className="value-rect vis-graphic--fill-c"
+                rx="15"
+                height="45"
+                width="140"
+                x="0"
+                y="0"
+              ></rect>
+              <g transform="translate(0,22.5)">
+                <text
+                  x="135"
+                  textAnchor="end"
+                  fontSize="45"
+                  fill="#181820"
+                  alignmentBaseline="central"
+                >
+                  100
+                </text>
+              </g>
+            </g>
+          </g>
+          <text
+            y="22.5"
+            x="-10"
+            alignmentBaseline="central"
+            textAnchor="end"
+            fontSize="11"
+            fill="#a4a8b6"
+          ></text>
+        </g>
       </g>
-    </g><text y="22.5" x="-10" alignment-baseline="central" text-anchor="end" font-size="11" fill="#a4a8b6"></text>
-  </g>
-  <g transform="translate(5,50)" refreshToken="2">
-    <g class="gauge-mini-bar">
-      <g transform="translate(0,0)">
-        <defs>
-          <clipPath id="rounded-bar-w-140-h-45-r-15">
-            <rect rx="15" width="140" height="45" y="0"></rect>
-          </clipPath>
-        </defs>
-        <rect height="45" x="0" width="140" fill="#0f0e15" clip-path="url(#rounded-bar-w-140-h-45-r-15)" y="0">
-        </rect>
-        <rect class="value-rect vis-graphic--fill-a" rx="15" height="45" width="84" x="0" y="0"></rect>
-        <g transform="translate(0,22.5)"><text x="79" text-anchor="end" font-size="45" fill="#181820"
-            alignment-baseline="central">60</text></g>
-      </g>
-    </g><text y="22.5" x="-10" alignment-baseline="central" text-anchor="end" font-size="11" fill="#a4a8b6"></text>
-  </g>
-  <g transform="translate(5,100)" refreshToken="2">
-    <g class="gauge-mini-bar">
-      <g transform="translate(0,0)">
-        <defs>
-          <clipPath id="rounded-bar-w-140-h-45-r-15">
-            <rect rx="15" width="140" height="45" y="0"></rect>
-          </clipPath>
-        </defs>
-        <rect height="45" x="0" width="140" fill="#0f0e15" clip-path="url(#rounded-bar-w-140-h-45-r-15)" y="0">
-        </rect>
-        <rect class="value-rect vis-graphic--fill-c" rx="15" height="45" width="140" x="0" y="0"></rect>
-        <g transform="translate(0,22.5)"><text x="135" text-anchor="end" font-size="45" fill="#181820"
-            alignment-baseline="central">100</text></g>
-      </g>
-    </g><text y="22.5" x="-10" alignment-baseline="central" text-anchor="end" font-size="11" fill="#a4a8b6"></text>
-  </g>
-</g>
-</svg>
-`,
-    }}
-  />
+    </svg>
+  </div>
 )
 
 export default icon

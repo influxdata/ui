@@ -55,7 +55,6 @@ interface Props {
   quiet?: boolean
 }
 
-// todo: can return string ?
 export const LatestMultipleValueTransform: FunctionComponent<Props> = ({
   table,
   quiet = false,

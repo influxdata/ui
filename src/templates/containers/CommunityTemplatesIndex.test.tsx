@@ -9,7 +9,6 @@ import {mocked} from 'ts-jest/utils'
 jest.mock('src/cloud/utils/reporting')
 jest.mock('src/resources/components/GetResources')
 jest.mock('src/shared/actions/notifications')
-jest.mock('src/shared/utils/errors')
 
 jest.mock('src/templates/api', () => {
   return {

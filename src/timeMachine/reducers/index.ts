@@ -1081,6 +1081,115 @@ export const timeMachineReducer = (
         )
       })
     }
+
+    case 'SET_MAP_TYPE': {
+      const {mapType} = action.payload
+      const mapTypeLayer = [...state.view.properties.layers]
+      switch (mapType) {
+        case 'pointMap':
+          mapTypeLayer[0] = {
+            type: 'pointMap',
+            colorDimension: {label: 'Duration'},
+            colorField: 'duration',
+            colors: [
+              {type: 'min', hex: '#ff0000'},
+              {value: 50, hex: '#343aeb'},
+              {type: 'max', hex: '#343aeb'},
+            ],
+            isClustered: false,
+          }
+          return setViewProperties(state, {
+            layers: mapTypeLayer,
+          })
+        case 'heatmap':
+          mapTypeLayer[0] = {
+            type: 'heatmap',
+            radius: 20,
+            blur: 10,
+            intensityDimension: {label: 'Magnitude'},
+            intensityField: 'magnitude',
+          }
+          return setViewProperties(state, {
+            layers: mapTypeLayer,
+          })
+        case 'trackMap':
+          mapTypeLayer[0] = {
+            type: 'trackMap',
+            speed: 200,
+            trackWidth: 4,
+            randomColors: false,
+            endStopMarkers: true,
+            endStopMarkerRadius: 4,
+            colors: [
+              {type: 'min', hex: '#0000FF'},
+              {type: 'max', hex: '#F0F0FF'},
+            ],
+          }
+          return setViewProperties(state, {
+            layers: mapTypeLayer,
+          })
+        case 'circleMap':
+          mapTypeLayer[0] = {
+            type: 'circleMap',
+            radiusField: 'magnitude',
+            radiusDimension: {label: 'Magnitude'},
+            colorDimension: {label: 'Duration'},
+            colorField: 'duration',
+            colors: [
+              {type: 'min', hex: '#ff00b3'},
+              {value: 50, hex: '#343aeb'},
+              {type: 'max', hex: '#343aeb'},
+            ],
+          }
+          return setViewProperties(state, {
+            layers: mapTypeLayer,
+          })
+        default:
+          return state
+      }
+    }
+    case 'SET_ZOOM_VALUE': {
+      const {zoom} = action.payload
+      switch (state.view.properties.type) {
+        case 'geo':
+          return setViewProperties(state, {
+            zoom,
+          })
+        default:
+          return state
+      }
+    }
+    case 'SET_LATITUDE': {
+      const {lat} = action.payload
+      switch (state.view.properties.type) {
+        case 'geo':
+          return setViewProperties(state, {
+            center: {...state.view.properties.center, lat},
+          })
+        default:
+          return state
+      }
+    }
+    case 'SET_ALLOW_PAN_AND_ZOOM': {
+      const {allowPanAndZoom} = action.payload
+      switch (state.view.properties.type) {
+        case 'geo':
+          return setViewProperties(state, {allowPanAndZoom})
+        default:
+          return state
+      }
+    }
+    case 'SET_LONGITUDE': {
+      const {lon} = action.payload
+      switch (state.view.properties.type) {
+        case 'geo':
+          return setViewProperties(state, {
+            center: {...state.view.properties.center, lon},
+          })
+        default:
+          return state
+      }
+    }
   }
 
   return state

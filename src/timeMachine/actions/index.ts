@@ -99,6 +99,11 @@ export type Action =
   | ReturnType<typeof setYTotalTicks>
   | ReturnType<typeof setYTickStart>
   | ReturnType<typeof setYTickStep>
+  | ReturnType<typeof setMapType>
+  | ReturnType<typeof setAllowPanAndZoom>
+  | ReturnType<typeof setZoomValue>
+  | ReturnType<typeof setLatitude>
+  | ReturnType<typeof setLongitude>
   | SetXDomainAction
   | SetYDomainAction
   | SetXAxisLabelAction
@@ -697,6 +702,27 @@ export const setLowerColumn = (lowerColumn: string) => ({
 export const setLegendOpacity = (legendOpacity: number) => ({
   type: 'SET_LEGEND_OPACITY' as 'SET_LEGEND_OPACITY',
   payload: {legendOpacity},
+})
+
+export const setMapType = (mapType: string) => ({
+  type: 'SET_MAP_TYPE' as 'SET_MAP_TYPE',
+  payload: {mapType},
+})
+export const setZoomValue = (zoom: number) => ({
+  type: 'SET_ZOOM_VALUE' as 'SET_ZOOM_VALUE',
+  payload: {zoom},
+})
+export const setAllowPanAndZoom = (allowPanAndZoom: boolean) => ({
+  type: 'SET_ALLOW_PAN_AND_ZOOM' as 'SET_ALLOW_PAN_AND_ZOOM',
+  payload: {allowPanAndZoom},
+})
+export const setLatitude = (lat: number) => ({
+  type: 'SET_LATITUDE' as 'SET_LATITUDE',
+  payload: {lat},
+})
+export const setLongitude = (lon: number) => ({
+  type: 'SET_LONGITUDE' as 'SET_LONGITUDE',
+  payload: {lon},
 })
 
 export const setLegendOrientationThreshold = (

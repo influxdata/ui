@@ -8,7 +8,6 @@ import Row from './Row'
 import {TelegrafPluginInputCpu} from '@influxdata/influx'
 import {renderWithReduxAndRouter} from 'src/mockState'
 
-
 const setup = (override = {}) => {
   const props = {
     confirmText: '',

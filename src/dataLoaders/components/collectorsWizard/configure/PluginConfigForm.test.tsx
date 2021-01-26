@@ -49,7 +49,7 @@ describe('DataLoaders.Components.CollectorsWizard.Configure.PluginConfigForm', (
           telegrafPluginsInfo[TelegrafPluginInputCpu.NameEnum.Cpu].fields,
       })
       const form = await screen.findByTestId('form-container')
-      const title = await screen.getByRole('heading', { level: 3 })
+      const title = await screen.getByRole('heading', {level: 3})
       const onboardingButtons = await screen.findByTestId('next')
 
       expect(form).toBeVisible()

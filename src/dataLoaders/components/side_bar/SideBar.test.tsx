@@ -48,17 +48,17 @@ describe('SideBar', () => {
     it('renders with no children', async () => {
       setup()
 
-      const elm = await screen.findByTestId("side-bar")
+      const elm = await screen.findByTestId('side-bar')
 
       expect(elm).toBeVisible()
     })
 
     it('renders with children, and renders its children', async () => {
       setup(null, childrenArray)
-      const elm = await screen.findByTestId("side-bar")
+      const elm = await screen.findByTestId('side-bar')
 
       expect(elm).toBeVisible()
-      childrenArray.forEach((child) => {
+      childrenArray.forEach(child => {
         expect(elm.innerHTML).toContain(render(child).container.innerHTML)
       })
     })

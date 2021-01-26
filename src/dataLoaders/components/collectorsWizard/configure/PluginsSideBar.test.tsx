@@ -42,7 +42,7 @@ describe('PluginsSideBar', () => {
         currentStepIndex: 2,
         telegrafPlugins: [cpuTelegrafPlugin, diskTelegrafPlugin],
       })
-      const tabs = await screen.findAllByTestId("sidebar-tab")
+      const tabs = await screen.findAllByTestId('sidebar-tab')
       expect(tabs.pop()).toBeVisible()
     })
   })

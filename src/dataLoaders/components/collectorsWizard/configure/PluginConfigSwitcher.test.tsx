@@ -36,7 +36,8 @@ describe('DataLoading.Components.Collectors.Configure.PluginConfigSwitcher', () 
   describe('if no telegraf plugins', () => {
     it('renders empty data source state', async () => {
       setup()
-      const defaultEmptyStateText = new EmptyDataSourceState({}).render().props.children
+      const defaultEmptyStateText = new EmptyDataSourceState({}).render().props
+        .children
       const emptyState = await screen.findByText(defaultEmptyStateText)
 
       expect(emptyState).toBeVisible()
@@ -48,7 +49,7 @@ describe('DataLoading.Components.Collectors.Configure.PluginConfigSwitcher', () 
       setup({
         telegrafPlugins: [{...telegrafPlugin, active: true}],
       })
-      const form = await screen.findByTestId("form-container")
+      const form = await screen.findByTestId('form-container')
 
       expect(form).toBeVisible()
     })
@@ -60,8 +61,10 @@ describe('DataLoading.Components.Collectors.Configure.PluginConfigSwitcher', () 
         telegrafPlugins: [{...telegrafPlugin, active: false}],
       })
 
-      const form = await screen.getAllByRole('heading', { level: 3 })
-      const instructions = await screen.getByText("Configure each plugin from the menu on the left. Some plugins do not require any configuration.")
+      const form = await screen.getAllByRole('heading', {level: 3})
+      const instructions = await screen.getByText(
+        'Configure each plugin from the menu on the left. Some plugins do not require any configuration.'
+      )
 
       expect(form.pop()).toBeVisible()
       expect(instructions).toBeVisible()

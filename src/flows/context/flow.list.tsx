@@ -19,11 +19,11 @@ import {PROJECT_NAME} from 'src/flows'
 import {
   postApiV2privateFlowsOrgsFlow,
   PostApiV2privateFlowsOrgsFlowParams,
-  patchApiV2privateFlowsOrgsFlow,
   PatchApiV2privateFlowsOrgsFlowParams,
   deleteApiV2privateFlowsOrgsFlow,
   getApiV2privateFlowsOrgsFlows,
 } from 'src/client/flowsRoutes'
+import {pooledUpdate} from 'src/flows/context/update'
 
 const useFlowListState = createPersistedState('flows')
 const useFlowCurrentState = createPersistedState('current-flow')
@@ -185,7 +185,7 @@ export const FlowListProvider: FC = ({children}) => {
     })
   }
 
-  const update = async (id: string, flow: Flow) => {
+  const update = (id: string, flow: Flow) => {
     if (!flows.hasOwnProperty(id)) {
       throw new Error(`${PROJECT_NAME} not found`)
     }
@@ -194,8 +194,8 @@ export const FlowListProvider: FC = ({children}) => {
       name: flow.name,
       range: flow.range,
       refresh: flow.refresh,
-      data: flow.data.serialize(),
-      meta: flow.meta.serialize(),
+      data: flow.data.serialize ? flow.data.serialize() : flow.data,
+      meta: flow.meta.serialize ? flow.meta.serialize() : flow.meta,
       readOnly: flow.readOnly,
     }
 
@@ -203,20 +203,19 @@ export const FlowListProvider: FC = ({children}) => {
       ...flows,
       [id]: data,
     })
+
     const apiFlow: PatchApiV2privateFlowsOrgsFlowParams = {
-      orgID: orgID,
       id,
+      orgID,
       data: {
-        orgID: orgID,
         id,
+        orgID,
         name: {value: flow.name},
         spec: data,
       },
     }
-    const res = await patchApiV2privateFlowsOrgsFlow(apiFlow)
-    if (res.status != 200) {
-      throw new Error(res.data.message)
-    }
+
+    pooledUpdate(apiFlow)
   }
 
   const change = useCallback(
@@ -256,10 +255,7 @@ export const FlowListProvider: FC = ({children}) => {
 
       _flow[field] = data
 
-      setFlows({
-        ...flows,
-        [curr]: _flow,
-      })
+      update(curr, _flow)
     }
 
     acc[curr] = {

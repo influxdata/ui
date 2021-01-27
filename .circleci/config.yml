@@ -346,6 +346,7 @@ jobs:
           name: Run smoke tests
           no_output_timeout: 30m
           command: |
+            docker images;
             cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress-smoke
       - store_test_results:
           path: monitor-ci/test-artifacts/results

@@ -14,7 +14,7 @@ import {
 import {AnnotationsSearchBarItem} from 'src/annotations/components/controlBar/AnnotationsSearchBarItem'
 
 // Actions
-import {enableAnnotationStream} from 'src/annotations/actions'
+import {enableAnnotationStream} from 'src/annotations/actions/creators'
 
 // Selectors
 import {getHiddenAnnotationStreams} from 'src/annotations/selectors'

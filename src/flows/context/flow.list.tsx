@@ -66,45 +66,21 @@ export const FlowListContext = React.createContext<FlowListContextType>(
   DEFAULT_CONTEXT
 )
 
-// NOTE: these have no utility, i'm just confused on how we are going to be getting
-// data from the api as a contract hasn't come forward, so i'm trying to be pre-emptive
-// on capabilities to speed integration. Remove the next two functions when that
-// data contract gets some ground and shows up (alex)
-// export function serialize(flow: Flow): PostApiV2privateFlowsOrgsFlowParams {
-// const apiFlow = {
-//   name: flow.name,
-//   readOnly: flow.readOnly,
-//   range: flow.range,
-//   refresh: flow.refresh,
-//   pipes: flow.data.allIDs.map(id => {
-//     const meta = flow.meta.byID[id]
-
-//     return {
-//       ...flow.data.byID[id],
-//       title: meta.title,
-//       visible: meta.visible,
-//     }
-//   }),
-// }
-
-//   return apiFlow
-// }
-
-export function hydrate(data) {
-  const flow = {
+export function hydrate(flow) {
+  const _flow = {
     ...JSON.parse(JSON.stringify(EMPTY_NOTEBOOK)),
-    name: data.name,
-    range: data.range,
-    refresh: data.refresh,
-    readOnly: data.readOnly,
+    name: flow.name,
+    range: flow.range,
+    refresh: flow.refresh,
+    readOnly: flow.readOnly,
   }
-  if (data.spec) {
-    Object.keys(data.spec.byID).forEach(key => {
-      const pipe = data.spec.byID[key]
+  if (flow.data) {
+    Object.keys(flow.data.byID).forEach(key => {
+      const pipe = flow.data.byID[key]
       const id = pipe.id || `local_${UUID()}`
 
-      flow.data.allIDs.push(id)
-      flow.meta.allIDs.push(id)
+      _flow.data.allIDs.push(id)
+      _flow.meta.allIDs.push(id)
 
       const meta = {
         title: pipe.title,
@@ -115,11 +91,11 @@ export function hydrate(data) {
       delete pipe.title
       delete pipe.visible
 
-      flow.data.byID[id] = pipe
-      flow.meta.byID[id] = meta
+      _flow.data.byID[id] = pipe
+      _flow.meta.byID[id] = meta
     })
   }
-  return flow
+  return _flow
 }
 
 export const FlowListProvider: FC = ({children}) => {
@@ -135,7 +111,7 @@ export const FlowListProvider: FC = ({children}) => {
 
     if (res.data.flows) {
       const _flows = {}
-      res.data.flows.forEach(f => _flows[f.id] = hydrate(f))
+      res.data.flows.forEach(f => (_flows[f.id] = hydrate(f.spec)))
       setFlows(_flows)
     }
   }, [orgID, setFlows])
@@ -186,7 +162,7 @@ export const FlowListProvider: FC = ({children}) => {
       data: {
         orgID: orgID,
         name: _flow.name,
-        spec: _flow.data,
+        spec: _flow,
       },
     }
     const res = await postApiV2privateFlowsOrgsFlow(apiFlow)
@@ -232,8 +208,9 @@ export const FlowListProvider: FC = ({children}) => {
       id,
       data: {
         orgID: orgID,
+        id,
         name: {value: flow.name},
-        spec: flow.data,
+        spec: data,
       },
     }
     const res = await patchApiV2privateFlowsOrgsFlow(apiFlow)

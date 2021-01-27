@@ -4,7 +4,6 @@ import {useDispatch} from 'react-redux'
 import {DragDropContext, Droppable} from 'react-beautiful-dnd'
 import classnames from 'classnames'
 
-import {AutoCompleteDropdown} from  '@influxdata/clockface'
 // Components
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import DraggableDropdown from 'src/dashboards/components/variablesControlBar/DraggableDropdown'
@@ -47,29 +46,26 @@ const VariablesControlBarList: FC<Props> = ({variables}) => {
     })
 
   return (
-      <div>
-    <DragDropContext onDragEnd={handleDragEnd}>
-      <Droppable droppableId="variables-dropdowns" direction="horizontal">
-        {(provided, snapshot) => (
-          <div
-            className={getGridClassName(snapshot.isDraggingOver)}
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-          >
-            {variables.map((v, i) => (
-              <ErrorBoundary key={v.id}>
-                <DraggableDropdown id={v.id} index={i} name={v.name} />
-              </ErrorBoundary>
-            ))}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
-    </DragDropContext>
-        <AutoCompleteDropdown/>
-
-
-      </div>
+    <div>
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId="variables-dropdowns" direction="horizontal">
+          {(provided, snapshot) => (
+            <div
+              className={getGridClassName(snapshot.isDraggingOver)}
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              {variables.map((v, i) => (
+                <ErrorBoundary key={v.id}>
+                  <DraggableDropdown id={v.id} index={i} name={v.name} />
+                </ErrorBoundary>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+    </div>
   )
 }
 

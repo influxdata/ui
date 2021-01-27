@@ -28,72 +28,46 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
+const placeHolderText = 'select a value'
+//todo:  play with focus....if the entire item loses focus, then
+//the input should show the actual selected item, not what the user typed in
+//think on this.....
 class VariableDropdown extends PureComponent<Props> {
-
-  constructor(props){
+  constructor(props) {
     super(props)
     this.state = {
       typedText: '',
-      shownValues:props.values,
+      shownValues: props.values,
     }
   }
 
   //only want this to run *once* when the values get loaded
-  componentDidUpdate(prevProps){
+  componentDidUpdate(prevProps) {
     const prevVals = prevProps.values
     const {values, selectedValue} = this.props
     const {loaded} = this.state
 
-
-    console.log("in component did update!")
-    if (!loaded && prevVals.length !== values.length){
-      console.log("actually updating...");
-      this.setState({shownValues:values, typedValue: selectedValue, loaded: true})
-    } else {
-      console.log("not updating...");
+    if (!loaded && prevVals.length !== values.length) {
+      this.setState({
+        shownValues: values,
+        typedValue: selectedValue,
+        loaded: true,
+      })
     }
   }
 
-  const filterVals = (ack) => {
+  filterVals = needle => {
     const {values} = this.props
 
-    if (!ack) {
-      console.log("empty string....show everything");
-      this.setState({shownValues: values, typedValue: ack});
-
+    if (!needle) {
+      this.setState({shownValues: values, typedValue: needle})
     } else {
-      const result = values.filter(val =>
-          val.toLowerCase().indexOf(ack.toLowerCase()) !== -1
+      const result = values.filter(
+        val => val.toLowerCase().indexOf(needle.toLowerCase()) !== -1
       )
-
-      console.log("filtering??? jill-ack1", result)
-
-      this.setState({shownValues: result, typedValue: ack})
+      this.setState({shownValues: result, typedValue: needle})
     }
   }
-
-  // setFocus() {
-  //   this.setInputFocused(true);
-  // }
-  // setInputFocused(focused) {
-  //   this.setState({inputFocused:focused});
-  // }
-  //
-  // setBlur(){
-  //   this.setInputFocused(false);
-  // }
-
-  getInputValue(){
-    const {typedValue, inputFocused} = this.state
-
-    if (inputFocused){
-      console.log("input is focused...");
-      return typedValue
-    }
-    console.log("input not focused...");
-    return this.selectedText
-  }
-
 
   render() {
     const {selectedValue, values, name} = this.props
@@ -102,25 +76,7 @@ class VariableDropdown extends PureComponent<Props> {
     const dropdownStatus =
       values.length === 0 ? ComponentStatus.Disabled : ComponentStatus.Default
 
-    const longestItemWidth = Math.floor(
-      values.reduce(function(a, b) {
-        return a.length > b.length ? a : b
-      }, '').length * 9.5
-    )
-
-    const widthLength = Math.max(140, longestItemWidth)
-
-    // const textInput =   <Input
-    //     placeholder='select a value'
-    //     onChange={e => filterVals(e.target.value)}
-    //     value={typedValue || getSelectedText()}
-    // />;
-
-console.log("jill23...shownValues??", this.state.shownValues)
-    console.log('jill23....actual vals?', values);
-
-
-
+    const widthStyle = this.getWidth()
 
     return (
       <Dropdown
@@ -133,17 +89,18 @@ console.log("jill23...shownValues??", this.state.shownValues)
             onClick={onClick}
             testID="variable-dropdown--button"
             status={dropdownStatus}
-          >  <Input
-              placeholder='select a value'
+          >
+            <Input
+              style={widthStyle}
+              placeholder={placeHolderText}
               onChange={e => this.filterVals(e.target.value)}
               value={typedValue}
-          />
-
+            />
           </Dropdown.Button>
         )}
         menu={onCollapse => (
           <Dropdown.Menu
-            style={{width: `${widthLength}px`}}
+            style={widthStyle}
             onCollapse={onCollapse}
             theme={DropdownMenuTheme.Amethyst}
           >
@@ -168,6 +125,20 @@ console.log("jill23...shownValues??", this.state.shownValues)
     )
   }
 
+  private getWidth() {
+    const {values} = this.props
+    const allVals = [placeHolderText, ...values]
+    const longestItemWidth = Math.floor(
+      allVals.reduce(function(a, b) {
+        return a.length > b.length ? a : b
+      }, '').length * 10
+    )
+
+    const widthLength = Math.max(140, longestItemWidth)
+    const widthStyle = {width: `${widthLength}px`}
+    return widthStyle
+  }
+
   private handleSelect = (selectedValue: string) => {
     const {
       variableID,
@@ -183,9 +154,11 @@ console.log("jill23...shownValues??", this.state.shownValues)
     if (onSelect) {
       onSelect()
     }
-    this.setState({typedValue:selectedValue})
+    this.setState({typedValue: selectedValue})
   }
 
+  // todo:  show the 'loading' or 'no values' as a string (no input field yet!)
+  // when it is loading
   private get selectedText() {
     const {selectedValue, status} = this.props
     if (status === RemoteDataState.Loading) {

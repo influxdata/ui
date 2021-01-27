@@ -4,6 +4,7 @@ import {useDispatch} from 'react-redux'
 import {DragDropContext, Droppable} from 'react-beautiful-dnd'
 import classnames from 'classnames'
 
+import {AutoCompleteDropdown} from  '@influxdata/clockface'
 // Components
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import DraggableDropdown from 'src/dashboards/components/variablesControlBar/DraggableDropdown'
@@ -46,6 +47,7 @@ const VariablesControlBarList: FC<Props> = ({variables}) => {
     })
 
   return (
+      <div>
     <DragDropContext onDragEnd={handleDragEnd}>
       <Droppable droppableId="variables-dropdowns" direction="horizontal">
         {(provided, snapshot) => (
@@ -64,6 +66,10 @@ const VariablesControlBarList: FC<Props> = ({variables}) => {
         )}
       </Droppable>
     </DragDropContext>
+        <AutoCompleteDropdown/>
+
+
+      </div>
   )
 }
 

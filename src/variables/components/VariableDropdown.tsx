@@ -7,6 +7,7 @@ import {
   Dropdown,
   DropdownMenuTheme,
   ComponentStatus,
+  Input,
 } from '@influxdata/clockface'
 
 // Actions
@@ -28,8 +29,75 @@ type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
 class VariableDropdown extends PureComponent<Props> {
+
+  constructor(props){
+    super(props)
+    this.state = {
+      typedText: '',
+      shownValues:props.values,
+    }
+  }
+
+  //only want this to run *once* when the values get loaded
+  componentDidUpdate(prevProps){
+    const prevVals = prevProps.values
+    const {values, selectedValue} = this.props
+    const {loaded} = this.state
+
+
+    console.log("in component did update!")
+    if (!loaded && prevVals.length !== values.length){
+      console.log("actually updating...");
+      this.setState({shownValues:values, typedValue: selectedValue, loaded: true})
+    } else {
+      console.log("not updating...");
+    }
+  }
+
+  const filterVals = (ack) => {
+    const {values} = this.props
+
+    if (!ack) {
+      console.log("empty string....show everything");
+      this.setState({shownValues: values, typedValue: ack});
+
+    } else {
+      const result = values.filter(val =>
+          val.toLowerCase().indexOf(ack.toLowerCase()) !== -1
+      )
+
+      console.log("filtering??? jill-ack1", result)
+
+      this.setState({shownValues: result, typedValue: ack})
+    }
+  }
+
+  // setFocus() {
+  //   this.setInputFocused(true);
+  // }
+  // setInputFocused(focused) {
+  //   this.setState({inputFocused:focused});
+  // }
+  //
+  // setBlur(){
+  //   this.setInputFocused(false);
+  // }
+
+  getInputValue(){
+    const {typedValue, inputFocused} = this.state
+
+    if (inputFocused){
+      console.log("input is focused...");
+      return typedValue
+    }
+    console.log("input not focused...");
+    return this.selectedText
+  }
+
+
   render() {
     const {selectedValue, values, name} = this.props
+    const {typedValue, shownValues} = this.state
 
     const dropdownStatus =
       values.length === 0 ? ComponentStatus.Disabled : ComponentStatus.Default
@@ -42,6 +110,18 @@ class VariableDropdown extends PureComponent<Props> {
 
     const widthLength = Math.max(140, longestItemWidth)
 
+    // const textInput =   <Input
+    //     placeholder='select a value'
+    //     onChange={e => filterVals(e.target.value)}
+    //     value={typedValue || getSelectedText()}
+    // />;
+
+console.log("jill23...shownValues??", this.state.shownValues)
+    console.log('jill23....actual vals?', values);
+
+
+
+
     return (
       <Dropdown
         style={{width: '140px'}}
@@ -53,8 +133,12 @@ class VariableDropdown extends PureComponent<Props> {
             onClick={onClick}
             testID="variable-dropdown--button"
             status={dropdownStatus}
-          >
-            {this.selectedText}
+          >  <Input
+              placeholder='select a value'
+              onChange={e => this.filterVals(e.target.value)}
+              value={typedValue}
+          />
+
           </Dropdown.Button>
         )}
         menu={onCollapse => (
@@ -63,7 +147,7 @@ class VariableDropdown extends PureComponent<Props> {
             onCollapse={onCollapse}
             theme={DropdownMenuTheme.Amethyst}
           >
-            {values.map(val => {
+            {shownValues.map(val => {
               return (
                 <Dropdown.Item
                   key={val}
@@ -99,6 +183,7 @@ class VariableDropdown extends PureComponent<Props> {
     if (onSelect) {
       onSelect()
     }
+    this.setState({typedValue:selectedValue})
   }
 
   private get selectedText() {

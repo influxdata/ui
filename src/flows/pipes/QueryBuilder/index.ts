@@ -10,21 +10,22 @@ export default register => {
     featureFlag: 'flow-panel--query-builder',
     button: 'Query Builder',
     initial: {
-      activeQuery: 0,
-      queries: [
+      buckets: [],
+      tags: [
         {
-          text: '',
-          editMode: 'builder',
-          builderConfig: {
-            buckets: [],
-            tags: [],
-            functions: [],
-          },
+          key: '_measurement',
+          values: [],
+          aggregateFunctionType: 'filter',
         },
       ],
+      functions: [{name: 'mean'}],
+      aggregateWindow: {
+        period: 'auto',
+        fillValues: false,
+      },
     },
-    generateFlux: (pipe, create, append) => {
-        return
+    generateFlux: (_pipe, _create, _append) => {
+      return
     },
   })
 }

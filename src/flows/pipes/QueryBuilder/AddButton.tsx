@@ -1,58 +1,33 @@
 // Libraries
 import React, {FC, useContext, useCallback} from 'react'
 import {SquareButton, IconFont} from '@influxdata/clockface'
+import {RemoteDataState} from 'src/types'
 
-import {PipeContext} from 'src/flows/context/pipe'
-
-const INITIAL_TAG_STATE = {
-          aggregateFunctionType: 'filter',
-          keys: [],
-          keysSearchTerm: '',
-          keysStatus: RemoteDataState.NotStarted,
-          values: [],
-          valuesSearchTerm: '',
-          valuesStatus: RemoteDataState.NotStarted,
-        }
+import {QueryBuilderCardListContext} from 'src/flows/context/tags'
 
 const AddButton: FC = () => {
-    const {data, update} = useContext(PipeContext)
-    const config = data.queries[data.activeQuery].builderConfig
+  const {cards, add} = useContext(QueryBuilderCardListContext)
 
-    const onClick = useCallback(() => {
-        // NOTE: immer would probably be easier to maintain
-        update({
-            queries: {
-                ...data.queries,
-                [data.activeQuery]: {
-                    ...data.queries[data.activeQuery],
-                    builderConfig: {
-                        ...data.queries[data.activeQuery].builderConfig,
-                        tags: [
-                            ...data.queries[data.activeQuery].builderConfig.tags,
-                            INITIAL_TAG_STATE
-                        ]
-                    }
-                }
-            }
-        })
-    }, [data, update])
+  const onClick = useCallback(() => {
+    add()
+  }, [add])
 
-    if (!config.tags.length) {
-       return
-    }
+  if (!cards.length) {
+    return null
+  }
 
-    const {keys, keysStatus} = config.tags[config.tags.length - 1]
-    if (keys.length === 0 && keysStatus === RemoteDataState.Done) {
-        return
-    }
+  const {keys} = cards[cards.length - 1]
+  if (keys.results.length === 0 && keys.status === RemoteDataState.Done) {
+    return null
+  }
 
-    return (
-      <SquareButton
-        className="query-builder--add-card-button"
-        onClick={onClick}
-        icon={IconFont.Plus}
-      />
-    )
+  return (
+    <SquareButton
+      className="query-builder--add-card-button"
+      onClick={onClick}
+      icon={IconFont.Plus}
+    />
+  )
 }
 
 export default AddButton

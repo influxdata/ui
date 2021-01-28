@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC, useContext, useState} from 'react'
 
 // Components
 import {
@@ -17,11 +17,15 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 import {millisecondsToDuration} from 'src/shared/utils/duration'
+import SelectorList from 'src/timeMachine/components/SelectorList'
 
-import {DURATIONS} from 'src/timeMachine/constants/queryBuilder'
+import {
+  DURATIONS,
+  AUTO_FUNCTIONS,
+  FUNCTIONS,
+} from 'src/timeMachine/constants/queryBuilder'
 
 import BuilderCard from 'src/timeMachine/components/builderCard/BuilderCard'
-import FunctionModeSelector from 'src/timeMachine/components/FunctionModeSelector'
 import DurationInput from 'src/shared/components/DurationInput'
 
 import {PipeContext} from 'src/flows/context/pipe'
@@ -33,6 +37,16 @@ const AggregationSelector: FC = () => {
   const {data, update} = useContext(PipeContext)
   const {flow} = useContext(FlowContext)
   const {period, fillValues} = data.aggregateWindow
+
+  const [isAutoFunction, setIsAutoFunction] = useState(
+    data.functions.length === 1 &&
+      AUTO_FUNCTIONS.map(fn => fn.name).includes(data.functions[0].name)
+  )
+
+  const fnList = isAutoFunction
+    ? AUTO_FUNCTIONS.map(f => f.name)
+    : FUNCTIONS.map(f => f.name)
+  const durationDisplay = period
 
   const toggleFill = () => {
     update({
@@ -90,7 +104,46 @@ const AggregationSelector: FC = () => {
     })
   }
 
-  const durationDisplay = period
+  const selectFn = fn => {
+    if (isAutoFunction) {
+      update({
+        functions: [{name: fn}],
+      })
+      return
+    }
+
+    const fns = [...data.functions]
+    const fnsFound = fns.map(f => f.name).indexOf(fn)
+    if (fnsFound !== -1) {
+      fns.splice(fnsFound, 1)
+      update({
+        functions: fns,
+      })
+    } else {
+      update({
+        functions: [...fns, {name: fn}],
+      })
+    }
+  }
+  const setFnMode = (mode: 'custom' | 'auto') => {
+    if (mode === 'custom') {
+      setIsAutoFunction(false)
+      return
+    }
+    const newFunctions = data.functions.filter(f =>
+      AUTO_FUNCTIONS.map(fn => fn.name).includes(f.name)
+    )
+    if (newFunctions.length === 0) {
+      update({
+        functions: [{name: AUTO_FUNCTIONS[0].name}],
+      })
+    } else {
+      update({
+        functions: [{name: newFunctions[0].name}],
+      })
+    }
+    setIsAutoFunction(true)
+  }
 
   return (
     <BuilderCard className="aggregation-selector" testID="aggregation-selector">
@@ -173,7 +226,51 @@ const AggregationSelector: FC = () => {
           </FlexBox>
         </FlexBox>
       </BuilderCard.Body>
-      <FunctionModeSelector />
+      <BuilderCard.Header
+        title="Aggregate Function"
+        className="aggregation-selector-header"
+      />
+      <BuilderCard.Menu className="aggregation-selector-menu">
+        <FlexBox
+          direction={FlexDirection.Column}
+          margin={ComponentSize.ExtraSmall}
+          alignItems={AlignItems.Stretch}
+        >
+          <SelectGroup
+            shape={ButtonShape.StretchToFit}
+            size={ComponentSize.ExtraSmall}
+          >
+            <SelectGroup.Option
+              name="custom"
+              id="custom-function"
+              testID="custom-function"
+              active={!isAutoFunction}
+              value="custom"
+              onClick={setFnMode}
+              titleText="Custom"
+            >
+              Custom
+            </SelectGroup.Option>
+            <SelectGroup.Option
+              name="auto"
+              id="auto-function"
+              testID="auto-function"
+              active={isAutoFunction}
+              value="auto"
+              onClick={setFnMode}
+              titleText="Auto"
+            >
+              Auto
+            </SelectGroup.Option>
+          </SelectGroup>
+        </FlexBox>
+      </BuilderCard.Menu>
+      <SelectorList
+        items={fnList}
+        selectedItems={data.functions.map(fn => fn.name)}
+        onSelectItem={selectFn}
+        multiSelect={!isAutoFunction}
+      />
     </BuilderCard>
   )
 }

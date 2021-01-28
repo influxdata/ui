@@ -1,4 +1,5 @@
 import React, {FC, useCallback, useEffect} from 'react'
+import {useDispatch} from 'react-redux'
 import {useParams} from 'react-router-dom'
 import createPersistedState from 'use-persisted-state'
 import {v4 as UUID} from 'uuid'
@@ -28,6 +29,12 @@ import {
   getAllAPI,
   migrateLocalFlowsToAPI,
 } from 'src/flows/context/api'
+import {notify} from 'src/shared/actions/notifications'
+import {
+  notebookCreateFail,
+  notebookDeleteFail,
+  notebookUpdateFail,
+} from 'src/shared/copy/notifications'
 
 const useFlowListState = createPersistedState('flows')
 const useFlowCurrentState = createPersistedState('current-flow')
@@ -106,8 +113,18 @@ export const FlowListProvider: FC = ({children}) => {
   const [flows, setFlows] = useFlowListState(DEFAULT_CONTEXT.flows)
   const [currentID, setCurrentID] = useFlowCurrentState(null)
   const {orgID} = useParams<{orgID: string}>()
+  const dispatch = useDispatch()
+
+  const migrate = async () => {
+    try {
+      await migrateLocalFlowsToAPI(orgID, flows, setFlows)
+    } catch {
+      dispatch(notify(notebookUpdateFail()))
+    }
+  }
+
   useEffect(() => {
-    migrateLocalFlowsToAPI(orgID, flows, setFlows)
+    migrate()
   }, [])
 
   const getAll = useCallback(async (): Promise<void> => {
@@ -162,15 +179,19 @@ export const FlowListProvider: FC = ({children}) => {
     }
 
     const apiFlow: PostApiV2privateFlowsOrgsFlowParams = {
-      orgID: orgID,
+      orgID,
       data: {
         orgID: orgID,
         name: _flow.name,
         spec: _flow,
       },
     }
-    // TODO (gene): on API failure, show notification
-    const id = await createAPI(apiFlow)
+    let id: string = `local_${UUID()}`
+    try {
+      id = await createAPI(apiFlow)
+    } catch {
+      dispatch(notify(notebookCreateFail()))
+    }
 
     return new Promise(resolve => {
       setTimeout(() => {
@@ -234,8 +255,11 @@ export const FlowListProvider: FC = ({children}) => {
     const _flows = {
       ...flows,
     }
-    // TODO (gene): on API failure, show notification
-    await deleteAPI({orgID, id} as DeleteApiV2privateFlowsOrgsFlowParams)
+    try {
+      await deleteAPI({orgID, id} as DeleteApiV2privateFlowsOrgsFlowParams)
+    } catch (error) {
+      dispatch(notify(notebookDeleteFail()))
+    }
 
     delete _flows[id]
     if (currentID === id) {

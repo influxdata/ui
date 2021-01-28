@@ -104,7 +104,7 @@ export const migrateLocalFlowsToAPI = async (
 ) => {
   if (isFlagEnabled(FLOWS_API_FLAG)) {
     const localFlows = Object.keys(flows).filter(id => id.includes('local'))
-    if (localFlows) {
+    if (localFlows.length) {
       await Promise.all(
         localFlows.map(async localID => {
           const flow = flows[localID]

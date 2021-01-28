@@ -1,7 +1,7 @@
 // Installed libraries
 import React from 'react'
 import {createStore} from 'redux'
-import {fireEvent, screen, waitFor} from '@testing-library/react'
+import {cleanup, fireEvent, screen, waitFor} from '@testing-library/react'
 import {normalize} from 'normalizr'
 import {mocked} from 'ts-jest/utils'
 
@@ -109,7 +109,7 @@ let getByTitle
 describe('the Community Templates Install Overlay', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-
+    mocked(reportErrorThroughHoneyBadger).mockClear()
     const foo = setup()
     const store = foo.store
     getByTitle = foo.getByTitle
@@ -136,7 +136,78 @@ describe('the Community Templates Install Overlay', () => {
   })
 
   describe('handling the template install process', () => {
-    it('opens the install overlay when the template url is valid', async () => {
+    it('handles failures to rename', async () => {
+      const templateButton = getByTitle('Lookup Template')
+
+      fireEvent.click(templateButton)
+
+      const [templateClickEventCallArguments] = mocked(event).mock.calls
+      const [eventName] = templateClickEventCallArguments
+      expect(eventName).toBe('template_click_lookup')
+
+      mocked(updateStackName).mockImplementationOnce(() => {
+        throw new Error()
+      })
+
+      await waitFor(() => {
+        expect(screen.queryByText('Template Installer')).toBeVisible()
+      })
+
+      await waitFor(() => {
+        const installButton = screen.queryByTitle('Install Template')
+        expect(installButton).toBeVisible()
+        fireEvent.click(installButton)
+      })
+
+      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyMessage] = notifyCallArguments
+      expect(notifyMessage).toEqual(communityTemplateRenameFailed())
+
+      const [honeyBadgerCallArguments] = mocked(
+        reportErrorThroughHoneyBadger
+      ).mock.calls
+      expect(honeyBadgerCallArguments[1]).toEqual({
+        name: 'The community template rename failed',
+      })
+    })
+
+    it('handles failures to install', async () => {
+      const templateButton = getByTitle('Lookup Template')
+
+      fireEvent.click(templateButton)
+
+      const [templateClickEventCallArguments] = mocked(event).mock.calls
+      const [eventName] = templateClickEventCallArguments
+      expect(eventName).toBe('template_click_lookup')
+
+      mocked(event).mockImplementationOnce(() => {
+        throw new Error()
+      })
+
+      await waitFor(() => {
+        expect(screen.queryByText('Template Installer')).toBeVisible()
+      })
+
+      await waitFor(() => {
+        const installButton = screen.queryByTitle('Install Template')
+        expect(installButton).toBeVisible()
+        fireEvent.click(installButton)
+      })
+
+      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyMessage] = notifyCallArguments
+      expect(notifyMessage).toEqual(communityTemplateInstallFailed())
+
+      const [honeyBadgerCallArguments] = mocked(
+        reportErrorThroughHoneyBadger
+      ).mock.calls
+      expect(honeyBadgerCallArguments[1]).toEqual({
+        name: 'Failed to install community template',
+      })
+
+      cleanup()
+    })
+    it('installs the template', async () => {
       const templateButton = getByTitle('Lookup Template')
 
       fireEvent.click(templateButton)
@@ -171,75 +242,6 @@ describe('the Community Templates Install Overlay', () => {
       expect(notifyMessage).toEqual(
         communityTemplateInstallSucceeded('fn-template')
       )
-    })
-
-    it('opens the install overlay when the template url is valid and fails install', async () => {
-      const templateButton = getByTitle('Lookup Template')
-
-      fireEvent.click(templateButton)
-
-      const [templateClickEventCallArguments] = mocked(event).mock.calls
-      const [eventName] = templateClickEventCallArguments
-      expect(eventName).toBe('template_click_lookup')
-
-      mocked(event).mockImplementation(() => {
-        throw new Error()
-      })
-
-      await waitFor(() => {
-        expect(screen.queryByText('Template Installer')).toBeVisible()
-      })
-
-      await waitFor(() => {
-        const installButton = screen.queryByTitle('Install Template')
-        expect(installButton).toBeVisible()
-        fireEvent.click(installButton)
-      })
-
-      const [notifyCallArguments] = mocked(notify).mock.calls
-      const [notifyMessage] = notifyCallArguments
-      expect(notifyMessage).toEqual(communityTemplateInstallFailed())
-
-      const [honeyBadgerCallArguments] = mocked(
-        reportErrorThroughHoneyBadger
-      ).mock.calls
-      expect(honeyBadgerCallArguments[1]).toEqual({
-        name: 'Failed to install community template',
-      })
-    })
-    it('opens the install overlay when the template url is valid and fails rename', async () => {
-      const templateButton = getByTitle('Lookup Template')
-
-      fireEvent.click(templateButton)
-
-      const [templateClickEventCallArguments] = mocked(event).mock.calls
-      const [eventName] = templateClickEventCallArguments
-      expect(eventName).toBe('template_click_lookup')
-
-      mocked(updateStackName).mockImplementation(() => {
-        throw new Error()
-      })
-
-      await waitFor(() => {
-        expect(screen.queryByText('Template Installer')).toBeVisible()
-      })
-
-      await waitFor(() => {
-        const installButton = screen.queryByTitle('Install Template')
-        expect(installButton).toBeVisible()
-        fireEvent.click(installButton)
-      })
-
-      const [notifyCallArguments] = mocked(notify).mock.calls
-      const [notifyMessage] = notifyCallArguments
-      expect(notifyMessage).toEqual(communityTemplateRenameFailed())
-
-      const [honeyBadgerCallArguments] = mocked(
-        reportErrorThroughHoneyBadger
-      ).mock.calls
-      expect(honeyBadgerCallArguments[2]).toEqual({
-        name: 'The community template rename failed',
-      })
     })
   })
 })

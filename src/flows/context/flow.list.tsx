@@ -94,38 +94,41 @@ export function serialize(flow) {
       }
     }),
   }
+
   return apiFlow
 }
 
-export function hydrate(flow) {
-  const _flow = {
+export function hydrate(data) {
+  const flow = {
     ...JSON.parse(JSON.stringify(EMPTY_NOTEBOOK)),
-    name: flow.name,
-    range: flow.range,
-    refresh: flow.refresh,
-    readOnly: flow.readOnly,
+    name: data.name,
+    range: data.range,
+    refresh: data.refresh,
+    readOnly: data.readOnly,
   }
-  if (flow.pipes) {
-    flow.pipes.forEach(pipe => {
-      const id = pipe.id || `local_${UUID()}`
-
-      _flow.data.allIDs.push(id)
-      _flow.meta.allIDs.push(id)
-
-      const meta = {
-        title: pipe.title,
-        visible: pipe.visible,
-        loading: RemoteDataState.NotStarted,
-      }
-
-      delete pipe.title
-      delete pipe.visible
-
-      _flow.data.byID[id] = pipe
-      _flow.meta.byID[id] = meta
-    })
+  if (!data.pipes) {
+    return flow
   }
-  return _flow
+  data.pipes.forEach(pipe => {
+    const id = pipe.id || `local_${UUID()}`
+
+    flow.data.allIDs.push(id)
+    flow.meta.allIDs.push(id)
+
+    const meta = {
+      title: pipe.title,
+      visible: pipe.visible,
+      loading: RemoteDataState.NotStarted,
+    }
+
+    delete pipe.title
+    delete pipe.visible
+
+    flow.data.byID[id] = pipe
+    flow.meta.byID[id] = meta
+  })
+
+  return flow
 }
 
 export const FlowListProvider: FC = ({children}) => {
@@ -133,36 +136,9 @@ export const FlowListProvider: FC = ({children}) => {
   const [currentID, setCurrentID] = useFlowCurrentState(null)
   const {orgID} = useParams<{orgID: string}>()
   const dispatch = useDispatch()
-
-  const migrate = async () => {
-    if (isFlagEnabled(FLOWS_API_FLAG)) {
-      const _flows = await migrateLocalFlowsToAPI(
-        orgID,
-        flows,
-        serialize,
-        dispatch
-      )
-      setFlows(_flows)
-      if (currentID && currentID.includes('local')) {
-        // if we migrated the local currentID flow, reset currentID
-        setCurrentID(Object.keys(_flows)[0])
-      }
-    }
-  }
-
   useEffect(() => {
     migrate()
   }, [])
-
-  const getAll = useCallback(async (): Promise<void> => {
-    const data = await getAllAPI(orgID)
-
-    if (data.flows) {
-      const _flows = {}
-      data.flows.forEach(f => (_flows[f.id] = hydrate(f.spec)))
-      setFlows(_flows)
-    }
-  }, [orgID, setFlows])
 
   const add = async (flow?: Flow): Promise<string> => {
     let _flow
@@ -263,7 +239,6 @@ export const FlowListProvider: FC = ({children}) => {
         spec: serialize(data),
       },
     }
-
     pooledUpdateAPI(apiFlow)
   }
 
@@ -294,6 +269,31 @@ export const FlowListProvider: FC = ({children}) => {
     }
 
     setFlows(_flows)
+  }
+
+  const getAll = useCallback(async (): Promise<void> => {
+    const data = await getAllAPI(orgID)
+    if (data.flows) {
+      const _flows = {}
+      data.flows.forEach(f => (_flows[f.id] = hydrate(f.spec)))
+      setFlows(_flows)
+    }
+  }, [orgID, setFlows])
+
+  const migrate = async () => {
+    if (isFlagEnabled(FLOWS_API_FLAG)) {
+      const _flows = await migrateLocalFlowsToAPI(
+        orgID,
+        flows,
+        serialize,
+        dispatch
+      )
+      setFlows(_flows)
+      if (currentID && currentID.includes('local')) {
+        // if we migrated the local currentID flow, reset currentID
+        setCurrentID(Object.keys(_flows)[0])
+      }
+    }
   }
 
   const flowList = Object.keys(flows).reduce((acc, curr) => {

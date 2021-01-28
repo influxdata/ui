@@ -7,10 +7,12 @@ import {
   getApiV2privateFlowsOrgsFlows,
   DeleteApiV2privateFlowsOrgsFlowParams,
 } from 'src/client/flowsRoutes'
+import {notebookUpdateFail} from 'src/shared/copy/notifications'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {v4 as UUID} from 'uuid'
+import {notify} from 'src/shared/actions/notifications'
 
-const FLOWS_API_FLAG = 'notebooks-api'
+export const FLOWS_API_FLAG = 'notebooks-api'
 const DEFAULT_API_FLOW: PatchApiV2privateFlowsOrgsFlowParams = {
   id: '',
   orgID: '',
@@ -100,28 +102,31 @@ export const getAllAPI = async (orgID: string) => {
 export const migrateLocalFlowsToAPI = async (
   orgID: string,
   flows: {},
-  setFlowsCallback: Function
+  serialize: Function,
+  dispatch: Function
 ) => {
-  if (isFlagEnabled(FLOWS_API_FLAG)) {
-    const localFlows = Object.keys(flows).filter(id => id.includes('local'))
-    if (localFlows.length) {
-      await Promise.all(
-        localFlows.map(async localID => {
-          const flow = flows[localID]
-          const apiFlow: PostApiV2privateFlowsOrgsFlowParams = {
+  const localFlows = Object.keys(flows).filter(id => id.includes('local'))
+  if (localFlows.length) {
+    await Promise.all(
+      localFlows.map(async localID => {
+        const flow = flows[localID]
+        const apiFlow: PostApiV2privateFlowsOrgsFlowParams = {
+          orgID: orgID,
+          data: {
             orgID: orgID,
-            data: {
-              orgID: orgID,
-              name: flow.name,
-              spec: flow,
-            },
-          }
-          const id = await createAPI(apiFlow)
-          delete flows[localID]
-          flows[id] = flow
-        })
-      )
-      setFlowsCallback({...flows})
-    }
+            name: flow.name,
+            spec: serialize(flow),
+          },
+        }
+        const id = await createAPI(apiFlow)
+        delete flows[localID]
+        flows[id] = flow
+      })
+    ).catch(() => {
+      // do not throw the error because some flows might have saved and we
+      // need to save the new IDs to avoid creating duplicates next time.
+      dispatch(notify(notebookUpdateFail()))
+    })
   }
+  return flows
 }

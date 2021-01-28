@@ -28,13 +28,14 @@ import {
   deleteAPI,
   getAllAPI,
   migrateLocalFlowsToAPI,
+  FLOWS_API_FLAG,
 } from 'src/flows/context/api'
 import {notify} from 'src/shared/actions/notifications'
 import {
   notebookCreateFail,
   notebookDeleteFail,
-  notebookUpdateFail,
 } from 'src/shared/copy/notifications'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const useFlowListState = createPersistedState('flows')
 const useFlowCurrentState = createPersistedState('current-flow')
@@ -77,6 +78,25 @@ export const FlowListContext = React.createContext<FlowListContextType>(
   DEFAULT_CONTEXT
 )
 
+export function serialize(flow) {
+  const apiFlow = {
+    name: flow.name,
+    readOnly: flow.readOnly,
+    range: flow.range,
+    refresh: flow.refresh,
+    pipes: flow.data.allIDs.map(id => {
+      const meta = flow.meta.byID[id]
+
+      return {
+        ...flow.data.byID[id],
+        title: meta.title,
+        visible: meta.visible,
+      }
+    }),
+  }
+  return apiFlow
+}
+
 export function hydrate(flow) {
   const _flow = {
     ...JSON.parse(JSON.stringify(EMPTY_NOTEBOOK)),
@@ -85,9 +105,8 @@ export function hydrate(flow) {
     refresh: flow.refresh,
     readOnly: flow.readOnly,
   }
-  if (flow.data) {
-    Object.keys(flow.data.byID).forEach(key => {
-      const pipe = flow.data.byID[key]
+  if (flow.pipes) {
+    flow.pipes.forEach(pipe => {
       const id = pipe.id || `local_${UUID()}`
 
       _flow.data.allIDs.push(id)
@@ -116,10 +135,18 @@ export const FlowListProvider: FC = ({children}) => {
   const dispatch = useDispatch()
 
   const migrate = async () => {
-    try {
-      await migrateLocalFlowsToAPI(orgID, flows, setFlows)
-    } catch {
-      dispatch(notify(notebookUpdateFail()))
+    if (isFlagEnabled(FLOWS_API_FLAG)) {
+      const _flows = await migrateLocalFlowsToAPI(
+        orgID,
+        flows,
+        serialize,
+        dispatch
+      )
+      setFlows(_flows)
+      if (currentID && currentID.includes('local')) {
+        // if we migrated the local currentID flow, reset currentID
+        setCurrentID(Object.keys(_flows)[0])
+      }
     }
   }
 
@@ -183,7 +210,7 @@ export const FlowListProvider: FC = ({children}) => {
       data: {
         orgID: orgID,
         name: _flow.name,
-        spec: _flow,
+        spec: serialize(_flow),
       },
     }
     let id: string = `local_${UUID()}`
@@ -233,7 +260,7 @@ export const FlowListProvider: FC = ({children}) => {
         id,
         orgID,
         name: {value: flow.name},
-        spec: data,
+        spec: serialize(data),
       },
     }
 

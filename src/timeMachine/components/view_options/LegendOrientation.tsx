@@ -99,6 +99,10 @@ const LegendOrientation: FC<Props> = props => {
 
   const toggleLabelStyle = {color: '#999dab'}
 
+  // without the toFixed(0) sometimes you
+  // can get numbers like 45.000009% which we want to avoid
+  const percentLegendOpacity = (legendOpacity * 100).toFixed(0)
+
   return (
     <Grid.Column>
       <h5 className="view-options--header">Legend</h5>
@@ -116,13 +120,14 @@ const LegendOrientation: FC<Props> = props => {
           value={thresholdInput}
         />
       </Form.Element>
-      <Form.Element label={`Opacity: ${legendOpacity.toFixed(2)}`}>
+      <Form.Element label={`Opacity: ${percentLegendOpacity}%`}>
         <RangeSlider
           max={LEGEND_OPACITY_MAXIMUM}
           min={LEGEND_OPACITY_MINIMUM}
           step={LEGEND_OPACITY_STEP}
           value={legendOpacity}
           onChange={handleSetOpacity}
+          hideLabels={true}
         />
       </Form.Element>
       <FlexBox

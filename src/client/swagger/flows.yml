@@ -3,56 +3,56 @@ info:
   title: transport.proto
   version: version not set
 servers:
-- url: ''
+  - url: ''
 paths:
   /api/v2private/flows/orgs/{orgID}/flows:
     get:
       tags:
-      - FlowAPI
+        - FlowAPI
       operationId: FlowAPI_ListFlows
       parameters:
-      - name: orgID
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: limit
-        in: query
-        schema:
-          type: integer
-          format: int64
-      - name: pageToken
-        in: query
-        schema:
-          type: string
+        - name: orgID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: pageToken
+          in: query
+          schema:
+            type: string
       responses:
         200:
           description: A successful response.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/transportFlowList'
+                $ref: '#/components/schemas/TransportFlowList'
         default:
           description: An unexpected error response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/runtimeError'
+                $ref: '#/components/schemas/RuntimeError'
     post:
       tags:
-      - FlowAPI
+        - FlowAPI
       operationId: FlowAPI_CreateFlow
       parameters:
-      - name: orgID
-        in: path
-        required: true
-        schema:
-          type: string
+        - name: orgID
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/transportFlowCreateRequest'
+              $ref: '#/components/schemas/TransportFlowCreateRequest'
         required: true
       responses:
         200:
@@ -60,58 +60,58 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/transportFlow'
+                $ref: '#/components/schemas/TransportFlow'
         default:
           description: An unexpected error response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/runtimeError'
+                $ref: '#/components/schemas/RuntimeError'
       x-codegen-request-body-name: body
   /api/v2private/flows/orgs/{orgID}/flows/{id}:
     get:
       tags:
-      - FlowAPI
+        - FlowAPI
       operationId: FlowAPI_GetFlow
       parameters:
-      - name: orgID
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
+        - name: orgID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: A successful response.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/transportFlow'
+                $ref: '#/components/schemas/TransportFlow'
         default:
           description: An unexpected error response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/runtimeError'
+                $ref: '#/components/schemas/RuntimeError'
     delete:
       tags:
-      - FlowAPI
+        - FlowAPI
       operationId: FlowAPI_DeleteFlow
       parameters:
-      - name: orgID
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
+        - name: orgID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: A successful response.
@@ -124,27 +124,27 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/runtimeError'
+                $ref: '#/components/schemas/RuntimeError'
     patch:
       tags:
-      - FlowAPI
+        - FlowAPI
       operationId: FlowAPI_UpdateFlow
       parameters:
-      - name: orgID
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
+        - name: orgID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/transportFlowUpdateRequest'
+              $ref: '#/components/schemas/TransportFlowUpdateRequest'
         required: true
       responses:
         200:
@@ -152,17 +152,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/transportFlow'
+                $ref: '#/components/schemas/TransportFlow'
         default:
           description: An unexpected error response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/runtimeError'
+                $ref: '#/components/schemas/RuntimeError'
       x-codegen-request-body-name: body
 components:
   schemas:
-    protobufAny:
+    ProtobufAny:
       type: object
       properties:
         type_url:
@@ -182,8 +182,8 @@ components:
          - NULL_VALUE: Null value.
       default: NULL_VALUE
       enum:
-      - NULL_VALUE
-    runtimeError:
+        - NULL_VALUE
+    RuntimeError:
       type: object
       properties:
         error:
@@ -196,8 +196,8 @@ components:
         details:
           type: array
           items:
-            $ref: '#/components/schemas/protobufAny'
-    transportFlow:
+            $ref: '#/components/schemas/ProtobufAny'
+    TransportFlow:
       type: object
       properties:
         orgID:
@@ -215,7 +215,7 @@ components:
         updatedAt:
           type: string
           format: date-time
-    transportFlowCreateRequest:
+    TransportFlowCreateRequest:
       type: object
       properties:
         orgID:
@@ -225,16 +225,16 @@ components:
         spec:
           type: object
           properties: {}
-    transportFlowList:
+    TransportFlowList:
       type: object
       properties:
         flows:
           type: array
           items:
-            $ref: '#/components/schemas/transportFlow'
+            $ref: '#/components/schemas/TransportFlow'
         nextPageToken:
           type: string
-    transportFlowUpdateRequest:
+    TransportFlowUpdateRequest:
       type: object
       properties:
         orgID:
@@ -242,11 +242,11 @@ components:
         id:
           type: string
         name:
-          $ref: '#/components/schemas/transportString'
+          $ref: '#/components/schemas/TransportString'
         spec:
           type: object
           properties: {}
-    transportString:
+    TransportString:
       type: object
       properties:
         value:

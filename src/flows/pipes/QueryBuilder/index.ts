@@ -96,7 +96,7 @@ export default register => {
         return `from(bucket: "${config.buckets[0]}") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)${tags}${fnFlux}`
       }
 
-      let query = _build(pipe)
+      const query = _build(pipe)
 
       if (!query) {
         return

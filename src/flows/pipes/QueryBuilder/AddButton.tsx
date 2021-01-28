@@ -3,10 +3,10 @@ import React, {FC, useContext, useCallback} from 'react'
 import {SquareButton, IconFont} from '@influxdata/clockface'
 import {RemoteDataState} from 'src/types'
 
-import {QueryBuilderCardListContext} from 'src/flows/context/tags'
+import {QueryBuilderContext} from 'src/flows/pipes/QueryBuilder/context'
 
 const AddButton: FC = () => {
-  const {cards, add} = useContext(QueryBuilderCardListContext)
+  const {cards, add} = useContext(QueryBuilderContext)
 
   const onClick = useCallback(() => {
     add()

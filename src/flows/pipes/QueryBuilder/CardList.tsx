@@ -7,7 +7,7 @@ import {
   FlexBox,
 } from '@influxdata/clockface'
 
-import {QueryBuilderCardListContext} from 'src/flows/context/tags'
+import {QueryBuilderContext} from 'src/flows/pipes/QueryBuilder/context'
 import {PipeContext} from 'src/flows/context/pipe'
 
 import {toComponentStatus} from 'src/shared/utils/toComponentStatus'
@@ -37,7 +37,7 @@ interface Props {
 
 const Card: FC<Props> = ({idx}) => {
   const {cards, update, remove, loadKeys, loadValues} = useContext(
-    QueryBuilderCardListContext
+    QueryBuilderContext
   )
   const {data} = useContext(PipeContext)
   const card = cards[idx]
@@ -258,7 +258,7 @@ const Card: FC<Props> = ({idx}) => {
 }
 
 const CardList: FC = () => {
-  const {cards} = useContext(QueryBuilderCardListContext)
+  const {cards} = useContext(QueryBuilderContext)
 
   if (!cards.length) {
     return null

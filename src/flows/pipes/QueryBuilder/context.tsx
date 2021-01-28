@@ -35,7 +35,7 @@ interface QueryBuilderCard {
   aggregateFunctionType: BuilderAggregateFunctionType
 }
 
-const DEFAULT_CARD: QueryBuilderCard = {
+const getDefaultCard = (): QueryBuilderCard => ({
   keys: {
     search: '',
     status: RemoteDataState.NotStarted,
@@ -49,9 +49,9 @@ const DEFAULT_CARD: QueryBuilderCard = {
     results: [],
   },
   aggregateFunctionType: 'filter',
-}
+})
 
-interface QueryBuilderCardListContextType {
+interface QueryBuilderContextType {
   cards: QueryBuilderCard[]
   add: () => void
   remove: (idx: number) => void
@@ -60,8 +60,8 @@ interface QueryBuilderCardListContextType {
   loadValues: (_idx: number) => void
 }
 
-export const DEFAULT_CONTEXT: QueryBuilderCardListContextType = {
-  cards: [DEFAULT_CARD],
+export const DEFAULT_CONTEXT: QueryBuilderContextType = {
+  cards: [getDefaultCard()],
   add: () => {},
   remove: (_idx: number) => {},
   update: (_idx: number, _card: QueryBuilderCard) => {},
@@ -69,29 +69,20 @@ export const DEFAULT_CONTEXT: QueryBuilderCardListContextType = {
   loadValues: (_idx: number) => {},
 }
 
-export const QueryBuilderCardListContext = createContext<
-  QueryBuilderCardListContextType
->(DEFAULT_CONTEXT)
+export const QueryBuilderContext = createContext<QueryBuilderContextType>(
+  DEFAULT_CONTEXT
+)
 
 const toBuilderConfig = (cards: QueryBuilderCard[]): BuilderTagsType[] =>
   cards.map(card => ({
     key: card.keys.selected[0],
-    values: card.values.selected.slice(1),
+    values: card.values.selected.slice(0),
     aggregateFunctionType: card.aggregateFunctionType,
   }))
 
 const fromBuilderConfig = (tags: BuilderTagsType[]): QueryBuilderCard[] =>
   tags.map(tag => {
-    const out = {
-      ...DEFAULT_CARD,
-      keys: {
-        ...DEFAULT_CARD.keys,
-      },
-      values: {
-        ...DEFAULT_CARD.values,
-      },
-    }
-
+    const out = getDefaultCard()
     out.keys.selected = [tag.key]
     out.values.selected = [...tag.values]
     out.aggregateFunctionType = tag.aggregateFunctionType
@@ -99,7 +90,7 @@ const fromBuilderConfig = (tags: BuilderTagsType[]): QueryBuilderCard[] =>
     return out
   })
 
-export const TagsProvider: FC = ({children}) => {
+export const QueryBuilderProvider: FC = ({children}) => {
   const {data, update} = useContext(PipeContext)
   const {query} = useContext(QueryContext)
   const {flow} = useContext(FlowContext)
@@ -107,7 +98,7 @@ export const TagsProvider: FC = ({children}) => {
   const [cards, setCards] = useState(fromBuilderConfig(data.tags))
 
   const add = useCallback(() => {
-    cards.push(DEFAULT_CARD)
+    cards.push(getDefaultCard())
     setCards(cards)
 
     update({tags: toBuilderConfig(cards)})
@@ -205,6 +196,7 @@ export const TagsProvider: FC = ({children}) => {
       setCards(cards)
 
       const tagSelections = cards
+        .slice(0, idx)
         .filter(card => card.keys.selected[0] && card.values.selected.length)
         .map(card => {
           const fluxTags = card.values.selected
@@ -281,7 +273,7 @@ export const TagsProvider: FC = ({children}) => {
   }
 
   return (
-    <QueryBuilderCardListContext.Provider
+    <QueryBuilderContext.Provider
       value={{
         cards,
         add,
@@ -292,6 +284,6 @@ export const TagsProvider: FC = ({children}) => {
       }}
     >
       {children}
-    </QueryBuilderCardListContext.Provider>
+    </QueryBuilderContext.Provider>
   )
 }

@@ -1,4 +1,4 @@
-import React, {FC, useCallback} from 'react'
+import React, {FC, useCallback, useEffect} from 'react'
 import {useParams} from 'react-router-dom'
 import createPersistedState from 'use-persisted-state'
 import {v4 as UUID} from 'uuid'
@@ -26,6 +26,7 @@ import {
   createAPI,
   deleteAPI,
   getAllAPI,
+  migrateLocalFlowsToAPI,
 } from 'src/flows/context/api'
 
 const useFlowListState = createPersistedState('flows')
@@ -105,6 +106,9 @@ export const FlowListProvider: FC = ({children}) => {
   const [flows, setFlows] = useFlowListState(DEFAULT_CONTEXT.flows)
   const [currentID, setCurrentID] = useFlowCurrentState(null)
   const {orgID} = useParams<{orgID: string}>()
+  useEffect(() => {
+    migrateLocalFlowsToAPI(orgID, flows, setFlows)
+  }, [])
 
   const getAll = useCallback(async (): Promise<void> => {
     const data = await getAllAPI(orgID)

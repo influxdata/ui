@@ -10,6 +10,7 @@ import {
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {v4 as UUID} from 'uuid'
 
+const FLOWS_API_FLAG = 'notebooks-api'
 const DEFAULT_API_FLOW: PatchApiV2privateFlowsOrgsFlowParams = {
   id: '',
   orgID: '',
@@ -55,7 +56,7 @@ export const pooledUpdateAPI = (flow: PatchApiV2privateFlowsOrgsFlowParams) => {
 }
 
 export const updateAPI = async (flow: PatchApiV2privateFlowsOrgsFlowParams) => {
-  if (isFlagEnabled('notebooks-api')) {
+  if (isFlagEnabled(FLOWS_API_FLAG)) {
     const res = await patchApiV2privateFlowsOrgsFlow(flow)
     if (res.status != 200) {
       throw new Error(res.data.message)
@@ -64,7 +65,7 @@ export const updateAPI = async (flow: PatchApiV2privateFlowsOrgsFlowParams) => {
 }
 
 export const createAPI = async (flow: PostApiV2privateFlowsOrgsFlowParams) => {
-  if (isFlagEnabled('notebooks-api')) {
+  if (isFlagEnabled(FLOWS_API_FLAG)) {
     const res = await postApiV2privateFlowsOrgsFlow(flow)
 
     if (res.status != 200) {
@@ -76,7 +77,7 @@ export const createAPI = async (flow: PostApiV2privateFlowsOrgsFlowParams) => {
 }
 
 export const deleteAPI = async (ids: DeleteApiV2privateFlowsOrgsFlowParams) => {
-  if (isFlagEnabled('notebooks-api')) {
+  if (isFlagEnabled(FLOWS_API_FLAG)) {
     const res = await deleteApiV2privateFlowsOrgsFlow(ids)
 
     if (res.status != 200) {
@@ -85,8 +86,8 @@ export const deleteAPI = async (ids: DeleteApiV2privateFlowsOrgsFlowParams) => {
   }
 }
 
-export const getAllAPI = async orgID => {
-  if (isFlagEnabled('notebooks-api')) {
+export const getAllAPI = async (orgID: string) => {
+  if (isFlagEnabled(FLOWS_API_FLAG)) {
     const res = await getApiV2privateFlowsOrgsFlows({orgID})
     if (res.status != 200) {
       throw new Error(res.data.message)
@@ -94,4 +95,33 @@ export const getAllAPI = async orgID => {
     return res.data
   }
   return {}
+}
+
+export const migrateLocalFlowsToAPI = async (
+  orgID: string,
+  flows: {},
+  setFlowsCallback: Function
+) => {
+  if (isFlagEnabled(FLOWS_API_FLAG)) {
+    const localFlows = Object.keys(flows).filter(id => id.includes('local'))
+    if (localFlows) {
+      await Promise.all(
+        localFlows.map(async localID => {
+          const flow = flows[localID]
+          const apiFlow: PostApiV2privateFlowsOrgsFlowParams = {
+            orgID: orgID,
+            data: {
+              orgID: orgID,
+              name: flow.name,
+              spec: flow,
+            },
+          }
+          const id = await createAPI(apiFlow)
+          delete flows[localID]
+          flows[id] = flow
+        })
+      )
+      setFlowsCallback({...flows})
+    }
+  }
 }

@@ -9,7 +9,6 @@ import {
 
 import {QueryBuilderCardListContext} from 'src/flows/context/tags'
 import {PipeContext} from 'src/flows/context/pipe'
-//import TagSelector from 'src/timeMachine/components/TagSelector'
 
 import {toComponentStatus} from 'src/shared/utils/toComponentStatus'
 import {RemoteDataState, BuilderAggregateFunctionType} from 'src/types'

@@ -17,13 +17,16 @@ import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 import {PROJECT_NAME} from 'src/flows'
 import {
-  postApiV2privateFlowsOrgsFlow,
   PostApiV2privateFlowsOrgsFlowParams,
   PatchApiV2privateFlowsOrgsFlowParams,
-  deleteApiV2privateFlowsOrgsFlow,
-  getApiV2privateFlowsOrgsFlows,
+  DeleteApiV2privateFlowsOrgsFlowParams,
 } from 'src/client/flowsRoutes'
-import {pooledUpdate} from 'src/flows/context/update'
+import {
+  pooledUpdateAPI,
+  createAPI,
+  deleteAPI,
+  getAllAPI,
+} from 'src/flows/context/api'
 
 const useFlowListState = createPersistedState('flows')
 const useFlowCurrentState = createPersistedState('current-flow')
@@ -104,14 +107,11 @@ export const FlowListProvider: FC = ({children}) => {
   const {orgID} = useParams<{orgID: string}>()
 
   const getAll = useCallback(async (): Promise<void> => {
-    const res = await getApiV2privateFlowsOrgsFlows({orgID})
-    if (res.status != 200) {
-      throw new Error(res.data.message)
-    }
+    const data = await getAllAPI(orgID)
 
-    if (res.data.flows) {
+    if (data.flows) {
       const _flows = {}
-      res.data.flows.forEach(f => (_flows[f.id] = hydrate(f.spec)))
+      data.flows.forEach(f => (_flows[f.id] = hydrate(f.spec)))
       setFlows(_flows)
     }
   }, [orgID, setFlows])
@@ -165,22 +165,19 @@ export const FlowListProvider: FC = ({children}) => {
         spec: _flow,
       },
     }
-    const res = await postApiV2privateFlowsOrgsFlow(apiFlow)
-
-    if (res.status != 200) {
-      throw new Error(res.data.message)
-    }
+    // TODO (gene): on API failure, show notification
+    const id = await createAPI(apiFlow)
 
     return new Promise(resolve => {
       setTimeout(() => {
         setFlows({
           ...flows,
-          [res.data.id]: _flow,
+          [id]: _flow,
         })
 
-        setCurrentID(res.data.id)
+        setCurrentID(id)
 
-        resolve(res.data.id)
+        resolve(id)
       }, 200)
     })
   }
@@ -215,7 +212,7 @@ export const FlowListProvider: FC = ({children}) => {
       },
     }
 
-    pooledUpdate(apiFlow)
+    pooledUpdateAPI(apiFlow)
   }
 
   const change = useCallback(
@@ -233,11 +230,8 @@ export const FlowListProvider: FC = ({children}) => {
     const _flows = {
       ...flows,
     }
-    const res = await deleteApiV2privateFlowsOrgsFlow({orgID, id})
-
-    if (res.status != 200) {
-      throw new Error(res.data.message)
-    }
+    // TODO (gene): on API failure, show notification
+    await deleteAPI({orgID, id} as DeleteApiV2privateFlowsOrgsFlowParams)
 
     delete _flows[id]
     if (currentID === id) {

@@ -16,7 +16,7 @@ const Youtube: FC<PipeProp> = ({Context}) => {
     setIsEditing(!isEditing)
   }
   const _update = evt => {
-    update(evt.target.value)
+    update({uri: evt.target.value})
   }
 
   const controls = (

@@ -48,7 +48,6 @@ const MeasurementSelectors: FC<Props> = ({measurements}) => {
             {measurement}
           </div>
           <div className="selectors--item-name">measurement</div>
-          <div className="selectors--item-type">string</div>
         </List.Item>
       ))}
     </>

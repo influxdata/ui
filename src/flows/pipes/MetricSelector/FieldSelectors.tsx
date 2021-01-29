@@ -48,7 +48,6 @@ const FieldSelectors: FC<Props> = ({fields}) => {
             {field}
           </div>
           <div className="selectors--item-name">field</div>
-          <div className="selectors--item-type">string</div>
         </List.Item>
       ))}
     </>

@@ -130,7 +130,6 @@ const TagSelectors: FC<Props> = ({tags}) => {
                         <List.Indicator type="dot" />
                         <div className="selectors--item-value selectors--item__tag">{`${tagName} = ${tagValue}`}</div>
                         <div className="selectors--item-name">tag</div>
-                        <div className="selectors--item-type">string</div>
                       </List.Item>
                     ))}
                 </React.Fragment>

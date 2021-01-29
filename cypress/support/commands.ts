@@ -49,7 +49,7 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
   })
 }
 
-export const wrapOrgAndBucket = (): Cypress.Chainable<Cypress.Response> => {
+export const wrapEnvironmentVariables = (): Cypress.Chainable<Cypress.Response> => {
   return cy
     .request({
       method: 'GET',
@@ -72,6 +72,11 @@ export const wrapOrgAndBucket = (): Cypress.Chainable<Cypress.Response> => {
             b.name !== '_monitoring'
         )
         cy.wrap(bucket).as('bucket')
+
+        const defaultBucket = 'defbuck'
+
+        cy.wrap(defaultBucket).as('defaultBucket')
+        cy.wrap('selector-list '.concat(defaultBucket)).as('defaultBucketListSelector')
       })
     })
 }
@@ -592,7 +597,7 @@ Cypress.Commands.add('signin', signin)
 
 // setup
 Cypress.Commands.add('setupUser', setupUser)
-Cypress.Commands.add('wrapOrgAndBucket', wrapOrgAndBucket)
+Cypress.Commands.add('wrapOrgAndBucket', wrapEnvironmentVariables)
 
 // dashboards
 Cypress.Commands.add('createDashboard', createDashboard)

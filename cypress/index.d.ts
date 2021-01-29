@@ -27,7 +27,7 @@ import {
   createTelegraf,
   createToken,
   writeData,
-  wrapOrgAndBucket,
+  wrapEnvironmentVariables,
   getByTestIDSubStr,
   createEndpoint,
   createDashWithCell,
@@ -73,7 +73,7 @@ declare global {
       createTelegraf: typeof createTelegraf
       createToken: typeof createToken
       writeData: typeof writeData
-      wrapOrgAndBucket: typeof wrapOrgAndBucket
+      wrapOrgAndBucket: typeof wrapEnvironmentVariables
       createEndpoint: typeof createEndpoint
       createRule: typeof createRule
     }

@@ -110,7 +110,7 @@ describe('the Community Templates Install Overlay', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mocked(reportErrorThroughHoneyBadger).mockClear()
-    const foo = setup()
+    const renderResult = setup()
     const store = foo.store
     getByTitle = foo.getByTitle
     const org = {name: 'zoe', id: '12345'}

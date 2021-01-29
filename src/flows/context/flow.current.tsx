@@ -26,6 +26,7 @@ export const FlowContext = React.createContext<FlowContextType>(DEFAULT_CONTEXT)
 
 let GENERATOR_INDEX = 0
 
+// TODO: add to self registration interface
 export const getHumanReadableName = (type: string): string => {
   ++GENERATOR_INDEX
 
@@ -40,6 +41,8 @@ export const getHumanReadableName = (type: string): string => {
       return `Flux Script ${GENERATOR_INDEX}`
     case 'toBucket':
       return `Output to Bucket ${GENERATOR_INDEX}`
+    case 'queryBuilder':
+      return `Query Builder ${GENERATOR_INDEX}`
     default:
       return `Cell ${GENERATOR_INDEX}`
   }

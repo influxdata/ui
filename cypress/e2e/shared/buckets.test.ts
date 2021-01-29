@@ -155,18 +155,20 @@ describe('Buckets', () => {
                   el.text((index, currentContent) => {
                     results[index] = currentContent
                   })
-                  cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
-                    const expectedOrder = [
-                      'ABC',
-                      defaultBucket,
-                      'Funky Town',
-                      'Jimmy Mack',
-                      '_monitoring',
-                      '_tasks',
-                    ]
-                    // check the order
-                    expect(results).to.deep.equal(expectedOrder)
-                  })
+                  cy.get<string>('@defaultBucket').then(
+                    (defaultBucket: string) => {
+                      const expectedOrder = [
+                        'ABC',
+                        defaultBucket,
+                        'Funky Town',
+                        'Jimmy Mack',
+                        '_monitoring',
+                        '_tasks',
+                      ]
+                      // check the order
+                      expect(results).to.deep.equal(expectedOrder)
+                    }
+                  )
                 })
             })
         })
@@ -342,9 +344,11 @@ describe('Buckets', () => {
 
       // TODO replace this with proper health checks
       cy.wait(1000)
-      cy.get<string>('@defaultBucketListSelector').then((defaultBucketListSelector: string) => {
-        cy.getByTestID(defaultBucketListSelector).click()
-      })
+      cy.get<string>('@defaultBucketListSelector').then(
+        (defaultBucketListSelector: string) => {
+          cy.getByTestID(defaultBucketListSelector).click()
+        }
+      )
       // mymeasurement comes from fixtures/data.txt
       cy.getByTestID('selector-list mymeasurement').should('exist')
     })
@@ -358,7 +362,10 @@ describe('Buckets', () => {
 
       // assert default bucket
       cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
-        cy.getByTestID('bucket-dropdown--button').should('contain', defaultBucket)
+        cy.getByTestID('bucket-dropdown--button').should(
+          'contain',
+          defaultBucket
+        )
       })
 
       // filter plugins and choose system

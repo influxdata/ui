@@ -76,7 +76,9 @@ export const wrapEnvironmentVariables = (): Cypress.Chainable<Cypress.Response> 
         const defaultBucket = 'defbuck'
 
         cy.wrap(defaultBucket).as('defaultBucket')
-        cy.wrap('selector-list '.concat(defaultBucket)).as('defaultBucketListSelector')
+        cy.wrap('selector-list '.concat(defaultBucket)).as(
+          'defaultBucketListSelector'
+        )
       })
     })
 }

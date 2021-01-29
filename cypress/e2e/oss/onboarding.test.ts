@@ -238,88 +238,88 @@ describe('Onboarding', () => {
       cy.getByTestID('input-field--bucketname').type(defaultBucket)
 
       cy.getByTestID('next')
-          .should('be.disabled')
-          .children('.cf-button--label')
-          .contains('Continue')
+        .should('be.disabled')
+        .children('.cf-button--label')
+        .contains('Continue')
 
       cy.getByTestID('input-field--password')
-          .clear()
-          .type(Cypress.env('password'))
+        .clear()
+        .type(Cypress.env('password'))
 
       cy.getByTestID('input-field--password-chk')
-          .clear()
-          .type(Cypress.env('password'))
+        .clear()
+        .type(Cypress.env('password'))
 
       cy.getByTestID('input-error').should('not.exist')
 
       cy.getByTestID('next')
-          .should('be.enabled')
-          .children('.cf-button--label')
-          .contains('Continue')
+        .should('be.enabled')
+        .children('.cf-button--label')
+        .contains('Continue')
 
       // check cleared username
       cy.getByTestID('input-field--username').clear()
 
       cy.getByTestID('next')
-          .should('be.disabled')
-          .children('.cf-button--label')
-          .contains('Continue')
+        .should('be.disabled')
+        .children('.cf-button--label')
+        .contains('Continue')
 
       cy.getByTestID('input-field--username').type(Cypress.env('username'))
 
       cy.getByTestID('next')
-          .should('be.enabled')
-          .children('.cf-button--label')
-          .contains('Continue')
+        .should('be.enabled')
+        .children('.cf-button--label')
+        .contains('Continue')
 
       // check cleared password
       cy.getByTestID('input-field--password').clear()
 
       cy.getByTestID('form--element-error').should(
-          'have.text',
-          'Passwords do not match'
+        'have.text',
+        'Passwords do not match'
       )
 
       cy.getByTestID('next')
-          .should('be.disabled')
-          .children('.cf-button--label')
-          .contains('Continue')
+        .should('be.disabled')
+        .children('.cf-button--label')
+        .contains('Continue')
 
       cy.getByTestID('input-field--password')
-          .clear()
-          .type(Cypress.env('password'))
+        .clear()
+        .type(Cypress.env('password'))
 
       cy.getByTestID('input-field--password-chk')
-          .clear()
-          .type(Cypress.env('password'))
+        .clear()
+        .type(Cypress.env('password'))
 
       cy.getByTestID('next')
-          .should('be.enabled')
-          .children('.cf-button--label')
-          .contains('Continue')
+        .should('be.enabled')
+        .children('.cf-button--label')
+        .contains('Continue')
 
       // check cleared org name
       cy.getByTestID('input-field--orgname').clear()
 
       cy.getByTestID('next')
-          .should('be.disabled')
-          .children('.cf-button--label')
-          .contains('Continue')
+        .should('be.disabled')
+        .children('.cf-button--label')
+        .contains('Continue')
 
       cy.getByTestID('input-field--orgname').type(Cypress.env('org'))
 
       cy.getByTestID('next')
-          .should('be.enabled')
-          .children('.cf-button--label')
-          .contains('Continue')
+        .should('be.enabled')
+        .children('.cf-button--label')
+        .contains('Continue')
 
       // check cleared bucket name
       cy.getByTestID('input-field--bucketname').clear()
 
       cy.getByTestID('next')
-          .should('be.disabled')
-          .children('.cf-button--label')
-          .contains('Continue')
+        .should('be.disabled')
+        .children('.cf-button--label')
+        .contains('Continue')
 
       cy.getByTestID('input-field--bucketname').type(defaultBucket)
     })

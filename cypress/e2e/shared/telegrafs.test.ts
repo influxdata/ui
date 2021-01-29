@@ -49,9 +49,9 @@ describe('Collectors', () => {
 
       cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
         cy.getByTestID('resource-card')
-            .should('have.length', 1)
-            .and('contain', newConfig)
-            .and('contain', defaultBucket)
+          .should('have.length', 1)
+          .and('contain', newConfig)
+          .and('contain', defaultBucket)
       })
     })
 
@@ -109,7 +109,12 @@ describe('Collectors', () => {
         const description = 'Config Description'
         cy.get('@org').then(({id}: Organization) => {
           cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
-            cy.createTelegraf(telegrafConfigName, description, id, defaultBucket)
+            cy.createTelegraf(
+              telegrafConfigName,
+              description,
+              id,
+              defaultBucket
+            )
           })
         })
 

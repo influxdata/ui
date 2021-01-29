@@ -545,15 +545,15 @@ describe('Dashboard', () => {
             ])
             cy.createCSVVariable(orgID, 'static', ['beans', defaultBucket])
             cy.createQueryVariable(
-                orgID,
-                'dependent',
-                `import "influxdata/influxdb/v1"
+              orgID,
+              'dependent',
+              `import "influxdata/influxdb/v1"
             v1.tagValues(bucket: v.static, tag: "container_name") |> keep(columns: ["_value"])`
             )
             cy.createQueryVariable(
-                orgID,
-                'build',
-                `import "influxdata/influxdb/v1"
+              orgID,
+              'build',
+              `import "influxdata/influxdb/v1"
             import "strings"
             v1.tagValues(bucket: v.static, tag: "container_name") |> filter(fn: (r) => strings.hasSuffix(v: r._value, suffix: v.dependent))`
             )
@@ -562,12 +562,12 @@ describe('Dashboard', () => {
               cy.visit(`${orgs}/${orgID}/dashboards/${dashboard.id}`)
             })
 
-          cy.getByTestID('add-cell--button').click()
-          cy.getByTestID('switch-to-script-editor').should('be.visible')
-          cy.getByTestID('switch-to-script-editor').click()
-          cy.getByTestID('toolbar-tab').click()
+            cy.getByTestID('add-cell--button').click()
+            cy.getByTestID('switch-to-script-editor').should('be.visible')
+            cy.getByTestID('switch-to-script-editor').click()
+            cy.getByTestID('toolbar-tab').click()
 
-          cy
+            cy
               .getByTestID('flux-editor')
               .should('be.visible')
               .click()
@@ -577,54 +577,57 @@ describe('Dashboard', () => {
 |> filter(fn: (r) => r["_field"] == "dopeness")
 |> filter(fn: (r) => r["container_name"] == v.build)`)
 
-          cy.getByTestID('save-cell--button').click()
+            cy.getByTestID('save-cell--button').click()
 
-          // the default bucket selection should have no results and load all three variables
-          // even though only two variables are being used (because 1 is dependent upon another)
-          cy.getByTestID('variable-dropdown--static').should('contain', 'beans')
-
-          // and cause the rest to exist in loading states
-          cy.getByTestIDSubStr('variable-dropdown--build').should(
-              'contain',
-              'Loading'
-          )
-
-          cy.getByTestIDSubStr('cell--view-empty')
-
-          // But selecting a nonempty bucket should load some data
-          cy.getByTestID('variable-dropdown--button')
-              .eq(0)
-              .click()
-          cy.get(`#${defaultBucket}`).click()
-
-          // default select the first result
-          cy.getByTestIDSubStr('variable-dropdown--build').should(
+            // the default bucket selection should have no results and load all three variables
+            // even though only two variables are being used (because 1 is dependent upon another)
+            cy.getByTestID('variable-dropdown--static').should(
               'contain',
               'beans'
-          )
+            )
 
-          // and also load the third result
-          cy.getByTestID('variable-dropdown--button')
+            // and cause the rest to exist in loading states
+            cy.getByTestIDSubStr('variable-dropdown--build').should(
+              'contain',
+              'Loading'
+            )
+
+            cy.getByTestIDSubStr('cell--view-empty')
+
+            // But selecting a nonempty bucket should load some data
+            cy.getByTestID('variable-dropdown--button')
+              .eq(0)
+              .click()
+            cy.get(`#${defaultBucket}`).click()
+
+            // default select the first result
+            cy.getByTestIDSubStr('variable-dropdown--build').should(
+              'contain',
+              'beans'
+            )
+
+            // and also load the third result
+            cy.getByTestID('variable-dropdown--button')
               .eq(2)
               .should('contain', 'beans')
               .click()
-          cy.get(`#cool`).click()
+            cy.get(`#cool`).click()
 
-          // and also load the second result
-          cy.getByTestIDSubStr('variable-dropdown--dependent').should(
+            // and also load the second result
+            cy.getByTestIDSubStr('variable-dropdown--dependent').should(
               'contain',
               'cool'
-          )
+            )
 
-          // updating the third variable should update the second
-          cy.getByTestID('variable-dropdown--button')
+            // updating the third variable should update the second
+            cy.getByTestID('variable-dropdown--button')
               .eq(2)
               .click()
-          cy.get(`#beans`).click()
-          cy.getByTestIDSubStr('variable-dropdown--build').should(
+            cy.get(`#beans`).click()
+            cy.getByTestIDSubStr('variable-dropdown--build').should(
               'contain',
               'beans'
-          )
+            )
           })
         })
       })
@@ -664,7 +667,6 @@ describe('Dashboard', () => {
       cy.get('@org').then(({id: orgID}: Organization) => {
         cy.createDashboard(orgID).then(({body: dashboard}) => {
           cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
-
             const now = Date.now()
             cy.writeData([
               `test,container_name=cool dopeness=12 ${now - 1000}000000`,
@@ -674,9 +676,9 @@ describe('Dashboard', () => {
             ])
             cy.createCSVVariable(orgID, 'static', ['beans', defaultBucket])
             cy.createQueryVariable(
-                orgID,
-                'dependent',
-                `from(bucket: v.static)
+              orgID,
+              'dependent',
+              `from(bucket: v.static)
   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
   |> filter(fn: (r) => r["_measurement"] == "test")
   |> keep(columns: ["container_name"])
@@ -692,17 +694,16 @@ describe('Dashboard', () => {
         })
       })
       cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
-
         cy.getByTestID('add-cell--button').click()
         cy.getByTestID('switch-to-script-editor').should('be.visible')
         cy.getByTestID('switch-to-script-editor').click()
         cy.getByTestID('toolbar-tab').click()
 
         cy
-            .getByTestID('flux-editor')
-            .should('be.visible')
-            .click()
-            .focused().type(`from(bucket: v.static)
+          .getByTestID('flux-editor')
+          .should('be.visible')
+          .click()
+          .focused().type(`from(bucket: v.static)
 |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
 |> filter(fn: (r) => r["_measurement"] == "test")
 |> filter(fn: (r) => r["_field"] == "dopeness")
@@ -711,30 +712,33 @@ describe('Dashboard', () => {
 
         // the default bucket selection should have no results
         cy.getByTestIDSubStr('variable-dropdown')
-            .eq(0)
-            .should('contain', 'beans')
+          .eq(0)
+          .should('contain', 'beans')
 
         // and cause the rest to exist in loading states
         cy.getByTestIDSubStr('variable-dropdown--dependent').should(
-            'contain',
-            'Loading'
+          'contain',
+          'Loading'
         )
 
         cy.getByTestIDSubStr('cell--view-empty')
 
         // But selecting a nonempty bucket should load some data
         cy.getByTestID('variable-dropdown--button')
-            .eq(0)
-            .click()
+          .eq(0)
+          .click()
         cy.get(`#${defaultBucket}`).click()
 
         // default select the first result
-        cy.getByTestID('variable-dropdown--dependent').should('contain', 'beans')
+        cy.getByTestID('variable-dropdown--dependent').should(
+          'contain',
+          'beans'
+        )
 
         // and also load the second result
         cy.getByTestID('variable-dropdown--button')
-            .eq(1)
-            .click()
+          .eq(1)
+          .click()
         cy.get(`#cool`).click()
       })
     })

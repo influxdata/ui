@@ -19,40 +19,43 @@ import GeoPlot from 'src/shared/components/GeoPlot'
 
 // Types
 import {
+  Annotation,
+  CheckType,
   CheckViewProperties,
   QueryViewProperties,
   SingleStatViewProperties,
   StatusRow,
+  Theme,
+  Threshold,
+  TimeRange,
   TimeZone,
   XYViewProperties,
-  TimeRange,
-  CheckType,
-  Threshold,
-  Theme,
 } from 'src/types'
 
 interface Props {
-  giraffeResult: FromFluxResult
-  files?: string[]
-  properties: QueryViewProperties | CheckViewProperties
-  timeZone: TimeZone
-  statuses?: StatusRow[][]
-  timeRange?: TimeRange | null
-  checkType?: CheckType
+  annotations: Annotation[]
   checkThresholds?: Threshold[]
+  checkType?: CheckType
+  files?: string[]
+  giraffeResult: FromFluxResult
+  properties: QueryViewProperties | CheckViewProperties
+  statuses?: StatusRow[][]
   theme: Theme
+  timeRange?: TimeRange | null
+  timeZone: TimeZone
 }
 
 const ViewSwitcher: FunctionComponent<Props> = ({
-  properties,
-  timeRange,
+  annotations,
+  checkThresholds = [],
+  checkType = null,
   files,
   giraffeResult: {table, fluxGroupKeyUnion},
-  timeZone,
+  properties,
   statuses,
-  checkType = null,
-  checkThresholds = [],
   theme,
+  timeRange,
+  timeZone,
 }) => {
   switch (properties.type) {
     case 'single-stat':
@@ -97,6 +100,7 @@ const ViewSwitcher: FunctionComponent<Props> = ({
     case 'xy':
       return (
         <XYPlot
+          annotations={annotations}
           timeRange={timeRange}
           fluxGroupKeyUnion={fluxGroupKeyUnion}
           table={table}

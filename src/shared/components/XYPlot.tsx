@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC, useMemo} from 'react'
+import {useDispatch} from 'react-redux'
 import {
   Config,
   Table,
@@ -34,7 +35,7 @@ import {
 
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-import {writeAnnotation} from 'src/annotations/api'
+import {writeThenUpdateAnnotations} from 'src/annotations/actions/thunks'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -42,23 +43,32 @@ import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {INVALID_DATA_COPY} from 'src/shared/copy/cell'
 
 // Types
-import {XYViewProperties, TimeZone, TimeRange, Theme} from 'src/types'
+import {
+  Annotation,
+  Theme,
+  TimeRange,
+  TimeZone,
+  XYViewProperties,
+} from 'src/types'
 
 interface Props {
+  annotations: Annotation[]
   children: (config: Config) => JSX.Element
   fluxGroupKeyUnion: string[]
-  timeRange?: TimeRange | null
   table: Table
+  theme: Theme
+  timeRange?: TimeRange | null
   timeZone: TimeZone
   viewProperties: XYViewProperties
-  theme: Theme
 }
 
 const XYPlot: FC<Props> = ({
+  annotations,
   children,
   fluxGroupKeyUnion,
-  timeRange,
   table,
+  theme,
+  timeRange,
   timeZone,
   viewProperties: {
     geom,
@@ -97,7 +107,6 @@ const XYPlot: FC<Props> = ({
     position,
     timeFormat,
   },
-  theme,
 }) => {
   const axisTicksOptions = useAxisTicksGenerator({
     generateXAxisTicks,
@@ -121,6 +130,8 @@ const XYPlot: FC<Props> = ({
   const yColumn =
     (table.columnKeys.includes(storedYColumn) && storedYColumn) ||
     defaultYColumn(table)
+
+  const dispatch = useDispatch()
 
   const columnKeys = table.columnKeys
 
@@ -229,15 +240,36 @@ const XYPlot: FC<Props> = ({
   }
 
   if (isFlagEnabled('annotations')) {
+    if (annotations && annotations.length) {
+      const annotationLayer = {
+        type: 'annotation',
+        x: xColumn,
+        y: yColumn,
+        fill: groupKey,
+        annotations: annotations.map(annotation => {
+          return {
+            color: 'green',
+            dimension: annotation.dimension ?? 'x',
+            title: annotation.summary,
+            startValue: new Date(annotation.start).getTime(),
+            stopValue: new Date(annotation.end).getTime()
+          }
+        }),
+      }
+
+      config.layers.push(annotationLayer)
+    }
+
     const doubleClickHandler = plotInteraction => {
       const annotationTime = new Date(plotInteraction.valueX).toISOString()
-      writeAnnotation([
+      console.log('dewd')
+      dispatch(writeThenUpdateAnnotations([
         {
-          summary: 'hi',
+          summary: 'bucky bucky bucky',
           start: annotationTime,
           end: annotationTime,
         },
-      ])
+      ]))
     }
 
     const interactionHandlers = {
@@ -245,6 +277,8 @@ const XYPlot: FC<Props> = ({
     }
 
     config.interactionHandlers = interactionHandlers
+
+    console.log(config.layers)
   }
 
   return children(config)

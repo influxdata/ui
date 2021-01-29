@@ -23,7 +23,7 @@ import {
 } from 'src/dataLoaders/reducers/telegrafEditor'
 import {RangeState} from 'src/dashboards/reducers/ranges'
 import {UserSettingsState} from 'src/userSettings/reducers'
-import {AnnotationsState} from 'src/annotations/reducers'
+import {Annotations} from 'src/annotations/reducers'
 import {OverlayState} from 'src/overlays/reducers/overlays'
 import {AutoRefreshState} from 'src/shared/reducers/autoRefresh'
 import {LimitsState} from 'src/cloud/reducers/limits'
@@ -68,7 +68,7 @@ export interface AppState {
   userSettings: UserSettingsState
   variableEditor: VariableEditorState
   VERSION: string
-  annotations: AnnotationsState
+  annotations: Annotations
 }
 
 export type GetState = () => AppState

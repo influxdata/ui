@@ -104,6 +104,7 @@ export type Action =
   | ReturnType<typeof setZoomValue>
   | ReturnType<typeof setLatitude>
   | ReturnType<typeof setLongitude>
+  | ReturnType<typeof setRadius>
   | SetXDomainAction
   | SetYDomainAction
   | SetXAxisLabelAction
@@ -723,6 +724,11 @@ export const setLatitude = (lat: number) => ({
 export const setLongitude = (lon: number) => ({
   type: 'SET_LONGITUDE' as 'SET_LONGITUDE',
   payload: {lon},
+})
+
+export const setRadius = (radius: number) => ({
+  type: 'SET_RADIUS' as 'SET_RADIUS',
+  payload: {radius},
 })
 
 export const setLegendOrientationThreshold = (

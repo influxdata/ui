@@ -39,7 +39,10 @@ import {
 } from 'src/types'
 import {Action} from 'src/timeMachine/actions'
 import {TimeMachineTab} from 'src/types/timeMachine'
-import {BuilderAggregateFunctionType} from 'src/client/generatedRoutes'
+import {
+  BuilderAggregateFunctionType,
+  GeoViewProperties,
+} from 'src/client/generatedRoutes'
 
 interface QueryBuilderState {
   buckets: string[]
@@ -1084,7 +1087,9 @@ export const timeMachineReducer = (
 
     case 'SET_MAP_TYPE': {
       const {mapType} = action.payload
-      const mapTypeLayer = [...state.view.properties.layers]
+      const properties = state.view.properties as GeoViewProperties
+
+      const mapTypeLayer = [...properties.layers]
       switch (mapType) {
         case 'pointMap':
           mapTypeLayer[0] = {
@@ -1106,8 +1111,14 @@ export const timeMachineReducer = (
             type: 'heatmap',
             radius: 20,
             blur: 10,
-            intensityDimension: {label: 'Magnitude'},
-            intensityField: 'magnitude',
+            intensityDimension: {label: 'Value'},
+            intensityField: '_value',
+            colors: [
+              {type: 'min', hex: '#00ff00'},
+              {value: 50, hex: '#ffae42'},
+              {value: 60, hex: '#ff0000'},
+              {type: 'max', hex: '#ff0000'},
+            ],
           }
           return setViewProperties(state, {
             layers: mapTypeLayer,
@@ -1188,6 +1199,16 @@ export const timeMachineReducer = (
           })
         default:
           return state
+      }
+    }
+    case 'SET_RADIUS': {
+      const {radius} = action.payload
+
+      switch (state.view.properties.type) {
+        case 'geo':
+          return setViewProperties(state, {
+            layers: [{...state.view.properties.layers[0], radius}],
+          })
       }
     }
   }

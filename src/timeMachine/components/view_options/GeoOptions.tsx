@@ -1,5 +1,6 @@
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
+import CustomHeatMapOptions from 'src/timeMachine/components/view_options/CustomHeatmapOptions'
 import {
   setLatitude,
   setLongitude,
@@ -7,21 +8,35 @@ import {
   setZoomValue,
   setMapType,
 } from 'src/timeMachine/actions'
-import {GeoViewProperties} from 'src/client'
+import {GeoViewProperties} from 'src/types'
 import {Grid, SelectGroup, Form, RangeSlider} from '@influxdata/clockface'
-import {invert} from 'lodash'
+
 const selectOptions = ['Point', 'Circle', 'Heat', 'Track']
-const selectHash = {
-  pointMap: 'Point',
-  circleMap: 'Circle',
-  heatmap: 'Heat',
-  trackMap: 'Track',
+const mapTypeHash = {
+  Point: 'pointMap',
+  Circle: 'circleMap',
+  Heat: 'heatmap',
+  Track: 'trackMap',
 }
+
+const displayCustomOptions = (mapType: string) => {
+  /* Eventually, the other map type subtype customizations can be added here */
+
+  switch (mapType) {
+    case 'heatmap':
+      return <CustomHeatMapOptions />
+    case 'trackMap':
+    case 'pointMap':
+    case 'circleMap':
+    default:
+      return null
+  }
+}
+
 const GeoOptions: FC<GeoViewProperties> = props => {
   const dispatch = useDispatch()
   const handleSelectGroupClick = (activeOption: string): void => {
-    console.log(invert(selectHash)[activeOption])
-    dispatch(setMapType(invert(selectHash)[activeOption]))
+    dispatch(setMapType(mapTypeHash[activeOption]))
   }
   const handleLatLongSelect = (latLonVal: number, type: string = 'lat') => {
     type === 'lon'
@@ -38,6 +53,7 @@ const GeoOptions: FC<GeoViewProperties> = props => {
     <>
       <SelectGroup
         style={{display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)'}}
+        testID="maptypeselect"
       >
         {selectOptions.map((s: string, i: number) => (
           <SelectGroup.Option
@@ -45,9 +61,11 @@ const GeoOptions: FC<GeoViewProperties> = props => {
             id={s}
             name="selectOptions"
             value={s}
-            active={props.layers[0].type === invert(selectHash)[s]}
+            active={props.layers[0].type === mapTypeHash[s]}
             onClick={handleSelectGroupClick}
             tabIndex={i + 1}
+            testID={`${s}-option`}
+            disabled={s === 'Track'}
           >
             {s}
           </SelectGroup.Option>
@@ -68,6 +86,7 @@ const GeoOptions: FC<GeoViewProperties> = props => {
             checked={props.allowPanAndZoom === true}
             onChange={handleSetPanZoom}
             type="checkbox"
+            data-testid="geoAllowPanZoom"
           />
         </Form.Element>
         <Form.Element label="Latitude">
@@ -76,6 +95,7 @@ const GeoOptions: FC<GeoViewProperties> = props => {
             max={90}
             value={props.center.lat}
             onChange={e => handleLatLongSelect(parseFloat(e.target.value))}
+            testID="geoLatitude"
           />
         </Form.Element>
         <Form.Element label="Longitude">
@@ -86,6 +106,7 @@ const GeoOptions: FC<GeoViewProperties> = props => {
             onChange={e =>
               handleLatLongSelect(parseFloat(e.target.value), 'lon')
             }
+            testID="geoLongitude"
           />
         </Form.Element>
         <Form.Element label="Zoom">
@@ -94,8 +115,10 @@ const GeoOptions: FC<GeoViewProperties> = props => {
             max={20}
             value={props.zoom}
             onChange={e => handleZoomSelect(parseFloat(e.target.value))}
+            testID="geoZoom"
           />
         </Form.Element>
+        {displayCustomOptions(props.layers[0].type)}
       </Grid.Column>
     </>
   )

@@ -28,7 +28,7 @@ const setup = (override?) => {
     onEditorClose: () => actions.clear(),
     ...override,
   }
-
+  // (gene: mstp): We are unable to mock mstp that this component depends on w/o enzyme
   const wrapper = shallow<VariableFormContext>(
     <VariableFormContext {...props} />
   )

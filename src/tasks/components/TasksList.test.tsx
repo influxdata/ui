@@ -1,6 +1,6 @@
 // Libraries
 import React from 'react'
-import {shallow} from 'enzyme'
+import {screen} from '@testing-library/react'
 
 // Components
 import TasksList from 'src/tasks/components/TasksList'
@@ -10,6 +10,8 @@ import {Task} from 'src/types'
 
 // Constants
 import {tasks} from 'mocks/dummyData'
+
+import {renderWithReduxAndRouter} from 'src/mockState'
 
 const setup = (override?) => {
   const props = {
@@ -24,9 +26,7 @@ const setup = (override?) => {
     ...override,
   }
 
-  const wrapper = shallow(<TasksList {...props} />)
-
-  return {wrapper}
+  renderWithReduxAndRouter(<TasksList {...props} />)
 }
 
 const oneTestFunction = (tasks: Task) => {
@@ -40,9 +40,10 @@ const secondTestFunction = () => {
 
 describe('TasksList', () => {
   describe('rendering', () => {
-    it('renders', () => {
-      const {wrapper} = setup()
-      expect(wrapper.exists()).toBe(true)
+    it('renders', async () => {
+      setup()
+      const elm = await screen.findAllByTestId('task-card')
+      expect(elm[0]).toBeVisible()
     })
   })
 })

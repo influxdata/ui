@@ -1,6 +1,7 @@
 import React from 'react'
-import {mount} from 'enzyme'
+import {screen} from '@testing-library/react'
 import {fromFlux} from '@influxdata/giraffe'
+import {renderWithReduxAndRouter} from 'src/mockState'
 
 import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
 
@@ -22,17 +23,21 @@ export const MULTI_SCHEMA_RESPONSE = `#datatype,string,long,dateTime:RFC3339,dat
 `
 
 describe('RawFluxDataTable', () => {
-  test('it can render a simple grid from a flux response', () => {
+  test('it can render a simple grid from a flux response', async () => {
     const data = fromFlux(MULTI_SCHEMA_RESPONSE)
-    const wrapper = mount(
+    renderWithReduxAndRouter(
       <RawFluxDataTable parsedResults={data} width={10000} height={10000} />
     )
 
-    const cells = wrapper.find('.raw-flux-data-table--cell')
+    const group = await screen.findAllByTestId('raw-flux-data-table--cell #group')
+    const datatype = await screen.findAllByTestId('raw-flux-data-table--cell #datatype')
+    const date = await screen.findAllByTestId('raw-flux-data-table--cell 1677-09-21T00:12:43.145Z')
 
-    expect(cells.at(0).text()).toEqual('#group')
-    expect(cells.at(14).text()).toEqual('#datatype')
-    expect(cells.at(41).text()).toEqual('')
-    expect(cells.at(59).text()).toEqual('1677-09-21T00:12:43.145Z')
+    expect(group[0]).toBeVisible()
+    expect(group.length).toEqual(4)
+    expect(datatype[0]).toBeVisible()
+    expect(datatype.length).toEqual(4)
+    expect(date[0]).toBeVisible()
+    expect(date.length).toEqual(4)
   })
 })

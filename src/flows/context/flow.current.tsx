@@ -3,7 +3,7 @@ import {Flow, PipeData} from 'src/types/flows'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import {v4 as UUID} from 'uuid'
 import {RemoteDataState} from 'src/types'
-import {PROJECT_NAME} from 'src/flows'
+import {PROJECT_NAME, PIPE_DEFINITIONS} from 'src/flows'
 import {event} from 'src/cloud/utils/reporting'
 
 export interface FlowContextType {
@@ -26,28 +26,6 @@ export const FlowContext = React.createContext<FlowContextType>(DEFAULT_CONTEXT)
 
 let GENERATOR_INDEX = 0
 
-// TODO: add to self registration interface
-export const getHumanReadableName = (type: string): string => {
-  ++GENERATOR_INDEX
-
-  switch (type) {
-    case 'metricSelector':
-      return `Metric Selector ${GENERATOR_INDEX}`
-    case 'visualization':
-      return `Visualization ${GENERATOR_INDEX}`
-    case 'markdown':
-      return `Markdown ${GENERATOR_INDEX}`
-    case 'rawFluxEditor':
-      return `Flux Script ${GENERATOR_INDEX}`
-    case 'toBucket':
-      return `Output to Bucket ${GENERATOR_INDEX}`
-    case 'queryBuilder':
-      return `Query Builder ${GENERATOR_INDEX}`
-    default:
-      return `Cell ${GENERATOR_INDEX}`
-  }
-}
-
 export const FlowProvider: FC = ({children}) => {
   const {flows, update, currentID} = useContext(FlowListContext)
 
@@ -66,7 +44,8 @@ export const FlowProvider: FC = ({children}) => {
 
     flows[currentID].data.add(id, initial)
     flows[currentID].meta.add(id, {
-      title: getHumanReadableName(initial.type),
+      title: `${PIPE_DEFINITIONS[initial.type].button ||
+        'Panel'} ${++GENERATOR_INDEX}`,
       visible: true,
       loading: RemoteDataState.NotStarted,
     })

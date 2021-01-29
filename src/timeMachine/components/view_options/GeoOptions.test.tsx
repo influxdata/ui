@@ -111,7 +111,7 @@ const setup = (override = {}) => {
     ...override,
   }
 
-  return renderWithRedux(<GeoOptions {...props} />, initialState => {
+  return renderWithRedux(<GeoOptions {...props} />, () => {
     const appState = {...mockAppState} as any
     appState.timeMachines.timeMachines.de.view = geoStateView
     return appState

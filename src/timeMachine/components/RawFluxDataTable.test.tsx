@@ -29,9 +29,15 @@ describe('RawFluxDataTable', () => {
       <RawFluxDataTable parsedResults={data} width={10000} height={10000} />
     )
 
-    const group = await screen.findAllByTestId('raw-flux-data-table--cell #group')
-    const datatype = await screen.findAllByTestId('raw-flux-data-table--cell #datatype')
-    const date = await screen.findAllByTestId('raw-flux-data-table--cell 1677-09-21T00:12:43.145Z')
+    const group = await screen.findAllByTestId(
+      'raw-flux-data-table--cell #group'
+    )
+    const datatype = await screen.findAllByTestId(
+      'raw-flux-data-table--cell #datatype'
+    )
+    const date = await screen.findAllByTestId(
+      'raw-flux-data-table--cell 1677-09-21T00:12:43.145Z'
+    )
 
     expect(group[0]).toBeVisible()
     expect(group.length).toEqual(4)

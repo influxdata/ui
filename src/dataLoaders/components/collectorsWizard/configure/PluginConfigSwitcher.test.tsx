@@ -1,11 +1,10 @@
 // Libraries
 import React from 'react'
-import {screen, render} from '@testing-library/react'
+import {screen} from '@testing-library/react'
 
 // Components
 import {PluginConfigSwitcher} from 'src/dataLoaders/components/collectorsWizard/configure/PluginConfigSwitcher'
 import {renderWithReduxAndRouter} from 'src/mockState'
-import TelegrafPluginInstructions from 'src/dataLoaders/components/collectorsWizard/configure/TelegrafPluginInstructions'
 import EmptyDataSourceState from 'src/dataLoaders/components/configureStep/EmptyDataSourceState'
 
 // Constants
@@ -62,8 +61,8 @@ describe('DataLoading.Components.Collectors.Configure.PluginConfigSwitcher', () 
       })
 
       const form = await screen.getAllByRole('heading', {level: 3})
-      const instructions = await screen.getByText(
-        'Configure each plugin from the menu on the left. Some plugins do not require any configuration.'
+      const instructions = await screen.getByTestId(
+        'telegraf-plugin-instructions'
       )
 
       expect(form.pop()).toBeVisible()

@@ -86,12 +86,15 @@ export function serialize(flow) {
     refresh: flow.refresh,
     pipes: flow.data.allIDs.map(id => {
       const meta = flow.meta.byID[id]
-
-      return {
-        ...flow.data.byID[id],
-        title: meta.title,
-        visible: meta.visible,
+      // if data changes first, meta will not exist yet
+      if (meta) {
+        return {
+          ...flow.data.byID[id],
+          title: meta.title,
+          visible: meta.visible,
+        }
       }
+      return {}
     }),
   }
 
@@ -235,7 +238,7 @@ export const FlowListProvider: FC = ({children}) => {
       data: {
         id,
         orgID,
-        name: {value: flow.name},
+        name: flow.name,
         spec: serialize(data),
       },
     }

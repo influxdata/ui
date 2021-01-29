@@ -22,7 +22,7 @@ let stagedFlow: PatchApiV2privateFlowsOrgsFlowParams = DEFAULT_API_FLOW
 let reportDecayTimeout = null
 let reportMaxTimeout = null
 
-const REPORT_DECAY = 2000 // number of miliseconds to wait after last event before sending
+const REPORT_DECAY = 500 // number of miliseconds to wait after last event before sending
 const REPORT_MAX_WAIT = 5000 // max number of miliseconds to wait between sends
 
 export const pooledUpdateAPI = (flow: PatchApiV2privateFlowsOrgsFlowParams) => {

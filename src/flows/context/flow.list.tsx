@@ -15,6 +15,7 @@ import {PIPE_DEFINITIONS} from 'src/flows'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 import {PROJECT_NAME} from 'src/flows'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const useFlowListState = createPersistedState('flows')
 const useFlowCurrentState = createPersistedState('current-flow')
@@ -116,10 +117,42 @@ export const FlowListProvider: FC = ({children}) => {
 
   const add = (flow?: Flow): Promise<string> => {
     let _flow
+    let _flowData
 
     if (!flow) {
-      _flow = {
-        ...hydrate({
+      if (isFlagEnabled('molly-first') && flows.length === 0) {
+        _flowData = hydrate({
+          name: `Name this ${PROJECT_NAME}`,
+          readOnly: false,
+          range: DEFAULT_TIME_RANGE,
+          refresh: AUTOREFRESH_DEFAULT,
+          pipes: [
+            {
+              title: 'Welcome',
+              visible: true,
+              type: 'youtube',
+              uri: 'Rs16uhxK0h8',
+            },
+            {
+              title: 'Select a Metric',
+              visible: true,
+              type: 'metricSelector',
+              ...JSON.parse(
+                JSON.stringify(PIPE_DEFINITIONS['metricSelector'].initial)
+              ),
+            },
+            {
+              title: 'Visualize the Result',
+              visible: true,
+              type: 'visualization',
+              ...JSON.parse(
+                JSON.stringify(PIPE_DEFINITIONS['visualization'].initial)
+              ),
+            },
+          ],
+        })
+      } else {
+        _flowData = hydrate({
           name: `Name this ${PROJECT_NAME}`,
           readOnly: false,
           range: DEFAULT_TIME_RANGE,
@@ -142,7 +175,10 @@ export const FlowListProvider: FC = ({children}) => {
               ),
             },
           ],
-        }),
+        })
+      }
+      _flow = {
+        ..._flowData,
       }
     } else {
       _flow = {

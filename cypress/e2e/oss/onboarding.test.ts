@@ -15,7 +15,7 @@ describe('Onboarding Redirect', () => {
 describe('Onboarding', () => {
   beforeEach(() => {
     cy.flush()
-
+    cy.wrapEnvironmentVariablesForOss()
     cy.visit('onboarding/0')
   })
 
@@ -119,6 +119,7 @@ describe('Onboarding', () => {
 
   it('Can onboard to advanced', () => {
     cy.server()
+    cy.wrapEnvironmentVariablesForOss()
 
     cy.route('POST', 'api/v2/setup').as('orgSetup')
 

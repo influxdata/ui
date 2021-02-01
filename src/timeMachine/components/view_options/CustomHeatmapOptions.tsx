@@ -9,7 +9,7 @@ enum HeatMapRadiusMinMax {
   Min = 1,
   Max = 100,
 }
-const CustomHeatMapOptions: FC = () => {
+export const CustomHeatMapOptions: FC = () => {
   const {
     view: {properties},
   } = useSelector(getActiveTimeMachine)
@@ -40,5 +40,3 @@ const CustomHeatMapOptions: FC = () => {
     </Form.Element>
   )
 }
-
-export default CustomHeatMapOptions

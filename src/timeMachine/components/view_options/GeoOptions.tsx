@@ -1,6 +1,6 @@
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
-import CustomHeatMapOptions from 'src/timeMachine/components/view_options/CustomHeatmapOptions'
+import {CustomHeatMapOptions} from 'src/timeMachine/components/view_options/CustomHeatmapOptions'
 import {
   setLatitude,
   setLongitude,

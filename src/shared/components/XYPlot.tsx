@@ -262,7 +262,6 @@ const XYPlot: FC<Props> = ({
 
     const doubleClickHandler = plotInteraction => {
       const annotationTime = new Date(plotInteraction.valueX).toISOString()
-      console.log('dewd')
       dispatch(writeThenUpdateAnnotations([
         {
           summary: 'bucky bucky bucky',

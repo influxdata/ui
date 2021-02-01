@@ -21,5 +21,5 @@ export const writeThenUpdateAnnotations = (annotations: Annotation[]) => async (
 ): Promise<void> => {
   await writeAnnotation(annotations)
 
-  dispatch(fetchAndSetAnnotations())
+  dispatch(await fetchAndSetAnnotations())
 }

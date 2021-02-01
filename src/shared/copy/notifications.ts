@@ -1011,6 +1011,21 @@ export const notebookRunFail = (
   message: `${projectName} ${runMode.toLowerCase()} failed`,
 })
 
+export const notebookCreateFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to create Notebook, please try again.`,
+})
+
+export const notebookUpdateFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to save changes to Notebook, please try again.`,
+})
+
+export const notebookDeleteFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to delete Notebook, please try again.`,
+})
+
 export const csvUploaderErrorNotification = (
   message: string
 ): Notification => ({

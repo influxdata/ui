@@ -82,9 +82,12 @@ export const wrapEnvironmentVariablesForOss = (): Cypress.Chainable => {
 }
 
 export const wrapDefaultBucket = (): Cypress.Chainable => {
-    return cy.wrap('defbuck').as('defaultBucket').then(defaultBucket => {
+  return cy
+    .wrap('defbuck')
+    .as('defaultBucket')
+    .then(defaultBucket => {
       cy.wrap('selector-list '.concat(defaultBucket)).as(
-          'defaultBucketListSelector'
+        'defaultBucketListSelector'
       )
     })
 }
@@ -605,7 +608,10 @@ Cypress.Commands.add('signin', signin)
 
 // setup
 Cypress.Commands.add('setupUser', setupUser)
-Cypress.Commands.add('wrapEnvironmentVariables', wrapEnvironmentVariablesForCloud)
+Cypress.Commands.add(
+  'wrapEnvironmentVariables',
+  wrapEnvironmentVariablesForCloud
+)
 
 // dashboards
 Cypress.Commands.add('createDashboard', createDashboard)

@@ -7,43 +7,56 @@ import {
   setAllowPanAndZoom,
   setZoomValue,
   setMapType,
-} from 'src/timeMachine/actions'
+} from 'src/timeMachine/actions/geoOptionsCreators'
 import {GeoViewProperties} from 'src/types'
 import {Grid, SelectGroup, Form, RangeSlider} from '@influxdata/clockface'
-
-const selectOptions = ['Point', 'Circle', 'Heat', 'Track']
-const mapTypeHash = {
-  Point: 'pointMap',
-  Circle: 'circleMap',
-  Heat: 'heatmap',
-  Track: 'trackMap',
+import './GeoOptions.scss'
+const mapTypeOptions = ['Point', 'Circle', 'Heat', 'Track']
+enum LatMinMax {
+  Min = -90,
+  Max = 90,
+}
+enum LonMinMax {
+  Min = -180,
+  Max = 180,
 }
 
-const displayCustomOptions = (mapType: string) => {
-  /* Eventually, the other map type subtype customizations can be added here */
+enum ZoomMinMax {
+  Min = 0,
+  Max = 20,
+}
+export enum MapType {
+  Point = 'pointMap',
+  Circle = 'circleMap',
+  Heat = 'heatmap',
+  Track = 'trackMap',
+}
 
+const displayCustomOptions = (mapType: MapType) => {
   switch (mapType) {
-    case 'heatmap':
+    case MapType.Heat: {
       return <CustomHeatMapOptions />
-    case 'trackMap':
-    case 'pointMap':
-    case 'circleMap':
+    }
+    case MapType.Track:
+    case MapType.Point:
+    case MapType.Circle:
     default:
       return null
   }
 }
 
-const GeoOptions: FC<GeoViewProperties> = props => {
+export const GeoOptions: FC<GeoViewProperties> = props => {
   const dispatch = useDispatch()
   const handleSelectGroupClick = (activeOption: string): void => {
-    dispatch(setMapType(mapTypeHash[activeOption]))
+    dispatch(setMapType(MapType[activeOption]))
   }
-  const handleLatLongSelect = (latLonVal: number, type: string = 'lat') => {
-    type === 'lon'
-      ? dispatch(setLongitude(latLonVal))
-      : dispatch(setLatitude(latLonVal))
+  const handleSelectLatitude = (latitude: number) => {
+    dispatch(setLatitude(latitude))
   }
-  const handleSetPanZoom = () => {
+  const handleSelectLongitude = (longitude: number) => {
+    dispatch(setLongitude(longitude))
+  }
+  const handleTogglePanZoom = () => {
     dispatch(setAllowPanAndZoom(!props.allowPanAndZoom))
   }
   const handleZoomSelect = (zoomValue: number) => {
@@ -51,76 +64,69 @@ const GeoOptions: FC<GeoViewProperties> = props => {
   }
   return (
     <>
-      <SelectGroup
-        style={{display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)'}}
-        testID="maptypeselect"
-      >
-        {selectOptions.map((s: string, i: number) => (
+      <SelectGroup className="mapTypeOptions" testID="maptypeselect">
+        {mapTypeOptions.map((mapTypeOption: string, index: number) => (
           <SelectGroup.Option
-            key={i}
-            id={s}
-            name="selectOptions"
-            value={s}
-            active={props.layers[0].type === mapTypeHash[s]}
+            key={mapTypeOption}
+            id={mapTypeOption}
+            name="mapTypeOptions"
+            value={mapTypeOption}
+            active={props?.layers[0]?.type === MapType[mapTypeOption]}
             onClick={handleSelectGroupClick}
-            tabIndex={i + 1}
-            testID={`${s}-option`}
-            disabled={s === 'Track'}
+            tabIndex={index + 1}
+            testID={`${mapTypeOption}-option`}
+            disabled={mapTypeOption === 'Track'}
           >
-            {s}
+            {mapTypeOption}
           </SelectGroup.Option>
         ))}
       </SelectGroup>
       <Grid.Column>
         <h4 className="view-options--header">Customize Geo Options</h4>
-        <Form.Element
-          label="Allow Pan And Zoom"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            width: '100%',
-          }}
-        >
+        <Form.Element label="Allow Pan And Zoom" className="allowPanAndZoom">
           <input
-            style={{left: '20px', justifySelf: 'end'}}
+            className="allowPanZoomInput"
             checked={props.allowPanAndZoom === true}
-            onChange={handleSetPanZoom}
+            onChange={handleTogglePanZoom}
             type="checkbox"
-            data-testid="geoAllowPanZoom"
+            data-testid="geo-toggle-pan-zoom"
           />
         </Form.Element>
         <Form.Element label="Latitude">
           <RangeSlider
-            min={-90}
-            max={90}
+            min={LatMinMax.Min}
+            max={LatMinMax.Max}
             value={props.center.lat}
-            onChange={e => handleLatLongSelect(parseFloat(e.target.value))}
-            testID="geoLatitude"
+            onChange={event => {
+              handleSelectLatitude(parseFloat(event.target.value))
+            }}
+            testID="geo-latitude"
           />
         </Form.Element>
         <Form.Element label="Longitude">
           <RangeSlider
-            min={-180}
-            max={180}
+            min={LonMinMax.Min}
+            max={LonMinMax.Max}
             value={props.center.lon}
-            onChange={e =>
-              handleLatLongSelect(parseFloat(e.target.value), 'lon')
-            }
-            testID="geoLongitude"
+            onChange={event => {
+              handleSelectLongitude(parseFloat(event.target.value))
+            }}
+            testID="geo-longitude"
           />
         </Form.Element>
         <Form.Element label="Zoom">
           <RangeSlider
-            min={0}
-            max={20}
+            min={ZoomMinMax.Min}
+            max={ZoomMinMax.Max}
             value={props.zoom}
-            onChange={e => handleZoomSelect(parseFloat(e.target.value))}
-            testID="geoZoom"
+            onChange={event => {
+              handleZoomSelect(parseFloat(event.target.value))
+            }}
+            testID="geo-zoom"
           />
         </Form.Element>
-        {displayCustomOptions(props.layers[0].type)}
+        {displayCustomOptions(props?.layers[0]?.type)}
       </Grid.Column>
     </>
   )
 }
-export default GeoOptions

@@ -11,7 +11,7 @@ import HistogramOptions from 'src/timeMachine/components/view_options/HistogramO
 import HeatmapOptions from 'src/timeMachine/components/view_options/HeatmapOptions'
 import ScatterOptions from 'src/timeMachine/components/view_options/ScatterOptions'
 import MosaicOptions from 'src/timeMachine/components/view_options/MosaicOptions'
-import GeoOptions from 'src/timeMachine/components/view_options/GeoOptions'
+import {GeoOptions} from 'src/timeMachine/components/view_options/GeoOptions'
 
 // Types
 import {View, NewView} from 'src/types'

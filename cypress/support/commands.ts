@@ -609,8 +609,12 @@ Cypress.Commands.add('signin', signin)
 // setup
 Cypress.Commands.add('setupUser', setupUser)
 Cypress.Commands.add(
-  'wrapEnvironmentVariables',
+  'wrapEnvironmentVariablesForCloud',
   wrapEnvironmentVariablesForCloud
+)
+Cypress.Commands.add(
+  'wrapEnvironmentVariablesForOss',
+  wrapEnvironmentVariablesForOss
 )
 
 // dashboards

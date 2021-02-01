@@ -9,7 +9,7 @@ import * as geoTimeMachineActions from 'src/timeMachine/actions/geoOptionsCreato
 import {
   defaultHeatmap,
   defaultPointMap,
-} from 'src/timeMachine/utils/geoMapTypeDefaults'
+} from 'src/timeMachine/reducers/geoOptionsReducer'
 const setup = (override = {}) => {
   const geoStateView = createView('geo')
 

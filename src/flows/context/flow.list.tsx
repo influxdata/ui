@@ -120,7 +120,7 @@ export const FlowListProvider: FC = ({children}) => {
     let _flowData
 
     if (!flow) {
-      if (isFlagEnabled('molly-first') && flows.length === 0) {
+      if (isFlagEnabled('molly-first') && Object.keys(flows).length === 0) {
         _flowData = hydrate({
           name: `Name this ${PROJECT_NAME}`,
           readOnly: false,

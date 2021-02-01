@@ -174,8 +174,8 @@ jobs:
       - run:
           name: Update the images we're using
           command: |
-            cd ./monitor-ci && sudo rm -rf .persist/certs/ && make update && make build NODE=ingress && make cypress-build;
-            make build NODE=dex;
+            docker system prune -f
+            cd ./monitor-ci && sudo rm -rf .persist/ && make update && make cypress-build;
             docker tag local/cypress:latest quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
@@ -230,12 +230,10 @@ jobs:
       - run:
           name: Update the images we're using
           command: |
-            cd ./monitor-ci && sudo rm -rf .persist/certs/ && make update && make build NODE=ingress && make cypress-build;
+            docker system prune -f
+            cd ./monitor-ci && sudo rm -rf .persist/ && make update && make cypress-build;
             docker load < ~/docker-cache-oss/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
-      - run:
-          name: Rebuild Ingress (may be removable after some time?)
-          command: cd ./monitor-ci; make rebuild NODE=ingress
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start
@@ -281,8 +279,8 @@ jobs:
       - run:
           name: Update the images we're using
           command: |
-            cd ./monitor-ci && sudo rm -rf .persist/certs/ && make update && make build NODE=ingress && make cypress-build;
-            make build NODE=dex;
+            docker system prune -f
+            cd ./monitor-ci && sudo rm -rf .persist/ && make update && make cypress-build;
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - run:
@@ -329,8 +327,8 @@ jobs:
       - run:
           name: Update the images we're using
           command: |
-            cd ./monitor-ci && sudo rm -rf .persist/certs/ && make update && make build NODE=ingress && make cypress-build;
-            make build NODE=dex;
+            docker system prune -f
+            cd ./monitor-ci && sudo rm -rf .persist/ && make update && make cypress-build;
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - run:
@@ -440,8 +438,8 @@ jobs:
       - run:
           name: Update the images we're using
           command: |
-            cd ./monitor-ci && sudo rm -rf .persist/certs/ && make update && make build NODE=ingress;
-            make build NODE=dex;
+            docker system prune -f
+            cd ./monitor-ci && sudo rm -rf .persist/ && make update;
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - run:

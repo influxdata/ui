@@ -1,6 +1,7 @@
 describe('Onboarding Redirect', () => {
   beforeEach(() => {
     cy.flush()
+    cy.wrapEnvironmentVariablesForOss()
     cy.visit('/')
   })
 

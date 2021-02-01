@@ -5,12 +5,7 @@ import {produce} from 'immer'
 // Utils
 import {createView, defaultViewQuery} from 'src/views/helpers'
 import {isConfigValid, buildQuery} from 'src/timeMachine/utils/queryBuilder'
-import {
-  defaultHeatmap,
-  defaultPointMap,
-  defaultTrackMap,
-  defaultCircleMap,
-} from 'src/timeMachine/utils/geoMapTypeDefaults'
+
 // Constants
 import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 import {
@@ -42,19 +37,12 @@ import {
   TimeMachineID,
   Color,
 } from 'src/types'
-import {
-  Action as GeoOptionsAction,
-  SET_MAP_TYPE,
-  SET_ALLOW_PAN_AND_ZOOM,
-  SET_ZOOM_VALUE,
-  SET_LONGITUDE,
-  SET_LATITUDE,
-  SET_RADIUS,
-} from 'src/timeMachine/actions/geoOptionsCreators'
+import {Action as GeoOptionsAction} from 'src/timeMachine/actions/geoOptionsCreators'
 import {Action} from 'src/timeMachine/actions'
 
 import {TimeMachineTab} from 'src/types/timeMachine'
 import {BuilderAggregateFunctionType} from 'src/client/generatedRoutes'
+import {geoOptionsReducer} from 'src/timeMachine/reducers/geoOptionsReducer'
 
 interface QueryBuilderState {
   buckets: string[]
@@ -184,9 +172,11 @@ const getTableProperties = (view, files) => {
   return properties
 }
 
+export type TimeMachineAction = Action | GeoOptionsAction
+
 export const timeMachinesReducer = (
   state: TimeMachinesState = initialState(),
-  action: Action | GeoOptionsAction
+  action: TimeMachineAction
 ): TimeMachinesState => {
   if (action.type === 'SET_ACTIVE_TIME_MACHINE') {
     const {activeTimeMachineID, initialState} = action.payload
@@ -238,18 +228,18 @@ export const timeMachinesReducer = (
 
   const newActiveTimeMachine = timeMachineReducer(activeTimeMachine, action)
 
+  const updatedViewTimeMachine = geoOptionsReducer(newActiveTimeMachine, action)
+
   const s = {
     ...state,
     timeMachines: {
       ...timeMachines,
-      [activeTimeMachineID]: newActiveTimeMachine,
+      [activeTimeMachineID]: updatedViewTimeMachine,
     },
   }
 
   return s
 }
-
-type TimeMachineAction = Action | GeoOptionsAction
 
 export const timeMachineReducer = (
   state: TimeMachineState,
@@ -1098,93 +1088,12 @@ export const timeMachineReducer = (
         )
       })
     }
-
-    case SET_MAP_TYPE: {
-      const {mapType} = action
-
-      switch (mapType) {
-        case 'pointMap': {
-          return setViewProperties(state, {
-            layers: [defaultPointMap],
-          })
-        }
-        case 'heatmap': {
-          return setViewProperties(state, {
-            layers: [defaultHeatmap],
-          })
-        }
-        case 'trackMap': {
-          return setViewProperties(state, {
-            layers: [defaultTrackMap],
-          })
-        }
-        case 'circleMap': {
-          return setViewProperties(state, {
-            layers: [defaultCircleMap],
-          })
-        }
-        default:
-          return state
-      }
-    }
-    case SET_ZOOM_VALUE: {
-      const {zoom} = action
-      switch (state.view.properties.type) {
-        case 'geo':
-          return setViewProperties(state, {
-            zoom,
-          })
-        default:
-          return state
-      }
-    }
-    case SET_LATITUDE: {
-      const {lat} = action
-      switch (state.view.properties.type) {
-        case 'geo':
-          return setViewProperties(state, {
-            center: {...state.view.properties.center, lat},
-          })
-        default:
-          return state
-      }
-    }
-    case SET_ALLOW_PAN_AND_ZOOM: {
-      const {allowPanAndZoom} = action
-      switch (state.view.properties.type) {
-        case 'geo':
-          return setViewProperties(state, {allowPanAndZoom})
-        default:
-          return state
-      }
-    }
-    case SET_LONGITUDE: {
-      const {lon} = action
-      switch (state.view.properties.type) {
-        case 'geo':
-          return setViewProperties(state, {
-            center: {...state.view.properties.center, lon},
-          })
-        default:
-          return state
-      }
-    }
-    case SET_RADIUS: {
-      const {radius} = action
-
-      switch (state.view.properties.type) {
-        case 'geo':
-          return setViewProperties(state, {
-            layers: [{...state.view.properties.layers[0], radius}],
-          })
-      }
-    }
   }
 
   return state
 }
 
-const setViewProperties = (
+export const setViewProperties = (
   state: TimeMachineState,
   update: {[key: string]: any}
 ): TimeMachineState => {

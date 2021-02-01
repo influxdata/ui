@@ -44,25 +44,6 @@ describe('GeoOptions Geo Customization Options', () => {
     jest.clearAllMocks()
   })
 
-  it('changes the lat, lon, allowPanAndZoom, and zoom properties for the selected map type', () => {
-    const {getByTestId, store} = setup()
-    const latitude = getByTestId('geo-latitude')
-    const longitude = getByTestId('geo-longitude')
-    const zoom = getByTestId('geo-zoom')
-    const allowPanAndZoom = getByTestId('geo-toggle-pan-zoom')
-
-    fireEvent.change(latitude, {target: {value: 40}})
-    fireEvent.change(longitude, {target: {value: 39}})
-    fireEvent.change(zoom, {target: {value: 12}})
-    fireEvent.click(allowPanAndZoom)
-
-    const storeProps = store.getState().timeMachines.timeMachines.de.view
-      .properties as GeoViewProperties
-    expect(storeProps.allowPanAndZoom).toEqual(false)
-    expect(storeProps.center).toEqual({lat: 40, lon: 39})
-    expect(storeProps.zoom).toEqual(12)
-  })
-
   it('fires the correct action to set the map type to the selected option', () => {
     const {getByTestId, findByTestId, store} = setup()
     const heatmapOption = getByTestId('Heat-option')
@@ -70,7 +51,7 @@ describe('GeoOptions Geo Customization Options', () => {
     fireEvent.click(heatmapOption)
 
     waitFor(() => {
-      expect(findByTestId('heatmapradiusslider')).toBeInTheDocument()
+      expect(findByTestId('geo-heatmap-radius-slider')).toBeInTheDocument()
       const storeProps = store.getState().timeMachines.timeMachines.de.view
         .properties as GeoViewProperties
       expect(storeProps.layers[0]).toEqual(defaultHeatmap)

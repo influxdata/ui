@@ -12,16 +12,16 @@ import {GeoViewProperties} from 'src/types'
 import {Grid, SelectGroup, Form, RangeSlider} from '@influxdata/clockface'
 import './GeoOptions.scss'
 const mapTypeOptions = ['Point', 'Circle', 'Heat', 'Track']
-enum LatMinMax {
+enum LatRangeSlider {
   Min = -90,
   Max = 90,
 }
-enum LonMinMax {
+enum LonRangeSlider {
   Min = -180,
   Max = 180,
 }
 
-enum ZoomMinMax {
+enum ZoomRangeSlider {
   Min = 0,
   Max = 20,
 }
@@ -40,8 +40,9 @@ const displayCustomOptions = (mapType: MapType) => {
     case MapType.Track:
     case MapType.Point:
     case MapType.Circle:
-    default:
+    default: {
       return null
+    }
   }
 }
 
@@ -64,7 +65,7 @@ export const GeoOptions: FC<GeoViewProperties> = props => {
   }
   return (
     <>
-      <SelectGroup className="mapTypeOptions" testID="maptypeselect">
+      <SelectGroup className="mapTypeOptions">
         {mapTypeOptions.map((mapTypeOption: string, index: number) => (
           <SelectGroup.Option
             key={mapTypeOption}
@@ -94,8 +95,8 @@ export const GeoOptions: FC<GeoViewProperties> = props => {
         </Form.Element>
         <Form.Element label="Latitude">
           <RangeSlider
-            min={LatMinMax.Min}
-            max={LatMinMax.Max}
+            min={LatRangeSlider.Min}
+            max={LatRangeSlider.Max}
             value={props.center.lat}
             onChange={event => {
               handleSelectLatitude(parseFloat(event.target.value))
@@ -105,8 +106,8 @@ export const GeoOptions: FC<GeoViewProperties> = props => {
         </Form.Element>
         <Form.Element label="Longitude">
           <RangeSlider
-            min={LonMinMax.Min}
-            max={LonMinMax.Max}
+            min={LonRangeSlider.Min}
+            max={LonRangeSlider.Max}
             value={props.center.lon}
             onChange={event => {
               handleSelectLongitude(parseFloat(event.target.value))
@@ -116,8 +117,8 @@ export const GeoOptions: FC<GeoViewProperties> = props => {
         </Form.Element>
         <Form.Element label="Zoom">
           <RangeSlider
-            min={ZoomMinMax.Min}
-            max={ZoomMinMax.Max}
+            min={ZoomRangeSlider.Min}
+            max={ZoomRangeSlider.Max}
             value={props.zoom}
             onChange={event => {
               handleZoomSelect(parseFloat(event.target.value))

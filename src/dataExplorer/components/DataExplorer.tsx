@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect} from 'react'
+import React, {FC, useEffect, useCallback} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Components
@@ -18,9 +18,6 @@ import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 
-import {usePersistReduxState} from 'src/shared/utils/reloadPersistState'
-import {timeMachineReducer} from 'src/timeMachine/reducers'
-
 const DataExplorer: FC = () => {
   const dispatch = useDispatch()
   const timeMachineState = useSelector(getActiveTimeMachine)
@@ -31,41 +28,43 @@ const DataExplorer: FC = () => {
     dispatch(setBuilderBucketIfExists(bucketQP))
   }, [dispatch])
 
-  // usePersistReduxState(timeMachineState, 'timeMachineState', dispatch, s =>
-  //   setActiveTimeMachine('de', s)
-  // )
-  // const setReduxStateFromLocalStorage = () => {
-  //   console.log('here')
-  //   const fromLocalStorageState = JSON.parse(
-  //     window.localStorage.getItem('timeMachineState')
-  //   )
+  const setReduxStateFromLocalStorage = useCallback(() => {
+    const fromLocalStorageState = JSON.parse(
+      window.localStorage.getItem('timeMachineState')
+    )
 
-  //   console.log(fromLocalStorageState, 'hello')
-  //   if (!fromLocalStorageState) {
-  //     return null
-  //   }
+    if (!fromLocalStorageState) {
+      return null
+    }
 
-  //   // set the state in redux
-  //   dispatch(setActiveTimeMachine('de', fromLocalStorageState))
-  // }
+    // set the state in redux
+    dispatch(setActiveTimeMachine('de', fromLocalStorageState))
+  }, [dispatch])
 
-  // useEffect(() => {
-  //   const setLocalStorageWithReduxState = e => {
-  //     e.preventDefault()
-  //     window.localStorage.setItem(
-  //       'timeMachineState',
-  //       JSON.stringify(timeMachineState)
-  //     )
-  //     return undefined
-  //     console.log('here')
-  //   }
-  //   window.onbeforeunload = setLocalStorageWithReduxState
-  //   setReduxStateFromLocalStorage()
-  //   return () => {
-  //     window.localStorage.clear()
-  //     window.removeEventListener('beforeunload', setLocalStorageWithReduxState)
-  //   }
-  // }, [timeMachineState])
+  const setLocalStorageWithReduxState = useCallback(
+    event => {
+      event.preventDefault()
+      window.localStorage.setItem(
+        'timeMachineState',
+        JSON.stringify(timeMachineState)
+      )
+      return undefined
+    },
+    [timeMachineState]
+  )
+
+  useEffect(() => {
+    window.onbeforeunload = setLocalStorageWithReduxState
+    setReduxStateFromLocalStorage()
+    return () => {
+      window.localStorage.clear()
+      window.removeEventListener('beforeunload', setLocalStorageWithReduxState)
+    }
+  }, [
+    timeMachineState,
+    setLocalStorageWithReduxState,
+    setReduxStateFromLocalStorage,
+  ])
 
   return (
     <ErrorBoundary>

@@ -54,10 +54,7 @@ import {
 import {Action} from 'src/timeMachine/actions'
 
 import {TimeMachineTab} from 'src/types/timeMachine'
-import {
-  BuilderAggregateFunctionType,
-  GeoViewProperties,
-} from 'src/client/generatedRoutes'
+import {BuilderAggregateFunctionType} from 'src/client/generatedRoutes'
 
 interface QueryBuilderState {
   buckets: string[]

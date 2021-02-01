@@ -74,7 +74,7 @@ declare global {
       createTelegraf: typeof createTelegraf
       createToken: typeof createToken
       writeData: typeof writeData
-      wrapEnvironmentVariables: typeof wrapEnvironmentVariablesForCloud
+      wrapEnvironmentVariablesForCloud: typeof wrapEnvironmentVariablesForCloud
       wrapEnvironmentVariablesForOss: typeof wrapEnvironmentVariablesForOss
       createEndpoint: typeof createEndpoint
       createRule: typeof createRule

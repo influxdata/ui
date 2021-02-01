@@ -45,7 +45,7 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
         })
       })
       .then(() => cy.location('pathname').should('not.eq', '/signin'))
-      .then(() => cy.wrapEnvironmentVariables())
+      .then(() => cy.wrapEnvironmentVariablesForCloud())
   })
 }
 

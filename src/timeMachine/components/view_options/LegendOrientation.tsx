@@ -130,7 +130,7 @@ const LegendOrientation: FC<Props> = props => {
     onLegendColorizeRowsChange(value)
   }
 
-  const toggleStyle = {marginTop: 4}
+  const toggleStyle = {marginTop: 12}
 
   const toggleLabelStyle = {color: '#999dab'}
 
@@ -143,9 +143,9 @@ const LegendOrientation: FC<Props> = props => {
       direction={FlexDirection.Column}
       margin={ComponentSize.Large}
       alignItems={AlignItems.FlexStart}
-      style={{marginBottom: 12}}
+      style={{marginBottom: 18}}
     >
-      <p>Legend Orientation</p>
+      <InputLabel style={toggleLabelStyle}> Legend Orientation</InputLabel>
       <Toggle
         tabIndex={1}
         value="horizontal"
@@ -157,6 +157,7 @@ const LegendOrientation: FC<Props> = props => {
         size={ComponentSize.ExtraSmall}
         color={ComponentColor['Primary']}
         appearance={Appearance['Outline']}
+        style={{marginBottom: 6}}
       >
         <InputLabel
           active={legendOrientation === 'horizontal'}
@@ -190,31 +191,33 @@ const LegendOrientation: FC<Props> = props => {
   return (
     <Grid.Column>
       <h5 className="view-options--header">Legend</h5>
-      {orientationToggle}
-      <Form.Element label={`Opacity: ${percentLegendOpacity}%`}>
-        <RangeSlider
-          max={LEGEND_OPACITY_MAXIMUM}
-          min={LEGEND_OPACITY_MINIMUM}
-          step={LEGEND_OPACITY_STEP}
-          value={legendOpacity}
-          onChange={handleSetOpacity}
-          hideLabels={true}
-        />
-      </Form.Element>
-      <FlexBox
-        direction={FlexDirection.Row}
-        alignItems={AlignItems.Center}
-        margin={ComponentSize.Medium}
-        stretchToFitWidth={true}
-        style={toggleStyle}
-      >
-        <SlideToggle
-          active={colorizeRowsInput}
-          size={ComponentSize.ExtraSmall}
-          onChange={handleSetColorization}
-        />
-        <InputLabel style={toggleLabelStyle}>Colorize Rows</InputLabel>
-      </FlexBox>
+      <div style={{paddingLeft: 8, paddingRight: 8}}>
+        {orientationToggle}
+        <Form.Element label={`Opacity: ${percentLegendOpacity}%`}>
+          <RangeSlider
+            max={LEGEND_OPACITY_MAXIMUM}
+            min={LEGEND_OPACITY_MINIMUM}
+            step={LEGEND_OPACITY_STEP}
+            value={legendOpacity}
+            onChange={handleSetOpacity}
+            hideLabels={true}
+          />
+        </Form.Element>
+        <FlexBox
+          direction={FlexDirection.Row}
+          alignItems={AlignItems.Center}
+          margin={ComponentSize.Medium}
+          stretchToFitWidth={true}
+          style={toggleStyle}
+        >
+          <SlideToggle
+            active={colorizeRowsInput}
+            size={ComponentSize.ExtraSmall}
+            onChange={handleSetColorization}
+          />
+          <InputLabel style={toggleLabelStyle}>Colorize Rows</InputLabel>
+        </FlexBox>
+      </div>
     </Grid.Column>
   )
 }

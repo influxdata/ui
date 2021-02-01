@@ -175,7 +175,7 @@ jobs:
           name: Update the images we're using
           command: |
             docker system prune -f
-            cd ./monitor-ci && sudo rm -rf .persist/ && make update && make cypress-build;
+            cd ./monitor-ci && sudo rm -rf .persist/ && make update && make build NODE=ingress && make cypress-build;
             docker tag local/cypress:latest quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
@@ -231,7 +231,7 @@ jobs:
           name: Update the images we're using
           command: |
             docker system prune -f
-            cd ./monitor-ci && sudo rm -rf .persist/ && make update && make cypress-build;
+            cd ./monitor-ci && sudo rm -rf .persist/ && make update && make build NODE=ingress && make cypress-build;
             docker load < ~/docker-cache-oss/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - run:
@@ -280,7 +280,7 @@ jobs:
           name: Update the images we're using
           command: |
             docker system prune -f
-            cd ./monitor-ci && sudo rm -rf .persist/ && make update && make cypress-build;
+            cd ./monitor-ci && sudo rm -rf .persist/ && make update && make build NODE=ingress && make cypress-build;
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - run:
@@ -328,7 +328,7 @@ jobs:
           name: Update the images we're using
           command: |
             docker system prune -f
-            cd ./monitor-ci && sudo rm -rf .persist/ && make update && make cypress-build;
+            cd ./monitor-ci && sudo rm -rf .persist/ && make update && make build NODE=ingress && make cypress-build;
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - run:
@@ -439,7 +439,7 @@ jobs:
           name: Update the images we're using
           command: |
             docker system prune -f
-            cd ./monitor-ci && sudo rm -rf .persist/ && make update;
+            cd ./monitor-ci && sudo rm -rf .persist/ && make update && make build NODE=ingress && make build NODE=ingress;
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - run:

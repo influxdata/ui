@@ -18,6 +18,24 @@ import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 
+import {getStore} from 'src/store/configureStore'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+;(() => {
+  if (isFlagEnabled('persistRefresh')) {
+    const fromLocalStorageState = JSON.parse(
+      window.localStorage.getItem('timeMachineState')
+    )
+
+    if (!fromLocalStorageState) {
+      return null
+    }
+
+    const store = getStore()
+    // set the state in redux
+    store.dispatch(setActiveTimeMachine('de', fromLocalStorageState))
+  }
+})()
+
 const DataExplorer: FC = () => {
   const dispatch = useDispatch()
   const timeMachineState = useSelector(getActiveTimeMachine)
@@ -28,43 +46,24 @@ const DataExplorer: FC = () => {
     dispatch(setBuilderBucketIfExists(bucketQP))
   }, [dispatch])
 
-  const setReduxStateFromLocalStorage = useCallback(() => {
-    const fromLocalStorageState = JSON.parse(
-      window.localStorage.getItem('timeMachineState')
+  const setLocalStorageWithReduxState = useCallback(() => {
+    const {
+      queryBuilder: _a,
+      queryResults: _b,
+      ...timeMachineToSave
+    } = timeMachineState
+
+    window.localStorage.setItem(
+      'timeMachineState',
+      JSON.stringify(timeMachineToSave)
     )
-
-    if (!fromLocalStorageState) {
-      return null
-    }
-
-    // set the state in redux
-    dispatch(setActiveTimeMachine('de', fromLocalStorageState))
-  }, [dispatch])
-
-  const setLocalStorageWithReduxState = useCallback(
-    event => {
-      event.preventDefault()
-      window.localStorage.setItem(
-        'timeMachineState',
-        JSON.stringify(timeMachineState)
-      )
-      return undefined
-    },
-    [timeMachineState]
-  )
+  }, [timeMachineState])
 
   useEffect(() => {
-    window.onbeforeunload = setLocalStorageWithReduxState
-    setReduxStateFromLocalStorage()
-    return () => {
-      window.localStorage.clear()
-      window.removeEventListener('beforeunload', setLocalStorageWithReduxState)
+    if (isFlagEnabled('persistRefresh')) {
+      setLocalStorageWithReduxState()
     }
-  }, [
-    timeMachineState,
-    setLocalStorageWithReduxState,
-    setReduxStateFromLocalStorage,
-  ])
+  }, [timeMachineState, setLocalStorageWithReduxState])
 
   return (
     <ErrorBoundary>

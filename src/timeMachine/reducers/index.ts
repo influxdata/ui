@@ -172,11 +172,11 @@ const getTableProperties = (view, files) => {
   return properties
 }
 
-export type TimeMachinesAction = TimeMachineAction | GeoOptionsAction
+export type Action = TimeMachineAction | GeoOptionsAction
 
 export const timeMachinesReducer = (
   state: TimeMachinesState = initialState(),
-  action: TimeMachinesAction
+  action: Action
 ): TimeMachinesState => {
   if (action.type === 'SET_ACTIVE_TIME_MACHINE') {
     const {activeTimeMachineID, initialState} = action.payload

@@ -9,6 +9,7 @@ import {mocked} from 'ts-jest/utils'
 jest.mock('src/cloud/utils/reporting')
 jest.mock('src/resources/components/GetResources')
 jest.mock('src/shared/actions/notifications')
+jest.mock('src/buckets/actions/thunks.ts')
 
 jest.mock('src/templates/selectors/index.ts', () => {
   return {
@@ -25,14 +26,6 @@ jest.mock('src/templates/utils/index.ts', () => {
   return {
     getTemplateNameFromUrl: jest.fn(() => {
       return {name: 'fn-template', extension: 'ext', directory: 'directory'}
-    }),
-  }
-})
-
-jest.mock('src/buckets/actions/thunks.ts', () => {
-  return {
-    getBuckets: jest.fn(() => {
-      return jest.fn()
     }),
   }
 })

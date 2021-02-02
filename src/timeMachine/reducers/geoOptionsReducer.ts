@@ -8,7 +8,7 @@ import {
 } from 'src/timeMachine/actions/geoOptionsCreators'
 
 import {
-  TimeMachineAction,
+  TimeMachinesAction,
   TimeMachineState,
   setViewProperties,
 } from 'src/timeMachine/reducers'
@@ -67,7 +67,7 @@ export const defaultCircleMap = {
 
 export const geoOptionsReducer = (
   state: TimeMachineState,
-  action: TimeMachineAction
+  action: TimeMachinesAction
 ): TimeMachineState => {
   switch (action.type) {
     case SET_MAP_TYPE: {

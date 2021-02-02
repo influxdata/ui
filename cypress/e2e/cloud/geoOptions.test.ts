@@ -1,5 +1,5 @@
 import {Organization} from '../../../src/types'
-describe('DataExplorer', () => {
+describe('DataExplorer - Geo Map Type Customization Options', () => {
   beforeEach(() => {
     cy.flush()
 

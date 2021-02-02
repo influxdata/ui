@@ -38,7 +38,7 @@ import {
   Color,
 } from 'src/types'
 import {Action as GeoOptionsAction} from 'src/timeMachine/actions/geoOptionsCreators'
-import {Action} from 'src/timeMachine/actions'
+import {Action as TimeMachineAction} from 'src/timeMachine/actions'
 
 import {TimeMachineTab} from 'src/types/timeMachine'
 import {BuilderAggregateFunctionType} from 'src/client/generatedRoutes'
@@ -172,11 +172,11 @@ const getTableProperties = (view, files) => {
   return properties
 }
 
-export type TimeMachineAction = Action | GeoOptionsAction
+export type TimeMachinesAction = TimeMachineAction | GeoOptionsAction
 
 export const timeMachinesReducer = (
   state: TimeMachinesState = initialState(),
-  action: TimeMachineAction
+  action: TimeMachinesAction
 ): TimeMachinesState => {
   if (action.type === 'SET_ACTIVE_TIME_MACHINE') {
     const {activeTimeMachineID, initialState} = action.payload
@@ -243,7 +243,7 @@ export const timeMachinesReducer = (
 
 export const timeMachineReducer = (
   state: TimeMachineState,
-  action: TimeMachineAction
+  action: TimeMachinesAction
 ): TimeMachineState => {
   switch (action.type) {
     case 'SET_VIEW_NAME': {

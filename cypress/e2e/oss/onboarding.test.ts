@@ -76,13 +76,7 @@ describe('Onboarding', () => {
       .contains('Continue')
 
     // Input fields
-    cy.getByTestID('input-field--username').type(Cypress.env('username'))
-    cy.getByTestID('input-field--password').type(Cypress.env('password'))
-    cy.getByTestID('input-field--password-chk').type(Cypress.env('password'))
-    cy.getByTestID('input-field--orgname').type(Cypress.env('org'))
-    cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
-      cy.getByTestID('input-field--bucketname').type(defaultBucket)
-    })
+    cy.fillInOSSLoginFormWithDefaults()
 
     cy.getByTestID('next')
       .children('.cf-button--label')
@@ -127,14 +121,7 @@ describe('Onboarding', () => {
     cy.getByTestID('onboarding-get-started').click()
     cy.location('pathname').should('include', 'onboarding/1')
 
-    // Input fields
-    cy.getByTestID('input-field--username').type(Cypress.env('username'))
-    cy.getByTestID('input-field--password').type(Cypress.env('password'))
-    cy.getByTestID('input-field--password-chk').type(Cypress.env('password'))
-    cy.getByTestID('input-field--orgname').type(Cypress.env('org'))
-    cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
-      cy.getByTestID('input-field--bucketname').type(defaultBucket)
-    })
+    cy.fillInOSSLoginFormWithDefaults()
 
     cy.getByTestID('next').click()
 
@@ -166,15 +153,7 @@ describe('Onboarding', () => {
     cy.getByTestID('onboarding-get-started').click()
     cy.location('pathname').should('include', 'onboarding/1')
 
-    // Input fields
-    cy.getByTestID('input-field--username').type(Cypress.env('username'))
-    cy.getByTestID('input-field--password').type(Cypress.env('password'))
-    cy.getByTestID('input-field--password-chk').type(Cypress.env('password'))
-    cy.getByTestID('input-field--orgname').type(Cypress.env('org'))
-
-    cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
-      cy.getByTestID('input-field--bucketname').type(defaultBucket)
-    })
+    cy.fillInOSSLoginFormWithDefaults()
 
     cy.getByTestID('next').click()
 
@@ -197,14 +176,18 @@ describe('Onboarding', () => {
     // Continue
     cy.getByTestID('onboarding-get-started').click()
 
-    cy.getByTestID('input-field--username').type(Cypress.env('username'))
+    cy.get<string>('@defaultUser').then((defaultUser: string) => {
+      cy.getByTestID('input-field--username').type(defaultUser)
+    })
 
     cy.getByTestID('next')
       .should('be.disabled')
       .children('.cf-button--label')
       .contains('Continue')
 
-    cy.getByTestID('input-field--password').type(Cypress.env('password'))
+    cy.get<string>('@defaultPassword').then((defaultPassword: string) => {
+      cy.getByTestID('input-field--password').type(defaultPassword)
+    })
 
     cy.getByTestID('next')
       .should('be.disabled')
@@ -235,7 +218,9 @@ describe('Onboarding', () => {
       .children('.cf-button--label')
       .contains('Continue')
 
-    cy.getByTestID('input-field--orgname').type(Cypress.env('org'))
+    cy.get<string>('@defaultOrg').then((defaultOrg: string) => {
+      cy.getByTestID('input-field--orgname').type(defaultOrg)
+    })
     cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
       cy.getByTestID('input-field--bucketname').type(defaultBucket)
 
@@ -244,13 +229,14 @@ describe('Onboarding', () => {
         .children('.cf-button--label')
         .contains('Continue')
 
-      cy.getByTestID('input-field--password')
-        .clear()
-        .type(Cypress.env('password'))
-
-      cy.getByTestID('input-field--password-chk')
-        .clear()
-        .type(Cypress.env('password'))
+      cy.get<string>('@defaultPassword').then((defaultPassword: string) => {
+        cy.getByTestID('input-field--password')
+          .clear()
+          .type(defaultPassword)
+        cy.getByTestID('input-field--password-chk')
+          .clear()
+          .type(defaultPassword)
+      })
 
       cy.getByTestID('input-error').should('not.exist')
 
@@ -267,7 +253,9 @@ describe('Onboarding', () => {
         .children('.cf-button--label')
         .contains('Continue')
 
-      cy.getByTestID('input-field--username').type(Cypress.env('username'))
+      cy.get<string>('@defaultUser').then((defaultUser: string) => {
+        cy.getByTestID('input-field--username').type(defaultUser)
+      })
 
       cy.getByTestID('next')
         .should('be.enabled')
@@ -287,13 +275,15 @@ describe('Onboarding', () => {
         .children('.cf-button--label')
         .contains('Continue')
 
-      cy.getByTestID('input-field--password')
-        .clear()
-        .type(Cypress.env('password'))
+      cy.get<string>('@defaultPassword').then((defaultPassword: string) => {
+        cy.getByTestID('input-field--password')
+          .clear()
+          .type(defaultPassword)
 
-      cy.getByTestID('input-field--password-chk')
-        .clear()
-        .type(Cypress.env('password'))
+        cy.getByTestID('input-field--password-chk')
+          .clear()
+          .type(defaultPassword)
+      })
 
       cy.getByTestID('next')
         .should('be.enabled')
@@ -308,7 +298,9 @@ describe('Onboarding', () => {
         .children('.cf-button--label')
         .contains('Continue')
 
-      cy.getByTestID('input-field--orgname').type(Cypress.env('org'))
+      cy.get<string>('@defaultOrg').then((defaultOrg: string) => {
+        cy.getByTestID('input-field--orgname').type(defaultOrg)
+      })
 
       cy.getByTestID('next')
         .should('be.enabled')

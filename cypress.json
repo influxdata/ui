@@ -8,10 +8,5 @@
   "defaultCommandTimeout": 10000,
   "videoUploadOnPasses": false,
   "chromeWebSecurity": false,
-  "blockHosts": ["www.google-analytics.com", "www.googletagmanager.com"],
-  "env": {
-    "username": "dev_user",
-    "password": "CHECKMEOUTASUPERSECRETPASSWORD",
-    "org": "InfluxData"
-  }
+  "blockHosts": ["www.google-analytics.com", "www.googletagmanager.com"]
 }

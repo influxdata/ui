@@ -12,8 +12,14 @@ describe('The Login Page', () => {
   // NOTE: we aren't currently loading the login page
   // for dex
   it.skip('can login and logout', () => {
-    cy.get('#username').type(Cypress.env('username'))
-    cy.get('#password').type(Cypress.env('password'))
+    cy.get<string>('@defaultUser').then((defaultUser: string) => {
+      cy.get('#username').type(defaultUser)
+    })
+
+    cy.get<string>('@defaultPassword').then((defaultPassword: string) => {
+      cy.get('#password').type(defaultPassword)
+    })
+
     cy.get('#submit-login').click()
 
     cy.getByTestID('tree-nav').should('exist')
@@ -35,14 +41,18 @@ describe('The Login Page', () => {
   // for dex
   describe.skip('login failure', () => {
     it('if username is not present', () => {
-      cy.get('#password').type(Cypress.env('password'))
+      cy.get<string>('@defaultPassword').then((defaultPassword: string) => {
+        cy.get('#password').type(defaultPassword)
+      })
       cy.get('#submit-login').click()
 
       cy.getByTestID('notification-error').should('exist')
     })
 
     it('if password is not present', () => {
-      cy.get('#username').type(Cypress.env('username'))
+      cy.get<string>('@defaultUser').then((defaultUser: string) => {
+        cy.get('#username').type(defaultUser)
+      })
       cy.get('#submit-login').click()
 
       cy.getByTestID('notification-error').should('exist')
@@ -50,14 +60,18 @@ describe('The Login Page', () => {
 
     it('if username is incorrect', () => {
       cy.getByInputName('username').type('not-a-user')
-      cy.getByInputName('password').type(Cypress.env('password'))
+      cy.get<string>('@defaultPassword').then((defaultPassword: string) => {
+        cy.getByInputName('password').type(defaultPassword)
+      })
       cy.get('button[type=submit]').click()
 
       cy.getByTestID('notification-error').should('exist')
     })
 
     it('if password is incorrect', () => {
-      cy.getByInputName('username').type(Cypress.env('username'))
+      cy.get<string>('@defaultUser').then((defaultUser: string) => {
+        cy.getByInputName('username').type(defaultUser)
+      })
       cy.getByInputName('password').type('not-a-password')
       cy.get('button[type=submit]').click()
 

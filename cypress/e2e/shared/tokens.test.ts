@@ -347,15 +347,15 @@ describe('tokens', () => {
   })
 
   it('can do sorting', () => {
-    cy.getByTestID(`token-card ${Cypress.env('username')}'s Token`).within(
-      () => {
+    cy.get<string>('@defaultUser').then((defaultUser: string) => {
+      cy.getByTestID(`token-card ${defaultUser}'s Token`).within(() => {
         cy.getByTestID('context-menu').click()
 
         cy.getByTestID('delete-token')
           .contains('Delete')
           .click()
-      }
-    )
+      })
+    })
 
     cy.log('sort by Description (Asc)')
 

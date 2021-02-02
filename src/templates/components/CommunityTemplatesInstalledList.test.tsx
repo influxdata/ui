@@ -70,8 +70,8 @@ describe('the Community Templates installed List', () => {
     jest.clearAllMocks()
   })
 
-  describe('handling loading the template list', () => {
-    it('the page loads in empty list', () => {
+  describe('starting to load the template list page', () => {
+    it('loads an empty page when there are no templates', () => {
       setup()
       expect(screen.queryByText('Installed Templates')).not.toBeInTheDocument()
       expect(
@@ -80,8 +80,8 @@ describe('the Community Templates installed List', () => {
     })
   })
 
-  describe('handle deleting template from template list', () => {
-    it('the delete is succesful', async () => {
+  describe('the template delete process', () => {
+    it('user can delete a template from the template list', async () => {
       const {getByTitle, getByTestId, store} = setup()
 
       store.dispatch({
@@ -125,7 +125,7 @@ describe('the Community Templates installed List', () => {
       ).toBeVisible()
     })
 
-    it('the delete fails', async () => {
+    it('handles failures in the delete', async () => {
       mocked(event).mockImplementation(() => {
         throw new Error('fake error')
       })

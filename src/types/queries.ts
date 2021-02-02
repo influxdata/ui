@@ -4,6 +4,7 @@ export type SelectableTimeRangeLower =
   | 'now() - 5m'
   | 'now() - 15m'
   | 'now() - 1h'
+  | 'now() - 3h'
   | 'now() - 6h'
   | 'now() - 12h'
   | 'now() - 24h'

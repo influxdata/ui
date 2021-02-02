@@ -1,11 +1,14 @@
 // Libraries
 import React from 'react'
-import {shallow} from 'enzyme'
+import {screen} from '@testing-library/react'
 
 // Components
 import {VariableFormContext} from 'src/variables/components/VariableFormContext'
 
+import {renderWithReduxAndRouter} from 'src/mockState'
+
 jest.mock('src/shared/components/FluxMonacoEditor', () => () => null)
+const ref = React.createRef()
 
 const setup = (override?) => {
   const actions = {
@@ -28,19 +31,37 @@ const setup = (override?) => {
     onEditorClose: () => actions.clear(),
     ...override,
   }
-  // (gene: mstp): We are unable to mock mstp that this component depends on w/o enzyme
-  const wrapper = shallow<VariableFormContext>(
-    <VariableFormContext {...props} />
-  )
+  renderWithReduxAndRouter(<VariableFormContext {...props} ref={ref} />)
 
-  return {wrapper, actions}
+  return actions
 }
 
 describe('VariableFormContext', () => {
   it('should tell the store to clear on close', () => {
-    const {wrapper, actions} = setup()
+    // (gene: mstp): We are unable to mock mstp that this component depends on w/o enzyme
+    // because it is using selectors, so we are just going to mock these props manually
+    const actions = setup({
+      variables: {},
+      name: 'some name',
+      variableType: 'constant',
+      query: {
+        type: 'query',
+        values: {
+          query: '',
+          language: 'flux',
+        },
+      },
+      map: {
+        type: 'map',
+        values: {},
+      },
+      constant: {
+        type: 'constant',
+        values: [],
+      },
+    })
 
-    wrapper.instance()['handleHideOverlay']()
+    ref.current['handleHideOverlay']()
 
     expect(actions.clear.mock.calls.length).toBe(1)
   })

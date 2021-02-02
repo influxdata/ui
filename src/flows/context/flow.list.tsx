@@ -291,7 +291,7 @@ export const FlowListProvider: FC = ({children}) => {
         serialize,
         dispatch
       )
-      setFlows(_flows)
+      setFlows({..._flows})
       if (currentID && currentID.includes('local')) {
         // if we migrated the local currentID flow, reset currentID
         setCurrentID(Object.keys(_flows)[0])

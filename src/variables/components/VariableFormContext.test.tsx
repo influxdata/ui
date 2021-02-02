@@ -1,6 +1,5 @@
 // Libraries
 import React from 'react'
-import {screen} from '@testing-library/react'
 
 // Components
 import {VariableFormContext} from 'src/variables/components/VariableFormContext'

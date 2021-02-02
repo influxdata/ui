@@ -3,9 +3,7 @@ import React from 'react'
 import {screen} from '@testing-library/react'
 
 // Components
-import {Form} from '@influxdata/clockface'
 import {PluginConfigForm} from 'src/dataLoaders/components/collectorsWizard/configure/PluginConfigForm'
-import OnboardingButtons from 'src/onboarding/components/OnboardingButtons'
 
 // Constants
 import {telegrafPluginsInfo} from 'src/dataLoaders/constants/pluginConfigs'

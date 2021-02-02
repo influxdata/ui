@@ -3,7 +3,6 @@ import React from 'react'
 import {screen} from '@testing-library/react'
 
 // Components
-import {Input} from '@influxdata/clockface'
 import URIFormElement from 'src/shared/components/URIFormElement'
 
 import {renderWithReduxAndRouter} from 'src/mockState'

@@ -583,9 +583,12 @@ describe('DataExplorer', () => {
       cy.get<Organization>('@org').then(({id, name}) => {
         cy.createBucket(id, name, 'newBucket')
       })
-
-      cy.getByTestID('selector-list defbuck').should('be.visible')
-      cy.getByTestID('selector-list newBucket').should('be.visible')
+      cy.get<string>('@defaultBucketListSelector').then(
+        (defaultBucketListSelector: string) => {
+          cy.getByTestID(defaultBucketListSelector).should('be.visible')
+          cy.getByTestID('selector-list newBucket').should('be.visible')
+        }
+      )
     })
 
     it('can delete a second query', () => {
@@ -665,103 +668,109 @@ describe('DataExplorer', () => {
       })
 
       it('can view time-series data', () => {
-        cy.log('can switch between editor modes')
-        cy.getByTestID('selector-list _monitoring').should('be.visible')
-        cy.getByTestID('selector-list _monitoring').click()
+        cy.get<string>('@defaultBucketListSelector').then(
+          (defaultBucketListSelector: string) => {
+            cy.log('can switch between editor modes')
+            cy.getByTestID('selector-list _monitoring').should('be.visible')
+            cy.getByTestID('selector-list _monitoring').click()
 
-        cy.getByTestID('selector-list defbuck').should('be.visible')
-        cy.getByTestID('selector-list defbuck').click()
+            cy.getByTestID(defaultBucketListSelector).should('be.visible')
+            cy.getByTestID(defaultBucketListSelector).click()
 
-        cy.getByTestID('selector-list m').should('be.visible')
-        cy.getByTestID('selector-list m').clickAttached()
+            cy.getByTestID('selector-list m').should('be.visible')
+            cy.getByTestID('selector-list m').clickAttached()
 
-        cy.getByTestID('selector-list v').should('be.visible')
-        cy.getByTestID('selector-list v').clickAttached()
+            cy.getByTestID('selector-list v').should('be.visible')
+            cy.getByTestID('selector-list v').clickAttached()
 
-        cy.getByTestID('switch-to-script-editor').click()
-        cy.getByTestID('flux-editor').should('be.visible')
+            cy.getByTestID('switch-to-script-editor').click()
+            cy.getByTestID('flux-editor').should('be.visible')
 
-        cy.log('revert back to query builder mode (without confirmation)')
-        cy.getByTestID('switch-to-query-builder').click()
-        cy.getByTestID('query-builder').should('be.visible')
+            cy.log('revert back to query builder mode (without confirmation)')
+            cy.getByTestID('switch-to-query-builder').click()
+            cy.getByTestID('query-builder').should('be.visible')
 
-        cy.log('can revert back to query builder mode (with confirmation)')
-        cy.getByTestID('switch-to-script-editor')
-          .should('be.visible')
-          .click()
-        cy.getByTestID('flux--aggregate.rate--inject').click()
+            cy.log('can revert back to query builder mode (with confirmation)')
+            cy.getByTestID('switch-to-script-editor')
+              .should('be.visible')
+              .click()
+            cy.getByTestID('flux--aggregate.rate--inject').click()
 
-        cy.log('check to see if import is defaulted to the top')
-        cy.get('.view-line')
-          .first()
-          .contains('import')
+            cy.log('check to see if import is defaulted to the top')
+            cy.get('.view-line')
+              .first()
+              .contains('import')
 
-        cy.log('check to see if new aggregate rate is at the bottom')
-        cy.get('.view-line')
-          .last()
-          .contains('aggregate.')
-        cy.getByTestID('flux-editor').should('exist')
-        cy.getByTestID('flux-editor').within(() => {
-          cy.get('textarea').type('yoyoyoyoyo', {force: true})
-        })
+            cy.log('check to see if new aggregate rate is at the bottom')
+            cy.get('.view-line')
+              .last()
+              .contains('aggregate.')
+            cy.getByTestID('flux-editor').should('exist')
+            cy.getByTestID('flux-editor').within(() => {
+              cy.get('textarea').type('yoyoyoyoyo', {force: true})
+            })
 
-        cy.log('can over over flux functions')
-        cy.getByTestID('flux-docs--aggregateWindow').should('not.exist')
-        cy.getByTestID('flux--aggregateWindow').trigger('mouseover')
-        cy.getByTestID('flux-docs--aggregateWindow').should('exist')
+            cy.log('can over over flux functions')
+            cy.getByTestID('flux-docs--aggregateWindow').should('not.exist')
+            cy.getByTestID('flux--aggregateWindow').trigger('mouseover')
+            cy.getByTestID('flux-docs--aggregateWindow').should('exist')
 
-        cy.getByTestID('switch-query-builder-confirm--button').click()
+            cy.getByTestID('switch-query-builder-confirm--button').click()
 
-        cy.getByTestID(
-          'switch-query-builder-confirm--popover--contents'
-        ).within(() => {
-          cy.getByTestID('switch-query-builder-confirm--confirm-button').click()
-        })
+            cy.getByTestID(
+              'switch-query-builder-confirm--popover--contents'
+            ).within(() => {
+              cy.getByTestID(
+                'switch-query-builder-confirm--confirm-button'
+              ).click()
+            })
 
-        cy.getByTestID('query-builder').should('exist')
-        // build the query to return data from beforeEach
-        cy.getByTestID('selector-list _monitoring').should('be.visible')
-        cy.getByTestID('selector-list _monitoring').click()
+            cy.getByTestID('query-builder').should('exist')
+            // build the query to return data from beforeEach
+            cy.getByTestID('selector-list _monitoring').should('be.visible')
+            cy.getByTestID('selector-list _monitoring').click()
 
-        cy.getByTestID('selector-list defbuck').should('be.visible')
-        cy.getByTestID('selector-list defbuck').click()
+            cy.getByTestID(defaultBucketListSelector).should('be.visible')
+            cy.getByTestID(defaultBucketListSelector).click()
 
-        cy.getByTestID('selector-list m').should('be.visible')
-        cy.getByTestID('selector-list m').clickAttached()
+            cy.getByTestID('selector-list m').should('be.visible')
+            cy.getByTestID('selector-list m').clickAttached()
 
-        cy.getByTestID('selector-list v').should('be.visible')
-        cy.getByTestID('selector-list v').clickAttached()
+            cy.getByTestID('selector-list v').should('be.visible')
+            cy.getByTestID('selector-list v').clickAttached()
 
-        cy.getByTestID('selector-list tv1').clickAttached()
+            cy.getByTestID('selector-list tv1').clickAttached()
 
-        cy.getByTestID('selector-list last')
-          .scrollIntoView()
-          .should('be.visible')
-          .click({force: true})
+            cy.getByTestID('selector-list last')
+              .scrollIntoView()
+              .should('be.visible')
+              .click({force: true})
 
-        cy.getByTestID('time-machine-submit-button').click()
+            cy.getByTestID('time-machine-submit-button').click()
 
-        // cycle through all the visualizations of the data
-        VIS_TYPES.forEach(({type}) => {
-          if (type !== 'mosaic' && type !== 'band') {
-            // mosaic graph is behind feature flag
-            cy.getByTestID('view-type--dropdown').click()
-            cy.getByTestID(`view-type--${type}`).click()
-            cy.getByTestID(`vis-graphic--${type}`).should('exist')
-            if (type.includes('single-stat')) {
-              cy.getByTestID('single-stat--text').should(
-                'contain',
-                `${numLines}`
-              )
-            }
+            // cycle through all the visualizations of the data
+            VIS_TYPES.forEach(({type}) => {
+              if (type !== 'mosaic' && type !== 'band') {
+                // mosaic graph is behind feature flag
+                cy.getByTestID('view-type--dropdown').click()
+                cy.getByTestID(`view-type--${type}`).click()
+                cy.getByTestID(`vis-graphic--${type}`).should('exist')
+                if (type.includes('single-stat')) {
+                  cy.getByTestID('single-stat--text').should(
+                    'contain',
+                    `${numLines}`
+                  )
+                }
+              }
+            })
+
+            // view raw data table
+            cy.getByTestID('raw-data--toggle').click()
+            cy.getByTestID('raw-data-table').should('exist')
+            cy.getByTestID('raw-data--toggle').click()
+            cy.getByTestID('giraffe-axes').should('exist')
           }
-        })
-
-        // view raw data table
-        cy.getByTestID('raw-data--toggle').click()
-        cy.getByTestID('raw-data-table').should('exist')
-        cy.getByTestID('raw-data--toggle').click()
-        cy.getByTestID('giraffe-axes').should('exist')
+        )
       })
 
       it('can set min or max y-axis values', () => {
@@ -1028,8 +1037,10 @@ describe('DataExplorer', () => {
             .trigger('mousedown', {force: true})
             .trigger('mousemove', {clientY: 5000})
             .trigger('mouseup')
+            .then(() => {
+              cy.get(`[title="${numLines}"]`).should('be.visible')
+            })
         })
-        cy.get(`[title="${numLines}"]`).should('be.visible')
       })
     })
   })
@@ -1225,12 +1236,15 @@ describe('DataExplorer', () => {
         cy.get<Organization>('@org').then(({id, name}: Organization) => {
           cy.createBucket(id, name, bucketName)
         })
-
-        cy.getByTestID('selector-list defbuck').click()
-        cy.getByTestID('nav-item-data-explorer').click({force: true})
-        cy.getByTestID(`selector-list m`).click()
-        cy.getByTestID('save-query-as').click({force: true})
-        cy.get('[id="task"]').click()
+        cy.get<string>('@defaultBucketListSelector').then(
+          (defaultBucketListSelector: string) => {
+            cy.getByTestID(defaultBucketListSelector).click()
+            cy.getByTestID('nav-item-data-explorer').click({force: true})
+            cy.getByTestID(`selector-list m`).click()
+            cy.getByTestID('save-query-as').click({force: true})
+            cy.get('[id="task"]').click()
+          }
+        )
       })
 
       // TODO: enable when problem with switching cron/every is fixed
@@ -1287,14 +1301,16 @@ describe('DataExplorer', () => {
           .should('exist')
 
         cy.getByTestID('task-options-bucket-dropdown--button').click()
-        cy.getByTestID('dropdown-item')
-          .contains('defbuck')
-          .click()
-        cy.getByTestID('task-options-bucket-dropdown--button')
-          .contains('defbuck')
-          .should('exist')
+        cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
+          cy.getByTestID('dropdown-item')
+            .contains(defaultBucket)
+            .click()
+          cy.getByTestID('task-options-bucket-dropdown--button')
+            .contains(defaultBucket)
+            .should('exist')
 
-        cy.getByTestID('task-form-save').click()
+          cy.getByTestID('task-form-save').click()
+        })
       })
     })
 
@@ -1355,31 +1371,37 @@ describe('DataExplorer', () => {
     })
 
     it('should set the default bucket in the dropdown to the selected bucket', () => {
-      cy.get('.cf-overlay--dismiss').click()
-      cy.getByTestID('selector-list defbuck').click()
-      cy.getByTestID('delete-data-predicate')
-        .click()
-        .then(() => {
-          cy.getByTestID('dropdown--button').contains('defbuck')
+      cy.get<string>('@defaultBucketListSelector').then(
+        (defaultBucketListSelector: string) => {
           cy.get('.cf-overlay--dismiss').click()
-        })
-        .then(() => {
-          cy.getByTestID('selector-list _monitoring').click()
+          cy.getByTestID(defaultBucketListSelector).click()
           cy.getByTestID('delete-data-predicate')
             .click()
             .then(() => {
-              cy.getByTestID('dropdown--button').contains('_monitoring')
-              cy.get('.cf-overlay--dismiss').click()
+              cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
+                cy.getByTestID('dropdown--button').contains(defaultBucket)
+                cy.get('.cf-overlay--dismiss').click()
+              })
             })
-        })
-        .then(() => {
-          cy.getByTestID('selector-list _tasks').click()
-          cy.getByTestID('delete-data-predicate')
-            .click()
             .then(() => {
-              cy.getByTestID('dropdown--button').contains('_tasks')
+              cy.getByTestID('selector-list _monitoring').click()
+              cy.getByTestID('delete-data-predicate')
+                .click()
+                .then(() => {
+                  cy.getByTestID('dropdown--button').contains('_monitoring')
+                  cy.get('.cf-overlay--dismiss').click()
+                })
             })
-        })
+            .then(() => {
+              cy.getByTestID('selector-list _tasks').click()
+              cy.getByTestID('delete-data-predicate')
+                .click()
+                .then(() => {
+                  cy.getByTestID('dropdown--button').contains('_tasks')
+                })
+            })
+        }
+      )
     })
 
     it('closes the overlay upon a successful delete with predicate submission', () => {

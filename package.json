@@ -50,8 +50,9 @@
     "cy": "CYPRESS_baseUrl=http://localhost:9999 cypress open",
     "cy:dev": "source ../monitor-ci/.env && CYPRESS_baseUrl=https://kubernetes.docker.internal:$PORT_HTTPS cypress open --config testFiles='{cloud,shared}/**/*.*'",
     "cy:dev-oss": "source ../monitor-ci/.env && CYPRESS_baseUrl=https://kubernetes.docker.internal:$PORT_HTTPS cypress open --config testFiles='{oss,shared}/**/*.*'",
-    "generate": "oats https://raw.githubusercontent.com/influxdata/influxdb/master/http/swagger.yml > ./src/client/generatedRoutes.ts && yarn unity",
-    "unity": "oats ./src/client/unity.yml > ./src/client/unityRoutes.ts"
+    "generate": "oats https://raw.githubusercontent.com/influxdata/influxdb/master/http/swagger.yml > ./src/client/generatedRoutes.ts && yarn unity && yarn flows",
+    "unity": "oats ./src/client/swagger/unity.yml > ./src/client/unityRoutes.ts",
+    "flows": "oats ./src/client/swagger/flows.yml > ./src/client/flowsRoutes.ts"
   },
   "author": "",
   "devDependencies": {
@@ -144,7 +145,7 @@
   "dependencies": {
     "@influxdata/clockface": "^2.4.1",
     "@influxdata/flux": "^0.5.1",
-    "@influxdata/flux-lsp-browser": "^0.5.29",
+    "@influxdata/flux-lsp-browser": "^0.5.30",
     "@influxdata/giraffe": "^2.0.0",
     "@influxdata/influx": "0.5.5",
     "@influxdata/influxdb-templates": "0.9.0",

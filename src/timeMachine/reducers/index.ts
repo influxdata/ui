@@ -243,7 +243,7 @@ export const timeMachinesReducer = (
 
 export const timeMachineReducer = (
   state: TimeMachineState,
-  action: TimeMachinesAction
+  action: Action
 ): TimeMachineState => {
   switch (action.type) {
     case 'SET_VIEW_NAME': {

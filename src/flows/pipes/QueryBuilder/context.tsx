@@ -272,7 +272,6 @@ export const QueryBuilderProvider: FC = ({children}) => {
         values: {
           ...card.values,
           status: RemoteDataState.NotStarted,
-          selected: [],
         },
       }
     })

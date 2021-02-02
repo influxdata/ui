@@ -5,6 +5,7 @@ import React, {
   useContext,
   useState,
   useCallback,
+  useEffect,
 } from 'react'
 
 // Contexts
@@ -96,6 +97,10 @@ export const QueryBuilderProvider: FC = ({children}) => {
   const {flow} = useContext(FlowContext)
 
   const [cards, setCards] = useState(fromBuilderConfig(data.tags))
+
+  useEffect(() => {
+    setCards([getDefaultCard()])
+  }, [data.buckets[0]])
 
   const add = useCallback(() => {
     cards.push(getDefaultCard())
@@ -253,9 +258,26 @@ export const QueryBuilderProvider: FC = ({children}) => {
     }
 
     cards.splice(idx, 1)
-    setCards([...cards])
+    const newCards = cards.map((card, i) => {
+      if (i < idx) {
+        return card
+      }
 
-    update({tags: toBuilderConfig(cards)})
+      return {
+        ...card,
+        keys: {
+          ...card.keys,
+          status: RemoteDataState.NotStarted,
+        },
+        values: {
+          ...card.values,
+          status: RemoteDataState.NotStarted,
+        },
+      }
+    })
+    setCards(newCards)
+
+    update({tags: toBuilderConfig(newCards)})
   }
 
   const updater = (idx: number, card: Partial<QueryBuilderCard>): void => {

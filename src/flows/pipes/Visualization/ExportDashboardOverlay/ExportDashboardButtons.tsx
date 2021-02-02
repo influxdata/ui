@@ -10,6 +10,7 @@ import {
 import {
   ExportToDashboard,
   Context,
+  CREATE_CELL,
 } from 'src/flows/pipes/Visualization/ExportDashboardOverlay/context'
 import {PopupContext} from 'src/flows/context/popup'
 
@@ -116,12 +117,15 @@ const ExportDashboardButtons: FC = () => {
   }
 
   const onSubmit = (): void => {
-    const submitFunc =
-      activeTab === ExportToDashboard.Update ? onUpdate : onCreate
-    const formIsValid = validateForm()
-
-    if (formIsValid) {
-      submitFunc()
+    if (validateForm()) {
+      if (
+        activeTab === ExportToDashboard.Update &&
+        selectedCell?.id !== CREATE_CELL
+      ) {
+        onUpdate()
+      } else {
+        onCreate()
+      }
     }
   }
 

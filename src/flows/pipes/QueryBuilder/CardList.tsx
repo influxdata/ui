@@ -36,7 +36,7 @@ interface Props {
 }
 
 const Card: FC<Props> = ({idx}) => {
-  const {cards, update, remove, loadKeys, loadValues} = useContext(
+  const {cards, add, update, remove, loadKeys, loadValues} = useContext(
     QueryBuilderContext
   )
   const {data} = useContext(PipeContext)
@@ -73,8 +73,11 @@ const Card: FC<Props> = ({idx}) => {
         ...card.keys,
         selected: [val],
       },
+      values: {
+        ...card.values,
+        status: RemoteDataState.NotStarted,
+      },
     })
-    loadKeys(idx)
   }
 
   const valueSearch = (search: string) => {
@@ -105,6 +108,14 @@ const Card: FC<Props> = ({idx}) => {
         selected: _vals,
       },
     })
+
+    if (index === -1 && _vals.length === 1 && idx === cards.length - 1) {
+      add()
+    } else {
+      for (let ni = idx + 1; ni < cards.length; ni++) {
+        loadKeys(ni)
+      }
+    }
   }
 
   useEffect(() => {

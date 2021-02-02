@@ -38,256 +38,276 @@ describe('Checks', () => {
       .should('be.disabled')
       .and('not.contain', 'Group')
       .contains('Filter')
-    cy.getByTestID(`selector-list defbuck`)
-      .wait(1200)
-      .click()
+    cy.get<string>('@defaultBucketListSelector').then(
+      (defaultBucketListSelector: string) => {
+        cy.getByTestID(defaultBucketListSelector)
+          .wait(1200)
+          .click()
 
-    cy.log(
-      'Select measurement and field; assert checklist popover and save button'
+        cy.log(
+          'Select measurement and field; assert checklist popover and save button'
+        )
+        cy.get('.query-checklist--popover').should('be.visible')
+        cy.getByTestID('save-cell--button').should('be.disabled')
+        cy.getByTestID(`selector-list ${measurement}`).click()
+        cy.getByTestID(`selector-list ${field}`).click()
+        cy.get('.query-checklist--popover').should('be.visible')
+        cy.getByTestID('save-cell--button').should('be.disabled')
+
+        cy.log('Assert "Window Period" placeholder')
+        cy.get('.duration-input').within(() => {
+          cy.getByTitle('This input is disabled').should(
+            'have.value',
+            'auto (1m)'
+          )
+        })
+
+        cy.log(
+          'Navigate to "Configure Check" tab; add threshold condition; assert checklist popover and save button'
+        )
+        cy.getByTestID('checkeo--header alerting-tab').click()
+        cy.getByTestID('add-threshold-condition-WARN').click()
+        cy.get('.query-checklist--popover').should('not.exist')
+        cy.getByTestID('save-cell--button').should('be.enabled')
+
+        cy.log(
+          'Change "Schedule Every" parameter and assert its change in "Window Period" placeholder'
+        )
+        cy.getByTestID('schedule-check')
+          .clear()
+          .type('135s')
+        cy.getByTestID('select-group--option').click()
+        cy.get('.duration-input').within(() => {
+          cy.getByTitle('This input is disabled').should(
+            'have.value',
+            'auto (135s)'
+          )
+        })
+
+        cy.log('Name the check; save')
+        cy.getByTestID('overlay--container').within(() => {
+          cy.getByTestID('page-title')
+            .contains('Name this Check')
+            .click()
+          cy.getByTestID('renamable-page-title--input')
+            .clear()
+            .type('Threshold check test{enter}')
+        })
+        cy.getByTestID('save-cell--button').click()
+
+        cy.log('Assert the check card')
+        cy.getByTestID('check-card--name')
+          .contains('Threshold check test')
+          .should('exist')
+      }
     )
-    cy.get('.query-checklist--popover').should('be.visible')
-    cy.getByTestID('save-cell--button').should('be.disabled')
-    cy.getByTestID(`selector-list ${measurement}`).click()
-    cy.getByTestID(`selector-list ${field}`).click()
-    cy.get('.query-checklist--popover').should('be.visible')
-    cy.getByTestID('save-cell--button').should('be.disabled')
-
-    cy.log('Assert "Window Period" placeholder')
-    cy.get('.duration-input').within(() => {
-      cy.getByTitle('This input is disabled').should('have.value', 'auto (1m)')
-    })
-
-    cy.log(
-      'Navigate to "Configure Check" tab; add threshold condition; assert checklist popover and save button'
-    )
-    cy.getByTestID('checkeo--header alerting-tab').click()
-    cy.getByTestID('add-threshold-condition-WARN').click()
-    cy.get('.query-checklist--popover').should('not.exist')
-    cy.getByTestID('save-cell--button').should('be.enabled')
-
-    cy.log(
-      'Change "Schedule Every" parameter and assert its change in "Window Period" placeholder'
-    )
-    cy.getByTestID('schedule-check')
-      .clear()
-      .type('135s')
-    cy.getByTestID('select-group--option').click()
-    cy.get('.duration-input').within(() => {
-      cy.getByTitle('This input is disabled').should(
-        'have.value',
-        'auto (135s)'
-      )
-    })
-
-    cy.log('Name the check; save')
-    cy.getByTestID('overlay--container').within(() => {
-      cy.getByTestID('page-title')
-        .contains('Name this Check')
-        .click()
-      cy.getByTestID('renamable-page-title--input')
-        .clear()
-        .type('Threshold check test{enter}')
-    })
-    cy.getByTestID('save-cell--button').click()
-
-    cy.log('Assert the check card')
-    cy.getByTestID('check-card--name')
-      .contains('Threshold check test')
-      .should('exist')
   })
 
   // TODO(watts): resolve flakeyness caused by detached elements with: https://github.com/influxdata/ui/pull/515
   it.skip('can create and filter checks', () => {
-    cy.log('create first check')
-    cy.getByTestID('create-check').click()
-    cy.getByTestID('create-deadman-check').click()
+    cy.get<string>('@defaultBucketListSelector').then(
+      (defaultBucketListSelector: string) => {
+        cy.log('create first check')
+        cy.getByTestID('create-check').click()
+        cy.getByTestID('create-deadman-check').click()
 
-    cy.log('select measurement and field')
-    cy.intercept('POST', '/query', req => {
-      if (req.body.query.includes('_measurement')) {
-        req.alias = 'measurementQuery'
+        cy.log('select measurement and field')
+        cy.intercept('POST', '/query', req => {
+          if (req.body.query.includes('_measurement')) {
+            req.alias = 'measurementQuery'
+          }
+        })
+        cy.intercept('POST', '/query', req => {
+          if (req.body.query.includes('distinct(column: "_field")')) {
+            req.alias = 'fieldQuery'
+          }
+        })
+
+        cy.getByTestID(defaultBucketListSelector).click()
+        cy.wait('@measurementQuery')
+        cy.getByTestID(`selector-list ${measurement}`).should('be.visible')
+        cy.getByTestID(`selector-list ${measurement}`).click()
+        cy.wait('@fieldQuery')
+        cy.getByTestID(`selector-list ${field}`).should('be.visible')
+        cy.getByTestID(`selector-list ${field}`).click()
+
+        cy.log('name the check; save')
+        cy.getByTestID('overlay').within(() => {
+          cy.getByTestID('page-title')
+            .contains('Name this Check')
+            .click()
+          cy.getByTestID('renamable-page-title--input')
+            .clear()
+            .type('Alpha{enter}')
+        })
+        cy.getByTestID('save-cell--button').click()
+
+        cy.getByTestID('overlay').should('not.exist')
+        // bust the /query cache
+        cy.reload()
+        cy.intercept('POST', '/query', req => {
+          if (req.body.query.includes('_measurement')) {
+            req.alias = 'measurementQueryBeta'
+          }
+        })
+        cy.intercept('POST', '/query', req => {
+          if (req.body.query.includes('distinct(column: "_field")')) {
+            req.alias = 'fieldQueryBeta'
+          }
+        })
+
+        cy.log('create second check')
+        cy.getByTestID('create-check').click()
+        cy.getByTestID('create-deadman-check').click()
+
+        cy.log('select measurement and field')
+        cy.getByTestID(defaultBucketListSelector).should('be.visible')
+        cy.getByTestID(defaultBucketListSelector).click()
+        cy.wait('@measurementQueryBeta')
+        cy.getByTestID(`selector-list ${measurement}`).should('be.visible')
+        cy.getByTestID(`selector-list ${measurement}`).click()
+        cy.wait('@fieldQueryBeta')
+        cy.getByTestID(`selector-list ${field}`).should('be.visible')
+        cy.getByTestID(`selector-list ${field}`).click()
+
+        cy.log('name the check; save')
+        cy.getByTestID('overlay').within(() => {
+          cy.getByTestID('page-title')
+            .contains('Name this Check')
+            .click()
+          cy.getByTestID('renamable-page-title--input')
+            .clear()
+            .type('Beta{enter}')
+        })
+        cy.getByTestID('save-cell--button').click()
+
+        cy.log('assert the number of check cards')
+        cy.getByTestID('check-card').should('have.length', 2)
+
+        cy.log('filter checks')
+        cy.getByTestID('filter--input checks').type('Al')
+        cy.getByTestID('check-card--name')
+          .contains('Alpha')
+          .should('be.visible')
+        cy.getByTestID('check-card').should('have.length', 1)
+
+        cy.log('clear filter and assert the number of check cards again')
+        cy.getByTestID('filter--input checks').clear()
+        cy.getByTestID('check-card').should('have.length', 2)
       }
-    })
-    cy.intercept('POST', '/query', req => {
-      if (req.body.query.includes('distinct(column: "_field")')) {
-        req.alias = 'fieldQuery'
-      }
-    })
-    cy.getByTestID(`selector-list defbuck`).click()
-    cy.wait('@measurementQuery')
-    cy.getByTestID(`selector-list ${measurement}`).should('be.visible')
-    cy.getByTestID(`selector-list ${measurement}`).click()
-    cy.wait('@fieldQuery')
-    cy.getByTestID(`selector-list ${field}`).should('be.visible')
-    cy.getByTestID(`selector-list ${field}`).click()
-
-    cy.log('name the check; save')
-    cy.getByTestID('overlay').within(() => {
-      cy.getByTestID('page-title')
-        .contains('Name this Check')
-        .click()
-      cy.getByTestID('renamable-page-title--input')
-        .clear()
-        .type('Alpha{enter}')
-    })
-    cy.getByTestID('save-cell--button').click()
-
-    cy.getByTestID('overlay').should('not.exist')
-    // bust the /query cache
-    cy.reload()
-    cy.intercept('POST', '/query', req => {
-      if (req.body.query.includes('_measurement')) {
-        req.alias = 'measurementQueryBeta'
-      }
-    })
-    cy.intercept('POST', '/query', req => {
-      if (req.body.query.includes('distinct(column: "_field")')) {
-        req.alias = 'fieldQueryBeta'
-      }
-    })
-
-    cy.log('create second check')
-    cy.getByTestID('create-check').click()
-    cy.getByTestID('create-deadman-check').click()
-
-    cy.log('select measurement and field')
-    cy.getByTestID(`selector-list defbuck`).should('be.visible')
-    cy.getByTestID(`selector-list defbuck`).click()
-    cy.wait('@measurementQueryBeta')
-    cy.getByTestID(`selector-list ${measurement}`).should('be.visible')
-    cy.getByTestID(`selector-list ${measurement}`).click()
-    cy.wait('@fieldQueryBeta')
-    cy.getByTestID(`selector-list ${field}`).should('be.visible')
-    cy.getByTestID(`selector-list ${field}`).click()
-
-    cy.log('name the check; save')
-    cy.getByTestID('overlay').within(() => {
-      cy.getByTestID('page-title')
-        .contains('Name this Check')
-        .click()
-      cy.getByTestID('renamable-page-title--input')
-        .clear()
-        .type('Beta{enter}')
-    })
-    cy.getByTestID('save-cell--button').click()
-
-    cy.log('assert the number of check cards')
-    cy.getByTestID('check-card').should('have.length', 2)
-
-    cy.log('filter checks')
-    cy.getByTestID('filter--input checks').type('Al')
-    cy.getByTestID('check-card--name')
-      .contains('Alpha')
-      .should('be.visible')
-    cy.getByTestID('check-card').should('have.length', 1)
-
-    cy.log('clear filter and assert the number of check cards again')
-    cy.getByTestID('filter--input checks').clear()
-    cy.getByTestID('check-card').should('have.length', 2)
+    )
   })
 
   it('can validate a deadman check', () => {
-    // create deadman check
-    cy.getByTestID('create-check').click()
-    cy.getByTestID('create-deadman-check').click()
+    cy.get<string>('@defaultBucketListSelector').then(
+      (defaultBucketListSelector: string) => {
+        // create deadman check
+        cy.getByTestID('create-check').click()
+        cy.getByTestID('create-deadman-check').click()
 
-    // checklist popover and save button check
-    cy.get('.query-checklist--popover').should('be.visible')
-    cy.getByTestID('save-cell--button').should('be.disabled')
+        // checklist popover and save button check
+        cy.get('.query-checklist--popover').should('be.visible')
+        cy.getByTestID('save-cell--button').should('be.disabled')
 
-    // select measurement and field - checklist popover should disappear, save button should activate
-    cy.getByTestID(`selector-list defbuck`).click()
-    cy.getByTestID(`selector-list ${measurement}`).click()
-    cy.getByTestID('save-cell--button').should('be.disabled')
-    cy.getByTestID(`selector-list ${field}`).click()
-    cy.get('.query-checklist--popover').should('not.exist')
-    cy.getByTestID('save-cell--button').should('be.enabled')
+        // select measurement and field - checklist popover should disappear, save button should activate
+        cy.getByTestID(defaultBucketListSelector).click()
+        cy.getByTestID(`selector-list ${measurement}`).click()
+        cy.getByTestID('save-cell--button').should('be.disabled')
+        cy.getByTestID(`selector-list ${field}`).click()
+        cy.get('.query-checklist--popover').should('not.exist')
+        cy.getByTestID('save-cell--button').should('be.enabled')
 
-    // submit the graph
-    cy.getByTestID('empty-graph--no-queries')
-    cy.getByTestID('time-machine-submit-button').click()
-    cy.getByTestID('giraffe-axes').should('exist')
+        // submit the graph
+        cy.getByTestID('empty-graph--no-queries')
+        cy.getByTestID('time-machine-submit-button').click()
+        cy.getByTestID('giraffe-axes').should('exist')
 
-    // navigate to configure check tab
-    cy.getByTestID('checkeo--header alerting-tab').click()
+        // navigate to configure check tab
+        cy.getByTestID('checkeo--header alerting-tab').click()
 
-    // conditions inputs check
-    cy.getByTestID('builder-conditions')
-      .should('contain', 'Deadman')
-      .within(() => {
-        cy.getByTestID('duration-input')
-          .first()
-          .click()
-        cy.get('.duration-input--menu').should('exist')
-        cy.getByTestID('duration-input')
-          .first()
-          .clear()
-          .type('60s')
-
-        cy.getByTestID('builder-card--header').click()
-        cy.get('.duration-input--menu').should('not.exist')
-
-        cy.getByTestID('duration-input')
-          .last()
-          .click()
-        cy.get('.duration-input--menu').should('exist')
-        cy.getByTestID('duration-input')
-          .last()
-          .clear()
-          .type('660s')
-        cy.getByTestID('builder-card--header').click()
-        cy.get('.duration-input--menu').should('not.exist')
-
-        cy.getByTestID('check-levels--dropdown--button').click()
-        cy.getByTestID('dropdown-menu')
-          .should('be.visible')
+        // conditions inputs check
+        cy.getByTestID('builder-conditions')
+          .should('contain', 'Deadman')
           .within(() => {
-            cy.getByTestID('check-levels--dropdown-item OK').click()
+            cy.getByTestID('duration-input')
+              .first()
+              .click()
+            cy.get('.duration-input--menu').should('exist')
+            cy.getByTestID('duration-input')
+              .first()
+              .clear()
+              .type('60s')
+
+            cy.getByTestID('builder-card--header').click()
+            cy.get('.duration-input--menu').should('not.exist')
+
+            cy.getByTestID('duration-input')
+              .last()
+              .click()
+            cy.get('.duration-input--menu').should('exist')
+            cy.getByTestID('duration-input')
+              .last()
+              .clear()
+              .type('660s')
+            cy.getByTestID('builder-card--header').click()
+            cy.get('.duration-input--menu').should('not.exist')
+
+            cy.getByTestID('check-levels--dropdown--button').click()
+            cy.getByTestID('dropdown-menu')
+              .should('be.visible')
+              .within(() => {
+                cy.getByTestID('check-levels--dropdown-item OK').click()
+              })
+            cy.get('.color-dropdown--name').should('have.text', 'OK')
           })
-        cy.get('.color-dropdown--name').should('have.text', 'OK')
-      })
 
-    // name the check; save
-    cy.getByTestID('overlay').within(() => {
-      cy.getByTestID('page-title')
-        .contains('Name this Check')
-        .click()
-      cy.getByTestID('renamable-page-title--input')
-        .clear()
-        .type('Deadman check test{enter}')
-    })
+        // name the check; save
+        cy.getByTestID('overlay').within(() => {
+          cy.getByTestID('page-title')
+            .contains('Name this Check')
+            .click()
+          cy.getByTestID('renamable-page-title--input')
+            .clear()
+            .type('Deadman check test{enter}')
+        })
 
-    cy.getByTestID('save-cell--button').click()
+        cy.getByTestID('save-cell--button').click()
 
-    // assert the check card
-    cy.getByTestID('check-card--name')
-      .contains('Deadman check test')
-      .should('exist')
+        // assert the check card
+        cy.getByTestID('check-card--name')
+          .contains('Deadman check test')
+          .should('exist')
+      }
+    )
   })
 
   it('checks only allow numeric fields', () => {
-    // create deadman check
-    cy.getByTestID('create-check').click()
-    cy.getByTestID('create-deadman-check').click()
+    cy.get<string>('@defaultBucketListSelector').then(
+      (defaultBucketListSelector: string) => {
+        // create deadman check
+        cy.getByTestID('create-check').click()
+        cy.getByTestID('create-deadman-check').click()
 
-    // checklist popover and save button check
-    cy.get('.query-checklist--popover').should('be.visible')
-    cy.getByTestID('save-cell--button').should('be.disabled')
+        // checklist popover and save button check
+        cy.get('.query-checklist--popover').should('be.visible')
+        cy.getByTestID('save-cell--button').should('be.disabled')
 
-    // select measurement and field - checklist popover should disappear, save button should activate
-    cy.getByTestID(`selector-list defbuck`).click()
-    cy.getByTestID(`selector-list ${measurement}`).click()
-    cy.getByTestID('save-cell--button').should('be.disabled')
-    cy.getByTestID(`selector-list ${stringField}`).click()
-    cy.get('.query-checklist--popover').should('not.exist')
-    cy.getByTestID('save-cell--button').should('be.enabled')
+        // select measurement and field - checklist popover should disappear, save button should activate
+        cy.getByTestID(defaultBucketListSelector).click()
+        cy.getByTestID(`selector-list ${measurement}`).click()
+        cy.getByTestID('save-cell--button').should('be.disabled')
+        cy.getByTestID(`selector-list ${stringField}`).click()
+        cy.get('.query-checklist--popover').should('not.exist')
+        cy.getByTestID('save-cell--button').should('be.enabled')
 
-    // submit the graph
-    cy.getByTestID('empty-graph--no-queries')
-    cy.getByTestID('time-machine-submit-button').click()
+        // submit the graph
+        cy.getByTestID('empty-graph--no-queries')
+        cy.getByTestID('time-machine-submit-button').click()
 
-    // check for error message
-    cy.getByTestID('empty-graph--numeric').should('exist')
+        // check for error message
+        cy.getByTestID('empty-graph--numeric').should('exist')
+      }
+    )
   })
 
   describe('When a check does not exist', () => {
@@ -307,29 +327,33 @@ describe('Checks', () => {
 
   describe('Check should be viewable once created', () => {
     beforeEach(() => {
-      // creates a check before each iteration
-      // TODO: refactor into a request
-      cy.getByTestID('create-check').click()
-      cy.getByTestID('create-threshold-check').click()
-      cy.getByTestID(`selector-list defbuck`)
-        .wait(1200)
-        .click()
-      cy.getByTestID(`selector-list ${measurement}`).click()
-      cy.getByTestID('save-cell--button').should('be.disabled')
-      cy.getByTestID(`selector-list ${field}`).click()
-      cy.getByTestID('save-cell--button').should('be.disabled')
-      cy.getByTestID('checkeo--header alerting-tab').click()
-      cy.getByTestID('add-threshold-condition-WARN').click()
-      cy.getByTestID('input-field-WARN')
-        .clear()
-        .type('5s')
-      cy.getByTestID('add-threshold-condition-CRIT').click()
-      cy.getByTestID('input-field-CRIT')
-        .clear()
-        .type('0')
-      cy.getByTestID('save-cell--button').click()
-      cy.getByTestID('check-card').should('have.length', 1)
-      cy.getByTestID('notification-error').should('not.exist')
+      cy.get<string>('@defaultBucketListSelector').then(
+        (defaultBucketListSelector: string) => {
+          // creates a check before each iteration
+          // TODO: refactor into a request
+          cy.getByTestID('create-check').click()
+          cy.getByTestID('create-threshold-check').click()
+          cy.getByTestID(defaultBucketListSelector)
+            .wait(1200)
+            .click()
+          cy.getByTestID(`selector-list ${measurement}`).click()
+          cy.getByTestID('save-cell--button').should('be.disabled')
+          cy.getByTestID(`selector-list ${field}`).click()
+          cy.getByTestID('save-cell--button').should('be.disabled')
+          cy.getByTestID('checkeo--header alerting-tab').click()
+          cy.getByTestID('add-threshold-condition-WARN').click()
+          cy.getByTestID('input-field-WARN')
+            .clear()
+            .type('5s')
+          cy.getByTestID('add-threshold-condition-CRIT').click()
+          cy.getByTestID('input-field-CRIT')
+            .clear()
+            .type('0')
+          cy.getByTestID('save-cell--button').click()
+          cy.getByTestID('check-card').should('have.length', 1)
+          cy.getByTestID('notification-error').should('not.exist')
+        }
+      )
     })
 
     it('after check creation confirm history page has graph', () => {

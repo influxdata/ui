@@ -79,9 +79,12 @@ describe('Buckets', () => {
 
     // filter a bucket
     cy.getByTestID('search-widget').type('def')
-    cy.get('.cf-resource-card')
-      .should('have.length', 1)
-      .should('contain', 'defbuck')
+
+    cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
+      cy.get('.cf-resource-card')
+        .should('have.length', 1)
+        .should('contain', defaultBucket)
+    })
 
     // clear filter and assert all buckets are visible
     cy.getByTestID('search-widget').clear()

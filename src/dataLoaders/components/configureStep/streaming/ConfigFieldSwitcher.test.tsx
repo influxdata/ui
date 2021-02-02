@@ -1,18 +1,17 @@
 // Libraries
 import React from 'react'
-import {shallow, mount} from 'enzyme'
+import {screen} from '@testing-library/react'
 
 // Components
-import {Input, FormElement} from '@influxdata/clockface'
 import ConfigFieldSwitcher from 'src/dataLoaders/components/configureStep/streaming/ConfigFieldSwitcher'
-import ArrayFormElement from 'src/dataLoaders/components/configureStep/streaming/ArrayFormElement'
-import URIFormElement from 'src/shared/components/URIFormElement'
 
 // Types
 import {ConfigFieldType} from 'src/types'
 import {TelegrafPluginInputCpu} from '@influxdata/influx'
 
-const setup = (override = {}, shouldMount = false) => {
+import {renderWithReduxAndRouter} from 'src/mockState'
+
+const setup = (override = {}) => {
   const props = {
     fieldName: '',
     fieldType: ConfigFieldType.String,
@@ -27,107 +26,94 @@ const setup = (override = {}, shouldMount = false) => {
     ...override,
   }
 
-  const wrapper = shouldMount
-    ? mount(<ConfigFieldSwitcher {...props} />)
-    : shallow(<ConfigFieldSwitcher {...props} />)
-
-  return {wrapper}
+  renderWithReduxAndRouter(<ConfigFieldSwitcher {...props} />)
 }
 
 describe('Onboarding.Components.ConfigureStep.Streaming.ConfigFieldSwitcher', () => {
   describe('if type is string', () => {
-    it('renders an input', () => {
+    it('renders an input', async () => {
       const fieldName = 'yo'
       const fieldType = ConfigFieldType.String
-      const {wrapper} = setup({fieldName, fieldType})
+      setup({fieldName, fieldType})
 
-      const input = wrapper.find(Input)
+      const input = await screen.getByTestId('input-field')
 
-      expect(wrapper.exists()).toBe(true)
-      expect(input.exists()).toBe(true)
+      expect(input).toBeVisible()
     })
 
     describe('if not required', () => {
-      it('optional is displayed as help text', () => {
+      it('optional is displayed as help text', async () => {
         const fieldName = 'yo'
         const fieldType = ConfigFieldType.String
         const value = ''
-        const {wrapper} = setup({
+        setup({
           fieldName,
           fieldType,
           isRequired: false,
           value,
         })
 
-        const input = wrapper.find(Input)
-        const formElement = wrapper.find(FormElement)
+        const input = await screen.getByTestId('input-field')
+        const formElement = await screen.queryByTestId('form--help-text')
 
-        expect(wrapper.exists()).toBe(true)
-        expect(input.exists()).toBe(true)
-        expect(formElement.prop('helpText')).toBe('optional')
+        expect(input).toBeVisible()
+        expect(formElement.innerHTML).toBe('optional')
       })
     })
   })
 
   describe('if type is array', () => {
-    it('renders an array input', () => {
+    it('renders an array input', async () => {
       const fieldName = ['yo']
       const fieldType = ConfigFieldType.StringArray
       const value = []
-      const {wrapper} = setup({fieldName, fieldType, value}, true)
+      setup({fieldName, fieldType, value})
 
-      const input = wrapper.find(ArrayFormElement)
-      const formElement = wrapper.find(FormElement).first()
+      const input = await screen.getByTestId('input-field')
+      const formElement = await screen.queryByTestId('form--help-text')
 
-      expect(input.exists()).toBe(true)
-      expect(formElement.prop('helpText')).toBe('')
+      expect(input).toBeVisible()
+      expect(formElement).toBeNull()
     })
 
     describe('if not required', () => {
-      const fieldName = ['yo']
-      const value = []
-      const fieldType = ConfigFieldType.StringArray
-      const {wrapper} = setup(
-        {fieldName, fieldType, value, isRequired: false},
-        true
-      )
+      it('optional is displayed as help text', async () => {
+        const fieldName = ['yo']
+        const value = []
+        const fieldType = ConfigFieldType.StringArray
+        setup({fieldName, fieldType, value, isRequired: false})
 
-      const input = wrapper.find(ArrayFormElement)
-      const formElement = wrapper.find(FormElement).first()
+        const input = await screen.getByTestId('multiple-input')
+        const formElement = await screen.queryByTestId('form--help-text')
 
-      expect(wrapper.exists()).toBe(true)
-      expect(input.exists()).toBe(true)
-      expect(formElement.prop('helpText')).toBe('optional')
+        expect(input).toBeVisible()
+        expect(formElement.innerHTML).toBe('optional')
+      })
     })
   })
 
   describe('if type is uri', () => {
-    it('renders a uri input ', () => {
+    it('renders a uri input ', async () => {
       const fieldName = ['http://google.com']
       const fieldType = ConfigFieldType.Uri
       const value = ''
-      const {wrapper} = setup({fieldName, fieldType, value}, true)
+      setup({fieldName, fieldType, value})
 
-      const input = wrapper.find(URIFormElement)
+      const input = await screen.getByTestId('grid')
 
-      expect(wrapper.exists()).toBe(true)
-      expect(input.exists()).toBe(true)
+      expect(input).toBeVisible()
     })
 
     describe('if not required', () => {
-      it('optional is displayed as help text', () => {
+      it('optional is displayed as help text', async () => {
         const fieldName = ['http://google.com']
         const fieldType = ConfigFieldType.Uri
         const value = ''
-        const {wrapper} = setup(
-          {fieldName, fieldType, value, isRequired: false},
-          true
-        )
+        setup({fieldName, fieldType, value, isRequired: false})
 
-        const input = wrapper.find(URIFormElement)
+        const input = await screen.getByTestId('grid')
 
-        expect(wrapper.exists()).toBe(true)
-        expect(input.exists()).toBe(true)
+        expect(input).toBeVisible()
       })
     })
   })

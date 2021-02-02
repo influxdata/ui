@@ -1,12 +1,14 @@
 // Libraries
 import React from 'react'
-import {shallow} from 'enzyme'
+import {screen} from '@testing-library/react'
 
 // Components
 import ScraperList from 'src/scrapers/components/ScraperList'
 
 // Constants
 import {scraperTargets} from 'mocks/dummyData'
+
+import {renderWithReduxAndRouter} from 'src/mockState'
 
 const setup = (override?) => {
   const props = {
@@ -17,16 +19,15 @@ const setup = (override?) => {
     ...override,
   }
 
-  const wrapper = shallow(<ScraperList {...props} />)
-
-  return {wrapper}
+  renderWithReduxAndRouter(<ScraperList {...props} />)
 }
 
 describe('ScraperList', () => {
   describe('rendering', () => {
-    it('renders', () => {
-      const {wrapper} = setup()
-      expect(wrapper.exists()).toBe(true)
+    it('renders', async () => {
+      setup()
+      const elm = await screen.getByTestId('resource-list')
+      expect(elm).toBeVisible()
     })
   })
 })

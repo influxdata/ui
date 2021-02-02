@@ -23,7 +23,7 @@ export interface Props {
 class ConnectionInformation extends PureComponent<Props> {
   public render() {
     return (
-      <div>
+      <div data-testid="connection-information">
         <h4 className={`wizard-step--text-state ${this.className}`}>
           {this.header}
         </h4>

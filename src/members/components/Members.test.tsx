@@ -1,7 +1,7 @@
 // Libraries
 import React from 'react'
 import {screen} from '@testing-library/react'
-3
+
 // Components
 import MemberList from 'src/members/components/MemberList'
 

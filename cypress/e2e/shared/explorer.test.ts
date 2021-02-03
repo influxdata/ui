@@ -665,6 +665,10 @@ describe('DataExplorer', () => {
       })
 
       it('can view time-series data', () => {
+        cy.window().then(win => {
+          win.influx.set('persistRefresh', true)
+        })
+
         cy.log('can switch between editor modes')
         cy.getByTestID('selector-list _monitoring').should('be.visible')
         cy.getByTestID('selector-list _monitoring').click()
@@ -762,6 +766,16 @@ describe('DataExplorer', () => {
         cy.getByTestID('raw-data-table').should('exist')
         cy.getByTestID('raw-data--toggle').click()
         cy.getByTestID('giraffe-axes').should('exist')
+
+        cy.reload()
+
+        cy.wait(2000)
+
+        cy.getByTestID('selector-list defbuck').should('be.visible')
+
+        cy.getByTestID('selector-list m').should('be.visible')
+
+        cy.getByTestID('selector-list v').should('be.visible')
       })
 
       it('can set min or max y-axis values', () => {

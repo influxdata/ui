@@ -23,6 +23,7 @@ export const OSS_FLAGS = {
   'load-data-flux-sources': false,
   'load-data-integrations': false,
   'notification-endpoint-telegram': false,
+  'molly-first': false,
 }
 
 export const CLOUD_FLAGS = {
@@ -48,6 +49,7 @@ export const CLOUD_FLAGS = {
   'load-data-integrations': false,
   'notification-endpoint-telegram': false,
   unity: false,
+  'molly-first': false,
 }
 
 export const activeFlags = (state: AppState): FlagMap => {

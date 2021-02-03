@@ -504,7 +504,7 @@ export const flush = () => {
   // cy.request('/debug/flush').then(response => {
   //   expect(response.status).to.eq(200)
   // })
-  cy.log("flush would go here")
+  cy.log('flush would go here')
 }
 
 export const lines = (numLines = 3) => {

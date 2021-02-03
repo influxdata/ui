@@ -1,6 +1,6 @@
 export interface Annotation {
-  stopValue: string
-  startValue: string
+  stopValue: number
+  startValue: number
   summary: string
   stickers?: any
   stream?: string

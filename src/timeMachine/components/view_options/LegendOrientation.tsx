@@ -49,8 +49,10 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
-const HORIZONTAL = 'horizontal'
-const VERTICAL = 'vertical'
+enum OrientationDirection {
+ HORIZONTAL = 'horizontal',
+ VERTICAL = 'vertical'
+}
 
 /**
  *  The LegendOrientation Component consists of three properties:
@@ -88,9 +90,9 @@ const LegendOrientation: FC<Props> = props => {
   const getOrientation = threshold => {
     switch (threshold) {
       case LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL:
-        return HORIZONTAL
+        return OrientationDirection.HORIZONTAL
       case LEGEND_ORIENTATION_THRESHOLD_VERTICAL:
-        return VERTICAL
+        return OrientationDirection.VERTICAL
       default:
         return LEGEND_ORIENTATION_THRESHOLD_DEFAULT
     }
@@ -105,9 +107,9 @@ const LegendOrientation: FC<Props> = props => {
     return null
   }
 
-  const handleSetOrientation = (value: string): void => {
+  const handleSetOrientation = (value: OrientationDirection): void => {
     let threshold = LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL
-    if (value === VERTICAL) {
+    if (value === OrientationDirection.VERTICAL) {
       threshold = LEGEND_ORIENTATION_THRESHOLD_VERTICAL
     }
     setLegendOrientation(value)
@@ -151,8 +153,8 @@ const LegendOrientation: FC<Props> = props => {
         value="horizontal"
         id="horizontal-legend-orientation"
         name="horizontal"
-        checked={legendOrientation === HORIZONTAL}
-        onChange={() => handleSetOrientation(HORIZONTAL)}
+        checked={legendOrientation === OrientationDirection.HORIZONTAL}
+        onChange={() => handleSetOrientation(OrientationDirection.HORIZONTAL)}
         type={InputToggleType.Radio}
         size={ComponentSize.ExtraSmall}
         color={ComponentColor['Primary']}
@@ -160,7 +162,7 @@ const LegendOrientation: FC<Props> = props => {
         style={{marginBottom: 6}}
       >
         <InputLabel
-          active={legendOrientation === 'horizontal'}
+          active={legendOrientation === OrientationDirection.HORIZONTAL}
           htmlFor="horizontal-legend-orientation"
         >
           Horizontal
@@ -171,15 +173,15 @@ const LegendOrientation: FC<Props> = props => {
         value="vertical"
         id="vertical-legend-orientation"
         name="vertical"
-        checked={legendOrientation === VERTICAL}
-        onChange={() => handleSetOrientation(VERTICAL)}
+        checked={legendOrientation === OrientationDirection.VERTICAL}
+        onChange={() => handleSetOrientation(OrientationDirection.VERTICAL)}
         type={InputToggleType.Radio}
         size={ComponentSize.ExtraSmall}
         color={ComponentColor['Primary']}
         appearance={Appearance['Outline']}
       >
         <InputLabel
-          active={legendOrientation === 'vertical'}
+          active={legendOrientation === OrientationDirection.VERTICAL}
           htmlFor="vertical-legend-orientation"
         >
           Vertical

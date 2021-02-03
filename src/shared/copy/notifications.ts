@@ -955,7 +955,7 @@ export const communityTemplateInstallSucceeded = (
 })
 
 export const communityTemplateInstallFailed = (
-  errorMessage: string
+  errorMessage: string = ''
 ): Notification => ({
   ...defaultErrorNotification,
   duration: INDEFINITE,

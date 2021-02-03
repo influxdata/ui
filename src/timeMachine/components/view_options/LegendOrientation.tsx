@@ -157,8 +157,8 @@ const LegendOrientation: FC<Props> = props => {
         onChange={() => handleSetOrientation(OrientationDirection.HORIZONTAL)}
         type={InputToggleType.Radio}
         size={ComponentSize.ExtraSmall}
-        color={ComponentColor['Primary']}
-        appearance={Appearance['Outline']}
+        color={ComponentColor.Primary}
+        appearance={Appearance.Outline}
         style={{marginBottom: 6}}
       >
         <InputLabel
@@ -177,8 +177,8 @@ const LegendOrientation: FC<Props> = props => {
         onChange={() => handleSetOrientation(OrientationDirection.VERTICAL)}
         type={InputToggleType.Radio}
         size={ComponentSize.ExtraSmall}
-        color={ComponentColor['Primary']}
-        appearance={Appearance['Outline']}
+        color={ComponentColor.Primary}
+        appearance={Appearance.Outline}
       >
         <InputLabel
           active={legendOrientation === OrientationDirection.VERTICAL}

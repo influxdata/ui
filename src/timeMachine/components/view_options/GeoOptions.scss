@@ -1,0 +1,15 @@
+.mapTypeOptions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.allowPanAndZoom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+}
+
+.allowPanZoomInput {
+  left: 20px;
+  justify-self: end;
+}

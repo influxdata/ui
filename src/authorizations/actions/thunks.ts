@@ -108,8 +108,8 @@ export const createAuthorization = (auth: Authorization) => async (
     dispatch(addAuthorization(newAuth))
     dispatch(notify(authorizationCreateSuccess()))
   } catch (error) {
-    console.error(error.message)
-    dispatch(notify(authorizationCreateFailed()))
+    console.error(error.data.message)
+    dispatch(notify(authorizationCreateFailed(error.data.message)))
     throw error
   }
 }

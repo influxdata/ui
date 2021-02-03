@@ -1,6 +1,6 @@
 export interface Annotation {
-  end: string
-  start: string
+  end: number
+  start: number
   summary: string
   stickers?: any
   stream?: string
@@ -14,14 +14,14 @@ export interface AnnotationStream {
 
 export interface GetAnnotationPayload {
   stream?: string
-  start?: string
-  end?: string
+  start?: number
+  end?: number
   stickers?: any
 }
 
 export interface DeleteAnnotation {
   stream: string
-  start: string
-  end: string
+  start: number
+  end: number
   stickers?: any
 }

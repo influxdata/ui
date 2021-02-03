@@ -22,7 +22,19 @@ import {formatAnnotationQueryString} from 'src/annotations/utils/formatQueryStri
 export const writeAnnotation = async (
   annotations: Annotation[]
 ): Promise<Annotation[]> => {
-  const res = await axios.post(url, annotations)
+  // we need to convert the annotation object's start and end time fields to be
+  // string types so they can be parsed in the backend.
+  const annotationsRequestConverted = annotations.map(annotation => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
+    annotation.start = new Date(annotation.start).toISOString()
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
+    annotation.end = new Date(annotation.end).toISOString()
+    return annotation
+  })
+
+  const res = await axios.post(url, annotationsRequestConverted)
 
   if (res.status >= 300) {
     throw new Error(res.data?.message)

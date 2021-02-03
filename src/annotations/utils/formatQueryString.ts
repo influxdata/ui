@@ -8,11 +8,14 @@ export const formatAnnotationQueryString = (
   const getAnnotationParams = new URLSearchParams({})
 
   if (annotation.start) {
-    getAnnotationParams.append('start', annotation.start)
+    getAnnotationParams.append(
+      'start',
+      new Date(annotation.start).toISOString()
+    )
   }
 
   if (annotation.end) {
-    getAnnotationParams.append('end', annotation.end)
+    getAnnotationParams.append('end', new Date(annotation.end).toISOString())
   }
 
   if (annotation?.stream) {

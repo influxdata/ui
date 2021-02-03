@@ -230,7 +230,7 @@ const XYPlot: FC<Props> = ({
 
   if (isFlagEnabled('annotations')) {
     const doubleClickHandler = plotInteraction => {
-      const annotationTime = new Date(plotInteraction.valueX).toISOString()
+      const annotationTime = new Date(plotInteraction.valueX).getTime()
       writeAnnotation([
         {
           summary: 'hi',

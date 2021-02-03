@@ -17,8 +17,8 @@ describe('annotations api calls', () => {
       const annotationResponse = [
         {
           summary: 'GO PACK GO',
-          start: Date.now().toString(),
-          end: Date.now().toString(),
+          start: Date.now(),
+          end: Date.now(),
           stream: 'Lambeau Field',
         },
       ]
@@ -38,8 +38,8 @@ describe('annotations api calls', () => {
       const annotationResponse = [
         {
           summary: 'GO PACK GO',
-          start: Date.now().toString(),
-          end: Date.now().toString(),
+          start: Date.now(),
+          end: Date.now(),
           stream: 'Lambeau Field',
         },
       ]
@@ -83,8 +83,8 @@ describe('annotations api calls', () => {
         Promise.resolve({data: [lambeau]})
       )
       const response = await getAnnotation({
-        start: Date.now().toString(),
-        end: Date.now().toString(),
+        start: Date.now(),
+        end: Date.now(),
         stream: 'Lambeau Field',
       })
 
@@ -93,8 +93,8 @@ describe('annotations api calls', () => {
 
     it('handles an error and returns the error message', async () => {
       const annotation = {
-        start: Date.now().toString(),
-        end: Date.now().toString(),
+        start: Date.now(),
+        end: Date.now(),
         stream: 'Lambeau Field',
       }
       const message = 'OOPS YOU DONE MESSED UP SON'
@@ -110,14 +110,14 @@ describe('annotations api calls', () => {
   describe('PUT - annotation update api calls', () => {
     const oldAnnotation = {
       stream: 'default',
-      start: Date.now().toString(),
-      end: Date.now().toString(),
+      start: Date.now(),
+      end: Date.now(),
     }
 
     const newAnnotation = {
       stream: 'boogey',
-      start: Date.now().toString(),
-      end: Date.now().toString(),
+      start: Date.now(),
+      end: Date.now(),
       message: 'This is a message',
       summary: 'Palpatine did nothing wrong',
     }
@@ -135,8 +135,8 @@ describe('annotations api calls', () => {
   describe('DELETE = annotation delete api calls', () => {
     const toDelete = {
       stream: 'default',
-      start: Date.now().toString(),
-      end: Date.now().toString(),
+      start: Date.now(),
+      end: Date.now(),
     }
 
     it('returns a 204 upon successful deletion of annotation', async () => {

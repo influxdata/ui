@@ -6,18 +6,18 @@ const mockAnnotations = [
     annotations: [
       {
         summary: 'hi',
-        end: '2021-01-21T00:05:51Z',
-        start: '2021-01-21T00:05:51Z',
+        end: new Date('2021-01-21T00:05:51Z').getTime(),
+        start: new Date('2021-01-21T00:05:51Z').getTime(),
       },
       {
         summary: 'yep',
-        end: '2021-01-21T00:07:10Z',
-        start: '2021-01-21T00:07:10Z',
+        end: new Date('2021-01-21T00:07:10Z').getTime(),
+        start: new Date('2021-01-21T00:07:10Z').getTime(),
       },
       {
         summary: 'sure, why not',
-        end: '2021-01-21T00:08:11Z',
-        start: '2021-01-21T00:08:11Z',
+        end: new Date('2021-01-21T00:08:11Z').getTime(),
+        start: new Date('2021-01-21T00:08:11Z').getTime(),
       },
     ],
   },
@@ -35,18 +35,18 @@ describe('the annotations reducer', () => {
         default: [
           {
             summary: 'hi',
-            end: '2021-01-21T00:05:51Z',
-            start: '2021-01-21T00:05:51Z',
+            end: new Date('2021-01-21T00:05:51Z').getTime(),
+            start: new Date('2021-01-21T00:05:51Z').getTime(),
           },
           {
             summary: 'yep',
-            end: '2021-01-21T00:07:10Z',
-            start: '2021-01-21T00:07:10Z',
+            end: new Date('2021-01-21T00:07:10Z').getTime(),
+            start: new Date('2021-01-21T00:07:10Z').getTime(),
           },
           {
             summary: 'sure, why not',
-            end: '2021-01-21T00:08:11Z',
-            start: '2021-01-21T00:08:11Z',
+            end: new Date('2021-01-21T00:08:11Z').getTime(),
+            start: new Date('2021-01-21T00:08:11Z').getTime(),
           },
         ],
       },

@@ -18,42 +18,42 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
   \*/
   return cy.setupUser().then(response => {
     // const route = Cypress.env('inkind') ? '/' : '/api/v2/signin'
-    cy.wrapEnvironmentVariablesForCloud().then(() => {
-      cy.visit('/')
-        .then(() => {
-          cy.get<string>('@defaultUser').then((defaultUser: string) => {
-            const username = Cypress._.get(
-              response,
-              'body.user.name',
-              defaultUser
-            )
-            cy.get('#login').type(username)
-          })
-        })
-        .then(() => {
-          cy.get<string>('@defaultPassword')
-            .then((defaultPassword: string) => {
-              cy.get('#password').type(defaultPassword)
-            })
-            .then(() => cy.get('#submit-login').click())
-            .then(() => {
-              cy.get('body').then($body => {
-                /**
-                 * we are conditionally rendering this test case since it's only
-                 * relevant to CLOUD tests in order to click the `Grant Access` button
-                 * that's rendered by Dex in the CLOUD development environment.
-                 *
-                 * We are using this conditional test based on the following doc suggestions:
-                 * https://docs.cypress.io/guides/core-concepts/conditional-testing.html#Element-existence
-                 **/
-                if ($body.find('.theme-btn--success').length) {
-                  cy.get('.theme-btn--success').click()
-                }
-              })
-            })
-            .then(() => cy.location('pathname').should('not.eq', '/signin'))
-        })
-    })
+    wrapDefaultUser().then(() => wrapDefaultPassword())
+        .then(() =>
+            cy.visit('/')
+                .then(() => {
+                  cy.get<string>('@defaultUser').then((defaultUser: string) => {
+                    const username = Cypress._.get(
+                        response,
+                        'body.user.name',
+                        defaultUser
+                    )
+                    cy.get('#login').type(username)
+                  })
+                })
+                .then(() => {
+                  cy.get<string>('@defaultPassword')
+                      .then((defaultPassword: string) => {
+                        cy.get('#password').type(defaultPassword)
+                      })
+                      .then(() => cy.get('#submit-login').click())
+                      .then(() => {
+                        cy.get('body').then($body => {
+                          /**
+                           * we are conditionally rendering this test case since it's only
+                           * relevant to CLOUD tests in order to click the `Grant Access` button
+                           * that's rendered by Dex in the CLOUD development environment.
+                           *
+                           * We are using this conditional test based on the following doc suggestions:
+                           * https://docs.cypress.io/guides/core-concepts/conditional-testing.html#Element-existence
+                           **/
+                          if ($body.find('.theme-btn--success').length) {
+                            cy.get('.theme-btn--success').click()
+                          }
+                        })
+                      })
+                      .then(() => cy.location('pathname').should('not.eq', '/signin'))
+                }).then(() => wrapEnvironmentVariablesForCloud()))
   })
 }
 
@@ -81,8 +81,6 @@ export const wrapEnvironmentVariablesForCloud = (): Cypress.Chainable<Cypress.Re
         )
         cy.wrap(bucket).as('bucket')
         wrapDefaultBucket()
-          .then(() => wrapDefaultUser())
-          .then(() => wrapDefaultPassword())
       })
     })
 }
@@ -500,11 +498,9 @@ export const setupUser = (): Cypress.Chainable<Cypress.Response> => {
 }
 
 export const flush = () => {
-  // want to see what happens if i do this.  will probably revert the change but i'm curious
-  // cy.request('/debug/flush').then(response => {
-  //   expect(response.status).to.eq(200)
-  // })
-  cy.log('flush would go here')
+  cy.request('/debug/flush').then(response => {
+    expect(response.status).to.eq(200)
+  })
 }
 
 export const lines = (numLines = 3) => {

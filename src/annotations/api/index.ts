@@ -28,11 +28,11 @@ export const writeAnnotation = async (
     throw new Error(res.data?.message)
   }
 
-  const [{start, end, summary, message, stickers, stream}] = res.data
+  const [{startValue, stopValue, summary, message, stickers, stream}] = res.data
   return [
     {
-      startValue: start,
-      stopValue: end,
+      startValue,
+      stopValue,
       summary,
       message,
       stickers,
@@ -84,10 +84,10 @@ export const updateAnnotation = async (
     throw new Error(res.data?.message)
   }
 
-  const {start, end, summary, message, stickers, stream} = res.data
+  const {startValue, stopValue, summary, message, stickers, stream} = res.data
   return {
-    startValue: start,
-    stopValue: end,
+    startValue,
+    stopValue,
     summary,
     message,
     stickers,

@@ -24,7 +24,6 @@ describe('URIFormElement', () => {
 
   it('renders', async () => {
     const elm = await screen.getByTestId('input-field')
-    // const input = wrapper.find(Input)
     expect(elm).toBeVisible()
   })
 })

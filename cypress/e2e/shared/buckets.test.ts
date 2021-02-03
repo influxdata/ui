@@ -8,6 +8,10 @@ describe('Buckets', () => {
       cy.get('@org').then(({id}: Organization) =>
         cy.fixture('routes').then(({orgs, buckets}) => {
           cy.visit(`${orgs}/${id}${buckets}`)
+          cy.window().then(win => {
+            win.influx.set('csvUploader', true)
+            cy.getByTestID('tree-nav')
+          })
         })
       )
     })
@@ -413,6 +417,75 @@ describe('Buckets', () => {
       )
       cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
         cy.getByTestID('bucket-name').should('contain', defaultBucket)
+      })
+    })
+  })
+
+  describe('upload csv', function() {
+    it('can write a properly annotated csv', () => {
+      // Navigate to csv uploader
+      cy.get('@org').then(({id: orgID}: Organization) => {
+        cy.fixture('routes').then(({orgs, buckets}) => {
+          cy.get('@bucket').then(({id: bucketID}: Bucket) => {
+            cy.visit(`${orgs}/${orgID}${buckets}/${bucketID}/csv-uploader/new`)
+            cy.location('pathname').should(
+              'contain',
+              `${orgs}/${orgID}${buckets}/${bucketID}/csv-uploader/new`
+            )
+          })
+
+          // wait for animation to complete
+          cy.wait(2000)
+
+          // Upload the file
+          const csv = 'good-csv.csv'
+          cy.fixture(csv, 'base64')
+            .then(Cypress.Blob.base64StringToBlob)
+            .then(blob => {
+              const type = 'plain/text'
+              const testFile = new File([blob], csv, {type})
+              const event = {dataTransfer: {files: [testFile]}, force: true}
+              cy.getByTestID('drag-and-drop--input')
+                .trigger('dragover', event)
+                .trigger('drop', event)
+            })
+
+          cy.getByTestID('csv-uploader--success')
+        })
+      })
+    })
+
+    it('fails to write improperly formatted csv', () => {
+      // Navigate to csv uploader
+      cy.get('@org').then(({id: orgID}: Organization) => {
+        cy.fixture('routes').then(({orgs, buckets}) => {
+          cy.get('@bucket').then(({id: bucketID}: Bucket) => {
+            cy.visit(`${orgs}/${orgID}${buckets}/${bucketID}/csv-uploader/new`)
+            cy.location('pathname').should(
+              'contain',
+              `${orgs}/${orgID}${buckets}/${bucketID}/csv-uploader/new`
+            )
+          })
+
+          // wait for animation to complete
+          cy.wait(2000)
+
+          // Upload the file
+          const csv = 'missing-column-csv.csv'
+          cy.fixture(csv, 'base64')
+            .then(Cypress.Blob.base64StringToBlob)
+            .then(blob => {
+              const type = 'plain/text'
+              const testFile = new File([blob], csv, {type})
+              const event = {dataTransfer: {files: [testFile]}, force: true}
+              cy.getByTestID('drag-and-drop--input')
+                .trigger('dragover', event)
+                .trigger('drop', event)
+            })
+
+          cy.getByTestID('csv-uploader--error')
+          cy.getByTestID('notification-error').should('be.visible')
+        })
       })
     })
   })

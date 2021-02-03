@@ -3,7 +3,7 @@ import {SparkleSpinner} from '@influxdata/clockface'
 import {RemoteDataState} from 'src/types'
 
 const CsvUploaderSuccess = () => (
-  <div className="line-protocol--spinner">
+  <div className="line-protocol--spinner" data-testid="csv-uploader--success">
     <p
       data-testid="line-protocol--status"
       className="line-protocol--status done"

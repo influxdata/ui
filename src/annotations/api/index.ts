@@ -31,8 +31,8 @@ export const writeAnnotation = async (
   const [{start, end, summary, message, stickers, stream}] = res.data
   return [
     {
-      start,
-      end,
+      startValue: start,
+      stopValue: end,
       summary,
       message,
       stickers,
@@ -86,8 +86,8 @@ export const updateAnnotation = async (
 
   const {start, end, summary, message, stickers, stream} = res.data
   return {
-    start,
-    end,
+    startValue: start,
+    stopValue: end,
     summary,
     message,
     stickers,

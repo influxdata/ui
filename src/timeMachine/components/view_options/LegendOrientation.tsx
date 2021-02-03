@@ -50,8 +50,8 @@ type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
 enum OrientationDirection {
- HORIZONTAL = 'horizontal',
- VERTICAL = 'vertical'
+  HORIZONTAL = 'horizontal',
+  VERTICAL = 'vertical',
 }
 
 /**

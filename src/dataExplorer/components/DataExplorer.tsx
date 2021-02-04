@@ -21,19 +21,20 @@ import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 import {getStore} from 'src/store/configureStore'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 ;(() => {
-  if (isFlagEnabled('persistRefresh')) {
-    const fromLocalStorageState = JSON.parse(
-      window.localStorage.getItem('timeMachineState')
-    )
-
-    if (!fromLocalStorageState) {
-      return null
-    }
-
-    const store = getStore()
-    // set the state in redux
-    store.dispatch(setActiveTimeMachine('de', fromLocalStorageState))
+  if (!isFlagEnabled('persistRefresh')) {
+    return
   }
+  const fromLocalStorageState = JSON.parse(
+    window.localStorage.getItem('timeMachineState')
+  )
+
+  if (!fromLocalStorageState) {
+    return null
+  }
+
+  const store = getStore()
+  // set the state in redux
+  store.dispatch(setActiveTimeMachine('de', fromLocalStorageState))
 })()
 
 const DataExplorer: FC = () => {

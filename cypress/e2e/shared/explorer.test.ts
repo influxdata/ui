@@ -667,7 +667,7 @@ describe('DataExplorer', () => {
         cy.writeData(lines(numLines))
       })
 
-      it('can view time-series data', () => {
+      it.only('can view time-series data', () => {
         cy.get<string>('@defaultBucketListSelector').then(
           (defaultBucketListSelector: string) => {
             cy.window().then(win => {
@@ -778,10 +778,22 @@ describe('DataExplorer', () => {
             cy.wait(2000)
 
             cy.getByTestID('selector-list defbuck').should('be.visible')
+            cy.getByTestID('selector-list defbuck').should(
+              'have.class',
+              'cf-list-item__active'
+            )
 
             cy.getByTestID('selector-list m').should('be.visible')
+            cy.getByTestID('selector-list m').should(
+              'have.class',
+              'cf-list-item__active'
+            )
 
             cy.getByTestID('selector-list v').should('be.visible')
+            cy.getByTestID('selector-list v').should(
+              'have.class',
+              'cf-list-item__active'
+            )
           }
         )
       })

@@ -166,16 +166,17 @@ describe('The Query Builder', () => {
         .contains('group')
         .click()
 
-      const groupableColums = []
+      const groupableColumns: string[] = []
 
       cy.getByTestID('builder-card')
         .last()
         .then($lastBuilderCard => {
           $lastBuilderCard.find('.cf-list-item--text').each((index, $item) => {
-            groupableColums.push($item.innerHTML)
+            expect($item.innerHTML).to.be.a('string')
+            groupableColumns.push($item.innerHTML)
           })
 
-          expect(groupableColums).to.eql([
+          expect(groupableColumns).to.eql([
             '_start',
             '_stop',
             '_time',

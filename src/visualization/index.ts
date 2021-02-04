@@ -2,13 +2,13 @@ import {FunctionComponent, ComponentClass} from 'react'
 import {ViewProperties, Theme, TimeZone, TimeRange} from 'src/types'
 import {FromFluxResult} from '@influxdata/giraffe'
 
-export interface VisOptionProps {
+export interface VisualizationOptionProps {
   properties: ViewProperties
   results: FromFluxResult
   update: (obj: any) => void
 }
 
-export interface VisProps {
+export interface VisualizationProps {
   properties: ViewProperties
   result: FromFluxResult
   theme?: Theme
@@ -16,30 +16,40 @@ export interface VisProps {
   timeRange?: TimeRange
 }
 
-export interface VisTypeRegistration {
+export interface Visualization {
   type: string // a unique string that identifies a visualization
   name: string // the name that shows up in the dropdown
   graphic: JSX.Element // the icon that shows up in the dropdown
-  component?: FunctionComponent<VisProps> | ComponentClass<VisProps> // the view component for rendering the interface
-  disabled?: boolean // if you should show it or not
+  component?:
+    | FunctionComponent<VisualizationProps>
+    | ComponentClass<VisualizationProps> // the view component for rendering the interface
+  disabled?: boolean // if you should show it or not, takes precidence over feature flagging
   featureFlag?: string // designates a flag that should enable the panel type
   initial: ViewProperties // the default state
-  options?: FunctionComponent<VisOptionProps> // the view component for rendering the interface
+  options?: FunctionComponent<VisualizationOptionProps> // the view component for rendering the interface
 }
 
-interface VisTypeRegistrationMap {
-  [key: string]: VisTypeRegistration
+interface Visualizations {
+  [visualizationType: string]: Visualization
 }
 
-export const TYPE_DEFINITIONS: VisTypeRegistrationMap = {}
+export const SUPPORTED_VISUALIZATIONS: Visualizations = {}
 
-const context = require.context('./types', true, /index\.(ts|tsx)$/)
-context.keys().forEach(key => {
-  const module = context(key)
-  module.default((def: VisTypeRegistration) => {
-    TYPE_DEFINITIONS[def.type] = def
+const visualizationDefintionContext = require.context(
+  './types',
+  true,
+  /index\.(ts|tsx)$/
+)
+visualizationDefintionContext
+  .keys()
+  .forEach(visualizationDefinitionIndexFile => {
+    const visualizationDefinitionModule = visualizationDefintionContext(
+      visualizationDefinitionIndexFile
+    )
+    visualizationDefinitionModule.default((def: Visualization) => {
+      SUPPORTED_VISUALIZATIONS[def.type] = def
+    })
   })
-})
 
 export {default as View} from 'src/visualization/components/View'
 export {default as ViewOptions} from 'src/visualization/components/ViewOptions'

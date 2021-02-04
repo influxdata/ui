@@ -28,11 +28,11 @@ import LegendOrientation from 'src/visualization/components/internal/LegendOrien
 import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksGenerator'
 import Checkbox from 'src/shared/components/Checkbox'
 import {XYViewProperties} from 'src/types'
-import {VisOptionProps} from 'src/visualization'
+import {VisualizationOptionProps} from 'src/visualization'
 
 const {BASE_2, BASE_10} = AXES_SCALE_OPTIONS
 
-interface Props extends VisOptionProps {
+interface Props extends VisualizationOptionProps {
   properties: XYViewProperties
 }
 

@@ -23,9 +23,9 @@ import {GIRAFFE_COLOR_SCHEMES} from 'src/shared/constants'
 
 import {defaultXColumn, defaultYColumn} from 'src/shared/utils/vis'
 import {ScatterViewProperties} from 'src/types'
-import {VisOptionProps} from 'src/visualization'
+import {VisualizationOptionProps} from 'src/visualization'
 
-interface Props extends VisOptionProps {
+interface Props extends VisualizationOptionProps {
   properties: ScatterViewProperties
 }
 

@@ -17,7 +17,11 @@ import {ViewType, RemoteDataState} from 'src/types'
 import {AppSettingContext} from 'src/flows/context/app'
 import {PipeContext} from 'src/flows/context/pipe'
 
-import {TYPE_DEFINITIONS, View, ViewTypeDropdown} from 'src/visualization'
+import {
+  SUPPORTED_VISUALIZATIONS,
+  View,
+  ViewTypeDropdown,
+} from 'src/visualization'
 
 const TestFlux: FC<PipeProp> = ({Context}) => {
   const {timeZone} = useContext(AppSettingContext)
@@ -60,7 +64,7 @@ const TestFlux: FC<PipeProp> = ({Context}) => {
 
   const updateType = (type: ViewType) => {
     update({
-      properties: TYPE_DEFINITIONS[type].initial,
+      properties: SUPPORTED_VISUALIZATIONS[type].initial,
     })
   }
 

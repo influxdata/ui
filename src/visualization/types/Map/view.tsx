@@ -4,9 +4,9 @@ import {Plot} from '@influxdata/giraffe'
 
 // Types
 import {GeoViewProperties} from 'src/types'
-import {VisProps} from 'src/visualization'
+import {VisualizationProps} from 'src/visualization'
 
-interface Props extends VisProps {
+interface Props extends VisualizationProps {
   properties: GeoViewProperties
 }
 

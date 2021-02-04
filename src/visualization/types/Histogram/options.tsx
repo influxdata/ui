@@ -19,10 +19,10 @@ import {defaultXColumn} from 'src/shared/utils/vis'
 import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
 import LegendOrientation from 'src/visualization/components/internal/LegendOrientation'
 import {HistogramViewProperties} from 'src/types'
-import {VisOptionProps} from 'src/visualization'
+import {VisualizationOptionProps} from 'src/visualization'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 
-interface Props extends VisOptionProps {
+interface Props extends VisualizationOptionProps {
   properties: HistogramViewProperties
 }
 

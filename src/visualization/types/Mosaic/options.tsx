@@ -21,9 +21,9 @@ import {defaultXColumn, mosaicYColumn} from 'src/shared/utils/vis'
 
 // Types
 import {MosaicViewProperties, Color} from 'src/types'
-import {VisOptionProps} from 'src/visualization'
+import {VisualizationOptionProps} from 'src/visualization'
 
-interface Props extends VisOptionProps {
+interface Props extends VisualizationOptionProps {
   properties: MosaicViewProperties
 }
 

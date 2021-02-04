@@ -19,9 +19,9 @@ import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
 
 import {SingleStatViewProperties, Color} from 'src/types'
-import {VisOptionProps} from 'src/visualization'
+import {VisualizationOptionProps} from 'src/visualization'
 
-interface Props extends VisOptionProps {
+interface Props extends VisualizationOptionProps {
   properties: SingleStatViewProperties
 }
 

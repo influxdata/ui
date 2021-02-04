@@ -1,17 +1,24 @@
 import React, {FC, createElement} from 'react'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
-import {VisOptionProps, TYPE_DEFINITIONS} from 'src/visualization'
+import {
+  VisualizationOptionProps,
+  SUPPORTED_VISUALIZATIONS,
+} from 'src/visualization'
 
-const ViewOptions: FC<VisOptionProps> = ({properties, results, update}) => {
-  if (!TYPE_DEFINITIONS[properties.type].options) {
+const ViewOptions: FC<VisualizationOptionProps> = ({
+  properties,
+  results,
+  update,
+}) => {
+  if (!SUPPORTED_VISUALIZATIONS[properties.type].options) {
     return
   }
 
   return (
     <ErrorBoundary>
       <div className="view-options">
-        {createElement(TYPE_DEFINITIONS[properties.type].options, {
+        {createElement(SUPPORTED_VISUALIZATIONS[properties.type].options, {
           properties: properties,
           results,
           update: update,

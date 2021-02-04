@@ -26,9 +26,9 @@ import {INVALID_DATA_COPY} from 'src/visualization/constants'
 
 // Types
 import {MosaicViewProperties} from 'src/types'
-import {VisProps} from 'src/visualization'
+import {VisualizationProps} from 'src/visualization'
 
-interface Props extends VisProps {
+interface Props extends VisualizationProps {
   properties: MosaicViewProperties
 }
 

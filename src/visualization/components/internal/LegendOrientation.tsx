@@ -21,7 +21,7 @@ import {
 } from '@influxdata/clockface'
 
 // Types
-import {VisOptionProps} from 'src/visualization'
+import {VisualizationOptionProps} from 'src/visualization'
 import {
   BandViewProperties,
   XYViewProperties,
@@ -39,7 +39,7 @@ import {
   LEGEND_OPACITY_STEP,
 } from 'src/visualization/constants'
 
-interface Props extends VisOptionProps {
+interface Props extends VisualizationOptionProps {
   properties:
     | BandViewProperties
     | XYViewProperties

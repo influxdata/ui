@@ -38,9 +38,9 @@ import {
 
 // Types
 import {BandViewProperties} from 'src/types'
-import {VisProps} from 'src/visualization'
+import {VisualizationProps} from 'src/visualization'
 
-interface Props extends VisProps {
+interface Props extends VisualizationProps {
   properties: BandViewProperties
 }
 

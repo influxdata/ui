@@ -25,9 +25,9 @@ import {INVALID_DATA_COPY} from 'src/visualization/constants'
 
 // Types
 import {HeatmapViewProperties} from 'src/types'
-import {VisProps} from 'src/visualization'
+import {VisualizationProps} from 'src/visualization'
 
-interface Props extends VisProps {
+interface Props extends VisualizationProps {
   properties: HeatmapViewProperties
 }
 

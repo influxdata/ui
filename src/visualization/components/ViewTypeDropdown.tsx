@@ -1,5 +1,5 @@
 import React, {FC} from 'react'
-import {TYPE_DEFINITIONS} from 'src/visualization'
+import {SUPPORTED_VISUALIZATIONS} from 'src/visualization'
 
 // Components
 import {Dropdown, DropdownMenuTheme} from '@influxdata/clockface'
@@ -14,7 +14,7 @@ export interface Props {
 }
 
 const ViewTypeDropdown: FC<Props> = ({viewType, onUpdateType}) => {
-  const items = Object.values(TYPE_DEFINITIONS)
+  const items = Object.values(SUPPORTED_VISUALIZATIONS)
     .filter(def => !def.disabled)
     .filter(def => !def.featureFlag || isFlagEnabled(def.featureFlag))
     .sort((a, b) => a.name.localeCompare(b.name))
@@ -47,10 +47,10 @@ const ViewTypeDropdown: FC<Props> = ({viewType, onUpdateType}) => {
           }
         >
           <div className="view-type-dropdown--graphic">
-            {TYPE_DEFINITIONS[viewType]?.graphic}
+            {SUPPORTED_VISUALIZATIONS[viewType]?.graphic}
           </div>
           <div className="view-type-dropdown--name">
-            {TYPE_DEFINITIONS[viewType]?.name}
+            {SUPPORTED_VISUALIZATIONS[viewType]?.name}
           </div>
         </Dropdown.Button>
       )}

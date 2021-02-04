@@ -11,7 +11,7 @@ import {Columns, Form, Grid, SelectGroup} from '@influxdata/clockface'
 
 // Types
 import {ButtonShape} from '@influxdata/clockface'
-import {VisOptionProps} from 'src/visualization'
+import {VisualizationOptionProps} from 'src/visualization'
 import {
   BandViewProperties,
   XYViewProperties,
@@ -29,7 +29,7 @@ const getGenerateAxisTicksOptionsNames = (axisName: string) => [
   `${axisName.toLowerCase()}TickStep`,
 ]
 
-interface Props extends VisOptionProps {
+interface Props extends VisualizationOptionProps {
   properties:
     | BandViewProperties
     | XYViewProperties

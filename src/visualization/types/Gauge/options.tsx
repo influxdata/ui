@@ -24,9 +24,9 @@ import {
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 
 import {GaugeViewProperties} from 'src/types'
-import {VisOptionProps} from 'src/visualization'
+import {VisualizationOptionProps} from 'src/visualization'
 
-interface Props extends VisOptionProps {
+interface Props extends VisualizationOptionProps {
   properties: GaugeViewProperties
 }
 

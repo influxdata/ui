@@ -29,14 +29,14 @@ import LegendOrientation from 'src/visualization/components/internal/LegendOrien
 import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksGenerator'
 
 import {BandViewProperties} from 'src/types'
-import {VisOptionProps} from 'src/visualization'
+import {VisualizationOptionProps} from 'src/visualization'
 
 const {BASE_2, BASE_10} = AXES_SCALE_OPTIONS
 const UPPER_COLUMN_PLACEHOLDER = `Please enter upper column's function name`
 const MAIN_COLUMN_PLACEHOLDER = `Please enter main column's function name`
 const LOWER_COLUMN_PLACEHOLDER = `Please enter lower column's function name`
 
-interface Props extends VisOptionProps {
+interface Props extends VisualizationOptionProps {
   properties: BandViewProperties
 }
 

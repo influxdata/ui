@@ -8,11 +8,11 @@ import {formatStatValue} from 'src/visualization/utils/formatStatValue'
 
 // Types
 import {SingleStatViewProperties} from 'src/types/dashboards'
-import {VisProps} from 'src/visualization'
+import {VisualizationProps} from 'src/visualization'
 
 import './style.scss'
 
-interface Props extends VisProps {
+interface Props extends VisualizationProps {
   properties: SingleStatViewProperties
 }
 

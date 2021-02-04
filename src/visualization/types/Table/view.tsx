@@ -12,7 +12,7 @@ import {tableFromFluxResult} from 'src/shared/parsing/flux/response'
 
 // Types
 import {TableViewProperties} from 'src/types'
-import {VisProps} from 'src/visualization'
+import {VisualizationProps} from 'src/visualization'
 import {
   ASCENDING,
   DESCENDING,
@@ -20,7 +20,7 @@ import {
   KEYS_I_HATE,
 } from './constants'
 
-interface Props extends VisProps {
+interface Props extends VisualizationProps {
   properties: TableViewProperties
 }
 

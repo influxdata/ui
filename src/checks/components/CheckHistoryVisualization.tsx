@@ -3,7 +3,7 @@ import React, {FC, useContext} from 'react'
 
 // Components
 import TimeSeries from 'src/shared/components/TimeSeries'
-import {View, TYPE_DEFINITIONS} from 'src/visualization'
+import {View, SUPPORTED_VISUALIZATIONS} from 'src/visualization'
 import {CheckContext} from 'src/checks/utils/context'
 
 // Types
@@ -14,7 +14,7 @@ interface Props {
 }
 
 const CheckHistoryVisualization: FC<Props> = ({timeZone}) => {
-  const properties = TYPE_DEFINITIONS['check'].initial
+  const properties = SUPPORTED_VISUALIZATIONS['check'].initial
 
   // NOTE: this is lazy, but i'm hoping we get rid of checks pretty soon
   // in favor of the new alerts interface (alex)

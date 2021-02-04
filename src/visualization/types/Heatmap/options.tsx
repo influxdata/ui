@@ -26,7 +26,7 @@ import LegendOrientation from 'src/visualization/components/internal/LegendOrien
 import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksGenerator'
 
 import {HeatmapViewProperties} from 'src/types'
-import {VisOptionProps} from 'src/visualization'
+import {VisualizationOptionProps} from 'src/visualization'
 
 const HEATMAP_COLOR_SCHEMES = [
   {name: 'Magma', colors: MAGMA},
@@ -35,7 +35,7 @@ const HEATMAP_COLOR_SCHEMES = [
   {name: 'Plasma', colors: PLASMA},
 ]
 
-interface Props extends VisOptionProps {
+interface Props extends VisualizationOptionProps {
   properties: HeatmapViewProperties
 }
 

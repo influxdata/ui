@@ -37,11 +37,11 @@ import Checkbox from 'src/shared/components/Checkbox'
 import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
 import LegendOrientation from 'src/visualization/components/internal/LegendOrientation'
 import {LinePlusSingleStatProperties, Color} from 'src/types'
-import {VisOptionProps} from 'src/visualization'
+import {VisualizationOptionProps} from 'src/visualization'
 
 const {BASE_2, BASE_10} = AXES_SCALE_OPTIONS
 
-interface Props extends VisOptionProps {
+interface Props extends VisualizationOptionProps {
   properties: LinePlusSingleStatProperties
 }
 

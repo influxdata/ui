@@ -14,7 +14,7 @@ import Resizer from 'src/flows/shared/Resizer'
 // Utilities
 import {event} from 'src/cloud/utils/reporting'
 import {
-  TYPE_DEFINITIONS,
+  SUPPORTED_VISUALIZATIONS,
   View,
   ViewOptions,
   ViewTypeDropdown,
@@ -57,7 +57,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     })
 
     update({
-      properties: TYPE_DEFINITIONS[type].initial,
+      properties: SUPPORTED_VISUALIZATIONS[type].initial,
     })
   }
 

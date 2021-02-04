@@ -3,7 +3,7 @@ import React, {FC, createElement} from 'react'
 
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
-import {TYPE_DEFINITIONS} from 'src/visualization'
+import {SUPPORTED_VISUALIZATIONS} from 'src/visualization'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 
 import ViewLoadingSpinner from 'src/visualization/components/internal/ViewLoadingSpinner'
@@ -37,7 +37,7 @@ const InnerView: FC<Props> = ({
   timeZone,
   theme,
 }) => {
-  if (!TYPE_DEFINITIONS[properties.type]?.component) {
+  if (!SUPPORTED_VISUALIZATIONS[properties.type]?.component) {
     throw new Error('Unknown view type in <View /> ')
   }
 
@@ -56,7 +56,7 @@ const InnerView: FC<Props> = ({
       isInitialFetch={isInitial || false}
       fallbackNote={fallbackNote}
     >
-      {createElement(TYPE_DEFINITIONS[properties.type].component, {
+      {createElement(SUPPORTED_VISUALIZATIONS[properties.type].component, {
         result: result,
         properties: properties,
         timeRange: timeRange || DEFAULT_TIME_RANGE,

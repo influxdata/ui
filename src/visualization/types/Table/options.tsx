@@ -32,7 +32,7 @@ import {
 } from 'src/shared/constants/thresholds'
 import DraggableColumn from 'src/shared/components/draggable_column/DraggableColumn'
 import {TableViewProperties, FieldOption} from 'src/types'
-import {VisOptionProps} from 'src/visualization'
+import {VisualizationOptionProps} from 'src/visualization'
 import {
   MIN_DECIMAL_PLACES,
   MAX_DECIMAL_PLACES,
@@ -43,7 +43,7 @@ import {move} from 'src/shared/utils/move'
 
 import './options.scss'
 
-interface Props extends VisOptionProps {
+interface Props extends VisualizationOptionProps {
   properties: TableViewProperties
 }
 

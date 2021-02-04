@@ -667,7 +667,7 @@ describe('DataExplorer', () => {
         cy.writeData(lines(numLines))
       })
 
-      it.only('can view time-series data', () => {
+      it('can view time-series data', () => {
         cy.get<string>('@defaultBucketListSelector').then(
           (defaultBucketListSelector: string) => {
             cy.window().then(win => {

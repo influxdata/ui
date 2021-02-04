@@ -22,9 +22,15 @@ const FlowCards = () => {
         >
           <ResourceList>
             <ResourceList.Body emptyState={<FlowsIndexEmpty />}>
-              {Object.entries(flows).map(([id, {name}]) => {
-                return <FlowCard key={id} id={id} name={name} />
-              })}
+              {Object.entries(flows)
+                .sort(
+                  ([aId, aFlow], [bId, bFlow]) =>
+                    aFlow.name.localeCompare(bFlow.name) ||
+                    aId.localeCompare(bId)
+                )
+                .map(([id, {name}]) => {
+                  return <FlowCard key={id} id={id} name={name} />
+                })}
             </ResourceList.Body>
           </ResourceList>
         </Grid.Column>

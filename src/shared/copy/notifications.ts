@@ -1069,3 +1069,13 @@ export const functionUpdateFail = (): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to save function. Please try again`,
 })
+export const deleteAnnotationSuccess = (): Notification => ({
+  ...defaultSuccessNotification,
+  icon: IconFont.Cube,
+  message: 'Successfully deleted the annotation',
+})
+
+export const deleteAnnotationFailed = (error: string): Notification => ({
+  ...defaultErrorNotification,
+  icon: IconFont.Cube,
+  message: `Failed to delete annotation: ${error}`,

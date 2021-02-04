@@ -1,5 +1,10 @@
 import {getAnnotations, writeAnnotation} from 'src/annotations/api'
 import {Dispatch} from 'react'
+import {deleteAnnotation} from 'src/annotations/actions/creators'
+import * as api from 'src/client'
+import * as copy from 'src/shared/copy/notifications'
+
+import {notify} from 'src/shared/actions/notifications'
 
 import {
   setAnnotations,
@@ -23,3 +28,18 @@ export const writeThenFetchAndSetAnnotations = (
 
   fetchAndSetAnnotations()(dispatch)
 }
+
+export const deleteAnnotations = (id: string) => async (
+  dispatch: Dispatch<AnnotationAction>
+) => {
+  try {
+    const resp = await api.deleteAnnotations({variableID: id})
+    if (resp.status !== 204) {
+      throw new Error(resp.data.message)
+    }
+    dispatch(deleteAnnotation(id))
+    dispatch(notify(copy.deleteAnnotationSuccess()))
+  } catch (error) {
+    console.error(error)
+    dispatch(notify(copy.deleteAnnotationFailed(error.message)))
+  }

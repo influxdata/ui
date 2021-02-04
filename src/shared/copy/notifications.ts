@@ -1038,3 +1038,15 @@ export const csvUploaderErrorNotification = (
   ...defaultErrorNotification,
   message: `Failed to upload the selected CSV: ${message}`,
 })
+
+export const deleteAnnotationSuccess = (): Notification => ({
+  ...defaultSuccessNotification,
+  icon: IconFont.Cube,
+  message: 'Successfully deleted the annotation',
+})
+
+export const deleteAnnotationFailed = (error: string): Notification => ({
+  ...defaultErrorNotification,
+  icon: IconFont.Cube,
+  message: `Failed to delete annotation: ${error}`,
+})

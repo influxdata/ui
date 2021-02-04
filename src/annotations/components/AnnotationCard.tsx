@@ -36,8 +36,9 @@ export const AnnotationCard: FC<Props> = ({annotationStream}) => {
   }
 
   const handleDelete = (): void => {
-    // Placeholder
+    onDeleteAnnotation(variable.id)
   }
+  
 
   return (
     <ResourceCard

@@ -1,5 +1,6 @@
 // Libraries
 import {get} from 'lodash'
+import {S2} from 's2-geometry'
 import {
   binaryPrefixFormatter,
   timeFormatter,
@@ -15,6 +16,8 @@ import {VIS_SIG_DIGITS, DEFAULT_TIME_FORMAT} from 'src/shared/constants'
 // Types
 import {XYGeom, Axis, Base, TimeZone} from 'src/types'
 import {resolveTimeFormat} from 'src/dashboards/utils/tableGraph'
+
+const HEX_DIGIT_PRECISION = 16
 
 /*
   A geom may be stored as "line", "step", "monotoneX", "bar", or "stacked", but
@@ -375,4 +378,42 @@ export const getMainColumnName = (
     }
   }
   return ''
+}
+
+const getS2CellID = (table, index: number): string => {
+  const column = table.getColumn('s2_cell_id')
+  if (!column) {
+    return null
+  }
+  const value = column[index]
+  if (typeof value !== 'string') {
+    return null
+  }
+  return value
+}
+
+export const PRECISION_TRIMMING_TABLE = (() => {
+  const precisionTable = [BigInt(1)]
+  for (let i = 1; i < HEX_DIGIT_PRECISION + 1; i++) {
+    precisionTable[i] = precisionTable[i - 1] * BigInt(HEX_DIGIT_PRECISION)
+  }
+  return precisionTable
+})()
+
+export const getLatLon = (table, index: number) => {
+  const cellId = getS2CellID(table, index)
+  if (cellId === null || cellId.length > HEX_DIGIT_PRECISION) {
+    return null
+  }
+  if (cellId === null || cellId.length > HEX_DIGIT_PRECISION) {
+    return null
+  }
+  const fixed =
+    BigInt('0x' + cellId) *
+    PRECISION_TRIMMING_TABLE[HEX_DIGIT_PRECISION - cellId.length]
+  const latLng = S2.idToLatLng(fixed.toString())
+  return {
+    lon: latLng.lng,
+    lat: latLng.lat,
+  }
 }

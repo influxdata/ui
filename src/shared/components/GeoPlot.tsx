@@ -1,9 +1,12 @@
 // Libraries
-import {FunctionComponent} from 'react'
+import React, {FunctionComponent} from 'react'
 import {Config, Table} from '@influxdata/giraffe'
 
 // Types
 import {GeoViewProperties} from 'src/types'
+
+// Utils
+import {getLatLon} from 'src/shared/utils/vis'
 
 interface Props {
   children: (config: Config) => JSX.Element
@@ -30,6 +33,17 @@ const GeoPlot: FunctionComponent<Props> = ({
   }
 
   const {lat, lon} = viewProperties.center
+
+  if (!getLatLon(table, 0)) {
+    const error =
+      'Map type is not supported with the data provided: Missing latitude/longitude values'
+
+    return (
+      <div className="panel-resizer--error" data-testid="geoplot-error">
+        {error}
+      </div>
+    )
+  }
 
   const config: Config = {
     table,

@@ -5,6 +5,7 @@ import {v4 as UUID} from 'uuid'
 import {RemoteDataState} from 'src/types'
 import {PROJECT_NAME, PIPE_DEFINITIONS} from 'src/flows'
 import {event} from 'src/cloud/utils/reporting'
+import {useParams} from 'react-router-dom'
 
 export interface FlowContextType {
   id: string | null
@@ -27,23 +28,24 @@ export const FlowContext = React.createContext<FlowContextType>(DEFAULT_CONTEXT)
 let GENERATOR_INDEX = 0
 
 export const FlowProvider: FC = ({children}) => {
-  const {flows, update, currentID} = useContext(FlowListContext)
+  const {flows, update} = useContext(FlowListContext)
+  const {id} = useParams<{id: string}>()
 
   const updateCurrent = useCallback(
     (flow: Flow) => {
-      update(currentID, {
-        ...flows[currentID],
+      update(id, {
+        ...flows[id],
         ...flow,
       })
     },
-    [currentID, flows[currentID]]
+    [id, flows[id]]
   )
 
   const addPipe = (initial: PipeData, index?: number) => {
     const id = `local_${UUID()}`
 
-    flows[currentID].data.add(id, initial)
-    flows[currentID].meta.add(id, {
+    flows[id].data.add(id, initial)
+    flows[id].meta.add(id, {
       title: `${PIPE_DEFINITIONS[initial.type].button ||
         'Panel'} ${++GENERATOR_INDEX}`,
       visible: true,
@@ -51,7 +53,7 @@ export const FlowProvider: FC = ({children}) => {
     })
 
     if (typeof index !== 'undefined') {
-      flows[currentID].data.move(id, index + 1)
+      flows[id].data.move(id, index + 1)
     }
 
     event('insert_notebook_cell', {notebooksCellType: initial.type})
@@ -59,16 +61,16 @@ export const FlowProvider: FC = ({children}) => {
     return id
   }
 
-  if (!flows || !flows.hasOwnProperty(currentID)) {
+  if (!flows || !flows.hasOwnProperty(id)) {
     return null
   }
 
   return (
     <FlowContext.Provider
       value={{
-        id: currentID,
+        id,
         name,
-        flow: flows[currentID],
+        flow: flows[id],
         add: addPipe,
         update: updateCurrent,
       }}

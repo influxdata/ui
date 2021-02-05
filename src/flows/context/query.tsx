@@ -21,6 +21,7 @@ import {
   setQueryByHashID,
 } from 'src/timeMachine/actions/queries'
 import {notify} from 'src/shared/actions/notifications'
+import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 
 // Constants
 import {
@@ -272,6 +273,15 @@ export const QueryProvider: FC = ({children}) => {
         // NOTE: this shouldn't fire, but lets wrap it for completeness
         throw e
       })
+  }
+
+  if (!flow) {
+    return (
+      <EmptyGraphMessage
+        message="Could not find this notebook"
+        testID="notebook-not-found"
+      />
+    )
   }
 
   if (!flow?.range || bucketsLoadingState !== RemoteDataState.Done) {

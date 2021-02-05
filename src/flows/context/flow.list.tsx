@@ -280,17 +280,6 @@ export const FlowListProvider: FC = ({children}) => {
     pooledUpdateAPI(apiFlow)
   }
 
-  const change = useCallback(
-    (id: string) => {
-      if (!flows || !flows.hasOwnProperty(id)) {
-        throw new Error(`${PROJECT_NAME} does note exist`)
-      }
-
-      setCurrentID(id)
-    },
-    [setCurrentID, flows]
-  )
-
   const remove = async (id: string) => {
     const _flows = {
       ...flows,
@@ -317,6 +306,16 @@ export const FlowListProvider: FC = ({children}) => {
       setFlows(_flows)
     }
   }, [orgID, setFlows])
+
+  const change = useCallback(
+    (id: string) => {
+      if (!Object.keys(flows).length) {
+        getAll()
+      }
+      setCurrentID(id)
+    },
+    [setCurrentID, flows]
+  )
 
   const migrate = async () => {
     if (isFlagEnabled(FLOWS_API_FLAG)) {

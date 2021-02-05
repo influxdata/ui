@@ -1,6 +1,10 @@
 ---
 name: Bug report
 about: Create a report to help us improve
+title: ''
+labels: kind/bug, team/ui
+assignees: ''
+
 ---
 
 Thank you for reporting a bug in InfluxData UI.

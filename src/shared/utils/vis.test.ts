@@ -161,32 +161,6 @@ describe('getS2CellID', () => {
   it('calls getColumn on the table, looking for s2_cell_id column', () => {
     const table = ({
       getColumn: jest.fn(),
-      getColumnName: jest.fn(),
-      getColumnType: columnKey => {
-        if (['_start', '_stop', '_time'].includes(columnKey)) {
-          return 'time'
-        }
-
-        if (columnKey === '_value') {
-          return 'number'
-        }
-
-        return 'boolean'
-      },
-      addColumn: jest.fn(),
-      columnKeys: [
-        'result',
-        'table',
-        '_start',
-        '_stop',
-        '_field',
-        '_measurement',
-        '_value',
-        'cpu',
-        'host',
-        '_time',
-      ],
-      length: 3,
     } as unknown) as Table
     getS2CellID(table, 3)
 

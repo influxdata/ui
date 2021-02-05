@@ -37,22 +37,53 @@ class VariableDropdown extends PureComponent<Props> {
     super(props)
     this.state = {
       typedText: '',
+      actualVal: '',
+      selectIndex: -1,
       shownValues: props.values,
     }
   }
 
   //only want this to run *once* when the values get loaded
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     const prevVals = prevProps.values
     const {values, selectedValue} = this.props
-    const {loaded} = this.state
+    const {actualVal, loaded, selectHappened, menuOpen} = this.state
+    const {
+      actualVal: prevActualVal,
+      selectHappened: prevSelectHappened,
+        menuOpen: prevMenuOpened
+    } = prevState
 
+    //this is for updatintg the values:
     if (!loaded && prevVals.length !== values.length) {
       this.setState({
         shownValues: values,
         typedValue: selectedValue,
         loaded: true,
       })
+    }
+
+    //unset the menuOpen; it should be set to closed only once; then undone
+    if (menuOpen !== prevMenuOpened){
+      console.log('setting menuOpen to ignore....***ACK***')
+      this.setState({menuOpen: 'ignore'});
+    }
+
+
+    //need to have this, as the 'onClickAwayHere' gets triggered *before*
+    // the selected value is set to the actualValue (it keeps re-using the original
+    //property)
+
+    //for updating the selected value:
+    if (
+      selectHappened &&
+      !prevSelectHappened &&
+      actualVal &&
+      actualVal !== prevActualVal
+    ) {
+      //update the 'typed val':
+      console.log(` ** ICK *** updating the typed val to ${actualVal}`)
+      this.setState({typedValue: actualVal, selectHappened: false})
     }
   }
 
@@ -65,13 +96,70 @@ class VariableDropdown extends PureComponent<Props> {
       const result = values.filter(
         val => val.toLowerCase().indexOf(needle.toLowerCase()) !== -1
       )
-      this.setState({shownValues: result, typedValue: needle})
+      this.setState({shownValues: result, typedValue: needle, menuOpen:'open'})
+    }
+  }
+
+  maybeSelectNextItem = e => {
+    const {shownValues, selectIndex} = this.state
+
+    if (e.keyCode === 40) {
+      //down arrow
+      console.log('*** ACK pressed down arrow ***')
+    }
+  }
+
+  maybeSelectNextItem = (e) => {
+    const {shownValues, selectIndex} = this.state
+
+      let newIndex = -1
+
+
+    if (e.keyCode === 40) {
+      //down arrow
+      console.log('*** ACK pressed down arrow ***')
+      newIndex = selectIndex + 1
+    } else if (e.keyCode === 38) {
+      //up arrow
+      console.log('*** ACK pressed UP arrow ***')
+      newIndex = selectIndex - 1
+    } else {
+      console.log('pressed.....', e.keyCode)
+    }
+    console.log(`selectIndex: ${selectIndex}, newIndex?? ${newIndex}`)
+
+      const numItems = shownValues.length
+
+      if (numItems && newIndex >=0 && newIndex < numItems) {
+        this.handleSelect(shownValues[newIndex], newIndex)
+        return
+      }
+
+
+    //console.log('pressed key:', e.target.parent);
+
+    if (e.keyCode === 13) {
+      //return/enter key
+      //lose focus & close the menu:
+      e.target.blur()
+      this.setState({menuOpen: 'closed'})
+    }
+  }
+
+  onClickAwayHere = () => {
+    const {actualVal} = this.state
+    const {selectedValue} = this.props
+
+    if (actualVal || selectedValue) {
+      const realValue = actualVal ? actualVal : selectedValue
+
+      this.setState({typedValue: realValue})
     }
   }
 
   render() {
     const {selectedValue, values, name} = this.props
-    const {typedValue, shownValues} = this.state
+    const {typedValue, shownValues, menuOpen} = this.state
 
     const dropdownStatus =
       values.length === 0 ? ComponentStatus.Disabled : ComponentStatus.Default
@@ -83,6 +171,8 @@ class VariableDropdown extends PureComponent<Props> {
         style={{width: '140px'}}
         className="variable-dropdown--dropdown"
         testID={this.props.testID || `variable-dropdown--${name}`}
+        onClickAway={this.onClickAwayHere}
+        menuOpen={menuOpen}
         button={(active, onClick) => (
           <Dropdown.Button
             active={active}
@@ -95,6 +185,7 @@ class VariableDropdown extends PureComponent<Props> {
               placeholder={placeHolderText}
               onChange={e => this.filterVals(e.target.value)}
               value={typedValue}
+              onKeyDown={e => this.maybeSelectNextItem(e)}
             />
           </Dropdown.Button>
         )}
@@ -139,7 +230,7 @@ class VariableDropdown extends PureComponent<Props> {
     return widthStyle
   }
 
-  private handleSelect = (selectedValue: string) => {
+  private handleSelect = (selectedValue: string, selectIndex?: number) => {
     const {
       variableID,
       onSelectValue,
@@ -154,22 +245,35 @@ class VariableDropdown extends PureComponent<Props> {
     if (onSelect) {
       onSelect()
     }
-    this.setState({typedValue: selectedValue})
+    console.log('in handleSelect,  selectedValue: ', selectedValue)
+    console.log('the props here:', this.props)
+
+    const newState = {
+      typedValue: selectedValue,
+      actualVal: selectedValue,
+      selectHappened: true,
+    }
+
+    if (selectIndex || selectIndex === 0){
+      newState.selectIndex = selectIndex
+    }
+
+    this.setState(newState)
   }
 
   // todo:  show the 'loading' or 'no values' as a string (no input field yet!)
   // when it is loading
-  private get selectedText() {
+  getIntroText = () => {
     const {selectedValue, status} = this.props
     if (status === RemoteDataState.Loading) {
-      return 'Loading'
+      return 'Loading...'
     }
 
     if (selectedValue) {
       return selectedValue
     }
 
-    return 'No Values'
+    return ''
   }
 }
 

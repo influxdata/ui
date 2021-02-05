@@ -345,7 +345,7 @@ export const getGeoCoordinates = (
 
   const latLng = S2.idToLatLng(fixed.toString())
 
-  if (!latLng?.lat || !latLng?.lon) {
+  if (!latLng?.lat || !latLng?.lng) {
     return null
   }
 

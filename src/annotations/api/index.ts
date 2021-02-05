@@ -25,13 +25,11 @@ export const writeAnnotation = async (
   // we need to convert the annotation object's start and end time fields to be
   // string types so they can be parsed in the backend.
   const annotationsRequestConverted = annotations.map(annotation => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-    // @ts-ignore
-    annotation.start = new Date(annotation.start).toISOString()
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-    // @ts-ignore
-    annotation.end = new Date(annotation.end).toISOString()
-    return annotation
+    return {
+      ...annotation,
+      start: new Date(annotation.start).toISOString(),
+      end: new Date(annotation.end).toISOString(),
+    }
   })
 
   const res = await axios.post(url, annotationsRequestConverted)

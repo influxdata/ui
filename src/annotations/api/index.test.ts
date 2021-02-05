@@ -83,8 +83,8 @@ describe('annotations api calls', () => {
         Promise.resolve({data: [lambeau]})
       )
       const response = await getAnnotation({
-        start: Date.now(),
-        end: Date.now(),
+        start: Date.now().toString(),
+        end: Date.now().toString(),
         stream: 'Lambeau Field',
       })
 
@@ -93,8 +93,8 @@ describe('annotations api calls', () => {
 
     it('handles an error and returns the error message', async () => {
       const annotation = {
-        start: Date.now(),
-        end: Date.now(),
+        start: Date.now().toString(),
+        end: Date.now().toString(),
         stream: 'Lambeau Field',
       }
       const message = 'OOPS YOU DONE MESSED UP SON'
@@ -110,8 +110,8 @@ describe('annotations api calls', () => {
   describe('PUT - annotation update api calls', () => {
     const oldAnnotation = {
       stream: 'default',
-      start: Date.now(),
-      end: Date.now(),
+      start: Date.now().toString(),
+      end: Date.now().toString(),
     }
 
     const newAnnotation = {
@@ -135,8 +135,8 @@ describe('annotations api calls', () => {
   describe('DELETE = annotation delete api calls', () => {
     const toDelete = {
       stream: 'default',
-      start: Date.now(),
-      end: Date.now(),
+      start: Date.now().toString(),
+      end: Date.now().toString(),
     }
 
     it('returns a 204 upon successful deletion of annotation', async () => {

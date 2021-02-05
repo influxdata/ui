@@ -4,8 +4,8 @@ describe('query string formatting function', () => {
   it('properly handles all potential properties for get/delete requests for annotations', () => {
     const query = {
       stream: 'default stream',
-      start: Date.now(),
-      end: Date.now(),
+      start: Date.now().toString(),
+      end: Date.now().toString(),
       summary: 'look ma, no spaces!',
       stickers: {
         foo: 'bar',

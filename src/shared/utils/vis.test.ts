@@ -4,6 +4,10 @@ import {
   defaultYColumn,
   getMainColumnName,
   parseYBounds,
+  HEX_DIGIT_PRECISION,
+  getGeoCoordinates,
+  getPrecisionTrimmingTableValue,
+  getS2CellID,
 } from 'src/shared/utils/vis'
 import {Table} from '@influxdata/giraffe'
 
@@ -139,5 +143,112 @@ describe('getMainColumnName', () => {
         lowerColumnName
       )
     ).toEqual('')
+  })
+})
+
+describe('getPrecisionTrimmingTableValue', () => {
+  it('returns a bigint array with length one greater than the hex precision value', () => {
+    const precisionTrimmingTable = getPrecisionTrimmingTableValue()
+
+    expect(precisionTrimmingTable.length - 1).toEqual(HEX_DIGIT_PRECISION)
+    expect(
+      precisionTrimmingTable.filter(num => typeof num === 'bigint').length
+    ).toEqual(HEX_DIGIT_PRECISION + 1)
+  })
+})
+
+describe('getS2CellID', () => {
+  it('calls getColumn on the table, looking for s2_cell_id column', () => {
+    const table = ({
+      getColumn: jest.fn(),
+      getColumnName: jest.fn(),
+      getColumnType: columnKey => {
+        if (['_start', '_stop', '_time'].includes(columnKey)) {
+          return 'time'
+        }
+
+        if (columnKey === '_value') {
+          return 'number'
+        }
+
+        return 'boolean'
+      },
+      addColumn: jest.fn(),
+      columnKeys: [
+        'result',
+        'table',
+        '_start',
+        '_stop',
+        '_field',
+        '_measurement',
+        '_value',
+        'cpu',
+        'host',
+        '_time',
+      ],
+      length: 3,
+    } as unknown) as Table
+    getS2CellID(table, 3)
+
+    expect(table.getColumn).toHaveBeenCalledWith('s2_cell_id')
+  })
+
+  it('returns null if no column is found named s2_cell_id', () => {
+    const table = ({
+      getColumn: () => null,
+    } as unknown) as Table
+    const nullResult = getS2CellID(table, 3)
+
+    expect(nullResult).toEqual(null)
+  })
+
+  it('returns null if the value at the passed index of the column is not of type string', () => {
+    const table = ({
+      getColumn: () => [0, 1, 2, 3, 4, 5],
+    } as unknown) as Table
+    const nullResult = getS2CellID(table, 3)
+
+    expect(nullResult).toEqual(null)
+  })
+
+  it('returns s2_cell_id column value at passed index if type is string and value exists', () => {
+    const table = ({
+      getColumn: () => [0, 1, 2, 'blah'],
+    } as unknown) as Table
+    const expectedBlahResult = getS2CellID(table, 3)
+
+    expect(expectedBlahResult).toEqual('blah')
+  })
+})
+
+describe('getGeoCoordinates', () => {
+  it('returns a latitude and longitude value with key names lat and lon if table with proper columns exists', () => {
+    const table = ({
+      getColumn: () => [0, 1, 2, '123'],
+    } as unknown) as Table
+    const geoCoordinates = getGeoCoordinates(table, 3)
+    expect(geoCoordinates).toEqual(
+      expect.objectContaining({
+        lon: expect.any(Number),
+        lat: expect.any(Number),
+      })
+    )
+  })
+
+  it('returns null if cellId is not a proper string value', () => {
+    const table = ({
+      getColumn: () => [0, 1, 2, 8],
+    } as unknown) as Table
+    const geoCoordinates = getGeoCoordinates(table, 3)
+    expect(geoCoordinates).toEqual(null)
+  })
+
+  it('returns null if cellId length is greater than the hex precision value allows for', () => {
+    const table = ({
+      getColumn: () => [0, 1, 2, new Array(HEX_DIGIT_PRECISION + 1).join('1')],
+    } as unknown) as Table
+
+    const geoCoordinates = getGeoCoordinates(table, 3)
+    expect(geoCoordinates).toEqual(null)
   })
 })

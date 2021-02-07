@@ -178,7 +178,7 @@ const ScatterOptions: FunctionComponent<Props> = props => {
       />
       {xColumn === '_time' && (
         <Form.Element label="Auto Scale Domain">
-          <TimeDomainAutoToggle setDomain={onSetXDomain} xDom={xDomain} />
+          <TimeDomainAutoToggle setDomain={onSetXDomain} xDomain={xDomain} />
         </Form.Element>
       )}
       <ColumnSelector

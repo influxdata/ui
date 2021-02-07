@@ -8,7 +8,7 @@ import {useVisXDomainSettings} from 'src/shared/utils/useVisDomainSettings'
 
 interface Props {
   setDomain: (xDomain: [number, number]) => void
-  xDom: number[] | null
+  xDomain: number[] | null
 }
 
 const isValidXDomain = xDomain => {
@@ -20,19 +20,19 @@ const isValidXDomain = xDomain => {
   )
 }
 
-export const TimeDomainAutoToggle: FC<Props> = ({setDomain, xDom}) => {
+export const TimeDomainAutoToggle: FC<Props> = ({setDomain, xDomain}) => {
   const [isActive, setIsActive] = useState<boolean>(false)
 
   const {table} = useSelector(getVisTable)
 
-  const [xDomain] = useVisXDomainSettings(
-    xDom,
+  const [xDom] = useVisXDomainSettings(
+    xDomain,
     table.getColumn('_time', 'number')
   )
 
   const toggleActiveDomain = (): void => {
     if (!isActive) {
-      setDomain([xDomain[0], xDomain[1]])
+      setDomain([xDom[0], xDom[1]])
     } else {
       setDomain(null)
     }
@@ -44,7 +44,7 @@ export const TimeDomainAutoToggle: FC<Props> = ({setDomain, xDom}) => {
         size={ComponentSize.ExtraSmall}
         active={isActive}
         onChange={toggleActiveDomain}
-        disabled={!isValidXDomain(xDomain)}
+        disabled={!isValidXDomain(xDom)}
         testID="time-domain-toggle-slide"
       />
     </div>

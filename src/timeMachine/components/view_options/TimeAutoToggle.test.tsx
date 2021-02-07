@@ -86,7 +86,7 @@ describe('Time Domain Auto Toggle', () => {
       const setDomainMock = jest.fn()
 
       const {getByTestId} = render(
-        <TimeDomainAutoToggle setDomain={setDomainMock} xDom={null} />
+        <TimeDomainAutoToggle setDomain={setDomainMock} xDomain={null} />
       )
 
       fireEvent.click(getByTestId('time-domain-toggle-slide'))
@@ -99,7 +99,7 @@ describe('Time Domain Auto Toggle', () => {
       const setDomainMock = jest.fn()
 
       const {getByTestId} = render(
-        <TimeDomainAutoToggle setDomain={setDomainMock} xDom={null} />
+        <TimeDomainAutoToggle setDomain={setDomainMock} xDomain={null} />
       )
 
       fireEvent.click(getByTestId('time-domain-toggle-slide'))

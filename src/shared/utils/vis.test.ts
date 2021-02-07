@@ -7,7 +7,6 @@ import {
   HEX_DIGIT_PRECISION,
   getGeoCoordinates,
   getPrecisionTrimmingTableValue,
-  getS2CellID,
 } from 'src/shared/utils/vis'
 import {Table} from '@influxdata/giraffe'
 
@@ -146,8 +145,8 @@ describe('getMainColumnName', () => {
   })
 })
 
-describe('getPrecisionTrimmingTableValue', () => {
-  it('returns a bigint array with length one greater than the hex precision value', () => {
+describe('getPrecisionTrimmingTableValue - get precision value for geo coordinate calculation', () => {
+  it('calculates a precision value that is used to retrieve id for geo coordinate calculation', () => {
     const precisionTrimmingTable = getPrecisionTrimmingTableValue()
 
     expect(precisionTrimmingTable.length - 1).toEqual(HEX_DIGIT_PRECISION)
@@ -157,45 +156,7 @@ describe('getPrecisionTrimmingTableValue', () => {
   })
 })
 
-describe('getS2CellID', () => {
-  it('calls getColumn on the table, looking for s2_cell_id column', () => {
-    const table = ({
-      getColumn: jest.fn(),
-    } as unknown) as Table
-    getS2CellID(table, 3)
-
-    expect(table.getColumn).toHaveBeenCalledWith('s2_cell_id')
-  })
-
-  it('returns null if no column is found named s2_cell_id', () => {
-    const table = ({
-      getColumn: () => null,
-    } as unknown) as Table
-    const nullResult = getS2CellID(table, 3)
-
-    expect(nullResult).toEqual(null)
-  })
-
-  it('returns null if the value at the passed index of the column is not of type string', () => {
-    const table = ({
-      getColumn: () => [0, 1, 2, 3, 4, 5],
-    } as unknown) as Table
-    const nullResult = getS2CellID(table, 3)
-
-    expect(nullResult).toEqual(null)
-  })
-
-  it('returns s2_cell_id column value at passed index if type is string and value exists', () => {
-    const table = ({
-      getColumn: () => [0, 1, 2, 'blah'],
-    } as unknown) as Table
-    const expectedBlahResult = getS2CellID(table, 3)
-
-    expect(expectedBlahResult).toEqual('blah')
-  })
-})
-
-describe('getGeoCoordinates', () => {
+describe('getGeoCoordinates - retrieve latitude and longitude values for map geo type', () => {
   it('returns a latitude and longitude value with key names lat and lon if table with proper columns exists', () => {
     const table = ({
       getColumn: () => [0, 1, 2, '123'],
@@ -209,20 +170,27 @@ describe('getGeoCoordinates', () => {
     )
   })
 
-  it('returns null if cellId is not a proper string value', () => {
+  it('throws an error if cellId is not a proper string value', () => {
     const table = ({
       getColumn: () => [0, 1, 2, 8],
     } as unknown) as Table
-    const geoCoordinates = getGeoCoordinates(table, 3)
-    expect(geoCoordinates).toEqual(null)
+
+    try {
+      getGeoCoordinates(table, 3)
+    } catch (err) {
+      expect(err.message).toEqual('invalid s2_cell_id column value')
+    }
   })
 
-  it('returns null if cellId length is greater than the hex precision value allows for', () => {
+  it('throws an error if cellId length is greater than the hex precision value allows for', () => {
     const table = ({
       getColumn: () => [0, 1, 2, new Array(HEX_DIGIT_PRECISION + 1).join('1')],
     } as unknown) as Table
 
-    const geoCoordinates = getGeoCoordinates(table, 3)
-    expect(geoCoordinates).toEqual(null)
+    try {
+      getGeoCoordinates(table, 3)
+    } catch (err) {
+      expect(err.message).toEqual('invalid cellId length')
+    }
   })
 })

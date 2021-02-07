@@ -307,14 +307,14 @@ export const getMainColumnName = (
   return ''
 }
 
-export const getS2CellID = (table: Table, index: number): string | null => {
+const getS2CellID = (table: Table, index: number): string => {
   const column = table.getColumn('s2_cell_id')
   if (!column) {
-    return null
+    throw new Error('Cannot retrieve s2_cell_id column')
   }
   const value = column[index]
   if (typeof value !== 'string') {
-    return null
+    throw new Error('invalid s2_cell_id column value')
   }
   return value
 }
@@ -335,22 +335,18 @@ export const getGeoCoordinates = (
 
   const precisionTrimmingTable = getPrecisionTrimmingTableValue()
 
-  if (cellId === null || cellId.length > HEX_DIGIT_PRECISION) {
-    return null
+  if (cellId.length > HEX_DIGIT_PRECISION) {
+    throw new Error('invalid cellId length')
   }
 
   const fixed =
     BigInt('0x' + cellId) *
     precisionTrimmingTable[HEX_DIGIT_PRECISION - cellId.length]
 
-  const latLng = S2.idToLatLng(fixed.toString())
-
-  if (!latLng?.lat || !latLng?.lng) {
-    return null
-  }
+  const geoCoordinateValue = S2.idToLatLng(fixed.toString())
 
   return {
-    lon: latLng.lng,
-    lat: latLng.lat,
+    lon: geoCoordinateValue.lng,
+    lat: geoCoordinateValue.lat,
   }
 }

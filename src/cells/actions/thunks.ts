@@ -178,7 +178,7 @@ export const updateCells = (dashboardID: string, cells: Cell[]) => async (
       throw new Error(resp.data.message)
     }
 
-    const updatedCells = cells.map((c) => ({...c, dashboardID}))
+    const updatedCells = cells.map(c => ({...c, dashboardID}))
 
     const normCells = normalize<Dashboard, DashboardEntities, string[]>(
       updatedCells,

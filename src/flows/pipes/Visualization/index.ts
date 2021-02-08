@@ -3,7 +3,7 @@ import './style.scss'
 
 import {SUPPORTED_VISUALIZATIONS} from 'src/visualization'
 
-export default (register) => {
+export default register => {
   register({
     type: 'visualization',
     family: 'passThrough',

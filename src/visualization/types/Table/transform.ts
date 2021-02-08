@@ -71,9 +71,7 @@ const updateMaxWidths = (
   const maxWidths = fastReduce<string>(
     row,
     (acc: ColumnWidths, col: string, c: number) => {
-      const foundField = fieldOptions.find(
-        (field) => field.internalName === col
-      )
+      const foundField = fieldOptions.find(field => field.internalName === col)
 
       let colValue: string | number = `${col}`
       if (foundField && foundField.displayName) {
@@ -117,7 +115,7 @@ export const resolveFieldOptions = (
 ): FieldOption[] => {
   let astNames = []
 
-  labels.forEach((label) => {
+  labels.forEach(label => {
     const field: FieldOption = {
       internalName: label,
       displayName: '',
@@ -126,12 +124,12 @@ export const resolveFieldOptions = (
     astNames = [...astNames, field]
   })
 
-  const intersection = existingFieldOptions.filter((f) => {
-    return astNames.find((a) => a.internalName === f.internalName)
+  const intersection = existingFieldOptions.filter(f => {
+    return astNames.find(a => a.internalName === f.internalName)
   })
 
-  const newFields = astNames.filter((a) => {
-    return !existingFieldOptions.find((f) => f.internalName === a.internalName)
+  const newFields = astNames.filter(a => {
+    return !existingFieldOptions.find(f => f.internalName === a.internalName)
   })
 
   return [...intersection, ...newFields]
@@ -175,7 +173,7 @@ export const filterTableColumns = (
     return fastFilter<string>(row, (col, j) => {
       if (i === 0) {
         const foundField = fieldOptions.find(
-          (field) => field.internalName === col
+          field => field.internalName === col
         )
         visibility[j] = foundField ? foundField.visible : true
       }
@@ -189,13 +187,13 @@ export const orderTableColumns = (
   data: string[][],
   fieldOptions: FieldOption[]
 ): string[][] => {
-  const fieldsSortOrder = fieldOptions.map((fieldOption) => {
-    return _.findIndex(data[0], (dataLabel) => {
+  const fieldsSortOrder = fieldOptions.map(fieldOption => {
+    return _.findIndex(data[0], dataLabel => {
       return dataLabel === fieldOption.internalName
     })
   })
 
-  const filteredFieldSortOrder = fieldsSortOrder.filter((f) => f !== -1)
+  const filteredFieldSortOrder = fieldsSortOrder.filter(f => f !== -1)
 
   const orderedData = fastMap<string[], string[]>(
     data,
@@ -219,7 +217,7 @@ export const sortTableData = (
   } else if (!sort.field) {
     return {
       sortedData: [...data],
-      sortedTimeVals: data.map((col) => col[0]),
+      sortedTimeVals: data.map(col => col[0]),
     }
   }
 
@@ -228,7 +226,7 @@ export const sortTableData = (
     data[0],
     ..._.orderBy<string[][]>(
       dataValues,
-      (row) => {
+      row => {
         const sortedValue = row[sortIndex]
         if (isNaN(Number(sortedValue))) {
           return sortedValue
@@ -250,9 +248,9 @@ export const excludeNoisyColumns = (data: string[][]): string[][] => {
   const IGNORED_COLUMNS = ['', 'result', 'table']
 
   const header = data[0]
-  const ignoredIndices = IGNORED_COLUMNS.map((name) => header.indexOf(name))
+  const ignoredIndices = IGNORED_COLUMNS.map(name => header.indexOf(name))
 
-  const excludedData = data.map((row) => {
+  const excludedData = data.map(row => {
     return row.filter((__, i) => !ignoredIndices.includes(i))
   })
 
@@ -350,7 +348,7 @@ export const getUnixISODiff = (unixMs: number, isoTime: string | number) => {
 }
 
 export const findTableNameHeaders = (tables: FluxTable[], name: string) => {
-  const foundTable = tables.find((t) => t.name === name)
+  const foundTable = tables.find(t => t.name === name)
 
   return _.get(foundTable, 'data.0', [])
 }

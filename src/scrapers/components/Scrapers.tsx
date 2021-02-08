@@ -94,7 +94,7 @@ class Scrapers extends PureComponent<Props, State> {
           searchKeys={['name', 'url']}
           list={scrapers}
         >
-          {(sl) => (
+          {sl => (
             <ScraperList
               scrapers={sl}
               emptyState={this.emptyState}

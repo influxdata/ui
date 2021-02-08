@@ -40,12 +40,12 @@ const AggregationSelector: FC = () => {
 
   const [isAutoFunction, setIsAutoFunction] = useState(
     data.functions.length === 1 &&
-      AUTO_FUNCTIONS.map((fn) => fn.name).includes(data.functions[0].name)
+      AUTO_FUNCTIONS.map(fn => fn.name).includes(data.functions[0].name)
   )
 
   const fnList = isAutoFunction
-    ? AUTO_FUNCTIONS.map((f) => f.name)
-    : FUNCTIONS.map((f) => f.name)
+    ? AUTO_FUNCTIONS.map(f => f.name)
+    : FUNCTIONS.map(f => f.name)
   const durationDisplay = period
 
   const toggleFill = () => {
@@ -95,7 +95,7 @@ const AggregationSelector: FC = () => {
     }
   }
 
-  const setPeriod = (_period) => {
+  const setPeriod = _period => {
     update({
       aggregateWindow: {
         ...data.aggregateWindow,
@@ -104,7 +104,7 @@ const AggregationSelector: FC = () => {
     })
   }
 
-  const selectFn = (fn) => {
+  const selectFn = fn => {
     if (isAutoFunction) {
       update({
         functions: [{name: fn}],
@@ -113,7 +113,7 @@ const AggregationSelector: FC = () => {
     }
 
     const fns = [...data.functions]
-    const fnsFound = fns.map((f) => f.name).indexOf(fn)
+    const fnsFound = fns.map(f => f.name).indexOf(fn)
     if (fnsFound !== -1) {
       fns.splice(fnsFound, 1)
       update({
@@ -130,8 +130,8 @@ const AggregationSelector: FC = () => {
       setIsAutoFunction(false)
       return
     }
-    const newFunctions = data.functions.filter((f) =>
-      AUTO_FUNCTIONS.map((fn) => fn.name).includes(f.name)
+    const newFunctions = data.functions.filter(f =>
+      AUTO_FUNCTIONS.map(fn => fn.name).includes(f.name)
     )
     if (newFunctions.length === 0) {
       update({
@@ -267,7 +267,7 @@ const AggregationSelector: FC = () => {
       </BuilderCard.Menu>
       <SelectorList
         items={fnList}
-        selectedItems={data.functions.map((fn) => fn.name)}
+        selectedItems={data.functions.map(fn => fn.name)}
         onSelectItem={selectFn}
         multiSelect={!isAutoFunction}
       />

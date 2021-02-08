@@ -102,25 +102,25 @@ export const getVariables = (controller?: AbortController) => async (
 
     // migrate the selected values from the existing variables into the new ones
     variables.result
-      .map((k) => {
+      .map(k => {
         return variables.entities.variables[k]
       })
-      .filter((e) => {
+      .filter(e => {
         return varsByID.hasOwnProperty(e.id)
       })
-      .forEach((v) => {
+      .forEach(v => {
         variables.entities.variables[v.id].selected = varsByID[v.id].selected
       })
 
     // Make sure all the queries are marked for update
     variables.result
-      .map((k) => {
+      .map(k => {
         return variables.entities.variables[k]
       })
-      .filter((e) => {
+      .filter(e => {
         return e.arguments.type === 'query'
       })
-      .forEach((v) => {
+      .forEach(v => {
         variables.entities.variables[v.id].status = RemoteDataState.NotStarted
       })
 
@@ -136,7 +136,7 @@ const getActiveView = (state: AppState) => {
   if (state.currentPage === 'dashboard') {
     const dashboardID = state.currentDashboard.id
     return Object.values(state.resources.views.byID).filter(
-      (variable) => variable.dashboardID === dashboardID
+      variable => variable.dashboardID === dashboardID
     )
   }
   if (get(state, ['timeMachines', 'activeTimeMachineID']) === 'de') {

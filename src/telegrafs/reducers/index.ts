@@ -35,7 +35,7 @@ export const telegrafsReducer = (
   state: TelegrafsState = initialState(),
   action: Action
 ): TelegrafsState =>
-  produce(state, (draftState) => {
+  produce(state, draftState => {
     switch (action.type) {
       case SET_TELEGRAFS: {
         setResource<Telegraf>(draftState, action, Telegrafs)

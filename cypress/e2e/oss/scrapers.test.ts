@@ -26,8 +26,12 @@ describe('Scrapers', () => {
 
       cy.getByTestID('create-scraper-button-header').click()
       cy.getByTestID('overlay--container').within(() => {
-        cy.getByInputName('name').clear().type(newScraper)
-        cy.getByInputName('url').clear().type(newURL)
+        cy.getByInputName('name')
+          .clear()
+          .type(newScraper)
+        cy.getByInputName('url')
+          .clear()
+          .type(newURL)
         cy.getByTestID('create-scraper--submit').click()
       })
 
@@ -42,8 +46,12 @@ describe('Scrapers', () => {
 
       cy.getByTestID('create-scraper-button-empty').click()
       cy.getByTestID('overlay--container').within(() => {
-        cy.getByInputName('name').clear().type(newScraper)
-        cy.getByInputName('url').clear().type(newURL)
+        cy.getByInputName('name')
+          .clear()
+          .type(newScraper)
+        cy.getByInputName('url')
+          .clear()
+          .type(newURL)
         cy.getByTestID('create-scraper--submit').click()
       })
 
@@ -74,7 +82,9 @@ describe('Scrapers', () => {
       it('can update scrapers name', () => {
         const newScraperName = 'This is new name'
         cy.getByTestID('resource-card').within(() => {
-          cy.getByTestID('editable-name').first().click()
+          cy.getByTestID('editable-name')
+            .first()
+            .click()
           cy.getByTestID('input-field').type(`${newScraperName}{enter}`)
         })
 
@@ -84,7 +94,9 @@ describe('Scrapers', () => {
       it('can delete a scraper', () => {
         cy.getByTestID('resource-card').should('have.length', 2)
 
-        cy.getByTestID('confirmation-button').last().click({force: true})
+        cy.getByTestID('confirmation-button')
+          .last()
+          .click({force: true})
 
         cy.getByTestID('resource-card').should('have.length', 1)
       })

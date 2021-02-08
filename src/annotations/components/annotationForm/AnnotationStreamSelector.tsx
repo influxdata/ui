@@ -36,7 +36,7 @@ export const AnnotationStreamSelector: FC = () => {
 
   // Normally get this from redux with useSelector + ResourceType.AnnotationStream
   const streams = MOCK_ANNOTATION_STREAMS
-  const selectedStream = streams.find((stream) => stream.id === streamID)
+  const selectedStream = streams.find(stream => stream.id === streamID)
   const buttonText = selectedStream ? selectedStream.name : 'Choose a stream'
 
   let tagsList
@@ -48,7 +48,7 @@ export const AnnotationStreamSelector: FC = () => {
         <div className="annotation-stream-selector--tag">
           {`measurement = ${selectedStream.query.measurement}`}
         </div>
-        {tagKeys.map((tagKey) => {
+        {tagKeys.map(tagKey => {
           return (
             <div
               key={tagKey}
@@ -71,10 +71,10 @@ export const AnnotationStreamSelector: FC = () => {
                   {buttonText}
                 </Dropdown.Button>
               )}
-              menu={(onCollapse) => (
+              menu={onCollapse => (
                 <Dropdown.Menu onCollapse={onCollapse}>
                   <List style={{width: '100%'}}>
-                    {streams.map((stream) => (
+                    {streams.map(stream => (
                       <List.Item
                         key={stream.id}
                         value={stream}

@@ -75,14 +75,14 @@ export const QueryBuilderContext = createContext<QueryBuilderContextType>(
 )
 
 const toBuilderConfig = (cards: QueryBuilderCard[]): BuilderTagsType[] =>
-  cards.map((card) => ({
+  cards.map(card => ({
     key: card.keys.selected[0],
     values: card.values.selected.slice(0),
     aggregateFunctionType: card.aggregateFunctionType,
   }))
 
 const fromBuilderConfig = (tags: BuilderTagsType[]): QueryBuilderCard[] =>
-  tags.map((tag) => {
+  tags.map(tag => {
     const out = getDefaultCard()
     out.keys.selected = [tag.key]
     out.values.selected = [...tag.values]
@@ -110,7 +110,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
   }, [cards, setCards])
 
   const loadKeys = useCallback(
-    (idx) => {
+    idx => {
       const {buckets} = data
 
       if (!data.buckets[0] || !cards[idx]) {
@@ -121,11 +121,11 @@ export const QueryBuilderProvider: FC = ({children}) => {
       setCards(cards)
 
       const tagSelections = cards
-        .filter((card) => card.keys.selected[0] && card.values.selected.length)
-        .map((card) => {
+        .filter(card => card.keys.selected[0] && card.values.selected.length)
+        .map(card => {
           const fluxTags = card.values.selected
             .map(
-              (value) =>
+              value =>
                 `r["${card.keys.selected[0]}"] == "${value.replace(
                   /\\/g,
                   '\\\\'
@@ -143,7 +143,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
         : ''
       const previousTagSelections = cards
         .slice(0, idx)
-        .map((card) => `r._value != "${card.keys.selected[0]}"`)
+        .map(card => `r._value != "${card.keys.selected[0]}"`)
       const previousTagString = previousTagSelections.length
         ? `\n  |> filter(fn: (r) => ${previousTagSelections.join(' and ')})`
         : ''
@@ -159,10 +159,10 @@ export const QueryBuilderProvider: FC = ({children}) => {
               |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
               |> sort()
               |> limit(n: ${DEFAULT_TAG_LIMIT})`)
-        .then((resp) => {
+        .then(resp => {
           return resp.parsed.table.getColumn('_value', 'string') || []
         })
-        .then((keys) => {
+        .then(keys => {
           const key = cards[idx].keys.selected[0]
 
           if (!key) {
@@ -196,17 +196,17 @@ export const QueryBuilderProvider: FC = ({children}) => {
   )
 
   const loadValues = useCallback(
-    (idx) => {
+    idx => {
       cards[idx].values.status = RemoteDataState.Loading
       setCards(cards)
 
       const tagSelections = cards
         .slice(0, idx)
-        .filter((card) => card.keys.selected[0] && card.values.selected.length)
-        .map((card) => {
+        .filter(card => card.keys.selected[0] && card.values.selected.length)
+        .map(card => {
           const fluxTags = card.values.selected
             .map(
-              (value) =>
+              value =>
                 `r["${card.keys.selected[0]}"] == "${value.replace(
                   /\\/g,
                   '\\\\'
@@ -235,10 +235,10 @@ export const QueryBuilderProvider: FC = ({children}) => {
               }")${searchString}
               |> limit(n: ${DEFAULT_TAG_LIMIT})
               |> sort()`)
-        .then((resp) => {
+        .then(resp => {
           return resp.parsed.table.getColumn('_value', 'string') || []
         })
-        .then((values) => {
+        .then(values => {
           cards[idx].values = {
             search: cards[idx].values.search,
             status: RemoteDataState.Done,

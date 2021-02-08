@@ -61,7 +61,7 @@ const parsedResultToSchema = (parsed: FromFluxResult): unknown => {
   const len = out.length
   const measurements = out.columns._measurement?.data
   const fields = out.columns._field?.data
-  const columns = out.columnKeys.filter((key) => {
+  const columns = out.columnKeys.filter(key => {
     return filtered.reduce((acc, curr) => {
       return acc && !curr.test(key)
     }, true)

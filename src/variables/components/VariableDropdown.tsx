@@ -35,7 +35,7 @@ class VariableDropdown extends PureComponent<Props> {
       values.length === 0 ? ComponentStatus.Disabled : ComponentStatus.Default
 
     const longestItemWidth = Math.floor(
-      values.reduce(function (a, b) {
+      values.reduce(function(a, b) {
         return a.length > b.length ? a : b
       }, '').length * 9.5
     )
@@ -57,13 +57,13 @@ class VariableDropdown extends PureComponent<Props> {
             {this.selectedText}
           </Dropdown.Button>
         )}
-        menu={(onCollapse) => (
+        menu={onCollapse => (
           <Dropdown.Menu
             style={{width: `${widthLength}px`}}
             onCollapse={onCollapse}
             theme={DropdownMenuTheme.Amethyst}
           >
-            {values.map((val) => {
+            {values.map(val => {
               return (
                 <Dropdown.Item
                   key={val}

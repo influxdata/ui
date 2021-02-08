@@ -28,8 +28,8 @@ import Functions from 'src/flows/pipes/RawFluxEditor/functions'
 // Styles
 import 'src/flows/pipes/RawFluxEditor/style.scss'
 
-const FluxMonacoEditor = lazy(
-  () => import('src/shared/components/FluxMonacoEditor')
+const FluxMonacoEditor = lazy(() =>
+  import('src/shared/components/FluxMonacoEditor')
 )
 
 const Query: FC<PipeProp> = ({Context}) => {
@@ -40,7 +40,7 @@ const Query: FC<PipeProp> = ({Context}) => {
   const query = queries[activeQuery]
 
   const updateText = useCallback(
-    (text) => {
+    text => {
       const _queries = queries.slice()
       _queries[activeQuery] = {
         ...queries[activeQuery],

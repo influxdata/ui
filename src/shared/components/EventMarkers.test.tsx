@@ -50,9 +50,11 @@ describe('EventMarkers', () => {
 
     const xDomain = [1, 2]
 
-    const xScale = scaleLinear().domain(xDomain).range([1, 5])
+    const xScale = scaleLinear()
+      .domain(xDomain)
+      .range([1, 5])
 
-    const xFormatter = (x) => {
+    const xFormatter = x => {
       return String(x)
     }
 

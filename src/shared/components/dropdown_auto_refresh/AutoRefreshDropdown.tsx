@@ -65,12 +65,12 @@ export default class AutoRefreshDropdown extends Component<Props> {
               {this.selectedOptionLabel}
             </Dropdown.Button>
           )}
-          menu={(onCollapse) => (
+          menu={onCollapse => (
             <Dropdown.Menu
               onCollapse={onCollapse}
               style={{width: `${DROPDOWN_WIDTH_FULL}px`}}
             >
-              {autoRefreshOptions.map((option) => {
+              {autoRefreshOptions.map(option => {
                 if (option.type === AutoRefreshOptionType.Header) {
                   return (
                     <Dropdown.Divider
@@ -152,7 +152,7 @@ export default class AutoRefreshDropdown extends Component<Props> {
     const {selected} = this.props
 
     const selectedOption = autoRefreshOptions.find(
-      (option) => option.milliseconds === selected.interval
+      option => option.milliseconds === selected.interval
     )
 
     return selectedOption.id
@@ -162,7 +162,7 @@ export default class AutoRefreshDropdown extends Component<Props> {
     const {selected} = this.props
 
     const selectedOption = autoRefreshOptions.find(
-      (option) => option.milliseconds === selected.interval
+      option => option.milliseconds === selected.interval
     )
 
     return selectedOption.label

@@ -114,7 +114,7 @@ class OrgProfileTab extends PureComponent<Props> {
     history.push(`/orgs/${orgID}/about/rename`)
   }
 
-  private generateCopyText = (title) => (text, copySucceeded) => {
+  private generateCopyText = title => (text, copySucceeded) => {
     if (copySucceeded) {
       return copyToClipboardSuccess(text, title)
     } else {

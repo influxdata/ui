@@ -26,10 +26,10 @@ const filterEvents = (
   isUnknownVisible: boolean
 ): StatusRow[][] => {
   return eventsArray
-    .map((events) => {
+    .map(events => {
       return (
         events.length &&
-        events.filter((e) => {
+        events.filter(e => {
           return (
             (e.level === 'ok' && isOkVisible) ||
             (e.level === 'info' && isInfoVisible) ||
@@ -40,7 +40,7 @@ const filterEvents = (
         })
       )
     })
-    .filter((events) => events && events.length)
+    .filter(events => events && events.length)
 }
 
 const EventMarkers: FunctionComponent<Props> = ({

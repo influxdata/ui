@@ -44,7 +44,7 @@ export const Submit: FC = () => {
 
   let status = RemoteDataState.Done
 
-  if (statuses.every((s) => s === RemoteDataState.NotStarted)) {
+  if (statuses.every(s => s === RemoteDataState.NotStarted)) {
     status = RemoteDataState.NotStarted
   } else if (statuses.includes(RemoteDataState.Error)) {
     status = RemoteDataState.Error

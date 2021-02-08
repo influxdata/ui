@@ -20,7 +20,7 @@ describe('tokens', () => {
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
         // check out array.reduce for the nested calls here
-        cy.request('api/v2/authorizations').then((resp) => {
+        cy.request('api/v2/authorizations').then(resp => {
           expect(resp.body).to.exist
           authData.push({
             description: resp.body.authorizations[0].description,
@@ -29,13 +29,13 @@ describe('tokens', () => {
           })
 
           cy.fixture('tokens.json').then(({tokens}) => {
-            tokens.forEach((token) => {
+            tokens.forEach(token => {
               cy.createToken(
                 id,
                 token.description,
                 token.status,
                 token.permissions
-              ).then((resp) => {
+              ).then(resp => {
                 expect(resp.body).to.exist
                 authData.push({
                   description: resp.body.description,
@@ -57,7 +57,7 @@ describe('tokens', () => {
 
   it('can list tokens', () => {
     cy.get('.cf-resource-card').should('have.length', 4)
-    cy.getByTestID('token-list').then((rows) => {
+    cy.getByTestID('token-list').then(rows => {
       authData = authData.sort((a, b) =>
         // eslint-disable-next-line
         a.description < b.description
@@ -73,7 +73,9 @@ describe('tokens', () => {
           .contains(authData[i].description)
 
         if (authData[i].status) {
-          cy.getByTestID('slide-toggle').eq(i).should('have.class', 'active')
+          cy.getByTestID('slide-toggle')
+            .eq(i)
+            .should('have.class', 'active')
         } else {
           cy.getByTestID('slide-toggle')
             .eq(i)
@@ -109,10 +111,10 @@ describe('tokens', () => {
           // check for status update on backend
           cy.request(
             'api/v2/authorizations/' +
-              (authData.find(function (item) {
+              (authData.find(function(item) {
                 return item.description === 'token test 02'
               }) as any).id
-          ).then((resp) => {
+          ).then(resp => {
             expect(resp.body.status).equals('active')
           })
         })
@@ -132,10 +134,10 @@ describe('tokens', () => {
           // check for status update on backend
           cy.request(
             'api/v2/authorizations/' +
-              (authData.find(function (item) {
+              (authData.find(function(item) {
                 return item.description === 'token test 02'
               }) as any).id
-          ).then((resp) => {
+          ).then(resp => {
             expect(resp.body.status).equals('inactive')
           })
         })
@@ -152,7 +154,9 @@ describe('tokens', () => {
     cy.getByTestID('token-card token test 03').within(() => {
       cy.getByTestID('context-menu').click()
 
-      cy.getByTestID('delete-token').contains('Delete').click()
+      cy.getByTestID('delete-token')
+        .contains('Delete')
+        .click()
     })
 
     cy.get('.cf-resource-card').should('have.length', 3)
@@ -165,7 +169,9 @@ describe('tokens', () => {
       .within(() => {
         cy.getByTestID('context-menu').click()
 
-        cy.getByTestID('delete-token').contains('Delete').click()
+        cy.getByTestID('delete-token')
+          .contains('Delete')
+          .click()
       })
 
     cy.get('.cf-resource-card')
@@ -173,7 +179,9 @@ describe('tokens', () => {
       .within(() => {
         cy.getByTestID('context-menu').click()
 
-        cy.getByTestID('delete-token').contains('Delete').click()
+        cy.getByTestID('delete-token')
+          .contains('Delete')
+          .click()
       })
 
     cy.get('.cf-resource-card')
@@ -181,7 +189,9 @@ describe('tokens', () => {
       .within(() => {
         cy.getByTestID('context-menu').click()
 
-        cy.getByTestID('delete-token').contains('Delete').click()
+        cy.getByTestID('delete-token')
+          .contains('Delete')
+          .click()
       })
 
     // Assert empty state
@@ -301,7 +311,9 @@ describe('tokens', () => {
 
     // summary match
     cy.getByTestID('permissions-section').should('have.length', 4)
-    cy.getByTestID('permissions-section').contains('views').should('be.visible')
+    cy.getByTestID('permissions-section')
+      .contains('views')
+      .should('be.visible')
     cy.getByTestID('permissions-section')
       .contains('documents')
       .should('be.visible')
@@ -339,7 +351,9 @@ describe('tokens', () => {
       cy.getByTestID(`token-card ${defaultUser}'s Token`).within(() => {
         cy.getByTestID('context-menu').click()
 
-        cy.getByTestID('delete-token').contains('Delete').click()
+        cy.getByTestID('delete-token')
+          .contains('Delete')
+          .click()
       })
     })
 
@@ -491,13 +505,17 @@ describe('tokens', () => {
     cy.getByTestID('select-group')
       .eq(0)
       .within(() => {
-        cy.getByTestID('select-group--option').contains('All Buckets').click()
+        cy.getByTestID('select-group--option')
+          .contains('All Buckets')
+          .click()
       })
 
     cy.getByTestID('select-group')
       .eq(1)
       .within(() => {
-        cy.getByTestID('select-group--option').contains('All Buckets').click()
+        cy.getByTestID('select-group--option')
+          .contains('All Buckets')
+          .click()
       })
 
     // save and assert the notification
@@ -512,8 +530,12 @@ describe('tokens', () => {
     cy.getByTestID('token-name All buckets test').click()
 
     // assert that there is read and write permission
-    cy.getByTestID('permissions-section').eq(0).contains('write')
-    cy.getByTestID('permissions-section').eq(0).contains('read')
+    cy.getByTestID('permissions-section')
+      .eq(0)
+      .contains('write')
+    cy.getByTestID('permissions-section')
+      .eq(0)
+      .contains('read')
 
     cy.get('.cf-overlay--dismiss').click()
 

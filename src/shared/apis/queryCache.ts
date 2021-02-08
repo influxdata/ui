@@ -184,7 +184,7 @@ export const resetQueryCacheByQuery = (query: string): void => {
 }
 
 const hasWindowVars = (variables: VariableAssignment[]): boolean =>
-  variables.some((vari) => vari.id.name === WINDOW_PERIOD)
+  variables.some(vari => vari.id.name === WINDOW_PERIOD)
 
 export const getCachedResultsOrRunQuery = (
   orgID: string,
@@ -197,7 +197,7 @@ export const getCachedResultsOrRunQuery = (
   const usedVars = filterUnusedVarsBasedOnQuery(allVars, [query])
   const variables = sortBy(usedVars, ['name'])
 
-  const simplifiedVariables = variables.map((v) => asSimplyKeyValueVariables(v))
+  const simplifiedVariables = variables.map(v => asSimplyKeyValueVariables(v))
   const stringifiedVars = JSON.stringify(simplifiedVariables)
   // create the queryID based on the query & vars
   const hashedVariables = `${hashCode(stringifiedVars)}`
@@ -210,13 +210,13 @@ export const getCachedResultsOrRunQuery = (
   // check the cache based on text & vars
   if (cacheResults) {
     return {
-      promise: new Promise((resolve) => resolve(cacheResults)),
+      promise: new Promise(resolve => resolve(cacheResults)),
       cancel: () => {},
     }
   }
   const variableAssignments = variables
-    .map((v) => asAssignment(v))
-    .filter((v) => !!v)
+    .map(v => asAssignment(v))
+    .filter(v => !!v)
 
   let windowVars = []
 

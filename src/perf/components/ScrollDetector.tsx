@@ -15,7 +15,7 @@ export function useDetectScroll(ref: RefObject<HTMLElement>) {
   useEffect(() => {
     const current = ref.current
     const observer = new IntersectionObserver(([entry]) => {
-      setY((prevY) => {
+      setY(prevY => {
         const newY = entry.boundingClientRect.y
         if (prevY !== newY && prevY !== Infinity) {
           setScrollY('scrolled')

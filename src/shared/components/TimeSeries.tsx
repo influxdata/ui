@@ -128,8 +128,8 @@ class TimeSeries extends Component<Props, State> {
 
   public componentDidMount() {
     const {cellID, setCellMount} = this.props
-    this.observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
+    this.observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
         const {isIntersecting} = entry
         const reload =
           !this.isIntersecting && isIntersecting && this.pendingReload
@@ -226,8 +226,8 @@ class TimeSeries extends Component<Props, State> {
           cancel()
         }
       })
-      const usedVars = variables.filter((v) => v.arguments.type !== 'system')
-      const waitList = usedVars.filter((v) => v.status !== RemoteDataState.Done)
+      const usedVars = variables.filter(v => v.arguments.type !== 'system')
+      const waitList = usedVars.filter(v => v.status !== RemoteDataState.Done)
 
       // If a variable is loading, and a cell requires it, leave the cell to never resolve,
       // keeping it in a loading state until the variable is resolved
@@ -235,7 +235,7 @@ class TimeSeries extends Component<Props, State> {
         await new Promise(() => {})
       }
 
-      const vars = variables.map((v) => asAssignment(v))
+      const vars = variables.map(v => asAssignment(v))
       // Issue new queries
       this.pendingResults = queries.map(({text}) => {
         const orgID =
@@ -251,17 +251,13 @@ class TimeSeries extends Component<Props, State> {
         if (!this.hashMapMutex[queryID]) {
           this.hashMapMutex[queryID] = RunQueryPromiseMutex<RunQueryResult>()
         }
-        return this.hashMapMutex[queryID].run(
-          orgID,
-          text,
-          extern
-        ) as CancelBox<RunQueryResult>
+        return this.hashMapMutex[queryID].run(orgID, text, extern) as CancelBox<
+          RunQueryResult
+        >
       })
 
       // Wait for new queries to complete
-      const results = await Promise.all(
-        this.pendingResults.map((r) => r.promise)
-      )
+      const results = await Promise.all(this.pendingResults.map(r => r.promise))
 
       let statuses = [] as StatusRow[][]
       if (check) {
@@ -280,7 +276,7 @@ class TimeSeries extends Component<Props, State> {
         if (result.type === 'UNKNOWN_ERROR') {
           if (isDemoDataAvailabilityError(result.code, result.message)) {
             const message = demoDataErrorMessage()
-            const buttonElement: NotificationButtonElement = (onDismiss) =>
+            const buttonElement: NotificationButtonElement = onDismiss =>
               getDemoDataErrorButton(onDismiss)
 
             notify(demoDataAvailability(message, buttonElement))
@@ -301,7 +297,7 @@ class TimeSeries extends Component<Props, State> {
         }
       }
 
-      const files = (results as RunQuerySuccessResult[]).map((r) => r.csv)
+      const files = (results as RunQuerySuccessResult[]).map(r => r.csv)
       let giraffeResult
 
       if (isFlagEnabled('fluxParser')) {
@@ -378,10 +374,10 @@ const mstp = (state: AppState, props: OwnProps) => {
   // NOTE: limit the variables returned to those that are used,
   // as this prevents resending when other queries get sent
   const queries = props.queries
-    ? props.queries.map((q) => q.text).filter((t) => !!t.trim())
+    ? props.queries.map(q => q.text).filter(t => !!t.trim())
     : []
-  const vars = getVariables(state).filter((v) =>
-    queries.some((t) => isInQuery(t, v))
+  const vars = getVariables(state).filter(v =>
+    queries.some(t => isInQuery(t, v))
   )
   const variables = [
     ...vars,

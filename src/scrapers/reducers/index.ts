@@ -32,7 +32,7 @@ export const scrapersReducer = (
   state: ScrapersState = initialState(),
   action: Action
 ): ScrapersState =>
-  produce(state, (draftState) => {
+  produce(state, draftState => {
     switch (action.type) {
       case SET_SCRAPERS: {
         setResource<Scraper>(draftState, action, Scrapers)

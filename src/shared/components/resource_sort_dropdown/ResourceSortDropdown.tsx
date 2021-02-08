@@ -36,7 +36,7 @@ function ResourceSortDropdown({
   const sortDropdownItems = generateSortItems(resourceType)
 
   const {label} = sortDropdownItems.find(
-    (item) =>
+    item =>
       item.sortKey === sortKey &&
       item.sortDirection === sortDirection &&
       item.sortType === sortType
@@ -57,9 +57,9 @@ function ResourceSortDropdown({
     </Dropdown.Button>
   )
 
-  const menu = (onCollapse) => (
+  const menu = onCollapse => (
     <Dropdown.Menu onCollapse={onCollapse}>
-      {sortDropdownItems.map((item) => (
+      {sortDropdownItems.map(item => (
         <Dropdown.Item
           key={`${item.sortKey}${item.sortDirection}`}
           value={item}

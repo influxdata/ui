@@ -50,9 +50,14 @@ describe('Variables', () => {
 
     cy.get('textarea').type('1,2,3,4,5,6')
 
-    cy.getByTestID('csv-value-select-dropdown').click().contains('6').click()
+    cy.getByTestID('csv-value-select-dropdown')
+      .click()
+      .contains('6')
+      .click()
 
-    cy.get('form').contains('Create').click()
+    cy.get('form')
+      .contains('Create')
+      .click()
 
     cy.getByTestID(`variable-card--name ${variableName}`).click()
     cy.getByTestID('notification-success--dismiss').should('exist')
@@ -72,7 +77,9 @@ describe('Variables', () => {
           })
       })
 
-      cy.get('form').contains('Submit').click()
+      cy.get('form')
+        .contains('Submit')
+        .click()
     })
 
     cy.getByTestID('notification-success--dismiss').should('exist')
@@ -93,7 +100,9 @@ describe('Variables', () => {
       cy.getByTestID('map-variable-dropdown--button').click()
       cy.contains(lastMapItem).click()
 
-      cy.get('form').contains('Submit').click()
+      cy.get('form')
+        .contains('Submit')
+        .click()
     })
 
     cy.getByTestID('notification-success--dismiss').should('exist')
@@ -109,8 +118,12 @@ describe('Variables', () => {
       .contains(variableName)
 
     // Delete a variable
-    cy.getByTestID('context-delete-menu').first().click({force: true})
-    cy.getByTestID('context-delete-variable').first().click({force: true})
+    cy.getByTestID('context-delete-menu')
+      .first()
+      .click({force: true})
+    cy.getByTestID('context-delete-variable')
+      .first()
+      .click({force: true})
 
     cy.getByTestID('notification-success--dismiss').should('exist')
     cy.getByTestID('notification-success--dismiss').click()
@@ -122,7 +135,9 @@ describe('Variables', () => {
       .contains('Little Variable')
 
     // Rename the variable
-    cy.getByTestID('context-menu').first().click({force: true})
+    cy.getByTestID('context-menu')
+      .first()
+      .click({force: true})
 
     cy.getByTestID('context-rename-variable').click({force: true})
 
@@ -153,9 +168,14 @@ describe('Variables', () => {
     cy.get('textarea').type(`Astrophel Chaudhary,"bDhZbuVj5RV94NcFXZPm"
       Ochieng Benes,"YIhg6SoMKRUH8FMlHs3V"`)
 
-    cy.getByTestID('map-variable-dropdown--button').click().last().click()
+    cy.getByTestID('map-variable-dropdown--button')
+      .click()
+      .last()
+      .click()
 
-    cy.get('form').contains('Create').click()
+    cy.get('form')
+      .contains('Create')
+      .click()
 
     cy.getByTestID('notification-success--dismiss').should('exist')
     cy.getByTestID('notification-success--dismiss').click()
@@ -184,7 +204,9 @@ describe('Variables', () => {
         })
     })
 
-    cy.get('form').contains('Create').click()
+    cy.get('form')
+      .contains('Create')
+      .click()
 
     cy.getByTestID('notification-success--dismiss').should('exist')
     cy.getByTestID('notification-success--dismiss').click()
@@ -224,7 +246,7 @@ describe('Variables', () => {
       .type('this is invalid JSON')
     cy.get('button[title*="Import JSON"]').click()
     cy.getByTestID('import-overlay--textarea--error').should('have.length', 1)
-    cy.getByTestID('import-overlay--textarea').should(($s) =>
+    cy.getByTestID('import-overlay--textarea').should($s =>
       expect($s).to.contain('this is invalid JSON')
     )
     cy.getByTestID('import-overlay--textarea').type(
@@ -267,9 +289,14 @@ describe('Variables', () => {
 
     cy.get('textarea').type('1,2,3,4,5,6')
 
-    cy.getByTestID('csv-value-select-dropdown').click().contains('6').click()
+    cy.getByTestID('csv-value-select-dropdown')
+      .click()
+      .contains('6')
+      .click()
 
-    cy.get('form').contains('Create').click()
+    cy.get('form')
+      .contains('Create')
+      .click()
 
     cy.getByTestID('search-widget').type(labelName)
 
@@ -287,12 +314,18 @@ describe('Variables', () => {
       .should('have.length', 2)
       .first()
       .contains(variableName)
-    cy.getByTestID('resource-card variable').last().contains(defaultVar)
+    cy.getByTestID('resource-card variable')
+      .last()
+      .contains(defaultVar)
 
     cy.getByTestID('resource-sorter--button').click()
     cy.getByTestID('resource-sorter--name-desc').click()
 
-    cy.getByTestID('resource-card variable').first().contains(defaultVar)
-    cy.getByTestID('resource-card variable').last().contains(variableName)
+    cy.getByTestID('resource-card variable')
+      .first()
+      .contains(defaultVar)
+    cy.getByTestID('resource-card variable')
+      .last()
+      .contains(variableName)
   })
 })

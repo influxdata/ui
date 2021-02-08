@@ -96,7 +96,7 @@ const AlertsColumnHeader: FC<OwnProps & StateProps> = ({
           icon={IconFont.Search}
           placeholder={`Filter ${title}...`}
           value={searchTerm}
-          onChange={(e) => onChangeSearchTerm(e.target.value)}
+          onChange={e => onChangeSearchTerm(e.target.value)}
           testID={`filter--input ${type}`}
           tabIndex={tabIndex}
         />

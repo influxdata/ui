@@ -51,7 +51,7 @@ export class TelegrafInstructionsOverlay extends PureComponent<Props> {
       },
       collectors,
     } = this.props
-    return collectors.find((c) => c.id === id)
+    return collectors.find(c => c.id === id)
   }
 
   private handleDismiss = (): void => {

@@ -415,7 +415,7 @@ export const getRuns = (taskID: string) => async (
       throw new Error(resp.data.message)
     }
 
-    const runsWithDuration = resp.data.runs.map((run) => {
+    const runsWithDuration = resp.data.runs.map(run => {
       const finished = new Date(run.finishedAt)
       const started = new Date(run.startedAt)
 

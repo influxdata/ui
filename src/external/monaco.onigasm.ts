@@ -11,7 +11,7 @@ const DEFAULT_DEF = async () => ({
   format: 'json',
   content: await import(
     /* webpackPrefetch: 0 */ 'src/external/plaintext.tmLanguage.json'
-  ).then((data) => {
+  ).then(data => {
     return JSON.stringify(data)
   }),
 })
@@ -42,7 +42,7 @@ class TokenizerState {
 }
 
 async function loader() {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     if (wasm) {
       resolve()
       return
@@ -60,7 +60,7 @@ async function loader() {
       wasm = true
 
       const registry = new Registry({
-        getGrammarDefinition: async (scope) => {
+        getGrammarDefinition: async scope => {
           if (!grammarDefs.hasOwnProperty(scope)) {
             return await DEFAULT_DEF()
           }
@@ -70,7 +70,7 @@ async function loader() {
       })
 
       Promise.all(
-        Array.from(grammars.keys()).map(async (lang) => {
+        Array.from(grammars.keys()).map(async lang => {
           const grammar = await registry.loadGrammar(grammars.get(lang))
           window.monaco.languages.setTokensProvider(lang, {
             getInitialState: () => new TokenizerState(INITIAL),
@@ -79,7 +79,7 @@ async function loader() {
 
               return {
                 endState: new TokenizerState(res.ruleStack),
-                tokens: res.tokens.map((token) => ({
+                tokens: res.tokens.map(token => ({
                   ...token,
                   scopes: token.scopes[token.scopes.length - 1],
                 })),
@@ -88,7 +88,7 @@ async function loader() {
           })
         })
       ).then(() => {
-        queue.forEach((c) => c())
+        queue.forEach(c => c())
       })
     })
   })

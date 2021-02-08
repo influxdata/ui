@@ -139,7 +139,7 @@ export const billingReducer = (
   state: BillingState = initialState(),
   action: Action
 ): BillingState =>
-  produce(state, (draftState) => {
+  produce(state, draftState => {
     switch (action.type) {
       case 'SET_ACCOUNT': {
         draftState.account = action.account

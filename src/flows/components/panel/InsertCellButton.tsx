@@ -61,7 +61,7 @@ const InsertCellButton: FC<Props> = ({id}) => {
         position={PopoverPosition.ToTheRight}
         onShow={handlePopoverShow}
         onHide={handlePopoverHide}
-        contents={(onHide) => (
+        contents={onHide => (
           <FlexBox
             direction={FlexDirection.Column}
             alignItems={AlignItems.Stretch}

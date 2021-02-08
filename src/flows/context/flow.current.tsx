@@ -44,9 +44,8 @@ export const FlowProvider: FC = ({children}) => {
 
     flows[currentID].data.add(id, initial)
     flows[currentID].meta.add(id, {
-      title: `${
-        PIPE_DEFINITIONS[initial.type].button || 'Panel'
-      } ${++GENERATOR_INDEX}`,
+      title: `${PIPE_DEFINITIONS[initial.type].button ||
+        'Panel'} ${++GENERATOR_INDEX}`,
       visible: true,
       loading: RemoteDataState.NotStarted,
     })

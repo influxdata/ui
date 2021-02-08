@@ -80,8 +80,8 @@ export const getUserVariableNames = (
   )
 
   return contextIDs
-    .filter((v) => allIDs.includes(v))
-    .concat(allIDs.filter((v) => !contextIDs.includes(v)))
+    .filter(v => allIDs.includes(v))
+    .concat(allIDs.filter(v => !contextIDs.includes(v)))
 }
 
 // this function grabs all user defined variables
@@ -96,7 +96,7 @@ export const getVariables = (
 
       return prev
     }, [])
-    .filter((v) => !!v)
+    .filter(v => !!v)
 
   return vars
 }
@@ -107,7 +107,7 @@ export const getVariablesForDashboard = (state: AppState): Variable[] => {
   const variablesUsedByDashboard = filterUnusedVars(
     variables,
     Object.values(state.resources.views.byID).filter(
-      (variable) => variable.dashboardID === state.currentDashboard.id
+      variable => variable.dashboardID === state.currentDashboard.id
     )
   )
 
@@ -126,7 +126,7 @@ export const getAllVariables = (
       prev.push(getVariable(state, curr))
       return prev
     }, [])
-    .filter((v) => !!v)
+    .filter(v => !!v)
   return vars
 }
 
@@ -156,7 +156,7 @@ export const getVariable = (state: AppState, variableID: string): Variable => {
     const timeVars = [
       getRangeVariable(TIME_RANGE_START, range),
       getRangeVariable(TIME_RANGE_STOP, range),
-    ].map((v) => asAssignment(v))
+    ].map(v => asAssignment(v))
 
     const assignments = variables.reduce((acc, curr) => {
       if (!curr.name || !curr.selected) {

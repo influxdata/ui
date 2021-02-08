@@ -56,7 +56,7 @@ const GaugeOptions: FC<Props> = ({properties, update}) => {
                 <Input
                   testID="prefix-input"
                   value={properties.prefix}
-                  onChange={(evt) => {
+                  onChange={evt => {
                     update({prefix: evt.target.value})
                   }}
                   placeholder="%, MPH, etc."
@@ -68,7 +68,7 @@ const GaugeOptions: FC<Props> = ({properties, update}) => {
                 <Input
                   testID="suffix-input"
                   value={properties.suffix}
-                  onChange={(evt) => {
+                  onChange={evt => {
                     update({suffix: evt.target.value})
                   }}
                   placeholder="%, MPH, etc."
@@ -88,7 +88,7 @@ const GaugeOptions: FC<Props> = ({properties, update}) => {
                   testID="tickprefix-input"
                   type={InputToggleType.Checkbox}
                   value={properties.tickPrefix}
-                  onChange={(val) => {
+                  onChange={val => {
                     update({tickPrefix: val === 'false' || !!!val})
                   }}
                   size={ComponentSize.ExtraSmall}
@@ -109,7 +109,7 @@ const GaugeOptions: FC<Props> = ({properties, update}) => {
                   testID="ticksuffix-input"
                   type={InputToggleType.Checkbox}
                   value={properties.tickSuffix}
-                  onChange={(val) => {
+                  onChange={val => {
                     update({tickSuffix: val === 'false' || !!!val})
                   }}
                   size={ComponentSize.ExtraSmall}
@@ -133,7 +133,7 @@ const GaugeOptions: FC<Props> = ({properties, update}) => {
                   <Input
                     name="decimal-places"
                     placeholder="Enter a number"
-                    onChange={(evt) => {
+                    onChange={evt => {
                       setDigits(convertUserInputToNumOrNaN(evt))
                     }}
                     value={properties.decimalPlaces.digits}
@@ -150,7 +150,7 @@ const GaugeOptions: FC<Props> = ({properties, update}) => {
           <Form.Element label="Colorized Thresholds">
             <ThresholdsSettings
               thresholds={properties.colors}
-              onSetThresholds={(colors) => {
+              onSetThresholds={colors => {
                 update({colors})
               }}
             />

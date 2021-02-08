@@ -12,12 +12,12 @@ const EMPTY_STATE = {
 } as Resource<FluxResult>
 
 const DEFAULT_CONTEXT: ResultsContextType = {
-  get: (_id) => null as FluxResult,
+  get: _id => null as FluxResult,
   add: (_id, _data) => {},
   update: (_id, _data) => {},
-  remove: (_id) => {},
-  indexOf: (_id) => -1,
-  move: (_id) => {},
+  remove: _id => {},
+  indexOf: _id => -1,
+  move: _id => {},
   serialize: () => ({...EMPTY_STATE}),
 
   allIDs: [],

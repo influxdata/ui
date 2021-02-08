@@ -4,7 +4,7 @@ export const incrementCloneName = (
 ): string => {
   const root = cloneName.replace(/\s\(clone\s(\d)+\)/g, '').replace(/\)/, '')
 
-  const filteredNames = namesList.filter((n) => n.includes(root))
+  const filteredNames = namesList.filter(n => n.includes(root))
 
   const highestNumberedClone = filteredNames.reduce((acc, name) => {
     if (name.match(/\(clone(\s|\d)+\)/)) {

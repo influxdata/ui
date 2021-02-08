@@ -51,7 +51,7 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
     })
   }
 
-  private registerSpinner = (elem) => {
+  private registerSpinner = elem => {
     this._spinner = elem
 
     if (!elem) {
@@ -76,10 +76,10 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
     this._observer.observe(this._spinner)
   }
 
-  private measure = (entries) => {
+  private measure = entries => {
     if (
       entries
-        .map((e) => e.isIntersecting)
+        .map(e => e.isIntersecting)
         .reduce((prev, curr) => prev || curr, false)
     ) {
       this.setState({
@@ -109,7 +109,7 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
       <div style={{height: '100%', display: 'grid'}}>
         <div className="dashboards-card-grid">
           {sortedDashboards
-            .filter((d) => d.status === RemoteDataState.Done)
+            .filter(d => d.status === RemoteDataState.Done)
             .slice(0, pages * windowSize)
             .map(({id, name, description, labels, meta}) => (
               <DashboardCard

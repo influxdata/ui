@@ -51,15 +51,15 @@ export const getNewDashboardCell = (
   }
 
   const cells = dashboard.cells
-    .map((cellID) => state.resources.cells.byID[cellID])
-    .filter((cell) => !!cell)
+    .map(cellID => state.resources.cells.byID[cellID])
+    .filter(cell => !!cell)
 
   if (!cells.length) {
     return defaultCell
   }
 
-  const existingCellWidths = cells.map((cell) => cell.w)
-  const existingCellHeights = cells.map((cell) => cell.h)
+  const existingCellWidths = cells.map(cell => cell.w)
+  const existingCellHeights = cells.map(cell => cell.h)
 
   const mostCommonCellWidth = getMostCommonValue(existingCellWidths)
   const mostCommonCellHeight = getMostCommonValue(existingCellHeights)

@@ -23,7 +23,7 @@ const InvoiceHistoryRows: FC<Props> = ({sortedInvoices}) => {
         width: '100%',
       }}
     >
-      {sortedInvoices.map((invoice) => (
+      {sortedInvoices.map(invoice => (
         <InvoiceHistoryRow key={invoice.targetDate} invoice={invoice} />
       ))}
     </DapperScrollbars>

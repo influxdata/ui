@@ -3,7 +3,7 @@ import properties from './properties'
 import options from './options'
 import view from './view'
 
-export default (register) => {
+export default register => {
   register({
     type: 'heatmap',
     name: 'Heatmap',

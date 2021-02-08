@@ -26,7 +26,7 @@ interface Props {
   onCursorChange?: (position: Position) => void
 }
 
-const TomlEditorMonaco: FC<Props> = (props) => {
+const TomlEditorMonaco: FC<Props> = props => {
   const editorDidMount = (
     editor: monacoEditor.editor.IStandaloneCodeEditor
   ) => {

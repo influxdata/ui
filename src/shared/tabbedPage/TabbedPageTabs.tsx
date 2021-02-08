@@ -26,7 +26,7 @@ interface Props {
 const SettingsNavigation: FC<Props> = ({activeTab, tabs, onTabClick}) => {
   return (
     <Tabs orientation={Orientation.Horizontal} size={ComponentSize.Large}>
-      {tabs.map((t) => {
+      {tabs.map(t => {
         let tab = (
           <Tabs.Tab
             testID={`${t.id}--tab`}

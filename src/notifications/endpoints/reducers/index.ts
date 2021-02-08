@@ -38,7 +38,7 @@ export default (
   state: EndpointsState = initialState,
   action: Action
 ): EndpointsState =>
-  produce(state, (draftState) => {
+  produce(state, draftState => {
     switch (action.type) {
       case SET_ENDPOINTS: {
         setResource<NotificationEndpoint>(
@@ -85,9 +85,7 @@ export default (
 
         const labels = draftState.byID[endpointID].labels
 
-        draftState.byID[endpointID].labels = labels.filter(
-          (id) => id !== labelID
-        )
+        draftState.byID[endpointID].labels = labels.filter(id => id !== labelID)
 
         return
       }

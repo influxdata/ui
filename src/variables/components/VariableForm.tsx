@@ -63,7 +63,7 @@ export default class VariableForm extends PureComponent<Props, State> {
                   required={true}
                   validationFunc={this.handleNameValidation}
                 >
-                  {(status) => (
+                  {status => (
                     <Input
                       placeholder="Give your variable a name"
                       testID="variable-name-input"
@@ -89,9 +89,9 @@ export default class VariableForm extends PureComponent<Props, State> {
                       {this.typeDropdownLabel}
                     </Dropdown.Button>
                   )}
-                  menu={(onCollapse) => (
+                  menu={onCollapse => (
                     <Dropdown.Menu onCollapse={onCollapse}>
-                      {variableItemTypes.map((v) => (
+                      {variableItemTypes.map(v => (
                         <Dropdown.Item
                           key={v.type}
                           id={v.type}
@@ -145,7 +145,7 @@ export default class VariableForm extends PureComponent<Props, State> {
   private get typeDropdownLabel(): string {
     const {variableType} = this.props
 
-    return variableItemTypes.find((variable) => variable.type === variableType)
+    return variableItemTypes.find(variable => variable.type === variableType)
       .label
   }
 

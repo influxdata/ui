@@ -57,7 +57,7 @@ const TelegrafConfigOverlayForm: FC = () => {
   let telegraf
 
   if (match?.params?.id) {
-    telegraf = telegrafs.find((tel) => tel.id === match.params.id)
+    telegraf = telegrafs.find(tel => tel.id === match.params.id)
   }
 
   const [workingConfig, updateWorkingConfig] = useState<string>(

@@ -45,13 +45,13 @@ const FlowProvider: FC = ({children}) => {
   const fullFlow = useMemo(() => {
     return {
       ...flow,
-      data: _asResource(flow.data, (data) => {
+      data: _asResource(flow.data, data => {
         setFlow({
           ...flow,
           data,
         })
       }),
-      meta: _asResource(flow.meta, (meta) => {
+      meta: _asResource(flow.meta, meta => {
         setFlow({
           ...flow,
           meta,

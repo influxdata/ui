@@ -97,7 +97,7 @@ export class DefaultValueFetcher implements ValueFetcher {
     const request = runQuery(orgID, query, extern, abortController)
     event('runQuery', {context: 'variables'})
 
-    const promise = request.promise.then((result) => {
+    const promise = request.promise.then(result => {
       if (result.type !== 'SUCCESS') {
         return Promise.reject(result.message)
       }

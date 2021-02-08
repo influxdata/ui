@@ -55,7 +55,7 @@ const Table: FC<Props> = ({
       transformTableData(
         table.data,
         sort,
-        properties.fieldOptions.map((o) => ({
+        properties.fieldOptions.map(o => ({
           ...o,
           dataType: table.dataTypes[o.internalName],
         })),
@@ -111,11 +111,11 @@ const Table: FC<Props> = ({
     properties.tableOptions.verticalTimeAxis || DEFAULT_VERTICAL_TIME_AXIS
   const timeVisible =
     transformed.resolvedFieldOptions.find(
-      (f) => f.internalName === DEFAULT_TIME_FIELD.internalName
+      f => f.internalName === DEFAULT_TIME_FIELD.internalName
     )[0]?.visible || false
 
   const calculate = useCallback(
-    (width) => (column) => {
+    width => column => {
       if (needsFixing && column.index === 0) {
         return (
           transformed.columnWidths[
@@ -197,7 +197,7 @@ const Table: FC<Props> = ({
   return (
     <div
       className={tableClassName}
-      ref={(gridContainer) => {
+      ref={gridContainer => {
         if (gridContainer) {
           setTableWidth(gridContainer.clientWidth)
         }

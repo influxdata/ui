@@ -32,7 +32,7 @@ class BucketsDropdown extends PureComponent<Props> {
             {this.selectedBucketName}
           </Dropdown.Button>
         )}
-        menu={(onCollapse) => (
+        menu={onCollapse => (
           <Dropdown.Menu onCollapse={onCollapse}>
             {this.dropdownBuckets}
           </Dropdown.Menu>
@@ -49,7 +49,7 @@ class BucketsDropdown extends PureComponent<Props> {
       return 'No buckets found'
     }
 
-    return buckets.find((bucket) => bucket.id === selectedBucketID).name
+    return buckets.find(bucket => bucket.id === selectedBucketID).name
   }
 
   private get status(): ComponentStatus {
@@ -73,10 +73,10 @@ class BucketsDropdown extends PureComponent<Props> {
     }
 
     const nonSystemBuckets = buckets.filter(
-      (bucket) => !isSystemBucket(bucket.name)
+      bucket => !isSystemBucket(bucket.name)
     )
 
-    return nonSystemBuckets.map((b) => (
+    return nonSystemBuckets.map(b => (
       <Dropdown.Item
         key={b.name}
         value={b}

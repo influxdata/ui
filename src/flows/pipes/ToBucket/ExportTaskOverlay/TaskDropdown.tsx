@@ -25,11 +25,11 @@ const TaskDropdown: FC = () => {
   if (tasks.length) {
     menuItems = (
       <>
-        {tasks.map((task) => (
+        {tasks.map(task => (
           <Dropdown.Item
             key={task.name}
             value={task}
-            onClick={(task) => handleSetTask(task)}
+            onClick={task => handleSetTask(task)}
             selected={task.name === selectedTask?.name}
             title={task.name}
             wrapText={true}
@@ -58,7 +58,7 @@ const TaskDropdown: FC = () => {
     </Dropdown.Button>
   )
 
-  const menu = (onCollapse) => (
+  const menu = onCollapse => (
     <Dropdown.Menu onCollapse={onCollapse}>{menuItems}</Dropdown.Menu>
   )
 

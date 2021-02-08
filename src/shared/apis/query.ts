@@ -63,7 +63,7 @@ export const runQuery = (
 
   const promise = request
     .then(processResponse)
-    .catch((e) =>
+    .catch(e =>
       e.name === 'AbortError'
         ? Promise.reject(new CancellationError())
         : Promise.reject(e)

@@ -23,10 +23,10 @@ interface Scale {
 }
 
 const findSelectedScale = (colors: Color[]): Scale => {
-  const key = (colors: Color[]) => colors.map((color) => color.hex).join(', ')
+  const key = (colors: Color[]) => colors.map(color => color.hex).join(', ')
   const needle = key(colors)
   const selectedScale = LINE_COLOR_SCALES.find(
-    (d) => key(d.colors as Color[]) === needle
+    d => key(d.colors as Color[]) === needle
   )
 
   if (selectedScale) {
@@ -45,11 +45,11 @@ const ColorSchemeDropdown: FC<Props> = ({value, onChange}) => {
         <Dropdown.Button active={active} onClick={onClick}>
           <ColorSchemeDropdownItem
             name={selectedScale.name}
-            colors={selectedScale.colors.map((c) => c.hex)}
+            colors={selectedScale.colors.map(c => c.hex)}
           />
         </Dropdown.Button>
       )}
-      menu={(onCollapse) => (
+      menu={onCollapse => (
         <Dropdown.Menu onCollapse={onCollapse} theme={DropdownMenuTheme.Onyx}>
           {LINE_COLOR_SCALES.map(({id, name, colors}) => (
             <Dropdown.Item
@@ -61,7 +61,7 @@ const ColorSchemeDropdown: FC<Props> = ({value, onChange}) => {
             >
               <ColorSchemeDropdownItem
                 name={name}
-                colors={colors.map((c) => c.hex)}
+                colors={colors.map(c => c.hex)}
               />
             </Dropdown.Item>
           ))}

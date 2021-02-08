@@ -129,9 +129,8 @@ class ProgressBar extends PureComponent<Props, null> {
         const connectorEle = (
           <span
             key={i}
-            className={`wizard--progress-connector wizard--progress-connector--${
-              connectorStatus || ConnectorState.None
-            }`}
+            className={`wizard--progress-connector wizard--progress-connector--${connectorStatus ||
+              ConnectorState.None}`}
           />
         )
         return [...acc, stepEle, connectorEle]

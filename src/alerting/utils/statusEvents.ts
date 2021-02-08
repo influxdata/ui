@@ -45,7 +45,7 @@ export const processStatusesResponse = ({
   promise: queryPromise,
   cancel,
 }: CancelBox<RunQueryResult>): CancelBox<Row[][]> => {
-  const promise = queryPromise.then<Row[][]>((resp) => {
+  const promise = queryPromise.then<Row[][]>(resp => {
     if (resp.type !== 'SUCCESS') {
       return Promise.reject(new Error(resp.message))
     }

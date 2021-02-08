@@ -37,7 +37,7 @@ const UsageToday: FC = () => {
 
   const getUsageSparkline = () => {
     const graphInfo = GRAPH_INFO.usageStats.find(
-      (stat) => stat.title === selectedUsage
+      stat => stat.title === selectedUsage
     )
     // TODO(ariel): make sure that the CSV is an actual CSV and not the rateLimits (it might be rateLimits, but i'm not sure)
     // const csv = history[graphInfo.column]
@@ -96,7 +96,7 @@ const UsageToday: FC = () => {
           margin={ComponentSize.Small}
           alignItems={AlignItems.Stretch}
         >
-          {GRAPH_INFO.rateLimits.map((graphInfo) => {
+          {GRAPH_INFO.rateLimits.map(graphInfo => {
             return (
               <GraphTypeSwitcher
                 csv={history.rateLimits}

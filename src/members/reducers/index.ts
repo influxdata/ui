@@ -30,7 +30,7 @@ export const membersReducer = (
   state: MembersState = initialState(),
   action: Action
 ): MembersState =>
-  produce(state, (draftState) => {
+  produce(state, draftState => {
     switch (action.type) {
       case SET_MEMBERS: {
         setResource<Member>(draftState, action, Members)

@@ -51,7 +51,7 @@ describe('exportVariables', () => {
     createVariable('like', 'other=~v.target'),
   ]
 
-  examples.forEach((example) => {
+  examples.forEach(example => {
     it(`should filter vars with shared prefix: ${example.name}`, () => {
       const target = createVariable('target', 'match me!')
       const partial = createVariable('tar', 'broke!')

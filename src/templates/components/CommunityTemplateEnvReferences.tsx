@@ -43,7 +43,7 @@ class CommunityTemplateEnvReferencesUnconnected extends PureComponent<
   componentDidMount() {
     // for the case when the user selected a bucket, then minimized the section, then re-opened the section
     const previouslySelectedRef = this.props.resource.envReferences.find(
-      (ref) => {
+      ref => {
         if (this.getFieldType(ref) === 'bucket') {
           if (
             this.props.stagedTemplateEnvReferences[ref.envRefKey].value !==
@@ -56,7 +56,7 @@ class CommunityTemplateEnvReferencesUnconnected extends PureComponent<
     )
 
     if (previouslySelectedRef) {
-      const previouslySelectedBucket = this.props.buckets.find((bucket) => {
+      const previouslySelectedBucket = this.props.buckets.find(bucket => {
         if (
           bucket.name ===
           this.props.stagedTemplateEnvReferences[
@@ -85,7 +85,7 @@ class CommunityTemplateEnvReferencesUnconnected extends PureComponent<
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {this.props.resource.envReferences.map((ref) => {
+          {this.props.resource.envReferences.map(ref => {
             const fieldType = this.getFieldType(ref)
             // this is a brittle way to do this, but it's the best we have now.
             // when we have the ability to distinguish types on the flux side, we can remove this.
@@ -128,8 +128,8 @@ class CommunityTemplateEnvReferencesUnconnected extends PureComponent<
     )
   }
 
-  private createRefBucketSelectHandler = (ref) => {
-    return (event) => {
+  private createRefBucketSelectHandler = ref => {
+    return event => {
       let selectedBucketID = ''
       if (event.hasOwnProperty('id')) {
         selectedBucketID = event.id
@@ -145,8 +145,8 @@ class CommunityTemplateEnvReferencesUnconnected extends PureComponent<
     }
   }
 
-  private handleRefChange = (ref) => {
-    return (event) => {
+  private handleRefChange = ref => {
+    return event => {
       this.props.updateTemplateEnvReferences(
         ref.envRefKey,
         ref.resourceField,

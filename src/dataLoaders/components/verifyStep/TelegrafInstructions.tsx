@@ -17,9 +17,9 @@ export interface Props {
 class TelegrafInstructions extends PureComponent<Props> {
   public render() {
     const {token, configID} = this.props
-    const configScript = `telegraf --config ${this.origin}/api/v2/telegrafs/${
-      configID || ''
-    }`
+    const configScript = `telegraf --config ${
+      this.origin
+    }/api/v2/telegrafs/${configID || ''}`
     const exportToken = `export INFLUX_TOKEN=${token || '<INFLUX_TOKEN>'}`
     return (
       <div data-testid="setup-instructions" className="telegraf-instructions">

@@ -1,7 +1,7 @@
 import {useMemo} from 'react'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-export const useAxisTicksGenerator = (properties) =>
+export const useAxisTicksGenerator = properties =>
   useMemo(() => {
     const {generateXAxisTicks, generateYAxisTicks} = properties
     const result = {
@@ -15,12 +15,12 @@ export const useAxisTicksGenerator = (properties) =>
     if (isFlagEnabled('axisTicksGenerator')) {
       if (Array.isArray(generateXAxisTicks)) {
         generateXAxisTicks.forEach(
-          (tickOption) => (result[tickOption] = properties[tickOption])
+          tickOption => (result[tickOption] = properties[tickOption])
         )
       }
       if (Array.isArray(generateYAxisTicks)) {
         generateYAxisTicks.forEach(
-          (tickOption) => (result[tickOption] = properties[tickOption])
+          tickOption => (result[tickOption] = properties[tickOption])
         )
       }
     }

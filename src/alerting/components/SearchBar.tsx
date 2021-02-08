@@ -45,7 +45,7 @@ const SearchBar: FC<Props> = ({
     setIsFocused(false)
   }
 
-  const handleClickOutside = (e) => {
+  const handleClickOutside = e => {
     const didClickSuggestion =
       e.target.classList.contains(SUGGESTION_CLASS) ||
       e.target.parentNode.classList.contains(SUGGESTION_CLASS)
@@ -64,7 +64,7 @@ const SearchBar: FC<Props> = ({
           style={{width: '100%'}}
           value={state.searchInput}
           status={inputStatus}
-          onChange={(e) => search(state, dispatch, loadRows, e.target.value)}
+          onChange={e => search(state, dispatch, loadRows, e.target.value)}
           onFocus={() => setIsFocused(true)}
           testID="check-status-input"
         />
@@ -85,7 +85,7 @@ const SearchBar: FC<Props> = ({
           noScrollY={true}
         >
           <DropdownDivider text="Examples" />
-          {exampleSearches.map((s) => (
+          {exampleSearches.map(s => (
             <DropdownItem
               key={s}
               value={s}

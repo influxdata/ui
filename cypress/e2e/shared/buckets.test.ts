@@ -21,13 +21,17 @@ describe('Buckets', () => {
       cy.getByTestID('Create Bucket').click()
       cy.getByTestID('overlay--container').within(() => {
         cy.getByInputName('name').type(newBucket)
-        cy.get('.cf-button').contains('Create').click()
+        cy.get('.cf-button')
+          .contains('Create')
+          .click()
       })
 
       cy.getByTestID(`bucket--card--name ${newBucket}`).should('exist')
 
       // Add a label
-      cy.getByTestID('inline-labels--add').first().click()
+      cy.getByTestID('inline-labels--add')
+        .first()
+        .click()
 
       const labelName = 'l1'
       cy.getByTestID('inline-labels--popover--contents').type(labelName)
@@ -145,7 +149,7 @@ describe('Buckets', () => {
               // get the bucket list
               cy.get('.cf-dropdown-item--children')
                 .should('have.length', 6)
-                .then((el) => {
+                .then(el => {
                   const results = []
                   // output in an array
                   el.text((index, currentContent) => {
@@ -184,7 +188,9 @@ describe('Buckets', () => {
       // checks the consent input
       cy.getByTestID('delete-checkbox').check({force: true})
       // can delete
-      cy.getByTestID('confirm-delete-btn').should('not.be.disabled').click()
+      cy.getByTestID('confirm-delete-btn')
+        .should('not.be.disabled')
+        .click()
     })
 
     // this is currently not producing success, its actually failing, im going to write a separate issue for this
@@ -237,7 +243,7 @@ describe('Buckets', () => {
     })
   })
 
-  describe('add data', function () {
+  describe('add data', function() {
     it('can write data to buckets', () => {
       cy.get('@org').then(({id: orgID}: Organization) => {
         // writing a well-formed line is accepted
@@ -305,7 +311,7 @@ describe('Buckets', () => {
       const smallFile = 'data.txt'
       cy.fixture(smallFile, 'base64')
         .then(Cypress.Blob.base64StringToBlob)
-        .then((blob) => {
+        .then(blob => {
           const type = 'plain/text'
           const testFile = new File([blob], smallFile, {type})
           const event = {dataTransfer: {files: [testFile]}, force: true}

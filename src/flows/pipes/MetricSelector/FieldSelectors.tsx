@@ -33,7 +33,7 @@ const FieldSelectors: FC<Props> = ({fields}) => {
 
   return (
     <>
-      {fields.map((field) => (
+      {fields.map(field => (
         <List.Item
           key={field}
           value={field}

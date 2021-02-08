@@ -36,9 +36,9 @@ const OrgSwitcherOverlay: FC<Props> = ({orgs, onClose, currentOrg}) => {
       <Overlay.Body>
         <p className="org-switcher--prompt">Choose an organization</p>
         <SortingHat list={orgs} sortKey="name" direction={Sort.Ascending}>
-          {(sortedOrgs) => (
+          {sortedOrgs => (
             <div className="org-switcher--list">
-              {sortedOrgs.map((org) => (
+              {sortedOrgs.map(org => (
                 <OrgSwitcherItem
                   key={org.id}
                   orgID={org.id}

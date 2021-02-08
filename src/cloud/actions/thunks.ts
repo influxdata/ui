@@ -98,7 +98,7 @@ export const getDemoDataBucketMembership = ({
 
     const createdDashboard = await createDashboardFromTemplate(template, orgID)
 
-    const buttonElement: NotificationButtonElement = (onDismiss) =>
+    const buttonElement: NotificationButtonElement = onDismiss =>
       getDemoDataSuccessButton(
         `/orgs/${orgID}/dashboards/${createdDashboard.id}`,
         onDismiss
@@ -120,9 +120,9 @@ export const getDemoDataBucketMembership = ({
   }
 }
 
-export const deleteDemoDataBucketMembership = (bucket: DemoBucket) => async (
-  dispatch
-) => {
+export const deleteDemoDataBucketMembership = (
+  bucket: DemoBucket
+) => async dispatch => {
   try {
     await deleteDemoDataBucketMembershipApi(bucket.id)
 

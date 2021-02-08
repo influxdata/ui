@@ -83,14 +83,14 @@ const DeleteDataForm: FC<Props> = ({
   })
 
   useEffect(() => {
-    if (filters.every((filter) => filter.key !== '' && filter.value !== '')) {
+    if (filters.every(filter => filter.key !== '' && filter.value !== '')) {
       handleDeleteDataPreview()
     }
   }, [filters]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const formatPredicatesForPreview = (predicates: Filter[]) => {
     let result = ''
-    predicates.forEach((predicate) => {
+    predicates.forEach(predicate => {
       const {key, equality, value} = predicate
       result += `\n|> filter(fn: (r) => r.${key} ${
         equality === '=' ? '==' : '!='
@@ -187,7 +187,7 @@ const DeleteDataForm: FC<Props> = ({
               <Panel.Body size={ComponentSize.ExtraSmall}>
                 {files && files.length > 0 && files[0].length > 1 && (
                   <FluxTablesTransform files={files}>
-                    {(tables) => {
+                    {tables => {
                       const [table] = tables
                       if (table && table.data) {
                         let [headers, bodyData] = table.data
@@ -225,7 +225,7 @@ const DeleteDataForm: FC<Props> = ({
                   testID="delete-checkbox"
                   label="I understand that this cannot be undone."
                   checked={isSerious}
-                  onSetChecked={(isSerious) => setIsSerious(isSerious)}
+                  onSetChecked={isSerious => setIsSerious(isSerious)}
                 />
                 <DeleteButton
                   status={deletionStatus}

@@ -29,7 +29,7 @@ export const getDemoDataBuckets = async (): Promise<Bucket[]> => {
     throw new Error('Could not reach demodata endpoint')
   }
 
-  return buckets.filter((b) => b.type == 'user') as Bucket[] // remove returned _tasks and _monitoring buckets
+  return buckets.filter(b => b.type == 'user') as Bucket[] // remove returned _tasks and _monitoring buckets
 }
 
 // member's id is looked up from the session token passed with the request.
@@ -94,7 +94,7 @@ export const fetchDemoDataBuckets = async (): Promise<Bucket[]> => {
       throw new Error(resp.data.message)
     }
 
-    return resp.data.buckets.map((b) => ({
+    return resp.data.buckets.map(b => ({
       ...b,
       type: 'demodata' as 'demodata',
       labels: [],

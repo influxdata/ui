@@ -37,7 +37,7 @@ class GaugeChart extends PureComponent<Props> {
 
     return (
       <LatestValueTransform table={result.table} allowString={false}>
-        {(latestValue) => (
+        {latestValue => (
           <AutoSizer>
             {({width, height}) => (
               <div className="gauge">

@@ -19,7 +19,7 @@ export const endpointSchema = new schema.Entity(
     labels: arrayOfLabels,
   },
   {
-    processStrategy: (point) => addEndpointDefaults(point),
+    processStrategy: point => addEndpointDefaults(point),
   }
 )
 

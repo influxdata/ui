@@ -47,7 +47,7 @@ class RenameBucketForm extends PureComponent<Props, State> {
           validationFunc={this.handleValidation}
           value={bucket.name}
         >
-          {(status) => (
+          {status => (
             <>
               <FlexBox
                 alignItems={AlignItems.Center}
@@ -105,7 +105,7 @@ class RenameBucketForm extends PureComponent<Props, State> {
       return 'Name is required'
     }
 
-    if (this.props.buckets.find((b) => b.name === bucketName)) {
+    if (this.props.buckets.find(b => b.name === bucketName)) {
       return 'This bucket name is taken'
     }
   }
@@ -137,7 +137,7 @@ const mstp = (state: AppState, props: RouterProps) => {
 
   const startBucket = getByID<OwnBucket>(state, ResourceType.Buckets, bucketID)
   const buckets = getAll<Bucket>(state, ResourceType.Buckets).filter(
-    (b) => b.id !== bucketID
+    b => b.id !== bucketID
   )
 
   return {

@@ -32,7 +32,7 @@ const viewsReducer = (
   state: ViewsState = initialState(),
   action: Action
 ): ViewsState =>
-  produce(state, (draftState) => {
+  produce(state, draftState => {
     switch (action.type) {
       case SET_DASHBOARD: {
         setResource<View>(draftState, action, ResourceType.Views)
@@ -45,7 +45,7 @@ const viewsReducer = (
       }
       case SET_VIEWS_AND_CELLS: {
         const {viewsArray} = action
-        viewsArray.forEach((view) => {
+        viewsArray.forEach(view => {
           setResource<View>(draftState, view, ResourceType.Views)
         })
 

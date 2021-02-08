@@ -275,7 +275,7 @@ export const cloneRule = (draftRule: NotificationRuleDraft) => async (
 
     const rule = draftRuleToPostRule(draftRule)
 
-    const allRuleNames = rules.map((r) => r.name)
+    const allRuleNames = rules.map(r => r.name)
 
     const clonedName = incrementCloneName(allRuleNames, rule.name)
 

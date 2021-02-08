@@ -70,9 +70,9 @@ const findOrgID = (text, buckets) => {
       acc.push(node)
     }
 
-    Object.values(node).forEach((val) => {
+    Object.values(node).forEach(val => {
       if (Array.isArray(val)) {
-        val.forEach((_val) => {
+        val.forEach(_val => {
           _search(_val, acc)
         })
       } else if (typeof val === 'object') {
@@ -84,10 +84,10 @@ const findOrgID = (text, buckets) => {
   }
 
   const queryBuckets = _search(ast).map(
-    (node) => node?.arguments[0]?.properties[0]?.value.value
+    node => node?.arguments[0]?.properties[0]?.value.value
   )
 
-  const bucket = buckets.find((buck) => queryBuckets.includes(buck.name))
+  const bucket = buckets.find(buck => queryBuckets.includes(buck.name))
 
   return bucket?.orgID
 }
@@ -114,11 +114,11 @@ export const QueryProvider: FC = ({children}) => {
   const vars = useMemo(() => {
     if (flow?.range) {
       return variables
-        .map((v) => asAssignment(v))
+        .map(v => asAssignment(v))
         .concat(getTimeRangeVars(flow.range))
     }
 
-    variables.map((v) => asAssignment(v))
+    variables.map(v => asAssignment(v))
   }, [variables, flow?.range])
 
   const generateMap = (withSideEffects?: boolean): Stage[] => {
@@ -132,7 +132,7 @@ export const QueryProvider: FC = ({children}) => {
           requirements: {},
         }
 
-        const create = (text) => {
+        const create = text => {
           if (text && PREVIOUS_REGEXP.test(text) && stages.length) {
             stage.text = text.replace(
               PREVIOUS_REGEXP,
@@ -167,7 +167,7 @@ export const QueryProvider: FC = ({children}) => {
 
         return stages
       }, [])
-      .map((queryStruct) => {
+      .map(queryStruct => {
         const queryText =
           Object.entries(queryStruct.requirements)
             .map(([key, value]) => `${key} = (\n${value}\n)\n\n`)
@@ -189,14 +189,14 @@ export const QueryProvider: FC = ({children}) => {
     const result = runQuery(orgID, text, extern)
     setQueryByHashID(queryID, result)
     return result.promise
-      .then((raw) => {
+      .then(raw => {
         if (raw.type !== 'SUCCESS') {
           throw new Error(raw.message)
         }
 
         return raw
       })
-      .then((raw) => {
+      .then(raw => {
         return {
           source: text,
           raw: raw.csv,
@@ -218,7 +218,7 @@ export const QueryProvider: FC = ({children}) => {
 
   let status = RemoteDataState.Done
 
-  if (statuses.every((s) => s === RemoteDataState.NotStarted)) {
+  if (statuses.every(s => s === RemoteDataState.NotStarted)) {
     status = RemoteDataState.NotStarted
   } else if (statuses.includes(RemoteDataState.Error)) {
     status = RemoteDataState.Error
@@ -240,19 +240,19 @@ export const QueryProvider: FC = ({children}) => {
     event('Running Notebook QueryAll')
 
     Promise.all(
-      map.map((stage) => {
-        stage.instances.forEach((pipeID) => {
+      map.map(stage => {
+        stage.instances.forEach(pipeID => {
           flow.meta.update(pipeID, {loading: RemoteDataState.Loading})
         })
         return query(stage.text)
-          .then((response) => {
-            stage.instances.forEach((pipeID) => {
+          .then(response => {
+            stage.instances.forEach(pipeID => {
               flow.meta.update(pipeID, {loading: RemoteDataState.Done})
               forceUpdate(pipeID, response)
             })
           })
-          .catch((e) => {
-            stage.instances.forEach((pipeID) => {
+          .catch(e => {
+            stage.instances.forEach(pipeID => {
               forceUpdate(pipeID, {
                 error: e.message,
               })
@@ -265,7 +265,7 @@ export const QueryProvider: FC = ({children}) => {
         event('run_notebook_success', {runMode})
         dispatch(notify(notebookRunSuccess(runMode, PROJECT_NAME)))
       })
-      .catch((e) => {
+      .catch(e => {
         event('run_notebook_fail', {runMode})
         dispatch(notify(notebookRunFail(runMode, PROJECT_NAME)))
 

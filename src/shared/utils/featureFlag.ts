@@ -33,7 +33,7 @@ export const FeatureFlag: FunctionComponent<{
 
 export const getUserFlags = () => activeFlags(getStore().getState())
 
-const orderObject = (unordered) => {
+const orderObject = unordered => {
   return Object.keys(unordered)
     .sort()
     .reduce((obj, key) => {

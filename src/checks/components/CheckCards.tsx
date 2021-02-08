@@ -36,8 +36,8 @@ const CheckCards: FunctionComponent<Props> = ({
   onCreateThreshold,
   onCreateDeadman,
 }) => {
-  const cards = (cs) => cs.map((c) => <CheckCard key={c.id} check={c} />)
-  const body = (filtered) => (
+  const cards = cs => cs.map(c => <CheckCard key={c.id} check={c} />)
+  const body = filtered => (
     <ResourceList.Body
       emptyState={
         <EmptyChecksList
@@ -53,7 +53,7 @@ const CheckCards: FunctionComponent<Props> = ({
   )
   const filteredChecks = (
     <FilterChecks list={checks} searchKeys={['name']} searchTerm={searchTerm}>
-      {(filtered) => body(filtered)}
+      {filtered => body(filtered)}
     </FilterChecks>
   )
 

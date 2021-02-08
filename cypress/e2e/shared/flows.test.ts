@@ -9,7 +9,7 @@ describe('Flows', () => {
           cy.visit(`${orgs}/${id}`)
           cy.getByTestID('tree-nav')
 
-          cy.window().then((win) => {
+          cy.window().then(win => {
             win.influx.set('notebooks', true)
           })
 
@@ -21,7 +21,9 @@ describe('Flows', () => {
 
   // TODO: unskip when no longer blocked by feature flag
   it.skip('CRUD a flow from the index page', () => {
-    cy.getByTestID('create-flow--button').first().click()
+    cy.getByTestID('create-flow--button')
+      .first()
+      .click()
 
     cy.getByTestID('page-title').click()
     cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
@@ -32,7 +34,9 @@ describe('Flows', () => {
 
     cy.getByTestID('add-flow-btn--visualization').click()
 
-    cy.getByTestID('flows-delete-cell').eq(1).click()
+    cy.getByTestID('flows-delete-cell')
+      .eq(1)
+      .click()
 
     cy.getByTestID('time-machine-submit-button').click()
 
@@ -42,7 +46,9 @@ describe('Flows', () => {
 
     cy.getByTestID('slide-toggle').click()
 
-    cy.get('.flow-panel--header').eq(0).click()
+    cy.get('.flow-panel--header')
+      .eq(0)
+      .click()
 
     // test for presentation mode state
 
@@ -51,7 +57,9 @@ describe('Flows', () => {
 
   it('can create a bucket from the metric selector and verify it is selected', () => {
     const newBucketName = 'IDontGiveABuck'
-    cy.getByTestID('create-flow--button').first().click()
+    cy.getByTestID('create-flow--button')
+      .first()
+      .click()
 
     cy.getByTestID('flow-bucket-selector')
       .click()

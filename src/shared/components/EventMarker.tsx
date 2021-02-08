@@ -27,7 +27,7 @@ const findMaxLevel = (event: StatusRow[]) => {
     'ok',
     'unknown',
   ]
-  const eventLevels = event.map((e) => e.level)
+  const eventLevels = event.map(e => e.level)
   for (const l of levels) {
     if (eventLevels.includes(l)) {
       return l
@@ -53,7 +53,7 @@ const EventMarker: FC<Props> = ({xScale, xDomain, events, xFormatter}) => {
   const level = findMaxLevel(events)
   const markerClass = `event-marker--line__${level.toLowerCase()}`
 
-  const formattedEvents = events.map((e) => ({...e, time: xFormatter(e.time)}))
+  const formattedEvents = events.map(e => ({...e, time: xFormatter(e.time)}))
 
   return (
     isInDomain(time, xDomain) && (

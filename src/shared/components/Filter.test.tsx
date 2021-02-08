@@ -18,11 +18,11 @@ function setup<T>(override?, stateOverride = resources) {
 
   return renderWithRedux(
     <Filter {...props}>
-      {(filtered) =>
+      {filtered =>
         filtered.map((item, index) => <TestListItem key={index} {...item} />)
       }
     </Filter>,
-    (s) => ({...s, ...stateOverride})
+    s => ({...s, ...stateOverride})
   )
 }
 

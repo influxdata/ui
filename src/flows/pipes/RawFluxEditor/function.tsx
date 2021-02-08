@@ -36,7 +36,7 @@ const FunctionTooltipContents: FC<TooltipProps> = ({func}) => {
   if (func.args.length > 0) {
     argComponent = (
       <>
-        {func.args.map((a) => (
+        {func.args.map(a => (
           <div className="flux-function-docs--arguments" key={a.name}>
             <span>{a.name}:</span>
             <span>{a.type}</span>

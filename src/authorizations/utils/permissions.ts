@@ -100,7 +100,7 @@ export const specificBucketsPermissions = (
   buckets: Bucket[],
   permission: Permission['action']
 ): Permission[] => {
-  return buckets.map((b) => {
+  return buckets.map(b => {
     return {
       action: permission,
       resource: {
@@ -130,10 +130,10 @@ export const toggleSelectedBucket = (
   bucketName: string,
   selectedBuckets: string[]
 ): string[] => {
-  const isSelected = selectedBuckets.find((n) => n === bucketName)
+  const isSelected = selectedBuckets.find(n => n === bucketName)
 
   if (isSelected) {
-    return selectedBuckets.filter((n) => n !== bucketName)
+    return selectedBuckets.filter(n => n !== bucketName)
   }
 
   return [...selectedBuckets, bucketName]

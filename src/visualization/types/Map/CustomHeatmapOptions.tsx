@@ -35,7 +35,7 @@ export const CustomHeatMapOptions: FC<Props> = ({properties, update}) => {
           properties.layers[0].radius ??
           Math.floor((HeatmapRadiusRange.Min + HeatmapRadiusRange.Max) / 2)
         }
-        onChange={(event) =>
+        onChange={event =>
           handleSetHeatmapRadius(parseFloat(event.target.value))
         }
       />

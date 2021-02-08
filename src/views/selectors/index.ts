@@ -14,10 +14,10 @@ export const getViewsForDashboard = (
     dashboardID
   )
 
-  const cellIDs = new Set(dashboard.cells.map((cellID) => cellID))
+  const cellIDs = new Set(dashboard.cells.map(cellID => cellID))
 
   const views = Object.values(state.resources.views.byID).filter(
-    (view) => view && cellIDs.has(view.cellID)
+    view => view && cellIDs.has(view.cellID)
   )
 
   return views

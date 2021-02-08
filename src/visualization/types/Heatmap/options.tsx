@@ -59,7 +59,7 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
     update({binSize: val})
   }
 
-  const numericColumns = results.table.columnKeys.filter((key) => {
+  const numericColumns = results.table.columnKeys.filter(key => {
     if (key === 'result' || key === 'table') {
       return false
     }
@@ -102,7 +102,7 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
             <SelectDropdown
               options={numericColumns}
               selectedOption={xColumn || 'Build a query before selecting...'}
-              onSelect={(xColumn) => {
+              onSelect={xColumn => {
                 update({xColumn})
               }}
               testID="dropdown-x"
@@ -117,7 +117,7 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
             <SelectDropdown
               options={numericColumns}
               selectedOption={yColumn || 'Build a query before selecting...'}
-              onSelect={(yColumn) => {
+              onSelect={yColumn => {
                 update({yColumn})
               }}
               testID="dropdown-y"
@@ -130,7 +130,7 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
           </Form.Element>
           <Form.Element label="Time Format">
             <SelectDropdown
-              options={FORMAT_OPTIONS.map((option) => option.text)}
+              options={FORMAT_OPTIONS.map(option => option.text)}
               selectedOption={resolveTimeFormat(properties.timeFormat)}
               onSelect={(format: string) => {
                 update({timeFormat: format})
@@ -142,7 +142,7 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
             <HexColorSchemeDropdown
               colorSchemes={HEATMAP_COLOR_SCHEMES}
               selectedColorScheme={properties.colors}
-              onSelectColorScheme={(colors) => {
+              onSelectColorScheme={colors => {
                 update({colors})
               }}
             />
@@ -166,7 +166,7 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
           <Form.Element label="X Axis Label">
             <Input
               value={properties.xAxisLabel}
-              onChange={(e) => {
+              onChange={e => {
                 update({xAxisLabel: e.target.value})
               }}
             />
@@ -176,7 +176,7 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
               <Form.Element label="X Tick Prefix">
                 <Input
                   value={properties.xPrefix}
-                  onChange={(evt) => {
+                  onChange={evt => {
                     update({xPrefix: evt.target.value})
                   }}
                 />
@@ -186,7 +186,7 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
               <Form.Element label="X Tick Suffix">
                 <Input
                   value={properties.xSuffix}
-                  onChange={(evt) => {
+                  onChange={evt => {
                     update({xSuffix: evt.target.value})
                   }}
                 />
@@ -203,7 +203,7 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
           />
           <AutoDomainInput
             domain={properties.xDomain as [number, number]}
-            onSetDomain={(domain) => {
+            onSetDomain={domain => {
               setDomain('x', domain)
             }}
             label="X Axis Domain"
@@ -218,7 +218,7 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
           <Form.Element label="Y Axis Label">
             <Input
               value={properties.yAxisLabel}
-              onChange={(e) => {
+              onChange={e => {
                 update({yAxisLabel: e.target.value})
               }}
             />
@@ -229,7 +229,7 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
                 <Input
                   value={properties.yPrefix}
                   placeholder="%, MPH, etc."
-                  onChange={(evt) => {
+                  onChange={evt => {
                     update({yPrefix: evt.target.value})
                   }}
                 />
@@ -240,7 +240,7 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
                 <Input
                   value={properties.ySuffix}
                   placeholder="%, MPH, etc."
-                  onChange={(evt) => {
+                  onChange={evt => {
                     update({ySuffix: evt.target.value})
                   }}
                 />
@@ -257,7 +257,7 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
           />
           <AutoDomainInput
             domain={properties.yDomain as [number, number]}
-            onSetDomain={(domain) => {
+            onSetDomain={domain => {
               setDomain('y', domain)
             }}
             label="Y Axis Domain"

@@ -67,7 +67,7 @@ const InnerView: FC<Props> = ({
   )
 }
 
-const View: FC<Props> = (props) => (
+const View: FC<Props> = props => (
   <ErrorBoundary>
     <ViewLoadingSpinner loading={props.loading} />
     <InnerView {...props} />

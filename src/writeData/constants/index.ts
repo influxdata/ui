@@ -46,7 +46,7 @@ export const sectionContainsMatchingItems = (
   section: WriteDataSection,
   searchTerm: string
 ): boolean => {
-  const matches = section.items.filter((item) =>
+  const matches = section.items.filter(item =>
     doesItemMatchSearchTerm(item.name, searchTerm)
   )
 

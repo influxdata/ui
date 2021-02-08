@@ -18,8 +18,8 @@ interface Props {
 const FilterEndpoints = FilterList<NotificationEndpoint>()
 
 const EndpointCards: FC<Props> = ({endpoints, searchTerm}) => {
-  const cards = (endpoints) =>
-    endpoints.map((endpoint) => (
+  const cards = endpoints =>
+    endpoints.map(endpoint => (
       <EndpointCard key={endpoint.id} endpoint={endpoint} />
     ))
 
@@ -29,7 +29,7 @@ const EndpointCards: FC<Props> = ({endpoints, searchTerm}) => {
       searchKeys={['name']}
       searchTerm={searchTerm}
     >
-      {(filteredEndpoints) => (
+      {filteredEndpoints => (
         <ResourceList.Body
           emptyState={<EmptyEndpointList searchTerm={searchTerm} />}
         >

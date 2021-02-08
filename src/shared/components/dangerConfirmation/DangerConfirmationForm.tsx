@@ -42,7 +42,7 @@ class DangerConfirmationForm extends PureComponent<Props> {
             <>
               <p>{this.props.message}</p>
               <ul>
-                {this.props.effectedItems.map((item) => (
+                {this.props.effectedItems.map(item => (
                   <li key={item}>{item}</li>
                 ))}
               </ul>

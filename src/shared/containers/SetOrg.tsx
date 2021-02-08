@@ -90,7 +90,7 @@ const SetOrg: FC<Props> = ({
 }) => {
   const [loading, setLoading] = useState(RemoteDataState.Loading)
   const dispatch = useDispatch()
-  const foundOrg = orgs.find((o) => o.id === orgID)
+  const foundOrg = orgs.find(o => o.id === orgID)
   const firstOrgID = orgs[0]?.id
 
   useEffect(() => {

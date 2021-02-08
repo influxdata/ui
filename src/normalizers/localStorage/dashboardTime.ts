@@ -10,7 +10,7 @@ import {RangeState} from 'src/dashboards/reducers/ranges'
 const isCorrectType = (bound: any) => isString(bound) || isNull(bound)
 
 export const getLocalStateRangesAsArray = (ranges: any[]): RangeState => {
-  const normalizedRanges = ranges.filter((r) => {
+  const normalizedRanges = ranges.filter(r => {
     if (!isObject(r)) {
       return false
     }

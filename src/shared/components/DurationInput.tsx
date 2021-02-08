@@ -33,7 +33,7 @@ const DurationInput: FC<Props> = ({
   submitInvalid = true,
   showDivider = true,
   testID = 'duration-input',
-  validFunction = (_) => false,
+  validFunction = _ => false,
 }) => {
   const [isFocused, setIsFocused] = useState(false)
 
@@ -50,7 +50,7 @@ const DurationInput: FC<Props> = ({
     setIsFocused(false)
   }
 
-  const handleClickOutside = (e) => {
+  const handleClickOutside = e => {
     const didClickSuggestion =
       e.target.classList.contains(SUGGESTION_CLASS) ||
       e.target.parentNode.classList.contains(SUGGESTION_CLASS)
@@ -83,7 +83,7 @@ const DurationInput: FC<Props> = ({
           placeholder={placeholder}
           value={inputValue}
           status={inputStatus}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={e => onChange(e.target.value)}
           onFocus={() => setIsFocused(true)}
           testID={testID}
         />
@@ -91,7 +91,7 @@ const DurationInput: FC<Props> = ({
       {isFocused && (
         <DropdownMenu className="duration-input--menu" noScrollX={true}>
           {showDivider && <DropdownDivider text="Examples" />}
-          {suggestions.map((s) => (
+          {suggestions.map(s => (
             <DropdownItem
               key={s}
               value={s}

@@ -37,11 +37,11 @@ const FriendlyQueryError: FC<Props> = ({error}) => {
   }
 
   let type = 'integers'
-  let suggestedFunc = FUNCTIONS.find((func) => func.name === 'mean')
+  let suggestedFunc = FUNCTIONS.find(func => func.name === 'mean')
 
   if (isStringType) {
     type = 'strings'
-    suggestedFunc = FUNCTIONS.find((func) => func.name === 'last')
+    suggestedFunc = FUNCTIONS.find(func => func.name === 'last')
   }
 
   const friendlyError = `${selectedFunction.name} cannot be applied to ${type}, try selecting ${suggestedFunc.name}`

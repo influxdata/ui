@@ -44,7 +44,7 @@ const CellsDropdown: FC = () => {
 
   useEffect(() => {
     if (selectedDashboard) {
-      getViewsForDashboard(selectedDashboard.id).then((res) => {
+      getViewsForDashboard(selectedDashboard.id).then(res => {
         setCells(res)
       })
     }
@@ -65,7 +65,7 @@ const CellsDropdown: FC = () => {
           <Dropdown.Item
             key={`${cell.name}${i}`}
             value={cell}
-            onClick={(cell) => handleSetCell(cell)}
+            onClick={cell => handleSetCell(cell)}
             selected={cell.name === selectedCell?.name}
             title={cell.name}
             wrapText={true}
@@ -96,7 +96,7 @@ const CellsDropdown: FC = () => {
     </Dropdown.Button>
   )
 
-  const menu = (onCollapse) => (
+  const menu = onCollapse => (
     <Dropdown.Menu onCollapse={onCollapse}>{menuItems}</Dropdown.Menu>
   )
 

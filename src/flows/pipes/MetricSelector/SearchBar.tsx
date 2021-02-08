@@ -24,7 +24,7 @@ const SearchBar: FC = () => {
       size={ComponentSize.Medium}
       value={searchTerm}
       placeholder="Filter data by measurement, field, or tag ..."
-      onChange={(e) => handleSetSearch(e.target.value)}
+      onChange={e => handleSetSearch(e.target.value)}
     />
   )
 }

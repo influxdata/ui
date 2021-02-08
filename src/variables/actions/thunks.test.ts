@@ -69,7 +69,7 @@ describe('hydrateVariables', () => {
     const getState = jest.fn(() => getMockAppState())
 
     fetchMock.mockResponse(() => {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         resolve('')
       })
     })
@@ -96,7 +96,7 @@ describe('hydrateVariables', () => {
     )
 
     fetchMock.mockResponse(() => {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         resolve('')
       })
     })
@@ -119,7 +119,7 @@ describe('hydrateVariables', () => {
     )
 
     fetchMock.mockResponse(() => {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         resolve('')
       })
     })
@@ -147,7 +147,7 @@ describe('hydrateVariables', () => {
     )
 
     fetchMock.mockResponse(() => {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         resolve('')
       })
     })
@@ -175,7 +175,7 @@ describe('hydrateVariables', () => {
     )
 
     fetchMock.mockResponse(() => {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         resolve('')
       })
     })

@@ -18,12 +18,12 @@ interface Props {
 const FilterRules = FilterList<NotificationRuleDraft>()
 
 const NotificationRuleCards: FC<Props> = ({rules, searchTerm}) => {
-  const cards = (rules) =>
-    rules.map((nr) => <NotificationRuleCard key={nr.id} rule={nr} />)
+  const cards = rules =>
+    rules.map(nr => <NotificationRuleCard key={nr.id} rule={nr} />)
 
   const filteredCards = (
     <FilterRules list={rules} searchKeys={['name']} searchTerm={searchTerm}>
-      {(filtered) => (
+      {filtered => (
         <ResourceList.Body
           emptyState={<EmptyNotificationRulesList searchTerm={searchTerm} />}
         >

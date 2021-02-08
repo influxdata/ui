@@ -39,7 +39,7 @@ const makeResponse = (status, data, respName, ...args) => {
 }
 
 export const getOrgsUsers = (): Promise<GetOrgsUsersResult> => {
-  const data = users.map((email) => ({id: uuid.v4(), email, role: 'owner'}))
+  const data = users.map(email => ({id: uuid.v4(), email, role: 'owner'}))
 
   return makeResponse(200, data, 'getOrgUsers')
 }

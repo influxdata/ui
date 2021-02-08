@@ -2,7 +2,7 @@
   View Options Styles
   ------------------------------------------------------------------------------
 */
-@import "src/style/modules";
+@import 'src/style/modules';
 
 .view-options--wrap {
   flex: 0 0 (420px - $cf-marg-b);
@@ -16,7 +16,7 @@
   padding: $cf-marg-d;
 
   > .cf-grid--container > .cf-grid--row > .cf-grid--column {
-      width: 100% !important;
+    width: 100% !important;
   }
 }
 

@@ -171,13 +171,13 @@ class SaveAsCellForm extends PureComponent<Props, State> {
     const viewWithProps: View = {...view, name: cellName}
 
     try {
-      targetDashboardIDs.forEach((dashID) => {
+      targetDashboardIDs.forEach(dashID => {
         if (dashID === DashboardTemplate.id) {
           onCreateDashboardWithView(orgID, newDashboardName, viewWithProps)
           return
         }
 
-        const selectedDashboard = dashboards.find((d) => d.id === dashID)
+        const selectedDashboard = dashboards.find(d => d.id === dashID)
         onCreateCellWithView(selectedDashboard.id, viewWithProps)
       })
     } catch (error) {

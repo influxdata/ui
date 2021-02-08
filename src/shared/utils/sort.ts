@@ -28,7 +28,7 @@ export function getSortedResources<T>(
   if (sortKey && sortDirection) {
     return orderBy<T>(
       resourceList,
-      (r) => orderByType(get(r, sortKey), sortType),
+      r => orderByType(get(r, sortKey), sortType),
       [sortDirection]
     )
   }

@@ -30,7 +30,7 @@ export const BucketContext = React.createContext<BucketContextType>(
 
 let GLOBAL_LOADING = false
 
-const lockAndLoad = async (grabber) => {
+const lockAndLoad = async grabber => {
   GLOBAL_LOADING = true
   await grabber()
   GLOBAL_LOADING = false

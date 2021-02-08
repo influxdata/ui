@@ -118,7 +118,7 @@ class TasksPage extends PureComponent<Props, State> {
                   searchTerm={searchTerm}
                   searchKeys={['name', 'labels[].name']}
                 >
-                  {(ts) => (
+                  {ts => (
                     <TasksList
                       searchTerm={searchTerm}
                       tasks={ts}
@@ -224,7 +224,7 @@ class TasksPage extends PureComponent<Props, State> {
 
   private get filteredTasks(): Task[] {
     const {tasks, showInactive} = this.props
-    const matchingTasks = tasks.filter((t) => {
+    const matchingTasks = tasks.filter(t => {
       let activeFilter = true
       if (!showInactive) {
         activeFilter = t.status === 'active'
@@ -243,7 +243,7 @@ class TasksPage extends PureComponent<Props, State> {
   private get hiddenTaskAlert(): JSX.Element {
     const {showInactive, tasks} = this.props
 
-    const hiddenCount = tasks.filter((t) => t.status === 'inactive').length
+    const hiddenCount = tasks.filter(t => t.status === 'inactive').length
 
     const allTasksAreHidden = hiddenCount === tasks.length
 

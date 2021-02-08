@@ -16,11 +16,11 @@ export const getVisibleAnnotationStreams = (
   state: AppState
 ): AnnotationStream[] => {
   const visibleStreams = state.annotations.visibleStreamsByID
-  const filtered = MOCK_ANNOTATION_STREAMS.filter((stream) =>
+  const filtered = MOCK_ANNOTATION_STREAMS.filter(stream =>
     visibleStreams.includes(stream.id)
   )
 
-  return sortBy(filtered, (stream) => stream.name)
+  return sortBy(filtered, stream => stream.name)
 }
 
 export const getHiddenAnnotationStreams = (
@@ -28,8 +28,8 @@ export const getHiddenAnnotationStreams = (
 ): AnnotationStream[] => {
   const visibleStreams = state.annotations.visibleStreamsByID
   const filtered = MOCK_ANNOTATION_STREAMS.filter(
-    (stream) => !visibleStreams.includes(stream.id)
+    stream => !visibleStreams.includes(stream.id)
   )
 
-  return sortBy(filtered, (stream) => stream.name)
+  return sortBy(filtered, stream => stream.name)
 }

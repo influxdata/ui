@@ -28,7 +28,7 @@ interface Props extends VisualizationOptionProps {
 
 const HistogramOptions: FC<Props> = ({properties, results, update}) => {
   const availableGroupColumns = results.table.columnKeys.filter(
-    (name) => !['_value', '_time', 'table'].includes(name)
+    name => !['_value', '_time', 'table'].includes(name)
   )
 
   const groupDropdownStatus = availableGroupColumns.length
@@ -37,7 +37,7 @@ const HistogramOptions: FC<Props> = ({properties, results, update}) => {
 
   const xColumn = defaultXColumn(results.table, properties.xColumn)
 
-  const numericColumns = results.table.columnKeys.filter((key) => {
+  const numericColumns = results.table.columnKeys.filter(key => {
     if (key === 'result' || key === 'table') {
       return false
     }
@@ -79,17 +79,17 @@ const HistogramOptions: FC<Props> = ({properties, results, update}) => {
 
   if (
     properties.fillColumns &&
-    properties.fillColumns.every((col) => availableGroupColumns.includes(col))
+    properties.fillColumns.every(col => availableGroupColumns.includes(col))
   ) {
     fillColumns = properties.fillColumns
   }
 
   const onSelectFillColumns = (option: string) => {
-    const columnExists = fillColumns.find((col) => col === option)
+    const columnExists = fillColumns.find(col => col === option)
     let updatedColumns = fillColumns
 
     if (columnExists) {
-      updatedColumns = fillColumns.filter((fc) => fc !== option)
+      updatedColumns = fillColumns.filter(fc => fc !== option)
     } else {
       updatedColumns = [...fillColumns, option]
     }
@@ -110,7 +110,7 @@ const HistogramOptions: FC<Props> = ({properties, results, update}) => {
             <SelectDropdown
               options={numericColumns}
               selectedOption={xColumn || 'Build a query before selecting...'}
-              onSelect={(xColumn) => {
+              onSelect={xColumn => {
                 update({xColumn})
               }}
               testID="dropdown-x"
@@ -139,7 +139,7 @@ const HistogramOptions: FC<Props> = ({properties, results, update}) => {
           <Form.Element label="Color Scheme">
             <ColorSchemeDropdown
               value={properties.colors}
-              onChange={(colors) => {
+              onChange={colors => {
                 update({colors})
               }}
             />
@@ -151,12 +151,12 @@ const HistogramOptions: FC<Props> = ({properties, results, update}) => {
                   {properties.position}
                 </Dropdown.Button>
               )}
-              menu={(onCollapse) => (
+              menu={onCollapse => (
                 <Dropdown.Menu onCollapse={onCollapse}>
                   <Dropdown.Item
                     id="overlaid"
                     value="overlaid"
-                    onClick={(position) => {
+                    onClick={position => {
                       update({position})
                     }}
                     selected={properties.position === 'overlaid'}
@@ -166,7 +166,7 @@ const HistogramOptions: FC<Props> = ({properties, results, update}) => {
                   <Dropdown.Item
                     id="stacked"
                     value="stacked"
-                    onClick={(position) => {
+                    onClick={position => {
                       update({position})
                     }}
                     selected={properties.position === 'stacked'}
@@ -192,7 +192,7 @@ const HistogramOptions: FC<Props> = ({properties, results, update}) => {
                   placeholder="Enter a number"
                   type={InputType.Number}
                   min={0}
-                  onChange={(evt) => {
+                  onChange={evt => {
                     update({binCount: convertUserInputToNumOrNaN(evt)})
                   }}
                 />
@@ -209,12 +209,12 @@ const HistogramOptions: FC<Props> = ({properties, results, update}) => {
           <Form.Element label="X Axis Label">
             <Input
               value={properties.xAxisLabel}
-              onChange={(e) => update({xAxisLabel: e.target.value})}
+              onChange={e => update({xAxisLabel: e.target.value})}
             />
           </Form.Element>
           <AutoDomainInput
             domain={properties.xDomain as [number, number]}
-            onSetDomain={(domain) => {
+            onSetDomain={domain => {
               setDomain('x', domain)
             }}
             label="X Axis Domain"

@@ -60,7 +60,7 @@ class LoadDataNavigation extends PureComponent<Props> {
       },
     ]
 
-    const activeTabName = tabs.find((t) => t.id === activeTab).text
+    const activeTabName = tabs.find(t => t.id === activeTab).text
 
     return (
       <Tabs
@@ -69,7 +69,7 @@ class LoadDataNavigation extends PureComponent<Props> {
         dropdownBreakpoint={872}
         dropdownLabel={activeTabName}
       >
-        {tabs.map((t) => {
+        {tabs.map(t => {
           let tabElement = (
             <Tabs.Tab
               testID={`${t.id}--tab`}

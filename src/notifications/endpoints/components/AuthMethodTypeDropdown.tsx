@@ -37,7 +37,7 @@ const AuthMethodTypeDropdown: FC<Props> = ({selectedType, onSelectType}) => {
     </Dropdown.Item>
   ))
 
-  const selected = types.find((t) => t.type === selectedType)
+  const selected = types.find(t => t.type === selectedType)
 
   if (!selected) {
     throw new Error(
@@ -55,7 +55,7 @@ const AuthMethodTypeDropdown: FC<Props> = ({selectedType, onSelectType}) => {
     </Dropdown.Button>
   )
 
-  const menu = (onCollapse) => (
+  const menu = onCollapse => (
     <Dropdown.Menu onCollapse={onCollapse}>{items}</Dropdown.Menu>
   )
 

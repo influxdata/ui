@@ -18,7 +18,7 @@ export const validateVariableName = (
   const lowerName = varName.toLocaleLowerCase()
 
   const reservedMatch = reservedVarNames.find(
-    (r) => r.toLocaleLowerCase() === lowerName
+    r => r.toLocaleLowerCase() === lowerName
   )
 
   if (!!reservedMatch) {
@@ -28,7 +28,7 @@ export const validateVariableName = (
   }
 
   const matchingName = variables.find(
-    (v) => v.name.toLocaleLowerCase() === lowerName
+    v => v.name.toLocaleLowerCase() === lowerName
   )
 
   if (!!matchingName) {

@@ -90,7 +90,7 @@ class TokensTab extends PureComponent<Props, State> {
           searchTerm={searchTerm}
           searchKeys={this.searchKeys}
         >
-          {(filteredAuths) => (
+          {filteredAuths => (
             <TokenList
               auths={filteredAuths}
               emptyState={this.emptyState}

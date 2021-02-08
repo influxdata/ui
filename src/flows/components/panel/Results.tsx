@@ -82,9 +82,9 @@ const Results: FC = () => {
       hiddenText="Results hidden"
       toggleVisibilityEnabled={true}
       height={height}
-      onUpdateHeight={(height) => setHeight(height)}
+      onUpdateHeight={height => setHeight(height)}
       visibility={visibility}
-      onUpdateVisibility={(visibility) => setVisibility(visibility)}
+      onUpdateVisibility={visibility => setVisibility(visibility)}
     >
       <div className="query-results">
         <ResultsPagination

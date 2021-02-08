@@ -54,7 +54,7 @@ const BucketSelector: FC<Props> = ({testID = 'flow-bucket-selector'}) => {
           testID={`${testID}--create`}
         />
         <Dropdown.Divider />
-        {buckets.map((bucket) => (
+        {buckets.map(bucket => (
           <Dropdown.Item
             key={bucket.name}
             value={bucket}
@@ -88,7 +88,7 @@ const BucketSelector: FC<Props> = ({testID = 'flow-bucket-selector'}) => {
     </Dropdown.Button>
   )
 
-  const menu = (onCollapse) => (
+  const menu = onCollapse => (
     <Dropdown.Menu onCollapse={onCollapse}>{menuItems}</Dropdown.Menu>
   )
 

@@ -39,7 +39,7 @@ const mstp = (state: AppState) => {
   const buckets = getSortedBuckets(state)
 
   return {
-    bucketNames: buckets.map((bucket) => bucket.name),
+    bucketNames: buckets.map(bucket => bucket.name),
   }
 }
 

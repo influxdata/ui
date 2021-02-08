@@ -54,7 +54,7 @@ const Usage: FC = () => {
 
   let loading = RemoteDataState.NotStarted
 
-  if (statuses.every((s) => s === RemoteDataState.Done)) {
+  if (statuses.every(s => s === RemoteDataState.Done)) {
     loading = RemoteDataState.Done
   } else if (statuses.includes(RemoteDataState.Error)) {
     loading = RemoteDataState.Error

@@ -53,8 +53,8 @@ const AlertHistoryIndex: FC<Props> = ({
 
   const loadRows = useMemo(() => {
     return historyType === 'statuses'
-      ? (options) => loadStatuses(orgID, options)
-      : (options) => loadNotifications(orgID, options)
+      ? options => loadStatuses(orgID, options)
+      : options => loadNotifications(orgID, options)
   }, [orgID, historyType])
 
   const fields =
@@ -70,7 +70,7 @@ const AlertHistoryIndex: FC<Props> = ({
     >
       <ResourceIDsContext.Provider value={resourceIDs}>
         <EventViewer loadRows={loadRows} initialState={getInitialState()}>
-          {(props) => (
+          {props => (
             <Page
               titleTag="Check Statuses | InfluxDB 2.0"
               className="alert-history-page"

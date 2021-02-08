@@ -15,10 +15,10 @@ export interface Props {
 
 const ViewTypeDropdown: FC<Props> = ({viewType, onUpdateType}) => {
   const items = Object.values(SUPPORTED_VISUALIZATIONS)
-    .filter((def) => !def.disabled)
-    .filter((def) => !def.featureFlag || isFlagEnabled(def.featureFlag))
+    .filter(def => !def.disabled)
+    .filter(def => !def.featureFlag || isFlagEnabled(def.featureFlag))
     .sort((a, b) => a.name.localeCompare(b.name))
-    .map((def) => (
+    .map(def => (
       <Dropdown.Item
         key={`view-type--${def.type}`}
         testID={`view-type--${def.type}`}
@@ -54,7 +54,7 @@ const ViewTypeDropdown: FC<Props> = ({viewType, onUpdateType}) => {
           </div>
         </Dropdown.Button>
       )}
-      menu={(onCollapse) => (
+      menu={onCollapse => (
         <Dropdown.Menu onCollapse={onCollapse} theme={DropdownMenuTheme.Onyx}>
           {items}
         </Dropdown.Menu>

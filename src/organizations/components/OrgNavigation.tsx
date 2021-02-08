@@ -58,7 +58,7 @@ class OrgNavigation extends PureComponent<Props> {
 
     return (
       <Tabs orientation={Orientation.Horizontal} size={ComponentSize.Large}>
-        {tabs.map((t) => {
+        {tabs.map(t => {
           let isActive = t.id === activeTab
           let tab = <></>
           if (t.id === 'members-oss' || t.id === 'members-cloud') {
@@ -73,7 +73,7 @@ class OrgNavigation extends PureComponent<Props> {
                 key={t.id}
                 text={t.text}
                 id={t.id}
-                linkElement={(className) => (
+                linkElement={className => (
                   <a href={t.href} className={className} />
                 )}
                 active={isActive}
@@ -85,7 +85,7 @@ class OrgNavigation extends PureComponent<Props> {
                 key={t.id}
                 text={t.text}
                 id={t.id}
-                linkElement={(className) => (
+                linkElement={className => (
                   <Link to={t.link} className={className} />
                 )}
                 active={isActive}

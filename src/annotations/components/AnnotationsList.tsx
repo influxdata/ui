@@ -41,7 +41,7 @@ export const AnnotationsList: FC<Props> = ({
   return (
     <ResourceList>
       <ResourceList.Body emptyState={emptyState}>
-        {sortedAnnotationStreams.map((stream) => (
+        {sortedAnnotationStreams.map(stream => (
           <AnnotationCard key={stream.id} annotationStream={stream} />
         ))}
       </ResourceList.Body>

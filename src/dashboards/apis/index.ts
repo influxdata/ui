@@ -47,13 +47,13 @@ export const cloneUtilFunc = async (
   oldDashID: string,
   clonedDashID: string
 ) => {
-  const pendingViews = cells.map((cell) =>
+  const pendingViews = cells.map(cell =>
     api
       .getDashboardsCellsView({
         dashboardID: oldDashID,
         cellID: cell.id,
       })
-      .then((res) => {
+      .then(res => {
         return {
           ...res,
           cellID: cell.id,
@@ -62,13 +62,13 @@ export const cloneUtilFunc = async (
   )
   const views = await Promise.all(pendingViews)
 
-  if (views.length > 0 && views.some((v) => v.status !== 200)) {
+  if (views.length > 0 && views.some(v => v.status !== 200)) {
     throw new Error('An error occurred cloning the dashboard')
   }
 
-  return views.map(async (v) => {
+  return views.map(async v => {
     const view = v.data as View
-    const cell = cells.find((c) => c.id === view.id)
+    const cell = cells.find(c => c.id === view.id)
 
     if (cell) {
       const newCell = await api.postDashboardsCell({

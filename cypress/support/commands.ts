@@ -16,7 +16,7 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
         })
     })
   \*/
-  return cy.setupUser().then((response) => {
+  return cy.setupUser().then(response => {
     // const route = Cypress.env('inkind') ? '/' : '/api/v2/signin'
     wrapDefaultUser()
       .then(() => wrapDefaultPassword())
@@ -40,7 +40,7 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
               })
               .then(() => cy.get('#submit-login').click())
               .then(() => {
-                cy.get('body').then(($body) => {
+                cy.get('body').then($body => {
                   /**
                    * we are conditionally rendering this test case since it's only
                    * relevant to CLOUD tests in order to click the `Grant Access` button
@@ -67,7 +67,7 @@ export const wrapEnvironmentVariablesForCloud = (): Cypress.Chainable<Cypress.Re
       method: 'GET',
       url: '/api/v2/orgs',
     })
-    .then((orgsResponse) => {
+    .then(orgsResponse => {
       const org = orgsResponse.body.orgs[0] as Organization
       cy.wrap(org).as('org')
 
@@ -75,10 +75,10 @@ export const wrapEnvironmentVariablesForCloud = (): Cypress.Chainable<Cypress.Re
         method: 'GET',
         url: '/api/v2/buckets',
         qs: {orgID: org.id},
-      }).then((bucketsResponse) => {
+      }).then(bucketsResponse => {
         const buckets = bucketsResponse.body.buckets as Array<Bucket>
         const bucket = buckets.find(
-          (b) =>
+          b =>
             b.orgID === org.id &&
             b.name !== '_tasks' &&
             b.name !== '_monitoring'
@@ -102,7 +102,7 @@ export const wrapDefaultBucket = (): Cypress.Chainable => {
   return cy
     .wrap('defbuck')
     .as('defaultBucket')
-    .then((defaultBucket) => {
+    .then(defaultBucket => {
       cy.wrap('selector-list '.concat(defaultBucket)).as(
         'defaultBucketListSelector'
       )
@@ -158,7 +158,7 @@ export const createView = (
   dbID: string,
   cellID: string
 ): Cypress.Chainable<Cypress.Response> => {
-  return cy.fixture('view').then((view) => {
+  return cy.fixture('view').then(view => {
     return cy.request({
       method: 'PATCH',
       url: `/api/v2/dashboards/${dbID}/cells/${cellID}/view`,
@@ -502,7 +502,7 @@ export const setupUser = (): Cypress.Chainable<Cypress.Response> => {
 }
 
 export const flush = () => {
-  cy.request('/debug/flush').then((response) => {
+  cy.request('/debug/flush').then(response => {
     expect(response.status).to.eq(200)
   })
 }
@@ -518,7 +518,7 @@ export const lines = (numLines = 3) => {
     .map((_, i) => i)
     .reverse()
 
-  const incrementingTimes = decendingValues.map((val) => {
+  const incrementingTimes = decendingValues.map(val => {
     return now - offset_ms * val
   })
 
@@ -620,7 +620,7 @@ export const clickAttached = (subject?: JQuery<HTMLElement>) => {
     return
   }
 
-  cy.wrap(subject).should(($el) => {
+  cy.wrap(subject).should($el => {
     // ensure the element is attached
     expect(Cypress.dom.isDetached($el)).to.be.false
 

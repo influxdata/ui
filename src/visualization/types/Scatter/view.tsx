@@ -77,8 +77,8 @@ const ScatterPlot: FunctionComponent<Props> = ({
     columnKeys.includes(xColumn) &&
     yColumn &&
     columnKeys.includes(yColumn) &&
-    fillColumns.every((col) => columnKeys.includes(col)) &&
-    symbolColumns.every((col) => columnKeys.includes(col))
+    fillColumns.every(col => columnKeys.includes(col)) &&
+    symbolColumns.every(col => columnKeys.includes(col))
 
   if (!isValidView) {
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
@@ -87,7 +87,7 @@ const ScatterPlot: FunctionComponent<Props> = ({
   const colorHexes =
     properties.colors && properties.colors.length
       ? properties.colors
-      : DEFAULT_LINE_COLORS.map((c) => c.hex)
+      : DEFAULT_LINE_COLORS.map(c => c.hex)
 
   const xFormatter = getFormatter(result.table.getColumnType(xColumn), {
     prefix: properties.xPrefix,

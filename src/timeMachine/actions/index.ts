@@ -365,7 +365,7 @@ export const editActiveQueryWithBuilderSync = (): EditActiveQueryWithBuilderActi
   type: 'EDIT_ACTIVE_QUERY_WITH_BUILDER',
 })
 
-export const editActiveQueryWithBuilder = () => (dispatch) => {
+export const editActiveQueryWithBuilder = () => dispatch => {
   dispatch(editActiveQueryWithBuilderSync())
   dispatch(saveAndExecuteQueries())
 }
@@ -378,7 +378,7 @@ export const resetActiveQueryWithBuilder = (): ResetActiveQueryWithBuilder => ({
   type: 'RESET_QUERY_AND_EDIT_WITH_BUILDER',
 })
 
-export const resetActiveQuerySwitchToBuilder = () => (dispatch) => {
+export const resetActiveQuerySwitchToBuilder = () => dispatch => {
   dispatch(resetActiveQueryWithBuilder())
   dispatch(saveAndExecuteQueries())
 }

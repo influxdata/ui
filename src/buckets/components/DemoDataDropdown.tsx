@@ -32,11 +32,11 @@ const DemoDataDropdown: FC<Props> = ({
     return null
   }
 
-  const sortedBuckets = sortBy(demoDataBuckets, (d) => {
+  const sortedBuckets = sortBy(demoDataBuckets, d => {
     return d.name.toLocaleLowerCase()
   })
 
-  const dropdownItems = sortedBuckets.map((b) => {
+  const dropdownItems = sortedBuckets.map(b => {
     if (ownBucketsByID[b.id]) {
       return (
         <Dropdown.Item
@@ -95,7 +95,7 @@ const DemoDataDropdown: FC<Props> = ({
           Add Demo Data
         </Dropdown.Button>
       )}
-      menu={(onCollapse) => (
+      menu={onCollapse => (
         <Dropdown.Menu onCollapse={onCollapse}>{dropdownItems}</Dropdown.Menu>
       )}
     />

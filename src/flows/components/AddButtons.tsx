@@ -57,7 +57,7 @@ const AddButtons: FC<Props> = ({index, onInsert}) => {
   const pipeFamilies = Object.entries(
     Object.values(PIPE_DEFINITIONS)
       .filter(
-        (def) =>
+        def =>
           !def.disabled && (!def.featureFlag || isFlagEnabled(def.featureFlag))
       )
       .reduce((acc, def) => {
@@ -83,10 +83,10 @@ const AddButtons: FC<Props> = ({index, onInsert}) => {
     return acc
   }, {})
 
-  const cellFamilies = SUPPORTED_FAMILIES.filter((fam) =>
+  const cellFamilies = SUPPORTED_FAMILIES.filter(fam =>
     pipeFamilies.hasOwnProperty(fam.family)
-  ).map((fam) => {
-    const pipes = pipeFamilies[fam.family].map((def) => {
+  ).map(fam => {
+    const pipes = pipeFamilies[fam.family].map(def => {
       return (
         <Button
           className={`flows-add-cell-${def.type}`}

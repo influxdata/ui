@@ -21,7 +21,7 @@ export const validateLabelUniqueness = (
   }
 
   const isNameUnique = !labelNames.find(
-    (labelName) => labelName.toLowerCase() === name.toLowerCase()
+    labelName => labelName.toLowerCase() === name.toLowerCase()
   )
 
   if (!isNameUnique) {

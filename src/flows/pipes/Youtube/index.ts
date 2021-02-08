@@ -1,7 +1,7 @@
 import View from './view'
 import './style.scss'
 
-export default (register) => {
+export default register => {
   register({
     type: 'youtube',
     family: 'test',

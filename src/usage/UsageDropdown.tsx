@@ -11,10 +11,10 @@ type Props = {
 
 const UsageDropdown: FC<Props> = ({selectedUsage, setSelectedUsage}) => {
   const options = GRAPH_INFO.usageStats
-    .filter((stat) =>
+    .filter(stat =>
       stat.pricingVersions.includes(DUMMY_PRICING_VERSION_TO_DELETE)
     )
-    .map((stat) => stat.title)
+    .map(stat => stat.title)
 
   return (
     <SelectDropdown

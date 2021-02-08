@@ -39,7 +39,7 @@ export const orgsReducer = (
   state: OrgsState = initialState(),
   action: Action
 ) =>
-  produce(state, (draftState) => {
+  produce(state, draftState => {
     switch (action.type) {
       case SET_ORGS: {
         setResource<Organization>(draftState, action, Orgs)

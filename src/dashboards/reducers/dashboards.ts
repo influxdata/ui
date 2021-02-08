@@ -51,7 +51,7 @@ export const dashboardsReducer = (
   state: DashboardsState = initialState(),
   action: Action | CellAction
 ): DashboardsState => {
-  return produce(state, (draftState) => {
+  return produce(state, draftState => {
     switch (action.type) {
       case SET_DASHBOARDS: {
         setResource<Dashboard>(draftState, action, ResourceType.Dashboards)
@@ -90,7 +90,7 @@ export const dashboardsReducer = (
 
         const {cells} = draftState.byID[dashboardID]
 
-        draftState.byID[dashboardID].cells = cells.filter((cID) => cID !== id)
+        draftState.byID[dashboardID].cells = cells.filter(cID => cID !== id)
 
         return
       }
@@ -145,7 +145,7 @@ export const dashboardsReducer = (
         const {labels} = draftState.byID[dashboardID]
 
         draftState.byID[dashboardID].labels = labels.filter(
-          (label) => label !== labelID
+          label => label !== labelID
         )
 
         return

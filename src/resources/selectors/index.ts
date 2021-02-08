@@ -17,7 +17,7 @@ export const getAll = <R>(
 ): R[] => {
   const allIDs: string[] = resources[resource].allIDs
   const byID: {[uuid: string]: R} = resources[resource].byID
-  return (allIDs ?? []).map((id) => byID[id])
+  return (allIDs ?? []).map(id => byID[id])
 }
 
 export const getAllTasks = (state: AppState): Task[] =>
@@ -47,6 +47,6 @@ export const getByID = <R>(
 
 export const getLabels = (state: AppState, labelIDs: string[]): Label[] => {
   return labelIDs
-    .map((labelID) => getByID<Label>(state, ResourceType.Labels, labelID))
-    .filter((label) => !!label)
+    .map(labelID => getByID<Label>(state, ResourceType.Labels, labelID))
+    .filter(label => !!label)
 }

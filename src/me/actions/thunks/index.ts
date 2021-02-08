@@ -13,7 +13,7 @@ import {setMe} from 'src/me/actions/creators'
 // Reducers
 import {MeState} from 'src/me/reducers'
 
-export const getMe = () => async (dispatch) => {
+export const getMe = () => async dispatch => {
   try {
     const user = await client.users.me()
     updateReportingContext({userID: user.id, userEmail: user.name})

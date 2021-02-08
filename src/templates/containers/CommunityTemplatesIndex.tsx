@@ -202,7 +202,7 @@ class UnconnectedCommunityTemplatesIndex extends Component<Props, State> {
         <Switch>
           <Route
             path={`${templatesPath}/import`}
-            render={(props) => {
+            render={props => {
               return (
                 <CommunityTemplateInstallOverlay
                   {...props}
@@ -258,14 +258,14 @@ class UnconnectedCommunityTemplatesIndex extends Component<Props, State> {
     }
   }
 
-  private handleTemplateChange = (event) => {
+  private handleTemplateChange = event => {
     const validationMessage = validateTemplateURL(event.target.value)
 
     this.setValidationMessage(validationMessage)
     this.props.setStagedTemplateUrl(event.target.value)
   }
 
-  private handleInputKeyPress = (event) => {
+  private handleInputKeyPress = event => {
     if (event.key === 'Enter') {
       this.startTemplateInstall()
     }

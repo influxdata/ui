@@ -43,7 +43,7 @@ export default class BucketAddDataButton extends PureComponent<Props> {
           position={PopoverPosition.ToTheRight}
           triggerRef={this.triggerRef}
           distanceFromTrigger={8}
-          contents={(onHide) => (
+          contents={onHide => (
             <div className="bucket-add-data" onClick={onHide}>
               <div className="bucket-add-data--option" onClick={onAddCollector}>
                 <div className="bucket-add-data--option-header">

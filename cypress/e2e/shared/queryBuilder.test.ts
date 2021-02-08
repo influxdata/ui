@@ -170,7 +170,7 @@ describe('The Query Builder', () => {
 
       cy.getByTestID('builder-card')
         .last()
-        .then(($lastBuilderCard) => {
+        .then($lastBuilderCard => {
           $lastBuilderCard.find('.cf-list-item--text').each((index, $item) => {
             expect($item.innerHTML).to.be.a('string')
             groupableColumns.push($item.innerHTML)
@@ -191,7 +191,7 @@ describe('The Query Builder', () => {
     beforeEach(() => {
       cy.get('@org').then((org: Organization) => {
         cy.createDashboard(org.id).then(({body}) => {
-          cy.createCell(body.id).then((cellResp) => {
+          cy.createCell(body.id).then(cellResp => {
             const dbID = body.id
             const orgID = org.id
             const cellID = cellResp.body.id
@@ -216,7 +216,9 @@ describe('The Query Builder', () => {
       cy.getByTestID('empty-graph--no-queries').should('exist')
       cy.contains('Submit').click()
       cy.getByTestID('giraffe-layer-line').should('exist')
-      cy.getByTestID('overlay').contains('Name this Cell').click()
+      cy.getByTestID('overlay')
+        .contains('Name this Cell')
+        .click()
       cy.get('[placeholder="Name this Cell"]').type('A better name!')
       cy.get('.veo-contents').click() // click out of inline editor
       cy.getByTestID('save-cell--button').click()
@@ -226,7 +228,9 @@ describe('The Query Builder', () => {
       })
 
       cy.getByTestID('giraffe-layer-line').should('exist')
-      cy.getByTestID('overlay').contains('A better name!').click()
+      cy.getByTestID('overlay')
+        .contains('A better name!')
+        .click()
 
       cy.get('[placeholder="Name this Cell"]').type(
         "Uncle Moe's Family Feedbag{enter}"

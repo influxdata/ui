@@ -135,7 +135,7 @@ class DashboardCard extends PureComponent<Props> {
     onDeleteDashboard(id, name)
   }
 
-  private handleClickDashboard = (e) => {
+  private handleClickDashboard = e => {
     const {
       onResetViews,
       history,

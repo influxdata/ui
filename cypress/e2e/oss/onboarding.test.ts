@@ -51,7 +51,7 @@ describe('Onboarding', () => {
     cy.getByTestID('nav-step--welcome')
       .parent()
       .children('span')
-      .should(($span) => {
+      .should($span => {
         expect($span).to.have.class('checkmark')
       })
 
@@ -62,7 +62,7 @@ describe('Onboarding', () => {
 
     cy.getByTestID('nav-step--complete')
       .parent()
-      .should(($el) => {
+      .should($el => {
         expect($el).to.have.class('unclickable')
       })
 
@@ -71,18 +71,24 @@ describe('Onboarding', () => {
 
     cy.getByTestID('next').should('be.disabled')
 
-    cy.getByTestID('next').children('.cf-button--label').contains('Continue')
+    cy.getByTestID('next')
+      .children('.cf-button--label')
+      .contains('Continue')
 
     // Input fields
     cy.fillInOSSLoginFormWithDefaults()
 
-    cy.getByTestID('next').children('.cf-button--label').contains('Continue')
+    cy.getByTestID('next')
+      .children('.cf-button--label')
+      .contains('Continue')
 
-    cy.getByTestID('next').should('be.enabled').click()
+    cy.getByTestID('next')
+      .should('be.enabled')
+      .click()
 
     cy.wait('@orgSetup')
 
-    cy.get('@orgSetup').then((xhr) => {
+    cy.get('@orgSetup').then(xhr => {
       const orgId: string = xhr.responseBody.org.id
 
       // wait for new page to load
@@ -121,7 +127,7 @@ describe('Onboarding', () => {
 
     cy.wait('@orgSetup')
 
-    cy.get('@orgSetup').then((xhr) => {
+    cy.get('@orgSetup').then(xhr => {
       const orgId: string = xhr.responseBody.org.id
 
       // wait for new page to load
@@ -153,7 +159,7 @@ describe('Onboarding', () => {
 
     cy.wait('@orgSetup')
 
-    cy.get('@orgSetup').then((xhr) => {
+    cy.get('@orgSetup').then(xhr => {
       const orgId: string = xhr.responseBody.org.id
       // wait for new page to load
 
@@ -196,9 +202,13 @@ describe('Onboarding', () => {
       'Passwords do not match'
     )
 
-    cy.getByTestID('input-field--password').clear().type('p1')
+    cy.getByTestID('input-field--password')
+      .clear()
+      .type('p1')
 
-    cy.getByTestID('input-field--password-chk').clear().type('p1')
+    cy.getByTestID('input-field--password-chk')
+      .clear()
+      .type('p1')
 
     // check password too short
     cy.getByTestID('form--element-error').should('contain.text', '8')
@@ -220,7 +230,9 @@ describe('Onboarding', () => {
         .contains('Continue')
 
       cy.get<string>('@defaultPassword').then((defaultPassword: string) => {
-        cy.getByTestID('input-field--password').clear().type(defaultPassword)
+        cy.getByTestID('input-field--password')
+          .clear()
+          .type(defaultPassword)
         cy.getByTestID('input-field--password-chk')
           .clear()
           .type(defaultPassword)
@@ -264,7 +276,9 @@ describe('Onboarding', () => {
         .contains('Continue')
 
       cy.get<string>('@defaultPassword').then((defaultPassword: string) => {
-        cy.getByTestID('input-field--password').clear().type(defaultPassword)
+        cy.getByTestID('input-field--password')
+          .clear()
+          .type(defaultPassword)
 
         cy.getByTestID('input-field--password-chk')
           .clear()

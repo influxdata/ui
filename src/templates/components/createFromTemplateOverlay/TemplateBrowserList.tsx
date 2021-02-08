@@ -24,7 +24,7 @@ class TemplateBrowser extends PureComponent<Props> {
         noScrollX={true}
       >
         {orderBy(templates, [({meta: {name}}) => name.toLocaleLowerCase()]).map(
-          (t) => (
+          t => (
             <TemplateBrowserListItem
               key={t.id}
               template={t}

@@ -25,9 +25,7 @@ const makeResponse = (status, data) => {
   })
 }
 
-export const getBillingAccount = (): ReturnType<
-  typeof getBillingAccountGenerated
-> => {
+export const getBillingAccount = (): ReturnType<typeof getBillingAccountGenerated> => {
   const account: Account = {
     id: 1234,
     balance: 100,
@@ -57,9 +55,7 @@ export const getBillingAccount = (): ReturnType<
   return makeResponse(200, account)
 }
 
-export const getPaymentMethods = (): ReturnType<
-  typeof getBillingPaymentMethods
-> => {
+export const getPaymentMethods = (): ReturnType<typeof getBillingPaymentMethods> => {
   const paymentMethods: PaymentMethod[] = [
     {
       cardType: 'Visa',
@@ -93,9 +89,7 @@ export const getBillingCreditCard = (): ReturnType<typeof getBillingCc> => {
   return makeResponse(200, cc)
 }
 
-export const getBillingNotificationSettings = (): ReturnType<
-  typeof getBillingNotifySettings
-> => {
+export const getBillingNotificationSettings = (): ReturnType<typeof getBillingNotifySettings> => {
   const billingNotifySettings: BillingNotifySettings = {
     isNotify: true,
     balanceThreshold: 1000000,

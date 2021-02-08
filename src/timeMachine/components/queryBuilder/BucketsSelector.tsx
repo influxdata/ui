@@ -23,7 +23,7 @@ import {RemoteDataState} from 'src/types'
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
-const fb = (term) => (bucket) =>
+const fb = term => bucket =>
   bucket.toLocaleLowerCase().includes(term.toLocaleLowerCase())
 
 const BucketSelector: FunctionComponent<Props> = ({
@@ -62,7 +62,7 @@ const BucketSelector: FunctionComponent<Props> = ({
           value={searchTerm}
           placeholder="Search for a bucket"
           className="tag-selector--search"
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={e => setSearchTerm(e.target.value)}
         />
       </BuilderCard.Menu>
       <Selector list={list} selected={selectedBucket} onSelect={onSelect} />
@@ -100,7 +100,7 @@ const Selector: FunctionComponent<SelectorProps> = ({
 
 const mstp = (state: AppState) => {
   const buckets = getAll<Bucket>(state, ResourceType.Buckets)
-  const bucketNames = buckets.map((bucket) => bucket.name || '')
+  const bucketNames = buckets.map(bucket => bucket.name || '')
   const bucketsStatus = getStatus(state, ResourceType.Buckets)
   const selectedBucket =
     getActiveQuery(state).builderConfig.buckets[0] || bucketNames[0]

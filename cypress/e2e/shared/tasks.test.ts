@@ -79,7 +79,7 @@ http.post(
       .type('this is invalid JSON')
     cy.get('button[title*="Import JSON"]').click()
     cy.getByTestID('import-overlay--textarea--error').should('have.length', 1)
-    cy.getByTestID('import-overlay--textarea').should(($s) =>
+    cy.getByTestID('import-overlay--textarea').should($s =>
       expect($s).to.contain('this is invalid JSON')
     )
     cy.getByTestID('import-overlay--textarea').type(
@@ -87,7 +87,7 @@ http.post(
     )
     cy.get('button[title*="Import JSON"]').click()
     cy.getByTestID('import-overlay--textarea--error').should('have.length', 1)
-    cy.getByTestID('import-overlay--textarea').should(($s) =>
+    cy.getByTestID('import-overlay--textarea').should($s =>
       expect($s).to.contain('this is invalid')
     )
   })
@@ -112,8 +112,12 @@ http.post(
       .type('Cron task test')
       .then(() => {
         cy.getByTestID('task-card-cron-btn').click()
-        cy.getByTestID('task-form-schedule-input').click().type('0 4 8-14 * *')
-        cy.getByTestID('task-form-offset-input').click().type('10m')
+        cy.getByTestID('task-form-schedule-input')
+          .click()
+          .type('0 4 8-14 * *')
+        cy.getByTestID('task-form-offset-input')
+          .click()
+          .type('10m')
       })
 
     cy.getByTestID('task-save-btn').click()
@@ -164,8 +168,12 @@ http.post(
       .click()
       .type('Option Test')
       .then(() => {
-        cy.getByTestID('task-form-schedule-input').click().type('24h')
-        cy.getByTestID('task-form-offset-input').click().type('20m')
+        cy.getByTestID('task-form-schedule-input')
+          .click()
+          .type('24h')
+        cy.getByTestID('task-form-offset-input')
+          .click()
+          .type('20m')
       })
 
     cy.getByTestID('task-save-btn').click()
@@ -175,7 +183,7 @@ http.post(
   describe('When tasks already exist', () => {
     beforeEach(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.get<string>('@token').then((token) => {
+        cy.get<string>('@token').then(token => {
           cy.createTask(token, id)
         })
       })
@@ -207,7 +215,9 @@ http.post(
             cy.getByTestID('task-card--name-button')
               .click()
               .then(() => {
-                cy.getByTestID('task-card--input').type(newName).type('{enter}')
+                cy.getByTestID('task-card--input')
+                  .type(newName)
+                  .type('{enter}')
               })
 
             cy.getByTestID('notification-success').should('exist')
@@ -255,7 +265,9 @@ http.post(
           .eq(1)
           .click()
           .then(() => {
-            cy.getByTestID('context-menu-item').contains('Clone').click()
+            cy.getByTestID('context-menu-item')
+              .contains('Clone')
+              .click()
           })
       })
 
@@ -289,7 +301,9 @@ http.post(
               cy.getByTestID('context-menu')
                 .click()
                 .then(() => {
-                  cy.getByTestID('context-menu-item').contains('Clone').click()
+                  cy.getByTestID('context-menu-item')
+                    .contains('Clone')
+                    .click()
                 })
             })
         })
@@ -338,7 +352,9 @@ http.post(
     // skip until this issue is resolved
     // https://github.com/influxdata/ui/issues/97
     it.skip('can add a comment into a task', () => {
-      cy.getByTestID('task-card--name').first().click()
+      cy.getByTestID('task-card--name')
+        .first()
+        .click()
 
       // assert textarea and write a comment
       cy.getByTestID('flux-editor').within(() => {
@@ -380,7 +396,9 @@ http.post(
           )
         })
 
-      cy.getByTestID('task-card--name').first().click()
+      cy.getByTestID('task-card--name')
+        .first()
+        .click()
 
       // assert the comment
       cy.getByTestID('flux-editor').within(() => {
@@ -402,7 +420,7 @@ http.post(
 
     beforeEach(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.get<string>('@token').then((token) => {
+        cy.get<string>('@token').then(token => {
           cy.createTask(token, id, taskName).then(({body}) => {
             cy.createAndAddLabel('tasks', id, body.id, newLabelName)
           })
@@ -428,7 +446,9 @@ http.post(
       cy.getByTestID('task-card').should('have.length', 1)
 
       // searching by task name
-      cy.getByTestID('search-widget').clear().type('bEE')
+      cy.getByTestID('search-widget')
+        .clear()
+        .type('bEE')
 
       cy.getByTestID('task-card').should('have.length', 1)
     })
@@ -457,7 +477,9 @@ http.post(
         .should('have.length', 1)
         .and('contain', taskName)
 
-      cy.getByTestID('task-card--name').contains(taskName).click()
+      cy.getByTestID('task-card--name')
+        .contains(taskName)
+        .click()
       // verify that the previously input data exists
       cy.getByInputValue(taskName)
       cy.getByInputValue(interval)
@@ -469,9 +491,15 @@ http.post(
       const newInterval = '24h'
       const newOffset = '7h'
       // updates the data
-      cy.getByTestID('task-form-name').clear().type(newTask)
-      cy.getByTestID('task-form-schedule-input').clear().type(newInterval)
-      cy.getByTestID('task-form-offset-input').clear().type(newOffset)
+      cy.getByTestID('task-form-name')
+        .clear()
+        .type(newTask)
+      cy.getByTestID('task-form-schedule-input')
+        .clear()
+        .type(newInterval)
+      cy.getByTestID('task-form-offset-input')
+        .clear()
+        .type(newOffset)
 
       cy.getByTestID('task-save-btn').click()
       // checks to see if the data has been updated once saved
@@ -513,7 +541,7 @@ http.post(
     const secondTask = 'Second_Task'
     beforeEach(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.get<string>('@token').then((token) => {
+        cy.get<string>('@token').then(token => {
           cy.createTask(token, id, firstTask)
           cy.createTask(token, id, secondTask)
         })
@@ -528,7 +556,9 @@ http.post(
 
     it('when navigating using the navbar', () => {
       // click on the second task
-      cy.getByTestID('task-card--name').contains(secondTask).click()
+      cy.getByTestID('task-card--name')
+        .contains(secondTask)
+        .click()
       // verify that it is the correct data
       cy.getByInputValue(secondTask)
 
@@ -537,30 +567,40 @@ http.post(
         cy.get('.cf-tree-nav--item-block').click()
       })
       // navigate back to the first one to verify that the name is correct
-      cy.getByTestID('task-card--name').contains(firstTask).click()
+      cy.getByTestID('task-card--name')
+        .contains(firstTask)
+        .click()
       cy.getByInputValue(firstTask)
     })
 
     it('when navigating using the cancel button', () => {
       // click on the second task
-      cy.getByTestID('task-card--name').contains(secondTask).click()
+      cy.getByTestID('task-card--name')
+        .contains(secondTask)
+        .click()
       // verify that it is the correct data
       cy.getByInputValue(secondTask)
       cy.getByTestID('task-cancel-btn').click()
       // navigate back to the first task again
-      cy.getByTestID('task-card--name').contains(firstTask).click()
+      cy.getByTestID('task-card--name')
+        .contains(firstTask)
+        .click()
       cy.getByInputValue(firstTask)
       cy.getByTestID('task-cancel-btn').click()
     })
 
     it('when navigating using the save button', () => {
       // click on the second task
-      cy.getByTestID('task-card--name').contains(secondTask).click()
+      cy.getByTestID('task-card--name')
+        .contains(secondTask)
+        .click()
       // verify that it is the correct data
       cy.getByInputValue(secondTask)
       cy.getByTestID('task-save-btn').click()
       // navigate back to the first task again
-      cy.getByTestID('task-card--name').contains(firstTask).click()
+      cy.getByTestID('task-card--name')
+        .contains(firstTask)
+        .click()
       cy.getByInputValue(firstTask)
       cy.getByTestID('task-save-btn').click()
     })
@@ -579,7 +619,7 @@ function createFirstTask(
 
   cy.getByTestID('add-resource-dropdown--new').click()
 
-  cy.get<Bucket>('@bucket').then((bucket) => {
+  cy.get<Bucket>('@bucket').then(bucket => {
     cy.getByTestID('flux-editor').within(() => {
       cy.get('textarea.inputarea')
         .click({force: true})

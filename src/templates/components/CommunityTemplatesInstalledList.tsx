@@ -72,7 +72,7 @@ class CommunityTemplatesInstalledListUnconnected extends PureComponent<Props> {
   }
 
   private renderStackSources(sources: string[]) {
-    return sources.map((source) => {
+    return sources.map(source => {
       if (source.includes('github') && source.includes('influxdata')) {
         return <CommunityTemplateReadMeOverlay key={source} url={source} />
       }
@@ -133,7 +133,7 @@ class CommunityTemplatesInstalledListUnconnected extends PureComponent<Props> {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {this.props.stacks.map((stack) => {
+            {this.props.stacks.map(stack => {
               return (
                 <Table.Row
                   testID="installed-template-list"
@@ -203,7 +203,7 @@ class CommunityTemplatesInstalledListUnconnected extends PureComponent<Props> {
 const mstp = (state: AppState) => {
   return {
     stacks: state.resources.templates.stacks.filter(
-      (stack) => stack.eventType !== 'delete' && stack.eventType !== 'uninstall'
+      stack => stack.eventType !== 'delete' && stack.eventType !== 'uninstall'
     ),
   }
 }

@@ -20,7 +20,7 @@ import WriteDataSection from 'src/writeData/components/WriteDataSection'
 const WriteDataSections: FC = () => {
   const {searchTerm} = useContext(WriteDataSearchContext)
 
-  const filteredSections = WRITE_DATA_SECTIONS.filter((section) => {
+  const filteredSections = WRITE_DATA_SECTIONS.filter(section => {
     const containsMatches = sectionContainsMatchingItems(section, searchTerm)
     const featureFlagEnabled = isFlagEnabled(section.featureFlag)
 
@@ -39,7 +39,7 @@ const WriteDataSections: FC = () => {
 
   return (
     <>
-      {filteredSections.map((section) => (
+      {filteredSections.map(section => (
         <WriteDataSection
           key={section.id}
           id={section.id}

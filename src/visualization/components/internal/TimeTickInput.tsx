@@ -41,7 +41,7 @@ interface TimeTickInputProps {
   update: (data: any) => void
 }
 
-export const TimeTickInput: FC<TimeTickInputProps> = (props) => {
+export const TimeTickInput: FC<TimeTickInputProps> = props => {
   const {
     axisName,
     tickOptions,
@@ -57,10 +57,9 @@ export const TimeTickInput: FC<TimeTickInputProps> = (props) => {
       : ''
   )
 
-  const [
-    tickOptionInputStatus,
-    setTickOptionInputStatus,
-  ] = useState<ComponentStatus>(ComponentStatus.Default)
+  const [tickOptionInputStatus, setTickOptionInputStatus] = useState<
+    ComponentStatus
+  >(ComponentStatus.Default)
 
   const [isDatePickerOpen, setIsDatePickerOpen] = useState<boolean>(false)
 
@@ -78,7 +77,7 @@ export const TimeTickInput: FC<TimeTickInputProps> = (props) => {
     const tickOptionNameWithoutAxis = label.split(' ').join('')
     const tickOptionNameWithAxis = `${axisName.toLowerCase()}${tickOptionNameWithoutAxis}`
     const computedTickOptions = Array.isArray(tickOptions)
-      ? tickOptions.filter((option) => option !== tickOptionNameWithAxis)
+      ? tickOptions.filter(option => option !== tickOptionNameWithAxis)
       : []
 
     if (!Number.isNaN(convertedValue)) {

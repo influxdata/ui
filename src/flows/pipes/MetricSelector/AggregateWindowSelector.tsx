@@ -50,7 +50,7 @@ const AggregateFunctionSelector: FC = () => {
         </p>
       </div>
       <Dropdown.Divider />
-      {FUNCTIONS.map((func) => (
+      {FUNCTIONS.map(func => (
         <Dropdown.Item
           key={func.name}
           value={func}
@@ -75,7 +75,7 @@ const AggregateFunctionSelector: FC = () => {
     </Dropdown.Button>
   )
 
-  const menu = (onCollapse) => (
+  const menu = onCollapse => (
     <Dropdown.Menu onCollapse={onCollapse}>{menuItems}</Dropdown.Menu>
   )
 

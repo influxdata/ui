@@ -5,7 +5,7 @@ import {range} from 'lodash'
 const PLACEHOLDER_MIN_WIDTH = 80
 const PLACEHOLDER_MAX_WIDTH = 140
 const PLACEHOLDER_HEIGHT = 10
-const RANDOM_NUMBERS = range(30).map((_) => Math.random())
+const RANDOM_NUMBERS = range(30).map(_ => Math.random())
 
 interface Props {
   index: number

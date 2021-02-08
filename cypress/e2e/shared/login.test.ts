@@ -29,7 +29,7 @@ describe('The Login Page', () => {
     cy.getByTestID('signin-page--content').should('exist')
 
     // try to access a protected route
-    cy.get<string>('@orgID').then((orgID) => {
+    cy.get<string>('@orgID').then(orgID => {
       cy.visit(`/orgs/${orgID}`)
     })
 

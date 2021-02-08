@@ -15,7 +15,7 @@ export const parseFilesWithFromFlux = (
   let maxColumnCount = 0
   let tables = []
   let curr: any
-  responses.forEach((response) => {
+  responses.forEach(response => {
     curr = fromFluxTableTransformer(response)
     maxColumnCount = Math.max(maxColumnCount, curr.max)
     tables = tables.concat(curr.tableData)
@@ -51,7 +51,7 @@ export const parseFromFluxResults = (
   const columnKeys = [
     'result',
     'table',
-    ...keys.filter((k) => k !== 'result' && k !== 'table'),
+    ...keys.filter(k => k !== 'result' && k !== 'table'),
   ]
 
   const tables = table.getColumn('table')
@@ -74,7 +74,7 @@ export const parseFromFluxResults = (
       currVal = values[i]
       currTable = tables[i]
       // build out the columnHeader = chunk[3]
-      columnHeaders = columnKeys.filter((col) => {
+      columnHeaders = columnKeys.filter(col => {
         const columnType: any = table.getColumnType(col)
         const values = table.getColumn(col, columnType)
         return values[i] !== undefined
@@ -129,8 +129,8 @@ export const parseFromFluxResults = (
 
 export const parseFiles = (responses: string[]): ParseFilesResult => {
   const chunks = parseChunks(responses.join('\n\n'))
-  const parsedChunks = chunks.map((c) => Papa.parse(c).data)
-  const maxColumnCount = Math.max(...parsedChunks.map((c) => c[0].length))
+  const parsedChunks = chunks.map(c => Papa.parse(c).data)
+  const maxColumnCount = Math.max(...parsedChunks.map(c => c[0].length))
   const data = []
 
   for (let i = 0; i < parsedChunks.length; i++) {

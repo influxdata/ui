@@ -152,7 +152,7 @@ describe('TimeMachine.Components.SubmitQueryButton', () => {
     mocked(fetch).mockImplementation(() => {
       return Promise.resolve(fakeResponse)
     })
-    const {getByTitle} = renderWithRedux(<SubmitQueryButton />, (s) => ({
+    const {getByTitle} = renderWithRedux(<SubmitQueryButton />, s => ({
       ...s,
       ...stateOverride,
     }))
@@ -168,7 +168,7 @@ describe('TimeMachine.Components.SubmitQueryButton', () => {
     expect(getByTitle('Submit')).toBeTruthy()
   })
 
-  it.skip("cancels the query after submission if the query hasn't finished and resolved", (done) => {
+  it.skip("cancels the query after submission if the query hasn't finished and resolved", done => {
     mocked(fetchMock).mockResponse(() => {
       return new Promise((resolve, _reject) => {
         setTimeout(() => {
@@ -177,7 +177,7 @@ describe('TimeMachine.Components.SubmitQueryButton', () => {
       })
     })
 
-    const {getByTitle} = renderWithRedux(<SubmitQueryButton />, (s) => ({
+    const {getByTitle} = renderWithRedux(<SubmitQueryButton />, s => ({
       ...s,
       ...stateOverride,
     }))

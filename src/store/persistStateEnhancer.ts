@@ -15,7 +15,7 @@ import {LocalStorage} from 'src/types/localStorage'
  */
 
 export default function persistState() {
-  return (next) => (reducer, initialState: LocalStorage, enhancer) => {
+  return next => (reducer, initialState: LocalStorage, enhancer) => {
     const store: Store<LocalStorage> = next(reducer, initialState, enhancer)
     const throttleMs = 1000
 

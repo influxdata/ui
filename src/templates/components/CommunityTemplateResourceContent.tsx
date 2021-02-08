@@ -50,7 +50,7 @@ class CommunityTemplateResourceContentUnconnected extends PureComponent<Props> {
           count={getResourceInstallCount(summary.dashboards)}
         >
           {Array.isArray(summary.dashboards) &&
-            summary.dashboards.map((dashboard) => {
+            summary.dashboards.map(dashboard => {
               let chartCount = 0
               if (dashboard.charts && dashboard.charts.length) {
                 chartCount = dashboard.charts.length
@@ -96,7 +96,7 @@ class CommunityTemplateResourceContentUnconnected extends PureComponent<Props> {
           count={getResourceInstallCount(summary.telegrafConfigs)}
         >
           {Array.isArray(summary.telegrafConfigs) &&
-            summary.telegrafConfigs.map((telegrafConfig) => {
+            summary.telegrafConfigs.map(telegrafConfig => {
               return (
                 <FlexBox
                   margin={ComponentSize.Small}
@@ -135,7 +135,7 @@ class CommunityTemplateResourceContentUnconnected extends PureComponent<Props> {
           count={getResourceInstallCount(summary.buckets)}
         >
           {Array.isArray(summary.buckets) &&
-            summary.buckets.map((bucket) => {
+            summary.buckets.map(bucket => {
               return (
                 <FlexBox
                   margin={ComponentSize.Small}
@@ -177,7 +177,7 @@ class CommunityTemplateResourceContentUnconnected extends PureComponent<Props> {
           count={getResourceInstallCount(summary.summaryTask)}
         >
           {Array.isArray(summary.summaryTask) &&
-            summary.summaryTask.map((task) => {
+            summary.summaryTask.map(task => {
               return (
                 <FlexBox
                   margin={ComponentSize.Small}
@@ -218,7 +218,7 @@ class CommunityTemplateResourceContentUnconnected extends PureComponent<Props> {
           count={getResourceInstallCount(summary.checks)}
         >
           {Array.isArray(summary.checks) &&
-            summary.checks.map((check) => {
+            summary.checks.map(check => {
               return (
                 <FlexBox
                   margin={ComponentSize.Small}
@@ -258,7 +258,7 @@ class CommunityTemplateResourceContentUnconnected extends PureComponent<Props> {
           count={getResourceInstallCount(summary.variables)}
         >
           {Array.isArray(summary.variables) &&
-            summary.variables.map((variable) => {
+            summary.variables.map(variable => {
               return (
                 <FlexBox
                   margin={ComponentSize.Small}
@@ -301,7 +301,7 @@ class CommunityTemplateResourceContentUnconnected extends PureComponent<Props> {
           count={getResourceInstallCount(summary.notificationRules)}
         >
           {Array.isArray(summary.notificationRules) &&
-            summary.notificationRules.map((notificationRule) => {
+            summary.notificationRules.map(notificationRule => {
               return (
                 <FlexBox
                   margin={ComponentSize.Small}
@@ -342,7 +342,7 @@ class CommunityTemplateResourceContentUnconnected extends PureComponent<Props> {
           count={getResourceInstallCount(summary.notificationEndpoints)}
         >
           {Array.isArray(summary.notificationEndpoints) &&
-            summary.notificationEndpoints.map((notificationEndpoint) => {
+            summary.notificationEndpoints.map(notificationEndpoint => {
               return (
                 <FlexBox
                   margin={ComponentSize.Small}
@@ -383,7 +383,7 @@ class CommunityTemplateResourceContentUnconnected extends PureComponent<Props> {
           count={getResourceInstallCount(summary.labels)}
         >
           {Array.isArray(summary.labels) &&
-            summary.labels.map((label) => {
+            summary.labels.map(label => {
               return (
                 <FlexBox
                   margin={ComponentSize.Small}

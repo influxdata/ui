@@ -17,8 +17,8 @@ import {
 } from 'src/overlays/components/OverlayController'
 import PageSpinner from 'src/perf/components/PageSpinner'
 const SetOrg = lazy(() => import('src/shared/containers/SetOrg'))
-const CreateOrgOverlay = lazy(
-  () => import('src/organizations/components/CreateOrgOverlay')
+const CreateOrgOverlay = lazy(() =>
+  import('src/organizations/components/CreateOrgOverlay')
 )
 
 // Types

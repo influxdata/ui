@@ -35,7 +35,7 @@ export default (
   state: RulesState = defaultNotificationRulesState,
   action: Action
 ): RulesState =>
-  produce(state, (draftState) => {
+  produce(state, draftState => {
     switch (action.type) {
       case SET_RULES: {
         setResource<NotificationRule>(
@@ -96,7 +96,7 @@ export default (
         const labels = draftState.byID[ruleID].labels
 
         draftState.byID[ruleID].labels = labels.filter(
-          (label) => label.id !== labelID
+          label => label.id !== labelID
         )
 
         return

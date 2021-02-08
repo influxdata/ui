@@ -77,7 +77,7 @@ export const validateThresholds = (
   adding to the list.
 */
 export const addThreshold = (thresholds: Color[]): Color => {
-  const values = thresholds.map((threshold) => threshold.value)
+  const values = thresholds.map(threshold => threshold.value)
 
   let minValue = Math.min(...values)
   let maxValue = Math.max(...values)

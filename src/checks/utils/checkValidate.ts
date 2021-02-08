@@ -1,7 +1,7 @@
 import {Threshold} from 'src/types'
 
 export const checkThresholdsValid = (thresholds: Threshold[]) => {
-  thresholds.forEach((t) => {
+  thresholds.forEach(t => {
     if (t.type === 'greater' && isNaN(t.value)) {
       throw new Error('Threshold must have defined value')
     }

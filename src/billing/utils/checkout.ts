@@ -1,6 +1,6 @@
 import {camelCase, snakeCase} from 'lodash'
 
-export const convertKeysToSnakecase = (data) => {
+export const convertKeysToSnakecase = data => {
   if (!data) {
     return null
   }
@@ -14,7 +14,7 @@ export const convertKeysToSnakecase = (data) => {
   }, {})
 }
 
-export const convertKeysToCamelCase = (data) => {
+export const convertKeysToCamelCase = data => {
   if (!data) {
     return null
   }

@@ -15,7 +15,7 @@ export const FORMAT_OPTIONS: Array<{text: string}> = [
 ]
 
 export const resolveTimeFormat = (timeFormat: string) => {
-  if (FORMAT_OPTIONS.find((d) => d.text === timeFormat)) {
+  if (FORMAT_OPTIONS.find(d => d.text === timeFormat)) {
     return timeFormat
   }
 

@@ -79,7 +79,7 @@ export default class TokenList extends PureComponent<Props, State> {
       sortType
     )
 
-    return sortedAuths.map((auth) => (
+    return sortedAuths.map(auth => (
       <TokenRow
         key={auth.id}
         auth={auth}
@@ -93,7 +93,7 @@ export default class TokenList extends PureComponent<Props, State> {
   }
 
   private handleClickDescription = (authID: string): void => {
-    const authInView = this.props.auths.find((a) => a.id === authID)
+    const authInView = this.props.auths.find(a => a.id === authID)
     this.setState({isTokenOverlayVisible: true, authInView})
   }
 }

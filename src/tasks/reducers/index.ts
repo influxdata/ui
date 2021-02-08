@@ -37,7 +37,7 @@ export default (
   state: TasksState = initialState(),
   action: Action
 ): TasksState =>
-  produce(state, (draftState) => {
+  produce(state, draftState => {
     switch (action.type) {
       case SET_TASKS: {
         setResource<Task>(draftState, action, ResourceType.Tasks)

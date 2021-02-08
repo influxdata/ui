@@ -88,7 +88,7 @@ const setup = (props = defaultProps) => {
 
   return renderWithReduxAndRouter(
     <CommunityTemplatesIndex {...props} />,
-    (_fakeLocalStorage) => {
+    _fakeLocalStorage => {
       const appState = {...mockAppState} as any
       appState.resources.templates = templatesStore.getState()
       return appState

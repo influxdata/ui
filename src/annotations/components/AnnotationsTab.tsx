@@ -113,7 +113,7 @@ export const AnnotationsTab: FC = () => {
                 searchKeys={['name']}
                 list={MOCK_ANNOTATION_STREAMS}
               >
-                {(annotationStreams) => (
+                {annotationStreams => (
                   <AnnotationsList
                     annotationStreams={annotationStreams}
                     emptyState={

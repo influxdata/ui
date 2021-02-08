@@ -16,7 +16,7 @@ export const AnnotationPills: FC = () => {
 
   return (
     <div className="annotation-pills" data-testid="annotation-pills">
-      {visibleStreams.map((stream) => (
+      {visibleStreams.map(stream => (
         <AnnotationPill
           key={stream.id}
           id={stream.id}

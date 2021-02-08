@@ -9,13 +9,13 @@ export const getResourceStatus = (
   state: AppState,
   resources: Resource[]
 ): RemoteDataState => {
-  const statuses = resources.map((resource) => {
+  const statuses = resources.map(resource => {
     return getStatus(state, resource)
   })
 
   let status = RemoteDataState.NotStarted
 
-  if (statuses.every((s) => s === RemoteDataState.Done)) {
+  if (statuses.every(s => s === RemoteDataState.Done)) {
     status = RemoteDataState.Done
   } else if (statuses.includes(RemoteDataState.Error)) {
     status = RemoteDataState.Error

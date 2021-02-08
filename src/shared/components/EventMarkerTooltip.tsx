@@ -33,7 +33,7 @@ const EventMarkerTooltip: FunctionComponent<Props> = ({events}) => {
   return (
     <div className="box-tooltip--contents event-marker-tooltip">
       <div className="event-marker-tooltip--table">
-        {columns.map((colName) => (
+        {columns.map(colName => (
           <div key={colName} className="event-marker-tooltip--column">
             <div className="event-marker-tooltip--header">{colName}</div>
             {events.map((event, i) => {

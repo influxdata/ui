@@ -82,7 +82,7 @@ export const updateQueryParams = (updatedQueryParams: object): RouterAction => {
       ...qs.parse(search, {ignoreQueryPrefix: true}),
       ...updatedQueryParams,
     },
-    (v) => !!v
+    v => !!v
   )
 
   const newSearch = qs.stringify(newQueryParams)
@@ -91,7 +91,7 @@ export const updateQueryParams = (updatedQueryParams: object): RouterAction => {
   return replace(newLocation)
 }
 
-export const updateQueryVars = (varsObj) => {
+export const updateQueryVars = varsObj => {
   const urlVars = qs.parse(window.location.search, {ignoreQueryPrefix: true})
   const vars = {
     ...(urlVars.vars || {}),

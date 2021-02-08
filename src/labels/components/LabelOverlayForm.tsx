@@ -87,7 +87,7 @@ export default class LabelOverlayForm extends PureComponent<Props> {
                 required={true}
                 validationFunc={this.handleNameValidation}
               >
-                {(status) => (
+                {status => (
                   <Input
                     type={InputType.Text}
                     placeholder="Name this Label"

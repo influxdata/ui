@@ -67,7 +67,7 @@ const Card: FC<Props> = ({idx}) => {
     })
   }
 
-  const keySelect = (val) => {
+  const keySelect = val => {
     update(idx, {
       keys: {
         ...card.keys,
@@ -93,7 +93,7 @@ const Card: FC<Props> = ({idx}) => {
     })
   }
 
-  const valueSelect = (val) => {
+  const valueSelect = val => {
     const _vals = [...card.values.selected]
     const index = _vals.indexOf(val)
 
@@ -206,7 +206,7 @@ const Card: FC<Props> = ({idx}) => {
     return (
       <BuilderCard>
         <BuilderCard.DropdownHeader
-          options={['filter', 'group'].map((s) => s.toUpperCase())}
+          options={['filter', 'group'].map(s => s.toUpperCase())}
           selectedOption={card.aggregateFunctionType.toUpperCase()}
           onDelete={_remove}
           onSelect={_update}
@@ -216,7 +216,7 @@ const Card: FC<Props> = ({idx}) => {
             value={card.values.search}
             placeholder={`Search ${card.keys.selected[0]} tag values`}
             className="tag-selector--search"
-            onChange={(evt) => {
+            onChange={evt => {
               valueSearch(evt.target.value)
             }}
           />
@@ -229,7 +229,7 @@ const Card: FC<Props> = ({idx}) => {
   return (
     <BuilderCard>
       <BuilderCard.DropdownHeader
-        options={['filter', 'group'].map((s) => s.toUpperCase())}
+        options={['filter', 'group'].map(s => s.toUpperCase())}
         selectedOption={card.aggregateFunctionType.toUpperCase()}
         onDelete={_remove}
         onSelect={_update}
@@ -258,7 +258,7 @@ const Card: FC<Props> = ({idx}) => {
           value={card.values.search}
           placeholder={`Search ${card.keys.selected[0]} tag values`}
           className="tag-selector--search"
-          onChange={(evt) => {
+          onChange={evt => {
             valueSearch(evt.target.value)
           }}
         />

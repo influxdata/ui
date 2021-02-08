@@ -17,7 +17,7 @@ const HexColorSchemeDropdown: FC<Props> = ({
   onSelectColorScheme,
 }) => {
   const selected = colorSchemes.find(
-    (scheme) =>
+    scheme =>
       scheme.colors.length === selectedColorScheme.length &&
       scheme.colors.every((color, i) => color === selectedColorScheme[i])
   )
@@ -47,7 +47,7 @@ const HexColorSchemeDropdown: FC<Props> = ({
           />
         </Dropdown.Button>
       )}
-      menu={(onCollapse) => (
+      menu={onCollapse => (
         <Dropdown.Menu onCollapse={onCollapse} theme={DropdownMenuTheme.Onyx}>
           {resolvedSchemes.map(({name, colors}) => (
             <Dropdown.Item

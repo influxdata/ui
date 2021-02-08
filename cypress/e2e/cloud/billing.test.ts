@@ -6,7 +6,7 @@ describe('Billing Page', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.window().then((w) => {
+        cy.window().then(w => {
           w.influx.set('unity-billing', true)
         })
 

@@ -31,7 +31,7 @@ interface Props extends VisualizationOptionProps {
 
 const ScatterOptions: FC<Props> = ({properties, results, update}) => {
   const availableGroupColumns = results.table.columnKeys.filter(
-    (name) => !['_value', '_time', 'table'].includes(name)
+    name => !['_value', '_time', 'table'].includes(name)
   )
 
   const groupDropdownStatus = availableGroupColumns.length
@@ -46,19 +46,19 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
 
   if (
     properties.fillColumns &&
-    properties.fillColumns.every((col) => availableGroupColumns.includes(col))
+    properties.fillColumns.every(col => availableGroupColumns.includes(col))
   ) {
     fillColumns = properties.fillColumns
   }
 
   if (
     properties.symbolColumns &&
-    properties.symbolColumns.every((col) => availableGroupColumns.includes(col))
+    properties.symbolColumns.every(col => availableGroupColumns.includes(col))
   ) {
     symbolColumns = properties.symbolColumns
   }
 
-  const numericColumns = results.table.columnKeys.filter((key) => {
+  const numericColumns = results.table.columnKeys.filter(key => {
     if (key === 'result' || key === 'table') {
       return false
     }
@@ -69,11 +69,11 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
   })
 
   const onSelectFillColumns = (option: string) => {
-    const columnExists = fillColumns.find((col) => col === option)
+    const columnExists = fillColumns.find(col => col === option)
     let updatedColumns = fillColumns
 
     if (columnExists) {
-      updatedColumns = fillColumns.filter((fc) => fc !== option)
+      updatedColumns = fillColumns.filter(fc => fc !== option)
     } else {
       updatedColumns = [...fillColumns, option]
     }
@@ -82,11 +82,11 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
   }
 
   const onSelectSymbolColumns = (option: string) => {
-    const columnExists = symbolColumns.find((col) => col === option)
+    const columnExists = symbolColumns.find(col => col === option)
     let updatedColumns = symbolColumns
 
     if (columnExists) {
-      updatedColumns = symbolColumns.filter((fc) => fc !== option)
+      updatedColumns = symbolColumns.filter(fc => fc !== option)
     } else {
       updatedColumns = [...symbolColumns, option]
     }
@@ -143,7 +143,7 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
             <SelectDropdown
               options={numericColumns}
               selectedOption={xColumn || 'Build a query before selecting...'}
-              onSelect={(xColumn) => {
+              onSelect={xColumn => {
                 update({xColumn})
               }}
               testID="dropdown-x"
@@ -158,7 +158,7 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
             <SelectDropdown
               options={numericColumns}
               selectedOption={yColumn || 'Build a query before selecting...'}
-              onSelect={(yColumn) => {
+              onSelect={yColumn => {
                 update({yColumn})
               }}
               testID="dropdown-y"
@@ -171,7 +171,7 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
           </Form.Element>
           <Form.Element label="Time Format">
             <SelectDropdown
-              options={FORMAT_OPTIONS.map((option) => option.text)}
+              options={FORMAT_OPTIONS.map(option => option.text)}
               selectedOption={resolveTimeFormat(properties.timeFormat)}
               onSelect={(format: string) => {
                 update({timeFormat: format})
@@ -183,7 +183,7 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
             <HexColorSchemeDropdown
               colorSchemes={GIRAFFE_COLOR_SCHEMES}
               selectedColorScheme={properties.colors}
-              onSelectColorScheme={(colors) => {
+              onSelectColorScheme={colors => {
                 update({colors})
               }}
             />
@@ -198,7 +198,7 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
           <Form.Element label="X Axis Label">
             <Input
               value={properties.xAxisLabel}
-              onChange={(e) => {
+              onChange={e => {
                 update({xAxisLabel: e.target.value})
               }}
             />
@@ -208,7 +208,7 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
               <Form.Element label="X Tick Prefix">
                 <Input
                   value={properties.xPrefix}
-                  onChange={(evt) => {
+                  onChange={evt => {
                     update({xPrefix: evt.target.value})
                   }}
                 />
@@ -218,7 +218,7 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
               <Form.Element label="X Tick Suffix">
                 <Input
                   value={properties.xSuffix}
-                  onChange={(evt) => {
+                  onChange={evt => {
                     update({xSuffix: evt.target.value})
                   }}
                 />
@@ -235,7 +235,7 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
           />
           <AutoDomainInput
             domain={properties.xDomain as [number, number]}
-            onSetDomain={(domain) => {
+            onSetDomain={domain => {
               setDomain('x', domain)
             }}
             label="X Axis Domain"
@@ -250,7 +250,7 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
           <Form.Element label="Y Axis Label">
             <Input
               value={properties.yAxisLabel}
-              onChange={(e) => {
+              onChange={e => {
                 update({yAxisLabel: e.target.value})
               }}
             />
@@ -260,7 +260,7 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
               <Form.Element label="Y Tick Prefix">
                 <Input
                   value={properties.yPrefix}
-                  onChange={(evt) => {
+                  onChange={evt => {
                     update({yPrefix: evt.target.value})
                   }}
                 />
@@ -270,7 +270,7 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
               <Form.Element label="Y Tick Suffix">
                 <Input
                   value={properties.ySuffix}
-                  onChange={(evt) => {
+                  onChange={evt => {
                     update({ySuffix: evt.target.value})
                   }}
                 />
@@ -287,7 +287,7 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
           />
           <AutoDomainInput
             domain={properties.yDomain as [number, number]}
-            onSetDomain={(domain) => {
+            onSetDomain={domain => {
               setDomain('y', domain)
             }}
             label="Y Axis Domain"

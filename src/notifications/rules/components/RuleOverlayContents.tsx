@@ -30,7 +30,7 @@ const RuleOverlayContents: FC<Props> = ({saveButtonText, onSave}) => {
   const rule = useRuleState()
   const dispatch = useRuleDispatch()
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const {name, value} = e.target
 
     dispatch({

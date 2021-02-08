@@ -124,7 +124,7 @@ const mstp = (state: AppState) => {
   const buckets = getAll<Bucket>(state, ResourceType.Buckets)
 
   const nonSystemBuckets = buckets.filter(
-    (bucket) => !isSystemBucket(bucket.name)
+    bucket => !isSystemBucket(bucket.name)
   )
 
   const org = getOrg(state)

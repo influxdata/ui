@@ -32,7 +32,7 @@ const TagRuleOperatorDropdown: FC<Props> = ({selectedOperator, onSelect}) => {
     </Dropdown.Item>
   ))
 
-  const buttonText = operators.find((o) => o.operator === selectedOperator)
+  const buttonText = operators.find(o => o.operator === selectedOperator)
 
   const button = (active, onClick) => (
     <Dropdown.Button
@@ -44,7 +44,7 @@ const TagRuleOperatorDropdown: FC<Props> = ({selectedOperator, onSelect}) => {
     </Dropdown.Button>
   )
 
-  const menu = (onCollapse) => (
+  const menu = onCollapse => (
     <Dropdown.Menu onCollapse={onCollapse}>{items}</Dropdown.Menu>
   )
 

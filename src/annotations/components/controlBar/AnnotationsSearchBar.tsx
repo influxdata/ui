@@ -29,7 +29,7 @@ export const AnnotationsSearchBar: FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [suggestionsAreVisible, setSuggestionState] = useState<boolean>(false)
 
-  const filteredSuggestions = suggestions.filter((stream) => {
+  const filteredSuggestions = suggestions.filter(stream => {
     return stream.name.toLowerCase().includes(searchTerm.toLowerCase())
   })
 
@@ -57,7 +57,7 @@ export const AnnotationsSearchBar: FC = () => {
   if (filteredSuggestions.length) {
     suggestionItems = (
       <>
-        {filteredSuggestions.map((item) => (
+        {filteredSuggestions.map(item => (
           <AnnotationsSearchBarItem
             key={item.name}
             name={item.name}

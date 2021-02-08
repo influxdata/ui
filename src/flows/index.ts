@@ -19,7 +19,7 @@ const context = require.context(
   true,
   /^\.\/([^\/])+\/index\.(ts|tsx)$/
 )
-context.keys().forEach((key) => {
+context.keys().forEach(key => {
   const module = context(key)
   module.default((definition: TypeRegistration) => {
     if (PIPE_DEFINITIONS.hasOwnProperty(definition.type)) {

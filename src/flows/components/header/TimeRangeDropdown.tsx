@@ -12,7 +12,7 @@ const TimeRangeDropdown: FC = () => {
   const {queryAll} = useContext(QueryContext)
 
   const updateRange = useCallback(
-    (range) => {
+    range => {
       event(
         'update_notebook_time_range',
         {

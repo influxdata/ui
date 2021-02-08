@@ -56,7 +56,7 @@ export interface WASMServer extends Server {
 import {format_from_js_file} from '@influxdata/flux'
 
 // NOTE: parses table then select measurements from the _value column
-const parseQueryResponse = (response) => {
+const parseQueryResponse = response => {
   const {table} = fromFlux(response.csv)
   return table.getColumn('_value', 'string') || []
 }
@@ -127,7 +127,7 @@ export class LSPServer {
     this.store = reduxStore
   }
 
-  getTagKeys = async (bucket) => {
+  getTagKeys = async bucket => {
     try {
       const org = getOrg(this.store.getState())
       const response = await queryTagKeys(org.id, bucket)
@@ -154,7 +154,7 @@ export class LSPServer {
       const org = getOrg(this.store.getState())
       const buckets = await fetchAllBuckets(org.id)
 
-      return Object.values(buckets.entities.buckets).map((b) => b.name)
+      return Object.values(buckets.entities.buckets).map(b => b.name)
     } catch (e) {
       console.error(e)
       return []
@@ -313,8 +313,8 @@ export class LSPServer {
     // NOTE: we use the AST intermediate format as a means of reducing
     // drift between the parser and the internal representation
     const variables = getAllVariables(state)
-      .map((v) => asAssignment(v))
-      .filter((v) => !!v)
+      .map(v => asAssignment(v))
+      .filter(v => !!v)
 
     const file = buildVarsOption(variables)
 
@@ -353,7 +353,7 @@ class LSPLoader {
 
     await this.server.initialize()
 
-    this.queue.forEach((d) => d.resolve(this.server))
+    this.queue.forEach(d => d.resolve(this.server))
 
     return this.server
   }

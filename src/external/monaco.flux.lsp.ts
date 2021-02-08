@@ -74,7 +74,7 @@ export function registerCompletion(monaco: MonacoType, server: LSPServer) {
       try {
         const locs = await server.references(uri, pos, context)
 
-        return (locs || []).map((loc) => p2m.asLocation(loc))
+        return (locs || []).map(loc => p2m.asLocation(loc))
       } catch (e) {
         return []
       }

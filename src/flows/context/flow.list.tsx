@@ -84,7 +84,7 @@ export function serialize(flow) {
     readOnly: flow.readOnly,
     range: flow.range,
     refresh: flow.refresh,
-    pipes: flow.data.allIDs.map((id) => {
+    pipes: flow.data.allIDs.map(id => {
       const meta = flow.meta.byID[id]
       // if data changes first, meta will not exist yet
       if (meta) {
@@ -112,7 +112,7 @@ export function hydrate(data) {
   if (!data.pipes) {
     return flow
   }
-  data.pipes.forEach((pipe) => {
+  data.pipes.forEach(pipe => {
     const id = pipe.id || `local_${UUID()}`
 
     flow.data.allIDs.push(id)
@@ -234,7 +234,7 @@ export const FlowListProvider: FC = ({children}) => {
       dispatch(notify(notebookCreateFail()))
     }
 
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       setTimeout(() => {
         setFlows({
           ...flows,
@@ -313,7 +313,7 @@ export const FlowListProvider: FC = ({children}) => {
     const data = await getAllAPI(orgID)
     if (data.flows) {
       const _flows = {}
-      data.flows.forEach((f) => (_flows[f.id] = hydrate(f.spec)))
+      data.flows.forEach(f => (_flows[f.id] = hydrate(f.spec)))
       setFlows(_flows)
     }
   }, [orgID, setFlows])
@@ -349,10 +349,10 @@ export const FlowListProvider: FC = ({children}) => {
       name: flows[curr].name,
       range: flows[curr].range,
       refresh: flows[curr].refresh,
-      data: _asResource(flows[curr].data, (data) => {
+      data: _asResource(flows[curr].data, data => {
         stateUpdater('data', data)
       }),
-      meta: _asResource(flows[curr].meta, (data) => {
+      meta: _asResource(flows[curr].meta, data => {
         stateUpdater('meta', data)
       }),
       readOnly: flows[curr].readOnly,

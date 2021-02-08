@@ -15,8 +15,8 @@ import {formatQueryText} from 'src/flows/shared/utils'
 // Contexts
 import {PopupContext} from 'src/flows/context/popup'
 
-const FluxMonacoEditor = lazy(
-  () => import('src/shared/components/FluxMonacoEditor')
+const FluxMonacoEditor = lazy(() =>
+  import('src/shared/components/FluxMonacoEditor')
 )
 
 const QueryTextPreview: FC = () => {

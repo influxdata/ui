@@ -49,7 +49,7 @@ const DashboardList: FC<Props> = ({dashboards, org}) => {
 
     if (searchTerm.length) {
       recentlyModifiedDashboards = recentlyModifiedDashboards.filter(
-        (dashboard) =>
+        dashboard =>
           dashboard.name.toLowerCase().includes(searchTerm.toLowerCase())
       )
     }

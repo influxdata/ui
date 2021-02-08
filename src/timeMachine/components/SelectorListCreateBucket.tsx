@@ -76,7 +76,7 @@ const SelectorListCreateBucket: FC<Props> = ({
     buttonDisabled = true
   }
 
-  const retentionRule = state.retentionRules.find((r) => r.type === 'expire')
+  const retentionRule = state.retentionRules.find(r => r.type === 'expire')
   const retentionSeconds = retentionRule ? retentionRule.everySeconds : 3600
 
   const handleChangeRuleType = (ruleType: RuleType): void => {
@@ -138,7 +138,7 @@ const SelectorListCreateBucket: FC<Props> = ({
         showEvent={PopoverInteraction.Click}
         hideEvent={PopoverInteraction.Click}
         testID="create-bucket-popover"
-        contents={(onHide) => (
+        contents={onHide => (
           <BucketOverlayForm
             name={state.name}
             buttonText="Create"

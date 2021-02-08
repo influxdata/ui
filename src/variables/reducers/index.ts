@@ -32,7 +32,7 @@ export const variablesReducer = (
   state: VariablesState = initialState(),
   action: Action
 ): VariablesState =>
-  produce(state, (draftState) => {
+  produce(state, draftState => {
     switch (action.type) {
       case SET_VARIABLES: {
         setResource<Variable>(draftState, action, ResourceType.Variables)

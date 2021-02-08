@@ -39,7 +39,7 @@ class GetMe extends PureComponent<Props, State> {
     return (
       <SpinnerContainer loading={loading} spinnerComponent={<TechnoSpinner />}>
         <Switch>
-          <Route render={(props) => <GetFlags {...props} />} />
+          <Route render={props => <GetFlags {...props} />} />
         </Switch>
       </SpinnerContainer>
     )

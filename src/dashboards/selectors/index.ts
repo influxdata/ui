@@ -65,7 +65,10 @@ export const isCurrentPageDashboard = (state: AppState): boolean =>
 // Query should run against 10-11:00am UTC rather than querying
 // 10-11:00am local time (offset depending on timezone)
 export const setTimeToUTC = (date: string): string =>
-  moment.utc(date).subtract(getTimezoneOffset(), 'minutes').format()
+  moment
+    .utc(date)
+    .subtract(getTimezoneOffset(), 'minutes')
+    .format()
 
 export const getTimeZone = (state: AppState): TimeZone => {
   return state.app.persisted.timeZone || 'Local'

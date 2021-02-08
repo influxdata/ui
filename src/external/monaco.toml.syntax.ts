@@ -6,7 +6,7 @@ register(LANGID, async () => ({
   format: 'json',
   content: await import(
     /* webpackPrefetch: 0 */ 'src/external/toml.tmLanguage.json'
-  ).then((data) => {
+  ).then(data => {
     return JSON.stringify(data)
   }),
 }))

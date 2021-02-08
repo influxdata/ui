@@ -23,7 +23,7 @@ interface FilteredFn {
 const Functions: FC<Props> = ({onSelect}) => {
   const [search, setSearch] = useState('')
   const updateSearch = useCallback(
-    (e) => {
+    e => {
       setSearch(e.target.value)
     },
     [search, setSearch]
@@ -31,7 +31,7 @@ const Functions: FC<Props> = ({onSelect}) => {
 
   const filteredFunctions: FilteredFn = useMemo(
     () =>
-      FLUX_FUNCTIONS.filter((fn) => {
+      FLUX_FUNCTIONS.filter(fn => {
         return (
           !search.length || fn.name.toLowerCase().includes(search.toLowerCase())
         )
@@ -59,7 +59,7 @@ const Functions: FC<Props> = ({onSelect}) => {
     fnComponent = Object.entries(filteredFunctions).map(([category, fns]) => (
       <dl className="flux-toolbar--category" key={category}>
         <dt className="flux-toolbar--heading">{category}</dt>
-        {fns.map((fn) => (
+        {fns.map(fn => (
           <Fn
             onClickFunction={onSelect}
             key={`${fn.name}_${fn.desc}`}

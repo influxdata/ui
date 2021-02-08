@@ -213,11 +213,11 @@ export const loadBuckets = () => async (
     dispatch(setBuckets(RemoteDataState.Done, normalizedBuckets))
 
     const allBuckets = [...resp.data.buckets, ...demoDataBuckets].map(
-      (b) => b.name
+      b => b.name
     )
 
-    const systemBuckets = allBuckets.filter((b) => b.startsWith('_'))
-    const userBuckets = allBuckets.filter((b) => !b.startsWith('_'))
+    const systemBuckets = allBuckets.filter(b => b.startsWith('_'))
+    const userBuckets = allBuckets.filter(b => !b.startsWith('_'))
     const buckets = [...userBuckets, ...systemBuckets]
 
     const selectedBucket = getActiveQuery(getState()).builderConfig.buckets[0]
@@ -275,7 +275,7 @@ export const loadTagSelector = (index: number) => async (
   const bucket = buckets[0]
 
   const allBuckets = getAll<Bucket>(getState(), ResourceType.Buckets)
-  const foundBucket = allBuckets.find((b) => b.name === bucket)
+  const foundBucket = allBuckets.find(b => b.name === bucket)
 
   const orgID = get(foundBucket, 'orgID', getOrg(getState()).id)
 
@@ -349,7 +349,7 @@ const loadTagSelectorValues = (index: number) => async (
   const bucket = buckets[0]
 
   const allBuckets = getAll<Bucket>(state, ResourceType.Buckets)
-  const foundBucket = allBuckets.find((b) => b.name === bucket)
+  const foundBucket = allBuckets.find(b => b.name === bucket)
   const orgID = get(foundBucket, 'orgID', getOrg(getState()).id)
 
   dispatch(setBuilderTagValuesStatus(index, RemoteDataState.Loading))
@@ -414,7 +414,7 @@ export const selectTagValue = (index: number, value: string) => (
   let newValues: string[]
 
   if (values.includes(value)) {
-    newValues = values.filter((v) => v !== value)
+    newValues = values.filter(v => v !== value)
   } else if (
     activeTimeMachineID === 'alerting' &&
     currentTag.key === '_field'
@@ -445,7 +445,7 @@ export const multiSelectBuilderFunction = (name: string) => (
   const {draftQueries, activeQueryIndex} = getActiveTimeMachine(getState())
   const functions = draftQueries[activeQueryIndex].builderConfig.functions
 
-  const functionNames = functions.map((f) => f.name)
+  const functionNames = functions.map(f => f.name)
   const clickedFunctionAlreadySelected = functionNames.includes(name)
 
   if (!clickedFunctionAlreadySelected) {
@@ -454,7 +454,7 @@ export const multiSelectBuilderFunction = (name: string) => (
   } else {
     if (functions.length > 1) {
       // if more than one function is selected, remove clicked from selected
-      dispatch(setFunctions(functionNames.filter((n) => n != name)))
+      dispatch(setFunctions(functionNames.filter(n => n != name)))
     }
   }
 }
@@ -466,7 +466,7 @@ export const singleSelectBuilderFunction = (name: string) => (
   const {draftQueries, activeQueryIndex} = getActiveTimeMachine(getState())
   const functions = draftQueries[activeQueryIndex].builderConfig.functions
 
-  const functionNames = functions.map((f) => f.name)
+  const functionNames = functions.map(f => f.name)
   const clickedFunctionAlreadySelected = functionNames.includes(name)
 
   if (!clickedFunctionAlreadySelected) {
@@ -475,7 +475,7 @@ export const singleSelectBuilderFunction = (name: string) => (
   } else {
     if (functions.length > 1) {
       // if more than one function is selected, remove clicked from selected
-      dispatch(setFunctions(functionNames.filter((n) => n != name)))
+      dispatch(setFunctions(functionNames.filter(n => n != name)))
     }
   }
 }
@@ -532,7 +532,7 @@ export const setBuilderBucketIfExists = (bucketName: string) => (
   getState: GetState
 ) => {
   const buckets = getAll<Bucket>(getState(), ResourceType.Buckets)
-  if (buckets.find((b) => b.name === bucketName)) {
+  if (buckets.find(b => b.name === bucketName)) {
     dispatch(editActiveQueryWithBuilderSync())
     dispatch(setBuilderBucket(bucketName, true))
   }

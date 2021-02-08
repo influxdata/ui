@@ -50,7 +50,7 @@ const HistogramPlot: FunctionComponent<Props> = ({
   const isValidView =
     properties.xColumn &&
     columnKeys.includes(properties.xColumn) &&
-    fillColumns.every((col) => columnKeys.includes(col))
+    fillColumns.every(col => columnKeys.includes(col))
 
   if (!isValidView) {
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
@@ -58,8 +58,8 @@ const HistogramPlot: FunctionComponent<Props> = ({
 
   const colorHexes =
     properties.colors && properties.colors.length
-      ? properties.colors.map((c) => c.hex)
-      : DEFAULT_LINE_COLORS.map((c) => c.hex)
+      ? properties.colors.map(c => c.hex)
+      : DEFAULT_LINE_COLORS.map(c => c.hex)
 
   const xFormatter = getFormatter(
     result.table.getColumnType(properties.xColumn),

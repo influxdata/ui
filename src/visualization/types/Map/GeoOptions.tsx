@@ -176,7 +176,7 @@ export const GeoOptions: FC<Props> = ({properties, update}) => {
             min={LatRangeSlider.Min}
             max={LatRangeSlider.Max}
             value={properties.center.lat}
-            onChange={(event) => {
+            onChange={event => {
               handleSelectLatitude(parseFloat(event.target.value))
             }}
             testID="geo-latitude"
@@ -187,7 +187,7 @@ export const GeoOptions: FC<Props> = ({properties, update}) => {
             min={LonRangeSlider.Min}
             max={LonRangeSlider.Max}
             value={properties.center.lon}
-            onChange={(event) => {
+            onChange={event => {
               handleSelectLongitude(parseFloat(event.target.value))
             }}
             testID="geo-longitude"
@@ -198,7 +198,7 @@ export const GeoOptions: FC<Props> = ({properties, update}) => {
             min={ZoomRangeSlider.Min}
             max={ZoomRangeSlider.Max}
             value={properties.zoom}
-            onChange={(event) => {
+            onChange={event => {
               handleZoomSelect(parseFloat(event.target.value))
             }}
             testID="geo-zoom"

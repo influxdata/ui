@@ -15,9 +15,7 @@ const makeResponse = (status, data) => {
   })
 }
 
-export const getBillingAccount = (): ReturnType<
-  typeof getBillingAccountGenerated
-> => {
+export const getBillingAccount = (): ReturnType<typeof getBillingAccountGenerated> => {
   const account: Account = {
     id: 1234,
     balance: 100,
@@ -47,9 +45,7 @@ export const getBillingAccount = (): ReturnType<
   return makeResponse(200, account)
 }
 
-export const getBillingDate = (): ReturnType<
-  typeof getBillingDateGenerated
-> => {
+export const getBillingDate = (): ReturnType<typeof getBillingDateGenerated> => {
   const billingDate: BillingDate = {
     date: new Date().toLocaleDateString(),
     time: new Date().toLocaleString(),

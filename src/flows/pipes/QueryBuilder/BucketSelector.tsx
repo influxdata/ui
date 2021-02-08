@@ -29,9 +29,9 @@ const BucketSelector: FC = () => {
   }
 
   const filteredBuckets = buckets
-    .map((bucket) => bucket.name)
+    .map(bucket => bucket.name)
     .filter(
-      (bucket) =>
+      bucket =>
         !search.length ||
         bucket.toLocaleLowerCase().includes(search.toLocaleLowerCase())
     )
@@ -45,7 +45,7 @@ const BucketSelector: FC = () => {
             value={search}
             placeholder="Search for a bucket"
             className="tag-selector--search"
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={e => setSearch(e.target.value)}
           />
         </BuilderCard.Menu>
         <BuilderCard.Empty>No buckets matched your search</BuilderCard.Empty>
@@ -61,7 +61,7 @@ const BucketSelector: FC = () => {
           value={search}
           placeholder="Search for a bucket"
           className="tag-selector--search"
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={e => setSearch(e.target.value)}
         />
       </BuilderCard.Menu>
       <List
@@ -69,7 +69,7 @@ const BucketSelector: FC = () => {
         testID="buckets-list"
         style={{flex: '1 0 0'}}
       >
-        {filteredBuckets.map((item) => {
+        {filteredBuckets.map(item => {
           const selected = data.buckets.includes(item)
 
           const title = selected

@@ -14,7 +14,7 @@ describe('Community Templates', () => {
   })
 
   it('launches github when the browse community template button is clicked', () => {
-    cy.window().then((win) => {
+    cy.window().then(win => {
       cy.stub(win, 'open').as('windowOpenSpy')
     })
 
@@ -219,13 +219,17 @@ describe('Community Templates', () => {
 
       cy.getByTestID('template-resource-link').click({multiple: true})
       // dashboard
-      cy.get('.community-templates--resources-table').contains('dash-1').click()
+      cy.get('.community-templates--resources-table')
+        .contains('dash-1')
+        .click()
       cy.url().should('include', 'dashboards')
       cy.go('back')
 
       cy.getByTestID('template-resource-link').click({multiple: true})
       // telegraf
-      cy.get('.community-templates--resources-table').contains('tele-2').click()
+      cy.get('.community-templates--resources-table')
+        .contains('tele-2')
+        .click()
       cy.url().should(
         'match',
         /.*\/load-data\/telegrafs\/[\w\d]+\/instructions/

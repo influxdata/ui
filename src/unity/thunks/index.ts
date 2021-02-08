@@ -45,11 +45,11 @@ export const getUsersAndInvites = async (dispatch: Dispatch<Action>) => {
       throw new Error(inviteResp.data.message)
     }
 
-    const users = userResp.data.map((u) => ({
+    const users = userResp.data.map(u => ({
       ...u,
       status: RemoteDataState.Done,
     }))
-    const invites = inviteResp.data.map((i) => ({
+    const invites = inviteResp.data.map(i => ({
       ...i,
       status: RemoteDataState.Done,
     }))

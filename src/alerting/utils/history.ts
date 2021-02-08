@@ -122,10 +122,10 @@ const renameTagKeys = (searchExpr: SearchExpr) => {
 
   const tagExprNodes: SearchTagExpr[] = findNodes(
     rewrittenExpr,
-    (n) => n && n.type === 'TagExpression'
+    n => n && n.type === 'TagExpression'
   )
 
-  const tagKeyNodes = tagExprNodes.map((n) => n.left)
+  const tagKeyNodes = tagExprNodes.map(n => n.left)
 
   for (const node of tagKeyNodes) {
     const normal = node.value
@@ -151,7 +151,7 @@ export const processResponse = ({
   promise: queryPromise,
   cancel,
 }: CancelBox<RunQueryResult>): CancelBox<Row[]> => {
-  const promise = queryPromise.then<Row[]>((resp) => {
+  const promise = queryPromise.then<Row[]>(resp => {
     if (resp.type !== 'SUCCESS') {
       return Promise.reject(new Error(resp.message))
     }

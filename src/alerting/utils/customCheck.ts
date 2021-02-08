@@ -23,15 +23,15 @@ export function createCheckQueryFromAlertBuilder(
   const dataFrom = `data = from(bucket: "${builderConfig.buckets[0]}")`
 
   const filterStatements = builderConfig.tags
-    .filter((tag) => !!tag.values[0])
-    .map((tag) => `  |> filter(fn: (r) => r.${tag.key} == "${tag.values[0]}")`)
+    .filter(tag => !!tag.values[0])
+    .map(tag => `  |> filter(fn: (r) => r.${tag.key} == "${tag.values[0]}")`)
 
   const messageFn = `messageFn = (r) =>("${statusMessageTemplate}")`
 
   const checkTags = tags
     ? tags
-        .filter((t) => t.key && t.value)
-        .map((t) => `${t.key}: "${t.value}"`)
+        .filter(t => t.key && t.value)
+        .map(t => `${t.key}: "${t.value}"`)
         .join(',')
     : ''
 
@@ -106,8 +106,8 @@ export function createCheckQueryFromAlertBuilder(
       aggregateFunction,
     ]
 
-    const thresholdExpressions = thresholds.map((t) => {
-      const fieldTag = builderConfig.tags.find((t) => t.key === '_field')
+    const thresholdExpressions = thresholds.map(t => {
+      const fieldTag = builderConfig.tags.find(t => t.key === '_field')
       const fieldSelection = get(fieldTag, 'values[0]')
 
       const beginning = `${t.level.toLowerCase()} = (r) =>(r.${fieldSelection}`
@@ -125,7 +125,7 @@ export function createCheckQueryFromAlertBuilder(
     })
 
     const thresholdsDefined = thresholds.map(
-      (t) => ` ${t.level.toLowerCase()}:${t.level.toLowerCase()}`
+      t => ` ${t.level.toLowerCase()}:${t.level.toLowerCase()}`
     )
 
     const queryStatement = [

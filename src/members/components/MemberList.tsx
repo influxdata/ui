@@ -73,7 +73,7 @@ export default class MemberList extends PureComponent<Props> {
       sortType
     )
 
-    return sortedMembers.map((member) => (
+    return sortedMembers.map(member => (
       <MemberCard key={member.id} member={member} onDelete={onDelete} />
     ))
   }

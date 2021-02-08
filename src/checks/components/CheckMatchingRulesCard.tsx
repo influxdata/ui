@@ -38,8 +38,8 @@ type Props = ReduxProps
 const CheckMatchingRulesCard: FC<Props> = ({orgID, tags, queryResults}) => {
   const getMatchingRules = async (): Promise<NotificationRule[]> => {
     const checkTags = tags
-      .filter((t) => t.key && t.value)
-      .map((t) => [t.key, t.value])
+      .filter(t => t.key && t.value)
+      .map(t => [t.key, t.value])
 
     const queryTags = []
 
@@ -47,18 +47,18 @@ const CheckMatchingRulesCard: FC<Props> = ({orgID, tags, queryResults}) => {
       const joined = queryResults.join('\n\n')
       const table = fromFlux(joined).table
       const fluxGroupKeyUnion = fromFlux(joined).fluxGroupKeyUnion.filter(
-        (v) => v !== '_start' && v !== '_stop'
+        v => v !== '_start' && v !== '_stop'
       )
 
-      fluxGroupKeyUnion.forEach((gk) => {
+      fluxGroupKeyUnion.forEach(gk => {
         const values = uniq(table.getColumn(gk, 'string'))
-        values.forEach((v) => {
+        values.forEach(v => {
           queryTags.push([gk, v])
         })
       })
     }
 
-    const tagsList = [...checkTags, ...queryTags].map((t) => [
+    const tagsList = [...checkTags, ...queryTags].map(t => [
       'tag',
       `${t[0].trim()}:${t[1].trim()}`,
     ])
@@ -124,7 +124,7 @@ const CheckMatchingRulesCard: FC<Props> = ({orgID, tags, queryResults}) => {
   } else {
     contents = (
       <>
-        {matchingRules.map((r) => (
+        {matchingRules.map(r => (
           <MatchingRuleCard key={r.id} rule={r} />
         ))}
       </>

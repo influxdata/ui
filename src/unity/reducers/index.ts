@@ -187,7 +187,7 @@ export const userListReducer = (
     case 'UPDATE_INVITE': {
       return {
         ...state,
-        invites: state.invites.map((invite) =>
+        invites: state.invites.map(invite =>
           invite.id == action.invite.id ? action.invite : invite
         ),
       }
@@ -196,7 +196,7 @@ export const userListReducer = (
     case 'UPDATE_USER': {
       return {
         ...state,
-        users: state.users.map((user) =>
+        users: state.users.map(user =>
           user.id == action.user.id ? action.user : user
         ),
       }

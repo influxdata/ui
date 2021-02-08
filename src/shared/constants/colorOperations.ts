@@ -9,7 +9,7 @@ import {
 
 import {Color} from 'src/types/colors'
 
-const getLegibleTextColor = (bgColorHex) => {
+const getLegibleTextColor = bgColorHex => {
   const darkText = '#292933'
   const lightText = '#ffffff'
 
@@ -21,9 +21,9 @@ const getLegibleTextColor = (bgColorHex) => {
 }
 
 const findNearestCrossedThreshold = (colors, lastValue) => {
-  const sortedColors = _.sortBy(colors, (color) => Number(color.value))
+  const sortedColors = _.sortBy(colors, color => Number(color.value))
   const nearestCrossedThreshold = sortedColors
-    .filter((color) => lastValue >= color.value)
+    .filter(color => lastValue >= color.value)
     .pop()
 
   return nearestCrossedThreshold
@@ -50,7 +50,7 @@ export const generateThresholdsListHexs = ({
   }
 
   // baseColor is expected in all cases
-  const baseColor = colors.find((color) => color.id === BASE_THRESHOLD_ID) || {
+  const baseColor = colors.find(color => color.id === BASE_THRESHOLD_ID) || {
     hex: defaultColoring.textColor,
   }
 
@@ -67,7 +67,7 @@ export const generateThresholdsListHexs = ({
 
   // When there is only a base color and it's applied to the text
   const shouldColorizeText = !!colors.find(
-    (color) => color.type === THRESHOLD_TYPE_TEXT
+    color => color.type === THRESHOLD_TYPE_TEXT
   )
 
   if (shouldColorizeText && colors.length === 1 && baseColor) {

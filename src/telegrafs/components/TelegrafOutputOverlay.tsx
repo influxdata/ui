@@ -70,7 +70,7 @@ class TelegrafOutputOverlay extends PureComponent<Props> {
   private get buckets() {
     const {buckets} = this.props
     return (buckets || [])
-      .filter((item) => item.type !== 'system')
+      .filter(item => item.type !== 'system')
       .sort((a, b) => {
         const _a = a.name.toLowerCase()
         const _b = b.name.toLowerCase()
@@ -147,7 +147,7 @@ class TelegrafOutputOverlay extends PureComponent<Props> {
     this.props.onClose()
   }
 
-  private handleSelectBucket = (bucket) => {
+  private handleSelectBucket = bucket => {
     this.setState({
       selectedBucket: bucket,
     })

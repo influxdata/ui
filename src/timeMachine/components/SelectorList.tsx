@@ -14,7 +14,7 @@ interface Props {
   wrapText?: boolean
 }
 
-const SelectorList: SFC<Props> = (props) => {
+const SelectorList: SFC<Props> = props => {
   const {
     items,
     selectedItems,
@@ -27,7 +27,7 @@ const SelectorList: SFC<Props> = (props) => {
 
   return (
     <List autoHideScrollbars={true} testID={testID} style={{flex: '1 0 0'}}>
-      {items.map((item) => {
+      {items.map(item => {
         const selected = selectedItems.includes(item)
 
         const title = selected

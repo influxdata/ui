@@ -40,14 +40,14 @@ const NotificationSettingsOverlay = ({onHideOverlay, isOverlayVisible}) => {
   const [notifyEmail, setNotifyEmail] = useState(billingSettings.notifyEmail)
 
   const onToggleChange = () => {
-    setIsNotifyActive((prevState) => !prevState)
+    setIsNotifyActive(prevState => !prevState)
   }
 
-  const onEmailChange = (e) => {
+  const onEmailChange = e => {
     setNotifyEmail(e.target.value)
   }
 
-  const onBalanceThresholdChange = (e) => {
+  const onBalanceThresholdChange = e => {
     setBalanceThreshold(e.target.value)
   }
 

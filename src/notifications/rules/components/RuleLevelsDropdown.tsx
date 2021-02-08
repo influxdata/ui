@@ -36,10 +36,10 @@ const RuleLevelsDropdown: FC<Props> = ({
     {display: 'ANY', hex: InfluxColors.Sidewalk, value: 'ANY'},
   ]
   if (otherLevel) {
-    levels = levels.filter((l) => l.value !== otherLevel)
+    levels = levels.filter(l => l.value !== otherLevel)
   }
 
-  const selected = levels.find((l) => l.value === selectedLevel)
+  const selected = levels.find(l => l.value === selectedLevel)
 
   if (!selected) {
     throw new Error('Unknown level type provided to <LevelsDropdown/>')
@@ -80,7 +80,7 @@ const RuleLevelsDropdown: FC<Props> = ({
     </Dropdown.Item>
   ))
 
-  const menu = (onCollapse) => (
+  const menu = onCollapse => (
     <Dropdown.Menu theme={DropdownMenuTheme.Onyx} onCollapse={onCollapse}>
       {items}
     </Dropdown.Menu>

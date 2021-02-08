@@ -30,7 +30,7 @@ interface State {
 @ErrorHandling
 export default class CSVTemplateBuilder extends PureComponent<Props, State> {
   state: State = {
-    csv: this.props.values.map((value) => `"${value}"`).join(',\n '),
+    csv: this.props.values.map(value => `"${value}"`).join(',\n '),
   }
 
   public render() {

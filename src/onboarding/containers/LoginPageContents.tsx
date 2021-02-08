@@ -166,7 +166,7 @@ class LoginPageContents extends PureComponent<Props> {
       passwordError,
     }
 
-    const isValid = Object.values(errors).every((error) => error === '')
+    const isValid = Object.values(errors).every(error => error === '')
 
     return {isValid, errors}
   }
@@ -197,7 +197,7 @@ class LoginPageContents extends PureComponent<Props> {
         email,
         password,
       },
-      (error) => {
+      error => {
         if (error) {
           this.setState({buttonStatus: ComponentStatus.Default})
           return this.displayErrorMessage(errors, error)
@@ -233,7 +233,7 @@ class LoginPageContents extends PureComponent<Props> {
     })
   }
 
-  private handleForgotPasswordClick = (event) => {
+  private handleForgotPasswordClick = event => {
     event.preventDefault()
     const {email} = this.state
     const {onNotify} = this.props

@@ -16,7 +16,7 @@ export default class extends PureComponent<Props> {
     const {tabs, activeLPTab} = this.props
     return (
       <SelectGroup shape={ButtonShape.Default}>
-        {tabs.map((t) => (
+        {tabs.map(t => (
           <Tab
             tab={t}
             key={t}

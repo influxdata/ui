@@ -33,13 +33,13 @@ export const annotationsReducer = (
       return {
         ...state,
         visibleStreamsByID: state.visibleStreamsByID.filter(
-          (streamID) => streamID !== action.streamID
+          streamID => streamID !== action.streamID
         ),
       }
     }
     case SET_ANNOTATIONS: {
       const annotations = {}
-      action.annotations.forEach((annotationStream) => {
+      action.annotations.forEach(annotationStream => {
         annotations[annotationStream.stream] = annotationStream.annotations
       })
       return {

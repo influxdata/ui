@@ -40,7 +40,9 @@ describe('Checks', () => {
       .contains('Filter')
     cy.get<string>('@defaultBucketListSelector').then(
       (defaultBucketListSelector: string) => {
-        cy.getByTestID(defaultBucketListSelector).wait(1200).click()
+        cy.getByTestID(defaultBucketListSelector)
+          .wait(1200)
+          .click()
 
         cy.log(
           'Select measurement and field; assert checklist popover and save button'
@@ -71,7 +73,9 @@ describe('Checks', () => {
         cy.log(
           'Change "Schedule Every" parameter and assert its change in "Window Period" placeholder'
         )
-        cy.getByTestID('schedule-check').clear().type('135s')
+        cy.getByTestID('schedule-check')
+          .clear()
+          .type('135s')
         cy.getByTestID('select-group--option').click()
         cy.get('.duration-input').within(() => {
           cy.getByTitle('This input is disabled').should(
@@ -82,7 +86,9 @@ describe('Checks', () => {
 
         cy.log('Name the check; save')
         cy.getByTestID('overlay--container').within(() => {
-          cy.getByTestID('page-title').contains('Name this Check').click()
+          cy.getByTestID('page-title')
+            .contains('Name this Check')
+            .click()
           cy.getByTestID('renamable-page-title--input')
             .clear()
             .type('Threshold check test{enter}')
@@ -106,12 +112,12 @@ describe('Checks', () => {
         cy.getByTestID('create-deadman-check').click()
 
         cy.log('select measurement and field')
-        cy.intercept('POST', '/query', (req) => {
+        cy.intercept('POST', '/query', req => {
           if (req.body.query.includes('_measurement')) {
             req.alias = 'measurementQuery'
           }
         })
-        cy.intercept('POST', '/query', (req) => {
+        cy.intercept('POST', '/query', req => {
           if (req.body.query.includes('distinct(column: "_field")')) {
             req.alias = 'fieldQuery'
           }
@@ -127,7 +133,9 @@ describe('Checks', () => {
 
         cy.log('name the check; save')
         cy.getByTestID('overlay').within(() => {
-          cy.getByTestID('page-title').contains('Name this Check').click()
+          cy.getByTestID('page-title')
+            .contains('Name this Check')
+            .click()
           cy.getByTestID('renamable-page-title--input')
             .clear()
             .type('Alpha{enter}')
@@ -137,12 +145,12 @@ describe('Checks', () => {
         cy.getByTestID('overlay').should('not.exist')
         // bust the /query cache
         cy.reload()
-        cy.intercept('POST', '/query', (req) => {
+        cy.intercept('POST', '/query', req => {
           if (req.body.query.includes('_measurement')) {
             req.alias = 'measurementQueryBeta'
           }
         })
-        cy.intercept('POST', '/query', (req) => {
+        cy.intercept('POST', '/query', req => {
           if (req.body.query.includes('distinct(column: "_field")')) {
             req.alias = 'fieldQueryBeta'
           }
@@ -164,7 +172,9 @@ describe('Checks', () => {
 
         cy.log('name the check; save')
         cy.getByTestID('overlay').within(() => {
-          cy.getByTestID('page-title').contains('Name this Check').click()
+          cy.getByTestID('page-title')
+            .contains('Name this Check')
+            .click()
           cy.getByTestID('renamable-page-title--input')
             .clear()
             .type('Beta{enter}')
@@ -219,16 +229,26 @@ describe('Checks', () => {
         cy.getByTestID('builder-conditions')
           .should('contain', 'Deadman')
           .within(() => {
-            cy.getByTestID('duration-input').first().click()
+            cy.getByTestID('duration-input')
+              .first()
+              .click()
             cy.get('.duration-input--menu').should('exist')
-            cy.getByTestID('duration-input').first().clear().type('60s')
+            cy.getByTestID('duration-input')
+              .first()
+              .clear()
+              .type('60s')
 
             cy.getByTestID('builder-card--header').click()
             cy.get('.duration-input--menu').should('not.exist')
 
-            cy.getByTestID('duration-input').last().click()
+            cy.getByTestID('duration-input')
+              .last()
+              .click()
             cy.get('.duration-input--menu').should('exist')
-            cy.getByTestID('duration-input').last().clear().type('660s')
+            cy.getByTestID('duration-input')
+              .last()
+              .clear()
+              .type('660s')
             cy.getByTestID('builder-card--header').click()
             cy.get('.duration-input--menu').should('not.exist')
 
@@ -243,7 +263,9 @@ describe('Checks', () => {
 
         // name the check; save
         cy.getByTestID('overlay').within(() => {
-          cy.getByTestID('page-title').contains('Name this Check').click()
+          cy.getByTestID('page-title')
+            .contains('Name this Check')
+            .click()
           cy.getByTestID('renamable-page-title--input')
             .clear()
             .type('Deadman check test{enter}')
@@ -311,16 +333,22 @@ describe('Checks', () => {
           // TODO: refactor into a request
           cy.getByTestID('create-check').click()
           cy.getByTestID('create-threshold-check').click()
-          cy.getByTestID(defaultBucketListSelector).wait(1200).click()
+          cy.getByTestID(defaultBucketListSelector)
+            .wait(1200)
+            .click()
           cy.getByTestID(`selector-list ${measurement}`).click()
           cy.getByTestID('save-cell--button').should('be.disabled')
           cy.getByTestID(`selector-list ${field}`).click()
           cy.getByTestID('save-cell--button').should('be.disabled')
           cy.getByTestID('checkeo--header alerting-tab').click()
           cy.getByTestID('add-threshold-condition-WARN').click()
-          cy.getByTestID('input-field-WARN').clear().type('5s')
+          cy.getByTestID('input-field-WARN')
+            .clear()
+            .type('5s')
           cy.getByTestID('add-threshold-condition-CRIT').click()
-          cy.getByTestID('input-field-CRIT').clear().type('0')
+          cy.getByTestID('input-field-CRIT')
+            .clear()
+            .type('0')
           cy.getByTestID('save-cell--button').click()
           cy.getByTestID('check-card').should('have.length', 1)
           cy.getByTestID('notification-error').should('not.exist')
@@ -353,7 +381,9 @@ describe('Checks', () => {
       cy.get('body').tab()
       cy.getByTestID('filter--input checks').should('have.focus')
 
-      cy.focused().tab().tab()
+      cy.focused()
+        .tab()
+        .tab()
       cy.getByTestID('filter--input endpoints').should('have.focus')
 
       cy.focused().tab()
@@ -365,7 +395,7 @@ describe('Checks', () => {
       cy.getByTestID('check-card--name').click()
       cy.get('@org').then(({id}: Organization) => {
         cy.fixture('routes').then(({orgs, alerting, checks}) => {
-          cy.url().then((url) => {
+          cy.url().then(url => {
             Cypress.minimatch(
               url,
               `
@@ -388,7 +418,9 @@ describe('Checks', () => {
         .clear()
         .type('0')
       // renames the check
-      cy.getByTestID('page-title').contains('Name this Check').type(checkName)
+      cy.getByTestID('page-title')
+        .contains('Name this Check')
+        .type(checkName)
       cy.getByTestID('save-cell--button').click()
       // checks that the values persisted
       cy.getByTestID('check-card--name').contains(checkName)

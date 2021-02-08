@@ -21,7 +21,7 @@ export class ClickOutside extends PureComponent<Props> {
     return React.Children.only(this.props.children)
   }
 
-  private handleClickOutside = (e) => {
+  private handleClickOutside = e => {
     const domNode = ReactDOM.findDOMNode(this)
     if (!domNode || !domNode.contains(e.target)) {
       this.props.onClickOutside(e)

@@ -110,7 +110,7 @@ export default class TasksList extends PureComponent<Props, State> {
       sortType
     )
 
-    return sortedTasks.map((task) => (
+    return sortedTasks.map(task => (
       <TaskCard
         key={`task-id--${task.id}`}
         task={task}

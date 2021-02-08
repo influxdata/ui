@@ -9,7 +9,7 @@ export const notificationsReducer = (
   state = initialState,
   action: Action
 ): Notification[] =>
-  produce(state, (draftState) => {
+  produce(state, draftState => {
     switch (action.type) {
       case 'PUBLISH_NOTIFICATION': {
         const {notification} = action.payload
@@ -18,7 +18,7 @@ export const notificationsReducer = (
           id: uuid.v4(),
         }
         const matchIndex = state.findIndex(
-          (n) => n.type && notification.type && n.type === notification.type
+          n => n.type && notification.type && n.type === notification.type
         )
         const isUnique = matchIndex === -1
         if (isUnique) {
@@ -29,7 +29,7 @@ export const notificationsReducer = (
 
       case 'DISMISS_NOTIFICATION': {
         const {id} = action.payload
-        return draftState.filter((n) => n.id !== id)
+        return draftState.filter(n => n.id !== id)
       }
 
       case 'DISMISS_ALL_NOTIFICATIONS': {

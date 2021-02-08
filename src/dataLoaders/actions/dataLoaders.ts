@@ -310,14 +310,12 @@ export const setToken = (token: string): SetToken => ({
   payload: {token},
 })
 
-export const addPluginBundleWithPlugins = (bundle: BundleName) => (
-  dispatch
-) => {
+export const addPluginBundleWithPlugins = (bundle: BundleName) => dispatch => {
   dispatch(addPluginBundle(bundle))
   const plugins = pluginsByBundle[bundle]
   dispatch(
     addTelegrafPlugins(
-      plugins.map((p) => {
+      plugins.map(p => {
         const isConfigured = !!telegrafPluginsInfo[p].fields
           ? ConfigurationState.Unconfigured
           : ConfigurationState.Configured
@@ -333,9 +331,9 @@ export const addPluginBundleWithPlugins = (bundle: BundleName) => (
   )
 }
 
-export const removePluginBundleWithPlugins = (bundle: BundleName) => (
-  dispatch
-) => {
+export const removePluginBundleWithPlugins = (
+  bundle: BundleName
+) => dispatch => {
   dispatch(removePluginBundle(bundle))
   dispatch(removeBundlePlugins(bundle))
 }

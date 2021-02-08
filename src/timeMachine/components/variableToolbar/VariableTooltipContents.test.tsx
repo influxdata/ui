@@ -71,7 +71,7 @@ describe("Time Machine's variable dropdown", () => {
 
       fireEvent.click(getByText('Value'))
       fireEvent.click(getByTestId('variable-dropdown--button'))
-      Object.keys(variableValues).forEach((variableKey) => {
+      Object.keys(variableValues).forEach(variableKey => {
         expect(getAllByText(variableKey)).toBeTruthy()
       })
     })

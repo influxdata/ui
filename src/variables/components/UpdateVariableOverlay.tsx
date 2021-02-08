@@ -97,9 +97,9 @@ class UpdateVariableOverlay extends PureComponent<Props, State> {
                               {this.typeDropdownLabel}
                             </Dropdown.Button>
                           )}
-                          menu={(onCollapse) => (
+                          menu={onCollapse => (
                             <Dropdown.Menu onCollapse={onCollapse}>
-                              {variableItemTypes.map((v) => (
+                              {variableItemTypes.map(v => (
                                 <Dropdown.Item
                                   key={v.type}
                                   id={v.type}
@@ -163,7 +163,7 @@ class UpdateVariableOverlay extends PureComponent<Props, State> {
     const {workingVariable} = this.state
 
     return variableItemTypes.find(
-      (variable) => variable.type === workingVariable.arguments.type
+      variable => variable.type === workingVariable.arguments.type
     ).label
   }
 
@@ -253,7 +253,7 @@ class UpdateVariableOverlay extends PureComponent<Props, State> {
 
 const mstp = (state: AppState) => {
   const variables = getVariables(state)
-  const startVariable = variables.find((v) => v.id === state.overlays.params.id)
+  const startVariable = variables.find(v => v.id === state.overlays.params.id)
 
   return {variables, startVariable}
 }

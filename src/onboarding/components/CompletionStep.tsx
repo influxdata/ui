@@ -75,7 +75,7 @@ class CompletionStep extends PureComponent<Props> {
                     >
                       <div className="wizard-completion--option">
                         <ResourceFetcher<Dashboard[]> fetcher={getDashboards}>
-                          {(dashboards) => (
+                          {dashboards => (
                             <CompletionQuickStartButton
                               onExit={this.handleQuickStart}
                               dashboards={dashboards}

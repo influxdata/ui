@@ -4,7 +4,7 @@ import {useBilling} from 'src/billing/components/BillingPage'
 const PaymentDisplay: FC = () => {
   const [{paymentMethods}] = useBilling()
   const paymentMethod =
-    paymentMethods.find((p) => p.defaultPaymentMethod) || paymentMethods[0]
+    paymentMethods.find(p => p.defaultPaymentMethod) || paymentMethods[0]
   return (
     <div data-testid="payment-display">
       <p>

@@ -27,7 +27,7 @@ const DurationSelector: FunctionComponent<Props> = ({
 }) => {
   let resolvedDurations = durations
   let selected: DurationOption = durations.find(
-    (d) =>
+    d =>
       selectedDuration === d.duration ||
       areDurationsEqual(selectedDuration, d.duration)
   )
@@ -50,7 +50,7 @@ const DurationSelector: FunctionComponent<Props> = ({
           {selected.displayText}
         </Dropdown.Button>
       )}
-      menu={(onCollapse) => (
+      menu={onCollapse => (
         <Dropdown.Menu onCollapse={onCollapse} testID="duration-selector--menu">
           {resolvedDurations.map(({duration, displayText}) => (
             <Dropdown.Item

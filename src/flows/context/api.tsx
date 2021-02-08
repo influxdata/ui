@@ -105,10 +105,10 @@ export const migrateLocalFlowsToAPI = async (
   serialize: Function,
   dispatch: Function
 ) => {
-  const localFlows = Object.keys(flows).filter((id) => id.includes('local'))
+  const localFlows = Object.keys(flows).filter(id => id.includes('local'))
   if (localFlows.length) {
     await Promise.all(
-      localFlows.map(async (localID) => {
+      localFlows.map(async localID => {
         const flow = flows[localID]
         const apiFlow: PostApiV2privateFlowsOrgsFlowParams = {
           orgID: orgID,

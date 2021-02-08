@@ -16,8 +16,8 @@ export const normalizeAppPersisted = (
   return {...persisted, timeZone: normalizeTimeZone(persisted.timeZone)}
 }
 
-const normalizeTimeZone = (timeZone) => {
-  const validTimeZone = timeZones.find((tz) => tz === timeZone)
+const normalizeTimeZone = timeZone => {
+  const validTimeZone = timeZones.find(tz => tz === timeZone)
   if (!validTimeZone) {
     return 'Local'
   }

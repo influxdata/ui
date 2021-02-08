@@ -61,7 +61,7 @@ export const SeriesCardinalityIncreaseForm: FC<Props> = ({orgID}) => {
         value={increaseAmount}
         required={true}
       >
-        {(status) => (
+        {status => (
           <Input
             name="Approximate Series Cardinality Needed"
             placeholder="Tell us how much series cardinality you need."
@@ -69,7 +69,7 @@ export const SeriesCardinalityIncreaseForm: FC<Props> = ({orgID}) => {
             status={status}
             autoFocus={true}
             value={increaseAmount}
-            onChange={(e) => onChangeIncreaseAmount(e.target.value)}
+            onChange={e => onChangeIncreaseAmount(e.target.value)}
             testID="rate-alert-form-amount"
           />
         )}
@@ -80,13 +80,13 @@ export const SeriesCardinalityIncreaseForm: FC<Props> = ({orgID}) => {
         value={requestDetails}
         required={true}
       >
-        {(status) => (
+        {status => (
           <TextArea
             name="Use-Case Details"
             placeholder="Tell us about your use-case, what you've tried so far, and why you need an increase."
             status={status}
             value={requestDetails}
-            onChange={(e) => onChangeRequestDetails(e.target.value)}
+            onChange={e => onChangeRequestDetails(e.target.value)}
             testID="rate-alert-form-details"
             rows={10}
           />

@@ -55,7 +55,7 @@ export const limitsReducer = (
   state = defaultState,
   action: Actions
 ): LimitsState =>
-  produce(state, (draftState) => {
+  produce(state, draftState => {
     switch (action.type) {
       case ActionTypes.SetLimitsStatus: {
         const {status} = action.payload
@@ -95,14 +95,14 @@ export const limitsReducer = (
           draftState.rules.maxAllowed = maxNotifications
           draftState.rules.blocked = blockedNotificationRules
             .split(',')
-            .map((r) => r.trim())
+            .map(r => r.trim())
         }
 
         if (limits.notificationEndpoint) {
           const {blockedNotificationEndpoints} = limits.notificationEndpoint
           draftState.endpoints.blocked = blockedNotificationEndpoints
             .split(',')
-            .map((r) => r.trim())
+            .map(r => r.trim())
         }
 
         if (limits.rate) {

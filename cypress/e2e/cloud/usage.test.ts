@@ -6,7 +6,7 @@ describe('Usage Page', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.window().then((w) => {
+        cy.window().then(w => {
           w.influx.set('unity-usage', true)
         })
 
@@ -32,7 +32,9 @@ describe('Usage Page', () => {
 
     // Checks the daterange picker
     // TODO(ariel): get more data in to see if things change in the results
-    cy.get('.cf-dropdown--selected').contains('Past 1').should('have.length', 1)
+    cy.get('.cf-dropdown--selected')
+      .contains('Past 1')
+      .should('have.length', 1)
     cy.getByTestID('timerange-popover--dialog').should('not.exist')
     cy.getByTestID('timerange-dropdown').click()
 
@@ -75,7 +77,9 @@ describe('Usage Page', () => {
     )
 
     // This is based on stubbed out data
-    cy.getByTestID('usage-page--dropdown').contains('Data In (MB)').click()
+    cy.getByTestID('usage-page--dropdown')
+      .contains('Data In (MB)')
+      .click()
     cy.getByTestID('dropdown-item')
       .should('have.length', 4)
       .last()

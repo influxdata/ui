@@ -55,7 +55,7 @@ const MinMaxInputs: SFC<MinMaxInputsProps> = ({
         <Form.Element label="Min">
           <Input
             value={minInput}
-            onChange={(e) => setMinInput(e.target.value)}
+            onChange={e => setMinInput(e.target.value)}
             onBlur={emitIfValid}
             onKeyPress={handleKeyPress}
             testID="auto-domain--min"
@@ -66,7 +66,7 @@ const MinMaxInputs: SFC<MinMaxInputsProps> = ({
         <Form.Element label="Max">
           <Input
             value={maxInput}
-            onChange={(e) => setMaxInput(e.target.value)}
+            onChange={e => setMaxInput(e.target.value)}
             onBlur={emitIfValid}
             onKeyPress={handleKeyPress}
             testID="auto-domain--max"

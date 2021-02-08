@@ -84,7 +84,7 @@ export const parseComponentName = (errorInfo: ErrorInfo): string => {
   const componentName = errorInfo.componentStack
     .trim()
     .split('\n')
-    .map((s) => s.split(' ')[1])[0]
+    .map(s => s.split(' ')[1])[0]
 
   return componentName
 }

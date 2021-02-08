@@ -4,7 +4,7 @@ import {PIPE_DEFINITIONS} from 'src/flows'
 import {PipeProp} from 'src/types/flows'
 import {PipeContext} from 'src/flows/context/pipe'
 
-const Pipe: FC<PipeProp> = (props) => {
+const Pipe: FC<PipeProp> = props => {
   const {data} = useContext(PipeContext)
 
   if (!PIPE_DEFINITIONS.hasOwnProperty(data.type)) {

@@ -15,7 +15,7 @@ const Youtube: FC<PipeProp> = ({Context}) => {
   const toggleEdit = () => {
     setIsEditing(!isEditing)
   }
-  const _update = (evt) => {
+  const _update = evt => {
     update({uri: evt.target.value})
   }
 

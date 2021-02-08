@@ -37,7 +37,7 @@ export const authsReducer = (
   state: AuthsState = initialState(),
   action: Action
 ): AuthsState =>
-  produce(state, (draftState) => {
+  produce(state, draftState => {
     switch (action.type) {
       case SET_AUTH: {
         setResource<Authorization>(draftState, action, Authorizations)

@@ -38,7 +38,7 @@ export default (
   state: ChecksState = defaultChecksState,
   action: Action
 ): ChecksState =>
-  produce(state, (draftState) => {
+  produce(state, draftState => {
     switch (action.type) {
       case SET_CHECKS: {
         setResource<Check>(draftState, action, ResourceType.Checks)
@@ -70,7 +70,7 @@ export default (
       case REMOVE_LABEL_FROM_CHECK: {
         const {checkID, labelID} = action
         const labels = draftState.byID[checkID].labels
-        draftState.byID[checkID].labels = labels.filter((id) => id !== labelID)
+        draftState.byID[checkID].labels = labels.filter(id => id !== labelID)
 
         return
       }

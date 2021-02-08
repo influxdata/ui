@@ -22,6 +22,6 @@ export const withHoverTime = <P extends {}>(
   Component: React.ComponentType<P & InjectedHoverProps>
 ) => (props: P) => (
   <Consumer>
-    {(hoverTimeProps) => <Component {...props} {...hoverTimeProps} />}
+    {hoverTimeProps => <Component {...props} {...hoverTimeProps} />}
   </Consumer>
 )

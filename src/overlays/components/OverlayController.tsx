@@ -134,7 +134,7 @@ export const OverlayController: FunctionComponent = () => {
   )
 }
 
-const OverlayProvider: FunctionComponent = (props) => {
+const OverlayProvider: FunctionComponent = props => {
   const {overlayID, onClose} = useSelector((state: AppState) => {
     const id = state.overlays.id
     const onClose = state.overlays.onClose

@@ -172,10 +172,10 @@ describe('Bucket Selector', () => {
             prev[curr.id] = curr
             return prev
           }, {}),
-          allIDs: buckets.map((bucket) => bucket.id),
+          allIDs: buckets.map(bucket => bucket.id),
         },
       },
-    } as AppState).map((bucket) => bucket.name)
+    } as AppState).map(bucket => bucket.name)
     const expectedResult = [
       'alpha',
       'buck2',

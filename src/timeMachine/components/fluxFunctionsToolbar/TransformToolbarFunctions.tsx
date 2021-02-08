@@ -16,10 +16,10 @@ interface Props {
   }) => JSX.Element | JSX.Element[]
 }
 
-const TransformToolbarFunctions: SFC<Props> = (props) => {
+const TransformToolbarFunctions: SFC<Props> = props => {
   const {searchTerm, funcs, children} = props
 
-  const filteredFunctions = funcs.filter((func) =>
+  const filteredFunctions = funcs.filter(func =>
     func.name.toLowerCase().includes(searchTerm.toLowerCase())
   )
 

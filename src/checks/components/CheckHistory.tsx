@@ -38,7 +38,7 @@ type Props = RouteComponentProps<{orgID: string; checkID: string}> & StateProps
 
 const CheckHistory: FC<Props> = ({match, timeZone, resourceIDs}) => {
   const loadRows = useMemo(
-    () => (options) => loadStatuses(match.params.orgID, options),
+    () => options => loadStatuses(match.params.orgID, options),
     [match.params.orgID]
   )
   const historyType = 'statuses'
@@ -47,7 +47,7 @@ const CheckHistory: FC<Props> = ({match, timeZone, resourceIDs}) => {
     <GetResources resources={[ResourceType.Checks]}>
       <ResourceIDsContext.Provider value={resourceIDs}>
         <EventViewer loadRows={loadRows} initialState={getInitialState()}>
-          {(props) => (
+          {props => (
             <Page
               titleTag="Check Statuses | InfluxDB 2.0"
               className="alert-history-page"

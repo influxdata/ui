@@ -405,7 +405,7 @@ class MultiGrid extends React.PureComponent<PropsMultiGrid, State> {
     this.onScroll(e)
   }
 
-  private onScroll = (scrollInfo) => {
+  private onScroll = scrollInfo => {
     const {scrollLeft, scrollTop} = scrollInfo
     this.setState({
       scrollLeft,
@@ -418,7 +418,7 @@ class MultiGrid extends React.PureComponent<PropsMultiGrid, State> {
     }
   }
 
-  private onScrollLeft = (scrollInfo) => {
+  private onScrollLeft = scrollInfo => {
     const {scrollLeft} = scrollInfo
     this.onScroll({
       scrollLeft,
@@ -581,11 +581,11 @@ class MultiGrid extends React.PureComponent<PropsMultiGrid, State> {
       : rowHeight
   }
 
-  private topLeftGridRef = (ref) => {
+  private topLeftGridRef = ref => {
     this.topLeftGrid = ref
   }
 
-  private topRightGridRef = (ref) => {
+  private topRightGridRef = ref => {
     this.topRightGrid = ref
   }
 
@@ -709,11 +709,11 @@ class MultiGrid extends React.PureComponent<PropsMultiGrid, State> {
     this.lastRenderedWidth = width
   }
 
-  private bottomLeftGridRef = (ref) => {
+  private bottomLeftGridRef = ref => {
     this.bottomLeftGrid = ref
   }
 
-  private bottomRightGridRef = (ref) => {
+  private bottomRightGridRef = ref => {
     this.bottomRightGrid = ref
   }
 

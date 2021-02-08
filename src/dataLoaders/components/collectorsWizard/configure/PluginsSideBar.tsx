@@ -36,7 +36,7 @@ class PluginsSideBar extends Component<Props> {
 
   private get tabs(): JSX.Element[] {
     const {telegrafPlugins, onTabClick} = this.props
-    return telegrafPlugins.map((t) => (
+    return telegrafPlugins.map(t => (
       <SideBar.Tab
         label={t.name}
         key={t.name}

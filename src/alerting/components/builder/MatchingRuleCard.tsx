@@ -27,7 +27,7 @@ interface StateProps {
 type Props = OwnProps & StateProps
 
 const MatchingRuleCard: FC<Props> = ({rule, endpoints}) => {
-  const endpoint = endpoints.find((e) => e.id === rule.endpointID)
+  const endpoint = endpoints.find(e => e.id === rule.endpointID)
 
   return (
     <ResourceCard key={`rule-id--${rule.id}`} testID="rule-card">

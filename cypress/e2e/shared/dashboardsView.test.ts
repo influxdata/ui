@@ -26,7 +26,9 @@ describe('Dashboard', () => {
     const newName = 'new 🅱️ashboard'
 
     cy.get('.renamable-page-title').click()
-    cy.get('.cf-input-field').type(newName).type('{enter}')
+    cy.get('.cf-input-field')
+      .type(newName)
+      .type('{enter}')
 
     cy.fixture('routes').then(({orgs}) => {
       cy.get('@org').then(({id: orgID}: Organization) => {
@@ -56,7 +58,9 @@ describe('Dashboard', () => {
     const xyCellName = 'Line Graph'
     cy.getByTestID('overlay').within(() => {
       cy.getByTestID('page-title').click()
-      cy.getByTestID('renamable-page-title--input').clear().type(xyCellName)
+      cy.getByTestID('renamable-page-title--input')
+        .clear()
+        .type(xyCellName)
       cy.getByTestID('save-cell--button').click()
     })
 
@@ -146,7 +150,9 @@ describe('Dashboard', () => {
     })
 
     // Edit note cell
-    cy.getByTestID('cell-context--toggle').last().click()
+    cy.getByTestID('cell-context--toggle')
+      .last()
+      .click()
     cy.getByTestID('cell-context--note').click()
 
     // Note cell
@@ -155,7 +161,9 @@ describe('Dashboard', () => {
 
     cy.getByTestID('note-editor--overlay').within(() => {
       cy.getByTestID('markdown-editor').within(() => {
-        cy.get('textarea').clear().type(`${headerPrefix2} ${noteText2}`)
+        cy.get('textarea')
+          .clear()
+          .type(`${headerPrefix2} ${noteText2}`)
       })
       cy.getByTestID('note-editor--preview').contains(noteText2)
       cy.getByTestID('note-editor--preview').should(
@@ -170,7 +178,9 @@ describe('Dashboard', () => {
     cy.getByTestID('cell Name this Cell').should('contain', noteText2)
 
     // Remove Note cell
-    cy.getByTestID('cell-context--toggle').last().click()
+    cy.getByTestID('cell-context--toggle')
+      .last()
+      .click()
     cy.getByTestID('cell-context--delete').click()
     cy.getByTestID('cell-context--delete-confirm').click()
     cy.wait(200)
@@ -182,7 +192,9 @@ describe('Dashboard', () => {
     // Ensure that the clone exists
     cy.getByTestID('cell Line Graph (Clone)').should('exist')
     // Remove View cells
-    cy.getByTestID('cell-context--toggle').first().click()
+    cy.getByTestID('cell-context--toggle')
+      .first()
+      .click()
     cy.getByTestID('cell-context--delete').click()
     cy.getByTestID('cell-context--delete-confirm').click()
     cy.getByTestID('cell-context--toggle').click()
@@ -209,7 +221,7 @@ describe('Dashboard', () => {
 
     cy.getByTestIDSubStr('cell--view-empty')
       .invoke('text')
-      .then((cellContent) => {
+      .then(cellContent => {
         // cellContent is yielded as a cutesy phrase from src/shared/copy/cell
 
         // open Cell Editor Overlay
@@ -224,7 +236,7 @@ describe('Dashboard', () => {
       })
   })
 
-  const getSelectedVariable = (contextID: string, index?: number) => (win) => {
+  const getSelectedVariable = (contextID: string, index?: number) => win => {
     const state = win.store.getState() as AppState
     const defaultVarOrder = state.resources.variables.allIDs
     const defaultVarDawg =
@@ -338,7 +350,9 @@ describe('Dashboard', () => {
               cy.location('search').should('eq', '?lower=now%28%29%20-%201h')
 
               // select 3rd value in dashboard
-              cy.getByTestID('variable-dropdown--button').first().click()
+              cy.getByTestID('variable-dropdown--button')
+                .first()
+                .click()
               cy.get(`#${bucketThree}`).click()
 
               // selected value in dashboard is 3rd value
@@ -357,7 +371,9 @@ describe('Dashboard', () => {
               )
 
               // select 2nd value in dashboard
-              cy.getByTestID('variable-dropdown--button').first().click()
+              cy.getByTestID('variable-dropdown--button')
+                .first()
+                .click()
               cy.get(`#${defaultBucket}`).click()
 
               // and that it updates the variable in the URL without breaking stuff
@@ -376,12 +392,16 @@ describe('Dashboard', () => {
                 .should('equal', defaultBucket)
 
               cy.getByTestID('toolbar-tab').click()
-              cy.get('.flux-toolbar--list-item').first().trigger('mouseover')
+              cy.get('.flux-toolbar--list-item')
+                .first()
+                .trigger('mouseover')
               // toggle the variable dropdown in the VEO cell dashboard
               cy.getByTestID('toolbar-popover--contents').within(() => {
                 cy.getByTestID('variable-dropdown--button').click()
                 // select 1st value in cell
-                cy.getByTestID('variable-dropdown--item').first().click()
+                cy.getByTestID('variable-dropdown--item')
+                  .first()
+                  .click()
               })
               // injecting mapTypeVar into query
               cy.get('.flux-toolbar--list-item')
@@ -417,7 +437,9 @@ describe('Dashboard', () => {
                 .should('equal', 'v1')
 
               // select 2nd value in dashboard
-              cy.getByTestID('variable-dropdown--button').eq(1).click()
+              cy.getByTestID('variable-dropdown--button')
+                .eq(1)
+                .click()
               cy.get(`#k2`).click()
 
               // selected value in dashboard is 2nd value
@@ -440,12 +462,16 @@ describe('Dashboard', () => {
                 .should('equal', 'v2')
 
               cy.getByTestID('toolbar-tab').click()
-              cy.get('.flux-toolbar--list-item').eq(2).trigger('mouseover')
+              cy.get('.flux-toolbar--list-item')
+                .eq(2)
+                .trigger('mouseover')
               // toggle the variable dropdown in the VEO cell dashboard
               cy.getByTestID('toolbar-popover--contents').within(() => {
                 cy.getByTestID('variable-dropdown--button').click()
                 // select 1st value in cell
-                cy.getByTestID('variable-dropdown--item').first().click()
+                cy.getByTestID('variable-dropdown--item')
+                  .first()
+                  .click()
               })
               // save cell
               cy.getByTestID('save-cell--button').click()
@@ -495,7 +521,9 @@ describe('Dashboard', () => {
               cy.getByTestID('empty-graph-error').contains(`${bucketOne}`)
 
               // select default bucket that has data
-              cy.getByTestID('variable-dropdown--button').eq(0).click()
+              cy.getByTestID('variable-dropdown--button')
+                .eq(0)
+                .click()
               cy.get(`#${defaultBucket}`).click()
 
               // assert visualization appears
@@ -541,8 +569,11 @@ describe('Dashboard', () => {
             cy.getByTestID('switch-to-script-editor').click()
             cy.getByTestID('toolbar-tab').click()
 
-            cy.getByTestID('flux-editor').should('be.visible').click().focused()
-              .type(`from(bucket: v.static)
+            cy
+              .getByTestID('flux-editor')
+              .should('be.visible')
+              .click()
+              .focused().type(`from(bucket: v.static)
 |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
 |> filter(fn: (r) => r["_measurement"] == "test")
 |> filter(fn: (r) => r["_field"] == "dopeness")
@@ -566,7 +597,9 @@ describe('Dashboard', () => {
             cy.getByTestIDSubStr('cell--view-empty')
 
             // But selecting a nonempty bucket should load some data
-            cy.getByTestID('variable-dropdown--button').eq(0).click()
+            cy.getByTestID('variable-dropdown--button')
+              .eq(0)
+              .click()
             cy.get(`#${defaultBucket}`).click()
 
             // default select the first result
@@ -589,7 +622,9 @@ describe('Dashboard', () => {
             )
 
             // updating the third variable should update the second
-            cy.getByTestID('variable-dropdown--button').eq(2).click()
+            cy.getByTestID('variable-dropdown--button')
+              .eq(2)
+              .click()
             cy.get(`#beans`).click()
             cy.getByTestIDSubStr('variable-dropdown--build').should(
               'contain',
@@ -666,8 +701,11 @@ describe('Dashboard', () => {
         cy.getByTestID('switch-to-script-editor').click()
         cy.getByTestID('toolbar-tab').click()
 
-        cy.getByTestID('flux-editor').should('be.visible').click().focused()
-          .type(`from(bucket: v.static)
+        cy
+          .getByTestID('flux-editor')
+          .should('be.visible')
+          .click()
+          .focused().type(`from(bucket: v.static)
 |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
 |> filter(fn: (r) => r["_measurement"] == "test")
 |> filter(fn: (r) => r["_field"] == "dopeness")
@@ -688,7 +726,9 @@ describe('Dashboard', () => {
         cy.getByTestIDSubStr('cell--view-empty')
 
         // But selecting a nonempty bucket should load some data
-        cy.getByTestID('variable-dropdown--button').eq(0).click()
+        cy.getByTestID('variable-dropdown--button')
+          .eq(0)
+          .click()
         cy.get(`#${defaultBucket}`).click()
 
         // default select the first result
@@ -698,7 +738,9 @@ describe('Dashboard', () => {
         )
 
         // and also load the second result
-        cy.getByTestID('variable-dropdown--button').eq(1).click()
+        cy.getByTestID('variable-dropdown--button')
+          .eq(1)
+          .click()
         cy.get(`#cool`).click()
       })
     })
@@ -729,7 +771,9 @@ describe('Dashboard', () => {
       .click()
       .then(() => {
         cy.get('.view-options').should('not.exist')
-        cy.getByTestID('cog-cell--button').should('have.length', 1).click()
+        cy.getByTestID('cog-cell--button')
+          .should('have.length', 1)
+          .click()
         // should toggle the view options
         cy.get('.view-options').should('exist')
         cy.getByTestID('dropdown--button')
@@ -780,8 +824,12 @@ describe('Dashboard', () => {
     cy.getByTestID(`cell-context--toggle`).click()
     cy.getByTestID(`cell-context--configure`).click()
     cy.getByTestID('dropdown--button').should('contain', timeFormatOriginal)
-    cy.getByTestID('dropdown--button').contains(timeFormatOriginal).click()
-    cy.getByTestID('dropdown-item').contains(timeFormatNew).click()
+    cy.getByTestID('dropdown--button')
+      .contains(timeFormatOriginal)
+      .click()
+    cy.getByTestID('dropdown-item')
+      .contains(timeFormatNew)
+      .click()
     cy.getByTestID('dropdown--button').should('contain', timeFormatNew)
     cy.getByTestID(`save-cell--button`).click()
 

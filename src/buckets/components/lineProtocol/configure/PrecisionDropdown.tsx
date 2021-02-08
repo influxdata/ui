@@ -39,9 +39,9 @@ class PrecisionDropdown extends PureComponent<Props> {
             {`Precision: ${makePrecisionReadable[precision]}`}
           </Dropdown.Button>
         )}
-        menu={(onCollapse) => (
+        menu={onCollapse => (
           <Dropdown.Menu onCollapse={onCollapse}>
-            {writePrecisions.map((value) => (
+            {writePrecisions.map(value => (
               <Dropdown.Item
                 key={value}
                 value={value}

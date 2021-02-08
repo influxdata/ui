@@ -173,7 +173,7 @@ class InlineLabelsEditor extends Component<Props, State> {
   private handleAddLabel = async (labelID: string) => {
     const {onAddLabel, labels} = this.props
 
-    const label = labels.find((label) => label.id === labelID)
+    const label = labels.find(label => label.id === labelID)
 
     if (label) {
       this.selectAvailableItem()
@@ -207,7 +207,7 @@ class InlineLabelsEditor extends Component<Props, State> {
   }
 
   private filterLabels = (searchTerm: string): Label[] => {
-    const filteredLabels = this.availableLabels.filter((label) => {
+    const filteredLabels = this.availableLabels.filter(label => {
       const lowercaseName = label.name.toLowerCase()
       const lowercaseSearchTerm = searchTerm.toLowerCase()
 
@@ -234,11 +234,11 @@ class InlineLabelsEditor extends Component<Props, State> {
     const updatedAddButton = {...ADD_NEW_LABEL_LABEL, name: searchTerm}
 
     const addButton = filteredLabels.find(
-      (label) => label.id === updatedAddButton.id
+      label => label.id === updatedAddButton.id
     )
 
     if (addButton) {
-      return filteredLabels.map((fl) => {
+      return filteredLabels.map(fl => {
         return fl.id === updatedAddButton.id ? updatedAddButton : fl
       })
     }
@@ -249,13 +249,13 @@ class InlineLabelsEditor extends Component<Props, State> {
   private filteredLabelsWithoutAddButton = (
     filteredLabels: Label[]
   ): Label[] => {
-    return filteredLabels.filter((label) => label.id !== ADD_NEW_LABEL_ITEM_ID)
+    return filteredLabels.filter(label => label.id !== ADD_NEW_LABEL_ITEM_ID)
   }
 
   private get availableLabels(): Label[] {
     const {selectedLabels, labels} = this.props
 
-    return _.differenceBy(labels, selectedLabels, (label) => label.name)
+    return _.differenceBy(labels, selectedLabels, label => label.name)
   }
 
   private handleCreateLabel = async (label: Label) => {
@@ -263,7 +263,7 @@ class InlineLabelsEditor extends Component<Props, State> {
     const {name, properties} = label
 
     await onCreateLabel(name, properties)
-    const newLabel = this.props.labels.find((l) => l.name === label.name)
+    const newLabel = this.props.labels.find(l => l.name === label.name)
     onAddLabel(newLabel)
   }
 
@@ -281,7 +281,7 @@ class InlineLabelsEditor extends Component<Props, State> {
 
   private handleEnsureUniqueLabelName = (name: string): string | null => {
     const {labels} = this.props
-    const names = labels.map((label) => label.name)
+    const names = labels.map(label => label.name)
 
     return validateLabelUniqueness(names, name)
   }

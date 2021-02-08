@@ -178,7 +178,7 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
   }
 
   private handleReadSelectAllBuckets = () => {
-    const readBuckets = this.props.buckets.map((b) => b.name)
+    const readBuckets = this.props.buckets.map(b => b.name)
     this.setState({readBuckets})
   }
 
@@ -187,7 +187,7 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
   }
   j
   private handleWriteSelectAllBuckets = () => {
-    const writeBuckets = this.props.buckets.map((b) => b.name)
+    const writeBuckets = this.props.buckets.map(b => b.name)
     this.setState({writeBuckets})
   }
 
@@ -227,8 +227,8 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
   private get writeBucketPermissions(): Permission[] {
     const {buckets} = this.props
 
-    const writeBuckets = this.state.writeBuckets.map((bucketName) => {
-      return buckets.find((b) => b.name === bucketName)
+    const writeBuckets = this.state.writeBuckets.map(bucketName => {
+      return buckets.find(b => b.name === bucketName)
     })
 
     return specificBucketsPermissions(writeBuckets, 'write')
@@ -237,8 +237,8 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
   private get readBucketPermissions(): Permission[] {
     const {buckets} = this.props
 
-    const readBuckets = this.state.readBuckets.map((bucketName) => {
-      return buckets.find((b) => b.name === bucketName)
+    const readBuckets = this.state.readBuckets.map(bucketName => {
+      return buckets.find(b => b.name === bucketName)
     })
 
     return specificBucketsPermissions(readBuckets, 'read')
@@ -259,7 +259,7 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
   private get nonSystemBuckets(): Bucket[] {
     const {buckets} = this.props
 
-    return buckets.filter((bucket) => !isSystemBucket(bucket.name))
+    return buckets.filter(bucket => !isSystemBucket(bucket.name))
   }
 
   private handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {

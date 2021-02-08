@@ -4,7 +4,7 @@ import './style.scss'
 import {FUNCTIONS} from 'src/timeMachine/constants/queryBuilder'
 import {BuilderConfig} from 'src/types'
 
-export default (register) => {
+export default register => {
   register({
     type: 'queryBuilder',
     family: 'inputs',
@@ -38,7 +38,7 @@ export default (register) => {
       ): string => {
         if (config.functions) {
           return config.functions
-            .map((fnc) => {
+            .map(fnc => {
               const conf = {...config}
               delete conf.functions
               return _build(conf, fnc)
@@ -47,7 +47,7 @@ export default (register) => {
         }
 
         const tags = config.tags
-          .map((tag) => {
+          .map(tag => {
             if (!tag.key) {
               return ''
             }
@@ -59,7 +59,7 @@ export default (register) => {
 
               const vals = tag.values
                 .map(
-                  (value) =>
+                  value =>
                     `r["${tag.key}"] == "${value.replace(/\\/g, '\\\\')}"`
                 )
                 .join(' or ')
@@ -68,7 +68,7 @@ export default (register) => {
             }
 
             if (tag.aggregateFunctionType === 'group') {
-              const quotedValues = tag.values.map((value) => `"${value}"`) // wrap the value in double quotes
+              const quotedValues = tag.values.map(value => `"${value}"`) // wrap the value in double quotes
 
               if (quotedValues.length) {
                 return `\n  |> group(columns: [${quotedValues.join(', ')}])` // join with a comma (e.g. "foo","bar","baz")
@@ -82,7 +82,7 @@ export default (register) => {
           .join('')
 
         let fnFlux = ''
-        const fnSpec = fn && FUNCTIONS.find((spec) => spec.name === fn.name)
+        const fnSpec = fn && FUNCTIONS.find(spec => spec.name === fn.name)
 
         if (fnSpec) {
           const period = config.aggregateWindow.period

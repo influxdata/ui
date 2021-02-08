@@ -50,7 +50,7 @@ const reducer = (state: State, action: Action): State => {
     case 'COLOR_CHANGED': {
       const {id, name, hex} = action
 
-      const thresholds = state.thresholds.map((threshold) =>
+      const thresholds = state.thresholds.map(threshold =>
         threshold.id === id ? {...threshold, name, hex} : threshold
       )
 
@@ -66,7 +66,7 @@ const reducer = (state: State, action: Action): State => {
     }
 
     case 'VALUE_BLURRED': {
-      const thresholds = state.thresholds.map((threshold) =>
+      const thresholds = state.thresholds.map(threshold =>
         threshold.id === action.id
           ? {...threshold, value: parseFloat(state.inputs[action.id])}
           : threshold
@@ -94,7 +94,7 @@ const reducer = (state: State, action: Action): State => {
 
     case 'THRESHOLD_REMOVED': {
       const thresholds = state.thresholds.filter(
-        (threshold) => threshold.id !== action.id
+        threshold => threshold.id !== action.id
       )
 
       return {...state, thresholds, isDirty: true}
@@ -151,8 +151,8 @@ const ThresholdsSettings: FunctionComponent<Props> = ({
         text="Add a Threshold"
         onClick={() => dispatch({type: 'THRESHOLD_ADDED'})}
       />
-      {state.thresholds.map((threshold) => {
-        const onChangeValue = (value) =>
+      {state.thresholds.map(threshold => {
+        const onChangeValue = value =>
           dispatch({
             type: 'VALUE_CHANGED',
             id: threshold.id,

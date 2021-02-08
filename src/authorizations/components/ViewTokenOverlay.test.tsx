@@ -9,7 +9,6 @@ import ViewTokenOverlay from 'src/authorizations/components/ViewTokenOverlay'
 import {auth} from 'mocks/dummyData'
 import {Permission} from '@influxdata/influx'
 import {get} from 'lodash'
-import {permissions} from 'src/utils/permissions'
 import {renderWithReduxAndRouter} from 'src/mockState'
 
 const permissions = (

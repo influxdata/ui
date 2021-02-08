@@ -59,7 +59,7 @@ export const FlowProvider: FC = ({children}) => {
     return id
   }
 
-  if (!flows || !flows.hasOwnProperty(currentID)) {
+  if (!flows) {
     return null
   }
 

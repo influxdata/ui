@@ -780,10 +780,14 @@ export const passwordResetSuccessfully = (message: string): Notification => ({
 
 export const authorizationCreateFailed = (
   errorMessage?: string
-): Notification => ({
-  ...defaultErrorNotification,
-  message: `Failed to create tokens: ${errorMessage}`,
-})
+): Notification => {
+  const defaultMsg = 'Failed to create tokens'
+  const message = errorMessage ? `${defaultMsg}: ${errorMessage}` : defaultMsg
+  return {
+    ...defaultErrorNotification,
+    message,
+  }
+}
 
 export const authorizationUpdateSuccess = (): Notification => ({
   ...defaultSuccessNotification,

@@ -174,19 +174,32 @@ class SaveAsCellForm extends PureComponent<Props, State> {
       this.state.newDashboardName || DEFAULT_DASHBOARD_NAME
 
     const viewWithProps: View = {...view, name: cellName}
-    let targetDashboard
+
+    const {history} = this.props
     let succeeded = false
+    const redirect = (id: string) =>
+      history.push(`/orgs/${orgID}/dashboards/${id}`)
     try {
-      targetDashboardIDs.forEach(dashID => {
+      targetDashboardIDs.forEach((dashID, idx) => {
+        const toRedirectProp =
+          idx === targetDashboardIDs.length - 1 ? redirect : undefined
         if (dashID === DashboardTemplate.id) {
-          targetDashboard = dashID
-          onCreateDashboardWithView(orgID, newDashboardName, viewWithProps)
+          onCreateDashboardWithView(
+            orgID,
+            newDashboardName,
+            viewWithProps,
+            toRedirectProp
+          )
           return
         }
 
         const selectedDashboard = dashboards.find(d => d.id === dashID)
-        targetDashboard = selectedDashboard.id
-        onCreateCellWithView(selectedDashboard.id, viewWithProps)
+        onCreateCellWithView(
+          selectedDashboard.id,
+          viewWithProps,
+          null,
+          toRedirectProp
+        )
       })
       succeeded = true
     } catch (error) {
@@ -195,7 +208,6 @@ class SaveAsCellForm extends PureComponent<Props, State> {
       this.resetForm()
       if (succeeded) {
         this.props.setTimeMachine('de', initialStateHelper())
-        this.props.history.push(`/orgs/${orgID}/dashboards/${targetDashboard}`)
       } else {
         dismiss()
       }

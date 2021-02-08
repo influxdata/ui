@@ -69,7 +69,8 @@ export const deleteCellAndView = (
 export const createCellWithView = (
   dashboardID: string,
   view: NewView,
-  clonedCell?: Cell
+  clonedCell?: Cell,
+  redirect: (id: string) => void | undefined
 ) => async (dispatch, getState: GetState): Promise<void> => {
   const state = getState()
   let workingView = view
@@ -125,6 +126,10 @@ export const createCellWithView = (
 
     dispatch(setCell(cellID, RemoteDataState.Done, normCell))
     dispatch(setView(cellID, RemoteDataState.Done, normView))
+
+    if (redirect) {
+      redirect(dashboardID)
+    }
   } catch (error) {
     dispatch(notify(copy.cellAddFailed(error.message)))
     throw error
@@ -134,7 +139,8 @@ export const createCellWithView = (
 export const createDashboardWithView = (
   orgID: string,
   dashboardName: string,
-  view: View
+  view: View,
+  redirect: (id: string) => void | undefined
 ) => async (dispatch): Promise<void> => {
   try {
     const newDashboard = {
@@ -158,6 +164,9 @@ export const createDashboardWithView = (
 
     await dispatch(createCellWithView(resp.data.id, view))
     dispatch(notify(copy.dashboardCreateSuccess()))
+    if (redirect) {
+      redirect(resp.data.id)
+    }
   } catch (error) {
     console.error(error)
     dispatch(notify(copy.cellAddFailed(error.message)))

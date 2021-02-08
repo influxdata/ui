@@ -1,4 +1,4 @@
-import {AnnotationStream} from 'src/types'
+import {Annotation, AnnotationStream} from 'src/types'
 
 export const ENABLE_ANNOTATION_STREAM = 'ENABLE_ANNOTATION_STREAM'
 export const DISABLE_ANNOTATION_STREAM = 'DISABLE_ANNOTATION_STREAM'
@@ -31,8 +31,8 @@ export const setAnnotations = (annotations: AnnotationStream[]) =>
     annotations,
   } as const)
 
-  export const deleteAnnotation = (annotationID: string) =>
+  export const deleteAnnotation = (annotation: Annotation) =>
   ({
     type: DELETE_ANNOTATION,
-    annotationID,
+    annotation,
   } as const)

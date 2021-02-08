@@ -8,7 +8,7 @@ import {DraggableResizer, Orientation} from '@influxdata/clockface'
 import TimeMachineQueries from 'src/timeMachine/components/Queries'
 import TimeMachineAlerting from 'src/timeMachine/components/TimeMachineAlerting'
 import TimeMachineVis from 'src/timeMachine/components/Vis'
-import ViewOptions from 'src/timeMachine/components/view_options/ViewOptions'
+import ViewOptions from 'src/timeMachine/components/ViewOptions'
 import TimeMachineCheckQuery from 'src/timeMachine/components/TimeMachineCheckQuery'
 
 // Utils

@@ -22,7 +22,6 @@
 @import 'src/shared/components/custom_singular_time/CustomSingularTime.scss';
 @import 'src/onboarding/OnboardingWizard.scss';
 @import 'src/shared/components/protoboard_icon/ProtoboardIcon.scss';
-@import 'src/shared/components/columns_options/ColumnsOptions.scss';
 @import 'src/shared/components/ImportOverlay.scss';
 @import 'src/shared/components/VersionInfo.scss';
 @import 'src/shared/components/WaitingText.scss';
@@ -37,10 +36,9 @@
 @import 'src/shared/components/inlineLabels/InlineLabels.scss';
 @import 'src/shared/components/inlineLabels/InlineLabelsEditor.scss';
 @import 'src/shared/components/TagInput.scss';
-@import 'src/shared/components/ColorSchemeDropdownItem.scss';
+@import 'src/visualization/components/internal/ColorSchemeDropdownItem.scss';
 @import 'src/shared/components/ExportOverlay.scss';
 @import 'src/shared/components/EditableName.scss';
-@import 'src/shared/components/SingleStat.scss';
 @import 'src/shared/components/DragAndDrop.scss';
 @import 'src/shared/components/SearchableDropdown.scss';
 @import 'src/shared/components/BoxTooltip.scss';
@@ -87,9 +85,8 @@
 @import 'src/timeMachine/components/QueryBuilder.scss';
 @import 'src/timeMachine/components/RawFluxDataTable.scss';
 @import 'src/timeMachine/components/fluxFunctionsToolbar/FluxFunctionsToolbar.scss';
-@import 'src/timeMachine/components/view_options/HistogramOptions.scss';
-@import 'src/timeMachine/components/view_options/ViewOptions.scss';
-@import 'src/timeMachine/components/view_options/ViewTypeDropdown.scss';
+@import 'src/timeMachine/components/ViewOptions.scss';
+@import 'src/visualization/components/ViewTypeDropdown.scss';
 @import 'src/timeMachine/components/builderCard/BuilderCard.scss';
 @import 'src/dataLoaders/components/side_bar/SideBar.scss';
 @import 'src/dataLoaders/components/DataLoadersOverlay.scss';

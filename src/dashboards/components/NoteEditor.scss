@@ -10,15 +10,19 @@
   align-items: stretch;
 }
 
-.note-editor--body .react-codemirror2,
+.note-editor--editor,
 .note-editor--preview {
   position: absolute;
   width: calc(50% - #{$ix-marg-a});
   height: 100%;
 }
 
-.note-editor--body .react-codemirror2 {
+.note-editor--editor {
   left: 0;
+
+  .markdown-editor--monaco {
+    height: 100%;
+  }
 }
 
 .note-editor--preview {

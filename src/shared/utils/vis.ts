@@ -1,16 +1,6 @@
 // Libraries
 import {S2} from 's2-geometry'
-import {
-  binaryPrefixFormatter,
-  timeFormatter,
-  siPrefixFormatter,
-  Table,
-  ColumnType,
-  LineInterpolation,
-  FromFluxResult,
-} from '@influxdata/giraffe'
-
-import {VIS_SIG_DIGITS, DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {Table, LineInterpolation, FromFluxResult} from '@influxdata/giraffe'
 
 // Types
 import {XYGeom, Axis} from 'src/types'

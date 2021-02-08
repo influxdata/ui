@@ -1,6 +1,7 @@
 // Libraries
 import React from 'react'
-import {shallow} from 'enzyme'
+import {screen} from '@testing-library/react'
+import {renderWithReduxAndRouter} from 'src/mockState'
 
 // Components
 import ConnectionInformation, {
@@ -17,15 +18,13 @@ const setup = (override = {}) => {
     ...override,
   }
 
-  const wrapper = shallow(<ConnectionInformation {...props} />)
-
-  return {wrapper}
+  renderWithReduxAndRouter(<ConnectionInformation {...props} />)
 }
 
 describe('Onboarding.Components.ConnectionInformation', () => {
-  it('renders', () => {
-    const {wrapper} = setup()
-
-    expect(wrapper.exists()).toBe(true)
+  it('renders', async () => {
+    setup()
+    const elm = await screen.getByTestId('connection-information')
+    expect(elm).toBeVisible()
   })
 })

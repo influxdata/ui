@@ -1,6 +1,6 @@
 // Libraries
 import React from 'react'
-import {shallow} from 'enzyme'
+import {screen} from '@testing-library/react'
 
 // Components
 import ViewTokenOverlay from 'src/authorizations/components/ViewTokenOverlay'
@@ -9,6 +9,7 @@ import ViewTokenOverlay from 'src/authorizations/components/ViewTokenOverlay'
 import {auth} from 'mocks/dummyData'
 import {Permission} from '@influxdata/influx'
 import {get} from 'lodash'
+import {renderWithReduxAndRouter} from 'src/mockState'
 
 const permissions = (
   permissions: Permission[]
@@ -39,15 +40,16 @@ const setup = (override?) => {
     ...override,
   }
 
-  return shallow(<ViewTokenOverlay {...props} />)
+  renderWithReduxAndRouter(<ViewTokenOverlay {...props} />)
 }
 
 describe('Account', () => {
   describe('rendering', () => {
-    it('renders!', () => {
-      const wrapper = setup()
+    it('renders!', async () => {
+      setup()
 
-      expect(wrapper.exists()).toBe(true)
+      const elm = await screen.findByTestId('overlay--container')
+      expect(elm).toBeVisible()
     })
   })
 

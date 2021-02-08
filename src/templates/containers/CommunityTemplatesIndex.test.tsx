@@ -1,6 +1,5 @@
 // Installed libraries
 import React from 'react'
-import {createStore} from 'redux'
 import {fireEvent, screen, waitFor} from '@testing-library/react'
 import {normalize} from 'normalizr'
 import {mocked} from 'ts-jest/utils'
@@ -29,14 +28,10 @@ import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 // Mock State
 import {renderWithReduxAndRouter} from 'src/mockState'
 import {withRouterProps} from 'mocks/dummyData'
-import {mockAppState} from 'src/mockAppState'
 
 // Types
 import {Organization, RemoteDataState, OrgEntities} from 'src/types'
 import {arrayOfOrgs} from 'src/schemas'
-
-// Redux
-import {templatesReducer} from 'src/templates/reducers/index'
 
 // What have you
 import {communityTemplateUnsupportedFormatError} from 'src/shared/copy/notifications'
@@ -53,16 +48,7 @@ const defaultProps: any = {
 }
 
 const setup = (props = defaultProps) => {
-  const templatesStore = createStore(templatesReducer)
-
-  return renderWithReduxAndRouter(
-    <CommunityTemplatesIndex {...props} />,
-    _fakeLocalStorage => {
-      const appState = {...mockAppState} as any
-      appState.resources.templates = templatesStore.getState()
-      return appState
-    }
-  )
+  return renderWithReduxAndRouter(<CommunityTemplatesIndex {...props} />)
 }
 
 describe('the Community Templates index', () => {

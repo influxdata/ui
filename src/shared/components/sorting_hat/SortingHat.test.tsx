@@ -1,12 +1,14 @@
 // Libraries
 import React from 'react'
-import {shallow} from 'enzyme'
+import {screen} from '@testing-library/react'
 
 // Components
 import SortingHat from 'src/shared/components/sorting_hat/SortingHat'
 
 // Types
 import {Sort} from 'src/clockface/types'
+
+import {renderWithReduxAndRouter} from 'src/mockState'
 
 const users = [
   {user: {name: 'fred'}, age: 48},
@@ -16,7 +18,7 @@ const users = [
 ]
 
 const setup = (override?) => {
-  const children = jest.fn(() => <div />)
+  const children = jest.fn(() => <div data-testid="my-special-div" />)
   const props = {
     list: users,
     sortKey: 'user.name',
@@ -25,16 +27,17 @@ const setup = (override?) => {
     ...override,
   }
 
-  const wrapper = shallow(<SortingHat {...props} />)
+  renderWithReduxAndRouter(<SortingHat {...props} />)
 
-  return {wrapper, children}
+  return children
 }
 
 describe('SortingHat', () => {
   describe('rendering', () => {
-    it('renders', () => {
-      const {wrapper} = setup()
-      expect(wrapper.exists()).toBe(true)
+    it('renders', async () => {
+      setup()
+      const elm = await screen.findByTestId('my-special-div')
+      expect(elm).toBeVisible()
     })
   })
 
@@ -49,7 +52,7 @@ describe('SortingHat', () => {
         {user: {name: 'fred'}, age: 40},
       ]
 
-      const {children} = setup({sortKey, direction})
+      const children = setup({sortKey, direction})
 
       expect(children).toBeCalledWith(expected)
     })

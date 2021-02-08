@@ -1,6 +1,7 @@
 // Libraries
 import React from 'react'
-import {shallow} from 'enzyme'
+import {screen} from '@testing-library/react'
+import {renderWithReduxAndRouter} from 'src/mockState'
 
 // Components
 import VersionInfo from 'src/shared/components/VersionInfo'
@@ -10,23 +11,21 @@ const setup = (override = {}) => {
     ...override,
   }
 
-  const wrapper = shallow(<VersionInfo {...props} />)
-
-  return {wrapper}
+  renderWithReduxAndRouter(<VersionInfo {...props} />)
 }
 
 describe('VersionInfo', () => {
-  it('renders correctly', () => {
-    const {wrapper} = setup()
-
-    expect(wrapper.exists()).toBe(true)
+  it('renders correctly', async () => {
+    setup()
+    const elm = await screen.getByTestId('version-info')
+    expect(elm).toBeVisible()
   })
 
   describe('when width is specified', () => {
-    it('renders corectly', () => {
-      const {wrapper} = setup({widthPixels: 300})
-
-      expect(wrapper.exists()).toBe(true)
+    it('renders corectly', async () => {
+      setup({widthPixels: 300})
+      const elm = await screen.getByTestId('version-info')
+      expect(elm).toBeVisible()
     })
   })
 })

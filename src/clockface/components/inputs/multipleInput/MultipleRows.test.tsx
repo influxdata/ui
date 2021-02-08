@@ -1,11 +1,12 @@
 // Libraries
 import React from 'react'
-import {shallow} from 'enzyme'
+import {screen} from '@testing-library/react'
 
 // Components
 import MultipleRows from './MultipleRows'
 
 import {TelegrafPluginInputCpu} from '@influxdata/influx'
+import {renderWithReduxAndRouter} from 'src/mockState'
 
 const setup = (override = {}) => {
   const props = {
@@ -18,16 +19,14 @@ const setup = (override = {}) => {
     ...override,
   }
 
-  const wrapper = shallow(<MultipleRows {...props} />)
-
-  return {wrapper}
+  renderWithReduxAndRouter(<MultipleRows {...props} />)
 }
 
 describe('Clockface.Components.MultipleRows', () => {
-  it('renders', () => {
+  it('renders', async () => {
     const fieldName = 'yo'
-    const {wrapper} = setup({fieldName})
-
-    expect(wrapper.exists()).toBe(true)
+    setup({fieldName})
+    const elm = await screen.findByTestId('multiple-rows')
+    expect(elm).toBeVisible()
   })
 })

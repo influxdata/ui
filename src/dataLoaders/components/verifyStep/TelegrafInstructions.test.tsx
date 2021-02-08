@@ -1,5 +1,6 @@
 import React from 'react'
-import {shallow} from 'enzyme'
+import {screen} from '@testing-library/react'
+import {renderWithReduxAndRouter} from 'src/mockState'
 
 import TelegrafInstructions from 'src/dataLoaders/components/verifyStep/TelegrafInstructions'
 
@@ -10,12 +11,13 @@ const setup = (override = {}) => {
     ...override,
   }
 
-  return shallow(<TelegrafInstructions {...props} />)
+  renderWithReduxAndRouter(<TelegrafInstructions {...props} />)
 }
 
 describe('TelegrafInstructions', () => {
-  it('renders', () => {
-    const wrapper = setup()
-    expect(wrapper.exists()).toBe(true)
+  it('renders', async () => {
+    setup()
+    const elm = await screen.getByTestId('setup-instructions')
+    expect(elm).toBeVisible()
   })
 })

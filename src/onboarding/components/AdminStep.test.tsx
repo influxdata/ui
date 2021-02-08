@@ -1,12 +1,14 @@
 // Libraries
 import React from 'react'
-import {shallow} from 'enzyme'
+import {screen} from '@testing-library/react'
 
 // Components
 import AdminStep from 'src/onboarding/components/AdminStep'
 
 // Dummy Data
 import {defaultOnboardingStepProps} from 'mocks/dummyData'
+
+import {renderWithReduxAndRouter} from 'src/mockState'
 
 const setup = (override = {}) => {
   const props = {
@@ -15,13 +17,13 @@ const setup = (override = {}) => {
     ...override,
   }
 
-  return shallow(<AdminStep {...props} />)
+  renderWithReduxAndRouter(<AdminStep {...props} />)
 }
 
 describe('Onboarding.Components.AdminStep', () => {
-  it('renders', () => {
-    const wrapper = setup()
-
-    expect(wrapper.exists()).toBe(true)
+  it('renders', async () => {
+    setup()
+    const elm = await screen.getByTestId('admin-step')
+    expect(elm).toBeVisible()
   })
 })

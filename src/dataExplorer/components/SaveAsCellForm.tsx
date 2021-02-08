@@ -166,6 +166,7 @@ class SaveAsCellForm extends PureComponent<Props, State> {
       view,
       dismiss,
       orgID,
+      history,
     } = this.props
     const {targetDashboardIDs} = this.state
 
@@ -175,20 +176,20 @@ class SaveAsCellForm extends PureComponent<Props, State> {
 
     const viewWithProps: View = {...view, name: cellName}
 
-    const {history} = this.props
     let succeeded = false
-    const redirect = (id: string) =>
+    const redirectHandler = (id: string): void =>
       history.push(`/orgs/${orgID}/dashboards/${id}`)
+
     try {
       targetDashboardIDs.forEach((dashID, idx) => {
-        const toRedirectProp =
-          idx === targetDashboardIDs.length - 1 ? redirect : undefined
+        const toRedirect =
+          idx === targetDashboardIDs.length - 1 ? redirectHandler : undefined
         if (dashID === DashboardTemplate.id) {
           onCreateDashboardWithView(
             orgID,
             newDashboardName,
             viewWithProps,
-            toRedirectProp
+            toRedirect
           )
           return
         }
@@ -198,7 +199,7 @@ class SaveAsCellForm extends PureComponent<Props, State> {
           selectedDashboard.id,
           viewWithProps,
           null,
-          toRedirectProp
+          toRedirect
         )
       })
       succeeded = true

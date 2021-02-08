@@ -70,7 +70,7 @@ export const createCellWithView = (
   dashboardID: string,
   view: NewView,
   clonedCell?: Cell,
-  redirect: (id: string) => void | undefined
+  redirect?: (id: string) => void | undefined
 ) => async (dispatch, getState: GetState): Promise<void> => {
   const state = getState()
   let workingView = view

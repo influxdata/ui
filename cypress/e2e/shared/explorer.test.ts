@@ -1202,30 +1202,17 @@ describe('DataExplorer', () => {
         // wait some time for save
         cy.wait(2000)
         // ensure dashboard created with cell
-<<<<<<< HEAD
-        cy.get('@org').then(({id: orgID}: Organization) => {
-          cy.fixture('routes').then(({orgs}) => {
-            cy.visit(`${orgs}/${orgID}/dashboards/`)
-            cy.getByTestID('tree-nav')
-            cy.getByTestID('dashboard-card--name')
-              .contains(dashboardCreateName)
-              .should('exist')
-              .click()
-            cy.getByTestID(`cell ${cellName}`).should('exist')
-          })
-        })
-=======
         // cy.get('@org').then(({id: orgID}: Organization) => {
         //   cy.fixture('routes').then(({orgs}) => {
         //     cy.visit(`${orgs}/${orgID}/dashboards/`)
 
         //   })
         // })
-        cy.getByTestID(`cell--draggable ${cellName}`)
+        cy.getByTestID('dashboard-card--name')
+          .contains(dashboardCreateName)
           .should('exist')
           .click()
         cy.getByTestID(`cell ${cellName}`).should('exist')
->>>>>>> fix: working with create and update, testing in progress
       })
     })
 

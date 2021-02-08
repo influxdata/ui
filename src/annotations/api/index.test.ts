@@ -17,7 +17,7 @@ describe('annotations api calls', () => {
       const annotationResponse = [
         {
           summary: 'GO PACK GO',
-          start: Date.now(),
+          startValue: Date.now(),
           stopValue: Date.now(),
           stream: 'Lambeau Field',
         },
@@ -38,7 +38,7 @@ describe('annotations api calls', () => {
       const annotationResponse = [
         {
           summary: 'GO PACK GO',
-          start: Date.now(),
+          startValue: Date.now(),
           stopValue: Date.now(),
           stream: 'Lambeau Field',
         },
@@ -116,7 +116,7 @@ describe('annotations api calls', () => {
 
     const newAnnotation = {
       stream: 'boogey',
-      start: Date.now(),
+      startValue: Date.now(),
       stopValue: Date.now(),
       message: 'This is a message',
       summary: 'Palpatine did nothing wrong',

@@ -1,11 +1,14 @@
-import {getAnnotations, writeAnnotation} from 'src/annotations/api'
+import {deleteAnnotation, getAnnotations, writeAnnotation} from 'src/annotations/api'
 import {Dispatch} from 'react'
-import {deleteAnnotation} from 'src/annotations/actions/creators'
-import * as api from 'src/client'
-import * as copy from 'src/shared/copy/notifications'
-
-import {notify} from 'src/shared/actions/notifications'
-
+import {deleteAnnotation as deleteAnnotationAction} from 'src/annotations/actions/creators'
+import {
+  deleteAnnotationFailed,
+  deleteAnnotationSuccess,
+} from 'src/shared/copy/notifications'
+import {
+  notify,
+  PublishNotificationAction,
+} from 'src/shared/actions/notifications'
 import {
   setAnnotations,
   Action as AnnotationAction,
@@ -29,17 +32,14 @@ export const writeThenFetchAndSetAnnotations = (
   fetchAndSetAnnotations()(dispatch)
 }
 
-export const deleteAnnotations = (id: string) => async (
-  dispatch: Dispatch<AnnotationAction>
+export const deleteAnnotations = annotation => async (
+  dispatch: Dispatch<AnnotationAction | PublishNotificationAction>
 ) => {
   try {
-    const resp = await api.deleteAnnotations({variableID: id})
-    if (resp.status !== 204) {
-      throw new Error(resp.data.message)
-    }
-    dispatch(deleteAnnotation(id))
-    dispatch(notify(copy.deleteAnnotationSuccess()))
+    await deleteAnnotation(annotation)
+    dispatch(deleteAnnotationAction(annotation))
+    dispatch(notify(deleteAnnotationSuccess()))
   } catch (error) {
     console.error(error)
-    dispatch(notify(copy.deleteAnnotationFailed(error.message)))
+    dispatch(notify(deleteAnnotationFailed(error.message)))
   }

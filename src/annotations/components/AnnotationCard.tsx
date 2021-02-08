@@ -14,6 +14,7 @@ import {
   Bullet,
   InfluxColors,
 } from '@influxdata/clockface'
+import {deleteAnnotations} from 'src/annotations/actions/thunks'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
@@ -36,7 +37,7 @@ export const AnnotationCard: FC<Props> = ({annotationStream}) => {
   }
 
   const handleDelete = (): void => {
-    onDeleteAnnotation(variable.id)
+    deleteAnnotations(annotationStream)
   }
   
 
@@ -80,3 +81,4 @@ export const AnnotationCard: FC<Props> = ({annotationStream}) => {
     </ResourceCard>
   )
 }
+

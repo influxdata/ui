@@ -1,4 +1,4 @@
-import {AnnotationStream} from 'src/types'
+import {Annotation, AnnotationStream} from 'src/types'
 
 export const ENABLE_ANNOTATION_STREAM = 'ENABLE_ANNOTATION_STREAM'
 export const DISABLE_ANNOTATION_STREAM = 'DISABLE_ANNOTATION_STREAM'
@@ -41,4 +41,9 @@ export const toggleSingleClickAnnotations = () =>
   ({
     type: DELETE_ANNOTATION,
     annotationID,
+    } as const)
+    export const deleteAnnotation = (annotation: Annotation) =>
+    ({
+      type: DELETE_ANNOTATION,
+      annotation,
     } as const)

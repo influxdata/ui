@@ -1,5 +1,5 @@
 export interface Annotation {
-  end: number
+  stopValue: number
   start: number
   summary: string
   stickers?: any

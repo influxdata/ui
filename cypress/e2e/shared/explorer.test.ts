@@ -1221,8 +1221,7 @@ describe('DataExplorer', () => {
 
         //   })
         // })
-        cy.getByTestID('dashboard-card--name')
-          .contains(dashboardCreateName)
+        cy.getByTestID(`cell--draggable ${cellName}`)
           .should('exist')
           .click()
         cy.getByTestID(`cell ${cellName}`).should('exist')

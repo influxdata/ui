@@ -177,8 +177,8 @@ class SaveAsCellForm extends PureComponent<Props, State> {
     const viewWithProps: View = {...view, name: cellName}
 
     let succeeded = false
-    const redirectHandler = (id: string): void =>
-      history.push(`/orgs/${orgID}/dashboards/${id}`)
+    const redirectHandler = (dashboardId: string): void =>
+      history.push(`/orgs/${orgID}/dashboards/${dashboardId}`)
 
     try {
       targetDashboardIDs.forEach((dashID, idx) => {

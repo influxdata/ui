@@ -81,7 +81,7 @@ const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv}) => {
       <Panel.Body className={graphTypeClassname}>
         <View
           loading={RemoteDataState.Done}
-          error={''}
+          error=""
           isInitial={false}
           properties={
             graphInfo.type === 'stat' ? singleStatProperties : xyProperties

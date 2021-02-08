@@ -7,12 +7,15 @@ import {fromFlux} from '@influxdata/giraffe'
 import {isEqual} from 'lodash'
 
 // Components
-import {View} from 'src/visualization'
+import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
+import ViewSwitcher from 'src/shared/components/ViewSwitcher'
+import ViewLoadingSpinner from 'src/shared/components/ViewLoadingSpinner'
 import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 // Utils
 import {getActiveTimeMachine} from 'src/timeMachine/selectors'
+import {checkResultsLength} from 'src/shared/utils/vis'
 import {
   getVisTable,
   getXColumnSelection,
@@ -38,6 +41,8 @@ const TimeMachineVis: FC<Props> = ({
   isInitialFetch,
   isViewingRawData,
   files,
+  checkType,
+  checkThresholds,
   viewProperties,
   giraffeResult,
   xColumn,
@@ -45,6 +50,7 @@ const TimeMachineVis: FC<Props> = ({
   fillColumns,
   symbolColumns,
   timeZone,
+  statuses,
 }) => {
   // If the current selections for `xColumn`/`yColumn`/ etc. are invalid given
   // the current Flux response, attempt to make a valid selection instead. This
@@ -65,38 +71,46 @@ const TimeMachineVis: FC<Props> = ({
     'time-machine--view__empty': noQueries,
   })
 
-  if (isViewingRawData) {
-    return (
-      <div className={timeMachineViewClassName}>
-        <ErrorBoundary>
-          <AutoSizer>
-            {({width, height}) => {
-              const [parsedResults] = files.flatMap(fromFlux)
-              return (
-                <RawFluxDataTable
-                  parsedResults={parsedResults}
-                  width={width}
-                  height={height}
-                />
-              )
-            }}
-          </AutoSizer>
-        </ErrorBoundary>
-      </div>
-    )
-  }
-
   return (
     <div className={timeMachineViewClassName}>
-      <View
-        loading={loading}
-        error={errorMessage}
-        isInitial={isInitialFetch}
-        properties={resolvedViewProperties}
-        result={giraffeResult}
-        timeRange={timeRange}
-        timeZone={timeZone}
-      />
+      <ErrorBoundary>
+        <ViewLoadingSpinner loading={loading} />
+        <EmptyQueryView
+          loading={loading}
+          errorFormat={ErrorFormat.Scroll}
+          errorMessage={errorMessage}
+          isInitialFetch={isInitialFetch}
+          queries={viewProperties.queries}
+          hasResults={checkResultsLength(giraffeResult)}
+        >
+          {isViewingRawData ? (
+            <AutoSizer>
+              {({width, height}) => {
+                const [parsedResults] = files.flatMap(fromFlux)
+                return (
+                  <RawFluxDataTable
+                    parsedResults={parsedResults}
+                    width={width}
+                    height={height}
+                  />
+                )
+              }}
+            </AutoSizer>
+          ) : (
+            <ViewSwitcher
+              giraffeResult={giraffeResult}
+              timeRange={timeRange}
+              files={files}
+              properties={resolvedViewProperties}
+              checkType={checkType}
+              checkThresholds={checkThresholds}
+              timeZone={timeZone}
+              statuses={statuses}
+              theme="dark"
+            />
+          )}
+        </EmptyQueryView>
+      </ErrorBoundary>
     </div>
   )
 }
@@ -106,9 +120,18 @@ const mstp = (state: AppState) => {
   const {
     isViewingRawData,
     view: {properties: viewProperties},
-    queryResults: {status: loading, errorMessage, isInitialFetch, files},
+    queryResults: {
+      status: loading,
+      errorMessage,
+      isInitialFetch,
+      files,
+      statuses,
+    },
   } = activeTimeMachine
   const timeRange = getTimeRangeWithTimezone(state)
+  const {
+    alertBuilder: {type: checkType, thresholds: checkThresholds},
+  } = state
 
   const giraffeResult = getVisTable(state)
   const xColumn = getXColumnSelection(state)
@@ -119,6 +142,8 @@ const mstp = (state: AppState) => {
 
   return {
     loading,
+    checkType,
+    checkThresholds,
     errorMessage,
     isInitialFetch,
     files,
@@ -131,6 +156,7 @@ const mstp = (state: AppState) => {
     symbolColumns,
     timeZone,
     timeRange: getActiveTimeRange(timeRange, viewProperties.queries),
+    statuses,
   }
 }
 

@@ -31,6 +31,7 @@
     "test:update": "jest --updateSnapshot",
     "test:debug": "node --inspect-brk $(npm bin)/jest --runInBand --watch --verbose false",
     "test:e2e": "CYPRESS_baseUrl=http://localhost:9999 cypress run --browser chrome --reporter junit --reporter-options 'mochaFile=junit-results/test-output-[hash].xml'",
+    "test:e2e:kind": "CYPRESS_bucket=defbuck CYPRESS_baseUrl=https://twodotoh.a.influxcloud.dev.local CYPRESS_password=password cypress open --browser chrome --config chromeWebSecurity=false",
     "test:e2e:ci": "CYPRESS_baseUrl=https://localhost:443 cypress run --parallel --browser chrome --reporter junit --reporter-options 'mochaFile=junit-results/test-output-[hash].xml'",
     "test:e2e:report": "junit-viewer --results=junit-results --save-file=cypress/site/junit-report.html",
     "test:e2e:clean": "rm junit-results/*.xml",

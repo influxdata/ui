@@ -3,8 +3,23 @@ import _ from 'lodash'
 import uuid from 'uuid'
 
 import {FluxTable} from 'src/types'
-import {fromFlux, FromFluxResult} from '@influxdata/giraffe'
+import {fromFlux} from '@influxdata/giraffe'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
+
+export const parseResponseError = (response: string): FluxTable[] => {
+  const data = Papa.parse(response.trim()).data as string[][]
+
+  return [
+    {
+      id: uuid.v4(),
+      name: 'Error',
+      result: '',
+      groupKey: {},
+      dataTypes: {},
+      data,
+    },
+  ]
+}
 
 /*
   A Flux CSV response can contain multiple CSV files each joined by a newline.
@@ -136,12 +151,21 @@ export const parseTables = (responseChunk: string): FluxTable[] => {
   return tables
 }
 
-export const tableFromFluxResult = (flux: FromFluxResult): FluxTable[] => {
+export const parseResponseWithFromFlux = (response: string): FluxTable[] => {
+  const parsed = fromFlux(response)
+
+  if (parsed.error) {
+    reportErrorThroughHoneyBadger(parsed.error, {
+      name: 'parseResponseWithFromFlux function',
+    })
+    return []
+  }
+
   const {
     fluxGroupKeyUnion,
     table,
     table: {columnKeys: keys},
-  } = flux
+  } = parsed
 
   const columnKeys = [
     'result',
@@ -324,17 +348,4 @@ export const tableFromFluxResult = (flux: FromFluxResult): FluxTable[] => {
   tableData.push(tableResult)
 
   return tableData
-}
-
-export const parseResponseWithFromFlux = (response: string): FluxTable[] => {
-  const parsed = fromFlux(response)
-
-  if (parsed.error) {
-    reportErrorThroughHoneyBadger(parsed.error, {
-      name: 'parseResponseWithFromFlux function',
-    })
-    return []
-  }
-
-  return tableFromFluxResult(parsed)
 }

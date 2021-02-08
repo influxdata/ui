@@ -26,9 +26,7 @@ describe('Dashboard', () => {
 
     cy.getByTestID('add-note--button').click()
     cy.getByTestID('note-editor--overlay').within(() => {
-      cy.getByTestID('markdown-editor').within(() => {
-        cy.get('textarea').type(`${noteText}`, {force: true})
-      })
+      cy.get('.CodeMirror').type(`${noteText}`)
       cy.getByTestID('note-editor--preview')
         .find('img')
         .should('be.visible')

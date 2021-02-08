@@ -17,14 +17,13 @@ import ExportDashboardOverlay from 'src/flows/pipes/Visualization/ExportDashboar
 import {event} from 'src/cloud/utils/reporting'
 
 const ExportDashboardButton: FC = () => {
-  const {data, range, queryText} = useContext(PipeContext)
+  const {data, queryText} = useContext(PipeContext)
   const {launch} = useContext(PopupContext)
   const onClick = () => {
     event('Export to Dashboard Clicked')
 
     launch(<ExportDashboardOverlay />, {
       properties: data.properties,
-      range: range,
       query: queryText,
     })
   }

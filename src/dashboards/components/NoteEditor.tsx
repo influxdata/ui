@@ -1,5 +1,5 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {PureComponent, MouseEvent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
@@ -32,8 +32,11 @@ interface State {
 }
 
 class NoteEditor extends PureComponent<Props, State> {
+  public state = {scrollTop: 0}
+
   public render() {
     const {note, onSetNote} = this.props
+    const {scrollTop} = this.state
 
     return (
       <div className="note-editor">
@@ -47,8 +50,17 @@ class NoteEditor extends PureComponent<Props, State> {
           {this.visibilityToggle}
         </div>
         <div className="note-editor--body">
-          <NoteEditorText note={note} onChangeNote={onSetNote} />
-          <NoteEditorPreview note={note} />
+          <NoteEditorText
+            note={note}
+            onChangeNote={onSetNote}
+            onScroll={this.handleEditorScroll}
+            scrollTop={scrollTop}
+          />
+          <NoteEditorPreview
+            note={note}
+            scrollTop={scrollTop}
+            onScroll={this.handlePreviewScroll}
+          />
         </div>
       </div>
     )
@@ -74,6 +86,17 @@ class NoteEditor extends PureComponent<Props, State> {
         />
       </FlexBox>
     )
+  }
+
+  private handleEditorScroll = (scrollTop: number) => {
+    this.setState({scrollTop})
+  }
+
+  private handlePreviewScroll = (e: MouseEvent<HTMLElement>) => {
+    const target = e.target as HTMLElement
+    const {scrollTop} = target
+
+    this.setState({scrollTop})
   }
 }
 

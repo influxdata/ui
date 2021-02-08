@@ -1,7 +1,7 @@
 import View from './view'
 import './style.scss'
 
-import {SUPPORTED_VISUALIZATIONS} from 'src/visualization'
+import {TYPE_DEFINITIONS} from 'src/shared/visualization'
 
 export default register => {
   register({
@@ -12,7 +12,7 @@ export default register => {
     initial: {
       panelVisibility: 'visible',
       panelHeight: 200,
-      properties: SUPPORTED_VISUALIZATIONS['xy'].initial,
+      properties: TYPE_DEFINITIONS['xy'].initial,
     },
   })
 }

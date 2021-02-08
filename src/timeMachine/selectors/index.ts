@@ -8,7 +8,7 @@ import {fromFlux, Table} from '@influxdata/giraffe'
 import {
   defaultXColumn,
   defaultYColumn,
-  mosaicYColumn,
+  mosaicYcolumn,
   getNumericColumns as getNumericColumnsUtil,
   getGroupableColumns as getGroupableColumnsUtil,
   getStringColumns as getStringColumnsUtil,
@@ -158,7 +158,7 @@ export const getYColumnSelection = (state: AppState): string => {
       'view.properties.ySeriesColumns[0]'
     )
 
-    return mosaicYColumn(table, preferredYColumnKey)
+    return mosaicYcolumn(table, preferredYColumnKey)
   }
 
   preferredYColumnKey = get(

@@ -120,6 +120,10 @@ export const GIRAFFE_COLOR_SCHEMES = [
   {name: 'T-MAX 400 Film', colors: T_MAX_400_FILM},
 ]
 
+export const BAND_LINE_OPACITY = 0.7
+export const BAND_LINE_WIDTH = 3
+export const BAND_SHADE_OPACITY = 0.3
+
 export const LEGEND_OPACITY_MINIMUM = 0.2
 export const LEGEND_OPACITY_MAXIMUM = 1.0
 export const LEGEND_OPACITY_DEFAULT = LEGEND_OPACITY_MAXIMUM

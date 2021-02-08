@@ -1,39 +1,74 @@
 // Libraries
-import React, {FC, lazy, Suspense} from 'react'
-import {
-  RemoteDataState,
-  SpinnerContainer,
-  TechnoSpinner,
-} from '@influxdata/clockface'
+import React, {PureComponent} from 'react'
+import {Controlled as ReactCodeMirror, IInstance} from 'react-codemirror2'
+import {ScrollInfo} from 'codemirror'
 
 // Utils
 import {humanizeNote} from 'src/dashboards/utils/notes'
 
-const MarkdownMonacoEditor = lazy(() =>
-  import('src/shared/components/MarkdownMonacoEditor')
-)
+const OPTIONS = {
+  mode: 'markdown',
+  theme: 'markdown',
+  tabIndex: 1,
+  readonly: false,
+  lineNumbers: false,
+  autoRefresh: true,
+  completeSingle: false,
+  lineWrapping: true,
+  placeholder: 'You can use Markdown syntax to format your note',
+}
+
+const noOp = () => {}
 
 interface Props {
   note: string
   onChangeNote: (value: string) => void
+  onScroll: (scrollTop: number) => void
+  scrollTop: number
 }
 
-const NoteEditorText: FC<Props> = ({note, onChangeNote}) => (
-  <div className="note-editor--editor">
-    <Suspense
-      fallback={
-        <SpinnerContainer
-          loading={RemoteDataState.Loading}
-          spinnerComponent={<TechnoSpinner />}
-        />
-      }
-    >
-      <MarkdownMonacoEditor
-        script={humanizeNote(note)}
-        onChangeScript={onChangeNote}
+class NoteEditorText extends PureComponent<Props, {}> {
+  private editor: IInstance
+
+  public componentDidUpdate() {
+    const currentScrollTop = this.editor.getScrollInfo().top
+    if (this.props.scrollTop !== currentScrollTop) {
+      this.editor.scrollTo(0, this.props.scrollTop)
+    }
+  }
+
+  public render() {
+    const {note} = this.props
+
+    return (
+      <ReactCodeMirror
+        autoCursor={true}
+        value={humanizeNote(note)}
+        options={OPTIONS}
+        onBeforeChange={this.handleChange}
+        onTouchStart={noOp}
+        editorDidMount={this.handleMount}
+        onScroll={this.handleScroll}
       />
-    </Suspense>
-  </div>
-)
+    )
+  }
+
+  private handleMount = (instance: IInstance) => {
+    instance.focus()
+    this.editor = instance
+  }
+
+  private handleChange = (_, __, note: string) => {
+    const {onChangeNote} = this.props
+
+    onChangeNote(note)
+  }
+
+  private handleScroll = (__: IInstance, scrollInfo: ScrollInfo) => {
+    const {onScroll} = this.props
+
+    onScroll(scrollInfo.top)
+  }
+}
 
 export default NoteEditorText

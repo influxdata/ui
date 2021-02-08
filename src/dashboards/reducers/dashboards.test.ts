@@ -17,74 +17,52 @@ import {
 import {removeCell} from 'src/cells/actions/creators'
 
 // Resources
-import {DEFAULT_DASHBOARD_SORT_OPTIONS} from 'src/dashboards/constants'
+import {dashboard} from 'src/dashboards/resources'
 
 // Types
 import {RemoteDataState, DashboardEntities, Dashboard} from 'src/types'
 
+const status = RemoteDataState.Done
+
 const initialState = () => ({
-  status: RemoteDataState.Done,
+  status,
   byID: {
-    ['dashOne']: {
-      id: 'dashOne',
-      name: 'd1',
-      orgID: '1',
-      cells: ['cellOne'],
-      status: RemoteDataState.Done,
-      labels: [],
-      links: {
-        self: '/v2/dashboards/dashOne',
-        cells: '/v2/dashboards/cells',
-      },
-      sortOptions: DEFAULT_DASHBOARD_SORT_OPTIONS,
-    },
-    ['dashTwo']: {
-      id: 'dashTwo',
-      name: 'd2',
-      orgID: '1',
-      cells: ['cellTwo'],
-      status: RemoteDataState.Done,
-      labels: [],
-      links: {
-        self: '/v2/dashboards/dashTwo',
-        cells: '/v2/dashboards/cells',
-      },
-      sortOptions: DEFAULT_DASHBOARD_SORT_OPTIONS,
-    },
+    [dashboard.id]: dashboard,
+    ['2']: {...dashboard, id: '2'},
   },
-  allIDs: ['dashOne', 'dashTwo'],
+  allIDs: [dashboard.id, '2'],
 })
 
 describe('dashboards reducer', () => {
   it('can set the dashboards', () => {
     const schema = normalize<Dashboard, DashboardEntities, string[]>(
-      [initialState().byID['dashOne']],
+      [dashboard],
       arrayOfDashboards
     )
 
     const byID = schema.entities.dashboards
     const allIDs = schema.result
 
-    const actual = reducer(
-      undefined,
-      setDashboards(RemoteDataState.Done, schema)
-    )
+    const actual = reducer(undefined, setDashboards(status, schema))
 
     expect(actual.byID).toEqual(byID)
     expect(actual.allIDs).toEqual(allIDs)
   })
 
   it('can remove a dashboard', () => {
-    const state = initialState()
-    const actual = reducer(state, removeDashboard('dashOne'))
+    const allIDs = [dashboard.id]
+    const byID = {[dashboard.id]: dashboard}
 
-    expect(actual.allIDs.length).toEqual(1)
-    expect(actual.allIDs[0]).toEqual('dashTwo')
+    const state = initialState()
+    const expected = {status, byID, allIDs}
+    const actual = reducer(state, removeDashboard(state.allIDs[1]))
+
+    expect(actual).toEqual(expected)
   })
 
   it('can set a dashboard', () => {
     const name = 'updated name'
-    const loadedDashboard = {...initialState().byID['dashOne'], name}
+    const loadedDashboard = {...dashboard, name: 'updated name'}
     const schema = normalize<Dashboard, DashboardEntities, string>(
       loadedDashboard,
       dashboardSchema
@@ -94,34 +72,33 @@ describe('dashboards reducer', () => {
 
     const actual = reducer(
       state,
-      setDashboard(loadedDashboard.id, RemoteDataState.Done, schema)
+      setDashboard(dashboard.id, RemoteDataState.Done, schema)
     )
 
-    expect(actual.byID[loadedDashboard.id].name).toEqual(name)
+    expect(actual.byID[dashboard.id].name).toEqual(name)
   })
 
   it('can edit a dashboard', () => {
     const name = 'updated name'
-    const loadedDashboard = {...initialState().byID['dashOne'], name}
+    const updates = {...dashboard, name}
 
     const schema = normalize<Dashboard, DashboardEntities, string>(
-      loadedDashboard,
+      updates,
       dashboardSchema
     )
 
     const state = initialState()
     const actual = reducer(state, editDashboard(schema))
 
-    expect(actual.byID[loadedDashboard.id].name).toEqual(name)
+    expect(actual.byID[dashboard.id].name).toEqual(name)
   })
 
   it('can remove a cell from a dashboard', () => {
     const state = initialState()
-    const actual = reducer(
-      state,
-      removeCell({dashboardID: 'dashOne', id: 'cellOne'})
-    )
+    const {id} = dashboard
+    const cellID = dashboard.cells[0]
+    const actual = reducer(state, removeCell({dashboardID: id, id: cellID}))
 
-    expect(actual.byID['dashOne'].cells).toEqual([])
+    expect(actual.byID[id].cells).toEqual([])
   })
 })

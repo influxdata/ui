@@ -39,7 +39,7 @@ class DashboardsIndexContents extends Component<Props> {
   public componentDidMount() {
     const {dashboards} = this.props
 
-    const dashboardIDs = dashboards.map(d => d.id)
+    const dashboardIDs = dashboards.map((d) => d.id)
     this.props.retainRangesDashTimeV1(dashboardIDs)
     this.props.checkDashboardLimits()
   }
@@ -62,7 +62,7 @@ class DashboardsIndexContents extends Component<Props> {
         searchKeys={['name', 'labels[].name']}
         sortByKey="name"
       >
-        {filteredDashboards => (
+        {(filteredDashboards) => (
           <Table
             searchTerm={searchTerm}
             filterComponent={filterComponent}

@@ -61,7 +61,7 @@ class InlineLabelsList extends Component<Props> {
     } = this.props
 
     if (filteredLabels.length) {
-      return filteredLabels.map(label => {
+      return filteredLabels.map((label) => {
         if (label.id === ADD_NEW_LABEL_ITEM_ID) {
           return (
             <InlineLabelsCreateLabelButton

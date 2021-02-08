@@ -47,7 +47,7 @@ class DashboardsDropdown extends PureComponent<Props> {
     let updatedSelection: string[]
 
     if (selectedIDs.includes(dashboard.id)) {
-      updatedSelection = selectedIDs.filter(id => id !== dashboard.id)
+      updatedSelection = selectedIDs.filter((id) => id !== dashboard.id)
     } else {
       updatedSelection = [...selectedIDs, dashboard.id]
     }
@@ -68,14 +68,14 @@ class DashboardsDropdown extends PureComponent<Props> {
     ]
 
     return dashboardsWithNew
-      .filter(d => selectedIDs.includes(d.id))
-      .map(d => d.name)
+      .filter((d) => selectedIDs.includes(d.id))
+      .map((d) => d.name)
       .join(', ')
   }
 
   private get dropdownItems(): JSX.Element[] {
     const {dashboards, selectedIDs} = this.props
-    const dashboardItems = dashboards.map(d => {
+    const dashboardItems = dashboards.map((d) => {
       return (
         <Dropdown.Item
           id={d.id}

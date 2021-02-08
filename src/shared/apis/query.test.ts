@@ -7,13 +7,13 @@ import {
   TIME_INVALIDATION,
 } from 'src/shared/apis/queryCache'
 import {RunQuerySuccessResult} from 'src/shared/apis/query'
-import {Variable} from 'src/types'
+import {Variable, RemoteDataState} from 'src/types'
 
 jest.mock('src/shared/apis/query')
 
 const orgID = 'orgID'
 
-const promise = new Promise(res => {
+const promise = new Promise((res) => {
   return res({
     type: 'SUCCESS',
     csv: 'wooooo',
@@ -25,6 +25,9 @@ const promise = new Promise(res => {
 const variables: Variable[] = [
   {
     id: '054b7476389f1000',
+    orgID: '',
+    status: RemoteDataState.Done,
+    labels: [],
     name: 'bucket',
     selected: ['Homeward Bound'],
     arguments: {
@@ -38,6 +41,9 @@ const variables: Variable[] = [
   },
   {
     id: '05782ef09ddb8000',
+    orgID: '',
+    status: RemoteDataState.Done,
+    labels: [],
     name: 'base_query',
     selected: [],
     arguments: {
@@ -51,6 +57,9 @@ const variables: Variable[] = [
   },
   {
     id: '05aeb0ad75aca000',
+    orgID: '',
+    status: RemoteDataState.Done,
+    labels: [],
     name: 'values',
     selected: ['system'],
     arguments: {
@@ -63,6 +72,9 @@ const variables: Variable[] = [
   },
   {
     id: '05ba3253105a5000',
+    orgID: '',
+    status: RemoteDataState.Done,
+    labels: [],
     name: 'broker_host',
     selected: [],
     arguments: {
@@ -76,6 +88,9 @@ const variables: Variable[] = [
   },
   {
     id: '05e6e4df2287b000',
+    orgID: '',
+    status: RemoteDataState.Done,
+    labels: [],
     name: 'deployment',
     selected: [],
     arguments: {
@@ -89,6 +104,9 @@ const variables: Variable[] = [
   },
   {
     id: '05e6e4fb0887b000',
+    orgID: '',
+    status: RemoteDataState.Done,
+    labels: [],
     name: 'build',
     selected: [],
     arguments: {
@@ -109,7 +127,7 @@ describe('query', () => {
       resetQueryCache()
     })
 
-    it('calls runQuery when there is no matching query in the cache & returns cached results when an unexpired match is found', done => {
+    it('calls runQuery when there is no matching query in the cache & returns cached results when an unexpired match is found', (done) => {
       // returns a mock runQuery
       mocked(runQuery).mockImplementation(() => ({
         promise,
@@ -129,7 +147,7 @@ describe('query', () => {
       })
     })
 
-    it('clears the cache by queryText', done => {
+    it('clears the cache by queryText', (done) => {
       mocked(runQuery).mockImplementation(() => ({
         promise,
         cancel: jest.fn(),
@@ -149,7 +167,7 @@ describe('query', () => {
       })
     })
     // Skip this until we can update the TIME_INVALIDATION
-    it.skip('invalidates the cached results after the time invalidation constant', done => {
+    it.skip('invalidates the cached results after the time invalidation constant', (done) => {
       mocked(runQuery).mockImplementation(() => ({
         promise,
         cancel: jest.fn(),
@@ -167,7 +185,7 @@ describe('query', () => {
         }
       }, TIME_INVALIDATION + 100)
     }, 6000)
-    it('returns the cached results when an unexpired match with the same variable is found', done => {
+    it('returns the cached results when an unexpired match with the same variable is found', (done) => {
       mocked(runQuery).mockImplementation(() => ({
         promise,
         cancel: jest.fn(),
@@ -185,7 +203,7 @@ describe('query', () => {
         }
       })
     })
-    it('deduplicates variables and returns the cached results when an unexpired match with the same variable is found', done => {
+    it('deduplicates variables and returns the cached results when an unexpired match with the same variable is found', (done) => {
       mocked(runQuery).mockImplementation(() => ({
         promise,
         cancel: jest.fn(),
@@ -204,7 +222,7 @@ describe('query', () => {
         }
       })
     })
-    it('deduplicates windowPeriod variables and returns the cached results when an unexpired match with the same variable is found', done => {
+    it('deduplicates windowPeriod variables and returns the cached results when an unexpired match with the same variable is found', (done) => {
       mocked(runQuery).mockImplementation(() => ({
         promise,
         cancel: jest.fn(),
@@ -224,14 +242,14 @@ describe('query', () => {
         }
       })
     })
-    it('resets the matching query if the variables do not match and reruns the query', done => {
+    it('resets the matching query if the variables do not match and reruns the query', (done) => {
       mocked(runQuery).mockImplementation(() => ({
         promise,
         cancel: jest.fn(),
       }))
       const queryText = 'v.build'
       const index = variables.findIndex(
-        variable => variable.id === '05e6e4df2287b000'
+        (variable) => variable.id === '05e6e4df2287b000'
       )
       const originalName = variables[index].name
       const result = getCachedResultsOrRunQuery(orgID, queryText, variables)
@@ -258,14 +276,14 @@ describe('query', () => {
           }
         })
     })
-    it('resets the matching query if the selected variables do not match and reruns the query', done => {
+    it('resets the matching query if the selected variables do not match and reruns the query', (done) => {
       mocked(runQuery).mockImplementation(() => ({
         promise,
         cancel: jest.fn(),
       }))
       const queryText = 'v.values'
       const index = variables.findIndex(
-        variable => variable.id === '05aeb0ad75aca000'
+        (variable) => variable.id === '05aeb0ad75aca000'
       )
       const [selected] = variables[index].selected
       const result = getCachedResultsOrRunQuery(orgID, queryText, variables)
@@ -292,7 +310,7 @@ describe('query', () => {
           }
         })
     })
-    it('returns cached results even when variables irrelevant to a query are toggled', done => {
+    it('returns cached results even when variables irrelevant to a query are toggled', (done) => {
       mocked(runQuery).mockImplementation(() => ({
         promise,
         cancel: jest.fn(),
@@ -303,7 +321,7 @@ describe('query', () => {
       result.promise.then(() => {
         try {
           const index = variables.findIndex(
-            variable => variable.id === '05e6e4df2287b000'
+            (variable) => variable.id === '05e6e4df2287b000'
           )
           variables[index].selected[0] = 'usage_user'
           getCachedResultsOrRunQuery(orgID, queryText, variables)

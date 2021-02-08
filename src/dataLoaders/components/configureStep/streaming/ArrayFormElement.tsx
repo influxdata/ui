@@ -72,7 +72,7 @@ class ArrayFormElement extends PureComponent<Props> {
 
   private get tags(): Array<{name: string; text: string}> {
     const {value} = this.props
-    return value.map(v => {
+    return value.map((v) => {
       return {text: v, name: v}
     })
   }

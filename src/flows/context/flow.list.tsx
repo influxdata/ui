@@ -1,4 +1,6 @@
-import React, {FC, useCallback} from 'react'
+import React, {FC, useCallback, useEffect} from 'react'
+import {useDispatch} from 'react-redux'
+import {useParams} from 'react-router-dom'
 import createPersistedState from 'use-persisted-state'
 import {v4 as UUID} from 'uuid'
 import {
@@ -15,6 +17,25 @@ import {PIPE_DEFINITIONS} from 'src/flows'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 import {PROJECT_NAME} from 'src/flows'
+import {
+  PostApiV2privateFlowsOrgsFlowParams,
+  PatchApiV2privateFlowsOrgsFlowParams,
+  DeleteApiV2privateFlowsOrgsFlowParams,
+} from 'src/client/flowsRoutes'
+import {
+  pooledUpdateAPI,
+  createAPI,
+  deleteAPI,
+  getAllAPI,
+  migrateLocalFlowsToAPI,
+  FLOWS_API_FLAG,
+} from 'src/flows/context/api'
+import {notify} from 'src/shared/actions/notifications'
+import {
+  notebookCreateFail,
+  notebookDeleteFail,
+} from 'src/shared/copy/notifications'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const useFlowListState = createPersistedState('flows')
 const useFlowCurrentState = createPersistedState('current-flow')
@@ -25,6 +46,7 @@ export interface FlowListContextType extends FlowList {
   remove: (id: string) => void
   currentID: string | null
   change: (id: string) => void
+  getAll: () => void
 }
 
 export const EMPTY_NOTEBOOK: FlowState = {
@@ -48,6 +70,7 @@ export const DEFAULT_CONTEXT: FlowListContextType = {
   update: (_id: string, _flow: Flow) => {},
   remove: (_id: string) => {},
   change: (_id: string) => {},
+  getAll: () => {},
   currentID: null,
 } as FlowListContextType
 
@@ -55,24 +78,23 @@ export const FlowListContext = React.createContext<FlowListContextType>(
   DEFAULT_CONTEXT
 )
 
-// NOTE: these have no utility, i'm just confused on how we are going to be getting
-// data from the api as a contract hasn't come forward, so i'm trying to be pre-emptive
-// on capabilities to speed integration. Remove the next two functions when that
-// data contract gets some ground and shows up (alex)
 export function serialize(flow) {
   const apiFlow = {
     name: flow.name,
     readOnly: flow.readOnly,
     range: flow.range,
     refresh: flow.refresh,
-    pipes: flow.data.allIDs.map(id => {
+    pipes: flow.data.allIDs.map((id) => {
       const meta = flow.meta.byID[id]
-
-      return {
-        ...flow.data.byID[id],
-        title: meta.title,
-        visible: meta.visible,
+      // if data changes first, meta will not exist yet
+      if (meta) {
+        return {
+          ...flow.data.byID[id],
+          title: meta.title,
+          visible: meta.visible,
+        }
       }
+      return {}
     }),
   }
 
@@ -87,8 +109,10 @@ export function hydrate(data) {
     refresh: data.refresh,
     readOnly: data.readOnly,
   }
-
-  data.pipes.forEach(pipe => {
+  if (!data.pipes) {
+    return flow
+  }
+  data.pipes.forEach((pipe) => {
     const id = pipe.id || `local_${UUID()}`
 
     flow.data.allIDs.push(id)
@@ -113,13 +137,50 @@ export function hydrate(data) {
 export const FlowListProvider: FC = ({children}) => {
   const [flows, setFlows] = useFlowListState(DEFAULT_CONTEXT.flows)
   const [currentID, setCurrentID] = useFlowCurrentState(null)
+  const {orgID} = useParams<{orgID: string}>()
+  const dispatch = useDispatch()
+  useEffect(() => {
+    migrate()
+  }, [])
 
-  const add = (flow?: Flow): Promise<string> => {
+  const add = async (flow?: Flow): Promise<string> => {
     let _flow
+    let _flowData
 
     if (!flow) {
-      _flow = {
-        ...hydrate({
+      if (isFlagEnabled('molly-first') && Object.keys(flows).length === 0) {
+        _flowData = hydrate({
+          name: `Name this ${PROJECT_NAME}`,
+          readOnly: false,
+          range: DEFAULT_TIME_RANGE,
+          refresh: AUTOREFRESH_DEFAULT,
+          pipes: [
+            {
+              title: 'Welcome',
+              visible: true,
+              type: 'youtube',
+              uri: 'Rs16uhxK0h8',
+            },
+            {
+              title: 'Select a Metric',
+              visible: true,
+              type: 'metricSelector',
+              ...JSON.parse(
+                JSON.stringify(PIPE_DEFINITIONS['metricSelector'].initial)
+              ),
+            },
+            {
+              title: 'Visualize the Result',
+              visible: true,
+              type: 'visualization',
+              ...JSON.parse(
+                JSON.stringify(PIPE_DEFINITIONS['visualization'].initial)
+              ),
+            },
+          ],
+        })
+      } else {
+        _flowData = hydrate({
           name: `Name this ${PROJECT_NAME}`,
           readOnly: false,
           range: DEFAULT_TIME_RANGE,
@@ -142,7 +203,10 @@ export const FlowListProvider: FC = ({children}) => {
               ),
             },
           ],
-        }),
+        })
+      }
+      _flow = {
+        ..._flowData,
       }
     } else {
       _flow = {
@@ -155,11 +219,23 @@ export const FlowListProvider: FC = ({children}) => {
       }
     }
 
-    // console.log('add to the api', serialize(data))
-    return new Promise(resolve => {
-      setTimeout(() => {
-        const id = `local_${UUID()}`
+    const apiFlow: PostApiV2privateFlowsOrgsFlowParams = {
+      orgID,
+      data: {
+        orgID: orgID,
+        name: _flow.name,
+        spec: serialize(_flow),
+      },
+    }
+    let id: string = `local_${UUID()}`
+    try {
+      id = await createAPI(apiFlow)
+    } catch {
+      dispatch(notify(notebookCreateFail()))
+    }
 
+    return new Promise((resolve) => {
+      setTimeout(() => {
         setFlows({
           ...flows,
           [id]: _flow,
@@ -181,8 +257,8 @@ export const FlowListProvider: FC = ({children}) => {
       name: flow.name,
       range: flow.range,
       refresh: flow.refresh,
-      data: flow.data.serialize(),
-      meta: flow.meta.serialize(),
+      data: flow.data.serialize ? flow.data.serialize() : flow.data,
+      meta: flow.meta.serialize ? flow.meta.serialize() : flow.meta,
       readOnly: flow.readOnly,
     }
 
@@ -190,7 +266,18 @@ export const FlowListProvider: FC = ({children}) => {
       ...flows,
       [id]: data,
     })
-    // console.log('update the api', serialize(data))
+
+    const apiFlow: PatchApiV2privateFlowsOrgsFlowParams = {
+      id,
+      orgID,
+      data: {
+        id,
+        orgID,
+        name: flow.name,
+        spec: serialize(data),
+      },
+    }
+    pooledUpdateAPI(apiFlow)
   }
 
   const change = useCallback(
@@ -201,12 +288,17 @@ export const FlowListProvider: FC = ({children}) => {
 
       setCurrentID(id)
     },
-    [currentID, setCurrentID, flows]
+    [setCurrentID, flows]
   )
 
-  const remove = (id: string) => {
+  const remove = async (id: string) => {
     const _flows = {
       ...flows,
+    }
+    try {
+      await deleteAPI({orgID, id} as DeleteApiV2privateFlowsOrgsFlowParams)
+    } catch (error) {
+      dispatch(notify(notebookDeleteFail()))
     }
 
     delete _flows[id]
@@ -217,6 +309,31 @@ export const FlowListProvider: FC = ({children}) => {
     setFlows(_flows)
   }
 
+  const getAll = useCallback(async (): Promise<void> => {
+    const data = await getAllAPI(orgID)
+    if (data.flows) {
+      const _flows = {}
+      data.flows.forEach((f) => (_flows[f.id] = hydrate(f.spec)))
+      setFlows(_flows)
+    }
+  }, [orgID, setFlows])
+
+  const migrate = async () => {
+    if (isFlagEnabled(FLOWS_API_FLAG)) {
+      const _flows = await migrateLocalFlowsToAPI(
+        orgID,
+        flows,
+        serialize,
+        dispatch
+      )
+      setFlows({..._flows})
+      if (currentID && currentID.includes('local')) {
+        // if we migrated the local currentID flow, reset currentID
+        setCurrentID(Object.keys(_flows)[0])
+      }
+    }
+  }
+
   const flowList = Object.keys(flows).reduce((acc, curr) => {
     const stateUpdater = (field, data) => {
       const _flow = {
@@ -225,20 +342,17 @@ export const FlowListProvider: FC = ({children}) => {
 
       _flow[field] = data
 
-      setFlows({
-        ...flows,
-        [curr]: _flow,
-      })
+      update(curr, _flow)
     }
 
     acc[curr] = {
       name: flows[curr].name,
       range: flows[curr].range,
       refresh: flows[curr].refresh,
-      data: _asResource(flows[curr].data, data => {
+      data: _asResource(flows[curr].data, (data) => {
         stateUpdater('data', data)
       }),
-      meta: _asResource(flows[curr].meta, data => {
+      meta: _asResource(flows[curr].meta, (data) => {
         stateUpdater('meta', data)
       }),
       readOnly: flows[curr].readOnly,
@@ -254,6 +368,7 @@ export const FlowListProvider: FC = ({children}) => {
         add,
         update,
         remove,
+        getAll,
         currentID,
         change,
       }}

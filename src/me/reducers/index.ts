@@ -25,7 +25,7 @@ export const initialState: MeState = {
 }
 
 export default (state = initialState, action: Actions): MeState =>
-  produce(state, draftState => {
+  produce(state, (draftState) => {
     switch (action.type) {
       case SET_ME: {
         draftState.id = action.me.id

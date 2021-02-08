@@ -50,7 +50,7 @@ class FluxFunctionsToolbar extends PureComponent<Props, State> {
               funcs={FLUX_FUNCTIONS}
               searchTerm={searchTerm}
             >
-              {sortedFunctions =>
+              {(sortedFunctions) =>
                 Object.entries(sortedFunctions).map(([category, funcs]) => (
                   <FunctionCategory
                     key={category}

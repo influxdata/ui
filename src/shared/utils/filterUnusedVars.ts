@@ -19,7 +19,9 @@ export const getAllUsedVars = (
   usedVars.forEach((vari: Variable) => {
     if (vari.arguments.type === 'query') {
       const queryText = get(vari, 'arguments.values.query', '')
-      const usedV = variables.filter(variable => isInQuery(queryText, variable))
+      const usedV = variables.filter((variable) =>
+        isInQuery(queryText, variable)
+      )
       varsInUse = varsInUse.concat(usedV)
     }
   })
@@ -52,8 +54,8 @@ export const filterUnusedVarsBasedOnQuery = (
   variables: Variable[],
   queryTexts: string[]
 ): Variable[] => {
-  const varsInUse = variables.filter(variable =>
-    queryTexts.some(text => isInQuery(text, variable))
+  const varsInUse = variables.filter((variable) =>
+    queryTexts.some((text) => isInQuery(text, variable))
   )
 
   const cachedVars = createdUsedVarsCache(varsInUse)
@@ -69,11 +71,11 @@ export const filterUnusedVars = (
   variables: Variable[],
   views: View[]
 ): Variable[] => {
-  const viewProperties = views.map(v => v.properties).filter(vp => !!vp)
+  const viewProperties = views.map((v) => v.properties).filter((vp) => !!vp)
   const queryViewProperties = viewProperties.filter(isQueryViewProperties)
 
   const queryTexts = queryViewProperties.reduce(
-    (acc, vp) => [...acc, ...vp.queries.map(query => query.text)],
+    (acc, vp) => [...acc, ...vp.queries.map((query) => query.text)],
     [] as Array<string>
   )
 

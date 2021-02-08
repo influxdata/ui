@@ -41,13 +41,13 @@ const HeatmapPlot: FunctionComponent<Props> = ({
   const columnKeys = result.table.columnKeys
   const xColumn =
     properties.xColumn ||
-    ['_time', '_start', '_stop'].filter(field =>
+    ['_time', '_start', '_stop'].filter((field) =>
       result.table.columnKeys.includes(field)
     )[0] ||
     result.table.columnKeys[0]
   const yColumn =
     properties.yColumn ||
-    ['_value'].filter(field => result.table.columnKeys.includes(field))[0] ||
+    ['_value'].filter((field) => result.table.columnKeys.includes(field))[0] ||
     result.table.columnKeys[0]
 
   const axisTicksOptions = useAxisTicksGenerator(properties)
@@ -81,7 +81,7 @@ const HeatmapPlot: FunctionComponent<Props> = ({
   const colors: string[] =
     properties.colors && properties.colors.length
       ? properties.colors
-      : DEFAULT_LINE_COLORS.map(c => c.hex)
+      : DEFAULT_LINE_COLORS.map((c) => c.hex)
 
   const xFormatter = getFormatter(result.table.getColumnType(xColumn), {
     prefix: properties.xPrefix,

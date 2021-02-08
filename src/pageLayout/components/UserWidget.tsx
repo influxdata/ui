@@ -53,15 +53,25 @@ const UserWidget: FC<Props> = ({
           id="usage"
           label="Usage"
           testID="user-nav-item-usage"
-          linkElement={className => (
+          linkElement={(className) => (
             <a className={className} href={`${CLOUD_URL}${CLOUD_USAGE_PATH}`} />
           )}
         />
+        <FeatureFlag name="unity-usage">
+          <TreeNav.UserItem
+            id="unity-usage"
+            label="Unity Usage"
+            testID="user-nav-item-unity-usage"
+            linkElement={(className) => (
+              <a className={className} href={`/orgs/${org.id}/unity-usage`} />
+            )}
+          />
+        </FeatureFlag>
         <TreeNav.UserItem
           id="billing"
           label="Billing"
           testID="user-nav-item-billing"
-          linkElement={className => (
+          linkElement={(className) => (
             <a
               className={className}
               href={`${CLOUD_URL}${CLOUD_BILLING_PATH}`}
@@ -72,7 +82,7 @@ const UserWidget: FC<Props> = ({
           id="users"
           label="Users"
           testID="user-nav-item-users"
-          linkElement={className => (
+          linkElement={(className) => (
             <a
               className={className}
               href={`${CLOUD_URL}/organizations/${org.id}${CLOUD_USERS_PATH}`}
@@ -84,7 +94,7 @@ const UserWidget: FC<Props> = ({
             id="unity-users"
             label="Unity Users"
             testID="user-nav-item-unity-users"
-            linkElement={className => (
+            linkElement={(className) => (
               <a className={className} href={`/orgs/${org.id}/unity-users`} />
             )}
           />
@@ -94,7 +104,7 @@ const UserWidget: FC<Props> = ({
             id="unity-billing"
             label="Unity billing"
             testID="user-nav-item-unity-billing"
-            linkElement={className => (
+            linkElement={(className) => (
               <a className={className} href={`/orgs/${org.id}/unity-billing`} />
             )}
           />
@@ -103,7 +113,7 @@ const UserWidget: FC<Props> = ({
           id="about"
           label="About"
           testID="user-nav-item-about"
-          linkElement={className => (
+          linkElement={(className) => (
             <Link className={className} to={`${orgPrefix}/about`} />
           )}
         />
@@ -114,7 +124,7 @@ const UserWidget: FC<Props> = ({
           label="Members"
           testID="user-nav-item-members"
           active={getNavItemActivation(['members'], location.pathname)}
-          linkElement={className => (
+          linkElement={(className) => (
             <Link className={className} to={`${orgPrefix}/members`} />
           )}
         />
@@ -123,7 +133,7 @@ const UserWidget: FC<Props> = ({
           label="About"
           testID="user-nav-item-about"
           active={getNavItemActivation(['about'], location.pathname)}
-          linkElement={className => (
+          linkElement={(className) => (
             <Link className={className} to={`${orgPrefix}/about`} />
           )}
         />
@@ -137,7 +147,7 @@ const UserWidget: FC<Props> = ({
           id="create-org"
           label="Create Organization"
           testID="user-nav-item-create-orgs"
-          linkElement={className => (
+          linkElement={(className) => (
             <Link className={className} to="/orgs/new" />
           )}
         />
@@ -146,7 +156,7 @@ const UserWidget: FC<Props> = ({
         id="logout"
         label="Logout"
         testID="user-nav-item-logout"
-        linkElement={className => <Link className={className} to="/logout" />}
+        linkElement={(className) => <Link className={className} to="/logout" />}
       />
     </TreeNav.User>
   )

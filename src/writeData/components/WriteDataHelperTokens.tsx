@@ -42,7 +42,7 @@ const WriteDataHelperTokens: FC = () => {
         maxHeight="200px"
         testID="write-data-tokens-list"
       >
-        {tokens.map(t => (
+        {tokens.map((t) => (
           <List.Item
             size={ComponentSize.Small}
             key={t.id}

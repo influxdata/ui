@@ -9,7 +9,6 @@ import {mocked} from 'ts-jest/utils'
 jest.mock('src/cloud/utils/reporting')
 jest.mock('src/resources/components/GetResources')
 jest.mock('src/shared/actions/notifications')
-jest.mock('src/shared/utils/errors')
 
 jest.mock('src/templates/api', () => {
   return {
@@ -45,7 +44,7 @@ import {communityTemplateUnsupportedFormatError} from 'src/shared/copy/notificat
 // The file under test, imported last
 import {CommunityTemplatesIndex} from 'src/templates/containers/CommunityTemplatesIndex'
 
-const defaultProps = {
+const defaultProps: any = {
   ...withRouterProps,
   notify: jest.fn(),
   setStagedTemplateUrl: jest.fn(),
@@ -58,7 +57,7 @@ const setup = (props = defaultProps) => {
 
   return renderWithReduxAndRouter(
     <CommunityTemplatesIndex {...props} />,
-    _fakeLocalStorage => {
+    (_fakeLocalStorage) => {
       const appState = {...mockAppState} as any
       appState.resources.templates = templatesStore.getState()
       return appState

@@ -1,0 +1,11 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.flow-panel--body .query-builder {
+  border: $cf-border solid $g0-obsidian;
+  background-color: $g0-obsidian;
+  border-radius: $cf-radius;
+  padding: $cf-radius;
+  position: relative;
+  height: 320px;
+  width: 100%;
+}

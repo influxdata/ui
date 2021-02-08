@@ -54,7 +54,7 @@ export const useCheckYDomain = (
       t.min,
       t.max,
     ])
-      .filter(v => v !== undefined && v !== null)
+      .filter((v) => v !== undefined && v !== null)
       .concat(dataDomain)
 
     return extent(extrema)

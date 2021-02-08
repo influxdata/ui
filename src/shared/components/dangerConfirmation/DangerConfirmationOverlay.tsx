@@ -12,8 +12,8 @@ interface Props {
   message: string
   effectedItems: string[]
   title: string
-  onClose: () => void
   confirmButtonText: string
+  onClose: () => void
 }
 
 interface State {
@@ -28,15 +28,13 @@ class DangerConfirmationOverlay extends PureComponent<Props, State> {
 
   public render() {
     return (
-      <Overlay visible={true}>
-        <Overlay.Container maxWidth={400}>
-          <Overlay.Header
-            title={this.overlayTitle}
-            onDismiss={this.handleCloseOverlay}
-          />
-          <Overlay.Body>{this.overlayContents}</Overlay.Body>
-        </Overlay.Container>
-      </Overlay>
+      <Overlay.Container maxWidth={400}>
+        <Overlay.Header
+          title={this.overlayTitle}
+          onDismiss={this.handleCloseOverlay}
+        />
+        <Overlay.Body>{this.overlayContents}</Overlay.Body>
+      </Overlay.Container>
     )
   }
 

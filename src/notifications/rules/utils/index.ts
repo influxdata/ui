@@ -32,7 +32,7 @@ export const getRuleVariantDefaults = (
   endpoints: NotificationEndpoint[],
   id: string
 ): RuleVariantFields => {
-  const endpoint = endpoints.find(e => e.id === id)
+  const endpoint = endpoints.find((e) => e.id === id)
 
   switch (endpoint.type) {
     case 'slack': {
@@ -51,7 +51,7 @@ export const getRuleVariantDefaults = (
       // wrap all variable values into `` to prevent telegram's markdown errors
       const messageTemplate = defaultMessage.replace(
         /\$\{[^\}]+\}/g,
-        x => `\`${x}\``
+        (x) => `\`${x}\``
       )
       return {
         messageTemplate: messageTemplate,
@@ -127,10 +127,10 @@ export const draftRuleToPostRule = (
   return {
     ...draftRule,
     status: draftRule.activeStatus,
-    statusRules: draftRule.statusRules.map(r => r.value),
+    statusRules: draftRule.statusRules.map((r) => r.value),
     tagRules: draftRule.tagRules
-      .map(r => r.value)
-      .filter(tr => tr.key && tr.value),
+      .map((r) => r.value)
+      .filter((tr) => tr.key && tr.value),
   } as PostNotificationRule
 }
 
@@ -149,11 +149,11 @@ export const ruleToDraftRule = (rule: GenRule): NotificationRuleDraft => {
   const tagRules = rule.tagRules || []
   return {
     ...rule,
-    labels: rule.labels.map(l => l.id),
+    labels: rule.labels.map((l) => l.id),
     status: RemoteDataState.Done,
     activeStatus: rule.status,
     offset: rule.offset || '',
-    statusRules: statusRules.map(value => ({cid: uuid.v4(), value})),
-    tagRules: tagRules.map(value => ({cid: uuid.v4(), value})),
+    statusRules: statusRules.map((value) => ({cid: uuid.v4(), value})),
+    tagRules: tagRules.map((value) => ({cid: uuid.v4(), value})),
   }
 }

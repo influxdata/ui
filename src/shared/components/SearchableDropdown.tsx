@@ -80,7 +80,7 @@ export default class SearchableDropdown extends Component<Props> {
               : selectedOption}
           </Dropdown.Button>
         )}
-        menu={onCollapse => (
+        menu={(onCollapse) => (
           <Dropdown.Menu
             onCollapse={onCollapse}
             theme={menuTheme}
@@ -111,7 +111,7 @@ export default class SearchableDropdown extends Component<Props> {
       onSelect,
     } = this.props
 
-    const filteredOptions = options.filter(option =>
+    const filteredOptions = options.filter((option) =>
       `${option}`.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
     )
 
@@ -119,7 +119,7 @@ export default class SearchableDropdown extends Component<Props> {
       return <div className="searchable-dropdown--empty">{emptyText}</div>
     }
 
-    return filteredOptions.map(option => (
+    return filteredOptions.map((option) => (
       <Dropdown.Item
         key={option}
         value={option}

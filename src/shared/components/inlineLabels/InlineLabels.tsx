@@ -67,7 +67,7 @@ class InlineLabels extends Component<Props> {
     const onDelete = this.isEditable ? this.handleDeleteLabel : null
 
     if (selectedLabels.length) {
-      return selectedLabels.map(_label => {
+      return selectedLabels.map((_label) => {
         const label = {..._label}
 
         // TODO: clean this up during normalization effort at
@@ -106,7 +106,7 @@ class InlineLabels extends Component<Props> {
 
   private handleDeleteLabel = (labelID: string) => {
     const {onRemoveLabel, selectedLabels} = this.props
-    const label = selectedLabels.find(label => label.id === labelID)
+    const label = selectedLabels.find((label) => label.id === labelID)
 
     onRemoveLabel(label)
   }

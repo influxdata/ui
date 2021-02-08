@@ -34,7 +34,7 @@ interface OwnProps {
   name: string
   onSetName: (name: string) => void
   onCancel: () => void
-  onSave: () => Promise<void>
+  onSave: () => void
 }
 
 type ReduxProps = ConnectedProps<typeof connector>

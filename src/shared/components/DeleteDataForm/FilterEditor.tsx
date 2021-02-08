@@ -47,7 +47,7 @@ const FilterEditor: FunctionComponent<Props> = ({
               key={i}
               keys={keys}
               filter={filter}
-              onChange={filter => onSetFilter(filter, i)}
+              onChange={(filter) => onSetFilter(filter, i)}
               onDelete={() => onDeleteFilter(i)}
               shouldValidate={shouldValidate}
               values={values}

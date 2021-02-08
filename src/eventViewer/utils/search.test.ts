@@ -129,7 +129,7 @@ describe('event viewer search utilities', () => {
       expect(parseSearchInput(input)).toEqual(expected)
     })
 
-    test.each(FAIL_TEST_CASES)("fails to parse input '%p'", input => {
+    test.each(FAIL_TEST_CASES)("fails to parse input '%p'", (input) => {
       expect(() => parseSearchInput(input)).toThrowError()
     })
   })

@@ -12,7 +12,7 @@ describe('TeplatedCodeSnippet', () => {
 
   it('should allow normal strings', () => {
     let props: any = {}
-    jest.mock('src/shared/components/CodeSnippet', () => _props => {
+    jest.mock('src/shared/components/CodeSnippet', () => (_props) => {
       props = _props
       return false
     })
@@ -28,7 +28,7 @@ describe('TeplatedCodeSnippet', () => {
 
   it('should show undefined', () => {
     let props: any = {}
-    jest.mock('src/shared/components/CodeSnippet', () => _props => {
+    jest.mock('src/shared/components/CodeSnippet', () => (_props) => {
       props = _props
       return false
     })
@@ -45,7 +45,7 @@ describe('TeplatedCodeSnippet', () => {
 
   it('should respect defaults', () => {
     let props: any = {}
-    jest.mock('src/shared/components/CodeSnippet', () => _props => {
+    jest.mock('src/shared/components/CodeSnippet', () => (_props) => {
       props = _props
       return false
     })
@@ -65,7 +65,7 @@ describe('TeplatedCodeSnippet', () => {
 
   it('should overwrite defaults with values', () => {
     let props: any = {}
-    jest.mock('src/shared/components/CodeSnippet', () => _props => {
+    jest.mock('src/shared/components/CodeSnippet', () => (_props) => {
       props = _props
 
       return false

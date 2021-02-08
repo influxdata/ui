@@ -56,7 +56,7 @@ const SingleStatOptions: FC<Props> = ({properties, update}) => {
                 <Input
                   value={properties.prefix}
                   placeholder="%, MPH, etc."
-                  onChange={evt => {
+                  onChange={(evt) => {
                     update({prefix: evt.target.value})
                   }}
                 />
@@ -67,7 +67,7 @@ const SingleStatOptions: FC<Props> = ({properties, update}) => {
                 <Input
                   value={properties.suffix}
                   placeholder="%, MPH, etc."
-                  onChange={evt => {
+                  onChange={(evt) => {
                     update({suffix: evt.target.value})
                   }}
                 />
@@ -88,7 +88,7 @@ const SingleStatOptions: FC<Props> = ({properties, update}) => {
                 <Input
                   name="decimal-places"
                   placeholder="Enter a number"
-                  onChange={evt => {
+                  onChange={(evt) => {
                     setDigits(convertUserInputToNumOrNaN(evt))
                   }}
                   value={properties.decimalPlaces.digits}
@@ -103,7 +103,7 @@ const SingleStatOptions: FC<Props> = ({properties, update}) => {
         <Grid.Column widthXS={Columns.Twelve} widthMD={Columns.Six}>
           <Form.Element label="Colorized Thresholds">
             <ThresholdsSettings
-              thresholds={properties.colors.filter(c => c.type !== 'scale')}
+              thresholds={properties.colors.filter((c) => c.type !== 'scale')}
               onSetThresholds={setColors}
             />
           </Form.Element>

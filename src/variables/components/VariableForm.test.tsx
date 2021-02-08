@@ -37,11 +37,11 @@ const setup = (override?) => {
     initialScript: 'Hello There!',
     onCreateVariable: jest.fn(),
     onHideOverlay: jest.fn(),
-    onNameUpdate: name => actions.name(name),
-    onTypeUpdate: type => actions.type(type),
-    onQueryUpdate: arg => actions.query(arg),
-    onMapUpdate: arg => actions.map(arg),
-    onConstantUpdate: arg => actions.constant(arg),
+    onNameUpdate: (name) => actions.name(name),
+    onTypeUpdate: (type) => actions.type(type),
+    onQueryUpdate: (arg) => actions.query(arg),
+    onMapUpdate: (arg) => actions.map(arg),
+    onConstantUpdate: (arg) => actions.constant(arg),
     ...override,
   }
 

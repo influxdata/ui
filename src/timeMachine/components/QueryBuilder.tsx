@@ -50,7 +50,7 @@ class TimeMachineQueryBuilder extends PureComponent<Props, State> {
                 <BucketsSelector />
               </BuilderCard>
               {tagFiltersLength &&
-                range(tagFiltersLength).map(i => (
+                range(tagFiltersLength).map((i) => (
                   <TagSelector key={i} index={i} />
                 ))}
               {this.addButton}

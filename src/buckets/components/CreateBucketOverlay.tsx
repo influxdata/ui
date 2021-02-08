@@ -37,7 +37,7 @@ const CreateBucketOverlay: FC = () => {
     initialBucketState(isRetentionLimitEnforced, org.id)
   )
 
-  const retentionRule = state.retentionRules.find(r => r.type === 'expire')
+  const retentionRule = state.retentionRules.find((r) => r.type === 'expire')
   const retentionSeconds = retentionRule ? retentionRule.everySeconds : 3600
 
   const handleChangeRuleType = (ruleType: RuleType): void => {

@@ -74,8 +74,8 @@ const sortTableKeys = (keyA: string, keyB: string): number => {
 export const latestValues = (table: Table): number[] => {
   const valueColsData = table.columnKeys
     .sort((a, b) => sortTableKeys(a, b))
-    .filter(k => isValueCol(table, k))
-    .map(k => table.getColumn(k)) as number[][]
+    .filter((k) => isValueCol(table, k))
+    .map((k) => table.getColumn(k)) as number[][]
 
   if (!valueColsData.length) {
     return []
@@ -101,7 +101,7 @@ export const latestValues = (table: Table): number[] => {
 
     if (
       time &&
-      valueColsData.some(colData => {
+      valueColsData.some((colData) => {
         return isFinite(colData[i]) || isString(colData[i])
       })
     ) {
@@ -114,12 +114,12 @@ export const latestValues = (table: Table): number[] => {
   const latestRowIndices =
     table.length === 1 ? [0] : maxesBy(range(table.length), d)
 
-  const latestValues = flatMap(latestRowIndices, i =>
-    valueColsData.map(colData => colData[i])
+  const latestValues = flatMap(latestRowIndices, (i) =>
+    valueColsData.map((colData) => colData[i])
   )
 
   const definedLatestValues = latestValues.filter(
-    x => isFinite(x) || isString(x)
+    (x) => isFinite(x) || isString(x)
   )
 
   return definedLatestValues

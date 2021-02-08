@@ -248,16 +248,12 @@ describe('NotificationRules', () => {
     // Filter for the new rule
     cy.getByTestID('filter--input rules').type(ruleName)
 
-    cy.getByTestID('rule-card--name')
-      .contains(ruleName)
-      .click()
+    cy.getByTestID('rule-card--name').contains(ruleName).click()
 
     const editedName = ruleName + '!'
 
     // Edit the rule
-    cy.getByTestID('rule-name--input')
-      .clear()
-      .type(editedName)
+    cy.getByTestID('rule-name--input').clear().type(editedName)
 
     cy.getByTestID('rule-schedule-every--input')
       .clear()
@@ -272,14 +268,10 @@ describe('NotificationRules', () => {
     cy.getByTestID('rule-overlay-save--button').click()
 
     // Open overlay
-    cy.getByTestID('rule-card--name')
-      .contains(editedName)
-      .click()
+    cy.getByTestID('rule-card--name').contains(editedName).click()
 
     // Close overlay
-    cy.getByTestID('dismiss-overlay')
-      .find('button')
-      .click()
+    cy.getByTestID('dismiss-overlay').find('button').click()
 
     // Delete the rule
     cy.getByTestID('rules--column').within(() => {

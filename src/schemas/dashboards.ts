@@ -17,7 +17,7 @@ export const viewsFromCells = (
   cells: CellsWithViewProperties,
   dashboardID: string
 ): View[] => {
-  return cells.map(cell => {
+  return cells.map((cell) => {
     const {properties, id, name} = cell
 
     return {

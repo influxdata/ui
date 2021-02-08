@@ -236,7 +236,7 @@ there",5
 
   test('it crushes whatever this bug is', () => {
     const file = path.join(__dirname, './', 'fromFlux.newline.csv')
-    const CSV = fs.readFileSync(file, 'utf8', function(err: any, data: any) {
+    const CSV = fs.readFileSync(file, 'utf8', function (err: any, data: any) {
       return data
     })
 
@@ -249,7 +249,7 @@ there",5
 
   test('it doesnt group all results', () => {
     const file = path.join(__dirname, './', 'fromFlux.grouping.csv')
-    const CSV = fs.readFileSync(file, 'utf8', function(err: any, data: any) {
+    const CSV = fs.readFileSync(file, 'utf8', function (err: any, data: any) {
       return data
     })
     const flux = fromFlux(CSV)

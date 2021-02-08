@@ -89,7 +89,7 @@ class TimeRangeDropdown extends PureComponent<Props, State> {
                 {timeRangeLabel}
               </Dropdown.Button>
             )}
-            menu={onCollapse => (
+            menu={(onCollapse) => (
               <Dropdown.Menu
                 onCollapse={onCollapse}
                 style={{width: `${this.dropdownWidth}px`}}
@@ -174,7 +174,7 @@ class TimeRangeDropdown extends PureComponent<Props, State> {
 
   private handleClickDropdownItem = (label: string): void => {
     const {onSetTimeRange} = this.props
-    const timeRange = SELECTABLE_TIME_RANGES.find(t => t.label === label)
+    const timeRange = SELECTABLE_TIME_RANGES.find((t) => t.label === label)
 
     onSetTimeRange(timeRange)
   }

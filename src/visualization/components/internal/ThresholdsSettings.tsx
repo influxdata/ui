@@ -38,7 +38,7 @@ const ThresholdsSettings: FC<Props> = ({thresholds, onSetThresholds}) => {
 
   const updateThreshold = (id: string, value: Partial<Color>) => {
     onSetThresholds(
-      thresholds.map(threshold => {
+      thresholds.map((threshold) => {
         if (threshold.id !== id) {
           return threshold
         }
@@ -52,7 +52,7 @@ const ThresholdsSettings: FC<Props> = ({thresholds, onSetThresholds}) => {
   }
 
   const removeThreshold = (id: string) => {
-    onSetThresholds(thresholds.filter(threshold => threshold.id !== id))
+    onSetThresholds(thresholds.filter((threshold) => threshold.id !== id))
   }
 
   const onBlur = () => {
@@ -72,8 +72,8 @@ const ThresholdsSettings: FC<Props> = ({thresholds, onSetThresholds}) => {
         text="Add a Threshold"
         onClick={() => appendThreshold()}
       />
-      {sortThresholds(thresholds).map(threshold => {
-        const onChangeValue = value =>
+      {sortThresholds(thresholds).map((threshold) => {
+        const onChangeValue = (value) =>
           updateThreshold(threshold.id, {value: parseFloat(value)})
 
         const onChangeColor = (name, hex) =>

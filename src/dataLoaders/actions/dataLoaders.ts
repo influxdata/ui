@@ -310,12 +310,14 @@ export const setToken = (token: string): SetToken => ({
   payload: {token},
 })
 
-export const addPluginBundleWithPlugins = (bundle: BundleName) => dispatch => {
+export const addPluginBundleWithPlugins = (bundle: BundleName) => (
+  dispatch
+) => {
   dispatch(addPluginBundle(bundle))
   const plugins = pluginsByBundle[bundle]
   dispatch(
     addTelegrafPlugins(
-      plugins.map(p => {
+      plugins.map((p) => {
         const isConfigured = !!telegrafPluginsInfo[p].fields
           ? ConfigurationState.Unconfigured
           : ConfigurationState.Configured
@@ -331,9 +333,9 @@ export const addPluginBundleWithPlugins = (bundle: BundleName) => dispatch => {
   )
 }
 
-export const removePluginBundleWithPlugins = (
-  bundle: BundleName
-) => dispatch => {
+export const removePluginBundleWithPlugins = (bundle: BundleName) => (
+  dispatch
+) => {
   dispatch(removePluginBundle(bundle))
   dispatch(removeBundlePlugins(bundle))
 }
@@ -402,13 +404,18 @@ export const generateTelegrafToken = (configID: string) => async (
     const orgID = getOrg(state).id
     const telegraf = getByID<Telegraf>(state, ResourceType.Telegrafs, configID)
     const bucketName = get(telegraf, 'metadata.buckets[0]', '')
+
     if (bucketName === '') {
       throw new Error(
-        'A token cannot be generated without a corresponding bucket'
+        'A token cannot be generated without a corresponding bucket; no buckets are assigned'
       )
     }
+
     const bucket = getBucketByName(state, bucketName)
 
+    if (!bucket || !bucket.id) {
+      throw new Error(`there is no bucket present with name ${bucketName}`)
+    }
     const permissions = [
       {
         action: Permission.ActionEnum.Write,
@@ -442,7 +449,16 @@ export const generateTelegrafToken = (configID: string) => async (
     dispatch(setToken(createdToken.token))
   } catch (error) {
     console.error(error)
-    dispatch(notify(TokenCreationError))
+
+    if (error.message) {
+      const customNotification = {
+        ...TokenCreationError,
+        message: `${TokenCreationError.message}: ${error.message}`,
+      }
+      dispatch(notify(customNotification))
+    } else {
+      dispatch(notify(TokenCreationError))
+    }
   }
 }
 

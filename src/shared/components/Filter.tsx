@@ -69,13 +69,13 @@ export default class FilterList<T> extends PureComponent<Props<T>> {
       return list
     }
 
-    const filtered = list.filter(listItem => {
+    const filtered = list.filter((listItem) => {
       const item = {
         ...listItem,
-        labels: get(listItem, 'labels', []).map(labelID => labels[labelID]),
+        labels: get(listItem, 'labels', []).map((labelID) => labels[labelID]),
       }
 
-      const isInList = searchKeys.some(key => {
+      const isInList = searchKeys.some((key) => {
         const value = this.getKey(item, key)
 
         const isStringArray = this.isStringArray(value)
@@ -92,9 +92,7 @@ export default class FilterList<T> extends PureComponent<Props<T>> {
           return this.checkIndex(searchIndex, formattedSearchTerm)
         }
 
-        return String(value)
-          .toLocaleLowerCase()
-          .includes(formattedSearchTerm)
+        return String(value).toLocaleLowerCase().includes(formattedSearchTerm)
       })
 
       return isInList
@@ -133,7 +131,7 @@ export default class FilterList<T> extends PureComponent<Props<T>> {
     const paths = key.split(EMPTY_ARRAY_BRACKETS)
     // flattens nested arrays into one large array
     const values = paths.reduce(
-      (results, path) => flatMap(results, r => get(r, path, [])),
+      (results, path) => flatMap(results, (r) => get(r, path, [])),
       [item]
     )
 

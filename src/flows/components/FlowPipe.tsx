@@ -11,7 +11,7 @@ export interface FlowPipeProps {
 
 const FlowPipe: FC<FlowPipeProps> = ({id}) => {
   const panel: FC<PipeContextProps> = useMemo(
-    () => props => {
+    () => (props) => {
       const _props = {
         ...props,
         id,

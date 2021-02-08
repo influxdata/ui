@@ -40,7 +40,7 @@ class DashboardRoute extends PureComponent<Props> {
   syncVariables(props, urlVars) {
     const {variables, selectValue} = props
 
-    variables.forEach(v => {
+    variables.forEach((v) => {
       let val
 
       if (v.selected) {

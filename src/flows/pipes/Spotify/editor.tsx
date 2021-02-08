@@ -8,8 +8,8 @@ interface Props {
 
 const Editor: FC<Props> = ({visible}) => {
   const {data, update} = useContext(PipeContext)
-  const _update = evt => {
-    update(evt.target.value)
+  const _update = (evt) => {
+    update({uri: evt.target.value})
   }
 
   if (!visible) {

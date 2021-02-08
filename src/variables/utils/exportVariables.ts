@@ -12,8 +12,8 @@ const getDescendantsFromGraph = (
   variable: Variable,
   varGraph: VariableNode[]
 ): Variable[] => {
-  const node = varGraph.find(n => n.variable.id === variable.id)
-  return collectDescendants(node).map(n => n.variable)
+  const node = varGraph.find((n) => n.variable.id === variable.id)
+  return collectDescendants(node).map((n) => n.variable)
 }
 
 export const findDependentVariables = (

@@ -9,7 +9,7 @@ interface Props {
   invoice: Invoice
 }
 
-const getPreviousMonth = date => {
+const getPreviousMonth = (date) => {
   const currentMonth = date.getUTCMonth()
   date.setMonth(currentMonth - 1)
   return date.toLocaleString('default', {month: 'long'})

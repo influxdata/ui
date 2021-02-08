@@ -28,7 +28,7 @@ const WriteDataSection: FC<Omit<WriteDataSection, 'featureFlag'>> = ({
 }) => {
   const {searchTerm} = useContext(WriteDataSearchContext)
 
-  const filteredItems = items.filter(item =>
+  const filteredItems = items.filter((item) =>
     doesItemMatchSearchTerm(item.name, searchTerm)
   )
 
@@ -56,7 +56,7 @@ const WriteDataSection: FC<Omit<WriteDataSection, 'featureFlag'>> = ({
         {description}
       </Heading>
       <SquareGrid cardSize="170px" gutter={ComponentSize.Small}>
-        {sortedItems.map(item => (
+        {sortedItems.map((item) => (
           <WriteDataItem
             key={item.id}
             id={item.id}

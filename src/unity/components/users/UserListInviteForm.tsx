@@ -39,9 +39,10 @@ interface InviteErrors {
 const UserListInviteForm: FC = () => {
   const [errors, setErrors] = useState<InviteErrors>({})
   const [notify, {show, hide}] = useNotify()
-  const [{draftInvite, orgID, invites}, dispatch] = useContext<
-    UserListContextResult
-  >(UserListContext)
+  const [
+    {draftInvite, orgID, invites},
+    dispatch,
+  ] = useContext<UserListContextResult>(UserListContext)
 
   const onInviteUser = async () => {
     dispatch(resetDraftInvite())

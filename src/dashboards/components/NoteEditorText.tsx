@@ -9,8 +9,8 @@ import {
 // Utils
 import {humanizeNote} from 'src/dashboards/utils/notes'
 
-const MarkdownMonacoEditor = lazy(() =>
-  import('src/shared/components/MarkdownMonacoEditor')
+const MarkdownMonacoEditor = lazy(
+  () => import('src/shared/components/MarkdownMonacoEditor')
 )
 
 interface Props {

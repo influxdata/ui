@@ -42,7 +42,7 @@ const visualizationDefintionContext = require.context(
 )
 visualizationDefintionContext
   .keys()
-  .forEach(visualizationDefinitionIndexFile => {
+  .forEach((visualizationDefinitionIndexFile) => {
     const visualizationDefinitionModule = visualizationDefintionContext(
       visualizationDefinitionIndexFile
     )

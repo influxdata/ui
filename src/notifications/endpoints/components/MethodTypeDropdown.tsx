@@ -33,7 +33,7 @@ const MethodTypeDropdown: FC<Props> = ({selectedType, onSelectType}) => {
     </Dropdown.Item>
   ))
 
-  const selected = types.find(t => t.type === selectedType)
+  const selected = types.find((t) => t.type === selectedType)
 
   if (!selected) {
     throw new Error('Incorrect method type provided to <MethodTypeDropdown/>')
@@ -49,7 +49,7 @@ const MethodTypeDropdown: FC<Props> = ({selectedType, onSelectType}) => {
     </Dropdown.Button>
   )
 
-  const menu = onCollapse => (
+  const menu = (onCollapse) => (
     <Dropdown.Menu onCollapse={onCollapse}>{items}</Dropdown.Menu>
   )
 

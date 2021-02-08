@@ -28,29 +28,21 @@ describe('Collectors', () => {
       cy.getByTestID('overlay--container').within(() => {
         cy.getByTestID('telegraf-plugins--System').click()
         cy.getByTestID('next').click()
-        cy.getByInputName('name')
-          .clear()
-          .type(newConfig)
-        cy.getByInputName('description')
-          .clear()
-          .type(configDescription)
-        cy.get('.cf-button')
-          .contains('Create and Verify')
-          .click()
+        cy.getByInputName('name').clear().type(newConfig)
+        cy.getByInputName('description').clear().type(configDescription)
+        cy.get('.cf-button').contains('Create and Verify').click()
         cy.getByTestID('streaming').within(() => {
-          cy.get('.cf-button')
-            .contains('Listen for Data')
-            .click()
+          cy.get('.cf-button').contains('Listen for Data').click()
         })
-        cy.get('.cf-button')
-          .contains('Finish')
-          .click()
+        cy.get('.cf-button').contains('Finish').click()
       })
 
-      cy.getByTestID('resource-card')
-        .should('have.length', 1)
-        .and('contain', newConfig)
-        .and('contain', Cypress.env('bucket'))
+      cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
+        cy.getByTestID('resource-card')
+          .should('have.length', 1)
+          .and('contain', newConfig)
+          .and('contain', defaultBucket)
+      })
     })
 
     it('allows the user to view just the output', () => {
@@ -76,7 +68,7 @@ describe('Collectors', () => {
             return _a > _b ? 1 : _a < _b ? -1 : 0
           })
 
-          cy.get('code').should($el => {
+          cy.get('code').should(($el) => {
             const text = $el.text()
 
             expect(text.includes('[[outputs.influxdb_v2]]')).to.be.true
@@ -86,12 +78,10 @@ describe('Collectors', () => {
 
           cy.getByTestID('bucket-dropdown').within(() => {
             cy.getByTestID('bucket-dropdown--button').click()
-            cy.getByTestID('dropdown-item')
-              .eq(2)
-              .click()
+            cy.getByTestID('dropdown-item').eq(2).click()
           })
 
-          cy.get('code').should($el => {
+          cy.get('code').should(($el) => {
             const text = $el.text()
 
             // NOTE: this index is off because there is a default
@@ -106,12 +96,14 @@ describe('Collectors', () => {
         const telegrafConfigName = 'New Config'
         const description = 'Config Description'
         cy.get('@org').then(({id}: Organization) => {
-          cy.createTelegraf(
-            telegrafConfigName,
-            description,
-            id,
-            Cypress.env('bucket')
-          )
+          cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
+            cy.createTelegraf(
+              telegrafConfigName,
+              description,
+              id,
+              defaultBucket
+            )
+          })
         })
 
         cy.reload()
@@ -121,12 +113,8 @@ describe('Collectors', () => {
       it('can update configuration name', () => {
         const newConfigName = 'This is new name'
 
-        cy.getByTestID('collector-card--name')
-          .first()
-          .trigger('mouseover')
-        cy.getByTestID('collector-card--name-button')
-          .first()
-          .click()
+        cy.getByTestID('collector-card--name').first().trigger('mouseover')
+        cy.getByTestID('collector-card--name-button').first().click()
         cy.getByTestID('collector-card--input')
           .type(newConfigName)
           .type('{enter}')
@@ -142,9 +130,7 @@ describe('Collectors', () => {
 
         cy.getByTestID('setup-instructions').should('exist')
 
-        cy.getByTestID('overlay--header')
-          .find('button')
-          .click()
+        cy.getByTestID('overlay--header').find('button').click()
 
         cy.getByTestID('setup-instructions').should('not.exist')
 
@@ -197,27 +183,19 @@ describe('Collectors', () => {
         cy.getByTestID('resource-card').should('have.length', 1)
         cy.getByTestID('resource-card').should('contain', firstTelegraf)
 
-        cy.getByTestID('search-widget')
-          .clear()
-          .type(secondTelegraf)
+        cy.getByTestID('search-widget').clear().type(secondTelegraf)
         cy.getByTestID('resource-card').should('have.length', 1)
         cy.getByTestID('resource-card').should('contain', secondTelegraf)
 
-        cy.getByTestID('search-widget')
-          .clear()
-          .type(thirdTelegraf)
+        cy.getByTestID('search-widget').clear().type(thirdTelegraf)
         cy.getByTestID('resource-card').should('have.length', 1)
         cy.getByTestID('resource-card').should('contain', thirdTelegraf)
 
-        cy.getByTestID('search-widget')
-          .clear()
-          .type('should have no results')
+        cy.getByTestID('search-widget').clear().type('should have no results')
         cy.getByTestID('resource-card').should('have.length', 0)
         cy.getByTestID('empty-state').should('exist')
 
-        cy.getByTestID('search-widget')
-          .clear()
-          .type('a')
+        cy.getByTestID('search-widget').clear().type('a')
         cy.getByTestID('resource-card').should('have.length', 2)
         cy.getByTestID('resource-card').should('contain', firstTelegraf)
         cy.getByTestID('resource-card').should('contain', secondTelegraf)
@@ -247,10 +225,7 @@ describe('Collectors', () => {
           })
           .then(() => {
             // NOTE: this then is just here to let me scope this variable (alex)
-            const teletubbies = telegrafs
-              .slice(0)
-              .sort()
-              .reverse()
+            const teletubbies = telegrafs.slice(0).sort().reverse()
             cy.getByTestID('collector-card--name').each((val, index) => {
               expect(val.text()).to.include(teletubbies[index])
             })
@@ -289,7 +264,7 @@ describe('Collectors', () => {
 
           cy.contains('http://example.com')
             .should('exist')
-            .then($example => {
+            .then(($example) => {
               $example.contains('Delete').click()
               $example.contains('Confirm').click()
 
@@ -347,7 +322,7 @@ describe('Collectors', () => {
 
           cy.contains('alan bean')
             .should('exist')
-            .then($server => {
+            .then(($server) => {
               $server.contains('Delete').click()
               $server.contains('Confirm').click()
               cy.contains('alan bean').should('not.exist')
@@ -415,10 +390,7 @@ describe('Collectors', () => {
         cy.getByTestID('create-label-form--submit').click()
         cy.getByTestID('label--pill zoe').should('exist')
         // search by label
-        cy.getByTestID('search-widget')
-          .should('be.visible')
-          .clear()
-          .type('zoe')
+        cy.getByTestID('search-widget').should('be.visible').clear().type('zoe')
 
         cy.getByTestID('resource-card').should('have.length', 1)
         cy.getByTestID('resource-card').should('contain', 'newteleg')

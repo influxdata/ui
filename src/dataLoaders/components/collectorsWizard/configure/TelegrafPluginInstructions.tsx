@@ -125,25 +125,25 @@ export class TelegrafPluginInstructions extends PureComponent<Props> {
     const {notify, telegrafPlugins, orgID} = this.props
     try {
       const configuredPlugins = telegrafPlugins.filter(
-        tp => tp.configured === ConfigurationState.Configured
+        (tp) => tp.configured === ConfigurationState.Configured
       )
 
       const configuredPluginTemplateIdentifiers = configuredPlugins
-        .map(t => t.templateID)
-        .filter(t => t)
+        .map((t) => t.templateID)
+        .filter((t) => t)
 
-      const templatesToInstantiate = influxdbTemplateList.filter(t => {
+      const templatesToInstantiate = influxdbTemplateList.filter((t) => {
         return includes(
           configuredPluginTemplateIdentifiers,
           get(t, 'meta.templateID')
         )
       })
 
-      const pendingDashboards = templatesToInstantiate.map(t =>
+      const pendingDashboards = templatesToInstantiate.map((t) =>
         createDashboardFromTemplateAJAX(t, orgID)
       )
 
-      const pendingDashboardNames = templatesToInstantiate.map(t =>
+      const pendingDashboardNames = templatesToInstantiate.map((t) =>
         t.meta.name.toLowerCase()
       )
 
@@ -178,7 +178,7 @@ export class TelegrafPluginInstructions extends PureComponent<Props> {
       onSetPluginConfiguration,
     } = this.props
 
-    const activeTelegrafPlugin = telegrafPlugins.find(tp => tp.active)
+    const activeTelegrafPlugin = telegrafPlugins.find((tp) => tp.active)
     if (!!activeTelegrafPlugin) {
       onSetPluginConfiguration(activeTelegrafPlugin.name)
     }

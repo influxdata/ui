@@ -77,7 +77,7 @@ const AxisTicksGenerator: FC<Props> = ({
 
   const [shouldShowInputs, setShouldShowInputs] = useState(
     generateAxisTicks.reduce((total, optionName) => {
-      getGenerateAxisTicksOptionsNames(axisName).forEach(axisTickOption => {
+      getGenerateAxisTicksOptionsNames(axisName).forEach((axisTickOption) => {
         if (axisTickOption === optionName) {
           total += 1
         }

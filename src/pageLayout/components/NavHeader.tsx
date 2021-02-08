@@ -26,7 +26,7 @@ const NavHeader: FC<Props> = ({link}) => {
           icon={<Icon glyph={IconFont.CuboNav} />}
           label={<InfluxDBCloudLogo cloud={false} />}
           color={ComponentColor.Secondary}
-          linkElement={className => <Link className={className} to={link} />}
+          linkElement={(className) => <Link className={className} to={link} />}
         />
       </CloudExclude>
       <CloudOnly>
@@ -35,7 +35,7 @@ const NavHeader: FC<Props> = ({link}) => {
           icon={<Icon glyph={IconFont.CuboNav} />}
           label={<InfluxDBCloudLogo cloud={true} />}
           color={ComponentColor.Primary}
-          linkElement={className => <Link className={className} to={link} />}
+          linkElement={(className) => <Link className={className} to={link} />}
         />
       </CloudOnly>
     </>

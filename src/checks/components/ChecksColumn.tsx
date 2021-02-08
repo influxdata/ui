@@ -89,7 +89,7 @@ const ChecksColumn: FunctionComponent<Props> = ({
       questionMarkTooltipContents={tooltipContents}
       tabIndex={tabIndex}
     >
-      {searchTerm => (
+      {(searchTerm) => (
         <CheckCards
           checks={checks}
           searchTerm={searchTerm}

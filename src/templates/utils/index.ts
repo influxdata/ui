@@ -15,7 +15,7 @@ export function findIncludedsFromRelationships<
   relationships: {id: string; type: TemplateType}[]
 ): T[] {
   let intersection = []
-  relationships.forEach(r => {
+  relationships.forEach((r) => {
     const included = findIncludedFromRelationship<T>(includeds, r)
     if (included) {
       intersection = [...intersection, included]
@@ -38,7 +38,7 @@ export const findLabelsToCreate = (
   labels: LabelIncluded[]
 ): LabelIncluded[] => {
   return labels.filter(
-    l => !currentLabels.find(el => el.name === l.attributes.name)
+    (l) => !currentLabels.find((el) => el.name === l.attributes.name)
   )
 }
 
@@ -53,7 +53,7 @@ export const findVariablesToCreate = (
   incomingVariables: VariableIncluded[]
 ): VariableIncluded[] => {
   return incomingVariables.filter(
-    v => !existingVariables.find(ev => ev.name === v.attributes.name)
+    (v) => !existingVariables.find((ev) => ev.name === v.attributes.name)
   )
 }
 

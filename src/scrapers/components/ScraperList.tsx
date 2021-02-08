@@ -58,7 +58,7 @@ export default class ScraperList extends PureComponent<Props> {
     )
 
     if (scrapers !== undefined) {
-      return sortedScrapers.map(scraper => (
+      return sortedScrapers.map((scraper) => (
         <ScraperRow
           key={scraper.id}
           scraper={scraper}

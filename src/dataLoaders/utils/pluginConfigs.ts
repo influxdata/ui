@@ -46,7 +46,7 @@ export const isPluginUniqueToBundle = (
       return acc
     }
 
-    pluginsByBundle[b].forEach(p => {
+    pluginsByBundle[b].forEach((p) => {
       if (p === telegrafPlugin) {
         acc = false
       }
@@ -60,5 +60,5 @@ export const isPluginInBundle = (
   telegrafPlugin: TelegrafPluginName,
   bundle: BundleName
 ) => {
-  return !!pluginsByBundle[bundle].find(p => p === telegrafPlugin)
+  return !!pluginsByBundle[bundle].find((p) => p === telegrafPlugin)
 }

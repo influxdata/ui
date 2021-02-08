@@ -41,7 +41,7 @@ const perfReducer = (
   state: PerfState = initialState(),
   action: Action
 ): PerfState =>
-  produce(state, draftState => {
+  produce(state, (draftState) => {
     switch (action.type) {
       case SET_SCROLL: {
         const {component, scroll} = action

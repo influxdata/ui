@@ -40,7 +40,7 @@ const FunctionSelector: FunctionComponent<Props> = ({
   onSetIsAutoFunction,
   isInCheckOverlay,
 }) => {
-  const autoFunctions = AUTO_FUNCTIONS.map(f => f.name)
+  const autoFunctions = AUTO_FUNCTIONS.map((f) => f.name)
   const [isAutoFunction, setIsAutoFunction] = useState(
     !isInCheckOverlay &&
       selectedFunctions.length === 1 &&
@@ -49,7 +49,7 @@ const FunctionSelector: FunctionComponent<Props> = ({
 
   const functionList = isAutoFunction
     ? autoFunctions
-    : FUNCTIONS.map(f => f.name)
+    : FUNCTIONS.map((f) => f.name)
 
   const handleSetAutoFunction = (bool: boolean): void => {
     setIsAutoFunction(bool)
@@ -61,7 +61,7 @@ const FunctionSelector: FunctionComponent<Props> = ({
       handleSetAutoFunction(false)
       return
     }
-    const newFunctions = selectedFunctions.filter(f =>
+    const newFunctions = selectedFunctions.filter((f) =>
       autoFunctions.includes(f)
     )
     if (newFunctions.length === 0) {
@@ -150,7 +150,7 @@ const mstp = (state: AppState) => {
   const {builderConfig} = getActiveQuery(state)
   const {functions} = builderConfig
   return {
-    selectedFunctions: functions.map(f => f.name),
+    selectedFunctions: functions.map((f) => f.name),
     isInCheckOverlay: getIsInCheckOverlay(state),
   }
 }

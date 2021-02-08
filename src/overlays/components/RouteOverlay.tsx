@@ -22,9 +22,8 @@ interface OwnProps {
 
 type OverlayHandlerProps = OwnProps & RouteComponentProps
 
-const OverlayHandler: FC<OverlayHandlerProps> = props => {
+const OverlayHandler: FC<OverlayHandlerProps> = (props) => {
   const {overlayID, onClose, match, history} = props
-
   const dispatch = useDispatch()
 
   useEffect(() => {

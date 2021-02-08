@@ -10,8 +10,8 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 import PageSpinner from 'src/perf/components/PageSpinner'
 import {LoginPage} from 'src/onboarding/containers/LoginPage'
 const Signin = lazy(() => import('src/Signin'))
-const OnboardingWizardPage = lazy(() =>
-  import('src/onboarding/containers/OnboardingWizardPage')
+const OnboardingWizardPage = lazy(
+  () => import('src/onboarding/containers/OnboardingWizardPage')
 )
 const SigninPage = lazy(() => import('src/onboarding/containers/SigninPage'))
 const Logout = lazy(() => import('src/Logout'))

@@ -1,8 +1,5 @@
 export const formatDownloadName = (filename: string, extension: string) => {
-  return `${filename
-    .trim()
-    .toLowerCase()
-    .replace(/\s/g, '_')}${extension}`
+  return `${filename.trim().toLowerCase().replace(/\s/g, '_')}${extension}`
 }
 
 export const downloadTextFile = (

@@ -89,7 +89,7 @@ export const updateViewAndVariables = (
     const views = getViewsForDashboard(getState(), dashboardID)
 
     views.splice(
-      views.findIndex(v => v.id === newView.id),
+      views.findIndex((v) => v.id === newView.id),
       1,
       newView
     )
@@ -137,8 +137,8 @@ export const getViewAndResultsForVEO = (
     )
 
     // Wait for new queries to complete
-    const results = await Promise.all(pendingResults.map(r => r.promise))
-    const files = (results as RunQuerySuccessResult[]).map(r => r.csv)
+    const results = await Promise.all(pendingResults.map((r) => r.promise))
+    const files = (results as RunQuerySuccessResult[]).map((r) => r.csv)
 
     if (files) {
       dispatch(setQueryResults(RemoteDataState.Done, files, null, null))

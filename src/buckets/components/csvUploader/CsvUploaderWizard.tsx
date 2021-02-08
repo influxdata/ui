@@ -26,7 +26,7 @@ import CsvUploaderError from 'src/buckets/components/csvUploader/CsvUploaderErro
 // Types
 import {RemoteDataState} from 'src/types'
 
-const getCsvBody = uploadState => {
+const getCsvBody = (uploadState) => {
   switch (uploadState) {
     case RemoteDataState.Done:
       return <CsvUploaderSuccess />

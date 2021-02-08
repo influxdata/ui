@@ -50,7 +50,7 @@ export const templatesReducer = (
   state: TemplatesState = defaultState(),
   action: Action
 ): TemplatesState =>
-  produce(state, draftState => {
+  produce(state, (draftState) => {
     switch (action.type) {
       case POPULATE_TEMPLATE_SUMMARIES: {
         setResource<TemplateSummary>(draftState, action, ResourceType.Templates)
@@ -83,12 +83,12 @@ export const templatesReducer = (
 
         stagedCommunityTemplate.summary.dashboards = (
           template.summary.dashboards || []
-        ).map(dashboard => {
+        ).map((dashboard) => {
           if (!dashboard.hasOwnProperty('shouldInstall')) {
             dashboard.shouldInstall = true
           }
           if (dashboard.envReferences.length) {
-            dashboard.envReferences.forEach(ref => {
+            dashboard.envReferences.forEach((ref) => {
               envReferences[ref.envRefKey] = {
                 envRefKey: ref.envRefKey,
                 resourceField: ref.resourceField,
@@ -102,12 +102,12 @@ export const templatesReducer = (
 
         stagedCommunityTemplate.summary.telegrafConfigs = (
           template.summary.telegrafConfigs || []
-        ).map(telegrafConfig => {
+        ).map((telegrafConfig) => {
           if (!telegrafConfig.hasOwnProperty('shouldInstall')) {
             telegrafConfig.shouldInstall = true
           }
           if (telegrafConfig.envReferences.length) {
-            telegrafConfig.envReferences.forEach(ref => {
+            telegrafConfig.envReferences.forEach((ref) => {
               envReferences[ref.envRefKey] = {
                 envRefKey: ref.envRefKey,
                 resourceField: ref.resourceField,
@@ -121,12 +121,12 @@ export const templatesReducer = (
 
         stagedCommunityTemplate.summary.buckets = (
           template.summary.buckets || []
-        ).map(bucket => {
+        ).map((bucket) => {
           if (!bucket.hasOwnProperty('shouldInstall')) {
             bucket.shouldInstall = true
           }
           if (bucket.envReferences.length) {
-            bucket.envReferences.forEach(ref => {
+            bucket.envReferences.forEach((ref) => {
               envReferences[ref.envRefKey] = {
                 envRefKey: ref.envRefKey,
                 resourceField: ref.resourceField,
@@ -140,12 +140,12 @@ export const templatesReducer = (
 
         stagedCommunityTemplate.summary.checks = (
           template.summary.checks || []
-        ).map(check => {
+        ).map((check) => {
           if (!check.hasOwnProperty('shouldInstall')) {
             check.shouldInstall = true
           }
           if (check.envReferences.length) {
-            check.envReferences.forEach(ref => {
+            check.envReferences.forEach((ref) => {
               envReferences[ref.envRefKey] = {
                 envRefKey: ref.envRefKey,
                 resourceField: ref.resourceField,
@@ -159,12 +159,12 @@ export const templatesReducer = (
 
         stagedCommunityTemplate.summary.variables = (
           template.summary.variables || []
-        ).map(variable => {
+        ).map((variable) => {
           if (!variable.hasOwnProperty('shouldInstall')) {
             variable.shouldInstall = true
           }
           if (variable.envReferences.length) {
-            variable.envReferences.forEach(ref => {
+            variable.envReferences.forEach((ref) => {
               envReferences[ref.envRefKey] = {
                 envRefKey: ref.envRefKey,
                 resourceField: ref.resourceField,
@@ -178,12 +178,12 @@ export const templatesReducer = (
 
         stagedCommunityTemplate.summary.notificationRules = (
           template.summary.notificationRules || []
-        ).map(notificationRule => {
+        ).map((notificationRule) => {
           if (!notificationRule.hasOwnProperty('shouldInstall')) {
             notificationRule.shouldInstall = true
           }
           if (notificationRule.envReferences.length) {
-            notificationRule.envReferences.forEach(ref => {
+            notificationRule.envReferences.forEach((ref) => {
               envReferences[ref.envRefKey] = {
                 envRefKey: ref.envRefKey,
                 resourceField: ref.resourceField,
@@ -197,12 +197,12 @@ export const templatesReducer = (
 
         stagedCommunityTemplate.summary.notificationEndpoints = (
           template.summary.notificationEndpoints || []
-        ).map(notificationEndpoint => {
+        ).map((notificationEndpoint) => {
           if (!notificationEndpoint.hasOwnProperty('shouldInstall')) {
             notificationEndpoint.shouldInstall = true
           }
           if (notificationEndpoint.envReferences.length) {
-            notificationEndpoint.envReferences.forEach(ref => {
+            notificationEndpoint.envReferences.forEach((ref) => {
               envReferences[ref.envRefKey] = {
                 envRefKey: ref.envRefKey,
                 resourceField: ref.resourceField,
@@ -216,12 +216,12 @@ export const templatesReducer = (
 
         stagedCommunityTemplate.summary.labels = (
           template.summary.labels || []
-        ).map(label => {
+        ).map((label) => {
           if (!label.hasOwnProperty('shouldInstall')) {
             label.shouldInstall = true
           }
           if (label.envReferences.length) {
-            label.envReferences.forEach(ref => {
+            label.envReferences.forEach((ref) => {
               envReferences[ref.envRefKey] = {
                 envRefKey: ref.envRefKey,
                 resourceField: ref.resourceField,
@@ -235,12 +235,12 @@ export const templatesReducer = (
 
         stagedCommunityTemplate.summary.summaryTask = (
           template.summary.summaryTask || []
-        ).map(summaryTask => {
+        ).map((summaryTask) => {
           if (!summaryTask.hasOwnProperty('shouldInstall')) {
             summaryTask.shouldInstall = true
           }
           if (summaryTask.envReferences.length) {
-            summaryTask.envReferences.forEach(ref => {
+            summaryTask.envReferences.forEach((ref) => {
               envReferences[ref.envRefKey] = {
                 envRefKey: ref.envRefKey,
                 resourceField: ref.resourceField,
@@ -280,7 +280,7 @@ export const templatesReducer = (
 
         const templateToInstall = {...draftState.stagedCommunityTemplate}
 
-        templateToInstall.summary[resourceType].forEach(resource => {
+        templateToInstall.summary[resourceType].forEach((resource) => {
           if (resource.templateMetaName === templateMetaName) {
             resource.shouldInstall = shouldInstall
             if (!shouldInstall) {

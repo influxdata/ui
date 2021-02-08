@@ -7,7 +7,7 @@ async function addSyntax() {
     format: 'json',
     content: await import(
       /* webpackPrefetch: 0 */ 'src/external/flux.tmLanguage.json'
-    ).then(data => {
+    ).then((data) => {
       return JSON.stringify(data)
     }),
   }))

@@ -115,7 +115,7 @@ class CreateLabelOverlay extends Component<Props, State> {
   private handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const {value, name} = e.target
 
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       label: {...prevState.label, [name]: value},
     }))
   }
@@ -125,7 +125,7 @@ class CreateLabelOverlay extends Component<Props, State> {
   ): void => {
     const {value, name} = e.target
 
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       label: {
         ...prevState.label,
         properties: {...prevState.label.properties, [name]: value},

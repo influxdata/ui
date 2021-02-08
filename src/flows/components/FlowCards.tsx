@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import React, {useContext, useEffect} from 'react'
 
 import {ResourceList, Grid, Columns} from '@influxdata/clockface'
 import {FlowListContext} from 'src/flows/context/flow.list'
@@ -7,7 +7,10 @@ import FlowsExplainer from 'src/flows/components/FlowsExplainer'
 import FlowCard from 'src/flows/components/FlowCard'
 
 const FlowCards = () => {
-  const {flows} = useContext(FlowListContext)
+  const {flows, getAll} = useContext(FlowListContext)
+  useEffect(() => {
+    getAll()
+  }, [getAll])
 
   return (
     <Grid>

@@ -50,7 +50,7 @@ export const isDraftQueryAlertable = (
     '[0].builderConfig.tags',
     []
   )
-  const fieldSelection = tags.find(t => get(t, 'key') === '_field')
+  const fieldSelection = tags.find((t) => get(t, 'key') === '_field')
   const fieldValues = get(fieldSelection, 'values', [])
   const functions = draftQueries[0].builderConfig.functions
   return {
@@ -96,7 +96,7 @@ export function buildQuery(builderConfig: BuilderConfig): string {
   let query: string
   if (functions.length) {
     query = functions
-      .map(f => buildQueryFromConfig(builderConfig, f))
+      .map((f) => buildQueryFromConfig(builderConfig, f))
       .join('\n\n')
   } else {
     query = buildQueryFromConfig(builderConfig, null)
@@ -116,7 +116,7 @@ function buildQueryFromConfig(
   // todo: (bucky) - check to see if we can combine filter calls
   // https://github.com/influxdata/influxdb/issues/16076
   let tagsFunctionCalls = ''
-  tags.forEach(tag => {
+  tags.forEach((tag) => {
     tagsFunctionCalls += convertTagsToFluxFunctionString(tag)
   })
 
@@ -136,7 +136,7 @@ export function formatFunctionCall(
   period: string,
   fillValues: boolean
 ) {
-  const fnSpec = FUNCTIONS.find(spec => spec.name === fn.name)
+  const fnSpec = FUNCTIONS.find((spec) => spec.name === fn.name)
 
   if (!fnSpec) {
     return
@@ -165,7 +165,13 @@ const convertTagsToFluxFunctionString = function convertTagsToFluxFunctionString
   }
 
   if (tag.aggregateFunctionType === 'group') {
-    const quotedValues = tag.values.map(value => `"${value}"`) // wrap the value in double quotes
+    // if group is selected, but there are no values, don't return anything.
+    // same behavior as when 'filter' is selected but no values are chosen
+    if (!tag.values.length) {
+      return ''
+    }
+
+    const quotedValues = tag.values.map((value) => `"${value}"`) // wrap the value in double quotes
 
     if (quotedValues.length) {
       return `\n  |> group(columns: [${quotedValues.join(', ')}])` // join with a comma (e.g. "foo","bar","baz")
@@ -179,7 +185,7 @@ const convertTagsToFluxFunctionString = function convertTagsToFluxFunctionString
 
 export const tagToFlux = function tagToFlux(tag: BuilderTagsType) {
   return tag.values
-    .map(value => `r["${tag.key}"] == "${value.replace(/\\/g, '\\\\')}"`)
+    .map((value) => `r["${tag.key}"] == "${value.replace(/\\/g, '\\\\')}"`)
     .join(' or ')
 }
 

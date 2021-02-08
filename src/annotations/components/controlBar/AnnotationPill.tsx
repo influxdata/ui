@@ -3,7 +3,7 @@ import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 
 // Actions
-import {disableAnnotationStream} from 'src/annotations/actions'
+import {disableAnnotationStream} from 'src/annotations/actions/creators'
 
 // Components
 import {Icon, IconFont} from '@influxdata/clockface'

@@ -17,7 +17,7 @@ export const initialState = (): AutoRefreshState => {
 }
 
 export const autoRefreshReducer = (state = initialState(), action: Action) =>
-  produce(state, draftState => {
+  produce(state, (draftState) => {
     switch (action.type) {
       case 'SET_AUTO_REFRESH_INTERVAL': {
         const {dashboardID, milliseconds} = action.payload

@@ -54,7 +54,7 @@ export const localState: LocalStorage = {
   },
 }
 
-export function renderWithRedux(ui, initialState = s => s) {
+export function renderWithRedux(ui, initialState = (s) => s) {
   const store = configureStoreForTests(initialState(localState))
 
   return {
@@ -63,7 +63,7 @@ export function renderWithRedux(ui, initialState = s => s) {
   }
 }
 
-export function renderWithReduxAndRouter(ui, initialState = s => s) {
+export function renderWithReduxAndRouter(ui, initialState = (s) => s) {
   const history = createMemoryHistory({initialEntries: ['/']})
   const store = configureStoreForTests(initialState(localState))
 

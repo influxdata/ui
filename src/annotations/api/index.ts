@@ -1,7 +1,7 @@
 // Types
 import {
   Annotation,
-  GetAnnotationResponse,
+  AnnotationStream,
   GetAnnotationPayload,
   DeleteAnnotation,
 } from 'src/types'
@@ -41,9 +41,24 @@ export const writeAnnotation = async (
   ]
 }
 
+export const getAnnotations = async (
+  stream?: string
+): Promise<AnnotationStream[]> => {
+  const res = await axios.get(`${url}?${formatAnnotationQueryString({stream})}`)
+
+  if (res.status >= 300) {
+    throw new Error(res.data?.message)
+  }
+
+  return res.data.map((retrievedAnnotation: AnnotationStream) => ({
+    stream: retrievedAnnotation.stream,
+    annotations: retrievedAnnotation.annotations,
+  }))
+}
+
 export const getAnnotation = async (
   annotation: GetAnnotationPayload
-): Promise<GetAnnotationResponse[]> => {
+): Promise<AnnotationStream[]> => {
   const formattedQueryString = formatAnnotationQueryString(annotation)
   const appendedURL = `${url}?${formattedQueryString}`
 
@@ -53,7 +68,7 @@ export const getAnnotation = async (
     throw new Error(res.data?.message)
   }
 
-  return res.data.map((retrievedAnnotation: GetAnnotationResponse) => ({
+  return res.data.map((retrievedAnnotation: AnnotationStream) => ({
     stream: retrievedAnnotation.stream,
     annotations: retrievedAnnotation.annotations,
   }))

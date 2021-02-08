@@ -45,9 +45,9 @@ export const DEFAULT_WRITE_DATA_DETAILS_CONTEXT: WriteDataDetailsContextType = {
   changeToken: () => {},
 }
 
-export const WriteDataDetailsContext = createContext<
-  WriteDataDetailsContextType
->(DEFAULT_WRITE_DATA_DETAILS_CONTEXT)
+export const WriteDataDetailsContext = createContext<WriteDataDetailsContextType>(
+  DEFAULT_WRITE_DATA_DETAILS_CONTEXT
+)
 
 const WriteDataDetailsContextProvider: FC<Props> = ({
   organization,
@@ -55,7 +55,7 @@ const WriteDataDetailsContextProvider: FC<Props> = ({
   tokens,
   children,
 }) => {
-  const userBuckets = buckets.filter(b => b.type === 'user')
+  const userBuckets = buckets.filter((b) => b.type === 'user')
   const initialToken = tokens.length ? tokens[0] : null
   const [bucket, changeBucket] = useState<Bucket>(userBuckets[0])
   const [token, changeToken] = useState<Authorization>(initialToken)

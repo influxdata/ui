@@ -16,7 +16,7 @@ import {pastHourTimeRange} from 'src/shared/constants/timeRanges'
 import {deleteWithPredicate} from 'src/shared/actions/predicatesThunks'
 import {convertTimeRangeToCustom} from '../utils/duration'
 
-const mockGetState = jest.fn(_ => {
+const mockGetState = jest.fn((_) => {
   return {
     ...localState,
     resources: {

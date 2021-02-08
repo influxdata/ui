@@ -54,16 +54,16 @@ const TableViewOptions: FC<Props> = ({properties, results, update}) => {
   }, {})
 
   results.table.columnKeys
-    .filter(o => !existing.hasOwnProperty(o))
-    .filter(o => !['result', '', 'table', 'time'].includes(o))
-    .forEach(o => {
+    .filter((o) => !existing.hasOwnProperty(o))
+    .filter((o) => !['result', '', 'table', 'time'].includes(o))
+    .forEach((o) => {
       existing[o] = {
         internalName: o,
         displayName: o,
         visible: true,
       }
     })
-  const fieldOptions = Object.keys(existing).map(e => existing[e])
+  const fieldOptions = Object.keys(existing).map((e) => existing[e])
 
   const setDigits = useCallback(
     (digits: number | null) => {
@@ -89,7 +89,7 @@ const TableViewOptions: FC<Props> = ({properties, results, update}) => {
   )
 
   const updateTableOptions = useCallback(
-    tableOptions => {
+    (tableOptions) => {
       update({
         tableOptions: {
           ...properties.tableOptions,
@@ -104,7 +104,7 @@ const TableViewOptions: FC<Props> = ({properties, results, update}) => {
     (threshold: string) => {
       if (threshold === THRESHOLD_TYPE_BG) {
         update({
-          colors: properties.colors.map(color => {
+          colors: properties.colors.map((color) => {
             if (color.type !== 'scale') {
               return {
                 ...color,
@@ -117,7 +117,7 @@ const TableViewOptions: FC<Props> = ({properties, results, update}) => {
         })
       } else {
         update({
-          colors: properties.colors.map(color => {
+          colors: properties.colors.map((color) => {
             if (color.type !== 'scale') {
               return {
                 ...color,
@@ -133,7 +133,7 @@ const TableViewOptions: FC<Props> = ({properties, results, update}) => {
     [update, properties.colors]
   )
 
-  const shouldSeeColumn = column =>
+  const shouldSeeColumn = (column) =>
     column.internalName !== 'time' &&
     column.internalName !== '' &&
     column.internalName !== 'result' &&
@@ -142,7 +142,7 @@ const TableViewOptions: FC<Props> = ({properties, results, update}) => {
   const updateColumn = useCallback(
     (fieldOption: FieldOption) => {
       update({
-        fieldOptions: fieldOptions.map(option => {
+        fieldOptions: fieldOptions.map((option) => {
           if (option.internalName !== fieldOption.internalName) {
             return option
           }
@@ -170,7 +170,8 @@ const TableViewOptions: FC<Props> = ({properties, results, update}) => {
   )
 
   const activeSetting =
-    properties.colors.filter(color => color.type !== 'scale')[0]?.type || 'text'
+    properties.colors.filter((color) => color.type !== 'scale')[0]?.type ||
+    'text'
 
   const draggableColumns = useMemo(
     () =>
@@ -205,11 +206,11 @@ const TableViewOptions: FC<Props> = ({properties, results, update}) => {
                     'Choose a sort field'}
                 </Dropdown.Button>
               )}
-              menu={onCollapse => (
+              menu={(onCollapse) => (
                 <Dropdown.Menu onCollapse={onCollapse}>
                   {fieldOptions
-                    .filter(field => !!field.internalName)
-                    .map(field => (
+                    .filter((field) => !!field.internalName)
+                    .map((field) => (
                       <Dropdown.Item
                         key={field.internalName}
                         id={field.internalName}
@@ -233,7 +234,7 @@ const TableViewOptions: FC<Props> = ({properties, results, update}) => {
           </Form.Element>
           <Form.Element label="Time Format">
             <SelectDropdown
-              options={FORMAT_OPTIONS.map(option => option.text)}
+              options={FORMAT_OPTIONS.map((option) => option.text)}
               selectedOption={resolveTimeFormat(properties.timeFormat)}
               onSelect={(timeFormat: string) => {
                 update({timeFormat})
@@ -252,7 +253,7 @@ const TableViewOptions: FC<Props> = ({properties, results, update}) => {
                 <Input
                   name="decimal-places"
                   placeholder="Enter a number"
-                  onChange={evt => {
+                  onChange={(evt) => {
                     setDigits(convertUserInputToNumOrNaN(evt))
                   }}
                   value={properties.decimalPlaces.digits}
@@ -266,7 +267,7 @@ const TableViewOptions: FC<Props> = ({properties, results, update}) => {
           <h5 className="view-options--header">Colorized Thresholds</h5>
           <ThresholdsSettings
             thresholds={properties.colors}
-            onSetThresholds={colors => {
+            onSetThresholds={(colors) => {
               update({colors})
             }}
           />

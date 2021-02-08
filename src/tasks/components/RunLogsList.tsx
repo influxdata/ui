@@ -43,7 +43,7 @@ class RunLogsOverlay extends PureComponent<Props> {
   }
 
   public get listLogs(): JSX.Element[] {
-    const logs = this.props.logs.map(rl => (
+    const logs = this.props.logs.map((rl) => (
       <RunLogRow key={rl.message} log={rl} />
     ))
 

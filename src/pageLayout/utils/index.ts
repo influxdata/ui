@@ -10,5 +10,5 @@ export const getNavItemActivation = (
   if (!parentPath.length) {
     parentPath.push(HOMEPAGE_PATHNAME)
   }
-  return keywords.some(path => parentPath.includes(path))
+  return keywords.some((path) => parentPath.includes(path))
 }

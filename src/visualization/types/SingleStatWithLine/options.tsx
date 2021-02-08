@@ -50,7 +50,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
   results,
   update,
 }) => {
-  const numericColumns = results.table.columnKeys.filter(key => {
+  const numericColumns = results.table.columnKeys.filter((key) => {
     if (key === 'result' || key === 'table') {
       return false
     }
@@ -114,14 +114,14 @@ const SingleStatWithLineOptions: FC<Props> = ({
     if (colors[0]?.type === 'scale') {
       update({
         colors: [
-          ...properties.colors.filter(c => c.type !== 'scale'),
+          ...properties.colors.filter((c) => c.type !== 'scale'),
           ...colors,
         ],
       })
     } else {
       update({
         colors: [
-          ...properties.colors.filter(c => c.type === 'scale'),
+          ...properties.colors.filter((c) => c.type === 'scale'),
           ...colors,
         ],
       })
@@ -141,7 +141,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
             <SelectDropdown
               options={numericColumns}
               selectedOption={xColumn || 'Build a query before selecting...'}
-              onSelect={xColumn => {
+              onSelect={(xColumn) => {
                 update({xColumn})
               }}
               testID="dropdown-x"
@@ -156,7 +156,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
             <SelectDropdown
               options={numericColumns}
               selectedOption={yColumn || 'Build a query before selecting...'}
-              onSelect={yColumn => {
+              onSelect={(yColumn) => {
                 update({yColumn})
               }}
               testID="dropdown-y"
@@ -169,7 +169,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
           </Form.Element>
           <Form.Element label="Time Format">
             <SelectDropdown
-              options={FORMAT_OPTIONS.map(option => option.text)}
+              options={FORMAT_OPTIONS.map((option) => option.text)}
               selectedOption={resolveTimeFormat(properties.timeFormat)}
               onSelect={(format: string) => {
                 update({timeFormat: format})
@@ -185,7 +185,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
           <h5 className="view-options--header">Options</h5>
           <Form.Element label="Line Colors">
             <ColorSchemeDropdown
-              value={properties.colors.filter(c => c.type === 'scale')}
+              value={properties.colors.filter((c) => c.type === 'scale')}
               onChange={setColors}
             />
           </Form.Element>
@@ -193,7 +193,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
           <Checkbox
             label="Shade Area Below Lines"
             checked={!!properties.shadeBelow}
-            onSetChecked={shadeBelow => {
+            onSetChecked={(shadeBelow) => {
               update({shadeBelow})
             }}
           />
@@ -205,12 +205,12 @@ const SingleStatWithLineOptions: FC<Props> = ({
                   {properties.hoverDimension}
                 </Dropdown.Button>
               )}
-              menu={onCollapse => (
+              menu={(onCollapse) => (
                 <Dropdown.Menu onCollapse={onCollapse}>
                   <Dropdown.Item
                     id="auto"
                     value="auto"
-                    onClick={hoverDimension => {
+                    onClick={(hoverDimension) => {
                       update({hoverDimension})
                     }}
                     selected={properties.hoverDimension === 'auto'}
@@ -220,7 +220,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
                   <Dropdown.Item
                     id="x"
                     value="x"
-                    onClick={hoverDimension => {
+                    onClick={(hoverDimension) => {
                       update({hoverDimension})
                     }}
                     selected={properties.hoverDimension === 'x'}
@@ -230,7 +230,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
                   <Dropdown.Item
                     id="y"
                     value="y"
-                    onClick={hoverDimension => {
+                    onClick={(hoverDimension) => {
                       update({hoverDimension})
                     }}
                     selected={properties.hoverDimension === 'y'}
@@ -240,7 +240,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
                   <Dropdown.Item
                     id="xy"
                     value="xy"
-                    onClick={hoverDimension => {
+                    onClick={(hoverDimension) => {
                       update({hoverDimension})
                     }}
                     selected={properties.hoverDimension === 'xy'}
@@ -267,7 +267,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
           <Form.Element label="Y Axis Label">
             <Input
               value={properties.axes.y.label}
-              onChange={evt => {
+              onChange={(evt) => {
                 updateAxis('y', {label: evt.target.value})
               }}
             />
@@ -280,7 +280,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
                 value=""
                 active={properties.axes.y.base === ''}
                 titleText="Do not format values using a unit prefix"
-                onClick={base => {
+                onClick={(base) => {
                   updateAxis('y', {base})
                 }}
               >
@@ -292,7 +292,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
                 value={BASE_10}
                 active={properties.axes.y.base === BASE_10}
                 titleText="Format values using an International System of Units prefix"
-                onClick={base => {
+                onClick={(base) => {
                   updateAxis('y', {base})
                 }}
               >
@@ -304,7 +304,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
                 value={BASE_2}
                 active={properties.axes.y.base === BASE_2}
                 titleText="Format values using a binary unit prefix (for formatting bits or bytes)"
-                onClick={base => {
+                onClick={(base) => {
                   updateAxis('y', {base})
                 }}
               >
@@ -317,7 +317,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
               <Form.Element label="Y Axis Prefix">
                 <Input
                   value={properties.axes.y.prefix}
-                  onChange={evt => {
+                  onChange={(evt) => {
                     updateAxis('y', {prefix: evt.target.value})
                   }}
                 />
@@ -327,7 +327,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
               <Form.Element label="Y Axis Suffix">
                 <Input
                   value={properties.axes.y.suffix}
-                  onChange={evt => {
+                  onChange={(evt) => {
                     updateAxis('y', {suffix: evt.target.value})
                   }}
                 />
@@ -354,12 +354,12 @@ const SingleStatWithLineOptions: FC<Props> = ({
                   {properties.position}
                 </Dropdown.Button>
               )}
-              menu={onCollapse => (
+              menu={(onCollapse) => (
                 <Dropdown.Menu onCollapse={onCollapse}>
                   <Dropdown.Item
                     id="overlaid"
                     value="overlaid"
-                    onClick={position => {
+                    onClick={(position) => {
                       update({position})
                     }}
                     selected={properties.position === 'overlaid'}
@@ -369,7 +369,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
                   <Dropdown.Item
                     id="stacked"
                     value="stacked"
-                    onClick={position => {
+                    onClick={(position) => {
                       update({position})
                     }}
                     selected={properties.position === 'stacked'}
@@ -388,7 +388,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
                 <Input
                   value={properties.prefix}
                   placeholder="%, MPH, etc."
-                  onChange={evt => {
+                  onChange={(evt) => {
                     update({prefix: evt.target.value})
                   }}
                 />
@@ -399,7 +399,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
                 <Input
                   value={properties.suffix}
                   placeholder="%, MPH, etc."
-                  onChange={evt => {
+                  onChange={(evt) => {
                     update({suffix: evt.target.value})
                   }}
                 />
@@ -420,7 +420,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
                 <Input
                   name="decimal-places"
                   placeholder="Enter a number"
-                  onChange={evt => {
+                  onChange={(evt) => {
                     setDigits(convertUserInputToNumOrNaN(evt))
                   }}
                   value={properties.decimalPlaces.digits}
@@ -435,7 +435,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
         <Grid.Column widthXS={Columns.Twelve} widthMD={Columns.Six}>
           <Form.Element label="Colorized Thresholds">
             <ThresholdsSettings
-              thresholds={properties.colors.filter(c => c.type !== 'scale')}
+              thresholds={properties.colors.filter((c) => c.type !== 'scale')}
               onSetThresholds={setColors}
             />
           </Form.Element>

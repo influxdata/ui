@@ -126,7 +126,7 @@ describe('navigation', () => {
   })
 
   const exploreTabs = (tabs: string[]) => {
-    tabs.forEach(tab => {
+    tabs.forEach((tab) => {
       cy.getByTestID(`${tab}--tab`).click()
       cy.url().should('contain', tab)
     })
@@ -139,7 +139,7 @@ describe('navigation', () => {
 
   it('can navigate in tabs of collapsed alerts page', () => {
     cy.getByTestID('nav-item-alerting').click()
-    ;['checks', 'endpoints', 'rules'].forEach(tab => {
+    ;['checks', 'endpoints', 'rules'].forEach((tab) => {
       cy.getByTestID(`alerting-tab--${tab}`).click()
       cy.getByTestID(`alerting-tab--${tab}--input`).should('to.be', 'checked')
     })
@@ -157,10 +157,8 @@ describe('navigation', () => {
       'variables',
       'templates',
       'labels',
-    ].forEach(x => {
-      cy.getByTestID(`nav-subitem-${x}`)
-        .last()
-        .click()
+    ].forEach((x) => {
+      cy.getByTestID(`nav-subitem-${x}`).last().click()
       cy.url().should('contain', x)
     })
 

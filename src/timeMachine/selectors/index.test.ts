@@ -18,16 +18,12 @@ describe('TimeMachine.Selectors.Index', () => {
     expect(getStartTime(pastThirtyDaysTimeRange)).toBeGreaterThanOrEqual(thirty)
   })
 
-  const hour = moment()
-    .subtract(1, 'hours')
-    .valueOf()
+  const hour = moment().subtract(1, 'hours').valueOf()
   it(`getStartTime should return ${hour} when lower is now() - 1h`, () => {
     expect(getStartTime(pastHourTimeRange)).toBeGreaterThanOrEqual(hour)
   })
 
-  const fifteen = moment()
-    .subtract(15, 'minutes')
-    .valueOf()
+  const fifteen = moment().subtract(15, 'minutes').valueOf()
   it(`getStartTime should return ${hour} when lower is now() - 1h`, () => {
     expect(getStartTime(pastFifteenMinTimeRange)).toBeGreaterThanOrEqual(
       fifteen

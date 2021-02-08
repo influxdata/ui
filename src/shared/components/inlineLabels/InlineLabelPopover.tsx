@@ -146,7 +146,7 @@ export default class InlineLabelPopover extends PureComponent<Props> {
 
     const selectedItemIndex = _.findIndex(
       filteredLabels,
-      label => label.id === selectedItemID
+      (label) => label.id === selectedItemID
     )
 
     const adjacentIndex = Math.min(

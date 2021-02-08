@@ -70,7 +70,7 @@ export const setBucketID = (bucketID: string): SetBucketID => ({
 
 export const setupAdmin = (
   params: ISetupParams
-): AppThunk<Promise<boolean>> => async dispatch => {
+): AppThunk<Promise<boolean>> => async (dispatch) => {
   try {
     dispatch(setSetupParams(params))
     const response = await client.setup.create(params)

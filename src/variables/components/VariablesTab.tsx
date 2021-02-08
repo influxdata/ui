@@ -87,7 +87,7 @@ class VariablesTab extends PureComponent<Props, State> {
             searchKeys={['name', 'labels[].name']}
             list={variables}
           >
-            {variables => (
+            {(variables) => (
               <VariableList
                 variables={variables}
                 emptyState={this.emptyState}

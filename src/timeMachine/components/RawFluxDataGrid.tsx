@@ -69,7 +69,7 @@ export default class extends PureComponent<Props, State> {
   private columnWidth = ({index}): number => {
     const {maxColumnCount, width} = this.props
 
-    const isDateTimeColumn = _.find(this.state.headerRows, i => {
+    const isDateTimeColumn = _.find(this.state.headerRows, (i) => {
       return (this.getCellData(i, index) || '').includes('dateTime')
     })
 

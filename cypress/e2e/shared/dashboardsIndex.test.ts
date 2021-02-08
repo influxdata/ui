@@ -21,13 +21,13 @@ describe('Dashboards', () => {
   it('empty state should have a header with text and a button to create a dashboard', () => {
     cy.getByTestID('page-contents').within(() => {
       cy.getByTestID('empty-dashboards-list').within(() => {
-        cy.getByTestID('empty-state--text').should($t => {
+        cy.getByTestID('empty-state--text').should(($t) => {
           expect($t).to.have.length(1)
           expect($t).to.contain(
             "Looks like you don't have any Dashboards, why not create one?"
           )
         })
-        cy.getByTestID('add-resource-dropdown--button').should($b => {
+        cy.getByTestID('add-resource-dropdown--button').should(($b) => {
           expect($b).to.have.length(1)
           expect($b).to.contain('Create Dashboard')
         })
@@ -55,17 +55,11 @@ describe('Dashboards', () => {
       })
 
     cy.getByTestID('dashboard-card').within(() => {
-      cy.getByTestID('dashboard-card--name')
-        .first()
-        .trigger('mouseover')
+      cy.getByTestID('dashboard-card--name').first().trigger('mouseover')
 
-      cy.getByTestID('dashboard-card--name-button')
-        .first()
-        .click()
+      cy.getByTestID('dashboard-card--name-button').first().click()
 
-      cy.get('.cf-input-field')
-        .type(newName)
-        .type('{enter}')
+      cy.get('.cf-input-field').type(newName).type('{enter}')
     })
 
     cy.getByTestID('dashboard-card').should('contain', newName)
@@ -162,9 +156,7 @@ describe('Dashboards', () => {
     }
 
     // import dashboard from file
-    cy.getByTestID('add-resource-dropdown--button')
-      .first()
-      .click()
+    cy.getByTestID('add-resource-dropdown--button').first().click()
     cy.getByTestID('add-resource-dropdown--import').click()
 
     cy.getByTestID('drag-and-drop--input').attachFile({
@@ -183,20 +175,16 @@ describe('Dashboards', () => {
         cy.getByTestID('context-delete-dashboard').click()
       })
 
-    // dasboard no longer exists
+    // dashboard no longer exists
     cy.getByTestID('dashboard-card').should('not.exist')
 
     // import dashboard as json
-    cy.getByTestID('add-resource-dropdown--button')
-      .first()
-      .click()
+    cy.getByTestID('add-resource-dropdown--button').first().click()
     cy.getByTestID('add-resource-dropdown--import').click()
 
-    cy.getByTestID('select-group--option')
-      .contains('Paste')
-      .click()
+    cy.getByTestID('select-group--option').contains('Paste').click()
 
-    cy.fixture('dashboard-import.json').then(json => {
+    cy.fixture('dashboard-import.json').then((json) => {
       cy.getByTestID('import-overlay--textarea')
         .should('be.visible')
         .click()
@@ -219,7 +207,7 @@ describe('Dashboards', () => {
       .type('this is invalid JSON')
     cy.get('button[title*="Import JSON"]').click()
     cy.getByTestID('import-overlay--textarea--error').should('have.length', 1)
-    cy.getByTestID('import-overlay--textarea').should($s =>
+    cy.getByTestID('import-overlay--textarea').should(($s) =>
       expect($s).to.contain('this is invalid JSON')
     )
     cy.getByTestID('import-overlay--textarea').type(
@@ -227,7 +215,7 @@ describe('Dashboards', () => {
     )
     cy.get('button[title*="Import JSON"]').click()
     cy.getByTestID('import-overlay--textarea--error').should('have.length', 1)
-    cy.getByTestID('import-overlay--textarea').should($s =>
+    cy.getByTestID('import-overlay--textarea').should(($s) =>
       expect($s).to.contain('this is invalid')
     )
   })
@@ -254,10 +242,7 @@ describe('Dashboards', () => {
     it('can clone a dashboard', () => {
       cy.getByTestID('dashboard-card').should('have.length', 2)
 
-      cy.getByTestID('clone-dashboard')
-        .first()
-        .click({force: true})
-        .wait(100)
+      cy.getByTestID('clone-dashboard').first().click({force: true}).wait(100)
 
       cy.fixture('routes').then(({orgs}) => {
         cy.get('@org').then(({id}: Organization) => {
@@ -337,9 +322,7 @@ describe('Dashboards', () => {
 
         cy.get('@org').then(({id}: Organization) => {
           cy.createLabel(labelName, id).then(() => {
-            cy.getByTestID(`inline-labels--add`)
-              .first()
-              .click()
+            cy.getByTestID(`inline-labels--add`).first().click()
 
             cy.getByTestID(`label--pill ${labelName}`).click()
 
@@ -353,9 +336,7 @@ describe('Dashboards', () => {
 
         cy.get('@org').then(({id}: Organization) => {
           cy.createLabel(labelName, id).then(() => {
-            cy.getByTestID(`inline-labels--add`)
-              .first()
-              .click()
+            cy.getByTestID(`inline-labels--add`).first().click()
 
             cy.getByTestID(`label--pill ${labelName}`).click()
 
@@ -373,9 +354,7 @@ describe('Dashboards', () => {
 
         cy.get('@org').then(({id}: Organization) => {
           cy.createLabel(labelName, id).then(() => {
-            cy.getByTestID(`inline-labels--add`)
-              .first()
-              .click()
+            cy.getByTestID(`inline-labels--add`).first().click()
 
             cy.getByTestID(`inline-labels--popover-field`).type(labelName)
 
@@ -388,9 +367,7 @@ describe('Dashboards', () => {
       it('typing a new label name and pressing ENTER starts label creation flow, closes popover', () => {
         const labelName = 'choco'
 
-        cy.getByTestID(`inline-labels--add`)
-          .first()
-          .click()
+        cy.getByTestID(`inline-labels--add`).first().click()
 
         cy.getByTestID('inline-labels--popover--contents').should('be.visible')
         cy.getByTestID(`inline-labels--popover-field`)
@@ -404,9 +381,7 @@ describe('Dashboards', () => {
         // https://github.com/influxdata/influxdb/issues/17964
         const labelName = 'the new new'
 
-        cy.getByTestID(`inline-labels--add`)
-          .first()
-          .click()
+        cy.getByTestID(`inline-labels--add`).first().click()
 
         cy.getByTestID('inline-labels--popover--contents').should('be.visible')
 
@@ -420,9 +395,7 @@ describe('Dashboards', () => {
 
       it('can create a label and add to a dashboard', () => {
         const label = 'plerps'
-        cy.getByTestID(`inline-labels--add`)
-          .first()
-          .click()
+        cy.getByTestID(`inline-labels--add`).first().click()
 
         cy.getByTestID('inline-labels--popover-field').type(label)
         cy.getByTestID('inline-labels--create-new').click()

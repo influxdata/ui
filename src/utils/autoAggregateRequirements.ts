@@ -23,7 +23,7 @@ interface ViewWithQuery {
 }
 
 function applyAutoAggregateRequirements<T extends ViewWithQuery>(view: T): T {
-  const autoAggregateableQueries = view.properties.queries.map(q => {
+  const autoAggregateableQueries = view.properties.queries.map((q) => {
     if (q.editMode === 'advanced') {
       return q
     }

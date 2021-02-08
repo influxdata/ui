@@ -26,7 +26,7 @@ const DeleteDataOverlay: FunctionComponent<Props> = ({
   },
 }) => {
   const dispatch = useDispatch()
-  const bucket = buckets.find(bucket => bucket.id === bucketID)
+  const bucket = buckets.find((bucket) => bucket.id === bucketID)
   const bucketName = bucket?.name
 
   useEffect(() => {

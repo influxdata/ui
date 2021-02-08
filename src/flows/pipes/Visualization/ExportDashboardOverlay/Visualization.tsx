@@ -19,7 +19,7 @@ const Visualization: FC = () => {
   const {timeZone} = useContext(AppSettingContext)
 
   const queryAndSetResults = useCallback(
-    async text => {
+    async (text) => {
       setLoading(RemoteDataState.Loading)
       const result = await query(text)
       setLoading(RemoteDataState.Done)

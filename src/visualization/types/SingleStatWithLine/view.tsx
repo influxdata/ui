@@ -81,11 +81,11 @@ const SingleStatWithLine: FC<Props> = ({
     yColumn &&
     columnKeys.includes(yColumn)
 
-  const _colors = properties.colors.filter(c => c.type === 'scale')
+  const _colors = properties.colors.filter((c) => c.type === 'scale')
   const colorHexes =
     _colors && _colors.length
-      ? _colors.map(c => c.hex)
-      : DEFAULT_LINE_COLORS.map(c => c.hex)
+      ? _colors.map((c) => c.hex)
+      : DEFAULT_LINE_COLORS.map((c) => c.hex)
 
   const interpolation = geomToInterpolation('line')
 
@@ -190,12 +190,12 @@ const SingleStatWithLine: FC<Props> = ({
       }}
     >
       <LatestValueTransform table={result.table} allowString={false}>
-        {latestValue => {
+        {(latestValue) => {
           const {
             bgColor: backgroundColor,
             textColor,
           } = generateThresholdsListHexs({
-            colors: properties.colors.filter(c => c.type !== 'scale'),
+            colors: properties.colors.filter((c) => c.type !== 'scale'),
             lastValue: latestValue,
             cellType: 'single-stat',
           })

@@ -1,6 +1,6 @@
 import View from './view'
 
-export default register => {
+export default (register) => {
   register({
     type: 'toBucket',
     family: 'output',

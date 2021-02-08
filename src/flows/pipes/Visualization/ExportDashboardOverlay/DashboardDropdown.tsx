@@ -25,7 +25,7 @@ const DashboardDropdown: FC = () => {
           <Dropdown.Item
             key={`${dashboard.name}${i}`}
             value={dashboard}
-            onClick={dashboard => handleSetDashboard(dashboard)}
+            onClick={(dashboard) => handleSetDashboard(dashboard)}
             selected={dashboard.name === selectedDashboard?.name}
             title={dashboard.name}
             wrapText={true}
@@ -53,7 +53,7 @@ const DashboardDropdown: FC = () => {
     </Dropdown.Button>
   )
 
-  const menu = onCollapse => (
+  const menu = (onCollapse) => (
     <Dropdown.Menu onCollapse={onCollapse}>{menuItems}</Dropdown.Menu>
   )
 

@@ -99,7 +99,7 @@ class StreamingSelector extends PureComponent<Props, State> {
           </Grid.Column>
         </Grid.Row>
         <SquareGrid cardSize={cardSize} gutter={ComponentSize.Small}>
-          {this.filteredBundles.map(b => {
+          {this.filteredBundles.map((b) => {
             return (
               <SquareGrid.Card key={b}>
                 <SelectableCard
@@ -125,7 +125,7 @@ class StreamingSelector extends PureComponent<Props, State> {
   private get selectedBucketID(): string {
     const {buckets, selectedBucketName} = this.props
 
-    return buckets.find(b => b.name === selectedBucketName).id
+    return buckets.find((b) => b.name === selectedBucketName).id
   }
 
   private handleSelectBucket = (bucket: Bucket) => {
@@ -149,7 +149,7 @@ class StreamingSelector extends PureComponent<Props, State> {
   private get filteredBundles(): BundleName[] {
     const {searchTerm} = this.state
 
-    return PLUGIN_BUNDLE_OPTIONS.filter(b =>
+    return PLUGIN_BUNDLE_OPTIONS.filter((b) =>
       b.toLowerCase().includes(searchTerm.toLowerCase())
     )
   }
@@ -157,7 +157,7 @@ class StreamingSelector extends PureComponent<Props, State> {
   private isCardChecked(bundle: BundleName): boolean {
     const {pluginBundles} = this.props
 
-    if (pluginBundles.find(b => b === bundle)) {
+    if (pluginBundles.find((b) => b === bundle)) {
       return true
     }
     return false

@@ -127,43 +127,43 @@ describe('hydrate vars', () => {
     if (isFlagEnabled('hydratevars')) {
       expect(actual.length).toEqual(2)
       expect(
-        actual.filter(v => v.id === 'e')[0].arguments.values.results
+        actual.filter((v) => v.id === 'e')[0].arguments.values.results
       ).toEqual(['eVal'])
-      expect(actual.filter(v => v.id === 'e')[0].selected).toEqual(['eVal'])
+      expect(actual.filter((v) => v.id === 'e')[0].selected).toEqual(['eVal'])
       expect(
-        actual.filter(v => v.id === 'g')[0].arguments.values.results
+        actual.filter((v) => v.id === 'g')[0].arguments.values.results
       ).toEqual(['gVal'])
-      expect(actual.filter(v => v.id === 'g')[0].selected).toEqual(['gVal'])
+      expect(actual.filter((v) => v.id === 'g')[0].selected).toEqual(['gVal'])
     }
     // TODO(ariel): remove the if condition above when feature is good
     // Also remove the following tests:
     expect(
-      actual.filter(v => v.id === 'a')[0].arguments.values.results
+      actual.filter((v) => v.id === 'a')[0].arguments.values.results
     ).toBeFalsy()
     expect(
-      actual.filter(v => v.id === 'b')[0].arguments.values.results
+      actual.filter((v) => v.id === 'b')[0].arguments.values.results
     ).toBeFalsy()
     expect(
-      actual.filter(v => v.id === 'c')[0].arguments.values.results
+      actual.filter((v) => v.id === 'c')[0].arguments.values.results
     ).toBeFalsy()
     expect(
-      actual.filter(v => v.id === 'd')[0].arguments.values.results
+      actual.filter((v) => v.id === 'd')[0].arguments.values.results
     ).toBeFalsy()
 
     expect(
-      actual.filter(v => v.id === 'e')[0].arguments.values.results
+      actual.filter((v) => v.id === 'e')[0].arguments.values.results
     ).toEqual(['eVal'])
-    expect(actual.filter(v => v.id === 'e')[0].selected).toEqual(['eVal'])
+    expect(actual.filter((v) => v.id === 'e')[0].selected).toEqual(['eVal'])
 
     expect(
-      actual.filter(v => v.id === 'g')[0].arguments.values.results
+      actual.filter((v) => v.id === 'g')[0].arguments.values.results
     ).toEqual(['gVal'])
-    expect(actual.filter(v => v.id === 'g')[0].selected).toEqual(['gVal'])
+    expect(actual.filter((v) => v.id === 'g')[0].selected).toEqual(['gVal'])
 
     expect(
-      actual.filter(v => v.id === 'f')[0].arguments.values.results
+      actual.filter((v) => v.id === 'f')[0].arguments.values.results
     ).toEqual(['fVal'])
-    expect(actual.filter(v => v.id === 'f')[0].selected).toEqual(['fVal'])
+    expect(actual.filter((v) => v.id === 'f')[0].selected).toEqual(['fVal'])
   })
 
   test('should invalidate all ancestors of a node when it fails', async () => {
@@ -218,16 +218,16 @@ describe('hydrate vars', () => {
     // TODO(ariel): remove the if condition above when feature is good
     // Also remove the following tests:
     expect(
-      actual.filter(v => v.id === 'a')[0].arguments.values.results
+      actual.filter((v) => v.id === 'a')[0].arguments.values.results
     ).toEqual([])
     expect(
-      actual.filter(v => v.id === 'b')[0].arguments.values.results
+      actual.filter((v) => v.id === 'b')[0].arguments.values.results
     ).toEqual([])
 
     expect(
-      actual.filter(v => v.id === 'c')[0].arguments.values.results
+      actual.filter((v) => v.id === 'c')[0].arguments.values.results
     ).toEqual(['cVal'])
-    expect(actual.filter(v => v.id === 'c')[0].selected).toEqual(['cVal'])
+    expect(actual.filter((v) => v.id === 'c')[0].selected).toEqual(['cVal'])
   })
 
   test('works with map template variables', async () => {
@@ -279,10 +279,10 @@ describe('hydrate vars', () => {
     // TODO(ariel): remove the if condition above when feature is good
     // Also remove the following tests:
     expect(
-      actual.filter(v => v.id === 'a')[0].arguments.values.results
+      actual.filter((v) => v.id === 'a')[0].arguments.values.results
     ).toEqual(['aVal'])
-    expect(actual.filter(v => v.id === 'a')[0].selected).toEqual(['aVal'])
-    expect(actual.filter(v => v.id === 'b')[0].arguments.values).toEqual({
+    expect(actual.filter((v) => v.id === 'a')[0].selected).toEqual(['aVal'])
+    expect(actual.filter((v) => v.id === 'b')[0].arguments.values).toEqual({
       k: 'v',
     })
   })
@@ -332,17 +332,17 @@ describe('hydrate vars', () => {
     // TODO(ariel): remove the if condition above when feature is good
     // Also remove the following tests:
     expect(
-      actual.filter(v => v.id === 'a')[0].arguments.values.results
+      actual.filter((v) => v.id === 'a')[0].arguments.values.results
     ).toEqual(['aVal'])
-    expect(actual.filter(v => v.id === 'a')[0].selected).toEqual(['aVal'])
+    expect(actual.filter((v) => v.id === 'a')[0].selected).toEqual(['aVal'])
 
-    expect(actual.filter(v => v.id === 'b')[0].arguments.values).toEqual([
+    expect(actual.filter((v) => v.id === 'b')[0].arguments.values).toEqual([
       'v1',
       'v2',
     ])
   })
 
-  test('should be cancellable', done => {
+  test('should be cancellable', (done) => {
     expect.assertions(1)
 
     const a = createVariable('a', 'f()')
@@ -357,7 +357,7 @@ describe('hydrate vars', () => {
       fetcher,
     })
 
-    promise.catch(e => {
+    promise.catch((e) => {
       expect(e).toBeInstanceOf(CancellationError)
       done()
     })
@@ -515,7 +515,7 @@ describe('findSubgraphFeature', () => {
     // returns the four subgraph results
     expect(actual.length).toEqual(4)
     const [defaultVarInResult] = actual.filter(
-      vn => vn.variable.id === defaultVariable.id
+      (vn) => vn.variable.id === defaultVariable.id
     )
     expect(defaultVarInResult.variable).toEqual(defaultVariable)
     // expect the subgraph to return the passed in variable
@@ -525,7 +525,7 @@ describe('findSubgraphFeature', () => {
     // expect the defaultVariable to have the associatedVariable as a parent
     expect(parentID).toEqual(associatedVariable.id)
     const [timeRangeResult] = actual.filter(
-      vn => vn.variable.id === timeRangeStartVariable.id
+      (vn) => vn.variable.id === timeRangeStartVariable.id
     )
     expect(timeRangeResult).toEqual(timeRangeResult)
     // expect the subgraph to return the passed in variable
@@ -556,7 +556,7 @@ describe('findSubgraphFeature', () => {
     const actual = await findSubgraphFeature(variableGraph, [defaultVariable])
     // returns the subgraph result
     expect(actual.length).toEqual(1)
-    const resultIDs = actual.map(v => v.variable.id)
+    const resultIDs = actual.map((v) => v.variable.id)
     // expect the one variables with no children to be output
     expect(resultIDs).toEqual([defaultVariable.id])
     expect(actual[0].children).toEqual([])
@@ -604,7 +604,7 @@ describe('findSubgraphFeature', () => {
     expect(actual.length).toEqual(3)
     // expect the one variables with no children to be output
     const [defaultVarInResult] = actual.filter(
-      vn => vn.variable.id === defaultVariable.id
+      (vn) => vn.variable.id === defaultVariable.id
     )
     expect(defaultVarInResult.variable).toEqual(defaultVariable)
     // expect the subgraph to return the passed in variable
@@ -614,7 +614,7 @@ describe('findSubgraphFeature', () => {
     // expect the defaultVariable to have the associatedVariable as a parent
     expect(parent).toEqual(associatedVariable.id)
     const [timeRangeResult] = actual.filter(
-      vn => vn.variable.id === timeRangeStartVariable.id
+      (vn) => vn.variable.id === timeRangeStartVariable.id
     )
     expect(timeRangeResult).toEqual(timeRangeResult)
     // expect the subgraph to return the passed in variable
@@ -660,7 +660,7 @@ describe('findSubgraphFeature', () => {
     // returns the subgraph result
     expect(actual.length).toEqual(3)
     const [defaultVarInResult] = actual.filter(
-      vn => vn.variable.id === defaultVariable.id
+      (vn) => vn.variable.id === defaultVariable.id
     )
     expect(defaultVarInResult.variable).toEqual(defaultVariable)
     // expect the subgraph to return the passed in variable
@@ -670,7 +670,7 @@ describe('findSubgraphFeature', () => {
     // expect the defaultVariable to have the associatedVariable as a parent
     expect(parentID).toEqual(associatedVariable.id)
     const [timeRangeResult] = actual.filter(
-      vn => vn.variable.id === timeRangeStartVariable.id
+      (vn) => vn.variable.id === timeRangeStartVariable.id
     )
     expect(timeRangeResult).toEqual(timeRangeResult)
     // expect the subgraph to return the passed in variable

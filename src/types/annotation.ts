@@ -7,7 +7,7 @@ export interface Annotation {
   message?: string
 }
 
-export interface GetAnnotationResponse {
+export interface AnnotationStream {
   stream: string
   annotations: Annotation[]
 }

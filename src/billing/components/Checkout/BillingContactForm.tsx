@@ -77,7 +77,7 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
     setInputs(inputState)
   }
 
-  const handleChangeSubdivision = subdivision => {
+  const handleChangeSubdivision = (subdivision) => {
     setSubdivisionError(subdivision === '')
     setSubdivision(subdivision)
   }
@@ -90,7 +90,7 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
     setSubdivisionError(state === '')
   }
 
-  const handleSubmitContactInfo = async contact => {
+  const handleSubmitContactInfo = async (contact) => {
     const payload = {
       contact: convertKeysToSnakecase(contact),
     }
@@ -113,12 +113,12 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
       return false
     }
 
-    return requiredFields.every(field => {
+    return requiredFields.every((field) => {
       return inputs[field].trim() !== ''
     })
   }
 
-  const handleConfirmContactInfo = async e => {
+  const handleConfirmContactInfo = async (e) => {
     e.preventDefault()
 
     const contact = {

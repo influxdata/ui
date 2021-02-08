@@ -24,7 +24,7 @@ class TooltipArguments extends PureComponent<Props> {
     const {argsList} = this.props
 
     if (argsList.length > 0) {
-      return argsList.map(a => {
+      return argsList.map((a) => {
         return (
           <div className="flux-function-docs--arguments" key={a.name}>
             <span>{a.name}:</span>

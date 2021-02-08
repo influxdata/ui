@@ -30,7 +30,7 @@ const TagSelectors: FC<Props> = ({tags}) => {
         selectedTags[tagName] &&
         selectedTags[tagName].includes(tagValue)
       ) {
-        tagValues = selectedTags[tagName].filter(v => v !== tagValue)
+        tagValues = selectedTags[tagName].filter((v) => v !== tagValue)
       } else {
         tagValues = [...selectedTags[tagName], tagValue]
       }
@@ -94,7 +94,7 @@ const TagSelectors: FC<Props> = ({tags}) => {
 
   return (
     <>
-      {tags.map(tag => {
+      {tags.map((tag) => {
         return (
           <React.Fragment key={JSON.stringify(tag)}>
             {Object.entries(tag).map(([tagName, tagValues]) => {
@@ -103,7 +103,7 @@ const TagSelectors: FC<Props> = ({tags}) => {
                 <React.Fragment key={tagName}>
                   {values
                     .filter(
-                      tagValue =>
+                      (tagValue) =>
                         tagName
                           .toLowerCase()
                           .includes(searchTerm.toLowerCase()) ||
@@ -111,7 +111,7 @@ const TagSelectors: FC<Props> = ({tags}) => {
                           .toLowerCase()
                           .includes(searchTerm.toLowerCase())
                     )
-                    .map(tagValue => (
+                    .map((tagValue) => (
                       <List.Item
                         key={tagValue}
                         value={tagValue}
@@ -130,7 +130,6 @@ const TagSelectors: FC<Props> = ({tags}) => {
                         <List.Indicator type="dot" />
                         <div className="selectors--item-value selectors--item__tag">{`${tagName} = ${tagValue}`}</div>
                         <div className="selectors--item-name">tag</div>
-                        <div className="selectors--item-type">string</div>
                       </List.Item>
                     ))}
                 </React.Fragment>

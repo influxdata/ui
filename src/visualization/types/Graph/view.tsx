@@ -83,8 +83,8 @@ const XYPlot: FC<Props> = ({
 
   const colorHexes =
     properties.colors && properties.colors.length
-      ? properties.colors.map(c => c.hex)
-      : DEFAULT_LINE_COLORS.map(c => c.hex)
+      ? properties.colors.map((c) => c.hex)
+      : DEFAULT_LINE_COLORS.map((c) => c.hex)
 
   const interpolation = geomToInterpolation(properties.geom)
 
@@ -146,7 +146,7 @@ const XYPlot: FC<Props> = ({
 
   const currentTheme = theme === 'light' ? VIS_THEME_LIGHT : VIS_THEME
 
-  const doubleClickHandler = plotInteraction => {
+  const doubleClickHandler = (plotInteraction) => {
     const annotationTime = new Date(plotInteraction.valueX).toISOString()
     writeAnnotation([
       {

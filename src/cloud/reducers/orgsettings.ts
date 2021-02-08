@@ -17,7 +17,7 @@ export const orgSettingsReducer = (
   state: OrgSettingsState = defaultState,
   action: Action
 ): OrgSettingsState =>
-  produce(state, draftState => {
+  produce(state, (draftState) => {
     if (action.type === SET_ORG_SETTINGS) {
       draftState.settings = action.payload.orgSettings
     }

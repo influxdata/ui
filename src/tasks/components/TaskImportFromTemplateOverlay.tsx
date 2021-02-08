@@ -140,10 +140,10 @@ const mstp = (state: AppState) => {
   } = state
   const items = getAll(state, ResourceType.Templates)
   const filteredTemplates = items.filter(
-    t => !t.meta.type || t.meta.type === TemplateType.Task
+    (t) => !t.meta.type || t.meta.type === TemplateType.Task
   )
 
-  const templates = sortBy(filteredTemplates, item =>
+  const templates = sortBy(filteredTemplates, (item) =>
     item.meta.name.toLocaleLowerCase()
   )
 

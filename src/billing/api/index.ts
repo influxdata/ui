@@ -3,18 +3,19 @@ import {
   getBillingNotifySettings,
   getBillingPaymentMethods,
   getBillingCc,
+  getInvoices as getInvoicesGenerated,
+  getBillingRegion,
+  Account,
 } from 'src/client/unityRoutes'
 
 import {RemoteDataState} from 'src/types'
 import {
-  Invoices,
+  Invoice,
   CreditCardParams,
-  LimitStatus,
   Region,
   BillingNotifySettings,
-  PaymentMethods,
+  PaymentMethod,
 } from 'src/types/billing'
-import {Account} from 'src/client/unityRoutes'
 
 const makeResponse = (status, data) => {
   return Promise.resolve({
@@ -24,7 +25,9 @@ const makeResponse = (status, data) => {
   })
 }
 
-export const getBillingAccount = (): ReturnType<typeof getBillingAccountGenerated> => {
+export const getBillingAccount = (): ReturnType<
+  typeof getBillingAccountGenerated
+> => {
   const account: Account = {
     id: 1234,
     balance: 100,
@@ -45,6 +48,7 @@ export const getBillingAccount = (): ReturnType<typeof getBillingAccountGenerate
       subscriberId: 'id123',
       status: 'Paid',
     },
+    pricingVersion: 4,
     type: 'free',
     updatedAt: new Date().toString(),
     users: [{}],
@@ -53,8 +57,10 @@ export const getBillingAccount = (): ReturnType<typeof getBillingAccountGenerate
   return makeResponse(200, account)
 }
 
-export const getPaymentMethods = (): ReturnType<typeof getBillingPaymentMethods> => {
-  const paymentMethods: PaymentMethods = [
+export const getPaymentMethods = (): ReturnType<
+  typeof getBillingPaymentMethods
+> => {
+  const paymentMethods: PaymentMethod[] = [
     {
       cardType: 'Visa',
       cardNumber: '4242424242424242',
@@ -87,7 +93,9 @@ export const getBillingCreditCard = (): ReturnType<typeof getBillingCc> => {
   return makeResponse(200, cc)
 }
 
-export const getBillingNotificationSettings = (): ReturnType<typeof getBillingNotifySettings> => {
+export const getBillingNotificationSettings = (): ReturnType<
+  typeof getBillingNotifySettings
+> => {
   const billingNotifySettings: BillingNotifySettings = {
     isNotify: true,
     balanceThreshold: 1000000,
@@ -97,25 +105,8 @@ export const getBillingNotificationSettings = (): ReturnType<typeof getBillingNo
   return makeResponse(200, billingNotifySettings)
 }
 
-export const getLimitsStatus = (): Promise<any> => {
-  const limitsStatus: LimitStatus = {
-    read: {
-      status: 'exceeded',
-    },
-    write: {
-      status: 'exceeded',
-    },
-    cardinality: {
-      status: 'exceeded',
-    },
-    status: RemoteDataState.Done,
-  }
-
-  return makeResponse(200, limitsStatus)
-}
-
-export const getInvoices = (): Promise<any> => {
-  const invoices: Invoices = [
+export const getInvoices = (): ReturnType<typeof getInvoicesGenerated> => {
+  const invoices: Invoice[] = [
     {
       amount: 0,
       filesID: 'abc123',
@@ -151,7 +142,7 @@ export const getInvoices = (): Promise<any> => {
   return makeResponse(200, invoices)
 }
 
-export const getRegion = (): Promise<any> => {
+export const getRegion = (): ReturnType<typeof getBillingRegion> => {
   const region: Region = {
     title: 'EU Frankfurt',
     isBeta: false,

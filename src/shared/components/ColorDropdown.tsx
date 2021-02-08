@@ -25,7 +25,7 @@ interface DefaultProps {
 
 type Props = PassedProps & DefaultProps
 
-const ColorDropdown: FC<Props> = props => {
+const ColorDropdown: FC<Props> = (props) => {
   const {selected, colors, onChoose, disabled, style} = props
 
   const status = disabled ? ComponentStatus.Disabled : ComponentStatus.Default
@@ -46,9 +46,9 @@ const ColorDropdown: FC<Props> = props => {
           </div>
         </Dropdown.Button>
       )}
-      menu={onCollapse => (
+      menu={(onCollapse) => (
         <Dropdown.Menu onCollapse={onCollapse} theme={DropdownMenuTheme.Onyx}>
-          {colors.map(color => (
+          {colors.map((color) => (
             <Dropdown.Item
               id={color.name}
               key={color.name}

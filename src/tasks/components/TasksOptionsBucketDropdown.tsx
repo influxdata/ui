@@ -51,7 +51,7 @@ class TaskOptionsBucketDropdown extends PureComponent<Props> {
             {selectedBucketName}
           </Dropdown.Button>
         )}
-        menu={onCollapse => (
+        menu={(onCollapse) => (
           <Dropdown.Menu onCollapse={onCollapse}>
             {this.dropdownItems}
           </Dropdown.Menu>
@@ -72,10 +72,10 @@ class TaskOptionsBucketDropdown extends PureComponent<Props> {
     }
 
     const nonSystemBuckets = buckets.filter(
-      bucket => !isSystemBucket(bucket.name)
+      (bucket) => !isSystemBucket(bucket.name)
     )
 
-    return nonSystemBuckets.map(bucket => {
+    return nonSystemBuckets.map((bucket) => {
       return (
         <Dropdown.Item
           id={bucket.name}

@@ -39,7 +39,7 @@ const WriteDataHelperBuckets: FC = () => {
         style={{height: '200px'}}
         maxHeight="200px"
       >
-        {buckets.map(b => (
+        {buckets.map((b) => (
           <List.Item
             size={ComponentSize.Small}
             key={b.id}

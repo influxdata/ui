@@ -64,7 +64,7 @@ class CollectorList extends PureComponent<Props> {
     )
 
     if (collectors !== undefined) {
-      return sortedCollectors.map(collector => (
+      return sortedCollectors.map((collector) => (
         <CollectorRow
           key={collector.id}
           collector={collector}
@@ -114,7 +114,7 @@ class FilteredCollectorList extends PureComponent<FilteredProps> {
         searchKeys={['metadata.buckets[]', 'name', 'labels[].name']}
         list={collectors}
       >
-        {cs => (
+        {(cs) => (
           <CollectorList
             collectors={cs}
             emptyState={emptyState}

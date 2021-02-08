@@ -33,7 +33,7 @@ const FieldSelectors: FC<Props> = ({fields}) => {
 
   return (
     <>
-      {fields.map(field => (
+      {fields.map((field) => (
         <List.Item
           key={field}
           value={field}
@@ -48,7 +48,6 @@ const FieldSelectors: FC<Props> = ({fields}) => {
             {field}
           </div>
           <div className="selectors--item-name">field</div>
-          <div className="selectors--item-type">string</div>
         </List.Item>
       ))}
     </>

@@ -124,7 +124,7 @@ describe('ThresholdSettings', () => {
 
       const [didRerender, setDidRerender] = useState(false)
 
-      const handleSetThresholds = newThresholds => {
+      const handleSetThresholds = (newThresholds) => {
         setThresholds(newThresholds)
         setDidRerender(true)
         handleSetThresholdsSpy(newThresholds)

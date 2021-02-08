@@ -306,7 +306,7 @@ export const LINE_COLOR_SCALES = [
   LINE_COLORS_SOLID_YELLOW,
   LINE_COLORS_SOLID_GREEN,
   LINE_COLORS_SOLID_PURPLE,
-].map(colorScale => {
+].map((colorScale) => {
   const name = colorScale[0].name
   const colors = colorScale
   const id = colorScale[0].id

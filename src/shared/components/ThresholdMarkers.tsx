@@ -89,7 +89,7 @@ const ThresholdMarkers: FunctionComponent<Props> = ({
       i === index ? nextThreshold : t
     )
 
-    const roundedThresholds = nextThresholds.map(nt => {
+    const roundedThresholds = nextThresholds.map((nt) => {
       if (nt.type === 'greater' || nt.type === 'lesser') {
         return {
           ...nt,

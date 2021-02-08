@@ -45,7 +45,7 @@ class GetResources extends PureComponent<Props> {
     const {resources} = this.props
     const promises = []
     const startTime = Date.now()
-    resources.forEach(resource => {
+    resources.forEach((resource) => {
       promises.push(this.getResourceDetails(resource))
     })
 

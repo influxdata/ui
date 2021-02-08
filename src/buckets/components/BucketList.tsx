@@ -63,7 +63,7 @@ class BucketList extends PureComponent<
       sortType
     )
 
-    return sortedBuckets.map(bucket => {
+    return sortedBuckets.map((bucket) => {
       if (bucket.type === 'demodata') {
         return <DemoDataBucketCard key={bucket.id} bucket={bucket} />
       }

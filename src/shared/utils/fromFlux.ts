@@ -323,7 +323,7 @@ export default function fromFlux(csv: string): ParsedFlux {
     .map(([k, v]) => {
       const columnNames = Object.keys(v)
 
-      columnNames.forEach(n => {
+      columnNames.forEach((n) => {
         output[n].data.length = runningTotal
       })
 
@@ -331,7 +331,7 @@ export default function fromFlux(csv: string): ParsedFlux {
     })
     .filter(([_, v]) => v.length === 1)
     .map(([k, v]) => [k, v[0]])
-    .forEach(e => {
+    .forEach((e) => {
       const k = e[0] as string
       const v = e[1] as string
 

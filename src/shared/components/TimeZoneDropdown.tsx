@@ -22,7 +22,7 @@ const TimeZoneDropdown: FunctionComponent<Props> = ({
 }) => {
   return (
     <SelectDropdown
-      options={TIME_ZONES.map(tz => tz.timeZone)}
+      options={TIME_ZONES.map((tz) => tz.timeZone)}
       selectedOption={selectedTimeZone}
       onSelect={onSetTimeZone}
       buttonIcon={IconFont.Annotate}

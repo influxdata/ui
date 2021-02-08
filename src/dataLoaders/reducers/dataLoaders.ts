@@ -61,13 +61,13 @@ export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
       return {
         ...state,
         pluginBundles: state.pluginBundles.filter(
-          b => b !== action.payload.bundle
+          (b) => b !== action.payload.bundle
         ),
       }
     case 'REMOVE_BUNDLE_PLUGINS':
       return {
         ...state,
-        telegrafPlugins: state.telegrafPlugins.filter(tp => {
+        telegrafPlugins: state.telegrafPlugins.filter((tp) => {
           if (isPluginInBundle(tp.name, action.payload.bundle)) {
             return !isPluginUniqueToBundle(
               tp.name,
@@ -93,7 +93,7 @@ export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
     case 'UPDATE_TELEGRAF_PLUGIN':
       return {
         ...state,
-        telegrafPlugins: state.telegrafPlugins.map(tp => {
+        telegrafPlugins: state.telegrafPlugins.map((tp) => {
           if (tp.name === action.payload.plugin.name) {
             return {
               ...tp,
@@ -107,7 +107,7 @@ export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
     case 'UPDATE_TELEGRAF_PLUGIN_CONFIG':
       return {
         ...state,
-        telegrafPlugins: state.telegrafPlugins.map(tp => {
+        telegrafPlugins: state.telegrafPlugins.map((tp) => {
           if (tp.name === action.payload.name) {
             const plugin = _.get(tp, 'plugin', createNewPlugin(tp.name))
 
@@ -126,7 +126,7 @@ export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
     case 'ADD_TELEGRAF_PLUGIN_CONFIG_VALUE':
       return {
         ...state,
-        telegrafPlugins: state.telegrafPlugins.map(tp => {
+        telegrafPlugins: state.telegrafPlugins.map((tp) => {
           if (tp.name === action.payload.pluginName) {
             const plugin = _.get(tp, 'plugin', createNewPlugin(tp.name))
 
@@ -156,7 +156,7 @@ export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
     case 'REMOVE_TELEGRAF_PLUGIN_CONFIG_VALUE':
       return {
         ...state,
-        telegrafPlugins: state.telegrafPlugins.map(tp => {
+        telegrafPlugins: state.telegrafPlugins.map((tp) => {
           if (tp.name === action.payload.pluginName) {
             const plugin = _.get(tp, 'plugin', createNewPlugin(tp.name))
 
@@ -166,7 +166,7 @@ export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
               []
             )
             const filteredConfigFieldValue = configFieldValues.filter(
-              v => v !== action.payload.value
+              (v) => v !== action.payload.value
             )
 
             return {
@@ -184,7 +184,7 @@ export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
     case 'SET_TELEGRAF_PLUGIN_CONFIG_VALUE':
       return {
         ...state,
-        telegrafPlugins: state.telegrafPlugins.map(tp => {
+        telegrafPlugins: state.telegrafPlugins.map((tp) => {
           if (tp.name === action.payload.pluginName) {
             const plugin = _.get(tp, 'plugin', createNewPlugin(tp.name))
             const configValues = _.get(
@@ -206,7 +206,7 @@ export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
     case 'SET_ACTIVE_TELEGRAF_PLUGIN':
       return {
         ...state,
-        telegrafPlugins: state.telegrafPlugins.map(tp => {
+        telegrafPlugins: state.telegrafPlugins.map((tp) => {
           if (tp.name === action.payload.telegrafPlugin) {
             return {...tp, active: true}
           }
@@ -216,7 +216,7 @@ export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
     case 'SET_PLUGIN_CONFIGURATION_STATE':
       return {
         ...state,
-        telegrafPlugins: state.telegrafPlugins.map(tp => {
+        telegrafPlugins: state.telegrafPlugins.map((tp) => {
           const name = _.get(tp, 'name')
           if (name === action.payload.telegrafPlugin) {
             const configFields = getConfigFields(name)
@@ -247,7 +247,7 @@ export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
                     case ConfigFieldType.UriArray:
                       isValidConfig =
                         !!(fieldValue as string[]).length &&
-                        !fieldValue.find(uri => !validateURI(uri))
+                        !fieldValue.find((uri) => !validateURI(uri))
                       break
                   }
                 }

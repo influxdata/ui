@@ -8,6 +8,7 @@
   width: 100%;
   display: flex;
   transition: box-shadow 0.25s ease;
+  flex-wrap: wrap;
 }
 
 .variables-control-bar--grid__dragging-over {

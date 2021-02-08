@@ -25,7 +25,7 @@ export const variableEditorReducer = (
   state: VariableEditorState = initialEditorState(),
   action: EditorAction
 ): VariableEditorState =>
-  produce(state, draftState => {
+  produce(state, (draftState) => {
     switch (action.type) {
       case CLEAR_VARIABLE_EDITOR: {
         return initialEditorState()

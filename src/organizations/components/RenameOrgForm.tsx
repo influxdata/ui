@@ -54,7 +54,7 @@ class RenameOrgForm extends PureComponent<Props, State> {
           validationFunc={this.handleValidation}
           value={org.name}
         >
-          {status => (
+          {(status) => (
             <>
               <FlexBox
                 alignItems={AlignItems.Center}
@@ -124,7 +124,7 @@ class RenameOrgForm extends PureComponent<Props, State> {
   }
 
   private isUniqueName = (orgName: string): boolean => {
-    return !this.props.orgNames.find(o => o === orgName)
+    return !this.props.orgNames.find((o) => o === orgName)
   }
 
   private handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -151,7 +151,7 @@ const mstp = (state: AppState) => {
   } = resources
   const orgs = getAll<Organization>(state, ResourceType.Orgs)
 
-  const orgNames = orgs.filter(o => o.id !== startOrg.id).map(o => o.name)
+  const orgNames = orgs.filter((o) => o.id !== startOrg.id).map((o) => o.name)
 
   return {startOrg, orgNames}
 }

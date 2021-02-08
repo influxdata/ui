@@ -122,7 +122,7 @@ export function extractBoxedCol(
   resp: CancelBox<RunQueryResult>,
   colName: string
 ): CancelBox<string[]> {
-  const promise = resp.promise.then<string[]>(result => {
+  const promise = resp.promise.then<string[]>((result) => {
     if (result.type !== 'SUCCESS') {
       return Promise.reject(new Error(result.message))
     }
@@ -149,7 +149,9 @@ export function formatTagFilterPredicate(
     return '(r) => true'
   }
 
-  const calls = validSelections.map(tag => `(${tagToFlux(tag)})`).join(' and ')
+  const calls = validSelections
+    .map((tag) => `(${tagToFlux(tag)})`)
+    .join(' and ')
 
   return `(r) => ${calls}`
 }
@@ -161,7 +163,7 @@ export function formatTagKeyFilterCall(tagsSelections: BuilderConfig['tags']) {
     return ''
   }
 
-  const fnBody = keys.map(key => `r._value != "${key}"`).join(' and ')
+  const fnBody = keys.map((key) => `r._value != "${key}"`).join(' and ')
 
   return `\n  |> filter(fn: (r) => ${fnBody})`
 }
@@ -175,7 +177,7 @@ export function formatSearchFilterCall(searchTerm: string) {
 }
 
 export function formatTimeRangeArguments(timeRange: TimeRange): string {
-  const [start, stop] = getTimeRangeVars(timeRange).map(assignment =>
+  const [start, stop] = getTimeRangeVars(timeRange).map((assignment) =>
     formatExpression(assignment.init)
   )
 

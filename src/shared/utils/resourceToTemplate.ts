@@ -94,8 +94,8 @@ export const taskToTemplate = (
   ])
 
   const taskLabels = getLabels(state, task.labels)
-  const includedLabels = taskLabels.map(label => labelToIncluded(label))
-  const relationshipsLabels = taskLabels.map(label =>
+  const includedLabels = taskLabels.map((label) => labelToIncluded(label))
+  const relationshipsLabels = taskLabels.map((label) =>
     labelToRelationship(label)
   )
 
@@ -154,7 +154,7 @@ const viewToRelationship = (view: View) => ({
 })
 
 const cellToIncluded = (cell: Cell, views: View[]) => {
-  const cellView = views.find(v => v.id === cell.id)
+  const cellView = views.find((v) => v.id === cell.id)
   const viewRelationship = viewToRelationship(cellView)
 
   const cellAttributes = pick(cell, ['x', 'y', 'w', 'h'])
@@ -186,18 +186,20 @@ export const variableToTemplate = (
   const variableName = get(v, 'name', '')
   const templateName = `${variableName}-Template`
   const variableData = variableToIncluded(v, labelsByID)
-  const variableRelationships = dependencies.map(d => variableToRelationship(d))
-  const includedDependencies = dependencies.map(d =>
+  const variableRelationships = dependencies.map((d) =>
+    variableToRelationship(d)
+  )
+  const includedDependencies = dependencies.map((d) =>
     variableToIncluded(d, labelsByID)
   )
 
   const vLabels = getLabels(state, v.labels)
 
-  const includedLabels = vLabels.map(label => labelToIncluded(label))
-  const labelRelationships = vLabels.map(label => labelToRelationship(label))
-  const includedDependentLabels = flatMap(dependencies, d => {
+  const includedLabels = vLabels.map((label) => labelToIncluded(label))
+  const labelRelationships = vLabels.map((label) => labelToRelationship(label))
+  const includedDependentLabels = flatMap(dependencies, (d) => {
     const dLabels = getLabels(state, d.labels)
-    return dLabels.map(label => labelToIncluded(label))
+    return dLabels.map((label) => labelToIncluded(label))
   })
 
   return {
@@ -235,7 +237,7 @@ type LabelsByID = AppState['resources']['labels']['byID']
 const variableToIncluded = (v: Variable, labelsByID: LabelsByID) => {
   const variableAttributes = pick(v, ['name', 'arguments', 'selected'])
   const labelRelationships = v.labels
-    .map(labelID => {
+    .map((labelID) => {
       const label = labelsByID[labelID]
       if (!label) {
         return null
@@ -243,7 +245,7 @@ const variableToIncluded = (v: Variable, labelsByID: LabelsByID) => {
 
       return labelToRelationship(label)
     })
-    .filter(label => !!label)
+    .filter((label) => !!label)
 
   return {
     id: v.id,
@@ -277,27 +279,27 @@ export const dashboardToTemplate = (
   const dashboardAttributes = pick(dashboard, ['name', 'description'])
 
   const dashboardLabels = getLabels(state, dashboard.labels)
-  const dashboardIncludedLabels = dashboardLabels.map(label =>
+  const dashboardIncludedLabels = dashboardLabels.map((label) =>
     labelToIncluded(label)
   )
-  const relationshipsLabels = dashboardLabels.map(label =>
+  const relationshipsLabels = dashboardLabels.map((label) =>
     labelToRelationship(label)
   )
 
-  const includedCells = cells.map(c => cellToIncluded(c, views))
-  const relationshipsCells = cells.map(c => cellToRelationship(c))
+  const includedCells = cells.map((c) => cellToIncluded(c, views))
+  const relationshipsCells = cells.map((c) => cellToRelationship(c))
 
-  const includedVariables = variables.map(v =>
+  const includedVariables = variables.map((v) =>
     variableToIncluded(v, labelsByID)
   )
 
-  const variableIncludedLabels = flatMap(variables, v =>
-    getLabels(state, v.labels).map(label => labelToIncluded(label))
+  const variableIncludedLabels = flatMap(variables, (v) =>
+    getLabels(state, v.labels).map((label) => labelToIncluded(label))
   )
 
-  const relationshipsVariables = variables.map(v => variableToRelationship(v))
+  const relationshipsVariables = variables.map((v) => variableToRelationship(v))
 
-  const includedViews = views.map(v => viewToIncluded(v))
+  const includedViews = views.map((v) => viewToIncluded(v))
   const includedLabels = uniqBy(
     [...dashboardIncludedLabels, ...variableIncludedLabels],
     'id'
@@ -337,7 +339,7 @@ export const dashboardToTemplate = (
 
 export const templateToExport = (template: ITemplate): DocumentCreate => {
   const pickedTemplate = pick(template, ['meta', 'content'])
-  const labelsArray = template.labels.map(l => l.name)
+  const labelsArray = template.labels.map((l) => l.name)
   const templateWithLabels = {...pickedTemplate, labels: labelsArray}
   return templateWithLabels
 }

@@ -22,7 +22,7 @@ export const useDragBehavior = (
         y: mouseDownEvent.pageY,
       })
 
-      const onMouseMove = mouseMoveEvent => {
+      const onMouseMove = (mouseMoveEvent) => {
         onDrag({
           type: 'drag',
           x: mouseMoveEvent.pageX,
@@ -30,7 +30,7 @@ export const useDragBehavior = (
         })
       }
 
-      const onMouseUp = mouseUpEvent => {
+      const onMouseUp = (mouseUpEvent) => {
         document.removeEventListener('mousemove', onMouseMove)
         document.removeEventListener('mouseup', onMouseUp)
 

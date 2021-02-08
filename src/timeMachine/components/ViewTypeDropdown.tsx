@@ -24,7 +24,7 @@ export const TimeMachineViewTypeDropdown: FC<{}> = () => {
   })
 
   const updateType = useCallback(
-    selectedType => {
+    (selectedType) => {
       dispatch(setType(selectedType))
     },
     [dispatch]

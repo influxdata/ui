@@ -242,7 +242,7 @@ export const cloneEndpoint = (endpoint: NotificationEndpoint) => async (
       ResourceType.NotificationEndpoints
     )
 
-    const allEndpointNames = endpoints.map(r => r.name)
+    const allEndpointNames = endpoints.map((r) => r.name)
 
     const clonedName = incrementCloneName(allEndpointNames, endpoint.name)
 

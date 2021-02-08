@@ -7,7 +7,7 @@ import {
   ComponentColor,
 } from '@influxdata/clockface'
 
-const BillingContactSubdivision = props => {
+const BillingContactSubdivision = (props) => {
   const {country, states, onChange, errorMessage, subdivision} = props
 
   switch (country) {

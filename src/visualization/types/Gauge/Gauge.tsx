@@ -90,10 +90,10 @@ class Gauge extends Component<Props> {
 
     // Distill out max and min values
     const minValue =
-      colors.find(color => color.type === COLOR_TYPE_MIN)?.value ||
+      colors.find((color) => color.type === COLOR_TYPE_MIN)?.value ||
       DEFAULT_VALUE_MIN
     const maxValue =
-      colors.find(color => color.type === COLOR_TYPE_MAX)?.value ||
+      colors.find((color) => color.type === COLOR_TYPE_MAX)?.value ||
       DEFAULT_VALUE_MAX
 
     // The following functions must be called in the specified order
@@ -297,7 +297,7 @@ class Gauge extends Component<Props> {
       suffix = ''
     }
 
-    const labels = tickValues.map(tick =>
+    const labels = tickValues.map((tick) =>
       formatStatValue(tick, {decimalPlaces, prefix, suffix})
     )
 

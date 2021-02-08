@@ -28,7 +28,7 @@ const StatusChangeDropdown: FC<Props> = ({status}) => {
       statusRule: changeStatusRule(s, c),
     })
 
-  const items = CHANGES.map(change => (
+  const items = CHANGES.map((change) => (
     <Dropdown.Item
       key={change}
       id={change}
@@ -52,7 +52,7 @@ const StatusChangeDropdown: FC<Props> = ({status}) => {
     </Dropdown.Button>
   )
 
-  const menu = onCollapse => (
+  const menu = (onCollapse) => (
     <Dropdown.Menu onCollapse={onCollapse}>{items}</Dropdown.Menu>
   )
 

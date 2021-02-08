@@ -16,7 +16,7 @@ const PipeList: FC = () => {
     return <EmptyPipeList />
   }
 
-  const _pipes = data.allIDs.map(id => {
+  const _pipes = data.allIDs.map((id) => {
     return <FlowPipe key={`pipe-${id}`} id={id} />
   })
 

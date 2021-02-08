@@ -40,10 +40,10 @@ const constructFilters = (value: string, type: string) => {
       if (tagNames) {
         const tags = []
         tagNames
-          .filter(tagName => !!value[tagName])
-          .forEach(tagName => {
+          .filter((tagName) => !!value[tagName])
+          .forEach((tagName) => {
             const tagValues = value[tagName]
-            const mappedTags = tagValues.map(tagValue => ({
+            const mappedTags = tagValues.map((tagValue) => ({
               id: tagValue,
               name: `${tagName} = ${tagValue}`,
               properties: {
@@ -83,7 +83,7 @@ const FilterTags: FC = () => {
             return acc
           }
 
-          acc[key] = value.filter(tag => tag !== tagValue)
+          acc[key] = value.filter((tag) => tag !== tagValue)
 
           if (!acc[key].length) {
             delete acc[key]
@@ -111,7 +111,7 @@ const FilterTags: FC = () => {
       filters = filters.concat(tags)
     }
     if (filters.length) {
-      return filters.map(_filter => {
+      return filters.map((_filter) => {
         const f = {..._filter}
 
         return (

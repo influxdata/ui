@@ -35,14 +35,16 @@ export function getMinDurationFromAST(ast: Package): number {
     throw new Error('no time ranges found in query')
   }
 
-  const starts = times.map(t => t[0])
-  const stops = times.map(t => t[1])
-  const cartesianProduct = starts.map(start => stops.map(stop => [start, stop]))
+  const starts = times.map((t) => t[0])
+  const stops = times.map((t) => t[1])
+  const cartesianProduct = starts.map((start) =>
+    stops.map((stop) => [start, stop])
+  )
 
   const durations = []
     .concat(...cartesianProduct)
     .map(([start, stop]) => stop - start)
-    .filter(d => d > 0)
+    .filter((d) => d > 0)
 
   const result = Math.min(...durations)
 
@@ -50,7 +52,7 @@ export function getMinDurationFromAST(ast: Package): number {
 }
 
 function allRangeTimes(ast: any): Array<[number, number]> {
-  return findNodes(ast, isRangeNode).map(node => rangeTimes(ast, node))
+  return findNodes(ast, isRangeNode).map((node) => rangeTimes(ast, node))
 }
 
 /*
@@ -66,14 +68,14 @@ function rangeTimes(ast: any, rangeNode: CallExpression): [number, number] {
 
   // The `start` argument is required
   const startProperty = properties.find(
-    p => (p.key as Identifier).name === 'start'
+    (p) => (p.key as Identifier).name === 'start'
   )
 
   const start = propertyTime(ast, startProperty.value, now)
 
   // The `end` argument to a `range` call is optional, and defaults to now
   const endProperty = properties.find(
-    p => (p.key as Identifier).name === 'stop'
+    (p) => (p.key as Identifier).name === 'stop'
   )
 
   const end = endProperty ? propertyTime(ast, endProperty.value, now) : now
@@ -121,7 +123,7 @@ function propertyTime(ast: any, value: Expression, now: number): number {
       const propertyName = get(value, 'property.name')
       const objExpr = lookupVariable(ast, objName) as ObjectExpression
       const property = objExpr.properties.find(
-        p => get(p, 'key.name') === propertyName
+        (p) => get(p, 'key.name') === propertyName
       )
 
       return propertyTime(ast, property.value, now)
@@ -147,7 +149,7 @@ function propertyTime(ast: any, value: Expression, now: number): number {
   given `name`.
 */
 function lookupVariable(ast: any, name: string): Expression {
-  const isDeclarator = node => {
+  const isDeclarator = (node) => {
     return (
       get(node, 'type') === 'VariableAssignment' &&
       get(node, 'id.name') === name

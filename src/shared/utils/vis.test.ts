@@ -32,7 +32,7 @@ describe('getting default columns', () => {
       return [0, 0, 1000000]
     },
     getColumnName: jest.fn(),
-    getColumnType: columnKey => {
+    getColumnType: (columnKey) => {
       if (['_start', '_stop', '_time'].includes(columnKey)) {
         return 'time'
       }

@@ -44,11 +44,11 @@ class BucketsTabBody extends PureComponent<Props> {
           searchTerm={searchTerm}
           searchKeys={['name']}
         >
-          {filteredBuckets => (
+          {(filteredBuckets) => (
             <SortingHat list={filteredBuckets} sortKey="name">
-              {sortedBuckets => (
+              {(sortedBuckets) => (
                 <SelectorList
-                  items={sortedBuckets.map(b => b.name)}
+                  items={sortedBuckets.map((b) => b.name)}
                   selectedItems={selectedBuckets}
                   onSelectItem={onSelect}
                   multiSelect={false}

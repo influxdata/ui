@@ -188,7 +188,7 @@ export default (
     case 'UPDATE_ALERT_BUILDER_THRESHOLD': {
       const thresholds = state.thresholds
       const filteredThresholds = thresholds.filter(
-        t => t.level !== action.payload.threshold.level
+        (t) => t.level !== action.payload.threshold.level
       )
       return {
         ...state,
@@ -207,7 +207,7 @@ export default (
       const thresholds = state.thresholds
       return {
         ...state,
-        thresholds: thresholds.filter(t => t.level !== action.payload.level),
+        thresholds: thresholds.filter((t) => t.level !== action.payload.level),
       }
     }
 

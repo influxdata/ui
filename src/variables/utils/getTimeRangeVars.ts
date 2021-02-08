@@ -16,7 +16,7 @@ export const getTimeRangeVars = (
   return [
     getRangeVariable(TIME_RANGE_START, timeRange),
     getRangeVariable(TIME_RANGE_STOP, timeRange),
-  ].map(v => asAssignment(v))
+  ].map((v) => asAssignment(v))
 }
 
 export const getRangeVariable = (

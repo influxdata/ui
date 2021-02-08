@@ -33,7 +33,7 @@ const VariableToolbar: FunctionComponent<Props> = ({
 }) => {
   const dispatch = useDispatch()
   const [searchTerm, setSearchTerm] = useState('')
-  const filteredVariables = variables.filter(v => v.name.includes(searchTerm))
+  const filteredVariables = variables.filter((v) => v.name.includes(searchTerm))
 
   useEffect(() => {
     dispatch(hydrateVariables())
@@ -46,7 +46,7 @@ const VariableToolbar: FunctionComponent<Props> = ({
   )
 
   if (Boolean(filteredVariables.length)) {
-    content = filteredVariables.map(v => (
+    content = filteredVariables.map((v) => (
       <VariableItem
         variable={v}
         key={v.id}

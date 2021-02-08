@@ -44,7 +44,7 @@ export const CommunityTemplatesResourceSummary: FC<Props> = ({
     }
   )
 
-  const tableRows = resources.map(resource => {
+  const tableRows = resources.map((resource) => {
     switch (resource.kind) {
       case 'Bucket': {
         return (

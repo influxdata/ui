@@ -53,7 +53,7 @@ export default class ViewTokenOverlay extends PureComponent<Props> {
             mode={PermissionsWidgetMode.Read}
             heightPixels={500}
           >
-            {Object.keys(permissions).map(type => {
+            {Object.keys(permissions).map((type) => {
               return (
                 <PermissionsWidget.Section
                   key={type}

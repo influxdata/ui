@@ -2,7 +2,7 @@ import View from './view'
 import './style.scss'
 import {FUNCTIONS} from 'src/timeMachine/constants/queryBuilder'
 
-export default register => {
+export default (register) => {
   register({
     type: 'metricSelector',
     family: 'inputs',

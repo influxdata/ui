@@ -70,7 +70,7 @@ export const removeResource = <R>(
 ) => {
   const {id} = action
   delete draftState.byID[id]
-  draftState.allIDs = draftState.allIDs.filter(uuid => uuid !== id)
+  draftState.allIDs = draftState.allIDs.filter((uuid) => uuid !== id)
 
   return
 }

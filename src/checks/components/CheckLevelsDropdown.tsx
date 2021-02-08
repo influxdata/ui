@@ -27,7 +27,7 @@ interface Props {
 }
 
 const CheckLevelsDropdown: FC<Props> = ({selectedLevel, onClickLevel}) => {
-  const selected = levels.find(l => l.value === selectedLevel)
+  const selected = levels.find((l) => l.value === selectedLevel)
 
   if (!selected) {
     throw new Error('Unknown level type provided to <CheckLevelsDropdown/>')

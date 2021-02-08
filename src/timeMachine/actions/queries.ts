@@ -99,12 +99,12 @@ export const getOrgIDFromBuckets = (
   allBuckets: Bucket[]
 ): string | null => {
   const ast = parse(text)
-  const bucketsInQuery: string[] = findNodes(ast, isFromBucket).map(node =>
+  const bucketsInQuery: string[] = findNodes(ast, isFromBucket).map((node) =>
     get(node, 'arguments.0.properties.0.value.value', '')
   )
 
   // if there are buckets from multiple orgs in a query, query will error, and user will receive error from query
-  const bucketMatch = allBuckets.find(a => bucketsInQuery.includes(a.name))
+  const bucketMatch = allBuckets.find((a) => bucketsInQuery.includes(a.name))
 
   return get(bucketMatch, 'orgID', null)
 }
@@ -116,23 +116,24 @@ export const getQueryFromFlux = (text: string) => {
   const aggregateWindowQuery: string[] = findNodes(
     ast,
     isFromFunction
-  ).map(node =>
+  ).map((node) =>
     get(node, 'arguments.0.properties.0.value.values.0.magnitude', '')
   )
 
-  const bucketsInQuery: string[] = findNodes(ast, isFromBucket).map(node =>
+  const bucketsInQuery: string[] = findNodes(ast, isFromBucket).map((node) =>
     get(node, 'arguments.0.properties.0.value.value', '')
   )
 
-  const functionsInQuery: string[] = findNodes(ast, isFromFunction).map(node =>
-    get(node, 'arguments.0.properties.1.value.name', '')
-  )
+  const functionsInQuery: string[] = findNodes(
+    ast,
+    isFromFunction
+  ).map((node) => get(node, 'arguments.0.properties.1.value.name', ''))
 
-  const tagsKeysInQuery: string[] = findNodes(ast, isFromTag).map(node =>
+  const tagsKeysInQuery: string[] = findNodes(ast, isFromTag).map((node) =>
     get(node, 'arguments.0.properties.0.value.body.left.property.value', '')
   )
 
-  const tagsValuesInQuery: string[] = findNodes(ast, isFromTag).map(node =>
+  const tagsValuesInQuery: string[] = findNodes(ast, isFromTag).map((node) =>
     get(node, 'arguments.0.properties.0.value.body.right.value', '')
   )
 
@@ -194,7 +195,7 @@ export const generateHashedQueryID = (
   const hashedQuery = `${hashCode(query)}`
   const usedVars = filterUnusedVarsBasedOnQuery(vars, [query])
   const variables = sortBy(usedVars, ['name'])
-  const simplifiedVariables = variables.map(v => asSimplyKeyValueVariables(v))
+  const simplifiedVariables = variables.map((v) => asSimplyKeyValueVariables(v))
   const stringifiedVars = JSON.stringify(simplifiedVariables)
   // create the queryID based on the query & vars
   const hashedVariables = `${hashCode(stringifiedVars)}`
@@ -213,14 +214,14 @@ export const cancelQueryByHashID = (queryID: string): void => {
 
 const cancelQuerysByHashIDs = (queryIDs?: string[]): void => {
   if (queryIDs.length > 0) {
-    queryIDs.forEach(queryID => cancelQueryByHashID(queryID))
+    queryIDs.forEach((queryID) => cancelQueryByHashID(queryID))
   }
   Object.keys(queryReference).forEach((queryID: string) => {
     cancelQueryByHashID(queryID)
   })
 }
 
-export const cancelAllRunningQueries = () => dispatch => {
+export const cancelAllRunningQueries = () => (dispatch) => {
   cancelQuerysByHashIDs(Object.keys(queryReference))
   dispatch(setQueryResults(RemoteDataState.Done, null, null))
 }
@@ -236,7 +237,7 @@ export const setQueryByHashID = (queryID: string, result: any): void => {
     .then(() => {
       queryReference[queryID].status = RemoteDataState.Done
     })
-    .catch(error => {
+    .catch((error) => {
       if (error.name === 'CancellationError' || error.name === 'AbortError') {
         queryReference[queryID].status = RemoteDataState.Done
         return
@@ -275,8 +276,8 @@ export const executeQueries = (abortController?: AbortController) => async (
     const allVariables = getAllVariables(state)
 
     const variableAssignments = allVariables
-      .map(v => asAssignment(v))
-      .filter(v => !!v)
+      .map((v) => asAssignment(v))
+      .filter((v) => !!v)
 
     const startTime = window.performance.now()
     const startDate = Date.now()
@@ -312,7 +313,7 @@ export const executeQueries = (abortController?: AbortController) => async (
       setQueryByHashID(queryID, result)
       return result
     })
-    const results = await Promise.all(pendingResults.map(r => r.promise))
+    const results = await Promise.all(pendingResults.map((r) => r.promise))
 
     const duration = window.performance.now() - startTime
 
@@ -333,7 +334,7 @@ export const executeQueries = (abortController?: AbortController) => async (
       if (result.type === 'UNKNOWN_ERROR') {
         if (isDemoDataAvailabilityError(result.code, result.message)) {
           const message = demoDataErrorMessage()
-          const buttonElement: NotificationButtonElement = onDismiss =>
+          const buttonElement: NotificationButtonElement = (onDismiss) =>
             getDemoDataErrorButton(onDismiss)
           dispatch(notify(demoDataAvailability(message, buttonElement)))
         }
@@ -342,7 +343,7 @@ export const executeQueries = (abortController?: AbortController) => async (
           state.currentExplorer.isAutoFunction
         ) {
           const message = `It looks like you're trying to apply a number-based aggregate function to a string, which cannot be processed. You can fix this by selecting the Aggregate Function "Last"`
-          const buttonElement: NotificationButtonElement = onDismiss =>
+          const buttonElement: NotificationButtonElement = (onDismiss) =>
             getAggregateTypeErrorButton(onDismiss)
           dispatch(notify(updateAggregateType(message, buttonElement)))
         }
@@ -368,7 +369,7 @@ export const executeQueries = (abortController?: AbortController) => async (
       }
     }
 
-    const files = (results as RunQuerySuccessResult[]).map(r => r.csv)
+    const files = (results as RunQuerySuccessResult[]).map((r) => r.csv)
     dispatch(
       setQueryResults(RemoteDataState.Done, files, duration, null, statuses)
     )
@@ -401,9 +402,9 @@ const saveDraftQueries = (): SaveDraftQueriesAction => ({
   type: 'SAVE_DRAFT_QUERIES',
 })
 
-export const saveAndExecuteQueries = (
-  abortController?: AbortController
-) => dispatch => {
+export const saveAndExecuteQueries = (abortController?: AbortController) => (
+  dispatch
+) => {
   dispatch(saveDraftQueries())
   dispatch(setQueryResults(RemoteDataState.Loading, [], null))
   dispatch(executeQueries(abortController))

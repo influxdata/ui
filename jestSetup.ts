@@ -23,7 +23,7 @@ window.flushAllPromises = async () => {
 
 // mocks and stuff
 fetchMock.enableMocks()
-jest.mock('honeybadger-js', () => () => null)
+jest.mock('src/shared/utils/errors')
 
 // cleans up state between @testing-library/react tests
 afterEach(() => {

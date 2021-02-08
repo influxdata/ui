@@ -3,7 +3,7 @@ import './style.scss'
 
 const COMMENT_REMOVER = /(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm
 
-export default register => {
+export default (register) => {
   register({
     type: 'rawFluxEditor',
     family: 'transform',

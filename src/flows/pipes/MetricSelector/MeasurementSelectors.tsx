@@ -33,7 +33,7 @@ const MeasurementSelectors: FC<Props> = ({measurements}) => {
   )
   return (
     <>
-      {measurements.map(measurement => (
+      {measurements.map((measurement) => (
         <List.Item
           key={measurement}
           value={measurement}
@@ -48,7 +48,6 @@ const MeasurementSelectors: FC<Props> = ({measurements}) => {
             {measurement}
           </div>
           <div className="selectors--item-name">measurement</div>
-          <div className="selectors--item-type">string</div>
         </List.Item>
       ))}
     </>

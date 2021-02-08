@@ -98,12 +98,12 @@ const columnTarget = {
 }
 
 function ColumnDropTarget(dropColumnType, dropColumnTarget, dropHandler) {
-  return target =>
+  return (target) =>
     DropTarget(dropColumnType, dropColumnTarget, dropHandler)(target) as any
 }
 
 function ColumnDragSource(dragColumnType, dragColumnSource, dragHandler) {
-  return target =>
+  return (target) =>
     DragSource(dragColumnType, dragColumnSource, dragHandler)(target) as any
 }
 

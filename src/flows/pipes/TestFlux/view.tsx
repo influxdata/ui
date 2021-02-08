@@ -30,7 +30,7 @@ const TestFlux: FC<PipeProp> = ({Context}) => {
   const startUpload = () => {
     uploadRef.current.click()
   }
-  const parseCSV = evt => {
+  const parseCSV = (evt) => {
     Promise.all(
       Array.from(evt.target.files)
         .filter((file: File) => file.type === 'text/csv')
@@ -47,7 +47,7 @@ const TestFlux: FC<PipeProp> = ({Context}) => {
           })
         })
     )
-      .then(results => {
+      .then((results) => {
         const result = results.join('\n\n')
 
         return {
@@ -56,7 +56,7 @@ const TestFlux: FC<PipeProp> = ({Context}) => {
           source: 'buckets()',
         } as FluxResult
       })
-      .then(result => {
+      .then((result) => {
         setResults(result)
       })
   }
@@ -91,9 +91,9 @@ const TestFlux: FC<PipeProp> = ({Context}) => {
         emptyIcon={IconFont.BarChart}
         toggleVisibilityEnabled={false}
         height={data.panelHeight}
-        onUpdateHeight={panelHeight => update({panelHeight})}
+        onUpdateHeight={(panelHeight) => update({panelHeight})}
         visibility={data.panelVisibility}
-        onUpdateVisibility={panelVisibility => update({panelVisibility})}
+        onUpdateVisibility={(panelVisibility) => update({panelVisibility})}
       >
         <div className="flow-visualization">
           <div className="flow-visualization--view">

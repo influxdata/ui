@@ -31,7 +31,7 @@ describe('testing view refactoring/components', () => {
     yTickStep: null,
   }
 
-  const checkTickProps = graphProps => {
+  const checkTickProps = (graphProps) => {
     expect(graphProps.generateXAxisTicks).toEqual(ticks.generateXAxisTicks)
     expect(graphProps.generateYAxisTicks).toEqual(ticks.generateYAxisTicks)
 
@@ -51,7 +51,7 @@ describe('testing view refactoring/components', () => {
     legendColorizeRows: LEGEND_COLORIZE_ROWS_DEFAULT,
   }
 
-  const checkLegendProps = graphProps => {
+  const checkLegendProps = (graphProps) => {
     expect(graphProps.legendOpacity).toEqual(legendProps.legendOpacity)
     expect(graphProps.legendOrientationThreshold).toEqual(
       legendProps.legendOrientationThreshold

@@ -12,10 +12,5 @@
 
 */
 export const formatOrgRoute = (route: string): string => {
-  return (
-    location.pathname
-      .split('/')
-      .slice(0, 3)
-      .join('/') + route
-  )
+  return location.pathname.split('/').slice(0, 3).join('/') + route
 }

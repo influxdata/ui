@@ -25,7 +25,9 @@ export const getDashboards = async (
       throw new Error(result.data.message)
     }
 
-    const dashboards = result.data.dashboards.map(d => addDashboardDefaults(d))
+    const dashboards = result.data.dashboards.map((d) =>
+      addDashboardDefaults(d)
+    )
 
     return dashboards
   } catch (error) {

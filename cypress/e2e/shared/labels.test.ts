@@ -40,9 +40,7 @@ describe('labels', () => {
         .contains('Create Label')
         .should('be.visible')
       // dismiss
-      cy.getByTestID('overlay--header')
-        .children('button')
-        .click()
+      cy.getByTestID('overlay--header').children('button').click()
     })
 
     // open create 2 - by standard button
@@ -68,23 +66,17 @@ describe('labels', () => {
       .invoke('attr', 'value')
       .should('contain', '#326BBA')
     cy.getByTestID('color-picker--swatch').should('have.length', 50)
-    cy.getByTestID('color-picker--swatch')
-      .eq(23)
-      .trigger('mouseover')
+    cy.getByTestID('color-picker--swatch').eq(23).trigger('mouseover')
     cy.getByTestID('color-picker--swatch')
       .eq(23)
       .invoke('attr', 'title')
       .should('contain', 'Honeydew')
-    cy.getByTestID('color-picker--swatch')
-      .eq(33)
-      .trigger('mouseover')
+    cy.getByTestID('color-picker--swatch').eq(33).trigger('mouseover')
     cy.getByTestID('color-picker--swatch')
       .eq(33)
       .invoke('attr', 'title')
       .should('contain', 'Thunder')
-    cy.getByTestID('color-picker--swatch')
-      .eq(33)
-      .click()
+    cy.getByTestID('color-picker--swatch').eq(33).click()
     cy.getByTestID('color-picker--input')
       .invoke('attr', 'value')
       .should('equal', '#FFD255')
@@ -113,7 +105,7 @@ describe('labels', () => {
     cy.getByTestID('color-picker--randomize').click()
     cy.getByTestID('color-picker--input')
       .invoke('val')
-      .then(hex => {
+      .then((hex) => {
         cy.getByTestID('color-picker--input')
           .parent()
           .parent()
@@ -140,9 +132,7 @@ describe('labels', () => {
 
     // verify name, descr, color
     cy.getByTestID('label-card').should('have.length', 1)
-    cy.getByTestID('label-card')
-      .contains(newLabelName)
-      .should('be.visible')
+    cy.getByTestID('label-card').contains(newLabelName).should('be.visible')
     cy.getByTestID('label-card')
       .contains(newLabelDescription)
       .should('be.visible')
@@ -181,9 +171,7 @@ describe('labels', () => {
     it('can update a label', () => {
       // verify name, descr, color
       cy.getByTestID('label-card').should('have.length', 1)
-      cy.getByTestID('label-card')
-        .contains(oldLabelName)
-        .should('be.visible')
+      cy.getByTestID('label-card').contains(oldLabelName).should('be.visible')
 
       cy.getByTestID('label-card')
         .contains(oldLabelDescription)
@@ -195,9 +183,7 @@ describe('labels', () => {
         .invoke('attr', 'style')
         .should('contain', hex2BgColor(oldLabelColor))
 
-      cy.getByTestID('label-card')
-        .contains(oldLabelName)
-        .click()
+      cy.getByTestID('label-card').contains(oldLabelName).click()
 
       cy.getByTestID('overlay--header')
         .children('div')
@@ -205,31 +191,21 @@ describe('labels', () => {
         .should('equal', 'Edit Label')
 
       // dismiss
-      cy.getByTestID('overlay--header')
-        .children('button')
-        .click()
+      cy.getByTestID('overlay--header').children('button').click()
 
       // modify
-      cy.getByTestID('label-card')
-        .contains(oldLabelName)
-        .click()
+      cy.getByTestID('label-card').contains(oldLabelName).click()
       cy.getByTestID('overlay--container').should('be.visible')
-      cy.getByTestID('create-label-form--name')
-        .clear()
-        .type(newLabelName)
+      cy.getByTestID('create-label-form--name').clear().type(newLabelName)
       cy.getByTestID('create-label-form--description')
         .clear()
         .type(newLabelDescription)
-      cy.getByTestID('color-picker--input')
-        .clear()
-        .type(newLabelColor)
+      cy.getByTestID('color-picker--input').clear().type(newLabelColor)
       cy.getByTestID('create-label-form--submit').click()
 
       // verify name, descr, color
       cy.getByTestID('label-card').should('have.length', 1)
-      cy.getByTestID('label-card')
-        .contains(newLabelName)
-        .should('be.visible')
+      cy.getByTestID('label-card').contains(newLabelName).should('be.visible')
       cy.getByTestID('label-card')
         .contains(newLabelDescription)
         .should('be.visible')
@@ -253,7 +229,7 @@ describe('labels', () => {
     ]
 
     cy.get('@org').then(({id}: Organization) => {
-      names.forEach(n => {
+      names.forEach((n) => {
         cy.createLabel(n.name, id, {description: n.description, color: n.color})
       })
     })
@@ -267,7 +243,7 @@ describe('labels', () => {
     )
 
     // check initial sort asc
-    cy.getByTestIDSubStr('label--pill').then(labels => {
+    cy.getByTestIDSubStr('label--pill').then((labels) => {
       for (let i = 0; i < labels.length; i++) {
         cy.getByTestIDSubStr('label--pill')
           .eq(i)
@@ -282,7 +258,7 @@ describe('labels', () => {
       })
 
     // check sort desc
-    cy.getByTestIDSubStr('label--pill').then(labels => {
+    cy.getByTestIDSubStr('label--pill').then((labels) => {
       for (let i = 0; i < labels.length; i++) {
         cy.getByTestIDSubStr('label--pill')
           .eq(i)
@@ -297,7 +273,7 @@ describe('labels', () => {
         cy.getByTestID('resource-sorter--name-asc').click()
       })
 
-    cy.getByTestIDSubStr('label--pill').then(labels => {
+    cy.getByTestIDSubStr('label--pill').then((labels) => {
       for (let i = 0; i < labels.length; i++) {
         cy.getByTestIDSubStr('label--pill')
           .eq(i)
@@ -318,7 +294,7 @@ describe('labels', () => {
     ]
 
     cy.get<Organization>('@org').then(({id}) => {
-      names.forEach(n => {
+      names.forEach((n) => {
         cy.createLabel(n.name, id, {description: n.description, color: n.color})
       })
     })
@@ -337,7 +313,7 @@ describe('labels', () => {
         cy.getByTestID('resource-sorter--properties.description-asc').click()
       })
 
-    cy.getByTestID('label-card').then(labels => {
+    cy.getByTestID('label-card').then((labels) => {
       for (let i = 0; i < labels.length; i++) {
         cy.getByTestID('label-card--description')
           .eq(i)
@@ -352,7 +328,7 @@ describe('labels', () => {
         cy.getByTestID('resource-sorter--properties.description-desc').click()
       })
 
-    cy.getByTestID('label-card').then(labels => {
+    cy.getByTestID('label-card').then((labels) => {
       for (let i = 0; i < labels.length; i++) {
         cy.getByTestID('label-card--description')
           .eq(i)
@@ -385,7 +361,7 @@ describe('labels', () => {
     ]
 
     cy.get<Organization>('@org').then(({id}) => {
-      names.forEach(n => {
+      names.forEach((n) => {
         cy.createLabel(n.name, id, {description: n.description, color: n.color})
       })
     })
@@ -393,23 +369,17 @@ describe('labels', () => {
     cy.reload()
 
     // input the search for titles check
-    cy.getByTestID('search-widget')
-      .clear()
-      .type('Apfel')
+    cy.getByTestID('search-widget').clear().type('Apfel')
 
     cy.getByTestID('label-card').should('have.length', 2)
 
     // input the search for description check
-    cy.getByTestID('search-widget')
-      .clear()
-      .type('sandwich')
+    cy.getByTestID('search-widget').clear().type('sandwich')
 
     cy.getByTestID('label-card').should('have.length', 2)
 
     // input the search for checking both name and description
-    cy.getByTestID('search-widget')
-      .clear()
-      .type('bread')
+    cy.getByTestID('search-widget').clear().type('bread')
 
     cy.getByTestID('label-card').should('have.length', 2)
   })

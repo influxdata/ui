@@ -7,7 +7,9 @@ export const formatVarsOption = (variables: VariableAssignment[]): string => {
     return ''
   }
 
-  const lines = variables.map(v => `${v.id.name}: ${formatExpression(v.init)}`)
+  const lines = variables.map(
+    (v) => `${v.id.name}: ${formatExpression(v.init)}`
+  )
 
   const option = `option ${OPTION_NAME} = {
   ${lines.join(',\n  ')}

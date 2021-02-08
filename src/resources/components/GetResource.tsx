@@ -35,7 +35,7 @@ class GetResource extends PureComponent<Props> {
   public componentDidMount() {
     const {resources} = this.props
     const promises = []
-    resources.forEach(resource => {
+    resources.forEach((resource) => {
       promises.push(this.getResourceDetails(resource))
     })
     Promise.all(promises)

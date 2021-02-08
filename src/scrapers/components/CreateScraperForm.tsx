@@ -48,7 +48,7 @@ export class ScraperTarget extends PureComponent<Props> {
                 validationFunc={this.handleNameValidation}
                 value={name}
               >
-                {status => (
+                {(status) => (
                   <Input
                     value={name}
                     name="name"
@@ -76,7 +76,7 @@ export class ScraperTarget extends PureComponent<Props> {
                 validationFunc={this.handleUrlValidation}
                 value={url}
               >
-                {status => (
+                {(status) => (
                   <Input
                     value={url}
                     name="url"

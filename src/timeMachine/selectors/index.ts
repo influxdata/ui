@@ -82,7 +82,7 @@ export const getActiveQueryIndex = (state: AppState): number => {
 // TODO kill this function
 export const getActiveWindowPeriod = (state: AppState) => {
   const {text} = getActiveQuery(state)
-  const variables = getAllVariables(state).map(v => asAssignment(v))
+  const variables = getAllVariables(state).map((v) => asAssignment(v))
   return getWindowPeriod(text, variables)
 }
 
@@ -174,7 +174,7 @@ const getGroupableColumnSelection = (
   preference: string[],
   fluxGroupKeyUnion: string[]
 ): string[] => {
-  if (preference && preference.every(col => validColumns.includes(col))) {
+  if (preference && preference.every((col) => validColumns.includes(col))) {
     return preference
   }
 
@@ -251,16 +251,12 @@ export const getStartTime = (timeRange: TimeRange) => {
     case 'custom':
       return moment(timeRange.lower).valueOf()
     case 'selectable-duration':
-      return moment()
-        .subtract(timeRange.seconds, 'seconds')
-        .valueOf()
+      return moment().subtract(timeRange.seconds, 'seconds').valueOf()
     case 'duration':
       const millisecondDuration = durationToMilliseconds(
         parseDuration(timeRangeToDuration(timeRange))
       )
-      return moment()
-        .subtract(millisecondDuration, 'milliseconds')
-        .valueOf()
+      return moment().subtract(millisecondDuration, 'milliseconds').valueOf()
     default:
       throw new Error(
         'unknown timeRange type ${timeRange.type} provided to getStartTime'
@@ -286,7 +282,7 @@ export const getActiveTimeRange = (
     return timeRange
   }
   const hasVariableTimes = queries.some(
-    query =>
+    (query) =>
       query.text.includes('v.timeRangeStart') ||
       query.text.includes('v.timeRangeStop')
   )
@@ -299,7 +295,7 @@ export const getActiveTimeRange = (
 const getMainColumn = (state: AppState) => {
   const {builderConfig} = getActiveQuery(state)
   const {functions} = builderConfig
-  const selectedFunctions = functions.map(f => f.name)
+  const selectedFunctions = functions.map((f) => f.name)
   const view = getActiveTimeMachine(state).view as NewView<BandViewProperties>
   const {upperColumn, mainColumn, lowerColumn} = view.properties
   return getMainColumnName(

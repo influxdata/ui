@@ -65,7 +65,7 @@ class AddResourceDropdown extends PureComponent<Props> {
             {titleText || `Create ${this.props.resourceName}`}
           </Dropdown.Button>
         )}
-        menu={onCollapse => (
+        menu={(onCollapse) => (
           <Dropdown.Menu
             onCollapse={onCollapse}
             testID="add-resource-dropdown--menu"

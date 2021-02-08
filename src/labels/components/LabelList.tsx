@@ -88,7 +88,7 @@ export default class LabelList extends PureComponent<Props, State> {
 
   private get label(): Label | null {
     if (this.state.labelID) {
-      return this.props.labels.find(l => l.id === this.state.labelID)
+      return this.props.labels.find((l) => l.id === this.state.labelID)
     }
   }
 
@@ -113,7 +113,7 @@ export default class LabelList extends PureComponent<Props, State> {
   private handleNameValidation = (name: string): string | null => {
     const {labels} = this.props
 
-    const names = labels.map(label => label.name).filter(l => l !== name)
+    const names = labels.map((label) => label.name).filter((l) => l !== name)
 
     return validateLabelUniqueness(names, name)
   }

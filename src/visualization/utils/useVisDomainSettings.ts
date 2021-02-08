@@ -87,7 +87,7 @@ export const useVisYDomainSettings = (
   const initialDomain = useMemo(() => {
     if (
       !Array.isArray(storedDomain) ||
-      storedDomain.every(val => val === null)
+      storedDomain.every((val) => val === null)
     ) {
       return getValidRange(data, timeRange)
     }

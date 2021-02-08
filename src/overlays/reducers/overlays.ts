@@ -15,6 +15,7 @@ export type OverlayID =
   | 'switch-organizations'
   | 'create-bucket'
   | 'asset-limit'
+  | 'rate-limit'
   | 'create-annotation-stream'
   | 'update-annotation-stream'
   | 'add-annotation'
@@ -38,7 +39,7 @@ export const overlaysReducer = (
   state = defaultState,
   action: Actions
 ): OverlayState =>
-  produce(state, draftState => {
+  produce(state, (draftState) => {
     switch (action.type) {
       case ActionTypes.ShowOverlay: {
         const {overlayID, overlayParams, onClose} = action.payload

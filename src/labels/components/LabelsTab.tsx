@@ -108,7 +108,7 @@ class Labels extends PureComponent<Props, State> {
           searchKeys={['name', 'properties.description']}
           searchTerm={searchTerm}
         >
-          {ls => (
+          {(ls) => (
             <LabelList
               labels={ls}
               emptyState={this.emptyState}
@@ -163,7 +163,7 @@ class Labels extends PureComponent<Props, State> {
   }
 
   private handleNameValidation = (name: string): string | null => {
-    const names = this.props.labels.map(label => label.name)
+    const names = this.props.labels.map((label) => label.name)
 
     return validateLabelUniqueness(names, name)
   }

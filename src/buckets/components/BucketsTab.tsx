@@ -118,7 +118,7 @@ class BucketsTab extends PureComponent<Props, State> {
                 searchKeys={['name', 'readableRetention', 'labels[].name']}
                 list={buckets}
               >
-                {bs => (
+                {(bs) => (
                   <BucketList
                     buckets={bs}
                     emptyState={this.emptyState}

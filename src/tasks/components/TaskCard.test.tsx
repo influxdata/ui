@@ -35,7 +35,7 @@ const setup = (override = {}) => {
           [labels[0].id]: labels[0],
           [labels[1].id]: labels[1],
         },
-        allIDs: labels.map(l => l.id),
+        allIDs: labels.map((l) => l.id),
       },
     },
   }

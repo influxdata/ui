@@ -70,7 +70,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
       setBucketDraft(resp.data as OwnBucket)
 
       const rules = get(resp.data, 'retentionRules', [])
-      const rule = rules.find(r => r.type === 'expire')
+      const rule = rules.find((r) => r.type === 'expire')
       if (rule) {
         setRetentionSelection(rule.everySeconds)
       }
@@ -121,7 +121,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
   }
 
   const rules = get(bucketDraft, 'retentionRules', [])
-  const rule = rules.find(r => r.type === 'expire')
+  const rule = rules.find((r) => r.type === 'expire')
 
   const retentionSeconds = rule ? rule.everySeconds : retentionSelection
   const ruleType = rule ? ('expire' as 'expire') : null

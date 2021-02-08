@@ -27,7 +27,7 @@ class GenerateTokenDropdown extends PureComponent<Props> {
             Generate
           </Dropdown.Button>
         )}
-        menu={onCollapse => (
+        menu={(onCollapse) => (
           <Dropdown.Menu onCollapse={onCollapse}>
             {this.optionItems}
           </Dropdown.Menu>

@@ -29,7 +29,7 @@ export const labelsReducer = (
   state: LabelsState = initialState(),
   action: Action
 ): LabelsState =>
-  produce(state, draftState => {
+  produce(state, (draftState) => {
     switch (action.type) {
       case SET_LABELS: {
         setResource<Label>(draftState, action, ResourceType.Labels)

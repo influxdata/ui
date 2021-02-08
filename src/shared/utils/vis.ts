@@ -38,7 +38,7 @@ const NOISY_LEGEND_COLUMNS = new Set(['_start', '_stop', 'result'])
   columns in the hover legend.
 */
 export const filterNoisyColumns = (columns: string[], table: Table): string[] =>
-  columns.filter(key => {
+  columns.filter((key) => {
     if (!NOISY_LEGEND_COLUMNS.has(key)) {
       return true
     }
@@ -112,7 +112,7 @@ export const checkResultsLength = (giraffeResult: FromFluxResult): boolean => {
 }
 
 export const getNumericColumns = (table: Table): string[] => {
-  const timeColumns = table.columnKeys.filter(k => {
+  const timeColumns = table.columnKeys.filter((k) => {
     if (k === 'result' || k === 'table') {
       return false
     }
@@ -126,7 +126,7 @@ export const getNumericColumns = (table: Table): string[] => {
 }
 
 export const getTimeColumns = (table: Table): string[] => {
-  const timeColumns = table.columnKeys.filter(k => {
+  const timeColumns = table.columnKeys.filter((k) => {
     if (k === 'result' || k === 'table') {
       return false
     }
@@ -139,7 +139,7 @@ export const getTimeColumns = (table: Table): string[] => {
 }
 
 export const getNumberColumns = (table: Table): string[] => {
-  const numberColumnKeys = table.columnKeys.filter(k => {
+  const numberColumnKeys = table.columnKeys.filter((k) => {
     if (k === 'result' || k === 'table') {
       return false
     }
@@ -152,7 +152,7 @@ export const getNumberColumns = (table: Table): string[] => {
 }
 
 export const getStringColumns = (table: Table): string[] => {
-  const stringColumnKeys = table.columnKeys.filter(k => {
+  const stringColumnKeys = table.columnKeys.filter((k) => {
     if (k === 'result' || k === 'table') {
       return false
     }
@@ -168,7 +168,7 @@ export const getStringColumns = (table: Table): string[] => {
 export const getGroupableColumns = (table: Table): string[] => {
   const invalidGroupColumns = new Set(['_value', '_time', 'table'])
   const groupableColumns = table.columnKeys.filter(
-    name => !invalidGroupColumns.has(name)
+    (name) => !invalidGroupColumns.has(name)
   )
 
   return groupableColumns
@@ -254,7 +254,7 @@ export const mosaicYColumn = (
     '_measurement',
   ])
   const preferredValidColumnKeys = validColumnKeys.filter(
-    name => !invalidMosaicYColumns.has(name)
+    (name) => !invalidMosaicYColumns.has(name)
   )
   if (preferredValidColumnKeys.length) {
     return preferredValidColumnKeys[0]
@@ -288,7 +288,7 @@ export const getMainColumnName = (
   lowerColumn: string
 ): string => {
   const hasMainColumn = selectedFunctions.some(
-    funcName => funcName === mainColumn
+    (funcName) => funcName === mainColumn
   )
 
   if (hasMainColumn) {

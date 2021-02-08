@@ -57,7 +57,7 @@ class RenameVariableOverlayForm extends PureComponent<Props, State> {
                   required={true}
                   validationFunc={this.handleNameValidation}
                 >
-                  {status => (
+                  {(status) => (
                     <Input
                       placeholder="Rename your variable"
                       name="name"
@@ -128,9 +128,9 @@ class RenameVariableOverlayForm extends PureComponent<Props, State> {
   }
 }
 
-const mstp = (state: AppState, {match}: RouterProps) => {
+const mstp = (state: AppState) => {
   const variables = getVariables(state)
-  const startVariable = variables.find(v => v.id === match.params.id)
+  const startVariable = variables.find((v) => v.id === state.overlays.params.id)
 
   return {variables, startVariable}
 }

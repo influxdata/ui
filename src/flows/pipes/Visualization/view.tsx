@@ -40,7 +40,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
   }, [optionsVisibility, setOptionsVisibility])
 
   const updateProperties = useCallback(
-    properties => {
+    (properties) => {
       update({
         properties: {
           ...data.properties,
@@ -110,9 +110,9 @@ const Visualization: FC<PipeProp> = ({Context}) => {
         emptyIcon={IconFont.BarChart}
         toggleVisibilityEnabled={false}
         height={data.panelHeight}
-        onUpdateHeight={panelHeight => update({panelHeight})}
+        onUpdateHeight={(panelHeight) => update({panelHeight})}
         visibility={data.panelVisibility}
-        onUpdateVisibility={panelVisibility => update({panelVisibility})}
+        onUpdateVisibility={(panelVisibility) => update({panelVisibility})}
       >
         <div className="flow-visualization">
           <div className="flow-visualization--view">

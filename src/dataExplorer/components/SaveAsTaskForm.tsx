@@ -91,7 +91,7 @@ class SaveAsTaskForm extends PureComponent<
     const {saveNewScript, newScript, taskOptions, goToTasks} = this.props
 
     // Don't embed variables that are not used in the script
-    const vars = [...this.props.userDefinedVars].filter(assignment =>
+    const vars = [...this.props.userDefinedVars].filter((assignment) =>
       newScript.includes(assignment.id.name)
     )
 
@@ -132,8 +132,8 @@ const mstp = (state: AppState) => {
   const activeQuery = getActiveQuery(state)
   const org = getOrg(state)
   const userDefinedVars = getAllVariables(state)
-    .map(v => asAssignment(v))
-    .filter(v => !!v)
+    .map((v) => asAssignment(v))
+    .filter((v) => !!v)
 
   return {
     newScript,

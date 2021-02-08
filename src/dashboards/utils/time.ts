@@ -58,7 +58,7 @@ export const validateAndTypeRange = (timeRange: {
 
   if (isDurationWithNowParseable(lower)) {
     const selectableTimeRange = SELECTABLE_TIME_RANGES.find(
-      r => r.lower === lower
+      (r) => r.lower === lower
     )
 
     if (selectableTimeRange) {

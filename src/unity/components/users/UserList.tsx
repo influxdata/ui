@@ -37,7 +37,7 @@ const UserList: FC = () => {
             icon={IconFont.Search}
             placeholder="Filter members..."
             value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </Grid.Column>
       </Grid.Row>
@@ -51,10 +51,10 @@ const UserList: FC = () => {
           <IndexList.HeaderCell width="10%" columnName="" />
         </IndexList.Header>
         <IndexList.Body emptyState={null} columnCount={4}>
-          {filteredInvites.map(invite => (
+          {filteredInvites.map((invite) => (
             <InviteListItem key={`invite-${invite.id}`} invite={invite} />
           ))}
-          {filteredUsers.map(user => (
+          {filteredUsers.map((user) => (
             <UserListItem key={`user-${user.id}`} user={user} />
           ))}
         </IndexList.Body>

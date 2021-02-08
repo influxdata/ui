@@ -85,9 +85,9 @@ const ThresholdSetting: FunctionComponent<Props> = ({
             className="threshold-setting--value"
             value={value}
             status={inputStatus}
-            onChange={e => onChangeValue(e.target.value)}
+            onChange={(e) => onChangeValue(e.target.value)}
             onBlur={onBlur}
-            onKeyDown={e => {
+            onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 onBlur()
               }
@@ -96,7 +96,7 @@ const ThresholdSetting: FunctionComponent<Props> = ({
         )}
         <ColorDropdown
           colors={THRESHOLD_COLORS}
-          selected={THRESHOLD_COLORS.find(d => d.name === name)}
+          selected={THRESHOLD_COLORS.find((d) => d.name === name)}
           onChoose={({name, hex}) => onChangeColor(name, hex)}
           style={dropdownStyle}
         />

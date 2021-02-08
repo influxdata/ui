@@ -21,7 +21,7 @@ export const updateQueryParams = (
       ...qs.parse(currentQueryString, {ignoreQueryPrefix: true}),
       ...updatedQueryParams,
     },
-    v => !!v
+    (v) => !!v
   )
 
   const newQueryString = qs.stringify(newQueryParams)

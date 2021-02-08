@@ -131,7 +131,7 @@ class MultipleInput extends PureComponent<Props, State> {
     }
   }
 
-  private handleSubmit = e => {
+  private handleSubmit = (e) => {
     e.preventDefault()
     const newItem = this.inputRef.current.value.trim()
     const {tags, onAddRow} = this.props
@@ -142,7 +142,7 @@ class MultipleInput extends PureComponent<Props, State> {
     onAddRow(this.inputRef.current.value)
   }
 
-  private handleKeyDown = e => {
+  private handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault()
       const newItem = e.target.value.trim()
@@ -160,7 +160,7 @@ class MultipleInput extends PureComponent<Props, State> {
   }
 
   private shouldAddToList(item: Item, tags: Item[]): boolean {
-    return !_.isEmpty(item) && !tags.find(l => l === item)
+    return !_.isEmpty(item) && !tags.find((l) => l === item)
   }
 
   private handleValidateURI = (value: string): void => {

@@ -62,7 +62,7 @@ function useResource<T>(
       }
 
       delete resource.byID[id]
-      resource.allIDs = resource.allIDs.filter(i => i !== id)
+      resource.allIDs = resource.allIDs.filter((i) => i !== id)
 
       onChange(resource)
     },
@@ -71,7 +71,7 @@ function useResource<T>(
       return resource.allIDs
     },
     get all() {
-      return resource.allIDs.map(id => resource.byID[id])
+      return resource.allIDs.map((id) => resource.byID[id])
     },
 
     indexOf: (id: string): number => {

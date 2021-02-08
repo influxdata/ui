@@ -80,9 +80,9 @@ class MapVariableBuilder extends PureComponent<Props, State> {
                     {this.defaultID}
                   </Dropdown.Button>
                 )}
-                menu={onCollapse => (
+                menu={(onCollapse) => (
                   <Dropdown.Menu onCollapse={onCollapse}>
-                    {entries.map(v => (
+                    {entries.map((v) => (
                       <Dropdown.Item
                         key={v.key}
                         id={v.key}

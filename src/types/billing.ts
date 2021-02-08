@@ -4,72 +4,36 @@
 import {
   Account as GenAccount,
   BillingNotifySettings as GenBillingNotifySettings,
-  Invoice as GenInvoice,
-  PaymentMethod as GenPaymentMethod,
+  Region as GenRegion,
+  History as GenHistory,
+  BillingDate as GenBillingDate,
 } from 'src/client/unityRoutes'
-import {RemoteDataState, LimitsStatus as GenLimitsStatus} from 'src/types'
+export {
+  BillingContact,
+  CreditCardParams,
+  Invoice,
+  Invoices,
+  PaymentMethod,
+  PaymentMethods,
+} from 'src/client/unityRoutes'
+import {RemoteDataState} from 'src/types'
 
-export interface LimitStatus extends GenLimitsStatus {
+export interface Region extends GenRegion {
   status: RemoteDataState
 }
 
-export interface Region {
-  title: string
-  isBeta: boolean
-  isAvailable: boolean
-  provider: string
-  region: string
+export interface History extends GenHistory {
   status: RemoteDataState
 }
-
-interface BillingContact {
-  companyName: string
-  email: string
-  firstName: string
-  lastName: string
-  country: string
-  street1: string
-  street2: string
-  city: string
-  subdivision: string
-  postalCode: number
-}
-
-export interface CreditCardParams {
-  id: string
-  tenantID: string
-  key: string
-  signature: string
-  token: string
-  style: string
-  submitEnabled: 'true' | 'false' // Zuora wants the literal string true or false
-  url: string
-}
-
-export interface MarketplaceSubscription {
-  marketplace: string
-  subscriberId: string
-  status: string
-}
-
 export interface Account extends GenAccount {
   status: RemoteDataState
 }
 
-export interface PaymentMethod extends GenPaymentMethod {}
-
-export type PaymentMethods = PaymentMethod[]
-
-export interface Invoice extends GenInvoice {}
-
-export type Invoices = Invoice[]
-
-// Current FreePage Props
-export interface Props {
-  isRegionBeta: boolean
+export interface BillingNotifySettings extends GenBillingNotifySettings {
+  status: RemoteDataState
 }
 
-export interface BillingNotifySettings extends GenBillingNotifySettings {
+export interface BillingDate extends GenBillingDate {
   status: RemoteDataState
 }
 
@@ -77,12 +41,8 @@ export interface BillingNotifySettings extends GenBillingNotifySettings {
 export interface Props {
   account: Account // could we possibly combine Account with BillingContact?
   billingNotifySettings: BillingNotifySettings // separate endpoint w/ put [x]
-  ccPageParams: CreditCardParams // separate endpoint [X]
-  contact: BillingContact // separate endpoint (get, put)
   email: string // where does this come from?
-  invoices: Invoices // separate endpoint [X]
-  limitStatuses: LimitStatus // get from IDPE
-  paymentMethods: PaymentMethods // separate endpoint [X]
+  history: History
   region: Region
 }
 

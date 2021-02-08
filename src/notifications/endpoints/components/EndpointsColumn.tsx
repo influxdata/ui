@@ -69,7 +69,7 @@ const EndpointsColumn: FC<Props> = ({history, match, endpoints, tabIndex}) => {
       questionMarkTooltipContents={tooltipContents}
       tabIndex={tabIndex}
     >
-      {searchTerm => (
+      {(searchTerm) => (
         <EndpointCards endpoints={endpoints} searchTerm={searchTerm} />
       )}
     </AlertsColumn>

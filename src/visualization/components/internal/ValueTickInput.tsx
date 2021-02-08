@@ -22,7 +22,7 @@ interface ValueTickInputProps {
   update: (data: any) => void
 }
 
-export const ValueTickInput: FC<ValueTickInputProps> = props => {
+export const ValueTickInput: FC<ValueTickInputProps> = (props) => {
   const {
     axisName,
     tickOptions,
@@ -36,9 +36,10 @@ export const ValueTickInput: FC<ValueTickInputProps> = props => {
       ? initialTickOptionValue
       : ''
   )
-  const [tickOptionInputStatus, setTickOptionInputStatus] = useState<
-    ComponentStatus
-  >(ComponentStatus.Default)
+  const [
+    tickOptionInputStatus,
+    setTickOptionInputStatus,
+  ] = useState<ComponentStatus>(ComponentStatus.Default)
 
   const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
     setTickOptionInput(event.target.value)
@@ -50,7 +51,7 @@ export const ValueTickInput: FC<ValueTickInputProps> = props => {
     const tickOptionNameWithoutAxis = label.split(' ').join('')
     const tickOptionNameWithAxis = `${axisName.toLowerCase()}${tickOptionNameWithoutAxis}`
     const filteredTickOptions = Array.isArray(tickOptions)
-      ? tickOptions.filter(option => option !== tickOptionNameWithAxis)
+      ? tickOptions.filter((option) => option !== tickOptionNameWithAxis)
       : []
 
     if (convertedValue === convertedValue) {

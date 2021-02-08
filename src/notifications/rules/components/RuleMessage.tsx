@@ -33,7 +33,7 @@ type Props = OwnProps & StateProps
 const RuleMessage: FC<Props> = ({endpoints, rule}) => {
   const dispatch = useRuleDispatch()
 
-  const onSelectEndpoint = endpointID => {
+  const onSelectEndpoint = (endpointID) => {
     dispatch({
       type: 'UPDATE_RULE',
       rule: {

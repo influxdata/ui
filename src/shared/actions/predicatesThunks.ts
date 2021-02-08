@@ -43,7 +43,7 @@ import {
 import {Filter, GetState, RemoteDataState} from 'src/types'
 
 const formatFilters = (filters: Filter[]) =>
-  filters.map(f => `${f.key} ${f.equality} ${f.value}`).join(' AND ')
+  filters.map((f) => `${f.key} ${f.equality} ${f.value}`).join(' AND ')
 
 export const deleteWithPredicate = () => async (
   dispatch: Dispatch<Action>,
@@ -104,8 +104,8 @@ export const executePreviewQuery = (query: string) => async (
     // garbage to be able to run a query instead of just being able
     // to executeQuery as normal
     const variableAssignments = getVariables(state)
-      .map(v => asAssignment(v))
-      .filter(v => !!v)
+      .map((v) => asAssignment(v))
+      .filter((v) => !!v)
     const windowVars = getWindowVars(query, variableAssignments)
     const extern = buildVarsOption([...variableAssignments, ...windowVars])
     const result = await runQuery(orgID, query, extern).promise

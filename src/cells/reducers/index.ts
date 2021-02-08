@@ -29,7 +29,7 @@ export const cellsReducer = (
   state: CellsState = initialState(),
   action: Action | DashboardAction
 ) =>
-  produce(state, draftState => {
+  produce(state, (draftState) => {
     switch (action.type) {
       case SET_DASHBOARD: {
         const {schema, status} = action
@@ -58,7 +58,7 @@ export const cellsReducer = (
       case SET_VIEWS_AND_CELLS: {
         const {status, cellsArray} = action
 
-        cellsArray.forEach(cellSchema => {
+        cellsArray.forEach((cellSchema) => {
           draftState.status = status
 
           if (get(cellSchema, ['entities', 'cells'])) {

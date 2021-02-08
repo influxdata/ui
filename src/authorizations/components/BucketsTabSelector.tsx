@@ -15,7 +15,7 @@ export default class BucketsTabSelector extends PureComponent<Props> {
     const {tabs, activeTab} = this.props
     return (
       <SelectGroup shape={ButtonShape.StretchToFit}>
-        {tabs.map(tab => (
+        {tabs.map((tab) => (
           <SelectGroup.Option
             name="bucket-selector"
             key={tab}

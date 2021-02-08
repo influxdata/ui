@@ -53,7 +53,7 @@ export const removeFromLocalStorage = (prop: string): void => {
   }
 }
 
-const isValidJSONString = errorString => {
+const isValidJSONString = (errorString) => {
   try {
     JSON.parse(errorString)
   } catch (e) {

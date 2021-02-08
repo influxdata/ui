@@ -76,7 +76,7 @@ class TreeSidebar extends PureComponent<Props> {
           onToggleClick={handleToggleNavExpansion}
           bannerElement={<CloudUpgradeNavBanner />}
         >
-          {navItems.map(item => {
+          {navItems.map((item) => {
             const linkElement = (className: string): JSX.Element => {
               if (item.link.type === 'href') {
                 return <a href={item.link.location} className={className} />
@@ -100,7 +100,7 @@ class TreeSidebar extends PureComponent<Props> {
               >
                 {Boolean(item.menu) && (
                   <TreeNav.SubMenu>
-                    {item.menu.map(menuItem => {
+                    {item.menu.map((menuItem) => {
                       const linkElement = (className: string): JSX.Element => {
                         if (menuItem.link.type === 'href') {
                           return (

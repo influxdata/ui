@@ -50,11 +50,11 @@ export const parseResponse = (response: string): FluxTable[] => {
 export const parseTables = (responseChunk: string): FluxTable[] => {
   const lines = responseChunk.split('\n')
   const annotationLines: string = lines
-    .filter(line => line.startsWith('#'))
+    .filter((line) => line.startsWith('#'))
     .join('\n')
     .trim()
   const nonAnnotationLines: string = lines
-    .filter(line => !line.startsWith('#'))
+    .filter((line) => !line.startsWith('#'))
     .join('\n')
     .trim()
 
@@ -71,8 +71,8 @@ export const parseTables = (responseChunk: string): FluxTable[] => {
   const nonAnnotationData = Papa.parse(nonAnnotationLines).data
   const annotationData = Papa.parse(annotationLines).data
   const headerRow = nonAnnotationData[0]
-  const tableColIndex = headerRow.findIndex(h => h === 'table')
-  const resultColIndex = headerRow.findIndex(h => h === 'result')
+  const tableColIndex = headerRow.findIndex((h) => h === 'table')
+  const resultColIndex = headerRow.findIndex((h) => h === 'result')
 
   interface TableGroup {
     [tableId: string]: string[]
@@ -82,13 +82,13 @@ export const parseTables = (responseChunk: string): FluxTable[] => {
   const tablesData = Object.values(
     _.groupBy<TableGroup[]>(
       nonAnnotationData.slice(1),
-      row => row[tableColIndex]
+      (row) => row[tableColIndex]
     )
   )
 
-  const groupRow = annotationData.find(row => row[0] === '#group')
-  const defaultsRow = annotationData.find(row => row[0] === '#default')
-  const dataTypeRow = annotationData.find(row => row[0] === '#datatype')
+  const groupRow = annotationData.find((row) => row[0] === '#group')
+  const defaultsRow = annotationData.find((row) => row[0] === '#default')
+  const dataTypeRow = annotationData.find((row) => row[0] === '#datatype')
 
   // groupRow = ['#group', 'false', 'true', 'true', 'false']
   const groupKeyIndices = groupRow.reduce((acc, value, i) => {
@@ -99,7 +99,7 @@ export const parseTables = (responseChunk: string): FluxTable[] => {
     return acc
   }, [])
 
-  const tables = tablesData.map(tableData => {
+  const tables = tablesData.map((tableData) => {
     const dataRow = _.get(tableData, '0', defaultsRow)
 
     const result: string =
@@ -146,7 +146,7 @@ export const tableFromFluxResult = (flux: FromFluxResult): FluxTable[] => {
   const columnKeys = [
     'result',
     'table',
-    ...keys.filter(k => k !== 'result' && k !== 'table'),
+    ...keys.filter((k) => k !== 'result' && k !== 'table'),
   ]
   // tables, values, and the index references will be used to
   // help delineate when a chunk begins and ends
@@ -162,7 +162,7 @@ export const tableFromFluxResult = (flux: FromFluxResult): FluxTable[] => {
   const dataTypes = {
     '': '#datatype',
   }
-  columnKeys.forEach(col => {
+  columnKeys.forEach((col) => {
     dataTypes[col] = table.getOriginalColumnType(col)
   })
 
@@ -172,7 +172,7 @@ export const tableFromFluxResult = (flux: FromFluxResult): FluxTable[] => {
   let columnValues
 
   // build out the columnHeaders. The columnHeaders are the basis for the groupKey & represent the first row of each data chunk
-  let columnHeaders = columnKeys.filter(col => {
+  let columnHeaders = columnKeys.filter((col) => {
     columnType = table.getColumnType(col)
     columnValues = table.getColumn(col, columnType)
     return columnValues[valueIndex] !== undefined
@@ -182,7 +182,7 @@ export const tableFromFluxResult = (flux: FromFluxResult): FluxTable[] => {
   let groupKey = {}
   let currentValue: any
   // build out the current groupKey based on the columnHeaders
-  columnHeaders.forEach(column => {
+  columnHeaders.forEach((column) => {
     columnType = table.getColumnType(column)
     originalType = table.getOriginalColumnType(column)
     columnValues = table.getColumn(column, columnType)
@@ -241,13 +241,13 @@ export const tableFromFluxResult = (flux: FromFluxResult): FluxTable[] => {
       valueIndex = i
       tableIndex = i
       // reset the columnHeaders
-      columnHeaders = columnKeys.filter(col => {
+      columnHeaders = columnKeys.filter((col) => {
         columnType = table.getColumnType(col)
         columnValues = table.getColumn(col, columnType)
         return columnValues[i] !== undefined
       })
       // rebuild the groupKey based on the new headers
-      columnHeaders.forEach(col => {
+      columnHeaders.forEach((col) => {
         columnType = table.getColumnType(col)
         originalType = table.getOriginalColumnType(column)
         columnValues = table.getColumn(col, columnType)

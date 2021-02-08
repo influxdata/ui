@@ -6,7 +6,7 @@ export const dedupeTags = (tags: Tag[]): NormalizedTag[] => {
   const cache = {}
   const set = new Set()
   let results = []
-  tags.forEach(tag => {
+  tags.forEach((tag) => {
     Object.entries(tag).forEach(([tagName, values]) => {
       const tagValues = [...values]
       // sorting tagValues to check for exact matches when doing string comparisons
@@ -51,12 +51,12 @@ const filterTags = (
   searchTerm: string
 ): NormalizedTag[] =>
   tags.filter(
-    tag =>
+    (tag) =>
       Object.entries(tag).filter(([tagName, tagValues]) => {
         if (tagName.toLowerCase().includes(searchTerm)) {
           return true
         }
-        return tagValues?.some(val => val.toLowerCase().includes(searchTerm))
+        return tagValues?.some((val) => val.toLowerCase().includes(searchTerm))
       }).length !== 0
   )
 
@@ -90,18 +90,20 @@ export const normalizeSchema = (
       const {fields, tags} = values
       if (!!selectedField) {
         // filter out measurements that are not associated with the selected field
-        return fields.some(field => field === selectedField)
+        return fields.some((field) => field === selectedField)
       }
       if (Object.keys(selectedTags)?.length > 0) {
         const tagNames = Object.keys(selectedTags)
         // TODO(ariel): do we care about matching the values as well?
-        return tagNames.some(tagName => tagName in tags)
+        return tagNames.some((tagName) => tagName in tags)
       }
       if (measurement.toLowerCase().includes(lowerCasedSearchTerm)) {
         return true
       }
       if (
-        fields.some(field => field.toLowerCase().includes(lowerCasedSearchTerm))
+        fields.some((field) =>
+          field.toLowerCase().includes(lowerCasedSearchTerm)
+        )
       ) {
         return true
       }
@@ -111,7 +113,7 @@ export const normalizeSchema = (
         }
         const tagValues = [...values]
         return (
-          tagValues?.some(tagValue =>
+          tagValues?.some((tagValue) =>
             `${tagValue}`.toLowerCase().includes(lowerCasedSearchTerm)
           ) || false
         )
@@ -131,14 +133,14 @@ export const normalizeSchema = (
     data?.field
   )
 
-  const dedupedMeasurements = [...new Set(measurements)].filter(a =>
+  const dedupedMeasurements = [...new Set(measurements)].filter((a) =>
     a.toLowerCase().includes(lowerCasedSearchTerm)
   )
 
   dedupedMeasurements.sort((a, b) => a.localeCompare(b))
 
   const filteredTags = filterTags(dedupedTags, lowerCasedSearchTerm).map(
-    tag => {
+    (tag) => {
       const key = Object.keys(tag)[0]
 
       return {
@@ -148,13 +150,11 @@ export const normalizeSchema = (
   )
 
   filteredFields
-    .filter(a => a.toLowerCase().includes(lowerCasedSearchTerm))
+    .filter((a) => a.toLowerCase().includes(lowerCasedSearchTerm))
     .sort((a, b) => a.localeCompare(b))
   filteredTags
-    .filter(a =>
-      Object.keys(a)[0]
-        .toLowerCase()
-        .includes(lowerCasedSearchTerm)
+    .filter((a) =>
+      Object.keys(a)[0].toLowerCase().includes(lowerCasedSearchTerm)
     )
     .sort((a, b) => {
       const keyA = Object.keys(a)[0].toLowerCase()

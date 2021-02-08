@@ -62,7 +62,7 @@ const EndpointTypeDropdown: FC<Props> = ({
       </Dropdown.Item>
     ))
 
-  const selected = types.find(t => t.type === selectedType)
+  const selected = types.find((t) => t.type === selectedType)
 
   if (!selected) {
     throw new Error(
@@ -80,7 +80,7 @@ const EndpointTypeDropdown: FC<Props> = ({
     </Dropdown.Button>
   )
 
-  const menu = onCollapse => (
+  const menu = (onCollapse) => (
     <Dropdown.Menu onCollapse={onCollapse}>{items}</Dropdown.Menu>
   )
 

@@ -21,7 +21,7 @@ const SingleStat: FC<Props> = ({properties, result}) => {
 
   return (
     <LatestValueTransform table={result.table} allowString={false}>
-      {latestValue => {
+      {(latestValue) => {
         const {
           bgColor: backgroundColor,
           textColor,

@@ -58,7 +58,7 @@ const TableGraphs: FC<Props> = ({properties, result, timeZone, theme}) => {
   const sidebarClassName = classnames('time-machine-sidebar', {
     'time-machine-sidebar__light': theme === 'light',
   })
-  const filteredTables = tables.filter(t => t.name.includes(search))
+  const filteredTables = tables.filter((t) => t.name.includes(search))
 
   return (
     <div className="time-machine-tables">
@@ -68,7 +68,7 @@ const TableGraphs: FC<Props> = ({properties, result, timeZone, theme}) => {
             <div className="time-machine-sidebar--heading">
               <Input
                 icon={IconFont.Search}
-                onChange={e => {
+                onChange={(e) => {
                   setSearch(e.target.value)
                 }}
                 placeholder="Filter tables..."
@@ -82,7 +82,7 @@ const TableGraphs: FC<Props> = ({properties, result, timeZone, theme}) => {
             className="time-machine-sidebar--scroll"
           >
             <div className="time-machine-sidebar--items">
-              {filteredTables.map(table => {
+              {filteredTables.map((table) => {
                 const {groupKey, id, name} = table
                 const classer = `time-machine-sidebar-item ${
                   selectedTable && name === selectedTable.name ? 'active' : ''

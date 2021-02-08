@@ -32,7 +32,7 @@ const UserRoleDropdown: FC = () => {
     </Dropdown.Button>
   )
 
-  const dropdownItems = roles.map(role => (
+  const dropdownItems = roles.map((role) => (
     <Dropdown.Item
       className="user-role--dropdown-item"
       id={role}
@@ -44,7 +44,7 @@ const UserRoleDropdown: FC = () => {
     </Dropdown.Item>
   ))
 
-  const dropdownMenu = onCollapse => (
+  const dropdownMenu = (onCollapse) => (
     <Dropdown.Menu onCollapse={onCollapse}>{dropdownItems}</Dropdown.Menu>
   )
 

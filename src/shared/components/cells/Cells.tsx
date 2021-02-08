@@ -52,7 +52,7 @@ class Cells extends Component<Props> {
           isDraggable
           isResizable
         >
-          {fastMap(cells, cell => (
+          {fastMap(cells, (cell) => (
             <div
               key={cell.id}
               className="cell"
@@ -70,8 +70,8 @@ class Cells extends Component<Props> {
   private get cells(): Layout[] {
     const {views} = this.props
     return this.props.cells
-      .filter(c => c.status === RemoteDataState.Done)
-      .map(c => {
+      .filter((c) => c.status === RemoteDataState.Done)
+      .map((c) => {
         const view = views[c.id]
         const cell = {
           ...c,
@@ -90,13 +90,13 @@ class Cells extends Component<Props> {
       })
   }
 
-  private handleLayoutChange = grid => {
+  private handleLayoutChange = (grid) => {
     const {cells} = this.props
 
     let changed = false
 
-    const newCells = cells.map(cell => {
-      const l = grid.find(ly => ly.i === cell.id)
+    const newCells = cells.map((cell) => {
+      const l = grid.find((ly) => ly.i === cell.id)
 
       if (
         cell.x !== l.x ||

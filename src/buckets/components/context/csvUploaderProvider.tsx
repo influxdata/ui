@@ -99,7 +99,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
             /^result$/,
           ]
 
-          const columns = table.columnKeys.filter(key => {
+          const columns = table.columnKeys.filter((key) => {
             return filtered.reduce((acc, curr) => {
               return acc && !curr.test(key)
             }, true)
@@ -113,6 +113,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
           let field: any = ''
           let time: any = ''
           let value: any = ''
+          let valueColumn: string = '_value'
           let tags: any = ''
           let line: any = ''
 
@@ -129,7 +130,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
               const resp = postWrite({
                 data: chunk,
                 query: {org: org.name, bucket, precision: WritePrecision.Ns},
-              }).then(v => {
+              }).then((v) => {
                 const percent = (++progress / counter) * 100
                 setProgress(Math.floor(percent))
                 return v
@@ -152,17 +153,26 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
               )
             }
             time = table.getColumn('_time')?.[i] ?? Date.now()
-            value = table.getColumn('_value')?.[i] ?? field ?? ''
+            table.columnKeys
+              // Matches _value, _value ('number'), _value ('string'), etc. to find value
+              // https://github.com/influxdata/giraffe/blob/master/giraffe/src/utils/fromFlux.ts#L62
+              .filter((c) => /_value( \('\w*'\))?/g.test(c))
+              .forEach((c) => {
+                if (table.getColumn(c)?.[i]) {
+                  value = table.getColumn(c)[i]
+                  valueColumn = c
+                }
+              })
             // Adds quotes to values if _value is of string type
             // https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/#quotes
             value =
-              table.getColumnType('_value') === 'string' && value
+              table.getColumnType(valueColumn) === 'string' && value
                 ? `"${value}"`
                 : value
             tags = columns
-              .filter(col => !!table.getColumn(col)[i])
+              .filter((col) => !!table.getColumn(col)[i])
               .map(
-                col =>
+                (col) =>
                   `${col}=${
                     table.getColumnType(col) === 'string'
                       ? // Replaces special characters in accordance to Line Protocol standards
@@ -188,7 +198,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
             const resp = postWrite({
               data: chunk,
               query: {org: org.name, bucket, precision: WritePrecision.Ns},
-            }).then(v => {
+            }).then((v) => {
               const percent = (++progress / counter) * 100
               setProgress(Math.floor(percent))
               return v
@@ -198,15 +208,15 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
           }
           chunk = ''
           Promise.all(pendingWrites)
-            .then(values => {
-              if (values.find(v => v.status >= 400)) {
+            .then((values) => {
+              if (values.find((v) => v.status >= 400)) {
                 throw new Error(
                   `Looks like some of the CSV data could not be written to the bucket. Please make sure that CSV was in Annotated Format`
                 )
               }
               setUploadState(RemoteDataState.Done)
             })
-            .catch(error => {
+            .catch((error) => {
               handleError(error)
             })
         } catch (error) {

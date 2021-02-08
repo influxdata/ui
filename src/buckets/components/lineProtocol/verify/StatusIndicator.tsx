@@ -33,7 +33,7 @@ const getStatusText = (s, writeError) => {
   }
 }
 
-const className = status =>
+const className = (status) =>
   cn(`line-protocol--status`, {
     loading: status === RemoteDataState.Loading,
     success: status === RemoteDataState.Done,

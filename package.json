@@ -41,16 +41,17 @@
     "eslint": "eslint '{src,cypress}/**/*.{ts,tsx}'",
     "eslint:circleci": "eslint",
     "eslint:fix": "eslint --fix '{src,cypress}/**/*.{ts,tsx}'",
-    "prettier": "prettier --config .prettierrc.json --check '{src,cypress}/**/*.{ts,tsx}'",
-    "prettier:fix": "prettier --config .prettierrc.json --write '{src,cypress}/**/*.{ts,tsx}'",
+    "prettier": "pretty-quick --config .prettierrc.json --check '{src,cypress}/**/*.{ts,tsx}'",
+    "prettier:fix": "pretty-quick --config .prettierrc.json --write '{src,cypress}/**/*.{ts,tsx}'",
     "tsc": "tsc -p ./tsconfig.json --noEmit --pretty --skipLibCheck",
     "tsc:watch": "yarn tsc --watch",
     "tsc:cypress": "tsc -p ./cypress/tsconfig.json --noEmit --pretty --skipLibCheck",
     "cy": "CYPRESS_baseUrl=http://localhost:9999 cypress open",
     "cy:dev": "source ../monitor-ci/.env && CYPRESS_baseUrl=https://kubernetes.docker.internal:$PORT_HTTPS cypress open --config testFiles='{cloud,shared}/**/*.*'",
     "cy:dev-oss": "source ../monitor-ci/.env && CYPRESS_baseUrl=https://kubernetes.docker.internal:$PORT_HTTPS cypress open --config testFiles='{oss,shared}/**/*.*'",
-    "generate": "oats https://raw.githubusercontent.com/influxdata/influxdb/master/http/swagger.yml > ./src/client/generatedRoutes.ts && yarn unity",
-    "unity": "oats ./src/client/unity.yml > ./src/client/unityRoutes.ts"
+    "generate": "oats https://raw.githubusercontent.com/influxdata/influxdb/master/http/swagger.yml > ./src/client/generatedRoutes.ts && yarn unity && yarn flows",
+    "unity": "oats ./src/client/swagger/unity.yml > ./src/client/unityRoutes.ts",
+    "flows": "oats ./src/client/swagger/flows.yml > ./src/client/flowsRoutes.ts"
   },
   "author": "",
   "devDependencies": {
@@ -124,6 +125,7 @@
     "mutation-observer": "^1.0.3",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "prettier": "^1.19.1",
+    "pretty-quick": "^3.1.0",
     "raw-loader": "^4.0.1",
     "sass": "^1.22.7",
     "sass-loader": "^7.1.0",
@@ -141,10 +143,10 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
-    "@influxdata/clockface": "2.3.7",
+    "@influxdata/clockface": "^2.4.1",
     "@influxdata/flux": "^0.5.1",
-    "@influxdata/flux-lsp-browser": "^0.5.28",
-    "@influxdata/giraffe": "^2.0.0",
+    "@influxdata/flux-lsp-browser": "^0.5.31",
+    "@influxdata/giraffe": "^2.0.1",
     "@influxdata/influx": "0.5.5",
     "@influxdata/influxdb-templates": "0.9.0",
     "@influxdata/react-custom-scrollbars": "4.3.8",

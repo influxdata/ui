@@ -25,11 +25,11 @@ const imageRenderer: Renderer<HTMLImageElement> = (): any =>
 // https://github.com/remarkjs/react-markdown#appendix-a-html-in-markdown
 const processNodeDefinitions = new HtmlToReact.ProcessNodeDefinitions(React)
 const parseHtml = htmlParser({
-  isValidNode: node => node.type !== 'script',
+  isValidNode: (node) => node.type !== 'script',
   processingInstructions: [
     {
       replaceChildren: false,
-      shouldProcessNode: node => node.name === 'img',
+      shouldProcessNode: (node) => node.name === 'img',
       processNode: () => {
         return (
           <p data-testid="markdown-image-unsupported">

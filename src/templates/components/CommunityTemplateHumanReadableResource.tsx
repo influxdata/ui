@@ -44,7 +44,7 @@ const CommunityTemplateHumanReadableResourceUnconnected: FC<Props> = ({
   allResources,
 }) => {
   const matchingResource = allResources.find(
-    resource => resource.id === resourceID
+    (resource) => resource.id === resourceID
   )
 
   const humanName = matchingResource ? matchingResource.name : metaName
@@ -58,43 +58,43 @@ const CommunityTemplateHumanReadableResourceUnconnected: FC<Props> = ({
 
 const mstp = (state: AppState) => {
   const labels = getAll<Label>(state, ResourceType.Labels)
-  const cleanedLabels = labels.map(label => ({
+  const cleanedLabels = labels.map((label) => ({
     id: label.id,
     name: label.name,
   }))
 
   const buckets = getAll<Bucket>(state, ResourceType.Buckets)
-  const cleanedBuckets = buckets.map(bucket => ({
+  const cleanedBuckets = buckets.map((bucket) => ({
     id: bucket.id,
     name: bucket.name,
   }))
 
   const telegrafs = getAll<Telegraf>(state, ResourceType.Telegrafs)
-  const cleanedTelegrafs = telegrafs.map(telegraf => ({
+  const cleanedTelegrafs = telegrafs.map((telegraf) => ({
     id: telegraf.id,
     name: telegraf.name,
   }))
 
   const variables = getAll<Variable>(state, ResourceType.Variables)
-  const cleanedVariables = variables.map(variable => ({
+  const cleanedVariables = variables.map((variable) => ({
     id: variable.id,
     name: variable.name,
   }))
 
   const dashboards = getAll<Dashboard>(state, ResourceType.Dashboards)
-  const cleanedDashboards = dashboards.map(dashboard => ({
+  const cleanedDashboards = dashboards.map((dashboard) => ({
     id: dashboard.id,
     name: dashboard.name,
   }))
 
   const tasks = getAll<Task>(state, ResourceType.Tasks)
-  const cleanedTasks = tasks.map(task => ({
+  const cleanedTasks = tasks.map((task) => ({
     id: task.id,
     name: task.name,
   }))
 
   const checks = getAll<Check>(state, ResourceType.Checks)
-  const cleanedChecks = checks.map(check => ({
+  const cleanedChecks = checks.map((check) => ({
     id: check.id,
     name: check.name,
   }))
@@ -104,7 +104,7 @@ const mstp = (state: AppState) => {
     ResourceType.NotificationEndpoints
   )
   const cleanedNotificationEndpoints = notificationEndpoints.map(
-    notificationEndpoint => ({
+    (notificationEndpoint) => ({
       id: notificationEndpoint.id,
       name: notificationEndpoint.name,
     })
@@ -114,7 +114,7 @@ const mstp = (state: AppState) => {
     state,
     ResourceType.NotificationRules
   )
-  const cleanedNotificationRules = notificationRules.map(notificationRule => {
+  const cleanedNotificationRules = notificationRules.map((notificationRule) => {
     if (notificationRule.id && notificationRule.name) {
       return {
         id: notificationRule.id,

@@ -11,7 +11,7 @@ export const getBucketByName = (
   bucketName: string
 ): Bucket => {
   const buckets = getAll<Bucket>(state, ResourceType.Buckets)
-  const bucket = buckets.find(b => b.name === bucketName)
+  const bucket = buckets.find((b) => b.name === bucketName)
   return bucket
 }
 
@@ -37,7 +37,7 @@ export const getSortedBuckets = (state: AppState): Bucket[] => {
   const otherBuckets = []
   const buckets = getAll<Bucket>(state, ResourceType.Buckets)
 
-  buckets.forEach(bucket => {
+  buckets.forEach((bucket) => {
     // separate system buckets from the rest
     if (isSystemBucket(bucket.type)) {
       systemBuckets.push(bucket)

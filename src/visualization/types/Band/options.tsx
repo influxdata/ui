@@ -41,7 +41,7 @@ interface Props extends VisualizationOptionProps {
 }
 
 const BandViewOptions: FC<Props> = ({properties, results, update}) => {
-  const numericColumns = (results?.table?.columnKeys || []).filter(key => {
+  const numericColumns = (results?.table?.columnKeys || []).filter((key) => {
     if (key === 'result' || key === 'table') {
       return false
     }
@@ -97,19 +97,19 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
     updateAxis('y', {bounds})
   }
 
-  const updateUpperColumn = evt => {
+  const updateUpperColumn = (evt) => {
     update({
       upperColumn: evt.target.value,
     })
   }
 
-  const updateMainColumn = evt => {
+  const updateMainColumn = (evt) => {
     update({
       mainColumn: evt.target.value,
     })
   }
 
-  const updateLowerColumn = evt => {
+  const updateLowerColumn = (evt) => {
     update({
       lowerColumn: evt.target.value,
     })
@@ -128,7 +128,7 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
             <SelectDropdown
               options={numericColumns}
               selectedOption={xColumn || 'Build a query before selecting...'}
-              onSelect={xColumn => {
+              onSelect={(xColumn) => {
                 update({xColumn})
               }}
               testID="dropdown-x"
@@ -143,7 +143,7 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
             <SelectDropdown
               options={numericColumns}
               selectedOption={yColumn || 'Build a query before selecting...'}
-              onSelect={yColumn => {
+              onSelect={(yColumn) => {
                 update({yColumn})
               }}
               testID="dropdown-y"
@@ -156,7 +156,7 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
           </Form.Element>
           <Form.Element label="Time Format">
             <SelectDropdown
-              options={FORMAT_OPTIONS.map(option => option.text)}
+              options={FORMAT_OPTIONS.map((option) => option.text)}
               selectedOption={resolveTimeFormat(properties.timeFormat)}
               onSelect={(format: string) => {
                 update({timeFormat: format})
@@ -217,7 +217,7 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
                     {getGeomLabel(properties.geom)}
                   </Dropdown.Button>
                 )}
-                menu={onCollapse => (
+                menu={(onCollapse) => (
                   <Dropdown.Menu onCollapse={onCollapse}>
                     <Dropdown.Item
                       value="line"
@@ -253,8 +253,8 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
           )}
           <Form.Element label="Line Colors">
             <ColorSchemeDropdown
-              value={properties.colors.filter(c => c.type === 'scale')}
-              onChange={colors => {
+              value={properties.colors.filter((c) => c.type === 'scale')}
+              onChange={(colors) => {
                 update({colors})
               }}
             />
@@ -268,12 +268,12 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
                   {properties.hoverDimension}
                 </Dropdown.Button>
               )}
-              menu={onCollapse => (
+              menu={(onCollapse) => (
                 <Dropdown.Menu onCollapse={onCollapse}>
                   <Dropdown.Item
                     id="auto"
                     value="auto"
-                    onClick={hoverDimension => {
+                    onClick={(hoverDimension) => {
                       update({hoverDimension})
                     }}
                     selected={properties.hoverDimension === 'auto'}
@@ -283,7 +283,7 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
                   <Dropdown.Item
                     id="x"
                     value="x"
-                    onClick={hoverDimension => {
+                    onClick={(hoverDimension) => {
                       update({hoverDimension})
                     }}
                     selected={properties.hoverDimension === 'x'}
@@ -293,7 +293,7 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
                   <Dropdown.Item
                     id="y"
                     value="y"
-                    onClick={hoverDimension => {
+                    onClick={(hoverDimension) => {
                       update({hoverDimension})
                     }}
                     selected={properties.hoverDimension === 'y'}
@@ -303,7 +303,7 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
                   <Dropdown.Item
                     id="xy"
                     value="xy"
-                    onClick={hoverDimension => {
+                    onClick={(hoverDimension) => {
                       update({hoverDimension})
                     }}
                     selected={properties.hoverDimension === 'xy'}
@@ -333,7 +333,7 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
           <Form.Element label="Y Axis Label">
             <Input
               value={properties.axes.y.label}
-              onChange={evt => {
+              onChange={(evt) => {
                 updateAxis('y', {label: evt.target.value})
               }}
             />
@@ -346,7 +346,7 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
                 value=""
                 active={properties.axes.y.base === ''}
                 titleText="Do not format values using a unit prefix"
-                onClick={base => {
+                onClick={(base) => {
                   updateAxis('y', {base})
                 }}
               >
@@ -358,7 +358,7 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
                 value={BASE_10}
                 active={properties.axes.y.base === BASE_10}
                 titleText="Format values using an International System of Units prefix"
-                onClick={base => {
+                onClick={(base) => {
                   updateAxis('y', {base})
                 }}
               >
@@ -370,7 +370,7 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
                 value={BASE_2}
                 active={properties.axes.y.base === BASE_2}
                 titleText="Format values using a binary unit prefix (for formatting bits or bytes)"
-                onClick={base => {
+                onClick={(base) => {
                   updateAxis('y', {base})
                 }}
               >
@@ -383,7 +383,7 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
               <Form.Element label="Y Axis Prefix">
                 <Input
                   value={properties.axes.y.prefix}
-                  onChange={evt => {
+                  onChange={(evt) => {
                     updateAxis('y', {prefix: evt.target.value})
                   }}
                 />
@@ -393,7 +393,7 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
               <Form.Element label="Y Axis Suffix">
                 <Input
                   value={properties.axes.y.suffix}
-                  onChange={evt => {
+                  onChange={(evt) => {
                     updateAxis('y', {suffix: evt.target.value})
                   }}
                 />

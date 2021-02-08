@@ -126,12 +126,12 @@ const addDashboardLabelsFromTemplate = async (
 ) => {
   try {
     const labelRelationships = getLabelRelationships(template.content.data)
-    const labelIDs = labelRelationships.map(l => labelMap[l.id] || '')
-    const pending = labelIDs.map(labelID =>
+    const labelIDs = labelRelationships.map((l) => labelMap[l.id] || '')
+    const pending = labelIDs.map((labelID) =>
       apiPostDashboardsLabel({dashboardID: dashboard.id, data: {labelID}})
     )
     const resolved = await Promise.all(pending)
-    if (resolved.length > 0 && resolved.some(r => r.status !== 201)) {
+    if (resolved.length > 0 && resolved.some((r) => r.status !== 201)) {
       throw new Error(
         'An error occurred adding dashboard labels from the template'
       )
@@ -152,7 +152,7 @@ const createLabelsFromTemplate = async <T extends TemplateBase>(
     content: {data, included},
   } = template
 
-  const labeledResources = [data, ...included].filter(r =>
+  const labeledResources = [data, ...included].filter((r) =>
     hasLabelsRelationships(r)
   )
 
@@ -160,7 +160,7 @@ const createLabelsFromTemplate = async <T extends TemplateBase>(
     return {}
   }
 
-  const labelRelationships = flatMap(labeledResources, r =>
+  const labelRelationships = flatMap(labeledResources, (r) =>
     getLabelRelationships(r)
   )
 
@@ -175,26 +175,26 @@ const createLabelsFromTemplate = async <T extends TemplateBase>(
     throw new Error(resp.data.message)
   }
 
-  const existingLabels = resp.data.labels.map(l => addLabelDefaults(l))
+  const existingLabels = resp.data.labels.map((l) => addLabelDefaults(l))
 
   const foundLabelsToCreate = findLabelsToCreate(
     existingLabels,
     includedLabels
-  ).map(l => ({
+  ).map((l) => ({
     orgID,
     name: get(l, 'attributes.name', ''),
     properties: get(l, 'attributes.properties', {}),
   }))
 
-  const promisedLabels = foundLabelsToCreate.map(lab => {
+  const promisedLabels = foundLabelsToCreate.map((lab) => {
     return apiPostLabel({
       data: lab,
     })
-      .then(res => {
+      .then((res) => {
         const out = get(res, 'data.label', '')
         return out
       })
-      .then(lab => addLabelDefaults(lab))
+      .then((lab) => addLabelDefaults(lab))
   })
 
   const createdLabels = await Promise.all(promisedLabels)
@@ -203,8 +203,8 @@ const createLabelsFromTemplate = async <T extends TemplateBase>(
 
   const labelMap: LabelMap = {}
 
-  includedLabels.forEach(label => {
-    const createdLabel = allLabels.find(l => l.name === label.attributes.name)
+  includedLabels.forEach((label) => {
+    const createdLabel = allLabels.find((l) => l.name === label.attributes.name)
 
     labelMap[label.id] = createdLabel.id
   })
@@ -231,7 +231,7 @@ const createCellsFromTemplate = async (
     cellRelationships
   )
 
-  const pendingCells = cellsToCreate.map(c => {
+  const pendingCells = cellsToCreate.map((c) => {
     const {
       attributes: {x, y, w, h},
     } = c
@@ -243,11 +243,11 @@ const createCellsFromTemplate = async (
 
   const cellResponses = await Promise.all(pendingCells)
 
-  if (cellResponses.length > 0 && cellResponses.some(r => r.status !== 201)) {
+  if (cellResponses.length > 0 && cellResponses.some((r) => r.status !== 201)) {
     throw new Error('An error occurred creating cells from the templates')
   }
 
-  const responses = cellResponses.map(resp => resp.data as Cell)
+  const responses = cellResponses.map((resp) => resp.data as Cell)
 
   createViewsFromTemplate(
     template,
@@ -263,7 +263,7 @@ const createViewsFromTemplate = async (
   cellsToCreate: CellIncluded[],
   dashboardID: string
 ) => {
-  const viewsToCreate = cellsToCreate.map(c => {
+  const viewsToCreate = cellsToCreate.map((c) => {
     const {
       content: {included},
     } = template
@@ -318,9 +318,9 @@ const createVariablesFromTemplate = async (
   const variablesToCreate = findVariablesToCreate(
     variables,
     variablesIncluded
-  ).map(v => ({...v.attributes, orgID}))
+  ).map((v) => ({...v.attributes, orgID}))
 
-  const pendingVariables = variablesToCreate.map(vars =>
+  const pendingVariables = variablesToCreate.map((vars) =>
     apiPostVariable({data: vars as PostVariable})
   )
 
@@ -328,14 +328,14 @@ const createVariablesFromTemplate = async (
 
   if (
     resolvedVariables.length > 0 &&
-    resolvedVariables.every(r => r.status !== 201)
+    resolvedVariables.every((r) => r.status !== 201)
   ) {
     throw new Error('An error occurred creating the variables from templates')
   }
 
   const createdVariables = await Promise.all(pendingVariables)
 
-  const normCreated = createdVariables.map(v => {
+  const normCreated = createdVariables.map((v) => {
     const normVar = normalize<Variable, VariableEntities, string>(
       v.data,
       variableSchema
@@ -345,11 +345,11 @@ const createVariablesFromTemplate = async (
 
   const allVars = [...variables, ...normCreated]
 
-  const addLabelsToVars = variablesIncluded.map(async includedVar => {
-    const variable = allVars.find(v => v.name === includedVar.attributes.name)
+  const addLabelsToVars = variablesIncluded.map(async (includedVar) => {
+    const variable = allVars.find((v) => v.name === includedVar.attributes.name)
     const labelRelationships = getLabelRelationships(includedVar)
-    const labelIDs = labelRelationships.map(l => labelMap[l.id] || '')
-    const pending = labelIDs.map(async labelID => {
+    const labelIDs = labelRelationships.map((l) => labelMap[l.id] || '')
+    const pending = labelIDs.map(async (labelID) => {
       await apiPostVariablesLabel({variableID: variable.id, data: {labelID}})
     })
     await Promise.all(pending)
@@ -410,12 +410,12 @@ const addTaskLabelsFromTemplate = async (
 ) => {
   try {
     const relationships = getLabelRelationships(template.content.data)
-    const labelIDs = relationships.map(l => labelMap[l.id] || '')
-    const pending = labelIDs.map(labelID =>
+    const labelIDs = relationships.map((l) => labelMap[l.id] || '')
+    const pending = labelIDs.map((labelID) =>
       apiPostTasksLabel({taskID: task.id, data: {labelID}})
     )
     const resolved = await Promise.all(pending)
-    if (resolved.length > 0 && resolved.some(r => r.status !== 201)) {
+    if (resolved.length > 0 && resolved.some((r) => r.status !== 201)) {
       throw new Error('An error occurred adding task labels from the templates')
     }
   } catch (error) {
@@ -464,7 +464,7 @@ export const createVariableFromTemplate = async (
   }
 }
 
-const applyTemplates = async params => {
+const applyTemplates = async (params) => {
   const resp = await postTemplatesApply(params)
   if (resp.status >= 300) {
     throw new Error((resp.data as PkgError).message)

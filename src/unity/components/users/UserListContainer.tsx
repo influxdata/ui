@@ -25,7 +25,7 @@ const UserListContainer: FC = () => {
               id="users"
               text="Users"
               active={true}
-              linkElement={className => (
+              linkElement={(className) => (
                 <a className={className} href={`/orgs/${orgID}/users`} />
               )}
             />
@@ -33,7 +33,7 @@ const UserListContainer: FC = () => {
               id="about"
               text="About"
               active={false}
-              linkElement={className => (
+              linkElement={(className) => (
                 <a className={className} href={`/orgs/${orgID}/about`} />
               )}
             />

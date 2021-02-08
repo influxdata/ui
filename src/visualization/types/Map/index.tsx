@@ -2,7 +2,7 @@ import icon from './icon'
 import properties from './properties'
 import view from './view'
 
-export default register => {
+export default (register) => {
   register({
     type: 'geo',
     name: 'Map',

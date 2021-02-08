@@ -62,7 +62,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
                 validationFunc={this.handleNameValidation}
                 required={true}
               >
-                {status => (
+                {(status) => (
                   <Input
                     status={nameInputStatus || status}
                     placeholder="Give your bucket a name"

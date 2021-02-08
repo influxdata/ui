@@ -69,7 +69,7 @@ class Members extends PureComponent<
           searchKeys={['name']}
           searchTerm={searchTerm}
         >
-          {ms => (
+          {(ms) => (
             <MemberList
               members={ms}
               emptyState={this.emptyState}

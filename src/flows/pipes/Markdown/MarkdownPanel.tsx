@@ -22,8 +22,8 @@ import {
   MARKDOWN_PIPE_INITIAL,
 } from 'src/flows/pipes/Markdown/index'
 
-const MarkdownMonacoEditor = lazy(() =>
-  import('src/shared/components/MarkdownMonacoEditor')
+const MarkdownMonacoEditor = lazy(
+  () => import('src/shared/components/MarkdownMonacoEditor')
 )
 
 const MarkdownPanel: FC<PipeProp> = ({Context}) => {

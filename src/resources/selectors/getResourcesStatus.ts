@@ -5,7 +5,7 @@ export const getResourcesStatus = (
   state: AppState,
   resources: Array<ResourceType>
 ): RemoteDataState => {
-  const statuses = resources.map(resource => {
+  const statuses = resources.map((resource) => {
     if (!state.resources || !state.resources[resource].status) {
       throw new Error(
         `RemoteDataState status for resource "${resource}" is undefined in getResourcesStatus`
@@ -17,7 +17,7 @@ export const getResourcesStatus = (
 
   let status = RemoteDataState.NotStarted
 
-  if (statuses.every(s => s === RemoteDataState.Done)) {
+  if (statuses.every((s) => s === RemoteDataState.Done)) {
     status = RemoteDataState.Done
   } else if (statuses.includes(RemoteDataState.Error)) {
     status = RemoteDataState.Error

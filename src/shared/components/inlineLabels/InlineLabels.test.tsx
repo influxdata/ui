@@ -34,7 +34,7 @@ const setup = (override = {}, stateOverride = appState) => {
     ...override,
   }
 
-  return renderWithRedux(<InlineLabels {...props} />, s => ({
+  return renderWithRedux(<InlineLabels {...props} />, (s) => ({
     ...s,
     ...stateOverride,
   }))

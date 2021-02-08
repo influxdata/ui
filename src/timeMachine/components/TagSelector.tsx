@@ -306,7 +306,7 @@ const mstp = (state: AppState, ownProps: OwnProps) => {
   } = tags[ownProps.index]
 
   if (aggregateFunctionType === 'group') {
-    values = [...ADDITIONAL_GROUP_BY_COLUMNS, ...tags.map(tag => tag.key)]
+    values = [...ADDITIONAL_GROUP_BY_COLUMNS, ...tags.map((tag) => tag.key)]
   }
   const isInCheckOverlay = getIsInCheckOverlay(state)
 

@@ -43,9 +43,19 @@ const CheckPlot: FC<Props> = ({properties, result, timeZone, theme}) => {
   const columnKeys = result.table.columnKeys
   const isValidView =
     columnKeys.includes(X_COLUMN) && columnKeys.includes(Y_COLUMN)
+  const isYNumeric = result.table.getColumnType(Y_COLUMN) === 'number'
 
   if (!isValidView) {
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
+  }
+
+  if (!isYNumeric) {
+    return (
+      <EmptyGraphMessage
+        message="Checks only support numeric values. Please try choosing another field."
+        testID="empty-graph--numeric"
+      />
+    )
   }
 
   const groupKey = [...result.fluxGroupKeyUnion, 'result']
@@ -69,14 +79,14 @@ const CheckPlot: FC<Props> = ({properties, result, timeZone, theme}) => {
     t.value,
     t.minValue,
     t.maxValue,
-  ]).filter(t => t !== undefined)
+  ]).filter((t) => t !== undefined)
 
   const yTicks = thresholdValues.length ? thresholdValues : null
 
   const colorHexes =
     properties.colors && properties.colors.length
-      ? properties.colors.map(c => c.hex)
-      : DEFAULT_LINE_COLORS.map(c => c.hex)
+      ? properties.colors.map((c) => c.hex)
+      : DEFAULT_LINE_COLORS.map((c) => c.hex)
 
   const currentTheme = theme === 'light' ? VIS_THEME_LIGHT : VIS_THEME
 

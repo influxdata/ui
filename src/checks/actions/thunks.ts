@@ -317,7 +317,7 @@ export const cloneCheck = (check: Check) => async (
   try {
     const state = getState()
     const checks = getAll<Check>(state, ResourceType.Checks)
-    const allCheckNames = checks.map(c => c.name)
+    const allCheckNames = checks.map((c) => c.name)
     const clonedName = incrementCloneName(allCheckNames, check.name)
 
     const data = toPostCheck({...check, name: clonedName})

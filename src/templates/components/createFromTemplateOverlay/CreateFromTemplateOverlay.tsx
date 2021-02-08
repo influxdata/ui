@@ -125,7 +125,7 @@ class DashboardImportFromTemplateOverlay extends PureComponent<
   private getVariablesForTemplate(template: Template): string[] {
     const variables = []
     const included = template.content.included as DashboardTemplateIncluded[]
-    included.forEach(data => {
+    included.forEach((data) => {
       if (data.type === TemplateType.Variable) {
         variables.push(data.attributes.name)
       }
@@ -137,7 +137,7 @@ class DashboardImportFromTemplateOverlay extends PureComponent<
   private getCellsForTemplate(template: Template): string[] {
     const cells = []
     const included = template.content.included as DashboardTemplateIncluded[]
-    included.forEach(data => {
+    included.forEach((data) => {
       if (data.type === TemplateType.View) {
         cells.push(data.attributes.name)
       }
@@ -188,10 +188,10 @@ const mstp = (state: AppState) => {
   } = state
   const items = getAll(state, ResourceType.Templates)
   const filteredTemplates = items.filter(
-    t => !t.meta.type || t.meta.type === TemplateType.Dashboard
+    (t) => !t.meta.type || t.meta.type === TemplateType.Dashboard
   )
 
-  const templates = sortBy(filteredTemplates, item =>
+  const templates = sortBy(filteredTemplates, (item) =>
     item.meta.name.toLocaleLowerCase()
   )
 

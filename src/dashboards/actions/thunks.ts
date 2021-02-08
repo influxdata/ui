@@ -134,7 +134,7 @@ export const cloneDashboard = (
 
     const org = getOrg(state)
     const dashboards = getAll<Dashboard>(state, ResourceType.Dashboards)
-    const allDashboardNames = dashboards.map(d => d.name)
+    const allDashboardNames = dashboards.map((d) => d.name)
     const clonedName = incrementCloneName(allDashboardNames, dashboardName)
 
     const getResp = await api.getDashboard({
@@ -175,7 +175,7 @@ export const cloneDashboard = (
       creators.setDashboard(postResp.data.id, RemoteDataState.Done, normDash)
     )
 
-    const pendingLabels = getResp.data.labels.map(l =>
+    const pendingLabels = getResp.data.labels.map((l) =>
       api.postDashboardsLabel({
         dashboardID: postResp.data.id,
         data: {labelID: l.id},
@@ -184,7 +184,7 @@ export const cloneDashboard = (
 
     const mappedLabels = await Promise.all(pendingLabels)
 
-    if (mappedLabels.length > 0 && mappedLabels.some(l => l.status !== 201)) {
+    if (mappedLabels.length > 0 && mappedLabels.some((l) => l.status !== 201)) {
       throw new Error('An error occurred cloning the labels for this dashboard')
     }
 
@@ -198,7 +198,7 @@ export const cloneDashboard = (
 
     const newViews = await Promise.all(clonedViews)
 
-    if (newViews.length > 0 && newViews.some(v => v.status !== 200)) {
+    if (newViews.length > 0 && newViews.some((v) => v.status !== 200)) {
       throw new Error('An error occurred cloning the dashboard')
     }
 
@@ -259,13 +259,15 @@ export const getDashboards = () => async (
 
     setTimeout(() => {
       Object.values(dashboards.entities.dashboards)
-        .map(dashboard => {
+        .map((dashboard) => {
           return {
             id: dashboard.id,
-            cells: dashboard.cells.map(cell => dashboards.entities.cells[cell]),
+            cells: dashboard.cells.map(
+              (cell) => dashboards.entities.cells[cell]
+            ),
           }
         })
-        .forEach(entity => {
+        .forEach((entity) => {
           const viewsData = viewsFromCells(entity.cells, entity.id)
 
           const normViews = normalize<View, ViewEntities, string[]>(
@@ -525,9 +527,9 @@ export const convertToTemplate = (dashboardID: string) => async (
     )
 
     const dashboard = entities.dashboards[result]
-    const cells = dashboard.cells.map(cellID => entities.cells[cellID])
+    const cells = dashboard.cells.map((cellID) => entities.cells[cellID])
 
-    const pendingViews = dashboard.cells.map(cellID =>
+    const pendingViews = dashboard.cells.map((cellID) =>
       dashAPI.getView(dashboardID, cellID)
     )
 

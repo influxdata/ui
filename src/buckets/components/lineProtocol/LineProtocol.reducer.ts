@@ -30,7 +30,7 @@ const lineProtocolReducer = (
   state = initialState(),
   action: Action
 ): LineProtocolState =>
-  produce(state, draftState => {
+  produce(state, (draftState) => {
     switch (action.type) {
       case SET_BODY: {
         draftState.body = action.body

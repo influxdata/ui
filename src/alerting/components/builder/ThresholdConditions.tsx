@@ -25,7 +25,7 @@ const ThresholdConditions: FC<StateProps> = ({thresholds}) => {
 
 const mstp = ({alertBuilder: {thresholds: thresholdsArray}}: AppState) => {
   const thresholds = {}
-  thresholdsArray.forEach(t => {
+  thresholdsArray.forEach((t) => {
     thresholds[t.level] = t
   })
   return {thresholds}

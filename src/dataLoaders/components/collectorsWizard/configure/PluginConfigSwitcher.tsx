@@ -37,7 +37,7 @@ export class PluginConfigSwitcher extends PureComponent<Props> {
 
   private get activeTelegrafPlugin(): TelegrafPlugin {
     const {telegrafPlugins} = this.props
-    return telegrafPlugins.find(tp => tp.active)
+    return telegrafPlugins.find((tp) => tp.active)
   }
 
   private get configFields(): ConfigFields {

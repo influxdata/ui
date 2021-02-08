@@ -29,7 +29,7 @@ interface Props extends VisualizationOptionProps {
 
 const MosaicOptions: FC<Props> = ({properties, results, update}) => {
   let fillColumns = []
-  const stringColumns = results.table.columnKeys.filter(k => {
+  const stringColumns = results.table.columnKeys.filter((k) => {
     if (k === 'result' || k === 'table') {
       return false
     }
@@ -37,7 +37,7 @@ const MosaicOptions: FC<Props> = ({properties, results, update}) => {
     return results.table.getColumnType(k) === 'string'
   })
 
-  const numericColumns = results.table.columnKeys.filter(key => {
+  const numericColumns = results.table.columnKeys.filter((key) => {
     if (key === 'result' || key === 'table') {
       return false
     }
@@ -49,7 +49,7 @@ const MosaicOptions: FC<Props> = ({properties, results, update}) => {
 
   if (
     properties.fillColumns &&
-    properties.fillColumns.every(col => stringColumns.includes(col))
+    properties.fillColumns.every((col) => stringColumns.includes(col))
   ) {
     fillColumns = properties.fillColumns
   } else {
@@ -65,7 +65,7 @@ const MosaicOptions: FC<Props> = ({properties, results, update}) => {
   const yColumn = mosaicYColumn(results.table, properties.ySeriesColumns?.[0])
 
   // TODO: make this normal DashboardColor[] and not string[]
-  const colors = properties.colors.map(color => {
+  const colors = properties.colors.map((color) => {
     return {hex: color} as Color
   })
 
@@ -84,7 +84,7 @@ const MosaicOptions: FC<Props> = ({properties, results, update}) => {
               selectedOption={
                 fillColumns?.[0] || 'Build a query before selecting...'
               }
-              onSelect={fillColumn => {
+              onSelect={(fillColumn) => {
                 update({fillColumns: [fillColumn]})
               }}
               testID="dropdown-fill"
@@ -99,7 +99,7 @@ const MosaicOptions: FC<Props> = ({properties, results, update}) => {
             <SelectDropdown
               options={numericColumns}
               selectedOption={xColumn || 'Build a query before selecting...'}
-              onSelect={xColumn => {
+              onSelect={(xColumn) => {
                 update({xColumn})
               }}
               testID="dropdown-x"
@@ -114,7 +114,7 @@ const MosaicOptions: FC<Props> = ({properties, results, update}) => {
             <SelectDropdown
               options={stringColumns}
               selectedOption={yColumn || 'Build a query before selecting...'}
-              onSelect={yColumn => {
+              onSelect={(yColumn) => {
                 update({ySeriesColumns: [yColumn]})
               }}
               testID="dropdown-y"
@@ -127,7 +127,7 @@ const MosaicOptions: FC<Props> = ({properties, results, update}) => {
           </Form.Element>
           <Form.Element label="Time Format">
             <SelectDropdown
-              options={FORMAT_OPTIONS.map(option => option.text)}
+              options={FORMAT_OPTIONS.map((option) => option.text)}
               selectedOption={resolveTimeFormat(properties.timeFormat)}
               onSelect={(format: string) => {
                 update({timeFormat: format})
@@ -144,8 +144,8 @@ const MosaicOptions: FC<Props> = ({properties, results, update}) => {
           <Form.Element label="Color Scheme">
             <ColorSchemeDropdown
               value={colors}
-              onChange={colors => {
-                update({colors: colors.map(c => c.hex)})
+              onChange={(colors) => {
+                update({colors: colors.map((c) => c.hex)})
               }}
             />
           </Form.Element>
@@ -153,7 +153,7 @@ const MosaicOptions: FC<Props> = ({properties, results, update}) => {
           <Form.Element label="X Axis Label">
             <Input
               value={properties.xAxisLabel}
-              onChange={e => update({xAxisLabel: e.target.value})}
+              onChange={(e) => update({xAxisLabel: e.target.value})}
             />
           </Form.Element>
           <AxisTicksGenerator
@@ -168,7 +168,7 @@ const MosaicOptions: FC<Props> = ({properties, results, update}) => {
           <Form.Element label="Y Axis Label">
             <Input
               value={properties.yAxisLabel}
-              onChange={e => update({yAxisLabel: e.target.value})}
+              onChange={(e) => update({yAxisLabel: e.target.value})}
             />
           </Form.Element>
         </Grid.Column>

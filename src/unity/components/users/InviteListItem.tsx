@@ -13,7 +13,7 @@ interface Props {
   invite: Invite
 }
 
-const getDate = datetime => {
+const getDate = (datetime) => {
   return new Date(datetime).toLocaleDateString()
 }
 

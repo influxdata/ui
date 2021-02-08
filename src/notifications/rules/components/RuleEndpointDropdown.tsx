@@ -44,7 +44,7 @@ const RuleEndpointDropdown: FC<Props> = ({
   ))
 
   const selectedEndpoint =
-    endpoints.find(e => e.id === selectedEndpointID) || endpoints[0]
+    endpoints.find((e) => e.id === selectedEndpointID) || endpoints[0]
 
   const button = (active, onClick) => (
     <Dropdown.Button
@@ -56,7 +56,7 @@ const RuleEndpointDropdown: FC<Props> = ({
     </Dropdown.Button>
   )
 
-  const menu = onCollapse => (
+  const menu = (onCollapse) => (
     <Dropdown.Menu onCollapse={onCollapse}>{items}</Dropdown.Menu>
   )
 

@@ -1,0 +1,28 @@
+#group,false,false,true,true,false,false,true,true,true,true
+#datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,dateTime:RFC3339,double,string,string,string,string
+#default,last,,,,,,,,,
+,result,table,_start,_stop,_time,_value,_field,_measurement,host,station_id
+,,0,2021-01-19T20:58:58.549310588Z,2021-01-21T20:58:58.549310588Z,2021-01-21T13:00:00Z,1,is_installed,baywheels,ip-192-168-1-6.ec2.internal,499
+,,1,2021-01-19T20:58:58.549310588Z,2021-01-21T20:58:58.549310588Z,2021-01-21T19:30:00Z,13,num_bikes_available,baywheels,ip-192-168-1-6.ec2.internal,500
+,,2,2021-01-19T20:58:58.549310588Z,2021-01-21T20:58:58.549310588Z,2021-01-21T20:10:00Z,2,num_ebikes_available,baywheels,ip-192-168-1-6.ec2.internal,11
+,,3,2021-01-19T20:58:58.549310588Z,2021-01-21T20:58:58.549310588Z,2021-01-21T20:20:00Z,4,num_docks_available,baywheels,ip-192-168-1-6.ec2.internal,129
+,,4,2021-01-19T20:58:58.549310588Z,2021-01-21T20:58:58.549310588Z,2021-01-21T12:30:00Z,0,num_bikes_disabled,baywheels,ip-192-168-1-6.ec2.internal,155
+,,5,2021-01-19T20:58:58.549310588Z,2021-01-21T20:58:58.549310588Z,2021-01-21T12:20:00Z,0,num_bikes_disabled,baywheels,ip-192-168-1-6.ec2.internal,167
+,,6,2021-01-19T20:58:58.549310588Z,2021-01-21T20:58:58.549310588Z,2021-01-21T13:00:00Z,14,num_docks_available,baywheels,ip-192-168-1-6.ec2.internal,233
+,,7,2021-01-19T20:58:58.549310588Z,2021-01-21T20:58:58.549310588Z,2021-01-21T20:30:00Z,0,num_docks_disabled,baywheels,ip-192-168-1-6.ec2.internal,313
+,,8,2021-01-19T20:58:58.549310588Z,2021-01-21T20:58:58.549310588Z,2021-01-21T20:40:00Z,0,num_docks_disabled,baywheels,ip-192-168-1-6.ec2.internal,470
+,,9,2021-01-19T20:58:58.549310588Z,2021-01-21T20:58:58.549310588Z,2021-01-21T16:30:00Z,2,num_ebikes_available,baywheels,ip-192-168-1-6.ec2.internal,480
+
+#group,false,false,true,true,false,false,true,true,true,true,true,true,true,true,true
+#datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,dateTime:RFC3339,double,string,string,string,string,string,string,string,string,string
+#default,last,,,,,,,,,,,,,,
+,result,table,_start,_stop,_time,_value,_field,_measurement,host,lat,lon,name,region_id,short_name,station_id
+,,10,2021-01-19T20:58:58.549310588Z,2021-01-21T20:58:58.549310588Z,2021-01-21T20:50:00Z,19,capacity,baywheels_meta,ip-192-168-1-6.ec2.internal,37.7692005,-122.4338119,Duboce Park,3,SF-L19,84
+,,10,2021-01-19T20:58:58.549310588Z,2021-01-21T20:58:58.549310588Z,2021-01-21T20:58:58.549310588Z,19,capacity,baywheels_meta,ip-192-168-1-6.ec2.internal,37.7692005,-122.4338119,Duboce Park,3,SF-L19,84
+
+#group,false,false,true,true,false,false,true,true,true,true,true,true,true,true,true
+#datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,dateTime:RFC3339,string,string,string,string,string,string,string,string,string,string
+#default,last,,,,,,,,,,,,,,
+,result,table,_start,_stop,_time,_value,_field,_measurement,host,lat,lon,name,region_id,short_name,station_id
+,,11,2021-01-19T20:58:58.549310588Z,2021-01-21T20:58:58.549310588Z,2021-01-21T20:50:00Z,73295cf1-c5e1-41dd-8cd7-eab6512e8a34,external_id,baywheels_meta,ip-192-168-1-6.ec2.internal,37.82669558640968,-122.27179706096648,37th St at West St,12,OK-G3,192
+,,11,2021-01-19T20:58:58.549310588Z,2021-01-21T20:58:58.549310588Z,2021-01-21T20:58:58.549310588Z,73295cf1-c5e1-41dd-8cd7-eab6512e8a34,external_id,baywheels_meta,ip-192-168-1-6.ec2.internal,37.82669558640968,-122.27179706096648,37th St at West St,12,OK-G3,192

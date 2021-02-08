@@ -1,7 +1,7 @@
 // Installed libraries
 import React from 'react'
 import {createStore} from 'redux'
-import {fireEvent, screen, waitFor} from '@testing-library/react'
+import {cleanup, fireEvent, screen, waitFor} from '@testing-library/react'
 import {normalize} from 'normalizr'
 import {mocked} from 'ts-jest/utils'
 
@@ -51,6 +51,7 @@ jest.mock('src/templates/api', () => {
 import {installTemplate, updateStackName} from 'src/templates/api'
 import {event} from 'src/cloud/utils/reporting'
 import {notify} from 'src/shared/actions/notifications'
+import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 // Mock State
 import {renderWithReduxAndRouter} from 'src/mockState'
@@ -66,6 +67,10 @@ import {templatesReducer} from 'src/templates/reducers/index'
 
 // What have you
 import {communityTemplateInstallSucceeded} from 'src/shared/copy/notifications'
+import {
+  communityTemplateInstallFailed,
+  communityTemplateRenameFailed,
+} from 'src/shared/copy/notifications'
 
 // The file under test, imported last
 import {CommunityTemplatesIndex} from 'src/templates/containers/CommunityTemplatesIndex'
@@ -91,46 +96,117 @@ const setup = (props = defaultProps) => {
   )
 }
 
+let getByTitle
+
 describe('the Community Templates Install Overlay', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    mocked(reportErrorThroughHoneyBadger).mockClear()
+    const renderResult = setup()
+    const store = renderResult.store
+    getByTitle = renderResult.getByTitle
+    const org = {name: 'zoe', id: '12345'}
+
+    store.dispatch({
+      type: 'SET_ORG',
+      org: org,
+    })
+    const organizations = normalize<Organization, OrgEntities, string[]>(
+      [org],
+      arrayOfOrgs
+    )
+    store.dispatch({
+      type: 'SET_ORGS',
+      schema: organizations,
+      status: RemoteDataState.Done,
+    })
+    store.dispatch({
+      type: 'SET_STAGED_TEMPLATE_URL',
+      templateUrl:
+        'https://github.com/influxdata/community-templates/blob/master/fortnite/fn-template.yml',
+    })
   })
 
   describe('handling the template install process', () => {
-    it('opens the install overlay when the template url is valid', async () => {
-      const {getByTitle, store} = setup()
-
-      // This successful call opens the Community Templates Installer overlay which requires orgs to be set
-      const org = {name: 'zoe', id: '12345'}
-      store.dispatch({
-        type: 'SET_ORG',
-        org: org,
-      })
-      const organizations = normalize<Organization, OrgEntities, string[]>(
-        [org],
-        arrayOfOrgs
-      )
-      store.dispatch({
-        type: 'SET_ORGS',
-        schema: organizations,
-        status: RemoteDataState.Done,
-      })
-
-      store.dispatch({
-        type: 'SET_STAGED_TEMPLATE_URL',
-        templateUrl:
-          'https://github.com/influxdata/community-templates/blob/master/fortnite/fn-template.yml',
-      })
-
+    it('handles failures to rename', async () => {
       const templateButton = getByTitle('Lookup Template')
 
       fireEvent.click(templateButton)
 
       const [templateClickEventCallArguments] = mocked(event).mock.calls
-      const [eventName, eventMetaData] = templateClickEventCallArguments
+      const [eventName] = templateClickEventCallArguments
       expect(eventName).toBe('template_click_lookup')
-      expect(eventMetaData).toEqual({templateName: 'fn-template'})
 
+      mocked(updateStackName).mockImplementationOnce(() => {
+        throw new Error()
+      })
+
+      await waitFor(() => {
+        expect(screen.queryByText('Template Installer')).toBeVisible()
+      })
+
+      await waitFor(() => {
+        const installButton = screen.queryByTitle('Install Template')
+        expect(installButton).toBeVisible()
+        fireEvent.click(installButton)
+      })
+
+      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyMessage] = notifyCallArguments
+      expect(notifyMessage).toEqual(communityTemplateRenameFailed())
+
+      const [honeyBadgerCallArguments] = mocked(
+        reportErrorThroughHoneyBadger
+      ).mock.calls
+      expect(honeyBadgerCallArguments[1]).toEqual({
+        name: 'The community template rename failed',
+      })
+    })
+
+    it('handles failures to install', async () => {
+      const templateButton = getByTitle('Lookup Template')
+
+      fireEvent.click(templateButton)
+
+      const [templateClickEventCallArguments] = mocked(event).mock.calls
+      const [eventName] = templateClickEventCallArguments
+      expect(eventName).toBe('template_click_lookup')
+
+      mocked(event).mockImplementationOnce(() => {
+        throw new Error()
+      })
+
+      await waitFor(() => {
+        expect(screen.queryByText('Template Installer')).toBeVisible()
+      })
+
+      await waitFor(() => {
+        const installButton = screen.queryByTitle('Install Template')
+        expect(installButton).toBeVisible()
+        fireEvent.click(installButton)
+      })
+
+      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyMessage] = notifyCallArguments
+      expect(notifyMessage).toEqual(communityTemplateInstallFailed())
+
+      const [honeyBadgerCallArguments] = mocked(
+        reportErrorThroughHoneyBadger
+      ).mock.calls
+      expect(honeyBadgerCallArguments[1]).toEqual({
+        name: 'Failed to install community template',
+      })
+
+      cleanup()
+    })
+    it('installs the template', async () => {
+      const templateButton = getByTitle('Lookup Template')
+
+      fireEvent.click(templateButton)
+
+      const [templateClickEventCallArguments] = mocked(event).mock.calls
+      const [eventName] = templateClickEventCallArguments
+      expect(eventName).toBe('template_click_lookup')
       await waitFor(() => {
         expect(screen.queryByText('Template Installer')).toBeVisible()
       })

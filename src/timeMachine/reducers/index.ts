@@ -37,12 +37,10 @@ import {
   TimeMachineID,
   Color,
 } from 'src/types'
-import {Action as GeoOptionsAction} from 'src/timeMachine/actions/geoOptionsCreators'
 import {Action as TimeMachineAction} from 'src/timeMachine/actions'
 
 import {TimeMachineTab} from 'src/types/timeMachine'
 import {BuilderAggregateFunctionType} from 'src/client/generatedRoutes'
-import {geoOptionsReducer} from 'src/timeMachine/reducers/geoOptionsReducer'
 
 interface QueryBuilderState {
   buckets: string[]
@@ -172,7 +170,7 @@ const getTableProperties = (view, files) => {
   return properties
 }
 
-export type Action = TimeMachineAction | GeoOptionsAction
+export type Action = TimeMachineAction
 
 export const timeMachinesReducer = (
   state: TimeMachinesState = initialState(),
@@ -228,13 +226,11 @@ export const timeMachinesReducer = (
 
   const newActiveTimeMachine = timeMachineReducer(activeTimeMachine, action)
 
-  const updatedViewTimeMachine = geoOptionsReducer(newActiveTimeMachine, action)
-
   const s = {
     ...state,
     timeMachines: {
       ...timeMachines,
-      [activeTimeMachineID]: updatedViewTimeMachine,
+      [activeTimeMachineID]: newActiveTimeMachine,
     },
   }
 
@@ -328,6 +324,12 @@ export const timeMachineReducer = (
 
     case 'TOGGLE_VIS_OPTIONS': {
       return {...state, isViewingVisOptions: !state.isViewingVisOptions}
+    }
+
+    case 'SET_VIEW_PROPERTIES': {
+      const {properties} = action.payload
+
+      return setViewProperties(state, properties)
     }
 
     case 'SET_GEOM': {

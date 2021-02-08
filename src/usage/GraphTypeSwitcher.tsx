@@ -6,11 +6,9 @@ import {Panel, ComponentSize, InfluxColors} from '@influxdata/clockface'
 import {fromFlux} from '@influxdata/giraffe'
 
 // Components
-import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
-import ViewSwitcher from 'src/shared/components/ViewSwitcher'
+import {View} from 'src/visualization'
 
 // Utils
-import {checkResultsLength} from 'src/shared/utils/vis'
 import {getTimeRangeWithTimezone, getTimeZone} from 'src/dashboards/selectors'
 
 // Types
@@ -81,24 +79,18 @@ const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv}) => {
         <h5>{graphInfo.title}</h5>
       </Panel.Header>
       <Panel.Body className={graphTypeClassname}>
-        <EmptyQueryView
+        <View
           loading={RemoteDataState.Done}
-          errorFormat={ErrorFormat.Scroll}
-          // TODO(ariel): set the error message eventually
-          // errorMessage={"Whoops, looks like there was an issue with your query"}
-          isInitialFetch={false}
-          hasResults={checkResultsLength(giraffeResult)}
-        >
-          <ViewSwitcher
-            giraffeResult={giraffeResult}
-            timeRange={timeRange}
-            properties={
-              graphInfo.type === 'stat' ? singleStatProperties : xyProperties
-            }
-            timeZone={timeZone}
-            theme="dark"
-          />
-        </EmptyQueryView>
+          error=""
+          isInitial={false}
+          properties={
+            graphInfo.type === 'stat' ? singleStatProperties : xyProperties
+          }
+          result={giraffeResult}
+          timeRange={timeRange}
+          timeZone={timeZone}
+          theme="dark"
+        />
       </Panel.Body>
     </Panel>
   )

@@ -1,5 +1,4 @@
 import {Organization} from '../../../src/types'
-import {VIS_TYPES} from '../../../src/timeMachine/constants'
 import {lines} from '../../support/commands'
 import {
   FROM,
@@ -12,6 +11,20 @@ import {
 } from '../../../src/shared/constants/fluxFunctions'
 
 const TYPE_DELAY = 0
+const VIS_TYPES = [
+  //    'band',
+  //    'check',
+  'gauge',
+  'xy',
+  'heatmap',
+  'histogram',
+  //  'map',
+  'mosaic',
+  'scatter',
+  'single-stat',
+  'line-plus-single-stat',
+  'table',
+]
 
 function getTimeMachineText() {
   return cy
@@ -749,7 +762,7 @@ describe('DataExplorer', () => {
             cy.getByTestID('time-machine-submit-button').click()
 
             // cycle through all the visualizations of the data
-            VIS_TYPES.forEach(({type}) => {
+            VIS_TYPES.forEach(type => {
               if (type !== 'mosaic' && type !== 'band') {
                 // mosaic graph is behind feature flag
                 cy.getByTestID('view-type--dropdown').click()
@@ -763,6 +776,11 @@ describe('DataExplorer', () => {
                 }
               }
             })
+
+            // force the last selected visualization to be a graph for the next test
+            cy.getByTestID('view-type--dropdown').click()
+            cy.getByTestID(`view-type--xy`).click()
+            cy.getByTestID(`vis-graphic--xy`).should('exist')
 
             // view raw data table
             cy.getByTestID('raw-data--toggle').click()

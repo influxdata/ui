@@ -145,7 +145,7 @@
   "dependencies": {
     "@influxdata/clockface": "^2.4.1",
     "@influxdata/flux": "^0.5.1",
-    "@influxdata/flux-lsp-browser": "^0.5.31",
+    "@influxdata/flux-lsp-browser": "^0.5.32",
     "@influxdata/giraffe": "^2.0.1",
     "@influxdata/influx": "0.5.5",
     "@influxdata/influxdb-templates": "0.9.0",

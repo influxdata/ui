@@ -1,5 +1,6 @@
 // Libraries
 import React, {PureComponent, ChangeEvent} from 'react'
+import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
 import {get, isEmpty} from 'lodash'
 
@@ -27,6 +28,7 @@ import {
   createDashboardWithView,
 } from 'src/cells/actions/thunks'
 import {notify} from 'src/shared/actions/notifications'
+import {setActiveTimeMachine} from 'src/timeMachine/actions'
 
 // Types
 import {AppState, Dashboard, View, ResourceType} from 'src/types'
@@ -38,6 +40,9 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 
+// Utils
+import {initialStateHelper} from 'src/timeMachine/reducers'
+
 interface State {
   targetDashboardIDs: string[]
   cellName: string
@@ -48,9 +53,9 @@ interface State {
 interface OwnProps {
   dismiss: () => void
 }
-
+type RouterProps = RouteComponentProps<{orgID: string}>
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & OwnProps
+type Props = ReduxProps & OwnProps & RouterProps
 
 @ErrorHandling
 class SaveAsCellForm extends PureComponent<Props, State> {
@@ -169,22 +174,31 @@ class SaveAsCellForm extends PureComponent<Props, State> {
       this.state.newDashboardName || DEFAULT_DASHBOARD_NAME
 
     const viewWithProps: View = {...view, name: cellName}
-
+    let targetDashboard
+    let succeeded = false
     try {
       targetDashboardIDs.forEach(dashID => {
         if (dashID === DashboardTemplate.id) {
+          targetDashboard = dashID
           onCreateDashboardWithView(orgID, newDashboardName, viewWithProps)
           return
         }
 
         const selectedDashboard = dashboards.find(d => d.id === dashID)
+        targetDashboard = selectedDashboard.id
         onCreateCellWithView(selectedDashboard.id, viewWithProps)
       })
+      succeeded = true
     } catch (error) {
       console.error(error)
     } finally {
       this.resetForm()
-      dismiss()
+      if (succeeded) {
+        this.props.setTimeMachine('de', initialStateHelper())
+        this.props.history.push(`/orgs/${orgID}/dashboards/${targetDashboard}`)
+      } else {
+        dismiss()
+      }
     }
   }
 
@@ -234,9 +248,10 @@ const mdtp = {
   onGetDashboards: getDashboards,
   onCreateCellWithView: createCellWithView,
   onCreateDashboardWithView: createDashboardWithView,
+  setTimeMachine: setActiveTimeMachine,
   notify,
 }
 
 const connector = connect(mstp, mdtp)
 
-export default connector(SaveAsCellForm)
+export default connector(withRouter(SaveAsCellForm))

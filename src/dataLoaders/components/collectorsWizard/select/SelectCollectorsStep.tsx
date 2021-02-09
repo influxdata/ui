@@ -20,7 +20,13 @@ import {Bucket} from 'src/types'
 import {ComponentStatus} from '@influxdata/clockface'
 import {CollectorsStepProps} from 'src/dataLoaders/components/collectorsWizard/CollectorsWizard'
 import {BundleName} from 'src/types/dataLoaders'
-import {AppState} from 'src/types'
+import {AppState, ResourceType} from 'src/types'
+
+// Selectors
+import {getAll} from 'src/resources/selectors'
+
+// Utils
+import {isSystemBucket} from 'src/buckets/constants'
 
 export interface OwnProps extends CollectorsStepProps {
   buckets: Bucket[]
@@ -48,13 +54,17 @@ export class SelectCollectorsStep extends PureComponent<Props> {
               metrics to a bucket in InfluxDB
             </h5>
           </div>
-          {!!this.props.bucket && (
+          {this.props.buckets.length && (
             <StreamingSelector
               pluginBundles={this.props.pluginBundles}
               telegrafPlugins={this.props.telegrafPlugins}
               onTogglePluginBundle={this.handleTogglePluginBundle}
               buckets={this.props.buckets}
-              selectedBucketName={this.props.bucket}
+              selectedBucketName={
+                this.props.bucket
+                  ? this.props.bucket
+                  : this.props.buckets[0].name
+              }
               onSelectBucket={this.handleSelectBucket}
             />
           )}
@@ -123,11 +133,21 @@ const mstp = ({
     dataLoaders: {telegrafPlugins, pluginBundles},
     steps: {bucket},
   },
-}: AppState) => ({
-  telegrafPlugins,
-  bucket,
-  pluginBundles,
-})
+  ...state
+}: AppState) => {
+  const buckets = getAll<Bucket>(state as AppState, ResourceType.Buckets)
+
+  const nonSystemBuckets = buckets.filter(
+    bucket => !isSystemBucket(bucket.name)
+  )
+
+  return {
+    telegrafPlugins,
+    bucket,
+    pluginBundles,
+    buckets: nonSystemBuckets,
+  }
+}
 
 const mdtp = {
   onAddPluginBundle: addPluginBundleWithPlugins,

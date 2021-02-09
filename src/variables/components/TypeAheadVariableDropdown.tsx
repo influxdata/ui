@@ -123,7 +123,15 @@ class TypeAheadVariableDropdown extends PureComponent<Props> {
       //return/enter key
       //lose focus, reset the selectIndex to -1, & close the menu:
       e.target.blur()
-      this.setState({setMenuStatus: 'closed', selectIndex: -1})
+
+      // the person could have been typing and pressed return, need to reset the value
+      // back to the 'real value'
+      const newState = {
+        setMenuStatus: 'closed',
+        selectIndex: -1,
+        ...this.getRealValue(),
+      }
+      this.setState(newState)
     }
   }
 
@@ -131,13 +139,19 @@ class TypeAheadVariableDropdown extends PureComponent<Props> {
   // the input should show the actual selected item, not what the user typed in;
   // only want to show valid values when the component is not actively being used
   onClickAwayHere = () => {
-    const {actualVal} = this.state
+    this.setState(this.getRealValue())
+  }
+
+  getRealValue = () => {
+    const {actualVal, typedValue} = this.state
     const {selectedValue} = this.props
 
     if (actualVal || selectedValue) {
       const realValue = actualVal ? actualVal : selectedValue
 
-      this.setState({typedValue: realValue})
+      if (typedValue !== realValue) {
+        return {typedValue: realValue}
+      }
     }
   }
 

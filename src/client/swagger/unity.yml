@@ -290,6 +290,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  '/invoices/:id':
+    get:
+      operationId: GetInvoicesId
+      tags:
+        - Invoices
+      responses:
+        '200':
+          description: Returns the raw binary for the json pdf
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
   '/orgs/{orgId}/invites':
     get:
       operationId: GetInvites

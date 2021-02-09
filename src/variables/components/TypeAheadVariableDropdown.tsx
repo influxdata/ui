@@ -28,10 +28,6 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
-const placeHolderText = 'select a value'
-//todo:  play with focus....if the entire item loses focus, then
-//the input should show the actual selected item, not what the user typed in
-//think on this.....
 class TypeAheadVariableDropdown extends PureComponent<Props> {
   constructor(props) {
     super(props)
@@ -44,18 +40,18 @@ class TypeAheadVariableDropdown extends PureComponent<Props> {
   }
 
   // set the 'shownValues' after loading, and
-  // resets the menuOpen variable
+  // resets the setMenuStatus variable
   componentDidUpdate(prevProps, prevState) {
     const prevVals = prevProps.values
     const {values, selectedValue} = this.props
-    const {actualVal, loaded, selectHappened, menuOpen} = this.state
+    const {actualVal, loaded, selectHappened, setMenuStatus} = this.state
     const {
       actualVal: prevActualVal,
       selectHappened: prevSelectHappened,
-      menuOpen: prevMenuOpened,
+      setMenuStatus: prevSetMenuStatus,
     } = prevState
 
-    //this is for updatintg the values:
+    //this is for updating the values:
     //(only want this to run *once* when the values get loaded)
     if (!loaded && prevVals.length !== values.length) {
       this.setState({
@@ -65,14 +61,14 @@ class TypeAheadVariableDropdown extends PureComponent<Props> {
       })
     }
 
-    //unset the menuOpen; it should be set to closed only once; then undone
-    if (menuOpen !== prevMenuOpened && menuOpen !== 'ignore') {
-      this.setState({menuOpen: 'ignore'})
+    //unset the setMenuStatus; it should be set to closed (or open) only once; then undone
+    if (setMenuStatus !== prevSetMenuStatus && setMenuStatus !== null) {
+      this.setState({setMenuStatus: null})
     }
 
-    //need to have this, as the 'onClickAwayHere' gets triggered *before*
+    // need to have this, as the 'onClickAwayHere' gets triggered *before*
     // the selected value is set to the actualValue (it keeps re-using the original
-    //property)
+    // property)
 
     //for updating the selected value:
     if (
@@ -95,7 +91,11 @@ class TypeAheadVariableDropdown extends PureComponent<Props> {
       const result = values.filter(
         val => val.toLowerCase().indexOf(needle.toLowerCase()) !== -1
       )
-      this.setState({shownValues: result, typedValue: needle, menuOpen: 'open'})
+      this.setState({
+        shownValues: result,
+        typedValue: needle,
+        setMenuStatus: 'open',
+      })
     }
   }
 
@@ -123,10 +123,13 @@ class TypeAheadVariableDropdown extends PureComponent<Props> {
       //return/enter key
       //lose focus, reset the selectIndex to -1, & close the menu:
       e.target.blur()
-      this.setState({menuOpen: 'closed', selectIndex: -1})
+      this.setState({setMenuStatus: 'closed', selectIndex: -1})
     }
   }
 
+  // if the entire item loses focus, then
+  // the input should show the actual selected item, not what the user typed in;
+  // only want to show valid values when the component is not actively being used
   onClickAwayHere = () => {
     const {actualVal} = this.state
     const {selectedValue} = this.props
@@ -140,12 +143,14 @@ class TypeAheadVariableDropdown extends PureComponent<Props> {
 
   render() {
     const {selectedValue, values, name} = this.props
-    const {typedValue, shownValues, menuOpen} = this.state
+    const {typedValue, shownValues, setMenuStatus} = this.state
 
     const dropdownStatus =
       values.length === 0 ? ComponentStatus.Disabled : ComponentStatus.Default
 
-    const widthStyle = this.getWidth()
+    const placeHolderText = this.getPlaceHolderText('Select a Value')
+
+    const widthStyle = this.getWidth(placeHolderText)
 
     return (
       <Dropdown
@@ -153,7 +158,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props> {
         className="variable-dropdown--dropdown"
         testID={this.props.testID || `variable-dropdown--${name}`}
         onClickAway={this.onClickAwayHere}
-        menuOpen={menuOpen}
+        setMenuStatus={setMenuStatus}
         button={(active, onClick) => (
           <Dropdown.Button
             active={active}
@@ -197,7 +202,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props> {
     )
   }
 
-  private getWidth() {
+  private getWidth(placeHolderText) {
     const {values} = this.props
     const allVals = [placeHolderText, ...values]
     const longestItemWidth = Math.floor(
@@ -240,19 +245,14 @@ class TypeAheadVariableDropdown extends PureComponent<Props> {
     this.setState(newState)
   }
 
-  // todo:  show the 'loading' or 'no values' as a string (no input field yet!)
+  // show the 'loading' or 'no values' as a string (no input field yet!)
   // when it is loading
-  getIntroText = () => {
-    const {selectedValue, status} = this.props
+  getPlaceHolderText = (defaultText: string = '') => {
+    const {status} = this.props
     if (status === RemoteDataState.Loading) {
       return 'Loading...'
     }
-
-    if (selectedValue) {
-      return selectedValue
-    }
-
-    return ''
+    return defaultText
   }
 }
 

@@ -6,7 +6,6 @@ import {
   parseYBounds,
   HEX_DIGIT_PRECISION,
   getGeoCoordinates,
-  getPrecisionTrimmingTableValue,
 } from 'src/shared/utils/vis'
 import {Table} from '@influxdata/giraffe'
 
@@ -145,23 +144,13 @@ describe('getMainColumnName', () => {
   })
 })
 
-describe('getPrecisionTrimmingTableValue - get precision value for geo coordinate calculation', () => {
-  it('calculates a precision value that is used to retrieve id for geo coordinate calculation', () => {
-    const precisionTrimmingTable = getPrecisionTrimmingTableValue()
-
-    expect(precisionTrimmingTable.length - 1).toEqual(HEX_DIGIT_PRECISION)
-    expect(
-      precisionTrimmingTable.filter(num => typeof num === 'bigint').length
-    ).toEqual(HEX_DIGIT_PRECISION + 1)
-  })
-})
-
 describe('getGeoCoordinates - retrieve latitude and longitude values for map geo type', () => {
   it('returns a latitude and longitude value with key names lat and lon if table with proper columns exists', () => {
-    const table = ({
-      getColumn: () => [0, 1, 2, '123'],
-    } as unknown) as Table
+    const table = {
+      getColumn: () => [0, 1, 2, '2323'],
+    } as any
     const geoCoordinates = getGeoCoordinates(table, 3)
+    console.log(geoCoordinates)
     expect(geoCoordinates).toEqual(
       expect.objectContaining({
         lon: expect.any(Number),
@@ -171,9 +160,9 @@ describe('getGeoCoordinates - retrieve latitude and longitude values for map geo
   })
 
   it('throws an error if cellId is not a proper string value', () => {
-    const table = ({
+    const table = {
       getColumn: () => [0, 1, 2, 8],
-    } as unknown) as Table
+    } as any
 
     try {
       getGeoCoordinates(table, 3)
@@ -185,9 +174,9 @@ describe('getGeoCoordinates - retrieve latitude and longitude values for map geo
   })
 
   it('throws an error if cellId length is greater than the hex precision value allows for', () => {
-    const table = ({
+    const table = {
       getColumn: () => [0, 1, 2, new Array(HEX_DIGIT_PRECISION + 1).join('1')],
-    } as unknown) as Table
+    } as any
 
     try {
       getGeoCoordinates(table, 3)

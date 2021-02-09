@@ -46,26 +46,24 @@ const VariablesControlBarList: FC<Props> = ({variables}) => {
     })
 
   return (
-    <div>
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <Droppable droppableId="variables-dropdowns" direction="horizontal">
-          {(provided, snapshot) => (
-            <div
-              className={getGridClassName(snapshot.isDraggingOver)}
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-            >
-              {variables.map((v, i) => (
-                <ErrorBoundary key={v.id}>
-                  <DraggableDropdown id={v.id} index={i} name={v.name} />
-                </ErrorBoundary>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-    </div>
+    <DragDropContext onDragEnd={handleDragEnd}>
+      <Droppable droppableId="variables-dropdowns" direction="horizontal">
+        {(provided, snapshot) => (
+          <div
+            className={getGridClassName(snapshot.isDraggingOver)}
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+          >
+            {variables.map((v, i) => (
+              <ErrorBoundary key={v.id}>
+                <DraggableDropdown id={v.id} index={i} name={v.name} />
+              </ErrorBoundary>
+            ))}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
+    </DragDropContext>
   )
 }
 

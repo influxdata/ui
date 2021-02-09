@@ -178,7 +178,9 @@ describe('getGeoCoordinates - retrieve latitude and longitude values for map geo
     try {
       getGeoCoordinates(table, 3)
     } catch (err) {
-      expect(err.message).toEqual('invalid s2_cell_id column value')
+      expect(err.message).toEqual(
+        'invalid s2_cell_id column value - value must be a string'
+      )
     }
   })
 

@@ -34,7 +34,7 @@ interface MyState {
   selectIndex: number
   shownValues: string[]
   selectHappened: boolean
-  setMenuStatus: string
+  menuOpen: string
   loaded: boolean
 }
 
@@ -47,21 +47,21 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       selectIndex: -1,
       shownValues: props.values,
       selectHappened: false,
-      setMenuStatus: null,
+      menuOpen: null,
       loaded: false,
     }
   }
 
   // set the 'shownValues' after loading, and
-  // resets the setMenuStatus variable
+  // resets the menuOpen variable
   componentDidUpdate(prevProps, prevState) {
     const prevVals = prevProps.values
     const {values, selectedValue} = this.props
-    const {actualVal, loaded, selectHappened, setMenuStatus} = this.state
+    const {actualVal, loaded, selectHappened, menuOpen} = this.state
     const {
       actualVal: prevActualVal,
       selectHappened: prevSelectHappened,
-      setMenuStatus: prevSetMenuStatus,
+      menuOpen: prevMenuOpen,
     } = prevState
 
     // this is for updating the values:
@@ -74,9 +74,9 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       })
     }
 
-    // unset the setMenuStatus; it should be set to closed (or open) only once; then undone
-    if (setMenuStatus !== prevSetMenuStatus && setMenuStatus !== null) {
-      this.setState({setMenuStatus: null})
+    // unset the menuOpen; it should be set to closed (or open) only once; then undone
+    if (menuOpen !== prevMenuOpen && menuOpen !== null) {
+      this.setState({menuOpen: null})
     }
 
     // need to have this, as the 'onClickAwayHere' gets triggered *before*
@@ -106,7 +106,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       this.setState({
         shownValues: result,
         typedValue: needle,
-        setMenuStatus: 'open',
+        menuOpen: 'open',
       })
     }
   }
@@ -139,7 +139,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       // the person could have been typing and pressed return, need to reset the value
       // back to the 'real value'
       const newState = {
-        setMenuStatus: 'closed',
+        menuOpen: 'closed',
         selectIndex: -1,
         ...this.getRealValue(),
       }
@@ -169,7 +169,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
   render() {
     const {selectedValue, values, name} = this.props
-    const {typedValue, shownValues, setMenuStatus} = this.state
+    const {typedValue, shownValues, menuOpen} = this.state
 
     const dropdownStatus =
       values.length === 0 ? ComponentStatus.Disabled : ComponentStatus.Default
@@ -184,7 +184,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
         className="variable-dropdown--dropdown"
         testID={this.props.testID || `variable-dropdown--${name}`}
         onClickAway={this.onClickAwayHere}
-        setMenuStatus={setMenuStatus}
+        menuOpen={menuOpen}
         button={(active, onClick) => (
           <Dropdown.Button
             active={active}
@@ -242,13 +242,18 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     return widthStyle
   }
 
-  private handleSelect = (selectedValue: string, selectIndex?: number) => {
+  private handleSelect = (selectedValue: string, newSelectIndex?: number) => {
     const {
       variableID,
       onSelectValue,
       onSelect,
       selectedValue: prevSelectedValue,
     } = this.props
+
+    let {selectIndex} = this.state;
+    if (newSelectIndex || newSelectIndex === 0){
+      selectIndex = newSelectIndex
+    }
 
     if (prevSelectedValue !== selectedValue) {
       onSelectValue(variableID, selectedValue)
@@ -262,10 +267,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       typedValue: selectedValue,
       actualVal: selectedValue,
       selectHappened: true,
-    }
-
-    if (selectIndex || selectIndex === 0) {
-      newState.selectIndex = selectIndex
+      selectIndex,
     }
 
     this.setState(newState)

@@ -778,10 +778,16 @@ export const passwordResetSuccessfully = (message: string): Notification => ({
   If you haven't received an email, please ensure that the email you provided is correct.`,
 })
 
-export const authorizationCreateFailed = (): Notification => ({
-  ...defaultErrorNotification,
-  message: 'Failed to create tokens',
-})
+export const authorizationCreateFailed = (
+  errorMessage?: string
+): Notification => {
+  const defaultMsg = 'Failed to create tokens'
+  const message = errorMessage ? `${defaultMsg}: ${errorMessage}` : defaultMsg
+  return {
+    ...defaultErrorNotification,
+    message,
+  }
+}
 
 export const authorizationUpdateSuccess = (): Notification => ({
   ...defaultSuccessNotification,

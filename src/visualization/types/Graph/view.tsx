@@ -152,7 +152,7 @@ const XYPlot: FC<Props> = ({
       {
         summary: 'hi',
         startValue: annotationTime,
-        endValue: annotationTime,
+        stopValue: annotationTime,
       },
     ])
   }

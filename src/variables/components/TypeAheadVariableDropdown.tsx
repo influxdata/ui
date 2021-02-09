@@ -28,14 +28,27 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
-class TypeAheadVariableDropdown extends PureComponent<Props> {
+interface MyState {
+  typedValue: string
+  actualVal: string
+  selectIndex: number
+  shownValues: string[]
+  selectHappened: boolean
+  setMenuStatus: string
+  loaded: boolean
+}
+
+class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
   constructor(props) {
     super(props)
     this.state = {
-      typedText: '',
+      typedValue: '',
       actualVal: '',
       selectIndex: -1,
       shownValues: props.values,
+      selectHappened: false,
+      setMenuStatus: null,
+      loaded: false,
     }
   }
 

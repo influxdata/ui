@@ -159,7 +159,7 @@ const MosaicOptions: FC<Props> = ({properties, results, update}) => {
           <AxisTicksGenerator
             axisName="x"
             columnType={xColumn}
-            label="X Axis Tick Generator"
+            label="Generate X Axis tick marks"
             properties={properties}
             results={results}
             update={update}

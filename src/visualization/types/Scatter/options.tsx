@@ -228,7 +228,7 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
           <AxisTicksGenerator
             axisName="x"
             columnType={xColumn}
-            label="X Axis Tick Generator"
+            label="Generate X Axis tick marks"
             properties={properties}
             results={results}
             update={update}
@@ -280,7 +280,7 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
           <AxisTicksGenerator
             axisName="y"
             columnType={yColumn}
-            label="Y Axis Tick Generator"
+            label="Generate Y Axis tick marks"
             properties={properties}
             results={results}
             update={update}

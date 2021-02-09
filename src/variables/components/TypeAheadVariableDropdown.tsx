@@ -87,8 +87,8 @@ class TypeAheadVariableDropdown extends PureComponent<Props> {
     if (!needle) {
       this.setState({shownValues: values, typedValue: needle})
     } else {
-      const result = values.filter(
-        val => val.toLowerCase().includes(needle.toLowerCase())
+      const result = values.filter(val =>
+        val.toLowerCase().includes(needle.toLowerCase())
       )
       this.setState({
         shownValues: result,

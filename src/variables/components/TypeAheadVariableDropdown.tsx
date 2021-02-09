@@ -51,8 +51,8 @@ class TypeAheadVariableDropdown extends PureComponent<Props> {
       setMenuStatus: prevSetMenuStatus,
     } = prevState
 
-    //this is for updating the values:
-    //(only want this to run *once* when the values get loaded)
+    // this is for updating the values:
+    // (only want this to run *once* when the values get loaded)
     if (!loaded && prevVals.length !== values.length) {
       this.setState({
         shownValues: values,
@@ -61,7 +61,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props> {
       })
     }
 
-    //unset the setMenuStatus; it should be set to closed (or open) only once; then undone
+    // unset the setMenuStatus; it should be set to closed (or open) only once; then undone
     if (setMenuStatus !== prevSetMenuStatus && setMenuStatus !== null) {
       this.setState({setMenuStatus: null})
     }
@@ -70,14 +70,13 @@ class TypeAheadVariableDropdown extends PureComponent<Props> {
     // the selected value is set to the actualValue (it keeps re-using the original
     // property)
 
-    //for updating the selected value:
+    // for updating the selected value:
     if (
       selectHappened &&
       !prevSelectHappened &&
       actualVal &&
       actualVal !== prevActualVal
     ) {
-      //update the 'typed val':
       this.setState({typedValue: actualVal, selectHappened: false})
     }
   }
@@ -89,7 +88,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props> {
       this.setState({shownValues: values, typedValue: needle})
     } else {
       const result = values.filter(
-        val => val.toLowerCase().indexOf(needle.toLowerCase()) !== -1
+        val => val.toLowerCase().includes(needle.toLowerCase())
       )
       this.setState({
         shownValues: result,
@@ -105,10 +104,10 @@ class TypeAheadVariableDropdown extends PureComponent<Props> {
     let newIndex = -1
 
     if (e.keyCode === 40) {
-      //down arrow
+      // down arrow
       newIndex = selectIndex + 1
     } else if (e.keyCode === 38) {
-      //up arrow
+      // up arrow
       newIndex = selectIndex - 1
     }
 
@@ -120,8 +119,8 @@ class TypeAheadVariableDropdown extends PureComponent<Props> {
     }
 
     if (e.keyCode === 13) {
-      //return/enter key
-      //lose focus, reset the selectIndex to -1, & close the menu:
+      // return/enter key
+      // lose focus, reset the selectIndex to -1, & close the menu:
       e.target.blur()
 
       // the person could have been typing and pressed return, need to reset the value

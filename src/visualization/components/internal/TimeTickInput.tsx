@@ -155,7 +155,7 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
   return (
     <>
       <Grid.Column widthXS={Columns.Six}>
-        <Form.Element label="Tick Start">
+        <Form.Element label="Start Tick Marks At">
           <Input
             placeholder={dateFormatPlaceholder}
             onChange={handleInput}
@@ -193,7 +193,7 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
                     <DatePicker
                       dateTime={getDatePickerDateTime()}
                       onSelectDate={handleSelectDate}
-                      label="Tick Start"
+                      label="Start Tick Marks At"
                     />
                   </div>
                   <Button

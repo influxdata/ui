@@ -112,7 +112,7 @@ const Table: FC<Props> = ({
   const timeVisible =
     transformed.resolvedFieldOptions.find(
       f => f.internalName === DEFAULT_TIME_FIELD.internalName
-    )[0]?.visible || false
+    )?.visible || false
 
   const calculate = useCallback(
     width => column => {

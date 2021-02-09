@@ -1,9 +1,11 @@
 ---
+
 name: Bug report
 about: Create a report to help us improve
----
-
-Thank you for reporting a bug in InfluxData UI.
+title: ''
+labels: kind/bug, team/ui
+assignees: ''
+---Thank you for reporting a bug in InfluxData UI.
 
 - Please ask usage questions on the Influx Community site.
   - https://community.influxdata.com/

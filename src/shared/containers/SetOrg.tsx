@@ -37,6 +37,10 @@ import {
   UsersPage,
   UsagePage,
   BillingPage,
+  FunctionsPage,
+  FunctionPage,
+  FunctionEditPage,
+  FunctionRunsPage,
 } from 'src/shared/containers'
 
 // Types
@@ -244,6 +248,25 @@ const SetOrg: FC<Props> = ({
           {/* Usage */}
           {CLOUD && isFlagEnabled('unity-usage') && (
             <Route path={`${orgPath}/unity-usage`} component={UsagePage} />
+          )}
+
+          {/* Managed Functions */}
+          {CLOUD && isFlagEnabled('managed-functions') && (
+            <>
+              <Route
+                path={`${orgPath}/functions/:id/runs`}
+                component={FunctionRunsPage}
+              />
+              <Route
+                path={`${orgPath}/functions/:id/edit`}
+                component={FunctionEditPage}
+              />
+              <Route
+                path={`${orgPath}/functions/new`}
+                component={FunctionPage}
+              />
+              <Route path={`${orgPath}/functions`} component={FunctionsPage} />
+            </>
           )}
 
           {/* Members */}

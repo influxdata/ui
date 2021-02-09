@@ -20,7 +20,7 @@ describe('tokens', () => {
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
         // check out array.reduce for the nested calls here
-        cy.request('api/v2/authorizations').then(resp => {
+        cy.request(`api/v2/authorizations?orgID=${id}`).then(resp => {
           expect(resp.body).to.exist
           authData.push({
             description: resp.body.authorizations[0].description,

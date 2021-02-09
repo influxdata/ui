@@ -50,4 +50,12 @@ describe('Onboarding.Components.SelectionStep.StreamingSelector', () => {
       expect(cards.length).toBe(1)
     })
   })
+
+  describe('buckets selection list', () => {
+    it('can handle if bucket prop is initially unset', async () => {
+      setup({bucket: ''})
+      const cards = await screen.getAllByTestId('square-grid--card')
+      expect(cards.length).toBe(PLUGIN_BUNDLE_OPTIONS.length)
+    })
+  })
 })

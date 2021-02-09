@@ -20,7 +20,7 @@ const SingleStat: FC<Props> = ({properties, result}) => {
   const {prefix, suffix, colors, decimalPlaces} = properties
 
   return (
-    <LatestValueTransform table={result.table} allowString={false}>
+    <LatestValueTransform table={result.table} allowString={true}>
       {latestValue => {
         const {
           bgColor: backgroundColor,

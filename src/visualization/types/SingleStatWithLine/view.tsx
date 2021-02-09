@@ -189,7 +189,7 @@ const SingleStatWithLine: FC<Props> = ({
         ],
       }}
     >
-      <LatestValueTransform table={result.table} allowString={false}>
+      <LatestValueTransform table={result.table} allowString={true}>
         {latestValue => {
           const {
             bgColor: backgroundColor,

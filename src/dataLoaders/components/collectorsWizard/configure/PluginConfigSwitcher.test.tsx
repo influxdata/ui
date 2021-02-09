@@ -1,12 +1,11 @@
 // Libraries
 import React from 'react'
-import {shallow} from 'enzyme'
+import {screen} from '@testing-library/react'
 
 // Components
 import {PluginConfigSwitcher} from 'src/dataLoaders/components/collectorsWizard/configure/PluginConfigSwitcher'
-import TelegrafPluginInstructions from 'src/dataLoaders/components/collectorsWizard/configure/TelegrafPluginInstructions'
+import {renderWithReduxAndRouter} from 'src/mockState'
 import EmptyDataSourceState from 'src/dataLoaders/components/configureStep/EmptyDataSourceState'
-import PluginConfigForm from 'src/dataLoaders/components/collectorsWizard/configure/PluginConfigForm'
 
 // Constants
 import {telegrafPlugin, token} from 'mocks/dummyData'
@@ -29,43 +28,45 @@ const setup = (override = {}) => {
     ...override,
   }
 
-  const wrapper = shallow(<PluginConfigSwitcher {...props} />)
-
-  return {wrapper}
+  renderWithReduxAndRouter(<PluginConfigSwitcher {...props} />)
 }
 
 describe('DataLoading.Components.Collectors.Configure.PluginConfigSwitcher', () => {
   describe('if no telegraf plugins', () => {
-    it('renders empty data source state', () => {
-      const {wrapper} = setup()
-      const emptyState = wrapper.find(EmptyDataSourceState)
+    it('renders empty data source state', async () => {
+      setup()
+      const defaultEmptyStateText = new EmptyDataSourceState({}).render().props
+        .children
+      const emptyState = await screen.findByText(defaultEmptyStateText)
 
-      expect(wrapper.exists()).toBe(true)
-      expect(emptyState.exists()).toBe(true)
+      expect(emptyState).toBeVisible()
     })
   })
 
   describe('if has active telegraf plugin', () => {
-    it('renders plugin config form', () => {
-      const {wrapper} = setup({
+    it('renders plugin config form', async () => {
+      setup({
         telegrafPlugins: [{...telegrafPlugin, active: true}],
       })
-      const form = wrapper.find(PluginConfigForm)
+      const form = await screen.findByTestId('form-container')
 
-      expect(wrapper.exists()).toBe(true)
-      expect(form.exists()).toBe(true)
+      expect(form).toBeVisible()
     })
   })
 
   describe('if has no active telegraf plugin', () => {
-    it('renders telegraf instructions', () => {
-      const {wrapper} = setup({
+    it('renders telegraf instructions', async () => {
+      setup({
         telegrafPlugins: [{...telegrafPlugin, active: false}],
       })
-      const form = wrapper.find(TelegrafPluginInstructions)
 
-      expect(wrapper.exists()).toBe(true)
-      expect(form.exists()).toBe(true)
+      const form = await screen.getAllByRole('heading', {level: 3})
+      const instructions = await screen.getByTestId(
+        'telegraf-plugin-instructions'
+      )
+
+      expect(form.pop()).toBeVisible()
+      expect(instructions).toBeVisible()
     })
   })
 })

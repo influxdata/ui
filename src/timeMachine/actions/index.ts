@@ -35,6 +35,7 @@ import {
   AutoRefresh,
   TimeMachineID,
   XYViewProperties,
+  ViewProperties,
   GetState,
 } from 'src/types'
 import {Color} from 'src/types/colors'
@@ -106,6 +107,7 @@ export type Action =
   | SetHoverDimensionAction
   | ReturnType<typeof toggleVisOptions>
   | ReturnType<typeof resetActiveQueryWithBuilder>
+  | ReturnType<typeof setViewProperties>
 
 type ExternalActions =
   | ReturnType<typeof loadBuckets>
@@ -750,6 +752,12 @@ export const setYTickStep = (yTickStep: number) => ({
   type: 'SET_Y_TICK_STEP' as 'SET_Y_TICK_STEP',
   payload: {yTickStep},
 })
+
+export const setViewProperties = (properties: ViewProperties) =>
+  ({
+    type: 'SET_VIEW_PROPERTIES',
+    payload: {properties},
+  } as const)
 
 export const loadNewVEO = () => (
   dispatch: Dispatch<Action | ExternalActions>

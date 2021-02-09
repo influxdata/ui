@@ -183,7 +183,7 @@ describe('Dashboards', () => {
         cy.getByTestID('context-delete-dashboard').click()
       })
 
-    // dasboard no longer exists
+    // dashboard no longer exists
     cy.getByTestID('dashboard-card').should('not.exist')
 
     // import dashboard as json

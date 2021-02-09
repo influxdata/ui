@@ -1,12 +1,14 @@
 // Libraries
 import React from 'react'
-import {shallow} from 'enzyme'
+import {render, screen} from '@testing-library/react'
 
 // Components
 import SideBar from 'src/dataLoaders/components/side_bar/SideBar'
 
 // Types
 import {SideBarTabStatus as TabStatus} from 'src/dataLoaders/components/side_bar/SideBar'
+
+import {renderWithReduxAndRouter} from 'src/mockState'
 
 const onClick = jest.fn(() => {})
 
@@ -15,6 +17,7 @@ const childrenArray = [
     label="a"
     key="a"
     id="a"
+    data-testid="a"
     active={true}
     status={TabStatus.Default}
     onClick={onClick}
@@ -23,6 +26,7 @@ const childrenArray = [
     label="b"
     key="b"
     id="b"
+    data-testid="b"
     active={false}
     status={TabStatus.Default}
     onClick={onClick}
@@ -36,23 +40,27 @@ const setup = (override?, childrenArray = []) => {
     ...override,
   }
 
-  const wrapper = shallow(<SideBar {...props}>{childrenArray} </SideBar>)
-
-  return {wrapper}
+  renderWithReduxAndRouter(<SideBar {...props}>{childrenArray} </SideBar>)
 }
 
 describe('SideBar', () => {
   describe('rendering', () => {
-    it('renders with no children', () => {
-      const {wrapper} = setup()
-      expect(wrapper.exists()).toBe(true)
+    it('renders with no children', async () => {
+      setup()
+
+      const elm = await screen.findByTestId('side-bar')
+
+      expect(elm).toBeVisible()
     })
 
-    it('renders with children, and renders its children', () => {
-      const {wrapper} = setup(null, childrenArray)
-      expect(wrapper.exists()).toBe(true)
-      expect(wrapper.contains(childrenArray[0])).toBe(true)
-      expect(wrapper.find(SideBar.Tab)).toHaveLength(2)
+    it('renders with children, and renders its children', async () => {
+      setup(null, childrenArray)
+      const elm = await screen.findByTestId('side-bar')
+
+      expect(elm).toBeVisible()
+      childrenArray.forEach(child => {
+        expect(elm.innerHTML).toContain(render(child).container.innerHTML)
+      })
     })
   })
 })

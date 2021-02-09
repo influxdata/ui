@@ -98,7 +98,10 @@ describe('Dashboard', () => {
 
     cy.getByTestID('add-note--button').click()
     cy.getByTestID('note-editor--overlay').within(() => {
-      cy.get('.CodeMirror').type(`${headerPrefix} ${noteText}`)
+      cy.getByTestID('markdown-editor').within(() => {
+        cy.get('textarea').type(`${headerPrefix} ${noteText}`, {force: true})
+      })
+
       cy.getByTestID('note-editor--preview').contains(noteText)
       cy.getByTestID('note-editor--preview').should('not.contain', headerPrefix)
 
@@ -157,12 +160,11 @@ describe('Dashboard', () => {
     const headerPrefix2 = '-'
 
     cy.getByTestID('note-editor--overlay').within(() => {
-      cy.get('.CodeMirror')
-        .then($codeMirror => {
-          const len = $codeMirror[0].innerText.length
-          cy.wrap($codeMirror).type('{backspace}'.repeat(len))
-        })
-        .type(`${headerPrefix2} ${noteText2}`)
+      cy.getByTestID('markdown-editor').within(() => {
+        cy.get('textarea')
+          .clear()
+          .type(`${headerPrefix2} ${noteText2}`)
+      })
       cy.getByTestID('note-editor--preview').contains(noteText2)
       cy.getByTestID('note-editor--preview').should(
         'not.contain',

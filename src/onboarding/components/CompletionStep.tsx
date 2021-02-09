@@ -54,7 +54,7 @@ class CompletionStep extends PureComponent<Props> {
     const {onExit} = this.props
 
     return (
-      <div className="onboarding-step">
+      <div className="onboarding-step" data-testid="completion-step">
         <div className="wizard-step--scroll-area">
           <DapperScrollbars autoHide={false}>
             <div className="wizard-step--scroll-content">

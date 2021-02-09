@@ -1,6 +1,6 @@
 // Libraries
 import React from 'react'
-import {shallow} from 'enzyme'
+import {screen} from '@testing-library/react'
 
 // Components
 import {ConfigFieldHandler} from 'src/dataLoaders/components/collectorsWizard/configure/ConfigFieldHandler'
@@ -14,7 +14,8 @@ import {
   TelegrafPluginInputCpu,
   TelegrafPluginInputRedis,
 } from '@influxdata/influx'
-import ConfigFieldSwitcher from '../../configureStep/streaming/ConfigFieldSwitcher'
+
+import {renderWithReduxAndRouter} from 'src/mockState'
 
 const setup = (override = {}) => {
   const props = {
@@ -28,40 +29,32 @@ const setup = (override = {}) => {
     ...override,
   }
 
-  const wrapper = shallow(<ConfigFieldHandler {...props} />)
-
-  return {wrapper}
+  renderWithReduxAndRouter(<ConfigFieldHandler {...props} />)
 }
 
 describe('DataLoaders.Components.CollectorsWizard.Configure.ConfigFieldHandler', () => {
   describe('if configFields have no keys', () => {
-    it('renders no config text', () => {
-      const {wrapper} = setup({
+    it('renders no config text', async () => {
+      setup({
         telegrafPlugin,
         configFields:
           telegrafPluginsInfo[TelegrafPluginInputCpu.NameEnum.Cpu].fields,
       })
-      const noConfig = wrapper.find({
-        'data-testid': 'no-config',
-      })
-
-      expect(wrapper.exists()).toBe(true)
-      expect(noConfig.exists()).toBe(true)
+      const noConfig = await screen.findByTestId('no-config')
+      expect(noConfig).toBeVisible()
     })
   })
 
   describe('if configFields have  keys', () => {
-    it('renders correct number of switchers', () => {
+    it('renders correct number of switchers', async () => {
       const configFields =
         telegrafPluginsInfo[TelegrafPluginInputRedis.NameEnum.Redis].fields
-      const {wrapper} = setup({
+      setup({
         telegrafPlugin,
         configFields,
       })
 
-      const switchers = wrapper.find(ConfigFieldSwitcher)
-
-      expect(wrapper.exists()).toBe(true)
+      const switchers = await screen.findAllByTestId('grid')
       expect(switchers.length).toBe(Object.keys(configFields).length)
     })
   })

@@ -1,10 +1,11 @@
 // Libraries
 import React from 'react'
-import {shallow} from 'enzyme'
+import {screen} from '@testing-library/react'
 
 // Components
-import {Input} from '@influxdata/clockface'
 import URIFormElement from 'src/shared/components/URIFormElement'
+
+import {renderWithReduxAndRouter} from 'src/mockState'
 
 const setup = (override = {}) => {
   const props = {
@@ -15,18 +16,14 @@ const setup = (override = {}) => {
     ...override,
   }
 
-  const wrapper = shallow(<URIFormElement {...props} />)
-
-  return {wrapper}
+  renderWithReduxAndRouter(<URIFormElement {...props} />)
 }
 
 describe('URIFormElement', () => {
-  const {wrapper} = setup()
+  setup()
 
-  it('renders', () => {
-    const input = wrapper.find(Input)
-
-    expect(wrapper.exists()).toBe(true)
-    expect(input.exists()).toBe(true)
+  it('renders', async () => {
+    const elm = await screen.getByTestId('input-field')
+    expect(elm).toBeVisible()
   })
 })

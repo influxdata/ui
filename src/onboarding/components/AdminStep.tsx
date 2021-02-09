@@ -63,7 +63,7 @@ class AdminStep extends PureComponent<Props, State> {
     const icon = this.InputIcon
     const status = this.InputStatus
     return (
-      <div className="onboarding-step">
+      <div className="onboarding-step" data-testid="admin-step">
         <Form onSubmit={this.handleNext}>
           <div className="wizard-step--scroll-area">
             <div className="wizard-step--scroll-content">

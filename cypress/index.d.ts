@@ -26,6 +26,7 @@ import {
   fluxEqual,
   createTelegraf,
   createToken,
+  fillInOSSLoginFormWithDefaults,
   writeData,
   wrapEnvironmentVariablesForCloud,
   wrapEnvironmentVariablesForOss,
@@ -76,6 +77,7 @@ declare global {
       writeData: typeof writeData
       wrapEnvironmentVariablesForCloud: typeof wrapEnvironmentVariablesForCloud
       wrapEnvironmentVariablesForOss: typeof wrapEnvironmentVariablesForOss
+      fillInOSSLoginFormWithDefaults: typeof fillInOSSLoginFormWithDefaults
       createEndpoint: typeof createEndpoint
       createRule: typeof createRule
     }

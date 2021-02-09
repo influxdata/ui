@@ -1,12 +1,5 @@
 // Libraries
-import React, {
-  FC,
-  createElement,
-  useContext,
-  useCallback,
-  useMemo,
-  useState,
-} from 'react'
+import React, {FC, useContext, useCallback, useMemo, useState} from 'react'
 
 // Components
 import {
@@ -16,15 +9,16 @@ import {
   SquareButton,
 } from '@influxdata/clockface'
 import ExportButton from 'src/flows/pipes/Visualization/ExportDashboardButton'
-import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
-import ViewSwitcher from 'src/shared/components/ViewSwitcher'
-import ViewTypeDropdown from 'src/shared/visualization/ViewTypeDropdown'
 import Resizer from 'src/flows/shared/Resizer'
 
 // Utilities
-import {checkResultsLength} from 'src/shared/utils/vis'
 import {event} from 'src/cloud/utils/reporting'
-import {TYPE_DEFINITIONS, _transform} from 'src/shared/visualization'
+import {
+  SUPPORTED_VISUALIZATIONS,
+  View,
+  ViewOptions,
+  ViewTypeDropdown,
+} from 'src/visualization'
 
 // Types
 import {ViewType, RemoteDataState} from 'src/types'
@@ -39,7 +33,7 @@ import {PipeContext} from 'src/flows/context/pipe'
 
 const Visualization: FC<PipeProp> = ({Context}) => {
   const {timeZone} = useContext(AppSettingContext)
-  const {data, update, loading, results} = useContext(PipeContext)
+  const {data, range, update, loading, results} = useContext(PipeContext)
   const [optionsVisibility, setOptionsVisibility] = useState(false)
   const toggleOptions = useCallback(() => {
     setOptionsVisibility(!optionsVisibility)
@@ -63,7 +57,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     })
 
     update({
-      properties: _transform(TYPE_DEFINITIONS[type].initial, results.parsed),
+      properties: SUPPORTED_VISUALIZATIONS[type].initial,
     })
   }
 
@@ -94,32 +88,6 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     </>
   )
 
-  const options = useMemo(() => {
-    if (
-      !optionsVisibility ||
-      !TYPE_DEFINITIONS[data.properties.type].options ||
-      !dataExists
-    ) {
-      return null
-    }
-
-    return (
-      <div className="flow-visualization--options">
-        {createElement(TYPE_DEFINITIONS[data.properties.type].options, {
-          properties: data.properties,
-          results: results.parsed,
-          update: updateProperties,
-        })}
-      </div>
-    )
-  }, [
-    optionsVisibility,
-    data.properties,
-    results.parsed,
-    updateProperties,
-    dataExists,
-  ])
-
   const loadingText = useMemo(() => {
     if (loading === RemoteDataState.Loading) {
       return 'Loading'
@@ -148,24 +116,24 @@ const Visualization: FC<PipeProp> = ({Context}) => {
       >
         <div className="flow-visualization">
           <div className="flow-visualization--view">
-            <EmptyQueryView
+            <View
               loading={loading}
-              errorMessage={results.error}
-              errorFormat={ErrorFormat.Scroll}
-              hasResults={checkResultsLength(results.parsed)}
-            >
-              <ViewSwitcher
-                giraffeResult={results.parsed}
-                files={[results.raw]}
-                properties={data.properties}
-                timeZone={timeZone}
-                theme="dark"
-              />
-            </EmptyQueryView>
+              error={results?.error}
+              properties={data.properties}
+              result={results.parsed}
+              timeRange={range}
+              timeZone={timeZone}
+            />
           </div>
         </div>
       </Resizer>
-      {options}
+      {optionsVisibility && dataExists && (
+        <ViewOptions
+          properties={data.properties}
+          results={results.parsed}
+          update={updateProperties}
+        />
+      )}
     </Context>
   )
 }

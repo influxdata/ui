@@ -11,7 +11,7 @@ import {
   Page,
 } from '@influxdata/clockface'
 import VisOptionsButton from 'src/timeMachine/components/VisOptionsButton'
-import Visualization from 'src/timeMachine/components/visualization/view'
+import ViewTypeDropdown from 'src/timeMachine/components/ViewTypeDropdown'
 
 // Constants
 import {
@@ -44,7 +44,7 @@ class VEOHeader extends PureComponent<Props> {
         </Page.Header>
         <Page.ControlBar fullWidth={true}>
           <Page.ControlBarLeft>
-            <Visualization />
+            <ViewTypeDropdown />
             <VisOptionsButton />
           </Page.ControlBarLeft>
           <Page.ControlBarRight>

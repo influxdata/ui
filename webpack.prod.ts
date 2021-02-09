@@ -8,7 +8,8 @@ const path = require('path')
 // Plugins
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const TerserJSPlugin = require('terser-webpack-plugin')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin
 
 const {STATIC_DIRECTORY} = require('./src/utils/env')
 
@@ -49,6 +50,7 @@ module.exports = merge(common, {
       analyzerMode: 'static',
       reportFilename: 'bundle-report.html',
       openAnalyzer: false,
+      generateStatsFile: true,
     }),
   ],
 })

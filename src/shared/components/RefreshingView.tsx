@@ -5,15 +5,11 @@ import {connect} from 'react-redux'
 
 // Components
 import TimeSeries from 'src/shared/components/TimeSeries'
-import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
-import ViewSwitcher from 'src/shared/components/ViewSwitcher'
-import ViewLoadingSpinner from 'src/shared/components/ViewLoadingSpinner'
-import CellEvent from 'src/perf/components/CellEvent'
+import {View} from 'src/visualization'
 
 // Utils
 import {GlobalAutoRefresher} from 'src/utils/AutoRefresher'
 import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
-import {checkResultsLength} from 'src/shared/utils/vis'
 import {getActiveTimeRange} from 'src/timeMachine/selectors/index'
 
 // Types
@@ -76,42 +72,18 @@ class RefreshingView extends PureComponent<Props, State> {
         queries={this.queries}
         key={manualRefresh}
       >
-        {({
-          giraffeResult,
-          files,
-          loading,
-          errorMessage,
-          isInitialFetch,
-          statuses,
-        }) => {
-          return (
-            <>
-              <ViewLoadingSpinner loading={loading} />
-              <EmptyQueryView
-                errorFormat={ErrorFormat.Scroll}
-                errorMessage={errorMessage}
-                hasResults={checkResultsLength(giraffeResult)}
-                loading={loading}
-                isInitialFetch={isInitialFetch}
-                queries={this.queries}
-                fallbackNote={this.fallbackNote}
-              >
-                <>
-                  <CellEvent id={id} type={properties.type} />
-                  <ViewSwitcher
-                    files={files}
-                    giraffeResult={giraffeResult}
-                    properties={properties}
-                    timeRange={ranges}
-                    statuses={statuses}
-                    timeZone={timeZone}
-                    theme={theme}
-                  />
-                </>
-              </EmptyQueryView>
-            </>
-          )
-        }}
+        {({giraffeResult, loading, errorMessage, isInitialFetch}) => (
+          <View
+            loading={loading}
+            error={errorMessage}
+            isInitial={isInitialFetch}
+            properties={properties}
+            result={giraffeResult}
+            timeRange={ranges}
+            timeZone={timeZone}
+            theme={theme}
+          />
+        )}
       </TimeSeries>
     )
   }
@@ -125,19 +97,6 @@ class RefreshingView extends PureComponent<Props, State> {
         return [properties.queries[0]]
       default:
         return properties.queries
-    }
-  }
-
-  private get fallbackNote(): string {
-    const {properties} = this.props
-
-    switch (properties.type) {
-      case 'check':
-        return null
-      default:
-        const {note, showNoteWhenEmpty} = properties
-
-        return showNoteWhenEmpty ? note : null
     }
   }
 

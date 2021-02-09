@@ -25,6 +25,10 @@ const FlowHeader: FC = () => {
     update({name})
   }
 
+  if (!flow) {
+    return null
+  }
+
   return (
     <>
       <Page.Header fullWidth={FULL_WIDTH}>

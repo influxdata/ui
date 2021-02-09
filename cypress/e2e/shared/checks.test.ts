@@ -460,4 +460,26 @@ describe('Checks', () => {
       cy.getByTestID('inline-labels--empty').should('exist')
     })
   })
+
+  describe('External links', () => {
+    it('can assert the link on the checks page points to "Create checks" article in documentation ', () => {
+      cy.getByTestID('Checks--question-mark')
+        .trigger('mouseover')
+        .then(() => {
+          cy.getByTestID('Checks--question-mark--tooltip--contents')
+            .should('be.visible')
+            .within(() => {
+              cy.get('a').then($a => {
+                const url = $a.prop('href')
+                cy.request(url)
+                  .its('body')
+                  .should(
+                    'include',
+                    'https://docs.influxdata.com/influxdb/v2.0/monitor-alert/checks/create/'
+                  )
+              })
+            })
+        })
+    })
+  })
 })

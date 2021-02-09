@@ -8,6 +8,7 @@ describe('Buckets', () => {
       cy.get('@org').then(({id}: Organization) =>
         cy.fixture('routes').then(({orgs, buckets}) => {
           cy.visit(`${orgs}/${id}${buckets}`)
+          cy.getByTestID('tree-nav')
           cy.window().then(win => {
             win.influx.set('csvUploader', true)
             cy.getByTestID('tree-nav')

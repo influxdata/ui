@@ -57,7 +57,10 @@ export class TelegrafPluginInstructions extends PureComponent<Props> {
         <div className="data-loading--scroll-content">
           <div>
             <h3 className="wizard-step--title">Configure Plugins</h3>
-            <h5 className="wizard-step--sub-title">
+            <h5
+              className="wizard-step--sub-title"
+              data-testid="telegraf-plugin-instructions"
+            >
               Configure each plugin from the menu on the left. Some plugins do
               not require any configuration.
             </h5>

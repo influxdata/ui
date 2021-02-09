@@ -249,13 +249,13 @@
 }
 
 // Special styling for view options inside flow panel
-.flow-panel--body .view-options {
+.flow-panel--body .view-options--wrap {
   flex: 0 0 340px;
   border-radius: 0;
   background-color: transparent;
   margin-right: 0;
 }
-.flow-panel--body .view-options--container {
+.flow-panel--body .view-options {
   padding: $cf-marg-c;
 }
 

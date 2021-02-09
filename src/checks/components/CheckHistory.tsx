@@ -11,6 +11,7 @@ import AlertHistoryQueryParams from 'src/alerting/components/AlertHistoryQueryPa
 import EventTable from 'src/eventViewer/components/EventTable'
 import GetResources from 'src/resources/components/GetResources'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
+import CheckProvider from 'src/checks/utils/context'
 
 // Context
 import {ResourceIDsContext} from 'src/alerting/components/AlertHistoryIndex'
@@ -25,29 +26,21 @@ import {getTimeZone} from 'src/dashboards/selectors'
 
 // Types
 import {ResourceIDs} from 'src/checks/reducers'
-import {AppState, Check, TimeZone, ResourceType} from 'src/types'
-import {getByID} from 'src/resources/selectors'
+import {AppState, TimeZone, ResourceType} from 'src/types'
 import {RouteComponentProps} from 'react-router-dom'
 
 interface StateProps {
-  check: Check
   timeZone: TimeZone
   resourceIDs: ResourceIDs
 }
 
 type Props = RouteComponentProps<{orgID: string; checkID: string}> & StateProps
 
-const CheckHistory: FC<Props> = ({
-  match: {
-    params: {orgID},
-  },
-  check,
-  timeZone,
-  resourceIDs,
-}) => {
-  const loadRows = useMemo(() => options => loadStatuses(orgID, options), [
-    orgID,
-  ])
+const CheckHistory: FC<Props> = ({match, timeZone, resourceIDs}) => {
+  const loadRows = useMemo(
+    () => options => loadStatuses(match.params.orgID, options),
+    [match.params.orgID]
+  )
   const historyType = 'statuses'
   const fields = STATUS_FIELDS
   return (
@@ -81,12 +74,9 @@ const CheckHistory: FC<Props> = ({
                 className="alert-history-page--contents"
               >
                 <div className="alert-history-contents">
-                  {check.type !== 'custom' && (
-                    <CheckHistoryVisualization
-                      check={check}
-                      timeZone={timeZone}
-                    />
-                  )}
+                  <CheckProvider id={match.params.checkID}>
+                    <CheckHistoryVisualization timeZone={timeZone} />
+                  </CheckProvider>
                   <div className="alert-history">
                     <EventTable {...props} fields={fields} />
                   </div>
@@ -100,14 +90,9 @@ const CheckHistory: FC<Props> = ({
   )
 }
 
-const mstp = (state: AppState, props: Props) => {
+const mstp = (state: AppState) => {
   const timeZone = getTimeZone(state)
   const checkIDs = getCheckIDs(state)
-  const check = getByID<Check>(
-    state,
-    ResourceType.Checks,
-    props.match.params.checkID
-  )
 
   const resourceIDs = {
     checkIDs,
@@ -115,7 +100,7 @@ const mstp = (state: AppState, props: Props) => {
     ruleIDs: null,
   }
 
-  return {check, timeZone, resourceIDs}
+  return {timeZone, resourceIDs}
 }
 
 export default connect<StateProps>(mstp)(CheckHistory)

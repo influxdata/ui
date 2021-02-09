@@ -64,8 +64,6 @@ class CollectorsWizard extends PureComponent<Props> {
   }
 
   public render() {
-    const {buckets} = this.props
-
     return (
       <Overlay visible={true}>
         <Overlay.Container maxWidth={1200}>
@@ -74,10 +72,7 @@ class CollectorsWizard extends PureComponent<Props> {
             onDismiss={this.handleDismiss}
           />
           <Overlay.Body className="data-loading--overlay">
-            <CollectorsStepSwitcher
-              stepProps={this.stepProps}
-              buckets={buckets}
-            />
+            <CollectorsStepSwitcher stepProps={this.stepProps} />
           </Overlay.Body>
         </Overlay.Container>
       </Overlay>

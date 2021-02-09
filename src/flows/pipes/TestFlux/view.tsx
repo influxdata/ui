@@ -2,9 +2,6 @@
 import React, {FC, useState, useContext} from 'react'
 
 // Components
-import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
-import ViewSwitcher from 'src/shared/components/ViewSwitcher'
-import ViewTypeDropdown from 'src/shared/visualization/ViewTypeDropdown'
 import Resizer from 'src/flows/shared/Resizer'
 
 // Components
@@ -12,7 +9,6 @@ import {SquareButton, IconFont} from '@influxdata/clockface'
 
 // Utilities
 import fromFlux from 'src/shared/utils/fromFlux.legacy'
-import {checkResultsLength} from 'src/shared/utils/vis'
 
 // Types
 import {PipeProp, FluxResult} from 'src/types/flows'
@@ -21,11 +17,15 @@ import {ViewType, RemoteDataState} from 'src/types'
 import {AppSettingContext} from 'src/flows/context/app'
 import {PipeContext} from 'src/flows/context/pipe'
 
-import {TYPE_DEFINITIONS, _transform} from 'src/shared/visualization'
+import {
+  SUPPORTED_VISUALIZATIONS,
+  View,
+  ViewTypeDropdown,
+} from 'src/visualization'
 
 const TestFlux: FC<PipeProp> = ({Context}) => {
   const {timeZone} = useContext(AppSettingContext)
-  const {data, update} = useContext(PipeContext)
+  const {data, range, update} = useContext(PipeContext)
   const uploadRef: React.RefObject<HTMLInputElement> = React.createRef()
   const startUpload = () => {
     uploadRef.current.click()
@@ -64,7 +64,7 @@ const TestFlux: FC<PipeProp> = ({Context}) => {
 
   const updateType = (type: ViewType) => {
     update({
-      properties: _transform(TYPE_DEFINITIONS[type].initial, results.parsed),
+      properties: SUPPORTED_VISUALIZATIONS[type].initial,
     })
   }
 
@@ -97,20 +97,14 @@ const TestFlux: FC<PipeProp> = ({Context}) => {
       >
         <div className="flow-visualization">
           <div className="flow-visualization--view">
-            <EmptyQueryView
+            <View
               loading={RemoteDataState.Done}
-              errorMessage={results.error}
-              errorFormat={ErrorFormat.Scroll}
-              hasResults={checkResultsLength(results.parsed)}
-            >
-              <ViewSwitcher
-                giraffeResult={results.parsed}
-                files={[results.raw]}
-                properties={data.properties}
-                timeZone={timeZone}
-                theme="dark"
-              />
-            </EmptyQueryView>
+              error={results?.error}
+              properties={data.properties}
+              result={results.parsed}
+              timeRange={range}
+              timeZone={timeZone}
+            />
           </div>
         </div>
       </Resizer>

@@ -1,21 +1,21 @@
 // Libraries
 import React from 'react'
-import {shallow} from 'enzyme'
+import {screen} from '@testing-library/react'
+import {renderWithReduxAndRouter} from 'src/mockState'
 
 // Components
 import SaveAsButton from 'src/dataExplorer/components/SaveAsButton'
 
 const setup = () => {
-  const wrapper = shallow(<SaveAsButton />)
-
-  return {wrapper}
+  renderWithReduxAndRouter(<SaveAsButton />)
 }
 
 describe('SaveAsButton', () => {
-  const {wrapper} = setup()
+  setup()
   describe('rendering', () => {
-    it('renders', () => {
-      expect(wrapper.exists()).toBe(true)
+    it('renders', async () => {
+      const elm = await screen.findByTestId('save-query-as')
+      expect(elm).toBeVisible()
     })
   })
 })

@@ -1,6 +1,7 @@
 // Libraries
 import React from 'react'
-import {shallow} from 'enzyme'
+import {screen} from '@testing-library/react'
+import {renderWithReduxAndRouter} from 'src/mockState'
 
 // Components
 import SideBarButton from 'src/dataLoaders/components/side_bar/SideBarButton'
@@ -18,16 +19,15 @@ const setup = (override?) => {
     ...override,
   }
 
-  const wrapper = shallow(<SideBarButton {...props} />)
-
-  return {wrapper}
+  renderWithReduxAndRouter(<SideBarButton {...props} />)
 }
 
 describe('SideBarButton', () => {
   describe('rendering', () => {
-    it('renders! wee!', () => {
-      const {wrapper} = setup()
-      expect(wrapper.exists()).toBe(true)
+    it('renders! wee!', async () => {
+      setup()
+      const elm = await screen.getByTestId('button')
+      expect(elm).toBeVisible()
     })
   })
 })

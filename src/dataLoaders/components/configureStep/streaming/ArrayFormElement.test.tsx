@@ -1,10 +1,10 @@
 // Libraries
 import React from 'react'
-import {shallow} from 'enzyme'
+import {screen} from '@testing-library/react'
 
 // Components
 import ArrayFormElement from 'src/dataLoaders/components/configureStep/streaming/ArrayFormElement'
-import {MultipleInput} from 'src/clockface'
+import {renderWithReduxAndRouter} from 'src/mockState'
 
 import {TelegrafPluginInputCpu} from '@influxdata/influx'
 
@@ -22,18 +22,15 @@ const setup = (override = {}) => {
     ...override,
   }
 
-  const wrapper = shallow(<ArrayFormElement {...props} />)
-
-  return {wrapper}
+  renderWithReduxAndRouter(<ArrayFormElement {...props} />)
 }
 
 describe('Onboarding.Components.ConfigureStep.Streaming.ArrayFormElement', () => {
-  it('renders', () => {
+  it('renders', async () => {
     const fieldName = 'yo'
-    const {wrapper} = setup({fieldName})
-    const multipleInput = wrapper.find(MultipleInput)
+    setup({fieldName})
+    const elm = await screen.findByText(fieldName)
 
-    expect(wrapper.exists()).toBe(true)
-    expect(multipleInput.exists()).toBe(true)
+    expect(elm).toBeVisible()
   })
 })

@@ -1,21 +1,9 @@
 // Libraries
-import {get} from 'lodash'
 import {S2} from 's2-geometry'
-import {
-  binaryPrefixFormatter,
-  timeFormatter,
-  siPrefixFormatter,
-  Table,
-  ColumnType,
-  LineInterpolation,
-  FromFluxResult,
-} from '@influxdata/giraffe'
-
-import {VIS_SIG_DIGITS, DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {Table, LineInterpolation, FromFluxResult} from '@influxdata/giraffe'
 
 // Types
-import {XYGeom, Axis, Base, TimeZone} from 'src/types'
-import {resolveTimeFormat} from 'src/dashboards/utils/tableGraph'
+import {XYGeom, Axis} from 'src/types'
 
 const HEX_DIGIT_PRECISION = 16
 
@@ -42,67 +30,6 @@ export const geomToInterpolation = (geom: XYGeom): LineInterpolation => {
     default:
       return 'linear'
   }
-}
-
-interface GetFormatterOptions {
-  prefix?: string
-  suffix?: string
-  base?: Base
-  timeZone?: TimeZone
-  trimZeros?: boolean
-  timeFormat?: string
-  format?: boolean
-}
-
-export const getFormatter = (
-  columnType: ColumnType,
-  {
-    prefix,
-    suffix,
-    base,
-    timeZone,
-    trimZeros = true,
-    timeFormat = DEFAULT_TIME_FORMAT,
-    format,
-  }: GetFormatterOptions = {}
-): null | ((x: any) => string) => {
-  if (columnType === 'number' && base === '2') {
-    return binaryPrefixFormatter({
-      prefix,
-      suffix,
-      significantDigits: VIS_SIG_DIGITS,
-      format,
-    })
-  }
-
-  if (columnType === 'number' && base === '10') {
-    return siPrefixFormatter({
-      prefix,
-      suffix,
-      significantDigits: VIS_SIG_DIGITS,
-      trimZeros,
-      format,
-    })
-  }
-
-  if (columnType === 'number' && base === '') {
-    return siPrefixFormatter({
-      prefix,
-      suffix,
-      significantDigits: VIS_SIG_DIGITS,
-      trimZeros,
-      format: true,
-    })
-  }
-
-  if (columnType === 'time') {
-    return timeFormatter({
-      timeZone: timeZone === 'Local' ? undefined : timeZone,
-      format: resolveTimeFormat(timeFormat),
-    })
-  }
-
-  return null
 }
 
 const NOISY_LEGEND_COLUMNS = new Set(['_start', '_stop', 'result'])
@@ -184,7 +111,7 @@ export const extent = (xs: number[]): [number, number] | null => {
 }
 
 export const checkResultsLength = (giraffeResult: FromFluxResult): boolean => {
-  return get(giraffeResult, 'table.length', 0) > 0
+  return (giraffeResult.table?.length || 0) > 0
 }
 
 export const getNumericColumns = (table: Table): string[] => {
@@ -314,7 +241,7 @@ export const defaultYColumn = (
   return null
 }
 
-export const mosaicYcolumn = (
+export const mosaicYColumn = (
   table: Table,
   preferredColumnKey?: string
 ): string | null => {

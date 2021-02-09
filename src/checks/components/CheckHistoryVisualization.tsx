@@ -1,70 +1,43 @@
 // Libraries
-import React, {FC, createContext, useState} from 'react'
-import {get} from 'lodash'
+import React, {FC, useContext} from 'react'
 
 // Components
-import {Plot} from '@influxdata/giraffe'
-import CheckPlot from 'src/shared/components/CheckPlot'
-import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 import TimeSeries from 'src/shared/components/TimeSeries'
-import ViewLoadingSpinner from 'src/shared/components/ViewLoadingSpinner'
+import {View, SUPPORTED_VISUALIZATIONS} from 'src/visualization'
+import {CheckContext} from 'src/checks/utils/context'
 
 // Types
-import {ResourceIDs} from 'src/checks/reducers'
-import {Check, TimeZone, CheckViewProperties} from 'src/types'
+import {TimeZone} from 'src/types'
 
-// Utils
-import {createView} from 'src/views/helpers'
-import {checkResultsLength} from 'src/shared/utils/vis'
-
-export const ResourceIDsContext = createContext<ResourceIDs>(null)
-
-interface OwnProps {
-  check: Check
+interface Props {
   timeZone: TimeZone
 }
 
-type Props = OwnProps
+const CheckHistoryVisualization: FC<Props> = ({timeZone}) => {
+  const properties = SUPPORTED_VISUALIZATIONS['check'].initial
 
-const CheckHistoryVisualization: FC<Props> = ({check, timeZone}) => {
-  const view = createView<CheckViewProperties>(get(check, 'threshold'))
+  // NOTE: this is lazy, but i'm hoping we get rid of checks pretty soon
+  // in favor of the new alerts interface (alex)
+  const {id, type, query, updateStatuses} = useContext(CheckContext)
 
-  const [submitToken] = useState(0)
-  const [manualRefresh] = useState(0)
+  if (type === 'custom') {
+    return
+  }
 
   return (
-    <TimeSeries
-      submitToken={submitToken}
-      queries={[check.query]}
-      key={manualRefresh}
-      check={check}
-    >
+    <TimeSeries submitToken={0} queries={[query]} key={0} check={{id: id}}>
       {({giraffeResult, loading, errorMessage, isInitialFetch, statuses}) => {
+        updateStatuses(statuses)
+
         return (
-          <>
-            <ViewLoadingSpinner loading={loading} />
-            <EmptyQueryView
-              errorFormat={ErrorFormat.Tooltip}
-              errorMessage={errorMessage}
-              hasResults={checkResultsLength(giraffeResult)}
-              loading={loading}
-              isInitialFetch={isInitialFetch}
-              queries={[check.query]}
-              fallbackNote={null}
-            >
-              <CheckPlot
-                checkType={check.type}
-                thresholds={check.type === 'threshold' ? check.thresholds : []}
-                table={get(giraffeResult, 'table')}
-                fluxGroupKeyUnion={get(giraffeResult, 'fluxGroupKeyUnion')}
-                timeZone={timeZone}
-                viewProperties={view.properties}
-                statuses={statuses}
-              >
-                {config => <Plot config={config} />}
-              </CheckPlot>
-            </EmptyQueryView>
-          </>
+          <View
+            loading={loading}
+            error={errorMessage}
+            isInitial={isInitialFetch}
+            properties={properties}
+            result={giraffeResult}
+            timeZone={timeZone}
+          />
         )
       }}
     </TimeSeries>

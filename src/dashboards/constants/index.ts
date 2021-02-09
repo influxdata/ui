@@ -1,10 +1,5 @@
-import {
-  DEFAULT_VERTICAL_TIME_AXIS,
-  DEFAULT_FIX_FIRST_COLUMN,
-} from 'src/shared/constants/tableGraph'
 import {Cell, Dashboard, RemoteDataState} from 'src/types'
 import {DecimalPlaces} from 'src/types'
-import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
 
 import {SortTypes} from 'src/shared/utils/sort'
 import {Sort} from '@influxdata/clockface'
@@ -16,38 +11,6 @@ export const DEFAULT_DECIMAL_PLACES: DecimalPlaces = {
   isEnforced: true,
   digits: 2,
 }
-
-export interface TimeField {
-  internalName: string
-  displayName: string
-  visible: boolean
-}
-export const DEFAULT_TIME_FIELD: TimeField = {
-  internalName: '_time',
-  displayName: 'time',
-  visible: true,
-}
-
-export const DEFAULT_TABLE_OPTIONS = {
-  verticalTimeAxis: DEFAULT_VERTICAL_TIME_AXIS,
-  sortBy: DEFAULT_TIME_FIELD,
-  wrapping: 'truncate',
-  fixFirstColumn: DEFAULT_FIX_FIRST_COLUMN,
-}
-
-export const FORMAT_OPTIONS: Array<{text: string}> = [
-  {text: DEFAULT_TIME_FORMAT},
-  {text: 'DD/MM/YYYY HH:mm:ss.sss'},
-  {text: 'MM/DD/YYYY HH:mm:ss.sss'},
-  {text: 'YYYY/MM/DD HH:mm:ss'},
-  {text: 'hh:mm a'},
-  {text: 'HH:mm'},
-  {text: 'HH:mm:ss'},
-  {text: 'HH:mm:ss ZZ'},
-  {text: 'HH:mm:ss.sss'},
-  {text: 'MMMM D, YYYY HH:mm:ss'},
-  {text: 'dddd, MMMM D, YYYY HH:mm:ss'},
-]
 
 export type NewDefaultCell = Pick<
   Cell,
@@ -123,9 +86,6 @@ export enum CEOTabs {
   Queries = 'Queries',
   Vis = 'Visualization',
 }
-
-export const MIN_DECIMAL_PLACES = 0
-export const MAX_DECIMAL_PLACES = 10
 
 // used in importing dashboards and mapping sources
 export const DYNAMIC_SOURCE = 'dynamic'

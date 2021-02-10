@@ -94,6 +94,7 @@ describe('The Query Builder', () => {
     it('when it creates a query, the query has an aggregate window, clicking around aggregate window selections work', () => {
       cy.get('@org').then((org: Organization) => {
         cy.visit(`orgs/${org.id}/data-explorer`)
+        cy.getByTestID('tree-nav')
       })
 
       cy.contains('mem').click('right') // users sometimes click in random spots

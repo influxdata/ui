@@ -30,7 +30,7 @@ describe('tokens', () => {
 
           cy.fixture('tokens.json').then(({tokens}) => {
             tokens.forEach(token => {
-              token.permissions.forEach(p => p.resource.orgID = id)
+              token.permissions.forEach(p => (p.resource.orgID = id))
               cy.createToken(
                 id,
                 token.description,

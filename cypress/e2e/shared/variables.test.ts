@@ -8,6 +8,7 @@ describe('Variables', () => {
       cy.get('@org').then(({id}: Organization) => {
         cy.createQueryVariable(id)
         cy.visit(`orgs/${id}/settings/variables`)
+        cy.getByTestID('tree-nav')
       })
     })
 

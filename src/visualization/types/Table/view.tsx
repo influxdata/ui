@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, Fragment, useState, useCallback} from 'react'
+import React, {FC, Fragment, useState, useMemo, useCallback} from 'react'
 import classnames from 'classnames'
 
 import Table from 'src/visualization/types/Table/Table'
@@ -25,14 +25,26 @@ interface Props extends VisualizationProps {
 }
 
 const TableGraphs: FC<Props> = ({properties, result, timeZone, theme}) => {
-  const tables = tableFromFluxResult(result)
-
-  const [selectedTable, setSelectedTable] = useState(tables[0])
+  const [selectedTable, setSelectedTable] = useState(null)
   const [search, setSearch] = useState('')
   const [sortOptions, setSortOptions] = useState({
     field: properties.tableOptions?.sortBy?.internalName,
     direction: ASCENDING,
   })
+  const updateSelectedTable = (name: string) => {
+    if (name === selectedTable) {
+      setSelectedTable(null)
+    } else {
+      setSelectedTable(name)
+    }
+  }
+  const tables = useMemo(() => {
+    setSelectedTable(null)
+    return tableFromFluxResult(result)
+  }, [result])
+
+  const _selectedTable =
+    tables.find(table => table.name === selectedTable) || tables[0]
 
   const updateSortOptions = useCallback(
     (fieldName: string) => {
@@ -64,7 +76,7 @@ const TableGraphs: FC<Props> = ({properties, result, timeZone, theme}) => {
     <div className="time-machine-tables">
       {tables.length > 1 && (
         <div className={sidebarClassName}>
-          {!!selectedTable?.data?.length && (
+          {!!_selectedTable?.data?.length && (
             <div className="time-machine-sidebar--heading">
               <Input
                 icon={IconFont.Search}
@@ -83,11 +95,10 @@ const TableGraphs: FC<Props> = ({properties, result, timeZone, theme}) => {
           >
             <div className="time-machine-sidebar--items">
               {filteredTables.map(table => {
-                const {groupKey, id, name} = table
                 const classer = `time-machine-sidebar-item ${
-                  selectedTable && name === selectedTable.name ? 'active' : ''
+                  selectedTable === table.name ? 'active' : ''
                 }`
-                const display = Object.entries(groupKey)
+                const display = Object.entries(table.groupKey)
                   .filter(([k]) => !KEYS_I_HATE.includes(k))
                   .map(([k, v], i) => {
                     return (
@@ -100,9 +111,9 @@ const TableGraphs: FC<Props> = ({properties, result, timeZone, theme}) => {
                   })
                 return (
                   <div
-                    key={id}
+                    key={table.id}
                     className={classer}
-                    onClick={() => setSelectedTable(table)}
+                    onClick={() => updateSelectedTable(table.name)}
                   >
                     {display}
                   </div>
@@ -112,10 +123,10 @@ const TableGraphs: FC<Props> = ({properties, result, timeZone, theme}) => {
           </DapperScrollbars>
         </div>
       )}
-      {!!selectedTable && (
+      {!!_selectedTable && (
         <Table
-          key={selectedTable?.name}
-          table={selectedTable}
+          key={_selectedTable?.name}
+          table={_selectedTable}
           sort={sortOptions}
           updateSort={updateSortOptions}
           properties={properties}
@@ -123,7 +134,7 @@ const TableGraphs: FC<Props> = ({properties, result, timeZone, theme}) => {
           theme={theme}
         />
       )}
-      {(!selectedTable || !selectedTable.data.length) && (
+      {(!_selectedTable || !_selectedTable.data.length) && (
         <EmptyGraphMessage message="This table has no data" />
       )}
     </div>

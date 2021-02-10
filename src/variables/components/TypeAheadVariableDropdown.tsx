@@ -8,6 +8,7 @@ import {
   DropdownMenuTheme,
   ComponentStatus,
   Input,
+  MenuStatus,
 } from '@influxdata/clockface'
 
 // Actions
@@ -34,7 +35,7 @@ interface MyState {
   selectIndex: number
   shownValues: string[]
   selectHappened: boolean
-  menuOpen: string
+  menuOpen: MenuStatus
   loaded: boolean
 }
 
@@ -106,7 +107,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       this.setState({
         shownValues: result,
         typedValue: needle,
-        menuOpen: 'open',
+        menuOpen: MenuStatus.Open,
       })
     }
   }
@@ -139,7 +140,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       // the person could have been typing and pressed return, need to reset the value
       // back to the 'real value'
       const newState = {
-        menuOpen: 'closed',
+        menuOpen: MenuStatus.Closed,
         selectIndex: -1,
         ...this.getRealValue(),
       }
@@ -250,8 +251,8 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       selectedValue: prevSelectedValue,
     } = this.props
 
-    let {selectIndex} = this.state;
-    if (newSelectIndex || newSelectIndex === 0){
+    let {selectIndex} = this.state
+    if (newSelectIndex || newSelectIndex === 0) {
       selectIndex = newSelectIndex
     }
 

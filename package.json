@@ -21,6 +21,7 @@
     "start:dev": "webpack-dev-server --config ./webpack.dev.ts --progress false",
     "start:dev-cloud": "cross-env CLOUD_LOGOUT_URL=http://localhost:8080/api/v2/signout CLOUD_URL=http://localhost:4000 webpack-dev-server --config ./webpack.dev.ts",
     "start:docker": "yarn generate && yarn build:vendor && yarn run start:dev",
+    "start:kind": "yarn build:vendor && NODE_ENV=development UI_SHA=local_dev_mode BASE_PATH=/ API_BASE_PATH=/ PORT=8080 PUBLIC=https://twodotoh.a.influxcloud.dev.local/ CLOUD_URL=/auth yarn start",
     "build": "yarn install --silent && yarn build:ci",
     "build:ci": "yarn generate && yarn build:vendor && webpack --config webpack.prod.ts --bail",
     "build:fast": "webpack --config webpack.fast.ts --bail",
@@ -47,8 +48,8 @@
     "tsc:watch": "yarn tsc --watch",
     "tsc:cypress": "tsc -p ./cypress/tsconfig.json --noEmit --pretty --skipLibCheck",
     "cy": "CYPRESS_baseUrl=http://localhost:9999 cypress open",
-    "cy:dev": "source ../monitor-ci/.env && CYPRESS_baseUrl=https://twodotoh.a.influxcloud.dev.local cypress open --config testFiles='{cloud,shared}/**/*.*'",
-    "cy:dev-oss": "source ../monitor-ci/.env && CYPRESS_baseUrl=https://twodotoh.a.influxcloud.dev.local cypress open --config testFiles='{oss,shared}/**/*.*'",
+    "cy:dev": "source ../monitor-ci/.env && CYPRESS_baseUrl=https://kubernetes.docker.internal:$PORT_HTTPS cypress open --config testFiles='{cloud,shared}/**/*.*'",
+    "cy:dev-oss": "source ../monitor-ci/.env && CYPRESS_baseUrl=https://kubernetes.docker.internal:$PORT_HTTPS cypress open --config testFiles='{oss,shared}/**/*.*'",
     "generate": "oats https://raw.githubusercontent.com/influxdata/influxdb/master/http/swagger.yml > ./src/client/generatedRoutes.ts && yarn unity && yarn flows",
     "unity": "oats ./src/client/swagger/unity.yml > ./src/client/unityRoutes.ts",
     "flows": "oats ./src/client/swagger/flows.yml > ./src/client/flowsRoutes.ts"

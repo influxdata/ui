@@ -71,7 +71,7 @@ const TimeMachineVis: FC<Props> = ({
         <ErrorBoundary>
           <AutoSizer>
             {({width, height}) => {
-              const [parsedResults] = files.flatMap(fromFlux)
+              const [parsedResults] = (files || []).flatMap(fromFlux)
               return (
                 <RawFluxDataTable
                   parsedResults={parsedResults}

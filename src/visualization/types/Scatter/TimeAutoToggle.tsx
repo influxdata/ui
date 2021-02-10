@@ -9,7 +9,7 @@ interface Props {
 }
 const isValidXDomain = xDomain => {
   return (
-    xDomain &&
+    Array.isArray(xDomain) &&
     xDomain.length === 2 &&
     typeof xDomain[0] === 'number' &&
     typeof xDomain[1] === 'number'
@@ -21,13 +21,13 @@ export const TimeDomainAutoToggle: FC<Props> = ({
   table,
 }) => {
   const [isActive, setIsActive] = useState<boolean>(false)
-  const [xDom] = useVisXDomainSettings(
+  const [calculatedXDomain] = useVisXDomainSettings(
     xDomain,
     table.getColumn('_time', 'number')
   )
   const toggleActiveDomain = (): void => {
     if (!isActive) {
-      setDomain('x', xDom)
+      setDomain('x', calculatedXDomain)
     } else {
       setDomain('x', [null, null])
     }
@@ -39,7 +39,7 @@ export const TimeDomainAutoToggle: FC<Props> = ({
         size={ComponentSize.ExtraSmall}
         active={isActive}
         onChange={toggleActiveDomain}
-        disabled={!isValidXDomain(xDom)}
+        disabled={!isValidXDomain(calculatedXDomain)}
         testID="time-domain-toggle-slide"
       />
     </div>

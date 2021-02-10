@@ -2,6 +2,7 @@
 import React, {FC} from 'react'
 import {useHistory} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
+import {get} from 'lodash'
 
 // Components
 import {
@@ -14,6 +15,7 @@ import {
 // Utils
 import {getOrg} from 'src/organizations/selectors'
 import {getAll} from 'src/resources/selectors'
+import {runQuery} from 'src/shared/apis/query'
 
 // Types
 import {AppState, Bucket, ResourceType} from 'src/types'
@@ -33,8 +35,38 @@ const DatalessEmptyState: FC<Props> = ({orgID, buckets, children}) => {
     history.push(`/orgs/${orgID}/load-data/sources`)
   }
 
-  // TODO: Replace with data loading flag from api if experiment is successful
-  if (buckets.find(bucket => bucket.type === 'user')) {
+  const userHasData = (): boolean  => {
+    const userBuckets = buckets.filter(bucket => bucket.type === 'user')
+
+    userBuckets.forEach(async (bucket): Promise<boolean> => {
+      const cardinality = await checkBucketCardinality(bucket["name"])
+      if (cardinality > 0) {
+        return true
+      }
+    })
+    
+    return false
+  }
+
+  const checkBucketCardinality = async (bucketName): Promise<number> => {
+    const cardinalityQuery = `
+      import "influxdata/influxdb"
+      influxdb.cardinality(bucket: "${bucketName}", start: -14d)
+    `
+
+    return await runQuery(orgID, cardinalityQuery).promise
+    .then(res => {
+      const table = get(res, 'csv', '1')
+      const cardinality = Number(table.substr(table.lastIndexOf(',') + 1))
+      return cardinality
+    })
+    .catch(error => {
+      throw new Error (error)
+    })
+  }
+
+  // TODO: Replace with analytics data flag if experiment is successful
+  if (userHasData()) {
     return children
   }
 

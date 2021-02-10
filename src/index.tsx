@@ -1,5 +1,6 @@
 import 'babel-polyfill'
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
+import 'bigint-polyfill'
 
 // Libraries
 import React, {PureComponent} from 'react'

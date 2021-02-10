@@ -1199,17 +1199,12 @@ describe('DataExplorer', () => {
 
         cy.getByTestID('save-as-dashboard-cell--submit').click()
 
-        // wait some time for save
-        cy.wait(2000)
-        // ensure dashboard created with cell
-        // cy.get('@org').then(({id: orgID}: Organization) => {
-        //   cy.fixture('routes').then(({orgs}) => {
-        //     cy.visit(`${orgs}/${orgID}/dashboards/`)
+        cy.location('pathname').should(
+          'match',
+          /^(?=.*dashboards)(?:(?!cell).)+$/
+        )
 
-        //   })
-        // })
-        cy.getByTestID('dashboard-card--name')
-          .contains(dashboardCreateName)
+        cy.getByTestID(`cell--draggable ${cellName}`)
           .should('exist')
           .click()
         cy.getByTestID(`cell ${cellName}`).should('exist')

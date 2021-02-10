@@ -14,7 +14,7 @@ import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import HexColorSchemeDropdown from 'src/visualization/components/internal/HexColorSchemeDropdown'
 import LegendOrientation from 'src/visualization/components/internal/LegendOrientation'
 import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksGenerator'
-
+import {TimeDomainAutoToggle} from 'src/visualization/types/Scatter/TimeAutoToggle'
 import {
   FORMAT_OPTIONS,
   resolveTimeFormat,
@@ -95,14 +95,11 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
   }
 
   const setDomain = (axis: string, domain: [number, number]): void => {
-    let bounds: [string | null, string | null]
+    let bounds: [number | null, number | null]
 
     if (domain) {
       const [min, max] = domain
-      bounds = [
-        min === null ? null : String(min),
-        max === null ? null : String(max),
-      ]
+      bounds = [min === null ? null : min, max === null ? null : max]
     } else {
       bounds = [null, null]
     }
@@ -178,6 +175,15 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
               }}
             />
           </Form.Element>
+          {xColumn === '_time' && (
+            <Form.Element label="Auto Scale Domain">
+              <TimeDomainAutoToggle
+                xDomain={properties.xDomain}
+                setDomain={setDomain}
+                table={results.table}
+              />
+            </Form.Element>
+          )}
           <h5 className="view-options--header">Options</h5>
           <Form.Element label="Color Scheme">
             <HexColorSchemeDropdown

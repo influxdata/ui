@@ -25,11 +25,6 @@ interface Props extends VisualizationProps {
 }
 
 const TableGraphs: FC<Props> = ({properties, result, timeZone, theme}) => {
-  const tables = useMemo(() => {
-    setSelectedTable(null)
-    return tableFromFluxResult(result)
-  }, [result])
-
   const [selectedTable, setSelectedTable] = useState(null)
   const [search, setSearch] = useState('')
   const [sortOptions, setSortOptions] = useState({
@@ -43,6 +38,10 @@ const TableGraphs: FC<Props> = ({properties, result, timeZone, theme}) => {
       setSelectedTable(name)
     }
   }
+  const tables = useMemo(() => {
+    setSelectedTable(null)
+    return tableFromFluxResult(result)
+  }, [result])
 
   const _selectedTable =
     tables.find(table => table.name === selectedTable) || tables[0]

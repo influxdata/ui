@@ -6,18 +6,18 @@ const mockAnnotations = [
     annotations: [
       {
         summary: 'hi',
-        stopValue: new Date('2021-01-21T00:05:51Z').getTime(),
-        startValue: new Date('2021-01-21T00:05:51Z').getTime(),
+        endTime: new Date('2021-01-21T00:05:51Z').getTime(),
+        startTime: new Date('2021-01-21T00:05:51Z').getTime(),
       },
       {
         summary: 'yep',
-        stopValue: new Date('2021-01-21T00:07:10Z').getTime(),
-        startValue: new Date('2021-01-21T00:07:10Z').getTime(),
+        endTime: new Date('2021-01-21T00:07:10Z').getTime(),
+        startTime: new Date('2021-01-21T00:07:10Z').getTime(),
       },
       {
         summary: 'sure, why not',
-        stopValue: new Date('2021-01-21T00:08:11Z').getTime(),
-        startValue: new Date('2021-01-21T00:08:11Z').getTime(),
+        endTime: new Date('2021-01-21T00:08:11Z').getTime(),
+        startTime: new Date('2021-01-21T00:08:11Z').getTime(),
       },
     ],
   },
@@ -35,18 +35,18 @@ describe('the annotations reducer', () => {
         default: [
           {
             summary: 'hi',
-            stopValue: new Date('2021-01-21T00:05:51Z').getTime(),
-            startValue: new Date('2021-01-21T00:05:51Z').getTime(),
+            endTime: new Date('2021-01-21T00:05:51Z').getTime(),
+            startTime: new Date('2021-01-21T00:05:51Z').getTime(),
           },
           {
             summary: 'yep',
-            stopValue: new Date('2021-01-21T00:07:10Z').getTime(),
-            startValue: new Date('2021-01-21T00:07:10Z').getTime(),
+            endTime: new Date('2021-01-21T00:07:10Z').getTime(),
+            startTime: new Date('2021-01-21T00:07:10Z').getTime(),
           },
           {
             summary: 'sure, why not',
-            stopValue: new Date('2021-01-21T00:08:11Z').getTime(),
-            startValue: new Date('2021-01-21T00:08:11Z').getTime(),
+            endTime: new Date('2021-01-21T00:08:11Z').getTime(),
+            startTime: new Date('2021-01-21T00:08:11Z').getTime(),
           },
         ],
       },

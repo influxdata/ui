@@ -27,8 +27,8 @@ export const writeAnnotation = async (
   const annotationsRequestConverted = annotations.map(annotation => {
     return {
       ...annotation,
-      start: new Date(annotation.startValue).toISOString(),
-      end: new Date(annotation.stopValue).toISOString(),
+      start: new Date(annotation.startTime).toISOString(),
+      end: new Date(annotation.endTime).toISOString(),
     }
   })
 
@@ -38,12 +38,12 @@ export const writeAnnotation = async (
     throw new Error(res.data?.message)
   }
 
-  const [{startValue, stopValue, summary, message, stickers, stream}] = res.data
+  const [{startTime, endTime, summary, message, stickers, stream}] = res.data
 
   return [
     {
-      startValue,
-      stopValue,
+      startTime,
+      endTime,
       summary,
       message,
       stickers,
@@ -95,10 +95,10 @@ export const updateAnnotation = async (
     throw new Error(res.data?.message)
   }
 
-  const {startValue, stopValue, summary, message, stickers, stream} = res.data
+  const {startTime, endTime, summary, message, stickers, stream} = res.data
   return {
-    startValue,
-    stopValue,
+    startTime,
+    endTime,
     summary,
     message,
     stickers,

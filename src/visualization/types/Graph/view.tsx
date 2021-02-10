@@ -151,8 +151,8 @@ const XYPlot: FC<Props> = ({
     writeAnnotation([
       {
         summary: 'hi',
-        startValue: annotationTime,
-        stopValue: annotationTime,
+        startTime: annotationTime,
+        endTime: annotationTime,
       },
     ])
   }

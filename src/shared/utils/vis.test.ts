@@ -150,7 +150,6 @@ describe('getGeoCoordinates - retrieve latitude and longitude values for map geo
       getColumn: () => [0, 1, 2, '2323'],
     } as any
     const geoCoordinates = getGeoCoordinates(table, 3)
-    console.log(geoCoordinates)
     expect(geoCoordinates).toEqual(
       expect.objectContaining({
         lon: expect.any(Number),

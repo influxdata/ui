@@ -6,25 +6,7 @@ import {Table, LineInterpolation, FromFluxResult} from '@influxdata/giraffe'
 import {XYGeom, Axis} from 'src/types'
 
 export const HEX_DIGIT_PRECISION = 16
-export const GEO_PRECISION_TABLE = [
-  1n,
-  16n,
-  256n,
-  4096n,
-  65536n,
-  1048576n,
-  16777216n,
-  268435456n,
-  4294967296n,
-  68719476736n,
-  1099511627776n,
-  17592186044416n,
-  281474976710656n,
-  4503599627370496n,
-  72057594037927936n,
-  1152921504606846976n,
-  18446744073709551616n,
-]
+
 /*
   A geom may be stored as "line", "step", "monotoneX", "bar", or "stacked", but
   we currently only support the "line", "step", and "monotoneX" geoms.
@@ -339,10 +321,19 @@ const getS2CellID = (table: Table, index: number): string => {
   return value
 }
 /* 
-   The geo precision table value used below is utilized by S2-geometry, a library which enhances the accuracy and efficiency of point / range coordinates on a map by accounting 
+   The geo precision table value calculated below is utilized by S2-geometry, a library which enhances the accuracy and efficiency of point / range coordinates on a map by accounting 
    for the semi-spherical nature of the earth rather than attempting to plot against a 2d rendering. The cellId value and the precision table are used to ascertain 
    the cell id at the particular level of specificity we are looking for, and that is then passed to S2 to retrieve the lat/lon value at that id. 
 */
+
+const getPrecisionTrimmingTableValue = (): bigint[] => {
+  const precisionTable = [BigInt(1)]
+  for (let i = 1; i <= HEX_DIGIT_PRECISION; i++) {
+    precisionTable[i] = precisionTable[i - 1] * BigInt(HEX_DIGIT_PRECISION)
+  }
+  return precisionTable
+}
+
 export const getGeoCoordinates = (
   table: Table,
   index: number
@@ -357,7 +348,7 @@ export const getGeoCoordinates = (
 
   const fixed =
     BigInt('0x' + cellId) *
-    GEO_PRECISION_TABLE[HEX_DIGIT_PRECISION - cellId.length]
+    getPrecisionTrimmingTableValue()[HEX_DIGIT_PRECISION - cellId.length]
 
   const geoCoordinateValue = S2.idToLatLng(fixed.toString())
 

@@ -147,12 +147,12 @@ const XYPlot: FC<Props> = ({
   const currentTheme = theme === 'light' ? VIS_THEME_LIGHT : VIS_THEME
 
   const doubleClickHandler = plotInteraction => {
-    const annotationTime = new Date(plotInteraction.valueX).toISOString()
+    const annotationTime = new Date(plotInteraction.valueX).getTime()
     writeAnnotation([
       {
         summary: 'hi',
-        start: annotationTime,
-        end: annotationTime,
+        startTime: annotationTime,
+        endTime: annotationTime,
       },
     ])
   }

@@ -1,6 +1,6 @@
 export interface Annotation {
-  end: string
-  start: string
+  endTime: number
+  startTime: number
   summary: string
   stickers?: any
   stream?: string

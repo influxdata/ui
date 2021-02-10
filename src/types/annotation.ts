@@ -25,3 +25,5 @@ export interface DeleteAnnotation {
   end: string
   stickers?: any
 }
+
+export type AnnotationsList = {[stream: string]: Annotation[]}

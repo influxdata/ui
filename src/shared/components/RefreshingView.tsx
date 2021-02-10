@@ -14,12 +14,13 @@ import {getActiveTimeRange} from 'src/timeMachine/selectors/index'
 
 // Types
 import {
-  TimeRange,
-  TimeZone,
   AppState,
   DashboardQuery,
   QueryViewProperties,
+  AnnotationsList,
   Theme,
+  TimeRange,
+  TimeZone,
 } from 'src/types'
 
 interface OwnProps {
@@ -29,9 +30,10 @@ interface OwnProps {
 }
 
 interface StateProps {
+  annotations: AnnotationsList
+  ranges: TimeRange | null
   theme: Theme
   timeRange: TimeRange
-  ranges: TimeRange | null
   timeZone: TimeZone
 }
 
@@ -62,7 +64,7 @@ class RefreshingView extends PureComponent<Props, State> {
   }
 
   public render() {
-    const {id, ranges, properties, manualRefresh, timeZone, theme} = this.props
+    const {id, manualRefresh, properties, ranges, theme, timeZone} = this.props
     const {submitToken} = this.state
 
     return (
@@ -110,11 +112,13 @@ const mstp = (state: AppState, ownProps: OwnProps) => {
   const ranges = getActiveTimeRange(timeRange, ownProps.properties.queries)
   const {timeZone, theme} = state.app.persisted
 
+  const annotations = state.annotations.annotations
   return {
-    timeRange,
+    annotations,
     ranges,
-    timeZone,
     theme,
+    timeRange,
+    timeZone,
   }
 }
 

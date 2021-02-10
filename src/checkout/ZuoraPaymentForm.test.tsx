@@ -15,7 +15,7 @@ describe('CheckoutV2.ZuoraPaymentForm', () => {
     signature: 'zuoraSignature',
     token: 'zuoraToken',
     style: 'zuoraStyle',
-    submitEnabled: 'true',
+    submitEnabled: 'false',
     url: 'zuoraURL',
   })
 
@@ -57,24 +57,12 @@ describe('CheckoutV2.ZuoraPaymentForm', () => {
   test('does not re-render Zuora form on prop changes', () => {
     const clientRenderSpy = jest.spyOn(client, 'render')
 
-    const {rerender} = render(
-      <ZuoraPaymentForm
-        client={client}
-        zuoraParams={zuoraParams}
-        onSuccess={_ => null}
-      />
-    )
+    const {rerender} = render(<ZuoraPaymentForm zuoraParams={zuoraParams} />)
 
     const newClient = createTestClient()
     const newClientRenderSpy = jest.spyOn(newClient, 'render')
 
-    rerender(
-      <ZuoraPaymentForm
-        client={newClient}
-        zuoraParams={{...zuoraParams}}
-        onSuccess={_ => null}
-      />
-    )
+    rerender(<ZuoraPaymentForm zuoraParams={{...zuoraParams}} />)
 
     expect(clientRenderSpy).toBeCalledTimes(1)
     expect(newClientRenderSpy).toBeCalledTimes(0)
@@ -83,13 +71,7 @@ describe('CheckoutV2.ZuoraPaymentForm', () => {
   test('calls provided callback when Zuora form submitted', () => {
     const mockSuccess = jest.fn()
 
-    render(
-      <ZuoraPaymentForm
-        client={client}
-        zuoraParams={zuoraParams}
-        onSuccess={mockSuccess}
-      />
-    )
+    render(<ZuoraPaymentForm zuoraParams={zuoraParams} />)
 
     client.submit()
 

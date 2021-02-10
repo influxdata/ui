@@ -8,15 +8,13 @@ interface Props {
   onClick?: (e: ButtonClickEvent) => void
 }
 
-const noop = _ => {}
-
-const CancelButton: React.FC<Props> = ({onClick = noop, text = 'Cancel'}) => {
+const CancelButton: React.FC<Props> = ({text = 'Cancel'}) => {
   const handleClick = e => {
     if (!!window?._abcr) {
       window?._abcr.triggerAbandonedCart()
     }
 
-    onClick(e)
+    window.location.href = '/'
   }
 
   return (
@@ -25,6 +23,7 @@ const CancelButton: React.FC<Props> = ({onClick = noop, text = 'Cancel'}) => {
       onClick={handleClick}
       text={text}
       id="button-cancel" // for google-analytics
+      testID="checkout-cancel--button"
     />
   )
 }

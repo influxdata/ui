@@ -15,6 +15,7 @@ export {
   UsageVector,
   PaymentMethods,
   ZuoraParams,
+  CreditCardParams,
 } from 'src/client/unityRoutes'
 import {RemoteDataState} from 'src/types'
 

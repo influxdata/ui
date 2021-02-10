@@ -16,8 +16,15 @@ const FormInput: FC<Props> = ({label, required, ...props}) => {
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const {value} = event.target
 
+    handleSetInputs(props.id, value)
+
+    if (props.id !== 'balanceThreshold' && errors[props.id] && value !== '') {
+      handleSetError(props.id, false)
+    }
+
     if (props.id === 'balanceThreshold' && value.length && Number(value) < 1) {
       handleSetError(props.id, true)
+
       requiredMessage = 'Please enter a value of 1 or greater'
     }
 
@@ -28,12 +35,6 @@ const FormInput: FC<Props> = ({label, required, ...props}) => {
     ) {
       handleSetError(props.id, false)
     }
-
-    if (errors[props.id] && value !== '') {
-      handleSetError(props.id, false)
-    }
-
-    handleSetInputs(props.id, value)
   }
 
   return (
@@ -41,7 +42,9 @@ const FormInput: FC<Props> = ({label, required, ...props}) => {
       htmlFor={props.id}
       label={label}
       required={required}
+      testID={`${props.id}--form-element`}
       errorMessage={errors[props.id] && requiredMessage}
+      errorMessageTestId={`${props.id}--form-element-error`}
     >
       <Input
         {...props}

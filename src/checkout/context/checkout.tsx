@@ -4,23 +4,28 @@ import {useDispatch} from 'react-redux'
 
 // Utils
 import {notify} from 'src/shared/actions/notifications'
-import {getBillingNotificationSettings} from 'src/billing/api'
+import {
+  getCheckoutZuoraParams,
+  getBillingNotificationSettings,
+  postCheckoutInformation,
+  makeCheckoutPayload,
+} from 'src/billing/api'
+import {Contact} from 'src/checkout/utils/contact'
 
 // Constants
 import {states} from 'src/billing/constants'
-import {CheckoutClient} from 'src/checkout/client/checkoutClient'
 import {submitError} from 'src/shared/copy/notifications'
 
 // Types
 import {RemoteDataState} from 'src/types'
-import {ZuoraParams} from 'src/types/billing'
+import {ZuoraParams, BillingNotifySettings} from 'src/types/billing'
 
 export type Props = {
   children: JSX.Element
 }
 
 export type Inputs = {
-  paymentMethodId: number
+  paymentMethodId: string
   notifyEmail: string
   balanceThreshold: number
   shouldNotify: boolean
@@ -35,12 +40,15 @@ export type Inputs = {
 
 export interface CheckoutContextType {
   checkoutStatus: RemoteDataState
-  completeCheckout: (value: string) => void
   errors: object
+  onSuccessUrl: string
   handleSetCheckoutStatus: (status: RemoteDataState) => void
   handleSetError: (name: string, value: boolean) => void
   handleSetInputs: (name: string, value: string | number | boolean) => void
-  handleSubmit: () => void
+  handleSubmit: (paymentMethodId: string) => void
+  handleFormValidation: () => number
+  onSuccess: () => void
+  onFocus: () => void
   inputs: Inputs
   isSubmitting: boolean
   zuoraParams: ZuoraParams
@@ -48,12 +56,15 @@ export interface CheckoutContextType {
 
 export const DEFAULT_CONTEXT: CheckoutContextType = {
   checkoutStatus: RemoteDataState.NotStarted,
-  completeCheckout: (_: string) => {},
   errors: {},
+  onSuccessUrl: '',
   handleSetCheckoutStatus: (_: RemoteDataState) => {},
   handleSetError: (_: string, __: boolean) => {},
   handleSetInputs: (_: string, __: string | number | boolean) => {},
-  handleSubmit: () => {},
+  handleSubmit: (_: string) => {},
+  handleFormValidation: () => 0,
+  onSuccess: () => {},
+  onFocus: () => {},
   inputs: {
     paymentMethodId: null,
     notifyEmail: '', // TODO(ariel): set notifyEmail by user's email
@@ -67,10 +78,10 @@ export const DEFAULT_CONTEXT: CheckoutContextType = {
     usSubdivision: states[0],
     postalCode: '',
   },
-  isSubmitting: true,
+  isSubmitting: false,
   zuoraParams: {
     id: '',
-    tenantID: '',
+    tenantId: '',
     key: '',
     signature: '',
     token: '',
@@ -84,20 +95,16 @@ export const CheckoutContext = React.createContext<CheckoutContextType>(
   DEFAULT_CONTEXT
 )
 
+interface CheckoutBase {
+  paymentMethodId?: string
+}
+
+export type Checkout = CheckoutBase & BillingNotifySettings & Contact
+
 export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   const dispatch = useDispatch()
-  const checkoutClient = new CheckoutClient()
 
-  const zuoraParams: ZuoraParams = {
-    id: 'zuora-id',
-    tenantID: 'tenant-id',
-    key: 'key',
-    signature: 'signature',
-    token: 'token',
-    style: 'style',
-    submitEnabled: 'true',
-    url: 'url',
-  }
+  const [zuoraParams, setZuoraParams] = useState({} as ZuoraParams)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [inputs, setInputs] = useState<Inputs>({
@@ -113,6 +120,21 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     usSubdivision: states[0],
     postalCode: '',
   })
+
+  const getZuoraParams = useCallback(async () => {
+    const response = await getCheckoutZuoraParams()
+    if (response.status !== 200) {
+      throw new Error(response.data.message)
+    }
+
+    setZuoraParams(response.data)
+  }, [getCheckoutZuoraParams])
+
+  useEffect(() => {
+    getZuoraParams()
+  }, [getZuoraParams])
+
+  const [onSuccessUrl, setOnSuccessUrl] = useState<string>('')
 
   const getBillingSettings = useCallback(
     async (fields = inputs) => {
@@ -146,10 +168,6 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     RemoteDataState.NotStarted
   )
 
-  const completeCheckout = useCallback(async () => {
-    setCheckoutStatus(await checkoutClient.completePurchase(inputs))
-  }, [checkoutClient, setCheckoutStatus, inputs])
-
   const handleSetInputs = useCallback(
     (name: string, value: string | number | boolean) => {
       setInputs({
@@ -163,8 +181,10 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   const handleSetCheckoutStatus = useCallback(
     (status: RemoteDataState) => {
       setCheckoutStatus(status)
+
+      RemoteDataState.Done === status && setOnSuccessUrl(zuoraParams.url)
     },
-    [setCheckoutStatus]
+    [setCheckoutStatus, zuoraParams]
   )
 
   const handleSetError = (name: string, value: boolean): void => {
@@ -185,7 +205,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     })
   }
 
-  const invalidFields = useCallback(() => {
+  const getInvalidFields = useCallback(() => {
     const fields = {...inputs}
 
     const {shouldNotify} = inputs
@@ -226,24 +246,45 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     })
   }, [getBillingSettings, inputs])
 
-  const handleSubmit = () => {
+  const handleFormValidation = (): number => {
+    const errs = getInvalidFields()
+
+    if (errs.length > 0) {
+      const errorFields = errs?.flatMap(([err]) => err)
+
+      handleSetErrors(errorFields)
+    }
+
+    return errs.length
+  }
+
+  const handleSubmit = async (paymentMethodId: string) => {
     setIsSubmitting(true)
+
     // Check to see if the form is valid using the validate form
-    const errs = invalidFields()
+    const errs = getInvalidFields()
+
     try {
       if (errs.length === 0) {
-        // Z.submit where Z is the Zuora Client IF the form is valid
-        // TODO(ariel): uncomment once the Zuora client is defined
-        // Z.submit()
+        const data = {...inputs, paymentMethodId}
+        const paymentInformation = makeCheckoutPayload(data) as Checkout
+
+        const response = await postCheckoutInformation(paymentInformation)
+
+        handleSetCheckoutStatus(
+          response.status === 201 ? RemoteDataState.Done : RemoteDataState.Error
+        )
       } else {
-        console.log({errs})
         const errorFields = errs?.flatMap(([err]) => err)
+
         handleSetErrors(errorFields)
       }
     } catch (error) {
       console.error({error})
+
       dispatch(notify(submitError()))
     }
+
     setIsSubmitting(false)
   }
 
@@ -251,16 +292,18 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     <CheckoutContext.Provider
       value={{
         checkoutStatus,
-        completeCheckout,
         errors,
         handleSetCheckoutStatus,
         handleSetError,
         handleSetInputs,
         handleSubmit,
+        handleFormValidation,
         inputs,
         isSubmitting,
         zuoraParams,
+        onSuccessUrl,
       }}
+      onSuccessUrl={onSuccessUrl}
     >
       {children}
     </CheckoutContext.Provider>

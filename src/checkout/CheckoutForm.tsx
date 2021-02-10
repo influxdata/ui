@@ -32,13 +32,30 @@ import {CheckoutContext} from 'src/checkout/context/checkout'
 // Types
 
 const CheckoutForm: FC = () => {
-  const {handleSubmit, isSubmitting} = useContext(CheckoutContext)
+  const {handleFormValidation} = useContext(CheckoutContext)
+
+  const onSubmit = () => {
+    if (handleFormValidation() > 0) {
+      return
+    }
+
+    try {
+      Z.submit()
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const {isSubmitting} = useContext(CheckoutContext)
 
   return (
-    <Form noValidate onSubmit={handleSubmit}>
+    <Form noValidate onSubmit={onSubmit}>
       <AppWrapper type="funnel">
         <FunnelPage logo={<LogoWithCubo />} enableGraphic={true}>
-          <h1 className="cf-funnel-page--title checkout-header">
+          <h1
+            data-testid="checkout-page--header"
+            className="cf-funnel-page--title checkout-header"
+          >
             Upgrade to Usage-Based Account
           </h1>
           <Panel gradient={Gradients.BeijingEclipse}>
@@ -49,10 +66,10 @@ const CheckoutForm: FC = () => {
                 alerted if your charges reach the limits you define. <br /> Have
                 any questions? Check out our{' '}
                 <a
-                  href="https://www.influxdata.com/influxdb-cloud-pricing-faq/"
+                  href="https://www.influxdata.com/influxdb-pricing/"
                   target="_blank"
                 >
-                  Pricing FAQ
+                  InfluxDB Cloud Pricing
                 </a>
                 .
               </p>
@@ -82,6 +99,7 @@ const CheckoutForm: FC = () => {
               title={
                 <FlexBox
                   justifyContent={JustifyContent.SpaceBetween}
+                  stretchToFitWidth={true}
                   className="powered-by-payment-header"
                 >
                   <Heading
@@ -95,7 +113,10 @@ const CheckoutForm: FC = () => {
               }
             />
             <Panel.Body size={ComponentSize.Medium}>
-              <ZuoraPaymentForm />
+              <ZuoraPaymentForm
+                key="zuora_payment"
+                data-reactid="zuorapaymentform"
+              />
             </Panel.Body>
           </Panel>
           <Panel>
@@ -123,7 +144,7 @@ const CheckoutForm: FC = () => {
               margin={ComponentSize.Large}
               justifyContent={JustifyContent.Center}
             >
-              <CancelButton onClick={_ => (window.location.href = '/')} />
+              <CancelButton />
               <CTAButton
                 color={ComponentColor.Primary}
                 status={
@@ -134,6 +155,7 @@ const CheckoutForm: FC = () => {
                 text="Upgrade"
                 type={ButtonType.Submit}
                 id="button-upgrade" // for google-analytics
+                testID="checkout-upgrade--button"
               />
             </FlexBox>
           </FunnelPage.FooterSection>

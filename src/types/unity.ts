@@ -1,5 +1,9 @@
 import {RemoteDataState} from '@influxdata/clockface'
-import {User as GenUser, Invite as GenInvite} from 'src/client/unityRoutes'
+import {
+  User as GenUser,
+  Invite as GenInvite,
+  PaymentInformation as GenPaymentInformation,
+} from 'src/client/unityRoutes'
 
 export type Role = 'owner' | 'member'
 
@@ -7,6 +11,10 @@ export interface CloudUser extends GenUser {
   status: RemoteDataState
 }
 export interface Invite extends GenInvite {
+  status: RemoteDataState
+}
+
+export interface PaymentInformation extends GenPaymentInformation {
   status: RemoteDataState
 }
 
@@ -113,6 +121,22 @@ interface PostOrgsInviteCreatedResult {
 }
 
 interface PostOrgsInviteDefaultResult {
+  status: 500
+  headers: Headers
+  data: Error
+}
+
+export type PostAccountUpgradeResult =
+  | PostAccountUpgradedResult
+  | PostAccountUpgradeDefaultResult
+
+interface PostAccountUpgradedResult {
+  status: 201
+  headers: Headers
+  data: Invite
+}
+
+interface PostAccountUpgradeDefaultResult {
   status: 500
   headers: Headers
   data: Error

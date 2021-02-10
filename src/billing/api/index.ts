@@ -6,7 +6,11 @@ import {
   getBillingInvoices,
 } from 'src/client/unityRoutes'
 
-import {RemoteDataState} from 'src/types'
+import {
+  RemoteDataState,
+  PaymentInformation,
+  PostAccountUpgradeResult,
+} from 'src/types'
 import {
   Account,
   Invoice,
@@ -18,7 +22,12 @@ import {
   ZuoraParams,
 } from 'src/types/billing'
 
-const makeResponse = (status, data) => {
+const makeResponse = (status, data, respName, ...args) => {
+  console.log(respName) // eslint-disable-line no-console
+  for (let i = 0; i < args.length; i++) {
+    console.log(args[i]) // eslint-disable-line no-console
+  }
+
   return Promise.resolve({
     status,
     headers: new Headers({'Content-Type': 'application/json'}),
@@ -33,7 +42,7 @@ export const getAccount = (): ReturnType<typeof apiGetAccount> => {
     type: 'free',
     status: RemoteDataState.Done,
   }
-  return makeResponse(200, account)
+  return makeResponse(200, account, 'getBillingAccount')
 }
 
 export const getBillingInfo = (): ReturnType<typeof getBilling> => {
@@ -64,6 +73,7 @@ export const getBillingInfo = (): ReturnType<typeof getBilling> => {
   return makeResponse(200, billing)
 }
 
+
 export const getBillingCreditCard = (): ReturnType<typeof getPaymentForm> => {
   const cc: CreditCardParams = {
     id: 'id123',
@@ -79,14 +89,49 @@ export const getBillingCreditCard = (): ReturnType<typeof getPaymentForm> => {
   return makeResponse(200, cc)
 }
 
+export const getBillingCreditCard = (): ReturnType<typeof getPaymentForm> => {
+  const cc: CreditCardParams = {
+    id: 'id123',
+    tenantId: 'tenant123',
+    key: 'key123',
+    signature: 'John Hancock',
+    token: 't0k3n',
+    style: 'fresh',
+    submitEnabled: 'true',
+    url: 'you-are-el',
+    status: RemoteDataState.Done,
+  }
+
+  return makeResponse(200, cc, 'getBillingCreditCard')
+}
+
+export const getCheckoutZuoraParams = (): ReturnType<typeof getBillingCc> => {
+  const zp: ZuoraParams = {
+    style: 'inline',
+    url: 'you-are-el',
+    submitEnabled: 'false',
+    tenantId: '12345',
+    token: 'TOW-KEN',
+    key: 'KEE',
+    signature: 'SIGNATURE',
+    id: 'eye-dee',
+  }
+
+  return makeResponse(200, zp, 'getCheckoutZuoraParams')
+}
+
 export const getBillingNotificationSettings = (): ReturnType<typeof getSettingsNotifications> => {
   const billingNotifySettings: BillingNotifySettings = {
     isNotify: true,
-    balanceThreshold: 1000000,
+    balanceThreshold: 10,
     notifyEmail: 'asalem@influxdata.com',
     status: RemoteDataState.Done,
   }
-  return makeResponse(200, billingNotifySettings)
+  return makeResponse(
+    200,
+    billingNotifySettings,
+    'getBillingNotificationSettings'
+  )
 }
 
 export const getInvoices = (): ReturnType<typeof getBillingInvoices> => {
@@ -123,5 +168,56 @@ export const getInvoices = (): ReturnType<typeof getBillingInvoices> => {
     },
   ]
 
-  return makeResponse(200, invoices)
+  return makeResponse(200, invoices, 'getInvoices')
+}
+
+export const getRegion = (): ReturnType<typeof getBillingRegion> => {
+  const region: Region = {
+    title: 'EU Frankfurt',
+    isBeta: false,
+    isAvailable: true,
+    provider: 'AWS',
+    region: 'us-west',
+    status: RemoteDataState.Done,
+  }
+
+  return makeResponse(200, region, 'getRegion')
+}
+
+export const makeCheckoutPayload = (data: any): PaymentInformation => {
+  const {
+    shouldNotify,
+    notifyEmail,
+    balanceThreshold,
+    paymentMethodId,
+    country,
+    intlSubdivision,
+    usSubdivision,
+    street1,
+    street2,
+    city,
+    postalCode,
+  } = data
+
+  return {
+    isNotify: shouldNotify,
+    notifyEmail,
+    balanceThreshold,
+    paymentMethodId,
+    country,
+    subdivision: usSubdivision ?? intlSubdivision,
+    street1,
+    street2,
+    city,
+    postalCode,
+    status: RemoteDataState.Done,
+  }
+}
+
+export const postCheckoutInformation = async (
+  data: any
+): Promise<PostAccountUpgradeResult> => {
+  const paymentInformation = makeCheckoutPayload(data)
+
+  return makeResponse(201, paymentInformation, 'postCheckoutInformation', data)
 }

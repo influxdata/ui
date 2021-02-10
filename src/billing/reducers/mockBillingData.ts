@@ -6,7 +6,7 @@ import {
   Invoice,
   PaymentMethod,
   Region,
-  ZuoraParams,
+  CreditCardParams,
 } from 'src/types/billing'
 
 export const mockAccount: Account = {

@@ -20,12 +20,7 @@ const FormSelectDropdown: FC<Props> = ({label, required, ...props}) => {
   }
 
   return (
-    <Form.Element
-      htmlFor={props.id}
-      label={label}
-      required={required}
-      // errorMessage={meta.touched && meta.error}
-    >
+    <Form.Element htmlFor={props.id} label={label} required={required}>
       <SelectDropdown
         {...props}
         onSelect={handleSelect}

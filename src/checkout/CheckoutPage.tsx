@@ -5,20 +5,13 @@ import CheckoutForm from 'src/checkout/CheckoutForm'
 import SuccessOverlay from 'src/checkout/SuccessOverlay'
 import CheckoutProvider from 'src/checkout/context/checkout'
 
-// Types
-interface Props {
-  // email: string
-  // onSuccessUrl: string
-}
-
-const CheckoutV2: FC<Props> = () => {
+const CheckoutV2: FC = () => {
   return (
     <CheckoutProvider>
-      {/* <SuccessOverlay
-          url={onSuccessUrl}
-          visible={checkoutStatus == RemoteDataState.Done}
-      />*/}
-      <CheckoutForm />
+      <React.Fragment>
+        <SuccessOverlay />
+        <CheckoutForm />
+      </React.Fragment>
     </CheckoutProvider>
   )
 }

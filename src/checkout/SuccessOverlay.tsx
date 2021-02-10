@@ -1,16 +1,14 @@
 import {Overlay} from '@influxdata/clockface'
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
+import {CheckoutContext} from 'src/checkout/context/checkout'
+import {RemoteDataState} from 'src/types'
 
-interface Props {
-  url: string
-  visible: boolean
-}
-
-const SuccessOverlay: FC<Props> = ({url, visible}) => {
-  const handleClick = () => (window.location.href = url)
+const SuccessOverlay: FC = () => {
+  const {checkoutStatus, onSuccessUrl} = useContext(CheckoutContext)
+  const handleClick = () => (window.location.href = onSuccessUrl)
 
   return (
-    <Overlay visible={visible}>
+    <Overlay visible={checkoutStatus === RemoteDataState.Done}>
       <Overlay.Container maxWidth={600}>
         <Overlay.Header title="Ready To Rock!" />
         <Overlay.Body>

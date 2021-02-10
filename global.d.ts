@@ -1,4 +1,5 @@
 import {MonacoType} from 'src/types'
+import { ZuoraClient } from 'src/types/billing'
 
 //
 // Got some globals here that only exist during compilation
@@ -7,8 +8,10 @@ import {MonacoType} from 'src/types'
 declare let monaco: MonacoType
 
 declare global {
+  let Z: ZuoraClient
   interface Window {
     monaco: MonacoType
+    Z: ZuoraClient
   }
   declare module '*.png' {
     const value: any

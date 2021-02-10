@@ -3,10 +3,6 @@ interface AlternateSubdivisions {
   usSubdivision?: string
 }
 
-interface FinalSubdivision {
-  subdivision: string
-}
-
 interface ContactBase {
   street1: string
   street2: string
@@ -16,6 +12,3 @@ interface ContactBase {
 }
 
 export type Contact = ContactBase & AlternateSubdivisions
-export type BackendContact = ContactBase & FinalSubdivision
-
-export const isUS = (country: string): boolean => country === 'United States'

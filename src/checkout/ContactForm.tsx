@@ -8,7 +8,7 @@ import {states, countries} from 'src/billing/constants'
 import {CheckoutContext} from 'src/checkout/context/checkout'
 
 const UsContactForm: FC = () => (
-  <Grid>
+  <Grid testID="contact-form--grid">
     <Grid.Row>
       <Grid.Column widthSM={Columns.Six}>
         <FormSelectDropdown

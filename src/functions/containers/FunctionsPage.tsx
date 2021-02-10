@@ -12,6 +12,9 @@ class FunctionsPage extends PureComponent {
     return (
       <>
         <Page titleTag={pageTitleSuffixer(['Functions'])}>
+          <Page.Header fullWidth={false} testID="functions-page--header">
+            <Page.Title title="Functions" />
+          </Page.Header>
           <Page.Contents fullWidth={false} scrollable={true}></Page.Contents>
         </Page>
       </>

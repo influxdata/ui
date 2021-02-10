@@ -252,21 +252,22 @@ const SetOrg: FC<Props> = ({
 
           {/* Managed Functions */}
           {CLOUD && isFlagEnabled('managed-functions') && (
-            <>
-              <Route
-                path={`${orgPath}/functions/:id/runs`}
-                component={FunctionRunsPage}
-              />
-              <Route
-                path={`${orgPath}/functions/:id/edit`}
-                component={FunctionEditPage}
-              />
-              <Route
-                path={`${orgPath}/functions/new`}
-                component={FunctionPage}
-              />
-              <Route path={`${orgPath}/functions`} component={FunctionsPage} />
-            </>
+            <Route
+              path={`${orgPath}/functions/:id/runs`}
+              component={FunctionRunsPage}
+            />
+          )}
+          {CLOUD && isFlagEnabled('managed-functions') && (
+            <Route
+              path={`${orgPath}/functions/:id/edit`}
+              component={FunctionEditPage}
+            />
+          )}
+          {CLOUD && isFlagEnabled('managed-functions') && (
+            <Route path={`${orgPath}/functions/new`} component={FunctionPage} />
+          )}
+          {CLOUD && isFlagEnabled('managed-functions') && (
+            <Route path={`${orgPath}/functions`} component={FunctionsPage} />
           )}
 
           {/* Members */}

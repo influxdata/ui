@@ -12,6 +12,9 @@ class FunctionEditPage extends PureComponent {
     return (
       <>
         <Page titleTag={pageTitleSuffixer(['Edit Function'])}>
+          <Page.Header fullWidth={false} testID="functions-edit-page--header">
+            <Page.Title title="Edit Function" />
+          </Page.Header>
           <Page.Contents fullWidth={false} scrollable={true}></Page.Contents>
         </Page>
       </>

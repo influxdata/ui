@@ -65,13 +65,13 @@ const TimeMachineVis: FC<Props> = ({
     'time-machine--view__empty': noQueries,
   })
 
-  if (isViewingRawData) {
+  if (isViewingRawData && files && files.length) {
     return (
       <div className={timeMachineViewClassName}>
         <ErrorBoundary>
           <AutoSizer>
             {({width, height}) => {
-              const [parsedResults] = (files || []).flatMap(fromFlux)
+              const [parsedResults] = files.flatMap(fromFlux)
               return (
                 <RawFluxDataTable
                   parsedResults={parsedResults}

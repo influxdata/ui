@@ -343,6 +343,7 @@ describe('Dashboards', () => {
 
         cy.get('@org').then(({id}: Organization) => {
           cy.createLabel(labelName, id).then(() => {
+            cy.reload()
             cy.getByTestID(`inline-labels--add`)
               .first()
               .click()

@@ -216,5 +216,17 @@ export const generateNavItems = (orgID: string): NavItem[] => {
         },
       ],
     },
+    {
+      id: 'functions',
+      testID: 'nav-item-functions',
+      icon: IconFont.CogOutline,
+      label: 'Functions',
+      link: {
+        type: 'link',
+        location: `${orgPrefix}/functions/`,
+      },
+      activeKeywords: ['functions'],
+      featureFlag: 'managed-functions',
+    },
   ]
 }

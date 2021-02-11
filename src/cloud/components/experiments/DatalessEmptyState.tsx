@@ -1,15 +1,18 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useEffect, useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
 import {get} from 'lodash'
 
 // Components
 import {
+  Button,
   EmptyState,
+  TechnoSpinner,
   ComponentSize,
   ComponentColor,
-  Button,
+  RemoteDataState,
+  SpinnerContainer,
 } from '@influxdata/clockface'
 
 // Utils
@@ -30,31 +33,44 @@ type Props = OwnProps & ReduxProps
 
 const DatalessEmptyState: FC<Props> = ({orgID, buckets, children}) => {
   const history = useHistory()
+  const [userHasData, setUserHasData] = useState<boolean | null>(null)
+  const loading = typeof userHasData === "boolean" ? RemoteDataState.Done : RemoteDataState.NotStarted
 
-  const handleClientLibrary = (): void => {
-    history.push(`/orgs/${orgID}/load-data/sources`)
-  }
+  useEffect(() => {
+    checkUserHasData()
+    .then(result => {
+      setUserHasData(result)
+    })
+    .catch(error => {
+      setUserHasData(true)
+      throw new Error (error)
+    })
+  },[])
 
-  const userHasData = (): boolean  => {
+  const checkUserHasData = async (): Promise<boolean> => {
     const userBuckets = buckets.filter(bucket => bucket.type === 'user')
 
-    userBuckets.forEach(async (bucket): Promise<boolean> => {
-      const cardinality = await checkBucketCardinality(bucket["name"])
-      if (cardinality > 0) {
-        return true
+    const checkBucketsForData = async (userBuckets, predicate): Promise<boolean> => {
+      for (let bucket of userBuckets) {
+        if (await predicate(bucket)) return true
       }
-    })
-    
-    return false
-  }
+      return false
+    }
 
+    const result = await checkBucketsForData(userBuckets, async (bucket) => {
+      return await checkBucketCardinality(bucket["name"]) > 0
+    })
+
+    return result
+  }
+  
   const checkBucketCardinality = async (bucketName): Promise<number> => {
     const cardinalityQuery = `
-      import "influxdata/influxdb"
-      influxdb.cardinality(bucket: "${bucketName}", start: -14d)
+    import "influxdata/influxdb"
+    influxdb.cardinality(bucket: "${bucketName}", start: -14d)
     `
-
-    return await runQuery(orgID, cardinalityQuery).promise
+    
+    return runQuery(orgID, cardinalityQuery).promise
     .then(res => {
       const table = get(res, 'csv', '1')
       const cardinality = Number(table.substr(table.lastIndexOf(',') + 1))
@@ -64,13 +80,22 @@ const DatalessEmptyState: FC<Props> = ({orgID, buckets, children}) => {
       throw new Error (error)
     })
   }
-
+  
+    const handleClickLoadData = (): void => {
+      history.push(`/orgs/${orgID}/load-data/sources`)
+    }
+  
   // TODO: Replace with analytics data flag if experiment is successful
-  if (userHasData()) {
-    return children
+  if (userHasData) {
+    return (
+      <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
+        {children}
+      </SpinnerContainer>
+      )
   }
 
   return (
+    <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
     <EmptyState size={ComponentSize.Large} className="dataless-empty-state">
       <div className="dataless-empty-state--image" />
       <EmptyState.Text>
@@ -86,12 +111,13 @@ const DatalessEmptyState: FC<Props> = ({orgID, buckets, children}) => {
       </EmptyState.Text>
       <Button
         text="Start Writing Data"
-        onClick={handleClientLibrary}
+        onClick={handleClickLoadData}
         testID="dataless-empty-state--load-data-button"
         color={ComponentColor.Primary}
         size={ComponentSize.Large}
       />
     </EmptyState>
+    </SpinnerContainer>
   )
 }
 

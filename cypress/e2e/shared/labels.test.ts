@@ -432,7 +432,7 @@ describe('labels', () => {
       })
     })
 
-    it.only('can delete a label', () => {
+    it('can delete a label', () => {
       cy.reload()
 
       cy.getByTestID('label-card').should('have.length', 1)

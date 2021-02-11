@@ -7,7 +7,7 @@ import {Page} from '@influxdata/clockface'
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
-const FunctionRunsPage: FC = () => {
+const FunctionRunListPage: FC = () => {
   return (
     <Page titleTag={pageTitleSuffixer(['Function Runs'])}>
       <Page.Header fullWidth={false} testID="functions-runs-page--header">
@@ -18,4 +18,4 @@ const FunctionRunsPage: FC = () => {
   )
 }
 
-export default FunctionRunsPage
+export default FunctionRunListPage

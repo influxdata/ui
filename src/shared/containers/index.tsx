@@ -74,8 +74,8 @@ export const BillingPage = lazy(() =>
   import('src/billing/components/BillingPage')
 )
 
-export const FunctionsPage = lazy(() =>
-  import('src/functions/containers/FunctionsPage')
+export const FunctionListPage = lazy(() =>
+  import('src/functions/containers/FunctionListPage')
 )
 export const FunctionPage = lazy(() =>
   import('src/functions/containers/FunctionPage')
@@ -83,6 +83,6 @@ export const FunctionPage = lazy(() =>
 export const FunctionEditPage = lazy(() =>
   import('src/functions/containers/FunctionEditPage')
 )
-export const FunctionRunsPage = lazy(() =>
-  import('src/functions/containers/FunctionRunsPage')
+export const FunctionRunListPage = lazy(() =>
+  import('src/functions/containers/FunctionRunListPage')
 )

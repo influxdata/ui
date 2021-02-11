@@ -37,10 +37,10 @@ import {
   UsersPage,
   UsagePage,
   BillingPage,
-  FunctionsPage,
+  FunctionListPage,
   FunctionPage,
   FunctionEditPage,
-  FunctionRunsPage,
+  FunctionRunListPage,
 } from 'src/shared/containers'
 
 // Types
@@ -254,7 +254,7 @@ const SetOrg: FC<Props> = ({
           {CLOUD && isFlagEnabled('managed-functions') && (
             <Route
               path={`${orgPath}/functions/:id/runs`}
-              component={FunctionRunsPage}
+              component={FunctionRunListPage}
             />
           )}
           {CLOUD && isFlagEnabled('managed-functions') && (
@@ -267,7 +267,7 @@ const SetOrg: FC<Props> = ({
             <Route path={`${orgPath}/functions/new`} component={FunctionPage} />
           )}
           {CLOUD && isFlagEnabled('managed-functions') && (
-            <Route path={`${orgPath}/functions`} component={FunctionsPage} />
+            <Route path={`${orgPath}/functions`} component={FunctionListPage} />
           )}
 
           {/* Members */}

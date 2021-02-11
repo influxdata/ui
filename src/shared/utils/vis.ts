@@ -314,6 +314,7 @@ const getS2CellID = (table: Table, index: number): string => {
       'Cannot retrieve s2_cell_id column - table does not conform to required structure of Table type'
     )
   }
+  console.log(column, index)
   const value = column[index]
   if (typeof value !== 'string') {
     throw new Error('invalid s2_cell_id column value - value must be a string')

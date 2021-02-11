@@ -15,21 +15,9 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 class RenameOrgOverlay extends PureComponent<
   RouteComponentProps<{orgID: string}>
 > {
-  state = {
-    visible: false,
-  }
-  componentDidMount() {
-    this.setState({visible: true})
-  }
-
-  private closeOverlay = () => {
-    this.setState({visible: false})
-    this.handleClose()
-  }
-
   public render() {
     return (
-      <Overlay visible={this.state.visible} onEscape={this.closeOverlay}>
+      <Overlay visible={true}>
         <DangerConfirmationOverlay
           title="Rename Organization"
           message={this.message}

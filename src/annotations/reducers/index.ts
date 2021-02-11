@@ -5,15 +5,17 @@ import {
   SET_ANNOTATIONS,
 } from 'src/annotations/actions/creators'
 
-import {Annotation} from 'src/types'
+import {Annotation, AnnotationsList} from 'src/types'
 
 export interface AnnotationsState {
-  annotations: {[stream: string]: Annotation[]}
+  annotations: AnnotationsList
   visibleStreamsByID: string[]
 }
 
 export const initialState = (): AnnotationsState => ({
-  annotations: {},
+  annotations: {
+    default: [] as Annotation[],
+  },
   visibleStreamsByID: [],
 })
 

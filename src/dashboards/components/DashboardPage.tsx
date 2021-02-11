@@ -30,6 +30,9 @@ import {event} from 'src/cloud/utils/reporting'
 import {resetQueryCache} from 'src/shared/apis/queryCache'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
+// Actions
+import {fetchAndSetAnnotations} from 'src/annotations/actions/thunks'
+
 // Selectors
 import {getByID} from 'src/resources/selectors'
 
@@ -60,6 +63,7 @@ class DashboardPage extends Component<Props> {
     resetQueryCache()
 
     this.emitRenderCycleEvent()
+    this.props.fetchAndSetAnnotations()
   }
 
   public componentWillUnmount() {
@@ -154,6 +158,10 @@ const mstp = (state: AppState) => {
   }
 }
 
-const connector = connect(mstp)
+const mdtp = {
+  fetchAndSetAnnotations,
+}
+
+const connector = connect(mstp, mdtp)
 
 export default connector(ManualRefresh<OwnProps>(DashboardPage))

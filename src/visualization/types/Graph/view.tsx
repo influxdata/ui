@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC, useMemo} from 'react'
+import {useDispatch} from 'react-redux'
 import {
   Plot,
   DomainLabel,
@@ -32,7 +33,7 @@ import {
 } from 'src/shared/utils/vis'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-import {writeAnnotation} from 'src/annotations/api'
+import {writeThenFetchAndSetAnnotations} from 'src/annotations/actions/thunks'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -60,6 +61,8 @@ const XYPlot: FC<Props> = ({
   const tooltipOrientationThreshold = useLegendOrientationThreshold(
     properties.legendOrientationThreshold
   )
+
+  const dispatch = useDispatch()
 
   const storedXDomain = useMemo(() => parseXBounds(properties.axes.x.bounds), [
     properties.axes.x.bounds,
@@ -148,13 +151,15 @@ const XYPlot: FC<Props> = ({
 
   const doubleClickHandler = plotInteraction => {
     const annotationTime = new Date(plotInteraction.valueX).getTime()
-    writeAnnotation([
-      {
-        summary: 'hi',
-        startTime: annotationTime,
-        endTime: annotationTime,
-      },
-    ])
+    dispatch(
+      writeThenFetchAndSetAnnotations([
+        {
+          summary: 'hi',
+          startTime: annotationTime,
+          endTime: annotationTime,
+        },
+      ])
+    )
   }
 
   const interactionHandlers = {

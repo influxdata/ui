@@ -28,7 +28,6 @@ import {
   deleteAPI,
   getAllAPI,
   migrateLocalFlowsToAPI,
-  FLOWS_API_FLAG,
 } from 'src/flows/context/api'
 import {notify} from 'src/shared/actions/notifications'
 import {
@@ -318,18 +317,16 @@ export const FlowListProvider: FC = ({children}) => {
   )
 
   const migrate = async () => {
-    if (isFlagEnabled(FLOWS_API_FLAG)) {
-      const _flows = await migrateLocalFlowsToAPI(
-        orgID,
-        flows,
-        serialize,
-        dispatch
-      )
-      setFlows({..._flows})
-      if (currentID && currentID.includes('local')) {
-        // if we migrated the local currentID flow, reset currentID
-        setCurrentID(Object.keys(_flows)[0])
-      }
+    const _flows = await migrateLocalFlowsToAPI(
+      orgID,
+      flows,
+      serialize,
+      dispatch
+    )
+    setFlows({..._flows})
+    if (currentID && currentID.includes('local')) {
+      // if we migrated the local currentID flow, reset currentID
+      setCurrentID(Object.keys(_flows)[0])
     }
   }
 

@@ -5,7 +5,7 @@ import {Table, LineInterpolation, FromFluxResult} from '@influxdata/giraffe'
 // Types
 import {XYGeom, Axis} from 'src/types'
 
-const HEX_DIGIT_PRECISION = 16
+export const HEX_DIGIT_PRECISION = 16
 
 /*
   A geom may be stored as "line", "step", "monotoneX", "bar", or "stacked", but
@@ -307,40 +307,54 @@ export const getMainColumnName = (
   return ''
 }
 
-const getS2CellID = (table, index: number): string => {
+const getS2CellID = (table: Table, index: number): string => {
   const column = table.getColumn('s2_cell_id')
   if (!column) {
-    return null
+    throw new Error(
+      'Cannot retrieve s2_cell_id column - table does not conform to required structure of Table type'
+    )
   }
+
   const value = column[index]
   if (typeof value !== 'string') {
-    return null
+    throw new Error('invalid s2_cell_id column value - value must be a string')
   }
   return value
 }
+/* 
+   The geo precision table value calculated below is utilized by S2-geometry, a library which enhances the accuracy and efficiency of point / range coordinates on a map by accounting 
+   for the semi-spherical nature of the earth rather than attempting to plot against a 2d rendering. The cellId value and the precision table are used to ascertain 
+   the cell id at the particular level of specificity we are looking for, and that is then passed to S2 to retrieve the lat/lon value at that id. 
+*/
 
-export const PRECISION_TRIMMING_TABLE = (() => {
+const getPrecisionTrimmingTableValue = (): bigint[] => {
   const precisionTable = [BigInt(1)]
-  for (let i = 1; i < HEX_DIGIT_PRECISION + 1; i++) {
+  for (let i = 1; i <= HEX_DIGIT_PRECISION; i++) {
     precisionTable[i] = precisionTable[i - 1] * BigInt(HEX_DIGIT_PRECISION)
   }
   return precisionTable
-})()
+}
 
-export const getLatLon = (table, index: number) => {
+export const getGeoCoordinates = (
+  table: Table,
+  index: number
+): {lon: number; lat: number} | null => {
   const cellId = getS2CellID(table, index)
-  if (cellId === null || cellId.length > HEX_DIGIT_PRECISION) {
-    return null
+
+  if (cellId.length > HEX_DIGIT_PRECISION) {
+    throw new Error(
+      'invalid cellId length - value must not be longer than the defined hex digit precision'
+    )
   }
-  if (cellId === null || cellId.length > HEX_DIGIT_PRECISION) {
-    return null
-  }
+
   const fixed =
     BigInt('0x' + cellId) *
-    PRECISION_TRIMMING_TABLE[HEX_DIGIT_PRECISION - cellId.length]
-  const latLng = S2.idToLatLng(fixed.toString())
+    getPrecisionTrimmingTableValue()[HEX_DIGIT_PRECISION - cellId.length]
+
+  const geoCoordinateValue = S2.idToLatLng(fixed.toString())
+
   return {
-    lon: latLng.lng,
-    lat: latLng.lat,
+    lat: geoCoordinateValue.lat,
+    lon: geoCoordinateValue.lng,
   }
 }

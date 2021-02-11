@@ -7,7 +7,7 @@ import {GeoViewProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
 
 // Utils
-import {getLatLon} from 'src/shared/utils/vis'
+import {getGeoCoordinates} from 'src/shared/utils/vis'
 
 interface Props extends VisualizationProps {
   properties: GeoViewProperties
@@ -28,7 +28,13 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
 
   const {lat, lon} = properties.center
 
-  if (!getLatLon(result.table, 0)) {
+  let calculatedGeoCoordinates = {
+    lat,
+    lon,
+  }
+  try {
+    calculatedGeoCoordinates = getGeoCoordinates(result.table, 0)
+  } catch (err) {
     const error =
       'Map type is not supported with the data provided: Missing latitude/longitude values'
 
@@ -47,8 +53,8 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
         layers: [
           {
             type: 'geo',
-            lat,
-            lon,
+            lat: calculatedGeoCoordinates.lat,
+            lon: calculatedGeoCoordinates.lon,
             zoom,
             allowPanAndZoom,
             detectCoordinateFields,

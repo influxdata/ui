@@ -4,6 +4,8 @@ import {
   defaultYColumn,
   getMainColumnName,
   parseYBounds,
+  HEX_DIGIT_PRECISION,
+  getGeoCoordinates,
 } from 'src/shared/utils/vis'
 import {Table} from '@influxdata/giraffe'
 
@@ -139,5 +141,48 @@ describe('getMainColumnName', () => {
         lowerColumnName
       )
     ).toEqual('')
+  })
+})
+
+describe('getGeoCoordinates - retrieve latitude and longitude values for map geo type', () => {
+  // Investigate implementation in real world
+  it.skip('returns a latitude and longitude value with key names lat and lon if table with proper columns exists', () => {
+    const table = {
+      getColumn: () => [0, 1, 2, '2323'],
+    } as any
+    const geoCoordinates = getGeoCoordinates(table, 3)
+
+    expect(geoCoordinates).toEqual(
+      expect.objectContaining({
+        lon: expect.any(Number),
+        lat: expect.any(Number),
+      })
+    )
+  })
+
+  it('throws an error if cellId is not a proper string value', () => {
+    const table = {
+      getColumn: () => [0, 1, 2, 8],
+    } as any
+
+    try {
+      getGeoCoordinates(table, 3)
+    } catch (err) {
+      expect(err.message).toEqual(
+        'invalid s2_cell_id column value - value must be a string'
+      )
+    }
+  })
+
+  it('throws an error if cellId length is greater than the hex precision value allows for', () => {
+    const table = {
+      getColumn: () => [0, 1, 2, new Array(HEX_DIGIT_PRECISION + 1).join('1')],
+    } as any
+
+    try {
+      getGeoCoordinates(table, 3)
+    } catch (err) {
+      expect(err.message).toEqual('invalid cellId length')
+    }
   })
 })

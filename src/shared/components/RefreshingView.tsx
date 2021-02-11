@@ -14,10 +14,11 @@ import {getActiveTimeRange} from 'src/timeMachine/selectors/index'
 
 // Types
 import {
-  TimeRange,
   AppState,
   DashboardQuery,
   QueryViewProperties,
+  AnnotationsList,
+  TimeRange,
 } from 'src/types'
 
 interface OwnProps {
@@ -27,6 +28,7 @@ interface OwnProps {
 }
 
 interface StateProps {
+  annotations: AnnotationsList
   timeRange: TimeRange
   ranges: TimeRange | null
 }
@@ -103,9 +105,11 @@ const mstp = (state: AppState, ownProps: OwnProps) => {
   const timeRange = getTimeRangeWithTimezone(state)
   const ranges = getActiveTimeRange(timeRange, ownProps.properties.queries)
 
+  const annotations = state.annotations.annotations
   return {
-    timeRange,
+    annotations,
     ranges,
+    timeRange,
   }
 }
 

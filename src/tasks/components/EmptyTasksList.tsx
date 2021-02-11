@@ -57,10 +57,7 @@ export default class EmptyTasksLists extends PureComponent<Props> {
             </EmptyState>
           }
           variants={[
-            <GetResources
-              resources={[ResourceType.Buckets]}
-              key="1"
-            >
+            <GetResources resources={[ResourceType.Buckets]} key="1">
               <DatalessEmptyState>
                 <EmptyState
                   testID="empty-tasks-list"

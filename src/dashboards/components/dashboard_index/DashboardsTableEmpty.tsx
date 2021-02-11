@@ -53,10 +53,7 @@ const DashboardsTableEmpty: FC<ComponentProps> = ({
         </EmptyState>
       }
       variants={[
-        <GetResources
-          resources={[ResourceType.Buckets]}
-          key="1"
-        >
+        <GetResources resources={[ResourceType.Buckets]} key="1">
           <DatalessEmptyState>
             <EmptyState
               size={ComponentSize.Large}

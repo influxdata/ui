@@ -1178,6 +1178,7 @@ describe('DataExplorer', () => {
             dashboardNames.forEach((_, i) => {
               cy.get(`@dasboard${i}-id`).then(id => {
                 cy.visit(`${orgs}/${orgID}/dashboards/${id}`)
+                cy.getByTestID('tree-nav')
                 cy.getByTestID(`cell ${cellName}`).should('exist')
               })
             })
@@ -1204,6 +1205,7 @@ describe('DataExplorer', () => {
         cy.get('@org').then(({id: orgID}: Organization) => {
           cy.fixture('routes').then(({orgs}) => {
             cy.visit(`${orgs}/${orgID}/dashboards/`)
+            cy.getByTestID('tree-nav')
             cy.getByTestID('dashboard-card--name')
               .contains(dashboardCreateName)
               .should('exist')
@@ -1247,6 +1249,7 @@ describe('DataExplorer', () => {
         cy.fixture('routes').then(({orgs}) => {
           cy.get('@org').then(({id}: Organization) => {
             cy.visit(`${orgs}/${id}/tasks`)
+            cy.getByTestID('tree-nav')
           })
         })
       }
@@ -1340,6 +1343,7 @@ describe('DataExplorer', () => {
         cy.fixture('routes').then(({orgs}) => {
           cy.get('@org').then(({id}: Organization) => {
             cy.visit(`${orgs}/${id}/settings/variables`)
+            cy.getByTestID('tree-nav')
           })
         })
       }

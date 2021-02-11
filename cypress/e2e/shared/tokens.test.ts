@@ -49,6 +49,7 @@ describe('tokens', () => {
 
           cy.fixture('routes').then(({orgs}) => {
             cy.visit(`${orgs}/${id}/load-data/tokens`)
+            cy.getByTestID('tree-nav')
           })
           cy.get('[data-testid="resource-list"]', {timeout: PAGE_LOAD_SLA})
         })

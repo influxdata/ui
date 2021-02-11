@@ -19,6 +19,7 @@ describe('Checks', () => {
         ])
         cy.fixture('routes').then(({orgs, alerting}) => {
           cy.visit(`${orgs}/${orgID}${alerting}`)
+          cy.getByTestID('tree-nav')
         })
       })
     })

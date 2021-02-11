@@ -26,6 +26,7 @@ describe('Notification Endpoints', () => {
             cy.wrap(body).as('endpoint')
           })
           cy.visit(`${orgs}/${id}${alerting}`)
+          cy.getByTestID('tree-nav')
 
           // User can only see all panels at once on large screens
           cy.getByTestID('alerting-tab--endpoints').click({force: true})

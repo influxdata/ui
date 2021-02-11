@@ -32,6 +32,7 @@ describe('The Query Builder', () => {
     it('creates a query, edits it to add another field, then views its results with pride and satisfaction', () => {
       cy.get('@org').then((org: Organization) => {
         cy.visit(`orgs/${org.id}/data-explorer`)
+        cy.getByTestID('tree-nav')
       })
 
       cy.contains('mem').click('right') // users sometimes click in random spots
@@ -134,6 +135,7 @@ describe('The Query Builder', () => {
     it('can create a bucket from the buckets list', () => {
       cy.get('@org').then((org: Organization) => {
         cy.visit(`orgs/${org.id}/data-explorer`)
+        cy.getByTestID('tree-nav')
       })
 
       const newBucketName = '٩(｡•́‿•̀｡)۶'
@@ -156,6 +158,7 @@ describe('The Query Builder', () => {
     it('creates a query that has a group() function in it', () => {
       cy.get('@org').then((org: Organization) => {
         cy.visit(`orgs/${org.id}/data-explorer`)
+        cy.getByTestID('tree-nav')
       })
 
       cy.contains('mem').click('left')
@@ -206,6 +209,7 @@ describe('The Query Builder', () => {
     it("creates a query, edits the query, edits the cell's default name, edits it again, submits with the keyboard, then chills", () => {
       cy.get<ResourceIDs>('@resourceIDs').then(({orgID, dbID, cellID}) => {
         cy.visit(`orgs/${orgID}/dashboards/${dbID}/cells/${cellID}/edit`)
+        cy.getByTestID('tree-nav')
       })
 
       // build query
@@ -226,6 +230,7 @@ describe('The Query Builder', () => {
 
       cy.get<ResourceIDs>('@resourceIDs').then(({orgID, dbID, cellID}) => {
         cy.visit(`orgs/${orgID}/dashboards/${dbID}/cells/${cellID}/edit`)
+        cy.getByTestID('tree-nav')
       })
 
       cy.getByTestID('giraffe-layer-line').should('exist')

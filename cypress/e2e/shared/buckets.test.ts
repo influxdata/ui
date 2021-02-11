@@ -241,6 +241,7 @@ describe('Buckets', () => {
               'contain',
               `${orgs}/${orgID}${buckets}/${bucketID}/edit`
             )
+            cy.getByTestID('tree-nav')
           })
           cy.getByTestID(`overlay`).should('exist')
         })

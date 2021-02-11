@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
-import {useSelector} from 'react-redux'
 import classnames from 'classnames'
+import {useSelector} from 'react-redux'
 import {Panel, ComponentSize, InfluxColors} from '@influxdata/clockface'
 import {fromFlux} from '@influxdata/giraffe'
 
@@ -9,7 +9,7 @@ import {fromFlux} from '@influxdata/giraffe'
 import {View} from 'src/visualization'
 
 // Utils
-import {getTimeRangeWithTimezone, getTimeZone} from 'src/dashboards/selectors'
+import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
 
 // Types
 import {
@@ -39,7 +39,6 @@ const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv}) => {
   const giraffeResult = fromFlux(csv)
 
   const timeRange = useSelector(getTimeRangeWithTimezone)
-  const timeZone = useSelector(getTimeZone)
 
   const singleStatProperties: SingleStatViewProperties = {
     ...GENERIC_PROPERTY_DEFAULTS,
@@ -88,8 +87,6 @@ const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv}) => {
           }
           result={giraffeResult}
           timeRange={timeRange}
-          timeZone={timeZone}
-          theme="dark"
         />
       </Panel.Body>
     </Panel>

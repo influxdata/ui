@@ -20,7 +20,7 @@ import {
   getFillColumnsSelection,
   getSymbolColumnsSelection,
 } from 'src/timeMachine/selectors'
-import {getTimeRangeWithTimezone, getTimeZone} from 'src/dashboards/selectors'
+import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
 
 // Types
 import {RemoteDataState, AppState} from 'src/types'
@@ -44,7 +44,6 @@ const TimeMachineVis: FC<Props> = ({
   yColumn,
   fillColumns,
   symbolColumns,
-  timeZone,
 }) => {
   // If the current selections for `xColumn`/`yColumn`/ etc. are invalid given
   // the current Flux response, attempt to make a valid selection instead. This
@@ -95,7 +94,6 @@ const TimeMachineVis: FC<Props> = ({
         properties={resolvedViewProperties}
         result={giraffeResult}
         timeRange={timeRange}
-        timeZone={timeZone}
       />
     </div>
   )
@@ -115,7 +113,6 @@ const mstp = (state: AppState) => {
   const yColumn = getYColumnSelection(state)
   const fillColumns = getFillColumnsSelection(state)
   const symbolColumns = getSymbolColumnsSelection(state)
-  const timeZone = getTimeZone(state)
 
   return {
     loading,
@@ -129,7 +126,6 @@ const mstp = (state: AppState) => {
     yColumn,
     fillColumns,
     symbolColumns,
-    timeZone,
     timeRange: getActiveTimeRange(timeRange, viewProperties.queries),
   }
 }

@@ -4,7 +4,6 @@ import React, {FC, useCallback, useContext, useEffect, useState} from 'react'
 // Components
 import QueryProvider, {QueryContext} from 'src/flows/context/query'
 import {PopupContext} from 'src/flows/context/popup'
-import {AppSettingContext} from 'src/flows/context/app'
 import {View} from 'src/visualization'
 
 // Types
@@ -16,7 +15,6 @@ const Visualization: FC = () => {
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
   const {data} = useContext(PopupContext)
   const {query} = useContext(QueryContext)
-  const {timeZone} = useContext(AppSettingContext)
 
   const queryAndSetResults = useCallback(
     async text => {
@@ -41,7 +39,6 @@ const Visualization: FC = () => {
           properties={data.properties}
           result={results.parsed}
           timeRange={data.range}
-          timeZone={timeZone}
         />
       </div>
     </div>

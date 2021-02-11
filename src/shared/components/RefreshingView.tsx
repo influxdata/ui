@@ -15,11 +15,9 @@ import {getActiveTimeRange} from 'src/timeMachine/selectors/index'
 // Types
 import {
   TimeRange,
-  TimeZone,
   AppState,
   DashboardQuery,
   QueryViewProperties,
-  Theme,
 } from 'src/types'
 
 interface OwnProps {
@@ -29,10 +27,8 @@ interface OwnProps {
 }
 
 interface StateProps {
-  theme: Theme
   timeRange: TimeRange
   ranges: TimeRange | null
-  timeZone: TimeZone
 }
 
 interface State {
@@ -62,7 +58,7 @@ class RefreshingView extends PureComponent<Props, State> {
   }
 
   public render() {
-    const {id, ranges, properties, manualRefresh, timeZone, theme} = this.props
+    const {id, ranges, properties, manualRefresh} = this.props
     const {submitToken} = this.state
 
     return (
@@ -80,8 +76,6 @@ class RefreshingView extends PureComponent<Props, State> {
             properties={properties}
             result={giraffeResult}
             timeRange={ranges}
-            timeZone={timeZone}
-            theme={theme}
           />
         )}
       </TimeSeries>
@@ -108,13 +102,10 @@ class RefreshingView extends PureComponent<Props, State> {
 const mstp = (state: AppState, ownProps: OwnProps) => {
   const timeRange = getTimeRangeWithTimezone(state)
   const ranges = getActiveTimeRange(timeRange, ownProps.properties.queries)
-  const {timeZone, theme} = state.app.persisted
 
   return {
     timeRange,
     ranges,
-    timeZone,
-    theme,
   }
 }
 

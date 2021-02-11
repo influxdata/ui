@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useMemo} from 'react'
+import React, {FC, useMemo, useContext} from 'react'
 import {
   Plot,
   DomainLabel,
@@ -31,6 +31,7 @@ import {
   defaultYColumn,
 } from 'src/shared/utils/vis'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {AppSettingContext} from 'src/shared/contexts/app'
 
 import {writeAnnotation} from 'src/annotations/api'
 
@@ -47,13 +48,8 @@ interface Props extends VisualizationProps {
   properties: XYViewProperties
 }
 
-const XYPlot: FC<Props> = ({
-  properties,
-  result,
-  timeRange,
-  timeZone,
-  theme,
-}) => {
+const XYPlot: FC<Props> = ({properties, result, timeRange}) => {
+  const {theme, timeZone} = useContext(AppSettingContext)
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
   const tooltipColorize = useLegendColorizeRows(properties.legendColorizeRows)

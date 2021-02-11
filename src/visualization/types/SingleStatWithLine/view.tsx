@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useMemo} from 'react'
+import React, {FC, useMemo, useContext} from 'react'
 import {
   Plot,
   DomainLabel,
@@ -33,6 +33,7 @@ import {
   defaultYColumn,
 } from 'src/shared/utils/vis'
 import {generateThresholdsListHexs} from 'src/shared/constants/colorOperations'
+import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -47,13 +48,8 @@ interface Props extends VisualizationProps {
   properties: LinePlusSingleStatProperties
 }
 
-const SingleStatWithLine: FC<Props> = ({
-  properties,
-  result,
-  timeRange,
-  timeZone,
-  theme,
-}) => {
+const SingleStatWithLine: FC<Props> = ({properties, result, timeRange}) => {
+  const {theme, timeZone} = useContext(AppSettingContext)
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
   const tooltipColorize = useLegendColorizeRows(properties.legendColorizeRows)

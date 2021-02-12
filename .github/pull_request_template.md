@@ -1,7 +1,7 @@
 Closes #
 
-### Testing Steps
+<!-- Describe your proposed changes here. -->
 
-### Merge Checklist
-- [ ] User facing change?
-  - [ ] CHANGELOG.md is updated and links to this PR
+- [ ] [Well-formatted commit messages](https://www.conventionalcommits.org/en/v1.0.0-beta.3/)
+- [ ] Rebased/mergeable
+- [ ] Tests pass

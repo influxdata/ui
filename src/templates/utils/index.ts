@@ -136,6 +136,7 @@ export const TEMPLATE_URL_WARN =
   'This URL does not point to our Community Templates repository. It may work but we cannot guarantee quality results.'
 
 export const validateTemplateURL = (url): string => {
+  url = url.trim()
   if (url === '') {
     return ''
   }
@@ -145,6 +146,12 @@ export const validateTemplateURL = (url): string => {
     url.startsWith(
       'https://raw.githubusercontent.com/influxdata/community-templates'
     )
+
+  const hasQueryAttached = url.includes('?')
+
+  if (hasQueryAttached) {
+    url = url.split('?')[0]
+  }
 
   const isCorrectFileType =
     url.endsWith('.yml') || url.endsWith('.json') || url.endsWith('.jsonnet')

@@ -181,9 +181,9 @@ class SaveAsCellForm extends PureComponent<Props, State> {
       history.push(`/orgs/${orgID}/dashboards/${dashboardId}`)
 
     try {
-      targetDashboardIDs.forEach((dashID, idx) => {
+      targetDashboardIDs.forEach((dashID, i) => {
         const toRedirect =
-          idx === targetDashboardIDs.length - 1 ? redirectHandler : undefined
+          i === targetDashboardIDs.length - 1 ? redirectHandler : undefined
         if (dashID === DashboardTemplate.id) {
           onCreateDashboardWithView(
             orgID,

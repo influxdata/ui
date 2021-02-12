@@ -15,6 +15,7 @@ import {
 
 interface ValueTickInputProps {
   axisName: string
+  tickPropertyName: string
   tickOptions: string[]
   initialTickOptionValue: number | string
   label: string
@@ -25,6 +26,7 @@ interface ValueTickInputProps {
 export const ValueTickInput: FC<ValueTickInputProps> = props => {
   const {
     axisName,
+    tickPropertyName,
     tickOptions,
     initialTickOptionValue,
     label,
@@ -47,7 +49,9 @@ export const ValueTickInput: FC<ValueTickInputProps> = props => {
 
   const updateTickOption = () => {
     const convertedValue = convertUserInputValueToNumOrNaN(tickOptionInput)
-    const tickOptionNameWithoutAxis = label.split(' ').join('')
+    const tickOptionNameWithoutAxis = `${tickPropertyName
+      .slice(0, 1)
+      .toUpperCase()}${tickPropertyName.slice(1)}`
     const tickOptionNameWithAxis = `${axisName.toLowerCase()}${tickOptionNameWithoutAxis}`
     const filteredTickOptions = Array.isArray(tickOptions)
       ? tickOptions.filter(option => option !== tickOptionNameWithAxis)

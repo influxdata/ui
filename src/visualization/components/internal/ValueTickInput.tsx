@@ -38,7 +38,7 @@ export const ValueTickInput: FC<ValueTickInputProps> = props => {
     label,
     placeholder,
     update,
-    elementStylingClass
+    elementStylingClass,
   } = props
   const [tickOptionInput, setTickOptionInput] = useState(
     initialTickOptionValue === initialTickOptionValue

@@ -48,7 +48,7 @@ const DatalessEmptyState: FC<Props> = ({orgID, buckets, children}) => {
         setUserHasData(true)
         throw new Error(error)
       })
-  }, [])
+  }, [buckets])
 
   const checkUserHasData = async (): Promise<boolean> => {
     const userBuckets = buckets.filter(bucket => bucket.type === 'user')
@@ -57,8 +57,10 @@ const DatalessEmptyState: FC<Props> = ({orgID, buckets, children}) => {
       userBuckets,
       predicate
     ): Promise<boolean> => {
-      for (let bucket of userBuckets) {
-        if (await predicate(bucket)) return true
+      for (const bucket of userBuckets) {
+        if (await predicate(bucket)) {
+          return true
+        }
       }
       return false
     }
@@ -70,7 +72,7 @@ const DatalessEmptyState: FC<Props> = ({orgID, buckets, children}) => {
     return result
   }
 
-  const checkBucketCardinality = async (bucketName): Promise<number> => {
+  const checkBucketCardinality = (bucketName): Promise<number> => {
     const cardinalityQuery = `
     import "influxdata/influxdb"
     influxdb.cardinality(bucket: "${bucketName}", start: -14d)

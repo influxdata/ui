@@ -26,6 +26,7 @@ interface ValueTickInputProps {
   label: string
   placeholder?: string
   update: (data: any) => void
+  elementStylingClass?: string
 }
 
 export const ValueTickInput: FC<ValueTickInputProps> = props => {
@@ -37,6 +38,7 @@ export const ValueTickInput: FC<ValueTickInputProps> = props => {
     label,
     placeholder,
     update,
+    elementStylingClass,
   } = props
   const [tickOptionInput, setTickOptionInput] = useState(
     initialTickOptionValue === initialTickOptionValue
@@ -98,7 +100,7 @@ export const ValueTickInput: FC<ValueTickInputProps> = props => {
 
   return (
     <Grid.Column widthXS={Columns.Twelve}>
-      <Form.Element label={label}>
+      <Form.Element label={label} className={elementStylingClass}>
         <Input
           placeholder={placeholder}
           onChange={handleInput}

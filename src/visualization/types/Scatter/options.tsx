@@ -200,7 +200,7 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
           widthMD={Columns.Six}
           widthLG={Columns.Four}
         >
-          <h5 className="view-options--header">X Axis</h5>
+          <h5 className="view-options--header">X-Axis</h5>
           <Form.Element label="X Axis Label">
             <Input
               value={properties.xAxisLabel}
@@ -234,7 +234,7 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
           <AxisTicksGenerator
             axisName="x"
             columnType={xColumn}
-            label="Generate X Axis tick marks"
+            label="Generate X-Axis Tick Marks"
             properties={properties}
             results={results}
             update={update}
@@ -252,7 +252,7 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
           widthMD={Columns.Six}
           widthLG={Columns.Four}
         >
-          <h5 className="view-options--header">Y Axis</h5>
+          <h5 className="view-options--header">Y-Axis</h5>
           <Form.Element label="Y Axis Label">
             <Input
               value={properties.yAxisLabel}
@@ -286,7 +286,7 @@ const ScatterOptions: FC<Props> = ({properties, results, update}) => {
           <AxisTicksGenerator
             axisName="y"
             columnType={yColumn}
-            label="Generate Y Axis tick marks"
+            label="Generate Y-Axis Tick Marks"
             properties={properties}
             results={results}
             update={update}

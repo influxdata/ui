@@ -205,7 +205,7 @@ const HistogramOptions: FC<Props> = ({properties, results, update}) => {
           widthMD={Columns.Six}
           widthLG={Columns.Four}
         >
-          <h5 className="view-options--header">X Axis</h5>
+          <h5 className="view-options--header">X-Axis</h5>
           <Form.Element label="X Axis Label">
             <Input
               value={properties.xAxisLabel}

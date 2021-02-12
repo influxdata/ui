@@ -12,7 +12,10 @@ import BucketsSelector from 'src/timeMachine/components/queryBuilder/BucketsSele
 import {DapperScrollbars} from '@influxdata/clockface'
 
 // Actions
-import {loadBuckets, addTagSelector} from 'src/timeMachine/actions/queryBuilder'
+import {
+  loadBuckets,
+  addTagSelector,
+} from 'src/timeMachine/actions/queryBuilderThunks'
 
 // Utils
 import {getActiveQuery, getActiveTimeMachine} from 'src/timeMachine/selectors'

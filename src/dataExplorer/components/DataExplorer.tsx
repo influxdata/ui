@@ -8,7 +8,7 @@ import LimitChecker from 'src/cloud/components/LimitChecker'
 
 // Actions
 import {setActiveTimeMachine} from 'src/timeMachine/actions'
-import {setBuilderBucketIfExists} from 'src/timeMachine/actions/queryBuilder'
+import {setBuilderBucketIfExists} from 'src/timeMachine/actions/queryBuilderThunks'
 
 // Utils
 import {HoverTimeProvider} from 'src/dashboards/utils/hoverTime'

@@ -248,6 +248,11 @@ describe('validating template URLs', () => {
           'https://github.com/influxdata/community-templates/blob/master/airquality/whitespace.yml      '
         )
       ).toBe(TEMPLATE_URL_VALID)
+      expect(
+        validateTemplateURL(
+          'https://github.com/influxdata/community-templates/blob/master/airquality/whitespaceQuery.yml?queryAttachedToTheURL      '
+        )
+      ).toBe(TEMPLATE_URL_VALID)
     })
   })
 

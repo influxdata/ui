@@ -27,7 +27,7 @@ const TreeSidebar: FC = () => {
     AppSettingContext
   )
 
-  if (presentationMode) {
+  if (presentationMode || !org) {
     return null
   }
 

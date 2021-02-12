@@ -1,0 +1,401 @@
+openapi: "3.0.0"
+info:
+  title: Influxdata Managed Functions CRUD API
+  version: 0.1.0
+servers:
+  - url: /
+paths:
+  "/api/v2private/functions":
+    get:
+      operationId: GetFunctions
+      tags:
+        - Functions
+      summary: List all Functions
+      parameters:
+        - in: query
+          name: org
+          description: The organization name.
+          schema:
+            type: string
+        - in: query
+          name: orgID
+          description: The organization ID.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A list of functions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Functions"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      operationId: PostFunctions
+      tags:
+        - Functions
+      summary: Create a new function
+      requestBody:
+        description: Function to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FunctionCreateRequest"
+      responses:
+        "201":
+          description: Function created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Function"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  "/api/v2private/functions/trigger":
+    post:
+      operationId: PostFunctionTrigger
+      tags:
+        - Functions
+      summary: Manually trigger a function execution without creating an association function resource
+      requestBody:
+        description: Function to run
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FunctionTriggerRequest"
+      responses:
+        "200":
+          description: Function successfully triggered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FunctionRun"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  "/api/v2private/functions/{functionID}":
+    get:
+      operationId: GetFunctionsID
+      tags:
+        - Functions
+      summary: Retrieve a function
+      parameters:
+        - in: path
+          name: functionID
+          schema:
+            type: string
+          required: true
+          description: The function ID.
+      responses:
+        "200":
+          description: Function details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Function"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    patch:
+      operationId: PatchFunctionsID
+      tags:
+        - Functions
+      summary: Update a function
+      description: Update a function
+      requestBody:
+        description: Function update to apply
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FunctionUpdateRequest"
+      parameters:
+        - in: path
+          name: functionID
+          schema:
+            type: string
+          required: true
+          description: The function ID.
+      responses:
+        "200":
+          description: Updated function
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Function"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      operationId: DeleteFunctionsID
+      tags:
+        - Functions
+      summary: Delete a function
+      description: Deletes a function and all associated records
+      parameters:
+        - in: path
+          name: functionID
+          schema:
+            type: string
+          required: true
+          description: The ID of the function to delete.
+      responses:
+        "204":
+          description: Function deleted
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  "/api/v2private/functions/{functionID}/runs":
+    get:
+      operationId: GetFunctionsIDRuns
+      tags:
+        - Functions
+      summary: List runs for a function
+      parameters:
+        - in: path
+          name: functionID
+          schema:
+            type: string
+          required: true
+          description: The ID of the function to get runs for.
+      responses:
+        "200":
+          description: A list of function runs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FunctionRunRecords"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      operationId: PostFunctionsIDRuns
+      tags:
+        - Functions
+      summary: Manually trigger a function run
+      parameters:
+        - in: path
+          name: functionID
+          schema:
+            type: string
+          required: true
+      responses:
+        "201":
+          description: Run triggered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FunctionRun"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  "/api/v2private/functions/{functionID}/runs/{runID}":
+    get:
+      operationId: GetFunctionsIDRunsID
+      tags:
+        - Functions
+      summary: Retrieve a single run for a function
+      parameters:
+        - in: path
+          name: functionID
+          schema:
+            type: string
+          required: true
+          description: The function ID.
+        - in: path
+          name: runID
+          schema:
+            type: string
+          required: true
+          description: The run ID.
+      responses:
+        "200":
+          description: The run record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FunctionRun"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    Error:
+      properties:
+        code:
+          description: Code is the machine-readable error code.
+          readOnly: true
+          type: string
+          # This set of enumerations must remain in sync with the constants defined in errors.go
+          enum:
+            - internal error
+            - not found
+            - conflict
+            - invalid
+            - unprocessable entity
+            - empty value
+            - unavailable
+            - forbidden
+            - too many requests
+            - unauthorized
+            - method not allowed
+        message:
+          readOnly: true
+          description: Message is a human-readable message.
+          type: string
+      required: [code, message]
+    Function:
+      properties:
+        id:
+          readOnly: true
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        orgID:
+          type: string
+        script:
+          description: script is script to be executed
+          type: string
+        language:
+           enum:
+            - python
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+        url:
+          type: string
+          description: trigger endpoint address
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+      required: [name, orgID, script]
+    Functions:
+      type: object
+      properties:
+        functions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Function"
+    FunctionRunRecord:
+      description: The record maintained from a function run- does not contain result
+      properties:
+        id:
+          readOnly: true
+          type: string
+        status:
+          type: string
+        logs:
+          type: array
+          items:
+           $ref: "#/components/schemas/FunctionRunLog"
+        startedAt:
+          type: string
+          format: date-time
+          readOnly: true
+    FunctionRunRecords:
+      type: object
+      properties:
+        functionrunrecords:
+          type: array
+          items:
+            $ref: "#/components/schemas/FunctionRunRecord"
+    FunctionRun:
+      description: Results returned from a function run, includes result
+      allOf:
+        - $ref: "#/components/schemas/FunctionRunRecord"
+        - type: object
+          properties:
+            result:
+              description: result returned from function executed
+              type: object
+    FunctionCreateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        orgID:
+          type: string
+        script:
+          description: script is script to be executed
+          type: string
+        language:
+           enum:
+            - python
+      required: [name, orgID, script,language]
+    FunctionUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        script:
+          description: script is script to be executed
+          type: string
+    FunctionTriggerRequest:
+      type: object
+      properties:
+        script:
+          description: script is script to be executed
+          type: string
+        params:
+          type: object
+        orgID:
+          type: string
+        org:
+          type: string
+        language:
+          type: string
+          enum:
+            - python
+      required: [language, script]
+    FunctionRunLog:
+      type: object
+      properties:
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        severity:
+          type: object
+          enum:
+            - DEBUG
+            - INFO

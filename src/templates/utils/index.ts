@@ -136,14 +136,15 @@ export const TEMPLATE_URL_WARN =
   'This URL does not point to our Community Templates repository. It may work but we cannot guarantee quality results.'
 
 export const validateTemplateURL = (url): string => {
+  if (url === '') {
+    return ''
+  }
+
   /*
      url may or may not have a query at the end. Either case is a valid url.
      We need to make sure the url is pointing to a valid template.
   */
   const cleanUrl = url.trim().split('?')[0]
-  if (cleanUrl === '') {
-    return ''
-  }
 
   const isCommunityTemplates =
     cleanUrl.startsWith('https://github.com/influxdata/community-templates') ||

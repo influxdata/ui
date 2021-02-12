@@ -32,11 +32,13 @@ import {
   PopoverPosition,
 } from '@influxdata/clockface'
 
+import {TICK_PROPERTY_PREFIX} from 'src/visualization/constants'
+
 interface TimeTickInputProps {
   axisName: string
+  tickPropertyName: string
   tickOptions: string[]
   initialTickOptionValue: number | string
-  label: string
   dateFormatPlaceholder?: string
   update: (data: any) => void
 }
@@ -44,9 +46,9 @@ interface TimeTickInputProps {
 export const TimeTickInput: FC<TimeTickInputProps> = props => {
   const {
     axisName,
+    tickPropertyName,
     tickOptions,
     initialTickOptionValue,
-    label,
     dateFormatPlaceholder = 'RFC3339',
     update,
   } = props
@@ -74,7 +76,9 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
     const convertedValue = convertUserInputValueToNumOrNaN(
       value === undefined ? tickOptionInput : value
     )
-    const tickOptionNameWithoutAxis = label.split(' ').join('')
+    const tickOptionNameWithoutAxis = `${TICK_PROPERTY_PREFIX}${tickPropertyName
+      .slice(0, 1)
+      .toUpperCase()}${tickPropertyName.slice(1).toLowerCase()}`
     const tickOptionNameWithAxis = `${axisName.toLowerCase()}${tickOptionNameWithoutAxis}`
     const computedTickOptions = Array.isArray(tickOptions)
       ? tickOptions.filter(option => option !== tickOptionNameWithAxis)

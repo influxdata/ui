@@ -47,7 +47,6 @@ const AxisTicksGenerator: FC<Props> = ({
   axisName,
   columnType,
   label = 'Tick Generator',
-
   properties,
   update,
 }) => {
@@ -111,6 +110,7 @@ const AxisTicksGenerator: FC<Props> = ({
         <Grid.Row className="tick-generator-input--custom">
           <ValueTickInput
             axisName={axisName}
+            tickPropertyName="total"
             tickOptions={generateAxisTicks}
             initialTickOptionValue={totalTicks}
             label="Total Tick Marks"
@@ -118,13 +118,14 @@ const AxisTicksGenerator: FC<Props> = ({
           />
           <TimeTickInput
             axisName={axisName}
+            tickPropertyName="start"
             tickOptions={generateAxisTicks}
             initialTickOptionValue={tickStart}
-            label="Start Tick Marks At"
             update={update}
           />
           <ValueTickInput
             axisName={axisName}
+            tickPropertyName="step"
             tickOptions={generateAxisTicks}
             initialTickOptionValue={tickStep}
             label="Tick Mark Interval"
@@ -138,6 +139,7 @@ const AxisTicksGenerator: FC<Props> = ({
         <Grid.Row className="tick-generator-input--custom">
           <ValueTickInput
             axisName={axisName}
+            tickPropertyName="total"
             tickOptions={generateAxisTicks}
             initialTickOptionValue={totalTicks}
             label="Total Tick Marks"
@@ -145,6 +147,7 @@ const AxisTicksGenerator: FC<Props> = ({
           />
           <ValueTickInput
             axisName={axisName}
+            tickPropertyName="start"
             tickOptions={generateAxisTicks}
             initialTickOptionValue={tickStart}
             label="Start Tick Marks At"
@@ -152,6 +155,7 @@ const AxisTicksGenerator: FC<Props> = ({
           />
           <ValueTickInput
             axisName={axisName}
+            tickPropertyName="step"
             tickOptions={generateAxisTicks}
             initialTickOptionValue={tickStep}
             label="Tick Mark Interval"

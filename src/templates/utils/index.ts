@@ -136,25 +136,21 @@ export const TEMPLATE_URL_WARN =
   'This URL does not point to our Community Templates repository. It may work but we cannot guarantee quality results.'
 
 export const validateTemplateURL = (url): string => {
-  url = url.trim()
-  if (url === '') {
+  const cleanUrl = url.trim().split('?')[0]
+  if (cleanUrl === '') {
     return ''
   }
 
   const isCommunityTemplates =
-    url.startsWith('https://github.com/influxdata/community-templates') ||
-    url.startsWith(
+    cleanUrl.startsWith('https://github.com/influxdata/community-templates') ||
+    cleanUrl.startsWith(
       'https://raw.githubusercontent.com/influxdata/community-templates'
     )
 
-  const hasQueryAttached = url.includes('?')
-
-  if (hasQueryAttached) {
-    url = url.split('?')[0]
-  }
-
   const isCorrectFileType =
-    url.endsWith('.yml') || url.endsWith('.json') || url.endsWith('.jsonnet')
+    cleanUrl.endsWith('.yml') ||
+    cleanUrl.endsWith('.json') ||
+    cleanUrl.endsWith('.jsonnet')
 
   if (isCommunityTemplates && !isCorrectFileType) {
     return "This URL correctly points to the Community Templates repository but isn't pointing to a YAML or JSON file"

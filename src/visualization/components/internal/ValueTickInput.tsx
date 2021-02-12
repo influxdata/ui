@@ -13,6 +13,11 @@ import {
   Input,
 } from '@influxdata/clockface'
 
+import {
+  TICK_PROPERTY_PREFIX,
+  TICK_PROPERTY_SUFFIX,
+} from 'src/visualization/constants'
+
 interface ValueTickInputProps {
   axisName: string
   tickPropertyName: string
@@ -49,9 +54,16 @@ export const ValueTickInput: FC<ValueTickInputProps> = props => {
 
   const updateTickOption = () => {
     const convertedValue = convertUserInputValueToNumOrNaN(tickOptionInput)
-    const tickOptionNameWithoutAxis = `${tickPropertyName
+
+    let tickOptionNameWithoutAxis = `${tickPropertyName
       .slice(0, 1)
-      .toUpperCase()}${tickPropertyName.slice(1)}`
+      .toUpperCase()}${tickPropertyName.slice(1).toLowerCase()}`
+    if (tickOptionNameWithoutAxis === 'Total') {
+      tickOptionNameWithoutAxis += TICK_PROPERTY_SUFFIX
+    } else {
+      tickOptionNameWithoutAxis = `${TICK_PROPERTY_PREFIX}${tickOptionNameWithoutAxis}`
+    }
+
     const tickOptionNameWithAxis = `${axisName.toLowerCase()}${tickOptionNameWithoutAxis}`
     const filteredTickOptions = Array.isArray(tickOptions)
       ? tickOptions.filter(option => option !== tickOptionNameWithAxis)

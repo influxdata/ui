@@ -110,7 +110,7 @@ const AxisTicksGenerator: FC<Props> = ({
         <Grid.Row className="tick-generator-input--custom">
           <ValueTickInput
             axisName={axisName}
-            tickPropertyName="totalTicks"
+            tickPropertyName="total"
             tickOptions={generateAxisTicks}
             initialTickOptionValue={totalTicks}
             label="Total Tick Marks"
@@ -118,14 +118,14 @@ const AxisTicksGenerator: FC<Props> = ({
           />
           <TimeTickInput
             axisName={axisName}
-            tickPropertyName="tickStart"
+            tickPropertyName="start"
             tickOptions={generateAxisTicks}
             initialTickOptionValue={tickStart}
             update={update}
           />
           <ValueTickInput
             axisName={axisName}
-            tickPropertyName="tickStep"
+            tickPropertyName="step"
             tickOptions={generateAxisTicks}
             initialTickOptionValue={tickStep}
             label="Tick Mark Interval"
@@ -139,7 +139,7 @@ const AxisTicksGenerator: FC<Props> = ({
         <Grid.Row className="tick-generator-input--custom">
           <ValueTickInput
             axisName={axisName}
-            tickPropertyName="totalTicks"
+            tickPropertyName="total"
             tickOptions={generateAxisTicks}
             initialTickOptionValue={totalTicks}
             label="Total Tick Marks"
@@ -147,7 +147,7 @@ const AxisTicksGenerator: FC<Props> = ({
           />
           <ValueTickInput
             axisName={axisName}
-            tickPropertyName="tickStart"
+            tickPropertyName="start"
             tickOptions={generateAxisTicks}
             initialTickOptionValue={tickStart}
             label="Start Tick Marks At"
@@ -155,7 +155,7 @@ const AxisTicksGenerator: FC<Props> = ({
           />
           <ValueTickInput
             axisName={axisName}
-            tickPropertyName="tickStep"
+            tickPropertyName="step"
             tickOptions={generateAxisTicks}
             initialTickOptionValue={tickStep}
             label="Tick Mark Interval"

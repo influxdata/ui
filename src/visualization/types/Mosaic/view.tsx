@@ -1,5 +1,5 @@
 // Libraries
-import React, {FunctionComponent} from 'react'
+import React, {FunctionComponent, useContext} from 'react'
 import {Plot} from '@influxdata/giraffe'
 
 // Components
@@ -18,6 +18,7 @@ import {
   useVisYDomainSettings,
 } from 'src/visualization/utils/useVisDomainSettings'
 import {defaultXColumn, mosaicYColumn} from 'src/shared/utils/vis'
+import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -36,9 +37,8 @@ const MosaicPlot: FunctionComponent<Props> = ({
   properties,
   result,
   timeRange,
-  timeZone,
-  theme,
 }) => {
+  const {theme, timeZone} = useContext(AppSettingContext)
   const fillColumns = properties.fillColumns || []
   const xColumn = properties.xColumn || defaultXColumn(result.table)
   let yColumn

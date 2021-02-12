@@ -1,12 +1,3 @@
-import {PRESENTATION_MODE_ANIMATION_DELAY} from '../constants'
-
-import {
-  notify,
-  PublishNotificationAction,
-} from 'src/shared/actions/notifications'
-import {presentationMode} from 'src/shared/copy/notifications'
-
-import {Dispatch} from 'redux'
 import {TimeZone, Theme, NavBarState} from 'src/types'
 
 export enum ActionTypes {
@@ -52,16 +43,6 @@ export const disableUpdatedTimeRangeInVEO = () =>
   ({
     type: ActionTypes.DisableUpdatedTimeRangeInVEO,
   } as const)
-
-export const delayEnablePresentationMode = () => (
-  dispatch: Dispatch<
-    ReturnType<typeof enablePresentationMode> | PublishNotificationAction
-  >
-): NodeJS.Timer =>
-  setTimeout(() => {
-    dispatch(enablePresentationMode())
-    dispatch(notify(presentationMode()))
-  }, PRESENTATION_MODE_ANIMATION_DELAY)
 
 // persistent state action creators
 

@@ -14,7 +14,6 @@ import fromFlux from 'src/shared/utils/fromFlux.legacy'
 import {PipeProp, FluxResult} from 'src/types/flows'
 import {ViewType, RemoteDataState} from 'src/types'
 
-import {AppSettingContext} from 'src/flows/context/app'
 import {PipeContext} from 'src/flows/context/pipe'
 
 import {
@@ -24,7 +23,6 @@ import {
 } from 'src/visualization'
 
 const TestFlux: FC<PipeProp> = ({Context}) => {
-  const {timeZone} = useContext(AppSettingContext)
   const {data, range, update} = useContext(PipeContext)
   const uploadRef: React.RefObject<HTMLInputElement> = React.createRef()
   const startUpload = () => {
@@ -103,7 +101,6 @@ const TestFlux: FC<PipeProp> = ({Context}) => {
               properties={data.properties}
               result={results.parsed}
               timeRange={range}
-              timeZone={timeZone}
             />
           </div>
         </div>

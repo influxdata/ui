@@ -1,5 +1,5 @@
 // Libraries
-import React, {FunctionComponent} from 'react'
+import React, {FunctionComponent, useContext} from 'react'
 import {Plot} from '@influxdata/giraffe'
 
 // Components
@@ -22,6 +22,7 @@ import {
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
 import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {INVALID_DATA_COPY} from 'src/visualization/constants'
+import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Types
 import {HeatmapViewProperties} from 'src/types'
@@ -35,9 +36,8 @@ const HeatmapPlot: FunctionComponent<Props> = ({
   result,
   properties,
   timeRange,
-  timeZone,
-  theme,
 }) => {
+  const {theme, timeZone} = useContext(AppSettingContext)
   const columnKeys = result.table.columnKeys
   const xColumn =
     properties.xColumn ||

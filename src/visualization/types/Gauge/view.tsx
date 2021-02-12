@@ -1,5 +1,5 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {FC, useContext} from 'react'
 import {AutoSizer} from 'react-virtualized'
 
 // Components
@@ -12,54 +12,49 @@ import {VisualizationProps} from 'src/visualization'
 
 // Constants
 import {GAUGE_THEME_LIGHT, GAUGE_THEME_DARK} from './constants'
-
-import {ErrorHandling} from 'src/shared/decorators/errors'
+import {AppSettingContext} from 'src/shared/contexts/app'
 
 interface Props extends VisualizationProps {
   properties: GaugeViewProperties
 }
 
-@ErrorHandling
-class GaugeChart extends PureComponent<Props> {
-  public render() {
-    const {result, theme} = this.props
-    const {
-      colors,
-      prefix,
-      tickPrefix,
-      suffix,
-      tickSuffix,
-      decimalPlaces,
-    } = this.props.properties
+const GaugeChart: FC<Props> = ({result, properties}) => {
+  const {theme} = useContext(AppSettingContext)
+  const {
+    colors,
+    prefix,
+    tickPrefix,
+    suffix,
+    tickSuffix,
+    decimalPlaces,
+  } = properties
 
-    const currentTheme =
-      theme === 'light' ? GAUGE_THEME_LIGHT : GAUGE_THEME_DARK
+  const currentTheme = theme === 'light' ? GAUGE_THEME_LIGHT : GAUGE_THEME_DARK
 
-    return (
-      <LatestValueTransform table={result.table} allowString={false}>
-        {latestValue => (
-          <AutoSizer>
-            {({width, height}) => (
-              <div className="gauge">
-                <Gauge
-                  width={width}
-                  height={height}
-                  colors={colors}
-                  prefix={prefix}
-                  tickPrefix={tickPrefix}
-                  suffix={suffix}
-                  tickSuffix={tickSuffix}
-                  gaugePosition={latestValue}
-                  decimalPlaces={decimalPlaces}
-                  theme={currentTheme}
-                />
-              </div>
-            )}
-          </AutoSizer>
-        )}
-      </LatestValueTransform>
-    )
-  }
+  return (
+    <LatestValueTransform table={result.table} allowString={false}>
+      {latestValue => (
+        <AutoSizer>
+          {({width, height}) => (
+            <div className="gauge">
+              <Gauge
+                width={width}
+                height={height}
+                colors={colors}
+                prefix={prefix}
+                tickPrefix={tickPrefix}
+                suffix={suffix}
+                tickSuffix={tickSuffix}
+                gaugePosition={latestValue}
+                decimalPlaces={decimalPlaces}
+                theme={currentTheme}
+              />
+            </div>
+          )}
+        </AutoSizer>
+      )}
+    </LatestValueTransform>
+  )
 }
 
 export default GaugeChart

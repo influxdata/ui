@@ -6,14 +6,7 @@ import TimeSeries from 'src/shared/components/TimeSeries'
 import {View, SUPPORTED_VISUALIZATIONS} from 'src/visualization'
 import {CheckContext} from 'src/checks/utils/context'
 
-// Types
-import {TimeZone} from 'src/types'
-
-interface Props {
-  timeZone: TimeZone
-}
-
-const CheckHistoryVisualization: FC<Props> = ({timeZone}) => {
+const CheckHistoryVisualization: FC = () => {
   const properties = SUPPORTED_VISUALIZATIONS['check'].initial
 
   // NOTE: this is lazy, but i'm hoping we get rid of checks pretty soon
@@ -36,7 +29,6 @@ const CheckHistoryVisualization: FC<Props> = ({timeZone}) => {
             isInitial={isInitialFetch}
             properties={properties}
             result={giraffeResult}
-            timeZone={timeZone}
           />
         )
       }}

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FunctionComponent} from 'react'
+import React, {FunctionComponent, useContext} from 'react'
 import {Plot} from '@influxdata/giraffe'
 
 // Components
@@ -13,6 +13,7 @@ import {
 } from 'src/visualization/utils/useLegendOrientation'
 import {useVisXDomainSettings} from 'src/visualization/utils/useVisDomainSettings'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
+import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -27,12 +28,8 @@ interface Props extends VisualizationProps {
   properties: HistogramViewProperties
 }
 
-const HistogramPlot: FunctionComponent<Props> = ({
-  result,
-  timeZone,
-  properties,
-  theme,
-}) => {
+const HistogramPlot: FunctionComponent<Props> = ({result, properties}) => {
+  const {theme, timeZone} = useContext(AppSettingContext)
   const columnKeys = result.table.columnKeys
   const fillColumns = properties.fillColumns || result.fluxGroupKeyUnion
 

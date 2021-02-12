@@ -1,9 +1,10 @@
 // Libraries
-import React, {FC, Suspense, lazy} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
-import {connect, ConnectedProps} from 'react-redux'
+import React, {FC, Suspense, lazy, useContext} from 'react'
+import {useSelector} from 'react-redux'
 import classnames from 'classnames'
 import {Switch, Route} from 'react-router-dom'
+
+import {AppSettingContext, AppSettingProvider} from 'src/shared/contexts/app'
 
 // Components
 import {AppWrapper} from '@influxdata/clockface'
@@ -24,20 +25,16 @@ const CreateOrgOverlay = lazy(() =>
 // Types
 import {AppState} from 'src/types'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type RouterProps = RouteComponentProps
-type Props = ReduxProps & RouterProps
+const App: FC = () => {
+  const {theme, presentationMode} = useContext(AppSettingContext)
+  const currentPage = useSelector((state: AppState) => state.currentPage)
 
-const App: FC<Props> = ({inPresentationMode, currentPage, theme}) => {
   const appWrapperClass = classnames('', {
     'dashboard-light-mode': currentPage === 'dashboard' && theme === 'light',
   })
 
   return (
-    <AppWrapper
-      presentationMode={inPresentationMode}
-      className={appWrapperClass}
-    >
+    <AppWrapper presentationMode={presentationMode} className={appWrapperClass}>
       <Notifications />
       <TooltipPortal />
       <NotesPortal />
@@ -55,18 +52,8 @@ const App: FC<Props> = ({inPresentationMode, currentPage, theme}) => {
   )
 }
 
-const mstp = (state: AppState) => {
-  const {
-    app: {
-      ephemeral: {inPresentationMode},
-      persisted: {theme},
-    },
-    currentPage,
-  } = state
-
-  return {inPresentationMode, currentPage, theme}
-}
-
-const connector = connect(mstp)
-
-export default connector(withRouter(App))
+export default () => (
+  <AppSettingProvider>
+    <App />
+  </AppSettingProvider>
+)

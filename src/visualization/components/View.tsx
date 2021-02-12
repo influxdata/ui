@@ -8,13 +8,7 @@ import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 
 import ViewLoadingSpinner from 'src/visualization/components/internal/ViewLoadingSpinner'
 import {FromFluxResult} from '@influxdata/giraffe'
-import {
-  ViewProperties,
-  RemoteDataState,
-  TimeRange,
-  TimeZone,
-  Theme,
-} from 'src/types'
+import {ViewProperties, RemoteDataState, TimeRange} from 'src/types'
 
 interface Props {
   properties: ViewProperties
@@ -23,8 +17,6 @@ interface Props {
   error?: string
   isInitial?: boolean
   timeRange?: TimeRange
-  timeZone?: TimeZone
-  theme?: Theme
 }
 
 const InnerView: FC<Props> = ({
@@ -34,8 +26,6 @@ const InnerView: FC<Props> = ({
   error,
   isInitial,
   timeRange,
-  timeZone,
-  theme,
 }) => {
   if (!SUPPORTED_VISUALIZATIONS[properties.type]?.component) {
     throw new Error('Unknown view type in <View /> ')
@@ -60,8 +50,6 @@ const InnerView: FC<Props> = ({
         result: result,
         properties: properties,
         timeRange: timeRange || DEFAULT_TIME_RANGE,
-        theme: theme || ('dark' as Theme),
-        timeZone: timeZone || ('Local' as TimeZone),
       })}
     </EmptyQueryView>
   )

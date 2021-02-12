@@ -1,5 +1,12 @@
 // Libraries
-import React, {FC, Fragment, useState, useMemo, useCallback} from 'react'
+import React, {
+  FC,
+  Fragment,
+  useState,
+  useMemo,
+  useCallback,
+  useContext,
+} from 'react'
 import classnames from 'classnames'
 
 import Table from 'src/visualization/types/Table/Table'
@@ -9,6 +16,7 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 
 // Utils
 import {tableFromFluxResult} from 'src/shared/parsing/flux/response'
+import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Types
 import {TableViewProperties} from 'src/types'
@@ -24,13 +32,14 @@ interface Props extends VisualizationProps {
   properties: TableViewProperties
 }
 
-const TableGraphs: FC<Props> = ({properties, result, timeZone, theme}) => {
+const TableGraphs: FC<Props> = ({properties, result}) => {
   const [selectedTable, setSelectedTable] = useState(null)
   const [search, setSearch] = useState('')
   const [sortOptions, setSortOptions] = useState({
     field: properties.tableOptions?.sortBy?.internalName,
     direction: ASCENDING,
   })
+  const {theme} = useContext(AppSettingContext)
   const updateSelectedTable = (name: string) => {
     if (name === selectedTable) {
       setSelectedTable(null)
@@ -130,8 +139,6 @@ const TableGraphs: FC<Props> = ({properties, result, timeZone, theme}) => {
           sort={sortOptions}
           updateSort={updateSortOptions}
           properties={properties}
-          timeZone={timeZone}
-          theme={theme}
         />
       )}
       {(!_selectedTable || !_selectedTable.data.length) && (

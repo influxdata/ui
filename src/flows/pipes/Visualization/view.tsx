@@ -24,15 +24,9 @@ import {
 import {ViewType, RemoteDataState} from 'src/types'
 import {PipeProp} from 'src/types/flows'
 
-// NOTE we dont want any pipe component to be directly dependent
-// to any flow concepts as this'll limit future reusability
-// but timezone seems like an app setting, and its existance within
-// the flow folder is purely a convenience
-import {AppSettingContext} from 'src/flows/context/app'
 import {PipeContext} from 'src/flows/context/pipe'
 
 const Visualization: FC<PipeProp> = ({Context}) => {
-  const {timeZone} = useContext(AppSettingContext)
   const {data, range, update, loading, results} = useContext(PipeContext)
   const [optionsVisibility, setOptionsVisibility] = useState(false)
   const toggleOptions = useCallback(() => {
@@ -122,7 +116,6 @@ const Visualization: FC<PipeProp> = ({Context}) => {
               properties={data.properties}
               result={results.parsed}
               timeRange={range}
-              timeZone={timeZone}
             />
           </div>
         </div>

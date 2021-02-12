@@ -12,6 +12,7 @@ import EventMarkers from 'src/shared/components/EventMarkers'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
 import {filterNoisyColumns} from 'src/shared/utils/vis'
 import {CheckContext} from 'src/checks/utils/context'
+import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -32,8 +33,9 @@ interface Props extends VisualizationProps {
 const X_COLUMN = '_time'
 const Y_COLUMN = '_value'
 
-const CheckPlot: FC<Props> = ({properties, result, timeZone, theme}) => {
+const CheckPlot: FC<Props> = ({properties, result}) => {
   const {statuses, thresholds, updateThresholds} = useContext(CheckContext)
+  const {theme, timeZone} = useContext(AppSettingContext)
 
   const [yDomain, onSetYDomain, onResetYDomain] = useCheckYDomain(
     result.table.getColumn(Y_COLUMN, 'number'),

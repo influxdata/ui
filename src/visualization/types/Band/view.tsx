@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useMemo} from 'react'
+import React, {FC, useMemo, useContext} from 'react'
 import {Plot} from '@influxdata/giraffe'
 
 // Components
@@ -35,6 +35,7 @@ import {
   BAND_SHADE_OPACITY,
   INVALID_DATA_COPY,
 } from 'src/visualization/constants'
+import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Types
 import {BandViewProperties} from 'src/types'
@@ -44,13 +45,7 @@ interface Props extends VisualizationProps {
   properties: BandViewProperties
 }
 
-const BandPlot: FC<Props> = ({
-  properties,
-  result,
-  timeRange,
-  timeZone,
-  theme,
-}) => {
+const BandPlot: FC<Props> = ({properties, result, timeRange}) => {
   const mainColumnName = properties.mainColumn
   /*
   const mainColumnName = useMemo(() => {
@@ -73,6 +68,7 @@ const BandPlot: FC<Props> = ({
     )
   }, [activeQueryIndex, properties.queries, properties.upperColumn, properties.mainColumn, properties.lowerColumn])
    */
+  const {theme, timeZone} = useContext(AppSettingContext)
 
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)

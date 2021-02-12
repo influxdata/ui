@@ -18,9 +18,7 @@ import {
   DashboardQuery,
   QueryViewProperties,
   AnnotationsList,
-  Theme,
   TimeRange,
-  TimeZone,
 } from 'src/types'
 
 interface OwnProps {
@@ -31,10 +29,8 @@ interface OwnProps {
 
 interface StateProps {
   annotations: AnnotationsList
-  ranges: TimeRange | null
-  theme: Theme
   timeRange: TimeRange
-  timeZone: TimeZone
+  ranges: TimeRange | null
 }
 
 interface State {
@@ -64,7 +60,7 @@ class RefreshingView extends PureComponent<Props, State> {
   }
 
   public render() {
-    const {id, manualRefresh, properties, ranges, theme, timeZone} = this.props
+    const {id, ranges, properties, manualRefresh} = this.props
     const {submitToken} = this.state
 
     return (
@@ -82,8 +78,6 @@ class RefreshingView extends PureComponent<Props, State> {
             properties={properties}
             result={giraffeResult}
             timeRange={ranges}
-            timeZone={timeZone}
-            theme={theme}
           />
         )}
       </TimeSeries>
@@ -110,15 +104,12 @@ class RefreshingView extends PureComponent<Props, State> {
 const mstp = (state: AppState, ownProps: OwnProps) => {
   const timeRange = getTimeRangeWithTimezone(state)
   const ranges = getActiveTimeRange(timeRange, ownProps.properties.queries)
-  const {timeZone, theme} = state.app.persisted
 
   const annotations = state.annotations.annotations
   return {
     annotations,
     ranges,
-    theme,
     timeRange,
-    timeZone,
   }
 }
 

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useMemo, useState, useCallback} from 'react'
+import React, {FC, useMemo, useState, useCallback, useContext} from 'react'
 import {timeFormatter} from '@influxdata/giraffe'
 import classnames from 'classnames'
 import {ColumnSizer, SizedColumnProps, AutoSizer} from 'react-virtualized'
@@ -22,15 +22,10 @@ import {
   DEFAULT_TIME_FIELD,
   NULL_ARRAY_INDEX,
 } from './constants'
+import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Types
-import {
-  TableViewProperties,
-  TimeZone,
-  Theme,
-  FluxTable,
-  SortOptions,
-} from 'src/types'
+import {TableViewProperties, FluxTable, SortOptions} from 'src/types'
 import {CellRendererProps} from 'src/visualization/types/Table/TableCell'
 
 interface Props {
@@ -38,18 +33,9 @@ interface Props {
   sort: SortOptions
   updateSort: (field: string) => void
   table: FluxTable
-  timeZone: TimeZone
-  theme: Theme
 }
 
-const Table: FC<Props> = ({
-  properties,
-  sort,
-  updateSort,
-  table,
-  timeZone,
-  theme,
-}) => {
+const Table: FC<Props> = ({properties, sort, updateSort, table}) => {
   const transformed = useMemo(
     () =>
       transformTableData(
@@ -72,6 +58,7 @@ const Table: FC<Props> = ({
     ]
   )
 
+  const {theme, timeZone} = useContext(AppSettingContext)
   const [tableWidth, setTableWidth] = useState(0)
   const [hoverColumn, setHoverColumn] = useState(NULL_ARRAY_INDEX)
   const [hoverRow, setHoverRow] = useState(NULL_ARRAY_INDEX)

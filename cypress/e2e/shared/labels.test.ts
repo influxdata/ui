@@ -8,6 +8,7 @@ describe('labels', () => {
       cy.get('@org').then(({id}: Organization) =>
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${id}/settings/labels`)
+          cy.getByTestID('tree-nav')
         })
       )
     })
@@ -175,6 +176,7 @@ describe('labels', () => {
 
       cy.get<Organization>('@org').then(({id}) => {
         cy.visit(`orgs/${id}/settings/labels`)
+        cy.getByTestID('tree-nav')
       })
     })
 
@@ -431,6 +433,8 @@ describe('labels', () => {
     })
 
     it('can delete a label', () => {
+      cy.reload()
+
       cy.getByTestID('label-card').should('have.length', 1)
       cy.getByTestID('empty-state').should('not.exist')
 

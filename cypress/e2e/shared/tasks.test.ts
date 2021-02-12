@@ -21,6 +21,7 @@ describe('Tasks', () => {
     cy.fixture('routes').then(({orgs}) => {
       cy.get('@org').then(({id}: Organization) => {
         cy.visit(`${orgs}/${id}/tasks`)
+        cy.getByTestID('tree-nav')
       })
     })
   })
@@ -434,6 +435,7 @@ http.post(
       cy.fixture('routes').then(({orgs}) => {
         cy.get('@org').then(({id}: Organization) => {
           cy.visit(`${orgs}/${id}/tasks`)
+          cy.getByTestID('tree-nav')
         })
       })
     })
@@ -550,6 +552,7 @@ http.post(
       cy.fixture('routes').then(({orgs}) => {
         cy.get('@org').then(({id}: Organization) => {
           cy.visit(`${orgs}/${id}/tasks`)
+          cy.getByTestID('tree-nav')
         })
       })
     })

@@ -25,6 +25,7 @@ describe('NotificationRules', () => {
         // visit the alerting index
         cy.fixture('routes').then(({orgs, alerting}) => {
           cy.visit(`${orgs}/${id}${alerting}`)
+          cy.getByTestID('tree-nav')
         })
       })
     })

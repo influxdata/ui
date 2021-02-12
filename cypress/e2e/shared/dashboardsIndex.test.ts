@@ -13,6 +13,7 @@ describe('Dashboards', () => {
       cy.fixture('routes').then(({orgs}) => {
         cy.get('@org').then(({id}: Organization) => {
           cy.visit(`${orgs}/${id}/dashboards-list`)
+          cy.getByTestID('tree-nav')
         })
       })
     )
@@ -50,6 +51,7 @@ describe('Dashboards', () => {
         cy.fixture('routes').then(({orgs}) => {
           cy.get('@org').then(({id}: Organization) => {
             cy.visit(`${orgs}/${id}/dashboards-list`)
+            cy.getByTestID('tree-nav')
           })
         })
       })
@@ -82,6 +84,7 @@ describe('Dashboards', () => {
     cy.fixture('routes').then(({orgs}) => {
       cy.get('@org').then(({id}: Organization) => {
         cy.visit(`${orgs}/${id}/dashboards-list`)
+        cy.getByTestID('tree-nav')
       })
     })
 
@@ -157,6 +160,7 @@ describe('Dashboards', () => {
       cy.fixture('routes').then(({orgs}) => {
         cy.get('@org').then(({id}: Organization) => {
           cy.visit(`${orgs}/${id}/dashboards-list`)
+          cy.getByTestID('tree-nav')
         })
       })
     }
@@ -247,6 +251,7 @@ describe('Dashboards', () => {
       cy.fixture('routes').then(({orgs}) => {
         cy.get('@org').then(({id}: Organization) => {
           cy.visit(`${orgs}/${id}/dashboards-list`)
+          cy.getByTestID('tree-nav')
         })
       })
     })
@@ -262,6 +267,7 @@ describe('Dashboards', () => {
       cy.fixture('routes').then(({orgs}) => {
         cy.get('@org').then(({id}: Organization) => {
           cy.visit(`${orgs}/${id}/dashboards-list`)
+          cy.getByTestID('tree-nav')
         })
       })
 
@@ -337,6 +343,7 @@ describe('Dashboards', () => {
 
         cy.get('@org').then(({id}: Organization) => {
           cy.createLabel(labelName, id).then(() => {
+            cy.reload()
             cy.getByTestID(`inline-labels--add`)
               .first()
               .click()

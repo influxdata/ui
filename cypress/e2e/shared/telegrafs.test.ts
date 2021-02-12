@@ -11,6 +11,7 @@ describe('Collectors', () => {
       cy.get('@org').then(({id}: Organization) =>
         cy.fixture('routes').then(({orgs, telegrafs}) => {
           cy.visit(`${orgs}/${id}${telegrafs}`)
+          cy.getByTestID('tree-nav')
         })
       )
     })

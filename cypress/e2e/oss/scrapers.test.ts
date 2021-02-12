@@ -11,6 +11,7 @@ describe('Scrapers', () => {
       cy.get('@org').then(({id}: Organization) =>
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${id}/load-data/scrapers`)
+          cy.getByTestID('tree-nav')
         })
       )
     })
@@ -74,6 +75,7 @@ describe('Scrapers', () => {
         cy.fixture('routes').then(({orgs}) => {
           cy.get<Organization>('@org').then(({id}: Organization) => {
             cy.visit(`${orgs}/${id}/load-data/scrapers`)
+            cy.getByTestID('tree-nav')
           })
         })
         cy.get('[data-testid="resource-list--body"]', {timeout: PAGE_LOAD_SLA})

@@ -31,6 +31,7 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
                 defaultUser
               )
               cy.get('#login').type(username)
+              cy.wrap(username).as('defaultUser')
             })
           })
           .then(() => {

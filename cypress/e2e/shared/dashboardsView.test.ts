@@ -9,6 +9,7 @@ describe('Dashboard', () => {
       cy.fixture('routes').then(({orgs}) => {
         cy.get('@org').then(({id: orgID}: Organization) => {
           cy.visit(`${orgs}/${orgID}/dashboards-list`)
+          cy.getByTestID('tree-nav')
         })
       })
     )
@@ -19,6 +20,7 @@ describe('Dashboard', () => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+          cy.getByTestID('tree-nav')
         })
       })
     })
@@ -33,6 +35,7 @@ describe('Dashboard', () => {
     cy.fixture('routes').then(({orgs}) => {
       cy.get('@org').then(({id: orgID}: Organization) => {
         cy.visit(`${orgs}/${orgID}/dashboards-list`)
+        cy.getByTestID('tree-nav')
       })
     })
 
@@ -44,6 +47,7 @@ describe('Dashboard', () => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+          cy.getByTestID('tree-nav')
         })
       })
     })
@@ -210,6 +214,7 @@ describe('Dashboard', () => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+          cy.getByTestID('tree-nav')
         })
       })
     })
@@ -299,6 +304,7 @@ describe('Dashboard', () => {
             cy.createMapVariable(orgID).then(() => {
               cy.fixture('routes').then(({orgs}) => {
                 cy.visit(`${orgs}/${orgID}/dashboards/${dashboard.id}`)
+                cy.getByTestID('tree-nav')
               })
               // add cell with variable in its query
               cy.getByTestID('add-cell--button').click()
@@ -562,6 +568,7 @@ describe('Dashboard', () => {
 
             cy.fixture('routes').then(({orgs}) => {
               cy.visit(`${orgs}/${orgID}/dashboards/${dashboard.id}`)
+              cy.getByTestID('tree-nav')
             })
 
             cy.getByTestID('add-cell--button').click()
@@ -751,6 +758,7 @@ describe('Dashboard', () => {
       cy.createDashWithViewAndVar(orgID).then(() => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards-list`)
+          cy.getByTestID('tree-nav')
           cy.getByTestID('dashboard-card--name').click()
           cy.get('.cell--view').should('have.length', 1)
         })
@@ -763,6 +771,7 @@ describe('Dashboard', () => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+          cy.getByTestID('tree-nav')
         })
       })
     })
@@ -800,6 +809,7 @@ describe('Dashboard', () => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+          cy.getByTestID('tree-nav')
         })
       })
     })
@@ -846,6 +856,7 @@ describe('Dashboard', () => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+          cy.getByTestID('tree-nav')
         })
       })
     })

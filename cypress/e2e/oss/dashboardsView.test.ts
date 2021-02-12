@@ -6,6 +6,7 @@ describe('Dashboard', () => {
       cy.fixture('routes').then(({orgs}) => {
         cy.get('@org').then(({id: orgID}: any) => {
           cy.visit(`${orgs}/${orgID}/dashboards-list`)
+          cy.getByTestID('tree-nav')
         })
       })
     )
@@ -16,6 +17,7 @@ describe('Dashboard', () => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+          cy.getByTestID('tree-nav')
         })
       })
     })

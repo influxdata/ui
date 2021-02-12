@@ -115,6 +115,7 @@ const AxisTicksGenerator: FC<Props> = ({
             initialTickOptionValue={totalTicks}
             label="Total Tick Marks"
             update={update}
+            elementStylingClass="value-tick-input--custom"
           />
           <TimeTickInput
             axisName={axisName}
@@ -144,6 +145,7 @@ const AxisTicksGenerator: FC<Props> = ({
             initialTickOptionValue={totalTicks}
             label="Total Tick Marks"
             update={update}
+            elementStylingClass="value-tick-input--custom"
           />
           <ValueTickInput
             axisName={axisName}

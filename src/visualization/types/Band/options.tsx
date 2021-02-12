@@ -288,7 +288,7 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
                     }}
                     selected={properties.hoverDimension === 'x'}
                   >
-                    X Axis
+                    X-Axis
                   </Dropdown.Item>
                   <Dropdown.Item
                     id="y"
@@ -298,7 +298,7 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
                     }}
                     selected={properties.hoverDimension === 'y'}
                   >
-                    Y Axis
+                    Y-Axis
                   </Dropdown.Item>
                   <Dropdown.Item
                     id="xy"
@@ -308,7 +308,7 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
                     }}
                     selected={properties.hoverDimension === 'xy'}
                   >
-                    X & Y Axis
+                    X-Y Axis
                   </Dropdown.Item>
                 </Dropdown.Menu>
               )}
@@ -316,20 +316,20 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
           </Form.Element>
         </Grid.Column>
         <Grid.Column>
-          <h5 className="view-options--header">X Axis</h5>
+          <h5 className="view-options--header">X-Axis</h5>
         </Grid.Column>
         <Grid.Column widthXS={Columns.Twelve} widthLG={Columns.Four}>
           <AxisTicksGenerator
             axisName="x"
             columnType={xColumn}
-            label="Generate X Axis tick marks"
+            label="Generate X-Axis Tick Marks"
             properties={properties}
             results={results}
             update={update}
           />
         </Grid.Column>
         <Grid.Column widthXS={Columns.Twelve} widthLG={Columns.Four}>
-          <h5 className="view-options--header">Y Axis</h5>
+          <h5 className="view-options--header">Y-Axis</h5>
           <Form.Element label="Y Axis Label">
             <Input
               value={properties.axes.y.label}
@@ -403,7 +403,7 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
           <AxisTicksGenerator
             axisName="y"
             columnType={yColumn}
-            label="Generate Y Axis tick marks"
+            label="Generate Y-Axis Tick Marks"
             properties={properties}
             results={results}
             update={update}

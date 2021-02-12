@@ -125,7 +125,7 @@ describe('The Query Builder', () => {
       cy.getByTestID('auto-window-period').click()
 
       cy.getByTestID('duration-input--error').should('not.exist')
-      cy.contains('Fill missing values').click()
+      cy.getByTestID('toggle').click()
       cy.getByTestID('switch-to-script-editor').click()
 
       cy.contains(

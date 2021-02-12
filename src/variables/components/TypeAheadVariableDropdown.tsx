@@ -160,7 +160,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     const {selectedValue} = this.props
 
     if (actualVal || selectedValue) {
-      const realValue = actualVal ? actualVal : selectedValue
+      const realValue = actualVal ?? selectedValue
 
       if (typedValue !== realValue) {
         return {typedValue: realValue}

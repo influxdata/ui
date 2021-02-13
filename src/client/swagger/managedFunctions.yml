@@ -3,7 +3,7 @@ info:
   title: Influxdata Managed Functions CRUD API
   version: 0.1.0
 servers:
-  - url: /
+  - url: ''
 paths:
   "/api/v2private/functions":
     get:

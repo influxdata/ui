@@ -1186,7 +1186,7 @@ describe('DataExplorer', () => {
         })
       })
 
-      it.only('can create new dashboard as saving target', () => {
+      it('can create new dashboard as saving target', () => {
         // select and input new dashboard name and cell name
         cy.getByTestID('save-as-dashboard-cell--dropdown').click()
         cy.getByTestID('save-as-dashboard-cell--create-new-dash').click()

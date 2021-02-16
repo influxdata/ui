@@ -128,8 +128,10 @@ describe('The Query Builder', () => {
       cy.get('label[class="cf-toggle--visual-input"]')
         .click()
         .then(() => {
+          // I (Gene) can't find a way around using a wait here.
+          // Clicking the script button too quickly doesn't allow the text to update as expected.
+          cy.wait(500)
           cy.getByTestID('switch-to-script-editor').click()
-
           cy.contains(
             '|> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: true)'
           ).should('exist')

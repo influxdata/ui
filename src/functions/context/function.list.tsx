@@ -1,12 +1,13 @@
 import React, {FC, useCallback} from 'react'
-import {useParams} from 'react-router-dom'
 import createPersistedState from 'use-persisted-state'
+import {useSelector} from 'react-redux'
 import {default as _asResource} from 'src/flows/context/resource.hook'
 import {getAllAPI, deleteAPI, createAPI} from 'src/functions/context/api'
 import {
   Function,
   FunctionCreateRequest,
 } from 'src/client/managedFunctionsRoutes'
+import {getOrg} from 'src/organizations/selectors'
 
 const useFunctionListState = createPersistedState('functions')
 
@@ -37,7 +38,8 @@ export const FunctionListProvider: FC = ({children}) => {
   const [functionsList, setFunctionsList] = useFunctionListState(
     DEFAULT_CONTEXT.functionsList
   )
-  const {orgID} = useParams<{orgID: string}>()
+
+  const {id: orgID} = useSelector(getOrg)
 
   const getAll = useCallback(async (): Promise<void> => {
     const data = await getAllAPI(orgID)

@@ -1,10 +1,14 @@
 // Libraries
 import React, {FC} from 'react'
-import {useParams, useHistory} from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
+import {useSelector} from 'react-redux'
 
 // Components
 import {Context} from 'src/clockface'
 import {ButtonShape, ComponentColor, IconFont} from '@influxdata/clockface'
+
+// Utils
+import {getOrg} from 'src/organizations/selectors'
 
 interface Props {
   id: string
@@ -12,7 +16,8 @@ interface Props {
 }
 
 const FunctionContextMenu: FC<Props> = ({id, name}) => {
-  const {orgID} = useParams<{orgID: string}>()
+  const {id: orgID} = useSelector(getOrg)
+
   const history = useHistory()
 
   const handleDelete = () => {

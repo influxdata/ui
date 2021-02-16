@@ -1,5 +1,6 @@
 import React, {FC} from 'react'
-import {useParams, useHistory} from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
+import {useSelector} from 'react-redux'
 
 // Components
 import {
@@ -12,13 +13,16 @@ import {
 import FunctionContextMenu from 'src/functions/components/FunctionContextMenu'
 import LastRunFunctionStatus from 'src/functions/components/LastRunFunctionStatus'
 
+// utils
+import {getOrg} from 'src/organizations/selectors'
+
 interface Props {
   id: string
   name: string
 }
 
 const FunctionCard: FC<Props> = ({id, name}) => {
-  const {orgID} = useParams<{orgID: string}>()
+  const {id: orgID} = useSelector(getOrg)
   const history = useHistory()
 
   const handleClick = () => {

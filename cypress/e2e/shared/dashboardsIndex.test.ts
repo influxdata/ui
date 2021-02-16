@@ -379,7 +379,9 @@ describe('Dashboards', () => {
         const labelName = 'banana'
 
         cy.get('@org').then(({id}: Organization) => {
+          cy.intercept('POST', '/labels').as('createLabel')
           cy.createLabel(labelName, id).then(() => {
+            cy.wait('@createLabel')
             cy.getByTestID(`inline-labels--add`)
               .first()
               .click()

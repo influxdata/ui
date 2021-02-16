@@ -38,10 +38,7 @@ const FunctionCard: FC<Props> = ({id, name}) => {
       direction={FlexDirection.Row}
       contextMenu={<FunctionContextMenu id={id} name={name} />}
     >
-      <LastRunFunctionStatus
-        lastRunError={undefined}
-        lastRunStatus={'success'}
-      />
+      <LastRunFunctionStatus lastRunError={undefined} lastRunStatus="success" />
       <FlexBox
         alignItems={AlignItems.FlexStart}
         direction={FlexDirection.Column}

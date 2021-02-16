@@ -20,9 +20,7 @@ const FunctionContextMenu: FC<Props> = ({id, name}) => {
 
   const history = useHistory()
 
-  const handleDelete = () => {
-    console.log('delete', id)
-  }
+  const handleDelete = () => {}
 
   const handleRouteToRuns = () => {
     history.push(`/orgs/${orgID}/functions/${id}/runs`)

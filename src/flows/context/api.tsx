@@ -8,11 +8,8 @@ import {
   DeleteApiV2privateFlowsOrgsFlowParams,
 } from 'src/client/flowsRoutes'
 import {notebookUpdateFail} from 'src/shared/copy/notifications'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {v4 as UUID} from 'uuid'
 import {notify} from 'src/shared/actions/notifications'
 
-export const FLOWS_API_FLAG = 'notebooks-api'
 const DEFAULT_API_FLOW: PatchApiV2privateFlowsOrgsFlowParams = {
   id: '',
   orgID: '',
@@ -58,45 +55,33 @@ export const pooledUpdateAPI = (flow: PatchApiV2privateFlowsOrgsFlowParams) => {
 }
 
 export const updateAPI = async (flow: PatchApiV2privateFlowsOrgsFlowParams) => {
-  if (isFlagEnabled(FLOWS_API_FLAG)) {
-    const res = await patchApiV2privateFlowsOrgsFlow(flow)
-    if (res.status != 200) {
-      throw new Error(res.data.message)
-    }
+  const res = await patchApiV2privateFlowsOrgsFlow(flow)
+  if (res.status != 200) {
+    throw new Error(res.data.message)
   }
 }
 
 export const createAPI = async (flow: PostApiV2privateFlowsOrgsFlowParams) => {
-  if (isFlagEnabled(FLOWS_API_FLAG)) {
-    const res = await postApiV2privateFlowsOrgsFlow(flow)
-
-    if (res.status != 200) {
-      throw new Error(res.data.message)
-    }
-    return res.data.id
+  const res = await postApiV2privateFlowsOrgsFlow(flow)
+  if (res.status != 200) {
+    throw new Error(res.data.message)
   }
-  return `local_${UUID()}`
+  return res.data.id
 }
 
 export const deleteAPI = async (ids: DeleteApiV2privateFlowsOrgsFlowParams) => {
-  if (isFlagEnabled(FLOWS_API_FLAG)) {
-    const res = await deleteApiV2privateFlowsOrgsFlow(ids)
-
-    if (res.status != 200) {
-      throw new Error(res.data.message)
-    }
+  const res = await deleteApiV2privateFlowsOrgsFlow(ids)
+  if (res.status != 200) {
+    throw new Error(res.data.message)
   }
 }
 
 export const getAllAPI = async (orgID: string) => {
-  if (isFlagEnabled(FLOWS_API_FLAG)) {
-    const res = await getApiV2privateFlowsOrgsFlows({orgID})
-    if (res.status != 200) {
-      throw new Error(res.data.message)
-    }
-    return res.data
+  const res = await getApiV2privateFlowsOrgsFlows({orgID})
+  if (res.status != 200) {
+    throw new Error(res.data.message)
   }
-  return {}
+  return res.data
 }
 
 export const migrateLocalFlowsToAPI = async (

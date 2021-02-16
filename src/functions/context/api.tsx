@@ -29,7 +29,7 @@ export const deleteAPI = async (id: string) => {
 
 export const getAllAPI = async (orgID: string) => {
   if (isFlagEnabled('managed-functions')) {
-    const res = await getApiV2privateFunctions({query: {orgID}})
+    await getApiV2privateFunctions({query: {orgID}})
     // if (res.status != 200) {
     //   throw new Error(res.data.message)
     // } TODO

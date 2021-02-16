@@ -50,26 +50,16 @@ const DatalessEmptyState: FC<Props> = ({orgID, buckets, children}) => {
       })
   }, [buckets])
 
-  const checkUserHasData = async (): Promise<boolean> => {
-    const userBuckets = buckets.filter(bucket => bucket.type === 'user')
-
-    const checkBucketsForData = async (
-      userBuckets,
-      predicate
-    ): Promise<boolean> => {
-      for (const bucket of userBuckets) {
-        if (await predicate(bucket)) {
-          return true
-        }
+  const checkBucketsHaveData = async (
+    userBuckets,
+    predicate
+  ): Promise<boolean> => {
+    for (const bucket of userBuckets) {
+      if (await predicate(bucket)) {
+        return true
       }
-      return false
     }
-
-    const result = await checkBucketsForData(userBuckets, async bucket => {
-      return (await checkBucketCardinality(bucket['name'])) > 0
-    })
-
-    return result
+    return false
   }
 
   const checkBucketCardinality = (bucketName): Promise<number> => {
@@ -89,11 +79,25 @@ const DatalessEmptyState: FC<Props> = ({orgID, buckets, children}) => {
       })
   }
 
+  const checkUserHasData = async (): Promise<boolean> => {
+    const userBuckets = buckets.filter(bucket => bucket.type === 'user')
+
+    if (userBuckets.length > 4) {
+      return true
+    }
+
+    const result = await checkBucketsHaveData(userBuckets, async bucket => {
+      return (await checkBucketCardinality(bucket['name'])) > 0
+    })
+
+    return result
+  }
+
   const handleClickLoadData = (): void => {
     history.push(`/orgs/${orgID}/load-data/sources`)
   }
 
-  // TODO: Replace with analytics data flag if experiment is successful
+  // TODO: Replace with analytics data or api flag if experiment is successful
   if (userHasData) {
     return (
       <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>

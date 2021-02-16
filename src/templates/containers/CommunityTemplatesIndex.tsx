@@ -245,9 +245,7 @@ class UnconnectedCommunityTemplatesIndex extends Component<Props, State> {
 
     try {
       event('template_click_lookup', {
-        templateName: getTemplateNameFromUrl(
-          this.props.stagedTemplateUrl.trim()
-        ).name,
+        templateName: getTemplateNameFromUrl(this.props.stagedTemplateUrl).name,
       })
       this.props.history.push(
         `/orgs/${this.props.org.id}/settings/templates/import`

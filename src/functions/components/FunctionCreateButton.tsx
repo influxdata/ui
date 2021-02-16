@@ -13,9 +13,7 @@ const FunctionCreateButton = () => {
   const history = useHistory()
   const {id: orgID} = useSelector(getOrg)
 
-  const handleCreate = async () => {
-    // const id = await add()
-    console.log('add')
+  const handleCreate = () => {
     history.push(`/orgs/${orgID}/functions/new`)
   }
 

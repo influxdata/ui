@@ -219,35 +219,37 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
         hoverDimension: properties.hoverDimension,
       },
     ],
-  }
+  } as any
 
-  if (isFlagEnabled('annotations')) {
-    if (annotations) {
-      //everything under the 'default' category for now:
-      const actualAnnotations = annotations.default ?? []
+  if (isFlagEnabled('annotations') && annotations) {
+    // everything is under the 'default' category for now:
+    // todo:  remove any[] after bucky fixes idpe name inconsistencies
+    const actualAnnotations: any[] = annotations.default ?? null
+
+    if (actualAnnotations && actualAnnotations.length) {
+      const colors = ['cyan', 'magenta', 'white']
 
       const annotationLayer = {
         type: 'annotation',
         x: xColumn,
         y: yColumn,
         fill: groupKey,
-        annotations: actualAnnotations.map(annotation => {
+        annotations: actualAnnotations.map((annotation, index) => {
           return {
-            color: 'cyan',
-            dimension: annotation.dimension ?? 'x',
             title: annotation.summary,
+            description: '',
+            color: colors[index % 3],
             startValue: new Date(annotation.start).getTime(),
             stopValue: new Date(annotation.end).getTime(),
+            dimension: 'x',
+            pin: 'start',
           }
         }),
-      }
-
-      console.log('new layer: ', annotationLayer)
+      } as any
 
       config.layers.push(annotationLayer)
     }
   }
-  console.log('config now....', config)
   return <Plot config={config} />
 }
 

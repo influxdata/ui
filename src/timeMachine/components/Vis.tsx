@@ -14,11 +14,12 @@ import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 // Utils
 import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 import {
+  getAnnotations,
+  getFillColumnsSelection,
+  getSymbolColumnsSelection,
   getVisTable,
   getXColumnSelection,
   getYColumnSelection,
-  getFillColumnsSelection,
-  getSymbolColumnsSelection,
 } from 'src/timeMachine/selectors'
 import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
 
@@ -44,6 +45,7 @@ const TimeMachineVis: FC<Props> = ({
   yColumn,
   fillColumns,
   symbolColumns,
+  annotations,
 }) => {
   // If the current selections for `xColumn`/`yColumn`/ etc. are invalid given
   // the current Flux response, attempt to make a valid selection instead. This
@@ -94,6 +96,7 @@ const TimeMachineVis: FC<Props> = ({
         properties={resolvedViewProperties}
         result={giraffeResult}
         timeRange={timeRange}
+        annotations={annotations}
       />
     </div>
   )
@@ -113,8 +116,9 @@ const mstp = (state: AppState) => {
   const yColumn = getYColumnSelection(state)
   const fillColumns = getFillColumnsSelection(state)
   const symbolColumns = getSymbolColumnsSelection(state)
+  const annotations = getAnnotations(state)
 
-  return {
+  const defaultObject = {
     loading,
     errorMessage,
     isInitialFetch,
@@ -127,7 +131,9 @@ const mstp = (state: AppState) => {
     fillColumns,
     symbolColumns,
     timeRange: getActiveTimeRange(timeRange, viewProperties.queries),
+    annotations,
   }
+  return defaultObject
 }
 
 const connector = connect(mstp)

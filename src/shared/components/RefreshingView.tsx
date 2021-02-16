@@ -10,8 +10,7 @@ import {View} from 'src/visualization'
 // Utils
 import {GlobalAutoRefresher} from 'src/utils/AutoRefresher'
 import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
-import {getActiveTimeRange} from 'src/timeMachine/selectors/index'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {getActiveTimeRange, getAnnotations} from 'src/timeMachine/selectors'
 
 // Types
 import {
@@ -106,20 +105,9 @@ class RefreshingView extends PureComponent<Props, State> {
 const mstp = (state: AppState, ownProps: OwnProps) => {
   const timeRange = getTimeRangeWithTimezone(state)
   const ranges = getActiveTimeRange(timeRange, ownProps.properties.queries)
+  const annotations = getAnnotations(state)
 
-  const annotations = state.annotations.annotations
-  //console.log('got annotations???? jill42a ', annotations)
-
-  const defaultObject = {ranges, timeRange}
-
-  if (isFlagEnabled('annotations')) {
-    return {
-      annotations,
-      ...defaultObject,
-    }
-  } else {
-    return defaultObject
-  }
+  return {ranges, timeRange, annotations}
 }
 
 export default connect<StateProps, {}, OwnProps>(mstp)(

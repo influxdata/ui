@@ -10,9 +10,9 @@ import ViewLoadingSpinner from 'src/visualization/components/internal/ViewLoadin
 import {FromFluxResult} from '@influxdata/giraffe'
 import {
   AnnotationsList,
-  ViewProperties,
   RemoteDataState,
   TimeRange,
+  ViewProperties,
 } from 'src/types'
 
 interface Props {

@@ -14,6 +14,9 @@ import {
   getStringColumns as getStringColumnsUtil,
   getMainColumnName,
 } from 'src/shared/utils/vis'
+
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
 import {
   getWindowPeriod,
   calcWindowPeriodForDuration,
@@ -186,6 +189,14 @@ const getFillColumnsSelectionMemoized = memoizeOne(getGroupableColumnSelection)
 const getSymbolColumnsSelectionMemoized = memoizeOne(
   getGroupableColumnSelection
 )
+
+export const getAnnotations = (state: AppState) => {
+  if (isFlagEnabled('annotations')) {
+    return state.annotations.annotations
+  } else {
+    return null
+  }
+}
 
 export const getFillColumnsSelection = (state: AppState): string[] => {
   const {table} = getVisTable(state)

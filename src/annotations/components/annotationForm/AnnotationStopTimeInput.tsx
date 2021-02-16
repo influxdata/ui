@@ -12,23 +12,22 @@ import {
 
 interface Props {
   onChange: (event: ChangeEvent<HTMLInputElement>) => void
-  summary: string
+  stopTime: string
 }
 
-export const AnnotationSummaryInput: FC<Props> = (props: Props) => {
-  const validationMessage = props.summary ? '' : 'This field is required'
+export const AnnotationStopTimeInput: FC<Props> = (props: Props) => {
+  const validationMessage = props.stopTime ? '' : 'This field is required'
 
   return (
-    <Grid.Column widthXS={Columns.Seven}>
+    <Grid.Column widthXS={Columns.Six}>
       <Form.Element
-        label="Summary"
+        label="Stop Time"
         required={true}
         errorMessage={validationMessage}
       >
         <Input
-          name="summary"
-          placeholder="ex: Deployed update"
-          value={props.summary}
+          name="stopTime"
+          value={new Date(props.stopTime).toString()}
           onChange={props.onChange}
           status={ComponentStatus.Default}
         />
@@ -36,5 +35,3 @@ export const AnnotationSummaryInput: FC<Props> = (props: Props) => {
     </Grid.Column>
   )
 }
-
-export default AnnotationSummaryInput

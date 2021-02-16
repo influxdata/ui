@@ -45,7 +45,7 @@ import {getOrg} from 'src/organizations/selectors'
 import {getAll} from 'src/resources/selectors'
 
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & RouteComponentProps<{orgID: string}>
+type Props = ReduxProps & RouteComponentProps
 
 interface State {
   dataLoaderOverlay: OverlayState
@@ -193,36 +193,26 @@ export class Collectors extends PureComponent<Props, State> {
   }
 
   private handleAddCollector = () => {
-    const {
-      history,
-      match: {
-        params: {orgID},
-      },
-    } = this.props
+    const {history, org} = this.props
 
-    history.push(`/orgs/${orgID}/load-data/telegrafs/new`)
+    history.push(`/orgs/${org.id}/load-data/telegrafs/new`)
   }
 
   private handleJustTheOutput = () => {
-    const {
-      history,
-      match: {
-        params: {orgID},
-      },
-    } = this.props
+    const {history, org} = this.props
 
-    history.push(`/orgs/${orgID}/load-data/telegrafs/output`)
+    history.push(`/orgs/${org.id}/load-data/telegrafs/output`)
   }
 
   private get emptyState(): JSX.Element {
-    const {orgName} = this.props
+    const {org} = this.props
     const {searchTerm} = this.state
 
     if (_.isEmpty(searchTerm)) {
       return (
         <EmptyState size={ComponentSize.Medium}>
           <EmptyState.Text>
-            {`${orgName}`} does not own any <b>Telegraf Configurations</b>, why
+            {`${org.name}`} does not own any <b>Telegraf Configurations</b>, why
             not create one?
           </EmptyState.Text>
           {this.createButton}
@@ -256,14 +246,14 @@ export class Collectors extends PureComponent<Props, State> {
 }
 const mstp = (state: AppState) => {
   const {telegrafs} = state.resources
-  const orgName = getOrg(state).name
   const buckets = getAll<Bucket>(state, ResourceType.Buckets)
   const hasTelegrafs = !!telegrafs.allIDs.length
+  const org = getOrg(state)
 
   return {
     hasTelegrafs,
-    orgName,
     buckets,
+    org,
   }
 }
 

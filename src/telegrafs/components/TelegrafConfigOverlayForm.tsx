@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC, useState, useContext} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
-import {useParams} from 'react-router-dom'
 
 // Components
 import TelegrafConfig from 'src/telegrafs/components/TelegrafConfig'
@@ -41,13 +40,12 @@ const TelegrafConfigOverlayForm: FC = () => {
     return getAll<Telegraf>(state, ResourceType.Telegrafs)
   }
   const telegrafs = useSelector(getTelegrafs)
-  const {onClose} = useContext(OverlayContext)
-  const {id} = useParams()
+  const {onClose, params} = useContext(OverlayContext)
 
   let telegraf
 
-  if (id) {
-    telegraf = telegrafs.find(tel => tel.id === id)
+  if (params.id) {
+    telegraf = telegrafs.find(tel => tel.id === params.id)
   }
 
   const [workingConfig, updateWorkingConfig] = useState<string>(

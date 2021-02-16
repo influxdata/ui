@@ -10,7 +10,7 @@ import React, {
 import {useDispatch, useSelector} from 'react-redux'
 
 // Types
-import {AppState} from 'src/types'
+import {AppState, OverlayParams} from 'src/types'
 
 // Components
 import {Overlay} from '@influxdata/clockface'
@@ -39,12 +39,14 @@ import {dismissOverlay} from 'src/overlays/actions/overlays'
 
 export interface OverlayContextType {
   onClose: () => void
+  params: OverlayParams['params']
   visibility: boolean
   overlayID: string
 }
 
 export const DEFAULT_OVERLAY_CONTEXT = {
   onClose: () => {},
+  params: {},
   visibility: false,
   overlayID: '',
 }
@@ -135,12 +137,14 @@ export const OverlayController: FunctionComponent = () => {
 }
 
 const OverlayProvider: FunctionComponent = props => {
-  const {overlayID, onClose} = useSelector((state: AppState) => {
+  const {overlayID, onClose, params} = useSelector((state: AppState) => {
     const id = state.overlays.id
+    const params = state.overlays.params
     const onClose = state.overlays.onClose
 
     return {
       overlayID: id,
+      params,
       onClose,
     }
   })
@@ -156,7 +160,7 @@ const OverlayProvider: FunctionComponent = props => {
 
   return (
     <OverlayContext.Provider
-      value={{onClose: closer, visibility: !!overlayID, overlayID}}
+      value={{onClose: closer, params, visibility: !!overlayID, overlayID}}
     >
       {children}
     </OverlayContext.Provider>

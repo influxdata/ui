@@ -13,9 +13,8 @@ export const createAPI = async (functionCreate: FunctionCreateRequest) => {
     if (res.status != 201) {
       throw new Error(res.data.message)
     }
-    return res.data.id
+    return res.data
   }
-  return '' // TODO think on this
 }
 
 export const deleteAPI = async (id: string) => {
@@ -33,8 +32,8 @@ export const getAllAPI = async (orgID: string) => {
     const res = await getApiV2privateFunctions({query: {orgID}})
     // if (res.status != 200) {
     //   throw new Error(res.data.message)
-    // }
-    console.log(res)
+    // } TODO
+    console.log(res) // remove
     return {
       functions: [
         {name: 'functionb', id: '1', orgID: '0', script: 'lalal'},

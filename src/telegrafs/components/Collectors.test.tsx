@@ -16,7 +16,7 @@ const setup = (override = {}) => {
     hasTelegrafs: false,
     org: {
       name: 'orgName',
-      id: 12,
+      id: '12',
     },
     buckets: [],
     onSetTelegrafConfigID: jest.fn(),

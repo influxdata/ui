@@ -130,7 +130,7 @@ describe('The Query Builder', () => {
         .then(() => {
           // I (Gene) can't find a way around using a wait here.
           // Clicking the script button too quickly doesn't allow the text to update as expected.
-          cy.wait(500)
+          cy.wait(5000)
           cy.getByTestID('switch-to-script-editor').click()
           cy.contains(
             '|> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: true)'

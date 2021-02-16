@@ -125,18 +125,14 @@ describe('The Query Builder', () => {
       cy.getByTestID('auto-window-period').click()
 
       cy.getByTestID('duration-input--error').should('not.exist')
-      cy.wait(5000)
-      cy.get('label[class="cf-toggle--visual-input"]')
-        .click()
-        .then(() => {
-          // I (Gene) can't find a way around using a wait here.
-          // Clicking the script button too quickly doesn't allow the text to update as expected.
-          cy.wait(5000)
-          cy.getByTestID('switch-to-script-editor').click()
-          cy.contains(
-            '|> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: true)'
-          ).should('exist')
-        })
+
+      cy.get('label[class="cf-toggle--visual-input"]').click()
+      cy.contains('Fill missing values').click()
+
+      cy.getByTestID('switch-to-script-editor').click()
+      cy.contains(
+        '|> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: true)'
+      ).should('exist')
     })
 
     it('can create a bucket from the buckets list', () => {

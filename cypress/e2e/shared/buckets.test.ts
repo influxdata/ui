@@ -99,11 +99,10 @@ describe('Buckets', () => {
 
     it('can delete a bucket', () => {
       const bucket1 = 'newbucket1'
-      cy.intercept('POST', '/buckets').as('createBucket')
       cy.get<Organization>('@org').then(({id, name}: Organization) => {
         cy.createBucket(id, name, bucket1)
       })
-      cy.wait('@createBucket')
+      cy.reload()
       cy.getByTestID(`bucket-card ${bucket1}`).trigger('mouseover')
       cy.getByTestID(`context-delete-menu ${bucket1}`).click()
       cy.intercept('DELETE', '/buckets').as('deleteBucket')

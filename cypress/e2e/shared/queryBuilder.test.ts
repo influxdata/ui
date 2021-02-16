@@ -125,13 +125,15 @@ describe('The Query Builder', () => {
       cy.getByTestID('auto-window-period').click()
 
       cy.getByTestID('duration-input--error').should('not.exist')
-      cy.get('label[class="cf-toggle--visual-input"]').click()
+      cy.get('label[class="cf-toggle--visual-input"]')
+        .click()
+        .then(() => {
+          cy.getByTestID('switch-to-script-editor').click()
 
-      cy.getByTestID('switch-to-script-editor').click()
-
-      cy.contains(
-        '|> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: true)'
-      ).should('exist')
+          cy.contains(
+            '|> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: true)'
+          ).should('exist')
+        })
     })
 
     it('can create a bucket from the buckets list', () => {

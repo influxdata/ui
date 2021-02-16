@@ -25,6 +25,9 @@ import {
   searchTagValues,
   selectTagKey,
   selectTagValue,
+} from 'src/timeMachine/actions/queryBuilderThunks'
+
+import {
   setBuilderAggregateFunctionType,
   setKeysSearchTerm,
   setValuesSearchTerm,

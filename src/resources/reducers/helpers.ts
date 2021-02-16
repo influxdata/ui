@@ -34,7 +34,7 @@ export const setResource = <R>(
     draftState.allIDs = schema.result
   } else {
     draftState.byID = {}
-    draftState.allIDs = schema.result ?? []
+    draftState.allIDs = schema?.result ?? []
   }
 
   return

@@ -125,6 +125,7 @@ describe('The Query Builder', () => {
       cy.getByTestID('auto-window-period').click()
 
       cy.getByTestID('duration-input--error').should('not.exist')
+      cy.wait(5000)
       cy.get('label[class="cf-toggle--visual-input"]')
         .click()
         .then(() => {

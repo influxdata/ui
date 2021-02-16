@@ -1,7 +1,7 @@
 // Libraries
-import React, {FunctionComponent} from 'react'
-import {connect} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import React, {FC} from 'react'
+import {useSelector} from 'react-redux'
+import {useHistory} from 'react-router-dom'
 
 // Types
 import {
@@ -23,28 +23,25 @@ import AlertsColumn from 'src/alerting/components/AlertsColumn'
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
+import {getOrg} from 'src/organizations/selectors'
 
-interface OwnProps {
+interface Props {
   tabIndex: number
 }
 
-interface StateProps {
-  rules: NotificationRuleDraft[]
-  endpoints: NotificationEndpoint[]
-}
+const NotificationRulesColumn: FC<Props> = ({tabIndex}) => {
+  const history = useHistory()
+  const org = useSelector(getOrg)
+  const rules = useSelector((state: AppState) =>
+    getAll<NotificationRuleDraft>(state, ResourceType.NotificationRules)
+  )
 
-type Props = OwnProps & StateProps & RouteComponentProps<{orgID: string}>
+  const endpoints = useSelector((state: AppState) =>
+    getAll<NotificationEndpoint>(state, ResourceType.NotificationEndpoints)
+  )
 
-const NotificationRulesColumn: FunctionComponent<Props> = ({
-  rules,
-  history,
-  match,
-  endpoints,
-  tabIndex,
-}) => {
   const handleOpenOverlay = () => {
-    const newRuleRoute = `/orgs/${match.params.orgID}/alerting/rules/new`
-    history.push(newRuleRoute)
+    history.push(`/orgs/${org.id}/alerting/rules/new`)
   }
 
   const tooltipContents = (
@@ -102,21 +99,4 @@ const NotificationRulesColumn: FunctionComponent<Props> = ({
   )
 }
 
-const mstp = (state: AppState) => {
-  const rules = getAll<NotificationRuleDraft>(
-    state,
-    ResourceType.NotificationRules
-  )
-
-  const endpoints = getAll<NotificationEndpoint>(
-    state,
-    ResourceType.NotificationEndpoints
-  )
-
-  return {rules, endpoints}
-}
-
-export default connect<StateProps>(
-  mstp,
-  null
-)(withRouter(NotificationRulesColumn))
+export default NotificationRulesColumn

@@ -1,15 +1,14 @@
 // Libraries
 import React, {
-  FunctionComponent,
+  FC,
   useEffect,
   useState,
   ChangeEvent,
   FormEvent,
   useCallback,
 } from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
-import {connect, ConnectedProps, useDispatch} from 'react-redux'
-import {get} from 'lodash'
+import {useParams, useHistory} from 'react-router-dom'
+import {useSelector, useDispatch} from 'react-redux'
 
 // Components
 import {
@@ -23,6 +22,7 @@ import BucketOverlayForm from 'src/buckets/components/BucketOverlayForm'
 // Actions
 import {updateBucket} from 'src/buckets/actions/thunks'
 import {notify} from 'src/shared/actions/notifications'
+import {getOrg} from 'src/organizations/selectors'
 
 // APIs
 import * as api from 'src/client'
@@ -34,19 +34,10 @@ import {getBucketFailed} from 'src/shared/copy/notifications'
 // Types
 import {OwnBucket} from 'src/types'
 
-interface DispatchProps {
-  onUpdateBucket: typeof updateBucket
-}
-
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & RouteComponentProps<{bucketID: string; orgID: string}>
-
-const UpdateBucketOverlay: FunctionComponent<Props> = ({
-  onUpdateBucket,
-  match,
-  history,
-}) => {
-  const {orgID, bucketID} = match.params
+const UpdateBucketOverlay: FC = () => {
+  const org = useSelector(getOrg)
+  const history = useHistory()
+  const {bucketID} = useParams()
   const dispatch = useDispatch()
   const [bucketDraft, setBucketDraft] = useState<OwnBucket>(null)
 
@@ -55,8 +46,8 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
   const [retentionSelection, setRetentionSelection] = useState(DEFAULT_SECONDS)
 
   const handleClose = useCallback(() => {
-    history.push(`/orgs/${orgID}/load-data/buckets`)
-  }, [orgID, history])
+    history.push(`/orgs/${org.id}/load-data/buckets`)
+  }, [org.id, history])
 
   useEffect(() => {
     const fetchBucket = async () => {
@@ -69,7 +60,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
       }
       setBucketDraft(resp.data as OwnBucket)
 
-      const rules = get(resp.data, 'retentionRules', [])
+      const rules = resp.data?.retentionRules || []
       const rule = rules.find(r => r.type === 'expire')
       if (rule) {
         setRetentionSelection(rule.everySeconds)
@@ -106,7 +97,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
-    onUpdateBucket(bucketDraft)
+    dispatch(updateBucket(bucketDraft))
     handleClose()
   }
 
@@ -117,10 +108,10 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
   }
 
   const handleClickRename = () => {
-    history.push(`/orgs/${orgID}/load-data/buckets/${bucketID}/rename`)
+    history.push(`/orgs/${org.id}/load-data/buckets/${bucketID}/rename`)
   }
 
-  const rules = get(bucketDraft, 'retentionRules', [])
+  const rules = bucketDraft?.retentionRules || []
   const rule = rules.find(r => r.type === 'expire')
 
   const retentionSeconds = rule ? rule.everySeconds : retentionSelection
@@ -155,13 +146,4 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
   )
 }
 
-const mdtp = {
-  onUpdateBucket: updateBucket,
-}
-
-const connector = connect(null, mdtp)
-
-export default connect<{}, DispatchProps>(
-  null,
-  mdtp
-)(withRouter(UpdateBucketOverlay))
+export default UpdateBucketOverlay

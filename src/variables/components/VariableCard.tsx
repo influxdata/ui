@@ -9,7 +9,7 @@ import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
 import VariableContextMenu from 'src/variables/components/VariableContextMenu'
 
 // Types
-import {Label, Variable} from 'src/types'
+import {AppState, Label, Variable} from 'src/types'
 
 // Actions
 import {
@@ -17,6 +17,7 @@ import {
   removeVariableLabelAsync,
 } from 'src/variables/actions/thunks'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+import {getOrg} from 'src/organizations/selectors'
 
 interface OwnProps {
   variable: Variable
@@ -28,9 +29,7 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
-class VariableCard extends PureComponent<
-  Props & RouteComponentProps<{orgID: string}>
-> {
+class VariableCard extends PureComponent<Props & RouteComponentProps> {
   public render() {
     const {variable, onDeleteVariable} = this.props
 
@@ -62,11 +61,9 @@ class VariableCard extends PureComponent<
   }
 
   private handleNameClick = (): void => {
-    const {variable, match, history} = this.props
+    const {variable, org, history} = this.props
 
-    history.push(
-      `/orgs/${match.params.orgID}/settings/variables/${variable.id}/edit`
-    )
+    history.push(`/orgs/${org.id}/settings/variables/${variable.id}/edit`)
   }
 
   private get labels(): JSX.Element {
@@ -95,20 +92,22 @@ class VariableCard extends PureComponent<
   }
 
   private handleExport = () => {
-    const {history, variable, match} = this.props
+    const {history, variable, org} = this.props
 
-    history.push(
-      `/orgs/${match.params.orgID}/settings/variables/${variable.id}/export`
-    )
+    history.push(`/orgs/${org.id}/settings/variables/${variable.id}/export`)
   }
 
   private handleRenameVariable = () => {
-    const {history, variable, match} = this.props
+    const {history, variable, org} = this.props
 
-    history.push(
-      `/orgs/${match.params.orgID}/settings/variables/${variable.id}/rename`
-    )
+    history.push(`/orgs/${org.id}/settings/variables/${variable.id}/rename`)
   }
+}
+
+const mstp = (state: AppState) => {
+  const org = getOrg(state)
+
+  return {org}
 }
 
 const mdtp = {
@@ -116,6 +115,6 @@ const mdtp = {
   onRemoveVariableLabel: removeVariableLabelAsync,
 }
 
-const connector = connect(null, mdtp)
+const connector = connect(mstp, mdtp)
 
 export default connector(withRouter(VariableCard))

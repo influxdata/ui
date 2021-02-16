@@ -23,9 +23,7 @@ interface OwnProps {
   children: React.ReactNode
 }
 
-type Props = ReduxProps &
-  OwnProps &
-  RouteComponentProps<{orgID: string; dashboardID: string}>
+type Props = ReduxProps & OwnProps & RouteComponentProps<{dashboardID: string}>
 
 class DashboardRoute extends PureComponent<Props> {
   pendingVars: [{[key: string]: any}]

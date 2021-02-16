@@ -1,7 +1,7 @@
 // Libraries
-import React, {PureComponent} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
-import memoizeOne from 'memoize-one'
+import React, {FC, useCallback, useMemo} from 'react'
+import {useHistory} from 'react-router-dom'
+import {useSelector} from 'react-redux'
 
 // Components
 import BucketCard from 'src/buckets/components/BucketCard'
@@ -17,6 +17,7 @@ import {Sort} from '@influxdata/clockface'
 
 // Utils
 import {SortTypes} from 'src/shared/utils/sort'
+import {getOrg} from 'src/organizations/selectors'
 
 interface Props {
   buckets: Bucket[]
@@ -29,64 +30,55 @@ interface Props {
   sortType: SortTypes
 }
 
-class BucketList extends PureComponent<
-  Props & RouteComponentProps<{orgID: string}>
-> {
-  private memGetSortedResources = memoizeOne<typeof getSortedResources>(
-    getSortedResources
+const BucketList: FC<Props> = ({
+  emptyState,
+  buckets,
+  sortKey,
+  sortDirection,
+  sortType,
+  onDeleteBucket,
+  onFilterChange,
+  onUpdateBucket,
+}) => {
+  const org = useSelector(getOrg)
+  const history = useHistory()
+  const handleStartDeleteData = useCallback(
+    (bucket: OwnBucket) => {
+      history.push(`/orgs/${org.id}/load-data/buckets/${bucket.id}/delete-data`)
+    },
+    [history, org.id]
   )
 
-  public render() {
-    return (
-      <ResourceList>
-        <ResourceList.Body emptyState={this.props.emptyState}>
-          {this.listBuckets}
-        </ResourceList.Body>
-      </ResourceList>
-    )
-  }
+  const bucketList = useMemo(
+    () =>
+      getSortedResources(buckets, sortKey, sortDirection, sortType).map(
+        bucket => {
+          if (bucket.type === 'demodata') {
+            return <DemoDataBucketCard key={bucket.id} bucket={bucket} />
+          }
 
-  private get listBuckets(): JSX.Element[] {
-    const {
-      buckets,
-      sortKey,
-      sortDirection,
-      sortType,
-      onDeleteBucket,
-      onFilterChange,
-      onUpdateBucket,
-    } = this.props
-    const sortedBuckets = this.memGetSortedResources(
-      buckets,
-      sortKey,
-      sortDirection,
-      sortType
-    )
+          return (
+            <BucketCard
+              key={bucket.id}
+              bucket={bucket}
+              onDeleteBucket={onDeleteBucket}
+              onDeleteData={handleStartDeleteData}
+              onUpdateBucket={onUpdateBucket}
+              onFilterChange={onFilterChange}
+            />
+          )
+        }
+      ),
+    [buckets, sortKey, sortDirection, sortType]
+  )
 
-    return sortedBuckets.map(bucket => {
-      if (bucket.type === 'demodata') {
-        return <DemoDataBucketCard key={bucket.id} bucket={bucket} />
-      }
-      return (
-        <BucketCard
-          key={bucket.id}
-          bucket={bucket}
-          onDeleteBucket={onDeleteBucket}
-          onDeleteData={this.handleStartDeleteData}
-          onUpdateBucket={onUpdateBucket}
-          onFilterChange={onFilterChange}
-        />
-      )
-    })
-  }
-
-  private handleStartDeleteData = (bucket: OwnBucket) => {
-    const {orgID} = this.props.match.params
-
-    this.props.history.push(
-      `/orgs/${orgID}/load-data/buckets/${bucket.id}/delete-data`
-    )
-  }
+  return (
+    <ResourceList>
+      <ResourceList.Body emptyState={emptyState}>
+        {bucketList}
+      </ResourceList.Body>
+    </ResourceList>
+  )
 }
 
-export default withRouter(BucketList)
+export default BucketList

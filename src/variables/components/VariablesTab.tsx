@@ -6,6 +6,7 @@ import {withRouter, RouteComponentProps} from 'react-router-dom'
 // Utils
 import {deleteVariable} from 'src/variables/actions/thunks'
 import {getVariables} from 'src/variables/selectors'
+import {getOrg} from 'src/organizations/selectors'
 
 // Components
 import {EmptyState} from '@influxdata/clockface'
@@ -25,7 +26,7 @@ import {SortTypes} from 'src/shared/utils/sort'
 import {VariableSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = RouteComponentProps<{orgID: string}> & ReduxProps
+type Props = RouteComponentProps & ReduxProps
 
 interface State {
   searchTerm: string
@@ -146,15 +147,15 @@ class VariablesTab extends PureComponent<Props, State> {
   }
 
   private handleOpenImportOverlay = (): void => {
-    const {history, match} = this.props
+    const {history, org} = this.props
 
-    history.push(`/orgs/${match.params.orgID}/settings/variables/import`)
+    history.push(`/orgs/${org.id}/settings/variables/import`)
   }
 
   private handleOpenCreateOverlay = (): void => {
-    const {history, match} = this.props
+    const {history, org} = this.props
 
-    history.push(`/orgs/${match.params.orgID}/settings/variables/new`)
+    history.push(`/orgs/${org.id}/settings/variables/new`)
   }
 
   private handleDeleteVariable = (variable: Variable): void => {
@@ -165,8 +166,9 @@ class VariablesTab extends PureComponent<Props, State> {
 
 const mstp = (state: AppState) => {
   const variables = getVariables(state)
+  const org = getOrg(state)
 
-  return {variables}
+  return {variables, org}
 }
 
 const mdtp = {

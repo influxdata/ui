@@ -31,6 +31,7 @@ import {
 
 // Selectors
 import {getAll} from 'src/resources/selectors/getAll'
+import {getOrg} from 'src/organizations/selectors'
 
 interface State {
   selectedTemplateSummary: TemplateSummary
@@ -119,8 +120,8 @@ class TaskImportFromTemplateOverlay extends PureComponent<
   }
 
   private onDismiss = () => {
-    const {history, match} = this.props
-    history.push(`/orgs/${match.params.orgID}/tasks`)
+    const {history, org} = this.props
+    history.push(`/orgs/${org.id}/tasks`)
   }
 
   private onSubmit = () => {
@@ -147,9 +148,12 @@ const mstp = (state: AppState) => {
     item.meta.name.toLocaleLowerCase()
   )
 
+  const org = getOrg(state)
+
   return {
     templates,
     templateStatus: status,
+    org,
   }
 }
 

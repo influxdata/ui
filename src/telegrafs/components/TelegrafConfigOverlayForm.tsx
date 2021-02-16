@@ -1,8 +1,7 @@
 // Libraries
 import React, {FC, useState, useContext} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
-import {useRouteMatch} from 'react-router-dom'
-import _ from 'lodash'
+import {useParams} from 'react-router-dom'
 
 // Components
 import TelegrafConfig from 'src/telegrafs/components/TelegrafConfig'
@@ -36,11 +35,6 @@ import {AppState, ResourceType, Telegraf} from 'src/types'
 // Selectors
 import {getAll} from 'src/resources/selectors'
 
-type Params = {orgID: string; id: string}
-interface Match {
-  params: Params
-}
-
 const TelegrafConfigOverlayForm: FC = () => {
   const dispatch = useDispatch()
   const getTelegrafs = (state: AppState): Telegraf[] => {
@@ -48,16 +42,12 @@ const TelegrafConfigOverlayForm: FC = () => {
   }
   const telegrafs = useSelector(getTelegrafs)
   const {onClose} = useContext(OverlayContext)
-  const match: Match = useRouteMatch({
-    path: '/orgs/:orgID/load-data/telegrafs/:id/view',
-    exact: true,
-    strict: false,
-  })
+  const {id} = useParams()
 
   let telegraf
 
-  if (match?.params?.id) {
-    telegraf = telegrafs.find(tel => tel.id === match.params.id)
+  if (id) {
+    telegraf = telegrafs.find(tel => tel.id === id)
   }
 
   const [workingConfig, updateWorkingConfig] = useState<string>(

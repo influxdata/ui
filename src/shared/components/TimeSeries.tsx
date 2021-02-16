@@ -24,6 +24,7 @@ import {getWindowVars} from 'src/variables/utils/getWindowVars'
 import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
 import 'intersection-observer'
 import {getAll} from 'src/resources/selectors'
+import {getOrg} from 'src/organizations/selectors'
 import {getOrgIDFromBuckets} from 'src/timeMachine/actions/queries'
 import {
   isDemoDataAvailabilityError,
@@ -238,8 +239,7 @@ class TimeSeries extends Component<Props, State> {
       const vars = variables.map(v => asAssignment(v))
       // Issue new queries
       this.pendingResults = queries.map(({text}) => {
-        const orgID =
-          getOrgIDFromBuckets(text, buckets) || this.props.match.params.orgID
+        const orgID = getOrgIDFromBuckets(text, buckets) || this.props.org.id
 
         const windowVars = getWindowVars(text, vars)
         const extern = buildVarsOption([...vars, ...windowVars])
@@ -263,7 +263,7 @@ class TimeSeries extends Component<Props, State> {
       if (check) {
         const extern = buildVarsOption(vars)
         this.pendingCheckStatuses = runStatusesQuery(
-          this.props.match.params.orgID,
+          this.props.org.id,
           check.id,
           extern
         )
@@ -384,6 +384,7 @@ const mstp = (state: AppState, props: OwnProps) => {
     getRangeVariable(TIME_RANGE_START, timeRange),
     getRangeVariable(TIME_RANGE_STOP, timeRange),
   ]
+  const org = getOrg(state)
 
   return {
     hasUpdatedTimeRangeInVEO: hasUpdatedTimeRangeInVEO(state),
@@ -391,6 +392,7 @@ const mstp = (state: AppState, props: OwnProps) => {
     queryLink: state.links.query.self,
     buckets: getAll<Bucket>(state, ResourceType.Buckets),
     variables,
+    org,
   }
 }
 

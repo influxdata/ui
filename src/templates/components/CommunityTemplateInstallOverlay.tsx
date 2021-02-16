@@ -19,11 +19,11 @@ import {getBuckets} from 'src/buckets/actions/thunks'
 import {getTotalResourceCount} from 'src/templates/selectors'
 
 // Types
-import {AppState, Organization, ResourceType} from 'src/types'
+import {AppState} from 'src/types'
 import {ComponentStatus} from '@influxdata/clockface'
 
 // Utils
-import {getByID} from 'src/resources/selectors'
+import {getOrg} from 'src/organizations/selectors'
 import {getTemplateNameFromUrl} from 'src/templates/utils'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
@@ -50,9 +50,7 @@ interface OwnProps {
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
-type RouterProps = RouteComponentProps<{
-  orgID: string
-}>
+type RouterProps = RouteComponentProps
 
 type Props = OwnProps & ReduxProps & RouterProps
 
@@ -156,12 +154,8 @@ class CommunityTemplateInstallOverlayUnconnected extends PureComponent<Props> {
   }
 }
 
-const mstp = (state: AppState, props: RouterProps) => {
-  const org = getByID<Organization>(
-    state,
-    ResourceType.Orgs,
-    props.match.params.orgID
-  )
+const mstp = (state: AppState) => {
+  const org = getOrg(state)
 
   // convert the env references into a format pkger is happy with
   const stagedTemplateEnvReferences = {}

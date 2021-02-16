@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
-import {connect, ConnectedProps} from 'react-redux'
+import {useHistory, useParams} from 'react-router-dom'
+import {useSelector, useDispatch} from 'react-redux'
 
 // Constants
 import {getNotificationRuleFailed} from 'src/shared/copy/notifications'
@@ -17,34 +17,36 @@ import {notify} from 'src/shared/actions/notifications'
 // Utils
 import RuleOverlayProvider from './RuleOverlayProvider'
 import {getByID} from 'src/resources/selectors'
+import {getOrg} from 'src/organizations/selectors'
 
 // Types
 import {NotificationRuleDraft, AppState, ResourceType} from 'src/types'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type RouterProps = RouteComponentProps<{orgID: string; ruleID: string}>
-type Props = RouterProps & ReduxProps
+const EditRuleOverlay: FC = () => {
+  const history = useHistory()
+  const org = useSelector(getOrg)
+  const {ruleID} = useParams()
+  const dispatch = useDispatch()
+  const stateRule = useSelector((state: AppState) =>
+    getByID<NotificationRuleDraft>(
+      state,
+      ResourceType.NotificationRules,
+      ruleID
+    )
+  )
 
-const EditRuleOverlay: FC<Props> = ({
-  match,
-  history,
-  stateRule,
-  onUpdateRule,
-  onNotify,
-}) => {
   const handleDismiss = () => {
-    history.push(`/orgs/${match.params.orgID}/alerting`)
+    history.push(`/orgs/${org.id}/alerting`)
   }
 
   if (!stateRule) {
-    onNotify(getNotificationRuleFailed(match.params.ruleID))
+    dispatch(notify(getNotificationRuleFailed(ruleID)))
     handleDismiss()
     return null
   }
 
   const handleUpdateRule = async (rule: NotificationRuleDraft) => {
-    await onUpdateRule(rule)
-
+    await dispatch(updateRule(rule))
     handleDismiss()
   }
 
@@ -69,25 +71,4 @@ const EditRuleOverlay: FC<Props> = ({
   )
 }
 
-const mstp = (state: AppState, {match}: RouterProps) => {
-  const {ruleID} = match.params
-
-  const stateRule = getByID<NotificationRuleDraft>(
-    state,
-    ResourceType.NotificationRules,
-    ruleID
-  )
-
-  return {
-    stateRule,
-  }
-}
-
-const mdtp = {
-  onNotify: notify,
-  onUpdateRule: updateRule,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(withRouter(EditRuleOverlay))
+export default EditRuleOverlay

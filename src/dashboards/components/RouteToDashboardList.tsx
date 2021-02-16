@@ -1,11 +1,13 @@
 import {FC} from 'react'
-import {RouteComponentProps} from 'react-router-dom'
+import {useSelector} from 'react-redux'
+import {useHistory} from 'react-router-dom'
+import {getOrg} from 'src/organizations/selectors'
 
-const RouteToDashboardList: FC<RouteComponentProps<{orgID: string}>> = ({
-  history,
-  match,
-}) => {
-  history.push(`/orgs/${match.params.orgID}/dashboards-list`)
+const RouteToDashboardList: FC = () => {
+  const history = useHistory()
+  const org = useSelector(getOrg)
+
+  history.push(`/orgs/${org.id}/dashboards-list`)
   return null
 }
 

@@ -25,13 +25,14 @@ import {AppState, Bucket, ResourceType, OwnBucket} from 'src/types'
 
 // Selectors
 import {getAll, getByID} from 'src/resources/selectors'
+import {getOrg} from 'src/organizations/selectors'
 
 interface State {
   bucket: OwnBucket
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
-type RouterProps = RouteComponentProps<{bucketID: string; orgID: string}>
+type RouterProps = RouteComponentProps<{bucketID: string}>
 type Props = ReduxProps & RouterProps
 
 class RenameBucketForm extends PureComponent<Props, State> {
@@ -126,9 +127,9 @@ class RenameBucketForm extends PureComponent<Props, State> {
   }
 
   private handleClose = () => {
-    const {history, match} = this.props
+    const {history, org} = this.props
 
-    history.push(`/orgs/${match.params.orgID}/load-data/buckets`)
+    history.push(`/orgs/${org.id}/load-data/buckets`)
   }
 }
 
@@ -139,10 +140,12 @@ const mstp = (state: AppState, props: RouterProps) => {
   const buckets = getAll<Bucket>(state, ResourceType.Buckets).filter(
     b => b.id !== bucketID
   )
+  const org = getOrg(state)
 
   return {
     startBucket,
     buckets,
+    org,
   }
 }
 

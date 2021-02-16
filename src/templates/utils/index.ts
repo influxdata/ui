@@ -169,6 +169,10 @@ export const validateTemplateURL = (url): string => {
     return "We can't use that URL"
   }
 
+  if (cleanUrl.includes(' ')) {
+    return 'URL cannot contain spaces'
+  }
+
   return TEMPLATE_URL_VALID
 }
 

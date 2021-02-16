@@ -245,7 +245,9 @@ class UnconnectedCommunityTemplatesIndex extends Component<Props, State> {
 
     try {
       event('template_click_lookup', {
-        templateName: getTemplateNameFromUrl(this.props.stagedTemplateUrl).name,
+        templateName: getTemplateNameFromUrl(
+          this.props.stagedTemplateUrl.trim()
+        ).name,
       })
       this.props.history.push(
         `/orgs/${this.props.org.id}/settings/templates/import`
@@ -262,7 +264,7 @@ class UnconnectedCommunityTemplatesIndex extends Component<Props, State> {
     const validationMessage = validateTemplateURL(event.target.value)
 
     this.setValidationMessage(validationMessage)
-    this.props.setStagedTemplateUrl(event.target.value)
+    this.props.setStagedTemplateUrl(event.target.value.trim())
   }
 
   private handleInputKeyPress = event => {

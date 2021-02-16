@@ -1,11 +1,11 @@
-openapi: "3.0.0"
+openapi: '3.0.0'
 info:
   title: Influxdata Managed Functions CRUD API
   version: 0.1.0
 servers:
   - url: ''
 paths:
-  "/api/v2private/functions":
+  '/api/v2private/functions':
     get:
       operationId: GetFunctions
       tags:
@@ -23,18 +23,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: A list of functions
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Functions"
+                $ref: '#/components/schemas/Functions'
         default:
           description: Unexpected error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: '#/components/schemas/Error'
     post:
       operationId: PostFunctions
       tags:
@@ -46,21 +46,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/FunctionCreateRequest"
+              $ref: '#/components/schemas/FunctionCreateRequest'
       responses:
-        "201":
+        '201':
           description: Function created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Function"
+                $ref: '#/components/schemas/Function'
         default:
           description: Unexpected error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-  "/api/v2private/functions/trigger":
+                $ref: '#/components/schemas/Error'
+  '/api/v2private/functions/trigger':
     post:
       operationId: PostFunctionTrigger
       tags:
@@ -72,21 +72,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/FunctionTriggerRequest"
+              $ref: '#/components/schemas/FunctionTriggerRequest'
       responses:
-        "200":
+        '200':
           description: Function successfully triggered
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/FunctionRun"
+                $ref: '#/components/schemas/FunctionRun'
         default:
           description: Unexpected error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-  "/api/v2private/functions/{functionID}":
+                $ref: '#/components/schemas/Error'
+  '/api/v2private/functions/{functionID}':
     get:
       operationId: GetFunctionsID
       tags:
@@ -100,18 +100,18 @@ paths:
           required: true
           description: The function ID.
       responses:
-        "200":
+        '200':
           description: Function details
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Function"
+                $ref: '#/components/schemas/Function'
         default:
           description: Unexpected error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: '#/components/schemas/Error'
     patch:
       operationId: PatchFunctionsID
       tags:
@@ -124,7 +124,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/FunctionUpdateRequest"
+              $ref: '#/components/schemas/FunctionUpdateRequest'
       parameters:
         - in: path
           name: functionID
@@ -133,18 +133,18 @@ paths:
           required: true
           description: The function ID.
       responses:
-        "200":
+        '200':
           description: Updated function
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Function"
+                $ref: '#/components/schemas/Function'
         default:
           description: Unexpected error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: '#/components/schemas/Error'
     delete:
       operationId: DeleteFunctionsID
       tags:
@@ -159,15 +159,15 @@ paths:
           required: true
           description: The ID of the function to delete.
       responses:
-        "204":
+        '204':
           description: Function deleted
         default:
           description: Unexpected error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-  "/api/v2private/functions/{functionID}/runs":
+                $ref: '#/components/schemas/Error'
+  '/api/v2private/functions/{functionID}/runs':
     get:
       operationId: GetFunctionsIDRuns
       tags:
@@ -181,18 +181,18 @@ paths:
           required: true
           description: The ID of the function to get runs for.
       responses:
-        "200":
+        '200':
           description: A list of function runs
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/FunctionRunRecords"
+                $ref: '#/components/schemas/FunctionRunRecords'
         default:
           description: Unexpected error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: '#/components/schemas/Error'
     post:
       operationId: PostFunctionsIDRuns
       tags:
@@ -205,19 +205,19 @@ paths:
             type: string
           required: true
       responses:
-        "201":
+        '201':
           description: Run triggered
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/FunctionRun"
+                $ref: '#/components/schemas/FunctionRun'
         default:
           description: Unexpected error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-  "/api/v2private/functions/{functionID}/runs/{runID}":
+                $ref: '#/components/schemas/Error'
+  '/api/v2private/functions/{functionID}/runs/{runID}':
     get:
       operationId: GetFunctionsIDRunsID
       tags:
@@ -237,18 +237,18 @@ paths:
           required: true
           description: The run ID.
       responses:
-        "200":
+        '200':
           description: The run record
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/FunctionRun"
+                $ref: '#/components/schemas/FunctionRun'
         default:
           description: Unexpected error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: '#/components/schemas/Error'
 components:
   schemas:
     Error:
@@ -290,7 +290,7 @@ components:
           description: script is script to be executed
           type: string
         language:
-           enum:
+          enum:
             - python
         createdAt:
           type: string
@@ -310,7 +310,7 @@ components:
         functions:
           type: array
           items:
-            $ref: "#/components/schemas/Function"
+            $ref: '#/components/schemas/Function'
     FunctionRunRecord:
       description: The record maintained from a function run- does not contain result
       properties:
@@ -322,7 +322,7 @@ components:
         logs:
           type: array
           items:
-           $ref: "#/components/schemas/FunctionRunLog"
+            $ref: '#/components/schemas/FunctionRunLog'
         startedAt:
           type: string
           format: date-time
@@ -333,11 +333,11 @@ components:
         functionrunrecords:
           type: array
           items:
-            $ref: "#/components/schemas/FunctionRunRecord"
+            $ref: '#/components/schemas/FunctionRunRecord'
     FunctionRun:
       description: Results returned from a function run, includes result
       allOf:
-        - $ref: "#/components/schemas/FunctionRunRecord"
+        - $ref: '#/components/schemas/FunctionRunRecord'
         - type: object
           properties:
             result:
@@ -356,9 +356,9 @@ components:
           description: script is script to be executed
           type: string
         language:
-           enum:
+          enum:
             - python
-      required: [name, orgID, script,language]
+      required: [name, orgID, script, language]
     FunctionUpdateRequest:
       type: object
       properties:

@@ -21,8 +21,8 @@ const FunctionCreateButton = () => {
     <Button
       icon={IconFont.Plus}
       color={ComponentColor.Primary}
-      text={`Create function`}
-      titleText={`Click to create a function`}
+      text="Create function"
+      titleText="Click to create a function"
       onClick={handleCreate}
       testID="create-function--button"
     />

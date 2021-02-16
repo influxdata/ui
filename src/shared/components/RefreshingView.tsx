@@ -11,6 +11,7 @@ import {View} from 'src/visualization'
 import {GlobalAutoRefresher} from 'src/utils/AutoRefresher'
 import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
 import {getActiveTimeRange} from 'src/timeMachine/selectors/index'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {
@@ -60,7 +61,7 @@ class RefreshingView extends PureComponent<Props, State> {
   }
 
   public render() {
-    const {id, ranges, properties, manualRefresh} = this.props
+    const {id, ranges, properties, manualRefresh, annotations} = this.props
     const {submitToken} = this.state
 
     return (
@@ -78,6 +79,7 @@ class RefreshingView extends PureComponent<Props, State> {
             properties={properties}
             result={giraffeResult}
             timeRange={ranges}
+            annotations={annotations}
           />
         )}
       </TimeSeries>
@@ -106,10 +108,17 @@ const mstp = (state: AppState, ownProps: OwnProps) => {
   const ranges = getActiveTimeRange(timeRange, ownProps.properties.queries)
 
   const annotations = state.annotations.annotations
-  return {
-    annotations,
-    ranges,
-    timeRange,
+  //console.log('got annotations???? jill42a ', annotations)
+
+  const defaultObject = {ranges, timeRange}
+
+  if (isFlagEnabled('annotations')) {
+    return {
+      annotations,
+      ...defaultObject,
+    }
+  } else {
+    return defaultObject
   }
 }
 

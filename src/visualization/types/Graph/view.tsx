@@ -52,7 +52,7 @@ interface Props extends VisualizationProps {
   properties: XYViewProperties
 }
 
-const XYPlot: FC<Props> = ({properties, result, timeRange}) => {
+const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
   const {theme, timeZone} = useContext(AppSettingContext)
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
@@ -182,48 +182,73 @@ const XYPlot: FC<Props> = ({properties, result, timeRange}) => {
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
   }
 
-  return (
-    <Plot
-      config={{
-        ...currentTheme,
-        table: result.table,
-        xAxisLabel: properties.axes.x.label,
-        yAxisLabel: properties.axes.y.label,
-        xDomain,
-        onSetXDomain,
-        onResetXDomain,
-        yDomain,
-        onSetYDomain,
-        onResetYDomain,
-        ...axisTicksOptions,
-        legendColumns,
-        legendOpacity: tooltipOpacity,
-        legendOrientationThreshold: tooltipOrientationThreshold,
-        legendColorizeRows: tooltipColorize,
-        valueFormatters: {
-          [xColumn]: xFormatter,
-          [yColumn]: yFormatter,
-        },
-        interactionHandlers: isFlagEnabled('annotations')
-          ? interactionHandlers
-          : null,
-        layers: [
-          {
-            type: 'line',
-            x: xColumn,
-            y: yColumn,
-            fill: groupKey,
-            interpolation,
-            position: properties.position,
-            colors: colorHexes,
-            shadeBelow: !!properties.shadeBelow,
-            shadeBelowOpacity: 0.08,
-            hoverDimension: properties.hoverDimension,
-          },
-        ],
-      }}
-    />
-  )
+  const config = {
+    ...currentTheme,
+    table: result.table,
+    xAxisLabel: properties.axes.x.label,
+    yAxisLabel: properties.axes.y.label,
+    xDomain,
+    onSetXDomain,
+    onResetXDomain,
+    yDomain,
+    onSetYDomain,
+    onResetYDomain,
+    ...axisTicksOptions,
+    legendColumns,
+    legendOpacity: tooltipOpacity,
+    legendOrientationThreshold: tooltipOrientationThreshold,
+    legendColorizeRows: tooltipColorize,
+    valueFormatters: {
+      [xColumn]: xFormatter,
+      [yColumn]: yFormatter,
+    },
+    interactionHandlers: isFlagEnabled('annotations')
+      ? interactionHandlers
+      : null,
+    layers: [
+      {
+        type: 'line',
+        x: xColumn,
+        y: yColumn,
+        fill: groupKey,
+        interpolation,
+        position: properties.position,
+        colors: colorHexes,
+        shadeBelow: !!properties.shadeBelow,
+        shadeBelowOpacity: 0.08,
+        hoverDimension: properties.hoverDimension,
+      },
+    ],
+  }
+
+  if (isFlagEnabled('annotations')) {
+    if (annotations) {
+      //everything under the 'default' category for now:
+      const actualAnnotations = annotations.default ?? []
+
+      const annotationLayer = {
+        type: 'annotation',
+        x: xColumn,
+        y: yColumn,
+        fill: groupKey,
+        annotations: actualAnnotations.map(annotation => {
+          return {
+            color: 'cyan',
+            dimension: annotation.dimension ?? 'x',
+            title: annotation.summary,
+            startValue: new Date(annotation.start).getTime(),
+            stopValue: new Date(annotation.end).getTime(),
+          }
+        }),
+      }
+
+      console.log('new layer: ', annotationLayer)
+
+      config.layers.push(annotationLayer)
+    }
+  }
+  console.log('config now....', config)
+  return <Plot config={config} />
 }
 
 export default XYPlot

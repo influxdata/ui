@@ -1,5 +1,5 @@
 import {FunctionComponent, ComponentClass} from 'react'
-import {ViewProperties, TimeRange} from 'src/types'
+import {AnnotationsList, ViewProperties, TimeRange} from 'src/types'
 import {FromFluxResult} from '@influxdata/giraffe'
 
 export interface VisualizationOptionProps {
@@ -12,6 +12,7 @@ export interface VisualizationProps {
   properties: ViewProperties
   result: FromFluxResult
   timeRange?: TimeRange
+  annotations?: AnnotationsList
 }
 
 export interface Visualization {
@@ -48,6 +49,8 @@ visualizationDefintionContext
       SUPPORTED_VISUALIZATIONS[def.type] = def
     })
   })
+
+//console.log
 
 export {default as View} from 'src/visualization/components/View'
 export {default as ViewOptions} from 'src/visualization/components/ViewOptions'

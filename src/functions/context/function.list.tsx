@@ -1,7 +1,6 @@
 import React, {FC, useCallback} from 'react'
 import createPersistedState from 'use-persisted-state'
 import {useSelector} from 'react-redux'
-import {default as _asResource} from 'src/flows/context/resource.hook'
 import {getAllAPI, deleteAPI, createAPI} from 'src/functions/context/api'
 import {
   Function,

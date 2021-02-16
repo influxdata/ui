@@ -14,7 +14,10 @@ const setup = (override = {}) => {
   const props = {
     ...withRouterProps,
     hasTelegrafs: false,
-    orgName: 'orgName',
+    org: {
+        name: 'orgName',
+        id: 12
+    },
     buckets: [],
     onSetTelegrafConfigID: jest.fn(),
     onSetTelegrafConfigName: jest.fn(),

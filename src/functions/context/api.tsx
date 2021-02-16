@@ -33,7 +33,6 @@ export const getAllAPI = async (orgID: string) => {
     // if (res.status != 200) {
     //   throw new Error(res.data.message)
     // } TODO
-    console.log(res) // remove
     return {
       functions: [
         {name: 'functionb', id: '1', orgID: '0', script: 'lalal'},

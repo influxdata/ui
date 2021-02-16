@@ -41,7 +41,16 @@ export const writeLineProtocolAction = async (
       dispatch(setWriteStatus(RemoteDataState.Error, resp.data.message))
     } else {
       const message = resp?.data?.message || 'Failed to write data'
-      dispatch(setWriteStatus(RemoteDataState.Error, message))
+      if (resp?.data?.code === 'invalid') {
+        dispatch(
+          setWriteStatus(
+            RemoteDataState.Error,
+            'Failed to write data - invalid line protocol submitted'
+          )
+        )
+      } else {
+        dispatch(setWriteStatus(RemoteDataState.Error, message))
+      }
       throw new Error(message)
     }
   } catch (error) {

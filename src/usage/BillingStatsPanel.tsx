@@ -85,7 +85,7 @@ const BillingStatsPanel: FC = () => {
               <br />
               <br />
               <a
-                href="https://v2.docs.influxdata.com/v2.0/account-management/data-usage/"
+                href="https://docs.influxdata.com/influxdb/cloud/account-management/data-usage/"
                 target="_blank"
                 rel="noreferrer"
               >

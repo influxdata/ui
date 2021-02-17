@@ -4,6 +4,9 @@ import {createStore} from 'redux'
 
 jest.mock('src/labels/actions/thunks.ts')
 jest.mock('src/resources/components/GetResources')
+jest.mock('src/annotations/components/overlay/CreateAnnotationStreamOverlay', () => () => null)
+jest.mock('src/checks/components/NewThresholdCheckEO.tsx', () => () => null)
+jest.mock('src/checks/components/NewDeadmanCheckEO.tsx', () => () => null)
 jest.mock('src/resources/selectors/index.ts', () => {
   return {
     getAll: jest.fn(() => {
@@ -32,6 +35,7 @@ import {
   cleanup,
   screen, waitFor,
 } from '@testing-library/react'
+import {OverlayController, OverlayProviderComp} from '../../overlays/components/OverlayController'
 
 const defaultProps: any = {
   ...withRouterProps,
@@ -42,7 +46,14 @@ const setup = (props = defaultProps) => {
   const variablesStore = createStore(variablesReducer)
 
   return renderWithReduxAndRouter(
-    <VariablesIndex {...props} />,
+    <>
+      <OverlayProviderComp>
+        <OverlayController />
+      </OverlayProviderComp>
+
+      <VariablesIndex {...props} />
+    </>
+    ,
     _fakeLocalStorage => {
       const appState = {...mockAppState}
       // appState.resources.variables = variablesStore.getState()
@@ -85,11 +96,18 @@ describe('the variable install overlay', () => {
       const newInstallButton = getByTestId('add-resource-dropdown--new')
       fireEvent.click(newInstallButton)
 
-      // debug()
+      debug()
 
       // wait for the overlay to show
+
+      console.log(store.getState())
+
+      debugger;
+
       await waitFor(()=>{
-        expect(screen.queryByTitle('Create Variable')).toBeInTheDocument()
+
+        expect(getByTestId("create-variable-overlay-header")).toBeVisible()
+        // expect(screen.queryByTitle('Create Variable')).toBeVisible()
       })
 
       // const overlay = await getByTestId("create-variable-overlay-header")

@@ -46,7 +46,7 @@ const FunctionCard: FC<Props> = ({id, name, url, description}) => {
       >
         <ResourceCard.Name name={name} onClick={handleClick} />
         <ResourceCard.Meta>
-          <>{description && description}</>
+          {description}
           {url && 'Endpoint: ' + url}
         </ResourceCard.Meta>
       </FlexBox>

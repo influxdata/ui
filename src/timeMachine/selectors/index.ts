@@ -15,8 +15,6 @@ import {
   getMainColumnName,
 } from 'src/shared/utils/vis'
 
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
 import {
   getWindowPeriod,
   calcWindowPeriodForDuration,

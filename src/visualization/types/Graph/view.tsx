@@ -2,7 +2,7 @@
 import React, {FC, useMemo, useContext} from 'react'
 import {useDispatch} from 'react-redux'
 import {
-  AnnotationLayer,
+  AnnotationLayerConfig,
   Config,
   DomainLabel,
   InteractionHandlerArguments,
@@ -230,7 +230,7 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
     if (actualAnnotations && actualAnnotations.length) {
       const colors = ['cyan', 'magenta', 'white']
 
-      const annotationLayer: AnnotationLayer = {
+      const annotationLayer: AnnotationLayerConfig = {
         type: 'annotation',
         x: xColumn,
         y: yColumn,

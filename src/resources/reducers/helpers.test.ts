@@ -94,8 +94,9 @@ describe('Resources.reducers.helpers', () => {
       const action = {
         schema: {
           entities: {
-            variables: null,
+            variables: {},
           },
+          result: [],
         },
         status: 'Done',
       }

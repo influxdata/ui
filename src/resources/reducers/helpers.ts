@@ -27,14 +27,10 @@ export const setResource = <R>(
   resource: ResourceType
 ) => {
   const {status, schema} = action
-
   draftState.status = status
   if (get(schema, ['entities', resource])) {
     draftState.byID = schema.entities[resource]
     draftState.allIDs = schema.result
-  } else {
-    draftState.byID = {}
-    draftState.allIDs = schema?.result ?? []
   }
 
   return

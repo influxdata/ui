@@ -33,7 +33,7 @@ const FunctionPage: FC = () => {
   const [params, setParams] = useState('')
   const [script, setScript] = useState('')
 
-  const {add} = useContext(FunctionListContext)
+  const {add, trigger} = useContext(FunctionListContext)
 
   const saveFunction = () => {
     add({name, description, script})
@@ -43,6 +43,10 @@ const FunctionPage: FC = () => {
   const cancelFunction = () => {
     history.push(`/orgs/${orgID}/functions/`)
     // TODO dont allow routing away if unsaved changes exist
+  }
+
+  const triggerFunction = () => {
+    trigger({script, params})
   }
 
   return (
@@ -60,6 +64,7 @@ const FunctionPage: FC = () => {
           setDescription={setDescription}
           params={params}
           setParams={setParams}
+          triggerFunction={triggerFunction}
         />
         <div className="task-form--editor">
           <Suspense

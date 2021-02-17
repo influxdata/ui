@@ -1,10 +1,17 @@
 import React, {FC, useCallback} from 'react'
 import createPersistedState from 'use-persisted-state'
 import {useSelector, useDispatch} from 'react-redux'
-import {getAllAPI, deleteAPI, createAPI} from 'src/functions/context/api'
+import {
+  getAllAPI,
+  deleteAPI,
+  createAPI,
+  triggerAPI,
+} from 'src/functions/context/api'
 import {
   Function,
   FunctionCreateRequest,
+  FunctionRun,
+  FunctionTriggerRequest,
 } from 'src/client/managedFunctionsRoutes'
 import {getOrg} from 'src/organizations/selectors'
 import {notify} from 'src/shared/actions/notifications'
@@ -26,6 +33,9 @@ export interface FunctionListContextType extends FunctionList {
   add: (_function: Partial<FunctionCreateRequest>) => Promise<void>
   remove: (_id: string) => void
   getAll: () => void
+  trigger: (
+    _functionTrigger: Partial<FunctionTriggerRequest>
+  ) => Promise<FunctionRun>
 }
 
 export const DEFAULT_CONTEXT: FunctionListContextType = {
@@ -93,6 +103,13 @@ export const FunctionListProvider: FC = ({children}) => {
     }
   }
 
+  const trigger = async ({script, params}) => {
+    try {
+      const run = await triggerAPI({script, params, language: 'python'})
+      return run
+    } catch (error) {}
+  }
+
   return (
     <FunctionListContext.Provider
       value={{
@@ -100,6 +117,7 @@ export const FunctionListProvider: FC = ({children}) => {
         remove,
         add,
         getAll,
+        trigger,
       }}
     >
       {children}

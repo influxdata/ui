@@ -43,7 +43,9 @@ const FunctionEditPage: FC = () => {
     setDescription(description)
   }, [functionsList, functionID, setName, setScript, setDescription])
 
-  const saveFunction = () => {
+  const {trigger} = useContext(FunctionListContext)
+
+  const updateFunction = () => {
     // TODO route away if saved, stay if error
   }
 
@@ -52,11 +54,15 @@ const FunctionEditPage: FC = () => {
     // TODO dont allow routing away if unsaved changes exist
   }
 
+  const triggerFunction = () => {
+    trigger({script, params})
+  }
+
   return (
     <Page titleTag={pageTitleSuffixer(['Edit Function'])}>
       <FunctionHeader
         name={name}
-        saveFunction={saveFunction}
+        saveFunction={updateFunction}
         cancelFunction={cancelFunction}
       />
       <Page.Contents fullWidth={false} scrollable={true}>
@@ -67,6 +73,7 @@ const FunctionEditPage: FC = () => {
           setDescription={setDescription}
           params={params}
           setParams={setParams}
+          triggerFunction={triggerFunction}
         />
         <div className="task-form--editor">
           <Suspense

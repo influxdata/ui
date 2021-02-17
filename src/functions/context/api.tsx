@@ -3,6 +3,8 @@ import {
   deleteApiV2Function,
   postApiV2Function,
   FunctionCreateRequest,
+  postApiV2FunctionsTrigger,
+  FunctionTriggerRequest,
 } from 'src/client/managedFunctionsRoutes'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
@@ -57,4 +59,15 @@ export const getAllAPI = async (orgID: string) => {
     }
   }
   return {}
+}
+
+export const triggerAPI = async (triggerRequest: FunctionTriggerRequest) => {
+  if (isFlagEnabled('managed-functions')) {
+    const res = await postApiV2FunctionsTrigger({data: triggerRequest})
+
+    if (res.status != 200) {
+      throw new Error(res.data.message)
+    }
+    return res.data
+  }
 }

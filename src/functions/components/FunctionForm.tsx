@@ -20,6 +20,7 @@ interface Props {
   setDescription: (name: string) => void
   params: string
   setParams: (name: string) => void
+  triggerFunction: () => void
 }
 
 const FunctionForm: FC<Props> = ({
@@ -29,6 +30,7 @@ const FunctionForm: FC<Props> = ({
   setDescription,
   params,
   setParams,
+  triggerFunction,
 }) => {
   return (
     <Form>
@@ -68,6 +70,7 @@ const FunctionForm: FC<Props> = ({
               testID="function-form-trigger-button"
               color={ComponentColor.Danger}
               size={ComponentSize.Large}
+              onClick={triggerFunction}
             />
           </Grid.Column>
         </Grid.Row>

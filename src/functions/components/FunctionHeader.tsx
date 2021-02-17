@@ -6,9 +6,11 @@ import {Page, Button, ComponentColor} from '@influxdata/clockface'
 
 interface Props {
   name: string
+  saveFunction: () => void
+  cancelFunction: () => void
 }
 
-const FunctionHeader: FC<Props> = ({name}) => {
+const FunctionHeader: FC<Props> = ({name, saveFunction, cancelFunction}) => {
   return (
     <>
       <Page.Header fullWidth={false} testID="functions-edit-page--header">
@@ -19,13 +21,13 @@ const FunctionHeader: FC<Props> = ({name}) => {
           <Button
             color={ComponentColor.Default}
             text="Cancel"
-            onClick={() => console.log('cancel')}
+            onClick={cancelFunction}
             testID="task-cancel-btn"
           />
           <Button
             color={ComponentColor.Success}
             text="Save"
-            onClick={() => console.log('save')}
+            onClick={saveFunction}
             testID="task-save-btn"
           />
         </Page.ControlBarRight>

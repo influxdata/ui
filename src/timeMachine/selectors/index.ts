@@ -189,13 +189,10 @@ const getFillColumnsSelectionMemoized = memoizeOne(getGroupableColumnSelection)
 const getSymbolColumnsSelectionMemoized = memoizeOne(
   getGroupableColumnSelection
 )
-
+// if annotations are off, then render just won't show them,
+// so ok to retrieve no matter the flag state
 export const getAnnotations = (state: AppState) => {
-  if (isFlagEnabled('annotations')) {
-    return state.annotations.annotations
-  } else {
-    return null
-  }
+  return state.annotations.annotations
 }
 
 export const getFillColumnsSelection = (state: AppState): string[] => {

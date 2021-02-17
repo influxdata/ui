@@ -221,7 +221,7 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
         hoverDimension: properties.hoverDimension,
       },
     ],
-  } as any
+  }
 
   if (isFlagEnabled('annotations') && annotations) {
     // everything is under the 'default' category for now:

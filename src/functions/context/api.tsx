@@ -29,27 +29,31 @@ export const deleteAPI = async (id: string) => {
 
 export const getAllAPI = async (orgID: string) => {
   if (isFlagEnabled('managed-functions')) {
-    await getApiV2Functions({query: {orgID}})
-    // if (res.status != 200) {
-    //   throw new Error(res.data.message)
-    // } TODO
-    return {
-      functions: [
-        {
-          name: 'functionb',
-          id: '1',
-          orgID: '0',
-          script: 'this is a script',
-          url: 'www.url.com',
-        },
-        {
-          name: 'functiona',
-          id: '2',
-          orgID: '0',
-          script: 'this is another script',
-          url: 'www.url.com',
-        },
-      ],
+    const res = await getApiV2Functions({query: {orgID}})
+    if (res.status != 200) {
+      //  throw new Error(res.data.message)
+      return {
+        functions: [
+          {
+            name: 'functionb',
+            id: '1',
+            orgID: '0',
+            script: 'this is a script',
+            url: 'www.url.com',
+            description: 'best function ever',
+          },
+          {
+            name: 'functiona',
+            id: '2',
+            orgID: '0',
+            script: 'this is another script',
+            url: 'www.url.com',
+            description: 'second best function ever',
+          },
+        ],
+      }
+    } else {
+      return res.data
     }
   }
   return {}

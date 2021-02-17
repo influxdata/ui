@@ -20,9 +20,10 @@ interface Props {
   id: string
   name: string
   url?: string
+  description?: string
 }
 
-const FunctionCard: FC<Props> = ({id, name, url}) => {
+const FunctionCard: FC<Props> = ({id, name, url, description}) => {
   const {id: orgID} = useSelector(getOrg)
   const history = useHistory()
 
@@ -47,7 +48,7 @@ const FunctionCard: FC<Props> = ({id, name, url}) => {
       >
         <ResourceCard.Name name={name} onClick={handleClick} />
         <ResourceCard.Meta>
-          <>Last triggered 3 minutes ago</>
+          <>{description && description}</>
           {url && 'Endpoint: ' + url}
         </ResourceCard.Meta>
       </FlexBox>

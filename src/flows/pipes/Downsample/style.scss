@@ -1,0 +1,13 @@
+.downsample-panel {
+    height: 320px;
+    display: flex;
+
+    .cf-grid--row {
+        height: 100%;
+    }
+
+    .cf-grid--column {
+        height: 100%;
+        display: flex;
+    }
+}

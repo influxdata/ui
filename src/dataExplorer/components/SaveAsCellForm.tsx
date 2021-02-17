@@ -176,7 +176,6 @@ class SaveAsCellForm extends PureComponent<Props, State> {
 
     const viewWithProps: View = {...view, name: cellName}
 
-    let succeeded = false
     const redirectHandler = (dashboardId: string): void =>
       history.push(`/orgs/${orgID}/dashboards/${dashboardId}`)
 
@@ -202,16 +201,12 @@ class SaveAsCellForm extends PureComponent<Props, State> {
           toRedirect
         )
       })
-      succeeded = true
+      this.props.setActiveTimeMachine('de', initialStateHelper())
     } catch (error) {
       console.error(error)
+      dismiss()
     } finally {
       this.resetForm()
-      if (succeeded) {
-        this.props.setTimeMachine('de', initialStateHelper())
-      } else {
-        dismiss()
-      }
     }
   }
 
@@ -261,7 +256,7 @@ const mdtp = {
   onGetDashboards: getDashboards,
   onCreateCellWithView: createCellWithView,
   onCreateDashboardWithView: createDashboardWithView,
-  setTimeMachine: setActiveTimeMachine,
+  setActiveTimeMachine,
   notify,
 }
 

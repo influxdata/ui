@@ -140,7 +140,7 @@ export const createDashboardWithView = (
   orgID: string,
   dashboardName: string,
   view: View,
-  redirect?: (destinationId: string) => void | undefined
+  redirect?: (destinationId: string) => void
 ) => async (dispatch): Promise<void> => {
   try {
     const newDashboard = {

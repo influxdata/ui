@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, lazy, Suspense, useContext, useEffect, useState} from 'react'
+import React, {FC, lazy, Suspense, useContext, useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -53,29 +53,25 @@ const FunctionPage: FC = () => {
         cancelFunction={cancelFunction}
       />
       <Page.Contents fullWidth={false} scrollable={true}>
-        <div className="task-form">
-          <div className="task-form--options">
-            <FunctionForm
-              name={name}
-              setName={setName}
-              description={description}
-              setDescription={setDescription}
-              params={params}
-              setParams={setParams}
-            />
-          </div>
-          <div className="task-form--editor">
-            <Suspense
-              fallback={
-                <SpinnerContainer
-                  loading={RemoteDataState.Loading}
-                  spinnerComponent={<TechnoSpinner />}
-                />
-              }
-            >
-              <FluxMonacoEditor script={script} onChangeScript={setScript} />
-            </Suspense>
-          </div>
+        <FunctionForm
+          name={name}
+          setName={setName}
+          description={description}
+          setDescription={setDescription}
+          params={params}
+          setParams={setParams}
+        />
+        <div className="task-form--editor">
+          <Suspense
+            fallback={
+              <SpinnerContainer
+                loading={RemoteDataState.Loading}
+                spinnerComponent={<TechnoSpinner />}
+              />
+            }
+          >
+            <FluxMonacoEditor script={script} onChangeScript={setScript} />
+          </Suspense>
         </div>
       </Page.Contents>
     </Page>

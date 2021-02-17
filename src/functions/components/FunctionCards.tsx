@@ -18,10 +18,7 @@ const FunctionCards: FC<Props> = ({searchTerm}) => {
   useEffect(() => {
     getAll()
   }, [getAll])
-  // const functionsList: Function[] = [
-  //   {name: 'functionb', id: '1', orgID: '0', script: 'lalal'},
-  //   {name: 'functiona', id: '2', orgID: '0', script: 'lalal'},
-  // ]
+
   return (
     <ResourceList>
       <ResourceList.Body emptyState={<FunctionListEmpty />}>

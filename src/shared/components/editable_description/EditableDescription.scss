@@ -33,11 +33,12 @@ $rename-dash-title-padding: 5px;
   text-overflow: ellipsis;
   @include no-user-select();
   color: $g13-mist;
-  transition: color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
+  transition: color 0.25s ease, background-color 0.25s ease,
+    border-color 0.25s ease;
   border: $ix-border solid transparent;
   height: $form-xs-height;
   line-height: $form-xs-height - ($ix-border * 2);
-  
+
   .cf-icon {
     position: relative;
     top: -2px;
@@ -47,11 +48,11 @@ $rename-dash-title-padding: 5px;
     transition: opacity 0.25s ease;
     color: $g11-sidewalk;
   }
-  
+
   &:hover .cf-icon {
     opacity: 1;
   }
-  
+
   &.untitled {
     color: $g9-mountain;
     font-style: italic;
@@ -66,15 +67,15 @@ $rename-dash-title-padding: 5px;
 /* Ensure placeholder text matches font weight of title */
 .cf-input.editable-description--input > input {
   &::-webkit-input-placeholder {
-      font-weight: $page-title-weight !important;
-    }
-    &::-moz-placeholder {
-      font-weight: $page-title-weight !important;
-    }
-    &:-ms-input-placeholder {
-      font-weight: $page-title-weight !important;
-    }
-    &:-moz-placeholder {
-      font-weight: $page-title-weight !important;
-    }
+    font-weight: $page-title-weight !important;
+  }
+  &::-moz-placeholder {
+    font-weight: $page-title-weight !important;
+  }
+  &:-ms-input-placeholder {
+    font-weight: $page-title-weight !important;
+  }
+  &:-moz-placeholder {
+    font-weight: $page-title-weight !important;
+  }
 }

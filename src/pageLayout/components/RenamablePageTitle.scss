@@ -32,7 +32,9 @@ $renamable-page-title--padding: 0;
 .renamable-page-title--input {
   position: absolute;
   top: 0;
-  width: calc(100% + #{($renamable-page-title--padding + $ix-border) * 2}) !important;
+  width: calc(
+    100% + #{($renamable-page-title--padding + $ix-border) * 2}
+  ) !important;
   left: -($renamable-page-title--padding + $ix-border);
 }
 
@@ -47,7 +49,8 @@ $renamable-page-title--padding: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   user-select: none;
-  transition: color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
+  transition: color 0.25s ease, background-color 0.25s ease,
+    border-color 0.25s ease;
   line-height: $renamable-page-title--height - ($ix-border * 2);
   border: $cf-border solid transparent;
 }

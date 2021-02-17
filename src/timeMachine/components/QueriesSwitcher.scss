@@ -5,6 +5,6 @@
 
 // This is kinda hacky but works for now. Ideally there  weould an additional
 // className prop on ConfirmationButton that passes through to the popover
-span[data-testid="switch-query-builder-confirm--confirmation-label"] {
+span[data-testid='switch-query-builder-confirm--confirmation-label'] {
   white-space: normal;
 }

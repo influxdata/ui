@@ -11,7 +11,6 @@ import {
   FlexBox,
 } from '@influxdata/clockface'
 import FunctionContextMenu from 'src/functions/components/FunctionContextMenu'
-import LastRunFunctionStatus from 'src/functions/components/LastRunFunctionStatus'
 
 // utils
 import {getOrg} from 'src/organizations/selectors'
@@ -40,7 +39,6 @@ const FunctionCard: FC<Props> = ({id, name, url, description}) => {
       direction={FlexDirection.Row}
       contextMenu={<FunctionContextMenu id={id} name={name} />}
     >
-      <LastRunFunctionStatus lastRunError={undefined} lastRunStatus="success" />
       <FlexBox
         alignItems={AlignItems.FlexStart}
         direction={FlexDirection.Column}

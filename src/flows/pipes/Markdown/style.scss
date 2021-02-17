@@ -1,0 +1,22 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.flow-panel--markdown {
+  font-size: 14px;
+  line-height: 16px;
+  padding: $cf-marg-b;
+  border-radius: $cf-radius - 1px;
+  transition: border-color 0.25s ease;
+}
+
+.flow-panel--body .markdown-editor--monaco {
+  position: relative;
+
+  .react-monaco-editor-container {
+    min-height: 100px;
+  }
+}
+
+.flow-panel--markdown__placeholder.markdown-format {
+  color: $g8-storm;
+  font-style: italic;
+}

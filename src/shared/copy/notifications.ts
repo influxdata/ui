@@ -421,6 +421,14 @@ export const getBucketFailed = (
   message: `Failed to fetch bucket with id ${bucketID}: ${error}`,
 })
 
+export const getSchemaFailed = (
+  bucketName: string,
+  error: string
+): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to fetch schema for bucket with id ${bucketName}: ${error}`,
+})
+
 // Demodata buckets
 
 export const demoDataAddBucketFailed = (
@@ -770,10 +778,16 @@ export const passwordResetSuccessfully = (message: string): Notification => ({
   If you haven't received an email, please ensure that the email you provided is correct.`,
 })
 
-export const authorizationCreateFailed = (): Notification => ({
-  ...defaultErrorNotification,
-  message: 'Failed to create tokens',
-})
+export const authorizationCreateFailed = (
+  errorMessage?: string
+): Notification => {
+  const defaultMsg = 'Failed to create tokens'
+  const message = errorMessage ? `${defaultMsg}: ${errorMessage}` : defaultMsg
+  return {
+    ...defaultErrorNotification,
+    message,
+  }
+}
 
 export const authorizationUpdateSuccess = (): Notification => ({
   ...defaultSuccessNotification,
@@ -947,7 +961,7 @@ export const communityTemplateInstallSucceeded = (
 })
 
 export const communityTemplateInstallFailed = (
-  errorMessage: string
+  errorMessage: string = ''
 ): Notification => ({
   ...defaultErrorNotification,
   duration: INDEFINITE,
@@ -983,4 +997,44 @@ export const communityTemplateUnsupportedFormatError = (): Notification => ({
 export const communityTemplateRenameFailed = (): Notification => ({
   ...defaultErrorNotification,
   message: `We've successfully installed your template but weren't able to name it properly. It may appear as a blank template.`,
+})
+
+// Notebooks
+
+export const notebookRunSuccess = (
+  runMode: string,
+  projectName: string
+): Notification => ({
+  ...defaultSuccessNotification,
+  message: `${projectName} ${runMode.toLowerCase()} successful!`,
+})
+
+export const notebookRunFail = (
+  runMode: string,
+  projectName: string
+): Notification => ({
+  ...defaultErrorNotification,
+  message: `${projectName} ${runMode.toLowerCase()} failed`,
+})
+
+export const notebookCreateFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to create Notebook, please try again.`,
+})
+
+export const notebookUpdateFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to save changes to Notebook, please try again.`,
+})
+
+export const notebookDeleteFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to delete Notebook, please try again.`,
+})
+
+export const csvUploaderErrorNotification = (
+  message: string
+): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to upload the selected CSV: ${message}`,
 })

@@ -3,7 +3,7 @@ import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 
 // Actions
-import {disableAnnotationStream} from 'src/annotations/actions'
+import {disableAnnotationStream} from 'src/annotations/actions/creators'
 
 // Components
 import {Icon, IconFont} from '@influxdata/clockface'
@@ -15,7 +15,7 @@ interface Props {
   color: string
 }
 
-const AnnotationPill: FC<Props> = ({id, name, description, color}) => {
+export const AnnotationPill: FC<Props> = ({id, name, description, color}) => {
   const dispatch = useDispatch()
 
   const handleDisable = (): void => {
@@ -39,5 +39,3 @@ const AnnotationPill: FC<Props> = ({id, name, description, color}) => {
     </div>
   )
 }
-
-export default AnnotationPill

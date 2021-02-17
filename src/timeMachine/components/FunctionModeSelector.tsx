@@ -18,8 +18,9 @@ import SelectorList from 'src/timeMachine/components/SelectorList'
 import {
   multiSelectBuilderFunction,
   singleSelectBuilderFunction,
-  setFunctions,
-} from 'src/timeMachine/actions/queryBuilder'
+} from 'src/timeMachine/actions/queryBuilderThunks'
+
+import {setFunctions} from 'src/timeMachine/actions/queryBuilder'
 import {setIsAutoFunction} from 'src/shared/actions/currentExplorer'
 import {getActiveQuery, getIsInCheckOverlay} from 'src/timeMachine/selectors'
 

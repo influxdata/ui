@@ -2,6 +2,7 @@ import React, {ChangeEvent, FC, useContext} from 'react'
 import {
   Columns,
   ComponentStatus,
+  ComponentSize,
   Form,
   Grid,
   Input,
@@ -11,16 +12,23 @@ import {Context} from 'src/flows/pipes/Visualization/ExportDashboardOverlay/cont
 const CreateTaskBody: FC = () => {
   const {
     cellName,
+    cellNameError,
     handleSetCellName,
     handleSetDashboardName,
     dashboardName,
+    dashboardNameError,
   } = useContext(Context)
 
   return (
     <>
-      <Grid.Column widthXS={Columns.Twelve}>
-        <Form.Element label="New Dashboard Name">
+      <Grid.Column widthXS={Columns.Six}>
+        <Form.Element
+          label="New Dashboard Name"
+          required={true}
+          errorMessage={dashboardNameError}
+        >
           <Input
+            size={ComponentSize.Medium}
             name="dashboard"
             placeholder="Name your dashboard"
             onChange={(event: ChangeEvent<HTMLInputElement>) =>
@@ -28,13 +36,22 @@ const CreateTaskBody: FC = () => {
             }
             value={dashboardName}
             testID="dashboard-form-name"
-            status={ComponentStatus.Default}
+            status={
+              dashboardNameError
+                ? ComponentStatus.Error
+                : ComponentStatus.Default
+            }
           />
         </Form.Element>
       </Grid.Column>
-      <Grid.Column widthXS={Columns.Twelve}>
-        <Form.Element label="New Cell Name">
+      <Grid.Column widthXS={Columns.Six}>
+        <Form.Element
+          label="New Cell Name"
+          required={true}
+          errorMessage={cellNameError}
+        >
           <Input
+            size={ComponentSize.Medium}
             name="cell"
             placeholder="Name your cell"
             onChange={(event: ChangeEvent<HTMLInputElement>) =>
@@ -42,7 +59,9 @@ const CreateTaskBody: FC = () => {
             }
             value={cellName}
             testID="dashboard-form-cellname"
-            status={ComponentStatus.Default}
+            status={
+              cellNameError ? ComponentStatus.Error : ComponentStatus.Default
+            }
           />
         </Form.Element>
       </Grid.Column>

@@ -8,12 +8,13 @@ import LimitChecker from 'src/cloud/components/LimitChecker'
 
 // Actions
 import {setActiveTimeMachine} from 'src/timeMachine/actions'
-import {setBuilderBucketIfExists} from 'src/timeMachine/actions/queryBuilder'
+import {setBuilderBucketIfExists} from 'src/timeMachine/actions/queryBuilderThunks'
 
 // Utils
 import {HoverTimeProvider} from 'src/dashboards/utils/hoverTime'
 import {queryBuilderFetcher} from 'src/timeMachine/apis/QueryBuilderFetcher'
 import {readQueryParams} from 'src/shared/utils/queryParams'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 const DataExplorer: FC = () => {
   const dispatch = useDispatch()
@@ -26,13 +27,15 @@ const DataExplorer: FC = () => {
   }, [dispatch])
 
   return (
-    <LimitChecker>
-      <div className="data-explorer">
-        <HoverTimeProvider>
-          <TimeMachine />
-        </HoverTimeProvider>
-      </div>
-    </LimitChecker>
+    <ErrorBoundary>
+      <LimitChecker>
+        <div className="data-explorer">
+          <HoverTimeProvider>
+            <TimeMachine />
+          </HoverTimeProvider>
+        </div>
+      </LimitChecker>
+    </ErrorBoundary>
   )
 }
 

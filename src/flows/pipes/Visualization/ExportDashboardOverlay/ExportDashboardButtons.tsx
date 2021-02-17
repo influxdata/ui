@@ -4,7 +4,6 @@ import {
   Button,
   ButtonType,
   ComponentColor,
-  ComponentStatus,
   Form,
   IconFont,
 } from '@influxdata/clockface'
@@ -47,7 +46,7 @@ const ExportConfirmationNotification = (
 const ExportDashboardButtons: FC = () => {
   const {
     activeTab,
-    canSubmit,
+    validateForm,
     selectedCell,
     selectedDashboard,
     cellName,
@@ -55,13 +54,13 @@ const ExportDashboardButtons: FC = () => {
   } = useContext(Context)
   const {data, closeFn} = useContext(PopupContext)
 
-  const formattedQueryText = formatQueryText(data.query)
+  const text = formatQueryText(data.query)
 
   const dispatch = useDispatch()
   const org = useSelector(getOrg)
 
   const onCreate = () => {
-    event('Save Visualization to Dashboard')
+    event('notebook_export_to_dashboard', {exportType: 'create'})
 
     const view = {
       name: cellName || DEFAULT_CELL_NAME,
@@ -69,7 +68,7 @@ const ExportDashboardButtons: FC = () => {
         ...data.properties,
         queries: [
           {
-            text: formattedQueryText,
+            text,
             editMode: 'advanced',
             name: '',
           },
@@ -95,7 +94,7 @@ const ExportDashboardButtons: FC = () => {
   }
 
   const onUpdate = () => {
-    event('Update Visualization to Dashboard')
+    event('notebook_export_to_dashboard', {exportType: 'update'})
 
     const view = {
       name: selectedCell?.name || DEFAULT_CELL_NAME, // TODO: fix this to handle overwriting or creating one
@@ -103,7 +102,7 @@ const ExportDashboardButtons: FC = () => {
         ...data.properties,
         queries: [
           {
-            text: formattedQueryText,
+            text,
             editMode: 'advanced',
             name: '',
           },
@@ -117,13 +116,17 @@ const ExportDashboardButtons: FC = () => {
     closeFn()
   }
 
-  let onSubmit = onCreate
-
-  if (
-    activeTab === ExportToDashboard.Update &&
-    selectedCell?.id !== CREATE_CELL
-  ) {
-    onSubmit = onUpdate
+  const onSubmit = (): void => {
+    if (validateForm()) {
+      if (
+        activeTab === ExportToDashboard.Update &&
+        selectedCell?.id !== CREATE_CELL
+      ) {
+        onUpdate()
+      } else {
+        onCreate()
+      }
+    }
   }
 
   return (
@@ -139,9 +142,6 @@ const ExportDashboardButtons: FC = () => {
         color={ComponentColor.Success}
         type={ButtonType.Submit}
         onClick={onSubmit}
-        status={
-          canSubmit() ? ComponentStatus.Default : ComponentStatus.Disabled
-        }
         testID="button--dashboard-export"
       />
     </Form.Footer>

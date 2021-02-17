@@ -1,7 +1,6 @@
 import {RouterState} from 'connected-react-router'
 import {TimeMachinesState} from 'src/timeMachine/reducers'
 import {AppState as AppPresentationState} from 'src/shared/reducers/app'
-import {MeState} from 'src/shared/reducers/me'
 import {FlagState} from 'src/shared/reducers/flags'
 import {CurrentDashboardState} from 'src/shared/reducers/currentDashboard'
 import {CurrentExplorerState} from 'src/shared/reducers/currentExplorer'
@@ -33,7 +32,7 @@ import {CurrentPage} from 'src/shared/reducers/currentPage'
 import {DemoDataState} from 'src/cloud/reducers/demodata'
 import {OrgSettingsState} from 'src/cloud/reducers/orgsettings'
 import {PerfState} from 'src/perf/reducers'
-import {SchemaState} from 'src/shared/reducers/schema'
+import {MeState} from 'src/me/reducers'
 
 export interface AppState {
   router: RouterState
@@ -52,7 +51,6 @@ export interface AppState {
   flags: FlagState
   links: Links
   me: MeState
-  flow: SchemaState
   noteEditor: NoteEditorState
   notifications: Notification[]
   onboarding: OnboardingState

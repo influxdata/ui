@@ -37,7 +37,8 @@ import {
   TimeMachineID,
   Color,
 } from 'src/types'
-import {Action} from 'src/timeMachine/actions'
+import {Action as TimeMachineAction} from 'src/timeMachine/actions'
+
 import {TimeMachineTab} from 'src/types/timeMachine'
 import {BuilderAggregateFunctionType} from 'src/client/generatedRoutes'
 
@@ -168,6 +169,8 @@ const getTableProperties = (view, files) => {
 
   return properties
 }
+
+export type Action = TimeMachineAction
 
 export const timeMachinesReducer = (
   state: TimeMachinesState = initialState(),
@@ -323,6 +326,12 @@ export const timeMachineReducer = (
       return {...state, isViewingVisOptions: !state.isViewingVisOptions}
     }
 
+    case 'SET_VIEW_PROPERTIES': {
+      const {properties} = action.payload
+
+      return setViewProperties(state, properties)
+    }
+
     case 'SET_GEOM': {
       const {geom} = action.payload
 
@@ -462,6 +471,12 @@ export const timeMachineReducer = (
       const {legendOrientationThreshold} = action.payload
 
       return setViewProperties(state, {legendOrientationThreshold})
+    }
+
+    case 'SET_LEGEND_COLORIZE_ROWS': {
+      const {legendColorizeRows} = action.payload
+
+      return setViewProperties(state, {legendColorizeRows})
     }
 
     case 'SET_BIN_COUNT': {
@@ -1080,7 +1095,7 @@ export const timeMachineReducer = (
   return state
 }
 
-const setViewProperties = (
+export const setViewProperties = (
   state: TimeMachineState,
   update: {[key: string]: any}
 ): TimeMachineState => {

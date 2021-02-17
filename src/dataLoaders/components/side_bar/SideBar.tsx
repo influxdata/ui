@@ -29,7 +29,7 @@ class SideBar extends Component<Props> {
     const {title} = this.props
 
     return (
-      <div className={this.containerClassName}>
+      <div className={this.containerClassName} data-testid="side-bar">
         <div className="side-bar--container">
           <h3 className="side-bar--title">{title}</h3>
           <DapperScrollbars autoHide={false}>

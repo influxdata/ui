@@ -1,20 +1,11 @@
 // Libraries
-import {get} from 'lodash'
-import {
-  binaryPrefixFormatter,
-  timeFormatter,
-  siPrefixFormatter,
-  Table,
-  ColumnType,
-  LineInterpolation,
-  FromFluxResult,
-} from '@influxdata/giraffe'
-
-import {VIS_SIG_DIGITS, DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {S2} from 's2-geometry'
+import {Table, LineInterpolation, FromFluxResult} from '@influxdata/giraffe'
 
 // Types
-import {XYGeom, Axis, Base, TimeZone} from 'src/types'
-import {resolveTimeFormat} from 'src/dashboards/utils/tableGraph'
+import {XYGeom, Axis} from 'src/types'
+
+export const HEX_DIGIT_PRECISION = 16
 
 /*
   A geom may be stored as "line", "step", "monotoneX", "bar", or "stacked", but
@@ -39,67 +30,6 @@ export const geomToInterpolation = (geom: XYGeom): LineInterpolation => {
     default:
       return 'linear'
   }
-}
-
-interface GetFormatterOptions {
-  prefix?: string
-  suffix?: string
-  base?: Base
-  timeZone?: TimeZone
-  trimZeros?: boolean
-  timeFormat?: string
-  format?: boolean
-}
-
-export const getFormatter = (
-  columnType: ColumnType,
-  {
-    prefix,
-    suffix,
-    base,
-    timeZone,
-    trimZeros = true,
-    timeFormat = DEFAULT_TIME_FORMAT,
-    format,
-  }: GetFormatterOptions = {}
-): null | ((x: any) => string) => {
-  if (columnType === 'number' && base === '2') {
-    return binaryPrefixFormatter({
-      prefix,
-      suffix,
-      significantDigits: VIS_SIG_DIGITS,
-      format,
-    })
-  }
-
-  if (columnType === 'number' && base === '10') {
-    return siPrefixFormatter({
-      prefix,
-      suffix,
-      significantDigits: VIS_SIG_DIGITS,
-      trimZeros,
-      format,
-    })
-  }
-
-  if (columnType === 'number' && base === '') {
-    return siPrefixFormatter({
-      prefix,
-      suffix,
-      significantDigits: VIS_SIG_DIGITS,
-      trimZeros,
-      format: true,
-    })
-  }
-
-  if (columnType === 'time') {
-    return timeFormatter({
-      timeZone: timeZone === 'Local' ? undefined : timeZone,
-      format: resolveTimeFormat(timeFormat),
-    })
-  }
-
-  return null
 }
 
 const NOISY_LEGEND_COLUMNS = new Set(['_start', '_stop', 'result'])
@@ -181,7 +111,7 @@ export const extent = (xs: number[]): [number, number] | null => {
 }
 
 export const checkResultsLength = (giraffeResult: FromFluxResult): boolean => {
-  return get(giraffeResult, 'table.length', 0) > 0
+  return (giraffeResult.table?.length || 0) > 0
 }
 
 export const getNumericColumns = (table: Table): string[] => {
@@ -311,7 +241,7 @@ export const defaultYColumn = (
   return null
 }
 
-export const mosaicYcolumn = (
+export const mosaicYColumn = (
   table: Table,
   preferredColumnKey?: string
 ): string | null => {
@@ -375,4 +305,56 @@ export const getMainColumnName = (
     }
   }
   return ''
+}
+
+const getS2CellID = (table: Table, index: number): string => {
+  const column = table.getColumn('s2_cell_id')
+  if (!column) {
+    throw new Error(
+      'Cannot retrieve s2_cell_id column - table does not conform to required structure of Table type'
+    )
+  }
+
+  const value = column[index]
+  if (typeof value !== 'string') {
+    throw new Error('invalid s2_cell_id column value - value must be a string')
+  }
+  return value
+}
+/* 
+   The geo precision table value calculated below is utilized by S2-geometry, a library which enhances the accuracy and efficiency of point / range coordinates on a map by accounting 
+   for the semi-spherical nature of the earth rather than attempting to plot against a 2d rendering. The cellId value and the precision table are used to ascertain 
+   the cell id at the particular level of specificity we are looking for, and that is then passed to S2 to retrieve the lat/lon value at that id. 
+*/
+
+const getPrecisionTrimmingTableValue = (): bigint[] => {
+  const precisionTable = [BigInt(1)]
+  for (let i = 1; i <= HEX_DIGIT_PRECISION; i++) {
+    precisionTable[i] = precisionTable[i - 1] * BigInt(HEX_DIGIT_PRECISION)
+  }
+  return precisionTable
+}
+
+export const getGeoCoordinates = (
+  table: Table,
+  index: number
+): {lon: number; lat: number} | null => {
+  const cellId = getS2CellID(table, index)
+
+  if (cellId.length > HEX_DIGIT_PRECISION) {
+    throw new Error(
+      'invalid cellId length - value must not be longer than the defined hex digit precision'
+    )
+  }
+
+  const fixed =
+    BigInt('0x' + cellId) *
+    getPrecisionTrimmingTableValue()[HEX_DIGIT_PRECISION - cellId.length]
+
+  const geoCoordinateValue = S2.idToLatLng(fixed.toString())
+
+  return {
+    lat: geoCoordinateValue.lat,
+    lon: geoCoordinateValue.lng,
+  }
 }

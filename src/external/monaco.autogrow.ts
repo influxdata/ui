@@ -1,4 +1,4 @@
-const MIN_HEIGHT = 100
+const MIN_HEIGHT = 300
 
 export const registerAutogrow = editor => {
   let prevHeight = 0
@@ -14,7 +14,7 @@ export const registerAutogrow = editor => {
       window.monaco.editor.EditorOption.lineHeight
     )
     const lineCount = (editor.getModel() || {}).getLineCount() || 1
-    const height = editor.getTopForLineNumber(lineCount + 1) + lineHeight
+    const height = editor.getTopForLineNumber(lineCount + 1) + lineHeight * 2
 
     if (prevHeight !== Math.max(MIN_HEIGHT, height)) {
       prevHeight = Math.max(MIN_HEIGHT, height)
@@ -38,4 +38,7 @@ export const registerAutogrow = editor => {
     updateEditorHeight() // typing
     requestAnimationFrame(updateEditorHeight) // folding
   })
+
+  // Set height on first render
+  updateEditorHeight()
 }

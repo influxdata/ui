@@ -10,19 +10,22 @@ import EndpointsColumn from 'src/notifications/endpoints/components/EndpointsCol
 import GetAssetLimits from 'src/cloud/components/GetAssetLimits'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import GetResources from 'src/resources/components/GetResources'
-import NewThresholdCheckEO from 'src/checks/components/NewThresholdCheckEO'
-import NewDeadmanCheckEO from 'src/checks/components/NewDeadmanCheckEO'
 import EditCheckEO from 'src/checks/components/EditCheckEO'
 import NewRuleOverlay from 'src/notifications/rules/components/NewRuleOverlay'
 import EditRuleOverlay from 'src/notifications/rules/components/EditRuleOverlay'
 import NewEndpointOverlay from 'src/notifications/endpoints/components/NewEndpointOverlay'
 import EditEndpointOverlay from 'src/notifications/endpoints/components/EditEndpointOverlay'
+import {
+  ThresholdCheckOverlay,
+  DeadmanCheckOverlay as NewDeadmanCheckEO,
+} from 'src/overlays/components'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Types
 import {ResourceType} from 'src/types'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 const alertsPath = '/orgs/:orgID/alerting'
 
@@ -42,7 +45,9 @@ const AlertingIndex: FunctionComponent = () => {
       <Page titleTag={pageTitleSuffixer(['Alerts'])}>
         <Page.Header fullWidth={true} testID="alerts-page--header">
           <Page.Title title="Alerts" />
-          <RateLimitAlert />
+          <ErrorBoundary>
+            <RateLimitAlert />
+          </ErrorBoundary>
         </Page.Header>
         <Page.Contents
           fullWidth={true}
@@ -91,13 +96,19 @@ const AlertingIndex: FunctionComponent = () => {
               </SelectGroup>
               <div className="alerting-index--columns">
                 <GetResources resources={[ResourceType.Checks]}>
-                  <ChecksColumn tabIndex={1} />
+                  <ErrorBoundary>
+                    <ChecksColumn tabIndex={1} />
+                  </ErrorBoundary>
                 </GetResources>
                 <GetResources resources={[ResourceType.NotificationEndpoints]}>
-                  <EndpointsColumn tabIndex={2} />
+                  <ErrorBoundary>
+                    <EndpointsColumn tabIndex={2} />
+                  </ErrorBoundary>
                 </GetResources>
                 <GetResources resources={[ResourceType.NotificationRules]}>
-                  <RulesColumn tabIndex={3} />
+                  <ErrorBoundary>
+                    <RulesColumn tabIndex={3} />
+                  </ErrorBoundary>
                 </GetResources>
               </div>
             </GetAssetLimits>
@@ -107,7 +118,7 @@ const AlertingIndex: FunctionComponent = () => {
       <Switch>
         <Route
           path={`${alertsPath}/checks/new-threshold`}
-          component={NewThresholdCheckEO}
+          component={ThresholdCheckOverlay}
         />
         <Route
           path={`${alertsPath}/checks/new-deadman`}

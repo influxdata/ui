@@ -11,13 +11,7 @@ import React, {
 import classnames from 'classnames'
 
 // Components
-import {
-  FlexBox,
-  ComponentSize,
-  AlignItems,
-  JustifyContent,
-  ClickOutside,
-} from '@influxdata/clockface'
+import {ClickOutside} from '@influxdata/clockface'
 import RemovePanelButton from 'src/flows/components/panel/RemovePanelButton'
 import InsertCellButton from 'src/flows/components/panel/InsertCellButton'
 import PanelVisibilityToggle from 'src/flows/components/panel/PanelVisibilityToggle'
@@ -83,38 +77,30 @@ const FlowPanelHeader: FC<HeaderProps> = ({
       <div className="flow-panel--node-wrapper">
         <div className="flow-panel--node" />
       </div>
-      <FlexBox
-        className="flow-panel--header-left"
-        alignItems={AlignItems.Center}
-        margin={ComponentSize.Small}
-        justifyContent={JustifyContent.FlexStart}
-      >
-        {title}
-      </FlexBox>
+      {title}
       {!flow.readOnly && (
-        <FlexBox
-          className="flow-panel--header-right"
-          alignItems={AlignItems.Center}
-          margin={ComponentSize.Small}
-          justifyContent={JustifyContent.FlexEnd}
-        >
-          {controls}
-          <FeatureFlag name="flow-move-cells">
-            <MovePanelButton
-              direction="up"
-              onClick={moveUp}
-              active={canBeMovedUp}
-            />
-            <MovePanelButton
-              direction="down"
-              onClick={moveDown}
-              active={canBeMovedDown}
-            />
-          </FeatureFlag>
-          <PanelVisibilityToggle id={id} />
-          <RemovePanelButton onRemove={remove} />
-          {persistentControl}
-        </FlexBox>
+        <>
+          <div className="flow-panel--hover-control">
+            {controls}
+            <FeatureFlag name="flow-move-cells">
+              <MovePanelButton
+                direction="up"
+                onClick={moveUp}
+                active={canBeMovedUp}
+              />
+              <MovePanelButton
+                direction="down"
+                onClick={moveDown}
+                active={canBeMovedDown}
+              />
+            </FeatureFlag>
+          </div>
+          <div className="flow-panel--persistent-control">
+            <PanelVisibilityToggle id={id} />
+            <RemovePanelButton onRemove={remove} />
+            {persistentControl}
+          </div>
+        </>
       )}
     </div>
   )
@@ -168,22 +154,24 @@ const FlowPanel: FC<Props> = ({id, children, controls, persistentControl}) => {
   }
 
   return (
-    <ClickOutside onClickOutside={handleClickOutside}>
-      <div className={panelClassName} onClick={handleClick} ref={panelRef}>
-        <FlowPanelHeader
-          id={id}
-          controls={controls}
-          persistentControl={persistentControl}
-        />
-        <div className="flow-panel--body">{children}</div>
-        {showResults && (
-          <div className="flow-panel--results">
-            <Results />
-          </div>
-        )}
-        {!flow.readOnly && <InsertCellButton id={id} />}
-      </div>
-    </ClickOutside>
+    <>
+      <ClickOutside onClickOutside={handleClickOutside}>
+        <div className={panelClassName} onClick={handleClick} ref={panelRef}>
+          <FlowPanelHeader
+            id={id}
+            controls={controls}
+            persistentControl={persistentControl}
+          />
+          {isVisible && <div className="flow-panel--body">{children}</div>}
+          {showResults && (
+            <div className="flow-panel--results">
+              <Results />
+            </div>
+          )}
+        </div>
+      </ClickOutside>
+      {!flow.readOnly && <InsertCellButton id={id} />}
+    </>
   )
 }
 

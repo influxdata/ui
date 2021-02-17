@@ -10,7 +10,7 @@ import {updateAnnotationDraft} from 'src/annotations/actions/annotationFormActio
 // Contexts
 import {AnnotationFormContext} from 'src/annotations/components/annotationForm/AnnotationForm'
 
-const AnnotationTimeStartInput: FC = () => {
+export const AnnotationTimeStartInput: FC = () => {
   const {
     timeStart,
     timeStartStatus,

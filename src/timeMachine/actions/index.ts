@@ -2,12 +2,12 @@
 import {Dispatch} from 'react'
 
 // Actions
-import {loadBuckets} from 'src/timeMachine/actions/queryBuilder'
-import {saveAndExecuteQueries} from 'src/timeMachine/actions/queries'
+import {Action as QueryBuilderAction} from 'src/timeMachine/actions/queryBuilder'
 import {
+  loadBuckets,
   reloadTagSelectors,
-  Action as QueryBuilderAction,
-} from 'src/timeMachine/actions/queryBuilder'
+} from 'src/timeMachine/actions/queryBuilderThunks'
+import {saveAndExecuteQueries} from 'src/timeMachine/actions/queries'
 import {convertCheckToCustom} from 'src/alerting/actions/alertBuilder'
 import {setDashboardTimeRange} from 'src/dashboards/actions/ranges'
 
@@ -35,6 +35,7 @@ import {
   AutoRefresh,
   TimeMachineID,
   XYViewProperties,
+  ViewProperties,
   GetState,
 } from 'src/types'
 import {Color} from 'src/types/colors'
@@ -90,6 +91,7 @@ export type Action =
   | ReturnType<typeof setLowerColumn>
   | ReturnType<typeof setLegendOpacity>
   | ReturnType<typeof setLegendOrientationThreshold>
+  | ReturnType<typeof setLegendColorizeRows>
   | ReturnType<typeof setGenerateXAxisTicks>
   | ReturnType<typeof setGenerateYAxisTicks>
   | ReturnType<typeof setXTotalTicks>
@@ -105,6 +107,7 @@ export type Action =
   | SetHoverDimensionAction
   | ReturnType<typeof toggleVisOptions>
   | ReturnType<typeof resetActiveQueryWithBuilder>
+  | ReturnType<typeof setViewProperties>
 
 type ExternalActions =
   | ReturnType<typeof loadBuckets>
@@ -705,6 +708,11 @@ export const setLegendOrientationThreshold = (
   payload: {legendOrientationThreshold},
 })
 
+export const setLegendColorizeRows = (legendColorizeRows: boolean) => ({
+  type: 'SET_LEGEND_COLORIZE_ROWS' as 'SET_LEGEND_COLORIZE_ROWS',
+  payload: {legendColorizeRows},
+})
+
 export const setGenerateXAxisTicks = (generateXAxisTicks: string[]) => ({
   type: 'SET_GENERATE_X_AXIS_TICKS' as 'SET_GENERATE_X_AXIS_TICKS',
   payload: {generateXAxisTicks},
@@ -744,6 +752,12 @@ export const setYTickStep = (yTickStep: number) => ({
   type: 'SET_Y_TICK_STEP' as 'SET_Y_TICK_STEP',
   payload: {yTickStep},
 })
+
+export const setViewProperties = (properties: ViewProperties) =>
+  ({
+    type: 'SET_VIEW_PROPERTIES',
+    payload: {properties},
+  } as const)
 
 export const loadNewVEO = () => (
   dispatch: Dispatch<Action | ExternalActions>

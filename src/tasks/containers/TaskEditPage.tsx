@@ -1,14 +1,17 @@
 // Libraries
-import React, {PureComponent, ChangeEvent} from 'react'
+import React, {lazy, Suspense, PureComponent, ChangeEvent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {RouteComponentProps} from 'react-router-dom'
+import {
+  RemoteDataState,
+  SpinnerContainer,
+  TechnoSpinner,
+} from '@influxdata/clockface'
 
 // Components
 import TaskForm from 'src/tasks/components/TaskForm'
 import TaskHeader from 'src/tasks/components/TaskHeader'
 import {Page} from '@influxdata/clockface'
-
-import FluxEditor from 'src/shared/components/FluxMonacoEditor'
 
 // Actions
 import {
@@ -28,6 +31,10 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Types
 import {AppState, TaskOptionKeys, TaskSchedule} from 'src/types'
+
+const FluxMonacoEditor = lazy(() =>
+  import('src/shared/components/FluxMonacoEditor')
+)
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{id: string}>
@@ -73,10 +80,19 @@ class TaskEditPage extends PureComponent<Props> {
               />
             </div>
             <div className="task-form--editor">
-              <FluxEditor
-                script={currentScript}
-                onChangeScript={this.handleChangeScript}
-              />
+              <Suspense
+                fallback={
+                  <SpinnerContainer
+                    loading={RemoteDataState.Loading}
+                    spinnerComponent={<TechnoSpinner />}
+                  />
+                }
+              >
+                <FluxMonacoEditor
+                  script={currentScript}
+                  onChangeScript={this.handleChangeScript}
+                />
+              </Suspense>
             </div>
           </div>
         </Page.Contents>

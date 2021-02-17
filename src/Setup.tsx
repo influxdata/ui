@@ -1,5 +1,5 @@
 // Libraries
-import React, {ReactElement, PureComponent} from 'react'
+import React, {ReactElement, PureComponent, Suspense, lazy} from 'react'
 import {Switch, Route, RouteComponentProps} from 'react-router-dom'
 
 // APIs
@@ -7,12 +7,15 @@ import {client} from 'src/utils/api'
 
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
-import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
-import Signin from 'src/Signin'
-import OnboardingWizardPage from 'src/onboarding/containers/OnboardingWizardPage'
-import SigninPage from 'src/onboarding/containers/SigninPage'
+import PageSpinner from 'src/perf/components/PageSpinner'
 import {LoginPage} from 'src/onboarding/containers/LoginPage'
-import Logout from 'src/Logout'
+// lazy loading the signin component causes wasm issues
+import Signin from 'src/Signin'
+const OnboardingWizardPage = lazy(() =>
+  import('src/onboarding/containers/OnboardingWizardPage')
+)
+const SigninPage = lazy(() => import('src/onboarding/containers/SigninPage'))
+const Logout = lazy(() => import('src/Logout'))
 
 // Constants
 import {LOGIN, SIGNIN, LOGOUT} from 'src/shared/constants/routes'
@@ -84,23 +87,28 @@ export class Setup extends PureComponent<Props, State> {
     const {loading, allowed} = this.state
 
     return (
-      <SpinnerContainer loading={loading} spinnerComponent={<TechnoSpinner />}>
-        {allowed && (
-          <Route path="/onboarding/:stepID" component={OnboardingWizardPage} />
-        )}
-        {!allowed && (
-          <Switch>
+      <PageSpinner loading={loading}>
+        <Suspense fallback={<PageSpinner />}>
+          {allowed && (
             <Route
               path="/onboarding/:stepID"
               component={OnboardingWizardPage}
             />
-            <Route path={LOGIN} component={LoginPage} />
-            <Route path={SIGNIN} component={SigninPage} />
-            <Route path={LOGOUT} component={Logout} />
-            <Route component={Signin} />
-          </Switch>
-        )}
-      </SpinnerContainer>
+          )}
+          {!allowed && (
+            <Switch>
+              <Route
+                path="/onboarding/:stepID"
+                component={OnboardingWizardPage}
+              />
+              <Route path={LOGIN} component={LoginPage} />
+              <Route path={SIGNIN} component={SigninPage} />
+              <Route path={LOGOUT} component={Logout} />
+              <Route component={Signin} />
+            </Switch>
+          )}
+        </Suspense>
+      </PageSpinner>
     )
   }
 }

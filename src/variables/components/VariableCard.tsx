@@ -16,6 +16,7 @@ import {
   addVariableLabelAsync,
   removeVariableLabelAsync,
 } from 'src/variables/actions/thunks'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 interface OwnProps {
   variable: Variable
@@ -34,28 +35,30 @@ class VariableCard extends PureComponent<
     const {variable, onDeleteVariable} = this.props
 
     return (
-      <ResourceCard
-        testID="resource-card variable"
-        contextMenuInteraction="alwaysVisible"
-        contextMenu={
-          <VariableContextMenu
-            variable={variable}
-            onExport={this.handleExport}
-            onRename={this.handleRenameVariable}
-            onDelete={onDeleteVariable}
+      <ErrorBoundary>
+        <ResourceCard
+          testID="resource-card variable"
+          contextMenuInteraction="alwaysVisible"
+          contextMenu={
+            <VariableContextMenu
+              variable={variable}
+              onExport={this.handleExport}
+              onRename={this.handleRenameVariable}
+              onDelete={onDeleteVariable}
+            />
+          }
+        >
+          <ResourceCard.Name
+            onClick={this.handleNameClick}
+            name={variable.name}
+            testID={`variable-card--name ${variable.name}`}
           />
-        }
-      >
-        <ResourceCard.Name
-          onClick={this.handleNameClick}
-          name={variable.name}
-          testID={`variable-card--name ${variable.name}`}
-        />
-        <ResourceCard.Meta>
-          <>Type: {variable.arguments.type}</>
-        </ResourceCard.Meta>
-        {this.labels}
-      </ResourceCard>
+          <ResourceCard.Meta>
+            <>Type: {variable.arguments.type}</>
+          </ResourceCard.Meta>
+          {this.labels}
+        </ResourceCard>
+      </ErrorBoundary>
     )
   }
 

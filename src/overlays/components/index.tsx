@@ -103,3 +103,51 @@ export const EditAnnotationDashboardOverlay = RouteOverlay(
     history.push(`/${ORGS}/${params.orgID}/${DASHBOARDS}/${params.dashboardID}`)
   }
 )
+
+export const ThresholdCheckOverlay = RouteOverlay(
+  OverlayHandler,
+  'check-threshold',
+  (history, params) => {
+    history.push(`/${ORGS}/${params.orgID}/alerting`)
+  }
+)
+
+export const DeadmanCheckOverlay = RouteOverlay(
+  OverlayHandler,
+  'deadman-check',
+  (history, params) => {
+    history.push(`/${ORGS}/${params.orgID}/alerting`)
+  }
+)
+
+export const CreateVariableOverlay = RouteOverlay(
+  OverlayHandler,
+  'create-variable',
+  (history, params) => {
+    history.push(`/orgs/${params.orgID}/settings/variables`)
+  }
+)
+
+export const VariableImportOverlay = RouteOverlay(
+  OverlayHandler,
+  'import-variable',
+  (history, params) => {
+    history.push(`/orgs/${params.orgID}/settings/variables`)
+  }
+)
+
+export const RenameVariableOverlay = RouteOverlay(
+  OverlayHandler,
+  'rename-variable',
+  (history, params) => {
+    history.push(`/orgs/${params.orgID}/settings/variables`)
+  }
+)
+
+export const UpdateVariableOverlay = RouteOverlay(
+  OverlayHandler,
+  'update-variable',
+  (history, params) => {
+    history.push(`/orgs/${params.orgID}/settings/variables`)
+  }
+)

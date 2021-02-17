@@ -1,7 +1,7 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
-
+import {Overlay} from '@influxdata/clockface'
 import _ from 'lodash'
 
 // Components
@@ -17,15 +17,17 @@ class RenameOrgOverlay extends PureComponent<
 > {
   public render() {
     return (
-      <DangerConfirmationOverlay
-        title="Rename Organization"
-        message={this.message}
-        effectedItems={this.effectedItems}
-        onClose={this.handleClose}
-        confirmButtonText="I understand, let's rename my Organization"
-      >
-        <RenameOrgForm />
-      </DangerConfirmationOverlay>
+      <Overlay visible={true}>
+        <DangerConfirmationOverlay
+          title="Rename Organization"
+          message={this.message}
+          effectedItems={this.effectedItems}
+          onClose={this.handleClose}
+          confirmButtonText="I understand, let's rename my Organization"
+        >
+          <RenameOrgForm />
+        </DangerConfirmationOverlay>
+      </Overlay>
     )
   }
 

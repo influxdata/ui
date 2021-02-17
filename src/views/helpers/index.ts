@@ -5,6 +5,7 @@ import {DEFAULT_CELL_NAME} from 'src/dashboards/constants'
 import {
   LEGEND_OPACITY_DEFAULT,
   LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+  LEGEND_COLORIZE_ROWS_DEFAULT,
 } from 'src/shared/constants'
 import {
   DEFAULT_GAUGE_COLORS,
@@ -42,6 +43,7 @@ import {
   ViewType,
   XYViewProperties,
   BandViewProperties,
+  GeoViewProperties,
 } from 'src/types'
 import {LineHoverDimension} from '@influxdata/giraffe/dist/types'
 
@@ -70,23 +72,32 @@ export function defaultBuilderConfig(): BuilderConfig {
   }
 }
 
+const legendProps = {
+  legendOpacity: LEGEND_OPACITY_DEFAULT,
+  legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+  legendColorizeRows: LEGEND_COLORIZE_ROWS_DEFAULT,
+}
+
+const tickProps = {
+  generateXAxisTicks: [],
+  generateYAxisTicks: [],
+  xTotalTicks: null,
+  xTickStart: null,
+  xTickStep: null,
+  yTotalTicks: null,
+  yTickStart: null,
+  yTickStep: null,
+}
+
 export function defaultLineViewProperties() {
   return {
+    ...legendProps,
     queries: [defaultViewQuery()],
     colors: DEFAULT_LINE_COLORS as Color[],
     legend: {},
     note: '',
     showNoteWhenEmpty: false,
-    generateXAxisTicks: [],
-    generateYAxisTicks: [],
-    xTotalTicks: null,
-    xTickStart: null,
-    xTickStep: null,
-    yTotalTicks: null,
-    yTickStart: null,
-    yTickStep: null,
-    legendOpacity: LEGEND_OPACITY_DEFAULT,
-    legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+    ...tickProps,
     axes: {
       x: {
         bounds: ['', ''],
@@ -111,21 +122,13 @@ export function defaultLineViewProperties() {
 
 export function defaultBandViewProperties() {
   return {
+    ...legendProps,
     queries: [defaultViewQuery()],
     colors: DEFAULT_LINE_COLORS as Color[],
     legend: {},
     note: '',
     showNoteWhenEmpty: false,
-    generateXAxisTicks: [],
-    generateYAxisTicks: [],
-    xTotalTicks: null,
-    xTickStart: null,
-    xTickStep: null,
-    yTotalTicks: null,
-    yTickStart: null,
-    yTickStep: null,
-    legendOpacity: LEGEND_OPACITY_DEFAULT,
-    legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+    ...tickProps,
     axes: {
       x: {
         bounds: ['', ''],
@@ -211,6 +214,7 @@ const NEW_VIEW_CREATORS = {
   histogram: (): NewView<HistogramViewProperties> => ({
     ...defaultView(),
     properties: {
+      ...legendProps,
       queries: [],
       type: 'histogram',
       shape: 'chronograf-v2',
@@ -223,13 +227,12 @@ const NEW_VIEW_CREATORS = {
       colors: DEFAULT_LINE_COLORS as Color[],
       note: '',
       showNoteWhenEmpty: false,
-      legendOpacity: LEGEND_OPACITY_DEFAULT,
-      legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
     },
   }),
   heatmap: (): NewView<HeatmapViewProperties> => ({
     ...defaultView(),
     properties: {
+      ...legendProps,
       queries: [],
       type: 'heatmap',
       shape: 'chronograf-v2',
@@ -247,16 +250,7 @@ const NEW_VIEW_CREATORS = {
       binSize: 10,
       note: '',
       showNoteWhenEmpty: false,
-      generateXAxisTicks: [],
-      generateYAxisTicks: [],
-      xTotalTicks: null,
-      xTickStart: null,
-      xTickStep: null,
-      yTotalTicks: null,
-      yTickStart: null,
-      yTickStep: null,
-      legendOpacity: LEGEND_OPACITY_DEFAULT,
-      legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+      ...tickProps,
     },
   }),
   'single-stat': (): NewView<SingleStatViewProperties> => ({
@@ -322,20 +316,14 @@ const NEW_VIEW_CREATORS = {
   scatter: (): NewView<ScatterViewProperties> => ({
     ...defaultView(),
     properties: {
+      ...legendProps,
       type: 'scatter',
       shape: 'chronograf-v2',
       queries: [defaultViewQuery()],
       colors: NINETEEN_EIGHTY_FOUR,
       note: '',
       showNoteWhenEmpty: false,
-      generateXAxisTicks: [],
-      generateYAxisTicks: [],
-      xTotalTicks: null,
-      xTickStart: null,
-      xTickStep: null,
-      yTotalTicks: null,
-      yTickStart: null,
-      yTickStep: null,
+      ...tickProps,
       fillColumns: null,
       symbolColumns: null,
       xColumn: null,
@@ -348,13 +336,12 @@ const NEW_VIEW_CREATORS = {
       xSuffix: '',
       yPrefix: '',
       ySuffix: '',
-      legendOpacity: LEGEND_OPACITY_DEFAULT,
-      legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
     },
   }),
   mosaic: (): NewView<MosaicViewProperties> => ({
     ...defaultView(),
     properties: {
+      ...legendProps,
       type: 'mosaic',
       shape: 'chronograf-v2',
       queries: [defaultViewQuery()],
@@ -376,8 +363,38 @@ const NEW_VIEW_CREATORS = {
       xSuffix: '',
       yPrefix: '',
       ySuffix: '',
-      legendOpacity: LEGEND_OPACITY_DEFAULT,
-      legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+    },
+  }),
+  geo: (): NewView<GeoViewProperties> => ({
+    ...defaultView(),
+    properties: {
+      type: 'geo',
+      shape: 'chronograf-v2',
+      queries: [defaultViewQuery()],
+      colors: [],
+      note: '',
+      showNoteWhenEmpty: false,
+      center: {
+        lat: 0,
+        lon: 0,
+      },
+      zoom: 6,
+      allowPanAndZoom: true,
+      detectCoordinateFields: false,
+      mapStyle: '',
+      layers: [
+        {
+          type: 'pointMap',
+          colorDimension: {label: 'Duration'},
+          colorField: 'duration',
+          colors: [
+            {type: 'min', hex: '#ff0000'},
+            {value: 50, hex: '#343aeb'},
+            {type: 'max', hex: '#343aeb'},
+          ],
+          isClustered: false,
+        },
+      ],
     },
   }),
   threshold: (): NewView<CheckViewProperties> => ({

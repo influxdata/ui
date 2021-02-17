@@ -1,27 +1,23 @@
 // Libraries
 import React, {FC, useCallback, useContext, useEffect, useState} from 'react'
-import {ComponentSize, TechnoSpinner} from '@influxdata/clockface'
 
 // Components
-import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
-import ViewSwitcher from 'src/shared/components/ViewSwitcher'
 import QueryProvider, {QueryContext} from 'src/flows/context/query'
 import {PopupContext} from 'src/flows/context/popup'
-
-// Utilities
-import {checkResultsLength} from 'src/shared/utils/vis'
+import {View} from 'src/visualization'
 
 // Types
-import {RemoteDataState, TimeZone} from 'src/types'
+import {RemoteDataState} from 'src/types'
+import {FluxResult} from 'src/types/flows'
 
 const Visualization: FC = () => {
-  const [results, setResults] = useState(undefined)
+  const [results, setResults] = useState<FluxResult>(null)
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
   const {data} = useContext(PopupContext)
   const {query} = useContext(QueryContext)
 
   const queryAndSetResults = useCallback(
-    async (text: string) => {
+    async text => {
       setLoading(RemoteDataState.Loading)
       const result = await query(text)
       setLoading(RemoteDataState.Done)
@@ -32,35 +28,18 @@ const Visualization: FC = () => {
 
   useEffect(() => {
     queryAndSetResults(data.query)
-  }, [data.query, queryAndSetResults])
-
-  let body = (
-    <TechnoSpinner strokeWidth={ComponentSize.Small} diameterPixels={32} />
-  )
-
-  if (results) {
-    body = (
-      <ViewSwitcher
-        giraffeResult={results.parsed}
-        files={[results.raw]}
-        properties={data.properties}
-        timeZone={'Local' as TimeZone}
-        theme="dark"
-      />
-    )
-  }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="flow-visualization" style={{height: 220}}>
       <div className="flow-visualization--view">
-        <EmptyQueryView
+        <View
           loading={loading}
-          errorMessage={results?.error}
-          errorFormat={ErrorFormat.Scroll}
-          hasResults={checkResultsLength(results?.parsed)}
-        >
-          {body}
-        </EmptyQueryView>
+          error={results?.error}
+          properties={data.properties}
+          result={results.parsed}
+          timeRange={data.range}
+        />
       </div>
     </div>
   )

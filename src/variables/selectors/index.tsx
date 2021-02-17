@@ -23,6 +23,9 @@ import {
 import {VariableAssignment} from 'src/types/ast'
 import {AppState, VariableArgumentType, Variable} from 'src/types'
 
+// Utils
+import {filterUnusedVars} from 'src/shared/utils/filterUnusedVars'
+
 export const extractVariableEditorName = (state: AppState): string => {
   return state.variableEditor.name
 }
@@ -96,6 +99,19 @@ export const getVariables = (
     .filter(v => !!v)
 
   return vars
+}
+
+export const getVariablesForDashboard = (state: AppState): Variable[] => {
+  const variables = getVariables(state)
+
+  const variablesUsedByDashboard = filterUnusedVars(
+    variables,
+    Object.values(state.resources.views.byID).filter(
+      variable => variable.dashboardID === state.currentDashboard.id
+    )
+  )
+
+  return variablesUsedByDashboard
 }
 
 // the same as the above method, but includes system
@@ -298,4 +314,8 @@ export const getDashboardVariablesStatus = (
   state: AppState
 ): RemoteDataState => {
   return get(state, 'resources.variables.status')
+}
+
+export const getControlBarVisibility = (state: AppState): boolean => {
+  return state.userSettings.showVariablesControls
 }

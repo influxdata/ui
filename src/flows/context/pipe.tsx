@@ -2,13 +2,14 @@ import React, {FC, useContext, useMemo} from 'react'
 import {PipeData, FluxResult} from 'src/types/flows'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {ResultsContext} from 'src/flows/context/results'
-import {RemoteDataState} from 'src/types'
 import {QueryContext} from './query'
+import {RemoteDataState, SelectableDurationTimeRange} from 'src/types'
 
 export interface PipeContextType {
   id: string
   data: PipeData
   queryText: string
+  range: SelectableDurationTimeRange
   update: (data: PipeData) => void
   loading: RemoteDataState
   results: FluxResult
@@ -19,6 +20,7 @@ export const DEFAULT_CONTEXT: PipeContextType = {
   id: '',
   data: {},
   queryText: '',
+  range: null,
   update: () => {},
   loading: RemoteDataState.NotStarted,
   results: {
@@ -59,19 +61,23 @@ export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
     _result = {...DEFAULT_CONTEXT.results}
   }
 
-  return (
-    <PipeContext.Provider
-      value={{
-        id: id,
-        data: flow.data.get(id),
-        queryText,
-        update: updater,
-        results: _result,
-        loading: flow.meta.get(id).loading,
-        readOnly: flow.readOnly,
-      }}
-    >
-      {children}
-    </PipeContext.Provider>
+  return useMemo(
+    () => (
+      <PipeContext.Provider
+        value={{
+          id: id,
+          data: flow.data.get(id),
+          queryText,
+          range: flow.range,
+          update: updater,
+          results: _result,
+          loading: flow.meta.get(id).loading,
+          readOnly: flow.readOnly,
+        }}
+      >
+        {children}
+      </PipeContext.Provider>
+    ),
+    [flow, results, flow.meta.get(id).loading]
   )
 }

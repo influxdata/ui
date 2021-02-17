@@ -1,20 +1,24 @@
-import {
-  Tag as GenTag,
-  Schema as GenSchema,
-  SchemaValues as GenSchemaValues,
-} from '@influxdata/giraffe'
 import {FromFluxResult} from '@influxdata/giraffe'
 import {FunctionComponent, ComponentClass, ReactNode} from 'react'
 import {
   AutoRefresh,
   RemoteDataState,
-  TimeRange,
-  ViewProperties,
+  SelectableDurationTimeRange,
 } from 'src/types'
 
-export interface Tag extends GenTag {}
-export interface Schema extends GenSchema {}
-export interface SchemaValues extends GenSchemaValues {}
+export interface Tag {
+  [tagName: string]: Set<string | number>
+}
+
+export interface SchemaValues {
+  fields: string[]
+  tags: Tag
+  type?: string
+}
+
+export interface Schema {
+  [measurement: string]: SchemaValues
+}
 
 export interface NormalizedTag {
   [tagName: string]: string[] | number[]
@@ -84,7 +88,7 @@ export interface ResourceManipulator<T> {
 
 export interface FlowState {
   name: string
-  range: TimeRange
+  range: SelectableDurationTimeRange
   refresh: AutoRefresh
   data: Resource<PipeData>
   meta: Resource<PipeMeta>
@@ -93,7 +97,7 @@ export interface FlowState {
 
 export interface Flow {
   name: string
-  range: TimeRange
+  range: SelectableDurationTimeRange
   refresh: AutoRefresh
   data: ResourceManipulator<PipeData>
   meta: ResourceManipulator<PipeMeta>
@@ -111,22 +115,6 @@ export interface FlowList {
   flows: {
     [key: string]: Flow
   }
-}
-
-export interface VisOptionProps {
-  properties: ViewProperties
-  results: FromFluxResult
-  update: (obj: any) => void
-}
-
-export interface VisTypeRegistration {
-  type: string // a unique string that identifies a visualization
-  name: string // the name that shows up in the dropdown
-  graphic: JSX.Element // the icon that shows up in the dropdown
-  disabled?: boolean // if you should show it or not
-  featureFlag?: string // designates a flag that should enable the panel type
-  initial: ViewProperties // the default state
-  options?: FunctionComponent<VisOptionProps> // the view component for rendering the interface
 }
 
 // NOTE: keep this interface as small as possible and

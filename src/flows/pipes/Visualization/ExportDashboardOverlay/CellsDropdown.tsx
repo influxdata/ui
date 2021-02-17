@@ -1,10 +1,5 @@
 import React, {FC, useContext, useEffect, useState} from 'react'
-import {
-  ComponentSize,
-  IconFont,
-  TechnoSpinner,
-  Dropdown,
-} from '@influxdata/clockface'
+import {ComponentSize, TechnoSpinner, Dropdown} from '@influxdata/clockface'
 import {
   Context,
   CREATE_CELL,
@@ -66,9 +61,9 @@ const CellsDropdown: FC = () => {
   if (cells.length) {
     menuItems = (
       <>
-        {cells.map(cell => (
+        {cells.map((cell, i) => (
           <Dropdown.Item
-            key={cell.name}
+            key={`${cell.name}${i}`}
             value={cell}
             onClick={cell => handleSetCell(cell)}
             selected={cell.name === selectedCell?.name}
@@ -90,9 +85,9 @@ const CellsDropdown: FC = () => {
 
   const button = (active, onClick) => (
     <Dropdown.Button
+      size={ComponentSize.Medium}
       onClick={onClick}
       active={active}
-      icon={IconFont.Disks}
       status={
         selectedDashboard ? ComponentStatus.Default : ComponentStatus.Disabled
       }

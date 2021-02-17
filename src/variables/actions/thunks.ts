@@ -28,6 +28,7 @@ import {
   getVariables as getVariablesFromState,
   getAllVariables as getAllVariablesFromState,
   normalizeValues,
+  getVariablesForDashboard,
 } from 'src/variables/selectors'
 import {variableToTemplate} from 'src/shared/utils/resourceToTemplate'
 import {findDependentVariables} from 'src/variables/utils/exportVariables'
@@ -339,7 +340,18 @@ export const moveVariable = (originalIndex: number, newIndex: number) => async (
   getState: GetState
 ) => {
   const contextID = currentContext(getState())
-  await dispatch(moveVariableInState(originalIndex, newIndex, contextID))
+  const byDashboardVariables = getVariablesForDashboard(getState())
+
+  const temp = byDashboardVariables[originalIndex]
+  byDashboardVariables[originalIndex] = byDashboardVariables[newIndex]
+  byDashboardVariables[newIndex] = temp
+
+  await dispatch(
+    moveVariableInState(
+      contextID,
+      byDashboardVariables.map((v: Variable) => v.id)
+    )
+  )
 }
 
 export const convertToTemplate = (variableID: string) => async (

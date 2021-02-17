@@ -18,12 +18,12 @@ import {
   Form,
 } from '@influxdata/clockface'
 import BucketsSelector from 'src/authorizations/components/BucketsSelector'
-import GetResources from 'src/resources/components/GetResources'
+import BucketsProvider from 'src/flows/context/buckets'
 
 // Utils
 import {
   specificBucketsPermissions,
-  selectBucket,
+  toggleSelectedBucket,
   allBucketsPermissions,
   BucketTab,
 } from 'src/authorizations/utils/permissions'
@@ -102,7 +102,7 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
                 />
               </Form.Element>
               <Form.Element label="">
-                <GetResources resources={[ResourceType.Buckets]}>
+                <BucketsProvider>
                   <Grid.Row>
                     <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Six}>
                       <BucketsSelector
@@ -129,7 +129,7 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
                       />
                     </Grid.Column>
                   </Grid.Row>
-                </GetResources>
+                </BucketsProvider>
               </Form.Element>
               <Form.Footer>
                 <Button
@@ -163,13 +163,16 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
   }
 
   private handleSelectReadBucket = (bucketName: string): void => {
-    const readBuckets = selectBucket(bucketName, this.state.readBuckets)
+    const readBuckets = toggleSelectedBucket(bucketName, this.state.readBuckets)
 
     this.setState({readBuckets})
   }
 
   private handleSelectWriteBucket = (bucketName: string): void => {
-    const writeBuckets = selectBucket(bucketName, this.state.writeBuckets)
+    const writeBuckets = toggleSelectedBucket(
+      bucketName,
+      this.state.writeBuckets
+    )
 
     this.setState({writeBuckets})
   }

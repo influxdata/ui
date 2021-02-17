@@ -3,7 +3,7 @@ import React, {FC, useContext, useEffect, useState, useMemo} from 'react'
 import {v4 as UUID} from 'uuid'
 
 // Components
-import AnnotationStreamOverlay from 'src/annotations/components/overlay/AnnotationStreamOverlay'
+import {AnnotationStreamOverlay} from 'src/annotations/components/overlay/AnnotationStreamOverlay'
 import {Overlay, Button, ComponentColor} from '@influxdata/clockface'
 import FlowBuilder from 'src/flows/components/Flow'
 import _asResource from 'src/flows/context/resource.hook'
@@ -15,7 +15,7 @@ import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 import {ResultsProvider} from 'src/flows/context/results'
-import {FlowContext, getHumanReadableName} from 'src/flows/context/flow.current'
+import {FlowContext} from 'src/flows/context/flow.current'
 import {hydrate} from 'src/flows/context/flow.list'
 import {RemoteDataState, Flow} from 'src/types'
 
@@ -69,7 +69,7 @@ const FlowProvider: FC = ({children}) => {
 
     fullFlow.data.add(id, initial)
     fullFlow.meta.add(id, {
-      title: getHumanReadableName(initial.type),
+      title: PIPE_DEFINITIONS[initial.type].button,
       visible: true,
       loading: RemoteDataState.NotStarted,
     })
@@ -103,7 +103,7 @@ const FlowProvider: FC = ({children}) => {
   )
 }
 
-const CreateAnnotationStreamOverlay: FC = () => {
+export const CreateAnnotationStreamOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
 
   return (
@@ -126,5 +126,3 @@ const CreateAnnotationStreamOverlay: FC = () => {
     </AnnotationStreamOverlay>
   )
 }
-
-export default CreateAnnotationStreamOverlay

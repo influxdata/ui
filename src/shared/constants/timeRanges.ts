@@ -1,4 +1,4 @@
-import {TimeRange, SelectableDurationTimeRange} from 'src/types'
+import {SelectableDurationTimeRange} from 'src/types'
 
 export const TIME_RANGE_FORMAT = 'YYYY-MM-DD HH:mm'
 
@@ -52,6 +52,15 @@ export const SELECTABLE_TIME_RANGES: SelectableDurationTimeRange[] = [
   pastFifteenMinTimeRange,
   pastHourTimeRange,
   {
+    seconds: 10800,
+    lower: 'now() - 3h',
+    upper: null,
+    label: 'Past 3h',
+    duration: '3h',
+    type: 'selectable-duration',
+    windowPeriod: 60000, // 1m
+  },
+  {
     seconds: 21600,
     lower: 'now() - 6h',
     upper: null,
@@ -99,4 +108,4 @@ export const SELECTABLE_TIME_RANGES: SelectableDurationTimeRange[] = [
   pastThirtyDaysTimeRange,
 ]
 
-export const DEFAULT_TIME_RANGE: TimeRange = pastHourTimeRange
+export const DEFAULT_TIME_RANGE = pastHourTimeRange

@@ -1,12 +1,5 @@
 @import '@influxdata/clockface/dist/variables.scss';
-
-.flow-panel--body .flux-editor--monaco {
-  position: relative;
-
-  .react-monaco-editor-container {
-    min-height: 100px;
-  }
-}
+@import '~src/flows/FlowVariables.scss';
 
 .query-results {
   width: 100%;
@@ -15,10 +8,10 @@
   flex-direction: column;
   align-items: stretch;
   background-color: $g0-obsidian;
+  position: relative;
 }
 
 .query-results--pagination {
-  background-color: $g2-kevlar;
   flex: 0 0 45px;
   height: 45px;
   display: flex;
@@ -47,4 +40,14 @@
 
 .query-results--container .cf-dapper-scrollbars--track-x {
   background-color: rgba($g3-castle, 0.5) !important;
+}
+
+.flow-panel--body .flux-toolbar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 300px;
+  flex-direction: column;
+  background-color: $flow-panel--bg;
 }

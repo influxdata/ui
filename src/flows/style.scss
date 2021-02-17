@@ -9,10 +9,6 @@
   align-items: stretch;
 }
 
-.flow-page .cf-page-contents__fluid {
-  padding: 0;
-}
-
 .flow--add-cell-label {
   user-select: none;
   margin: 0 $cf-marg-c 0 0;
@@ -35,8 +31,7 @@
   flex-direction: column;
   align-items: stretch;
   border-radius: $cf-radius;
-  border: $cf-border solid transparent;
-  transition: border-color 0.25s ease;
+  background-color: $flow-panel--bg;
 
   // Vertical line on left side of panel
   &::after {
@@ -45,17 +40,13 @@
     width: $cf-border;
     background-color: $g5-pepper;
     // Ensures there is no visible gap
-    bottom: -$cf-border;
-    top: -$cf-border;
+    bottom: 0;
+    top: 0;
     left: ($flow-panel--node-gap / 2) - ($cf-border / 2);
   }
 
   &:first-child::after {
     top: ($flow-header-height - $flow-panel--node-dot) / 2;
-  }
-
-  &:last-child {
-    margin-bottom: 25vh;
   }
 }
 
@@ -67,29 +58,54 @@
 
 .flow-panel--header {
   border-radius: $cf-radius $cf-radius 0 0;
-  height: $flow-header-height;
-  flex: 0 0 $flow-header-height;
-  padding-right: $cf-marg-b;
+  padding: $cf-marg-b;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
 }
 
-.flow-panel--header-left,
-.flow-panel--header-right {
-  flex: 1 0 $flow-header-height;
+.flow-panel--hover-control,
+.flow-panel--persistent-control {
+  display: flex;
+  align-items: center;
+
+  > * {
+    margin-left: $cf-marg-a;
+  }
 }
 
-.flow-panel--header-right > * {
-  opacity: 0;
+.flow-panel--hover-control {
+  order: 4;
+  flex: 1 0 100%;
+  padding-left: 28px;
+
+  & > * {
+    margin-top: $cf-marg-a;
+  }
+}
+
+.flow-panel__focus,
+.flow-panel:hover {
+  .flow-panel--hover-control > * {
+    opacity: 1;
+  }
+}
+
+.flow-panel--persistent-control {
+  justify-content: flex-end;
+  order: 3;
+  flex-grow: 1;
 }
 
 .flow-panel--node-wrapper {
+  order: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   align-content: center;
-  width: $flow-panel--node-gap;
+  flex-basis: 24px;
+  width: 24px;
   position: relative;
   z-index: 2;
 }
@@ -98,29 +114,9 @@
   width: $flow-panel--node-dot;
   height: $flow-panel--node-dot;
   border-radius: 50%;
-  background-color: $g1-raven;
+  background-color: $flow-panel--bg;
   border: $cf-border solid $g5-pepper;
   position: relative;
-
-  &:after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    border-radius: 50%;
-    background-color: $c-laser;
-    transform: translate(-50%, -50%) scale(1.5, 1.5);
-    width: $cf-marg-b;
-    height: $cf-marg-b;
-    box-shadow: 0 0 8px 2px $c-void, 0 0 4px 2px $c-pool, 0 0 1px 1px$c-laser;
-    transition: transform 0.25s ease, opacity 0.25s ease;
-    opacity: 0;
-  }
-
-  .flow-panel__focus &:after {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1, 1);
-  }
 }
 
 .flow-panel--title,
@@ -131,49 +127,63 @@
   margin-right: $cf-marg-b !important;
 }
 
-.flow-panel--title {
-  color: $g15-platinum;
-}
-
 .flow-panel--data-source {
   color: $c-laser;
 }
 
-.flow-panel--editable-title {
+.flow-panel--title {
+  order: 2;
+  color: $g15-platinum;
+  width: 230px;
+  flex: 0 0 230px;
+  height: $cf-form-sm-height;
+  position: relative;
+  margin-left: $cf-marg-b;
+}
+
+.flow-panel--title-input {
   background-color: transparent;
-  border: 0;
+  border: $cf-border solid $flow-panel--bg;
   color: $g15-platinum;
   font-size: 14px;
   font-family: $cf-text-font;
   font-weight: $cf-font-weight--medium;
-  transition: color 0.25s ease, background-color 0.25s ease;
+  transition: color 0.25s ease, background-color 0.25s ease,
+    border-color 0.25s ease, box-shadow 0.25s ease;
   outline: none;
-  width: 350px;
+  width: 100%;
+  height: $cf-form-sm-height;
+  border-radius: $cf-radius;
+
+  &:hover {
+    border-color: $g5-pepper;
+  }
 
   &:hover,
   &:focus {
     color: $g20-white;
   }
-}
 
-// Focus state
-.flow-panel__focus,
-.flow-panel:hover {
-  .flow-panel--header-right > * {
-    opacity: 1;
+  &:focus {
+    background-color: $cf-input-background--focused;
+    border-color: $cf-input-border--focused;
+    box-shadow: $cf-input--box-shadow;
   }
 }
 
-.flow-panel__focus {
-  border-color: $g5-pepper;
+.flow-panel--title-icon {
+  position: absolute;
+  top: 50%;
+  right: $cf-form-sm-height / 2;
+  transform: translate(50%, -50%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+  color: $g11-sidewalk;
 }
 
-.flow-panel__focus {
-  .flow-panel--header,
-  .flow-panel--body,
-  .flow-panel--results {
-    background-color: $flow-panel--bg;
-  }
+.flow-panel--title:hover .flow-panel--title-icon {
+  opacity: 1;
 }
 
 .flow-panel--data-caret {
@@ -191,18 +201,6 @@
   padding-left: $flow-panel--node-gap;
   padding-top: 0;
   position: relative;
-}
-
-// Special styling for query builder inside flow panel
-.flow-panel--body .query-builder {
-  position: relative;
-  height: 320px;
-  width: 100%;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  padding-top: 0;
 }
 
 .flow-panel--results {
@@ -251,13 +249,13 @@
 }
 
 // Special styling for view options inside flow panel
-.flow-panel--body .view-options {
+.flow-panel--body .view-options--wrap {
   flex: 0 0 340px;
   border-radius: 0;
   background-color: transparent;
   margin-right: 0;
 }
-.flow-panel--body .view-options--container {
+.flow-panel--body .view-options {
   padding: $cf-marg-c;
 }
 
@@ -268,5 +266,33 @@
 
   > * {
     margin-left: $cf-marg-a;
+  }
+}
+
+.flows-early-access-feedback {
+  font-size: 1.25em;
+  font-weight: $cf-font-weight--medium;
+  margin-left: $cf-marg-b;
+}
+
+// Responsive Layout
+// The 1200px number is somewhat arbitrary but works with the current design
+// Adjust as needed
+@media screen and (min-width: 1200px) {
+  .flow-panel--hover-control {
+    flex: 1 0 0;
+    order: 3;
+    justify-content: flex-end;
+    padding-left: 0;
+
+    & > * {
+      margin-top: 0;
+      opacity: 0;
+    }
+  }
+
+  .flow-panel--persistent-control {
+    flex: initial;
+    order: 4;
   }
 }

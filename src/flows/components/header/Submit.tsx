@@ -1,12 +1,5 @@
 // Libraries
-import React, {
-  FC,
-  MouseEvent,
-  useMemo,
-  useContext,
-  useState,
-  useEffect,
-} from 'react'
+import React, {FC, MouseEvent, useContext, useMemo} from 'react'
 import {
   Dropdown,
   IconFont,
@@ -16,98 +9,47 @@ import {
   List,
   ButtonGroup,
 } from '@influxdata/clockface'
+
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
 import {QueryContext} from 'src/flows/context/query'
-import {FlowContext} from 'src/flows/context/flow.current'
-import {ResultsContext} from 'src/flows/context/results'
+import {RunModeContext, RunMode} from 'src/flows/context/runMode'
 import {notify} from 'src/shared/actions/notifications'
-import {PIPE_DEFINITIONS} from 'src/flows'
+import {FlowContext} from 'src/flows/context/flow.current'
 
 // Utils
-import {event} from 'src/cloud/utils/reporting'
 import {cancelAllRunningQueries} from 'src/timeMachine/actions/queries'
-
-// Types
-import {RemoteDataState} from 'src/types'
+import {event} from 'src/cloud/utils/reporting'
 
 // Styles
 import 'src/flows/components/header/Submit.scss'
 
+// Types
+import {RemoteDataState} from 'src/types'
+
 const fakeNotify = notify
 
 export const Submit: FC = () => {
-  const {query, generateMap} = useContext(QueryContext)
   const {flow} = useContext(FlowContext)
-  const {add, update} = useContext(ResultsContext)
-  const [isLoading, setLoading] = useState(RemoteDataState.NotStarted)
-  const [isRunning, setIsRunning] = useState(false)
+  const {runMode, setRunMode} = useContext(RunModeContext)
+  const {generateMap, queryAll} = useContext(QueryContext)
 
-  const hasQueries = useMemo(() => {
-    return !!flow.data.all
-      .map(p => PIPE_DEFINITIONS[p.type])
-      .filter(p => p && (p.family === 'transform' || p.family === 'inputs'))
-      .length
-  }, [flow.data])
+  const hasQueries = useMemo(() => generateMap().length > 0, [generateMap])
 
-  useEffect(() => {
-    if (hasQueries) {
-      submit()
-    }
-  }, [flow.range, hasQueries]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  const forceUpdate = (id, data) => {
-    try {
-      update(id, data)
-    } catch (_e) {
-      add(id, data)
-    }
+  const handleSubmit = () => {
+    event('Notebook Submit Button Clicked')
+    queryAll()
   }
 
-  const submit = () => {
-    const map = generateMap(isRunning)
+  const statuses = flow.meta.all.map(({loading}) => loading)
 
-    if (!map.length) {
-      return
-    }
+  let status = RemoteDataState.Done
 
-    event('Flow Submit Button Clicked')
-    setLoading(RemoteDataState.Loading)
-
-    flow.data.allIDs.forEach(pipeID => {
-      flow.meta.update(pipeID, {loading: RemoteDataState.Loading})
-    })
-
-    Promise.all(
-      map.map(stage => {
-        return query(stage.text)
-          .then(response => {
-            stage.instances.forEach(pipeID => {
-              forceUpdate(pipeID, response)
-              flow.meta.update(pipeID, {loading: RemoteDataState.Done})
-            })
-          })
-          .catch(e => {
-            stage.instances.forEach(pipeID => {
-              forceUpdate(pipeID, {
-                error: e.message,
-              })
-              flow.meta.update(pipeID, {loading: RemoteDataState.Error})
-            })
-          })
-      })
-    )
-      .then(() => {
-        event('Flow Submit Resolved')
-
-        setLoading(RemoteDataState.Done)
-      })
-      .catch(e => {
-        event('Flow Submit Resolved')
-
-        // NOTE: this shouldn't fire, but lets wrap it for completeness
-        setLoading(RemoteDataState.Error)
-        throw e
-      })
+  if (statuses.every(s => s === RemoteDataState.NotStarted)) {
+    status = RemoteDataState.NotStarted
+  } else if (statuses.includes(RemoteDataState.Error)) {
+    status = RemoteDataState.Error
+  } else if (statuses.includes(RemoteDataState.Loading)) {
+    status = RemoteDataState.Loading
   }
 
   const DropdownButton = (
@@ -117,12 +59,12 @@ export const Submit: FC = () => {
     return (
       <ButtonGroup>
         <SubmitQueryButton
-          text={isRunning ? 'Run' : 'Preview'}
+          text={runMode}
           className="flows--submit-button"
           icon={IconFont.Play}
-          submitButtonDisabled={!hasQueries}
-          queryStatus={isLoading}
-          onSubmit={submit}
+          submitButtonDisabled={hasQueries === false}
+          queryStatus={status}
+          onSubmit={handleSubmit}
           onNotify={fakeNotify}
           queryID=""
           cancelAllRunningQueries={cancelAllRunningQueries}
@@ -142,10 +84,10 @@ export const Submit: FC = () => {
       <List.Item
         key="Preview"
         value="Preview"
-        onClick={() => setIsRunning(false)}
+        onClick={() => setRunMode(RunMode.Preview)}
         className="submit-btn--item"
         testID="flow-preview-button"
-        selected={!isRunning}
+        selected={runMode === RunMode.Preview}
         gradient={Gradients.PolarExpress}
       >
         <div className="submit-btn--item-details">
@@ -158,10 +100,10 @@ export const Submit: FC = () => {
       <List.Item
         key="Run"
         value="Run"
-        onClick={() => setIsRunning(true)}
+        onClick={() => setRunMode(RunMode.Run)}
         className="submit-btn--item"
         testID="flow-run-button"
-        selected={isRunning}
+        selected={runMode === RunMode.Run}
         gradient={Gradients.PolarExpress}
       >
         <div className="submit-btn--item-details">

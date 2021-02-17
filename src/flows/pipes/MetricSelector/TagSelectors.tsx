@@ -41,11 +41,13 @@ const TagSelectors: FC<Props> = ({tags}) => {
       }
 
       if (tagValues.length < selectedTags[tagName]?.length) {
+        reportEvent('metric_selector_add_filter')
         reportEvent(deselectEventText, {
           type: 'multi-select',
           tags: JSON.stringify(updatedTags),
         })
       } else {
+        reportEvent('metric_selector_remove_filter')
         reportEvent(selectEventText, {
           type: 'multi-select',
           tags: JSON.stringify(updatedTags),
@@ -128,7 +130,6 @@ const TagSelectors: FC<Props> = ({tags}) => {
                         <List.Indicator type="dot" />
                         <div className="selectors--item-value selectors--item__tag">{`${tagName} = ${tagValue}`}</div>
                         <div className="selectors--item-name">tag</div>
-                        <div className="selectors--item-type">string</div>
                       </List.Item>
                     ))}
                 </React.Fragment>

@@ -17,7 +17,7 @@ const RemoveButton: FC<Props> = ({onRemove}) => {
   }
 
   const handleClick = (): void => {
-    event('Flow Panel Removed')
+    event('notebook_delete_cell')
 
     onRemove()
   }

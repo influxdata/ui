@@ -1,0 +1,776 @@
+openapi: '3.0.0'
+info:
+  title: Unity API Service
+  version: 0.1.0
+servers:
+  - url: /unity/v2 # to be determined
+paths:
+  '/billing/account':
+    get:
+      operationId: GetAccount
+      tags:
+        - Account
+      responses:
+        '200':
+          description: Account info for billing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/billing/date':
+    get:
+      operationId: GetBillingDate
+      tags:
+        - BillingDate
+      responses:
+        '200':
+          description: Billing Date for Account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingDate'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/billing/region':
+    get:
+      operationId: GetRegion
+      tags:
+        - Region
+      responses:
+        '200':
+          description: Account region for billing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Region'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/account/history':
+    get:
+      operationId: GetHistory
+      tags:
+        - History
+      responses:
+        '200':
+          description: Account history for billing, rates and usage
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/History'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/billing/notify_settings':
+    get:
+      operationId: GetBillingNotifySettings
+      tags:
+        - BillingNotifySettings
+      responses:
+        '200':
+          description: Settings for billing notifications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingNotifySettings'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      operationId: PutBillingContact
+      tags:
+        - PaymentMethods
+      requestBody:
+        description: Billing Contact to Update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BillingNotifySettings'
+      responses:
+        '200':
+          description: billing notification settings updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingNotifySettings'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/billing/contact':
+    get:
+      operationId: GetBillingContact
+      tags:
+        - BillingContact
+      responses:
+        '200':
+          description: A billing contact object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingContact'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      operationId: PutBillingContact
+      tags:
+        - BillingContact
+      requestBody:
+        description: BillingContact to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BillingContact'
+      responses:
+        '200':
+          description: billing contact updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingContact'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/billing/cc':
+    get:
+      operationId: GetCCPageParams
+      tags:
+        - CreditCards
+      responses:
+        '200':
+          description: A CreditCard parameter object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditCardParams'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/billing/payment_methods':
+    get:
+      operationId: GetPaymentMethods
+      tags:
+        - PaymentMethods
+      responses:
+        '200':
+          description: A list of PaymentMethods
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentMethods'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/billing/payment_method':
+    put:
+      operationId: PutPaymentMethod
+      tags:
+        - PaymentMethods
+      requestBody:
+        description: PaymentMethod to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentMethodPut'
+      responses:
+        '200':
+          description: Payment method updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentMethods'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/invoices':
+    get:
+      operationId: GetInvoices
+      tags:
+        - Invoices
+      responses:
+        '200':
+          description: A list of invoices
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoices'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/orgs/{orgID}/invites':
+    get:
+      operationId: GetInvites
+      tags:
+        - Invites
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+        - in: path
+          name: orgID
+          description: Specifies the organization ID of the Invite.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of cloud invites
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invites'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      operationId: PostOrgsIDInvites
+      tags:
+        - Invites
+        - Organizations
+      summary: Creates an invite to an organization
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+        - in: path
+          name: orgID
+          schema:
+            type: string
+          required: true
+          description: The organization ID.
+      requestBody:
+        description: Invite to be sent
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Invite'
+      responses:
+        '201':
+          description: Invite sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invite'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/orgs/{orgID}/invites/{inviteID}':
+    delete:
+      operationId: DeleteOrgsIDInviteID
+      tags:
+        - Invites
+        - Organizations
+      summary: Remove an invite to an organization
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+        - in: path
+          name: inviteID
+          schema:
+            type: string
+          required: true
+          description: The ID of the invite to remove.
+        - in: path
+          name: orgID
+          schema:
+            type: string
+          required: true
+          description: The organization ID.
+      responses:
+        '204':
+          description: Invite removed
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/orgs/{orgID}/invites/{inviteID}/resend':
+    post:
+      operationId: DeleteOrgsIDInviteID
+      tags:
+        - Invites
+        - Organizations
+      summary: Re-sends an invite
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+        - in: path
+          name: inviteID
+          schema:
+            type: string
+          required: true
+          description: The ID of the invite to resend.
+        - in: path
+          name: orgID
+          schema:
+            type: string
+          required: true
+          description: The organization ID.
+      responses:
+        '200':
+          description: Invite resent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invite'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/orgs/{orgID}/users':
+    get:
+      operationId: GetUsers
+      tags:
+        - Users
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+        - in: path
+          name: orgID
+          description: Specifies the organization ID of the User.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/orgs/{orgID}/users/{userID}':
+    delete:
+      operationId: DeleteOrgsIDUserID
+      tags:
+        - Users
+        - Organizations
+      summary: Deletes a user
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+        - in: path
+          name: userID
+          schema:
+            type: string
+          required: true
+          description: The ID of the user to remove.
+        - in: path
+          name: orgID
+          schema:
+            type: string
+          required: true
+          description: The organization ID.
+      responses:
+        '204':
+          description: User removed
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  parameters:
+    TraceSpan:
+      in: header
+      name: Zap-Trace-Span
+      description: OpenTracing span context
+      example:
+        trace_id: '1'
+        span_id: '1'
+        baggage:
+          key: value
+      required: false
+      schema:
+        type: string
+  schemas:
+    Error:
+      properties:
+        code:
+          description: Code is the machine-readable error code.
+          readOnly: true
+          type: string
+          # This set of enumerations must remain in sync with the constants defined in errors.go
+          enum:
+            - internal error
+            - not found
+            - conflict
+            - invalid
+            - unprocessable entity
+            - empty value
+            - unavailable
+            - forbidden
+            - too many requests
+            - unauthorized
+            - method not allowed
+        message:
+          readOnly: true
+          description: Message is a human-readable message.
+          type: string
+      required: [code, message]
+    MarketplaceSubscription:
+      properties:
+        marketplace:
+          description: marketplace name
+          type: string
+        subscriberId:
+          description: id of subscriber
+          type: string
+        status:
+          type: string
+          description: status of marketplace subscription
+      required: [marketplace, subscriberId, status]
+    Account:
+      properties:
+        id:
+          type: number
+          description: id of the account
+        balance:
+          type: number
+          description: account balance
+        billingContact:
+          type: '#/components/schemas/BillingContact'
+          description: billing contact information for the account
+        deletable:
+          type: boolean
+          description: boolean of for whether the account can be deleted
+        marketplaceSubscription:
+          type: '#/components/schemas/MarketplaceSubscription'
+          description: marketplace subscription
+        pricingVersion:
+          type: number
+          description: pricing version for the account
+        type:
+          type: string
+          description: type of the account
+          enum:
+            - free
+            - cancelled
+            - pay_as_you_go
+        updatedAt:
+          type: string
+          description: date of last update to account
+        users:
+          type: object
+          description: array of user objects
+        zuoraAccountId:
+          type: string
+          description: id of zuora account
+      required:
+        [
+          id,
+          balance,
+          billingContact,
+          deletable,
+          marketplaceSubscription,
+          pricingVersion,
+          type,
+          updatedAt,
+          users,
+          zuoraAccountId,
+        ]
+    Region:
+      properties:
+        title:
+          type: string
+          description: title of the region
+        isBeta:
+          type: boolean
+          description: boolean whether the region is beta or not
+        isAvailable:
+          type: boolean
+          description: boolean whether the region is available or not
+        provider:
+          type: string
+          description: name of the provider
+        region:
+          type: string
+          description: name of the region
+      required: [title, isBeta, isAvailable, provider, region]
+    History:
+      properties:
+        billingStats:
+          type: string
+          description: csv string of the billing_stats
+        rateLimits:
+          type: string
+          description: csv string of the rate_limits
+        usageStats:
+          type: string
+          description: csv string of the usage_stats
+      required: [billingStats, rateLimits, usageStats]
+    BillingDate:
+      properties:
+        date:
+          type: string
+          description: date representing the start billing date
+        time:
+          type: string
+          description: time representing the start billing date time
+      required: [date, time]
+    BillingContact:
+      properties:
+        companyName:
+          type: string
+          description: name of the company billed
+        email:
+          type: string
+          description: billing email
+        firstName:
+          type: string
+          description: first name of billing contact
+        lastName:
+          type: string
+          description: last name of billing contact
+        country:
+          type: string
+          description: country of billing contact
+        street1:
+          type: string
+          description: street of billing contact
+        street2:
+          type: string
+          description: additional street info
+        subdivision:
+          type: string
+          description: subdivision
+        postalCode:
+          type: number
+          description: postal code of billing contact
+      required:
+        [companyName, email, firstName, lastName, country, street1, postalCode]
+    BillingNotifySettings:
+      properties:
+        isNotify:
+          type: boolean
+        balanceThreshold:
+          type: number
+          description: threshold that when passed will trigger a notification
+        notifyEmail:
+          type: string
+          description: email to send billing notification
+      required: [isNotify, balanceThreshold, notifyEmail]
+    Invite:
+      properties:
+        id:
+          description: the idpe id of the invite
+          readOnly: true
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum:
+            - member
+            - owner
+        expiresAt:
+          format: date-time
+          type: string
+        links:
+          type: object
+          readOnly: true
+          example:
+            self: '/unity/v2/invites/1'
+          properties:
+            self:
+              type: string
+              format: uri
+      required: [id, email, role]
+    Invites:
+      type: object
+      properties:
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+              format: uri
+        invites:
+          type: array
+          items:
+            $ref: '#/components/schemas/Invite'
+    PaymentMethodPut:
+      properties:
+        paymentMethodID:
+          type: string
+          description: ref id from Zuora
+          readOnly: true
+    CreditCardParams:
+      properties:
+        id:
+          description: id of the page displayed
+          readOnly: true
+          type: string
+        tenantID:
+          description: id of our account with the payment processor
+          type: string
+          readOnly: true
+        key:
+          description: payment processor secret key
+          readOnly: true
+          type: string
+        signature:
+          description: signature of the key or token
+          readOnly: true
+          type: string
+        token:
+          description: api token of the payment processor
+          readOnly: true
+          type: string
+        style:
+          description: way payment form gets displayed
+          type: string
+          readOnly: true
+        submitEnabled:
+          description: boolean string 'true' or 'false' which allows us to handle submits from our form
+          type: string
+          enum:
+            - 'true'
+            - 'false'
+          readOnly: true
+        url:
+          type: string
+          readOnly: true
+          description: uri of the embedded iframe
+      required: [id, tenantID, key, signature, token, style, submitEnabled, url]
+    PaymentMethod:
+      properties:
+        cardType:
+          description: name of credit card vendor
+          type: string
+        cardNumber:
+          description: masked credit card number
+          type: string
+        expirationMonth:
+          description: month of expiration
+          type: string
+        expirationYear:
+          description: year of expiration
+          type: string
+        defaultPaymentMethod:
+          description: this the default payment method
+          type: boolean
+      required: [cardType, cardNumber, expirationMonth, expirationYear]
+    PaymentMethods:
+      type: object
+      properties:
+        invoices:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentMethod'
+    Invoice:
+      properties:
+        status:
+          description: status of the invoice
+          readOnly: true
+          type: string
+        amount:
+          description: amount of invoice in dollars
+          type: number
+          readOnly: true
+        targetDate:
+          description: date of invoice
+          readOnly: true
+          type: string
+        filesID:
+          description: id of the invoice file
+          type: string
+      required: [status, amount, targetDate, filesID]
+    Invoices:
+      type: object
+      properties:
+        invoices:
+          type: array
+          items:
+            $ref: '#/components/schemas/Invoice'
+    User:
+      properties:
+        id:
+          description: the idpe id of the user
+          readOnly: true
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum:
+            - member
+            - owner
+        links:
+          type: object
+          readOnly: true
+          example:
+            self: '/unity/v2/users/1'
+          properties:
+            self:
+              type: string
+              format: uri
+      required: [id, email, role]
+    Users:
+      type: object
+      properties:
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+              format: uri
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'

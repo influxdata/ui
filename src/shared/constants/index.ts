@@ -13,6 +13,13 @@ import {InfluxColors} from '@influxdata/clockface'
 
 import {AutoRefreshStatus} from 'src/types'
 
+function formatConstant(constant: string) {
+  if (!constant) {
+    return ''
+  }
+  return constant.trim()
+}
+
 export const DEFAULT_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss ZZ'
 
 export const DROPDOWN_MENU_MAX_HEIGHT = 240
@@ -52,15 +59,17 @@ export const MIN_HANDLE_PIXELS = 20
 export const MAX_SIZE = 1
 export const MIN_SIZE = 0
 
-export const VERSION = process.env.npm_package_version
-export const GIT_SHA = process.env.GIT_SHA
-export const BASE_PATH = process.env.STATIC_PREFIX
-export const API_BASE_PATH = process.env.API_PREFIX
+export const VERSION = formatConstant(process.env.npm_package_version)
+export const GIT_SHA = formatConstant(process.env.GIT_SHA)
+export const BASE_PATH = formatConstant(process.env.STATIC_PREFIX)
+export const API_BASE_PATH = formatConstant(process.env.API_PREFIX)
+export const HONEYBADGER_KEY = formatConstant(process.env.HONEYBADGER_KEY)
+export const HONEYBADGER_ENV = formatConstant(process.env.HONEYBADGER_ENV)
 
 export const CLOUD = !!process.env.CLOUD_URL
 export const CLOUD_SIGNIN_PATHNAME = '/api/v2/signin'
 export const CLOUD_BILLING_VISIBLE = CLOUD
-export const CLOUD_URL = process.env.CLOUD_URL
+export const CLOUD_URL = formatConstant(process.env.CLOUD_URL)
 export const CLOUD_CHECKOUT_PATH = '/checkout'
 export const CLOUD_BILLING_PATH = '/billing'
 export const CLOUD_USAGE_PATH = '/usage'
@@ -111,15 +120,20 @@ export const GIRAFFE_COLOR_SCHEMES = [
   {name: 'T-MAX 400 Film', colors: T_MAX_400_FILM},
 ]
 
-export const BAND_LINE_OPACITY = 0.7
-export const BAND_LINE_WIDTH = 3
-export const BAND_SHADE_OPACITY = 0.3
-
 export const LEGEND_OPACITY_MINIMUM = 0.2
 export const LEGEND_OPACITY_MAXIMUM = 1.0
 export const LEGEND_OPACITY_DEFAULT = LEGEND_OPACITY_MAXIMUM
 export const LEGEND_OPACITY_STEP = 0.01
-export const LEGEND_ORIENTATION_THRESHOLD_DEFAULT = 10
+
+export const LEGEND_ORIENTATION_THRESHOLD_VERTICAL = 0
+export const LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL = 100000000
+
+export const LEGEND_ORIENTATION_THRESHOLD_DEFAULT = LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL
+
+export const LEGEND_COLORIZE_ROWS_DEFAULT = true
 
 export const QUERY_BUILDER_MODE = 'builder'
 export const SCRIPT_EDITOR_MODE = 'advanced'
+
+export const MARKDOWN_UNSUPPORTED_IMAGE =
+  "We don't support images in markdown for security purposes"

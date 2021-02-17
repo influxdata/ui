@@ -89,6 +89,7 @@ export {
   TableViewProperties,
   MarkdownViewProperties,
   CheckViewProperties,
+  GeoViewProperties,
   RenamableField,
   Legend,
   DecimalPlaces,

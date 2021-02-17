@@ -9,11 +9,24 @@ import {
 } from '@influxdata/clockface'
 import Selectors from 'src/flows/pipes/MetricSelector/Selectors'
 import {SchemaContext} from 'src/flows/context/schemaProvider'
+import {PipeContext} from 'src/flows/context/pipe'
 
 const FieldsList: FC = () => {
+  const {data} = useContext(PipeContext)
   const {loading} = useContext(SchemaContext)
 
-  if (loading === RemoteDataState.Loading) {
+  if (!data.bucket) {
+    return (
+      <div className="data-source--list__empty">
+        <p>Select a bucket first</p>
+      </div>
+    )
+  }
+
+  if (
+    loading === RemoteDataState.NotStarted ||
+    loading === RemoteDataState.Loading
+  ) {
     return (
       <div className="data-source--list__empty">
         <TechnoSpinner strokeWidth={ComponentSize.Small} diameterPixels={32} />

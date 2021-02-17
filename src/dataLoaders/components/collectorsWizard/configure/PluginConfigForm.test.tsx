@@ -1,11 +1,9 @@
 // Libraries
 import React from 'react'
-import {shallow} from 'enzyme'
+import {screen} from '@testing-library/react'
 
 // Components
-import {Form} from '@influxdata/clockface'
 import {PluginConfigForm} from 'src/dataLoaders/components/collectorsWizard/configure/PluginConfigForm'
-import OnboardingButtons from 'src/onboarding/components/OnboardingButtons'
 
 // Constants
 import {telegrafPluginsInfo} from 'src/dataLoaders/constants/pluginConfigs'
@@ -13,6 +11,8 @@ import {telegrafPlugin} from 'mocks/dummyData'
 
 // Types
 import {TelegrafPluginInputCpu} from '@influxdata/influx'
+
+import {renderWithReduxAndRouter} from 'src/mockState'
 
 const setup = (override = {}) => {
   const props = {
@@ -35,38 +35,35 @@ const setup = (override = {}) => {
     ...override,
   }
 
-  const wrapper = shallow(<PluginConfigForm {...props} />)
-
-  return {wrapper}
+  renderWithReduxAndRouter(<PluginConfigForm {...props} />)
 }
 
 describe('DataLoaders.Components.CollectorsWizard.Configure.PluginConfigForm', () => {
   describe('if configFields have no keys', () => {
-    it('renders text and buttons', () => {
-      const {wrapper} = setup({
+    it('renders text and buttons', async () => {
+      setup({
         telegrafPlugin,
         configFields:
           telegrafPluginsInfo[TelegrafPluginInputCpu.NameEnum.Cpu].fields,
       })
-      const form = wrapper.find(Form)
-      const title = wrapper.find('h3')
-      const onboardingButtons = wrapper.find(OnboardingButtons)
+      const form = await screen.findByTestId('form-container')
+      const title = await screen.getByRole('heading', {level: 3})
+      const onboardingButtons = await screen.findByTestId('next')
 
-      expect(wrapper.exists()).toBe(true)
-      expect(form.exists()).toBe(true)
-      expect(title.exists()).toBe(true)
-      expect(onboardingButtons.exists()).toBe(true)
+      expect(form).toBeVisible()
+      expect(title).toBeVisible()
+      expect(onboardingButtons).toBeVisible()
     })
   })
 
-  it('has a link to documentation containing plugin name', () => {
-    const {wrapper} = setup({
+  it('has a link to documentation containing plugin name', async () => {
+    setup({
       telegrafPlugin,
     })
 
-    const link = wrapper.find({'data-testid': 'docs-link'})
+    const link = await screen.findByTestId('docs-link')
 
-    expect(link.exists()).toBe(true)
-    expect(link.prop('href')).toContain(telegrafPlugin.name)
+    expect(link).toBeVisible()
+    expect(link.getAttribute('href')).toContain(telegrafPlugin.name)
   })
 })

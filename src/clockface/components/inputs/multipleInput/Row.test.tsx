@@ -1,11 +1,12 @@
 // Libraries
 import React from 'react'
-import {shallow} from 'enzyme'
+import {screen} from '@testing-library/react'
 
 // Components
 import Row from './Row'
 
 import {TelegrafPluginInputCpu} from '@influxdata/influx'
+import {renderWithReduxAndRouter} from 'src/mockState'
 
 const setup = (override = {}) => {
   const props = {
@@ -19,16 +20,14 @@ const setup = (override = {}) => {
     ...override,
   }
 
-  const wrapper = shallow(<Row {...props} />)
-
-  return {wrapper}
+  renderWithReduxAndRouter(<Row {...props} />)
 }
 
 describe('Onboarding.Components.ConfigureStep.Streaming.ArrayFormElement', () => {
-  it('renders', () => {
+  it('renders', async () => {
     const fieldName = 'yo'
-    const {wrapper} = setup({fieldName})
-
-    expect(wrapper.exists()).toBe(true)
+    setup({fieldName})
+    const elm = await screen.findByTestId('index-list')
+    expect(elm).toBeVisible()
   })
 })

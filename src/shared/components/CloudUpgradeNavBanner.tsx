@@ -62,7 +62,7 @@ const CloudUpgradeNavBanner: FC<StateProps> = ({inView}) => {
             href={`${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`}
             target="_self"
           >
-            <Icon glyph={IconFont.Upgrade} />
+            <Icon glyph={IconFont.CrownSolid} />
             <Heading element={HeadingElement.H5}>Upgrade Now</Heading>
           </a>
         </CloudOnly>

@@ -3,6 +3,7 @@ import {produce} from 'immer'
 
 // Types
 import {ActionTypes, Actions} from 'src/overlays/actions/overlays'
+import {OverlayParams} from 'src/types'
 
 export type OverlayID =
   | 'add-note'
@@ -14,14 +15,11 @@ export type OverlayID =
   | 'switch-organizations'
   | 'create-bucket'
   | 'asset-limit'
+  | 'rate-limit'
   | 'create-annotation-stream'
   | 'update-annotation-stream'
   | 'add-annotation'
   | 'edit-annotation'
-
-export interface OverlayParams {
-  [key: string]: string
-}
 
 export interface OverlayState {
   id: OverlayID | null

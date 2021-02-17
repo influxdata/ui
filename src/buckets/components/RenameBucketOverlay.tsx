@@ -10,22 +10,24 @@ import RenameBucketForm from 'src/buckets/components/RenameBucketForm'
 
 // Decorators
 import {ErrorHandling} from 'src/shared/decorators/errors'
-
+import {Overlay} from '@influxdata/clockface'
 @ErrorHandling
 class RenameBucketOverlay extends PureComponent<
   RouteComponentProps<{orgID: string}>
 > {
   public render() {
     return (
-      <DangerConfirmationOverlay
-        title="Rename Bucket"
-        message={this.message}
-        effectedItems={this.effectedItems}
-        onClose={this.handleClose}
-        confirmButtonText="I understand, let's rename my Bucket"
-      >
-        <RenameBucketForm />
-      </DangerConfirmationOverlay>
+      <Overlay visible={true}>
+        <DangerConfirmationOverlay
+          title="Rename Bucket"
+          message={this.message}
+          effectedItems={this.effectedItems}
+          onClose={this.handleClose}
+          confirmButtonText="I understand, let's rename my Bucket"
+        >
+          <RenameBucketForm />
+        </DangerConfirmationOverlay>
+      </Overlay>
     )
   }
 
@@ -45,7 +47,6 @@ class RenameBucketOverlay extends PureComponent<
 
   private handleClose = () => {
     const {history, match} = this.props
-
     history.push(`/orgs/${match.params.orgID}/load-data/buckets`)
   }
 }

@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, useRef, useState} from 'react'
 import {ProtocolToMonacoConverter} from 'monaco-languageclient/lib/monaco-converter'
+import classnames from 'classnames'
 
 // Components
 import MonacoEditor from 'react-monaco-editor'
@@ -16,9 +17,9 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 // Types
 import {OnChangeScript} from 'src/types/flux'
 import {EditorType} from 'src/types'
+import {editor as monacoEditor} from 'monaco-editor/esm/vs/editor/editor.api.js'
 
 import './FluxMonacoEditor.scss'
-import {editor as monacoEditor} from 'monaco-editor'
 import {Diagnostic} from 'monaco-languageclient/lib/services'
 
 const p2m = new ProtocolToMonacoConverter()
@@ -47,6 +48,10 @@ const FluxEditorMonaco: FC<Props> = ({
   const [editorInst, seteditorInst] = useState<EditorType | null>(null)
   const [docVersion, setdocVersion] = useState(2)
   const [docURI, setDocURI] = useState('')
+
+  const wrapperClassName = classnames('flux-editor--monaco', {
+    'flux-editor--monaco__autogrow': autogrow,
+  })
 
   const updateDiagnostics = (diagnostics: Diagnostic[]) => {
     if (editorInst) {
@@ -111,7 +116,7 @@ const FluxEditorMonaco: FC<Props> = ({
   }
 
   return (
-    <div className="flux-editor--monaco" data-testid="flux-editor">
+    <div className={wrapperClassName} data-testid="flux-editor">
       <MonacoEditor
         language={FLUXLANGID}
         theme={THEME_NAME}

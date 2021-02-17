@@ -11,10 +11,10 @@ import {
   ClickOutside,
   Dropdown,
 } from '@influxdata/clockface'
-import AnnotationsSearchBarItem from 'src/annotations/components/controlBar/AnnotationsSearchBarItem'
+import {AnnotationsSearchBarItem} from 'src/annotations/components/controlBar/AnnotationsSearchBarItem'
 
 // Actions
-import {enableAnnotationStream} from 'src/annotations/actions'
+import {enableAnnotationStream} from 'src/annotations/actions/creators'
 
 // Selectors
 import {getHiddenAnnotationStreams} from 'src/annotations/selectors'
@@ -22,7 +22,7 @@ import {getHiddenAnnotationStreams} from 'src/annotations/selectors'
 // Styles
 import 'src/annotations/components/controlBar/AnnotationsSearchBar.scss'
 
-const AnnotationsSearchBar: FC = () => {
+export const AnnotationsSearchBar: FC = () => {
   const dispatch = useDispatch()
   const inputRef = useRef<InputRef>(null)
   const suggestions = useSelector(getHiddenAnnotationStreams)
@@ -94,5 +94,3 @@ const AnnotationsSearchBar: FC = () => {
     </ClickOutside>
   )
 }
-
-export default AnnotationsSearchBar

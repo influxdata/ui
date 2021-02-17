@@ -1,13 +1,38 @@
 // Libraries
 import React from 'react'
-import {shallow} from 'enzyme'
+import {screen} from '@testing-library/react'
 
 // Components
 import ViewTokenOverlay from 'src/authorizations/components/ViewTokenOverlay'
 
 // Fixtures
 import {auth} from 'mocks/dummyData'
-import {permissions} from 'src/utils/permissions'
+import {Permission} from '@influxdata/influx'
+import {get} from 'lodash'
+import {renderWithReduxAndRouter} from 'src/mockState'
+
+const permissions = (
+  permissions: Permission[]
+): {[x: string]: Permission.ActionEnum[]} => {
+  const p = permissions.reduce((acc, {action, resource}) => {
+    const {type} = resource
+    const name = get(resource, 'name', '')
+    let key = `${type}`
+    if (name) {
+      key = `${type}-${name}`
+    }
+
+    let actions = get(acc, key, [])
+
+    if (name && actions) {
+      return {...acc, [key]: [...actions, action]}
+    }
+
+    actions = get(acc, key || resource.type, [])
+    return {...acc, [type]: [...actions, action]}
+  }, {})
+  return p
+}
 
 const setup = (override?) => {
   const props = {
@@ -15,15 +40,16 @@ const setup = (override?) => {
     ...override,
   }
 
-  return shallow(<ViewTokenOverlay {...props} />)
+  renderWithReduxAndRouter(<ViewTokenOverlay {...props} />)
 }
 
 describe('Account', () => {
   describe('rendering', () => {
-    it('renders!', () => {
-      const wrapper = setup()
+    it('renders!', async () => {
+      setup()
 
-      expect(wrapper.exists()).toBe(true)
+      const elm = await screen.findByTestId('overlay--container')
+      expect(elm).toBeVisible()
     })
   })
 

@@ -1,20 +1,18 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, memo} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {AutoSizer} from 'react-virtualized'
 import classnames from 'classnames'
 import {fromFlux} from '@influxdata/giraffe'
+import {isEqual} from 'lodash'
 
 // Components
-import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
-import ViewSwitcher from 'src/shared/components/ViewSwitcher'
-import ViewLoadingSpinner from 'src/shared/components/ViewLoadingSpinner'
+import {View} from 'src/visualization'
 import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 // Utils
 import {getActiveTimeMachine} from 'src/timeMachine/selectors'
-import {checkResultsLength} from 'src/shared/utils/vis'
 import {
   getVisTable,
   getXColumnSelection,
@@ -22,8 +20,7 @@ import {
   getFillColumnsSelection,
   getSymbolColumnsSelection,
 } from 'src/timeMachine/selectors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {getTimeRangeWithTimezone, getTimeZone} from 'src/dashboards/selectors'
+import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
 
 // Types
 import {RemoteDataState, AppState} from 'src/types'
@@ -41,16 +38,12 @@ const TimeMachineVis: FC<Props> = ({
   isInitialFetch,
   isViewingRawData,
   files,
-  checkType,
-  checkThresholds,
   viewProperties,
   giraffeResult,
   xColumn,
   yColumn,
   fillColumns,
   symbolColumns,
-  timeZone,
-  statuses,
 }) => {
   // If the current selections for `xColumn`/`yColumn`/ etc. are invalid given
   // the current Flux response, attempt to make a valid selection instead. This
@@ -71,55 +64,37 @@ const TimeMachineVis: FC<Props> = ({
     'time-machine--view__empty': noQueries,
   })
 
+  if (isViewingRawData && files && files.length) {
+    return (
+      <div className={timeMachineViewClassName}>
+        <ErrorBoundary>
+          <AutoSizer>
+            {({width, height}) => {
+              const [parsedResults] = files.flatMap(fromFlux)
+              return (
+                <RawFluxDataTable
+                  parsedResults={parsedResults}
+                  width={width}
+                  height={height}
+                />
+              )
+            }}
+          </AutoSizer>
+        </ErrorBoundary>
+      </div>
+    )
+  }
+
   return (
     <div className={timeMachineViewClassName}>
-      <ErrorBoundary>
-        <ViewLoadingSpinner loading={loading} />
-        <EmptyQueryView
-          loading={loading}
-          errorFormat={ErrorFormat.Scroll}
-          errorMessage={errorMessage}
-          isInitialFetch={isInitialFetch}
-          queries={viewProperties.queries}
-          hasResults={checkResultsLength(giraffeResult)}
-        >
-          {isViewingRawData ? (
-            <AutoSizer>
-              {({width, height}) => {
-                if (isFlagEnabled('flowsUiPagination')) {
-                  const [parsedResults] = files.flatMap(fromFlux)
-                  return (
-                    <RawFluxDataTable
-                      parsedResults={parsedResults}
-                      width={width}
-                      height={height}
-                    />
-                  )
-                }
-                return (
-                  <RawFluxDataTable
-                    files={files}
-                    width={width}
-                    height={height}
-                  />
-                )
-              }}
-            </AutoSizer>
-          ) : (
-            <ViewSwitcher
-              giraffeResult={giraffeResult}
-              timeRange={timeRange}
-              files={files}
-              properties={resolvedViewProperties}
-              checkType={checkType}
-              checkThresholds={checkThresholds}
-              timeZone={timeZone}
-              statuses={statuses}
-              theme="dark"
-            />
-          )}
-        </EmptyQueryView>
-      </ErrorBoundary>
+      <View
+        loading={loading}
+        error={errorMessage}
+        isInitial={isInitialFetch}
+        properties={resolvedViewProperties}
+        result={giraffeResult}
+        timeRange={timeRange}
+      />
     </div>
   )
 }
@@ -129,30 +104,18 @@ const mstp = (state: AppState) => {
   const {
     isViewingRawData,
     view: {properties: viewProperties},
-    queryResults: {
-      status: loading,
-      errorMessage,
-      isInitialFetch,
-      files,
-      statuses,
-    },
+    queryResults: {status: loading, errorMessage, isInitialFetch, files},
   } = activeTimeMachine
   const timeRange = getTimeRangeWithTimezone(state)
-  const {
-    alertBuilder: {type: checkType, thresholds: checkThresholds},
-  } = state
 
   const giraffeResult = getVisTable(state)
   const xColumn = getXColumnSelection(state)
   const yColumn = getYColumnSelection(state)
   const fillColumns = getFillColumnsSelection(state)
   const symbolColumns = getSymbolColumnsSelection(state)
-  const timeZone = getTimeZone(state)
 
   return {
     loading,
-    checkType,
-    checkThresholds,
     errorMessage,
     isInitialFetch,
     files,
@@ -163,12 +126,12 @@ const mstp = (state: AppState) => {
     yColumn,
     fillColumns,
     symbolColumns,
-    timeZone,
     timeRange: getActiveTimeRange(timeRange, viewProperties.queries),
-    statuses,
   }
 }
 
 const connector = connect(mstp)
 
-export default connector(TimeMachineVis)
+export default connector(
+  memo(TimeMachineVis, (prev, next) => isEqual(prev, next))
+)

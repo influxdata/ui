@@ -11,7 +11,6 @@ import {ResultsContext} from 'src/flows/context/results'
 import {PIPE_DEFINITIONS} from 'src/flows'
 
 // Utils
-import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import {TypeRegistration} from 'src/types/flows'
@@ -22,7 +21,6 @@ import 'src/flows/components/AddButtons.scss'
 interface Props {
   index?: number
   onInsert?: () => void
-  eventName: string
 }
 
 const SUPPORTED_FAMILIES = [
@@ -35,7 +33,7 @@ const SUPPORTED_FAMILIES = [
     family: 'transform',
   },
   {
-    name: 'Pass Throughs',
+    name: 'Pass-through',
     family: 'passThrough',
   },
   {
@@ -43,7 +41,7 @@ const SUPPORTED_FAMILIES = [
     family: 'test',
   },
   {
-    name: 'Outputs',
+    name: 'Output',
     family: 'output',
   },
   {
@@ -52,7 +50,7 @@ const SUPPORTED_FAMILIES = [
   },
 ]
 
-const AddButtons: FC<Props> = ({index, onInsert, eventName}) => {
+const AddButtons: FC<Props> = ({index, onInsert}) => {
   const {add} = useContext(FlowContext)
   const results = useContext(ResultsContext)
 
@@ -102,10 +100,6 @@ const AddButtons: FC<Props> = ({index, onInsert, eventName}) => {
             }
 
             onInsert && onInsert()
-
-            event(eventName, {
-              type: def.type,
-            })
 
             const id = add(
               {

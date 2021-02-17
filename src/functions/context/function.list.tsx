@@ -1,12 +1,18 @@
 import React, {FC, useCallback} from 'react'
 import createPersistedState from 'use-persisted-state'
-import {useSelector} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 import {getAllAPI, deleteAPI, createAPI} from 'src/functions/context/api'
 import {
   Function,
   FunctionCreateRequest,
 } from 'src/client/managedFunctionsRoutes'
 import {getOrg} from 'src/organizations/selectors'
+import {notify} from 'src/shared/actions/notifications'
+import {
+  functionCreateFail,
+  functionGetFail,
+  functionDeleteFail,
+} from 'src/shared/copy/notifications'
 
 const useFunctionListState = createPersistedState('functions')
 
@@ -37,17 +43,22 @@ export const FunctionListProvider: FC = ({children}) => {
   const [functionsList, setFunctionsList] = useFunctionListState(
     DEFAULT_CONTEXT.functionsList
   )
+  const dispatch = useDispatch()
 
   const {id: orgID} = useSelector(getOrg)
 
   const getAll = useCallback(async (): Promise<void> => {
-    const data = await getAllAPI(orgID)
-    if (data.functions) {
-      const _functions = {}
-      data.functions.forEach(f => (_functions[f.id] = f))
-      setFunctionsList(_functions)
+    try {
+      const data = await getAllAPI(orgID)
+      if (data.functions) {
+        const _functions = {}
+        data.functions.forEach(f => (_functions[f.id] = f))
+        setFunctionsList(_functions)
+      }
+    } catch {
+      dispatch(notify(functionGetFail()))
     }
-  }, [orgID, setFunctionsList])
+  }, [orgID, setFunctionsList, dispatch])
 
   const add = async (
     partialFunction: Omit<FunctionCreateRequest, 'orgID' | 'language'>
@@ -64,7 +75,7 @@ export const FunctionListProvider: FC = ({children}) => {
         [createdFunction.id]: createdFunction,
       })
     } catch {
-      // dispatch(notify(notebookCreateFail())) TODO
+      dispatch(notify(functionCreateFail()))
     }
   }
 
@@ -74,13 +85,12 @@ export const FunctionListProvider: FC = ({children}) => {
     }
     try {
       await deleteAPI(id)
+
+      delete _functions[id]
+      setFunctionsList(_functions)
     } catch (error) {
-      // dispatch(notify(notebookDeleteFail())) TODO
+      dispatch(notify(functionDeleteFail()))
     }
-
-    delete _functions[id]
-
-    setFunctionsList(_functions)
   }
 
   return (

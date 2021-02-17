@@ -2,6 +2,8 @@
 import React, {FC, useMemo, useContext} from 'react'
 import {useDispatch} from 'react-redux'
 import {
+  AnnotationLayer,
+  Config,
   DomainLabel,
   InteractionHandlerArguments,
   Plot,
@@ -182,8 +184,7 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
   }
 
-  // todo: remove *any* when types get fixed
-  const config = {
+  const config: Config = {
     ...currentTheme,
     table: result.table,
     xAxisLabel: properties.axes.x.label,
@@ -224,14 +225,12 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
 
   if (isFlagEnabled('annotations') && annotations) {
     // everything is under the 'default' category for now:
-    // todo:  remove any[] after bucky fixes idpe name inconsistencies
     const actualAnnotations: any[] = annotations.default ?? null
 
     if (actualAnnotations && actualAnnotations.length) {
       const colors = ['cyan', 'magenta', 'white']
 
-      // todo: remove *any* when types get fixed
-      const annotationLayer = {
+      const annotationLayer: AnnotationLayer = {
         type: 'annotation',
         x: xColumn,
         y: yColumn,
@@ -247,7 +246,7 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
             pin: 'start',
           }
         }),
-      } as any
+      }
 
       config.layers.push(annotationLayer)
     }

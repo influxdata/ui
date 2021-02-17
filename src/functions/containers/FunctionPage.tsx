@@ -33,10 +33,7 @@ const FunctionPage: FC = () => {
   const [params, setParams] = useState('')
   const [script, setScript] = useState('')
 
-  const {getAll, add} = useContext(FunctionListContext)
-  useEffect(() => {
-    getAll()
-  }, [getAll])
+  const {add} = useContext(FunctionListContext)
 
   const saveFunction = () => {
     add({name, description, script})

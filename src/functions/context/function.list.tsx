@@ -104,8 +104,20 @@ export const FunctionListProvider: FC = ({children}) => {
   }
 
   const trigger = async ({script, params}) => {
+    const paramObject = {}
+
+    params.split('\n').forEach((entry: string) => {
+      const arr = entry.split('=')
+      paramObject[arr[0]] = arr[1]
+    })
+
     try {
-      const run = await triggerAPI({script, params, language: 'python'})
+      const run = await triggerAPI({
+        script,
+        params: paramObject,
+        language: 'python',
+        orgID,
+      })
       return run
     } catch (error) {}
   }

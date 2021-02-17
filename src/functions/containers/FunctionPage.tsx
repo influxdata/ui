@@ -56,27 +56,31 @@ const FunctionPage: FC = () => {
         saveFunction={saveFunction}
         cancelFunction={cancelFunction}
       />
-      <Page.Contents fullWidth={false} scrollable={true}>
-        <FunctionForm
-          name={name}
-          setName={setName}
-          description={description}
-          setDescription={setDescription}
-          params={params}
-          setParams={setParams}
-          triggerFunction={triggerFunction}
-        />
-        <div className="task-form--editor">
-          <Suspense
-            fallback={
-              <SpinnerContainer
-                loading={RemoteDataState.Loading}
-                spinnerComponent={<TechnoSpinner />}
-              />
-            }
-          >
-            <FluxMonacoEditor script={script} onChangeScript={setScript} />
-          </Suspense>
+      <Page.Contents fullWidth={true} scrollable={true}>
+        <div className="function-form">
+          <div className="function-form--options">
+            <FunctionForm
+              name={name}
+              setName={setName}
+              description={description}
+              setDescription={setDescription}
+              params={params}
+              setParams={setParams}
+              triggerFunction={triggerFunction}
+            />
+          </div>
+          <div className="function-form--editor">
+            <Suspense
+              fallback={
+                <SpinnerContainer
+                  loading={RemoteDataState.Loading}
+                  spinnerComponent={<TechnoSpinner />}
+                />
+              }
+            >
+              <FluxMonacoEditor script={script} onChangeScript={setScript} />
+            </Suspense>
+          </div>
         </div>
       </Page.Contents>
     </Page>

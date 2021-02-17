@@ -1,0 +1,24 @@
+/*
+   Function Editor Page Styles
+   -----------------------------------------------------------------------------
+*/
+
+.function-form {
+  height: calc(100% - #{$ix-marg-d});
+  display: flex;
+  align-items: stretch;
+  background-color: $g3-castle;
+  border-radius: $radius;
+}
+
+.function-form--options {
+  flex: 1 0 140px;
+  padding: $ix-marg-d;
+}
+
+.function-form--editor {
+  position: relative;
+  flex: 6 0 0;
+  border-radius: 0 $radius $radius 0;
+  margin: $ix-marg-b;
+}

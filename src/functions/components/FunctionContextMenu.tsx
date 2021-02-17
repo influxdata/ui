@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -9,6 +9,7 @@ import {ButtonShape, ComponentColor, IconFont} from '@influxdata/clockface'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
+import {FunctionListContext} from 'src/functions/context/function.list'
 
 interface Props {
   id: string
@@ -16,11 +17,15 @@ interface Props {
 }
 
 const FunctionContextMenu: FC<Props> = ({id, name}) => {
+  const {remove} = useContext(FunctionListContext)
+
   const {id: orgID} = useSelector(getOrg)
 
   const history = useHistory()
 
-  const handleDelete = () => {}
+  const handleDelete = () => {
+    remove(id)
+  }
 
   const handleRouteToRuns = () => {
     history.push(`/orgs/${orgID}/functions/${id}/runs`)

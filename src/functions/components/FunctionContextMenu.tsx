@@ -16,7 +16,7 @@ interface Props {
   name: string
 }
 
-const FunctionContextMenu: FC<Props> = ({id, name}) => {
+const FunctionContextMenu: FC<Props> = ({id: functionID, name}) => {
   const {remove} = useContext(FunctionListContext)
 
   const {id: orgID} = useSelector(getOrg)
@@ -24,11 +24,11 @@ const FunctionContextMenu: FC<Props> = ({id, name}) => {
   const history = useHistory()
 
   const handleDelete = () => {
-    remove(id)
+    remove(functionID)
   }
 
   const handleRouteToRuns = () => {
-    history.push(`/orgs/${orgID}/functions/${id}/runs`)
+    history.push(`/orgs/${orgID}/functions/${functionID}/runs`)
   }
 
   return (

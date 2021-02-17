@@ -25,16 +25,8 @@ const FunctionCards: FC<Props> = ({searchTerm}) => {
         {Object.values(functionsList)
           .sort((a, b) => a.name.localeCompare(b.name))
           .filter(f => f.name.includes(searchTerm))
-          .map(({id, name, url, description}) => {
-            return (
-              <FunctionCard
-                key={id}
-                id={id}
-                url={url}
-                name={name}
-                description={description}
-              />
-            )
+          .map(({id}) => {
+            return <FunctionCard key={id} id={id} />
           })}
       </ResourceList.Body>
     </ResourceList>

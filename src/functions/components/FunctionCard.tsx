@@ -1,4 +1,4 @@
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -11,20 +11,21 @@ import {
   FlexBox,
 } from '@influxdata/clockface'
 import FunctionContextMenu from 'src/functions/components/FunctionContextMenu'
+import {FunctionListContext} from 'src/functions/context/function.list'
 
 // utils
 import {getOrg} from 'src/organizations/selectors'
 
 interface Props {
   id: string
-  name: string
-  url?: string
-  description?: string
 }
 
-const FunctionCard: FC<Props> = ({id, name, url, description}) => {
+const FunctionCard: FC<Props> = ({id}) => {
+  const {functionsList} = useContext(FunctionListContext)
   const {id: orgID} = useSelector(getOrg)
   const history = useHistory()
+
+  const {name, url, description} = functionsList[id]
 
   const handleClick = () => {
     history.push(`/orgs/${orgID}/functions/${id}/edit`)

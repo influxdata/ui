@@ -35,8 +35,20 @@ export const getAllAPI = async (orgID: string) => {
     // } TODO
     return {
       functions: [
-        {name: 'functionb', id: '1', orgID: '0', script: 'lalal'},
-        {name: 'functiona', id: '2', orgID: '0', script: 'lalal'},
+        {
+          name: 'functionb',
+          id: '1',
+          orgID: '0',
+          script: 'this is a script',
+          url: 'www.url.com',
+        },
+        {
+          name: 'functiona',
+          id: '2',
+          orgID: '0',
+          script: 'this is another script',
+          url: 'www.url.com',
+        },
       ],
     }
   }

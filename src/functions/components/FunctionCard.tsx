@@ -19,9 +19,10 @@ import {getOrg} from 'src/organizations/selectors'
 interface Props {
   id: string
   name: string
+  url?: string
 }
 
-const FunctionCard: FC<Props> = ({id, name}) => {
+const FunctionCard: FC<Props> = ({id, name, url}) => {
   const {id: orgID} = useSelector(getOrg)
   const history = useHistory()
 
@@ -47,7 +48,7 @@ const FunctionCard: FC<Props> = ({id, name}) => {
         <ResourceCard.Name name={name} onClick={handleClick} />
         <ResourceCard.Meta>
           <>Last triggered 3 minutes ago</>
-          <>Trigger URL: http://moo.influxdata.com/yerfunctionisawesome</>
+          {url && 'Endpoint: ' + url}
         </ResourceCard.Meta>
       </FlexBox>
     </ResourceCard>

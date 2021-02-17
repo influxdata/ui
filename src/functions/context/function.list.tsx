@@ -50,11 +50,12 @@ export const FunctionListProvider: FC = ({children}) => {
   }, [orgID, setFunctionsList])
 
   const add = async (
-    partialFunction: Omit<FunctionCreateRequest, 'orgID'>
+    partialFunction: Omit<FunctionCreateRequest, 'orgID' | 'language'>
   ): Promise<void> => {
     const _function = {
       ...partialFunction,
       orgID,
+      language: 'python',
     }
     try {
       const createdFunction = await createAPI(_function)

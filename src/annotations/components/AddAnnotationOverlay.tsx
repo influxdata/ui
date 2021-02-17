@@ -1,38 +1,35 @@
 // Libraries
-import React, {FC} from 'react'
-import {RouteProps, useLocation} from 'react-router-dom'
+import React, {FC, useContext} from 'react'
+import {useSelector} from 'react-redux'
 
 // Components
 import {AnnotationForm} from 'src/annotations/components/annotationForm/AnnotationForm'
 
-// Types
-import {Annotation} from 'src/annotations/reducers/annotationFormReducer'
+// Contexts
+import {OverlayContext} from 'src/overlays/components/OverlayController'
+
+// Selectors
+import {getOverlayParams} from 'src/overlays/selectors'
 
 export const AddAnnotationOverlay: FC = () => {
-  const location: RouteProps['location'] = useLocation()
-  const params = location.state
-  let timeStart = ''
-  let timeStop = ''
+  const {onClose} = useContext(OverlayContext)
+  const {createAnnotation, startTime} = useSelector(getOverlayParams)
 
-  if (params && params[0]) {
-    timeStart = params[0].timeStart
-    timeStop = params[0].timeStop
-  }
-
-  const type = timeStart === timeStop ? 'point' : 'range'
-
-  const handleSubmit = (_annotation: Annotation): void => {
-    // Use the values of annotation to construct a line protocol string and
-    // then execute it
+  const handleSubmit = (modifiedAnnotation): void => {
+    const formIsValid = true
+    if (formIsValid) {
+      createAnnotation(modifiedAnnotation)
+      onClose()
+    }
   }
 
   return (
     <AnnotationForm
       title="Add"
+      type="point"
+      onClose={onClose}
       onSubmit={handleSubmit}
-      timeStart={timeStart}
-      timeStop={timeStop}
-      type={type}
+      startTime={startTime}
     />
   )
 }

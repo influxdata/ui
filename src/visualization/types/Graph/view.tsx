@@ -2,11 +2,11 @@
 import React, {FC, useMemo, useContext} from 'react'
 import {useDispatch} from 'react-redux'
 import {
+  DomainLabel,
   InteractionHandlerArguments,
   Plot,
-  DomainLabel,
-  lineTransform,
   getDomainDataFromLines,
+  lineTransform,
 } from '@influxdata/giraffe'
 
 // Components
@@ -35,7 +35,9 @@ import {
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {AppSettingContext} from 'src/shared/contexts/app'
 
+// Redux
 import {writeThenFetchAndSetAnnotations} from 'src/annotations/actions/thunks'
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -146,16 +148,29 @@ const XYPlot: FC<Props> = ({properties, result, timeRange}) => {
 
   const currentTheme = theme === 'light' ? VIS_THEME_LIGHT : VIS_THEME
 
-  const doubleClickHandler = (plotInteraction: InteractionHandlerArguments) => {
-    const annotationTime = new Date(plotInteraction.valueX).getTime()
+  const createAnnotation = userModifiedAnnotation => {
+    const {message, startTime} = userModifiedAnnotation
     dispatch(
       writeThenFetchAndSetAnnotations([
         {
-          summary: 'hi',
-          startTime: annotationTime,
-          endTime: annotationTime,
+          summary: message,
+          startTime: new Date(startTime).getTime(),
+          endTime: new Date(startTime).getTime(),
         },
       ])
+    )
+  }
+
+  const doubleClickHandler = (plotInteraction: InteractionHandlerArguments) => {
+    dispatch(
+      showOverlay(
+        'add-annotation',
+        {
+          createAnnotation,
+          startTime: plotInteraction.valueX,
+        },
+        dismissOverlay
+      )
     )
   }
 

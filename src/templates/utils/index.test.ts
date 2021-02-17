@@ -212,7 +212,7 @@ describe('validating template URLs', () => {
     })
 
     it('notifies the user when the URL is invalid due to spaces', () => {
-      const errorMessage = 'URL cannot contain spaces'
+      const errorMessage = `Your URL can't contain spaces`
       expect(
         validateTemplateURL(
           'https://github.com/influxdata/community-templates/  blob/master/linux_system/linux_system.yml'

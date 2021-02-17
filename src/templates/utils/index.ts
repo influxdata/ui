@@ -146,6 +146,10 @@ export const validateTemplateURL = (url): string => {
   */
   const cleanUrl = url.trim().split('?')[0]
 
+  if (cleanUrl.includes(' ')) {
+    return `Your URL can't contain spaces`
+  }
+
   const isCommunityTemplates =
     cleanUrl.startsWith('https://github.com/influxdata/community-templates') ||
     cleanUrl.startsWith(
@@ -167,10 +171,6 @@ export const validateTemplateURL = (url): string => {
 
   if (!isCommunityTemplates && !isCorrectFileType) {
     return "We can't use that URL"
-  }
-
-  if (cleanUrl.includes(' ')) {
-    return 'URL cannot contain spaces'
   }
 
   return TEMPLATE_URL_VALID

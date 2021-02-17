@@ -182,6 +182,7 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
   }
 
+  // todo: remove *any* when types get fixed
   const config = {
     ...currentTheme,
     table: result.table,
@@ -229,6 +230,7 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
     if (actualAnnotations && actualAnnotations.length) {
       const colors = ['cyan', 'magenta', 'white']
 
+      // todo: remove *any* when types get fixed
       const annotationLayer = {
         type: 'annotation',
         x: xColumn,

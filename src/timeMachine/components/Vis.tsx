@@ -118,7 +118,7 @@ const mstp = (state: AppState) => {
   const symbolColumns = getSymbolColumnsSelection(state)
   const annotations = getAnnotations(state)
 
-  const defaultObject = {
+  return {
     loading,
     errorMessage,
     isInitialFetch,
@@ -133,7 +133,6 @@ const mstp = (state: AppState) => {
     timeRange: getActiveTimeRange(timeRange, viewProperties.queries),
     annotations,
   }
-  return defaultObject
 }
 
 const connector = connect(mstp)

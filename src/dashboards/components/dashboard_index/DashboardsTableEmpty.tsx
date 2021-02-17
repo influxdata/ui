@@ -37,7 +37,7 @@ const DashboardsTableEmpty: FC<ComponentProps> = ({
 
   return (
     <GoogleOptimizeExperiment
-      experimentID="9H85dx92QTylCNHIL9Y5Sg"
+      experimentID="H_NofBAhSW-hv6zaYaxeow"
       original={
         <EmptyState size={ComponentSize.Large} testID="empty-dashboards-list">
           <EmptyState.Text>

@@ -41,7 +41,7 @@ export default class EmptyTasksLists extends PureComponent<Props> {
     if (searchTerm === '') {
       return (
         <GoogleOptimizeExperiment
-          experimentID="9H85dx92QTylCNHIL9Y5Sg"
+          experimentID="H_NofBAhSW-hv6zaYaxeow"
           original={
             <EmptyState testID="empty-tasks-list" size={ComponentSize.Large}>
               <EmptyState.Text>

@@ -171,7 +171,7 @@ class BucketsTab extends PureComponent<Props, State> {
 
     if (isEmpty(searchTerm)) {
       return (
-        <EmptyState size={ComponentSize.Large}>
+        <EmptyState size={ComponentSize.Large} testID="buckets-empty">
           <EmptyState.Text>
             Looks like there aren't any <b>Buckets</b>, why not create one?
           </EmptyState.Text>

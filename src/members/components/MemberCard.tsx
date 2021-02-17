@@ -18,6 +18,7 @@ export default class MemberCard extends PureComponent<Props> {
     return (
       <ResourceCard
         testID="task-card"
+        contextMenuInteraction="alwaysVisible"
         contextMenu={<MemberContextMenu member={member} onDelete={onDelete} />}
       >
         <ResourceCard.Name name={member.name} />

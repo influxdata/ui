@@ -103,11 +103,21 @@ describe('Buckets', () => {
         cy.createBucket(id, name, bucket1)
       })
       cy.reload()
-      cy.getByTestID(`bucket-card ${bucket1}`).trigger('mouseover')
-      cy.getByTestID(`context-delete-menu ${bucket1}`).click()
       cy.intercept('DELETE', '/buckets').as('deleteBucket')
-      cy.getByTestID(`context-delete-bucket ${bucket1}`).click({force: true})
+      cy.get('.cf-resource-card').should('have.length', 5)
+      cy.getByTestID(`bucket-card ${bucket1}`)
+        .trigger('mouseover')
+        .within(() => {
+          cy.getByTestID(`context-delete--button`).click()
+        })
+        .then(() => {
+          cy.getByTestID('context-delete--confirm-button').should('be.visible')
+          cy.getByTestID('context-delete--confirm-button').click()
+        })
+
       cy.wait('@deleteBucket')
+
+      cy.get('.cf-resource-card').should('have.length', 4)
       cy.getByTestID(`bucket--card--name ${bucket1}`).should('not.exist')
     })
   })

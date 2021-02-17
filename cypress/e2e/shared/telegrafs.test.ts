@@ -174,8 +174,8 @@ describe('Collectors', () => {
 
       it('can delete a config', () => {
         cy.getByTestID('resource-card').should('have.length', 1)
-        cy.getByTestID('telegraf-delete-menu').click({force: true})
-        cy.getByTestID('telegraf-delete-button').click()
+        cy.getByTestID('telegraf-delete--button').click({force: true})
+        cy.getByTestID('telegraf-delete--confirm-button').click()
         cy.getByTestID('empty-state').should('exist')
       })
     })

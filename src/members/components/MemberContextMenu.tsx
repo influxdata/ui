@@ -3,10 +3,14 @@ import React, {PureComponent} from 'react'
 
 // Components
 import {Member} from 'src/types'
-import {Context} from 'src/clockface'
-
 import CloudExclude from 'src/shared/components/cloud/CloudExclude'
-import {IconFont, ComponentColor} from '@influxdata/clockface'
+import {
+  IconFont,
+  ComponentColor,
+  ConfirmationButton,
+  ComponentSize,
+  ButtonShape,
+} from '@influxdata/clockface'
 
 interface Props {
   member: Member
@@ -15,30 +19,22 @@ interface Props {
 
 export default class MemberContextMenu extends PureComponent<Props> {
   public render() {
-    const {member} = this.props
+    const {member, onDelete} = this.props
 
     return (
       <CloudExclude>
-        <Context>
-          <Context.Menu
-            icon={IconFont.Trash}
-            color={ComponentColor.Danger}
-            testID="context-delete-menu"
-          >
-            <Context.Item
-              label="Delete"
-              action={this.handleDelete}
-              value={member}
-              testID="context-delete-task"
-            />
-          </Context.Menu>
-        </Context>
+        <ConfirmationButton
+          color={ComponentColor.Danger}
+          icon={IconFont.Trash}
+          size={ComponentSize.ExtraSmall}
+          shape={ButtonShape.Square}
+          returnValue={member}
+          onConfirm={onDelete}
+          confirmationButtonText="Delete"
+          confirmationLabel="Really delete member?"
+          testID="delete-member"
+        />
       </CloudExclude>
     )
-  }
-
-  private handleDelete = () => {
-    const {member, onDelete} = this.props
-    onDelete(member)
   }
 }

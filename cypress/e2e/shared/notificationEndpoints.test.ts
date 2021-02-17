@@ -236,16 +236,16 @@ describe('Notification Endpoints', () => {
 
   it('can view history of endpoint', () => {
     cy.get<SlackNotificationEndpoint>('@endpoint').then(() => {
-      cy.getByTestID(`context-history-menu`).click()
-      cy.getByTestID(`context-history-task`).click()
+      cy.getByTestID(`context-endpoint-options`).click()
+      cy.getByTestID(`context-endpoint-history`).click()
       cy.getByTestID(`alert-history-title`).should('exist')
     })
   })
 
   it('can delete endpoint', () => {
     cy.get<SlackNotificationEndpoint>('@endpoint').then(() => {
-      cy.getByTestID(`context-delete-menu`).click()
-      cy.getByTestID(`context-delete-task`).click()
+      cy.getByTestID(`context-delete-endpoint--button`).click()
+      cy.getByTestID(`context-delete-endpoint--confirm-button`).click()
       cy.getByTestID(`endpoint-card--name ${name}`).should('not.exist')
     })
   })

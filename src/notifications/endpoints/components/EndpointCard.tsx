@@ -115,6 +115,7 @@ const EndpointCard: FC<Props> = ({
         direction={FlexDirection.Row}
         alignItems={AlignItems.Center}
         margin={ComponentSize.Large}
+        contextMenuInteraction="alwaysVisible"
         testID={`endpoint-card ${name}`}
       >
         <SlideToggle

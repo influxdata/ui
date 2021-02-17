@@ -11,16 +11,15 @@ import {
 
 // Components
 import {
-  ComponentSize,
   FlexBox,
   InputLabel,
   SlideToggle,
   ComponentColor,
   ResourceCard,
   IconFont,
+  ConfirmationButton,
+  ComponentSize,
 } from '@influxdata/clockface'
-
-import {Context} from 'src/clockface'
 
 // Types
 import {Authorization} from 'src/types'
@@ -46,6 +45,7 @@ class TokenRow extends PureComponent<Props> {
     return (
       <ResourceCard
         contextMenu={this.contextMenu}
+        contextMenuInteraction="alwaysVisible"
         testID={`token-card ${auth.description}`}
       >
         <ResourceCard.EditableName
@@ -77,15 +77,16 @@ class TokenRow extends PureComponent<Props> {
 
   private get contextMenu(): JSX.Element {
     return (
-      <Context>
-        <Context.Menu icon={IconFont.Trash} color={ComponentColor.Danger}>
-          <Context.Item
-            label="Delete"
-            action={this.handleDelete}
-            testID="delete-token"
-          />
-        </Context.Menu>
-      </Context>
+      <ConfirmationButton
+        size={ComponentSize.ExtraSmall}
+        text="Delete"
+        color={ComponentColor.Danger}
+        icon={IconFont.Trash}
+        confirmationLabel="Are you sure? This cannot be undone"
+        confirmationButtonText="Confirm"
+        onConfirm={this.handleDelete}
+        testID="delete-token"
+      />
     )
   }
 

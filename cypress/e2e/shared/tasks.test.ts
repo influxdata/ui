@@ -191,8 +191,8 @@ http.post(
       cy.reload()
     })
 
-    it('can edit a task', () => {
-      // Disabling the test
+    it('can edit and delete a task', () => {
+      // Disabling the task
       cy.getByTestID('task-card--slide-toggle')
         .should('have.class', 'active')
         .then(() => {
@@ -239,37 +239,28 @@ http.post(
       // Delete the label
       cy.getByTestID(`label--pill--delete ${labelName}`).click({force: true})
       cy.getByTestID('inline-labels--empty').should('exist')
-    })
 
-    it('can delete a task', () => {
+      // Now delete the task
       cy.getByTestID('task-card')
         .first()
-        .trigger('mouseover')
-        .then(() => {
-          cy.getByTestID('context-delete-menu')
-            .click()
-            .then(() => {
-              cy.getByTestID('context-delete-task')
-                .click()
-                .then(() => {
-                  cy.getByTestID('empty-tasks-list').should('exist')
-                })
-            })
+        .within(() => {
+          cy.getByTestID('task-context--delete--button').click()
         })
+        .then(() => {
+          cy.getByTestID('task-context--delete--confirm-button').click()
+        })
+
+      // Empty state should appear when no tasks are present
+      cy.getByTestID('empty-tasks-list').should('exist')
     })
 
     // skipping until this issue is resolved
     // https://github.com/influxdata/influxdb/issues/18478
     it.skip('can clone a task and activate just the cloned one', () => {
       cy.getByTestID('task-card').then(() => {
-        cy.get('.context-menu--container')
-          .eq(1)
-          .click()
-          .then(() => {
-            cy.getByTestID('context-menu-item')
-              .contains('Clone')
-              .click()
-          })
+        cy.getByTestID('task-context-menu').within(() => {
+          cy.getByTestID('task-context--clone').click()
+        })
       })
 
       cy.getByTestID('task-card--slide-toggle')
@@ -292,22 +283,11 @@ http.post(
 
     it('can clone a task and edit it', () => {
       // clone a task
-      cy.getByTestID('task-card')
-        .first()
-        .trigger('mouseover')
-        .then(() => {
-          cy.get('.context-menu--container')
-            .eq(1)
-            .within(() => {
-              cy.getByTestID('context-menu')
-                .click()
-                .then(() => {
-                  cy.getByTestID('context-menu-item')
-                    .contains('Clone')
-                    .click()
-                })
-            })
+      cy.getByTestID('task-card').then(() => {
+        cy.getByTestID('task-context-menu').within(() => {
+          cy.getByTestID('task-context--clone').click()
         })
+      })
 
       cy.getByTestID('task-card').should('have.length', 2)
 

@@ -6,7 +6,6 @@ import WizardFullScreen from './components/wizard/WizardFullScreen'
 import WizardOverlay from './components/wizard/WizardOverlay'
 import WizardProgressHeader from './components/wizard/WizardProgressHeader'
 import ProgressBar from './components/wizard/ProgressBar'
-import Context from './components/context_menu/Context'
 import Select from 'src/clockface/components/Select'
 
 // Import Types
@@ -37,7 +36,6 @@ export {
   ComponentColor,
   ComponentSize,
   ComponentStatus,
-  Context,
   DropdownChild,
   DropdownMenuColors,
   DropdownMenuPosition,

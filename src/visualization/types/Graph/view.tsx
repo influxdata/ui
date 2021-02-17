@@ -2,6 +2,7 @@
 import React, {FC, useMemo, useContext} from 'react'
 import {useDispatch} from 'react-redux'
 import {
+  InteractionHandlerArguments,
   Plot,
   DomainLabel,
   lineTransform,
@@ -145,7 +146,7 @@ const XYPlot: FC<Props> = ({properties, result, timeRange}) => {
 
   const currentTheme = theme === 'light' ? VIS_THEME_LIGHT : VIS_THEME
 
-  const doubleClickHandler = plotInteraction => {
+  const doubleClickHandler = (plotInteraction: InteractionHandlerArguments) => {
     const annotationTime = new Date(plotInteraction.valueX).getTime()
     dispatch(
       writeThenFetchAndSetAnnotations([

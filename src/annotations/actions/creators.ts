@@ -12,7 +12,6 @@ export type Action =
   | ReturnType<typeof setAnnotations>
   | ReturnType<typeof deleteAnnotation>
 
-
 export const enableAnnotationStream = (streamID: string) =>
   ({
     type: ENABLE_ANNOTATION_STREAM,
@@ -31,7 +30,7 @@ export const setAnnotations = (annotations: AnnotationStream[]) =>
     annotations,
   } as const)
 
-  export const deleteAnnotation = (annotation: Annotation) =>
+export const deleteAnnotation = (annotation: Annotation) =>
   ({
     type: DELETE_ANNOTATION,
     annotation,

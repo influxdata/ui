@@ -1,5 +1,4 @@
-import React, {FC, useCallback} from 'react'
-import createPersistedState from 'use-persisted-state'
+import React, {FC, useCallback, useState} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import {useHistory} from 'react-router-dom'
 import {
@@ -27,8 +26,6 @@ import {
   functionUpdateFail,
   runGetFail,
 } from 'src/shared/copy/notifications'
-
-const useFunctionListState = createPersistedState('functions')
 
 export interface FunctionList {
   functionsList: {
@@ -77,10 +74,11 @@ export const FunctionListContext = React.createContext<FunctionListContextType>(
 )
 
 export const FunctionListProvider: FC = ({children}) => {
-  const [functionsList, setFunctionsList] = useFunctionListState(
+  const [functionsList, setFunctionsList] = useState(
     DEFAULT_CONTEXT.functionsList
   )
-  const [runsList, setRunsList] = useFunctionListState(DEFAULT_CONTEXT.runsList)
+
+  const [runsList, setRunsList] = useState(DEFAULT_CONTEXT.runsList)
 
   const dispatch = useDispatch()
   const history = useHistory()

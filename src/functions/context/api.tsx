@@ -30,27 +30,27 @@ export const deleteAPI = async (id: string) => {
 export const getAllAPI = async (orgID: string) => {
   const res = await getApiV2Functions({query: {orgID}})
   if (res.status != 200) {
-    //  throw new Error(res.data.message)
-    return {
-      functions: [
-        {
-          name: 'functionb',
-          id: '1',
-          orgID: '0',
-          script: 'this is a script',
-          url: 'www.url.com',
-          description: 'best function ever',
-        },
-        {
-          name: 'functiona',
-          id: '2',
-          orgID: '0',
-          script: 'this is another script',
-          url: 'www.url.com',
-          description: 'second best function ever',
-        },
-      ],
-    }
+    throw new Error(res.data.message)
+    // return {
+    //   functions: [
+    //     {
+    //       name: 'functionb',
+    //       id: '1',
+    //       orgID: '0',
+    //       script: 'this is a script',
+    //       url: 'www.url.com',
+    //       description: 'best function ever',
+    //     },
+    //     {
+    //       name: 'functiona',
+    //       id: '2',
+    //       orgID: '0',
+    //       script: 'this is another script',
+    //       url: 'www.url.com',
+    //       description: 'second best function ever',
+    //     },
+    //   ],
+    // }
   } else {
     return res.data
   }
@@ -81,21 +81,21 @@ export const getRunsAPI = async (functionID: string) => {
   const res = await getApiV2FunctionsRuns({functionID})
 
   if (res.status != 200) {
-    // throw new Error(res.data.message)
-    return [
-      {
-        id: '1',
-        status: 'success',
-        logs: [{message: 'yo', timestamp: '1010', severity: 'crit'}],
-        startedAt: '1',
-      },
-      {
-        id: '2',
-        status: 'fail',
-        logs: [{message: 'yo', timestamp: '1010', severity: 'warn'}],
-        startedAt: '2',
-      },
-    ]
+    throw new Error(res.data.message)
+    // return [
+    //   {
+    //     id: '1',
+    //     status: 'success',
+    //     logs: [{message: 'yo', timestamp: '1010', severity: 'crit'}],
+    //     startedAt: '1',
+    //   },
+    //   {
+    //     id: '2',
+    //     status: 'fail',
+    //     logs: [{message: 'yo', timestamp: '1010', severity: 'warn'}],
+    //     startedAt: '2',
+    //   },
+    // ]
   }
   return res.data.functionrunrecords
 }

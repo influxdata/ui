@@ -7,6 +7,7 @@ import {
   FunctionTriggerRequest,
   patchApiV2Function,
   FunctionUpdateRequest,
+  getApiV2FunctionsRuns,
 } from 'src/client/managedFunctionsRoutes'
 
 export const createAPI = async (functionCreate: FunctionCreateRequest) => {
@@ -69,6 +70,15 @@ export const updateAPI = async (
   updateRequest: FunctionUpdateRequest
 ) => {
   const res = await patchApiV2Function({functionID, data: updateRequest})
+
+  if (res.status != 200) {
+    throw new Error(res.data.message)
+  }
+  return res.data
+}
+
+export const getRunsAPI = async (functionID: string) => {
+  const res = await getApiV2FunctionsRuns({functionID})
 
   if (res.status != 200) {
     throw new Error(res.data.message)

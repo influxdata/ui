@@ -8,11 +8,13 @@ import {
   createAPI,
   triggerAPI,
   updateAPI,
+  getRunsAPI,
 } from 'src/functions/context/api'
 import {
   Function,
   FunctionCreateRequest,
   FunctionRun,
+  FunctionRunRecord,
   FunctionTriggerRequest,
 } from 'src/client/managedFunctionsRoutes'
 import {getOrg} from 'src/organizations/selectors'
@@ -23,6 +25,7 @@ import {
   functionDeleteFail,
   functionRunFail,
   functionUpdateFail,
+  runGetFail,
 } from 'src/shared/copy/notifications'
 
 const useFunctionListState = createPersistedState('functions')
@@ -33,7 +36,13 @@ export interface FunctionList {
   }
 }
 
-export interface FunctionListContextType extends FunctionList {
+export interface RunsList {
+  runsList: {
+    [key: string]: FunctionRunRecord[]
+  }
+}
+
+export interface FunctionListContextType extends FunctionList, RunsList {
   add: (_function: Partial<FunctionCreateRequest>) => Promise<void>
   remove: (_id: string) => void
   getAll: () => void
@@ -46,6 +55,7 @@ export interface FunctionListContextType extends FunctionList {
   trigger: (
     _functionTrigger: Partial<FunctionTriggerRequest>
   ) => Promise<FunctionRun>
+  getRuns: (_functionID: string) => Promise<void>
 }
 
 export const DEFAULT_CONTEXT: FunctionListContextType = {
@@ -59,6 +69,7 @@ export const DEFAULT_CONTEXT: FunctionListContextType = {
     _description?: string
   ) => {},
   getAll: () => {},
+  getRuns: (_functionID: string) => {},
 } as FunctionListContextType
 
 export const FunctionListContext = React.createContext<FunctionListContextType>(
@@ -69,6 +80,8 @@ export const FunctionListProvider: FC = ({children}) => {
   const [functionsList, setFunctionsList] = useFunctionListState(
     DEFAULT_CONTEXT.functionsList
   )
+  const [runsList, setRunsList] = useFunctionListState(DEFAULT_CONTEXT.runsList)
+
   const dispatch = useDispatch()
   const history = useHistory()
 
@@ -161,10 +174,21 @@ export const FunctionListProvider: FC = ({children}) => {
     }
   }
 
+  const getRuns = async (functionID: string) => {
+    try {
+      const runs = await getRunsAPI(functionID)
+      setRunsList({...runsList, [functionID]: runs})
+    } catch (error) {
+      dispatch(notify(runGetFail()))
+    }
+  }
+
   return (
     <FunctionListContext.Provider
       value={{
-        functionsList: functionsList,
+        functionsList,
+        runsList,
+        getRuns,
         remove,
         add,
         update,

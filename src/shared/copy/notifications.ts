@@ -1060,6 +1060,11 @@ export const functionRunFail = (): Notification => ({
   message: `Failed to execute function run. Please try again`,
 })
 
+export const runGetFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to fetch runs for this function`,
+})
+
 export const functionUpdateFail = (): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to save function. Please try again`,

@@ -57,6 +57,7 @@ const RateLimitAlertContent: FC<OwnProps & ReduxProps> = ({
             href="https://docs.influxdata.com/influxdb/v2.0/write-data/best-practices/resolve-high-cardinality/"
             className="rate-alert--docs-link"
             target="_blank"
+            rel="noreferrer"
           >
             series cardinality
           </a>{' '}
@@ -80,6 +81,7 @@ const RateLimitAlertContent: FC<OwnProps & ReduxProps> = ({
           href="https://docs.influxdata.com/influxdb/v2.0/write-data/best-practices/resolve-high-cardinality/"
           className="rate-alert--docs-link"
           target="_blank"
+          rel="noreferrer"
         >
           series cardinality
         </a>{' '}

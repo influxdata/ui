@@ -1,4 +1,4 @@
-For more detailed and up to date information check out the <a href="https://github.com/tobiasschuerg/InfluxDB-Client-for-Arduino" target="_blank">GitHub Repository</a>
+For more detailed and up to date information check out the <a href="https://github.com/tobiasschuerg/InfluxDB-Client-for-Arduino" target="_blank" rel="noreferrer">GitHub Repository</a>
 
 ##### Install Library
 

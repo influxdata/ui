@@ -65,7 +65,7 @@ const FunctionTooltipContents: FC<TooltipProps> = ({func}) => {
           </article>
           <p className="tooltip--link">
             Still have questions? Check out the{' '}
-            <a target="_blank" href={func.link}>
+            <a target="_blank" rel="noreferrer" href={func.link}>
               Flux Docs
             </a>
             .

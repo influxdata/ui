@@ -69,6 +69,7 @@ const BillingStatsPanel = () => {
               <a
                 href="https://v2.docs.influxdata.com/v2.0/account-management/data-usage/"
                 target="_blank"
+                rel="noreferrer"
               >
                 Read Documentation
               </a>

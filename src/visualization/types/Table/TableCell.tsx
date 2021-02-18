@@ -66,7 +66,7 @@ function asLink(str) {
 
       link = str.slice(m.index, m.index + m[1].length)
       out.push(
-        <a href={link} target="_blank">
+        <a href={link} target="_blank" rel="noreferrer">
           {link}
         </a>
       )

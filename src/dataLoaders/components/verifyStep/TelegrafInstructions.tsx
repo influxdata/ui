@@ -29,7 +29,7 @@ class TelegrafInstructions extends PureComponent<Props> {
           <a
             href="https://portal.influxdata.com/downloads/"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             InfluxData Downloads&nbsp;
           </a>

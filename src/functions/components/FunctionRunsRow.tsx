@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useState} from 'react'
 import moment from 'moment'
 
 // Components
@@ -8,7 +8,9 @@ import {
   ComponentColor,
   ComponentSize,
   IndexList,
+  Overlay,
 } from '@influxdata/clockface'
+import FunctionRunLogsOverlay from 'src/functions/components/FunctionRunLogsOverlay'
 
 // Types
 import {FunctionRunRecord} from 'src/client/managedFunctionsRoutes'
@@ -19,6 +21,7 @@ interface Props {
 }
 
 const FunctionRunsRow: FC<Props> = ({run}) => {
+  const [overlayVisible, setOverlayVisibility] = useState(false)
   const dateTimeIfy = (dt: string): string => {
     if (!dt) {
       return ''
@@ -41,9 +44,15 @@ const FunctionRunsRow: FC<Props> = ({run}) => {
           size={ComponentSize.ExtraSmall}
           color={ComponentColor.Default}
           text="View Logs"
-          onClick={() => {}}
+          onClick={() => setOverlayVisibility(true)}
         />
-        {/* {this.renderLogOverlay} */}
+        <Overlay visible={overlayVisible}>
+          <FunctionRunLogsOverlay
+            onDismissOverlay={() => setOverlayVisibility(false)}
+            logs={run.logs || []}
+          />
+          <></>
+        </Overlay>
       </IndexList.Cell>
     </IndexList.Row>
   )

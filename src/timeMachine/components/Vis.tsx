@@ -10,15 +10,17 @@ import {isEqual} from 'lodash'
 import {View} from 'src/visualization'
 import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 
 // Utils
 import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 import {
+  getAnnotations,
+  getFillColumnsSelection,
+  getSymbolColumnsSelection,
   getVisTable,
   getXColumnSelection,
   getYColumnSelection,
-  getFillColumnsSelection,
-  getSymbolColumnsSelection,
 } from 'src/timeMachine/selectors'
 import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
 
@@ -44,6 +46,7 @@ const TimeMachineVis: FC<Props> = ({
   yColumn,
   fillColumns,
   symbolColumns,
+  annotations,
 }) => {
   // If the current selections for `xColumn`/`yColumn`/ etc. are invalid given
   // the current Flux response, attempt to make a valid selection instead. This
@@ -65,21 +68,29 @@ const TimeMachineVis: FC<Props> = ({
   })
 
   if (isViewingRawData && files && files.length) {
+    const [parsedResults] = files.flatMap(fromFlux)
     return (
       <div className={timeMachineViewClassName}>
         <ErrorBoundary>
-          <AutoSizer>
-            {({width, height}) => {
-              const [parsedResults] = files.flatMap(fromFlux)
-              return (
-                <RawFluxDataTable
-                  parsedResults={parsedResults}
-                  width={width}
-                  height={height}
-                />
-              )
-            }}
-          </AutoSizer>
+          <EmptyQueryView
+            loading={loading}
+            errorMessage={errorMessage}
+            errorFormat={ErrorFormat.Scroll}
+            hasResults={!!parsedResults?.table?.length}
+            isInitialFetch={isInitialFetch}
+          >
+            <AutoSizer>
+              {({width, height}) => {
+                return (
+                  <RawFluxDataTable
+                    parsedResults={parsedResults}
+                    width={width}
+                    height={height}
+                  />
+                )
+              }}
+            </AutoSizer>
+          </EmptyQueryView>
         </ErrorBoundary>
       </div>
     )
@@ -94,6 +105,7 @@ const TimeMachineVis: FC<Props> = ({
         properties={resolvedViewProperties}
         result={giraffeResult}
         timeRange={timeRange}
+        annotations={annotations}
       />
     </div>
   )
@@ -113,6 +125,7 @@ const mstp = (state: AppState) => {
   const yColumn = getYColumnSelection(state)
   const fillColumns = getFillColumnsSelection(state)
   const symbolColumns = getSymbolColumnsSelection(state)
+  const annotations = getAnnotations(state)
 
   return {
     loading,
@@ -127,6 +140,7 @@ const mstp = (state: AppState) => {
     fillColumns,
     symbolColumns,
     timeRange: getActiveTimeRange(timeRange, viewProperties.queries),
+    annotations,
   }
 }
 

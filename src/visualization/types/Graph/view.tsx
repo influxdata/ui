@@ -2,6 +2,8 @@
 import React, {FC, useMemo, useContext} from 'react'
 import {useDispatch} from 'react-redux'
 import {
+  AnnotationLayerConfig,
+  Config,
   DomainLabel,
   InteractionHandlerArguments,
   Plot,
@@ -52,7 +54,7 @@ interface Props extends VisualizationProps {
   properties: XYViewProperties
 }
 
-const XYPlot: FC<Props> = ({properties, result, timeRange}) => {
+const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
   const {theme, timeZone} = useContext(AppSettingContext)
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
@@ -182,48 +184,74 @@ const XYPlot: FC<Props> = ({properties, result, timeRange}) => {
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
   }
 
-  return (
-    <Plot
-      config={{
-        ...currentTheme,
-        table: result.table,
-        xAxisLabel: properties.axes.x.label,
-        yAxisLabel: properties.axes.y.label,
-        xDomain,
-        onSetXDomain,
-        onResetXDomain,
-        yDomain,
-        onSetYDomain,
-        onResetYDomain,
-        ...axisTicksOptions,
-        legendColumns,
-        legendOpacity: tooltipOpacity,
-        legendOrientationThreshold: tooltipOrientationThreshold,
-        legendColorizeRows: tooltipColorize,
-        valueFormatters: {
-          [xColumn]: xFormatter,
-          [yColumn]: yFormatter,
-        },
-        interactionHandlers: isFlagEnabled('annotations')
-          ? interactionHandlers
-          : null,
-        layers: [
-          {
-            type: 'line',
-            x: xColumn,
-            y: yColumn,
-            fill: groupKey,
-            interpolation,
-            position: properties.position,
-            colors: colorHexes,
-            shadeBelow: !!properties.shadeBelow,
-            shadeBelowOpacity: 0.08,
-            hoverDimension: properties.hoverDimension,
-          },
-        ],
-      }}
-    />
-  )
+  const config: Config = {
+    ...currentTheme,
+    table: result.table,
+    xAxisLabel: properties.axes.x.label,
+    yAxisLabel: properties.axes.y.label,
+    xDomain,
+    onSetXDomain,
+    onResetXDomain,
+    yDomain,
+    onSetYDomain,
+    onResetYDomain,
+    ...axisTicksOptions,
+    legendColumns,
+    legendOpacity: tooltipOpacity,
+    legendOrientationThreshold: tooltipOrientationThreshold,
+    legendColorizeRows: tooltipColorize,
+    valueFormatters: {
+      [xColumn]: xFormatter,
+      [yColumn]: yFormatter,
+    },
+    interactionHandlers: isFlagEnabled('annotations')
+      ? interactionHandlers
+      : null,
+    layers: [
+      {
+        type: 'line',
+        x: xColumn,
+        y: yColumn,
+        fill: groupKey,
+        interpolation,
+        position: properties.position,
+        colors: colorHexes,
+        shadeBelow: !!properties.shadeBelow,
+        shadeBelowOpacity: 0.08,
+        hoverDimension: properties.hoverDimension,
+      },
+    ],
+  }
+
+  if (isFlagEnabled('annotations') && annotations) {
+    // everything is under the 'default' category for now:
+    const actualAnnotations: any[] = annotations.default ?? null
+
+    if (actualAnnotations && actualAnnotations.length) {
+      const colors = ['cyan', 'magenta', 'white']
+
+      const annotationLayer: AnnotationLayerConfig = {
+        type: 'annotation',
+        x: xColumn,
+        y: yColumn,
+        fill: groupKey,
+        annotations: actualAnnotations.map((annotation, index) => {
+          return {
+            title: annotation.summary,
+            description: '',
+            color: colors[index % 3],
+            startValue: new Date(annotation.start).getTime(),
+            stopValue: new Date(annotation.end).getTime(),
+            dimension: 'x',
+            pin: 'start',
+          }
+        }),
+      }
+
+      config.layers.push(annotationLayer)
+    }
+  }
+  return <Plot config={config} />
 }
 
 export default XYPlot

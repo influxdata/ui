@@ -331,8 +331,6 @@ components:
           type: string
         name:
           type: string
-        description:
-          type: string
         orgID:
           type: string
         script:
@@ -353,12 +351,41 @@ components:
           readOnly: true
       required: [name, orgID, script]
     Functions:
-      type: object
+      type: array
+      items:
+        $ref: '#/components/schemas/Function'
+    FunctionRunRecord:
+      description: The record maintained from a function run- does not contain result
       properties:
-        functions:
+        id:
+          readOnly: true
+          type: string
+        status:
+          type: string
+        logs:
           type: array
           items:
-            $ref: '#/components/schemas/Function'
+            $ref: '#/components/schemas/FunctionRunLog'
+        startedAt:
+          type: string
+          format: date-time
+          readOnly: true
+    FunctionRunRecords:
+      type: object
+      properties:
+        functionrunrecords:
+          type: array
+          items:
+            $ref: '#/components/schemas/FunctionRunRecord'
+    FunctionRun:
+      description: Results returned from a function run, includes result
+      allOf:
+        - $ref: '#/components/schemas/FunctionRunRecord'
+        - type: object
+          properties:
+            result:
+              description: result returned from function executed
+              type: object
     FunctionCreateRequest:
       type: object
       properties:

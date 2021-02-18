@@ -26,8 +26,6 @@ import {FunctionRun} from 'src/client/managedFunctionsRoutes'
 interface Props {
   name: string
   setName: (name: string) => void
-  description: string
-  setDescription: (name: string) => void
   params: string
   setParams: (name: string) => void
   triggerFunction: () => void
@@ -37,8 +35,6 @@ interface Props {
 const FunctionForm: FC<Props> = ({
   name,
   setName,
-  description,
-  setDescription,
   params,
   setParams,
   triggerFunction,
@@ -56,15 +52,6 @@ const FunctionForm: FC<Props> = ({
                 }}
                 value={name}
                 testID="function-form-name"
-              />
-            </Form.Element>
-            <Form.Element label="Description">
-              <Input
-                onChange={e => {
-                  setDescription(e.target.value)
-                }}
-                value={description}
-                testID="function-form-description"
               />
             </Form.Element>
             <Form.Element label="Parameters">

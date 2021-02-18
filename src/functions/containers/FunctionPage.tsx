@@ -27,7 +27,6 @@ const FunctionPage: FC = () => {
   const {id: orgID} = useSelector(getOrg)
 
   const [name, setName] = useState('New Function')
-  const [description, setDescription] = useState('')
   const [params, setParams] = useState('')
   const [script, setScript] = useState('')
   const [runResult, setRunResult] = useState({})
@@ -35,7 +34,7 @@ const FunctionPage: FC = () => {
   const {add, trigger} = useContext(FunctionListContext)
 
   const saveFunction = () => {
-    add({name, description, script})
+    add({name, script})
   }
 
   const cancelFunction = () => {
@@ -61,8 +60,6 @@ const FunctionPage: FC = () => {
             <FunctionForm
               name={name}
               setName={setName}
-              description={description}
-              setDescription={setDescription}
               params={params}
               setParams={setParams}
               triggerFunction={triggerFunction}

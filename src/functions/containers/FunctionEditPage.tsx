@@ -28,7 +28,6 @@ const FunctionEditPage: FC = () => {
   const {id: orgID} = useSelector(getOrg)
 
   const [name, setName] = useState('New Function')
-  const [description, setDescription] = useState('')
   const [params, setParams] = useState('')
   const [script, setScript] = useState('')
 
@@ -45,15 +44,14 @@ const FunctionEditPage: FC = () => {
   useEffect(() => {
     const func = functionsList[functionID]
     if (func) {
-      const {name, script, description} = func
+      const {name, script} = func
       setName(name)
       setScript(script)
-      setDescription(description)
     }
-  }, [functionsList, functionID, setName, setScript, setDescription])
+  }, [functionsList, functionID, setName, setScript])
 
   const updateFunction = () => {
-    update(functionID, name, script, description)
+    update(functionID, name, script)
   }
 
   const cancelFunction = () => {
@@ -79,8 +77,6 @@ const FunctionEditPage: FC = () => {
             <FunctionForm
               name={name}
               setName={setName}
-              description={description}
-              setDescription={setDescription}
               params={params}
               setParams={setParams}
               triggerFunction={triggerFunction}

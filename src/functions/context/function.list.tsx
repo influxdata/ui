@@ -41,12 +41,7 @@ export interface FunctionListContextType extends FunctionList, RunsList {
   add: (_function: Partial<FunctionCreateRequest>) => Promise<void>
   remove: (_id: string) => void
   getAll: () => void
-  update: (
-    _id: string,
-    _name?: string,
-    _script?: string,
-    _description?: string
-  ) => Promise<void>
+  update: (_id: string, _name?: string, _script?: string) => Promise<void>
   trigger: (
     _functionTrigger: Partial<FunctionTriggerRequest>
   ) => Promise<FunctionRun>
@@ -58,12 +53,7 @@ export const DEFAULT_CONTEXT: FunctionListContextType = {
   runsList: [],
   add: (_function?: FunctionCreateRequest) => {},
   remove: (_id: string) => {},
-  update: (
-    _id: string,
-    _name?: string,
-    _script?: string,
-    _description?: string
-  ) => {},
+  update: (_id: string, _name?: string, _script?: string) => {},
   getAll: () => {},
   getRuns: (_functionID: string) => {},
 } as FunctionListContextType
@@ -87,11 +77,9 @@ export const FunctionListProvider: FC = ({children}) => {
   const getAll = useCallback(async (): Promise<void> => {
     try {
       const data = await getAllAPI(orgID)
-      if (data.functions) {
-        const _functions = {}
-        data.functions.forEach(f => (_functions[f.id] = f))
-        setFunctionsList(_functions)
-      }
+      const _functions = {}
+      data.forEach(f => (_functions[f.id] = f))
+      setFunctionsList(_functions)
     } catch {
       dispatch(notify(functionGetFail()))
     }
@@ -131,14 +119,9 @@ export const FunctionListProvider: FC = ({children}) => {
     }
   }
 
-  const update = async (
-    id: string,
-    name?: string,
-    script?: string,
-    description?: string
-  ) => {
+  const update = async (id: string, name?: string, script?: string) => {
     try {
-      const updatedFunction = await updateAPI(id, {name, script, description})
+      const updatedFunction = await updateAPI(id, {name, script})
       const _functions = {
         ...functionsList,
       }

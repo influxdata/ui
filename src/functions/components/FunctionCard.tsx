@@ -25,7 +25,7 @@ const FunctionCard: FC<Props> = ({id}) => {
   const {id: orgID} = useSelector(getOrg)
   const history = useHistory()
 
-  const {name, url, description} = functionsList[id]
+  const {name, url, updatedAt} = functionsList[id]
 
   const handleClick = () => {
     history.push(`/orgs/${orgID}/functions/${id}/edit`)
@@ -47,8 +47,8 @@ const FunctionCard: FC<Props> = ({id}) => {
       >
         <ResourceCard.Name name={name} onClick={handleClick} />
         <ResourceCard.Meta>
-          {description}
           {url && 'Endpoint: ' + url}
+          {`Last updated: ${updatedAt}`}
         </ResourceCard.Meta>
       </FlexBox>
     </ResourceCard>

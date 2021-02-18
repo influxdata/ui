@@ -10,6 +10,7 @@ import {isEqual} from 'lodash'
 import {View} from 'src/visualization'
 import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 
 // Utils
 import {getActiveTimeMachine} from 'src/timeMachine/selectors'
@@ -67,21 +68,29 @@ const TimeMachineVis: FC<Props> = ({
   })
 
   if (isViewingRawData && files && files.length) {
+    const [parsedResults] = files.flatMap(fromFlux)
     return (
       <div className={timeMachineViewClassName}>
         <ErrorBoundary>
-          <AutoSizer>
-            {({width, height}) => {
-              const [parsedResults] = files.flatMap(fromFlux)
-              return (
-                <RawFluxDataTable
-                  parsedResults={parsedResults}
-                  width={width}
-                  height={height}
-                />
-              )
-            }}
-          </AutoSizer>
+          <EmptyQueryView
+            loading={loading}
+            errorMessage={errorMessage}
+            errorFormat={ErrorFormat.Scroll}
+            hasResults={!!parsedResults?.table?.length}
+            isInitialFetch={isInitialFetch}
+          >
+            <AutoSizer>
+              {({width, height}) => {
+                return (
+                  <RawFluxDataTable
+                    parsedResults={parsedResults}
+                    width={width}
+                    height={height}
+                  />
+                )
+              }}
+            </AutoSizer>
+          </EmptyQueryView>
         </ErrorBoundary>
       </div>
     )

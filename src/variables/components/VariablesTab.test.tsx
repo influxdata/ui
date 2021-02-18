@@ -48,10 +48,10 @@ const setup = (props = defaultProps) => {
   return renderWithReduxAndRouter(
     <>
       <OverlayProviderComp>
-        <OverlayController />
+        <OverlayController/>
+        <VariablesIndex {...props} />
       </OverlayProviderComp>
 
-      <VariablesIndex {...props} />
     </>
     ,
     _fakeLocalStorage => {
@@ -96,26 +96,18 @@ describe('the variable install overlay', () => {
       const newInstallButton = getByTestId('add-resource-dropdown--new')
       fireEvent.click(newInstallButton)
 
-      debug()
-
-      // wait for the overlay to show
-
-      console.log(store.getState())
-
-      debugger;
 
       await waitFor(()=>{
-
-        expect(getByTestId("create-variable-overlay-header")).toBeVisible()
-        // expect(screen.queryByTitle('Create Variable')).toBeVisible()
+        // Cancel button is unique in the overlay and should be visible
+        expect(screen.queryByTitle('Cancel')).toBeVisible()
       })
 
-      // const overlay = await getByTestId("create-variable-overlay-header")
-
-      const variableTypeDropdown = getByTestId('variable-type-dropdown--button')
-      fireEvent.click(variableTypeDropdown)
+      const variableTypeDropdown = getByTestId('overlay--body')
 
       debug(variableTypeDropdown)
+
+      // fireEvent.click(variableTypeDropdown)
+
       // const queryTypeOption = getByTestId('variable-type-dropdown-query')
       // fireEvent.click(queryTypeOption)
 

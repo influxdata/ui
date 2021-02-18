@@ -34,7 +34,9 @@ const FunctionEditPage: FC = () => {
 
   const [runResult, setRunResult] = useState({})
 
-  const {functionsList, getAll} = useContext(FunctionListContext)
+  const {functionsList, getAll, update, trigger} = useContext(
+    FunctionListContext
+  )
 
   useEffect(() => {
     getAll()
@@ -49,8 +51,6 @@ const FunctionEditPage: FC = () => {
       setDescription(description)
     }
   }, [functionsList, functionID, setName, setScript, setDescription])
-
-  const {update, trigger} = useContext(FunctionListContext)
 
   const updateFunction = () => {
     update(functionID, name, script, description)

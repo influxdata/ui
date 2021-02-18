@@ -1,6 +1,7 @@
 import React, {FC, useCallback} from 'react'
 import createPersistedState from 'use-persisted-state'
 import {useSelector, useDispatch} from 'react-redux'
+import {useHistory} from 'react-router-dom'
 import {
   getAllAPI,
   deleteAPI,
@@ -55,6 +56,7 @@ export const FunctionListProvider: FC = ({children}) => {
     DEFAULT_CONTEXT.functionsList
   )
   const dispatch = useDispatch()
+  const history = useHistory()
 
   const {id: orgID} = useSelector(getOrg)
 
@@ -85,6 +87,7 @@ export const FunctionListProvider: FC = ({children}) => {
         ...functionsList,
         [createdFunction.id]: createdFunction,
       })
+      history.push(`/orgs/${orgID}/functions/`)
     } catch {
       dispatch(notify(functionCreateFail()))
     }

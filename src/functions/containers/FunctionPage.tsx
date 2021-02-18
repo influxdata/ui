@@ -38,7 +38,6 @@ const FunctionPage: FC = () => {
 
   const saveFunction = () => {
     add({name, description, script})
-    // TODO route away if saved, stay if error
   }
 
   const cancelFunction = () => {

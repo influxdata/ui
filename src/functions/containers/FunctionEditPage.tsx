@@ -34,13 +34,20 @@ const FunctionEditPage: FC = () => {
 
   const [runResult, setRunResult] = useState({})
 
-  const {functionsList} = useContext(FunctionListContext)
+  const {functionsList, getAll} = useContext(FunctionListContext)
+
   useEffect(() => {
-    const {name, script, description} = functionsList[functionID]
-    // TODO what if functionID no exist??
-    setName(name)
-    setScript(script)
-    setDescription(description)
+    getAll()
+  }, [getAll])
+
+  useEffect(() => {
+    const func = functionsList[functionID]
+    if (func) {
+      const {name, script, description} = func
+      setName(name)
+      setScript(script)
+      setDescription(description)
+    }
   }, [functionsList, functionID, setName, setScript, setDescription])
 
   const {update, trigger} = useContext(FunctionListContext)

@@ -34,9 +34,7 @@ export interface FunctionList {
 }
 
 export interface RunsList {
-  runsList: {
-    [key: string]: FunctionRunRecord[]
-  }
+  runsList: FunctionRunRecord[]
 }
 
 export interface FunctionListContextType extends FunctionList, RunsList {
@@ -57,6 +55,7 @@ export interface FunctionListContextType extends FunctionList, RunsList {
 
 export const DEFAULT_CONTEXT: FunctionListContextType = {
   functionsList: {},
+  runsList: [],
   add: (_function?: FunctionCreateRequest) => {},
   remove: (_id: string) => {},
   update: (
@@ -172,14 +171,17 @@ export const FunctionListProvider: FC = ({children}) => {
     }
   }
 
-  const getRuns = async (functionID: string) => {
-    try {
-      const runs = await getRunsAPI(functionID)
-      setRunsList({...runsList, [functionID]: runs})
-    } catch (error) {
-      dispatch(notify(runGetFail()))
-    }
-  }
+  const getRuns = useCallback(
+    async (functionID: string) => {
+      try {
+        const runs = await getRunsAPI(functionID)
+        setRunsList(runs)
+      } catch (error) {
+        dispatch(notify(runGetFail()))
+      }
+    },
+    [setRunsList, dispatch]
+  )
 
   return (
     <FunctionListContext.Provider

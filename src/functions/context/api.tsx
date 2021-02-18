@@ -81,7 +81,21 @@ export const getRunsAPI = async (functionID: string) => {
   const res = await getApiV2FunctionsRuns({functionID})
 
   if (res.status != 200) {
-    throw new Error(res.data.message)
+    // throw new Error(res.data.message)
+    return [
+      {
+        id: '1',
+        status: 'success',
+        logs: [{message: 'yo', timestamp: '1010', severity: 'crit'}],
+        startedAt: '1',
+      },
+      {
+        id: '2',
+        status: 'fail',
+        logs: [{message: 'yo', timestamp: '1010', severity: 'warn'}],
+        startedAt: '2',
+      },
+    ]
   }
-  return res.data
+  return res.data.functionrunrecords
 }

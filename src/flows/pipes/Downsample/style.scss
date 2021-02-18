@@ -1,13 +1,17 @@
 .downsample-panel {
-  height: 320px;
   display: flex;
+  margin: 0 -8px;
+  padding-bottom: 16px;
 
-  .cf-grid--row {
-    height: 100%;
+  .duration-input {
+    width: 200px;
+    margin-bottom: 8px;
   }
 
-  .cf-grid--column {
-    height: 100%;
-    display: flex;
+  .downsample-panel--left {
+    padding: 0 8px;
+  }
+  .downsample-panel--right {
+    padding: 0 8px;
   }
 }

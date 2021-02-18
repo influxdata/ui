@@ -362,6 +362,8 @@ components:
           type: string
         status:
           type: string
+        error:
+          type: string
         logs:
           type: array
           items:

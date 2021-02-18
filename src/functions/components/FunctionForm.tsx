@@ -98,10 +98,16 @@ const FunctionForm: FC<Props> = ({
                   <h5>{runResult.status + '!'}</h5>
                 </Panel.Header>
                 <Panel.Body alignItems={AlignItems.FlexStart}>
-                  <p>
-                    <div>{JSON.stringify(runResult.logs)}</div>
-                    <div>{JSON.stringify(runResult.result)}</div>
-                  </p>
+                  {runResult.status == 'success' ? (
+                    <p>
+                      <div>{JSON.stringify(runResult.logs)}</div>
+                      <div>{JSON.stringify(runResult.result)}</div>
+                    </p>
+                  ) : (
+                    <p>
+                      <div>{JSON.stringify(runResult.error)}</div>
+                    </p>
+                  )}
                 </Panel.Body>
               </Panel>
             </Grid.Column>

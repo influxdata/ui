@@ -1,4 +1,8 @@
-import {deleteAnnotation, getAnnotations, writeAnnotation} from 'src/annotations/api'
+import {
+  deleteAnnotation,
+  getAnnotations,
+  writeAnnotation,
+} from 'src/annotations/api'
 import {Dispatch} from 'react'
 import {deleteAnnotation as deleteAnnotationAction} from 'src/annotations/actions/creators'
 import {
@@ -43,3 +47,4 @@ export const deleteAnnotations = annotation => async (
     console.error(error)
     dispatch(notify(deleteAnnotationFailed(error.message)))
   }
+}

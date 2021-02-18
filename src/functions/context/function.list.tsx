@@ -150,7 +150,7 @@ export const FunctionListProvider: FC = ({children}) => {
     }
   }
 
-  const trigger = async ({script, params}) => {
+  const trigger = async ({script, params}): Promise<FunctionRun> => {
     const paramObject = {}
 
     params.split('\n').forEach((entry: string) => {
@@ -168,6 +168,7 @@ export const FunctionListProvider: FC = ({children}) => {
       return run
     } catch (error) {
       dispatch(notify(functionRunFail()))
+      return {}
     }
   }
 

@@ -22,7 +22,7 @@ export const createAPI = async (functionCreate: FunctionCreateRequest) => {
 export const deleteAPI = async (id: string) => {
   const res = await deleteApiV2Function({functionID: id})
 
-  if (res.status != 204) {
+  if (res.status != 200) {
     throw new Error(res.data.message)
   }
 }

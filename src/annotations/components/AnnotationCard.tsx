@@ -39,7 +39,6 @@ export const AnnotationCard: FC<Props> = ({annotationStream}) => {
   const handleDelete = (): void => {
     deleteAnnotations(annotationStream)
   }
-  
 
   return (
     <ResourceCard
@@ -81,4 +80,3 @@ export const AnnotationCard: FC<Props> = ({annotationStream}) => {
     </ResourceCard>
   )
 }
-

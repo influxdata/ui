@@ -13,7 +13,7 @@ import {
 export const createAPI = async (functionCreate: FunctionCreateRequest) => {
   const res = await postApiV2Function({data: functionCreate})
 
-  if (res.status != 201) {
+  if (res.status != 200) {
     throw new Error(res.data.message)
   }
   return res.data

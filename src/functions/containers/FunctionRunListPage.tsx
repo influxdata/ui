@@ -6,7 +6,6 @@ import {useSelector} from 'react-redux'
 // Components
 import {Button, ComponentColor, Page} from '@influxdata/clockface'
 import FunctionRunsList from 'src/functions/components/FunctionRunsList'
-import FunctionListProvider from 'src/functions/context/function.list'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -22,25 +21,23 @@ const FunctionRunListPage: FC = () => {
   }
 
   return (
-    <FunctionListProvider>
-      <Page titleTag={pageTitleSuffixer(['Function Runs'])}>
-        <Page.Header fullWidth={false} testID="functions-runs-page--header">
-          <Page.Title title="Function Runs" />
-        </Page.Header>
-        <Page.ControlBar fullWidth={false}>
-          <Page.ControlBarRight>
-            <Button
-              onClick={goToFunctionPage}
-              text="Edit or Trigger This Function"
-              color={ComponentColor.Primary}
-            />
-          </Page.ControlBarRight>
-        </Page.ControlBar>
-        <Page.Contents fullWidth={false} scrollable={true}>
-          <FunctionRunsList />
-        </Page.Contents>
-      </Page>
-    </FunctionListProvider>
+    <Page titleTag={pageTitleSuffixer(['Function Runs'])}>
+      <Page.Header fullWidth={false} testID="functions-runs-page--header">
+        <Page.Title title="Function Runs" />
+      </Page.Header>
+      <Page.ControlBar fullWidth={false}>
+        <Page.ControlBarRight>
+          <Button
+            onClick={goToFunctionPage}
+            text="Edit or Trigger This Function"
+            color={ComponentColor.Primary}
+          />
+        </Page.ControlBarRight>
+      </Page.ControlBar>
+      <Page.Contents fullWidth={false} scrollable={true}>
+        <FunctionRunsList />
+      </Page.Contents>
+    </Page>
   )
 }
 

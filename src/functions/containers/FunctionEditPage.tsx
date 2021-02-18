@@ -12,9 +12,7 @@ import {
 } from '@influxdata/clockface'
 import FunctionHeader from 'src/functions/components/FunctionHeader'
 import FunctionForm from 'src/functions/components/FunctionForm'
-import FunctionListProvider, {
-  FunctionListContext,
-} from 'src/functions/context/function.list'
+import {FunctionListContext} from 'src/functions/context/function.list'
 
 const FluxMonacoEditor = lazy(() =>
   import('src/shared/components/FluxMonacoEditor')
@@ -100,12 +98,4 @@ const FunctionEditPage: FC = () => {
   )
 }
 
-const FunctionEditPageWithProvider: FC = () => {
-  return (
-    <FunctionListProvider>
-      <FunctionEditPage />
-    </FunctionListProvider>
-  )
-}
-
-export default FunctionEditPageWithProvider
+export default FunctionEditPage

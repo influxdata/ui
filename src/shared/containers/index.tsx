@@ -86,3 +86,6 @@ export const FunctionEditPage = lazy(() =>
 export const FunctionRunListPage = lazy(() =>
   import('src/functions/containers/FunctionRunListPage')
 )
+export const FunctionsRouter = lazy(() =>
+  import('src/functions/containers/FunctionsRouter')
+)

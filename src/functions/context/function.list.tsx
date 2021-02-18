@@ -19,6 +19,7 @@ import {
   functionCreateFail,
   functionGetFail,
   functionDeleteFail,
+  functionRunFail,
 } from 'src/shared/copy/notifications'
 
 const useFunctionListState = createPersistedState('functions')
@@ -119,7 +120,9 @@ export const FunctionListProvider: FC = ({children}) => {
         orgID,
       })
       return run
-    } catch (error) {}
+    } catch (error) {
+      dispatch(notify(functionRunFail()))
+    }
   }
 
   return (

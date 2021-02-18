@@ -32,6 +32,7 @@ const FunctionPage: FC = () => {
   const [description, setDescription] = useState('')
   const [params, setParams] = useState('')
   const [script, setScript] = useState('')
+  const [runResult, setRunResult] = useState({})
 
   const {add, trigger} = useContext(FunctionListContext)
 
@@ -45,8 +46,9 @@ const FunctionPage: FC = () => {
     // TODO dont allow routing away if unsaved changes exist
   }
 
-  const triggerFunction = () => {
-    trigger({script, params})
+  const triggerFunction = async () => {
+    const runResponse = await trigger({script, params})
+    setRunResult(runResponse)
   }
 
   return (
@@ -67,6 +69,7 @@ const FunctionPage: FC = () => {
               params={params}
               setParams={setParams}
               triggerFunction={triggerFunction}
+              runResult={runResult}
             />
           </div>
           <div className="function-form--editor">

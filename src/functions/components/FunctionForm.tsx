@@ -14,7 +14,14 @@ import {
   ButtonGroup,
   SquareButton,
   IconFont,
+  Panel,
+  Gradients,
+  AlignItems,
+  ButtonShape,
 } from '@influxdata/clockface'
+
+// Types
+import {FunctionRun} from 'src/client/managedFunctionsRoutes'
 
 interface Props {
   name: string
@@ -24,6 +31,7 @@ interface Props {
   params: string
   setParams: (name: string) => void
   triggerFunction: () => void
+  runResult: FunctionRun
 }
 
 const FunctionForm: FC<Props> = ({
@@ -34,6 +42,7 @@ const FunctionForm: FC<Props> = ({
   params,
   setParams,
   triggerFunction,
+  runResult,
 }) => {
   return (
     <Form>
@@ -82,12 +91,35 @@ const FunctionForm: FC<Props> = ({
                 color={ComponentColor.Success}
                 size={ComponentSize.Large}
                 onClick={triggerFunction}
+                shape={ButtonShape.StretchToFit}
               />
             </ButtonGroup>
           </Grid.Column>
         </Grid.Row>
-          </Grid.Column>
-        </Grid.Row>
+        {runResult.status && (
+          <Grid.Row>
+            <Grid.Column widthXS={Columns.Twelve}>
+              <Panel
+                gradient={
+                  runResult.status == 'success'
+                    ? Gradients.TropicalTourist
+                    : Gradients.DangerLight
+                }
+                border={true}
+              >
+                <Panel.Header>
+                  <h5>{runResult.status + '!'}</h5>
+                </Panel.Header>
+                <Panel.Body alignItems={AlignItems.FlexStart}>
+                  <p>
+                    <div>{JSON.stringify(runResult.logs)}</div>
+                    <div>{JSON.stringify(runResult.result)}</div>
+                  </p>
+                </Panel.Body>
+              </Panel>
+            </Grid.Column>
+          </Grid.Row>
+        )}
       </Grid>
     </Form>
   )

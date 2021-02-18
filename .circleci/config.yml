@@ -94,8 +94,6 @@ jobs:
               ./ui
             mkdir -p docker-cache
             docker save -o docker-cache/image.tar quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1}
-            docker tag quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1}
-            docker push quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1}
       - save_cache:
           key: UI_PROD_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
           paths:

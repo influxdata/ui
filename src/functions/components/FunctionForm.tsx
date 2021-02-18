@@ -11,6 +11,9 @@ import {
   Button,
   ComponentColor,
   ComponentSize,
+  ButtonGroup,
+  SquareButton,
+  IconFont,
 } from '@influxdata/clockface'
 
 interface Props {
@@ -65,13 +68,24 @@ const FunctionForm: FC<Props> = ({
                 rows={5}
               />
             </Form.Element>
-            <Button
-              text="trigger function"
-              testID="function-form-trigger-button"
-              color={ComponentColor.Danger}
-              size={ComponentSize.Large}
-              onClick={triggerFunction}
-            />
+            <ButtonGroup>
+              <SquareButton
+                active={false}
+                onClick={triggerFunction}
+                icon={IconFont.CaretRight}
+                color={ComponentColor.Success}
+                size={ComponentSize.Large}
+              />
+              <Button
+                text="trigger function"
+                testID="function-form-trigger-button"
+                color={ComponentColor.Success}
+                size={ComponentSize.Large}
+                onClick={triggerFunction}
+              />
+            </ButtonGroup>
+          </Grid.Column>
+        </Grid.Row>
           </Grid.Column>
         </Grid.Row>
       </Grid>

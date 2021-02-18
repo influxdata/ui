@@ -7,6 +7,7 @@ import {
   deleteAPI,
   createAPI,
   triggerAPI,
+  updateAPI,
 } from 'src/functions/context/api'
 import {
   Function,
@@ -21,6 +22,7 @@ import {
   functionGetFail,
   functionDeleteFail,
   functionRunFail,
+  functionUpdateFail,
 } from 'src/shared/copy/notifications'
 
 const useFunctionListState = createPersistedState('functions')
@@ -35,6 +37,12 @@ export interface FunctionListContextType extends FunctionList {
   add: (_function: Partial<FunctionCreateRequest>) => Promise<void>
   remove: (_id: string) => void
   getAll: () => void
+  update: (
+    _id: string,
+    _name?: string,
+    _script?: string,
+    _description?: string
+  ) => Promise<void>
   trigger: (
     _functionTrigger: Partial<FunctionTriggerRequest>
   ) => Promise<FunctionRun>
@@ -44,6 +52,12 @@ export const DEFAULT_CONTEXT: FunctionListContextType = {
   functionsList: {},
   add: (_function?: FunctionCreateRequest) => {},
   remove: (_id: string) => {},
+  update: (
+    _id: string,
+    _name?: string,
+    _script?: string,
+    _description?: string
+  ) => {},
   getAll: () => {},
 } as FunctionListContextType
 
@@ -107,6 +121,25 @@ export const FunctionListProvider: FC = ({children}) => {
     }
   }
 
+  const update = async (
+    id: string,
+    name?: string,
+    script?: string,
+    description?: string
+  ) => {
+    try {
+      const updatedFunction = await updateAPI(id, {name, script, description})
+      const _functions = {
+        ...functionsList,
+      }
+      _functions[id] = updatedFunction
+      setFunctionsList(_functions)
+      history.push(`/orgs/${orgID}/functions/`)
+    } catch (error) {
+      dispatch(notify(functionUpdateFail()))
+    }
+  }
+
   const trigger = async ({script, params}) => {
     const paramObject = {}
 
@@ -134,6 +167,7 @@ export const FunctionListProvider: FC = ({children}) => {
         functionsList: functionsList,
         remove,
         add,
+        update,
         getAll,
         trigger,
       }}

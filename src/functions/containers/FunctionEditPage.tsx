@@ -45,10 +45,10 @@ const FunctionEditPage: FC = () => {
     setDescription(description)
   }, [functionsList, functionID, setName, setScript, setDescription])
 
-  const {trigger} = useContext(FunctionListContext)
+  const {update, trigger} = useContext(FunctionListContext)
 
   const updateFunction = () => {
-    // TODO route away if saved, stay if error
+    update(functionID, name, script, description)
   }
 
   const cancelFunction = () => {

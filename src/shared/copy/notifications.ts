@@ -1059,3 +1059,8 @@ export const functionRunFail = (): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to execute function run. Please try again`,
 })
+
+export const functionUpdateFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to save function. Please try again`,
+})

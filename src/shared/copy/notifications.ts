@@ -1055,9 +1055,9 @@ export const functionDeleteFail = (): Notification => ({
   message: `Failed to delete function. Please try again`,
 })
 
-export const functionRunFail = (): Notification => ({
+export const functionTriggerFail = (): Notification => ({
   ...defaultErrorNotification,
-  message: `Failed to execute function run. Please try again`,
+  message: `Failed to trigger function run. Please try again`,
 })
 
 export const runGetFail = (): Notification => ({

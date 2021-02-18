@@ -22,7 +22,7 @@ import {
   functionCreateFail,
   functionGetFail,
   functionDeleteFail,
-  functionRunFail,
+  functionTriggerFail,
   functionUpdateFail,
   runGetFail,
 } from 'src/shared/copy/notifications'
@@ -167,7 +167,7 @@ export const FunctionListProvider: FC = ({children}) => {
       })
       return run
     } catch (error) {
-      dispatch(notify(functionRunFail()))
+      dispatch(notify(functionTriggerFail()))
       return {}
     }
   }

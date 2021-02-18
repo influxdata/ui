@@ -195,6 +195,8 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
     ],
   }
 
+  // TODO: address this tech debt
+  // see https://github.com/influxdata/ui/issues/725
   if (isFlagEnabled('annotations') && annotationsModeIsActive) {
     const createAnnotation = userModifiedAnnotation => {
       const {message, startTime} = userModifiedAnnotation

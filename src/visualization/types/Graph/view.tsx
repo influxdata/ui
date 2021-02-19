@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useMemo, useContext} from 'react'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {
   AnnotationLayerConfig,
   Config,
@@ -13,6 +13,22 @@ import {
 
 // Components
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
+
+// Context
+import {AppSettingContext} from 'src/shared/contexts/app'
+
+// Redux
+import {writeThenFetchAndSetAnnotations} from 'src/annotations/actions/thunks'
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+
+// Constants
+import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
+import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
+import {INVALID_DATA_COPY} from 'src/visualization/constants'
+
+// Types
+import {AppState, XYViewProperties} from 'src/types'
+import {VisualizationProps} from 'src/visualization'
 
 // Utils
 import {useAxisTicksGenerator} from 'src/visualization/utils/useAxisTicksGenerator'
@@ -35,20 +51,6 @@ import {
   defaultYColumn,
 } from 'src/shared/utils/vis'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {AppSettingContext} from 'src/shared/contexts/app'
-
-// Redux
-import {writeThenFetchAndSetAnnotations} from 'src/annotations/actions/thunks'
-import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
-
-// Constants
-import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
-import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
-import {INVALID_DATA_COPY} from 'src/visualization/constants'
-
-// Types
-import {XYViewProperties} from 'src/types'
-import {VisualizationProps} from 'src/visualization'
 
 interface Props extends VisualizationProps {
   properties: XYViewProperties
@@ -64,6 +66,9 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
   )
 
   const dispatch = useDispatch()
+  const annotationsModeIsActive = useSelector(
+    (state: AppState) => state.userSettings.showAnnotationsControls
+  )
 
   const storedXDomain = useMemo(() => parseXBounds(properties.axes.x.bounds), [
     properties.axes.x.bounds,
@@ -150,36 +155,6 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
 
   const currentTheme = theme === 'light' ? VIS_THEME_LIGHT : VIS_THEME
 
-  const createAnnotation = userModifiedAnnotation => {
-    const {message, startTime} = userModifiedAnnotation
-    dispatch(
-      writeThenFetchAndSetAnnotations([
-        {
-          summary: message,
-          startTime: new Date(startTime).getTime(),
-          endTime: new Date(startTime).getTime(),
-        },
-      ])
-    )
-  }
-
-  const doubleClickHandler = (plotInteraction: InteractionHandlerArguments) => {
-    dispatch(
-      showOverlay(
-        'add-annotation',
-        {
-          createAnnotation,
-          startTime: plotInteraction.valueX,
-        },
-        dismissOverlay
-      )
-    )
-  }
-
-  const interactionHandlers = {
-    doubleClick: doubleClickHandler,
-  }
-
   if (!isValidView) {
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
   }
@@ -204,9 +179,6 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
       [xColumn]: xFormatter,
       [yColumn]: yFormatter,
     },
-    interactionHandlers: isFlagEnabled('annotations')
-      ? interactionHandlers
-      : null,
     layers: [
       {
         type: 'line',
@@ -223,11 +195,45 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
     ],
   }
 
-  if (isFlagEnabled('annotations') && annotations) {
-    // everything is under the 'default' category for now:
-    const actualAnnotations: any[] = annotations.default ?? null
+  // TODO: address this tech debt
+  // see https://github.com/influxdata/ui/issues/725
+  if (isFlagEnabled('annotations') && annotationsModeIsActive) {
+    const createAnnotation = userModifiedAnnotation => {
+      const {message, startTime} = userModifiedAnnotation
+      dispatch(
+        writeThenFetchAndSetAnnotations([
+          {
+            summary: message,
+            startTime: new Date(startTime).getTime(),
+            endTime: new Date(startTime).getTime(),
+          },
+        ])
+      )
+    }
 
-    if (actualAnnotations && actualAnnotations.length) {
+    const doubleClickHandler = (
+      plotInteraction: InteractionHandlerArguments
+    ) => {
+      dispatch(
+        showOverlay(
+          'add-annotation',
+          {
+            createAnnotation,
+            startTime: plotInteraction.valueX,
+          },
+          dismissOverlay
+        )
+      )
+    }
+
+    config.interactionHandlers = {
+      doubleClick: doubleClickHandler,
+    }
+
+    // everything is under the 'default' category for now:
+    const selectedAnnotations: any[] = annotations?.default ?? []
+
+    if (selectedAnnotations.length) {
       const colors = ['cyan', 'magenta', 'white']
 
       const annotationLayer: AnnotationLayerConfig = {
@@ -235,11 +241,11 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
         x: xColumn,
         y: yColumn,
         fill: groupKey,
-        annotations: actualAnnotations.map((annotation, index) => {
+        annotations: selectedAnnotations.map((annotation, i) => {
           return {
             title: annotation.summary,
             description: '',
-            color: colors[index % 3],
+            color: colors[i % 3],
             startValue: new Date(annotation.start).getTime(),
             stopValue: new Date(annotation.end).getTime(),
             dimension: 'x',

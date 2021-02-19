@@ -1,5 +1,10 @@
 // Installed libraries
 import React from 'react'
+
+jest.mock('src/shared/components/FluxMonacoEditor', () => {
+  return () => <></>
+})
+
 import {createStore} from 'redux'
 
 jest.mock('src/labels/actions/thunks.ts')
@@ -18,9 +23,10 @@ jest.mock('src/resources/selectors/index.ts', () => {
   }
 })
 
+
 // Mock State
 import {renderWithReduxAndRouter} from 'src/mockState'
-import {withRouterProps} from 'mocks/dummyData'
+import {variables, withRouterProps} from 'mocks/dummyData'
 import {mockAppState} from 'src/mockAppState'
 
 // Redux
@@ -48,7 +54,7 @@ const setup = (props = defaultProps) => {
   return renderWithReduxAndRouter(
     <>
       <OverlayProviderComp>
-        <OverlayController/>
+        <OverlayController />
         <VariablesIndex {...props} />
       </OverlayProviderComp>
 
@@ -58,7 +64,7 @@ const setup = (props = defaultProps) => {
       const appState = {...mockAppState}
       // appState.resources.variables = variablesStore.getState()
       return appState
-    }
+    },
   )
 }
 
@@ -70,8 +76,8 @@ describe('the variable install overlay', () => {
     cleanup()
   })
 
-  describe('handling the variable install process', () => {
-    it('Install Query', async () => {
+  describe('handling the variable creation process', () => {
+    it('Create a Variable of Query type', async () => {
       const {getByTestId, store, debug} = setup()
 
       const org = {name: 'zoe', id: '12345'}
@@ -82,7 +88,7 @@ describe('the variable install overlay', () => {
       })
       const organizations = normalize<Organization, OrgEntities, string[]>(
         [org],
-        arrayOfOrgs
+        arrayOfOrgs,
       )
       store.dispatch({
         type: 'SET_ORGS',
@@ -97,19 +103,81 @@ describe('the variable install overlay', () => {
       fireEvent.click(newInstallButton)
 
 
-      await waitFor(()=>{
+      await waitFor(() => {
         // Cancel button is unique in the overlay and should be visible
         expect(screen.queryByTitle('Cancel')).toBeVisible()
       })
 
-      const variableTypeDropdown = getByTestId('overlay--body')
+      // select query
+      const variableTypeDropdown = getByTestId('variable-type-dropdown--button')
+      fireEvent.click(variableTypeDropdown)
+      const queryTypeOption = getByTestId('variable-type-dropdown-query')
+      fireEvent.click(queryTypeOption)
 
-      debug(variableTypeDropdown)
+      // type the name
+      const variableName = getByTestId('variable-name-input')
+      fireEvent.change(variableName, { target: { value: 'Test variable name' } })
 
-      // fireEvent.click(variableTypeDropdown)
+      const createButton = getByTestId('variable-form-save')
 
-      // const queryTypeOption = getByTestId('variable-type-dropdown-query')
-      // fireEvent.click(queryTypeOption)
+      debug(createButton)
+
+      expect(createButton).toBeDisabled()
+
+    })
+    it('Create a Variable of Map type', async () => {
+      const {getByTestId, store, debug} = setup()
+
+      const org = {name: 'zoe', id: '12345'}
+
+      store.dispatch({
+        type: 'SET_ORG',
+        org: org,
+      })
+      const organizations = normalize<Organization, OrgEntities, string[]>(
+        [org],
+        arrayOfOrgs,
+      )
+      store.dispatch({
+        type: 'SET_ORGS',
+        schema: organizations,
+        status: RemoteDataState.Done,
+      })
+
+      const dropdownCreateButton = getByTestId('add-resource-dropdown--button')
+      fireEvent.click(dropdownCreateButton)
+
+      const newInstallButton = getByTestId('add-resource-dropdown--new')
+      fireEvent.click(newInstallButton)
+
+
+      await waitFor(() => {
+        // Cancel button is unique in the overlay and should be visible
+        expect(screen.queryByTitle('Cancel')).toBeVisible()
+      })
+
+      // select query
+      const variableTypeDropdown = getByTestId('variable-type-dropdown--button')
+      fireEvent.click(variableTypeDropdown)
+      const queryTypeOption = getByTestId('variable-type-dropdown-map')
+      fireEvent.click(queryTypeOption)
+
+      // type the name
+      const variableName = getByTestId('variable-name-input')
+      fireEvent.change(variableName, { target: { value: 'Test variable name' } })
+
+      const mapQueryTextArea = getByTestId("textarea")
+      fireEvent.change(mapQueryTextArea, { target: { value: 'please,work' } })
+
+
+      const createButton = getByTestId('variable-form-save')
+      debug(createButton)
+
+      const mapDropdown = getByTestId("map-variable-dropdown--button")
+      fireEvent.click(mapDropdown)
+      debug(mapDropdown)
+
+      expect(createButton).not.toBeDisabled()
 
     })
   })

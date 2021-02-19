@@ -507,6 +507,9 @@ workflows:
       - oss-e2e:
           requires:
             - build-oss-image
+      - shared-e2e:
+          requires:
+            - build-image
       - smoke:
           requires:
             - build-image
@@ -535,3 +538,4 @@ workflows:
             - lint
             - smoke
             - cloud-e2e
+            - shared-e2e

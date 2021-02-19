@@ -71,13 +71,9 @@ describe('Usage Page', () => {
 
     // click button and see if time range has been selected
     cy.getByTestID('daterange--apply-btn').click()
-
-    cy.getByTestID('usage-header--timerange').contains(
-      'Usage from 2019-10-29T15:00:00.000Z to 2019-10-29T16:00:00.000Z'
-    )
-    cy.getByTestID('rate-limits-header--timerange').contains(
-      'Rate Limits from 2019-10-29T15:00:00.000Z to 2019-10-29T16:00:00.000Z'
-    )
+    const reg = /2019-10-29T\d\d:00:00\.000Z to 2019-10-29T\d\d:00:00\.000Z/g
+    cy.getByTestID('usage-header--timerange').contains(reg)
+    cy.getByTestID('rate-limits-header--timerange').contains(reg)
 
     // This is based on stubbed out data
     cy.getByTestID('usage-page--dropdown')

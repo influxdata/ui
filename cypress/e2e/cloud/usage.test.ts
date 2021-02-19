@@ -6,7 +6,10 @@ describe('Usage Page', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
+        cy.getByTestID('tree-nav')
         cy.window().then(w => {
+          // I hate to add this, but the influx object isn't ready yet
+          cy.wait(1000)
           w.influx.set('unity-usage', true)
         })
 

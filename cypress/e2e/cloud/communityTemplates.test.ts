@@ -1,6 +1,7 @@
 import {Organization} from '../../../src/types'
 
-describe('Community Templates', () => {
+// TODO unskip these tests once the checkbox bug is fixed
+describe.skip('Community Templates', () => {
   beforeEach(() => {
     cy.flush()
 

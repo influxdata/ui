@@ -4,15 +4,13 @@ import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import {
-  AlignItems,
-  ComponentColor,
-  ComponentSize,
-  FlexBox,
-  FlexDirection,
   InputLabel,
+  FlexBox,
+  ComponentSize,
+  ComponentColor,
+  Toggle,
   InputToggleType,
   QuestionMarkTooltip,
-  Toggle,
 } from '@influxdata/clockface'
 
 // Actions
@@ -40,11 +38,7 @@ const FillValues: FunctionComponent<Props> = ({
   }
 
   return (
-    <FlexBox
-      direction={FlexDirection.Column}
-      margin={ComponentSize.Large}
-      alignItems={AlignItems.FlexStart}
-    >
+    <>
       <Toggle
         id="isFillValues"
         type={InputToggleType.Checkbox}
@@ -52,18 +46,18 @@ const FillValues: FunctionComponent<Props> = ({
         onChange={onChangeFillValues}
         color={ComponentColor.Primary}
         size={ComponentSize.ExtraSmall}
-      >
+      />
+      <FlexBox.Child grow={1}>
         <InputLabel className="fill-values-checkbox--label">
           Fill missing values
         </InputLabel>
-        <QuestionMarkTooltip
-          style={{marginLeft: 6}}
-          diameter={16}
-          tooltipContents="For windows without data, create an empty window and fill it with a null aggregate value"
-          tooltipStyle={{fontSize: '13px', padding: '8px'}}
-        />
-      </Toggle>
-    </FlexBox>
+      </FlexBox.Child>
+      <QuestionMarkTooltip
+        diameter={16}
+        tooltipContents="For windows without data, create an empty window and fill it with a null aggregate value"
+        tooltipStyle={{fontSize: '13px', padding: '8px'}}
+      />
+    </>
   )
 }
 

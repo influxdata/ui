@@ -81,21 +81,67 @@ export const getRunsAPI = async (functionID: string) => {
   const res = await getApiV2FunctionsRuns({functionID})
 
   if (res.status != 200) {
-    throw new Error(res.data.message)
-    // return [
-    //   {
-    //     id: '1',
-    //     status: 'success',
-    //     logs: [{message: 'yo', timestamp: '1010', severity: 'crit'}],
-    //     startedAt: '1',
-    //   },
-    //   {
-    //     id: '2',
-    //     status: 'fail',
-    //     logs: [{message: 'yo', timestamp: '1010', severity: 'warn'}],
-    //     startedAt: '2',
-    //   },
-    // ]
+    // throw new Error(res.data.message)
+    return [
+      {
+        id: '1',
+        status: 'ok',
+        logs: [
+          {
+            message: 'this is a message',
+            timestamp: '2021-02-18T23:48:27.283155000Z',
+            severity: 'crit',
+          },
+        ],
+        startedAt: '2021-02-18T23:48:27.283155000Z',
+      },
+      {
+        id: '2',
+        status: 'error',
+        logs: [
+          {
+            message: 'oh no things got really bad',
+            timestamp: '2021-02-18T23:48:27.283155000Z',
+            severity: 'crit',
+          },
+          {
+            message: 'it was terrible',
+            timestamp: '2021-02-18T23:48:27.283155000Z',
+            severity: 'crit',
+          },
+          {
+            message: 'yuck',
+            timestamp: '2021-02-18T23:48:27.283155000Z',
+            severity: 'crit',
+          },
+        ],
+        startedAt: '2021-02-18T23:48:27.283155000Z',
+      },
+      {
+        id: '1',
+        status: 'ok',
+        logs: [
+          {
+            message: 'another message',
+            timestamp: '2021-02-18T23:48:27.283155000Z',
+            severity: 'crit',
+          },
+        ],
+        startedAt: '2021-02-18T23:48:27.283155000Z',
+      },
+      {
+        id: '1',
+        status: 'ok',
+        logs: [
+          {
+            message: 'you are doing great',
+            timestamp: '2021-02-18T23:48:27.283155000Z',
+            severity: 'crit',
+          },
+        ],
+        startedAt: '2021-02-18T23:48:27.283155000Z',
+      },
+    ]
   }
   return res.data.functionrunrecords
 }

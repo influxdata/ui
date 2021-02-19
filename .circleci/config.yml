@@ -425,11 +425,12 @@ jobs:
           no_output_timeout: 10m
           command: |
             cd monitor-ci;
-            if [ "${CIRCLE_BRANCH}" = "master" ]; then
-                    make lhr MASTER_BRANCH=1 GITHUB_TOKEN="${HERCULES_TOKEN}";
-            else
-                    make lhr PR="${CIRCLE_PULL_REQUEST}" GITHUB_TOKEN="${HERCULES_TOKEN}";
-            fi
+            echo "Temporarily disabled LHR";
+            # if [ "${CIRCLE_BRANCH}" = "master" ]; then
+            #         make lhr MASTER_BRANCH=1 GITHUB_TOKEN="${HERCULES_TOKEN}";
+            # else
+            #         make lhr PR="${CIRCLE_PULL_REQUEST}" GITHUB_TOKEN="${HERCULES_TOKEN}";
+            # fi
       - store_artifacts:
           path: /tmp/results.html
       - store_artifacts:

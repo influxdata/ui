@@ -40,6 +40,7 @@ const FunctionForm: FC<Props> = ({
   triggerFunction,
   runResult,
 }) => {
+  const stutusText = runResult.status === 'ok' ? 'success!' : 'error'
   return (
     <Form>
       <Grid>
@@ -88,17 +89,17 @@ const FunctionForm: FC<Props> = ({
             <Grid.Column widthXS={Columns.Twelve}>
               <Panel
                 gradient={
-                  runResult.status == 'success'
+                  runResult.status == 'ok'
                     ? Gradients.TropicalTourist
                     : Gradients.DangerLight
                 }
                 border={true}
               >
                 <Panel.Header>
-                  <h5>{runResult.status + '!'}</h5>
+                  <h5>{stutusText}</h5>
                 </Panel.Header>
                 <Panel.Body alignItems={AlignItems.FlexStart}>
-                  {runResult.status == 'success' ? (
+                  {runResult.status == 'ok' ? (
                     <p>
                       <div>{JSON.stringify(runResult.logs)}</div>
                       <div>{JSON.stringify(runResult.result)}</div>

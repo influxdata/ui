@@ -23,7 +23,8 @@ $dashboarding-bar-graph-anim: 0.15s;
   stroke-width: 1.5px;
   stroke: $g6-smoke;
   fill: transparent;
-  transition: fill $dashboarding-graphic-anim-time ease, stroke $dashboarding-graphic-anim-time ease;
+  transition: fill $dashboarding-graphic-anim-time ease,
+    stroke $dashboarding-graphic-anim-time ease;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-miterlimit: 10;
@@ -160,7 +161,7 @@ $dashboarding-bar-graph-anim: 0.15s;
     fill: transparent;
   }
   70% {
-    fill: transparent
+    fill: transparent;
   }
   100% {
     fill: $c-pool;
@@ -174,7 +175,7 @@ $dashboarding-bar-graph-anim: 0.15s;
     fill: transparent;
   }
   70% {
-    fill: transparent
+    fill: transparent;
   }
   100% {
     fill: $c-comet;

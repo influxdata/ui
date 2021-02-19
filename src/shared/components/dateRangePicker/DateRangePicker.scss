@@ -11,19 +11,19 @@
   padding: $ix-marg-b;
   border-radius: $ix-radius;
   z-index: 9999;
-  
+
   .react-datepicker {
     font-family: $ix-text-font;
     font-size: $ix-text-base-1;
   }
-  
+
   .range-picker--date-pickers {
     flex-wrap: nowrap;
     display: flex;
     flex-direction: row;
     align-items: center;
     margin-bottom: $ix-marg-b;
-    
+
     .range-picker--date-picker {
       margin: $ix-marg-a;
       margin-top: 0;
@@ -36,7 +36,7 @@
       .range-picker--calendar-container {
         position: relative;
       }
-    
+
       .range-picker--calendar {
         background-color: transparent;
         border: none;
@@ -63,7 +63,7 @@
         .react-datepicker__navigation--previous {
           border-right-color: $g18-cloud;
         }
-        
+
         .range-picker--day {
           color: $g7-graphite;
 
@@ -75,7 +75,7 @@
 
         .range-picker--day-in-month {
           color: $g14-chromium;
-          
+
           &:hover {
             background-color: $c-laser;
             color: $g20-white;
@@ -92,7 +92,6 @@
         }
 
         .react-datepicker__header {
-          
           border-radius: 0;
           padding: 0;
           border: none;
@@ -102,7 +101,7 @@
             color: $c-rainforest;
             font-weight: 700;
           }
-          
+
           .react-datepicker__current-month {
             width: 100%;
             border-radius: $ix-radius $ix-radius 0 0;
@@ -116,7 +115,7 @@
             align-items: center;
           }
         }
-        
+
         .react-datepicker__time-container {
           width: 70px;
           border: none;
@@ -125,7 +124,7 @@
           background-color: transparent;
           display: flex;
           flex-direction: column;
-          
+
           .react-datepicker__header--time {
             width: 100%;
             border-radius: $ix-radius $ix-radius 0 0;
@@ -178,12 +177,10 @@
                 .react-datepicker__time-list-item--selected:hover {
                   background-color: $c-pool;
                 }
-
               }
             }
           }
         }
-
       }
     }
   }
@@ -198,7 +195,7 @@
   z-index: 5000;
   top: 0;
   right: 0;
-  transform: translate(50%,-50%);
+  transform: translate(50%, -50%);
   width: 24px;
   height: 24px;
   outline: none;

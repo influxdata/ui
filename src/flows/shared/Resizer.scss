@@ -141,17 +141,17 @@ body.panel-resizer-dragging:hover {
 .panel-resizer--drag-icon {
   width: $panel-resizer--drag-handle / 2;
   height: $cf-border;
-  background-color: $g11-sidewalk;
+  background-color: $c-honeydew;
   transition: background-color 0.25s ease;
   margin: $cf-border 0;
 }
 
 .panel-resizer--drag-handle:hover .panel-resizer--drag-icon {
-  background-color: $g18-cloud;
+  background-color: $c-honeydew;
 }
 
 .panel-resizer--drag-handle__dragging .panel-resizer--drag-icon {
-  background-color: $c-pool;
+  background-color: $c-rainforest;
 }
 
 /*

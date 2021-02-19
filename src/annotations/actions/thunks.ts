@@ -43,8 +43,8 @@ export const deleteAnnotations = annotation => async (
     await deleteAnnotation(annotation)
     dispatch(deleteAnnotationAction(annotation))
     dispatch(notify(deleteAnnotationSuccess()))
+    fetchAndSetAnnotations()(dispatch)
   } catch (error) {
-    console.error(error)
     dispatch(notify(deleteAnnotationFailed(error.message)))
   }
 }

@@ -72,7 +72,7 @@ const Downsample: FC<PipeProp> = ({Context}) => {
           />
         </div>
         <div className="downsample-panel--right">
-          <h5>Window Period</h5>
+          <h5>Every Window Period</h5>
           <DurationInput
             onSubmit={setPeriod}
             placeholder="ex: 3h30s"

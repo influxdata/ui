@@ -126,8 +126,6 @@ describe('The Query Builder', () => {
 
       cy.getByTestID('duration-input--error').should('not.exist')
 
-      cy.get('label[class="cf-toggle--visual-input"]').click()
-
       cy.getByTestID('toggle').click()
       cy.getByTestID('switch-to-script-editor').click()
       cy.contains(

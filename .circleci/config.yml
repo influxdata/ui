@@ -397,6 +397,7 @@ jobs:
     working_directory: ~/
     resource_class: large
     steps:
+      - run: docker system prune -f
       - restore_cache:
           key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
       - checkout:

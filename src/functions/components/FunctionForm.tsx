@@ -99,11 +99,14 @@ const FunctionForm: FC<Props> = ({
                   <h5>{stutusText}</h5>
                 </Panel.Header>
                 <Panel.Body alignItems={AlignItems.FlexStart}>
-                  {runResult.status == 'ok' ? (
-                    <p>
-                      <div>{JSON.stringify(runResult.logs)}</div>
-                      <div>{JSON.stringify(runResult.result)}</div>
-                    </p>
+                  {runResult.status == 'ok' && runResult.logs ? (
+                    runResult.logs.map(l => {
+                      ;<p>
+                        <div>severity: {JSON.stringify(l.severity)}</div>
+                        <div>timestamp: {JSON.stringify(l.timestamp)}</div>
+                        <div>message: {JSON.stringify(l.message)}</div>
+                      </p>
+                    })
                   ) : (
                     <p>
                       <div>{JSON.stringify(runResult.error)}</div>

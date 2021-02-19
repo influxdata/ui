@@ -1,7 +1,6 @@
 import View from './view'
 import './style.scss'
 
-import {FUNCTIONS} from 'src/timeMachine/constants/queryBuilder'
 import {BuilderConfig} from 'src/types'
 
 export default register => {
@@ -21,31 +20,13 @@ export default register => {
           aggregateFunctionType: 'filter',
         },
       ],
-      functions: [{name: 'mean'}],
-      aggregateWindow: {
-        period: 'auto',
-        fillValues: false,
-      },
     },
-    generateFlux: (pipe, create, _append) => {
+    generateFlux: (pipe, create, append) => {
       if (!pipe.buckets[0] || !pipe.tags.length) {
         return
       }
 
-      const _build = (
-        config: BuilderConfig,
-        fn?: BuilderConfig['functions'][0]
-      ): string => {
-        if (config.functions) {
-          return config.functions
-            .map(fnc => {
-              const conf = {...config}
-              delete conf.functions
-              return _build(conf, fnc)
-            })
-            .join('\n\n')
-        }
-
+      const _build = (config: Partial<BuilderConfig>): string => {
         const tags = config.tags
           .map(tag => {
             if (!tag.key) {
@@ -81,19 +62,7 @@ export default register => {
           })
           .join('')
 
-        let fnFlux = ''
-        const fnSpec = fn && FUNCTIONS.find(spec => spec.name === fn.name)
-
-        if (fnSpec) {
-          const period = config.aggregateWindow.period
-          const flux = fnSpec.flux(
-            period === 'auto' || !period ? 'v.windowPeriod' : period,
-            config.aggregateWindow.fillValues
-          )
-          fnFlux = `\n  ${flux}\n  |> yield(name: "${fn.name}")`
-        }
-
-        return `from(bucket: "${config.buckets[0]}") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)${tags}${fnFlux}`
+        return `from(bucket: "${config.buckets[0]}") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)${tags}`
       }
 
       const query = _build(pipe)
@@ -103,6 +72,7 @@ export default register => {
       }
 
       create(query)
+      append(`__CURRENT_RESULT__ |> limit(n: 100)`)
     },
   })
 }

@@ -15,8 +15,8 @@ export default register => {
       tags: {},
       aggregateFunction: FUNCTIONS[0],
     },
-    generateFlux: (pipe, create, _append) => {
-      const {aggregateFunction, bucket, field, measurement, tags} = pipe
+    generateFlux: (pipe, create, append) => {
+      const {bucket, field, measurement, tags} = pipe
       if (!bucket) {
         return
       }
@@ -49,11 +49,8 @@ export default register => {
           })
       }
 
-      if (aggregateFunction?.name) {
-        text += ` |> aggregateWindow(every: v.windowPeriod, fn: ${aggregateFunction.name}, createEmpty: false)`
-      }
-
       create(text)
+      append(`__CURRENT_RESULT__ |> limit(n: 100)`)
     },
   })
 }

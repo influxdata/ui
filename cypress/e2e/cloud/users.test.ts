@@ -1,5 +1,4 @@
 import {Organization} from '../../../src/types'
-import {users, invites} from '../../../src/unity/api'
 
 describe('Users Page', () => {
   beforeEach(() => {
@@ -35,10 +34,7 @@ describe('Users Page', () => {
       cy.contains('expiration', {matchCase: false})
     })
 
-    cy.getByTestIDSubStr('invite-list-item').should(
-      'have.length',
-      invites.length + 1
-    )
+    cy.getByTestIDSubStr('invite-list-item').should('have.length', 4)
 
     cy.log('resending an invite')
     cy.getByTestID(`invite-list-item ${email}`).within(() => {
@@ -65,10 +61,7 @@ describe('Users Page', () => {
     cy.getByTestID('invitation-withdrawn').should('be.visible')
     cy.getByTestID('invitation-withdrawn--dismiss').click()
 
-    cy.getByTestIDSubStr('invite-list-item').should(
-      'have.length',
-      invites.length
-    )
+    cy.getByTestIDSubStr('invite-list-item').should('have.length', 3)
 
     cy.getByTestID(`user-list-item iris@influxdata.com`).within(() => {
       cy.getByTestID('delete-user--button').trigger('mouseover')
@@ -83,9 +76,6 @@ describe('Users Page', () => {
     cy.getByTestID('user-removed').should('be.visible')
     cy.getByTestID('user-removed--dismiss').click()
 
-    cy.getByTestIDSubStr('user-list-item').should(
-      'have.length',
-      users.length - 1
-    )
+    cy.getByTestIDSubStr('user-list-item').should('have.length', 2)
   })
 })

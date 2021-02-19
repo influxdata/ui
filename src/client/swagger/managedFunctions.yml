@@ -77,7 +77,12 @@ paths:
       operationId: PostFunctionsTrigger
       tags:
         - Functions
-      summary: Manually trigger a function without creating an associated function resource
+      summary: Manually trigger a function execution without creating an association function resource
+      parameters:
+        - in: query
+          name: param
+          schema:
+            type: string
       requestBody:
         description: Function to be triggered
         required: true

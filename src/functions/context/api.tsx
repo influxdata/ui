@@ -56,8 +56,14 @@ export const getAllAPI = async (orgID: string) => {
   }
 }
 
-export const triggerAPI = async (triggerRequest: FunctionTriggerRequest) => {
-  const res = await postApiV2FunctionsTrigger({data: triggerRequest})
+export const triggerAPI = async (
+  triggerRequest: FunctionTriggerRequest,
+  param: string
+) => {
+  const res = await postApiV2FunctionsTrigger({
+    data: triggerRequest,
+    query: {param},
+  })
 
   if (res.status != 200) {
     throw new Error(res.data.message)

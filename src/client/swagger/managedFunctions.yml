@@ -62,7 +62,7 @@ paths:
                 $ref: '#/components/schemas/Error'
   '/api/v2/functions/trigger':
     post:
-      operationId: PostFunctionTrigger
+      operationId: PostFunctionsTrigger
       tags:
         - Functions
       summary: Manually trigger a function execution without creating an association function resource

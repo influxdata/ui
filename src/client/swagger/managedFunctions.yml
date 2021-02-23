@@ -72,7 +72,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/FunctionTriggerRequest'
+              $ref: '#/components/schemas/FunctionInvocationRequest'
       responses:
         '200':
           description: Function successfully triggered
@@ -194,19 +194,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     post:
-      operationId: PostFunctionsIDRuns
+      operationId: PostFunctionsIDInvoke
       tags:
         - Functions
-      summary: Manually trigger a function run
+      summary: Manually invoke a function with params in request body
       parameters:
         - in: path
           name: functionID
           schema:
             type: string
           required: true
+      requestBody:
+        description: Function to invoke with parameters
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FunctionInvocationParams'
       responses:
         '201':
-          description: Run triggered
+          description: Function invocation response
           content:
             application/json:
               schema:
@@ -298,7 +305,7 @@ components:
           readOnly: true
         url:
           type: string
-          description: trigger endpoint address
+          description: invocation endpoint address
         updatedAt:
           type: string
           format: date-time
@@ -368,23 +375,30 @@ components:
         script:
           description: script is script to be executed
           type: string
-    FunctionTriggerRequest:
+    FunctionInvocationRequest:
+      allOf:
+        - $ref: '#/components/schemas/FunctionInvocationParams'
+        - type: object
+          properties:
+            script:
+              description: script is script to be executed
+              type: string
+            params:
+              type: object
+            orgID:
+              type: string
+            org:
+              type: string
+            language:
+              type: string
+              enum:
+                - python
+          required: [language, script]
+    FunctionInvocationParams:
       type: object
       properties:
-        script:
-          description: script is script to be executed
-          type: string
         params:
           type: object
-        orgID:
-          type: string
-        org:
-          type: string
-        language:
-          type: string
-          enum:
-            - python
-      required: [language, script]
     FunctionRunLog:
       type: object
       properties:

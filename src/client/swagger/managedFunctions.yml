@@ -48,7 +48,7 @@ paths:
             schema:
               $ref: '#/components/schemas/FunctionCreateRequest'
       responses:
-        '201':
+        '200':
           description: Function created
           content:
             application/json:
@@ -159,7 +159,7 @@ paths:
           required: true
           description: The ID of the function to delete.
       responses:
-        '204':
+        '200':
           description: Function deleted
         default:
           description: Unexpected error

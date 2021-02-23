@@ -6,7 +6,10 @@ describe('Usage Page', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
+        cy.getByTestID('tree-nav')
         cy.window().then(w => {
+          // I hate to add this, but the influx object isn't ready yet
+          cy.wait(1000)
           w.influx.set('unity-usage', true)
         })
 
@@ -68,13 +71,9 @@ describe('Usage Page', () => {
 
     // click button and see if time range has been selected
     cy.getByTestID('daterange--apply-btn').click()
-
-    cy.getByTestID('usage-header--timerange').contains(
-      'Usage from 2019-10-29T15:00:00.000Z to 2019-10-29T16:00:00.000Z'
-    )
-    cy.getByTestID('rate-limits-header--timerange').contains(
-      'Rate Limits from 2019-10-29T15:00:00.000Z to 2019-10-29T16:00:00.000Z'
-    )
+    const reg = /2019-10-29T\d\d:00:00\.000Z to 2019-10-29T\d\d:00:00\.000Z/g
+    cy.getByTestID('usage-header--timerange').contains(reg)
+    cy.getByTestID('rate-limits-header--timerange').contains(reg)
 
     // This is based on stubbed out data
     cy.getByTestID('usage-page--dropdown')

@@ -5,7 +5,7 @@ info:
 servers:
   - url: ''
 paths:
-  '/api/v2private/functions':
+  '/api/v2/functions':
     get:
       operationId: GetFunctions
       tags:
@@ -60,7 +60,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  '/api/v2private/functions/trigger':
+  '/api/v2/functions/trigger':
     post:
       operationId: PostFunctionTrigger
       tags:
@@ -86,7 +86,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  '/api/v2private/functions/{functionID}':
+  '/api/v2/functions/{functionID}':
     get:
       operationId: GetFunctionsID
       tags:
@@ -167,7 +167,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  '/api/v2private/functions/{functionID}/runs':
+  '/api/v2/functions/{functionID}/runs':
     get:
       operationId: GetFunctionsIDRuns
       tags:
@@ -217,7 +217,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  '/api/v2private/functions/{functionID}/runs/{runID}':
+  '/api/v2/functions/{functionID}/runs/{runID}':
     get:
       operationId: GetFunctionsIDRunsID
       tags:

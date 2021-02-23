@@ -332,13 +332,13 @@ components:
           type: string
         language:
           $ref: '#/components/schemas/FunctionLanguage'
+        url:
+          type: string
+          description: invocation endpoint address
         createdAt:
           type: string
           format: date-time
           readOnly: true
-        url:
-          type: string
-          description: invocation endpoint address
         updatedAt:
           type: string
           format: date-time

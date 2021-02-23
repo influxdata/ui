@@ -331,8 +331,7 @@ components:
           description: script is script to be executed
           type: string
         language:
-          enum:
-            - python
+          $ref: '#/components/schemas/FunctionLanguage'
         createdAt:
           type: string
           format: date-time
@@ -352,6 +351,31 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Function'
+    FunctionCreateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        orgID:
+          type: string
+        script:
+          description: script is script to be executed
+          type: string
+        language:
+          $ref: '#/components/schemas/FunctionLanguage'
+      required: [name, orgID, script, language]
+    FunctionUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        script:
+          description: script is script to be executed
+          type: string
     FunctionHTTPResponseData:
       description: The data sent to end user when a function is invoked using http. User defined and dynamic
       type: object
@@ -406,32 +430,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FunctionRun'
-    FunctionCreateRequest:
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        orgID:
-          type: string
-        script:
-          description: script is script to be executed
-          type: string
-        language:
-          enum:
-            - python
-      required: [name, orgID, script, language]
-    FunctionUpdateRequest:
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        script:
-          description: script is script to be executed
-          type: string
     FunctionTriggerRequest:
       allOf:
         - $ref: '#/components/schemas/FunctionInvocationParams'
@@ -450,9 +448,7 @@ components:
             org:
               type: string
             language:
-              type: string
-              enum:
-                - python
+              $ref: '#/components/schemas/FunctionLanguage'
           required: [language, script, method]
     FunctionInvocationParams:
       type: object
@@ -472,3 +468,6 @@ components:
           enum:
             - DEBUG
             - INFO
+    FunctionLanguage:
+      type: string
+      enum: [python, flux]

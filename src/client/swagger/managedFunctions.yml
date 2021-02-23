@@ -244,7 +244,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FunctionRun'
+                oneOf:
+                  - $ref: '#/components/schemas/FunctionHTTPResponseData'
         default:
           description: Unexpected error
           content:
@@ -270,12 +271,13 @@ paths:
             schema:
               $ref: '#/components/schemas/FunctionInvocationParams'
       responses:
-        '201':
+        '200':
           description: Function invocation response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FunctionRun'
+                oneOf:
+                  - $ref: '#/components/schemas/FunctionHTTPResponseData'
         default:
           description: Unexpected error
           content:
@@ -373,6 +375,32 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/Function'
+    FunctionHTTPResponseData:
+      description: The data sent to end user when a function is invoked using http. User defined and dynamic
+      type: object
+    FunctionHTTPResponse:
+      description: The full response sent to end user when a function is invoked using http
+      properties:
+        type:
+          type: string
+          enum: [http]
+        data:
+          $ref: '#/components/schemas/FunctionHTTPResponseData'
+        dataType:
+          type: string
+          enum: [json]
+        headers:
+          type: object
+          properties:
+            "content-type":
+              type: string
+              enum: [application/json]
+            "x-test-response":
+              type: string
+              enum: [unspecified]
+        statusCode:
+          type: string
+          enum: [200, 500, 404]
     FunctionRunRecord:
       description: The record maintained from a function invocation- does not contain result
       properties:
@@ -404,9 +432,11 @@ components:
         - $ref: '#/components/schemas/FunctionRunRecord'
         - type: object
           properties:
-            result:
+            data:
               description: result returned from function executed
               type: object
+            response:
+              $ref: '#/components/schemas/FunctionHTTPResponse'
     FunctionCreateRequest:
       type: object
       properties:

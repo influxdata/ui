@@ -172,7 +172,7 @@ paths:
       operationId: GetFunctionsIDInvoke
       tags:
         - Functions
-      summary: Manually invoke a function with query params
+      summary: Manually invoke a function with params in query
       parameters:
         - in: path
           name: functionID
@@ -192,8 +192,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: '#/components/schemas/FunctionHTTPResponseData'
+                $ref: '#/components/schemas/FunctionHTTPResponseData'
         default:
           description: Unexpected error
           content:
@@ -212,8 +211,6 @@ paths:
             type: string
           required: true
       requestBody:
-        description: Function to invoke with parameters
-        required: true
         content:
           application/json:
             schema:
@@ -224,8 +221,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: '#/components/schemas/FunctionHTTPResponseData'
+                $ref: '#/components/schemas/FunctionHTTPResponseData'
         default:
           description: Unexpected error
           content:
@@ -438,8 +434,6 @@ components:
             script:
               description: script is script to be executed
               type: string
-            params:
-              type: object
             method:
               type: string
               enum: [GET, POST]

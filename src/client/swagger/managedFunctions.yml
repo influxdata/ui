@@ -65,9 +65,9 @@ paths:
       operationId: PostFunctionsTrigger
       tags:
         - Functions
-      summary: Manually trigger a function execution without creating an association function resource
+      summary: Manually trigger a function without creating an associated function resource
       requestBody:
-        description: Function to run
+        description: Function to be triggered
         required: true
         content:
           application/json:

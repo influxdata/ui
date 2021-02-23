@@ -392,10 +392,10 @@ components:
         headers:
           type: object
           properties:
-            "content-type":
+            contenttype:
               type: string
               enum: [application/json]
-            "x-test-response":
+            xtestresponse:
               type: string
               enum: [unspecified]
         statusCode:

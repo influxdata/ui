@@ -365,13 +365,6 @@ components:
           enum: [json]
         headers:
           type: object
-          properties:
-            contenttype:
-              type: string
-              enum: [application/json]
-            xtestresponse:
-              type: string
-              enum: [unspecified]
         statusCode:
           type: string
           enum: [200, 500, 404]

@@ -346,9 +346,12 @@ components:
           readOnly: true
       required: [name, orgID, script]
     Functions:
-      type: array
-      items:
-        $ref: '#/components/schemas/Function'
+      type: object
+      properties:
+        functions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Function'
     FunctionHTTPResponseData:
       description: The data sent to end user when a function is invoked using http. User defined and dynamic
       type: object

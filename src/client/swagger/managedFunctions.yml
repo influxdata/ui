@@ -251,7 +251,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FunctionRunRecords'
+                $ref: '#/components/schemas/FunctionRuns'
         default:
           description: Unexpected error
           content:
@@ -357,12 +357,18 @@ components:
       type: object
     FunctionHTTPResponse:
       description: The full response sent to end user when a function is invoked using http
+      allOf:
+        - $ref: '#/components/schemas/FunctionHTTPResponseNoData'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/FunctionHTTPResponseData'
+    FunctionHTTPResponseNoData:
+      description: The full response sent to end user when a function is invoked using http
       properties:
         type:
           type: string
           enum: [http]
-        data:
-          $ref: '#/components/schemas/FunctionHTTPResponseData'
         dataType:
           type: string
           enum: [json]
@@ -371,42 +377,35 @@ components:
         statusCode:
           type: string
           enum: [200, 500, 404]
-    FunctionRunRecord:
-      description: The record maintained from a function invocation- does not contain result
+    FunctionRun:
+      description: The record kept of a function run- does not include data returned to user
+      type: object
       properties:
         id:
           readOnly: true
           type: string
         status:
           type: string
+          enum: [ok, error]
         error:
           type: string
         logs:
           type: array
           items:
             $ref: '#/components/schemas/FunctionRunLog'
+        response:
+          $ref: '#/components/schemas/FunctionHTTPResponseNoData'
         startedAt:
           type: string
           format: date-time
           readOnly: true
-    FunctionRunRecords:
+    FunctionRuns:
       type: object
       properties:
-        functionrunrecords:
+        runs:
           type: array
           items:
-            $ref: '#/components/schemas/FunctionRunRecord'
-    FunctionRun:
-      description: Results returned from a function run, includes result
-      allOf:
-        - $ref: '#/components/schemas/FunctionRunRecord'
-        - type: object
-          properties:
-            data:
-              description: result returned from function executed
-              type: object
-            response:
-              $ref: '#/components/schemas/FunctionHTTPResponse'
+            $ref: '#/components/schemas/FunctionRun'
     FunctionCreateRequest:
       type: object
       properties:

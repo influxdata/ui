@@ -167,32 +167,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  '/api/v2/functions/{functionID}/runs':
-    get:
-      operationId: GetFunctionsIDRuns
-      tags:
-        - Functions
-      summary: List runs for a function
-      parameters:
-        - in: path
-          name: functionID
-          schema:
-            type: string
-          required: true
-          description: The ID of the function to get runs for.
-      responses:
-        '200':
-          description: A list of function runs
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FunctionRunRecords'
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
   '/api/v2/functions/{functionID}/invoke':
     get:
       operationId: GetFunctionsIDInvoke
@@ -252,6 +226,32 @@ paths:
               schema:
                 oneOf:
                   - $ref: '#/components/schemas/FunctionHTTPResponseData'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/api/v2/functions/{functionID}/runs':
+    get:
+      operationId: GetFunctionsIDRuns
+      tags:
+        - Functions
+      summary: List runs for a function
+      parameters:
+        - in: path
+          name: functionID
+          schema:
+            type: string
+          required: true
+          description: The ID of the function to get runs for.
+      responses:
+        '200':
+          description: A list of function runs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FunctionRunRecords'
         default:
           description: Unexpected error
           content:

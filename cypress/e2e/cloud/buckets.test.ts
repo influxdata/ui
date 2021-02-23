@@ -16,24 +16,30 @@ describe('Buckets', () => {
 
   // TODO: Skipping this until we can sort out the differences between OSS and Cloud
   it('can sort by name and retention', () => {
-    const buckets = [
-      'Website Monitoring Bucket',
-      'defbuck',
-      '_tasks',
-      '_monitoring',
-    ]
-    const retentionDesc = [
-      '_monitoring',
-      'Website Monitoring Bucket',
-      '_tasks',
-      'defbuck',
-    ]
-    const retentionAsc = [
-      'defbuck',
-      '_tasks',
-      '_monitoring',
-      'Website Monitoring Bucket',
-    ]
+    const demoDataBucket = 'Website Monitoring Bucket'
+    const buckets = [demoDataBucket, 'defbuck', '_tasks', '_monitoring']
+    const retentionDesc = ['_monitoring', demoDataBucket, '_tasks', 'defbuck']
+    const retentionAsc = ['defbuck', '_tasks', '_monitoring', demoDataBucket]
+
+    // if demo data bucket doesn't exist, create a bucket with the same name
+    cy.getByTestID('resource-list').then($body => {
+      if (
+        $body.find(`[data-testid="bucket-card ${demoDataBucket}"]`).length === 0
+      ) {
+        cy.getByTestID(`bucket-card ${demoDataBucket}`).should('not.exist')
+        cy.getByTestID('Create Bucket').click()
+        cy.getByTestID('overlay--container').within(() => {
+          cy.getByInputName('name').type(demoDataBucket)
+          cy.getByTestID('retention-intervals--button').click()
+          cy.getByTestID('duration-selector--button').click()
+          cy.getByTestID('duration-selector--7d')
+            .click()
+            .then(() => {
+              cy.getByTestID('bucket-form-submit').click()
+            })
+        })
+      }
+    })
 
     cy.getByTestID('resource-sorter--button')
       .click()

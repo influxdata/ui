@@ -305,14 +305,11 @@ components:
           readOnly: true
       required: [name, orgID, script]
     Functions:
-      type: object
-      properties:
-        functions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Function'
+      type: array
+      items:
+        $ref: '#/components/schemas/Function'
     FunctionRunRecord:
-      description: The record maintained from a function run- does not contain result
+      description: The record maintained from a function invocation- does not contain result
       properties:
         id:
           readOnly: true

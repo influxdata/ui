@@ -5,8 +5,7 @@ jest.mock('src/shared/components/FluxMonacoEditor', () => {
   return () => <></>
 })
 
-import {createStore} from 'redux'
-
+jest.mock('src/variables/actions/thunks.ts')
 jest.mock('src/resources/components/GetResources')
 jest.mock(
   'src/annotations/components/overlay/CreateAnnotationStreamOverlay',
@@ -27,7 +26,7 @@ jest.mock('src/resources/selectors/index.ts', () => {
 
 // Mock State
 import {renderWithReduxAndRouter} from 'src/mockState'
-import {variables, withRouterProps} from 'mocks/dummyData'
+import {withRouterProps} from 'mocks/dummyData'
 import {mockAppState} from 'src/mockAppState'
 
 // Redux
@@ -41,6 +40,7 @@ import {
   OverlayController,
   OverlayProviderComp,
 } from '../../overlays/components/OverlayController'
+import {createVariable} from '../actions/thunks'
 
 const defaultProps: any = {
   ...withRouterProps,
@@ -112,10 +112,8 @@ describe('the variable install overlay', () => {
       fireEvent.change(variableName, {target: {value: 'Test variable name'}})
 
       const createButton = getByTestId('variable-form-save')
-
-      debug(createButton)
-
       expect(createButton).toBeDisabled()
+
     })
     it('Create a Variable of Map type', async () => {
       const {getByTestId, store} = setup()
@@ -173,6 +171,7 @@ describe('the variable install overlay', () => {
       expect(createButton).not.toBeDisabled()
       fireEvent.click(createButton)
 
+      expect(createVariable).toHaveBeenCalledTimes(1)
       console.log(store.getState().resources.variables)
     })
   })

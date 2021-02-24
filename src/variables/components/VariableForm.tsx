@@ -192,7 +192,7 @@ export default class VariableForm extends PureComponent<Props, State> {
   }
 
   private handleSubmit = (): void => {
-    console.log("handleSubmit")
+    console.log('handleSubmit')
     const {name, onCreateVariable, onHideOverlay} = this.props
     const {selected} = this.state
 

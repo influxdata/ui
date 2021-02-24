@@ -5,13 +5,12 @@ jest.mock('src/shared/components/FluxMonacoEditor', () => {
   return () => <></>
 })
 
-
 jest.mock('src/client/generatedRoutes.ts', () => ({
   ...require.requireActual('src/client/generatedRoutes.ts'),
   postVariable: jest.fn(() => {
     return {
-      status : 201,
-      message: "Variable created successfully",
+      status: 201,
+      message: 'Variable created successfully',
       data: {
         name: 'a little variable',
         id: 'test_variable_id',
@@ -25,7 +24,7 @@ jest.mock('src/client/generatedRoutes.ts', () => ({
       },
     }
   }),
-}));
+}))
 
 jest.mock('src/client/index.ts')
 jest.mock('src/shared/actions/notifications')
@@ -67,7 +66,10 @@ import {
 import {createVariable} from '../actions/thunks'
 import {mocked} from 'ts-jest/utils'
 import {notify} from 'src/shared/actions/notifications'
-import {communityTemplateRenameFailed, createVariableSuccess} from '../../shared/copy/notifications'
+import {
+  communityTemplateRenameFailed,
+  createVariableSuccess,
+} from '../../shared/copy/notifications'
 
 const defaultProps: any = {
   ...withRouterProps,
@@ -140,7 +142,6 @@ describe('the variable install overlay', () => {
 
       const createButton = getByTestId('variable-form-save')
       expect(createButton).toBeDisabled()
-
     })
     it('Create a Variable of Map type', async () => {
       const {getByTestId, store} = setup()
@@ -194,15 +195,15 @@ describe('the variable install overlay', () => {
         },
       })
 
-      const dropdown = getByTestId("map-variable-dropdown--button")
+      const dropdown = getByTestId('map-variable-dropdown--button')
       fireEvent.click(dropdown)
 
-      const first = getByTestId("dropdown-item")
+      const first = getByTestId('dropdown-item')
       fireEvent.click(first)
 
       const createButton = getByTestId('variable-form-save')
       expect(createButton).not.toBeDisabled()
-      await waitFor(()=>{
+      await waitFor(() => {
         fireEvent.click(createButton)
       })
 

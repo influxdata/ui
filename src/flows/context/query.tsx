@@ -2,10 +2,9 @@ import React, {FC, useContext, useMemo, useEffect} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {parse} from 'src/external/parser'
 import {runQuery} from 'src/shared/apis/query'
-import {getWindowVars} from 'src/variables/utils/getWindowVars'
 import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
-import {getTimeRangeVars} from 'src/variables/utils/getTimeRangeVars'
 import {getVariables, asAssignment} from 'src/variables/selectors'
+import {getOrg} from 'src/organizations/selectors'
 import {getBuckets} from 'src/buckets/actions/thunks'
 import {getSortedBuckets} from 'src/buckets/selectors'
 import {getStatus} from 'src/resources/selectors'
@@ -16,25 +15,38 @@ import {fromFlux} from '@influxdata/giraffe'
 import {event} from 'src/cloud/utils/reporting'
 import {FluxResult} from 'src/types/flows'
 import {PIPE_DEFINITIONS} from 'src/flows'
-import {
-  generateHashedQueryID,
-  setQueryByHashID,
-} from 'src/timeMachine/actions/queries'
+import {propertyTime} from 'src/shared/utils/getMinDurationFromAST'
 import {notify} from 'src/shared/actions/notifications'
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
+import {parseDuration, timeRangeToDuration} from 'src/shared/utils/duration'
 
 // Constants
 import {
   notebookRunSuccess,
   notebookRunFail,
 } from 'src/shared/copy/notifications'
+import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
+import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 import {PROJECT_NAME} from 'src/flows'
 
 // Types
-import {AppState, ResourceType, RemoteDataState} from 'src/types'
+import {
+  AppState,
+  ResourceType,
+  RemoteDataState,
+  Variable,
+  OptionStatement,
+  VariableAssignment,
+  ObjectExpression,
+} from 'src/types'
+
 interface Stage {
   text: string
   instances: string[]
+}
+
+interface VariableMap {
+  [key: string]: Variable
 }
 
 export interface QueryContextType {
@@ -53,45 +65,10 @@ export const QueryContext = React.createContext<QueryContextType>(
   DEFAULT_CONTEXT
 )
 
+const DESIRED_POINTS_PER_GRAPH = 360
+const FALLBACK_WINDOW_PERIOD = 15000
+
 const PREVIOUS_REGEXP = /__PREVIOUS_RESULT__/g
-
-const findOrgID = (text, buckets) => {
-  const ast = parse(text)
-
-  const _search = (node, acc = []) => {
-    if (!node) {
-      return acc
-    }
-    if (
-      node?.type === 'CallExpression' &&
-      node?.callee?.type === 'Identifier' &&
-      node?.callee?.name === 'from' &&
-      node?.arguments[0]?.properties[0]?.key?.name === 'bucket'
-    ) {
-      acc.push(node)
-    }
-
-    Object.values(node).forEach(val => {
-      if (Array.isArray(val)) {
-        val.forEach(_val => {
-          _search(_val, acc)
-        })
-      } else if (typeof val === 'object') {
-        _search(val, acc)
-      }
-    })
-
-    return acc
-  }
-
-  const queryBuckets = _search(ast).map(
-    node => node?.arguments[0]?.properties[0]?.value.value
-  )
-
-  const bucket = buckets.find(buck => queryBuckets.includes(buck.name))
-
-  return bucket?.orgID
-}
 
 export const QueryProvider: FC = ({children}) => {
   const {flow} = useContext(FlowContext)
@@ -99,6 +76,7 @@ export const QueryProvider: FC = ({children}) => {
   const {add, update} = useContext(ResultsContext)
 
   const variables = useSelector((state: AppState) => getVariables(state))
+
   const buckets = useSelector((state: AppState) => getSortedBuckets(state))
   const bucketsLoadingState = useSelector((state: AppState) =>
     getStatus(state, ResourceType.Buckets)
@@ -113,13 +91,97 @@ export const QueryProvider: FC = ({children}) => {
   }, [bucketsLoadingState, dispatch])
 
   const vars = useMemo(() => {
-    if (flow?.range) {
-      return variables
-        .map(v => asAssignment(v))
-        .concat(getTimeRangeVars(flow.range))
+    const _vars = [...variables]
+
+    if (!flow?.range) {
+      return _vars.reduce((acc, curr) => {
+        acc[curr.name] = curr
+        return acc
+      }, {})
     }
 
-    variables.map(v => asAssignment(v))
+    if (!flow.range.upper) {
+      _vars.push({
+        orgID: '',
+        id: TIME_RANGE_STOP,
+        name: TIME_RANGE_STOP,
+        arguments: {
+          type: 'system',
+          values: ['now()'],
+        },
+        status: RemoteDataState.Done,
+        labels: [],
+      })
+    } else if (isNaN(Date.parse(flow.range.upper))) {
+      _vars.push({
+        orgID: '',
+        id: TIME_RANGE_STOP,
+        name: TIME_RANGE_STOP,
+        arguments: {
+          type: 'system',
+          values: [null],
+        },
+        status: RemoteDataState.Done,
+        labels: [],
+      })
+    } else {
+      _vars.push({
+        orgID: '',
+        id: TIME_RANGE_STOP,
+        name: TIME_RANGE_STOP,
+        arguments: {
+          type: 'system',
+          values: [flow.range.upper],
+        },
+        status: RemoteDataState.Done,
+        labels: [],
+      })
+    }
+
+    if ((flow.range.type as any) !== 'custom') {
+      const duration = parseDuration(timeRangeToDuration(flow.range))
+
+      _vars.push({
+        orgID: '',
+        id: TIME_RANGE_START,
+        name: TIME_RANGE_START,
+        arguments: {
+          type: 'system',
+          values: [duration],
+        },
+        status: RemoteDataState.Done,
+        labels: [],
+      })
+    } else if (isNaN(Date.parse(flow.range.lower))) {
+      _vars.push({
+        orgID: '',
+        id: TIME_RANGE_START,
+        name: TIME_RANGE_START,
+        arguments: {
+          type: 'system',
+          values: [null],
+        },
+        status: RemoteDataState.Done,
+        labels: [],
+      })
+    } else {
+      _vars.push({
+        orgID: '',
+        id: TIME_RANGE_START,
+        name: TIME_RANGE_START,
+        arguments: {
+          type: 'system',
+          values: [flow.range.lower],
+        },
+        status: RemoteDataState.Done,
+        labels: [],
+      })
+    }
+
+    return _vars.reduce((acc, curr) => {
+      acc[curr.name] = curr
+      return acc
+    }, {})
   }, [variables, flow?.range])
 
   const generateMap = (withSideEffects?: boolean): Stage[] => {
@@ -181,14 +243,178 @@ export const QueryProvider: FC = ({children}) => {
       })
   }
 
+  const _walk = (node, test, acc = []) => {
+    if (!node) {
+      return acc
+    }
+
+    if (test(node)) {
+      acc.push(node)
+    }
+
+    Object.values(node).forEach(val => {
+      if (Array.isArray(val)) {
+        val.forEach(_val => {
+          _walk(_val, test, acc)
+        })
+      } else if (typeof val === 'object') {
+        _walk(val, test, acc)
+      }
+    })
+
+    return acc
+  }
+
+  const _getVars = (ast, acc: VariableMap = {}): VariableMap =>
+    _walk(
+      ast,
+      node => node?.type === 'MemberExpression' && node?.object?.name === 'v'
+    )
+      .map(node => node.property.name)
+      .reduce((tot, curr) => {
+
+        if (tot.hasOwnProperty(curr)) {
+          return tot
+        }
+
+          if (!vars[curr]) {
+              tot[curr] = null
+              return tot
+          }
+        tot[curr] = vars[curr]
+
+        if (tot[curr].arguments.type === 'query') {
+          _getVars(parse(tot[curr].arguments.values.query), tot)
+        }
+
+        return tot
+      }, acc)
+
   const query = (text: string): Promise<FluxResult> => {
-    const orgID = findOrgID(text, buckets)
-    const windowVars = getWindowVars(text, vars)
-    const extern = buildVarsOption([...vars, ...windowVars])
-    const queryID = generateHashedQueryID(text, variables, orgID)
+    // Some preamble for setting the stage
+    const baseAST = parse(text)
+    const usedVars = _getVars(baseAST)
+    const optionAST = buildVarsOption(Object.values(usedVars).filter(v => !!v).map(v => asAssignment(v)))
+
+    const ast = {
+      package: '',
+      type: 'Package',
+      files: [baseAST, optionAST],
+    }
+
+    // Here we grab the org from the contents of the query
+    const queryBuckets = _walk(
+      ast,
+      node =>
+        node?.type === 'CallExpression' &&
+        node?.callee?.type === 'Identifier' &&
+        node?.callee?.name === 'from' &&
+        node?.arguments[0]?.properties[0]?.key?.name === 'bucket'
+    ).map(node => node?.arguments[0]?.properties[0]?.value.value)
+    const orgID =
+      buckets.find(buck => queryBuckets.includes(buck.name))?.orgID ||
+      useSelector(getOrg).id
+
+    // This is all for trying to tease out a window period
+    if (usedVars.hasOwnProperty('windowPeriod')) {
+      const queryRanges = _walk(
+        ast,
+        node =>
+          node?.callee?.type === 'Identifier' && node?.callee?.name === 'range'
+      ).map(node =>
+        (node.arguments[0]?.properties || []).reduce(
+          (acc, curr) => {
+            if (curr.key.name === 'start') {
+              acc.start = propertyTime(ast, curr.value, Date.now())
+            }
+
+            if (curr.key.name === 'stop') {
+              acc.stop = propertyTime(ast, curr.value, Date.now())
+            }
+
+            return acc
+          },
+          {
+            start: '',
+            stop: Date.now(),
+          }
+        )
+      )
+
+      if (!queryRanges.length) {
+        ;(((optionAST.body[0] as OptionStatement)
+          .assignment as VariableAssignment)
+          .init as ObjectExpression).properties.push({
+          type: 'Property',
+          key: {
+            type: 'Identifier',
+            name: 'windowPeriod',
+          },
+          value: {
+            type: 'DurationLiteral',
+            values: [{magnitude: FALLBACK_WINDOW_PERIOD, unit: 'ms'}],
+          },
+        })
+      } else {
+        const starts = queryRanges.map(t => t.start)
+        const stops = queryRanges.map(t => t.stop)
+        const cartesianProduct = starts.map(start =>
+          stops.map(stop => [start, stop])
+        )
+
+        const durations = []
+          .concat(...cartesianProduct)
+          .map(([start, stop]) => stop - start)
+          .filter(d => d > 0)
+
+        const queryDuration = Math.min(...durations)
+        const foundDuration = SELECTABLE_TIME_RANGES.find(
+          tr => tr.seconds * 1000 === queryDuration
+        )
+
+        if (foundDuration) {
+          ;(((optionAST.body[0] as OptionStatement)
+            .assignment as VariableAssignment)
+            .init as ObjectExpression).properties.push({
+            type: 'Property',
+            key: {
+              type: 'Identifier',
+              name: 'windowPeriod',
+            },
+            value: {
+              type: 'DurationLiteral',
+              values: [{magnitude: foundDuration.windowPeriod, unit: 'ms'}],
+            },
+          })
+        } else {
+          ;(((optionAST.body[0] as OptionStatement)
+            .assignment as VariableAssignment)
+            .init as ObjectExpression).properties.push({
+            type: 'Property',
+            key: {
+              type: 'Identifier',
+              name: 'windowPeriod',
+            },
+            value: {
+              type: 'DurationLiteral',
+              values: [
+                {
+                  magnitude: Math.round(
+                    queryDuration / DESIRED_POINTS_PER_GRAPH
+                  ),
+                  unit: 'ms',
+                },
+              ],
+            },
+          })
+        }
+      }
+    }
+
     event('runQuery', {context: 'flows'})
-    const result = runQuery(orgID, text, extern)
-    setQueryByHashID(queryID, result)
+
+    const result = runQuery(orgID, text, optionAST)
+
     return result.promise
       .then(raw => {
         if (raw.type !== 'SUCCESS') {

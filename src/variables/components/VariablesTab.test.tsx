@@ -5,7 +5,30 @@ jest.mock('src/shared/components/FluxMonacoEditor', () => {
   return () => <></>
 })
 
-jest.mock('src/variables/actions/thunks.ts')
+
+jest.mock('src/client/generatedRoutes.ts', () => ({
+  ...require.requireActual('src/client/generatedRoutes.ts'),
+  postVariable: jest.fn(() => {
+    return {
+      status : 201,
+      message: "Variable created successfully",
+      data: {
+        name: 'a little variable',
+        id: 'test_variable_id',
+        orgID: 'ec6f80303d52a018',
+        arguments: {
+          type: 'map',
+          values: {
+            please: 'work',
+          },
+        },
+      },
+    }
+  }),
+}));
+
+jest.mock('src/client/index.ts')
+jest.mock('src/shared/actions/notifications')
 jest.mock('src/resources/components/GetResources')
 jest.mock(
   'src/annotations/components/overlay/CreateAnnotationStreamOverlay',
@@ -40,7 +63,11 @@ import {
   OverlayController,
   OverlayProviderComp,
 } from '../../overlays/components/OverlayController'
+
 import {createVariable} from '../actions/thunks'
+import {mocked} from 'ts-jest/utils'
+import {notify} from 'src/shared/actions/notifications'
+import {communityTemplateRenameFailed, createVariableSuccess} from '../../shared/copy/notifications'
 
 const defaultProps: any = {
   ...withRouterProps,
@@ -118,7 +145,7 @@ describe('the variable install overlay', () => {
     it('Create a Variable of Map type', async () => {
       const {getByTestId, store} = setup()
 
-      const org = {name: 'TRYRYRYRYRYRYRY', id: '12345'}
+      const org = {name: 'TRYRYRYRYRYRYRY', id: 'ec6f80303d52a018'}
 
       store.dispatch({
         type: 'SET_ORG',
@@ -167,11 +194,23 @@ describe('the variable install overlay', () => {
         },
       })
 
+      const dropdown = getByTestId("map-variable-dropdown--button")
+      fireEvent.click(dropdown)
+
+      const first = getByTestId("dropdown-item")
+      fireEvent.click(first)
+
       const createButton = getByTestId('variable-form-save')
       expect(createButton).not.toBeDisabled()
-      fireEvent.click(createButton)
+      await waitFor(()=>{
+        fireEvent.click(createButton)
+      })
 
-      expect(createVariable).toHaveBeenCalledTimes(1)
+      const [notifyCallArguments] = mocked(notify).mock.calls
+      console.log(notifyCallArguments)
+      const [notifyMessage] = notifyCallArguments
+      expect(notifyMessage).toEqual(createVariableSuccess('Test variable name'))
+
       console.log(store.getState().resources.variables)
     })
   })

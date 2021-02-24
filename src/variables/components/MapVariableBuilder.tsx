@@ -58,6 +58,7 @@ class MapVariableBuilder extends PureComponent<Props, State> {
               value={templateValuesString}
               onChange={this.handleChange}
               onBlur={this.handleBlur}
+              testID="map-variable-textarea"
             />
           </Grid.Column>
         </Grid.Row>
@@ -107,6 +108,7 @@ class MapVariableBuilder extends PureComponent<Props, State> {
   private get defaultID(): string {
     const {selected} = this.props
     const {entries} = this
+    console.log('defaultID', entries)
     const firstEntry = _.get(entries, '0.key', 'Enter values above')
 
     return _.get(selected, '0', firstEntry)
@@ -134,6 +136,7 @@ class MapVariableBuilder extends PureComponent<Props, State> {
   }
 
   private handleChange = (e: ChangeEvent<HTMLTextAreaElement>): void => {
+    console.log('handleChange')
     const templateValuesString = e.target.value
     this.setState({templateValuesString})
   }

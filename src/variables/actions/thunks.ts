@@ -242,7 +242,7 @@ export const createVariable = (
         orgID: org.id,
       },
     })
-
+    console.log({...variable})
     if (resp.status !== 201) {
       throw new Error(resp.data.message)
     }

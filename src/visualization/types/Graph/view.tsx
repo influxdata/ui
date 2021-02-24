@@ -232,7 +232,6 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
 
     // everything is under the 'default' category for now:
     const selectedAnnotations: any[] = annotations?.default ?? []
-
     if (selectedAnnotations.length) {
       const colors = ['cyan', 'magenta', 'white']
 
@@ -246,8 +245,8 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
             title: annotation.summary,
             description: '',
             color: colors[i % 3],
-            startValue: new Date(annotation.start).getTime(),
-            stopValue: new Date(annotation.end).getTime(),
+            startValue: new Date(annotation.startTime).getTime(),
+            stopValue: new Date(annotation.endTime).getTime(),
             dimension: 'x',
             pin: 'start',
           }

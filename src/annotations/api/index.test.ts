@@ -3,7 +3,7 @@
 import {mocked} from 'ts-jest/utils'
 import {
   writeAnnotation,
-  getAnnotation,
+  getAnnotations,
   deleteAnnotation,
   updateAnnotation,
 } from 'src/annotations/api'
@@ -82,28 +82,19 @@ describe('annotations api calls', () => {
       mocked(axios.get).mockImplementationOnce(() =>
         Promise.resolve({data: [lambeau]})
       )
-      const response = await getAnnotation({
-        startTime: Date.now().toString(),
-        endTime: Date.now().toString(),
-        stream: 'Lambeau Field',
-      })
+      const response = await getAnnotations('Lambeau Field')
 
       expect(response).toEqual([lambeau])
     })
 
     it('handles an error and returns the error message', async () => {
-      const annotation = {
-        startTime: Date.now().toString(),
-        endTime: Date.now().toString(),
-        stream: 'Lambeau Field',
-      }
       const message = 'OOPS YOU DONE MESSED UP SON'
 
       mocked(axios.get).mockImplementationOnce(() =>
         Promise.reject(new Error(message))
       )
 
-      await expect(getAnnotation(annotation)).rejects.toThrow(message)
+      await expect(getAnnotations('Lambeau Field')).rejects.toThrow(message)
     })
   })
 

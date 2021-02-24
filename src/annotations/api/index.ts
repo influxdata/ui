@@ -66,24 +66,6 @@ export const getAnnotations = async (
   }))
 }
 
-export const getAnnotation = async (
-  annotation: GetAnnotationPayload
-): Promise<AnnotationStream[]> => {
-  const formattedQueryString = formatAnnotationQueryString(annotation)
-  const appendedURL = `${url}?${formattedQueryString}`
-
-  const res = await axios.get(appendedURL)
-
-  if (res.status >= 300) {
-    throw new Error(res.data?.message)
-  }
-
-  return res.data.map((retrievedAnnotation: AnnotationStream) => ({
-    stream: retrievedAnnotation.stream,
-    annotations: retrievedAnnotation.annotations,
-  }))
-}
-
 export const updateAnnotation = async (
   oldAnnotation: DeleteAnnotation,
   newAnnotation: Annotation

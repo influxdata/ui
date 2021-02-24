@@ -100,6 +100,7 @@ export const QueryProvider: FC = ({children}) => {
   const bucketsLoadingState = useSelector((state: AppState) =>
     getStatus(state, ResourceType.Buckets)
   )
+  const org = useSelector(getOrg)
 
   const dispatch = useDispatch()
 
@@ -136,8 +137,7 @@ export const QueryProvider: FC = ({children}) => {
         node?.arguments[0]?.properties[0]?.key?.name === 'bucket'
     ).map(node => node?.arguments[0]?.properties[0]?.value.value)
     const orgID =
-      buckets.find(buck => queryBuckets.includes(buck.name))?.orgID ||
-      useSelector(getOrg).id
+      buckets.find(buck => queryBuckets.includes(buck.name))?.orgID || org.id
 
     // This is all for trying to tease out a window period
     if (usedVars.hasOwnProperty('windowPeriod')) {
@@ -166,7 +166,7 @@ export const QueryProvider: FC = ({children}) => {
       )
 
       if (!queryRanges.length) {
-        ;(((optionAST.body[0] as OptionStatement)
+        ;(((optionAST.body[0] as OptionStatement) // eslint-disable-line no-extra-semi
           .assignment as VariableAssignment)
           .init as ObjectExpression).properties.push({
           type: 'Property',
@@ -197,7 +197,7 @@ export const QueryProvider: FC = ({children}) => {
         )
 
         if (foundDuration) {
-          ;(((optionAST.body[0] as OptionStatement)
+          ;(((optionAST.body[0] as OptionStatement) // eslint-disable-line no-extra-semi
             .assignment as VariableAssignment)
             .init as ObjectExpression).properties.push({
             type: 'Property',
@@ -211,7 +211,7 @@ export const QueryProvider: FC = ({children}) => {
             },
           })
         } else {
-          ;(((optionAST.body[0] as OptionStatement)
+          ;(((optionAST.body[0] as OptionStatement) // eslint-disable-line no-extra-semi
             .assignment as VariableAssignment)
             .init as ObjectExpression).properties.push({
             type: 'Property',

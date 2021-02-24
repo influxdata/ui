@@ -22,13 +22,12 @@ import {formatAnnotationQueryString} from 'src/annotations/utils/formatQueryStri
 export const writeAnnotation = async (
   annotations: Annotation[]
 ): Promise<Annotation[]> => {
-  // we need to convert the annotation object's start and end time fields to be
-  // string types so they can be parsed in the backend.
+  // RFC 3339 is the standard serialization format for dates across the wire for annotations
   const annotationsRequestConverted = annotations.map(annotation => {
     return {
       ...annotation,
-      start: new Date(annotation.startTime).toISOString(),
-      end: new Date(annotation.endTime).toISOString(),
+      startTime: new Date(annotation.startTime).toISOString(),
+      endTime: new Date(annotation.endTime).toISOString(),
     }
   })
 

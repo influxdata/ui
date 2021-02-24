@@ -14,15 +14,15 @@ export interface AnnotationStream {
 
 export interface GetAnnotationPayload {
   stream?: string
-  start?: string
-  end?: string
+  startTime?: string
+  endTime?: string
   stickers?: any
 }
 
 export interface DeleteAnnotation {
   stream: string
-  start: string
-  end: string
+  startTime: string
+  endTime: string
   stickers?: any
 }
 

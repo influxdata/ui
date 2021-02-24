@@ -12,7 +12,7 @@ jest.mock('src/client/generatedRoutes.ts', () => ({
       status: 201,
       message: 'Variable created successfully',
       data: {
-        name: 'a little variable',
+        name: 'Test Map Variable Name',
         id: 'test_variable_id',
         orgID: 'ec6f80303d52a018',
         arguments: {
@@ -63,11 +63,9 @@ import {
   OverlayProviderComp,
 } from '../../overlays/components/OverlayController'
 
-import {createVariable} from '../actions/thunks'
 import {mocked} from 'ts-jest/utils'
 import {notify} from 'src/shared/actions/notifications'
 import {
-  communityTemplateRenameFailed,
   createVariableSuccess,
 } from '../../shared/copy/notifications'
 
@@ -100,49 +98,6 @@ describe('the variable install overlay', () => {
   })
 
   describe('handling the variable creation process', () => {
-    it('Create a Variable of Query type', async () => {
-      const {getByTestId, store, debug} = setup()
-
-      const org = {name: 'zoe', id: '12345'}
-
-      store.dispatch({
-        type: 'SET_ORG',
-        org: org,
-      })
-      const organizations = normalize<Organization, OrgEntities, string[]>(
-        [org],
-        arrayOfOrgs
-      )
-      store.dispatch({
-        type: 'SET_ORGS',
-        schema: organizations,
-        status: RemoteDataState.Done,
-      })
-
-      const dropdownCreateButton = getByTestId('add-resource-dropdown--button')
-      fireEvent.click(dropdownCreateButton)
-
-      const newInstallButton = getByTestId('add-resource-dropdown--new')
-      fireEvent.click(newInstallButton)
-
-      await waitFor(() => {
-        // Cancel button is unique in the overlay and should be visible
-        expect(screen.queryByTitle('Cancel')).toBeVisible()
-      })
-
-      // select query
-      const variableTypeDropdown = getByTestId('variable-type-dropdown--button')
-      fireEvent.click(variableTypeDropdown)
-      const queryTypeOption = getByTestId('variable-type-dropdown-query')
-      fireEvent.click(queryTypeOption)
-
-      // type the name
-      const variableName = getByTestId('variable-name-input')
-      fireEvent.change(variableName, {target: {value: 'Test variable name'}})
-
-      const createButton = getByTestId('variable-form-save')
-      expect(createButton).toBeDisabled()
-    })
     it('Create a Variable of Map type', async () => {
       const {getByTestId, store} = setup()
 
@@ -208,11 +163,8 @@ describe('the variable install overlay', () => {
       })
 
       const [notifyCallArguments] = mocked(notify).mock.calls
-      console.log(notifyCallArguments)
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(createVariableSuccess('Test variable name'))
-
-      console.log(store.getState().resources.variables)
     })
   })
 })

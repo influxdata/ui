@@ -1,4 +1,4 @@
-import React, {FC} from 'react'
+import React, {FC, useCallback} from 'react'
 
 import {
   Input,
@@ -131,6 +131,42 @@ const SingleStatWithLineOptions: FC<Props> = ({
       })
     }
   }
+
+  const updateThreshold = useCallback(
+    (threshold: string) => {
+      if (threshold === THRESHOLD_TYPE_BG) {
+        update({
+          colors: properties.colors.map(color => {
+            if (color.type !== 'scale') {
+              return {
+                ...color,
+                type: THRESHOLD_TYPE_BG,
+              }
+            }
+
+            return color
+          }),
+        })
+      } else {
+        update({
+          colors: properties.colors.map(color => {
+            if (color.type !== 'scale') {
+              return {
+                ...color,
+                type: THRESHOLD_TYPE_TEXT,
+              }
+            }
+
+            return color
+          }),
+        })
+      }
+    },
+    [update, properties.colors]
+  )
+
+  const activeSetting =
+    properties.colors.filter(color => color.type !== 'scale')[0]?.type || 'text'
 
   return (
     <Grid>

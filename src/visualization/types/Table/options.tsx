@@ -320,7 +320,7 @@ const TableViewOptions: FC<Props> = ({properties, results, update}) => {
           <Form.Element label="Table Columns">
             <DndProvider backend={HTML5Backend}>
               <div>
-                {draggableColumns.length || (
+                {!draggableColumns.length ? (
                   <Form.Box>
                     <EmptyState size={ComponentSize.Small}>
                       <EmptyState.Text>
@@ -328,6 +328,8 @@ const TableViewOptions: FC<Props> = ({properties, results, update}) => {
                       </EmptyState.Text>
                     </EmptyState>
                   </Form.Box>
+                ) : (
+                  draggableColumns
                 )}
               </div>
             </DndProvider>

@@ -192,11 +192,9 @@ export default class VariableForm extends PureComponent<Props, State> {
   }
 
   private handleSubmit = (): void => {
-    console.log('handleSubmit')
     const {name, onCreateVariable, onHideOverlay} = this.props
     const {selected} = this.state
 
-    console.log(onCreateVariable.toString())
     onCreateVariable({
       selected,
       name,
@@ -207,7 +205,6 @@ export default class VariableForm extends PureComponent<Props, State> {
   }
 
   private handleChangeType = (selectedType: string) => {
-    console.log('handleChangeType')
     const {variableType, onTypeUpdate} = this.props
     const {isNameValid} = this.state
     const defaults = {selected: null, hasValidArgs: false, isNameValid}
@@ -232,7 +229,6 @@ export default class VariableForm extends PureComponent<Props, State> {
     args: VariableArguments
     isValid: boolean
   }) => {
-    console.log('handleChangeArgs')
     const {onQueryUpdate, onMapUpdate, onConstantUpdate} = this.props
 
     switch (args.type) {
@@ -260,7 +256,6 @@ export default class VariableForm extends PureComponent<Props, State> {
   }
 
   private handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log('handleChangeInput')
     const {value} = e.target
 
     this.props.onNameUpdate(value)

@@ -65,9 +65,7 @@ import {
 
 import {mocked} from 'ts-jest/utils'
 import {notify} from 'src/shared/actions/notifications'
-import {
-  createVariableSuccess,
-} from '../../shared/copy/notifications'
+import {createVariableSuccess} from '../../shared/copy/notifications'
 
 const defaultProps: any = {
   ...withRouterProps,

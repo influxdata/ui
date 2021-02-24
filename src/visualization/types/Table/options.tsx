@@ -328,7 +328,9 @@ const TableViewOptions: FC<Props> = ({properties, results, update}) => {
                       </EmptyState.Text>
                     </EmptyState>
                   </Form.Box>
-                ): draggableColumns}
+                ) : (
+                  draggableColumns
+                )}
               </div>
             </DndProvider>
           </Form.Element>

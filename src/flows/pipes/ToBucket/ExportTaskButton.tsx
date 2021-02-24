@@ -11,23 +11,21 @@ import {
 import {Button} from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 import {PopupContext} from 'src/flows/context/popup'
-import {FlowContext} from 'src/flows/context/flow.current'
 import ExportTaskOverlay from 'src/flows/pipes/ToBucket/ExportTaskOverlay'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
 const ExportTaskButton: FC = () => {
-  const {data, queryText} = useContext(PipeContext)
+  const {data, range, queryText} = useContext(PipeContext)
   const {launch} = useContext(PopupContext)
-  const {flow} = useContext(FlowContext)
 
   const onClick = () => {
     event('Export Task Clicked')
     launch(<ExportTaskOverlay />, {
       bucket: data.bucket,
       query: queryText,
-      range: flow.range,
+      range,
     })
   }
 

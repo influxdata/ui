@@ -4,7 +4,6 @@ import React, {FC, useContext} from 'react'
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
 import {AppSettingProvider} from 'src/shared/contexts/app'
-import QueryProvider from 'src/flows/context/query'
 
 // Components
 import {Page} from '@influxdata/clockface'
@@ -41,16 +40,12 @@ const FlowHeader: FC = () => {
       </Page.Header>
       <Page.ControlBar fullWidth={FULL_WIDTH}>
         <Page.ControlBarLeft>
-          <QueryProvider>
-            <Submit />
-          </QueryProvider>
+          <Submit />
         </Page.ControlBarLeft>
         <Page.ControlBarRight>
           <PresentationMode />
           <TimeZoneDropdown />
-          <QueryProvider>
-            <TimeRangeDropdown />
-          </QueryProvider>
+          <TimeRangeDropdown />
           <AutoRefreshDropdown />
         </Page.ControlBarRight>
       </Page.ControlBar>

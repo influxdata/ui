@@ -7,42 +7,38 @@ jest.mock('src/shared/components/FluxMonacoEditor', () => {
 
 jest.mock('src/client/generatedRoutes.ts', () => ({
   ...require.requireActual('src/client/generatedRoutes.ts'),
-  postVariable: jest
-    .fn(() => {
-      return {
-        status: 201,
-        message: 'Variable created successfully',
-        data: {
-          name: 'Test Map Variable Name',
-          id: 'test_variable_id',
-          orgID: 'ec6f80303d52a018',
-          arguments: {
-            type: 'map',
-            values: {
-              please: 'work',
-            },
+  postVariable: jest.fn(() => {
+    return {
+      status: 201,
+      message: 'Variable created successfully',
+      data: {
+        name: 'Test Map Variable Name',
+        id: 'test_variable_id',
+        orgID: 'ec6f80303d52a018',
+        arguments: {
+          type: 'map',
+          values: {
+            please: 'work',
           },
         },
-      }
-    }),
-  patchVariable: jest
-    .fn(() => {
-      return {
-        status: 200,
-        message: 'Variable updated successfully',
-        data: {
-          name: 'values',
-          id: '05aeb0ad75aca000',
-          orgID: 'ec6f80303d52a018',
-          arguments: {
-            type: 'map',
-            values: {
-              please: 'work',
-            },
-          },
+      },
+    }
+  }),
+  patchVariable: jest.fn(() => {
+    return {
+      status: 200,
+      message: 'Variable updated successfully',
+      data: {
+        name: 'csv_test_variable',
+        id: '05aeb0ad75aca000',
+        orgID: 'ec6f80303d52a018',
+        arguments: {
+          type: 'map',
+          values: ['pleasework', 'again'],
         },
-      }
-    })
+      },
+    }
+  }),
 }))
 
 jest.mock('src/client/index.ts')
@@ -84,7 +80,10 @@ import {
 
 import {mocked} from 'ts-jest/utils'
 import {notify} from 'src/shared/actions/notifications'
-import {createVariableSuccess, updateVariableSuccess} from '../../shared/copy/notifications'
+import {
+  createVariableSuccess,
+  updateVariableSuccess,
+} from '../../shared/copy/notifications'
 
 const defaultProps: any = {
   ...withRouterProps,
@@ -176,8 +175,6 @@ describe('the variable install overlay', () => {
       const [notifyCallArguments] = mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(createVariableSuccess('Test variable name'))
-
-      console.log(store.getState().resources.variables)
     })
     it('Create a Variable of CSV type', async () => {
       const {getByTestId, store} = setup()
@@ -241,8 +238,6 @@ describe('the variable install overlay', () => {
       const [notifyCallArguments] = mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(createVariableSuccess('Test variable name'))
-
-      console.log(store.getState().resources.variables)
     })
     it('Create a Variable of query type', async () => {
       const {getByTestId, store} = setup()
@@ -306,14 +301,12 @@ describe('the variable install overlay', () => {
       const [notifyCallArguments] = mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(createVariableSuccess('Test variable name'))
-
-      console.log(store.getState().resources.variables)
     })
   })
 
   describe('handling variable modifiation process', () => {
     it('Edit a Map variable', async () => {
-      const {getByTestId, store, debug, getAllByTestId, getByTitle} = setup()
+      const {getByTestId, store, getByTitle} = setup()
 
       const org = {name: 'test_org_name', id: 'test_org_id'}
 
@@ -331,15 +324,15 @@ describe('the variable install overlay', () => {
         status: RemoteDataState.Done,
       })
 
-      const base_query_variable = getByTestId("variable-card--name values")
+      const base_query_variable = getByTestId('variable-card--name values')
 
       fireEvent.click(base_query_variable)
 
       await waitFor(() => {
-        expect(screen.queryByTitle("Edit Variable")).toBeVisible()
+        expect(screen.queryByTitle('Edit Variable')).toBeVisible()
       })
 
-      const mapTextArea = getByTestId("map-variable-textarea")
+      const mapTextArea = getByTestId('map-variable-textarea')
       fireEvent.change(mapTextArea, {target: {value: 'please,work'}})
 
       store.dispatch({
@@ -352,7 +345,7 @@ describe('the variable install overlay', () => {
         },
       })
 
-      const submitButton = getByTitle("Submit")
+      const submitButton = getByTitle('Submit')
       expect(submitButton).not.toBeDisabled()
       await waitFor(() => {
         fireEvent.click(submitButton)
@@ -361,8 +354,55 @@ describe('the variable install overlay', () => {
       const [notifyCallArguments] = mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(updateVariableSuccess('values'))
+    })
+    it('Edit a CSV variable', async () => {
+      const {getByTestId, store, getByTitle} = setup()
 
-      console.log(store.getState().resources.variables.byID['05aeb0ad75aca000'])
+      const org = {name: 'test_org_name', id: 'test_org_id'}
+
+      store.dispatch({
+        type: 'SET_ORG',
+        org: org,
+      })
+      const organizations = normalize<Organization, OrgEntities, string[]>(
+        [org],
+        arrayOfOrgs
+      )
+      store.dispatch({
+        type: 'SET_ORGS',
+        schema: organizations,
+        status: RemoteDataState.Done,
+      })
+
+      const base_query_variable = getByTestId(
+        'variable-card--name csv_test_variable'
+      )
+      fireEvent.click(base_query_variable)
+
+      await waitFor(() => {
+        expect(screen.queryByTitle('Edit Variable')).toBeVisible()
+      })
+
+      const mapTextArea = getByTestId('csv-variable-textarea')
+      fireEvent.change(mapTextArea, {target: {value: 'pleasework,again'}})
+
+      store.dispatch({
+        type: 'UPDATE_VARIABLE_EDITOR_CONSTANT',
+        payload: {
+          type: 'constant',
+          values: ['pleasework', 'again'],
+        },
+      })
+
+      const submitButton = getByTitle('Submit')
+      expect(submitButton).not.toBeDisabled()
+      await waitFor(() => {
+        fireEvent.click(submitButton)
+      })
+
+      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyMessage] = notifyCallArguments
+      expect(notifyMessage).toEqual(updateVariableSuccess('csv_test_variable'))
     })
   })
 })

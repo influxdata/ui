@@ -169,10 +169,14 @@ export const hydrateVariables = (
       return
     }
     if (status === RemoteDataState.Done) {
+      variable.selected = variable.selected.filter(v =>
+        variable.arguments.values.results.includes(v)
+      )
       const _variable = normalize<Variable, VariableEntities, string>(
         variable,
         variableSchema
       )
+
       dispatch(setVariable(variable.id, RemoteDataState.Done, _variable))
     }
   })

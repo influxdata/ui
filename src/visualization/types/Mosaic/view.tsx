@@ -17,7 +17,7 @@ import {
   useVisXDomainSettings,
   useVisYDomainSettings,
 } from 'src/visualization/utils/useVisDomainSettings'
-import {defaultXColumn, mosaicYColumn} from 'src/shared/utils/vis'
+import {defaultXColumn} from 'src/shared/utils/vis'
 import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Constants
@@ -41,12 +41,7 @@ const MosaicPlot: FunctionComponent<Props> = ({
   const {theme, timeZone} = useContext(AppSettingContext)
   const fillColumns = properties.fillColumns || []
   const xColumn = properties.xColumn || defaultXColumn(result.table)
-  let yColumn
-  if (properties.ySeriesColumns) {
-    yColumn = properties.ySeriesColumns[0]
-  } else {
-    yColumn = mosaicYColumn(result.table)
-  }
+  const ySeriesColumns = properties.ySeriesColumns || []
   const columnKeys = result.table.columnKeys
 
   const axisTicksOptions = useAxisTicksGenerator(properties)
@@ -64,14 +59,13 @@ const MosaicPlot: FunctionComponent<Props> = ({
 
   const [yDomain, onSetYDomain, onResetYDomain] = useVisYDomainSettings(
     properties.yDomain,
-    result.table.getColumn(yColumn, 'string')
+    result.table.getColumn(ySeriesColumns[0], 'string')
   )
 
   const isValidView =
     xColumn &&
     columnKeys.includes(xColumn) &&
-    yColumn &&
-    columnKeys.includes(yColumn) &&
+    ySeriesColumns.every(col => columnKeys.includes(col)) &&
     fillColumns.length !== 0 &&
     fillColumns.every(col => columnKeys.includes(col))
 
@@ -85,11 +79,6 @@ const MosaicPlot: FunctionComponent<Props> = ({
       : DEFAULT_LINE_COLORS.map(c => c.hex)
 
   const xFormatter = getFormatter(result.table.getColumnType(xColumn), {
-    timeZone,
-    timeFormat: properties.timeFormat,
-  })
-
-  const yFormatter = getFormatter(result.table.getColumnType(yColumn), {
     timeZone,
     timeFormat: properties.timeFormat,
   })
@@ -115,13 +104,12 @@ const MosaicPlot: FunctionComponent<Props> = ({
         legendColorizeRows: tooltipColorize,
         valueFormatters: {
           [xColumn]: xFormatter,
-          [yColumn]: yFormatter,
         },
         layers: [
           {
             type: 'mosaic',
             x: xColumn,
-            y: yColumn,
+            y: ySeriesColumns,
             colors: colorHexes,
             fill: fillColumns,
           },

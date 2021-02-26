@@ -250,12 +250,7 @@ export const mosaicYColumn = (
     return preferredColumnKey
   }
 
-  const invalidMosaicYColumns = new Set([
-    '_value',
-    'status',
-    '_field',
-    '_measurement',
-  ])
+  const invalidMosaicYColumns = new Set(['_value', 'status', '_field'])
   const preferredValidColumnKeys = validColumnKeys.filter(
     name => !invalidMosaicYColumns.has(name)
   )

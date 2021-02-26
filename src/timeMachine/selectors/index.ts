@@ -52,6 +52,10 @@ export const getActiveTimeMachine = (state: AppState) => {
   return timeMachine
 }
 
+export const getActiveGraphType = (state: AppState): string => {
+  return get(getActiveTimeMachine(state), 'view.properties.type', 'xy')
+}
+
 export const getIsInCheckOverlay = (state: AppState): boolean => {
   return state.timeMachines.activeTimeMachineID === 'alerting'
 }
@@ -154,18 +158,12 @@ export const getYColumnSelection = (state: AppState): string => {
   let preferredYColumnKey
 
   if (tm.view.properties.type === 'mosaic') {
-    preferredYColumnKey = get(
-      getActiveTimeMachine(state),
-      'view.properties.ySeriesColumns[0]'
-    )
+    preferredYColumnKey = get(tm, 'view.properties.ySeriesColumns')
 
     return mosaicYColumn(table, preferredYColumnKey)
   }
 
-  preferredYColumnKey = get(
-    getActiveTimeMachine(state),
-    'view.properties.yColumn'
-  )
+  preferredYColumnKey = get(tm, 'view.properties.yColumn')
 
   return defaultYColumn(table, preferredYColumnKey)
 }

@@ -9,6 +9,7 @@ import {
   SelectDropdown,
   ComponentStatus,
   Columns,
+  MultiSelectDropdown,
 } from '@influxdata/clockface'
 import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
 import LegendOrientation from 'src/visualization/components/internal/LegendOrientation'
@@ -17,7 +18,7 @@ import {
   FORMAT_OPTIONS,
   resolveTimeFormat,
 } from 'src/visualization/utils/timeFormat'
-import {defaultXColumn, mosaicYColumn} from 'src/shared/utils/vis'
+import {defaultXColumn} from 'src/shared/utils/vis'
 
 // Types
 import {MosaicViewProperties, Color} from 'src/types'
@@ -27,8 +28,10 @@ interface Props extends VisualizationOptionProps {
   properties: MosaicViewProperties
 }
 
-const MosaicOptions: FC<Props> = ({properties, results, update}) => {
+const MosaicOptions: FC<Props> = props => {
+  const {properties, results, update} = props
   let fillColumns = []
+  let ySeriesColumns = []
   const stringColumns = results.table.columnKeys.filter(k => {
     if (k === 'result' || k === 'table') {
       return false
@@ -37,18 +40,12 @@ const MosaicOptions: FC<Props> = ({properties, results, update}) => {
     return results.table.getColumnType(k) === 'string'
   })
 
-  const numericColumns = results.table.columnKeys.filter(key => {
-    if (key === 'result' || key === 'table') {
-      return false
-    }
-
-    const columnType = results.table.getColumnType(key)
-
-    return columnType === 'time' || columnType === 'number'
-  })
+  // Mosaic graphs are currently limited to always using _time on the x-axis
+  //   future enhancements will depend on the visualization library
+  const xDataColumn = results.table.columnKeys.filter(key => key === '_time')
 
   if (
-    properties.fillColumns &&
+    Array.isArray(properties.fillColumns) &&
     properties.fillColumns.every(col => stringColumns.includes(col))
   ) {
     fillColumns = properties.fillColumns
@@ -62,12 +59,40 @@ const MosaicOptions: FC<Props> = ({properties, results, update}) => {
   }
 
   const xColumn = defaultXColumn(results.table, properties.xColumn)
-  const yColumn = mosaicYColumn(results.table, properties.ySeriesColumns?.[0])
+
+  if (
+    Array.isArray(properties.ySeriesColumns) &&
+    properties.ySeriesColumns.every(col => stringColumns.includes(col))
+  ) {
+    ySeriesColumns = properties.ySeriesColumns
+  } else {
+    for (const key of stringColumns) {
+      if (key === '_measurement') {
+        ySeriesColumns.push(key)
+        break
+      }
+    }
+  }
 
   // TODO: make this normal DashboardColor[] and not string[]
   const colors = properties.colors.map(color => {
     return {hex: color} as Color
   })
+
+  const onSelectYSeriesColumn = (option: string) => {
+    const columnExists = Array.isArray(ySeriesColumns)
+      ? ySeriesColumns.find(col => col === option)
+      : false
+    let updatedColumns = ySeriesColumns || []
+
+    if (columnExists) {
+      updatedColumns = ySeriesColumns.filter(fc => fc !== option)
+    } else {
+      updatedColumns = [...updatedColumns, option]
+    }
+
+    update({ySeriesColumns: updatedColumns})
+  }
 
   return (
     <Grid>
@@ -97,32 +122,25 @@ const MosaicOptions: FC<Props> = ({properties, results, update}) => {
           </Form.Element>
           <Form.Element label="X Column">
             <SelectDropdown
-              options={numericColumns}
+              options={xDataColumn}
               selectedOption={xColumn || 'Build a query before selecting...'}
               onSelect={xColumn => {
                 update({xColumn})
               }}
               testID="dropdown-x"
               buttonStatus={
-                numericColumns.length == 0
+                xDataColumn.length == 0
                   ? ComponentStatus.Disabled
                   : ComponentStatus.Default
               }
             />
           </Form.Element>
           <Form.Element label="Y Column">
-            <SelectDropdown
+            <MultiSelectDropdown
               options={stringColumns}
-              selectedOption={yColumn || 'Build a query before selecting...'}
-              onSelect={yColumn => {
-                update({ySeriesColumns: [yColumn]})
-              }}
-              testID="dropdown-y"
-              buttonStatus={
-                stringColumns.length == 0
-                  ? ComponentStatus.Disabled
-                  : ComponentStatus.Default
-              }
+              selectedOptions={ySeriesColumns}
+              onSelect={onSelectYSeriesColumn}
+              buttonStatus={ComponentStatus.Default}
             />
           </Form.Element>
           <Form.Element label="Time Format">

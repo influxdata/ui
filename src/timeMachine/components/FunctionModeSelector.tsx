@@ -1,5 +1,5 @@
 // Libraries
-import React, {FunctionComponent, useState} from 'react'
+import React, {FunctionComponent, useEffect, useState} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
@@ -22,10 +22,17 @@ import {
 
 import {setFunctions} from 'src/timeMachine/actions/queryBuilder'
 import {setIsAutoFunction} from 'src/shared/actions/currentExplorer'
-import {getActiveQuery, getIsInCheckOverlay} from 'src/timeMachine/selectors'
+import {
+  getActiveGraphType,
+  getActiveQuery,
+  getIsInCheckOverlay,
+} from 'src/timeMachine/selectors'
 
 // Constants
-import {AUTO_FUNCTIONS, FUNCTIONS} from 'src/timeMachine/constants/queryBuilder'
+import {
+  FUNCTIONS,
+  getDefaultAutoFunctions,
+} from 'src/timeMachine/constants/queryBuilder'
 
 // Types
 import {AppState} from 'src/types'
@@ -34,19 +41,34 @@ type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
 const FunctionSelector: FunctionComponent<Props> = ({
-  onSetFunctions,
-  selectedFunctions,
-  onSingleSelectBuilderFunction,
-  onMultiSelectBuilderFunction,
-  onSetIsAutoFunction,
+  activeGraphType,
   isInCheckOverlay,
+  onMultiSelectBuilderFunction,
+  onSetFunctions,
+  onSetIsAutoFunction,
+  onSingleSelectBuilderFunction,
+  savedFunctions,
 }) => {
-  const autoFunctions = AUTO_FUNCTIONS.map(f => f.name)
+  const autoFunctions = getDefaultAutoFunctions(activeGraphType).map(
+    f => f.name
+  )
+
   const [isAutoFunction, setIsAutoFunction] = useState(
     !isInCheckOverlay &&
-      selectedFunctions.length === 1 &&
-      autoFunctions.includes(selectedFunctions[0])
+      savedFunctions.length === 1 &&
+      autoFunctions.includes(savedFunctions[0])
   )
+
+  useEffect(() => {
+    if (isAutoFunction && autoFunctions.includes(savedFunctions[0]) === false) {
+      onSingleSelectBuilderFunction(autoFunctions[0])
+    }
+  }, [
+    autoFunctions,
+    isAutoFunction,
+    onSingleSelectBuilderFunction,
+    savedFunctions,
+  ])
 
   const functionList = isAutoFunction
     ? autoFunctions
@@ -62,9 +84,7 @@ const FunctionSelector: FunctionComponent<Props> = ({
       handleSetAutoFunction(false)
       return
     }
-    const newFunctions = selectedFunctions.filter(f =>
-      autoFunctions.includes(f)
-    )
+    const newFunctions = savedFunctions.filter(f => autoFunctions.includes(f))
     if (newFunctions.length === 0) {
       onSetFunctions([autoFunctions[0]])
     } else if (newFunctions.length > 1) {
@@ -88,12 +108,22 @@ const FunctionSelector: FunctionComponent<Props> = ({
         />
         <SelectorList
           items={functionList}
-          selectedItems={selectedFunctions}
+          selectedItems={savedFunctions}
           onSelectItem={onSingleSelectBuilderFunction}
           multiSelect={false}
         />
       </>
     )
+  }
+
+  const validSavedFunctions = savedFunctions.filter(func =>
+    functionList.includes(func)
+  )
+  let selectedFunctions = savedFunctions
+  if (isAutoFunction) {
+    selectedFunctions = validSavedFunctions.length
+      ? validSavedFunctions
+      : autoFunctions
   }
 
   return (
@@ -148,11 +178,13 @@ const FunctionSelector: FunctionComponent<Props> = ({
 }
 
 const mstp = (state: AppState) => {
+  const activeGraphType = getActiveGraphType(state)
   const {builderConfig} = getActiveQuery(state)
   const {functions} = builderConfig
   return {
-    selectedFunctions: functions.map(f => f.name),
+    activeGraphType,
     isInCheckOverlay: getIsInCheckOverlay(state),
+    savedFunctions: functions.map(f => f.name),
   }
 }
 

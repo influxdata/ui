@@ -25,7 +25,7 @@ import {
 import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
 
 // Types
-import {RemoteDataState, AppState} from 'src/types'
+import {RemoteDataState, AppState, ViewProperties} from 'src/types'
 
 // Selectors
 import {getActiveTimeRange} from 'src/timeMachine/selectors/index'
@@ -48,6 +48,7 @@ const TimeMachineVis: FC<Props> = ({
   symbolColumns,
   annotations,
 }) => {
+  const {type} = viewProperties
   // If the current selections for `xColumn`/`yColumn`/ etc. are invalid given
   // the current Flux response, attempt to make a valid selection instead. This
   // fallback logic is contained within the selectors that supply each of these
@@ -56,10 +57,11 @@ const TimeMachineVis: FC<Props> = ({
   const resolvedViewProperties = {
     ...viewProperties,
     xColumn,
-    yColumn,
+    [`${type === 'mosaic' ? 'ySeriesColumns' : 'yColumn'}`]:
+      type === 'mosaic' ? [yColumn] : yColumn,
     fillColumns,
     symbolColumns,
-  }
+  } as ViewProperties
 
   const noQueries =
     loading === RemoteDataState.NotStarted || !viewProperties.queries.length

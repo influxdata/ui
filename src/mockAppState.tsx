@@ -81,7 +81,7 @@ export const mockAppState = {
           name: 'csv_test_variable',
           arguments: {
             type: 'constant',
-            values: ['please', 'work'],
+            values: ['sample', 'value'],
           },
         },
         '05ba3253105a5000': {

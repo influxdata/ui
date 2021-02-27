@@ -1,30 +1,35 @@
 // Libraries
-import React, {FC, ChangeEvent, useContext} from 'react'
+import React, {FC, ChangeEvent, useEffect, useRef} from 'react'
 
 // Components
-import {Grid, Columns, Form, TextArea, TextAreaRef} from '@influxdata/clockface'
+import {Columns, Form, Grid, TextArea} from '@influxdata/clockface'
 
-// Actions
-import {updateAnnotationDraft} from 'src/annotations/actions/annotationFormActions'
+interface Props {
+  onChange: (event: ChangeEvent<HTMLTextAreaElement>) => void
+  message: string
+}
 
-// Contexts
-import {AnnotationFormContext} from 'src/annotations/components/annotationForm/AnnotationForm'
+export const AnnotationMessageInput: FC<Props> = (props: Props) => {
+  const textArea = useRef(null)
+  const validationMessage = props.message ? '' : 'This field is required'
 
-export const AnnotationMessageInput: FC = () => {
-  const {message, dispatch} = useContext(AnnotationFormContext)
-
-  const handleChange = (e: ChangeEvent<TextAreaRef>): void => {
-    dispatch(updateAnnotationDraft({message: e.target.value}))
-  }
+  useEffect(() => {
+    textArea.current.focus()
+  }, [])
 
   return (
     <Grid.Column widthXS={Columns.Twelve}>
-      <Form.Element label="Message" required={false}>
+      <Form.Element
+        label="Message"
+        required={true}
+        errorMessage={validationMessage}
+      >
         <TextArea
           name="message"
-          value={message}
-          onChange={handleChange}
+          value={props.message}
+          onChange={props.onChange}
           style={{height: '80px', minHeight: '80px'}}
+          ref={textArea}
         />
       </Form.Element>
     </Grid.Column>

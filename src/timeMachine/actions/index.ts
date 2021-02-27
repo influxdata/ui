@@ -2,12 +2,12 @@
 import {Dispatch} from 'react'
 
 // Actions
-import {loadBuckets} from 'src/timeMachine/actions/queryBuilder'
-import {saveAndExecuteQueries} from 'src/timeMachine/actions/queries'
+import {Action as QueryBuilderAction} from 'src/timeMachine/actions/queryBuilder'
 import {
+  loadBuckets,
   reloadTagSelectors,
-  Action as QueryBuilderAction,
-} from 'src/timeMachine/actions/queryBuilder'
+} from 'src/timeMachine/actions/queryBuilderThunks'
+import {saveAndExecuteQueries} from 'src/timeMachine/actions/queries'
 import {convertCheckToCustom} from 'src/alerting/actions/alertBuilder'
 import {setDashboardTimeRange} from 'src/dashboards/actions/ranges'
 

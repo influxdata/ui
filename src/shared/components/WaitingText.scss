@@ -1,26 +1,26 @@
 @keyframes loading-dots {
   0% {
-    content: " "
+    content: ' ';
   }
 
   25% {
-    content: "."
+    content: '.';
   }
 
   50% {
-    content: ".."
+    content: '..';
   }
 
   75% {
-    content: "..."
+    content: '...';
   }
-  
+
   100% {
-    content: " "
+    content: ' ';
   }
 }
 
 .waiting-text::after {
   animation: 2s linear loading-dots infinite;
-  content: "..."
+  content: '...';
 }

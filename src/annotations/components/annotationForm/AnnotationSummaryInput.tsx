@@ -1,33 +1,36 @@
 // Libraries
-import React, {FC, ChangeEvent, useContext} from 'react'
+import React, {FC, ChangeEvent} from 'react'
 
 // Components
-import {Grid, Columns, Form, Input, InputRef} from '@influxdata/clockface'
+import {
+  Columns,
+  ComponentStatus,
+  Form,
+  Grid,
+  Input,
+} from '@influxdata/clockface'
 
-// Actions
-import {updateAnnotationDraft} from 'src/annotations/actions/annotationFormActions'
+interface Props {
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void
+  summary: string
+}
 
-// Contexts
-import {AnnotationFormContext} from 'src/annotations/components/annotationForm/AnnotationForm'
-
-export const AnnotationSummaryInput: FC = () => {
-  const {summary, summaryStatus, summaryError, dispatch} = useContext(
-    AnnotationFormContext
-  )
-
-  const handleChange = (e: ChangeEvent<InputRef>): void => {
-    dispatch(updateAnnotationDraft({summary: e.target.value}))
-  }
+export const AnnotationSummaryInput: FC<Props> = (props: Props) => {
+  const validationMessage = props.summary ? '' : 'This field is required'
 
   return (
     <Grid.Column widthXS={Columns.Seven}>
-      <Form.Element label="Summary" required={true} errorMessage={summaryError}>
+      <Form.Element
+        label="Summary"
+        required={true}
+        errorMessage={validationMessage}
+      >
         <Input
           name="summary"
           placeholder="ex: Deployed update"
-          value={summary}
-          onChange={handleChange}
-          status={summaryStatus}
+          value={props.summary}
+          onChange={props.onChange}
+          status={ComponentStatus.Default}
         />
       </Form.Element>
     </Grid.Column>

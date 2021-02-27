@@ -50,9 +50,10 @@
     "cy": "CYPRESS_baseUrl=http://localhost:9999 cypress open",
     "cy:dev": "source ../monitor-ci/.env && CYPRESS_baseUrl=https://kubernetes.docker.internal:$PORT_HTTPS cypress open --config testFiles='{cloud,shared}/**/*.*'",
     "cy:dev-oss": "source ../monitor-ci/.env && CYPRESS_baseUrl=https://kubernetes.docker.internal:$PORT_HTTPS cypress open --config testFiles='{oss,shared}/**/*.*'",
-    "generate": "oats https://raw.githubusercontent.com/influxdata/influxdb/master/http/swagger.yml > ./src/client/generatedRoutes.ts && yarn unity && yarn flows",
+    "generate": "oats https://raw.githubusercontent.com/influxdata/influxdb/master/http/swagger.yml > ./src/client/generatedRoutes.ts && yarn unity && yarn flows && yarn managedFunctions",
     "unity": "oats ./src/client/swagger/unity.yml > ./src/client/unityRoutes.ts",
-    "flows": "oats ./src/client/swagger/flows.yml > ./src/client/flowsRoutes.ts"
+    "flows": "oats ./src/client/swagger/flows.yml > ./src/client/flowsRoutes.ts",
+    "managedFunctions": "oats ./src/client/swagger/managedFunctions.yml > ./src/client/managedFunctionsRoutes.ts"
   },
   "author": "",
   "devDependencies": {
@@ -143,10 +144,10 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
-    "@influxdata/clockface": "^2.6.1",
+    "@influxdata/clockface": "^2.4.1",
     "@influxdata/flux": "^0.5.1",
-    "@influxdata/flux-lsp-browser": "^0.5.32",
-    "@influxdata/giraffe": "^2.0.1",
+    "@influxdata/flux-lsp-browser": "^0.5.33",
+    "@influxdata/giraffe": "^2.2.0",
     "@influxdata/influx": "0.5.5",
     "@influxdata/influxdb-templates": "0.9.0",
     "@influxdata/react-custom-scrollbars": "4.3.8",
@@ -171,7 +172,7 @@
     "immutable": "^3.8.1",
     "intersection-observer": "^0.7.0",
     "jsonlint-mod": "^1.7.5",
-    "lodash": "^4.3.0",
+    "lodash": "^4.17.20",
     "memoize-one": "^4.0.2",
     "moment": "^2.13.0",
     "monaco-editor": "^0.19.2",

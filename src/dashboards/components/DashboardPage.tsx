@@ -19,7 +19,6 @@ import NewVEO from 'src/dashboards/components/NewVEO'
 import {
   AddNoteOverlay,
   EditNoteOverlay,
-  AddAnnotationDashboardOverlay,
   EditAnnotationDashboardOverlay,
 } from 'src/overlays/components'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
@@ -105,12 +104,6 @@ class DashboardPage extends Component<Props> {
               path={`${dashRoute}/notes/:cellID/edit`}
               component={EditNoteOverlay}
             />
-            {isFlagEnabled('annotations') && (
-              <Route
-                path={`${dashRoute}/add-annotation`}
-                component={AddAnnotationDashboardOverlay}
-              />
-            )}
             {isFlagEnabled('annotations') && (
               <Route
                 path={`${dashRoute}/edit-annotation`}

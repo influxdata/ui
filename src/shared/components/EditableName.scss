@@ -30,7 +30,7 @@ $rename-dash-title-padding: 6px;
 
 .editable-name--toggle {
   font-size: $resource-name-font-size * 0.75;
-  transform: translateY(-10%);  
+  transform: translateY(-10%);
   padding: $ix-marg-a;
   display: inline-block;
   margin-left: $ix-marg-b;
@@ -44,7 +44,6 @@ $rename-dash-title-padding: 6px;
   }
 }
 
-
 .cf-input.editable-name--input {
   position: absolute;
   top: -1px;
@@ -55,19 +54,18 @@ $rename-dash-title-padding: 6px;
 /* Ensure placeholder text matches font weight of title */
 .cf-input.editable-name--input > input {
   &::-webkit-input-placeholder {
-      font-weight: $resource-name-font-wight !important;
-    }
-    &::-moz-placeholder {
-      font-weight: $resource-name-font-wight !important;
-    }
-    &:-ms-input-placeholder {
-      font-weight: $resource-name-font-wight !important;
-    }
-    &:-moz-placeholder {
-      font-weight: $resource-name-font-wight !important;
-    }
+    font-weight: $resource-name-font-wight !important;
+  }
+  &::-moz-placeholder {
+    font-weight: $resource-name-font-wight !important;
+  }
+  &:-ms-input-placeholder {
+    font-weight: $resource-name-font-wight !important;
+  }
+  &:-moz-placeholder {
+    font-weight: $resource-name-font-wight !important;
+  }
 }
-
 
 /* When used inside an index list, hide edit button until row hover */
 

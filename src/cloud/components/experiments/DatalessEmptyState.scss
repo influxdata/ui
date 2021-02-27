@@ -1,0 +1,13 @@
+.dataless-empty-state--docs-link {
+  font-weight: 500;
+}
+
+.dataless-empty-state--image {
+  background-position: center center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('../../assets/images/plan-graphic--free.svg');
+  margin-bottom: $cf-marg-c;
+  width: 270px;
+  height: 200px;
+}

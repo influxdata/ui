@@ -1,10 +1,11 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, Suspense} from 'react'
 import {connect} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
 import {SelectableCard, SquareGrid, ComponentSize} from '@influxdata/clockface'
+const LazySVG = React.lazy(() => import('src/perf/components/LazySVG'))
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
@@ -36,7 +37,11 @@ const WriteDataItem: FC<Props> = ({id, name, url, image, history, orgID}) => {
   let thumb = <img src={placeholderLogo} />
 
   if (image) {
-    thumb = <img src={image} />
+    thumb = (
+      <Suspense fallback="Loading...">
+        <LazySVG image={image} />
+      </Suspense>
+    )
   }
 
   return (

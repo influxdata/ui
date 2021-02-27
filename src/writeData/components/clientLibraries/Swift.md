@@ -1,4 +1,4 @@
-For more detailed and up to date information check out the [GitHub Repository](https://github.com/influxdata/influxdb-client-swift/)
+For more detailed and up to date information check out the <a href="https://github.com/influxdata/influxdb-client-swift/" target="_blank">GitHub Repository</a>
 
 ##### Install via Swift Package Manager
 

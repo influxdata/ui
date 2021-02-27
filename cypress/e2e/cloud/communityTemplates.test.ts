@@ -257,7 +257,7 @@ describe('Community Templates', () => {
     it('deletes templates', () => {
       cy.getByTestID('template-delete-button-dashboard--button').click()
       cy.getByTestID('template-delete-button-dashboard--confirm-button').click()
-      cy.getByTestID('installed-template-dashboard').should('not.be.visible')
+      cy.getByTestID('installed-template-dashboard').should('not.exist')
     })
   })
 })

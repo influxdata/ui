@@ -1,4 +1,4 @@
-@import "src/style/modules";
+@import 'src/style/modules';
 
 .raw-flux-data-table > .fancy-scroll--container,
 .raw-flux-data-table--cell {
@@ -22,7 +22,7 @@
     width: calc(100% - 10px);
     min-width: 100%;
     min-height: 100%;
-    text-overflow:  ellipsis;
+    text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
     -webkit-user-select: text;

@@ -71,10 +71,10 @@ $selector-list--header-margin: $ix-marg-b + $ix-border;
   }
 
   &:before {
-    transform: translate(-50%,-50%) rotate(45deg);
+    transform: translate(-50%, -50%) rotate(45deg);
   }
   &:after {
-    transform: translate(-50%,-50%) rotate(-45deg);
+    transform: translate(-50%, -50%) rotate(-45deg);
   }
 
   &:hover {

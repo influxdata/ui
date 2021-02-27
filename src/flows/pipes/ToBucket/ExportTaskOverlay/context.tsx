@@ -81,7 +81,7 @@ export const Provider: FC = ({children}) => {
     event('notebook_export_task', {exportType: 'create'})
 
     const taskOption: string = `option task = { \n  name: "${taskName}",\n  every: ${interval},\n  offset: 0s\n}`
-    const variable: string = `option v = {\n  timeRangeStart: -${interval},\n  timeRangeStop: now()\n}`
+    const variable: string = `option v = {\n  timeRangeStart: -${interval},\n  timeRangeStop: now(),\n  windowPeriod: ${data.range.duration}\n}`
     const preamble = `${variable}\n\n${taskOption}`
 
     dispatch(saveNewScript(script, preamble))
@@ -91,7 +91,7 @@ export const Provider: FC = ({children}) => {
     event('notebook_export_task', {exportType: 'update'})
 
     const taskOption: string = `option task = { \n  name: "${selectedTask.name}",\n  every: ${interval},\n  offset: 0s\n}`
-    const variable: string = `option v = {\n  timeRangeStart: -${interval},\n  timeRangeStop: now()\n}`
+    const variable: string = `option v = {\n  timeRangeStart: -${interval},\n  timeRangeStop: now(),\n  windowPeriod: ${data.range.duration}\n}`
     const preamble = `${variable}\n\n${taskOption}`
 
     dispatch(

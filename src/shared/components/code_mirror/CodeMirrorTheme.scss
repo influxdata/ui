@@ -69,15 +69,15 @@ div.CodeMirror-selected,
 }
 
 .CodeMirror-line::selection,
-.CodeMirror-line>span::selection,
-.CodeMirror-line>span>span::selection {
-  background: rgba(255, 255, 255, 0.10);
+.CodeMirror-line > span::selection,
+.CodeMirror-line > span > span::selection {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .CodeMirror-line::-moz-selection,
-.CodeMirror-line>span::-moz-selection,
-.CodeMirror-line>span>span::-moz-selection {
-  background: rgba(255, 255, 255, 0.10);
+.CodeMirror-line > span::-moz-selection,
+.CodeMirror-line > span > span::-moz-selection {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .CodeMirror-activeline-background {

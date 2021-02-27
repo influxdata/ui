@@ -6,7 +6,12 @@ $threshold-marker--caret-width: 12px;
   background-color: $color;
 
   &.threshold-marker--handle {
-    background: linear-gradient(115deg, $color 0%, $color 35%, $color-varient 100%);
+    background: linear-gradient(
+      115deg,
+      $color 0%,
+      $color 35%,
+      $color-varient 100%
+    );
 
     &:before {
       border-right: $threshold-marker--caret-width solid $color;
@@ -65,7 +70,7 @@ $threshold-marker--caret-width: 12px;
   }
 
   &:before {
-    content: "";
+    content: '';
     border-top: ($threshold-marker--handle-height / 2) solid transparent;
     border-bottom: ($threshold-marker--handle-height / 2) solid transparent;
     display: block;

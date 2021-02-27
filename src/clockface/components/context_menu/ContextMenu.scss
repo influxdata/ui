@@ -27,18 +27,17 @@ $context-menu--arrow-size: 8px;
     color: $g13-mist;
     transition: color 0.25s ease, background-color 0.25s ease;
     outline: none;
-  
+
     &:hover {
       cursor: pointer;
       color: $g20-white;
     }
-  
+
     &.active {
       color: $g20-white;
     }
   }
 }
-
 
 .context-menu--list {
   @extend %drop-shadow;
@@ -138,7 +137,7 @@ $context-menu--arrow-size: 8px;
       right: 0;
       transform: translateX(calc(100% - #{$context-menu--toggle-size}));
     }
-    
+
     .context-menu--list:before {
       right: calc(100% - #{$context-menu--toggle-size / 2});
     }
@@ -151,7 +150,7 @@ $context-menu--arrow-size: 8px;
   & > .context-menu--container {
     margin-right: 2px;
   }
-  
+
   & > .context-menu--container:last-child {
     margin-right: 0;
 
@@ -159,7 +158,7 @@ $context-menu--arrow-size: 8px;
       right: 0;
       transform: translateX(0);
     }
-    
+
     .context-menu--list:before {
       right: $context-menu--toggle-size / 2;
     }
@@ -188,7 +187,6 @@ $context-menu--arrow-size: 8px;
     background-color: $hover;
   }
 }
-
 
 /* Theme Modifiers */
 .context-menu--toggle.context-menu--default {

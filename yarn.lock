@@ -782,25 +782,25 @@
     debug "^3.1.0"
     lodash.once "^4.1.1"
 
-"@influxdata/clockface@^2.6.1":
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-2.6.1.tgz#3b39a11cfdc2570e9bad6bbdf967d5afd34fdc35"
-  integrity sha512-RNsUbMCwojb96z6nu59sHeh/Xtv905/ec04/JEhsPUaMaXMAOuGkZe8sQ6zdg119mfMNU/XkNL3meR4Yy6ev/g==
+"@influxdata/clockface@^2.4.1":
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-2.4.1.tgz#67c61d89782dea07a149dd35e45b9eb13ad63a5f"
+  integrity sha512-p1YEnB73wOkzS6PqKr2P3jf0jRLP4mJZBbyOZsDlkYsuy3PrGnGCscshecb/f2XNiTbbbShXy40SzPreM07wQw==
 
-"@influxdata/flux-lsp-browser@^0.5.32":
-  version "0.5.32"
-  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.5.32.tgz#84fdff1dae1a10f1a80195b4380dd7b320ba4906"
-  integrity sha512-ExAAlQs2Yi2WrRScCuargVKztIMjswRzlRfhDevrqRIlEHMbiCGyVDzx3t20fKgy6ODdf6wvRMkaL7tc8Vmc5w==
+"@influxdata/flux-lsp-browser@^0.5.33":
+  version "0.5.33"
+  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.5.33.tgz#405bcba7ee41a6c0b898d30b2d86b02be4374f79"
+  integrity sha512-Xx7EV+08IQdvjSxkmrETSmpZQu2z2BFjuGlDzj3KhRX0NsMYweoaxX90Pg0YlPlc66E3O9/pXgcqJlqPa3DE0Q==
 
 "@influxdata/flux@^0.5.1":
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/@influxdata/flux/-/flux-0.5.1.tgz#e39e7a7af9163fc9494422c8fed77f3ae1b68f56"
   integrity sha512-GHlkXBhSdJ2m56JzDkbnKPAqLj3/lexPooacu14AWTO4f2sDGLmzM7r0AxgdtU1M2x7EXNBwgGOI5EOAdN6mkw==
 
-"@influxdata/giraffe@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.0.1.tgz#243b5b420feadb0588fdc87c1d87935071efc16e"
-  integrity sha512-o0LhrVjeHr0Z0NmwGDK9SToi79RGUQ/4c136x5KAbNpDtM4zby13aqFDLPA/zV8WLQ2SUcX2p3PhdH1HwAOujA==
+"@influxdata/giraffe@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.2.0.tgz#a4a563560aa7f3c625f1d27c4ab0d680da5a9949"
+  integrity sha512-HRL/Nlqk2lDiI6aO5VdkVBuzHse64heaX+/kSxAwdqX+OkFMwqYXY9FCSQslot5WCabRUJKkcp0RHnJsYzGfMg==
 
 "@influxdata/influx@0.5.5":
   version "0.5.5"
@@ -7613,7 +7613,7 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-lodash@^4.15.0, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.3.0:
+lodash@^4.15.0, lodash@^4.17.4, lodash@^4.17.5:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
   integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
@@ -7623,7 +7623,7 @@ lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
 
-lodash@^4.17.19:
+lodash@^4.17.19, lodash@^4.17.20:
   version "4.17.20"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
   integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==

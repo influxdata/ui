@@ -15,7 +15,7 @@ import DurationInput from 'src/shared/components/DurationInput'
 import {
   setWindowPeriodSelectionMode,
   selectAggregateWindow,
-} from 'src/timeMachine/actions/queryBuilder'
+} from 'src/timeMachine/actions/queryBuilderThunks'
 
 // Utils
 import {

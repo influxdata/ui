@@ -37,7 +37,7 @@ const Visualization: FC = () => {
           loading={loading}
           error={results?.error}
           properties={data.properties}
-          result={results.parsed}
+          result={results?.parsed}
           timeRange={data.range}
         />
       </div>

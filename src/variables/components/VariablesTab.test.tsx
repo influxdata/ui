@@ -425,6 +425,55 @@ describe('the variable integration tests', () => {
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(updateVariableSuccess('test_variable_name'))
     })
+    it('Edit a Query variable', async () => {
+      const {getByTestId, store, getByTitle} = setup()
+
+      const org = {name: 'test_org_name', id: 'test_org_id'}
+
+      store.dispatch({
+        type: 'SET_ORG',
+        org: org,
+      })
+      const organizations = normalize<Organization, OrgEntities, string[]>(
+        [org],
+        arrayOfOrgs
+      )
+      store.dispatch({
+        type: 'SET_ORGS',
+        schema: organizations,
+        status: RemoteDataState.Done,
+      })
+
+      const base_query_variable = getByTestId(
+        'variable-card--name base_query'
+      )
+      fireEvent.click(base_query_variable)
+
+      await waitFor(() => {
+        expect(screen.queryByTitle('Edit Variable')).toBeVisible()
+      })
+
+      store.dispatch({
+        type: 'UPDATE_VARIABLE_EDITOR_QUERY',
+        payload: {
+          type: 'query',
+          values: {
+            language: 'flux',
+            query: 'sample flux query'
+          },
+        },
+      })
+
+      const submitButton = getByTitle('Submit')
+      expect(submitButton).not.toBeDisabled()
+      await waitFor(() => {
+        fireEvent.click(submitButton)
+      })
+
+      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyMessage] = notifyCallArguments
+      expect(notifyMessage).toEqual(updateVariableSuccess('test_variable_name'))
+    })
   })
   describe('handling variable deleting process', () => {
     it('Delete a Map variable', async () => {

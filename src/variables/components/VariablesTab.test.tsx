@@ -14,11 +14,11 @@ jest.mock('src/client/generatedRoutes.ts', () => ({
       data: {
         name: 'Test Map Variable Name',
         id: 'test_variable_id',
-        orgID: 'ec6f80303d52a018',
+        orgID: 'test_org_id',
         arguments: {
           type: 'map',
           values: {
-            please: 'work',
+            sample: 'value',
           },
         },
       },
@@ -34,7 +34,9 @@ jest.mock('src/client/generatedRoutes.ts', () => ({
         orgID: 'test_org_id',
         arguments: {
           type: 'map',
-          values: {please: 'workagain'},
+          values: {
+            sample: 'value',
+          },
         },
       },
     }
@@ -49,7 +51,9 @@ jest.mock('src/client/generatedRoutes.ts', () => ({
         orgID: 'test_org_id',
         arguments: {
           type: 'map',
-          values: {please: 'workagain'},
+          values: {
+            sample: 'value',
+          },
         },
       },
     }
@@ -121,10 +125,11 @@ const setup = (props = defaultProps) => {
   )
 }
 
-describe('the variable install overlay', () => {
+describe('the variable integration tests', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
+
   afterEach(() => {
     cleanup()
   })
@@ -232,15 +237,15 @@ describe('the variable install overlay', () => {
       fireEvent.change(variableName, {target: {value: 'Test variable name'}})
 
       const csvQueryTextArea = getByTestId('csv-variable-textarea')
-      fireEvent.change(csvQueryTextArea, {target: {value: 'please,work'}})
+      fireEvent.change(csvQueryTextArea, {target: {value: 'sample,value'}})
 
       store.dispatch({
         type: 'UPDATE_VARIABLE_EDITOR_CONSTANT',
         payload: {
           type: 'constant',
           values: {
-            0: 'please',
-            1: 'work',
+            0: 'sample',
+            1: 'value',
           },
         },
       })

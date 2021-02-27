@@ -53,7 +53,7 @@ jest.mock('src/client/generatedRoutes.ts', () => ({
         },
       },
     }
-  })
+  }),
 }))
 
 jest.mock('src/client/index.ts')
@@ -96,7 +96,8 @@ import {
 import {mocked} from 'ts-jest/utils'
 import {notify} from 'src/shared/actions/notifications'
 import {
-  createVariableSuccess, deleteVariableSuccess,
+  createVariableSuccess,
+  deleteVariableSuccess,
   updateVariableSuccess,
 } from '../../shared/copy/notifications'
 
@@ -440,7 +441,7 @@ describe('the variable install overlay', () => {
         status: RemoteDataState.Done,
       })
 
-      const deleteButton = getByTestId("context-delete-variable values")
+      const deleteButton = getByTestId('context-delete-variable values')
 
       await waitFor(() => {
         fireEvent.click(deleteButton)
@@ -449,7 +450,6 @@ describe('the variable install overlay', () => {
       const [notifyCallArguments] = mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(deleteVariableSuccess())
-
     })
     it('Delete a CSV variable', async () => {
       const {store, getByTestId} = setup()
@@ -470,7 +470,9 @@ describe('the variable install overlay', () => {
         status: RemoteDataState.Done,
       })
 
-      const deleteButton = getByTestId("context-delete-variable csv_test_variable")
+      const deleteButton = getByTestId(
+        'context-delete-variable csv_test_variable'
+      )
 
       await waitFor(() => {
         fireEvent.click(deleteButton)
@@ -479,7 +481,6 @@ describe('the variable install overlay', () => {
       const [notifyCallArguments] = mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(deleteVariableSuccess())
-
     })
     it('Delete a Query variable', async () => {
       const {store, getByTestId} = setup()
@@ -500,7 +501,7 @@ describe('the variable install overlay', () => {
         status: RemoteDataState.Done,
       })
 
-      const deleteButton = getByTestId("context-delete-variable base_query")
+      const deleteButton = getByTestId('context-delete-variable base_query')
 
       await waitFor(() => {
         fireEvent.click(deleteButton)
@@ -509,7 +510,6 @@ describe('the variable install overlay', () => {
       const [notifyCallArguments] = mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(deleteVariableSuccess())
-
     })
   })
 })

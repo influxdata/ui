@@ -12,7 +12,7 @@ jest.mock('src/client/generatedRoutes.ts', () => ({
       status: 201,
       message: 'Variable created successfully',
       data: {
-        name: 'Test Map Variable Name',
+        name: 'test_variable_name',
         id: 'test_variable_id',
         orgID: 'test_org_id',
         arguments: {
@@ -175,7 +175,7 @@ describe('the variable integration tests', () => {
       fireEvent.change(variableName, {target: {value: 'Test variable name'}})
 
       const mapQueryTextArea = getByTestId('map-variable-textarea')
-      fireEvent.change(mapQueryTextArea, {target: {value: 'please,work'}})
+      fireEvent.change(mapQueryTextArea, {target: {value: 'sample,value'}})
 
       store.dispatch({
         type: 'UPDATE_VARIABLE_EDITOR_MAP',
@@ -260,8 +260,7 @@ describe('the variable integration tests', () => {
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(createVariableSuccess('Test variable name'))
     })
-    it('Create a Variable of query type', async () => {
-      return
+    it('Create a Variable of Query type', async () => {
       const {getByTestId, store} = setup()
 
       const org = {name: 'test_org_name', id: 'test_org_id'}
@@ -294,14 +293,11 @@ describe('the variable integration tests', () => {
       const variableTypeDropdown = getByTestId('variable-type-dropdown--button')
       fireEvent.click(variableTypeDropdown)
 
-      const queryTypeOption = getByTestId('variable-type-dropdown-constant')
+      const queryTypeOption = getByTestId('variable-type-dropdown-query')
       fireEvent.click(queryTypeOption)
 
       const variableName = getByTestId('variable-name-input')
       fireEvent.change(variableName, {target: {value: 'Test variable name'}})
-
-      const csvQueryTextArea = getByTestId('csv-variable-textarea')
-      fireEvent.change(csvQueryTextArea, {target: {value: 'please,work'}})
 
       store.dispatch({
         type: 'UPDATE_VARIABLE_EDITOR_QUERY',

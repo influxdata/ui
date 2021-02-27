@@ -444,9 +444,7 @@ describe('the variable integration tests', () => {
         status: RemoteDataState.Done,
       })
 
-      const base_query_variable = getByTestId(
-        'variable-card--name base_query'
-      )
+      const base_query_variable = getByTestId('variable-card--name base_query')
       fireEvent.click(base_query_variable)
 
       await waitFor(() => {
@@ -459,7 +457,7 @@ describe('the variable integration tests', () => {
           type: 'query',
           values: {
             language: 'flux',
-            query: 'sample flux query'
+            query: 'sample flux query',
           },
         },
       })

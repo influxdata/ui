@@ -422,7 +422,7 @@ describe('the variable install overlay', () => {
   })
   describe('handling variable deleting process', () => {
     it('Delete a Map variable', async () => {
-      const {debug, store, getByTestId} = setup()
+      const {store, getByTestId} = setup()
 
       const org = {name: 'test_org_name', id: 'test_org_id'}
 
@@ -440,26 +440,70 @@ describe('the variable install overlay', () => {
         status: RemoteDataState.Done,
       })
 
-      let mapVariableCard = getByTestId('variable-card--name values')
-
-      mapVariableCard = mapVariableCard.parentElement.parentElement.parentElement
-
-      // fireEvent.mouseOver(mapVariableCard)
-
-      // debug(mapVariableCard)
-
-      let deleteButton = mapVariableCard.children.item(1) as HTMLElement
-
-      deleteButton = deleteButton.firstElementChild.lastElementChild.firstElementChild as HTMLElement
-      fireEvent.click(deleteButton)
-
-      // TODO: change the code to add unique test id to the delete button
-      const deleteMenu = deleteButton.parentElement.lastElementChild.firstElementChild.firstElementChild as HTMLElement
-
-      expect(deleteMenu).toBeVisible()
+      const deleteButton = getByTestId("context-delete-variable values")
 
       await waitFor(() => {
-        fireEvent.click(deleteMenu)
+        fireEvent.click(deleteButton)
+      })
+
+      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyMessage] = notifyCallArguments
+      expect(notifyMessage).toEqual(deleteVariableSuccess())
+
+    })
+    it('Delete a CSV variable', async () => {
+      const {store, getByTestId} = setup()
+
+      const org = {name: 'test_org_name', id: 'test_org_id'}
+
+      store.dispatch({
+        type: 'SET_ORG',
+        org: org,
+      })
+      const organizations = normalize<Organization, OrgEntities, string[]>(
+        [org],
+        arrayOfOrgs
+      )
+      store.dispatch({
+        type: 'SET_ORGS',
+        schema: organizations,
+        status: RemoteDataState.Done,
+      })
+
+      const deleteButton = getByTestId("context-delete-variable csv_test_variable")
+
+      await waitFor(() => {
+        fireEvent.click(deleteButton)
+      })
+
+      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyMessage] = notifyCallArguments
+      expect(notifyMessage).toEqual(deleteVariableSuccess())
+
+    })
+    it('Delete a Query variable', async () => {
+      const {store, getByTestId} = setup()
+
+      const org = {name: 'test_org_name', id: 'test_org_id'}
+
+      store.dispatch({
+        type: 'SET_ORG',
+        org: org,
+      })
+      const organizations = normalize<Organization, OrgEntities, string[]>(
+        [org],
+        arrayOfOrgs
+      )
+      store.dispatch({
+        type: 'SET_ORGS',
+        schema: organizations,
+        status: RemoteDataState.Done,
+      })
+
+      const deleteButton = getByTestId("context-delete-variable base_query")
+
+      await waitFor(() => {
+        fireEvent.click(deleteButton)
       })
 
       const [notifyCallArguments] = mocked(notify).mock.calls

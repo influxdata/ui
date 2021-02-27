@@ -125,9 +125,35 @@ const setup = (props = defaultProps) => {
   )
 }
 
+let getByTestId
+let store
+let getByTitle
+
 describe('the variable integration tests', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+
+    const renderResult = setup()
+
+    store = renderResult.store
+    getByTestId = renderResult.getByTestId
+    getByTitle = renderResult.getByTitle
+
+    const org = {name: 'test_org_name', id: 'test_org_id'}
+
+    store.dispatch({
+      type: 'SET_ORG',
+      org: org,
+    })
+    const organizations = normalize<Organization, OrgEntities, string[]>(
+      [org],
+      arrayOfOrgs
+    )
+    store.dispatch({
+      type: 'SET_ORGS',
+      schema: organizations,
+      status: RemoteDataState.Done,
+    })
   })
 
   afterEach(() => {
@@ -136,24 +162,6 @@ describe('the variable integration tests', () => {
 
   describe('handling the variable creation process', () => {
     it('Create a Variable of Map type', async () => {
-      const {getByTestId, store} = setup()
-
-      const org = {name: 'test_org_name', id: 'test_org_id'}
-
-      store.dispatch({
-        type: 'SET_ORG',
-        org: org,
-      })
-      const organizations = normalize<Organization, OrgEntities, string[]>(
-        [org],
-        arrayOfOrgs
-      )
-      store.dispatch({
-        type: 'SET_ORGS',
-        schema: organizations,
-        status: RemoteDataState.Done,
-      })
-
       const dropdownCreateButton = getByTestId('add-resource-dropdown--button')
       fireEvent.click(dropdownCreateButton)
 
@@ -198,24 +206,6 @@ describe('the variable integration tests', () => {
       expect(notifyMessage).toEqual(createVariableSuccess('Test variable name'))
     })
     it('Create a Variable of CSV type', async () => {
-      const {getByTestId, store} = setup()
-
-      const org = {name: 'test_org_name', id: 'test_org_id'}
-
-      store.dispatch({
-        type: 'SET_ORG',
-        org: org,
-      })
-      const organizations = normalize<Organization, OrgEntities, string[]>(
-        [org],
-        arrayOfOrgs
-      )
-      store.dispatch({
-        type: 'SET_ORGS',
-        schema: organizations,
-        status: RemoteDataState.Done,
-      })
-
       const dropdownCreateButton = getByTestId('add-resource-dropdown--button')
       fireEvent.click(dropdownCreateButton)
 
@@ -261,24 +251,6 @@ describe('the variable integration tests', () => {
       expect(notifyMessage).toEqual(createVariableSuccess('Test variable name'))
     })
     it('Create a Variable of Query type', async () => {
-      const {getByTestId, store} = setup()
-
-      const org = {name: 'test_org_name', id: 'test_org_id'}
-
-      store.dispatch({
-        type: 'SET_ORG',
-        org: org,
-      })
-      const organizations = normalize<Organization, OrgEntities, string[]>(
-        [org],
-        arrayOfOrgs
-      )
-      store.dispatch({
-        type: 'SET_ORGS',
-        schema: organizations,
-        status: RemoteDataState.Done,
-      })
-
       const dropdownCreateButton = getByTestId('add-resource-dropdown--button')
       fireEvent.click(dropdownCreateButton)
 
@@ -323,24 +295,6 @@ describe('the variable integration tests', () => {
   })
   describe('handling variable editing process', () => {
     it('Edit a Map variable', async () => {
-      const {getByTestId, store, getByTitle} = setup()
-
-      const org = {name: 'test_org_name', id: 'test_org_id'}
-
-      store.dispatch({
-        type: 'SET_ORG',
-        org: org,
-      })
-      const organizations = normalize<Organization, OrgEntities, string[]>(
-        [org],
-        arrayOfOrgs
-      )
-      store.dispatch({
-        type: 'SET_ORGS',
-        schema: organizations,
-        status: RemoteDataState.Done,
-      })
-
       const base_query_variable = getByTestId('variable-card--name values')
 
       fireEvent.click(base_query_variable)
@@ -373,24 +327,6 @@ describe('the variable integration tests', () => {
       expect(notifyMessage).toEqual(updateVariableSuccess('test_variable_name'))
     })
     it('Edit a CSV variable', async () => {
-      const {getByTestId, store, getByTitle} = setup()
-
-      const org = {name: 'test_org_name', id: 'test_org_id'}
-
-      store.dispatch({
-        type: 'SET_ORG',
-        org: org,
-      })
-      const organizations = normalize<Organization, OrgEntities, string[]>(
-        [org],
-        arrayOfOrgs
-      )
-      store.dispatch({
-        type: 'SET_ORGS',
-        schema: organizations,
-        status: RemoteDataState.Done,
-      })
-
       const base_query_variable = getByTestId(
         'variable-card--name csv_test_variable'
       )
@@ -422,24 +358,6 @@ describe('the variable integration tests', () => {
       expect(notifyMessage).toEqual(updateVariableSuccess('test_variable_name'))
     })
     it('Edit a Query variable', async () => {
-      const {getByTestId, store, getByTitle} = setup()
-
-      const org = {name: 'test_org_name', id: 'test_org_id'}
-
-      store.dispatch({
-        type: 'SET_ORG',
-        org: org,
-      })
-      const organizations = normalize<Organization, OrgEntities, string[]>(
-        [org],
-        arrayOfOrgs
-      )
-      store.dispatch({
-        type: 'SET_ORGS',
-        schema: organizations,
-        status: RemoteDataState.Done,
-      })
-
       const base_query_variable = getByTestId('variable-card--name base_query')
       fireEvent.click(base_query_variable)
 
@@ -471,24 +389,6 @@ describe('the variable integration tests', () => {
   })
   describe('handling variable deleting process', () => {
     it('Delete a Map variable', async () => {
-      const {store, getByTestId} = setup()
-
-      const org = {name: 'test_org_name', id: 'test_org_id'}
-
-      store.dispatch({
-        type: 'SET_ORG',
-        org: org,
-      })
-      const organizations = normalize<Organization, OrgEntities, string[]>(
-        [org],
-        arrayOfOrgs
-      )
-      store.dispatch({
-        type: 'SET_ORGS',
-        schema: organizations,
-        status: RemoteDataState.Done,
-      })
-
       const deleteButton = getByTestId('context-delete-variable values')
 
       await waitFor(() => {
@@ -500,24 +400,6 @@ describe('the variable integration tests', () => {
       expect(notifyMessage).toEqual(deleteVariableSuccess())
     })
     it('Delete a CSV variable', async () => {
-      const {store, getByTestId} = setup()
-
-      const org = {name: 'test_org_name', id: 'test_org_id'}
-
-      store.dispatch({
-        type: 'SET_ORG',
-        org: org,
-      })
-      const organizations = normalize<Organization, OrgEntities, string[]>(
-        [org],
-        arrayOfOrgs
-      )
-      store.dispatch({
-        type: 'SET_ORGS',
-        schema: organizations,
-        status: RemoteDataState.Done,
-      })
-
       const deleteButton = getByTestId(
         'context-delete-variable csv_test_variable'
       )
@@ -531,24 +413,6 @@ describe('the variable integration tests', () => {
       expect(notifyMessage).toEqual(deleteVariableSuccess())
     })
     it('Delete a Query variable', async () => {
-      const {store, getByTestId} = setup()
-
-      const org = {name: 'test_org_name', id: 'test_org_id'}
-
-      store.dispatch({
-        type: 'SET_ORG',
-        org: org,
-      })
-      const organizations = normalize<Organization, OrgEntities, string[]>(
-        [org],
-        arrayOfOrgs
-      )
-      store.dispatch({
-        type: 'SET_ORGS',
-        schema: organizations,
-        status: RemoteDataState.Done,
-      })
-
       const deleteButton = getByTestId('context-delete-variable base_query')
 
       await waitFor(() => {

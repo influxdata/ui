@@ -254,12 +254,27 @@ export const defaultYSeriesColumns = (
     )
   }
   if (ySeriesColumns.length === 0) {
-    ySeriesColumns.push(
-      validColumnKeys.find(columnKey => columnKey.startsWith('_') === false)
+    const defaultKey = validColumnKeys.find(
+      columnKey => columnKey.startsWith('_') === false
     )
+    if (defaultKey) {
+      ySeriesColumns.push(defaultKey)
+    }
   }
 
   return ySeriesColumns
+}
+
+export const defaultYLabelColumns = (
+  preferredYSeriesColumns: Array<string>,
+  validYSeriesColumns: Array<string>
+): Array<string> => {
+  return Array.isArray(preferredYSeriesColumns) &&
+    Array.isArray(validYSeriesColumns)
+    ? preferredYSeriesColumns.filter(columnKey =>
+        validYSeriesColumns.includes(columnKey)
+      )
+    : []
 }
 
 export const isInDomain = (value: number, domain: number[]) =>

@@ -46,6 +46,8 @@ export default {
   xColumn: null,
   xDomain: null,
   ySeriesColumns: [],
+  yLabelColumns: [],
+  yLabelColumnSeparator: '',
   yDomain: null,
   xAxisLabel: '',
   yAxisLabel: '',

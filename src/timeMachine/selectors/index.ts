@@ -166,10 +166,10 @@ export const getYColumnSelection = (state: AppState): string => {
 export const getYSeriesColumns = (state: AppState): Array<string> => {
   const {table} = getVisTable(state)
   const tm = getActiveTimeMachine(state)
-  const preferredYSeriesColumnss = get(tm, 'view.properties.ySeriesColumns')
+  const preferredYSeriesColumns = get(tm, 'view.properties.ySeriesColumns')
 
   if (tm.view.properties.type === 'mosaic') {
-    return defaultYSeriesColumns(table, preferredYSeriesColumnss)
+    return defaultYSeriesColumns(table, preferredYSeriesColumns)
   }
   return []
 }

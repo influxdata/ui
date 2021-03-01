@@ -110,6 +110,8 @@ const MosaicPlot: FunctionComponent<Props> = ({
             type: 'mosaic',
             x: xColumn,
             y: ySeriesColumns,
+            yLabelColumns: properties.yLabelColumns,
+            yLabelColumnSeparator: properties.yLabelColumnSeparator,
             colors: colorHexes,
             fill: fillColumns,
           },

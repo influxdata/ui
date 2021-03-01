@@ -18,7 +18,7 @@ import {
   FORMAT_OPTIONS,
   resolveTimeFormat,
 } from 'src/visualization/utils/timeFormat'
-import {defaultXColumn} from 'src/shared/utils/vis'
+import {defaultXColumn, defaultYSeriesColumns} from 'src/shared/utils/vis'
 
 // Types
 import {MosaicViewProperties, Color} from 'src/types'
@@ -31,7 +31,6 @@ interface Props extends VisualizationOptionProps {
 const MosaicOptions: FC<Props> = props => {
   const {properties, results, update} = props
   let fillColumns = []
-  let ySeriesColumns = []
   const stringColumns = results.table.columnKeys.filter(k => {
     if (k === 'result' || k === 'table') {
       return false
@@ -59,20 +58,10 @@ const MosaicOptions: FC<Props> = props => {
   }
 
   const xColumn = defaultXColumn(results.table, properties.xColumn)
-
-  if (
-    Array.isArray(properties.ySeriesColumns) &&
-    properties.ySeriesColumns.every(col => stringColumns.includes(col))
-  ) {
-    ySeriesColumns = properties.ySeriesColumns
-  } else {
-    for (const key of stringColumns) {
-      if (key === '_measurement') {
-        ySeriesColumns.push(key)
-        break
-      }
-    }
-  }
+  const ySeriesColumns = defaultYSeriesColumns(
+    results.table,
+    properties.ySeriesColumns
+  )
 
   // TODO: make this normal DashboardColor[] and not string[]
   const colors = properties.colors.map(color => {
@@ -135,7 +124,7 @@ const MosaicOptions: FC<Props> = props => {
               }
             />
           </Form.Element>
-          <Form.Element label="Y Column">
+          <Form.Element label="Y Columns">
             <MultiSelectDropdown
               options={stringColumns}
               selectedOptions={ySeriesColumns}

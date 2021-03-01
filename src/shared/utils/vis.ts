@@ -241,27 +241,25 @@ export const defaultYColumn = (
   return null
 }
 
-export const mosaicYColumn = (
+export const defaultYSeriesColumns = (
   table: Table,
-  preferredColumnKey?: string
-): string | null => {
-  const validColumnKeys = getStringColumns(table)
-  if (validColumnKeys.includes(preferredColumnKey)) {
-    return preferredColumnKey
+  preferredYSeriesColumns: Array<string>
+): Array<string> => {
+  const validColumnKeys = [...getStringColumns(table)]
+  let ySeriesColumns = []
+
+  if (Array.isArray(preferredYSeriesColumns)) {
+    ySeriesColumns = preferredYSeriesColumns.filter(columnKey =>
+      validColumnKeys.includes(columnKey)
+    )
+  }
+  if (ySeriesColumns.length === 0) {
+    ySeriesColumns.push(
+      validColumnKeys.find(columnKey => columnKey.startsWith('_') === false)
+    )
   }
 
-  const invalidMosaicYColumns = new Set(['_value', 'status', '_field'])
-  const preferredValidColumnKeys = validColumnKeys.filter(
-    name => !invalidMosaicYColumns.has(name)
-  )
-  if (preferredValidColumnKeys.length) {
-    return preferredValidColumnKeys[0]
-  }
-
-  if (validColumnKeys.length) {
-    return validColumnKeys[0]
-  }
-  return null
+  return ySeriesColumns
 }
 
 export const isInDomain = (value: number, domain: number[]) =>

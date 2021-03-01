@@ -13,14 +13,15 @@ import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 
 // Utils
-import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 import {
+  getActiveTimeMachine,
   getAnnotations,
   getFillColumnsSelection,
   getSymbolColumnsSelection,
   getVisTable,
   getXColumnSelection,
   getYColumnSelection,
+  getYSeriesColumns,
 } from 'src/timeMachine/selectors'
 import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
 
@@ -44,6 +45,7 @@ const TimeMachineVis: FC<Props> = ({
   giraffeResult,
   xColumn,
   yColumn,
+  ySeriesColumns,
   fillColumns,
   symbolColumns,
   annotations,
@@ -58,7 +60,7 @@ const TimeMachineVis: FC<Props> = ({
     ...viewProperties,
     xColumn,
     [`${type === 'mosaic' ? 'ySeriesColumns' : 'yColumn'}`]:
-      type === 'mosaic' ? [yColumn] : yColumn,
+      type === 'mosaic' ? ySeriesColumns : yColumn,
     fillColumns,
     symbolColumns,
   } as ViewProperties
@@ -125,6 +127,7 @@ const mstp = (state: AppState) => {
   const giraffeResult = getVisTable(state)
   const xColumn = getXColumnSelection(state)
   const yColumn = getYColumnSelection(state)
+  const ySeriesColumns = getYSeriesColumns(state)
   const fillColumns = getFillColumnsSelection(state)
   const symbolColumns = getSymbolColumnsSelection(state)
   const annotations = getAnnotations(state)
@@ -139,6 +142,7 @@ const mstp = (state: AppState) => {
     giraffeResult,
     xColumn,
     yColumn,
+    ySeriesColumns,
     fillColumns,
     symbolColumns,
     timeRange: getActiveTimeRange(timeRange, viewProperties.queries),

@@ -8,7 +8,7 @@ import {fromFlux, Table} from '@influxdata/giraffe'
 import {
   defaultXColumn,
   defaultYColumn,
-  mosaicYColumn,
+  defaultYSeriesColumns,
   getNumericColumns as getNumericColumnsUtil,
   getGroupableColumns as getGroupableColumnsUtil,
   getStringColumns as getStringColumnsUtil,
@@ -155,17 +155,23 @@ export const getXColumnSelection = (state: AppState): string => {
 export const getYColumnSelection = (state: AppState): string => {
   const {table} = getVisTable(state)
   const tm = getActiveTimeMachine(state)
-  let preferredYColumnKey
+  const preferredYColumnKey = get(tm, 'view.properties.yColumn')
 
   if (tm.view.properties.type === 'mosaic') {
-    preferredYColumnKey = get(tm, 'view.properties.ySeriesColumns')
-
-    return mosaicYColumn(table, preferredYColumnKey)
+    return ''
   }
-
-  preferredYColumnKey = get(tm, 'view.properties.yColumn')
-
   return defaultYColumn(table, preferredYColumnKey)
+}
+
+export const getYSeriesColumns = (state: AppState): Array<string> => {
+  const {table} = getVisTable(state)
+  const tm = getActiveTimeMachine(state)
+  const preferredYSeriesColumnss = get(tm, 'view.properties.ySeriesColumns')
+
+  if (tm.view.properties.type === 'mosaic') {
+    return defaultYSeriesColumns(table, preferredYSeriesColumnss)
+  }
+  return []
 }
 
 const getGroupableColumnSelection = (

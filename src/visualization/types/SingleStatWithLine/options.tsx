@@ -1,4 +1,4 @@
-import React, {FC} from 'react'
+import React, {FC, useCallback} from 'react'
 
 import {
   Input,
@@ -31,6 +31,10 @@ import {
   defaultYColumn,
   parseYBounds,
 } from 'src/shared/utils/vis'
+import {
+  THRESHOLD_TYPE_TEXT,
+  THRESHOLD_TYPE_BG,
+} from 'src/shared/constants/thresholds'
 import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
 import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksGenerator'
 import Checkbox from 'src/shared/components/Checkbox'
@@ -127,6 +131,30 @@ const SingleStatWithLineOptions: FC<Props> = ({
       })
     }
   }
+
+  const updateThreshold = useCallback(
+    (threshold: string) => {
+      update({
+        colors: properties.colors.map(color => {
+          if (color.type !== 'scale') {
+            return {
+              ...color,
+              type:
+                threshold === THRESHOLD_TYPE_BG
+                  ? THRESHOLD_TYPE_BG
+                  : THRESHOLD_TYPE_TEXT,
+            }
+          }
+
+          return color
+        }),
+      })
+    },
+    [update, properties.colors]
+  )
+
+  const activeSetting =
+    properties.colors.filter(color => color.type !== 'scale')[0]?.type || 'text'
 
   return (
     <Grid>
@@ -438,6 +466,30 @@ const SingleStatWithLineOptions: FC<Props> = ({
               thresholds={properties.colors.filter(c => c.type !== 'scale')}
               onSetThresholds={setColors}
             />
+          </Form.Element>
+          <Form.Element label="Colorization" style={{marginTop: '16px'}}>
+            <SelectGroup shape={ButtonShape.StretchToFit}>
+              <SelectGroup.Option
+                name="threshold-coloring"
+                titleText="background"
+                id="background"
+                active={activeSetting === THRESHOLD_TYPE_BG}
+                onClick={updateThreshold}
+                value={THRESHOLD_TYPE_BG}
+              >
+                Background
+              </SelectGroup.Option>
+              <SelectGroup.Option
+                name="threshold-coloring"
+                titleText="text"
+                id="text"
+                active={activeSetting === THRESHOLD_TYPE_TEXT}
+                onClick={updateThreshold}
+                value={THRESHOLD_TYPE_TEXT}
+              >
+                Text
+              </SelectGroup.Option>
+            </SelectGroup>
           </Form.Element>
         </Grid.Column>
         <Grid.Column

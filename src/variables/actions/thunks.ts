@@ -169,9 +169,12 @@ export const hydrateVariables = (
       return
     }
     if (status === RemoteDataState.Done) {
-      variable.selected = variable.selected.filter(v =>
-        variable.arguments.values.results.includes(v)
-      )
+      if (variable.arguments.type === 'query') {
+        variable.selected = variable.selected.filter(v =>
+          variable.arguments.values?.results?.includes(v)
+        )
+      }
+
       const _variable = normalize<Variable, VariableEntities, string>(
         variable,
         variableSchema

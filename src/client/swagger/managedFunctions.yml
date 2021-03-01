@@ -74,7 +74,7 @@ paths:
             schema:
               $ref: '#/components/schemas/FunctionTriggerRequest'
       responses:
-        '201':
+        '200':
           description: Function successfully triggered
           content:
             application/json:
@@ -216,7 +216,7 @@ paths:
             schema:
               $ref: '#/components/schemas/FunctionInvocationParams'
       responses:
-        '201':
+        '200':
           description: Function invocation response
           content:
             application/json:

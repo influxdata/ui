@@ -151,3 +151,11 @@ export const UpdateVariableOverlay = RouteOverlay(
     history.push(`/orgs/${params.orgID}/settings/variables`)
   }
 )
+
+export const ExportVariableOverlay = RouteOverlay(
+  OverlayHandler,
+  'export-variable',
+  (history, params) => {
+    history.push(`/orgs/${params.orgID}/settings/variables`)
+  }
+)

@@ -54,33 +54,21 @@ const SingleStatOptions: FC<Props> = ({properties, update}) => {
 
   const updateThreshold = useCallback(
     (threshold: string) => {
-      if (threshold === THRESHOLD_TYPE_BG) {
-        update({
-          colors: properties.colors.map(color => {
-            if (color.type !== 'scale') {
-              return {
-                ...color,
-                type: THRESHOLD_TYPE_BG,
-              }
+      update({
+        colors: properties.colors.map(color => {
+          if (color.type !== 'scale') {
+            return {
+              ...color,
+              type:
+                threshold === THRESHOLD_TYPE_BG
+                  ? THRESHOLD_TYPE_BG
+                  : THRESHOLD_TYPE_TEXT,
             }
+          }
 
-            return color
-          }),
-        })
-      } else {
-        update({
-          colors: properties.colors.map(color => {
-            if (color.type !== 'scale') {
-              return {
-                ...color,
-                type: THRESHOLD_TYPE_TEXT,
-              }
-            }
-
-            return color
-          }),
-        })
-      }
+          return color
+        }),
+      })
     },
     [update, properties.colors]
   )

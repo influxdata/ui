@@ -152,7 +152,7 @@ let getByTestId
 let store
 let getByTitle
 
-describe('different processes under the variables tab', () => {
+describe('the variables ui functionality', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 

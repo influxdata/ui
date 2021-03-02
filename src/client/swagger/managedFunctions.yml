@@ -188,7 +188,7 @@ paths:
           explode: true
       responses:
         default:
-          description: Response defined by user
+          description: Response defined by function
           content:
             application/json:
               schema:
@@ -211,7 +211,7 @@ paths:
               $ref: '#/components/schemas/FunctionInvocationParams'
       responses:
         default:
-          description: Response defined by user
+          description: Response defined by function
           content:
             application/json:
               schema:

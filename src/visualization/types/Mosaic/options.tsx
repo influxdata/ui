@@ -9,6 +9,7 @@ import {
   SelectDropdown,
   ComponentStatus,
   Columns,
+  MultiSelectDropdown,
 } from '@influxdata/clockface'
 import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
 import LegendOrientation from 'src/visualization/components/internal/LegendOrientation'
@@ -17,7 +18,11 @@ import {
   FORMAT_OPTIONS,
   resolveTimeFormat,
 } from 'src/visualization/utils/timeFormat'
-import {defaultXColumn, mosaicYColumn} from 'src/shared/utils/vis'
+import {
+  defaultXColumn,
+  defaultYLabelColumns,
+  defaultYSeriesColumns,
+} from 'src/shared/utils/vis'
 
 // Types
 import {MosaicViewProperties, Color} from 'src/types'
@@ -27,7 +32,8 @@ interface Props extends VisualizationOptionProps {
   properties: MosaicViewProperties
 }
 
-const MosaicOptions: FC<Props> = ({properties, results, update}) => {
+const MosaicOptions: FC<Props> = props => {
+  const {properties, results, update} = props
   let fillColumns = []
   const stringColumns = results.table.columnKeys.filter(k => {
     if (k === 'result' || k === 'table') {
@@ -37,18 +43,14 @@ const MosaicOptions: FC<Props> = ({properties, results, update}) => {
     return results.table.getColumnType(k) === 'string'
   })
 
-  const numericColumns = results.table.columnKeys.filter(key => {
-    if (key === 'result' || key === 'table') {
-      return false
-    }
-
-    const columnType = results.table.getColumnType(key)
-
-    return columnType === 'time' || columnType === 'number'
-  })
+  // Mosaic graphs are currently limited to always using _time on the x-axis
+  //   future enhancements will depend on the visualization library
+  const xDataColumn = (results?.table?.columnKeys || []).filter(
+    key => key === '_time'
+  )
 
   if (
-    properties.fillColumns &&
+    Array.isArray(properties.fillColumns) &&
     properties.fillColumns.every(col => stringColumns.includes(col))
   ) {
     fillColumns = properties.fillColumns
@@ -62,12 +64,73 @@ const MosaicOptions: FC<Props> = ({properties, results, update}) => {
   }
 
   const xColumn = defaultXColumn(results.table, properties.xColumn)
-  const yColumn = mosaicYColumn(results.table, properties.ySeriesColumns?.[0])
+  const ySeriesColumns = defaultYSeriesColumns(
+    results.table,
+    properties.ySeriesColumns
+  )
+
+  const yLabelColumns = defaultYLabelColumns(
+    properties.yLabelColumns,
+    ySeriesColumns
+  )
 
   // TODO: make this normal DashboardColor[] and not string[]
   const colors = properties.colors.map(color => {
     return {hex: color} as Color
   })
+
+  const updateYLabelColumns = (
+    validYSeriesColumns: Array<string>,
+    currentYLabelColumns: Array<string>,
+    option: string
+  ): Array<string> => {
+    const columnExists = Array.isArray(currentYLabelColumns)
+      ? currentYLabelColumns.find(col => col === option)
+      : false
+    let updatedYLabelColumns = currentYLabelColumns || []
+
+    if (columnExists) {
+      updatedYLabelColumns = currentYLabelColumns.filter(
+        currentYLabelColumn => currentYLabelColumn !== option
+      )
+    } else {
+      updatedYLabelColumns = validYSeriesColumns.includes(option)
+        ? [...updatedYLabelColumns, option]
+        : updatedYLabelColumns
+    }
+    return updatedYLabelColumns
+  }
+
+  const onSelectYSeriesColumns = (option: string) => {
+    const columnExists = Array.isArray(ySeriesColumns)
+      ? ySeriesColumns.find(col => col === option)
+      : false
+    let updatedYSeriesColumns = ySeriesColumns || []
+
+    if (columnExists) {
+      updatedYSeriesColumns = ySeriesColumns.filter(
+        ySeriesColumn => ySeriesColumn !== option
+      )
+    } else {
+      updatedYSeriesColumns = [...updatedYSeriesColumns, option]
+    }
+
+    const updatedYLabelColumns = updateYLabelColumns(
+      updatedYSeriesColumns,
+      yLabelColumns,
+      option
+    )
+    update({
+      yLabelColumns: updatedYLabelColumns,
+      ySeriesColumns: updatedYSeriesColumns,
+    })
+  }
+
+  const onSelectYLabelColumns = (option: string) => {
+    update({
+      yLabelColumns: updateYLabelColumns(ySeriesColumns, yLabelColumns, option),
+    })
+  }
 
   return (
     <Grid>
@@ -97,32 +160,25 @@ const MosaicOptions: FC<Props> = ({properties, results, update}) => {
           </Form.Element>
           <Form.Element label="X Column">
             <SelectDropdown
-              options={numericColumns}
+              options={xDataColumn}
               selectedOption={xColumn || 'Build a query before selecting...'}
               onSelect={xColumn => {
                 update({xColumn})
               }}
               testID="dropdown-x"
               buttonStatus={
-                numericColumns.length == 0
+                xDataColumn.length === 0
                   ? ComponentStatus.Disabled
                   : ComponentStatus.Default
               }
             />
           </Form.Element>
-          <Form.Element label="Y Column">
-            <SelectDropdown
+          <Form.Element label="Y Columns">
+            <MultiSelectDropdown
               options={stringColumns}
-              selectedOption={yColumn || 'Build a query before selecting...'}
-              onSelect={yColumn => {
-                update({ySeriesColumns: [yColumn]})
-              }}
-              testID="dropdown-y"
-              buttonStatus={
-                stringColumns.length == 0
-                  ? ComponentStatus.Disabled
-                  : ComponentStatus.Default
-              }
+              selectedOptions={ySeriesColumns}
+              onSelect={onSelectYSeriesColumns}
+              buttonStatus={ComponentStatus.Default}
             />
           </Form.Element>
           <Form.Element label="Time Format">
@@ -169,6 +225,20 @@ const MosaicOptions: FC<Props> = ({properties, results, update}) => {
             <Input
               value={properties.yAxisLabel}
               onChange={e => update({yAxisLabel: e.target.value})}
+            />
+          </Form.Element>
+          <Form.Element label="Y Label Separator">
+            <Input
+              value={properties.yLabelColumnSeparator}
+              onChange={e => update({yLabelColumnSeparator: e.target.value})}
+            />
+          </Form.Element>
+          <Form.Element label="Y Labels">
+            <MultiSelectDropdown
+              options={ySeriesColumns}
+              selectedOptions={yLabelColumns}
+              onSelect={onSelectYLabelColumns}
+              buttonStatus={ComponentStatus.Default}
             />
           </Form.Element>
         </Grid.Column>

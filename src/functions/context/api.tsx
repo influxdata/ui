@@ -1,14 +1,14 @@
 import {
-  getApiV2privateFunctions,
-  deleteApiV2privateFunction,
-  postApiV2privateFunction,
+  getApiV2Functions,
+  deleteApiV2Function,
+  postApiV2Function,
   FunctionCreateRequest,
 } from 'src/client/managedFunctionsRoutes'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export const createAPI = async (functionCreate: FunctionCreateRequest) => {
   if (isFlagEnabled('managed-functions')) {
-    const res = await postApiV2privateFunction({data: functionCreate})
+    const res = await postApiV2Function({data: functionCreate})
 
     if (res.status != 201) {
       throw new Error(res.data.message)
@@ -19,7 +19,7 @@ export const createAPI = async (functionCreate: FunctionCreateRequest) => {
 
 export const deleteAPI = async (id: string) => {
   if (isFlagEnabled('managed-functions')) {
-    const res = await deleteApiV2privateFunction({functionID: id})
+    const res = await deleteApiV2Function({functionID: id})
 
     if (res.status != 204) {
       throw new Error(res.data.message)
@@ -29,7 +29,7 @@ export const deleteAPI = async (id: string) => {
 
 export const getAllAPI = async (orgID: string) => {
   if (isFlagEnabled('managed-functions')) {
-    await getApiV2privateFunctions({query: {orgID}})
+    await getApiV2Functions({query: {orgID}})
     // if (res.status != 200) {
     //   throw new Error(res.data.message)
     // } TODO

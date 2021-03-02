@@ -13,19 +13,20 @@ import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 
 // Utils
-import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 import {
+  getActiveTimeMachine,
   getAnnotations,
   getFillColumnsSelection,
   getSymbolColumnsSelection,
   getVisTable,
   getXColumnSelection,
   getYColumnSelection,
+  getYSeriesColumns,
 } from 'src/timeMachine/selectors'
 import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
 
 // Types
-import {RemoteDataState, AppState} from 'src/types'
+import {RemoteDataState, AppState, ViewProperties} from 'src/types'
 
 // Selectors
 import {getActiveTimeRange} from 'src/timeMachine/selectors/index'
@@ -44,10 +45,12 @@ const TimeMachineVis: FC<Props> = ({
   giraffeResult,
   xColumn,
   yColumn,
+  ySeriesColumns,
   fillColumns,
   symbolColumns,
   annotations,
 }) => {
+  const {type} = viewProperties
   // If the current selections for `xColumn`/`yColumn`/ etc. are invalid given
   // the current Flux response, attempt to make a valid selection instead. This
   // fallback logic is contained within the selectors that supply each of these
@@ -56,10 +59,11 @@ const TimeMachineVis: FC<Props> = ({
   const resolvedViewProperties = {
     ...viewProperties,
     xColumn,
-    yColumn,
+    [`${type === 'mosaic' ? 'ySeriesColumns' : 'yColumn'}`]:
+      type === 'mosaic' ? ySeriesColumns : yColumn,
     fillColumns,
     symbolColumns,
-  }
+  } as ViewProperties
 
   const noQueries =
     loading === RemoteDataState.NotStarted || !viewProperties.queries.length
@@ -123,6 +127,7 @@ const mstp = (state: AppState) => {
   const giraffeResult = getVisTable(state)
   const xColumn = getXColumnSelection(state)
   const yColumn = getYColumnSelection(state)
+  const ySeriesColumns = getYSeriesColumns(state)
   const fillColumns = getFillColumnsSelection(state)
   const symbolColumns = getSymbolColumnsSelection(state)
   const annotations = getAnnotations(state)
@@ -137,6 +142,7 @@ const mstp = (state: AppState) => {
     giraffeResult,
     xColumn,
     yColumn,
+    ySeriesColumns,
     fillColumns,
     symbolColumns,
     timeRange: getActiveTimeRange(timeRange, viewProperties.queries),

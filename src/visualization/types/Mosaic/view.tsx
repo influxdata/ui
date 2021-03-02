@@ -65,9 +65,9 @@ const MosaicPlot: FunctionComponent<Props> = ({
   const isValidView =
     xColumn &&
     columnKeys.includes(xColumn) &&
-    ySeriesColumns.every(col => columnKeys.includes(col)) &&
+    ySeriesColumns.every(ySeriesColumn => columnKeys.includes(ySeriesColumn)) &&
     fillColumns.length !== 0 &&
-    fillColumns.every(col => columnKeys.includes(col))
+    fillColumns.every(fillColumn => columnKeys.includes(fillColumn))
 
   if (!isValidView) {
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />

@@ -45,7 +45,9 @@ const MosaicOptions: FC<Props> = props => {
 
   // Mosaic graphs are currently limited to always using _time on the x-axis
   //   future enhancements will depend on the visualization library
-  const xDataColumn = results.table.columnKeys.filter(key => key === '_time')
+  const xDataColumn = (results?.table?.columnKeys || []).filter(
+    key => key === '_time'
+  )
 
   if (
     Array.isArray(properties.fillColumns) &&
@@ -88,7 +90,9 @@ const MosaicOptions: FC<Props> = props => {
     let updatedYLabelColumns = currentYLabelColumns || []
 
     if (columnExists) {
-      updatedYLabelColumns = currentYLabelColumns.filter(fc => fc !== option)
+      updatedYLabelColumns = currentYLabelColumns.filter(
+        currentYLabelColumn => currentYLabelColumn !== option
+      )
     } else {
       updatedYLabelColumns = validYSeriesColumns.includes(option)
         ? [...updatedYLabelColumns, option]
@@ -104,7 +108,9 @@ const MosaicOptions: FC<Props> = props => {
     let updatedYSeriesColumns = ySeriesColumns || []
 
     if (columnExists) {
-      updatedYSeriesColumns = ySeriesColumns.filter(fc => fc !== option)
+      updatedYSeriesColumns = ySeriesColumns.filter(
+        ySeriesColumn => ySeriesColumn !== option
+      )
     } else {
       updatedYSeriesColumns = [...updatedYSeriesColumns, option]
     }
@@ -161,7 +167,7 @@ const MosaicOptions: FC<Props> = props => {
               }}
               testID="dropdown-x"
               buttonStatus={
-                xDataColumn.length == 0
+                xDataColumn.length === 0
                   ? ComponentStatus.Disabled
                   : ComponentStatus.Default
               }

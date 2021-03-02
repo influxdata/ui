@@ -50,7 +50,7 @@ const FunctionSelector: FunctionComponent<Props> = ({
   savedFunctions,
 }) => {
   const autoFunctions = getDefaultAutoFunctions(activeGraphType).map(
-    f => f.name
+    autoFunction => autoFunction.name
   )
 
   const [isAutoFunction, setIsAutoFunction] = useState(
@@ -84,7 +84,9 @@ const FunctionSelector: FunctionComponent<Props> = ({
       handleSetAutoFunction(false)
       return
     }
-    const newFunctions = savedFunctions.filter(f => autoFunctions.includes(f))
+    const newFunctions = savedFunctions.filter(savedFunction =>
+      autoFunctions.includes(savedFunction)
+    )
     if (newFunctions.length === 0) {
       onSetFunctions([autoFunctions[0]])
     } else if (newFunctions.length > 1) {

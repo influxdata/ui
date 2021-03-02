@@ -316,7 +316,7 @@ describe('the variable integration tests', () => {
       expect(notifyMessage).toEqual(createVariableSuccess('Test variable name'))
     })
   })
-  describe('variable editing process', () => {
+  describe('the variable editing process', () => {
     it('can edit a Map variable', async () => {
       const base_query_variable = getByTestId('variable-card--name values')
 
@@ -410,7 +410,7 @@ describe('the variable integration tests', () => {
       expect(notifyMessage).toEqual(updateVariableSuccess('test_variable_name'))
     })
   })
-  describe('variable deleting process', () => {
+  describe('the variable deleting process', () => {
     it('can delete a Map variable', async () => {
       const deleteButton = getByTestId('context-delete-variable values')
 
@@ -447,7 +447,7 @@ describe('the variable integration tests', () => {
       expect(notifyMessage).toEqual(deleteVariableSuccess())
     })
   })
-  describe('variable importing process', () => {
+  describe('the variable importing process', () => {
     it('can import a Variable of Map type', async () => {
       const dropdownCreateButton = getByTestId('add-resource-dropdown--button')
       fireEvent.click(dropdownCreateButton)

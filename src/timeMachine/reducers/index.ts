@@ -391,6 +391,16 @@ export const timeMachineReducer = (
       return setViewProperties(state, {ySeriesColumns})
     }
 
+    case 'SET_Y_LABEL_COLUMNS': {
+      const {yLabelColumns} = action.payload
+      return setViewProperties(state, {yLabelColumns})
+    }
+
+    case 'SET_Y_LABEL_COLUMN_SEPARATOR': {
+      const {yLabelColumnSeparator} = action.payload
+      return setViewProperties(state, {yLabelColumnSeparator})
+    }
+
     case 'SET_X_AXIS_LABEL': {
       const {xAxisLabel} = action.payload
 

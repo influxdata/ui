@@ -79,6 +79,8 @@ export type Action =
   | SetXColumnAction
   | SetYColumnAction
   | SetYSeriesColumnsAction
+  | SetYLabelColumnsAction
+  | SetYLabelColumnSeparatorAction
   | SetBinSizeAction
   | SetColorHexesAction
   | SetFillColumnsAction
@@ -556,6 +558,30 @@ export const setYSeriesColumns = (
 ): SetYSeriesColumnsAction => ({
   type: 'SET_Y_SERIES_COLUMNS',
   payload: {ySeriesColumns},
+})
+
+interface SetYLabelColumnsAction {
+  type: 'SET_Y_LABEL_COLUMNS'
+  payload: {yLabelColumns: string[]}
+}
+
+export const setYLabelColumns = (
+  yLabelColumns: string[]
+): SetYLabelColumnsAction => ({
+  type: 'SET_Y_LABEL_COLUMNS',
+  payload: {yLabelColumns},
+})
+
+interface SetYLabelColumnSeparatorAction {
+  type: 'SET_Y_LABEL_COLUMN_SEPARATOR'
+  payload: {yLabelColumnSeparator: string}
+}
+
+export const setYLabelColumnSeparator = (
+  yLabelColumnSeparator: string
+): SetYLabelColumnSeparatorAction => ({
+  type: 'SET_Y_LABEL_COLUMN_SEPARATOR',
+  payload: {yLabelColumnSeparator},
 })
 
 interface SetShadeBelowAction {

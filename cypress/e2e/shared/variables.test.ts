@@ -122,7 +122,7 @@ describe('Variables', () => {
     cy.getByTestID('context-delete-menu')
       .first()
       .click({force: true})
-    cy.getByTestID('context-delete-variable')
+    cy.getByTestID(`context-delete-variable ${variableName}`)
       .first()
       .click({force: true})
 

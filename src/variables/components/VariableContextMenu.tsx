@@ -38,7 +38,7 @@ export default class VariableContextMenu extends PureComponent<Props> {
             label="Delete"
             action={onDelete}
             value={variable}
-            testID="context-delete-variable"
+            testID={`context-delete-variable ${variable.name}`}
           />
         </Context.Menu>
       </Context>

@@ -33,3 +33,7 @@ export const getHiddenAnnotationStreams = (
 
   return sortBy(filtered, stream => stream.name)
 }
+
+export const isSingleClickAnnotationsEnabled = (state: AppState): boolean => {
+  return state.annotations.enableSingleClickAnnotations
+}

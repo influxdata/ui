@@ -72,6 +72,8 @@ class DashboardPage extends Component<Props> {
   public render() {
     const {autoRefresh, manualRefresh, onManualRefresh} = this.props
 
+    console.log('inside my dash....', this.props)
+
     return (
       <>
         <ErrorBoundary>

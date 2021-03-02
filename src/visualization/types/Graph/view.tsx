@@ -19,6 +19,7 @@ import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Redux
 import {writeThenFetchAndSetAnnotations} from 'src/annotations/actions/thunks'
+import {isSingleClickAnnotationsEnabled} from 'src/annotations/selectors'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Constants
@@ -63,6 +64,15 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
   const tooltipColorize = useLegendColorizeRows(properties.legendColorizeRows)
   const tooltipOrientationThreshold = useLegendOrientationThreshold(
     properties.legendOrientationThreshold
+  )
+  //it doesn't know that it is even *in* a dashboard, much less which dashboard it is in.
+  //so having annotations on per dashboard is not supported yet
+  console.log(
+    'in xy plot/graph view....props??',
+    properties,
+    result,
+    timeRange,
+    annotations
   )
 
   const dispatch = useDispatch()
@@ -159,6 +169,38 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
   }
 
+  const makeSingleClickHandler = () => {
+    const createAnnotation = userModifiedAnnotation => {
+      const {message, startTime} = userModifiedAnnotation
+      dispatch(
+        writeThenFetchAndSetAnnotations([
+          {
+            summary: message,
+            startTime: new Date(startTime).getTime(),
+            endTime: new Date(startTime).getTime(),
+          },
+        ])
+      )
+    }
+
+    const singleClickHandler = (
+      plotInteraction: InteractionHandlerArguments
+    ) => {
+      dispatch(
+        showOverlay(
+          'add-annotation',
+          {
+            createAnnotation,
+            startTime: plotInteraction.valueX,
+          },
+          dismissOverlay
+        )
+      )
+    }
+
+    return singleClickHandler
+  }
+
   const config: Config = {
     ...currentTheme,
     table: result.table,
@@ -198,38 +240,13 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
   // TODO: address this tech debt
   // see https://github.com/influxdata/ui/issues/725
   if (isFlagEnabled('annotations') && annotationsModeIsActive) {
-    const createAnnotation = userModifiedAnnotation => {
-      const {message, startTime} = userModifiedAnnotation
-      dispatch(
-        writeThenFetchAndSetAnnotations([
-          {
-            summary: message,
-            startTime: new Date(startTime).getTime(),
-            endTime: new Date(startTime).getTime(),
-          },
-        ])
-      )
-    }
+    if (useSelector(isSingleClickAnnotationsEnabled)) {
+      const singleClickHandler = makeSingleClickHandler()
 
-    const doubleClickHandler = (
-      plotInteraction: InteractionHandlerArguments
-    ) => {
-      dispatch(
-        showOverlay(
-          'add-annotation',
-          {
-            createAnnotation,
-            startTime: plotInteraction.valueX,
-          },
-          dismissOverlay
-        )
-      )
+      config.interactionHandlers = {
+        singleClick: singleClickHandler,
+      }
     }
-
-    config.interactionHandlers = {
-      doubleClick: doubleClickHandler,
-    }
-
     // everything is under the 'default' category for now:
     const selectedAnnotations: any[] = annotations?.default ?? []
     if (selectedAnnotations.length) {

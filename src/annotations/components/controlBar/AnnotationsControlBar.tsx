@@ -1,6 +1,6 @@
 // Libraries
 import React, {useState, FC} from 'react'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {useHistory, useParams} from 'react-router-dom'
 
 // Components
@@ -18,11 +18,15 @@ import {
 } from '@influxdata/clockface'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import Toolbar from 'src/shared/components/toolbar/Toolbar'
+import {toggleSingleClickAnnotations} from 'src/annotations/actions/creators'
 import {AnnotationPills} from 'src/annotations/components/controlBar/AnnotationPills'
 import {AnnotationsSearchBar} from 'src/annotations/components/controlBar/AnnotationsSearchBar'
 
 // Selectors
-import {getAnnotationControlsVisibility} from 'src/annotations/selectors'
+import {
+  getAnnotationControlsVisibility,
+  isSingleClickAnnotationsEnabled,
+} from 'src/annotations/selectors'
 
 // Constants
 import {ORGS, SETTINGS, ANNOTATIONS} from 'src/shared/constants/routes'
@@ -32,14 +36,19 @@ export const AnnotationsControlBar: FC = () => {
   const isVisible = useSelector(getAnnotationControlsVisibility)
   const {orgID} = useParams<{orgID: string; dashboardID: string}>()
 
-  const [annotationWriteMode, setAnnotationWriteMode] = useState(false)
+  const [annotationWriteMode, setAnnotationWriteMode] = useState(
+    useSelector(isSingleClickAnnotationsEnabled)
+  )
 
   if (!isVisible) {
     return null
   }
+  const dispatch = useDispatch()
 
   const onModeChange = () => {
     //todo:  call prop method to change the state
+    dispatch(toggleSingleClickAnnotations())
+
     setAnnotationWriteMode(!annotationWriteMode)
   }
 

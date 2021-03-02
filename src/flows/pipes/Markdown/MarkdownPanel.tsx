@@ -6,6 +6,7 @@ import {
   TechnoSpinner,
 } from '@influxdata/clockface'
 import classnames from 'classnames'
+import {debounce} from 'lodash'
 
 // Types
 import {MarkdownMode} from './'
@@ -63,9 +64,7 @@ const MarkdownPanel: FC<PipeProp> = ({Context}) => {
     <MarkdownModeToggle mode={data.mode} onToggleMode={handleToggleMode} />
   )
 
-  const handleChange = (text: string): void => {
-    update({text})
-  }
+  const handleChange = debounce((text: string): void => update({text}), 500)
 
   let panelContents = (
     <ClickOutside onClickOutside={handleClickOutside}>

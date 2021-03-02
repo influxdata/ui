@@ -22,6 +22,18 @@ paths:
           description: The organization ID.
           schema:
             type: string
+        - in: query
+          name: limit
+          description: The number of functions to return
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: offset
+          required: false
+          description: Offset for pagination
+          schema:
+            type: integer
       responses:
         '200':
           description: A list of functions
@@ -229,6 +241,18 @@ paths:
             type: string
           required: true
           description: The ID of the function to get runs for.
+        - in: query
+          name: limit
+          description: The number of functions to return
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: offset
+          required: false
+          description: Offset for pagination
+          schema:
+            type: integer
       responses:
         '200':
           description: A list of function runs

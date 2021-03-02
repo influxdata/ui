@@ -187,18 +187,12 @@ paths:
           style: form
           explode: true
       responses:
-        '200':
-          description: Function invocation response
+        default:
+          description: Response defined by user
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/FunctionHTTPResponseData'
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
     post:
       operationId: PostFunctionsIDInvoke
       tags:
@@ -216,18 +210,12 @@ paths:
             schema:
               $ref: '#/components/schemas/FunctionInvocationParams'
       responses:
-        '200':
-          description: Function invocation response
+        default:
+          description: Response defined by user
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/FunctionHTTPResponseData'
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
   '/api/v2/functions/{functionID}/runs':
     get:
       operationId: GetFunctionsIDRuns

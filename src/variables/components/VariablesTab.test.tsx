@@ -79,7 +79,7 @@ jest.mock('src/resources/selectors/index.ts', () => {
     }),
     getStatus: jest.fn(() => {
       return RemoteDataState.Done
-    })
+    }),
   }
 })
 
@@ -87,20 +87,20 @@ jest.mock('src/templates/api/index.ts', () => ({
   ...require.requireActual('src/templates/api/index.ts'),
   createVariableFromTemplate: jest.fn(() => {
     return {
-      "id": "test_variable_id",
-      "orgID": "test_org_id",
-      "name": "test_variable_name",
-      "description": "",
-      "selected": null,
-      "arguments": {
-      "type": "map",
-        "values": {
-        "taest": "steet"
-      }
-    },
-      "labels": [],
+      id: 'test_variable_id',
+      orgID: 'test_org_id',
+      name: 'test_variable_name',
+      description: '',
+      selected: null,
+      arguments: {
+        type: 'map',
+        values: {
+          taest: 'steet',
+        },
+      },
+      labels: [],
     }
-  })
+  }),
 }))
 
 // Mock State
@@ -469,38 +469,38 @@ describe('the variable integration tests', () => {
       })
 
       const variableJSON = {
-        "meta": {
-          "version": "1",
-          "type": "variable",
-          "name": "test_var-Template",
-          "description": "template created from variable: test_var"
+        meta: {
+          version: '1',
+          type: 'variable',
+          name: 'test_var-Template',
+          description: 'template created from variable: test_var',
         },
-        "content": {
-          "data": {
-            "type": "variable",
-            "id": "test_variable_id",
-            "attributes": {
-              "name": "test_variable_name",
-              "arguments": {
-                "type": "map",
-                "values": {
-                  "test": "value"
-                }
+        content: {
+          data: {
+            type: 'variable',
+            id: 'test_variable_id',
+            attributes: {
+              name: 'test_variable_name',
+              arguments: {
+                type: 'map',
+                values: {
+                  test: 'value',
+                },
               },
-              "selected": null
+              selected: null,
             },
-            "relationships": {
-              "variable": {
-                "data": []
+            relationships: {
+              variable: {
+                data: [],
               },
-              "label": {
-                "data": []
-              }
-            }
+              label: {
+                data: [],
+              },
+            },
           },
-          "included": []
+          included: [],
         },
-        "labels": []
+        labels: [],
       }
 
       const jsonStr = JSON.stringify(variableJSON).trim()
@@ -539,39 +539,36 @@ describe('the variable integration tests', () => {
       })
 
       const variableJSON = {
-        "meta": {
-          "version": "1",
-          "type": "variable",
-          "name": "test_variable_name-Template",
-          "description": "template created from variable: test_variable_name"
+        meta: {
+          version: '1',
+          type: 'variable',
+          name: 'test_variable_name-Template',
+          description: 'template created from variable: test_variable_name',
         },
-        "content": {
-          "data": {
-            "type": "variable",
-            "id": "test_variable_id",
-            "attributes": {
-              "name": "test_variable_name",
-              "arguments": {
-                "type": "constant",
-                "values": [
-                  "sample",
-                  "value"
-                ]
+        content: {
+          data: {
+            type: 'variable',
+            id: 'test_variable_id',
+            attributes: {
+              name: 'test_variable_name',
+              arguments: {
+                type: 'constant',
+                values: ['sample', 'value'],
               },
-              "selected": null
+              selected: null,
             },
-            "relationships": {
-              "variable": {
-                "data": []
+            relationships: {
+              variable: {
+                data: [],
               },
-              "label": {
-                "data": []
-              }
-            }
+              label: {
+                data: [],
+              },
+            },
           },
-          "included": []
+          included: [],
         },
-        "labels": []
+        labels: [],
       }
 
       const jsonStr = JSON.stringify(variableJSON).trim()
@@ -610,39 +607,39 @@ describe('the variable integration tests', () => {
       })
 
       const variableJSON = {
-        "meta": {
-          "version": "1",
-          "type": "variable",
-          "name": "testqueyry-Template",
-          "description": "template created from variable: testqueyry"
+        meta: {
+          version: '1',
+          type: 'variable',
+          name: 'testqueyry-Template',
+          description: 'template created from variable: testqueyry',
         },
-        "content": {
-          "data": {
-            "type": "variable",
-            "id": "test_variable_id",
-            "attributes": {
-              "name": "test_variable_name",
-              "arguments": {
-                "type": "query",
-                "values": {
-                  "query": "testquery",
-                  "language": "flux"
-                }
+        content: {
+          data: {
+            type: 'variable',
+            id: 'test_variable_id',
+            attributes: {
+              name: 'test_variable_name',
+              arguments: {
+                type: 'query',
+                values: {
+                  query: 'testquery',
+                  language: 'flux',
+                },
               },
-              "selected": null
+              selected: null,
             },
-            "relationships": {
-              "variable": {
-                "data": []
+            relationships: {
+              variable: {
+                data: [],
               },
-              "label": {
-                "data": []
-              }
-            }
+              label: {
+                data: [],
+              },
+            },
           },
-          "included": []
+          included: [],
         },
-        "labels": []
+        labels: [],
       }
 
       const jsonStr = JSON.stringify(variableJSON).trim()

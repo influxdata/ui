@@ -77,8 +77,31 @@ jest.mock('src/resources/selectors/index.ts', () => {
     getLabels: jest.fn(() => {
       return []
     }),
+    getStatus: jest.fn(() => {
+      return RemoteDataState.Done
+    })
   }
 })
+
+jest.mock('src/templates/api/index.ts', () => ({
+  ...require.requireActual('src/templates/api/index.ts'),
+  createVariableFromTemplate: jest.fn(() => {
+    return {
+      "id": "test_variable_id",
+      "orgID": "test_org_id",
+      "name": "test_variable_name",
+      "description": "",
+      "selected": null,
+      "arguments": {
+      "type": "map",
+        "values": {
+        "taest": "steet"
+      }
+    },
+      "labels": [],
+    }
+  })
+}))
 
 // Mock State
 import {renderWithReduxAndRouter} from 'src/mockState'
@@ -160,8 +183,8 @@ describe('the variable integration tests', () => {
     cleanup()
   })
 
-  describe('handling the variable creation process', () => {
-    it('Create a Variable of Map type', async () => {
+  describe('the variable creation process', () => {
+    it('can create a Variable of Map type', async () => {
       const dropdownCreateButton = getByTestId('add-resource-dropdown--button')
       fireEvent.click(dropdownCreateButton)
 
@@ -205,7 +228,7 @@ describe('the variable integration tests', () => {
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(createVariableSuccess('Test variable name'))
     })
-    it('Create a Variable of CSV type', async () => {
+    it('can create a Variable of CSV type', async () => {
       const dropdownCreateButton = getByTestId('add-resource-dropdown--button')
       fireEvent.click(dropdownCreateButton)
 
@@ -250,7 +273,7 @@ describe('the variable integration tests', () => {
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(createVariableSuccess('Test variable name'))
     })
-    it('Create a Variable of Query type', async () => {
+    it('can create a Variable of Query type', async () => {
       const dropdownCreateButton = getByTestId('add-resource-dropdown--button')
       fireEvent.click(dropdownCreateButton)
 
@@ -293,8 +316,8 @@ describe('the variable integration tests', () => {
       expect(notifyMessage).toEqual(createVariableSuccess('Test variable name'))
     })
   })
-  describe('handling variable editing process', () => {
-    it('Edit a Map variable', async () => {
+  describe('variable editing process', () => {
+    it('can edit a Map variable', async () => {
       const base_query_variable = getByTestId('variable-card--name values')
 
       fireEvent.click(base_query_variable)
@@ -326,7 +349,7 @@ describe('the variable integration tests', () => {
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(updateVariableSuccess('test_variable_name'))
     })
-    it('Edit a CSV variable', async () => {
+    it('can edit a CSV variable', async () => {
       const base_query_variable = getByTestId(
         'variable-card--name csv_test_variable'
       )
@@ -357,7 +380,7 @@ describe('the variable integration tests', () => {
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(updateVariableSuccess('test_variable_name'))
     })
-    it('Edit a Query variable', async () => {
+    it('can edit a Query variable', async () => {
       const base_query_variable = getByTestId('variable-card--name base_query')
       fireEvent.click(base_query_variable)
 
@@ -387,8 +410,8 @@ describe('the variable integration tests', () => {
       expect(notifyMessage).toEqual(updateVariableSuccess('test_variable_name'))
     })
   })
-  describe('handling variable deleting process', () => {
-    it('Delete a Map variable', async () => {
+  describe('variable deleting process', () => {
+    it('can delete a Map variable', async () => {
       const deleteButton = getByTestId('context-delete-variable values')
 
       await waitFor(() => {
@@ -399,7 +422,7 @@ describe('the variable integration tests', () => {
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(deleteVariableSuccess())
     })
-    it('Delete a CSV variable', async () => {
+    it('can delete a CSV variable', async () => {
       const deleteButton = getByTestId(
         'context-delete-variable csv_test_variable'
       )
@@ -412,7 +435,7 @@ describe('the variable integration tests', () => {
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(deleteVariableSuccess())
     })
-    it('Delete a Query variable', async () => {
+    it('can delete a Query variable', async () => {
       const deleteButton = getByTestId('context-delete-variable base_query')
 
       await waitFor(() => {
@@ -422,6 +445,220 @@ describe('the variable integration tests', () => {
       const [notifyCallArguments] = mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(deleteVariableSuccess())
+    })
+  })
+  describe('variable importing process', () => {
+    it('can import a Variable of Map type', async () => {
+      const dropdownCreateButton = getByTestId('add-resource-dropdown--button')
+      fireEvent.click(dropdownCreateButton)
+
+      const importButton = getByTestId('add-resource-dropdown--import')
+      fireEvent.click(importButton)
+
+      await waitFor(() => {
+        // Import Variable in the overlay and should be visible
+        expect(screen.queryByTitle('Import Variable')).toBeVisible()
+      })
+
+      const selectPasteJson = getByTestId('select-group--paste-json-button')
+      fireEvent.click(selectPasteJson)
+
+      const textArea = getByTestId('import-overlay--textarea')
+      await waitFor(() => {
+        expect(textArea).toBeVisible()
+      })
+
+      const variableJSON = {
+        "meta": {
+          "version": "1",
+          "type": "variable",
+          "name": "test_var-Template",
+          "description": "template created from variable: test_var"
+        },
+        "content": {
+          "data": {
+            "type": "variable",
+            "id": "test_variable_id",
+            "attributes": {
+              "name": "test_variable_name",
+              "arguments": {
+                "type": "map",
+                "values": {
+                  "test": "value"
+                }
+              },
+              "selected": null
+            },
+            "relationships": {
+              "variable": {
+                "data": []
+              },
+              "label": {
+                "data": []
+              }
+            }
+          },
+          "included": []
+        },
+        "labels": []
+      }
+
+      const jsonStr = JSON.stringify(variableJSON).trim()
+
+      await waitFor(() => {
+        fireEvent.change(textArea, {target: {value: jsonStr}})
+      })
+
+      const createFromJsonButton = getByTestId('submit-button Variable')
+      await waitFor(() => {
+        fireEvent.click(createFromJsonButton)
+      })
+
+      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyMessage] = notifyCallArguments
+      expect(notifyMessage).toEqual(createVariableSuccess('test_variable_name'))
+    })
+    it('can import a Variable of CSV type', async () => {
+      const dropdownCreateButton = getByTestId('add-resource-dropdown--button')
+      fireEvent.click(dropdownCreateButton)
+
+      const importButton = getByTestId('add-resource-dropdown--import')
+      fireEvent.click(importButton)
+
+      await waitFor(() => {
+        // Import Variable in the overlay and should be visible
+        expect(screen.queryByTitle('Import Variable')).toBeVisible()
+      })
+
+      const selectPasteJson = getByTestId('select-group--paste-json-button')
+      fireEvent.click(selectPasteJson)
+
+      const textArea = getByTestId('import-overlay--textarea')
+      await waitFor(() => {
+        expect(textArea).toBeVisible()
+      })
+
+      const variableJSON = {
+        "meta": {
+          "version": "1",
+          "type": "variable",
+          "name": "test_variable_name-Template",
+          "description": "template created from variable: test_variable_name"
+        },
+        "content": {
+          "data": {
+            "type": "variable",
+            "id": "test_variable_id",
+            "attributes": {
+              "name": "test_variable_name",
+              "arguments": {
+                "type": "constant",
+                "values": [
+                  "sample",
+                  "value"
+                ]
+              },
+              "selected": null
+            },
+            "relationships": {
+              "variable": {
+                "data": []
+              },
+              "label": {
+                "data": []
+              }
+            }
+          },
+          "included": []
+        },
+        "labels": []
+      }
+
+      const jsonStr = JSON.stringify(variableJSON).trim()
+
+      await waitFor(() => {
+        fireEvent.change(textArea, {target: {value: jsonStr}})
+      })
+
+      const createFromJsonButton = getByTestId('submit-button Variable')
+      await waitFor(() => {
+        fireEvent.click(createFromJsonButton)
+      })
+
+      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyMessage] = notifyCallArguments
+      expect(notifyMessage).toEqual(createVariableSuccess('test_variable_name'))
+    })
+    it('can import a Variable of Query type', async () => {
+      const dropdownCreateButton = getByTestId('add-resource-dropdown--button')
+      fireEvent.click(dropdownCreateButton)
+
+      const importButton = getByTestId('add-resource-dropdown--import')
+      fireEvent.click(importButton)
+
+      await waitFor(() => {
+        // Import Variable in the overlay and should be visible
+        expect(screen.queryByTitle('Import Variable')).toBeVisible()
+      })
+
+      const selectPasteJson = getByTestId('select-group--paste-json-button')
+      fireEvent.click(selectPasteJson)
+
+      const textArea = getByTestId('import-overlay--textarea')
+      await waitFor(() => {
+        expect(textArea).toBeVisible()
+      })
+
+      const variableJSON = {
+        "meta": {
+          "version": "1",
+          "type": "variable",
+          "name": "testqueyry-Template",
+          "description": "template created from variable: testqueyry"
+        },
+        "content": {
+          "data": {
+            "type": "variable",
+            "id": "test_variable_id",
+            "attributes": {
+              "name": "test_variable_name",
+              "arguments": {
+                "type": "query",
+                "values": {
+                  "query": "testquery",
+                  "language": "flux"
+                }
+              },
+              "selected": null
+            },
+            "relationships": {
+              "variable": {
+                "data": []
+              },
+              "label": {
+                "data": []
+              }
+            }
+          },
+          "included": []
+        },
+        "labels": []
+      }
+
+      const jsonStr = JSON.stringify(variableJSON).trim()
+
+      await waitFor(() => {
+        fireEvent.change(textArea, {target: {value: jsonStr}})
+      })
+
+      const createFromJsonButton = getByTestId('submit-button Variable')
+      await waitFor(() => {
+        fireEvent.click(createFromJsonButton)
+      })
+
+      const [notifyCallArguments] = mocked(notify).mock.calls
+      const [notifyMessage] = notifyCallArguments
+      expect(notifyMessage).toEqual(createVariableSuccess('test_variable_name'))
     })
   })
 })

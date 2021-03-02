@@ -82,6 +82,7 @@ class ImportOverlay extends PureComponent<Props, State> {
                     value={ImportOption.Paste}
                     onClick={this.handleSetImportOption}
                     titleText="Paste"
+                    testID="select-group--paste-json-button"
                   >
                     Paste JSON
                   </SelectGroup.Option>

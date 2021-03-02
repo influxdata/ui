@@ -62,7 +62,7 @@ const CsvUploaderWizard = () => {
         <OverlayFooter>
           <Button
             color={ComponentColor.Default}
-            text="Close"
+            text={uploadState === RemoteDataState.Loading ? 'Cancel' : 'Close'}
             size={ComponentSize.Medium}
             type={ButtonType.Button}
             onClick={handleDismiss}

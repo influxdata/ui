@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useCallback, useState} from 'react'
+import React, {FC, useCallback, useState, useRef} from 'react'
 import {fromFlux} from '@influxdata/giraffe'
 import {useSelector, useDispatch} from 'react-redux'
 
@@ -65,8 +65,12 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
     return `${time}` + Array(20 - `${time}`.length).join('0')
   }, [])
 
-  const resetUploadState = (): void =>
+  const controller = useRef(new AbortController())
+
+  const resetUploadState = (): void => {
     setUploadState(RemoteDataState.NotStarted)
+    controller.current.abort()
+  }
 
   const handleError = (error: Error): void => {
     setUploadState(RemoteDataState.Error)
@@ -127,10 +131,15 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
               i !== 0 &&
               i % Math.round(length / CONCURRENT_REQUEST_LIMIT) === 0
             ) {
-              const resp = postWrite({
-                data: chunk,
-                query: {org: org.name, bucket, precision: WritePrecision.Ns},
-              }).then(v => {
+              const resp = postWrite(
+                {
+                  data: chunk,
+                  query: {org: org.name, bucket, precision: WritePrecision.Ns},
+                },
+                {
+                  signal: controller.current.signal,
+                }
+              ).then(v => {
                 const percent = (++progress / counter) * 100
                 setProgress(Math.floor(percent))
                 return v
@@ -195,10 +204,15 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
             chunk = `${line}\n${chunk}`
           }
           if (chunk) {
-            const resp = postWrite({
-              data: chunk,
-              query: {org: org.name, bucket, precision: WritePrecision.Ns},
-            }).then(v => {
+            const resp = postWrite(
+              {
+                data: chunk,
+                query: {org: org.name, bucket, precision: WritePrecision.Ns},
+              },
+              {
+                signal: controller.current.signal,
+              }
+            ).then(v => {
               const percent = (++progress / counter) * 100
               setProgress(Math.floor(percent))
               return v

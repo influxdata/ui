@@ -1,14 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="InfluxDB is a time series database designed to handle high write and query loads.
+      Telegraf. Open source server agent to collect metrics from stacks, sensors and systems.
+      InfluxDB Enterprise. Turns any InfluxData instance into a production-ready cluster that can run anywhere."
+    />
     <title>InfluxDB 2.0</title>
     <base href="/" />
-    <%= htmlWebpackPlugin.options.header  %>
+    <%= htmlWebpackPlugin.options.header %>
   </head>
   <body>
-    <div id="react-root" data-basepath="<%= htmlWebpackPlugin.options.base %>"></div>
-    <%= htmlWebpackPlugin.options.body  %>
+    <div
+      id="react-root"
+      data-basepath="<%= htmlWebpackPlugin.options.base %>"
+    ></div>
+    <%= htmlWebpackPlugin.options.body %>
   </body>
 </html>

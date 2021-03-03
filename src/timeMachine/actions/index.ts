@@ -1,6 +1,6 @@
 // Libraries
 import {Dispatch} from 'react'
-
+import {isEqual} from 'lodash'
 // Actions
 import {loadBuckets} from 'src/timeMachine/actions/queryBuilder'
 import {saveAndExecuteQueries} from 'src/timeMachine/actions/queries'
@@ -108,6 +108,7 @@ export type Action =
   | ReturnType<typeof toggleVisOptions>
   | ReturnType<typeof resetActiveQueryWithBuilder>
   | ReturnType<typeof setViewProperties>
+  | ReturnType<typeof setTimeMachineTimeRange>
 
 type ExternalActions =
   | ReturnType<typeof loadBuckets>
@@ -155,13 +156,22 @@ export const setName = (name: string): SetNameAction => ({
   payload: {name},
 })
 
+export const setTimeMachineTimeRange = (timeRange: TimeRange) =>
+  ({
+    type: 'SET_TIME_MACHINE_TIME_RANGE',
+    timeRange,
+  } as const)
+
 export const setTimeRange = (timeRange: TimeRange) => (dispatch, getState) => {
   const state = getState()
   const contextID = currentContext(state)
   const activeQuery = getActiveQuery(state)
 
-  dispatch(setDashboardTimeRange(contextID, timeRange))
-  dispatch(saveAndExecuteQueries())
+  if (!isEqual(timeRange, state.ranges[contextID])) {
+    dispatch(setDashboardTimeRange(contextID, timeRange))
+    dispatch(saveAndExecuteQueries())
+  }
+
   if (activeQuery.editMode === 'builder') {
     dispatch(reloadTagSelectors())
   }

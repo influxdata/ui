@@ -5,7 +5,7 @@ import {connect, ConnectedProps} from 'react-redux'
 import {get, isEmpty} from 'lodash'
 
 // Selectors
-import {getSaveableView} from 'src/timeMachine/selectors'
+import {getActiveTimeMachine, getSaveableView} from 'src/timeMachine/selectors'
 import {getOrg} from 'src/organizations/selectors'
 import {getAll} from 'src/resources/selectors'
 import {sortDashboardByName} from 'src/dashboards/selectors'
@@ -53,7 +53,7 @@ interface State {
 interface OwnProps {
   dismiss: () => void
 }
-type RouterProps = RouteComponentProps<{orgID: string}>
+type RouterProps = RouteComponentProps
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & OwnProps & RouterProps
 
@@ -167,6 +167,7 @@ class SaveAsCellForm extends PureComponent<Props, State> {
       dismiss,
       orgID,
       history,
+      timeRange,
     } = this.props
     const {targetDashboardIDs} = this.state
 
@@ -188,7 +189,8 @@ class SaveAsCellForm extends PureComponent<Props, State> {
             orgID,
             newDashboardName,
             viewWithProps,
-            toRedirect
+            toRedirect,
+            timeRange
           )
           return
         }
@@ -198,7 +200,8 @@ class SaveAsCellForm extends PureComponent<Props, State> {
           selectedDashboard.id,
           viewWithProps,
           null,
-          toRedirect
+          toRedirect,
+          timeRange
         )
       })
       this.props.setActiveTimeMachine('de', initialStateHelper())
@@ -244,11 +247,12 @@ const mstp = (state: AppState) => {
   const view = getSaveableView(state)
   const org = getOrg(state)
   const dashboards = getAll<Dashboard>(state, ResourceType.Dashboards)
-
+  const timeRange = getActiveTimeMachine(state).timeRange
   return {
     dashboards: sortDashboardByName(dashboards),
     view,
     orgID: get(org, 'id', ''),
+    timeRange,
   }
 }
 

@@ -80,6 +80,10 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
       activeTabWrite,
     } = this.state
 
+    const {
+        buckets
+    } = this.props
+
     return (
       <Overlay.Container maxWidth={700}>
         <Overlay.Header
@@ -107,7 +111,7 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
                     <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Six}>
                       <BucketsSelector
                         onSelect={this.handleSelectReadBucket}
-                        buckets={this.nonSystemBuckets}
+                        buckets={buckets}
                         selectedBuckets={readBuckets}
                         title="Read"
                         onSelectAll={this.handleReadSelectAllBuckets}
@@ -119,7 +123,7 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
                     <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Six}>
                       <BucketsSelector
                         onSelect={this.handleSelectWriteBucket}
-                        buckets={this.nonSystemBuckets}
+                        buckets={buckets}
                         selectedBuckets={writeBuckets}
                         title="Write"
                         onSelectAll={this.handleWriteSelectAllBuckets}
@@ -256,12 +260,6 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
     return allBucketsPermissions(orgID, 'write')
   }
 
-  private get nonSystemBuckets(): Bucket[] {
-    const {buckets} = this.props
-
-    return buckets.filter(bucket => !isSystemBucket(bucket.name))
-  }
-
   private handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const {value} = e.target
 
@@ -274,9 +272,12 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
 }
 
 const mstp = (state: AppState) => {
+    const orgID = getOrg(state).id
   return {
-    orgID: getOrg(state).id,
-    buckets: getAll<Bucket>(state, ResourceType.Buckets),
+    orgID: orgID,
+    buckets: getAll<Bucket>(state, ResourceType.Buckets)
+        .filter(bucket => !isSystemBucket(bucket.name))
+        .filter(bucket => bucket.orgID === orgID),
   }
 }
 

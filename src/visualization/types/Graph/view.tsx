@@ -65,20 +65,19 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
   const tooltipOrientationThreshold = useLegendOrientationThreshold(
     properties.legendOrientationThreshold
   )
-  //it doesn't know that it is even *in* a dashboard, much less which dashboard it is in.
-  //so having annotations on per dashboard is not supported yet
-  console.log(
-    'in xy plot/graph view....props??',
-    properties,
-    result,
-    timeRange,
-    annotations
-  )
-
   const dispatch = useDispatch()
+
+  // it doesn't know that it is even *in* a dashboard, much less which dashboard it is in.
+  // so having annotations on per dashboard is not supported yet
+  // these next two values are set in the dashboard, and used whether or not this view is in a dashboard
+  // or in configuration/single cell popout mode
+  // would need to add the annotation control bar to the VEOHeader to get access to the controls,
+  // which are currently global values, not per dashboard
+
   const annotationsModeIsActive = useSelector(
     (state: AppState) => state.userSettings.showAnnotationsControls
   )
+  const inAnnotationWriteMode = useSelector(isSingleClickAnnotationsEnabled)
 
   const storedXDomain = useMemo(() => parseXBounds(properties.axes.x.bounds), [
     properties.axes.x.bounds,
@@ -237,14 +236,10 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
     ],
   }
 
-  // TODO: address this tech debt
-  // see https://github.com/influxdata/ui/issues/725
   if (isFlagEnabled('annotations') && annotationsModeIsActive) {
-    if (useSelector(isSingleClickAnnotationsEnabled)) {
-      const singleClickHandler = makeSingleClickHandler()
-
+    if (inAnnotationWriteMode) {
       config.interactionHandlers = {
-        singleClick: singleClickHandler,
+        singleClick: makeSingleClickHandler(),
       }
     }
     // everything is under the 'default' category for now:

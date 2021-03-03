@@ -33,22 +33,15 @@ import {ORGS, SETTINGS, ANNOTATIONS} from 'src/shared/constants/routes'
 
 export const AnnotationsControlBar: FC = () => {
   const history = useHistory()
-  const isVisible = useSelector(getAnnotationControlsVisibility)
   const {orgID} = useParams<{orgID: string; dashboardID: string}>()
 
-  const [annotationWriteMode, setAnnotationWriteMode] = useState(
-    useSelector(isSingleClickAnnotationsEnabled)
-  )
+  const inWriteMode = useSelector(isSingleClickAnnotationsEnabled)
+  const [annotationWriteMode, setAnnotationWriteMode] = useState(inWriteMode)
 
-  if (!isVisible) {
-    return null
-  }
   const dispatch = useDispatch()
 
   const onModeChange = () => {
-    //todo:  call prop method to change the state
     dispatch(toggleSingleClickAnnotations())
-
     setAnnotationWriteMode(!annotationWriteMode)
   }
 
@@ -79,7 +72,6 @@ export const AnnotationsControlBar: FC = () => {
             color={ComponentColor.Primary}
             size={ComponentSize.ExtraSmall}
           >
-            {' '}
             <InputLabel>Enable 1-Click Annotations</InputLabel>
           </Toggle>
           <SquareButton

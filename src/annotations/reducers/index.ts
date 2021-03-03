@@ -4,7 +4,6 @@ import {
   DISABLE_ANNOTATION_STREAM,
   SET_ANNOTATIONS,
   TOGGLE_SINGLE_CLICK_ANNOTATIONS,
-  enableAnnotationStream,
 } from 'src/annotations/actions/creators'
 
 import {Annotation, AnnotationsList} from 'src/types'

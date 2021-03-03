@@ -797,10 +797,12 @@
   resolved "https://registry.yarnpkg.com/@influxdata/flux/-/flux-0.5.1.tgz#e39e7a7af9163fc9494422c8fed77f3ae1b68f56"
   integrity sha512-GHlkXBhSdJ2m56JzDkbnKPAqLj3/lexPooacu14AWTO4f2sDGLmzM7r0AxgdtU1M2x7EXNBwgGOI5EOAdN6mkw==
 
-"@influxdata/giraffe@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.2.0.tgz#a4a563560aa7f3c625f1d27c4ab0d680da5a9949"
-  integrity sha512-HRL/Nlqk2lDiI6aO5VdkVBuzHse64heaX+/kSxAwdqX+OkFMwqYXY9FCSQslot5WCabRUJKkcp0RHnJsYzGfMg==
+"@influxdata/giraffe@^2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.4.0.tgz#e12007f02315ad10c9949f2d95dc37a08446c407"
+  integrity sha512-q2p1DMuu2fD/CDPVG4G5yrNtfeEnn2kaEVbWkrNzpiL5n7hvO5gvTG/T5JhsBosubB4fOaszOmNOXk/OSMfjtQ==
+  dependencies:
+    merge-images "^2.0.0"
 
 "@influxdata/influx@0.5.5":
   version "0.5.5"
@@ -7822,6 +7824,11 @@ merge-descriptors@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/merge-descriptors/-/merge-descriptors-1.0.1.tgz#b00aaa556dd8b44568150ec9d1b953f3f90cbb61"
   integrity sha1-sAqqVW3YtEVoFQ7J0blT8/kMu2E=
+
+merge-images@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/merge-images/-/merge-images-2.0.0.tgz#4d68d6d90ad8c33a91aced0b5d8660983bf4db3a"
+  integrity sha512-bpI4j54n/Zl6ZTgxaR3xWou/lqI53RAAt8peXijW37BKqoON83LQ7XCZqtFiwzBfEXIws1isYyR06584yffAyA==
 
 merge-stream@^1.0.1:
   version "1.0.1"

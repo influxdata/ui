@@ -171,28 +171,6 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
               }}
             />
           </Form.Element>
-          <Grid.Row>
-            <Grid.Column widthSM={Columns.Six}>
-              <Form.Element label="X Tick Prefix">
-                <Input
-                  value={properties.xPrefix}
-                  onChange={evt => {
-                    update({xPrefix: evt.target.value})
-                  }}
-                />
-              </Form.Element>
-            </Grid.Column>
-            <Grid.Column widthSM={Columns.Six}>
-              <Form.Element label="X Tick Suffix">
-                <Input
-                  value={properties.xSuffix}
-                  onChange={evt => {
-                    update({xSuffix: evt.target.value})
-                  }}
-                />
-              </Form.Element>
-            </Grid.Column>
-          </Grid.Row>
           <AxisTicksGenerator
             axisName="x"
             columnType={xColumn}

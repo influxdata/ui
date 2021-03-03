@@ -280,6 +280,9 @@ const SingleStatWithLineOptions: FC<Props> = ({
             />
           </Form.Element>
         </Grid.Column>
+        <Grid.Column>
+          <h5 className="view-options--header">X-Axis</h5>
+        </Grid.Column>
         <Grid.Column widthXS={Columns.Twelve} widthLG={Columns.Four}>
           <AxisTicksGenerator
             axisName="x"

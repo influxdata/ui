@@ -80,9 +80,7 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
       activeTabWrite,
     } = this.state
 
-    const {
-        buckets
-    } = this.props
+    const {buckets} = this.props
 
     return (
       <Overlay.Container maxWidth={700}>
@@ -272,12 +270,12 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
 }
 
 const mstp = (state: AppState) => {
-    const orgID = getOrg(state).id
+  const orgID = getOrg(state).id
   return {
     orgID: orgID,
     buckets: getAll<Bucket>(state, ResourceType.Buckets)
-        .filter(bucket => !isSystemBucket(bucket.name))
-        .filter(bucket => bucket.orgID === orgID),
+      .filter(bucket => !isSystemBucket(bucket.name))
+      .filter(bucket => bucket.orgID === orgID),
   }
 }
 

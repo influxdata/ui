@@ -242,6 +242,12 @@ export const timeMachineReducer = (
   action: Action
 ): TimeMachineState => {
   switch (action.type) {
+    case 'SET_TIME_MACHINE_TIME_RANGE': {
+      return produce(state, draftState => {
+        draftState.timeRange = action.timeRange
+      })
+    }
+
     case 'SET_VIEW_NAME': {
       const {name} = action.payload
       const view = {...state.view, name}

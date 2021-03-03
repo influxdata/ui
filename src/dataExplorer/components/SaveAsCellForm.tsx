@@ -1,10 +1,11 @@
 // Libraries
 import React, {PureComponent, ChangeEvent} from 'react'
+import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
 import {get, isEmpty} from 'lodash'
 
 // Selectors
-import {getSaveableView} from 'src/timeMachine/selectors'
+import {getActiveTimeMachine, getSaveableView} from 'src/timeMachine/selectors'
 import {getOrg} from 'src/organizations/selectors'
 import {getAll} from 'src/resources/selectors'
 import {sortDashboardByName} from 'src/dashboards/selectors'
@@ -27,6 +28,7 @@ import {
   createDashboardWithView,
 } from 'src/cells/actions/thunks'
 import {notify} from 'src/shared/actions/notifications'
+import {setActiveTimeMachine} from 'src/timeMachine/actions'
 
 // Types
 import {AppState, Dashboard, View, ResourceType} from 'src/types'
@@ -38,6 +40,9 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 
+// Utils
+import {initialStateHelper} from 'src/timeMachine/reducers'
+
 interface State {
   targetDashboardIDs: string[]
   cellName: string
@@ -48,9 +53,9 @@ interface State {
 interface OwnProps {
   dismiss: () => void
 }
-
+type RouterProps = RouteComponentProps
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & OwnProps
+type Props = ReduxProps & OwnProps & RouterProps
 
 @ErrorHandling
 class SaveAsCellForm extends PureComponent<Props, State> {
@@ -161,6 +166,8 @@ class SaveAsCellForm extends PureComponent<Props, State> {
       view,
       dismiss,
       orgID,
+      history,
+      timeRange,
     } = this.props
     const {targetDashboardIDs} = this.state
 
@@ -170,21 +177,39 @@ class SaveAsCellForm extends PureComponent<Props, State> {
 
     const viewWithProps: View = {...view, name: cellName}
 
+    const redirectHandler = (dashboardId: string): void =>
+      history.push(`/orgs/${orgID}/dashboards/${dashboardId}`)
+
     try {
-      targetDashboardIDs.forEach(dashID => {
+      targetDashboardIDs.forEach((dashID, i) => {
+        const toRedirect =
+          i === targetDashboardIDs.length - 1 ? redirectHandler : undefined
         if (dashID === DashboardTemplate.id) {
-          onCreateDashboardWithView(orgID, newDashboardName, viewWithProps)
+          onCreateDashboardWithView(
+            orgID,
+            newDashboardName,
+            viewWithProps,
+            toRedirect,
+            timeRange
+          )
           return
         }
 
         const selectedDashboard = dashboards.find(d => d.id === dashID)
-        onCreateCellWithView(selectedDashboard.id, viewWithProps)
+        onCreateCellWithView(
+          selectedDashboard.id,
+          viewWithProps,
+          null,
+          toRedirect,
+          timeRange
+        )
       })
+      this.props.setActiveTimeMachine('de', initialStateHelper())
     } catch (error) {
       console.error(error)
+      dismiss()
     } finally {
       this.resetForm()
-      dismiss()
     }
   }
 
@@ -222,11 +247,12 @@ const mstp = (state: AppState) => {
   const view = getSaveableView(state)
   const org = getOrg(state)
   const dashboards = getAll<Dashboard>(state, ResourceType.Dashboards)
-
+  const timeRange = getActiveTimeMachine(state).timeRange
   return {
     dashboards: sortDashboardByName(dashboards),
     view,
     orgID: get(org, 'id', ''),
+    timeRange,
   }
 }
 
@@ -234,9 +260,10 @@ const mdtp = {
   onGetDashboards: getDashboards,
   onCreateCellWithView: createCellWithView,
   onCreateDashboardWithView: createDashboardWithView,
+  setActiveTimeMachine,
   notify,
 }
 
 const connector = connect(mstp, mdtp)
 
-export default connector(SaveAsCellForm)
+export default connector(withRouter(SaveAsCellForm))

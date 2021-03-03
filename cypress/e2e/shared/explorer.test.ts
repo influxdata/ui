@@ -1160,13 +1160,12 @@ describe('DataExplorer', () => {
 
       it('can save as cell into multiple dashboards', () => {
         // input dashboards and cell name
-        cy.getByTestID('save-as-dashboard-cell--dropdown').click()
-        cy.getByTestID('save-as-dashboard-cell--dropdown-menu').within(() => {
-          dashboardNames.forEach(d => {
-            cy.contains(d).click()
+        dashboardNames.forEach(name => {
+          cy.getByTestID('save-as-dashboard-cell--dropdown').click()
+          cy.getByTestID('save-as-dashboard-cell--dropdown-menu').within(() => {
+            cy.contains(name).click()
           })
         })
-        cy.getByTestID('save-as-dashboard-cell--dropdown').click()
         cy.getByTestID('save-as-dashboard-cell--cell-name').type(cellName)
 
         cy.getByTestID('save-as-dashboard-cell--submit').click()
@@ -1189,8 +1188,9 @@ describe('DataExplorer', () => {
       it('can create new dashboard as saving target', () => {
         // select and input new dashboard name and cell name
         cy.getByTestID('save-as-dashboard-cell--dropdown').click()
-        cy.getByTestID('save-as-dashboard-cell--create-new-dash').click()
-        cy.getByTestID('save-as-dashboard-cell--dropdown').click()
+        cy.getByTestID('save-as-dashboard-cell--dropdown-menu').within(() => {
+          cy.getByTestID('save-as-dashboard-cell--create-new-dash').click()
+        })
         cy.getByTestID('save-as-dashboard-cell--dashboard-name')
           .should('be.visible')
           .clear()
@@ -1199,20 +1199,15 @@ describe('DataExplorer', () => {
 
         cy.getByTestID('save-as-dashboard-cell--submit').click()
 
-        // wait some time for save
-        cy.wait(200)
-        // ensure dashboard created with cell
-        cy.get('@org').then(({id: orgID}: Organization) => {
-          cy.fixture('routes').then(({orgs}) => {
-            cy.visit(`${orgs}/${orgID}/dashboards/`)
-            cy.getByTestID('tree-nav')
-            cy.getByTestID('dashboard-card--name')
-              .contains(dashboardCreateName)
-              .should('exist')
-              .click()
-            cy.getByTestID(`cell ${cellName}`).should('exist')
-          })
-        })
+        cy.location('pathname').should(
+          'match',
+          /^(?=.*dashboards)(?:(?!cell).)+$/
+        )
+
+        cy.getByTestID(`cell--draggable ${cellName}`)
+          .should('exist')
+          .click()
+        cy.getByTestID(`cell ${cellName}`).should('exist')
       })
     })
 

@@ -61,23 +61,30 @@ export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
     _result = {...DEFAULT_CONTEXT.results}
   }
 
-  return useMemo(
-    () => (
+  return useMemo(() => {
+    let data = null
+    let loading = RemoteDataState.NotStarted
+    try {
+      data = flow.data.get(id)
+      loading = flow.meta.get(id).loading
+    } catch {
+      return null
+    }
+    return (
       <PipeContext.Provider
         value={{
           id: id,
-          data: flow.data.get(id),
+          data,
           queryText,
           range: flow.range,
           update: updater,
           results: _result,
-          loading: flow.meta.get(id).loading,
+          loading,
           readOnly: flow.readOnly,
         }}
       >
         {children}
       </PipeContext.Provider>
-    ),
-    [flow, results, flow.meta.get(id).loading]
-  )
+    )
+  }, [flow, queryText, id, _result, children, updater])
 }

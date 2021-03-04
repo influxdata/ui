@@ -15,7 +15,6 @@ import {
   IconFont,
   ComponentColor,
 } from '@influxdata/clockface'
-import {debounce} from 'lodash'
 
 // Types
 import {EditorType} from 'src/types'
@@ -40,20 +39,18 @@ const Query: FC<PipeProp> = ({Context}) => {
   const {queries, activeQuery} = data
   const query = queries[activeQuery]
 
-  const updateText = text => {
-    const _queries = queries.slice()
-    _queries[activeQuery] = {
-      ...queries[activeQuery],
-      text,
-    }
+  const updateText = useCallback(
+    text => {
+      const _queries = queries.slice()
+      _queries[activeQuery] = {
+        ...queries[activeQuery],
+        text,
+      }
 
-    update({queries: _queries})
-  }
-  const updateTextDebounce = useCallback(debounce(updateText, 500), [
-    update,
-    queries,
-    activeQuery,
-  ])
+      update({queries: _queries})
+    },
+    [update, queries, activeQuery]
+  )
 
   const inject = useCallback(
     (fn: FluxToolbarFunction): void => {
@@ -138,7 +135,7 @@ const Query: FC<PipeProp> = ({Context}) => {
       >
         <FluxMonacoEditor
           script={query.text}
-          onChangeScript={updateTextDebounce}
+          onChangeScript={updateText}
           onSubmitScript={() => {}}
           setEditorInstance={setEditorInstance}
           autogrow

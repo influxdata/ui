@@ -572,8 +572,8 @@ export const hydrateVars = (
       on.fire('status', node.variable, node.status)
 
       return Promise.all(node.parents.filter(readyToResolve).map(resolve))
-    } catch (e) {
-      if (e.name === 'CancellationError') {
+    } catch (error) {
+      if (error.name === 'CancellationError') {
         return
       }
 
@@ -581,6 +581,8 @@ export const hydrateVars = (
       node.variable.arguments.values.results = []
 
       invalidateAncestors(node)
+
+      on.fire('status', node.variable, node.status, error)
     }
   }
 

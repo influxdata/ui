@@ -45,6 +45,7 @@ export interface Variable
   status: RemoteDataState // Loading status of an individual variable
   labels: string[]
   arguments: VariableProperties
+  errorMessage?: string // For variables that fail to load
 }
 
 export interface PostVariable extends GenVariable {

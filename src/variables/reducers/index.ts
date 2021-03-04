@@ -11,11 +11,12 @@ import {
 } from 'src/types'
 import {
   Action,
-  SET_VARIABLES,
-  SET_VARIABLE,
-  REMOVE_VARIABLE,
   MOVE_VARIABLE,
+  REMOVE_VARIABLE,
   SELECT_VARIABLE_VALUE,
+  SET_VARIABLE,
+  SET_VARIABLES,
+  SET_VARIABLE_HYDRATION_ERROR,
 } from 'src/variables/actions/creators'
 
 // Utils
@@ -102,6 +103,14 @@ export const variablesReducer = (
           order: newVariableOrder,
         }
 
+        return
+      }
+
+      case SET_VARIABLE_HYDRATION_ERROR: {
+        const {id, errorMessage} = action
+
+        draftState.byID[id].status = RemoteDataState.Error
+        draftState.byID[id].errorMessage = errorMessage
         return
       }
     }

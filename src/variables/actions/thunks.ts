@@ -6,11 +6,12 @@ import {get} from 'lodash'
 import {notify} from 'src/shared/actions/notifications'
 import {setExportTemplate} from 'src/templates/actions/creators'
 import {
-  setVariables,
-  setVariable,
-  selectValue as selectValueInState,
-  removeVariable,
   moveVariable as moveVariableInState,
+  removeVariable,
+  selectValue as selectValueInState,
+  setVariable,
+  setVariableHydrationError,
+  setVariables,
 } from 'src/variables/actions/creators'
 import {updateQueryVars} from 'src/dashboards/actions/ranges'
 
@@ -167,15 +168,15 @@ export const hydrateVariables = (
     controller,
   })
 
-  hydration.on('status', (variable, status) => {
+  hydration.on('status', (variable, status, error) => {
     if (status === RemoteDataState.Loading) {
       dispatch(setVariable(variable.id, status))
       return
     }
     if (status === RemoteDataState.Done) {
       if (variable.arguments.type === 'query') {
-        variable.selected = variable.selected.filter(v =>
-          variable.arguments.values?.results?.includes(v)
+        variable.selected = variable.selected.filter(selectedVar =>
+          variable.arguments.values?.results?.includes(selectedVar)
         )
       }
 
@@ -184,6 +185,12 @@ export const hydrateVariables = (
         variableSchema
       )
       dispatch(setVariable(variable.id, RemoteDataState.Done, _variable))
+      return
+    }
+
+    if (status === RemoteDataState.Error) {
+      dispatch(setVariableHydrationError(variable.id, error))
+      return
     }
   })
   await hydration.promise

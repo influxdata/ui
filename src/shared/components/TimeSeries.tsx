@@ -226,8 +226,23 @@ class TimeSeries extends Component<Props, State> {
           cancel()
         }
       })
-      const usedVars = variables.filter(v => v.arguments.type !== 'system')
-      const waitList = usedVars.filter(v => v.status !== RemoteDataState.Done)
+      const usedVars = variables.filter(
+        variable => variable.arguments.type !== 'system'
+      )
+
+      // One way a failed variable can exist is a query with a broken query variable.
+      // The variable hydrates by executing a query which fails. See the catch block in hydrateVars.ts
+      const failedVariable = usedVars.find(
+        variable => variable.status === RemoteDataState.Error
+      )
+
+      if (failedVariable) {
+        throw new Error(failedVariable.errorMessage)
+      }
+
+      const waitList = usedVars.filter(
+        variable => variable.status !== RemoteDataState.Done
+      )
 
       // If a variable is loading, and a cell requires it, leave the cell to never resolve,
       // keeping it in a loading state until the variable is resolved
@@ -235,7 +250,7 @@ class TimeSeries extends Component<Props, State> {
         await new Promise(() => {})
       }
 
-      const vars = variables.map(v => asAssignment(v))
+      const vars = variables.map(variable => asAssignment(variable))
       // Issue new queries
       this.pendingResults = queries.map(({text}) => {
         const orgID =
@@ -320,8 +335,6 @@ class TimeSeries extends Component<Props, State> {
       if (error.name === 'CancellationError') {
         return
       }
-
-      console.error(error)
 
       this.setState({
         errorMessage: error.message,

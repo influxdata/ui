@@ -2,7 +2,7 @@
 import React, {FC} from 'react'
 import {Route, Switch} from 'react-router-dom'
 import {
-  FunctionEditPage,
+  FunctionEditWrapper,
   FunctionPage,
   FunctionRunListPage,
   FunctionListPage,
@@ -23,7 +23,7 @@ const FunctionsRouter: FC = () => {
         />
         <Route
           path={`${orgPath}/functions/:id/edit`}
-          component={FunctionEditPage}
+          component={FunctionEditWrapper}
         />
         <Route path={`${orgPath}/functions/new`} component={FunctionPage} />
         <Route path={`${orgPath}/functions`} component={FunctionListPage} />

@@ -38,24 +38,36 @@ export interface RunsList {
 }
 
 export interface FunctionListContextType extends FunctionList, RunsList {
+  draftFunction: Function
   add: (_function: Partial<FunctionCreateRequest>) => Promise<void>
   remove: (_id: string) => void
-  getAll: () => void
-  update: (_id: string, _name?: string, _script?: string) => Promise<void>
   trigger: (
     _functionTrigger: Partial<FunctionTriggerRequest>
   ) => Promise<FunctionRun>
+  update: (_id: string, _name?: string, _script?: string) => Promise<void>
+  getAll: () => void
   getRuns: (_functionID: string) => Promise<void>
+  setDraftFunctionWithID: (id: string) => void
+  updateDraftFunction: (f: Partial<Function>) => void
 }
 
 export const DEFAULT_CONTEXT: FunctionListContextType = {
   functionsList: {},
   runsList: [],
+  draftFunction: {
+    name: 'New Function',
+    description: '',
+    script: '',
+    orgID: '',
+  },
   add: (_function?: FunctionCreateRequest) => {},
   remove: (_id: string) => {},
+  trigger: (_functionTrigger: Partial<FunctionTriggerRequest>) => {},
   update: (_id: string, _name?: string, _script?: string) => {},
   getAll: () => {},
   getRuns: (_functionID: string) => {},
+  setDraftFunctionWithID: (_id: string) => {},
+  updateDraftFunction: (_f: Partial<Function>) => {},
 } as FunctionListContextType
 
 export const FunctionListContext = React.createContext<FunctionListContextType>(
@@ -65,6 +77,10 @@ export const FunctionListContext = React.createContext<FunctionListContextType>(
 export const FunctionListProvider: FC = ({children}) => {
   const [functionsList, setFunctionsList] = useState(
     DEFAULT_CONTEXT.functionsList
+  )
+
+  const [draftFunction, setDraftFunction] = useState(
+    DEFAULT_CONTEXT.draftFunction
   )
 
   const [runsList, setRunsList] = useState(DEFAULT_CONTEXT.runsList)
@@ -133,6 +149,19 @@ export const FunctionListProvider: FC = ({children}) => {
     }
   }
 
+  const setDraftFunctionWithID = useCallback(
+    (functionID: string) => {
+      if (functionsList[functionID]) {
+        setDraftFunction(JSON.parse(JSON.stringify(functionsList[functionID])))
+      }
+    },
+    [functionsList]
+  )
+
+  const updateDraftFunction = () => {
+    // TODO implement
+  }
+
   const trigger = async ({script, params}): Promise<FunctionRun> => {
     const paramObject = {}
 
@@ -186,6 +215,9 @@ export const FunctionListProvider: FC = ({children}) => {
         update,
         getAll,
         trigger,
+        draftFunction,
+        setDraftFunctionWithID,
+        updateDraftFunction,
       }}
     >
       {children}

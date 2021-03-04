@@ -1,5 +1,5 @@
 // Libraries
-import React, {useState, FC} from 'react'
+import React, {FC} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {useHistory, useParams} from 'react-router-dom'
 
@@ -23,10 +23,7 @@ import {AnnotationPills} from 'src/annotations/components/controlBar/AnnotationP
 import {AnnotationsSearchBar} from 'src/annotations/components/controlBar/AnnotationsSearchBar'
 
 // Selectors
-import {
-  getAnnotationControlsVisibility,
-  isSingleClickAnnotationsEnabled,
-} from 'src/annotations/selectors'
+import {isSingleClickAnnotationsEnabled} from 'src/annotations/selectors'
 
 // Constants
 import {ORGS, SETTINGS, ANNOTATIONS} from 'src/shared/constants/routes'
@@ -36,13 +33,11 @@ export const AnnotationsControlBar: FC = () => {
   const {orgID} = useParams<{orgID: string; dashboardID: string}>()
 
   const inWriteMode = useSelector(isSingleClickAnnotationsEnabled)
-  const [annotationWriteMode, setAnnotationWriteMode] = useState(inWriteMode)
 
   const dispatch = useDispatch()
 
-  const onModeChange = () => {
+  const changeWriteMode = () => {
     dispatch(toggleSingleClickAnnotations())
-    setAnnotationWriteMode(!annotationWriteMode)
   }
 
   const handleSettingsClick = (): void => {
@@ -67,8 +62,8 @@ export const AnnotationsControlBar: FC = () => {
             style={{marginRight: 20}}
             id="enableAnnotationMode"
             type={InputToggleType.Checkbox}
-            checked={annotationWriteMode}
-            onChange={onModeChange}
+            checked={inWriteMode}
+            onChange={changeWriteMode}
             color={ComponentColor.Primary}
             size={ComponentSize.ExtraSmall}
           >

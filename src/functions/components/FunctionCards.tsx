@@ -1,4 +1,4 @@
-import React, {FC, useContext, useEffect} from 'react'
+import React, {FC, useContext} from 'react'
 
 // Components
 import {ComponentSize, EmptyState, ResourceList} from '@influxdata/clockface'
@@ -13,10 +13,7 @@ interface Props {
 }
 
 const FunctionCards: FC<Props> = ({searchTerm}) => {
-  const {functionsList, getAll} = useContext(FunctionListContext)
-  useEffect(() => {
-    getAll()
-  }, [getAll])
+  const {functionsList} = useContext(FunctionListContext)
 
   return (
     <ResourceList>

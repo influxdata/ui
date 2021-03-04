@@ -33,13 +33,7 @@ const FunctionEditPage: FC = () => {
 
   const [runResult, setRunResult] = useState({})
 
-  const {functionsList, getAll, update, trigger} = useContext(
-    FunctionListContext
-  )
-
-  useEffect(() => {
-    getAll()
-  }, [getAll])
+  const {functionsList, update, trigger} = useContext(FunctionListContext)
 
   useEffect(() => {
     const func = functionsList[functionID]

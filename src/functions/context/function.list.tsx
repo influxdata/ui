@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useState} from 'react'
+import React, {FC, useCallback, useEffect, useState} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import {useHistory} from 'react-router-dom'
 import {
@@ -170,6 +170,10 @@ export const FunctionListProvider: FC = ({children}) => {
     },
     [setRunsList, dispatch]
   )
+
+  useEffect(() => {
+    getAll()
+  }, [getAll])
 
   return (
     <FunctionListContext.Provider

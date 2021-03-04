@@ -14,6 +14,7 @@ export const SET_VARIABLE = 'SET_VARIABLE'
 export const REMOVE_VARIABLE = 'REMOVE_VARIABLE'
 export const MOVE_VARIABLE = 'MOVE_VARIABLE'
 export const SELECT_VARIABLE_VALUE = 'SELECT_VARIABLE_VALUE'
+export const SET_VARIABLE_HYDRATION_ERROR = 'SET_VARIABLE_HYDRATION_ERROR'
 
 export type Action =
   | ReturnType<typeof setVariables>
@@ -21,6 +22,7 @@ export type Action =
   | ReturnType<typeof removeVariable>
   | ReturnType<typeof moveVariable>
   | ReturnType<typeof selectValue>
+  | ReturnType<typeof setVariableHydrationError>
 
 // R is the type of the value of the "result" key in normalizr's normalization
 type VariablesSchema<R extends string | string[]> = NormalizedSchema<
@@ -73,6 +75,13 @@ export const selectValue = (
     contextID,
     variableID,
     selectedValue,
+  } as const)
+
+export const setVariableHydrationError = (id: string, errorMessage: string) =>
+  ({
+    type: SET_VARIABLE_HYDRATION_ERROR,
+    id,
+    errorMessage,
   } as const)
 
 // Variable Editor Action Creators

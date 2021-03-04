@@ -1,6 +1,6 @@
 // Libraries
 import React, {Component} from 'react'
-import {connect, ConnectedProps, useSelector} from 'react-redux'
+import {connect, ConnectedProps} from 'react-redux'
 import {Switch, Route} from 'react-router-dom'
 
 // Components
@@ -149,6 +149,7 @@ const mstp = (state: AppState) => {
     ResourceType.Dashboards,
     state.currentDashboard.id
   )
+
   const showAnnotationBar = state.userSettings.showAnnotationsControls || false
 
   return {

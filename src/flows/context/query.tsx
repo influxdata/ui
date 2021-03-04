@@ -110,6 +110,115 @@ export const QueryProvider: FC = ({children}) => {
     }
   }, [bucketsLoadingState, dispatch])
 
+  const _getOrg = ast => {
+    const queryBuckets = _walk(
+      ast,
+      node =>
+        node?.type === 'CallExpression' &&
+        node?.callee?.type === 'Identifier' &&
+        node?.callee?.name === 'from' &&
+        node?.arguments[0]?.properties[0]?.key?.name === 'bucket'
+    ).map(node => node?.arguments[0]?.properties[0]?.value.value)
+
+    return (
+      buckets.find(buck => queryBuckets.includes(buck.name))?.orgID || org.id
+    )
+  }
+
+  const _addWindowPeriod = (ast, optionAST): void => {
+    const queryRanges = _walk(
+      ast,
+      node =>
+        node?.callee?.type === 'Identifier' && node?.callee?.name === 'range'
+    ).map(node =>
+      (node.arguments[0]?.properties || []).reduce(
+        (acc, curr) => {
+          if (curr.key.name === 'start') {
+            acc.start = propertyTime(ast, curr.value, Date.now())
+          }
+
+          if (curr.key.name === 'stop') {
+            acc.stop = propertyTime(ast, curr.value, Date.now())
+          }
+
+          return acc
+        },
+        {
+          start: '',
+          stop: Date.now(),
+        }
+      )
+    )
+
+    if (!queryRanges.length) {
+      ;(((optionAST.body[0] as OptionStatement) // eslint-disable-line no-extra-semi
+        .assignment as VariableAssignment)
+        .init as ObjectExpression).properties.push({
+        type: 'Property',
+        key: {
+          type: 'Identifier',
+          name: 'windowPeriod',
+        },
+        value: {
+          type: 'DurationLiteral',
+          values: [{magnitude: FALLBACK_WINDOW_PERIOD, unit: 'ms'}],
+        },
+      })
+
+      return
+    }
+    const starts = queryRanges.map(t => t.start)
+    const stops = queryRanges.map(t => t.stop)
+    const cartesianProduct = starts.map(start =>
+      stops.map(stop => [start, stop])
+    )
+
+    const durations = []
+      .concat(...cartesianProduct)
+      .map(([start, stop]) => stop - start)
+      .filter(d => d > 0)
+
+    const queryDuration = Math.min(...durations)
+    const foundDuration = SELECTABLE_TIME_RANGES.find(
+      tr => tr.seconds * 1000 === queryDuration
+    )
+
+    if (foundDuration) {
+      ;(((optionAST.body[0] as OptionStatement) // eslint-disable-line no-extra-semi
+        .assignment as VariableAssignment)
+        .init as ObjectExpression).properties.push({
+        type: 'Property',
+        key: {
+          type: 'Identifier',
+          name: 'windowPeriod',
+        },
+        value: {
+          type: 'DurationLiteral',
+          values: [{magnitude: foundDuration.windowPeriod, unit: 'ms'}],
+        },
+      })
+
+      return
+    }
+    ;(((optionAST.body[0] as OptionStatement).assignment as VariableAssignment) // eslint-disable-line no-extra-semi
+      .init as ObjectExpression).properties.push({
+      type: 'Property',
+      key: {
+        type: 'Identifier',
+        name: 'windowPeriod',
+      },
+      value: {
+        type: 'DurationLiteral',
+        values: [
+          {
+            magnitude: Math.round(queryDuration / DESIRED_POINTS_PER_GRAPH),
+            unit: 'ms',
+          },
+        ],
+      },
+    })
+  }
+
   const query = (text: string, vars: VariableMap = {}): Promise<FluxResult> => {
     // Some preamble for setting the stage
     const baseAST = parse(text)
@@ -127,112 +236,12 @@ export const QueryProvider: FC = ({children}) => {
       files: [baseAST, optionAST],
     }
 
-    // Here we grab the org from the contents of the query
-    const queryBuckets = _walk(
-      ast,
-      node =>
-        node?.type === 'CallExpression' &&
-        node?.callee?.type === 'Identifier' &&
-        node?.callee?.name === 'from' &&
-        node?.arguments[0]?.properties[0]?.key?.name === 'bucket'
-    ).map(node => node?.arguments[0]?.properties[0]?.value.value)
-    const orgID =
-      buckets.find(buck => queryBuckets.includes(buck.name))?.orgID || org.id
+    // Here we grab the org from the contents of the query, in case it references a sampledata bucket
+    const orgID = _getOrg(ast)
 
-    // This is all for trying to tease out a window period
+    // load in windowPeriod at the last second, because it needs to self reference all the things
     if (usedVars.hasOwnProperty('windowPeriod')) {
-      const queryRanges = _walk(
-        ast,
-        node =>
-          node?.callee?.type === 'Identifier' && node?.callee?.name === 'range'
-      ).map(node =>
-        (node.arguments[0]?.properties || []).reduce(
-          (acc, curr) => {
-            if (curr.key.name === 'start') {
-              acc.start = propertyTime(ast, curr.value, Date.now())
-            }
-
-            if (curr.key.name === 'stop') {
-              acc.stop = propertyTime(ast, curr.value, Date.now())
-            }
-
-            return acc
-          },
-          {
-            start: '',
-            stop: Date.now(),
-          }
-        )
-      )
-
-      if (!queryRanges.length) {
-        ;(((optionAST.body[0] as OptionStatement) // eslint-disable-line no-extra-semi
-          .assignment as VariableAssignment)
-          .init as ObjectExpression).properties.push({
-          type: 'Property',
-          key: {
-            type: 'Identifier',
-            name: 'windowPeriod',
-          },
-          value: {
-            type: 'DurationLiteral',
-            values: [{magnitude: FALLBACK_WINDOW_PERIOD, unit: 'ms'}],
-          },
-        })
-      } else {
-        const starts = queryRanges.map(t => t.start)
-        const stops = queryRanges.map(t => t.stop)
-        const cartesianProduct = starts.map(start =>
-          stops.map(stop => [start, stop])
-        )
-
-        const durations = []
-          .concat(...cartesianProduct)
-          .map(([start, stop]) => stop - start)
-          .filter(d => d > 0)
-
-        const queryDuration = Math.min(...durations)
-        const foundDuration = SELECTABLE_TIME_RANGES.find(
-          tr => tr.seconds * 1000 === queryDuration
-        )
-
-        if (foundDuration) {
-          ;(((optionAST.body[0] as OptionStatement) // eslint-disable-line no-extra-semi
-            .assignment as VariableAssignment)
-            .init as ObjectExpression).properties.push({
-            type: 'Property',
-            key: {
-              type: 'Identifier',
-              name: 'windowPeriod',
-            },
-            value: {
-              type: 'DurationLiteral',
-              values: [{magnitude: foundDuration.windowPeriod, unit: 'ms'}],
-            },
-          })
-        } else {
-          ;(((optionAST.body[0] as OptionStatement) // eslint-disable-line no-extra-semi
-            .assignment as VariableAssignment)
-            .init as ObjectExpression).properties.push({
-            type: 'Property',
-            key: {
-              type: 'Identifier',
-              name: 'windowPeriod',
-            },
-            value: {
-              type: 'DurationLiteral',
-              values: [
-                {
-                  magnitude: Math.round(
-                    queryDuration / DESIRED_POINTS_PER_GRAPH
-                  ),
-                  unit: 'ms',
-                },
-              ],
-            },
-          })
-        }
-      }
+      _addWindowPeriod(ast, optionAST)
     }
 
     const result = runQuery(orgID, text, optionAST)

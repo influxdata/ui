@@ -13,8 +13,8 @@ import {
   Function,
   FunctionCreateRequest,
   FunctionRun,
-  FunctionRunRecord,
   FunctionTriggerRequest,
+  FunctionLanguage,
 } from 'src/client/managedFunctionsRoutes'
 import {getOrg} from 'src/organizations/selectors'
 import {notify} from 'src/shared/actions/notifications'
@@ -34,7 +34,7 @@ export interface FunctionList {
 }
 
 export interface RunsList {
-  runsList: FunctionRunRecord[]
+  runsList: FunctionRun[]
 }
 
 export interface FunctionListContextType extends FunctionList, RunsList {
@@ -78,7 +78,7 @@ export const FunctionListProvider: FC = ({children}) => {
     try {
       const data = await getAllAPI(orgID)
       const _functions = {}
-      data.forEach(f => (_functions[f.id] = f))
+      data.functions.forEach(f => (_functions[f.id] = f))
       setFunctionsList(_functions)
     } catch {
       dispatch(notify(functionGetFail()))
@@ -91,7 +91,7 @@ export const FunctionListProvider: FC = ({children}) => {
     const _function = {
       ...partialFunction,
       orgID,
-      language: 'python',
+      language: 'python' as FunctionLanguage,
     }
     try {
       const createdFunction = await createAPI(_function)
@@ -148,8 +148,9 @@ export const FunctionListProvider: FC = ({children}) => {
           params: paramObject,
           language: 'python',
           orgID,
-        },
-        paramObject['param']
+          method: 'GET',
+        }
+        // paramObject['param']
       )
       return run
     } catch (error) {

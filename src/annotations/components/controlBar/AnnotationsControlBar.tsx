@@ -67,7 +67,9 @@ export const AnnotationsControlBar: FC = () => {
             color={ComponentColor.Primary}
             size={ComponentSize.ExtraSmall}
           >
-            <InputLabel>Enable 1-Click Annotations</InputLabel>
+            <InputLabel htmlFor="enableAnnotationMode">
+              Enable 1-Click Annotations
+            </InputLabel>
           </Toggle>
           <SquareButton
             testID="annotations-control-bar--settings"

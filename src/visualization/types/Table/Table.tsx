@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useMemo, useState, useCallback, useContext} from 'react'
-import {timeFormatter} from '@influxdata/giraffe'
 import classnames from 'classnames'
 import {ColumnSizer, SizedColumnProps, AutoSizer} from 'react-virtualized'
 
@@ -9,6 +8,7 @@ import MultiGrid from 'src/visualization/types/Table/MultiGrid'
 import TableCell from 'src/visualization/types/Table/TableCell'
 
 // Utils
+import {getFormatter} from 'src/visualization/utils/getFormatter'
 import {
   transformTableData,
   findHoverTimeIndex,
@@ -67,9 +67,9 @@ const Table: FC<Props> = ({properties, sort, updateSort, table}) => {
   const tableClassName = classnames('time-machine-table', {
     'time-machine-table__light-mode': theme === 'light',
   })
-  const formatter = timeFormatter({
+  const formatter = getFormatter('time', {
     timeZone: timeZone === 'Local' ? undefined : timeZone,
-    format: resolveTimeFormat(properties.timeFormat),
+    timeFormat: resolveTimeFormat(properties.timeFormat),
   })
   const colCount = transformed?.transformedData[0]?.length || 0
   const rowCount =

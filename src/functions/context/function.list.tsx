@@ -90,26 +90,6 @@ export const FunctionListProvider: FC = ({children}) => {
       data.functions.forEach(f => (_functions[f.id] = f))
       setFunctionsList(_functions)
     } catch {
-      // TODO remove this when api is available
-      setFunctionsList({
-        '1': {
-          name: 'functionb',
-          id: '1',
-          orgID: '0',
-          script: 'this is a script',
-          url: 'www.url.com',
-          description: 'best function ever',
-        } as Function,
-        '2': {
-          name: 'functiona',
-          id: '2',
-          orgID: '0',
-          script: 'this is another script',
-          url: 'www.url.com',
-          description: 'second best function ever',
-        } as Function,
-      })
-
       dispatch(notify(functionGetFail()))
     }
   }, [orgID, setFunctionsList, dispatch])

@@ -1,108 +1,106 @@
-import React, {FC, useContext, useMemo, useEffect} from 'react'
+import React, {FC, useEffect} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {parse} from 'src/external/parser'
 import {runQuery} from 'src/shared/apis/query'
-import {getWindowVars} from 'src/variables/utils/getWindowVars'
 import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
-import {getTimeRangeVars} from 'src/variables/utils/getTimeRangeVars'
-import {getVariables, asAssignment} from 'src/variables/selectors'
+import {asAssignment} from 'src/variables/selectors'
+import {getOrg} from 'src/organizations/selectors'
 import {getBuckets} from 'src/buckets/actions/thunks'
 import {getSortedBuckets} from 'src/buckets/selectors'
 import {getStatus} from 'src/resources/selectors'
-import {FlowContext} from 'src/flows/context/flow.current'
-import {RunModeContext, RunMode} from 'src/flows/context/runMode'
-import {ResultsContext} from 'src/flows/context/results'
 import {fromFlux} from '@influxdata/giraffe'
-import {event} from 'src/cloud/utils/reporting'
 import {FluxResult} from 'src/types/flows'
-import {PIPE_DEFINITIONS} from 'src/flows'
-import {
-  generateHashedQueryID,
-  setQueryByHashID,
-} from 'src/timeMachine/actions/queries'
-import {notify} from 'src/shared/actions/notifications'
-import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
+import {propertyTime} from 'src/shared/utils/getMinDurationFromAST'
 
 // Constants
-import {
-  notebookRunSuccess,
-  notebookRunFail,
-} from 'src/shared/copy/notifications'
-import {PROJECT_NAME} from 'src/flows'
+import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 
 // Types
-import {AppState, ResourceType, RemoteDataState} from 'src/types'
-interface Stage {
-  text: string
-  instances: string[]
+import {
+  AppState,
+  ResourceType,
+  RemoteDataState,
+  Variable,
+  OptionStatement,
+  VariableAssignment,
+  ObjectExpression,
+} from 'src/types'
+
+interface VariableMap {
+  [key: string]: Variable
 }
 
 export interface QueryContextType {
-  generateMap: (withSideEffects?: boolean) => Stage[]
-  query: (text: string) => Promise<FluxResult>
-  queryAll: () => void
+  query: (text: string, vars?: VariableMap) => Promise<FluxResult>
 }
 
 export const DEFAULT_CONTEXT: QueryContextType = {
-  generateMap: () => [],
-  query: (_: string) => Promise.resolve({} as FluxResult),
-  queryAll: () => {},
+  query: (_: string, __?: VariableMap) => Promise.resolve({} as FluxResult),
 }
 
 export const QueryContext = React.createContext<QueryContextType>(
   DEFAULT_CONTEXT
 )
 
-const PREVIOUS_REGEXP = /__PREVIOUS_RESULT__/g
+const DESIRED_POINTS_PER_GRAPH = 360
+const FALLBACK_WINDOW_PERIOD = 15000
 
-const findOrgID = (text, buckets) => {
-  const ast = parse(text)
-
-  const _search = (node, acc = []) => {
-    if (!node) {
-      return acc
-    }
-    if (
-      node?.type === 'CallExpression' &&
-      node?.callee?.type === 'Identifier' &&
-      node?.callee?.name === 'from' &&
-      node?.arguments[0]?.properties[0]?.key?.name === 'bucket'
-    ) {
-      acc.push(node)
-    }
-
-    Object.values(node).forEach(val => {
-      if (Array.isArray(val)) {
-        val.forEach(_val => {
-          _search(_val, acc)
-        })
-      } else if (typeof val === 'object') {
-        _search(val, acc)
-      }
-    })
-
+const _walk = (node, test, acc = []) => {
+  if (!node) {
     return acc
   }
 
-  const queryBuckets = _search(ast).map(
-    node => node?.arguments[0]?.properties[0]?.value.value
-  )
+  if (test(node)) {
+    acc.push(node)
+  }
 
-  const bucket = buckets.find(buck => queryBuckets.includes(buck.name))
+  Object.values(node).forEach(val => {
+    if (Array.isArray(val)) {
+      val.forEach(_val => {
+        _walk(_val, test, acc)
+      })
+    } else if (typeof val === 'object') {
+      _walk(val, test, acc)
+    }
+  })
 
-  return bucket?.orgID
+  return acc
 }
 
-export const QueryProvider: FC = ({children}) => {
-  const {flow} = useContext(FlowContext)
-  const {runMode} = useContext(RunModeContext)
-  const {add, update} = useContext(ResultsContext)
+const _getVars = (
+  ast,
+  allVars: VariableMap = {},
+  acc: VariableMap = {}
+): VariableMap =>
+  _walk(
+    ast,
+    node => node?.type === 'MemberExpression' && node?.object?.name === 'v'
+  )
+    .map(node => node.property.name)
+    .reduce((tot, curr) => {
+      if (tot.hasOwnProperty(curr)) {
+        return tot
+      }
 
-  const variables = useSelector((state: AppState) => getVariables(state))
+      if (!allVars[curr]) {
+        tot[curr] = null
+        return tot
+      }
+      tot[curr] = allVars[curr]
+
+      if (tot[curr].arguments.type === 'query') {
+        _getVars(parse(tot[curr].arguments.values.query), allVars, tot)
+      }
+
+      return tot
+    }, acc)
+
+export const QueryProvider: FC = ({children}) => {
   const buckets = useSelector((state: AppState) => getSortedBuckets(state))
   const bucketsLoadingState = useSelector((state: AppState) =>
     getStatus(state, ResourceType.Buckets)
   )
+  const org = useSelector(getOrg)
 
   const dispatch = useDispatch()
 
@@ -112,83 +110,142 @@ export const QueryProvider: FC = ({children}) => {
     }
   }, [bucketsLoadingState, dispatch])
 
-  const vars = useMemo(() => {
-    if (flow?.range) {
-      return variables
-        .map(v => asAssignment(v))
-        .concat(getTimeRangeVars(flow.range))
-    }
+  const _getOrg = ast => {
+    const queryBuckets = _walk(
+      ast,
+      node =>
+        node?.type === 'CallExpression' &&
+        node?.callee?.type === 'Identifier' &&
+        node?.callee?.name === 'from' &&
+        node?.arguments[0]?.properties[0]?.key?.name === 'bucket'
+    ).map(node => node?.arguments[0]?.properties[0]?.value.value)
 
-    variables.map(v => asAssignment(v))
-  }, [variables, flow?.range])
-
-  const generateMap = (withSideEffects?: boolean): Stage[] => {
-    return flow.data.allIDs
-      .reduce((stages, pipeID) => {
-        const pipe = flow.data.get(pipeID)
-
-        const stage = {
-          text: '',
-          instances: [pipeID],
-          requirements: {},
-        }
-
-        const create = text => {
-          if (text && PREVIOUS_REGEXP.test(text) && stages.length) {
-            stage.text = text.replace(
-              PREVIOUS_REGEXP,
-              stages[stages.length - 1].text
-            )
-          } else {
-            stage.text = text
-          }
-
-          stages.push(stage)
-        }
-
-        const append = () => {
-          if (stages.length) {
-            stages[stages.length - 1].instances.push(pipeID)
-          }
-        }
-
-        if (
-          PIPE_DEFINITIONS[pipe.type] &&
-          PIPE_DEFINITIONS[pipe.type].generateFlux
-        ) {
-          PIPE_DEFINITIONS[pipe.type].generateFlux(
-            pipe,
-            create,
-            append,
-            withSideEffects
-          )
-        } else {
-          append()
-        }
-
-        return stages
-      }, [])
-      .map(queryStruct => {
-        const queryText =
-          Object.entries(queryStruct.requirements)
-            .map(([key, value]) => `${key} = (\n${value}\n)\n\n`)
-            .join('') + queryStruct.text
-
-        return {
-          text: queryText,
-          instances: queryStruct.instances,
-        }
-      })
+    return (
+      buckets.find(buck => queryBuckets.includes(buck.name))?.orgID || org.id
+    )
   }
 
-  const query = (text: string): Promise<FluxResult> => {
-    const orgID = findOrgID(text, buckets)
-    const windowVars = getWindowVars(text, vars)
-    const extern = buildVarsOption([...vars, ...windowVars])
-    const queryID = generateHashedQueryID(text, variables, orgID)
-    event('runQuery', {context: 'flows'})
-    const result = runQuery(orgID, text, extern)
-    setQueryByHashID(queryID, result)
+  const _addWindowPeriod = (ast, optionAST): void => {
+    const queryRanges = _walk(
+      ast,
+      node =>
+        node?.callee?.type === 'Identifier' && node?.callee?.name === 'range'
+    ).map(node =>
+      (node.arguments[0]?.properties || []).reduce(
+        (acc, curr) => {
+          if (curr.key.name === 'start') {
+            acc.start = propertyTime(ast, curr.value, Date.now())
+          }
+
+          if (curr.key.name === 'stop') {
+            acc.stop = propertyTime(ast, curr.value, Date.now())
+          }
+
+          return acc
+        },
+        {
+          start: '',
+          stop: Date.now(),
+        }
+      )
+    )
+
+    if (!queryRanges.length) {
+      ;(((optionAST.body[0] as OptionStatement) // eslint-disable-line no-extra-semi
+        .assignment as VariableAssignment)
+        .init as ObjectExpression).properties.push({
+        type: 'Property',
+        key: {
+          type: 'Identifier',
+          name: 'windowPeriod',
+        },
+        value: {
+          type: 'DurationLiteral',
+          values: [{magnitude: FALLBACK_WINDOW_PERIOD, unit: 'ms'}],
+        },
+      })
+
+      return
+    }
+    const starts = queryRanges.map(t => t.start)
+    const stops = queryRanges.map(t => t.stop)
+    const cartesianProduct = starts.map(start =>
+      stops.map(stop => [start, stop])
+    )
+
+    const durations = []
+      .concat(...cartesianProduct)
+      .map(([start, stop]) => stop - start)
+      .filter(d => d > 0)
+
+    const queryDuration = Math.min(...durations)
+    const foundDuration = SELECTABLE_TIME_RANGES.find(
+      tr => tr.seconds * 1000 === queryDuration
+    )
+
+    if (foundDuration) {
+      ;(((optionAST.body[0] as OptionStatement) // eslint-disable-line no-extra-semi
+        .assignment as VariableAssignment)
+        .init as ObjectExpression).properties.push({
+        type: 'Property',
+        key: {
+          type: 'Identifier',
+          name: 'windowPeriod',
+        },
+        value: {
+          type: 'DurationLiteral',
+          values: [{magnitude: foundDuration.windowPeriod, unit: 'ms'}],
+        },
+      })
+
+      return
+    }
+    ;(((optionAST.body[0] as OptionStatement).assignment as VariableAssignment) // eslint-disable-line no-extra-semi
+      .init as ObjectExpression).properties.push({
+      type: 'Property',
+      key: {
+        type: 'Identifier',
+        name: 'windowPeriod',
+      },
+      value: {
+        type: 'DurationLiteral',
+        values: [
+          {
+            magnitude: Math.round(queryDuration / DESIRED_POINTS_PER_GRAPH),
+            unit: 'ms',
+          },
+        ],
+      },
+    })
+  }
+
+  const query = (text: string, vars: VariableMap = {}): Promise<FluxResult> => {
+    // Some preamble for setting the stage
+    const baseAST = parse(text)
+    const usedVars = _getVars(baseAST, vars)
+    const optionAST = buildVarsOption(
+      Object.values(usedVars)
+        .filter(v => !!v)
+        .map(v => asAssignment(v))
+    )
+
+    // Make a version of the query with the variables loaded
+    const ast = {
+      package: '',
+      type: 'Package',
+      files: [baseAST, optionAST],
+    }
+
+    // Here we grab the org from the contents of the query, in case it references a sampledata bucket
+    const orgID = _getOrg(ast)
+
+    // load in windowPeriod at the last second, because it needs to self reference all the things
+    if (usedVars.hasOwnProperty('windowPeriod')) {
+      _addWindowPeriod(ast, optionAST)
+    }
+
+    const result = runQuery(orgID, text, optionAST)
+
     return result.promise
       .then(raw => {
         if (raw.type !== 'SUCCESS') {
@@ -207,91 +264,12 @@ export const QueryProvider: FC = ({children}) => {
       })
   }
 
-  const forceUpdate = (id, data) => {
-    try {
-      update(id, data)
-    } catch (_e) {
-      add(id, data)
-    }
-  }
-
-  const statuses = flow ? flow.meta.all.map(({loading}) => loading) : []
-
-  let status = RemoteDataState.Done
-
-  if (statuses.every(s => s === RemoteDataState.NotStarted)) {
-    status = RemoteDataState.NotStarted
-  } else if (statuses.includes(RemoteDataState.Error)) {
-    status = RemoteDataState.Error
-  } else if (statuses.includes(RemoteDataState.Loading)) {
-    status = RemoteDataState.Loading
-  }
-
-  const queryAll = () => {
-    if (status === RemoteDataState.Loading) {
-      return
-    }
-
-    const map = generateMap(runMode === RunMode.Run)
-
-    if (!map.length) {
-      return
-    }
-
-    event('Running Notebook QueryAll')
-
-    Promise.all(
-      map.map(stage => {
-        stage.instances.forEach(pipeID => {
-          flow.meta.update(pipeID, {loading: RemoteDataState.Loading})
-        })
-        return query(stage.text)
-          .then(response => {
-            stage.instances.forEach(pipeID => {
-              flow.meta.update(pipeID, {loading: RemoteDataState.Done})
-              forceUpdate(pipeID, response)
-            })
-          })
-          .catch(e => {
-            stage.instances.forEach(pipeID => {
-              forceUpdate(pipeID, {
-                error: e.message,
-              })
-              flow.meta.update(pipeID, {loading: RemoteDataState.Error})
-            })
-          })
-      })
-    )
-      .then(() => {
-        event('run_notebook_success', {runMode})
-        dispatch(notify(notebookRunSuccess(runMode, PROJECT_NAME)))
-      })
-      .catch(e => {
-        event('run_notebook_fail', {runMode})
-        dispatch(notify(notebookRunFail(runMode, PROJECT_NAME)))
-
-        // NOTE: this shouldn't fire, but lets wrap it for completeness
-        throw e
-      })
-  }
-
-  if (!flow) {
-    return (
-      <EmptyGraphMessage
-        message="Could not find this notebook"
-        testID="notebook-not-found"
-      />
-    )
-  }
-
-  if (!flow?.range || bucketsLoadingState !== RemoteDataState.Done) {
+  if (bucketsLoadingState !== RemoteDataState.Done) {
     return null
   }
 
   return (
-    <QueryContext.Provider value={{query, generateMap, queryAll}}>
-      {children}
-    </QueryContext.Provider>
+    <QueryContext.Provider value={{query}}>{children}</QueryContext.Provider>
   )
 }
 

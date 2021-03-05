@@ -70,7 +70,12 @@ class DashboardPage extends Component<Props> {
   }
 
   public render() {
-    const {autoRefresh, manualRefresh, onManualRefresh} = this.props
+    const {
+      autoRefresh,
+      manualRefresh,
+      onManualRefresh,
+      showAnnotationBar,
+    } = this.props
 
     return (
       <>
@@ -85,7 +90,7 @@ class DashboardPage extends Component<Props> {
                 <RateLimitAlert alertOnly={true} />
                 <VariablesControlBar />
                 <FeatureFlag name="annotations">
-                  <AnnotationsControlBar />
+                  {showAnnotationBar && <AnnotationsControlBar />}
                 </FeatureFlag>
                 <ErrorBoundary>
                   <DashboardComponent manualRefresh={manualRefresh} />
@@ -145,9 +150,12 @@ const mstp = (state: AppState) => {
     state.currentDashboard.id
   )
 
+  const showAnnotationBar = state.userSettings.showAnnotationsControls
+
   return {
     startVisitMs: state.perf.dashboard.byID[dashboard.id]?.startVisitMs,
     dashboard,
+    showAnnotationBar,
   }
 }
 

@@ -84,7 +84,7 @@ function rangeTimes(ast: any, rangeNode: CallExpression): [number, number] {
   return [start, end]
 }
 
-function propertyTime(ast: any, value: Expression, now: number): number {
+export function propertyTime(ast: any, value: Expression, now: number): number {
   switch (value.type) {
     case 'UnaryExpression':
       return (

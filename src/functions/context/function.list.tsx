@@ -210,16 +210,13 @@ export const FunctionListProvider: FC = ({children}) => {
     }
 
     try {
-      const response = await triggerAPI(
-        {
-          script,
-          params: paramObject,
-          language: 'python',
-          orgID,
-          method: 'GET',
-        }
-        // paramObject['param']
-      )
+      const response = await triggerAPI({
+        script,
+        params: paramObject,
+        language: 'python',
+        orgID,
+        method: 'POST',
+      })
       return response
     } catch (error) {
       dispatch(notify(functionTriggerFail()))

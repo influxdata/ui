@@ -13,11 +13,11 @@ import {
 import FunctionRunLogsOverlay from 'src/functions/components/FunctionRunLogsOverlay'
 
 // Types
-import {FunctionRunRecord} from 'src/client/managedFunctionsRoutes'
+import {FunctionRun} from 'src/client/managedFunctionsRoutes'
 import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
 
 interface Props {
-  run: FunctionRunRecord
+  run: FunctionRun
 }
 
 const FunctionRunsRow: FC<Props> = ({run}) => {

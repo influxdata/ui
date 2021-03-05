@@ -11,10 +11,10 @@ import {
 } from 'src/functions/context/api'
 import {
   Function,
-  FunctionCreateRequest,
   FunctionRun,
   FunctionTriggerRequest,
   FunctionLanguage,
+  FunctionTriggerResponse,
 } from 'src/client/managedFunctionsRoutes'
 import {getOrg} from 'src/organizations/selectors'
 import {notify} from 'src/shared/actions/notifications'
@@ -33,41 +33,39 @@ export interface FunctionList {
   }
 }
 
-export interface RunsList {
-  runsList: FunctionRun[]
+export interface DraftFunction extends Omit<Function, 'orgID' | 'language'> {
+  params: string
 }
 
-export interface FunctionListContextType extends FunctionList, RunsList {
-  draftFunction: Function
-  add: (_function: Partial<FunctionCreateRequest>) => Promise<void>
+const newDraftFunction = (): DraftFunction => {
+  return {name: 'new Function', script: '', description: '', params: ''}
+}
+
+export interface FunctionListContextType extends FunctionList {
+  runsList: FunctionRun[]
+  draftFunction: DraftFunction
+  getAll: () => void
   remove: (_id: string) => void
+  setDraftFunctionByID: (id?: string) => void
+  updateDraftFunction: (f: Partial<DraftFunction>) => void
+  saveDraftFunction: () => void
   trigger: (
     _functionTrigger: Partial<FunctionTriggerRequest>
-  ) => Promise<FunctionRun>
-  update: (_id: string, _name?: string, _script?: string) => Promise<void>
-  getAll: () => void
+  ) => Promise<FunctionTriggerResponse>
   getRuns: (_functionID: string) => Promise<void>
-  setDraftFunctionWithID: (id: string) => void
-  updateDraftFunction: (f: Partial<Function>) => void
 }
 
 export const DEFAULT_CONTEXT: FunctionListContextType = {
   functionsList: {},
   runsList: [],
-  draftFunction: {
-    name: 'New Function',
-    description: '',
-    script: '',
-    orgID: '',
-  },
-  add: (_function?: FunctionCreateRequest) => {},
-  remove: (_id: string) => {},
-  trigger: (_functionTrigger: Partial<FunctionTriggerRequest>) => {},
-  update: (_id: string, _name?: string, _script?: string) => {},
+  draftFunction: newDraftFunction(),
   getAll: () => {},
+  remove: (_id: string) => {},
+  setDraftFunctionByID: (_id: string) => {},
+  updateDraftFunction: (_f: Partial<DraftFunction>) => {},
+  saveDraftFunction: () => {},
+  trigger: (_functionTrigger: Partial<FunctionTriggerRequest>) => {},
   getRuns: (_functionID: string) => {},
-  setDraftFunctionWithID: (_id: string) => {},
-  updateDraftFunction: (_f: Partial<Function>) => {},
 } as FunctionListContextType
 
 export const FunctionListContext = React.createContext<FunctionListContextType>(
@@ -75,20 +73,15 @@ export const FunctionListContext = React.createContext<FunctionListContextType>(
 )
 
 export const FunctionListProvider: FC = ({children}) => {
-  const [functionsList, setFunctionsList] = useState(
-    DEFAULT_CONTEXT.functionsList
-  )
-
-  const [draftFunction, setDraftFunction] = useState(
-    DEFAULT_CONTEXT.draftFunction
-  )
-
-  const [runsList, setRunsList] = useState(DEFAULT_CONTEXT.runsList)
-
   const dispatch = useDispatch()
   const history = useHistory()
-
   const {id: orgID} = useSelector(getOrg)
+
+  const [functionsList, setFunctionsList] = useState({})
+
+  const [runsList, setRunsList] = useState([])
+
+  const [draftFunction, setDraftFunction] = useState(newDraftFunction())
 
   const getAll = useCallback(async (): Promise<void> => {
     try {
@@ -97,15 +90,39 @@ export const FunctionListProvider: FC = ({children}) => {
       data.functions.forEach(f => (_functions[f.id] = f))
       setFunctionsList(_functions)
     } catch {
+      // TODO remove this when api is available
+      setFunctionsList({
+        '1': {
+          name: 'functionb',
+          id: '1',
+          orgID: '0',
+          script: 'this is a script',
+          url: 'www.url.com',
+          description: 'best function ever',
+        } as Function,
+        '2': {
+          name: 'functiona',
+          id: '2',
+          orgID: '0',
+          script: 'this is another script',
+          url: 'www.url.com',
+          description: 'second best function ever',
+        } as Function,
+      })
+
       dispatch(notify(functionGetFail()))
     }
   }, [orgID, setFunctionsList, dispatch])
 
   const add = async (
-    partialFunction: Omit<FunctionCreateRequest, 'orgID' | 'language'>
+    name: string,
+    script: string,
+    description?: string
   ): Promise<void> => {
     const _function = {
-      ...partialFunction,
+      name,
+      script,
+      description,
       orgID,
       language: 'python' as FunctionLanguage,
     }
@@ -135,9 +152,14 @@ export const FunctionListProvider: FC = ({children}) => {
     }
   }
 
-  const update = async (id: string, name?: string, script?: string) => {
+  const update = async (
+    id: string,
+    name: string,
+    script: string,
+    description: string
+  ) => {
     try {
-      const updatedFunction = await updateAPI(id, {name, script})
+      const updatedFunction = await updateAPI(id, {name, script, description})
       const _functions = {
         ...functionsList,
       }
@@ -149,8 +171,11 @@ export const FunctionListProvider: FC = ({children}) => {
     }
   }
 
-  const setDraftFunctionWithID = useCallback(
-    (functionID: string) => {
+  const setDraftFunctionByID = useCallback(
+    (functionID?: string) => {
+      if (!functionID) {
+        setDraftFunction(newDraftFunction())
+      }
       if (functionsList[functionID]) {
         setDraftFunction(JSON.parse(JSON.stringify(functionsList[functionID])))
       }
@@ -158,20 +183,34 @@ export const FunctionListProvider: FC = ({children}) => {
     [functionsList]
   )
 
-  const updateDraftFunction = () => {
-    // TODO implement
+  const updateDraftFunction = (partial: Partial<DraftFunction>) => {
+    const _function = {...draftFunction, ...partial}
+    setDraftFunction(_function)
   }
 
-  const trigger = async ({script, params}): Promise<FunctionRun> => {
-    const paramObject = {}
+  const saveDraftFunction = () => {
+    const {id, name, script, description} = draftFunction
+    if (draftFunction.id) {
+      update(id, name, script, description)
+    } else {
+      add(name, script, description)
+    }
+  }
 
-    params.split('\n').forEach((entry: string) => {
-      const arr = entry.split('=')
-      paramObject[arr[0]] = arr[1]
-    })
+  const trigger = async ({
+    script,
+    params,
+  }): Promise<FunctionTriggerResponse> => {
+    const paramObject = {}
+    if (params) {
+      params.split('\n').forEach((entry: string) => {
+        const arr = entry.split('=')
+        paramObject[arr[0]] = arr[1]
+      })
+    }
 
     try {
-      const run = await triggerAPI(
+      const response = await triggerAPI(
         {
           script,
           params: paramObject,
@@ -181,7 +220,7 @@ export const FunctionListProvider: FC = ({children}) => {
         }
         // paramObject['param']
       )
-      return run
+      return response
     } catch (error) {
       dispatch(notify(functionTriggerFail()))
       return {}
@@ -194,6 +233,68 @@ export const FunctionListProvider: FC = ({children}) => {
         const runs = await getRunsAPI(functionID)
         setRunsList(runs)
       } catch (error) {
+        // TODO remove this when api is available.
+        setRunsList([
+          {
+            id: '1',
+            status: 'ok',
+            logs: [
+              {
+                message: 'this is a message',
+                timestamp: '2021-02-18T23:48:27.283155000Z',
+                severity: 'crit',
+              },
+            ],
+            startedAt: '2021-02-18T23:48:27.283155000Z',
+          },
+          {
+            id: '2',
+            status: 'error',
+            logs: [
+              {
+                message: 'oh no things got really bad',
+                timestamp: '2021-02-18T23:48:27.283155000Z',
+                severity: 'crit',
+              },
+              {
+                message: 'it was terrible',
+                timestamp: '2021-02-18T23:48:27.283155000Z',
+                severity: 'crit',
+              },
+              {
+                message: 'yuck',
+                timestamp: '2021-02-18T23:48:27.283155000Z',
+                severity: 'crit',
+              },
+            ],
+            startedAt: '2021-02-18T23:48:27.283155000Z',
+          },
+          {
+            id: '1',
+            status: 'ok',
+            logs: [
+              {
+                message: 'another message',
+                timestamp: '2021-02-18T23:48:27.283155000Z',
+                severity: 'crit',
+              },
+            ],
+            startedAt: '2021-02-18T23:48:27.283155000Z',
+          },
+          {
+            id: '1',
+            status: 'ok',
+            logs: [
+              {
+                message: 'you are doing great',
+                timestamp: '2021-02-18T23:48:27.283155000Z',
+                severity: 'crit',
+              },
+            ],
+            startedAt: '2021-02-18T23:48:27.283155000Z',
+          },
+        ] as Array<FunctionRun>)
+
         dispatch(notify(runGetFail()))
       }
     },
@@ -209,15 +310,14 @@ export const FunctionListProvider: FC = ({children}) => {
       value={{
         functionsList,
         runsList,
+        draftFunction,
+        getAll,
         getRuns,
         remove,
-        add,
-        update,
-        getAll,
         trigger,
-        draftFunction,
-        setDraftFunctionWithID,
+        setDraftFunctionByID,
         updateDraftFunction,
+        saveDraftFunction,
       }}
     >
       {children}

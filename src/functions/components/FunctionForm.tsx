@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useContext, useState} from 'react'
 
 // Components
 import {
@@ -19,28 +19,29 @@ import {
   AlignItems,
   ButtonShape,
 } from '@influxdata/clockface'
+import {FunctionListContext} from 'src/functions/context/function.list'
 
 // Types
-import {FunctionRun} from 'src/client/managedFunctionsRoutes'
+import {FunctionTriggerResponse} from 'src/client/managedFunctionsRoutes'
 
-interface Props {
-  name: string
-  setName: (name: string) => void
-  params: string
-  setParams: (name: string) => void
-  triggerFunction: () => void
-  runResult: FunctionRun
-}
+const FunctionForm: FC = () => {
+  const {
+    draftFunction: {name, script, params},
+    updateDraftFunction,
+    trigger,
+  } = useContext(FunctionListContext)
 
-const FunctionForm: FC<Props> = ({
-  name,
-  setName,
-  params,
-  setParams,
-  triggerFunction,
-  runResult,
-}) => {
-  const stutusText = runResult.status === 'ok' ? 'success!' : 'error'
+  const [triggerResponse, setTriggerResponse] = useState<
+    FunctionTriggerResponse
+  >({})
+
+  const triggerFunction = async () => {
+    const response = await trigger({script, params})
+    setTriggerResponse(response)
+  }
+
+  const statusText = triggerResponse.status === 'ok' ? 'success!' : 'error'
+
   return (
     <Form>
       <Grid>
@@ -49,7 +50,7 @@ const FunctionForm: FC<Props> = ({
             <Form.Element label="Name">
               <Input
                 onChange={e => {
-                  setName(e.target.value)
+                  updateDraftFunction({name: e.target.value})
                 }}
                 value={name}
                 testID="function-form-name"
@@ -58,7 +59,7 @@ const FunctionForm: FC<Props> = ({
             <Form.Element label="Parameters">
               <TextArea
                 onChange={e => {
-                  setParams(e.target.value)
+                  updateDraftFunction({params: e.target.value})
                 }}
                 value={params}
                 testID="function-form-parameters"
@@ -84,32 +85,34 @@ const FunctionForm: FC<Props> = ({
             </ButtonGroup>
           </Grid.Column>
         </Grid.Row>
-        {runResult.status && (
+        {triggerResponse.status && (
           <Grid.Row>
             <Grid.Column widthXS={Columns.Twelve}>
               <Panel
                 gradient={
-                  runResult.status == 'ok'
+                  triggerResponse.status == 'ok'
                     ? Gradients.TropicalTourist
                     : Gradients.DangerLight
                 }
                 border={true}
               >
                 <Panel.Header>
-                  <h5>{stutusText}</h5>
+                  <h5>{statusText}</h5>
                 </Panel.Header>
                 <Panel.Body alignItems={AlignItems.FlexStart}>
-                  {runResult.status == 'ok' && runResult.logs ? (
-                    runResult.logs.map(l => {
-                      ;<p>
-                        <div>severity: {JSON.stringify(l.severity)}</div>
-                        <div>timestamp: {JSON.stringify(l.timestamp)}</div>
-                        <div>message: {JSON.stringify(l.message)}</div>
-                      </p>
+                  {triggerResponse.status == 'ok' && triggerResponse.logs ? (
+                    triggerResponse.logs.map(l => {
+                      return (
+                        <div key={l.timestamp}>
+                          <div>severity: {JSON.stringify(l.severity)}</div>
+                          <div>timestamp: {JSON.stringify(l.timestamp)}</div>
+                          <div>message: {JSON.stringify(l.message)}</div>
+                        </div>
+                      )
                     })
                   ) : (
                     <p>
-                      <div>{JSON.stringify(runResult.error)}</div>
+                      <div>{JSON.stringify(triggerResponse.error)}</div>
                     </p>
                   )}
                 </Panel.Body>

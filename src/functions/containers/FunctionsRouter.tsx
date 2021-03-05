@@ -3,7 +3,7 @@ import React, {FC} from 'react'
 import {Route, Switch} from 'react-router-dom'
 import {
   FunctionEditWrapper,
-  FunctionPage,
+  FunctionNewWrapper,
   FunctionRunListPage,
   FunctionListPage,
 } from 'src/shared/containers'
@@ -25,7 +25,10 @@ const FunctionsRouter: FC = () => {
           path={`${orgPath}/functions/:id/edit`}
           component={FunctionEditWrapper}
         />
-        <Route path={`${orgPath}/functions/new`} component={FunctionPage} />
+        <Route
+          path={`${orgPath}/functions/new`}
+          component={FunctionNewWrapper}
+        />
         <Route path={`${orgPath}/functions`} component={FunctionListPage} />
       </Switch>
     </FunctionListProvider>

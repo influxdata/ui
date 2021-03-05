@@ -1,16 +1,29 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
+import {useHistory} from 'react-router-dom'
+import {useSelector} from 'react-redux'
 
 // Components
 import {Page, Button, ComponentColor} from '@influxdata/clockface'
+import {FunctionListContext} from 'src/functions/context/function.list'
 
-interface Props {
-  name: string
-  saveFunction: () => void
-  cancelFunction: () => void
-}
+// Utils
+import {getOrg} from 'src/organizations/selectors'
 
-const FunctionHeader: FC<Props> = ({name, saveFunction, cancelFunction}) => {
+const FunctionHeader: FC = () => {
+  const history = useHistory()
+  const {id: orgID} = useSelector(getOrg)
+
+  const {
+    draftFunction: {name},
+    saveDraftFunction,
+  } = useContext(FunctionListContext)
+
+  const cancelFunction = () => {
+    history.push(`/orgs/${orgID}/functions/`)
+    // TODO dont allow routing away if unsaved changes exist
+  }
+
   return (
     <>
       <Page.Header fullWidth={false} testID="functions-edit-page--header">
@@ -22,13 +35,13 @@ const FunctionHeader: FC<Props> = ({name, saveFunction, cancelFunction}) => {
             color={ComponentColor.Default}
             text="Cancel"
             onClick={cancelFunction}
-            testID="task-cancel-btn"
+            testID="function-cancel-btn"
           />
           <Button
             color={ComponentColor.Success}
             text="Save"
-            onClick={saveFunction}
-            testID="task-save-btn"
+            onClick={saveDraftFunction}
+            testID="function-save-btn"
           />
         </Page.ControlBarRight>
       </Page.ControlBar>

@@ -2,7 +2,7 @@ import React, {FC, useContext, useMemo} from 'react'
 import {PipeData, FluxResult} from 'src/types/flows'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {ResultsContext} from 'src/flows/context/results'
-import {QueryContext} from './query'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {RemoteDataState, SelectableDurationTimeRange} from 'src/types'
 
 export interface PipeContextType {
@@ -40,7 +40,7 @@ interface PipeContextProps {
 export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
   const {flow} = useContext(FlowContext)
   const results = useContext(ResultsContext)
-  const {generateMap} = useContext(QueryContext)
+  const {generateMap} = useContext(FlowQueryContext)
 
   const stages = useMemo(() => generateMap(true), [
     generateMap,

@@ -11,7 +11,7 @@ import {
 } from '@influxdata/clockface'
 
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
-import {QueryContext} from 'src/flows/context/query'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {RunModeContext, RunMode} from 'src/flows/context/runMode'
 import {notify} from 'src/shared/actions/notifications'
 import {FlowContext} from 'src/flows/context/flow.current'
@@ -31,7 +31,7 @@ const fakeNotify = notify
 export const Submit: FC = () => {
   const {flow} = useContext(FlowContext)
   const {runMode, setRunMode} = useContext(RunModeContext)
-  const {generateMap, queryAll} = useContext(QueryContext)
+  const {generateMap, queryAll} = useContext(FlowQueryContext)
 
   const hasQueries = useMemo(() => generateMap().length > 0, [generateMap])
 

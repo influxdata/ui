@@ -7,7 +7,7 @@ import {Icon, IconFont} from '@influxdata/clockface'
 
 // Context
 import {PipeContext} from 'src/flows/context/pipe'
-import {QueryContext} from 'src/flows/context/query'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -40,7 +40,7 @@ const ResizerHeader: FC<Props> = ({
   toggleVisibilityEnabled,
 }) => {
   const {readOnly} = useContext(PipeContext)
-  const {queryAll} = useContext(QueryContext)
+  const {queryAll} = useContext(FlowQueryContext)
   const glyph = visibility === 'visible' ? IconFont.EyeOpen : IconFont.EyeClosed
   const className = classnames('panel-resizer--header', {
     'panel-resizer--header__multiple-controls':

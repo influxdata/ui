@@ -12,6 +12,13 @@ export interface AnnotationStream {
   annotations: Annotation[]
 }
 
+export interface AnnotationStreamDetail {
+  stream: string
+  description?: string
+  createdAt?: string
+  updatedAt?: string
+}
+
 export interface GetAnnotationPayload {
   stream?: string
   startTime?: string

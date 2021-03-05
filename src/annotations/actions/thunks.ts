@@ -1,12 +1,25 @@
-import {getAnnotations, writeAnnotation} from 'src/annotations/api'
+import {
+  getAnnotations,
+  writeAnnotation,
+  getAnnotationStreamsDetails,
+} from 'src/annotations/api'
 import {Dispatch} from 'react'
 
 import {
   setAnnotations,
+  setAnnotationStreams,
   Action as AnnotationAction,
 } from 'src/annotations/actions/creators'
 
-import {Annotation} from 'src/types'
+import {Annotation, AnnotationStreamDetail} from 'src/types'
+
+export const fetchSetAnnotationStreamDetails = async (
+  dispatch: Dispatch<AnnotationAction>
+): Promise<void> => {
+  const annotationStreamDetails: AnnotationStreamDetail[] = await getAnnotationStreamsDetails()
+
+  dispatch(setAnnotationStreams(annotationStreamDetails))
+}
 
 export const fetchAndSetAnnotations = () => async (
   dispatch: Dispatch<AnnotationAction>

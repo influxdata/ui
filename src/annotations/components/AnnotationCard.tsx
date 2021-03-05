@@ -19,10 +19,10 @@ import {
 import {getOrg} from 'src/organizations/selectors'
 
 // Mocks
-import {AnnotationStream} from 'src/annotations/constants/mocks'
+import {AnnotationStreamDetail} from 'src/types'
 
 interface Props {
-  annotationStream: AnnotationStream
+  annotationStream: AnnotationStreamDetail
 }
 
 export const AnnotationCard: FC<Props> = ({annotationStream}) => {
@@ -31,7 +31,7 @@ export const AnnotationCard: FC<Props> = ({annotationStream}) => {
 
   const handleNameClick = (): void => {
     history.push(
-      `/orgs/${org.id}/settings/annotations/${annotationStream.id}/edit`
+      `/orgs/${org.id}/settings/annotations/${annotationStream.stream}/edit`
     )
   }
 
@@ -57,23 +57,27 @@ export const AnnotationCard: FC<Props> = ({annotationStream}) => {
     >
       <ResourceCard.Name
         onClick={handleNameClick}
-        name={annotationStream.name}
-        testID={`annotation-stream-card--name ${annotationStream.name}`}
+        name={annotationStream.stream}
+        testID={`annotation-stream-card--name ${annotationStream.stream}`}
       />
-      <ResourceCard.Description description={annotationStream.description} />
+      <ResourceCard.Description
+        description={
+          annotationStream?.description ??
+          'Add a description to your stream to see it here'
+        }
+      />
       <ResourceCard.Meta>
         <>
           <Bullet
             glyph={IconFont.Annotate}
             size={ComponentSize.ExtraSmall}
             color={InfluxColors.Castle}
-            backgroundColor={annotationStream.display.color}
+            backgroundColor="#9078E4"
             style={{marginRight: '4px'}}
           />
-          Streaming from {annotationStream.query.bucketName}
         </>
-        <>Created at {annotationStream.meta.createdAt}</>
-        <>Last modified {annotationStream.meta.updatedAt}</>
+        <>Created at {annotationStream?.createdAt}</>
+        <>Last modified {annotationStream?.updatedAt}</>
       </ResourceCard.Meta>
       {/* Labels go here */}
     </ResourceCard>

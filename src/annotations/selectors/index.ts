@@ -1,5 +1,5 @@
 // Types
-import {AppState} from 'src/types'
+import {AppState, AnnotationStreamDetail} from 'src/types'
 import {sortBy} from 'lodash'
 
 // Mocks
@@ -32,4 +32,11 @@ export const getHiddenAnnotationStreams = (
   )
 
   return sortBy(filtered, stream => stream.name)
+}
+
+export const getAnnotationStreams = (
+  state: AppState
+): AnnotationStreamDetail[] => {
+  const annotationStreamDetails = state.annotations.streams
+  return annotationStreamDetails
 }

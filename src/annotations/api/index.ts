@@ -4,6 +4,7 @@ import {
   AnnotationStream,
   GetAnnotationPayload,
   DeleteAnnotation,
+  AnnotationStreamDetail,
 } from 'src/types'
 
 /* Note: Axios will be removed from here as part of #511, which is the next ticket to be worked on the annotations API */
@@ -15,9 +16,18 @@ import {API_BASE_PATH} from 'src/shared/constants'
 
 // URL
 const url = `${API_BASE_PATH}api/v2private/annotations`
+const streamsURL = `${API_BASE_PATH}api/v2private/streams`
 
 // Utils
 import {formatAnnotationQueryString} from 'src/annotations/utils/formatQueryString'
+
+export const getAnnotationStreamsDetails = async (): Promise<AnnotationStreamDetail[]> => {
+  const annotationStreamResponse = await axios.get(streamsURL)
+  if (annotationStreamResponse.status >= 300) {
+    throw new Error(annotationStreamResponse.data?.message)
+  }
+  return annotationStreamResponse.data ?? []
+}
 
 export const writeAnnotation = async (
   annotations: Annotation[]

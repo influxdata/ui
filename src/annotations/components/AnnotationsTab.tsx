@@ -1,7 +1,7 @@
 // Libraries
-import React, {FC, useState} from 'react'
+import React, {FC, useState, useEffect} from 'react'
 import {useHistory} from 'react-router-dom'
-import {useSelector} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 
 // Components
 import {
@@ -25,17 +25,15 @@ import {AnnotationsExplainer} from 'src/annotations/components/AnnotationsExplai
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 
+import {getAnnotationStreams} from 'src/annotations/selectors'
 // Types
-import {ResourceType} from 'src/types'
+import {ResourceType, AnnotationStreamDetail} from 'src/types'
 import {SortTypes} from 'src/shared/utils/sort'
 
-// Mocks
-import {
-  AnnotationStream,
-  MOCK_ANNOTATION_STREAMS,
-} from 'src/annotations/constants/mocks'
+// Thunks
+import {fetchSetAnnotationStreamDetails} from 'src/annotations/actions/thunks'
 
-const FilterList = Filter<AnnotationStream>()
+const FilterList = Filter<AnnotationStreamDetail>()
 
 interface AnnotationsTabEmptyStateProps {
   searchTerm?: string
@@ -46,7 +44,7 @@ const AnnotationsTabEmptyState: FC<AnnotationsTabEmptyStateProps> = ({
 }) => {
   if (!searchTerm) {
     return (
-      <EmptyState size={ComponentSize.Large}>
+      <EmptyState size={ComponentSize.Large} testID="annotations-empty-state">
         <EmptyState.Text>
           Looks like there aren't any <b>Annotation Streams</b>, why not create
           one?
@@ -63,6 +61,14 @@ const AnnotationsTabEmptyState: FC<AnnotationsTabEmptyStateProps> = ({
 }
 
 export const AnnotationsTab: FC = () => {
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(fetchSetAnnotationStreamDetails)
+  }, [dispatch])
+
+  const annotationStreamDetails = useSelector(getAnnotationStreams)
+
   const org = useSelector(getOrg)
   const history = useHistory()
 
@@ -111,17 +117,17 @@ export const AnnotationsTab: FC = () => {
               <FilterList
                 searchTerm={searchTerm}
                 searchKeys={['name']}
-                list={MOCK_ANNOTATION_STREAMS}
+                list={annotationStreamDetails}
               >
-                {annotationStreams => (
+                {streams => (
                   <AnnotationsList
-                    annotationStreams={annotationStreams}
                     emptyState={
                       <AnnotationsTabEmptyState searchTerm={searchTerm} />
                     }
                     sortKey={sortKey}
                     sortDirection={sortDirection}
                     sortType={sortType}
+                    annotationStreams={streams}
                   />
                 )}
               </FilterList>

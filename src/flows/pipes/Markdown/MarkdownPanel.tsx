@@ -63,7 +63,9 @@ const MarkdownPanel: FC<PipeProp> = ({Context}) => {
     <MarkdownModeToggle mode={data.mode} onToggleMode={handleToggleMode} />
   )
 
-  const handleChange = (text: string): void => update({text})
+  const handleChange = (text: string): void => {
+    update({text})
+  }
 
   let panelContents = (
     <ClickOutside onClickOutside={handleClickOutside}>

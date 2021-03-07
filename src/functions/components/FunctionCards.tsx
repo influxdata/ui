@@ -1,8 +1,7 @@
-import React, {FC, useContext, useEffect} from 'react'
+import React, {FC, useContext} from 'react'
 
 // Components
-import {ResourceList} from '@influxdata/clockface'
-import FunctionListEmpty from 'src/functions/components/FunctionListEmpty'
+import {ComponentSize, EmptyState, ResourceList} from '@influxdata/clockface'
 import FunctionCard from 'src/functions/components/FunctionCard'
 import {FunctionListContext} from 'src/functions/context/function.list'
 
@@ -14,22 +13,24 @@ interface Props {
 }
 
 const FunctionCards: FC<Props> = ({searchTerm}) => {
-  const {functionsList, getAll} = useContext(FunctionListContext)
-  useEffect(() => {
-    getAll()
-  }, [getAll])
-  // const functionsList: Function[] = [
-  //   {name: 'functionb', id: '1', orgID: '0', script: 'lalal'},
-  //   {name: 'functiona', id: '2', orgID: '0', script: 'lalal'},
-  // ]
+  const {functionsList} = useContext(FunctionListContext)
+
   return (
     <ResourceList>
-      <ResourceList.Body emptyState={<FunctionListEmpty />}>
+      <ResourceList.Body
+        emptyState={
+          <EmptyState size={ComponentSize.Large}>
+            <EmptyState.Text>
+              Looks like you haven't created any <b>functions</b>... yet!
+            </EmptyState.Text>
+          </EmptyState>
+        }
+      >
         {Object.values(functionsList)
           .sort((a, b) => a.name.localeCompare(b.name))
           .filter(f => f.name.includes(searchTerm))
-          .map(({id, name}) => {
-            return <FunctionCard key={id} id={id} name={name} />
+          .map(({id}) => {
+            return <FunctionCard key={id} id={id} />
           })}
       </ResourceList.Body>
     </ResourceList>

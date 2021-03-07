@@ -37,10 +37,6 @@ import {
   UsersPage,
   UsagePage,
   BillingPage,
-  FunctionListPage,
-  FunctionPage,
-  FunctionEditPage,
-  FunctionRunListPage,
 } from 'src/shared/containers'
 
 // Types
@@ -77,6 +73,7 @@ import {RemoteDataState} from '@influxdata/clockface'
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
+import FunctionsRouter from 'src/functions/containers/FunctionsRouter'
 
 interface OwnProps {
   children: React.ReactElement<any>
@@ -252,22 +249,7 @@ const SetOrg: FC<Props> = ({
 
           {/* Managed Functions */}
           {CLOUD && isFlagEnabled('managed-functions') && (
-            <Route
-              path={`${orgPath}/functions/:id/runs`}
-              component={FunctionRunListPage}
-            />
-          )}
-          {CLOUD && isFlagEnabled('managed-functions') && (
-            <Route
-              path={`${orgPath}/functions/:id/edit`}
-              component={FunctionEditPage}
-            />
-          )}
-          {CLOUD && isFlagEnabled('managed-functions') && (
-            <Route path={`${orgPath}/functions/new`} component={FunctionPage} />
-          )}
-          {CLOUD && isFlagEnabled('managed-functions') && (
-            <Route path={`${orgPath}/functions`} component={FunctionListPage} />
+            <Route path={`${orgPath}/functions`} component={FunctionsRouter} />
           )}
 
           {/* Members */}

@@ -61,8 +61,22 @@ function useResource<T>(
         return
       }
 
+      const filterInPlace = (arr: string[], filter: Function) => {
+        let i = 0,
+          j = 0
+        while (i < arr.length) {
+          if (filter(arr[i], i, arr)) {
+            arr[j++] = arr[i]
+          }
+          i++
+        }
+        arr.length = j
+        return arr
+      }
+
       delete resource.byID[id]
-      resource.allIDs = resource.allIDs.filter(i => i !== id)
+      // need to filter in place because allIDs only has a getter
+      filterInPlace(resource.allIDs, i => i !== id)
 
       onChange(resource)
     },

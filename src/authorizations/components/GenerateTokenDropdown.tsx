@@ -1,5 +1,6 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {FC} from 'react'
+import {useSelector} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
@@ -8,94 +9,82 @@ import {Dropdown} from '@influxdata/clockface'
 // Types
 import {IconFont, ComponentColor} from '@influxdata/clockface'
 
-type Props = RouteComponentProps<{orgID: string}>
+// Selectors
+import {getOrg} from 'src/organizations/selectors'
 
-class GenerateTokenDropdown extends PureComponent<Props> {
-  public render() {
-    return (
-      <Dropdown
-        testID="dropdown--gen-token"
-        style={{width: '160px'}}
-        button={(active, onClick) => (
-          <Dropdown.Button
-            active={active}
-            onClick={onClick}
-            icon={IconFont.Plus}
-            color={ComponentColor.Primary}
-            testID="dropdown-button--gen-token"
-          >
-            Generate
-          </Dropdown.Button>
-        )}
-        menu={onCollapse => (
-          <Dropdown.Menu onCollapse={onCollapse}>
-            {this.optionItems}
-          </Dropdown.Menu>
-        )}
-      />
-    )
+type GenerateTokenProps = RouteComponentProps
+
+const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
+  const org = useSelector(getOrg)
+
+  const bucketReadWriteOption = (): string => {
+    return 'Read/Write Token'
   }
 
-  private get optionItems(): JSX.Element[] {
+  const allAccessOption = (): string => {
+    return 'All Access Token'
+  }
+
+  const handleAllAccess = () => {
+    history.push(`/orgs/${org.id}/load-data/tokens/generate/all-access`)
+  }
+
+  const handleReadWrite = () => {
+    history.push(`/orgs/${org.id}/load-data/tokens/generate/buckets`)
+  }
+  const handleSelect = (selection: string): void => {
+    if (selection === allAccessOption()) {
+      handleAllAccess()
+    } else if (selection === bucketReadWriteOption()) {
+      handleReadWrite()
+    }
+  }
+
+  const getOptionItems = () => {
     return [
       <Dropdown.Item
         testID="dropdown-item generate-token--read-write"
-        id={this.bucketReadWriteOption}
-        key={this.bucketReadWriteOption}
-        value={this.bucketReadWriteOption}
-        onClick={this.handleSelect}
+        id={bucketReadWriteOption()}
+        key={bucketReadWriteOption()}
+        value={bucketReadWriteOption()}
+        onClick={handleSelect}
       >
-        {this.bucketReadWriteOption}
+        {bucketReadWriteOption()}
       </Dropdown.Item>,
       <Dropdown.Item
         testID="dropdown-item generate-token--all-access"
-        id={this.allAccessOption}
-        key={this.allAccessOption}
-        value={this.allAccessOption}
-        onClick={this.handleSelect}
+        id={allAccessOption()}
+        key={allAccessOption()}
+        value={allAccessOption()}
+        onClick={handleSelect}
       >
-        {this.allAccessOption}
+        {allAccessOption()}
       </Dropdown.Item>,
     ]
   }
 
-  private get bucketReadWriteOption(): string {
-    return 'Read/Write Token'
-  }
-
-  private get allAccessOption(): string {
-    return 'All Access Token'
-  }
-
-  private handleSelect = (selection: string): void => {
-    if (selection === this.allAccessOption) {
-      this.handleAllAccess()
-    } else if (selection === this.bucketReadWriteOption) {
-      this.handleReadWrite()
-    }
-  }
-
-  private handleAllAccess = () => {
-    const {
-      history,
-      match: {
-        params: {orgID},
-      },
-    } = this.props
-
-    history.push(`/orgs/${orgID}/load-data/tokens/generate/all-access`)
-  }
-
-  private handleReadWrite = () => {
-    const {
-      history,
-      match: {
-        params: {orgID},
-      },
-    } = this.props
-
-    history.push(`/orgs/${orgID}/load-data/tokens/generate/buckets`)
-  }
+  return (
+    <Dropdown
+      testID="dropdown--gen-token"
+      style={{width: '160px'}}
+      button={(active, onClick) => (
+        <Dropdown.Button
+          active={active}
+          onClick={onClick}
+          icon={IconFont.Plus}
+          color={ComponentColor.Primary}
+          testID="dropdown-button--gen-token"
+        >
+          Generate
+        </Dropdown.Button>
+      )}
+      menu={onCollapse => (
+        <Dropdown.Menu onCollapse={onCollapse}>
+          {getOptionItems()}
+        </Dropdown.Menu>
+      )}
+    />
+  )
 }
 
 export default withRouter(GenerateTokenDropdown)

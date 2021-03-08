@@ -1,10 +1,9 @@
 // Libraries
 import React, {FC, useEffect, useState, useContext, useMemo} from 'react'
 import {AutoSizer} from 'react-virtualized'
+import {Table, ComponentSize} from '@influxdata/clockface'
 
 // Components
-import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
-import {ROW_HEIGHT} from 'src/timeMachine/components/RawFluxDataGrid'
 import Resizer from 'src/flows/shared/Resizer'
 import ResultsPagination from 'src/flows/components/panel/ResultsPagination'
 
@@ -18,6 +17,9 @@ import {event} from 'src/cloud/utils/reporting'
 
 import {RemoteDataState} from 'src/types'
 import {Visibility} from 'src/types/flows'
+
+const HEADER_HEIGHT = 33
+const ROW_HEIGHT = 33
 
 const Results: FC = () => {
   const {flow} = useContext(FlowContext)
@@ -103,21 +105,96 @@ const Results: FC = () => {
                 return false
               }
 
-              const page = Math.floor(height / ROW_HEIGHT)
+              let runningHeight = 0
+              let rowIdx = startRow
+              let currentTable
+
+              while(runningHeight < height && startRow <= results.parsed.table.length) {
+                  if (results.parse.table.columns.table.data[rowIdx] !== currentTable) {
+                      currentTable = results.parse.table.columns.table.data[rowIdx]
+                      runningHeight += HEADER_HEIGHT
+                      continue
+                  }
+
+                  runningHeight += ROW_HEIGHT
+                  rowIdx++
+              }
+
+              const page = rowIdx - startRow
 
               if (page !== pageSize) {
                 setPageSize(page)
               }
 
-              return (
-                <RawFluxDataTable
-                  parsedResults={results.parsed}
-                  startRow={startRow}
-                  width={width}
-                  height={page * ROW_HEIGHT}
-                  disableVerticalScrolling={true}
-                />
-              )
+              const subset = Object.values(results.parsed.table.columns)
+              .map(c => ({
+                  ...c,
+                  group: results.parsed.fluxGroupKeyUnion.indexOf(c.name) !== -1,
+                  data: c.data.slice(startRow, startRow + page)
+              }))
+              .filter(c => !!c.data.filter(_c => _c !== undefined).length && c.name !== '_start' && c.name !== '_stop')
+              .reduce((arr, curr) => {
+                  arr[curr.name] = curr
+                  return arr
+              }, {})
+
+              const tables = []
+              let lastTable
+
+              for (let ni = 0; ni < page; ni++) {
+                  if (subset.table.data[ni] === lastTable) {
+                      continue;
+                  }
+
+                  lastTable = subset.table.data[ni]
+
+                  if (tables.length) {
+                      tables[tables.length - 1].end = ni - 1
+                  }
+
+                  tables.push({
+                      idx: lastTable,
+                      start: ni
+                  })
+              }
+
+              if (tables.length) {
+                  tables[tables.length - 1].end = page
+              }
+
+              return tables.map(t => {
+                  const cols = Object.values(subset).map(c => ({...c, data: c.data.slice(t.start, t.end)})).filter(c => !!c.data.length)
+
+                  const headers = cols.map(c => (
+                      <Table.HeaderCell>{c.name}</Table.HeaderCell>
+                  ))
+                  const rows = Array(t.end-t.start).fill(null).map((_, idx) => {
+                      const cells = cols.map(c => (
+                          <Table.Cell>{c.data[idx]}</Table.Cell>
+                      ))
+
+                      return (
+                          <Table.Row>
+                              {cells}
+                          </Table.Row>
+                      )
+                  })
+
+                  return (
+                      <Table fontSize={ComponentSize.Small}
+                        striped
+                        highlight>
+                          <Table.Header>
+                              <Table.Row>
+                                  {headers}
+                              </Table.Row>
+                          </Table.Header>
+                          <Table.Body>
+                              {rows}
+                          </Table.Body>
+                      </Table>
+                  )
+              })
             }}
           </AutoSizer>
         </div>

@@ -424,6 +424,7 @@ jobs:
           name: Run lighthouse
           no_output_timeout: 10m
           command: |
+            set -e # makes this step optional
             cd monitor-ci;
             if [ "${CIRCLE_BRANCH}" = "master" ]; then
                     make lhr MASTER_BRANCH=1 GITHUB_TOKEN="${HERCULES_TOKEN}";

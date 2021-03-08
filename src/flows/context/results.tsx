@@ -19,7 +19,7 @@ const DEFAULT_CONTEXT: ResultsContextType = {
   indexOf: _id => -1,
   move: _id => {},
   serialize: () => ({...EMPTY_STATE}),
-
+  byID: null,
   allIDs: [],
   all: [],
 } as ResultsContextType

@@ -1,7 +1,7 @@
-import React, {FC, useCallback, useEffect} from 'react'
+import React, {FC, useCallback, useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
 import {useParams} from 'react-router-dom'
-import createPersistedState from 'use-persisted-state'
+import useLocalStorageState from 'use-local-storage-state'
 import {v4 as UUID} from 'uuid'
 import {
   FlowList,
@@ -35,9 +35,6 @@ import {
   notebookDeleteFail,
 } from 'src/shared/copy/notifications'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
-const useFlowListState = createPersistedState('flows')
-const useFlowCurrentState = createPersistedState('current-flow')
 
 export interface FlowListContextType extends FlowList {
   add: (flow?: Flow) => Promise<string>
@@ -134,8 +131,8 @@ export function hydrate(data) {
 }
 
 export const FlowListProvider: FC = ({children}) => {
-  const [flows, setFlows] = useFlowListState(DEFAULT_CONTEXT.flows)
-  const [currentID, setCurrentID] = useFlowCurrentState(null)
+  const [flows, setFlows] = useLocalStorageState('flows', DEFAULT_CONTEXT.flows)
+  const [currentID, setCurrentID] = useState(DEFAULT_CONTEXT.currentID)
   const {orgID} = useParams<{orgID: string}>()
   const dispatch = useDispatch()
   useEffect(() => {
@@ -256,9 +253,10 @@ export const FlowListProvider: FC = ({children}) => {
       name: flow.name,
       range: flow.range,
       refresh: flow.refresh,
-      data: flow.data.serialize ? flow.data.serialize() : flow.data,
-      meta: flow.meta.serialize ? flow.meta.serialize() : flow.meta,
+      data: flow.data,
+      meta: flow.meta,
       readOnly: flow.readOnly,
+      results: null,
     }
 
     setFlows({

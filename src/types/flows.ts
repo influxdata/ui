@@ -79,7 +79,7 @@ export interface ResourceManipulator<T> {
   remove: (id: string) => void
   indexOf: (id: string) => number
   move: (id: string, index: number) => void
-
+  byID: DataLookup<T>
   serialize: () => Resource<T>
 
   allIDs: string[]

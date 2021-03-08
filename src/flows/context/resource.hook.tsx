@@ -93,6 +93,7 @@ function useResource<T>(
     serialize: () => {
       return resource
     },
+    byID: resource.byID,
   }
 }
 

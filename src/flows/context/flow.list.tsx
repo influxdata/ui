@@ -253,9 +253,10 @@ export const FlowListProvider: FC = ({children}) => {
       name: flow.name,
       range: flow.range,
       refresh: flow.refresh,
-      data: flow.data.serialize ? flow.data.serialize() : flow.data,
-      meta: flow.meta.serialize ? flow.meta.serialize() : flow.meta,
+      data: flow.data,
+      meta: flow.meta,
       readOnly: flow.readOnly,
+      results: null,
     }
 
     setFlows({

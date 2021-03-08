@@ -37,13 +37,8 @@ export const toggleSingleClickAnnotations = () =>
     type: TOGGLE_SINGLE_CLICK_ANNOTATIONS,
   } as const)
 
-  export const deleteAnnotation = (annotationID: string) =>
+export const deleteAnnotation = (annotation: Annotation) =>
   ({
     type: DELETE_ANNOTATION,
-    annotationID,
-    } as const)
-    export const deleteAnnotation = (annotation: Annotation) =>
-    ({
-      type: DELETE_ANNOTATION,
-      annotation,
-    } as const)
+    annotation,
+  } as const)

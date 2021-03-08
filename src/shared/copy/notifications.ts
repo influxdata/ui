@@ -1079,3 +1079,4 @@ export const deleteAnnotationFailed = (error: string): Notification => ({
   ...defaultErrorNotification,
   icon: IconFont.Cube,
   message: `Failed to delete annotation: ${error}`,
+})

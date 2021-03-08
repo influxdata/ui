@@ -73,7 +73,7 @@ export const filterUnusedVars = (
   const queryViewProperties = viewProperties.filter(isQueryViewProperties)
 
   const queryTexts = queryViewProperties.reduce(
-    (acc, vp) => [...acc, ...vp.queries.map(query => query.text)],
+    (acc, vp) => [...acc, ...(vp.queries || []).map(query => query.text)],
     [] as Array<string>
   )
 

@@ -11,7 +11,10 @@ export const useEvent = (
   })
 }
 
-export const sendEvent = (eventStorageKey: string, eventStorageValue?: string) => {
+export const sendEvent = (
+  eventStorageKey: string,
+  eventStorageValue?: string
+) => {
   localStorage.setItem(eventStorageKey, eventStorageValue ?? eventStorageKey)
   localStorage.removeItem(eventStorageKey)
 }

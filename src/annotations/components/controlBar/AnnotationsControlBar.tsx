@@ -25,6 +25,9 @@ import {AnnotationsSearchBar} from 'src/annotations/components/controlBar/Annota
 // Selectors
 import {isSingleClickAnnotationsEnabled} from 'src/annotations/selectors'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 // Constants
 import {ORGS, SETTINGS, ANNOTATIONS} from 'src/shared/constants/routes'
 
@@ -37,6 +40,12 @@ export const AnnotationsControlBar: FC = () => {
   const dispatch = useDispatch()
 
   const changeWriteMode = () => {
+    const newMode = !inWriteMode
+    event(
+      'annotations write mode toggle button : onClick -> new toggle state : ',
+      {},
+      {writeMode: newMode.toString()}
+    )
     dispatch(toggleSingleClickAnnotations())
   }
 

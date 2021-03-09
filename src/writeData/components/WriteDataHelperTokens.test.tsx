@@ -51,11 +51,13 @@ describe('WriteDataHelperTokens', () => {
 
       expect(list).toBeTruthy()
 
-      const token = getByTestId(auth.description)
+      const renderedToken = getByTestId(auth.description)
 
-      expect(token).toBeTruthy()
+      expect(renderedToken).toBeTruthy()
 
-      expect(token.classList.contains('cf-list-item__active')).toBeTruthy()
+      expect(
+        renderedToken.classList.contains('cf-list-item__active')
+      ).toBeTruthy()
     })
   })
 

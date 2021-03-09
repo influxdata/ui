@@ -431,7 +431,6 @@ jobs:
             else
                     make lhr PR="${CIRCLE_PULL_REQUEST}" GITHUB_TOKEN="${HERCULES_TOKEN}";
             fi
-            exit 1
       - store_artifacts:
           path: /tmp/results.html
       - store_artifacts:

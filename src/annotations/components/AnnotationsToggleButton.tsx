@@ -10,6 +10,7 @@ import {toggleShowAnnotationsControls} from 'src/userSettings/actions'
 
 // Components
 import {Button, ComponentColor, IconFont} from '@influxdata/clockface'
+import {event} from '../../cloud/utils/reporting'
 
 export const AnnotationsToggleButton: FC = () => {
   const dispatch = useDispatch()
@@ -24,6 +25,12 @@ export const AnnotationsToggleButton: FC = () => {
     : 'Click to reveal annotations controls'
 
   const handleClick = (): void => {
+    const newIsVisible = !isVisible
+    event(
+      'annotations control bar toggle button : onClick -> new toggle state : ',
+      {},
+      {writeMode: newIsVisible.toString()}
+    )
     dispatch(toggleShowAnnotationsControls())
   }
 

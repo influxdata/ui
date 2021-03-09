@@ -75,7 +75,7 @@ const FunctionForm: FC = () => {
                 size={ComponentSize.Large}
               />
               <Button
-                text="trigger function"
+                text="run function"
                 testID="function-form-trigger-button"
                 color={ComponentColor.Success}
                 size={ComponentSize.Large}

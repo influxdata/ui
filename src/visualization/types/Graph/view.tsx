@@ -19,7 +19,10 @@ import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Redux
 import {writeThenFetchAndSetAnnotations} from 'src/annotations/actions/thunks'
-import {isSingleClickAnnotationsEnabled} from 'src/annotations/selectors'
+import {
+  getVisibleAnnotationStreams,
+  isSingleClickAnnotationsEnabled,
+} from 'src/annotations/selectors'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Constants
@@ -78,6 +81,8 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
     (state: AppState) => state.userSettings.showAnnotationsControls
   )
   const inAnnotationWriteMode = useSelector(isSingleClickAnnotationsEnabled)
+
+  const visibleAnnotationStreams = useSelector(getVisibleAnnotationStreams)
 
   const storedXDomain = useMemo(() => parseXBounds(properties.axes.x.bounds), [
     properties.axes.x.bounds,
@@ -242,8 +247,17 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
         singleClick: makeSingleClickHandler(),
       }
     }
-    // everything is under the 'default' category for now:
-    const selectedAnnotations: any[] = annotations?.default ?? []
+    // show only the streams that are enabled by the user, the 'default' stream is enabled by default.
+
+    let selectedAnnotations: any[] = []
+
+    // we want to check what annotations are enabled
+    visibleAnnotationStreams.forEach(stream => {
+      if (annotations[stream.id]) {
+        selectedAnnotations = [...annotations[stream.id]]
+      }
+    })
+
     if (selectedAnnotations.length) {
       const colors = ['cyan', 'magenta', 'white']
 

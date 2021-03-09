@@ -254,7 +254,7 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
     // we want to check what annotations are enabled
     visibleAnnotationStreams.forEach(stream => {
       if (annotations[stream.id]) {
-        selectedAnnotations = selectedAnnotations.concat(annotations[stream.id])
+        selectedAnnotations = [...annotations[stream.id]]
       }
     })
 

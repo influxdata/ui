@@ -52,6 +52,7 @@ import {
   defaultYColumn,
 } from 'src/shared/utils/vis'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {event} from '../../../cloud/utils/reporting'
 
 interface Props extends VisualizationProps {
   properties: XYViewProperties
@@ -185,6 +186,12 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
     const singleClickHandler = (
       plotInteraction: InteractionHandlerArguments
     ) => {
+      const annotationCreationBegan = true
+      event(
+        'annotations graph onClick : annotation creation process started',
+        {},
+        {annotationCreationBegan: annotationCreationBegan.toString()}
+      )
       dispatch(
         showOverlay(
           'add-annotation',

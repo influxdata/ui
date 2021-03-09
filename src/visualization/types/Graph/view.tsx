@@ -19,7 +19,10 @@ import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Redux
 import {writeThenFetchAndSetAnnotations} from 'src/annotations/actions/thunks'
-import {getVisibleAnnotationStreams, isSingleClickAnnotationsEnabled} from 'src/annotations/selectors'
+import {
+  getVisibleAnnotationStreams,
+  isSingleClickAnnotationsEnabled,
+} from 'src/annotations/selectors'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Constants

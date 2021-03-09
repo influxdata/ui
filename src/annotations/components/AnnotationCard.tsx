@@ -1,7 +1,5 @@
 // Libraries
 import React, {FC} from 'react'
-import {useHistory} from 'react-router-dom'
-import {useSelector} from 'react-redux'
 
 // Components
 import {
@@ -15,9 +13,6 @@ import {
   InfluxColors,
 } from '@influxdata/clockface'
 
-// Selectors
-import {getOrg} from 'src/organizations/selectors'
-
 // Mocks
 import {AnnotationStream} from 'src/types'
 
@@ -26,13 +21,8 @@ interface Props {
 }
 
 export const AnnotationCard: FC<Props> = ({annotationStream}) => {
-  const org = useSelector(getOrg)
-  const history = useHistory()
-
   const handleNameClick = (): void => {
-    history.push(
-      `/orgs/${org.id}/settings/annotations/${annotationStream.stream}/edit`
-    )
+    // Placeholder
   }
 
   const handleDelete = (): void => {

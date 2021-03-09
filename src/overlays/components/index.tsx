@@ -64,14 +64,6 @@ export const CreateAnnotationStreamOverlay = RouteOverlay(
   }
 )
 
-export const UpdateAnnotationStreamOverlay = RouteOverlay(
-  OverlayHandler,
-  'update-annotation-stream',
-  (history, params) => {
-    history.push(`/${ORGS}/${params.orgID}/${SETTINGS}/${ANNOTATIONS}`)
-  }
-)
-
 export const AddAnnotationDEOverlay = RouteOverlay(
   OverlayHandler,
   'add-annotation',

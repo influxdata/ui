@@ -10,15 +10,18 @@ const supportLinks = [
     title: 'Get Started with Flux',
   },
   {
-    link: 'https://docs.influxdata.com/influxdb/cloud/query-data/execute-queries/data-explorer/',
+    link:
+      'https://docs.influxdata.com/influxdb/cloud/query-data/execute-queries/data-explorer/',
     title: 'Explore Metrics',
   },
   {
-    link: 'https://docs.influxdata.com/influxdb/cloud/visualize-data/dashboards/',
+    link:
+      'https://docs.influxdata.com/influxdb/cloud/visualize-data/dashboards/',
     title: 'Build a Dashboard',
   },
   {
-    link: 'https://docs.influxdata.com/influxdb/cloud/process-data/get-started/',
+    link:
+      'https://docs.influxdata.com/influxdb/cloud/process-data/get-started/',
     title: 'Write a Task',
   },
 ]

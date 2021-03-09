@@ -172,6 +172,12 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
   const makeSingleClickHandler = () => {
     const createAnnotation = userModifiedAnnotation => {
       const {message, startTime} = userModifiedAnnotation
+      const annotationCreationComplete = true
+      event(
+        'annotations graph onClick : annotation creation process complete',
+        {},
+        {annotationCreationComplete: annotationCreationComplete.toString()}
+      )
       dispatch(
         writeThenFetchAndSetAnnotations([
           {

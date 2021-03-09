@@ -19,7 +19,7 @@ import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Redux
 import {writeThenFetchAndSetAnnotations} from 'src/annotations/actions/thunks'
-import {isSingleClickAnnotationsEnabled} from 'src/annotations/selectors'
+import {getVisibleAnnotationStreams, isSingleClickAnnotationsEnabled} from 'src/annotations/selectors'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Constants
@@ -78,6 +78,8 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
     (state: AppState) => state.userSettings.showAnnotationsControls
   )
   const inAnnotationWriteMode = useSelector(isSingleClickAnnotationsEnabled)
+
+  const visibleAnnotationStreams = useSelector(getVisibleAnnotationStreams)
 
   const storedXDomain = useMemo(() => parseXBounds(properties.axes.x.bounds), [
     properties.axes.x.bounds,
@@ -243,7 +245,12 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
       }
     }
     // everything is under the 'default' category for now:
-    const selectedAnnotations: any[] = annotations?.default ?? []
+    let selectedAnnotations: any[] = []
+
+    visibleAnnotationStreams.map(stream => {
+      selectedAnnotations = selectedAnnotations.concat(annotations[stream.id])
+    })
+
     if (selectedAnnotations.length) {
       const colors = ['cyan', 'magenta', 'white']
 

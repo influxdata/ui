@@ -166,12 +166,18 @@ export function formatTagKeyFilterCall(tagsSelections: BuilderConfig['tags']) {
   return `\n  |> filter(fn: (r) => ${fnBody})`
 }
 
+export function escapeRegExSpecialCharacters(characters: string) {
+  return characters.replace(/[.*+?^${}()|\/[\]\\]/g, '\\$&')
+}
+
 export function formatSearchFilterCall(searchTerm: string) {
   if (!searchTerm) {
     return ''
   }
 
-  return `\n  |> filter(fn: (r) => r._value =~ /(?i:${searchTerm})/)`
+  return `\n  |> filter(fn: (r) => r._value =~ /(?i:${escapeRegExSpecialCharacters(
+    searchTerm
+  )})/)`
 }
 
 export function formatTimeRangeArguments(timeRange: TimeRange): string {

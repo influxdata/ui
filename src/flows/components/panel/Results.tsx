@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, useEffect, useState, useContext, useMemo} from 'react'
 import {AutoSizer} from 'react-virtualized'
-import {Table, ComponentSize} from '@influxdata/clockface'
+import {Table, ComponentSize, DapperScrollbars} from '@influxdata/clockface'
 
 // Components
 import Resizer from 'src/flows/shared/Resizer'
@@ -18,8 +18,8 @@ import {event} from 'src/cloud/utils/reporting'
 import {RemoteDataState} from 'src/types'
 import {Visibility} from 'src/types/flows'
 
-const HEADER_HEIGHT = 33
-const ROW_HEIGHT = 33
+const HEADER_HEIGHT = 51
+const ROW_HEIGHT = 25
 
 const Results: FC = () => {
   const {flow} = useContext(FlowContext)
@@ -109,14 +109,28 @@ const Results: FC = () => {
               let rowIdx = startRow
               let currentTable
 
-              while(runningHeight < height && startRow <= results.parsed.table.length) {
-                  if (results.parse.table.columns.table.data[rowIdx] !== currentTable) {
-                      currentTable = results.parse.table.columns.table.data[rowIdx]
+              while(startRow <= results.parsed.table.length) {
+                  if (results.parsed.table.columns.table.data[rowIdx] !== currentTable) {
                       runningHeight += HEADER_HEIGHT
+
+                      if (currentTable !== undefined) {
+                          runningHeight += 10
+                      }
+
+                      if (runningHeight > height) {
+                          break
+                      }
+
+                      currentTable = results.parsed.table.columns.table.data[rowIdx]
                       continue
                   }
 
                   runningHeight += ROW_HEIGHT
+
+                  if (runningHeight > height) {
+                      break
+                  }
+
                   rowIdx++
               }
 
@@ -166,7 +180,11 @@ const Results: FC = () => {
                   const cols = Object.values(subset).map(c => ({...c, data: c.data.slice(t.start, t.end)})).filter(c => !!c.data.length)
 
                   const headers = cols.map(c => (
-                      <Table.HeaderCell>{c.name}</Table.HeaderCell>
+                      <Table.HeaderCell>
+                          {c.name}
+                          <label>{c.group ? 'group' : 'no group'}</label>
+                          <label>{c.fluxDataType}</label>
+                      </Table.HeaderCell>
                   ))
                   const rows = Array(t.end-t.start).fill(null).map((_, idx) => {
                       const cells = cols.map(c => (

@@ -26,7 +26,7 @@ import {FunctionTriggerResponse} from 'src/client/managedFunctionsRoutes'
 
 const FunctionForm: FC = () => {
   const {
-    draftFunction: {name, script, params},
+    draftFunction: {name, script, params, description},
     updateDraftFunction,
     trigger,
   } = useContext(FunctionListContext)
@@ -53,6 +53,15 @@ const FunctionForm: FC = () => {
                   updateDraftFunction({name: e.target.value})
                 }}
                 value={name}
+                testID="function-form-name"
+              />
+            </Form.Element>
+            <Form.Element label="Description">
+              <Input
+                onChange={e => {
+                  updateDraftFunction({description: e.target.value})
+                }}
+                value={description}
                 testID="function-form-name"
               />
             </Form.Element>

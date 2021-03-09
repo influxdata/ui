@@ -27,13 +27,13 @@ import {getOrg} from 'src/organizations/selectors'
 
 import {getAnnotationStreams} from 'src/annotations/selectors'
 // Types
-import {ResourceType, AnnotationStreamDetail} from 'src/types'
+import {ResourceType, AnnotationStream} from 'src/types'
 import {SortTypes} from 'src/shared/utils/sort'
 
 // Thunks
-import {fetchSetAnnotationStreamDetails} from 'src/annotations/actions/thunks'
+import {fetchAndSetAnnotationStreams} from 'src/annotations/actions/thunks'
 
-const FilterList = Filter<AnnotationStreamDetail>()
+const FilterList = Filter<AnnotationStream>()
 
 interface AnnotationsTabEmptyStateProps {
   searchTerm?: string
@@ -64,7 +64,7 @@ export const AnnotationsTab: FC = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(fetchSetAnnotationStreamDetails)
+    dispatch(fetchAndSetAnnotationStreams)
   }, [dispatch])
 
   const annotationStreamDetails = useSelector(getAnnotationStreams)
@@ -121,13 +121,13 @@ export const AnnotationsTab: FC = () => {
               >
                 {streams => (
                   <AnnotationsList
+                    annotationStreams={streams}
                     emptyState={
                       <AnnotationsTabEmptyState searchTerm={searchTerm} />
                     }
                     sortKey={sortKey}
                     sortDirection={sortDirection}
                     sortType={sortType}
-                    annotationStreams={streams}
                   />
                 )}
               </FilterList>

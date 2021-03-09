@@ -7,10 +7,10 @@ import {
   TOGGLE_SINGLE_CLICK_ANNOTATIONS,
 } from 'src/annotations/actions/creators'
 
-import {Annotation, AnnotationsList, AnnotationStreamDetail} from 'src/types'
+import {Annotation, AnnotationsList, AnnotationStream} from 'src/types'
 
 export interface AnnotationsState {
-  streams: AnnotationStreamDetail[]
+  streams: AnnotationStream[]
   annotations: AnnotationsList
   visibleStreamsByID: string[]
   enableSingleClickAnnotations: boolean

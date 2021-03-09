@@ -11,14 +11,14 @@ import {
   Action as AnnotationAction,
 } from 'src/annotations/actions/creators'
 
-import {Annotation, AnnotationStreamDetail} from 'src/types'
+import {Annotation, AnnotationStream} from 'src/types'
 
-export const fetchSetAnnotationStreamDetails = async (
+export const fetchAndSetAnnotationStreams = async (
   dispatch: Dispatch<AnnotationAction>
 ): Promise<void> => {
-  const annotationStreamDetails: AnnotationStreamDetail[] = await getAnnotationStreamsDetails()
+  const annotationStreams: AnnotationStream[] = await getAnnotationStreamsDetails()
 
-  dispatch(setAnnotationStreams(annotationStreamDetails))
+  dispatch(setAnnotationStreams(annotationStreams))
 }
 
 export const fetchAndSetAnnotations = () => async (

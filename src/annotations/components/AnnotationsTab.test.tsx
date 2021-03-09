@@ -23,7 +23,7 @@ describe('Annotations Tab Component', () => {
 
     const {getByTestId} = setup()
 
-    expect(getByTestId('annotations-empty-state')).toBeInTheDocument()
+    expect(getByTestId('annotations-empty-state')).toBeVisible()
   })
 
   it('renders with annotation streams displayed if the user has annotations', () => {

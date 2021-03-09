@@ -13,14 +13,14 @@ import {Sort} from '@influxdata/clockface'
 import {getSortedResources} from 'src/shared/utils/sort'
 
 // Types
-import {AnnotationStreamDetail} from 'src/types'
+import {AnnotationStream} from 'src/types'
 
 interface Props {
   emptyState: JSX.Element
   sortKey: string
   sortDirection: Sort
   sortType: SortTypes
-  annotationStreams: AnnotationStreamDetail[]
+  annotationStreams: AnnotationStream[]
 }
 
 export const AnnotationsList: FC<Props> = ({
@@ -30,7 +30,7 @@ export const AnnotationsList: FC<Props> = ({
   sortType,
   annotationStreams,
 }) => {
-  const sortedAnnotationStreams = getSortedResources<AnnotationStreamDetail>(
+  const sortedAnnotationStreams = getSortedResources<AnnotationStream>(
     annotationStreams,
     sortKey,
     sortDirection,

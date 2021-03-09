@@ -19,10 +19,10 @@ import {
 import {getOrg} from 'src/organizations/selectors'
 
 // Mocks
-import {AnnotationStreamDetail} from 'src/types'
+import {AnnotationStream} from 'src/types'
 
 interface Props {
-  annotationStream: AnnotationStreamDetail
+  annotationStream: AnnotationStream
 }
 
 export const AnnotationCard: FC<Props> = ({annotationStream}) => {
@@ -62,7 +62,7 @@ export const AnnotationCard: FC<Props> = ({annotationStream}) => {
       />
       <ResourceCard.Description
         description={
-          annotationStream?.description ??
+          annotationStream.description ??
           'Add a description to your stream to see it here'
         }
       />
@@ -76,8 +76,8 @@ export const AnnotationCard: FC<Props> = ({annotationStream}) => {
             style={{marginRight: '4px'}}
           />
         </>
-        <>Created at {annotationStream?.createdAt}</>
-        <>Last modified {annotationStream?.updatedAt}</>
+        <>Created at {annotationStream.createdAt ?? null}</>
+        <>Last modified {annotationStream?.updatedAt ?? null}</>
       </ResourceCard.Meta>
       {/* Labels go here */}
     </ResourceCard>

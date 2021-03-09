@@ -1,10 +1,10 @@
 // Types
 import {
   Annotation,
-  AnnotationStream,
+  AnnotationResponse,
   GetAnnotationPayload,
   DeleteAnnotation,
-  AnnotationStreamDetail,
+  AnnotationStream,
 } from 'src/types'
 
 /* Note: Axios will be removed from here as part of #511, which is the next ticket to be worked on the annotations API */
@@ -21,10 +21,13 @@ const streamsURL = `${API_BASE_PATH}api/v2private/streams`
 // Utils
 import {formatAnnotationQueryString} from 'src/annotations/utils/formatQueryString'
 
-export const getAnnotationStreamsDetails = async (): Promise<AnnotationStreamDetail[]> => {
+export const getAnnotationStreamsDetails = async (): Promise<AnnotationStream[]> => {
   const annotationStreamResponse = await axios.get(streamsURL)
   if (annotationStreamResponse.status >= 300) {
-    throw new Error(annotationStreamResponse.data?.message)
+    throw new Error(
+      annotationStreamResponse.data?.message ??
+        'Error fetching annotation streams'
+    )
   }
   return annotationStreamResponse.data ?? []
 }
@@ -63,14 +66,14 @@ export const writeAnnotation = async (
 
 export const getAnnotations = async (
   stream?: string
-): Promise<AnnotationStream[]> => {
+): Promise<AnnotationResponse[]> => {
   const res = await axios.get(`${url}?${formatAnnotationQueryString({stream})}`)
 
   if (res.status >= 300) {
     throw new Error(res.data?.message)
   }
 
-  return res.data.map((retrievedAnnotation: AnnotationStream) => ({
+  return res.data.map((retrievedAnnotation: AnnotationResponse) => ({
     stream: retrievedAnnotation.stream,
     annotations: retrievedAnnotation.annotations,
   }))
@@ -78,7 +81,7 @@ export const getAnnotations = async (
 
 export const getAnnotation = async (
   annotation: GetAnnotationPayload
-): Promise<AnnotationStream[]> => {
+): Promise<AnnotationResponse[]> => {
   const formattedQueryString = formatAnnotationQueryString(annotation)
   const appendedURL = `${url}?${formattedQueryString}`
 
@@ -88,7 +91,7 @@ export const getAnnotation = async (
     throw new Error(res.data?.message)
   }
 
-  return res.data.map((retrievedAnnotation: AnnotationStream) => ({
+  return res.data.map((retrievedAnnotation: AnnotationResponse) => ({
     stream: retrievedAnnotation.stream,
     annotations: retrievedAnnotation.annotations,
   }))

@@ -247,11 +247,15 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
         singleClick: makeSingleClickHandler(),
       }
     }
-    // everything is under the 'default' category for now:
+    // show only the streams that are enabled by the user, the 'default' stream is enabled by default.
+
     let selectedAnnotations: any[] = []
 
-    visibleAnnotationStreams.map(stream => {
-      selectedAnnotations = selectedAnnotations.concat(annotations[stream.id])
+    // we want to check what annotations are enabled
+    visibleAnnotationStreams.forEach(stream => {
+      if (annotations[stream.id]) {
+        selectedAnnotations = selectedAnnotations.concat(annotations[stream.id])
+      }
     })
 
     if (selectedAnnotations.length) {

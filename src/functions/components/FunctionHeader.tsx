@@ -41,6 +41,7 @@ const FunctionHeader: FC = () => {
       <Page.ControlBar fullWidth={true}>
         {id && (
           <Page.ControlBarLeft>
+            URL:
             <CopyToClipboard text={functionURL} onCopy={notifyCopied}>
               <div className="code-snippet--text" style={{fontSize: '13px'}}>
                 <pre>

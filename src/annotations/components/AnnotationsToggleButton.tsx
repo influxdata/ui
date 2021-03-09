@@ -29,7 +29,7 @@ export const AnnotationsToggleButton: FC = () => {
     event(
       'annotations control bar toggle button : onClick -> new toggle state : ',
       {},
-      {writeMode: newIsVisible.toString()}
+      {isVisible: newIsVisible.toString()}
     )
     dispatch(toggleShowAnnotationsControls())
   }

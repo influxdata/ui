@@ -33,14 +33,12 @@ describe('Annotations Tab Component', () => {
       {stream: 'Vince Lombardi'},
     ])
 
-    const {getByTestId, getAllByTestId} = setup()
+    const {getByText, getAllByTestId} = setup()
 
     const annotationStreamListItems = getAllByTestId(
       'resource-card annotation-stream'
     )
     expect(annotationStreamListItems.length).toEqual(2)
-    expect(
-      getByTestId('annotation-stream-card--name Aaron Rodgers')
-    ).toBeInTheDocument()
+    expect(getByText('Aaron Rodgers')).toBeVisible()
   })
 })

@@ -13,7 +13,7 @@ import {
   InfluxColors,
 } from '@influxdata/clockface'
 
-// Mocks
+// Types
 import {AnnotationStream} from 'src/types'
 
 interface Props {

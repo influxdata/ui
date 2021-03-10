@@ -1,4 +1,4 @@
-import {FromFluxResult} from '@influxdata/giraffe'
+import {FromFluxResult, FluxDataType, Table} from '@influxdata/giraffe'
 import {FunctionComponent, ComponentClass, ReactNode} from 'react'
 import {
   AutoRefresh,
@@ -53,10 +53,33 @@ export interface PipeProp {
     | ComponentClass<PipeContextProps>
 }
 
+type Column =
+  | {
+      name: string
+      type: 'number'
+      fluxDataType: FluxDataType
+      data: Array<number | null>
+    } //  parses empty numeric values as null
+  | {name: string; type: 'time'; fluxDataType: FluxDataType; data: number[]}
+  | {name: string; type: 'boolean'; fluxDataType: FluxDataType; data: boolean[]}
+  | {name: string; type: 'string'; fluxDataType: FluxDataType; data: string[]}
+
+interface Columns {
+  [columnKey: string]: Column
+}
+
+interface InternalTable extends Table {
+  columns: Columns
+}
+
+interface InternalFromFluxResult extends FromFluxResult {
+  table: InternalTable
+}
+
 export interface FluxResult {
   source: string // the query that was used to generate the flux
   raw: string // the result from the API
-  parsed: FromFluxResult // the parsed result
+  parsed: InternalFromFluxResult // the parsed result
   error?: string // any error that might have happend while fetching
 }
 

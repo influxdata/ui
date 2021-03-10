@@ -282,7 +282,7 @@ describe('Checks', () => {
     )
   })
 
-  it('checks only allow numeric fields', () => {
+  it('deadman checks should render a table for non-numeric fields', () => {
     cy.get<string>('@defaultBucketListSelector').then(
       (defaultBucketListSelector: string) => {
         // create deadman check
@@ -305,8 +305,8 @@ describe('Checks', () => {
         cy.getByTestID('empty-graph--no-queries')
         cy.getByTestID('time-machine-submit-button').click()
 
-        // check for error message
-        cy.getByTestID('empty-graph--numeric').should('exist')
+        // check for table
+        cy.getByTestID('_value-table-header').should('exist')
       }
     )
   })

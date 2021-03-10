@@ -338,7 +338,7 @@ export const getSaveableView = (state: AppState): QueryView & {id?: string} => {
       properties: {
         ...saveableView.properties,
         xColumn: getXColumnSelection(state),
-        ySeriesColumns: [getYColumnSelection(state)],
+        ySeriesColumns: getYSeriesColumns(state),
         fillColumns: getFillColumnsSelection(state),
       },
     }

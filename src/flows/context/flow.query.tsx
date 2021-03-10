@@ -11,6 +11,7 @@ import {PIPE_DEFINITIONS} from 'src/flows'
 import {notify} from 'src/shared/actions/notifications'
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 import {parseDuration, timeRangeToDuration} from 'src/shared/utils/duration'
+import {useEvent, sendEvent} from 'src/unity/hooks/useEvent'
 
 // Constants
 import {
@@ -66,8 +67,16 @@ export const FlowQueryProvider: FC = ({children}) => {
   const {query: queryAPI} = useContext(QueryContext)
 
   const dispatch = useDispatch()
-
+  const notebookQueryKey = `queryAll-${flow?.name}`
   const variables = useSelector((state: AppState) => getVariables(state))
+
+  // Share querying event across tabs
+  const handleStorageEvent = e => {
+    if (e.key === notebookQueryKey && e.newValue === notebookQueryKey) {
+      _queryAll()
+    }
+  }
+  useEvent('storage', handleStorageEvent)
 
   const vars = useMemo(() => {
     const _vars = [...variables]
@@ -189,7 +198,13 @@ export const FlowQueryProvider: FC = ({children}) => {
     status = RemoteDataState.Loading
   }
 
+  // Use localstorage to communicate query execution to other tabs
   const queryAll = () => {
+    sendEvent(notebookQueryKey)
+    _queryAll()
+  }
+
+  const _queryAll = () => {
     if (status === RemoteDataState.Loading) {
       return
     }

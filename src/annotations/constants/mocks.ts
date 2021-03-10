@@ -26,15 +26,15 @@ export interface AnnotationStream {
 
 export const MOCK_ANNOTATION_STREAMS: AnnotationStream[] = [
   {
-    id: 'anno1',
-    name: 'Deployments',
-    description: 'Event data for deployments',
+    id: 'default',
+    name: 'Default',
+    description: 'Default Annotation stream',
     meta: {
       createdAt: '2d ago',
       updatedAt: '6h ago',
     },
     display: {
-      color: '#ffffff',
+      color: '#8e1fc3',
       summaryCol: 'summary',
       messageCol: 'message',
       timeStartCol: '_timeStart',
@@ -43,54 +43,6 @@ export const MOCK_ANNOTATION_STREAMS: AnnotationStream[] = [
     query: {
       tags: {
         _field: 'deployments',
-      },
-      measurement: 'annotations',
-      bucketName: 'defBuck',
-    },
-  },
-  {
-    id: 'anno2',
-    name: 'Snacks',
-    description: 'Tracking every time I eat a snack',
-    meta: {
-      createdAt: '2d ago',
-      updatedAt: '6h ago',
-    },
-    display: {
-      color: '#00ff90',
-      summaryCol: 'summary',
-      messageCol: 'message',
-      timeStartCol: '_timeStart',
-      timeStopCol: '_timeStop',
-    },
-    query: {
-      tags: {
-        _field: 'snacks',
-      },
-      measurement: 'annotations',
-      bucketName: 'defBuck',
-    },
-  },
-  {
-    id: 'anno3',
-    name: 'HydroHomies',
-    description: 'Tracking every time someone on the team hydrates',
-    meta: {
-      createdAt: '2d ago',
-      updatedAt: '6h ago',
-    },
-    display: {
-      color: '#2973fa',
-      summaryCol: 'summary',
-      messageCol: 'message',
-      timeStartCol: '_timeStart',
-      timeStopCol: '_timeStop',
-    },
-    query: {
-      tags: {
-        _field: 'hydrohomies',
-        water: 'filtered',
-        flavor: 'awesome',
       },
       measurement: 'annotations',
       bucketName: 'defBuck',

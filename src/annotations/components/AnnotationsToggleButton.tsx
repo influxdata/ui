@@ -20,8 +20,8 @@ export const AnnotationsToggleButton: FC = () => {
     : ComponentColor.Default
 
   const titleText = isVisible
-    ? 'Click to reveal annotations controls'
-    : 'Click to hide annotations controls'
+    ? 'Click to hide annotations controls'
+    : 'Click to reveal annotations controls'
 
   const handleClick = (): void => {
     dispatch(toggleShowAnnotationsControls())

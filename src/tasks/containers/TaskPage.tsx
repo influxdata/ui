@@ -117,8 +117,13 @@ class TaskPage extends PureComponent<Props> {
     const {newScript, taskOptions} = this.props
 
     const taskOption: string = taskOptionsToFluxScript(taskOptions)
-    const script: string = addDestinationToFluxScript(newScript, taskOptions)
+    let script: string = addDestinationToFluxScript(newScript, taskOptions)
     const preamble = `${taskOption}`
+
+    // if the script has a pre-defined options task = {}
+    // we want the taskOptions to take precedence over what is provided in the script
+    // currently we delete that part of the script
+    script = script.replace(new RegExp('options\\s+task\\s+=\\s+{(.|\\s)*}'), '')
 
     this.props.saveNewScript(script, preamble).then(() => {
       this.props.goToTasks()

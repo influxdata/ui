@@ -119,10 +119,10 @@ export const updateAnnotation = async (
 }
 
 export const deleteAnnotation = async (
-  deleteAnnotation: DeleteAnnotation
+  annotationToDelete: DeleteAnnotation
 ): Promise<number> => {
   const formattedQueryString = formatAnnotationQueryString(
-    deleteAnnotation,
+    annotationToDelete,
     'delete'
   )
 

@@ -24,9 +24,14 @@ import {PROJECT_NAME} from 'src/flows'
 // Types
 import {AppState, RemoteDataState, Variable} from 'src/types'
 
+interface Instance {
+  id: string
+  modifier?: string
+}
+
 interface Stage {
   text: string
-  instances: string[]
+  instances: Instance[]
 }
 
 export interface FlowQueryContextType {
@@ -46,6 +51,7 @@ export const FlowQueryContext = React.createContext<FlowQueryContextType>(
 )
 
 const PREVIOUS_REGEXP = /__PREVIOUS_RESULT__/g
+const CURRENT_REGEXP = /__CURRENT_RESULT__/g
 
 const generateTimeVar = (which, value): Variable =>
   ({
@@ -118,13 +124,12 @@ export const FlowQueryProvider: FC = ({children}) => {
       .reduce((stages, pipeID) => {
         const pipe = flow.data.get(pipeID)
 
-        const stage = {
-          text: '',
-          instances: [pipeID],
-          requirements: {},
-        }
-
         const create = text => {
+          const stage = {
+            text: '',
+            instances: [{id: pipeID}],
+            requirements: {},
+          }
           if (text && PREVIOUS_REGEXP.test(text) && stages.length) {
             stage.text = text.replace(
               PREVIOUS_REGEXP,
@@ -137,10 +142,23 @@ export const FlowQueryProvider: FC = ({children}) => {
           stages.push(stage)
         }
 
-        const append = () => {
-          if (stages.length) {
-            stages[stages.length - 1].instances.push(pipeID)
+        const append = (modifier?) => {
+          if (!stages.length) {
+            return
           }
+
+          const text = (modifier || '').replace(
+            CURRENT_REGEXP,
+            stages[stages.length - 1].text
+          )
+
+          stages[stages.length - 1].instances = [
+            ...stages[stages.length - 1].instances.filter(i => i.id !== pipeID),
+            {
+              id: pipeID,
+              modifier: text,
+            },
+          ]
         }
 
         if (
@@ -153,8 +171,6 @@ export const FlowQueryProvider: FC = ({children}) => {
             append,
             withSideEffects
           )
-        } else {
-          append()
         }
 
         return stages
@@ -218,26 +234,43 @@ export const FlowQueryProvider: FC = ({children}) => {
     event('Running Notebook QueryAll')
 
     Promise.all(
-      map.map(stage => {
-        stage.instances.forEach(pipeID => {
-          flow.meta.update(pipeID, {loading: RemoteDataState.Loading})
-        })
-        return query(stage.text)
-          .then(response => {
-            stage.instances.forEach(pipeID => {
-              flow.meta.update(pipeID, {loading: RemoteDataState.Done})
-              forceUpdate(pipeID, response)
-            })
+      map
+        .reduce((acc, curr) => {
+          acc.push({
+            text: curr.text,
+            instances: curr.instances.filter(i => !i.modifier).map(i => i.id),
           })
-          .catch(e => {
-            stage.instances.forEach(pipeID => {
-              forceUpdate(pipeID, {
-                error: e.message,
+
+          return acc.concat(
+            curr.instances
+              .filter(i => i.modifier)
+              .map(i => ({
+                text: i.modifier,
+                instances: [i.id],
+              }))
+          )
+        }, [])
+        .filter(stage => !!stage.instances.length)
+        .map(stage => {
+          stage.instances.forEach(pipeID => {
+            flow.meta.update(pipeID, {loading: RemoteDataState.Loading})
+          })
+          return query(stage.text)
+            .then(response => {
+              stage.instances.forEach(pipeID => {
+                flow.meta.update(pipeID, {loading: RemoteDataState.Done})
+                forceUpdate(pipeID, response)
               })
-              flow.meta.update(pipeID, {loading: RemoteDataState.Error})
             })
-          })
-      })
+            .catch(e => {
+              stage.instances.forEach(pipeID => {
+                forceUpdate(pipeID, {
+                  error: e.message,
+                })
+                flow.meta.update(pipeID, {loading: RemoteDataState.Error})
+              })
+            })
+        })
     )
       .then(() => {
         event('run_notebook_success', {runMode})

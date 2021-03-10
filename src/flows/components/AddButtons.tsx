@@ -7,7 +7,6 @@ import CellFamily from 'src/flows/components/CellFamily'
 
 // Constants
 import {FlowContext} from 'src/flows/context/flow.current'
-import {ResultsContext} from 'src/flows/context/results'
 import {PIPE_DEFINITIONS} from 'src/flows'
 
 // Utils
@@ -52,7 +51,6 @@ const SUPPORTED_FAMILIES = [
 
 const AddButtons: FC<Props> = ({index, onInsert}) => {
   const {add} = useContext(FlowContext)
-  const results = useContext(ResultsContext)
 
   const pipeFamilies = Object.entries(
     Object.values(PIPE_DEFINITIONS)
@@ -101,15 +99,13 @@ const AddButtons: FC<Props> = ({index, onInsert}) => {
 
             onInsert && onInsert()
 
-            const id = add(
+            add(
               {
                 ...data,
                 type: def.type,
               },
               index
             )
-
-            results.add(id)
           }}
           color={ComponentColor.Secondary}
         />

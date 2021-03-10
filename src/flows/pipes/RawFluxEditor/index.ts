@@ -31,11 +31,11 @@ export default register => {
         .trim()
 
       if (!text.length) {
-        append()
         return
       }
 
       create(text)
+      append(`__CURRENT_RESULT__ |> limit(n: 100)`)
     },
   })
 }

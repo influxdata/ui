@@ -11,7 +11,6 @@ import {QueryBuilderProvider} from 'src/flows/pipes/QueryBuilder/context'
 
 // Components
 import AddButton from 'src/flows/pipes/QueryBuilder/AddButton'
-import AggregationSelector from 'src/flows/pipes/QueryBuilder/AggregationSelector'
 import BucketSelector from 'src/flows/pipes/QueryBuilder/BucketSelector'
 import CardList from 'src/flows/pipes/QueryBuilder/CardList'
 
@@ -29,7 +28,6 @@ const QueryBuilder: FC<PipeProp> = ({Context}) => {
                   <AddButton />
                 </div>
               </DapperScrollbars>
-              <AggregationSelector />
             </div>
           </div>
         </Context>

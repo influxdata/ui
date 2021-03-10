@@ -82,13 +82,6 @@ const ResultTable: FC<TableProps> = ({
         group: results.parsed.fluxGroupKeyUnion.includes(c.name),
         data: c.data.slice(startRow, startRow + page),
       }))
-      .filter(
-        (c: any) =>
-          !!c.data.filter(_c => _c !== undefined).length &&
-          c.name !== '_start' &&
-          c.name !== '_stop' &&
-          c.name !== 'result'
-      )
       .reduce((arr, curr) => {
         arr[curr.name] = curr
         return arr
@@ -126,14 +119,24 @@ const ResultTable: FC<TableProps> = ({
         subset['_value'],
       ]
         .concat(
-          Object.values(subset).filter((c: any) => {
-            return !['table', '_measurement', '_field', '_value'].includes(
-              c.name
+          Object.values(subset)
+            .filter((c: any) => {
+              return ![
+                '_start',
+                '_stop',
+                'result',
+                'table',
+                '_measurement',
+                '_field',
+                '_value',
+              ].includes(c.name)
+            })
+            .sort((a: any, b: any) =>
+              a.name.toLowerCase().localeCompare(b.name.toLowerCase())
             )
-          })
         )
         .map(c => ({...c, data: c.data.slice(t.start, t.end)}))
-        .filter(c => !!c.data.length)
+        .filter(c => !!c.data.filter(_c => _c !== undefined).length)
 
       const headers = cols.map(c => (
         <Table.HeaderCell key={`t${tIdx}:h${c.name}`}>

@@ -14,12 +14,10 @@ import {
   ButtonGroup,
   SquareButton,
   IconFont,
-  Panel,
-  Gradients,
-  AlignItems,
   ButtonShape,
 } from '@influxdata/clockface'
 import {FunctionListContext} from 'src/functions/context/function.list'
+import FunctionResponse from 'src/functions/components/FunctionResponse'
 
 // Types
 import {FunctionTriggerResponse} from 'src/client/managedFunctionsRoutes'
@@ -39,8 +37,6 @@ const FunctionForm: FC = () => {
     const response = await trigger({script, params})
     setTriggerResponse(response)
   }
-
-  const statusText = triggerResponse.status === 'ok' ? 'success!' : 'error'
 
   return (
     <Form>
@@ -95,39 +91,7 @@ const FunctionForm: FC = () => {
           </Grid.Column>
         </Grid.Row>
         {triggerResponse.status && (
-          <Grid.Row>
-            <Grid.Column widthXS={Columns.Twelve}>
-              <Panel
-                gradient={
-                  triggerResponse.status == 'ok'
-                    ? Gradients.TropicalTourist
-                    : Gradients.DangerLight
-                }
-                border={true}
-              >
-                <Panel.Header>
-                  <h5>{statusText}</h5>
-                </Panel.Header>
-                <Panel.Body alignItems={AlignItems.FlexStart}>
-                  {triggerResponse.status == 'ok' && triggerResponse.logs ? (
-                    triggerResponse.logs.map(l => {
-                      return (
-                        <div key={l.timestamp}>
-                          <div>severity: {JSON.stringify(l.severity)}</div>
-                          <div>timestamp: {JSON.stringify(l.timestamp)}</div>
-                          <div>message: {JSON.stringify(l.message)}</div>
-                        </div>
-                      )
-                    })
-                  ) : (
-                    <p>
-                      <div>{JSON.stringify(triggerResponse.error)}</div>
-                    </p>
-                  )}
-                </Panel.Body>
-              </Panel>
-            </Grid.Column>
-          </Grid.Row>
+          <FunctionResponse triggerResponse={triggerResponse} />
         )}
       </Grid>
     </Form>

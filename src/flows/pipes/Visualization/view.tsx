@@ -2,26 +2,16 @@
 import React, {FC, useContext, useCallback, useMemo, useState} from 'react'
 
 // Components
-import {
-  ComponentColor,
-  ComponentStatus,
-  IconFont,
-  SquareButton,
-} from '@influxdata/clockface'
+import {IconFont} from '@influxdata/clockface'
 import ExportButton from 'src/flows/pipes/Visualization/ExportDashboardButton'
+import Controls from 'src/flows/pipes/Visualization/Controls'
 import Resizer from 'src/flows/shared/Resizer'
 
 // Utilities
-import {event} from 'src/cloud/utils/reporting'
-import {
-  SUPPORTED_VISUALIZATIONS,
-  View,
-  ViewOptions,
-  ViewTypeDropdown,
-} from 'src/visualization'
+import {View, ViewOptions} from 'src/visualization'
 
 // Types
-import {ViewType, RemoteDataState} from 'src/types'
+import {RemoteDataState} from 'src/types'
 import {PipeProp} from 'src/types/flows'
 
 import {PipeContext} from 'src/flows/context/pipe'
@@ -45,42 +35,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     [data.properties, update]
   )
 
-  const updateType = (type: ViewType) => {
-    event('notebook_change_visualization_type', {
-      viewType: type,
-    })
-
-    update({
-      properties: SUPPORTED_VISUALIZATIONS[type].initial,
-    })
-  }
-
   const dataExists = results.parsed && Object.entries(results.parsed).length
-  const configureButtonStatus = dataExists
-    ? ComponentStatus.Default
-    : ComponentStatus.Disabled
-  const configureButtonTitleText = dataExists
-    ? 'Configure Visualization'
-    : 'No data to visualize yet'
-
-  const controls = (
-    <>
-      <ViewTypeDropdown
-        viewType={data.properties.type}
-        onUpdateType={updateType as any}
-      />
-      <SquareButton
-        icon={IconFont.CogThick}
-        onClick={toggleOptions}
-        status={configureButtonStatus}
-        color={
-          optionsVisibility ? ComponentColor.Primary : ComponentColor.Default
-        }
-        titleText={configureButtonTitleText}
-        className="flows-config-visualization-button"
-      />
-    </>
-  )
 
   const loadingText = useMemo(() => {
     if (loading === RemoteDataState.Loading) {
@@ -95,7 +50,10 @@ const Visualization: FC<PipeProp> = ({Context}) => {
   }, [loading])
 
   return (
-    <Context controls={controls} persistentControl={<ExportButton />}>
+    <Context
+      controls={<Controls toggle={toggleOptions} visible={optionsVisibility} />}
+      persistentControl={<ExportButton />}
+    >
       <Resizer
         loading={loading}
         resizingEnabled={!!results.raw}

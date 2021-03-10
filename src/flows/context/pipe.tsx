@@ -47,7 +47,8 @@ export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
     flow.data.get(id),
   ])
   const queryText =
-    stages.filter(stage => stage.instances.includes(id))[0]?.text || ''
+    stages.filter(stage => stage.instances.map(i => i.id).includes(id))[0]
+      ?.text || ''
 
   const updater = (_data: PipeData) => {
     flow.data.update(id, _data)

@@ -123,7 +123,10 @@ class TaskPage extends PureComponent<Props> {
     // if the script has a pre-defined options task = {}
     // we want the taskOptions to take precedence over what is provided in the script
     // currently we delete that part of the script
-    script = script.replace(new RegExp('options\\s+task\\s+=\\s+{(.|\\s)*}'), '')
+    script = script.replace(
+      new RegExp('options\\s+task\\s+=\\s+{(.|\\s)*}'),
+      ''
+    )
 
     this.props.saveNewScript(script, preamble).then(() => {
       this.props.goToTasks()

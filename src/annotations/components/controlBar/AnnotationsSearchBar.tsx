@@ -17,7 +17,10 @@ import {AnnotationsSearchBarItem} from 'src/annotations/components/controlBar/An
 import {enableAnnotationStream} from 'src/annotations/actions/creators'
 import {fetchAndSetAnnotationStreams} from 'src/annotations/actions/thunks'
 // Selectors
-import {getAnnotationStreams} from 'src/annotations/selectors'
+import {
+  getAnnotationStreams,
+  getHiddenAnnotationStreams,
+} from 'src/annotations/selectors'
 
 // Styles
 import 'src/annotations/components/controlBar/AnnotationsSearchBar.scss'
@@ -33,11 +36,15 @@ export const AnnotationsSearchBar: FC = () => {
   }, [dispatch])
 
   const annotationStreams = useSelector(getAnnotationStreams)
+  const hiddenStreams = useSelector(getHiddenAnnotationStreams)
 
   const filteredSuggestions = annotationStreams.filter(annotationStream => {
-    return annotationStream.stream
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
+    return (
+      annotationStream.stream
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) &&
+      hiddenStreams.includes(annotationStream.stream.toLowerCase())
+    )
   })
 
   const handleInputChange = (e: ChangeEvent<InputRef>): void => {
@@ -70,7 +77,7 @@ export const AnnotationsSearchBar: FC = () => {
             name={item.stream}
             id={item.stream}
             description={item.description}
-            color="purple"
+            color="#9078E4"
             onClick={handleSuggestionClick}
           />
         ))}

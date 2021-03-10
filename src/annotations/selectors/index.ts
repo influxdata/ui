@@ -2,36 +2,23 @@
 import {AppState, AnnotationStream} from 'src/types'
 import {sortBy} from 'lodash'
 
-// Mocks
-import {
-  MOCK_ANNOTATION_STREAMS,
-  AnnotationStream as MockAnnotationStream,
-} from 'src/annotations/constants/mocks'
-
 export const getAnnotationControlsVisibility = (state: AppState): boolean => {
   return state.userSettings.showAnnotationsControls || false
 }
 
-export const getVisibleAnnotationStreams = (
-  state: AppState
-): MockAnnotationStream[] => {
+export const getVisibleAnnotationStreams = (state: AppState): string[] => {
   const visibleStreams = state.annotations.visibleStreamsByID
-  const filtered = MOCK_ANNOTATION_STREAMS.filter(stream =>
-    visibleStreams.includes(stream.id)
-  )
 
-  return sortBy(filtered, stream => stream.name)
+  return sortBy(visibleStreams, stream => stream)
 }
 
-export const getHiddenAnnotationStreams = (
-  state: AppState
-): MockAnnotationStream[] => {
+export const getHiddenAnnotationStreams = (state: AppState): string[] => {
   const visibleStreams = state.annotations.visibleStreamsByID
-  const filtered = MOCK_ANNOTATION_STREAMS.filter(
-    stream => !visibleStreams.includes(stream.id)
-  )
+  const filtered = state.annotations.streams
+    .map(stream => stream.stream)
+    .filter(stream => !visibleStreams.includes(stream))
 
-  return sortBy(filtered, stream => stream.name)
+  return sortBy(filtered, stream => stream)
 }
 
 export const getAnnotationStreams = (state: AppState): AnnotationStream[] => {

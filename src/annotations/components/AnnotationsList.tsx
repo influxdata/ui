@@ -41,10 +41,7 @@ export const AnnotationsList: FC<Props> = ({
     <ResourceList>
       <ResourceList.Body emptyState={emptyState}>
         {sortedAnnotationStreams.map(stream => (
-          <AnnotationCard
-            key={JSON.stringify(stream)}
-            annotationStream={stream}
-          />
+          <AnnotationCard key={stream.stream} annotationStream={stream} />
         ))}
       </ResourceList.Body>
     </ResourceList>

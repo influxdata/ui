@@ -59,7 +59,9 @@ export function findKeys({
 
   // TODO: Use the `v1.tagKeys` function from the Flux standard library once
   // this issue is resolved: https://github.com/influxdata/flux/issues/1071
-  const query = `from(bucket: "${bucket}")
+  const query = `import "regexp"
+  
+  from(bucket: "${bucket}")
   |> range(${timeRangeArguments})
   |> filter(fn: ${tagFilters})
   |> keys()
@@ -102,7 +104,9 @@ export function findValues({
 
   // TODO: Use the `v1.tagValues` function from the Flux standard library once
   // this issue is resolved: https://github.com/influxdata/flux/issues/1071
-  const query = `from(bucket: "${bucket}")
+  const query = `import "regexp"
+  
+  from(bucket: "${bucket}")
   |> range(${timeRangeArguments})
   |> filter(fn: ${tagFilters})
   |> keep(columns: ["${key}"])
@@ -166,18 +170,12 @@ export function formatTagKeyFilterCall(tagsSelections: BuilderConfig['tags']) {
   return `\n  |> filter(fn: (r) => ${fnBody})`
 }
 
-export function escapeRegExSpecialCharacters(characters: string) {
-  return characters.replace(/[.*+?^${}()|\/[\]\\]/g, '\\$&')
-}
-
 export function formatSearchFilterCall(searchTerm: string) {
   if (!searchTerm) {
     return ''
   }
 
-  return `\n  |> filter(fn: (r) => r._value =~ /(?i:${escapeRegExSpecialCharacters(
-    searchTerm
-  )})/)`
+  return `\n  |> filter(fn: (r) => r._value =~ regexp.compile(v: "(?i:" + regexp.quoteMeta(v: "${searchTerm}") + ")"))`
 }
 
 export function formatTimeRangeArguments(timeRange: TimeRange): string {

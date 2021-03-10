@@ -75,7 +75,7 @@ const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
           color={ComponentColor.Primary}
           testID="dropdown-button--gen-token"
         >
-          Generate
+          Generate Token
         </Dropdown.Button>
       )}
       menu={onCollapse => (

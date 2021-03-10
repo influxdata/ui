@@ -53,9 +53,13 @@ export function findKeys({
   limit = DEFAULT_LIMIT,
 }: FindKeysOptions): CancelBox<string[]> {
   const tagFilters = formatTagFilterPredicate(tagsSelections)
-  const searchFilter = formatSearchFilterCall(searchTerm)
   const previousKeyFilter = formatTagKeyFilterCall(tagsSelections)
   const timeRangeArguments = formatTimeRangeArguments(timeRange)
+
+  // requires Flux package to work which we will put in the query
+  const searchFilter = !searchTerm
+    ? ''
+    : `\n  |> filter(fn: (r) => r._value =~ regexp.compile(v: "(?i:" + regexp.quoteMeta(v: "${searchTerm}") + ")"))`
 
   // TODO: Use the `v1.tagKeys` function from the Flux standard library once
   // this issue is resolved: https://github.com/influxdata/flux/issues/1071
@@ -99,8 +103,12 @@ export function findValues({
   limit = DEFAULT_LIMIT,
 }: FindValuesOptions): CancelBox<string[]> {
   const tagFilters = formatTagFilterPredicate(tagsSelections)
-  const searchFilter = formatSearchFilterCall(searchTerm)
   const timeRangeArguments = formatTimeRangeArguments(timeRange)
+
+  // requires Flux package to work which we will put in the query
+  const searchFilter = !searchTerm
+    ? ''
+    : `\n  |> filter(fn: (r) => r._value =~ regexp.compile(v: "(?i:" + regexp.quoteMeta(v: "${searchTerm}") + ")"))`
 
   // TODO: Use the `v1.tagValues` function from the Flux standard library once
   // this issue is resolved: https://github.com/influxdata/flux/issues/1071
@@ -168,14 +176,6 @@ export function formatTagKeyFilterCall(tagsSelections: BuilderConfig['tags']) {
   const fnBody = keys.map(key => `r._value != "${key}"`).join(' and ')
 
   return `\n  |> filter(fn: (r) => ${fnBody})`
-}
-
-export function formatSearchFilterCall(searchTerm: string) {
-  if (!searchTerm) {
-    return ''
-  }
-
-  return `\n  |> filter(fn: (r) => r._value =~ regexp.compile(v: "(?i:" + regexp.quoteMeta(v: "${searchTerm}") + ")"))`
 }
 
 export function formatTimeRangeArguments(timeRange: TimeRange): string {

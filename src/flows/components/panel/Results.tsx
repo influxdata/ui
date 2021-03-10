@@ -79,7 +79,7 @@ const ResultTable: FC<TableProps> = ({
     const subset = Object.values(results.parsed.table.columns)
       .map(c => ({
         ...c,
-        group: results.parsed.fluxGroupKeyUnion.indexOf(c.name) !== -1,
+        group: results.parsed.fluxGroupKeyUnion.includes(c.name),
         data: c.data.slice(startRow, startRow + page),
       }))
       .filter(

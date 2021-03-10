@@ -206,6 +206,11 @@
 .flow-panel--results {
   width: 100%;
   position: relative;
+
+  .panel-resizer--body {
+    width: 100%;
+    overflow: hidden;
+  }
 }
 
 /*

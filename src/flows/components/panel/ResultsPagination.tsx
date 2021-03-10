@@ -42,7 +42,7 @@ const ResultsPagination: FC<Props> = ({
 
   return (
     <div className="query-results--pagination">
-      <span className="query-results--pagination-label">{`Showing Results ${startRow} - ${startRow +
+      <span className="query-results--pagination-label">{`Showing most recent 100 results per series ${startRow} - ${startRow +
         pageSize}`}</span>
       <Button
         className="query-results--pagination-button"

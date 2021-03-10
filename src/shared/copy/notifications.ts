@@ -1069,3 +1069,9 @@ export const functionUpdateFail = (): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to save function. Please try again`,
 })
+
+export const copyFunctionURL = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: `Copied function URL to clipboard`,
+  duration: 2000,
+})

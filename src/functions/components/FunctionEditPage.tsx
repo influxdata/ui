@@ -32,7 +32,7 @@ const FunctionEditPage: FC = () => {
   return (
     <Page titleTag={pageTitleSuffixer(['Edit Function'])}>
       <FunctionHeader />
-      <Page.Contents fullWidth={true} scrollable={true}>
+      <Page.Contents fullWidth={true} scrollable={false}>
         <div className="function-form">
           <div className="function-form--options">
             <FunctionForm />

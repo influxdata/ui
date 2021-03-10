@@ -219,8 +219,8 @@ export const generateNavItems = (orgID: string): NavItem[] => {
     {
       id: 'functions',
       testID: 'nav-item-functions',
-      icon: IconFont.CogOutline,
-      label: 'Functions',
+      icon: IconFont.Function,
+      label: 'Function',
       link: {
         type: 'link',
         location: `${orgPrefix}/functions/`,

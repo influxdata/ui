@@ -14,9 +14,9 @@ export const getVisibleAnnotationStreams = (state: AppState): string[] => {
 
 export const getHiddenAnnotationStreams = (state: AppState): string[] => {
   const visibleStreams = state.annotations.visibleStreamsByID
-  const filtered = state.annotations.streams.filter(
-    stream => !visibleStreams.includes(stream.stream)
-  )
+  const filtered = state.annotations.streams
+    .filter(stream => !visibleStreams.includes(stream.stream))
+    .map(stream => stream.stream)
 
   return sortBy(filtered, stream => stream)
 }

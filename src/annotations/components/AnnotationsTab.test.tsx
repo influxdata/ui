@@ -23,7 +23,9 @@ describe('Annotations Tab Component', () => {
 
     const {getByTestId} = setup()
 
-    expect(getByTestId('annotations-empty-state')).toBeVisible()
+    expect(getByTestId('annotations-empty-state')).toHaveTextContent(
+      "Looks like there aren't any Annotation Streams, why not create one?"
+    )
   })
 
   it('renders with annotation streams displayed if the user has annotations', () => {

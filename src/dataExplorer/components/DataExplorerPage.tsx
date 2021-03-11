@@ -14,7 +14,7 @@ import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import SaveAsOverlay from 'src/dataExplorer/components/SaveAsOverlay'
 import DEDeleteDataOverlay from 'src/dataExplorer/components/DeleteDataOverlay'
 import ViewTypeDropdown from 'src/timeMachine/components/ViewTypeDropdown'
-import {AnnotationsToggleButton} from 'src/annotations/components/AnnotationsToggleButton'
+import {AnnotationsControlBarToggleButton} from 'src/annotations/components/AnnotationsControlBarToggleButton'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
 import {AnnotationsControlBar} from 'src/annotations/components/controlBar/AnnotationsControlBar'
 import {AddAnnotationDEOverlay} from 'src/overlays/components/index'
@@ -65,7 +65,7 @@ const DataExplorerPage: FC = () => {
             <ViewTypeDropdown />
             <VisOptionsButton />
             <FeatureFlag name="annotations">
-              <AnnotationsToggleButton />
+              <AnnotationsControlBarToggleButton />
             </FeatureFlag>
           </Page.ControlBarLeft>
           <Page.ControlBarRight>

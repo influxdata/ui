@@ -17,13 +17,9 @@ type GenerateTokenProps = RouteComponentProps
 const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
   const org = useSelector(getOrg)
 
-  const bucketReadWriteOption = (): string => {
-    return 'Read/Write Token'
-  }
+  const bucketReadWriteOption = 'Read/Write Token'
 
-  const allAccessOption = (): string => {
-    return 'All Access Token'
-  }
+  const allAccessOption = 'All Access Token'
 
   const handleAllAccess = () => {
     history.push(`/orgs/${org.id}/load-data/tokens/generate/all-access`)
@@ -33,34 +29,11 @@ const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
     history.push(`/orgs/${org.id}/load-data/tokens/generate/buckets`)
   }
   const handleSelect = (selection: string): void => {
-    if (selection === allAccessOption()) {
+    if (selection === allAccessOption) {
       handleAllAccess()
-    } else if (selection === bucketReadWriteOption()) {
+    } else if (selection === bucketReadWriteOption) {
       handleReadWrite()
     }
-  }
-
-  const getOptionItems = () => {
-    return [
-      <Dropdown.Item
-        testID="dropdown-item generate-token--read-write"
-        id={bucketReadWriteOption()}
-        key={bucketReadWriteOption()}
-        value={bucketReadWriteOption()}
-        onClick={handleSelect}
-      >
-        {bucketReadWriteOption()}
-      </Dropdown.Item>,
-      <Dropdown.Item
-        testID="dropdown-item generate-token--all-access"
-        id={allAccessOption()}
-        key={allAccessOption()}
-        value={allAccessOption()}
-        onClick={handleSelect}
-      >
-        {allAccessOption()}
-      </Dropdown.Item>,
-    ]
   }
 
   return (
@@ -80,7 +53,26 @@ const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
       )}
       menu={onCollapse => (
         <Dropdown.Menu onCollapse={onCollapse}>
-          {getOptionItems()}
+          {[
+            <Dropdown.Item
+              testID="dropdown-item generate-token--read-write"
+              id={bucketReadWriteOption}
+              key={bucketReadWriteOption}
+              value={bucketReadWriteOption}
+              onClick={handleSelect}
+            >
+              {bucketReadWriteOption}
+            </Dropdown.Item>,
+            <Dropdown.Item
+              testID="dropdown-item generate-token--all-access"
+              id={allAccessOption}
+              key={allAccessOption}
+              value={allAccessOption}
+              onClick={handleSelect}
+            >
+              {allAccessOption}
+            </Dropdown.Item>,
+          ]}
         </Dropdown.Menu>
       )}
     />

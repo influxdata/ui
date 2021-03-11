@@ -31,7 +31,7 @@ import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {INVALID_DATA_COPY} from 'src/visualization/constants'
 
 // Types
-import {AppState, XYViewProperties} from 'src/types'
+import {XYViewProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
 
 // Utils
@@ -77,9 +77,6 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
   // would need to add the annotation control bar to the VEOHeader to get access to the controls,
   // which are currently global values, not per dashboard
 
-  const annotationsModeIsActive = useSelector(
-    (state: AppState) => state.userSettings.showAnnotationsControls
-  )
   const inAnnotationWriteMode = useSelector(isSingleClickAnnotationsEnabled)
 
   const visibleAnnotationStreams = useSelector(getVisibleAnnotationStreams)
@@ -241,7 +238,7 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
     ],
   }
 
-  if (isFlagEnabled('annotations') && annotationsModeIsActive) {
+  if (isFlagEnabled('annotations')) {
     if (inAnnotationWriteMode) {
       config.interactionHandlers = {
         singleClick: makeSingleClickHandler(),

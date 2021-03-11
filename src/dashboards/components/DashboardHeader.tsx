@@ -12,7 +12,7 @@ import GraphTips from 'src/shared/components/graph_tips/GraphTips'
 import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import {Button, IconFont, ComponentColor, Page} from '@influxdata/clockface'
-import {AnnotationsToggleButton} from 'src/annotations/components/AnnotationsToggleButton'
+import {AnnotationsControlBarToggleButton} from 'src/annotations/components/AnnotationsControlBarToggleButton'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Actions
@@ -172,7 +172,7 @@ const DashboardHeader: FC<Props> = ({
             }
           />
           <FeatureFlag name="annotations">
-            <AnnotationsToggleButton />
+            <AnnotationsControlBarToggleButton />
           </FeatureFlag>
           <DashboardLightModeToggle />
           <PresentationModeToggle />

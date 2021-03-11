@@ -68,8 +68,9 @@ interface Columns {
   [columnKey: string]: Column
 }
 
+// This isn't actually optional, it just makes the type system work
 interface InternalTable extends Table {
-  columns: Columns
+  columns?: Columns
 }
 
 interface InternalFromFluxResult extends FromFluxResult {

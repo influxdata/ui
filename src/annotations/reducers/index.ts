@@ -3,12 +3,14 @@ import {
   ENABLE_ANNOTATION_STREAM,
   DISABLE_ANNOTATION_STREAM,
   SET_ANNOTATIONS,
+  SET_ANNOTATION_STREAMS,
   TOGGLE_SINGLE_CLICK_ANNOTATIONS,
 } from 'src/annotations/actions/creators'
 
-import {Annotation, AnnotationsList} from 'src/types'
+import {Annotation, AnnotationsList, AnnotationStream} from 'src/types'
 
 export interface AnnotationsState {
+  streams: AnnotationStream[]
   annotations: AnnotationsList
   visibleStreamsByID: string[]
   enableSingleClickAnnotations: boolean
@@ -19,6 +21,7 @@ export const initialState = (): AnnotationsState => ({
     default: [] as Annotation[],
   },
   visibleStreamsByID: ['default'],
+  streams: [],
   enableSingleClickAnnotations: true,
 })
 
@@ -28,6 +31,12 @@ export const annotationsReducer = (
   action: Action
 ): AnnotationsState => {
   switch (action.type) {
+    case SET_ANNOTATION_STREAMS: {
+      return {
+        ...state,
+        streams: action.streams,
+      }
+    }
     case ENABLE_ANNOTATION_STREAM: {
       return {
         ...state,

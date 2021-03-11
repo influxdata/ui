@@ -66,8 +66,8 @@ export const AnnotationCard: FC<Props> = ({annotationStream}) => {
             style={{marginRight: '4px'}}
           />
         </>
-        <>Created at {annotationStream.createdAt ?? null}</>
-        <>Last modified {annotationStream.updatedAt ?? null}</>
+        <>Created at {annotationStream.createdAt}</>
+        <>Last modified {annotationStream.updatedAt}</>
       </ResourceCard.Meta>
       {/* Labels go here */}
     </ResourceCard>

@@ -6,6 +6,7 @@ export default register => {
     family: 'output',
     priority: 1,
     component: View,
+    featureFlag: 'flow-panel--to-bucket',
     button: 'Output to Bucket',
     generateFlux: (data, create, _append, withSideEffects) => {
       if (withSideEffects && data?.bucket) {

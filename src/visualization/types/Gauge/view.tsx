@@ -1,11 +1,9 @@
 // Libraries
 import React, {FC, useContext} from 'react'
-import {AutoSizer} from 'react-virtualized'
 
 // Components
-import Gauge from './Gauge'
-import LatestValueTransform from 'src/visualization/components/LatestValueTransform'
-
+import {Config, Plot} from '@influxdata/giraffe'
+import {latestValues as getLatestValues} from '../../../shared/utils/latestValues'
 // Types
 import {GaugeViewProperties} from 'src/types/dashboards'
 import {VisualizationProps} from 'src/visualization'
@@ -31,30 +29,21 @@ const GaugeChart: FC<Props> = ({result, properties}) => {
 
   const currentTheme = theme === 'light' ? GAUGE_THEME_LIGHT : GAUGE_THEME_DARK
 
-  return (
-    <LatestValueTransform table={result.table} allowString={false}>
-      {latestValue => (
-        <AutoSizer>
-          {({width, height}) => (
-            <div className="gauge">
-              <Gauge
-                width={width}
-                height={height}
-                colors={colors}
-                prefix={prefix}
-                tickPrefix={tickPrefix}
-                suffix={suffix}
-                tickSuffix={tickSuffix}
-                gaugePosition={latestValue}
-                decimalPlaces={decimalPlaces}
-                theme={currentTheme}
-              />
-            </div>
-          )}
-        </AutoSizer>
-      )}
-    </LatestValueTransform>
-  )
+  const config: Config = {
+    table: result.table,
+    layers: [
+      {
+        type: 'gauge',
+        prefix: prefix,
+        suffix: suffix,
+        tickPrefix: tickPrefix,
+        tickSuffix: tickSuffix,
+        decimalPlaces: decimalPlaces,
+        gaugeColors: colors,
+      },
+    ],
+  }
+  return <Plot config={config} />
 }
 
 export default GaugeChart

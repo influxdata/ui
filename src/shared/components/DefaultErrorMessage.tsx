@@ -14,7 +14,7 @@ const DefaultErrorMessage: ErrorMessageComponent = () => {
     >
       An InfluxDB error has occurred. Please report the issue&nbsp;
       <a
-        href={`https://github.com/influxdata/ui/issues/new?template=bug_report.md&title=${SHA_PARAM}`}
+        href={`https://github.com/influxdata/ui/issues/new?template=bug_report.md&version=${SHA_PARAM}`}
       >
         here
       </a>

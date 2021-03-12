@@ -15,14 +15,26 @@ import {
   EmptyState,
 } from '@influxdata/clockface'
 
+import GenerateTokenDropdown from 'src/authorizations/components/GenerateTokenDropdown'
+
 const WriteDataHelperTokens: FC = () => {
   const {token, tokens, changeToken} = useContext(WriteDataDetailsContext)
 
   let body = (
-    <EmptyState size={ComponentSize.Small}>
-      <p data-testid="write-data-tokens-list-empty">
-        You don't have any Tokens
-      </p>
+    <EmptyState
+      className="write-data--details-empty-state"
+      testID="write-data--details-empty-state"
+    >
+      <span>
+        You don't have any{' '}
+        <a
+          href="https://docs.influxdata.com/influxdb/cloud/security/tokens/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Tokens
+        </a>
+      </span>
     </EmptyState>
   )
 
@@ -67,6 +79,7 @@ const WriteDataHelperTokens: FC = () => {
         className="write-data--details-widget-title"
       >
         Token
+        <GenerateTokenDropdown />
       </Heading>
       {body}
     </>

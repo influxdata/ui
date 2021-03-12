@@ -9,7 +9,8 @@ const stringField = 'string_field'
 describe('Checks', () => {
   beforeEach(() => {
     cy.flush()
-
+    // have to make the viewport huge to get it not to switch to tablet size
+    cy.viewport(1800, 980)
     cy.signin().then(() => {
       // visit the alerting index
       cy.get('@org').then(({id: orgID}: Organization) => {
@@ -376,9 +377,6 @@ describe('Checks', () => {
     })
 
     it('accepts keyboard tabs as navigation', () => {
-      // have to make the viewport huge to get it not to switch to tablet size
-      cy.viewport(1800, 980)
-
       cy.getByTestID('alerting-tab--checks').focus()
       cy.focused().tab()
       cy.getByTestID('filter--input checks').should('have.focus')

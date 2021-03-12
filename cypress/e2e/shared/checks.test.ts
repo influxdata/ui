@@ -400,18 +400,44 @@ describe('Checks', () => {
         cy.getByTestID('select-group').should('be.visible')
       })
       it('accepts keyboard tabs as navigation', () => {
-        cy.get('body')
-          .tab()
-          .tab()
-        cy.getByTestID('filter--input checks').should('have.focus')
+        // chrome and firefox handle focusing after btn clicks differently.
+        // It doesn't affect the UX to the user, but does affect testing.
+        // https://zellwk.com/blog/inconsistent-button-behavior/
+        if (Cypress.browser.name === 'firefox') {
+          cy.get('body').tab()
 
-        cy.getByTestID('alerting-tab--endpoints').click()
-        cy.focused().tab()
-        cy.getByTestID('filter--input endpoints').should('have.focus')
+          cy.getByTestID('filter--input checks').should('have.focus')
 
-        cy.getByTestID('alerting-tab--rules').click()
-        cy.focused().tab()
-        cy.getByTestID('filter--input rules').should('have.focus')
+          cy.getByTestID('alerting-tab--endpoints')
+            .click()
+            .focus()
+          cy.get('body').tab()
+          cy.getByTestID('filter--input endpoints').should('have.focus')
+
+          cy.getByTestID('alerting-tab--rules')
+            .click()
+            .focus()
+          cy.get('body').tab()
+          cy.getByTestID('filter--input rules').should('have.focus')
+        } else {
+          cy.get('body')
+            .tab()
+            .tab()
+
+          cy.getByTestID('filter--input checks').should('have.focus')
+
+          cy.getByTestID('alerting-tab--endpoints')
+            .click()
+            .focus()
+          cy.focused().tab()
+          cy.getByTestID('filter--input endpoints').should('have.focus')
+
+          cy.getByTestID('alerting-tab--rules')
+            .click()
+            .focus()
+          cy.focused().tab()
+          cy.getByTestID('filter--input rules').should('have.focus')
+        }
       })
     })
 

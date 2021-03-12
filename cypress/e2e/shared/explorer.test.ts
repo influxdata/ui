@@ -770,7 +770,7 @@ describe('DataExplorer', () => {
                 cy.getByTestID(`view-type--${type}`).click()
                 cy.getByTestID(`vis-graphic--${type}`).should('exist')
                 if (type.includes('single-stat')) {
-                  cy.getByTestID('single-stat--text').should(
+                  cy.getByTestID('giraffe-layer-single-stat').should(
                     'contain',
                     `${numLines}`
                   )

@@ -24,6 +24,10 @@ import {
   getYSeriesColumns,
 } from 'src/timeMachine/selectors'
 import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
+import {
+  setIsDisabledViewRawData,
+  setIsViewingRawData,
+} from 'src/timeMachine/actions'
 
 // Types
 import {RemoteDataState, AppState, ViewProperties} from 'src/types'
@@ -40,6 +44,8 @@ const TimeMachineVis: FC<Props> = ({
   timeRange,
   isInitialFetch,
   isViewingRawData,
+  setViewRawData,
+  setDisableRawData,
   files,
   viewProperties,
   giraffeResult,
@@ -70,6 +76,26 @@ const TimeMachineVis: FC<Props> = ({
   const timeMachineViewClassName = classnames('time-machine--view', {
     'time-machine--view__empty': noQueries,
   })
+
+  // Handles deadman check edge case to allow non-numeric values
+  if (
+    !!giraffeResult.table.length &&
+    !isViewingRawData &&
+    resolvedViewProperties.type === 'check' &&
+    giraffeResult.table.getColumnType('_value') !== 'number'
+  ) {
+    setViewRawData(true)
+    setDisableRawData(true)
+    return null
+  } else if (
+    !!giraffeResult.table.length &&
+    isViewingRawData &&
+    resolvedViewProperties.type === 'check' &&
+    giraffeResult.table.getColumnType('_value') === 'number'
+  ) {
+    setViewRawData(false)
+    setDisableRawData(false)
+  }
 
   if (isViewingRawData && files && files.length) {
     const [parsedResults] = files.flatMap(fromFlux)
@@ -150,7 +176,12 @@ const mstp = (state: AppState) => {
   }
 }
 
-const connector = connect(mstp)
+const mdtp = {
+  setViewRawData: setIsViewingRawData,
+  setDisableRawData: setIsDisabledViewRawData,
+}
+
+const connector = connect(mstp, mdtp)
 
 export default connector(
   memo(TimeMachineVis, (prev, next) => isEqual(prev, next))

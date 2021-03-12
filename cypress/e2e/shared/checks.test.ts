@@ -282,7 +282,7 @@ describe('Checks', () => {
     )
   })
 
-  it('checks only allow numeric fields', () => {
+  it('deadman checks should render a table for non-numeric fields', () => {
     cy.get<string>('@defaultBucketListSelector').then(
       (defaultBucketListSelector: string) => {
         // create deadman check
@@ -305,8 +305,20 @@ describe('Checks', () => {
         cy.getByTestID('empty-graph--no-queries')
         cy.getByTestID('time-machine-submit-button').click()
 
-        // check for error message
-        cy.getByTestID('empty-graph--numeric').should('exist')
+        // check for table
+        cy.getByTestID('raw-data-table').should('exist')
+        cy.getByTestID('raw-data--toggle').should('have.class', 'disabled')
+
+        // change field to numeric value
+        cy.getByTestID(`selector-list ${field}`).click()
+        cy.get('.query-checklist--popover').should('not.exist')
+        cy.getByTestID('save-cell--button').should('be.enabled')
+
+        // submit the graph
+        cy.getByTestID('time-machine-submit-button').click()
+
+        // make sure the plot is visible
+        cy.getByTestID('giraffe-inner-plot').should('be.visible')
       }
     )
   })

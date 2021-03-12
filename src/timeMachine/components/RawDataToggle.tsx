@@ -19,7 +19,7 @@ type Props = ReduxProps
 
 class TimeMachineQueries extends PureComponent<Props> {
   public render() {
-    const {isViewingRawData} = this.props
+    const {isViewingRawData, isDisabledViewRawData} = this.props
 
     return (
       <div className="view-raw-data-toggle">
@@ -29,6 +29,7 @@ class TimeMachineQueries extends PureComponent<Props> {
           onChange={this.handleToggleIsViewingRawData}
           size={ComponentSize.ExtraSmall}
           testID="raw-data--toggle"
+          disabled={isDisabledViewRawData}
         />
       </div>
     )
@@ -42,9 +43,9 @@ class TimeMachineQueries extends PureComponent<Props> {
 }
 
 const mstp = (state: AppState) => {
-  const {isViewingRawData} = getActiveTimeMachine(state)
+  const {isViewingRawData, isDisabledViewRawData} = getActiveTimeMachine(state)
 
-  return {isViewingRawData}
+  return {isViewingRawData, isDisabledViewRawData}
 }
 
 const mdtp = {

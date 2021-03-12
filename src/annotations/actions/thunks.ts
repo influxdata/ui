@@ -1,10 +1,11 @@
 import {
   getAnnotations,
-  writeAnnotation,
   getAnnotationStreamsDetails,
+  deleteAnnotation,
+  writeAnnotation,
 } from 'src/annotations/api'
 import {Dispatch} from 'react'
-
+import {deleteAnnotation as deleteAnnotationAction} from 'src/annotations/actions/creators'
 import {
   setAnnotations,
   setAnnotationStreams,
@@ -34,5 +35,12 @@ export const writeThenFetchAndSetAnnotations = (
 ) => async (dispatch: Dispatch<AnnotationAction>): Promise<void> => {
   await writeAnnotation(annotations)
 
+  fetchAndSetAnnotations()(dispatch)
+}
+export const deleteAnnotations = annotation => async (
+  dispatch: Dispatch<AnnotationAction>
+) => {
+  await deleteAnnotation(annotation)
+  dispatch(deleteAnnotationAction(annotation))
   fetchAndSetAnnotations()(dispatch)
 }

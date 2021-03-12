@@ -1,4 +1,4 @@
-import {AnnotationResponse, AnnotationStream} from 'src/types'
+import {Annotation, AnnotationResponse, AnnotationStream} from 'src/types'
 
 export const ENABLE_ANNOTATION_STREAM = 'ENABLE_ANNOTATION_STREAM'
 export const DISABLE_ANNOTATION_STREAM = 'DISABLE_ANNOTATION_STREAM'
@@ -6,6 +6,7 @@ export const DISABLE_ANNOTATION_STREAM = 'DISABLE_ANNOTATION_STREAM'
 export const SET_ANNOTATIONS = 'SET_ANNOTATIONS'
 export const SET_ANNOTATION_STREAMS = 'SET_ANNOTATION_STREAMS'
 export const TOGGLE_SINGLE_CLICK_ANNOTATIONS = 'TOGGLE_SINGLE_CLICK_ANNOTATIONS'
+export const DELETE_ANNOTATION = 'DELETE_ANNOTATION'
 
 export type Action =
   | ReturnType<typeof enableAnnotationStream>
@@ -13,6 +14,7 @@ export type Action =
   | ReturnType<typeof setAnnotations>
   | ReturnType<typeof setAnnotationStreams>
   | ReturnType<typeof toggleSingleClickAnnotations>
+  | ReturnType<typeof deleteAnnotation>
 
 export const enableAnnotationStream = (streamID: string) =>
   ({
@@ -41,4 +43,10 @@ export const setAnnotationStreams = (streams: AnnotationStream[]) =>
 export const toggleSingleClickAnnotations = () =>
   ({
     type: TOGGLE_SINGLE_CLICK_ANNOTATIONS,
+  } as const)
+
+export const deleteAnnotation = (annotation: Annotation) =>
+  ({
+    type: DELETE_ANNOTATION,
+    annotation,
   } as const)

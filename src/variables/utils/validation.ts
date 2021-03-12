@@ -43,5 +43,11 @@ export const validateVariableName = (
     }
   }
 
+  if (/[-\s]+/g.test(varName)) {
+    return {
+      error: `Variable name must not contain any hyphens or spaces`,
+    }
+  }
+
   return {error: null}
 }

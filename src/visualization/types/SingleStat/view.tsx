@@ -9,6 +9,7 @@ import {SingleStatViewProperties} from 'src/types/dashboards'
 import {VisualizationProps} from 'src/visualization'
 
 import {Config, Plot} from '@influxdata/giraffe'
+
 import {latestValues as getLatestValues} from '../../../shared/utils/latestValues'
 
 interface Props extends VisualizationProps {

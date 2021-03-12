@@ -1,7 +1,7 @@
 import {
-  getAnnotations,
-  getAnnotationStreamsDetails,
   deleteAnnotation,
+  getAnnotations,
+  getAnnotationStreams,
   writeAnnotation,
 } from 'src/annotations/api'
 import {Dispatch} from 'react'
@@ -17,7 +17,7 @@ import {Annotation, AnnotationStream} from 'src/types'
 export const fetchAndSetAnnotationStreams = async (
   dispatch: Dispatch<AnnotationAction>
 ): Promise<void> => {
-  const annotationStreams: AnnotationStream[] = await getAnnotationStreamsDetails()
+  const annotationStreams: AnnotationStream[] = await getAnnotationStreams()
 
   dispatch(setAnnotationStreams(annotationStreams))
 }

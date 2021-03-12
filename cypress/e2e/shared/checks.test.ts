@@ -384,14 +384,10 @@ describe('Checks', () => {
         .tab()
       cy.getByTestID('filter--input checks').should('have.focus')
 
-      cy.focused()
-        .tab()
-        .tab()
+      cy.focused().tab()
       cy.getByTestID('filter--input endpoints').should('have.focus')
 
-      cy.focused()
-        .tab()
-        .tab()
+      cy.focused().tab()
       cy.getByTestID('filter--input rules').should('have.focus')
     })
 

@@ -1,18 +1,14 @@
 // Libraries
 import React, {FC, useState, useEffect} from 'react'
-import {useHistory} from 'react-router-dom'
 import {useSelector, useDispatch} from 'react-redux'
 
 // Components
 import {
-  Grid,
   Columns,
-  EmptyState,
   ComponentSize,
+  EmptyState,
+  Grid,
   Sort,
-  Button,
-  ComponentColor,
-  IconFont,
 } from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
@@ -23,7 +19,6 @@ import {AnnotationsList} from 'src/annotations/components/AnnotationsList'
 import {AnnotationsExplainer} from 'src/annotations/components/AnnotationsExplainer'
 
 // Selectors
-import {getOrg} from 'src/organizations/selectors'
 import {getAnnotationStreams} from 'src/annotations/selectors'
 
 // Types
@@ -69,19 +64,12 @@ export const AnnotationsTab: FC = () => {
 
   const annotationStreams = useSelector(getAnnotationStreams)
 
-  const org = useSelector(getOrg)
-  const history = useHistory()
-
   const [searchTerm, setSearchTerm] = useState<string>('')
 
   // TODO: make these stateful
   const sortKey = 'name'
   const sortDirection = Sort.Ascending
   const sortType = SortTypes.String
-
-  const handleAddAnnotationStream = (): void => {
-    history.push(`/orgs/${org.id}/settings/annotations/new`)
-  }
 
   const leftHeaderItems = (
     <SearchWidget
@@ -91,21 +79,9 @@ export const AnnotationsTab: FC = () => {
     />
   )
 
-  const rightHeaderItems = (
-    <Button
-      text="Add Annotation Stream"
-      icon={IconFont.Annotate}
-      color={ComponentColor.Primary}
-      onClick={handleAddAnnotationStream}
-    />
-  )
-
   return (
     <>
-      <TabbedPageHeader
-        childrenLeft={leftHeaderItems}
-        childrenRight={rightHeaderItems}
-      />
+      <TabbedPageHeader childrenLeft={leftHeaderItems} />
       <Grid>
         <Grid.Row>
           <Grid.Column

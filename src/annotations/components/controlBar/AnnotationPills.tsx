@@ -28,7 +28,7 @@ export const AnnotationPills: FC = () => {
           id={stream.stream}
           name={stream.stream}
           description={stream.description}
-          color="#9078E4"
+          color={stream.color}
         />
       ))}
     </div>

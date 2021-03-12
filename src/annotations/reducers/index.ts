@@ -9,12 +9,18 @@ import {
 
 import {Annotation, AnnotationsList, AnnotationStream} from 'src/types'
 
+import {InfluxColors} from '@influxdata/clockface'
+
 export interface AnnotationsState {
   streams: AnnotationStream[]
   annotations: AnnotationsList
   visibleStreamsByID: string[]
   enableSingleClickAnnotations: boolean
 }
+
+export const FALLBACK_COLOR = InfluxColors.Curacao
+
+const STREAM_COLOR_LIST = [InfluxColors.Potassium]
 
 export const initialState = (): AnnotationsState => ({
   annotations: {
@@ -25,7 +31,6 @@ export const initialState = (): AnnotationsState => ({
   enableSingleClickAnnotations: true,
 })
 
-// TODO: use immer
 export const annotationsReducer = (
   state = initialState(),
   action: Action
@@ -34,7 +39,12 @@ export const annotationsReducer = (
     case SET_ANNOTATION_STREAMS: {
       return {
         ...state,
-        streams: action.streams,
+        streams: action.streams.map((stream, i) => {
+          return {
+            ...stream,
+            color: STREAM_COLOR_LIST[i],
+          }
+        }),
       }
     }
     case ENABLE_ANNOTATION_STREAM: {

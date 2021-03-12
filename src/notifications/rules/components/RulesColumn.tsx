@@ -61,6 +61,7 @@ const NotificationRulesColumn: FunctionComponent<Props> = ({
       <a
         href="https://v2.docs.influxdata.com/v2.0/monitor-alert/notification-rules/create"
         target="_blank"
+        rel="noreferrer"
       >
         Read Documentation
       </a>

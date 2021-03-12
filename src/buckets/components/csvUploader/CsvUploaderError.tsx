@@ -15,6 +15,7 @@ const CsvUploaderError = () => (
       Please make sure that CSV was in
       <a
         target="_blank"
+        rel="noreferrer"
         href="https://docs.influxdata.com/influxdb/v2.0/write-data/developer-tools/csv/#csv-annotations"
       >
         &nbsp;Annotated Format&nbsp;

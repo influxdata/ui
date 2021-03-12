@@ -20,6 +20,7 @@ const BucketExplainer: FunctionComponent = () => (
         <a
           href="https://v2.docs.influxdata.com/v2.0/write-data/"
           target="_blank"
+          rel="noreferrer"
         >
           how to write data
         </a>{' '}

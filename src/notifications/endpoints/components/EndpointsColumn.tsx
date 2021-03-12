@@ -45,6 +45,7 @@ const EndpointsColumn: FC<Props> = ({history, match, endpoints, tabIndex}) => {
       <a
         href="https://v2.docs.influxdata.com/v2.0/monitor-alert/notification-endpoints/create"
         target="_blank"
+        rel="noreferrer"
       >
         Read Documentation
       </a>

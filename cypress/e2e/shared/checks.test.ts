@@ -379,6 +379,7 @@ describe('Checks', () => {
       beforeEach(() => {
         // have to make the viewport huge to get it not to switch to tablet size
         cy.viewport(1800, 980)
+        cy.getByTestID('select-group').should('not.be.visible')
       })
       it('accepts keyboard tabs as navigation', () => {
         cy.get('body').tab()
@@ -396,6 +397,7 @@ describe('Checks', () => {
       beforeEach(() => {
         // have to make the viewport small to use tablet size
         cy.viewport(1200, 980)
+        cy.getByTestID('select-group').should('be.visible')
       })
       it('accepts keyboard tabs as navigation', () => {
         cy.get('body')

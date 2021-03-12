@@ -19,16 +19,15 @@ describe('Flows', () => {
     })
   })
 
-  // TODO: unskip when no longer blocked by feature flag
-  it.skip('CRUD a flow from the index page', () => {
+  it('CRUD a flow from the index page', () => {
     cy.getByTestID('create-flow--button')
       .first()
       .click()
 
+    cy.getByTestID('time-machine-submit-button').should('be.visible')
+
     cy.getByTestID('page-title').click()
     cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
-
-    cy.getByTestID('add-flow-btn--query').click()
 
     cy.getByTestID('panel-add-btn-0').click()
 
@@ -37,6 +36,9 @@ describe('Flows', () => {
     cy.getByTestID('flows-delete-cell')
       .eq(1)
       .click()
+
+    cy.getByTestID('flow-bucket-selector').click()
+    cy.getByTestID('flow-bucket-selector--defbuck').click()
 
     cy.getByTestID('time-machine-submit-button').click()
 
@@ -77,5 +79,44 @@ describe('Flows', () => {
           cy.contains(newBucketName).should('exist')
         })
       })
+  })
+
+  it('can export a task with all the neccesary variables', () => {
+    const taskName = 'the greatest task of all time'
+
+    cy.getByTestID('create-flow--button')
+      .first()
+      .click()
+
+    cy.getByTestIDSubStr('panel-add-btn')
+      .first()
+      .click()
+      .then(() => {
+        cy.getByTestID('add-flow-btn--toBucket').click()
+      })
+
+    cy.getByTestID('flow-bucket-selector')
+      .last()
+      .click()
+      .then(() => {
+        cy.getByTestID('flow-bucket-selector--defbuck').click()
+      })
+
+    cy.getByTestID('task-form-save').click()
+    cy.getByTestID('task-form-name').type(taskName)
+    cy.getByTestID('task-form-schedule-input').type('24h')
+    cy.getByTestID('task-form-export').click()
+
+    cy.getByTestID('notification-success').should('be.visible')
+
+    cy.getByTestID('nav-item-tasks').click()
+    cy.contains(taskName).click()
+
+    cy.contains('timeRangeStart').should('be.visible')
+    cy.contains('timeRangeStop').should('be.visible')
+    cy.contains('windowPeriod').should('be.visible')
+    cy.contains('name').should('be.visible')
+    cy.contains('every').should('be.visible')
+    cy.contains('offset').should('be.visible')
   })
 })

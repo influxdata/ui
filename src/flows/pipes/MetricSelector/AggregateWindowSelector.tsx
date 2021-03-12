@@ -7,7 +7,7 @@ import {Dropdown, IconFont, Icon} from '@influxdata/clockface'
 // Contexts
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowContext} from 'src/flows/context/flow.current'
-import {QueryContext} from 'src/flows/context/query'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
 
 // Constants
 import {FUNCTIONS, QueryFn} from 'src/timeMachine/constants/queryBuilder'
@@ -18,7 +18,7 @@ import {millisecondsToDuration} from 'src/shared/utils/duration'
 const AggregateFunctionSelector: FC = () => {
   const {flow} = useContext(FlowContext)
   const {data, update} = useContext(PipeContext)
-  const {queryAll} = useContext(QueryContext)
+  const {queryAll} = useContext(FlowQueryContext)
 
   const selectedFunction = data?.aggregateFunction || FUNCTIONS[0]
 

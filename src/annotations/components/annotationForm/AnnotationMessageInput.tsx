@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, ChangeEvent} from 'react'
+import React, {FC, ChangeEvent, useEffect, useRef} from 'react'
 
 // Components
 import {Columns, Form, Grid, TextArea} from '@influxdata/clockface'
@@ -10,7 +10,12 @@ interface Props {
 }
 
 export const AnnotationMessageInput: FC<Props> = (props: Props) => {
+  const textArea = useRef(null)
   const validationMessage = props.message ? '' : 'This field is required'
+
+  useEffect(() => {
+    textArea.current.focus()
+  }, [])
 
   return (
     <Grid.Column widthXS={Columns.Twelve}>
@@ -24,6 +29,7 @@ export const AnnotationMessageInput: FC<Props> = (props: Props) => {
           value={props.message}
           onChange={props.onChange}
           style={{height: '80px', minHeight: '80px'}}
+          ref={textArea}
         />
       </Form.Element>
     </Grid.Column>

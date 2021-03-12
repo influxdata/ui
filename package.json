@@ -36,6 +36,7 @@
     "test:e2e:report": "junit-viewer --results=junit-results --save-file=cypress/site/junit-report.html",
     "test:e2e:clean": "rm junit-results/*.xml",
     "test:e2e:all": "yarn test:e2e:clean && yarn test:e2e; yarn test:e2e:report;",
+    "test:e2e:kind": "CYPRESS_baseUrl=https://twodotoh.a.influxcloud.dev.local CYPRESS_password=password cypress open --browser chrome --config chromeWebSecurity=false",
     "test:circleci": "yarn run test:ci --maxWorkers=2",
     "test:ci": "JEST_JUNIT_OUTPUT_DIR=\"./coverage\" jest --ci --coverage",
     "lint": "yarn tsc && yarn prettier && yarn eslint",
@@ -144,10 +145,10 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
-    "@influxdata/clockface": "^2.6.1",
+    "@influxdata/clockface": "^2.4.1",
     "@influxdata/flux": "^0.5.1",
-    "@influxdata/flux-lsp-browser": "^0.5.32",
-    "@influxdata/giraffe": "^2.2.0",
+    "@influxdata/flux-lsp-browser": "^0.5.34",
+    "@influxdata/giraffe": "^2.4.0",
     "@influxdata/influx": "0.5.5",
     "@influxdata/influxdb-templates": "0.9.0",
     "@influxdata/react-custom-scrollbars": "4.3.8",
@@ -210,7 +211,7 @@
     "s2-geometry": "^1.2.10",
     "seamless-immutable": "^7.1.3",
     "unraw": "2.0.0",
-    "use-persisted-state": "^0.3.0",
+    "use-local-storage-state": "^9.0.2",
     "uuid": "^3.2.1",
     "webpack-bundle-analyzer": "^3.6.0"
   }

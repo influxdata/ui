@@ -1,6 +1,6 @@
 // Libraries
 import {Dispatch} from 'react'
-
+import {isEqual} from 'lodash'
 // Actions
 import {Action as QueryBuilderAction} from 'src/timeMachine/actions/queryBuilder'
 import {
@@ -79,6 +79,8 @@ export type Action =
   | SetXColumnAction
   | SetYColumnAction
   | SetYSeriesColumnsAction
+  | SetYLabelColumnsAction
+  | SetYLabelColumnSeparatorAction
   | SetBinSizeAction
   | SetColorHexesAction
   | SetFillColumnsAction
@@ -108,6 +110,7 @@ export type Action =
   | ReturnType<typeof toggleVisOptions>
   | ReturnType<typeof resetActiveQueryWithBuilder>
   | ReturnType<typeof setViewProperties>
+  | ReturnType<typeof setTimeMachineTimeRange>
 
 type ExternalActions =
   | ReturnType<typeof loadBuckets>
@@ -155,13 +158,22 @@ export const setName = (name: string): SetNameAction => ({
   payload: {name},
 })
 
+export const setTimeMachineTimeRange = (timeRange: TimeRange) =>
+  ({
+    type: 'SET_TIME_MACHINE_TIME_RANGE',
+    timeRange,
+  } as const)
+
 export const setTimeRange = (timeRange: TimeRange) => (dispatch, getState) => {
   const state = getState()
   const contextID = currentContext(state)
   const activeQuery = getActiveQuery(state)
 
-  dispatch(setDashboardTimeRange(contextID, timeRange))
-  dispatch(saveAndExecuteQueries())
+  if (!isEqual(timeRange, state.ranges[contextID])) {
+    dispatch(setDashboardTimeRange(contextID, timeRange))
+    dispatch(saveAndExecuteQueries())
+  }
+
   if (activeQuery.editMode === 'builder') {
     dispatch(reloadTagSelectors())
   }
@@ -556,6 +568,30 @@ export const setYSeriesColumns = (
 ): SetYSeriesColumnsAction => ({
   type: 'SET_Y_SERIES_COLUMNS',
   payload: {ySeriesColumns},
+})
+
+interface SetYLabelColumnsAction {
+  type: 'SET_Y_LABEL_COLUMNS'
+  payload: {yLabelColumns: string[]}
+}
+
+export const setYLabelColumns = (
+  yLabelColumns: string[]
+): SetYLabelColumnsAction => ({
+  type: 'SET_Y_LABEL_COLUMNS',
+  payload: {yLabelColumns},
+})
+
+interface SetYLabelColumnSeparatorAction {
+  type: 'SET_Y_LABEL_COLUMN_SEPARATOR'
+  payload: {yLabelColumnSeparator: string}
+}
+
+export const setYLabelColumnSeparator = (
+  yLabelColumnSeparator: string
+): SetYLabelColumnSeparatorAction => ({
+  type: 'SET_Y_LABEL_COLUMN_SEPARATOR',
+  payload: {yLabelColumnSeparator},
 })
 
 interface SetShadeBelowAction {

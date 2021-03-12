@@ -76,6 +76,14 @@ export const mockAppState = {
             },
           },
         },
+        '05aeb0ad75aca001': {
+          id: '05aeb0ad75aca001',
+          name: 'csv_test_variable',
+          arguments: {
+            type: 'constant',
+            values: ['sample', 'value'],
+          },
+        },
         '05ba3253105a5000': {
           id: '05ba3253105a5000',
           name: 'broker_host',
@@ -123,6 +131,7 @@ export const mockAppState = {
         '05ba3253105a5000',
         '05e6e4df2287b000',
         '05e6e4fb0887b000',
+        '05aeb0ad75aca001',
       ],
     },
   },

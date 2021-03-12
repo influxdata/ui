@@ -125,10 +125,9 @@ describe('The Query Builder', () => {
       cy.getByTestID('auto-window-period').click()
 
       cy.getByTestID('duration-input--error').should('not.exist')
-
-      cy.get('label[class="cf-toggle--visual-input"]').click()
-      cy.contains('Fill missing values').click()
-
+      cy.getByTestID('aggregation-selector').within(() => {
+        cy.getByTestID('toggle').click()
+      })
       cy.getByTestID('switch-to-script-editor').click()
       cy.contains(
         '|> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: true)'

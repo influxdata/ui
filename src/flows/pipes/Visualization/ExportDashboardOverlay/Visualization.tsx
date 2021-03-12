@@ -2,7 +2,8 @@
 import React, {FC, useCallback, useContext, useEffect, useState} from 'react'
 
 // Components
-import QueryProvider, {QueryContext} from 'src/flows/context/query'
+import QueryProvider from 'src/flows/context/query'
+import {FlowQueryProvider, FlowQueryContext} from 'src/flows/context/flow.query'
 import {PopupContext} from 'src/flows/context/popup'
 import {View} from 'src/visualization'
 
@@ -14,7 +15,7 @@ const Visualization: FC = () => {
   const [results, setResults] = useState<FluxResult>(null)
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
   const {data} = useContext(PopupContext)
-  const {query} = useContext(QueryContext)
+  const {query} = useContext(FlowQueryContext)
 
   const queryAndSetResults = useCallback(
     async text => {
@@ -37,7 +38,7 @@ const Visualization: FC = () => {
           loading={loading}
           error={results?.error}
           properties={data.properties}
-          result={results.parsed}
+          result={results?.parsed}
           timeRange={data.range}
         />
       </div>
@@ -47,6 +48,8 @@ const Visualization: FC = () => {
 
 export default () => (
   <QueryProvider>
-    <Visualization />
+    <FlowQueryProvider>
+      <Visualization />
+    </FlowQueryProvider>
   </QueryProvider>
 )

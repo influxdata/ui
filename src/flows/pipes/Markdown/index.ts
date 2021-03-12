@@ -173,6 +173,7 @@ export default register => {
     type: 'markdown',
     family: 'passThrough',
     component: MarkdownPanel,
+    featureFlag: 'flow-panel--markdown',
     button: 'Markdown',
     initial: () => ({
       text: TEST_MODE ? TESTCASE : MARKDOWN_PIPE_INITIAL,

@@ -242,6 +242,12 @@ export const timeMachineReducer = (
   action: Action
 ): TimeMachineState => {
   switch (action.type) {
+    case 'SET_TIME_MACHINE_TIME_RANGE': {
+      return produce(state, draftState => {
+        draftState.timeRange = action.timeRange
+      })
+    }
+
     case 'SET_VIEW_NAME': {
       const {name} = action.payload
       const view = {...state.view, name}
@@ -389,6 +395,16 @@ export const timeMachineReducer = (
     case 'SET_Y_SERIES_COLUMNS': {
       const {ySeriesColumns} = action.payload
       return setViewProperties(state, {ySeriesColumns})
+    }
+
+    case 'SET_Y_LABEL_COLUMNS': {
+      const {yLabelColumns} = action.payload
+      return setViewProperties(state, {yLabelColumns})
+    }
+
+    case 'SET_Y_LABEL_COLUMN_SEPARATOR': {
+      const {yLabelColumnSeparator} = action.payload
+      return setViewProperties(state, {yLabelColumnSeparator})
     }
 
     case 'SET_X_AXIS_LABEL': {

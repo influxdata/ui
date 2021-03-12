@@ -35,7 +35,7 @@ $label-edit-button-diameter: 18px; // Should be the same as the height of labels
   height: $label-edit-button-diameter;
   margin: $label-margin;
   position: relative;
-  
+
   &,
   &:after {
     border-radius: 50%;
@@ -49,7 +49,7 @@ $label-edit-button-diameter: 18px; // Should be the same as the height of labels
   }
 
   &:hover:after {
-    transform: translate(-50%, -50%) scale(1.5,1.5);
+    transform: translate(-50%, -50%) scale(1.5, 1.5);
   }
 }
 

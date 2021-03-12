@@ -356,6 +356,8 @@ const NEW_VIEW_CREATORS = {
       xColumn: null,
       xDomain: null,
       ySeriesColumns: null,
+      yLabelColumns: null,
+      yLabelColumnSeparator: '',
       yDomain: null,
       xAxisLabel: '',
       yAxisLabel: '',

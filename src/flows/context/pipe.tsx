@@ -2,7 +2,7 @@ import React, {FC, useContext, useMemo} from 'react'
 import {PipeData, FluxResult} from 'src/types/flows'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {ResultsContext} from 'src/flows/context/results'
-import {QueryContext} from './query'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {RemoteDataState, SelectableDurationTimeRange} from 'src/types'
 
 export interface PipeContextType {
@@ -40,14 +40,15 @@ interface PipeContextProps {
 export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
   const {flow} = useContext(FlowContext)
   const results = useContext(ResultsContext)
-  const {generateMap} = useContext(QueryContext)
+  const {generateMap} = useContext(FlowQueryContext)
 
   const stages = useMemo(() => generateMap(true), [
     generateMap,
     flow.data.get(id),
   ])
   const queryText =
-    stages.filter(stage => stage.instances.includes(id))[0]?.text || ''
+    stages.filter(stage => stage.instances.map(i => i.id).includes(id))[0]
+      ?.text || ''
 
   const updater = (_data: PipeData) => {
     flow.data.update(id, _data)
@@ -61,23 +62,30 @@ export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
     _result = {...DEFAULT_CONTEXT.results}
   }
 
-  return useMemo(
-    () => (
+  return useMemo(() => {
+    let data = null
+    let loading = RemoteDataState.NotStarted
+    try {
+      data = flow.data.get(id)
+      loading = flow.meta.get(id).loading
+    } catch {
+      return null
+    }
+    return (
       <PipeContext.Provider
         value={{
           id: id,
-          data: flow.data.get(id),
+          data,
           queryText,
           range: flow.range,
           update: updater,
           results: _result,
-          loading: flow.meta.get(id).loading,
+          loading,
           readOnly: flow.readOnly,
         }}
       >
         {children}
       </PipeContext.Provider>
-    ),
-    [flow, results, flow.meta.get(id).loading]
-  )
+    )
+  }, [flow, queryText, id, _result, children, updater])
 }

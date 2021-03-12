@@ -1,35 +1,43 @@
 // Libraries
 import React, {FC} from 'react'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {useHistory, useParams} from 'react-router-dom'
 
 // Components
 import {
+  ComponentColor,
   ComponentSize,
   FlexBox,
   FlexBoxChild,
   IconFont,
+  InputLabel,
+  InputToggleType,
   JustifyContent,
   SquareButton,
+  Toggle,
 } from '@influxdata/clockface'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import Toolbar from 'src/shared/components/toolbar/Toolbar'
+import {toggleSingleClickAnnotations} from 'src/annotations/actions/creators'
 import {AnnotationPills} from 'src/annotations/components/controlBar/AnnotationPills'
 import {AnnotationsSearchBar} from 'src/annotations/components/controlBar/AnnotationsSearchBar'
 
 // Selectors
-import {getAnnotationControlsVisibility} from 'src/annotations/selectors'
+import {isSingleClickAnnotationsEnabled} from 'src/annotations/selectors'
 
 // Constants
 import {ORGS, SETTINGS, ANNOTATIONS} from 'src/shared/constants/routes'
 
 export const AnnotationsControlBar: FC = () => {
   const history = useHistory()
-  const isVisible = useSelector(getAnnotationControlsVisibility)
   const {orgID} = useParams<{orgID: string; dashboardID: string}>()
 
-  if (!isVisible) {
-    return null
+  const inWriteMode = useSelector(isSingleClickAnnotationsEnabled)
+
+  const dispatch = useDispatch()
+
+  const changeWriteMode = () => {
+    dispatch(toggleSingleClickAnnotations())
   }
 
   const handleSettingsClick = (): void => {
@@ -50,6 +58,17 @@ export const AnnotationsControlBar: FC = () => {
           <AnnotationPills />
         </FlexBoxChild>
         <FlexBox margin={ComponentSize.Small}>
+          <Toggle
+            style={{marginRight: 20}}
+            id="enableAnnotationMode"
+            type={InputToggleType.Checkbox}
+            checked={inWriteMode}
+            onChange={changeWriteMode}
+            color={ComponentColor.Primary}
+            size={ComponentSize.ExtraSmall}
+          >
+            <InputLabel>Enable 1-Click Annotations</InputLabel>
+          </Toggle>
           <SquareButton
             testID="annotations-control-bar--settings"
             icon={IconFont.CogThick}

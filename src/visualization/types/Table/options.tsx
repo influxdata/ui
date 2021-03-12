@@ -38,7 +38,7 @@ import {
   MAX_DECIMAL_PLACES,
 } from 'src/visualization/constants'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
-import ThresholdsSettings from 'src/shared/components/ThresholdsSettings'
+import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
 import {move} from 'src/shared/utils/move'
 
 import './options.scss'
@@ -320,7 +320,7 @@ const TableViewOptions: FC<Props> = ({properties, results, update}) => {
           <Form.Element label="Table Columns">
             <DndProvider backend={HTML5Backend}>
               <div>
-                {draggableColumns.length || (
+                {!draggableColumns.length ? (
                   <Form.Box>
                     <EmptyState size={ComponentSize.Small}>
                       <EmptyState.Text>
@@ -328,6 +328,8 @@ const TableViewOptions: FC<Props> = ({properties, results, update}) => {
                       </EmptyState.Text>
                     </EmptyState>
                   </Form.Box>
+                ) : (
+                  draggableColumns
                 )}
               </div>
             </DndProvider>

@@ -7,22 +7,29 @@ export interface Annotation {
   message?: string
 }
 
-export interface AnnotationStream {
+export interface AnnotationResponse {
   stream: string
   annotations: Annotation[]
 }
 
+export interface AnnotationStream {
+  stream: string
+  description?: string
+  createdAt?: string
+  updatedAt?: string
+}
+
 export interface GetAnnotationPayload {
   stream?: string
-  start?: string
-  end?: string
+  startTime?: string
+  endTime?: string
   stickers?: any
 }
 
 export interface DeleteAnnotation {
   stream: string
-  start: string
-  end: string
+  startTime: string
+  endTime: string
   stickers?: any
 }
 

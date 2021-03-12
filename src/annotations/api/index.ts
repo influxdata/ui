@@ -1,9 +1,10 @@
 // Types
 import {
   Annotation,
-  AnnotationStream,
+  AnnotationResponse,
   GetAnnotationPayload,
   DeleteAnnotation,
+  AnnotationStream,
 } from 'src/types'
 
 /* Note: Axios will be removed from here as part of #511, which is the next ticket to be worked on the annotations API */
@@ -15,20 +16,31 @@ import {API_BASE_PATH} from 'src/shared/constants'
 
 // URL
 const url = `${API_BASE_PATH}api/v2private/annotations`
+const streamsURL = `${API_BASE_PATH}api/v2private/streams`
 
 // Utils
 import {formatAnnotationQueryString} from 'src/annotations/utils/formatQueryString'
 
+export const getAnnotationStreamsDetails = async (): Promise<AnnotationStream[]> => {
+  const annotationStreamResponse = await axios.get(streamsURL)
+  if (annotationStreamResponse.status >= 300) {
+    throw new Error(
+      annotationStreamResponse.data?.message ??
+        'Error fetching annotation streams'
+    )
+  }
+  return annotationStreamResponse.data ?? []
+}
+
 export const writeAnnotation = async (
   annotations: Annotation[]
 ): Promise<Annotation[]> => {
-  // we need to convert the annotation object's start and end time fields to be
-  // string types so they can be parsed in the backend.
+  // RFC 3339 is the standard serialization format for dates across the wire for annotations
   const annotationsRequestConverted = annotations.map(annotation => {
     return {
       ...annotation,
-      start: new Date(annotation.startTime).toISOString(),
-      end: new Date(annotation.endTime).toISOString(),
+      startTime: new Date(annotation.startTime).toISOString(),
+      endTime: new Date(annotation.endTime).toISOString(),
     }
   })
 
@@ -54,14 +66,14 @@ export const writeAnnotation = async (
 
 export const getAnnotations = async (
   stream?: string
-): Promise<AnnotationStream[]> => {
+): Promise<AnnotationResponse[]> => {
   const res = await axios.get(`${url}?${formatAnnotationQueryString({stream})}`)
 
   if (res.status >= 300) {
     throw new Error(res.data?.message)
   }
 
-  return res.data.map((retrievedAnnotation: AnnotationStream) => ({
+  return res.data.map((retrievedAnnotation: AnnotationResponse) => ({
     stream: retrievedAnnotation.stream,
     annotations: retrievedAnnotation.annotations,
   }))
@@ -69,7 +81,7 @@ export const getAnnotations = async (
 
 export const getAnnotation = async (
   annotation: GetAnnotationPayload
-): Promise<AnnotationStream[]> => {
+): Promise<AnnotationResponse[]> => {
   const formattedQueryString = formatAnnotationQueryString(annotation)
   const appendedURL = `${url}?${formattedQueryString}`
 
@@ -79,7 +91,7 @@ export const getAnnotation = async (
     throw new Error(res.data?.message)
   }
 
-  return res.data.map((retrievedAnnotation: AnnotationStream) => ({
+  return res.data.map((retrievedAnnotation: AnnotationResponse) => ({
     stream: retrievedAnnotation.stream,
     annotations: retrievedAnnotation.annotations,
   }))
@@ -107,10 +119,10 @@ export const updateAnnotation = async (
 }
 
 export const deleteAnnotation = async (
-  deleteAnnotation: DeleteAnnotation
+  annotationToDelete: DeleteAnnotation
 ): Promise<number> => {
   const formattedQueryString = formatAnnotationQueryString(
-    deleteAnnotation,
+    annotationToDelete,
     'delete'
   )
 

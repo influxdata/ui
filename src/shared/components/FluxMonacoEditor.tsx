@@ -17,7 +17,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 // Types
 import {OnChangeScript} from 'src/types/flux'
 import {EditorType} from 'src/types'
-import {editor as monacoEditor} from 'monaco-editor/esm/vs/editor/editor.api.js'
+import {editor as monacoEditor} from 'monaco-editor'
 
 import './FluxMonacoEditor.scss'
 import {Diagnostic} from 'monaco-languageclient/lib/services'
@@ -46,7 +46,6 @@ const FluxEditorMonaco: FC<Props> = ({
 }) => {
   const lspServer = useRef<LSPServer>(null)
   const [editorInst, seteditorInst] = useState<EditorType | null>(null)
-  const [docVersion, setdocVersion] = useState(2)
   const [docURI, setDocURI] = useState('')
 
   const wrapperClassName = classnames('flux-editor--monaco', {
@@ -109,7 +108,6 @@ const FluxEditorMonaco: FC<Props> = ({
     try {
       const diagnostics = await lspServer.current.didChange(docURI, text)
       updateDiagnostics(diagnostics)
-      setdocVersion(docVersion + 1)
     } catch (e) {
       // TODO: notify user that lsp failed
     }

@@ -1,5 +1,5 @@
 // Libraries
-import React, {ChangeEvent, FC, useState, useRef} from 'react'
+import React, {ChangeEvent, FC, useState, useRef, useEffect} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 
 // Components
@@ -15,9 +15,12 @@ import {AnnotationsSearchBarItem} from 'src/annotations/components/controlBar/An
 
 // Actions
 import {enableAnnotationStream} from 'src/annotations/actions/creators'
-
+import {fetchAndSetAnnotationStreams} from 'src/annotations/actions/thunks'
 // Selectors
-import {getHiddenAnnotationStreams} from 'src/annotations/selectors'
+import {
+  getAnnotationStreams,
+  getHiddenAnnotationStreams,
+} from 'src/annotations/selectors'
 
 // Styles
 import 'src/annotations/components/controlBar/AnnotationsSearchBar.scss'
@@ -25,12 +28,23 @@ import 'src/annotations/components/controlBar/AnnotationsSearchBar.scss'
 export const AnnotationsSearchBar: FC = () => {
   const dispatch = useDispatch()
   const inputRef = useRef<InputRef>(null)
-  const suggestions = useSelector(getHiddenAnnotationStreams)
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [suggestionsAreVisible, setSuggestionState] = useState<boolean>(false)
 
-  const filteredSuggestions = suggestions.filter(stream => {
-    return stream.name.toLowerCase().includes(searchTerm.toLowerCase())
+  useEffect(() => {
+    dispatch(fetchAndSetAnnotationStreams)
+  }, [dispatch])
+
+  const annotationStreams = useSelector(getAnnotationStreams)
+  const hiddenStreams = useSelector(getHiddenAnnotationStreams)
+
+  const filteredSuggestions = annotationStreams.filter(annotationStream => {
+    return (
+      annotationStream.stream
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) &&
+      hiddenStreams.includes(annotationStream.stream.toLowerCase())
+    )
   })
 
   const handleInputChange = (e: ChangeEvent<InputRef>): void => {
@@ -59,11 +73,11 @@ export const AnnotationsSearchBar: FC = () => {
       <>
         {filteredSuggestions.map(item => (
           <AnnotationsSearchBarItem
-            key={item.name}
-            name={item.name}
-            id={item.id}
+            key={item.stream}
+            name={item.stream}
+            id={item.stream}
             description={item.description}
-            color={item.display.color}
+            color="#9078E4"
             onClick={handleSuggestionClick}
           />
         ))}

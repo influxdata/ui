@@ -9,6 +9,11 @@ describe('DataExplorer - Geo Map Type Customization Options', () => {
         cy.fixture('routes').then(({orgs, explorer}) => {
           cy.visit(`${orgs}/${id}${explorer}`)
           cy.getByTestID('tree-nav')
+          cy.window().then(w => {
+            // I hate to add this, but the influx object isn't ready yet
+            cy.wait(1000)
+            w.influx.set('mapGeo', true)
+          })
         })
       })
     })

@@ -2,7 +2,7 @@
 import React, {PureComponent} from 'react'
 
 // Components
-import {Panel} from '@influxdata/clockface'
+import {Panel, Heading, HeadingElement, FontWeight} from '@influxdata/clockface'
 
 const supportLinks = [
   {
@@ -28,7 +28,13 @@ export default class SupportLinks extends PureComponent {
     return (
       <Panel>
         <Panel.Header>
-          <h4>Some Handy Guides and Tutorials</h4>
+          <Heading
+            element={HeadingElement.H2}
+            weight={FontWeight.Light}
+            className="cf-heading__h4"
+          >
+            Some Handy Guides and Tutorials
+          </Heading>
         </Panel.Header>
         <Panel.Body>
           <ul className="tutorials-list">

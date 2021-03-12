@@ -1,44 +1,68 @@
 import {
-  getApiV2privateFunctions,
-  deleteApiV2privateFunction,
-  postApiV2privateFunction,
+  getApiV2Functions,
+  deleteApiV2Function,
+  postApiV2Function,
   FunctionCreateRequest,
+  postApiV2FunctionsTrigger,
+  FunctionTriggerRequest,
+  patchApiV2Function,
+  FunctionUpdateRequest,
+  getApiV2FunctionsRuns,
 } from 'src/client/managedFunctionsRoutes'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export const createAPI = async (functionCreate: FunctionCreateRequest) => {
-  if (isFlagEnabled('managed-functions')) {
-    const res = await postApiV2privateFunction({data: functionCreate})
+  const res = await postApiV2Function({data: functionCreate})
 
-    if (res.status != 201) {
-      throw new Error(res.data.message)
-    }
-    return res.data
+  if (res.status != 201) {
+    throw new Error(res.data.message)
   }
+  return res.data
 }
 
 export const deleteAPI = async (id: string) => {
-  if (isFlagEnabled('managed-functions')) {
-    const res = await deleteApiV2privateFunction({functionID: id})
+  const res = await deleteApiV2Function({functionID: id})
 
-    if (res.status != 204) {
-      throw new Error(res.data.message)
-    }
+  if (res.status != 204) {
+    throw new Error(res.data.message)
   }
 }
 
 export const getAllAPI = async (orgID: string) => {
-  if (isFlagEnabled('managed-functions')) {
-    await getApiV2privateFunctions({query: {orgID}})
-    // if (res.status != 200) {
-    //   throw new Error(res.data.message)
-    // } TODO
-    return {
-      functions: [
-        {name: 'functionb', id: '1', orgID: '0', script: 'lalal'},
-        {name: 'functiona', id: '2', orgID: '0', script: 'lalal'},
-      ],
-    }
+  const res = await getApiV2Functions({query: {orgID}})
+  if (res.status != 200) {
+    throw new Error(res.data.message)
   }
-  return {}
+  return res.data
+}
+
+export const triggerAPI = async (triggerRequest: FunctionTriggerRequest) => {
+  const res = await postApiV2FunctionsTrigger({
+    data: triggerRequest,
+  })
+
+  if (res.status != 200) {
+    throw new Error(res.data.message)
+  }
+  return res.data
+}
+
+export const updateAPI = async (
+  functionID: string,
+  updateRequest: FunctionUpdateRequest
+) => {
+  const res = await patchApiV2Function({functionID, data: updateRequest})
+
+  if (res.status != 200) {
+    throw new Error(res.data.message)
+  }
+  return res.data
+}
+
+export const getRunsAPI = async (functionID: string) => {
+  const res = await getApiV2FunctionsRuns({functionID})
+
+  if (res.status != 200) {
+    throw new Error(res.data.message)
+  }
+  return res.data.runs
 }

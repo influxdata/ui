@@ -3,7 +3,7 @@ import React, {FC, useContext} from 'react'
 
 // Contexts
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
-
+import CreateBucketButton from 'src/buckets/components/CreateBucketButton'
 // Components
 import {
   List,
@@ -19,8 +19,17 @@ const WriteDataHelperBuckets: FC = () => {
   const {bucket, buckets, changeBucket} = useContext(WriteDataDetailsContext)
 
   let body = (
-    <EmptyState size={ComponentSize.Small}>
-      <p>You don't have any Buckets</p>
+    <EmptyState className="write-data--details-empty-state">
+      <span>
+        You don't have any{' '}
+        <a
+          href="https://docs.influxdata.com/influxdb/cloud/organizations/buckets/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Buckets
+        </a>
+      </span>
     </EmptyState>
   )
 
@@ -63,6 +72,7 @@ const WriteDataHelperBuckets: FC = () => {
         className="write-data--details-widget-title"
       >
         Bucket
+        <CreateBucketButton />
       </Heading>
       {body}
     </>

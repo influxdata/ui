@@ -782,25 +782,27 @@
     debug "^3.1.0"
     lodash.once "^4.1.1"
 
-"@influxdata/clockface@^2.6.1":
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-2.6.1.tgz#3b39a11cfdc2570e9bad6bbdf967d5afd34fdc35"
-  integrity sha512-RNsUbMCwojb96z6nu59sHeh/Xtv905/ec04/JEhsPUaMaXMAOuGkZe8sQ6zdg119mfMNU/XkNL3meR4Yy6ev/g==
+"@influxdata/clockface@^2.4.1":
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-2.4.1.tgz#67c61d89782dea07a149dd35e45b9eb13ad63a5f"
+  integrity sha512-p1YEnB73wOkzS6PqKr2P3jf0jRLP4mJZBbyOZsDlkYsuy3PrGnGCscshecb/f2XNiTbbbShXy40SzPreM07wQw==
 
-"@influxdata/flux-lsp-browser@^0.5.32":
-  version "0.5.32"
-  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.5.32.tgz#84fdff1dae1a10f1a80195b4380dd7b320ba4906"
-  integrity sha512-ExAAlQs2Yi2WrRScCuargVKztIMjswRzlRfhDevrqRIlEHMbiCGyVDzx3t20fKgy6ODdf6wvRMkaL7tc8Vmc5w==
+"@influxdata/flux-lsp-browser@^0.5.34":
+  version "0.5.34"
+  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.5.34.tgz#792f29cb979c75fb86792f65402465604a423653"
+  integrity sha512-LoxOv0Dbaq7zuk+O2TW3ujCgxTf9ThV2M+5Z/LWB/Y+dh8BXCh+I0mad1CVReLVkHkDP0fJD/clnS257ZWVpQQ==
 
 "@influxdata/flux@^0.5.1":
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/@influxdata/flux/-/flux-0.5.1.tgz#e39e7a7af9163fc9494422c8fed77f3ae1b68f56"
   integrity sha512-GHlkXBhSdJ2m56JzDkbnKPAqLj3/lexPooacu14AWTO4f2sDGLmzM7r0AxgdtU1M2x7EXNBwgGOI5EOAdN6mkw==
 
-"@influxdata/giraffe@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.2.0.tgz#a4a563560aa7f3c625f1d27c4ab0d680da5a9949"
-  integrity sha512-HRL/Nlqk2lDiI6aO5VdkVBuzHse64heaX+/kSxAwdqX+OkFMwqYXY9FCSQslot5WCabRUJKkcp0RHnJsYzGfMg==
+"@influxdata/giraffe@^2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.4.0.tgz#e12007f02315ad10c9949f2d95dc37a08446c407"
+  integrity sha512-q2p1DMuu2fD/CDPVG4G5yrNtfeEnn2kaEVbWkrNzpiL5n7hvO5gvTG/T5JhsBosubB4fOaszOmNOXk/OSMfjtQ==
+  dependencies:
+    merge-images "^2.0.0"
 
 "@influxdata/influx@0.5.5":
   version "0.5.5"
@@ -1486,11 +1488,6 @@
     is-glob "^4.0.1"
     lodash.unescape "4.0.1"
     semver "^6.3.0"
-
-"@use-it/event-listener@^0.1.2":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@use-it/event-listener/-/event-listener-0.1.3.tgz#a9920b2819d211cf55e68e830997546eec6886d3"
-  integrity sha512-UCHkLOVU+xj3/1R8jXz8GzDTowkzfIDPESOBlVC2ndgwUSBEqiFdwCoUEs2lcGhJOOiEdmWxF+T23C5+60eEew==
 
 "@webassemblyjs/ast@1.8.5":
   version "1.8.5"
@@ -7823,6 +7820,11 @@ merge-descriptors@1.0.1:
   resolved "https://registry.yarnpkg.com/merge-descriptors/-/merge-descriptors-1.0.1.tgz#b00aaa556dd8b44568150ec9d1b953f3f90cbb61"
   integrity sha1-sAqqVW3YtEVoFQ7J0blT8/kMu2E=
 
+merge-images@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/merge-images/-/merge-images-2.0.0.tgz#4d68d6d90ad8c33a91aced0b5d8660983bf4db3a"
+  integrity sha512-bpI4j54n/Zl6ZTgxaR3xWou/lqI53RAAt8peXijW37BKqoON83LQ7XCZqtFiwzBfEXIws1isYyR06584yffAyA==
+
 merge-stream@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/merge-stream/-/merge-stream-1.0.1.tgz#4041202d508a342ba00174008df0c251b8c135e1"
@@ -12214,17 +12216,15 @@ url@^0.11.0:
     punycode "1.3.2"
     querystring "0.2.0"
 
+use-local-storage-state@^9.0.2:
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/use-local-storage-state/-/use-local-storage-state-9.0.2.tgz#77ace2fd72c8d17d3da5be74cf6aa3e25b6e321c"
+  integrity sha512-loNVFqrzfsNoNVtM/3RJbjKVhSgTX15vPC5Tcuk7oflF0nonldRivMGAgFU3toi9v6hfTT/x8M+o6ifDN2n0OQ==
+
 use-memo-one@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/use-memo-one/-/use-memo-one-1.1.1.tgz#39e6f08fe27e422a7d7b234b5f9056af313bd22c"
   integrity sha512-oFfsyun+bP7RX8X2AskHNTxu+R3QdE/RC5IefMbqptmACAA/gfol1KDD5KRzPsGMa62sWxGZw+Ui43u6x4ddoQ==
-
-use-persisted-state@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/use-persisted-state/-/use-persisted-state-0.3.0.tgz#f8e3d2fd8eee67e0c86fd596c3ea3e8121c07402"
-  integrity sha512-UlWEq0JYg7NbvcRBZ1g6Bwe4SEbYfr1wr/D5mrmfCzSxXSwsPRYygGLlsxHcW58Rf7gGwRPBT23sNVvyVn4WYg==
-  dependencies:
-    "@use-it/event-listener" "^0.1.2"
 
 use@^3.1.0:
   version "3.1.1"

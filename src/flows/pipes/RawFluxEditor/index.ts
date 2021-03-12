@@ -9,6 +9,7 @@ export default register => {
     family: 'transform',
     priority: 1,
     component: View,
+    featureFlag: 'flow-panel--raw-flux',
     button: 'Flux Script',
     initial: {
       activeQuery: 0,
@@ -31,11 +32,11 @@ export default register => {
         .trim()
 
       if (!text.length) {
-        append()
         return
       }
 
       create(text)
+      append(`__CURRENT_RESULT__ |> limit(n: 100)`)
     },
   })
 }

@@ -50,7 +50,9 @@ describe('the annotations reducer', () => {
           },
         ],
       },
-      visibleStreamsByID: [],
+      enableSingleClickAnnotations: true,
+      visibleStreamsByID: ['default'],
+      streams: [],
     })
   })
 })

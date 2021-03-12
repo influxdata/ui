@@ -4,7 +4,6 @@ import {lines} from '../../support/commands'
 describe('Dashboard', () => {
   beforeEach(() => {
     cy.flush()
-
     cy.signin().then(() =>
       cy.fixture('routes').then(({orgs}) => {
         cy.get('@org').then(({id: orgID}: Organization) => {
@@ -273,7 +272,7 @@ describe('Dashboard', () => {
     return hydratedVarDawg.selected[0]
   }
 
-  describe('variable interractions', () => {
+  describe('variable interactions', () => {
     beforeEach(() => {
       const numLines = 360
       cy.writeData(lines(numLines))
@@ -540,7 +539,7 @@ describe('Dashboard', () => {
       })
     })
 
-    it('ensures that dependent variables load one another accordingly', () => {
+    it('ensures that dependent variables load one another accordingly, even with reload and cleared local storage', () => {
       cy.get('@org').then(({id: orgID}: Organization) => {
         cy.createDashboard(orgID).then(({body: dashboard}) => {
           cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
@@ -633,6 +632,29 @@ describe('Dashboard', () => {
               .eq(2)
               .click()
             cy.get(`#beans`).click()
+            cy.getByTestIDSubStr('variable-dropdown--build').should(
+              'contain',
+              'beans'
+            )
+          })
+          cy.clearLocalStorage()
+          cy.reload()
+          cy.get<string>('@defaultBucket').then(() => {
+            // the default bucket selection should have no results and load all three variables
+            // even though only two variables are being used (because 1 is dependent upon another)
+            cy.getByTestID('variable-dropdown--static').should(
+              'contain',
+              'defbuck'
+            )
+
+            // and cause the rest to exist in loading states
+            cy.getByTestIDSubStr('variable-dropdown--build').should(
+              'contain',
+              'beans'
+            )
+
+            // and also load the second result
+
             cy.getByTestIDSubStr('variable-dropdown--build').should(
               'contain',
               'beans'

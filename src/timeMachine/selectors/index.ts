@@ -8,7 +8,7 @@ import {fromFlux, Table} from '@influxdata/giraffe'
 import {
   defaultXColumn,
   defaultYColumn,
-  mosaicYColumn,
+  defaultYSeriesColumns,
   getNumericColumns as getNumericColumnsUtil,
   getGroupableColumns as getGroupableColumnsUtil,
   getStringColumns as getStringColumnsUtil,
@@ -50,6 +50,10 @@ export const getActiveTimeMachine = (state: AppState) => {
   const timeMachine = timeMachines[activeTimeMachineID]
 
   return timeMachine
+}
+
+export const getActiveGraphType = (state: AppState): string => {
+  return get(getActiveTimeMachine(state), 'view.properties.type', 'xy')
 }
 
 export const getIsInCheckOverlay = (state: AppState): boolean => {
@@ -151,23 +155,23 @@ export const getXColumnSelection = (state: AppState): string => {
 export const getYColumnSelection = (state: AppState): string => {
   const {table} = getVisTable(state)
   const tm = getActiveTimeMachine(state)
-  let preferredYColumnKey
+  const preferredYColumnKey = get(tm, 'view.properties.yColumn')
 
   if (tm.view.properties.type === 'mosaic') {
-    preferredYColumnKey = get(
-      getActiveTimeMachine(state),
-      'view.properties.ySeriesColumns[0]'
-    )
-
-    return mosaicYColumn(table, preferredYColumnKey)
+    return ''
   }
-
-  preferredYColumnKey = get(
-    getActiveTimeMachine(state),
-    'view.properties.yColumn'
-  )
-
   return defaultYColumn(table, preferredYColumnKey)
+}
+
+export const getYSeriesColumns = (state: AppState): Array<string> => {
+  const {table} = getVisTable(state)
+  const tm = getActiveTimeMachine(state)
+  const preferredYSeriesColumns = get(tm, 'view.properties.ySeriesColumns')
+
+  if (tm.view.properties.type === 'mosaic') {
+    return defaultYSeriesColumns(table, preferredYSeriesColumns)
+  }
+  return []
 }
 
 const getGroupableColumnSelection = (
@@ -334,7 +338,7 @@ export const getSaveableView = (state: AppState): QueryView & {id?: string} => {
       properties: {
         ...saveableView.properties,
         xColumn: getXColumnSelection(state),
-        ySeriesColumns: [getYColumnSelection(state)],
+        ySeriesColumns: getYSeriesColumns(state),
         fillColumns: getFillColumnsSelection(state),
       },
     }

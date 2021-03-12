@@ -45,6 +45,7 @@ export default class CSVTemplateBuilder extends PureComponent<Props, State> {
               value={csv}
               onChange={this.handleChange}
               onBlur={this.handleBlur}
+              testID="csv-variable-textarea"
             />
           </Grid.Column>
         </Grid.Row>

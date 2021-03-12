@@ -11,7 +11,6 @@ import React, {
 // Contexts
 import {PipeContext} from 'src/flows/context/pipe'
 import {QueryContext} from 'src/flows/context/query'
-import {FlowContext} from 'src/flows/context/flow.current'
 
 import {formatTimeRangeArguments} from 'src/timeMachine/apis/queryBuilder'
 
@@ -92,9 +91,8 @@ const fromBuilderConfig = (tags: BuilderTagsType[]): QueryBuilderCard[] =>
   })
 
 export const QueryBuilderProvider: FC = ({children}) => {
-  const {data, update} = useContext(PipeContext)
+  const {data, range, update} = useContext(PipeContext)
   const {query} = useContext(QueryContext)
-  const {flow} = useContext(FlowContext)
 
   const [cards, setCards] = useState(fromBuilderConfig(data.tags))
 
@@ -151,7 +149,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
       // TODO: Use the `v1.tagKeys` function from the Flux standard library once
       // this issue is resolved: https://github.com/influxdata/flux/issues/1071
       query(`from(bucket: "${buckets[0]}")
-              |> range(${formatTimeRangeArguments(flow.range)})
+              |> range(${formatTimeRangeArguments(range)})
               |> filter(fn: (r) => ${tagString})
               |> keys()
               |> keep(columns: ["_value"])
@@ -226,7 +224,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
       // TODO: Use the `v1.tagValues` function from the Flux standard library once
       // this issue is resolved: https://github.com/influxdata/flux/issues/1071
       query(`from(bucket: "${data.buckets[0]}")
-              |> range(${formatTimeRangeArguments(flow.range)})
+              |> range(${formatTimeRangeArguments(range)})
               |> filter(fn: (r) => ${tagString})
               |> keep(columns: ["${cards[idx].keys.selected[0]}"])
               |> group()

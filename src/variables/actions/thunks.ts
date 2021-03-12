@@ -124,6 +124,10 @@ export const getVariables = (controller?: AbortController) => async (
         variables.entities.variables[v.id].status = RemoteDataState.NotStarted
       })
 
+    if (!variables.entities['variables']) {
+      variables.entities['variables'] = {}
+    }
+
     await dispatch(setVariables(RemoteDataState.Done, variables))
   } catch (error) {
     console.error(error)
@@ -169,6 +173,12 @@ export const hydrateVariables = (
       return
     }
     if (status === RemoteDataState.Done) {
+      if (variable.arguments.type === 'query') {
+        variable.selected = variable.selected.filter(v =>
+          variable.arguments.values?.results?.includes(v)
+        )
+      }
+
       const _variable = normalize<Variable, VariableEntities, string>(
         variable,
         variableSchema

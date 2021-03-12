@@ -7,10 +7,7 @@ import {Switch, Route} from 'react-router-dom'
 import SettingsTabbedPage from 'src/settings/components/SettingsTabbedPage'
 import SettingsHeader from 'src/settings/components/SettingsHeader'
 import {Page} from '@influxdata/clockface'
-import {
-  CreateAnnotationStreamOverlay,
-  UpdateAnnotationStreamOverlay,
-} from 'src/overlays/components'
+import {CreateAnnotationStreamOverlay} from 'src/overlays/components'
 import {AnnotationsTab} from 'src/annotations/components/AnnotationsTab'
 
 // Selectors
@@ -41,10 +38,6 @@ export const AnnotationsIndex: FC = () => {
         <Route
           path={`${annotationsPath}/new`}
           component={CreateAnnotationStreamOverlay}
-        />
-        <Route
-          path={`${annotationsPath}/:annotationID/edit`}
-          component={UpdateAnnotationStreamOverlay}
         />
       </Switch>
     </>

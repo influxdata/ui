@@ -38,17 +38,16 @@ export const AnnotationsSearchBar: FC = () => {
   const annotationStreams = useSelector(getAnnotationStreams)
   const hiddenStreams = useSelector(getHiddenAnnotationStreams)
 
-  const filteredSuggestions = annotationStreams.filter(annotationStream => {
-    return (
-      annotationStream.stream
+  const filteredStreams = annotationStreams
+    .filter(annotationStream => {
+      return annotationStream.stream
         .toLowerCase()
-        .includes(searchTerm.toLowerCase()) &&
-      hiddenStreams.includes(annotationStream.stream.toLowerCase())
-    )
-  })
+        .includes(searchTerm.toLowerCase())
+    })
+    .filter(annotationStream => hiddenStreams.includes(annotationStream.stream))
 
-  const handleInputChange = (e: ChangeEvent<InputRef>): void => {
-    setSearchTerm(e.target.value)
+  const handleInputChange = (event: ChangeEvent<InputRef>): void => {
+    setSearchTerm(event.target.value)
   }
 
   const handleStartSuggesting = (): void => {
@@ -68,16 +67,16 @@ export const AnnotationsSearchBar: FC = () => {
     <List.EmptyState>No streams match your search</List.EmptyState>
   )
 
-  if (filteredSuggestions.length) {
+  if (filteredStreams.length) {
     suggestionItems = (
       <>
-        {filteredSuggestions.map(item => (
+        {filteredStreams.map(stream => (
           <AnnotationsSearchBarItem
-            key={item.stream}
-            name={item.stream}
-            id={item.stream}
-            description={item.description}
-            color="#9078E4"
+            key={stream.stream}
+            name={stream.stream}
+            id={stream.stream}
+            description={stream.description}
+            color={stream.color}
             onClick={handleSuggestionClick}
           />
         ))}

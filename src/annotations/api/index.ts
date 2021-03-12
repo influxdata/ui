@@ -21,7 +21,7 @@ const streamsURL = `${API_BASE_PATH}api/v2private/streams`
 // Utils
 import {formatAnnotationQueryString} from 'src/annotations/utils/formatQueryString'
 
-export const getAnnotationStreamsDetails = async (): Promise<AnnotationStream[]> => {
+export const getAnnotationStreams = async (): Promise<AnnotationStream[]> => {
   const annotationStreamResponse = await axios.get(streamsURL)
   if (annotationStreamResponse.status >= 300) {
     throw new Error(

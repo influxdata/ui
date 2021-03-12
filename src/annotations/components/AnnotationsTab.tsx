@@ -24,8 +24,8 @@ import {AnnotationsExplainer} from 'src/annotations/components/AnnotationsExplai
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
-
 import {getAnnotationStreams} from 'src/annotations/selectors'
+
 // Types
 import {ResourceType, AnnotationStream} from 'src/types'
 import {SortTypes} from 'src/shared/utils/sort'
@@ -67,7 +67,7 @@ export const AnnotationsTab: FC = () => {
     dispatch(fetchAndSetAnnotationStreams)
   }, [dispatch])
 
-  const annotationStreamDetails = useSelector(getAnnotationStreams)
+  const annotationStreams = useSelector(getAnnotationStreams)
 
   const org = useSelector(getOrg)
   const history = useHistory()
@@ -117,7 +117,7 @@ export const AnnotationsTab: FC = () => {
               <FilterList
                 searchTerm={searchTerm}
                 searchKeys={['name']}
-                list={annotationStreamDetails}
+                list={annotationStreams}
               >
                 {streams => (
                   <AnnotationsList

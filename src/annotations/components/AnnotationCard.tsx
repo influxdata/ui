@@ -62,14 +62,13 @@ export const AnnotationCard: FC<Props> = ({annotationStream}) => {
             glyph={IconFont.Annotate}
             size={ComponentSize.ExtraSmall}
             color={InfluxColors.Castle}
-            backgroundColor="#9078E4"
+            backgroundColor={annotationStream.color}
             style={{marginRight: '4px'}}
           />
         </>
         <>Created at {annotationStream.createdAt}</>
         <>Last modified {annotationStream.updatedAt}</>
       </ResourceCard.Meta>
-      {/* Labels go here */}
     </ResourceCard>
   )
 }

@@ -19,10 +19,13 @@ import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Redux
 import {writeThenFetchAndSetAnnotations} from 'src/annotations/actions/thunks'
+import {FALLBACK_COLOR} from 'src/annotations/reducers/index'
 import {
+  getAnnotationStreams,
   getVisibleAnnotationStreams,
   isSingleClickAnnotationsEnabled,
 } from 'src/annotations/selectors'
+
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Constants
@@ -76,10 +79,10 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
   // or in configuration/single cell popout mode
   // would need to add the annotation control bar to the VEOHeader to get access to the controls,
   // which are currently global values, not per dashboard
-
   const inAnnotationWriteMode = useSelector(isSingleClickAnnotationsEnabled)
-
   const visibleAnnotationStreams = useSelector(getVisibleAnnotationStreams)
+
+  const annotationStreams = useSelector(getAnnotationStreams)
 
   const storedXDomain = useMemo(() => parseXBounds(properties.axes.x.bounds), [
     properties.axes.x.bounds,
@@ -244,30 +247,40 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
         singleClick: makeSingleClickHandler(),
       }
     }
-    // show only the streams that are enabled by the user, the 'default' stream is enabled by default.
 
+    // show only the streams that are enabled by the user, the 'default' stream is enabled by default.
     let selectedAnnotations: any[] = []
 
     // we want to check what annotations are enabled
-    visibleAnnotationStreams.forEach(stream => {
-      if (annotations[stream]) {
-        selectedAnnotations = [...annotations[stream]]
+    visibleAnnotationStreams.forEach(visibleStreamName => {
+      if (annotations[visibleStreamName]) {
+        const correspondingStream = annotationStreams.find(
+          stream => stream.stream === visibleStreamName
+        )
+
+        const annotationsWithStreamColor = annotations[visibleStreamName].map(
+          annotation => {
+            return {
+              ...annotation,
+              color: correspondingStream?.color ?? FALLBACK_COLOR,
+            }
+          }
+        )
+        selectedAnnotations = [...annotationsWithStreamColor]
       }
     })
 
     if (selectedAnnotations.length) {
-      const colors = ['cyan', 'magenta', 'white']
-
       const annotationLayer: AnnotationLayerConfig = {
         type: 'annotation',
         x: xColumn,
         y: yColumn,
         fill: groupKey,
-        annotations: selectedAnnotations.map((annotation, i) => {
+        annotations: selectedAnnotations.map(annotation => {
           return {
             title: annotation.summary,
             description: '',
-            color: colors[i % 3],
+            color: annotation.color,
             startValue: new Date(annotation.startTime).getTime(),
             stopValue: new Date(annotation.endTime).getTime(),
             dimension: 'x',

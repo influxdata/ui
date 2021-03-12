@@ -64,9 +64,6 @@ const DataExplorerPage: FC = () => {
           <Page.ControlBarLeft>
             <ViewTypeDropdown />
             <VisOptionsButton />
-            <FeatureFlag name="annotations">
-              <AnnotationsControlBarToggleButton />
-            </FeatureFlag>
           </Page.ControlBarLeft>
           <Page.ControlBarRight>
             <DeleteDataButton />
@@ -74,9 +71,6 @@ const DataExplorerPage: FC = () => {
             <SaveAsButton />
           </Page.ControlBarRight>
         </Page.ControlBar>
-        <FeatureFlag name="annotations">
-          <AnnotationsControlBar />
-        </FeatureFlag>
         <Page.Contents fullWidth={true} scrollable={false}>
           <DataExplorer />
         </Page.Contents>

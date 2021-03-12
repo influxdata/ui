@@ -50,6 +50,9 @@
 */
 
 @media screen and (min-width: $cf-grid--breakpoint-lg) {
+  .alerting-index--selector {
+    display: none !important;
+  }
   .alerting-index--column {
     display: flex;
     margin-bottom: $cf-marg-d;

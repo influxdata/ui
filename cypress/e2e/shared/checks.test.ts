@@ -381,19 +381,13 @@ describe('Checks', () => {
         cy.viewport(1800, 980)
       })
       it('accepts keyboard tabs as navigation', () => {
-        cy.get('body')
-          .tab()
-          .tab()
+        cy.get('body').tab()
         cy.getByTestID('filter--input checks').should('have.focus')
 
-        cy.focused()
-          .tab()
-          .tab()
+        cy.focused().tab()
         cy.getByTestID('filter--input endpoints').should('have.focus')
 
-        cy.focused()
-          .tab()
-          .tab()
+        cy.focused().tab()
         cy.getByTestID('filter--input rules').should('have.focus')
       })
     })
@@ -403,7 +397,7 @@ describe('Checks', () => {
         // have to make the viewport small to use tablet size
         cy.viewport(1200, 980)
       })
-      it.only('accepts keyboard tabs as navigation', () => {
+      it('accepts keyboard tabs as navigation', () => {
         cy.get('body')
           .tab()
           .tab()

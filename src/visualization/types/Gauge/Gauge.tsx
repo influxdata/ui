@@ -390,7 +390,7 @@
 // export default Gauge
 
 // Libraries
-import React, {FunctionComponent} from 'react'
+import {FunctionComponent} from 'react'
 import {Config, Table} from '@influxdata/giraffe'
 
 // Types

@@ -375,24 +375,48 @@ describe('Checks', () => {
         .trigger('mouseup', {force: true})
     })
 
-    it('accepts keyboard tabs as navigation', () => {
-      // have to make the viewport huge to get it not to switch to tablet size
-      cy.viewport(1800, 980)
+    describe('test tabbing behavior with wide screen', () => {
+      beforeEach(() => {
+        // have to make the viewport huge to get it not to switch to tablet size
+        cy.viewport(1800, 980)
+      })
+      it('accepts keyboard tabs as navigation', () => {
+        cy.get('body')
+          .tab()
+          .tab()
+        cy.getByTestID('filter--input checks').should('have.focus')
 
-      cy.get('body')
-        .tab()
-        .tab()
-      cy.getByTestID('filter--input checks').should('have.focus')
+        cy.focused()
+          .tab()
+          .tab()
+        cy.getByTestID('filter--input endpoints').should('have.focus')
 
-      cy.focused()
-        .tab()
-        .tab()
-      cy.getByTestID('filter--input endpoints').should('have.focus')
+        cy.focused()
+          .tab()
+          .tab()
+        cy.getByTestID('filter--input rules').should('have.focus')
+      })
+    })
 
-      cy.focused()
-        .tab()
-        .tab()
-      cy.getByTestID('filter--input rules').should('have.focus')
+    describe('test tabbing behavior with small screen', () => {
+      beforeEach(() => {
+        // have to make the viewport small to use tablet size
+        cy.viewport(1200, 980)
+      })
+      it.only('accepts keyboard tabs as navigation', () => {
+        cy.get('body')
+          .tab()
+          .tab()
+        cy.getByTestID('filter--input checks').should('have.focus')
+
+        cy.getByTestID('alerting-tab--endpoints').click()
+        cy.focused().tab()
+        cy.getByTestID('filter--input endpoints').should('have.focus')
+
+        cy.getByTestID('alerting-tab--rules').click()
+        cy.focused().tab()
+        cy.getByTestID('filter--input rules').should('have.focus')
+      })
     })
 
     it('should allow created checks to be selected and routed to the edit page', () => {

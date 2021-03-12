@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, createElement} from 'react'
-import {useDispatch} from 'react-redux'
 
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
@@ -15,7 +14,6 @@ import {
   TimeRange,
   ViewProperties,
 } from 'src/types'
-import {setType} from 'src/timeMachine/actions'
 
 interface Props {
   properties: ViewProperties
@@ -40,20 +38,11 @@ const InnerView: FC<Props> = ({
     throw new Error('Unknown view type in <View /> ')
   }
 
-  const dispatch = useDispatch()
-
   const fallbackNote =
     properties.type !== 'check' && properties['showNoteWhenEmpty']
       ? properties.note
       : null
   const hasResults = !!(result?.table?.length || 0)
-
-  if (
-    properties.type === 'check' &&
-    result.table.getColumnType('_value') !== 'number'
-  ) {
-    dispatch(setType('table'))
-  }
 
   return (
     <EmptyQueryView

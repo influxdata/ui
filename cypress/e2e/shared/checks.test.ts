@@ -306,7 +306,19 @@ describe('Checks', () => {
         cy.getByTestID('time-machine-submit-button').click()
 
         // check for table
-        cy.getByTestID('_value-table-header').should('exist')
+        cy.getByTestID('raw-data-table').should('exist')
+        cy.getByTestID('raw-data--toggle').should('have.class', 'disabled')
+
+        // change field to numeric value
+        cy.getByTestID(`selector-list ${field}`).click()
+        cy.get('.query-checklist--popover').should('not.exist')
+        cy.getByTestID('save-cell--button').should('be.enabled')
+
+        // submit the graph
+        cy.getByTestID('time-machine-submit-button').click()
+
+        // make sure the plot is visible
+        cy.getByTestID('giraffe-inner-plot').should('be.visible')
       }
     )
   })

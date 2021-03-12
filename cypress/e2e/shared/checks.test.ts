@@ -379,19 +379,15 @@ describe('Checks', () => {
       // have to make the viewport huge to get it not to switch to tablet size
       cy.viewport(1800, 980)
 
-      cy.get('body')
-        .tab()
-        .tab()
+      cy.getByTestID('alerting-tab--checks').tab()
       cy.getByTestID('filter--input checks').should('have.focus')
 
-      cy.focused()
-        .tab()
-        .tab()
+      cy.focused().tab()
+      cy.focused().tab()
       cy.getByTestID('filter--input endpoints').should('have.focus')
 
-      cy.focused()
-        .tab()
-        .tab()
+      cy.focused().tab()
+      cy.focused().tab()
       cy.getByTestID('filter--input rules').should('have.focus')
     })
 

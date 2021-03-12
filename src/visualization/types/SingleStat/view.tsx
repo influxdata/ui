@@ -38,7 +38,7 @@ const SingleStat: FC<Props> = ({properties, result}) => {
         decimalPlaces: decimalPlaces,
         textColor: textColor,
         textOpacity: 100,
-        backgroundColor: backgroundColor? backgroundColor : '',
+        backgroundColor: backgroundColor ? backgroundColor : '',
         svgTextStyle: {
           fontSize: '100',
           fontWeight: 'lighter',

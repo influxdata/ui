@@ -47,8 +47,8 @@ const SingleStat: FC<Props> = ({properties, result}) => {
           letterSpacing: '-0.05em',
         },
         svgTextAttributes: {
-          'data-testid': 'single-stat--text'
-        }
+          'data-testid': 'single-stat--text',
+        },
       },
     ],
   }

@@ -44,7 +44,6 @@ import {INVALID_DATA_COPY} from 'src/visualization/constants'
 import {LinePlusSingleStatProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
 
-
 interface Props extends VisualizationProps {
   properties: LinePlusSingleStatProperties
 }

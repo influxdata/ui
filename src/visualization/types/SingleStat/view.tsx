@@ -18,7 +18,7 @@ interface Props extends VisualizationProps {
   properties: SingleStatViewProperties
 }
 
-// Temporary feature flag, replace with actual feature flag logic
+// TODO: Temporary feature flag, replace with actual feature flag logic
 const FEATURE_FLAG_ENABLED = true
 
 const SingleStat: FC<Props> = ({properties, result}) => {
@@ -59,8 +59,7 @@ const SingleStat: FC<Props> = ({properties, result}) => {
       ],
     }
     return <Plot config={config} />
-  }
-  else {
+  } else {
     return (
       <LatestValueTransform table={result.table} allowString={true}>
         {latestValue => {

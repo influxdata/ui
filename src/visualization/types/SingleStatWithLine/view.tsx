@@ -43,6 +43,7 @@ import {INVALID_DATA_COPY} from 'src/visualization/constants'
 // Types
 import {LinePlusSingleStatProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
+import {latestValues as getLatestValues} from '../../../shared/utils/latestValues'
 
 interface Props extends VisualizationProps {
   properties: LinePlusSingleStatProperties
@@ -149,6 +150,14 @@ const SingleStatWithLine: FC<Props> = ({properties, result, timeRange}) => {
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
   }
 
+  const latestValues = getLatestValues(result.table)
+  const latestValue = latestValues[0]
+
+  const {bgColor: backgroundColor, textColor} = generateThresholdsListHexs({
+    colors: properties.colors,
+    lastValue: latestValue,
+    cellType: 'single-stat',
+  })
   if (FEATURE_FLAG_ENABLED) {
     return (
       <Plot
@@ -184,6 +193,25 @@ const SingleStatWithLine: FC<Props> = ({properties, result, timeRange}) => {
               shadeBelow: !!properties.shadeBelow,
               shadeBelowOpacity: 0.08,
               hoverDimension: properties.hoverDimension,
+            },
+            {
+              type: 'single stat',
+              prefix: properties.prefix,
+              suffix: properties.suffix,
+              decimalPlaces: properties.decimalPlaces,
+              textColor: textColor,
+              textOpacity: 100,
+              backgroundColor: backgroundColor ? backgroundColor : '',
+              svgTextStyle: {
+                fontSize: '100',
+                fontWeight: 'lighter',
+                dominantBaseline: 'middle',
+                textAnchor: 'middle',
+                letterSpacing: '-0.05em',
+              },
+              svgTextAttributes: {
+                'data-testid': 'single-stat--text',
+              },
             },
           ],
         }}

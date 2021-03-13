@@ -49,6 +49,7 @@ interface Props extends VisualizationProps {
   properties: LinePlusSingleStatProperties
 }
 
+// TODO: temporary feature flag code, replace with actual logic for feature flag.
 const FEATURE_FLAG_ENABLED = true
 
 const SingleStatWithLine: FC<Props> = ({properties, result, timeRange}) => {
@@ -215,11 +216,9 @@ const SingleStatWithLine: FC<Props> = ({properties, result, timeRange}) => {
             },
           ],
         }}
-      >
-      </Plot>
+      ></Plot>
     )
-  }
-  else{
+  } else {
     return (
       <Plot
         config={{

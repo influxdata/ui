@@ -14,6 +14,8 @@ import {latestValues as getLatestValues} from '../../../shared/utils/latestValue
 import LatestValueTransform from '../../components/LatestValueTransform'
 import {formatStatValue} from '../../utils/formatStatValue'
 
+import './style.scss'
+
 interface Props extends VisualizationProps {
   properties: SingleStatViewProperties
 }

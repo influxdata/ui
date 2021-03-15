@@ -173,7 +173,7 @@
     "immutable": "^3.8.1",
     "intersection-observer": "^0.7.0",
     "jsonlint-mod": "^1.7.5",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "memoize-one": "^4.0.2",
     "moment": "^2.13.0",
     "monaco-editor": "^0.19.2",

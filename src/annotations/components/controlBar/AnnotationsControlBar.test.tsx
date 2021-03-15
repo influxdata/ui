@@ -27,9 +27,6 @@ const setup = () => {
 
 let getByTestId
 let store
-let getByTitle
-let getByText
-let debug
 
 describe('the annotations control bar ui functionality', () => {
   beforeEach(() => {
@@ -39,9 +36,6 @@ describe('the annotations control bar ui functionality', () => {
 
     store = renderResult.store
     getByTestId = renderResult.getByTestId
-    getByTitle = renderResult.getByTitle
-    debug = renderResult.debug
-    getByText = renderResult.getByText
 
     const org = {name: 'test_org_name', id: 'test_org_id'}
 

@@ -155,7 +155,7 @@ describe('the variables ui functionality', () => {
 
       expect(not_default_suggestion).toBeVisible()
     })
-    it('can search for streams', async () => {
+    it('can select stream from the available streams', async () => {
       const streamSearchBar = getByTestId('annotations-search-input')
 
       expect(streamSearchBar).toBeVisible()
@@ -176,6 +176,12 @@ describe('the variables ui functionality', () => {
       )
 
       expect(not_default_suggestion).toBeVisible()
+      await waitFor(() => {
+        fireEvent.click(not_default_suggestion)
+      })
+
+      const streamAnnotationPill = getByTestId('annotation-pill not_default')
+      expect(streamAnnotationPill).toBeVisible()
     })
   })
 })

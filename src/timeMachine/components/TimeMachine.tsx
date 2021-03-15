@@ -44,6 +44,8 @@ const TimeMachine: FunctionComponent<StateProps> = ({
     bottomContents = <TimeMachineCheckQuery />
   }
 
+  console.log('here is a failing test')
+
   return (
     <>
       {isViewingVisOptions && <ViewOptions />}

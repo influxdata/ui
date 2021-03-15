@@ -27,7 +27,6 @@ import 'src/annotations/components/controlBar/AnnotationsSearchBar.scss'
 
 export const AnnotationsSearchBar: FC = () => {
 
-  console.log("starting rendering the search bar...")
   const dispatch = useDispatch()
   const inputRef = useRef<InputRef>(null)
   const [searchTerm, setSearchTerm] = useState<string>('')

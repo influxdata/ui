@@ -47,6 +47,14 @@
 /*
   Large Screen Layout
   ------------------------------------------------------------------------------
+
+  if the screen is larger than the threshold, hide the tab buttons (only needed if it is
+  a small screen; to help you navigate between the tabs.  if the screen is large enough,
+  all the tabs/columns are visible so don't need the buttons).
+
+  clockface has the pattern to put our provided className after the internal classnames.
+  So our styles will always be lower ranking than the styles within clockface.
+  therefore, putting !important here is valid.
 */
 
 @media screen and (min-width: $cf-grid--breakpoint-lg) {

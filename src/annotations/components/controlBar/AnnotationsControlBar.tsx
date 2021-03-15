@@ -66,6 +66,7 @@ export const AnnotationsControlBar: FC = () => {
             onChange={changeWriteMode}
             color={ComponentColor.Primary}
             size={ComponentSize.ExtraSmall}
+            testID="annotations-one-click-toggle"
           >
             <InputLabel htmlFor="enableAnnotationMode">
               Enable 1-Click Annotations

@@ -1,12 +1,6 @@
 // Installed libraries
 import React from 'react'
 
-// jest.mock('src/client/generatedRoutes.ts', () => ({
-//   ...require.requireActual('src/client/generatedRoutes.ts'),
-// }))
-
-jest.mock('src/client/index.ts')
-
 // Mock State
 import {renderWithReduxAndRouter} from 'src/mockState'
 import {mockAppState} from 'src/mockAppState'
@@ -37,7 +31,7 @@ let getByTitle
 let getByText
 let debug
 
-describe('the variables ui functionality', () => {
+describe('the annotations control bar ui functionality', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
@@ -132,93 +126,109 @@ describe('the variables ui functionality', () => {
     cleanup()
   })
 
-  describe('the annotation control bar', () => {
-    it('can search for streams', async () => {
-      const streamSearchBar = getByTestId('annotations-search-input')
+  it('can search for streams', async () => {
+    const streamSearchBar = getByTestId('annotations-search-input')
 
-      expect(streamSearchBar).toBeVisible()
+    expect(streamSearchBar).toBeVisible()
 
-      fireEvent.focus(streamSearchBar)
+    fireEvent.focus(streamSearchBar)
 
-      const suggestions = getByTestId('annotations-searchbar-suggestions')
+    const suggestions = getByTestId('annotations-searchbar-suggestions')
 
-      expect(suggestions).toBeVisible()
+    expect(suggestions).toBeVisible()
 
-      // start typing "not_" this will trigger the search filtering process.
-      await waitFor(() => {
-        fireEvent.change(streamSearchBar, {target: {value: 'not_'}})
-      })
-
-      const not_default_suggestion = getByTestId(
-        'annotations-suggestion not_default'
-      )
-
-      expect(not_default_suggestion).toBeVisible()
+    // start typing "not_" this will trigger the search filtering process.
+    await waitFor(() => {
+      fireEvent.change(streamSearchBar, {target: {value: 'not_'}})
     })
-    it('can select stream from the available streams', async () => {
-      const streamSearchBar = getByTestId('annotations-search-input')
 
-      expect(streamSearchBar).toBeVisible()
+    const not_default_suggestion = getByTestId(
+      'annotations-suggestion not_default'
+    )
 
-      fireEvent.focus(streamSearchBar)
+    expect(not_default_suggestion).toBeVisible()
+  })
+  it('can select stream from the available streams', async () => {
+    const streamSearchBar = getByTestId('annotations-search-input')
 
-      const suggestions = getByTestId('annotations-searchbar-suggestions')
+    expect(streamSearchBar).toBeVisible()
 
-      expect(suggestions).toBeVisible()
+    fireEvent.focus(streamSearchBar)
 
-      // start typing "not_" this will trigger the search filtering process.
-      await waitFor(() => {
-        fireEvent.change(streamSearchBar, {target: {value: 'not_'}})
-      })
+    const suggestions = getByTestId('annotations-searchbar-suggestions')
 
-      const not_default_suggestion = getByTestId(
-        'annotations-suggestion not_default'
-      )
+    expect(suggestions).toBeVisible()
 
-      expect(not_default_suggestion).toBeVisible()
-      await waitFor(() => {
-        fireEvent.click(not_default_suggestion)
-      })
-
-      const streamAnnotationPill = getByTestId('annotation-pill not_default')
-      expect(streamAnnotationPill).toBeVisible()
+    // start typing "not_" this will trigger the search filtering process.
+    await waitFor(() => {
+      fireEvent.change(streamSearchBar, {target: {value: 'not_'}})
     })
-    it('can close the stream from the annotation pill', async () => {
-      const streamSearchBar = getByTestId('annotations-search-input')
 
-      expect(streamSearchBar).toBeVisible()
+    const not_default_suggestion = getByTestId(
+      'annotations-suggestion not_default'
+    )
 
-      fireEvent.focus(streamSearchBar)
-
-      const suggestions = getByTestId('annotations-searchbar-suggestions')
-
-      expect(suggestions).toBeVisible()
-
-      // start typing "not_" this will trigger the search filtering process.
-      await waitFor(() => {
-        fireEvent.change(streamSearchBar, {target: {value: 'not_'}})
-      })
-
-      let not_default_suggestion = getByTestId(
-        'annotations-suggestion not_default'
-      )
-
-      expect(not_default_suggestion).toBeVisible()
-      await waitFor(() => {
-        fireEvent.click(not_default_suggestion)
-      })
-
-      const streamAnnotationPillClose = getByTestId('annotation-pill not_default')
-      expect(streamAnnotationPillClose).toBeVisible()
-
-      await waitFor(() => {
-        fireEvent.click(streamAnnotationPillClose)
-      })
-
-      fireEvent.focus(streamSearchBar)
-      not_default_suggestion = getByTestId('annotations-suggestion not_default')
-      expect(not_default_suggestion).toBeVisible()
-
+    expect(not_default_suggestion).toBeVisible()
+    await waitFor(() => {
+      fireEvent.click(not_default_suggestion)
     })
+
+    const streamAnnotationPill = getByTestId('annotation-pill not_default')
+    expect(streamAnnotationPill).toBeVisible()
+
+    const visibleStreamsByID = store.getState().annotations.visibleStreamsByID
+    expect(visibleStreamsByID).toStrictEqual(['default', 'not_default'])
+  })
+  it('can close the stream from the annotation pill', async () => {
+    const streamSearchBar = getByTestId('annotations-search-input')
+
+    expect(streamSearchBar).toBeVisible()
+
+    fireEvent.focus(streamSearchBar)
+
+    const suggestions = getByTestId('annotations-searchbar-suggestions')
+
+    expect(suggestions).toBeVisible()
+
+    // start typing "not_" this will trigger the search filtering process.
+    await waitFor(() => {
+      fireEvent.change(streamSearchBar, {target: {value: 'not_'}})
+    })
+
+    let not_default_suggestion = getByTestId(
+      'annotations-suggestion not_default'
+    )
+
+    expect(not_default_suggestion).toBeVisible()
+    await waitFor(() => {
+      fireEvent.click(not_default_suggestion)
+    })
+
+    const streamAnnotationPillClose = getByTestId('annotation-pill not_default')
+    expect(streamAnnotationPillClose).toBeVisible()
+
+    await waitFor(() => {
+      fireEvent.click(streamAnnotationPillClose)
+    })
+
+    fireEvent.focus(streamSearchBar)
+    not_default_suggestion = getByTestId('annotations-suggestion not_default')
+    expect(not_default_suggestion).toBeVisible()
+
+    const visibleStreamsByID = store.getState().annotations.visibleStreamsByID
+    expect(visibleStreamsByID).toStrictEqual(['default'])
+  })
+  it('can enable the one click add annotation', async () => {
+    const toggleButton = getByTestId('annotations-one-click-toggle')
+
+    await waitFor(() => {
+      fireEvent.click(toggleButton)
+    })
+
+    const enableSingleClickAnnotations = store.getState().annotations
+      .enableSingleClickAnnotations
+
+    // by default the annotations single click to add is enabled, above toggle disables it
+    expect(enableSingleClickAnnotations).toBe(false)
   })
 })

@@ -21,10 +21,9 @@ import {AnnotationsControlBar} from './AnnotationsControlBar'
 import {setAnnotations, setAnnotationStreams} from '../../actions/creators'
 import {AnnotationResponse, AnnotationStream} from '../../../types'
 
-
 const setup = () => {
   return renderWithReduxAndRouter(
-    <AnnotationsControlBar/>,
+    <AnnotationsControlBar />,
     _fakeLocalStorage => {
       const appState = {...mockAppState}
       return appState
@@ -67,33 +66,14 @@ describe('the variables ui functionality', () => {
     })
 
     // set some annotations
-    const annotations = [{
-      stream: 'default',
-      annotations: [
-        {
-          summary: 'Annotation 1',
-          endTime: new Date('2021-03-15T20:51:45.853Z').getTime(),
-          startTime: new Date('2021-03-15T20:51:45.853Z').getTime()
-        },
-        {
-          summary: 'Annotation 2',
-          endTime: new Date('2021-03-15T20:59:47.636Z').getTime(),
-          startTime: new Date('2021-03-15T20:59:47.636Z').getTime(),
-        },
-        {
-          summary: 'Annotation 3',
-          endTime: new Date('2021-03-15T21:06:18.741Z').getTime(),
-          startTime: new Date('2021-03-15T21:06:18.741Z').getTime(),
-        }
-      ]
-    },
+    const annotations = [
       {
-        stream: 'not_default',
+        stream: 'default',
         annotations: [
           {
             summary: 'Annotation 1',
             endTime: new Date('2021-03-15T20:51:45.853Z').getTime(),
-            startTime: new Date('2021-03-15T20:51:45.853Z').getTime()
+            startTime: new Date('2021-03-15T20:51:45.853Z').getTime(),
           },
           {
             summary: 'Annotation 2',
@@ -104,9 +84,29 @@ describe('the variables ui functionality', () => {
             summary: 'Annotation 3',
             endTime: new Date('2021-03-15T21:06:18.741Z').getTime(),
             startTime: new Date('2021-03-15T21:06:18.741Z').getTime(),
-          }
-        ]
-      }
+          },
+        ],
+      },
+      {
+        stream: 'not_default',
+        annotations: [
+          {
+            summary: 'Annotation 1',
+            endTime: new Date('2021-03-15T20:51:45.853Z').getTime(),
+            startTime: new Date('2021-03-15T20:51:45.853Z').getTime(),
+          },
+          {
+            summary: 'Annotation 2',
+            endTime: new Date('2021-03-15T20:59:47.636Z').getTime(),
+            startTime: new Date('2021-03-15T20:59:47.636Z').getTime(),
+          },
+          {
+            summary: 'Annotation 3',
+            endTime: new Date('2021-03-15T21:06:18.741Z').getTime(),
+            startTime: new Date('2021-03-15T21:06:18.741Z').getTime(),
+          },
+        ],
+      },
     ] as AnnotationResponse[]
 
     store.dispatch(setAnnotations(annotations))
@@ -116,13 +116,13 @@ describe('the variables ui functionality', () => {
       {
         stream: 'default',
         color: 'red',
-        description: 'The default annotation stream.'
+        description: 'The default annotation stream.',
       },
       {
         stream: 'not_default',
         color: 'green',
-        description: 'The not_default annotation stream.'
-      }
+        description: 'The not_default annotation stream.',
+      },
     ] as AnnotationStream[]
 
     store.dispatch(setAnnotationStreams(annotationStreams))
@@ -134,26 +134,48 @@ describe('the variables ui functionality', () => {
 
   describe('the annotation control bar', () => {
     it('can search for streams', async () => {
-      const streamSearchBar = getByTestId("annotations-search-input")
+      const streamSearchBar = getByTestId('annotations-search-input')
 
       expect(streamSearchBar).toBeVisible()
 
       fireEvent.focus(streamSearchBar)
 
-      const suggestions = getByTestId("annotations-searchbar-suggestions")
+      const suggestions = getByTestId('annotations-searchbar-suggestions')
 
       expect(suggestions).toBeVisible()
 
+      // start typing "not_" this will trigger the search filtering process.
+      await waitFor(() => {
+        fireEvent.change(streamSearchBar, {target: {value: 'not_'}})
+      })
+
+      const not_default_suggestion = getByTestId(
+        'annotations-suggestion not_default'
+      )
+
+      expect(not_default_suggestion).toBeVisible()
+    })
+    it('can search for streams', async () => {
+      const streamSearchBar = getByTestId('annotations-search-input')
+
+      expect(streamSearchBar).toBeVisible()
+
+      fireEvent.focus(streamSearchBar)
+
+      const suggestions = getByTestId('annotations-searchbar-suggestions')
+
+      expect(suggestions).toBeVisible()
 
       // start typing "not_" this will trigger the search filtering process.
       await waitFor(() => {
-        fireEvent.change(streamSearchBar, {target : {value: "not_"}})
+        fireEvent.change(streamSearchBar, {target: {value: 'not_'}})
       })
 
-      const not_default_suggestion = getByTestId("annotations-suggestion not_default")
+      const not_default_suggestion = getByTestId(
+        'annotations-suggestion not_default'
+      )
 
       expect(not_default_suggestion).toBeVisible()
-
     })
   })
 })

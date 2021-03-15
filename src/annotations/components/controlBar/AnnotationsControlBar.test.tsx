@@ -12,8 +12,11 @@ import {OrgEntities, RemoteDataState} from 'src/types'
 import {arrayOfOrgs} from 'src/schemas'
 import {fireEvent, cleanup, waitFor} from '@testing-library/react'
 import {AnnotationsControlBar} from './AnnotationsControlBar'
-import {setAnnotations, setAnnotationStreams} from '../../actions/creators'
-import {AnnotationResponse, AnnotationStream} from '../../../types'
+import {
+  setAnnotations,
+  setAnnotationStreams,
+} from 'src/annotations/actions/creators'
+import {AnnotationResponse, AnnotationStream} from 'src/types'
 
 const setup = () => {
   return renderWithReduxAndRouter(

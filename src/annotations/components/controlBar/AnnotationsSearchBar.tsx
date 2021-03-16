@@ -99,7 +99,10 @@ export const AnnotationsSearchBar: FC = () => {
           testID="annotations-search-input"
         />
         {suggestionsAreVisible && (
-          <Dropdown.Menu className="annotations-searchbar--suggestions">
+          <Dropdown.Menu
+            className="annotations-searchbar--suggestions"
+            testID="annotations-searchbar-suggestions"
+          >
             <List style={{width: '100%'}}>{suggestionItems}</List>
           </Dropdown.Menu>
         )}

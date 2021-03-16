@@ -40,7 +40,6 @@ interface Props extends VisualizationProps {
   properties: TableViewProperties
 }
 
-
 const TableGraphs: FC<Props> = ({properties, result}) => {
   const [selectedTable, setSelectedTable] = useState(null)
   const [search, setSearch] = useState('')

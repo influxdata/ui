@@ -15,18 +15,17 @@ import LatestValueTransform from '../../components/LatestValueTransform'
 import {formatStatValue} from '../../utils/formatStatValue'
 
 import './style.scss'
+import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 
 interface Props extends VisualizationProps {
   properties: SingleStatViewProperties
 }
 
-// TODO: temporary feature flag variable, replace later.
-const FEATURE_FLAG_ENABLED = true
 
 const SingleStat: FC<Props> = ({properties, result}) => {
   const {prefix, suffix, colors, decimalPlaces} = properties
 
-  if (FEATURE_FLAG_ENABLED) {
+  if (isFlagEnabled('useGiraffeGraphs')) {
     const latestValues = getLatestValues(result.table)
     const latestValue = latestValues[0]
 

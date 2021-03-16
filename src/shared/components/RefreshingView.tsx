@@ -7,6 +7,8 @@ import {connect} from 'react-redux'
 import TimeSeries from 'src/shared/components/TimeSeries'
 import {View} from 'src/visualization'
 
+import CellEvent from 'src/perf/components/CellEvent'
+
 // Utils
 import {GlobalAutoRefresher} from 'src/utils/AutoRefresher'
 import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
@@ -63,6 +65,8 @@ class RefreshingView extends PureComponent<Props, State> {
     const {id, ranges, properties, manualRefresh, annotations} = this.props
     const {submitToken} = this.state
 
+    // DO NOT REMOVE the CellEvent component.  it gathers metrics for performance that management requires.
+
     return (
       <TimeSeries
         cellID={id}
@@ -71,15 +75,18 @@ class RefreshingView extends PureComponent<Props, State> {
         key={manualRefresh}
       >
         {({giraffeResult, loading, errorMessage, isInitialFetch}) => (
-          <View
-            loading={loading}
-            error={errorMessage}
-            isInitial={isInitialFetch}
-            properties={properties}
-            result={giraffeResult}
-            timeRange={ranges}
-            annotations={annotations}
-          />
+          <React.Fragment>
+            <CellEvent id={id} type={properties.type} />
+            <View
+              loading={loading}
+              error={errorMessage}
+              isInitial={isInitialFetch}
+              properties={properties}
+              result={giraffeResult}
+              timeRange={ranges}
+              annotations={annotations}
+            />
+          </React.Fragment>
         )}
       </TimeSeries>
     )

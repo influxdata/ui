@@ -21,7 +21,6 @@ interface Props extends VisualizationProps {
   properties: SingleStatViewProperties
 }
 
-
 const SingleStat: FC<Props> = ({properties, result}) => {
   const {prefix, suffix, colors, decimalPlaces} = properties
 

@@ -319,6 +319,19 @@ describe('Checks', () => {
 
         // make sure the plot is visible
         cy.getByTestID('giraffe-inner-plot').should('be.visible')
+
+        // change back to string field
+        cy.getByTestID(`selector-list ${stringField}`).click()
+
+        // save the check
+        cy.getByTestID('save-cell--button').click()
+
+        // go to the history page
+        cy.getByTestID('context-history-menu').click({force: true})
+        cy.getByTestID('context-history-task').click({force: true})
+
+        // make sure table is present
+        cy.getByTestID('raw-data-table').should('exist')
       }
     )
   })

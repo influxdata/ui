@@ -917,7 +917,7 @@ describe('Dashboard', () => {
     })
   })
 
-  it.only('can refresh a cell without refreshing the entire dashboard', () => {
+  it('can refresh a cell without refreshing the entire dashboard', () => {
     cy.get('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
@@ -954,14 +954,22 @@ describe('Dashboard', () => {
     cy.getByTestID('switch-to-script-editor').click()
     cy.getByTestID('toolbar-tab').click()
 
-    cy
-      .getByTestID('flux-editor')
+    const query1 = `from(bucket: v.buckets)
+|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+|> filter(fn: (r) => r["_measurement"] == "docker_container_cpu")
+|> filter(fn: (r) => r["_field"] == "usage_percent")`
+
+    const query2 = `from(bucket: v.buckets)
+|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+|> filter(fn: (r) => r["_measurement"] == "docker_container_cpu")
+|> filter(fn: (r) => r["_field"] == "usage_percent")
+|> filter(fn: (r) => r["container_name"] == v.depbuck)`
+
+    cy.getByTestID('flux-editor')
       .should('be.visible')
       .click()
-      .focused().type(`from(bucket: v.buckets)
-          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-          |> filter(fn: (r) => r["_measurement"] == "docker_container_cpu")
-          |> filter(fn: (r) => r["_field"] == "usage_percent")`)
+      .focused()
+      .type(query1)
 
     cy.getByTestID('overlay').within(() => {
       cy.getByTestID('page-title').click()
@@ -976,20 +984,26 @@ describe('Dashboard', () => {
     cy.getByTestID('switch-to-script-editor').click()
     cy.getByTestID('toolbar-tab').click()
 
-    cy
-      .getByTestID('flux-editor')
+    cy.getByTestID('flux-editor')
       .should('be.visible')
       .click()
-      .focused().type(`from(bucket: v.buckets)
-      |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-      |> filter(fn: (r) => r["_measurement"] == "docker_container_cpu")
-      |> filter(fn: (r) => r["_field"] == "usage_percent")
-      |> filter(fn: (r) => r["container_name"] == v.depbuck)`)
+      .focused()
+      .type(query2)
     cy.getByTestID('save-cell--button').click()
+
+    cy.intercept('POST', 'query', req => {
+      if (req.body.query === query1) {
+        req.alias = 'refreshCellQuery'
+      }
+      if (req.body.query === query2) {
+        throw new Error('Refreshed the wrong cell')
+      }
+    })
 
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('cell-context--toggle').click()
     })
     cy.getByTestID('cell-context--refresh').click()
+    cy.wait('@refreshCellQuery')
   })
 })

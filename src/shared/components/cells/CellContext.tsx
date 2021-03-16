@@ -90,7 +90,6 @@ const CellContext: FC<Props> = ({
     ) {
       resetQueryCacheByQuery(viewWithQueries.properties.queries[0].text)
     }
-    console.log('here')
     onRefresh()
   }
 

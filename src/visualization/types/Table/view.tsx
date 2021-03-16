@@ -34,12 +34,12 @@ import {
   HoverTimeProvider,
   Plot,
 } from '@influxdata/giraffe'
+import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 
 interface Props extends VisualizationProps {
   properties: TableViewProperties
 }
 
-const FEATURE_FLAG_ENABLED = true
 
 const TableGraphs: FC<Props> = ({properties, result}) => {
   const [selectedTable, setSelectedTable] = useState(null)
@@ -90,10 +90,9 @@ const TableGraphs: FC<Props> = ({properties, result}) => {
   })
   const filteredTables = tables.filter(t => t.name.includes(search))
 
-  if (FEATURE_FLAG_ENABLED) {
+  if (isFlagEnabled('useGiraffeGraphs')) {
     const parsed = parseFromFluxResults(result)
     const fluxResponse = parsed.tableData.join('\n')
-
     const config: Config = {
       fluxResponse,
       layers: [

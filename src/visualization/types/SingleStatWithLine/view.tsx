@@ -44,13 +44,11 @@ import {INVALID_DATA_COPY} from 'src/visualization/constants'
 import {LinePlusSingleStatProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
 import {latestValues as getLatestValues} from '../../../shared/utils/latestValues'
+import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 
 interface Props extends VisualizationProps {
   properties: LinePlusSingleStatProperties
 }
-
-// TODO: temporary feature flag code, replace with actual logic for feature flag.
-const FEATURE_FLAG_ENABLED = true
 
 const SingleStatWithLine: FC<Props> = ({properties, result, timeRange}) => {
   const {theme, timeZone} = useContext(AppSettingContext)
@@ -159,7 +157,7 @@ const SingleStatWithLine: FC<Props> = ({properties, result, timeRange}) => {
     lastValue: latestValue,
     cellType: 'single-stat',
   })
-  if (FEATURE_FLAG_ENABLED) {
+  if (isFlagEnabled('useGiraffeGraphs')) {
     return (
       <Plot
         config={{
@@ -216,7 +214,7 @@ const SingleStatWithLine: FC<Props> = ({properties, result, timeRange}) => {
             },
           ],
         }}
-      ></Plot>
+      />
     )
   } else {
     return (

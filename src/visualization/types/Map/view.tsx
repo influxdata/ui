@@ -19,6 +19,11 @@ type Coordinates = {
   lon: number
 }
 
+enum MapErrorStates {
+  MapServiceUnavailable = 'MapServiceUnavailable',
+  InvalidCoordinates = 'InvalidCoordinates',
+}
+
 const GeoPlot: FC<Props> = ({result, properties}) => {
   const {
     layers,
@@ -28,14 +33,8 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     mapStyle,
   } = properties
 
-  const {lat, lon} = properties.center
-
   const [errorCode, setErrorCode] = useState<string>('')
   const [mapToken, setMapToken] = useState<string>('')
-  const [geoCoordinates, setGeoCoordinates] = useState<Coordinates>({
-    lat,
-    lon,
-  })
 
   useEffect(() => {
     const getToken = async () => {
@@ -43,26 +42,25 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
         const {token} = await getMapToken()
         setMapToken(token)
       } catch (err) {
-        setErrorCode('MapServiceUnavailable')
+        setErrorCode(MapErrorStates.MapServiceUnavailable)
       }
     }
-    const getCoordinates = () => {
-      let calculatedGeoCoordinates = {
-        lat,
-        lon,
-      }
-      try {
-        calculatedGeoCoordinates = getGeoCoordinates(result.table, 0)
-        setGeoCoordinates(calculatedGeoCoordinates)
-      } catch (err) {
-        setErrorCode('InvalidCoordinates')
-      }
-    }
-    getCoordinates()
     getToken()
   }, [])
 
   let error = ''
+
+  const {lat, lon} = properties.center
+
+  let calculatedGeoCoordinates = {
+    lat,
+    lon,
+  }
+  try {
+    calculatedGeoCoordinates = getGeoCoordinates(result.table, 0)
+  } catch (err) {
+    setErrorCode(MapErrorStates.InvalidCoordinates)
+  }
 
   const getMapboxUrl = () => {
     if (mapToken) {
@@ -72,7 +70,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
   }
 
   switch (errorCode) {
-    case 'MapServiceUnavailable':
+    case MapErrorStates.MapServiceUnavailable:
       error =
         'Map type is having issues connecting to the server. Please try again later.'
 
@@ -81,7 +79,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
           {error}
         </div>
       )
-    case 'InvalidCoordinates':
+    case MapErrorStates.InvalidCoordinates:
       error =
         'Map type is not supported with the data provided: Missing latitude/longitude values'
 
@@ -104,8 +102,8 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
             layers: [
               {
                 type: 'geo',
-                lat: geoCoordinates.lat,
-                lon: geoCoordinates.lon,
+                lat: calculatedGeoCoordinates.lat,
+                lon: calculatedGeoCoordinates.lon,
                 zoom,
                 allowPanAndZoom,
                 detectCoordinateFields,

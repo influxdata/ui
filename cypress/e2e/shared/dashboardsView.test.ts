@@ -916,4 +916,80 @@ describe('Dashboard', () => {
         .should('have.class', 'table-graph-cell__sort-desc')
     })
   })
+
+  it.only('can refresh a cell without refreshing the entire dashboard', () => {
+    cy.get('@org').then(({id: orgID}: Organization) => {
+      cy.createDashboard(orgID).then(({body}) => {
+        cy.fixture('routes').then(({orgs}) => {
+          cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+          cy.getByTestID('tree-nav')
+        })
+      })
+      cy.window().then(win => {
+        win.influx.set('refreshSingleCell', true)
+      })
+      cy.createQueryVariable(
+        orgID,
+        'depbuck',
+        `from(bucket: v.buckets)
+      |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+      |> filter(fn: (r) => r["_measurement"] == "docker_container_cpu")
+      |> keep(columns: ["container_name"])
+      |> rename(columns: {"container_name": "_value"})
+      |> last()
+      |> group()`
+      )
+      cy.createQueryVariable(
+        orgID,
+        'buckets',
+        `buckets()
+        |> filter(fn: (r) => r.name !~ /^_/)
+        |> rename(columns: {name: "_value"})
+        |> keep(columns: ["_value"])`
+      )
+    })
+
+    cy.getByTestID('button').click()
+    cy.getByTestID('switch-to-script-editor').should('be.visible')
+    cy.getByTestID('switch-to-script-editor').click()
+    cy.getByTestID('toolbar-tab').click()
+
+    cy
+      .getByTestID('flux-editor')
+      .should('be.visible')
+      .click()
+      .focused().type(`from(bucket: v.buckets)
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r["_measurement"] == "docker_container_cpu")
+          |> filter(fn: (r) => r["_field"] == "usage_percent")`)
+
+    cy.getByTestID('overlay').within(() => {
+      cy.getByTestID('page-title').click()
+      cy.getByTestID('renamable-page-title--input')
+        .clear()
+        .type('blah')
+      cy.getByTestID('save-cell--button').click()
+    })
+
+    cy.getByTestID('button').click()
+    cy.getByTestID('switch-to-script-editor').should('be.visible')
+    cy.getByTestID('switch-to-script-editor').click()
+    cy.getByTestID('toolbar-tab').click()
+
+    cy
+      .getByTestID('flux-editor')
+      .should('be.visible')
+      .click()
+      .focused().type(`from(bucket: v.buckets)
+      |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+      |> filter(fn: (r) => r["_measurement"] == "docker_container_cpu")
+      |> filter(fn: (r) => r["_field"] == "usage_percent")
+      |> filter(fn: (r) => r["container_name"] == v.depbuck)`)
+    cy.getByTestID('save-cell--button').click()
+
+    cy.getByTestID('cell blah').within(() => {
+      cy.getByTestID('cell-context--toggle').click()
+    })
+    cy.getByTestID('cell-context--refresh').click()
+  })
 })

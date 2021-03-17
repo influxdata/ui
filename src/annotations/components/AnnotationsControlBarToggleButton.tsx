@@ -33,7 +33,7 @@ export const AnnotationsControlBarToggleButton: FC = () => {
       icon={IconFont.Annotate}
       color={buttonColor}
       titleText={titleText}
-      testID="toggle-annoations-controls"
+      testID="toggle-annotations-controls"
       onClick={handleClick}
     />
   )

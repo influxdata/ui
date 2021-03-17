@@ -144,7 +144,7 @@ describe('Variables', () => {
 
     cy.getByTestID('danger-confirmation-button').click()
 
-    cy.getByInputName('name').type('-renamed')
+    cy.getByInputName('name').type('Renamed')
 
     cy.getByTestID('rename-variable-submit').click()
 
@@ -152,7 +152,7 @@ describe('Variables', () => {
     cy.getByTestID('notification-success--dismiss').click()
 
     cy.getByTestID(`variable-card--name Little Variable-renamed`).contains(
-      '-renamed'
+      'Renamed'
     )
 
     // Create a Map variable from scratch

@@ -41,7 +41,7 @@ describe('VariableFormContext', () => {
     // because it is using selectors, so we are just going to mock these props manually
     const actions = setup({
       variables: {},
-      name: 'some name',
+      name: 'someName',
       variableType: 'constant',
       query: {
         type: 'query',

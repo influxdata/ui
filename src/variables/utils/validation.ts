@@ -33,7 +33,7 @@ export const validateVariableName = (
     }
   }
 
-  const matchingName = variables.find(v => {
+  const matchingName = variables?.find(v => {
     if (!id) {
       return v.name.toLocaleLowerCase() === lowerName
     }

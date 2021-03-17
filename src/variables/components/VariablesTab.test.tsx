@@ -222,7 +222,7 @@ describe('the variables ui functionality', () => {
 
       const [notifyCallArguments] = mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
-      expect(notifyMessage).toEqual(createVariableSuccess('Test variable name'))
+      expect(notifyMessage).toEqual(createVariableSuccess('TestVariableName'))
     })
     it('can create a Variable of CSV type', async () => {
       const dropdownCreateButton = getByTestId('add-resource-dropdown--button')
@@ -267,7 +267,7 @@ describe('the variables ui functionality', () => {
 
       const [notifyCallArguments] = mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
-      expect(notifyMessage).toEqual(createVariableSuccess('Test variable name'))
+      expect(notifyMessage).toEqual(createVariableSuccess('TestVariableName'))
     })
     it('can create a Variable of Query type', async () => {
       const dropdownCreateButton = getByTestId('add-resource-dropdown--button')
@@ -309,7 +309,7 @@ describe('the variables ui functionality', () => {
 
       const [notifyCallArguments] = mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
-      expect(notifyMessage).toEqual(createVariableSuccess('Test variable name'))
+      expect(notifyMessage).toEqual(createVariableSuccess('TestVariableName'))
     })
   })
   describe('the variable editing process', () => {

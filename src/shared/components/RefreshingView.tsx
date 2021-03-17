@@ -98,10 +98,6 @@ class RefreshingView extends PureComponent<Props> {
         return properties.queries
     }
   }
-
-  private incrementSubmitToken = () => {
-    this.setState({submitToken: Date.now()})
-  }
 }
 
 const mstp = (state: AppState, ownProps: OwnProps) => {

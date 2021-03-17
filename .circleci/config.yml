@@ -25,11 +25,11 @@ jobs:
               --build-arg UI_SHA=testing \
               --build-arg CLOUD_URL=http://localhost/auth \
               --build-arg WEBPACK_FILE=fast \
-              -t quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} \
+              -t quay.io/influxdb/ui-acceptance:gene \
               -f ./monitor-ci/docker/Dockerfile.chronograf.prod \
               ./ui
             mkdir -p docker-cache
-            docker save -o docker-cache/image.tar quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1}
+            docker save -o docker-cache/image.tar quay.io/influxdb/ui-acceptance:gene
       - save_cache:
           key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
           paths:
@@ -178,15 +178,15 @@ jobs:
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - when:
-          condition:
-            equal: [master, << pipeline.git.branch >>]
+          # condition:
+          # equal: [master, << pipeline.git.branch >>]
           steps:
             # The cypress image used within the ui-e2e image is a non-standard slim image and its definition and versions are
             # maintained here: https://github.com/influxdata/cypress-slim
             - run: docker tag local/cypress:latest quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
-            - run: docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} quay.io/influxdb/ui-e2e:latest
+            - run: docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} quay.io/influxdb/ui-e2e:gene
             - run: docker push quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
-            - run: docker push quay.io/influxdb/ui-e2e:latest
+            - run: docker push quay.io/influxdb/ui-e2e:gene
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start
@@ -436,6 +436,40 @@ jobs:
           path: /tmp/results.html
       - store_artifacts:
           path: /tmp/results.json
+
+  cd-app-e2e-test:
+    machine:
+      # use Ubuntu 16 image as jsonnet requires libraries newer than in Ubuntu 14
+      image: ubuntu-1604:202007-01
+    # E2e tests deploy kind, use a very large instance size
+    resource_class: 2xlarge
+    steps:
+      - checkout
+      - install_jsonnet_binary
+      - install_kind_binary
+      - install_kubectl_binary
+      - install_kubecfg_binary
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout_k8s_idpe
+      - checkout_idpe
+      - run: mkdir -p /tmp/artifacts
+      - run: mkdir -p /tmp/cypress_artifacts
+      - run:
+          name: Run E2e test
+          command: cd ../idpe/ && ./scripts/ci/cd-app-e2e-test.bash | tee /tmp/artifacts/e2e-test.log
+          environment:
+            USE_K8SIDPE_LOCAL_TOOLS: '1' # this is needed as otherwise kubecfg is not able to talk to kind API server via localhost
+            ARTIFACTS_DIRECTORY: '/tmp/artifacts'
+      - store_artifacts:
+          path: /tmp/artifacts/
+          destination: 'tests/e2e'
+      - store_artifacts:
+          path: /tmp/kindlogs/
+          destination: 'kind_e2e_logs'
+      - store_artifacts:
+          path: /home/circleci/k8s-idpe/.tmp-kind-hostpath-volume/cypress/
+          destination: cypress-videos
 workflows:
   version: 2
   build:
@@ -486,3 +520,65 @@ workflows:
             - lint
             - smoke
             - cloud-e2e
+      - cd-app-e2e-test:
+          requires:
+            - build-image
+            - cloud-e2e
+commands:
+  install_jsonnet_binary:
+    description: >
+      This will install the jsonnet binary.
+    steps:
+      - run:
+          name: Install jsonnet binary
+          command: curl -sSL https://github.com/google/jsonnet/releases/download/v0.16.0/jsonnet-bin-v0.16.0-linux.tar.gz | sudo tar -C /usr/local/bin -xz jsonnet && sudo chmod 0755 /usr/local/bin/jsonnet
+
+  install_kind_binary:
+    description: >
+      This will install the kind binary.
+    steps:
+      - run:
+          name: Install kind binary
+          command: sudo curl -sSL -o /usr/local/bin/kind https://github.com/kubernetes-sigs/kind/releases/download/v0.8.1/kind-linux-amd64 && sudo chmod 0755 /usr/local/bin/kind
+
+  install_kubecfg_binary:
+    description: >
+      This will install the kubecfg binary.
+    steps:
+      - run:
+          name: Install kubecfg binary
+          command: sudo curl -sSL -o /usr/local/bin/kubecfg https://github.com/bitnami/kubecfg/releases/download/v0.16.0/kubecfg-linux-amd64 && sudo chmod 0755 /usr/local/bin/kubecfg
+
+  install_kubectl_binary:
+    description: >
+      This will install the kubectl binary.
+    steps:
+      - run:
+          name: Install kubectl binary
+          command: sudo curl -sSL -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/v1.15.0/bin/linux/amd64/kubectl && sudo chmod 0755 /usr/local/bin/kubectl
+
+  checkout_k8s_idpe:
+    description: >
+      This will checkout k8s-idpe in parent directory
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - '55:c2:6e:7a:29:df:90:2c:6a:74:e2:a5:b0:fb:56:82' # SSH deploy key for k8s-idpe repo
+      - run:
+          command: ./scripts/ci/checkout-repo.bash
+          environment:
+            # use the SSH deploy key for k8s-idpe repo ; ignore ssh agent which does not have the specified key
+            GIT_SSH_COMMAND: 'ssh -o "IdentitiesOnly=yes" -i /home/circleci/.ssh/id_rsa_55c26e7a29df902c6a74e2a5b0fb5682'
+            REPO: k8s-idpe
+            BRANCH: master
+  checkout_idpe:
+    description: >
+      This will checkout idpe in parent directory
+    steps:
+      - run:
+          command: ./scripts/ci/checkout-repo.bash
+          environment:
+            # use the SSH deploy key for idpe repo ; ignore ssh agent which does not have the specified key
+            GIT_SSH_COMMAND: 'ssh -o "IdentitiesOnly=yes" -i /home/circleci/.ssh/id_rsa_55c26e7a29df902c6a74e2a5b0fb5682'
+            REPO: idpe
+            BRANCH: master

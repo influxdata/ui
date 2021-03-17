@@ -4,7 +4,12 @@ import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
-import {ResourceCard} from '@influxdata/clockface'
+import {
+  Alert,
+  ComponentColor,
+  IconFont,
+  ResourceCard,
+} from '@influxdata/clockface'
 import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
 import VariableContextMenu from 'src/variables/components/VariableContextMenu'
 
@@ -20,8 +25,8 @@ import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 interface OwnProps {
   variable: Variable
+  description?: string
   onDeleteVariable: (variable: Variable) => void
-  onEditVariable: (variable: Variable) => void
   onFilterChange: (searchTerm: string) => void
 }
 
@@ -32,7 +37,7 @@ class VariableCard extends PureComponent<
   Props & RouteComponentProps<{orgID: string}>
 > {
   public render() {
-    const {variable, onDeleteVariable} = this.props
+    const {variable, description, onDeleteVariable} = this.props
 
     return (
       <ErrorBoundary>
@@ -52,6 +57,16 @@ class VariableCard extends PureComponent<
             name={variable.name}
             testID={`variable-card--name ${variable.name}`}
           />
+          {description ? (
+            <>
+              <Alert
+                icon={IconFont.AlertTriangle}
+                color={ComponentColor.Warning}
+              >
+                {description}
+              </Alert>
+            </>
+          ) : null}
           <ResourceCard.Meta>
             <>Type: {variable.arguments.type}</>
           </ResourceCard.Meta>

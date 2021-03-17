@@ -61,6 +61,7 @@ export default class VariableForm extends PureComponent<Props, State> {
                   label="Name"
                   value={name}
                   required={true}
+                  prevalidate={true}
                   validationFunc={this.handleNameValidation}
                 >
                   {status => (
@@ -248,7 +249,7 @@ export default class VariableForm extends PureComponent<Props, State> {
 
   private handleNameValidation = (name: string) => {
     const {variables} = this.props
-    const {error} = validateVariableName(name, variables)
+    const {error} = validateVariableName(variables, name)
 
     this.setState({isNameValid: !error})
 

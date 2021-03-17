@@ -49,12 +49,13 @@ class RenameVariableOverlayForm extends PureComponent<Props, State> {
       <Form onSubmit={this.handleSubmit}>
         <Grid>
           <Grid.Row>
-            <Grid.Column widthXS={Columns.Six}>
+            <Grid.Column>
               <div className="overlay-flux-editor--spacing">
                 <Form.ValidationElement
                   label="Name"
                   value={workingVariable.name}
                   required={true}
+                  prevalidate={true}
                   validationFunc={this.handleNameValidation}
                 >
                   {status => (
@@ -110,7 +111,8 @@ class RenameVariableOverlayForm extends PureComponent<Props, State> {
 
   private handleNameValidation = (name: string) => {
     const {variables} = this.props
-    const {error} = validateVariableName(name, variables)
+    const {workingVariable} = this.state
+    const {error} = validateVariableName(variables, name, workingVariable.id)
 
     this.setState({isNameValid: !error})
 

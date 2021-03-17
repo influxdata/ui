@@ -40,7 +40,7 @@ describe('VariableFormContext', () => {
     // (gene: mstp): We are unable to mock mstp that this component depends on w/o enzyme
     // because it is using selectors, so we are just going to mock these props manually
     const actions = setup({
-      variables: {},
+      variables: [],
       name: 'someName',
       variableType: 'constant',
       query: {

@@ -1332,7 +1332,7 @@ describe('DataExplorer', () => {
     })
 
     describe('as variable', () => {
-      const variableName = 'var 1'
+      const variableName = 'var1'
 
       const visitVariables = () => {
         cy.fixture('routes').then(({orgs}) => {

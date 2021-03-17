@@ -28,7 +28,7 @@ describe('Annotations', () => {
             })
           })
         })
-        cy.getByTestID('toggle-annoations-controls').click()
+        cy.getByTestID('toggle-annotations-controls').click()
         cy.getByTestID('annotations-control-bar').should('be.visible')
       })
 

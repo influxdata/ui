@@ -531,13 +531,16 @@ export const lines = (numLines = 3) => {
 }
 
 export const writeData = (
-  lines: string[]
+  lines: string[],
+  namedBucket?: string
 ): Cypress.Chainable<Cypress.Response> => {
   return cy.get<Organization>('@org').then((org: Organization) => {
     return cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
       return cy.request({
         method: 'POST',
-        url: '/api/v2/write?org=' + org.name + '&bucket=' + bucket.name,
+        url:
+          '/api/v2/write?org=' + org.name + '&bucket=' + namedBucket ??
+          bucket.name,
         body: lines.join('\n'),
       })
     })

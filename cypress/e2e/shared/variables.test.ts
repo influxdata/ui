@@ -46,7 +46,7 @@ describe('Variables', () => {
     cy.getByTestID('variable-type-dropdown-constant').click()
 
     // Create a CSV variable
-    const variableName = 'a Second Variable'
+    const variableName = 'AnotherVariable'
     cy.getByInputName('name').type(variableName)
 
     cy.get('textarea').type('1,2,3,4,5,6')
@@ -163,7 +163,7 @@ describe('Variables', () => {
     cy.getByTestID('variable-type-dropdown--button').click()
     cy.getByTestID('variable-type-dropdown-map').click()
 
-    const mapVariableName = 'Map Variable'
+    const mapVariableName = 'MapVariable'
     cy.getByInputName('name').type(mapVariableName)
 
     cy.get('textarea').type(`Astrophel Chaudhary,"bDhZbuVj5RV94NcFXZPm"
@@ -190,7 +190,7 @@ describe('Variables', () => {
     cy.getByTestID('variable-type-dropdown--button').click()
     cy.getByTestID('variable-type-dropdown-map').click()
 
-    const queryVariableName = 'Query Variable'
+    const queryVariableName = 'QueryVariable'
     cy.getByInputName('name').type(queryVariableName)
 
     cy.getByTestID('variable-type-dropdown--button').click()
@@ -284,8 +284,8 @@ describe('Variables', () => {
     cy.getByTestID('variable-type-dropdown-constant').click()
 
     // Create a CSV variable
-    const variableName = 'a Second Variable'
-    const defaultVar = 'Little Variable'
+    const variableName = 'SecondVariable'
+    const defaultVar = 'LittleVariable'
     cy.getByInputName('name').type(variableName)
 
     cy.get('textarea').type('1,2,3,4,5,6')

@@ -5,7 +5,7 @@ import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
-import {Form, Input, Button, Grid, Columns} from '@influxdata/clockface'
+import {Form, Input, Button, Grid} from '@influxdata/clockface'
 
 // Utils
 import {validateVariableName} from 'src/variables/utils/validation'

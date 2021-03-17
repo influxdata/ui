@@ -199,7 +199,7 @@ describe('the variables ui functionality', () => {
       fireEvent.click(queryTypeOption)
 
       const variableName = getByTestId('variable-name-input')
-      fireEvent.change(variableName, {target: {value: 'Test variable name'}})
+      fireEvent.change(variableName, {target: {value: 'TestVariableName'}})
 
       const mapQueryTextArea = getByTestId('map-variable-textarea')
       fireEvent.change(mapQueryTextArea, {target: {value: 'sample,value'}})
@@ -243,7 +243,7 @@ describe('the variables ui functionality', () => {
       fireEvent.click(queryTypeOption)
 
       const variableName = getByTestId('variable-name-input')
-      fireEvent.change(variableName, {target: {value: 'Test variable name'}})
+      fireEvent.change(variableName, {target: {value: 'TestVariableName'}})
 
       const csvQueryTextArea = getByTestId('csv-variable-textarea')
       fireEvent.change(csvQueryTextArea, {target: {value: 'sample,value'}})
@@ -288,7 +288,7 @@ describe('the variables ui functionality', () => {
       fireEvent.click(queryTypeOption)
 
       const variableName = getByTestId('variable-name-input')
-      fireEvent.change(variableName, {target: {value: 'Test variable name'}})
+      fireEvent.change(variableName, {target: {value: 'TestVariableName'}})
 
       store.dispatch({
         type: 'UPDATE_VARIABLE_EDITOR_QUERY',

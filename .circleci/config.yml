@@ -428,9 +428,9 @@ jobs:
           command: |
             cd monitor-ci;
             if [ "${CIRCLE_BRANCH}" = "master" ]; then
-                    make lhr MASTER_BRANCH=1 GITHUB_TOKEN="${HERCULES_TOKEN}" INFLUXDB_TOKEN="${INFLUXDB_TOKEN}" ORG_ID="${ORG_ID}";
+                    make lhr MASTER_BRANCH=1 GITHUB_TOKEN="${HERCULES_TOKEN}" INFLUXDB_TOKEN="${INFLUXDB_TOKEN}" INFLUXDB_ORGID="${INFLUXDB_ORGID}" INFLUXDB_URL="${INFLUXDB_URL}" DASHBOARD_URL="${DASHBOARD_URL}";
             else
-                    make lhr PR="${CIRCLE_PULL_REQUEST}" GITHUB_TOKEN="${HERCULES_TOKEN}" INFLUXDB_TOKEN="${INFLUXDB_TOKEN}" ORG_ID="${ORG_ID}";
+                    make lhr PR="${CIRCLE_PULL_REQUEST}" GITHUB_TOKEN="${HERCULES_TOKEN}" INFLUXDB_TOKEN="${INFLUXDB_TOKEN}" INFLUXDB_ORGID="${INFLUXDB_ORGID}" INFLUXDB_URL="${INFLUXDB_URL}" DASHBOARD_URL="${DASHBOARD_URL}";
             fi
       - store_artifacts:
           path: /tmp/results.html

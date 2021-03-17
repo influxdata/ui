@@ -444,6 +444,17 @@ jobs:
     # E2e tests deploy kind, use a very large instance size
     resource_class: 2xlarge
     steps:
+      - checkout
+      - install_jsonnet_binary
+      - install_kind_binary
+      - install_kubectl_binary
+      - install_kubecfg_binary
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout_k8s_idpe
+      - checkout_idpe
+      - run: mkdir -p /tmp/artifacts
+      - run: mkdir -p /tmp/cypress_artifacts
       - run:
           name: Build ui-e2e image
           command: |
@@ -458,17 +469,6 @@ jobs:
             - run: docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} quay.io/influxdb/ui-e2e:gene
             - run: docker push quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
             - run: docker push quay.io/influxdb/ui-e2e:gene
-      - checkout
-      - install_jsonnet_binary
-      - install_kind_binary
-      - install_kubectl_binary
-      - install_kubecfg_binary
-      - attach_workspace:
-          at: /tmp/workspace
-      - checkout_k8s_idpe
-      - checkout_idpe
-      - run: mkdir -p /tmp/artifacts
-      - run: mkdir -p /tmp/cypress_artifacts
       - run:
           name: Run E2e test
           command: cd ../idpe/ && ./scripts/ci/cd-app-e2e-test.bash | tee /tmp/artifacts/e2e-test.log

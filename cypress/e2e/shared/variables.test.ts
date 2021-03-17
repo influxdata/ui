@@ -133,7 +133,7 @@ describe('Variables', () => {
 
     cy.getByTestID('resource-card variable')
       .should('have.length', 1)
-      .contains('Little Variable')
+      .contains('LittleVariable')
 
     // Rename the variable
     cy.getByTestID('context-menu')
@@ -151,7 +151,7 @@ describe('Variables', () => {
     cy.getByTestID('notification-success--dismiss').should('exist')
     cy.getByTestID('notification-success--dismiss').click()
 
-    cy.getByTestID(`variable-card--name Little Variable-renamed`).contains(
+    cy.getByTestID(`variable-card--name LittleVariableRenamed`).contains(
       'Renamed'
     )
 

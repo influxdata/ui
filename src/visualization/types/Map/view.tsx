@@ -14,11 +14,6 @@ interface Props extends VisualizationProps {
   properties: GeoViewProperties
 }
 
-type Coordinates = {
-  lat: number
-  lon: number
-}
-
 enum MapErrorStates {
   MapServiceUnavailable = 'MapServiceUnavailable',
   InvalidCoordinates = 'InvalidCoordinates',
@@ -46,7 +41,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
       }
     }
     getToken()
-  }, [])
+  })
 
   let error = ''
 
@@ -64,7 +59,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
 
   const getMapboxUrl = () => {
     if (mapToken) {
-      return `https://api.mapbox.com/styles/v1/influxdata/cklspghhd1opp17mmz0yk7rcy/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiaW5mbHV4ZGF0YSIsImEiOiJja2hndnM0eWQwNTVtMzRwZnd5cmQxNHhoIn0.IEAjIguiM67ql4mhiD88rw`
+      return `https://api.mapbox.com/styles/v1/influxdata/cklspghhd1opp17mmz0yk7rcy/tiles/256/{z}/{x}/{y}@2x?access_token=${mapToken}`
     }
     return ''
   }

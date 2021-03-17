@@ -1,6 +1,7 @@
 import {Organization} from '../../../src/types'
 
 describe('Annotations', () => {
+
     beforeEach(() => {
       cy.flush()
       cy.signin().then(() =>
@@ -11,6 +12,11 @@ describe('Annotations', () => {
           })
         })
       )
+      cy.window().then(w => {
+        // I hate to add this, but the influx object isn't ready yet
+        cy.wait(1000)
+        w.influx.set('annotations', true)
+      })
     })
 
     it("can create an annotation when control bar open", () => {
@@ -22,7 +28,7 @@ describe('Annotations', () => {
             })
           })
         })
-        
+        cy.getByTestID('toggle-annoations-controls').click()
         cy.getByTestID('annotations-control-bar').should('be.visible')
       })
 

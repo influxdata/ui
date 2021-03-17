@@ -25,11 +25,11 @@ jobs:
               --build-arg UI_SHA=testing \
               --build-arg CLOUD_URL=http://localhost/auth \
               --build-arg WEBPACK_FILE=fast \
-              -t quay.io/influxdb/ui-acceptance:gene \
+              -t quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} \
               -f ./monitor-ci/docker/Dockerfile.chronograf.prod \
               ./ui
             mkdir -p docker-cache
-            docker save -o docker-cache/image.tar quay.io/influxdb/ui-acceptance:gene
+            docker save -o docker-cache/image.tar quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1}
       - save_cache:
           key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
           paths:

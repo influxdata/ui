@@ -444,6 +444,20 @@ jobs:
     # E2e tests deploy kind, use a very large instance size
     resource_class: 2xlarge
     steps:
+      - run:
+          name: Build ui-e2e image
+          command: |
+            cd ./monitor-ci && make build NODE=cypress
+      - when:
+          condition:
+            equal: [genehynson/k8s-idpe-e2e-tests, << pipeline.git.branch >>]
+          steps:
+            # The cypress image used within the ui-e2e image is a non-standard slim image and its definition and versions are
+            # maintained here: https://github.com/influxdata/cypress-slim
+            - run: docker tag local/cypress:latest quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
+            - run: docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} quay.io/influxdb/ui-e2e:gene
+            - run: docker push quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
+            - run: docker push quay.io/influxdb/ui-e2e:gene
       - checkout
       - install_jsonnet_binary
       - install_kind_binary
@@ -486,7 +500,7 @@ workflows:
       - cloud-lighthouse:
           requires:
             - build-image
-      - cloud-e2e:
+      - cd-app-e2e-test:
           requires:
             - build-image
       - oss-e2e:
@@ -519,10 +533,6 @@ workflows:
             - unit
             - lint
             - smoke
-            - cloud-e2e
-      - cd-app-e2e-test:
-          requires:
-            - build-image
             - cloud-e2e
 commands:
   install_jsonnet_binary:

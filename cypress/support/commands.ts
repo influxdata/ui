@@ -536,11 +536,10 @@ export const writeData = (
 ): Cypress.Chainable<Cypress.Response> => {
   return cy.get<Organization>('@org').then((org: Organization) => {
     return cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
+      const bucketToUse = namedBucket ?? bucket.name
       return cy.request({
         method: 'POST',
-        url:
-          '/api/v2/write?org=' + org.name + '&bucket=' + namedBucket ??
-          bucket.name,
+        url: '/api/v2/write?org=' + org.name + '&bucket=' + bucketToUse,
         body: lines.join('\n'),
       })
     })

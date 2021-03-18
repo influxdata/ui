@@ -88,7 +88,9 @@ const CellContext: FC<Props> = ({
       Array.isArray(viewWithQueries.properties?.queries) &&
       viewWithQueries.properties.queries.length
     ) {
-      resetQueryCacheByQuery(viewWithQueries.properties.queries[0].text)
+      for (const query of viewWithQueries.properties.queries) {
+        resetQueryCacheByQuery(query.text)
+      }
     }
     onRefresh()
   }

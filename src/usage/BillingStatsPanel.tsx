@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {FC, useContext} from 'react'
 
 import {
   AlignItems,
@@ -13,29 +13,47 @@ import {
 } from '@influxdata/clockface'
 
 import GraphTypeSwitcher from 'src/usage/GraphTypeSwitcher'
+import {UsageContext} from 'src/usage/context/usage'
 
-import {GRAPH_INFO} from 'src/usage/Constants'
-import {useUsage} from 'src/usage/UsagePage'
-import {DUMMY_PRICING_VERSION_TO_DELETE} from 'src/usage/Constants'
-
-const billingStats = (pricingVersion = 3) => {
-  return GRAPH_INFO.billingStats.filter(stat =>
-    stat.pricingVersions.includes(pricingVersion)
-  )
-}
-
-const BillingStatsPanel = () => {
-  const [
-    {
-      billingStart: {date: billingStartDate, time: billingStartTime},
-      history,
-    },
-  ] = useUsage()
-
-  const csvs = history.billingStats.split('\n\n')
+const graphInfo = [
+  {
+    title: 'Data In',
+    groupColumns: [],
+    column: 'writes_mb',
+    units: 'MB',
+    isGrouped: false,
+    type: 'stat',
+  },
+  {
+    title: 'Query Count',
+    groupColumns: [],
+    column: 'query_count',
+    units: '',
+    isGrouped: false,
+    type: 'stat',
+  },
+  {
+    title: 'Storage',
+    groupColumns: [],
+    column: 'storage_gb',
+    units: 'GB-hr',
+    isGrouped: false,
+    type: 'stat',
+  },
+  {
+    title: 'Data Out',
+    groupColumns: [],
+    column: 'reads_gb',
+    units: 'GB',
+    isGrouped: false,
+    type: 'stat',
+  },
+]
+const BillingStatsPanel: FC = () => {
+  const {billingDateTime, billingStats} = useContext(UsageContext)
 
   const today = new Date().toISOString()
-  const dateRange = `${billingStartTime} UTC to ${today} UTC`
+  const dateRange = `${billingDateTime} UTC to ${today} UTC`
 
   return (
     <Panel className="plan-type-panel usage--panel billing-stats--panel">
@@ -54,7 +72,7 @@ const BillingStatsPanel = () => {
           data-testid="usage-billing--title"
         >
           <h4 className="usage--billing-date-range">
-            {`Billing Stats For ${billingStartDate} to Today`}
+            {`Billing Stats For ${billingDateTime} to Today`}
           </h4>
         </ReflessPopover>
         <QuestionMarkTooltip
@@ -83,13 +101,12 @@ const BillingStatsPanel = () => {
         alignItems={AlignItems.Stretch}
         testID="billing-stats--graphs"
       >
-        {/* TODO(ariel): fix this so that we map over the parsed CSV and pass in a table for each version */}
-        {billingStats(DUMMY_PRICING_VERSION_TO_DELETE).map((graphInfo, i) => {
+        {billingStats.map((csv: string, i: number) => {
           return (
             <GraphTypeSwitcher
-              key={graphInfo.title}
-              graphInfo={graphInfo}
-              csv={csvs[i].trim()}
+              key={csv}
+              graphInfo={graphInfo[i]}
+              csv={csv.trim()}
             />
           )
         })}

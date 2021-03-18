@@ -1,30 +1,28 @@
-// can we just get this from IDPE
-// directly or does Quartz have special
-// permissions / knowledge?
 import {
   Account as GenAccount,
   BillingNotifySettings as GenBillingNotifySettings,
-  Region as GenRegion,
-  History as GenHistory,
   BillingDate as GenBillingDate,
+  BillingInfo as GenBillingInfo,
+  CreditCardParams as GenCreditCardParams,
 } from 'src/client/unityRoutes'
 export {
   BillingContact,
-  CreditCardParams,
   Invoice,
   Invoices,
   PaymentMethod,
-  PaymentMethods,
+  UsageVectors,
+  UsageVector,
 } from 'src/client/unityRoutes'
 import {RemoteDataState} from 'src/types'
 
-export interface Region extends GenRegion {
+export interface BillingInfo extends GenBillingInfo {
   status: RemoteDataState
 }
 
-export interface History extends GenHistory {
+export interface CreditCardParams extends GenCreditCardParams {
   status: RemoteDataState
 }
+
 export interface Account extends GenAccount {
   status: RemoteDataState
 }
@@ -43,7 +41,6 @@ export interface Props {
   billingNotifySettings: BillingNotifySettings // separate endpoint w/ put [x]
   email: string // where does this come from?
   history: History
-  region: Region
 }
 
 export interface ZuoraResponse {

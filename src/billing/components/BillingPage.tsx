@@ -52,7 +52,9 @@ function BillingPage() {
         <Page titleTag="Billing">
           <Page.Header fullWidth={false} testID="billing-page--header">
             <Page.Title title="Billing" />
-            <LimitChecker>{!isCancelled && <RateLimitAlert />}</LimitChecker>
+            <LimitChecker>
+              <RateLimitAlert />
+            </LimitChecker>
           </Page.Header>
           <Page.Contents
             scrollable={true}

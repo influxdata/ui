@@ -453,12 +453,13 @@ jobs:
           at: /tmp/workspace
       - checkout_k8s_idpe
       - checkout_idpe
+      - checkout_monitor_ci
       - run: mkdir -p /tmp/artifacts
       - run: mkdir -p /tmp/cypress_artifacts
       - run:
           name: Build ui-e2e image
           command: |
-            cd ./monitor-ci && make build NODE=cypress
+            cd ../monitor-ci && make build NODE=cypress
       - when:
           condition:
             equal: [genehynson/k8s-idpe-e2e-tests, << pipeline.git.branch >>]
@@ -588,7 +589,16 @@ commands:
       - run:
           command: ./scripts/checkout-repo.bash
           environment:
-            # use the SSH deploy key for idpe repo ; ignore ssh agent which does not have the specified key
             GIT_SSH_COMMAND: 'ssh -o "IdentitiesOnly=yes" -i /home/circleci/.ssh/id_rsa_55c26e7a29df902c6a74e2a5b0fb5682'
             REPO: idpe
+            BRANCH: master
+  checkout_monitor_ci:
+    description: >
+      This will checkout monitor-ci in parent directory
+    steps:
+      - run:
+          command: ./scripts/checkout-repo.bash
+          environment:
+            GIT_SSH_COMMAND: 'ssh -o "IdentitiesOnly=yes" -i /home/circleci/.ssh/id_rsa_55c26e7a29df902c6a74e2a5b0fb5682'
+            REPO: monitor-ci
             BRANCH: master

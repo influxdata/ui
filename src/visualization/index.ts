@@ -1,16 +1,17 @@
 import {FunctionComponent, ComponentClass} from 'react'
 import {AnnotationsList, ViewProperties, TimeRange} from 'src/types'
-import {FromFluxResult} from '@influxdata/giraffe'
+import {FluxResult} from 'src/types/flows'
+import {SimpleTableViewProperties} from 'src/visualization/types/SimpleTable'
 
 export interface VisualizationOptionProps {
   properties: ViewProperties
-  results: FromFluxResult
+  results: FluxResult['parsed']
   update: (obj: any) => void
 }
 
 export interface VisualizationProps {
-  properties: ViewProperties
-  result: FromFluxResult
+  properties: ViewProperties | SimpleTableViewProperties
+  result: FluxResult['parsed']
   timeRange?: TimeRange
   annotations?: AnnotationsList
 }

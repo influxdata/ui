@@ -8,9 +8,11 @@ import {isEqual} from 'lodash'
 
 // Components
 import {View} from 'src/visualization'
+import {SimpleTableViewProperties} from 'src/visualization/types/SimpleTable'
 import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Utils
 import {
@@ -62,14 +64,20 @@ const TimeMachineVis: FC<Props> = ({
   // fallback logic is contained within the selectors that supply each of these
   // props. Note that in a dashboard context, we display an error instead of
   // attempting to fall back to an valid selection.
-  const resolvedViewProperties = {
+  let resolvedViewProperties = {
     ...viewProperties,
     xColumn,
     [`${type === 'mosaic' ? 'ySeriesColumns' : 'yColumn'}`]:
       type === 'mosaic' ? ySeriesColumns : yColumn,
     fillColumns,
     symbolColumns,
-  } as ViewProperties
+  } as ViewProperties | SimpleTableViewProperties
+
+  if (isViewingRawData && isFlagEnabled('simple-table')) {
+    resolvedViewProperties = {
+      type: 'simple-table',
+    }
+  }
 
   const noQueries =
     loading === RemoteDataState.NotStarted || !viewProperties.queries.length
@@ -97,7 +105,12 @@ const TimeMachineVis: FC<Props> = ({
     setDisableRawData(false)
   }
 
-  if (isViewingRawData && files && files.length) {
+  if (
+    isViewingRawData &&
+    files &&
+    files.length &&
+    !isFlagEnabled('simple-table')
+  ) {
     const [parsedResults] = files.flatMap(fromFlux)
     return (
       <div className={timeMachineViewClassName}>

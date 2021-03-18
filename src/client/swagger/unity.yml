@@ -290,11 +290,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  '/invoices/:id':
+  '/invoices/{invoiceId}':
     get:
       operationId: GetInvoicesId
       tags:
         - Invoices
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+        - in: path
+          name: invoiceId
+          schema:
+            type: string
+          required: true
+          description: The ID of the invoice to get.
       responses:
         '200':
           description: Returns the raw binary for the json pdf
@@ -303,6 +311,12 @@ paths:
               schema:
                 type: string
                 format: binary
+      default:
+        description: Unexpected error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'
   '/orgs/{orgId}/invites':
     get:
       operationId: GetInvites

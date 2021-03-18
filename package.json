@@ -84,6 +84,7 @@
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.5",
     "@types/react-virtualized": "^9.18.3",
+    "@types/resize-observer-browser": "^0.1.5",
     "@types/text-encoding": "^0.0.32",
     "@types/uuid": "^3.4.3",
     "@types/webpack": "^4.4.35",

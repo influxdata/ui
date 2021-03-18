@@ -1,16 +1,34 @@
+import {FluxDataType} from '@influxdata/giraffe'
+
 import view from './view'
+import icon from './icon'
 
 export interface SimpleTableViewProperties {
-    type: 'simple-table',
-    offset?: number,
-    height?: number
+  type: 'simple-table'
+}
+
+interface SubsetTableColumn {
+  name: string
+  type: string
+  fluxDataType: FluxDataType
+  data: Array<any>
+  group: boolean
+}
+
+export interface SubsetTable {
+  idx: number
+  start: number
+  end: number
+  signature: string
+  cols: SubsetTableColumn[]
 }
 
 export default register => {
   register({
     type: 'simple-table',
     name: 'Simple Table',
-    initial: { type: 'simple-table' },
+    graphic: icon,
+    initial: {type: 'simple-table'},
     component: view,
   })
 }

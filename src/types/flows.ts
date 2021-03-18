@@ -53,7 +53,7 @@ export interface PipeProp {
     | ComponentClass<PipeContextProps>
 }
 
-type Column =
+export type Column =
   | {
       name: string
       type: 'number'

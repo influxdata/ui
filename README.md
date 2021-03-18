@@ -37,17 +37,16 @@ yarn upgrade packageName
 
 Tests can be run via command line with `yarn test`, from within the `/ui` directory. For more detailed reporting, use `yarn test -- --reporters=verbose`.
 
-
 ## Cypress Testing
 
 e2e tests:
-For the end to end tests to run properly, the server needs to be running in the e2e testing mode with the in memory data store.
+For the end to end tests to run properly, the server needs to be running in the e2e testing mode with the in-memory data store.
 From the influxdb directory
 `$ ./bin/darwin/influxd --assets-path=ui/build --e2e-testing --store=memory`
 
 From the ui directory. Build the javascript with
 `$ yarn start`
- To run Cypress locally
+To run Cypress locally
 `$ yarn cy:dev`
 
 ## Starting Dev Server

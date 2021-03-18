@@ -27,13 +27,21 @@ interface OwnProps {
 }
 
 interface State {
-  inView: boolean
+  submitToken: number
 }
 
 type Props = StateProps & OwnProps
 
 @ErrorHandling
 class CellComponent extends Component<Props, State> {
+  state = {
+    submitToken: 0,
+  }
+
+  private handleIncrementToken = (): void => {
+    this.setState(s => ({...s, submitToken: s.submitToken + 1}))
+  }
+
   public render() {
     const {cell, view} = this.props
 
@@ -44,6 +52,7 @@ class CellComponent extends Component<Props, State> {
             cell={cell}
             view={view}
             onCSVDownload={this.handleCSVDownload}
+            onRefresh={this.handleIncrementToken}
           />
         </CellHeader>
         <div
@@ -103,6 +112,8 @@ class CellComponent extends Component<Props, State> {
         id={view.id}
         properties={view.properties}
         manualRefresh={manualRefresh}
+        incrementSubmitToken={this.handleIncrementToken}
+        submitToken={this.state.submitToken}
       />
     )
   }

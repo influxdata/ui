@@ -457,6 +457,9 @@ jobs:
       - run: mkdir -p /tmp/artifacts
       - run: mkdir -p /tmp/cypress_artifacts
       - run:
+          name: Copy over the testing variables
+          command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
+      - run:
           name: Build ui-e2e image
           command: |
             cd ../monitor-ci && make build NODE=cypress

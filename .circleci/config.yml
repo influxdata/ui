@@ -476,7 +476,7 @@ jobs:
             - run: docker push quay.io/influxdb/ui-e2e:gene
       - run:
           name: Run E2e test
-          command: cd ../idpe/ && ./scripts/ci/cd-app-e2e-test.bash | tee /tmp/artifacts/e2e-test.log
+          command: cd ../idpe/ && export QUAY_USER=$QUAY_USER && export QUAY_PASS=$QUAY_PASS && ./scripts/ci/cd-app-e2e-test.bash | tee /tmp/artifacts/e2e-test.log
           environment:
             USE_K8SIDPE_LOCAL_TOOLS: '1' # this is needed as otherwise kubecfg is not able to talk to kind API server via localhost
             ARTIFACTS_DIRECTORY: '/tmp/artifacts'

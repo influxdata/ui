@@ -8,7 +8,7 @@ const UsageDropdown: FC = () => {
     UsageContext
   )
 
-  const vectorNames = usageVectors.map(vector => vector.name)
+  const vectorNames = usageVectors?.map(vector => vector.name)
 
   return (
     <SelectDropdown

@@ -73,7 +73,11 @@ const UsageToday: FC = () => {
   } = useContext(UsageContext)
 
   const getUsageSparkline = () => {
-    const graphInfo = usageGraphInfo.find(stat => stat.title === selectedUsage)
+    let graphInfo = usageGraphInfo.find(stat => stat.title === selectedUsage)
+    // TODO(ariel): figure out what to do if there's no match
+    if (!graphInfo) {
+      graphInfo = usageGraphInfo[0]
+    }
     return <GraphTypeSwitcher csv={usageStats} graphInfo={graphInfo} />
   }
 

@@ -65,7 +65,7 @@ const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv}) => {
   }
 
   const graphTypeClassname = classnames('panel-body--size', {
-    'usage-plot': graphInfo.type === 'sparkline',
+    'usage-plot': graphInfo?.type === 'sparkline',
   })
 
   return (
@@ -75,7 +75,7 @@ const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv}) => {
       testID="graph-type--panel"
     >
       <Panel.Header size={ComponentSize.ExtraSmall}>
-        <h5>{graphInfo.title}</h5>
+        <h5>{graphInfo?.title}</h5>
       </Panel.Header>
       <Panel.Body className={graphTypeClassname}>
         <View
@@ -83,7 +83,7 @@ const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv}) => {
           error=""
           isInitial={false}
           properties={
-            graphInfo.type === 'stat' ? singleStatProperties : xyProperties
+            graphInfo?.type === 'stat' ? singleStatProperties : xyProperties
           }
           result={giraffeResult}
           timeRange={timeRange}

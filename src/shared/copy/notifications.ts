@@ -1075,3 +1075,15 @@ export const copyFunctionURL = (): Notification => ({
   message: `Copied function URL to clipboard`,
   duration: 2000,
 })
+
+export const deleteAnnotationSuccess = (): Notification => ({
+  ...defaultSuccessNotification,
+  icon: IconFont.Cube,
+  message: 'Successfully deleted the annotation',
+})
+
+export const deleteAnnotationFailed = (error: string): Notification => ({
+  ...defaultErrorNotification,
+  icon: IconFont.Cube,
+  message: `Failed to delete annotation: ${error}`,
+})

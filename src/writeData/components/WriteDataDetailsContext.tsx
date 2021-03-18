@@ -66,10 +66,10 @@ const WriteDataDetailsContextProvider: FC<Props> = ({
     origin,
     bucket,
     buckets: userBuckets,
-    changeBucket,
+    changeBucket: (toChangeBucket: Bucket) => changeBucket(toChangeBucket),
     token,
     tokens,
-    changeToken,
+    changeToken: (toChangeToken: Authorization) => changeToken(toChangeToken),
   }
 
   return (

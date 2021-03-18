@@ -22,7 +22,7 @@ export default class SupportLinks extends PureComponent {
       <ul className="useful-links">
         {supportLinks.map(({link, title}) => (
           <li key={title}>
-            <a href={link} target="_blank" rel="noopener">
+            <a href={link} target="_blank" rel="noreferrer">
               {title}
             </a>
           </li>

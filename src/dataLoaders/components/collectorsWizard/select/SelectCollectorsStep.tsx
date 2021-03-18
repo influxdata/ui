@@ -73,6 +73,7 @@ export class SelectCollectorsStep extends PureComponent<Props> {
             <a
               href="https://v2.docs.influxdata.com/v2.0/reference/telegraf-plugins/#input-plugins"
               target="_blank"
+              rel="noreferrer"
             >
               Telegraf Plugins
             </a>
@@ -80,6 +81,7 @@ export class SelectCollectorsStep extends PureComponent<Props> {
             <a
               href="https://v2.docs.influxdata.com/v2.0/write-data/no-code/use-telegraf/manual-config/"
               target="_blank"
+              rel="noreferrer"
             >
               Configure these Plugins
             </a>

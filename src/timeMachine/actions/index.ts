@@ -51,6 +51,7 @@ export type Action =
   | SetTypeAction
   | SetActiveQueryText
   | SetIsViewingRawDataAction
+  | SetIsDisabledViewRawData
   | SetGeomAction
   | SetDecimalPlaces
   | SetBackgroundThresholdColoringAction
@@ -221,6 +222,18 @@ export const setIsViewingRawData = (
 ): SetIsViewingRawDataAction => ({
   type: 'SET_IS_VIEWING_RAW_DATA',
   payload: {isViewingRawData},
+})
+
+interface SetIsDisabledViewRawData {
+  type: 'SET_IS_DISABLED_VIEW_RAW_DATA'
+  payload: {isDisabledViewRawData: boolean}
+}
+
+export const setIsDisabledViewRawData = (
+  isDisabledViewRawData: boolean
+): SetIsDisabledViewRawData => ({
+  type: 'SET_IS_DISABLED_VIEW_RAW_DATA',
+  payload: {isDisabledViewRawData},
 })
 
 interface SetGeomAction {

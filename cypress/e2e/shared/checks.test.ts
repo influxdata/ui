@@ -282,7 +282,7 @@ describe('Checks', () => {
     )
   })
 
-  it('checks only allow numeric fields', () => {
+  it('deadman checks should render a table for non-numeric fields', () => {
     cy.get<string>('@defaultBucketListSelector').then(
       (defaultBucketListSelector: string) => {
         // create deadman check
@@ -305,8 +305,33 @@ describe('Checks', () => {
         cy.getByTestID('empty-graph--no-queries')
         cy.getByTestID('time-machine-submit-button').click()
 
-        // check for error message
-        cy.getByTestID('empty-graph--numeric').should('exist')
+        // check for table
+        cy.getByTestID('raw-data-table').should('exist')
+        cy.getByTestID('raw-data--toggle').should('have.class', 'disabled')
+
+        // change field to numeric value
+        cy.getByTestID(`selector-list ${field}`).click()
+        cy.get('.query-checklist--popover').should('not.exist')
+        cy.getByTestID('save-cell--button').should('be.enabled')
+
+        // submit the graph
+        cy.getByTestID('time-machine-submit-button').click()
+
+        // make sure the plot is visible
+        cy.getByTestID('giraffe-inner-plot').should('be.visible')
+
+        // change back to string field
+        cy.getByTestID(`selector-list ${stringField}`).click()
+
+        // save the check
+        cy.getByTestID('save-cell--button').click()
+
+        // go to the history page
+        cy.getByTestID('context-history-menu').click({force: true})
+        cy.getByTestID('context-history-task').click({force: true})
+
+        // make sure table is present
+        cy.getByTestID('raw-data-table').should('exist')
       }
     )
   })
@@ -375,20 +400,70 @@ describe('Checks', () => {
         .trigger('mouseup', {force: true})
     })
 
-    it('accepts keyboard tabs as navigation', () => {
-      // have to make the viewport huge to get it not to switch to tablet size
-      cy.viewport(1800, 980)
+    describe('test tabbing behavior with wide screen', () => {
+      beforeEach(() => {
+        // have to make the viewport huge to get it not to switch to tablet size
+        cy.viewport(1800, 980)
+        cy.getByTestID('select-group').should('not.be.visible')
+      })
+      it('accepts keyboard tabs as navigation', () => {
+        cy.get('body').tab()
+        cy.getByTestID('filter--input checks').should('have.focus')
 
-      cy.get('body').tab()
-      cy.getByTestID('filter--input checks').should('have.focus')
+        cy.focused().tab()
+        cy.getByTestID('filter--input endpoints').should('have.focus')
 
-      cy.focused()
-        .tab()
-        .tab()
-      cy.getByTestID('filter--input endpoints').should('have.focus')
+        cy.focused().tab()
+        cy.getByTestID('filter--input rules').should('have.focus')
+      })
+    })
 
-      cy.focused().tab()
-      cy.getByTestID('filter--input rules').should('have.focus')
+    describe('test tabbing behavior with small screen', () => {
+      beforeEach(() => {
+        // have to make the viewport small to use tablet size
+        cy.viewport(1200, 980)
+        cy.getByTestID('select-group').should('be.visible')
+      })
+      it('accepts keyboard tabs as navigation', () => {
+        // chrome and firefox handle focusing after btn clicks differently.
+        // It doesn't affect the UX to the user, but does affect testing.
+        // https://zellwk.com/blog/inconsistent-button-behavior/
+        if (Cypress.browser.name === 'firefox') {
+          cy.get('body').tab()
+
+          cy.getByTestID('filter--input checks').should('have.focus')
+
+          cy.getByTestID('alerting-tab--endpoints')
+            .click()
+            .focus()
+          cy.get('body').tab()
+          cy.getByTestID('filter--input endpoints').should('have.focus')
+
+          cy.getByTestID('alerting-tab--rules')
+            .click()
+            .focus()
+          cy.get('body').tab()
+          cy.getByTestID('filter--input rules').should('have.focus')
+        } else {
+          cy.get('body')
+            .tab()
+            .tab()
+
+          cy.getByTestID('filter--input checks').should('have.focus')
+
+          cy.getByTestID('alerting-tab--endpoints')
+            .click()
+            .focus()
+          cy.focused().tab()
+          cy.getByTestID('filter--input endpoints').should('have.focus')
+
+          cy.getByTestID('alerting-tab--rules')
+            .click()
+            .focus()
+          cy.focused().tab()
+          cy.getByTestID('filter--input rules').should('have.focus')
+        }
+      })
     })
 
     it('should allow created checks to be selected and routed to the edit page', () => {

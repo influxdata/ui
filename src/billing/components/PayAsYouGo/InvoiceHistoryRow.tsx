@@ -33,7 +33,7 @@ const InvoiceHistoryRow: FC<Props> = ({
       justifyContent={JustifyContent.SpaceBetween}
       stretchToFitWidth={true}
     >
-      <a href={link} target="_blank">
+      <a href={link} target="_blank" rel="noreferrer">
         {invoiceName}
       </a>
       <FlexBox direction={FlexDirection.Row}>

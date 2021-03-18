@@ -1,18 +1,14 @@
 // Libraries
-import React, {FC, useState} from 'react'
-import {useHistory} from 'react-router-dom'
-import {useSelector} from 'react-redux'
+import React, {FC, useState, useEffect} from 'react'
+import {useSelector, useDispatch} from 'react-redux'
 
 // Components
 import {
-  Grid,
   Columns,
-  EmptyState,
   ComponentSize,
+  EmptyState,
+  Grid,
   Sort,
-  Button,
-  ComponentColor,
-  IconFont,
 } from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
@@ -23,17 +19,14 @@ import {AnnotationsList} from 'src/annotations/components/AnnotationsList'
 import {AnnotationsExplainer} from 'src/annotations/components/AnnotationsExplainer'
 
 // Selectors
-import {getOrg} from 'src/organizations/selectors'
+import {getAnnotationStreams} from 'src/annotations/selectors'
 
 // Types
-import {ResourceType} from 'src/types'
+import {ResourceType, AnnotationStream} from 'src/types'
 import {SortTypes} from 'src/shared/utils/sort'
 
-// Mocks
-import {
-  AnnotationStream,
-  MOCK_ANNOTATION_STREAMS,
-} from 'src/annotations/constants/mocks'
+// Thunks
+import {fetchAndSetAnnotationStreams} from 'src/annotations/actions/thunks'
 
 const FilterList = Filter<AnnotationStream>()
 
@@ -46,7 +39,7 @@ const AnnotationsTabEmptyState: FC<AnnotationsTabEmptyStateProps> = ({
 }) => {
   if (!searchTerm) {
     return (
-      <EmptyState size={ComponentSize.Large}>
+      <EmptyState size={ComponentSize.Large} testID="annotations-empty-state">
         <EmptyState.Text>
           Looks like there aren't any <b>Annotation Streams</b>, why not create
           one?
@@ -63,8 +56,13 @@ const AnnotationsTabEmptyState: FC<AnnotationsTabEmptyStateProps> = ({
 }
 
 export const AnnotationsTab: FC = () => {
-  const org = useSelector(getOrg)
-  const history = useHistory()
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(fetchAndSetAnnotationStreams)
+  }, [dispatch])
+
+  const annotationStreams = useSelector(getAnnotationStreams)
 
   const [searchTerm, setSearchTerm] = useState<string>('')
 
@@ -72,10 +70,6 @@ export const AnnotationsTab: FC = () => {
   const sortKey = 'name'
   const sortDirection = Sort.Ascending
   const sortType = SortTypes.String
-
-  const handleAddAnnotationStream = (): void => {
-    history.push(`/orgs/${org.id}/settings/annotations/new`)
-  }
 
   const leftHeaderItems = (
     <SearchWidget
@@ -85,21 +79,9 @@ export const AnnotationsTab: FC = () => {
     />
   )
 
-  const rightHeaderItems = (
-    <Button
-      text="Add Annotation Stream"
-      icon={IconFont.Annotate}
-      color={ComponentColor.Primary}
-      onClick={handleAddAnnotationStream}
-    />
-  )
-
   return (
     <>
-      <TabbedPageHeader
-        childrenLeft={leftHeaderItems}
-        childrenRight={rightHeaderItems}
-      />
+      <TabbedPageHeader childrenLeft={leftHeaderItems} />
       <Grid>
         <Grid.Row>
           <Grid.Column
@@ -111,11 +93,11 @@ export const AnnotationsTab: FC = () => {
               <FilterList
                 searchTerm={searchTerm}
                 searchKeys={['name']}
-                list={MOCK_ANNOTATION_STREAMS}
+                list={annotationStreams}
               >
-                {annotationStreams => (
+                {streams => (
                   <AnnotationsList
-                    annotationStreams={annotationStreams}
+                    annotationStreams={streams}
                     emptyState={
                       <AnnotationsTabEmptyState searchTerm={searchTerm} />
                     }

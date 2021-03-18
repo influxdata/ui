@@ -18,7 +18,7 @@ interface Props {
 export const AnnotationPill: FC<Props> = ({id, name, description, color}) => {
   const dispatch = useDispatch()
 
-  const handleDisable = (): void => {
+  const disableStream = (): void => {
     dispatch(disableAnnotationStream(id))
   }
 
@@ -32,7 +32,7 @@ export const AnnotationPill: FC<Props> = ({id, name, description, color}) => {
       <button
         className="annotation-pill--button"
         data-testid={`annotation-pill ${id}`}
-        onClick={handleDisable}
+        onClick={disableStream}
       >
         <Icon glyph={IconFont.Remove} />
       </button>

@@ -36,7 +36,17 @@
 .write-data--details-widget-title {
   margin-bottom: $cf-marg-b;
   padding-left: $cf-marg-b + $cf-marg-a;
-  padding-right: $cf-marg-b + $cf-marg-a;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.write-data--details-empty-state {
+  height: 200px;
+  background-color: #0f0e15;
+  display: grid;
+  align-items: center;
+  justify-items: center;
 }
 
 .markdown-format .code-snippet--text {

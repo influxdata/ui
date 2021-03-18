@@ -7,9 +7,17 @@ export interface Annotation {
   message?: string
 }
 
-export interface AnnotationStream {
+export interface AnnotationResponse {
   stream: string
   annotations: Annotation[]
+}
+
+export interface AnnotationStream {
+  stream: string
+  color: string
+  description?: string
+  createdAt?: string
+  updatedAt?: string
 }
 
 export interface GetAnnotationPayload {

@@ -58,6 +58,7 @@ import {
   defaultYColumn,
 } from 'src/shared/utils/vis'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {event} from 'src/cloud/utils/reporting'
 
 interface Props extends VisualizationProps {
   properties: XYViewProperties
@@ -176,6 +177,7 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
   const makeSingleClickHandler = () => {
     const createAnnotation = userModifiedAnnotation => {
       const {message, startTime} = userModifiedAnnotation
+      event('xyplot.annotations.create_annotation.create')
       dispatch(
         writeThenFetchAndSetAnnotations([
           {
@@ -190,6 +192,7 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
     const singleClickHandler = (
       plotInteraction: InteractionHandlerArguments
     ) => {
+      event('xyplot.annotations.create_annotation.show_overlay')
       dispatch(
         showOverlay(
           'add-annotation',
@@ -197,7 +200,10 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
             createAnnotation,
             startTime: plotInteraction.valueX,
           },
-          dismissOverlay
+          () => {
+            event('xyplot.annotations.create_annotation.cancel')
+            dismissOverlay()
+          }
         )
       )
     }
@@ -253,7 +259,7 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
 
     // we want to check what annotations are enabled
     visibleAnnotationStreams.forEach(visibleStreamName => {
-      if (annotations[visibleStreamName]) {
+      if (annotations && annotations[visibleStreamName]) {
         const correspondingStream = annotationStreams.find(
           stream => stream.stream === visibleStreamName
         )

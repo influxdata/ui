@@ -18,7 +18,12 @@ const InnerTable: FC<InnerProps> = ({table}) => {
     .fill(null)
     .map((_, idx) => {
       const cells = Object.values(table.cols).map(c => (
-        <Table.Cell key={`h${c.name}:r${idx}`}>{c.data[idx]}</Table.Cell>
+        <Table.Cell
+          key={`h${c.name}:r${idx}`}
+          testID={`table-cell ${c.data[idx]}`}
+        >
+          {c.data[idx]}
+        </Table.Cell>
       ))
 
       return <Table.Row key={`r${idx}`}>{cells}</Table.Row>

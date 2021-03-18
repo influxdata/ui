@@ -7,13 +7,14 @@ set -eu -o pipefail
 # go to parent directory
 cd ..
 
-if [ -d "./${REPO}" ] ; then
+if [ -d "../${REPO}" ] ; then
   # if repo directory already exists, pull latest version
-  cd ${REPO}
+  cd ../${REPO}
   git pull
   git co ${BRANCH}
 else
   # if it does not exist, do a shallow clone to speed up the process
+  cd ..
   git clone --depth 3 git@github.com:influxdata/${REPO}.git --branch ${BRANCH}
   cd ${REPO}
 fi

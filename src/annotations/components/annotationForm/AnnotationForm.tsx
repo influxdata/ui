@@ -75,6 +75,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
             text="Save Annotation"
             color={ComponentColor.Primary}
             type={ButtonType.Submit}
+            testID="add-annotation-submit"
           />
         </Overlay.Footer>
       </Form>

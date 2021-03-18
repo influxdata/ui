@@ -258,11 +258,12 @@ describe('Variables', () => {
     cy.getByTestID('import-overlay--textarea').contains('this is invalid')
   })
 
-  it('can create and delete a label and filter a variable by label name & sort by variable name', () => {
+  it('can create and delete a label and sort by variable name', () => {
     cy.getByTestID('inline-labels--add').should('be.visible')
-    cy.getByTestID('inline-labels--add').clickAttached()
 
+    // Create a label for the existing variable
     const labelName = 'label'
+    cy.getByTestID('inline-labels--add').clickAttached()
     cy.getByTestID('inline-labels--popover--contents').type(labelName)
     cy.getByTestID('inline-labels--create-new').click()
 
@@ -271,6 +272,8 @@ describe('Variables', () => {
 
     cy.getByTestID('overlay--children').should('not.exist')
 
+    // Create a CSV variable
+    const variableName = 'SecondVariable'
     cy.getByTestID('add-resource-dropdown--button').should('be.visible')
     cy.getByTestID('add-resource-dropdown--button').click()
 
@@ -283,9 +286,6 @@ describe('Variables', () => {
     cy.getByTestID('variable-type-dropdown--button').should('be.visible')
     cy.getByTestID('variable-type-dropdown-constant').click()
 
-    // Create a CSV variable
-    const variableName = 'SecondVariable'
-    const defaultVar = 'LittleVariable'
     cy.getByInputName('name').type(variableName)
 
     cy.get('textarea').type('1,2,3,4,5,6')
@@ -299,34 +299,148 @@ describe('Variables', () => {
       .contains('Create')
       .click()
 
-    cy.getByTestID('search-widget').type(labelName)
-
-    cy.getByTestID('resource-card variable')
-      .should('have.length', 1)
-      .contains(defaultVar)
-
     // Delete the label
     cy.getByTestID(`label--pill--delete ${labelName}`).click({force: true})
-    cy.getByTestID('resource-card variable').should('have.length', 0)
+    cy.getByTestID('resource-card variable').should('have.length', 2)
     cy.getByTestID('search-widget').clear()
     cy.getByTestID('inline-labels--empty').should('exist')
 
     cy.getByTestID('resource-card variable')
-      .should('have.length', 2)
-      .first()
-      .contains(variableName)
-    cy.getByTestID('resource-card variable')
       .last()
-      .contains(defaultVar)
+      .contains(variableName)
 
     cy.getByTestID('resource-sorter--button').click()
     cy.getByTestID('resource-sorter--name-desc').click()
 
     cy.getByTestID('resource-card variable')
       .first()
-      .contains(defaultVar)
-    cy.getByTestID('resource-card variable')
-      .last()
       .contains(variableName)
+  })
+
+  it('can filter by variable or label name', () => {
+    const firstVariableName = 'LittleVariable'
+    cy.getByTestID('resource-card variable')
+      .should('have.length', 1)
+      .contains(firstVariableName)
+
+    // Create a Query variable from scratch
+    const secondVariableName = 'SecondVariable'
+    cy.getByTestID('add-resource-dropdown--button').click()
+    cy.getByTestID('add-resource-dropdown--new').click()
+
+    cy.getByTestID('variable-type-dropdown--button').click()
+    cy.getByTestID('variable-type-dropdown-query').click()
+
+    cy.getByTestID('flux-editor').within(() => {
+      cy.get('.react-monaco-editor-container')
+        .click()
+        .focused()
+        .type('filter(fn: (r) => r._field == "cpu")', {
+          force: true,
+        })
+    })
+    cy.getByInputName('name').type(secondVariableName)
+
+    cy.get('form')
+      .contains('Create')
+      .click()
+
+    // Create a CSV variable
+    const thirdVariableName = 'ThirdVariable'
+    cy.getByTestID('add-resource-dropdown--button').click()
+    cy.getByTestID('add-resource-dropdown--new').click()
+
+    cy.getByTestID('variable-type-dropdown--button').click()
+    cy.getByTestID('variable-type-dropdown-constant').click()
+
+    cy.getByInputName('name').type(thirdVariableName)
+    cy.get('textarea').type('1,2,3,4,5,6')
+    cy.getByTestID('csv-value-select-dropdown')
+      .click()
+      .contains('6')
+      .click()
+
+    cy.get('form')
+      .contains('Create')
+      .click()
+
+    // Ensure we have three variables and three buttons to add labels
+    cy.getByTestID('resource-card variable').should('have.length', 3)
+    cy.get('button.inline-labels--add').should('have.length', 3)
+
+    // Create the labels
+    const firstLabelName = 'little'
+    cy.get('button.inline-labels--add')
+      .first()
+      .clickAttached()
+    cy.getByTestID('inline-labels--popover--contents').type(firstLabelName)
+    cy.getByTestID('inline-labels--create-new').click()
+    cy.getByTestID('create-label-form--submit').should('be.visible')
+    cy.getByTestID('create-label-form--submit').click()
+
+    const secondLabelName = 'query'
+    cy.get('button.inline-labels--add')
+      .eq(1)
+      .clickAttached()
+    cy.getByTestID('inline-labels--popover--contents').type(secondLabelName)
+    cy.getByTestID('inline-labels--create-new').click()
+    cy.getByTestID('create-label-form--submit').should('be.visible')
+    cy.getByTestID('create-label-form--submit').click()
+
+    const thirdLabelName = 'csv'
+    cy.get('button.inline-labels--add')
+      .last()
+      .clickAttached()
+    cy.getByTestID('inline-labels--popover--contents').type(thirdLabelName)
+    cy.getByTestID('inline-labels--create-new').click()
+    cy.getByTestID('create-label-form--submit').should('be.visible')
+    cy.getByTestID('create-label-form--submit').click()
+
+    // Select ascending order and use filter on variable name
+    cy.getByTestID('resource-sorter--button').click()
+    cy.getByTestID('resource-sorter--name-asc').click()
+
+    cy.getByTestID('search-widget').type(firstVariableName)
+    cy.getByTestID('resource-card variable')
+      .should('have.length', 1)
+      .contains(firstVariableName)
+
+    cy.getByTestID('search-widget')
+      .clear()
+      .type(secondVariableName)
+    cy.getByTestID('resource-card variable')
+      .should('have.length', 1)
+      .contains(secondVariableName)
+
+    cy.getByTestID('search-widget')
+      .clear()
+      .type(thirdVariableName)
+    cy.getByTestID('resource-card variable')
+      .should('have.length', 1)
+      .contains(thirdVariableName)
+
+    // Select descending order and use filter on label name
+    cy.getByTestID('search-widget').clear()
+    cy.getByTestID('resource-sorter--button').click()
+    cy.getByTestID('resource-sorter--name-desc').click()
+
+    cy.getByTestID('search-widget').type(firstLabelName)
+    cy.getByTestID('resource-card variable')
+      .should('have.length', 1)
+      .contains(firstVariableName)
+
+    cy.getByTestID('search-widget')
+      .clear()
+      .type(secondLabelName)
+    cy.getByTestID('resource-card variable')
+      .should('have.length', 1)
+      .contains(secondVariableName)
+
+    cy.getByTestID('search-widget')
+      .clear()
+      .type(thirdLabelName)
+    cy.getByTestID('resource-card variable')
+      .should('have.length', 1)
+      .contains(thirdVariableName)
   })
 })

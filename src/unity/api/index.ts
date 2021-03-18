@@ -25,8 +25,7 @@ export const invites = [
   'palak@influxdata.com',
 ]
 
-const makeResponse = (status, data, respName, ...args) => {
-  console.log(respName) // eslint-disable-line no-console
+const makeResponse = (status, data, ...args) => {
   for (let i = 0; i < args.length; i++) {
     console.log(args[i]) // eslint-disable-line no-console
   }
@@ -61,7 +60,7 @@ const makeInvite = (email: string): Invite => {
 export const getOrgsInvites = (): Promise<GetOrgsInvitesResult> => {
   const data = invites.map(makeInvite)
 
-  return makeResponse(200, data, 'getOrgsInvites')
+  return makeResponse(200, data)
 }
 
 export const createOrgInvite = async (
@@ -69,14 +68,14 @@ export const createOrgInvite = async (
   draftInvite: DraftInvite
 ): Promise<PostOrgsInviteResult> => {
   const data = makeInvite(draftInvite.email)
-  return makeResponse(201, data, 'createOrgInvite', orgID, draftInvite)
+  return makeResponse(201, data, orgID, draftInvite)
 }
 
 export const deleteOrgInvite = async (
   orgID: string,
   id: string
 ): Promise<DeleteOrgsInviteResult> => {
-  return makeResponse(204, null, 'deleteOrgInvite', orgID, id)
+  return makeResponse(204, null, orgID, id)
 }
 
 export const resendOrgInvite = async (
@@ -84,12 +83,12 @@ export const resendOrgInvite = async (
   id: string,
   invite: Invite // TODO(watts): delete this argument when un-mocking
 ): Promise<PostOrgsInvitesResendResult> => {
-  return makeResponse(200, invite, 'resendOrgInvite', orgID, id, invite)
+  return makeResponse(200, invite, orgID, id, invite)
 }
 
 export const deleteOrgUser = async (
   orgID: string,
   id: string
 ): Promise<DeleteOrgsUserResult> => {
-  return makeResponse(204, null, 'deleteOrgUser', orgID, id)
+  return makeResponse(204, null, orgID, id)
 }

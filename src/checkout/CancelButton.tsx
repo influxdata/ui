@@ -1,20 +1,24 @@
 import React from 'react'
 import {CTAButton, ComponentColor} from '@influxdata/clockface'
+import { RouteComponentProps, withRouter } from 'react-router'
 
 type ButtonClickEvent = React.MouseEvent<HTMLButtonElement>
 
-interface Props {
+interface OwnProps {
   text?: string
   onClick?: (e: ButtonClickEvent) => void
 }
 
-const CancelButton: React.FC<Props> = ({text = 'Cancel'}) => {
+type Props = OwnProps & RouteComponentProps
+
+
+const CancelButton: React.FC<Props> = ({history, text = 'Cancel'}) => {
   const handleClick = e => {
     if (!!window?._abcr) {
       window?._abcr.triggerAbandonedCart()
     }
 
-    window.location.href = '/'
+    history.push('/')
   }
 
   return (
@@ -28,4 +32,4 @@ const CancelButton: React.FC<Props> = ({text = 'Cancel'}) => {
   )
 }
 
-export default CancelButton
+export default withRouter(CancelButton)

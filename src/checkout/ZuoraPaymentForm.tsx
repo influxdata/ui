@@ -36,8 +36,10 @@ const ZuoraPaymentForm: FC = () => {
 
   useEffect(() => {
     const script = document.createElement('script')
+    const scriptId = 'ZUORA_SCRIPT_ID'
 
     if (!client) {
+      script.id = scriptId
       script.src = ZUORA_SCRIPT_URL
       script.async = true
       document.body.appendChild(script)
@@ -48,7 +50,7 @@ const ZuoraPaymentForm: FC = () => {
     }
 
     return () => {
-      document.body.removeChild(script)
+      client && document.body.removeChild(document.getElementById(scriptId))
     }
   }, [client])
 
@@ -94,7 +96,6 @@ const ZuoraPaymentForm: FC = () => {
   return (
     <div
       id={ZUORA_ID}
-      key={ZUORA_ID}
       className="billing-form--frame v2-zuora-form"
       data-testid="payment-form"
     />

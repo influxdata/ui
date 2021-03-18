@@ -149,7 +149,10 @@ const ResultTable: FC<TableProps> = ({
         .fill(null)
         .map((_, idx) => {
           const cells = cols.map(c => (
-            <Table.Cell key={`t${tIdx}:h${c.name}:r${idx}`}>
+            <Table.Cell
+              key={`t${tIdx}:h${c.name}:r${idx}`}
+              testID={`table-cell ${c.data[idx]}`}
+            >
               {c.data[idx]}
             </Table.Cell>
           ))
@@ -171,7 +174,7 @@ const ResultTable: FC<TableProps> = ({
         </Table>
       )
     })
-  }, [height, startRow])
+  }, [height, startRow, results])
 
   return (
     <div className="query-results--container">

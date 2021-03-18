@@ -42,6 +42,7 @@ const FieldSelectors: FC<Props> = ({fields}) => {
           title={field}
           gradient={Gradients.GundamPilot}
           wrapText={true}
+          testID={`field-selector ${field}`}
         >
           <List.Indicator type="dot" />
           <div className="selectors--item-value selectors--item__field">

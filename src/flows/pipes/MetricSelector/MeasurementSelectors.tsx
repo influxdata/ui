@@ -42,6 +42,7 @@ const MeasurementSelectors: FC<Props> = ({measurements}) => {
           title={measurement}
           gradient={Gradients.GundamPilot}
           wrapText={true}
+          testID={`measurement-selector ${measurement}`}
         >
           <List.Indicator type="dot" />
           <div className="selectors--item-value selectors--item__measurement">

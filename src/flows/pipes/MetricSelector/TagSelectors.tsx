@@ -126,6 +126,7 @@ const TagSelectors: FC<Props> = ({tags}) => {
                         title={tagValue}
                         gradient={Gradients.GundamPilot}
                         wrapText={true}
+                        testID={`tag-selector ${tagValue}`}
                       >
                         <List.Indicator type="dot" />
                         <div className="selectors--item-value selectors--item__tag">{`${tagName} = ${tagValue}`}</div>

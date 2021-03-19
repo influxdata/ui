@@ -106,6 +106,37 @@ describe('The Annotations UI functionality', () => {
     // the pill should be back
     cy.getByTestID('annotation-pill default').should('exist')
   })
+  it('Clicking the graph with the control bar open creates an annotation', () => {
+    cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot').click()
+      })
+      cy.getByTestID('overlay--container').within(() => {
+        cy.getByTestID('textarea')
+          .should('be.visible')
+          .click()
+          .focused()
+          .type('yoho')
+        cy.getByTestID('add-annotation-submit').click()
+      })
+      // we need to see if the annotations got created and that the tooltip says "yoho"
+  })
+
+  it('Clicking the graph with the control bar closed creates an annotation', () => {
+    cy.getByTestID('toggle-annotations-controls').click()
+    
+    cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot').click()
+      })
+      cy.getByTestID('overlay--container').within(() => {
+        cy.getByTestID('textarea')
+          .should('be.visible')
+          .click()
+          .focused()
+          .type('yoho')
+        cy.getByTestID('add-annotation-submit').click()
+      })
+      // we need to see if the annotations got created and that the tooltip says "yoho"
+  })
   it('can hide the Annotations Control bar after clicking on the Annotations Toggle Button', () => {
     cy.getByTestID('toggle-annotations-controls').click()
     cy.getByTestID('annotations-control-bar').should('not.exist')

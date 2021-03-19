@@ -43,10 +43,6 @@ export const AnnotationsControlBar: FC = () => {
     dispatch(toggleSingleClickAnnotations())
   }
 
-  const handleSettingsClick = (): void => {
-    history.push(`/orgs/${orgID}/settings/annotations`)
-  }
-
   return (
     <ErrorBoundary>
       <Toolbar
@@ -75,11 +71,6 @@ export const AnnotationsControlBar: FC = () => {
               Enable 1-Click Annotations
             </InputLabel>
           </Toggle>
-          <SquareButton
-            testID="annotations-control-bar--settings"
-            icon={IconFont.CogThick}
-            onClick={handleSettingsClick}
-          />
         </FlexBox>
       </Toolbar>
     </ErrorBoundary>

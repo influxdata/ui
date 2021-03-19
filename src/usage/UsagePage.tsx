@@ -5,7 +5,6 @@ import {Page} from '@influxdata/clockface'
 // Components
 import UsageToday from 'src/usage/UsageToday'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
-// import AlertStatusCancelled from 'src/billing/components/Usage/AlertStatusCancelled'
 import LimitChecker from 'src/cloud/components/LimitChecker'
 import CheckoutProvider from 'src/usage/context/usage'
 
@@ -20,8 +19,6 @@ const Usage: FC = () => (
         </LimitChecker>
       </Page.Header>
       <Page.Contents scrollable={true}>
-        {/* TODO(ariel):  find out if we want this */}
-        {/* {isCancelled && <AlertStatusCancelled />} */}
         <UsageToday />
       </Page.Contents>
     </Page>

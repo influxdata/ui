@@ -6,7 +6,6 @@ import {Page} from '@influxdata/clockface'
 import PageSpinner from 'src/perf/components/PageSpinner'
 import BillingPageContents from 'src/billing/components/BillingPageContents'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
-import AlertStatusCancelled from 'src/billing/components/Usage/AlertStatusCancelled'
 import LimitChecker from 'src/cloud/components/LimitChecker'
 
 // Reducers
@@ -44,8 +43,6 @@ function BillingPage() {
     ? state.account?.status
     : RemoteDataState.NotStarted
 
-  const isCancelled = state?.account && state.account?.type === 'cancelled'
-
   return (
     <PageSpinner loading={loading}>
       <BillingPageContext.Provider value={[state, dispatch]}>
@@ -60,7 +57,6 @@ function BillingPage() {
             scrollable={true}
             testID="billing-page-contents--scroll"
           >
-            {isCancelled && <AlertStatusCancelled />}
             <BillingPageContents />
           </Page.Contents>
         </Page>

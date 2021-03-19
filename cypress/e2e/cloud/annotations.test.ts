@@ -110,5 +110,16 @@ describe('The Annotations UI functionality', () => {
     cy.getByTestID('toggle-annotations-controls').click()
     cy.getByTestID('annotations-control-bar').should('not.exist')
   })
+  it('can disable writing annotations if Enable-Annotations is disabled', () => {
+    cy.getByTestID('annotations-one-click-toggle').click()
+
+    // click on the graph to try adding an annotation
+    cy.getByTestID('cell blah').within(() => {
+      cy.getByTestID('giraffe-inner-plot').click()
+    })
+
+    // should not show an overlay.
+    cy.getByTestID('overlay').should('not.exist')
+  })
   it('text for created annotation shows up in tooltip', () => {})
 })

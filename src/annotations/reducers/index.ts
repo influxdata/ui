@@ -1,9 +1,10 @@
 import {
   Action,
-  ENABLE_ANNOTATION_STREAM,
   DISABLE_ANNOTATION_STREAM,
+  ENABLE_ANNOTATION_STREAM,
   SET_ANNOTATIONS,
   SET_ANNOTATION_STREAMS,
+  TOGGLE_ANNOTATION_VISIBILITY,
   TOGGLE_SINGLE_CLICK_ANNOTATIONS,
 } from 'src/annotations/actions/creators'
 
@@ -14,6 +15,7 @@ import {InfluxColors} from '@influxdata/clockface'
 export interface AnnotationsState {
   streams: AnnotationStream[]
   annotations: AnnotationsList
+  annotationsAreVisible: boolean // a temporary (we'll see) measure until we enable streams
   visibleStreamsByID: string[]
   enableSingleClickAnnotations: boolean
 }
@@ -26,9 +28,13 @@ export const initialState = (): AnnotationsState => ({
   annotations: {
     default: [] as Annotation[],
   },
-  visibleStreamsByID: ['default'],
-  streams: [],
+  annotationsAreVisible: true,
   enableSingleClickAnnotations: true,
+  streams: [{
+    stream: 'default',
+    color: InfluxColors.Potassium
+  }],
+  visibleStreamsByID: ['default'],
 })
 
 export const annotationsReducer = (
@@ -69,6 +75,13 @@ export const annotationsReducer = (
       return {
         ...state,
         annotations,
+      }
+    }
+
+    case TOGGLE_ANNOTATION_VISIBILITY: {
+      return {
+        ...state,
+        annotationsAreVisible: !state.annotationsAreVisible
       }
     }
 

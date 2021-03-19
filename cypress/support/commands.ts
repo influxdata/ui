@@ -111,12 +111,12 @@ export const wrapDefaultBucket = (): Cypress.Chainable => {
 }
 
 export const wrapDefaultUser = (): Cypress.Chainable => {
-  const username = Cypress.env('username') ?? 'CHECKMEOUTASUPERSECRETPASSWORD'
+  const username = Cypress.env('username') ?? 'dev_user'
   return cy.wrap(username).as('defaultUser')
 }
 
 export const wrapDefaultPassword = (): Cypress.Chainable => {
-  const password = Cypress.env('password') ?? 'demouser'
+  const password = Cypress.env('password') ?? 'CHECKMEOUTASUPERSECRETPASSWORD'
   return cy.wrap(password).as('defaultPassword')
 }
 

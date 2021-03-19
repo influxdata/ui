@@ -33,8 +33,6 @@ describe('Annotations UI functionality', () => {
         })
       })
     })
-  })
-  it('hide the stream in the search bar when the given stream is active', () => {
     cy.getByTestID('toggle-annotations-controls').click()
     cy.getByTestID('annotations-control-bar').should('be.visible')
     cy.getByTestID('button').click()
@@ -67,6 +65,8 @@ describe('Annotations UI functionality', () => {
         .type('im a hippopotamus')
       cy.getByTestID('add-annotation-submit').click()
     })
+  })
+  it('hide the stream in the search bar when the stream is active', () => {
     cy.getByTestID('annotations-search-input')
       .focus()
       .click()
@@ -74,14 +74,14 @@ describe('Annotations UI functionality', () => {
       cy.getByTestID('list-empty-state').should('be.visible')
     })
   })
+  it.only('hide the pill and stop rendering the stream once X is clicked on the pill', () => {
+    cy.getByTestID('annotations-search-input')
+      .focus()
+      .click()
+
+  })
+
   it('text for created annotation shows up in tooltip', () => {
-    cy.get('@org').then(({id: orgID}: Organization) => {
-      cy.createDashboard(orgID).then(({body}) => {
-        cy.fixture('routes').then(({orgs}) => {
-          cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
-          cy.getByTestID('tree-nav')
-        })
-      })
-    })
+
   })
 })

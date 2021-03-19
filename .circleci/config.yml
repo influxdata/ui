@@ -423,7 +423,8 @@ jobs:
     # E2e tests deploy kind, use a very large instance size
     resource_class: 2xlarge
     steps:
-      - checkout
+      - checkout:
+          path: ./ui
       - install_jsonnet_binary
       - install_kind_binary
       - install_kubectl_binary
@@ -559,7 +560,7 @@ commands:
           fingerprints:
             - '55:c2:6e:7a:29:df:90:2c:6a:74:e2:a5:b0:fb:56:82' # SSH deploy key for k8s-idpe repo
       - run:
-          command: ./scripts/checkout-repo.bash
+          command: ./ui/scripts/checkout-repo.bash
           environment:
             # use the SSH deploy key for k8s-idpe repo ; ignore ssh agent which does not have the specified key
             GIT_SSH_COMMAND: 'ssh -o "IdentitiesOnly=yes" -i /home/circleci/.ssh/id_rsa_55c26e7a29df902c6a74e2a5b0fb5682'
@@ -570,7 +571,7 @@ commands:
       This will checkout idpe in parent directory
     steps:
       - run:
-          command: ./scripts/checkout-repo.bash
+          command: ./ui/scripts/checkout-repo.bash
           environment:
             GIT_SSH_COMMAND: 'ssh -o "IdentitiesOnly=yes" -i /home/circleci/.ssh/id_rsa_55c26e7a29df902c6a74e2a5b0fb5682'
             REPO: idpe
@@ -580,7 +581,7 @@ commands:
       This will checkout monitor-ci in parent directory
     steps:
       - run:
-          command: ./scripts/checkout-repo.bash
+          command: ./ui/scripts/checkout-repo.bash
           environment:
             GIT_SSH_COMMAND: 'ssh -o "IdentitiesOnly=yes" -i /home/circleci/.ssh/id_rsa_55c26e7a29df902c6a74e2a5b0fb5682'
             REPO: monitor-ci

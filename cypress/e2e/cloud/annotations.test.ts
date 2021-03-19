@@ -1,5 +1,5 @@
 import {Organization} from '../../../src/types'
-describe('Annotations', () => {
+describe('Annotations UI functionality', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin().then(() =>
@@ -10,8 +10,6 @@ describe('Annotations', () => {
         })
       })
     )
-  })
-  it('searching stream list when pill is active does not show stream', () => {
     cy.window().then(w => {
       cy.wait(1000)
       w.influx.set('annotations', true)
@@ -35,6 +33,8 @@ describe('Annotations', () => {
         })
       })
     })
+  })
+  it('hide the stream in the search bar when the given stream is active', () => {
     cy.getByTestID('toggle-annotations-controls').click()
     cy.getByTestID('annotations-control-bar').should('be.visible')
     cy.getByTestID('button').click()
@@ -42,8 +42,8 @@ describe('Annotations', () => {
     cy.getByTestID('switch-to-script-editor').click()
     cy.getByTestID('toolbar-tab').click()
     const query1 = `from(bucket: "schmucket")
-|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-|> filter(fn: (r) => r["container_name"] == "cool")`
+    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+    |> filter(fn: (r) => r["container_name"] == "cool")`
     cy.getByTestID('flux-editor')
       .should('be.visible')
       .click()

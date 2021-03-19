@@ -116,7 +116,7 @@ export const wrapDefaultUser = (): Cypress.Chainable => {
 }
 
 export const wrapDefaultPassword = (): Cypress.Chainable => {
-  const password = Cypress.env('password') ?? 'CHECKMEOUTASUPERSECRETPASSWORD'
+  const password = Cypress.env('password') ?? 'demouser'
   return cy.wrap(password).as('defaultPassword')
 }
 

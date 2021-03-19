@@ -18,7 +18,7 @@ import {
   MAX_DECIMAL_PLACES,
 } from 'src/visualization/constants'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
-import ThresholdsSettings from 'src/shared/components/ThresholdsSettings'
+import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
 import {
   THRESHOLD_TYPE_TEXT,
   THRESHOLD_TYPE_BG,

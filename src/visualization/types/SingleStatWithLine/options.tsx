@@ -38,7 +38,7 @@ import {
 import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
 import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksGenerator'
 import Checkbox from 'src/shared/components/Checkbox'
-import ThresholdsSettings from 'src/shared/components/ThresholdsSettings'
+import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
 import LegendOrientation from 'src/visualization/components/internal/LegendOrientation'
 import {LinePlusSingleStatProperties, Color} from 'src/types'
 import {VisualizationOptionProps} from 'src/visualization'

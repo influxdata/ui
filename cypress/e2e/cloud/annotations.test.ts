@@ -1,4 +1,5 @@
 import {Organization} from '../../../src/types'
+import {lines} from '../../support/commands'
 describe('The Annotations UI functionality', () => {
   beforeEach(() => {
     cy.flush()
@@ -22,12 +23,7 @@ describe('The Annotations UI functionality', () => {
           cy.createBucket(orgID, name, 'schmucket')
           const now = Date.now()
           cy.writeData(
-            [
-              `test,container_name=cool dopeness=12 ${now - 1000}000000`,
-              `test,container_name=beans dopeness=18 ${now - 1200}000000`,
-              `test,container_name=cool dopeness=14 ${now - 1400}000000`,
-              `test,container_name=beans dopeness=10 ${now - 1600}000000`,
-            ],
+            lines(3000),
             'schmucket'
           )
         })
@@ -35,18 +31,34 @@ describe('The Annotations UI functionality', () => {
     })
     cy.getByTestID('toggle-annotations-controls').click()
     cy.getByTestID('annotations-control-bar').should('be.visible')
-    cy.getByTestID('button').click()
-    cy.getByTestID('switch-to-script-editor').should('be.visible')
-    cy.getByTestID('switch-to-script-editor').click()
-    cy.getByTestID('toolbar-tab').click()
-    const query1 = `from(bucket: "schmucket")
-    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-    |> filter(fn: (r) => r["container_name"] == "cool")`
-    cy.getByTestID('flux-editor')
-      .should('be.visible')
+    // cy.getByTestID('button').click()
+    // cy.getByTestID('switch-to-script-editor').should('be.visible')
+    // cy.getByTestID('switch-to-script-editor').click()
+    // cy.getByTestID('toolbar-tab').click()
+    // const query1 = `from(bucket: "schmucket")
+    // |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+    // |> filter(fn: (r) => r["container_name"] == "cool")`
+    // cy.getByTestID('flux-editor')
+    //   .should('be.visible')
+    //   .click()
+    //   .focused()
+    //   .type(query1)
+    // creating new dashboard cell
+    cy.getByTestID('add-cell--button')
       .click()
-      .focused()
-      .type(query1)
+      .then(() => {
+        cy.getByTestID('selector-list schmucket')
+          .click()
+          .getByTestID(`selector-list m`)
+          .click()
+          .getByTestID('selector-list v')
+          .click()
+          .getByTestID(`selector-list tv1`)
+          .click()
+          .then(() => {
+            cy.getByTestID('time-machine-submit-button').click()
+          })
+      })
     cy.getByTestID('overlay').within(() => {
       cy.getByTestID('page-title').click()
       cy.getByTestID('renamable-page-title--input')
@@ -66,7 +78,7 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('add-annotation-submit').click()
     })
   })
-  it('can hide the stream in the search bar when the stream is active', () => {
+  it.only('can hide the stream in the search bar when the stream is active', () => {
     cy.getByTestID('annotations-search-input')
       .focus()
       .click()

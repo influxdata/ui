@@ -22,10 +22,7 @@ describe('The Annotations UI functionality', () => {
           cy.getByTestID('tree-nav')
           cy.createBucket(orgID, name, 'schmucket')
           const now = Date.now()
-          cy.writeData(
-            lines(3000),
-            'schmucket'
-          )
+          cy.writeData(lines(3000), 'schmucket')
         })
       })
     })
@@ -93,19 +90,17 @@ describe('The Annotations UI functionality', () => {
     })
 
     // disable default
-    cy.getByTestID('annotation-pill default')
-      .click()
+    cy.getByTestID('annotation-pill default').click()
 
     // should appear in the suggestions
     cy.getByTestID('annotations-search-input')
       .focus()
       .click()
-      .getByTestID('annotations-searchbar-suggestions').within(() => {
+      .getByTestID('annotations-searchbar-suggestions')
+      .within(() => {
         cy.getByTestID('annotations-suggestion default')
-    })
+      })
   })
 
-  it('text for created annotation shows up in tooltip', () => {
-
-  })
+  it('text for created annotation shows up in tooltip', () => {})
 })

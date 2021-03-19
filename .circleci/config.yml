@@ -11,9 +11,7 @@ jobs:
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - run:
-          name: Grab compose files
-          command: git clone git@github.com:influxdata/monitor-ci.git
+      - checkout_monitor_ci
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing ./monitor-ci/.env
@@ -44,9 +42,7 @@ jobs:
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - run:
-          name: Grab compose files
-          command: git clone git@github.com:influxdata/monitor-ci.git
+      - checkout_monitor_ci
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing.oss ./monitor-ci/.env
@@ -76,9 +72,7 @@ jobs:
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - run:
-          name: Grab compose files
-          command: git clone git@github.com:influxdata/monitor-ci.git
+      - checkout_monitor_ci
       - run:
           name: Build the ui docker image
           command: |
@@ -110,9 +104,7 @@ jobs:
       - restore_cache:
           key: UI_PROD_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - run:
-          name: Grab deploy files
-          command: git clone git@github.com:influxdata/monitor-ci.git
+      - checkout_monitor_ci
       - run:
           name: Load the prod image
           command: |
@@ -164,10 +156,7 @@ jobs:
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - run:
-          name: Grab compose files
-          command: |
-            git clone git@github.com:influxdata/monitor-ci.git
+      - checkout_monitor_ci
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
@@ -216,9 +205,7 @@ jobs:
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - run:
-          name: Grab compose files
-          command: git clone git@github.com:influxdata/monitor-ci.git
+      - checkout_monitor_ci
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing.oss ./monitor-ci/.env
@@ -260,10 +247,7 @@ jobs:
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - run:
-          name: Grab compose files
-          command: |
-            git clone git@github.com:influxdata/monitor-ci.git
+      - checkout_monitor_ci
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
@@ -301,10 +285,7 @@ jobs:
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - run:
-          name: Grab compose files
-          command: |
-            git clone git@github.com:influxdata/monitor-ci.git
+      - checkout_monitor_ci
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
@@ -404,9 +385,7 @@ jobs:
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - run:
-          name: Grab compose files
-          command: git clone git@github.com:influxdata/monitor-ci.git
+      - checkout_monitor_ci
       - run:
           name: Copy over the lighthouse variables
           command: |

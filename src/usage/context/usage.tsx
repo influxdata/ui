@@ -121,7 +121,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   }, [handleGetBillingStats])
 
   const handleGetUsageStats = useCallback(async () => {
-    const resp = await getUsageStats(selectedUsage.name, timeRange)
+    const resp = await getUsageStats(selectedUsage, timeRange)
 
     if (resp.status !== 200) {
       throw new Error(resp.data.message)

@@ -4,9 +4,6 @@
 
 set -eu -o pipefail
 
-# go to parent directory
-cd ..
-
 if [ -d "./${REPO}" ] ; then
   # if repo directory already exists, pull latest version
   cd ${REPO}

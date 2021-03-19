@@ -118,6 +118,7 @@ const subsetResult = (
         subset['_field'],
         subset['_value'],
       ]
+        .filter(c => !!c)
         .concat(
           Object.values(subset)
             .filter((c: any) => {

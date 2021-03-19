@@ -62,6 +62,11 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('add-annotation-submit').click()
     })
   })
+
+  afterEach(() => {
+    // tests were being flaky because the annotations toggle state would keep leaking into other states
+    cy.getByTestID('toggle-annotations-controls').click()
+  })
   it('can hide the stream in the search bar when the stream is active', () => {
     cy.getByTestID('annotations-search-input')
       .focus()

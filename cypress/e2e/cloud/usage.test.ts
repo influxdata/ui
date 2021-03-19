@@ -82,9 +82,9 @@ describe('Usage Page', () => {
     cy.getByTestID('dropdown-item')
       .should('have.length', 5)
       .last()
-      .contains('Query Count')
-      .click()
+      .contains('Data Out')
+      .click({force: true})
 
-    cy.getByTestID('usage-page--dropdown').contains('Query Count')
+    cy.getByTestID('usage-page--dropdown').contains('Data Out')
   })
 })

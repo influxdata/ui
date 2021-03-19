@@ -169,6 +169,6 @@ describe('The Annotations UI functionality', () => {
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
     })
-    cy.getByTestID('giraffe-anntation-tooltip').contains('im a hippopotamus')
+    cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
   })
 })

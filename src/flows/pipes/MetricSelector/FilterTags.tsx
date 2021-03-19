@@ -118,7 +118,7 @@ const FilterTags: FC = () => {
           <LabelComponent
             className="data-source--filter"
             id={f.id}
-            key={f.id}
+            key={f.name}
             name={f.name}
             color={f.properties.color}
             description={f.properties.description}

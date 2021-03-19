@@ -8,9 +8,11 @@ import {isEqual} from 'lodash'
 
 // Components
 import {View} from 'src/visualization'
+import {SimpleTableViewProperties} from 'src/visualization/types/SimpleTable'
 import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Utils
 import {
@@ -24,6 +26,10 @@ import {
   getYSeriesColumns,
 } from 'src/timeMachine/selectors'
 import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
+import {
+  setIsDisabledViewRawData,
+  setIsViewingRawData,
+} from 'src/timeMachine/actions'
 
 // Types
 import {RemoteDataState, AppState, ViewProperties} from 'src/types'
@@ -40,6 +46,8 @@ const TimeMachineVis: FC<Props> = ({
   timeRange,
   isInitialFetch,
   isViewingRawData,
+  setViewRawData,
+  setDisableRawData,
   files,
   viewProperties,
   giraffeResult,
@@ -56,14 +64,20 @@ const TimeMachineVis: FC<Props> = ({
   // fallback logic is contained within the selectors that supply each of these
   // props. Note that in a dashboard context, we display an error instead of
   // attempting to fall back to an valid selection.
-  const resolvedViewProperties = {
+  let resolvedViewProperties = {
     ...viewProperties,
     xColumn,
     [`${type === 'mosaic' ? 'ySeriesColumns' : 'yColumn'}`]:
       type === 'mosaic' ? ySeriesColumns : yColumn,
     fillColumns,
     symbolColumns,
-  } as ViewProperties
+  } as ViewProperties | SimpleTableViewProperties
+
+  if (isViewingRawData && isFlagEnabled('simple-table')) {
+    resolvedViewProperties = {
+      type: 'simple-table',
+    }
+  }
 
   const noQueries =
     loading === RemoteDataState.NotStarted || !viewProperties.queries.length
@@ -71,7 +85,32 @@ const TimeMachineVis: FC<Props> = ({
     'time-machine--view__empty': noQueries,
   })
 
-  if (isViewingRawData && files && files.length) {
+  // Handles deadman check edge case to allow non-numeric values
+  if (
+    !!giraffeResult.table.length &&
+    !isViewingRawData &&
+    resolvedViewProperties.type === 'check' &&
+    giraffeResult.table.getColumnType('_value') !== 'number'
+  ) {
+    setViewRawData(true)
+    setDisableRawData(true)
+    return null
+  } else if (
+    !!giraffeResult.table.length &&
+    isViewingRawData &&
+    resolvedViewProperties.type === 'check' &&
+    giraffeResult.table.getColumnType('_value') === 'number'
+  ) {
+    setViewRawData(false)
+    setDisableRawData(false)
+  }
+
+  if (
+    isViewingRawData &&
+    files &&
+    files.length &&
+    !isFlagEnabled('simple-table')
+  ) {
     const [parsedResults] = files.flatMap(fromFlux)
     return (
       <div className={timeMachineViewClassName}>
@@ -150,7 +189,12 @@ const mstp = (state: AppState) => {
   }
 }
 
-const connector = connect(mstp)
+const mdtp = {
+  setViewRawData: setIsViewingRawData,
+  setDisableRawData: setIsDisabledViewRawData,
+}
+
+const connector = connect(mstp, mdtp)
 
 export default connector(
   memo(TimeMachineVis, (prev, next) => isEqual(prev, next))

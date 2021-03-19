@@ -12,6 +12,7 @@ import {CsvUploaderContext} from 'src/buckets/components/context/csvUploaderProv
 
 // Utils
 import {getByID} from 'src/resources/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {AppState, Bucket, RemoteDataState, ResourceType} from 'src/types'
@@ -26,6 +27,7 @@ const CsvUploaderBody: FC = () => {
     )?.name ?? ''
 
   const handleUploadCsv = (csv: string) => {
+    event('Uploading_CSV')
     uploadCsv(csv, bucket)
   }
 

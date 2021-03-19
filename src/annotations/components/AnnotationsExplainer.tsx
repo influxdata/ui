@@ -20,7 +20,7 @@ export const AnnotationsExplainer: FC = () => (
         Data Explorer.
       </p>
       <p>
-        <a href="#" target="_blank">
+        <a href="#" target="_blank" rel="noreferrer">
           Annotations Documentation
         </a>
       </p>

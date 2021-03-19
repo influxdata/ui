@@ -31,6 +31,7 @@ const TelegrafPluginsExplainer: FC = () => {
           <a
             href="https://docs.influxdata.com/telegraf/v1.15/introduction/installation/"
             target="_blank"
+            rel="noreferrer"
           >
             Installation Guide
           </a>

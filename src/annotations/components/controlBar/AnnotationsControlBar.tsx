@@ -25,8 +25,8 @@ import {AnnotationsSearchBar} from 'src/annotations/components/controlBar/Annota
 // Selectors
 import {isSingleClickAnnotationsEnabled} from 'src/annotations/selectors'
 
-// Constants
-import {ORGS, SETTINGS, ANNOTATIONS} from 'src/shared/constants/routes'
+// Utils
+import {event} from 'src/cloud/utils/reporting'
 
 export const AnnotationsControlBar: FC = () => {
   const history = useHistory()
@@ -37,11 +37,14 @@ export const AnnotationsControlBar: FC = () => {
   const dispatch = useDispatch()
 
   const changeWriteMode = () => {
+    event('dashboard.annotations.change_write_mode.toggle', {
+      newIsWriteModeEnabled: (!inWriteMode).toString(),
+    })
     dispatch(toggleSingleClickAnnotations())
   }
 
   const handleSettingsClick = (): void => {
-    history.push(`/${ORGS}/${orgID}/${SETTINGS}/${ANNOTATIONS}`)
+    history.push(`/orgs/${orgID}/settings/annotations`)
   }
 
   return (
@@ -66,8 +69,11 @@ export const AnnotationsControlBar: FC = () => {
             onChange={changeWriteMode}
             color={ComponentColor.Primary}
             size={ComponentSize.ExtraSmall}
+            testID="annotations-one-click-toggle"
           >
-            <InputLabel>Enable 1-Click Annotations</InputLabel>
+            <InputLabel htmlFor="enableAnnotationMode">
+              Enable 1-Click Annotations
+            </InputLabel>
           </Toggle>
           <SquareButton
             testID="annotations-control-bar--settings"

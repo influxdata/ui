@@ -83,6 +83,7 @@ const RateLimitOverlay: FC<Props> = ({onClose, orgID}) => {
               <a
                 href="https://www.influxdata.com/blog/solving-runaway-series-cardinality-when-using-influxdb/"
                 target="_blank"
+                rel="noreferrer"
               >
                 Solving Runaway Series Cardinality When Using InfluxDB
               </a>

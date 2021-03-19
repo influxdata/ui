@@ -3,14 +3,11 @@ import React, {FC} from 'react'
 
 // Components
 import {
-  ResourceCard,
-  ComponentSize,
-  ComponentColor,
-  ConfirmationButton,
-  ButtonShape,
-  IconFont,
   Bullet,
+  ComponentSize,
+  IconFont,
   InfluxColors,
+  ResourceCard,
 } from '@influxdata/clockface'
 
 // Types
@@ -21,32 +18,12 @@ interface Props {
 }
 
 export const AnnotationCard: FC<Props> = ({annotationStream}) => {
-  const handleNameClick = (): void => {
-    // Placeholder
-  }
-
-  const handleDelete = (): void => {
-    // Placeholder
-  }
-
   return (
     <ResourceCard
       testID="resource-card annotation-stream"
       contextMenuInteraction="alwaysVisible"
-      contextMenu={
-        <ConfirmationButton
-          shape={ButtonShape.Square}
-          icon={IconFont.Trash}
-          size={ComponentSize.ExtraSmall}
-          color={ComponentColor.Danger}
-          confirmationButtonText="Delete"
-          confirmationLabel="Are you sure?"
-          onConfirm={handleDelete}
-        />
-      }
     >
       <ResourceCard.Name
-        onClick={handleNameClick}
         name={annotationStream.stream}
         testID={`annotation-stream-card--name ${annotationStream.stream}`}
       />
@@ -62,14 +39,13 @@ export const AnnotationCard: FC<Props> = ({annotationStream}) => {
             glyph={IconFont.Annotate}
             size={ComponentSize.ExtraSmall}
             color={InfluxColors.Castle}
-            backgroundColor="#9078E4"
+            backgroundColor={annotationStream.color}
             style={{marginRight: '4px'}}
           />
         </>
         <>Created at {annotationStream.createdAt}</>
         <>Last modified {annotationStream.updatedAt}</>
       </ResourceCard.Meta>
-      {/* Labels go here */}
     </ResourceCard>
   )
 }

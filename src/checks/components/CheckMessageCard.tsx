@@ -74,6 +74,7 @@ const CheckMessageCard: FC<Props> = ({
             <a
               href="https://v2.docs.influxdata.com/v2.0/monitor-alert/checks/create/#flux-only-interpolates-string-values"
               target="_blank"
+              rel="noreferrer"
             >
               Documentation
             </a>

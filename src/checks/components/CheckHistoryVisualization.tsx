@@ -1,10 +1,12 @@
 // Libraries
 import React, {FC, useContext} from 'react'
+import {AutoSizer} from 'react-virtualized'
 
 // Components
 import TimeSeries from 'src/shared/components/TimeSeries'
 import {View, SUPPORTED_VISUALIZATIONS} from 'src/visualization'
 import {CheckContext} from 'src/checks/utils/context'
+import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
 
 const CheckHistoryVisualization: FC = () => {
   const properties = SUPPORTED_VISUALIZATIONS['check'].initial
@@ -21,6 +23,27 @@ const CheckHistoryVisualization: FC = () => {
     <TimeSeries submitToken={0} queries={[query]} key={0} check={{id: id}}>
       {({giraffeResult, loading, errorMessage, isInitialFetch, statuses}) => {
         updateStatuses(statuses)
+
+        // handle edge case where deadman check has non-numeric value
+        if (
+          giraffeResult &&
+          !!giraffeResult.table.length &&
+          giraffeResult.table.getColumnType('_value') !== 'number'
+        ) {
+          return (
+            <AutoSizer>
+              {({width, height}) => {
+                return (
+                  <RawFluxDataTable
+                    parsedResults={giraffeResult}
+                    width={width}
+                    height={height}
+                  />
+                )
+              }}
+            </AutoSizer>
+          )
+        }
 
         return (
           <View

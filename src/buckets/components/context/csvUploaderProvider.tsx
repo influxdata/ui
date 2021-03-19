@@ -5,6 +5,7 @@ import {useSelector, useDispatch} from 'react-redux'
 
 // Utils
 import {postWrite} from 'src/client'
+import {event} from 'src/cloud/utils/reporting'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 // Selectors
@@ -74,9 +75,16 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
 
   const handleError = (error: Error): void => {
     setUploadState(RemoteDataState.Error)
-    reportErrorThroughHoneyBadger(error, {
-      name: 'uploadCsv function',
-    })
+    if (error.name === 'AbortError') {
+      event('Aborting_CSV_Upload')
+    }
+    if (error.message.includes('incorrectly formatted')) {
+      event('CSV_Upload_Format_Error')
+    } else {
+      reportErrorThroughHoneyBadger(error, {
+        name: 'uploadCsv function',
+      })
+    }
     const message = getErrorMessage(error)
     dispatch(notify(csvUploaderErrorNotification(message)))
   }

@@ -66,7 +66,7 @@ function asLink(str) {
 
       link = str.slice(m.index, m.index + m[1].length)
       out.push(
-        <a href={link} target="_blank">
+        <a href={link} target="_blank" rel="noreferrer">
           {link}
         </a>
       )
@@ -259,7 +259,7 @@ class TableCell extends PureComponent<Props> {
     const {properties, data, dataType, timeFormatter} = this.props
     const {decimalPlaces} = properties
 
-    if (data && dataType.includes('dateTime')) {
+    if (data && dataType.includes('dateTime') && !this.isFieldName) {
       return timeFormatter(data)
     }
 

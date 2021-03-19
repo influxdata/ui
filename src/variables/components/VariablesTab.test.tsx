@@ -63,10 +63,6 @@ jest.mock('src/client/generatedRoutes.ts', () => ({
 jest.mock('src/client/index.ts')
 jest.mock('src/shared/actions/notifications')
 jest.mock('src/resources/components/GetResources')
-jest.mock(
-  'src/annotations/components/overlay/CreateAnnotationStreamOverlay',
-  () => () => null
-)
 jest.mock('src/checks/components/NewThresholdCheckEO.tsx', () => () => null)
 jest.mock('src/checks/components/NewDeadmanCheckEO.tsx', () => () => null)
 jest.mock('src/resources/selectors/index.ts', () => {

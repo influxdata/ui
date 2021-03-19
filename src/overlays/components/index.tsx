@@ -4,13 +4,7 @@ import OverlayHandler, {
 } from 'src/overlays/components/RouteOverlay'
 
 // Constants
-import {
-  ORGS,
-  SETTINGS,
-  ANNOTATIONS,
-  DATA_EXPLORER,
-  DASHBOARDS,
-} from 'src/shared/constants/routes'
+import {ORGS, DATA_EXPLORER, DASHBOARDS} from 'src/shared/constants/routes'
 
 export const AddNoteOverlay = RouteOverlay(
   OverlayHandler,
@@ -53,14 +47,6 @@ export const TelegrafOutputOverlay = RouteOverlay(
   'telegraf-output',
   (history, params) => {
     history.push(`/orgs/${params.orgID}/load-data/telegrafs`)
-  }
-)
-
-export const CreateAnnotationStreamOverlay = RouteOverlay(
-  OverlayHandler,
-  'create-annotation-stream',
-  (history, params) => {
-    history.push(`/${ORGS}/${params.orgID}/${SETTINGS}/${ANNOTATIONS}`)
   }
 )
 

@@ -916,4 +916,175 @@ describe('Dashboard', () => {
         .should('have.class', 'table-graph-cell__sort-desc')
     })
   })
+
+  it('can refresh a cell without refreshing the entire dashboard', () => {
+    cy.get('@org').then(({id: orgID, name}: Organization) => {
+      cy.createDashboard(orgID).then(({body}) => {
+        cy.fixture('routes').then(({orgs}) => {
+          cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+          cy.getByTestID('tree-nav')
+        })
+      })
+      cy.window().then(win => {
+        win.influx.set('refreshSingleCell', true)
+      })
+
+      cy.createBucket(orgID, name, 'schmucket')
+
+      const now = Date.now()
+      cy.writeData(
+        [
+          `test,container_name=cool dopeness=12 ${now - 1000}000000`,
+          `test,container_name=beans dopeness=18 ${now - 1200}000000`,
+          `test,container_name=cool dopeness=14 ${now - 1400}000000`,
+          `test,container_name=beans dopeness=10 ${now - 1600}000000`,
+        ],
+        'schmucket'
+      )
+    })
+
+    cy.getByTestID('button').click()
+    cy.getByTestID('switch-to-script-editor').should('be.visible')
+    cy.getByTestID('switch-to-script-editor').click()
+    cy.getByTestID('toolbar-tab').click()
+
+    const query1 = `from(bucket: "schmucket")
+|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+|> filter(fn: (r) => r["container_name"] == "cool")`
+
+    const query2 = `from(bucket: "schmucket")
+|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+|> filter(fn: (r) => r["container_name"] == "beans")`
+
+    cy.getByTestID('flux-editor')
+      .should('be.visible')
+      .click()
+      .focused()
+      .type(query1)
+
+    cy.getByTestID('overlay').within(() => {
+      cy.getByTestID('page-title').click()
+      cy.getByTestID('renamable-page-title--input')
+        .clear()
+        .type('blah')
+      cy.getByTestID('save-cell--button').click()
+    })
+
+    cy.getByTestID('button').click()
+    cy.getByTestID('switch-to-script-editor').should('be.visible')
+    cy.getByTestID('switch-to-script-editor').click()
+    cy.getByTestID('toolbar-tab').click()
+
+    cy.getByTestID('overlay').within(() => {
+      cy.getByTestID('flux-editor')
+        .should('be.visible')
+        .click()
+        .focused()
+        .type(query2)
+      cy.getByTestID('save-cell--button').click()
+    })
+
+    cy.getByTestID('cell Name this Cell').within(() => {
+      cy.getByTestID('giraffe-inner-plot')
+    })
+
+    cy.intercept('POST', 'query', req => {
+      if (req.body.query === query1) {
+        req.alias = 'refreshCellQuery'
+      }
+      if (req.body.query === query2) {
+        throw new Error('Refreshed the wrong cell')
+      }
+    })
+    cy.getByTestID('cell blah').within(() => {
+      cy.getByTestID('cell-context--toggle').click()
+    })
+    cy.getByTestID('cell-context--refresh').click()
+    cy.wait('@refreshCellQuery')
+  })
+
+  it('can refresh the dashboard, which refreshes both cells', () => {
+    cy.get('@org').then(({id: orgID, name}: Organization) => {
+      cy.createDashboard(orgID).then(({body}) => {
+        cy.fixture('routes').then(({orgs}) => {
+          cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+          cy.getByTestID('tree-nav')
+        })
+      })
+      cy.window().then(win => {
+        win.influx.set('refreshSingleCell', true)
+      })
+
+      cy.createBucket(orgID, name, 'schmucket')
+
+      const now = Date.now()
+      cy.writeData(
+        [
+          `test,container_name=cool dopeness=12 ${now - 1000}000000`,
+          `test,container_name=beans dopeness=18 ${now - 1200}000000`,
+          `test,container_name=cool dopeness=14 ${now - 1400}000000`,
+          `test,container_name=beans dopeness=10 ${now - 1600}000000`,
+        ],
+        'schmucket'
+      )
+    })
+
+    cy.getByTestID('button').click()
+    cy.getByTestID('switch-to-script-editor').should('be.visible')
+    cy.getByTestID('switch-to-script-editor').click()
+    cy.getByTestID('toolbar-tab').click()
+
+    const query1 = `from(bucket: "schmucket")
+|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+|> filter(fn: (r) => r["container_name"] == "cool")`
+
+    const query2 = `from(bucket: "schmucket")
+|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+|> filter(fn: (r) => r["container_name"] == "beans")`
+
+    cy.getByTestID('flux-editor')
+      .should('be.visible')
+      .click()
+      .focused()
+      .type(query1)
+
+    cy.getByTestID('overlay').within(() => {
+      cy.getByTestID('page-title').click()
+      cy.getByTestID('renamable-page-title--input')
+        .clear()
+        .type('blah')
+      cy.getByTestID('save-cell--button').click()
+    })
+
+    cy.getByTestID('button').click()
+    cy.getByTestID('switch-to-script-editor').should('be.visible')
+    cy.getByTestID('switch-to-script-editor').click()
+    cy.getByTestID('toolbar-tab').click()
+
+    cy.getByTestID('overlay').within(() => {
+      cy.getByTestID('flux-editor')
+        .should('be.visible')
+        .click()
+        .focused()
+        .type(query2)
+      cy.getByTestID('save-cell--button').click()
+    })
+
+    cy.getByTestID('cell Name this Cell').within(() => {
+      cy.getByTestID('giraffe-inner-plot')
+    })
+
+    cy.intercept('POST', 'query', req => {
+      if (req.body.query === query1) {
+        req.alias = 'refreshCellQuery'
+      }
+      if (req.body.query === query2) {
+        req.alias = 'refreshSecondQuery'
+      }
+    })
+
+    cy.getByTestID('autorefresh-dropdown-refresh').click()
+    cy.wait('@refreshCellQuery')
+    cy.wait('@refreshSecondQuery')
+  })
 })

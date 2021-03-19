@@ -157,5 +157,12 @@ describe('The Annotations UI functionality', () => {
     // should not show an overlay.
     cy.getByTestID('overlay').should('not.exist')
   })
-  it('text for created annotation shows up in tooltip', () => {})
+  it('can show a tooltip when annotation is hovered on in the graph', () => {
+    // click on the graph to try adding an annotation
+    cy.getByTestID('cell blah').within(() => {
+      cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
+    })
+    cy.getByTestID('giraffe-anntation-tooltip').contains('im a hippopotamus')
+
+  })
 })

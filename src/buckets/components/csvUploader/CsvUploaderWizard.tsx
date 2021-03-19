@@ -14,6 +14,7 @@ import {
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
 // Context
 import {CsvUploaderContext} from 'src/buckets/components/context/csvUploaderProvider'
@@ -22,6 +23,7 @@ import {CsvUploaderContext} from 'src/buckets/components/context/csvUploaderProv
 import CsvUploaderBody from 'src/buckets/components/csvUploader/CsvUploaderBody'
 import CsvUploaderSuccess from 'src/buckets/components/csvUploader/CsvUploaderSuccess'
 import CsvUploaderError from 'src/buckets/components/csvUploader/CsvUploaderError'
+import CsvUploaderHelperText from 'src/buckets/components/csvUploader/CsvUploaderHelperText'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -43,6 +45,9 @@ const CsvUploaderWizard = () => {
 
   const org = useSelector(getOrg)
   const handleDismiss = useCallback(() => {
+    if (uploadState === RemoteDataState.Loading) {
+      event('CSV_Upload_Cancelled')
+    }
     history.push(`/orgs/${org.id}/load-data/buckets`)
     resetUploadState()
   }, [history, org.id, resetUploadState])
@@ -57,6 +62,7 @@ const CsvUploaderWizard = () => {
         <Form>
           <Overlay.Body style={{textAlign: 'center'}}>
             {getCsvBody(uploadState)}
+            <CsvUploaderHelperText />
           </Overlay.Body>
         </Form>
         <OverlayFooter>

@@ -438,12 +438,12 @@ jobs:
       - run: mkdir -p /tmp/cypress_artifacts
       - run:
           name: Copy over the testing variables
-          command: cp ../monitor-ci/env.testing.kind ../monitor-ci/.env
+          command: cp ./monitor-ci/env.testing.kind ../monitor-ci/.env
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
           name: Build ui-e2e image
           command: |
-            cd ../monitor-ci && make build NODE=cypress
+            cd ./monitor-ci && make build NODE=cypress
       - when:
           condition:
             equal: [genehynson/k8s-idpe-e2e-tests, << pipeline.git.branch >>]
@@ -456,7 +456,7 @@ jobs:
             - run: docker push quay.io/influxdb/ui-e2e:gene
       - run:
           name: Run E2e test
-          command: cd ../idpe/ && export QUAY_CD_USER=$QUAY_USER && export QUAY_CD_PASSWORD=$QUAY_PASS && ./scripts/ci/cd-app-e2e-test.bash | tee /tmp/artifacts/e2e-test.log
+          command: cd ./idpe/ && export QUAY_CD_USER=$QUAY_USER && export QUAY_CD_PASSWORD=$QUAY_PASS && ./scripts/ci/cd-app-e2e-test.bash | tee /tmp/artifacts/e2e-test.log
           environment:
             USE_K8SIDPE_LOCAL_TOOLS: '1' # this is needed as otherwise kubecfg is not able to talk to kind API server via localhost
             ARTIFACTS_DIRECTORY: '/tmp/artifacts'

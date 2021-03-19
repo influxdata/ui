@@ -1,5 +1,5 @@
 import {Organization} from '../../../src/types'
-describe('Annotations UI functionality', () => {
+describe('The Annotations UI functionality', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin().then(() =>
@@ -66,7 +66,7 @@ describe('Annotations UI functionality', () => {
       cy.getByTestID('add-annotation-submit').click()
     })
   })
-  it('hide the stream in the search bar when the stream is active', () => {
+  it('can hide the stream in the search bar when the stream is active', () => {
     cy.getByTestID('annotations-search-input')
       .focus()
       .click()
@@ -74,11 +74,23 @@ describe('Annotations UI functionality', () => {
       cy.getByTestID('list-empty-state').should('be.visible')
     })
   })
-  it.only('hide the pill and stop rendering the stream once X is clicked on the pill', () => {
+  it('can hide the pill and stop rendering the stream once X is clicked on the pill', () => {
+    // default is enabled, so shouldn't be part of the suggestions
+    cy.getByTestID('annotations-searchbar-suggestions').within(() => {
+      cy.getByTestID('list-empty-state').should('be.visible')
+    })
+
+    // disable default
+    cy.getByTestID('annotation-pill default')
+      .click()
+
+    // should appear in the suggestions
     cy.getByTestID('annotations-search-input')
       .focus()
       .click()
-
+      .getByTestID('annotations-searchbar-suggestions').within(() => {
+        cy.getByTestID('annotations-suggestion default')
+    })
   })
 
   it('text for created annotation shows up in tooltip', () => {

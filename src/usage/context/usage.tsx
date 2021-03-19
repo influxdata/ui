@@ -55,9 +55,7 @@ export const UsageContext = React.createContext<UsageContextType>(
 export const UsageProvider: FC<Props> = React.memo(({children}) => {
   const [billingDateTime, setBillingDateTime] = useState('')
   const [usageVectors, setUsageVectors] = useState([])
-  const [selectedUsage, setSelectedUsage] = useState(
-    usageVectors?.[0]?.name ?? ''
-  )
+  const [selectedUsage, setSelectedUsage] = useState('')
   const [billingStats, setBillingStats] = useState([])
   const [usageStats, setUsageStats] = useState('')
   const [rateLimits, setRateLimits] = useState('')
@@ -69,6 +67,13 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
     dispatch(setTimeRange(range))
   }
 
+  const handleSetSelectedUsage = useCallback(
+    (vector: string) => {
+      setSelectedUsage(vector)
+    },
+    [setSelectedUsage]
+  )
+
   const handleGetUsageVectors = useCallback(async () => {
     const resp = await getUsageVectors()
 
@@ -76,7 +81,10 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
       throw new Error(resp.data.message)
     }
 
-    setUsageVectors(resp.data.usageVectors)
+    const vectors = resp.data.usageVectors
+
+    setUsageVectors(vectors)
+    handleSetSelectedUsage(vectors?.[0]?.name)
   }, [setUsageVectors])
 
   useEffect(() => {
@@ -139,13 +147,6 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   useEffect(() => {
     handleGetRateLimits()
   }, [handleGetRateLimits])
-
-  const handleSetSelectedUsage = useCallback(
-    (vector: string) => {
-      setSelectedUsage(vector)
-    },
-    [setSelectedUsage]
-  )
 
   return (
     <UsageContext.Provider

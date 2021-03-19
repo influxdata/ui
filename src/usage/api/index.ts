@@ -51,7 +51,7 @@ export const getUsageVectors = (): ReturnType<typeof apiGetUsageVectors> => {
       fluxKey: 'reads_gb',
     },
   ]
-  return makeResponse(200, usageVectors)
+  return makeResponse(200, {usageVectors})
 }
 
 export const getUsageStats = (

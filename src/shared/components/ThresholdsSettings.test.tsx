@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {useState} from 'react'
 import {render, fireEvent, waitFor, getNodeText} from '@testing-library/react'
-import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
+import ThresholdsSettings from 'src/shared/components/ThresholdsSettings'
 import {BASE_THRESHOLD_ID} from 'src/shared/constants/thresholds'
 import {Color} from 'src/types'
 

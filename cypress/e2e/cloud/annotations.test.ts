@@ -124,6 +124,10 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('add-annotation-submit').click()
     })
     // we need to see if the annotations got created and that the tooltip says "yoho"
+    cy.getByTestID('cell blah').within(() => {
+      cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
+    })
+    cy.getByTestID('giraffe-anntation-tooltip').contains('yoho')
   })
 
   it('can create an annotation when graph is clicked and the control bar is closed', () => {
@@ -141,6 +145,10 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('add-annotation-submit').click()
     })
     // we need to see if the annotations got created and that the tooltip says "yoho"
+    cy.getByTestID('cell blah').within(() => {
+      cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
+    })
+    cy.getByTestID('giraffe-anntation-tooltip').contains('yoho')
   })
   it('can hide the Annotations Control bar after clicking on the Annotations Toggle Button', () => {
     cy.getByTestID('toggle-annotations-controls').click()
@@ -158,7 +166,6 @@ describe('The Annotations UI functionality', () => {
     cy.getByTestID('overlay').should('not.exist')
   })
   it('can show a tooltip when annotation is hovered on in the graph', () => {
-    // click on the graph to try adding an annotation
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
     })

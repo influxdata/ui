@@ -75,16 +75,16 @@ describe('Usage Page', () => {
     cy.getByTestID('usage-header--timerange').contains(reg)
     cy.getByTestID('rate-limits-header--timerange').contains(reg)
 
-    // This is based on stubbed out data
+    // This is based on stubbed out data and should be replaced when the API is hooked up
     cy.getByTestID('usage-page--dropdown')
-      .contains('Data In (MB)')
+      .contains('Limit Events')
       .click()
     cy.getByTestID('dropdown-item')
-      .should('have.length', 4)
+      .should('have.length', 5)
       .last()
-      .contains('Data Out (GB)')
+      .contains('Query Count')
       .click()
 
-    cy.getByTestID('usage-page--dropdown').contains('Data Out (GB)')
+    cy.getByTestID('usage-page--dropdown').contains('Query Count')
   })
 })

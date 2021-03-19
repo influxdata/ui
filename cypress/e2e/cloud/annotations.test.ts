@@ -28,19 +28,6 @@ describe('The Annotations UI functionality', () => {
     })
     cy.getByTestID('toggle-annotations-controls').click()
     cy.getByTestID('annotations-control-bar').should('be.visible')
-    // cy.getByTestID('button').click()
-    // cy.getByTestID('switch-to-script-editor').should('be.visible')
-    // cy.getByTestID('switch-to-script-editor').click()
-    // cy.getByTestID('toolbar-tab').click()
-    // const query1 = `from(bucket: "schmucket")
-    // |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-    // |> filter(fn: (r) => r["container_name"] == "cool")`
-    // cy.getByTestID('flux-editor')
-    //   .should('be.visible')
-    //   .click()
-    //   .focused()
-    //   .type(query1)
-    // creating new dashboard cell
     cy.getByTestID('add-cell--button')
       .click()
       .then(() => {
@@ -75,7 +62,7 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('add-annotation-submit').click()
     })
   })
-  it.only('can hide the stream in the search bar when the stream is active', () => {
+  it('can hide the stream in the search bar when the stream is active', () => {
     cy.getByTestID('annotations-search-input')
       .focus()
       .click()
@@ -84,11 +71,6 @@ describe('The Annotations UI functionality', () => {
     })
   })
   it('can hide the pill and stop rendering the stream once X is clicked on the pill', () => {
-    // default is enabled, so shouldn't be part of the suggestions
-    cy.getByTestID('annotations-searchbar-suggestions').within(() => {
-      cy.getByTestID('list-empty-state').should('be.visible')
-    })
-
     // disable default
     cy.getByTestID('annotation-pill default').click()
 
@@ -98,8 +80,31 @@ describe('The Annotations UI functionality', () => {
       .click()
       .getByTestID('annotations-searchbar-suggestions')
       .within(() => {
-        cy.getByTestID('annotations-suggestion default')
+        cy.getByTestID('annotations-suggestion default').should('be.visible')
       })
+    // the rendering should stop
+    cy.get('line').should('not.exist')
+  })
+  it('can re-display the removed pill and re-render the annotations for that stream', () => {
+    // disable default
+    cy.getByTestID('annotation-pill default').click()
+
+    // should appear in the suggestions, click on it
+    cy.getByTestID('annotations-search-input')
+      .focus()
+      .click()
+      .getByTestID('annotations-searchbar-suggestions')
+      .within(() => {
+        cy.getByTestID('annotations-suggestion default')
+          .should('be.visible')
+          .click()
+      })
+
+    // the rendering should start
+    cy.get('line').should('exist')
+
+    // the pill should be back
+    cy.getByTestID('annotation-pill default').should('exist')
   })
 
   it('text for created annotation shows up in tooltip', () => {})

@@ -163,6 +163,5 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
     })
     cy.getByTestID('giraffe-anntation-tooltip').contains('im a hippopotamus')
-
   })
 })

@@ -21,7 +21,6 @@ describe('The Annotations UI functionality', () => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
           cy.getByTestID('tree-nav')
           cy.createBucket(orgID, name, 'schmucket')
-          const now = Date.now()
           cy.writeData(lines(3000), 'schmucket')
         })
       })

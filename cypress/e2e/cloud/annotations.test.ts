@@ -106,6 +106,9 @@ describe('The Annotations UI functionality', () => {
     // the pill should be back
     cy.getByTestID('annotation-pill default').should('exist')
   })
-
+  it('can hide the Annotations Control bar after clicking on the Annotations Toggle Button', ()=> {
+    cy.getByTestID('toggle-annotations-controls').click()
+    cy.getByTestID('annotations-control-bar').should('not.exist')
+  })
   it('text for created annotation shows up in tooltip', () => {})
 })

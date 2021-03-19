@@ -8,11 +8,13 @@ import {generateThresholdsListHexs} from 'src/shared/constants/colorOperations'
 import {SingleStatViewProperties} from 'src/types/dashboards'
 import {VisualizationProps} from 'src/visualization'
 
-import {Config, Plot} from '@influxdata/giraffe'
-
-import {latestValues as getLatestValues} from '../../../shared/utils/latestValues'
+import {
+  Config,
+  Plot,
+  getLatestValues,
+  formatStatValue,
+} from '@influxdata/giraffe'
 import LatestValueTransform from '../../components/LatestValueTransform'
-import {formatStatValue} from '../../utils/formatStatValue'
 
 import './style.scss'
 import {isFlagEnabled} from '../../../shared/utils/featureFlag'

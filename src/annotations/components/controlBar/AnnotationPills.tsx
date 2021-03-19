@@ -17,7 +17,6 @@ import 'src/annotations/components/controlBar/AnnotationPills.scss'
 export const AnnotationPills: FC = () => {
   const visibleStreams = useSelector(getVisibleAnnotationStreams)
   const allStreams = useSelector(getAnnotationStreams)
-
   const streamsToDisplay = allStreams.filter(stream =>
     visibleStreams.includes(stream.stream)
   )

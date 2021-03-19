@@ -1357,6 +1357,11 @@
     "@types/prop-types" "*"
     csstype "^3.0.2"
 
+"@types/resize-observer-browser@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@types/resize-observer-browser/-/resize-observer-browser-0.1.5.tgz#36d897708172ac2380cd486da7a3daf1161c1e23"
+  integrity sha512-8k/67Z95Goa6Lznuykxkfhq9YU3l1Qe6LNZmwde1u7802a3x8v44oq0j91DICclxatTr0rNnhXx7+VTIetSrSQ==
+
 "@types/shallowequal@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/shallowequal/-/shallowequal-1.1.1.tgz#aad262bb3f2b1257d94c71d545268d592575c9b1"
@@ -8814,10 +8819,10 @@ pako@~1.0.5:
   resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.11.tgz#6c9599d340d54dfd3946380252a35705a6b992bf"
   integrity sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==
 
-papaparse@^4.6.3:
-  version "4.6.3"
-  resolved "https://registry.yarnpkg.com/papaparse/-/papaparse-4.6.3.tgz#742e5eaaa97fa6c7e1358d2934d8f18f44aee781"
-  integrity sha512-LRq7BrHC2kHPBYSD50aKuw/B/dGcg29omyJbKWY3KsYUZU69RKwaBHu13jGmCYBtOc4odsLCrFyk6imfyNubJQ==
+papaparse@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/papaparse/-/papaparse-5.2.0.tgz#97976a1b135c46612773029153dc64995caa3b7b"
+  integrity sha512-ylq1wgUSnagU+MKQtNeVqrPhZuMYBvOSL00DHycFTCxownF95gpLAk1HiHdUW77N8yxRq1qHXLdlIPyBSG9NSA==
 
 parallel-transform@^1.1.0:
   version "1.2.0"

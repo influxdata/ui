@@ -47,8 +47,6 @@ export interface CheckoutContextType {
   handleSetInputs: (name: string, value: string | number | boolean) => void
   handleSubmit: (paymentMethodId: string) => void
   handleFormValidation: () => number
-  onSuccess: () => void
-  onFocus: () => void
   inputs: Inputs
   isSubmitting: boolean
   zuoraParams: ZuoraParams
@@ -63,8 +61,6 @@ export const DEFAULT_CONTEXT: CheckoutContextType = {
   handleSetInputs: (_: string, __: string | number | boolean) => {},
   handleSubmit: (_: string) => {},
   handleFormValidation: () => 0,
-  onSuccess: () => {},
-  onFocus: () => {},
   inputs: {
     paymentMethodId: null,
     notifyEmail: '', // TODO(ariel): set notifyEmail by user's email
@@ -303,7 +299,6 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
         zuoraParams,
         onSuccessUrl,
       }}
-      onSuccessUrl={onSuccessUrl}
     >
       {children}
     </CheckoutContext.Provider>

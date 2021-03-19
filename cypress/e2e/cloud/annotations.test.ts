@@ -21,6 +21,7 @@ describe('The Annotations UI functionality', () => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
           cy.getByTestID('tree-nav')
           cy.createBucket(orgID, name, 'schmucket')
+          // have to add large amount of data to fill the window so that the random click for annotation works
           cy.writeData(lines(3000), 'schmucket')
         })
       })

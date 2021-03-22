@@ -13,15 +13,13 @@ your database.
   options to exclude unneeded tags.
 - Write to a database with an appropriate
   [retention policy](https://docs.influxdata.com/influxdb/latest/guides/downsampling_and_retention/).
-- Limit series cardinality in your database using the
-  [`max-series-per-database`](https://docs.influxdata.com/influxdb/latest/administration/config/#max-series-per-database-1000000) and
-  [`max-values-per-tag`](https://docs.influxdata.com/influxdb/latest/administration/config/#max-values-per-tag-100000) settings.
 - Consider using the
   [Time Series Index](https://docs.influxdata.com/influxdb/latest/concepts/time-series-index/).
 - Monitor your databases
   [series cardinality](https://docs.influxdata.com/influxdb/latest/query_language/spec/#show-cardinality).
 
 ### Configuration:
+
 ```toml
 [[inputs.dcos]]
   ## The DC/OS cluster URL.
@@ -72,6 +70,7 @@ When using Enterprise DC/OS, it is recommended to use a service account to
 authenticate with the cluster.
 
 The plugin requires the following permissions:
+
 ```
 dcos:adminrouter:ops:system-metrics full
 dcos:adminrouter:ops:mesos full
@@ -80,6 +79,7 @@ dcos:adminrouter:ops:mesos full
 Follow the directions to [create a service account and assign permissions](https://docs.mesosphere.com/1.10/security/service-auth/custom-service-auth/).
 
 Quick configuration using the Enterprise CLI:
+
 ```
 dcos security org service-accounts keypair telegraf-sa-key.pem telegraf-sa-cert.pem
 dcos security org service-accounts create -p telegraf-sa-cert.pem -d "Telegraf DC/OS input plugin" telegraf
@@ -89,7 +89,7 @@ dcos security org users grant telegraf dcos:adminrouter:ops:mesos full
 
 #### Open Source Authentication
 
-The Open Source DC/OS does not provide service accounts.  Instead you can use
+The Open Source DC/OS does not provide service accounts. Instead you can use
 of the following options:
 
 1. [Disable authentication](https://dcos.io/docs/1.10/security/managing-authentication/#authentication-opt-out)
@@ -98,16 +98,17 @@ of the following options:
 Then `token_file` can be set by using the [dcos cli] to login periodically.
 The cli can login for at most XXX days, you will need to ensure the cli
 performs a new login before this time expires.
+
 ```
 dcos auth login --username foo --password bar
 dcos config show core.dcos_acs_token > ~/.dcos/token
 ```
 
 Another option to create a `token_file` is to generate a token using the
-cluster secret.  This will allow you to set the expiration date manually or
-even create a never expiring token.  However, if the cluster secret or the
+cluster secret. This will allow you to set the expiration date manually or
+even create a never expiring token. However, if the cluster secret or the
 token is compromised it cannot be revoked and may require a full reinstall of
-the cluster.  For more information on this technique reference
+the cluster. For more information on this technique reference
 [this blog post](https://medium.com/@richardgirges/authenticating-open-source-dc-os-with-third-party-services-125fa33a5add).
 
 ### Metrics:
@@ -116,6 +117,7 @@ Please consult the [Metrics Reference](https://docs.mesosphere.com/1.10/metrics/
 for details about field interpretation.
 
 - dcos_node
+
   - tags:
     - cluster
     - hostname
@@ -156,6 +158,7 @@ for details about field interpretation.
     - process_count (float)
 
 - dcos_container
+
   - tags:
     - cluster
     - hostname

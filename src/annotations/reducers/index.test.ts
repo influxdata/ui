@@ -1,4 +1,8 @@
-import {annotationsReducer, initialState} from 'src/annotations/reducers'
+import {
+  annotationsReducer,
+  initialState,
+  STREAM_COLOR_LIST,
+} from 'src/annotations/reducers'
 
 const mockAnnotations = [
   {
@@ -50,9 +54,15 @@ describe('the annotations reducer', () => {
           },
         ],
       },
+      annotationsAreVisible: true,
       enableSingleClickAnnotations: true,
       visibleStreamsByID: ['default'],
-      streams: [],
+      streams: [
+        {
+          stream: 'default',
+          color: STREAM_COLOR_LIST[0],
+        },
+      ],
     })
   })
 })

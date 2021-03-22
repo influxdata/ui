@@ -22,7 +22,7 @@ export interface AnnotationsState {
 
 export const FALLBACK_COLOR = InfluxColors.Curacao
 
-const STREAM_COLOR_LIST = [InfluxColors.Potassium]
+export const STREAM_COLOR_LIST = [InfluxColors.Potassium]
 
 export const initialState = (): AnnotationsState => ({
   annotations: {

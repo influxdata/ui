@@ -419,6 +419,7 @@ jobs:
       - run:
           name: Update the images we're using
           command: |
+            docker pull quay.io/influxdb/lighthouse
             cd ./monitor-ci && sudo rm -rf .persist/certs/ && make update && make build NODE=ingress
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest

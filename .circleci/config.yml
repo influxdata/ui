@@ -416,11 +416,12 @@ jobs:
       - store_artifacts:
           path: /tmp/results.json
 
-  cd-app-e2e-test:
+  cloud-e2e-k8s-idpe:
     machine:
       # use Ubuntu 16 image as jsonnet requires libraries newer than in Ubuntu 14
       image: ubuntu-1604:202007-01
-    # E2e tests deploy kind, use a very large instance size
+    # E2e tests deploy kind and are very resource intensive.
+    # 2xlarge is the largest resource class for "machine"; there is no 2xlarge+ like the docker runners.
     resource_class: 2xlarge
     steps:
       - checkout:
@@ -457,8 +458,10 @@ jobs:
       - run:
           name: Run E2e test
           command: cd ./idpe/ && export QUAY_CD_USER=$QUAY_USER && export QUAY_CD_PASSWORD=$QUAY_PASS && ./scripts/ci/cd-app-e2e-test.bash | tee /tmp/artifacts/e2e-test.log
+          no_output_timeout: '15m' # Sometimes gathering the images takes too long. Go 50% over the default 10m timeout.
           environment:
             USE_K8SIDPE_LOCAL_TOOLS: '1' # this is needed as otherwise kubecfg is not able to talk to kind API server via localhost
+            USE_CONTAINERD_BIND_DIR: '1' # enable using tmpfs to avoid IO performance issues in CircleCI machine executor
             ARTIFACTS_DIRECTORY: '/tmp/artifacts'
       - store_artifacts:
           path: /tmp/artifacts/
@@ -485,7 +488,7 @@ workflows:
       - cloud-lighthouse:
           requires:
             - build-image
-      - cd-app-e2e-test:
+      - cloud-e2e-k8s-idpe:
           requires:
             - build-image
       - oss-e2e:
@@ -507,7 +510,7 @@ workflows:
             - unit
             - lint
             - smoke
-            - cd-app-e2e-test
+            - cloud-e2e-k8s-idpe
       - share-testing-image:
           filters:
             branches:
@@ -518,7 +521,7 @@ workflows:
             - unit
             - lint
             - smoke
-            - cd-app-e2e-test
+            - cloud-e2e-k8s-idpe
 commands:
   install_jsonnet_binary:
     description: >

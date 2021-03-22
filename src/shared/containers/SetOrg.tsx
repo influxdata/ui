@@ -5,7 +5,6 @@ import {Route, Switch} from 'react-router-dom'
 
 // Components
 import {CommunityTemplatesIndex} from 'src/templates/containers/CommunityTemplatesIndex'
-import {AnnotationsIndex} from 'src/annotations/containers/AnnotationsIndex'
 import PageSpinner from 'src/perf/components/PageSpinner'
 import {
   MePage,
@@ -50,7 +49,6 @@ import {
   TELEGRAF_PLUGINS,
   CLIENT_LIBS,
   SETTINGS,
-  ANNOTATIONS,
   VARIABLES,
   LABELS,
   BUCKETS,

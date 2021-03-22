@@ -1,19 +1,15 @@
 // Libraries
 import React, {FC} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {useHistory, useParams} from 'react-router-dom'
 
 // Components
 import {
   ComponentColor,
   ComponentSize,
-  FlexBox,
   FlexBoxChild,
-  IconFont,
   InputLabel,
   InputToggleType,
   JustifyContent,
-  SquareButton,
   Toggle,
 } from '@influxdata/clockface'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
@@ -22,8 +18,6 @@ import {
   toggleAnnotationVisibility,
   toggleSingleClickAnnotations,
 } from 'src/annotations/actions/creators'
-import {AnnotationPills} from 'src/annotations/components/controlBar/AnnotationPills'
-import {AnnotationsSearchBar} from 'src/annotations/components/controlBar/AnnotationsSearchBar'
 
 // Selectors
 import {
@@ -35,9 +29,6 @@ import {
 import {event} from 'src/cloud/utils/reporting'
 
 export const AnnotationsControlBar: FC = () => {
-  const history = useHistory()
-  const {orgID} = useParams<{orgID: string; dashboardID: string}>()
-
   const inWriteMode = useSelector(isSingleClickAnnotationsEnabled)
   const annotationsAreVisible = useSelector(selectAreAnnotationsVisible)
 

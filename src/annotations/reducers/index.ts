@@ -30,10 +30,12 @@ export const initialState = (): AnnotationsState => ({
   },
   annotationsAreVisible: true,
   enableSingleClickAnnotations: true,
-  streams: [{
-    stream: 'default',
-    color: InfluxColors.Potassium
-  }],
+  streams: [
+    {
+      stream: 'default',
+      color: InfluxColors.Potassium,
+    },
+  ],
   visibleStreamsByID: ['default'],
 })
 
@@ -81,7 +83,7 @@ export const annotationsReducer = (
     case TOGGLE_ANNOTATION_VISIBILITY: {
       return {
         ...state,
-        annotationsAreVisible: !state.annotationsAreVisible
+        annotationsAreVisible: !state.annotationsAreVisible,
       }
     }
 

@@ -52,6 +52,7 @@ export const deleteAnnotation = (annotation: Annotation) =>
     annotation,
   } as const)
 
-export const toggleAnnotationVisibility = () => ({
+export const toggleAnnotationVisibility = () =>
+  ({
     type: TOGGLE_ANNOTATION_VISIBILITY,
   } as const)

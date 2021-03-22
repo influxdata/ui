@@ -1,3 +1,4 @@
+/// <reference types="resize-observer-browser" />
 import React, {FC, useContext, useRef, useEffect, useState} from 'react'
 import {DapperScrollbars} from '@influxdata/clockface'
 import {SubsetTable} from 'src/visualization/types/SimpleTable'

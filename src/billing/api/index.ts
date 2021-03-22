@@ -1,20 +1,18 @@
 import {
-  getBillingAccount as getBillingAccountGenerated,
-  getBillingNotifySettings,
-  getBillingPaymentMethods,
-  getBillingCc,
-  getInvoices as getInvoicesGenerated,
-  getBillingRegion,
-  Account,
+  getAccount as apiGetAccount,
+  getBilling,
+  getSettingsNotifications,
+  getPaymentForm,
+  getBillingInvoices,
 } from 'src/client/unityRoutes'
 
 import {RemoteDataState} from 'src/types'
 import {
+  Account,
   Invoice,
   CreditCardParams,
-  Region,
   BillingNotifySettings,
-  PaymentMethod,
+  BillingInfo,
 } from 'src/types/billing'
 
 const makeResponse = (status, data) => {
@@ -25,71 +23,60 @@ const makeResponse = (status, data) => {
   })
 }
 
-export const getBillingAccount = (): ReturnType<typeof getBillingAccountGenerated> => {
+export const getAccount = (): ReturnType<typeof apiGetAccount> => {
   const account: Account = {
-    id: 1234,
-    balance: 100,
-    billingContact: {
-      companyName: 'InfluxDB',
-      email: 'info@influxdata.com',
-      firstName: 'Boatie',
-      lastName: 'McBoatface',
-      country: 'USA',
-      street1: '123 Powers St',
-      subdivision: 'NY',
-      city: 'Brooklyn',
-      postalCode: 30000,
-    },
-    deletable: false,
-    marketplaceSubscription: {
-      marketplace: 'us-west',
-      subscriberId: 'id123',
-      status: 'Paid',
-    },
-    pricingVersion: 4,
+    id: 'account_1',
+    marketplace: 'AWS',
     type: 'free',
-    updatedAt: new Date().toString(),
-    users: [{}],
-    zuoraAccountId: 'zID123',
+    status: RemoteDataState.Done,
   }
   return makeResponse(200, account)
 }
 
-export const getPaymentMethods = (): ReturnType<typeof getBillingPaymentMethods> => {
-  const paymentMethods: PaymentMethod[] = [
-    {
+export const getBillingInfo = (): ReturnType<typeof getBilling> => {
+  const billing: BillingInfo = {
+    balance: 100,
+    region: 'us-west',
+    paymentMethod: {
       cardType: 'Visa',
       cardNumber: '4242424242424242',
       expirationMonth: '04',
       expirationYear: '22',
       defaultPaymentMethod: true,
     },
-    {
-      cardType: 'MasterCard',
-      cardNumber: '5242424242424242',
-      expirationMonth: '05',
-      expirationYear: '25',
-      defaultPaymentMethod: false,
+    balanceUpdatedAt: new Date().toString(),
+    contact: {
+      companyName: 'InfluxDB',
+      email: 'info@influxdata.com',
+      firstName: 'Boatie',
+      lastName: 'McBoatface',
+      country: 'USA',
+      street1: '123 Powers St',
+      city: 'Brooklyn',
+      subdivision: 'NY',
+      postalCode: 30000,
     },
-  ]
-  return makeResponse(200, paymentMethods)
+    status: RemoteDataState.Done,
+  }
+  return makeResponse(200, billing)
 }
 
-export const getBillingCreditCard = (): ReturnType<typeof getBillingCc> => {
+export const getBillingCreditCard = (): ReturnType<typeof getPaymentForm> => {
   const cc: CreditCardParams = {
     id: 'id123',
-    tenantID: 'tenant123',
+    tenantId: 'tenant123',
     key: 'key123',
     signature: 'John Hancock',
     token: 't0k3n',
     style: 'fresh',
     submitEnabled: 'true',
     url: 'you-are-el',
+    status: RemoteDataState.Done,
   }
   return makeResponse(200, cc)
 }
 
-export const getBillingNotificationSettings = (): ReturnType<typeof getBillingNotifySettings> => {
+export const getBillingNotificationSettings = (): ReturnType<typeof getSettingsNotifications> => {
   const billingNotifySettings: BillingNotifySettings = {
     isNotify: true,
     balanceThreshold: 1000000,
@@ -99,52 +86,39 @@ export const getBillingNotificationSettings = (): ReturnType<typeof getBillingNo
   return makeResponse(200, billingNotifySettings)
 }
 
-export const getInvoices = (): ReturnType<typeof getInvoicesGenerated> => {
+export const getInvoices = (): ReturnType<typeof getBillingInvoices> => {
   const invoices: Invoice[] = [
     {
       amount: 0,
-      filesID: 'abc123',
+      filesId: 'abc123',
       status: 'Paid',
       targetDate: new Date('01/01/2020').toString(),
     },
     {
       amount: 10,
-      filesID: '10E->405N',
+      filesId: '10E->405N',
       status: 'Unpaid',
       targetDate: new Date('01/02/2020').toString(),
     },
     {
       amount: 405,
-      filesID: '405N->101N',
+      filesId: '405N->101N',
       status: 'Paid',
       targetDate: new Date('01/03/2020').toString(),
     },
     {
       amount: 101,
-      filesID: '101N->1N',
+      filesId: '101N->1N',
       status: 'Unpaid',
       targetDate: new Date('01/04/2020').toString(),
     },
     {
       amount: 1,
-      filesID: '1N',
+      filesId: '1N',
       status: 'Paid',
       targetDate: new Date('01/05/2020').toString(),
     },
   ]
 
   return makeResponse(200, invoices)
-}
-
-export const getRegion = (): ReturnType<typeof getBillingRegion> => {
-  const region: Region = {
-    title: 'EU Frankfurt',
-    isBeta: false,
-    isAvailable: true,
-    provider: 'AWS',
-    region: 'us-west',
-    status: RemoteDataState.Done,
-  }
-
-  return makeResponse(200, region)
 }

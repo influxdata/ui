@@ -29,24 +29,24 @@ type Props = {
 const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
   const [
     {
-      account: {billingContact},
+      billingInfo: {contact},
     },
   ] = useBilling()
 
   const [inputs, setInputs] = useState({
-    firstName: billingContact.firstName,
-    lastName: billingContact.lastName,
-    companyName: billingContact.companyName,
-    street1: billingContact.street1,
-    street2: billingContact.street2,
-    city: billingContact.city,
-    postalCode: billingContact.postalCode,
+    firstName: contact.firstName,
+    lastName: contact.lastName,
+    companyName: contact.companyName,
+    street1: contact.street1,
+    street2: contact.street2,
+    city: contact.city,
+    postalCode: contact.postalCode,
   })
 
   const [errorType, setErrorType] = useState('')
 
-  const [country, setCountry] = useState(billingContact.country)
-  const [subdivision, setSubdivision] = useState(billingContact.subdivision)
+  const [country, setCountry] = useState(contact.country)
+  const [subdivision, setSubdivision] = useState(contact.subdivision)
 
   const [countryError, setCountryError] = useState(false)
   const [subdivisionError, setSubdivisionError] = useState(false)

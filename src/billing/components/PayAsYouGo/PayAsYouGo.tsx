@@ -15,8 +15,7 @@ import CancellationPanel from 'src/billing/components/PayAsYouGo/CancellationPan
 import NotificationPanel from 'src/billing/components/PayAsYouGo/NotificationPanel'
 import InvoiceLoadingWrapper from 'src/billing/components/AssetLoading/InvoiceWrapper'
 import BillingLoadingWrapper from 'src/billing/components/AssetLoading/BillingWrapper'
-import PaymentMethodsLoadingWrapper from 'src/billing/components/AssetLoading/PaymentMethodsWrapper'
-import RegionLoadingWrapper from 'src/billing/components/AssetLoading/RegionWrapper'
+import BillingInfoWrapper from 'src/billing/components/AssetLoading/BillingInfoWrapper'
 
 const BillingPayAsYouGo: FC = () => (
   <FlexBox
@@ -24,16 +23,14 @@ const BillingPayAsYouGo: FC = () => (
     alignItems={AlignItems.Stretch}
     margin={ComponentSize.Small}
   >
-    <RegionLoadingWrapper>
+    <BillingInfoWrapper>
       <PlanTypePanel />
-    </RegionLoadingWrapper>
-    <InvoiceLoadingWrapper>
-      <InvoiceHistory />
-    </InvoiceLoadingWrapper>
-    <PaymentMethodsLoadingWrapper>
+      <InvoiceLoadingWrapper>
+        <InvoiceHistory />
+      </InvoiceLoadingWrapper>
       <PaymentPanel />
-    </PaymentMethodsLoadingWrapper>
-    <BillingContactInfo />
+      <BillingContactInfo />
+    </BillingInfoWrapper>
     <BillingLoadingWrapper>
       <NotificationPanel />
     </BillingLoadingWrapper>

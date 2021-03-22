@@ -1,10 +1,9 @@
-import {BillingDate, History} from 'src/types/billing'
-import {RemoteDataState} from 'src/types'
+import {BillingDate, UsageVector} from 'src/types/billing'
+import {RemoteDataState, TimeRange} from 'src/types'
 import {
-  Account,
-  getBillingAccount as getBillingAccountGenerated,
-  getBillingDate as getBillingDateGenerated,
-  getAccountHistory,
+  getBillingStartDate,
+  getUsageVectors as apiGetUsageVectors,
+  getUsage,
 } from 'src/client/unityRoutes'
 
 const makeResponse = (status, data) => {
@@ -15,49 +14,99 @@ const makeResponse = (status, data) => {
   })
 }
 
-export const getBillingAccount = (): ReturnType<typeof getBillingAccountGenerated> => {
-  const account: Account = {
-    id: 1234,
-    balance: 100,
-    billingContact: {
-      companyName: 'InfluxDB',
-      email: 'info@influxdata.com',
-      firstName: 'Boatie',
-      lastName: 'McBoatface',
-      country: 'USA',
-      street1: '123 Powers St',
-      subdivision: 'NY',
-      city: 'Brooklyn',
-      postalCode: 30000,
-    },
-    deletable: false,
-    marketplaceSubscription: {
-      marketplace: 'us-west',
-      subscriberId: 'id123',
-      status: 'Paid',
-    },
-    pricingVersion: 4,
-    type: 'free',
-    updatedAt: new Date().toString(),
-    users: [{}],
-    zuoraAccountId: 'zID123',
-  }
-  return makeResponse(200, account)
-}
-
-export const getBillingDate = (): ReturnType<typeof getBillingDateGenerated> => {
+export const getBillingDate = (): ReturnType<typeof getBillingStartDate> => {
   const billingDate: BillingDate = {
-    date: new Date().toLocaleDateString(),
-    time: new Date().toLocaleString(),
+    dateTime: new Date().toLocaleString(),
     status: RemoteDataState.Done,
   }
 
   return makeResponse(200, billingDate)
 }
 
-export const getHistory = (): ReturnType<typeof getAccountHistory> => {
-  const history: History = {
-    billingStats: `
+export const getUsageVectors = (): ReturnType<typeof apiGetUsageVectors> => {
+  const usageVectors: UsageVector[] = [
+    {
+      name: 'Limit Events',
+      unit: '',
+      fluxKey: '_value',
+    },
+    {
+      name: 'Data In',
+      unit: 'MB',
+      fluxKey: 'writes_mb',
+    },
+    {
+      name: 'Query Count',
+      unit: '',
+      fluxKey: 'query_count',
+    },
+    {
+      name: 'Storage',
+      unit: 'GB-hr',
+      fluxKey: 'storage_gb',
+    },
+    {
+      name: 'Data Out',
+      unit: 'GB',
+      fluxKey: 'reads_gb',
+    },
+  ]
+  return makeResponse(200, {usageVectors})
+}
+
+export const getUsageStats = (
+  _usageVector: string,
+  _timeRange: TimeRange
+): ReturnType<typeof getUsage> => {
+  const usageStats = `#group,false,false,true,false,false
+#datatype,string,long,string,dateTime:RFC3339,long
+#default,limits,,,,
+,result,table,_field,_time,_value
+,,0,limited_write,2021-01-13T22:05:00Z,0
+,,0,limited_write,2021-01-13T22:10:00Z,0
+,,0,limited_write,2021-01-13T22:15:00Z,0
+,,0,limited_write,2021-01-13T22:20:00Z,0
+,,0,limited_write,2021-01-13T22:25:00Z,0
+,,0,limited_write,2021-01-13T22:30:00Z,0
+,,0,limited_write,2021-01-13T22:35:00Z,0
+,,0,limited_write,2021-01-13T22:40:00Z,0
+,,0,limited_write,2021-01-13T22:45:00Z,0
+,,0,limited_write,2021-01-13T22:50:00Z,0
+,,0,limited_write,2021-01-13T22:55:00Z,0
+,,0,limited_write,2021-01-13T23:00:00Z,0
+,,0,limited_write,2021-01-13T23:05:00Z,0
+,,0,limited_write,2021-01-13T23:10:00Z,0
+,,0,limited_write,2021-01-13T23:15:00Z,0
+,,0,limited_write,2021-01-13T23:20:00Z,0
+,,0,limited_write,2021-01-13T23:25:00Z,0
+,,0,limited_write,2021-01-13T23:30:00Z,0
+,,0,limited_write,2021-01-13T23:35:00Z,0
+,,0,limited_write,2021-01-13T23:40:00Z,0
+,,0,limited_write,2021-01-13T23:45:00Z,0
+,,0,limited_write,2021-01-13T23:50:00Z,0
+,,0,limited_write,2021-01-13T23:55:00Z,0
+,,0,limited_write,2021-01-14T00:00:00Z,0
+,,0,limited_write,2021-01-14T00:05:00Z,0
+,,0,limited_write,2021-01-14T00:10:00Z,0
+,,0,limited_write,2021-01-14T00:15:00Z,0
+,,0,limited_write,2021-01-14T00:20:00Z,0
+,,0,limited_write,2021-01-14T00:25:00Z,0
+,,0,limited_write,2021-01-14T00:30:00Z,0
+,,0,limited_write,2021-01-14T00:35:00Z,0
+,,0,limited_write,2021-01-14T00:40:00Z,0
+,,0,limited_write,2021-01-14T00:45:00Z,0
+,,0,limited_write,2021-01-14T00:50:00Z,0
+,,0,limited_write,2021-01-14T00:55:00Z,0
+,,0,limited_write,2021-01-14T01:00:00Z,0
+,,0,limited_write,2021-01-14T01:05:00Z,0
+,,0,limited_write,2021-01-14T01:10:00Z,0
+,,0,limited_write,2021-01-14T01:15:00Z,0
+,,0,limited_write,2021-01-14T01:20:00Z,0`
+  return makeResponse(200, usageStats)
+}
+
+export const getBillingStats = (): ReturnType<typeof getUsage> => {
+  const billingStats: string = `
 #group,false,false,true,true,false
 #datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,long
 #default,query_count,,,,
@@ -80,9 +129,14 @@ export const getHistory = (): ReturnType<typeof getAccountHistory> => {
 #datatype,string,long,double,double
 #default,storage_gb,,,
 ,result,table,_value,storage_gb
-,,0,144473630.31726062,0.14`,
-    rateLimits: `
-#group,false,false,true,false,false
+,,0,144473630.31726062,0.14`
+  return makeResponse(200, billingStats)
+}
+
+export const getRateLimits = (
+  _timeRange: TimeRange
+): ReturnType<typeof getUsage> => {
+  const rateLimits: string = `#group,false,false,true,false,false
 #datatype,string,long,string,dateTime:RFC3339,long
 #default,limits,,,,
 ,result,table,_field,_time,_value
@@ -662,53 +716,6 @@ export const getHistory = (): ReturnType<typeof getAccountHistory> => {
 ,,0,limited_write,2021-01-15T21:50:00Z,45
 ,,0,limited_write,2021-01-15T21:55:00Z,45
 ,,0,limited_write,2021-01-15T22:00:00Z,45
-,,0,limited_write,2021-01-15T22:01:46.746172314Z,18`,
-    usageStats: `#group,false,false,true,false,false
-#datatype,string,long,string,dateTime:RFC3339,long
-#default,limits,,,,
-,result,table,_field,_time,_value
-,,0,limited_write,2021-01-13T22:05:00Z,0
-,,0,limited_write,2021-01-13T22:10:00Z,0
-,,0,limited_write,2021-01-13T22:15:00Z,0
-,,0,limited_write,2021-01-13T22:20:00Z,0
-,,0,limited_write,2021-01-13T22:25:00Z,0
-,,0,limited_write,2021-01-13T22:30:00Z,0
-,,0,limited_write,2021-01-13T22:35:00Z,0
-,,0,limited_write,2021-01-13T22:40:00Z,0
-,,0,limited_write,2021-01-13T22:45:00Z,0
-,,0,limited_write,2021-01-13T22:50:00Z,0
-,,0,limited_write,2021-01-13T22:55:00Z,0
-,,0,limited_write,2021-01-13T23:00:00Z,0
-,,0,limited_write,2021-01-13T23:05:00Z,0
-,,0,limited_write,2021-01-13T23:10:00Z,0
-,,0,limited_write,2021-01-13T23:15:00Z,0
-,,0,limited_write,2021-01-13T23:20:00Z,0
-,,0,limited_write,2021-01-13T23:25:00Z,0
-,,0,limited_write,2021-01-13T23:30:00Z,0
-,,0,limited_write,2021-01-13T23:35:00Z,0
-,,0,limited_write,2021-01-13T23:40:00Z,0
-,,0,limited_write,2021-01-13T23:45:00Z,0
-,,0,limited_write,2021-01-13T23:50:00Z,0
-,,0,limited_write,2021-01-13T23:55:00Z,0
-,,0,limited_write,2021-01-14T00:00:00Z,0
-,,0,limited_write,2021-01-14T00:05:00Z,0
-,,0,limited_write,2021-01-14T00:10:00Z,0
-,,0,limited_write,2021-01-14T00:15:00Z,0
-,,0,limited_write,2021-01-14T00:20:00Z,0
-,,0,limited_write,2021-01-14T00:25:00Z,0
-,,0,limited_write,2021-01-14T00:30:00Z,0
-,,0,limited_write,2021-01-14T00:35:00Z,0
-,,0,limited_write,2021-01-14T00:40:00Z,0
-,,0,limited_write,2021-01-14T00:45:00Z,0
-,,0,limited_write,2021-01-14T00:50:00Z,0
-,,0,limited_write,2021-01-14T00:55:00Z,0
-,,0,limited_write,2021-01-14T01:00:00Z,0
-,,0,limited_write,2021-01-14T01:05:00Z,0
-,,0,limited_write,2021-01-14T01:10:00Z,0
-,,0,limited_write,2021-01-14T01:15:00Z,0
-,,0,limited_write,2021-01-14T01:20:00Z,0`,
-    status: RemoteDataState.Done,
-  }
-
-  return makeResponse(200, history)
+,,0,limited_write,2021-01-15T22:01:46.746172314Z,18`
+  return makeResponse(200, rateLimits)
 }

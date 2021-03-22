@@ -10,11 +10,15 @@ import PaymentPanelBody from './PaymentPanelBody'
 import {useBilling} from 'src/billing/components/BillingPage'
 
 const PaymentPanel: FC = () => {
-  const [{paymentMethods}] = useBilling()
+  const [
+    {
+      billingInfo: {paymentMethod},
+    },
+  ] = useBilling()
 
-  const [isEditing, setIsEditing] = useState(!paymentMethods.length)
+  const [isEditing, setIsEditing] = useState(paymentMethod === null)
 
-  const hasExistingPayment = !!paymentMethods.length
+  const hasExistingPayment = paymentMethod !== null
 
   const onEdit = (): void => {
     setIsEditing(true)

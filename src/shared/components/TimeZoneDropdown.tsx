@@ -1,5 +1,5 @@
 // Libraries
-import React, {FunctionComponent, useContext} from 'react'
+import React, {FC, useContext} from 'react'
 import {SelectDropdown, IconFont} from '@influxdata/clockface'
 
 // Actions & Selectors
@@ -8,7 +8,7 @@ import {AppSettingContext} from 'src/shared/contexts/app'
 // Constants
 import {TIME_ZONES} from 'src/shared/constants/timeZones'
 
-const TimeZoneDropdown: FunctionComponent<> = () => {
+const TimeZoneDropdown: FC = () => {
   const {timeZone, setTimeZone} = useContext(AppSettingContext)
 
   return (

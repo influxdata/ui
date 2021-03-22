@@ -5,34 +5,33 @@ import {
   Action,
   setAccount,
   setAccountStatus,
+  setBillingInfo,
+  setBillingInfoStatus,
   setBillingSettings,
   setBillingSettingsStatus,
+  setCreditCard,
+  setCreditCardStatus,
   setInvoices,
   setInvoicesStatus,
-  setPaymentMethods,
-  setPaymentMethodsStatus,
-  setRegion,
-  setRegionStatus,
 } from 'src/billing/reducers'
 
 // API
 import {
-  getBillingAccount,
+  getAccount as apiGetAccount,
+  getBillingInfo as apiGetBillingInfo,
   getBillingCreditCard,
   getBillingNotificationSettings,
-  getPaymentMethods as apiGetPaymentMethods,
   getInvoices as apiGetInvoices,
-  getRegion as apiGetRegion,
 } from 'src/billing/api'
 
 // Types
 import {RemoteDataState} from 'src/types'
-import {Invoice, PaymentMethod} from 'src/types/billing'
+import {CreditCardParams, Invoice} from 'src/types/billing'
 
 export const getAccount = async (dispatch: Dispatch<Action>) => {
   try {
     dispatch(setAccountStatus(RemoteDataState.Loading))
-    const resp = await getBillingAccount()
+    const resp = await apiGetAccount()
 
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
@@ -43,6 +42,23 @@ export const getAccount = async (dispatch: Dispatch<Action>) => {
     console.error(error)
 
     dispatch(setAccountStatus(RemoteDataState.Error))
+  }
+}
+
+export const getBillingInfo = async (dispatch: Dispatch<Action>) => {
+  try {
+    dispatch(setBillingInfoStatus(RemoteDataState.Loading))
+    const resp = await apiGetBillingInfo()
+
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
+    }
+
+    dispatch(setBillingInfo({...resp.data, status: RemoteDataState.Done}))
+  } catch (error) {
+    console.error(error)
+
+    dispatch(setBillingInfoStatus(RemoteDataState.Error))
   }
 }
 
@@ -80,50 +96,20 @@ export const getInvoices = async (dispatch: Dispatch<Action>) => {
   }
 }
 
-export const getPaymentMethods = async (dispatch: Dispatch<Action>) => {
+export const getCreditCard = async (dispatch: Dispatch<Action>) => {
   try {
-    dispatch(setPaymentMethodsStatus(RemoteDataState.Loading))
+    dispatch(setCreditCardStatus(RemoteDataState.Loading))
 
-    const [paymentMethodsResp, ccResp] = await Promise.all([
-      apiGetPaymentMethods(),
-      getBillingCreditCard(),
-    ])
-
-    if (paymentMethodsResp.status !== 200) {
-      throw new Error(paymentMethodsResp.data.message)
-    }
-
-    if (ccResp.status !== 200) {
-      throw new Error(ccResp.data.message)
-    }
-
-    dispatch(
-      setPaymentMethods(
-        paymentMethodsResp.data as PaymentMethod[],
-        ccResp.data,
-        RemoteDataState.Done
-      )
-    )
-  } catch (error) {
-    console.error(error)
-
-    dispatch(setPaymentMethodsStatus(RemoteDataState.Error))
-  }
-}
-
-export const getRegion = async (dispatch: Dispatch<Action>) => {
-  try {
-    dispatch(setRegionStatus(RemoteDataState.Loading))
-    const resp = await apiGetRegion()
+    const resp = await getBillingCreditCard()
 
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
     }
 
-    dispatch(setRegion({...resp.data, status: RemoteDataState.Done}))
+    dispatch(setCreditCard(resp.data as CreditCardParams))
   } catch (error) {
     console.error(error)
 
-    dispatch(setRegionStatus(RemoteDataState.Error))
+    dispatch(setCreditCardStatus(RemoteDataState.Error))
   }
 }

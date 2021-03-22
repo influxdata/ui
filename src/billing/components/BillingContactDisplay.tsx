@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react'
+import React from 'react'
 import {Panel, Grid, ComponentSize} from '@influxdata/clockface'
 
 import BillingContactItem from 'src/billing/components/BillingContactItem'
@@ -7,12 +7,12 @@ import {useBilling} from 'src/billing/components/BillingPage'
 const BillingContactDisplay = () => {
   const [
     {
-      account: {billingContact: contact},
+      billingInfo: {contact},
     },
   ] = useBilling()
 
   return (
-    <Fragment>
+    <>
       <Panel.Body size={ComponentSize.Large} testID="billing-contact">
         <Grid>
           <Grid.Row>
@@ -49,7 +49,7 @@ const BillingContactDisplay = () => {
           </Grid.Row>
         </Grid>
       </Panel.Body>
-    </Fragment>
+    </>
   )
 }
 

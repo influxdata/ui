@@ -14,12 +14,12 @@ import {useBilling} from 'src/billing/components/BillingPage'
 const BillingContactInfo: FC = () => {
   const [
     {
-      account: {billingContact},
+      billingInfo: {contact},
     },
   ] = useBilling()
 
   // Contact is created during signup but city (required) is not collected then
-  const isFirstContactSaved = billingContact && billingContact.city
+  const isFirstContactSaved = contact && contact.city
 
   const [isEditing, setIsEditing] = useState(!isFirstContactSaved)
 

@@ -2,9 +2,12 @@ import React, {FC} from 'react'
 import {useBilling} from 'src/billing/components/BillingPage'
 
 const PaymentDisplay: FC = () => {
-  const [{paymentMethods}] = useBilling()
-  const paymentMethod =
-    paymentMethods.find(p => p.defaultPaymentMethod) || paymentMethods[0]
+  const [
+    {
+      billingInfo: {paymentMethod},
+    },
+  ] = useBilling()
+
   return (
     <div data-testid="payment-display">
       <p>

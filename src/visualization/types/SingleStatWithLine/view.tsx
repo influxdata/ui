@@ -6,6 +6,7 @@ import {
   lineTransform,
   getDomainDataFromLines,
   formatStatValue,
+  getLatestValues,
 } from '@influxdata/giraffe'
 
 // Components
@@ -43,7 +44,6 @@ import {INVALID_DATA_COPY} from 'src/visualization/constants'
 // Types
 import {LinePlusSingleStatProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
-import {latestValues as getLatestValues} from '../../../shared/utils/latestValues'
 import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 
 interface Props extends VisualizationProps {

@@ -5,6 +5,7 @@ import {
   DomainLabel,
   lineTransform,
   getDomainDataFromLines,
+  formatStatValue,
 } from '@influxdata/giraffe'
 
 // Components
@@ -14,7 +15,6 @@ import LatestValueTransform from 'src/visualization/components/LatestValueTransf
 // Utils
 import {useAxisTicksGenerator} from 'src/visualization/utils/useAxisTicksGenerator'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
-import {formatStatValue} from 'src/visualization/utils/formatStatValue'
 import {
   useLegendOpacity,
   useLegendOrientationThreshold,

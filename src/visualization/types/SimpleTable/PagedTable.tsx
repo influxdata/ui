@@ -1,3 +1,5 @@
+/// <reference types="resize-observer-browser" />
+
 import React, {
   FC,
   useContext,

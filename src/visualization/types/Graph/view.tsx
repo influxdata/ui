@@ -24,6 +24,7 @@ import {
   getAnnotationStreams,
   getVisibleAnnotationStreams,
   isSingleClickAnnotationsEnabled,
+  selectAreAnnotationsVisible,
 } from 'src/annotations/selectors'
 
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
@@ -82,6 +83,7 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
   // which are currently global values, not per dashboard
   const inAnnotationWriteMode = useSelector(isSingleClickAnnotationsEnabled)
   const visibleAnnotationStreams = useSelector(getVisibleAnnotationStreams)
+  const annotationsAreVisible = useSelector(selectAreAnnotationsVisible)
 
   const annotationStreams = useSelector(getAnnotationStreams)
 
@@ -276,7 +278,7 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
       }
     })
 
-    if (selectedAnnotations.length) {
+    if (annotationsAreVisible && selectedAnnotations.length) {
       const annotationLayer: AnnotationLayerConfig = {
         type: 'annotation',
         x: xColumn,

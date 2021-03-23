@@ -58,4 +58,14 @@ describe('Onboarding.Components.SelectionStep.StreamingSelector', () => {
       expect(cards.length).toBe(PLUGIN_BUNDLE_OPTIONS.length)
     })
   })
+
+  describe('user without buckets', () => {
+    it('causes the modal create bucket button and the message prompting the user to create a bucket', async () => {
+      setup({bucket: '', buckets: []})
+      const createButton = await screen.getByTestId('Create Bucket')
+      const promptMessage = await screen.getByTestId('create-bucket-prompt')
+      expect(createButton).toBeVisible()
+      expect(promptMessage).toBeVisible()
+    })
+  })
 })

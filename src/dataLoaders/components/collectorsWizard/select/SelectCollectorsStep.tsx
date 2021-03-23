@@ -38,6 +38,7 @@ type Props = OwnProps & ReduxProps
 @ErrorHandling
 export class SelectCollectorsStep extends PureComponent<Props> {
   public render() {
+    const selectedBucketName = this.props.bucket ?? this.props.buckets[0]?.name
     return (
       <Form
         onSubmit={this.props.onIncrementCurrentStepIndex}
@@ -59,13 +60,7 @@ export class SelectCollectorsStep extends PureComponent<Props> {
             telegrafPlugins={this.props.telegrafPlugins}
             onTogglePluginBundle={this.handleTogglePluginBundle}
             buckets={this.props.buckets ?? []}
-            selectedBucketName={
-              this.props.bucket
-                ? this.props.bucket
-                : this.props.buckets.length
-                ? this.props.buckets[0].name
-                : 'No Buckets Available'
-            }
+            selectedBucketName={selectedBucketName}
             onSelectBucket={this.handleSelectBucket}
           />
           <h5 className="wizard-step--sub-title">

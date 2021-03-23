@@ -31,9 +31,20 @@ interface StateProps {
 }
 
 const CloudUpgradeNavBanner: FC<StateProps> = ({inView}) => {
+  // TODO(ariel): we need to build out an exception for beta regions
+  // This current hack is being placed to allow a Beta region to be deployed
+  // without allowing users to get navigated to a Quartz 404. This hack is being implemented
+  // to address the following issue:
+  // https://github.com/influxdata/ui/issues/944
+  // The follow up to this issue will address the hack here:
+  // https://github.com/influxdata/ui/issues/930
+
+  const isBetaRegion = window.location.hostname.includes(
+    'europe-west1-1.gcp.cloud2.influxdata.com'
+  )
   return (
     <>
-      {inView && (
+      {inView && !isBetaRegion && (
         <CloudOnly>
           <Panel
             gradient={Gradients.HotelBreakfast}

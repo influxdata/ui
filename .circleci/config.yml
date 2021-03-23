@@ -577,7 +577,7 @@ commands:
           name: Checkout k8s-idpe repo
           environment:
             REPO: k8s-idpe
-            BRANCH: genehynson/k8s-idpe-e2e-tests
+            BRANCH: master
   checkout_idpe:
     description: >
       This will checkout idpe

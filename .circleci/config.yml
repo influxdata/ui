@@ -1,4 +1,4 @@
-version: 2.1
+version: 2.2
 
 jobs:
   build-image:
@@ -442,7 +442,7 @@ jobs:
             mkdir -p /tmp/cypress_artifacts
       - run:
           name: Copy over the testing variables
-          command: cp ./monitor-ci/env.testing.kind ./monitor-ci/.env
+          command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
           name: Build ui-e2e image

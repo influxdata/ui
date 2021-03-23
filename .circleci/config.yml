@@ -561,7 +561,7 @@ commands:
 
   checkout_k8s_idpe:
     description: >
-      This will checkout k8s-idpe in parent directory
+      This will checkout k8s-idpe
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -576,7 +576,7 @@ commands:
             BRANCH: genehynson/k8s-idpe-e2e-tests
   checkout_idpe:
     description: >
-      This will checkout idpe in parent directory
+      This will checkout idpe
     steps:
       - run:
           command: ./ui/scripts/checkout-repo.bash
@@ -587,7 +587,7 @@ commands:
             BRANCH: master
   checkout_monitor_ci:
     description: >
-      This will checkout monitor-ci in parent directory
+      This will checkout monitor-ci
     steps:
       - run:
           command: ./ui/scripts/checkout-repo.bash

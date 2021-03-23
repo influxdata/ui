@@ -166,16 +166,6 @@ jobs:
             cd ./monitor-ci && make update && make build NODE=cypress && make build NODE=ingress && make build NODE=dex
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
-      - when:
-          condition:
-            equal: [master, << pipeline.git.branch >>]
-          steps:
-            # The cypress image used within the ui-e2e image is a non-standard slim image and its definition and versions are
-            # maintained here: https://github.com/influxdata/cypress-slim
-            - run: docker tag local/cypress:latest quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
-            - run: docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} quay.io/influxdb/ui-e2e:latest
-            - run: docker push quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
-            - run: docker push quay.io/influxdb/ui-e2e:latest
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start
@@ -192,6 +182,16 @@ jobs:
       - store_artifacts:
           path: monitor-ci/test-artifacts/screenshots
           destination: test_artifacts/screenshots
+      - when:
+          condition:
+            equal: [master, << pipeline.git.branch >>]
+          steps:
+            # The cypress image used within the ui-e2e image is a non-standard slim image and its definition and versions are
+            # maintained here: https://github.com/influxdata/cypress-slim
+            - run: docker tag local/cypress:latest quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
+            - run: docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} quay.io/influxdb/ui-e2e:latest
+            - run: docker push quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
+            - run: docker push quay.io/influxdb/ui-e2e:latest
   oss-e2e:
     machine:
       image: ubuntu-2004:202008-01
@@ -415,7 +415,6 @@ jobs:
           path: /tmp/results.html
       - store_artifacts:
           path: /tmp/results.json
-
   # This job should be similar to cd-app-e2e-test job running in IDPE: https://github.com/influxdata/idpe/blob/master/.circleci/config.yml
   cloud-e2e-k8s-idpe:
     machine:
@@ -450,17 +449,6 @@ jobs:
           name: Build ui-e2e image
           command: |
             cd ./monitor-ci && make build NODE=cypress
-      # TODO: enable this when we remove cloud-e2e job
-      # - when:
-      #     condition:
-      #       equal: [master, << pipeline.git.branch >>]
-      #     steps:
-      #       # The cypress image used within the ui-e2e image is a non-standard slim image and its definition and versions are
-      #       # maintained here: https://github.com/influxdata/cypress-slim
-      #       - run: docker tag local/cypress:latest quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
-      #       - run: docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} quay.io/influxdb/ui-e2e:latest
-      #       - run: docker push quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
-      #       - run: docker push quay.io/influxdb/ui-e2e:latest
       - run:
           name: Run E2e test
           command: cd ./idpe/ && export QUAY_CD_USER=$QUAY_USER && export QUAY_CD_PASSWORD=$QUAY_PASS && ./scripts/ci/cd-app-e2e-test.bash | tee /tmp/artifacts/e2e-test.log || true
@@ -478,6 +466,17 @@ jobs:
       - store_artifacts:
           path: /home/circleci/k8s-idpe/.tmp-kind-hostpath-volume/cypress/
           destination: cypress-videos
+      # TODO: enable this when we remove cloud-e2e job
+      # - when:
+      #     condition:
+      #       equal: [master, << pipeline.git.branch >>]
+      #     steps:
+      #       # The cypress image used within the ui-e2e image is a non-standard slim image and its definition and versions are
+      #       # maintained here: https://github.com/influxdata/cypress-slim
+      #       - run: docker tag local/cypress:latest quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
+      #       - run: docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} quay.io/influxdb/ui-e2e:latest
+      #       - run: docker push quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
+      #       - run: docker push quay.io/influxdb/ui-e2e:latest
 workflows:
   version: 2
   build:

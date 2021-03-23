@@ -21,7 +21,7 @@ const Results: FC = () => {
   const [visibility, setVisibility] = useState('visible' as Visibility)
   const meta = flow.meta.get(id)
   const resultsExist =
-    !!results && !!results.raw && !!results.parsed.table.length
+    !!results && !!results.parsed && !!results.parsed.table.length
 
   let emptyText
   if (meta.loading === RemoteDataState.NotStarted) {

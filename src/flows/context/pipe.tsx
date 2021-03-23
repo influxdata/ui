@@ -25,7 +25,6 @@ export const DEFAULT_CONTEXT: PipeContextType = {
   loading: RemoteDataState.NotStarted,
   results: {
     source: '',
-    raw: '',
     parsed: {},
   } as FluxResult,
   readOnly: false,

@@ -1,4 +1,11 @@
-import React, {FC, useContext, useRef, useEffect, useState} from 'react'
+import React, {
+  FC,
+  useContext,
+  useMemo,
+  useRef,
+  useEffect,
+  useState,
+} from 'react'
 import {DapperScrollbars} from '@influxdata/clockface'
 import {SubsetTable} from 'src/visualization/types/SimpleTable'
 import {FluxResult} from 'src/types/flows'
@@ -33,6 +40,7 @@ const measurePage = (
             )}`
         )
         .join('|')
+
       if (signature !== lastSignature) {
         runningHeight += HEADER_HEIGHT
 
@@ -86,18 +94,21 @@ const subsetResult = (
 
   // group by table id (series)
   for (let ni = 0; ni < page; ni++) {
-    if (subset['table'].data[ni] === lastTable) {
+    if (
+      `y${subset['result'].data[ni]}:t${subset['table'].data[ni]}` === lastTable
+    ) {
       continue
     }
 
-    lastTable = subset['table'].data[ni]
+    lastTable = `y${subset['result'].data[ni]}:t${subset['table'].data[ni]}`
 
     if (tables.length) {
       tables[tables.length - 1].end = ni
     }
 
     tables.push({
-      idx: lastTable,
+      idx: subset['table'].data[ni],
+      yield: subset['result'].data[ni],
       cols: [],
       signature: '',
       start: ni,
@@ -152,7 +163,11 @@ const subsetResult = (
     .reduce((acc, curr) => {
       const last: SubsetTable = acc[acc.length - 1]
 
-      if (!last || curr.signature !== last.signature) {
+      if (
+        !last ||
+        curr.yield !== last.yield ||
+        curr.signature !== last.signature
+      ) {
         acc.push(curr)
         return acc
       }
@@ -194,7 +209,9 @@ const PagedTable: FC<Props> = ({result}) => {
       }
 
       timeout = setTimeout(() => {
-        setHeight(entries[0].contentRect.height)
+        requestAnimationFrame(() => {
+          setHeight(entries[0].contentRect.height)
+        })
       }, 200)
     })
 
@@ -216,16 +233,16 @@ const PagedTable: FC<Props> = ({result}) => {
     }
   }, [ref?.current])
 
-  if (!height) {
-    return (
-      <div className="visualization--simple-table--results" ref={ref}></div>
-    )
-  }
+  const page = useMemo(() => {
+    return measurePage(result, offset, height)
+  }, [result, offset, height])
+  const tables = useMemo(() => {
+    return subsetResult(result, offset, page)
+  }, [result, offset, page])
 
-  const page = measurePage(result, offset, height)
-  const tables = subsetResult(result, offset, page)
-
-  setSize(page)
+  useEffect(() => {
+    setSize(page)
+  }, [page])
 
   const inner = tables.map((t, tIdx) => (
     <InnerTable table={t} key={`table${tIdx}`} />

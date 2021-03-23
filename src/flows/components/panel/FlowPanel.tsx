@@ -1,17 +1,8 @@
 // Libraries
-import React, {
-  FC,
-  useContext,
-  useCallback,
-  useEffect,
-  ReactNode,
-  MouseEvent,
-  useRef,
-} from 'react'
+import React, {FC, useContext, useCallback, ReactNode} from 'react'
 import classnames from 'classnames'
 
 // Components
-import {ClickOutside} from '@influxdata/clockface'
 import RemovePanelButton from 'src/flows/components/panel/RemovePanelButton'
 import InsertCellButton from 'src/flows/components/panel/InsertCellButton'
 import PanelVisibilityToggle from 'src/flows/components/panel/PanelVisibilityToggle'
@@ -26,7 +17,6 @@ import {PipeContextProps} from 'src/types/flows'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
-import {RefContext} from 'src/flows/context/refs'
 
 export interface Props extends PipeContextProps {
   id: string
@@ -108,37 +98,14 @@ const FlowPanelHeader: FC<HeaderProps> = ({
 
 const FlowPanel: FC<Props> = ({id, children, controls, persistentControl}) => {
   const {flow} = useContext(FlowContext)
-  const refs = useContext(RefContext)
-  const panelRef = useRef<HTMLDivElement>(null)
 
   const isVisible = flow.meta.get(id).visible
-  const isFocused = refs.get(id).focus
 
   const panelClassName = classnames('flow-panel', {
     [`flow-panel__visible`]: isVisible,
     [`flow-panel__hidden`]: !isVisible,
-    'flow-panel__focus': isFocused,
+    'flow-panel__focus': true,
   })
-
-  useEffect(() => {
-    refs.update(id, {panel: panelRef})
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  const updatePanelFocus = useCallback(
-    (focus: boolean): void => {
-      refs.update(id, {focus})
-    },
-    [id, refs] // eslint-disable-line react-hooks/exhaustive-deps
-  )
-
-  const handleClick = (e: MouseEvent<HTMLDivElement>): void => {
-    e.stopPropagation()
-    updatePanelFocus(true)
-  }
-
-  const handleClickOutside = (): void => {
-    updatePanelFocus(false)
-  }
 
   const showResults =
     PIPE_DEFINITIONS[flow.data.get(id).type] &&
@@ -155,21 +122,19 @@ const FlowPanel: FC<Props> = ({id, children, controls, persistentControl}) => {
 
   return (
     <>
-      <ClickOutside onClickOutside={handleClickOutside}>
-        <div className={panelClassName} onClick={handleClick} ref={panelRef}>
-          <FlowPanelHeader
-            id={id}
-            controls={controls}
-            persistentControl={persistentControl}
-          />
-          {isVisible && <div className="flow-panel--body">{children}</div>}
-          {showResults && (
-            <div className="flow-panel--results">
-              <Results />
-            </div>
-          )}
-        </div>
-      </ClickOutside>
+      <div className={panelClassName}>
+        <FlowPanelHeader
+          id={id}
+          controls={controls}
+          persistentControl={persistentControl}
+        />
+        {isVisible && <div className="flow-panel--body">{children}</div>}
+        {showResults && (
+          <div className="flow-panel--results">
+            <Results />
+          </div>
+        )}
+      </div>
       {!flow.readOnly && <InsertCellButton id={id} />}
     </>
   )

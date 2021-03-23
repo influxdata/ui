@@ -17,6 +17,7 @@ interface SubsetTableColumn {
 
 export interface SubsetTable {
   idx: number
+  yield: string
   start: number
   end: number
   signature: string

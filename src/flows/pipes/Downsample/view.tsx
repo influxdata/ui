@@ -1,4 +1,4 @@
-import React, {FC, useContext} from 'react'
+import React, {FC, useCallback, useContext, useMemo} from 'react'
 import {
   FlexBox,
   FlexDirection,
@@ -20,23 +20,39 @@ import DurationInput from 'src/shared/components/DurationInput'
 
 import {PipeProp} from 'src/types/flows'
 
+const AVAILABLE_FUNCTIONS = FUNCTIONS.map(f => f.name)
+
 const Downsample: FC<PipeProp> = ({Context}) => {
   const {data, update} = useContext(PipeContext)
+  const options = useMemo(() => {
+    if (!data.functions || !data.functions.length) {
+      return [{name: 'mean'}].map(f => f.name)
+    }
+    return data.functions.map(f => f.name)
+  }, [data.functions])
 
-  const selectFn = fn => {
-    const fns = [...data.functions]
-    const fnsFound = fns.map(f => f.name).indexOf(fn)
-    if (fnsFound !== -1) {
-      fns.splice(fnsFound, 1)
+  const selectFn = useCallback(
+    (fn: string) => {
+      const fns = options.map(f => ({name: f}))
+      let found = false
+      let fnIdx = fns.findIndex(f => f.name === fn)
+
+      while (fnIdx !== -1) {
+        found = true
+        fns.splice(fnIdx, 1)
+        fnIdx = fns.findIndex(f => f.name === fn)
+      }
+
+      if (!found) {
+        fns.push({name: fn})
+      }
+
       update({
         functions: fns,
       })
-    } else {
-      update({
-        functions: [...fns, {name: fn}],
-      })
-    }
-  }
+    },
+    [options, update]
+  )
 
   const setPeriod = _period => {
     update({
@@ -64,8 +80,8 @@ const Downsample: FC<PipeProp> = ({Context}) => {
           <MultiSelectDropdown
             emptyText="Select"
             style={{width: '250px'}}
-            options={FUNCTIONS.map(f => f.name)}
-            selectedOptions={data.functions.map(fn => fn.name)}
+            options={AVAILABLE_FUNCTIONS}
+            selectedOptions={options}
             onSelect={selectFn}
             buttonColor={ComponentColor.Secondary}
             buttonIcon={IconFont.BarChart}

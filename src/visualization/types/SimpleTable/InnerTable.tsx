@@ -7,13 +7,23 @@ interface InnerProps {
 }
 
 const InnerTable: FC<InnerProps> = ({table}) => {
-  const headers = Object.values(table.cols).map(c => (
-    <Table.HeaderCell key={`h${c.name}`}>
-      {c.name}
-      <label>{c.group ? 'group' : 'no group'}</label>
-      <label>{c.fluxDataType}</label>
-    </Table.HeaderCell>
-  ))
+  const headers = Object.values(table.cols).map(c => {
+    if (c.name === 'table') {
+      return (
+        <Table.HeaderCell key="htable">
+          table
+          <label>{table.yield}</label>
+        </Table.HeaderCell>
+      )
+    }
+    return (
+      <Table.HeaderCell key={`h${c.name}`}>
+        {c.name}
+        <label>{c.group ? 'group' : 'no group'}</label>
+        <label>{c.fluxDataType}</label>
+      </Table.HeaderCell>
+    )
+  })
   const rows = Array(table.end - table.start)
     .fill(null)
     .map((_, idx) => {

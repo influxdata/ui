@@ -49,7 +49,6 @@ const TestFlux: FC<PipeProp> = ({Context}) => {
         const result = results.join('\n\n')
 
         return {
-          raw: result,
           parsed: fromFlux(result),
           source: 'buckets()',
         } as FluxResult
@@ -84,7 +83,7 @@ const TestFlux: FC<PipeProp> = ({Context}) => {
   return (
     <Context controls={controls}>
       <Resizer
-        resizingEnabled={!!results.raw}
+        resizingEnabled={!!results.parsed}
         emptyText="This cell will visualize results from uploaded CSVs"
         emptyIcon={IconFont.BarChart}
         toggleVisibilityEnabled={false}

@@ -255,12 +255,20 @@ export const QueryProvider: FC = ({children}) => {
         return raw
       })
       .then(raw => {
-        return {
-          source: text,
-          raw: raw.csv,
-          parsed: fromFlux(raw.csv),
-          error: null,
-        } as FluxResult
+        return new Promise((resolve, reject) => {
+          requestAnimationFrame(() => {
+            try {
+              const parsed = fromFlux(raw.csv)
+              resolve({
+                source: text,
+                parsed,
+                error: null,
+              } as FluxResult)
+            } catch (e) {
+              reject(e)
+            }
+          })
+        })
       })
   }
 

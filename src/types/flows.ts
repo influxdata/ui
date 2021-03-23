@@ -79,7 +79,6 @@ interface InternalFromFluxResult extends FromFluxResult {
 
 export interface FluxResult {
   source: string // the query that was used to generate the flux
-  raw: string // the result from the API
   parsed: InternalFromFluxResult // the parsed result
   error?: string // any error that might have happend while fetching
 }

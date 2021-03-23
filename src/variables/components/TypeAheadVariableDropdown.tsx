@@ -226,19 +226,19 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
   // only want to show valid values when the component is not actively being used
   onClickAwayHere = () => {
     //  reset:
-    console.log('in click away here for ' + this.props.name)
+    // console.log('in click away here for ' + this.props.name)
     this.setState(this.getRealValue())
   }
 
   getRealValue = () => {
     const {actualVal, typedValue} = this.state
-    const {selectedValue, name} = this.props
+    const {selectedValue} = this.props
 
     if (actualVal || selectedValue) {
       const realValue = actualVal ?? selectedValue
-      console.log(`foo-123 (setting typedValue) d for ${name} to ${realValue}`)
+      //  console.log(`foo-123 (setting typedValue) d for ${name} to ${realValue}`)
       if (typedValue !== realValue) {
-        console.log('actually setting it...... (foo-d-ack)')
+        // console.log('actually setting it...... (foo-d-ack)')
         return {typedValue: realValue}
       }
     }
@@ -269,6 +269,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
             onChange={e => this.filterVals(e.target.value)}
             value={typedValue}
             onKeyDown={this.maybeSelectNextItem}
+            testID={`variable-dropdown-input-typeAhead--${name}`}
           />
         )
       }
@@ -387,7 +388,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
   }
 
   noValuesPresent = useAllValues => {
-    const {status, name, values} = this.props
+    const {status, values} = this.props
     const {shownValues} = this.state
     // console.log(`in no values present....${name}`, shownValues)
     // console.log('status: ', status)

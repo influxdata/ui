@@ -283,7 +283,7 @@ describe('Dashboard', () => {
       })
     })
 
-    it('can manage variable state with a lot of pointing and clicking', () => {
+    it.only('can manage variable state with a lot of pointing and clicking', () => {
       const bucketOne = 'b1'
       const bucketThree = 'b3'
       const bucketVarName = 'bucketsCSV'
@@ -329,19 +329,19 @@ describe('Dashboard', () => {
 
               // TESTING CSV VARIABLE
               // selected value in dashboard is 1st value
-              cy.getByTestID(`variable-dropdown--${bucketVarName}`).should(
-                'contain',
-                bucketOne
-              )
+              cy.getByTestID(
+                `variable-dropdown-input-typeAhead--${bucketVarName}`
+              ).should('have.value', bucketOne)
+
               cy.window()
                 .pipe(getSelectedVariable(dashboard.id, 0))
                 .should('equal', bucketOne)
 
               // testing variable controls
-              cy.getByTestID(`variable-dropdown--${bucketVarName}`).should(
-                'contain',
-                bucketOne
-              )
+              cy.getByTestID(
+                `variable-dropdown-input-typeAhead--${bucketVarName}`
+              ).should('have.value', bucketOne)
+
               cy.getByTestID('variables--button').click()
               cy.getByTestID(`variable-dropdown--${bucketVarName}`).should(
                 'not.exist'
@@ -361,10 +361,10 @@ describe('Dashboard', () => {
               cy.get(`#${bucketThree}`).click()
 
               // selected value in dashboard is 3rd value
-              cy.getByTestID(`variable-dropdown--${bucketVarName}`).should(
-                'contain',
-                bucketThree
-              )
+              cy.getByTestID(
+                `variable-dropdown-input-typeAhead--${bucketVarName}`
+              ).should('have.value', bucketThree)
+
               cy.window()
                 .pipe(getSelectedVariable(dashboard.id, 0))
                 .should('equal', bucketThree)
@@ -421,22 +421,22 @@ describe('Dashboard', () => {
               cy.window()
                 .pipe(getSelectedVariable(dashboard.id, 0))
                 .should('equal', bucketOne)
+              cy.pause()
 
               // selected value in dashboard is 1st value
-              cy.getByTestID(`variable-dropdown--${bucketVarName}`).should(
-                'contain',
-                bucketOne
-              )
+              cy.getByTestID(
+                `variable-dropdown-input-typeAhead--${bucketVarName}`
+              ).should('have.value', bucketOne)
+
               cy.window()
                 .pipe(getSelectedVariable(dashboard.id, 0))
                 .should('equal', bucketOne)
 
               // TESTING MAP VARIABLE
               // selected value in dashboard is 1st value
-              cy.getByTestID(`variable-dropdown--${mapTypeVarName}`).should(
-                'contain',
-                'k1'
-              )
+              cy.getByTestID(
+                `variable-dropdown-input-typeAhead--${mapTypeVarName}`
+              ).should('have.value', 'k1')
               cy.window()
                 .pipe(getSelectedVariable(dashboard.id, 2))
                 .should('equal', 'v1')
@@ -448,10 +448,9 @@ describe('Dashboard', () => {
               cy.get(`#k2`).click()
 
               // selected value in dashboard is 2nd value
-              cy.getByTestID(`variable-dropdown--${mapTypeVarName}`).should(
-                'contain',
-                'k2'
-              )
+              cy.getByTestID(
+                `variable-dropdown-input-typeAhead--${mapTypeVarName}`
+              ).should('have.value', 'k2')
               cy.window()
                 .pipe(getSelectedVariable(dashboard.id, 2))
                 .should('equal', 'v2')
@@ -487,10 +486,9 @@ describe('Dashboard', () => {
                 .should('equal', 'v1')
 
               // selected value in dashboard is 1st value
-              cy.getByTestID(`variable-dropdown--${mapTypeVarName}`).should(
-                'contain',
-                'k1'
-              )
+              cy.getByTestID(
+                `variable-dropdown-input-typeAhead--${mapTypeVarName}`
+              ).should('have.value', 'k1')
               cy.window()
                 .pipe(getSelectedVariable(dashboard.id, 2))
                 .should('equal', 'v1')

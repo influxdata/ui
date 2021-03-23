@@ -15,7 +15,11 @@ import {
 import CloudOnly from 'src/shared/components/cloud/CloudOnly'
 
 // Constants
-import {CLOUD_URL, CLOUD_CHECKOUT_PATH} from 'src/shared/constants'
+import {
+  BETA_REGIONS,
+  CLOUD_URL,
+  CLOUD_CHECKOUT_PATH,
+} from 'src/shared/constants'
 import {
   HIDE_UPGRADE_CTA_KEY,
   PAID_ORG_HIDE_UPGRADE_SETTING,
@@ -44,9 +48,21 @@ const CloudUpgradeButton: FC<StateProps & OwnProps> = ({
     [`${className}`]: className,
   })
 
+  // TODO(ariel): we need to build out an exception for beta regions
+  // This current hack is being placed to allow a Beta region to be deployed
+  // without allowing users to get navigated to a Quartz 404. This hack is being implemented
+  // to address the following issue:
+  // https://github.com/influxdata/ui/issues/944
+  // The follow up to this issue will address the hack here:
+  // https://github.com/influxdata/ui/issues/930
+
+  const isBetaRegion = BETA_REGIONS.some((pathName: string) =>
+    window.location.hostname.includes(pathName)
+  )
+
   return (
     <CloudOnly>
-      {inView && (
+      {inView && !isBetaRegion && (
         <LinkButton
           icon={IconFont.CrownSolid}
           className={cloudUpgradeButtonClass}

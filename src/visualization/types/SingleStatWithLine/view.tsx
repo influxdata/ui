@@ -5,6 +5,8 @@ import {
   DomainLabel,
   lineTransform,
   getDomainDataFromLines,
+  formatStatValue,
+  getLatestValues,
 } from '@influxdata/giraffe'
 
 // Components
@@ -14,7 +16,6 @@ import LatestValueTransform from 'src/visualization/components/LatestValueTransf
 // Utils
 import {useAxisTicksGenerator} from 'src/visualization/utils/useAxisTicksGenerator'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
-import {formatStatValue} from 'src/visualization/utils/formatStatValue'
 import {
   useLegendOpacity,
   useLegendOrientationThreshold,
@@ -43,6 +44,7 @@ import {INVALID_DATA_COPY} from 'src/visualization/constants'
 // Types
 import {LinePlusSingleStatProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
+import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 
 interface Props extends VisualizationProps {
   properties: LinePlusSingleStatProperties
@@ -147,92 +149,161 @@ const SingleStatWithLine: FC<Props> = ({properties, result, timeRange}) => {
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
   }
 
-  return (
-    <Plot
-      config={{
-        ...currentTheme,
-        table: result.table,
-        xAxisLabel: properties.axes.x.label,
-        yAxisLabel: properties.axes.y.label,
-        xDomain,
-        onSetXDomain,
-        onResetXDomain,
-        yDomain,
-        onSetYDomain,
-        onResetYDomain,
-        ...axisTicksOptions,
-        legendColumns,
-        legendOpacity: tooltipOpacity,
-        legendOrientationThreshold: tooltipOrientationThreshold,
-        legendColorizeRows: tooltipColorize,
-        valueFormatters: {
-          [xColumn]: xFormatter,
-          [yColumn]: yFormatter,
-        },
-        layers: [
-          {
-            type: 'line',
-            x: xColumn,
-            y: yColumn,
-            fill: groupKey,
-            interpolation,
-            position: properties.position,
-            colors: colorHexes,
-            shadeBelow: !!properties.shadeBelow,
-            shadeBelowOpacity: 0.08,
-            hoverDimension: properties.hoverDimension,
-          },
-        ],
-      }}
-    >
-      <LatestValueTransform table={result.table} allowString={true}>
-        {latestValue => {
-          const {
-            bgColor: backgroundColor,
-            textColor,
-          } = generateThresholdsListHexs({
-            colors: properties.colors.filter(c => c.type !== 'scale'),
-            lastValue: latestValue,
-            cellType: 'single-stat',
-          })
+  const latestValues = getLatestValues(result.table)
+  const latestValue = latestValues[0]
 
-          const formattedValue = formatStatValue(latestValue, {
-            decimalPlaces: properties.decimalPlaces,
-            prefix: properties.prefix,
-            suffix: properties.suffix,
-          })
-          return (
-            <div
-              className="single-stat"
-              style={{backgroundColor}}
-              data-testid="single-stat"
-            >
-              <div className="single-stat--resizer">
-                <svg
-                  width="100%"
-                  height="100%"
-                  viewBox={`0 0 ${formattedValue.length * 55} 100`}
-                >
-                  <text
-                    className="single-stat--text"
-                    data-testid="single-stat--text"
-                    fontSize="100"
-                    y="59%"
-                    x="50%"
-                    dominantBaseline="middle"
-                    textAnchor="middle"
-                    style={{fill: textColor}}
-                  >
-                    {formattedValue}
-                  </text>
-                </svg>
-              </div>
-            </div>
-          )
+  const {bgColor: backgroundColor, textColor} = generateThresholdsListHexs({
+    colors: properties.colors,
+    lastValue: latestValue,
+    cellType: 'single-stat',
+  })
+  if (isFlagEnabled('useGiraffeGraphs')) {
+    return (
+      <Plot
+        config={{
+          ...currentTheme,
+          table: result.table,
+          xAxisLabel: properties.axes.x.label,
+          yAxisLabel: properties.axes.y.label,
+          xDomain,
+          onSetXDomain,
+          onResetXDomain,
+          yDomain,
+          onSetYDomain,
+          onResetYDomain,
+          ...axisTicksOptions,
+          legendColumns,
+          legendOpacity: tooltipOpacity,
+          legendOrientationThreshold: tooltipOrientationThreshold,
+          legendColorizeRows: tooltipColorize,
+          valueFormatters: {
+            [xColumn]: xFormatter,
+            [yColumn]: yFormatter,
+          },
+          layers: [
+            {
+              type: 'line',
+              x: xColumn,
+              y: yColumn,
+              fill: groupKey,
+              interpolation,
+              position: properties.position,
+              colors: colorHexes,
+              shadeBelow: !!properties.shadeBelow,
+              shadeBelowOpacity: 0.08,
+              hoverDimension: properties.hoverDimension,
+            },
+            {
+              type: 'single stat',
+              prefix: properties.prefix,
+              suffix: properties.suffix,
+              decimalPlaces: properties.decimalPlaces,
+              textColor: textColor,
+              textOpacity: 100,
+              backgroundColor: backgroundColor ? backgroundColor : '',
+              svgTextStyle: {
+                fontSize: '100',
+                fontWeight: 'lighter',
+                dominantBaseline: 'middle',
+                textAnchor: 'middle',
+                letterSpacing: '-0.05em',
+              },
+              svgTextAttributes: {
+                'data-testid': 'single-stat--text',
+              },
+            },
+          ],
         }}
-      </LatestValueTransform>
-    </Plot>
-  )
+      />
+    )
+  } else {
+    return (
+      <Plot
+        config={{
+          ...currentTheme,
+          table: result.table,
+          xAxisLabel: properties.axes.x.label,
+          yAxisLabel: properties.axes.y.label,
+          xDomain,
+          onSetXDomain,
+          onResetXDomain,
+          yDomain,
+          onSetYDomain,
+          onResetYDomain,
+          ...axisTicksOptions,
+          legendColumns,
+          legendOpacity: tooltipOpacity,
+          legendOrientationThreshold: tooltipOrientationThreshold,
+          legendColorizeRows: tooltipColorize,
+          valueFormatters: {
+            [xColumn]: xFormatter,
+            [yColumn]: yFormatter,
+          },
+          layers: [
+            {
+              type: 'line',
+              x: xColumn,
+              y: yColumn,
+              fill: groupKey,
+              interpolation,
+              position: properties.position,
+              colors: colorHexes,
+              shadeBelow: !!properties.shadeBelow,
+              shadeBelowOpacity: 0.08,
+              hoverDimension: properties.hoverDimension,
+            },
+          ],
+        }}
+      >
+        <LatestValueTransform table={result.table} allowString={true}>
+          {latestValue => {
+            const {
+              bgColor: backgroundColor,
+              textColor,
+            } = generateThresholdsListHexs({
+              colors: properties.colors.filter(c => c.type !== 'scale'),
+              lastValue: latestValue,
+              cellType: 'single-stat',
+            })
+
+            const formattedValue = formatStatValue(latestValue, {
+              decimalPlaces: properties.decimalPlaces,
+              prefix: properties.prefix,
+              suffix: properties.suffix,
+            })
+            return (
+              <div
+                className="single-stat"
+                style={{backgroundColor}}
+                data-testid="single-stat"
+              >
+                <div className="single-stat--resizer">
+                  <svg
+                    width="100%"
+                    height="100%"
+                    viewBox={`0 0 ${formattedValue.length * 55} 100`}
+                  >
+                    <text
+                      className="single-stat--text"
+                      data-testid="single-stat--text"
+                      fontSize="100"
+                      y="59%"
+                      x="50%"
+                      dominantBaseline="middle"
+                      textAnchor="middle"
+                      style={{fill: textColor}}
+                    >
+                      {formattedValue}
+                    </text>
+                  </svg>
+                </div>
+              </div>
+            )
+          }}
+        </LatestValueTransform>
+      </Plot>
+    )
+  }
 }
 
 export default SingleStatWithLine

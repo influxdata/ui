@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useContext, useEffect, useState} from 'react'
+import React, {FC, useContext, useEffect, useState} from 'react'
 
 // Context
 import {CheckoutContext} from 'src/checkout/context/checkout'
@@ -8,31 +8,31 @@ export const ZUORA_SCRIPT_URL =
 export const ZUORA_ID = 'zuora_payment'
 
 const ZuoraPaymentForm: FC = () => {
-  const {zuoraParams, onFocus, handleSubmit, inputs} = useContext(
-    CheckoutContext
-  )
+  // FIXME: Add onFocus functionality
+  const {zuoraParams, handleSubmit, inputs} = useContext(CheckoutContext)
 
   const [client, setClient] = useState(window.Z)
   const [paymentMethodId, setPaymentMethodId] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const windowBlurred = useCallback(
-    event => {
-      if (event.target !== window) {
-        return
-      }
+  // FIXME: Add onFocus functionality
+  // const windowBlurred = useCallback(
+  //   event => {
+  //     if (event.target !== window) {
+  //       return
+  //     }
 
-      // in FireFox the iframe is not yet the active element when the blur event first fires
-      // we use setTimeout with no delay to check on the next event cycle when it will have
-      // become the active element
-      setTimeout(() => {
-        if (document.activeElement.parentElement.id === ZUORA_ID) {
-          onFocus()
-        }
-      })
-    },
-    [onFocus]
-  )
+  //     // in FireFox the iframe is not yet the active element when the blur event first fires
+  //     // we use setTimeout with no delay to check on the next event cycle when it will have
+  //     // become the active element
+  //     setTimeout(() => {
+  //       if (document.activeElement.parentElement.id === ZUORA_ID) {
+  //         onFocus()
+  //       }
+  //     })
+  //   },
+  //   [onFocus]
+  // )
 
   useEffect(() => {
     const script = document.createElement('script')
@@ -83,15 +83,16 @@ const ZuoraPaymentForm: FC = () => {
     }
   }, [client, zuoraParams])
 
-  useEffect(() => {
-    onFocus && window.addEventListener('blur', windowBlurred, true)
+  // FIXME: Add onFocus functionality
+  // useEffect(() => {
+  //   onFocus && window.addEventListener('blur', windowBlurred, true)
 
-    return () => {
-      if (onFocus) {
-        window.removeEventListener('blur', windowBlurred)
-      }
-    }
-  }, [onFocus, windowBlurred])
+  //   return () => {
+  //     if (onFocus) {
+  //       window.removeEventListener('blur', windowBlurred)
+  //     }
+  //   }
+  // }, [onFocus, windowBlurred])
 
   return (
     <div

@@ -19,7 +19,7 @@ import {
 } from '@influxdata/clockface'
 
 // Components
-import ContactForm from 'src/checkout/ContactForm'
+import ContactForm from 'src/checkout/utils/ContactForm'
 import CancelButton from 'src/checkout/CancelButton'
 import NotificationSettingsForm from 'src/checkout/NotificationSettingsForm'
 import ZuoraPaymentForm from 'src/checkout/ZuoraPaymentForm'

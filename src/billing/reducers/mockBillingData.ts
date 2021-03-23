@@ -5,7 +5,6 @@ import {
   BillingNotifySettings,
   Invoice,
   PaymentMethod,
-  Region,
   CreditCardParams,
 } from 'src/types/billing'
 
@@ -79,15 +78,6 @@ export const mockPaymentMethods: PaymentMethod[] = [
     defaultPaymentMethod: false,
   },
 ]
-
-export const mockRegion: Region = {
-  title: 'EU Central',
-  isBeta: false,
-  isAvailable: true,
-  provider: 'aws',
-  region: 'eu-central',
-  status: RemoteDataState.Done,
-}
 
 export const mockCreditCard: CreditCardParams = {
   id: 'cc-123',

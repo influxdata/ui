@@ -9,7 +9,6 @@ import {
   BillingNotifySettings,
   Invoice,
   PaymentMethod,
-  Region,
   CreditCardParams,
 } from 'src/types/billing'
 
@@ -44,6 +43,7 @@ export const initialState = (): BillingState => ({
     notifyEmail: '',
     status: RemoteDataState.NotStarted,
   },
+  creditCards: null,
   creditCard: null,
   invoices: null,
   invoicesStatus: RemoteDataState.NotStarted,
@@ -119,18 +119,6 @@ export const setPaymentMethodsStatus = (
   ({
     type: 'SET_PAYMENT_METHODS_STATUS',
     paymentMethodsStatus,
-  } as const)
-
-export const setRegion = (region: Region) =>
-  ({
-    type: 'SET_REGION',
-    region,
-  } as const)
-
-export const setRegionStatus = (status: RemoteDataState) =>
-  ({
-    type: 'SET_REGION_STATUS',
-    status,
   } as const)
 
 export const setCreditCard = (creditCard: CreditCardParams) =>

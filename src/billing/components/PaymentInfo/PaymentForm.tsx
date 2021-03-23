@@ -13,19 +13,19 @@ import {
 import {CreditCardParams} from 'src/types/billing'
 
 interface Props {
-  hostedPage: CreditCardParams
+  zuoraParams: CreditCardParams
   onSubmit: (response: any) => void
   errorMessage: string
 }
 
-const PaymentForm: FC<Props> = ({hostedPage, onSubmit, errorMessage}) => {
+const PaymentForm: FC<Props> = ({zuoraParams, onSubmit, errorMessage}) => {
   /**
    * For context, Z is a globally defined ZuoraClient in Quartz
    * that is set when the ZuoraAPI is queried. In this case, Z serves as a
    * a hosted iframe to render a credit card form to the UI
    */
   useEffect(
-    () => typeof Z !== 'undefined' && Z.render(hostedPage, {}, onSubmit)
+    () => typeof Z !== 'undefined' && Z.render(zuoraParams, {}, onSubmit)
   )
 
   return (

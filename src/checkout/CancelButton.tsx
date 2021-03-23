@@ -12,10 +12,11 @@ interface OwnProps {
 type Props = OwnProps & RouteComponentProps
 
 const CancelButton: React.FC<Props> = ({history, text = 'Cancel'}) => {
-  const handleClick = e => {
-    if (!!window?._abcr) {
-      window?._abcr.triggerAbandonedCart()
-    }
+  const handleClick = () => {
+    // FIXME: Issue - https://github.com/influxdata/ui/issues/877
+    // if (!!window?._abcr) {
+    //   window?._abcr.triggerAbandonedCart()
+    // }
 
     history.push('/')
   }

@@ -1,3 +1,4 @@
+import {Inputs} from 'src/checkout/context/checkout'
 import {
   getAccount as apiGetAccount,
   getBilling,
@@ -7,18 +8,13 @@ import {
   getBillingInvoices,
 } from 'src/client/unityRoutes'
 
-import {
-  RemoteDataState,
-  CheckoutRequest,
-  PostAccountUpgradeResult,
-} from 'src/types'
+import {RemoteDataState, CheckoutRequest} from 'src/types'
 import {
   Account,
   Invoice,
   CreditCardParams,
   BillingInfo,
   BillingNotifySettings,
-  ZuoraParams,
 } from 'src/types/billing'
 
 const makeResponse = (status, data, ...args) => {
@@ -87,8 +83,8 @@ export const getBillingCreditCard = (): ReturnType<typeof getPaymentForm> => {
   return makeResponse(200, cc, 'getBillingCreditCard')
 }
 
-export const getCheckoutZuoraParams = (): ReturnType<typeof postCheckout> => {
-  const zp: ZuoraParams = {
+export const getCheckoutZuoraParams = (): ReturnType<typeof getPaymentForm> => {
+  const zp: CreditCardParams = {
     style: 'inline',
     url: 'you-are-el',
     submitEnabled: 'false',
@@ -97,9 +93,10 @@ export const getCheckoutZuoraParams = (): ReturnType<typeof postCheckout> => {
     key: 'KEE',
     signature: 'SIGNATURE',
     id: 'eye-dee',
+    status: RemoteDataState.Done,
   }
 
-  return makeResponse(200, zp)
+  return makeResponse(204, zp)
 }
 
 export const getBillingNotificationSettings = (): ReturnType<typeof getSettingsNotifications> => {
@@ -153,7 +150,7 @@ export const getInvoices = (): ReturnType<typeof getBillingInvoices> => {
   return makeResponse(200, invoices, 'getInvoices')
 }
 
-export const makeCheckoutPayload = (data: any): CheckoutRequest => {
+export const makeCheckoutPayload = (data: Inputs): CheckoutRequest => {
   const {
     shouldNotify,
     notifyEmail,
@@ -167,9 +164,8 @@ export const makeCheckoutPayload = (data: any): CheckoutRequest => {
     city,
     postalCode,
   } = data
-
   return {
-    notify: shouldNotify,
+    isNotify: shouldNotify,
     notifyEmail,
     balanceThreshold,
     paymentMethodId,
@@ -184,8 +180,8 @@ export const makeCheckoutPayload = (data: any): CheckoutRequest => {
 }
 
 export const postCheckoutInformation = async (
-  data: any
-): Promise<PostAccountUpgradeResult> => {
+  data: Inputs
+): ReturnType<typeof postCheckout> => {
   const paymentInformation = makeCheckoutPayload(data)
 
   return makeResponse(201, paymentInformation, 'postCheckoutInformation', data)

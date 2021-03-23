@@ -8,7 +8,6 @@ import {
   getCheckoutZuoraParams,
   getBillingNotificationSettings,
   postCheckoutInformation,
-  makeCheckoutPayload,
 } from 'src/billing/api'
 import {Contact} from 'src/checkout/utils/contact'
 
@@ -18,7 +17,7 @@ import {submitError} from 'src/shared/copy/notifications'
 
 // Types
 import {RemoteDataState} from 'src/types'
-import {ZuoraParams, BillingNotifySettings} from 'src/types/billing'
+import {BillingNotifySettings, CreditCardParams} from 'src/types/billing'
 
 export type Props = {
   children: JSX.Element
@@ -49,7 +48,21 @@ export interface CheckoutContextType {
   handleFormValidation: () => number
   inputs: Inputs
   isSubmitting: boolean
-  zuoraParams: ZuoraParams
+  zuoraParams: CreditCardParams
+}
+
+// If we don't initialize these params here, then the UI will start
+// showing a popup and cypress tests will start failing.
+const EMPTY_ZUORA_PARAMS: CreditCardParams = {
+  id: '',
+  tenantId: '',
+  key: '',
+  signature: '',
+  token: '',
+  style: '',
+  submitEnabled: 'false',
+  url: '',
+  status: RemoteDataState.NotStarted,
 }
 
 export const DEFAULT_CONTEXT: CheckoutContextType = {
@@ -75,16 +88,7 @@ export const DEFAULT_CONTEXT: CheckoutContextType = {
     postalCode: '',
   },
   isSubmitting: false,
-  zuoraParams: {
-    id: '',
-    tenantId: '',
-    key: '',
-    signature: '',
-    token: '',
-    style: '',
-    submitEnabled: 'false',
-    url: '',
-  },
+  zuoraParams: EMPTY_ZUORA_PARAMS,
 }
 
 export const CheckoutContext = React.createContext<CheckoutContextType>(
@@ -100,7 +104,7 @@ export type Checkout = CheckoutBase & BillingNotifySettings & Contact
 export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   const dispatch = useDispatch()
 
-  const [zuoraParams, setZuoraParams] = useState({} as ZuoraParams)
+  const [zuoraParams, setZuoraParams] = useState(EMPTY_ZUORA_PARAMS)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [inputs, setInputs] = useState<Inputs>({
@@ -120,11 +124,13 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   const getZuoraParams = useCallback(async () => {
     const response = await getCheckoutZuoraParams()
     if (response.status !== 200) {
-      throw new Error(response.data.message)
+      const error = response.data
+
+      throw new Error(error.message)
     }
 
-    setZuoraParams(response.data)
-  }, [getCheckoutZuoraParams])
+    setZuoraParams(response.data as CreditCardParams)
+  }, [])
 
   useEffect(() => {
     getZuoraParams()
@@ -262,13 +268,12 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
 
     try {
       if (errs.length === 0) {
-        const data = {...inputs, paymentMethodId}
-        const paymentInformation = makeCheckoutPayload(data) as Checkout
+        const paymentInformation = {...inputs, paymentMethodId}
 
         const response = await postCheckoutInformation(paymentInformation)
 
         handleSetCheckoutStatus(
-          response.status === 201 ? RemoteDataState.Done : RemoteDataState.Error
+          response.status === 204 ? RemoteDataState.Done : RemoteDataState.Error
         )
       } else {
         const errorFields = errs?.flatMap(([err]) => err)

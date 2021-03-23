@@ -27,8 +27,10 @@ describe('Checkout Page', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(() => {
+        cy.getByTestID('home-page--header').should('be.visible')
         cy.window().then(w => {
-          // w.influx.set('unity-checkout', true)
+          w.influx.set('unity-checkout', true)
+          cy.wait(1000)
         })
 
         cy.visit(`/checkout`)

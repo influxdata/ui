@@ -85,7 +85,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
 
     setUsageVectors(vectors)
     handleSetSelectedUsage(vectors?.[0]?.name)
-  }, [setUsageVectors])
+  }, [setUsageVectors, handleSetSelectedUsage])
 
   useEffect(() => {
     handleGetUsageVectors()

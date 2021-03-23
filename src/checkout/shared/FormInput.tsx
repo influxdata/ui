@@ -6,7 +6,7 @@ import {CheckoutContext} from 'src/checkout/context/checkout'
 
 type Props = FormElementProps & InputProps
 
-const FormInput: FC<Props> = ({label, required, ...props}) => {
+const FormInput: FC<Props> = ({label, required, id}) => {
   const {errors, inputs, handleSetInputs, handleSetError} = useContext(
     CheckoutContext
   )
@@ -18,41 +18,38 @@ const FormInput: FC<Props> = ({label, required, ...props}) => {
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const {value} = event.target
 
-    handleSetInputs(props.id, value)
+    handleSetInputs(id, value)
 
-    if (props.id !== 'balanceThreshold' && errors[props.id] && value !== '') {
-      handleSetError(props.id, false)
+    if (id !== 'balanceThreshold' && errors[id] && value !== '') {
+      handleSetError(id, false)
     }
 
-    if (props.id === 'balanceThreshold' && value.length && Number(value) < 1) {
-      handleSetError(props.id, true)
+    if (id === 'balanceThreshold' && value.length && Number(value) < 1) {
+      handleSetError(id, true)
 
       setRequiredMessage('Please enter a value of 1 or greater')
     }
 
-    if (
-      props.id === 'balanceThreshold' &&
-      errors[props.id] &&
-      Number(value) >= 1
-    ) {
-      handleSetError(props.id, false)
+    if (id === 'balanceThreshold' && errors[id] && Number(value) >= 1) {
+      handleSetError(id, false)
     }
   }
 
   return (
     <Form.Element
-      htmlFor={props.id}
+      htmlFor={id}
       label={label}
       required={required}
-      testID={`${props.id}--form-element`}
-      errorMessage={errors[props.id] && requiredMessage}
-      errorMessageTestId={`${props.id}--form-element-error`}
+      testID={`${id}--form-element`}
+      errorMessage={errors[id] && requiredMessage}
+      errorMessageTestId={`${id}--form-element-error`}
     >
       <Input
-        {...props}
-        value={inputs[props.id]}
+        id={id}
+        required={required}
+        value={inputs[id]}
         onChange={handleChange}
-        testID={`${props.id}--input`}
+        testID={`${id}--input`}
       />
     </Form.Element>
   )

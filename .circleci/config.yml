@@ -423,6 +423,7 @@ jobs:
     # E2e tests deploy kind and are very resource intensive.
     # 2xlarge is the largest resource class for "machine"; there is no 2xlarge+ like the docker runners.
     resource_class: 2xlarge
+    working_directory: ~/
     steps:
       - checkout:
           path: ./ui

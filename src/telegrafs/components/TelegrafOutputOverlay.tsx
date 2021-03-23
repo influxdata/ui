@@ -74,7 +74,16 @@ class TelegrafOutputOverlay extends PureComponent<Props> {
       .sort((a, b) => {
         const _a = a.name.toLowerCase()
         const _b = b.name.toLowerCase()
-        return _a > _b ? 1 : _a < _b ? -1 : 0
+
+        if (_a > _b) {
+          return 1
+        }
+
+        if (_a < _b) {
+          return -1
+        }
+
+        return 0
       })
   }
 

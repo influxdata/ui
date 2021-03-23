@@ -76,7 +76,16 @@ describe('Collectors', () => {
           const buckets = bucketz.slice(0).sort((a, b) => {
             const _a = a.toLowerCase()
             const _b = b.toLowerCase()
-            return _a > _b ? 1 : _a < _b ? -1 : 0
+
+            if (_a > _b) {
+              return 1
+            }
+
+            if (_a < _b) {
+              return -1
+            }
+
+            return 0
           })
 
           cy.get('code').should($el => {

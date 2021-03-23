@@ -40,6 +40,7 @@ module.exports = {
     'no-undef': 'off',
     'no-fallthrough': 'off',
     'no-prototype-builtins': 'off',
+    'no-nested-ternary': 'error',
     'require-atomic-updates': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',

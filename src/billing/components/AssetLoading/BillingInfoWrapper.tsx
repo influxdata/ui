@@ -5,7 +5,7 @@ import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 import {useBilling} from 'src/billing/components/BillingPage'
 
 // Thunks
-import {getRegion} from 'src/billing/thunks'
+import {getBillingInfo} from 'src/billing/thunks'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -14,14 +14,14 @@ type Props = {
   children: ReactNode
 }
 
-const RegionWrapper: FC<Props> = ({children}) => {
-  const [{region}, dispatch] = useBilling()
+const BillingInfoWrapper: FC<Props> = ({children}) => {
+  const [{billingInfo}, dispatch] = useBilling()
 
   useEffect(() => {
-    getRegion(dispatch)
+    getBillingInfo(dispatch)
   }, [dispatch])
 
-  const loading = region?.status ? region.status : RemoteDataState.NotStarted
+  const loading = billingInfo?.status ?? RemoteDataState.NotStarted
 
   return (
     <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
@@ -30,4 +30,4 @@ const RegionWrapper: FC<Props> = ({children}) => {
   )
 }
 
-export default RegionWrapper
+export default BillingInfoWrapper

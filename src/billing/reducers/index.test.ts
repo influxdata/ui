@@ -5,24 +5,23 @@ import {billingReducer} from 'src/billing/reducers'
 import {
   setAccount,
   setAccountStatus,
+  setBillingInfo,
+  setBillingInfoStatus,
   setBillingSettings,
   setBillingSettingsStatus,
   setInvoices,
   setInvoicesStatus,
-  setPaymentMethods,
-  setPaymentMethodsStatus,
-  setRegion,
-  setRegionStatus,
+  setCreditCard,
+  setCreditCardStatus,
 } from 'src/billing/reducers'
 
 // Mocks
 import {
-  mockBillingSettings,
   mockAccount,
+  mockBillingInfo,
+  mockBillingSettings,
   mockInvoices,
-  mockPaymentMethods,
   mockCreditCard,
-  mockRegion,
 } from 'src/billing/reducers/mockBillingData'
 import {RemoteDataState} from '@influxdata/clockface'
 
@@ -40,6 +39,20 @@ describe('billing reducer', () => {
 
     expect(expected.account).toEqual(mockAccount)
     expect(expected.account.status).toEqual(RemoteDataState.Done)
+  })
+  it('can set the billing info status', () => {
+    const expected = billingReducer(
+      undefined,
+      setBillingInfoStatus(RemoteDataState.Loading)
+    )
+
+    expect(expected.billingInfo.status).toEqual(RemoteDataState.Loading)
+  })
+  it('can set the billing info', () => {
+    const expected = billingReducer(undefined, setBillingInfo(mockBillingInfo))
+
+    expect(expected.billingInfo).toEqual(mockBillingInfo)
+    expect(expected.billingInfo.status).toEqual(RemoteDataState.Done)
   })
   it('can set the billing settings status', () => {
     const expected = billingReducer(
@@ -75,40 +88,18 @@ describe('billing reducer', () => {
     expect(expected.invoices).toEqual(mockInvoices)
     expect(expected.invoicesStatus).toEqual(RemoteDataState.Done)
   })
-  it('can set the payment methods status', () => {
+  it('can set the credit card status', () => {
     const expected = billingReducer(
       undefined,
-      setPaymentMethodsStatus(RemoteDataState.Loading)
+      setCreditCardStatus(RemoteDataState.Loading)
     )
 
-    expect(expected.paymentMethodsStatus).toEqual(RemoteDataState.Loading)
+    expect(expected.creditCard?.status).toEqual(RemoteDataState.Loading)
   })
   it('can set the payment methods', () => {
-    const expected = billingReducer(
-      undefined,
-      setPaymentMethods(
-        mockPaymentMethods,
-        mockCreditCard,
-        RemoteDataState.Done
-      )
-    )
+    const expected = billingReducer(undefined, setCreditCard(mockCreditCard))
 
-    expect(expected.paymentMethods).toEqual(mockPaymentMethods)
-    expect(expected.paymentMethodsStatus).toEqual(RemoteDataState.Done)
-    expect(expected.creditCards).toEqual(mockCreditCard)
-  })
-  it('can set the region status', () => {
-    const expected = billingReducer(
-      undefined,
-      setRegionStatus(RemoteDataState.Loading)
-    )
-
-    expect(expected.region.status).toEqual(RemoteDataState.Loading)
-  })
-  it('can set the region', () => {
-    const expected = billingReducer(undefined, setRegion(mockRegion))
-
-    expect(expected.region).toEqual(mockRegion)
-    expect(expected.region.status).toEqual(RemoteDataState.Done)
+    expect(expected.creditCard).toEqual(mockCreditCard)
+    expect(expected.creditCard.status).toEqual(RemoteDataState.Done)
   })
 })

@@ -20,7 +20,7 @@ const TimeOptions = {
 }
 
 const PlanTypePanel: FC = () => {
-  const [{account, region}] = useBilling()
+  const [{billingInfo}] = useBilling()
 
   return (
     <Panel className="plan-type-panel">
@@ -36,7 +36,7 @@ const PlanTypePanel: FC = () => {
             <h5>Region</h5>
           </Panel.Header>
           <Panel.Body size={ComponentSize.ExtraSmall}>
-            {region.title}
+            {billingInfo.region}
           </Panel.Body>
         </Panel>
         <Panel
@@ -48,7 +48,7 @@ const PlanTypePanel: FC = () => {
           </Panel.Header>
           <Panel.Body size={ComponentSize.ExtraSmall}>
             <span className="money">
-              {parseFloat(`${account.balance}`).toFixed(2)}
+              {parseFloat(`${billingInfo.balance}`).toFixed(2)}
             </span>
           </Panel.Body>
         </Panel>
@@ -60,7 +60,10 @@ const PlanTypePanel: FC = () => {
             <h5>Last Update</h5>
           </Panel.Header>
           <Panel.Body size={ComponentSize.ExtraSmall}>
-            {new Date(account.updatedAt).toLocaleString('default', TimeOptions)}{' '}
+            {new Date(billingInfo.balanceUpdatedAt).toLocaleString(
+              'default',
+              TimeOptions
+            )}{' '}
           </Panel.Body>
           <Panel.Footer
             size={ComponentSize.ExtraSmall}

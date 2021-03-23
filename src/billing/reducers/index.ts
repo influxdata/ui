@@ -5,37 +5,35 @@ import {RemoteDataState} from 'src/types'
 // Types
 import {
   Account,
+  BillingInfo,
   BillingNotifySettings,
   CreditCardParams,
   Invoice,
-  PaymentMethod,
-  Region,
 } from 'src/types/billing'
 
 export interface BillingState {
   account: Account
+  billingInfo: BillingInfo
   billingSettings: BillingNotifySettings
-  creditCards: CreditCardParams
+  creditCard: CreditCardParams
   invoices: Invoice[]
   invoicesStatus: RemoteDataState
-  paymentMethods: PaymentMethod[]
-  paymentMethodsStatus: RemoteDataState
-  region: Region
 }
 
 export const initialState = (): BillingState => ({
   account: {
     status: RemoteDataState.NotStarted,
     id: null,
-    balance: null,
-    billingContact: null,
-    deletable: false,
-    marketplaceSubscription: null,
+    marketplace: '',
     type: 'free',
-    updatedAt: '',
-    users: [],
-    pricingVersion: null,
-    zuoraAccountId: '',
+  },
+  billingInfo: {
+    balance: null,
+    region: '',
+    paymentMethod: null,
+    balanceUpdatedAt: '',
+    contact: null,
+    status: RemoteDataState.NotStarted,
   },
   billingSettings: {
     balanceThreshold: 0,
@@ -43,12 +41,9 @@ export const initialState = (): BillingState => ({
     notifyEmail: '',
     status: RemoteDataState.NotStarted,
   },
-  creditCards: null,
+  creditCard: null,
   invoices: null,
   invoicesStatus: RemoteDataState.NotStarted,
-  paymentMethodsStatus: RemoteDataState.NotStarted,
-  paymentMethods: null,
-  region: null,
 })
 
 export type BillingReducer = React.Reducer<BillingState, Action>
@@ -63,6 +58,18 @@ export const setAccount = (account: Account) =>
 export const setAccountStatus = (status: RemoteDataState) =>
   ({
     type: 'SET_ACCOUNT_STATUS',
+    status,
+  } as const)
+
+export const setBillingInfo = (billingInfo: BillingInfo) =>
+  ({
+    type: 'SET_BILLING_INFO',
+    billingInfo,
+  } as const)
+
+export const setBillingInfoStatus = (status: RemoteDataState) =>
+  ({
+    type: 'SET_BILLING_INFO_STATUS',
     status,
   } as const)
 
@@ -91,35 +98,15 @@ export const setInvoicesStatus = (status: RemoteDataState) =>
     invoiceStatus: status,
   } as const)
 
-export const setPaymentMethods = (
-  paymentMethods: PaymentMethod[],
-  creditCards: CreditCardParams,
-  paymentMethodsStatus: RemoteDataState
-) =>
+export const setCreditCard = (creditCard: CreditCardParams) =>
   ({
-    type: 'SET_PAYMENT_METHODS',
-    paymentMethods,
-    creditCards,
-    paymentMethodsStatus,
+    type: 'SET_CREDIT_CARD',
+    creditCard,
   } as const)
 
-export const setPaymentMethodsStatus = (
-  paymentMethodsStatus: RemoteDataState
-) =>
+export const setCreditCardStatus = (status: RemoteDataState) =>
   ({
-    type: 'SET_PAYMENT_METHODS_STATUS',
-    paymentMethodsStatus,
-  } as const)
-
-export const setRegion = (region: Region) =>
-  ({
-    type: 'SET_REGION',
-    region,
-  } as const)
-
-export const setRegionStatus = (status: RemoteDataState) =>
-  ({
-    type: 'SET_REGION_STATUS',
+    type: 'SET_CREDIT_CARD_STATUS',
     status,
   } as const)
 
@@ -128,12 +115,12 @@ export type Action =
   | ReturnType<typeof setAccountStatus>
   | ReturnType<typeof setBillingSettings>
   | ReturnType<typeof setBillingSettingsStatus>
+  | ReturnType<typeof setBillingInfo>
+  | ReturnType<typeof setBillingInfoStatus>
   | ReturnType<typeof setInvoices>
   | ReturnType<typeof setInvoicesStatus>
-  | ReturnType<typeof setPaymentMethods>
-  | ReturnType<typeof setPaymentMethodsStatus>
-  | ReturnType<typeof setRegion>
-  | ReturnType<typeof setRegionStatus>
+  | ReturnType<typeof setCreditCard>
+  | ReturnType<typeof setCreditCardStatus>
 
 export const billingReducer = (
   state: BillingState = initialState(),
@@ -154,6 +141,24 @@ export const billingReducer = (
         }
 
         draftState.account.status = action.status
+        return
+      }
+      case 'SET_BILLING_INFO': {
+        draftState.billingInfo = action.billingInfo
+
+        return
+      }
+      case 'SET_BILLING_INFO_STATUS': {
+        if (!draftState.billingInfo?.status) {
+          draftState.billingInfo = {
+            ...draftState.billingInfo,
+            status: action.status,
+          }
+
+          return
+        }
+
+        draftState.billingInfo.status = action.status
         return
       }
       case 'SET_BILLING_SETTINGS': {
@@ -185,34 +190,22 @@ export const billingReducer = (
 
         return
       }
-      case 'SET_PAYMENT_METHODS': {
-        draftState.paymentMethods = action.paymentMethods
-        draftState.creditCards = action.creditCards
-        draftState.paymentMethodsStatus = action.paymentMethodsStatus
+      case 'SET_CREDIT_CARD': {
+        draftState.creditCard = action.creditCard
 
         return
       }
-      case 'SET_PAYMENT_METHODS_STATUS': {
-        draftState.paymentMethodsStatus = action.paymentMethodsStatus
-
-        return
-      }
-      case 'SET_REGION': {
-        draftState.region = action.region
-
-        return
-      }
-      case 'SET_REGION_STATUS': {
-        if (!draftState.region?.status) {
-          draftState.region = {
-            ...draftState.region,
+      case 'SET_CREDIT_CARD_STATUS': {
+        if (!draftState.creditCard?.status) {
+          draftState.creditCard = {
+            ...draftState.creditCard,
             status: action.status,
           }
 
           return
         }
 
-        draftState.region.status = action.status
+        draftState.creditCard.status = action.status
         return
       }
     }

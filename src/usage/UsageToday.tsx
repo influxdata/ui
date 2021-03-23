@@ -1,6 +1,5 @@
 // Libraries
-import React, {FC, useState} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
+import React, {FC, useContext} from 'react'
 import {
   ComponentSize,
   FlexBox,
@@ -14,35 +13,72 @@ import UsageDropdown from 'src/usage/UsageDropdown'
 import BillingStatsPanel from 'src/usage/BillingStatsPanel'
 import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
 import GraphTypeSwitcher from 'src/usage/GraphTypeSwitcher'
+import {UsageContext} from 'src/usage/context/usage'
 
-// Constants
-import {GRAPH_INFO} from 'src/usage/Constants'
-import {getTimeRange} from 'src/dashboards/selectors'
-import {setTimeRange} from 'src/timeMachine/actions'
-import {useUsage} from 'src/usage/UsagePage'
+const usageGraphInfo = [
+  {
+    title: 'Data In (MB)',
+    groupColumns: [],
+    column: 'write_mb',
+    units: 'MB',
+    isGrouped: true,
+    type: 'sparkline',
+    pricingVersions: [3, 4],
+  },
+  {
+    title: 'Query Count',
+    groupColumns: [],
+    column: 'query_count',
+    units: '',
+    isGrouped: false,
+    type: 'sparkline',
+    pricingVersions: [4],
+  },
+  {
+    title: 'Storage (GB-hr)',
+    groupColumns: [],
+    column: 'storage_gb',
+    units: 'GB',
+    isGrouped: false,
+    type: 'sparkline',
+    pricingVersions: [3, 4],
+  },
+  {
+    title: 'Data Out (GB)',
+    groupColumns: [],
+    column: 'reads_gb',
+    units: 'GB',
+    isGrouped: false,
+    type: 'sparkline',
+    pricingVersions: [4],
+  },
+]
 
-// Types
-import {TimeRange} from 'src/types'
+const rateLimitGraphInfo = {
+  title: 'Limit Events',
+  groupColumns: ['_field'],
+  column: '_value',
+  units: '',
+  isGrouped: true,
+  type: 'sparkline',
+}
 
 const UsageToday: FC = () => {
-  const [{history}] = useUsage()
-  const [selectedUsage, setSelectedUsage] = useState('Data In (MB)')
-
-  const timeRange = useSelector(getTimeRange)
-  const dispatch = useDispatch()
-
-  const handleSetTimeRange = (range: TimeRange) => {
-    dispatch(setTimeRange(range))
-  }
+  const {
+    handleSetTimeRange,
+    rateLimits,
+    selectedUsage,
+    timeRange,
+    usageStats,
+  } = useContext(UsageContext)
 
   const getUsageSparkline = () => {
-    const graphInfo = GRAPH_INFO.usageStats.find(
-      stat => stat.title === selectedUsage
-    )
-    // TODO(ariel): make sure that the CSV is an actual CSV and not the rateLimits (it might be rateLimits, but i'm not sure)
-    // const csv = history[graphInfo.column]
-    const csv = history.usageStats
-    return <GraphTypeSwitcher csv={csv} graphInfo={graphInfo} />
+    let graphInfo = usageGraphInfo.find(stat => stat.title === selectedUsage)
+    // TODO(ariel): figure out what to do if there's no match
+    if (!graphInfo) {
+      graphInfo = usageGraphInfo[0]
+    }
+    return <GraphTypeSwitcher csv={usageStats} graphInfo={graphInfo} />
   }
 
   const getTimeRangeLabel = () => {
@@ -74,10 +110,7 @@ const UsageToday: FC = () => {
       <Panel className="usage--panel">
         <Panel.Header>
           <h4 data-testid="usage-header--timerange">{`Usage ${timeRangeLabel}`}</h4>
-          <UsageDropdown
-            selectedUsage={selectedUsage}
-            setSelectedUsage={setSelectedUsage}
-          />
+          <UsageDropdown />
         </Panel.Header>
         <Panel.Body
           direction={FlexDirection.Column}
@@ -96,15 +129,11 @@ const UsageToday: FC = () => {
           margin={ComponentSize.Small}
           alignItems={AlignItems.Stretch}
         >
-          {GRAPH_INFO.rateLimits.map(graphInfo => {
-            return (
-              <GraphTypeSwitcher
-                csv={history.rateLimits}
-                graphInfo={graphInfo}
-                key={graphInfo.title}
-              />
-            )
-          })}
+          <GraphTypeSwitcher
+            csv={rateLimits}
+            graphInfo={rateLimitGraphInfo}
+            key={rateLimitGraphInfo.title}
+          />
         </Panel.Body>
       </Panel>
     </FlexBox>

@@ -54,20 +54,20 @@ export class SelectCollectorsStep extends PureComponent<Props> {
               metrics to a bucket in InfluxDB
             </h5>
           </div>
-          {this.props.buckets.length && (
-            <StreamingSelector
-              pluginBundles={this.props.pluginBundles}
-              telegrafPlugins={this.props.telegrafPlugins}
-              onTogglePluginBundle={this.handleTogglePluginBundle}
-              buckets={this.props.buckets}
-              selectedBucketName={
-                this.props.bucket
-                  ? this.props.bucket
-                  : this.props.buckets[0].name
-              }
-              onSelectBucket={this.handleSelectBucket}
-            />
-          )}
+          <StreamingSelector
+            pluginBundles={this.props.pluginBundles}
+            telegrafPlugins={this.props.telegrafPlugins}
+            onTogglePluginBundle={this.handleTogglePluginBundle}
+            buckets={this.props.buckets ?? []}
+            selectedBucketName={
+              this.props.bucket
+                ? this.props.bucket
+                : this.props.buckets.length
+                ? this.props.buckets[0].name
+                : 'No Buckets Available'
+            }
+            onSelectBucket={this.handleSelectBucket}
+          />
           <h5 className="wizard-step--sub-title">
             Looking for other things to monitor? Check out our 200+ other &nbsp;
             <a

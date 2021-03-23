@@ -123,7 +123,9 @@ describe('the annotations control bar ui functionality', () => {
     cleanup()
   })
 
-  it('can search for streams', async () => {
+  // temporarily removing the notion of streams
+  // see https://github.com/influxdata/ui/issues/901
+  it.skip('can search for streams', async () => {
     const streamSearchBar = getByTestId('annotations-search-input')
 
     expect(streamSearchBar).toBeVisible()
@@ -145,7 +147,10 @@ describe('the annotations control bar ui functionality', () => {
 
     expect(not_default_suggestion).toBeVisible()
   })
-  it('can select stream from the available streams', async () => {
+
+  // temporarily removing the notion of streams
+  // see https://github.com/influxdata/ui/issues/901
+  it.skip('can select stream from the available streams', async () => {
     const streamSearchBar = getByTestId('annotations-search-input')
 
     expect(streamSearchBar).toBeVisible()
@@ -176,7 +181,10 @@ describe('the annotations control bar ui functionality', () => {
     const visibleStreamsByID = store.getState().annotations.visibleStreamsByID
     expect(visibleStreamsByID).toStrictEqual(['default', 'not_default'])
   })
-  it('can close the stream from the annotation pill', async () => {
+
+  // temporarily removing the notion of streams
+  // see https://github.com/influxdata/ui/issues/901
+  it.skip('can close the stream from the annotation pill', async () => {
     const streamSearchBar = getByTestId('annotations-search-input')
 
     expect(streamSearchBar).toBeVisible()
@@ -215,6 +223,7 @@ describe('the annotations control bar ui functionality', () => {
     const visibleStreamsByID = store.getState().annotations.visibleStreamsByID
     expect(visibleStreamsByID).toStrictEqual(['default'])
   })
+
   it('can enable the one click add annotation', async () => {
     const toggleButton = getByTestId('annotations-one-click-toggle')
 
@@ -226,6 +235,16 @@ describe('the annotations control bar ui functionality', () => {
       .enableSingleClickAnnotations
 
     // by default the annotations single click to add is enabled, above toggle disables it
-    expect(enableSingleClickAnnotations).toBe(false)
+    expect(enableSingleClickAnnotations).toBeFalsy()
+  })
+
+  it('can toggle the visibility of annotations (which are on by default)', async () => {
+    const toggleButton = getByTestId('annotations-visibility-toggle')
+
+    await waitFor(() => {
+      fireEvent.click(toggleButton)
+    })
+
+    expect(store.getState().annotations.annotationsAreVisible).toBeFalsy()
   })
 })

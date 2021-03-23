@@ -769,38 +769,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Invite'
-    PaymentInformation:
-      properties:
-        isNotify:
-          type: boolean
-        balanceThreshold:
-          type: number
-          description: threshold that when passed will trigger a notification
-        notifyEmail:
-          type: string
-          description: email to send billing notification
-        paymentMethodId:
-          type: string
-          description: PaymentMethodID received from Zuora form submission
-        country:
-          type: string
-          description: country of billing contact
-        street1:
-          type: string
-          description: street of billing contact
-        street2:
-          type: string
-          description: additional street info
-        subdivision:
-          type: string
-          description: subdivision
-        city:
-          type: string
-          description: city
-        postalCode:
-          type: string
-          description: postal code of billing contact
-      required: [isNotify, balanceThreshold, notifyEmail, paymentMethodId, country, subdivision, city, postalCode]
     PaymentMethodPut:
       properties:
         paymentMethodId:

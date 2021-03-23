@@ -252,16 +252,6 @@ const SetOrg: FC<Props> = ({
             <Route path={`${orgPath}/functions`} component={FunctionsRouter} />
           )}
 
-          {/* Checkout */}
-          {CLOUD && isFlagEnabled('unity-checkout') && (
-            <CheckoutProvider>
-              <Route
-                path={`${orgPath}/unity-checkout`}
-                component={CheckoutPage}
-              />
-            </CheckoutProvider>
-          )}
-
           {/* Members */}
           {!CLOUD && (
             <Route path={`${orgPath}/members`} component={MembersIndex} />

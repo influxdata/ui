@@ -2,7 +2,7 @@ import {RemoteDataState} from '@influxdata/clockface'
 import {
   User as GenUser,
   Invite as GenInvite,
-  PaymentInformation as GenPaymentInformation,
+  CheckoutRequest as GenCheckoutRequest,
 } from 'src/client/unityRoutes'
 
 export type Role = 'owner' | 'member'
@@ -14,7 +14,7 @@ export interface Invite extends GenInvite {
   status: RemoteDataState
 }
 
-export interface PaymentInformation extends GenPaymentInformation {
+export interface CheckoutRequest extends GenCheckoutRequest {
   status: RemoteDataState
 }
 

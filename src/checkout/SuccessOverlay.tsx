@@ -2,12 +2,11 @@ import {Overlay} from '@influxdata/clockface'
 import React, {FC, useContext} from 'react'
 import {CheckoutContext} from 'src/checkout/context/checkout'
 import {RemoteDataState} from 'src/types'
-import { RouteComponentProps, withRouter } from 'react-router'
-
+import {RouteComponentProps, withRouter} from 'react-router'
 
 const SuccessOverlay: FC<RouteComponentProps> = ({history}) => {
   const {checkoutStatus, onSuccessUrl} = useContext(CheckoutContext)
-  const handleClick = () => (history.push(onSuccessUrl))
+  const handleClick = () => history.push(onSuccessUrl)
 
   return (
     <Overlay visible={checkoutStatus === RemoteDataState.Done}>

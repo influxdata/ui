@@ -1,5 +1,26 @@
 import {Organization} from '../../../src/types'
 
+const resetInputs = () => {
+  cy.getByTestID('notifyEmail--input')
+    .clear()
+    .should('have.value', '')
+  cy.getByTestID('balanceThreshold--input')
+    .clear()
+    .should('have.value', '')
+  cy.getByTestID('city--input')
+    .clear()
+    .should('have.value', '')
+  cy.getByTestID('postalCode--input')
+    .clear()
+    .should('have.value', '')
+  cy.getByTestID('street1--input')
+    .clear()
+    .should('have.value', '')
+  cy.getByTestID('street2--input')
+    .clear()
+    .should('have.value', '')
+}
+
 describe('Checkout Page', () => {
   beforeEach(() => {
     cy.flush()
@@ -7,7 +28,7 @@ describe('Checkout Page', () => {
     cy.signin().then(() => {
       cy.get('@org').then(() => {
         cy.window().then(w => {
-          w.influx.set('checkout', true)
+          // w.influx.set('unity-checkout', true)
         })
 
         cy.visit(`/checkout`)
@@ -28,9 +49,7 @@ describe('Checkout Page', () => {
 
     cy.getByTestID('shouldNotify--checkbox--input').should('be.checked')
 
-    // Clear out all fields
-    cy.getByTestID('notifyEmail--input').clear()
-    cy.getByTestID('balanceThreshold--input').clear()
+    resetInputs()
 
     // Click Upgrade
     cy.getByTestID('checkout-upgrade--button').click()
@@ -70,16 +89,12 @@ describe('Checkout Page', () => {
     cy.getByTestID('shouldNotify--checkbox--input').should('be.checked')
     cy.getByTestID('notifyEmail--input').should('have.value', email)
     cy.getByTestID('balanceThreshold--input').should('have.value', limit)
-  })
 
-  it('should render US Billing Address', () => {
+    // should render US Billing Address
     const error = 'This is a required field'
 
     // Check defaults
-    cy.getByTestID('city--input').should('have.value', '')
-    cy.getByTestID('postalCode--input').should('have.value', '')
-    cy.getByTestID('street1--input').should('have.value', '')
-    cy.getByTestID('street2--input').should('have.value', '')
+    resetInputs()
     cy.getByTestID('country--dropdown')
       .get('.cf-dropdown--selected')
       .contains('United States')
@@ -100,24 +115,15 @@ describe('Checkout Page', () => {
     cy.getByTestID('city--form-element-error').should('not.exist')
     cy.getByTestID('postalCode--form-element-error').should('not.exist')
 
-    cy.getByTestID('checkout-cancel--button').click()
-
-    cy.get('@org').then((org: Organization) => {
-      cy.location().should(loc => {
-        expect(loc.pathname).to.include(`/orgs/${org.id}`)
-      })
-    })
-  })
-
-  const cases = [
-    {country: 'Canada', state: 'Province'},
-    {country: 'India', state: 'State / Province / Region'},
-  ]
-  cases.forEach(item => {
-    it(`should render ${item.country} Billing Address form`, () => {
+    const cases = [
+      {country: 'Canada', state: 'Province'},
+      {country: 'India', state: 'State / Province / Region'},
+    ]
+    cases.forEach(item => {
       const city = 'TestCity'
       const error = 'This is a required field'
 
+      resetInputs()
       cy.getByTestID('country--dropdown')
         .click()
         .getByTestID('dropdown-item')
@@ -154,6 +160,15 @@ describe('Checkout Page', () => {
 
       // Check no errors are visible for billing address form
       cy.getByTestID('city--form-element-error').should('not.exist')
+    })
+
+    // Click Cancel Button
+    cy.getByTestID('checkout-cancel--button').click()
+
+    cy.get('@org').then((org: Organization) => {
+      cy.location().should(loc => {
+        expect(loc.pathname).to.include(`/orgs/${org.id}`)
+      })
     })
   })
 })

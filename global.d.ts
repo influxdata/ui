@@ -1,5 +1,5 @@
 import {MonacoType} from 'src/types'
-import { ZuoraClient } from 'src/types/billing'
+import {ZuoraClient} from 'src/types/billing'
 
 //
 // Got some globals here that only exist during compilation

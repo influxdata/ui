@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FC, useContext} from 'react'
+import React, {ChangeEvent, FC, useContext, useState} from 'react'
 import {Form, FormElementProps, Input, InputProps} from '@influxdata/clockface'
 
 // Context
@@ -6,11 +6,13 @@ import {CheckoutContext} from 'src/checkout/context/checkout'
 
 type Props = FormElementProps & InputProps
 
-let requiredMessage = 'This is a required field'
-
 const FormInput: FC<Props> = ({label, required, ...props}) => {
   const {errors, inputs, handleSetInputs, handleSetError} = useContext(
     CheckoutContext
+  )
+
+  const [requiredMessage, setRequiredMessage] = useState(
+    'This is a required field'
   )
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -25,7 +27,7 @@ const FormInput: FC<Props> = ({label, required, ...props}) => {
     if (props.id === 'balanceThreshold' && value.length && Number(value) < 1) {
       handleSetError(props.id, true)
 
-      requiredMessage = 'Please enter a value of 1 or greater'
+      setRequiredMessage('Please enter a value of 1 or greater')
     }
 
     if (

@@ -1,6 +1,7 @@
 import {
   getAccount as apiGetAccount,
   getBilling,
+  postCheckout,
   getSettingsNotifications,
   getPaymentForm,
   getBillingInvoices,
@@ -8,7 +9,7 @@ import {
 
 import {
   RemoteDataState,
-  PaymentInformation,
+  CheckoutRequest,
   PostAccountUpgradeResult,
 } from 'src/types'
 import {
@@ -16,14 +17,11 @@ import {
   Invoice,
   CreditCardParams,
   BillingInfo,
-  Region,
   BillingNotifySettings,
-  PaymentMethod,
   ZuoraParams,
 } from 'src/types/billing'
 
-const makeResponse = (status, data, respName, ...args) => {
-  console.log(respName) // eslint-disable-line no-console
+const makeResponse = (status, data, ...args) => {
   for (let i = 0; i < args.length; i++) {
     console.log(args[i]) // eslint-disable-line no-console
   }
@@ -73,22 +71,6 @@ export const getBillingInfo = (): ReturnType<typeof getBilling> => {
   return makeResponse(200, billing)
 }
 
-
-export const getBillingCreditCard = (): ReturnType<typeof getPaymentForm> => {
-  const cc: CreditCardParams = {
-    id: 'id123',
-    tenantId: 'tenant123',
-    key: 'key123',
-    signature: 'John Hancock',
-    token: 't0k3n',
-    style: 'fresh',
-    submitEnabled: 'true',
-    url: 'you-are-el',
-    status: RemoteDataState.Done,
-  }
-  return makeResponse(200, cc)
-}
-
 export const getBillingCreditCard = (): ReturnType<typeof getPaymentForm> => {
   const cc: CreditCardParams = {
     id: 'id123',
@@ -105,7 +87,7 @@ export const getBillingCreditCard = (): ReturnType<typeof getPaymentForm> => {
   return makeResponse(200, cc, 'getBillingCreditCard')
 }
 
-export const getCheckoutZuoraParams = (): ReturnType<typeof getBillingCc> => {
+export const getCheckoutZuoraParams = (): ReturnType<typeof postCheckout> => {
   const zp: ZuoraParams = {
     style: 'inline',
     url: 'you-are-el',
@@ -117,7 +99,7 @@ export const getCheckoutZuoraParams = (): ReturnType<typeof getBillingCc> => {
     id: 'eye-dee',
   }
 
-  return makeResponse(200, zp, 'getCheckoutZuoraParams')
+  return makeResponse(200, zp)
 }
 
 export const getBillingNotificationSettings = (): ReturnType<typeof getSettingsNotifications> => {
@@ -171,20 +153,7 @@ export const getInvoices = (): ReturnType<typeof getBillingInvoices> => {
   return makeResponse(200, invoices, 'getInvoices')
 }
 
-export const getRegion = (): ReturnType<typeof getBillingRegion> => {
-  const region: Region = {
-    title: 'EU Frankfurt',
-    isBeta: false,
-    isAvailable: true,
-    provider: 'AWS',
-    region: 'us-west',
-    status: RemoteDataState.Done,
-  }
-
-  return makeResponse(200, region, 'getRegion')
-}
-
-export const makeCheckoutPayload = (data: any): PaymentInformation => {
+export const makeCheckoutPayload = (data: any): CheckoutRequest => {
   const {
     shouldNotify,
     notifyEmail,
@@ -200,7 +169,7 @@ export const makeCheckoutPayload = (data: any): PaymentInformation => {
   } = data
 
   return {
-    isNotify: shouldNotify,
+    notify: shouldNotify,
     notifyEmail,
     balanceThreshold,
     paymentMethodId,

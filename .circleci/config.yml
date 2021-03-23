@@ -595,4 +595,4 @@ commands:
           environment:
             GIT_SSH_COMMAND: 'ssh -o "IdentitiesOnly=yes" -i /home/circleci/.ssh/id_rsa_55c26e7a29df902c6a74e2a5b0fb5682'
             REPO: monitor-ci
-            BRANCH: genehynson/k8s-idpe-e2e-tests
+            BRANCH: master

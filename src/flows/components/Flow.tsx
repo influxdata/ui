@@ -6,10 +6,10 @@ import {PopupDrawer, PopupProvider} from 'src/flows/context/popup'
 
 // NOTE: requires a FlowProvider and ResultsProvider
 const Flow = () => (
-    <PopupProvider>
-        <PipeList />
-        <PopupDrawer />
-    </PopupProvider>
+  <PopupProvider>
+    <PipeList />
+    <PopupDrawer />
+  </PopupProvider>
 )
 
 export default Flow

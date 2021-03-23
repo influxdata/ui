@@ -553,6 +553,106 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+    put:
+      operationId: PutOrgsIdLimits
+      tags:
+        - Organizations
+        - Operator
+      summary: Update the limits of an organization
+      parameters:
+        - in: path
+          name: orgId
+          schema:
+            type: string
+          required: true
+          description: The ID of the organization
+      responses:
+        '200':
+          description: Organization limits
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrgLimits'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/orgs/{orgId}':
+    get:
+      operationId: GetOrganizationById
+      tags:
+        - Organizations
+        - Operator
+      summary: Get an organization by ID
+      parameters:
+        - in: path
+          name: orgId
+          schema:
+            type: string
+          required: true
+          description: The ID of the organization
+      responses:
+        '200':
+          description: Organization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/operator/orgs/{searchTerm}':
+    get:
+      operationId: GetOrganizationByName
+      tags:
+        - Organizations
+        - Operator
+      summary: Get an organization by search term
+      parameters:
+        - in: path
+          name: searchTerm
+          schema:
+            type: string
+          required: false
+          description: The name of the organization being searched
+      responses:
+        '200':
+          description: OrganizationsOrgani
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organizations'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/accounts':
+    get:
+      operationId: getAccounts
+      tags:
+        - Account
+        - Operator
+      summary: Get the list of accounts
+      responses:
+        '200':
+          description: Account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   '/checkout':
     post:
       operationId: PostCheckout
@@ -1012,6 +1112,21 @@ components:
           $ref: '#/components/schemas/NotificationRuleLimits'
         notificationEndpoint:
           $ref: '#/components/schemas/NotificationEndpointLimits'
+    Organization:
+      type: object
+      properties:
+        orgID:
+          type: string
+          readOnly: true
+          description: ID of the org for which these rates apply
+        name:
+          type: string
+          readOnly: true
+          description: name of the org for which these rates apply
+    Organizations:
+      type: array
+      items:
+        $ref: '#/components/schemas/Organization'
     RateLimits:
       description: Usage rate limits
       type: object

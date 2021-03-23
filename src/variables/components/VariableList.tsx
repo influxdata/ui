@@ -12,12 +12,6 @@ import {Sort} from '@influxdata/clockface'
 
 // Selectors
 import {getSortedResources} from 'src/shared/utils/sort'
-import {validateVariableName} from '../utils/validation'
-
-interface ValidatedVariable {
-  description: string
-  variable: Variable
-}
 
 interface Props {
   variables: Variable[]
@@ -45,35 +39,14 @@ const VariableList: FC<Props> = props => {
     [variables, sortKey, sortDirection, sortType]
   )
 
-  const validatedVariables = useMemo(
-    () =>
-      sortedVariables.map(variable => {
-        const validated: ValidatedVariable = {
-          description: '',
-          variable,
-        }
-        const {error} = validateVariableName(
-          sortedVariables,
-          variable.name,
-          variable.id
-        )
-        if (error) {
-          validated.description = `Please rename. ${error}`
-        }
-        return validated
-      }),
-    [sortedVariables]
-  )
-
   return (
     <>
       <ResourceList>
         <ResourceList.Body emptyState={emptyState}>
-          {validatedVariables.map(({description, variable}, index) => (
+          {sortedVariables.map((variable, index) => (
             <VariableCard
               key={variable.id || `variable-${index}`}
               variable={variable}
-              description={description}
               onDeleteVariable={onDeleteVariable}
               onFilterChange={onFilterChange}
             />

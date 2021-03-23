@@ -17,6 +17,7 @@ const ViewTypeDropdown: FC<Props> = ({viewType, onUpdateType}) => {
   const items = Object.values(SUPPORTED_VISUALIZATIONS)
     .filter(def => !def.disabled)
     .filter(def => !def.featureFlag || isFlagEnabled(def.featureFlag))
+    .filter(def => def.options)
     .sort((a, b) => a.name.localeCompare(b.name))
     .map(def => (
       <Dropdown.Item

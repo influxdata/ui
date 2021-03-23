@@ -297,7 +297,7 @@ export const FlowListProvider: FC = ({children}) => {
 
   const getAll = useCallback(async (): Promise<void> => {
     const data = await getAllAPI(orgID)
-    if (data.flows) {
+    if (data && data.flows) {
       const _flows = {}
       data.flows.forEach(f => (_flows[f.id] = hydrate(f.spec)))
       setFlows(_flows)

@@ -1,4 +1,4 @@
-import React, {FC, useContext, useMemo} from 'react'
+import React, {FC, useContext, useMemo, useCallback} from 'react'
 import {PipeData, FluxResult} from 'src/types/flows'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {ResultsContext} from 'src/flows/context/results'
@@ -50,9 +50,12 @@ export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
     stages.filter(stage => stage.instances.map(i => i.id).includes(id))[0]
       ?.text || ''
 
-  const updater = (_data: PipeData) => {
-    flow.data.update(id, _data)
-  }
+  const updater = useCallback(
+    (_data: PipeData) => {
+      flow.data.update(id, _data)
+    },
+    [flow, id]
+  )
 
   let _result
 

@@ -11,61 +11,6 @@
   position: relative;
 }
 
-.query-results--pagination {
-  flex: 0 0 45px;
-  height: 45px;
-  display: flex;
-  align-items: center;
-}
-
-.query-results--pagination-label {
-  display: inline-block;
-  margin-right: $cf-marg-b;
-  color: $g13-mist;
-  font-weight: $cf-font-weight--medium;
-}
-
-.query-results--pagination-button {
-  margin-left: $cf-marg-b;
-}
-
-.query-results--container {
-  flex: 1 0 0;
-  position: relative;
-
-  .cf-dapper-scrollbars {
-    border-bottom: $cf-border solid $g2-kevlar;
-  }
-
-  .cf-dapper-scrollbars--track-x {
-    background-color: rgba($g3-castle, 0.5) !important;
-  }
-
-  .cf-table {
-    border: 2px solid $g6-smoke;
-    margin-bottom: 10px;
-    width: 100%;
-  }
-
-  .cf-table--header-cell,
-  .cf-table--cell {
-    padding: 4px 10px;
-    white-space: nowrap;
-  }
-
-  .cf-table--header-cell label {
-    display: block;
-    font-size: 10px;
-    text-transform: uppercase;
-    color: $g9-mountain;
-    font-weight: 500;
-
-    &:first-of-type {
-      padding-top: 2px;
-    }
-  }
-}
-
 .flow-panel--body .flux-toolbar {
   position: absolute;
   top: 0;

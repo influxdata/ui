@@ -34,7 +34,7 @@ import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {INVALID_DATA_COPY} from 'src/visualization/constants'
 
 // Types
-import {XYViewProperties} from 'src/types'
+import {XYViewProperties, Annotation} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
 
 // Utils
@@ -174,6 +174,12 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
   }
 
+  const editAnnotation = (userSelectedAnnotation: Annotation) => {
+    event('xyplot.annotations.edit_annotation.edit')
+    /* eslint-disable no-console */
+    console.log('edit!', userSelectedAnnotation)
+  }
+
   const makeSingleClickHandler = () => {
     const createAnnotation = userModifiedAnnotation => {
       const {message, startTime} = userModifiedAnnotation
@@ -192,20 +198,43 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
     const singleClickHandler = (
       plotInteraction: InteractionHandlerArguments
     ) => {
-      event('xyplot.annotations.create_annotation.show_overlay')
-      dispatch(
-        showOverlay(
-          'add-annotation',
-          {
-            createAnnotation,
-            startTime: plotInteraction.valueX,
-          },
-          () => {
-            event('xyplot.annotations.create_annotation.cancel')
-            dismissOverlay()
-          }
-        )
+      const annotationLayers: any =
+        config.layers.find(l => l.type === 'annotation') ?? []
+
+      const clickedAnnotation = annotationLayers.annotations?.find(
+        f =>
+          f.startValue === Math.round(plotInteraction.valueX as number) ||
+          f.stopValue === Math.round(plotInteraction.valueX as number)
       )
+
+      if (clickedAnnotation) {
+        event('xyplot.annotations.edit_annotation.show_overlay')
+        dispatch(
+          showOverlay(
+            'edit-annotation',
+            {editAnnotation, clickedAnnotation},
+            () => {
+              event('xyplot.annotations.edit_annotation.cancel')
+              dismissOverlay()
+            }
+          )
+        )
+      } else {
+        event('xyplot.annotations.create_annotation.show_overlay')
+        dispatch(
+          showOverlay(
+            'add-annotation',
+            {
+              createAnnotation,
+              startTime: plotInteraction.valueX,
+            },
+            () => {
+              event('xyplot.annotations.create_annotation.cancel')
+              dismissOverlay()
+            }
+          )
+        )
+      }
     }
 
     return singleClickHandler
@@ -248,15 +277,8 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
   }
 
   if (isFlagEnabled('annotations')) {
-    if (inAnnotationWriteMode) {
-      config.interactionHandlers = {
-        singleClick: makeSingleClickHandler(),
-      }
-    }
-
     // show only the streams that are enabled by the user, the 'default' stream is enabled by default.
     let selectedAnnotations: any[] = []
-
     // we want to check what annotations are enabled
     visibleAnnotationStreams.forEach(visibleStreamName => {
       if (annotations[visibleStreamName]) {
@@ -276,6 +298,12 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
       }
     })
 
+    if (inAnnotationWriteMode) {
+      config.interactionHandlers = {
+        singleClick: makeSingleClickHandler(),
+      }
+    }
+
     if (selectedAnnotations.length) {
       const annotationLayer: AnnotationLayerConfig = {
         type: 'annotation',
@@ -284,6 +312,7 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
         fill: groupKey,
         annotations: selectedAnnotations.map(annotation => {
           return {
+            id: annotation.id,
             title: annotation.summary,
             description: '',
             color: annotation.color,

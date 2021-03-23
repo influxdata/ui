@@ -451,8 +451,7 @@ jobs:
             cd ./monitor-ci && make build NODE=cypress
       - run:
           name: Run E2e test
-          # TODO: remove '|| true' from the following statement when we disable cloud-e2e
-          command: cd ./idpe/ && export QUAY_CD_USER=$QUAY_USER && export QUAY_CD_PASSWORD=$QUAY_PASS && ./scripts/ci/cd-app-e2e-test.bash | tee /tmp/artifacts/e2e-test.log || true
+          command: cd ./idpe/ && export QUAY_CD_USER=$QUAY_USER && export QUAY_CD_PASSWORD=$QUAY_PASS && ./scripts/ci/cd-app-e2e-test.bash | tee /tmp/artifacts/e2e-test.log
           no_output_timeout: '15m' # Sometimes gathering the images takes too long. Go 50% over the default 10m timeout.
           environment:
             USE_K8SIDPE_LOCAL_TOOLS: '1' # this is needed as otherwise kubecfg is not able to talk to kind API server via localhost

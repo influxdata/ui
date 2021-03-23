@@ -149,7 +149,7 @@
     "@influxdata/clockface": "^2.6.3",
     "@influxdata/flux": "^0.5.1",
     "@influxdata/flux-lsp-browser": "^0.5.35",
-    "@influxdata/giraffe": "^2.6.1",
+    "@influxdata/giraffe": "^2.4.0",
     "@influxdata/influx": "0.5.5",
     "@influxdata/influxdb-templates": "0.9.0",
     "@influxdata/react-custom-scrollbars": "4.3.8",

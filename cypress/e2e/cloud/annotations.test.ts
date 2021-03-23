@@ -111,7 +111,7 @@ describe('The Annotations UI functionality', () => {
     // the pill should be back
     cy.getByTestID('annotation-pill default').should('exist')
   })
-  it('can create an annotation when graph is clicked and the control bar is open', () => {
+  it('can create an annotation when the graph is clicked and the control bar is open', () => {
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').click()
     })

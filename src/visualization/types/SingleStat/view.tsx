@@ -2,8 +2,8 @@
 import React, {FC} from 'react'
 
 // Utils
-import {generateThresholdsListHexs} from 'src/shared/constants/colorOperations'
 import LatestValueTransform from 'src/visualization/components/LatestValueTransform'
+import {generateThresholdsListHexs} from 'src/shared/constants/colorOperations'
 
 // Types
 import {SingleStatViewProperties} from 'src/types/dashboards'

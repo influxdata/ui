@@ -35,7 +35,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     [data.properties, update]
   )
 
-  const dataExists = !!results.parsed && !!Object.entries(results.parsed).length
+  const dataExists = !!(results?.parsed?.table || []).length
 
   const loadingText = useMemo(() => {
     if (loading === RemoteDataState.Loading) {

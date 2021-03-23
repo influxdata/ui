@@ -15,7 +15,11 @@ import {
 import CloudOnly from 'src/shared/components/cloud/CloudOnly'
 
 // Constants
-import {CLOUD_URL, CLOUD_CHECKOUT_PATH} from 'src/shared/constants'
+import {
+  BETA_REGIONS,
+  CLOUD_URL,
+  CLOUD_CHECKOUT_PATH,
+} from 'src/shared/constants'
 import {
   HIDE_UPGRADE_CTA_KEY,
   PAID_ORG_HIDE_UPGRADE_SETTING,
@@ -52,8 +56,8 @@ const CloudUpgradeButton: FC<StateProps & OwnProps> = ({
   // The follow up to this issue will address the hack here:
   // https://github.com/influxdata/ui/issues/930
 
-  const isBetaRegion = window.location.hostname.includes(
-    'europe-west1-1.gcp.cloud2.influxdata.com'
+  const isBetaRegion = BETA_REGIONS.some((pathName: string) =>
+    window.location.hostname.includes(pathName)
   )
 
   return (

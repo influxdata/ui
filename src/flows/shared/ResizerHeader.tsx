@@ -93,9 +93,10 @@ const ResizerHeader: FC<Props> = ({
         ref={dragHandleRef}
         title="Drag to resize results table"
       >
-        <div className="panel-resizer--drag-icon" />
-        <div className="panel-resizer--drag-icon" />
-        <div className="panel-resizer--drag-icon" />
+        <Icon
+          className="panel-resizer--drag-icon"
+          glyph={IconFont.DragToExpand}
+        />
       </div>
     </div>
   )

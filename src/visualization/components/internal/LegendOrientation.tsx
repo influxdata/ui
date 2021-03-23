@@ -129,7 +129,7 @@ const LegendOrientation: FC<Props> = ({properties, update}) => {
         tabIndex={1}
         value="horizontal"
         id="horizontal-legend-orientation"
-        name="horizontal"
+        name="legendOr"
         checked={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL}
         onChange={() =>
           handleSetOrientation(LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL)
@@ -151,7 +151,7 @@ const LegendOrientation: FC<Props> = ({properties, update}) => {
         tabIndex={2}
         value="vertical"
         id="vertical-legend-orientation"
-        name="vertical"
+        name="lengendOr"
         checked={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_VERTICAL}
         onChange={() =>
           handleSetOrientation(LEGEND_ORIENTATION_THRESHOLD_VERTICAL)

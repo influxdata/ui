@@ -8,7 +8,6 @@ import BucketProvider from 'src/flows/context/buckets'
 import {SchemaProvider} from 'src/flows/context/schemaProvider'
 
 // Components
-import AggregateWindowSelector from 'src/flows/pipes/MetricSelector/AggregateWindowSelector'
 import BucketSelector from 'src/flows/shared/BucketSelector'
 import FieldsList from 'src/flows/pipes/MetricSelector/FieldsList'
 import FilterTags from 'src/flows/pipes/MetricSelector/FilterTags'
@@ -23,7 +22,6 @@ const DataSource: FC<PipeProp> = ({Context}) => (
             <BucketSelector />
           </div>
           <FilterTags />
-          <AggregateWindowSelector />
         </div>
         <SearchBar />
         <FieldsList />

@@ -3,6 +3,7 @@ import React, {FC} from 'react'
 
 // Utils
 import {generateThresholdsListHexs} from 'src/shared/constants/colorOperations'
+import LatestValueTransform from 'src/visualization/components/LatestValueTransform'
 
 // Types
 import {SingleStatViewProperties} from 'src/types/dashboards'
@@ -14,7 +15,6 @@ import {
   getLatestValues,
   formatStatValue,
 } from '@influxdata/giraffe'
-import LatestValueTransform from '../../components/LatestValueTransform'
 
 import './style.scss'
 import {isFlagEnabled} from '../../../shared/utils/featureFlag'

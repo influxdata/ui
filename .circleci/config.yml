@@ -416,10 +416,11 @@ jobs:
       - store_artifacts:
           path: /tmp/results.json
 
+  # This job should be similar to cd-app-e2e-test job running in IDPE: https://github.com/influxdata/idpe/blob/master/.circleci/config.yml
   cloud-e2e-k8s-idpe:
     machine:
-      # use Ubuntu 16 image as jsonnet requires libraries newer than in Ubuntu 14
-      image: ubuntu-1604:202007-01
+      # use Ubuntu 20 image as jsonnet requires libraries newer than in Ubuntu 14
+      image: ubuntu-2004:202008-01
     # E2e tests deploy kind and are very resource intensive.
     # 2xlarge is the largest resource class for "machine"; there is no 2xlarge+ like the docker runners.
     resource_class: 2xlarge

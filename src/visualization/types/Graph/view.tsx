@@ -174,10 +174,9 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
   }
 
+  /* eslint-disable @typescript-eslint/no-unused-vars */
   const editAnnotation = (userSelectedAnnotation: Annotation) => {
     event('xyplot.annotations.edit_annotation.edit')
-    /* eslint-disable no-console */
-    console.log('edit!', userSelectedAnnotation)
   }
 
   const makeSingleClickHandler = () => {

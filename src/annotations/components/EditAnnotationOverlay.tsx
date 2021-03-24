@@ -32,9 +32,9 @@ export const EditAnnotationOverlay: FC = () => {
 
   return (
     <EditAnnotationForm
-      onSubmit={handleSubmit}
+      handleSubmit={handleSubmit}
       annotation={clickedAnnotation}
-      onClose={onClose}
+      handleClose={onClose}
     />
   )
 }

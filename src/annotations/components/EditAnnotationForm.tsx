@@ -2,19 +2,19 @@
 import React, {FC, useState, ChangeEvent, FormEvent} from 'react'
 import {useSelector} from 'react-redux'
 import {
-  Overlay,
   Button,
-  ComponentColor,
-  Grid,
   Columns,
-  Panel,
-  Dropdown,
-  InfluxColors,
-  ComponentStatus,
-  Input,
-  Form,
-  TextArea,
+  ComponentColor,
   ComponentSize,
+  ComponentStatus,
+  Dropdown,
+  Form,
+  Grid,
+  InfluxColors,
+  Input,
+  Overlay,
+  Panel,
+  TextArea,
 } from '@influxdata/clockface'
 
 // Selectors
@@ -26,10 +26,13 @@ import {Annotation} from 'src/types'
 // Style
 import 'src/annotations/components/editAnnotationForm.scss'
 
+type AnnotationPartial = Annotation & {
+  startValue?: string
+}
 interface EditAnnotationProps {
-  onSubmit: (e: FormEvent, editedAnnotation: Partial<Annotation>) => void
-  annotation: any
-  onClose: () => void
+  handleSubmit: (e: FormEvent, editedAnnotation: Partial<Annotation>) => void
+  annotation: AnnotationPartial
+  handleClose: () => void
 }
 interface EditAnnotationState {
   timestamp: string
@@ -37,8 +40,8 @@ interface EditAnnotationState {
   message: string
 }
 export const EditAnnotationForm: FC<EditAnnotationProps> = ({
-  onClose,
-  onSubmit,
+  handleClose,
+  handleSubmit,
   annotation,
 }) => {
   const [editAnnotationState, setEditAnnotationState] = useState<
@@ -66,7 +69,7 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
     <Overlay.Container maxWidth={800}>
       <Overlay.Header
         title="Edit Annotation"
-        onDismiss={onClose}
+        onDismiss={handleClose}
         className="edit-annotation-head"
       ></Overlay.Header>
       <Grid className="edit-annotation-grid">
@@ -84,7 +87,7 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
                 name="timestamp"
                 placeholder="2020-10-10 05:00:00 PDT"
                 value={editAnnotationState.timestamp}
-                onChange={e => handleEditAnnotationChange(e)}
+                onChange={handleEditAnnotationChange}
                 status={ComponentStatus.Default}
                 size={ComponentSize.Medium}
               />
@@ -141,7 +144,7 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
                     onCollapse={onCollapse}
                     testID="stream-selector--dropdown-menu"
                   >
-                    {annotationStreams.map(a => a.stream)}
+                    {annotationStreams.map(stream => stream.stream)}
                   </Dropdown.Menu>
                 )}
               />
@@ -159,14 +162,14 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
         <div className="edit-annotation-buttons">
           <Button
             text="Cancel"
-            onClick={onClose}
+            onClick={handleClose}
             color={ComponentColor.Default}
             className="edit-annotation-cancel"
           />
           <Button
             text="Save Changes"
             onClick={(e: FormEvent) =>
-              onSubmit(e, editAnnotationState as Partial<Annotation>)
+              handleSubmit(e, editAnnotationState as Partial<Annotation>)
             }
             color={ComponentColor.Primary}
           />

@@ -258,6 +258,82 @@ describe('Variables', () => {
     cy.getByTestID('import-overlay--textarea').contains('this is invalid')
   })
 
+  it('can prevent variable names with hyphens or spaces from being saved', () => {
+    // Prevent creation of a CSV variable with hyphens or spaces
+    cy.getByTestID('add-resource-dropdown--button').should('be.visible')
+    cy.getByTestID('add-resource-dropdown--button').click()
+
+    cy.getByTestID('add-resource-dropdown--new').should('be.visible')
+    cy.getByTestID('add-resource-dropdown--new').click()
+
+    cy.getByTestID('variable-type-dropdown--button').should('be.visible')
+    cy.getByTestID('variable-type-dropdown--button').click()
+
+    cy.getByTestID('variable-type-dropdown--button').should('be.visible')
+    cy.getByTestID('variable-type-dropdown-constant').click()
+
+    cy.get('textarea').type('1,2,3,4,5,6')
+
+    cy.getByTestID('csv-value-select-dropdown')
+      .click()
+      .contains('6')
+      .click()
+
+    cy.getByInputName('name').type('bad name')
+    cy.getByTestID('variable-form-save').should('be.disabled')
+
+    cy.getByInputName('name')
+      .clear()
+      .type('bad-name')
+    cy.getByTestID('variable-form-save').should('be.disabled')
+
+    // Prevent creation of a Query variable with hyphens or spaces
+    cy.getByTestID('variable-type-dropdown--button').click()
+    cy.getByTestID('variable-type-dropdown-query').click()
+
+    cy.getByTestID('flux-editor').within(() => {
+      cy.get('.react-monaco-editor-container')
+        .click()
+        .focused()
+        .type('filter(fn: (r) => r._field == "cpu")', {
+          force: true,
+        })
+    })
+
+    cy.getByInputName('name')
+      .clear()
+      .type('bad name')
+    cy.getByTestID('variable-form-save').should('be.disabled')
+
+    cy.getByInputName('name')
+      .clear()
+      .type('bad-name')
+    cy.getByTestID('variable-form-save').should('be.disabled')
+
+    // Prevent creation of a Map variable with hyphens or spaces
+    cy.getByTestID('variable-type-dropdown--button').click()
+    cy.getByTestID('variable-type-dropdown-map').click()
+
+    const lastMapItem = 'Mila Emile,"o61AhpOGr5aO3cYVArC0"'
+    cy.get('textarea').type(`Juanito MacNeil,"5TKl6l8i4idg15Fxxe4P"
+    Astrophel Chaudhary,"bDhZbuVj5RV94NcFXZPm"
+    Ochieng Benes,"YIhg6SoMKRUH8FMlHs3V"
+    ${lastMapItem}`)
+
+    cy.getByTestID('map-variable-dropdown--button').click()
+    cy.contains(lastMapItem).click()
+
+    cy.getByInputName('name')
+      .clear()
+      .type('bad name')
+    cy.getByTestID('variable-form-save').should('be.disabled')
+
+    cy.getByInputName('name')
+      .clear()
+      .type('bad-name')
+    cy.getByTestID('variable-form-save').should('be.disabled')
+  })
+
   it('can create and delete a label and sort by variable name', () => {
     cy.getByTestID('inline-labels--add').should('be.visible')
 

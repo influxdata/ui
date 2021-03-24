@@ -98,23 +98,21 @@ export const getAnnotation = async (
 }
 
 export const updateAnnotation = async (
-  oldAnnotation: DeleteAnnotation,
   newAnnotation: Annotation
 ): Promise<Annotation> => {
-  const res = await axios.put(url, {old: oldAnnotation, new: newAnnotation})
+  const res = await axios.put(`${url}/${newAnnotation.id}`, newAnnotation)
 
   if (res.status >= 300) {
     throw new Error(res.data?.message)
   }
 
-  const {startTime, endTime, summary, message, stickers, stream} = res.data
+  const {startTime, endTime, summary, message, id} = res.data
   return {
     startTime,
     endTime,
     summary,
     message,
-    stickers,
-    stream,
+    id,
   }
 }
 

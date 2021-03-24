@@ -2,17 +2,28 @@ import {
   deleteAnnotation,
   getAnnotations,
   getAnnotationStreams,
+  updateAnnotation,
   writeAnnotation,
 } from 'src/annotations/api'
+import {notify} from 'src/shared/actions/notifications'
+import {
+  deleteAnnotationSuccess,
+  deleteAnnotationFailed,
+  createAnnotationSuccess,
+  createAnnotationFailed,
+  editAnnotationSuccess,
+  editAnnotationFailed,
+} from 'src/shared/copy/notifications'
 import {Dispatch} from 'react'
-import {deleteAnnotation as deleteAnnotationAction} from 'src/annotations/actions/creators'
 import {
   setAnnotations,
   setAnnotationStreams,
   Action as AnnotationAction,
+  editAnnotation as patchAnnotation,
+  deleteAnnotation as deleteAnnotationAction,
 } from 'src/annotations/actions/creators'
 
-import {Annotation, AnnotationStream} from 'src/types'
+import {Annotation, AnnotationStream, NotificationAction} from 'src/types'
 
 export const fetchAndSetAnnotationStreams = async (
   dispatch: Dispatch<AnnotationAction>
@@ -32,15 +43,45 @@ export const fetchAndSetAnnotations = () => async (
 
 export const writeThenFetchAndSetAnnotations = (
   annotations: Annotation[]
-) => async (dispatch: Dispatch<AnnotationAction>): Promise<void> => {
-  await writeAnnotation(annotations)
+) => async (
+  dispatch: Dispatch<AnnotationAction | NotificationAction>
+): Promise<void> => {
+  try {
+    await writeAnnotation(annotations)
 
-  fetchAndSetAnnotations()(dispatch)
+    fetchAndSetAnnotations()(dispatch)
+    dispatch(notify(createAnnotationSuccess()))
+  } catch (err) {
+    dispatch(notify(createAnnotationFailed(err)))
+  }
 }
 export const deleteAnnotations = annotation => async (
-  dispatch: Dispatch<AnnotationAction>
+  dispatch: Dispatch<AnnotationAction | NotificationAction>
 ) => {
-  await deleteAnnotation(annotation)
-  dispatch(deleteAnnotationAction(annotation))
-  fetchAndSetAnnotations()(dispatch)
+  try {
+    await deleteAnnotation({
+      ...annotation,
+      endTime: annotation.startTime,
+      stream: 'default',
+    })
+    dispatch(deleteAnnotationAction(annotation))
+    dispatch(notify(deleteAnnotationSuccess()))
+  } catch (err) {
+    dispatch(notify(deleteAnnotationFailed(err)))
+  }
+}
+
+export const editAnnotation = annotation => async (
+  dispatch: Dispatch<AnnotationAction | NotificationAction>
+) => {
+  try {
+    const updatedAnnotation = await updateAnnotation({
+      ...annotation,
+      endTime: annotation.startTime,
+    })
+    dispatch(patchAnnotation(updatedAnnotation))
+    dispatch(notify(editAnnotationSuccess()))
+  } catch (err) {
+    dispatch(notify(editAnnotationFailed(err)))
+  }
 }

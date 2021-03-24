@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useContext} from 'react'
-import {useSelector} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 
 // Components
 import {EditAnnotationForm} from 'src/annotations/components/EditAnnotationForm'
@@ -11,19 +11,19 @@ import {OverlayContext} from 'src/overlays/components/OverlayController'
 // Selectors
 import {getOverlayParams} from 'src/overlays/selectors'
 
+// Actions
+import {editAnnotation} from 'src/annotations/actions/thunks'
 // Types
-import {Annotation} from 'src/types'
+import {EditAnnotationState} from 'src/annotations/components/EditAnnotationForm'
 
 export const EditAnnotationOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
-  const {clickedAnnotation, editAnnotation} = useSelector(getOverlayParams)
+  const dispatch = useDispatch()
+  const {clickedAnnotation} = useSelector(getOverlayParams)
 
-  const handleSubmit = (editedAnnotation: Partial<Annotation>): void => {
-    const formIsValid = true
-    if (formIsValid) {
-      editAnnotation(editedAnnotation)
-      onClose()
-    }
+  const handleSubmit = (editedAnnotation: EditAnnotationState): void => {
+    dispatch(editAnnotation(editedAnnotation))
+    onClose()
   }
 
   return (

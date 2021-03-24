@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useState, ChangeEvent} from 'react'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {
   Button,
   Columns,
@@ -20,25 +20,28 @@ import {
 // Selectors
 import {getAnnotationStreams} from 'src/annotations/selectors'
 
+// Actions
+import {deleteAnnotations} from 'src/annotations/actions/thunks'
+
 // Types
 import {Annotation} from 'src/types'
 
 // Style
 import 'src/annotations/components/editAnnotationForm.scss'
 
-type AnnotationPartial = Annotation & {
-  startValue?: string
-}
-interface EditAnnotationProps {
-  handleSubmit: (editedAnnotation: Partial<Annotation>) => void
-  annotation: AnnotationPartial
-  handleClose: () => void
-}
-interface EditAnnotationState {
-  timestamp: string
+export interface EditAnnotationState {
+  startTime: string
   summary: string
   message: string
+  id: string
 }
+
+interface EditAnnotationProps {
+  handleSubmit: (editedAnnotation: EditAnnotationState) => void
+  annotation: Annotation
+  handleClose: () => void
+}
+
 export const EditAnnotationForm: FC<EditAnnotationProps> = ({
   handleClose,
   handleSubmit,
@@ -47,9 +50,10 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
   const [editAnnotationState, setEditAnnotationState] = useState<
     EditAnnotationState
   >({
-    timestamp: new Date(annotation.startValue).toISOString(),
+    startTime: new Date(annotation.startTime).toISOString(),
     summary: annotation.summary,
     message: annotation.message ?? '',
+    id: annotation.id,
   })
 
   const handleEditAnnotationChange = (
@@ -63,8 +67,13 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
     }))
   }
 
-  const annotationStreams = useSelector(getAnnotationStreams)
+  const handleDeleteAnnotation = () => {
+    dispatch(deleteAnnotations(editAnnotationState))
+    handleClose()
+  }
 
+  const annotationStreams = useSelector(getAnnotationStreams)
+  const dispatch = useDispatch()
   return (
     <Overlay.Container maxWidth={800}>
       <Overlay.Header
@@ -84,9 +93,9 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
               className="edit-annotation-form-label"
             >
               <Input
-                name="timestamp"
+                name="startTime"
                 placeholder="2020-10-10 05:00:00 PDT"
-                value={editAnnotationState.timestamp}
+                value={editAnnotationState.startTime}
                 onChange={handleEditAnnotationChange}
                 status={ComponentStatus.Default}
                 size={ComponentSize.Medium}
@@ -155,7 +164,7 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
       <Overlay.Footer className="edit-annotation-form-footer">
         <Button
           text="Delete Annotation"
-          onClick={() => {}}
+          onClick={handleDeleteAnnotation}
           color={ComponentColor.Danger}
           style={{marginRight: '15px'}}
         />
@@ -168,9 +177,7 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
           />
           <Button
             text="Save Changes"
-            onClick={() =>
-              handleSubmit(editAnnotationState as Partial<Annotation>)
-            }
+            onClick={() => handleSubmit(editAnnotationState)}
             color={ComponentColor.Primary}
           />
         </div>

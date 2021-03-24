@@ -1,4 +1,4 @@
-import React, {FC, useContext, useEffect} from 'react'
+import React, {FC, useContext, useCallback, useEffect, useMemo} from 'react'
 import {
   MultiSelectDropdown,
   ComponentColor,
@@ -18,6 +18,8 @@ interface Props {
   toggle: () => void
   visible: boolean
 }
+
+const AVAILABLE_FUNCTIONS = FUNCTIONS.map(f => f.name)
 
 const Controls: FC<Props> = ({toggle, visible}) => {
   const {data, range, update, results} = useContext(PipeContext)
@@ -42,42 +44,57 @@ const Controls: FC<Props> = ({toggle, visible}) => {
     })
   }
 
-  const selectFn = (fn: string) => {
-    const fns = [...(data.functions || [{name: 'mean'}])]
-    let found = false
-    let fnIdx = fns.findIndex(f => f.name === fn)
-
-    // NOTE: I had to kill it this way because i had poluted my local state
-    while (fnIdx !== -1) {
-      found = true
-      fns.splice(fnIdx, 1)
-      fnIdx = fns.findIndex(f => f.name === fn)
+  const options = useMemo(() => {
+    if (!data.functions || !data.functions.length) {
+      return [{name: 'mean'}].map(f => f.name)
     }
+    return data.functions.map(f => f.name)
+  }, [data.functions])
 
-    if (!found) {
-      fns.push({name: fn})
-    }
+  const selectFn = useCallback(
+    (fn: string) => {
+      const fns = options.map(f => ({name: f}))
+      let found = false
+      let fnIdx = fns.findIndex(f => f.name === fn)
 
-    update({
-      functions: fns,
-    })
-  }
+      while (fnIdx !== -1) {
+        found = true
+        fns.splice(fnIdx, 1)
+        fnIdx = fns.findIndex(f => f.name === fn)
+      }
+
+      if (!found) {
+        fns.push({name: fn})
+      }
+
+      update({
+        functions: fns,
+      })
+    },
+    [options, update]
+  )
 
   useEffect(() => {
-    update({
-      period: millisecondsToDuration(range.windowPeriod),
-    })
-  }, [range])
+    if (range.type === 'custom') {
+      update({
+        period: millisecondsToDuration(
+          Math.round((Date.parse(range.upper) - Date.parse(range.lower)) / 360)
+        ),
+      })
+    } else if (range.type === 'selectable-duration') {
+      update({
+        period: millisecondsToDuration(range.windowPeriod),
+      })
+    }
+  }, [range, options])
 
   return (
     <>
       <MultiSelectDropdown
         emptyText="Select"
         style={{width: '250px'}}
-        options={FUNCTIONS.map(f => f.name)}
-        selectedOptions={(data.functions || [{name: 'mean'}]).map(
-          fn => fn.name
-        )}
+        options={AVAILABLE_FUNCTIONS}
+        selectedOptions={options}
         onSelect={selectFn}
         buttonColor={ComponentColor.Secondary}
         buttonIcon={IconFont.BarChart}

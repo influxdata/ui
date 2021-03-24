@@ -56,7 +56,7 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const {name, value} = event.target
-    event.preventDefault()
+
     setEditAnnotationState(prev => ({
       ...prev,
       [name]: value,

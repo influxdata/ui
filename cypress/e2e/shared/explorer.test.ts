@@ -1332,7 +1332,7 @@ describe('DataExplorer', () => {
     })
 
     describe('as variable', () => {
-      const variableName = 'var 1'
+      const variableName = 'var1'
 
       const visitVariables = () => {
         cy.fixture('routes').then(({orgs}) => {
@@ -1366,6 +1366,23 @@ describe('DataExplorer', () => {
         })
         visitVariables()
         cy.getByTestID(`variable-card--name ${variableName}`).should('exist')
+      })
+
+      it('can prevent saving variable names with hyphens or spaces', () => {
+        cy.getByTestID('overlay--container').within(() => {
+          cy.getByTestID('variable-form-save').should('be.disabled')
+          cy.getByTestID('flux-editor').should('be.visible')
+          cy.getByTestID('flux-editor').click()
+          cy.getByTestID('variable-name-input')
+            .click()
+            .type('bad name')
+          cy.getByTestID('variable-form-save').should('be.disabled')
+
+          cy.getByTestID('variable-name-input')
+            .clear()
+            .type('bad-name')
+          cy.getByTestID('variable-form-save').should('be.disabled')
+        })
       })
     })
   })

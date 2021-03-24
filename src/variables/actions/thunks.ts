@@ -355,6 +355,25 @@ export const moveVariable = (originalIndex: number, newIndex: number) => async (
   const temp = byDashboardVariables[originalIndex]
   byDashboardVariables[originalIndex] = byDashboardVariables[newIndex]
   byDashboardVariables[newIndex] = temp
+  console.log('BY DASHBOARD', originalIndex, newIndex)
+  // Move Variable Sort Order Number
+  const firstVar = await api.patchVariable({
+    variableID: temp.id,
+    data: {
+      ...(temp as GenVariable),
+      sort_order: newIndex,
+    } as GenVariable,
+  })
+
+  const secondVar = await api.patchVariable({
+    variableID: byDashboardVariables[newIndex].id,
+    data: {
+      ...(byDashboardVariables[newIndex] as GenVariable),
+      sort_order: originalIndex,
+    } as GenVariable,
+  })
+
+  console.log(firstVar)
 
   await dispatch(
     moveVariableInState(

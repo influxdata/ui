@@ -947,6 +947,8 @@ components:
           type: string
         orgId:
           type: string
+        accountId:
+          type: string
         isBeta:
           type: boolean
           description: whether the region associated with the account is a beta region
@@ -965,15 +967,16 @@ components:
             - pay_as_you_go
       required:
         [
-          type,
-          marketplace,
-          isOperator,
-          isBeta,
-          orgId,
+          id,
+          accountId,
           email,
           firstName,
           lastName,
-          id,
+          isOperator,
+          isBeta,
+          orgId,
+          marketplace,
+          type,
         ]
     Users:
       type: object

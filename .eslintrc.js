@@ -29,7 +29,7 @@ module.exports = {
     },
   },
   rules: {
-    'spaced-comment': ['error', 'always'],
+    'spaced-comment': ['error', 'always', {markers: ['/']}],
     curly: ['error', 'all'],
     'no-console': ['error', {allow: ['warn', 'error']}],
     'no-empty': 'off',

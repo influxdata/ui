@@ -43,7 +43,7 @@ export const accountColumnInfo: CellInfo[] = [
     defaultValue: '',
   },
   {
-    path: ['marketplaceSubscription', 'marketplace'],
+    path: ['marketplace'],
     header: 'Billing Provider',
     name: 'marketplace',
     defaultValue: 'Zuora',

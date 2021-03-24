@@ -606,47 +606,54 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  '/operator/orgs/{searchTerm}':
+  '/operator/accounts/{searchTerm}':
     get:
-      operationId: GetOrganizationByName
+      operationId: getAccounts
       tags:
-        - Organizations
+        - Accounts
         - Operator
-      summary: Get an organization by search term
+      summary: Get the list of accounts by search term
       parameters:
         - in: path
           name: searchTerm
           schema:
             type: string
           required: false
-          description: The name of the organization being searched
-      responses:
-        '200':
-          description: OrganizationsOrgani
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Organizations'
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  '/accounts':
-    get:
-      operationId: getAccounts
-      tags:
-        - Account
-        - Operator
-      summary: Get the list of accounts
+          description: The name of the account's billing contact email being searched
       responses:
         '200':
           description: Account
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Account'
+                $ref: '#/components/schemas/Accounts'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/operator/orgs/{searchTerm}':
+    get:
+      operationId: getOrganizationsById
+      tags:
+        - Organizations
+        - Operator
+      summary: Get the list of orgs by search term
+      parameters:
+        - in: path
+          name: searchTerm
+          schema:
+            type: string
+          required: false
+          description: The id of the org being searched
+      responses:
+        '200':
+          description: Organization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organizations'
         default:
           description: Unexpected error
           content:
@@ -759,7 +766,10 @@ components:
             - free
             - cancelled
             - pay_as_you_go
-      required: [id, marketplace, type]
+      required: [id, balance, billingContact, marketplace, users, type]
+    Accounts:
+      items:
+        $ref: '#/components/schemas/Account'
     Region:
       properties:
         title:
@@ -1058,6 +1068,16 @@ components:
         marketplace:
           type: string
           description: which marketplace, nil if none
+        balance:
+          type: number
+          description: remaining balance on the account, nil if none
+        billingContact:
+          $ref: '#/components/schemas/BillingContact'
+          description: billing contact for the account
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
         type:
           type: string
           description: type of the account
@@ -1115,14 +1135,27 @@ components:
     Organization:
       type: object
       properties:
-        orgID:
+        id:
           type: string
-          readOnly: true
-          description: ID of the org for which these rates apply
+          description: ID of the org
+        idpeID:
+          type: string
+          description: idpe ID of the org
         name:
           type: string
-          readOnly: true
-          description: name of the org for which these rates apply
+          description: name of the org
+        region:
+          type: string
+          description: region of the org
+        provider:
+          type: string
+          description: provider of the org
+        date:
+          type: string
+          description: date org was created
+        account:
+          $ref: '#/components/schemas/Account'
+      required: [id, idpeID, name, account, region, provider, date]
     Organizations:
       type: array
       items:

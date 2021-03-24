@@ -1,70 +1,39 @@
 // Libraries
-import React, {FC, useCallback, useState, useEffect} from 'react'
+import React, {FC, useContext} from 'react'
 import {
   Table,
-  RemoteDataState,
-  SpinnerContainer,
-  TechnoSpinner,
   EmptyState,
   ComponentSize,
   Tabs,
   Orientation,
 } from '@influxdata/clockface'
+
+// Components
 import ResourcesTableRow from 'src/operator/ResourcesTableRow'
-import {Resource, CellInfo} from 'src/types/operator'
 import ResourcesSearchbar from 'src/operator/ResourcesSearchbar'
+import {OperatorContext} from 'src/operator/context/operator'
 import OperatorTabs from 'src/operator/OperatorTabs'
+import PageSpinner from 'src/perf/components/PageSpinner'
 
-type ActiveTab = 'accounts' | 'organizations' | 'users' | 'testResources'
+// Constants
+import {accountColumnInfo, organizationColumnInfo} from 'src/operator/constants'
 
-interface Props {
-  infos: CellInfo[]
-  fetchResources: (searchTerm?: string) => Promise<Resource[]>
-  tabName: ActiveTab
-  searchBarPlaceholder: string
-}
-
-const ResourcesTable: FC<Props> = ({
-  infos,
-  fetchResources,
-  searchBarPlaceholder,
-  tabName,
-}) => {
-  const [resources, setResources] = useState([])
-  const [status, setStatus] = useState(RemoteDataState.NotStarted)
-  const fetchData = useCallback(
-    async (searchTerm?) => {
-      try {
-        setStatus(RemoteDataState.Loading)
-        const resources = await fetchResources(searchTerm || '')
-        setResources(resources)
-        setStatus(RemoteDataState.Done)
-      } catch (e) {
-        console.error(e)
-        setStatus(RemoteDataState.Error)
-      }
-    },
-    [fetchResources]
+const ResourcesTable: FC = () => {
+  const {activeTab, accounts, organizations, status} = useContext(
+    OperatorContext
   )
 
-  useEffect(() => {
-    fetchData()
-  }, [tabName, fetchData])
+  const resources = activeTab === 'accounts' ? accounts : organizations
+  const infos =
+    activeTab === 'accounts' ? accountColumnInfo : organizationColumnInfo
 
   return (
     <Tabs.Container orientation={Orientation.Horizontal}>
-      <OperatorTabs activeTab={tabName} />
+      <OperatorTabs />
       <Tabs.TabContents>
-        <ResourcesSearchbar
-          searchDebounce={tabName != 'testResources'}
-          fetchData={fetchData}
-          placeholder={searchBarPlaceholder}
-        />
-        <SpinnerContainer
-          loading={status}
-          spinnerComponent={<TechnoSpinner diameterPixels={100} />}
-        >
-          {resources.length ? (
+        <ResourcesSearchbar />
+        <PageSpinner loading={status}>
+          {resources?.length ? (
             <Table>
               <Table.Header>
                 <Table.Row>
@@ -75,11 +44,7 @@ const ResourcesTable: FC<Props> = ({
               </Table.Header>
               <Table.Body>
                 {resources.map(resource => (
-                  <ResourcesTableRow
-                    key={resource.id}
-                    resource={resource}
-                    infos={infos}
-                  />
+                  <ResourcesTableRow key={resource.id} resource={resource} />
                 ))}
               </Table.Body>
               <Table.Footer />
@@ -87,12 +52,12 @@ const ResourcesTable: FC<Props> = ({
           ) : (
             <EmptyState size={ComponentSize.Medium}>
               <EmptyState.Text>
-                Looks like there were no <b>{tabName}</b> that matched your
+                Looks like there were no <b>{activeTab}</b> that matched your
                 search.
               </EmptyState.Text>
             </EmptyState>
           )}
-        </SpinnerContainer>
+        </PageSpinner>
       </Tabs.TabContents>
     </Tabs.Container>
   )

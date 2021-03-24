@@ -1,13 +1,9 @@
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
 import {Tabs, ComponentSize} from '@influxdata/clockface'
-import {Link} from 'react-router-dom'
-import {OperatorRoutes} from 'src/operator/constants'
+import {OperatorContext} from 'src/operator/context/operator'
 
-interface Props {
-  activeTab?: string
-}
-
-const OperatorTabs: FC<Props> = ({activeTab = 'accounts'}) => {
+const OperatorTabs: FC = () => {
+  const {activeTab, setActiveTab} = useContext(OperatorContext)
   return (
     <Tabs size={ComponentSize.Large}>
       <Tabs.Tab
@@ -15,18 +11,14 @@ const OperatorTabs: FC<Props> = ({activeTab = 'accounts'}) => {
         text="Accounts"
         active={activeTab == 'accounts'}
         testID="accountTab"
-        linkElement={className => (
-          <Link className={className} to={OperatorRoutes.accounts} />
-        )}
+        onClick={() => setActiveTab('accounts')}
       />
       <Tabs.Tab
         id="organizations"
         text="Organizations"
         active={activeTab == 'organizations'}
         testID="orgTab"
-        linkElement={className => (
-          <Link className={className} to={OperatorRoutes.organizations} />
-        )}
+        onClick={() => setActiveTab('organizations')}
       />
     </Tabs>
   )

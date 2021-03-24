@@ -1,16 +1,6 @@
-export type Resource = Account | Organization | User | TestResource
+export {Account, Organizations, Organization} from 'src/client/unityRoutes'
 
-export interface Account {
-  id: number
-  users: object[]
-  organizations: object[]
-  balance: number
-  type: string
-  marketplaceSubscription: MarketplaceSubscription
-  billingContact: BillingContact
-  zuoraAccountId: string
-  deletable: boolean
-}
+export type Resource = Account | User | TestResource
 
 export interface MarketplaceSubscription {
   marketplace: string
@@ -64,14 +54,4 @@ export interface ResourceInfo {
   header: string
   defaultValue: string | number
   renderValue?: (any) => any
-}
-
-export interface Organization {
-  name: string
-  id: string
-  idpeID: string
-  account: Account
-  region: string
-  provider: string
-  date: string
 }

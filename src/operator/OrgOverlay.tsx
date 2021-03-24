@@ -37,8 +37,6 @@ interface Props {
   fetchOrganization: (idpeID: string) => Promise<Organization>
   fetchLimits: (idpeID: string) => Promise<any>
   updateLimits: (id: string, limits: any) => Promise<AxiosResponse<any>>
-  // fetchLimits: (idpeID: string) => Promise<Limits>
-  // updateLimits: (id: string, limits: Limits) => Promise<AxiosResponse<Limits>>
 }
 
 const OrgOverlay: FC<Props & RouteComponentProps> = props => {

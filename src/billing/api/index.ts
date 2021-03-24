@@ -32,12 +32,8 @@ const makeResponse = (status, data, ...args) => {
 export const getAccount = (): ReturnType<typeof apiGetAccount> => {
   const account: Account = {
     id: 'account_1',
-    marketplace: {
-      name: 'Amazon Web Services',
-      shortName: 'aws',
-      url: 'smile.amazon.com',
-    },
-    type: 'pay_as_you_go',
+    marketplace: null,
+    type: 'free',
     status: RemoteDataState.Done,
   }
   return makeResponse(200, account, 'getBillingAccount')

@@ -3,6 +3,7 @@ import {lines} from '../../support/commands'
 describe('The Annotations UI functionality', () => {
   beforeEach(() => {
     cy.flush()
+    cy.clearLocalStorage()
     cy.signin().then(() =>
       cy.fixture('routes').then(({orgs}) => {
         cy.get('@org').then(({id: orgID}: Organization) => {
@@ -63,10 +64,6 @@ describe('The Annotations UI functionality', () => {
     })
   })
 
-  afterEach(() => {
-    // tests were being flaky because the annotations toggle state would keep leaking into other states
-    cy.getByTestID('toggle-annotations-controls').click()
-  })
   it('can hide the stream in the search bar when the stream is active', () => {
     cy.getByTestID('annotations-search-input')
       .focus()
@@ -127,28 +124,38 @@ describe('The Annotations UI functionality', () => {
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
     })
-    cy.getByTestID('giraffe-anntation-tooltip').contains('yoho')
+    cy.getByTestID('giraffe-annotation-tooltip').contains('yoho')
   })
 
-  it('can create an annotation when graph is clicked and the control bar is closed', () => {
-    cy.getByTestID('toggle-annotations-controls').click()
+  it.only('can create an annotation when graph is clicked and the control bar is closed', () => {
 
-    cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('giraffe-inner-plot').click()
-    })
-    cy.getByTestID('overlay--container').within(() => {
-      cy.getByTestID('textarea')
-        .should('be.visible')
-        .click()
-        .focused()
-        .type('yoho')
-      cy.getByTestID('add-annotation-submit').click()
-    })
+    // cy.reload()
+    // cy.clearLocalStorage('annotations')
+
+    // cy.getByTestID('toggle-annotations-controls').click()
+
+    // cy.getByTestID('cell blah').within(() => {
+    //   cy.getByTestID('giraffe-inner-plot').click()
+    // })
+    // cy.getByTestID('overlay--container').within(() => {
+    //   cy.getByTestID('textarea')
+    //     .should('be.visible')
+    //     .click()
+    //     .focused()
+    //     .type('yoho')
+    //   cy.getByTestID('add-annotation-submit').click()
+    // })
     // we need to see if the annotations got created and that the tooltip says "yoho"
     cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
+      cy.getByTestID('giraffe-inner-plot').within(() => {
+        cy.get('line').trigger('mouseover')
+      })
     })
-    cy.getByTestID('giraffe-anntation-tooltip').contains('yoho')
+    cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
+    // cy.get('giraffe-annotation-tooltip').contains('yoho')
+    // // cy.get('giraffe-annotation-tooltip').then((t) => {
+    // //   console.log(t)
+    // // })
   })
   it('can hide the Annotations Control bar after clicking on the Annotations Toggle Button', () => {
     cy.getByTestID('toggle-annotations-controls').click()

@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, useCallback, useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
+import {useHistory} from 'react-router-dom'
 
 // Utils
 import {notify} from 'src/shared/actions/notifications'
@@ -40,14 +41,17 @@ export type Inputs = {
 export interface CheckoutContextType {
   checkoutStatus: RemoteDataState
   errors: object
-  onSuccessUrl: string
+  handleCancelClick: () => void
   handleSetCheckoutStatus: (status: RemoteDataState) => void
   handleSetError: (name: string, value: boolean) => void
   handleSetInputs: (name: string, value: string | number | boolean) => void
   handleSubmit: (paymentMethodId: string) => void
   handleFormValidation: () => number
   inputs: Inputs
+  isDirty: boolean
   isSubmitting: boolean
+  onSuccessUrl: string
+  setIsDirty: (_: boolean) => void
   zuoraParams: CreditCardParams
 }
 
@@ -68,7 +72,7 @@ const EMPTY_ZUORA_PARAMS: CreditCardParams = {
 export const DEFAULT_CONTEXT: CheckoutContextType = {
   checkoutStatus: RemoteDataState.NotStarted,
   errors: {},
-  onSuccessUrl: '',
+  handleCancelClick: () => {},
   handleSetCheckoutStatus: (_: RemoteDataState) => {},
   handleSetError: (_: string, __: boolean) => {},
   handleSetInputs: (_: string, __: string | number | boolean) => {},
@@ -87,7 +91,10 @@ export const DEFAULT_CONTEXT: CheckoutContextType = {
     usSubdivision: states[0],
     postalCode: '',
   },
+  isDirty: false,
   isSubmitting: false,
+  onSuccessUrl: '',
+  setIsDirty: (_: boolean) => {},
   zuoraParams: EMPTY_ZUORA_PARAMS,
 }
 
@@ -105,6 +112,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   const dispatch = useDispatch()
 
   const [zuoraParams, setZuoraParams] = useState(EMPTY_ZUORA_PARAMS)
+  const [isDirty, setIsDirty] = useState(false)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [inputs, setInputs] = useState<Inputs>({
@@ -150,7 +158,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
         notifyEmail: resp.data.notifyEmail,
       })
     },
-    [getBillingNotificationSettings]
+    [getBillingNotificationSettings] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   useEffect(() => {
@@ -172,12 +180,15 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
 
   const handleSetInputs = useCallback(
     (name: string, value: string | number | boolean) => {
+      if (isDirty === false) {
+        setIsDirty(true)
+      }
       setInputs({
         ...inputs,
         [name]: value,
       })
     },
-    [inputs, setInputs]
+    [inputs, setInputs] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   const handleSetCheckoutStatus = useCallback(
@@ -289,20 +300,33 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     setIsSubmitting(false)
   }
 
+  const history = useHistory()
+
+  const handleCancelClick = () => {
+    if (!!window?._abcr && isDirty) {
+      window._abcr?.triggerAbandonedCart()
+    }
+
+    history.push('/')
+  }
+
   return (
     <CheckoutContext.Provider
       value={{
         checkoutStatus,
         errors,
+        handleCancelClick,
         handleSetCheckoutStatus,
         handleSetError,
         handleSetInputs,
         handleSubmit,
         handleFormValidation,
         inputs,
+        isDirty,
         isSubmitting,
-        zuoraParams,
         onSuccessUrl,
+        setIsDirty,
+        zuoraParams,
       }}
     >
       {children}

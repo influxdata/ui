@@ -7,9 +7,14 @@ import {CheckoutContext} from 'src/checkout/context/checkout'
 type Props = FormElementProps & InputProps
 
 const FormInput: FC<Props> = ({label, required, id}) => {
-  const {errors, inputs, handleSetInputs, handleSetError} = useContext(
-    CheckoutContext
-  )
+  const {
+    errors,
+    handleSetInputs,
+    handleSetError,
+    inputs,
+    isDirty,
+    setIsDirty,
+  } = useContext(CheckoutContext)
 
   const [requiredMessage, setRequiredMessage] = useState(
     'This is a required field'
@@ -35,6 +40,12 @@ const FormInput: FC<Props> = ({label, required, id}) => {
     }
   }
 
+  const handleOnFocus = () => {
+    if (isDirty === false) {
+      setIsDirty(true)
+    }
+  }
+
   return (
     <Form.Element
       htmlFor={id}
@@ -50,6 +61,7 @@ const FormInput: FC<Props> = ({label, required, id}) => {
         value={inputs[id]}
         onChange={handleChange}
         testID={`${id}--input`}
+        onFocus={handleOnFocus}
       />
     </Form.Element>
   )

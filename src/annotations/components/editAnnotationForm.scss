@@ -1,0 +1,36 @@
+.edit-annotation-panel {
+  padding: 15px;
+}
+
+.edit-annotation-head {
+  height: 70px;
+}
+.edit-annotation-grid {
+  padding: 0 10px;
+}
+
+.edit-annotation-form-textarea {
+  height: 100px;
+}
+
+.edit-annotation-form-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 30px;
+}
+
+.edit-annotation-buttons {
+  display: flex;
+  flex: 2;
+  justify-content: flex-end;
+}
+
+.edit-annotation-cancel {
+  margin-right: 10px;
+}
+
+.edit-annotation-header-text {
+  font-size: 15px;
+  padding-left: 10px;
+  font-weight: 500;
+}

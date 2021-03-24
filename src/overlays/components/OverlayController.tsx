@@ -24,6 +24,7 @@ import CreateBucketOverlay from 'src/buckets/components/CreateBucketOverlay'
 import AssetLimitOverlay from 'src/cloud/components/AssetLimitOverlay'
 import RateLimitOverlay from 'src/cloud/components/RateLimitOverlay'
 import {AddAnnotationOverlay} from 'src/annotations/components/AddAnnotationOverlay'
+import {EditAnnotationOverlay} from 'src/annotations/components/EditAnnotationOverlay'
 import CreateVariableOverlay from 'src/variables/components/CreateVariableOverlay'
 import RenameVariableOverlay from 'src/variables/components/RenameVariableOverlay'
 import ImportVariableOverlay from 'src/variables/components/VariableImportOverlay'
@@ -85,6 +86,9 @@ export const OverlayController: FunctionComponent = () => {
         break
       case 'add-annotation':
         activeOverlay.current = <AddAnnotationOverlay />
+        break
+      case 'edit-annotation':
+        activeOverlay.current = <EditAnnotationOverlay />
         break
       case 'check-threshold':
         activeOverlay.current = <NewThresholdCheckEO />

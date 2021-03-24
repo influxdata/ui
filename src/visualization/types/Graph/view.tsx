@@ -250,15 +250,8 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
   }
 
   if (isFlagEnabled('annotations')) {
-    if (inAnnotationWriteMode) {
-      config.interactionHandlers = {
-        singleClick: makeSingleClickHandler(),
-      }
-    }
-
     // show only the streams that are enabled by the user, the 'default' stream is enabled by default.
     let selectedAnnotations: any[] = []
-
     // we want to check what annotations are enabled
     visibleAnnotationStreams.forEach(visibleStreamName => {
       if (annotations && annotations[visibleStreamName]) {
@@ -278,6 +271,12 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
       }
     })
 
+    if (inAnnotationWriteMode) {
+      config.interactionHandlers = {
+        singleClick: makeSingleClickHandler(),
+      }
+    }
+
     if (annotationsAreVisible && selectedAnnotations.length) {
       const annotationLayer: AnnotationLayerConfig = {
         type: 'annotation',
@@ -286,6 +285,7 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
         fill: groupKey,
         annotations: selectedAnnotations.map(annotation => {
           return {
+            id: annotation.id,
             title: annotation.summary,
             description: '',
             color: annotation.color,

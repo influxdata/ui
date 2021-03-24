@@ -73,7 +73,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
   componentDidUpdate(prevProps, prevState) {
     const prevVals = prevProps.values
     const {values, selectedValue, status, name} = this.props
-    const {status: prevStatus} = prevProps
+    const {status: prevStatus, selectedValue: prevSelectedValue} = prevProps
     const {actualVal, loaded, selectHappened, menuOpen} = this.state
     const {
       actualVal: prevActualVal,
@@ -81,33 +81,24 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       menuOpen: prevMenuOpen,
     } = prevState
 
-    // console.log(`vars-1b (${name}: `, this.props)
+    console.log(`vars-1b (${name}: `, this.props)
+    console.log(`state(-1b) for ${name}:`, this.state)
+
+    let newState = {}
+
+    const justLoaded = () =>
+      status === RemoteDataState.Done && prevStatus !== RemoteDataState.Done
+
+    const justSelected = () =>
+      selectHappened &&
+      !prevSelectHappened &&
+      actualVal &&
+      actualVal !== prevActualVal
+
     // this is for updating the values:
     // (only want this to run *once* when the values get loaded)
-
-    if (
-      status === RemoteDataState.Done &&
-      prevStatus !== RemoteDataState.Done
-    ) {
-      //it reloaded; maybe because a dependent var
-      // console.log(`it reloaded!; for ${name}`)
-      //want to re-init
-      // console.log(`selected values??? ${name}: prev: ${prevSelectedValue}, current: ${selectedValue}`)
-
-      //if selectedValue is present in the values, set it; else zero it out (TODO)
-      let newSelectedValue = ''
-      if (values.indexOf(selectedValue) >= 0) {
-        newSelectedValue = selectedValue
-      }
-      console.log(
-        `foo-123 (setting typedValue) a1 for ${name} ${newSelectedValue}`
-      )
-      this.setState({
-        shownValues: values,
-        typedValue: newSelectedValue,
-        loaded: true,
-        actualVal: newSelectedValue,
-      })
+    if (justLoaded()) {
+      newState = this.getInitialValuesAfterLoading(prevSelectedValue)
     } else if (
       !loaded &&
       status === RemoteDataState.Done &&
@@ -115,16 +106,16 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     ) {
       // console.log(`(foo-123) ACK !! old loading...for ${name}`)
       console.log(`foo-123 (setting typedeValue) a ${selectedValue}`)
-      this.setState({
+      newState = {
         shownValues: values,
         typedValue: selectedValue,
         loaded: true,
-      })
+      }
     }
 
     // unset the menuOpen; it should be set to closed (or open) only once; then undone
     if (menuOpen !== prevMenuOpen && menuOpen !== null) {
-      this.setState({menuOpen: null})
+      newState['menuOpen'] = null
     }
 
     // need to have this, as the 'onClickAwayHere' gets triggered *before*
@@ -132,14 +123,39 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     // property)
 
     // for updating the selected value:
-    if (
-      selectHappened &&
-      !prevSelectHappened &&
-      actualVal &&
-      actualVal !== prevActualVal
-    ) {
-      // console.log(`foo-123 (setting typedeValue) b for ${name}`)
-      this.setState({typedValue: actualVal, selectHappened: false})
+    if (justSelected()) {
+      console.log(
+        `foo-123 (setting typedeValue) b for ${name}, currentTypedValue: ${this.state.typedValue}, current actualvalue: ${actualVal}`
+      )
+      //this.setState({typedValue: actualVal, selectHappened: false})
+      newState = {...newState, typedValue: actualVal, selectHappened: false}
+    }
+
+    this.setState(newState)
+  }
+
+  getInitialValuesAfterLoading(prevSelectedValue) {
+    const {values, selectedValue, name} = this.props
+    //it reloaded; maybe because a dependent var
+    console.log(`it reloaded!; for ${name}`)
+    //want to re-init
+    console.log(
+      `selected values??? ${name}: prev: ${prevSelectedValue}, current: ${selectedValue}`
+    )
+
+    //if selectedValue is present in the values, set it; else zero it out (TODO)
+    let newSelectedValue = ''
+    if (values.indexOf(selectedValue) >= 0) {
+      newSelectedValue = selectedValue
+    }
+    console.log(
+      `foo-123 (setting typedValue && actualVal) a1 for ${name} ${newSelectedValue}`
+    )
+    return {
+      shownValues: values,
+      typedValue: newSelectedValue,
+      loaded: true,
+      actualVal: newSelectedValue,
     }
   }
 
@@ -156,7 +172,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       const result = values.filter(val =>
         val.toLowerCase().includes(needle.toLowerCase())
       )
-      // console.log(` (setting typedeValue) c  for ${name}`)
+      console.log(` (setting typedeValue) c  for ${name}`)
 
       //always reset the selectIndex when doing filtering;  because
       // if it had a value, and then they type, the shownValues changes
@@ -226,19 +242,21 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
   // only want to show valid values when the component is not actively being used
   onClickAwayHere = () => {
     //  reset:
-    // console.log('in click away here for ' + this.props.name)
+    console.log('in click away here for ' + this.props.name)
     this.setState(this.getRealValue())
   }
 
   getRealValue = () => {
     const {actualVal, typedValue} = this.state
-    const {selectedValue} = this.props
+    const {selectedValue, name} = this.props
 
     if (actualVal || selectedValue) {
-      const realValue = actualVal ?? selectedValue
-      //  console.log(`foo-123 (setting typedValue) d for ${name} to ${realValue}`)
+      const realValue = selectedValue ?? actualVal
+      console.log(
+        `foo-123 (setting typedValue) d for ${name} to ${realValue}; actualVal: ${actualVal}, selectedVal: ${selectedValue}`
+      )
       if (typedValue !== realValue) {
-        // console.log('actually setting it...... (foo-d-ack)')
+        console.log(`actually setting it...... (foo-d-ack) ${name}`)
         return {typedValue: realValue}
       }
     }
@@ -255,7 +273,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
     const widthStyle = this.getWidth(placeHolderText)
 
-    // console.log(`vars-1c (${name}: `, this.props)
+    console.log(`vars-1c (${name}: `, this.props)
     console.log(`ack!  foo-s 0 selectIndex: ${selectIndex}`)
 
     const getInnerComponent = () => {

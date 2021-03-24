@@ -32,8 +32,8 @@ const makeResponse = (status, data, ...args) => {
 export const getAccount = (): ReturnType<typeof apiGetAccount> => {
   const account: Account = {
     id: 'account_1',
-    marketplace: 'AWS',
-    type: 'free',
+    marketplace: 'gcp',
+    type: 'pay_as_you_go',
     status: RemoteDataState.Done,
   }
   return makeResponse(200, account, 'getBillingAccount')

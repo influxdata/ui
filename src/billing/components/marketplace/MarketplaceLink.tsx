@@ -11,46 +11,35 @@ import {Marketplace} from 'src/types/marketplace'
 // Utils
 import {useBilling} from 'src/billing/components/BillingPage'
 
-const buttonInfo = (marketplace: Marketplace): {link: string; text: string} => {
+const buttonInfo = (
+  marketplace: Marketplace['shortName']
+): {link: string; text: string} => {
   switch (marketplace) {
     case 'aws':
       return {
         link: 'https://aws.amazon.com/marketplace/library/',
-        text: 'Check My AWS Subscription',
+        text: 'AWS Subscription Portal',
       }
     case 'gcm':
       return {
         link: 'https://console.cloud.google.com/marketplace/yourSolutions',
-        text: 'Check My Google Cloud Marketplace Subscription',
+        text: 'Google Cloud Solution',
       }
     case 'azure':
       return {
         link:
           'https://portal.azure.com/#blade/Microsoft_Azure_Billing/SubscriptionsBlade',
-        text: 'Check My Azure Marketplace Subscription',
+        text: 'Microsoft Azure Portal',
       }
     default:
       return {link: '', text: ''}
   }
 }
 
-const marketplaceLinkText = marketplace => {
-  switch (marketplace) {
-    case 'aws':
-      return 'AWS Subscription Portal'
-    case 'gcp':
-      return 'Google Cloud Solution'
-    case 'azure':
-      return 'Microsoft Azure Portal'
-  }
-}
-
 const MarketplaceLink: FC = () => {
   const [{account}] = useBilling()
 
-  const {link, text: defaultText} = buttonInfo(
-    account.marketplace as Marketplace
-  )
+  const {link, text} = buttonInfo(account.marketplace.shortName)
 
   const handleClick = () => {
     window.open(link, '_blank')
@@ -60,7 +49,7 @@ const MarketplaceLink: FC = () => {
     <Button
       shape={ButtonShape.Default}
       onClick={handleClick}
-      text={marketplaceLinkText(account.marketplace) || defaultText}
+      text={text}
       color={ComponentColor.Primary}
       size={ComponentSize.Small}
     />

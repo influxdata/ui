@@ -2,7 +2,7 @@ import React, {FC} from 'react'
 
 import {Panel} from '@influxdata/clockface'
 
-const PurplePanel: FC = ({children}) => (
+const SubscriptionManagerPanel: FC = ({children}) => (
   <Panel
     style={{
       backgroundImage:
@@ -14,4 +14,4 @@ const PurplePanel: FC = ({children}) => (
   </Panel>
 )
 
-export default PurplePanel
+export default SubscriptionManagerPanel

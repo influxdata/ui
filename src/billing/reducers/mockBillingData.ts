@@ -10,7 +10,7 @@ import {
 export const mockAccount: Account = {
   status: RemoteDataState.Done,
   id: 'account_1',
-  marketplace: 'us-west',
+  marketplace: null,
   type: 'free',
 }
 

@@ -1,1 +1,1 @@
-export type Marketplace = 'gcm' | 'aws' | 'azure'
+export {Marketplace} from 'src/client/unityRoutes'

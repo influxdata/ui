@@ -10,7 +10,7 @@ import {
 } from '@influxdata/clockface'
 
 import MarketplaceLink from 'src/billing/components/marketplace/MarketplaceLink'
-import PurplePanel from 'src/billing/components/marketplace/PurplePanel'
+import SubscriptionManagerPanel from 'src/billing/components/marketplace/SubscriptionManagerPanel'
 
 const MarketplaceBilling: FC = () => {
   return (
@@ -20,7 +20,7 @@ const MarketplaceBilling: FC = () => {
       justifyContent={JustifyContent.Center}
       margin={ComponentSize.Small}
     >
-      <PurplePanel>
+      <SubscriptionManagerPanel>
         <Panel.Header size={ComponentSize.Large}>
           <h4>Subscription Management:</h4>
         </Panel.Header>
@@ -28,7 +28,7 @@ const MarketplaceBilling: FC = () => {
           You can manage your subscription, review billing, and find licensing
           terms on your <MarketplaceLink />
         </Panel.Body>
-      </PurplePanel>
+      </SubscriptionManagerPanel>
     </FlexBox>
   )
 }

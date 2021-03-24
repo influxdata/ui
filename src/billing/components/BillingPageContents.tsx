@@ -12,7 +12,7 @@ import {useBilling} from 'src/billing/components/BillingPage'
 const BillingPageContents: FC = () => {
   const [{account}] = useBilling()
 
-  if (account.type === 'pay_as_you_go' && account.marketplace !== 'Zuora') {
+  if (!!account.marketplace) {
     return <MarketplaceBilling />
   }
 

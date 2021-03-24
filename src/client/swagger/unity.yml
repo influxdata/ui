@@ -650,7 +650,7 @@ components:
           type: string
           description: account id
         marketplace:
-          type: string
+          $ref: '#/components/schemas/Marketplace'
           description: which marketplace, nil if none
         type:
           type: string

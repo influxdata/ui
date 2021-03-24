@@ -23,7 +23,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  '/me/{id}':
+  '/me':
     get:
       operationId: GetMe
       tags:

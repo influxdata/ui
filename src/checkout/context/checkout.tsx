@@ -272,6 +272,9 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   }
 
   const handleSubmit = async (paymentMethodId: string) => {
+    if (isDirty === false) {
+      setIsDirty(true)
+    }
     setIsSubmitting(true)
 
     // Check to see if the form is valid using the validate form

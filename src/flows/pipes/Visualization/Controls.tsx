@@ -75,9 +75,17 @@ const Controls: FC<Props> = ({toggle, visible}) => {
   )
 
   useEffect(() => {
-    update({
-      period: millisecondsToDuration(range.windowPeriod),
-    })
+    if (range.type === 'custom') {
+      update({
+        period: millisecondsToDuration(
+          Math.round((Date.parse(range.upper) - Date.parse(range.lower)) / 360)
+        ),
+      })
+    } else if (range.type === 'selectable-duration') {
+      update({
+        period: millisecondsToDuration(range.windowPeriod),
+      })
+    }
   }, [range, options])
 
   return (

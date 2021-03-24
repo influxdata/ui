@@ -3,13 +3,13 @@ import {PipeData, FluxResult} from 'src/types/flows'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {ResultsContext} from 'src/flows/context/results'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
-import {RemoteDataState, SelectableDurationTimeRange} from 'src/types'
+import {RemoteDataState, TimeRange} from 'src/types'
 
 export interface PipeContextType {
   id: string
   data: PipeData
   queryText: string
-  range: SelectableDurationTimeRange
+  range: TimeRange
   update: (data: PipeData) => void
   loading: RemoteDataState
   results: FluxResult

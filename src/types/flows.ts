@@ -1,10 +1,6 @@
 import {FromFluxResult, FluxDataType, Table} from '@influxdata/giraffe'
 import {FunctionComponent, ComponentClass, ReactNode} from 'react'
-import {
-  AutoRefresh,
-  RemoteDataState,
-  SelectableDurationTimeRange,
-} from 'src/types'
+import {AutoRefresh, RemoteDataState, TimeRange} from 'src/types'
 
 export interface Tag {
   [tagName: string]: Set<string | number>
@@ -111,7 +107,7 @@ export interface ResourceManipulator<T> {
 
 export interface FlowState {
   name: string
-  range: SelectableDurationTimeRange
+  range: TimeRange
   refresh: AutoRefresh
   data: Resource<PipeData>
   meta: Resource<PipeMeta>
@@ -120,7 +116,7 @@ export interface FlowState {
 
 export interface Flow {
   name: string
-  range: SelectableDurationTimeRange
+  range: TimeRange
   refresh: AutoRefresh
   data: ResourceManipulator<PipeData>
   meta: ResourceManipulator<PipeMeta>

@@ -4,7 +4,6 @@ import {
   BillingInfo,
   BillingNotifySettings,
   Invoice,
-  PaymentMethod,
   CreditCardParams,
 } from 'src/types/billing'
 

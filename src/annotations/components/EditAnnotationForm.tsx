@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState, ChangeEvent, FormEvent} from 'react'
+import React, {FC, useState, ChangeEvent} from 'react'
 import {useSelector} from 'react-redux'
 import {
   Button,
@@ -30,7 +30,7 @@ type AnnotationPartial = Annotation & {
   startValue?: string
 }
 interface EditAnnotationProps {
-  handleSubmit: (e: FormEvent, editedAnnotation: Partial<Annotation>) => void
+  handleSubmit: (editedAnnotation: Partial<Annotation>) => void
   annotation: AnnotationPartial
   handleClose: () => void
 }
@@ -168,8 +168,8 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
           />
           <Button
             text="Save Changes"
-            onClick={(e: FormEvent) =>
-              handleSubmit(e, editAnnotationState as Partial<Annotation>)
+            onClick={() =>
+              handleSubmit(editAnnotationState as Partial<Annotation>)
             }
             color={ComponentColor.Primary}
           />

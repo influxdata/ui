@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, FormEvent} from 'react'
+import React, {FC, useContext} from 'react'
 import {useSelector} from 'react-redux'
 
 // Components
@@ -18,11 +18,7 @@ export const EditAnnotationOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
   const {clickedAnnotation, editAnnotation} = useSelector(getOverlayParams)
 
-  const handleSubmit = (
-    e: FormEvent,
-    editedAnnotation: Partial<Annotation>
-  ): void => {
-    e.preventDefault()
+  const handleSubmit = (editedAnnotation: Partial<Annotation>): void => {
     const formIsValid = true
     if (formIsValid) {
       editAnnotation(editedAnnotation)

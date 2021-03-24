@@ -62,23 +62,6 @@ export const mockInvoices: Invoice[] = [
   },
 ]
 
-export const mockPaymentMethods: PaymentMethod[] = [
-  {
-    cardType: 'visa',
-    cardNumber: '4242424242424242',
-    expirationMonth: '02',
-    expirationYear: '2024',
-    defaultPaymentMethod: true,
-  },
-  {
-    cardType: 'mastercard',
-    cardNumber: '5242424242424242',
-    expirationMonth: '03',
-    expirationYear: '2023',
-    defaultPaymentMethod: false,
-  },
-]
-
 export const mockCreditCard: CreditCardParams = {
   id: 'cc-123',
   tenantId: 'david-1',

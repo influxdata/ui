@@ -132,6 +132,10 @@
 @import 'src/usage/GraphTypeSwitcher.scss';
 @import 'src/usage/BillingStatsPanel.scss';
 @import 'src/visualization/components/internal/ValueTickInput.scss';
+@import 'src/checkout/LogoWithCubo.scss';
+@import 'src/checkout/PoweredByStripeLogo.scss';
+@import 'src/checkout/SuccessOverlay.scss';
+@import 'src/checkout/CheckoutPage.scss';
 
 // External
 @import '../../node_modules/@influxdata/react-custom-scrollbars/dist/styles.css';

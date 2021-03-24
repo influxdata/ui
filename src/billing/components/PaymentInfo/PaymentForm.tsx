@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useEffect} from 'react'
 import {
   Alert,
   ComponentColor,
@@ -9,29 +9,24 @@ import {
   TechnoSpinner,
 } from '@influxdata/clockface'
 
-// Utils
-// import {useBilling} from 'src/billing/components/BillingPage'
-
 // Types
-// import {CreditCardParams} from 'src/types/billing'
+import {CreditCardParams} from 'src/types/billing'
 
 interface Props {
+  zuoraParams: CreditCardParams
   onSubmit: (response: any) => void
   errorMessage: string
 }
 
-const PaymentForm: FC<Props> = ({errorMessage}) => {
-  // const [{creditCards}] = useBilling()
-
+const PaymentForm: FC<Props> = ({zuoraParams, onSubmit, errorMessage}) => {
   /**
    * For context, Z is a globally defined ZuoraClient in Quartz
    * that is set when the ZuoraAPI is queried. In this case, Z serves as a
    * a hosted iframe to render a credit card form to the UI
    */
-  // TODO(ariel): uncomment this when we get to define Z
-  // useEffect(
-  //   () => typeof Z !== 'undefined' && Z.render(creditCards, {}, onSubmit)
-  // )
+  useEffect(
+    () => typeof Z !== 'undefined' && Z.render(zuoraParams, {}, onSubmit)
+  )
 
   return (
     <>

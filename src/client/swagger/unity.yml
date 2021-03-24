@@ -726,8 +726,8 @@ components:
           type: string
         balanceThreshold:
           description: threshold for notification
-          type: string
-        notify:
+          type: number
+        isNotify:
           description: whether the user will be notified about their balance
           type: boolean
     Invite:

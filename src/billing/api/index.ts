@@ -1,21 +1,27 @@
+import {Inputs} from 'src/checkout/context/checkout'
 import {
   getAccount as apiGetAccount,
   getBilling,
+  postCheckout,
   getSettingsNotifications,
   getPaymentForm,
   getBillingInvoices,
 } from 'src/client/unityRoutes'
 
-import {RemoteDataState} from 'src/types'
+import {RemoteDataState, CheckoutRequest} from 'src/types'
 import {
   Account,
   Invoice,
   CreditCardParams,
-  BillingNotifySettings,
   BillingInfo,
+  BillingNotifySettings,
 } from 'src/types/billing'
 
-const makeResponse = (status, data) => {
+const makeResponse = (status, data, ...args) => {
+  for (let i = 0; i < args.length; i++) {
+    console.log(args[i]) // eslint-disable-line no-console
+  }
+
   return Promise.resolve({
     status,
     headers: new Headers({'Content-Type': 'application/json'}),
@@ -30,7 +36,7 @@ export const getAccount = (): ReturnType<typeof apiGetAccount> => {
     type: 'free',
     status: RemoteDataState.Done,
   }
-  return makeResponse(200, account)
+  return makeResponse(200, account, 'getBillingAccount')
 }
 
 export const getBillingInfo = (): ReturnType<typeof getBilling> => {
@@ -73,17 +79,38 @@ export const getBillingCreditCard = (): ReturnType<typeof getPaymentForm> => {
     url: 'you-are-el',
     status: RemoteDataState.Done,
   }
-  return makeResponse(200, cc)
+
+  return makeResponse(200, cc, 'getBillingCreditCard')
+}
+
+export const getCheckoutZuoraParams = (): ReturnType<typeof getPaymentForm> => {
+  const zp: CreditCardParams = {
+    style: 'inline',
+    url: 'you-are-el',
+    submitEnabled: 'false',
+    tenantId: '12345',
+    token: 'TOW-KEN',
+    key: 'KEE',
+    signature: 'SIGNATURE',
+    id: 'eye-dee',
+    status: RemoteDataState.Done,
+  }
+
+  return makeResponse(204, zp)
 }
 
 export const getBillingNotificationSettings = (): ReturnType<typeof getSettingsNotifications> => {
   const billingNotifySettings: BillingNotifySettings = {
     isNotify: true,
-    balanceThreshold: 1000000,
+    balanceThreshold: 10,
     notifyEmail: 'asalem@influxdata.com',
     status: RemoteDataState.Done,
   }
-  return makeResponse(200, billingNotifySettings)
+  return makeResponse(
+    200,
+    billingNotifySettings,
+    'getBillingNotificationSettings'
+  )
 }
 
 export const getInvoices = (): ReturnType<typeof getBillingInvoices> => {
@@ -120,5 +147,42 @@ export const getInvoices = (): ReturnType<typeof getBillingInvoices> => {
     },
   ]
 
-  return makeResponse(200, invoices)
+  return makeResponse(200, invoices, 'getInvoices')
+}
+
+export const makeCheckoutPayload = (data: Inputs): CheckoutRequest => {
+  const {
+    shouldNotify,
+    notifyEmail,
+    balanceThreshold,
+    paymentMethodId,
+    country,
+    intlSubdivision,
+    usSubdivision,
+    street1,
+    street2,
+    city,
+    postalCode,
+  } = data
+  return {
+    isNotify: shouldNotify,
+    notifyEmail,
+    balanceThreshold,
+    paymentMethodId,
+    country,
+    subdivision: usSubdivision ?? intlSubdivision,
+    street1,
+    street2,
+    city,
+    postalCode,
+    status: RemoteDataState.Done,
+  }
+}
+
+export const postCheckoutInformation = async (
+  data: Inputs
+): ReturnType<typeof postCheckout> => {
+  const paymentInformation = makeCheckoutPayload(data)
+
+  return makeResponse(201, paymentInformation, 'postCheckoutInformation', data)
 }

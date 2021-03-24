@@ -7,8 +7,9 @@ import {
   Account,
   BillingInfo,
   BillingNotifySettings,
-  CreditCardParams,
   Invoice,
+  PaymentMethod,
+  CreditCardParams,
 } from 'src/types/billing'
 
 export interface BillingState {
@@ -16,6 +17,7 @@ export interface BillingState {
   billingInfo: BillingInfo
   billingSettings: BillingNotifySettings
   creditCard: CreditCardParams
+  creditCards: CreditCardParams
   invoices: Invoice[]
   invoicesStatus: RemoteDataState
 }
@@ -41,6 +43,7 @@ export const initialState = (): BillingState => ({
     notifyEmail: '',
     status: RemoteDataState.NotStarted,
   },
+  creditCards: null,
   creditCard: null,
   invoices: null,
   invoicesStatus: RemoteDataState.NotStarted,
@@ -96,6 +99,26 @@ export const setInvoicesStatus = (status: RemoteDataState) =>
   ({
     type: 'SET_INVOICES_STATUS',
     invoiceStatus: status,
+  } as const)
+
+export const setPaymentMethods = (
+  paymentMethods: PaymentMethod[],
+  creditCards: CreditCardParams,
+  paymentMethodsStatus: RemoteDataState
+) =>
+  ({
+    type: 'SET_PAYMENT_METHODS',
+    paymentMethods,
+    creditCards,
+    paymentMethodsStatus,
+  } as const)
+
+export const setPaymentMethodsStatus = (
+  paymentMethodsStatus: RemoteDataState
+) =>
+  ({
+    type: 'SET_PAYMENT_METHODS_STATUS',
+    paymentMethodsStatus,
   } as const)
 
 export const setCreditCard = (creditCard: CreditCardParams) =>

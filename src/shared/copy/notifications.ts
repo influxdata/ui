@@ -90,6 +90,14 @@ export const resultTooLarge = (bytesRead: number): Notification => ({
   message: `Large response truncated to first ${bytesFormatter(bytesRead)}`,
 })
 
+// Checkout Notifications
+export const submitError = (): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message:
+    'There was an error submitting the upgrade request, please try again.',
+})
+
 // Onboarding notifications
 export const SetupSuccess: Notification = {
   ...defaultSuccessNotification,

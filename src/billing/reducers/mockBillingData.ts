@@ -3,8 +3,8 @@ import {
   Account,
   BillingInfo,
   BillingNotifySettings,
-  CreditCardParams,
   Invoice,
+  CreditCardParams,
 } from 'src/types/billing'
 
 export const mockAccount: Account = {

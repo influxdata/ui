@@ -7,7 +7,7 @@ import PaymentDisplay from './PaymentDisplay'
 import PaymentForm from './PaymentForm'
 
 // Types
-import {ZuoraResponse} from 'src/types/billing'
+import {CreditCardParams, ZuoraResponse} from 'src/types/billing'
 
 interface Props {
   isEditing: boolean
@@ -43,7 +43,12 @@ const PaymentPanelBody: FC<Props> = ({isEditing, onCancel}) => {
   if (isEditing) {
     return (
       <Panel.Body size={ComponentSize.Large}>
-        <PaymentForm onSubmit={onSubmit} errorMessage={errorMessage} />
+        {/* FIXME: Add zuoraParams functionality */}
+        <PaymentForm
+          zuoraParams={{} as CreditCardParams}
+          onSubmit={onSubmit}
+          errorMessage={errorMessage}
+        />
       </Panel.Body>
     )
   }

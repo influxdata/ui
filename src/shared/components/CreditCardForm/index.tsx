@@ -7,9 +7,9 @@ export const ZUORA_SCRIPT_URL =
   'https://apisandboxstatic.zuora.com/Resources/libs/hosted/1.3.0/zuora-min.js'
 export const ZUORA_ID = 'zuora_payment'
 
-type Props = {
+interface Props {
   zuoraParams: CreditCardParams
-  onSubmit: (_) => void
+  onSubmit: (paymentMethodId) => void
 }
 
 // FIXME: Add onFocus functionality
@@ -50,10 +50,6 @@ const CreditCardForm: FC<Props> = ({zuoraParams, onSubmit}) => {
       script.onload = () => {
         setClient(window.Z)
       }
-    }
-
-    return () => {
-      client && document.body.removeChild(document.getElementById(scriptId))
     }
   }, [client])
 

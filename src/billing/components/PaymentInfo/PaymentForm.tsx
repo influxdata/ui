@@ -15,7 +15,7 @@ import CreditCardForm from 'src/shared/components/CreditCardForm'
 
 interface Props {
   zuoraParams: CreditCardParams
-  onSubmit: (response: any) => void
+  onSubmit: (paymentMethodId: string) => void
   errorMessage: string
 }
 

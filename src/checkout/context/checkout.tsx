@@ -131,7 +131,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
 
   const getZuoraParams = useCallback(async () => {
     const response = await getCheckoutZuoraParams()
-    if (response.status !== 204) {
+    if (response.status !== 200) {
       const error = response.data
 
       throw new Error(error.message)

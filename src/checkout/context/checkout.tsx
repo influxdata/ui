@@ -19,7 +19,7 @@ import {submitError} from 'src/shared/copy/notifications'
 // Types
 import {RemoteDataState} from 'src/types'
 import {BillingNotifySettings, CreditCardParams} from 'src/types/billing'
-import { getErrorMessage } from 'src/utils/api'
+import {getErrorMessage} from 'src/utils/api'
 
 export type Props = {
   children: JSX.Element

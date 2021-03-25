@@ -14,7 +14,7 @@ import {
   getBillingCreditCardParams,
   putBillingPaymentMethodId,
 } from 'src/billing/api'
-import { getErrorMessage } from 'src/utils/api'
+import {getErrorMessage} from 'src/utils/api'
 
 interface Props {
   isEditing: boolean

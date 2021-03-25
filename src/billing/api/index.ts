@@ -32,7 +32,7 @@ const makeResponse = (status, data, ...args) => {
 export const getAccount = (): ReturnType<typeof apiGetAccount> => {
   const account: Account = {
     id: 'account_1',
-    marketplace: 'AWS',
+    marketplace: null,
     type: 'free',
     status: RemoteDataState.Done,
   }

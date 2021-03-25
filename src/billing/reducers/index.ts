@@ -26,7 +26,7 @@ export const initialState = (): BillingState => ({
   account: {
     status: RemoteDataState.NotStarted,
     id: null,
-    marketplace: '',
+    marketplace: null,
     type: 'free',
   },
   billingInfo: {

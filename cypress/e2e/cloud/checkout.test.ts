@@ -57,18 +57,15 @@ describe('Checkout Page', () => {
     cy.getByTestID('checkout-upgrade--button').click()
 
     // Check all errors are visible
-    cy.getByTestID('balanceThreshold--form-element-error').should('be.visible')
     cy.getByTestID('balanceThreshold--form-element-error').contains(
       genericError
     )
-    cy.getByTestID('notifyEmail--form-element-error').should('be.visible')
     cy.getByTestID('notifyEmail--form-element-error').contains(genericError)
 
     // Check balance threshold specific error should exist
     cy.getByTestID('balanceThreshold--input')
       .clear()
       .type('0')
-    cy.getByTestID('balanceThreshold--form-element-error').should('be.visible')
     cy.getByTestID('balanceThreshold--form-element-error').contains(numberError)
 
     cy.getByTestID('notifyEmail--input')

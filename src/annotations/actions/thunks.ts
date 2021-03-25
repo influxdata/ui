@@ -10,7 +10,7 @@ import {
   setAnnotations,
   setAnnotationStreams,
   Action as AnnotationAction,
-  editAnnotation as patchAnnotation,
+  editAnnotation as editAnnotationAction,
   deleteAnnotation as deleteAnnotationAction,
 } from 'src/annotations/actions/creators'
 
@@ -59,5 +59,5 @@ export const editAnnotation = annotation => async (
     ...annotation,
     endTime: annotation.startTime,
   })
-  dispatch(patchAnnotation(updatedAnnotation))
+  dispatch(editAnnotationAction(updatedAnnotation))
 }

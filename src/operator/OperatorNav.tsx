@@ -8,14 +8,14 @@ import {
   PopoverInteraction,
 } from '@influxdata/clockface'
 import {Link} from 'react-router-dom'
-import {User} from 'src/types/operator'
 import {get} from 'lodash'
 
-interface Props {
-  operator: User
-}
+// interface Props {
+//   operator: User
+// }
 
-const OperatorNav: FC<Props> = ({operator}) => {
+const OperatorNav: FC = () => {
+  // TODO(ariel): get the operator here
   return (
     <ReflessPopover
       position={PopoverPosition.ToTheLeft}
@@ -23,7 +23,7 @@ const OperatorNav: FC<Props> = ({operator}) => {
       hideEvent={PopoverInteraction.Click}
       contents={() => (
         <>
-          <p>{get(operator, 'email', '')}</p>
+          <p>{get(operator ?? {}, 'email', '')}</p>
           <Link to="/logout" data-testid="logout-button">
             Logout
           </Link>

@@ -36,8 +36,6 @@ import {
   UsersPage,
   UsagePage,
   BillingPage,
-  OperatorPage,
-  OrgOverlay,
 } from 'src/shared/containers'
 
 // Types
@@ -239,21 +237,6 @@ const SetOrg: FC<Props> = ({
           {/* Usage */}
           {CLOUD && isFlagEnabled('unity-usage') && (
             <Route path={`${orgPath}/unity-usage`} component={UsagePage} />
-          )}
-
-          {/* Operator */}
-          {CLOUD && isFlagEnabled('unity-operator') && (
-            <>
-              <Route path={`${orgPath}/operator`} component={OperatorPage} />
-              <Route
-                path={`${orgPath}/operator/accounts/:id`}
-                component={OperatorPage}
-              />
-              <Route
-                path={`${orgPath}/operator/organizations/:orgID`}
-                component={OrgOverlay}
-              />
-            </>
           )}
 
           {/* Managed Functions */}

@@ -13,7 +13,7 @@ import {getStore} from 'src/store/configureStore'
 import {history} from 'src/store/history'
 
 // Components
-import {CheckoutPage} from 'src/shared/containers'
+import {CheckoutPage, OperatorPage, OrgOverlay} from 'src/shared/containers'
 import Setup from 'src/Setup'
 import PageSpinner from 'src/perf/components/PageSpinner'
 
@@ -76,8 +76,25 @@ class Root extends PureComponent {
         <ConnectedRouter history={history}>
           <Suspense fallback={<PageSpinner />}>
             <Switch>
+              {/* TODO(ariel): we need to restrict access to the checkout and operator pages based on specific critera:
+                https://github.com/influxdata/ui/issues/848
+               */}
               {CLOUD && isFlagEnabled('unity-checkout') && (
                 <Route path="/checkout" component={CheckoutPage} />
+              )}
+              {/* Operator Routes */}
+              {/* These are lumped under individual conditions since Switch statements expects a route as a child and can't handle React Fragments */}
+              {CLOUD && isFlagEnabled('unity-operator') && (
+                <Route exact path="/operator" component={OperatorPage} />
+              )}
+              {CLOUD && isFlagEnabled('unity-operator') && (
+                <Route path="/operator/accounts/:id" component={OperatorPage} />
+              )}
+              {CLOUD && isFlagEnabled('unity-operator') && (
+                <Route
+                  path="/operator/organizations/:orgID"
+                  component={OrgOverlay}
+                />
               )}
               <Route component={Setup} />
             </Switch>

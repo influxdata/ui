@@ -23,6 +23,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  '/me':
+    get:
+      operationId: GetMe
+      tags:
+        - Account
+        - Operator
+        - Region
+        - Organization
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the user to get.
+      responses:
+        '200':
+          description: congregated meta data for an individual account and org
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Me'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   '/billing':
     get:
       operationId: GetBilling
@@ -621,7 +650,7 @@ components:
           type: string
           description: account id
         marketplace:
-          type: string
+          $ref: '#/components/schemas/Marketplace'
           description: which marketplace, nil if none
         type:
           type: string
@@ -636,7 +665,7 @@ components:
         title:
           type: string
           description: title of the region
-      required: [title, isBeta, isAvailable, provider, region]
+      required: [title]
     BillingDate:
       properties:
         dateTime:
@@ -905,6 +934,50 @@ components:
               type: string
               format: uri
       required: [id, email, role]
+    Me:
+      properties:
+        id:
+          description: the idpe id of the user
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        orgId:
+          type: string
+        accountId:
+          type: string
+        isBeta:
+          type: boolean
+          description: whether the region associated with the account is a beta region
+        isOperator:
+          type: boolean
+          description: whether the user is an operator
+        marketplace:
+          type: string
+          description: which marketplace, nil if none
+        type:
+          type: string
+          description: type of the account
+          enum:
+            - free
+            - cancelled
+            - pay_as_you_go
+      required:
+        [
+          id,
+          accountId,
+          email,
+          firstName,
+          lastName,
+          isOperator,
+          isBeta,
+          orgId,
+          marketplace,
+          type,
+        ]
     Users:
       type: object
       properties:

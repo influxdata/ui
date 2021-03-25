@@ -4,7 +4,7 @@ import {queryBuilderFetcher} from 'src/timeMachine/apis/QueryBuilderFetcher'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-
+import {prohibitedDeselect} from 'src/shared/copy/notifications'
 // API
 import {normalize} from 'normalizr'
 import {get} from 'lodash'
@@ -18,6 +18,7 @@ import {
   GetState,
   RemoteDataState,
   ResourceType,
+  NotificationAction,
 } from 'src/types'
 import {
   Action as AlertBuilderAction,
@@ -55,7 +56,7 @@ import {
   setFunctions,
 } from 'src/timeMachine/actions/queryBuilder'
 import {setBuckets} from 'src/buckets/actions/creators'
-
+import {notify} from 'src/shared/actions/notifications'
 // Constants
 import {LIMIT} from 'src/resources/constants'
 import {AGG_WINDOW_AUTO} from 'src/timeMachine/constants/queryBuilder'
@@ -352,7 +353,7 @@ export const selectTagValue = (index: number, value: string) => (
 }
 
 export const multiSelectBuilderFunction = (name: string) => (
-  dispatch: Dispatch<Action>,
+  dispatch: Dispatch<Action | NotificationAction>,
   getState: GetState
 ) => {
   const {draftQueries, activeQueryIndex} = getActiveTimeMachine(getState())
@@ -368,6 +369,8 @@ export const multiSelectBuilderFunction = (name: string) => (
     if (functions.length > 1) {
       // if more than one function is selected, remove clicked from selected
       dispatch(setFunctions(functionNames.filter(n => n != name)))
+    } else {
+      dispatch(notify(prohibitedDeselect()))
     }
   }
 }

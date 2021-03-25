@@ -20,8 +20,7 @@ const Results: FC = () => {
   const [height, setHeight] = useState(MINIMUM_RESIZER_HEIGHT)
   const [visibility, setVisibility] = useState('visible' as Visibility)
   const meta = flow.meta.get(id)
-  const resultsExist =
-    !!results && !!results.raw && !!results.parsed.table.length
+  const resultsExist = !!(results?.parsed?.table || []).length
 
   let emptyText
   if (meta.loading === RemoteDataState.NotStarted) {

@@ -1,35 +1,19 @@
-import React from 'react'
+import React, {FC, useContext} from 'react'
 import {CTAButton, ComponentColor} from '@influxdata/clockface'
-import {RouteComponentProps, withRouter} from 'react-router'
+import {CheckoutContext} from 'src/checkout/context/checkout'
 
-type ButtonClickEvent = React.MouseEvent<HTMLButtonElement>
-
-interface OwnProps {
-  text?: string
-  onClick?: (e: ButtonClickEvent) => void
-}
-
-type Props = OwnProps & RouteComponentProps
-
-const CancelButton: React.FC<Props> = ({history, text = 'Cancel'}) => {
-  const handleClick = () => {
-    // FIXME: Issue - https://github.com/influxdata/ui/issues/877
-    // if (!!window?._abcr) {
-    //   window?._abcr.triggerAbandonedCart()
-    // }
-
-    history.push('/')
-  }
+const CancelButton: FC = () => {
+  const {handleCancelClick} = useContext(CheckoutContext)
 
   return (
     <CTAButton
       color={ComponentColor.Default}
-      onClick={handleClick}
-      text={text}
+      onClick={handleCancelClick}
+      text="Cancel"
       id="button-cancel" // for google-analytics
       testID="checkout-cancel--button"
     />
   )
 }
 
-export default withRouter(CancelButton)
+export default CancelButton

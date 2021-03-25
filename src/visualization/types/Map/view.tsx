@@ -41,7 +41,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
       }
     }
     getToken()
-  })
+  }, [])
 
   let error = ''
 
@@ -52,7 +52,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     lon,
   }
   try {
-    calculatedGeoCoordinates = getGeoCoordinates(result.table, 0)
+    calculatedGeoCoordinates = getGeoCoordinates(result.table)
   } catch (err) {
     setErrorCode(MapErrorStates.InvalidCoordinates)
   }

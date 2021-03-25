@@ -797,10 +797,10 @@
   resolved "https://registry.yarnpkg.com/@influxdata/flux/-/flux-0.5.1.tgz#e39e7a7af9163fc9494422c8fed77f3ae1b68f56"
   integrity sha512-GHlkXBhSdJ2m56JzDkbnKPAqLj3/lexPooacu14AWTO4f2sDGLmzM7r0AxgdtU1M2x7EXNBwgGOI5EOAdN6mkw==
 
-"@influxdata/giraffe@^2.6.2":
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.6.2.tgz#3c5b7c565d1c046782efcb3ea740eb5ee6d430ea"
-  integrity sha512-hZS3E8Mh8E8eSbgr7ztkGwPX/lDdP1SVJhJbyzW3InzOR8swYPQwozkQpdAsXDroLCzWlB68ZBpheyIpOJxOIQ==
+"@influxdata/giraffe@^2.6.3":
+  version "2.6.3"
+  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.6.3.tgz#6de51d52dd0e4e5ec2f0d8ed5163872e2f9ec2bd"
+  integrity sha512-ZFMZxUDPoWqt3KASYeFXmuv12DzPgTNcUkMjEDlb3GpCqoyTErpXJMXpTXTaQ4LBOLNzx8govoG1w1aXA/hSiA==
   dependencies:
     merge-images "^2.0.0"
 
@@ -7669,11 +7669,6 @@ loglevel@^1.6.6:
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.6.7.tgz#b3e034233188c68b889f5b862415306f565e2c56"
   integrity sha512-cY2eLFrQSAfVPhCgH1s7JI73tMbg9YC3v3+ZHVW67sBS7UxWzNEk/ZBbSfLykBWHp33dqqtOv82gjhKEi81T/A==
 
-long@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/long/-/long-3.2.0.tgz#d821b7138ca1cb581c172990ef14db200b5c474b"
-  integrity sha1-2CG3E4yhy1gcFymQ7xTbIAtcR0s=
-
 longest@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/longest/-/longest-1.0.1.tgz#30a0b2da38f73770e8294a0d22e6625ed77d0097"
@@ -10587,13 +10582,6 @@ rxjs@^6.4.0:
   integrity sha512-Z9Yfa11F6B9Sg/BK9MnqnQ+aQYicPLtilXBp2yUtDt2JRCE0h26d33EnfO3ZxoNxG0T92OUucP3Ct7cpfkdFfw==
   dependencies:
     tslib "^1.9.0"
-
-s2-geometry@^1.2.10:
-  version "1.2.10"
-  resolved "https://registry.yarnpkg.com/s2-geometry/-/s2-geometry-1.2.10.tgz#c6ff22f3eccafd0eea491b60b44c141b9887acab"
-  integrity sha1-xv8i8+zK/Q7qSRtgtEwUG5iHrKs=
-  dependencies:
-    long "^3.2.0"
 
 safe-buffer@5.1.1:
   version "5.1.1"

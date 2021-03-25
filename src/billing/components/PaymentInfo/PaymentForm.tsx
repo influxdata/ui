@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect} from 'react'
+import React, {FC} from 'react'
 import {
   Alert,
   ComponentColor,
@@ -11,6 +11,7 @@ import {
 
 // Types
 import {CreditCardParams} from 'src/types/billing'
+import CreditCardForm from 'src/shared/components/CreditCardForm'
 
 interface Props {
   zuoraParams: CreditCardParams
@@ -24,9 +25,6 @@ const PaymentForm: FC<Props> = ({zuoraParams, onSubmit, errorMessage}) => {
    * that is set when the ZuoraAPI is queried. In this case, Z serves as a
    * a hosted iframe to render a credit card form to the UI
    */
-  useEffect(
-    () => typeof Z !== 'undefined' && Z.render(zuoraParams, {}, onSubmit)
-  )
 
   return (
     <>
@@ -45,11 +43,7 @@ const PaymentForm: FC<Props> = ({zuoraParams, onSubmit, errorMessage}) => {
         spinnerComponent={<TechnoSpinner />}
         className="billing-payment--spinner"
       />
-      <div
-        id="zuora_payment"
-        className="billing-form--frame"
-        data-testid="payment-form"
-      />
+      <CreditCardForm zuoraParams={zuoraParams} onSubmit={onSubmit} />
     </>
   )
 }

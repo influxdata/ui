@@ -43,7 +43,6 @@ const PaymentPanelBody: FC<Props> = ({isEditing, onCancel}) => {
   if (isEditing) {
     return (
       <Panel.Body size={ComponentSize.Large}>
-        {/* FIXME: Add zuoraParams functionality */}
         <PaymentForm
           zuoraParams={{} as CreditCardParams}
           onSubmit={onSubmit}

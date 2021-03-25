@@ -32,7 +32,7 @@ import {CheckoutContext} from 'src/checkout/context/checkout'
 // Types
 
 const CheckoutForm: FC = () => {
-  const {handleFormValidation, zuoraParams, handleSubmit, inputs} = useContext(
+  const {handleFormValidation, zuoraParams, handleSubmit} = useContext(
     CheckoutContext
   )
 
@@ -120,7 +120,6 @@ const CheckoutForm: FC = () => {
                 data-reactid="zuorapaymentform"
                 zuoraParams={zuoraParams}
                 onSubmit={handleSubmit}
-                inputs={inputs}
               />
             </Panel.Body>
           </Panel>

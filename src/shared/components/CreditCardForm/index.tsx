@@ -1,7 +1,6 @@
 import React, {FC, useEffect, useState} from 'react'
 
 // Context
-import {Inputs} from 'src/checkout/context/checkout'
 import {CreditCardParams} from 'src/client/unityRoutes'
 
 export const ZUORA_SCRIPT_URL =
@@ -11,11 +10,10 @@ export const ZUORA_ID = 'zuora_payment'
 type Props = {
   zuoraParams: CreditCardParams
   onSubmit: (_) => void
-  inputs: Inputs
 }
 
 // FIXME: Add onFocus functionality
-const CreditCardForm: FC<Props> = ({zuoraParams, onSubmit, inputs}) => {
+const CreditCardForm: FC<Props> = ({zuoraParams, onSubmit}) => {
   const [client, setClient] = useState(window.Z)
   const [paymentMethodId, setPaymentMethodId] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -76,7 +74,7 @@ const CreditCardForm: FC<Props> = ({zuoraParams, onSubmit, inputs}) => {
       setIsSubmitting(true)
       submitCheckout(paymentMethodId)
     }
-  }, [paymentMethodId, onSubmit, inputs, isSubmitting, setIsSubmitting])
+  }, [paymentMethodId, onSubmit, isSubmitting, setIsSubmitting])
 
   useEffect(() => {
     if (client) {

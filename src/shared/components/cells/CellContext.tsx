@@ -7,7 +7,11 @@ import classnames from 'classnames'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {resetQueryCacheByQuery} from 'src/shared/apis/queryCache'
+import {
+  resetQueryCacheByQuery,
+  getFromQueryCacheByQuery,
+  togglePauseQuery,
+} from 'src/shared/apis/queryCache'
 
 // Components
 import {
@@ -24,14 +28,24 @@ import {FeatureFlag} from 'src/shared/utils/featureFlag'
 // Actions
 import {deleteCellAndView, createCellWithView} from 'src/cells/actions/thunks'
 
+// Selectors
+import {getAllVariables} from 'src/variables/selectors'
+
 // Types
-import {Cell, View, ViewProperties, MarkdownViewProperties} from 'src/types'
+import {
+  Cell,
+  View,
+  ViewProperties,
+  MarkdownViewProperties,
+  AppState,
+} from 'src/types'
 
 interface OwnProps {
   cell: Cell
   view: View
   onCSVDownload: () => void
   onRefresh: () => void
+  variables: string
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -42,6 +56,7 @@ const CellContext: FC<Props> = ({
   history,
   location,
   cell,
+  variables,
   onCloneCell,
   onDeleteCell,
   onCSVDownload,
@@ -93,6 +108,24 @@ const CellContext: FC<Props> = ({
       }
     }
     onRefresh()
+  }
+
+  const togglePauseCell = (): void => {
+    const viewWithQueries = view as View<
+      Exclude<ViewProperties, MarkdownViewProperties>
+    >
+    if (
+      Array.isArray(viewWithQueries.properties?.queries) &&
+      viewWithQueries.properties.queries.length
+    ) {
+      for (const query of viewWithQueries.properties.queries) {
+        const returnedQuery = getFromQueryCacheByQuery(query.text, variables)
+        if (returnedQuery) {
+          const toggled = togglePauseQuery(returnedQuery)
+          console.log(toggled)
+        }
+      }
+    }
   }
 
   const popoverContents = (onHide): JSX.Element => {
@@ -165,6 +198,18 @@ const CellContext: FC<Props> = ({
             testID="cell-context--refresh"
           />
         </FeatureFlag>
+        <FeatureFlag name="pauseCell">
+          <CellContextItem
+            label="Pause"
+            onClick={() => {
+              console.log('pause')
+              togglePauseCell()
+            }}
+            icon={IconFont.Pause}
+            onHide={onHide}
+            testID="cell-context--pause"
+          />
+        </FeatureFlag>
       </div>
     )
   }
@@ -196,11 +241,14 @@ const CellContext: FC<Props> = ({
   )
 }
 
+const mstp = (state: AppState) => ({
+  variables: getAllVariables(state),
+})
 const mdtp = {
   onDeleteCell: deleteCellAndView,
   onCloneCell: createCellWithView,
 }
 
-const connector = connect(null, mdtp)
+const connector = connect(mstp, mdtp)
 
 export default withRouter(connector(CellContext))

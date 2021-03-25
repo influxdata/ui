@@ -76,7 +76,7 @@ export const annotationsReducer = (
         ...state,
         annotations: {
           default: state.annotations['default'].filter(
-            a => a.id !== action.annotation.id
+            annotation => annotation.id !== action.annotation.id
           ),
         },
       }

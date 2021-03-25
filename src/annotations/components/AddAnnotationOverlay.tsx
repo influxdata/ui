@@ -16,8 +16,11 @@ export const AddAnnotationOverlay: FC = () => {
   const {createAnnotation, startTime} = useSelector(getOverlayParams)
 
   const handleSubmit = (modifiedAnnotation): void => {
-    createAnnotation(modifiedAnnotation)
-    onClose()
+    const formIsValid = true
+    if (formIsValid) {
+      createAnnotation(modifiedAnnotation)
+      onClose()
+    }
   }
 
   return (

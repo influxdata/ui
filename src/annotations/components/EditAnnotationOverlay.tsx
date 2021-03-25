@@ -16,14 +16,30 @@ import {editAnnotation} from 'src/annotations/actions/thunks'
 // Types
 import {EditAnnotationState} from 'src/annotations/components/EditAnnotationForm'
 
+// Notifications
+import {
+  editAnnotationSuccess,
+  editAnnotationFailed,
+} from 'src/shared/copy/notifications'
+
+import {notify} from 'src/shared/actions/notifications'
+
 export const EditAnnotationOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
   const dispatch = useDispatch()
   const {clickedAnnotation} = useSelector(getOverlayParams)
 
   const handleSubmit = (editedAnnotation: EditAnnotationState): void => {
-    dispatch(editAnnotation(editedAnnotation))
-    onClose()
+    const formIsValid = true
+    if (formIsValid) {
+      try {
+        dispatch(editAnnotation(editedAnnotation))
+        dispatch(notify(editAnnotationSuccess()))
+        onClose()
+      } catch (err) {
+        dispatch(notify(editAnnotationFailed(err)))
+      }
+    }
   }
 
   return (

@@ -61,6 +61,11 @@ import {
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
+// Notifications
+import {createAnnotationFailed} from 'src/shared/copy/notifications'
+
+import {notify} from 'src/shared/actions/notifications'
+
 interface Props extends VisualizationProps {
   properties: XYViewProperties
 }
@@ -180,15 +185,21 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
     const createAnnotation = userModifiedAnnotation => {
       const {message, startTime} = userModifiedAnnotation
       event('xyplot.annotations.create_annotation.create')
-      dispatch(
-        writeThenFetchAndSetAnnotations([
-          {
-            summary: message,
-            startTime: new Date(startTime).getTime(),
-            endTime: new Date(startTime).getTime(),
-          },
-        ])
-      )
+      try {
+        dispatch(
+          writeThenFetchAndSetAnnotations([
+            {
+              summary: message,
+              startTime: new Date(startTime).getTime(),
+              endTime: new Date(startTime).getTime(),
+            },
+          ])
+        )
+        event('xyplot.annotations.create_annotation.create')
+      } catch (err) {
+        dispatch(notify(createAnnotationFailed(err)))
+        event('xyplot.annotations.create_annotation.failure')
+      }
     }
 
     const singleClickHandler = (

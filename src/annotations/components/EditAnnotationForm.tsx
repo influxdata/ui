@@ -29,6 +29,13 @@ import {Annotation} from 'src/types'
 // Style
 import 'src/annotations/components/editAnnotationForm.scss'
 
+// Notifications
+import {
+  deleteAnnotationFailed,
+  deleteAnnotationSuccess,
+} from 'src/shared/copy/notifications'
+import {notify} from 'src/shared/actions/notifications'
+
 export interface EditAnnotationState {
   startTime: string
   summary: string
@@ -68,8 +75,13 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
   }
 
   const handleDeleteAnnotation = () => {
-    dispatch(deleteAnnotations(editAnnotationState))
-    handleClose()
+    try {
+      dispatch(deleteAnnotations(editAnnotationState))
+      dispatch(notify(deleteAnnotationSuccess()))
+      handleClose()
+    } catch (err) {
+      dispatch(notify(deleteAnnotationFailed(err)))
+    }
   }
 
   const annotationStreams = useSelector(getAnnotationStreams)

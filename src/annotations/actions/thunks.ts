@@ -5,14 +5,6 @@ import {
   updateAnnotation,
   writeAnnotation,
 } from 'src/annotations/api'
-import {notify} from 'src/shared/actions/notifications'
-import {
-  deleteAnnotationSuccess,
-  deleteAnnotationFailed,
-  createAnnotationFailed,
-  editAnnotationSuccess,
-  editAnnotationFailed,
-} from 'src/shared/copy/notifications'
 import {Dispatch} from 'react'
 import {
   setAnnotations,
@@ -45,41 +37,27 @@ export const writeThenFetchAndSetAnnotations = (
 ) => async (
   dispatch: Dispatch<AnnotationAction | NotificationAction>
 ): Promise<void> => {
-  try {
-    await writeAnnotation(annotations)
+  await writeAnnotation(annotations)
 
-    fetchAndSetAnnotations()(dispatch)
-  } catch (err) {
-    dispatch(notify(createAnnotationFailed(err)))
-  }
+  fetchAndSetAnnotations()(dispatch)
 }
 export const deleteAnnotations = annotation => async (
   dispatch: Dispatch<AnnotationAction | NotificationAction>
 ) => {
-  try {
-    await deleteAnnotation({
-      ...annotation,
-      endTime: annotation.startTime,
-      stream: 'default',
-    })
-    dispatch(deleteAnnotationAction(annotation))
-    dispatch(notify(deleteAnnotationSuccess()))
-  } catch (err) {
-    dispatch(notify(deleteAnnotationFailed(err)))
-  }
+  await deleteAnnotation({
+    ...annotation,
+    endTime: annotation.startTime,
+    stream: 'default',
+  })
+  dispatch(deleteAnnotationAction(annotation))
 }
 
 export const editAnnotation = annotation => async (
   dispatch: Dispatch<AnnotationAction | NotificationAction>
 ) => {
-  try {
-    const updatedAnnotation = await updateAnnotation({
-      ...annotation,
-      endTime: annotation.startTime,
-    })
-    dispatch(patchAnnotation(updatedAnnotation))
-    dispatch(notify(editAnnotationSuccess()))
-  } catch (err) {
-    dispatch(notify(editAnnotationFailed(err)))
-  }
+  const updatedAnnotation = await updateAnnotation({
+    ...annotation,
+    endTime: annotation.startTime,
+  })
+  dispatch(patchAnnotation(updatedAnnotation))
 }

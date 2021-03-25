@@ -9,7 +9,6 @@ import {notify} from 'src/shared/actions/notifications'
 import {
   deleteAnnotationSuccess,
   deleteAnnotationFailed,
-  createAnnotationSuccess,
   createAnnotationFailed,
   editAnnotationSuccess,
   editAnnotationFailed,
@@ -50,7 +49,6 @@ export const writeThenFetchAndSetAnnotations = (
     await writeAnnotation(annotations)
 
     fetchAndSetAnnotations()(dispatch)
-    dispatch(notify(createAnnotationSuccess()))
   } catch (err) {
     dispatch(notify(createAnnotationFailed(err)))
   }

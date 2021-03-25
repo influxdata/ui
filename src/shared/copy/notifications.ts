@@ -1108,12 +1108,6 @@ export const editAnnotationFailed = (error: string): Notification => ({
   message: `Failed to edit annotation: ${error}`,
 })
 
-export const createAnnotationSuccess = (): Notification => ({
-  ...defaultSuccessNotification,
-  icon: IconFont.Checkmark,
-  message: 'Successfully created annotation',
-})
-
 export const createAnnotationFailed = (error: string): Notification => ({
   ...defaultErrorNotification,
   icon: IconFont.Cube,

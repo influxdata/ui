@@ -283,10 +283,13 @@ describe('Dashboard', () => {
       })
     })
 
-    it.only('can manage variable state with a lot of pointing and clicking', () => {
+    it('can manage variable state with a lot of pointing and clicking', () => {
       const bucketOne = 'b1'
       const bucketThree = 'b3'
       const bucketVarName = 'bucketsCSV'
+      const bucket4 = 'anotherBucket'
+      const bucket5 = 'randomBucket'
+
       const mapTypeVarName = 'mapTypeVar'
       const bucketVarIndex = 0
       const mapTypeVarIndex = 2
@@ -297,6 +300,8 @@ describe('Dashboard', () => {
               bucketOne,
               defaultBucket,
               bucketThree,
+              bucket4,
+              bucket5,
             ])
 
             cy.createQueryVariable(orgID)
@@ -387,14 +392,69 @@ describe('Dashboard', () => {
                 `?lower=now%28%29%20-%201h&vars%5BbucketsCSV%5D=${defaultBucket}`
               )
 
+              //start new stuff for typeAheadDropdown here!
+
+              //type in the input!
+              cy.getByTestID(
+                `variable-dropdown-input-typeAhead--${bucketVarName}`
+              ).clear()
+
+              cy.getByTestID(
+                `variable-dropdown-input-typeAhead--${bucketVarName}`
+              ).type('an')
+
+              //dropdown should  be showing: anotherBucket', 'randomBucket'
+
+              //hit down arrow once:
+
+              cy.getByTestID(
+                `variable-dropdown-input-typeAhead--${bucketVarName}`
+              ).type('{downarrow}')
+
+              //first element should be active (highlighted)
+              cy.get(`#anotherBucket`).should('have.class', 'active')
+
+              //hit down arrow again
+              cy.getByTestID(
+                `variable-dropdown-input-typeAhead--${bucketVarName}`
+              ).type('{downarrow}')
+
+              //next one should be active (first should NOT be active)
+              cy.get(`#anotherBucket`).should('not.have.class', 'active')
+              cy.get(`#randomBucket`).should('have.class', 'active')
+
+              //now; press return/enter to set it:
+              cy.getByTestID(
+                `variable-dropdown-input-typeAhead--${bucketVarName}`
+              ).type('{enter}')
+
+              // selected value in dashboard is 'randomBucket' value
+              cy.getByTestID(
+                `variable-dropdown-input-typeAhead--${bucketVarName}`
+              ).should('have.value', 'randomBucket')
+
+              //now:  clear the text area, write some text that doesn't match anything,
+              //then click outside; it should revert back to 'randomBucket'
+
+              //type in the input!
+              cy.getByTestID(
+                `variable-dropdown-input-typeAhead--${bucketVarName}`
+              ).clear()
+
+              cy.getByTestID(
+                `variable-dropdown-input-typeAhead--${bucketVarName}`
+              ).type('nothingM')
+
+              //end typeAhead section; rest is normal behavoir
+
               // open VEO
               cy.getByTestID('cell-context--toggle').click()
               cy.getByTestID('cell-context--configure').click()
 
-              // selected value in cell context is 2nd value
+              // selected value in cell context is 2nd value (making sure it reverts back!)
               cy.window()
                 .pipe(getSelectedVariable(dashboard.id, 0))
-                .should('equal', defaultBucket)
+                .should('equal', bucket5)
 
               cy.getByTestID('toolbar-tab').click()
               cy.get('.flux-toolbar--list-item')
@@ -421,7 +481,6 @@ describe('Dashboard', () => {
               cy.window()
                 .pipe(getSelectedVariable(dashboard.id, 0))
                 .should('equal', bucketOne)
-              cy.pause()
 
               // selected value in dashboard is 1st value
               cy.getByTestID(
@@ -532,6 +591,196 @@ describe('Dashboard', () => {
               // assert visualization appears
               cy.getByTestID('giraffe-layer-line').should('exist')
             })
+          })
+        })
+      })
+    })
+
+    it.only('dependent variables reload properly', () => {
+      const bucketOne = 'b1'
+      const bucketThree = 'b3'
+      const bucketVarName = 'bucketsCSV'
+      const bucket4 = 'anotherBucket'
+      const bucket5 = 'randomBucket'
+
+      const dependentTypeVarName = 'greeting'
+      const bucketVarIndex = 0
+
+      cy.get('@org').then(({id: orgID}: Organization) => {
+        cy.get<Dashboard>('@dashboard').then(({dashboard}) => {
+          cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
+            cy.createCSVVariable(orgID, bucketVarName, [
+              bucketOne,
+              defaultBucket,
+              bucketThree,
+              bucket4,
+              bucket5,
+            ])
+
+            cy.createQueryVariable(
+              orgID,
+              'greeting',
+              `import "csv"
+data = "#group,false,false,false,false
+#datatype,string,long,string,string
+#default,_result,,,
+,result,table,_value,bucket
+,,0,hola,b1
+,,0,adios,b1
+,,0,bonjour,defbuck
+,,0,hello,b3
+,,0,goodbye,b3
+,,0,seeya,b3
+"
+csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
+            )
+
+            cy.fixture('routes').then(({orgs}) => {
+              cy.visit(`${orgs}/${orgID}/dashboards/${dashboard.id}`)
+              cy.getByTestID('tree-nav')
+            })
+            // add cell with variable in its query
+            cy.getByTestID('add-cell--button').click()
+            cy.getByTestID('switch-to-script-editor').should('be.visible')
+            cy.getByTestID('switch-to-script-editor').click()
+            cy.getByTestID('toolbar-tab').click()
+
+            cy.getByTestID('flux-editor')
+              .should('be.visible')
+              .click()
+              .focused()
+              .clear()
+              .type(
+                `from(bucket: v.bucketsCSV)
+|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+|> filter(fn: (r) => r["_field"] == v.greeting)
+|> aggregateWindow(every: v.windowPeriod, fn: max)
+|> yield(name: "max")`,
+                {force: true, delay: 1}
+              )
+            cy.get('.flux-toolbar--list-item')
+              .eq(bucketVarIndex)
+              .within(() => {
+                cy.get('.cf-button').click()
+              })
+            cy.getByTestID('save-cell--button').click()
+
+            //ok; now check that 'b1' is selected and 'greeting' has 'adios' selected
+            cy.getByTestID(
+              `variable-dropdown-input-typeAhead--${bucketVarName}`
+            ).should('have.value', bucketOne)
+
+            cy.getByTestID(
+              `variable-dropdown-input-typeAhead--${dependentTypeVarName}`
+            ).should('have.value', 'adios')
+
+            //hit downarrow in the second dropdown:
+            cy.getByTestID(
+              `variable-dropdown-input-typeAhead--${dependentTypeVarName}`
+            ).type('{downarrow}')
+
+            //check that both 'adios' and 'hola' are showing: (and with correct classes)
+            cy.get(`#hola`).should('not.have.class', 'active')
+            cy.get(`#adios`).should('have.class', 'active')
+
+            //hit the down arrow again:
+            cy.getByTestID(
+              `variable-dropdown-input-typeAhead--${dependentTypeVarName}`
+            ).type('{downarrow}')
+
+            //check that both 'adios' and 'hola' are showing: (and with correct classes)
+            cy.get(`#hola`).should('have.class', 'active')
+
+            //'adios' is still active b/c it is selected.....
+            cy.get(`#adios`).should('have.class', 'active')
+
+            //press enter to select:
+            cy.getByTestID(
+              `variable-dropdown-input-typeAhead--${dependentTypeVarName}`
+            ).type('{enter}')
+
+            //'hola' should now be selected:
+            cy.getByTestID(
+              `variable-dropdown-input-typeAhead--${dependentTypeVarName}`
+            ).should('have.value', 'hola')
+
+            //ok!  now;  pick a different bucket:
+
+            //but first test that it only allows valid values:
+            cy.getByTestID(
+              `variable-dropdown-input-typeAhead--${bucketVarName}`
+            )
+              .type('b3')
+              .type('{enter}')
+              .should('have.value', 'b1')
+
+            //now clear it first and do it right:
+            cy.getByTestID(
+              `variable-dropdown-input-typeAhead--${bucketVarName}`
+            )
+              .clear()
+              .type('b3')
+              .type('{downarrow}')
+              .type('{enter}')
+              .should('have.value', 'b3')
+
+            //now the 'greeting' should be empty
+            cy.getByTestID(
+              `variable-dropdown-input-typeAhead--${dependentTypeVarName}`
+            ).should('have.value', '')
+
+            //click the dropdownbutton:
+            // select 2nd value in dashboard
+            cy.getByTestID('variable-dropdown--button')
+              .eq(1)
+              .click()
+
+            //verify they are all there and with no active class:
+            cy.get(`#hello`).should('not.have.class', 'active')
+            cy.get(`#goodbye`).should('not.have.class', 'active')
+            cy.get(`#seeya`).should('not.have.class', 'active')
+
+            cy.getByTestID(
+              `variable-dropdown-input-typeAhead--${dependentTypeVarName}`
+            )
+              .type('el')
+              .type('{downarrow}')
+              .type('{enter}')
+
+            cy.getByTestID(
+              `variable-dropdown-input-typeAhead--${dependentTypeVarName}`
+            ).should('have.value', 'hello')
+
+            //ok; now switch to a bucket with NO greeting vars; test that:
+
+            cy.getByTestID(
+              `variable-dropdown-input-typeAhead--${bucketVarName}`
+            )
+              .clear()
+              .type('random')
+              .type('{downarrow}')
+              .type('{enter}')
+              .should('have.value', bucket5)
+
+            //the greeting vars should NOT be there
+            cy.getByTestID(`variable-dropdown--${dependentTypeVarName}`).should(
+              'contain',
+              'No Values'
+            )
+
+            //now, go back to b3; 'hello' should be th eselected greeting
+            cy.getByTestID(
+              `variable-dropdown-input-typeAhead--${bucketVarName}`
+            )
+              .clear()
+              .type('b3')
+              .type('{downarrow}')
+              .type('{enter}')
+              .should('have.value', bucketThree)
+
+            cy.getByTestID(
+              `variable-dropdown-input-typeAhead--${dependentTypeVarName}`
+            ).should('have.value', 'hello')
           })
         })
       })

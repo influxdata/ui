@@ -65,7 +65,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     }
 
     this.state = defaultState
-    // console.log(`vars-1a (${props.name}: `, props)
+    console.log(`in constructor, props:  (${props.name}: `, props)
   }
 
   // set the 'shownValues' after loading, and

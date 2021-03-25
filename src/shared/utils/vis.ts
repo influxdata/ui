@@ -323,6 +323,9 @@ const getColumnValue = (table: Table, field: string) => {
     )
   }
   const index = fieldColumn.findIndex(val => val === field)
+  if (index < 0) {
+    throw new Error('Map type requires the fields to be either lat or lon')
+  }
   const valueColumn = table.getColumn('_value')
   const value = valueColumn[index]
 

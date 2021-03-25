@@ -1,5 +1,4 @@
 // Libraries
-import {S2} from 's2-geometry'
 import {Table, LineInterpolation, FromFluxResult} from '@influxdata/giraffe'
 
 // Types
@@ -335,7 +334,7 @@ export const getGeoCoordinates = (table: Table) => {
   const lonCoordinate = getColumnValue(table, 'lon')
 
   return {
-    lat: parseInt(latCoordinate.toString()),
-    lon: parseInt(lonCoordinate.toString()),
+    lat: parseInt(latCoordinate.toString(), 10),
+    lon: parseInt(lonCoordinate.toString(), 10),
   }
 }

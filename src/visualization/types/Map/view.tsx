@@ -43,19 +43,22 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     getToken()
   }, [])
 
-  let error = ''
-
   const {lat, lon} = properties.center
 
   let calculatedGeoCoordinates = {
     lat,
     lon,
   }
-  try {
-    calculatedGeoCoordinates = getGeoCoordinates(result.table)
-  } catch (err) {
-    setErrorCode(MapErrorStates.InvalidCoordinates)
-  }
+
+  useEffect(() => {
+    try {
+      calculatedGeoCoordinates = getGeoCoordinates(result.table)
+    } catch (err) {
+      setErrorCode(MapErrorStates.InvalidCoordinates)
+    }
+  }, [])
+
+  let error = ''
 
   const getMapboxUrl = () => {
     if (mapToken) {
@@ -101,7 +104,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
                 lon: calculatedGeoCoordinates.lon,
                 zoom,
                 allowPanAndZoom,
-                detectCoordinateFields,
+                detectCoordinateFields: true,
                 mapStyle,
                 layers,
                 tileServerConfiguration: tileServerConfiguration,

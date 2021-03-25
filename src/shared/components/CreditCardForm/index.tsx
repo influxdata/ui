@@ -1,16 +1,21 @@
-import React, {FC, useContext, useEffect, useState} from 'react'
+import React, {FC, useEffect, useState} from 'react'
 
 // Context
-import {CheckoutContext} from 'src/checkout/context/checkout'
+import {Inputs} from 'src/checkout/context/checkout'
+import {CreditCardParams} from 'src/client/unityRoutes'
 
 export const ZUORA_SCRIPT_URL =
   'https://apisandboxstatic.zuora.com/Resources/libs/hosted/1.3.0/zuora-min.js'
 export const ZUORA_ID = 'zuora_payment'
 
-const ZuoraPaymentForm: FC = () => {
-  // FIXME: Add onFocus functionality
-  const {zuoraParams, handleSubmit, inputs} = useContext(CheckoutContext)
+type Props = {
+  zuoraParams: CreditCardParams
+  onSubmit: (_) => void
+  inputs: Inputs
+}
 
+// FIXME: Add onFocus functionality
+const CreditCardForm: FC<Props> = ({zuoraParams, onSubmit, inputs}) => {
   const [client, setClient] = useState(window.Z)
   const [paymentMethodId, setPaymentMethodId] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -57,7 +62,7 @@ const ZuoraPaymentForm: FC = () => {
   useEffect(() => {
     const submitCheckout = async paymentMethodId => {
       try {
-        await handleSubmit(paymentMethodId)
+        await onSubmit(paymentMethodId)
 
         // Should we have retries at all?
         setPaymentMethodId(null)
@@ -71,7 +76,7 @@ const ZuoraPaymentForm: FC = () => {
       setIsSubmitting(true)
       submitCheckout(paymentMethodId)
     }
-  }, [paymentMethodId, handleSubmit, inputs, isSubmitting, setIsSubmitting])
+  }, [paymentMethodId, onSubmit, inputs, isSubmitting, setIsSubmitting])
 
   useEffect(() => {
     if (client) {
@@ -103,4 +108,4 @@ const ZuoraPaymentForm: FC = () => {
   )
 }
 
-export default ZuoraPaymentForm
+export default CreditCardForm

@@ -1,15 +1,15 @@
 // FIXME: Re-enable these tests after extracting out
-// ZuoraPaymentForm and making it a stand-alone component
+// CreditCardForm and making it a stand-alone component
 // import React from 'react'
 // import {render, screen} from '@testing-library/react'
 
 // import {ZuoraClient, CreditCardParams} from 'src/types/billing'
 
-// import ZuoraPaymentForm, {Props} from './ZuoraPaymentForm'
+// import CreditCardForm, {Props} from './CreditCardForm'
 
 // import {createTestClient, zuoraResponse} from 'js/testHelpers/zuora'
 
-describe('CheckoutV2.ZuoraPaymentForm', () => {
+describe('CheckoutV2.CreditCardForm', () => {
   // FIXME: Remove this test when enabling tests in this file
   it('fake test to pass lint check', () => {
     expect(true).toBeTruthy()
@@ -42,7 +42,7 @@ describe('CheckoutV2.ZuoraPaymentForm', () => {
   //       onSuccess: jest.fn(),
   //     }
 
-  //     render(<ZuoraPaymentForm {...props} />)
+  //     render(<CreditCardForm {...props} />)
 
   //     expect(renderSpy).toHaveBeenCalled()
   //   })
@@ -53,9 +53,9 @@ describe('CheckoutV2.ZuoraPaymentForm', () => {
   //     const renderSpy = jest.spyOn(client, 'render')
   //     const props: Props = {onSuccess, zuoraParams, client}
 
-  //     const {rerender} = render(<ZuoraPaymentForm {...props} />)
+  //     const {rerender} = render(<CreditCardForm {...props} />)
 
-  //     rerender(<ZuoraPaymentForm {...props} />)
+  //     rerender(<CreditCardForm {...props} />)
 
   //     expect(renderSpy).toHaveBeenCalledTimes(1)
   //   })
@@ -63,12 +63,12 @@ describe('CheckoutV2.ZuoraPaymentForm', () => {
   //   test.skip('does not re-render Zuora form on prop changes', () => {
   //     const clientRenderSpy = jest.spyOn(client, 'render')
 
-  //     const {rerender} = render(<ZuoraPaymentForm zuoraParams={zuoraParams} />)
+  //     const {rerender} = render(<CreditCardForm zuoraParams={zuoraParams} />)
 
   //     const newClient = createTestClient()
   //     const newClientRenderSpy = jest.spyOn(newClient, 'render')
 
-  //     rerender(<ZuoraPaymentForm zuoraParams={{...zuoraParams}} />)
+  //     rerender(<CreditCardForm zuoraParams={{...zuoraParams}} />)
 
   //     expect(clientRenderSpy).toBeCalledTimes(1)
   //     expect(newClientRenderSpy).toBeCalledTimes(0)
@@ -77,7 +77,7 @@ describe('CheckoutV2.ZuoraPaymentForm', () => {
   //   test.skip('calls provided callback when Zuora form submitted', () => {
   //     const mockSuccess = jest.fn()
 
-  //     render(<ZuoraPaymentForm zuoraParams={zuoraParams} />)
+  //     render(<CreditCardForm zuoraParams={zuoraParams} />)
 
   //     client.submit()
 
@@ -88,7 +88,7 @@ describe('CheckoutV2.ZuoraPaymentForm', () => {
   //     const successMock = jest.fn()
 
   //     const {rerender} = render(
-  //       <ZuoraPaymentForm
+  //       <CreditCardForm
   //         client={client}
   //         zuoraParams={zuoraParams}
   //         onSuccess={successMock}
@@ -98,7 +98,7 @@ describe('CheckoutV2.ZuoraPaymentForm', () => {
   //     const latestSuccessMock = jest.fn()
 
   //     rerender(
-  //       <ZuoraPaymentForm
+  //       <CreditCardForm
   //         client={client}
   //         zuoraParams={zuoraParams}
   //         onSuccess={latestSuccessMock}

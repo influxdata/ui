@@ -20,13 +20,7 @@ enum MapErrorStates {
 }
 
 const GeoPlot: FC<Props> = ({result, properties}) => {
-  const {
-    layers,
-    zoom,
-    allowPanAndZoom,
-    detectCoordinateFields,
-    mapStyle,
-  } = properties
+  const {layers, zoom, allowPanAndZoom, mapStyle} = properties
 
   const [errorCode, setErrorCode] = useState<string>('')
   const [mapToken, setMapToken] = useState<string>('')

@@ -1,5 +1,16 @@
-import {getOperatorAccount, getOperatorOrg} from 'src/client/unityRoutes'
-import {Account, Organizations} from 'src/types/operator'
+import {
+  getOperatorAccount,
+  getOperatorOrg,
+  getOrg,
+  getOrgsLimits,
+  putOrgsLimits,
+} from 'src/client/unityRoutes'
+import {
+  Account,
+  Organization,
+  Organizations,
+  OrgLimits,
+} from 'src/types/operator'
 
 const makeResponse = (status, data) => {
   return Promise.resolve({
@@ -15,7 +26,7 @@ export const getAccounts = (
   const accounts: Account[] = [
     {
       id: '123',
-      marketplace: 'Zuora',
+      marketplace: null,
       balance: 0,
       billingContact: {
         companyName: 'Influx',
@@ -33,7 +44,11 @@ export const getAccounts = (
     },
     {
       id: '345',
-      marketplace: 'aws',
+      marketplace: {
+        shortName: 'aws',
+        name: 'Amazon Web Services',
+        url: 'smile.amazon.com',
+      },
       balance: 10,
       billingContact: {
         companyName: 'Data',
@@ -51,7 +66,11 @@ export const getAccounts = (
     },
     {
       id: '678',
-      marketplace: 'azure',
+      marketplace: {
+        shortName: 'gcm',
+        name: 'Google Cloud Marketplace',
+        url: 'www.google.com',
+      },
       balance: 20,
       billingContact: {
         companyName: 'Pineapple',
@@ -91,7 +110,7 @@ export const getOrgs = (
       date: '01/01/2010',
       account: {
         id: '123',
-        marketplace: 'Zuora',
+        marketplace: null,
         balance: 0,
         billingContact: {
           companyName: 'Influx',
@@ -117,7 +136,11 @@ export const getOrgs = (
       date: '01/01/2011',
       account: {
         id: '345',
-        marketplace: 'aws',
+        marketplace: {
+          name: 'Amazon Web Services',
+          url: 'smile.amazon.com',
+          shortName: 'aws',
+        },
         balance: 10,
         billingContact: {
           companyName: 'Data',
@@ -139,11 +162,15 @@ export const getOrgs = (
       idpeID: '678',
       name: 'Lucky 3',
       region: 'gcp-west',
-      provider: 'azure',
+      provider: 'gcm',
       date: '01/01/2012',
       account: {
         id: '678',
-        marketplace: 'azure',
+        marketplace: {
+          shortName: 'gcm',
+          name: 'Google Cloud Marketplace',
+          url: 'www.google.com',
+        },
         balance: 20,
         billingContact: {
           companyName: 'Pineapple',
@@ -169,4 +196,104 @@ export const getOrgs = (
     return true
   })
   return makeResponse(200, filtered)
+}
+
+export const getOrgById = (_id: string): ReturnType<typeof getOrg> => {
+  const organization: Organization = {
+    id: '123',
+    idpeID: '123',
+    name: 'Best Org',
+    region: 'us-west',
+    provider: 'Zuora',
+    date: '01/01/2010',
+    account: {
+      id: '123',
+      marketplace: null,
+      balance: 0,
+      billingContact: {
+        companyName: 'Influx',
+        email: 'asalem@influxdata.com',
+        firstName: 'Ariel',
+        lastName: 'Salem',
+        country: 'USA',
+        street1: '123 Main St',
+        city: 'New York',
+        subdivision: 'NY',
+        postalCode: 30000,
+      },
+      users: [],
+      type: 'pay_as_you_go',
+    },
+  }
+
+  return makeResponse(200, organization)
+}
+
+export const getOrgLimits = (_id: string): ReturnType<typeof getOrgsLimits> => {
+  const limits: OrgLimits = {
+    orgID: '123',
+    rate: {
+      readKBs: 1,
+      writeKBs: 1,
+      cardinality: 1,
+    },
+    bucket: {
+      maxBuckets: 2,
+      maxRetentionDuration: Infinity,
+    },
+    task: {
+      maxTasks: 2,
+    },
+    dashboard: {
+      maxDashboards: 2,
+    },
+    check: {
+      maxChecks: 2,
+    },
+    notificationRule: {
+      maxNotifications: 2,
+      blockedNotificationRules: 'pagerduty, slack, http',
+    },
+    notificationEndpoint: {
+      blockedNotificationEndpoints: 'pagerduty, slack, http',
+    },
+  }
+
+  return makeResponse(200, limits)
+}
+
+export const updateOrgLimits = (
+  _id: string,
+  _limits: any
+): ReturnType<typeof putOrgsLimits> => {
+  const limits: OrgLimits = {
+    orgID: '123',
+    rate: {
+      readKBs: 1,
+      writeKBs: 1,
+      cardinality: 1,
+    },
+    bucket: {
+      maxBuckets: 2,
+      maxRetentionDuration: Infinity,
+    },
+    task: {
+      maxTasks: 2,
+    },
+    dashboard: {
+      maxDashboards: 2,
+    },
+    check: {
+      maxChecks: 2,
+    },
+    notificationRule: {
+      maxNotifications: 2,
+      blockedNotificationRules: '',
+    },
+    notificationEndpoint: {
+      blockedNotificationEndpoints: '',
+    },
+  }
+
+  return makeResponse(200, limits)
 }

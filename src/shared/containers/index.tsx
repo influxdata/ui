@@ -74,7 +74,7 @@ export const BillingPage = lazy(() =>
   import('src/billing/components/BillingPage')
 )
 export const OperatorPage = lazy(() => import('src/operator/OperatorPage'))
-export const OrgOverlay = lazy(() => import('src/operator/OrgOverlay'))
+export const OrgOverlay = lazy(() => import('src/operator/OrgOverlayWrapper'))
 
 // Functions
 export const FunctionListPage = lazy(() =>

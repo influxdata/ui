@@ -4,106 +4,114 @@ import AccountID from 'src/operator/AccountID'
 import OrgID from 'src/operator/OrgID'
 import {Link} from 'react-router-dom'
 
+export const accountHeaderInfo = [
+  'company-name',
+  'account-id',
+  'email',
+  'users',
+  'balance',
+  'acct-type',
+  'marketplace',
+]
+
 export const accountColumnInfo: CellInfo[] = [
   {
     path: ['billingContact', 'companyName'],
     header: 'Company Name',
-    name: 'company-name',
     defaultValue: '',
   },
   {
     path: ['id'],
     header: 'Acct ID',
-    name: 'account-id',
     defaultValue: '',
     renderValue: value => <AccountID value={value} />,
   },
   {
     path: ['billingContact', 'email'],
     header: 'Owner Email',
-    name: 'email',
     defaultValue: '',
   },
   {
     path: ['users', 'length'],
     header: 'Users',
-    name: 'users',
     defaultValue: '',
   },
   {
     path: ['balance'],
     header: 'Balance',
-    name: 'balance',
     defaultValue: '',
   },
   {
     path: ['type'],
     header: 'Account Type',
-    name: 'acct-type',
     defaultValue: '',
   },
   {
     path: ['marketplace'],
     header: 'Billing Provider',
-    name: 'marketplace',
     defaultValue: 'Zuora',
   },
+]
+
+export const organizationColumnHeaders = [
+  'org-name',
+  'org-id',
+  'email',
+  'account-id',
+  'acct-balance',
+  'acct-type',
+  'provider',
+  'region',
+  'date',
 ]
 
 export const organizationColumnInfo: CellInfo[] = [
   {
     path: ['name'],
     header: 'Org Name',
-    name: 'org-name',
     defaultValue: '',
   },
   {
     path: ['idpeID'],
     header: 'Org ID',
-    name: 'org-id',
     defaultValue: '',
-    renderValue: value => <Link to={`organizations/${value}`}>{value}</Link>,
+    renderValue: value => (
+      <Link to={`/operator/organizations/${value}`}>{value}</Link>
+    ),
   },
   {
     path: ['account', 'billingContact', 'email'],
     header: 'Owner Email',
-    name: 'email',
     defaultValue: '',
   },
   {
     path: ['account', 'id'],
     header: 'Account ID',
-    name: 'account-id',
     defaultValue: '',
   },
   {
     path: ['account', 'balance'],
     header: 'Balance',
-    name: 'acct-balance',
     defaultValue: '',
   },
   {
     path: ['account', 'type'],
     header: 'Type',
-    name: 'acct-type',
     defaultValue: '',
   },
   {
     path: ['provider'],
     header: 'Provider',
-    name: 'provider',
     defaultValue: '',
   },
   {
     path: ['region'],
     header: 'Region',
-    name: 'region',
     defaultValue: '',
   },
   {
     path: ['date'],
     header: 'Date Created',
-    name: 'date',
     defaultValue: '',
   },
 ]
@@ -211,7 +219,7 @@ export const acctOrgColumnInfo: CellInfo[] = [
     header: 'Org ID',
     name: 'org-id',
     defaultValue: '',
-    renderValue: value => <OrgID idpeID={value} />,
+    renderValue: value => <OrgID orgID={value} />,
   },
   {path: ['provider'], header: 'Provider', name: 'provider', defaultValue: ''},
   {path: ['region'], header: 'Region', name: 'region', defaultValue: ''},

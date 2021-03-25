@@ -766,6 +766,16 @@ components:
             - free
             - cancelled
             - pay_as_you_go
+        balance:
+          type: number
+          description: remaining balance on the account, nil if none
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        billingContact:
+          $ref: '#/components/schemas/BillingContact'
+          description: billing contact for the account
       required: [id, balance, billingContact, marketplace, users, type]
     Accounts:
       items:
@@ -1132,6 +1142,17 @@ components:
           $ref: '#/components/schemas/NotificationRuleLimits'
         notificationEndpoint:
           $ref: '#/components/schemas/NotificationEndpointLimits'
+      required:
+        [
+          orgID,
+          rate,
+          bucket,
+          task,
+          dashboard,
+          check,
+          notificationRule,
+          notificationEndpoint,
+        ]
     Organization:
       type: object
       properties:

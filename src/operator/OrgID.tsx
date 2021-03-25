@@ -1,19 +1,14 @@
 import React, {FC} from 'react'
-import {Link, useLocation} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 
 interface Props {
-  idpeID: string
+  orgId: string
 }
 
-const OrgID: FC<Props> = ({idpeID}) => {
-  const location = useLocation()
-
+const OrgID: FC<Props> = ({orgId}) => {
   return (
-    <Link
-      data-testid={`orgID${idpeID}`}
-      to={`${location.pathname}/organizations/${idpeID}`}
-    >
-      {idpeID}
+    <Link data-testid={`orgID${orgId}`} to={`/operator/organizations/${orgId}`}>
+      {orgId}
     </Link>
   )
 }

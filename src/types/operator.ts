@@ -1,4 +1,9 @@
-export {Account, Organizations, Organization} from 'src/client/unityRoutes'
+export {
+  Account,
+  Organizations,
+  Organization,
+  OrgLimits,
+} from 'src/client/unityRoutes'
 
 export type Resource = Account | User | TestResource
 
@@ -42,7 +47,7 @@ export interface TestResource {
 
 export interface CellInfo {
   path: string[]
-  name: string
+  name?: string
   header: string
   defaultValue: string | number
   renderValue?: (any) => any

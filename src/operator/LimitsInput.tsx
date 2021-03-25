@@ -2,15 +2,13 @@ import React, {FC} from 'react'
 import {Input, InputType} from '@influxdata/clockface'
 import {get} from 'lodash'
 import {set} from 'lodash/fp'
-// import {Limits} from 'js/types'
+import {OrgLimits} from 'src/types/operator'
 
 interface Props {
   type: InputType
   name: string
-  limits: any
-  onChangeLimits: (limits: any) => void
-  // limits: Limits
-  // onChangeLimits: (limits: Limits) => void
+  limits: OrgLimits
+  onChangeLimits: (limits: OrgLimits) => void
 }
 
 const LimitsInput: FC<Props> = ({type, name, limits, onChangeLimits}) => {

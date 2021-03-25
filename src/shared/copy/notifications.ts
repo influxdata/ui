@@ -104,6 +104,44 @@ export const submitError = (): Notification => ({
     'There was an error submitting the upgrade request, please try again.',
 })
 
+// Operator Notifications
+export const getOrgsError = (): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message:
+    'There was an error getting the all the organization, please try again.',
+})
+
+export const getOrgError = (id: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Could not find organization with ID ${id}`,
+})
+
+export const getLimitsError = (id: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Could not fetch limits for this organization ${id}`,
+})
+
+export const updateLimitsError = (id: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Could not update limits for this organization ${id}`,
+})
+
+export const updateLimitsSuccess = (id: string): Notification => ({
+  ...defaultSuccessNotification,
+  duration: FIVE_SECONDS,
+  message: `Successfully updated limits for the organization ${id}`,
+})
+
+export const getAccountsError = (): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: 'There was an error getting the all the accounts, please try again.',
+})
+
 // Onboarding notifications
 export const SetupSuccess: Notification = {
   ...defaultSuccessNotification,

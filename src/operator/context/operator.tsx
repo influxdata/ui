@@ -1,8 +1,11 @@
 // Libraries
 import React, {FC, useCallback, useEffect, useState} from 'react'
+import {useDispatch} from 'react-redux'
 
 // Utils
+import {notify} from 'src/shared/actions/notifications'
 import {getAccounts, getOrgs} from 'src/operator/api'
+import {getAccountsError, getOrgsError} from 'src/shared/copy/notifications'
 
 // Types
 import {Account, Organizations} from 'src/types/operator'
@@ -43,37 +46,51 @@ export const OperatorContext = React.createContext<OperatorContextType>(
 export const OperatorProvider: FC<Props> = React.memo(({children}) => {
   const [activeTab, setActiveTab] = useState('organizations')
   const [accounts, setAccounts] = useState([])
-  const [status, setStatus] = useState(RemoteDataState.NotStarted)
+  const [accountStatus, setAccountStatus] = useState(RemoteDataState.NotStarted)
+  const [orgsStatus, setOrgsStatus] = useState(RemoteDataState.NotStarted)
   const [searchTerm, setSearchTerm] = useState('')
+  const dispatch = useDispatch()
 
   const [organizations, setOrganizations] = useState([])
 
   // TODO(ariel): might need to debounce
   const handleGetAccounts = useCallback(async () => {
-    setStatus(RemoteDataState.Loading)
-    const resp = await getAccounts(searchTerm)
+    try {
+      setAccountStatus(RemoteDataState.Loading)
+      const resp = await getAccounts(searchTerm)
 
-    if (resp.status !== 200) {
-      setStatus(RemoteDataState.Error)
-      throw new Error(resp.data.message)
+      if (resp.status !== 200) {
+        setAccountStatus(RemoteDataState.Error)
+        throw new Error(resp.data.message)
+      }
+
+      setAccountStatus(RemoteDataState.Done)
+      setAccounts(resp.data)
+    } catch (error) {
+      setAccountStatus(RemoteDataState.Error)
+      dispatch(notify(getAccountsError()))
+      console.error({error})
     }
-
-    setStatus(RemoteDataState.Done)
-    setAccounts(resp.data)
-  }, [searchTerm])
+  }, [searchTerm, dispatch])
 
   const handleGetOrgs = useCallback(async () => {
-    setStatus(RemoteDataState.Loading)
-    const resp = await getOrgs(searchTerm)
+    try {
+      setOrgsStatus(RemoteDataState.Loading)
+      const resp = await getOrgs(searchTerm)
 
-    if (resp.status !== 200) {
-      setStatus(RemoteDataState.Error)
-      throw new Error(resp.data.message)
+      if (resp.status !== 200) {
+        setOrgsStatus(RemoteDataState.Error)
+        throw new Error(resp.data.message)
+      }
+
+      setOrgsStatus(RemoteDataState.Done)
+      setOrganizations(resp.data)
+    } catch (error) {
+      console.error({error})
+      setOrgsStatus(RemoteDataState.Error)
+      dispatch(notify(getOrgsError()))
     }
-
-    setStatus(RemoteDataState.Done)
-    setOrganizations(resp.data)
-  }, [searchTerm])
+  }, [searchTerm, dispatch])
 
   useEffect(() => {
     if (activeTab === 'organizations') {
@@ -82,6 +99,18 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
       handleGetAccounts()
     }
   }, [activeTab, handleGetAccounts, handleGetOrgs])
+
+  let status = RemoteDataState.Done
+
+  const statuses = [accountStatus, orgsStatus]
+
+  if (statuses.every(s => s === RemoteDataState.NotStarted)) {
+    status = RemoteDataState.NotStarted
+  } else if (statuses.includes(RemoteDataState.Error)) {
+    status = RemoteDataState.Error
+  } else if (statuses.includes(RemoteDataState.Loading)) {
+    status = RemoteDataState.Loading
+  }
 
   return (
     <OperatorContext.Provider

@@ -16,7 +16,10 @@ import OperatorTabs from 'src/operator/OperatorTabs'
 import PageSpinner from 'src/perf/components/PageSpinner'
 
 // Constants
-import {accountColumnInfo, organizationColumnInfo} from 'src/operator/constants'
+import {
+  accountHeaderInfo,
+  organizationColumnHeaders,
+} from 'src/operator/constants'
 
 const ResourcesTable: FC = () => {
   const {activeTab, accounts, organizations, status} = useContext(
@@ -25,7 +28,7 @@ const ResourcesTable: FC = () => {
 
   const resources = activeTab === 'accounts' ? accounts : organizations
   const infos =
-    activeTab === 'accounts' ? accountColumnInfo : organizationColumnInfo
+    activeTab === 'accounts' ? accountHeaderInfo : organizationColumnHeaders
 
   return (
     <Tabs.Container orientation={Orientation.Horizontal}>
@@ -37,8 +40,8 @@ const ResourcesTable: FC = () => {
             <Table>
               <Table.Header>
                 <Table.Row>
-                  {infos.map(({header}) => (
-                    <Table.HeaderCell key={header}>{header}</Table.HeaderCell>
+                  {infos.map((column: string) => (
+                    <Table.HeaderCell key={column}>{column}</Table.HeaderCell>
                   ))}
                 </Table.Row>
               </Table.Header>

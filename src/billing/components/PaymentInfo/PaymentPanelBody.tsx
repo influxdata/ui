@@ -14,6 +14,7 @@ import {
   getBillingCreditCardParams,
   putBillingPaymentMethodId,
 } from 'src/billing/api'
+import { getErrorMessage } from 'src/utils/api'
 
 interface Props {
   isEditing: boolean
@@ -41,9 +42,7 @@ const PaymentPanelBody: FC<Props> = ({isEditing, onCancel}) => {
   const onSubmit = async (paymentMethodId: string): Promise<void> => {
     const response = await putBillingPaymentMethodId(paymentMethodId)
     if (response.status !== 200) {
-      const error = response.data
-
-      setErrorMessage(error.message)
+      setErrorMessage(getErrorMessage(response))
     } else {
       onCancel()
       setErrorMessage('')
@@ -53,9 +52,7 @@ const PaymentPanelBody: FC<Props> = ({isEditing, onCancel}) => {
   const getCreditCardParams = useCallback(async () => {
     const response = await getBillingCreditCardParams()
     if (response.status !== 200) {
-      const error = response.data
-
-      throw new Error(error.message)
+      throw new Error(getErrorMessage(response))
     }
 
     setCreditCardParams(response.data as CreditCardParams)

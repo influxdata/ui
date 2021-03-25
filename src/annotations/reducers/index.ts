@@ -1,11 +1,13 @@
 import {
   Action,
+  DELETE_ANNOTATION,
   DISABLE_ANNOTATION_STREAM,
   ENABLE_ANNOTATION_STREAM,
   SET_ANNOTATIONS,
   SET_ANNOTATION_STREAMS,
   TOGGLE_ANNOTATION_VISIBILITY,
   TOGGLE_SINGLE_CLICK_ANNOTATIONS,
+  EDIT_ANNOTATION,
 } from 'src/annotations/actions/creators'
 
 import {Annotation, AnnotationsList, AnnotationStream} from 'src/types'
@@ -69,6 +71,30 @@ export const annotationsReducer = (
         ),
       }
     }
+    case DELETE_ANNOTATION: {
+      return {
+        ...state,
+        annotations: {
+          default: state.annotations['default'].filter(
+            annotation => annotation.id !== action.annotation.id
+          ),
+        },
+      }
+    }
+
+    case EDIT_ANNOTATION: {
+      const copyAnnotations = state.annotations['default'].filter(
+        annotation => annotation.id !== action.annotation.id
+      )
+
+      return {
+        ...state,
+        annotations: {
+          default: [...copyAnnotations, action.annotation],
+        },
+      }
+    }
+
     case SET_ANNOTATIONS: {
       const annotations = {}
       action.annotations.forEach(annotationStream => {

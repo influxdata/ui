@@ -108,18 +108,12 @@ describe('annotations api calls', () => {
   })
 
   describe('PUT - annotation update api calls', () => {
-    const oldAnnotation = {
-      stream: 'default',
-      startTime: Date.now().toString(),
-      endTime: Date.now().toString(),
-    }
-
     const newAnnotation = {
-      stream: 'boogey',
       startTime: Date.now(),
       endTime: Date.now(),
       message: 'This is a message',
       summary: 'Palpatine did nothing wrong',
+      id: '123123123',
     }
 
     it('returns an updated annotation if correct parameters are passed', async () => {
@@ -127,7 +121,7 @@ describe('annotations api calls', () => {
         Promise.resolve({data: newAnnotation})
       )
 
-      const res = await updateAnnotation(oldAnnotation, newAnnotation)
+      const res = await updateAnnotation(newAnnotation)
       expect(res).toEqual(newAnnotation)
     })
   })
@@ -137,6 +131,7 @@ describe('annotations api calls', () => {
       stream: 'default',
       startTime: Date.now().toString(),
       endTime: Date.now().toString(),
+      id: '00013123123',
     }
 
     it('returns a 204 upon successful deletion of annotation', async () => {

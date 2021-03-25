@@ -7,10 +7,12 @@ export const SET_ANNOTATIONS = 'SET_ANNOTATIONS'
 export const SET_ANNOTATION_STREAMS = 'SET_ANNOTATION_STREAMS'
 export const TOGGLE_ANNOTATION_VISIBILITY = 'TOGGLE_ANNOTATION_VISIBILITY'
 export const TOGGLE_SINGLE_CLICK_ANNOTATIONS = 'TOGGLE_SINGLE_CLICK_ANNOTATIONS'
+export const EDIT_ANNOTATION = 'EDIT_ANNOTATION'
 
 export type Action =
   | ReturnType<typeof deleteAnnotation>
   | ReturnType<typeof disableAnnotationStream>
+  | ReturnType<typeof editAnnotation>
   | ReturnType<typeof enableAnnotationStream>
   | ReturnType<typeof setAnnotations>
   | ReturnType<typeof setAnnotationStreams>
@@ -51,6 +53,9 @@ export const deleteAnnotation = (annotation: Annotation) =>
     type: DELETE_ANNOTATION,
     annotation,
   } as const)
+
+export const editAnnotation = (annotation: Annotation) =>
+  ({type: EDIT_ANNOTATION, annotation} as const)
 
 export const toggleAnnotationVisibility = () =>
   ({

@@ -5,6 +5,7 @@ export interface Annotation {
   stickers?: any
   stream?: string
   message?: string
+  id?: string
 }
 
 export interface AnnotationResponse {
@@ -28,6 +29,7 @@ export interface GetAnnotationPayload {
 }
 
 export interface DeleteAnnotation {
+  id: string
   stream: string
   startTime: string
   endTime: string

@@ -56,6 +56,12 @@ const defaultDeletionNotification: NotificationExcludingMessage = {
 //  Misc Notifications
 //  ----------------------------------------------------------------------------
 
+export const prohibitedDeselect = (message?: string): Notification => ({
+  ...defaultErrorNotification,
+  message:
+    message ?? 'You must have at least one custom aggregate function selected',
+})
+
 export const newVersion = (version: string): Notification => ({
   ...defaultSuccessNotification,
   style: NotificationStyle.Info,

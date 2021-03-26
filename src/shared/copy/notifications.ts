@@ -529,7 +529,7 @@ export const resourceLimitReached = (resourceName: string): Notification => ({
 
 export const queryCancelRequest = (): Notification => ({
   ...defaultSuccessNotification,
-  message: `Cancelling query...`,
+  message: `Query cancelled.`,
 })
 
 export const taskNotCreated = (additionalMessage: string): Notification => ({

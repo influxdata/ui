@@ -19,6 +19,7 @@ import {
 
 // Types
 import {Color} from 'src/types/colors'
+import {DecimalPlaces} from 'src/types/dashboards'
 
 interface Props {
   width: number

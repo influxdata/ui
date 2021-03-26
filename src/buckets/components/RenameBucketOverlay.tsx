@@ -2,8 +2,6 @@
 import React, {PureComponent} from 'react'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
-import _ from 'lodash'
-
 // Components
 import DangerConfirmationOverlay from 'src/shared/components/dangerConfirmation/DangerConfirmationOverlay'
 import RenameBucketForm from 'src/buckets/components/RenameBucketForm'

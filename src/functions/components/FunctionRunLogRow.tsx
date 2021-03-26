@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC} from 'react'
-import _ from 'lodash'
 import moment from 'moment'
 
 // Components

@@ -1,5 +1,5 @@
 // Libraries
-import _ from 'lodash'
+import {get} from 'lodash'
 
 // Constants
 import {StepStatus} from 'src/clockface/constants/wizard'
@@ -94,7 +94,7 @@ export const setupAdmin = (
     return true
   } catch (err) {
     console.error(err)
-    const message = _.get(err, 'response.data.message', '')
+    const message = get(err, 'response.data.message', '')
     dispatch(notify(SetupError(message)))
     dispatch(setStepStatus(1, StepStatus.Error))
   }

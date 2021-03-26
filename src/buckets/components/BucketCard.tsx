@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
-import _ from 'lodash'
 
 // Components
 import {ResourceCard} from '@influxdata/clockface'

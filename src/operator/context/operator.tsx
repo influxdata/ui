@@ -44,7 +44,7 @@ export const OperatorContext = React.createContext<OperatorContextType>(
 )
 
 export const OperatorProvider: FC<Props> = React.memo(({children}) => {
-  const [activeTab, setActiveTab] = useState('organizations')
+  const [activeTab, setActiveTab] = useState('accounts')
   const [accounts, setAccounts] = useState([])
   const [accountStatus, setAccountStatus] = useState(RemoteDataState.NotStarted)
   const [orgsStatus, setOrgsStatus] = useState(RemoteDataState.NotStarted)

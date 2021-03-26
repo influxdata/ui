@@ -88,7 +88,10 @@ class Root extends PureComponent {
                 <Route exact path="/operator" component={OperatorPage} />
               )}
               {CLOUD && isFlagEnabled('unity-operator') && (
-                <Route path="/operator/accounts/:id" component={OperatorPage} />
+                <Route
+                  path="/operator/accounts/:accountID"
+                  component={OperatorPage}
+                />
               )}
               {CLOUD && isFlagEnabled('unity-operator') && (
                 <Route

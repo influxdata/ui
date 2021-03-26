@@ -23,6 +23,56 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  # Oats is making this incredibly annoying with naming conflicts
+  '/operator/account/{accountId}':
+    get:
+      operationId: GetAccountById
+      tags:
+        - Account
+        - Operator
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+        - in: path
+          name: accountId
+          schema:
+            type: string
+          required: true
+          description: The ID of the account to get.
+      responses:
+        '200':
+          description: the account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      operationId: DeleteAccountById
+      tags:
+        - Account
+        - Operator
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+        - in: path
+          name: accountId
+          schema:
+            type: string
+          required: true
+          description: The ID of the account to delete.
+      responses:
+        '204':
+          description: Account deleted
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   '/me':
     get:
       operationId: GetMe
@@ -31,14 +81,6 @@ paths:
         - Operator
         - Region
         - Organization
-      parameters:
-        - $ref: '#/components/parameters/TraceSpan'
-        - in: path
-          name: id
-          schema:
-            type: string
-          required: true
-          description: The ID of the user to get.
       responses:
         '200':
           description: congregated meta data for an individual account and org
@@ -436,6 +478,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  '/operator/account/{accountId}/users/{userId}':
+    delete:
+      operationId: RemoveUserFromAccount
+      tags:
+        - Accounts
+        - Users
+        - Organizations
+      summary: Removes a user from an account
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+        - in: path
+          name: accountId
+          schema:
+            type: string
+          required: true
+          description: The ID of the account to remove user from.
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: The ID of the user to remove from the account.
+      responses:
+        '204':
+          description: User removed from account
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   '/orgs/{orgId}/invites/{inviteId}/resend':
     post:
       operationId: PostOrgsIdInvitesId
@@ -606,7 +679,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  '/operator/accounts/{searchTerm}':
+  '/search/account/{searchTerm}':
     get:
       operationId: getAccounts
       tags:
@@ -633,7 +706,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  '/operator/orgs/{searchTerm}':
+  '/search/orgs/{searchTerm}':
     get:
       operationId: getOrganizationsById
       tags:
@@ -732,6 +805,12 @@ components:
           type: string
           enum: [aws, gcm, azure]
           example: gcm
+        subscriberId:
+          type: string
+          description: TODO - not sure what this is referring to
+        status:
+          type: string
+          description: TODO - not sure what this is referring to
         url:
           description: link to marketplace
           type: string
@@ -766,6 +845,14 @@ components:
             - free
             - cancelled
             - pay_as_you_go
+        organizations:
+          $ref: '#/components/schemas/Organizations'
+        zuoraAccountId:
+          type: string
+          description: Zuora ID associated with the account
+        deletable:
+          type: boolean
+          description: flag whether the account can be deleted or not
         balance:
           type: number
           description: remaining balance on the account, nil if none
@@ -1031,6 +1118,10 @@ components:
       properties:
         id:
           description: the idpe id of the user
+          readOnly: true
+          type: string
+        sfdcContactId:
+          description: the sfdcContact id of the user
           readOnly: true
           type: string
         firstName:

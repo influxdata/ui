@@ -1,6 +1,9 @@
 import {
+  deleteOperatorAccount,
+  deleteOperatorAccountUser,
   getOperatorAccount,
-  getOperatorOrg,
+  getSearchAccount,
+  getSearchOrg,
   getOrg,
   getOrgsLimits,
   putOrgsLimits,
@@ -22,7 +25,7 @@ const makeResponse = (status, data) => {
 
 export const getAccounts = (
   searchTerm?: string
-): ReturnType<typeof getOperatorAccount> => {
+): ReturnType<typeof getSearchAccount> => {
   const accounts: Account[] = [
     {
       id: '123',
@@ -99,7 +102,7 @@ export const getAccounts = (
 
 export const getOrgs = (
   searchTerm?: string
-): ReturnType<typeof getOperatorOrg> => {
+): ReturnType<typeof getSearchOrg> => {
   const organizations: Organizations = [
     {
       id: '123',
@@ -227,6 +230,48 @@ export const getOrgById = (_id: string): ReturnType<typeof getOrg> => {
   }
 
   return makeResponse(200, organization)
+}
+
+export const getAccountById = (
+  _id: string
+): ReturnType<typeof getOperatorAccount> => {
+  const account: Account = {
+    id: '345',
+    marketplace: {
+      name: 'Amazon Web Services',
+      url: 'smile.amazon.com',
+      shortName: 'aws',
+    },
+    balance: 10,
+    billingContact: {
+      companyName: 'Data',
+      email: 'watts@influxdata.com',
+      firstName: 'Andrew',
+      lastName: 'Watkins',
+      country: 'USA',
+      street1: '345 Main St',
+      city: 'Austin',
+      subdivision: 'TX',
+      postalCode: 50000,
+    },
+    users: [],
+    type: 'cancelled',
+  }
+
+  return makeResponse(200, account)
+}
+
+export const deleteAccountById = (
+  _id: string
+): ReturnType<typeof deleteOperatorAccount> => {
+  return makeResponse(204, 'ok')
+}
+
+export const removeUserFromAccount = (
+  _accountID: string,
+  _id: string
+): ReturnType<typeof deleteOperatorAccountUser> => {
+  return makeResponse(204, 'ok')
 }
 
 export const getOrgLimits = (_id: string): ReturnType<typeof getOrgsLimits> => {

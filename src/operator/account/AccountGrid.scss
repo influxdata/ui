@@ -1,0 +1,16 @@
+.account-grid-text {
+  background-color: rgba($color: #000000, $alpha: 0);
+  font-size: medium;
+  margin: -5px 0px;
+  padding: 0px;
+}
+
+.account-grid-text.heading {
+  color: #a5a8b5;
+  margin-top: 20px;
+}
+
+.account-grid-text.body {
+  color: #d4d7dc;
+  font-weight: $cf-font-weight--bold;
+}

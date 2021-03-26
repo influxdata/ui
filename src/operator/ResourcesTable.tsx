@@ -18,7 +18,9 @@ import PageSpinner from 'src/perf/components/PageSpinner'
 // Constants
 import {
   accountHeaderInfo,
+  accountColumnInfo,
   organizationColumnHeaders,
+  organizationColumnInfo,
 } from 'src/operator/constants'
 
 const ResourcesTable: FC = () => {
@@ -27,8 +29,10 @@ const ResourcesTable: FC = () => {
   )
 
   const resources = activeTab === 'accounts' ? accounts : organizations
-  const infos =
+  const headers =
     activeTab === 'accounts' ? accountHeaderInfo : organizationColumnHeaders
+  const infos =
+    activeTab === 'accounts' ? accountColumnInfo : organizationColumnInfo
 
   return (
     <Tabs.Container orientation={Orientation.Horizontal}>
@@ -40,14 +44,18 @@ const ResourcesTable: FC = () => {
             <Table>
               <Table.Header>
                 <Table.Row>
-                  {infos.map((column: string) => (
-                    <Table.HeaderCell key={column}>{column}</Table.HeaderCell>
+                  {headers.map((header: string) => (
+                    <Table.HeaderCell key={header}>{header}</Table.HeaderCell>
                   ))}
                 </Table.Row>
               </Table.Header>
               <Table.Body>
                 {resources.map(resource => (
-                  <ResourcesTableRow key={resource.id} resource={resource} />
+                  <ResourcesTableRow
+                    key={resource.id}
+                    resource={resource}
+                    infos={infos}
+                  />
                 ))}
               </Table.Body>
               <Table.Footer />

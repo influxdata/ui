@@ -1,11 +1,10 @@
-export {
-  Account,
-  Organizations,
-  Organization,
-  OrgLimits,
-} from 'src/client/unityRoutes'
+import {Organization as GenOrg, User as GenUser} from 'src/client/unityRoutes'
+export {Account, Organizations, OrgLimits} from 'src/client/unityRoutes'
 
-export type Resource = Account | User | TestResource
+export interface Organization extends GenOrg {}
+export interface User extends GenUser {}
+
+export type Resource = Account | User | Organization
 
 export interface MarketplaceSubscription {
   marketplace: string
@@ -25,18 +24,6 @@ export interface BillingContact {
   postalCode: number
 }
 
-export interface User {
-  firstName: string
-  lastName: string
-  id: string
-  idpeId: string
-  email: string
-  operator: boolean
-  onboardingState: string
-  sfdcContactId: string
-  accountId: string
-}
-
 export interface TestResource {
   name: string
   id: string
@@ -47,8 +34,8 @@ export interface TestResource {
 
 export interface CellInfo {
   path: string[]
-  name?: string
-  header: string
+  name: string
+  header?: string
   defaultValue: string | number
   renderValue?: (any) => any
 }

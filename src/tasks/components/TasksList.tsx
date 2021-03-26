@@ -59,12 +59,7 @@ export default class TasksList extends PureComponent<Props, State> {
   }
 
   public render() {
-    const {
-      searchTerm,
-      onCreate,
-      totalCount,
-      onImportTask,
-    } = this.props
+    const {searchTerm, onCreate, totalCount, onImportTask} = this.props
 
     return (
       <>

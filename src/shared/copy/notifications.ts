@@ -1090,10 +1090,12 @@ export const copyFunctionURL = (): Notification => ({
   duration: 2000,
 })
 
-export const deleteAnnotationSuccess = (): Notification => ({
+export const deleteAnnotationSuccess = (message: string): Notification => ({
   ...defaultSuccessNotification,
   icon: IconFont.Cube,
-  message: 'Successfully deleted the annotation',
+  message: message
+    ? `Successfully deleted the annotation: ${message}`
+    : 'Successfully deleted the annotation',
 })
 
 export const deleteAnnotationFailed = (error: string): Notification => ({

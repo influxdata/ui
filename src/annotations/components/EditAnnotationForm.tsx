@@ -77,7 +77,7 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
   const handleDeleteAnnotation = () => {
     try {
       dispatch(deleteAnnotations(editAnnotationState))
-      dispatch(notify(deleteAnnotationSuccess()))
+      dispatch(notify(deleteAnnotationSuccess(editAnnotationState.message)))
       handleClose()
     } catch (err) {
       dispatch(notify(deleteAnnotationFailed(err)))

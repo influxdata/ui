@@ -17,7 +17,6 @@ interface Props {
   onCreate: () => void
   totalCount: number
   onImportTask: () => void
-  onImportFromTemplate: () => void
 }
 
 export default class EmptyTasksLists extends PureComponent<Props> {
@@ -27,7 +26,6 @@ export default class EmptyTasksLists extends PureComponent<Props> {
       onCreate,
       totalCount,
       onImportTask,
-      onImportFromTemplate,
     } = this.props
 
     if (totalCount && searchTerm === '') {
@@ -51,7 +49,6 @@ export default class EmptyTasksLists extends PureComponent<Props> {
                 canImportFromTemplate
                 onSelectNew={onCreate}
                 onSelectImport={onImportTask}
-                onSelectTemplate={onImportFromTemplate}
                 resourceName="Task"
               />
             </EmptyState>
@@ -71,7 +68,6 @@ export default class EmptyTasksLists extends PureComponent<Props> {
                     canImportFromTemplate
                     onSelectNew={onCreate}
                     onSelectImport={onImportTask}
-                    onSelectTemplate={onImportFromTemplate}
                     resourceName="Task"
                   />
                 </EmptyState>

@@ -34,7 +34,6 @@ interface Props {
   sortDirection: Sort
   sortType: SortTypes
   checkTaskLimits: any
-  onImportFromTemplate: () => void
 }
 
 interface State {
@@ -65,7 +64,6 @@ export default class TasksList extends PureComponent<Props, State> {
       onCreate,
       totalCount,
       onImportTask,
-      onImportFromTemplate,
     } = this.props
 
     return (
@@ -78,7 +76,6 @@ export default class TasksList extends PureComponent<Props, State> {
                 onCreate={onCreate}
                 totalCount={totalCount}
                 onImportTask={onImportTask}
-                onImportFromTemplate={onImportFromTemplate}
               />
             }
           >

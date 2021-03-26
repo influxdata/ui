@@ -110,6 +110,8 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
       } catch (error) {
         console.error({error})
         dispatch(notify(deleteAccountError(accountID)))
+      } finally {
+        await handleGetAccount()
       }
     },
     [dispatch] // eslint-disable-line react-hooks/exhaustive-deps

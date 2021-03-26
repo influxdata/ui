@@ -16,13 +16,8 @@ import {AccountContext} from 'src/operator/context/account'
 // Constants
 import {acctUserColumnInfo, accountUserHeaderInfo} from 'src/operator/constants'
 
-interface Props {
-  removeResource?: (resourceId: string) => Promise<void>
-}
-
-const AssociatedTableUsers: FC<Props> = ({removeResource}) => {
+const AssociatedTableUsers: FC = () => {
   const {account, handleRemoveUserFromAccount} = useContext(AccountContext)
-  // TODO(ariel): intergrate the remove user API
   return (
     <FlexBox direction={FlexDirection.Column} margin={ComponentSize.Large}>
       {account?.users?.length ? (

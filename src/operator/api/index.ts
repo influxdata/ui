@@ -237,12 +237,25 @@ export const getAccountById = (
 ): ReturnType<typeof getOperatorAccount> => {
   const account: Account = {
     id: '345',
+    quartzId: 'qID1',
+    onboardingState: 'complete',
     marketplace: {
       name: 'Amazon Web Services',
       url: 'smile.amazon.com',
       shortName: 'aws',
     },
     balance: 10,
+    organizations: [
+      {
+        id: 'orgid',
+        idpeID: 'idpeID',
+        name: 'name',
+        region: 'region',
+        provider: 'provider',
+        date: '01/01/2021',
+        account: null,
+      },
+    ],
     billingContact: {
       companyName: 'Data',
       email: 'watts@influxdata.com',
@@ -254,7 +267,20 @@ export const getAccountById = (
       subdivision: 'TX',
       postalCode: 50000,
     },
-    users: [],
+    deletable: true,
+    users: [
+      {
+        id: '1',
+        sfdcContactId: '12',
+        firstName: 'Ariel',
+        lastName: 'Salem',
+        email: 'asalem@influxdata.com',
+        role: 'member',
+        links: {
+          self: 'www.self.com',
+        },
+      },
+    ],
     type: 'cancelled',
   }
 

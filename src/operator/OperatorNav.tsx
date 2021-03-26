@@ -10,10 +10,6 @@ import {
 import {Link} from 'react-router-dom'
 import {get} from 'lodash'
 
-// interface Props {
-//   operator: User
-// }
-
 const OperatorNav: FC = () => {
   // TODO(ariel): get the operator here
   return (

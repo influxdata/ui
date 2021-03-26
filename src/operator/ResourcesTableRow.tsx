@@ -10,6 +10,7 @@ interface Props {
 }
 
 const ResourcesTableRow: FC<Props> = ({resource, infos}) => {
+  console.log({resource})
   const returnValue = (path, defaultValue, renderValue) => {
     const value = get(resource, path, defaultValue)
     return renderValue ? renderValue(value) : value

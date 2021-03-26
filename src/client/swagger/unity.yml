@@ -845,6 +845,7 @@ components:
             - free
             - cancelled
             - pay_as_you_go
+        # TODO(ariel): this seems cyclical since accounts and orgs are subsets of one another
         organizations:
           $ref: '#/components/schemas/Organizations'
         zuoraAccountId:
@@ -1120,6 +1121,13 @@ components:
           description: the idpe id of the user
           readOnly: true
           type: string
+        quartzId:
+          description: the quartz id of the user
+          readOnly: true
+          type: string
+        onboardingState:
+          description: onboarding state of the user
+          type: string
         sfdcContactId:
           description: the sfdcContact id of the user
           readOnly: true
@@ -1265,6 +1273,7 @@ components:
         date:
           type: string
           description: date org was created
+        # TODO(ariel): this seems cyclical since accounts and orgs are subsets of one another
         account:
           $ref: '#/components/schemas/Account'
       required: [id, idpeID, name, account, region, provider, date]

@@ -1,4 +1,3 @@
-// import {OrgLimit} from 'src/types/billing'
 import {hoursToNs, nsToHours} from 'src/billing/utils/timeHelpers'
 import {update} from 'lodash/fp'
 

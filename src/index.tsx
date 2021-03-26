@@ -13,7 +13,12 @@ import {getStore} from 'src/store/configureStore'
 import {history} from 'src/store/history'
 
 // Components
-import {CheckoutPage, OperatorPage, OrgOverlay} from 'src/shared/containers'
+import {
+  AccountPage,
+  CheckoutPage,
+  OperatorPage,
+  OrgOverlay,
+} from 'src/shared/containers'
 import Setup from 'src/Setup'
 import PageSpinner from 'src/perf/components/PageSpinner'
 
@@ -90,7 +95,7 @@ class Root extends PureComponent {
               {CLOUD && isFlagEnabled('unity-operator') && (
                 <Route
                   path="/operator/accounts/:accountID"
-                  component={OperatorPage}
+                  component={AccountPage}
                 />
               )}
               {CLOUD && isFlagEnabled('unity-operator') && (

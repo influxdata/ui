@@ -194,12 +194,12 @@ export const acctUserColumnInfo: CellInfo[] = [
     defaultValue: '',
   },
   {
-    path: ['id'],
+    path: ['quartzId'],
     name: 'user-quartz-id',
     defaultValue: '',
   },
   {
-    path: ['idpeId'],
+    path: ['id'],
     name: 'user-idpe-id',
     defaultValue: '',
   },

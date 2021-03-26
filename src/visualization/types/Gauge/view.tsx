@@ -50,7 +50,7 @@ const GaugeChart: FC<Props> = ({result, properties}) => {
     }
     return <Plot config={config} />
   } else {
-    <LatestValueTransform table={result.table} allowString={false}>
+    ;<LatestValueTransform table={result.table} allowString={false}>
       {latestValue => (
         <AutoSizer>
           {({width, height}) => (

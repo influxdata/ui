@@ -1,113 +1,145 @@
-// FIXME: Re-enable these tests after extracting out
-// CreditCardForm and making it a stand-alone component
-// import React from 'react'
-// import {render, screen} from '@testing-library/react'
+import React from 'react'
+import {render, screen, act, waitFor} from '@testing-library/react'
 
-// import {ZuoraClient, CreditCardParams} from 'src/types/billing'
+import {ZuoraClient, CreditCardParams} from '../../../types/billing'
+import {RemoteDataState} from '../../../types'
 
-// import CreditCardForm, {Props} from './CreditCardForm'
+import CreditCardForm, {Props} from './index'
 
-// import {createTestClient, zuoraResponse} from 'js/testHelpers/zuora'
+interface ZuoraResponse {
+  success: boolean
+  responseFrom: string
+  refId: string
+}
+
+export const zuoraResponse: ZuoraResponse = {
+  responseFrom: 'zuora',
+  success: true,
+  refId: 'somePaymentMethodID',
+}
+
+export const createTestClient = (
+  response: ZuoraResponse = zuoraResponse
+): ZuoraClient => {
+  let handleSubmit = null
+
+  return {
+    render: (_zuoraParams, _presets, onSubmit) => {
+      handleSubmit = onSubmit
+    },
+    submit: () => {
+      handleSubmit(response)
+    },
+  }
+}
 
 describe('CheckoutV2.CreditCardForm', () => {
-  // FIXME: Remove this test when enabling tests in this file
-  it('fake test to pass lint check', () => {
-    expect(true).toBeTruthy()
-  })
-  //   const zuoraParams: CreditCardParams = Object.freeze({
-  //     id: 'zuoraId',
-  //     tenantId: 'zuoraTenantId',
-  //     key: 'zuoraKey',
-  //     signature: 'zuoraSignature',
-  //     token: 'zuoraToken',
-  //     style: 'zuoraStyle',
-  //     submitEnabled: 'false',
-  //     url: 'zuoraURL',
-  //   })
+    const zuoraParams: CreditCardParams = Object.freeze({
+      id: 'zuoraId',
+      tenantId: 'zuoraTenantId',
+      key: 'zuoraKey',
+      signature: 'zuoraSignature',
+      token: 'zuoraToken',
+      style: 'zuoraStyle',
+      submitEnabled: 'false',
+      url: 'zuoraURL',
+      status: RemoteDataState.Done
+    })
 
-  //   let client: ZuoraClient = null
+    let zuoraClient: ZuoraClient = null
 
-  //   beforeEach(() => {
-  //     client = createTestClient()
-  //   })
+    beforeEach(() => {
+      zuoraClient = createTestClient()
+    })
 
-  //   test.skip('renders Zuora div with appropriate id', () => {
-  //     const renderSpy = jest.spyOn(client, 'render').mockImplementation(() => {
-  //       expect(screen.getByTestId('payment-form')).toBeTruthy()
-  //     })
+    test('renders Zuora div with appropriate id', () => {
+      const onSubmit = jest.fn()
+      const renderSpy = jest.spyOn(zuoraClient, 'render').mockImplementation(() => {
+        expect(screen.getByTestId('payment-form')).toBeTruthy()
+      })
 
-  //     const props: Props = {
-  //       client,
-  //       zuoraParams,
-  //       onSuccess: jest.fn(),
-  //     }
+      const props: Props = {
+        zuoraParams,
+        onSubmit,
+        zuoraClient
+      }
 
-  //     render(<CreditCardForm {...props} />)
+      render(<CreditCardForm {...props} />)
 
-  //     expect(renderSpy).toHaveBeenCalled()
-  //   })
+      expect(renderSpy).toHaveBeenCalled()
+    })
 
-  //   test.skip('calls Zuora render exactly once', () => {
-  //     const onSuccess = jest.fn()
+    test('calls Zuora render exactly once', () => {
+      const onSubmit = jest.fn()
+      const renderSpy = jest.spyOn(zuoraClient, 'render')
+      const props: Props = {onSubmit, zuoraParams, zuoraClient}
 
-  //     const renderSpy = jest.spyOn(client, 'render')
-  //     const props: Props = {onSuccess, zuoraParams, client}
+      const {rerender} = render(<CreditCardForm {...props} />)
 
-  //     const {rerender} = render(<CreditCardForm {...props} />)
+      rerender(<CreditCardForm {...props} />)
 
-  //     rerender(<CreditCardForm {...props} />)
+      expect(renderSpy).toHaveBeenCalledTimes(1)
+    })
 
-  //     expect(renderSpy).toHaveBeenCalledTimes(1)
-  //   })
+    test('does not re-render Zuora form on prop changes', () => {
+      const onSubmit = jest.fn()
+      const clientRenderSpy = jest.spyOn(zuoraClient, 'render')
+      const props: Props = {onSubmit, zuoraParams, zuoraClient}
 
-  //   test.skip('does not re-render Zuora form on prop changes', () => {
-  //     const clientRenderSpy = jest.spyOn(client, 'render')
+      const {rerender} = render(<CreditCardForm {...props} />)
 
-  //     const {rerender} = render(<CreditCardForm zuoraParams={zuoraParams} />)
+      const newClient = createTestClient()
+      const newClientRenderSpy = jest.spyOn(newClient, 'render')
 
-  //     const newClient = createTestClient()
-  //     const newClientRenderSpy = jest.spyOn(newClient, 'render')
+      rerender(<CreditCardForm {...props} />)
 
-  //     rerender(<CreditCardForm zuoraParams={{...zuoraParams}} />)
+      expect(clientRenderSpy).toBeCalledTimes(1)
+      expect(newClientRenderSpy).toBeCalledTimes(0)
+    })
 
-  //     expect(clientRenderSpy).toBeCalledTimes(1)
-  //     expect(newClientRenderSpy).toBeCalledTimes(0)
-  //   })
+    test('calls provided callback when Zuora form submitted', async () => {
+      const onSubmit = jest.fn()
+      const renderSpy = jest.spyOn(zuoraClient, 'render')
+      const props: Props = {onSubmit, zuoraParams, zuoraClient}
 
-  //   test.skip('calls provided callback when Zuora form submitted', () => {
-  //     const mockSuccess = jest.fn()
+      render(<CreditCardForm {...props} />)
 
-  //     render(<CreditCardForm zuoraParams={zuoraParams} />)
+      act(() => zuoraClient.submit())
+      await waitFor(()=>{
+        expect(renderSpy).toBeCalledTimes(1)
+        expect(onSubmit).toBeCalledTimes(1)
+        expect(onSubmit).toBeCalledWith(zuoraResponse.refId)
+      }, {timeout: 1000})
+    })
 
-  //     client.submit()
+    test('calls latest provided callback when Zuora form submitted', async () => {
+      const onSubmit = jest.fn()
+      const renderSpy = jest.spyOn(zuoraClient, 'render')
+      const {rerender} = render(
+        <CreditCardForm
+        zuoraClient={zuoraClient}
+        zuoraParams={zuoraParams}
+        onSubmit={onSubmit}
+        />
+      )
 
-  //     expect(mockSuccess).toBeCalledWith(zuoraResponse.refId)
-  //   })
+      const latestSubmitMock = jest.fn()
+      const latestClient = createTestClient()
 
-  //   test.skip('calls latest provided callback when Zuora form submitted', () => {
-  //     const successMock = jest.fn()
+      rerender(
+        <CreditCardForm
+        zuoraClient={latestClient}
+        zuoraParams={zuoraParams}
+        onSubmit={latestSubmitMock}
+        />
+      )
 
-  //     const {rerender} = render(
-  //       <CreditCardForm
-  //         client={client}
-  //         zuoraParams={zuoraParams}
-  //         onSuccess={successMock}
-  //       />
-  //     )
+      act(() => zuoraClient.submit())
+      await waitFor(()=>{
+        expect(onSubmit).not.toHaveBeenCalled()
+        expect(renderSpy).toBeCalledTimes(1)
+        expect(latestSubmitMock).toHaveBeenCalledWith(zuoraResponse.refId)
+      }, {timeout: 1000})
 
-  //     const latestSuccessMock = jest.fn()
-
-  //     rerender(
-  //       <CreditCardForm
-  //         client={client}
-  //         zuoraParams={zuoraParams}
-  //         onSuccess={latestSuccessMock}
-  //       />
-  //     )
-
-  //     client.submit()
-
-  //     expect(successMock).not.toHaveBeenCalled()
-  //     expect(latestSuccessMock).toHaveBeenCalledWith(zuoraResponse.refId)
-  //   })
+    })
 })

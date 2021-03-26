@@ -1,22 +1,31 @@
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC, useEffect, useRef, useState} from 'react'
 
 // Context
 import {CreditCardParams} from 'src/client/unityRoutes'
+import { ZuoraClient } from 'src/types/billing'
 
 export const ZUORA_SCRIPT_URL =
   'https://apisandboxstatic.zuora.com/Resources/libs/hosted/1.3.0/zuora-min.js'
 export const ZUORA_ID = 'zuora_payment'
 
-interface Props {
+export interface Props {
   zuoraParams: CreditCardParams
-  onSubmit: (paymentMethodId) => void
+  onSubmit?: (paymentMethodId) => void
+  zuoraClient?: ZuoraClient
 }
 
 // FIXME: Add onFocus functionality
-const CreditCardForm: FC<Props> = ({zuoraParams, onSubmit}) => {
-  const [client, setClient] = useState(window.Z)
+const CreditCardForm: FC<Props> = ({zuoraParams, onSubmit, zuoraClient}) => {
+  const _isMounted = useRef(true)
+  const [client, setClient] = useState(zuoraClient ?? window.Z)
   const [paymentMethodId, setPaymentMethodId] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  useEffect(() => {
+    return () => {
+      _isMounted.current = false
+    }
+  }, [])
 
   // FIXME: Add onFocus functionality
   // const windowBlurred = useCallback(
@@ -36,6 +45,12 @@ const CreditCardForm: FC<Props> = ({zuoraParams, onSubmit}) => {
   //   },
   //   [onFocus]
   // )
+
+  useEffect(() => {
+    if (_isMounted.current && zuoraClient && !client) {
+      setClient(zuoraClient)
+    }
+  }, [zuoraClient, client, setClient])
 
   useEffect(() => {
     const script = document.createElement('script')
@@ -66,14 +81,14 @@ const CreditCardForm: FC<Props> = ({zuoraParams, onSubmit}) => {
       }
     }
 
-    if (paymentMethodId !== null && !isSubmitting) {
+    if (_isMounted.current && paymentMethodId !== null && !isSubmitting) {
       setIsSubmitting(true)
       submitCheckout(paymentMethodId)
     }
-  }, [paymentMethodId, onSubmit, isSubmitting, setIsSubmitting])
+  }, [_isMounted, paymentMethodId, onSubmit, isSubmitting, setIsSubmitting])
 
   useEffect(() => {
-    if (client) {
+    if (_isMounted.current && client) {
       client.render(zuoraParams, {}, response => {
         if (response.success) {
           setPaymentMethodId(response.refId)

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 
 import {mocked} from 'ts-jest/utils'
-import axios from 'axios'
 
 const fakeAxios = {
   get: jest.fn(),
@@ -12,7 +11,7 @@ const fakeAxios = {
 
 jest.doMock('axios', () => {
   return {
-    create: () => fakeAxios
+    create: () => fakeAxios,
   }
 })
 

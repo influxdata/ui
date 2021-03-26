@@ -60,6 +60,7 @@ export const AnnotationsControlBar: FC = () => {
         <FlexBoxChild grow={0}>
           <TextBlock
             backgroundColor={InfluxColors.Obsidian}
+            textColor={InfluxColors.Mist}
             text="*Currently, we only support annotations on XY Plots"
           />
         </FlexBoxChild>

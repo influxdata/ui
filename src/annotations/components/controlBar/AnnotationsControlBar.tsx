@@ -58,7 +58,10 @@ export const AnnotationsControlBar: FC = () => {
         margin={ComponentSize.Large}
       >
         <FlexBoxChild grow={0}>
-          <TextBlock backgroundColor={InfluxColors.Obsidian} text="*Currently, we only support annotations on XY Plots" />
+          <TextBlock
+            backgroundColor={InfluxColors.Obsidian}
+            text="*Currently, we only support annotations on XY Plots"
+          />
         </FlexBoxChild>
         <FlexBoxChild grow={1} />
         <FlexBoxChild grow={0}>

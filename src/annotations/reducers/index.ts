@@ -31,7 +31,7 @@ export const initialState = (): AnnotationsState => ({
     default: [] as Annotation[],
   },
   annotationsAreVisible: true,
-  enableSingleClickAnnotations: true,
+  enableSingleClickAnnotations: false,
   streams: [
     {
       stream: 'default',

@@ -7,9 +7,11 @@ import {
   ComponentColor,
   ComponentSize,
   FlexBoxChild,
+  InfluxColors,
   InputLabel,
   InputToggleType,
   JustifyContent,
+  TextBlock,
   Toggle,
 } from '@influxdata/clockface'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
@@ -55,6 +57,10 @@ export const AnnotationsControlBar: FC = () => {
         justifyContent={JustifyContent.FlexEnd}
         margin={ComponentSize.Large}
       >
+        <FlexBoxChild grow={0}>
+          <TextBlock backgroundColor={InfluxColors.Obsidian} text="*Currently, we only support annotations on XY Plots" />
+        </FlexBoxChild>
+        <FlexBoxChild grow={1} />
         <FlexBoxChild grow={0}>
           <Toggle
             style={{marginRight: 20}}

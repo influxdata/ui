@@ -287,15 +287,15 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
         singleClick: makeSingleClickHandler(),
       }
     }
-    const clickedAnnotationHandler = (id: string) => {
-      const toEditAnnotation = annotations['default'].find(
+    const handleAnnotationClick = (id: string) => {
+      const annotationToEdit = annotations['default'].find(
         annotation => annotation.id === id
       )
       event('xyplot.annotations.edit_annotation.show_overlay')
       dispatch(
         showOverlay(
           'edit-annotation',
-          {clickedAnnotation: toEditAnnotation},
+          {clickedAnnotation: annotationToEdit},
           () => {
             event('xyplot.annotations.edit_annotation.cancel')
             dismissOverlay()
@@ -309,7 +309,7 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
         x: xColumn,
         y: yColumn,
         fill: groupKey,
-        handleAnnotationClick: clickedAnnotationHandler,
+        handleAnnotationClick,
         annotations: selectedAnnotations.map(annotation => {
           return {
             id: annotation.id,

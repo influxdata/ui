@@ -234,8 +234,8 @@ describe('the annotations control bar ui functionality', () => {
     const enableSingleClickAnnotations = store.getState().annotations
       .enableSingleClickAnnotations
 
-    // by default the annotations single click to add is enabled, above toggle disables it
-    expect(enableSingleClickAnnotations).toBeFalsy()
+    // by default the annotations single click to add is disabled, above toggle enables it
+    expect(enableSingleClickAnnotations).toBeTruthy()
   })
 
   it('can toggle the visibility of annotations (which are on by default)', async () => {

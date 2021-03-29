@@ -88,7 +88,7 @@ const AccountGrid: FC = () => {
           body={account?.marketplace?.status ?? 'N/A'}
           testID="subscription-status"
         />
-        <AccountBillingContact billingContact={account.billingContact} />
+        <AccountBillingContact />
       </FlexBox>
     </FlexBox>
   )

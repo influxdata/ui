@@ -1,17 +1,16 @@
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
 import {TextBlock} from '@influxdata/clockface'
 import {billingContactInfo} from 'src/operator/constants'
-import {BillingContact} from 'src/types/billing'
-import {get} from 'lodash'
+import {AccountContext} from 'src/operator/context/account'
 
-interface Props {
-  billingContact: BillingContact
-}
+const AccountBillingContact: FC = () => {
+  const {
+    account: {billingContact},
+  } = useContext(AccountContext)
 
-const AccountBillingContact: FC<Props> = billingContact => {
   const createLine = (path, defaultValue, renderValue) => {
     const value = path.map(x => {
-      return get(billingContact, x, defaultValue)
+      return billingContact[x] ?? defaultValue
     })
     return renderValue ? renderValue(value) : value
   }

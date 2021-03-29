@@ -243,10 +243,7 @@ export const acctOrgColumnInfo: CellInfo[] = [
 
 export const billingContactInfo: ResourceInfo[] = [
   {
-    path: [
-      ['billingContact', 'firstName'],
-      ['billingContact', 'lastName'],
-    ],
+    path: [['firstName'], ['lastName']],
     header: 'Name',
     name: 'name',
     defaultValue: '',
@@ -255,29 +252,25 @@ export const billingContactInfo: ResourceInfo[] = [
     },
   },
   {
-    path: [['billingContact', 'companyName']],
+    path: [['companyName']],
     header: 'Company Name',
     name: 'company-name',
     defaultValue: '',
   },
   {
-    path: [['billingContact', 'street1']],
+    path: [['street1']],
     header: 'Street 1',
     name: 'street-one',
     defaultValue: '',
   },
   {
-    path: [['billingContact', 'street2']],
+    path: [['street2']],
     header: 'Street 2',
     name: 'street-two',
     defaultValue: '',
   },
   {
-    path: [
-      ['billingContact', 'city'],
-      ['billingContact', 'subdivision'],
-      ['billingContact', 'postalCode'],
-    ],
+    path: [['city'], ['subdivision'], ['postalCode']],
     header: 'City State and Zip',
     name: 'city-state-zip',
     defaultValue: undefined,

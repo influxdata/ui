@@ -1175,7 +1175,7 @@ components:
           type: boolean
           description: whether the user is an operator
         marketplace:
-          type: string
+          $ref: '#/components/schemas/Marketplace'
           description: which marketplace, nil if none
         balance:
           type: number

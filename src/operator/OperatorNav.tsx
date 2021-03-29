@@ -1,4 +1,4 @@
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
 import {
   ReflessPopover,
   PopoverPosition,
@@ -8,10 +8,10 @@ import {
   PopoverInteraction,
 } from '@influxdata/clockface'
 import {Link} from 'react-router-dom'
-import {get} from 'lodash'
+import {OperatorContext} from './context/operator'
 
 const OperatorNav: FC = () => {
-  // TODO(ariel): get the operator here
+  const {operator} = useContext(OperatorContext)
   return (
     <ReflessPopover
       position={PopoverPosition.ToTheLeft}
@@ -19,7 +19,7 @@ const OperatorNav: FC = () => {
       hideEvent={PopoverInteraction.Click}
       contents={() => (
         <>
-          <p>{get(operator ?? {}, 'email', '')}</p>
+          <p>{operator?.email ?? ''}</p>
           <Link to="/logout" data-testid="logout-button">
             Logout
           </Link>

@@ -1,6 +1,7 @@
 import {
   deleteOperatorAccount,
   deleteOperatorAccountUser,
+  getMe as apiGetMe,
   getOperatorAccount,
   getSearchAccount,
   getSearchOrg,
@@ -10,6 +11,7 @@ import {
 } from 'src/client/unityRoutes'
 import {
   Account,
+  Me,
   Organization,
   Organizations,
   OrgLimits,
@@ -42,7 +44,21 @@ export const getAccounts = (
         subdivision: 'NY',
         postalCode: 30000,
       },
-      users: [],
+      users: [
+        {
+          id: 'user1',
+          quartzId: 'q1',
+          onboardingState: 'complete',
+          sfdcContactId: 'sdfc_u_know_me',
+          firstName: 'jr',
+          lastName: 'OG',
+          email: 'og@influxdata.com',
+          role: 'member',
+          links: {
+            self: 'www.self.com',
+          },
+        },
+      ],
       type: 'pay_as_you_go',
     },
     {
@@ -232,13 +248,41 @@ export const getOrgById = (_id: string): ReturnType<typeof getOrg> => {
   return makeResponse(200, organization)
 }
 
+export const getMe = (): ReturnType<typeof apiGetMe> => {
+  const me: Me = {
+    id: '123',
+    firstName: 'ariel',
+    lastName: 'salem',
+    email: 'asalem@influxdata.com',
+    orgId: 'org123',
+    accountId: 'account123',
+    isBeta: false,
+    isOperator: true,
+    marketplace: null,
+    balance: 0,
+    billingContact: {
+      companyName: 'Influx',
+      email: 'asalem@influxdata.com',
+      firstName: 'Ariel',
+      lastName: 'Salem',
+      country: 'USA',
+      street1: '123 Main St',
+      city: 'New York',
+      subdivision: 'NY',
+      postalCode: 30000,
+    },
+    users: [],
+    type: 'pay_as_you_go',
+  }
+
+  return makeResponse(200, me)
+}
+
 export const getAccountById = (
   _id: string
 ): ReturnType<typeof getOperatorAccount> => {
   const account: Account = {
     id: '345',
-    quartzId: 'qID1',
-    onboardingState: 'complete',
     marketplace: {
       name: 'Amazon Web Services',
       url: 'smile.amazon.com',

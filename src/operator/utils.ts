@@ -1,8 +1,21 @@
 import {hoursToNs, nsToHours} from 'src/billing/utils/timeHelpers'
-import {update} from 'lodash/fp'
 
-export const toDisplayLimits = (limits: any) =>
-  update('bucket.maxRetentionDuration', nsToHours, limits)
+// Types
+import {OrgLimits} from 'src/types/operator'
 
-export const fromDisplayLimits = (displayLimits: any) =>
-  update('bucket.maxRetentionDuration', hoursToNs, displayLimits)
+const updateMaxRetentionWithCallback = (
+  limits: OrgLimits,
+  cb: typeof nsToHours | typeof hoursToNs
+) => ({
+  ...limits,
+  bucket: {
+    ...limits?.bucket,
+    maxRetentionDuration: cb(limits?.bucket?.maxRetentionDuration),
+  },
+})
+
+export const toDisplayLimits = (limits: OrgLimits) =>
+  updateMaxRetentionWithCallback(limits, nsToHours)
+
+export const fromDisplayLimits = (displayLimits: OrgLimits) =>
+  updateMaxRetentionWithCallback(displayLimits, hoursToNs)

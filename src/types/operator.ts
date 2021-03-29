@@ -1,6 +1,7 @@
 import {Organization as GenOrg, User as GenUser} from 'src/client/unityRoutes'
-export {Account, Organizations, OrgLimits} from 'src/client/unityRoutes'
+export {Account, Me, Organizations, OrgLimits} from 'src/client/unityRoutes'
 
+export interface Organization extends GenOrg {}
 export interface Organization extends GenOrg {}
 export interface User extends GenUser {}
 
@@ -33,7 +34,7 @@ export interface TestResource {
 }
 
 export interface CellInfo {
-  path: string[]
+  path: string
   name: string
   header?: string
   defaultValue: string | number

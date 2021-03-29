@@ -14,12 +14,12 @@ export const accountHeaderInfo = [
 
 export const accountColumnInfo: CellInfo[] = [
   {
-    path: ['billingContact', 'companyName'],
+    path: 'billingContact.companyName',
     name: 'company-name',
     defaultValue: '',
   },
   {
-    path: ['id'],
+    path: 'id',
     name: 'account-id',
     defaultValue: '',
     renderValue: value => (
@@ -27,27 +27,27 @@ export const accountColumnInfo: CellInfo[] = [
     ),
   },
   {
-    path: ['billingContact', 'email'],
+    path: 'billingContact.email',
     name: 'email',
     defaultValue: '',
   },
   {
-    path: ['users', 'length'],
+    path: 'users.length',
     name: 'users',
     defaultValue: '',
   },
   {
-    path: ['balance'],
+    path: 'balance',
     name: 'balance',
     defaultValue: '',
   },
   {
-    path: ['type'],
+    path: 'type',
     name: 'acct-type',
     defaultValue: '',
   },
   {
-    path: ['marketplace', 'shortName'],
+    path: 'marketplace.shortName',
     name: 'marketplace',
     defaultValue: 'Zuora',
   },
@@ -67,12 +67,12 @@ export const organizationColumnHeaders = [
 
 export const organizationColumnInfo: CellInfo[] = [
   {
-    path: ['name'],
+    path: 'name',
     name: 'org-name',
     defaultValue: '',
   },
   {
-    path: ['idpeID'],
+    path: 'idpeID',
     name: 'org-id',
     defaultValue: '',
     renderValue: value => (
@@ -80,37 +80,37 @@ export const organizationColumnInfo: CellInfo[] = [
     ),
   },
   {
-    path: ['account', 'billingContact', 'email'],
+    path: 'account.billingContact.email',
     name: 'email',
     defaultValue: '',
   },
   {
-    path: ['account', 'id'],
+    path: 'account.id',
     name: 'account-id',
     defaultValue: '',
   },
   {
-    path: ['account', 'balance'],
+    path: 'account.balance',
     name: 'acct-balance',
     defaultValue: '',
   },
   {
-    path: ['account', 'type'],
+    path: 'account.type',
     name: 'acct-type',
     defaultValue: '',
   },
   {
-    path: ['provider'],
+    path: 'provider',
     name: 'provider',
     defaultValue: '',
   },
   {
-    path: ['region'],
+    path: 'region',
     name: 'region',
     defaultValue: '',
   },
   {
-    path: ['date'],
+    path: 'date',
     name: 'date',
     defaultValue: '',
   },
@@ -118,50 +118,50 @@ export const organizationColumnInfo: CellInfo[] = [
 
 export const userColumnInfo: CellInfo[] = [
   {
-    path: ['email'],
+    path: 'email',
     header: 'Email',
     name: 'user-email',
     defaultValue: '',
   },
   {
-    path: ['id'],
+    path: 'id',
     header: 'ID',
     name: 'user-id',
     defaultValue: '',
   },
   {
-    path: ['firstName'],
+    path: 'firstName',
     header: 'First Name',
     name: 'first-name',
     defaultValue: '',
   },
   {
-    path: ['lastName'],
+    path: 'lastName',
     header: 'Last Name',
     name: 'last-name',
     defaultValue: '',
   },
   {
-    path: ['onboardingState'],
+    path: 'onboardingState',
     header: 'Onboarding State',
     name: 'onboarding-state',
     defaultValue: '',
   },
   {
-    path: ['sfdcContactId'],
+    path: 'sfdcContactId',
     header: 'SFDC Contact ID',
     name: 'sfdc-contact-id',
     defaultValue: '',
   },
   {
-    path: ['operator'],
+    path: 'operator',
     header: 'Operator',
     name: 'operator',
     defaultValue: 'no',
     renderValue: value => (value ? 'yes' : 'no'),
   },
   {
-    path: ['accountId'],
+    path: 'accountId',
     header: 'Acct ID',
     name: 'acct-id',
     defaultValue: '',
@@ -179,32 +179,32 @@ export const accountUserHeaderInfo = [
 
 export const acctUserColumnInfo: CellInfo[] = [
   {
-    path: ['firstName'],
+    path: 'firstName',
     name: 'first-name',
     defaultValue: '',
   },
   {
-    path: ['lastName'],
+    path: 'lastName',
     name: 'last-name',
     defaultValue: '',
   },
   {
-    path: ['email'],
+    path: 'email',
     name: 'user-email',
     defaultValue: '',
   },
   {
-    path: ['quartzId'],
+    path: 'quartzId',
     name: 'user-quartz-id',
     defaultValue: '',
   },
   {
-    path: ['id'],
+    path: 'id',
     name: 'user-idpe-id',
     defaultValue: '',
   },
   {
-    path: ['onboardingState'],
+    path: 'onboardingState',
     name: 'onboarding-state',
     defaultValue: '',
   },
@@ -220,22 +220,22 @@ export const accountOrgHeaders = [
 
 export const acctOrgColumnInfo: CellInfo[] = [
   {
-    path: ['name'],
+    path: 'name',
     name: 'org-name',
     defaultValue: '',
   },
   {
-    path: ['idpeID'],
+    path: 'idpeID',
     name: 'org-id',
     defaultValue: '',
     renderValue: value => (
       <Link to={`/operator/organizations/${value}`}>{value}</Link>
     ),
   },
-  {path: ['provider'], name: 'provider', defaultValue: ''},
-  {path: ['region'], name: 'region', defaultValue: ''},
+  {path: 'provider', name: 'provider', defaultValue: ''},
+  {path: 'region', name: 'region', defaultValue: ''},
   {
-    path: ['account', 'balance'],
+    path: 'account.balance',
     name: 'acct-balance',
     defaultValue: '',
   },
@@ -252,25 +252,25 @@ export const billingContactInfo: ResourceInfo[] = [
     },
   },
   {
-    path: [['companyName']],
+    path: 'companyName',
     header: 'Company Name',
     name: 'company-name',
     defaultValue: '',
   },
   {
-    path: [['street1']],
+    path: 'street1',
     header: 'Street 1',
     name: 'street-one',
     defaultValue: '',
   },
   {
-    path: [['street2']],
+    path: 'street2',
     header: 'Street 2',
     name: 'street-two',
     defaultValue: '',
   },
   {
-    path: [['city'], ['subdivision'], ['postalCode']],
+    path: ['city', 'subdivision', 'postalCode'],
     header: 'City State and Zip',
     name: 'city-state-zip',
     defaultValue: undefined,

@@ -1,6 +1,5 @@
 import React, {FC} from 'react'
 import {Table} from '@influxdata/clockface'
-import {get} from 'lodash'
 
 // Types
 import {CellInfo, Resource} from 'src/types/operator'
@@ -9,9 +8,12 @@ interface Props {
   infos: CellInfo[]
 }
 
+const resolvePath = (object, path, defaultValue) =>
+  path.split('.').reduce((o, p) => (o ? o[p] : defaultValue), object)
+
 const ResourcesTableRow: FC<Props> = ({resource, infos}) => {
   const returnValue = (path, defaultValue, renderValue) => {
-    const value = get(resource, path, defaultValue)
+    const value = resolvePath(resource, path, defaultValue)
     return renderValue ? renderValue(value) : value
   }
 

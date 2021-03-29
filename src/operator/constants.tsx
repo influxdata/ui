@@ -243,7 +243,7 @@ export const acctOrgColumnInfo: CellInfo[] = [
 
 export const billingContactInfo: ResourceInfo[] = [
   {
-    path: [['firstName'], ['lastName']],
+    path: ['firstName', 'lastName'],
     header: 'Name',
     name: 'name',
     defaultValue: '',
@@ -252,19 +252,19 @@ export const billingContactInfo: ResourceInfo[] = [
     },
   },
   {
-    path: 'companyName',
+    path: ['companyName'],
     header: 'Company Name',
     name: 'company-name',
     defaultValue: '',
   },
   {
-    path: 'street1',
+    path: ['street1'],
     header: 'Street 1',
     name: 'street-one',
     defaultValue: '',
   },
   {
-    path: 'street2',
+    path: ['street2'],
     header: 'Street 2',
     name: 'street-two',
     defaultValue: '',

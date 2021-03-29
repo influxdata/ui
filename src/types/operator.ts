@@ -42,7 +42,7 @@ export interface CellInfo {
 }
 
 export interface ResourceInfo {
-  path: string[][]
+  path: string[]
   name: string
   header: string
   defaultValue: string | number

@@ -30,19 +30,19 @@ export interface OverlayContextType {
   handleUpdateLimits: (limits: OrgLimits) => void
   organization: Organization
   orgStatus: RemoteDataState
-  setLimits: (_: any) => void
+  setLimits: (_: OrgLimits) => void
   updateLimitStatus: RemoteDataState
 }
 
 export const DEFAULT_CONTEXT: OverlayContextType = {
   handleGetLimits: (_: string) => {},
   handleGetOrg: (_: string) => {},
-  handleUpdateLimits: (_: any) => {},
+  handleUpdateLimits: (_: OrgLimits) => {},
   limits: null,
   limitsStatus: RemoteDataState.NotStarted,
   organization: null,
   orgStatus: RemoteDataState.NotStarted,
-  setLimits: (_: any) => {},
+  setLimits: (_: OrgLimits) => {},
   updateLimitStatus: RemoteDataState.NotStarted,
 }
 
@@ -117,7 +117,7 @@ export const OverlayProvider: FC<Props> = React.memo(({children}) => {
   }, [handleGetOrg, handleGetLimits, orgID])
 
   const handleUpdateLimits = useCallback(
-    async (updatedLimits: any) => {
+    async (updatedLimits: OrgLimits) => {
       try {
         setUpdateLimitStatus(RemoteDataState.Loading)
         await updateOrgLimits(orgID, updatedLimits)

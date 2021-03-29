@@ -9,16 +9,16 @@ const AccountBillingContact: FC = () => {
   } = useContext(AccountContext)
 
   const createLine = (path, defaultValue, renderValue) => {
-    const value = path.map(x => {
-      return billingContact[x] ?? defaultValue
-    })
+    const value = path.map(
+      (prop: string) => billingContact[prop] ?? defaultValue
+    )
     return renderValue ? renderValue(value) : value
   }
 
   const createBillingContact = () => {
     return billingContactInfo.map(value => {
       const text = createLine(value.path, value.defaultValue, value.renderValue)
-      return text != '' ? (
+      return text !== '' ? (
         <TextBlock
           key={value.name}
           className="account-grid-text body"

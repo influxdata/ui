@@ -9,13 +9,7 @@ import {
   getOrgsLimits,
   putOrgsLimits,
 } from 'src/client/unityRoutes'
-import {
-  Account,
-  Me,
-  Organization,
-  Organizations,
-  OrgLimits,
-} from 'src/types/operator'
+import {Account, Me, Organization, OrgLimits} from 'src/types/operator'
 
 const makeResponse = (status, data) => {
   return Promise.resolve({
@@ -119,7 +113,7 @@ export const getAccounts = (
 export const getOrgs = (
   searchTerm?: string
 ): ReturnType<typeof getSearchOrg> => {
-  const organizations: Organizations = [
+  const organizations: Organization[] = [
     {
       id: '123',
       idpeID: '123',

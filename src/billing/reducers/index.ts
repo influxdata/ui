@@ -28,6 +28,9 @@ export const initialState = (): BillingState => ({
     id: null,
     marketplace: null,
     type: 'free',
+    balance: null,
+    users: [],
+    billingContact: null,
   },
   billingInfo: {
     balance: null,

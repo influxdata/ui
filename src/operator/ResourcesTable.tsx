@@ -23,12 +23,18 @@ import {
   organizationColumnInfo,
 } from 'src/operator/constants'
 
+// Types
+import {Account, Organization} from 'src/types/operator'
+
 const ResourcesTable: FC = () => {
   const {activeTab, accounts, organizations, status} = useContext(
     OperatorContext
   )
 
-  const resources = activeTab === 'accounts' ? accounts : organizations
+  // TODO(ariel): remove type forcing here, this should be resolved with
+  // API integration
+  const resources: Account[] | Organization[] =
+    activeTab === 'accounts' ? accounts : organizations
   const headers =
     activeTab === 'accounts' ? accountHeaderInfo : organizationColumnHeaders
   const infos =
@@ -50,7 +56,7 @@ const ResourcesTable: FC = () => {
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {resources.map(resource => (
+                {resources?.map(resource => (
                   <ResourcesTableRow
                     key={resource.id}
                     resource={resource}

@@ -35,6 +35,9 @@ export const getAccount = (): ReturnType<typeof apiGetAccount> => {
     id: 'account_1',
     marketplace: null,
     type: 'free',
+    balance: null,
+    users: [],
+    billingContact: null,
     status: RemoteDataState.Done,
   }
   return makeResponse(200, account, 'getBillingAccount')

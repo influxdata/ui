@@ -8,7 +8,7 @@ import {getMe, getAccounts, getOrgs} from 'src/operator/api'
 import {getAccountsError, getOrgsError} from 'src/shared/copy/notifications'
 
 // Types
-import {Account, Me, Organizations} from 'src/types/operator'
+import {Account, Me, Organization} from 'src/types/operator'
 import {RemoteDataState} from 'src/types'
 
 export type Props = {
@@ -22,7 +22,7 @@ export interface OperatorContextType {
   handleGetOrgs: () => void
   operator: Me
   operatorStatus: RemoteDataState
-  organizations: Organizations
+  organizations: Organization[]
   searchTerm: string
   setActiveTab: (tab: string) => void
   setSearchTerm: (searchTerm?: string) => void

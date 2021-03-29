@@ -2,9 +2,9 @@ import React, {FC} from 'react'
 import {Table} from '@influxdata/clockface'
 
 // Types
-import {CellInfo, Resource} from 'src/types/operator'
+import {Account, CellInfo, Organization, User} from 'src/types/operator'
 interface Props {
-  resource: Resource
+  resource: Account | Organization | User
   infos: CellInfo[]
 }
 

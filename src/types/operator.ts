@@ -1,17 +1,12 @@
-import {Organization as GenOrg, User as GenUser} from 'src/client/unityRoutes'
 export {
   Account,
   Me,
   BillingContact,
+  Organization,
   Organizations,
   OrgLimits,
+  User,
 } from 'src/client/unityRoutes'
-
-export interface Organization extends GenOrg {}
-export interface Organization extends GenOrg {}
-export interface User extends GenUser {}
-
-export type Resource = Account | User | Organization
 
 export interface MarketplaceSubscription {
   marketplace: string

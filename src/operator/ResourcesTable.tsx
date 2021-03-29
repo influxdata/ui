@@ -33,7 +33,7 @@ const ResourcesTable: FC = () => {
 
   // TODO(ariel): remove type forcing here, this should be resolved with
   // API integration
-  const resources: Account[] | Organization[] =
+  const resources: (Account | Organization)[] =
     activeTab === 'accounts' ? accounts : organizations
   const headers =
     activeTab === 'accounts' ? accountHeaderInfo : organizationColumnHeaders

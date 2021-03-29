@@ -192,7 +192,7 @@ const normalizeSchema = (
     measurements: Object.keys(measurements),
     fields: Object.keys(fields),
     tags: Object.entries(tags).map(([tag, value]) => ({
-      [tag as string]: Array.from(value as ArrayLike<string>),
+      [tag]: Array.from(value as ArrayLike<string>),
     })),
   }
 }

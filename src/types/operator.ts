@@ -1,5 +1,11 @@
 import {Organization as GenOrg, User as GenUser} from 'src/client/unityRoutes'
-export {Account, Me, Organizations, OrgLimits} from 'src/client/unityRoutes'
+export {
+  Account,
+  Me,
+  BillingContact,
+  Organizations,
+  OrgLimits,
+} from 'src/client/unityRoutes'
 
 export interface Organization extends GenOrg {}
 export interface Organization extends GenOrg {}
@@ -11,18 +17,6 @@ export interface MarketplaceSubscription {
   marketplace: string
   subscriberId: string
   status: string
-}
-export interface BillingContact {
-  companyName: string
-  email: string
-  firstName: string
-  lastName: string
-  country: string
-  street1: string
-  street2: string
-  city: string
-  subdivision: string
-  postalCode: number
 }
 
 export interface TestResource {

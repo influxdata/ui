@@ -230,8 +230,6 @@ export const SchemaProvider: FC = React.memo(({children}) => {
 
     setLoading(RemoteDataState.Loading)
 
-    console.log('neat', data.bucket.name, lastBucket.id, range, query)
-
     const text = `from(bucket: "${data.bucket.name}")
 |> range(${range})
 |> first()

@@ -10,11 +10,7 @@ import {FlowContext} from 'src/flows/context/flow.current'
 import {formatTimeRangeArguments} from 'src/timeMachine/apis/queryBuilder'
 
 // Types
-import {
-  FluxResult,
-  RemoteDataState,
-  PipeData,
-} from 'src/types'
+import {FluxResult, RemoteDataState, PipeData} from 'src/types'
 import {FromFluxResult} from '@influxdata/giraffe'
 import {RunQueryResult} from 'src/shared/apis/query'
 
@@ -32,7 +28,7 @@ interface Schema {
   [measurement: string]: SchemaValues
 }
 
-interface NormalizedTag {
+export interface NormalizedTag {
   [tagName: string]: string[] | number[]
 }
 
@@ -41,7 +37,6 @@ interface NormalizedSchema {
   fields: string[]
   tags: NormalizedTag[]
 }
-
 
 interface SchemaContextType {
   loading: RemoteDataState
@@ -137,12 +132,14 @@ const normalizeSchema = (
           (!!data.field && f === data.field) ||
           (!data.field && f.toLowerCase().includes(searchTerm.toLowerCase()))
       ),
-      tags: Object.entries(values.tags).filter(([name, values]) =>
-        Array.from(values).some(value =>
-          `${('' + name).toLowerCase()} = ${(
-            '' + value
-          ).toLowerCase()}`.includes(('' + searchTerm).toLowerCase())
-        )
+      tags: Object.entries(values.tags).filter(
+        ([name, values]) =>
+          !searchTerm ||
+          Array.from(values).some(value =>
+            `${('' + name).toLowerCase()} = ${(
+              '' + value
+            ).toLowerCase()}`.includes(searchTerm.toLowerCase())
+          )
       ),
     }))
     .filter(values => {
@@ -227,11 +224,13 @@ export const SchemaProvider: FC = React.memo(({children}) => {
   const range = formatTimeRangeArguments(flow?.range)
 
   useEffect(() => {
-    if (!data?.bucket) {
+    if (!data?.bucket || loading === RemoteDataState.Loading) {
       return
     }
 
     setLoading(RemoteDataState.Loading)
+
+    console.log('neat', data.bucket.name, lastBucket.id, range, query)
 
     const text = `from(bucket: "${data.bucket.name}")
 |> range(${range})
@@ -250,7 +249,7 @@ export const SchemaProvider: FC = React.memo(({children}) => {
         setLoading(RemoteDataState.Error)
         setSchema({})
       })
-  }, [data?.bucket?.name, lastBucket?.id, query, range]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [data?.bucket?.name, lastBucket?.id, range]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const normalized = useMemo(() => normalizeSchema(schema, data, searchTerm), [
     data,

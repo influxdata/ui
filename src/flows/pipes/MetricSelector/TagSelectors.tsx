@@ -4,18 +4,17 @@ import React, {FC, MouseEvent, useContext, useCallback} from 'react'
 // Components
 import {List, Gradients} from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
-import {SchemaContext} from 'src/flows/pipes/MetricSelector/context'
+import {NormalizedTag} from 'src/flows/pipes/MetricSelector/context'
 
 // Utils
 import {event as reportEvent} from 'src/cloud/utils/reporting'
 
 type Props = {
-  tags: any[]
+  tags: NormalizedTag[]
 }
 
 const TagSelectors: FC<Props> = ({tags}) => {
   const {data, update} = useContext(PipeContext)
-  const {searchTerm} = useContext(SchemaContext)
   const selectedTags = data?.tags
 
   const selectEventText = 'Selecting Tag in Flow Query Builder'
@@ -92,38 +91,37 @@ const TagSelectors: FC<Props> = ({tags}) => {
     [update]
   )
 
-  const _tags = tags.reduce((acc, curr) => {
-      return acc.concat(Object.entries(curr).reduce((tacc, [name, values]) => {
-          return tacc.concat(values.map(val => (
-                      <List.Item
-                        key={val}
-                        value={val}
-                        onClick={(value: string, event) => {
-                          handleSubListItemClick(
-                            event as MouseEvent,
-                            name,
-                            value
-                          )
-                        }}
-                        selected={selectedTags[name]?.includes(val)}
-                        title={val}
-                        gradient={Gradients.GundamPilot}
-                        wrapText={true}
-                        testID={`tag-selector ${val}`}
-                      >
-                        <List.Indicator type="dot" />
-                        <div className="selectors--item-value selectors--item__tag">{`${name} = ${val}`}</div>
-                        <div className="selectors--item-name">tag</div>
-                      </List.Item>
-          )))
-      }, []))
+  const _tags = tags.reduce((acc, tag) => {
+    const byTag = Object.entries(tag).reduce((tacc, tcurr) => {
+      const name = tcurr[0]
+      const values = tcurr[1] as string[]
+
+      const items = values.map(val => (
+        <List.Item
+          key={`${name}::${val}`}
+          value={val}
+          onClick={(value: string, event) => {
+            handleSubListItemClick(event as MouseEvent, name, value)
+          }}
+          selected={selectedTags[name]?.includes(val)}
+          title={val}
+          gradient={Gradients.GundamPilot}
+          wrapText={true}
+          testID={`tag-selector ${val}`}
+        >
+          <List.Indicator type="dot" />
+          <div className="selectors--item-value selectors--item__tag">{`${name} = ${val}`}</div>
+          <div className="selectors--item-name">tag</div>
+        </List.Item>
+      ))
+
+      return tacc.concat(items)
+    }, [])
+
+    return acc.concat(byTag)
   }, [])
 
-  return (
-    <>
-        {_tags}
-    </>
-  )
+  return <>{_tags}</>
 }
 
 export default TagSelectors

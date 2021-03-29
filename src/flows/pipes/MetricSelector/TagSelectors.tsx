@@ -4,7 +4,7 @@ import React, {FC, MouseEvent, useContext, useCallback} from 'react'
 // Components
 import {List, Gradients} from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
-import {SchemaContext} from 'src/flows/context/schemaProvider'
+import {SchemaContext} from 'src/flows/pipes/MetricSelector/context'
 
 // Utils
 import {event as reportEvent} from 'src/cloud/utils/reporting'
@@ -92,53 +92,36 @@ const TagSelectors: FC<Props> = ({tags}) => {
     [update]
   )
 
-  return (
-    <>
-      {tags.map(tag => {
-        return (
-          <React.Fragment key={JSON.stringify(tag)}>
-            {Object.entries(tag).map(([tagName, tagValues]) => {
-              const values = tagValues as any[]
-              return (
-                <React.Fragment key={tagName}>
-                  {values
-                    .filter(
-                      tagValue =>
-                        tagName
-                          .toLowerCase()
-                          .includes(searchTerm.toLowerCase()) ||
-                        tagValue
-                          .toLowerCase()
-                          .includes(searchTerm.toLowerCase())
-                    )
-                    .map(tagValue => (
+  const _tags = tags.reduce((acc, curr) => {
+      return acc.concat(Object.entries(curr).reduce((tacc, [name, values]) => {
+          return tacc.concat(values.map(val => (
                       <List.Item
-                        key={tagValue}
-                        value={tagValue}
+                        key={val}
+                        value={val}
                         onClick={(value: string, event) => {
                           handleSubListItemClick(
                             event as MouseEvent,
-                            tagName,
+                            name,
                             value
                           )
                         }}
-                        selected={selectedTags[tagName]?.includes(tagValue)}
-                        title={tagValue}
+                        selected={selectedTags[name]?.includes(val)}
+                        title={val}
                         gradient={Gradients.GundamPilot}
                         wrapText={true}
-                        testID={`tag-selector ${tagValue}`}
+                        testID={`tag-selector ${val}`}
                       >
                         <List.Indicator type="dot" />
-                        <div className="selectors--item-value selectors--item__tag">{`${tagName} = ${tagValue}`}</div>
+                        <div className="selectors--item-value selectors--item__tag">{`${name} = ${val}`}</div>
                         <div className="selectors--item-name">tag</div>
                       </List.Item>
-                    ))}
-                </React.Fragment>
-              )
-            })}
-          </React.Fragment>
-        )
-      })}
+          )))
+      }, []))
+  }, [])
+
+  return (
+    <>
+        {_tags}
     </>
   )
 }

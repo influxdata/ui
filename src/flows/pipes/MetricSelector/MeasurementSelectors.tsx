@@ -33,7 +33,7 @@ const MeasurementSelectors: FC<Props> = ({measurements}) => {
   )
   return (
     <>
-      {measurements.map(measurement => (
+        {measurements.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).map(measurement => (
         <List.Item
           key={measurement}
           value={measurement}

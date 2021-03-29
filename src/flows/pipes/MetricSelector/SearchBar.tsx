@@ -5,7 +5,7 @@ import React, {FC, useContext} from 'react'
 import {Input, IconFont, ComponentSize} from '@influxdata/clockface'
 
 // Contexts
-import {SchemaContext} from 'src/flows/context/schemaProvider'
+import {SchemaContext} from 'src/flows/pipes/MetricSelector/context'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'

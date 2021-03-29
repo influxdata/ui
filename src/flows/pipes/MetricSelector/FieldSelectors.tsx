@@ -33,7 +33,7 @@ const FieldSelectors: FC<Props> = ({fields}) => {
 
   return (
     <>
-      {fields.map(field => (
+        {fields.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).map(field => (
         <List.Item
           key={field}
           value={field}

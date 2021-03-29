@@ -7,19 +7,43 @@ import {PipeContext} from 'src/flows/context/pipe'
 import {FlowContext} from 'src/flows/context/flow.current'
 
 // Utils
-import {normalizeSchema} from 'src/shared/utils/flowSchemaNormalizer'
 import {formatTimeRangeArguments} from 'src/timeMachine/apis/queryBuilder'
 
 // Types
-import {FluxResult, NormalizedTag, RemoteDataState} from 'src/types'
+import {
+  FluxResult,
+  RemoteDataState,
+  PipeData,
+} from 'src/types'
 import {FromFluxResult} from '@influxdata/giraffe'
 import {RunQueryResult} from 'src/shared/apis/query'
 
-export type Props = {
-  children: JSX.Element
+interface Tag {
+  [tagName: string]: Set<string | number>
 }
 
-export interface SchemaContextType {
+interface SchemaValues {
+  fields: string[]
+  tags: Tag
+  type?: string
+}
+
+interface Schema {
+  [measurement: string]: SchemaValues
+}
+
+interface NormalizedTag {
+  [tagName: string]: string[] | number[]
+}
+
+interface NormalizedSchema {
+  measurements: string[]
+  fields: string[]
+  tags: NormalizedTag[]
+}
+
+
+interface SchemaContextType {
   loading: RemoteDataState
   measurements: string[]
   fields: string[]
@@ -28,7 +52,7 @@ export interface SchemaContextType {
   setSearchTerm: (value: string) => void
 }
 
-export const DEFAULT_CONTEXT: SchemaContextType = {
+const DEFAULT_CONTEXT: SchemaContextType = {
   loading: RemoteDataState.NotStarted,
   measurements: [],
   fields: [],
@@ -100,7 +124,83 @@ const parsedResultToSchema = (parsed: FromFluxResult): unknown => {
   return schema
 }
 
-export const SchemaProvider: FC<Props> = React.memo(({children}) => {
+const normalizeSchema = (
+  schema: Schema,
+  data: PipeData,
+  searchTerm: string
+): NormalizedSchema => {
+  const {measurements, fields, tags} = Object.entries(schema || {})
+    .map(([measurement, values]) => ({
+      measurement: measurement,
+      fields: values.fields.filter(
+        f =>
+          (!!data.field && f === data.field) ||
+          (!data.field && f.toLowerCase().includes(searchTerm.toLowerCase()))
+      ),
+      tags: Object.entries(values.tags).filter(([name, values]) =>
+        Array.from(values).some(value =>
+          `${('' + name).toLowerCase()} = ${(
+            '' + value
+          ).toLowerCase()}`.includes(('' + searchTerm).toLowerCase())
+        )
+      ),
+    }))
+    .filter(values => {
+      if (data.measurement) {
+        return values.measurement === data.measurement
+      }
+
+      if (data.field) {
+        return values.fields.length
+      }
+
+      if (searchTerm) {
+        return (
+          `measurement = ${values.measurement.toLowerCase()}`.includes(
+            searchTerm.toLowerCase()
+          ) ||
+          values.fields.length ||
+          values.tags.length
+        )
+      }
+
+      return true
+    })
+    .reduce(
+      (acc, curr) => {
+        acc.measurements[curr.measurement] = true
+        curr.fields.reduce((facc, fcurr) => {
+          facc[fcurr] = true
+          return facc
+        }, acc.fields)
+        curr.tags.reduce((tacc, [tag, values]) => {
+          if (!tacc[tag]) {
+            tacc[tag] = new Set()
+          }
+
+          values.forEach(v => tacc[tag].add('' + v))
+
+          return tacc
+        }, acc.tags)
+        return acc
+      },
+      {
+        measurements: {},
+        fields: {},
+        tags: {},
+      }
+    )
+
+  return {
+    measurements: Object.keys(measurements),
+    fields: Object.keys(fields),
+    tags: Object.entries(tags).map(([tag, value]) => ({
+      [tag as string]: Array.from(value as ArrayLike<string>),
+    })),
+  }
+}
+
+export const SchemaProvider: FC = React.memo(({children}) => {
   const {data, update} = useContext(PipeContext)
   const {flow} = useContext(FlowContext)
   const {query} = useContext(QueryContext)
@@ -127,7 +227,7 @@ export const SchemaProvider: FC<Props> = React.memo(({children}) => {
   const range = formatTimeRangeArguments(flow?.range)
 
   useEffect(() => {
-    if (!data?.bucket || loading !== RemoteDataState.NotStarted) {
+    if (!data?.bucket) {
       return
     }
 
@@ -139,8 +239,7 @@ export const SchemaProvider: FC<Props> = React.memo(({children}) => {
 |> drop(columns: ["_value"])
 |> group()`
 
-    const result = query(text)
-    result
+    query(text)
       .then((response: FluxResult) => {
         const schemaForBucket = parsedResultToSchema(response.parsed)
         setSchema(schemaForBucket)

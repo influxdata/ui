@@ -9,8 +9,6 @@ import {
   setBillingInfoStatus,
   setBillingSettings,
   setBillingSettingsStatus,
-  setCreditCard,
-  setCreditCardStatus,
   setInvoices,
   setInvoicesStatus,
 } from 'src/billing/reducers'
@@ -19,14 +17,13 @@ import {
 import {
   getAccount as apiGetAccount,
   getBillingInfo as apiGetBillingInfo,
-  getBillingCreditCard,
   getBillingNotificationSettings,
   getInvoices as apiGetInvoices,
 } from 'src/billing/api'
 
 // Types
 import {RemoteDataState} from 'src/types'
-import {CreditCardParams, Invoice} from 'src/types/billing'
+import {Invoice} from 'src/types/billing'
 
 export const getAccount = async (dispatch: Dispatch<Action>) => {
   try {
@@ -93,23 +90,5 @@ export const getInvoices = async (dispatch: Dispatch<Action>) => {
     console.error(error)
 
     dispatch(setInvoicesStatus(RemoteDataState.Error))
-  }
-}
-
-export const getCreditCard = async (dispatch: Dispatch<Action>) => {
-  try {
-    dispatch(setCreditCardStatus(RemoteDataState.Loading))
-
-    const resp = await getBillingCreditCard()
-
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
-
-    dispatch(setCreditCard(resp.data as CreditCardParams))
-  } catch (error) {
-    console.error(error)
-
-    dispatch(setCreditCardStatus(RemoteDataState.Error))
   }
 }

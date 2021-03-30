@@ -59,7 +59,7 @@ describe('Flows', () => {
 
   it('can create a bucket from the metric selector and verify it is selected', () => {
     const newBucketName = 'IDontGiveABuck'
-    cy.getByTestID('create-flow--button')
+    cy.getByTestID('create-flow--button-nopeeeeeeee')
       .first()
       .click()
 

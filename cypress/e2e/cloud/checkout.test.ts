@@ -57,9 +57,12 @@ describe('Checkout Page', () => {
     cy.getByTestID('checkout-upgrade--button').click()
 
     // Check all errors are visible
+    cy.getByTestID('balanceThreshold--input').scrollIntoView()
+    cy.getByTestID('balanceThreshold--form-element-error').should('be.visible')
     cy.getByTestID('balanceThreshold--form-element-error').contains(
       genericError
     )
+    cy.getByTestID('notifyEmail--form-element-error').should('be.visible')
     cy.getByTestID('notifyEmail--form-element-error').contains(genericError)
 
     // Check balance threshold specific error should exist
@@ -103,7 +106,9 @@ describe('Checkout Page', () => {
 
     cy.getByTestID('checkout-upgrade--button').click()
 
+    cy.getByTestID('city--form-element-error').should('be.visible')
     cy.getByTestID('city--form-element-error').contains(error)
+    cy.getByTestID('postalCode--form-element-error').should('be.visible')
     cy.getByTestID('postalCode--form-element-error').contains(error)
 
     cy.getByTestID('city--input').type('Blacksburg')
@@ -148,6 +153,7 @@ describe('Checkout Page', () => {
       cy.getByTestID('checkout-upgrade--button').click()
 
       // Check required fields show error
+      cy.getByTestID('city--form-element-error').should('be.visible')
       cy.getByTestID('city--form-element-error').contains(error)
 
       cy.getByTestID('city--input')

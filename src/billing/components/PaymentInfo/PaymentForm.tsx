@@ -25,7 +25,6 @@ const PaymentForm: FC<Props> = ({zuoraParams, onSubmit, errorMessage}) => {
    * that is set when the ZuoraAPI is queried. In this case, Z serves as a
    * a hosted iframe to render a credit card form to the UI
    */
-
   return (
     <>
       {errorMessage && (
@@ -39,11 +38,12 @@ const PaymentForm: FC<Props> = ({zuoraParams, onSubmit, errorMessage}) => {
       )}
 
       <SpinnerContainer
-        loading={RemoteDataState.Loading}
+        loading={zuoraParams.status !== RemoteDataState.Done}
         spinnerComponent={<TechnoSpinner />}
         className="billing-payment--spinner"
-      />
-      <CreditCardForm zuoraParams={zuoraParams} onSubmit={onSubmit} />
+      >
+        <CreditCardForm zuoraParams={zuoraParams} onSubmit={onSubmit} />
+      </SpinnerContainer>
     </>
   )
 }

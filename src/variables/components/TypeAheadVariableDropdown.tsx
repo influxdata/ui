@@ -107,7 +107,14 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       }
     }
 
-    // unset the menuOpen; it should be set to closed (or open) only once; then undone
+    /**
+     * unset the menuOpen; it should be set to closed (or open) only once; then undone
+     * this is needed because: (from clockface Dropdown.tsx documentation):
+     * if the string is set to 'open', and then the user closes it, and the code sets it to open again,
+     * unless the code sets it to something else in between (like null or 'close'),
+     * then nothing will happen- the menu will not open)
+     */
+
     if (menuOpen !== prevMenuOpen && menuOpen !== null) {
       newState['menuOpen'] = null
     }
@@ -126,10 +133,10 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
   getInitialValuesAfterLoading() {
     const {values, selectedValue} = this.props
-    // it reloaded; maybe because a dependent var
+    // it reloaded; maybe because of a dependent var
     // want to re-init
 
-    // if selectedValue is present in the values, set it; else zero it out (TODO)
+    // if selectedValue is present in the values, set it; else zero it out
     let newSelectedValue = ''
     if (values.includes(selectedValue)) {
       newSelectedValue = selectedValue
@@ -143,8 +150,10 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     }
   }
 
-  filterVals = needle => {
+  filterVals = event => {
     const {values} = this.props
+
+    const needle = event?.target?.value
 
     // if there is no value, set the shownValues to everything
     // and set the typedValue to nothing (zero it out)
@@ -259,7 +268,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
           <Input
             style={widthStyle}
             placeholder={placeHolderText}
-            onChange={e => this.filterVals(e.target.value)}
+            onChange={this.filterVals}
             value={typedValue}
             onKeyDown={this.maybeSelectNextItem}
             testID={`variable-dropdown-input-typeAhead--${name}`}
@@ -267,8 +276,11 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
         )
       }
     }
-
+    // binding this b/c can't use arrow functions in the map below (shownValues.map)
+    // because need the index for highlighting the selectIndex for when using arrows
+    // to select the value
     const thisHandleSelect = this.handleSelect.bind(this)
+
     return (
       <Dropdown
         style={{width: '140px'}}

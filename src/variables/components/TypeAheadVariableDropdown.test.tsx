@@ -8,7 +8,6 @@ import TypeAheadVariableDropdown from 'src/variables/components/TypeAheadVariabl
 // Utils
 import {renderWithRedux} from 'src/mockState'
 import {AppState, RemoteDataState} from 'src/types'
-import {Input} from '@influxdata/clockface'
 
 const values = {
   def: 'defbuck',
@@ -107,7 +106,9 @@ describe('Dashboards.Components.VariablesControlBar.TypeAheadVariableDropdown', 
       setInitialState
     )
 
-    const filterInput = getByTestId('variable-dropdown--input-typeAhead')
+    const filterInput = getByTestId(
+      'variable-dropdown-input-typeAhead--map_buckets'
+    )
 
     const checkDropdown = (filterText, expectedList) => {
       fireEvent.change(filterInput, {target: {value: filterText}})
@@ -133,28 +134,4 @@ describe('Dashboards.Components.VariablesControlBar.TypeAheadVariableDropdown', 
     const items = screen.queryByTestId('variable-dropdown--item')
     expect(items).toBeNull() // it doesn't exist
   })
-  //
-  // it('arrow buttons work to activate prior to selection', () => {
-  //   const {getByTestId, getAllByTestId} = renderWithRedux(
-  //       <TypeAheadVariableDropdown variableID="03cbdc8a53a63000" />,
-  //       setInitialState
-  //   )
-  //
-  //   const filterInput = getByTestId('variable-dropdown--input-typeAhead')
-  //
-  //   fireEvent.change(filterInput, {target: {value: 'f'}})
-  //   fireEvent.keyDown(filterInput, { key: 'ArrowDown', which: 40, code: 'ArrowDown' })
-  //     it's not getting the keydown event properly
-  //   //the first one (  def: 'defbuck',) should be 'activated'
-  //
-  //   const defBuckItem = getAllByTestId('variable-dropdown--item').filter(node =>
-  //       node.id === 'def'
-  //   )
-  //
-  //   console.log("defBuckitem??", defBuckItem);
-  //
-  //
-  //
-  //
-  // })
 })

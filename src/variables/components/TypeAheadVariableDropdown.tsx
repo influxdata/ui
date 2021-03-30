@@ -131,7 +131,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
     // if selectedValue is present in the values, set it; else zero it out (TODO)
     let newSelectedValue = ''
-    if (values.indexOf(selectedValue) >= 0) {
+    if (values.includes(selectedValue)) {
       newSelectedValue = selectedValue
     }
 
@@ -204,7 +204,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
         // but:  if the value they typed is LEGAL (in the list/dropdown values), set it;
         // else: reset to the previous real/legal value:
-        if (values.indexOf(typedValue) >= 0) {
+        if (values.includes(typedValue)) {
           // is is a real legal value
           this.handleSelect(typedValue, true)
         } else {
@@ -244,7 +244,6 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
   render() {
     const {selectedValue, values, name, status} = this.props
     const {typedValue, shownValues, menuOpen, selectIndex} = this.state
-    const that = this
     const dropdownStatus =
       values.length === 0 ? ComponentStatus.Disabled : ComponentStatus.Default
 
@@ -269,6 +268,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       }
     }
 
+    const thisHandleSelect = this.handleSelect.bind(this)
     return (
       <Dropdown
         style={{width: '140px'}}
@@ -294,7 +294,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
           >
             {shownValues.map(function(value, index) {
               let classN = 'variable-dropdown--item'
-              //this works!  need to use it for highlighting when arrowing; like a hover
+              // highlight when arrowing; like a hover
               if (index === selectIndex) {
                 classN += ' active'
               }
@@ -303,7 +303,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
                   key={value}
                   id={value}
                   value={value}
-                  onClick={that.handleSelect}
+                  onClick={thisHandleSelect}
                   selected={value === selectedValue}
                   testID="variable-dropdown--item"
                   className={classN}
@@ -337,7 +337,6 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       variableID,
       onSelectValue,
       onSelect,
-      name,
       selectedValue: prevSelectedValue,
     } = this.props
 

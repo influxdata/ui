@@ -674,7 +674,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
                 })
               cy.getByTestID('save-cell--button').click()
 
-              //ok; now check that 'b1' is selected and 'greeting' has 'adios' selected
+              // ok; now check that 'b1' is selected and 'greeting' has 'adios' selected
               cy.getByTestID(
                 `variable-dropdown-input-typeAhead--${bucketVarName}`
               ).should('have.value', bucketOne)
@@ -683,39 +683,39 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
                 `variable-dropdown-input-typeAhead--${dependentTypeVarName}`
               ).should('have.value', 'adios')
 
-              //hit downarrow in the second dropdown:
+              // hit downarrow in the second dropdown:
               cy.getByTestID(
                 `variable-dropdown-input-typeAhead--${dependentTypeVarName}`
               ).type('{downarrow}')
 
-              //check that both 'adios' and 'hola' are showing: (and with correct classes)
+              // check that both 'adios' and 'hola' are showing: (and with correct classes)
               cy.get(`#hola`).should('not.have.class', 'active')
               cy.get(`#adios`).should('have.class', 'active')
 
-              //hit the down arrow again:
+              // hit the down arrow again:
               cy.getByTestID(
                 `variable-dropdown-input-typeAhead--${dependentTypeVarName}`
               ).type('{downarrow}')
 
-              //check that both 'adios' and 'hola' are showing: (and with correct classes)
+              // check that both 'adios' and 'hola' are showing: (and with correct classes)
               cy.get(`#hola`).should('have.class', 'active')
 
-              //'adios' is still active b/c it is selected.....
+              // 'adios' is still active b/c it is selected.....
               cy.get(`#adios`).should('have.class', 'active')
 
-              //press enter to select:
+              // press enter to select:
               cy.getByTestID(
                 `variable-dropdown-input-typeAhead--${dependentTypeVarName}`
               ).type('{enter}')
 
-              //'hola' should now be selected:
+              // 'hola' should now be selected:
               cy.getByTestID(
                 `variable-dropdown-input-typeAhead--${dependentTypeVarName}`
               ).should('have.value', 'hola')
 
-              //ok!  now;  pick a different bucket:
+              // ok!  now;  pick a different bucket:
 
-              //but first test that it only allows valid values:
+              // but first test that it only allows valid values:
               cy.getByTestID(
                 `variable-dropdown-input-typeAhead--${bucketVarName}`
               )
@@ -723,7 +723,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
                 .type('{enter}')
                 .should('have.value', 'b1')
 
-              //now clear it first and do it right:
+              // now clear it first and do it right:
               cy.getByTestID(
                 `variable-dropdown-input-typeAhead--${bucketVarName}`
               )
@@ -732,18 +732,18 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
                 .type('{enter}')
                 .should('have.value', 'b3')
 
-              //now the 'greeting' should be empty
+              // now the 'greeting' should be empty
               cy.getByTestID(
                 `variable-dropdown-input-typeAhead--${dependentTypeVarName}`
               ).should('have.value', '')
 
-              //click the dropdownbutton:
+              // click the dropdownbutton:
               // select 2nd value in dashboard
               cy.getByTestID('variable-dropdown--button')
                 .eq(1)
                 .click()
 
-              //verify they are all there and with no active class:
+              // verify they are all there and with no active class:
               cy.get(`#hello`).should('not.have.class', 'active')
               cy.get(`#goodbye`).should('not.have.class', 'active')
               cy.get(`#seeya`).should('not.have.class', 'active')
@@ -759,7 +759,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
                 `variable-dropdown-input-typeAhead--${dependentTypeVarName}`
               ).should('have.value', 'hello')
 
-              //ok; now switch to a bucket with NO greeting vars; test that:
+              // ok; now switch to a bucket with NO greeting vars; test that:
 
               cy.getByTestID(
                 `variable-dropdown-input-typeAhead--${bucketVarName}`
@@ -770,12 +770,12 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
                 .type('{enter}')
                 .should('have.value', bucket5)
 
-              //the greeting vars should NOT be there
+              // the greeting vars should NOT be there
               cy.getByTestID(
                 `variable-dropdown--${dependentTypeVarName}`
               ).should('contain', 'No Values')
 
-              //now, go back to b3; 'hello' should be th eselected greeting
+              // now, go back to b3; 'hello' should be th eselected greeting
               cy.getByTestID(
                 `variable-dropdown-input-typeAhead--${bucketVarName}`
               )
@@ -794,9 +794,14 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       })
     })
 
+    // leaving this test to test the non-type ahead dropdown.  with all the reloads the flag setting
+    // is not functional.  plus we need to test the normal one anyone until the typeahead flag is gone.
+    // when that flag goes away, need to update this test!
+
+    // explicitly setting flag to false tho; because previous tests have set it to true.
     it('ensures that dependent variables load one another accordingly, even with reload and cleared local storage', () => {
       cy.window().then(win => {
-        win.influx.set(typeAheadFlag, true)
+        win.influx.set(typeAheadFlag, false)
 
         cy.get('@org').then(({id: orgID}: Organization) => {
           cy.createDashboard(orgID).then(({body: dashboard}) => {
@@ -847,12 +852,13 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
 
               // the default bucket selection should have no results and load all three variables
               // even though only two variables are being used (because 1 is dependent upon another)
-              cy.getByTestID(
-                'variable-dropdown-input-typeAhead--static'
-              ).should('have.value', 'beans')
+              cy.getByTestID('variable-dropdown--static').should(
+                'contain',
+                'beans'
+              )
 
               // and cause the rest to exist in loading states
-              cy.getByTestIDSubStr('variable-dropdown--build').should(
+              cy.getByTestID('variable-dropdown--build').should(
                 'contain',
                 'Loading'
               )
@@ -866,33 +872,31 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
               cy.get(`#${defaultBucket}`).click()
 
               // default select the first result
-              cy.getByTestID('variable-dropdown-input-typeAhead--build').should(
-                'have.value',
+              cy.getByTestID('variable-dropdown--build').should(
+                'contain',
                 'beans'
               )
-
-              cy.getByTestID(
-                'variable-dropdown-input-typeAhead--dependent'
-              ).should('have.value', 'beans')
 
               // and also load the third result
               cy.getByTestID('variable-dropdown--button')
                 .eq(2)
+                .should('contain', 'beans')
                 .click()
               cy.get(`#cool`).click()
 
               // and also load the second result
-              cy.getByTestID(
-                'variable-dropdown-input-typeAhead--dependent'
-              ).should('have.value', 'cool')
+              cy.getByTestID('variable-dropdown--dependent').should(
+                'contain',
+                'cool'
+              )
 
               // updating the third variable should update the second
               cy.getByTestID('variable-dropdown--button')
                 .eq(2)
                 .click()
               cy.get(`#beans`).click()
-              cy.getByTestID('variable-dropdown-input-typeAhead--build').should(
-                'have.value',
+              cy.getByTestID('variable-dropdown--build').should(
+                'contain',
                 'beans'
               )
             })
@@ -901,21 +905,21 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
             cy.get<string>('@defaultBucket').then(() => {
               // the default bucket selection should have no results and load all three variables
               // even though only two variables are being used (because 1 is dependent upon another)
-              cy.getByTestID(
-                'variable-dropdown-input-typeAhead--static'
-              ).should('have.value', 'defbuck')
+              cy.getByTestID('variable-dropdown--static').should(
+                'contain',
+                'defbuck'
+              )
 
-              //todo:  verify comment....JILL
               // and cause the rest to exist in loading states
-              cy.getByTestID('variable-dropdown-input-typeAhead--build').should(
-                'have.value',
+              cy.getByTestID('variable-dropdown--build').should(
+                'contain',
                 'beans'
               )
 
               // and also load the second result
 
-              cy.getByTestID('variable-dropdown-input-typeAhead--build').should(
-                'have.value',
+              cy.getByTestID('variable-dropdown--build').should(
+                'contain',
                 'beans'
               )
             })

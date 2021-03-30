@@ -37,10 +37,6 @@ const OrgOverlay: FC = () => {
   const {orgID} = useParams()
   const history = useHistory()
 
-  const setInputs = limits => {
-    setLimits(limits)
-  }
-
   const updateLimits = async () => {
     try {
       const backendLimits = fromDisplayLimits(limits)
@@ -196,7 +192,7 @@ const OrgOverlay: FC = () => {
                       type={InputType.Text}
                       name="notificationRule.blockedNotificationRules"
                       limits={limits}
-                      onChangeLimits={setInputs}
+                      onChangeLimits={setLimits}
                     />
                   </Grid.Column>
                   <Grid.Column widthMD={3}>
@@ -205,7 +201,7 @@ const OrgOverlay: FC = () => {
                       type={InputType.Text}
                       name="notificationEndpoint.blockedNotificationEndpoints"
                       limits={limits}
-                      onChangeLimits={setInputs}
+                      onChangeLimits={setLimits}
                     />
                   </Grid.Column>
                 </Grid.Row>

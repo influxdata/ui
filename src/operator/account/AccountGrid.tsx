@@ -12,15 +12,6 @@ import {AccountContext} from 'src/operator/context/account'
 const AccountGrid: FC = () => {
   const {account} = useContext(AccountContext)
 
-  const changeType = type => {
-    switch (type) {
-      case 'pay_as_you_go':
-        return 'PAYG'
-      default:
-        return type
-    }
-  }
-
   const billingAccountID = () => {
     if (!account?.marketplace) {
       return account?.zuoraAccountId ?? 'N/A'
@@ -42,7 +33,7 @@ const AccountGrid: FC = () => {
       >
         <AccountField
           header="Account Type"
-          body={changeType(account.type)}
+          body={account.type === 'pay_as_you_go' ? 'PAYG' : account.type}
           testID="account-type"
         />
         <AccountField

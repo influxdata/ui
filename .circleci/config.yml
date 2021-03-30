@@ -143,55 +143,6 @@ jobs:
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
             docker push quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1}
             docker push quay.io/influxdb/ui-acceptance:latest
-  cloud-e2e:
-    machine:
-      image: ubuntu-2004:202008-01
-      docker_layer_caching: true
-    parallelism: 10
-    working_directory: ~/
-    resource_class: large
-    steps:
-      - restore_cache:
-          key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
-      - checkout:
-          path: ./ui
-      - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - checkout_monitor_ci
-      - run:
-          name: Copy over the testing variables
-          command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
-      - run:
-          name: Update the images we're using
-          command: |
-            cd ./monitor-ci && make update && make build NODE=cypress && make build NODE=ingress && make build NODE=dex
-            docker load < ~/docker-cache/image.tar
-            docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
-      - run:
-          name: Start the cluster
-          command: cd ./monitor-ci; make start
-      - run:
-          name: Run e2e tests
-          no_output_timeout: 30m
-          command: |
-            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser chrome --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/{cloud,shared}/**/*.test.ts" | circleci tests split | paste -sd "," -)"
-      - store_test_results:
-          path: monitor-ci/test-artifacts/results
-      - store_artifacts:
-          path: monitor-ci/test-artifacts/videos
-          destination: test_artifacts/videos
-      - store_artifacts:
-          path: monitor-ci/test-artifacts/screenshots
-          destination: test_artifacts/screenshots
-      - when:
-          condition:
-            equal: [master, << pipeline.git.branch >>]
-          steps:
-            # The cypress image used within the ui-e2e image is a non-standard slim image and its definition and versions are
-            # maintained here: https://github.com/influxdata/cypress-slim
-            - run: docker tag local/cypress:latest quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
-            - run: docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} quay.io/influxdb/ui-e2e:latest
-            - run: docker push quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
-            - run: docker push quay.io/influxdb/ui-e2e:latest
   oss-e2e:
     machine:
       image: ubuntu-2004:202008-01
@@ -472,15 +423,14 @@ jobs:
       - store_artifacts:
           path: /home/circleci/k8s-idpe/.tmp-kind-hostpath-volume/cypress/
           destination: cypress-videos
-      # TODO: enable this when we remove cloud-e2e job
-      # - when:
-      #     condition:
-      #       equal: [master, << pipeline.git.branch >>]
-      #     steps:
-      #       # The cypress image used within the ui-e2e image is a non-standard slim image and its definition and versions are
-      #       # maintained here: https://github.com/influxdata/cypress-slim
-      #       - run: docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} quay.io/influxdb/ui-e2e:latest
-      #       - run: docker push quay.io/influxdb/ui-e2e:latest
+      - when:
+          condition:
+            equal: [master, << pipeline.git.branch >>]
+          steps:
+            # The cypress image used within the ui-e2e image is a non-standard slim image and its definition and versions are
+            # maintained here: https://github.com/influxdata/cypress-slim
+            - run: docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} quay.io/influxdb/ui-e2e:latest
+            - run: docker push quay.io/influxdb/ui-e2e:latest
 workflows:
   version: 2
   build:
@@ -498,9 +448,6 @@ workflows:
           requires:
             - build-image
       - cloud-e2e-k8s-idpe:
-          requires:
-            - build-image
-      - cloud-e2e:
           requires:
             - build-image
       - oss-e2e:
@@ -522,9 +469,7 @@ workflows:
             - unit
             - lint
             - smoke
-            - cloud-e2e
-            # TODO: uncomment this when we disable cloud-e2e
-            # - cloud-e2e-k8s-idpe
+            - cloud-e2e-k8s-idpe
       - share-testing-image:
           filters:
             branches:
@@ -535,9 +480,7 @@ workflows:
             - unit
             - lint
             - smoke
-            - cloud-e2e
-            # TODO: uncomment this when we disable cloud-e2e
-            # - cloud-e2e-k8s-idpe
+            - cloud-e2e-k8s-idpe
 commands:
   install_jsonnet_binary:
     description: >

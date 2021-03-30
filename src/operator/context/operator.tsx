@@ -60,7 +60,6 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
 
   const [organizations, setOrganizations] = useState([])
 
-  // TODO(ariel): might need to debounce
   const handleGetAccounts = useCallback(async () => {
     try {
       setAccountStatus(RemoteDataState.Loading)

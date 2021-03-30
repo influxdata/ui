@@ -114,58 +114,6 @@ export const organizationColumnInfo: CellInfo[] = [
   },
 ]
 
-export const userColumnInfo: CellInfo[] = [
-  {
-    path: 'email',
-    header: 'Email',
-    name: 'user-email',
-    defaultValue: '',
-  },
-  {
-    path: 'id',
-    header: 'ID',
-    name: 'user-id',
-    defaultValue: '',
-  },
-  {
-    path: 'firstName',
-    header: 'First Name',
-    name: 'first-name',
-    defaultValue: '',
-  },
-  {
-    path: 'lastName',
-    header: 'Last Name',
-    name: 'last-name',
-    defaultValue: '',
-  },
-  {
-    path: 'onboardingState',
-    header: 'Onboarding State',
-    name: 'onboarding-state',
-    defaultValue: '',
-  },
-  {
-    path: 'sfdcContactId',
-    header: 'SFDC Contact ID',
-    name: 'sfdc-contact-id',
-    defaultValue: '',
-  },
-  {
-    path: 'operator',
-    header: 'Operator',
-    name: 'operator',
-    defaultValue: 'no',
-    renderValue: value => (value ? 'yes' : 'no'),
-  },
-  {
-    path: 'accountId',
-    header: 'Acct ID',
-    name: 'acct-id',
-    defaultValue: '',
-  },
-]
-
 export const accountUserHeaderInfo = [
   'First Name',
   'Last Name',

@@ -7,9 +7,7 @@ export const getAnnotationControlsVisibility = (state: AppState): boolean => {
 }
 
 export const getVisibleAnnotationStreams = (state: AppState): string[] => {
-  const visibleStreams = state.annotations.visibleStreamsByID
-
-  return sortBy(visibleStreams, stream => stream)
+  return state.annotations.visibleStreamsByID
 }
 
 export const getHiddenAnnotationStreams = (state: AppState): string[] => {

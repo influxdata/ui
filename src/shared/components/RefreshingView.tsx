@@ -80,6 +80,7 @@ class RefreshingView extends PureComponent<Props> {
           <React.Fragment>
             <CellEvent id={id} type={properties.type} />
             <View
+              cellID={id}
               loading={loading}
               error={errorMessage}
               isInitial={isInitialFetch}

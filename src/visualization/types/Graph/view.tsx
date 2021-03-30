@@ -70,7 +70,13 @@ interface Props extends VisualizationProps {
   properties: XYViewProperties
 }
 
-const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
+const XYPlot: FC<Props> = ({
+  properties,
+  result,
+  timeRange,
+  annotations,
+  cellID,
+}) => {
   const {theme, timeZone} = useContext(AppSettingContext)
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
@@ -89,7 +95,6 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
   const inAnnotationWriteMode = useSelector(isSingleClickAnnotationsEnabled)
   const visibleAnnotationStreams = useSelector(getVisibleAnnotationStreams)
   const annotationsAreVisible = useSelector(selectAreAnnotationsVisible)
-
   const annotationStreams = useSelector(getAnnotationStreams)
 
   const storedXDomain = useMemo(() => parseXBounds(properties.axes.x.bounds), [
@@ -189,6 +194,7 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
         dispatch(
           writeThenFetchAndSetAnnotations([
             {
+              stream: cellID,
               summary: message,
               startTime: new Date(startTime).getTime(),
               endTime: new Date(startTime).getTime(),
@@ -261,56 +267,75 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
   }
 
   if (isFlagEnabled('annotations')) {
-    // show only the streams that are enabled by the user, the 'default' stream is enabled by default.
-    let selectedAnnotations: any[] = []
-    // we want to check what annotations are enabled
-    visibleAnnotationStreams.forEach(visibleStreamName => {
-      if (annotations && annotations[visibleStreamName]) {
-        const correspondingStream = annotationStreams.find(
-          stream => stream.stream === visibleStreamName
-        )
-
-        const annotationsWithStreamColor = annotations[visibleStreamName].map(
-          annotation => {
-            return {
-              ...annotation,
-              color: correspondingStream?.color ?? FALLBACK_COLOR,
-            }
-          }
-        )
-        selectedAnnotations = [...annotationsWithStreamColor]
-      }
-    })
-
     if (inAnnotationWriteMode) {
       config.interactionHandlers = {
         singleClick: makeSingleClickHandler(),
       }
     }
-    const handleAnnotationClick = (id: string) => {
-      const annotationToEdit = annotations['default'].find(
-        annotation => annotation.id === id
-      )
-      event('xyplot.annotations.edit_annotation.show_overlay')
-      dispatch(
-        showOverlay(
-          'edit-annotation',
-          {clickedAnnotation: annotationToEdit},
-          () => {
-            event('xyplot.annotations.edit_annotation.cancel')
-            dismissOverlay()
-          }
+
+    // show only the streams that are enabled by the user, the 'default' stream is enabled by default.
+    let annotationsToRender: any[] = annotations
+      .filter(annotation => {
+        console.log('filter', cellID, annotation.stream === cellID)
+        return annotation.stream === cellID
+      })
+      .reduce((stream, annotation) => {
+        return [...stream, ...annotation.annotations]
+      }, [])
+      .map(annotation => {
+        return {
+          ...annotation,
+          color: FALLBACK_COLOR,
+        }
+      })
+
+    console.log(annotationsToRender)
+
+    // we want to check what annotations are enabled
+
+    // visibleAnnotationStreams.forEach(visibleStreamName => {
+    //   if (annotations && annotations[visibleStreamName]) {
+    //     const correspondingStream = annotationStreams.find(
+    //       stream => stream.stream === visibleStreamName
+    //     )
+
+    //     const annotationsWithStreamColor = annotations[visibleStreamName].map(
+    //       annotation => {
+    //         return {
+    //           ...annotation,
+    //           color: FALLBACK_COLOR,
+    //         }
+    //       }
+    //     )
+    //     annotationsToRender = [...annotationsWithStreamColor]
+    //   }
+    // })
+
+    if (annotationsAreVisible && annotationsToRender.length) {
+      const handleAnnotationClick = (id: string) => {
+        const annotationToEdit = annotations['default'].find(
+          annotation => annotation.id === id
         )
-      )
-    }
-    if (annotationsAreVisible && selectedAnnotations.length) {
+        event('xyplot.annotations.edit_annotation.show_overlay')
+        dispatch(
+          showOverlay(
+            'edit-annotation',
+            {clickedAnnotation: annotationToEdit},
+            () => {
+              event('xyplot.annotations.edit_annotation.cancel')
+              dismissOverlay()
+            }
+          )
+        )
+      }
+
       const annotationLayer: AnnotationLayerConfig = {
         type: 'annotation',
         x: xColumn,
         y: yColumn,
         fill: groupKey,
         handleAnnotationClick,
-        annotations: selectedAnnotations.map(annotation => {
+        annotations: annotationsToRender.map(annotation => {
           return {
             id: annotation.id,
             title: annotation.summary,

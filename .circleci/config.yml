@@ -451,6 +451,11 @@ jobs:
           command: |
             cd ./monitor-ci && make build NODE=cypress
       - run:
+          name: Push ui-e2e image tagged with this commit
+          command: |
+            docker tag local/cypress:latest quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
+            docker push quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
+      - run:
           name: Run E2e test
           command: cd ./idpe/ && export QUAY_CD_USER=$QUAY_USER && export QUAY_CD_PASSWORD=$QUAY_PASS && ./scripts/ci/cd-app-e2e-test.bash | tee /tmp/artifacts/e2e-test.log
           no_output_timeout: '15m' # Sometimes gathering the images takes too long. Go 50% over the default 10m timeout.
@@ -474,9 +479,7 @@ jobs:
       #     steps:
       #       # The cypress image used within the ui-e2e image is a non-standard slim image and its definition and versions are
       #       # maintained here: https://github.com/influxdata/cypress-slim
-      #       - run: docker tag local/cypress:latest quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
       #       - run: docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} quay.io/influxdb/ui-e2e:latest
-      #       - run: docker push quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
       #       - run: docker push quay.io/influxdb/ui-e2e:latest
 workflows:
   version: 2

@@ -16,7 +16,7 @@ yarn add packageName --dev
 
 ### Updating a package
 
-First, run the command
+First, run the command:
 
 ```sh
 yarn outdated

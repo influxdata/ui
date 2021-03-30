@@ -24,7 +24,7 @@ interface Props {
   isInitial?: boolean
   timeRange?: TimeRange
   annotations?: AnnotationsList
-  cellID: string
+  cellID?: string
 }
 
 const InnerView: FC<Props> = ({

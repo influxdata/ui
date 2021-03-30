@@ -1,6 +1,6 @@
 // Libraries
 import React, {PureComponent, ChangeEvent, FormEvent} from 'react'
-import {startsWith} from 'lodash'
+import _ from 'lodash'
 
 // Components
 import {Form, Input, Grid, Button, ButtonType} from '@influxdata/clockface'
@@ -135,7 +135,8 @@ export class ScraperTarget extends PureComponent<Props> {
       return 'Target URL cannot be empty'
     }
 
-    const isURLValid = startsWith(url, 'http://') || startsWith(url, 'https://')
+    const isURLValid =
+      _.startsWith(url, 'http://') || _.startsWith(url, 'https://')
 
     if (!isURLValid) {
       return 'Target URL must begin with "http://"'

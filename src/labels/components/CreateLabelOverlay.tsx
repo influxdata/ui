@@ -1,5 +1,6 @@
 // Libraries
 import React, {Component, ChangeEvent} from 'react'
+import _ from 'lodash'
 
 // Components
 import LabelOverlayForm from 'src/labels/components/LabelOverlayForm'

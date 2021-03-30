@@ -1,6 +1,6 @@
 // Libraries
 import React, {PureComponent, CSSProperties} from 'react'
-import {find, range, reduce} from 'lodash'
+import _ from 'lodash'
 import {Grid} from 'react-virtualized'
 
 export const ROW_HEIGHT = 27
@@ -23,7 +23,7 @@ interface State {
 
 export default class extends PureComponent<Props, State> {
   public static getDerivedStateFromProps(nextProps: Props): Partial<State> {
-    const headerRows = reduce(
+    const headerRows = _.reduce(
       nextProps.data,
       (acc, row, index) => {
         if (row[0] === '#datatype') {
@@ -69,7 +69,7 @@ export default class extends PureComponent<Props, State> {
   private columnWidth = ({index}): number => {
     const {maxColumnCount, width} = this.props
 
-    const isDateTimeColumn = find(this.state.headerRows, i => {
+    const isDateTimeColumn = _.find(this.state.headerRows, i => {
       return (this.getCellData(i, index) || '').includes('dateTime')
     })
 
@@ -110,8 +110,8 @@ export default class extends PureComponent<Props, State> {
 
   private calculateWidth(): number {
     const {maxColumnCount} = this.props
-    return reduce(
-      range(0, maxColumnCount),
+    return _.reduce(
+      _.range(0, maxColumnCount),
       (acc, index) => acc + this.columnWidth({index}),
       0
     )

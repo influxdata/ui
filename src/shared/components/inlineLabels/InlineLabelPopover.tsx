@@ -5,7 +5,7 @@ import React, {
   KeyboardEvent,
   RefObject,
 } from 'react'
-import {findIndex} from 'lodash'
+import _ from 'lodash'
 
 // Components
 import {Input, ButtonBaseRef} from '@influxdata/clockface'
@@ -144,7 +144,7 @@ export default class InlineLabelPopover extends PureComponent<Props> {
       return null
     }
 
-    const selectedItemIndex = findIndex(
+    const selectedItemIndex = _.findIndex(
       filteredLabels,
       label => label.id === selectedItemID
     )

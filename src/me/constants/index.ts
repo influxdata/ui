@@ -1,4 +1,4 @@
-import {sample} from 'lodash'
+import _ from 'lodash'
 import {Dashboard} from 'src/types'
 
 interface Greeting {
@@ -158,7 +158,7 @@ const randomGreetings: Greeting[] = [
 ]
 
 export const generateRandomGreeting = (): Greeting => {
-  return sample(randomGreetings)
+  return _.sample(randomGreetings)
 }
 
 const sortFunc = (a: Dashboard, b: Dashboard) => {

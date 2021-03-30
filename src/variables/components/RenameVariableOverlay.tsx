@@ -3,6 +3,8 @@ import React, {useContext, FC, memo} from 'react'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
+import _ from 'lodash'
+
 // Components
 import DangerConfirmationOverlay from 'src/shared/components/dangerConfirmation/DangerConfirmationOverlay'
 import RenameVariableForm from 'src/variables/components/RenameVariableForm'

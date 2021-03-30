@@ -109,7 +109,7 @@ export const getOrgsError = (): Notification => ({
   ...defaultErrorNotification,
   duration: FIVE_SECONDS,
   message:
-    'There was an error getting the all the organization, please try again.',
+    'There was an error getting the all the organizations, please try again.',
 })
 
 export const getOrgError = (id: string): Notification => ({
@@ -121,13 +121,13 @@ export const getOrgError = (id: string): Notification => ({
 export const getLimitsError = (id: string): Notification => ({
   ...defaultErrorNotification,
   duration: FIVE_SECONDS,
-  message: `Could not fetch limits for this organization ${id}`,
+  message: `Could not fetch limits for the organization ${id}`,
 })
 
 export const updateLimitsError = (id: string): Notification => ({
   ...defaultErrorNotification,
   duration: FIVE_SECONDS,
-  message: `Could not update limits for this organization ${id}`,
+  message: `Could not update limits for the organization ${id}`,
 })
 
 export const updateLimitsSuccess = (id: string): Notification => ({

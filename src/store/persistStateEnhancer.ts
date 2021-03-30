@@ -1,4 +1,4 @@
-import {throttle} from 'lodash'
+import _ from 'lodash'
 import {saveToLocalStorage} from '../localStorage'
 
 // Types
@@ -20,7 +20,7 @@ export default function persistState() {
     const throttleMs = 1000
 
     store.subscribe(
-      throttle(() => {
+      _.throttle(() => {
         saveToLocalStorage(store.getState())
       }, throttleMs)
     )

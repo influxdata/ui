@@ -1,7 +1,7 @@
 // Libraries
 import React, {Component, ChangeEvent, createRef} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {differenceBy} from 'lodash'
+import _ from 'lodash'
 
 // Components
 import {
@@ -255,7 +255,7 @@ class InlineLabelsEditor extends Component<Props, State> {
   private get availableLabels(): Label[] {
     const {selectedLabels, labels} = this.props
 
-    return differenceBy(labels, selectedLabels, label => label.name)
+    return _.differenceBy(labels, selectedLabels, label => label.name)
   }
 
   private handleCreateLabel = async (label: Label) => {

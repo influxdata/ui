@@ -1,4 +1,4 @@
-import {isEqual} from 'lodash'
+import _ from 'lodash'
 
 import linksReducer from 'src/shared/reducers/links'
 import {linksGetCompleted} from 'src/shared/actions/links'
@@ -39,6 +39,6 @@ describe('Shared.Reducers.linksReducer', () => {
   it('can handle LINKS_GET_COMPLETED', () => {
     const actual = linksReducer(undefined, linksGetCompleted(links))
     const expected = links
-    expect(isEqual(actual, expected)).toBe(true)
+    expect(_.isEqual(actual, expected)).toBe(true)
   })
 })

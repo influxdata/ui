@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
+import _ from 'lodash'
 
 // Components
 import {Tabs, Orientation, ComponentSize} from '@influxdata/clockface'

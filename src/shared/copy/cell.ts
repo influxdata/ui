@@ -1,4 +1,4 @@
-import {sample} from 'lodash'
+import _ from 'lodash'
 
 const emptyFunny = [
   'Looks like you don’t have any queries. Be a lot cooler if you did!',
@@ -6,4 +6,4 @@ const emptyFunny = [
   'Create a query. Have fun!',
 ]
 
-export const emptyGraphCopy = sample(emptyFunny)
+export const emptyGraphCopy = _.sample(emptyFunny)

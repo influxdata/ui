@@ -1,5 +1,6 @@
 // Libraries
 import React, {PureComponent, ChangeEvent} from 'react'
+import _ from 'lodash'
 
 // Components
 import {Form, Input, Grid} from '@influxdata/clockface'

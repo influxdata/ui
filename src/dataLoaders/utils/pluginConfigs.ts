@@ -1,4 +1,4 @@
-import {get} from 'lodash'
+import _ from 'lodash'
 
 // Constants
 import {
@@ -26,7 +26,7 @@ export const updateConfigFields = <T extends Plugin>(
   value: string[] | string
 ): T => {
   return Object.assign({}, plugin, {
-    config: Object.assign({}, get(plugin, 'config', {}), {
+    config: Object.assign({}, _.get(plugin, 'config', {}), {
       [fieldName]: value,
     }),
   })

@@ -1,5 +1,6 @@
 // Libraries
 import React, {Component} from 'react'
+import _ from 'lodash'
 
 // Components
 import {EmptyState, DapperScrollbars} from '@influxdata/clockface'

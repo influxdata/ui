@@ -1,6 +1,6 @@
 // Libraries
 import React, {PureComponent, ChangeEvent} from 'react'
-import {debounce} from 'lodash'
+import _ from 'lodash'
 
 // Components
 import {Input, FormElement, Grid} from '@influxdata/clockface'
@@ -34,7 +34,7 @@ class URIFormElement extends PureComponent<Props, State> {
       status: ComponentStatus.Default,
     }
 
-    this.debouncedValidate = debounce(
+    this.debouncedValidate = _.debounce(
       this.handleValidateURI,
       VALIDATE_DEBOUNCE_MS
     )

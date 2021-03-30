@@ -1,7 +1,7 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
-import {get} from 'lodash'
+import _ from 'lodash'
 
 // Components
 import {Button, ComponentColor, ComponentSize} from '@influxdata/clockface'
@@ -33,7 +33,7 @@ class CompletionQuickStartButton extends PureComponent<Props> {
 
   private handleAdvanced = (): void => {
     const {history, dashboards, onExit} = this.props
-    const id = get(dashboards, '[0].id', null)
+    const id = _.get(dashboards, '[0].id', null)
     if (id) {
       history.push(`/dashboards/${id}`)
     } else {

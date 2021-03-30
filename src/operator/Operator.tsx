@@ -7,11 +7,13 @@ import {
   FlexDirection,
   Page,
 } from '@influxdata/clockface'
+import {Route} from 'react-router-dom'
 
 // Components
 import AppPageHeader from 'src/operator/AppPageHeader'
 import ResourcesTable from 'src/operator/ResourcesTable'
 import OperatorNav from 'src/operator/OperatorNav'
+import {OrgOverlay} from 'src/shared/containers'
 
 const Operator: FC = () => (
   <AppWrapper>
@@ -25,6 +27,7 @@ const Operator: FC = () => (
       <Page.Contents scrollable={true}>
         <ResourcesTable />
       </Page.Contents>
+      <Route path="/operator/orgs/:orgID" component={OrgOverlay} />
     </Page>
   </AppWrapper>
 )

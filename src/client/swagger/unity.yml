@@ -679,15 +679,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  '/search/account/{searchTerm}':
+  '/operator/accounts':
     get:
-      operationId: getAccounts
+      operationId: getAccountsByName
       tags:
         - Accounts
         - Operator
       summary: Get the list of accounts by search term
       parameters:
-        - in: path
+        - $ref: '#/components/parameters/TraceSpan'
+        - in: query
           name: searchTerm
           schema:
             type: string
@@ -706,7 +707,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  '/search/orgs/{searchTerm}':
+  '/operator/orgs':
     get:
       operationId: getOrganizationsById
       tags:
@@ -714,7 +715,8 @@ paths:
         - Operator
       summary: Get the list of orgs by search term
       parameters:
-        - in: path
+        - $ref: '#/components/parameters/TraceSpan'
+        - in: query
           name: searchTerm
           schema:
             type: string
@@ -807,10 +809,12 @@ components:
           example: gcm
         subscriberId:
           type: string
-          description: TODO - not sure what this is referring to
+          description: this is the user's ID for the marketplace subscription
         status:
           type: string
-          description: TODO - not sure what this is referring to
+          description: the status of the marketplace subscription
+          enum: [pending, subscribed, unsubscribed, failed]
+          example: pending
         url:
           description: link to marketplace
           type: string

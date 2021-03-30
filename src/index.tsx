@@ -83,14 +83,6 @@ class Root extends PureComponent {
                 <Route path="/checkout" component={CheckoutPage} />
               )}
               {/* Operator Routes */}
-              {/* These are lumped under individual conditions since Switch statements expects a route as a child and can't handle React Fragments */}
-              {CLOUD && isFlagEnabled('unity-operator') && (
-                <Route
-                  exact
-                  path="/operator/accounts/:accountID"
-                  component={AccountPage}
-                />
-              )}
               {CLOUD && isFlagEnabled('unity-operator') && (
                 <Route path="/operator" component={OperatorPage} />
               )}

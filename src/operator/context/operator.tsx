@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, useCallback, useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
+import {useLocation} from 'react-router-dom'
 
 // Utils
 import {notify} from 'src/shared/actions/notifications'
@@ -10,6 +11,7 @@ import {getAccountsError, getOrgsError} from 'src/shared/copy/notifications'
 // Types
 import {Account, Me, Organization} from 'src/types/operator'
 import {RemoteDataState} from 'src/types'
+import {OperatorRoutes} from 'src/operator/constants'
 
 export type Props = {
   children: JSX.Element
@@ -17,28 +19,26 @@ export type Props = {
 
 export interface OperatorContextType {
   accounts: Account[]
-  activeTab: string
   handleGetAccounts: () => void
   handleGetOrgs: () => void
   operator: Me
   operatorStatus: RemoteDataState
   organizations: Organization[]
+  pathname: string
   searchTerm: string
-  setActiveTab: (tab: string) => void
   setSearchTerm: (searchTerm?: string) => void
   status: RemoteDataState
 }
 
 export const DEFAULT_CONTEXT: OperatorContextType = {
   accounts: [],
-  activeTab: 'organizations',
   handleGetAccounts: () => {},
   handleGetOrgs: () => {},
   operator: null,
   operatorStatus: RemoteDataState.NotStarted,
   organizations: [],
+  pathname: OperatorRoutes.default,
   searchTerm: '',
-  setActiveTab: () => {},
   setSearchTerm: () => {},
   status: RemoteDataState.NotStarted,
 }
@@ -48,7 +48,6 @@ export const OperatorContext = React.createContext<OperatorContextType>(
 )
 
 export const OperatorProvider: FC<Props> = React.memo(({children}) => {
-  const [activeTab, setActiveTab] = useState('accounts')
   const [accounts, setAccounts] = useState([])
   const [operator, setOperator] = useState(null)
   const [accountStatus, setAccountStatus] = useState(RemoteDataState.NotStarted)
@@ -100,13 +99,23 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
     }
   }, [searchTerm, dispatch])
 
+  const {pathname} = useLocation()
+
   useEffect(() => {
-    if (activeTab === 'organizations') {
-      handleGetOrgs()
-    } else {
-      handleGetAccounts()
+    switch (pathname) {
+      case OperatorRoutes.accounts:
+        handleGetAccounts()
+        break
+      case OperatorRoutes.default:
+        handleGetAccounts()
+        break
+      case OperatorRoutes.organizations:
+        handleGetOrgs()
+        break
+      default:
+        return
     }
-  }, [activeTab, handleGetAccounts, handleGetOrgs])
+  }, [pathname, handleGetAccounts, handleGetOrgs])
 
   const handleGetMe = useCallback(async () => {
     try {
@@ -147,14 +156,13 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
     <OperatorContext.Provider
       value={{
         accounts,
-        activeTab,
         handleGetAccounts,
         handleGetOrgs,
         operator,
         operatorStatus,
         organizations,
+        pathname,
         searchTerm,
-        setActiveTab,
         setSearchTerm,
         status,
       }}

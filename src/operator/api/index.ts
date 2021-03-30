@@ -3,8 +3,8 @@ import {
   deleteOperatorAccountUser,
   getMe as apiGetMe,
   getOperatorAccount,
-  getSearchAccount,
-  getSearchOrg,
+  getOperatorAccounts,
+  getOperatorOrgs,
   getOrg,
   getOrgsLimits,
   putOrgsLimits,
@@ -21,7 +21,7 @@ const makeResponse = (status, data) => {
 
 export const getAccounts = (
   searchTerm?: string
-): ReturnType<typeof getSearchAccount> => {
+): ReturnType<typeof getOperatorAccounts> => {
   const accounts: Account[] = [
     {
       id: '123',
@@ -112,7 +112,7 @@ export const getAccounts = (
 
 export const getOrgs = (
   searchTerm?: string
-): ReturnType<typeof getSearchOrg> => {
+): ReturnType<typeof getOperatorOrgs> => {
   const organizations: Organization[] = [
     {
       id: '123',

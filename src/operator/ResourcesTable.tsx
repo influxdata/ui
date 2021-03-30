@@ -25,20 +25,22 @@ import {
 
 // Types
 import {Account, Organization} from 'src/types/operator'
+import {OperatorRoutes} from 'src/operator/constants'
 
 const ResourcesTable: FC = () => {
-  const {activeTab, accounts, organizations, status} = useContext(
+  const {pathname, accounts, organizations, status} = useContext(
     OperatorContext
   )
 
+  const isOrgsTab = pathname.includes(OperatorRoutes.organizations)
+
   // TODO(ariel): remove type forcing here, this should be resolved with
   // API integration
-  const resources: (Account | Organization)[] =
-    activeTab === 'accounts' ? accounts : organizations
-  const headers =
-    activeTab === 'accounts' ? accountHeaderInfo : organizationColumnHeaders
-  const infos =
-    activeTab === 'accounts' ? accountColumnInfo : organizationColumnInfo
+  const resources: (Account | Organization)[] = isOrgsTab
+    ? organizations
+    : accounts
+  const headers = isOrgsTab ? organizationColumnHeaders : accountHeaderInfo
+  const infos = isOrgsTab ? organizationColumnInfo : accountColumnInfo
 
   return (
     <Tabs.Container orientation={Orientation.Horizontal}>
@@ -69,8 +71,9 @@ const ResourcesTable: FC = () => {
           ) : (
             <EmptyState size={ComponentSize.Medium}>
               <EmptyState.Text>
-                Looks like there were no <b>{activeTab}</b> that matched your
-                search.
+                Looks like there were no{' '}
+                <b>{isOrgsTab ? 'organizations' : 'accounts'}</b> that matched
+                your search.
               </EmptyState.Text>
             </EmptyState>
           )}

@@ -75,9 +75,7 @@ export const organizationColumnInfo: CellInfo[] = [
     path: 'idpeID',
     name: 'org-id',
     defaultValue: '',
-    renderValue: value => (
-      <Link to={`/operator/organizations/${value}`}>{value}</Link>
-    ),
+    renderValue: value => <Link to={`/operator/orgs/${value}`}>{value}</Link>,
   },
   {
     path: 'account.billingContact.email',
@@ -228,9 +226,7 @@ export const acctOrgColumnInfo: CellInfo[] = [
     path: 'idpeID',
     name: 'org-id',
     defaultValue: '',
-    renderValue: value => (
-      <Link to={`/operator/organizations/${value}`}>{value}</Link>
-    ),
+    renderValue: value => <Link to={`/operator/orgs/${value}`}>{value}</Link>,
   },
   {path: 'provider', name: 'provider', defaultValue: ''},
   {path: 'region', name: 'region', defaultValue: ''},
@@ -283,7 +279,8 @@ export const billingContactInfo: ResourceInfo[] = [
 ]
 
 export const OperatorRoutes = {
+  default: '/operator',
   accounts: '/operator/accounts',
-  organizations: '/operator/organizations',
+  organizations: '/operator/orgs',
   users: '/operator/users',
 }

@@ -4,7 +4,6 @@ import {
   Alert,
   ComponentColor,
   IconFont,
-  RemoteDataState,
   SpinnerContainer,
   TechnoSpinner,
 } from '@influxdata/clockface'
@@ -38,7 +37,7 @@ const PaymentForm: FC<Props> = ({zuoraParams, onSubmit, errorMessage}) => {
       )}
 
       <SpinnerContainer
-        loading={zuoraParams.status !== RemoteDataState.Done}
+        loading={zuoraParams.status}
         spinnerComponent={<TechnoSpinner />}
         className="billing-payment--spinner"
       >

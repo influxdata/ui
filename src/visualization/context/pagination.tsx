@@ -9,6 +9,7 @@ interface PaginationContextType {
   previous: () => void
 
   setSize: (size: number) => void
+  setPage: (page: number) => void
 }
 
 const DEFAULT_CONTEXT: PaginationContextType = {
@@ -20,6 +21,7 @@ const DEFAULT_CONTEXT: PaginationContextType = {
   previous: () => {},
 
   setSize: (_size: number) => {},
+  setPage: (_page: number) => {},
 }
 
 export const PaginationContext = createContext<PaginationContextType>(
@@ -49,6 +51,10 @@ export const PaginationProvider: FC<PaginationProviderProps> = ({
     setOffset(Math.max(offset - size, 0))
   }, [offset, size, setOffset])
 
+  const setPage = useCallback((page: number) => {
+      setOffset(Math.min(Math.max(0, (page - 1) * size), total - size))
+  }, [offset, size, setOffset])
+
   return (
     <PaginationContext.Provider
       value={{
@@ -58,6 +64,7 @@ export const PaginationProvider: FC<PaginationProviderProps> = ({
         next,
         previous,
         setSize,
+        setPage,
       }}
     >
       {children}

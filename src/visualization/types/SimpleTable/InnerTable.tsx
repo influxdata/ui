@@ -33,6 +33,9 @@ const InnerTable: FC<InnerProps> = ({table}) => {
         if (c.type === 'time') {
           val = new Date(val).toISOString()
         }
+        if (c.type === 'boolean') {
+          val = val ? 'true' : 'false'
+        }
 
         return (
           <Table.Cell

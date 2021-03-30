@@ -8,5 +8,5 @@
   "defaultCommandTimeout": 10000,
   "videoUploadOnPasses": false,
   "chromeWebSecurity": true,
-  "blockHosts": ["www.google-analytics.com","www.googletagmanager.com"]
+  "blockHosts": ["www.google-analytics.com", "www.googletagmanager.com"]
 }

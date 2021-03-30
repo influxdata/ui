@@ -14,6 +14,7 @@ export interface VisualizationProps {
   result: FluxResult['parsed']
   timeRange?: TimeRange
   annotations?: AnnotationsList
+  cellID: string
 }
 
 export interface Visualization {

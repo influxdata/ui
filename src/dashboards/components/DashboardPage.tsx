@@ -150,7 +150,7 @@ const mstp = (state: AppState) => {
     state.currentDashboard.id
   )
 
-  const showAnnotationBar = state.userSettings.showAnnotationsControls || false
+  const showAnnotationBar = state.userSettings.showAnnotationsControls ?? false
 
   return {
     startVisitMs: state.perf.dashboard.byID[dashboard.id]?.startVisitMs,

@@ -87,6 +87,7 @@ class RefreshingView extends PureComponent<Props> {
               result={giraffeResult}
               timeRange={ranges}
               annotations={annotations}
+              cellID={id}
             />
           </React.Fragment>
         )}

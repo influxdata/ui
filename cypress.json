@@ -7,6 +7,6 @@
   "integrationFolder": "cypress/e2e",
   "defaultCommandTimeout": 10000,
   "videoUploadOnPasses": false,
-  "chromeWebSecurity": false,
+  "chromeWebSecurity": true,
   "blockHosts": ["www.google-analytics.com", "www.googletagmanager.com"]
 }

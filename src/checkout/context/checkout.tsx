@@ -19,6 +19,7 @@ import {submitError} from 'src/shared/copy/notifications'
 // Types
 import {RemoteDataState} from 'src/types'
 import {BillingNotifySettings, CreditCardParams} from 'src/types/billing'
+import {getErrorMessage} from 'src/utils/api'
 
 export type Props = {
   children: JSX.Element
@@ -132,9 +133,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   const getZuoraParams = useCallback(async () => {
     const response = await getCheckoutZuoraParams()
     if (response.status !== 200) {
-      const error = response.data
-
-      throw new Error(error.message)
+      throw new Error(getErrorMessage(response))
     }
 
     setZuoraParams(response.data as CreditCardParams)

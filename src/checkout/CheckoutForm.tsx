@@ -22,9 +22,9 @@ import {
 import ContactForm from 'src/checkout/utils/ContactForm'
 import CancelButton from 'src/checkout/CancelButton'
 import NotificationSettingsForm from 'src/checkout/NotificationSettingsForm'
-import ZuoraPaymentForm from 'src/checkout/ZuoraPaymentForm'
 import LogoWithCubo from 'src/checkout/LogoWithCubo'
 import PoweredByStripeLogo from 'src/checkout/PoweredByStripeLogo'
+import CreditCardForm from 'src/shared/components/CreditCardForm'
 
 // Context
 import {CheckoutContext} from 'src/checkout/context/checkout'
@@ -32,7 +32,9 @@ import {CheckoutContext} from 'src/checkout/context/checkout'
 // Types
 
 const CheckoutForm: FC = () => {
-  const {handleFormValidation} = useContext(CheckoutContext)
+  const {handleFormValidation, zuoraParams, handleSubmit} = useContext(
+    CheckoutContext
+  )
 
   const onSubmit = () => {
     if (handleFormValidation() > 0) {
@@ -113,9 +115,11 @@ const CheckoutForm: FC = () => {
               }
             />
             <Panel.Body size={ComponentSize.Medium}>
-              <ZuoraPaymentForm
+              <CreditCardForm
                 key="zuora_payment"
                 data-reactid="zuorapaymentform"
+                zuoraParams={zuoraParams}
+                onSubmit={handleSubmit}
               />
             </Panel.Body>
           </Panel>

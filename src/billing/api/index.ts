@@ -6,6 +6,7 @@ import {
   getSettingsNotifications,
   getPaymentForm,
   getBillingInvoices,
+  putBillingPaymentMethod,
 } from 'src/client/unityRoutes'
 
 import {RemoteDataState, CheckoutRequest} from 'src/types'
@@ -67,16 +68,16 @@ export const getBillingInfo = (): ReturnType<typeof getBilling> => {
   return makeResponse(200, billing)
 }
 
-export const getBillingCreditCard = (): ReturnType<typeof getPaymentForm> => {
+export const getBillingCreditCardParams = (): ReturnType<typeof getPaymentForm> => {
   const cc: CreditCardParams = {
-    id: 'id123',
-    tenantId: 'tenant123',
-    key: 'key123',
-    signature: 'John Hancock',
-    token: 't0k3n',
-    style: 'fresh',
-    submitEnabled: 'true',
+    style: 'inline',
     url: 'you-are-el',
+    submitEnabled: 'false',
+    tenantId: '12345',
+    token: 'TOW-KEN',
+    key: 'KEE',
+    signature: 'SIGNATURE',
+    id: 'eye-dee',
     status: RemoteDataState.Done,
   }
 
@@ -96,7 +97,7 @@ export const getCheckoutZuoraParams = (): ReturnType<typeof getPaymentForm> => {
     status: RemoteDataState.Done,
   }
 
-  return makeResponse(204, zp)
+  return makeResponse(200, zp)
 }
 
 export const getBillingNotificationSettings = (): ReturnType<typeof getSettingsNotifications> => {
@@ -185,4 +186,14 @@ export const postCheckoutInformation = async (
   const paymentInformation = makeCheckoutPayload(data)
 
   return makeResponse(201, paymentInformation, 'postCheckoutInformation', data)
+}
+export const putBillingPaymentMethodId = async (
+  paymentMethodId: string
+): ReturnType<typeof putBillingPaymentMethod> => {
+  return makeResponse(
+    200,
+    paymentMethodId,
+    'putBillingPaymentMethodId',
+    paymentMethodId
+  )
 }

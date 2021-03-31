@@ -595,6 +595,9 @@ commands:
     description: >
       This will checkout monitor-ci
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "5f:c0:ef:38:b3:45:9e:f4:d5:2f:3b:8b:59:c2:fa:50"
       - run:
           command: ./ui/scripts/checkout-repo.bash
           name: Checkout monitor-ci repo

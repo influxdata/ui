@@ -2,7 +2,6 @@ import {Annotation, AnnotationResponse, AnnotationStream} from 'src/types'
 
 export const DELETE_ANNOTATION = 'DELETE_ANNOTATION'
 export const DISABLE_ANNOTATION_STREAM = 'DISABLE_ANNOTATION_STREAM'
-export const ENABLE_ANNOTATION_STREAM = 'ENABLE_ANNOTATION_STREAM'
 export const SET_ANNOTATIONS = 'SET_ANNOTATIONS'
 export const SET_ANNOTATION_STREAMS = 'SET_ANNOTATION_STREAMS'
 export const TOGGLE_ANNOTATION_VISIBILITY = 'TOGGLE_ANNOTATION_VISIBILITY'
@@ -11,25 +10,11 @@ export const EDIT_ANNOTATION = 'EDIT_ANNOTATION'
 
 export type Action =
   | ReturnType<typeof deleteAnnotation>
-  | ReturnType<typeof disableAnnotationStream>
   | ReturnType<typeof editAnnotation>
-  | ReturnType<typeof enableAnnotationStream>
   | ReturnType<typeof setAnnotations>
   | ReturnType<typeof setAnnotationStreams>
   | ReturnType<typeof toggleAnnotationVisibility>
   | ReturnType<typeof toggleSingleClickAnnotations>
-
-export const enableAnnotationStream = (streamID: string) =>
-  ({
-    type: ENABLE_ANNOTATION_STREAM,
-    streamID,
-  } as const)
-
-export const disableAnnotationStream = (streamID: string) =>
-  ({
-    type: DISABLE_ANNOTATION_STREAM,
-    streamID,
-  } as const)
 
 export const setAnnotations = (annotations: AnnotationResponse[]) =>
   ({

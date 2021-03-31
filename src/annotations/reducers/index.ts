@@ -57,21 +57,6 @@ export const annotationsReducer = (
         }),
       }
     }
-    //TODO: remove these!
-    case ENABLE_ANNOTATION_STREAM: {
-      return {
-        ...state,
-        visibleStreamsByID: [...state.visibleStreamsByID, action.streamID],
-      }
-    }
-    case DISABLE_ANNOTATION_STREAM: {
-      return {
-        ...state,
-        visibleStreamsByID: state.visibleStreamsByID.filter(
-          streamID => streamID !== action.streamID
-        ),
-      }
-    }
     case DELETE_ANNOTATION: {
       return {
         ...state,

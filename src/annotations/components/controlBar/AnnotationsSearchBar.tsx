@@ -14,7 +14,6 @@ import {
 import {AnnotationsSearchBarItem} from 'src/annotations/components/controlBar/AnnotationsSearchBarItem'
 
 // Actions
-import {enableAnnotationStream} from 'src/annotations/actions/creators'
 import {fetchAndSetAnnotationStreams} from 'src/annotations/actions/thunks'
 // Selectors
 import {
@@ -58,10 +57,10 @@ export const AnnotationsSearchBar: FC = () => {
     setSuggestionState(false)
   }
 
-  const handleSuggestionClick = (id: string): void => {
-    dispatch(enableAnnotationStream(id))
-    inputRef.current?.focus()
-  }
+  // TODO: im not sure if this changes or not
+  // const handleSuggestionClick = (id: string): void => {
+  //   inputRef.current?.focus()
+  // }
 
   let suggestionItems = (
     <List.EmptyState>No streams match your search</List.EmptyState>

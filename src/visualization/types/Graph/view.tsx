@@ -283,17 +283,19 @@ const XYPlot: FC<Props> = ({
       const annotationToEdit = annotations[cellID].find(
         annotation => annotation.id === id
       )
-      event('xyplot.annotations.edit_annotation.show_overlay')
-      dispatch(
-        showOverlay(
-          'edit-annotation',
-          {clickedAnnotation: annotationToEdit},
-          () => {
-            event('xyplot.annotations.edit_annotation.cancel')
-            dismissOverlay()
-          }
+      if (annotationToEdit) {
+        event('xyplot.annotations.edit_annotation.show_overlay')
+        dispatch(
+          showOverlay(
+            'edit-annotation',
+            {clickedAnnotation: {...annotationToEdit, stream: cellID}},
+            () => {
+              event('xyplot.annotations.edit_annotation.cancel')
+              dismissOverlay()
+            }
+          )
         )
-      )
+      }
     }
     if (annotationsAreVisible && annotationsToRender.length) {
       const annotationLayer: AnnotationLayerConfig = {

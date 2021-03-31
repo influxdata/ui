@@ -69,15 +69,20 @@ export const annotationsReducer = (
     }
 
     case EDIT_ANNOTATION: {
-      const copyAnnotations = state.annotations['default'].filter(
-        annotation => annotation.id !== action.annotation.id
-      )
+      const stream = action.annotation.stream
+      const cellAnnotations = [...state.annotations[stream]]
+      const annotations = {...state.annotations}
+
+      annotations[stream] = cellAnnotations.map(annotation => {
+        if (annotation.id === action.annotation.id) {
+          return action.annotation
+        }
+        return annotation
+      })
 
       return {
         ...state,
-        annotations: {
-          default: [...copyAnnotations, action.annotation],
-        },
+        annotations
       }
     }
 

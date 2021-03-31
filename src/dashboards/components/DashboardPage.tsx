@@ -62,7 +62,10 @@ class DashboardPage extends Component<Props> {
     resetQueryCache()
 
     this.emitRenderCycleEvent()
-    this.props.fetchAndSetAnnotations()
+
+    if (isFlagEnabled('annotations')) {
+      this.props.fetchAndSetAnnotations()
+    }
   }
 
   public componentWillUnmount() {

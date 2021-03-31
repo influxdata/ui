@@ -32,9 +32,12 @@ import {CheckoutContext} from 'src/checkout/context/checkout'
 // Types
 
 const CheckoutForm: FC = () => {
-  const {handleFormValidation, zuoraParams, handleSubmit, setIsDirty} = useContext(
-    CheckoutContext
-  )
+  const {
+    handleFormValidation,
+    zuoraParams,
+    handleSubmit,
+    setIsDirty,
+  } = useContext(CheckoutContext)
 
   const onSubmit = () => {
     if (handleFormValidation() > 0) {

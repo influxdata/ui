@@ -16,7 +16,12 @@ export interface Props {
 }
 
 // FIXME: Add onFocus functionality
-const CreditCardForm: FC<Props> = ({zuoraParams, onSubmit, zuoraClient, onFocus}) => {
+const CreditCardForm: FC<Props> = ({
+  zuoraParams,
+  onSubmit,
+  zuoraClient,
+  onFocus,
+}) => {
   const _isMounted = useRef(true)
   const [client, setClient] = useState(zuoraClient ?? window.Z)
   const [paymentMethodId, setPaymentMethodId] = useState(null)

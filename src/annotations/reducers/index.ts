@@ -1,13 +1,11 @@
 import {
   Action,
   DELETE_ANNOTATION,
-  DISABLE_ANNOTATION_STREAM,
-  ENABLE_ANNOTATION_STREAM,
+  EDIT_ANNOTATION,
   SET_ANNOTATIONS,
   SET_ANNOTATION_STREAMS,
   TOGGLE_ANNOTATION_VISIBILITY,
   TOGGLE_SINGLE_CLICK_ANNOTATIONS,
-  EDIT_ANNOTATION,
 } from 'src/annotations/actions/creators'
 
 import {Annotation, AnnotationsList, AnnotationStream} from 'src/types'
@@ -83,7 +81,7 @@ export const annotationsReducer = (
 
       return {
         ...state,
-        annotations
+        annotations,
       }
     }
 

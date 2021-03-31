@@ -49,9 +49,7 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
   handleSubmit,
   annotation,
 }) => {
-  const [editedAnnotation, updateAnnotation] = useState<
-    EditAnnotationState
-  >({
+  const [editedAnnotation, updateAnnotation] = useState<EditAnnotationState>({
     stream: annotation.stream,
     startTime: new Date(annotation.startTime).toISOString(),
     summary: annotation.summary,

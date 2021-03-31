@@ -21,8 +21,6 @@ import {AppSettingContext} from 'src/shared/contexts/app'
 import {writeThenFetchAndSetAnnotations} from 'src/annotations/actions/thunks'
 import {FALLBACK_COLOR} from 'src/annotations/reducers/index'
 import {
-  getAnnotationStreams,
-  getVisibleAnnotationStreams,
   isSingleClickAnnotationsEnabled,
   selectAreAnnotationsVisible,
 } from 'src/annotations/selectors'
@@ -87,12 +85,7 @@ const XYPlot: FC<Props> = ({
   const dispatch = useDispatch()
 
   const inAnnotationWriteMode = useSelector(isSingleClickAnnotationsEnabled)
-
-  //use cellid as the annotation 'stream'
-  const visibleAnnotationStreams = cellID
   const annotationsAreVisible = useSelector(selectAreAnnotationsVisible)
-
-  const annotationStreams = useSelector(getAnnotationStreams)
 
   const storedXDomain = useMemo(() => parseXBounds(properties.axes.x.bounds), [
     properties.axes.x.bounds,
@@ -266,7 +259,7 @@ const XYPlot: FC<Props> = ({
   if (isFlagEnabled('annotations')) {
     const cellAnnotations = annotations[cellID] ?? []
 
-    let annotationsToRender: any[] = cellAnnotations.map(annotation => {
+    const annotationsToRender: any[] = cellAnnotations.map(annotation => {
       return {
         ...annotation,
         color: FALLBACK_COLOR,

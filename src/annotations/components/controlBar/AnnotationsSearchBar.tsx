@@ -57,7 +57,7 @@ export const AnnotationsSearchBar: FC = () => {
     setSuggestionState(false)
   }
 
-  const handleSuggestionClick = (id: string): void => {
+  const handleSuggestionClick = (): void => {
     inputRef.current?.focus()
   }
 

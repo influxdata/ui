@@ -86,15 +86,6 @@ const XYPlot: FC<Props> = ({
   )
   const dispatch = useDispatch()
 
-  console.log('in graph...properties??', cellID)
-  //console.log("ack!  frustrated here... ")
-
-  // it doesn't know that it is even *in* a dashboard, much less which dashboard it is in.
-  // so having annotations on per dashboard is not supported yet
-  // these next two values are set in the dashboard, and used whether or not this view is in a dashboard
-  // or in configuration/single cell popout mode
-  // would need to add the annotation control bar to the VEOHeader to get access to the controls,
-  // which are currently global values, not per dashboard
   const inAnnotationWriteMode = useSelector(isSingleClickAnnotationsEnabled)
 
   //use cellid as the annotation 'stream'

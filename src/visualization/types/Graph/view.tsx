@@ -264,27 +264,14 @@ const XYPlot: FC<Props> = ({
   }
 
   if (isFlagEnabled('annotations')) {
-    // show only the streams that are enabled by the user, the 'default' stream is enabled by default.
-    let selectedAnnotations: any[] = []
-    // we want to check what annotations are enabled
+    const cellAnnotations = annotations[cellID] ?? []
 
-    //only want the streamName that corresponds to the id of this cell
-
-    //CHANGE ME HERE (JZ)
-
-    if (annotations && annotations[cellID]) {
-      const correspondingStream = annotationStreams.find(
-        stream => stream.stream === cellID
-      )
-
-      const annotationsWithStreamColor = annotations[cellID].map(annotation => {
-        return {
-          ...annotation,
-          color: correspondingStream?.color ?? FALLBACK_COLOR,
-        }
-      })
-      selectedAnnotations = [...annotationsWithStreamColor]
-    }
+    let annotationsToRender: any[] = cellAnnotations.map(annotation => {
+      return {
+        ...annotation,
+        color: FALLBACK_COLOR,
+      }
+    })
 
     if (inAnnotationWriteMode) {
       config.interactionHandlers = {
@@ -308,14 +295,14 @@ const XYPlot: FC<Props> = ({
         )
       )
     }
-    if (annotationsAreVisible && selectedAnnotations.length) {
+    if (annotationsAreVisible && annotationsToRender.length) {
       const annotationLayer: AnnotationLayerConfig = {
         type: 'annotation',
         x: xColumn,
         y: yColumn,
         fill: groupKey,
         handleAnnotationClick,
-        annotations: selectedAnnotations.map(annotation => {
+        annotations: annotationsToRender.map(annotation => {
           return {
             id: annotation.id,
             title: annotation.summary,

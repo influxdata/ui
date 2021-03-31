@@ -58,10 +58,11 @@ export const annotationsReducer = (
       }
     }
     case DELETE_ANNOTATION: {
+      const stream = action.annotation.stream
       return {
         ...state,
         annotations: {
-          default: state.annotations['default'].filter(
+          [stream]: state.annotations[stream].filter(
             annotation => annotation.id !== action.annotation.id
           ),
         },

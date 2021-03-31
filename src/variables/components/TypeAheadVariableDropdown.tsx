@@ -1,6 +1,7 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
+import classnames from 'classnames'
 
 // Components
 import {
@@ -260,7 +261,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     const widthStyle = this.getWidth(placeHolderText)
 
     const getInnerComponent = () => {
-      if (status === RemoteDataState.Loading || this.noValuesPresent(true)) {
+      if (status === RemoteDataState.Loading || this.noValuesPresent()) {
         return placeHolderText
       } else {
         return (
@@ -300,12 +301,11 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
             theme={DropdownMenuTheme.Amethyst}
           >
             {shownValues.map((value, index) => {
-              let classN = 'variable-dropdown--item'
+              // add the 'active' class to highlight when arrowing; like a hover
+              const classN = classnames('variable-dropdown--item', {
+                active: index === selectIndex,
+              })
 
-              // highlight when arrowing; like a hover
-              if (index === selectIndex) {
-                classN += ' active'
-              }
               return (
                 <Dropdown.Item
                   key={value}
@@ -378,17 +378,25 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     if (status === RemoteDataState.Loading) {
       return 'Loading...'
     }
-    if (this.noValuesPresent(false)) {
+    if (this.noFilteredValuesPresent()) {
       return 'No Values'
     }
 
     return defaultText
   }
 
-  noValuesPresent = useAllValues => {
-    const {status, values} = this.props
+  noFilteredValuesPresent = () => {
     const {shownValues} = this.state
-    const valsToUse = useAllValues ? values : shownValues
+    return this.internalNoValuesPresent(shownValues)
+  }
+
+  noValuesPresent = () => {
+    const {values} = this.props
+    return this.internalNoValuesPresent(values)
+  }
+
+  internalNoValuesPresent = valsToUse => {
+    const {status} = this.props
 
     return (
       status === RemoteDataState.Done && (!valsToUse || valsToUse.length === 0)

@@ -732,7 +732,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
                 .clear()
                 .type('b3789')
 
-              //now click away
+              // now click away
               cy.getByTestID('variable-dropdown--button')
                 .eq(1)
                 .click()
@@ -748,7 +748,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
                 .clear()
                 .type('b3')
 
-              //now click away
+              // now click away
               cy.getByTestID('variable-dropdown--button')
                 .eq(1)
                 .click()

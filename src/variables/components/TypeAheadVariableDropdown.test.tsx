@@ -83,7 +83,7 @@ const setInitialState = (state: AppState): AppState => {
 }
 
 describe('Dashboards.Components.VariablesControlBar.TypeAheadVariableDropdown', () => {
-  describe('if map type', () => {
+  describe('variable map type', () => {
     it('renders dropdown with keys as dropdown items', () => {
       const {getByTestId, getAllByTestId} = renderWithRedux(
         <TypeAheadVariableDropdown variableID="03cbdc8a53a63000" />,

@@ -70,9 +70,8 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
   // set the 'shownValues' after loading, and
   // resets the menuOpen variable
   componentDidUpdate(prevProps, prevState) {
-    const prevVals = prevProps.values
     const {values, selectedValue, status} = this.props
-    const {status: prevStatus} = prevProps
+    const {values: prevVals, status: prevStatus} = prevProps
     const {actualVal, loaded, selectHappened, menuOpen} = this.state
     const {
       actualVal: prevActualVal,
@@ -214,7 +213,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
         // but:  if the value they typed is LEGAL (in the list/dropdown values), set it;
         // else: reset to the previous real/legal value:
         if (values.includes(typedValue)) {
-          // is is a real legal value
+          // is a real legal value
           this.handleSelect(typedValue, true)
         } else {
           const newState = {
@@ -276,10 +275,6 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
         )
       }
     }
-    // binding this b/c can't use arrow functions in the map below (shownValues.map)
-    // because need the index for highlighting the selectIndex for when using arrows
-    // to select the value
-    const thisHandleSelect = this.handleSelect.bind(this)
 
     return (
       <Dropdown
@@ -304,8 +299,9 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
             onCollapse={onCollapse}
             theme={DropdownMenuTheme.Amethyst}
           >
-            {shownValues.map(function(value, index) {
+            {shownValues.map((value, index) => {
               let classN = 'variable-dropdown--item'
+
               // highlight when arrowing; like a hover
               if (index === selectIndex) {
                 classN += ' active'
@@ -315,7 +311,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
                   key={value}
                   id={value}
                   value={value}
-                  onClick={thisHandleSelect}
+                  onClick={this.handleSelect}
                   selected={value === selectedValue}
                   testID="variable-dropdown--item"
                   className={classN}
@@ -394,10 +390,9 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     const {shownValues} = this.state
     const valsToUse = useAllValues ? values : shownValues
 
-    const result =
+    return (
       status === RemoteDataState.Done && (!valsToUse || valsToUse.length === 0)
-
-    return result
+    )
   }
 }
 

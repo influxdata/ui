@@ -450,7 +450,7 @@ describe('Dashboard', () => {
                   `variable-dropdown-input-typeAhead--${bucketVarName}`
                 ).type('nothingM')
 
-                // end typeAhead section; rest is normal behavoir
+                // end typeAhead section; rest is normal behavior
 
                 // open VEO
                 cy.getByTestID('cell-context--toggle').click()
@@ -602,7 +602,7 @@ describe('Dashboard', () => {
       })
     })
 
-    it('dependent variables reload properly', () => {
+    it('reloads dependent variables properly', () => {
       const bucketOne = 'b1'
       const bucketThree = 'b3'
       const bucketVarName = 'bucketsCSV'
@@ -716,6 +716,48 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
               // ok!  now;  pick a different bucket:
 
               // but first test that it only allows valid values:
+              cy.getByTestID(
+                `variable-dropdown-input-typeAhead--${bucketVarName}`
+              )
+                .type('b3789')
+                .type('{enter}')
+                .should('have.value', 'b1')
+
+              // while it still has the `b1' value, test the clickAwayHere functionality:
+
+              // type in a fake value, then click away, the prev value should be showing
+              cy.getByTestID(
+                `variable-dropdown-input-typeAhead--${bucketVarName}`
+              )
+                .clear()
+                .type('b3789')
+
+              //now click away
+              cy.getByTestID('variable-dropdown--button')
+                .eq(1)
+                .click()
+
+              cy.getByTestID(
+                `variable-dropdown-input-typeAhead--${bucketVarName}`
+              ).should('have.value', 'b1')
+
+              // type in a real value, then click away, the prev value should be showing
+              cy.getByTestID(
+                `variable-dropdown-input-typeAhead--${bucketVarName}`
+              )
+                .clear()
+                .type('b3')
+
+              //now click away
+              cy.getByTestID('variable-dropdown--button')
+                .eq(1)
+                .click()
+
+              cy.getByTestID(
+                `variable-dropdown-input-typeAhead--${bucketVarName}`
+              ).should('have.value', 'b1')
+
+              // now back to testing that only valid values work:
               cy.getByTestID(
                 `variable-dropdown-input-typeAhead--${bucketVarName}`
               )

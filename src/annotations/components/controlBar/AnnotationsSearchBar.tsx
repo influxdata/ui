@@ -57,10 +57,9 @@ export const AnnotationsSearchBar: FC = () => {
     setSuggestionState(false)
   }
 
-  // TODO: im not sure if this changes or not
-  // const handleSuggestionClick = (id: string): void => {
-  //   inputRef.current?.focus()
-  // }
+  const handleSuggestionClick = (id: string): void => {
+    inputRef.current?.focus()
+  }
 
   let suggestionItems = (
     <List.EmptyState>No streams match your search</List.EmptyState>

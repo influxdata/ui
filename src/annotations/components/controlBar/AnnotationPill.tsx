@@ -1,8 +1,5 @@
 // Libraries
 import React, {FC} from 'react'
-// import {useDispatch} from 'react-redux'
-
-// Actions
 
 // Components
 import {Icon, IconFont} from '@influxdata/clockface'
@@ -15,13 +12,6 @@ interface Props {
 }
 
 export const AnnotationPill: FC<Props> = ({id, name, description, color}) => {
-  // TODO: when we use this page again we should fix this
-  // const dispatch = useDispatch()
-
-  // const disableStream = (): void => {
-
-  // }
-
   return (
     <div className="annotation-pill" title={description}>
       <div

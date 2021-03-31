@@ -24,17 +24,14 @@ import {
   getInvoices as apiGetInvoices,
   getOrgsLimits as apiGetOrgLimits,
 } from 'src/billing/api'
-import {notify} from 'src/shared/actions/notifications'
-
-// Notifications
-import {getErrorMessage} from 'src/utils/api'
-import {getAccountFailed} from 'src/shared/copy/notification'
 
 // Types
 import {RemoteDataState} from 'src/types'
 import {BillingNotifySettings, Invoice} from 'src/types/billing'
 
 // TODO(ariel): add error handling here
+// notify() will not work since Dispatch here is based on the passed in dispatch from the local reducer
+// and not from the higher level dispatch from the app.
 export const getAccount = async (dispatch: Dispatch<Action>) => {
   try {
     dispatch(setAccountStatus(RemoteDataState.Loading))
@@ -44,13 +41,9 @@ export const getAccount = async (dispatch: Dispatch<Action>) => {
       throw new Error(resp.data.message)
     }
 
-    dispatch(notify('here is a notification'))
     dispatch(setAccount({...resp.data, status: RemoteDataState.Done}))
   } catch (error) {
     console.error(error)
-    // const message = getErrorMessage(error)
-    // dispatch(notify(getAccountFailed()))
-    // dispatch(notify(getAccountFailed(message)))
     dispatch(setAccountStatus(RemoteDataState.Error))
   }
 }

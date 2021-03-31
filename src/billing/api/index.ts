@@ -115,6 +115,7 @@ export const getOrgsLimits = (): ReturnType<typeof apiGetOrgLimits> => {
       maxNotifications: 9,
       blockedNotificationRules: 'cancelled',
     },
+    status: RemoteDataState.Done,
   }
 
   return makeResponse(200, limits, 'getOrgsLimits')

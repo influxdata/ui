@@ -32,7 +32,7 @@ import {CheckoutContext} from 'src/checkout/context/checkout'
 // Types
 
 const CheckoutForm: FC = () => {
-  const {handleFormValidation, zuoraParams, handleSubmit} = useContext(
+  const {handleFormValidation, zuoraParams, handleSubmit, setIsDirty} = useContext(
     CheckoutContext
   )
 
@@ -117,6 +117,7 @@ const CheckoutForm: FC = () => {
             <Panel.Body size={ComponentSize.Medium}>
               <CreditCardForm
                 key="zuora_payment"
+                onFocus={() => setIsDirty(true)}
                 data-reactid="zuorapaymentform"
                 zuoraParams={zuoraParams}
                 onSubmit={handleSubmit}

@@ -2,20 +2,23 @@ import {Inputs} from 'src/checkout/context/checkout'
 import {
   getAccount as apiGetAccount,
   getBilling,
+  getOrgsLimits as apiGetOrgLimits,
   postCheckout,
   getSettingsNotifications,
   getPaymentForm,
   getBillingInvoices,
   putBillingPaymentMethod,
+  putSettingsNotifications,
 } from 'src/client/unityRoutes'
 
-import {RemoteDataState, CheckoutRequest} from 'src/types'
+import {RemoteDataState} from 'src/types'
 import {
   Account,
   Invoice,
   CreditCardParams,
   BillingInfo,
   BillingNotifySettings,
+  OrgLimits,
 } from 'src/types/billing'
 
 const makeResponse = (status, data, ...args) => {
@@ -84,6 +87,39 @@ export const getBillingCreditCardParams = (): ReturnType<typeof getPaymentForm> 
   return makeResponse(200, cc, 'getBillingCreditCard')
 }
 
+export const getOrgsLimits = (): ReturnType<typeof apiGetOrgLimits> => {
+  const limits: OrgLimits = {
+    orgID: 'org123',
+    rate: {
+      readKBs: 100,
+      writeKBs: 100,
+      cardinality: 1,
+    },
+    bucket: {
+      maxRetentionDuration: 3,
+      maxBuckets: 2,
+    },
+    task: {
+      maxTasks: 10,
+    },
+    dashboard: {
+      maxDashboards: 7,
+    },
+    check: {
+      maxChecks: 4,
+    },
+    notificationEndpoint: {
+      blockedNotificationEndpoints: 'slack',
+    },
+    notificationRule: {
+      maxNotifications: 9,
+      blockedNotificationRules: 'cancelled',
+    },
+  }
+
+  return makeResponse(200, limits, 'getOrgsLimits')
+}
+
 export const getCheckoutZuoraParams = (): ReturnType<typeof getPaymentForm> => {
   const zp: CreditCardParams = {
     style: 'inline',
@@ -112,6 +148,12 @@ export const getBillingNotificationSettings = (): ReturnType<typeof getSettingsN
     billingNotifySettings,
     'getBillingNotificationSettings'
   )
+}
+
+export const updateBillingNotificationSettings = (
+  settings: BillingNotifySettings
+): ReturnType<typeof putSettingsNotifications> => {
+  return makeResponse(200, settings, 'updateBillingNotificationSettings')
 }
 
 export const getInvoices = (): ReturnType<typeof getBillingInvoices> => {
@@ -151,7 +193,7 @@ export const getInvoices = (): ReturnType<typeof getBillingInvoices> => {
   return makeResponse(200, invoices, 'getInvoices')
 }
 
-export const makeCheckoutPayload = (data: Inputs): CheckoutRequest => {
+export const makeCheckoutPayload = (data: Inputs): any => {
   const {
     shouldNotify,
     notifyEmail,

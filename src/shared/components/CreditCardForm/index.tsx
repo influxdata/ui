@@ -15,7 +15,6 @@ export interface Props {
   onFocus?: () => void
 }
 
-// FIXME: Add onFocus functionality
 const CreditCardForm: FC<Props> = ({
   zuoraParams,
   onSubmit,

@@ -57,6 +57,7 @@ export const annotationsReducer = (
         }),
       }
     }
+    //TODO: remove these!
     case ENABLE_ANNOTATION_STREAM: {
       return {
         ...state,

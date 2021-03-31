@@ -600,4 +600,4 @@ commands:
           name: Checkout monitor-ci repo
           environment:
             REPO: monitor-ci
-            BRANCH: master
+            BRANCH: checkout_monitor_ci

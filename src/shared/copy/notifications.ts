@@ -1121,9 +1121,3 @@ export const createAnnotationFailed = (error: string): Notification => ({
   icon: IconFont.Cube,
   message: `Failed to create annotation: ${error}`,
 })
-
-// Billing Notifications
-export const getAccountFailed = (message: string): Notification => ({
-  ...defaultErrorNotification,
-  message: `Failed to get the account: ${message}`,
-})

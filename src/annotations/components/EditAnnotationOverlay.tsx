@@ -13,8 +13,9 @@ import {getOverlayParams} from 'src/overlays/selectors'
 
 // Actions
 import {editAnnotation} from 'src/annotations/actions/thunks'
+
 // Types
-import {EditAnnotationState} from 'src/annotations/components/EditAnnotationForm'
+import {EditAnnotation} from 'src/types'
 
 // Notifications
 import {
@@ -29,7 +30,7 @@ export const EditAnnotationOverlay: FC = () => {
   const dispatch = useDispatch()
   const {clickedAnnotation} = useSelector(getOverlayParams)
 
-  const handleSubmit = (editedAnnotation: EditAnnotationState): void => {
+  const handleSubmit = (editedAnnotation: EditAnnotation): void => {
     const formIsValid = true
     if (formIsValid) {
       try {

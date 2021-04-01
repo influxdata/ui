@@ -19,7 +19,7 @@ import {
 import {deleteAnnotations} from 'src/annotations/actions/thunks'
 
 // Types
-import {Annotation} from 'src/types'
+import {Annotation, EditAnnotation} from 'src/types'
 
 // Style
 import 'src/annotations/components/editAnnotationForm.scss'
@@ -31,15 +31,8 @@ import {
 } from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
 
-export interface EditAnnotationState {
-  startTime: string
-  summary: string
-  message: string
-  id: string
-}
-
 interface EditAnnotationProps {
-  handleSubmit: (editedAnnotation: EditAnnotationState) => void
+  handleSubmit: (editedAnnotation: EditAnnotation) => void
   annotation: Annotation
   handleClose: () => void
 }
@@ -49,12 +42,12 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
   handleSubmit,
   annotation,
 }) => {
-  const [editedAnnotation, updateAnnotation] = useState<EditAnnotationState>({
-    stream: annotation.stream,
-    startTime: new Date(annotation.startTime).toISOString(),
-    summary: annotation.summary,
-    message: annotation.message ?? '',
+  const [editedAnnotation, updateAnnotation] = useState<EditAnnotation>({
     id: annotation.id,
+    message: annotation.message ?? '',
+    startTime: new Date(annotation.startTime).toISOString(),
+    stream: annotation.stream,
+    summary: annotation.summary,
   })
 
   const handleChange = (

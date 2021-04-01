@@ -13,47 +13,59 @@ pipeline=$(curl -s --request POST \
 
 # TODO: what if starting the pipeline fails?
 pipeline_id=$(echo ${pipeline} | jq  -r '.id')
+pipeline_number=$(echo ${pipeline} | jq -r '.number')
+# pipeline_id="db41d91c-d21b-4805-9609-31f44b2f4504"
+# pipeline_number="30"
 
 # poll the status of the monitor-ci pipeline
 echo "waiting for monitor-ci pipeline..."
+is_failure=0
 attempts=0
 max_attempts=10
 while [ $attempts -le $max_attempts ];
 do
 
-	workflow=$(curl -s --request GET \
+	workflows=$(curl -s --request GET \
 		--url "https://circleci.com/api/v2/pipeline/${pipeline_id}/workflow" \
 		--header "Circle-Token: ${API_KEY}" \
 		--header 'content-type: application/json' \
 		--header 'Accept: application/json')
 
-	# TODO: what if there are multiple workflows?
-	status=$(echo ${workflow} | jq  -r '.items | .[].status')
-	pipeline_number=$(echo ${workflow} | jq  -r '.items | .[].pipeline_number')
-	workflow_id=$(echo ${workflow} | jq  -r '.items | .[].id')
-	# workflow_id="4f50685c-0466-4fbc-8d74-34cd2f1ffaa4"
+	number_running_workflows=$(echo ${workflows} | jq  -r '.items | map(select(.status == "running")) | length')
 
-	if [[ "${status}" == "failed" ]]; then
-		echo "monitor-ci tests FAILED here: https://app.circleci.com/pipelines/github/influxdata/monitor-ci/${pipeline_number}/workflows/${workflow_id}"
+	# when the pipeline has finished
+	if [ ${number_running_workflows} -eq 0 ]; then
+		workflows_ids=( $(echo ${workflows} | jq -r '.items | .[].id') )
 
-		# get the jobs that failed
-		jobs=$(curl -s --request GET \
-			--url "https://circleci.com/api/v2/workflow/${workflow_id}/job" \
-			--header "Circle-Token: ${API_KEY}" \
-			--header 'content-type: application/json' \
-			--header 'Accept: application/json')
+		# report failed jobs per workflow
+		for workflow_id in "${workflows_ids[@]}"; do
+			workflow_status=$(echo ${workflows} | jq -r --arg id "${workflow_id}" '.items | map(select(.id == $id)) | .[].status')
 
-		echo "Failed jobs:"
-		failed_jobs=$(echo ${jobs} | jq '.items | map(select(.status == "failed"))')
-		failed_jobs_names=( $(echo ${failed_jobs} | jq -r '.[].name') )
-		for name in "${failed_jobs_names[@]}"; do
-			echo "- ${name}"
+			if [[ "$workflow_status" == "success" ]]; then
+				echo "PASSED: monitor-ci workflow with id ${workflow_id} passed: https://app.circleci.com/pipelines/github/influxdata/monitor-ci/${pipeline_number}/workflows/${workflow_id}"
+			else
+				echo "FAILURE: monitor-ci workflow with id ${workflow_id} failed: https://app.circleci.com/pipelines/github/influxdata/monitor-ci/${pipeline_number}/workflows/${workflow_id}"
+
+				# set job failure
+				is_failure=1
+
+				# get the jobs that failed for this workflow
+				jobs=$(curl -s --request GET \
+					--url "https://circleci.com/api/v2/workflow/${workflow_id}/job" \
+					--header "Circle-Token: ${API_KEY}" \
+					--header 'content-type: application/json' \
+					--header 'Accept: application/json')
+
+				echo "Failed jobs:"
+				failed_jobs=$(echo ${jobs} | jq '.items | map(select(.status == "failed"))')
+				failed_jobs_names=( $(echo ${failed_jobs} | jq -r '.[].name') )
+				for name in "${failed_jobs_names[@]}"; do
+					echo "- ${name}"
+				done
+			fi
 		done
 
-		exit 1
-	elif [[ "${status}" == "success" ]]; then
-		echo "monitor-ci tests PASSED here: https://app.circleci.com/pipelines/github/influxdata/monitor-ci/${pipeline_number}/workflows/${workflow_id}"
-		exit 0
+		exit $is_failure
 	fi
 
 	# sleep 1 minute and poll the status again

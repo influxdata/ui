@@ -19,7 +19,7 @@ const getName = (name: string): string => {
     case 'cardinality':
       return 'Series Cardinality'
     default:
-      return `Max ${startCase(name)}`
+      return `${startCase(name)}`
   }
 }
 
@@ -28,13 +28,13 @@ const getStat = (name: string, value: any) => {
     case 'writeKBs':
     case 'readKBs':
       const sIn5Min = minToSeconds(5)
-      const mbPerSecond = kbToMb(value.maxAllowed as number)
+      const mbPerSecond = kbToMb(value)
       const mb5Min = floor(mbPerSecond * sIn5Min)
       return `${mb5Min} MB / 5 min`
     case 'bucket':
-      return `${nsToDays(value.maxRetentionSeconds as number)} days`
+      return `${nsToDays(value)} days`
     default:
-      return value.maxAllowed
+      return value
   }
 }
 

@@ -782,15 +782,15 @@
     debug "^3.1.0"
     lodash.once "^4.1.1"
 
-"@influxdata/clockface@^2.6.7":
-  version "2.6.7"
-  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-2.6.7.tgz#1baddd86e95328b8f747819705b7e486ebcedbad"
-  integrity sha512-LGIMEN2gXTYtS7Z4OiZgKkqWAbA6p6tTakouFgUTuPj/naT84sqni6xyZ92THrdJRpNSZ9Ez3xLOu3xK0j2E5g==
+"@influxdata/clockface@^2.6.9":
+  version "2.6.9"
+  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-2.6.9.tgz#ec18cabdc9a07f56e788270db4027b3985ac5316"
+  integrity sha512-6pzFuysWsIh+eXD81JsZMRwCRhlBLvi1wrbhwvXcv+2vytZ8UtcDocp1GF2bZ457caWkdMG+DMunv9/AV0OxDg==
 
-"@influxdata/flux-lsp-browser@^0.5.37":
-  version "0.5.37"
-  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.5.37.tgz#a18a6f713087afb306e4e0a9724e139e3c71ebb3"
-  integrity sha512-KL9GctYgNCyUTgUtuKYgBxB9N1DspsVbNSNz2Mt6wKkhFfsUjeJXkkl8/1iaOMrQWsW2UwU3E6oTwsJxCsC/5A==
+"@influxdata/flux-lsp-browser@^0.5.38":
+  version "0.5.38"
+  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.5.38.tgz#a7b4a59bb41f8d0fbecfceb6444fe0f699c907d3"
+  integrity sha512-fHACE7dSHLP+zrusWy4HnJQCxAM6x54i5Za9cyEmXfaxIRU0p6lLj0h7HT4NJ8mQ0SeE3OwIYo94B6QnL29XLA==
 
 "@influxdata/flux@^0.5.1":
   version "0.5.1"

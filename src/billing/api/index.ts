@@ -2,19 +2,23 @@ import {Inputs} from 'src/checkout/context/checkout'
 import {
   getAccount as apiGetAccount,
   getBilling,
+  getOrgsLimits as apiGetOrgLimits,
   postCheckout,
   getSettingsNotifications,
   getPaymentForm,
   getBillingInvoices,
+  putBillingPaymentMethod,
+  putSettingsNotifications,
 } from 'src/client/unityRoutes'
 
-import {RemoteDataState, CheckoutRequest} from 'src/types'
+import {RemoteDataState} from 'src/types'
 import {
   Account,
   Invoice,
   CreditCardParams,
   BillingInfo,
   BillingNotifySettings,
+  OrgLimits,
 } from 'src/types/billing'
 
 const makeResponse = (status, data, ...args) => {
@@ -34,6 +38,9 @@ export const getAccount = (): ReturnType<typeof apiGetAccount> => {
     id: 'account_1',
     marketplace: null,
     type: 'free',
+    balance: null,
+    users: [],
+    billingContact: null,
     status: RemoteDataState.Done,
   }
   return makeResponse(200, account, 'getBillingAccount')
@@ -67,20 +74,54 @@ export const getBillingInfo = (): ReturnType<typeof getBilling> => {
   return makeResponse(200, billing)
 }
 
-export const getBillingCreditCard = (): ReturnType<typeof getPaymentForm> => {
+export const getBillingCreditCardParams = (): ReturnType<typeof getPaymentForm> => {
   const cc: CreditCardParams = {
-    id: 'id123',
-    tenantId: 'tenant123',
-    key: 'key123',
-    signature: 'John Hancock',
-    token: 't0k3n',
-    style: 'fresh',
-    submitEnabled: 'true',
+    style: 'inline',
     url: 'you-are-el',
+    submitEnabled: 'false',
+    tenantId: '12345',
+    token: 'TOW-KEN',
+    key: 'KEE',
+    signature: 'SIGNATURE',
+    id: 'eye-dee',
     status: RemoteDataState.Done,
   }
 
   return makeResponse(200, cc, 'getBillingCreditCard')
+}
+
+export const getOrgsLimits = (): ReturnType<typeof apiGetOrgLimits> => {
+  const limits: OrgLimits = {
+    orgID: 'org123',
+    rate: {
+      readKBs: 100,
+      writeKBs: 100,
+      cardinality: 1,
+    },
+    bucket: {
+      maxRetentionDuration: 3,
+      maxBuckets: 2,
+    },
+    task: {
+      maxTasks: 10,
+    },
+    dashboard: {
+      maxDashboards: 7,
+    },
+    check: {
+      maxChecks: 4,
+    },
+    notificationEndpoint: {
+      blockedNotificationEndpoints: 'slack',
+    },
+    notificationRule: {
+      maxNotifications: 9,
+      blockedNotificationRules: 'cancelled',
+    },
+    status: RemoteDataState.Done,
+  }
+
+  return makeResponse(200, limits, 'getOrgsLimits')
 }
 
 export const getCheckoutZuoraParams = (): ReturnType<typeof getPaymentForm> => {
@@ -96,7 +137,7 @@ export const getCheckoutZuoraParams = (): ReturnType<typeof getPaymentForm> => {
     status: RemoteDataState.Done,
   }
 
-  return makeResponse(204, zp)
+  return makeResponse(200, zp)
 }
 
 export const getBillingNotificationSettings = (): ReturnType<typeof getSettingsNotifications> => {
@@ -111,6 +152,12 @@ export const getBillingNotificationSettings = (): ReturnType<typeof getSettingsN
     billingNotifySettings,
     'getBillingNotificationSettings'
   )
+}
+
+export const updateBillingNotificationSettings = (
+  settings: BillingNotifySettings
+): ReturnType<typeof putSettingsNotifications> => {
+  return makeResponse(200, settings, 'updateBillingNotificationSettings')
 }
 
 export const getInvoices = (): ReturnType<typeof getBillingInvoices> => {
@@ -150,7 +197,7 @@ export const getInvoices = (): ReturnType<typeof getBillingInvoices> => {
   return makeResponse(200, invoices, 'getInvoices')
 }
 
-export const makeCheckoutPayload = (data: Inputs): CheckoutRequest => {
+export const makeCheckoutPayload = (data: Inputs): any => {
   const {
     shouldNotify,
     notifyEmail,
@@ -185,4 +232,14 @@ export const postCheckoutInformation = async (
   const paymentInformation = makeCheckoutPayload(data)
 
   return makeResponse(201, paymentInformation, 'postCheckoutInformation', data)
+}
+export const putBillingPaymentMethodId = async (
+  paymentMethodId: string
+): ReturnType<typeof putBillingPaymentMethod> => {
+  return makeResponse(
+    200,
+    paymentMethodId,
+    'putBillingPaymentMethodId',
+    paymentMethodId
+  )
 }

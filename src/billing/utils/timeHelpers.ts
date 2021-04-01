@@ -12,7 +12,7 @@ const nanoPerHour =
   microPerMilli *
   nanoPerMicro
 
-export const nsToHours = (ns: number) => {
+export const nsToHours = (ns: number): number => {
   if (ns === -1) {
     return ns
   }
@@ -20,7 +20,7 @@ export const nsToHours = (ns: number) => {
   return ns / nanoPerHour
 }
 
-export const hoursToNs = (hours: number) => {
+export const hoursToNs = (hours: number): number => {
   if (hours === -1) {
     return -1
   }

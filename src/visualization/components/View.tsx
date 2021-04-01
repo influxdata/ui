@@ -24,6 +24,7 @@ interface Props {
   isInitial?: boolean
   timeRange?: TimeRange
   annotations?: AnnotationsList
+  cellID?: string
 }
 
 const InnerView: FC<Props> = ({
@@ -34,6 +35,7 @@ const InnerView: FC<Props> = ({
   isInitial,
   timeRange,
   annotations,
+  cellID,
 }) => {
   if (!SUPPORTED_VISUALIZATIONS[properties.type]?.component) {
     throw new Error('Unknown view type in <View /> ')
@@ -59,6 +61,7 @@ const InnerView: FC<Props> = ({
         properties: properties,
         timeRange: timeRange || DEFAULT_TIME_RANGE,
         annotations: annotations,
+        cellID: cellID,
       })}
     </EmptyQueryView>
   )

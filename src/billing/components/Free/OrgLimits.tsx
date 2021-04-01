@@ -1,9 +1,12 @@
 import React, {FC} from 'react'
-import {useSelector} from 'react-redux'
 import {Grid, Columns} from '@influxdata/clockface'
 import OrgLimitStat from 'src/billing/components/Free/OrgLimitStat'
-import {AppState} from 'src/types'
-import {LimitsState} from 'src/cloud/reducers/limits'
+
+// Utils
+import {useBilling} from 'src/billing/components/BillingPage'
+
+// Types
+import {OrgLimits} from 'src/types/billing'
 
 type KV = [string, string | number]
 
@@ -13,25 +16,27 @@ const excludeOrgIDAndStatus = (limitEntries: KV[]): KV[] => {
   )
 }
 
-// TODO(ariel): get these rejections hooked up
-// const rejectConcurrencyLimits = (limitEntries: KV[]): KV[] => {
-//   const excludedLimits = [
-//     'blockedNotificationRules',
-//     'blockedNotificationEndpoints',
-//   ]
-//   console.log({limitEntries})
-//   return limitEntries.filter(
-//     ([limitName, _limitValue]) => !excludedLimits.includes(limitName)
-//   )
-// }
+const rejectConcurrencyLimits = (limitEntries: KV[]): KV[] => {
+  const excludedLimits = [
+    'blockedNotificationRules',
+    'blockedNotificationEndpoints',
+  ]
+  return limitEntries.filter(
+    ([limitName, _limitValue]) => !excludedLimits.includes(limitName)
+  )
+}
 
-const limits = (orgLimits: LimitsState | {}): KV[] => {
-  return excludeOrgIDAndStatus(Object.entries(orgLimits))
+const limits = (orgLimits: OrgLimits): KV[] => {
+  const limitsByCategory = excludeOrgIDAndStatus(Object.entries(orgLimits))
+
+  return limitsByCategory.flatMap(([_category, limits]) =>
+    rejectConcurrencyLimits(Object.entries(limits))
+  )
 }
 
 const OrgLimits: FC = () => {
-  const orgLimits =
-    useSelector((state: AppState): LimitsState => state?.cloud?.limits) ?? {}
+  const [{orgLimits}] = useBilling()
+
   return (
     <Grid>
       {limits(orgLimits).flatMap(([name, value]) => {

@@ -19,6 +19,7 @@ import {submitError} from 'src/shared/copy/notifications'
 // Types
 import {RemoteDataState} from 'src/types'
 import {BillingNotifySettings, CreditCardParams} from 'src/types/billing'
+import {getErrorMessage} from 'src/utils/api'
 
 export type Props = {
   children: JSX.Element
@@ -78,19 +79,7 @@ export const DEFAULT_CONTEXT: CheckoutContextType = {
   handleSetInputs: (_: string, __: string | number | boolean) => {},
   handleSubmit: (_: string) => {},
   handleFormValidation: () => 0,
-  inputs: {
-    paymentMethodId: null,
-    notifyEmail: '', // TODO(ariel): set notifyEmail by user's email
-    balanceThreshold: 1,
-    shouldNotify: false,
-    street1: '',
-    street2: '',
-    city: '',
-    country: 'United States',
-    intlSubdivision: '',
-    usSubdivision: states[0],
-    postalCode: '',
-  },
+  inputs: null,
   isDirty: false,
   isSubmitting: false,
   onSuccessUrl: '',
@@ -117,8 +106,8 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [inputs, setInputs] = useState<Inputs>({
     paymentMethodId: null,
-    notifyEmail: '', // TODO(ariel): set notifyEmail by user's email
-    balanceThreshold: 1, // TODO(ariel): set balanceThreshold by user's data
+    notifyEmail: '',
+    balanceThreshold: null,
     shouldNotify: true,
     street1: '',
     street2: '',
@@ -132,9 +121,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   const getZuoraParams = useCallback(async () => {
     const response = await getCheckoutZuoraParams()
     if (response.status !== 200) {
-      const error = response.data
-
-      throw new Error(error.message)
+      throw new Error(getErrorMessage(response))
     }
 
     setZuoraParams(response.data as CreditCardParams)

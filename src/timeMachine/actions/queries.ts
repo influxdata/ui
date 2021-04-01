@@ -238,10 +238,24 @@ export const setQueryByHashID = (queryID: string, result: any): void => {
     })
     .catch(error => {
       if (error.name === 'CancellationError' || error.name === 'AbortError') {
-        queryReference[queryID].status = RemoteDataState.Done
+        if (queryID in queryReference) {
+          queryReference[queryID].status = RemoteDataState.Done
+        } else {
+          queryReference[queryID] = {
+            ...queryReference[queryID],
+            status: RemoteDataState.Done,
+          }
+        }
         return
       }
-      queryReference[queryID].status = RemoteDataState.Error
+      if (queryID in queryReference) {
+        queryReference[queryID].status = RemoteDataState.Error
+      } else {
+        queryReference[queryID] = {
+          ...queryReference[queryID],
+          status: RemoteDataState.Error,
+        }
+      }
     })
 }
 

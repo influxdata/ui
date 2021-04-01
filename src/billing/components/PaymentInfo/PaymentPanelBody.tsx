@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState} from 'react'
+import React, {FC, useCallback, useEffect, useState} from 'react'
 
 // Components
 import {Panel, ComponentSize} from '@influxdata/clockface'
@@ -7,45 +7,66 @@ import PaymentDisplay from './PaymentDisplay'
 import PaymentForm from './PaymentForm'
 
 // Types
-import {CreditCardParams, ZuoraResponse} from 'src/types/billing'
+import {CreditCardParams} from 'src/types/billing'
+import {RemoteDataState} from 'src/types'
+
+import {
+  getBillingCreditCardParams,
+  putBillingPaymentMethodId,
+} from 'src/billing/api'
+import {getErrorMessage} from 'src/utils/api'
 
 interface Props {
   isEditing: boolean
   onCancel: () => void
 }
 
+const EMPTY_CREDIT_CARD_PARAMS: CreditCardParams = {
+  id: '',
+  tenantId: '',
+  key: '',
+  signature: '',
+  token: '',
+  style: '',
+  submitEnabled: 'false',
+  url: '',
+  status: RemoteDataState.NotStarted,
+}
+
 const PaymentPanelBody: FC<Props> = ({isEditing, onCancel}) => {
   const [errorMessage, setErrorMessage] = useState('')
+  const [creditCardParams, setCreditCardParams] = useState(
+    EMPTY_CREDIT_CARD_PARAMS
+  )
 
-  const onSubmit = async (response: ZuoraResponse): Promise<void> => {
-    const error = 'Could not add card, please try again.'
-    if (response?.success) {
-      try {
-        const url = 'privateAPI/billing/payment_method'
-        const data = await fetch(url, {
-          method: 'PUT',
-          body: JSON.stringify({
-            paymentMethodId: response.refId,
-          }),
-        })
-        onCancel()
-        setErrorMessage('')
-        // TODO(ariel): refetch the updated payment methods elsewhere once this has resolved
-        console.log(data) // eslint-disable-line no-console
-      } catch {
-        setErrorMessage(error)
-      }
+  const onSubmit = async (paymentMethodId: string): Promise<void> => {
+    const response = await putBillingPaymentMethodId(paymentMethodId)
+    if (response.status !== 200) {
+      setErrorMessage(getErrorMessage(response))
     } else {
-      setErrorMessage(error)
+      onCancel()
+      setErrorMessage('')
     }
   }
+
+  const getCreditCardParams = useCallback(async () => {
+    const response = await getBillingCreditCardParams()
+    if (response.status !== 200) {
+      throw new Error(getErrorMessage(response))
+    }
+
+    setCreditCardParams(response.data as CreditCardParams)
+  }, [])
+
+  useEffect(() => {
+    getCreditCardParams()
+  }, [getCreditCardParams])
 
   if (isEditing) {
     return (
       <Panel.Body size={ComponentSize.Large}>
-        {/* FIXME: Add zuoraParams functionality */}
         <PaymentForm
-          zuoraParams={{} as CreditCardParams}
+          zuoraParams={creditCardParams}
           onSubmit={onSubmit}
           errorMessage={errorMessage}
         />

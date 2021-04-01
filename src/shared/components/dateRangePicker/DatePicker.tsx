@@ -18,6 +18,7 @@ interface Props {
   maxDate?: string
   minDate?: string
   onSelectDate: (date: string) => void
+  onInvalidInput: () => void
 }
 
 interface State {
@@ -107,6 +108,8 @@ export default class DatePicker extends PureComponent<Props, State> {
     const {inputValue, inputFormat} = this.state
 
     if (this.isInputValueInvalid) {
+      const {onInvalidInput} = this.props
+      onInvalidInput()
       return inputValue
     }
 

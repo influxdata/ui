@@ -62,12 +62,14 @@ class DateRangePicker extends PureComponent<Props, State> {
             <DatePicker
               dateTime={lower}
               onSelectDate={this.handleSelectLower}
+              onInvalidInput={this.handleInvalidInput}
               label="Start"
               maxDate={upper}
             />
             <DatePicker
               dateTime={upper}
               onSelectDate={this.handleSelectUpper}
+              onInvalidInput={this.handleInvalidInput}
               label="Stop"
               minDate={lower}
             />
@@ -122,16 +124,19 @@ class DateRangePicker extends PureComponent<Props, State> {
   }
 
   private handleSelectLower = (lower: string): void => {
-    this.setState({lower, validDateRange: this.isTimeRangeValid()})
+    this.setState(prev => ({...prev, lower, validDateRange: this.isTimeRangeValid(lower, this.state.upper)}))
   }
 
   private handleSelectUpper = (upper: string): void => {
-    this.setState({upper, validDateRange: this.isTimeRangeValid()})
+    this.setState(prev => ({...prev, upper, validDateRange: this.isTimeRangeValid(this.state.lower, upper)}))
   }
 
-  private isTimeRangeValid = (): boolean => {
-    const {lower, upper} = this.state
+  private isTimeRangeValid = (lower: string, upper: string): boolean => {
     return moment(lower).isBefore(upper)
+  }
+
+  private handleInvalidInput = () => {
+    this.setState(prev => ({...prev, validDateRange: false}))
   }
 }
 

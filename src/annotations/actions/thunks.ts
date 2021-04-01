@@ -41,13 +41,13 @@ export const writeThenFetchAndSetAnnotations = (
 
   fetchAndSetAnnotations()(dispatch)
 }
+
 export const deleteAnnotations = annotation => async (
   dispatch: Dispatch<AnnotationAction | NotificationAction>
 ) => {
   await deleteAnnotation({
     ...annotation,
     endTime: annotation.startTime,
-    stream: 'default',
   })
   dispatch(deleteAnnotationAction(annotation))
 }

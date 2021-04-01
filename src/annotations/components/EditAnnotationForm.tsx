@@ -19,7 +19,7 @@ import {
 import {deleteAnnotations} from 'src/annotations/actions/thunks'
 
 // Types
-import {Annotation} from 'src/types'
+import {Annotation, EditAnnotation} from 'src/types'
 
 // Style
 import 'src/annotations/components/editAnnotationForm.scss'
@@ -31,15 +31,8 @@ import {
 } from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
 
-export interface EditAnnotationState {
-  startTime: string
-  summary: string
-  message: string
-  id: string
-}
-
 interface EditAnnotationProps {
-  handleSubmit: (editedAnnotation: EditAnnotationState) => void
+  handleSubmit: (editedAnnotation: EditAnnotation) => void
   annotation: Annotation
   handleClose: () => void
 }
@@ -49,30 +42,31 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
   handleSubmit,
   annotation,
 }) => {
-  const [editAnnotationState, setEditAnnotationState] = useState<
-    EditAnnotationState
-  >({
-    startTime: new Date(annotation.startTime).toISOString(),
-    summary: annotation.summary,
-    message: annotation.message ?? '',
+  const [editedAnnotation, updateAnnotation] = useState<EditAnnotation>({
     id: annotation.id,
+    message: annotation.message ?? '',
+    startTime: new Date(annotation.startTime).toISOString(),
+    stream: annotation.stream,
+    summary: annotation.summary,
   })
 
-  const handleEditAnnotationChange = (
+  const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const {name, value} = event.target
 
-    setEditAnnotationState(prev => ({
-      ...prev,
-      [name]: value,
-    }))
+    updateAnnotation(annotationToUpdate => {
+      return {
+        ...annotationToUpdate,
+        [name]: value,
+      }
+    })
   }
 
-  const handleDeleteAnnotation = () => {
+  const handleDelete = () => {
     try {
-      dispatch(deleteAnnotations(editAnnotationState))
-      dispatch(notify(deleteAnnotationSuccess(editAnnotationState.message)))
+      dispatch(deleteAnnotations(editedAnnotation))
+      dispatch(notify(deleteAnnotationSuccess(editedAnnotation.message)))
       handleClose()
     } catch (err) {
       dispatch(notify(deleteAnnotationFailed(err)))
@@ -101,8 +95,8 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
               <Input
                 name="startTime"
                 placeholder="2020-10-10 05:00:00 PDT"
-                value={editAnnotationState.startTime}
-                onChange={handleEditAnnotationChange}
+                value={editedAnnotation.startTime}
+                onChange={handleChange}
                 status={ComponentStatus.Default}
                 size={ComponentSize.Medium}
               />
@@ -113,8 +107,8 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
             >
               <Input
                 name="summary"
-                value={editAnnotationState.summary}
-                onChange={handleEditAnnotationChange}
+                value={editedAnnotation.summary}
+                onChange={handleChange}
                 status={ComponentStatus.Default}
                 size={ComponentSize.Medium}
               />
@@ -125,7 +119,7 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
       <Overlay.Footer className="edit-annotation-form-footer">
         <Button
           text="Delete Annotation"
-          onClick={handleDeleteAnnotation}
+          onClick={handleDelete}
           color={ComponentColor.Danger}
           style={{marginRight: '15px'}}
         />
@@ -138,7 +132,7 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
           />
           <Button
             text="Save Changes"
-            onClick={() => handleSubmit(editAnnotationState)}
+            onClick={() => handleSubmit(editedAnnotation)}
             color={ComponentColor.Primary}
           />
         </div>

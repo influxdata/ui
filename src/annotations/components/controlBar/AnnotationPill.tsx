@@ -1,9 +1,5 @@
 // Libraries
 import React, {FC} from 'react'
-import {useDispatch} from 'react-redux'
-
-// Actions
-import {disableAnnotationStream} from 'src/annotations/actions/creators'
 
 // Components
 import {Icon, IconFont} from '@influxdata/clockface'
@@ -16,12 +12,6 @@ interface Props {
 }
 
 export const AnnotationPill: FC<Props> = ({id, name, description, color}) => {
-  const dispatch = useDispatch()
-
-  const disableStream = (): void => {
-    dispatch(disableAnnotationStream(id))
-  }
-
   return (
     <div className="annotation-pill" title={description}>
       <div
@@ -32,7 +22,6 @@ export const AnnotationPill: FC<Props> = ({id, name, description, color}) => {
       <button
         className="annotation-pill--button"
         data-testid={`annotation-pill ${id}`}
-        onClick={disableStream}
       >
         <Icon glyph={IconFont.Remove} />
       </button>

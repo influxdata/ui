@@ -341,68 +341,6 @@ jobs:
       - store_artifacts:
           path: monitor-ci/test-artifacts/screenshots
           destination: test_artifacts/screenshots
-  unit:
-    docker:
-      - image: circleci/golang:1.15-node
-    working_directory: ~/influxdata/ui
-    parallelism: 4
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - 'yarn-cached-packages-{{ checksum "yarn.lock" }}'
-          name: 'Restore Yarn Package Cache'
-      - run:
-          command: |
-            set +e
-            npx yarn install
-            npx yarn prettier
-          name: 'Install Dependencies'
-      - run: yarn generate
-      - run:
-          name: parallel jest tests
-          command: |
-            set +e
-            TESTFILES=$(circleci tests glob "src/**/*.test.ts*" | circleci tests split --split-by=timings)
-            npx yarn test:circleci $TESTFILES
-      - store_test_results:
-          path: coverage
-      - store_artifacts:
-          path: coverage
-          destination: raw-test-output
-      - save_cache:
-          key: 'yarn-cached-packages-{{ checksum "yarn.lock" }}'
-          name: 'Save Yarn Package Cache'
-          paths:
-            - ~/.cache/yarn
-  lint:
-    docker:
-      - image: circleci/golang:1.15-node
-    working_directory: ~/influxdata/ui
-    parallelism: 4
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - 'yarn-cached-packages-{{ checksum "yarn.lock" }}'
-          name: 'Restore Yarn Package Cache'
-      - run:
-          command: |
-            set +e
-            yarn install
-          name: 'Install Dependencies'
-      - run: yarn generate
-      - run:
-          name: parallel eslint
-          command: |
-            set +e
-            TESTFILES=$(circleci tests glob "src/**/*.ts*" "cypress/**/*.ts*" | circleci tests split --split-by=filesize)
-            yarn eslint:circleci $TESTFILES
-      - save_cache:
-          key: 'yarn-cached-packages-{{ checksum "yarn.lock" }}'
-          name: 'Save Yarn Package Cache'
-          paths:
-            - ~/.cache/yarn
   cloud-lighthouse:
     machine:
       image: ubuntu-2004:202008-01
@@ -511,10 +449,19 @@ jobs:
       #       # maintained here: https://github.com/influxdata/cypress-slim
       #       - run: docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} quay.io/influxdb/ui-e2e:latest
       #       - run: docker push quay.io/influxdb/ui-e2e:latest
+  monitor-ci-tests:
+    docker:
+      - image: circleci/golang:1.15-node
+    steps:
+      - checkout
+      - run:
+          name: Run monitor-ci tests
+          command: API_KEY=${MONITOR_CI_API_KEY} BRANCH=${CIRCLE_BRANCH} SHA=${CIRCLE_SHA1} ./scripts/run-monitor-ci-tests.bash
 workflows:
   version: 2
   build:
     jobs:
+      - monitor-ci-tests
       - build-oss-image
       - build-image
       - build-lighthouse-image
@@ -523,8 +470,6 @@ workflows:
             branches:
               only:
                 - master
-      - unit
-      - lint
       - cloud-lighthouse:
           requires:
             - build-lighthouse-image
@@ -550,8 +495,7 @@ workflows:
                 - master
           requires:
             - build-prod-image
-            - unit
-            - lint
+            - monitor-ci-tests
             - smoke
             - cloud-e2e
             # TODO: uncomment this when we disable cloud-e2e
@@ -563,8 +507,7 @@ workflows:
                 - master
           requires:
             - build-image
-            - unit
-            - lint
+            - monitor-ci-tests
             - smoke
             - cloud-e2e
             # TODO: uncomment this when we disable cloud-e2e

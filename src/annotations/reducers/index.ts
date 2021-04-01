@@ -10,8 +10,6 @@ import {
 
 import {Annotation, AnnotationsList, AnnotationStream} from 'src/types'
 
-import {InfluxColors} from '@influxdata/clockface'
-
 export interface AnnotationsState {
   streams: AnnotationStream[]
   annotations: AnnotationsList
@@ -20,23 +18,14 @@ export interface AnnotationsState {
   enableSingleClickAnnotations: boolean
 }
 
-export const FALLBACK_COLOR = InfluxColors.Curacao
-
-export const STREAM_COLOR_LIST = [InfluxColors.Potassium]
-
 export const initialState = (): AnnotationsState => ({
   annotations: {
     default: [] as Annotation[],
   },
   annotationsAreVisible: true,
   enableSingleClickAnnotations: false,
-  streams: [
-    {
-      stream: 'default',
-      color: InfluxColors.Potassium,
-    },
-  ],
-  visibleStreamsByID: ['default'],
+  streams: [],
+  visibleStreamsByID: [],
 })
 
 export const annotationsReducer = (
@@ -47,12 +36,7 @@ export const annotationsReducer = (
     case SET_ANNOTATION_STREAMS: {
       return {
         ...state,
-        streams: action.streams.map((stream, i) => {
-          return {
-            ...stream,
-            color: STREAM_COLOR_LIST[i],
-          }
-        }),
+        streams: action.streams,
       }
     }
     case DELETE_ANNOTATION: {

@@ -5,6 +5,7 @@ import {
   AnnotationLayerConfig,
   Config,
   DomainLabel,
+  InfluxColors,
   InteractionHandlerArguments,
   Plot,
   getDomainDataFromLines,
@@ -19,7 +20,6 @@ import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Redux
 import {writeThenFetchAndSetAnnotations} from 'src/annotations/actions/thunks'
-import {FALLBACK_COLOR} from 'src/annotations/reducers/index'
 import {
   isSingleClickAnnotationsEnabled,
   selectAreAnnotationsVisible,
@@ -266,7 +266,7 @@ const XYPlot: FC<Props> = ({
     const annotationsToRender: any[] = cellAnnotations.map(annotation => {
       return {
         ...annotation,
-        color: FALLBACK_COLOR,
+        color: InfluxColors.Honeydew,
       }
     })
 

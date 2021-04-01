@@ -15,26 +15,29 @@ import {
   ComponentStatus,
   InputType,
 } from '@influxdata/clockface'
+
+// Utils
 import {useBilling} from 'src/billing/components/BillingPage'
+import {updateBillingSettings} from 'src/billing/thunks'
+
+// Types
+import {BillingNotifySettings} from 'src/types/billing'
 
 const NotificationSettingsOverlay = ({onHideOverlay, isOverlayVisible}) => {
-  const [{billingSettings}] = useBilling()
+  const [{billingSettings}, dispatch] = useBilling()
   const [isNotifyActive, setIsNotifyActive] = useState(billingSettings.isNotify)
   const [balanceThreshold, setBalanceThreshold] = useState(
     billingSettings.balanceThreshold
   )
 
   const onSubmitThreshold = () => {
-    const payload = {
+    const settings = {
       notifyEmail,
-      balanceThreshold: balanceThreshold.toString(),
+      balanceThreshold: balanceThreshold,
       isNotify: isNotifyActive,
-    }
-    const url = 'privateAPI/balance_threshold'
-    fetch(url, {method: 'PUT', body: JSON.stringify(payload)}).then(() => {
-      onHideOverlay()
-      // TODO(ariel): query the billingSettings to get the latest data in the parent
-    })
+    } as BillingNotifySettings
+    updateBillingSettings(dispatch, settings)
+    onHideOverlay()
   }
 
   const [notifyEmail, setNotifyEmail] = useState(billingSettings.notifyEmail)

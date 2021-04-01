@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eux -o pipefail
+set -eu -o pipefail
 
 # start the monitor-ci pipeline
 echo "starting monitor-ci pipeline targeting UI branch ${BRANCH} and using image tag ${TAG}"
@@ -13,7 +13,6 @@ pipeline=$(curl -s --request POST \
 
 # TODO: what if starting the pipeline fails?
 pipeline_id=$(echo ${pipeline} | jq  -r '.id')
-# pipeline_id="61173d1e-a211-4b4c-be1e-85a00d2087c3"
 
 # poll the status of the monitor-ci pipeline
 echo "waiting for monitor-ci pipeline..."
@@ -32,6 +31,7 @@ do
 	status=$(echo ${workflow} | jq  -r '.items | .[].status')
 	pipeline_number=$(echo ${workflow} | jq  -r '.items | .[].pipeline_number')
 	workflow_id=$(echo ${workflow} | jq  -r '.items | .[].id')
+	# workflow_id="4f50685c-0466-4fbc-8d74-34cd2f1ffaa4"
 
 	if [[ "${status}" == "failed" ]]; then
 		echo "monitor-ci tests FAILED here: https://app.circleci.com/pipelines/github/influxdata/monitor-ci/${pipeline_number}/workflows/${workflow_id}"
@@ -45,7 +45,7 @@ do
 
 		echo "Failed jobs:"
 		failed_jobs=$(echo ${jobs} | jq '.items | map(select(.status == "failed"))')
-		failed_jobs_names=$(echo ${failed_jobs} | jq -r '.[].name')
+		failed_jobs_names=( $(echo ${failed_jobs} | jq -r '.[].name') )
 		for name in "${failed_jobs_names[@]}"; do
 			echo "- ${name}"
 		done
@@ -63,3 +63,6 @@ do
 	sleep 1m
 
 done
+
+echo "monitor-ci pipeline did not finish in time, quitting"
+exit 1

@@ -16,13 +16,18 @@ import {
   removeFromLocalStorage,
   setToLocalStorage,
 } from 'src/localStorage'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Actions
 import {notify as notifyAction} from 'src/shared/actions/notifications'
 
 // Constants
 import {sessionTimedOut} from 'src/shared/copy/notifications'
-import {CLOUD, CLOUD_SIGNIN_PATHNAME} from 'src/shared/constants'
+import {
+  CLOUD,
+  CLOUD_LOGIN_PATHNAME,
+  CLOUD_SIGNIN_PATHNAME,
+} from 'src/shared/constants'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -97,6 +102,15 @@ export class Signin extends PureComponent<Props, State> {
       } = this.props
 
       clearInterval(this.intervalID)
+
+      if (CLOUD && isFlagEnabled('authSessionCookieOn')) {
+        const url = new URL(
+          `${window.location.origin}${CLOUD_LOGIN_PATHNAME}?redirectTo=${window.location.href}`
+        )
+        setToLocalStorage('redirectTo', window.location.href)
+        window.location.href = url.href
+        throw error
+      }
 
       if (CLOUD) {
         const url = new URL(

@@ -290,7 +290,7 @@ http.post(
         })
     })
 
-    it.only('can clone a task and edit it', () => {
+    it('can clone a task and edit it', () => {
       // clone a task
       cy.getByTestID('task-card')
         .first()

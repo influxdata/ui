@@ -1,17 +1,21 @@
 #!/bin/bash
 
-set -eux -o pipefail
+set -eu -o pipefail
 
 # start the monitor-ci pipeline
 echo "starting monitor-ci pipeline targeting UI branch ${BRANCH} and using image tag ${TAG}"
-pipeline=$(curl -s --request POST \
+pipeline=$(curl -s --fail --request POST \
   --url https://circleci.com/api/v2/project/gh/influxdata/monitor-ci/pipeline \
   --header "Circle-Token: ${API_KEY}" \
   --header 'content-type: application/json' \
 	--header 'Accept: application/json'    \
   --data "{\"branch\":\"${BRANCH}\", \"parameters\":{ \"ui-image-tag\":\"${TAG}\"}}")
 
-# TODO: what if starting the pipeline fails?
+if [ $? != 0 ]; then
+	echo "failed to start monitor-ci pipeline, quitting"
+	exit 1
+fi
+
 pipeline_id=$(echo ${pipeline} | jq  -r '.id')
 pipeline_number=$(echo ${pipeline} | jq -r '.number')
 # pipeline_id="db41d91c-d21b-4805-9609-31f44b2f4504"

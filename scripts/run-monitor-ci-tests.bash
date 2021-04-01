@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu -o pipefail
+set -eux -o pipefail
 
 # start the monitor-ci pipeline
 echo "starting monitor-ci pipeline targeting UI branch ${BRANCH} and using image tag ${TAG}"

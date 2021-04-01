@@ -23,6 +23,56 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  # Oats is making this incredibly annoying with naming conflicts
+  '/operator/account/{accountId}':
+    get:
+      operationId: GetAccountById
+      tags:
+        - Account
+        - Operator
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+        - in: path
+          name: accountId
+          schema:
+            type: string
+          required: true
+          description: The ID of the account to get.
+      responses:
+        '200':
+          description: the account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      operationId: DeleteAccountById
+      tags:
+        - Account
+        - Operator
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+        - in: path
+          name: accountId
+          schema:
+            type: string
+          required: true
+          description: The ID of the account to delete.
+      responses:
+        '204':
+          description: Account deleted
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   '/me':
     get:
       operationId: GetMe
@@ -31,14 +81,6 @@ paths:
         - Operator
         - Region
         - Organization
-      parameters:
-        - $ref: '#/components/parameters/TraceSpan'
-        - in: path
-          name: id
-          schema:
-            type: string
-          required: true
-          description: The ID of the user to get.
       responses:
         '200':
           description: congregated meta data for an individual account and org
@@ -436,6 +478,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  '/operator/account/{accountId}/users/{userId}':
+    delete:
+      operationId: RemoveUserFromAccount
+      tags:
+        - Accounts
+        - Users
+        - Organizations
+      summary: Removes a user from an account
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+        - in: path
+          name: accountId
+          schema:
+            type: string
+          required: true
+          description: The ID of the account to remove user from.
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: The ID of the user to remove from the account.
+      responses:
+        '204':
+          description: User removed from account
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   '/orgs/{orgId}/invites/{inviteId}/resend':
     post:
       operationId: PostOrgsIdInvitesId
@@ -553,6 +626,115 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+    put:
+      operationId: PutOrgsIdLimits
+      tags:
+        - Organizations
+        - Operator
+      summary: Update the limits of an organization
+      parameters:
+        - in: path
+          name: orgId
+          schema:
+            type: string
+          required: true
+          description: The ID of the organization
+      responses:
+        '200':
+          description: Organization limits
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrgLimits'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/orgs/{orgId}':
+    get:
+      operationId: GetOrganizationById
+      tags:
+        - Organizations
+        - Operator
+      summary: Get an organization by ID
+      parameters:
+        - in: path
+          name: orgId
+          schema:
+            type: string
+          required: true
+          description: The ID of the organization
+      responses:
+        '200':
+          description: Organization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/operator/accounts':
+    get:
+      operationId: getAccountsByName
+      tags:
+        - Accounts
+        - Operator
+      summary: Get the list of accounts by search term
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+        - in: query
+          name: searchTerm
+          schema:
+            type: string
+          required: false
+          description: The name of the account's billing contact email being searched
+      responses:
+        '200':
+          description: Account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Accounts'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/operator/orgs':
+    get:
+      operationId: getOrganizationsById
+      tags:
+        - Organizations
+        - Operator
+      summary: Get the list of orgs by search term
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+        - in: query
+          name: searchTerm
+          schema:
+            type: string
+          required: false
+          description: The id of the org being searched
+      responses:
+        '200':
+          description: Organization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organizations'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   '/checkout':
     post:
       operationId: PostCheckout
@@ -625,6 +807,14 @@ components:
           type: string
           enum: [aws, gcm, azure]
           example: gcm
+        subscriberId:
+          type: string
+          description: this is the user's ID for the marketplace subscription
+        status:
+          type: string
+          description: the status of the marketplace subscription
+          enum: [pending, subscribed, unsubscribed, failed]
+          example: pending
         url:
           description: link to marketplace
           type: string
@@ -659,7 +849,29 @@ components:
             - free
             - cancelled
             - pay_as_you_go
-      required: [id, marketplace, type]
+        # TODO(ariel): this seems cyclical since accounts and orgs are subsets of one another
+        organizations:
+          $ref: '#/components/schemas/Organizations'
+        zuoraAccountId:
+          type: string
+          description: Zuora ID associated with the account
+        deletable:
+          type: boolean
+          description: flag whether the account can be deleted or not
+        balance:
+          type: number
+          description: remaining balance on the account, nil if none
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        billingContact:
+          $ref: '#/components/schemas/BillingContact'
+          description: billing contact for the account
+      required: [id, balance, billingContact, marketplace, users, type]
+    Accounts:
+      items:
+        $ref: '#/components/schemas/Account'
     Region:
       properties:
         title:
@@ -913,6 +1125,17 @@ components:
           description: the idpe id of the user
           readOnly: true
           type: string
+        quartzId:
+          description: the quartz id of the user
+          readOnly: true
+          type: string
+        onboardingState:
+          description: onboarding state of the user
+          type: string
+        sfdcContactId:
+          description: the sfdcContact id of the user
+          readOnly: true
+          type: string
         firstName:
           type: string
         lastName:
@@ -956,8 +1179,18 @@ components:
           type: boolean
           description: whether the user is an operator
         marketplace:
-          type: string
+          $ref: '#/components/schemas/Marketplace'
           description: which marketplace, nil if none
+        balance:
+          type: number
+          description: remaining balance on the account, nil if none
+        billingContact:
+          $ref: '#/components/schemas/BillingContact'
+          description: billing contact for the account
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
         type:
           type: string
           description: type of the account
@@ -1012,6 +1245,46 @@ components:
           $ref: '#/components/schemas/NotificationRuleLimits'
         notificationEndpoint:
           $ref: '#/components/schemas/NotificationEndpointLimits'
+      required:
+        [
+          orgID,
+          rate,
+          bucket,
+          task,
+          dashboard,
+          check,
+          notificationRule,
+          notificationEndpoint,
+        ]
+    Organization:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the org
+        idpeID:
+          type: string
+          description: idpe ID of the org
+        name:
+          type: string
+          description: name of the org
+        region:
+          type: string
+          description: region of the org
+        provider:
+          type: string
+          description: provider of the org
+        date:
+          type: string
+          description: date org was created
+        # TODO(ariel): this seems cyclical since accounts and orgs are subsets of one another
+        account:
+          $ref: '#/components/schemas/Account'
+      required: [id, idpeID, name, account, region, provider, date]
+    Organizations:
+      type: array
+      items:
+        $ref: '#/components/schemas/Organization'
     RateLimits:
       description: Usage rate limits
       type: object

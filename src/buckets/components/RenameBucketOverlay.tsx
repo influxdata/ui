@@ -1,7 +1,6 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
-
 import _ from 'lodash'
 
 // Components

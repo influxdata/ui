@@ -51,7 +51,6 @@ class DateRangePicker extends PureComponent<Props, State> {
     const {onClose} = this.props
     const {upper, lower} = this.state
 
-    console.log('From the main component: state -> ', this.state)
     return (
       <ClickOutside onClickOutside={onClose}>
         <div
@@ -63,14 +62,12 @@ class DateRangePicker extends PureComponent<Props, State> {
             <DatePicker
               dateTime={lower}
               onSelectDate={this.handleSelectLower}
-              onInputChange={this.handleInputChangeLower}
               label="Start"
               maxDate={upper}
             />
             <DatePicker
               dateTime={upper}
               onSelectDate={this.handleSelectUpper}
-              onInputChange={this.handleInputChangeUpper}
               label="Stop"
               minDate={lower}
             />
@@ -129,14 +126,6 @@ class DateRangePicker extends PureComponent<Props, State> {
   }
 
   private handleSelectUpper = (upper: string): void => {
-    this.setState({upper, validDateRange: this.isTimeRangeValid()})
-  }
-
-  private handleInputChangeLower = (lower: string): void => {
-    this.setState({lower, validDateRange: this.isTimeRangeValid()})
-  }
-
-  private handleInputChangeUpper = (upper: string): void => {
     this.setState({upper, validDateRange: this.isTimeRangeValid()})
   }
 

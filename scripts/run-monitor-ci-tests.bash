@@ -1,10 +1,9 @@
 #!/bin/bash
 
-set -eu -o pipefail
-
-echo "{\"branch\":\"${BRANCH}\", \"parameters\":{ \"ui-image-tag\":\"${TAG}\"}}"
+set -eux -o pipefail
 
 # start the monitor-ci pipeline
+echo "starting monitor-ci pipeline targeting UI branch ${BRANCH} and using image tag ${TAG}"
 pipeline=$(curl -s --request POST \
   --url https://circleci.com/api/v2/project/gh/influxdata/monitor-ci/pipeline \
   --header "Circle-Token: ${API_KEY}" \
@@ -17,6 +16,7 @@ pipeline_id=$(echo ${pipeline} | jq  -r '.id')
 # pipeline_id="61173d1e-a211-4b4c-be1e-85a00d2087c3"
 
 # poll the status of the monitor-ci pipeline
+echo "waiting for monitor-ci pipeline..."
 attempts=0
 max_attempts=10
 while [ $attempts -le $max_attempts ];

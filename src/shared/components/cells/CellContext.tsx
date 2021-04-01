@@ -62,6 +62,13 @@ const CellContext: FC<Props> = ({
   onCSVDownload,
   onRefresh,
 }) => {
+  const viewWithQueries = view as View<
+    Exclude<ViewProperties, MarkdownViewProperties>
+  >
+  const foundQueries =
+    Array.isArray(viewWithQueries?.properties?.queries) &&
+    viewWithQueries?.properties?.queries.length
+  const [isPaused, setIsPaused] = useState<boolean>(false)
   const [popoverVisible, setPopoverVisibility] = useState<boolean>(false)
   const editNoteText = !!get(view, 'properties.note') ? 'Edit Note' : 'Add Note'
   const triggerRef: RefObject<HTMLButtonElement> = useRef<HTMLButtonElement>(
@@ -96,13 +103,7 @@ const CellContext: FC<Props> = ({
   }
 
   const refreshCell = (): void => {
-    const viewWithQueries = view as View<
-      Exclude<ViewProperties, MarkdownViewProperties>
-    >
-    if (
-      Array.isArray(viewWithQueries.properties?.queries) &&
-      viewWithQueries.properties.queries.length
-    ) {
+    if (foundQueries) {
       for (const query of viewWithQueries.properties.queries) {
         resetQueryCacheByQuery(query.text)
       }
@@ -111,18 +112,13 @@ const CellContext: FC<Props> = ({
   }
 
   const togglePauseCell = (): void => {
-    const viewWithQueries = view as View<
-      Exclude<ViewProperties, MarkdownViewProperties>
-    >
-    if (
-      Array.isArray(viewWithQueries.properties?.queries) &&
-      viewWithQueries.properties.queries.length
-    ) {
+    if (foundQueries) {
       for (const query of viewWithQueries.properties.queries) {
         const returnedQuery = getFromQueryCacheByQuery(query.text, variables)
         if (returnedQuery) {
           const toggled = togglePauseQuery(returnedQuery)
           console.log(toggled)
+          setIsPaused(!isPaused)
         }
       }
     }
@@ -200,12 +196,12 @@ const CellContext: FC<Props> = ({
         </FeatureFlag>
         <FeatureFlag name="pauseCell">
           <CellContextItem
-            label="Pause"
+            label={isPaused ? 'Resume' : 'Pause'}
             onClick={() => {
               console.log('pause')
               togglePauseCell()
             }}
-            icon={IconFont.Pause}
+            icon={isPaused ? IconFont.Play : IconFont.Pause}
             onHide={onHide}
             testID="cell-context--pause"
           />
@@ -216,6 +212,15 @@ const CellContext: FC<Props> = ({
 
   return (
     <>
+      {isPaused && (
+        <button
+          className={buttonClass}
+          onClick={togglePauseCell}
+          data-testid="cell-context--pause"
+        >
+          <Icon glyph={IconFont.Pause} />
+        </button>
+      )}
       <button
         className={buttonClass}
         ref={triggerRef}

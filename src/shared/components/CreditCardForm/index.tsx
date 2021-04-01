@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useRef, useState} from 'react'
+import React, {FC, useCallback, useEffect, useRef, useState} from 'react'
 
 // Context
 import {CreditCardParams} from 'src/client/unityRoutes'
@@ -12,10 +12,15 @@ export interface Props {
   zuoraParams: CreditCardParams
   onSubmit?: (paymentMethodId) => void
   zuoraClient?: ZuoraClient
+  onFocus?: () => void
 }
 
-// FIXME: Add onFocus functionality
-const CreditCardForm: FC<Props> = ({zuoraParams, onSubmit, zuoraClient}) => {
+const CreditCardForm: FC<Props> = ({
+  zuoraParams,
+  onSubmit,
+  zuoraClient,
+  onFocus,
+}) => {
   const _isMounted = useRef(true)
   const [client, setClient] = useState(zuoraClient ?? window.Z)
   const [paymentMethodId, setPaymentMethodId] = useState(null)
@@ -27,24 +32,23 @@ const CreditCardForm: FC<Props> = ({zuoraParams, onSubmit, zuoraClient}) => {
     }
   }, [])
 
-  // FIXME: Add onFocus functionality
-  // const windowBlurred = useCallback(
-  //   event => {
-  //     if (event.target !== window) {
-  //       return
-  //     }
+  const windowBlurred = useCallback(
+    event => {
+      if (event.target !== window) {
+        return
+      }
 
-  //     // in FireFox the iframe is not yet the active element when the blur event first fires
-  //     // we use setTimeout with no delay to check on the next event cycle when it will have
-  //     // become the active element
-  //     setTimeout(() => {
-  //       if (document.activeElement.parentElement.id === ZUORA_ID) {
-  //         onFocus()
-  //       }
-  //     })
-  //   },
-  //   [onFocus]
-  // )
+      // in FireFox the iframe is not yet the active element when the blur event first fires
+      // we use setTimeout with no delay to check on the next event cycle when it will have
+      // become the active element
+      setTimeout(() => {
+        if (document.activeElement.parentElement.id === ZUORA_ID) {
+          onFocus()
+        }
+      })
+    },
+    [onFocus]
+  )
 
   useEffect(() => {
     if (_isMounted.current && zuoraClient && !client) {
@@ -97,16 +101,17 @@ const CreditCardForm: FC<Props> = ({zuoraParams, onSubmit, zuoraClient}) => {
     }
   }, [client, zuoraParams])
 
-  // FIXME: Add onFocus functionality
-  // useEffect(() => {
-  //   onFocus && window.addEventListener('blur', windowBlurred, true)
+  useEffect(() => {
+    if (!!onFocus) {
+      window.addEventListener('blur', windowBlurred, true)
+    }
 
-  //   return () => {
-  //     if (onFocus) {
-  //       window.removeEventListener('blur', windowBlurred)
-  //     }
-  //   }
-  // }, [onFocus, windowBlurred])
+    return () => {
+      if (!!onFocus) {
+        window.removeEventListener('blur', windowBlurred)
+      }
+    }
+  }, [onFocus, windowBlurred])
 
   return (
     <div

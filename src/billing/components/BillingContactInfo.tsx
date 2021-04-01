@@ -7,15 +7,20 @@ import {
   ComponentColor,
 } from '@influxdata/clockface'
 
+// Components
 import BillingContactForm from 'src/billing/components/Checkout/BillingContactForm'
 import BillingContactDisplay from 'src/billing/components/BillingContactDisplay'
+
+// Utils
 import {useBilling} from 'src/billing/components/BillingPage'
+import {getBillingInfo} from 'src/billing/thunks'
 
 const BillingContactInfo: FC = () => {
   const [
     {
       billingInfo: {contact},
     },
+    dispatch,
   ] = useBilling()
 
   // Contact is created during signup but city (required) is not collected then
@@ -25,7 +30,7 @@ const BillingContactInfo: FC = () => {
 
   const handleSubmitEditForm = () => {
     setIsEditing(false)
-    // TODO(ariel): make a request to get the most updated info
+    getBillingInfo(dispatch)
   }
 
   const panelClass = classnames('checkout-panel billing-contact-panel', {

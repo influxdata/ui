@@ -13,7 +13,7 @@ import {getStore} from 'src/store/configureStore'
 import {history} from 'src/store/history'
 
 // Components
-import {CheckoutPage} from 'src/shared/containers'
+import {CheckoutPage, OperatorPage} from 'src/shared/containers'
 import Setup from 'src/Setup'
 import PageSpinner from 'src/perf/components/PageSpinner'
 
@@ -76,8 +76,15 @@ class Root extends PureComponent {
         <ConnectedRouter history={history}>
           <Suspense fallback={<PageSpinner />}>
             <Switch>
+              {/* TODO(ariel): we need to restrict access to the checkout and operator pages based on specific critera:
+                https://github.com/influxdata/ui/issues/848
+               */}
               {CLOUD && isFlagEnabled('unity-checkout') && (
                 <Route path="/checkout" component={CheckoutPage} />
+              )}
+              {/* Operator Routes */}
+              {CLOUD && isFlagEnabled('unity-operator') && (
+                <Route path="/operator" component={OperatorPage} />
               )}
               <Route component={Setup} />
             </Switch>

@@ -11,6 +11,8 @@ import {
   setBillingSettingsStatus,
   setInvoices,
   setInvoicesStatus,
+  setOrgLimits,
+  setOrgLimitsStatus,
 } from 'src/billing/reducers'
 
 // API
@@ -18,13 +20,18 @@ import {
   getAccount as apiGetAccount,
   getBillingInfo as apiGetBillingInfo,
   getBillingNotificationSettings,
+  updateBillingNotificationSettings,
   getInvoices as apiGetInvoices,
+  getOrgsLimits as apiGetOrgLimits,
 } from 'src/billing/api'
 
 // Types
 import {RemoteDataState} from 'src/types'
-import {Invoice} from 'src/types/billing'
+import {BillingNotifySettings, Invoice} from 'src/types/billing'
 
+// TODO(ariel): add error handling here
+// notify() will not work since Dispatch here is based on the passed in dispatch from the local reducer
+// and not from the higher level dispatch from the app.
 export const getAccount = async (dispatch: Dispatch<Action>) => {
   try {
     dispatch(setAccountStatus(RemoteDataState.Loading))
@@ -37,8 +44,24 @@ export const getAccount = async (dispatch: Dispatch<Action>) => {
     dispatch(setAccount({...resp.data, status: RemoteDataState.Done}))
   } catch (error) {
     console.error(error)
-
     dispatch(setAccountStatus(RemoteDataState.Error))
+  }
+}
+
+export const getOrgLimits = async (dispatch: Dispatch<Action>) => {
+  try {
+    dispatch(setOrgLimitsStatus(RemoteDataState.Loading))
+    const resp = await apiGetOrgLimits()
+
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
+    }
+
+    dispatch(setOrgLimits({...resp.data, status: RemoteDataState.Done}))
+  } catch (error) {
+    console.error(error)
+
+    dispatch(setOrgLimitsStatus(RemoteDataState.Error))
   }
 }
 
@@ -72,6 +95,25 @@ export const getBillingSettings = async (dispatch: Dispatch<Action>) => {
   } catch (error) {
     console.error(error)
 
+    dispatch(setBillingSettingsStatus(RemoteDataState.Error))
+  }
+}
+
+export const updateBillingSettings = async (
+  dispatch: Dispatch<Action>,
+  settings: BillingNotifySettings
+) => {
+  try {
+    dispatch(setBillingSettingsStatus(RemoteDataState.Loading))
+    const resp = await updateBillingNotificationSettings(settings)
+
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
+    }
+
+    dispatch(setBillingSettings({...resp.data, status: RemoteDataState.Done}))
+  } catch (error) {
+    console.error(error)
     dispatch(setBillingSettingsStatus(RemoteDataState.Error))
   }
 }

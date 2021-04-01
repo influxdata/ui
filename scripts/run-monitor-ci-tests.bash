@@ -40,7 +40,7 @@ do
 	fi
 
 	# sleep 1 minute and poll the status again
-	attempts++
+	attempts=$(($attempts+1))
 	sleep 1m
 
 done

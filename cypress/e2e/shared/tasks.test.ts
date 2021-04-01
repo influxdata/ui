@@ -311,12 +311,10 @@ http.post(
 
       cy.getByTestID('task-card').should('have.length', 2)
 
-      cy.getByTestID('task-card--name')
-        .last()
-        .should('have.value', '🦄ask (clone 1)')
       // assert the values of the task and change them
       cy.getByTestID('task-card--name')
         .eq(1)
+        .should('have.value', '🦄ask (clone 1)')
         .click()
         .then(() => {
           // focused() waits for monoco editor to get input focus

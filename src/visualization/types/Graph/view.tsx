@@ -84,6 +84,10 @@ const XYPlot: FC<Props> = ({
   )
   const dispatch = useDispatch()
 
+  // these two values are set in the dashboard, and used whether or not this view
+  // is in a dashboard or in configuration/single cell popout mode
+  // would need to add the annotation control bar to the VEOHeader to get access to the controls,
+  // which are currently global values, not per dashboard
   const inAnnotationWriteMode = useSelector(isSingleClickAnnotationsEnabled)
   const annotationsAreVisible = useSelector(selectAreAnnotationsVisible)
 

@@ -74,6 +74,7 @@ export const HONEYBADGER_ENV = formatConstant(process.env.HONEYBADGER_ENV)
 
 export const CLOUD = !!process.env.CLOUD_URL
 export const CLOUD_SIGNIN_PATHNAME = '/api/v2/signin'
+export const CLOUD_LOGIN_PATHNAME = '/login'
 export const CLOUD_BILLING_VISIBLE = CLOUD
 export const CLOUD_URL = formatConstant(process.env.CLOUD_URL)
 export const CLOUD_CHECKOUT_PATH = '/checkout'

@@ -476,40 +476,40 @@ workflows:
       # - cloud-e2e-k8s-idpe:
       #     requires:
       #       - build-image
-      - cloud-e2e:
-          requires:
-            - build-image
-      - oss-e2e:
-          requires:
-            - build-oss-image
-      - smoke:
-          requires:
-            - build-image
-      - cloud-e2e-firefox:
-          requires:
-            - build-image
-      - deploy:
-          filters:
-            branches:
-              only:
-                - master
-          requires:
-            - build-prod-image
-            - monitor-ci-tests
-            - smoke
-            - cloud-e2e
+      # - cloud-e2e:
+      #     requires:
+      #       - build-image
+      # - oss-e2e:
+      #     requires:
+      #       - build-oss-image
+      # - smoke:
+      #     requires:
+      #       - build-image
+      # - cloud-e2e-firefox:
+      #     requires:
+      #       - build-image
+      # - deploy:
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
+      #     requires:
+      #       - build-prod-image
+      #       - monitor-ci-tests
+      #       - smoke
+      #       - cloud-e2e
             # TODO: uncomment this when we disable cloud-e2e
             # - cloud-e2e-k8s-idpe
-      - share-testing-image:
-          filters:
-            branches:
-              only:
-                - master
-          requires:
-            - build-image
-            - monitor-ci-tests
-            - smoke
-            - cloud-e2e
+      # - share-testing-image:
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
+      #     requires:
+      #       - build-image
+      #       - monitor-ci-tests
+      #       - smoke
+      #       - cloud-e2e
             # TODO: uncomment this when we disable cloud-e2e
             # - cloud-e2e-k8s-idpe
 commands:

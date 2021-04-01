@@ -290,7 +290,7 @@ http.post(
         })
     })
 
-    it('can clone a task and edit it', () => {
+    it.only('can clone a task and edit it', () => {
       // clone a task
       cy.getByTestID('task-card')
         .first()
@@ -314,7 +314,7 @@ http.post(
       // assert the values of the task and change them
       cy.getByTestID('task-card--name')
         .eq(1)
-        .should('have.value', '🦄ask (clone 1)')
+        .contains('🦄ask (clone 1)')
         .click()
         .then(() => {
           // focused() waits for monoco editor to get input focus
@@ -324,7 +324,7 @@ http.post(
             .contains('option task = {')
             .then(() => {
               cy.getByTestID('task-form-name')
-                .should('have.value', '🦄ask')
+                .should('have.value', '🦄ask (clone 1)')
                 .then(() => {
                   cy.getByTestID('task-form-name')
                     .should('be.visible')

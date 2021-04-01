@@ -29,7 +29,7 @@ const VariablesControlBar: FC = () => {
   const variables = useSelector(getVariablesForDashboard)
   const variablesStatus = useSelector(getDashboardVariablesStatus)
   const isVisible = useSelector(getControlBarVisibility)
-  console.log(variables)
+
   useEffect(() => {
     if (
       variablesStatus === RemoteDataState.Done &&

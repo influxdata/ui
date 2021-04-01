@@ -109,7 +109,7 @@ export const getVariablesForDashboard = (state: AppState): Variable[] => {
     Object.values(state.resources.views.byID).filter(
       variable => variable.dashboardID === state.currentDashboard.id
     )
-  )
+  ).sort((a, b) => a.sort_order - b.sort_order)
 
   return variablesUsedByDashboard
 }

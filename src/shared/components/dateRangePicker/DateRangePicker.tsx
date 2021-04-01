@@ -1,5 +1,5 @@
 // Libraries
-import React, {CSSProperties, PureComponent} from 'react'
+import React, {PureComponent, CSSProperties} from 'react'
 
 // Components
 import DatePicker from 'src/shared/components/dateRangePicker/DatePicker'

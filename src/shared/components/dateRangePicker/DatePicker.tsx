@@ -18,6 +18,7 @@ interface Props {
   maxDate?: string
   minDate?: string
   onSelectDate: (date: string) => void
+  onInputChange: (date: string) => void
 }
 
 interface State {

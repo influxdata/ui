@@ -1,5 +1,5 @@
 // Libraries
-import React, {PureComponent, CSSProperties} from 'react'
+import React, {CSSProperties, PureComponent} from 'react'
 
 // Components
 import DatePicker from 'src/shared/components/dateRangePicker/DatePicker'
@@ -7,7 +7,13 @@ import {ClickOutside} from 'src/shared/components/ClickOutside'
 
 // Types
 import {TimeRange} from 'src/types'
-import {Button, ComponentColor, ComponentSize} from '@influxdata/clockface'
+import {
+  Button,
+  ComponentColor,
+  ComponentSize,
+  ComponentStatus,
+} from '@influxdata/clockface'
+import moment from 'moment'
 
 interface Props {
   timeRange: TimeRange
@@ -25,6 +31,7 @@ interface Props {
 interface State {
   lower: string
   upper: string
+  validDateRange: boolean
 }
 
 class DateRangePicker extends PureComponent<Props, State> {
@@ -35,13 +42,16 @@ class DateRangePicker extends PureComponent<Props, State> {
       timeRange: {lower, upper},
     } = props
 
-    this.state = {lower, upper}
+    // The button can be disabled to start with, only activate it if the values are changed.
+    const validDateRange = false
+    this.state = {lower, upper, validDateRange}
   }
 
   public render() {
     const {onClose} = this.props
     const {upper, lower} = this.state
 
+    console.log('From the main component: state -> ', this.state)
     return (
       <ClickOutside onClickOutside={onClose}>
         <div
@@ -53,12 +63,14 @@ class DateRangePicker extends PureComponent<Props, State> {
             <DatePicker
               dateTime={lower}
               onSelectDate={this.handleSelectLower}
+              onInputChange={this.handleInputChangeLower}
               label="Start"
               maxDate={upper}
             />
             <DatePicker
               dateTime={upper}
               onSelectDate={this.handleSelectUpper}
+              onInputChange={this.handleInputChangeUpper}
               label="Stop"
               minDate={lower}
             />
@@ -70,6 +82,11 @@ class DateRangePicker extends PureComponent<Props, State> {
             onClick={this.handleSetTimeRange}
             text="Apply Time Range"
             testID="daterange--apply-btn"
+            status={
+              this.state.validDateRange
+                ? ComponentStatus.Default
+                : ComponentStatus.Disabled
+            }
           />
         </div>
       </ClickOutside>
@@ -108,11 +125,24 @@ class DateRangePicker extends PureComponent<Props, State> {
   }
 
   private handleSelectLower = (lower: string): void => {
-    this.setState({lower})
+    this.setState({lower, validDateRange: this.isTimeRangeValid()})
   }
 
   private handleSelectUpper = (upper: string): void => {
-    this.setState({upper})
+    this.setState({upper, validDateRange: this.isTimeRangeValid()})
+  }
+
+  private handleInputChangeLower = (lower: string): void => {
+    this.setState({lower, validDateRange: this.isTimeRangeValid()})
+  }
+
+  private handleInputChangeUpper = (upper: string): void => {
+    this.setState({upper, validDateRange: this.isTimeRangeValid()})
+  }
+
+  private isTimeRangeValid = (): boolean => {
+    const {lower, upper} = this.state
+    return moment(lower).isBefore(upper)
   }
 }
 

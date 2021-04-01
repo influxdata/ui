@@ -205,7 +205,6 @@ export const getFromQueryCacheByQuery = (
   const hashedVariables = `${hashCode(stringifiedVars)}`
 
   const returnedQuery = queryCache.getFromCache(queryID, hashedVariables)
-
   if (returnedQuery) {
     const queryObj = queryCache.getById(queryID)
     return queryObj

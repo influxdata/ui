@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect} from 'react'
+import React, {FC, useEffect, useCallback} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
@@ -68,13 +68,13 @@ const DashboardHeader: FC<Props> = ({
   showVariablesControls,
   onSetAutoRefreshStatus,
   setAutoRefreshInterval,
-  autoRefresh,
   timeRange,
   updateDashboard,
   updateQueryParams,
   setDashboardTimeRange,
   history,
   org,
+  autoRefresh,
 }) => {
   const demoDataset = DemoDataDashboardNames[dashboard.name]
   useEffect(() => {
@@ -129,11 +129,23 @@ const DashboardHeader: FC<Props> = ({
     }
   }
 
-  const resetCacheAndRefresh = (): void => {
+  const resetCacheAndRefresh = useCallback((): void => {
     // We want to invalidate the existing cache when a user manually refreshes the dashboard
     resetQueryCache()
     onManualRefresh()
-  }
+  }, [])
+
+  useEffect(() => {
+    if (autoRefresh?.status === 'active') {
+      const interval = setInterval(() => {
+        resetCacheAndRefresh()
+      }, autoRefresh?.interval)
+
+      return () => {
+        clearInterval(interval)
+      }
+    }
+  }, [autoRefresh])
 
   return (
     <>
@@ -206,11 +218,14 @@ const mstp = (state: AppState) => {
   const timeRange = getTimeRange(state)
   const org = getOrg(state)
 
+  const autoRefresh = state.autoRefresh[state.currentDashboard.id]
+
   return {
     org,
     dashboard,
     timeRange,
     showVariablesControls,
+    autoRefresh,
   }
 }
 

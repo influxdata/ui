@@ -36,6 +36,10 @@ interface Props {
 export default class AutoRefreshDropdown extends Component<Props> {
   public static defaultProps = {
     showManualRefresh: true,
+    selected: {
+      interval: 0,
+      status: 'paused',
+    },
   }
 
   constructor(props) {
@@ -47,9 +51,9 @@ export default class AutoRefreshDropdown extends Component<Props> {
   }
 
   public render() {
-    if (CLOUD) {
-      return <div className={this.className}>{this.manualRefreshButton}</div>
-    }
+    // if (CLOUD) {
+    //   return <div className={this.className}>{this.manualRefreshButton}</div>
+    // }
     return (
       <div className={this.className}>
         <Dropdown

@@ -122,6 +122,7 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
           onClick={handleDelete}
           color={ComponentColor.Danger}
           style={{marginRight: '15px'}}
+          testID="delete-annotation-button"
         />
         <div className="edit-annotation-buttons">
           <Button

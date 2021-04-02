@@ -27,8 +27,8 @@ describe('The Annotations UI functionality', () => {
         })
       })
     })
-    cy.getByTestID('toggle-annotations-controls').click()
-    cy.getByTestID('annotations-control-bar').should('be.visible')
+
+    // make a dashboard cell
     cy.getByTestID('add-cell--button')
       .click()
       .then(() => {
@@ -51,6 +51,13 @@ describe('The Annotations UI functionality', () => {
         .type('blah')
       cy.getByTestID('save-cell--button').click()
     })
+
+    cy.getByTestID('toggle-annotations-controls').click()
+    cy.getByTestID('annotations-control-bar').should('be.visible')
+    cy.getByTestID('annotations-one-click-toggle').click()
+  })
+
+  it('can create an annotation when the graph is clicked and the control bar is open', () => {
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').click()
     })
@@ -62,53 +69,20 @@ describe('The Annotations UI functionality', () => {
         .type('im a hippopotamus')
       cy.getByTestID('add-annotation-submit').click()
     })
-  })
 
-  it('can hide the stream in the search bar when the stream is active', () => {
-    cy.getByTestID('annotations-search-input')
-      .focus()
-      .click()
-    cy.getByTestID('annotations-searchbar-suggestions').within(() => {
-      cy.getByTestID('list-empty-state').should('be.visible')
+    // we need to see if the annotations got created and that the tooltip says "yoho"
+    cy.getByTestID('cell blah').within(() => {
+      cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
     })
+    cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
   })
-  it('can hide the pill and stop rendering the stream once X is clicked on the pill', () => {
-    // disable default
-    cy.getByTestID('annotation-pill default').click()
 
-    // should appear in the suggestions
-    cy.getByTestID('annotations-search-input')
-      .focus()
-      .click()
-      .getByTestID('annotations-searchbar-suggestions')
-      .within(() => {
-        cy.getByTestID('annotations-suggestion default').should('be.visible')
-      })
-    // the rendering should stop
-    cy.get('line').should('not.exist')
-  })
-  it('can re-display the removed pill and re-render the annotations for that stream', () => {
-    // disable default
-    cy.getByTestID('annotation-pill default').click()
+  it('can create an annotation when graph is clicked and the control bar is closed', () => {
+    // switch off the control bar
+    cy.getByTestID('toggle-annotations-controls').click()
+    cy.getByTestID('annotations-control-bar').should('not.exist')
 
-    // should appear in the suggestions, click on it
-    cy.getByTestID('annotations-search-input')
-      .focus()
-      .click()
-      .getByTestID('annotations-searchbar-suggestions')
-      .within(() => {
-        cy.getByTestID('annotations-suggestion default')
-          .should('be.visible')
-          .click()
-      })
-
-    // the rendering should start
-    cy.get('line').should('exist')
-
-    // the pill should be back
-    cy.getByTestID('annotation-pill default').should('exist')
-  })
-  it('can create an annotation when the graph is clicked and the control bar is open', () => {
+    // add the annotation
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').click()
     })
@@ -117,62 +91,47 @@ describe('The Annotations UI functionality', () => {
         .should('be.visible')
         .click()
         .focused()
-        .type('yoho')
+        .type('im a hippopotamus')
       cy.getByTestID('add-annotation-submit').click()
     })
-    // we need to see if the annotations got created and that the tooltip says "yoho"
+
+    // should have the annotation created and the tooltip should says "im a hippopotamus"
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
     })
-    cy.getByTestID('giraffe-annotation-tooltip').contains('yoho')
-  })
-
-  it.only('can create an annotation when graph is clicked and the control bar is closed', () => {
-
-    // cy.reload()
-    // cy.clearLocalStorage('annotations')
-
-    // cy.getByTestID('toggle-annotations-controls').click()
-
-    // cy.getByTestID('cell blah').within(() => {
-    //   cy.getByTestID('giraffe-inner-plot').click()
-    // })
-    // cy.getByTestID('overlay--container').within(() => {
-    //   cy.getByTestID('textarea')
-    //     .should('be.visible')
-    //     .click()
-    //     .focused()
-    //     .type('yoho')
-    //   cy.getByTestID('add-annotation-submit').click()
-    // })
-    // we need to see if the annotations got created and that the tooltip says "yoho"
-    cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('giraffe-inner-plot').within(() => {
-        cy.get('line').trigger('mouseover')
-      })
-    })
     cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
-    // cy.get('giraffe-annotation-tooltip').contains('yoho')
-    // // cy.get('giraffe-annotation-tooltip').then((t) => {
-    // //   console.log(t)
-    // // })
   })
+
   it('can hide the Annotations Control bar after clicking on the Annotations Toggle Button', () => {
     cy.getByTestID('toggle-annotations-controls').click()
     cy.getByTestID('annotations-control-bar').should('not.exist')
   })
+
   it('can disable writing annotations if Enable-Annotations is disabled', () => {
+    // turn off one-click annotation
     cy.getByTestID('annotations-one-click-toggle').click()
 
-    // click on the graph to try adding an annotation
+    // click on the graph
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').click()
     })
-
-    // should not show an overlay.
+    // should not show an overlay
     cy.getByTestID('overlay').should('not.exist')
   })
+
   it('can show a tooltip when annotation is hovered on in the graph', () => {
+    cy.getByTestID('cell blah').within(() => {
+      cy.getByTestID('giraffe-inner-plot').click()
+    })
+    cy.getByTestID('overlay--container').within(() => {
+      cy.getByTestID('textarea')
+        .should('be.visible')
+        .click()
+        .focused()
+        .type('im a hippopotamus')
+      cy.getByTestID('add-annotation-submit').click()
+    })
+
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
     })

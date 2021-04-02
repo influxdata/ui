@@ -153,6 +153,7 @@ const DashboardHeader: FC<Props> = ({
             onClick={handleAddCell}
             text="Add Cell"
             titleText="Add cell to dashboard"
+            testID="add-dashboard-cell--button"
           />
           <Button
             icon={IconFont.TextBlock}

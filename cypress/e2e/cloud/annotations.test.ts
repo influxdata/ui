@@ -184,7 +184,9 @@ describe('The Annotations UI functionality', () => {
       cy.get('line').click()
     })
 
-    cy.getByTestID('edit-annotation-summary-inputfield').clear().type('lets edit this annotation...')
+    cy.getByTestID('edit-annotation-summary-inputfield')
+      .clear()
+      .type('lets edit this annotation...')
 
     cy.getByTestID('edit-annotation-submit-button').click()
 
@@ -192,7 +194,9 @@ describe('The Annotations UI functionality', () => {
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
     })
-    cy.getByTestID('giraffe-annotation-tooltip').contains('lets edit this annotation...')
+    cy.getByTestID('giraffe-annotation-tooltip').contains(
+      'lets edit this annotation...'
+    )
   })
 
   it('can cancel an annotation edit process by clicking on the cancel button in the edit annotation form', () => {
@@ -214,7 +218,9 @@ describe('The Annotations UI functionality', () => {
       cy.get('line').click()
     })
 
-    cy.getByTestID('edit-annotation-summary-inputfield').clear().type('lets edit this annotation...')
+    cy.getByTestID('edit-annotation-summary-inputfield')
+      .clear()
+      .type('lets edit this annotation...')
 
     cy.getByTestID('edit-annotation-cancel-button').click()
 
@@ -225,4 +231,57 @@ describe('The Annotations UI functionality', () => {
     cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
   })
 
+  it('can create an annotation that is scoped to a dashboard cell', () => {
+    // create a new cell
+    // make a dashboard cell
+    cy.getByTestID('add-dashboard-cell--button')
+      .click()
+      .then(() => {
+        cy.getByTestID('selector-list schmucket')
+          .click()
+          .getByTestID(`selector-list m`)
+          .click()
+          .getByTestID('selector-list v')
+          .click()
+          .getByTestID(`selector-list tv1`)
+          .click()
+          .then(() => {
+            cy.getByTestID('time-machine-submit-button').click()
+          })
+      })
+    cy.getByTestID('overlay').within(() => {
+      cy.getByTestID('page-title').click()
+      cy.getByTestID('renamable-page-title--input')
+        .clear()
+        .type('newCell')
+      cy.getByTestID('save-cell--button').click()
+    })
+
+    // there should be no annotations in this cell
+    cy.getByTestID('cell newCell').within(() => {
+      cy.get('line').should('not.exist')
+    })
+
+    // create a new annotation in it
+    cy.getByTestID('cell newCell').within(() => {
+      cy.getByTestID('giraffe-inner-plot').click()
+    })
+
+    cy.getByTestID('overlay--container').within(() => {
+      cy.getByTestID('textarea')
+        .should('be.visible')
+        .click()
+        .focused()
+        .type('annotation in newCell')
+      cy.getByTestID('add-annotation-submit').click()
+    })
+
+    // should have the annotation created and the tooltip should says "annotation in newCell"
+    cy.getByTestID('cell newCell').within(() => {
+      cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
+    })
+    cy.getByTestID('giraffe-annotation-tooltip').contains(
+      'annotation in newCell'
+    )
+  })
 })

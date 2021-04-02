@@ -262,7 +262,7 @@ const XYPlot: FC<Props> = ({
 
   if (isFlagEnabled('annotations')) {
     // annotations and the cellID might or might be provided to this graph view
-    const cellAnnotations = annotations ? annotations[cellID] ?? [] : []
+    const cellAnnotations = annotations?.cellID ?? []
     const annotationsToRender: any[] = cellAnnotations.map(annotation => {
       return {
         ...annotation,

@@ -314,7 +314,6 @@ http.post(
       // assert the values of the task and change them
       cy.getByTestID('task-card--name')
         .eq(1)
-        .contains('🦄ask (clone 1)')
         .click()
         .then(() => {
           // focused() waits for monoco editor to get input focus
@@ -324,7 +323,7 @@ http.post(
             .contains('option task = {')
             .then(() => {
               cy.getByTestID('task-form-name')
-                .should('have.value', '🦄ask (clone 1)')
+                .should('have.value', '🦄ask')
                 .then(() => {
                   cy.getByTestID('task-form-name')
                     .should('be.visible')

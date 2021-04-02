@@ -4,7 +4,7 @@ The SFlow Input Plugin provides support for acting as an SFlow V5 collector in
 accordance with the specification from [sflow.org](https://sflow.org/).
 
 Currently only Flow Samples of Ethernet / IPv4 & IPv4 TCP & UDP headers are
-turned into metrics.  Counters and other header samples are ignored.
+turned into metrics. Counters and other header samples are ignored.
 
 #### Series Cardinality Warning
 
@@ -14,8 +14,6 @@ avoid cardinality issues:
 
 - Use [metric filtering][] options to exclude unneeded measurements and tags.
 - Write to a database with an appropriate [retention policy][].
-- Limit series cardinality in your database using the
-  [max-series-per-database][] and [max-values-per-tag][] settings.
 - Consider using the [Time Series Index][tsi].
 - Monitor your databases [series cardinality][].
 - Consult the [InfluxDB documentation][influx-docs] for the most up-to-date techniques.
@@ -87,13 +85,15 @@ avoid cardinality issues:
 
 The [sflowtool][] utility can be used to print sFlow packets, and compared
 against the metrics produced by Telegraf.
+
 ```
 sflowtool -p 6343
 ```
 
 If opening an issue, in addition to the output of sflowtool it will also be
-helpful to collect a packet capture.  Adjust the interface, host and port as
+helpful to collect a packet capture. Adjust the interface, host and port as
 needed:
+
 ```
 $ sudo tcpdump -s 0 -i eth0 -w telegraf-sflow.pcap host 127.0.0.1 and port 6343
 ```
@@ -101,20 +101,18 @@ $ sudo tcpdump -s 0 -i eth0 -w telegraf-sflow.pcap host 127.0.0.1 and port 6343
 [sflowtool]: https://github.com/sflow/sflowtool
 
 ### Example Output
+
 ```
 sflow,agent_address=0.0.0.0,dst_ip=10.0.0.2,dst_mac=ff:ff:ff:ff:ff:ff,dst_port=40042,ether_type=IPv4,header_protocol=ETHERNET-ISO88023,input_ifindex=6,ip_dscp=27,ip_ecn=0,output_ifindex=1073741823,source_id_index=3,source_id_type=0,src_ip=10.0.0.1,src_mac=ff:ff:ff:ff:ff:ff,src_port=443 bytes=1570i,drops=0i,frame_length=157i,header_length=128i,ip_flags=2i,ip_fragment_offset=0i,ip_total_length=139i,ip_ttl=42i,sampling_rate=10i,tcp_header_length=0i,tcp_urgent_pointer=0i,tcp_window_size=14i 1584473704793580447
 ```
 
 ### Reference Documentation
 
-This sflow implementation was built from the reference document 
+This sflow implementation was built from the reference document
 [sflow.org/sflow_version_5.txt](sflow_version_5)
-
 
 [metric filtering]: https://github.com/influxdata/telegraf/blob/master/docs/CONFIGURATION.md#metric-filtering
 [retention policy]: https://docs.influxdata.com/influxdb/latest/guides/downsampling_and_retention/
-[max-series-per-database]: https://docs.influxdata.com/influxdb/latest/administration/config/#max-series-per-database-1000000
-[max-values-per-tag]: https://docs.influxdata.com/influxdb/latest/administration/config/#max-values-per-tag-100000
 [tsi]: https://docs.influxdata.com/influxdb/latest/concepts/time-series-index/
 [series cardinality]: https://docs.influxdata.com/influxdb/latest/query_language/spec/#show-cardinality
 [influx-docs]: https://docs.influxdata.com/influxdb/latest/

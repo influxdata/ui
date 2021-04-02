@@ -1,4 +1,4 @@
-import React, {FC, createContext, useState} from 'react'
+import React, {FC, createContext, useState, useCallback} from 'react'
 
 interface PaginationContextType {
   offset: number // the start index
@@ -9,6 +9,7 @@ interface PaginationContextType {
   previous: () => void
 
   setSize: (size: number) => void
+  setPage: (page: number) => void
 }
 
 const DEFAULT_CONTEXT: PaginationContextType = {
@@ -20,6 +21,7 @@ const DEFAULT_CONTEXT: PaginationContextType = {
   previous: () => {},
 
   setSize: (_size: number) => {},
+  setPage: (_page: number) => {},
 }
 
 export const PaginationContext = createContext<PaginationContextType>(
@@ -37,17 +39,24 @@ export const PaginationProvider: FC<PaginationProviderProps> = ({
   const [offset, setOffset] = useState(DEFAULT_CONTEXT.offset)
   const [size, setSize] = useState(DEFAULT_CONTEXT.size)
 
-  const next = () => {
+  const next = useCallback(() => {
     if (total) {
       setOffset(Math.min(offset + size, total - size))
     } else {
       setOffset(offset + size)
     }
-  }
+  }, [offset, size, setOffset])
 
-  const previous = () => {
+  const previous = useCallback(() => {
     setOffset(Math.max(offset - size, 0))
-  }
+  }, [offset, size, setOffset])
+
+  const setPage = useCallback(
+    (page: number) => {
+      setOffset(Math.min(Math.max(0, (page - 1) * size), total - size))
+    },
+    [offset, size, setOffset]
+  )
 
   return (
     <PaginationContext.Provider
@@ -58,6 +67,7 @@ export const PaginationProvider: FC<PaginationProviderProps> = ({
         next,
         previous,
         setSize,
+        setPage,
       }}
     >
       {children}

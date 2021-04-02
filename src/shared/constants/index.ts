@@ -13,6 +13,12 @@ import {InfluxColors} from '@influxdata/clockface'
 
 import {AutoRefreshStatus} from 'src/types'
 
+// This is temporary and should be resolved
+// Once the Beta region API is built out by Quartz:
+// influxdata/quartz#4369
+// Beta Regions contain the hostname of the beta regions
+export const BETA_REGIONS = ['europe-west1-1.gcp.cloud2.influxdata.com']
+
 function formatConstant(constant: string) {
   if (!constant) {
     return ''
@@ -68,6 +74,7 @@ export const HONEYBADGER_ENV = formatConstant(process.env.HONEYBADGER_ENV)
 
 export const CLOUD = !!process.env.CLOUD_URL
 export const CLOUD_SIGNIN_PATHNAME = '/api/v2/signin'
+export const CLOUD_LOGIN_PATHNAME = '/login'
 export const CLOUD_BILLING_VISIBLE = CLOUD
 export const CLOUD_URL = formatConstant(process.env.CLOUD_URL)
 export const CLOUD_CHECKOUT_PATH = '/checkout'

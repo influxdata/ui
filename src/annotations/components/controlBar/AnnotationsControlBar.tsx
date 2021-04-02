@@ -1,38 +1,38 @@
 // Libraries
 import React, {FC} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {useHistory, useParams} from 'react-router-dom'
 
 // Components
 import {
   ComponentColor,
   ComponentSize,
-  FlexBox,
   FlexBoxChild,
-  IconFont,
+  InfluxColors,
   InputLabel,
   InputToggleType,
   JustifyContent,
-  SquareButton,
+  TextBlock,
   Toggle,
 } from '@influxdata/clockface'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import Toolbar from 'src/shared/components/toolbar/Toolbar'
-import {toggleSingleClickAnnotations} from 'src/annotations/actions/creators'
-import {AnnotationPills} from 'src/annotations/components/controlBar/AnnotationPills'
-import {AnnotationsSearchBar} from 'src/annotations/components/controlBar/AnnotationsSearchBar'
+import {
+  toggleAnnotationVisibility,
+  toggleSingleClickAnnotations,
+} from 'src/annotations/actions/creators'
 
 // Selectors
-import {isSingleClickAnnotationsEnabled} from 'src/annotations/selectors'
+import {
+  isSingleClickAnnotationsEnabled,
+  selectAreAnnotationsVisible,
+} from 'src/annotations/selectors'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
 export const AnnotationsControlBar: FC = () => {
-  const history = useHistory()
-  const {orgID} = useParams<{orgID: string; dashboardID: string}>()
-
   const inWriteMode = useSelector(isSingleClickAnnotationsEnabled)
+  const annotationsAreVisible = useSelector(selectAreAnnotationsVisible)
 
   const dispatch = useDispatch()
 
@@ -43,27 +43,48 @@ export const AnnotationsControlBar: FC = () => {
     dispatch(toggleSingleClickAnnotations())
   }
 
-  const handleSettingsClick = (): void => {
-    history.push(`/orgs/${orgID}/settings/annotations`)
+  const changeAnnotationVisibility = () => {
+    event('dashboard.annotations.change_visibility_mode.toggle', {
+      newAnnotationsAreVisible: (!annotationsAreVisible).toString(),
+    })
+    dispatch(toggleAnnotationVisibility())
   }
 
   return (
     <ErrorBoundary>
       <Toolbar
         testID="annotations-control-bar"
-        justifyContent={JustifyContent.SpaceBetween}
+        justifyContent={JustifyContent.FlexEnd}
         margin={ComponentSize.Large}
       >
-        <FlexBoxChild basis={300} grow={0}>
-          <AnnotationsSearchBar />
+        <FlexBoxChild grow={0}>
+          <TextBlock
+            backgroundColor={InfluxColors.Obsidian}
+            textColor={InfluxColors.Mist}
+            text="*Currently, we only support annotations on XY Plots"
+          />
         </FlexBoxChild>
-        <FlexBoxChild grow={1}>
-          <AnnotationPills />
-        </FlexBoxChild>
-        <FlexBox margin={ComponentSize.Small}>
+        <FlexBoxChild grow={1} />
+        <FlexBoxChild grow={0}>
           <Toggle
             style={{marginRight: 20}}
-            id="enableAnnotationMode"
+            id="enable-annotation-visibility"
+            type={InputToggleType.Checkbox}
+            checked={annotationsAreVisible}
+            onChange={changeAnnotationVisibility}
+            color={ComponentColor.Primary}
+            size={ComponentSize.ExtraSmall}
+            testID="annotations-visibility-toggle"
+          >
+            <InputLabel htmlFor="enable-annotation-visibility">
+              Show Annotations
+            </InputLabel>
+          </Toggle>
+        </FlexBoxChild>
+        <FlexBoxChild grow={0}>
+          <Toggle
+            style={{marginRight: 20}}
+            id="enable-annotation-mode"
             type={InputToggleType.Checkbox}
             checked={inWriteMode}
             onChange={changeWriteMode}
@@ -71,16 +92,11 @@ export const AnnotationsControlBar: FC = () => {
             size={ComponentSize.ExtraSmall}
             testID="annotations-one-click-toggle"
           >
-            <InputLabel htmlFor="enableAnnotationMode">
+            <InputLabel htmlFor="enable-annotation-mode">
               Enable 1-Click Annotations
             </InputLabel>
           </Toggle>
-          <SquareButton
-            testID="annotations-control-bar--settings"
-            icon={IconFont.CogThick}
-            onClick={handleSettingsClick}
-          />
-        </FlexBox>
+        </FlexBoxChild>
       </Toolbar>
     </ErrorBoundary>
   )

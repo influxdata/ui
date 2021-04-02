@@ -1,9 +1,10 @@
 import {
   Action,
-  ENABLE_ANNOTATION_STREAM,
-  DISABLE_ANNOTATION_STREAM,
+  DELETE_ANNOTATION,
+  EDIT_ANNOTATION,
   SET_ANNOTATIONS,
   SET_ANNOTATION_STREAMS,
+  TOGGLE_ANNOTATION_VISIBILITY,
   TOGGLE_SINGLE_CLICK_ANNOTATIONS,
 } from 'src/annotations/actions/creators'
 
@@ -14,21 +15,28 @@ import {InfluxColors} from '@influxdata/clockface'
 export interface AnnotationsState {
   streams: AnnotationStream[]
   annotations: AnnotationsList
+  annotationsAreVisible: boolean // a temporary (we'll see) measure until we enable streams
   visibleStreamsByID: string[]
   enableSingleClickAnnotations: boolean
 }
 
 export const FALLBACK_COLOR = InfluxColors.Curacao
 
-const STREAM_COLOR_LIST = [InfluxColors.Potassium]
+export const STREAM_COLOR_LIST = [InfluxColors.Potassium]
 
 export const initialState = (): AnnotationsState => ({
   annotations: {
     default: [] as Annotation[],
   },
+  annotationsAreVisible: true,
+  enableSingleClickAnnotations: false,
+  streams: [
+    {
+      stream: 'default',
+      color: InfluxColors.Potassium,
+    },
+  ],
   visibleStreamsByID: ['default'],
-  streams: [],
-  enableSingleClickAnnotations: true,
 })
 
 export const annotationsReducer = (
@@ -47,20 +55,36 @@ export const annotationsReducer = (
         }),
       }
     }
-    case ENABLE_ANNOTATION_STREAM: {
+    case DELETE_ANNOTATION: {
+      const stream = action.annotation.stream
       return {
         ...state,
-        visibleStreamsByID: [...state.visibleStreamsByID, action.streamID],
+        annotations: {
+          [stream]: state.annotations[stream].filter(
+            annotation => annotation.id !== action.annotation.id
+          ),
+        },
       }
     }
-    case DISABLE_ANNOTATION_STREAM: {
+
+    case EDIT_ANNOTATION: {
+      const stream = action.annotation.stream
+      const cellAnnotations = [...state.annotations[stream]]
+      const annotations = {...state.annotations}
+
+      annotations[stream] = cellAnnotations.map(annotation => {
+        if (annotation.id === action.annotation.id) {
+          return action.annotation
+        }
+        return annotation
+      })
+
       return {
         ...state,
-        visibleStreamsByID: state.visibleStreamsByID.filter(
-          streamID => streamID !== action.streamID
-        ),
+        annotations,
       }
     }
+
     case SET_ANNOTATIONS: {
       const annotations = {}
       action.annotations.forEach(annotationStream => {
@@ -69,6 +93,13 @@ export const annotationsReducer = (
       return {
         ...state,
         annotations,
+      }
+    }
+
+    case TOGGLE_ANNOTATION_VISIBILITY: {
+      return {
+        ...state,
+        annotationsAreVisible: !state.annotationsAreVisible,
       }
     }
 

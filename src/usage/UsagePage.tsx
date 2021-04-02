@@ -6,11 +6,10 @@ import {Page} from '@influxdata/clockface'
 import UsageToday from 'src/usage/UsageToday'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import LimitChecker from 'src/cloud/components/LimitChecker'
-import CheckoutProvider from 'src/usage/context/usage'
+import UsageProvider from 'src/usage/context/usage'
 
-// Reducers
 const Usage: FC = () => (
-  <CheckoutProvider>
+  <UsageProvider>
     <Page titleTag="Usage">
       <Page.Header fullWidth={false} testID="usage-page--header">
         <Page.Title title="Usage" />
@@ -22,7 +21,7 @@ const Usage: FC = () => (
         <UsageToday />
       </Page.Contents>
     </Page>
-  </CheckoutProvider>
+  </UsageProvider>
 )
 
 export default Usage

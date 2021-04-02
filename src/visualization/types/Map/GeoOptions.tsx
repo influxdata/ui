@@ -41,8 +41,8 @@ export const GeoOptions: FC<Props> = ({properties, update}) => {
           layers: [
             {
               type: 'pointMap',
-              colorDimension: {label: 'Duration'},
-              colorField: 'duration',
+              colorDimension: {label: 'Value'},
+              colorField: '_value',
               colors: [
                 {type: 'min', hex: '#ff0000'},
                 {value: 50, hex: '#343aeb'},
@@ -60,8 +60,8 @@ export const GeoOptions: FC<Props> = ({properties, update}) => {
               type: 'heatmap',
               radius: 20,
               blur: 10,
-              intensityDimension: {label: 'Value'},
-              intensityField: '_value',
+              intensityDimension: {label: 'Lat'},
+              intensityField: 'lat',
               colors: [
                 {type: 'min', hex: '#00ff00'},
                 {value: 50, hex: '#ffae42'},
@@ -95,10 +95,10 @@ export const GeoOptions: FC<Props> = ({properties, update}) => {
           layers: [
             {
               type: 'circleMap',
-              radiusField: 'magnitude',
-              radiusDimension: {label: 'Magnitude'},
-              colorDimension: {label: 'Duration'},
-              colorField: 'duration',
+              radiusField: 'lat',
+              radiusDimension: {label: 'lat'},
+              colorDimension: {label: 'lon'},
+              colorField: 'lon',
               colors: [
                 {type: 'min', hex: '#ff00b3'},
                 {value: 50, hex: '#343aeb'},

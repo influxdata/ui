@@ -33,6 +33,16 @@ in Prometheus format.
   ## - prometheus.io/path: If the metrics path is not /metrics, define it with this annotation.
   ## - prometheus.io/port: If port is not 9102 use this annotation
   # monitor_kubernetes_pods = true
+  ## Get the list of pods to scrape with either the scope of
+  ## - cluster: the kubernetes watch api (default), no need to specify
+  ## - node: the local cadvisor api; for scalability. Note that the config node_ip or the environment variable NODE_IP must be set to the host IP.
+  # pod_scrape_scope = "cluster"
+  ## Only for node scrape scope: node IP of the node that telegraf is running on.
+  ## Either this config or the environment variable NODE_IP must be set.
+  # node_ip = "10.180.1.1"
+  ## Only for node scrape scope: interval in seconds for how often to get updated pod list for scraping
+  ## Default is 60 seconds.
+  # pod_scrape_interval = 60
   ## Restricts Kubernetes monitoring to a single namespace
   ##   ex: monitor_kubernetes_pods_namespace = "default"
   # monitor_kubernetes_pods_namespace = ""
@@ -81,12 +91,24 @@ pods. Currently, you can run this plugin in your kubernetes cluster, or we use t
 file to determine where to monitor.
 Currently the following annotation are supported:
 
-* `prometheus.io/scrape` Enable scraping for this pod.
-* `prometheus.io/scheme` If the metrics endpoint is secured then you will need to set this to `https` & most likely set the tls config. (default 'http')
-* `prometheus.io/path` Override the path for the metrics endpoint on the service. (default '/metrics')
-* `prometheus.io/port` Used to override the port. (default 9102)
+- `prometheus.io/scrape` Enable scraping for this pod.
+- `prometheus.io/scheme` If the metrics endpoint is secured then you will need to set this to `https` & most likely set the tls config. (default 'http')
+- `prometheus.io/path` Override the path for the metrics endpoint on the service. (default '/metrics')
+- `prometheus.io/port` Used to override the port. (default 9102)
 
 Using the `monitor_kubernetes_pods_namespace` option allows you to limit which pods you are scraping.
+
+Using `pod_scrape_scope = "node"` allows more scalable scraping for pods which will scrape pods only in the node that telegraf is running. It will fetch the pod list locally from the node's kubelet. This will require running Telegraf in every node of the cluster. Note that either `node_ip` must be specified in the config or the environment variable `NODE_IP` must be set to the host IP. ThisThe latter can be done in the yaml of the pod running telegraf:
+
+```
+env:
+  - name: NODE_IP
+    valueFrom:
+      fieldRef:
+        fieldPath: status.hostIP
+```
+
+If using node level scrape scope, `pod_scrape_interval` specifies how often (in seconds) the pod list for scraping should updated. If not specified, the default is 60 seconds.
 
 #### Bearer Token
 
@@ -98,10 +120,10 @@ Authorization header.
 
 If you want to monitor Caddy, you need to use Caddy with its Prometheus plugin:
 
-* Download Caddy+Prometheus plugin [here](https://caddyserver.com/download/linux/amd64?plugins=http.prometheus)
-* Add the `prometheus` directive in your `CaddyFile`
-* Restart Caddy
-* Configure Telegraf to fetch metrics on it:
+- Download Caddy+Prometheus plugin [here](https://caddyserver.com/download/linux/amd64?plugins=http.prometheus)
+- Add the `prometheus` directive in your `CaddyFile`
+- Restart Caddy
+- Configure Telegraf to fetch metrics on it:
 
 ```toml
 [[inputs.prometheus]]
@@ -115,7 +137,7 @@ If you want to monitor Caddy, you need to use Caddy with its Prometheus plugin:
 ### Metrics:
 
 Measurement names are based on the Metric Family and tags are created for each
-label.  The value is added to a field named based on the metric type.
+label. The value is added to a field named based on the metric type.
 
 All metrics receive the `url` tag indicating the related URL specified in the
 Telegraf configuration. If using Kubernetes service discovery the `address`
@@ -124,6 +146,7 @@ tag is also added indicating the discovered ip address.
 ### Example Output:
 
 **Source**
+
 ```
 # HELP go_gc_duration_seconds A summary of the GC invocation durations.
 # TYPE go_gc_duration_seconds summary
@@ -146,6 +169,7 @@ cpu_usage_user{cpu="cpu3"} 1.5045135406226022
 ```
 
 **Output**
+
 ```
 go_gc_duration_seconds,url=http://example.org:9273/metrics 1=0.001336611,count=14,sum=0.004527551,0=0.000057965,0.25=0.000083812,0.5=0.000286537,0.75=0.000365303 1505776733000000000
 go_goroutines,url=http://example.org:9273/metrics gauge=21 1505776695000000000
@@ -156,6 +180,7 @@ cpu_usage_user,cpu=cpu3,url=http://example.org:9273/metrics gauge=1.522842639594
 ```
 
 **Output (when metric_version = 2)**
+
 ```
 prometheus,quantile=1,url=http://example.org:9273/metrics go_gc_duration_seconds=0.005574303 1556075100000000000
 prometheus,quantile=0.75,url=http://example.org:9273/metrics go_gc_duration_seconds=0.0001046 1556075100000000000

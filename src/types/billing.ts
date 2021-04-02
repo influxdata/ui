@@ -4,7 +4,9 @@ import {
   BillingDate as GenBillingDate,
   BillingInfo as GenBillingInfo,
   CreditCardParams as GenCreditCardParams,
+  OrgLimits as GenOrgLimits,
 } from 'src/client/unityRoutes'
+
 export {
   BillingContact,
   Invoice,
@@ -15,11 +17,26 @@ export {
 } from 'src/client/unityRoutes'
 import {RemoteDataState} from 'src/types'
 
+export type ZuoraResponseHandler = (response: ZuoraResponse) => void
+
+export interface ZuoraClient {
+  render: (
+    zuoraParams: GenCreditCardParams,
+    formFields: {},
+    onSubmit: ZuoraResponseHandler
+  ) => void
+  submit: () => void
+}
+
 export interface BillingInfo extends GenBillingInfo {
   status: RemoteDataState
 }
 
 export interface CreditCardParams extends GenCreditCardParams {
+  status: RemoteDataState
+}
+
+export interface OrgLimits extends GenOrgLimits {
   status: RemoteDataState
 }
 

@@ -7,8 +7,10 @@ import {
   Account,
   BillingInfo,
   BillingNotifySettings,
-  CreditCardParams,
   Invoice,
+  PaymentMethod,
+  CreditCardParams,
+  OrgLimits,
 } from 'src/types/billing'
 
 export interface BillingState {
@@ -16,16 +18,21 @@ export interface BillingState {
   billingInfo: BillingInfo
   billingSettings: BillingNotifySettings
   creditCard: CreditCardParams
+  creditCards: CreditCardParams
   invoices: Invoice[]
   invoicesStatus: RemoteDataState
+  orgLimits: OrgLimits
 }
 
 export const initialState = (): BillingState => ({
   account: {
     status: RemoteDataState.NotStarted,
     id: null,
-    marketplace: '',
+    marketplace: null,
     type: 'free',
+    balance: null,
+    users: [],
+    billingContact: null,
   },
   billingInfo: {
     balance: null,
@@ -41,14 +48,15 @@ export const initialState = (): BillingState => ({
     notifyEmail: '',
     status: RemoteDataState.NotStarted,
   },
+  creditCards: null,
   creditCard: null,
   invoices: null,
   invoicesStatus: RemoteDataState.NotStarted,
+  orgLimits: null,
 })
 
 export type BillingReducer = React.Reducer<BillingState, Action>
 
-// TODO(ariel): consolidate this with the account in usage
 export const setAccount = (account: Account) =>
   ({
     type: 'SET_ACCOUNT',
@@ -58,6 +66,18 @@ export const setAccount = (account: Account) =>
 export const setAccountStatus = (status: RemoteDataState) =>
   ({
     type: 'SET_ACCOUNT_STATUS',
+    status,
+  } as const)
+
+export const setOrgLimits = (orgLimits: OrgLimits) =>
+  ({
+    type: 'SET_ORG_LIMITS',
+    orgLimits,
+  } as const)
+
+export const setOrgLimitsStatus = (status: RemoteDataState) =>
+  ({
+    type: 'SET_ORG_LIMITS_STATUS',
     status,
   } as const)
 
@@ -98,6 +118,26 @@ export const setInvoicesStatus = (status: RemoteDataState) =>
     invoiceStatus: status,
   } as const)
 
+export const setPaymentMethods = (
+  paymentMethods: PaymentMethod[],
+  creditCards: CreditCardParams,
+  paymentMethodsStatus: RemoteDataState
+) =>
+  ({
+    type: 'SET_PAYMENT_METHODS',
+    paymentMethods,
+    creditCards,
+    paymentMethodsStatus,
+  } as const)
+
+export const setPaymentMethodsStatus = (
+  paymentMethodsStatus: RemoteDataState
+) =>
+  ({
+    type: 'SET_PAYMENT_METHODS_STATUS',
+    paymentMethodsStatus,
+  } as const)
+
 export const setCreditCard = (creditCard: CreditCardParams) =>
   ({
     type: 'SET_CREDIT_CARD',
@@ -117,10 +157,12 @@ export type Action =
   | ReturnType<typeof setBillingSettingsStatus>
   | ReturnType<typeof setBillingInfo>
   | ReturnType<typeof setBillingInfoStatus>
-  | ReturnType<typeof setInvoices>
-  | ReturnType<typeof setInvoicesStatus>
   | ReturnType<typeof setCreditCard>
   | ReturnType<typeof setCreditCardStatus>
+  | ReturnType<typeof setInvoices>
+  | ReturnType<typeof setInvoicesStatus>
+  | ReturnType<typeof setOrgLimits>
+  | ReturnType<typeof setOrgLimitsStatus>
 
 export const billingReducer = (
   state: BillingState = initialState(),
@@ -206,6 +248,24 @@ export const billingReducer = (
         }
 
         draftState.creditCard.status = action.status
+        return
+      }
+      case 'SET_ORG_LIMITS': {
+        draftState.orgLimits = action.orgLimits
+
+        return
+      }
+      case 'SET_ORG_LIMITS_STATUS': {
+        if (!draftState.orgLimits?.status) {
+          draftState.orgLimits = {
+            ...draftState.orgLimits,
+            status: action.status,
+          }
+
+          return
+        }
+
+        draftState.orgLimits.status = action.status
         return
       }
     }

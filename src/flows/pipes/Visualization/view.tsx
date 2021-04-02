@@ -35,7 +35,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     [data.properties, update]
   )
 
-  const dataExists = results.parsed && Object.entries(results.parsed).length
+  const dataExists = !!(results?.parsed?.table || []).length
 
   const loadingText = useMemo(() => {
     if (loading === RemoteDataState.Loading) {
@@ -56,7 +56,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     >
       <Resizer
         loading={loading}
-        resizingEnabled={!!results.raw}
+        resizingEnabled={dataExists}
         minimumHeight={200}
         emptyText={loadingText}
         emptyIcon={IconFont.BarChart}
@@ -69,7 +69,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
         <div className="flow-visualization">
           <div className="flow-visualization--view">
             <View
-              loading={loading}
+              loading={RemoteDataState.Done}
               error={results?.error}
               properties={data.properties}
               result={results.parsed}

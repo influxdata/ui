@@ -4,35 +4,26 @@ import {
   Alert,
   ComponentColor,
   IconFont,
-  RemoteDataState,
   SpinnerContainer,
   TechnoSpinner,
 } from '@influxdata/clockface'
 
-// Utils
-// import {useBilling} from 'src/billing/components/BillingPage'
-
 // Types
-// import {CreditCardParams} from 'src/types/billing'
+import {CreditCardParams} from 'src/types/billing'
+import CreditCardForm from 'src/shared/components/CreditCardForm'
 
 interface Props {
-  onSubmit: (response: any) => void
+  zuoraParams: CreditCardParams
+  onSubmit: (paymentMethodId: string) => void
   errorMessage: string
 }
 
-const PaymentForm: FC<Props> = ({errorMessage}) => {
-  // const [{creditCards}] = useBilling()
-
+const PaymentForm: FC<Props> = ({zuoraParams, onSubmit, errorMessage}) => {
   /**
    * For context, Z is a globally defined ZuoraClient in Quartz
    * that is set when the ZuoraAPI is queried. In this case, Z serves as a
    * a hosted iframe to render a credit card form to the UI
    */
-  // TODO(ariel): uncomment this when we get to define Z
-  // useEffect(
-  //   () => typeof Z !== 'undefined' && Z.render(creditCards, {}, onSubmit)
-  // )
-
   return (
     <>
       {errorMessage && (
@@ -46,15 +37,12 @@ const PaymentForm: FC<Props> = ({errorMessage}) => {
       )}
 
       <SpinnerContainer
-        loading={RemoteDataState.Loading}
+        loading={zuoraParams.status}
         spinnerComponent={<TechnoSpinner />}
         className="billing-payment--spinner"
-      />
-      <div
-        id="zuora_payment"
-        className="billing-form--frame"
-        data-testid="payment-form"
-      />
+      >
+        <CreditCardForm zuoraParams={zuoraParams} onSubmit={onSubmit} />
+      </SpinnerContainer>
     </>
   )
 }

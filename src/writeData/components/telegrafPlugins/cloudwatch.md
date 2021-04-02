@@ -6,6 +6,7 @@ This plugin will pull Metric Statistics from Amazon CloudWatch.
 
 This plugin uses a credential chain for Authentication with the CloudWatch
 API endpoint. In the following order the plugin will attempt to authenticate.
+
 1. Assumed credentials via STS if `role_arn` attribute is specified (source credentials are evaluated from subsequent rules)
 2. Explicit credentials from `access_key`, `secret_key`, and `token` attributes
 3. Shared profile from `profile` attribute
@@ -40,6 +41,9 @@ API endpoint. In the following order the plugin will attempt to authenticate.
   ## default.
   ##   ex: endpoint_url = "http://localhost:8000"
   # endpoint_url = ""
+
+  ## Set http_proxy (telegraf uses the system wide proxy settings if it's is not set)
+  # http_proxy_url = "http://localhost:8888"
 
   # The minimum period for Cloudwatch metrics is 1 minute (60s). However not all
   # metrics are made available to the 1 minute period. Some are collected at
@@ -102,6 +106,7 @@ API endpoint. In the following order the plugin will attempt to authenticate.
   #    name = "LoadBalancerName"
   #    value = "p-example"
 ```
+
 #### Requirements and Terminology
 
 Plugin Configuration utilizes [CloudWatch concepts](http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/cloudwatch_concepts.html) and access pattern to allow monitoring of any CloudWatch Metric.
@@ -113,10 +118,11 @@ Plugin Configuration utilizes [CloudWatch concepts](http://docs.aws.amazon.com/A
 - `dimensions` must be valid CloudWatch [Dimension](http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/cloudwatch_concepts.html#Dimension) name/value pairs
 
 Omitting or specifying a value of `'*'` for a dimension value configures all available metrics that contain a dimension with the specified name
-to be retrieved. If specifying >1 dimension, then the metric must contain *all* the configured dimensions where the the value of the
+to be retrieved. If specifying >1 dimension, then the metric must contain _all_ the configured dimensions where the the value of the
 wildcard dimension is ignored.
 
 Example:
+
 ```
 [[inputs.cloudwatch]]
   period = "1m"
@@ -136,13 +142,14 @@ Example:
 ```
 
 If the following ELBs are available:
+
 - name: `p-example`, availabilityZone: `us-east-1a`
 - name: `p-example`, availabilityZone: `us-east-1b`
 - name: `q-example`, availabilityZone: `us-east-1a`
 - name: `q-example`, availabilityZone: `us-east-1b`
 
-
 Then 2 metrics will be output:
+
 - name: `p-example`, availabilityZone: `us-east-1a`
 - name: `p-example`, availabilityZone: `us-east-1b`
 
@@ -152,6 +159,7 @@ would be exported containing the aggregate values of the ELB across availability
 To maximize efficiency and savings, consider making fewer requests by increasing `interval` but keeping `period` at the duration you would like metrics to be reported. The above example will request metrics from Cloudwatch every 5 minutes but will output five metrics timestamped one minute apart.
 
 #### Restrictions and Limitations
+
 - CloudWatch metrics are not available instantly via the CloudWatch API. You should adjust your collection `delay` to account for this lag in metrics availability based on your [monitoring subscription level](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-cloudwatch-new.html)
 - CloudWatch API usage incurs cost - see [GetMetricData Pricing](https://aws.amazon.com/cloudwatch/pricing/)
 
@@ -160,25 +168,26 @@ To maximize efficiency and savings, consider making fewer requests by increasing
 Each CloudWatch Namespace monitored records a measurement with fields for each available Metric Statistic.
 Namespace and Metrics are represented in [snake case](https://en.wikipedia.org/wiki/Snake_case)
 
-- cloudwatch_{namespace}
-  - {metric}_sum         (metric Sum value)
-  - {metric}_average     (metric Average value)
-  - {metric}_minimum     (metric Minimum value)
-  - {metric}_maximum     (metric Maximum value)
-  - {metric}_sample_count (metric SampleCount value)
-
+- cloudwatch\_{namespace}
+  - {metric}\_sum (metric Sum value)
+  - {metric}\_average (metric Average value)
+  - {metric}\_minimum (metric Minimum value)
+  - {metric}\_maximum (metric Maximum value)
+  - {metric}\_sample_count (metric SampleCount value)
 
 ### Tags:
+
 Each measurement is tagged with the following identifiers to uniquely identify the associated metric
 Tag Dimension names are represented in [snake case](https://en.wikipedia.org/wiki/Snake_case)
 
 - All measurements have the following tags:
-  - region           (CloudWatch Region)
+  - region (CloudWatch Region)
   - {dimension-name} (Cloudwatch Dimension value - one for each metric dimension)
 
 ### Troubleshooting:
 
 You can use the aws cli to get a list of available metrics and dimensions:
+
 ```
 aws cloudwatch list-metrics --namespace AWS/EC2 --region us-east-1
 aws cloudwatch list-metrics --namespace AWS/EC2 --region us-east-1 --metric-name CPUCreditBalance
@@ -186,6 +195,7 @@ aws cloudwatch list-metrics --namespace AWS/EC2 --region us-east-1 --metric-name
 
 If the expected metrics are not returned, you can try getting them manually
 for a short period of time:
+
 ```
 aws cloudwatch get-metric-data \
   --start-time 2018-07-01T00:00:00Z \

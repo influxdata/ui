@@ -2,10 +2,10 @@ import 'babel-polyfill'
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
 
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {PureComponent, Suspense} from 'react'
 import {render} from 'react-dom'
 import {Provider} from 'react-redux'
-import {Route} from 'react-router-dom'
+import {Route, Switch} from 'react-router-dom'
 import {ConnectedRouter} from 'connected-react-router'
 
 // Stores
@@ -13,15 +13,20 @@ import {getStore} from 'src/store/configureStore'
 import {history} from 'src/store/history'
 
 // Components
+import {CheckoutPage, OperatorPage} from 'src/shared/containers'
 import Setup from 'src/Setup'
-import GetLinks from 'src/shared/containers/GetLinks'
+import PageSpinner from 'src/perf/components/PageSpinner'
 
 // Utilities
 import {getRootNode} from 'src/utils/nodes'
 import {updateReportingContext} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Actions
 import {disablePresentationMode} from 'src/shared/actions/app'
+
+// Constants
+import {CLOUD} from 'src/shared/constants'
 
 // Styles
 import 'src/style/chronograf.scss'
@@ -69,8 +74,21 @@ class Root extends PureComponent {
     return (
       <Provider store={getStore()}>
         <ConnectedRouter history={history}>
-          <Route component={GetLinks} />
-          <Route component={Setup} />
+          <Suspense fallback={<PageSpinner />}>
+            <Switch>
+              {/* TODO(ariel): we need to restrict access to the checkout and operator pages based on specific critera:
+                https://github.com/influxdata/ui/issues/848
+               */}
+              {CLOUD && isFlagEnabled('unity-checkout') && (
+                <Route path="/checkout" component={CheckoutPage} />
+              )}
+              {/* Operator Routes */}
+              {CLOUD && isFlagEnabled('unity-operator') && (
+                <Route path="/operator" component={OperatorPage} />
+              )}
+              <Route component={Setup} />
+            </Switch>
+          </Suspense>
         </ConnectedRouter>
       </Provider>
     )

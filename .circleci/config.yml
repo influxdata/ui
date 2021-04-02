@@ -11,9 +11,7 @@ jobs:
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - run:
-          name: Grab compose files
-          command: git clone git@github.com:influxdata/monitor-ci.git
+      - checkout_monitor_ci
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing ./monitor-ci/.env
@@ -44,9 +42,7 @@ jobs:
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - run:
-          name: Grab compose files
-          command: git clone git@github.com:influxdata/monitor-ci.git
+      - checkout_monitor_ci
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing.oss ./monitor-ci/.env
@@ -76,9 +72,7 @@ jobs:
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - run:
-          name: Grab compose files
-          command: git clone git@github.com:influxdata/monitor-ci.git
+      - checkout_monitor_ci
       - run:
           name: Build the ui docker image
           command: |
@@ -110,9 +104,7 @@ jobs:
       - restore_cache:
           key: UI_PROD_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - run:
-          name: Grab deploy files
-          command: git clone git@github.com:influxdata/monitor-ci.git
+      - checkout_monitor_ci
       - run:
           name: Load the prod image
           command: |
@@ -164,10 +156,7 @@ jobs:
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - run:
-          name: Grab compose files
-          command: |
-            git clone git@github.com:influxdata/monitor-ci.git
+      - checkout_monitor_ci
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
@@ -177,16 +166,6 @@ jobs:
             cd ./monitor-ci && make update && make build NODE=cypress && make build NODE=ingress && make build NODE=dex
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
-      - when:
-          condition:
-            equal: [master, << pipeline.git.branch >>]
-          steps:
-            # The cypress image used within the ui-e2e image is a non-standard slim image and its definition and versions are
-            # maintained here: https://github.com/influxdata/cypress-slim
-            - run: docker tag local/cypress:latest quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
-            - run: docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} quay.io/influxdb/ui-e2e:latest
-            - run: docker push quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
-            - run: docker push quay.io/influxdb/ui-e2e:latest
       - run:
           name: Start the cluster
           command: cd ./monitor-ci; make start
@@ -203,6 +182,16 @@ jobs:
       - store_artifacts:
           path: monitor-ci/test-artifacts/screenshots
           destination: test_artifacts/screenshots
+      - when:
+          condition:
+            equal: [master, << pipeline.git.branch >>]
+          steps:
+            # The cypress image used within the ui-e2e image is a non-standard slim image and its definition and versions are
+            # maintained here: https://github.com/influxdata/cypress-slim
+            - run: docker tag local/cypress:latest quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
+            - run: docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} quay.io/influxdb/ui-e2e:latest
+            - run: docker push quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
+            - run: docker push quay.io/influxdb/ui-e2e:latest
   oss-e2e:
     machine:
       image: ubuntu-2004:202008-01
@@ -216,9 +205,7 @@ jobs:
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - run:
-          name: Grab compose files
-          command: git clone git@github.com:influxdata/monitor-ci.git
+      - checkout_monitor_ci
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing.oss ./monitor-ci/.env
@@ -260,10 +247,7 @@ jobs:
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - run:
-          name: Grab compose files
-          command: |
-            git clone git@github.com:influxdata/monitor-ci.git
+      - checkout_monitor_ci
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
@@ -301,10 +285,7 @@ jobs:
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - run:
-          name: Grab compose files
-          command: |
-            git clone git@github.com:influxdata/monitor-ci.git
+      - checkout_monitor_ci
       - run:
           name: Copy over the testing variables
           command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
@@ -404,9 +385,7 @@ jobs:
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - run:
-          name: Grab compose files
-          command: git clone git@github.com:influxdata/monitor-ci.git
+      - checkout_monitor_ci
       - run:
           name: Copy over the lighthouse variables
           command: |
@@ -419,9 +398,10 @@ jobs:
       - run:
           name: Update the images we're using
           command: |
-            cd ./monitor-ci && sudo rm -rf .persist/certs/ && make update && make build NODE=ingress
-            docker load < ~/docker-cache/image.tar
-            docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
+            docker pull quay.io/influxdb/lighthouse;
+            cd ./monitor-ci && sudo rm -rf .persist/certs/ && make update && make build NODE=ingress;
+            docker load < ~/docker-cache/image.tar;
+            docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest;
       - run:
           name: Run lighthouse
           no_output_timeout: 10m
@@ -436,6 +416,71 @@ jobs:
           path: /tmp/results.html
       - store_artifacts:
           path: /tmp/results.json
+  # This job should be similar to cd-app-e2e-test job running in IDPE: https://github.com/influxdata/idpe/blob/master/.circleci/config.yml
+  cloud-e2e-k8s-idpe:
+    machine:
+      # use Ubuntu 20 image as jsonnet requires libraries newer than in Ubuntu 14
+      image: ubuntu-2004:202008-01
+    # E2e tests deploy kind and are very resource intensive.
+    # 2xlarge is the largest resource class for "machine"; there is no 2xlarge+ like the docker runners.
+    resource_class: 2xlarge
+    working_directory: ~/
+    steps:
+      - checkout:
+          path: ./ui
+      - install_jsonnet_binary
+      - install_kind_binary
+      - install_kubectl_binary
+      - install_kubecfg_binary
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout_k8s_idpe
+      - checkout_idpe
+      - checkout_monitor_ci
+      - run:
+          name: Make test artifact directories
+          command: |
+            mkdir -p /tmp/artifacts
+            mkdir -p /tmp/cypress_artifacts
+      - run:
+          name: Copy over the testing variables
+          command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
+      - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
+      - run:
+          name: Build ui-e2e image
+          command: |
+            cd ./monitor-ci && make build NODE=cypress
+      - run:
+          name: Push ui-e2e image tagged with this commit
+          command: |
+            docker tag local/cypress:latest quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
+            docker push quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
+      - run:
+          name: Run E2e test
+          command: cd ./idpe/ && export QUAY_CD_USER=$QUAY_USER && export QUAY_CD_PASSWORD=$QUAY_PASS && export UI_E2E_TESTS_IMAGE="quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}" && ./scripts/ci/cd-app-e2e-test.bash | tee /tmp/artifacts/e2e-test.log
+          no_output_timeout: '15m' # Sometimes gathering the images takes too long. Go 50% over the default 10m timeout.
+          environment:
+            USE_K8SIDPE_LOCAL_TOOLS: '1' # this is needed as otherwise kubecfg is not able to talk to kind API server via localhost
+            USE_CONTAINERD_BIND_DIR: '1' # enable using tmpfs to avoid IO performance issues in CircleCI machine executor
+            ARTIFACTS_DIRECTORY: '/tmp/artifacts'
+      - store_artifacts:
+          path: /tmp/artifacts/
+          destination: 'tests/e2e'
+      - store_artifacts:
+          path: /tmp/kindlogs/
+          destination: 'kind_e2e_logs'
+      - store_artifacts:
+          path: /home/circleci/k8s-idpe/.tmp-kind-hostpath-volume/cypress/
+          destination: cypress-videos
+      # TODO: enable this when we remove cloud-e2e job
+      # - when:
+      #     condition:
+      #       equal: [master, << pipeline.git.branch >>]
+      #     steps:
+      #       # The cypress image used within the ui-e2e image is a non-standard slim image and its definition and versions are
+      #       # maintained here: https://github.com/influxdata/cypress-slim
+      #       - run: docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} quay.io/influxdb/ui-e2e:latest
+      #       - run: docker push quay.io/influxdb/ui-e2e:latest
 workflows:
   version: 2
   build:
@@ -450,6 +495,9 @@ workflows:
       - unit
       - lint
       - cloud-lighthouse:
+          requires:
+            - build-image
+      - cloud-e2e-k8s-idpe:
           requires:
             - build-image
       - cloud-e2e:
@@ -475,6 +523,8 @@ workflows:
             - lint
             - smoke
             - cloud-e2e
+            # TODO: uncomment this when we disable cloud-e2e
+            # - cloud-e2e-k8s-idpe
       - share-testing-image:
           filters:
             branches:
@@ -486,3 +536,71 @@ workflows:
             - lint
             - smoke
             - cloud-e2e
+            # TODO: uncomment this when we disable cloud-e2e
+            # - cloud-e2e-k8s-idpe
+commands:
+  install_jsonnet_binary:
+    description: >
+      This will install the jsonnet binary.
+    steps:
+      - run:
+          name: Install jsonnet binary
+          command: curl -sSL https://github.com/google/jsonnet/releases/download/v0.16.0/jsonnet-bin-v0.16.0-linux.tar.gz | sudo tar -C /usr/local/bin -xz jsonnet && sudo chmod 0755 /usr/local/bin/jsonnet
+
+  install_kind_binary:
+    description: >
+      This will install the kind binary.
+    steps:
+      - run:
+          name: Install kind binary
+          command: sudo curl -sSL -o /usr/local/bin/kind https://github.com/kubernetes-sigs/kind/releases/download/v0.8.1/kind-linux-amd64 && sudo chmod 0755 /usr/local/bin/kind
+
+  install_kubecfg_binary:
+    description: >
+      This will install the kubecfg binary.
+    steps:
+      - run:
+          name: Install kubecfg binary
+          command: sudo curl -sSL -o /usr/local/bin/kubecfg https://github.com/bitnami/kubecfg/releases/download/v0.16.0/kubecfg-linux-amd64 && sudo chmod 0755 /usr/local/bin/kubecfg
+
+  install_kubectl_binary:
+    description: >
+      This will install the kubectl binary.
+    steps:
+      - run:
+          name: Install kubectl binary
+          command: sudo curl -sSL -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/v1.15.0/bin/linux/amd64/kubectl && sudo chmod 0755 /usr/local/bin/kubectl
+
+  checkout_k8s_idpe:
+    description: >
+      This will checkout k8s-idpe
+    steps:
+      - run:
+          command: ./ui/scripts/checkout-repo.bash
+          name: Checkout k8s-idpe repo
+          environment:
+            REPO: k8s-idpe
+            BRANCH: master
+  checkout_idpe:
+    description: >
+      This will checkout idpe
+    steps:
+      - run:
+          command: ./ui/scripts/checkout-repo.bash
+          name: Checkout idpe repo
+          environment:
+            REPO: idpe
+            BRANCH: master
+  checkout_monitor_ci:
+    description: >
+      This will checkout monitor-ci
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "5f:c0:ef:38:b3:45:9e:f4:d5:2f:3b:8b:59:c2:fa:50"
+      - run:
+          command: ./ui/scripts/checkout-repo.bash
+          name: Checkout monitor-ci repo
+          environment:
+            REPO: monitor-ci
+            BRANCH: master

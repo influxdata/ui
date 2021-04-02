@@ -3,15 +3,18 @@ import {
   Account,
   BillingInfo,
   BillingNotifySettings,
-  CreditCardParams,
   Invoice,
+  CreditCardParams,
 } from 'src/types/billing'
 
 export const mockAccount: Account = {
   status: RemoteDataState.Done,
   id: 'account_1',
-  marketplace: 'us-west',
+  marketplace: null,
   type: 'free',
+  balance: null,
+  users: [],
+  billingContact: null,
 }
 
 export const mockBillingInfo: BillingInfo = {

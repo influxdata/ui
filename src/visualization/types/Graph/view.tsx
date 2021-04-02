@@ -21,9 +21,8 @@ import {AppSettingContext} from 'src/shared/contexts/app'
 import {writeThenFetchAndSetAnnotations} from 'src/annotations/actions/thunks'
 import {FALLBACK_COLOR} from 'src/annotations/reducers/index'
 import {
-  getAnnotationStreams,
-  getVisibleAnnotationStreams,
   isSingleClickAnnotationsEnabled,
+  selectAreAnnotationsVisible,
 } from 'src/annotations/selectors'
 
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
@@ -60,11 +59,22 @@ import {
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
+// Notifications
+import {createAnnotationFailed} from 'src/shared/copy/notifications'
+
+import {notify} from 'src/shared/actions/notifications'
+
 interface Props extends VisualizationProps {
   properties: XYViewProperties
 }
 
-const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
+const XYPlot: FC<Props> = ({
+  properties,
+  result,
+  timeRange,
+  annotations,
+  cellID,
+}) => {
   const {theme, timeZone} = useContext(AppSettingContext)
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
@@ -74,16 +84,12 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
   )
   const dispatch = useDispatch()
 
-  // it doesn't know that it is even *in* a dashboard, much less which dashboard it is in.
-  // so having annotations on per dashboard is not supported yet
-  // these next two values are set in the dashboard, and used whether or not this view is in a dashboard
-  // or in configuration/single cell popout mode
+  // these two values are set in the dashboard, and used whether or not this view
+  // is in a dashboard or in configuration/single cell popout mode
   // would need to add the annotation control bar to the VEOHeader to get access to the controls,
   // which are currently global values, not per dashboard
   const inAnnotationWriteMode = useSelector(isSingleClickAnnotationsEnabled)
-  const visibleAnnotationStreams = useSelector(getVisibleAnnotationStreams)
-
-  const annotationStreams = useSelector(getAnnotationStreams)
+  const annotationsAreVisible = useSelector(selectAreAnnotationsVisible)
 
   const storedXDomain = useMemo(() => parseXBounds(properties.axes.x.bounds), [
     properties.axes.x.bounds,
@@ -178,15 +184,22 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
     const createAnnotation = userModifiedAnnotation => {
       const {message, startTime} = userModifiedAnnotation
       event('xyplot.annotations.create_annotation.create')
-      dispatch(
-        writeThenFetchAndSetAnnotations([
-          {
-            summary: message,
-            startTime: new Date(startTime).getTime(),
-            endTime: new Date(startTime).getTime(),
-          },
-        ])
-      )
+      try {
+        dispatch(
+          writeThenFetchAndSetAnnotations([
+            {
+              summary: message,
+              stream: cellID,
+              startTime: new Date(startTime).getTime(),
+              endTime: new Date(startTime).getTime(),
+            },
+          ])
+        )
+        event('xyplot.annotations.create_annotation.create')
+      } catch (err) {
+        dispatch(notify(createAnnotationFailed(err)))
+        event('xyplot.annotations.create_annotation.failure')
+      }
     }
 
     const singleClickHandler = (
@@ -248,42 +261,49 @@ const XYPlot: FC<Props> = ({properties, result, timeRange, annotations}) => {
   }
 
   if (isFlagEnabled('annotations')) {
+    const cellAnnotations = annotations[cellID] ?? []
+
+    const annotationsToRender: any[] = cellAnnotations.map(annotation => {
+      return {
+        ...annotation,
+        color: FALLBACK_COLOR,
+      }
+    })
+
     if (inAnnotationWriteMode) {
       config.interactionHandlers = {
         singleClick: makeSingleClickHandler(),
       }
     }
 
-    // show only the streams that are enabled by the user, the 'default' stream is enabled by default.
-    let selectedAnnotations: any[] = []
-
-    // we want to check what annotations are enabled
-    visibleAnnotationStreams.forEach(visibleStreamName => {
-      if (annotations && annotations[visibleStreamName]) {
-        const correspondingStream = annotationStreams.find(
-          stream => stream.stream === visibleStreamName
-        )
-
-        const annotationsWithStreamColor = annotations[visibleStreamName].map(
-          annotation => {
-            return {
-              ...annotation,
-              color: correspondingStream?.color ?? FALLBACK_COLOR,
+    const handleAnnotationClick = (id: string) => {
+      const annotationToEdit = annotations[cellID].find(
+        annotation => annotation.id === id
+      )
+      if (annotationToEdit) {
+        event('xyplot.annotations.edit_annotation.show_overlay')
+        dispatch(
+          showOverlay(
+            'edit-annotation',
+            {clickedAnnotation: {...annotationToEdit, stream: cellID}},
+            () => {
+              event('xyplot.annotations.edit_annotation.cancel')
+              dismissOverlay()
             }
-          }
+          )
         )
-        selectedAnnotations = [...annotationsWithStreamColor]
       }
-    })
-
-    if (selectedAnnotations.length) {
+    }
+    if (annotationsAreVisible && annotationsToRender.length) {
       const annotationLayer: AnnotationLayerConfig = {
         type: 'annotation',
         x: xColumn,
         y: yColumn,
         fill: groupKey,
-        annotations: selectedAnnotations.map(annotation => {
+        handleAnnotationClick,
+        annotations: annotationsToRender.map(annotation => {
           return {
+            id: annotation.id,
             title: annotation.summary,
             description: '',
             color: annotation.color,

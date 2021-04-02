@@ -20,13 +20,7 @@ enum MapErrorStates {
 }
 
 const GeoPlot: FC<Props> = ({result, properties}) => {
-  const {
-    layers,
-    zoom,
-    allowPanAndZoom,
-    detectCoordinateFields,
-    mapStyle,
-  } = properties
+  const {layers, zoom, allowPanAndZoom, mapStyle} = properties
 
   const [errorCode, setErrorCode] = useState<string>('')
   const [mapToken, setMapToken] = useState<string>('')
@@ -41,9 +35,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
       }
     }
     getToken()
-  })
-
-  let error = ''
+  }, [])
 
   const {lat, lon} = properties.center
 
@@ -51,11 +43,16 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     lat,
     lon,
   }
-  try {
-    calculatedGeoCoordinates = getGeoCoordinates(result.table, 0)
-  } catch (err) {
-    setErrorCode(MapErrorStates.InvalidCoordinates)
-  }
+
+  useEffect(() => {
+    try {
+      calculatedGeoCoordinates = getGeoCoordinates(result.table)
+    } catch (err) {
+      setErrorCode(MapErrorStates.InvalidCoordinates)
+    }
+  }, [])
+
+  let error = ''
 
   const getMapboxUrl = () => {
     if (mapToken) {
@@ -101,7 +98,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
                 lon: calculatedGeoCoordinates.lon,
                 zoom,
                 allowPanAndZoom,
-                detectCoordinateFields,
+                detectCoordinateFields: true,
                 mapStyle,
                 layers,
                 tileServerConfiguration: tileServerConfiguration,

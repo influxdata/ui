@@ -62,9 +62,7 @@ const BillingStatsPanel: FC = () => {
           appearance={Appearance.Outline}
           distanceFromTrigger={16}
           contents={() => (
-            <React.Fragment data-testid="usage-billing--popover">
-              {dateRange}
-            </React.Fragment>
+            <div data-testid="usage-billing--popover">{dateRange}</div>
           )}
           position={PopoverPosition.ToTheRight}
           showEvent={PopoverInteraction.Hover}

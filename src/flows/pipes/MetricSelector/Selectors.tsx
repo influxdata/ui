@@ -6,7 +6,7 @@ import {InfluxColors, List, EmptyState} from '@influxdata/clockface'
 import MeasurementSelectors from 'src/flows/pipes/MetricSelector/MeasurementSelectors'
 import FieldSelectors from 'src/flows/pipes/MetricSelector/FieldSelectors'
 import TagSelectors from 'src/flows/pipes/MetricSelector/TagSelectors'
-import {SchemaContext} from 'src/flows/context/schemaProvider'
+import {SchemaContext} from 'src/flows/pipes/MetricSelector/context'
 
 const Selectors: FC = () => {
   const {fields, measurements, tags, searchTerm} = useContext(SchemaContext)

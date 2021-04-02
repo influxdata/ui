@@ -18,11 +18,17 @@ import {API_BASE_PATH} from 'src/shared/constants'
 const url = `${API_BASE_PATH}api/v2private/annotations`
 const streamsURL = `${API_BASE_PATH}api/v2private/streams`
 
+const annotationsProxy = axios.create({
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
+
 // Utils
 import {formatAnnotationQueryString} from 'src/annotations/utils/formatQueryString'
 
 export const getAnnotationStreams = async (): Promise<AnnotationStream[]> => {
-  const annotationStreamResponse = await axios.get(streamsURL)
+  const annotationStreamResponse = await annotationsProxy.get(streamsURL)
   if (annotationStreamResponse.status >= 300) {
     throw new Error(
       annotationStreamResponse.data?.message ??
@@ -44,7 +50,7 @@ export const writeAnnotation = async (
     }
   })
 
-  const res = await axios.post(url, annotationsRequestConverted)
+  const res = await annotationsProxy.post(url, annotationsRequestConverted)
 
   if (res.status >= 300) {
     throw new Error(res.data?.message)
@@ -67,7 +73,9 @@ export const writeAnnotation = async (
 export const getAnnotations = async (
   stream?: string
 ): Promise<AnnotationResponse[]> => {
-  const res = await axios.get(`${url}?${formatAnnotationQueryString({stream})}`)
+  const res = await annotationsProxy.get(
+    `${url}?${formatAnnotationQueryString({stream})}`
+  )
 
   if (res.status >= 300) {
     throw new Error(res.data?.message)
@@ -85,7 +93,7 @@ export const getAnnotation = async (
   const formattedQueryString = formatAnnotationQueryString(annotation)
   const appendedURL = `${url}?${formattedQueryString}`
 
-  const res = await axios.get(appendedURL)
+  const res = await annotationsProxy.get(appendedURL)
 
   if (res.status >= 300) {
     throw new Error(res.data?.message)
@@ -98,24 +106,18 @@ export const getAnnotation = async (
 }
 
 export const updateAnnotation = async (
-  oldAnnotation: DeleteAnnotation,
   newAnnotation: Annotation
 ): Promise<Annotation> => {
-  const res = await axios.put(url, {old: oldAnnotation, new: newAnnotation})
+  const res = await annotationsProxy.put(
+    `${url}/${newAnnotation.id}`,
+    newAnnotation
+  )
 
   if (res.status >= 300) {
     throw new Error(res.data?.message)
   }
 
-  const {startTime, endTime, summary, message, stickers, stream} = res.data
-  return {
-    startTime,
-    endTime,
-    summary,
-    message,
-    stickers,
-    stream,
-  }
+  return res.data
 }
 
 export const deleteAnnotation = async (
@@ -128,7 +130,7 @@ export const deleteAnnotation = async (
 
   const appendedURL = `${url}?${formattedQueryString}`
 
-  const res = await axios.delete(appendedURL)
+  const res = await annotationsProxy.delete(appendedURL)
 
   if (res.status >= 300) {
     throw new Error(res.data?.message)

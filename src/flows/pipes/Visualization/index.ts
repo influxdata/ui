@@ -18,7 +18,7 @@ export default register => {
       properties: SUPPORTED_VISUALIZATIONS['xy'].initial,
     },
     generateFlux: (pipe, _, append) => {
-      if (!pipe.functions) {
+      if (!pipe.functions || !pipe.functions.length) {
         // this is just for migration
         pipe.functions = [{name: 'mean'}]
       }

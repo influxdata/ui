@@ -25,6 +25,7 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Types
 import {SortTypes} from 'src/shared/utils/sort'
+import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{id: string; orgID: string}>
@@ -70,6 +71,7 @@ class TaskRunsPage extends PureComponent<Props, State> {
               />
             </Page.ControlBarLeft>
             <Page.ControlBarRight>
+              <TimeZoneDropdown />
               <Button
                 onClick={this.handleRunTask}
                 text="Run Task"

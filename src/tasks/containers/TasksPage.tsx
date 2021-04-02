@@ -14,7 +14,6 @@ import GetAssetLimits from 'src/cloud/components/GetAssetLimits'
 import AssetLimitAlert from 'src/cloud/components/AssetLimitAlert'
 import TaskExportOverlay from 'src/tasks/components/TaskExportOverlay'
 import TaskImportOverlay from 'src/tasks/components/TaskImportOverlay'
-import TaskImportFromTemplateOverlay from 'src/tasks/components/TaskImportFromTemplateOverlay'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -101,7 +100,6 @@ class TasksPage extends PureComponent<Props, State> {
             setShowInactive={setShowInactive}
             showInactive={showInactive}
             onImportTask={this.summonImportOverlay}
-            onImportFromTemplate={this.summonImportFromTemplateOverlay}
             limitStatus={limitStatus}
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
@@ -132,9 +130,6 @@ class TasksPage extends PureComponent<Props, State> {
                       onFilterChange={setSearchTerm}
                       onUpdate={updateTaskName}
                       onImportTask={this.summonImportOverlay}
-                      onImportFromTemplate={
-                        this.summonImportFromTemplateOverlay
-                      }
                       sortKey={sortKey}
                       sortDirection={sortDirection}
                       sortType={sortType}
@@ -155,10 +150,6 @@ class TasksPage extends PureComponent<Props, State> {
           <Route
             path="/orgs/:orgID/tasks/:id/export"
             component={TaskExportOverlay}
-          />
-          <Route
-            path="/orgs/:orgID/tasks/import-template"
-            component={TaskImportFromTemplateOverlay}
           />
           <Route
             path="/orgs/:orgID/tasks/import"
@@ -198,17 +189,6 @@ class TasksPage extends PureComponent<Props, State> {
     } = this.props
 
     history.push(`/orgs/${orgID}/tasks/new`)
-  }
-
-  private summonImportFromTemplateOverlay = () => {
-    const {
-      history,
-      match: {
-        params: {orgID},
-      },
-    } = this.props
-
-    history.push(`/orgs/${orgID}/tasks/import-template`)
   }
 
   private summonImportOverlay = (): void => {

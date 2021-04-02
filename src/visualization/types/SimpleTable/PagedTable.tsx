@@ -9,7 +9,10 @@ import React, {
   useState,
 } from 'react'
 import {DapperScrollbars} from '@influxdata/clockface'
-import {SubsetTable} from 'src/visualization/types/SimpleTable'
+import {
+  SubsetTable,
+  SimpleTableViewProperties,
+} from 'src/visualization/types/SimpleTable'
 import {FluxResult} from 'src/types/flows'
 import {PaginationContext} from 'src/visualization/context/pagination'
 import InnerTable from 'src/visualization/types/SimpleTable/InnerTable'
@@ -77,7 +80,8 @@ const measurePage = (
 const subsetResult = (
   result: FluxResult['parsed'],
   offset: number,
-  page: number
+  page: number,
+  disableFilter: boolean
 ): SubsetTable[] => {
   // only look at data within the page
   const subset = Object.values(result.table.columns)
@@ -135,15 +139,16 @@ const subsetResult = (
         .concat(
           Object.values(subset)
             .filter((c: any) => {
-              return ![
-                '_start',
-                '_stop',
-                'result',
-                'table',
-                '_measurement',
-                '_field',
-                '_value',
-              ].includes(c.name)
+              return (
+                ![
+                  'result',
+                  'table',
+                  '_measurement',
+                  '_field',
+                  '_value',
+                ].includes(c.name) &&
+                (disableFilter || !['_start', '_stop'].includes(c.name))
+              )
             })
             .sort((a: any, b: any) =>
               a.name.toLowerCase().localeCompare(b.name.toLowerCase())
@@ -190,10 +195,11 @@ const subsetResult = (
 }
 
 interface Props {
+  properties: SimpleTableViewProperties
   result: FluxResult['parsed']
 }
 
-const PagedTable: FC<Props> = ({result}) => {
+const PagedTable: FC<Props> = ({result, properties}) => {
   const {offset, setSize} = useContext(PaginationContext)
   const [height, setHeight] = useState(0)
   const ref = useRef()
@@ -239,7 +245,7 @@ const PagedTable: FC<Props> = ({result}) => {
     return measurePage(result, offset, height)
   }, [result, offset, height])
   const tables = useMemo(() => {
-    return subsetResult(result, offset, page)
+    return subsetResult(result, offset, page, properties.showAll)
   }, [result, offset, page])
 
   useEffect(() => {

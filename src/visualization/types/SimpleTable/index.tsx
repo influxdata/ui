@@ -5,6 +5,7 @@ import icon from './icon'
 
 export interface SimpleTableViewProperties {
   type: 'simple-table'
+  showAll: boolean
 }
 
 interface SubsetTableColumn {
@@ -29,7 +30,7 @@ export default register => {
     type: 'simple-table',
     name: 'Simple Table',
     graphic: icon,
-    initial: {type: 'simple-table'},
+    initial: {type: 'simple-table', showAll: false},
     component: view,
   })
 }

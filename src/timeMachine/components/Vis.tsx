@@ -76,6 +76,7 @@ const TimeMachineVis: FC<Props> = ({
   if (isViewingRawData && isFlagEnabled('simple-table')) {
     resolvedViewProperties = {
       type: 'simple-table',
+      showAll: true,
     }
   }
 

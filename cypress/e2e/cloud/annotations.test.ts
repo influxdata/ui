@@ -233,7 +233,7 @@ describe('The Annotations UI functionality', () => {
 
   it('can create an annotation that is scoped to a dashboard cell', () => {
     // create a new cell
-    cy.getByTestID('add-dashboard-cell--button')
+    cy.getByTestID('button')
       .click()
       .then(() => {
         cy.getByTestID('selector-list schmucket')

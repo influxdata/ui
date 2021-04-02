@@ -137,4 +137,92 @@ describe('The Annotations UI functionality', () => {
     })
     cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
   })
+
+  it('can delete an annotation by clicking on the annotation line', () => {
+    // add the annotation
+    cy.getByTestID('cell blah').within(() => {
+      cy.getByTestID('giraffe-inner-plot').click()
+    })
+    cy.getByTestID('overlay--container').within(() => {
+      cy.getByTestID('textarea')
+        .should('be.visible')
+        .click()
+        .focused()
+        .type('im a hippopotamus')
+      cy.getByTestID('add-annotation-submit').click()
+    })
+
+    // should have the annotation created , lets click it to show the modal.
+    cy.getByTestID('cell blah').within(() => {
+      cy.get('line').click()
+    })
+
+    cy.getByTestID('delete-annotation-button').click()
+
+    // annotation line should not exist in the dashboard cell
+    cy.getByTestID('cell blah').within(() => {
+      cy.get('line').should('not.exist')
+    })
+  })
+
+  it('can edit an annotation by clicking on the annotation line', () => {
+    // add the annotation
+    cy.getByTestID('cell blah').within(() => {
+      cy.getByTestID('giraffe-inner-plot').click()
+    })
+    cy.getByTestID('overlay--container').within(() => {
+      cy.getByTestID('textarea')
+        .should('be.visible')
+        .click()
+        .focused()
+        .type('im a hippopotamus')
+      cy.getByTestID('add-annotation-submit').click()
+    })
+
+    // should have the annotation created , lets click it to show the modal.
+    cy.getByTestID('cell blah').within(() => {
+      cy.get('line').click()
+    })
+
+    cy.getByTestID('edit-annotation-summary-inputfield').clear().type('lets edit this annotation...')
+
+    cy.getByTestID('edit-annotation-submit-button').click()
+
+    // annotation tooltip should say the new name
+    cy.getByTestID('cell blah').within(() => {
+      cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
+    })
+    cy.getByTestID('giraffe-annotation-tooltip').contains('lets edit this annotation...')
+  })
+
+  it('can cancel an annotation edit process by clicking on the cancel button in the edit annotation form', () => {
+    // add the annotation
+    cy.getByTestID('cell blah').within(() => {
+      cy.getByTestID('giraffe-inner-plot').click()
+    })
+    cy.getByTestID('overlay--container').within(() => {
+      cy.getByTestID('textarea')
+        .should('be.visible')
+        .click()
+        .focused()
+        .type('im a hippopotamus')
+      cy.getByTestID('add-annotation-submit').click()
+    })
+
+    // should have the annotation created , lets click it to show the modal.
+    cy.getByTestID('cell blah').within(() => {
+      cy.get('line').click()
+    })
+
+    cy.getByTestID('edit-annotation-summary-inputfield').clear().type('lets edit this annotation...')
+
+    cy.getByTestID('edit-annotation-cancel-button').click()
+
+    // annotation tooltip should say the old name
+    cy.getByTestID('cell blah').within(() => {
+      cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
+    })
+    cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
+  })
+
 })

@@ -111,6 +111,7 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
                 onChange={handleChange}
                 status={ComponentStatus.Default}
                 size={ComponentSize.Medium}
+                testID="edit-annotation-summary-inputfield"
               />
             </Form.Element>
           </Panel>
@@ -130,11 +131,13 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
             onClick={handleClose}
             color={ComponentColor.Default}
             className="edit-annotation-cancel"
+            testID="edit-annotation-cancel-button"
           />
           <Button
             text="Save Changes"
             onClick={() => handleSubmit(editedAnnotation)}
             color={ComponentColor.Primary}
+            testID="edit-annotation-submit-button"
           />
         </div>
       </Overlay.Footer>

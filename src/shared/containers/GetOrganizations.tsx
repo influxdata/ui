@@ -9,7 +9,6 @@ import {CheckoutPage, OperatorPage} from 'src/shared/containers'
 const NoOrgsPage = lazy(() => import('src/organizations/containers/NoOrgsPage'))
 const App = lazy(() => import('src/App'))
 const NotFound = lazy(() => import('src/shared/components/NotFound'))
-import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Types
 import {RemoteDataState, AppState} from 'src/types'

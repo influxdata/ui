@@ -41,7 +41,7 @@ const ResourcesTable: FC = () => {
     : accounts
   const headers = isOrgsTab ? organizationColumnHeaders : accountHeaderInfo
   const infos = isOrgsTab ? organizationColumnInfo : accountColumnInfo
-  console.log({organizations})
+
   return (
     <Tabs.Container orientation={Orientation.Horizontal}>
       <OperatorTabs />

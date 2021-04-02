@@ -2,8 +2,13 @@
 
 set -eu -o pipefail
 
+# TODO GET the https://circleci.com/api/v2/project/gh/influxdata/monitor-ci/pipeline API,
+# filter for pipelines where SHA == .vcs.revision in the json response.
+# Check the workflows for those filtered pipelines to see if any pipelines are fully passing.
+# If a fully passing pipeline is found, exit early with success; otherwise, continue.
+
 # start the monitor-ci pipeline
-echo "starting monitor-ci pipeline targeting UI branch ${BRANCH} and using image tag ${TAG}"
+printf "\nstarting monitor-ci pipeline targeting UI branch ${BRANCH} and using image tag ${TAG}\n"
 pipeline=$(curl -s --fail --request POST \
   --url https://circleci.com/api/v2/project/gh/influxdata/monitor-ci/pipeline \
   --header "Circle-Token: ${API_KEY}" \
@@ -12,7 +17,7 @@ pipeline=$(curl -s --fail --request POST \
   --data "{\"branch\":\"${BRANCH}\", \"parameters\":{ \"ui-image-tag\":\"${TAG}\"}}")
 
 if [ $? != 0 ]; then
-	echo "failed to start monitor-ci pipeline, quitting"
+	echo "failed to start the monitor-ci pipeline, quitting"
 	exit 1
 fi
 
@@ -22,7 +27,7 @@ pipeline_number=$(echo ${pipeline} | jq -r '.number')
 # pipeline_number="30"
 
 # poll the status of the monitor-ci pipeline
-echo "waiting for monitor-ci pipeline..."
+printf "\nwaiting for monitor-ci pipeline...\n"
 is_failure=0
 attempts=0
 max_attempts=10
@@ -46,9 +51,9 @@ do
 			workflow_status=$(echo ${workflows} | jq -r --arg id "${workflow_id}" '.items | map(select(.id == $id)) | .[].status')
 
 			if [[ "$workflow_status" == "success" ]]; then
-				echo "PASSED: monitor-ci workflow with id ${workflow_id} passed: https://app.circleci.com/pipelines/github/influxdata/monitor-ci/${pipeline_number}/workflows/${workflow_id}"
+				printf "\nPASSED: monitor-ci workflow with id ${workflow_id} passed: https://app.circleci.com/pipelines/github/influxdata/monitor-ci/${pipeline_number}/workflows/${workflow_id} \n"
 			else
-				echo "FAILURE: monitor-ci workflow with id ${workflow_id} failed: https://app.circleci.com/pipelines/github/influxdata/monitor-ci/${pipeline_number}/workflows/${workflow_id}"
+				printf "\nFAILURE: monitor-ci workflow with id ${workflow_id} failed: https://app.circleci.com/pipelines/github/influxdata/monitor-ci/${pipeline_number}/workflows/${workflow_id} \n"
 
 				# set job failure
 				is_failure=1
@@ -60,11 +65,37 @@ do
 					--header 'content-type: application/json' \
 					--header 'Accept: application/json')
 
-				echo "Failed jobs:"
+				# print the names of the failed jobs
+				printf "\nFailed jobs:\n"
 				failed_jobs=$(echo ${jobs} | jq '.items | map(select(.status == "failed"))')
 				failed_jobs_names=( $(echo ${failed_jobs} | jq -r '.[].name') )
 				for name in "${failed_jobs_names[@]}"; do
-					echo "- ${name}"
+					printf " - ${name}\n"
+				done
+
+				# get the artifacts for each failed job
+				printf "\nArtifacts from failed jobs:\n"
+				for name in "${failed_jobs_names[@]}"; do
+					printf "\n===== ${name} =====\n"
+					job_number=$(echo ${failed_jobs} | jq -r --arg name "${name}" 'map(select(.name == $name)) | .[].job_number')
+					artifacts=$(curl -s --request GET \
+					--url "https://circleci.com/api/v1.1/project/github/influxdata/ui/${job_number}/artifacts" \
+						--header "Circle-Token: ${API_KEY}" \
+						--header 'content-type: application/json' \
+						--header 'Accept: application/json')
+
+					artifacts_paths=( $(echo ${artifacts} | jq -r '.[].pretty_path') )
+					echo $artifacts_paths
+					if [ ${#artifacts_paths[@]} -eq 0 ]; then
+						printf "\n No artifacts for this failed job.\n"
+					else
+						# print each artifact text and link
+						for path in "${artifacts_paths[@]}"; do
+							url=$(echo ${artifacts} | jq -r --arg path "${path}" 'map(select(.pretty_path == $path)) | .[].url')
+							printf "\n- ${path}\n"
+							printf "   - URL: ${url}\n"
+						done
+					fi
 				done
 			fi
 		done
@@ -75,10 +106,10 @@ do
 	# sleep 1 minute and poll the status again
 	attempts=$(($attempts+1))
 	remaining_attempts=$(($max_attempts-$attempts))
-	echo "monitor-ci pipeline isn't finished yet, waiting another minute... ($remaining_attempts minutes left)"
+	printf "\nmonitor-ci pipeline isn't finished yet, waiting another minute... ($remaining_attempts minutes left)\n"
 	sleep 1m
 
 done
 
-echo "monitor-ci pipeline did not finish in time, quitting"
+printf "\nmonitor-ci pipeline did not finish in time, quitting\n"
 exit 1

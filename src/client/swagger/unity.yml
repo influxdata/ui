@@ -849,7 +849,6 @@ components:
             - free
             - cancelled
             - pay_as_you_go
-        # TODO(ariel): this seems cyclical since accounts and orgs are subsets of one another
         organizations:
           $ref: '#/components/schemas/Organizations'
         zuoraAccountId:
@@ -1233,9 +1232,9 @@ components:
         id:
           type: string
           description: ID of the org
-        idpeID:
+        quartzId:
           type: string
-          description: idpe ID of the org
+          description: quartz ID of the org
         name:
           type: string
           description: name of the org
@@ -1248,10 +1247,14 @@ components:
         date:
           type: string
           description: date org was created
-        # TODO(ariel): this seems cyclical since accounts and orgs are subsets of one another
-        account:
-          $ref: '#/components/schemas/Account'
-      required: [id, idpeID, name, account, region, provider, date]
+        accountType:
+          type: string
+          description: type of the account
+          enum:
+            - free
+            - cancelled
+            - pay_as_you_go
+      required: [id, quartzId, name, accountType, region, provider, date]
     Organizations:
       type: array
       items:

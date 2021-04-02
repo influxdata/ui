@@ -115,95 +115,36 @@ export const getOrgs = (
   const organizations: Organization[] = [
     {
       id: '123',
-      idpeID: '123',
+      quartzId: '123',
       name: 'Best Org',
       region: 'us-west',
       provider: 'Zuora',
       date: '01/01/2010',
-      account: {
-        id: '123',
-        marketplace: null,
-        balance: 0,
-        billingContact: {
-          companyName: 'Influx',
-          email: 'asalem@influxdata.com',
-          firstName: 'Ariel',
-          lastName: 'Salem',
-          country: 'USA',
-          street1: '123 Main St',
-          city: 'New York',
-          subdivision: 'NY',
-          postalCode: 30000,
-        },
-        users: [],
-        type: 'pay_as_you_go',
-      },
+      accountType: 'pay_as_you_go',
     },
     {
       id: '345',
-      idpeID: '345',
+      quartzId: '345',
       name: 'Second_best_org',
       region: 'eu-central',
       provider: 'aws',
       date: '01/01/2011',
-      account: {
-        id: '345',
-        marketplace: {
-          name: 'Amazon Web Services',
-          url: 'smile.amazon.com',
-          shortName: 'aws',
-        },
-        balance: 10,
-        billingContact: {
-          companyName: 'Data',
-          email: 'watts@influxdata.com',
-          firstName: 'Andrew',
-          lastName: 'Watkins',
-          country: 'USA',
-          street1: '345 Main St',
-          city: 'Austin',
-          subdivision: 'TX',
-          postalCode: 50000,
-        },
-        users: [],
-        type: 'cancelled',
-      },
+      accountType: 'cancelled',
     },
     {
       id: '678',
-      idpeID: '678',
+      quartzId: '678',
       name: 'Lucky 3',
       region: 'gcp-west',
       provider: 'gcm',
       date: '01/01/2012',
-      account: {
-        id: '678',
-        marketplace: {
-          shortName: 'gcm',
-          name: 'Google Cloud Marketplace',
-          url: 'www.google.com',
-        },
-        balance: 20,
-        billingContact: {
-          companyName: 'Pineapple',
-          email: 'desa@influxdata.com',
-          firstName: 'Michael',
-          lastName: 'De Sa',
-          country: 'USA',
-          street1: '678 Main St',
-          city: 'Seattle',
-          subdivision: 'WA',
-          postalCode: 80000,
-        },
-        users: [],
-        type: 'free',
-      },
+      accountType: 'free',
     },
   ]
 
   const filtered = organizations.filter(org => {
     if (searchTerm) {
-      return org.id.includes(searchTerm) || org.idpeID.includes(searchTerm)
+      return org.id.includes(searchTerm) || org.quartzId.includes(searchTerm)
     }
     return true
   })
@@ -213,29 +154,12 @@ export const getOrgs = (
 export const getOrgById = (_id: string): ReturnType<typeof getOrg> => {
   const organization: Organization = {
     id: '123',
-    idpeID: '123',
+    quartzId: '123',
     name: 'Best Org',
     region: 'us-west',
     provider: 'Zuora',
     date: '01/01/2010',
-    account: {
-      id: '123',
-      marketplace: null,
-      balance: 0,
-      billingContact: {
-        companyName: 'Influx',
-        email: 'asalem@influxdata.com',
-        firstName: 'Ariel',
-        lastName: 'Salem',
-        country: 'USA',
-        street1: '123 Main St',
-        city: 'New York',
-        subdivision: 'NY',
-        postalCode: 30000,
-      },
-      users: [],
-      type: 'pay_as_you_go',
-    },
+    accountType: 'pay_as_you_go',
   }
 
   return makeResponse(200, organization)
@@ -255,12 +179,12 @@ export const getAccountById = (
     organizations: [
       {
         id: 'orgid',
-        idpeID: 'idpeID',
+        quartzId: 'quartzId',
         name: 'name',
         region: 'region',
         provider: 'provider',
         date: '01/01/2021',
-        account: null,
+        accountType: 'free',
       },
     ],
     billingContact: {

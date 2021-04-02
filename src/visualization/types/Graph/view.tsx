@@ -63,7 +63,6 @@ import {event} from 'src/cloud/utils/reporting'
 import {createAnnotationFailed} from 'src/shared/copy/notifications'
 
 import {notify} from 'src/shared/actions/notifications'
-import {cell} from '../../../../mocks/dummyData'
 
 interface Props extends VisualizationProps {
   properties: XYViewProperties

@@ -119,8 +119,12 @@ class TaskRunsPage extends PureComponent<Props, State> {
 
   private handleRunTask = () => {
     const {onRunTask, match, getRuns} = this.props
-    onRunTask(match.params.id)
-    getRuns(match.params.id)
+    try {
+      onRunTask(match.params.id)
+      getRuns(match.params.id)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   private handleEditTask = () => {

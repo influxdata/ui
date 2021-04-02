@@ -839,6 +839,13 @@ components:
         id:
           type: string
           description: account id
+        quartzId:
+          type: string
+          description: account id in quartz
+        onboardingState:
+          type: string
+          # TODO(ariel): get clarity on this
+          description: stage of onboarding the account is in
         marketplace:
           $ref: '#/components/schemas/Marketplace'
           description: which marketplace, nil if none
@@ -1263,7 +1270,19 @@ components:
         accountId:
           type: string
           description: id of the account associated with the org
-      required: [id, quartzId, name, accountType, region, provider, date]
+      required:
+        [
+          id,
+          quartzId,
+          name,
+          accountType,
+          accountBalance,
+          accountEmail,
+          accountId,
+          region,
+          provider,
+          date,
+        ]
     Organizations:
       type: array
       items:

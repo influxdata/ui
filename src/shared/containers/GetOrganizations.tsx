@@ -60,7 +60,7 @@ const GetOrganizations: FunctionComponent = () => {
   return (
     <PageSpinner loading={status}>
       <Suspense fallback={<PageSpinner />}>
-        <FeatureFlag name="unity-me-api">
+        {isFlagEnabled('unity-me-api') ? (
           <PageSpinner loading={quartzMeStatus}>
             <Switch>
               <Route path="/no-orgs" component={NoOrgsPage} />
@@ -77,19 +77,14 @@ const GetOrganizations: FunctionComponent = () => {
               <Route component={NotFound} />
             </Switch>
           </PageSpinner>
-        </FeatureFlag>
-        {/* <Switch>
-          <Route path="/no-orgs" component={NoOrgsPage} />
-          <Route path="/orgs" component={App} />
-          <Route exact path="/" component={RouteToOrg} />
-          {CLOUD && isFlagEnabled('unity-checkout') && (
-            <Route path="/checkout" component={CheckoutPage} />
-          )}
-          {CLOUD && isFlagEnabled('unity-operator') && (
-            <Route path="/operator" component={OperatorPage} />
-          )}
-          <Route component={NotFound} />
-        </Switch> */}
+        ) : (
+          <Switch>
+            <Route path="/no-orgs" component={NoOrgsPage} />
+            <Route path="/orgs" component={App} />
+            <Route exact path="/" component={RouteToOrg} />
+            <Route component={NotFound} />
+          </Switch>
+        )}
       </Suspense>
     </PageSpinner>
   )

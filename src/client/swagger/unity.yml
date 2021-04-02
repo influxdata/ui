@@ -1254,6 +1254,15 @@ components:
             - free
             - cancelled
             - pay_as_you_go
+        accountBalance:
+          type: number
+          description: balance of the account
+        accountEmail:
+          type: string
+          description: billing contact email
+        accountId:
+          type: string
+          description: id of the account associated with the org
       required: [id, quartzId, name, accountType, region, provider, date]
     Organizations:
       type: array

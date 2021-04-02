@@ -121,6 +121,9 @@ export const getOrgs = (
       provider: 'Zuora',
       date: '01/01/2010',
       accountType: 'pay_as_you_go',
+      accountBalance: 0,
+      accountId: 'account123',
+      accountEmail: 'account@account.com',
     },
     {
       id: '345',
@@ -130,6 +133,9 @@ export const getOrgs = (
       provider: 'aws',
       date: '01/01/2011',
       accountType: 'cancelled',
+      accountBalance: 0,
+      accountId: 'cancelled1',
+      accountEmail: 'cancelled@account.com',
     },
     {
       id: '678',
@@ -139,6 +145,9 @@ export const getOrgs = (
       provider: 'gcm',
       date: '01/01/2012',
       accountType: 'free',
+      accountBalance: 0,
+      accountId: 'free123',
+      accountEmail: 'free@account.com',
     },
   ]
 
@@ -160,6 +169,9 @@ export const getOrgById = (_id: string): ReturnType<typeof getOrg> => {
     provider: 'Zuora',
     date: '01/01/2010',
     accountType: 'pay_as_you_go',
+    accountBalance: 10,
+    accountId: 'pay123',
+    accountEmail: 'paid@account.com',
   }
 
   return makeResponse(200, organization)
@@ -185,6 +197,9 @@ export const getAccountById = (
         provider: 'provider',
         date: '01/01/2021',
         accountType: 'free',
+        accountBalance: 0,
+        accountId: 'freeme1',
+        accountEmail: 'free1@account.com',
       },
     ],
     billingContact: {

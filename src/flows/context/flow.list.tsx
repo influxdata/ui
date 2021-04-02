@@ -137,6 +137,7 @@ export const FlowListProvider: FC = ({children}) => {
   const dispatch = useDispatch()
   useEffect(() => {
     migrate()
+    getAll()
   }, [])
 
   const add = async (flow?: Flow): Promise<string> => {

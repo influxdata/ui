@@ -1162,55 +1162,26 @@ components:
         id:
           description: the idpe id of the user
           type: string
+        # TODO(ariel): find out if these are account or user specific
         firstName:
           type: string
+        # TODO(ariel): find out if these are account or user specific
         lastName:
           type: string
         email:
+          # TODO(ariel): find out about this one
+          description: Not sure if this is the billing account email or the account email, but this might be unnecessary since that should be included in the Account or nested in the Account
           type: string
-        orgId:
-          type: string
-        accountId:
-          type: string
+        account:
+          $ref: '#/components/schemas/Account'
+          description: User Account for the account
         isBeta:
           type: boolean
           description: whether the region associated with the account is a beta region
         isOperator:
           type: boolean
           description: whether the user is an operator
-        marketplace:
-          $ref: '#/components/schemas/Marketplace'
-          description: which marketplace, nil if none
-        balance:
-          type: number
-          description: remaining balance on the account, nil if none
-        billingContact:
-          $ref: '#/components/schemas/BillingContact'
-          description: billing contact for the account
-        users:
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
-        type:
-          type: string
-          description: type of the account
-          enum:
-            - free
-            - cancelled
-            - pay_as_you_go
-      required:
-        [
-          id,
-          accountId,
-          email,
-          firstName,
-          lastName,
-          isOperator,
-          isBeta,
-          orgId,
-          marketplace,
-          type,
-        ]
+      required: [id, account, email, firstName, lastName, isOperator, isBeta]
     Users:
       type: object
       properties:

@@ -5,11 +5,11 @@ import {useLocation} from 'react-router-dom'
 
 // Utils
 import {notify} from 'src/shared/actions/notifications'
-import {getMe, getAccounts, getOrgs} from 'src/operator/api'
+import {getAccounts, getOrgs} from 'src/operator/api'
 import {getAccountsError, getOrgsError} from 'src/shared/copy/notifications'
 
 // Types
-import {Account, Me, Organization} from 'src/types/operator'
+import {Account, Organization} from 'src/types/operator'
 import {RemoteDataState} from 'src/types'
 import {OperatorRoutes} from 'src/operator/constants'
 
@@ -21,8 +21,6 @@ export interface OperatorContextType {
   accounts: Account[]
   handleGetAccounts: () => void
   handleGetOrgs: () => void
-  operator: Me
-  operatorStatus: RemoteDataState
   organizations: Organization[]
   pathname: string
   searchTerm: string
@@ -34,8 +32,6 @@ export const DEFAULT_CONTEXT: OperatorContextType = {
   accounts: [],
   handleGetAccounts: () => {},
   handleGetOrgs: () => {},
-  operator: null,
-  operatorStatus: RemoteDataState.NotStarted,
   organizations: [],
   pathname: OperatorRoutes.default,
   searchTerm: '',
@@ -49,12 +45,8 @@ export const OperatorContext = React.createContext<OperatorContextType>(
 
 export const OperatorProvider: FC<Props> = React.memo(({children}) => {
   const [accounts, setAccounts] = useState([])
-  const [operator, setOperator] = useState(null)
   const [accountStatus, setAccountStatus] = useState(RemoteDataState.NotStarted)
   const [orgsStatus, setOrgsStatus] = useState(RemoteDataState.NotStarted)
-  const [operatorStatus, setOperatorStatus] = useState(
-    RemoteDataState.NotStarted
-  )
   const [searchTerm, setSearchTerm] = useState('')
   const dispatch = useDispatch()
 
@@ -66,7 +58,6 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
       const resp = await getAccounts(searchTerm)
 
       if (resp.status !== 200) {
-        setAccountStatus(RemoteDataState.Error)
         throw new Error(resp.data.message)
       }
 
@@ -85,7 +76,6 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
       const resp = await getOrgs(searchTerm)
 
       if (resp.status !== 200) {
-        setOrgsStatus(RemoteDataState.Error)
         throw new Error(resp.data.message)
       }
 
@@ -116,29 +106,6 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
     }
   }, [pathname, handleGetAccounts, handleGetOrgs])
 
-  const handleGetMe = useCallback(async () => {
-    try {
-      setOperatorStatus(RemoteDataState.Loading)
-      const resp = await getMe()
-
-      if (resp.status !== 200) {
-        setOperatorStatus(RemoteDataState.Error)
-        throw new Error(resp.data.message)
-      }
-
-      setOperatorStatus(RemoteDataState.Done)
-      setOperator(resp.data)
-    } catch (error) {
-      console.error({error})
-      setOperatorStatus(RemoteDataState.Error)
-      dispatch(notify(getOrgsError()))
-    }
-  }, [dispatch])
-
-  useEffect(() => {
-    handleGetMe()
-  }, [handleGetMe])
-
   let status = RemoteDataState.Done
 
   const statuses = [accountStatus, orgsStatus]
@@ -157,8 +124,6 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
         accounts,
         handleGetAccounts,
         handleGetOrgs,
-        operator,
-        operatorStatus,
         organizations,
         pathname,
         searchTerm,

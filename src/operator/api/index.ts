@@ -1,7 +1,6 @@
 import {
   deleteOperatorAccount,
   deleteOperatorAccountUser,
-  getMe as apiGetMe,
   getOperatorAccount,
   getOperatorAccounts,
   getOperatorOrgs,
@@ -9,7 +8,7 @@ import {
   getOrgsLimits,
   putOrgsLimits,
 } from 'src/client/unityRoutes'
-import {Account, Me, Organization, OrgLimits} from 'src/types/operator'
+import {Account, Organization, OrgLimits} from 'src/types/operator'
 
 const makeResponse = (status, data) => {
   return Promise.resolve({
@@ -240,36 +239,6 @@ export const getOrgById = (_id: string): ReturnType<typeof getOrg> => {
   }
 
   return makeResponse(200, organization)
-}
-
-export const getMe = (): ReturnType<typeof apiGetMe> => {
-  const me: Me = {
-    id: '123',
-    firstName: 'ariel',
-    lastName: 'salem',
-    email: 'asalem@influxdata.com',
-    orgId: 'org123',
-    accountId: 'account123',
-    isBeta: false,
-    isOperator: true,
-    marketplace: null,
-    balance: 0,
-    billingContact: {
-      companyName: 'Influx',
-      email: 'asalem@influxdata.com',
-      firstName: 'Ariel',
-      lastName: 'Salem',
-      country: 'USA',
-      street1: '123 Main St',
-      city: 'New York',
-      subdivision: 'NY',
-      postalCode: 30000,
-    },
-    users: [],
-    type: 'pay_as_you_go',
-  }
-
-  return makeResponse(200, me)
 }
 
 export const getAccountById = (

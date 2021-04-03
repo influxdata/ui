@@ -485,6 +485,11 @@ export const selectValue = (variableID: string, selected: string) => async (
   if (!vals.includes(selected)) {
     // TODO: there is an issue that's causing non-state set values to
     // return with no results and not respect query params
+    dispatch(
+      notify(
+        copy.invalidVariableNameValuePairInURLQuery(variable.name, selected)
+      )
+    )
     return
   }
 

@@ -329,6 +329,15 @@ export const invalidTimeRangeValueInURLQuery = (): Notification => ({
   message: `Invalid URL query value supplied for lower or upper time range.`,
 })
 
+export const invalidVariableNameValuePairInURLQuery = (
+  name: string,
+  value: string
+): Notification => ({
+  ...defaultErrorNotification,
+  icon: IconFont.Cube,
+  message: `Invalid URL query value "${value}" supplied for variable name "${name}".`,
+})
+
 export const getVariablesFailed = (): Notification => ({
   ...defaultErrorNotification,
   message: 'Failed to fetch variables',

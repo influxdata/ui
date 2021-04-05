@@ -8,13 +8,13 @@ set -eu -o pipefail
 # If a fully passing pipeline is found, exit early with success; otherwise, continue.
 
 # start the monitor-ci pipeline
-printf "\nstarting monitor-ci pipeline targeting UI branch ${BRANCH} and using image tag ${TAG}\n"
+printf "\nstarting monitor-ci pipeline targeting monitor-ci branch ${MONITOR_CI_BRANCH}, UI branch ${UI_BRANCH} and using UI SHA ${SHA}\n"
 pipeline=$(curl -s --fail --request POST \
   --url https://circleci.com/api/v2/project/gh/influxdata/monitor-ci/pipeline \
   --header "Circle-Token: ${API_KEY}" \
   --header 'content-type: application/json' \
 	--header 'Accept: application/json'    \
-  --data "{\"branch\":\"${BRANCH}\", \"parameters\":{ \"ui-image-tag\":\"${TAG}\"}}")
+  --data "{\"branch\":\"${MONITOR_CI_BRANCH}\", \"parameters\":{ \"ui-sha\":\"${SHA}\", \"ui-branch\":\"${UI_BRANCH}\"}}")
 
 if [ $? != 0 ]; then
 	echo "failed to start the monitor-ci pipeline, quitting"

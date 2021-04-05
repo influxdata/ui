@@ -50,8 +50,7 @@ import {taskToTemplate} from 'src/shared/utils/resourceToTemplate'
 import {isLimitError} from 'src/cloud/utils/limits'
 import {checkTaskLimits} from 'src/cloud/actions/limits'
 import {getOrg} from 'src/organizations/selectors'
-import {getAll, getStatus} from 'src/resources/selectors'
-import {incrementCloneName} from 'src/utils/naming'
+import {getStatus} from 'src/resources/selectors'
 
 // Types
 import {TASK_LIMIT} from 'src/resources/constants'
@@ -245,27 +244,15 @@ export const deleteTask = (taskID: string) => async (
   }
 }
 
-export const cloneTask = (task: Task) => async (
-  dispatch: Dispatch<Action>,
-  getState: GetState
-) => {
+export const cloneTask = (task: Task) => async (dispatch: Dispatch<Action>) => {
   try {
-    const state = getState()
     const resp = await api.getTask({taskID: task.id})
 
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
     }
 
-    const taskName = resp.data.name
-    const tasks = getAll<Task>(state, ResourceType.Tasks)
-    const allTaskNames = tasks.map(d => d.name)
-    const clonedName = incrementCloneName(allTaskNames, taskName)
-    const flux = resp.data.flux
-
-    const newTask = await api.postTask({
-      data: {...resp.data, flux: flux.replace(/".*?"/, `"${clonedName}"`)},
-    })
+    const newTask = await api.postTask({data: resp.data})
 
     if (newTask.status !== 201) {
       throw new Error(newTask.data.message)
@@ -461,6 +448,7 @@ export const runTask = (taskID: string) => async (
     const message = getErrorMessage(error)
     dispatch(notify(copy.taskRunFailed(message)))
     console.error(error)
+    throw message
   }
 }
 

@@ -43,11 +43,13 @@
 .visualization--simple-table--results {
   flex: 1 0 0;
   position: relative;
+  margin-top: 8px;
 }
 
 .visualization--simple-table--paging {
   display: flex;
   align-items: center;
+  height: 48px;
 }
 
 .visualization--simple-table--paging-label {

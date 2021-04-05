@@ -261,8 +261,8 @@ const XYPlot: FC<Props> = ({
   }
 
   if (isFlagEnabled('annotations')) {
-    const cellAnnotations = annotations[cellID] ?? []
-
+    // annotations and the cellID might or might be provided to this graph view
+    const cellAnnotations = annotations ? annotations[cellID] ?? [] : []
     const annotationsToRender: any[] = cellAnnotations.map(annotation => {
       return {
         ...annotation,
@@ -270,7 +270,7 @@ const XYPlot: FC<Props> = ({
       }
     })
 
-    if (inAnnotationWriteMode) {
+    if (inAnnotationWriteMode && cellID) {
       config.interactionHandlers = {
         singleClick: makeSingleClickHandler(),
       }

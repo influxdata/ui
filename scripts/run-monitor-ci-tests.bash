@@ -2,10 +2,43 @@
 
 set -eux -o pipefail
 
-# TODO GET the https://circleci.com/api/v2/project/gh/influxdata/monitor-ci/pipeline API,
-# filter for pipelines where SHA == .vcs.revision in the json response.
-# Check the workflows for those filtered pipelines to see if any pipelines are fully passing.
-# If a fully passing pipeline is found, exit early with success; otherwise, continue.
+# get monitor-ci pipelines we've already run on this sha
+found_passing_pipeline=0
+all_pipelines=$(curl -s --request GET \
+		--url "https://circleci.com/api/v2/project/gh/influxdata/monitor-ci/pipeline" \
+		--header "Circle-Token: ${API_KEY}" \
+		--header 'content-type: application/json' \
+		--header 'Accept: application/json')
+sha_pipelines=$(echo ${all_pipelines} | jq --arg SHA "${SHA}" '.items | map(select(.vcs.revision == $SHA))')
+sha_pipelines_length=$(echo ${sha_pipelines} | jq -r 'length')
+if [ $sha_pipelines_length -gt 0 ]; then
+	# check the status of the workflows for each of these pipelines
+	sha_pipelines_ids=( $(echo ${sha_pipelines} | jq -r '.[].id') )
+	for sha_pipeline_id "${sha_pipelines_ids[@]}"; do
+
+		workflows=$(curl -s --request GET \
+			--url "https://circleci.com/api/v2/pipeline/${pipeline_id}/workflow" \
+			--header "Circle-Token: ${API_KEY}" \
+			--header 'content-type: application/json' \
+			--header 'Accept: application/json')
+
+		number_workflows=$(echo ${workflows} | jq  -r '.items | length')
+		number_success_workflows=$(echo ${workflows} | jq  -r '.items | map(select(.status == "success")) | length')
+
+		if [ $number_workflows -eq $number_success_workflows ]; then
+			# we've found a successful run
+			found_passing_pipeline=1
+		fi
+	done
+fi
+
+# terminate early if we found a passing pipeline for this SHA
+if [ $found_passing_pipeline -eq 1 ]; then
+	printf "\nSUCCESS: Found a passing monitor-ci pipeline for this SHA, will not re-run these tests\n"
+	exit 0
+else
+	printf "\nNo passing monitor-ci pipelines found for this SHA, starting a new one\n"
+fi
 
 # start the monitor-ci pipeline
 printf "\nstarting monitor-ci pipeline targeting monitor-ci branch ${MONITOR_CI_BRANCH}, UI branch ${UI_BRANCH} and using UI SHA ${SHA}\n"
@@ -81,7 +114,7 @@ do
 					printf "\n===== ${name} =====\n"
 					job_number=$(echo ${failed_jobs} | jq -r --arg name "${name}" 'map(select(.name == $name)) | .[].job_number')
 					artifacts=$(curl -s --request GET \
-					--url "https://circleci.com/api/v1.1/project/github/influxdata/ui/${job_number}/artifacts" \
+					--url "https://circleci.com/api/v1.1/project/github/influxdata/monitor-ci/${job_number}/artifacts" \
 						--header "Circle-Token: ${API_KEY}" \
 						--header 'content-type: application/json' \
 						--header 'Accept: application/json')

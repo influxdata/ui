@@ -95,9 +95,7 @@ export default class TaskRunsList extends PureComponent<Props> {
       sortType
     )
 
-    const mostRecentRuns = sortedRuns.slice(0, 20)
-
-    return mostRecentRuns.map(run => (
+    return sortedRuns.map(run => (
       <TaskRunsRow key={`run-id==${run.id}`} taskID={taskID} run={run} />
     ))
   }

@@ -16,7 +16,9 @@ import {
 } from 'src/types'
 
 // GenVariable is the shape of a variable from the server
-export type GenVariable = GVariable
+export type GenVariable = GVariable & {
+  sort_order?: number
+}
 export interface SystemVariableProperties {
   type?: 'system'
   values?: any

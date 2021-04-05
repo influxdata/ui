@@ -85,6 +85,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
                 ? ComponentStatus.Default
                 : ComponentStatus.Disabled
             }
+            testID="add-annotation-submit"
           />
         </Overlay.Footer>
       </Form>

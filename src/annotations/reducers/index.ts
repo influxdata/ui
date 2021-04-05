@@ -44,6 +44,7 @@ export const annotationsReducer = (
       return {
         ...state,
         annotations: {
+          ...state.annotations,
           [stream]: state.annotations[stream].filter(
             annotation => annotation.id !== action.annotation.id
           ),

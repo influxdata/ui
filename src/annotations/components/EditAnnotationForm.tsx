@@ -106,7 +106,7 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
               />
             </Form.Element>
             <Form.Element
-              label="Summary"
+              label="Message"
               className="edit-annotation-form-label"
             >
               <Input

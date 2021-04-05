@@ -375,6 +375,12 @@ export const updateVariableSuccess = (name: string): Notification => ({
   message: `Successfully updated variable: ${name}.`,
 })
 
+export const moveVariableFailed = (error: string): Notification => ({
+  ...defaultErrorNotification,
+  icon: IconFont.Cube,
+  message: `Failed to move variable: ${error}`,
+})
+
 export const copyToClipboardSuccess = (
   text: string,
   title: string = ''

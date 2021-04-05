@@ -21,7 +21,7 @@ interface Props {
 const VariablesControlBarList: FC<Props> = ({variables}) => {
   const dispatch = useDispatch()
 
-  const handleDragEnd = (result): void => {
+  const handleDragEnd = async result => {
     const {destination, source} = result
 
     // Don't do anything if dropdown is dropped outside droppable area
@@ -37,7 +37,7 @@ const VariablesControlBarList: FC<Props> = ({variables}) => {
       return
     }
 
-    dispatch(moveVariable(source.index, destination.index))
+    await dispatch(moveVariable(source.index, destination.index))
   }
 
   const getGridClassName = (isDraggingOver: boolean): CSSProperties =>

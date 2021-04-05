@@ -4,6 +4,9 @@ import React, {FC, ChangeEvent, useEffect, useRef} from 'react'
 // Components
 import {Columns, Form, Grid, TextArea} from '@influxdata/clockface'
 
+// constants
+import {MAX_ANNOTATIONS_MESSAGE_LENGTH} from 'src/shared/constants'
+
 interface Props {
   onChange: (event: ChangeEvent<HTMLTextAreaElement>) => void
   message: string
@@ -11,7 +14,11 @@ interface Props {
 
 export const AnnotationMessageInput: FC<Props> = (props: Props) => {
   const textArea = useRef(null)
-  const validationMessage = props.message ? '' : 'This field is required'
+  let validationMessage = props.message ? '' : 'This field is required'
+
+  if (props.message.length > MAX_ANNOTATIONS_MESSAGE_LENGTH) {
+    validationMessage = `Max limit is ${MAX_ANNOTATIONS_MESSAGE_LENGTH} characters. (${props.message.length} / ${MAX_ANNOTATIONS_MESSAGE_LENGTH})`
+  }
 
   useEffect(() => {
     textArea.current.focus()

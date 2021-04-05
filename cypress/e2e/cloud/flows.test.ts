@@ -20,6 +20,7 @@ describe('Flows', () => {
   })
 
   it('CRUD a flow from the index page', () => {
+    const now = Date.now()
     cy.writeData(
       [
         `test,container_name=cool dopeness=12 ${now - 1000}000000`,

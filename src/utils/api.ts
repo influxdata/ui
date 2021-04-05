@@ -52,14 +52,8 @@ export const getMeQuartz = (): ReturnType<typeof getMe> => {
     isOperator: true,
     account: {
       id: 'account123',
-      marketplace: {
-        name: 'Google Cloud Marketplace',
-        shortName: 'gcm',
-        subscriberId: '123',
-        status: 'subscribed',
-        url: 'www.google.com',
-      },
-      type: 'pay_as_you_go',
+      marketplace: null,
+      type: 'free',
       organizations: null,
       deletable: false,
       balance: 0,

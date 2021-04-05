@@ -14,9 +14,6 @@ import {
 import {AnnotationMessageInput} from 'src/annotations/components/annotationForm/AnnotationMessageInput'
 import {AnnotationStartTimeInput} from 'src/annotations/components/annotationForm/AnnotationStartTimeInput'
 
-// Constants
-import {MAX_ANNOTATIONS_MESSAGE_LENGTH} from 'src/shared/constants'
-
 interface Annotation {
   message: string
   startTime: number | string
@@ -37,7 +34,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
   const [message, setMessage] = useState('')
 
   const isValidAnnotationForm = ({message, startTime}): boolean => {
-    return (message.length <= MAX_ANNOTATIONS_MESSAGE_LENGTH) && startTime
+    return message.length && startTime
   }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {

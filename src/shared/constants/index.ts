@@ -144,5 +144,3 @@ export const SCRIPT_EDITOR_MODE = 'advanced'
 
 export const MARKDOWN_UNSUPPORTED_IMAGE =
   "We don't support images in markdown for security purposes"
-
-export const MAX_ANNOTATIONS_MESSAGE_LENGTH = 255

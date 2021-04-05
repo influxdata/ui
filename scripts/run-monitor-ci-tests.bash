@@ -123,10 +123,10 @@ do
 					if [ ${artifacts_length} -eq 0 ]; then
 						printf "\n No artifacts for this failed job.\n"
 					else
-						artifacts_paths=( $(echo ${artifacts} | jq -r '.[].pretty_path') )
+						artifacts_urls=( $(echo ${artifacts} | jq -r '.[].url') )
 						# print each artifact text and link
-						for path in "${artifacts_paths[@]}"; do
-							url=$(echo ${artifacts} | jq -r --arg path "${path}" 'map(select(.pretty_path == $path)) | .[].url')
+						for url in "${artifacts_urls[@]}"; do
+							path=$(echo ${artifacts} | jq --arg url "${url}" 'map(select(.url == $url)) | .[].pretty_path')
 							printf "\n- ${path}\n"
 							printf "   - URL: ${url}\n"
 						done

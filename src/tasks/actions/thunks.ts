@@ -2,6 +2,7 @@
 import {push, goBack, RouterAction} from 'connected-react-router'
 import {Dispatch} from 'react'
 import {normalize} from 'normalizr'
+import {format_from_js_file} from '@influxdata/flux'
 
 // APIs
 import * as api from 'src/client'
@@ -30,6 +31,7 @@ import {
 
 // Constants
 import * as copy from 'src/shared/copy/notifications'
+import {parse} from 'src/external/parser'
 
 // Types
 import {
@@ -261,18 +263,37 @@ export const cloneTask = (task: Task) => async (
     const tasks = getAll<Task>(state, ResourceType.Tasks)
     const allTaskNames = tasks.map(d => d.name)
     const clonedName = incrementCloneName(allTaskNames, taskName)
-    const flux = resp.data.flux
+    const {flux} = resp.data
 
-    // Searches for the beginning option task declaration, ignoring whitespace prior to the task name
-    const revisedFlux = flux.replace(
-      /option task\s*=\s*{\s*name:\s*".*?"/,
-      `option task = {name: "${clonedName}"`
-    )
+    const ast = parse(flux)
+
+    ast.body = ast.body.map(statement => {
+      if (
+        statement.type === 'OptionStatement' &&
+        statement.assignment.init &&
+        Array.isArray(statement.assignment.init.properties)
+      ) {
+        statement.assignment.init.properties = statement.assignment.init?.properties.map(
+          property => {
+            if (
+              property.key.name === 'name' &&
+              property?.value?.location?.source
+            ) {
+              property.value.location.source = `"${clonedName}"`
+            }
+            return property
+          }
+        )
+      }
+      return statement
+    })
+
+    const fluxWithNewName = format_from_js_file(ast)
 
     const newTask = await api.postTask({
       data: {
         ...resp.data,
-        flux: revisedFlux,
+        flux: fluxWithNewName,
       },
     })
 

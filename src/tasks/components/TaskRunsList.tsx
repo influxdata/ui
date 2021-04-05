@@ -6,8 +6,6 @@ import memoizeOne from 'memoize-one'
 import {EmptyState, IndexList} from '@influxdata/clockface'
 import TaskRunsRow from 'src/tasks/components/TaskRunsRow'
 
-import {TASK_RUNS_LIMIT} from 'src/tasks/constants'
-
 // Types
 import {Sort, ComponentSize} from '@influxdata/clockface'
 import {Run} from 'src/types'
@@ -97,9 +95,7 @@ export default class TaskRunsList extends PureComponent<Props> {
       sortType
     )
 
-    const mostRecentRuns = sortedRuns.slice(0, TASK_RUNS_LIMIT)
-
-    return mostRecentRuns.map(run => (
+    return sortedRuns.map(run => (
       <TaskRunsRow key={`run-id==${run.id}`} taskID={taskID} run={run} />
     ))
   }

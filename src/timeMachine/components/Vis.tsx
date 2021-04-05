@@ -16,6 +16,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Utils
 import {
+  getActiveCellID,
   getActiveTimeMachine,
   getAnnotations,
   getFillColumnsSelection,
@@ -57,6 +58,7 @@ const TimeMachineVis: FC<Props> = ({
   fillColumns,
   symbolColumns,
   annotations,
+  cellID,
 }) => {
   const {type} = viewProperties
   // If the current selections for `xColumn`/`yColumn`/ etc. are invalid given
@@ -150,6 +152,7 @@ const TimeMachineVis: FC<Props> = ({
         result={giraffeResult}
         timeRange={timeRange}
         annotations={annotations}
+        cellID={cellID}
       />
     </div>
   )
@@ -171,6 +174,7 @@ const mstp = (state: AppState) => {
   const fillColumns = getFillColumnsSelection(state)
   const symbolColumns = getSymbolColumnsSelection(state)
   const annotations = getAnnotations(state)
+  const cellID = getActiveCellID(state)
 
   return {
     loading,
@@ -187,6 +191,7 @@ const mstp = (state: AppState) => {
     symbolColumns,
     timeRange: getActiveTimeRange(timeRange, viewProperties.queries),
     annotations,
+    cellID,
   }
 }
 

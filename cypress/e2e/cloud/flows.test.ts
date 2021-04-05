@@ -20,6 +20,15 @@ describe('Flows', () => {
   })
 
   it('CRUD a flow from the index page', () => {
+    cy.writeData(
+      [
+        `test,container_name=cool dopeness=12 ${now - 1000}000000`,
+        `test,container_name=beans dopeness=18 ${now - 1200}000000`,
+        `test,container_name=cool dopeness=14 ${now - 1400}000000`,
+        `test,container_name=beans dopeness=10 ${now - 1600}000000`,
+      ],
+      'defbuck'
+    )
     cy.getByTestID('create-flow--button')
       .first()
       .click()

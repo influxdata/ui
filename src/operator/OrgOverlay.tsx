@@ -76,7 +76,7 @@ const OrgOverlay: FC = () => {
                 </Grid.Column>
                 <Grid.Column widthMD={4}>
                   <label>Account Type</label>
-                  <p>{organization?.accountType ?? ''}</p>
+                  <p>{organization?.relatedAccount?.type ?? ''}</p>
                 </Grid.Column>
                 <Grid.Column widthMD={4}>
                   <LinkButton

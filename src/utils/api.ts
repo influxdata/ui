@@ -47,10 +47,8 @@ export const getMeQuartz = (): ReturnType<typeof getMe> => {
   // TODO(ariel): remove this once the API is connected
   const me: Me = {
     id: '123',
-    firstName: 'ariel',
-    lastName: 'salem',
     email: 'asalem@influxdata.com',
-    isBeta: false,
+    isRegionBeta: false,
     isOperator: true,
     account: {
       id: 'account123',

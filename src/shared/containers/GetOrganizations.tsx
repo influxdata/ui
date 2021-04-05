@@ -28,13 +28,10 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {Me} from 'src/client/unityRoutes'
 
 const canAccessCheckout = (me: Me): boolean => {
-  if (me?.account?.type === 'pay_as_you_go') {
+  if (!!me?.isRegionBeta) {
     return false
   }
-  if (me?.account?.type === 'free' && !!me?.isBeta) {
-    return false
-  }
-  return true
+  return me?.account?.type !== 'pay_as_you_go'
 }
 
 const GetOrganizations: FunctionComponent = () => {

@@ -844,7 +844,6 @@ components:
           description: account id in quartz
         onboardingState:
           type: string
-          # TODO(ariel): get clarity on this
           description: stage of onboarding the account is in
         marketplace:
           $ref: '#/components/schemas/Marketplace'
@@ -1166,28 +1165,21 @@ components:
     Me:
       properties:
         id:
+          type: string
           description: the idpe id of the user
-          type: string
-        # TODO(ariel): find out if these are account or user specific
-        firstName:
-          type: string
-        # TODO(ariel): find out if these are account or user specific
-        lastName:
-          type: string
         email:
-          # TODO(ariel): find out about this one
-          description: Not sure if this is the billing account email or the account email, but this might be unnecessary since that should be included in the Account or nested in the Account
           type: string
+          description: the email associated with the user
         account:
           $ref: '#/components/schemas/Account'
           description: User Account for the account
-        isBeta:
+        isRegionBeta:
           type: boolean
           description: whether the region associated with the account is a beta region
         isOperator:
           type: boolean
           description: whether the user is an operator
-      required: [id, account, email, firstName, lastName, isOperator, isBeta]
+      required: [id, account, email, isOperator, isRegionBeta]
     Users:
       type: object
       properties:
@@ -1254,39 +1246,35 @@ components:
         date:
           type: string
           description: date org was created
-        accountType:
+        relatedAccount:
+          $ref: '#/components/schemas/RelatedAccount'
+          description: subset of related account information
+      required: [id, quartzId, name, region, provider, date]
+    Organizations:
+      type: array
+      items:
+        $ref: '#/components/schemas/Organization'
+    RelatedAccount:
+      description: Subset of Account data related to the organization
+      type: object
+      properties:
+        id:
+          type: string
+          description: account id
+        email:
+          type: string
+          description: email associated with the account
+        type:
           type: string
           description: type of the account
           enum:
             - free
             - cancelled
             - pay_as_you_go
-        accountBalance:
+        balance:
           type: number
-          description: balance of the account
-        accountEmail:
-          type: string
-          description: billing contact email
-        accountId:
-          type: string
-          description: id of the account associated with the org
-      required:
-        [
-          id,
-          quartzId,
-          name,
-          accountType,
-          accountBalance,
-          accountEmail,
-          accountId,
-          region,
-          provider,
-          date,
-        ]
-    Organizations:
-      type: array
-      items:
-        $ref: '#/components/schemas/Organization'
+          description: remaining balance on the account, nil if none
+      required: [id, email, type, balance]
     RateLimits:
       description: Usage rate limits
       type: object

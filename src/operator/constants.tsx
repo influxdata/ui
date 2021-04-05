@@ -78,22 +78,22 @@ export const organizationColumnInfo: CellInfo[] = [
     renderValue: value => <Link to={`/operator/orgs/${value}`}>{value}</Link>,
   },
   {
-    path: 'accountEmail',
+    path: 'relatedAccount.email',
     name: 'email',
     defaultValue: '',
   },
   {
-    path: 'accountId',
+    path: 'relatedAccount.id',
     name: 'account-id',
     defaultValue: '',
   },
   {
-    path: 'accountBalance',
+    path: 'relatedAccount.balance',
     name: 'acct-balance',
     defaultValue: '',
   },
   {
-    path: 'accountType',
+    path: 'relatedAccount.type',
     name: 'acct-type',
     defaultValue: '',
   },
@@ -179,7 +179,7 @@ export const acctOrgColumnInfo: CellInfo[] = [
   {path: 'provider', name: 'provider', defaultValue: ''},
   {path: 'region', name: 'region', defaultValue: ''},
   {
-    path: 'accountBalance',
+    path: 'relatedAccount.balance',
     name: 'acct-balance',
     defaultValue: '',
   },

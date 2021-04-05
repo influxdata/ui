@@ -53,7 +53,7 @@ export const getActiveTimeMachine = (state: AppState) => {
 }
 
 export const getActiveCellID = (state: AppState) => {
-  return getActiveTimeMachine(state).view.cellID
+  return getActiveTimeMachine(state)?.view.cellID
 }
 
 export const getActiveGraphType = (state: AppState): string => {

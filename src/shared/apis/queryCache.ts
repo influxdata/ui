@@ -91,10 +91,12 @@ class QueryCache {
   ): RunQueryResult | null => {
     // no existing query match
     if (!this.cache[id]) {
+      console.log('ooooop1', typeof id, this.cache)
       return null
     }
     // query match with no existing variable match
     if (this.cache[id].hashedVariables !== hashedVariables) {
+      console.log('ooooop', this.cache[id].hashedVariables, hashedVariables)
       this.resetCacheByID(id)
       return null
     }
@@ -199,7 +201,9 @@ export const getFromQueryCacheByQuery = (
   variables: Variable[]
 ): CacheValue | null => {
   const queryID = `${hashCode(query)}`
-  const simplifiedVariables = variables.map(v => asSimplyKeyValueVariables(v))
+  const usedVars = filterUnusedVarsBasedOnQuery(variables, [query])
+  const finalVars = sortBy(usedVars, ['name'])
+  const simplifiedVariables = finalVars.map(v => asSimplyKeyValueVariables(v))
   const stringifiedVars = JSON.stringify(simplifiedVariables)
   // create the queryID based on the query & vars
   const hashedVariables = `${hashCode(stringifiedVars)}`
@@ -214,6 +218,7 @@ export const getFromQueryCacheByQuery = (
 }
 
 export const togglePauseQuery = (queryObj: CacheValue) => {
+  console.log(queryCache)
   queryObj.paused = !queryObj.paused
 
   return queryObj

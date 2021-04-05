@@ -116,8 +116,7 @@ const CellContext: FC<Props> = ({
       for (const query of viewWithQueries.properties.queries) {
         const returnedQuery = getFromQueryCacheByQuery(query.text, variables)
         if (returnedQuery) {
-          const toggled = togglePauseQuery(returnedQuery)
-          console.log(toggled)
+          togglePauseQuery(returnedQuery)
           setIsPaused(!isPaused)
         }
       }

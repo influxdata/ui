@@ -20,6 +20,7 @@ import {
   AddNoteOverlay,
   EditNoteOverlay,
   EditAnnotationDashboardOverlay,
+  AutoRefreshOverlay,
 } from 'src/overlays/components'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
@@ -116,6 +117,12 @@ class DashboardPage extends Component<Props> {
               <Route
                 path={`${dashRoute}/edit-annotation`}
                 component={EditAnnotationDashboardOverlay}
+              />
+            )}
+            {isFlagEnabled('pauseCell') && (
+              <Route
+                path={`${dashRoute}/autorefresh`}
+                component={AutoRefreshOverlay}
               />
             )}
           </Switch>

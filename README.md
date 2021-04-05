@@ -60,3 +60,5 @@ Running `/ui` locally depends on `monitor-ci` or `k8s-idpe`.
 
 **Troubleshooting**: If your Zuora form isn't rendering or calling your callback function which you passed in `client.render`.
 When running UI locally using [Monitor CI](https://github.com/influxdata/monitor-ci), get Zuora PageID which you are using to render the form. Then, from Zuora admin console, get the `Host` and `Port` that PageID is corresponding to. Make sure to match those `Host` and `Port` with your `INGRESS_HOST` and `PORT_HTTPS` provided in the `.env` file of `monitor-ci`.
+
+Triggering pipeline

@@ -497,9 +497,9 @@ workflows:
       - cloud-lighthouse:
           requires:
             - build-image
-      - cloud-e2e-k8s-idpe:
-          requires:
-            - build-image
+      # - cloud-e2e-k8s-idpe:
+      #     requires:
+      #       - build-image
       - cloud-e2e:
           requires:
             - build-image

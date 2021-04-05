@@ -1,37 +1,47 @@
 export interface Annotation {
   endTime: number
+  id?: string
+  message?: string
   startTime: number
-  summary: string
   stickers?: any
   stream?: string
-  message?: string
+  summary: string
+}
+
+export interface EditAnnotation {
+  id: string
+  message: string
+  startTime: string
+  stream: string
+  summary: string
 }
 
 export interface AnnotationResponse {
-  stream: string
   annotations: Annotation[]
+  stream: string
 }
 
 export interface AnnotationStream {
-  stream: string
   color: string
-  description?: string
   createdAt?: string
+  description?: string
+  stream: string
   updatedAt?: string
 }
 
 export interface GetAnnotationPayload {
-  stream?: string
-  startTime?: string
   endTime?: string
+  startTime?: string
   stickers?: any
+  stream?: string
 }
 
 export interface DeleteAnnotation {
-  stream: string
-  startTime: string
   endTime: string
+  id: string
+  startTime: string
   stickers?: any
+  stream: string
 }
 
 export type AnnotationsList = {[stream: string]: Annotation[]}

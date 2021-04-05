@@ -16,7 +16,7 @@ yarn add packageName --dev
 
 ### Updating a package
 
-First, run the command
+First, run the command:
 
 ```sh
 yarn outdated
@@ -51,7 +51,10 @@ To run Cypress locally
 
 ## Starting Dev Server
 
-Running `/ui` locally depends on `monitor-ci`. [See the monitor-ci Quickstart](https://github.com/influxdata/monitor-ci#quickstart-for-local-development)
+Running `/ui` locally depends on `monitor-ci` or `k8s-idpe`.
+
+- [Monitor-ci Quickstart](https://github.com/influxdata/monitor-ci#quickstart-for-local-development)
+- [K8s-IDPE Quickstart](https://docs.influxdata.io/development/guides/local-development)
 
 ## Zuora Form
 

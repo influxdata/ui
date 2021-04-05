@@ -16,12 +16,12 @@ interface Props extends VisualizationProps {
   result: FluxResult['parsed']
 }
 
-const SimpleTable: FC<Props> = ({result}) => {
+const SimpleTable: FC<Props> = ({properties, result}) => {
   return (
     <div className="visualization--simple-table">
       <PaginationProvider total={result?.table?.length || 0}>
+        <PagedTable properties={properties} result={result} />
         <PageControl />
-        <PagedTable result={result} />
       </PaginationProvider>
     </div>
   )

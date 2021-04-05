@@ -27,8 +27,6 @@ avoid cardinality issues:
 
 - Use [metric filtering][] options to exclude unneeded measurements and tags.
 - Write to a database with an appropriate [retention policy][].
-- Limit series cardinality in your database using the
-  [max-series-per-database][] and [max-values-per-tag][] settings.
 - Consider using the [Time Series Index][tsi].
 - Monitor your databases [series cardinality][].
 - Consult the [InfluxDB documentation][influx-docs] for the most up-to-date techniques.
@@ -38,7 +36,7 @@ avoid cardinality issues:
 ```toml
 [[inputs.kube_inventory]]
   ## URL for the Kubernetes API
-  url = "https://127.0.0.1"
+  url = "https://$HOSTIP:6443"
 
   ## Namespace to use. Set to "" to use all namespaces.
   # namespace = "default"
@@ -91,11 +89,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: influx:cluster:viewer
   labels:
-    rbac.authorization.k8s.io/aggregate-view-telegraf: "true"
+    rbac.authorization.k8s.io/aggregate-view-telegraf: 'true'
 rules:
-  - apiGroups: [""]
-    resources: ["persistentvolumes", "nodes"]
-    verbs: ["get", "list"]
+  - apiGroups: ['']
+    resources: ['persistentvolumes', 'nodes']
+    verbs: ['get', 'list']
 
 ---
 kind: ClusterRole
@@ -105,9 +103,9 @@ metadata:
 aggregationRule:
   clusterRoleSelectors:
     - matchLabels:
-        rbac.authorization.k8s.io/aggregate-view-telegraf: "true"
+        rbac.authorization.k8s.io/aggregate-view-telegraf: 'true'
     - matchLabels:
-        rbac.authorization.k8s.io/aggregate-to-view: "true"
+        rbac.authorization.k8s.io/aggregate-to-view: 'true'
 rules: [] # Rules are automatically filled in by the controller manager.
 ```
 
@@ -309,8 +307,6 @@ kubernetes_statefulset,namespace=default,selector_select1=s1,statefulset_name=et
 
 [metric filtering]: https://github.com/influxdata/telegraf/blob/master/docs/CONFIGURATION.md#metric-filtering
 [retention policy]: https://docs.influxdata.com/influxdb/latest/guides/downsampling_and_retention/
-[max-series-per-database]: https://docs.influxdata.com/influxdb/latest/administration/config/#max-series-per-database-1000000
-[max-values-per-tag]: https://docs.influxdata.com/influxdb/latest/administration/config/#max-values-per-tag-100000
 [tsi]: https://docs.influxdata.com/influxdb/latest/concepts/time-series-index/
 [series cardinality]: https://docs.influxdata.com/influxdb/latest/query_language/spec/#show-cardinality
 [influx-docs]: https://docs.influxdata.com/influxdb/latest/

@@ -2,6 +2,7 @@ import React from 'react'
 import {ComponentSize, EmptyState} from '@influxdata/clockface'
 import {PROJECT_NAME_PLURAL} from 'src/flows'
 import FlowCreateButton from 'src/flows/components/FlowCreateButton'
+import 'src/flows/components/EmptyPipeList.scss'
 
 const FlowsIndexEmpty = () => {
   return (

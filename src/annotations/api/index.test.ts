@@ -1,15 +1,26 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 
 import {mocked} from 'ts-jest/utils'
+
+const fakeAxios = {
+  get: jest.fn(),
+  post: jest.fn(),
+  put: jest.fn(),
+  delete: jest.fn(),
+}
+
+jest.doMock('axios', () => {
+  return {
+    create: () => fakeAxios,
+  }
+})
+
 import {
   writeAnnotation,
   getAnnotation,
   deleteAnnotation,
   updateAnnotation,
 } from 'src/annotations/api'
-import axios from 'axios'
-
-jest.mock('axios')
 
 describe('annotations api calls', () => {
   describe('POST - write annotations api calls', () => {
@@ -23,13 +34,13 @@ describe('annotations api calls', () => {
         },
       ]
 
-      mocked(axios.post).mockImplementationOnce(() =>
+      mocked(fakeAxios.post).mockImplementationOnce(() =>
         Promise.resolve({status: 200, data: annotationResponse})
       )
 
       const response = await writeAnnotation(annotationResponse)
 
-      expect(axios.post).toHaveBeenCalledTimes(1)
+      expect(fakeAxios.post).toHaveBeenCalledTimes(1)
 
       expect(response).toEqual(annotationResponse)
     })
@@ -45,7 +56,7 @@ describe('annotations api calls', () => {
       ]
       const message = 'OOPS YOU DONE MESSED UP SON'
 
-      mocked(axios.post).mockImplementationOnce(() =>
+      mocked(fakeAxios.post).mockImplementationOnce(() =>
         Promise.reject(new Error(message))
       )
 
@@ -79,7 +90,7 @@ describe('annotations api calls', () => {
 
     it('retrieves annotations and returns them categorized by annotation stream', async () => {
       const [lambeau] = annotationResponse
-      mocked(axios.get).mockImplementationOnce(() =>
+      mocked(fakeAxios.get).mockImplementationOnce(() =>
         Promise.resolve({data: [lambeau]})
       )
       const response = await getAnnotation({
@@ -99,7 +110,7 @@ describe('annotations api calls', () => {
       }
       const message = 'OOPS YOU DONE MESSED UP SON'
 
-      mocked(axios.get).mockImplementationOnce(() =>
+      mocked(fakeAxios.get).mockImplementationOnce(() =>
         Promise.reject(new Error(message))
       )
 
@@ -108,26 +119,20 @@ describe('annotations api calls', () => {
   })
 
   describe('PUT - annotation update api calls', () => {
-    const oldAnnotation = {
-      stream: 'default',
-      startTime: Date.now().toString(),
-      endTime: Date.now().toString(),
-    }
-
     const newAnnotation = {
-      stream: 'boogey',
       startTime: Date.now(),
       endTime: Date.now(),
       message: 'This is a message',
       summary: 'Palpatine did nothing wrong',
+      id: '123123123',
     }
 
     it('returns an updated annotation if correct parameters are passed', async () => {
-      mocked(axios.put).mockImplementationOnce(() =>
+      mocked(fakeAxios.put).mockImplementationOnce(() =>
         Promise.resolve({data: newAnnotation})
       )
 
-      const res = await updateAnnotation(oldAnnotation, newAnnotation)
+      const res = await updateAnnotation(newAnnotation)
       expect(res).toEqual(newAnnotation)
     })
   })
@@ -137,10 +142,11 @@ describe('annotations api calls', () => {
       stream: 'default',
       startTime: Date.now().toString(),
       endTime: Date.now().toString(),
+      id: '00013123123',
     }
 
     it('returns a 204 upon successful deletion of annotation', async () => {
-      mocked(axios.delete).mockImplementationOnce(() =>
+      mocked(fakeAxios.delete).mockImplementationOnce(() =>
         Promise.resolve({status: 204})
       )
 
@@ -152,7 +158,7 @@ describe('annotations api calls', () => {
     it('handles an error and returns the error message', async () => {
       const message = 'OOPS YOU DONE MESSED UP SON'
 
-      mocked(axios.delete).mockImplementationOnce(() =>
+      mocked(fakeAxios.delete).mockImplementationOnce(() =>
         Promise.reject(new Error(message))
       )
 

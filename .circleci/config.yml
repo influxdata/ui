@@ -79,7 +79,7 @@ jobs:
             cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
             docker build \
               --build-arg HONEYBADGER_KEY=${HONEYBADGER_KEY} \
-              --build-arg INJECT_HEADER="<script>(function (w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' }); var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f); })(window, document, 'script', 'dataLayer', '${GTM_ID}'); </script>" \
+              --build-arg INJECT_HEADER="<script>(function (w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' }); var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f); })(window, document, 'script', 'dataLayer', '${GTM_ID}'); </script><script>window.userpilotSettings = {token: '72cf72g10'}</script><script src = 'https://js.userpilot.io/sdk/latest.js'></script>" \
               --build-arg INJECT_BODY="<!-- Google Tag Manager (noscript) --> <noscript><iframe src=\"https://www.googletagmanager.com/ns.html?id=${GTM_ID}\" height=\"0\" width=\"0\" style=\"display:none;visibility:hidden\"></iframe></noscript> <!-- End Google Tag Manager (noscript) -->" \
               --build-arg UI_SHA=${CIRCLE_SHA1} \
               --build-arg CLOUD_URL=/auth \
@@ -451,8 +451,13 @@ jobs:
           command: |
             cd ./monitor-ci && make build NODE=cypress
       - run:
+          name: Push ui-e2e image tagged with this commit
+          command: |
+            docker tag local/cypress:latest quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
+            docker push quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
+      - run:
           name: Run E2e test
-          command: cd ./idpe/ && export QUAY_CD_USER=$QUAY_USER && export QUAY_CD_PASSWORD=$QUAY_PASS && ./scripts/ci/cd-app-e2e-test.bash | tee /tmp/artifacts/e2e-test.log
+          command: cd ./idpe/ && export QUAY_CD_USER=$QUAY_USER && export QUAY_CD_PASSWORD=$QUAY_PASS && export UI_E2E_TESTS_IMAGE="quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}" && ./scripts/ci/cd-app-e2e-test.bash | tee /tmp/artifacts/e2e-test.log
           no_output_timeout: '15m' # Sometimes gathering the images takes too long. Go 50% over the default 10m timeout.
           environment:
             USE_K8SIDPE_LOCAL_TOOLS: '1' # this is needed as otherwise kubecfg is not able to talk to kind API server via localhost
@@ -474,9 +479,7 @@ jobs:
       #     steps:
       #       # The cypress image used within the ui-e2e image is a non-standard slim image and its definition and versions are
       #       # maintained here: https://github.com/influxdata/cypress-slim
-      #       - run: docker tag local/cypress:latest quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
       #       - run: docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} quay.io/influxdb/ui-e2e:latest
-      #       - run: docker push quay.io/influxdb/ui-e2e:${CIRCLE_SHA1}
       #       - run: docker push quay.io/influxdb/ui-e2e:latest
 workflows:
   version: 2
@@ -592,6 +595,9 @@ commands:
     description: >
       This will checkout monitor-ci
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "5f:c0:ef:38:b3:45:9e:f4:d5:2f:3b:8b:59:c2:fa:50"
       - run:
           command: ./ui/scripts/checkout-repo.bash
           name: Checkout monitor-ci repo

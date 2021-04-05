@@ -43,13 +43,13 @@
 .visualization--simple-table--results {
   flex: 1 0 0;
   position: relative;
+  margin-top: 8px;
 }
 
 .visualization--simple-table--paging {
-  flex: 0 0 45px;
-  height: 45px;
   display: flex;
   align-items: center;
+  height: 48px;
 }
 
 .visualization--simple-table--paging-label {
@@ -57,8 +57,5 @@
   margin-right: $cf-marg-b;
   color: $g13-mist;
   font-weight: $cf-font-weight--medium;
-}
-
-.visualization--simple-table--paging-button {
-  margin-left: $cf-marg-b;
+  width: 189px;
 }

@@ -104,6 +104,62 @@ export const submitError = (): Notification => ({
     'There was an error submitting the upgrade request, please try again.',
 })
 
+// Operator Notifications
+export const getOrgsError = (): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message:
+    'There was an error getting the all the organizations, please try again.',
+})
+
+export const getOrgError = (id: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Could not find organization with ID ${id}`,
+})
+
+export const getLimitsError = (id: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Could not fetch limits for the organization ${id}`,
+})
+
+export const updateLimitsError = (id: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Could not update limits for the organization ${id}`,
+})
+
+export const updateLimitsSuccess = (id: string): Notification => ({
+  ...defaultSuccessNotification,
+  duration: FIVE_SECONDS,
+  message: `Successfully updated limits for the organization ${id}`,
+})
+
+export const getAccountsError = (): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: 'There was an error getting the all the accounts, please try again.',
+})
+
+export const getAccountError = (id: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Could not get the account for ID: ${id}`,
+})
+
+export const deleteAccountError = (id: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Failed to delete the account with the ID ${id}, please try again.`,
+})
+
+export const removeUserAccountError = (id: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Failed to remove the user from the account with the ID ${id}, please try again.`,
+})
+
 // Onboarding notifications
 export const SetupSuccess: Notification = {
   ...defaultSuccessNotification,
@@ -529,7 +585,7 @@ export const resourceLimitReached = (resourceName: string): Notification => ({
 
 export const queryCancelRequest = (): Notification => ({
   ...defaultSuccessNotification,
-  message: `Cancelling query...`,
+  message: `Query cancelled.`,
 })
 
 export const taskNotCreated = (additionalMessage: string): Notification => ({
@@ -1090,14 +1146,34 @@ export const copyFunctionURL = (): Notification => ({
   duration: 2000,
 })
 
-export const deleteAnnotationSuccess = (): Notification => ({
+export const deleteAnnotationSuccess = (message: string): Notification => ({
   ...defaultSuccessNotification,
   icon: IconFont.Cube,
-  message: 'Successfully deleted the annotation',
+  message: message
+    ? `Successfully deleted the annotation: ${message}`
+    : 'Successfully deleted the annotation',
 })
 
 export const deleteAnnotationFailed = (error: string): Notification => ({
   ...defaultErrorNotification,
   icon: IconFont.Cube,
   message: `Failed to delete annotation: ${error}`,
+})
+
+export const editAnnotationSuccess = (): Notification => ({
+  ...defaultSuccessNotification,
+  icon: IconFont.Checkmark,
+  message: 'Annotation updated successfully',
+})
+
+export const editAnnotationFailed = (error: string): Notification => ({
+  ...defaultErrorNotification,
+  icon: IconFont.Cube,
+  message: `Failed to edit annotation: ${error}`,
+})
+
+export const createAnnotationFailed = (error: string): Notification => ({
+  ...defaultErrorNotification,
+  icon: IconFont.Cube,
+  message: `Failed to create annotation: ${error}`,
 })

@@ -29,7 +29,6 @@ interface Props {
   showInactive: boolean
   onImportTask: () => void
   limitStatus: LimitStatus
-  onImportFromTemplate: () => void
   searchTerm: string
   setSearchTerm: typeof setSearchTermAction
   sortKey: TaskSortKey
@@ -49,7 +48,6 @@ export default class TasksHeader extends PureComponent<Props> {
       setShowInactive,
       showInactive,
       onImportTask,
-      onImportFromTemplate,
       setSearchTerm,
       searchTerm,
       sortKey,
@@ -96,7 +94,6 @@ export default class TasksHeader extends PureComponent<Props> {
               canImportFromTemplate
               onSelectNew={onCreateTask}
               onSelectImport={onImportTask}
-              onSelectTemplate={onImportFromTemplate}
               resourceName="Task"
               limitStatus={limitStatus}
             />

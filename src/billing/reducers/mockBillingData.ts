@@ -12,6 +12,9 @@ export const mockAccount: Account = {
   id: 'account_1',
   marketplace: null,
   type: 'free',
+  balance: null,
+  users: [],
+  billingContact: null,
 }
 
 export const mockBillingInfo: BillingInfo = {

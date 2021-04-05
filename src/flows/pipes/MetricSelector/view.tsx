@@ -5,7 +5,7 @@ import {PipeProp} from 'src/types/flows'
 
 // Contexts
 import BucketProvider from 'src/flows/context/buckets'
-import {SchemaProvider} from 'src/flows/context/schemaProvider'
+import {SchemaProvider} from 'src/flows/pipes/MetricSelector/context'
 
 // Components
 import BucketSelector from 'src/flows/shared/BucketSelector'

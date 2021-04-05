@@ -63,7 +63,10 @@ class DashboardPage extends Component<Props> {
     resetQueryCache()
 
     this.emitRenderCycleEvent()
-    this.props.fetchAndSetAnnotations()
+
+    if (isFlagEnabled('annotations')) {
+      this.props.fetchAndSetAnnotations()
+    }
   }
 
   public componentWillUnmount() {
@@ -157,7 +160,7 @@ const mstp = (state: AppState) => {
     state.currentDashboard.id
   )
 
-  const showAnnotationBar = state.userSettings.showAnnotationsControls
+  const showAnnotationBar = state.userSettings.showAnnotationsControls ?? false
 
   return {
     startVisitMs: state.perf.dashboard.byID[dashboard.id]?.startVisitMs,

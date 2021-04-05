@@ -2,30 +2,6 @@ import {FromFluxResult, FluxDataType, Table} from '@influxdata/giraffe'
 import {FunctionComponent, ComponentClass, ReactNode} from 'react'
 import {AutoRefresh, RemoteDataState, TimeRange} from 'src/types'
 
-export interface Tag {
-  [tagName: string]: Set<string | number>
-}
-
-export interface SchemaValues {
-  fields: string[]
-  tags: Tag
-  type?: string
-}
-
-export interface Schema {
-  [measurement: string]: SchemaValues
-}
-
-export interface NormalizedTag {
-  [tagName: string]: string[] | number[]
-}
-
-export interface NormalizedSchema {
-  measurements: string[]
-  fields: string[]
-  tags: NormalizedTag[]
-}
-
 export interface PipeContextProps {
   children?: ReactNode
   controls?: ReactNode

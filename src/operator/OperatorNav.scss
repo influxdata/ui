@@ -1,0 +1,18 @@
+.operator-nav-button {
+  @include gradient-diag-up($c-pool, $c-rainforest);
+  border-radius: 100%;
+  border: none;
+  overflow: hidden;
+  display: inline-block;
+  justify-content: flex-start;
+  margin-right: 40px;
+
+  .cf-button-icon {
+    text-align: center;
+    margin-top: $cf-marg-a;
+    font-size: 32px;
+  }
+}
+.operator-nav-popover {
+  display: flex;
+}

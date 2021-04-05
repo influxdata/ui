@@ -1,27 +1,25 @@
 // Libraries
 import React, {FC, useEffect} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
 import {Grid, Columns} from '@influxdata/clockface'
 import FreePanel from 'src/billing/components/Free/FreePanel'
 import PAYGConversion from 'src/billing/components/Free/PAYGConversion'
 import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 
-// Thunks
-import {getAssetLimits} from 'src/cloud/actions/limits'
+// Utils
+import {getOrgLimits} from 'src/billing/thunks'
+import {useBilling} from 'src/billing/components/BillingPage'
 
 // Types
-import {AppState, RemoteDataState} from 'src/types'
+import {RemoteDataState} from 'src/types'
 
 const BillingFree: FC = () => {
-  const status = useSelector((state: AppState) => state?.cloud?.limits?.status)
-
-  const dispatch = useDispatch()
+  const [{orgLimits}, dispatch] = useBilling()
 
   useEffect(() => {
-    dispatch(getAssetLimits())
+    getOrgLimits(dispatch)
   }, [dispatch])
 
-  const loading = status ?? RemoteDataState.NotStarted
+  const loading = orgLimits?.status ?? RemoteDataState.NotStarted
   return (
     <Grid>
       <Grid.Row>

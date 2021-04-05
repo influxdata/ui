@@ -26,8 +26,10 @@ pipeline_number=$(echo ${pipeline} | jq -r '.number')
 # pipeline_id="db41d91c-d21b-4805-9609-31f44b2f4504"
 # pipeline_number="30"
 
+printf "\nwaiting for monitor-ci pipeline to begin...\n"
+sleep 1m
+
 # poll the status of the monitor-ci pipeline
-printf "\nwaiting for monitor-ci pipeline...\n"
 is_failure=0
 attempts=0
 max_attempts=40 # minutes

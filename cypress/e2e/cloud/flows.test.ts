@@ -74,6 +74,10 @@ describe('Flows', () => {
       .first()
       .click()
 
+    cy.getByTestID('time-machine-submit-button').should('be.visible')
+    cy.getByTestID('page-title').click()
+    cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
+
     cy.getByTestID('flow-bucket-selector')
       .click()
       .then(() => {
@@ -117,11 +121,9 @@ describe('Flows', () => {
     cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
 
     // select our bucket
-    cy.getByTestID('flow-bucket-selector')
-      .click()
-      .then(() => {
-        cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
-      })
+    cy.getByTestID('flow-bucket-selector').click()
+
+    cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
 
     // select measurement and field
     cy.getByTestID('measurement-selector test').click()

@@ -86,11 +86,11 @@ do
 						--header 'content-type: application/json' \
 						--header 'Accept: application/json')
 
-					artifacts_paths=( $(echo ${artifacts} | jq -r '.[].pretty_path') )
-					echo $artifacts_paths
-					if [ ${#artifacts_paths[@]} -eq 0 ]; then
+					artifacts_length=$(echo ${artifacts} | jq -r 'length')
+					if [ ${artifacts_length} -eq 0 ]; then
 						printf "\n No artifacts for this failed job.\n"
 					else
+						artifacts_paths=( $(echo ${artifacts} | jq -r '.[].pretty_path') )
 						# print each artifact text and link
 						for path in "${artifacts_paths[@]}"; do
 							url=$(echo ${artifacts} | jq -r --arg path "${path}" 'map(select(.pretty_path == $path)) | .[].url')

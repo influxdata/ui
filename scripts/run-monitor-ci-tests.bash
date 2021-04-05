@@ -14,7 +14,7 @@ pipeline=$(curl -s --fail --request POST \
   --header "Circle-Token: ${API_KEY}" \
   --header 'content-type: application/json' \
 	--header 'Accept: application/json'    \
-  --data "{\"branch\":\"${MONITOR_CI_BRANCH}\", \"parameters\":{ \"ui-sha\":\"${SHA}\", \"ui-branch\":\"${UI_BRANCH}\", \"ui-pull-request":\"${PULL_REQUEST}\"}}")
+  --data "{\"branch\":\"${MONITOR_CI_BRANCH}\", \"parameters\":{ \"ui-sha\":\"${SHA}\", \"ui-branch\":\"${UI_BRANCH}\", \"ui-pull-request\":\"${PULL_REQUEST}\"}}")
 
 if [ $? != 0 ]; then
 	echo "failed to start the monitor-ci pipeline, quitting"

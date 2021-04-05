@@ -16,6 +16,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Utils
 import {
+  getActiveCellID,
   getActiveTimeMachine,
   getAnnotations,
   getFillColumnsSelection,
@@ -173,7 +174,7 @@ const mstp = (state: AppState) => {
   const fillColumns = getFillColumnsSelection(state)
   const symbolColumns = getSymbolColumnsSelection(state)
   const annotations = getAnnotations(state)
-  const cellID = activeTimeMachine.view.cellID
+  const cellID = getActiveCellID(state)
 
   return {
     loading,

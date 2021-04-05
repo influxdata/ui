@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu -o pipefail
+set -eux -o pipefail
 
 # TODO GET the https://circleci.com/api/v2/project/gh/influxdata/monitor-ci/pipeline API,
 # filter for pipelines where SHA == .vcs.revision in the json response.
@@ -30,7 +30,7 @@ pipeline_number=$(echo ${pipeline} | jq -r '.number')
 printf "\nwaiting for monitor-ci pipeline...\n"
 is_failure=0
 attempts=0
-max_attempts=10
+max_attempts=40 # minutes
 while [ $attempts -le $max_attempts ];
 do
 

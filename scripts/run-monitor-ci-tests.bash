@@ -42,7 +42,7 @@ do
 		--header 'content-type: application/json' \
 		--header 'Accept: application/json')
 
-	number_running_workflows=$(echo ${workflows} | jq  -r '.items | map(select(.status == "running")) | length')
+	number_running_workflows=$(echo ${workflows} | jq  -r '.items | map(select(.status == "running" or .status == "failing")) | length')
 
 	# when the pipeline has finished
 	if [ ${number_running_workflows} -eq 0 ]; then

@@ -14,7 +14,7 @@ sha_pipelines_length=$(echo ${sha_pipelines} | jq -r 'length')
 if [ $sha_pipelines_length -gt 0 ]; then
 	# check the status of the workflows for each of these pipelines
 	sha_pipelines_ids=( $(echo ${sha_pipelines} | jq -r '.[].id') )
-	for sha_pipeline_id "${sha_pipelines_ids[@]}"; do
+	for sha_pipeline_id in "${sha_pipelines_ids[@]}"; do
 
 		workflows=$(curl -s --request GET \
 			--url "https://circleci.com/api/v2/pipeline/${pipeline_id}/workflow" \

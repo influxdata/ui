@@ -270,12 +270,12 @@ export const cloneTask = (task: Task) => async (
     ast.body = ast.body.map(statement => {
       if (
         statement.type === 'OptionStatement' &&
-        statement.assignment.init &&
-        Array.isArray(statement.assignment.init.properties)
+        statement.assignment.init.type === 'ObjectExpression'
       ) {
         statement.assignment.init.properties = statement.assignment.init?.properties.map(
           property => {
             if (
+              property.key.type === 'Identifier' &&
               property.key.name === 'name' &&
               property?.value?.location?.source
             ) {

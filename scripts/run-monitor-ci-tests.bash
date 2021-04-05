@@ -147,8 +147,8 @@ do
 						# print each artifact text and link
 						for url in "${artifacts_urls[@]}"; do
 							path=$(echo ${artifacts} | jq --arg url "${url}" 'map(select(.url == $url)) | .[].pretty_path')
-							printf "\n- ${path}\n"
-							printf "   - URL: ${url}\n"
+							printf '\n- %s\n' "${path}"
+							printf '   - URL: %s\n' "${url}"
 						done
 					fi
 				done

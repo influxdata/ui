@@ -50,12 +50,8 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
     summary: annotation.summary,
   })
 
-  const isValidAnnotationForm = (): boolean => {
-    if (!editedAnnotation.summary.length || !editedAnnotation.startTime) {
-      return false
-    } else {
-      return true
-    }
+  const isValidAnnotationForm = ({summary, startTime}): boolean => {
+    return summary.length && startTime
   }
 
   const handleChange = (
@@ -143,7 +139,10 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
             onClick={() => handleSubmit(editedAnnotation)}
             color={ComponentColor.Primary}
             status={
-              isValidAnnotationForm()
+              isValidAnnotationForm({
+                startTime: editedAnnotation.startTime,
+                summary: editedAnnotation.summary,
+              })
                 ? ComponentStatus.Default
                 : ComponentStatus.Disabled
             }

@@ -34,11 +34,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
   const [message, setMessage] = useState('')
 
   const isValidAnnotationForm = ({message, startTime}): boolean => {
-    if (!message.length || !startTime) {
-      return false
-    } else {
-      return true
-    }
+    return message.length && startTime
   }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {

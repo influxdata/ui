@@ -27,6 +27,7 @@ import {
 import {getCheckIDs} from 'src/checks/selectors'
 import {getEndpointIDs} from 'src/notifications/endpoints/selectors'
 import {getRuleIDs} from 'src/notifications/rules/selectors'
+import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Types
 import {ResourceIDs} from 'src/checks/reducers'
@@ -72,7 +73,7 @@ const AlertHistoryIndex: FC<Props> = ({
         <EventViewer loadRows={loadRows} initialState={getInitialState()}>
           {props => (
             <Page
-              titleTag="Check Statuses | InfluxDB 2.0"
+              titleTag={pageTitleSuffixer(['Check Statuses'])}
               className="alert-history-page"
             >
               <Page.Header fullWidth={true}>

@@ -270,7 +270,6 @@ const XYPlot: FC<Props> = ({
       }
     })
 
-    // only pass interaction handler to giraffe if annotations write mode is enabled and cellID is present
     if (inAnnotationWriteMode && cellID) {
       config.interactionHandlers = {
         singleClick: makeSingleClickHandler(),

@@ -147,6 +147,11 @@ const DashboardHeader: FC<Props> = ({
     }
   }, [autoRefresh])
 
+  const openAutoRefreshModal = () => {
+    console.log('here')
+    history.push(`/orgs/${org.id}/dashboards/${dashboard.id}/autorefresh`)
+  }
+
   return (
     <>
       <Page.Header fullWidth={true}>
@@ -192,11 +197,17 @@ const DashboardHeader: FC<Props> = ({
         </Page.ControlBarLeft>
         <Page.ControlBarRight>
           <TimeZoneDropdown />
-          <AutoRefreshDropdown
+          {/* <AutoRefreshDropdown
             onChoose={handleChooseAutoRefresh}
             onManualRefresh={resetCacheAndRefresh}
             selected={autoRefresh}
+          /> */}
+          <Button
+            text="Enable Auto Refresh"
+            color={ComponentColor.Primary}
+            onClick={openAutoRefreshModal}
           />
+
           <TimeRangeDropdown
             onSetTimeRange={handleChooseTimeRange}
             timeRange={timeRange}

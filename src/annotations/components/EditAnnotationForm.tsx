@@ -50,6 +50,10 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
     summary: annotation.summary,
   })
 
+  const isValidAnnotationForm = ({summary, startTime}): boolean => {
+    return summary.length && startTime
+  }
+
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -137,6 +141,14 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
             text="Save Changes"
             onClick={() => handleSubmit(editedAnnotation)}
             color={ComponentColor.Primary}
+            status={
+              isValidAnnotationForm({
+                startTime: editedAnnotation.startTime,
+                summary: editedAnnotation.summary,
+              })
+                ? ComponentStatus.Default
+                : ComponentStatus.Disabled
+            }
             testID="edit-annotation-submit-button"
           />
         </div>

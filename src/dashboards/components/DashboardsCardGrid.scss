@@ -36,7 +36,7 @@ $dashboard-grid-gap: $cf-marg-a;
 
   .cf-resource-editable-name {
     position: absolute;
-    min-width: 60%;
+    max-width: 65%;
 
     .cf-resource-name--text {
       overflow: hidden;

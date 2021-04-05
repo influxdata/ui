@@ -22,7 +22,10 @@ export default register => {
       ],
     },
     generateFlux: (pipe, create, append) => {
-      if (!pipe.buckets[0] || !pipe.tags.length) {
+      if (
+        !pipe.buckets[0] ||
+        !pipe.tags.reduce((acc, curr) => acc.concat(curr.values), []).length
+      ) {
         return
       }
 

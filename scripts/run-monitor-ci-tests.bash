@@ -1,8 +1,30 @@
 #!/bin/bash
 
-set -eux -o pipefail
+set -eu -o pipefail
 
-# get monitor-ci pipelines we've already run on this sha
+########################
+# --- Script Summary ---
+# This script is the junction between the UI CI (public) and the monitor-ci CI (private).
+# When the public CI is started, this script kicks off the private CI and waits for it to complete.
+# This script uses the CircleCI APIs to make this magic happen.
+#
+# If the private CI fails, this script will collect the names and artifacts of the failed jobs and report them.
+# If you retry a failing job in the private CI and it passes, you can safely rerun this job in the public CI.
+#  - This script uses your commit SHA to search for a passing pipeline before starting a new one.
+#  - If you rerun the private CI and it passes, this script will find that pipeline and will not start a new one.
+#  - In this situation the script will exit quickly with success.
+# This script should support multiple workflows if more are added, although it has not been tested.
+# This script waits 40 minutes for the private CI to complete otherwise it fails.
+#
+# Required Env Vars:
+# - SHA: the UI repo commit SHA we're running against
+# - API_KEY: the CircleCI API access key
+# - UI_BRANCH: the branch of the UI repo we're running against
+# - MONITOR_CI_BRANCH: the branch of the monitor-ci repo to start a pipeline with (usually 'master')
+# - PULL_REQUEST: the open pull request, if one exists (used for lighthouse)
+########################
+
+# get monitor-ci pipelines we've already run on this SHA
 found_passing_pipeline=0
 all_pipelines=$(curl -s --request GET \
 		--url "https://circleci.com/api/v2/project/gh/influxdata/monitor-ci/pipeline" \
@@ -56,8 +78,6 @@ fi
 
 pipeline_id=$(echo ${pipeline} | jq  -r '.id')
 pipeline_number=$(echo ${pipeline} | jq -r '.number')
-# pipeline_id="db41d91c-d21b-4805-9609-31f44b2f4504"
-# pipeline_number="30"
 
 printf "\nwaiting for monitor-ci pipeline to begin...\n"
 sleep 1m

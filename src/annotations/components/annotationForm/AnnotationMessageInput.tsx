@@ -20,7 +20,7 @@ export const AnnotationMessageInput: FC<Props> = (props: Props) => {
   return (
     <Grid.Column widthXS={Columns.Twelve}>
       <Form.Element
-        label="Message"
+        label="Message (max: 255 characters)"
         required={true}
         errorMessage={validationMessage}
       >
@@ -30,6 +30,7 @@ export const AnnotationMessageInput: FC<Props> = (props: Props) => {
           onChange={props.onChange}
           style={{height: '80px', minHeight: '80px'}}
           ref={textArea}
+          maxLength={255}
         />
       </Form.Element>
     </Grid.Column>

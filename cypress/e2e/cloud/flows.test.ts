@@ -49,6 +49,7 @@ describe('Flows', () => {
 
     cy.getByTestID('flow-bucket-selector').click()
     cy.getByTestID('flow-bucket-selector--defbuck').click()
+    cy.getByTestID('measurement-selector test').click()
 
     cy.getByTestID('time-machine-submit-button').click()
 

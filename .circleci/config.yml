@@ -63,35 +63,6 @@ jobs:
           name: 'Save Yarn Package Cache'
           paths:
             - ~/.cache/yarn
-  deploy:
-    docker:
-      - image: circleci/golang:1.15-node
-    working_directory: ~/
-    steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - checkout:
-          path: ./ui
-      - restore_cache:
-          key: UI_PROD_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
-      - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
-      - checkout_monitor_ci
-      - run:
-          name: Load the prod image
-          command: |
-            docker load < ~/docker-cache/image.tar
-      - run:
-          name: Push the image to quay
-          command: |
-            docker tag quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1} quay.io/influxdb/influxdb-ui:latest
-            docker push quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1}
-            docker push quay.io/influxdb/influxdb-ui:latest
-      - run:
-          name: Deploy the image
-          command: |
-            cd ./monitor-ci/c2updater
-            export C2UPDATER_SIGNING_KEY=${ARGO_KEY}
-            GO111MODULE=on GOPATH=/go go mod download && go run ./ ${CIRCLE_SHA1} quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1} quay.io/influxdb/influxdb-ui@$(docker image inspect quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1} --format '{{.Id}}' | tr -d '\n')
   share-testing-image:
     docker:
       - image: circleci/golang:1.15-node
@@ -129,15 +100,6 @@ workflows:
       - unit
       - lint
       - monitor-ci-tests
-      - deploy:
-          filters:
-            branches:
-              only:
-                - master
-          requires:
-            - unit
-            - lint
-            - monitor-ci-tests
       - share-testing-image:
           filters:
             branches:

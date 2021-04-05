@@ -12,6 +12,7 @@ interface Props extends VisualizationOptionProps {
   properties: GeoViewProperties
 }
 
+const SHOW_GEO_OPTIONS = false
 const mapTypeOptions = ['Point', 'Circle', 'Heat', 'Track']
 enum LatRangeSlider {
   Min = -90,
@@ -141,7 +142,7 @@ export const GeoOptions: FC<Props> = ({properties, update}) => {
     })
   }
 
-  return (
+  return SHOW_GEO_OPTIONS ? (
     <>
       <SelectGroup className="mapTypeOptions">
         {mapTypeOptions.map((mapTypeOption: string, index: number) => (
@@ -213,5 +214,21 @@ export const GeoOptions: FC<Props> = ({properties, update}) => {
         )}
       </Grid.Column>
     </>
+  ) : (
+    <Grid.Column>
+      <h4 className="view-options--header">Customize Geo Options</h4>
+      <p>
+        To display properly, your data will need to contain fields named 'lat'
+        and 'lon' or a tag named 's2_cell_id'. For help customizing your query,
+        please see our{' '}
+        <a
+          href="https://docs.influxdata.com/influxdb/cloud/visualize-data/visualization-types/map/"
+          rel="noreferrer"
+          target="_blank"
+        >
+          documentation
+        </a>
+      </p>
+    </Grid.Column>
   )
 }

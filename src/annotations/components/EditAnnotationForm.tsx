@@ -50,6 +50,14 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
     summary: annotation.summary,
   })
 
+  const isValidAnnotationForm = (): boolean => {
+    if (!editedAnnotation.summary.length || !editedAnnotation.startTime) {
+      return false
+    } else {
+      return true
+    }
+  }
+
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -134,6 +142,11 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
             text="Save Changes"
             onClick={() => handleSubmit(editedAnnotation)}
             color={ComponentColor.Primary}
+            status={
+              isValidAnnotationForm()
+                ? ComponentStatus.Default
+                : ComponentStatus.Disabled
+            }
           />
         </div>
       </Overlay.Footer>

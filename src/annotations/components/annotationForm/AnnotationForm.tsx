@@ -9,6 +9,7 @@ import {
   Form,
   Grid,
   ButtonType,
+  ComponentStatus,
 } from '@influxdata/clockface'
 import {AnnotationMessageInput} from 'src/annotations/components/annotationForm/AnnotationMessageInput'
 import {AnnotationStartTimeInput} from 'src/annotations/components/annotationForm/AnnotationStartTimeInput'
@@ -31,6 +32,14 @@ interface Props {
 export const AnnotationForm: FC<Props> = (props: Props) => {
   const [startTime, setStartTime] = useState(props.startTime)
   const [message, setMessage] = useState('')
+
+  const isValidAnnotationForm = ({message, startTime}): boolean => {
+    if (!message.length || !startTime) {
+      return false
+    } else {
+      return true
+    }
+  }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault()
@@ -75,6 +84,11 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
             text="Save Annotation"
             color={ComponentColor.Primary}
             type={ButtonType.Submit}
+            status={
+              isValidAnnotationForm({startTime, message})
+                ? ComponentStatus.Default
+                : ComponentStatus.Disabled
+            }
           />
         </Overlay.Footer>
       </Form>

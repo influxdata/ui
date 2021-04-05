@@ -4,6 +4,9 @@ import React, {FC, useContext} from 'react'
 // Utils
 import LatestValueTransform from 'src/visualization/components/LatestValueTransform'
 import {generateThresholdsListHexs} from 'src/shared/constants/colorOperations'
+import {formatStatValue} from 'src/visualization/utils/formatStatValue'
+import {getFormatter} from 'src/visualization/utils/getFormatter'
+import {resolveTimeFormat} from 'src/visualization/utils/timeFormat'
 
 // Types
 import {SingleStatViewProperties} from 'src/types/dashboards'
@@ -17,6 +20,7 @@ import {
 } from '@influxdata/giraffe'
 
 import './style.scss'
+import {AppSettingContext} from 'src/shared/contexts/app'
 import {getFormatter} from '../../utils/getFormatter'
 import {AppSettingContext} from '../../../shared/contexts/app'
 import {isFlagEnabled} from '../../../shared/utils/featureFlag'
@@ -65,64 +69,63 @@ const SingleStat: FC<Props> = ({properties, result}) => {
     }
     return <Plot config={config} />
   } else {
-    return (
-      <LatestValueTransform table={result.table} allowString={true}>
-        {latestValue => {
-          const {
-            bgColor: backgroundColor,
-            textColor,
-          } = generateThresholdsListHexs({
-            colors,
-            lastValue: latestValue,
-            cellType: 'single-stat',
-          })
+  return (
+    <LatestValueTransform table={result.table} allowString={true}>
+      {latestValue => {
+        const {
+          bgColor: backgroundColor,
+          textColor,
+        } = generateThresholdsListHexs({
+          colors,
+          lastValue: latestValue,
+          cellType: 'single-stat',
+        })
 
           const timeFormatter = getFormatter('time', {
             timeZone: timeZone === 'Local' ? undefined : timeZone,
             timeFormat: DEFAULT_TIME_FORMAT,
           })
 
-          const formattedValue =
-            result.table.getColumnType('_value') == 'time'
-              ? timeFormatter(latestValue)
-              : formatStatValue(latestValue, {
+        const formattedValue =
+          result.table.getColumnType('_value') == 'time'
+            ? timeFormatter(latestValue)
+            : formatStatValue(latestValue, {
                 decimalPlaces,
                 prefix,
                 suffix,
               })
 
-          return (
-            <div
-              className="single-stat"
-              style={{backgroundColor}}
-              data-testid="single-stat"
-            >
-              <div className="single-stat--resizer">
-                <svg
-                  width="100%"
-                  height="100%"
-                  viewBox={`0 0 ${formattedValue.length * 55} 100`}
+        return (
+          <div
+            className="single-stat"
+            style={{backgroundColor}}
+            data-testid="single-stat"
+          >
+            <div className="single-stat--resizer">
+              <svg
+                width="100%"
+                height="100%"
+                viewBox={`0 0 ${formattedValue.length * 55} 100`}
+              >
+                <text
+                  className="single-stat--text"
+                  data-testid="single-stat--text"
+                  fontSize="100"
+                  y="59%"
+                  x="50%"
+                  dominantBaseline="middle"
+                  textAnchor="middle"
+                  style={{fill: textColor}}
                 >
-                  <text
-                    className="single-stat--text"
-                    data-testid="single-stat--text"
-                    fontSize="100"
-                    y="59%"
-                    x="50%"
-                    dominantBaseline="middle"
-                    textAnchor="middle"
-                    style={{fill: textColor}}
-                  >
-                    {formattedValue}
-                  </text>
-                </svg>
-              </div>
+                  {formattedValue}
+                </text>
+              </svg>
             </div>
-          )
-        }}
-      </LatestValueTransform>
-    )
-  }
+          </div>
+        )
+      }}
+    </LatestValueTransform>
+  )
 }
 
 export default SingleStat

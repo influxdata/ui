@@ -488,7 +488,13 @@ jobs:
       - checkout
       - run:
           name: Run monitor-ci tests
-          command: API_KEY=${MONITOR_CI_API_KEY} PULL_REQUEST=${CIRCLE_PULL_REQUEST} MONITOR_CI_BRANCH="genehynson/circle-refactor" UI_BRANCH=${CIRCLE_BRANCH} SHA=${CIRCLE_SHA1} ./scripts/run-monitor-ci-tests.bash
+          command: ./scripts/run-monitor-ci-tests.bash
+          environment:
+            API_KEY: ${MONITOR_CI_API_KEY}
+            PULL_REQUEST: ${CIRCLE_PULL_REQUEST}
+            MONITOR_CI_BRANCH: master
+            UI_BRANCH: ${CIRCLE_BRANCH}
+            SHA: ${CIRCLE_SHA1}
       - store_artifacts:
           path: monitor-ci/test-artifacts/results/build-oss-image
           destination: test_artifacts/results/build-oss-image

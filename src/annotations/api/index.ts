@@ -117,14 +117,7 @@ export const updateAnnotation = async (
     throw new Error(res.data?.message)
   }
 
-  const {startTime, endTime, summary, message, id} = res.data
-  return {
-    startTime,
-    endTime,
-    summary,
-    message,
-    id,
-  }
+  return res.data
 }
 
 export const deleteAnnotation = async (

@@ -67,7 +67,13 @@ class TaskRunsRow extends PureComponent<Props, State> {
       return ''
     }
     const newdate = new Date(dt)
-    const formatted = moment(newdate).format(DEFAULT_TIME_FORMAT)
+    const {timeZone} = this.props
+    const formatted =
+      timeZone === 'UTC'
+        ? moment(newdate)
+            .utc()
+            .format(DEFAULT_TIME_FORMAT)
+        : moment(newdate).format(DEFAULT_TIME_FORMAT)
 
     return formatted
   }
@@ -96,8 +102,9 @@ class TaskRunsRow extends PureComponent<Props, State> {
 
 const mstp = (state: AppState) => {
   const {logs} = state.resources.tasks
+  const timeZone = state.app.persisted.timeZone
 
-  return {logs}
+  return {logs, timeZone}
 }
 
 const mdtp = {getLogs: getLogs}

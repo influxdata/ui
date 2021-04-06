@@ -127,7 +127,7 @@ export interface VariableAssignment extends BaseNode {
 export interface MemberAssignment extends BaseNode {
   member: MemberExpression
   init: Expression
-  type: 'MemberExpression'
+  type: 'MemberAssignment'
 }
 
 export type Expression =

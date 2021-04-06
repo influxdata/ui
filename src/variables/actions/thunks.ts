@@ -351,10 +351,43 @@ export const moveVariable = (originalIndex: number, newIndex: number) => async (
 ) => {
   const contextID = currentContext(getState())
   const byDashboardVariables = getVariablesForDashboard(getState())
-
+  const oldDashboardVarOrder = [...byDashboardVariables]
   const temp = byDashboardVariables[originalIndex]
   byDashboardVariables[originalIndex] = byDashboardVariables[newIndex]
   byDashboardVariables[newIndex] = temp
+
+  api
+    .patchVariable({
+      variableID: temp.id,
+      data: {
+        ...(temp as GenVariable),
+        sort_order: newIndex,
+      } as GenVariable,
+    })
+    .then(() => {
+      api.patchVariable({
+        variableID: byDashboardVariables[newIndex].id,
+        data: {
+          ...(byDashboardVariables[newIndex] as GenVariable),
+          sort_order: originalIndex,
+        } as GenVariable,
+      })
+    })
+    .catch(async err => {
+      await dispatch(
+        moveVariableInState(
+          contextID,
+          oldDashboardVarOrder.map((v: Variable) => v.id)
+        )
+      )
+      dispatch(
+        notify(
+          copy.moveVariableFailed(
+            err.message ?? 'Unable to move variable at this time.'
+          )
+        )
+      )
+    })
 
   await dispatch(
     moveVariableInState(

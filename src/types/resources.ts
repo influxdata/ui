@@ -24,6 +24,7 @@ export enum ResourceType {
   Cells = 'cells',
   Checks = 'checks',
   Dashboards = 'dashboards',
+  Flows = 'flows',
   Labels = 'labels',
   Orgs = 'orgs',
   Members = 'members',

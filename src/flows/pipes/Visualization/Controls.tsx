@@ -46,7 +46,7 @@ const Controls: FC<Props> = ({toggle, visible}) => {
 
   const options = useMemo(() => {
     if (!data.functions || !data.functions.length) {
-      return [{name: 'mean'}].map(f => f.name)
+      return []
     }
     return data.functions.map(f => f.name)
   }, [data.functions])

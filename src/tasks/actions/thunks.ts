@@ -448,6 +448,7 @@ export const runTask = (taskID: string) => async (
     const message = getErrorMessage(error)
     dispatch(notify(copy.taskRunFailed(message)))
     console.error(error)
+    throw message
   }
 }
 

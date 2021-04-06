@@ -48,6 +48,7 @@ const Results: FC = () => {
         <View
           properties={{
             type: 'simple-table',
+            showAll: false,
           }}
           result={results.parsed}
         />

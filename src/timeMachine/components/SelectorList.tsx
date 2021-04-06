@@ -26,7 +26,12 @@ const SelectorList: SFC<Props> = props => {
   } = props
 
   return (
-    <List autoHideScrollbars={true} testID={testID} style={{flex: '1 0 0'}}>
+    <List
+      autoHideScrollbars={true}
+      testID={testID}
+      style={{flex: '1 0 0'}}
+      scrollToSelected={true}
+    >
       {items.map(item => {
         const selected = selectedItems.includes(item)
 

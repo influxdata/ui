@@ -43,7 +43,7 @@ $checkbox--h-padding: $ix-marg-c;
     transition: opacity 0.25s ease, transform 0.25s ease;
     border-radius: 50%;
     opacity: 0;
-    transform: translate(-50%, -50%) scale(1.8,1.8);
+    transform: translate(-50%, -50%) scale(1.8, 1.8);
   }
 
   &.checked {
@@ -52,7 +52,7 @@ $checkbox--h-padding: $ix-marg-c;
     }
     &:after {
       opacity: 1;
-      transform: translate(-50%, -50%) scale(1,1);
+      transform: translate(-50%, -50%) scale(1, 1);
     }
   }
 }

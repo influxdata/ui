@@ -24,7 +24,8 @@ import {setView} from 'src/views/actions/creators'
 import {notify} from 'src/shared/actions/notifications'
 import {setDashboard} from 'src/dashboards/actions/creators'
 import {setCells, setCell, removeCell} from 'src/cells/actions/creators'
-
+import {removeView} from 'src/views/actions/creators'
+import {setDashboardTimeRange} from 'src/dashboards/actions/ranges'
 // Constants
 import * as copy from 'src/shared/copy/notifications'
 
@@ -41,20 +42,24 @@ import {
   CellEntities,
   View,
   ViewEntities,
+  TimeRange,
 } from 'src/types'
 
 // Utils
 import {getNewDashboardCell} from 'src/dashboards/utils/cellGetters'
 import {getByID} from 'src/resources/selectors'
 
-export const deleteCell = (dashboardID: string, cellID: string) => async (
-  dispatch
-): Promise<void> => {
+export const deleteCellAndView = (
+  dashboardID: string,
+  cellID: string,
+  viewID: string
+) => async (dispatch): Promise<void> => {
   try {
     await Promise.all([
       deleteDashboardsCell({dashboardID: dashboardID, cellID: cellID}),
     ])
 
+    dispatch(removeView(viewID))
     dispatch(removeCell({dashboardID, id: cellID}))
     dispatch(notify(copy.cellDeleted()))
   } catch (error) {
@@ -65,7 +70,9 @@ export const deleteCell = (dashboardID: string, cellID: string) => async (
 export const createCellWithView = (
   dashboardID: string,
   view: NewView,
-  clonedCell?: Cell
+  clonedCell?: Cell,
+  redirect?: (destinationId: string) => void,
+  timeRange?: TimeRange
 ) => async (dispatch, getState: GetState): Promise<void> => {
   const state = getState()
   let workingView = view
@@ -108,6 +115,9 @@ export const createCellWithView = (
       workingView = {...workingView, name: `${view.name} (Clone)`}
     }
 
+    if (timeRange) {
+      dispatch(setDashboardTimeRange(dashboardID, timeRange))
+    }
     // Create the view and associate it with the cell
     const newView = await updateView(dashboardID, cellID, workingView)
 
@@ -121,6 +131,10 @@ export const createCellWithView = (
 
     dispatch(setCell(cellID, RemoteDataState.Done, normCell))
     dispatch(setView(cellID, RemoteDataState.Done, normView))
+
+    if (redirect) {
+      redirect(dashboardID)
+    }
   } catch (error) {
     dispatch(notify(copy.cellAddFailed(error.message)))
     throw error
@@ -130,7 +144,9 @@ export const createCellWithView = (
 export const createDashboardWithView = (
   orgID: string,
   dashboardName: string,
-  view: View
+  view: View,
+  redirect?: (destinationId: string) => void,
+  timeRange?: TimeRange
 ) => async (dispatch): Promise<void> => {
   try {
     const newDashboard = {
@@ -152,8 +168,13 @@ export const createDashboardWithView = (
 
     await dispatch(setDashboard(resp.data.id, RemoteDataState.Done, normDash))
 
-    await dispatch(createCellWithView(resp.data.id, view))
+    await dispatch(
+      createCellWithView(resp.data.id, view, null, null, timeRange)
+    )
     dispatch(notify(copy.dashboardCreateSuccess()))
+    if (redirect) {
+      redirect(resp.data.id)
+    }
   } catch (error) {
     console.error(error)
     dispatch(notify(copy.cellAddFailed(error.message)))

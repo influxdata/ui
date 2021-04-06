@@ -57,6 +57,16 @@ const UserWidget: FC<Props> = ({
             <a className={className} href={`${CLOUD_URL}${CLOUD_USAGE_PATH}`} />
           )}
         />
+        <FeatureFlag name="unity-usage">
+          <TreeNav.UserItem
+            id="unity-usage"
+            label="Unity Usage"
+            testID="user-nav-item-unity-usage"
+            linkElement={className => (
+              <a className={className} href={`/orgs/${org.id}/unity-usage`} />
+            )}
+          />
+        </FeatureFlag>
         <TreeNav.UserItem
           id="billing"
           label="Billing"
@@ -86,6 +96,16 @@ const UserWidget: FC<Props> = ({
             testID="user-nav-item-unity-users"
             linkElement={className => (
               <a className={className} href={`/orgs/${org.id}/unity-users`} />
+            )}
+          />
+        </FeatureFlag>
+        <FeatureFlag name="unity-billing">
+          <TreeNav.UserItem
+            id="unity-billing"
+            label="Unity billing"
+            testID="user-nav-item-unity-billing"
+            linkElement={className => (
+              <a className={className} href={`/orgs/${org.id}/unity-billing`} />
             )}
           />
         </FeatureFlag>

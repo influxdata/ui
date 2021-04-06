@@ -7,7 +7,7 @@ interface Props {
 const TooltipLink: SFC<Props> = ({link}) => (
   <p className="tooltip--link">
     Still have questions? Check out the{' '}
-    <a target="_blank" href={link}>
+    <a target="_blank" rel="noreferrer" href={link}>
       Flux Docs
     </a>
     .

@@ -8,6 +8,7 @@ describe('labels', () => {
       cy.get('@org').then(({id}: Organization) =>
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${id}/settings/labels`)
+          cy.getByTestID('tree-nav')
         })
       )
     })
@@ -45,15 +46,12 @@ describe('labels', () => {
         .click()
     })
 
-    cy.getByTestID('overlay--container').should('not.be.visible')
-
     // open create 2 - by standard button
     cy.getByTestID('button-create').click()
     cy.getByTestID('overlay--container').should('be.visible')
 
     // cancel
     cy.getByTestID('create-label-form--cancel').click()
-    cy.getByTestID('overlay--container').should('not.be.visible')
     cy.getByTestID('label-card').should('have.length', 0)
 
     // open create - and proceed with overlay
@@ -178,6 +176,7 @@ describe('labels', () => {
 
       cy.get<Organization>('@org').then(({id}) => {
         cy.visit(`orgs/${id}/settings/labels`)
+        cy.getByTestID('tree-nav')
       })
     })
 
@@ -434,6 +433,8 @@ describe('labels', () => {
     })
 
     it('can delete a label', () => {
+      cy.reload()
+
       cy.getByTestID('label-card').should('have.length', 1)
       cy.getByTestID('empty-state').should('not.exist')
 

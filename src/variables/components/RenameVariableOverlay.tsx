@@ -1,6 +1,7 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {useContext, FC, memo} from 'react'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {OverlayContext} from 'src/overlays/components/OverlayController'
 
 import _ from 'lodash'
 
@@ -8,40 +9,30 @@ import _ from 'lodash'
 import DangerConfirmationOverlay from 'src/shared/components/dangerConfirmation/DangerConfirmationOverlay'
 import RenameVariableForm from 'src/variables/components/RenameVariableForm'
 
-// Decorators
-import {ErrorHandling} from 'src/shared/decorators/errors'
-
-@ErrorHandling
-class RenameVariableOverlay extends PureComponent<
-  RouteComponentProps<{orgID: string}>
-> {
-  public render() {
-    return (
-      <DangerConfirmationOverlay
-        title="Rename Variable"
-        message={this.message}
-        effectedItems={this.effectedItems}
-        onClose={this.handleClose}
-        confirmButtonText="I understand, let's rename my Variable"
-      >
-        <RenameVariableForm onClose={this.handleClose} />
-      </DangerConfirmationOverlay>
-    )
-  }
-
-  private get message(): string {
-    return 'Updating the name of a Variable can have unintended consequences. Anything that references this Variable by name will stop working including:'
-  }
-
-  private get effectedItems(): string[] {
-    return ['Queries', 'Dashboards', 'Telegraf Configurations', 'Templates']
-  }
-
-  private handleClose = () => {
-    const {history, match} = this.props
-
-    history.push(`/orgs/${match.params.orgID}/settings/variables`)
-  }
+const sendMessage = (): string => {
+  return 'Updating the name of a Variable can have unintended consequences. Anything that references this Variable by name will stop working including:'
 }
 
-export default withRouter(RenameVariableOverlay)
+const effectedItems = (): string[] => {
+  return ['Queries', 'Dashboards', 'Telegraf Configurations', 'Templates']
+}
+
+const RenameVariableOverlay: FC<RouteComponentProps<{
+  orgID: string
+}>> = () => {
+  const {onClose} = useContext(OverlayContext)
+
+  return (
+    <DangerConfirmationOverlay
+      title="Rename Variable"
+      message={sendMessage()}
+      effectedItems={effectedItems()}
+      confirmButtonText="I understand, let's rename my Variable"
+      onClose={onClose}
+    >
+      <RenameVariableForm onClose={onClose} />
+    </DangerConfirmationOverlay>
+  )
+}
+
+export default withRouter(memo(RenameVariableOverlay))

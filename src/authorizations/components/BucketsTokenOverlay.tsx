@@ -18,12 +18,12 @@ import {
   Form,
 } from '@influxdata/clockface'
 import BucketsSelector from 'src/authorizations/components/BucketsSelector'
-import GetResources from 'src/resources/components/GetResources'
+import BucketsProvider from 'src/flows/context/buckets'
 
 // Utils
 import {
   specificBucketsPermissions,
-  selectBucket,
+  toggleSelectedBucket,
   allBucketsPermissions,
   BucketTab,
 } from 'src/authorizations/utils/permissions'
@@ -80,6 +80,8 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
       activeTabWrite,
     } = this.state
 
+    const {buckets} = this.props
+
     return (
       <Overlay.Container maxWidth={700}>
         <Overlay.Header
@@ -102,12 +104,12 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
                 />
               </Form.Element>
               <Form.Element label="">
-                <GetResources resources={[ResourceType.Buckets]}>
+                <BucketsProvider>
                   <Grid.Row>
                     <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Six}>
                       <BucketsSelector
                         onSelect={this.handleSelectReadBucket}
-                        buckets={this.nonSystemBuckets}
+                        buckets={buckets}
                         selectedBuckets={readBuckets}
                         title="Read"
                         onSelectAll={this.handleReadSelectAllBuckets}
@@ -119,7 +121,7 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
                     <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Six}>
                       <BucketsSelector
                         onSelect={this.handleSelectWriteBucket}
-                        buckets={this.nonSystemBuckets}
+                        buckets={buckets}
                         selectedBuckets={writeBuckets}
                         title="Write"
                         onSelectAll={this.handleWriteSelectAllBuckets}
@@ -129,7 +131,7 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
                       />
                     </Grid.Column>
                   </Grid.Row>
-                </GetResources>
+                </BucketsProvider>
               </Form.Element>
               <Form.Footer>
                 <Button
@@ -163,13 +165,16 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
   }
 
   private handleSelectReadBucket = (bucketName: string): void => {
-    const readBuckets = selectBucket(bucketName, this.state.readBuckets)
+    const readBuckets = toggleSelectedBucket(bucketName, this.state.readBuckets)
 
     this.setState({readBuckets})
   }
 
   private handleSelectWriteBucket = (bucketName: string): void => {
-    const writeBuckets = selectBucket(bucketName, this.state.writeBuckets)
+    const writeBuckets = toggleSelectedBucket(
+      bucketName,
+      this.state.writeBuckets
+    )
 
     this.setState({writeBuckets})
   }
@@ -253,12 +258,6 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
     return allBucketsPermissions(orgID, 'write')
   }
 
-  private get nonSystemBuckets(): Bucket[] {
-    const {buckets} = this.props
-
-    return buckets.filter(bucket => !isSystemBucket(bucket.name))
-  }
-
   private handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const {value} = e.target
 
@@ -271,9 +270,12 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
 }
 
 const mstp = (state: AppState) => {
+  const orgID = getOrg(state).id
   return {
-    orgID: getOrg(state).id,
-    buckets: getAll<Bucket>(state, ResourceType.Buckets),
+    orgID: orgID,
+    buckets: getAll<Bucket>(state, ResourceType.Buckets)
+      .filter(bucket => !isSystemBucket(bucket.name))
+      .filter(bucket => bucket.orgID === orgID),
   }
 }
 

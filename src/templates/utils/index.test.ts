@@ -211,13 +211,19 @@ describe('validating template URLs', () => {
       )
     })
 
+    it('notifies the user when the URL is invalid due to spaces', () => {
+      const errorMessage = "Your URL can't contain spaces"
+      expect(
+        validateTemplateURL(
+          'https://github.com/influxdata/community-templates/  blob/master/linux_system/linux_system.yml'
+        )
+      ).toBe(errorMessage)
+    })
+
     it("notifies the user when it's neither a correct community template nor a correct file type", () => {
       const errorMessage = "We can't use that URL"
       expect(validateTemplateURL('http://www.example.com')).toBe(errorMessage)
       expect(validateTemplateURL('http://www.example.com/template.toml')).toBe(
-        errorMessage
-      )
-      expect(validateTemplateURL('Jackdaws love my big sphinx of quartz')).toBe(
         errorMessage
       )
     })
@@ -236,6 +242,26 @@ describe('validating template URLs', () => {
       expect(
         validateTemplateURL(
           'https://raw.githubusercontent.com/influxdata/community-templates/master/speedtest/speedtest.yml'
+        )
+      ).toBe(TEMPLATE_URL_VALID)
+      expect(
+        validateTemplateURL(
+          'https://github.com/influxdata/community-templates/blob/master/airquality/airquality.yml?queryAttachedToTheURL'
+        )
+      ).toBe(TEMPLATE_URL_VALID)
+      expect(
+        validateTemplateURL(
+          'https://github.com/influxdata/community-templates/blob/master/airquality/whitespace.yml      '
+        )
+      ).toBe(TEMPLATE_URL_VALID)
+      expect(
+        validateTemplateURL(
+          'https://github.com/influxdata/community-templates/blob/master/airquality/whitespaceQuery.yml?queryAttachedToTheURL      '
+        )
+      ).toBe(TEMPLATE_URL_VALID)
+      expect(
+        validateTemplateURL(
+          'https://github.com/influxdata/community-templates/blob/master/airquality/EmptyQueryButQuestionMarkPresent.yml?      '
         )
       ).toBe(TEMPLATE_URL_VALID)
     })

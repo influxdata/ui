@@ -52,6 +52,15 @@ export const SELECTABLE_TIME_RANGES: SelectableDurationTimeRange[] = [
   pastFifteenMinTimeRange,
   pastHourTimeRange,
   {
+    seconds: 10800,
+    lower: 'now() - 3h',
+    upper: null,
+    label: 'Past 3h',
+    duration: '3h',
+    type: 'selectable-duration',
+    windowPeriod: 60000, // 1m
+  },
+  {
     seconds: 21600,
     lower: 'now() - 6h',
     upper: null,

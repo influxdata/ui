@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC} from 'react'
 import {connect} from 'react-redux'
 import {get, find} from 'lodash'
 import classnames from 'classnames'
@@ -15,7 +15,11 @@ import {
 import CloudOnly from 'src/shared/components/cloud/CloudOnly'
 
 // Constants
-import {CLOUD_URL, CLOUD_CHECKOUT_PATH} from 'src/shared/constants'
+import {
+  BETA_REGIONS,
+  CLOUD_URL,
+  CLOUD_CHECKOUT_PATH,
+} from 'src/shared/constants'
 import {
   HIDE_UPGRADE_CTA_KEY,
   PAID_ORG_HIDE_UPGRADE_SETTING,
@@ -23,9 +27,6 @@ import {
 
 // Types
 import {AppState, OrgSetting} from 'src/types'
-
-// Utils
-import {getExperimentVariantId} from 'src/cloud/utils/experiments'
 
 interface StateProps {
   inView: boolean
@@ -47,26 +48,23 @@ const CloudUpgradeButton: FC<StateProps & OwnProps> = ({
     [`${className}`]: className,
   })
 
-  const [assignedIconVariant, setAssignedIconVariant] = useState<IconFont>(
-    IconFont.Upgrade
+  // TODO(ariel): we need to build out an exception for beta regions
+  // This current hack is being placed to allow a Beta region to be deployed
+  // without allowing users to get navigated to a Quartz 404. This hack is being implemented
+  // to address the following issue:
+  // https://github.com/influxdata/ui/issues/944
+  // The follow up to this issue will address the hack here:
+  // https://github.com/influxdata/ui/issues/930
+
+  const isBetaRegion = BETA_REGIONS.some((pathName: string) =>
+    window.location.hostname.includes(pathName)
   )
-
-  useEffect(() => {
-    const variantID = getExperimentVariantId('e44rY7GjQN-ASmGeWLs_pA')
-
-    if (variantID) {
-      setAssignedIconVariant(
-        [IconFont.Upgrade, IconFont.CrownSolid, IconFont.Star][variantID] ||
-          IconFont.Upgrade
-      )
-    }
-  })
 
   return (
     <CloudOnly>
-      {inView && (
+      {inView && !isBetaRegion && (
         <LinkButton
-          icon={assignedIconVariant}
+          icon={IconFont.CrownSolid}
           className={cloudUpgradeButtonClass}
           color={ComponentColor.Success}
           size={size}
@@ -74,6 +72,7 @@ const CloudUpgradeButton: FC<StateProps & OwnProps> = ({
           href={`${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`}
           target="_self"
           text={buttonText}
+          testID="cloud-upgrade--button"
         />
       )}
     </CloudOnly>

@@ -5,9 +5,15 @@ import classnames from 'classnames'
 // Components
 import {Icon, IconFont} from '@influxdata/clockface'
 
+// Context
+import {PipeContext} from 'src/flows/context/pipe'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
+
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 // Types
 import {Visibility} from 'src/types/flows'
-import {PipeContext} from 'src/flows/context/pipe'
 
 interface Props {
   visibility: Visibility
@@ -34,6 +40,7 @@ const ResizerHeader: FC<Props> = ({
   toggleVisibilityEnabled,
 }) => {
   const {readOnly} = useContext(PipeContext)
+  const {queryAll} = useContext(FlowQueryContext)
   const glyph = visibility === 'visible' ? IconFont.EyeOpen : IconFont.EyeClosed
   const className = classnames('panel-resizer--header', {
     'panel-resizer--header__multiple-controls':
@@ -41,9 +48,14 @@ const ResizerHeader: FC<Props> = ({
     [`panel-resizer--header__${visibility}`]: resizingEnabled && visibility,
   })
 
+  const handleSubmit = () => {
+    event('Query All button clicked from inside Pipe')
+    queryAll()
+  }
+
   if (!resizingEnabled) {
     return (
-      <div className={className}>
+      <div className={className} onClick={handleSubmit}>
         <Icon glyph={emptyIcon} className="panel-resizer--vis-toggle" />
       </div>
     )
@@ -81,9 +93,10 @@ const ResizerHeader: FC<Props> = ({
         ref={dragHandleRef}
         title="Drag to resize results table"
       >
-        <div className="panel-resizer--drag-icon" />
-        <div className="panel-resizer--drag-icon" />
-        <div className="panel-resizer--drag-icon" />
+        <Icon
+          className="panel-resizer--drag-icon"
+          glyph={IconFont.DragToExpand}
+        />
       </div>
     </div>
   )

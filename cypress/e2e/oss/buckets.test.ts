@@ -4,23 +4,14 @@ describe('Buckets', () => {
   beforeEach(() => {
     cy.flush()
 
-    cy.signin()
-      .then(() =>
-        cy.request({
-          method: 'GET',
-          url: '/api/v2/buckets',
+    cy.signin().then(() => {
+      cy.get('@org').then(({id}: Organization) =>
+        cy.fixture('routes').then(({orgs, buckets}) => {
+          cy.visit(`${orgs}/${id}${buckets}`)
+          cy.getByTestID('tree-nav')
         })
       )
-      .then(response => {
-        cy.wrap(response.body.buckets[0]).as('bucket')
-      })
-      .then(() => {
-        cy.get('@org').then(({id}: Organization) =>
-          cy.fixture('routes').then(({orgs, buckets}) => {
-            cy.visit(`${orgs}/${id}${buckets}`)
-          })
-        )
-      })
+    })
   })
 
   // TODO: Skipping this until we can sort out the differences between OSS and Cloud
@@ -73,10 +64,12 @@ describe('Buckets', () => {
     cy.get('.cf-resource-card').should('have.length', 3)
 
     // filter a bucket
-    cy.getByTestID('search-widget').type('def')
-    cy.get('.cf-resource-card')
-      .should('have.length', 1)
-      .should('contain', 'defbuck')
+    cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
+      cy.getByTestID('search-widget').type(defaultBucket.substr(0, 3))
+      cy.get('.cf-resource-card')
+        .should('have.length', 1)
+        .should('contain', defaultBucket)
+    })
 
     // clear filter and assert all buckets are visible
     cy.getByTestID('search-widget').clear()

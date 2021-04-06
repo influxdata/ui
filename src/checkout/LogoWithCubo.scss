@@ -1,0 +1,26 @@
+.cf-funnel-page--logo {
+  .cubo-logo {
+    font-size: $cf-text-base-4;
+    padding-right: $cf-marg-b;
+    color: #fff;
+    line-height: 1.5;
+  }
+}
+
+.influx-logo {
+  width: 150px;
+
+  .st0 {
+    fill: #ffffff;
+  }
+
+  .st1 {
+    fill: none;
+  }
+}
+
+.influx-cloud-logo {
+  width: 150px;
+  height: 50px;
+  display: flex;
+}

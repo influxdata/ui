@@ -7,24 +7,14 @@ describe('Scrapers', () => {
   beforeEach(() => {
     cy.flush()
 
-    cy.signin()
-      .then(() =>
-        cy.request({
-          method: 'GET',
-          url: '/api/v2/buckets',
+    cy.signin().then(() => {
+      cy.get('@org').then(({id}: Organization) =>
+        cy.fixture('routes').then(({orgs}) => {
+          cy.visit(`${orgs}/${id}/load-data/scrapers`)
+          cy.getByTestID('tree-nav')
         })
       )
-      .then(response => {
-        cy.wrap(response.body.buckets[0]).as('bucket')
-      })
-
-      .then(() => {
-        cy.get('@org').then(({id}: Organization) =>
-          cy.fixture('routes').then(({orgs}) => {
-            cy.visit(`${orgs}/${id}/load-data/scrapers`)
-          })
-        )
-      })
+    })
     cy.get('[data-testid="resource-list--body"]', {timeout: PAGE_LOAD_SLA})
   })
 
@@ -85,6 +75,7 @@ describe('Scrapers', () => {
         cy.fixture('routes').then(({orgs}) => {
           cy.get<Organization>('@org').then(({id}: Organization) => {
             cy.visit(`${orgs}/${id}/load-data/scrapers`)
+            cy.getByTestID('tree-nav')
           })
         })
         cy.get('[data-testid="resource-list--body"]', {timeout: PAGE_LOAD_SLA})

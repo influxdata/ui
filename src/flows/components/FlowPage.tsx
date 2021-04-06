@@ -5,6 +5,8 @@ import {useParams} from 'react-router-dom'
 // Components
 import CurrentFlowProvider from 'src/flows/context/flow.current'
 import {RunModeProvider} from 'src/flows/context/runMode'
+import QueryProvider from 'src/flows/context/query'
+import {FlowQueryProvider} from 'src/flows/context/flow.query'
 import {FlowListContext} from 'src/flows/context/flow.list'
 import Flow from 'src/flows/components/Flow'
 import {Page} from '@influxdata/clockface'
@@ -13,7 +15,7 @@ import {ResultsProvider} from 'src/flows/context/results'
 import {PROJECT_NAME_PLURAL} from 'src/flows'
 
 const FlowFromRoute = () => {
-  const {id} = useParams()
+  const {id} = useParams<{id: string}>()
   const {change} = useContext(FlowListContext)
 
   useEffect(() => {
@@ -28,23 +30,27 @@ const FlowFromRoute = () => {
 import 'src/flows/style.scss'
 
 const FlowContainer: FC = () => (
-  <CurrentFlowProvider>
-    <RunModeProvider>
-      <FlowFromRoute />
-      <ResultsProvider>
-        <Page titleTag={PROJECT_NAME_PLURAL}>
-          <FlowHeader />
-          <Page.Contents
-            fullWidth={true}
-            scrollable={true}
-            className="flow-page"
-          >
-            <Flow />
-          </Page.Contents>
-        </Page>
-      </ResultsProvider>
-    </RunModeProvider>
-  </CurrentFlowProvider>
+  <QueryProvider>
+    <CurrentFlowProvider>
+      <RunModeProvider>
+        <FlowFromRoute />
+        <ResultsProvider>
+          <FlowQueryProvider>
+            <Page titleTag={PROJECT_NAME_PLURAL}>
+              <FlowHeader />
+              <Page.Contents
+                fullWidth={true}
+                scrollable={true}
+                className="flow-page"
+              >
+                <Flow />
+              </Page.Contents>
+            </Page>
+          </FlowQueryProvider>
+        </ResultsProvider>
+      </RunModeProvider>
+    </CurrentFlowProvider>
+  </QueryProvider>
 )
 
 export default FlowContainer

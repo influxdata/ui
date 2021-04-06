@@ -20,7 +20,13 @@ import {Bucket} from 'src/types'
 import {ComponentStatus} from '@influxdata/clockface'
 import {CollectorsStepProps} from 'src/dataLoaders/components/collectorsWizard/CollectorsWizard'
 import {BundleName} from 'src/types/dataLoaders'
-import {AppState} from 'src/types'
+import {AppState, ResourceType} from 'src/types'
+
+// Selectors
+import {getAll} from 'src/resources/selectors'
+
+// Utils
+import {isSystemBucket} from 'src/buckets/constants'
 
 export interface OwnProps extends CollectorsStepProps {
   buckets: Bucket[]
@@ -32,6 +38,7 @@ type Props = OwnProps & ReduxProps
 @ErrorHandling
 export class SelectCollectorsStep extends PureComponent<Props> {
   public render() {
+    const selectedBucketName = this.props.bucket ?? this.props.buckets[0]?.name
     return (
       <Form
         onSubmit={this.props.onIncrementCurrentStepIndex}
@@ -48,21 +55,20 @@ export class SelectCollectorsStep extends PureComponent<Props> {
               metrics to a bucket in InfluxDB
             </h5>
           </div>
-          {!!this.props.bucket && (
-            <StreamingSelector
-              pluginBundles={this.props.pluginBundles}
-              telegrafPlugins={this.props.telegrafPlugins}
-              onTogglePluginBundle={this.handleTogglePluginBundle}
-              buckets={this.props.buckets}
-              selectedBucketName={this.props.bucket}
-              onSelectBucket={this.handleSelectBucket}
-            />
-          )}
+          <StreamingSelector
+            pluginBundles={this.props.pluginBundles}
+            telegrafPlugins={this.props.telegrafPlugins}
+            onTogglePluginBundle={this.handleTogglePluginBundle}
+            buckets={this.props.buckets ?? []}
+            selectedBucketName={selectedBucketName}
+            onSelectBucket={this.handleSelectBucket}
+          />
           <h5 className="wizard-step--sub-title">
             Looking for other things to monitor? Check out our 200+ other &nbsp;
             <a
               href="https://v2.docs.influxdata.com/v2.0/reference/telegraf-plugins/#input-plugins"
               target="_blank"
+              rel="noreferrer"
             >
               Telegraf Plugins
             </a>
@@ -70,6 +76,7 @@ export class SelectCollectorsStep extends PureComponent<Props> {
             <a
               href="https://v2.docs.influxdata.com/v2.0/write-data/no-code/use-telegraf/manual-config/"
               target="_blank"
+              rel="noreferrer"
             >
               Configure these Plugins
             </a>
@@ -123,11 +130,21 @@ const mstp = ({
     dataLoaders: {telegrafPlugins, pluginBundles},
     steps: {bucket},
   },
-}: AppState) => ({
-  telegrafPlugins,
-  bucket,
-  pluginBundles,
-})
+  ...state
+}: AppState) => {
+  const buckets = getAll<Bucket>(state as AppState, ResourceType.Buckets)
+
+  const nonSystemBuckets = buckets.filter(
+    bucket => !isSystemBucket(bucket.name)
+  )
+
+  return {
+    telegrafPlugins,
+    bucket,
+    pluginBundles,
+    buckets: nonSystemBuckets,
+  }
+}
 
 const mdtp = {
   onAddPluginBundle: addPluginBundleWithPlugins,

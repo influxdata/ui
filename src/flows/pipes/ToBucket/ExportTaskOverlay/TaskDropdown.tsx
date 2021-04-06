@@ -48,7 +48,12 @@ const TaskDropdown: FC = () => {
   }
 
   const button = (active, onClick) => (
-    <Dropdown.Button onClick={onClick} active={active} icon={IconFont.Disks}>
+    <Dropdown.Button
+      onClick={onClick}
+      active={active}
+      icon={IconFont.Calendar}
+      size={ComponentSize.Medium}
+    >
       {buttonText}
     </Dropdown.Button>
   )

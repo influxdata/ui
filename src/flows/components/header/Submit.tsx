@@ -1,12 +1,5 @@
 // Libraries
-import React, {
-  FC,
-  MouseEvent,
-  useMemo,
-  useContext,
-  useState,
-  useEffect,
-} from 'react'
+import React, {FC, MouseEvent, useContext, useMemo} from 'react'
 import {
   Dropdown,
   IconFont,
@@ -16,111 +9,47 @@ import {
   List,
   ButtonGroup,
 } from '@influxdata/clockface'
-import {useDispatch} from 'react-redux'
 
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
-import {QueryContext} from 'src/flows/context/query'
-import {FlowContext} from 'src/flows/context/flow.current'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {RunModeContext, RunMode} from 'src/flows/context/runMode'
-import {ResultsContext} from 'src/flows/context/results'
 import {notify} from 'src/shared/actions/notifications'
-import {PIPE_DEFINITIONS} from 'src/flows'
+import {FlowContext} from 'src/flows/context/flow.current'
 
 // Utils
-import {event} from 'src/cloud/utils/reporting'
 import {cancelAllRunningQueries} from 'src/timeMachine/actions/queries'
-
-// Constants
-import {
-  notebookRunSuccess,
-  notebookRunFail,
-} from 'src/shared/copy/notifications'
-import {PROJECT_NAME} from 'src/flows'
-
-// Types
-import {RemoteDataState} from 'src/types'
+import {event} from 'src/cloud/utils/reporting'
 
 // Styles
 import 'src/flows/components/header/Submit.scss'
 
+// Types
+import {RemoteDataState} from 'src/types'
+
 const fakeNotify = notify
 
 export const Submit: FC = () => {
-  const dispatch = useDispatch()
-  const {query, generateMap} = useContext(QueryContext)
-  const {runMode, setRunMode} = useContext(RunModeContext)
   const {flow} = useContext(FlowContext)
-  const {add, update} = useContext(ResultsContext)
-  const [isLoading, setLoading] = useState(RemoteDataState.NotStarted)
+  const {runMode, setRunMode} = useContext(RunModeContext)
+  const {generateMap, queryAll} = useContext(FlowQueryContext)
 
-  const hasQueries = useMemo(() => {
-    return !!flow.data.all
-      .map(p => PIPE_DEFINITIONS[p.type])
-      .filter(p => p && (p.family === 'transform' || p.family === 'inputs'))
-      .length
-  }, [flow.data])
+  const hasQueries = useMemo(() => generateMap().length > 0, [generateMap])
 
-  useEffect(() => {
-    if (hasQueries) {
-      submit()
-    }
-  }, [flow.range, hasQueries]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  const forceUpdate = (id, data) => {
-    try {
-      update(id, data)
-    } catch (_e) {
-      add(id, data)
-    }
+  const handleSubmit = () => {
+    event('Notebook Submit Button Clicked')
+    queryAll()
   }
 
-  const submit = () => {
-    const map = generateMap(runMode === RunMode.Run)
+  const statuses = flow.meta.all.map(({loading}) => loading)
 
-    if (!map.length) {
-      return
-    }
+  let status = RemoteDataState.Done
 
-    event('Flow Submit Button Clicked')
-    setLoading(RemoteDataState.Loading)
-
-    flow.data.allIDs.forEach(pipeID => {
-      flow.meta.update(pipeID, {loading: RemoteDataState.Loading})
-    })
-
-    Promise.all(
-      map.map(stage => {
-        return query(stage.text)
-          .then(response => {
-            stage.instances.forEach(pipeID => {
-              forceUpdate(pipeID, response)
-              flow.meta.update(pipeID, {loading: RemoteDataState.Done})
-            })
-          })
-          .catch(e => {
-            stage.instances.forEach(pipeID => {
-              forceUpdate(pipeID, {
-                error: e.message,
-              })
-              flow.meta.update(pipeID, {loading: RemoteDataState.Error})
-            })
-          })
-      })
-    )
-      .then(() => {
-        event('Flow Submit Resolved')
-        dispatch(notify(notebookRunSuccess(runMode, PROJECT_NAME)))
-
-        setLoading(RemoteDataState.Done)
-      })
-      .catch(e => {
-        event('Flow Submit Resolved')
-        dispatch(notify(notebookRunFail(runMode, PROJECT_NAME)))
-
-        // NOTE: this shouldn't fire, but lets wrap it for completeness
-        setLoading(RemoteDataState.Error)
-        throw e
-      })
+  if (statuses.every(s => s === RemoteDataState.NotStarted)) {
+    status = RemoteDataState.NotStarted
+  } else if (statuses.includes(RemoteDataState.Error)) {
+    status = RemoteDataState.Error
+  } else if (statuses.includes(RemoteDataState.Loading)) {
+    status = RemoteDataState.Loading
   }
 
   const DropdownButton = (
@@ -133,9 +62,9 @@ export const Submit: FC = () => {
           text={runMode}
           className="flows--submit-button"
           icon={IconFont.Play}
-          submitButtonDisabled={!hasQueries}
-          queryStatus={isLoading}
-          onSubmit={submit}
+          submitButtonDisabled={hasQueries === false}
+          queryStatus={status}
+          onSubmit={handleSubmit}
           onNotify={fakeNotify}
           queryID=""
           cancelAllRunningQueries={cancelAllRunningQueries}

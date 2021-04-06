@@ -1,11 +1,5 @@
 // Libraries
-import React, {
-  FC,
-  FormEvent,
-  useContext,
-  useReducer,
-  createContext,
-} from 'react'
+import React, {FC, ChangeEvent, FormEvent, useState} from 'react'
 
 // Components
 import {
@@ -15,120 +9,86 @@ import {
   Form,
   Grid,
   ButtonType,
+  ComponentStatus,
 } from '@influxdata/clockface'
-import {AnnotationSummaryInput} from 'src/annotations/components/annotationForm/AnnotationSummaryInput'
-import {AnnotationTimeStartInput} from 'src/annotations/components/annotationForm/AnnotationTimeStartInput'
-import {AnnotationTimeStopInput} from 'src/annotations/components/annotationForm/AnnotationTimeStopInput'
 import {AnnotationMessageInput} from 'src/annotations/components/annotationForm/AnnotationMessageInput'
-import {AnnotationTypeToggle} from 'src/annotations/components/annotationForm/AnnotationTypeToggle'
-import {AnnotationStreamSelector} from 'src/annotations/components/annotationForm/AnnotationStreamSelector'
+import {AnnotationStartTimeInput} from 'src/annotations/components/annotationForm/AnnotationStartTimeInput'
 
-// Form State
-import {
-  annotationFormReducer,
-  getInitialAnnotationState,
-  AnnotationType,
-  Annotation,
-  getAnnotationFromDraft,
-  AnnotationContextType,
-  DEFAULT_ANNOTATION_CONTEXT,
-} from 'src/annotations/reducers/annotationFormReducer'
-
-// Contexts
-import {OverlayContext} from 'src/overlays/components/OverlayController'
-
-import {updateAnnotationDraft} from 'src/annotations/actions/annotationFormActions'
-
-import {annotationFormIsValid} from 'src/annotations/utils/form'
-
-interface Props {
-  title: 'Edit' | 'Add'
-  type: AnnotationType
-  timeStart: string
-  timeStop: string
-  summaryText?: string
-  messageText?: string
-  streamID?: string
-  onSubmit: (Annotation: Annotation) => void
+interface Annotation {
+  message: string
+  startTime: number | string
 }
 
-export const AnnotationFormContext = createContext<AnnotationContextType>(
-  DEFAULT_ANNOTATION_CONTEXT
-)
+type AnnotationType = 'point' | 'range'
 
-export const AnnotationForm: FC<Props> = ({
-  title,
-  type,
-  timeStart,
-  timeStop,
-  summaryText,
-  messageText,
-  streamID,
-  onSubmit,
-}) => {
-  const initialAnnotationState = getInitialAnnotationState(
-    type,
-    timeStart,
-    timeStop,
-    summaryText,
-    messageText,
-    streamID
-  )
+interface Props {
+  startTime: string
+  title: 'Edit' | 'Add'
+  type: AnnotationType
+  onSubmit: (Annotation) => void
+  onClose: () => void
+}
 
-  const [state, dispatch] = useReducer(
-    annotationFormReducer,
-    initialAnnotationState
-  )
+export const AnnotationForm: FC<Props> = (props: Props) => {
+  const [startTime, setStartTime] = useState(props.startTime)
+  const [message, setMessage] = useState('')
 
-  const {onClose} = useContext(OverlayContext)
+  const isValidAnnotationForm = ({message, startTime}): boolean => {
+    return message.length && startTime
+  }
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
-    e.preventDefault()
+  const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
+    event.preventDefault()
 
-    // force required inputs into error or valid state (instead of initial)
-    // so user can resolve the form errors and submit again
-    dispatch(updateAnnotationDraft(state))
-    const formIsValid = annotationFormIsValid(state)
+    props.onSubmit({message, startTime})
+  }
 
-    if (formIsValid) {
-      onSubmit(getAnnotationFromDraft(state))
-      onClose()
-    }
+  const updateMessage = (event: ChangeEvent<HTMLTextAreaElement>): void => {
+    setMessage(event.target.value)
+  }
+
+  const updateStartTime = (event: ChangeEvent<HTMLInputElement>): void => {
+    setStartTime(event.target.value)
   }
 
   return (
-    <AnnotationFormContext.Provider value={{...state, dispatch}}>
-      <Overlay.Container maxWidth={560}>
-        <Overlay.Header title={`${title} Annotation`} onDismiss={onClose} />
-        <Form onSubmit={handleSubmit}>
-          <Overlay.Body>
-            <Grid>
-              <Grid.Row>
-                <AnnotationSummaryInput />
-                <AnnotationTypeToggle />
-              </Grid.Row>
-              <Grid.Row>
-                <AnnotationTimeStartInput />
-                <AnnotationTimeStopInput />
-              </Grid.Row>
-              <Grid.Row>
-                <AnnotationMessageInput />
-              </Grid.Row>
-              <Grid.Row>
-                <AnnotationStreamSelector />
-              </Grid.Row>
-            </Grid>
-          </Overlay.Body>
-          <Overlay.Footer>
-            <Button text="Cancel" onClick={onClose} />
-            <Button
-              text="Add Annotation"
-              color={ComponentColor.Primary}
-              type={ButtonType.Submit}
-            />
-          </Overlay.Footer>
-        </Form>
-      </Overlay.Container>
-    </AnnotationFormContext.Provider>
+    <Overlay.Container maxWidth={560}>
+      <Overlay.Header
+        title={`${props.title} Annotation`}
+        onDismiss={props.onClose}
+      />
+      <Form onSubmit={handleSubmit}>
+        <Overlay.Body>
+          <Grid>
+            <Grid.Row>
+              <AnnotationStartTimeInput
+                onChange={updateStartTime}
+                startTime={startTime}
+              />
+            </Grid.Row>
+            <Grid.Row>
+              <AnnotationMessageInput
+                message={message}
+                onChange={updateMessage}
+              />
+            </Grid.Row>
+          </Grid>
+        </Overlay.Body>
+        <Overlay.Footer>
+          <Button text="Cancel" onClick={props.onClose} />
+          <Button
+            text="Save Annotation"
+            color={ComponentColor.Primary}
+            type={ButtonType.Submit}
+            status={
+              isValidAnnotationForm({startTime, message})
+                ? ComponentStatus.Default
+                : ComponentStatus.Disabled
+            }
+            testID="add-annotation-submit"
+          />
+        </Overlay.Footer>
+      </Form>
+    </Overlay.Container>
   )
 }

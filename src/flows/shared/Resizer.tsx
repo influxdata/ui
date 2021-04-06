@@ -12,6 +12,7 @@ import classnames from 'classnames'
 // Components
 import ResizerHeader from 'src/flows/shared/ResizerHeader'
 import {TechnoSpinner, IconFont} from '@influxdata/clockface'
+import FriendlyQueryError from 'src/flows/shared/FriendlyQueryError'
 
 // Types
 import {Visibility} from 'src/types/flows'
@@ -157,7 +158,7 @@ const Resizer: FC<Props> = ({
   let body = children
 
   if (error) {
-    body = <div className="panel-resizer--error">{error}</div>
+    body = <FriendlyQueryError error={error} />
   } else {
     if (!resizingEnabled) {
       body = <div className="panel-resizer--empty">{emptyText}</div>

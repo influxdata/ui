@@ -58,7 +58,7 @@ interface State {
 }
 
 @ErrorHandling
-class Collectors extends PureComponent<Props, State> {
+export class Collectors extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
 
@@ -187,6 +187,7 @@ class Collectors extends PureComponent<Props, State> {
         onClick={this.handleAddCollector}
         status={status}
         titleText={titleText}
+        testID="create-telegraf-configuration-button"
       />
     )
   }

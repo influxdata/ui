@@ -184,7 +184,7 @@ export default class TaskForm extends PureComponent<Props, State> {
         <Form.Box>
           <p className="time-format--helper">
             For more information on cron syntax,{' '}
-            <a href="https://crontab.guru/" target="_blank">
+            <a href="https://crontab.guru/" target="_blank" rel="noreferrer">
               click here
             </a>
           </p>

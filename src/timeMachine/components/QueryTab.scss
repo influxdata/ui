@@ -1,4 +1,4 @@
-@import "src/style/modules";
+@import 'src/style/modules';
 
 $query-tab--height: $cf-form-sm-height;
 $query-tab--padding: $cf-form-sm-padding;
@@ -12,7 +12,6 @@ $query-tab--hover-text: $g15-platinum;
 
 $query-tab--active-bg: $g3-castle;
 $query-tab--active-text: $g18-cloud;
-
 
 .query-tab {
   background-color: $query-tab--default-bg;
@@ -52,11 +51,11 @@ $query-tab--active-text: $g18-cloud;
   flex: 0 0 auto;
   background: $g3-castle;
   color: $g16-pearl;
-  
+
   .query-tab--hide {
     display: inline-flex;
   }
-  
+
   .query-tab--name {
     width: auto;
   }

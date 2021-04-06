@@ -5,47 +5,41 @@ import {connect} from 'react-redux'
 
 // Components
 import TimeSeries from 'src/shared/components/TimeSeries'
-import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
-import ViewSwitcher from 'src/shared/components/ViewSwitcher'
-import ViewLoadingSpinner from 'src/shared/components/ViewLoadingSpinner'
+import {View} from 'src/visualization'
+
 import CellEvent from 'src/perf/components/CellEvent'
 
 // Utils
 import {GlobalAutoRefresher} from 'src/utils/AutoRefresher'
 import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
-import {checkResultsLength} from 'src/shared/utils/vis'
-import {getActiveTimeRange} from 'src/timeMachine/selectors/index'
+import {getActiveTimeRange, getAnnotations} from 'src/timeMachine/selectors'
 
 // Types
 import {
-  TimeRange,
-  TimeZone,
   AppState,
   DashboardQuery,
   QueryViewProperties,
-  Theme,
+  AnnotationsList,
+  TimeRange,
 } from 'src/types'
 
 interface OwnProps {
   id: string
   manualRefresh: number
   properties: QueryViewProperties
+  incrementSubmitToken: () => void
+  submitToken: number
 }
 
 interface StateProps {
-  theme: Theme
+  annotations: AnnotationsList
   timeRange: TimeRange
   ranges: TimeRange | null
-  timeZone: TimeZone
-}
-
-interface State {
-  submitToken: number
 }
 
 type Props = OwnProps & StateProps & RouteComponentProps<{orgID: string}>
 
-class RefreshingView extends PureComponent<Props, State> {
+class RefreshingView extends PureComponent<Props> {
   public static defaultProps = {
     inView: true,
     manualRefresh: 0,
@@ -53,21 +47,27 @@ class RefreshingView extends PureComponent<Props, State> {
 
   constructor(props) {
     super(props)
-
-    this.state = {submitToken: 0}
   }
 
   public componentDidMount() {
-    GlobalAutoRefresher.subscribe(this.incrementSubmitToken)
+    GlobalAutoRefresher.subscribe(this.props.incrementSubmitToken)
   }
 
   public componentWillUnmount() {
-    GlobalAutoRefresher.unsubscribe(this.incrementSubmitToken)
+    GlobalAutoRefresher.unsubscribe(this.props.incrementSubmitToken)
   }
 
   public render() {
-    const {id, ranges, properties, manualRefresh, timeZone, theme} = this.props
-    const {submitToken} = this.state
+    const {
+      id,
+      ranges,
+      properties,
+      manualRefresh,
+      annotations,
+      submitToken,
+    } = this.props
+
+    // DO NOT REMOVE the CellEvent component.  it gathers metrics for performance that management requires.
 
     return (
       <TimeSeries
@@ -76,42 +76,21 @@ class RefreshingView extends PureComponent<Props, State> {
         queries={this.queries}
         key={manualRefresh}
       >
-        {({
-          giraffeResult,
-          files,
-          loading,
-          errorMessage,
-          isInitialFetch,
-          statuses,
-        }) => {
-          return (
-            <>
-              <ViewLoadingSpinner loading={loading} />
-              <EmptyQueryView
-                errorFormat={ErrorFormat.Scroll}
-                errorMessage={errorMessage}
-                hasResults={checkResultsLength(giraffeResult)}
-                loading={loading}
-                isInitialFetch={isInitialFetch}
-                queries={this.queries}
-                fallbackNote={this.fallbackNote}
-              >
-                <>
-                  <CellEvent id={id} type={properties.type} />
-                  <ViewSwitcher
-                    files={files}
-                    giraffeResult={giraffeResult}
-                    properties={properties}
-                    timeRange={ranges}
-                    statuses={statuses}
-                    timeZone={timeZone}
-                    theme={theme}
-                  />
-                </>
-              </EmptyQueryView>
-            </>
-          )
-        }}
+        {({giraffeResult, loading, errorMessage, isInitialFetch}) => (
+          <React.Fragment>
+            <CellEvent id={id} type={properties.type} />
+            <View
+              loading={loading}
+              error={errorMessage}
+              isInitial={isInitialFetch}
+              properties={properties}
+              result={giraffeResult}
+              timeRange={ranges}
+              annotations={annotations}
+              cellID={id}
+            />
+          </React.Fragment>
+        )}
       </TimeSeries>
     )
   }
@@ -127,36 +106,14 @@ class RefreshingView extends PureComponent<Props, State> {
         return properties.queries
     }
   }
-
-  private get fallbackNote(): string {
-    const {properties} = this.props
-
-    switch (properties.type) {
-      case 'check':
-        return null
-      default:
-        const {note, showNoteWhenEmpty} = properties
-
-        return showNoteWhenEmpty ? note : null
-    }
-  }
-
-  private incrementSubmitToken = () => {
-    this.setState({submitToken: Date.now()})
-  }
 }
 
 const mstp = (state: AppState, ownProps: OwnProps) => {
   const timeRange = getTimeRangeWithTimezone(state)
   const ranges = getActiveTimeRange(timeRange, ownProps.properties.queries)
-  const {timeZone, theme} = state.app.persisted
+  const annotations = getAnnotations(state)
 
-  return {
-    timeRange,
-    ranges,
-    timeZone,
-    theme,
-  }
+  return {ranges, timeRange, annotations}
 }
 
 export default connect<StateProps, {}, OwnProps>(mstp)(

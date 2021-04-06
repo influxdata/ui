@@ -1,0 +1,17 @@
+.downsample-panel {
+  display: flex;
+  margin: 0 -8px;
+  padding-bottom: 16px;
+
+  .duration-input {
+    width: 200px;
+    margin-bottom: 8px;
+  }
+
+  .downsample-panel--left {
+    padding: 0 8px;
+  }
+  .downsample-panel--right {
+    padding: 0 8px;
+  }
+}

@@ -4,11 +4,15 @@ import React, {FC} from 'react'
 // Components
 import {EmptyState, ComponentSize} from '@influxdata/clockface'
 import AddResourceDropdown from 'src/shared/components/AddResourceDropdown'
+import DatalessEmptyState from 'src/cloud/components/experiments/DatalessEmptyState'
+import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
+import GetResources from 'src/resources/components/GetResources'
 
 // Actions
 import {createDashboard} from 'src/dashboards/actions/thunks'
 
 import {ALLOW_IMPORT_FROM_TEMPLATE} from 'src/shared/constants' // spoiler alert: you can't import from templates
+import {ResourceType} from 'src/types'
 
 interface ComponentProps {
   searchTerm?: string
@@ -32,18 +36,45 @@ const DashboardsTableEmpty: FC<ComponentProps> = ({
   }
 
   return (
-    <EmptyState size={ComponentSize.Large} testID="empty-dashboards-list">
-      <EmptyState.Text>
-        Looks like you don't have any <b>Dashboards</b>, why not create one?
-      </EmptyState.Text>
-      <AddResourceDropdown
-        onSelectNew={onCreateDashboard}
-        onSelectImport={summonImportOverlay}
-        onSelectTemplate={summonImportFromTemplateOverlay}
-        resourceName="Dashboard"
-        canImportFromTemplate={ALLOW_IMPORT_FROM_TEMPLATE}
-      />
-    </EmptyState>
+    <GoogleOptimizeExperiment
+      experimentID="H_NofBAhSW-hv6zaYaxeow"
+      original={
+        <EmptyState size={ComponentSize.Large} testID="empty-dashboards-list">
+          <EmptyState.Text>
+            Looks like you don't have any <b>Dashboards</b>, why not create one?
+          </EmptyState.Text>
+          <AddResourceDropdown
+            onSelectNew={onCreateDashboard}
+            onSelectImport={summonImportOverlay}
+            onSelectTemplate={summonImportFromTemplateOverlay}
+            resourceName="Dashboard"
+            canImportFromTemplate={ALLOW_IMPORT_FROM_TEMPLATE}
+          />
+        </EmptyState>
+      }
+      variants={[
+        <GetResources resources={[ResourceType.Buckets]} key="1">
+          <DatalessEmptyState>
+            <EmptyState
+              size={ComponentSize.Large}
+              testID="empty-dashboards-list"
+            >
+              <EmptyState.Text>
+                Looks like you don't have any <b>Dashboards</b>, why not create
+                one?
+              </EmptyState.Text>
+              <AddResourceDropdown
+                onSelectNew={onCreateDashboard}
+                onSelectImport={summonImportOverlay}
+                onSelectTemplate={summonImportFromTemplateOverlay}
+                resourceName="Dashboard"
+                canImportFromTemplate={ALLOW_IMPORT_FROM_TEMPLATE}
+              />
+            </EmptyState>
+          </DatalessEmptyState>
+        </GetResources>,
+      ]}
+    />
   )
 }
 

@@ -140,14 +140,26 @@ export const validateTemplateURL = (url): string => {
     return ''
   }
 
+  /*
+     url may or may not have a query at the end. Either case is a valid url.
+     We need to make sure the url is pointing to a valid template.
+  */
+  const cleanUrl = url.trim().split('?')[0]
+
+  if (cleanUrl.includes(' ')) {
+    return "Your URL can't contain spaces"
+  }
+
   const isCommunityTemplates =
-    url.startsWith('https://github.com/influxdata/community-templates') ||
-    url.startsWith(
+    cleanUrl.startsWith('https://github.com/influxdata/community-templates') ||
+    cleanUrl.startsWith(
       'https://raw.githubusercontent.com/influxdata/community-templates'
     )
 
   const isCorrectFileType =
-    url.endsWith('.yml') || url.endsWith('.json') || url.endsWith('.jsonnet')
+    cleanUrl.endsWith('.yml') ||
+    cleanUrl.endsWith('.json') ||
+    cleanUrl.endsWith('.jsonnet')
 
   if (isCommunityTemplates && !isCorrectFileType) {
     return "This URL correctly points to the Community Templates repository but isn't pointing to a YAML or JSON file"

@@ -1,5 +1,4 @@
 import {Organization} from '../../../src/types'
-import {VIS_TYPES} from '../../../src/timeMachine/constants'
 import {lines} from '../../support/commands'
 import {
   FROM,
@@ -12,6 +11,20 @@ import {
 } from '../../../src/shared/constants/fluxFunctions'
 
 const TYPE_DELAY = 0
+const VIS_TYPES = [
+  //    'band',
+  //    'check',
+  'gauge',
+  'xy',
+  'heatmap',
+  'histogram',
+  //  'map',
+  'mosaic',
+  'scatter',
+  'single-stat',
+  'line-plus-single-stat',
+  'table',
+]
 
 function getTimeMachineText() {
   return cy
@@ -47,7 +60,7 @@ const makeGraphSnapshot = (() => {
     const name = `graph-snapshot-${lastGraphSnapsotIndex++}`
 
     // wait for drawing done
-    cy.wait(150)
+    cy.wait(500)
     cy.get('[data-testid|=giraffe-layer]')
       .then($layer => ($layer[0] as HTMLCanvasElement).toDataURL('image/jpeg'))
       .as(getNameLayer(name))
@@ -96,6 +109,7 @@ describe('DataExplorer', () => {
         cy.createMapVariable(id)
         cy.fixture('routes').then(({orgs, explorer}) => {
           cy.visit(`${orgs}/${id}${explorer}`)
+          cy.getByTestID('tree-nav')
         })
       })
     })
@@ -406,22 +420,26 @@ describe('DataExplorer', () => {
         .click()
     })
 
-    it('shows the proper errors and query button state', () => {
+    it.skip('shows the proper errors and query button state', () => {
       cy.getByTestID('time-machine-submit-button').should('be.disabled')
 
       cy.getByTestID('time-machine--bottom').then(() => {
-        cy.getByTestID('flux-editor').within(() => {
-          cy.get('textarea').type('foo |> bar', {force: true})
+        cy.getByTestID('flux-editor', {timeout: 30000})
+          .should('be.visible')
+          .within(() => {
+            cy.get('textarea').type('foo |> bar', {force: true})
 
-          cy.get('.squiggly-error').should('be.visible')
+            cy.get('.squiggly-error').should('be.visible')
 
-          cy.get('textarea').type('{selectall} {backspace}', {force: true})
+            cy.get('textarea').type('{selectall} {backspace}', {force: true})
 
-          cy.get('textarea').type('from(', {force: true})
+            cy.get('textarea').type('from(bucket: )', {force: true})
 
-          // error signature from lsp
-          cy.get('.signature').should('be.visible')
-        })
+            // error signature from lsp
+            // TODO(ariel): need to resolve this test. The issue for it is here:
+            // https://github.com/influxdata/ui/issues/481
+            // cy.get('.signature').should('be.visible')
+          })
       })
 
       cy.getByTestID('time-machine-submit-button').should('not.be.disabled')
@@ -442,13 +460,14 @@ describe('DataExplorer', () => {
     })
 
     it('imports the appropriate packages to build a query', () => {
+      cy.getByTestID('flux-editor', {timeout: 30000}).should('be.visible')
       cy.getByTestID('functions-toolbar-contents--functions').should('exist')
-      cy.getByTestID('flux--from--inject').click()
-      cy.getByTestID('flux--range--inject').click()
-      cy.getByTestID('flux--math.abs--inject').click()
-      cy.getByTestID('flux--math.floor--inject').click()
-      cy.getByTestID('flux--strings.title--inject').click()
-      cy.getByTestID('flux--strings.trim--inject').click()
+      cy.getByTestID('flux--from--inject').click({force: true})
+      cy.getByTestID('flux--range--inject').click({force: true})
+      cy.getByTestID('flux--math.abs--inject').click({force: true})
+      cy.getByTestID('flux--math.floor--inject').click({force: true})
+      cy.getByTestID('flux--strings.title--inject').click({force: true})
+      cy.getByTestID('flux--strings.trim--inject').click({force: true})
 
       cy.wait(100)
 
@@ -513,7 +532,7 @@ describe('DataExplorer', () => {
 
     it('shows the empty state when the query returns no results', () => {
       cy.getByTestID('time-machine--bottom').within(() => {
-        cy.get('.react-monaco-editor-container')
+        cy.getByTestID('flux-editor')
           .should('be.visible')
           .click()
           .focused()
@@ -578,9 +597,12 @@ describe('DataExplorer', () => {
       cy.get<Organization>('@org').then(({id, name}) => {
         cy.createBucket(id, name, 'newBucket')
       })
-
-      cy.getByTestID('selector-list defbuck').should('be.visible')
-      cy.getByTestID('selector-list newBucket').should('be.visible')
+      cy.get<string>('@defaultBucketListSelector').then(
+        (defaultBucketListSelector: string) => {
+          cy.getByTestID(defaultBucketListSelector).should('be.visible')
+          cy.getByTestID('selector-list newBucket').should('be.visible')
+        }
+      )
     })
 
     it('can delete a second query', () => {
@@ -642,9 +664,10 @@ describe('DataExplorer', () => {
             cy.getByTestID('time-machine-submit-button').click()
             cy.getByTestID('empty-graph--error').should('exist')
           })
-          cy.get('.react-monaco-editor-container')
-            .click()
+          cy.getByTestID('flux-editor')
+            .click({force: true})
             .focused()
+            .clear()
             .type('from(', {force: true, delay: 2})
           cy.getByTestID('time-machine-submit-button').click()
         })
@@ -659,103 +682,114 @@ describe('DataExplorer', () => {
       })
 
       it('can view time-series data', () => {
-        cy.log('can switch between editor modes')
-        cy.getByTestID('selector-list _monitoring').should('be.visible')
-        cy.getByTestID('selector-list _monitoring').click()
+        cy.get<string>('@defaultBucketListSelector').then(
+          (defaultBucketListSelector: string) => {
+            cy.log('can switch between editor modes')
+            cy.getByTestID('selector-list _monitoring').should('be.visible')
+            cy.getByTestID('selector-list _monitoring').click()
 
-        cy.getByTestID('selector-list defbuck').should('be.visible')
-        cy.getByTestID('selector-list defbuck').click()
+            cy.getByTestID(defaultBucketListSelector).should('be.visible')
+            cy.getByTestID(defaultBucketListSelector).click()
 
-        cy.getByTestID('selector-list m').should('be.visible')
-        cy.getByTestID('selector-list m').clickAttached()
+            cy.getByTestID('selector-list m').should('be.visible')
+            cy.getByTestID('selector-list m').clickAttached()
 
-        cy.getByTestID('selector-list v').should('be.visible')
-        cy.getByTestID('selector-list v').clickAttached()
+            cy.getByTestID('selector-list v').should('be.visible')
+            cy.getByTestID('selector-list v').clickAttached()
 
-        cy.getByTestID('switch-to-script-editor').click()
-        cy.getByTestID('flux-editor').should('be.visible')
+            cy.getByTestID('switch-to-script-editor').click()
+            cy.getByTestID('flux-editor').should('be.visible')
 
-        cy.log('revert back to query builder mode (without confirmation)')
-        cy.getByTestID('switch-to-query-builder').click()
-        cy.getByTestID('query-builder').should('be.visible')
+            cy.log('revert back to query builder mode (without confirmation)')
+            cy.getByTestID('switch-to-query-builder').click()
+            cy.getByTestID('query-builder').should('be.visible')
 
-        cy.log('can revert back to query builder mode (with confirmation)')
-        cy.getByTestID('switch-to-script-editor')
-          .should('be.visible')
-          .click()
-        cy.getByTestID('flux--aggregate.rate--inject').click()
+            cy.log('can revert back to query builder mode (with confirmation)')
+            cy.getByTestID('switch-to-script-editor')
+              .should('be.visible')
+              .click()
+            cy.getByTestID('flux--aggregate.rate--inject').click()
 
-        cy.log('check to see if import is defaulted to the top')
-        cy.get('.view-line')
-          .first()
-          .contains('import')
+            cy.log('check to see if import is defaulted to the top')
+            cy.get('.view-line')
+              .first()
+              .contains('import')
 
-        cy.log('check to see if new aggregate rate is at the bottom')
-        cy.get('.view-line')
-          .last()
-          .contains('aggregate.')
-        cy.getByTestID('flux-editor').should('exist')
-        cy.getByTestID('flux-editor').within(() => {
-          cy.get('textarea').type('yoyoyoyoyo', {force: true})
-        })
+            cy.log('check to see if new aggregate rate is at the bottom')
+            cy.get('.view-line')
+              .last()
+              .contains('aggregate.')
+            cy.getByTestID('flux-editor').should('exist')
+            cy.getByTestID('flux-editor').within(() => {
+              cy.get('textarea').type('yoyoyoyoyo', {force: true})
+            })
 
-        cy.log('can over over flux functions')
-        cy.getByTestID('flux-docs--aggregateWindow').should('not.exist')
-        cy.getByTestID('flux--aggregateWindow').trigger('mouseover')
-        cy.getByTestID('flux-docs--aggregateWindow').should('exist')
+            cy.log('can over over flux functions')
+            cy.getByTestID('flux-docs--aggregateWindow').should('not.exist')
+            cy.getByTestID('flux--aggregateWindow').trigger('mouseover')
+            cy.getByTestID('flux-docs--aggregateWindow').should('exist')
 
-        cy.getByTestID('switch-query-builder-confirm--button').click()
+            cy.getByTestID('switch-query-builder-confirm--button').click()
 
-        cy.getByTestID(
-          'switch-query-builder-confirm--popover--contents'
-        ).within(() => {
-          cy.getByTestID('switch-query-builder-confirm--confirm-button').click()
-        })
+            cy.getByTestID(
+              'switch-query-builder-confirm--popover--contents'
+            ).within(() => {
+              cy.getByTestID(
+                'switch-query-builder-confirm--confirm-button'
+              ).click()
+            })
 
-        cy.getByTestID('query-builder').should('exist')
-        // build the query to return data from beforeEach
-        cy.getByTestID('selector-list _monitoring').should('be.visible')
-        cy.getByTestID('selector-list _monitoring').click()
+            cy.getByTestID('query-builder').should('exist')
+            // build the query to return data from beforeEach
+            cy.getByTestID('selector-list _monitoring').should('be.visible')
+            cy.getByTestID('selector-list _monitoring').click()
 
-        cy.getByTestID('selector-list defbuck').should('be.visible')
-        cy.getByTestID('selector-list defbuck').click()
+            cy.getByTestID(defaultBucketListSelector).should('be.visible')
+            cy.getByTestID(defaultBucketListSelector).click()
 
-        cy.getByTestID('selector-list m').should('be.visible')
-        cy.getByTestID('selector-list m').clickAttached()
+            cy.getByTestID('selector-list m').should('be.visible')
+            cy.getByTestID('selector-list m').clickAttached()
 
-        cy.getByTestID('selector-list v').should('be.visible')
-        cy.getByTestID('selector-list v').clickAttached()
+            cy.getByTestID('selector-list v').should('be.visible')
+            cy.getByTestID('selector-list v').clickAttached()
 
-        cy.getByTestID('selector-list tv1').clickAttached()
+            cy.getByTestID('selector-list tv1').clickAttached()
 
-        cy.getByTestID('selector-list last')
-          .scrollIntoView()
-          .should('be.visible')
-          .click({force: true})
+            cy.getByTestID('selector-list last')
+              .scrollIntoView()
+              .should('be.visible')
+              .click({force: true})
 
-        cy.getByTestID('time-machine-submit-button').click()
+            cy.getByTestID('time-machine-submit-button').click()
 
-        // cycle through all the visualizations of the data
-        VIS_TYPES.forEach(({type}) => {
-          if (type !== 'mosaic' && type !== 'band') {
-            // mosaic graph is behind feature flag
+            // cycle through all the visualizations of the data
+            VIS_TYPES.forEach(type => {
+              if (type !== 'mosaic' && type !== 'band') {
+                // mosaic graph is behind feature flag
+                cy.getByTestID('view-type--dropdown').click()
+                cy.getByTestID(`view-type--${type}`).click()
+                cy.getByTestID(`vis-graphic--${type}`).should('exist')
+                if (type.includes('single-stat')) {
+                  cy.getByTestID('single-stat--text').should(
+                    'contain',
+                    `${numLines}`
+                  )
+                }
+              }
+            })
+
+            // force the last selected visualization to be a graph for the next test
             cy.getByTestID('view-type--dropdown').click()
-            cy.getByTestID(`view-type--${type}`).click()
-            cy.getByTestID(`vis-graphic--${type}`).should('exist')
-            if (type.includes('single-stat')) {
-              cy.getByTestID('single-stat--text').should(
-                'contain',
-                `${numLines}`
-              )
-            }
-          }
-        })
+            cy.getByTestID(`view-type--xy`).click()
+            cy.getByTestID(`vis-graphic--xy`).should('exist')
 
-        // view raw data table
-        cy.getByTestID('raw-data--toggle').click()
-        cy.getByTestID('raw-data-table').should('exist')
-        cy.getByTestID('raw-data--toggle').click()
-        cy.getByTestID('giraffe-axes').should('exist')
+            // view raw data table
+            cy.getByTestID('raw-data--toggle').click()
+            cy.getByTestID('raw-data-table').should('exist')
+            cy.getByTestID('raw-data--toggle').click()
+            cy.getByTestID('giraffe-axes').should('exist')
+          }
+        )
       })
 
       it('can set min or max y-axis values', () => {
@@ -836,7 +870,8 @@ describe('DataExplorer', () => {
         cy.getByTestID('dropdown-y').contains('_time')
       })
 
-      it('can zoom and unzoom horizontal axis', () => {
+      // TODO: make work with annotations
+      it.skip('can zoom and unzoom horizontal axis', () => {
         cy.getByTestID(`selector-list m`).click()
         cy.getByTestID('selector-list v').click()
         cy.getByTestID(`selector-list tv1`).click()
@@ -1021,8 +1056,10 @@ describe('DataExplorer', () => {
             .trigger('mousedown', {force: true})
             .trigger('mousemove', {clientY: 5000})
             .trigger('mouseup')
+            .then(() => {
+              cy.get(`[title="${numLines}"]`).should('be.visible')
+            })
         })
-        cy.get(`[title="${numLines}"]`).should('be.visible')
       })
     })
   })
@@ -1030,6 +1067,7 @@ describe('DataExplorer', () => {
   describe('refresh', () => {
     beforeEach(() => {
       cy.writeData(lines(10))
+
       cy.getByTestID(`selector-list m`).click()
       cy.getByTestID('time-machine-submit-button').click()
 
@@ -1080,7 +1118,7 @@ describe('DataExplorer', () => {
 
     it('can open/close save as dialog and navigate inside', () => {
       // open save as
-      cy.getByTestID('overlay--container').should('not.be.visible')
+      cy.getByTestID('overlay--container').should('not.exist')
       cy.getByTestID('save-query-as').click()
       cy.getByTestID('overlay--container').should('be.visible')
 
@@ -1096,7 +1134,7 @@ describe('DataExplorer', () => {
       cy.getByTestID('save-as-overlay--header').within(() => {
         cy.get('button').click()
       })
-      cy.getByTestID('overlay--container').should('not.be.visible')
+      cy.getByTestID('overlay--container').should('not.exist')
     })
 
     describe('as dashboard cell', () => {
@@ -1122,13 +1160,12 @@ describe('DataExplorer', () => {
 
       it('can save as cell into multiple dashboards', () => {
         // input dashboards and cell name
-        cy.getByTestID('save-as-dashboard-cell--dropdown').click()
-        cy.getByTestID('save-as-dashboard-cell--dropdown-menu').within(() => {
-          dashboardNames.forEach(d => {
-            cy.contains(d).click()
+        dashboardNames.forEach(name => {
+          cy.getByTestID('save-as-dashboard-cell--dropdown').click()
+          cy.getByTestID('save-as-dashboard-cell--dropdown-menu').within(() => {
+            cy.contains(name).click()
           })
         })
-        cy.getByTestID('save-as-dashboard-cell--dropdown').click()
         cy.getByTestID('save-as-dashboard-cell--cell-name').type(cellName)
 
         cy.getByTestID('save-as-dashboard-cell--submit').click()
@@ -1140,6 +1177,7 @@ describe('DataExplorer', () => {
             dashboardNames.forEach((_, i) => {
               cy.get(`@dasboard${i}-id`).then(id => {
                 cy.visit(`${orgs}/${orgID}/dashboards/${id}`)
+                cy.getByTestID('tree-nav')
                 cy.getByTestID(`cell ${cellName}`).should('exist')
               })
             })
@@ -1147,11 +1185,12 @@ describe('DataExplorer', () => {
         })
       })
 
-      it('can create new dasboard as saving target', () => {
+      it('can create new dashboard as saving target', () => {
         // select and input new dashboard name and cell name
         cy.getByTestID('save-as-dashboard-cell--dropdown').click()
-        cy.getByTestID('save-as-dashboard-cell--create-new-dash').click()
-        cy.getByTestID('save-as-dashboard-cell--dropdown').click()
+        cy.getByTestID('save-as-dashboard-cell--dropdown-menu').within(() => {
+          cy.getByTestID('save-as-dashboard-cell--create-new-dash').click()
+        })
         cy.getByTestID('save-as-dashboard-cell--dashboard-name')
           .should('be.visible')
           .clear()
@@ -1160,19 +1199,15 @@ describe('DataExplorer', () => {
 
         cy.getByTestID('save-as-dashboard-cell--submit').click()
 
-        // wait some time for save
-        cy.wait(100)
-        // ensure dasboard created with cell
-        cy.get('@org').then(({id: orgID}: Organization) => {
-          cy.fixture('routes').then(({orgs}) => {
-            cy.visit(`${orgs}/${orgID}/dashboards/`)
-            cy.getByTestID('dashboard-card--name')
-              .contains(dashboardCreateName)
-              .should('exist')
-              .click()
-            cy.getByTestID(`cell ${cellName}`).should('exist')
-          })
-        })
+        cy.location('pathname').should(
+          'match',
+          /^(?=.*dashboards)(?:(?!cell).)+$/
+        )
+
+        cy.getByTestID(`cell--draggable ${cellName}`)
+          .should('exist')
+          .click()
+        cy.getByTestID(`cell ${cellName}`).should('exist')
       })
     })
 
@@ -1209,6 +1244,7 @@ describe('DataExplorer', () => {
         cy.fixture('routes').then(({orgs}) => {
           cy.get('@org').then(({id}: Organization) => {
             cy.visit(`${orgs}/${id}/tasks`)
+            cy.getByTestID('tree-nav')
           })
         })
       }
@@ -1217,12 +1253,15 @@ describe('DataExplorer', () => {
         cy.get<Organization>('@org').then(({id, name}: Organization) => {
           cy.createBucket(id, name, bucketName)
         })
-
-        cy.getByTestID('selector-list defbuck').click()
-        cy.getByTestID('nav-item-data-explorer').click({force: true})
-        cy.getByTestID(`selector-list m`).click()
-        cy.getByTestID('save-query-as').click({force: true})
-        cy.get('[id="task"]').click()
+        cy.get<string>('@defaultBucketListSelector').then(
+          (defaultBucketListSelector: string) => {
+            cy.getByTestID(defaultBucketListSelector).click()
+            cy.getByTestID('nav-item-data-explorer').click({force: true})
+            cy.getByTestID(`selector-list m`).click()
+            cy.getByTestID('save-query-as').click({force: true})
+            cy.get('[id="task"]').click()
+          }
+        )
       })
 
       // TODO: enable when problem with switching cron/every is fixed
@@ -1279,24 +1318,27 @@ describe('DataExplorer', () => {
           .should('exist')
 
         cy.getByTestID('task-options-bucket-dropdown--button').click()
-        cy.getByTestID('dropdown-item')
-          .contains('defbuck')
-          .click()
-        cy.getByTestID('task-options-bucket-dropdown--button')
-          .contains('defbuck')
-          .should('exist')
+        cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
+          cy.getByTestID('dropdown-item')
+            .contains(defaultBucket)
+            .click()
+          cy.getByTestID('task-options-bucket-dropdown--button')
+            .contains(defaultBucket)
+            .should('exist')
 
-        cy.getByTestID('task-form-save').click()
+          cy.getByTestID('task-form-save').click()
+        })
       })
     })
 
     describe('as variable', () => {
-      const variableName = 'var 1'
+      const variableName = 'var1'
 
       const visitVariables = () => {
         cy.fixture('routes').then(({orgs}) => {
           cy.get('@org').then(({id}: Organization) => {
             cy.visit(`${orgs}/${id}/settings/variables`)
+            cy.getByTestID('tree-nav')
           })
         })
       }
@@ -1310,18 +1352,37 @@ describe('DataExplorer', () => {
 
       it('can save and enable/disable submit button', () => {
         cy.getByTestID('overlay--container').within(() => {
-          cy.get('.cf-button-success').should('be.disabled')
-          cy.get('[placeholder="Give your variable a name"]').type(variableName)
-          cy.get('.cf-button-success').should('be.enabled')
-          cy.get('[placeholder="Give your variable a name"]').clear()
-          cy.get('.cf-button-success').should('be.disabled')
-          cy.get('[placeholder="Give your variable a name"]').type(variableName)
-          cy.get('.cf-button-success').should('be.enabled')
+          cy.getByTestID('variable-form-save').should('be.disabled')
+          cy.getByTestID('flux-editor').should('be.visible')
+          cy.getByTestID('variable-name-input').type(variableName)
+          cy.getByTestID('variable-form-save').should('be.enabled')
+          cy.getByTestID('variable-name-input').clear()
+          cy.getByTestID('variable-form-save').should('be.disabled')
+          cy.getByTestID('flux-editor').should('be.visible')
+          cy.getByTestID('variable-name-input').type(variableName)
+          cy.getByTestID('variable-form-save').should('be.enabled')
 
-          cy.get('.cf-button-success').click()
+          cy.getByTestID('variable-form-save').click()
         })
         visitVariables()
         cy.getByTestID(`variable-card--name ${variableName}`).should('exist')
+      })
+
+      it('can prevent saving variable names with hyphens or spaces', () => {
+        cy.getByTestID('overlay--container').within(() => {
+          cy.getByTestID('variable-form-save').should('be.disabled')
+          cy.getByTestID('flux-editor').should('be.visible')
+          cy.getByTestID('flux-editor').click()
+          cy.getByTestID('variable-name-input')
+            .click()
+            .type('bad name')
+          cy.getByTestID('variable-form-save').should('be.disabled')
+
+          cy.getByTestID('variable-name-input')
+            .clear()
+            .type('bad-name')
+          cy.getByTestID('variable-form-save').should('be.disabled')
+        })
       })
     })
   })
@@ -1345,31 +1406,37 @@ describe('DataExplorer', () => {
     })
 
     it('should set the default bucket in the dropdown to the selected bucket', () => {
-      cy.get('.cf-overlay--dismiss').click()
-      cy.getByTestID('selector-list defbuck').click()
-      cy.getByTestID('delete-data-predicate')
-        .click()
-        .then(() => {
-          cy.getByTestID('dropdown--button').contains('defbuck')
+      cy.get<string>('@defaultBucketListSelector').then(
+        (defaultBucketListSelector: string) => {
           cy.get('.cf-overlay--dismiss').click()
-        })
-        .then(() => {
-          cy.getByTestID('selector-list _monitoring').click()
+          cy.getByTestID(defaultBucketListSelector).click()
           cy.getByTestID('delete-data-predicate')
             .click()
             .then(() => {
-              cy.getByTestID('dropdown--button').contains('_monitoring')
-              cy.get('.cf-overlay--dismiss').click()
+              cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
+                cy.getByTestID('dropdown--button').contains(defaultBucket)
+                cy.get('.cf-overlay--dismiss').click()
+              })
             })
-        })
-        .then(() => {
-          cy.getByTestID('selector-list _tasks').click()
-          cy.getByTestID('delete-data-predicate')
-            .click()
             .then(() => {
-              cy.getByTestID('dropdown--button').contains('_tasks')
+              cy.getByTestID('selector-list _monitoring').click()
+              cy.getByTestID('delete-data-predicate')
+                .click()
+                .then(() => {
+                  cy.getByTestID('dropdown--button').contains('_monitoring')
+                  cy.get('.cf-overlay--dismiss').click()
+                })
             })
-        })
+            .then(() => {
+              cy.getByTestID('selector-list _tasks').click()
+              cy.getByTestID('delete-data-predicate')
+                .click()
+                .then(() => {
+                  cy.getByTestID('dropdown--button').contains('_tasks')
+                })
+            })
+        }
+      )
     })
 
     it('closes the overlay upon a successful delete with predicate submission', () => {

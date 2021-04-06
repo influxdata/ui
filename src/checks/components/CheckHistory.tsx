@@ -1,6 +1,7 @@
 // Libraries
 import React, {useMemo, FC} from 'react'
-import {connect} from 'react-redux'
+import {useParams} from 'react-router'
+import {useSelector} from 'react-redux'
 
 // Components
 import {Page} from '@influxdata/clockface'
@@ -11,6 +12,7 @@ import AlertHistoryQueryParams from 'src/alerting/components/AlertHistoryQueryPa
 import EventTable from 'src/eventViewer/components/EventTable'
 import GetResources from 'src/resources/components/GetResources'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
+import CheckProvider from 'src/checks/utils/context'
 
 // Context
 import {ResourceIDsContext} from 'src/alerting/components/AlertHistoryIndex'
@@ -21,42 +23,33 @@ import {STATUS_FIELDS} from 'src/alerting/constants/history'
 // Utils
 import {loadStatuses, getInitialState} from 'src/alerting/utils/history'
 import {getCheckIDs} from 'src/checks/selectors'
-import {getTimeZone} from 'src/dashboards/selectors'
+import {getOrg} from 'src/organizations/selectors'
+import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Types
-import {ResourceIDs} from 'src/checks/reducers'
-import {AppState, Check, TimeZone, ResourceType} from 'src/types'
-import {getByID} from 'src/resources/selectors'
-import {RouteComponentProps} from 'react-router-dom'
+import {AppState, ResourceType} from 'src/types'
 
-interface StateProps {
-  check: Check
-  timeZone: TimeZone
-  resourceIDs: ResourceIDs
-}
-
-type Props = RouteComponentProps<{orgID: string; checkID: string}> & StateProps
-
-const CheckHistory: FC<Props> = ({
-  match: {
-    params: {orgID},
-  },
-  check,
-  timeZone,
-  resourceIDs,
-}) => {
-  const loadRows = useMemo(() => options => loadStatuses(orgID, options), [
-    orgID,
+const CheckHistory: FC = () => {
+  const resourceIDs = useSelector((state: AppState) => ({
+    checkIDs: getCheckIDs(state),
+    endpointIDs: null,
+    ruleIDs: null,
+  }))
+  const org = useSelector(getOrg)
+  const {checkID} = useParams()
+  const loadRows = useMemo(() => options => loadStatuses(org.id, options), [
+    org.id,
   ])
   const historyType = 'statuses'
   const fields = STATUS_FIELDS
+
   return (
     <GetResources resources={[ResourceType.Checks]}>
       <ResourceIDsContext.Provider value={resourceIDs}>
         <EventViewer loadRows={loadRows} initialState={getInitialState()}>
           {props => (
             <Page
-              titleTag="Check Statuses | InfluxDB 2.0"
+              titleTag={pageTitleSuffixer(['Check Statuses'])}
               className="alert-history-page"
             >
               <Page.Header fullWidth={true}>
@@ -81,12 +74,9 @@ const CheckHistory: FC<Props> = ({
                 className="alert-history-page--contents"
               >
                 <div className="alert-history-contents">
-                  {check.type !== 'custom' && (
-                    <CheckHistoryVisualization
-                      check={check}
-                      timeZone={timeZone}
-                    />
-                  )}
+                  <CheckProvider id={checkID}>
+                    <CheckHistoryVisualization />
+                  </CheckProvider>
                   <div className="alert-history">
                     <EventTable {...props} fields={fields} />
                   </div>
@@ -100,22 +90,4 @@ const CheckHistory: FC<Props> = ({
   )
 }
 
-const mstp = (state: AppState, props: Props) => {
-  const timeZone = getTimeZone(state)
-  const checkIDs = getCheckIDs(state)
-  const check = getByID<Check>(
-    state,
-    ResourceType.Checks,
-    props.match.params.checkID
-  )
-
-  const resourceIDs = {
-    checkIDs,
-    endpointIDs: null,
-    ruleIDs: null,
-  }
-
-  return {check, timeZone, resourceIDs}
-}
-
-export default connect<StateProps>(mstp)(CheckHistory)
+export default CheckHistory

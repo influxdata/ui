@@ -89,6 +89,7 @@ const DashboardList: FC<Props> = ({dashboards, org}) => {
         icon={IconFont.Search}
         placeholder="Filter dashboards..."
         onChange={handleInputChange}
+        id="filter-dashboards"
       />
       {dashboardsList}
     </>

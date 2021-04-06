@@ -33,10 +33,19 @@ export const FeatureFlag: FunctionComponent<{
 
 export const getUserFlags = () => activeFlags(getStore().getState())
 
+const orderObject = unordered => {
+  return Object.keys(unordered)
+    .sort()
+    .reduce((obj, key) => {
+      obj[key] = unordered[key]
+      return obj
+    }, {})
+}
+
 /* eslint-disable no-console */
 const list = () => {
   console.log('Currently Available Feature Flags')
-  console.table(getUserFlags())
+  console.table(orderObject(getUserFlags()))
 }
 /* eslint-enable no-console */
 

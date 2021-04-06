@@ -1,5 +1,5 @@
 // Libraries
-import React, {ChangeEvent, FC, useState, useRef} from 'react'
+import React, {ChangeEvent, FC, useState, useRef, useEffect} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 
 // Components
@@ -14,10 +14,12 @@ import {
 import {AnnotationsSearchBarItem} from 'src/annotations/components/controlBar/AnnotationsSearchBarItem'
 
 // Actions
-import {enableAnnotationStream} from 'src/annotations/actions'
-
+import {fetchAndSetAnnotationStreams} from 'src/annotations/actions/thunks'
 // Selectors
-import {getHiddenAnnotationStreams} from 'src/annotations/selectors'
+import {
+  getAnnotationStreams,
+  getHiddenAnnotationStreams,
+} from 'src/annotations/selectors'
 
 // Styles
 import 'src/annotations/components/controlBar/AnnotationsSearchBar.scss'
@@ -25,16 +27,26 @@ import 'src/annotations/components/controlBar/AnnotationsSearchBar.scss'
 export const AnnotationsSearchBar: FC = () => {
   const dispatch = useDispatch()
   const inputRef = useRef<InputRef>(null)
-  const suggestions = useSelector(getHiddenAnnotationStreams)
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [suggestionsAreVisible, setSuggestionState] = useState<boolean>(false)
 
-  const filteredSuggestions = suggestions.filter(stream => {
-    return stream.name.toLowerCase().includes(searchTerm.toLowerCase())
-  })
+  useEffect(() => {
+    dispatch(fetchAndSetAnnotationStreams)
+  }, [dispatch])
 
-  const handleInputChange = (e: ChangeEvent<InputRef>): void => {
-    setSearchTerm(e.target.value)
+  const annotationStreams = useSelector(getAnnotationStreams)
+  const hiddenStreams = useSelector(getHiddenAnnotationStreams)
+
+  const filteredStreams = annotationStreams
+    .filter(annotationStream => {
+      return annotationStream.stream
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    })
+    .filter(annotationStream => hiddenStreams.includes(annotationStream.stream))
+
+  const handleInputChange = (event: ChangeEvent<InputRef>): void => {
+    setSearchTerm(event.target.value)
   }
 
   const handleStartSuggesting = (): void => {
@@ -45,8 +57,7 @@ export const AnnotationsSearchBar: FC = () => {
     setSuggestionState(false)
   }
 
-  const handleSuggestionClick = (id: string): void => {
-    dispatch(enableAnnotationStream(id))
+  const handleSuggestionClick = (): void => {
     inputRef.current?.focus()
   }
 
@@ -54,16 +65,16 @@ export const AnnotationsSearchBar: FC = () => {
     <List.EmptyState>No streams match your search</List.EmptyState>
   )
 
-  if (filteredSuggestions.length) {
+  if (filteredStreams.length) {
     suggestionItems = (
       <>
-        {filteredSuggestions.map(item => (
+        {filteredStreams.map(stream => (
           <AnnotationsSearchBarItem
-            key={item.name}
-            name={item.name}
-            id={item.id}
-            description={item.description}
-            color={item.display.color}
+            key={stream.stream}
+            name={stream.stream}
+            id={stream.stream}
+            description={stream.description}
+            color={stream.color}
             onClick={handleSuggestionClick}
           />
         ))}
@@ -86,7 +97,10 @@ export const AnnotationsSearchBar: FC = () => {
           testID="annotations-search-input"
         />
         {suggestionsAreVisible && (
-          <Dropdown.Menu className="annotations-searchbar--suggestions">
+          <Dropdown.Menu
+            className="annotations-searchbar--suggestions"
+            testID="annotations-searchbar-suggestions"
+          >
             <List style={{width: '100%'}}>{suggestionItems}</List>
           </Dropdown.Menu>
         )}

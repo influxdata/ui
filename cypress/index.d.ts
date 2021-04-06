@@ -26,7 +26,10 @@ import {
   fluxEqual,
   createTelegraf,
   createToken,
+  fillInOSSLoginFormWithDefaults,
   writeData,
+  wrapEnvironmentVariablesForCloud,
+  wrapEnvironmentVariablesForOss,
   getByTestIDSubStr,
   createEndpoint,
   createDashWithCell,
@@ -72,6 +75,9 @@ declare global {
       createTelegraf: typeof createTelegraf
       createToken: typeof createToken
       writeData: typeof writeData
+      wrapEnvironmentVariablesForCloud: typeof wrapEnvironmentVariablesForCloud
+      wrapEnvironmentVariablesForOss: typeof wrapEnvironmentVariablesForOss
+      fillInOSSLoginFormWithDefaults: typeof fillInOSSLoginFormWithDefaults
       createEndpoint: typeof createEndpoint
       createRule: typeof createRule
     }

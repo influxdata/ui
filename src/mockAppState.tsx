@@ -30,11 +30,13 @@ export const mockAppState = {
   },
   resources: {
     orgs: {
+      status: RemoteDataState.Done,
       org: {
         id: '674b23253171ee69',
       },
     },
     variables: {
+      status: RemoteDataState.Done,
       byID: {
         '054b7476389f1000': {
           id: '054b7476389f1000',
@@ -72,6 +74,14 @@ export const mockAppState = {
               system: 'system',
               usage_user: 'usage_user',
             },
+          },
+        },
+        '05aeb0ad75aca001': {
+          id: '05aeb0ad75aca001',
+          name: 'csv_test_variable',
+          arguments: {
+            type: 'constant',
+            values: ['sample', 'value'],
           },
         },
         '05ba3253105a5000': {
@@ -121,6 +131,7 @@ export const mockAppState = {
         '05ba3253105a5000',
         '05e6e4df2287b000',
         '05e6e4fb0887b000',
+        '05aeb0ad75aca001',
       ],
     },
   },

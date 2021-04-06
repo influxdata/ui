@@ -8,12 +8,13 @@ import {fromFlux, Table} from '@influxdata/giraffe'
 import {
   defaultXColumn,
   defaultYColumn,
-  mosaicYcolumn,
+  defaultYSeriesColumns,
   getNumericColumns as getNumericColumnsUtil,
   getGroupableColumns as getGroupableColumnsUtil,
   getStringColumns as getStringColumnsUtil,
   getMainColumnName,
 } from 'src/shared/utils/vis'
+
 import {
   getWindowPeriod,
   calcWindowPeriodForDuration,
@@ -49,6 +50,14 @@ export const getActiveTimeMachine = (state: AppState) => {
   const timeMachine = timeMachines[activeTimeMachineID]
 
   return timeMachine
+}
+
+export const getActiveCellID = (state: AppState) => {
+  return getActiveTimeMachine(state)?.view.cellID
+}
+
+export const getActiveGraphType = (state: AppState): string => {
+  return get(getActiveTimeMachine(state), 'view.properties.type', 'xy')
 }
 
 export const getIsInCheckOverlay = (state: AppState): boolean => {
@@ -150,23 +159,23 @@ export const getXColumnSelection = (state: AppState): string => {
 export const getYColumnSelection = (state: AppState): string => {
   const {table} = getVisTable(state)
   const tm = getActiveTimeMachine(state)
-  let preferredYColumnKey
+  const preferredYColumnKey = get(tm, 'view.properties.yColumn')
 
   if (tm.view.properties.type === 'mosaic') {
-    preferredYColumnKey = get(
-      getActiveTimeMachine(state),
-      'view.properties.ySeriesColumns[0]'
-    )
-
-    return mosaicYcolumn(table, preferredYColumnKey)
+    return ''
   }
-
-  preferredYColumnKey = get(
-    getActiveTimeMachine(state),
-    'view.properties.yColumn'
-  )
-
   return defaultYColumn(table, preferredYColumnKey)
+}
+
+export const getYSeriesColumns = (state: AppState): Array<string> => {
+  const {table} = getVisTable(state)
+  const tm = getActiveTimeMachine(state)
+  const preferredYSeriesColumns = get(tm, 'view.properties.ySeriesColumns')
+
+  if (tm.view.properties.type === 'mosaic') {
+    return defaultYSeriesColumns(table, preferredYSeriesColumns)
+  }
+  return []
 }
 
 const getGroupableColumnSelection = (
@@ -186,6 +195,11 @@ const getFillColumnsSelectionMemoized = memoizeOne(getGroupableColumnSelection)
 const getSymbolColumnsSelectionMemoized = memoizeOne(
   getGroupableColumnSelection
 )
+// if annotations are off, then render just won't show them,
+// so ok to retrieve no matter the flag state
+export const getAnnotations = (state: AppState) => {
+  return state.annotations.annotations
+}
 
 export const getFillColumnsSelection = (state: AppState): string[] => {
   const {table} = getVisTable(state)
@@ -328,7 +342,7 @@ export const getSaveableView = (state: AppState): QueryView & {id?: string} => {
       properties: {
         ...saveableView.properties,
         xColumn: getXColumnSelection(state),
-        ySeriesColumns: [getYColumnSelection(state)],
+        ySeriesColumns: getYSeriesColumns(state),
         fillColumns: getFillColumnsSelection(state),
       },
     }

@@ -1,17 +1,20 @@
 .variable-dropdown {
   display: flex;
   flex-direction: row;
-  height: $form-sm-height;
-  position: relative;
-  border-radius: $radius;
-  transition: opacity 0.25s ease;
-  border-radius: $radius;
+  height: $form-sm-height + ($cf-border * 2);
+  border-radius: $cf-radius;
   background-color: $g3-castle;
+  margin-right: $cf-border;
+  border: $cf-border solid $g3-castle;
+}
 
-  &__dragging {
-    opacity: 0;
-    cursor: grab !important;
-  }
+.variable-dropdown__dragging {
+  border-color: $c-comet;
+  box-shadow: 0 0 4px 1px $c-amethyst;
+}
+
+.variable-dropdown__dragging + .variable-dropdown {
+  pointer-events: none;
 }
 
 .variable-dropdown--label {
@@ -27,26 +30,13 @@
   > span {
     display: inline-block;
     padding: 0 $form-sm-padding;
-    padding-left: $form-sm-padding - $ix-border;
+    padding-left: $form-sm-padding - $cf-border;
     color: $c-comet;
+    transition: color 0.25s ease;
   }
-}
 
-.variable-dropdown--placeholder {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2;
-  width: 100%;
-  height: $form-sm-height;
-  border-radius: $radius;
-  @include gradient-diag-down($c-pool, $c-comet);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease;
-
-  .variable-dropdown__dragging + & {
-    opacity: 0.3;
+  .variable-dropdown__dragging & > span {
+    color: $c-moonstone;
   }
 }
 
@@ -55,17 +45,17 @@
   width: ceil($form-sm-height * 0.66);
   height: $form-sm-height;
   position: relative;
-  opacity: 0.4;
-  transition: opacity 0.25s ease;
+  opacity: 1;
 
   .hamburger {
     width: 10px;
-    height: 2px;
-    border-radius: 1px;
+    height: $cf-border;
+    border-radius: $cf-border / 2;
     position: absolute;
     top: 50%;
     right: 0;
-    background-color: $c-comet;
+    background-color: $c-star;
+    transition: background-color 0.25s ease;
     transform: translate(0, -50%);
 
     &:before,
@@ -75,22 +65,31 @@
       display: block;
       width: 100%;
       height: 100%;
-      background-color: $c-comet;
-      border-radius: 1px;
+      background-color: $c-star;
+      transition: background-color 0.25s ease;
+      border-radius: $cf-border / 2;
       left: 0;
     }
     &:before {
-      top: -4px;
+      top: -$cf-marg-a;
     }
     &:after {
-      top: 4px;
+      top: $cf-marg-a;
     }
   }
 
-  .variable-dropdown__dragging &,
-  &:hover {
-    opacity: 1;
-    cursor: grab !important;
+  // Hover State
+  &:hover .hamburger,
+  &:hover .hamburger:before,
+  &:hover .hamburger:after {
+    background-color: $c-moonstone;
+  }
+
+  // Dragging State
+  .variable-dropdown__dragging & .hamburger,
+  .variable-dropdown__dragging & .hamburger:before,
+  .variable-dropdown__dragging & .hamburger:after {
+    background-color: $c-moonstone;
   }
 }
 

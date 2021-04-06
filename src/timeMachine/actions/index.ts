@@ -1,13 +1,13 @@
 // Libraries
 import {Dispatch} from 'react'
-
+import {isEqual} from 'lodash'
 // Actions
-import {loadBuckets} from 'src/timeMachine/actions/queryBuilder'
-import {saveAndExecuteQueries} from 'src/timeMachine/actions/queries'
+import {Action as QueryBuilderAction} from 'src/timeMachine/actions/queryBuilder'
 import {
+  loadBuckets,
   reloadTagSelectors,
-  Action as QueryBuilderAction,
-} from 'src/timeMachine/actions/queryBuilder'
+} from 'src/timeMachine/actions/queryBuilderThunks'
+import {saveAndExecuteQueries} from 'src/timeMachine/actions/queries'
 import {convertCheckToCustom} from 'src/alerting/actions/alertBuilder'
 import {setDashboardTimeRange} from 'src/dashboards/actions/ranges'
 
@@ -35,6 +35,7 @@ import {
   AutoRefresh,
   TimeMachineID,
   XYViewProperties,
+  ViewProperties,
   GetState,
 } from 'src/types'
 import {Color} from 'src/types/colors'
@@ -50,6 +51,7 @@ export type Action =
   | SetTypeAction
   | SetActiveQueryText
   | SetIsViewingRawDataAction
+  | SetIsDisabledViewRawData
   | SetGeomAction
   | SetDecimalPlaces
   | SetBackgroundThresholdColoringAction
@@ -78,6 +80,8 @@ export type Action =
   | SetXColumnAction
   | SetYColumnAction
   | SetYSeriesColumnsAction
+  | SetYLabelColumnsAction
+  | SetYLabelColumnSeparatorAction
   | SetBinSizeAction
   | SetColorHexesAction
   | SetFillColumnsAction
@@ -90,6 +94,7 @@ export type Action =
   | ReturnType<typeof setLowerColumn>
   | ReturnType<typeof setLegendOpacity>
   | ReturnType<typeof setLegendOrientationThreshold>
+  | ReturnType<typeof setLegendColorizeRows>
   | ReturnType<typeof setGenerateXAxisTicks>
   | ReturnType<typeof setGenerateYAxisTicks>
   | ReturnType<typeof setXTotalTicks>
@@ -105,6 +110,8 @@ export type Action =
   | SetHoverDimensionAction
   | ReturnType<typeof toggleVisOptions>
   | ReturnType<typeof resetActiveQueryWithBuilder>
+  | ReturnType<typeof setViewProperties>
+  | ReturnType<typeof setTimeMachineTimeRange>
 
 type ExternalActions =
   | ReturnType<typeof loadBuckets>
@@ -152,13 +159,22 @@ export const setName = (name: string): SetNameAction => ({
   payload: {name},
 })
 
+export const setTimeMachineTimeRange = (timeRange: TimeRange) =>
+  ({
+    type: 'SET_TIME_MACHINE_TIME_RANGE',
+    timeRange,
+  } as const)
+
 export const setTimeRange = (timeRange: TimeRange) => (dispatch, getState) => {
   const state = getState()
   const contextID = currentContext(state)
   const activeQuery = getActiveQuery(state)
 
-  dispatch(setDashboardTimeRange(contextID, timeRange))
-  dispatch(saveAndExecuteQueries())
+  if (!isEqual(timeRange, state.ranges[contextID])) {
+    dispatch(setDashboardTimeRange(contextID, timeRange))
+    dispatch(saveAndExecuteQueries())
+  }
+
   if (activeQuery.editMode === 'builder') {
     dispatch(reloadTagSelectors())
   }
@@ -206,6 +222,18 @@ export const setIsViewingRawData = (
 ): SetIsViewingRawDataAction => ({
   type: 'SET_IS_VIEWING_RAW_DATA',
   payload: {isViewingRawData},
+})
+
+interface SetIsDisabledViewRawData {
+  type: 'SET_IS_DISABLED_VIEW_RAW_DATA'
+  payload: {isDisabledViewRawData: boolean}
+}
+
+export const setIsDisabledViewRawData = (
+  isDisabledViewRawData: boolean
+): SetIsDisabledViewRawData => ({
+  type: 'SET_IS_DISABLED_VIEW_RAW_DATA',
+  payload: {isDisabledViewRawData},
 })
 
 interface SetGeomAction {
@@ -555,6 +583,30 @@ export const setYSeriesColumns = (
   payload: {ySeriesColumns},
 })
 
+interface SetYLabelColumnsAction {
+  type: 'SET_Y_LABEL_COLUMNS'
+  payload: {yLabelColumns: string[]}
+}
+
+export const setYLabelColumns = (
+  yLabelColumns: string[]
+): SetYLabelColumnsAction => ({
+  type: 'SET_Y_LABEL_COLUMNS',
+  payload: {yLabelColumns},
+})
+
+interface SetYLabelColumnSeparatorAction {
+  type: 'SET_Y_LABEL_COLUMN_SEPARATOR'
+  payload: {yLabelColumnSeparator: string}
+}
+
+export const setYLabelColumnSeparator = (
+  yLabelColumnSeparator: string
+): SetYLabelColumnSeparatorAction => ({
+  type: 'SET_Y_LABEL_COLUMN_SEPARATOR',
+  payload: {yLabelColumnSeparator},
+})
+
 interface SetShadeBelowAction {
   type: 'SET_SHADE_BELOW'
   payload: {shadeBelow}
@@ -705,6 +757,11 @@ export const setLegendOrientationThreshold = (
   payload: {legendOrientationThreshold},
 })
 
+export const setLegendColorizeRows = (legendColorizeRows: boolean) => ({
+  type: 'SET_LEGEND_COLORIZE_ROWS' as 'SET_LEGEND_COLORIZE_ROWS',
+  payload: {legendColorizeRows},
+})
+
 export const setGenerateXAxisTicks = (generateXAxisTicks: string[]) => ({
   type: 'SET_GENERATE_X_AXIS_TICKS' as 'SET_GENERATE_X_AXIS_TICKS',
   payload: {generateXAxisTicks},
@@ -744,6 +801,12 @@ export const setYTickStep = (yTickStep: number) => ({
   type: 'SET_Y_TICK_STEP' as 'SET_Y_TICK_STEP',
   payload: {yTickStep},
 })
+
+export const setViewProperties = (properties: ViewProperties) =>
+  ({
+    type: 'SET_VIEW_PROPERTIES',
+    payload: {properties},
+  } as const)
 
 export const loadNewVEO = () => (
   dispatch: Dispatch<Action | ExternalActions>

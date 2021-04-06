@@ -11,6 +11,7 @@ import {
   Telegraf,
   Scraper,
   Authorization,
+  Flow,
 } from 'src/types'
 
 export type DashboardSortKey = keyof Dashboard | 'meta.updatedAt'
@@ -22,6 +23,7 @@ export type BucketSortKey = keyof Bucket | 'retentionRules[0].everySeconds'
 export type TelegrafSortKey = keyof Telegraf
 export type ScraperSortKey = keyof Scraper
 export type AuthorizationSortKey = keyof Authorization
+export type FlowSortKey = keyof Flow
 
 export type SortKey =
   | DashboardSortKey
@@ -33,6 +35,7 @@ export type SortKey =
   | TelegrafSortKey
   | ScraperSortKey
   | AuthorizationSortKey
+  | FlowSortKey
 
 export interface SortDropdownItem {
   label: string
@@ -332,6 +335,21 @@ export const generateSortItems = (
         {
           label: 'Date Created (Newest)',
           sortKey: 'createdAt',
+          sortType: SortTypes.String,
+          sortDirection: Sort.Descending,
+        },
+      ]
+    case ResourceType.Flows:
+      return [
+        {
+          label: 'Name (A → Z)',
+          sortKey: 'name',
+          sortType: SortTypes.String,
+          sortDirection: Sort.Ascending,
+        },
+        {
+          label: 'Name (Z → A)',
+          sortKey: 'name',
           sortType: SortTypes.String,
           sortDirection: Sort.Descending,
         },

@@ -92,28 +92,14 @@ export const variablesReducer = (
       }
 
       case MOVE_VARIABLE: {
-        const {originalIndex, newIndex, contextID} = action
-        let newOrder = get(draftState, `values.${contextID}.order`)
-
-        // if no order, take it from allIDs
-        if (!newOrder) {
-          newOrder = get(draftState, `allIDs`)
-        }
-
-        newOrder = newOrder.slice(0)
-
-        const idToMove = newOrder[originalIndex]
-        const idToSwap = newOrder[newIndex]
-
-        newOrder[originalIndex] = idToSwap
-        newOrder[newIndex] = idToMove
+        const {contextID, newVariableOrder} = action
 
         draftState.values[contextID] = {
           ...(draftState.values[contextID] || {
             status: RemoteDataState.NotStarted,
             values: {},
           }),
-          order: newOrder,
+          order: newVariableOrder,
         }
 
         return

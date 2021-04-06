@@ -1,8 +1,5 @@
 import React, {PureComponent} from 'react'
 
-// utils
-import _ from 'lodash'
-
 // components
 import {Dropdown, DropdownItemType} from '@influxdata/clockface'
 import {ErrorHandling} from 'src/shared/decorators/errors'
@@ -32,8 +29,11 @@ class DashboardsDropdown extends PureComponent<Props> {
             {this.dropdownLabel}
           </Dropdown.Button>
         )}
-        menu={() => (
-          <Dropdown.Menu testID="save-as-dashboard-cell--dropdown-menu">
+        menu={onCollapse => (
+          <Dropdown.Menu
+            onCollapse={onCollapse}
+            testID="save-as-dashboard-cell--dropdown-menu"
+          >
             {this.dropdownItems}
           </Dropdown.Menu>
         )}

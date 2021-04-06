@@ -58,6 +58,7 @@ class MapVariableBuilder extends PureComponent<Props, State> {
               value={templateValuesString}
               onChange={this.handleChange}
               onBlur={this.handleBlur}
+              testID="map-variable-textarea"
             />
           </Grid.Column>
         </Grid.Row>

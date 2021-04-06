@@ -1,96 +1,102 @@
 // Libraries
 import React, {FC} from 'react'
-import {useSelector} from 'react-redux'
-import {useHistory, useParams} from 'react-router-dom'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {
-  Button,
-  SquareButton,
-  IconFont,
-  JustifyContent,
-  FlexBox,
-  FlexBoxChild,
-  ComponentSize,
   ComponentColor,
+  ComponentSize,
+  FlexBoxChild,
+  InfluxColors,
+  InputLabel,
+  InputToggleType,
+  JustifyContent,
+  TextBlock,
+  Toggle,
 } from '@influxdata/clockface'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import Toolbar from 'src/shared/components/toolbar/Toolbar'
-import {AnnotationPills} from 'src/annotations/components/controlBar/AnnotationPills'
-import {AnnotationsSearchBar} from 'src/annotations/components/controlBar/AnnotationsSearchBar'
+import {
+  toggleAnnotationVisibility,
+  toggleSingleClickAnnotations,
+} from 'src/annotations/actions/creators'
 
 // Selectors
-import {getAnnotationControlsVisibility} from 'src/annotations/selectors'
-
-// Constants
 import {
-  ORGS,
-  SETTINGS,
-  DASHBOARDS,
-  ANNOTATIONS,
-  DATA_EXPLORER,
-} from 'src/shared/constants/routes'
+  isSingleClickAnnotationsEnabled,
+  selectAreAnnotationsVisible,
+} from 'src/annotations/selectors'
+
+// Utils
+import {event} from 'src/cloud/utils/reporting'
 
 export const AnnotationsControlBar: FC = () => {
-  const history = useHistory()
-  const isVisible = useSelector(getAnnotationControlsVisibility)
-  const {orgID, dashboardID} = useParams<{orgID: string; dashboardID: string}>()
+  const inWriteMode = useSelector(isSingleClickAnnotationsEnabled)
+  const annotationsAreVisible = useSelector(selectAreAnnotationsVisible)
 
-  if (!isVisible) {
-    return null
+  const dispatch = useDispatch()
+
+  const changeWriteMode = () => {
+    event('dashboard.annotations.change_write_mode.toggle', {
+      newIsWriteModeEnabled: (!inWriteMode).toString(),
+    })
+    dispatch(toggleSingleClickAnnotations())
   }
 
-  const handleSettingsClick = (): void => {
-    history.push(`/${ORGS}/${orgID}/${SETTINGS}/${ANNOTATIONS}`)
-  }
-
-  const handleAnnotateClick = (): void => {
-    // NOTE: these values should come from the interaction with the graph
-    // You should get 2 timestamps
-    const timeStart = 'today, right now'
-    const timeStop = 'today, right now'
-
-    // Using presence of dashboardID to determine whether the user is viewing
-    // a dashboard or the data explorer
-    // This is brittle af
-
-    const addAnnotationRoute = dashboardID
-      ? `/${ORGS}/${orgID}/${DASHBOARDS}/${dashboardID}/add-annotation`
-      : `/${ORGS}/${orgID}/${DATA_EXPLORER}/add-annotation`
-
-    // Using the second argument of history.push to pass some state along
-    // to the overlay without having to expose it in the URL
-
-    history.push(addAnnotationRoute, [{timeStart, timeStop}])
+  const changeAnnotationVisibility = () => {
+    event('dashboard.annotations.change_visibility_mode.toggle', {
+      newAnnotationsAreVisible: (!annotationsAreVisible).toString(),
+    })
+    dispatch(toggleAnnotationVisibility())
   }
 
   return (
     <ErrorBoundary>
       <Toolbar
         testID="annotations-control-bar"
-        justifyContent={JustifyContent.SpaceBetween}
+        justifyContent={JustifyContent.FlexEnd}
         margin={ComponentSize.Large}
       >
-        <FlexBoxChild basis={300} grow={0}>
-          <AnnotationsSearchBar />
+        <FlexBoxChild grow={0}>
+          <TextBlock
+            backgroundColor={InfluxColors.Obsidian}
+            textColor={InfluxColors.Mist}
+            text="*Currently, we only support annotations on XY Plots"
+          />
         </FlexBoxChild>
-        <FlexBoxChild grow={1}>
-          <AnnotationPills />
-        </FlexBoxChild>
-        <FlexBox margin={ComponentSize.Small}>
-          <Button
-            testID="annotations-control-bar--add"
-            text="Annotate"
-            icon={IconFont.AnnotatePlus}
+        <FlexBoxChild grow={1} />
+        <FlexBoxChild grow={0}>
+          <Toggle
+            style={{marginRight: 20}}
+            id="enable-annotation-visibility"
+            type={InputToggleType.Checkbox}
+            checked={annotationsAreVisible}
+            onChange={changeAnnotationVisibility}
             color={ComponentColor.Primary}
-            onClick={handleAnnotateClick}
-          />
-          <SquareButton
-            testID="annotations-control-bar--settings"
-            icon={IconFont.CogThick}
-            onClick={handleSettingsClick}
-          />
-        </FlexBox>
+            size={ComponentSize.ExtraSmall}
+            testID="annotations-visibility-toggle"
+          >
+            <InputLabel htmlFor="enable-annotation-visibility">
+              Show Annotations
+            </InputLabel>
+          </Toggle>
+        </FlexBoxChild>
+        <FlexBoxChild grow={0}>
+          <Toggle
+            style={{marginRight: 20}}
+            id="enable-annotation-mode"
+            type={InputToggleType.Checkbox}
+            checked={inWriteMode}
+            onChange={changeWriteMode}
+            color={ComponentColor.Primary}
+            size={ComponentSize.ExtraSmall}
+            testID="annotations-one-click-toggle"
+          >
+            <InputLabel htmlFor="enable-annotation-mode">
+              Enable 1-Click Annotations
+            </InputLabel>
+          </Toggle>
+        </FlexBoxChild>
       </Toolbar>
     </ErrorBoundary>
   )

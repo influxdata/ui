@@ -19,7 +19,11 @@ class SideBarTab extends Component<Props> {
     const {label} = this.props
 
     return (
-      <div className={this.className} onClick={this.handleClick}>
+      <div
+        className={this.className}
+        onClick={this.handleClick}
+        data-testid="sidebar-tab"
+      >
         <pre>
           {this.icon} {label}
         </pre>

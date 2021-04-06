@@ -22,8 +22,11 @@ import {
 } from '@influxdata/clockface'
 
 // Actions
-import {setAutoRefresh} from 'src/timeMachine/actions'
-import {setTimeRange} from 'src/timeMachine/actions'
+import {
+  setAutoRefresh,
+  setTimeMachineTimeRange,
+  setTimeRange,
+} from 'src/timeMachine/actions'
 import {enableUpdatedTimeRangeInVEO} from 'src/shared/actions/app'
 
 // Utils
@@ -87,6 +90,7 @@ class TimeMachineQueries extends PureComponent<Props> {
       onEnableUpdatedTimeRangeInVEO,
       onSetAutoRefresh,
       onSetTimeRange,
+      setTimeMachineTimeRange,
       match: {
         params: {cellID, dashboardID, orgID},
       },
@@ -98,7 +102,7 @@ class TimeMachineQueries extends PureComponent<Props> {
       onEnableUpdatedTimeRangeInVEO()
     }
     onSetTimeRange(timeRange)
-
+    setTimeMachineTimeRange(timeRange)
     if (timeRange.type === 'custom') {
       onSetAutoRefresh({...autoRefresh, status: AutoRefreshStatus.Disabled})
       return
@@ -142,6 +146,7 @@ const mstp = (state: AppState) => {
 }
 
 const mdtp = {
+  setTimeMachineTimeRange,
   onSetTimeRange: setTimeRange,
   onEnableUpdatedTimeRangeInVEO: enableUpdatedTimeRangeInVEO,
   onSetAutoRefresh: setAutoRefresh,

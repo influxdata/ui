@@ -2,6 +2,7 @@ import {cleanup} from '@testing-library/react'
 import 'intersection-observer'
 import MutationObserver from 'mutation-observer'
 import fetchMock from 'jest-fetch-mock'
+import '@testing-library/jest-dom'
 
 // global vars
 process.env.API_PREFIX = 'http://example.com/'
@@ -22,7 +23,7 @@ window.flushAllPromises = async () => {
 
 // mocks and stuff
 fetchMock.enableMocks()
-jest.mock('honeybadger-js', () => () => null)
+jest.mock('src/shared/utils/errors')
 
 // cleans up state between @testing-library/react tests
 afterEach(() => {

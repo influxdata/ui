@@ -14,7 +14,7 @@ import {
   SquareGrid,
 } from '@influxdata/clockface'
 import {ErrorHandling} from 'src/shared/decorators/errors'
-
+import CreateBucketButton from 'src/buckets/components/CreateBucketButton'
 // Constants
 import {
   PLUGIN_BUNDLE_OPTIONS,
@@ -71,52 +71,64 @@ class StreamingSelector extends PureComponent<Props, State> {
     const {searchTerm} = this.state
 
     const cardSize = `${100 / (PLUGIN_BUNDLE_OPTIONS.length + 1)}%`
-
     return (
       <div className="wizard-step--grid-container">
-        <Grid.Row>
-          <Grid.Column widthSM={Columns.Five}>
-            <FormElement label="Bucket">
-              <BucketDropdown
-                selectedBucketID={this.selectedBucketID}
-                buckets={buckets}
-                onSelectBucket={this.handleSelectBucket}
-              />
-            </FormElement>
-          </Grid.Column>
-          <Grid.Column widthSM={Columns.Five} offsetSM={Columns.Two}>
-            <FormElement label="">
-              <Input
-                className="wizard-step--filter"
-                size={ComponentSize.Small}
-                icon={IconFont.Search}
-                value={searchTerm}
-                onBlur={this.handleFilterBlur}
-                onChange={this.handleFilterChange}
-                placeholder="Filter Plugins..."
-              />
-            </FormElement>
-          </Grid.Column>
-        </Grid.Row>
-        <SquareGrid cardSize={cardSize} gutter={ComponentSize.Small}>
-          {this.filteredBundles.map(b => {
-            return (
-              <SquareGrid.Card key={b}>
-                <SelectableCard
-                  id={b}
-                  formName="telegraf-plugins"
-                  label={b}
-                  testID={`telegraf-plugins--${b}`}
-                  selected={this.isCardChecked(b)}
-                  onClick={this.handleToggle}
-                  icon={IconFont.Checkmark}
-                >
-                  {createElement(BUNDLE_LOGOS[b])}
-                </SelectableCard>
-              </SquareGrid.Card>
-            )
-          })}
-        </SquareGrid>
+        {buckets.length ? (
+          <>
+            <Grid.Row>
+              <Grid.Column widthSM={Columns.Five}>
+                <FormElement label="Bucket">
+                  <BucketDropdown
+                    selectedBucketID={this.selectedBucketID}
+                    buckets={buckets}
+                    onSelectBucket={this.handleSelectBucket}
+                  />
+                </FormElement>
+              </Grid.Column>
+              <Grid.Column widthSM={Columns.Five} offsetSM={Columns.Two}>
+                <FormElement label="">
+                  <Input
+                    className="wizard-step--filter"
+                    size={ComponentSize.Small}
+                    icon={IconFont.Search}
+                    value={searchTerm}
+                    onBlur={this.handleFilterBlur}
+                    onChange={this.handleFilterChange}
+                    placeholder="Filter Plugins..."
+                  />
+                </FormElement>
+              </Grid.Column>
+            </Grid.Row>
+            <SquareGrid cardSize={cardSize} gutter={ComponentSize.Small}>
+              {this.filteredBundles.map(b => {
+                return (
+                  <SquareGrid.Card key={b}>
+                    <SelectableCard
+                      id={b}
+                      formName="telegraf-plugins"
+                      label={b}
+                      testID={`telegraf-plugins--${b}`}
+                      selected={this.isCardChecked(b)}
+                      onClick={this.handleToggle}
+                      icon={IconFont.Checkmark}
+                    >
+                      {createElement(BUNDLE_LOGOS[b])}
+                    </SelectableCard>
+                  </SquareGrid.Card>
+                )
+              })}
+            </SquareGrid>
+          </>
+        ) : (
+          <>
+            <Grid.Row style={{width: 'auto'}}>
+              <CreateBucketButton />
+            </Grid.Row>
+            <h3 data-testid="create-bucket-prompt">
+              Create a Bucket To Show Telegraf Plugins
+            </h3>
+          </>
+        )}
         {this.emptyState}
       </div>
     )

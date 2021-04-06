@@ -23,6 +23,9 @@ import {
 import {VariableAssignment} from 'src/types/ast'
 import {AppState, VariableArgumentType, Variable} from 'src/types'
 
+// Utils
+import {filterUnusedVars} from 'src/shared/utils/filterUnusedVars'
+
 export const extractVariableEditorName = (state: AppState): string => {
   return state.variableEditor.name
 }
@@ -98,6 +101,23 @@ export const getVariables = (
   return vars
 }
 
+export const getVariablesForDashboard = (state: AppState): Variable[] => {
+  const variables = getVariables(state)
+
+  const variablesUsedByDashboard = filterUnusedVars(
+    variables,
+    Object.values(state.resources.views.byID).filter(
+      variable => variable.dashboardID === state.currentDashboard.id
+    )
+  ).sort((a, b) => {
+    if (a.sort_order && b.sort_order) {
+      return a.sort_order - b.sort_order
+    }
+  })
+
+  return variablesUsedByDashboard
+}
+
 // the same as the above method, but includes system
 // variables
 export const getAllVariables = (
@@ -168,10 +188,7 @@ export const getVariable = (state: AppState, variableID: string): Variable => {
   // the current situation
   const vals = normalizeValues(vari)
   vari = {...vari}
-  if (
-    !vari.selected ||
-    (vari.selected && vari.selected.length && !vals.includes(vari.selected[0]))
-  ) {
+  if (!vari.selected) {
     vari.selected = []
   }
 
@@ -298,4 +315,8 @@ export const getDashboardVariablesStatus = (
   state: AppState
 ): RemoteDataState => {
   return get(state, 'resources.variables.status')
+}
+
+export const getControlBarVisibility = (state: AppState): boolean => {
+  return state.userSettings.showVariablesControls
 }

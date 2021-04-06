@@ -9,13 +9,14 @@ export default register => {
     family: 'transform',
     priority: 1,
     component: View,
+    featureFlag: 'flow-panel--raw-flux',
     button: 'Flux Script',
     initial: {
       activeQuery: 0,
       queries: [
         {
           text:
-            '// Use __PREVIOUS_RESULT__ to continue building from the previous cell\n// Write Flux script here',
+            '// Uncomment the following line to continue building from the previous cell\n// __PREVIOUS_RESULT__\n',
           editMode: 'advanced',
           builderConfig: {
             buckets: [],
@@ -28,14 +29,14 @@ export default register => {
     generateFlux: (pipe, create, append) => {
       const text = pipe.queries[pipe.activeQuery].text
         .replace(COMMENT_REMOVER, '')
-        .replace(/\s/g, '')
+        .trim()
 
       if (!text.length) {
-        append()
         return
       }
 
       create(text)
+      append(`__CURRENT_RESULT__ |> limit(n: 100)`)
     },
   })
 }

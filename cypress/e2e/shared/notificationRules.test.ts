@@ -1,7 +1,7 @@
 import {SlackNotificationEndpoint, Organization} from '../../../src/types'
 
 // skipping these tests until we have a local vault instance running
-describe.skip('NotificationRules', () => {
+describe('NotificationRules', () => {
   const name1 = 'Slack 1'
   const name2 = 'Slack 2'
   const name3 = 'Slack 3'
@@ -25,6 +25,7 @@ describe.skip('NotificationRules', () => {
         // visit the alerting index
         cy.fixture('routes').then(({orgs, alerting}) => {
           cy.visit(`${orgs}/${id}${alerting}`)
+          cy.getByTestID('tree-nav')
         })
       })
     })
@@ -38,10 +39,7 @@ describe.skip('NotificationRules', () => {
       cy.get('@org').then(({id}: Organization) => {
         cy.fixture('routes').then(({orgs, alerting, rules}) => {
           cy.visit(`${orgs}/${id}${alerting}${rules}/${nonexistentID}/edit`)
-          cy.url().should(
-            'eq',
-            `${Cypress.config().baseUrl}${orgs}/${id}${alerting}`
-          )
+          cy.url().should('include', `${orgs}/${id}${alerting}`)
         })
       })
     })
@@ -61,20 +59,20 @@ describe.skip('NotificationRules', () => {
         cy.getByTestID('add-threshold-condition-CRIT').click()
         cy.getByTestID('builder-conditions').within(() => {
           cy.getByTestID('panel').within(() => {
-            cy.getByTestID('input-field')
+            cy.getByTestID('input-field-CRIT')
               .click()
               .type('{backspace}{backspace}')
               .invoke('attr', 'type')
               .should('equal', 'text')
-              .getByTestID('input-field--error')
+              .getByTestID('input-field-CRIT--error')
               .should('have.length', 1)
               .and('have.value', '')
-            cy.getByTestID('input-field')
+            cy.getByTestID('input-field-CRIT')
               .click()
               .type('somerangetext')
               .invoke('val')
               .should('equal', '')
-              .getByTestID('input-field--error')
+              .getByTestID('input-field-CRIT--error')
               .should('have.length', 1)
           })
         })
@@ -85,7 +83,7 @@ describe.skip('NotificationRules', () => {
         cy.getByTestID('add-threshold-condition-CRIT').click()
         cy.getByTestID('builder-conditions').within(() => {
           cy.getByTestID('panel').within(() => {
-            cy.getByTestID('input-field')
+            cy.getByTestID('input-field-CRIT')
               .click()
               .type('{backspace}{backspace}9')
               .invoke('val')

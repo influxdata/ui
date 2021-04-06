@@ -1,6 +1,6 @@
 // Libraries
 import React from 'react'
-import {render} from '@testing-library/react'
+import {renderWithReduxAndRouter} from 'src/mockState'
 
 // Components
 import WriteDataHelperTokens from 'src/writeData/components/WriteDataHelperTokens'
@@ -28,7 +28,7 @@ const setup = (override?) => {
 
   const contextValue = {...mockContextValue, ...override}
 
-  const wrapper = render(
+  const wrapper = renderWithReduxAndRouter(
     <WriteDataDetailsContext.Provider value={contextValue}>
       <WriteDataHelperTokens />
     </WriteDataDetailsContext.Provider>
@@ -51,11 +51,13 @@ describe('WriteDataHelperTokens', () => {
 
       expect(list).toBeTruthy()
 
-      const token = getByTestId(auth.description)
+      const renderedToken = getByTestId(auth.description)
 
-      expect(token).toBeTruthy()
+      expect(renderedToken).toBeTruthy()
 
-      expect(token.classList.contains('cf-list-item__active')).toBeTruthy()
+      expect(
+        renderedToken.classList.contains('cf-list-item__active')
+      ).toBeTruthy()
     })
   })
 
@@ -83,7 +85,7 @@ describe('WriteDataHelperTokens', () => {
       const {wrapper} = setup({tokens: []})
       const {getByTestId} = wrapper
 
-      const emptyText = getByTestId('write-data-tokens-list-empty')
+      const emptyText = getByTestId('write-data--details-empty-state')
 
       expect(emptyText).toBeTruthy()
     })

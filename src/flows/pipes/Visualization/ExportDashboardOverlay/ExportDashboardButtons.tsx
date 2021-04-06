@@ -10,6 +10,7 @@ import {
 import {
   ExportToDashboard,
   Context,
+  CREATE_CELL,
 } from 'src/flows/pipes/Visualization/ExportDashboardOverlay/context'
 import {PopupContext} from 'src/flows/context/popup'
 
@@ -59,7 +60,7 @@ const ExportDashboardButtons: FC = () => {
   const org = useSelector(getOrg)
 
   const onCreate = () => {
-    event('Save Visualization to Dashboard')
+    event('notebook_export_to_dashboard', {exportType: 'create'})
 
     const view = {
       name: cellName || DEFAULT_CELL_NAME,
@@ -93,7 +94,7 @@ const ExportDashboardButtons: FC = () => {
   }
 
   const onUpdate = () => {
-    event('Update Visualization to Dashboard')
+    event('notebook_export_to_dashboard', {exportType: 'update'})
 
     const view = {
       name: selectedCell?.name || DEFAULT_CELL_NAME, // TODO: fix this to handle overwriting or creating one
@@ -116,12 +117,15 @@ const ExportDashboardButtons: FC = () => {
   }
 
   const onSubmit = (): void => {
-    const submitFunc =
-      activeTab === ExportToDashboard.Update ? onUpdate : onCreate
-    const formIsValid = validateForm()
-
-    if (formIsValid) {
-      submitFunc()
+    if (validateForm()) {
+      if (
+        activeTab === ExportToDashboard.Update &&
+        selectedCell?.id !== CREATE_CELL
+      ) {
+        onUpdate()
+      } else {
+        onCreate()
+      }
     }
   }
 

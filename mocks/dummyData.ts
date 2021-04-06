@@ -271,7 +271,7 @@ export const tasks: Task[] = [
 
 export const variables: Variable[] = [
   {
-    name: 'a little variable',
+    name: 'LittleVariable',
     orgID: '0',
     arguments: {
       type: 'query',

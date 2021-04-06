@@ -12,10 +12,11 @@ import {
   FlexDirection,
   ComponentSize,
   AlignItems,
+  Heading,
+  HeadingElement,
+  FontWeight,
 } from '@influxdata/clockface'
 import VersionInfo from 'src/shared/components/VersionInfo'
-import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
-import {CustomerSuccessLinkPanel} from 'src/cloud/components/experiments/variants/CustomerSuccessLinkPanel'
 
 // Types
 import {AppState, ResourceType} from 'src/types'
@@ -35,13 +36,25 @@ class ResourceLists extends PureComponent<Props> {
       >
         <Panel>
           <Panel.Header>
-            <h4>Account</h4>
+            <Heading
+              element={HeadingElement.H2}
+              weight={FontWeight.Light}
+              className="cf-heading__h4"
+            >
+              Account
+            </Heading>
             <LogoutButton />
           </Panel.Header>
         </Panel>
         <Panel testID="recent-dashboards--panel">
           <Panel.Header>
-            <h4>Recent Dashboards</h4>
+            <Heading
+              element={HeadingElement.H2}
+              weight={FontWeight.Light}
+              className="cf-heading__h4"
+            >
+              <label htmlFor="filter-dashboards">Recent Dashboards</label>
+            </Heading>
           </Panel.Header>
           <Panel.Body>
             <GetResources resources={[ResourceType.Dashboards]}>
@@ -51,7 +64,13 @@ class ResourceLists extends PureComponent<Props> {
         </Panel>
         <Panel>
           <Panel.Header>
-            <h4>Useful Links</h4>
+            <Heading
+              element={HeadingElement.H2}
+              weight={FontWeight.Light}
+              className="cf-heading__h4"
+            >
+              Useful Links
+            </Heading>
           </Panel.Header>
           <Panel.Body>
             <Support />
@@ -60,10 +79,6 @@ class ResourceLists extends PureComponent<Props> {
             <VersionInfo />
           </Panel.Footer>
         </Panel>
-        <GoogleOptimizeExperiment
-          experimentID="hABJwA89QlyQFi6QGBIysg"
-          variants={[<CustomerSuccessLinkPanel key="v1" />]}
-        />
       </FlexBox>
     )
   }

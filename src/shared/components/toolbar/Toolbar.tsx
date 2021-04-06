@@ -1,13 +1,11 @@
 // Libraries
-import React, {FC, ReactNode} from 'react'
-import {useSelector} from 'react-redux'
+import React, {FC, ReactNode, useContext} from 'react'
 import classnames from 'classnames'
-
-// Selectors
-import {getPresentationMode} from 'src/shared/selectors/app'
 
 // Components
 import {FlexBox, FlexBoxProps, Omit} from '@influxdata/clockface'
+
+import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Styles
 import 'src/shared/components/toolbar/Toolbar.scss'
@@ -28,11 +26,11 @@ const Toolbar: FC<Props> = ({
   style,
   id = 'toolbar',
 }) => {
-  const isInPresentationMode = useSelector(getPresentationMode)
+  const {presentationMode} = useContext(AppSettingContext)
 
   const toolbarClassName = classnames('toolbar', {
     [`${className}`]: className,
-    'toolbar__presentation-mode': isInPresentationMode,
+    'toolbar__presentation-mode': presentationMode,
   })
 
   return (

@@ -1,8 +1,11 @@
 ---
 name: Feature request
 about: Opening a feature request kicks off a discussion
----
+title: ''
+labels: enhancement, team/ui
+assignees: ''
 
+---
 Thank you for suggesting an idea to improve InfluxData UI.
 
 - Please ask usage questions on the Influx Community site.

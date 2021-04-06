@@ -4,18 +4,17 @@ import React, {FC, MouseEvent, useContext, useCallback} from 'react'
 // Components
 import {List, Gradients} from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
-import {SchemaContext} from 'src/flows/context/schemaProvider'
+import {NormalizedTag} from 'src/flows/pipes/MetricSelector/context'
 
 // Utils
 import {event as reportEvent} from 'src/cloud/utils/reporting'
 
 type Props = {
-  tags: any[]
+  tags: NormalizedTag[]
 }
 
 const TagSelectors: FC<Props> = ({tags}) => {
   const {data, update} = useContext(PipeContext)
-  const {searchTerm} = useContext(SchemaContext)
   const selectedTags = data?.tags
 
   const selectEventText = 'Selecting Tag in Flow Query Builder'
@@ -41,11 +40,13 @@ const TagSelectors: FC<Props> = ({tags}) => {
       }
 
       if (tagValues.length < selectedTags[tagName]?.length) {
+        reportEvent('metric_selector_add_filter')
         reportEvent(deselectEventText, {
           type: 'multi-select',
           tags: JSON.stringify(updatedTags),
         })
       } else {
+        reportEvent('metric_selector_remove_filter')
         reportEvent(selectEventText, {
           type: 'multi-select',
           tags: JSON.stringify(updatedTags),
@@ -90,55 +91,37 @@ const TagSelectors: FC<Props> = ({tags}) => {
     [update]
   )
 
-  return (
-    <>
-      {tags.map(tag => {
-        return (
-          <React.Fragment key={JSON.stringify(tag)}>
-            {Object.entries(tag).map(([tagName, tagValues]) => {
-              const values = tagValues as any[]
-              return (
-                <React.Fragment key={tagName}>
-                  {values
-                    .filter(
-                      tagValue =>
-                        tagName
-                          .toLowerCase()
-                          .includes(searchTerm.toLowerCase()) ||
-                        tagValue
-                          .toLowerCase()
-                          .includes(searchTerm.toLowerCase())
-                    )
-                    .map(tagValue => (
-                      <List.Item
-                        key={tagValue}
-                        value={tagValue}
-                        onClick={(value: string, event) => {
-                          handleSubListItemClick(
-                            event as MouseEvent,
-                            tagName,
-                            value
-                          )
-                        }}
-                        selected={selectedTags[tagName]?.includes(tagValue)}
-                        title={tagValue}
-                        gradient={Gradients.GundamPilot}
-                        wrapText={true}
-                      >
-                        <List.Indicator type="dot" />
-                        <div className="selectors--item-value selectors--item__tag">{`${tagName} = ${tagValue}`}</div>
-                        <div className="selectors--item-name">tag</div>
-                        <div className="selectors--item-type">string</div>
-                      </List.Item>
-                    ))}
-                </React.Fragment>
-              )
-            })}
-          </React.Fragment>
-        )
-      })}
-    </>
-  )
+  const _tags = tags.reduce((acc, tag) => {
+    const byTag = Object.entries(tag).reduce((tacc, tcurr) => {
+      const name = tcurr[0]
+      const values = tcurr[1] as string[]
+
+      const items = values.map(val => (
+        <List.Item
+          key={`${name}::${val}`}
+          value={val}
+          onClick={(value: string, event) => {
+            handleSubListItemClick(event as MouseEvent, name, value)
+          }}
+          selected={selectedTags[name]?.includes(val)}
+          title={val}
+          gradient={Gradients.GundamPilot}
+          wrapText={true}
+          testID={`tag-selector ${val}`}
+        >
+          <List.Indicator type="dot" />
+          <div className="selectors--item-value selectors--item__tag">{`${name} = ${val}`}</div>
+          <div className="selectors--item-name">tag</div>
+        </List.Item>
+      ))
+
+      return tacc.concat(items)
+    }, [])
+
+    return acc.concat(byTag)
+  }, [])
+
+  return <>{_tags}</>
 }
 
 export default TagSelectors

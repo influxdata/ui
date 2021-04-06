@@ -19,7 +19,6 @@ import NewVEO from 'src/dashboards/components/NewVEO'
 import {
   AddNoteOverlay,
   EditNoteOverlay,
-  AddAnnotationDashboardOverlay,
   EditAnnotationDashboardOverlay,
 } from 'src/overlays/components'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
@@ -29,6 +28,9 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {event} from 'src/cloud/utils/reporting'
 import {resetQueryCache} from 'src/shared/apis/queryCache'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+// Actions
+import {fetchAndSetAnnotations} from 'src/annotations/actions/thunks'
 
 // Selectors
 import {getByID} from 'src/resources/selectors'
@@ -50,6 +52,7 @@ import {
   DASHBOARDS,
   DASHBOARD_ID,
 } from 'src/shared/constants/routes'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 const dashRoute = `/${ORGS}/${ORG_ID}/${DASHBOARDS}/${DASHBOARD_ID}`
 
@@ -59,6 +62,10 @@ class DashboardPage extends Component<Props> {
     resetQueryCache()
 
     this.emitRenderCycleEvent()
+
+    if (isFlagEnabled('annotations')) {
+      this.props.fetchAndSetAnnotations()
+    }
   }
 
   public componentWillUnmount() {
@@ -66,47 +73,53 @@ class DashboardPage extends Component<Props> {
   }
 
   public render() {
-    const {autoRefresh, manualRefresh, onManualRefresh} = this.props
+    const {
+      autoRefresh,
+      manualRefresh,
+      onManualRefresh,
+      showAnnotationBar,
+    } = this.props
 
     return (
       <>
-        <Page titleTag={this.pageTitle}>
-          <LimitChecker>
-            <HoverTimeProvider>
-              <DashboardHeader
-                autoRefresh={autoRefresh}
-                onManualRefresh={onManualRefresh}
+        <ErrorBoundary>
+          <Page titleTag={this.pageTitle}>
+            <LimitChecker>
+              <HoverTimeProvider>
+                <DashboardHeader
+                  autoRefresh={autoRefresh}
+                  onManualRefresh={onManualRefresh}
+                />
+                <RateLimitAlert alertOnly={true} />
+                <VariablesControlBar />
+                <FeatureFlag name="annotations">
+                  {showAnnotationBar && <AnnotationsControlBar />}
+                </FeatureFlag>
+                <ErrorBoundary>
+                  <DashboardComponent manualRefresh={manualRefresh} />
+                </ErrorBoundary>
+              </HoverTimeProvider>
+            </LimitChecker>
+          </Page>
+          <Switch>
+            <Route path={`${dashRoute}/cells/new`} component={NewVEO} />
+            <Route
+              path={`${dashRoute}/cells/:cellID/edit`}
+              component={EditVEO}
+            />
+            <Route path={`${dashRoute}/notes/new`} component={AddNoteOverlay} />
+            <Route
+              path={`${dashRoute}/notes/:cellID/edit`}
+              component={EditNoteOverlay}
+            />
+            {isFlagEnabled('annotations') && (
+              <Route
+                path={`${dashRoute}/edit-annotation`}
+                component={EditAnnotationDashboardOverlay}
               />
-              <RateLimitAlert alertOnly={true} />
-              <VariablesControlBar />
-              <FeatureFlag name="annotations">
-                <AnnotationsControlBar />
-              </FeatureFlag>
-              <DashboardComponent manualRefresh={manualRefresh} />
-            </HoverTimeProvider>
-          </LimitChecker>
-        </Page>
-        <Switch>
-          <Route path={`${dashRoute}/cells/new`} component={NewVEO} />
-          <Route path={`${dashRoute}/cells/:cellID/edit`} component={EditVEO} />
-          <Route path={`${dashRoute}/notes/new`} component={AddNoteOverlay} />
-          <Route
-            path={`${dashRoute}/notes/:cellID/edit`}
-            component={EditNoteOverlay}
-          />
-          {isFlagEnabled('annotations') && (
-            <Route
-              path={`${dashRoute}/add-annotation`}
-              component={AddAnnotationDashboardOverlay}
-            />
-          )}
-          {isFlagEnabled('annotations') && (
-            <Route
-              path={`${dashRoute}/edit-annotation`}
-              component={EditAnnotationDashboardOverlay}
-            />
-          )}
-        </Switch>
+            )}
+          </Switch>
+        </ErrorBoundary>
       </>
     )
   }
@@ -140,12 +153,19 @@ const mstp = (state: AppState) => {
     state.currentDashboard.id
   )
 
+  const showAnnotationBar = state.userSettings.showAnnotationsControls ?? false
+
   return {
     startVisitMs: state.perf.dashboard.byID[dashboard.id]?.startVisitMs,
     dashboard,
+    showAnnotationBar,
   }
 }
 
-const connector = connect(mstp)
+const mdtp = {
+  fetchAndSetAnnotations,
+}
+
+const connector = connect(mstp, mdtp)
 
 export default connector(ManualRefresh<OwnProps>(DashboardPage))

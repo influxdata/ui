@@ -1,13 +1,16 @@
 // Libraries
-import React, {PureComponent, ChangeEvent} from 'react'
+import React, {lazy, Suspense, PureComponent, ChangeEvent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
+import {
+  RemoteDataState,
+  SpinnerContainer,
+  TechnoSpinner,
+} from '@influxdata/clockface'
 
 // Components
 import TaskForm from 'src/tasks/components/TaskForm'
 import TaskHeader from 'src/tasks/components/TaskHeader'
 import {Page} from '@influxdata/clockface'
-
-import FluxEditor from 'src/shared/components/FluxMonacoEditor'
 
 // Actions
 import {
@@ -29,6 +32,10 @@ import {AppState, TaskOptionKeys, TaskSchedule} from 'src/types'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
+
+const FluxMonacoEditor = lazy(() =>
+  import('src/shared/components/FluxMonacoEditor')
+)
 
 class TaskPage extends PureComponent<Props> {
   constructor(props) {
@@ -68,10 +75,19 @@ class TaskPage extends PureComponent<Props> {
               />
             </div>
             <div className="task-form--editor">
-              <FluxEditor
-                script={newScript}
-                onChangeScript={this.handleChangeScript}
-              />
+              <Suspense
+                fallback={
+                  <SpinnerContainer
+                    loading={RemoteDataState.Loading}
+                    spinnerComponent={<TechnoSpinner />}
+                  />
+                }
+              >
+                <FluxMonacoEditor
+                  script={newScript}
+                  onChangeScript={this.handleChangeScript}
+                />
+              </Suspense>
             </div>
           </div>
         </Page.Contents>
@@ -101,8 +117,13 @@ class TaskPage extends PureComponent<Props> {
     const {newScript, taskOptions} = this.props
 
     const taskOption: string = taskOptionsToFluxScript(taskOptions)
-    const script: string = addDestinationToFluxScript(newScript, taskOptions)
+    let script: string = addDestinationToFluxScript(newScript, taskOptions)
     const preamble = `${taskOption}`
+
+    // if the script has a pre-defined option task = {}
+    // we want the taskOptions to take precedence over what is provided in the script
+    // currently we delete that part of the script
+    script = script.replace(new RegExp('option\\s+task\\s+=\\s+{(.|\\s)*}'), '')
 
     this.props.saveNewScript(script, preamble).then(() => {
       this.props.goToTasks()

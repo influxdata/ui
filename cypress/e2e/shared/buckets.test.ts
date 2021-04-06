@@ -4,23 +4,18 @@ describe('Buckets', () => {
   beforeEach(() => {
     cy.flush()
 
-    cy.signin()
-      .then(() =>
-        cy.request({
-          method: 'GET',
-          url: '/api/v2/buckets',
+    cy.signin().then(() => {
+      cy.get('@org').then(({id}: Organization) =>
+        cy.fixture('routes').then(({orgs, buckets}) => {
+          cy.visit(`${orgs}/${id}${buckets}`)
+          cy.getByTestID('tree-nav')
+          cy.window().then(win => {
+            win.influx.set('csvUploader', true)
+            cy.getByTestID('tree-nav')
+          })
         })
       )
-      .then(response => {
-        cy.wrap(response.body.buckets[0]).as('bucket')
-      })
-      .then(() => {
-        cy.get('@org').then(({id}: Organization) =>
-          cy.fixture('routes').then(({orgs, buckets}) => {
-            cy.visit(`${orgs}/${id}${buckets}`)
-          })
-        )
-      })
+    })
   })
 
   describe('from the buckets index page', () => {
@@ -107,12 +102,12 @@ describe('Buckets', () => {
       cy.get<Organization>('@org').then(({id, name}: Organization) => {
         cy.createBucket(id, name, bucket1)
       })
-
+      cy.reload()
+      cy.getByTestID(`bucket-card ${bucket1}`).trigger('mouseover')
       cy.getByTestID(`context-delete-menu ${bucket1}`).click()
-      cy.getByTestID(`context-delete-bucket ${bucket1}`)
-        .should('be.visible')
-        .click()
-        .wait(500)
+      cy.intercept('DELETE', '/buckets').as('deleteBucket')
+      cy.getByTestID(`context-delete-bucket ${bucket1}`).click({force: true})
+      cy.wait('@deleteBucket')
       cy.getByTestID(`bucket--card--name ${bucket1}`).should('not.exist')
     })
   })
@@ -165,16 +160,20 @@ describe('Buckets', () => {
                   el.text((index, currentContent) => {
                     results[index] = currentContent
                   })
-                  const expectedOrder = [
-                    'ABC',
-                    'defbuck',
-                    'Funky Town',
-                    'Jimmy Mack',
-                    '_monitoring',
-                    '_tasks',
-                  ]
-                  // check the order
-                  expect(results).to.deep.equal(expectedOrder)
+                  cy.get<string>('@defaultBucket').then(
+                    (defaultBucket: string) => {
+                      const expectedOrder = [
+                        'ABC',
+                        defaultBucket,
+                        'Funky Town',
+                        'Jimmy Mack',
+                        '_monitoring',
+                        '_tasks',
+                      ]
+                      // check the order
+                      expect(results).to.deep.equal(expectedOrder)
+                    }
+                  )
                 })
             })
         })
@@ -242,6 +241,7 @@ describe('Buckets', () => {
               'contain',
               `${orgs}/${orgID}${buckets}/${bucketID}/edit`
             )
+            cy.getByTestID('tree-nav')
           })
           cy.getByTestID(`overlay`).should('exist')
         })
@@ -350,7 +350,11 @@ describe('Buckets', () => {
 
       // TODO replace this with proper health checks
       cy.wait(1000)
-      cy.getByTestID(`selector-list ${Cypress.env('bucket')}`).click()
+      cy.get<string>('@defaultBucketListSelector').then(
+        (defaultBucketListSelector: string) => {
+          cy.getByTestID(defaultBucketListSelector).click()
+        }
+      )
       // mymeasurement comes from fixtures/data.txt
       cy.getByTestID('selector-list mymeasurement').should('exist')
     })
@@ -363,7 +367,12 @@ describe('Buckets', () => {
         .click()
 
       // assert default bucket
-      cy.getByTestID('bucket-dropdown--button').should('contain', 'defbuck')
+      cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
+        cy.getByTestID('bucket-dropdown--button').should(
+          'contain',
+          defaultBucket
+        )
+      })
 
       // filter plugins and choose system
       cy.getByTestID('input-field')
@@ -408,7 +417,54 @@ describe('Buckets', () => {
         'contain',
         'This is a telegraf description'
       )
-      cy.getByTestID('bucket-name').should('contain', 'defbuck')
+      cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
+        cy.getByTestID('bucket-name').should('contain', defaultBucket)
+      })
+    })
+  })
+
+  describe('upload csv', function() {
+    it('can write a properly annotated csv', () => {
+      // Navigate to csv uploader
+      cy.getByTestID('add-data--button').click()
+      cy.getByTestID('bucket-add-csv').click()
+
+      // Upload the file
+      const csv = 'good-csv.csv'
+      cy.fixture(csv, 'base64')
+        .then(Cypress.Blob.base64StringToBlob)
+        .then(blob => {
+          const type = 'plain/text'
+          const testFile = new File([blob], csv, {type})
+          const event = {dataTransfer: {files: [testFile]}, force: true}
+          cy.getByTestID('drag-and-drop--input')
+            .trigger('dragover', event)
+            .trigger('drop', event)
+        })
+
+      cy.getByTestID('csv-uploader--success')
+    })
+
+    it('fails to write improperly formatted csv', () => {
+      // Navigate to csv uploader
+      cy.getByTestID('add-data--button').click()
+      cy.getByTestID('bucket-add-csv').click()
+
+      // Upload the file
+      const csv = 'missing-column-csv.csv'
+      cy.fixture(csv, 'base64')
+        .then(Cypress.Blob.base64StringToBlob)
+        .then(blob => {
+          const type = 'plain/text'
+          const testFile = new File([blob], csv, {type})
+          const event = {dataTransfer: {files: [testFile]}, force: true}
+          cy.getByTestID('drag-and-drop--input')
+            .trigger('dragover', event)
+            .trigger('drop', event)
+        })
+
+      cy.getByTestID('csv-uploader--error')
+      cy.getByTestID('notification-error').should('be.visible')
     })
   })
 })

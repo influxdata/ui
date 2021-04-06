@@ -4,23 +4,27 @@ import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
-import {ResourceCard} from '@influxdata/clockface'
+import {ComponentStatus, ResourceCard} from '@influxdata/clockface'
 import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
 import VariableContextMenu from 'src/variables/components/VariableContextMenu'
 
 // Types
-import {Label, Variable} from 'src/types'
+import {AppState, Label, Variable} from 'src/types'
+
+// Utils
+import {getVariables} from 'src/variables/selectors'
+import {validateVariableName} from 'src/variables/utils/validation'
 
 // Actions
 import {
   addVariableLabelAsync,
   removeVariableLabelAsync,
 } from 'src/variables/actions/thunks'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 interface OwnProps {
   variable: Variable
   onDeleteVariable: (variable: Variable) => void
-  onEditVariable: (variable: Variable) => void
   onFilterChange: (searchTerm: string) => void
 }
 
@@ -31,30 +35,38 @@ class VariableCard extends PureComponent<
   Props & RouteComponentProps<{orgID: string}>
 > {
   public render() {
-    const {variable, onDeleteVariable} = this.props
+    const {variable, variables, onDeleteVariable} = this.props
+
+    const {error} = validateVariableName(variables, variable.name, variable.id)
+    const errorMessage = (error && `Rename required. ${error}`) ?? null
+    const status = error ? ComponentStatus.Error : ComponentStatus.Default
 
     return (
-      <ResourceCard
-        testID="resource-card variable"
-        contextMenu={
-          <VariableContextMenu
-            variable={variable}
-            onExport={this.handleExport}
-            onRename={this.handleRenameVariable}
-            onDelete={onDeleteVariable}
+      <ErrorBoundary>
+        <ResourceCard
+          testID="resource-card variable"
+          contextMenu={
+            <VariableContextMenu
+              variable={variable}
+              onExport={this.handleExport}
+              onRename={this.handleRenameVariable}
+              onDelete={onDeleteVariable}
+            />
+          }
+        >
+          <ResourceCard.Name
+            onClick={this.handleNameClick}
+            name={variable.name}
+            testID={`variable-card--name ${variable.name}`}
+            errorMessage={errorMessage}
+            status={status}
           />
-        }
-      >
-        <ResourceCard.Name
-          onClick={this.handleNameClick}
-          name={variable.name}
-          testID={`variable-card--name ${variable.name}`}
-        />
-        <ResourceCard.Meta>
-          <>Type: {variable.arguments.type}</>
-        </ResourceCard.Meta>
-        {this.labels}
-      </ResourceCard>
+          <ResourceCard.Meta>
+            <>Type: {variable.arguments.type}</>
+          </ResourceCard.Meta>
+          {this.labels}
+        </ResourceCard>
+      </ErrorBoundary>
     )
   }
 
@@ -108,11 +120,17 @@ class VariableCard extends PureComponent<
   }
 }
 
+const mstp = (state: AppState) => {
+  const variables = getVariables(state)
+
+  return {variables}
+}
+
 const mdtp = {
   onAddVariableLabel: addVariableLabelAsync,
   onRemoveVariableLabel: removeVariableLabelAsync,
 }
 
-const connector = connect(null, mdtp)
+const connector = connect(mstp, mdtp)
 
 export default connector(withRouter(VariableCard))

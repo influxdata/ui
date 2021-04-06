@@ -56,6 +56,12 @@ const defaultDeletionNotification: NotificationExcludingMessage = {
 //  Misc Notifications
 //  ----------------------------------------------------------------------------
 
+export const prohibitedDeselect = (message?: string): Notification => ({
+  ...defaultErrorNotification,
+  message:
+    message ?? 'You must have at least one custom aggregate function selected',
+})
+
 export const newVersion = (version: string): Notification => ({
   ...defaultSuccessNotification,
   style: NotificationStyle.Info,
@@ -88,6 +94,70 @@ export const resultTooLarge = (bytesRead: number): Notification => ({
   ...defaultErrorNotification,
   duration: FIVE_SECONDS,
   message: `Large response truncated to first ${bytesFormatter(bytesRead)}`,
+})
+
+// Checkout Notifications
+export const submitError = (): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message:
+    'There was an error submitting the upgrade request, please try again.',
+})
+
+// Operator Notifications
+export const getOrgsError = (): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message:
+    'There was an error getting the all the organizations, please try again.',
+})
+
+export const getOrgError = (id: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Could not find organization with ID ${id}`,
+})
+
+export const getLimitsError = (id: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Could not fetch limits for the organization ${id}`,
+})
+
+export const updateLimitsError = (id: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Could not update limits for the organization ${id}`,
+})
+
+export const updateLimitsSuccess = (id: string): Notification => ({
+  ...defaultSuccessNotification,
+  duration: FIVE_SECONDS,
+  message: `Successfully updated limits for the organization ${id}`,
+})
+
+export const getAccountsError = (): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: 'There was an error getting the all the accounts, please try again.',
+})
+
+export const getAccountError = (id: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Could not get the account for ID: ${id}`,
+})
+
+export const deleteAccountError = (id: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Failed to delete the account with the ID ${id}, please try again.`,
+})
+
+export const removeUserAccountError = (id: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Failed to remove the user from the account with the ID ${id}, please try again.`,
 })
 
 // Onboarding notifications
@@ -305,6 +375,12 @@ export const updateVariableSuccess = (name: string): Notification => ({
   message: `Successfully updated variable: ${name}.`,
 })
 
+export const moveVariableFailed = (error: string): Notification => ({
+  ...defaultErrorNotification,
+  icon: IconFont.Cube,
+  message: `Failed to move variable: ${error}`,
+})
+
 export const copyToClipboardSuccess = (
   text: string,
   title: string = ''
@@ -421,6 +497,14 @@ export const getBucketFailed = (
   message: `Failed to fetch bucket with id ${bucketID}: ${error}`,
 })
 
+export const getSchemaFailed = (
+  bucketName: string,
+  error: string
+): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to fetch schema for bucket with id ${bucketName}: ${error}`,
+})
+
 // Demodata buckets
 
 export const demoDataAddBucketFailed = (
@@ -507,7 +591,7 @@ export const resourceLimitReached = (resourceName: string): Notification => ({
 
 export const queryCancelRequest = (): Notification => ({
   ...defaultSuccessNotification,
-  message: `Cancelling query...`,
+  message: `Query cancelled.`,
 })
 
 export const taskNotCreated = (additionalMessage: string): Notification => ({
@@ -770,10 +854,16 @@ export const passwordResetSuccessfully = (message: string): Notification => ({
   If you haven't received an email, please ensure that the email you provided is correct.`,
 })
 
-export const authorizationCreateFailed = (): Notification => ({
-  ...defaultErrorNotification,
-  message: 'Failed to create tokens',
-})
+export const authorizationCreateFailed = (
+  errorMessage?: string
+): Notification => {
+  const defaultMsg = 'Failed to create tokens'
+  const message = errorMessage ? `${defaultMsg}: ${errorMessage}` : defaultMsg
+  return {
+    ...defaultErrorNotification,
+    message,
+  }
+}
 
 export const authorizationUpdateSuccess = (): Notification => ({
   ...defaultSuccessNotification,
@@ -947,7 +1037,7 @@ export const communityTemplateInstallSucceeded = (
 })
 
 export const communityTemplateInstallFailed = (
-  errorMessage: string
+  errorMessage: string = ''
 ): Notification => ({
   ...defaultErrorNotification,
   duration: INDEFINITE,
@@ -1001,4 +1091,95 @@ export const notebookRunFail = (
 ): Notification => ({
   ...defaultErrorNotification,
   message: `${projectName} ${runMode.toLowerCase()} failed`,
+})
+
+export const notebookCreateFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to create Notebook, please try again.`,
+})
+
+export const notebookUpdateFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to save changes to Notebook, please try again.`,
+})
+
+export const notebookDeleteFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to delete Notebook, please try again.`,
+})
+
+export const csvUploaderErrorNotification = (
+  message: string
+): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to upload the selected CSV: ${message}`,
+})
+
+// Functions
+export const functionGetFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to fetch functions`,
+})
+
+export const functionCreateFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to create function. Please try again`,
+})
+
+export const functionDeleteFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to delete function. Please try again`,
+})
+
+export const functionTriggerFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to trigger function run. Please try again`,
+})
+
+export const runGetFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to fetch runs for this function`,
+})
+
+export const functionUpdateFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to save function. Please try again`,
+})
+
+export const copyFunctionURL = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: `Copied function URL to clipboard`,
+  duration: 2000,
+})
+
+export const deleteAnnotationSuccess = (message: string): Notification => ({
+  ...defaultSuccessNotification,
+  icon: IconFont.Cube,
+  message: message
+    ? `Successfully deleted the annotation: ${message}`
+    : 'Successfully deleted the annotation',
+})
+
+export const deleteAnnotationFailed = (error: string): Notification => ({
+  ...defaultErrorNotification,
+  icon: IconFont.Cube,
+  message: `Failed to delete annotation: ${error}`,
+})
+
+export const editAnnotationSuccess = (): Notification => ({
+  ...defaultSuccessNotification,
+  icon: IconFont.Checkmark,
+  message: 'Annotation updated successfully',
+})
+
+export const editAnnotationFailed = (error: string): Notification => ({
+  ...defaultErrorNotification,
+  icon: IconFont.Cube,
+  message: `Failed to edit annotation: ${error}`,
+})
+
+export const createAnnotationFailed = (error: string): Notification => ({
+  ...defaultErrorNotification,
+  icon: IconFont.Cube,
+  message: `Failed to create annotation: ${error}`,
 })

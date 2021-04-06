@@ -22,7 +22,6 @@
 @import 'src/shared/components/custom_singular_time/CustomSingularTime.scss';
 @import 'src/onboarding/OnboardingWizard.scss';
 @import 'src/shared/components/protoboard_icon/ProtoboardIcon.scss';
-@import 'src/shared/components/columns_options/ColumnsOptions.scss';
 @import 'src/shared/components/ImportOverlay.scss';
 @import 'src/shared/components/VersionInfo.scss';
 @import 'src/shared/components/WaitingText.scss';
@@ -37,10 +36,9 @@
 @import 'src/shared/components/inlineLabels/InlineLabels.scss';
 @import 'src/shared/components/inlineLabels/InlineLabelsEditor.scss';
 @import 'src/shared/components/TagInput.scss';
-@import 'src/shared/components/ColorSchemeDropdownItem.scss';
+@import 'src/visualization/components/internal/ColorSchemeDropdownItem.scss';
 @import 'src/shared/components/ExportOverlay.scss';
 @import 'src/shared/components/EditableName.scss';
-@import 'src/shared/components/SingleStat.scss';
 @import 'src/shared/components/DragAndDrop.scss';
 @import 'src/shared/components/SearchableDropdown.scss';
 @import 'src/shared/components/BoxTooltip.scss';
@@ -57,7 +55,7 @@
 @import 'src/tasks/components/TaskForm.scss';
 @import 'src/tasks/components/TasksPage.scss';
 @import 'src/tasks/components/RunLogsList.scss';
-@import 'src/tasks/components/TaskForm.scss';
+@import 'src/functions/components/FunctionForm.scss';
 @import 'src/tasks/components/TasksPage.scss';
 @import 'src/labels/components/LabelOverlayForm.scss';
 @import 'src/dataExplorer/components/SaveAsButton.scss';
@@ -87,9 +85,8 @@
 @import 'src/timeMachine/components/QueryBuilder.scss';
 @import 'src/timeMachine/components/RawFluxDataTable.scss';
 @import 'src/timeMachine/components/fluxFunctionsToolbar/FluxFunctionsToolbar.scss';
-@import 'src/timeMachine/components/view_options/HistogramOptions.scss';
-@import 'src/timeMachine/components/view_options/ViewOptions.scss';
-@import 'src/timeMachine/components/view_options/ViewTypeDropdown.scss';
+@import 'src/timeMachine/components/ViewOptions.scss';
+@import 'src/visualization/components/ViewTypeDropdown.scss';
 @import 'src/timeMachine/components/builderCard/BuilderCard.scss';
 @import 'src/dataLoaders/components/side_bar/SideBar.scss';
 @import 'src/dataLoaders/components/DataLoadersOverlay.scss';
@@ -124,8 +121,23 @@
 @import 'src/dashboards/components/DashboardLightMode.scss';
 @import 'src/buckets/components/DemoDataDropdown.scss';
 @import 'src/buckets/components/BucketCardMeta.scss';
+@import 'src/tasks/components/TaskCardMeta.scss';
+@import 'src/cloud/components/RateLimitOverlay.scss';
+@import 'src/cloud/components/experiments/DatalessEmptyState.scss';
 @import 'src/shared/components/notifications/Notification.scss';
 @import 'src/unity/components/users/UserList.scss';
+@import 'src/billing/components/PayAsYouGo/cancellation-overlay.scss';
+@import 'src/billing/components/PayAsYouGo/PlanTypePanel.scss';
+@import 'src/billing/components/BillingPage.scss';
+@import 'src/usage/GraphTypeSwitcher.scss';
+@import 'src/usage/BillingStatsPanel.scss';
+@import 'src/visualization/components/internal/ValueTickInput.scss';
+@import 'src/checkout/LogoWithCubo.scss';
+@import 'src/checkout/PoweredByStripeLogo.scss';
+@import 'src/checkout/SuccessOverlay.scss';
+@import 'src/checkout/CheckoutPage.scss';
+@import 'src/operator/OperatorNav.scss';
+@import 'src/operator/account/AccountGrid.scss';
 
 // External
 @import '../../node_modules/@influxdata/react-custom-scrollbars/dist/styles.css';

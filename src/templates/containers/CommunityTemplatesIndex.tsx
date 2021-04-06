@@ -182,7 +182,6 @@ class UnconnectedCommunityTemplatesIndex extends Component<Props, State> {
                 </Panel.Body>
               </Panel>
             </FlexBox>
-
             <GetResources
               resources={[
                 ResourceType.Buckets,
@@ -248,7 +247,6 @@ class UnconnectedCommunityTemplatesIndex extends Component<Props, State> {
       event('template_click_lookup', {
         templateName: getTemplateNameFromUrl(this.props.stagedTemplateUrl).name,
       })
-
       this.props.history.push(
         `/orgs/${this.props.org.id}/settings/templates/import`
       )
@@ -261,10 +259,11 @@ class UnconnectedCommunityTemplatesIndex extends Component<Props, State> {
   }
 
   private handleTemplateChange = event => {
-    const validationMessage = validateTemplateURL(event.target.value)
+    const trimmedValue = event.target.value.trim()
+    const validationMessage = validateTemplateURL(trimmedValue)
 
     this.setValidationMessage(validationMessage)
-    this.props.setStagedTemplateUrl(event.target.value)
+    this.props.setStagedTemplateUrl(trimmedValue)
   }
 
   private handleInputKeyPress = event => {

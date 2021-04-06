@@ -3,12 +3,11 @@ import React, {FC, useContext} from 'react'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
-import AppSettingProvider from 'src/flows/context/app'
-import QueryProvider from 'src/flows/context/query'
+import {AppSettingProvider} from 'src/shared/contexts/app'
 
 // Components
 import {Page} from '@influxdata/clockface'
-import TimeZoneDropdown from 'src/flows/components/header/TimeZoneDropdown'
+import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import TimeRangeDropdown from 'src/flows/components/header/TimeRangeDropdown'
 import AutoRefreshDropdown from 'src/flows/components/header/AutoRefreshDropdown'
 import Submit from 'src/flows/components/header/Submit'
@@ -25,6 +24,10 @@ const FlowHeader: FC = () => {
     update({name})
   }
 
+  if (!flow) {
+    return null
+  }
+
   return (
     <>
       <Page.Header fullWidth={FULL_WIDTH}>
@@ -37,9 +40,7 @@ const FlowHeader: FC = () => {
       </Page.Header>
       <Page.ControlBar fullWidth={FULL_WIDTH}>
         <Page.ControlBarLeft>
-          <QueryProvider>
-            <Submit />
-          </QueryProvider>
+          <Submit />
         </Page.ControlBarLeft>
         <Page.ControlBarRight>
           <PresentationMode />

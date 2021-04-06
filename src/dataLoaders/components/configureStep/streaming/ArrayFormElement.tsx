@@ -28,7 +28,7 @@ class ArrayFormElement extends PureComponent<Props> {
     const {fieldName, autoFocus, helpText} = this.props
 
     return (
-      <div className="multiple-input-index">
+      <div className="multiple-input-index" data-testid="multiple-input">
         <MultipleInput
           title={fieldName}
           helpText={helpText}

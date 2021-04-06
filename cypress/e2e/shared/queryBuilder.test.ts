@@ -32,6 +32,7 @@ describe('The Query Builder', () => {
     it('creates a query, edits it to add another field, then views its results with pride and satisfaction', () => {
       cy.get('@org').then((org: Organization) => {
         cy.visit(`orgs/${org.id}/data-explorer`)
+        cy.getByTestID('tree-nav')
       })
 
       cy.contains('mem').click('right') // users sometimes click in random spots
@@ -94,6 +95,7 @@ describe('The Query Builder', () => {
     it('when it creates a query, the query has an aggregate window, clicking around aggregate window selections work', () => {
       cy.get('@org').then((org: Organization) => {
         cy.visit(`orgs/${org.id}/data-explorer`)
+        cy.getByTestID('tree-nav')
       })
 
       cy.contains('mem').click('right') // users sometimes click in random spots
@@ -123,7 +125,9 @@ describe('The Query Builder', () => {
       cy.getByTestID('auto-window-period').click()
 
       cy.getByTestID('duration-input--error').should('not.exist')
-      cy.getByTestID('toggle').click()
+      cy.getByTestID('aggregation-selector').within(() => {
+        cy.getByTestID('toggle').click()
+      })
       cy.getByTestID('switch-to-script-editor').click()
       cy.contains(
         '|> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: true)'
@@ -133,6 +137,7 @@ describe('The Query Builder', () => {
     it('can create a bucket from the buckets list', () => {
       cy.get('@org').then((org: Organization) => {
         cy.visit(`orgs/${org.id}/data-explorer`)
+        cy.getByTestID('tree-nav')
       })
 
       const newBucketName = '٩(｡•́‿•̀｡)۶'
@@ -155,6 +160,7 @@ describe('The Query Builder', () => {
     it('creates a query that has a group() function in it', () => {
       cy.get('@org').then((org: Organization) => {
         cy.visit(`orgs/${org.id}/data-explorer`)
+        cy.getByTestID('tree-nav')
       })
 
       cy.contains('mem').click('left')
@@ -166,16 +172,17 @@ describe('The Query Builder', () => {
         .contains('group')
         .click()
 
-      const groupableColums = []
+      const groupableColumns: string[] = []
 
       cy.getByTestID('builder-card')
         .last()
         .then($lastBuilderCard => {
           $lastBuilderCard.find('.cf-list-item--text').each((index, $item) => {
-            groupableColums.push($item.innerHTML)
+            expect($item.innerHTML).to.be.a('string')
+            groupableColumns.push($item.innerHTML)
           })
 
-          expect(groupableColums).to.eql([
+          expect(groupableColumns).to.eql([
             '_start',
             '_stop',
             '_time',
@@ -204,6 +211,7 @@ describe('The Query Builder', () => {
     it("creates a query, edits the query, edits the cell's default name, edits it again, submits with the keyboard, then chills", () => {
       cy.get<ResourceIDs>('@resourceIDs').then(({orgID, dbID, cellID}) => {
         cy.visit(`orgs/${orgID}/dashboards/${dbID}/cells/${cellID}/edit`)
+        cy.getByTestID('tree-nav')
       })
 
       // build query
@@ -224,6 +232,7 @@ describe('The Query Builder', () => {
 
       cy.get<ResourceIDs>('@resourceIDs').then(({orgID, dbID, cellID}) => {
         cy.visit(`orgs/${orgID}/dashboards/${dbID}/cells/${cellID}/edit`)
+        cy.getByTestID('tree-nav')
       })
 
       cy.getByTestID('giraffe-layer-line').should('exist')

@@ -51,11 +51,11 @@ class ImportOverlay extends PureComponent<Props, State> {
   }
 
   public render() {
-    const {isVisible, resourceName} = this.props
+    const {resourceName} = this.props
     const {selectedImportOption} = this.state
 
     return (
-      <Overlay visible={isVisible} testID="task-import--overlay">
+      <Overlay visible={true} testID="task-import--overlay">
         <Overlay.Container maxWidth={800}>
           <Form onSubmit={this.submit}>
             <Overlay.Header
@@ -82,6 +82,7 @@ class ImportOverlay extends PureComponent<Props, State> {
                     value={ImportOption.Paste}
                     onClick={this.handleSetImportOption}
                     titleText="Paste"
+                    testID="select-group--paste-json-button"
                   >
                     Paste JSON
                   </SelectGroup.Option>

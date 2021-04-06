@@ -11,6 +11,7 @@ describe('Collectors', () => {
       cy.get('@org').then(({id}: Organization) =>
         cy.fixture('routes').then(({orgs, telegrafs}) => {
           cy.visit(`${orgs}/${id}${telegrafs}`)
+          cy.getByTestID('tree-nav')
         })
       )
     })
@@ -47,10 +48,12 @@ describe('Collectors', () => {
           .click()
       })
 
-      cy.getByTestID('resource-card')
-        .should('have.length', 1)
-        .and('contain', newConfig)
-        .and('contain', Cypress.env('bucket'))
+      cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
+        cy.getByTestID('resource-card')
+          .should('have.length', 1)
+          .and('contain', newConfig)
+          .and('contain', defaultBucket)
+      })
     })
 
     it('allows the user to view just the output', () => {
@@ -106,12 +109,14 @@ describe('Collectors', () => {
         const telegrafConfigName = 'New Config'
         const description = 'Config Description'
         cy.get('@org').then(({id}: Organization) => {
-          cy.createTelegraf(
-            telegrafConfigName,
-            description,
-            id,
-            Cypress.env('bucket')
-          )
+          cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
+            cy.createTelegraf(
+              telegrafConfigName,
+              description,
+              id,
+              defaultBucket
+            )
+          })
         })
 
         cy.reload()

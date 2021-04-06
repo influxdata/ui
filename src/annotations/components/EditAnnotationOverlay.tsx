@@ -1,36 +1,50 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
+import {useSelector, useDispatch} from 'react-redux'
 
 // Components
-import {AnnotationForm} from 'src/annotations/components/annotationForm/AnnotationForm'
+import {EditAnnotationForm} from 'src/annotations/components/EditAnnotationForm'
+
+// Contexts
+import {OverlayContext} from 'src/overlays/components/OverlayController'
+
+// Selectors
+import {getOverlayParams} from 'src/overlays/selectors'
+
+// Actions
+import {editAnnotation} from 'src/annotations/actions/thunks'
 
 // Types
-import {Annotation} from 'src/annotations/reducers/annotationFormReducer'
+import {EditAnnotation} from 'src/types'
 
-const MOCK_ANNOTATION: Annotation = {
-  summary: 'I am an annotation',
-  message: 'Look at me go',
-  type: 'point',
-  timeStart: 'timeStart',
-  timeStop: 'timeStop',
-  streamID: 'anno2',
-  bucketName: 'defBuck',
-  measurement: 'annotations',
-  tags: {
-    _field: 'snacks',
-  },
-}
+// Notifications
+import {
+  editAnnotationSuccess,
+  editAnnotationFailed,
+} from 'src/shared/copy/notifications'
+
+import {notify} from 'src/shared/actions/notifications'
 
 export const EditAnnotationOverlay: FC = () => {
-  const handleSubmit = (_annotation: Annotation): void => {
-    // Use the values of annotation to construct a line protocol string and
-    // then execute it
+  const {onClose} = useContext(OverlayContext)
+  const dispatch = useDispatch()
+  const {clickedAnnotation} = useSelector(getOverlayParams)
+
+  const handleSubmit = (editedAnnotation: EditAnnotation): void => {
+    try {
+      dispatch(editAnnotation(editedAnnotation))
+      dispatch(notify(editAnnotationSuccess()))
+      onClose()
+    } catch (err) {
+      dispatch(notify(editAnnotationFailed(err)))
+    }
   }
 
-  // NOTE: This value should come from the annotation being edited
-  // Could use query strings like the add overlay
-  // or a different approach
-  const annotation = MOCK_ANNOTATION
-
-  return <AnnotationForm title="Edit" onSubmit={handleSubmit} {...annotation} />
+  return (
+    <EditAnnotationForm
+      handleSubmit={handleSubmit}
+      annotation={clickedAnnotation}
+      handleClose={onClose}
+    />
+  )
 }

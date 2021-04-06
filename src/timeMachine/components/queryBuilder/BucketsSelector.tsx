@@ -10,7 +10,7 @@ import SelectorListCreateBucket from 'src/timeMachine/components/SelectorListCre
 import {Input} from '@influxdata/clockface'
 
 // Actions
-import {selectBucket} from 'src/timeMachine/actions/queryBuilder'
+import {selectBucket} from 'src/timeMachine/actions/queryBuilderThunks'
 
 // Utils
 import {getActiveQuery} from 'src/timeMachine/selectors'

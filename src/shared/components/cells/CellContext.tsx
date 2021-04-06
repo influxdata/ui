@@ -7,6 +7,7 @@ import classnames from 'classnames'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {resetQueryCacheByQuery} from 'src/shared/apis/queryCache'
 
 // Components
 import {
@@ -21,15 +22,16 @@ import CellContextDangerItem from 'src/shared/components/cells/CellContextDanger
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Actions
-import {deleteCell, createCellWithView} from 'src/cells/actions/thunks'
+import {deleteCellAndView, createCellWithView} from 'src/cells/actions/thunks'
 
 // Types
-import {Cell, View} from 'src/types'
+import {Cell, View, ViewProperties, MarkdownViewProperties} from 'src/types'
 
 interface OwnProps {
   cell: Cell
   view: View
   onCSVDownload: () => void
+  onRefresh: () => void
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -43,6 +45,7 @@ const CellContext: FC<Props> = ({
   onCloneCell,
   onDeleteCell,
   onCSVDownload,
+  onRefresh,
 }) => {
   const [popoverVisible, setPopoverVisibility] = useState<boolean>(false)
   const editNoteText = !!get(view, 'properties.note') ? 'Edit Note' : 'Add Note'
@@ -58,9 +61,10 @@ const CellContext: FC<Props> = ({
   }
 
   const handleDeleteCell = (): void => {
+    const viewID = view.id
     const {dashboardID, id} = cell
 
-    onDeleteCell(dashboardID, id)
+    onDeleteCell(dashboardID, id, viewID)
   }
 
   const handleEditNote = () => {
@@ -74,6 +78,21 @@ const CellContext: FC<Props> = ({
   const handleEditCell = (): void => {
     history.push(`${location.pathname}/cells/${cell.id}/edit`)
     event('editCell button Click')
+  }
+
+  const refreshCell = (): void => {
+    const viewWithQueries = view as View<
+      Exclude<ViewProperties, MarkdownViewProperties>
+    >
+    if (
+      Array.isArray(viewWithQueries.properties?.queries) &&
+      viewWithQueries.properties.queries.length
+    ) {
+      for (const query of viewWithQueries.properties.queries) {
+        resetQueryCacheByQuery(query.text)
+      }
+    }
+    onRefresh()
   }
 
   const popoverContents = (onHide): JSX.Element => {
@@ -137,6 +156,15 @@ const CellContext: FC<Props> = ({
           onHide={onHide}
           testID="cell-context--delete"
         />
+        <FeatureFlag name="refreshSingleCell">
+          <CellContextItem
+            label="Refresh"
+            onClick={refreshCell}
+            icon={IconFont.Refresh}
+            onHide={onHide}
+            testID="cell-context--refresh"
+          />
+        </FeatureFlag>
       </div>
     )
   }
@@ -169,7 +197,7 @@ const CellContext: FC<Props> = ({
 }
 
 const mdtp = {
-  onDeleteCell: deleteCell,
+  onDeleteCell: deleteCellAndView,
   onCloneCell: createCellWithView,
 }
 

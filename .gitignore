@@ -1,6 +1,7 @@
 # dotfiles
 .cache
 .DS_Store
+.idea
 .netrc
 .package.json.swp
 .swo
@@ -20,3 +21,5 @@ junit.xml
 npm-error.log
 src/client/generatedRoutes.ts
 src/client/unityRoutes.ts
+src/client/flowsRoutes.ts
+src/client/managedFunctionsRoutes.ts

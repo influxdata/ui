@@ -18,7 +18,9 @@ export const notificationsReducer = (
           id: uuid.v4(),
         }
         const matchIndex = state.findIndex(
-          n => n.type && notification.type && n.type === notification.type
+          n =>
+            (n.type && notification.type && n.type === notification.type) ||
+            (n.message && n.message === notification.message)
         )
         const isUnique = matchIndex === -1
         if (isUnique) {

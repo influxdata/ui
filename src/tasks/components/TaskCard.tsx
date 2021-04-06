@@ -16,6 +16,7 @@ import {
 } from '@influxdata/clockface'
 import {Context} from 'src/clockface'
 import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
+import TaskCardMeta from 'src/tasks/components/TaskCardMeta'
 import LastRunTaskStatus from 'src/shared/components/lastRunTaskStatus/LastRunTaskStatus'
 
 // Actions
@@ -78,6 +79,9 @@ export class TaskCard extends PureComponent<
             {this.activeToggle}
             <>Last completed at {task.latestCompleted}</>
             <>{`Scheduled to run ${this.schedule}`}</>
+            <>
+              <TaskCardMeta task={task} />
+            </>
           </ResourceCard.Meta>
           {this.labels}
         </FlexBox>
@@ -101,14 +105,18 @@ export class TaskCard extends PureComponent<
   }
 
   private get contextMenu(): JSX.Element {
-    const {task, onClone, onDelete, onRunTask} = this.props
+    const {task, onClone, onDelete} = this.props
 
     return (
       <Context>
         <Context.Menu icon={IconFont.CogThick}>
           <Context.Item label="Export" action={this.handleExport} />
           <Context.Item label="View Task Runs" action={this.handleViewRuns} />
-          <Context.Item label="Run Task" action={onRunTask} value={task.id} />
+          <Context.Item
+            label="Run Task"
+            action={this.handleRunTask}
+            value={task.id}
+          />
         </Context.Menu>
         <Context.Menu
           icon={IconFont.Duplicate}
@@ -146,6 +154,22 @@ export class TaskCard extends PureComponent<
       window.open(url, '_blank')
     } else {
       history.push(url)
+    }
+  }
+
+  private handleRunTask = (taskId: string) => {
+    const {
+      onRunTask,
+      history,
+      match: {
+        params: {orgID},
+      },
+    } = this.props
+    try {
+      onRunTask(taskId)
+      history.push(`/orgs/${orgID}/tasks/${taskId}/runs`)
+    } catch (error) {
+      console.error(error)
     }
   }
 

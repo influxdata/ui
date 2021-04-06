@@ -16,7 +16,7 @@ yarn add packageName --dev
 
 ### Updating a package
 
-First, run the command
+First, run the command:
 
 ```sh
 yarn outdated
@@ -37,19 +37,26 @@ yarn upgrade packageName
 
 Tests can be run via command line with `yarn test`, from within the `/ui` directory. For more detailed reporting, use `yarn test -- --reporters=verbose`.
 
-
 ## Cypress Testing
 
 e2e tests:
-For the end to end tests to run properly, the server needs to be running in the e2e testing mode with the in memory data store.
-From the influxdb directory
+For the end to end tests to run properly, the server needs to be running in the e2e testing mode with the in-memory data store.
+From the influxdb directory:
 `$ ./bin/darwin/influxd --assets-path=ui/build --e2e-testing --store=memory`
 
 From the ui directory. Build the javascript with
 `$ yarn start`
- To run Cypress locally
+To run Cypress locally
 `$ yarn cy:dev`
 
 ## Starting Dev Server
 
-Running `/ui` locally depends on `monitor-ci`. [See the monitor-ci Quickstart](https://github.com/influxdata/monitor-ci#quickstart-for-local-development)
+Running `/ui` locally depends on `monitor-ci` or `k8s-idpe`.
+
+- [Monitor-ci Quickstart](https://github.com/influxdata/monitor-ci#quickstart-for-local-development)
+- [K8s-IDPE Quickstart](https://docs.influxdata.io/development/guides/local-development)
+
+## Zuora Form
+
+**Troubleshooting**: If your Zuora form isn't rendering or calling your callback function which you passed in `client.render`.
+When running UI locally using [Monitor CI](https://github.com/influxdata/monitor-ci), get Zuora PageID which you are using to render the form. Then, from Zuora admin console, get the `Host` and `Port` that PageID is corresponding to. Make sure to match those `Host` and `Port` with your `INGRESS_HOST` and `PORT_HTTPS` provided in the `.env` file of `monitor-ci`.

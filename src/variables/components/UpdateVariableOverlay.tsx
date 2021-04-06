@@ -32,6 +32,9 @@ import {
 } from '@influxdata/clockface'
 import {VariableArguments, AppState, Variable} from 'src/types'
 
+// Context
+import {OverlayContext} from 'src/overlays/components/OverlayController'
+
 interface State {
   workingVariable: Variable
   isNameValid: boolean
@@ -53,99 +56,106 @@ class UpdateVariableOverlay extends PureComponent<Props, State> {
     const {workingVariable, hasValidArgs} = this.state
 
     return (
-      <Overlay visible={true} testID="edit-variable--overlay">
-        <Overlay.Container maxWidth={1000}>
-          <Overlay.Header title="Edit Variable" onDismiss={this.handleClose} />
-          <Overlay.Body>
-            <Form onSubmit={this.handleSubmit}>
-              <Grid>
-                <Grid.Row>
-                  <Grid.Column widthXS={Columns.Six}>
-                    <div className="overlay-flux-editor--spacing">
-                      <Form.Element
-                        label="Name"
-                        helpText="To rename your variable use the rename button. Renaming is not allowed here."
-                      >
-                        <Input
-                          placeholder="Give your variable a name"
-                          name="name"
-                          autoFocus={true}
-                          value={workingVariable.name}
-                          status={ComponentStatus.Disabled}
+      <OverlayContext.Consumer>
+        {({onClose}) => (
+          <Overlay.Container maxWidth={1000} testID="edit-variable--overlay">
+            <Overlay.Header title="Edit Variable" onDismiss={onClose} />
+            <Overlay.Body>
+              <Form
+                onSubmit={(e: FormEvent) => {
+                  this.handleSubmit(e)
+                  onClose()
+                }}
+              >
+                <Grid>
+                  <Grid.Row>
+                    <Grid.Column widthXS={Columns.Six}>
+                      <div className="overlay-flux-editor--spacing">
+                        <Form.Element
+                          label="Name"
+                          helpText="To rename your variable use the rename button. Renaming is not allowed here."
+                        >
+                          <Input
+                            placeholder="Give your variable a name"
+                            name="name"
+                            autoFocus={true}
+                            value={workingVariable.name}
+                            status={ComponentStatus.Disabled}
+                          />
+                        </Form.Element>
+                      </div>
+                    </Grid.Column>
+                    <Grid.Column widthXS={Columns.Six}>
+                      <Form.Element label="Type" required={true}>
+                        <Dropdown
+                          button={(active, onClick) => (
+                            <Dropdown.Button
+                              active={active}
+                              onClick={onClick}
+                              testID="variable-type-dropdown--button"
+                            >
+                              {this.typeDropdownLabel}
+                            </Dropdown.Button>
+                          )}
+                          menu={onCollapse => (
+                            <Dropdown.Menu onCollapse={onCollapse}>
+                              {variableItemTypes.map(v => (
+                                <Dropdown.Item
+                                  key={v.type}
+                                  id={v.type}
+                                  value={v.type}
+                                  onClick={this.handleChangeType}
+                                  selected={
+                                    v.type === workingVariable.arguments.type
+                                  }
+                                  testID={`variable-type-dropdown-${v.type}`}
+                                >
+                                  {v.label}
+                                </Dropdown.Item>
+                              ))}
+                            </Dropdown.Menu>
+                          )}
                         />
                       </Form.Element>
-                    </div>
-                  </Grid.Column>
-                  <Grid.Column widthXS={Columns.Six}>
-                    <Form.Element label="Type" required={true}>
-                      <Dropdown
-                        button={(active, onClick) => (
-                          <Dropdown.Button
-                            active={active}
-                            onClick={onClick}
-                            testID="variable-type-dropdown--button"
-                          >
-                            {this.typeDropdownLabel}
-                          </Dropdown.Button>
-                        )}
-                        menu={onCollapse => (
-                          <Dropdown.Menu onCollapse={onCollapse}>
-                            {variableItemTypes.map(v => (
-                              <Dropdown.Item
-                                key={v.type}
-                                id={v.type}
-                                value={v.type}
-                                onClick={this.handleChangeType}
-                                selected={
-                                  v.type === workingVariable.arguments.type
-                                }
-                                testID={`variable-type-dropdown-${v.type}`}
-                              >
-                                {v.label}
-                              </Dropdown.Item>
-                            ))}
-                          </Dropdown.Menu>
-                        )}
+                    </Grid.Column>
+                  </Grid.Row>
+                  <Grid.Row>
+                    <Grid.Column>
+                      <VariableArgumentsEditor
+                        onChange={this.handleChangeArgs}
+                        onSelectMapDefault={this.handleSelectMapDefault}
+                        selected={workingVariable.selected}
+                        args={workingVariable.arguments}
                       />
-                    </Form.Element>
-                  </Grid.Column>
-                </Grid.Row>
-                <Grid.Row>
-                  <Grid.Column>
-                    <VariableArgumentsEditor
-                      onChange={this.handleChangeArgs}
-                      onSelectMapDefault={this.handleSelectMapDefault}
-                      selected={workingVariable.selected}
-                      args={workingVariable.arguments}
-                    />
-                  </Grid.Column>
-                </Grid.Row>
-                <Grid.Row>
-                  <Grid.Column>
-                    <Form.Footer>
-                      <Button
-                        text="Cancel"
-                        color={ComponentColor.Danger}
-                        onClick={this.handleClose}
-                      />
-                      <Button
-                        text="Submit"
-                        type={ButtonType.Submit}
-                        color={ComponentColor.Primary}
-                        status={
-                          hasValidArgs
-                            ? ComponentStatus.Default
-                            : ComponentStatus.Disabled
-                        }
-                      />
-                    </Form.Footer>
-                  </Grid.Column>
-                </Grid.Row>
-              </Grid>
-            </Form>
-          </Overlay.Body>
-        </Overlay.Container>
-      </Overlay>
+                    </Grid.Column>
+                  </Grid.Row>
+                  <Grid.Row>
+                    <Grid.Column>
+                      <Form.Footer>
+                        <Button
+                          text="Cancel"
+                          color={ComponentColor.Danger}
+                          onClick={onClose}
+                        />
+                        <Button
+                          text="Submit"
+                          type={ButtonType.Submit}
+                          color={ComponentColor.Primary}
+                          status={
+                            hasValidArgs
+                              ? ComponentStatus.Default
+                              : ComponentStatus.Disabled
+                          }
+                        />
+                      </Form.Footer>
+                    </Grid.Column>
+                  </Grid.Row>
+                </Grid>
+              </Form>
+            </Overlay.Body>
+          </Overlay.Container>
+        )}
+      </OverlayContext.Consumer>
     )
   }
 
@@ -238,19 +248,12 @@ class UpdateVariableOverlay extends PureComponent<Props, State> {
     const {workingVariable} = this.state
 
     this.props.onUpdateVariable(workingVariable.id, workingVariable)
-    this.handleClose()
-  }
-
-  private handleClose = () => {
-    const {history, match} = this.props
-
-    history.push(`/orgs/${match.params.orgID}/settings/variables`)
   }
 }
 
-const mstp = (state: AppState, {match}: RouterProps) => {
+const mstp = (state: AppState) => {
   const variables = getVariables(state)
-  const startVariable = variables.find(v => v.id === match.params.id)
+  const startVariable = variables.find(v => v.id === state.overlays.params.id)
 
   return {variables, startVariable}
 }

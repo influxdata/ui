@@ -5,7 +5,7 @@ import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
-import {Form, Input, Button, Grid, Columns} from '@influxdata/clockface'
+import {Form, Input, Button, Grid} from '@influxdata/clockface'
 
 // Utils
 import {validateVariableName} from 'src/variables/utils/validation'
@@ -49,12 +49,13 @@ class RenameVariableOverlayForm extends PureComponent<Props, State> {
       <Form onSubmit={this.handleSubmit}>
         <Grid>
           <Grid.Row>
-            <Grid.Column widthXS={Columns.Six}>
+            <Grid.Column>
               <div className="overlay-flux-editor--spacing">
                 <Form.ValidationElement
                   label="Name"
                   value={workingVariable.name}
                   required={true}
+                  prevalidate={true}
                   validationFunc={this.handleNameValidation}
                 >
                   {status => (
@@ -110,7 +111,8 @@ class RenameVariableOverlayForm extends PureComponent<Props, State> {
 
   private handleNameValidation = (name: string) => {
     const {variables} = this.props
-    const {error} = validateVariableName(name, variables)
+    const {workingVariable} = this.state
+    const {error} = validateVariableName(variables, name, workingVariable.id)
 
     this.setState({isNameValid: !error})
 
@@ -128,9 +130,9 @@ class RenameVariableOverlayForm extends PureComponent<Props, State> {
   }
 }
 
-const mstp = (state: AppState, {match}: RouterProps) => {
+const mstp = (state: AppState) => {
   const variables = getVariables(state)
-  const startVariable = variables.find(v => v.id === match.params.id)
+  const startVariable = variables.find(v => v.id === state.overlays.params.id)
 
   return {variables, startVariable}
 }

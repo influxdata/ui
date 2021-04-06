@@ -11,7 +11,10 @@ const DefaultErrorMessage: ErrorMessageComponent = () => {
       style={{display: 'flex', placeContent: 'center'}}
     >
       An InfluxDB error has occurred. Please report the issue&nbsp;
-      <a href="https://github.com/influxdata/influxdb/issues">here</a>.
+      <a href="https://github.com/influxdata/ui/issues/new?template=bug_report.md">
+        here
+      </a>
+      .
     </p>
   )
 }

@@ -29,8 +29,9 @@ const TelegrafPluginsExplainer: FC = () => {
           You will need to have Telegraf installed in order to use this plugin.
           See our handy{' '}
           <a
-            href="https://docs.influxdata.com/telegraf/v1.15/introduction/installation/"
+            href="https://docs.influxdata.com/telegraf/latest/introduction/installation/"
             target="_blank"
+            rel="noreferrer"
           >
             Installation Guide
           </a>

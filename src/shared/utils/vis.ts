@@ -1,20 +1,10 @@
 // Libraries
-import {get} from 'lodash'
-import {
-  binaryPrefixFormatter,
-  timeFormatter,
-  siPrefixFormatter,
-  Table,
-  ColumnType,
-  LineInterpolation,
-  FromFluxResult,
-} from '@influxdata/giraffe'
-
-import {VIS_SIG_DIGITS, DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {Table, LineInterpolation, FromFluxResult} from '@influxdata/giraffe'
 
 // Types
-import {XYGeom, Axis, Base, TimeZone} from 'src/types'
-import {resolveTimeFormat} from 'src/dashboards/utils/tableGraph'
+import {XYGeom, Axis} from 'src/types'
+
+export const HEX_DIGIT_PRECISION = 16
 
 /*
   A geom may be stored as "line", "step", "monotoneX", "bar", or "stacked", but
@@ -39,67 +29,6 @@ export const geomToInterpolation = (geom: XYGeom): LineInterpolation => {
     default:
       return 'linear'
   }
-}
-
-interface GetFormatterOptions {
-  prefix?: string
-  suffix?: string
-  base?: Base
-  timeZone?: TimeZone
-  trimZeros?: boolean
-  timeFormat?: string
-  format?: boolean
-}
-
-export const getFormatter = (
-  columnType: ColumnType,
-  {
-    prefix,
-    suffix,
-    base,
-    timeZone,
-    trimZeros = true,
-    timeFormat = DEFAULT_TIME_FORMAT,
-    format,
-  }: GetFormatterOptions = {}
-): null | ((x: any) => string) => {
-  if (columnType === 'number' && base === '2') {
-    return binaryPrefixFormatter({
-      prefix,
-      suffix,
-      significantDigits: VIS_SIG_DIGITS,
-      format,
-    })
-  }
-
-  if (columnType === 'number' && base === '10') {
-    return siPrefixFormatter({
-      prefix,
-      suffix,
-      significantDigits: VIS_SIG_DIGITS,
-      trimZeros,
-      format,
-    })
-  }
-
-  if (columnType === 'number' && base === '') {
-    return siPrefixFormatter({
-      prefix,
-      suffix,
-      significantDigits: VIS_SIG_DIGITS,
-      trimZeros,
-      format: true,
-    })
-  }
-
-  if (columnType === 'time') {
-    return timeFormatter({
-      timeZone: timeZone === 'Local' ? undefined : timeZone,
-      format: resolveTimeFormat(timeFormat),
-    })
-  }
-
-  return null
 }
 
 const NOISY_LEGEND_COLUMNS = new Set(['_start', '_stop', 'result'])
@@ -181,7 +110,7 @@ export const extent = (xs: number[]): [number, number] | null => {
 }
 
 export const checkResultsLength = (giraffeResult: FromFluxResult): boolean => {
-  return get(giraffeResult, 'table.length', 0) > 0
+  return (giraffeResult.table?.length || 0) > 0
 }
 
 export const getNumericColumns = (table: Table): string[] => {
@@ -311,32 +240,40 @@ export const defaultYColumn = (
   return null
 }
 
-export const mosaicYcolumn = (
+export const defaultYSeriesColumns = (
   table: Table,
-  preferredColumnKey?: string
-): string | null => {
-  const validColumnKeys = getStringColumns(table)
-  if (validColumnKeys.includes(preferredColumnKey)) {
-    return preferredColumnKey
+  preferredYSeriesColumns: Array<string>
+): Array<string> => {
+  const validColumnKeys = [...getStringColumns(table)]
+  let ySeriesColumns = []
+
+  if (Array.isArray(preferredYSeriesColumns)) {
+    ySeriesColumns = preferredYSeriesColumns.filter(columnKey =>
+      validColumnKeys.includes(columnKey)
+    )
+  }
+  if (ySeriesColumns.length === 0) {
+    const defaultKey = validColumnKeys.find(
+      columnKey => columnKey.startsWith('_') === false
+    )
+    if (defaultKey) {
+      ySeriesColumns.push(defaultKey)
+    }
   }
 
-  const invalidMosaicYColumns = new Set([
-    '_value',
-    'status',
-    '_field',
-    '_measurement',
-  ])
-  const preferredValidColumnKeys = validColumnKeys.filter(
-    name => !invalidMosaicYColumns.has(name)
-  )
-  if (preferredValidColumnKeys.length) {
-    return preferredValidColumnKeys[0]
-  }
+  return ySeriesColumns
+}
 
-  if (validColumnKeys.length) {
-    return validColumnKeys[0]
-  }
-  return null
+export const defaultYLabelColumns = (
+  preferredYSeriesColumns: Array<string>,
+  validYSeriesColumns: Array<string>
+): Array<string> => {
+  return Array.isArray(preferredYSeriesColumns) &&
+    Array.isArray(validYSeriesColumns)
+    ? preferredYSeriesColumns.filter(columnKey =>
+        validYSeriesColumns.includes(columnKey)
+      )
+    : []
 }
 
 export const isInDomain = (value: number, domain: number[]) =>
@@ -375,4 +312,32 @@ export const getMainColumnName = (
     }
   }
   return ''
+}
+
+const getColumnValue = (table: Table, field: string) => {
+  const fieldColumn = table.getColumn('_field')
+
+  if (!fieldColumn) {
+    throw new Error(
+      'Cannot retrieve _field column - table does not conform to required structure of Table type'
+    )
+  }
+  const index = fieldColumn.findIndex(val => val === field)
+  if (index < 0) {
+    throw new Error('Map type requires the fields to be either lat or lon')
+  }
+  const valueColumn = table.getColumn('_value')
+  const value = valueColumn[index]
+
+  return value
+}
+
+export const getGeoCoordinates = (table: Table) => {
+  const latCoordinate = getColumnValue(table, 'lat')
+  const lonCoordinate = getColumnValue(table, 'lon')
+
+  return {
+    lat: parseInt(latCoordinate.toString(), 10),
+    lon: parseInt(lonCoordinate.toString(), 10),
+  }
 }

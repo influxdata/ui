@@ -1,35 +1,34 @@
 // Types
-import {AppState} from 'src/types'
+import {AppState, AnnotationStream} from 'src/types'
 import {sortBy} from 'lodash'
-
-// Mocks
-import {
-  MOCK_ANNOTATION_STREAMS,
-  AnnotationStream,
-} from 'src/annotations/constants/mocks'
 
 export const getAnnotationControlsVisibility = (state: AppState): boolean => {
   return state.userSettings.showAnnotationsControls || false
 }
 
-export const getVisibleAnnotationStreams = (
-  state: AppState
-): AnnotationStream[] => {
+export const getVisibleAnnotationStreams = (state: AppState): string[] => {
   const visibleStreams = state.annotations.visibleStreamsByID
-  const filtered = MOCK_ANNOTATION_STREAMS.filter(stream =>
-    visibleStreams.includes(stream.id)
-  )
 
-  return sortBy(filtered, stream => stream.name)
+  return sortBy(visibleStreams, stream => stream)
 }
 
-export const getHiddenAnnotationStreams = (
-  state: AppState
-): AnnotationStream[] => {
+export const getHiddenAnnotationStreams = (state: AppState): string[] => {
   const visibleStreams = state.annotations.visibleStreamsByID
-  const filtered = MOCK_ANNOTATION_STREAMS.filter(
-    stream => !visibleStreams.includes(stream.id)
-  )
+  const filtered = state.annotations.streams
+    .filter(stream => !visibleStreams.includes(stream.stream))
+    .map(stream => stream.stream)
 
-  return sortBy(filtered, stream => stream.name)
+  return sortBy(filtered, stream => stream)
+}
+
+export const getAnnotationStreams = (state: AppState): AnnotationStream[] => {
+  return state.annotations.streams
+}
+
+export const isSingleClickAnnotationsEnabled = (state: AppState): boolean => {
+  return state.annotations.enableSingleClickAnnotations
+}
+
+export const selectAreAnnotationsVisible = (state: AppState): boolean => {
+  return state.annotations.annotationsAreVisible
 }

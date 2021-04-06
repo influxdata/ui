@@ -30,6 +30,7 @@ describe('tokens', () => {
 
           cy.fixture('tokens.json').then(({tokens}) => {
             tokens.forEach(token => {
+              token.permissions.forEach(p => (p.resource.orgID = id))
               cy.createToken(
                 id,
                 token.description,
@@ -48,6 +49,7 @@ describe('tokens', () => {
 
           cy.fixture('routes').then(({orgs}) => {
             cy.visit(`${orgs}/${id}/load-data/tokens`)
+            cy.getByTestID('tree-nav')
           })
           cy.get('[data-testid="resource-list"]', {timeout: PAGE_LOAD_SLA})
         })
@@ -235,7 +237,6 @@ describe('tokens', () => {
 
       // check cancel
       cy.getByTestID('button--cancel').click()
-      cy.getByTestID('overlay--container').should('not.be.visible')
       cy.get('.cf-resource-card').should('have.length', 4)
 
       // open overlay - again
@@ -292,9 +293,10 @@ describe('tokens', () => {
         .parent()
         .within(() => {
           cy.getByTestID('permissions--item').should('have.length', 1)
-          cy.getByTestID('permissions--item')
-            .contains('write')
-            .should('not.be.visible')
+          cy.getByTestID('permissions--item').should(
+            'not.contain.value',
+            'write'
+          )
           cy.getByTestID('permissions--item')
             .contains('read')
             .should('be.visible')
@@ -334,7 +336,6 @@ describe('tokens', () => {
     cy.getByTestID('overlay--header').within(() => {
       cy.get('button').click()
     })
-    cy.getByTestID('overlay--container').should('not.be.visible')
   })
 
   it('can edit the description', () => {
@@ -348,15 +349,15 @@ describe('tokens', () => {
   })
 
   it('can do sorting', () => {
-    cy.getByTestID(`token-card ${Cypress.env('username')}'s Token`).within(
-      () => {
+    cy.get<string>('@defaultUser').then((defaultUser: string) => {
+      cy.getByTestID(`token-card ${defaultUser}'s Token`).within(() => {
         cy.getByTestID('context-menu').click()
 
         cy.getByTestID('delete-token')
           .contains('Delete')
           .click()
-      }
-    )
+      })
+    })
 
     cy.log('sort by Description (Asc)')
 

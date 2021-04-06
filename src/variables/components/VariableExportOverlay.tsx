@@ -17,16 +17,14 @@ type Props = RouteComponentProps<{orgID: string; id: string}> & ReduxProps
 
 class VariableExportOverlay extends PureComponent<Props> {
   public componentDidMount() {
-    const {
-      match: {
-        params: {id},
-      },
-      convertToTemplate,
-    } = this.props
-
+    const {id, convertToTemplate} = this.props
     convertToTemplate(id)
   }
 
+  public componentWillUnmount() {
+    const {clearExportTemplate} = this.props
+    clearExportTemplate()
+  }
   public render() {
     const {variableTemplate, status} = this.props
 
@@ -49,6 +47,7 @@ class VariableExportOverlay extends PureComponent<Props> {
 }
 
 const mstp = (state: AppState) => ({
+  id: state.overlays.params.id,
   variableTemplate: state.resources.templates.exportTemplate.item,
   status: state.resources.templates.exportTemplate.status,
 })

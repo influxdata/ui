@@ -48,7 +48,6 @@ $input-tag--item-height: 24px;
   }
 }
 
-
 // Optional Add Tags Button
 .tags-add {
   position: relative;
@@ -79,7 +78,7 @@ $input-tag--item-height: 24px;
   border-radius: 4px;
   overflow: auto;
   max-height: 200px;
-  @include gradient-h($c-ocean,$c-pool);
+  @include gradient-h($c-ocean, $c-pool);
 }
 .tags-add--menu-item {
   text-align: left;
@@ -95,13 +94,13 @@ $input-tag--item-height: 24px;
   &:hover {
     cursor: pointer;
     color: $g20-white;
-    @include gradient-h($c-laser,$c-pool);
+    @include gradient-h($c-laser, $c-pool);
   }
   &:active,
   &:active:focus {
     cursor: pointer;
     color: $g20-white;
-    @include gradient-h($c-sapphire,$c-pool);
+    @include gradient-h($c-sapphire, $c-pool);
   }
 }
 .tags-add.open .tags-add--menu {

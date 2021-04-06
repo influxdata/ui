@@ -11,7 +11,11 @@ interface Props {
 class VersionInfo extends PureComponent<Props> {
   public render() {
     return (
-      <div className="version-info" style={this.style}>
+      <div
+        className="version-info"
+        style={this.style}
+        data-testid="version-info"
+      >
         <p>
           Version {VERSION} {GIT_SHA && <code>({GIT_SHA.slice(0, 7)})</code>}
         </p>

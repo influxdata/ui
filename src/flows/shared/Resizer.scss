@@ -4,7 +4,6 @@ $panel-resizer--header: 47px;
 $panel-resizer--drag-handle: 30px;
 
 .panel-resizer {
-  margin-top: $cf-marg-a;
   display: flex;
   flex-direction: row;
   align-items: stretch;
@@ -110,6 +109,10 @@ $panel-resizer--drag-handle: 30px;
   padding: 0;
 }
 
+.panel-resizer--error-button {
+  margin-left: $cf-marg-b;
+}
+
 .panel-resizer--drag-handle {
   width: $panel-resizer--drag-handle;
   height: $panel-resizer--drag-handle;
@@ -136,19 +139,18 @@ body.panel-resizer-dragging:hover {
 }
 
 .panel-resizer--drag-icon {
-  width: $panel-resizer--drag-handle / 2;
-  height: $cf-border;
-  background-color: $g11-sidewalk;
+  font-size: 2em;
+  color: $c-honeydew;
   transition: background-color 0.25s ease;
   margin: $cf-border 0;
 }
 
 .panel-resizer--drag-handle:hover .panel-resizer--drag-icon {
-  background-color: $g18-cloud;
+  color: $c-honeydew;
 }
 
 .panel-resizer--drag-handle__dragging .panel-resizer--drag-icon {
-  background-color: $c-pool;
+  color: $c-rainforest;
 }
 
 /*

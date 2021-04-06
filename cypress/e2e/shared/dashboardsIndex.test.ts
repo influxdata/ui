@@ -13,6 +13,7 @@ describe('Dashboards', () => {
       cy.fixture('routes').then(({orgs}) => {
         cy.get('@org').then(({id}: Organization) => {
           cy.visit(`${orgs}/${id}/dashboards-list`)
+          cy.getByTestID('tree-nav')
         })
       })
     )
@@ -50,6 +51,7 @@ describe('Dashboards', () => {
         cy.fixture('routes').then(({orgs}) => {
           cy.get('@org').then(({id}: Organization) => {
             cy.visit(`${orgs}/${id}/dashboards-list`)
+            cy.getByTestID('tree-nav')
           })
         })
       })
@@ -82,6 +84,7 @@ describe('Dashboards', () => {
     cy.fixture('routes').then(({orgs}) => {
       cy.get('@org').then(({id}: Organization) => {
         cy.visit(`${orgs}/${id}/dashboards-list`)
+        cy.getByTestID('tree-nav')
       })
     })
 
@@ -157,6 +160,7 @@ describe('Dashboards', () => {
       cy.fixture('routes').then(({orgs}) => {
         cy.get('@org').then(({id}: Organization) => {
           cy.visit(`${orgs}/${id}/dashboards-list`)
+          cy.getByTestID('tree-nav')
         })
       })
     }
@@ -183,7 +187,7 @@ describe('Dashboards', () => {
         cy.getByTestID('context-delete-dashboard').click()
       })
 
-    // dasboard no longer exists
+    // dashboard no longer exists
     cy.getByTestID('dashboard-card').should('not.exist')
 
     // import dashboard as json
@@ -247,6 +251,7 @@ describe('Dashboards', () => {
       cy.fixture('routes').then(({orgs}) => {
         cy.get('@org').then(({id}: Organization) => {
           cy.visit(`${orgs}/${id}/dashboards-list`)
+          cy.getByTestID('tree-nav')
         })
       })
     })
@@ -262,6 +267,7 @@ describe('Dashboards', () => {
       cy.fixture('routes').then(({orgs}) => {
         cy.get('@org').then(({id}: Organization) => {
           cy.visit(`${orgs}/${id}/dashboards-list`)
+          cy.getByTestID('tree-nav')
         })
       })
 
@@ -337,6 +343,7 @@ describe('Dashboards', () => {
 
         cy.get('@org').then(({id}: Organization) => {
           cy.createLabel(labelName, id).then(() => {
+            cy.reload()
             cy.getByTestID(`inline-labels--add`)
               .first()
               .click()
@@ -353,6 +360,7 @@ describe('Dashboards', () => {
 
         cy.get('@org').then(({id}: Organization) => {
           cy.createLabel(labelName, id).then(() => {
+            cy.reload()
             cy.getByTestID(`inline-labels--add`)
               .first()
               .click()
@@ -373,6 +381,7 @@ describe('Dashboards', () => {
 
         cy.get('@org').then(({id}: Organization) => {
           cy.createLabel(labelName, id).then(() => {
+            cy.reload()
             cy.getByTestID(`inline-labels--add`)
               .first()
               .click()
@@ -397,10 +406,9 @@ describe('Dashboards', () => {
           .type(labelName)
           .type('{enter}')
         cy.getByTestID('overlay--body').should('be.visible')
-        cy.getByTestID('inline-labels--popover--contents').should(
-          'not.be.visible'
-        )
+        cy.getByTestID('inline-labels--popover--contents').should('not.exist')
       })
+
       it('typing a new label name and clicking name starts label creation flow, closes popover', () => {
         // https://github.com/influxdata/influxdb/issues/17964
         const labelName = 'the new new'
@@ -416,9 +424,7 @@ describe('Dashboards', () => {
         cy.getByTestID(`inline-labels--create-new`).click()
 
         cy.getByTestID('overlay--body').should('be.visible')
-        cy.getByTestID('inline-labels--popover--contents').should(
-          'not.be.visible'
-        )
+        cy.getByTestID('inline-labels--popover--contents').should('not.exist')
       })
 
       it('can create a label and add to a dashboard', () => {
@@ -484,7 +490,7 @@ describe('Dashboards', () => {
         .parent()
         .within(() => {
           const dashboardIsVisible = (name: string, isVisible = true) => {
-            cy.contains(name).should((isVisible ? 'be.' : 'not.') + 'visible')
+            cy.contains(name).should(isVisible ? 'be.visible' : 'not.exist')
           }
 
           dashboardIsVisible(dashboardName)
@@ -505,10 +511,7 @@ describe('Dashboards', () => {
     cy.get('@org').then(({id}: Organization) => {
       cy.fixture('routes').then(({orgs, dashboards}) => {
         cy.visit(`${orgs}/${id}${dashboards}/${nonexistentID}`)
-        cy.url().should(
-          'eq',
-          `${Cypress.config().baseUrl}${orgs}/${id}/dashboards-list`
-        )
+        cy.url().should('include', `${orgs}/${id}/dashboards-list`)
       })
     })
   })

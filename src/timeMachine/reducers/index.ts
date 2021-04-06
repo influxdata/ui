@@ -37,7 +37,8 @@ import {
   TimeMachineID,
   Color,
 } from 'src/types'
-import {Action} from 'src/timeMachine/actions'
+import {Action as TimeMachineAction} from 'src/timeMachine/actions'
+
 import {TimeMachineTab} from 'src/types/timeMachine'
 import {BuilderAggregateFunctionType} from 'src/client/generatedRoutes'
 
@@ -73,6 +74,7 @@ export interface TimeMachineState {
   draftQueries: DashboardDraftQuery[]
   isViewingRawData: boolean
   isViewingVisOptions: boolean
+  isDisabledViewRawData: boolean
   activeTab: TimeMachineTab
   activeQueryIndex: number | null
   queryBuilder: QueryBuilderState
@@ -97,6 +99,7 @@ export const initialStateHelper = (): TimeMachineState => {
     draftQueries: [{...defaultViewQuery(), hidden: false}],
     isViewingRawData: false,
     isViewingVisOptions: false,
+    isDisabledViewRawData: false,
     activeTab: 'queries',
     activeQueryIndex: 0,
     queryResults: initialQueryResultsState(),
@@ -169,6 +172,8 @@ const getTableProperties = (view, files) => {
   return properties
 }
 
+export type Action = TimeMachineAction
+
 export const timeMachinesReducer = (
   state: TimeMachinesState = initialState(),
   action: Action
@@ -239,6 +244,12 @@ export const timeMachineReducer = (
   action: Action
 ): TimeMachineState => {
   switch (action.type) {
+    case 'SET_TIME_MACHINE_TIME_RANGE': {
+      return produce(state, draftState => {
+        draftState.timeRange = action.timeRange
+      })
+    }
+
     case 'SET_VIEW_NAME': {
       const {name} = action.payload
       const view = {...state.view, name}
@@ -313,6 +324,12 @@ export const timeMachineReducer = (
       return {...state, isViewingRawData}
     }
 
+    case 'SET_IS_DISABLED_VIEW_RAW_DATA': {
+      const {isDisabledViewRawData} = action.payload
+
+      return {...state, isDisabledViewRawData}
+    }
+
     case 'SET_ACTIVE_TAB': {
       const {activeTab} = action.payload
 
@@ -321,6 +338,12 @@ export const timeMachineReducer = (
 
     case 'TOGGLE_VIS_OPTIONS': {
       return {...state, isViewingVisOptions: !state.isViewingVisOptions}
+    }
+
+    case 'SET_VIEW_PROPERTIES': {
+      const {properties} = action.payload
+
+      return setViewProperties(state, properties)
     }
 
     case 'SET_GEOM': {
@@ -380,6 +403,16 @@ export const timeMachineReducer = (
     case 'SET_Y_SERIES_COLUMNS': {
       const {ySeriesColumns} = action.payload
       return setViewProperties(state, {ySeriesColumns})
+    }
+
+    case 'SET_Y_LABEL_COLUMNS': {
+      const {yLabelColumns} = action.payload
+      return setViewProperties(state, {yLabelColumns})
+    }
+
+    case 'SET_Y_LABEL_COLUMN_SEPARATOR': {
+      const {yLabelColumnSeparator} = action.payload
+      return setViewProperties(state, {yLabelColumnSeparator})
     }
 
     case 'SET_X_AXIS_LABEL': {
@@ -462,6 +495,12 @@ export const timeMachineReducer = (
       const {legendOrientationThreshold} = action.payload
 
       return setViewProperties(state, {legendOrientationThreshold})
+    }
+
+    case 'SET_LEGEND_COLORIZE_ROWS': {
+      const {legendColorizeRows} = action.payload
+
+      return setViewProperties(state, {legendColorizeRows})
     }
 
     case 'SET_BIN_COUNT': {
@@ -1080,7 +1119,7 @@ export const timeMachineReducer = (
   return state
 }
 
-const setViewProperties = (
+export const setViewProperties = (
   state: TimeMachineState,
   update: {[key: string]: any}
 ): TimeMachineState => {

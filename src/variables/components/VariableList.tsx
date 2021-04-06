@@ -1,13 +1,12 @@
 // Libraries
-import React, {PureComponent} from 'react'
-import memoizeOne from 'memoize-one'
+import React, {FC, useMemo} from 'react'
 
 // Components
 import {ResourceList} from '@influxdata/clockface'
 import VariableCard from 'src/variables/components/VariableCard'
 
 // Types
-import {OverlayState, Variable} from 'src/types'
+import {Variable} from 'src/types'
 import {SortTypes} from 'src/shared/utils/sort'
 import {Sort} from '@influxdata/clockface'
 
@@ -24,73 +23,38 @@ interface Props {
   sortType: SortTypes
 }
 
-interface State {
-  variableID: string
-  variableOverlayState: OverlayState
-  sortedVariables: Variable[]
-}
+const VariableList: FC<Props> = props => {
+  const {
+    emptyState,
+    variables,
+    sortKey,
+    sortDirection,
+    sortType,
+    onDeleteVariable,
+    onFilterChange,
+  } = props
 
-export default class VariableList extends PureComponent<Props, State> {
-  private memGetSortedResources = memoizeOne<typeof getSortedResources>(
-    getSortedResources
+  const sortedVariables = useMemo(
+    () => getSortedResources(variables, sortKey, sortDirection, sortType),
+    [variables, sortKey, sortDirection, sortType]
   )
 
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      variableID: null,
-      variableOverlayState: OverlayState.Closed,
-      sortedVariables: this.props.variables,
-    }
-  }
-
-  public render() {
-    const {emptyState} = this.props
-
-    return (
-      <>
-        <ResourceList>
-          <ResourceList.Body emptyState={emptyState}>
-            {this.rows}
-          </ResourceList.Body>
-        </ResourceList>
-      </>
-    )
-  }
-
-  private get rows(): JSX.Element[] {
-    const {
-      variables,
-      sortKey,
-      sortDirection,
-      sortType,
-      onDeleteVariable,
-      onFilterChange,
-    } = this.props
-
-    const sortedVariables = this.memGetSortedResources(
-      variables,
-      sortKey,
-      sortDirection,
-      sortType
-    )
-
-    return sortedVariables.map((variable, index) => (
-      <VariableCard
-        key={variable.id || `variable-${index}`}
-        variable={variable}
-        onDeleteVariable={onDeleteVariable}
-        onEditVariable={this.handleStartEdit}
-        onFilterChange={onFilterChange}
-      />
-    ))
-  }
-
-  private handleStartEdit = (variable: Variable) => {
-    this.setState({
-      variableID: variable.id,
-      variableOverlayState: OverlayState.Open,
-    })
-  }
+  return (
+    <>
+      <ResourceList>
+        <ResourceList.Body emptyState={emptyState}>
+          {sortedVariables.map((variable, index) => (
+            <VariableCard
+              key={variable.id || `variable-${index}`}
+              variable={variable}
+              onDeleteVariable={onDeleteVariable}
+              onFilterChange={onFilterChange}
+            />
+          ))}
+        </ResourceList.Body>
+      </ResourceList>
+    </>
+  )
 }
+
+export default VariableList

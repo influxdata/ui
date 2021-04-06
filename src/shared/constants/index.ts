@@ -13,6 +13,12 @@ import {InfluxColors} from '@influxdata/clockface'
 
 import {AutoRefreshStatus} from 'src/types'
 
+// This is temporary and should be resolved
+// Once the Beta region API is built out by Quartz:
+// influxdata/quartz#4369
+// Beta Regions contain the hostname of the beta regions
+export const BETA_REGIONS = ['europe-west1-1.gcp.cloud2.influxdata.com']
+
 function formatConstant(constant: string) {
   if (!constant) {
     return ''
@@ -68,6 +74,7 @@ export const HONEYBADGER_ENV = formatConstant(process.env.HONEYBADGER_ENV)
 
 export const CLOUD = !!process.env.CLOUD_URL
 export const CLOUD_SIGNIN_PATHNAME = '/api/v2/signin'
+export const CLOUD_LOGIN_PATHNAME = '/login'
 export const CLOUD_BILLING_VISIBLE = CLOUD
 export const CLOUD_URL = formatConstant(process.env.CLOUD_URL)
 export const CLOUD_CHECKOUT_PATH = '/checkout'
@@ -120,15 +127,20 @@ export const GIRAFFE_COLOR_SCHEMES = [
   {name: 'T-MAX 400 Film', colors: T_MAX_400_FILM},
 ]
 
-export const BAND_LINE_OPACITY = 0.7
-export const BAND_LINE_WIDTH = 3
-export const BAND_SHADE_OPACITY = 0.3
-
 export const LEGEND_OPACITY_MINIMUM = 0.2
 export const LEGEND_OPACITY_MAXIMUM = 1.0
 export const LEGEND_OPACITY_DEFAULT = LEGEND_OPACITY_MAXIMUM
 export const LEGEND_OPACITY_STEP = 0.01
-export const LEGEND_ORIENTATION_THRESHOLD_DEFAULT = 10
+
+export const LEGEND_ORIENTATION_THRESHOLD_VERTICAL = 0
+export const LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL = 100000000
+
+export const LEGEND_ORIENTATION_THRESHOLD_DEFAULT = LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL
+
+export const LEGEND_COLORIZE_ROWS_DEFAULT = true
 
 export const QUERY_BUILDER_MODE = 'builder'
 export const SCRIPT_EDITOR_MODE = 'advanced'
+
+export const MARKDOWN_UNSUPPORTED_IMAGE =
+  "We don't support images in markdown for security purposes"

@@ -26,7 +26,10 @@ const FunctionResponse: FC<Props> = ({
     if (response && response.data) {
       return (
         <>
-          <pre>{JSON.stringify(response.data)}</pre> <p></p>
+          <pre style={{maxWidth: '200px'}}>
+            {JSON.stringify(response.data, null, '\t')}
+          </pre>{' '}
+          <p></p>
         </>
       )
     }
@@ -54,6 +57,7 @@ const FunctionResponse: FC<Props> = ({
             status == 'ok' ? Gradients.TropicalTourist : Gradients.DangerLight
           }
           border={true}
+          style={{overflow: 'scroll'}}
         >
           <Panel.Header>
             <h5>{statusText}</h5>

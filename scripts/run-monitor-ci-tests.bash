@@ -108,8 +108,6 @@ do
 			if [[ "$workflow_status" == "success" ]]; then
 				printf "\SUCCESS: monitor-ci workflow with id ${workflow_id} passed: https://app.circleci.com/pipelines/github/influxdata/monitor-ci/${pipeline_number}/workflows/${workflow_id} \n"
 			else
-				printf "\nFAILURE: monitor-ci workflow with id ${workflow_id} failed: https://app.circleci.com/pipelines/github/influxdata/monitor-ci/${pipeline_number}/workflows/${workflow_id} \n"
-
 				# set job failure
 				is_failure=1
 
@@ -152,6 +150,9 @@ do
 						done
 					fi
 				done
+
+				printf "\n\nFAILURE: monitor-ci workflow with id ${workflow_id} failed:\n"
+				printf "\e]8;;https://app.circleci.com/pipelines/github/influxdata/monitor-ci/${pipeline_number}/workflows/${workflow_id}\e\\See failed pipeline\e]8;;\e\\\n"
 			fi
 		done
 

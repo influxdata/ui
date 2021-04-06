@@ -24,6 +24,9 @@ set -eux -o pipefail
 # - PULL_REQUEST: the open pull request, if one exists (used for lighthouse)
 ########################
 
+# make dir for artifacts
+mkdir -p monitor-ci/test-artifacts/results/{build-oss-image,oss-e2e,build-image,cloud-e2e,cloud-e2e-firefox,cloud-e2e-k8s-idpe,cloud-lighthouse,smoke,build-prod-image,deploy}
+
 # get monitor-ci pipelines we've already run on this SHA
 found_passing_pipeline=0
 all_pipelines=$(curl -s --request GET \
@@ -150,7 +153,7 @@ do
 
 							# download artifact
 							filename=$(basename "${path}")
-							curl -s -L --output "monitor-ci/test-artifacts/results/${name}/${filename}" --request GET \
+							curl -L --output "monitor-ci/test-artifacts/results/${name}/${filename}" --request GET \
 								--url "${url}" \
 								--header "Circle-Token: ${API_KEY}"
 						done

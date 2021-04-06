@@ -492,7 +492,7 @@ jobs:
           environment:
             API_KEY: ${MONITOR_CI_API_KEY}
             PULL_REQUEST: ${CIRCLE_PULL_REQUEST}
-            MONITOR_CI_BRANCH: master
+            MONITOR_CI_BRANCH: "master"
             UI_BRANCH: ${CIRCLE_BRANCH}
             SHA: ${CIRCLE_SHA1}
       - store_artifacts:

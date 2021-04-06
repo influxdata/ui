@@ -160,7 +160,7 @@ export const getOrgs = (
   const filtered = organizations.filter(org => {
     if (searchTerm) {
       return (
-        org.id.includes(searchTerm) || org.quartzId.includes(Number(searchTerm))
+        org.id.includes(searchTerm) || `${org.quartzId}`.includes(searchTerm)
       )
     }
     return true

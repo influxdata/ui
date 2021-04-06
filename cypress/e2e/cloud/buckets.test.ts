@@ -72,7 +72,7 @@ describe('Buckets', () => {
           })
         })
 
-      cy.getByTestID('resource-sorter--button')
+      cy.getByTestID('resource-sorter--buttonasdfasd')
         .click()
         .then(() => {
           cy.getByTestID(

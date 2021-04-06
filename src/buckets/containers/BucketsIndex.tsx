@@ -22,7 +22,6 @@ import {Page} from '@influxdata/clockface'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {ORGS, ORG_ID, BUCKETS, BUCKET_ID} from 'src/shared/constants/routes'

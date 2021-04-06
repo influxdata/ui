@@ -1,6 +1,5 @@
 // Libraries
 import React, {PureComponent, createRef, RefObject} from 'react'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Components
 import CloudExclude from 'src/shared/components/cloud/CloudExclude'

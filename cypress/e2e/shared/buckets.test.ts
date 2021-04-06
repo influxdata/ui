@@ -10,7 +10,6 @@ describe('Buckets', () => {
           cy.visit(`${orgs}/${id}${buckets}`)
           cy.getByTestID('tree-nav')
           cy.window().then(win => {
-            win.influx.set('csvUploader', true)
             cy.getByTestID('tree-nav')
           })
         })

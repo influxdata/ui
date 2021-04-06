@@ -60,13 +60,11 @@ class BucketsIndex extends Component {
             path={`${bucketsPath}/line-protocols/new`}
             component={LineProtocolWizard}
           />
-          {isFlagEnabled('csvUploader') && (
-            <Route path={`${bucketsPath}/csv-uploader/new`}>
-              <CsvUploaderProvider>
-                <CsvUploaderWizard />
-              </CsvUploaderProvider>
-            </Route>
-          )}
+          <Route path={`${bucketsPath}/csv-uploader/new`}>
+            <CsvUploaderProvider>
+              <CsvUploaderWizard />
+            </CsvUploaderProvider>
+          </Route>
           <Route
             path={`${bucketsPath}/telegrafs/new`}
             component={CollectorsWizard}

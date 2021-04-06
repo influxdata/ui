@@ -74,6 +74,10 @@ describe('Flows', () => {
       .first()
       .click()
 
+    cy.getByTestID('time-machine-submit-button').should('be.visible')
+    cy.getByTestID('page-title').click()
+    cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
+
     cy.getByTestID('flow-bucket-selector')
       .click()
       .then(() => {
@@ -117,11 +121,9 @@ describe('Flows', () => {
     cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
 
     // select our bucket
-    cy.getByTestID('flow-bucket-selector')
-      .click()
-      .then(() => {
-        cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
-      })
+    cy.getByTestID('flow-bucket-selector').click()
+
+    cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
 
     // select measurement and field
     cy.getByTestID('measurement-selector test').click()
@@ -157,19 +159,22 @@ describe('Flows', () => {
       .first()
       .click()
 
+    cy.getByTestID('time-machine-submit-button').should('be.visible')
+
+    cy.getByTestID('page-title').click()
+    cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
+
     cy.getByTestIDSubStr('panel-add-btn')
       .first()
       .click()
-      .then(() => {
-        cy.getByTestID('add-flow-btn--toBucket').click()
-      })
+
+    cy.getByTestID('add-flow-btn--toBucket').click()
 
     cy.getByTestID('flow-bucket-selector')
       .last()
       .click()
-      .then(() => {
-        cy.getByTestID('flow-bucket-selector--defbuck').click()
-      })
+
+    cy.getByTestID('flow-bucket-selector--defbuck').click()
 
     cy.getByTestID('task-form-save').click()
     cy.getByTestID('task-form-name').type(taskName)

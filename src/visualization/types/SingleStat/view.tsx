@@ -4,7 +4,6 @@ import React, {FC, useContext} from 'react'
 // Utils
 import LatestValueTransform from 'src/visualization/components/LatestValueTransform'
 import {generateThresholdsListHexs} from 'src/shared/constants/colorOperations'
-import {formatStatValue} from 'src/visualization/utils/formatStatValue'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
 
 // Types
@@ -21,8 +20,6 @@ import {
 import './style.scss'
 import {AppSettingContext} from 'src/shared/contexts/app'
 import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
-import {getFormatter} from '../../utils/getFormatter'
-import {AppSettingContext} from '../../../shared/contexts/app'
 import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 
 interface Props extends VisualizationProps {

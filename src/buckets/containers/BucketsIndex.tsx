@@ -22,7 +22,6 @@ import {Page} from '@influxdata/clockface'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {ORGS, ORG_ID, BUCKETS, BUCKET_ID} from 'src/shared/constants/routes'
@@ -60,13 +59,11 @@ class BucketsIndex extends Component {
             path={`${bucketsPath}/line-protocols/new`}
             component={LineProtocolWizard}
           />
-          {isFlagEnabled('csvUploader') && (
-            <Route path={`${bucketsPath}/csv-uploader/new`}>
-              <CsvUploaderProvider>
-                <CsvUploaderWizard />
-              </CsvUploaderProvider>
-            </Route>
-          )}
+          <Route path={`${bucketsPath}/csv-uploader/new`}>
+            <CsvUploaderProvider>
+              <CsvUploaderWizard />
+            </CsvUploaderProvider>
+          </Route>
           <Route
             path={`${bucketsPath}/telegrafs/new`}
             component={CollectorsWizard}

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eux -o pipefail
+set -eu -o pipefail
 
 ########################
 # --- Script Summary ---
@@ -153,6 +153,7 @@ do
 
 							# download artifact
 							filename=$(basename "${path}")
+							filename="${filename::-1}" # removes extra " from end
 							curl -L --output "monitor-ci/test-artifacts/results/${name}/${filename}" --request GET \
 								--url "${url}" \
 								--header "Circle-Token: ${API_KEY}"

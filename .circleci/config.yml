@@ -517,6 +517,7 @@ workflows:
     jobs:
       - build-oss-image
       - build-image
+      - build-lighthouse-image
       - build-prod-image:
           filters:
             branches:
@@ -526,7 +527,7 @@ workflows:
       - lint
       - cloud-lighthouse:
           requires:
-            - build-image
+            - build-lighthouse-image
       # - cloud-e2e-k8s-idpe:
       #     requires:
       #       - build-image

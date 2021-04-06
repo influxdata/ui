@@ -106,7 +106,7 @@ do
 			workflow_status=$(echo ${workflows} | jq -r --arg id "${workflow_id}" '.items | map(select(.id == $id)) | .[].status')
 
 			if [[ "$workflow_status" == "success" ]]; then
-				printf "\SUCCESS: monitor-ci workflow with id ${workflow_id} passed: https://app.circleci.com/pipelines/github/influxdata/monitor-ci/${pipeline_number}/workflows/${workflow_id} \n"
+				printf "\nSUCCESS: monitor-ci workflow with id ${workflow_id} passed: https://app.circleci.com/pipelines/github/influxdata/monitor-ci/${pipeline_number}/workflows/${workflow_id} \n"
 			else
 				# set job failure
 				is_failure=1
@@ -147,12 +147,18 @@ do
 							path=$(echo ${artifacts} | jq --arg url "${url}" 'map(select(.url == $url)) | .[].pretty_path')
 							printf '\n- %s\n' "${path}"
 							printf '   - URL: %s\n' "${url}"
+
+							# download artifact
+							filename=$(basename ${path})
+							curl -s -L --output "monitor-ci/test-artifacts/results/${name}/${filename}" --request GET \
+								--url "${url}" \
+								--header "Circle-Token: ${API_KEY}"
 						done
 					fi
 				done
 
 				printf "\n\nFAILURE: monitor-ci workflow with id ${workflow_id} failed:\n"
-				printf "\e]8;;https://app.circleci.com/pipelines/github/influxdata/monitor-ci/${pipeline_number}/workflows/${workflow_id}\e\\See failed pipeline\e]8;;\e\\\n"
+				printf "https://app.circleci.com/pipelines/github/influxdata/monitor-ci/${pipeline_number}/workflows/${workflow_id}"
 			fi
 		done
 

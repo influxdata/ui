@@ -62,7 +62,7 @@ if [ $found_passing_pipeline -eq 1 ]; then
 	printf "\nSUCCESS: Found a passing monitor-ci pipeline for this SHA, will not re-run these tests\n"
 	exit 0
 else
-	printf "\nNo passing monitor-ci pipelines found for this SHA, starting a new one\n"
+	printf "\nno passing monitor-ci pipelines found for this SHA, starting a new one\n"
 fi
 
 # start the monitor-ci pipeline
@@ -135,7 +135,7 @@ do
 					printf "\n===== ${name} =====\n"
 					job_number=$(echo ${failed_jobs} | jq -r --arg name "${name}" 'map(select(.name == $name)) | .[].job_number')
 					artifacts=$(curl -s --request GET \
-					--url "https://circleci.com/api/v1.1/project/github/influxdata/monitor-ci/${job_number}/artifacts" \
+						--url "https://circleci.com/api/v1.1/project/github/influxdata/monitor-ci/${job_number}/artifacts" \
 						--header "Circle-Token: ${API_KEY}" \
 						--header 'content-type: application/json' \
 						--header 'Accept: application/json')
@@ -154,7 +154,8 @@ do
 							# download artifact
 							filename=$(basename "${path}")
 							filename="${filename::-1}" # removes extra " from end
-							curl -L --output "monitor-ci/test-artifacts/results/${name}/${filename}" --request GET \
+							curl -L -s --request GET \
+								--output "monitor-ci/test-artifacts/results/${name}/${filename}" \
 								--url "${url}" \
 								--header "Circle-Token: ${API_KEY}"
 						done

@@ -21,7 +21,7 @@ import {getVariables, asAssignment} from 'src/variables/selectors'
 import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
 import {isInQuery} from 'src/variables/utils/hydrateVars'
 import {getWindowVars} from 'src/variables/utils/getWindowVars'
-import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
+import {buildExtern} from 'src/variables/utils/buildVarsOption'
 import 'intersection-observer'
 import {getAll} from 'src/resources/selectors'
 import {getOrgIDFromBuckets} from 'src/timeMachine/actions/queries'
@@ -242,7 +242,7 @@ class TimeSeries extends Component<Props, State> {
           getOrgIDFromBuckets(text, buckets) || this.props.match.params.orgID
 
         const windowVars = getWindowVars(text, vars)
-        const extern = buildVarsOption([...vars, ...windowVars])
+        const extern = buildExtern([...vars, ...windowVars], false)
         event('runQuery', {context: 'TimeSeries'})
         if (isCurrentPageDashboard) {
           return onGetCachedResultsThunk(orgID, text)
@@ -261,7 +261,7 @@ class TimeSeries extends Component<Props, State> {
 
       let statuses = [] as StatusRow[][]
       if (check) {
-        const extern = buildVarsOption(vars)
+        const extern = buildExtern(vars, false)
         this.pendingCheckStatuses = runStatusesQuery(
           this.props.match.params.orgID,
           check.id,

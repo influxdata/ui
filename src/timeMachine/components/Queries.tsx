@@ -12,6 +12,7 @@ import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
 import TimeMachineQueryBuilder from 'src/timeMachine/components/QueryBuilder'
 import SubmitQueryButton from 'src/timeMachine/components/SubmitQueryButton'
 import RawDataToggle from 'src/timeMachine/components/RawDataToggle'
+import ProfleQueryToggle from 'src/timeMachine/components/ProfileQueryToggle'
 import QueryTabs from 'src/timeMachine/components/QueryTabs'
 import EditorShortcutsToolTip from 'src/timeMachine/components/EditorShortcutsTooltip'
 import {
@@ -20,6 +21,7 @@ import {
   FlexDirection,
   JustifyContent,
 } from '@influxdata/clockface'
+import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Actions
 import {
@@ -63,6 +65,13 @@ class TimeMachineQueries extends PureComponent<Props> {
             className="time-machine-queries--buttons"
           >
             {activeQuery.editMode === 'advanced' && <EditorShortcutsToolTip />}
+            {!isInCheckOverlay && (
+              <>
+                <FeatureFlag name="profile-query">
+                  <ProfleQueryToggle />
+                </FeatureFlag>
+              </>
+            )}
             <RawDataToggle />
             {!isInCheckOverlay && (
               <>

@@ -5,7 +5,7 @@ import {fromFlux} from '@influxdata/giraffe'
 // Utils
 import {resolveSelectedKey} from 'src/variables/utils/resolveSelectedValue'
 import {formatVarsOption} from 'src/variables/utils/formatVarsOption'
-import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
+import {buildExtern} from 'src/variables/utils/buildVarsOption'
 import {event} from 'src/cloud/utils/reporting'
 
 // Types
@@ -93,7 +93,7 @@ export class DefaultValueFetcher implements ValueFetcher {
       }
     }
 
-    const extern = buildVarsOption(variables)
+    const extern = buildExtern(variables, false)
     const request = runQuery(orgID, query, extern, abortController)
     event('runQuery', {context: 'variables'})
 

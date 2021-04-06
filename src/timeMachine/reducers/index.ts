@@ -73,8 +73,10 @@ export interface TimeMachineState {
   autoRefresh: AutoRefresh
   draftQueries: DashboardDraftQuery[]
   isViewingRawData: boolean
+  isProfilingQuery: boolean
   isViewingVisOptions: boolean
   isDisabledViewRawData: boolean
+  isDisabledProfilingQuery: boolean
   activeTab: TimeMachineTab
   activeQueryIndex: number | null
   queryBuilder: QueryBuilderState
@@ -98,8 +100,10 @@ export const initialStateHelper = (): TimeMachineState => {
     view: createView(),
     draftQueries: [{...defaultViewQuery(), hidden: false}],
     isViewingRawData: false,
+    isProfilingQuery: false,
     isViewingVisOptions: false,
     isDisabledViewRawData: false,
+    isDisabledProfilingQuery: false,
     activeTab: 'queries',
     activeQueryIndex: 0,
     queryResults: initialQueryResultsState(),
@@ -328,6 +332,18 @@ export const timeMachineReducer = (
       const {isDisabledViewRawData} = action.payload
 
       return {...state, isDisabledViewRawData}
+    }
+
+    case 'SET_IS_PROFILING_QUERY': {
+      const {isProfilingQuery} = action.payload
+
+      return {...state, isProfilingQuery}
+    }
+
+    case 'SET_IS_DISABLED_PROFILING_QUERY': {
+      const {isDisabledProfilingQuery} = action.payload
+
+      return {...state, isDisabledProfilingQuery}
     }
 
     case 'SET_ACTIVE_TAB': {

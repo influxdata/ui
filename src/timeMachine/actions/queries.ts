@@ -27,7 +27,7 @@ import {getActiveTimeMachine, getActiveQuery} from 'src/timeMachine/selectors'
 import fromFlux from 'src/shared/utils/fromFlux'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getAllVariables, asAssignment} from 'src/variables/selectors'
-import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
+import {buildExtern} from 'src/variables/utils/buildVarsOption'
 import {findNodes} from 'src/shared/utils/ast'
 import {
   isDemoDataAvailabilityError,
@@ -305,10 +305,11 @@ export const executeQueries = (abortController?: AbortController) => async (
         event('demoData_queried')
       }
 
-      const extern = buildVarsOption(variableAssignments)
-
+      const extern = buildExtern(
+        variableAssignments,
+        activeTimeMachine.isProfilingQuery
+      )
       event('runQuery', {context: 'timeMachine'})
-
       const queryID = generateHashedQueryID(text, allVariables, orgID)
       if (isCurrentPageDashboard(state)) {
         // reset any existing matching query in the cache
@@ -316,7 +317,8 @@ export const executeQueries = (abortController?: AbortController) => async (
         const result = getCachedResultsOrRunQuery(
           orgID,
           text,
-          getAllVariables(state)
+          getAllVariables(state),
+          activeTimeMachine.isProfilingQuery
         )
         setQueryByHashID(queryID, result)
 
@@ -338,7 +340,10 @@ export const executeQueries = (abortController?: AbortController) => async (
     } = state
 
     if (checkID) {
-      const extern = buildVarsOption(variableAssignments)
+      const extern = buildExtern(
+        variableAssignments,
+        activeTimeMachine.isProfilingQuery
+      )
       pendingCheckStatuses = runStatusesQuery(getOrg(state).id, checkID, extern)
       statuses = await pendingCheckStatuses.promise
     }

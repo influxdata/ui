@@ -2,7 +2,7 @@ import React, {FC, useEffect} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {parse} from 'src/external/parser'
 import {runQuery} from 'src/shared/apis/query'
-import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
+import {buildExtern} from 'src/variables/utils/buildVarsOption'
 import {asAssignment} from 'src/variables/selectors'
 import {getOrg} from 'src/organizations/selectors'
 import {getBuckets} from 'src/buckets/actions/thunks'
@@ -223,10 +223,11 @@ export const QueryProvider: FC = ({children}) => {
     // Some preamble for setting the stage
     const baseAST = parse(text)
     const usedVars = _getVars(baseAST, vars)
-    const optionAST = buildVarsOption(
+    const optionAST = buildExtern(
       Object.values(usedVars)
         .filter(v => !!v)
-        .map(v => asAssignment(v))
+        .map(v => asAssignment(v)),
+      false
     )
 
     // Make a version of the query with the variables loaded

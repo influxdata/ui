@@ -3,7 +3,7 @@ import {sortBy} from 'lodash'
 
 // Utils
 import {asAssignment, getAllVariables} from 'src/variables/selectors'
-import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
+import {buildExtern} from 'src/variables/utils/buildVarsOption'
 import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
 import {event} from 'src/cloud/utils/reporting'
 import {getWindowVars} from 'src/variables/utils/getWindowVars'
@@ -189,7 +189,8 @@ const hasWindowVars = (variables: VariableAssignment[]): boolean =>
 export const getCachedResultsOrRunQuery = (
   orgID: string,
   query: string,
-  allVars: Variable[]
+  allVars: Variable[],
+  isProfilingQuery: boolean
 ): CancelBox<RunQueryResult> => {
   const queryID = `${hashCode(query)}`
   event('Starting Query Cache Process ', {context: 'queryCache', queryID})
@@ -225,7 +226,10 @@ export const getCachedResultsOrRunQuery = (
   }
 
   // otherwise query & set results
-  const extern = buildVarsOption([...variableAssignments, ...windowVars])
+  const extern = buildExtern(
+    [...variableAssignments, ...windowVars],
+    isProfilingQuery
+  )
   const {mutex} = queryCache.initializeCacheByID(queryID, hashedVariables)
   const results = mutex.run(orgID, query, extern)
   results.promise = results.promise
@@ -250,4 +254,4 @@ export const getCachedResultsThunk = (orgID: string, query: string) => (
   _,
   getState: GetState
 ): CancelBox<RunQueryResult> =>
-  getCachedResultsOrRunQuery(orgID, query, getAllVariables(getState()))
+  getCachedResultsOrRunQuery(orgID, query, getAllVariables(getState()), false)

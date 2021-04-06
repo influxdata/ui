@@ -20,7 +20,7 @@ import {
 import {registerCompletion} from 'src/external/monaco.flux.lsp'
 import {AppState, LocalStorage} from 'src/types'
 import {getAllVariables, asAssignment} from 'src/variables/selectors'
-import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
+import {buildExtern} from 'src/variables/utils/buildVarsOption'
 import {runQuery} from 'src/shared/apis/query'
 import {getOrg} from 'src/organizations/selectors'
 import {fetchAllBuckets} from 'src/buckets/actions/thunks'
@@ -316,7 +316,7 @@ export class LSPServer {
       .map(v => asAssignment(v))
       .filter(v => !!v)
 
-    const file = buildVarsOption(variables)
+    const file = buildExtern(variables, false)
 
     const parts = uri.split('/')
     parts.pop()

@@ -840,7 +840,7 @@ components:
           type: string
           description: account id
         quartzId:
-          type: string
+          type: number
           description: account id in quartz
         onboardingState:
           type: string
@@ -1133,7 +1133,7 @@ components:
         quartzId:
           description: the quartz id of the user
           readOnly: true
-          type: string
+          type: number
         onboardingState:
           description: onboarding state of the user
           type: string
@@ -1232,7 +1232,7 @@ components:
           type: string
           description: ID of the org
         quartzId:
-          type: string
+          type: number
           description: quartz ID of the org
         name:
           type: string

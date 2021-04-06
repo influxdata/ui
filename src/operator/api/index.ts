@@ -40,7 +40,7 @@ export const getAccounts = (
       users: [
         {
           id: 'user1',
-          quartzId: 'q1',
+          quartzId: 1,
           onboardingState: 'complete',
           sfdcContactId: 'sdfc_u_know_me',
           firstName: 'jr',
@@ -115,7 +115,7 @@ export const getOrgs = (
   const organizations: Organization[] = [
     {
       id: '123',
-      quartzId: '123',
+      quartzId: 12,
       name: 'Best Org',
       region: 'us-west',
       provider: 'Zuora',
@@ -129,7 +129,7 @@ export const getOrgs = (
     },
     {
       id: '345',
-      quartzId: '345',
+      quartzId: 345,
       name: 'Second_best_org',
       region: 'eu-central',
       provider: 'aws',
@@ -143,7 +143,7 @@ export const getOrgs = (
     },
     {
       id: '678',
-      quartzId: '678',
+      quartzId: 678,
       name: 'Lucky 3',
       region: 'gcp-west',
       provider: 'gcm',
@@ -159,7 +159,9 @@ export const getOrgs = (
 
   const filtered = organizations.filter(org => {
     if (searchTerm) {
-      return org.id.includes(searchTerm) || org.quartzId.includes(searchTerm)
+      return (
+        org.id.includes(searchTerm) || org.quartzId.includes(Number(searchTerm))
+      )
     }
     return true
   })
@@ -169,7 +171,7 @@ export const getOrgs = (
 export const getOrgById = (_id: string): ReturnType<typeof getOrg> => {
   const organization: Organization = {
     id: '123',
-    quartzId: '123',
+    quartzId: 123,
     name: 'Best Org',
     region: 'us-west',
     provider: 'Zuora',
@@ -199,7 +201,7 @@ export const getAccountById = (
     organizations: [
       {
         id: 'orgid',
-        quartzId: 'quartzId',
+        quartzId: 001,
         name: 'name',
         region: 'region',
         provider: 'provider',

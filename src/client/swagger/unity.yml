@@ -839,6 +839,12 @@ components:
         id:
           type: string
           description: account id
+        quartzId:
+          type: number
+          description: account id in quartz
+        onboardingState:
+          type: string
+          description: stage of onboarding the account is in
         marketplace:
           $ref: '#/components/schemas/Marketplace'
           description: which marketplace, nil if none
@@ -849,7 +855,6 @@ components:
             - free
             - cancelled
             - pay_as_you_go
-        # TODO(ariel): this seems cyclical since accounts and orgs are subsets of one another
         organizations:
           $ref: '#/components/schemas/Organizations'
         zuoraAccountId:
@@ -1128,7 +1133,7 @@ components:
         quartzId:
           description: the quartz id of the user
           readOnly: true
-          type: string
+          type: number
         onboardingState:
           description: onboarding state of the user
           type: string
@@ -1160,57 +1165,21 @@ components:
     Me:
       properties:
         id:
+          type: string
           description: the idpe id of the user
-          type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
         email:
           type: string
-        orgId:
-          type: string
-        accountId:
-          type: string
-        isBeta:
+          description: the email associated with the user
+        account:
+          $ref: '#/components/schemas/Account'
+          description: User Account for the account
+        isRegionBeta:
           type: boolean
           description: whether the region associated with the account is a beta region
         isOperator:
           type: boolean
           description: whether the user is an operator
-        marketplace:
-          $ref: '#/components/schemas/Marketplace'
-          description: which marketplace, nil if none
-        balance:
-          type: number
-          description: remaining balance on the account, nil if none
-        billingContact:
-          $ref: '#/components/schemas/BillingContact'
-          description: billing contact for the account
-        users:
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
-        type:
-          type: string
-          description: type of the account
-          enum:
-            - free
-            - cancelled
-            - pay_as_you_go
-      required:
-        [
-          id,
-          accountId,
-          email,
-          firstName,
-          lastName,
-          isOperator,
-          isBeta,
-          orgId,
-          marketplace,
-          type,
-        ]
+      required: [id, account, email, isOperator, isRegionBeta]
     Users:
       type: object
       properties:
@@ -1262,9 +1231,9 @@ components:
         id:
           type: string
           description: ID of the org
-        idpeID:
-          type: string
-          description: idpe ID of the org
+        quartzId:
+          type: number
+          description: quartz ID of the org
         name:
           type: string
           description: name of the org
@@ -1277,14 +1246,35 @@ components:
         date:
           type: string
           description: date org was created
-        # TODO(ariel): this seems cyclical since accounts and orgs are subsets of one another
-        account:
-          $ref: '#/components/schemas/Account'
-      required: [id, idpeID, name, account, region, provider, date]
+        relatedAccount:
+          $ref: '#/components/schemas/RelatedAccount'
+          description: subset of related account information
+      required: [id, quartzId, name, region, provider, date]
     Organizations:
       type: array
       items:
         $ref: '#/components/schemas/Organization'
+    RelatedAccount:
+      description: Subset of Account data related to the organization
+      type: object
+      properties:
+        id:
+          type: string
+          description: account id
+        email:
+          type: string
+          description: email associated with the account
+        type:
+          type: string
+          description: type of the account
+          enum:
+            - free
+            - cancelled
+            - pay_as_you_go
+        balance:
+          type: number
+          description: remaining balance on the account, nil if none
+      required: [id, email, type, balance]
     RateLimits:
       description: Usage rate limits
       type: object

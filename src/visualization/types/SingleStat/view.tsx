@@ -4,6 +4,7 @@ import React, {FC, useContext} from 'react'
 // Utils
 import LatestValueTransform from 'src/visualization/components/LatestValueTransform'
 import {generateThresholdsListHexs} from 'src/shared/constants/colorOperations'
+import {getFormatter} from 'src/visualization/utils/getFormatter'
 
 // Types
 import {SingleStatViewProperties} from 'src/types/dashboards'
@@ -18,9 +19,8 @@ import {
 
 import './style.scss'
 import {isFlagEnabled} from '../../../shared/utils/featureFlag'
-import {DEFAULT_TIME_FORMAT} from '../../../shared/constants'
-import {getFormatter} from '../../utils/getFormatter'
-import {AppSettingContext} from '../../../shared/contexts/app'
+import {AppSettingContext} from 'src/shared/contexts/app'
+import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
 
 interface Props extends VisualizationProps {
   properties: SingleStatViewProperties

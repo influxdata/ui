@@ -149,7 +149,7 @@ do
 							printf '   - URL: %s\n' "${url}"
 
 							# download artifact
-							filename=$(basename ${path})
+							filename=$(basename "${path}")
 							curl -s -L --output "monitor-ci/test-artifacts/results/${name}/${filename}" --request GET \
 								--url "${url}" \
 								--header "Circle-Token: ${API_KEY}"

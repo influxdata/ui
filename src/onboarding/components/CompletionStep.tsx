@@ -116,8 +116,8 @@ class CompletionStep extends PureComponent<Props> {
                         />
                         <dt>I've got this...</dt>
                         <dd>
-                          Jump into InfluxDB Cloud and set up data collection when
-                          you’re ready.
+                          Jump into InfluxDB Cloud and set up data collection
+                          when you’re ready.
                         </dd>
                       </div>
                     </Grid.Column>

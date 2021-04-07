@@ -34,28 +34,36 @@ all_pipelines=$(curl -s --request GET \
 		--header "Circle-Token: ${API_KEY}" \
 		--header 'content-type: application/json' \
 		--header 'Accept: application/json')
-sha_pipelines=$(echo ${all_pipelines} | jq --arg SHA "${SHA}" '.items | map(select(.vcs.revision == $SHA))')
-sha_pipelines_length=$(echo ${sha_pipelines} | jq -r 'length')
-if [ $sha_pipelines_length -gt 0 ]; then
-	# check the status of the workflows for each of these pipelines
-	sha_pipelines_ids=( $(echo ${sha_pipelines} | jq -r '.[].id') )
-	for sha_pipeline_id in "${sha_pipelines_ids[@]}"; do
 
+# check the status of the workflows for each of these pipelines
+all_pipelines_ids=( $(echo ${all_pipelines} | jq -r '.[].id') )
+for pipeline_id in "${all_pipelines_ids[@]}"; do
+
+	config=$(curl -s --request GET \
+		--url "https://circleci.com/api/v2/pipeline/${pipeline_id}/config" \
+		--header "Circle-Token: ${API_KEY}" \
+		--header 'content-type: application/json' \
+		--header 'Accept: application/json')
+
+	# finds the UI SHA parameter used in this pipeline by hunting for the line "export UI_SHA="
+	pipeline_ui_sha=$(echo ${config} | jq '.compiled' | grep -o 'export UI_SHA=[^\]*' | grep -v 'export UI_SHA=${LATEST_SHA}' | head -1 | sed 's/=/\n/g' | tail -1)
+
+	if [[ "${SHA}" == "${pipeline_ui_sha}" ]]; then
+		# check if this pipeline's 'build' workflow is passing
 		workflows=$(curl -s --request GET \
 			--url "https://circleci.com/api/v2/pipeline/${pipeline_id}/workflow" \
 			--header "Circle-Token: ${API_KEY}" \
 			--header 'content-type: application/json' \
 			--header 'Accept: application/json')
 
-		number_workflows=$(echo ${workflows} | jq  -r '.items | length')
-		number_success_workflows=$(echo ${workflows} | jq  -r '.items | map(select(.status == "success")) | length')
-
-		if [ $number_workflows -eq $number_success_workflows ]; then
+		number_build_success_workflows=$(echo ${workflows} | jq '.items | map(select(.name == "build" and .status == "success")) | length')
+		if [ $number_build_success_workflows -gt 0 ]; then
 			# we've found a successful run
 			found_passing_pipeline=1
+			break
 		fi
-	done
-fi
+	fi
+done
 
 # terminate early if we found a passing pipeline for this SHA
 if [ $found_passing_pipeline -eq 1 ]; then

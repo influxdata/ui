@@ -190,13 +190,36 @@ export const FunctionListProvider: FC = ({children}) => {
     }
 
     try {
-      const response = await triggerAPI({
-        script,
-        params: paramObject,
-        language: 'python',
-        orgID,
-        method: 'POST',
-      })
+      const response = {
+        logs: [
+          {
+            message: 'Pair is EURUSD',
+            severity: 'info',
+            timestamp: 1617753427730,
+          },
+          {
+            message: 'Value is 1.1746',
+            severity: 'info',
+            timestamp: 1617753427781,
+          },
+        ],
+        response: {
+          data: {
+            pair: 'EURUSD',
+            urlSuffix: '',
+            value: 1.1746,
+          },
+          dataType: 'json',
+          headers: {
+            'content-type': 'application/json',
+            'x-test-response': 'unspecified',
+          },
+          statusCode: 200,
+          type: 'http',
+        },
+        startedAt: '2021-04-06T23:57:07.695919000Z',
+        status: 'ok',
+      }
       return response
     } catch (error) {
       dispatch(notify(functionTriggerFail()))

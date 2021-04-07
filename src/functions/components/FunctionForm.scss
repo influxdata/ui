@@ -22,3 +22,8 @@
   border-radius: 0 $radius $radius 0;
   margin: $ix-marg-b;
 }
+
+.function-form--response-scroll-bar {
+  max-height: 300px; // Some options, you can explore re-organizing the container and using the height 100% or you can just make this a calc(100% - Whatever is above this) so that it fills the rest of the container responsively.
+  width: 100%;
+}

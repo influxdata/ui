@@ -56,10 +56,14 @@ const FunctionResponse: FC<Props> = ({
           }
           border={true}
         >
-          <Panel.Header>
-            <h5>{statusText}</h5>
-          </Panel.Header>
-          <DapperScrollbars style={{width: '100%', height: '100%'}}>
+          <DapperScrollbars
+            className="function-form--response-scroll-bar"
+            autoHide={true}
+            autoSizeHeight={true}
+          >
+            <Panel.Header>
+              <h5>{statusText}</h5>
+            </Panel.Header>
             <Panel.Body alignItems={AlignItems.FlexStart}>
               {status == 'ok' ? (
                 <>

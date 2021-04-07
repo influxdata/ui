@@ -90,10 +90,10 @@ const FunctionForm: FC = () => {
             </ButtonGroup>
           </Grid.Column>
         </Grid.Row>
-        {triggerResponse.status && (
-          <FunctionResponse triggerResponse={triggerResponse} />
-        )}
       </Grid>
+      {triggerResponse.status && (
+        <FunctionResponse triggerResponse={triggerResponse} />
+      )}
     </Form>
   )
 }

@@ -1,6 +1,5 @@
 import React, {FC, useCallback, useEffect, useState} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
-import {useHistory} from 'react-router-dom'
 import {
   getAllAPI,
   deleteAPI,
@@ -74,7 +73,6 @@ export const FunctionListContext = React.createContext<FunctionListContextType>(
 
 export const FunctionListProvider: FC = ({children}) => {
   const dispatch = useDispatch()
-  const history = useHistory()
   const {id: orgID} = useSelector(getOrg)
 
   const [functionsList, setFunctionsList] = useState({})
@@ -112,7 +110,6 @@ export const FunctionListProvider: FC = ({children}) => {
         ...functionsList,
         [createdFunction.id]: createdFunction,
       })
-      history.push(`/orgs/${orgID}/functions/`)
     } catch {
       dispatch(notify(functionCreateFail()))
     }
@@ -145,7 +142,6 @@ export const FunctionListProvider: FC = ({children}) => {
       }
       _functions[id] = updatedFunction
       setFunctionsList(_functions)
-      history.push(`/orgs/${orgID}/functions/`)
     } catch (error) {
       dispatch(notify(functionUpdateFail()))
     }

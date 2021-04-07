@@ -66,13 +66,17 @@ else
 fi
 
 # start the monitor-ci pipeline
+DEPLOY_PROD=false
+if [[ "${UI_BRANCH}" == "master" ]]; then
+	DEPLOY_PROD=true
+fi
 printf "\nstarting monitor-ci pipeline targeting monitor-ci branch ${MONITOR_CI_BRANCH}, UI branch ${UI_BRANCH} and using UI SHA ${SHA}\n"
 pipeline=$(curl -s --fail --request POST \
   --url https://circleci.com/api/v2/project/gh/influxdata/monitor-ci/pipeline \
   --header "Circle-Token: ${API_KEY}" \
   --header 'content-type: application/json' \
 	--header 'Accept: application/json'    \
-  --data "{\"branch\":\"${MONITOR_CI_BRANCH}\", \"parameters\":{ \"ui-sha\":\"${SHA}\", \"ui-branch\":\"${UI_BRANCH}\", \"ui-pull-request\":\"${PULL_REQUEST}\"}}")
+  --data "{\"branch\":\"${MONITOR_CI_BRANCH}\", \"parameters\":{ \"ui-sha\":\"${SHA}\", \"ui-branch\":\"${UI_BRANCH}\", \"ui-pull-request\":\"${PULL_REQUEST}\", \"deploy-prod\":${DEPLOY_PROD}}}")
 
 if [ $? != 0 ]; then
 	echo "failed to start the monitor-ci pipeline, quitting"

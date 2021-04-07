@@ -1,21 +1,15 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC} from 'react'
 
 // Components
 import LineProtocolHelperText from 'src/buckets/components/lineProtocol/LineProtocolHelperText'
-import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
+import LineProtocolTabs from 'src/buckets/components/lineProtocol/configure/LineProtocolTabs'
 
-// Styles
-import 'src/writeData/components/WriteDataDetailsView.scss'
-
-const LpMethod: FC = () => {
-  const {bucket} = useContext(WriteDataDetailsContext)
-
-  return (
-    <>
-      <LineProtocolHelperText />
-    </>
-  )
-}
+const LpMethod: FC = () => (
+  <>
+    <LineProtocolHelperText />
+    <LineProtocolTabs />
+  </>
+)
 
 export default LpMethod

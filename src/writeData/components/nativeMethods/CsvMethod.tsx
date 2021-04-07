@@ -9,7 +9,7 @@ import {
 
 // Components
 import CsvUploaderHelperText from 'src/buckets/components/csvUploader/CsvUploaderHelperText'
-import {CsvUploaderContext} from 'src/buckets/components/context/csvUploaderProvider'
+import {CsvUploaderContext} from 'src/buckets/components/context/csvUploader'
 import {getCsvBody} from 'src/buckets/components/csvUploader/CsvUploaderWizard'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 

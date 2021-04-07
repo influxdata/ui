@@ -8,6 +8,7 @@ import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataD
 import GetResources from 'src/resources/components/GetResources'
 import CsvMethod from 'src/writeData/components/nativeMethods/CsvMethod'
 import LpMethod from 'src/writeData/components/nativeMethods/LpMethod'
+
 // Types
 import {WriteDataSection} from 'src/writeData/constants'
 import {ResourceType} from 'src/types'

@@ -4,7 +4,7 @@ import cn from 'classnames'
 
 // Components
 import {SparkleSpinner} from '@influxdata/clockface'
-import {Context} from 'src/buckets/components/lineProtocol/LineProtocolWizard'
+import {LineProtocolContext} from 'src/buckets/components/context/lineProtocol'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -41,7 +41,7 @@ const className = status =>
   })
 
 const StatusIndicator: FC = () => {
-  const [{writeStatus, writeError}] = useContext(Context)
+  const {writeStatus, writeError} = useContext(LineProtocolContext)
 
   return (
     <div className="line-protocol--spinner">

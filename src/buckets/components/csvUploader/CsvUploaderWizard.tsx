@@ -17,7 +17,7 @@ import {getOrg} from 'src/organizations/selectors'
 import {event} from 'src/cloud/utils/reporting'
 
 // Context
-import {CsvUploaderContext} from 'src/buckets/components/context/csvUploaderProvider'
+import {CsvUploaderContext} from 'src/buckets/components/context/csvUploader'
 
 // Components
 import CsvUploaderBody from 'src/buckets/components/csvUploader/CsvUploaderBody'

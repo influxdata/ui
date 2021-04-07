@@ -8,7 +8,7 @@ import {ProgressBar} from '@influxdata/clockface'
 import DragAndDrop from 'src/buckets/components/csvUploader/DragAndDrop'
 
 // Context
-import {CsvUploaderContext} from 'src/buckets/components/context/csvUploaderProvider'
+import {CsvUploaderContext} from 'src/buckets/components/context/csvUploader'
 
 // Utils
 import {getByID} from 'src/resources/selectors'

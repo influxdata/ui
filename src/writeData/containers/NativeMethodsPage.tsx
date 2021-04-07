@@ -7,7 +7,8 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 import NativeMethodsIndex from 'src/writeData/components/nativeMethods/NativeMethodsIndex'
 import UploadDataDetailsView from 'src/writeData/components/nativeMethods/UploadDataDetailsView'
 import UploadDataHelper from 'src/writeData/components/nativeMethods/UploadDataHelper'
-import CsvUploaderProvider from 'src/buckets/components/context/csvUploaderProvider'
+import CsvUploaderProvider from 'src/buckets/components/context/csvUploader'
+import LineProtocolProvider from 'src/buckets/components/context/lineProtocol'
 
 // Constants
 import {ORGS, ORG_ID, NATIVE_METHODS} from 'src/shared/constants/routes'
@@ -17,9 +18,11 @@ const nativeMethodsPath = `/${ORGS}/${ORG_ID}/load-data/${NATIVE_METHODS}`
 
 const NativeMethodsDetailsPage: FC = () => (
   <CsvUploaderProvider>
-    <UploadDataDetailsView section={WRITE_DATA_NATIVE_METHODS_SECTION}>
-      <UploadDataHelper />
-    </UploadDataDetailsView>
+    <LineProtocolProvider>
+      <UploadDataDetailsView section={WRITE_DATA_NATIVE_METHODS_SECTION}>
+        <UploadDataHelper />
+      </UploadDataDetailsView>
+    </LineProtocolProvider>
   </CsvUploaderProvider>
 )
 

@@ -68,7 +68,7 @@ fi
 # start the monitor-ci pipeline
 DEPLOY_PROD=false
 if [[ "${UI_BRANCH}" == "master" ]]; then
-	DEPLOY_PROD=true
+	DEPLOY_PROD=false # TODO: change this to true when we're ready to depend on this script
 fi
 printf "\nstarting monitor-ci pipeline targeting monitor-ci branch ${MONITOR_CI_BRANCH}, UI branch ${UI_BRANCH} and using UI SHA ${SHA}\n"
 pipeline=$(curl -s --fail --request POST \

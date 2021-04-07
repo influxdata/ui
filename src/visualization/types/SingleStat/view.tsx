@@ -1,9 +1,10 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
 
 // Utils
 import LatestValueTransform from 'src/visualization/components/LatestValueTransform'
 import {generateThresholdsListHexs} from 'src/shared/constants/colorOperations'
+import {getFormatter} from 'src/visualization/utils/getFormatter'
 
 // Types
 import {SingleStatViewProperties} from 'src/types/dashboards'
@@ -18,6 +19,8 @@ import {
 
 import './style.scss'
 import {isFlagEnabled} from '../../../shared/utils/featureFlag'
+import {AppSettingContext} from 'src/shared/contexts/app'
+import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
 
 interface Props extends VisualizationProps {
   properties: SingleStatViewProperties
@@ -25,6 +28,7 @@ interface Props extends VisualizationProps {
 
 const SingleStat: FC<Props> = ({properties, result}) => {
   const {prefix, suffix, colors, decimalPlaces} = properties
+  const {timeZone} = useContext(AppSettingContext)
 
   if (isFlagEnabled('useGiraffeGraphs')) {
     const latestValues = getLatestValues(result.table)
@@ -74,11 +78,20 @@ const SingleStat: FC<Props> = ({properties, result}) => {
             cellType: 'single-stat',
           })
 
-          const formattedValue = formatStatValue(latestValue, {
-            decimalPlaces,
-            prefix,
-            suffix,
+          const timeFormatter = getFormatter('time', {
+            timeZone: timeZone === 'Local' ? undefined : timeZone,
+            timeFormat: DEFAULT_TIME_FORMAT,
           })
+
+          const formattedValue =
+            result.table.getColumnType('_value') === 'time'
+              ? timeFormatter(latestValue)
+              : formatStatValue(latestValue, {
+                  decimalPlaces,
+                  prefix,
+                  suffix,
+                })
+
           return (
             <div
               className="single-stat"

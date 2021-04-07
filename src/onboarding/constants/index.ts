@@ -1,1 +1,1 @@
-export const QUICKSTART_DASHBOARD_NAME = 'InfluxDB 2.0 OSS Metrics'
+export const QUICKSTART_DASHBOARD_NAME = 'InfluxDB Cloud OSS Metrics'

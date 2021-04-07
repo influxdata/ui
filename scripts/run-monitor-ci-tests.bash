@@ -46,7 +46,7 @@ for pipeline_id in "${all_pipelines_ids[@]}"; do
 		--header 'Accept: application/json')
 
 	# finds the UI SHA parameter used in this pipeline by hunting for the line "export UI_SHA="
-	pipeline_ui_sha=$(echo ${config} | jq '.compiled' | grep -o 'export UI_SHA=[^\]*' | grep -v 'export UI_SHA=${LATEST_SHA}' | head -1 | sed 's/=/\n/g' | tail -1)
+	pipeline_ui_sha=$(echo ${config} | jq '.compiled' | grep -o 'export UI_SHA=[^\]*' | grep -v 'export UI_SHA=${LATEST_SHA}' | head -1 | sed 's/=/\n/g' | tail -1 || true)
 
 	if [[ "${SHA}" == "${pipeline_ui_sha}" ]]; then
 		# check if this pipeline's 'build' workflow is passing

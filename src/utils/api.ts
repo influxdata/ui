@@ -25,6 +25,11 @@ export const getErrorMessage = (e: any) => {
     message = get(e, 'message')
   }
 
+  if (!message && Array.isArray(e)) {
+    const error = e.find(err => err.status >= 400)
+    message = get(error, 'data.message')
+  }
+
   if (!message) {
     message = 'unknown error'
   }

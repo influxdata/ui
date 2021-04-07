@@ -30,6 +30,7 @@ import {
   MembersIndex,
   RouteToDashboardList,
   ClientLibrariesPage,
+  NativeMethodsPage,
   TelegrafPluginsPage,
   FlowsIndex,
   NotFound,
@@ -56,6 +57,7 @@ import {
   TEMPLATES,
   TOKENS,
   TELEGRAFS,
+  NATIVE_METHODS,
 } from 'src/shared/constants/routes'
 
 // Actions
@@ -175,6 +177,10 @@ const SetOrg: FC<Props> = ({
           <Route
             path={`${orgPath}/${LOAD_DATA}/${CLIENT_LIBS}`}
             component={ClientLibrariesPage}
+          />
+          <Route
+            path={`${orgPath}/${LOAD_DATA}/${NATIVE_METHODS}`}
+            component={NativeMethodsPage}
           />
           <Route
             path={`${orgPath}/${LOAD_DATA}/${TELEGRAF_PLUGINS}`}

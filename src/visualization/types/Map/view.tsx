@@ -7,7 +7,10 @@ import {GeoViewProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
 
 // Utils
-import {getGeoCoordinates} from 'src/shared/utils/vis'
+import {
+  getDetectCoordinatingFields,
+  getGeoCoordinates,
+} from 'src/shared/utils/vis'
 import {getMapToken} from './api'
 
 interface Props extends VisualizationProps {
@@ -19,38 +22,45 @@ enum MapErrorStates {
   InvalidCoordinates = 'InvalidCoordinates',
 }
 
+type GeoCoordinates = {
+  lat: number
+  lon: number
+}
+
 const GeoPlot: FC<Props> = ({result, properties}) => {
   const {layers, zoom, allowPanAndZoom, mapStyle} = properties
+  const {lat, lon} = properties.center
 
-  const [errorCode, setErrorCode] = useState<string>('')
+  const [mapServiceError, setMapServiceError] = useState<string>('')
   const [mapToken, setMapToken] = useState<string>('')
+  const [coordinateError, setCoordinateError] = useState<string>('')
+  const [geoCoordinates, setGeoCoordinates] = useState<GeoCoordinates>({
+    lat,
+    lon,
+  })
 
   useEffect(() => {
     const getToken = async () => {
       try {
         const {token} = await getMapToken()
         setMapToken(token)
+        setMapServiceError('')
       } catch (err) {
-        setErrorCode(MapErrorStates.MapServiceUnavailable)
+        setMapServiceError(MapErrorStates.MapServiceUnavailable)
       }
     }
     getToken()
   }, [])
 
-  const {lat, lon} = properties.center
-
-  let calculatedGeoCoordinates = {
-    lat,
-    lon,
-  }
-
   useEffect(() => {
     try {
-      calculatedGeoCoordinates = getGeoCoordinates(result.table)
+      const coordinates = getGeoCoordinates(result.table, 0)
+      setGeoCoordinates(coordinates)
+      setCoordinateError('')
     } catch (err) {
-      setErrorCode(MapErrorStates.InvalidCoordinates)
+      setCoordinateError(MapErrorStates.InvalidCoordinates)
     }
-  }, [])
+  }, [result.table])
 
   let error = ''
 
@@ -61,52 +71,53 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     return ''
   }
 
-  switch (errorCode) {
-    case MapErrorStates.MapServiceUnavailable:
-      error =
-        'Map type is having issues connecting to the server. Please try again later.'
+  const coordinatingFieldsFlag = getDetectCoordinatingFields(result.table)
 
-      return (
-        <div className="panel-resizer--error" data-testid="geoplot-error">
-          {error}
-        </div>
-      )
-    case MapErrorStates.InvalidCoordinates:
-      error =
-        'Map type is not supported with the data provided: Missing latitude/longitude values'
+  if (mapServiceError === MapErrorStates.MapServiceUnavailable) {
+    error =
+      'Map type is having issues connecting to the server. Please try again later.'
 
-      return (
-        <div className="panel-resizer--error" data-testid="geoplot-error">
-          {error}
-        </div>
-      )
-    default:
-      const tileServerConfiguration = {
-        tileServerUrl: getMapboxUrl(),
-        bingKey: '',
-      }
+    return (
+      <div className="panel-resizer--error" data-testid="geoplot-error">
+        {error}
+      </div>
+    )
+  } else if (coordinateError === MapErrorStates.InvalidCoordinates) {
+    error =
+      'Map type is not supported with the data provided: Missing latitude/longitude values'
 
-      return (
-        <Plot
-          config={{
-            table: result.table,
-            showAxes: false,
-            layers: [
-              {
-                type: 'geo',
-                lat: calculatedGeoCoordinates.lat,
-                lon: calculatedGeoCoordinates.lon,
-                zoom,
-                allowPanAndZoom,
-                detectCoordinateFields: true,
-                mapStyle,
-                layers,
-                tileServerConfiguration: tileServerConfiguration,
-              },
-            ],
-          }}
-        />
-      )
+    return (
+      <div className="panel-resizer--error" data-testid="geoplot-error">
+        {error}
+      </div>
+    )
+  } else {
+    const tileServerConfiguration = {
+      tileServerUrl: getMapboxUrl(),
+      bingKey: '',
+    }
+
+    return (
+      <Plot
+        config={{
+          table: result.table,
+          showAxes: false,
+          layers: [
+            {
+              type: 'geo',
+              lat: geoCoordinates.lat,
+              lon: geoCoordinates.lon,
+              zoom,
+              allowPanAndZoom,
+              detectCoordinateFields: coordinatingFieldsFlag,
+              mapStyle,
+              layers,
+              tileServerConfiguration: tileServerConfiguration,
+            },
+          ],
+        }}
+      />
+    )
   }
 }
 

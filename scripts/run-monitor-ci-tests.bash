@@ -36,7 +36,7 @@ all_pipelines=$(curl -s --request GET \
 		--header 'Accept: application/json')
 
 # check the status of the workflows for each of these pipelines
-all_pipelines_ids=( $(echo ${all_pipelines} | jq -r '.[].id') )
+all_pipelines_ids=( $(echo ${all_pipelines} | jq -r '.items | .[].id') )
 for pipeline_id in "${all_pipelines_ids[@]}"; do
 
 	config=$(curl -s --request GET \

@@ -84,7 +84,7 @@ const SingleStat: FC<Props> = ({properties, result}) => {
           })
 
           const formattedValue =
-            result.table.getColumnType('_value') == 'time'
+            result.table.getColumnType('_value') === 'time'
               ? timeFormatter(latestValue)
               : formatStatValue(latestValue, {
                   decimalPlaces,

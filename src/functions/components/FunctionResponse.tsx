@@ -26,10 +26,7 @@ const FunctionResponse: FC<Props> = ({
     if (response && response.data) {
       return (
         <>
-          <pre style={{maxWidth: '200px'}}>
-            {JSON.stringify(response.data, null, '\t')}
-          </pre>{' '}
-          <p></p>
+          <pre>{JSON.stringify(response.data, null, '\t')}</pre> <p></p>
         </>
       )
     }

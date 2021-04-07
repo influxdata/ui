@@ -13,7 +13,6 @@ import {
   ComponentSize,
   ComponentStatus,
 } from '@influxdata/clockface'
-import moment from 'moment'
 
 interface Props {
   timeRange: TimeRange
@@ -140,7 +139,7 @@ class DateRangePicker extends PureComponent<Props, State> {
   }
 
   private isTimeRangeValid = (lower: string, upper: string): boolean => {
-    return moment(lower).isBefore(upper)
+    return new Date(lower).getTime() < new Date(upper).getTime()
   }
 
   private handleInvalidInput = () => {

@@ -603,4 +603,4 @@ commands:
           name: Checkout monitor-ci repo
           environment:
             REPO: monitor-ci
-            BRANCH: master
+            BRANCH: fix_decimal_places

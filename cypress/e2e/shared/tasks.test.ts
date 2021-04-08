@@ -675,6 +675,35 @@ http.post(
         .getByTestID('task-card--name')
         .contains(task.name)
     })
+
+    // Test the browser Back click navigation condition
+    tasks.forEach(task => {
+      // Search for a task
+      const name = task.name.slice(-4)
+      cy.getByTestID('search-widget')
+        .clear()
+        .type(name)
+      cy.getByTestID('resource-list--body')
+        .children()
+        .should('have.length', 1)
+      cy.getByTestID('resource-list--body')
+        .children()
+        .getByTestID('task-card--name')
+        .click()
+
+      // Navigate away from current page back to Tasks List page
+      cy.go('back')
+      cy.getByTestID('search-widget').should('have.value', name)
+
+      // Validate that the list has correct search results
+      cy.getByTestID('resource-list--body')
+        .children()
+        .should('have.length', 1)
+      cy.getByTestID('resource-list--body')
+        .children()
+        .getByTestID('task-card--name')
+        .contains(task.name)
+    })
   })
 })
 

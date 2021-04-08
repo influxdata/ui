@@ -6,8 +6,8 @@ import {useParams} from 'react-router-dom'
 import {Page} from '@influxdata/clockface'
 import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
 import GetResources from 'src/resources/components/GetResources'
-import CsvMethod from 'src/writeData/components/nativeMethods/CsvMethod'
-import LpMethod from 'src/writeData/components/nativeMethods/LpMethod'
+import CsvMethod from 'src/writeData/components/fileUploads/CsvMethod'
+import LpMethod from 'src/writeData/components/fileUploads/LpMethod'
 
 // Types
 import {WriteDataSection} from 'src/writeData/constants'
@@ -61,6 +61,7 @@ const UploadDataDetailsView: FC<Props> = ({section, children}) => {
               >
                 {children}
                 {isLP ? <LpMethod /> : <CsvMethod />}
+                {/* TODO(ariel): add some helper text in each of these to match the other pages and update the logos / images */}
               </div>
             </div>
           </Page.Contents>

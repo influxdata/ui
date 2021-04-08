@@ -629,7 +629,10 @@ http.post(
     ]
 
     tasks.forEach(task => {
-      cy.getByTestID('add-resource-dropdown').click()
+      cy.getByTestID('add-resource-dropdown')
+        .children()
+        .first()
+        .click()
       cy.getByTestID('add-resource-dropdown--new').click()
 
       // Fill Task Form

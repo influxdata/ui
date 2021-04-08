@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useCallback} from 'react'
+import React, {CSSProperties, FC, useContext} from 'react'
 
 // Components
 import {
@@ -13,32 +13,25 @@ import CreateBucketDropdownItem from 'src/flows/shared/BucketSelector/CreateBuck
 
 // Contexts
 import {BucketContext} from 'src/flows/context/buckets'
-import {PipeContext} from 'src/flows/context/pipe'
-
-// Utils
-import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {Bucket} from 'src/types'
 
 interface Props {
+  selected: Bucket
+  onSelect: (bucket: Bucket) => void
   testID?: string
+  style?: CSSProperties
 }
 
-const BucketSelector: FC<Props> = ({testID = 'flow-bucket-selector'}) => {
-  const {data, update} = useContext(PipeContext)
+const BucketSelector: FC<Props> = ({
+  selected,
+  onSelect,
+  testID = 'flow-bucket-selector',
+  style = {},
+}) => {
   const {buckets, loading} = useContext(BucketContext)
   let buttonText = 'Loading buckets...'
-
-  const updateBucket = useCallback(
-    (updatedBucket: Bucket): void => {
-      event('Updating Bucket Selection in Flow Query Builder', {
-        bucket: updatedBucket.name,
-      })
-      update({bucket: updatedBucket})
-    },
-    [update]
-  )
 
   let menuItems = (
     <Dropdown.ItemEmpty>
@@ -50,7 +43,7 @@ const BucketSelector: FC<Props> = ({testID = 'flow-bucket-selector'}) => {
     menuItems = (
       <>
         <CreateBucketDropdownItem
-          onUpdateBucket={updateBucket}
+          onUpdateBucket={onSelect}
           testID={`${testID}--create`}
         />
         <Dropdown.Divider />
@@ -58,8 +51,8 @@ const BucketSelector: FC<Props> = ({testID = 'flow-bucket-selector'}) => {
           <Dropdown.Item
             key={bucket.name}
             value={bucket}
-            onClick={updateBucket}
-            selected={bucket.name === data.bucket?.name}
+            onClick={onSelect}
+            selected={bucket.name === selected?.name}
             title={bucket.name}
             wrapText={true}
             testID={`${testID}--${bucket.name}`}
@@ -71,10 +64,10 @@ const BucketSelector: FC<Props> = ({testID = 'flow-bucket-selector'}) => {
     )
   }
 
-  if (loading === RemoteDataState.Done && !data.bucket) {
+  if (loading === RemoteDataState.Done && !selected?.name) {
     buttonText = 'Choose a bucket'
-  } else if (loading === RemoteDataState.Done && data.bucket) {
-    buttonText = data.bucket.name
+  } else if (loading === RemoteDataState.Done && selected?.name) {
+    buttonText = selected.name
   }
 
   const button = (active, onClick) => (
@@ -92,13 +85,7 @@ const BucketSelector: FC<Props> = ({testID = 'flow-bucket-selector'}) => {
     <Dropdown.Menu onCollapse={onCollapse}>{menuItems}</Dropdown.Menu>
   )
 
-  return (
-    <Dropdown
-      button={button}
-      menu={menu}
-      style={{width: '250px', flex: '0 0 250px'}}
-    />
-  )
+  return <Dropdown button={button} menu={menu} style={style} />
 }
 
 export default BucketSelector

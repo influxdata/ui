@@ -996,7 +996,7 @@ components:
           type: object
           readOnly: true
           example:
-            self: '/unity/v2/invites/1'
+            self: '/api/v2private/invites/1'
           properties:
             self:
               type: string
@@ -1156,7 +1156,7 @@ components:
           type: object
           readOnly: true
           example:
-            self: '/unity/v2/users/1'
+            self: '/api/v2private/users/1'
           properties:
             self:
               type: string

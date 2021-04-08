@@ -3,7 +3,7 @@ info:
   title: Unity API Service
   version: 0.1.0
 servers:
-  - url: /unity/v2 # to be determined
+  - url: /api/v2private
 paths:
   '/account':
     get:

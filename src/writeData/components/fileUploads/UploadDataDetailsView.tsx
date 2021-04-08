@@ -1,13 +1,16 @@
 // Libraries
 import React, {FC, ReactNode} from 'react'
 import {useParams} from 'react-router-dom'
+import {Renderer} from 'react-markdown'
 
 // Components
 import {Page} from '@influxdata/clockface'
 import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
 import GetResources from 'src/resources/components/GetResources'
 import CsvMethod from 'src/writeData/components/fileUploads/CsvMethod'
-import LpMethod from 'src/writeData/components/fileUploads/LpMethod'
+import WriteDataCodeSnippet from 'src/writeData/components/WriteDataCodeSnippet'
+import LineProtocolTabs from 'src/buckets/components/lineProtocol/configure/LineProtocolTabs'
+import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
 
 // Types
 import {WriteDataSection} from 'src/writeData/constants'
@@ -27,9 +30,15 @@ interface Props {
   children?: ReactNode
 }
 
+const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => {
+  return <WriteDataCodeSnippet code={props.value} language={props.language} />
+}
+
 const UploadDataDetailsView: FC<Props> = ({section, children}) => {
   const {contentID} = useParams()
-  const {name, image} = section.items.find(item => item.id === contentID)
+  const {name, markdown, image} = section.items.find(
+    item => item.id === contentID
+  )
 
   let thumbnail = (
     <img data-testid="load-data-details-thumb" src={image || placeholderLogo} />
@@ -37,6 +46,14 @@ const UploadDataDetailsView: FC<Props> = ({section, children}) => {
 
   if (image) {
     thumbnail = <img data-testid="load-data-details-thumb" src={image} />
+  }
+
+  let pageContent = <></>
+
+  if (markdown) {
+    pageContent = (
+      <MarkdownRenderer text={markdown} cloudRenderers={{code: codeRenderer}} />
+    )
   }
 
   const isLP = contentID === 'lp'
@@ -60,8 +77,8 @@ const UploadDataDetailsView: FC<Props> = ({section, children}) => {
                 data-testid="load-data-details-content"
               >
                 {children}
-                {isLP ? <LpMethod /> : <CsvMethod />}
-                {/* TODO(ariel): add some helper text in each of these to match the other pages and update the logos / images */}
+                {pageContent}
+                {isLP ? <LineProtocolTabs /> : <CsvMethod />}
               </div>
             </div>
           </Page.Contents>

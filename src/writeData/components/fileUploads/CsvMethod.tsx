@@ -8,7 +8,6 @@ import {
 } from '@influxdata/clockface'
 
 // Components
-import CsvUploaderHelperText from 'src/buckets/components/csvUploader/CsvUploaderHelperText'
 import {CsvUploaderContext} from 'src/buckets/components/context/csvUploader'
 import {getCsvBody} from 'src/buckets/components/csvUploader/CsvUploaderWizard'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
@@ -35,7 +34,6 @@ const CsvMethod: FC = () => {
 
   return (
     <>
-      <CsvUploaderHelperText />
       {getCsvBody(uploadState, bucket.name)}
       {uploadState !== RemoteDataState.NotStarted && (
         <div className="csv-button--wrapper">

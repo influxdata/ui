@@ -63,7 +63,7 @@ class CompletionStep extends PureComponent<Props> {
             <div className="wizard-step--scroll-content">
               <h3 className="wizard-step--title">You are ready to go!</h3>
               <h5 className="wizard-step--sub-title">
-                Your {this.environment} has 1 organization, 1 user, and 1
+                Your InfluxDB {CLOUD && 'Cloud '}has 1 organization, 1 user, and 1
                 bucket.
               </h5>
               <div className="splash-logo secondary" />

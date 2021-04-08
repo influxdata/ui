@@ -22,3 +22,8 @@
   border-radius: 0 $radius $radius 0;
   margin: $ix-marg-b;
 }
+
+.function-form--response-scroll-bar {
+  max-height: 250px;
+  max-width: 100%;
+}

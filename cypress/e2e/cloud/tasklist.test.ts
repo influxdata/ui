@@ -1,12 +1,11 @@
 import {Organization} from '../../../src/types'
 
-describe('Checkout Page', () => {
+describe('Tasks List Page', () => {
   beforeEach(() => {
     cy.flush()
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        console.log('Organization:::: ', id)
         cy.visit(`orgs/${id}/tasks`)
       })
     })
@@ -17,13 +16,13 @@ describe('Checkout Page', () => {
 
     const tasks = [
       {
-        name: 't1',
+        name: 'task1',
         every: '3h30s',
         offset: '20m',
         query: 'task query1',
       },
       {
-        name: 't2',
+        name: 'task2',
         every: '3h',
         offset: '30m',
         query: 'task query2',
@@ -51,7 +50,8 @@ describe('Checkout Page', () => {
     })
 
     // Search for a task
-    cy.getByTestID('search-widget').type(tasks[0].name)
+    const task1Name = tasks[0].name.slice(-4)
+    cy.getByTestID('search-widget').type(task1Name)
     cy.getByTestID('resource-list--body')
       .children()
       .should('have.length', 1)
@@ -62,7 +62,14 @@ describe('Checkout Page', () => {
 
     // Navigate away from current page back to Tasks List page
     cy.getByTestID('task-cancel-btn').click()
-    cy.getByTestID('search-widget').should('have.value', tasks[0].name)
+    cy.getByTestID('search-widget').should('have.value', task1Name)
+    cy.getByTestID('resource-list--body')
+      .children()
+      .should('have.length', 1)
+    cy.getByTestID('resource-list--body')
+      .children()
+      .getByTestID('task-card--name')
+      .contains(tasks[0].name)
 
     // Search for a different task
     cy.getByTestID('search-widget')
@@ -79,5 +86,12 @@ describe('Checkout Page', () => {
     // Navigate away from current page back to Tasks List page
     cy.getByTestID('task-cancel-btn').click()
     cy.getByTestID('search-widget').should('have.value', tasks[1].name)
+    cy.getByTestID('resource-list--body')
+      .children()
+      .should('have.length', 1)
+    cy.getByTestID('resource-list--body')
+      .children()
+      .getByTestID('task-card--name')
+      .contains(tasks[1].name)
   })
 })

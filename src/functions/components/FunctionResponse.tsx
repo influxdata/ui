@@ -55,7 +55,6 @@ const FunctionResponse: FC<Props> = ({
             status == 'ok' ? Gradients.TropicalTourist : Gradients.DangerLight
           }
           border={true}
-          style={{overflow: 'scroll'}}
         >
           <DapperScrollbars
             className="function-form--response-scroll-bar"

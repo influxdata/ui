@@ -92,6 +92,36 @@ jobs:
           key: UI_PROD_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - docker-cache
+  build-lighthouse-image:
+    machine:
+      image: ubuntu-2004:202008-01
+      docker_layer_caching: true
+    working_directory: ~/
+    resource_class: large
+    steps:
+      - checkout:
+          path: ./ui
+      - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
+      - checkout_monitor_ci
+      - run:
+          name: Copy over the testing variables
+          command: cp ./monitor-ci/env.testing ./monitor-ci/.env
+      - run:
+          name: Build the ui docker image
+          command: |
+            cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
+            docker build \
+              --build-arg UI_SHA=testing \
+              --build-arg CLOUD_URL=http://localhost/auth \
+              -t quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} \
+              -f ./monitor-ci/docker/Dockerfile.chronograf.prod \
+              ./ui
+            mkdir -p docker-cache
+            docker save -o docker-cache/image.tar quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1}
+      - save_cache:
+          key: UI_LIGHTHOUSE_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - docker-cache
   deploy:
     docker:
       - image: circleci/golang:1.15-node
@@ -381,7 +411,7 @@ jobs:
     resource_class: large
     steps:
       - restore_cache:
-          key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
+          key: UI_LIGHTHOUSE_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
@@ -487,6 +517,7 @@ workflows:
     jobs:
       - build-oss-image
       - build-image
+      - build-lighthouse-image
       - build-prod-image:
           filters:
             branches:
@@ -496,7 +527,7 @@ workflows:
       - lint
       - cloud-lighthouse:
           requires:
-            - build-image
+            - build-lighthouse-image
       # - cloud-e2e-k8s-idpe:
       #     requires:
       #       - build-image

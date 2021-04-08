@@ -23,7 +23,7 @@ const FunctionHeader: FC = () => {
     saveDraftFunction,
   } = useContext(FunctionListContext)
 
-  const cancelFunction = () => {
+  const closeFunction = () => {
     history.push(`/orgs/${orgID}/functions/`)
     // TODO dont allow routing away if unsaved changes exist
   }
@@ -54,8 +54,8 @@ const FunctionHeader: FC = () => {
         <Page.ControlBarRight>
           <Button
             color={ComponentColor.Default}
-            text="Cancel"
-            onClick={cancelFunction}
+            text="Close"
+            onClick={closeFunction}
             testID="function-cancel-btn"
           />
           <Button

@@ -37,7 +37,11 @@ import {generateThresholdsListHexs} from 'src/shared/constants/colorOperations'
 import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Constants
-import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
+import {
+  DEFAULT_TIME_FORMAT,
+  VIS_THEME,
+  VIS_THEME_LIGHT,
+} from 'src/shared/constants'
 import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {INVALID_DATA_COPY} from 'src/visualization/constants'
 
@@ -266,11 +270,20 @@ const SingleStatWithLine: FC<Props> = ({properties, result, timeRange}) => {
               cellType: 'single-stat',
             })
 
-            const formattedValue = formatStatValue(latestValue, {
-              decimalPlaces: properties.decimalPlaces,
-              prefix: properties.prefix,
-              suffix: properties.suffix,
+            const timeFormatter = getFormatter('time', {
+              timeZone: timeZone === 'Local' ? undefined : timeZone,
+              timeFormat: DEFAULT_TIME_FORMAT,
             })
+
+            const formattedValue =
+              result.table.getColumnType('_value') === 'time'
+                ? timeFormatter(latestValue)
+                : formatStatValue(latestValue, {
+                    decimalPlaces: properties.decimalPlaces,
+                    prefix: properties.prefix,
+                    suffix: properties.suffix,
+                  })
+
             return (
               <div
                 className="single-stat"

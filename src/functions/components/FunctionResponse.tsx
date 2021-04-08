@@ -8,6 +8,7 @@ import {
   Panel,
   Gradients,
   AlignItems,
+  DapperScrollbars,
 } from '@influxdata/clockface'
 
 // Types
@@ -26,10 +27,7 @@ const FunctionResponse: FC<Props> = ({
     if (response && response.data) {
       return (
         <>
-          <pre style={{maxWidth: '200px'}}>
-            {JSON.stringify(response.data, null, '\t')}
-          </pre>{' '}
-          <p></p>
+          <pre>{JSON.stringify(response.data, null, '\t')}</pre> <p></p>
         </>
       )
     }
@@ -57,21 +55,26 @@ const FunctionResponse: FC<Props> = ({
             status == 'ok' ? Gradients.TropicalTourist : Gradients.DangerLight
           }
           border={true}
-          style={{overflow: 'scroll'}}
         >
-          <Panel.Header>
-            <h5>{statusText}</h5>
-          </Panel.Header>
-          <Panel.Body alignItems={AlignItems.FlexStart}>
-            {status == 'ok' ? (
-              <>
-                {dataOutput()}
-                {logsOutput()}
-              </>
-            ) : (
-              <div>{JSON.stringify(error)}</div>
-            )}
-          </Panel.Body>
+          <DapperScrollbars
+            className="function-form--response-scroll-bar"
+            autoHide={true}
+            autoSizeHeight={true}
+          >
+            <Panel.Header>
+              <h5>{statusText}</h5>
+            </Panel.Header>
+            <Panel.Body alignItems={AlignItems.FlexStart}>
+              {status == 'ok' ? (
+                <>
+                  {dataOutput()}
+                  {logsOutput()}
+                </>
+              ) : (
+                <div>{JSON.stringify(error, null, '\t')}</div>
+              )}
+            </Panel.Body>
+          </DapperScrollbars>
         </Panel>
       </Grid.Column>
     </Grid.Row>

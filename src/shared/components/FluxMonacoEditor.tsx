@@ -85,6 +85,7 @@ const FluxEditorMonaco: FC<Props> = ({
       lspServer.current = await loadServer()
       const diagnostics = await lspServer.current.didOpen(uri, script)
       updateDiagnostics(diagnostics)
+      monacoEditor.remeasureFonts()
 
       if (isFlagEnabled('cursorAtEOF')) {
         const lines = (script || '').split('\n')

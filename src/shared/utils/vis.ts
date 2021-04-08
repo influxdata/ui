@@ -406,14 +406,14 @@ export const getGeoCoordinates = (
   const coordinateColumn = getCoordinateColumn(table)
 
   switch (coordinateColumn) {
-    case 's2_cell_id': 
+    case 's2_cell_id':
       return getCoordinateFromS2(table, index)
     case 'lat_lon_as_tags':
       const latColumn = table.getColumn('lat')
       const lonColumn = table.getColumn('lon')
       return {
         lat: parseCoordinates(latColumn[index]),
-        lon: parseCoordinates(lonColumn[index])
+        lon: parseCoordinates(lonColumn[index]),
       }
     case 'lat_lon_as_fields':
       const latCoordinate = getColumnValue(table, 'lat')
@@ -422,13 +422,12 @@ export const getGeoCoordinates = (
         lat: parseCoordinates(latCoordinate),
         lon: parseCoordinates(lonCoordinate),
       }
-    default: 
+    default:
       throw new Error('lat_lon_not_provided')
   }
 }
 
-const parseCoordinates = (coordinate) =>
-  parseInt(coordinate.toString(), 10)
+const parseCoordinates = coordinate => parseInt(coordinate.toString(), 10)
 
 export const getDetectCoordinatingFields = (table: Table) => {
   const coordinateColumn = getCoordinateColumn(table)

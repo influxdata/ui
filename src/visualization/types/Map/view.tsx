@@ -84,7 +84,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     )
   } else if (coordinateError === MapErrorStates.InvalidCoordinates) {
     error =
-      'Map type is not supported with the data provided: Missing latitude/longitude values'
+      'Map type is not supported with the data provided: Missing latitude/longitude values (field values must be specified to lat or lon)'
 
     return (
       <div className="panel-resizer--error" data-testid="geoplot-error">

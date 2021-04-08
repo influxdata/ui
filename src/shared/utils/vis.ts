@@ -315,12 +315,6 @@ export const getMainColumnName = (
   return ''
 }
 
-const getFieldValue = (table: Table, field: string) => {
-  const fieldColumn = table.getColumn('_field')
-  const index = fieldColumn.findIndex(val => val === field)
-  return index >= 0
-}
-
 const getCoordinateColumn = (table: Table): string => {
   const column = table.getColumn('s2_cell_id')
   if (column != null) {
@@ -333,12 +327,14 @@ const getCoordinateColumn = (table: Table): string => {
     return 'lat_lon_as_tags'
   }
 
-  const latCoordinate = getFieldValue(table, 'lat')
-  const lonCoordinate = getFieldValue(table, 'lon')
+  const latCoordinate = getColumnValue(table, 'lat')
+  const lonCoordinate = getColumnValue(table, 'lon')
 
-  if (latCoordinate === true && lonCoordinate === true) {
+  if (latCoordinate && lonCoordinate) {
     return 'lat_lon_as_fields'
   }
+
+  return 'lat_lon_not_provided'
 }
 
 const getS2CellID = (table: Table, index: number): string => {
@@ -409,28 +405,30 @@ export const getGeoCoordinates = (
 ): {lon: number; lat: number} | null => {
   const coordinateColumn = getCoordinateColumn(table)
 
-  if (coordinateColumn === 's2_cell_id') {
-    const coordinates = getCoordinateFromS2(table, index)
-    return coordinates
-  } else if (coordinateColumn === 'lat_lon_as_tags') {
-    const latColumn = table.getColumn('lat')
-    const lonColumn = table.getColumn('lon')
-    const coordinates = {
-      lat: parseInt(latColumn[index].toString(), 10),
-      lon: parseInt(lonColumn[index].toString(), 10),
-    }
-    return coordinates
-  } else {
-    const latCoordinate = getColumnValue(table, 'lat')
-    const lonCoordinate = getColumnValue(table, 'lon')
-
-    const coordinates = {
-      lat: parseInt(latCoordinate.toString(), 10),
-      lon: parseInt(lonCoordinate.toString(), 10),
-    }
-    return coordinates
+  switch (coordinateColumn) {
+    case 's2_cell_id': 
+      return getCoordinateFromS2(table, index)
+    case 'lat_lon_as_tags':
+      const latColumn = table.getColumn('lat')
+      const lonColumn = table.getColumn('lon')
+      return {
+        lat: parseCoordinates(latColumn[index]),
+        lon: parseCoordinates(lonColumn[index])
+      }
+    case 'lat_lon_as_fields':
+      const latCoordinate = getColumnValue(table, 'lat')
+      const lonCoordinate = getColumnValue(table, 'lon')
+      return {
+        lat: parseCoordinates(latCoordinate),
+        lon: parseCoordinates(lonCoordinate),
+      }
+    default: 
+      throw new Error('lat_lon_not_provided')
   }
 }
+
+const parseCoordinates = (coordinate) =>
+  parseInt(coordinate.toString(), 10)
 
 export const getDetectCoordinatingFields = (table: Table) => {
   const coordinateColumn = getCoordinateColumn(table)

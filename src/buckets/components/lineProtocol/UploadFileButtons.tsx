@@ -1,8 +1,8 @@
 // Libraries
 import React, {FC, useContext} from 'react'
+import {useHistory, useParams} from 'react-router'
 
 // Components
-import {Context} from './LineProtocolWizard'
 import {
   Button,
   ButtonType,
@@ -12,14 +12,16 @@ import {
 
 // Types
 import {RemoteDataState} from 'src/types'
+import {LineProtocolContext} from 'src/buckets/components/context/lineProtocol'
 
-interface Props {
-  onClose: () => void
-  onCancel: () => void
-}
+const UploadFileButtons: FC = () => {
+  const {handleResetLineProtocol, writeStatus} = useContext(LineProtocolContext)
+  const history = useHistory()
+  const {orgID} = useParams<{orgID: string}>()
 
-const UploadFileButtons: FC<Props> = ({onClose, onCancel}) => {
-  const [{writeStatus}] = useContext(Context)
+  const handleClose = () => {
+    history.push(`/orgs/${orgID}/load-data/buckets`)
+  }
 
   if (writeStatus === RemoteDataState.Error) {
     return (
@@ -28,7 +30,7 @@ const UploadFileButtons: FC<Props> = ({onClose, onCancel}) => {
         text="Cancel"
         size={ComponentSize.Medium}
         type={ButtonType.Button}
-        onClick={onCancel}
+        onClick={handleResetLineProtocol}
         testID="lp-cancel--button"
       />
     )
@@ -41,7 +43,7 @@ const UploadFileButtons: FC<Props> = ({onClose, onCancel}) => {
         text="Close"
         size={ComponentSize.Medium}
         type={ButtonType.Button}
-        onClick={onClose}
+        onClick={handleClose}
         testID="lp-close--button"
       />
     )

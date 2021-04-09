@@ -12,7 +12,8 @@ import GetAssetLimits from 'src/cloud/components/GetAssetLimits'
 import LimitChecker from 'src/cloud/components/LimitChecker'
 import LineProtocolWizard from 'src/buckets/components/lineProtocol/LineProtocolWizard'
 import CsvUploaderWizard from 'src/buckets/components/csvUploader/CsvUploaderWizard'
-import CsvUploaderProvider from 'src/buckets/components/context/csvUploaderProvider'
+import CsvUploaderProvider from 'src/buckets/components/context/csvUploader'
+import LineProtocolProvider from 'src/buckets/components/context/lineProtocol'
 import CollectorsWizard from 'src/dataLoaders/components/collectorsWizard/CollectorsWizard'
 import UpdateBucketOverlay from 'src/buckets/components/UpdateBucketOverlay'
 import RenameBucketOverlay from 'src/buckets/components/RenameBucketOverlay'
@@ -55,10 +56,11 @@ class BucketsIndex extends Component {
           </LimitChecker>
         </Page>
         <Switch>
-          <Route
-            path={`${bucketsPath}/line-protocols/new`}
-            component={LineProtocolWizard}
-          />
+          <Route path={`${bucketsPath}/line-protocols/new`}>
+            <LineProtocolProvider>
+              <LineProtocolWizard />
+            </LineProtocolProvider>
+          </Route>
           <Route path={`${bucketsPath}/csv-uploader/new`}>
             <CsvUploaderProvider>
               <CsvUploaderWizard />

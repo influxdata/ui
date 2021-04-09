@@ -17,7 +17,7 @@ import {getOrg} from 'src/organizations/selectors'
 import {event} from 'src/cloud/utils/reporting'
 
 // Context
-import {CsvUploaderContext} from 'src/buckets/components/context/csvUploaderProvider'
+import {CsvUploaderContext} from 'src/buckets/components/context/csvUploader'
 
 // Components
 import CsvUploaderBody from 'src/buckets/components/csvUploader/CsvUploaderBody'
@@ -28,14 +28,14 @@ import CsvUploaderHelperText from 'src/buckets/components/csvUploader/CsvUploade
 // Types
 import {RemoteDataState} from 'src/types'
 
-const getCsvBody = uploadState => {
+export const getCsvBody = (uploadState: RemoteDataState, bucket?: string) => {
   switch (uploadState) {
     case RemoteDataState.Done:
       return <CsvUploaderSuccess />
     case RemoteDataState.Error:
       return <CsvUploaderError />
     default:
-      return <CsvUploaderBody />
+      return <CsvUploaderBody bucket={bucket} />
   }
 }
 
@@ -51,6 +51,16 @@ const CsvUploaderWizard = () => {
     history.push(`/orgs/${org.id}/load-data/buckets`)
     resetUploadState()
   }, [history, org.id, resetUploadState])
+
+  let buttonText = 'Close'
+
+  if (uploadState === RemoteDataState.Loading) {
+    buttonText = 'Cancel'
+  }
+
+  if (uploadState === RemoteDataState.Error) {
+    buttonText = 'Clear'
+  }
 
   return (
     <Overlay visible={true}>
@@ -68,11 +78,15 @@ const CsvUploaderWizard = () => {
         <OverlayFooter>
           <Button
             color={ComponentColor.Default}
-            text={uploadState === RemoteDataState.Loading ? 'Cancel' : 'Close'}
+            text={buttonText}
             size={ComponentSize.Medium}
             type={ButtonType.Button}
-            onClick={handleDismiss}
-            testID="lp-close--button"
+            onClick={
+              uploadState === RemoteDataState.Error
+                ? resetUploadState
+                : handleDismiss
+            }
+            testID="csv-close--button"
           />
         </OverlayFooter>
       </Overlay.Container>

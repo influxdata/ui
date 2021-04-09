@@ -206,7 +206,7 @@ export const dashboardWithLabels: Dashboard = {
     updatedAt: '2019-01-08T12:57:31.562048-08:00',
   },
   status: RemoteDataState.Done,
-  labels: labelIDs
+  labels: labelIDs,
 }
 
 export const cell: Cell = {

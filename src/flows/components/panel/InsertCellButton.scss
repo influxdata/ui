@@ -4,7 +4,7 @@
 .flow-divider {
   position: relative;
   width: 100%;
-  height: $flow-panel--node-gap + $cf-marg-b;
+  height: $flow-panel--node-gap + $cf-marg-b + 12;
   opacity: 1;
 
   // Vertical lines
@@ -52,6 +52,49 @@
   &:after {
     border-radius: 50%;
   }
+}
+
+.flow-divider--collapse {
+  position: absolute;
+  top: 50%;
+  left: $flow-panel--node-gap / 2 + 20;
+  transform: translate(0, -50%);
+  padding: 4px 16px;
+}
+.flow-divider--collapse-caution {
+  border-radius: 4px;
+  border: 2px solid $c-curacao;
+
+  .flow-divider--collapse-button:before {
+    position: absolute;
+    content: '';
+    background: $c-curacao;
+    top: -1px;
+    bottom: -1px;
+    right: -1px;
+    width: 50px;
+    z-index: -1;
+    border-radius: 0 4px 4px 0;
+  }
+}
+.flow-divider--collapse-notice {
+  width: 612px;
+  font-size: 14px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 24px;
+
+  span {
+    display: inline-block;
+    font-weight: bold;
+    margin: 0 4px;
+  }
+}
+
+.flow-divider--collapse-button {
+  font-size: 22px;
+  display: inline-block;
+  cursor: pointer;
 }
 
 .flow-panel:hover .flow-divider,

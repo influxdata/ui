@@ -50,26 +50,7 @@ export const getMeQuartz = (): ReturnType<typeof getMe> => {
     email: 'asalem@influxdata.com',
     isRegionBeta: false,
     isOperator: true,
-    account: {
-      id: 'account123',
-      marketplace: null,
-      type: 'free',
-      organizations: null,
-      deletable: false,
-      balance: 0,
-      users: [],
-      billingContact: {
-        companyName: 'Influx',
-        email: 'asalem@influxdata.com',
-        firstName: 'Ariel',
-        lastName: 'Salem',
-        country: 'USA',
-        street1: '123 Main St',
-        city: 'New York',
-        subdivision: 'NY',
-        postalCode: 30000,
-      },
-    },
+    accountType: 'free',
   }
 
   return makeResponse(200, me)

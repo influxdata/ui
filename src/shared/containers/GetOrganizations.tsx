@@ -31,7 +31,7 @@ const canAccessCheckout = (me: Me): boolean => {
   if (!!me?.isRegionBeta) {
     return false
   }
-  return me?.account?.type !== 'pay_as_you_go'
+  return me?.accountType !== 'pay_as_you_go'
 }
 
 const GetOrganizations: FunctionComponent = () => {

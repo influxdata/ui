@@ -1170,16 +1170,20 @@ components:
         email:
           type: string
           description: the email associated with the user
-        account:
-          $ref: '#/components/schemas/Account'
-          description: User Account for the account
+        accountType:
+          type: string
+          description: type of the account
+          enum:
+            - free
+            - cancelled
+            - pay_as_you_go
         isRegionBeta:
           type: boolean
           description: whether the region associated with the account is a beta region
         isOperator:
           type: boolean
           description: whether the user is an operator
-      required: [id, account, email, isOperator, isRegionBeta]
+      required: [id, accountType, email, isOperator, isRegionBeta]
     Users:
       type: object
       properties:

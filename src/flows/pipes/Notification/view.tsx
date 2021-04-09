@@ -6,18 +6,22 @@ import {
   FlexBox,
   Input,
   InputType,
+  Icon,
+  IconFont,
   ComponentSize,
   Tabs,
   Orientation,
   TextArea,
   AlignItems,
 } from '@influxdata/clockface'
+import {RemoteDataState} from 'src/types'
 
 import {PipeContext} from 'src/flows/context/pipe'
 import Slack from 'src/flows/pipes/Notification/Slack'
 import Bucket from 'src/flows/pipes/Notification/Bucket'
 import PagerDuty from 'src/flows/pipes/Notification/PagerDuty'
 import HTTP from 'src/flows/pipes/Notification/HTTP'
+import Threshold from 'src/flows/pipes/Notification/Threshold'
 
 // Types
 import {PipeProp} from 'src/types/flows'
@@ -52,9 +56,21 @@ const DEFAULT_ENDPOINTS = {
 }
 
 const Notification: FC<PipeProp> = ({Context}) => {
-  const {data, update} = useContext(PipeContext)
+  const {data, update, results, loading} = useContext(PipeContext)
   let intervalError = ''
   let offsetError = ''
+
+  const numericColumns = (results.parsed.table?.columnKeys || []).filter(
+    key => {
+      if (key === 'result' || key === 'table') {
+        return false
+      }
+
+      const columnType = results.parsed.table.getColumnType(key)
+
+      return columnType === 'time' || columnType === 'number'
+    }
+  )
 
   if (
     data.interval &&
@@ -123,6 +139,43 @@ const Notification: FC<PipeProp> = ({Context}) => {
     }
   }, [data.endpoint])
 
+  if (
+    loading === RemoteDataState.NotStarted ||
+    loading === RemoteDataState.Loading
+  ) {
+    return (
+      <Context>
+        <div className="panel-resizer">
+          <div className="panel-resizer--header">
+            <Icon glyph={IconFont.Bell} className="panel-resizer--vis-toggle" />
+          </div>
+          <div className="panel-resizer--body">
+            <div className="panel-resizer--empty">
+              This cell requires results from the previous cell
+            </div>
+          </div>
+        </div>
+      </Context>
+    )
+  }
+
+  if (!numericColumns.length) {
+    return (
+      <Context>
+        <div className="panel-resizer">
+          <div className="panel-resizer--header">
+            <Icon glyph={IconFont.Bell} className="panel-resizer--vis-toggle" />
+          </div>
+          <div className="panel-resizer--body">
+            <div className="panel-resizer--empty">
+              This cell requires a numeric column. Check your source query
+            </div>
+          </div>
+        </div>
+      </Context>
+    )
+  }
+
   return (
     <Context>
       <div className="notification">
@@ -169,11 +222,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
             </Form.Element>
           </FlexBox.Child>
         </FlexBox>
-        <FlexBox>
-          <FlexBox.Child grow={1} shrink={1}>
-            <h1>... insert threshold vs deadman interface here ...</h1>
-          </FlexBox.Child>
-        </FlexBox>
+        <Threshold />
         <FlexBox
           alignItems={AlignItems.FlexStart}
           margin={ComponentSize.Medium}

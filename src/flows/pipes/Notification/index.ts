@@ -11,6 +11,11 @@ export default register => {
     initial: {
       interval: '10m',
       offset: '0s',
+      threshold: {
+        type: 'greater',
+        field: '_value',
+        value: 0,
+      },
       message:
         'Notification Rule: ${ r._notification_rule_name } triggered by check: ${ r._check_name }: ${ r._message }',
       endpoint: 'slack',
@@ -18,6 +23,8 @@ export default register => {
         url: 'https://hooks.slack.com/services/X/X/X',
       },
     },
-    generateFlux: (_data, _create, _append, _withSideEffects) => {},
+    generateFlux: (_data, _create, append, _withSideEffects) => {
+      append('__CURRENT_RESULT__')
+    },
   })
 }

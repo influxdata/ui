@@ -59,7 +59,7 @@ export interface TelegrafsState extends NormalizedState<Telegraf> {
 export interface RulesState extends NormalizedState<NotificationRule> {
   current: {status: RemoteDataState; rule: NotificationRule}
 }
-export interface DashboardState extends NormalizedState<Dashboard> {
+export interface DashboardsState extends NormalizedState<Dashboard> {
   searchTerm: string
   sortOptions: DashboardSortParams
 }
@@ -73,7 +73,7 @@ export interface ResourceState {
   [ResourceType.Buckets]: NormalizedState<Bucket>
   [ResourceType.Cells]: CellsState
   [ResourceType.Checks]: NormalizedState<Check>
-  [ResourceType.Dashboards]: DashboardState
+  [ResourceType.Dashboards]: DashboardsState
   [ResourceType.Labels]: NormalizedState<Label>
   [ResourceType.Members]: NormalizedState<Member>
   [ResourceType.Orgs]: OrgsState

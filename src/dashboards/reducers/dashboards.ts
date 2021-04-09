@@ -41,7 +41,7 @@ import {DEFAULT_DASHBOARD_SORT_OPTIONS} from 'src/dashboards/constants'
 
 type DashboardsState = ResourceState['dashboards']
 
-const initialState = () => ({
+const initialState = (): DashboardsState => ({
   byID: {},
   allIDs: [],
   status: RemoteDataState.NotStarted,

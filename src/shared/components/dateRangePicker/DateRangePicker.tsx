@@ -141,7 +141,7 @@ class DateRangePicker extends PureComponent<Props, State> {
   }
 
   private handleInvalidInput = () => {
-    this.setState(prev => ({...prev, validDateRange: false}))
+    this.setState({validDateRange: false})
   }
 }
 

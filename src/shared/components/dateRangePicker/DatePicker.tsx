@@ -162,11 +162,9 @@ export default class DatePicker extends PureComponent<Props, State> {
     const {dateTime} = this.props
     const {inputFormat} = this.state
 
-    let value
+    let value = moment(dateTime).format('YYYY-MM-DD HH:mm:ss.SSS')
     if (inputFormat) {
       value = moment(dateTime).format(inputFormat)
-    } else {
-      value = moment(dateTime).format('YYYY-MM-DD HH:mm:ss.SSS')
     }
 
     this.setState({inputValue: value, inputFormat: getFormat(value)})

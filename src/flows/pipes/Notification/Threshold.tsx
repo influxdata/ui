@@ -16,38 +16,54 @@ enum ThresholdFormat {
   Range = 'range',
 }
 
-const THRESHOLD = {
+export const THRESHOLD_TYPES = {
   greater: {
     name: 'Greater Than',
     format: ThresholdFormat.Value,
+    condition: data =>
+      `(r) => (r["${data.threshold.field}"] > ${data.threshold.value})`,
   },
   'greater-equal': {
     name: 'Greater Than or Equal To',
     format: ThresholdFormat.Value,
+    condition: data =>
+      `(r) => (r["${data.threshold.field}"] >= ${data.threshold.value})`,
   },
   less: {
-    name: 'Greater Than',
+    name: 'Less Than',
     format: ThresholdFormat.Value,
+    condition: data =>
+      `(r) => (r["${data.threshold.field}"] < ${data.threshold.value})`,
   },
   'less-equal': {
-    name: 'Greater Than or Equal To',
+    name: 'Less Than or Equal To',
     format: ThresholdFormat.Value,
+    condition: data =>
+      `(r) => (r["${data.threshold.field}"] <= ${data.threshold.value})`,
   },
   equal: {
     name: 'Equal To',
     format: ThresholdFormat.Value,
+    condition: data =>
+      `(r) => (r["${data.threshold.field}"] == ${data.threshold.value})`,
   },
   'not-equal': {
     name: 'Not Equal To',
     format: ThresholdFormat.Value,
+    condition: data =>
+      `(r) => (r["${data.threshold.field}"] != ${data.threshold.value})`,
   },
   between: {
     name: 'Between',
     format: ThresholdFormat.Range,
+    condition: data =>
+      `(r) => (r["${data.threshold.field}"] > ${data.threshold.min} and r["${data.threshold.field}"] < ${data.threshold.max})`,
   },
   'not-between': {
     name: 'Not Between',
     format: ThresholdFormat.Range,
+    condition: data =>
+      `(r) => (r["${data.threshold.field}"] < ${data.threshold.min} or r["${data.threshold.field}"] > ${data.threshold.max})`,
   },
 }
 
@@ -65,11 +81,11 @@ const Threshold: FC = () => {
   })
 
   const setThresholdType = type => {
-    if (!THRESHOLD[type]) {
+    if (!THRESHOLD_TYPES[type]) {
       return
     }
 
-    if (THRESHOLD[type].format === ThresholdFormat.Range) {
+    if (THRESHOLD_TYPES[type].format === ThresholdFormat.Range) {
       update({
         threshold: {
           type,
@@ -99,7 +115,7 @@ const Threshold: FC = () => {
   }
 
   const funcDropdown = useMemo(() => {
-    const menuItems = Object.entries(THRESHOLD).map(([key, value]) => (
+    const menuItems = Object.entries(THRESHOLD_TYPES).map(([key, value]) => (
       <Dropdown.Item
         key={key}
         value={key}
@@ -119,7 +135,7 @@ const Threshold: FC = () => {
         active={active}
         size={ComponentSize.Medium}
       >
-        {THRESHOLD[data.threshold?.type]?.name || 'Select a function'}
+        {THRESHOLD_TYPES[data.threshold?.type]?.name || 'Select a function'}
       </Dropdown.Button>
     )
     return <Dropdown menu={menu} button={menuButton} />
@@ -180,7 +196,7 @@ const Threshold: FC = () => {
   }
 
   const feet =
-    THRESHOLD[data.threshold?.type].format === ThresholdFormat.Range ? (
+    THRESHOLD_TYPES[data.threshold?.type].format === ThresholdFormat.Range ? (
       <FlexBox
         direction={FlexDirection.Row}
         margin={ComponentSize.Small}

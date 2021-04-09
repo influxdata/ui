@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useMemo} from 'react'
+import React, {FC, useContext, useEffect, useMemo} from 'react'
 import {
   ComponentStatus,
   Form,
@@ -26,12 +26,14 @@ import Threshold from 'src/flows/pipes/Notification/Threshold'
 // Types
 import {PipeProp} from 'src/types/flows'
 
-const DEFAULT_ENDPOINTS = {
+export const DEFAULT_ENDPOINTS = {
   slack: {
     name: 'Slack',
     data: {
       url: 'https://hooks.slack.com/services/X/X/X',
+      channel: '',
     },
+    imports: ['slack'],
   },
   http: {
     name: 'HTTP Post',
@@ -39,6 +41,7 @@ const DEFAULT_ENDPOINTS = {
       auth: 'none',
       url: 'https://www.example.com/endpoint',
     },
+    imports: ['http'],
   },
   pagerduty: {
     name: 'Pager Duty',
@@ -46,19 +49,30 @@ const DEFAULT_ENDPOINTS = {
       url: '',
       key: '',
     },
+    imports: ['pagerduty'],
   },
   bucket: {
     name: 'Write to Bucket',
     data: {
       bucket: null,
     },
+    imports: [],
   },
 }
 
 const Notification: FC<PipeProp> = ({Context}) => {
-  const {data, update, results, loading} = useContext(PipeContext)
+  const {id, data, queryText, update, results, loading} = useContext(
+    PipeContext
+  )
   let intervalError = ''
   let offsetError = ''
+
+  useEffect(() => {
+    update({
+      panel: id,
+      query: queryText,
+    })
+  }, [queryText, id])
 
   const numericColumns = (results.parsed.table?.columnKeys || []).filter(
     key => {

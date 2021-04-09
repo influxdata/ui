@@ -47,6 +47,10 @@ const Downsample: FC<PipeProp> = ({Context}) => {
         fns.push({name: fn})
       }
 
+      if (!fns.length) {
+        fns.push({name: 'mean'})
+      }
+
       update({
         functions: fns,
       })

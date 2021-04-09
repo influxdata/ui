@@ -30,7 +30,6 @@ interface OwnProps {
 }
 
 interface DefaultProps {
-  canImportFromTemplate: boolean
   status: ComponentStatus
   titleText: string
 }
@@ -41,7 +40,6 @@ type Props = OwnProps & DefaultProps & ReduxProps
 
 class AddResourceDropdown extends PureComponent<Props> {
   public static defaultProps: DefaultProps = {
-    canImportFromTemplate: false,
     status: ComponentStatus.Default,
     titleText: null,
   }

@@ -49,32 +49,31 @@ const GaugeChart: FC<Props> = ({result, properties}) => {
       ],
     }
     return <Plot config={config} />
-  } else {
-    return (
-      <LatestValueTransform table={result.table} allowString={false}>
-        {latestValue => (
-          <AutoSizer>
-            {({width, height}) => (
-              <div className="gauge">
-                <Gauge
-                  width={width}
-                  height={height}
-                  colors={colors}
-                  prefix={prefix}
-                  tickPrefix={tickPrefix}
-                  suffix={suffix}
-                  tickSuffix={tickSuffix}
-                  gaugePosition={latestValue}
-                  decimalPlaces={decimalPlaces}
-                  theme={currentTheme}
-                />
-              </div>
-            )}
-          </AutoSizer>
-        )}
-      </LatestValueTransform>
-    )
   }
+  return (
+    <LatestValueTransform table={result.table} allowString={false}>
+      {latestValue => (
+        <AutoSizer>
+          {({width, height}) => (
+            <div className="gauge">
+              <Gauge
+                width={width}
+                height={height}
+                colors={colors}
+                prefix={prefix}
+                tickPrefix={tickPrefix}
+                suffix={suffix}
+                tickSuffix={tickSuffix}
+                gaugePosition={latestValue}
+                decimalPlaces={decimalPlaces}
+                theme={currentTheme}
+              />
+            </div>
+          )}
+        </AutoSizer>
+      )}
+    </LatestValueTransform>
+  )
 }
 
 export default GaugeChart

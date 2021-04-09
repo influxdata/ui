@@ -18,6 +18,7 @@ import {
   SET_DASHBOARDS,
   REMOVE_DASHBOARD_LABEL,
   EDIT_DASHBOARD,
+  SET_DASHBOARDS_SEARCH_TERM,
 } from 'src/dashboards/actions/creators'
 import {
   SET_CELLS,
@@ -45,6 +46,7 @@ const initialState = () => ({
   allIDs: [],
   status: RemoteDataState.NotStarted,
   sortOptions: DEFAULT_DASHBOARD_SORT_OPTIONS,
+  searchTerm: '',
 })
 
 export const dashboardsReducer = (
@@ -147,6 +149,14 @@ export const dashboardsReducer = (
         draftState.byID[dashboardID].labels = labels.filter(
           label => label !== labelID
         )
+
+        return
+      }
+
+      case SET_DASHBOARDS_SEARCH_TERM: {
+        const {searchTerm} = action
+
+        draftState['searchTerm'] = searchTerm
 
         return
       }

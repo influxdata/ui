@@ -25,7 +25,10 @@ import {extractDashboardLimits} from 'src/cloud/utils/limits'
 
 // Actions
 import {createDashboard as createDashboardAction} from 'src/dashboards/actions/thunks'
-import {setDashboardSort} from 'src/dashboards/actions/creators'
+import {
+  setDashboardSort,
+  setSearchTerm as setSearchTermAction,
+} from 'src/dashboards/actions/creators'
 
 // Types
 import {AppState, ResourceType} from 'src/types'
@@ -39,23 +42,11 @@ import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{orgID: string}>
 
-interface State {
-  searchTerm: string
-}
-
 @ErrorHandling
-class DashboardIndex extends PureComponent<Props, State> {
-  constructor(props: Props) {
-    super(props)
-
-    this.state = {
-      searchTerm: '',
-    }
-  }
-
+class DashboardIndex extends PureComponent<Props> {
   public render() {
     const {createDashboard, sortOptions, limitStatus} = this.props
-    const {searchTerm} = this.state
+    const {searchTerm} = this.props
 
     return (
       <>
@@ -72,7 +63,7 @@ class DashboardIndex extends PureComponent<Props, State> {
               <Page.ControlBarLeft>
                 <SearchWidget
                   placeholderText="Filter dashboards..."
-                  onSearch={this.handleFilterDashboards}
+                  onSearch={this.props.setSearchTerm}
                   searchTerm={searchTerm}
                 />
                 <ResourceSortDropdown
@@ -104,7 +95,7 @@ class DashboardIndex extends PureComponent<Props, State> {
               <GetAssetLimits>
                 <DashboardsIndexContents
                   searchTerm={searchTerm}
-                  onFilterChange={this.handleFilterDashboards}
+                  onFilterChange={this.props.setSearchTerm}
                   sortDirection={sortOptions.sortDirection}
                   sortType={sortOptions.sortType}
                   sortKey={sortOptions.sortKey}
@@ -139,10 +130,6 @@ class DashboardIndex extends PureComponent<Props, State> {
     this.props.setDashboardSort({sortKey, sortDirection, sortType})
   }
 
-  private handleFilterDashboards = (searchTerm: string): void => {
-    this.setState({searchTerm})
-  }
-
   private summonImportOverlay = (): void => {
     const {
       history,
@@ -169,16 +156,19 @@ const mstp = (state: AppState) => {
     cloud: {limits},
   } = state
   const sortOptions = state.resources.dashboards['sortOptions']
+  const searchTerm = state.resources.dashboards['searchTerm']
 
   return {
     limitStatus: extractDashboardLimits(limits),
     sortOptions,
+    searchTerm,
   }
 }
 
 const mdtp = {
   createDashboard: createDashboardAction,
   setDashboardSort,
+  setSearchTerm: setSearchTermAction,
 }
 
 const connector = connect(mstp, mdtp)

@@ -82,7 +82,6 @@ class AddResourceDropdown extends PureComponent<Props> {
   private get optionItems(): JSX.Element[] {
     const importOption = this.importOption
     const newOption = this.newOption
-    const templateOption = this.templateOption
 
     const items = [
       <Dropdown.Item

@@ -123,19 +123,11 @@ class DateRangePicker extends PureComponent<Props, State> {
   }
 
   private handleSelectLower = (lower: string): void => {
-    this.setState(prev => ({
-      ...prev,
-      lower,
-      validDateRange: this.isTimeRangeValid(lower, this.state.upper),
-    }))
+    this.setState({lower, validDateRange: this.isTimeRangeValid(lower, this.state.upper)})
   }
 
   private handleSelectUpper = (upper: string): void => {
-    this.setState(prev => ({
-      ...prev,
-      upper,
-      validDateRange: this.isTimeRangeValid(this.state.lower, upper),
-    }))
+    this.setState({upper, validDateRange: this.isTimeRangeValid(upper, this.state.upper)})
   }
 
   private isTimeRangeValid = (lower: string, upper: string): boolean => {

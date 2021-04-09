@@ -797,10 +797,10 @@
   resolved "https://registry.yarnpkg.com/@influxdata/flux/-/flux-0.5.1.tgz#e39e7a7af9163fc9494422c8fed77f3ae1b68f56"
   integrity sha512-GHlkXBhSdJ2m56JzDkbnKPAqLj3/lexPooacu14AWTO4f2sDGLmzM7r0AxgdtU1M2x7EXNBwgGOI5EOAdN6mkw==
 
-"@influxdata/giraffe@^2.7.1":
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.7.1.tgz#326bd76f8f35f2c3201d84b3e3ac964b02d79bd4"
-  integrity sha512-h76B0cNAAdRhXOKWzwaKaNVhdGQqqG0gniDmIl04Re36NkyTRMRV1hg4zbSE3/58mMNDjxZDi97Mq2nQRaxI2g==
+"@influxdata/giraffe@^2.7.3":
+  version "2.7.3"
+  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.7.3.tgz#106f814c4fff6f81b895e6713c53443fef473633"
+  integrity sha512-xjs3HHycp/JeqOl4e5kpc7y8YLvDSw9H2JAbbW8W85ZE/aMT3LT74PZ6QGXLog/wGoQcp8RDSLDUntwFiMhQhQ==
   dependencies:
     merge-images "^2.0.0"
 

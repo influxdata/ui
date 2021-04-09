@@ -58,9 +58,7 @@ const SingleStat: FC<Props> = ({properties, result}) => {
             textAnchor: 'middle',
             letterSpacing: '-0.05em',
           },
-          svgTextAttributes: {
-            'data-testid': 'single-stat--text',
-          },
+          testID: 'single-stat--text'
         },
       ],
     }

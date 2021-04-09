@@ -613,18 +613,25 @@ http.post(
   it('should persist search term across pages', () => {
     cy.getByTestID('search-widget').should('have.value', '')
 
+    const delay = 100
     const tasks = [
       {
         name: 'task1',
         every: '3h30s',
         offset: '20m',
-        query: 'task query1',
+        query: `import "influxdata/influxdb/v1{rightarrow}
+        v1.tagValues(bucket: "task1", tag: "_field"{rightarrow}
+        from(bucket: "task1"{rightarrow}
+           |> range(start: -2m{rightarrow}`,
       },
       {
         name: 'task2',
         every: '3h',
         offset: '30m',
-        query: 'task query2',
+        query: `import "influxdata/influxdb/v1{rightarrow}
+        v1.tagValues(bucket: "task1", tag: "_field"{rightarrow}
+        from(bucket: "task1"{rightarrow}
+           |> range(start: -2m{rightarrow}`,
       },
     ]
 
@@ -638,13 +645,16 @@ http.post(
       // Fill Task Form
       cy.getByTestID('task-form-name')
         .clear()
-        .type(task.name)
+        .wait(500)
+        .type(task.name, {delay})
       cy.getByTestID('task-form-schedule-input')
         .clear()
-        .type(task.every)
+        .wait(500)
+        .type(task.every, {delay})
       cy.getByTestID('task-form-offset-input')
         .clear()
-        .type(task.offset)
+        .wait(500)
+        .type(task.offset, {delay})
       cy.getByTestID('flux-editor').type(task.query)
 
       // Save Task
@@ -656,7 +666,8 @@ http.post(
       const name = task.name.slice(-4)
       cy.getByTestID('search-widget')
         .clear()
-        .type(name)
+        .wait(500)
+        .type(name, {delay})
       cy.getByTestID('resource-list--body')
         .children()
         .should('have.length', 1)
@@ -685,7 +696,8 @@ http.post(
       const name = task.name.slice(-4)
       cy.getByTestID('search-widget')
         .clear()
-        .type(name)
+        .wait(500)
+        .type(name, {delay})
       cy.getByTestID('resource-list--body')
         .children()
         .should('have.length', 1)

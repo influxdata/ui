@@ -499,15 +499,13 @@ describe('Dashboards', () => {
           .first()
           .getByTestID('dashboard-card--name')
           .click()
-        cy.wait(1000)
+        cy.getByTestID('page-title').contains(dashboardName)
         cy.go('back')
-
         cy.getByTestID('search-widget').should('have.value', dashSearchName)
 
         // Navigate Away and come back by clicking on Boards icon
-        cy.getByTestID('nav-item-tasks')
-          .click()
-          .wait(1000)
+        cy.getByTestID('nav-item-tasks').click()
+        cy.getByTestID('page-title').contains('Tasks')
         cy.getByTestID('nav-item-dashboards').click()
         cy.getByTestID('search-widget').should('have.value', dashSearchName)
       })

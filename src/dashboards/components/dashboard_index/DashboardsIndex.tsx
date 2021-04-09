@@ -33,7 +33,6 @@ import {Sort} from '@influxdata/clockface'
 import {SortTypes} from 'src/shared/utils/sort'
 import {DashboardSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 
-import {ALLOW_IMPORT_FROM_TEMPLATE} from 'src/shared/constants' // spoiler alert: you can't import from templates
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -89,7 +88,6 @@ class DashboardIndex extends PureComponent<Props, State> {
                   onSelectImport={this.summonImportOverlay}
                   onSelectTemplate={this.summonImportFromTemplateOverlay}
                   resourceName="Dashboard"
-                  canImportFromTemplate={ALLOW_IMPORT_FROM_TEMPLATE}
                   limitStatus={limitStatus}
                 />
               </Page.ControlBarRight>

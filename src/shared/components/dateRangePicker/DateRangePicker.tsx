@@ -48,7 +48,7 @@ class DateRangePicker extends PureComponent<Props, State> {
 
   public render() {
     const {onClose} = this.props
-    const {upper, lower} = this.state
+    const {upper, lower, validDateRange} = this.state
 
     return (
       <ClickOutside onClickOutside={onClose}>
@@ -81,7 +81,7 @@ class DateRangePicker extends PureComponent<Props, State> {
             text="Apply Time Range"
             testID="daterange--apply-btn"
             status={
-              this.state.validDateRange
+              validDateRange
                 ? ComponentStatus.Default
                 : ComponentStatus.Disabled
             }

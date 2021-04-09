@@ -105,20 +105,6 @@ class AddResourceDropdown extends PureComponent<Props> {
       </Dropdown.Item>,
     ]
 
-    if (!!this.props.canImportFromTemplate) {
-      items.push(
-        <Dropdown.Item
-          id={templateOption}
-          key={templateOption}
-          onClick={this.handleSelect}
-          value={templateOption}
-          testID="add-resource-dropdown--template"
-        >
-          {templateOption}
-        </Dropdown.Item>
-      )
-    }
-
     return items
   }
 

@@ -609,6 +609,117 @@ http.post(
       cy.getByTestID('task-save-btn').click()
     })
   })
+
+  it('should persist search term across pages', () => {
+    cy.getByTestID('search-widget').should('have.value', '')
+
+    const delay = 100
+    const tasks = [
+      {
+        name: 'task1',
+        every: '3h30s',
+        offset: '20m',
+        query: `import "influxdata/influxdb/v1{rightarrow}
+        v1.tagValues(bucket: "task1", tag: "_field"{rightarrow}
+        from(bucket: "task1"{rightarrow}
+           |> range(start: -2m{rightarrow}`,
+      },
+      {
+        name: 'task2',
+        every: '3h',
+        offset: '30m',
+        query: `import "influxdata/influxdb/v1{rightarrow}
+        v1.tagValues(bucket: "task1", tag: "_field"{rightarrow}
+        from(bucket: "task1"{rightarrow}
+           |> range(start: -2m{rightarrow}`,
+      },
+    ]
+
+    tasks.forEach(task => {
+      cy.getByTestID('add-resource-dropdown')
+        .children()
+        .first()
+        .click()
+      cy.getByTestID('add-resource-dropdown--new').click()
+
+      // Fill Task Form
+      cy.getByTestID('task-form-name')
+        .clear()
+        .wait(500)
+        .type(task.name, {delay})
+      cy.getByTestID('task-form-schedule-input')
+        .clear()
+        .wait(500)
+        .type(task.every, {delay})
+      cy.getByTestID('task-form-offset-input')
+        .clear()
+        .wait(500)
+        .type(task.offset, {delay})
+      cy.getByTestID('flux-editor').type(task.query)
+
+      // Save Task
+      cy.getByTestID('task-save-btn').click()
+    })
+
+    tasks.forEach(task => {
+      // Search for a task
+      const name = task.name.slice(-4)
+      cy.getByTestID('search-widget')
+        .clear()
+        .wait(500)
+        .type(name, {delay})
+      cy.getByTestID('resource-list--body')
+        .children()
+        .should('have.length', 1)
+      cy.getByTestID('resource-list--body')
+        .children()
+        .getByTestID('task-card--name')
+        .click()
+
+      // Navigate away from current page back to Tasks List page
+      cy.getByTestID('task-cancel-btn').click()
+      cy.getByTestID('search-widget').should('have.value', name)
+
+      // Validate that the list has correct search results
+      cy.getByTestID('resource-list--body')
+        .children()
+        .should('have.length', 1)
+      cy.getByTestID('resource-list--body')
+        .children()
+        .getByTestID('task-card--name')
+        .contains(task.name)
+    })
+
+    // Test the browser Back click navigation condition
+    tasks.forEach(task => {
+      // Search for a task
+      const name = task.name.slice(-4)
+      cy.getByTestID('search-widget')
+        .clear()
+        .wait(500)
+        .type(name, {delay})
+      cy.getByTestID('resource-list--body')
+        .children()
+        .should('have.length', 1)
+      cy.getByTestID('resource-list--body')
+        .children()
+        .getByTestID('task-card--name')
+        .click()
+
+      // Navigate away from current page back to Tasks List page
+      cy.go('back')
+      cy.getByTestID('search-widget').should('have.value', name)
+
+      // Validate that the list has correct search results
+      cy.getByTestID('resource-list--body')
+        .children()
+        .should('have.length', 1)
+      cy.getByTestID('resource-list--body')
+        .children()
+        .getByTestID('task-card--name')
+        .contains(task.name)
+    })
+  })
 })
 
 function createFirstTask(

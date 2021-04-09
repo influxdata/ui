@@ -4,6 +4,8 @@ import {
   Cell,
   Check,
   Dashboard,
+  DashboardSortParams,
+  Label,
   Member,
   NotificationEndpoint,
   NotificationRule,
@@ -15,7 +17,6 @@ import {
   TemplatesState,
   VariablesState,
   View,
-  Label,
 } from 'src/types'
 
 export enum ResourceType {
@@ -58,6 +59,10 @@ export interface TelegrafsState extends NormalizedState<Telegraf> {
 export interface RulesState extends NormalizedState<NotificationRule> {
   current: {status: RemoteDataState; rule: NotificationRule}
 }
+export interface DashboardState extends NormalizedState<Dashboard> {
+  searchTerm: string
+  sortOptions: DashboardSortParams
+}
 
 // Cells "allIDs" are Dashboard.cells
 type CellsState = Omit<NormalizedState<Cell>, 'allIDs'>
@@ -68,7 +73,7 @@ export interface ResourceState {
   [ResourceType.Buckets]: NormalizedState<Bucket>
   [ResourceType.Cells]: CellsState
   [ResourceType.Checks]: NormalizedState<Check>
-  [ResourceType.Dashboards]: NormalizedState<Dashboard>
+  [ResourceType.Dashboards]: DashboardState
   [ResourceType.Labels]: NormalizedState<Label>
   [ResourceType.Members]: NormalizedState<Member>
   [ResourceType.Orgs]: OrgsState

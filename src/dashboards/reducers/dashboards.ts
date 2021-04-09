@@ -76,7 +76,7 @@ export const dashboardsReducer = (
       case SET_DASHBOARD_SORT: {
         const {sortOptions} = action
 
-        draftState['sortOptions'] = sortOptions
+        draftState.sortOptions = sortOptions
 
         return
       }
@@ -156,7 +156,7 @@ export const dashboardsReducer = (
       case SET_DASHBOARDS_SEARCH_TERM: {
         const {searchTerm} = action
 
-        draftState['searchTerm'] = searchTerm
+        draftState.searchTerm = searchTerm
 
         return
       }

@@ -449,7 +449,7 @@ http.post(
       cy.getByTestID('task-card').should('have.length', 1)
 
       // searching by task name
-      clearAndType('search-widget', 'bEE')
+      getByTestIdAndSetInputValue('search-widget', 'bEE')
 
       cy.getByTestID('task-card').should('have.length', 1)
     })
@@ -492,9 +492,9 @@ http.post(
       const newInterval = '24h'
       const newOffset = '7h'
       // updates the data
-      clearAndType('task-form-name', newTask)
-      clearAndType('task-form-schedule-input', newInterval)
-      clearAndType('task-form-offset-input', newOffset)
+      getByTestIdAndSetInputValue('task-form-name', newTask)
+      getByTestIdAndSetInputValue('task-form-schedule-input', newInterval)
+      getByTestIdAndSetInputValue('task-form-offset-input', newOffset)
 
       cy.getByTestID('task-save-btn').click()
       // checks to see if the data has been updated once saved
@@ -628,9 +628,9 @@ http.post(
       cy.getByTestID('add-resource-dropdown--new').click()
 
       // Fill Task Form
-      clearAndType('task-form-name', task.name)
-      clearAndType('task-form-schedule-input', task.every)
-      clearAndType('task-form-offset-input', task.offset)
+      getByTestIdAndSetInputValue('task-form-name', task.name)
+      getByTestIdAndSetInputValue('task-form-schedule-input', task.every)
+      getByTestIdAndSetInputValue('task-form-offset-input', task.offset)
       cy.getByTestID('flux-editor').type(task.query)
 
       // Save Task
@@ -640,7 +640,7 @@ http.post(
     tasks.forEach(task => {
       // Search for a task
       const name = task.name.slice(-4)
-      clearAndType('search-widget', name)
+      getByTestIdAndSetInputValue('search-widget', name)
       cy.getByTestID('resource-list--body')
         .children()
         .should('have.length', 1)
@@ -667,7 +667,7 @@ http.post(
     tasks.forEach(task => {
       // Search for a task
       const name = task.name.slice(-4)
-      clearAndType('search-widget', name)
+      getByTestIdAndSetInputValue('search-widget', name)
       cy.getByTestID('resource-list--body')
         .children()
         .should('have.length', 1)
@@ -718,7 +718,10 @@ function createFirstTask(
   cy.getByTestID('task-form-offset-input').type(offset)
 }
 
-const clearAndType = (testId: string, value: string | number) => {
+const getByTestIdAndSetInputValue = (
+  testId: string,
+  value: string | number
+) => {
   const val = `${value}`
   cy.getByTestID(testId).clear()
   cy.getByTestID(testId)

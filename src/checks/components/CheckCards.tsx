@@ -52,7 +52,7 @@ const CheckCards: FunctionComponent<Props> = ({
     </ResourceList.Body>
   )
   const filteredChecks = (
-    <FilterChecks list={checks} searchKeys={['name']} searchTerm={searchTerm}>
+    <FilterChecks list={checks} searchKeys={['name', 'id']} searchTerm={searchTerm}>
       {filtered => body(filtered)}
     </FilterChecks>
   )

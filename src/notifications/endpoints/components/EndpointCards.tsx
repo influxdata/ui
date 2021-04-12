@@ -26,7 +26,7 @@ const EndpointCards: FC<Props> = ({endpoints, searchTerm}) => {
   const body = (
     <FilterEndpoints
       list={endpoints}
-      searchKeys={['name']}
+      searchKeys={['name', 'id']}
       searchTerm={searchTerm}
     >
       {filteredEndpoints => (

@@ -38,7 +38,7 @@ export const autoRefreshReducer = (state = initialState(), action: Action) =>
           draftState[dashboardID] = AUTOREFRESH_DEFAULT
         }
 
-        draftState[dashboardID].status = status
+        draftState[dashboardID] = {...draftState[dashboardID], status}
 
         return
       }

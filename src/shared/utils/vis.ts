@@ -315,26 +315,33 @@ export const getMainColumnName = (
   return ''
 }
 
+enum CoordinateType {
+  S2 = 'S2 cell id',
+  Tags = 'Lat/long as tags',
+  Fields = 'Lat/Long as fields',
+  None = 'Lat/Long not provided',
+}
+
 const getCoordinateColumn = (table: Table): string => {
   const column = table.getColumn('s2_cell_id')
   if (column != null) {
-    return 's2_cell_id'
+    return CoordinateType.S2
   }
   const lat = table.getColumn('lat')
   const lon = table.getColumn('lon')
 
-  if (lat != null && lon != null) {
-    return 'lat_lon_as_tags'
+  if (lat !== null && lon !== null) {
+    return CoordinateType.Tags
   }
 
   const latCoordinate = getColumnValue(table, 'lat')
   const lonCoordinate = getColumnValue(table, 'lon')
 
   if (latCoordinate && lonCoordinate) {
-    return 'lat_lon_as_fields'
+    return CoordinateType.Fields
   }
 
-  return 'lat_lon_not_provided'
+  return CoordinateType.None
 }
 
 const getS2CellID = (table: Table, index: number): string => {
@@ -406,16 +413,16 @@ export const getGeoCoordinates = (
   const coordinateColumn = getCoordinateColumn(table)
 
   switch (coordinateColumn) {
-    case 's2_cell_id':
+    case CoordinateType.S2:
       return getCoordinateFromS2(table, index)
-    case 'lat_lon_as_tags':
+    case CoordinateType.Tags:
       const latColumn = table.getColumn('lat')
       const lonColumn = table.getColumn('lon')
       return {
         lat: parseCoordinates(latColumn[index]),
         lon: parseCoordinates(lonColumn[index]),
       }
-    case 'lat_lon_as_fields':
+    case CoordinateType.Fields:
       const latCoordinate = getColumnValue(table, 'lat')
       const lonCoordinate = getColumnValue(table, 'lon')
       return {
@@ -432,11 +439,11 @@ const parseCoordinates = coordinate => parseInt(coordinate.toString(), 10)
 export const getDetectCoordinatingFields = (table: Table) => {
   const coordinateColumn = getCoordinateColumn(table)
 
-  if (coordinateColumn === 's2_cell_id') {
+  if (
+    coordinateColumn === CoordinateType.S2 ||
+    coordinateColumn === CoordinateType.Tags
+  ) {
     return false
-  } else if (coordinateColumn === 'lat_lon_as_tags') {
-    return false
-  } else {
-    return true
   }
+  return true
 }

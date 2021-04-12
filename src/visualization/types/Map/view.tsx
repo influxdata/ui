@@ -91,34 +91,33 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
         {error}
       </div>
     )
-  } else {
-    const tileServerConfiguration = {
-      tileServerUrl: getMapboxUrl(),
-      bingKey: '',
-    }
-
-    return (
-      <Plot
-        config={{
-          table: result.table,
-          showAxes: false,
-          layers: [
-            {
-              type: 'geo',
-              lat: geoCoordinates.lat,
-              lon: geoCoordinates.lon,
-              zoom,
-              allowPanAndZoom,
-              detectCoordinateFields: coordinatingFieldsFlag,
-              mapStyle,
-              layers,
-              tileServerConfiguration: tileServerConfiguration,
-            },
-          ],
-        }}
-      />
-    )
   }
+  const tileServerConfiguration = {
+    tileServerUrl: getMapboxUrl(),
+    bingKey: '',
+  }
+
+  return (
+    <Plot
+      config={{
+        table: result.table,
+        showAxes: false,
+        layers: [
+          {
+            type: 'geo',
+            lat: geoCoordinates.lat,
+            lon: geoCoordinates.lon,
+            zoom,
+            allowPanAndZoom,
+            detectCoordinateFields: coordinatingFieldsFlag,
+            mapStyle,
+            layers,
+            tileServerConfiguration: tileServerConfiguration,
+          },
+        ],
+      }}
+    />
+  )
 }
 
 export default GeoPlot

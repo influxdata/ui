@@ -27,14 +27,10 @@ const Logout: FC<Props> = ({history}) => {
   useEffect(() => {
     const handleSignOut = async () => {
       if (CLOUD && isFlagEnabled('authSessionCookieOn')) {
-        const signoutUrl = new URL(
+        const url = new URL(
           `${window.location.origin}${CLOUD_SIGNOUT_PATHNAME}`
         )
-        const auth0 = new auth0js.WebAuth({
-          returnTo: signoutUrl.href,
-        })
-        // Log the user out of Auth0, then destroy their API session
-        auth0.logout()
+        window.location.href = url.href
         return
       }
 

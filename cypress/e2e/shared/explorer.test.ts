@@ -376,7 +376,6 @@ describe('DataExplorer', () => {
 
         // button should be disabled
         cy.getByTestID('daterange--apply-btn').should('be.disabled')
-
       })
 
       it('should error when invalid dates are input', () => {

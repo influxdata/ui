@@ -2,7 +2,6 @@
 import {FC, useEffect} from 'react'
 import {useDispatch} from 'react-redux'
 import {RouteComponentProps} from 'react-router-dom'
-import auth0js from 'auth0-js'
 
 // APIs
 import {postSignout} from 'src/client'

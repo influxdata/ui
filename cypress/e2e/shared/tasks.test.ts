@@ -644,16 +644,16 @@ http.post(
 
       // Fill Task Form
       cy.getByTestID('task-form-name')
+        .focus()
         .clear()
-        .wait(500)
         .type(task.name, {delay})
       cy.getByTestID('task-form-schedule-input')
+        .focus()
         .clear()
-        .wait(500)
         .type(task.every, {delay})
       cy.getByTestID('task-form-offset-input')
+        .focus()
         .clear()
-        .wait(500)
         .type(task.offset, {delay})
       cy.getByTestID('flux-editor').type(task.query)
 
@@ -665,8 +665,8 @@ http.post(
       // Search for a task
       const name = task.name.slice(-4)
       cy.getByTestID('search-widget')
+        .focus()
         .clear()
-        .wait(500)
         .type(name, {delay})
       cy.getByTestID('resource-list--body')
         .children()
@@ -695,8 +695,8 @@ http.post(
       // Search for a task
       const name = task.name.slice(-4)
       cy.getByTestID('search-widget')
+        .focus()
         .clear()
-        .wait(500)
         .type(name, {delay})
       cy.getByTestID('resource-list--body')
         .children()

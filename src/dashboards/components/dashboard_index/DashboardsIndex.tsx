@@ -25,7 +25,7 @@ import {extractDashboardLimits} from 'src/cloud/utils/limits'
 
 // Actions
 import {createDashboard as createDashboardAction} from 'src/dashboards/actions/thunks'
-import {setDashboardSort} from 'src/dashboards/actions/creators'
+import {setDashboardSort, setSearchTerm} from 'src/dashboards/actions/creators'
 
 // Types
 import {AppState, ResourceType} from 'src/types'
@@ -48,8 +48,12 @@ class DashboardIndex extends PureComponent<Props, State> {
     super(props)
 
     this.state = {
-      searchTerm: '',
+      searchTerm: props.searchTerm,
     }
+  }
+
+  componentWillUnmount() {
+    this.props.setSearchTerm(this.state.searchTerm)
   }
 
   public render() {
@@ -129,16 +133,16 @@ class DashboardIndex extends PureComponent<Props, State> {
     )
   }
 
+  private handleFilterDashboards = (searchTerm: string): void => {
+    this.setState({searchTerm})
+  }
+
   private handleSort = (
     sortKey: DashboardSortKey,
     sortDirection: Sort,
     sortType: SortTypes
   ): void => {
     this.props.setDashboardSort({sortKey, sortDirection, sortType})
-  }
-
-  private handleFilterDashboards = (searchTerm: string): void => {
-    this.setState({searchTerm})
   }
 
   private summonImportOverlay = (): void => {
@@ -166,17 +170,20 @@ const mstp = (state: AppState) => {
   const {
     cloud: {limits},
   } = state
-  const sortOptions = state.resources.dashboards['sortOptions']
+
+  const {sortOptions, searchTerm} = state.resources.dashboards
 
   return {
     limitStatus: extractDashboardLimits(limits),
     sortOptions,
+    searchTerm,
   }
 }
 
 const mdtp = {
   createDashboard: createDashboardAction,
   setDashboardSort,
+  setSearchTerm,
 }
 
 const connector = connect(mstp, mdtp)

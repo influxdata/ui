@@ -23,6 +23,7 @@ import {
 } from '@influxdata/clockface'
 import EndpointCardMenu from 'src/notifications/endpoints/components/EndpointCardMenu'
 import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
+import {CopyResourceID} from 'src/shared/components/CopyResourceID'
 
 // Constants
 import {
@@ -147,6 +148,7 @@ const EndpointCard: FC<Props> = ({
             <>
               {relativeTimestampFormatter(endpoint.updatedAt, 'Last updated ')}
             </>
+            <CopyResourceID resource={endpoint} resourceType="Endpoint" />
           </ResourceCard.Meta>
           <InlineLabels
             selectedLabelIDs={endpoint.labels}

@@ -212,7 +212,9 @@ const SingleStatWithLine: FC<Props> = ({properties, result, timeRange}) => {
                 textAnchor: 'middle',
                 letterSpacing: '-0.05em',
               },
-              testID: 'single-stat--text'
+              svgTextAttributes: {
+                'data-testid': 'single-stat--text',
+              },
             },
           ],
         }}

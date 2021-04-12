@@ -155,7 +155,6 @@ export const dashboardsReducer = (
 
       case SET_DASHBOARDS_SEARCH_TERM: {
         const {searchTerm} = action
-
         draftState.searchTerm = searchTerm
 
         return

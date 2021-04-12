@@ -449,9 +449,7 @@ http.post(
       cy.getByTestID('task-card').should('have.length', 1)
 
       // searching by task name
-      cy.getByTestID('search-widget')
-        .clear()
-        .type('bEE')
+      getByTestIdAndSetInputValue('search-widget', 'bEE')
 
       cy.getByTestID('task-card').should('have.length', 1)
     })
@@ -494,15 +492,9 @@ http.post(
       const newInterval = '24h'
       const newOffset = '7h'
       // updates the data
-      cy.getByTestID('task-form-name')
-        .clear()
-        .type(newTask)
-      cy.getByTestID('task-form-schedule-input')
-        .clear()
-        .type(newInterval)
-      cy.getByTestID('task-form-offset-input')
-        .clear()
-        .type(newOffset)
+      getByTestIdAndSetInputValue('task-form-name', newTask)
+      getByTestIdAndSetInputValue('task-form-schedule-input', newInterval)
+      getByTestIdAndSetInputValue('task-form-offset-input', newOffset)
 
       cy.getByTestID('task-save-btn').click()
       // checks to see if the data has been updated once saved
@@ -613,25 +605,18 @@ http.post(
   it('should persist search term across pages', () => {
     cy.getByTestID('search-widget').should('have.value', '')
 
-    const delay = 100
     const tasks = [
       {
         name: 'task1',
         every: '3h30s',
         offset: '20m',
-        query: `import "influxdata/influxdb/v1{rightarrow}
-        v1.tagValues(bucket: "task1", tag: "_field"{rightarrow}
-        from(bucket: "task1"{rightarrow}
-           |> range(start: -2m{rightarrow}`,
+        query: `buckets()`,
       },
       {
         name: 'task2',
         every: '3h',
         offset: '30m',
-        query: `import "influxdata/influxdb/v1{rightarrow}
-        v1.tagValues(bucket: "task1", tag: "_field"{rightarrow}
-        from(bucket: "task1"{rightarrow}
-           |> range(start: -2m{rightarrow}`,
+        query: `buckets()`,
       },
     ]
 
@@ -643,18 +628,9 @@ http.post(
       cy.getByTestID('add-resource-dropdown--new').click()
 
       // Fill Task Form
-      cy.getByTestID('task-form-name')
-        .focus()
-        .clear()
-        .type(task.name, {delay})
-      cy.getByTestID('task-form-schedule-input')
-        .focus()
-        .clear()
-        .type(task.every, {delay})
-      cy.getByTestID('task-form-offset-input')
-        .focus()
-        .clear()
-        .type(task.offset, {delay})
+      getByTestIdAndSetInputValue('task-form-name', task.name)
+      getByTestIdAndSetInputValue('task-form-schedule-input', task.every)
+      getByTestIdAndSetInputValue('task-form-offset-input', task.offset)
       cy.getByTestID('flux-editor').type(task.query)
 
       // Save Task
@@ -664,10 +640,7 @@ http.post(
     tasks.forEach(task => {
       // Search for a task
       const name = task.name.slice(-4)
-      cy.getByTestID('search-widget')
-        .focus()
-        .clear()
-        .type(name, {delay})
+      getByTestIdAndSetInputValue('search-widget', name)
       cy.getByTestID('resource-list--body')
         .children()
         .should('have.length', 1)
@@ -694,10 +667,7 @@ http.post(
     tasks.forEach(task => {
       // Search for a task
       const name = task.name.slice(-4)
-      cy.getByTestID('search-widget')
-        .focus()
-        .clear()
-        .type(name, {delay})
+      getByTestIdAndSetInputValue('search-widget', name)
       cy.getByTestID('resource-list--body')
         .children()
         .should('have.length', 1)
@@ -746,4 +716,16 @@ function createFirstTask(
   cy.getByInputName('name').type(name)
   cy.getByTestID('task-form-schedule-input').type(interval)
   cy.getByTestID('task-form-offset-input').type(offset)
+}
+
+const getByTestIdAndSetInputValue = (
+  testId: string,
+  value: string | number
+) => {
+  const val = `${value}`
+  cy.getByTestID(testId).clear()
+  cy.getByTestID(testId)
+    .focus()
+    .type(val)
+  cy.getByTestID(testId).should('have.value', val)
 }

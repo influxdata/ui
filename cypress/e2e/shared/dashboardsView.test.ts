@@ -1,8 +1,6 @@
 import {Organization, AppState, Dashboard} from '../../../src/types'
 import {lines} from '../../support/commands'
 
-const typeAheadFlag = 'typeAheadVariableDropdown'
-
 describe('Dashboard', () => {
   beforeEach(() => {
     cy.flush()
@@ -842,7 +840,8 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     })
 
 
-    it.only('ensures that dependent variables load one another accordingly, even with reload and cleared local storage', () => {
+    it('ensures that dependent variables load one another accordingly, even with reload and cleared local storage', () => {
+
       cy.get('@org').then(({id: orgID}: Organization) => {
         cy.createDashboard(orgID).then(({body: dashboard}) => {
           cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
@@ -858,7 +857,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
               orgID,
               'dependent',
               `import "influxdata/influxdb/v1"
-            v1.tagValues(bucket: v.static, tag: "container_name") |> keep(columns: ["_value"])`
+          v1.tagValues(bucket: v.static, tag: "container_name") |> keep(columns: ["_value"])`
             )
             cy.createQueryVariable(
               orgID,
@@ -930,6 +929,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
             cy.getByTestID(
               'variable-dropdown-input-typeAhead--dependent'
             ).should('have.value', 'beans')
+
             // and also load the third result
             cy.getByTestID('variable-dropdown--button')
               .eq(2)

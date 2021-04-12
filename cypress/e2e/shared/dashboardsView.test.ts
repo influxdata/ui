@@ -841,130 +841,128 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     // when that flag goes away, need to update this test!
 
     // explicitly setting flag to false tho; because previous tests have set it to true.
-    it('ensures that dependent variables load one another accordingly, even with reload and cleared local storage', () => {
-      cy.window().then(win => {
-        win.influx.set(typeAheadFlag, false)
-
-        cy.get('@org').then(({id: orgID}: Organization) => {
-          cy.createDashboard(orgID).then(({body: dashboard}) => {
-            cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
-              const now = Date.now()
-              cy.writeData([
-                `test,container_name=cool dopeness=12 ${now - 1000}000000`,
-                `test,container_name=beans dopeness=18 ${now - 1200}000000`,
-                `test,container_name=cool dopeness=14 ${now - 1400}000000`,
-                `test,container_name=beans dopeness=10 ${now - 1600}000000`,
-              ])
-              cy.createCSVVariable(orgID, 'static', ['beans', defaultBucket])
-              cy.createQueryVariable(
-                orgID,
-                'dependent',
-                `import "influxdata/influxdb/v1"
+    it.only('ensures that dependent variables load one another accordingly, even with reload and cleared local storage', () => {
+      cy.get('@org').then(({id: orgID}: Organization) => {
+        cy.createDashboard(orgID).then(({body: dashboard}) => {
+          cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
+            const now = Date.now()
+            cy.writeData([
+              `test,container_name=cool dopeness=12 ${now - 1000}000000`,
+              `test,container_name=beans dopeness=18 ${now - 1200}000000`,
+              `test,container_name=cool dopeness=14 ${now - 1400}000000`,
+              `test,container_name=beans dopeness=10 ${now - 1600}000000`,
+            ])
+            cy.createCSVVariable(orgID, 'static', ['beans', defaultBucket])
+            cy.createQueryVariable(
+              orgID,
+              'dependent',
+              `import "influxdata/influxdb/v1"
             v1.tagValues(bucket: v.static, tag: "container_name") |> keep(columns: ["_value"])`
-              )
-              cy.createQueryVariable(
-                orgID,
-                'build',
-                `import "influxdata/influxdb/v1"
+            )
+            cy.createQueryVariable(
+              orgID,
+              'build',
+              `import "influxdata/influxdb/v1"
             import "strings"
             v1.tagValues(bucket: v.static, tag: "container_name") |> filter(fn: (r) => strings.hasSuffix(v: r._value, suffix: v.dependent))`
-              )
+            )
 
-              cy.fixture('routes').then(({orgs}) => {
-                cy.visit(`${orgs}/${orgID}/dashboards/${dashboard.id}`)
-                cy.getByTestID('tree-nav')
-              })
+            cy.fixture('routes').then(({orgs}) => {
+              cy.visit(`${orgs}/${orgID}/dashboards/${dashboard.id}`)
+              cy.getByTestID('tree-nav')
+            })
 
-              cy.getByTestID('add-cell--button').click()
-              cy.getByTestID('switch-to-script-editor').should('be.visible')
-              cy.getByTestID('switch-to-script-editor').click()
-              cy.getByTestID('toolbar-tab').click()
+            cy.getByTestID('add-cell--button').click()
+            cy.getByTestID('switch-to-script-editor').should('be.visible')
+            cy.getByTestID('switch-to-script-editor').click()
+            cy.getByTestID('toolbar-tab').click()
 
-              cy
-                .getByTestID('flux-editor')
-                .should('be.visible')
-                .click()
-                .focused().type(`from(bucket: v.static)
+            cy
+              .getByTestID('flux-editor')
+              .should('be.visible')
+              .click()
+              .focused().type(`from(bucket: v.static)
 |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
 |> filter(fn: (r) => r["_measurement"] == "test")
 |> filter(fn: (r) => r["_field"] == "dopeness")
 |> filter(fn: (r) => r["container_name"] == v.build)`)
 
-              cy.getByTestID('save-cell--button').click()
+            cy.getByTestID('save-cell--button').click()
 
-              // the default bucket selection should have no results and load all three variables
-              // even though only two variables are being used (because 1 is dependent upon another)
-              cy.getByTestID('variable-dropdown--static').should(
-                'contain',
-                'beans'
-              )
+            // the default bucket selection should have no results and load all three variables
+            // even though only two variables are being used (because 1 is dependent upon another)
+            cy.getByTestID('variable-dropdown-input-typeAhead--static').should(
+              'have.value',
+              'beans'
+            )
 
-              // and cause the rest to exist in loading states
-              cy.getByTestID('variable-dropdown--build').should(
-                'contain',
-                'Loading'
-              )
+            // and cause the rest to exist in loading states
+            cy.getByTestID('variable-dropdown--build').should(
+              'contain',
+              'Loading'
+            )
 
-              cy.getByTestIDSubStr('cell--view-empty')
+            cy.getByTestIDSubStr('cell--view-empty')
 
-              // But selecting a nonempty bucket should load some data
-              cy.getByTestID('variable-dropdown--button')
-                .eq(0)
-                .click()
-              cy.get(`#${defaultBucket}`).click()
+            // But selecting a nonempty bucket should load some data
+            cy.getByTestID('variable-dropdown--button')
+              .eq(0)
+              .click()
+            cy.get(`#${defaultBucket}`).click()
 
-              // default select the first result
-              cy.getByTestID('variable-dropdown--build').should(
-                'contain',
-                'beans'
-              )
+            // default select the first result
+            cy.getByTestID('variable-dropdown-input-typeAhead--build').should(
+              'have.value',
+              'beans'
+            )
+            cy.pause()
 
-              // and also load the third result
-              cy.getByTestID('variable-dropdown--button')
-                .eq(2)
-                .should('contain', 'beans')
-                .click()
-              cy.get(`#cool`).click()
+            cy.getByTestID(
+              'variable-dropdown-input-typeAhead--dependent'
+            ).should('have.value', 'beans')
+            // and also load the third result
+            cy.getByTestID('variable-dropdown--button')
+              .eq(2)
+              .click()
+            cy.get(`#cool`).click()
 
-              // and also load the second result
-              cy.getByTestID('variable-dropdown--dependent').should(
-                'contain',
-                'cool'
-              )
+            // and also load the second result
+            cy.getByTestID(
+              'variable-dropdown-input-typeAhead--dependent'
+            ).should('have.value', 'cool')
 
-              // updating the third variable should update the second
-              cy.getByTestID('variable-dropdown--button')
-                .eq(2)
-                .click()
-              cy.get(`#beans`).click()
-              cy.getByTestID('variable-dropdown--build').should(
-                'contain',
-                'beans'
-              )
-            })
-            cy.clearLocalStorage()
-            cy.reload()
-            cy.get<string>('@defaultBucket').then(() => {
-              // the default bucket selection should have no results and load all three variables
-              // even though only two variables are being used (because 1 is dependent upon another)
-              cy.getByTestID('variable-dropdown--static').should(
-                'contain',
-                'defbuck'
-              )
+            // updating the third variable should update the second
+            cy.getByTestID('variable-dropdown--button')
+              .eq(2)
+              .click()
+            cy.get(`#beans`).click()
+            cy.getByTestID('variable-dropdown-input-typeAhead--build').should(
+              'have.value',
+              'beans'
+            )
+          })
+          cy.clearLocalStorage()
+          cy.reload()
+          cy.get<string>('@defaultBucket').then(() => {
+            // the default bucket selection should have no results and load all three variables
+            // even though only two variables are being used (because 1 is dependent upon another)
+            cy.getByTestID('variable-dropdown-input-typeAhead--static').should(
+              'have.value',
+              'defbuck'
+            )
 
-              // and cause the rest to exist in loading states
-              cy.getByTestID('variable-dropdown--build').should(
-                'contain',
-                'beans'
-              )
+            // and cause the rest to exist in loading states
+            cy.getByTestID('variable-dropdown-input-typeAhead--build').should(
+              'have.value',
+              'beans'
+            )
 
-              // and also load the second result
+            // and also load the second result
 
-              cy.getByTestID('variable-dropdown--build').should(
-                'contain',
-                'beans'
-              )
-            })
+            cy.getByTestID('variable-dropdown-input-typeAhead--build').should(
+              'have.value',
+              'beans'
+            )
           })
         })
       })

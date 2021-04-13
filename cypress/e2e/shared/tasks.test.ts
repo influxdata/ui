@@ -54,7 +54,8 @@ from(bucket: "${name}"{rightarrow}
   it('can create a task using http.post', () => {
     const taskName = 'Task'
     createFirstTask(taskName, () => {
-      return `import "http"{enter}http.post(url: "https://foo.bar/baz", data: bytes(v: "body")){enter}`
+      return `import "http"
+http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     })
 
     cy.getByTestID('task-save-btn').click()

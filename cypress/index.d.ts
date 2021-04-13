@@ -66,6 +66,7 @@ declare global {
       getByTestID: typeof getByTestID
       getByInputName: typeof getByInputName
       getByInputValue: typeof getByInputValue
+      getByTestIDAndSetInputValue: typeof getByTestIDAndSetInputValue
       getByTitle: typeof getByTitle
       getByTestIDSubStr: typeof getByTestIDSubStr
       createAndAddLabel: typeof createAndAddLabel

@@ -50,15 +50,12 @@ from(bucket: "${name}"{rightarrow}
       cy.get('.cf-overlay--dismiss').click()
     })
   })
-  // this test is broken due to a failure on the post route
-  it.skip('can create a task using http.post', () => {
+
+  it('can create a task using http.post', () => {
     const taskName = 'Task'
     createFirstTask(taskName, () => {
-      return `import "http{rightarrow}
-http.post(
-  url: "https://foo.bar/baz",
-  data: bytes(v: "body"{rightarrow}
-  {rightarrow}`
+      return `import "http"
+http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     })
 
     cy.getByTestID('task-save-btn').click()
@@ -139,9 +136,7 @@ http.post(
       })
   })
 
-  // skip until this issue is resolved
-  // https://github.com/influxdata/ui/issues/96
-  it.skip('can create a task with an option parameter', () => {
+  it('can create a task with an option parameter', () => {
     cy.getByTestID('empty-tasks-list').within(() => {
       cy.getByTestID('add-resource-dropdown--button')
         .click()
@@ -150,20 +145,18 @@ http.post(
         })
     })
 
-    cy.getByTestID('flux-editor').within(() => {
-      cy.get('textarea.inputarea')
-        .click()
-        .type(
-          'option task = \n' +
-            '{\n' +
-            'name: "Option Test", \n' +
-            'every: 24h, \n' +
-            'offset: 20m\n' +
-            '}\n' +
-            'from(bucket: "defbuck")\n' +
-            '\t|> range(start: -2m)'
-        )
-    })
+    cy.focused()
+
+    cy.getByTestID('flux-editor').type(
+      'option task = \n' +
+        '{\n' +
+        'name: "Option Test", \n' +
+        'every: 24h, \n' +
+        'offset: 20m\n' +
+        '}\n' +
+        'from(bucket: "defbuck")\n' +
+        '\t|> range(start: -2m)'
+    )
 
     cy.getByTestID('task-form-name')
       .click()
@@ -258,9 +251,9 @@ http.post(
         })
     })
 
-    // skipping until this issue is resolved
-    // https://github.com/influxdata/influxdb/issues/18478
-    it.skip('can clone a task and activate just the cloned one', () => {
+    it('can clone a task and activate just the cloned one', () => {
+      createTask('task1', 'buckets()')
+
       cy.getByTestID('task-card').then(() => {
         cy.get('.context-menu--container')
           .eq(1)
@@ -352,7 +345,8 @@ http.post(
     })
 
     // skip until this issue is resolved
-    // https://github.com/influxdata/ui/issues/97
+    // IDPE: https://github.com/influxdata/idpe/issues/10368
+    // UI: https://github.com/influxdata/ui/issues/97
     it.skip('can add a comment into a task', () => {
       cy.getByTestID('task-card--name')
         .first()
@@ -449,7 +443,7 @@ http.post(
       cy.getByTestID('task-card').should('have.length', 1)
 
       // searching by task name
-      getByTestIdAndSetInputValue('search-widget', 'bEE')
+      cy.getByTestIDAndSetInputValue('search-widget', 'bEE')
 
       cy.getByTestID('task-card').should('have.length', 1)
     })
@@ -492,9 +486,9 @@ http.post(
       const newInterval = '24h'
       const newOffset = '7h'
       // updates the data
-      getByTestIdAndSetInputValue('task-form-name', newTask)
-      getByTestIdAndSetInputValue('task-form-schedule-input', newInterval)
-      getByTestIdAndSetInputValue('task-form-offset-input', newOffset)
+      cy.getByTestIDAndSetInputValue('task-form-name', newTask)
+      cy.getByTestIDAndSetInputValue('task-form-schedule-input', newInterval)
+      cy.getByTestIDAndSetInputValue('task-form-offset-input', newOffset)
 
       cy.getByTestID('task-save-btn').click()
       // checks to see if the data has been updated once saved
@@ -628,10 +622,15 @@ http.post(
       cy.getByTestID('add-resource-dropdown--new').click()
 
       // Fill Task Form
-      getByTestIdAndSetInputValue('task-form-name', task.name)
-      getByTestIdAndSetInputValue('task-form-schedule-input', task.every)
-      getByTestIdAndSetInputValue('task-form-offset-input', task.offset)
+      // focused() waits for monoco editor to get input focus
+      // If this isn't present then cypress shifts focus on elements
+      // making it seem randomly jumping to elements
+      cy.focused()
+
       cy.getByTestID('flux-editor').type(task.query)
+      cy.getByTestIDAndSetInputValue('task-form-name', task.name)
+      cy.getByTestIDAndSetInputValue('task-form-schedule-input', task.every)
+      cy.getByTestIDAndSetInputValue('task-form-offset-input', task.offset)
 
       // Save Task
       cy.getByTestID('task-save-btn').click()
@@ -640,7 +639,7 @@ http.post(
     tasks.forEach(task => {
       // Search for a task
       const name = task.name.slice(-4)
-      getByTestIdAndSetInputValue('search-widget', name)
+      cy.getByTestIDAndSetInputValue('search-widget', name)
       cy.getByTestID('resource-list--body')
         .children()
         .should('have.length', 1)
@@ -667,7 +666,7 @@ http.post(
     tasks.forEach(task => {
       // Search for a task
       const name = task.name.slice(-4)
-      getByTestIdAndSetInputValue('search-widget', name)
+      cy.getByTestIDAndSetInputValue('search-widget', name)
       cy.getByTestID('resource-list--body')
         .children()
         .should('have.length', 1)
@@ -691,6 +690,32 @@ http.post(
     })
   })
 })
+
+const createTask = (
+  name: string,
+  task: string,
+  every = '3h',
+  offset = '20m'
+) => {
+  cy.getByTestID('add-resource-dropdown--button')
+    .children()
+    .first()
+    .click()
+  cy.getByTestID('add-resource-dropdown--new').click()
+
+  cy.getByTestID('flux-editor').within(() => {
+    cy.get('textarea.inputarea')
+      .click({force: true})
+      .focused()
+      .type(task, {force: true, delay: 2})
+  })
+
+  cy.getByTestIDAndSetInputValue('task-form-name', name)
+  cy.getByTestIDAndSetInputValue('task-form-offset-input', offset)
+  cy.getByTestIDAndSetInputValue('task-form-schedule-input', every)
+  cy.getByTestID('task-save-btn').click()
+  cy.getByTestID('notification-success--dismiss').click()
+}
 
 function createFirstTask(
   name: string,
@@ -716,16 +741,4 @@ function createFirstTask(
   cy.getByInputName('name').type(name)
   cy.getByTestID('task-form-schedule-input').type(interval)
   cy.getByTestID('task-form-offset-input').type(offset)
-}
-
-const getByTestIdAndSetInputValue = (
-  testId: string,
-  value: string | number
-) => {
-  const val = `${value}`
-  cy.getByTestID(testId).clear()
-  cy.getByTestID(testId)
-    .focus()
-    .type(val)
-  cy.getByTestID(testId).should('have.value', val)
 }

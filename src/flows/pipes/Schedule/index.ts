@@ -8,7 +8,8 @@ export default register => {
     component: View,
     featureFlag: 'flow-panel--schedule',
     button: 'Schedule',
-    generateFlux: (_data, _create, _append, _withSideEffects) => {
+    generateFlux: (_data, _create, append, _withSideEffects) => {
+      append()
     },
   })
 }

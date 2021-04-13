@@ -120,6 +120,7 @@
 }
 
 .flow-panel--title,
+.flow-panel--editable-title,
 .flow-panel--data-source {
   font-size: 14px;
   font-weight: $cf-font-weight--medium;
@@ -131,6 +132,7 @@
   color: $c-laser;
 }
 
+.flow-panel--editable-title,
 .flow-panel--title {
   order: 2;
   color: $g15-platinum;
@@ -141,6 +143,7 @@
   margin-left: $cf-marg-b;
 }
 
+.flow-panel--editable-title,
 .flow-panel--title-input {
   background-color: transparent;
   border: $cf-border solid $flow-panel--bg;
@@ -154,7 +157,9 @@
   width: 100%;
   height: $cf-form-sm-height;
   border-radius: $cf-radius;
+  }
 
+.flow-panel--title-input {
   &:hover {
     border-color: $g5-pepper;
   }
@@ -169,6 +174,10 @@
     border-color: $cf-input-border--focused;
     box-shadow: $cf-input--box-shadow;
   }
+}
+
+.flow-panel--editable-title {
+    line-height: 30px;
 }
 
 .flow-panel--title-icon {

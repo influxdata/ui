@@ -67,6 +67,11 @@ export const MarkdownRenderer: FC<Props> = ({
 
   // load images locally to your heart's content. caveat emptor
   return (
-    <ReactMarkdown source={text} className={className} escapeHtml={false} />
+    <ReactMarkdown
+      source={text}
+      className={className}
+      renderers={{...cloudRenderers}}
+      escapeHtml={false}
+    />
   )
 }

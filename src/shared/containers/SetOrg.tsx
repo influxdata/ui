@@ -30,6 +30,7 @@ import {
   MembersIndex,
   RouteToDashboardList,
   ClientLibrariesPage,
+  FileUploadsPage,
   TelegrafPluginsPage,
   FlowsIndex,
   NotFound,
@@ -56,6 +57,7 @@ import {
   TEMPLATES,
   TOKENS,
   TELEGRAFS,
+  FILE_UPLOAD,
 } from 'src/shared/constants/routes'
 
 // Actions
@@ -175,6 +177,10 @@ const SetOrg: FC<Props> = ({
           <Route
             path={`${orgPath}/${LOAD_DATA}/${CLIENT_LIBS}`}
             component={ClientLibrariesPage}
+          />
+          <Route
+            path={`${orgPath}/${LOAD_DATA}/${FILE_UPLOAD}`}
+            component={FileUploadsPage}
           />
           <Route
             path={`${orgPath}/${LOAD_DATA}/${TELEGRAF_PLUGINS}`}

@@ -1,6 +1,5 @@
 // Libraries
 import React, {PureComponent, createRef, RefObject} from 'react'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Components
 import CloudExclude from 'src/shared/components/cloud/CloudExclude'
@@ -67,19 +66,17 @@ export default class BucketAddDataButton extends PureComponent<Props> {
                   Quickly load an existing line protocol file.
                 </div>
               </div>
-              {isFlagEnabled('csvUploader') && (
-                <div className="bucket-add-data--option" onClick={onAddCsv}>
-                  <div
-                    className="bucket-add-data--option-header"
-                    data-testid="bucket-add-csv"
-                  >
-                    CSV Upload
-                  </div>
-                  <div className="bucket-add-data--option-desc">
-                    Quickly load an existing csv file.
-                  </div>
+              <div className="bucket-add-data--option" onClick={onAddCsv}>
+                <div
+                  className="bucket-add-data--option-header"
+                  data-testid="bucket-add-csv"
+                >
+                  CSV Upload
                 </div>
-              )}
+                <div className="bucket-add-data--option-desc">
+                  Quickly load an existing csv file.
+                </div>
+              </div>
               <div
                 className="bucket-add-data--option"
                 onClick={onAddClientLibrary}

@@ -11,7 +11,7 @@ export default register => {
     featureFlag: 'flow-panel--downsample',
     button: 'Downsample',
     initial: {
-      functions: [],
+      functions: [{name: 'mean'}],
       aggregateWindow: {
         period: '',
         fillValues: false,

@@ -270,7 +270,7 @@ const XYPlot: FC<Props> = ({
       }
     })
 
-    if (inAnnotationWriteMode) {
+    if (inAnnotationWriteMode && cellID) {
       config.interactionHandlers = {
         singleClick: makeSingleClickHandler(),
       }

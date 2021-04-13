@@ -64,7 +64,6 @@ class TasksPage extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
 
-    props.setSearchTerm('')
     if (!props.showInactive) {
       props.setShowInactive()
     }

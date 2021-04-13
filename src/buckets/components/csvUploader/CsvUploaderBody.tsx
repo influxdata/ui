@@ -8,7 +8,7 @@ import {ProgressBar} from '@influxdata/clockface'
 import DragAndDrop from 'src/buckets/components/csvUploader/DragAndDrop'
 
 // Context
-import {CsvUploaderContext} from 'src/buckets/components/context/csvUploaderProvider'
+import {CsvUploaderContext} from 'src/buckets/components/context/csvUploader'
 
 // Utils
 import {getByID} from 'src/resources/selectors'
@@ -17,18 +17,22 @@ import {event} from 'src/cloud/utils/reporting'
 // Types
 import {AppState, Bucket, RemoteDataState, ResourceType} from 'src/types'
 
-const CsvUploaderBody: FC = () => {
+type Props = {
+  bucket?: string
+}
+
+const CsvUploaderBody: FC<Props> = ({bucket}) => {
   const {uploadState, progress, uploadCsv} = useContext(CsvUploaderContext)
 
   const {bucketID} = useParams()
-  const bucket =
+  const selectedBucket =
     useSelector((state: AppState) =>
       getByID<Bucket>(state, ResourceType.Buckets, bucketID)
     )?.name ?? ''
 
   const handleUploadCsv = (csv: string) => {
     event('Uploading_CSV')
-    uploadCsv(csv, bucket)
+    uploadCsv(csv, bucket ?? selectedBucket)
   }
 
   return (

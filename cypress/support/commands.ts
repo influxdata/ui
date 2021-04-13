@@ -227,13 +227,15 @@ export const createTask = (
   orgID?: string,
   name: string = '🦄ask'
 ): Cypress.Chainable<Cypress.Response> => {
-  const flux = `option task = {
-    name: "${name}",
-    every: 24h,
-    offset: 20m
-  }
-  from(bucket: "defbuck")
-        |> range(start: -2m)`
+  const flux = `import "csv"
+
+option task = {
+  name: "${name}",
+  every: 24h,
+  offset: 20m
+}
+from(bucket: "defbuck")
+      |> range(start: -2m)`
 
   return cy.request({
     method: 'POST',

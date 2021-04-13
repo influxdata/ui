@@ -18,12 +18,12 @@ export default register => {
       properties: SUPPORTED_VISUALIZATIONS['xy'].initial,
     },
     generateFlux: (pipe, _, append) => {
-      if (!pipe.functions || !pipe.functions.length) {
-        // this is just for migration
-        pipe.functions = [{name: 'mean'}]
+      if (!pipe.functions.length) {
+        append('__CURRENT_RESULT__')
+        return
       }
 
-      if (!pipe.functions.length || !pipe.period) {
+      if (!pipe.period) {
         return
       }
 

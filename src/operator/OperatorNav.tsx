@@ -1,4 +1,5 @@
-import React, {FC, useContext} from 'react'
+import React, {FC} from 'react'
+import {useSelector} from 'react-redux'
 import {
   ReflessPopover,
   PopoverPosition,
@@ -8,10 +9,12 @@ import {
   PopoverInteraction,
 } from '@influxdata/clockface'
 import {Link} from 'react-router-dom'
-import {OperatorContext} from './context/operator'
+
+// Types
+import {AppState} from 'src/types'
 
 const OperatorNav: FC = () => {
-  const {operator} = useContext(OperatorContext)
+  const operator = useSelector((state: AppState) => state.me.quartzMe)
   return (
     <ReflessPopover
       position={PopoverPosition.ToTheLeft}

@@ -31,15 +31,12 @@ export const EditAnnotationOverlay: FC = () => {
   const {clickedAnnotation} = useSelector(getOverlayParams)
 
   const handleSubmit = (editedAnnotation: EditAnnotation): void => {
-    const formIsValid = true
-    if (formIsValid) {
-      try {
-        dispatch(editAnnotation(editedAnnotation))
-        dispatch(notify(editAnnotationSuccess()))
-        onClose()
-      } catch (err) {
-        dispatch(notify(editAnnotationFailed(err)))
-      }
+    try {
+      dispatch(editAnnotation(editedAnnotation))
+      dispatch(notify(editAnnotationSuccess()))
+      onClose()
+    } catch (err) {
+      dispatch(notify(editAnnotationFailed(err)))
     }
   }
 

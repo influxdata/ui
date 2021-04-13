@@ -50,6 +50,10 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
     summary: annotation.summary,
   })
 
+  const isValidAnnotationForm = ({summary, startTime}): boolean => {
+    return summary.length && startTime
+  }
+
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -102,7 +106,7 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
               />
             </Form.Element>
             <Form.Element
-              label="Summary"
+              label="Message"
               className="edit-annotation-form-label"
             >
               <Input
@@ -111,6 +115,7 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
                 onChange={handleChange}
                 status={ComponentStatus.Default}
                 size={ComponentSize.Medium}
+                testID="edit-annotation-summary-inputfield"
               />
             </Form.Element>
           </Panel>
@@ -122,6 +127,7 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
           onClick={handleDelete}
           color={ComponentColor.Danger}
           style={{marginRight: '15px'}}
+          testID="delete-annotation-button"
         />
         <div className="edit-annotation-buttons">
           <Button
@@ -129,11 +135,21 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
             onClick={handleClose}
             color={ComponentColor.Default}
             className="edit-annotation-cancel"
+            testID="edit-annotation-cancel-button"
           />
           <Button
             text="Save Changes"
             onClick={() => handleSubmit(editedAnnotation)}
             color={ComponentColor.Primary}
+            status={
+              isValidAnnotationForm({
+                startTime: editedAnnotation.startTime,
+                summary: editedAnnotation.summary,
+              })
+                ? ComponentStatus.Default
+                : ComponentStatus.Disabled
+            }
+            testID="edit-annotation-submit-button"
           />
         </div>
       </Overlay.Footer>

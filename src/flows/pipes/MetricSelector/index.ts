@@ -20,6 +20,10 @@ export default register => {
       if (!bucket) {
         return
       }
+      if (!(field || measurement || Object.values(tags).length)) {
+        return
+      }
+
       let text = `from(bucket: "${bucket.name}") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)`
       if (measurement) {
         text += ` |> filter(fn: (r) => r["_measurement"] == "${measurement}")`

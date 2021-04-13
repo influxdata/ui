@@ -11,7 +11,6 @@ import GetResources from 'src/resources/components/GetResources'
 // Actions
 import {createDashboard} from 'src/dashboards/actions/thunks'
 
-import {ALLOW_IMPORT_FROM_TEMPLATE} from 'src/shared/constants' // spoiler alert: you can't import from templates
 import {ResourceType} from 'src/types'
 
 interface ComponentProps {
@@ -48,7 +47,6 @@ const DashboardsTableEmpty: FC<ComponentProps> = ({
             onSelectImport={summonImportOverlay}
             onSelectTemplate={summonImportFromTemplateOverlay}
             resourceName="Dashboard"
-            canImportFromTemplate={ALLOW_IMPORT_FROM_TEMPLATE}
           />
         </EmptyState>
       }
@@ -68,7 +66,6 @@ const DashboardsTableEmpty: FC<ComponentProps> = ({
                 onSelectImport={summonImportOverlay}
                 onSelectTemplate={summonImportFromTemplateOverlay}
                 resourceName="Dashboard"
-                canImportFromTemplate={ALLOW_IMPORT_FROM_TEMPLATE}
               />
             </EmptyState>
           </DatalessEmptyState>

@@ -149,6 +149,7 @@ from(bucket: "${name}"{rightarrow}
     })
 
     cy.getByTestID('flux-editor').within(() => {
+      cy.focused()
       cy.get('textarea.inputarea')
         .click()
         .type(

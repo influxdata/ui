@@ -449,7 +449,7 @@ http.post(
       cy.getByTestID('task-card').should('have.length', 1)
 
       // searching by task name
-      getByTestIdAndSetInputValue('search-widget', 'bEE')
+      cy.getByTestIDAndSetInputValue('search-widget', 'bEE')
 
       cy.getByTestID('task-card').should('have.length', 1)
     })
@@ -492,9 +492,9 @@ http.post(
       const newInterval = '24h'
       const newOffset = '7h'
       // updates the data
-      getByTestIdAndSetInputValue('task-form-name', newTask)
-      getByTestIdAndSetInputValue('task-form-schedule-input', newInterval)
-      getByTestIdAndSetInputValue('task-form-offset-input', newOffset)
+      cy.getByTestIDAndSetInputValue('task-form-name', newTask)
+      cy.getByTestIDAndSetInputValue('task-form-schedule-input', newInterval)
+      cy.getByTestIDAndSetInputValue('task-form-offset-input', newOffset)
 
       cy.getByTestID('task-save-btn').click()
       // checks to see if the data has been updated once saved
@@ -628,10 +628,15 @@ http.post(
       cy.getByTestID('add-resource-dropdown--new').click()
 
       // Fill Task Form
-      getByTestIdAndSetInputValue('task-form-name', task.name)
-      getByTestIdAndSetInputValue('task-form-schedule-input', task.every)
-      getByTestIdAndSetInputValue('task-form-offset-input', task.offset)
+      // focused() waits for monoco editor to get input focus
+      // If this isn't present then cypress shifts focus on elements
+      // making it seem randomly jumping to elements
+      cy.focused()
+
       cy.getByTestID('flux-editor').type(task.query)
+      cy.getByTestIDAndSetInputValue('task-form-name', task.name)
+      cy.getByTestIDAndSetInputValue('task-form-schedule-input', task.every)
+      cy.getByTestIDAndSetInputValue('task-form-offset-input', task.offset)
 
       // Save Task
       cy.getByTestID('task-save-btn').click()
@@ -640,7 +645,7 @@ http.post(
     tasks.forEach(task => {
       // Search for a task
       const name = task.name.slice(-4)
-      getByTestIdAndSetInputValue('search-widget', name)
+      cy.getByTestIDAndSetInputValue('search-widget', name)
       cy.getByTestID('resource-list--body')
         .children()
         .should('have.length', 1)
@@ -667,7 +672,7 @@ http.post(
     tasks.forEach(task => {
       // Search for a task
       const name = task.name.slice(-4)
-      getByTestIdAndSetInputValue('search-widget', name)
+      cy.getByTestIDAndSetInputValue('search-widget', name)
       cy.getByTestID('resource-list--body')
         .children()
         .should('have.length', 1)
@@ -716,16 +721,4 @@ function createFirstTask(
   cy.getByInputName('name').type(name)
   cy.getByTestID('task-form-schedule-input').type(interval)
   cy.getByTestID('task-form-offset-input').type(offset)
-}
-
-const getByTestIdAndSetInputValue = (
-  testId: string,
-  value: string | number
-) => {
-  const val = `${value}`
-  cy.getByTestID(testId).clear()
-  cy.getByTestID(testId)
-    .focus()
-    .type(val)
-  cy.getByTestID(testId).should('have.value', val)
 }

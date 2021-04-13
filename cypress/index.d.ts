@@ -13,6 +13,7 @@ import {
   getByTestID,
   getByInputName,
   getByInputValue,
+  getByTestIDAndSetInputValue,
   getByTitle,
   createTask,
   createMapVariable,

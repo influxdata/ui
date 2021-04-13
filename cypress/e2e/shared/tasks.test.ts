@@ -148,21 +148,19 @@ from(bucket: "${name}"{rightarrow}
         })
     })
 
-    cy.getByTestID('flux-editor').within(() => {
-      cy.focused()
-      cy.get('textarea.inputarea')
-        .click()
-        .type(
-          'option task = \n' +
-            '{\n' +
-            'name: "Option Test", \n' +
-            'every: 24h, \n' +
-            'offset: 20m\n' +
-            '}\n' +
-            'from(bucket: "defbuck")\n' +
-            '\t|> range(start: -2m)'
-        )
-    })
+    cy.focused()
+
+    cy.getByTestID('flux-editor')
+      .type(
+        'option task = \n' +
+          '{\n' +
+          'name: "Option Test", \n' +
+          'every: 24h, \n' +
+          'offset: 20m\n' +
+          '}\n' +
+          'from(bucket: "defbuck")\n' +
+          '\t|> range(start: -2m)'
+      )
 
     cy.getByTestID('task-form-name')
       .click()

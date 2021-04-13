@@ -50,15 +50,15 @@ from(bucket: "${name}"{rightarrow}
       cy.get('.cf-overlay--dismiss').click()
     })
   })
-  // this test is broken due to a failure on the post route
-  it.skip('can create a task using http.post', () => {
+
+  it('can create a task using http.post', () => {
     const taskName = 'Task'
     createFirstTask(taskName, () => {
-      return `import "http{rightarrow}
-http.post(
-  url: "https://foo.bar/baz",
-  data: bytes(v: "body"{rightarrow}
-  {rightarrow}`
+      return (
+        'import "http"\n' +
+        'http.post(url: "https://foo.bar/baz",' +
+        ' data: bytes(v: "body"))\n'
+      )
     })
 
     cy.getByTestID('task-save-btn').click()
@@ -139,9 +139,7 @@ http.post(
       })
   })
 
-  // skip until this issue is resolved
-  // https://github.com/influxdata/ui/issues/96
-  it.skip('can create a task with an option parameter', () => {
+  it('can create a task with an option parameter', () => {
     cy.getByTestID('empty-tasks-list').within(() => {
       cy.getByTestID('add-resource-dropdown--button')
         .click()
@@ -258,9 +256,9 @@ http.post(
         })
     })
 
-    // skipping until this issue is resolved
-    // https://github.com/influxdata/influxdb/issues/18478
-    it.skip('can clone a task and activate just the cloned one', () => {
+    it('can clone a task and activate just the cloned one', () => {
+      createTask('task1', 'buckets()')
+
       cy.getByTestID('task-card').then(() => {
         cy.get('.context-menu--container')
           .eq(1)
@@ -352,7 +350,8 @@ http.post(
     })
 
     // skip until this issue is resolved
-    // https://github.com/influxdata/ui/issues/97
+    // IDPE: https://github.com/influxdata/idpe/issues/10368
+    // UI: https://github.com/influxdata/ui/issues/97
     it.skip('can add a comment into a task', () => {
       cy.getByTestID('task-card--name')
         .first()
@@ -696,6 +695,32 @@ http.post(
     })
   })
 })
+
+const createTask = (
+  name: string,
+  task: string,
+  every = '3h',
+  offset = '20m'
+) => {
+  cy.getByTestID('add-resource-dropdown--button')
+    .children()
+    .first()
+    .click()
+  cy.getByTestID('add-resource-dropdown--new').click()
+
+  cy.getByTestID('flux-editor').within(() => {
+    cy.get('textarea.inputarea')
+      .click({force: true})
+      .focused()
+      .type(task, {force: true, delay: 2})
+  })
+
+  cy.getByTestIDAndSetInputValue('task-form-name', name)
+  cy.getByTestIDAndSetInputValue('task-form-offset-input', offset)
+  cy.getByTestIDAndSetInputValue('task-form-schedule-input', every)
+  cy.getByTestID('task-save-btn').click()
+  cy.getByTestID('notification-success--dismiss').click()
+}
 
 function createFirstTask(
   name: string,

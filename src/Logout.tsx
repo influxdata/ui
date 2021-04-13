@@ -7,7 +7,13 @@ import {RouteComponentProps} from 'react-router-dom'
 import {postSignout} from 'src/client'
 
 // Constants
-import {CLOUD, CLOUD_URL, CLOUD_LOGOUT_PATH} from 'src/shared/constants'
+import {
+  CLOUD,
+  CLOUD_URL,
+  CLOUD_LOGOUT_PATH,
+  CLOUD_SIGNOUT_PATHNAME,
+} from 'src/shared/constants'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Components
 import {reset} from 'src/shared/actions/flags'
@@ -19,6 +25,14 @@ const Logout: FC<Props> = ({history}) => {
 
   useEffect(() => {
     const handleSignOut = async () => {
+      if (CLOUD && isFlagEnabled('authSessionCookieOn')) {
+        const url = new URL(
+          `${window.location.origin}${CLOUD_SIGNOUT_PATHNAME}`
+        )
+        window.location.href = url.href
+        return
+      }
+
       if (CLOUD) {
         window.location.href = `${CLOUD_URL}${CLOUD_LOGOUT_PATH}`
         return

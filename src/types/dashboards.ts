@@ -47,7 +47,6 @@ export interface Dashboard extends Omit<GenDashboard, 'cells' | 'labels'> {
   cells: string[]
   labels: string[]
   status: RemoteDataState
-  sortOptions: DashboardSortParams
 }
 
 export type Omit<K, V> = Pick<K, Exclude<keyof K, V>>

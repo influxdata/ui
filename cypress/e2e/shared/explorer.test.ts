@@ -1348,9 +1348,21 @@ describe('DataExplorer', () => {
         cy.getByTestID(`selector-list m`).click()
         cy.getByTestID('save-query-as').click({force: true})
         cy.get('[id="variable"]').click()
+
+        // pre-visit the "Save as variable" tab to prevent race condition
+        cy.getByTestID('overlay--container').within(() => {
+          cy.getByTestID('variable-form-save').should('be.disabled')
+          cy.getByTestID('flux-editor').should('be.visible')
+          cy.getByTestID('flux-editor').click()
+          cy.get('.cf-overlay--dismiss').click()
+        })
       })
 
       it('can save and enable/disable submit button', () => {
+        cy.getByTestID(`selector-list m`).click()
+        cy.getByTestID('save-query-as').click({force: true})
+        cy.get('[id="variable"]').click()
+
         cy.getByTestID('overlay--container').within(() => {
           cy.getByTestID('variable-form-save').should('be.disabled')
           cy.getByTestID('flux-editor').should('be.visible')
@@ -1369,19 +1381,20 @@ describe('DataExplorer', () => {
       })
 
       it('can prevent saving variable names with hyphens or spaces', () => {
+        cy.getByTestID(`selector-list m`).click()
+        cy.getByTestID('save-query-as').click({force: true})
+        cy.get('[id="variable"]').click()
         cy.getByTestID('overlay--container').within(() => {
           cy.getByTestID('variable-form-save').should('be.disabled')
           cy.getByTestID('flux-editor').should('be.visible')
-          cy.getByTestID('flux-editor').click()
-          cy.getByTestID('variable-name-input')
-            .click()
-            .type('bad name')
+          cy.getByTestID('variable-name-input').type('bad name')
           cy.getByTestID('variable-form-save').should('be.disabled')
 
           cy.getByTestID('variable-name-input')
             .clear()
             .type('bad-name')
           cy.getByTestID('variable-form-save').should('be.disabled')
+          cy.get('.cf-overlay--dismiss').click()
         })
       })
     })

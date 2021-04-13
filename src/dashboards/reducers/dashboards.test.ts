@@ -36,7 +36,6 @@ const initialState = () => ({
         self: '/v2/dashboards/dashOne',
         cells: '/v2/dashboards/cells',
       },
-      sortOptions: DEFAULT_DASHBOARD_SORT_OPTIONS,
     },
     ['dashTwo']: {
       id: 'dashTwo',
@@ -49,10 +48,11 @@ const initialState = () => ({
         self: '/v2/dashboards/dashTwo',
         cells: '/v2/dashboards/cells',
       },
-      sortOptions: DEFAULT_DASHBOARD_SORT_OPTIONS,
     },
   },
   allIDs: ['dashOne', 'dashTwo'],
+  searchTerm: '',
+  sortOptions: DEFAULT_DASHBOARD_SORT_OPTIONS,
 })
 
 describe('dashboards reducer', () => {

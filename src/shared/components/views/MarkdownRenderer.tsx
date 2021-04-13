@@ -70,7 +70,7 @@ export const MarkdownRenderer: FC<Props> = ({
     <ReactMarkdown
       source={text}
       className={className}
-      renderers={{...cloudRenderers}}
+      renderers={cloudRenderers}
       escapeHtml={false}
     />
   )

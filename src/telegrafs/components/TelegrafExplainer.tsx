@@ -1,5 +1,5 @@
 // Libraries
-import React, {FunctionComponent} from 'react'
+import React, {FunctionComponent, CSSProperties} from 'react'
 
 // Components
 import {
@@ -9,11 +9,10 @@ import {
   Gradients,
   ComponentSize,
 } from '@influxdata/clockface'
-import {TextAlignProperty} from 'csstype'
 
 interface Props {
   hasNoTelegrafs?: boolean
-  textAlign?: TextAlignProperty
+  textAlign?: CSSProperties['textAlign']
   bodySize?: ComponentSize
 }
 

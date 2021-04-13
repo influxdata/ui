@@ -173,7 +173,7 @@ const RuleCard: FC<Props> = ({
           <ResourceCard.Meta>
             <>Last completed at {latestCompleted}</>
             <>{relativeTimestampFormatter(rule.updatedAt, 'Last updated ')}</>
-            <CopyResourceID resource={rule} resourceType="Rule" />
+            <CopyResourceID resource={rule} resourceName="Rule" />
           </ResourceCard.Meta>
           <InlineLabels
             selectedLabelIDs={rule.labels}

@@ -15,19 +15,19 @@ interface ResourceWithID {
 
 interface Props {
   resource: ResourceWithID
-  resourceType: string
+  resourceName: string
 }
 
-export const CopyResourceID: FC<Props> = ({resource, resourceType}) => {
+export const CopyResourceID: FC<Props> = ({resource, resourceName}) => {
   const dispatch = useDispatch()
 
   const handleCopy = (copiedText: string, copyWasSuccessful: boolean): void => {
     if (!copyWasSuccessful) {
-      dispatch(notify(copyToClipboardFailed(copiedText, `${resourceType} ID`)))
+      dispatch(notify(copyToClipboardFailed(copiedText, `${resourceName} ID`)))
       return
     }
 
-    dispatch(notify(copyToClipboardSuccess(copiedText, `${resourceType} ID`)))
+    dispatch(notify(copyToClipboardSuccess(copiedText, `${resourceName} ID`)))
   }
 
   return (

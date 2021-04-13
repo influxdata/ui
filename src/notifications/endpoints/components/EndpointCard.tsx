@@ -148,7 +148,7 @@ const EndpointCard: FC<Props> = ({
             <>
               {relativeTimestampFormatter(endpoint.updatedAt, 'Last updated ')}
             </>
-            <CopyResourceID resource={endpoint} resourceType="Endpoint" />
+            <CopyResourceID resource={endpoint} resourceName="Endpoint" />
           </ResourceCard.Meta>
           <InlineLabels
             selectedLabelIDs={endpoint.labels}

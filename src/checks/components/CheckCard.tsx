@@ -176,7 +176,7 @@ const CheckCard: FC<Props> = ({
           <ResourceCard.Meta>
             <>Last completed at {check.latestCompleted}</>
             <>{relativeTimestampFormatter(check.updatedAt, 'Last updated ')}</>
-            <CopyResourceID resource={check} resourceType="Check" />
+            <CopyResourceID resource={check} resourceName="Check" />
           </ResourceCard.Meta>
           <InlineLabels
             selectedLabelIDs={check.labels}

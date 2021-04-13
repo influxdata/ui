@@ -79,7 +79,7 @@ export class TaskCard extends PureComponent<
             {this.activeToggle}
             <>Last completed at {task.latestCompleted}</>
             <>{`Scheduled to run ${this.schedule}`}</>
-            <CopyResourceID resource={task} resourceType="Task" />
+            <CopyResourceID resource={task} resourceName="Task" />
           </ResourceCard.Meta>
           {this.labels}
         </FlexBox>

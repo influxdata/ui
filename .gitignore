@@ -8,6 +8,7 @@
 .swp
 .vs
 .vscode
+.env
 
 # directories
 build

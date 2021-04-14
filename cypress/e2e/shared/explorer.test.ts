@@ -374,12 +374,8 @@ describe('DataExplorer', () => {
           .clear()
           .type('2019-10-29')
 
-        // click button and see if time range has been selected
-        cy.getByTestID('daterange--apply-btn').click()
-
-        cy.getByTestID('timerange-dropdown').contains(
-          '2019-10-31 00:00 - 2019-10-29 00:00'
-        )
+        // button should be disabled
+        cy.getByTestID('daterange--apply-btn').should('be.disabled')
       })
 
       it('should error when invalid dates are input', () => {
@@ -409,6 +405,9 @@ describe('DataExplorer', () => {
 
         // invalid date errors
         cy.getByTestID('form--element-error').should('exist')
+
+        // button should be disabled
+        cy.getByTestID('daterange--apply-btn').should('be.disabled')
       })
     })
   })

@@ -519,6 +519,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Invite'
+        '401':
+          description: Not Authorized or Invalid Session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '404':
+          description: Org or invite not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         default:
           description: Unexpected error
           content:

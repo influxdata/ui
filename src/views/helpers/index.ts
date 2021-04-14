@@ -387,8 +387,8 @@ const NEW_VIEW_CREATORS = {
       layers: [
         {
           type: 'pointMap',
-          colorDimension: {label: 'Duration'},
-          colorField: 'duration',
+          colorDimension: {label: 'Value'},
+          colorField: '_value',
           colors: [
             {type: 'min', hex: '#ff0000'},
             {value: 50, hex: '#343aeb'},

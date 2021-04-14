@@ -149,7 +149,7 @@ describe('getGeoCoordinates - retrieve latitude and longitude values for map geo
     const table = {
       getColumn: () => [0, 1, 2, '2323'],
     } as any
-    const geoCoordinates = getGeoCoordinates(table)
+    const geoCoordinates = getGeoCoordinates(table, 0)
 
     expect(geoCoordinates).toEqual(
       expect.objectContaining({

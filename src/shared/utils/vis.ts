@@ -323,25 +323,29 @@ enum CoordinateType {
 }
 
 const getCoordinateColumn = (table: Table): string => {
-  const column = table.getColumn('s2_cell_id')
-  if (column != null) {
-    return CoordinateType.S2
+  try {
+    const column = table.getColumn('s2_cell_id')
+    if (column != null) {
+      return CoordinateType.S2
+    }
+    const lat = table.getColumn('lat')
+    const lon = table.getColumn('lon')
+
+    if (lat !== null && lon !== null) {
+      return CoordinateType.Tags
+    }
+
+    const latCoordinate = getColumnValue(table, 'lat')
+    const lonCoordinate = getColumnValue(table, 'lon')
+
+    if (latCoordinate && lonCoordinate) {
+      return CoordinateType.Fields
+    }
+
+    return CoordinateType.None
+  } catch (e) {
+    throw new Error('lat_lon_not_found')
   }
-  const lat = table.getColumn('lat')
-  const lon = table.getColumn('lon')
-
-  if (lat !== null && lon !== null) {
-    return CoordinateType.Tags
-  }
-
-  const latCoordinate = getColumnValue(table, 'lat')
-  const lonCoordinate = getColumnValue(table, 'lon')
-
-  if (latCoordinate && lonCoordinate) {
-    return CoordinateType.Fields
-  }
-
-  return CoordinateType.None
 }
 
 const getS2CellID = (table: Table, index: number): string => {

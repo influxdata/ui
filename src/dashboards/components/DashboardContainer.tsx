@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useContext} from 'react'
+import React, {FC, useEffect, useCallback} from 'react'
 import {connect, ConnectedProps, useDispatch} from 'react-redux'
 
 // Components
@@ -11,7 +11,7 @@ import DashboardRoute from 'src/shared/components/DashboardRoute'
 
 // Actions
 import {setCurrentPage} from 'src/shared/reducers/currentPage'
-
+import {resetDashboardAutoRefresh} from 'src/shared/actions/autoRefresh'
 // Utils
 import {GlobalAutoRefresher} from 'src/utils/AutoRefresher'
 
@@ -28,10 +28,18 @@ type Props = ReduxProps
 
 const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
   const dispatch = useDispatch()
-  autoRefresh
+
+  const stopFunc = useCallback(() => {
+    if (autoRefresh?.duration?.upper <= new Date().toISOString()) {
+      GlobalAutoRefresher.stopPolling()
+      dispatch(resetDashboardAutoRefresh(dashboard))
+    }
+  }, [dashboard, dispatch, autoRefresh?.duration?.upper])
+
   useEffect(() => {
     if (autoRefresh.status === Active) {
-      GlobalAutoRefresher.poll(autoRefresh.interval)
+      console.log('GO')
+      GlobalAutoRefresher.poll(autoRefresh, stopFunc)
       return
     }
 
@@ -40,7 +48,7 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
     return function cleanup() {
       GlobalAutoRefresher.stopPolling()
     }
-  }, [autoRefresh.status, autoRefresh.interval])
+  }, [autoRefresh.status, autoRefresh, stopFunc])
 
   useEffect(() => {
     dispatch(setCurrentPage('dashboard'))
@@ -63,7 +71,7 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
 
 const mstp = (state: AppState) => {
   const dashboard = state.currentDashboard.id
-  const autoRefresh = state.autoRefresh[dashboard] || AUTOREFRESH_DEFAULT
+  const autoRefresh: any = state.autoRefresh[dashboard] || AUTOREFRESH_DEFAULT
   return {
     autoRefresh,
     dashboard,

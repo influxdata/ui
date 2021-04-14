@@ -91,12 +91,10 @@ class QueryCache {
   ): RunQueryResult | null => {
     // no existing query match
     if (!this.cache[id]) {
-      console.log('ooooop1', typeof id, this.cache)
       return null
     }
     // query match with no existing variable match
     if (this.cache[id].hashedVariables !== hashedVariables) {
-      console.log('ooooop', this.cache[id].hashedVariables, hashedVariables)
       this.resetCacheByID(id)
       return null
     }

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect} from 'react'
+import React, {FC, useEffect, useContext} from 'react'
 import {connect, ConnectedProps, useDispatch} from 'react-redux'
 
 // Components
@@ -28,7 +28,7 @@ type Props = ReduxProps
 
 const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
   const dispatch = useDispatch()
-
+  autoRefresh
   useEffect(() => {
     if (autoRefresh.status === Active) {
       GlobalAutoRefresher.poll(autoRefresh.interval)

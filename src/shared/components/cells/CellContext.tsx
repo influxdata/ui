@@ -8,7 +8,6 @@ import classnames from 'classnames'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {
-  resetQueryCacheByQuery,
   getFromQueryCacheByQuery,
   togglePauseQuery,
 } from 'src/shared/apis/queryCache'
@@ -102,15 +101,6 @@ const CellContext: FC<Props> = ({
     event('editCell button Click')
   }
 
-  const refreshCell = (): void => {
-    if (foundQueries) {
-      for (const query of viewWithQueries.properties.queries) {
-        resetQueryCacheByQuery(query.text)
-      }
-    }
-    onRefresh()
-  }
-
   const togglePauseCell = (): void => {
     if (foundQueries) {
       for (const query of viewWithQueries.properties.queries) {
@@ -187,7 +177,7 @@ const CellContext: FC<Props> = ({
         <FeatureFlag name="refreshSingleCell">
           <CellContextItem
             label="Refresh"
-            onClick={refreshCell}
+            onClick={onRefresh}
             icon={IconFont.Refresh}
             onHide={onHide}
             testID="cell-context--refresh"

@@ -1,7 +1,5 @@
 // Libraries
-import React, {FC, useContext, useCallback, useState} from 'react'
-import {useSelector, useDispatch} from 'react-redux'
-
+import React, {FC, useContext, useCallback} from 'react'
 // Utils
 import {resetQueryCache} from 'src/shared/apis/queryCache'
 
@@ -18,47 +16,29 @@ import AutoRefreshDropdown from 'src/shared/components/dropdown_auto_refresh/Aut
 import TimeRangeDropdown from 'src/shared/components/DeleteDataForm/TimeRangeDropdown'
 
 // Types
-import {AutoRefreshStatus, AppState, CustomTimeRange} from 'src/types'
+import {CustomTimeRange, AutoRefreshStatus} from 'src/types'
 
-// Actions
-import {
-  setAutoRefreshInterval,
-  setAutoRefreshStatus,
-} from 'src/shared/actions/autoRefresh'
+// Context
+import AutoRefreshContextProvider, {
+  AutoRefreshContext,
+} from 'src/dashboards/components/RefreshContext'
 
-const INACTIVITY_ARRAY = [...Array(61).keys()].map(num => num.toString())
+const INACTIVITY_ARRAY = [...Array(25).keys()].map(num => num.toString())
 INACTIVITY_ARRAY[0] = 'None'
-export const AutoRefreshOverlay: FC = () => {
-  // For now, these details can be held in state - these should be moved to redux if/when this is implemented with corresponding backend changes
-  const [refreshState, setRefreshState] = useState({
-    duration: '',
-    inactivityTimeout: 'None',
-    inactivityTimeoutCategory: 'Minutes',
-    timeRange: {
-      lower: new Date().toISOString(),
-      upper: new Date().toISOString(),
-      type: 'custom',
-    } as CustomTimeRange,
-  })
 
+export const AutoRefreshForm: FC = () => {
   const {onClose} = useContext(OverlayContext)
-  const dispatch = useDispatch()
-  const {currentDashboardId, autoRefresh} = useSelector((state: AppState) => ({
-    autoRefresh: state.autoRefresh[state.currentDashboard.id],
-    currentDashboardId: state.currentDashboard.id,
-  }))
+  const {state, dispatch: setRefreshContext, enableAutoRefresh} = useContext(
+    AutoRefreshContext
+  )
 
-  const handleChooseAutoRefresh = (milliseconds: number) => {
-    dispatch(setAutoRefreshInterval(currentDashboardId, milliseconds))
-
-    if (milliseconds === 0) {
-      dispatch(
-        setAutoRefreshStatus(currentDashboardId, AutoRefreshStatus.Paused)
-      )
-      return
-    }
-
-    dispatch(setAutoRefreshStatus(currentDashboardId, AutoRefreshStatus.Active))
+  const handleChooseAutoRefresh = milliseconds => {
+    const status =
+      milliseconds === 0 ? AutoRefreshStatus.Paused : AutoRefreshStatus.Active
+    setRefreshContext({
+      type: 'SET_REFRESH_MILLISECONDS',
+      refreshMilliseconds: {status, interval: milliseconds},
+    })
   }
 
   const resetCacheAndRefresh = useCallback((): void => {
@@ -67,7 +47,6 @@ export const AutoRefreshOverlay: FC = () => {
     // onManualRefresh()
     console.log('refresh yo')
   }, [])
-
   return (
     <Overlay.Container maxWidth={500}>
       <Overlay.Header title="Auto Refresh Menu" onDismiss={onClose} />
@@ -85,7 +64,7 @@ export const AutoRefreshOverlay: FC = () => {
             <AutoRefreshDropdown
               onChoose={handleChooseAutoRefresh}
               onManualRefresh={resetCacheAndRefresh}
-              selected={autoRefresh}
+              selected={state.refreshMilliseconds}
               showManualRefresh={false}
             />
           </div>
@@ -97,12 +76,13 @@ export const AutoRefreshOverlay: FC = () => {
               padding: '10px 50px',
             }}
           >
-            <span>Between: </span>
+            <span>Until: </span>
             <TimeRangeDropdown
-              timeRange={refreshState.timeRange}
-              onSetTimeRange={x =>
-                setRefreshState(prev => ({...prev, timeRange: x}))
+              timeRange={state.timeRange}
+              onSetTimeRange={(timeRange: CustomTimeRange) =>
+                setRefreshContext({type: 'SET_TIME_RANGE', timeRange})
               }
+              singleDirection="upper"
             />
           </div>
           <div
@@ -118,31 +98,31 @@ export const AutoRefreshOverlay: FC = () => {
               style={{
                 display: 'grid',
                 gridTemplateColumns: `${
-                  refreshState.inactivityTimeout !== 'None' ? '1fr 1fr' : '1fr'
+                  state.inactivityTimeout !== 'None' ? '1fr 1fr' : '1fr'
                 }`,
               }}
             >
               <SelectDropdown
                 options={INACTIVITY_ARRAY}
-                selectedOption={refreshState.inactivityTimeout}
-                onSelect={x =>
-                  setRefreshState(prev => ({
-                    ...prev,
-                    inactivityTimeout: x,
-                  }))
+                selectedOption={state.inactivityTimeout}
+                onSelect={(timeout: string) =>
+                  setRefreshContext({
+                    type: 'SET_INACTIVITY_TIMEOUT',
+                    inactivityTimeout: timeout,
+                  })
                 }
                 buttonColor={ComponentColor.Default}
               />
-              {refreshState.inactivityTimeout !== 'None' && (
+              {state.inactivityTimeout !== 'None' && (
                 <SelectDropdown
                   style={{padding: '0 0 0 10px', flex: 1}}
-                  options={['Minutes', 'Hours', 'Days']}
-                  selectedOption={refreshState.inactivityTimeoutCategory}
-                  onSelect={x =>
-                    setRefreshState(prev => ({
-                      ...prev,
-                      inactivityTimeoutCategory: x,
-                    }))
+                  options={['Hours', 'Days']}
+                  selectedOption={state.inactivityTimeoutCategory}
+                  onSelect={(timeoutCategory: string) =>
+                    setRefreshContext({
+                      type: 'SET_INACTIVITY_TIMEOUT_CATEGORY',
+                      inactivityTimeoutCategory: timeoutCategory,
+                    })
                   }
                   buttonColor={ComponentColor.Default}
                 />
@@ -173,5 +153,12 @@ export const AutoRefreshOverlay: FC = () => {
         </Grid.Column>
       </Grid>
     </Overlay.Container>
+  )
+}
+export const AutoRefreshOverlay: FC = () => {
+  return (
+    <AutoRefreshContextProvider>
+      <AutoRefreshForm />
+    </AutoRefreshContextProvider>
   )
 }

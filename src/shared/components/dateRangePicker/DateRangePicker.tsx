@@ -20,6 +20,7 @@ interface Props {
     left?: number
     position?: string
   }
+  singleDirection?: string
 }
 
 interface State {
@@ -39,7 +40,7 @@ class DateRangePicker extends PureComponent<Props, State> {
   }
 
   public render() {
-    const {onClose} = this.props
+    const {onClose, singleDirection} = this.props
     const {upper, lower} = this.state
 
     return (
@@ -50,18 +51,22 @@ class DateRangePicker extends PureComponent<Props, State> {
         >
           <button className="range-picker--dismiss" onClick={onClose} />
           <div className="range-picker--date-pickers">
-            <DatePicker
-              dateTime={lower}
-              onSelectDate={this.handleSelectLower}
-              label="Start"
-              maxDate={upper}
-            />
-            <DatePicker
-              dateTime={upper}
-              onSelectDate={this.handleSelectUpper}
-              label="Stop"
-              minDate={lower}
-            />
+            {singleDirection !== 'upper' && (
+              <DatePicker
+                dateTime={lower}
+                onSelectDate={this.handleSelectLower}
+                label="Start"
+                maxDate={upper}
+              />
+            )}
+            {singleDirection !== 'lower' && (
+              <DatePicker
+                dateTime={upper}
+                onSelectDate={this.handleSelectUpper}
+                label="Stop"
+                minDate={lower}
+              />
+            )}
           </div>
           <Button
             className="range-picker--submit"

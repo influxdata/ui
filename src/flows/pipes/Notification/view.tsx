@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useEffect, useMemo} from 'react'
+import React, {FC, useContext, useEffect} from 'react'
 import {
   ComponentStatus,
   Form,
@@ -17,48 +17,13 @@ import {
 import {RemoteDataState} from 'src/types'
 
 import {PipeContext} from 'src/flows/context/pipe'
-import Slack from 'src/flows/pipes/Notification/Slack'
-import Bucket from 'src/flows/pipes/Notification/Bucket'
-import PagerDuty from 'src/flows/pipes/Notification/PagerDuty'
-import HTTP from 'src/flows/pipes/Notification/HTTP'
-import Threshold from 'src/flows/pipes/Notification/Threshold'
+import Threshold, {
+  THRESHOLD_TYPES,
+} from 'src/flows/pipes/Notification/Threshold'
+import {DEFAULT_ENDPOINTS} from 'src/flows/pipes/Notification/Endpoints'
 
 // Types
 import {PipeProp} from 'src/types/flows'
-
-export const DEFAULT_ENDPOINTS = {
-  slack: {
-    name: 'Slack',
-    data: {
-      url: 'https://hooks.slack.com/services/X/X/X',
-      channel: '',
-    },
-    imports: ['slack'],
-  },
-  http: {
-    name: 'HTTP Post',
-    data: {
-      auth: 'none',
-      url: 'https://www.example.com/endpoint',
-    },
-    imports: ['http'],
-  },
-  pagerduty: {
-    name: 'Pager Duty',
-    data: {
-      url: '',
-      key: '',
-    },
-    imports: ['pagerduty'],
-  },
-  bucket: {
-    name: 'Write to Bucket',
-    data: {
-      bucket: null,
-    },
-    imports: [],
-  },
-}
 
 const Notification: FC<PipeProp> = ({Context}) => {
   const {id, data, queryText, update, results, loading} = useContext(
@@ -67,12 +32,67 @@ const Notification: FC<PipeProp> = ({Context}) => {
   let intervalError = ''
   let offsetError = ''
 
+  if (!data.interval) {
+    intervalError = 'An Interval is Required'
+  } else if (
+    data.interval !==
+    data.interval.match(/(?:(\d+(y|mo|s|m|w|h){1}))/g)?.join('')
+  ) {
+    intervalError = 'Invalid Time'
+  }
+
+  if (
+    data.offset &&
+    data.offset !== data.offset.match(/(?:(\d+(y|mo|s|m|w|h){1}))/g)?.join('')
+  ) {
+    offsetError = 'Invalid Time'
+  }
+
   useEffect(() => {
+    if (intervalError || offsetError) {
+      update({
+        query: '',
+      })
+
+      return
+    }
+
+    const condition = THRESHOLD_TYPES[data.threshold.type].condition(data)
+    const query = `
+import "strings"
+import "regexp"
+import "influxdata/influxdb/monitor"
+import "influxdata/influxdb/schema"
+import "influxdata/influxdb/secrets"
+import "experimental"
+${DEFAULT_ENDPOINTS[data.endpoint]?.generateImports()}
+
+option task = {name: "Notebook Generated Task From Panel ${id}", every: ${
+      data.interval
+    }, offset: ${data.offset || 0}}
+check = {
+	_check_id: "${id}",
+	_check_name: "Notebook Generated Check",
+	_type: "custom",
+	tags: {},
+}
+notification = {
+	_notification_rule_id: "${id}",
+	_notification_rule_name: "Notebook Generated Rule",
+	_notification_endpoint_id: "${id}",
+	_notification_endpoint_name: "Notebook Generated Endpoint",
+}
+
+task_data = ${queryText}
+trigger = ${condition}
+messageFn = (r) => ("${data.message}")
+
+${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data)}`
+
     update({
-      panel: id,
-      query: queryText,
+      query,
     })
-  }, [queryText, id])
+  }, [queryText, id, intervalError, offsetError])
 
   const numericColumns = (results.parsed.table?.columnKeys || []).filter(
     key => {
@@ -85,21 +105,6 @@ const Notification: FC<PipeProp> = ({Context}) => {
       return columnType === 'time' || columnType === 'number'
     }
   )
-
-  if (
-    data.interval &&
-    data.interval !==
-      data.interval.match(/(?:(\d+(y|mo|s|m|w|h){1}))/g)?.join('')
-  ) {
-    intervalError = 'Invalid Time'
-  }
-
-  if (
-    data.offset &&
-    data.offset !== data.offset.match(/(?:(\d+(y|mo|s|m|w|h){1}))/g)?.join('')
-  ) {
-    offsetError = 'Invalid Time'
-  }
 
   const updateMessage = evt => {
     update({
@@ -135,23 +140,6 @@ const Notification: FC<PipeProp> = ({Context}) => {
       active={data.endpoint === k}
     />
   ))
-  const endpointInterface = useMemo(() => {
-    if (data.endpoint === 'slack') {
-      return <Slack />
-    }
-
-    if (data.endpoint === 'http') {
-      return <HTTP />
-    }
-
-    if (data.endpoint === 'pagerduty') {
-      return <PagerDuty />
-    }
-
-    if (data.endpoint === 'bucket') {
-      return <Bucket />
-    }
-  }, [data.endpoint])
 
   if (
     loading === RemoteDataState.NotStarted ||
@@ -245,7 +233,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
             <Tabs orientation={Orientation.Vertical}>{avail}</Tabs>
           </FlexBox.Child>
           <FlexBox.Child grow={1} shrink={1}>
-            {endpointInterface}
+            {DEFAULT_ENDPOINTS[data.endpoint].view}
           </FlexBox.Child>
           <FlexBox.Child grow={2} shrink={1}>
             <Form.Element label="Message Format" required={true}>

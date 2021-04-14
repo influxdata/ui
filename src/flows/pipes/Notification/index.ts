@@ -23,6 +23,8 @@ export default register => {
         url: 'https://hooks.slack.com/services/X/X/X',
       },
     },
-    generateFlux: (_data, _create, _append, _withSideEffects) => {},
+    generateFlux: (_data, _create, append, _withSideEffects) => {
+      append()
+    },
   })
 }

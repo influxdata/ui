@@ -233,7 +233,7 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data)}`
             <Tabs orientation={Orientation.Vertical}>{avail}</Tabs>
           </FlexBox.Child>
           <FlexBox.Child grow={1} shrink={1}>
-            {DEFAULT_ENDPOINTS[data.endpoint].view}
+            {React.createElement(DEFAULT_ENDPOINTS[data.endpoint].view)}
           </FlexBox.Child>
           <FlexBox.Child grow={2} shrink={1}>
             <Form.Element label="Message Format" required={true}>

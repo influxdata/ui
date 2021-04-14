@@ -32,18 +32,51 @@ export const DEFAULT_ENDPOINTS = {
       url: 'https://www.example.com/endpoint',
     },
     view: HTTP,
-    generateImports: () => ['http'].map(i => `import "${i}"`).join('\n'),
-    generateQuery: _data => ``,
+    generateImports: () =>
+      ['http', 'json'].map(i => `import "${i}"`).join('\n'),
+    generateQuery: data => `task_data
+	|> schema["fieldsAsCols"]()
+	|> monitor["check"](
+		data: check,
+		messageFn: messageFn,
+		trigger: trigger,
+	)
+	|> monitor["notify"](data: notification, endpoint: http["endpoint"](url: ${data.endpointData.url})(mapFn: (r) => {
+      body = {r with _version: 1}
+      return {headers: {"Content-Type": "application/json"}, data: json["encode"](v: body)}
+  }))`,
   },
   pagerduty: {
     name: 'Pager Duty',
     data: {
       url: '',
       key: '',
+      level: 'warning',
     },
     view: PagerDuty,
-    generateImports: () => ['pagerduty'].map(i => `import "${i}"`).join('\n'),
-    generateQuery: _data => ``,
+    generateImports: () =>
+      ['pagerduty', 'influxdata/influxdb/secrets']
+        .map(i => `import "${i}"`)
+        .join('\n'),
+    generateQuery: data => `task_data
+	|> schema["fieldsAsCols"]()
+	|> monitor["check"](
+		data: check,
+		messageFn: messageFn,
+		trigger: trigger,
+	)
+	|> monitor["notify"](data: notification, endpoint: pagerduty["endpoint"]()(mapFn: (r) => ({
+        routingKey: "${data.endpointData.key},
+        client: "influxdata",
+        clientURL: "${data.endpointData.url}",
+        class: r._check_name,
+        group: r["_source_measurement"],
+        severity: pagerduty["severityFromLevel"](level: ${data.endpointData.level}),
+        eventAction: pagerduty["actionFromLevel"](level: ${data.endpointData.level}),
+          source: notification["_notification_rule_name"],
+          summary: r["_message"],
+          timestamp: time(v: r["_source_timestamp"]),
+  })))`,
   },
   bucket: {
     name: 'Write to Bucket',

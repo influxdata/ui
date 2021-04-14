@@ -1039,17 +1039,10 @@ components:
             - member
             - owner
         expiresAt:
+          description: when the invite will expire
+          readOnly: true
           format: date-time
           type: string
-        links:
-          type: object
-          readOnly: true
-          example:
-            self: '/api/v2private/invites/1'
-          properties:
-            self:
-              type: string
-              format: uri
       required: [id, email, role]
     Invites:
       type: object

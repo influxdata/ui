@@ -197,13 +197,17 @@ const DashboardHeader: FC<Props> = ({
         </Page.ControlBarLeft>
         <Page.ControlBarRight>
           <TimeZoneDropdown />
-          <AutoRefreshDropdown
+          {/* <AutoRefreshDropdown
             onChoose={handleChooseAutoRefresh}
             onManualRefresh={resetCacheAndRefresh}
             selected={autoRefresh}
-          />
+          /> */}
           <Button
-            text="Enable Auto Refresh"
+            text={
+              autoRefresh.status === AutoRefreshStatus.Active
+                ? 'Stop Auto Refresh'
+                : 'Enable Auto Refresh'
+            }
             color={ComponentColor.Primary}
             onClick={openAutoRefreshModal}
           />

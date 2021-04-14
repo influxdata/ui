@@ -1,7 +1,5 @@
 // Libraries
 import React, {FC, useContext, useCallback} from 'react'
-// Utils
-import {resetQueryCache} from 'src/shared/apis/queryCache'
 
 // Components
 import {
@@ -28,7 +26,7 @@ INACTIVITY_ARRAY[0] = 'None'
 
 export const AutoRefreshForm: FC = () => {
   const {onClose} = useContext(OverlayContext)
-  const {state, dispatch: setRefreshContext, enableAutoRefresh} = useContext(
+  const {state, dispatch: setRefreshContext, activateAutoRefresh} = useContext(
     AutoRefreshContext
   )
 
@@ -47,6 +45,7 @@ export const AutoRefreshForm: FC = () => {
     // onManualRefresh()
     console.log('refresh yo')
   }, [])
+  console.log(state.duration)
   return (
     <Overlay.Container maxWidth={500}>
       <Overlay.Header title="Auto Refresh Menu" onDismiss={onClose} />
@@ -78,9 +77,9 @@ export const AutoRefreshForm: FC = () => {
           >
             <span>Until: </span>
             <TimeRangeDropdown
-              timeRange={state.timeRange}
+              timeRange={state.duration}
               onSetTimeRange={(timeRange: CustomTimeRange) =>
-                setRefreshContext({type: 'SET_TIME_RANGE', timeRange})
+                setRefreshContext({type: 'SET_DURATION', duration: timeRange})
               }
               singleDirection="upper"
             />
@@ -144,7 +143,11 @@ export const AutoRefreshForm: FC = () => {
               style={{width: '60%', justifySelf: 'end'}}
             />
             <Button
-              onClick={() => console.log('Confirm')}
+              onClick={() => {
+                console.log('hold on to yer butts')
+                activateAutoRefresh()
+                onClose()
+              }}
               text="Enable"
               color={ComponentColor.Success}
               style={{width: '60%'}}

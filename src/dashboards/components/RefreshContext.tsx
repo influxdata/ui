@@ -4,6 +4,8 @@ import React, {
   useCallback,
   FC,
   useEffect,
+  useMemo,
+  useState,
 } from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import moment from 'moment'
@@ -20,50 +22,25 @@ import {
 import {
   setAutoRefreshInterval,
   setAutoRefreshStatus,
+  setAutoRefreshDuration,
 } from 'src/shared/actions/autoRefresh'
 
 export const AutoRefreshContext = createContext(null)
 
 interface AutoRefreshState {
-  duration: string
+  duration: CustomTimeRange
   inactivityTimeout: string
   inactivityTimeoutCategory: string
-  timeRange: CustomTimeRange
   refreshMilliseconds: AutoRefresh
-}
-
-const inactivityTime = function(timerToSet) {
-  let time
-  window.addEventListener('load', resetTimer)
-  // DOM Events
-  document.addEventListener('mousemove', resetTimer)
-  document.addEventListener('keypress', resetTimer)
-
-  function logout() {
-    timerToSet()
-  }
-
-  function resetTimer() {
-    clearTimeout(time)
-    time = setTimeout(logout, 3000)
-  }
-
-  return () => {
-    clearTimeout(time)
-    window.removeEventListener('load', resetTimer)
-    document.removeEventListener('mousemove', resetTimer)
-    document.removeEventListener('keypress', resetTimer)
-  }
 }
 
 export const createAutoRefreshInitialState = (
   override = {}
 ): AutoRefreshState => {
   return {
-    duration: '',
     inactivityTimeout: 'None',
     inactivityTimeoutCategory: 'Hours',
-    timeRange: {
+    duration: {
       lower: new Date().toISOString(),
       upper: new Date().toISOString(),
       type: 'custom',
@@ -75,6 +52,7 @@ export const createAutoRefreshInitialState = (
     ...override,
   }
 }
+
 const autoRefreshReducer = (
   state = createAutoRefreshInitialState(),
   action
@@ -89,8 +67,6 @@ const autoRefreshReducer = (
         ...state,
         inactivityTimeoutCategory: action.inactivityTimeoutCategory,
       }
-    case 'SET_TIME_RANGE':
-      return {...state, timeRange: action.timeRange}
     case 'SET_REFRESH_MILLISECONDS':
       return {...state, refreshMilliseconds: action.refreshMilliseconds}
     case 'RESET':
@@ -99,38 +75,52 @@ const autoRefreshReducer = (
       return state
   }
 }
+let timer
 const AutoRefreshContextProvider: FC = ({children}) => {
   const [state, dispatch] = useReducer(
     autoRefreshReducer,
     createAutoRefreshInitialState()
   )
 
-  const {currentDashboardId, autoRefresh} = useSelector((state: AppState) => ({
-    autoRefresh: state.autoRefresh[state.currentDashboard.id],
-    currentDashboardId: state.currentDashboard.id,
-  }))
+  const {currentDashboardId, autoRefresh} = useSelector(
+    (appState: AppState) => ({
+      autoRefresh: appState.autoRefresh[appState.currentDashboard.id],
+      currentDashboardId: appState.currentDashboard.id,
+    })
+  )
+
+  console.log(autoRefresh)
 
   const reduxDispatch = useDispatch()
 
-  const activateAutoRefresh = useCallback(
-    (milliseconds: number) => {
-      reduxDispatch(setAutoRefreshInterval(currentDashboardId, milliseconds))
-
-      if (milliseconds === 0) {
-        reduxDispatch(
-          setAutoRefreshStatus(currentDashboardId, AutoRefreshStatus.Paused)
-        )
-        return
-      }
-
-      reduxDispatch(
-        setAutoRefreshStatus(currentDashboardId, AutoRefreshStatus.Active)
+  const activateAutoRefresh = useCallback(() => {
+    reduxDispatch(
+      setAutoRefreshInterval(
+        currentDashboardId,
+        state.refreshMilliseconds.interval
       )
-    },
-    [currentDashboardId, reduxDispatch]
-  )
+    )
 
-  const calculateTimeout = useCallback(() => {
+    if (state.refreshMilliseconds.interval === 0) {
+      reduxDispatch(
+        setAutoRefreshStatus(currentDashboardId, AutoRefreshStatus.Paused)
+      )
+      return
+    }
+
+    reduxDispatch(
+      setAutoRefreshStatus(currentDashboardId, AutoRefreshStatus.Active)
+    )
+
+    reduxDispatch(setAutoRefreshDuration(currentDashboardId, state.duration))
+  }, [
+    currentDashboardId,
+    reduxDispatch,
+    state.duration,
+    state.refreshMilliseconds,
+  ])
+
+  const timeout = useMemo(() => {
     const timeoutNumber = parseInt(state.inactivityTimeout)
     const startTime = moment(new Date())
     const copyStart = startTime.unix()
@@ -142,42 +132,54 @@ const AutoRefreshContextProvider: FC = ({children}) => {
     return endTime.unix() - copyStart // Convert to milliseconds
   }, [state.inactivityTimeoutCategory, state.inactivityTimeout])
 
-  if (state.inactivityTimeout !== 'None') {
-    console.log(calculateTimeout())
-  }
+  const registerListeners = useCallback(() => {
+    if (timer) {
+      registerStopListeners()
+    }
+
+    timer = setTimeout(() => {
+      reduxDispatch(
+        setAutoRefreshStatus(currentDashboardId, AutoRefreshStatus.Paused)
+      )
+      dispatch({
+        type: 'RESET',
+      })
+    }, 3000)
+
+    window.addEventListener('load', registerListeners)
+    document.addEventListener('mousemove', registerListeners)
+    document.addEventListener('keypress', registerListeners)
+  }, [])
+
+  const registerStopListeners = useCallback(() => {
+    // Stop all existing timers and deregister everythang
+    if (!timer) {
+      return
+    }
+    clearTimeout(timer)
+    timer = null
+    window.removeEventListener('load', registerListeners)
+    document.removeEventListener('mousemove', registerListeners)
+    document.removeEventListener('keypress', registerListeners)
+  }, [timer])
+
   useEffect(() => {
-    let timer
-    let activityListener
+    console.log(timeout, autoRefresh.status)
     if (
-      autoRefresh.status === AutoRefreshStatus.Active ||
+      (autoRefresh?.status &&
+        autoRefresh.status === AutoRefreshStatus.Active) ||
       state.inactivityTimeout !== 'None'
     ) {
-      timer = () =>
-        setTimeout(() => {
-          reduxDispatch(
-            setAutoRefreshStatus(currentDashboardId, AutoRefreshStatus.Paused)
-          )
-          dispatch({
-            type: 'RESET',
-          })
-          console.log('timer function ran')
-        }, calculateTimeout())
-      activityListener = inactivityTime(timer)
-      console.log(activityListener, 'this is the listener')
+      console.log('heyooooo')
+      registerListeners()
+    } else {
+      registerStopListeners()
     }
     return () => {
-      console.log('running exit strategy')
-      if (activityListener) {
-        activityListener()
-      }
+      registerStopListeners()
     }
-  }, [
-    currentDashboardId,
-    reduxDispatch,
-    state.inactivityTimeout,
-    autoRefresh.status,
-    calculateTimeout,
-  ])
+  }, [autoRefresh?.status, timeout])
+
   return (
     <AutoRefreshContext.Provider value={{state, dispatch, activateAutoRefresh}}>
       {children}

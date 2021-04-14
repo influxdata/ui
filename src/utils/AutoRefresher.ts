@@ -1,3 +1,5 @@
+import {AutoRefresh} from 'src/types'
+
 type func = (...args: any[]) => any
 
 export class AutoRefresher {
@@ -13,12 +15,11 @@ export class AutoRefresher {
     this.subscribers = this.subscribers.filter(f => f !== fn)
   }
 
-  public poll(refreshMs: number) {
+  public poll(autoRefresh: AutoRefresh, stopFunc) {
     this.clearInterval()
-
-    if (refreshMs) {
-      this.intervalID = setInterval(this.refresh, refreshMs)
-    }
+    this.intervalID = setInterval(() => {
+      this.refresh(true, stopFunc)
+    }, autoRefresh.interval)
   }
 
   public stopPolling() {
@@ -34,7 +35,10 @@ export class AutoRefresher {
     this.intervalID = null
   }
 
-  private refresh = () => {
+  private refresh = (isAutoRefresh?: boolean, stopFunc?: () => void) => {
+    if (isAutoRefresh) {
+      stopFunc()
+    }
     this.subscribers.forEach(fn => fn())
   }
 }

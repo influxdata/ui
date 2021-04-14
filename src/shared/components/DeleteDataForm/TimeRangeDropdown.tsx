@@ -22,9 +22,14 @@ import {
 interface Props {
   timeRange: CustomTimeRange
   onSetTimeRange: (timeRange: CustomTimeRange) => void
+  singleDirection?: string
 }
 
-const TimeRangeDropdown: FC<Props> = ({timeRange, onSetTimeRange}) => {
+const TimeRangeDropdown: FC<Props> = ({
+  timeRange,
+  onSetTimeRange,
+  singleDirection,
+}) => {
   const [pickerActive, setPickerActive] = useState(false)
   const buttonRef = useRef<HTMLDivElement>(null)
 
@@ -60,6 +65,7 @@ const TimeRangeDropdown: FC<Props> = ({timeRange, onSetTimeRange}) => {
             onSetTimeRange={handleApplyTimeRange}
             onClose={() => setPickerActive(false)}
             position={{position: 'relative'}}
+            singleDirection={singleDirection}
           />
         )}
       />

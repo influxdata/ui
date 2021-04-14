@@ -25,6 +25,7 @@ interface Props {
     left?: number
     position?: string
   }
+  singleDirection?: string
 }
 
 interface State {

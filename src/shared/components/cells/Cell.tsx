@@ -13,9 +13,18 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 
 // Utils
 import {getByID} from 'src/resources/selectors'
+import {resetQueryCacheByQuery} from 'src/shared/apis/queryCache'
 
 // Types
-import {RemoteDataState, AppState, View, Cell, ResourceType} from 'src/types'
+import {
+  RemoteDataState,
+  AppState,
+  View,
+  Cell,
+  ResourceType,
+  ViewProperties,
+  MarkdownViewProperties,
+} from 'src/types'
 
 interface StateProps {
   view: View
@@ -38,7 +47,23 @@ class CellComponent extends Component<Props, State> {
     submitToken: 0,
   }
 
+  private handleRefreshProcess = (): void => {
+    const viewWithQueries = this.props.view as View<
+      Exclude<ViewProperties, MarkdownViewProperties>
+    >
+    const foundQueries =
+      Array.isArray(viewWithQueries?.properties?.queries) &&
+      viewWithQueries?.properties?.queries.length
+
+    if (foundQueries) {
+      for (const query of viewWithQueries.properties.queries) {
+        resetQueryCacheByQuery(query.text)
+      }
+    }
+  }
+
   private handleIncrementToken = (): void => {
+    this.handleRefreshProcess()
     this.setState(s => ({...s, submitToken: s.submitToken + 1}))
   }
 

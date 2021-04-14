@@ -339,7 +339,7 @@ describe('Dashboard', () => {
 
                 // Make sure typeAhead input box is rendered and is visible
                 cy.getByTestID(
-                  `variable-dropdown-input-typeAhead--${bucketVarName}`,
+                  `variable-dropdown-input-typeAhead--${bucketVarName}`
                 ).should('be.visible')
 
                 // TESTING CSV VARIABLE

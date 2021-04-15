@@ -26,6 +26,8 @@ import {AppState} from 'src/types'
 
 // Decorators
 import {ErrorHandling} from 'src/shared/decorators/errors'
+import AlertsStatuses from '../components/AlertsStatuses'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
@@ -58,6 +60,7 @@ export class MePage extends PureComponent<Props> {
                     </Panel.Body>
                   </Panel>
                   <Docs />
+                  {isFlagEnabled('alertsStatuses') && <AlertsStatuses />}
                 </FlexBox>
               </Grid.Column>
               <Grid.Column widthSM={Columns.Four} widthMD={Columns.Three}>

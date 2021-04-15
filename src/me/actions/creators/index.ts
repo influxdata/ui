@@ -5,6 +5,8 @@ import {RemoteDataState} from 'src/types'
 export const SET_ME = 'SET_ME'
 export const SET_QUARTZ_ME = 'SET_QUARTZ_ME'
 export const SET_QUARTZ_ME_STATUS = 'SET_QUARTZ_ME_STATUS'
+export const SET_ALERTS_STATUSES = 'SET_ALERTS_STATUSES'
+export const SET_ALERTS_STATUSES_STATUS = 'SET_ALERTS_STATUSES_STATUS'
 
 export type Actions =
   | ReturnType<typeof setMe>

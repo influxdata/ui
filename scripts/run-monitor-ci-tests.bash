@@ -157,11 +157,9 @@ do
 						printf "\n No artifacts for this failed job.\n"
 					else
 						artifacts_urls=( $(echo ${artifacts} | jq -r '.[].url') )
-						# print each artifact text and link
+						# download each artifact
 						for url in "${artifacts_urls[@]}"; do
 							path=$(echo ${artifacts} | jq --arg url "${url}" 'map(select(.url == $url)) | .[].pretty_path')
-							printf '\n- %s\n' "${path}"
-							printf '   - URL: %s\n' "${url}"
 
 							# download artifact
 							filename=$(basename "${path}")
@@ -171,6 +169,7 @@ do
 								--url "${url}" \
 								--header "Circle-Token: ${API_KEY}"
 						done
+						printf "\n ${artifacts_length} artifacts successfully downloaded for this failed job.\n"
 					fi
 				done
 

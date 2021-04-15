@@ -9,12 +9,15 @@ import {
   setBillingSettingsStatus,
   setInvoices,
   setInvoicesStatus,
+  setMarketplace,
+  setMarketplaceStatus,
   setOrgLimits,
   setOrgLimitsStatus,
 } from 'src/billing/reducers'
 
 // API
 import {
+  getMarketplace as apiGetMarketplace,
   getBillingInfo as apiGetBillingInfo,
   getBillingNotificationSettings,
   updateBillingNotificationSettings,
@@ -29,6 +32,25 @@ import {BillingNotifySettings, Invoice} from 'src/types/billing'
 // TODO(ariel): add error handling here
 // notify() will not work since Dispatch here is based on the passed in dispatch from the local reducer
 // and not from the higher level dispatch from the app.
+export const getMarketplace = async (dispatch: Dispatch<Action>) => {
+  try {
+    dispatch(setMarketplaceStatus(RemoteDataState.Loading))
+    const resp = await apiGetMarketplace()
+
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
+    }
+
+    dispatch(
+      setMarketplace({...resp.data, loadingStatus: RemoteDataState.Done})
+    )
+  } catch (error) {
+    console.error(error)
+
+    dispatch(setMarketplaceStatus(RemoteDataState.Error))
+  }
+}
+
 export const getOrgLimits = async (dispatch: Dispatch<Action>) => {
   try {
     dispatch(setOrgLimitsStatus(RemoteDataState.Loading))

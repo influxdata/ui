@@ -5,13 +5,11 @@ import PipeList from 'src/flows/components/PipeList'
 import {PopupDrawer, PopupProvider} from 'src/flows/context/popup'
 
 // NOTE: requires a FlowProvider and ResultsProvider
-const Flow = () => {
-  return (
+const Flow = () => (
     <PopupProvider>
       <PipeList />
       <PopupDrawer />
     </PopupProvider>
   )
-}
 
 export default Flow

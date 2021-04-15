@@ -42,7 +42,7 @@ export const AutoRefreshForm: FC = () => {
   const noop = useCallback((): void => {}, [])
   return (
     <Overlay.Container maxWidth={500}>
-      <Overlay.Header title="Auto Refresh Menu" onDismiss={onClose} />
+      <Overlay.Header title="Configure Auto Refresh" onDismiss={onClose} />
       <Grid>
         <Grid.Column style={{display: 'grid'}}>
           <div

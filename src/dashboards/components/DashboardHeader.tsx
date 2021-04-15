@@ -202,16 +202,19 @@ const DashboardHeader: FC<Props> = ({
           />
           <Button
             text={
+              autoRefresh?.status &&
               autoRefresh.status === AutoRefreshStatus.Active
                 ? 'Stop Auto Refresh'
                 : 'Enable Auto Refresh'
             }
             color={
+              autoRefresh?.status &&
               autoRefresh.status === AutoRefreshStatus.Active
                 ? ComponentColor.Danger
                 : ComponentColor.Primary
             }
             onClick={
+              autoRefresh?.status &&
               autoRefresh.status === AutoRefreshStatus.Active
                 ? stopAutoRefreshAndReset
                 : openAutoRefreshModal

@@ -9,6 +9,7 @@ export const DEFAULT_ENDPOINTS = {
     data: {
       url: 'https://hooks.slack.com/services/X/X/X',
       channel: '',
+      color: '#34BB55',
     },
     view: Slack,
     generateImports: () => ['slack'].map(i => `import "${i}"`).join('\n'),

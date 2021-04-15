@@ -1,5 +1,5 @@
 import React, {FC, useContext} from 'react'
-import {Form, Input, InputType, ComponentSize} from '@influxdata/clockface'
+import {ColorPicker, Form, Input, InputType, ComponentSize} from '@influxdata/clockface'
 
 import {PipeContext} from 'src/flows/context/pipe'
 
@@ -20,6 +20,15 @@ const Slack: FC = () => {
       endpointData: {
         ...data.endpointData,
         channel: evt.target.value,
+      },
+    })
+  }
+
+  const updateColor = hex => {
+    update({
+      endpointData: {
+        ...data.endpointData,
+        color: hex,
       },
     })
   }
@@ -45,6 +54,9 @@ const Slack: FC = () => {
           size={ComponentSize.Medium}
         />
       </Form.Element>
+              <Form.Element label="Color">
+                <ColorPicker color={data.endpointData.color} onChange={updateColor} />
+              </Form.Element>
     </>
   )
 }

@@ -14,17 +14,17 @@ type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
 const EngagementLink: FC<Props> = ({org, me}) => {
-  if (!org || !me) {
-    return null
-  }
+  const pathname = useLocation().pathname
 
-  const host = window.location.hostname.split('.')
-  const pathname = useLocation()
+  useEffect(() => {
+    sendToUserPilot()
+  }, [pathname, org, me])
 
   const sendToUserPilot = (): void => {
-    const userpilot = get(window, 'userpilot', null)
+    const userpilot = get(window, 'userpilot')
+    const host = window.location.hostname.split('.')
 
-    if (userpilot) {
+    if (userpilot && org && me) {
       userpilot.identify(me.name, {
         email: me.name, // User Email address
         orgID: org.id, // Organization ID
@@ -33,10 +33,6 @@ const EngagementLink: FC<Props> = ({org, me}) => {
       })
     }
   }
-
-  useEffect(() => {
-    sendToUserPilot()
-  }, [pathname, org, me])
 
   return null
 }

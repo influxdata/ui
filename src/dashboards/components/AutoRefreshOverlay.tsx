@@ -138,7 +138,6 @@ export const AutoRefreshForm: FC = () => {
             />
             <Button
               onClick={() => {
-                console.log('hold on to yer butts')
                 activateAutoRefresh()
                 onClose()
               }}

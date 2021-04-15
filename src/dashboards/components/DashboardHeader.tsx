@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useEffect, useCallback} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
+import {connect, ConnectedProps, useDispatch} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
@@ -21,6 +21,7 @@ import {updateDashboard as updateDashboardAction} from 'src/dashboards/actions/t
 import {
   setAutoRefreshInterval as setAutoRefreshIntervalAction,
   setAutoRefreshStatus as setAutoRefreshStatusAction,
+  resetDashboardAutoRefresh as resetDashboardAutoRefreshAction,
 } from 'src/shared/actions/autoRefresh'
 import {
   setDashboardTimeRange as setDashboardTimeRangeAction,
@@ -76,6 +77,7 @@ const DashboardHeader: FC<Props> = ({
   org,
   autoRefresh,
 }) => {
+  const dispatch = useDispatch()
   const demoDataset = DemoDataDashboardNames[dashboard.name]
   useEffect(() => {
     if (demoDataset) {
@@ -137,6 +139,10 @@ const DashboardHeader: FC<Props> = ({
 
   const openAutoRefreshModal = () => {
     history.push(`/orgs/${org.id}/dashboards/${dashboard.id}/autorefresh`)
+  }
+
+  const stopAutoRefreshAndReset = () => {
+    dispatch(resetDashboardAutoRefreshAction(dashboard.id))
   }
 
   return (
@@ -205,7 +211,11 @@ const DashboardHeader: FC<Props> = ({
                 ? ComponentColor.Danger
                 : ComponentColor.Primary
             }
-            onClick={openAutoRefreshModal}
+            onClick={
+              autoRefresh.status === AutoRefreshStatus.Active
+                ? stopAutoRefreshAndReset
+                : openAutoRefreshModal
+            }
           />
         </Page.ControlBarRight>
       </Page.ControlBar>

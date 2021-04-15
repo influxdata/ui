@@ -15,7 +15,7 @@ export class AutoRefresher {
     this.subscribers = this.subscribers.filter(f => f !== fn)
   }
 
-  public poll(autoRefresh: AutoRefresh, stopFunc) {
+  public poll(autoRefresh: AutoRefresh, stopFunc?: () => void) {
     this.clearInterval()
     this.intervalID = setInterval(() => {
       this.refresh(true, stopFunc)

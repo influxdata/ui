@@ -20,20 +20,17 @@ const EngagementLink: FC<Props> = ({org, me}) => {
 
   const host = window.location.hostname.split('.')
   const pathname = useLocation()
-  
+
   const sendToUserPilot = (): void => {
     const userpilot = get(window, 'userpilot', null)
 
     if (userpilot) {
-      userpilot.identify( 
-        me.name,
-        {
-          email: me.name, // User Email address
-          orgID: org.id, // Organization ID
-          region: host[0], // Cloud provider region
-          provider: host[1], // Cloud provider
-        }
-      )
+      userpilot.identify(me.name, {
+        email: me.name, // User Email address
+        orgID: org.id, // Organization ID
+        region: host[0], // Cloud provider region
+        provider: host[1], // Cloud provider
+      })
     }
   }
 

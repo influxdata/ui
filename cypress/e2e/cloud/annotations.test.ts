@@ -138,7 +138,7 @@ describe('The Annotations UI functionality', () => {
     cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
   })
 
-  it('can delete an annotation by clicking on the annotation line', () => {
+  it.only('can delete an annotation by clicking on the annotation line', () => {
     // add the annotation
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').click()
@@ -154,7 +154,8 @@ describe('The Annotations UI functionality', () => {
 
     // should have the annotation created , lets click it to show the modal.
     cy.getByTestID('cell blah').within(() => {
-      cy.get('line').click()
+      // we have 2 line layers by the same id, we only want to click on the first
+      cy.get('line').first().click()
     })
 
     cy.getByTestID('delete-annotation-button').click()
@@ -181,7 +182,8 @@ describe('The Annotations UI functionality', () => {
 
     // should have the annotation created , lets click it to show the modal.
     cy.getByTestID('cell blah').within(() => {
-      cy.get('line').click()
+      // we have 2 line layers by the same id, we only want to click on the first
+      cy.get('line').first().click()
     })
 
     cy.getByTestID('edit-annotation-summary-inputfield')
@@ -215,7 +217,8 @@ describe('The Annotations UI functionality', () => {
 
     // should have the annotation created , lets click it to show the modal.
     cy.getByTestID('cell blah').within(() => {
-      cy.get('line').click()
+      // we have 2 line layers by the same id, we only want to click on the first
+      cy.get('line').first().click()
     })
 
     cy.getByTestID('edit-annotation-summary-inputfield')

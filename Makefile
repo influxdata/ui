@@ -32,19 +32,27 @@ build:
 	docker build -t local/chronograf:latest -f docker/Dockerfile.chronograf.prod .
 
 ####### EVERYTHING UNDER THIS LINE IS APPLICATION SPECIFIC
-.PHONY: test
+.PHONY: test build
 
 # running `make pretty` will run prettier on your frontend code
 pretty:
-	docker exec slowmograf npx prettier --config .prettierrc.json --write '{src,cypress}/**/*.{ts,tsx,scss}'
+	docker run slowmograf \
+		-v ${PWD}/src:/repo/src:delegated \
+		-v ${PWD}/cypress:/repo/cypress:delegated \
+		-v ${PWD}/mocks:/repo/mocks:delegated \
+		-v ${PWD}/assets:/repo/assets:delegated \
+		-v ${PWD}/static:/repo/build:delegated -d \
+		npx prettier --config .prettierrc.json --write '{src,cypress}/**/*.{ts,tsx,scss}'
 
 # running `make test` will run the unit tests in watch mode
 test:
-	docker exec slowmograf yarn test --watchAll
-
-# running `make tsc` will run the typescript validator in watch mode
-tsc:
-	docker exec slowmograf yarn tsc --watch
+	docker run slowmograf \
+		-v ${PWD}/src:/repo/src:delegated \
+		-v ${PWD}/cypress:/repo/cypress:delegated \
+		-v ${PWD}/mocks:/repo/mocks:delegated \
+		-v ${PWD}/assets:/repo/assets:delegated \
+		-v ${PWD}/static:/repo/build:delegated -d \
+		yarn test --watchAll
 
 build-ui-e2e-image:
 	docker -t quay.io/influxdb/ui-e2e:$(UI_GIT_SHA) build -f docker/Dockerfile.cypress .

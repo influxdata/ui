@@ -26,8 +26,52 @@ const {Active} = AutoRefreshStatus
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
+let timer
 const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
   const dispatch = useDispatch()
+
+  const registerListeners = useCallback(() => {
+    if (timer) {
+      registerStopListeners()
+    }
+
+    timer = setTimeout(() => {
+      dispatch(resetDashboardAutoRefresh(dashboard))
+      registerStopListeners()
+    }, 3000)
+
+    window.addEventListener('load', registerListeners)
+    document.addEventListener('mousemove', registerListeners)
+    document.addEventListener('keypress', registerListeners)
+  }, [dashboard])
+
+  const registerStopListeners = useCallback(() => {
+    // Stop all existing timers and deregister everythang
+    if (!timer) {
+      return
+    }
+    clearTimeout(timer)
+    timer = null
+    window.removeEventListener('load', registerListeners)
+    document.removeEventListener('mousemove', registerListeners)
+    document.removeEventListener('keypress', registerListeners)
+  }, [timer, dashboard])
+
+  useEffect(() => {
+    if (
+      (autoRefresh?.status &&
+        autoRefresh.status === AutoRefreshStatus.Active) ||
+      autoRefresh.inactivityTimeout > 0
+    ) {
+      console.log('heyooooo')
+      registerListeners()
+    } else {
+      registerStopListeners()
+    }
+    return () => {
+      registerStopListeners()
+    }
+  }, [autoRefresh?.status, autoRefresh.inactivityTimeout])
 
   const stopFunc = useCallback(() => {
     if (autoRefresh?.duration?.upper <= new Date().toISOString()) {
@@ -38,7 +82,6 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
 
   useEffect(() => {
     if (autoRefresh.status === Active) {
-      console.log('GO')
       GlobalAutoRefresher.poll(autoRefresh, stopFunc)
       return
     }

@@ -53,6 +53,17 @@ export const autoRefreshReducer = (state = initialState(), action: Action) =>
         draftState[dashboardID].duration = duration
         return
       }
+
+      case 'SET_INACTIVITY_TIMEOUT': {
+        const {dashboardID, inactivityTimeout} = action
+
+        if (!draftState[dashboardID]) {
+          draftState[dashboardID] = AUTOREFRESH_DEFAULT
+        }
+
+        draftState[dashboardID].inactivityTimeout = inactivityTimeout
+        return
+      }
       case 'RESET_DASHBOARD_AUTO_REFRESH': {
         const {dashboardID} = action
         draftState[dashboardID] = AUTOREFRESH_DEFAULT

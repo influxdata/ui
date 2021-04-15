@@ -138,7 +138,7 @@ describe('The Annotations UI functionality', () => {
     cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
   })
 
-  it.only('can delete an annotation by clicking on the annotation line', () => {
+  it('can delete an annotation by clicking on the annotation line', () => {
     // add the annotation
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').click()

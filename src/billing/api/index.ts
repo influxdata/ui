@@ -12,7 +12,6 @@ import {
 
 import {RemoteDataState} from 'src/types'
 import {
-  Account,
   Invoice,
   CreditCardParams,
   BillingInfo,

@@ -10,4 +10,5 @@ export interface AutoRefresh {
   status: AutoRefreshStatus
   interval: number
   duration?: CustomTimeRange | null
+  inactivityTimeout?: number | null
 }

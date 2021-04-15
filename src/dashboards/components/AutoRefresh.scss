@@ -1,0 +1,46 @@
+.refresh-form-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 50px;
+}
+
+.refresh-form-container-child {
+  flex: 1;
+  &.active {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  &.inactive {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+}
+.refresh-form-column {
+  display: grid;
+}
+
+.refresh-timeout-span {
+  flex: 1;
+}
+
+.refresh-form-buttons {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-gap: 10px;
+  padding: 30px 10px 15px 10px;
+}
+
+.refresh-form-cancel-button {
+  width: 60%;
+  justify-self: end;
+}
+
+.refresh-form-activate-button {
+  width: 60%;
+}
+
+.refresh-form-timeout-dropdown {
+  padding: 0 0 0 10px;
+  flex: 1;
+}

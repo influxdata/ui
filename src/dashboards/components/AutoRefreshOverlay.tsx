@@ -21,6 +21,8 @@ import AutoRefreshContextProvider, {
   AutoRefreshContext,
 } from 'src/dashboards/components/RefreshContext'
 
+import './AutoRefresh.scss'
+
 const INACTIVITY_ARRAY = [...Array(25).keys()].map(num => num.toString())
 INACTIVITY_ARRAY[0] = 'None'
 
@@ -39,20 +41,14 @@ export const AutoRefreshForm: FC = () => {
     })
   }
 
+  // Because we are not using the manual refresh in the dropdown, this function is a no-op
   const noop = useCallback((): void => {}, [])
   return (
     <Overlay.Container maxWidth={500}>
       <Overlay.Header title="Configure Auto Refresh" onDismiss={onClose} />
       <Grid>
-        <Grid.Column style={{display: 'grid'}}>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '10px 50px',
-            }}
-          >
+        <Grid.Column className="refresh-form-column">
+          <div className="refresh-form-container">
             <span>Select Refresh Frequency: </span>
             <AutoRefreshDropdown
               onChoose={handleChooseAutoRefresh}
@@ -61,39 +57,27 @@ export const AutoRefreshForm: FC = () => {
               showManualRefresh={false}
             />
           </div>
-          <div
-            style={{
-              display: 'grid',
-              alignItems: 'center',
-              gridTemplateColumns: '1fr 1fr',
-              padding: '10px 50px',
-            }}
-          >
-            <span>Until: </span>
+          <div className="refresh-form-container">
+            <span className="refresh-form-container-child">Until: </span>
             <TimeRangeDropdown
               timeRange={state.duration}
               onSetTimeRange={(timeRange: CustomTimeRange) =>
                 setRefreshContext({type: 'SET_DURATION', duration: timeRange})
               }
               singleDirection="upper"
+              className="refresh-form-container-child"
             />
           </div>
-          <div
-            style={{
-              display: 'grid',
-              alignItems: 'center',
-              gridTemplateColumns: '1fr 1fr',
-              padding: '10px 50px',
-            }}
-          >
-            <span style={{flex: 1}}>Inactivity Timeout: </span>
+          <div className="refresh-form-container">
+            <span className="refresh-form-container-child">
+              Inactivity Timeout:{' '}
+            </span>
             <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: `${
-                  state.inactivityTimeout !== 'None' ? '1fr 1fr' : '1fr'
-                }`,
-              }}
+              className={
+                state.inactivityTimeout === 'None'
+                  ? 'refresh-form-container-child inactive'
+                  : 'refresh-form-container-child active'
+              }
             >
               <SelectDropdown
                 options={INACTIVITY_ARRAY}
@@ -108,7 +92,7 @@ export const AutoRefreshForm: FC = () => {
               />
               {state.inactivityTimeout !== 'None' && (
                 <SelectDropdown
-                  style={{padding: '0 0 0 10px', flex: 1}}
+                  className="refresh-form-timeout-dropdown"
                   options={['Hours', 'Days']}
                   selectedOption={state.inactivityTimeoutCategory}
                   onSelect={(timeoutCategory: string) =>
@@ -122,19 +106,12 @@ export const AutoRefreshForm: FC = () => {
               )}
             </div>
           </div>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'auto auto',
-              gridGap: '10px',
-              padding: '30px 10px 15px 10px',
-            }}
-          >
+          <div className="refresh-form-buttons">
             <Button
               onClick={onClose}
               text="Cancel"
               color={ComponentColor.Default}
-              style={{width: '60%', justifySelf: 'end'}}
+              className="refresh-form-cancel-button"
             />
             <Button
               onClick={() => {
@@ -143,7 +120,7 @@ export const AutoRefreshForm: FC = () => {
               }}
               text="Enable"
               color={ComponentColor.Success}
-              style={{width: '60%'}}
+              className="refresh-form-activate-button"
             />
           </div>
         </Grid.Column>

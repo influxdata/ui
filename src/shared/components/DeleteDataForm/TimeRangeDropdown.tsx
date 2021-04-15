@@ -23,12 +23,14 @@ interface Props {
   timeRange: CustomTimeRange
   onSetTimeRange: (timeRange: CustomTimeRange) => void
   singleDirection?: string
+  className?: string
 }
 
 const TimeRangeDropdown: FC<Props> = ({
   timeRange,
   onSetTimeRange,
   singleDirection,
+  className,
 }) => {
   const [pickerActive, setPickerActive] = useState(false)
   const buttonRef = useRef<HTMLDivElement>(null)
@@ -45,7 +47,7 @@ const TimeRangeDropdown: FC<Props> = ({
   }
 
   return (
-    <div ref={buttonRef}>
+    <div ref={buttonRef} className={className}>
       <Dropdown.Button onClick={() => setPickerActive(!pickerActive)}>
         {dropdownLabel}
       </Dropdown.Button>

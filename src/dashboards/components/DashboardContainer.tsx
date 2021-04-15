@@ -104,7 +104,7 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
       <GetResource resources={[{type: ResourceType.Dashboards, id: dashboard}]}>
         <GetResources resources={[ResourceType.Buckets]}>
           <GetTimeRange />
-          <DashboardPage autoRefresh={autoRefresh} />
+          <DashboardPage />
         </GetResources>
       </GetResource>
     </DashboardRoute>

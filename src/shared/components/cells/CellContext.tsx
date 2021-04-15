@@ -187,7 +187,6 @@ const CellContext: FC<Props> = ({
           <CellContextItem
             label={isPaused ? 'Resume' : 'Pause'}
             onClick={() => {
-              console.log('pause')
               togglePauseCell()
             }}
             icon={isPaused ? IconFont.Play : IconFont.Pause}

@@ -756,7 +756,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-
+  '/cancel':
+    post:
+      operationId: PostCancel
+      tags:
+        - Account
+      responses:
+        '204':
+          description: Account cancelled
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   parameters:
     TraceSpan:

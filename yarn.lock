@@ -787,20 +787,20 @@
   resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-2.6.9.tgz#ec18cabdc9a07f56e788270db4027b3985ac5316"
   integrity sha512-6pzFuysWsIh+eXD81JsZMRwCRhlBLvi1wrbhwvXcv+2vytZ8UtcDocp1GF2bZ457caWkdMG+DMunv9/AV0OxDg==
 
-"@influxdata/flux-lsp-browser@^0.5.39":
-  version "0.5.39"
-  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.5.39.tgz#e4868ac9d236bbcff878010f7a1af5f183b289a7"
-  integrity sha512-qfj4fPQtBijLrVl/pnlNsMxQTgtJ8LhVDzL4/ZlgLcDXVdrLP8mdqIIeQunQQhXgCFHU6jnAxWMI8vTOIcj/Aw==
+"@influxdata/flux-lsp-browser@^0.5.40":
+  version "0.5.40"
+  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.5.40.tgz#48a9a68d13b5c85ce7681350608a703886e4bec7"
+  integrity sha512-McYWoo3yfsx/TAp1YxHJLZD8QfeipI/pWEVj+5quvtEfYJvK7d+oZC+QWwLn8JQQp91S0JoCdh2uGmGC4jwkuw==
 
 "@influxdata/flux@^0.5.1":
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/@influxdata/flux/-/flux-0.5.1.tgz#e39e7a7af9163fc9494422c8fed77f3ae1b68f56"
   integrity sha512-GHlkXBhSdJ2m56JzDkbnKPAqLj3/lexPooacu14AWTO4f2sDGLmzM7r0AxgdtU1M2x7EXNBwgGOI5EOAdN6mkw==
 
-"@influxdata/giraffe@^2.7.1":
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.7.1.tgz#326bd76f8f35f2c3201d84b3e3ac964b02d79bd4"
-  integrity sha512-h76B0cNAAdRhXOKWzwaKaNVhdGQqqG0gniDmIl04Re36NkyTRMRV1hg4zbSE3/58mMNDjxZDi97Mq2nQRaxI2g==
+"@influxdata/giraffe@^2.7.6":
+  version "2.7.6"
+  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.7.6.tgz#3d1b94eed7d2183d7a5affda853de2696399379f"
+  integrity sha512-OJdwKC+6SyOlfDeVJ4yUSkGSl+mGHVdG/oPIMpWH7RpvlLKgLD8AlqA1WQXB4saDIZ3qeqls/t2Pr1C6m6HASw==
   dependencies:
     merge-images "^2.0.0"
 
@@ -1717,11 +1717,6 @@ acorn@^6.0.1:
   version "6.2.1"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.2.1.tgz#3ed8422d6dec09e6121cc7a843ca86a330a86b51"
   integrity sha512-JD0xT5FCRDNyjDda3Lrg/IxFscp9q4tiYtxE1/nOzlKCk7hIRuYjhq1kCNkbPjMRMZuFq20HNQn1I9k8Oj0E+Q==
-
-acorn@^6.0.6:
-  version "6.0.6"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.0.6.tgz#cd75181670d5b99bdb1b1c993941d3a239ab1f56"
-  integrity sha512-5M3G/A4uBSMIlfJ+h9W125vJvPFH/zirISsW5qfxF5YzEvXJCtolLoQvM5yZft0DvMcUrPGKPOlgEu55I6iUtA==
 
 acorn@^6.0.7:
   version "6.3.0"
@@ -7655,6 +7650,11 @@ loglevel@^1.6.6:
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.6.7.tgz#b3e034233188c68b889f5b862415306f565e2c56"
   integrity sha512-cY2eLFrQSAfVPhCgH1s7JI73tMbg9YC3v3+ZHVW67sBS7UxWzNEk/ZBbSfLykBWHp33dqqtOv82gjhKEi81T/A==
 
+long@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/long/-/long-3.2.0.tgz#d821b7138ca1cb581c172990ef14db200b5c474b"
+  integrity sha1-2CG3E4yhy1gcFymQ7xTbIAtcR0s=
+
 longest@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/longest/-/longest-1.0.1.tgz#30a0b2da38f73770e8294a0d22e6625ed77d0097"
@@ -10568,6 +10568,13 @@ rxjs@^6.4.0:
   integrity sha512-Z9Yfa11F6B9Sg/BK9MnqnQ+aQYicPLtilXBp2yUtDt2JRCE0h26d33EnfO3ZxoNxG0T92OUucP3Ct7cpfkdFfw==
   dependencies:
     tslib "^1.9.0"
+
+s2-geometry@^1.2.10:
+  version "1.2.10"
+  resolved "https://registry.yarnpkg.com/s2-geometry/-/s2-geometry-1.2.10.tgz#c6ff22f3eccafd0eea491b60b44c141b9887acab"
+  integrity sha1-xv8i8+zK/Q7qSRtgtEwUG5iHrKs=
+  dependencies:
+    long "^3.2.0"
 
 safe-buffer@5.1.1:
   version "5.1.1"

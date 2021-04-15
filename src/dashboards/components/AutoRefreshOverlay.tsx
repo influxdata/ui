@@ -39,13 +39,7 @@ export const AutoRefreshForm: FC = () => {
     })
   }
 
-  const resetCacheAndRefresh = useCallback((): void => {
-    // We want to invalidate the existing cache when a user manually refreshes the dashboard
-    // resetQueryCache()
-    // onManualRefresh()
-    console.log('refresh yo')
-  }, [])
-  console.log(state.duration)
+  const noop = useCallback((): void => {}, [])
   return (
     <Overlay.Container maxWidth={500}>
       <Overlay.Header title="Auto Refresh Menu" onDismiss={onClose} />
@@ -62,7 +56,7 @@ export const AutoRefreshForm: FC = () => {
             <span>Select Refresh Frequency: </span>
             <AutoRefreshDropdown
               onChoose={handleChooseAutoRefresh}
-              onManualRefresh={resetCacheAndRefresh}
+              onManualRefresh={noop}
               selected={state.refreshMilliseconds}
               showManualRefresh={false}
             />

@@ -1,11 +1,4 @@
-import React, {
-  createContext,
-  useReducer,
-  useCallback,
-  FC,
-  useEffect,
-  useMemo,
-} from 'react'
+import React, {createContext, useReducer, useCallback, FC, useMemo} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import moment from 'moment'
 
@@ -32,6 +25,16 @@ interface AutoRefreshState {
   inactivityTimeout: string
   inactivityTimeoutCategory: string
   refreshMilliseconds: AutoRefresh
+}
+
+const calculateTimeout = (timeout, timeoutUnit) => {
+  const timeoutNumber = parseInt(timeout)
+  const startTime = moment(new Date())
+  const copyStart = startTime.unix()
+  const endTime = startTime.add(timeoutNumber, timeoutUnit[0].toLowerCase())
+  const cutoff = endTime.unix() - copyStart
+
+  return cutoff
 }
 
 export const createAutoRefreshInitialState = (
@@ -75,21 +78,16 @@ const autoRefreshReducer = (
       return state
   }
 }
-let timer
+
 const AutoRefreshContextProvider: FC = ({children}) => {
   const [state, dispatch] = useReducer(
     autoRefreshReducer,
     createAutoRefreshInitialState()
   )
 
-  const {currentDashboardId, autoRefresh} = useSelector(
-    (appState: AppState) => ({
-      autoRefresh: appState.autoRefresh[appState.currentDashboard.id],
-      currentDashboardId: appState.currentDashboard.id,
-    })
-  )
-
-  console.log(autoRefresh)
+  const {currentDashboardId} = useSelector((appState: AppState) => ({
+    currentDashboardId: appState.currentDashboard.id,
+  }))
 
   const reduxDispatch = useDispatch()
 
@@ -112,31 +110,22 @@ const AutoRefreshContextProvider: FC = ({children}) => {
       setAutoRefreshStatus(currentDashboardId, AutoRefreshStatus.Active)
     )
 
+    if (state.inactivityTimeout !== 'None') {
+      const cutoff = calculateTimeout(
+        state.inactivityTimeout,
+        state.inactivityTimeoutCategory
+      )
+      reduxDispatch(setInactivityTimeout(currentDashboardId, cutoff * 1000))
+    }
+
     reduxDispatch(setAutoRefreshDuration(currentDashboardId, state.duration))
   }, [
     currentDashboardId,
     reduxDispatch,
     state.duration,
     state.refreshMilliseconds,
-  ])
-
-  const timeout = useMemo(() => {
-    const timeoutNumber = parseInt(state.inactivityTimeout)
-    const startTime = moment(new Date())
-    const copyStart = startTime.unix()
-    const endTime = startTime.add(
-      timeoutNumber,
-      state.inactivityTimeoutCategory[0].toLowerCase()
-    )
-    const cutoff = endTime.unix() - copyStart
-
-    reduxDispatch(setInactivityTimeout(currentDashboardId, cutoff * 1000))
-    return cutoff // Convert to milliseconds
-  }, [
-    state.inactivityTimeoutCategory,
     state.inactivityTimeout,
-    reduxDispatch,
-    currentDashboardId,
+    state.inactivityTimeoutCategory,
   ])
 
   return (

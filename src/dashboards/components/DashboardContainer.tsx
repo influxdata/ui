@@ -38,7 +38,7 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
     timer = setTimeout(() => {
       dispatch(resetDashboardAutoRefresh(dashboard))
       registerStopListeners()
-    }, 3000)
+    }, 15000)
 
     window.addEventListener('load', registerListeners)
     document.addEventListener('mousemove', registerListeners)

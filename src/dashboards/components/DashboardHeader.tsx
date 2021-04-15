@@ -135,20 +135,7 @@ const DashboardHeader: FC<Props> = ({
     onManualRefresh()
   }, [])
 
-  // useEffect(() => {
-  //   if (autoRefresh?.status === 'active') {
-  //     const interval = setInterval(() => {
-  //       resetCacheAndRefresh()
-  //     }, autoRefresh?.interval)
-
-  //     return () => {
-  //       clearInterval(interval)
-  //     }
-  //   }
-  // }, [autoRefresh])
-
   const openAutoRefreshModal = () => {
-    console.log('here')
     history.push(`/orgs/${org.id}/dashboards/${dashboard.id}/autorefresh`)
   }
 
@@ -197,24 +184,28 @@ const DashboardHeader: FC<Props> = ({
         </Page.ControlBarLeft>
         <Page.ControlBarRight>
           <TimeZoneDropdown />
-          {/* <AutoRefreshDropdown
+          <TimeRangeDropdown
+            onSetTimeRange={handleChooseTimeRange}
+            timeRange={timeRange}
+          />
+          <AutoRefreshDropdown
             onChoose={handleChooseAutoRefresh}
             onManualRefresh={resetCacheAndRefresh}
             selected={autoRefresh}
-          /> */}
+            showAutoRefresh={false}
+          />
           <Button
             text={
               autoRefresh.status === AutoRefreshStatus.Active
                 ? 'Stop Auto Refresh'
                 : 'Enable Auto Refresh'
             }
-            color={ComponentColor.Primary}
+            color={
+              autoRefresh.status === AutoRefreshStatus.Active
+                ? ComponentColor.Danger
+                : ComponentColor.Primary
+            }
             onClick={openAutoRefreshModal}
-          />
-
-          <TimeRangeDropdown
-            onSetTimeRange={handleChooseTimeRange}
-            timeRange={timeRange}
           />
         </Page.ControlBarRight>
       </Page.ControlBar>

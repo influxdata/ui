@@ -18,7 +18,6 @@ import autoRefreshOptions, {
 
 // Types
 import {AutoRefresh, AutoRefreshStatus} from 'src/types'
-import {CLOUD} from 'src/shared/constants'
 
 const DROPDOWN_WIDTH_COLLAPSED = 50
 const DROPDOWN_WIDTH_FULL = 84
@@ -30,12 +29,14 @@ interface Props {
   onChoose: (milliseconds: number) => void
   showManualRefresh: boolean
   onManualRefresh?: () => void
+  showAutoRefresh?: boolean
 }
 
 @ErrorHandling
 export default class AutoRefreshDropdown extends Component<Props> {
   public static defaultProps = {
     showManualRefresh: true,
+    showAutoRefresh: true,
     selected: {
       interval: 0,
       status: 'paused',
@@ -51,9 +52,9 @@ export default class AutoRefreshDropdown extends Component<Props> {
   }
 
   public render() {
-    // if (CLOUD) {
-    //   return <div className={this.className}>{this.manualRefreshButton}</div>
-    // }
+    if (!this.props.showAutoRefresh) {
+      return <div className={this.className}>{this.manualRefreshButton}</div>
+    }
     return (
       <div className={this.className}>
         <Dropdown

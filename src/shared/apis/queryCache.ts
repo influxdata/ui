@@ -216,7 +216,6 @@ export const getFromQueryCacheByQuery = (
 }
 
 export const togglePauseQuery = (queryObj: CacheValue) => {
-  console.log(queryCache)
   queryObj.paused = !queryObj.paused
 
   return queryObj

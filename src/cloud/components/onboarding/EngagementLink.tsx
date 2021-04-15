@@ -15,16 +15,19 @@ type Props = ReduxProps
 
 const EngagementLink: FC<Props> = ({org, me}) => {
   const pathname = useLocation().pathname
+  const userpilot = get(window, 'userpilot')
 
   useEffect(() => {
-    sendToUserPilot()
+    if (userpilot) {
+      sendToUserPilot()
+      userpilot.reload()
+    }
   }, [pathname, org, me])
 
   const sendToUserPilot = (): void => {
-    const userpilot = get(window, 'userpilot')
     const host = window.location.hostname.split('.')
 
-    if (userpilot && org && me) {
+    if (org && me) {
       userpilot.identify(me.name, {
         email: me.name, // User Email address
         orgID: org.id, // Organization ID

@@ -21,6 +21,9 @@ import {deleteAnnotations} from 'src/annotations/actions/thunks'
 // Types
 import {Annotation, EditAnnotation} from 'src/types'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 // Style
 import 'src/annotations/components/editAnnotationForm.scss'
 
@@ -71,8 +74,10 @@ export const EditAnnotationForm: FC<EditAnnotationProps> = ({
     try {
       dispatch(deleteAnnotations(editedAnnotation))
       dispatch(notify(deleteAnnotationSuccess(editedAnnotation.message)))
+      event('xyplot.annotations.delete_annotation.success')
       handleClose()
     } catch (err) {
+      event('xyplot.annotations.delete_annotation.failure')
       dispatch(notify(deleteAnnotationFailed(err)))
     }
   }

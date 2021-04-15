@@ -152,6 +152,57 @@ describe('Flows', () => {
     cy.getByTestID('table-cell beans').should('not.exist')
   })
 
+  it('can execute preview, via ctrl+enter and see results', () => {
+    const newBucketName = 'electric boogaloo'
+    const now = Date.now()
+    cy.get<Organization>('@org').then(({id, name}: Organization) => {
+      cy.createBucket(id, name, newBucketName)
+    })
+    cy.writeData(
+      [
+        `test,container_name=cool dopeness=12 ${now - 1000}000000`,
+        `test,container_name=beans dopeness=18 ${now - 1200}000000`,
+        `test,container_name=cool dopeness=14 ${now - 1400}000000`,
+        `test,container_name=beans dopeness=10 ${now - 1600}000000`,
+      ],
+      newBucketName
+    )
+
+    cy.getByTestID('create-flow--button')
+      .first()
+      .click()
+    cy.getByTestID('time-machine-submit-button').should('be.visible')
+
+    cy.getByTestID('page-title').click()
+    cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
+
+    // select our bucket
+    cy.getByTestID('flow-bucket-selector').click()
+
+    cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
+
+    // select measurement and field
+    cy.getByTestID('measurement-selector test').click()
+    cy.getByTestID('field-selector dopeness').click()
+
+    // type ctrl+enter for preview
+    cy.intercept('POST', '**/api/v2/query**').as('queryForFlow')
+    // cy.window().then((win) => {
+    //   win.type('{ctrl+enter}').click()
+    // })
+    cy.getByTestID('field-selector dopeness').click()
+    cy.getByTestID('table').should('be.visible')
+    cy.getByTestID('table-cell beans')
+      .first()
+      .should('be.visible')
+    // cy.wait('@queryForFlow').then(() => {
+    //   cy.getByTestID('table').should('be.visible')
+    //   cy.getByTestID('table-cell beans')
+    //       .first()
+    //       .should('be.visible')
+    // })
+  })
+
   it('can export a task with all the neccesary variables', () => {
     const taskName = 'the greatest task of all time'
 

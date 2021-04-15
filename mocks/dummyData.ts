@@ -968,7 +968,6 @@ export const viewProperties: ViewProperties = {
     },
   },
   type: 'line-plus-single-stat',
-  legend: {},
   colors: [
     {
       id: 'base',

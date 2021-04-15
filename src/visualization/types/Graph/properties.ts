@@ -43,7 +43,6 @@ export default {
   ],
 
   colors: DEFAULT_LINE_COLORS as Color[],
-  legend: {},
   legendOpacity: LEGEND_OPACITY_DEFAULT,
   legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
 

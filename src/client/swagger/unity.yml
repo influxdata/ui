@@ -1161,7 +1161,7 @@ components:
             - pay_as_you_go
         billingProvider:
           type: string
-          description: the billing provider for the account
+          description: the billing provider for the account, nil if none
           enum:
             - zuora
             - aws
@@ -1173,7 +1173,8 @@ components:
         isOperator:
           type: boolean
           description: whether the user is an operator
-      required: [id, accountType, email, isOperator, isRegionBeta]
+      required:
+        [id, accountType, billingProvider, email, isOperator, isRegionBeta]
     Users:
       type: object
       properties:

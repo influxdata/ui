@@ -1,6 +1,5 @@
 import {Inputs} from 'src/checkout/context/checkout'
 import {
-  getAccount as apiGetAccount,
   getBilling,
   getOrgsLimits as apiGetOrgLimits,
   postCheckout,
@@ -31,19 +30,6 @@ const makeResponse = (status, data, ...args) => {
     headers: new Headers({'Content-Type': 'application/json'}),
     data,
   })
-}
-
-export const getAccount = (): ReturnType<typeof apiGetAccount> => {
-  const account: Account = {
-    id: 'account_1',
-    marketplace: null,
-    type: 'free',
-    balance: null,
-    users: [],
-    billingContact: null,
-    status: RemoteDataState.Done,
-  }
-  return makeResponse(200, account, 'getBillingAccount')
 }
 
 export const getBillingInfo = (): ReturnType<typeof getBilling> => {

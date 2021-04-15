@@ -4,7 +4,6 @@ import {RemoteDataState} from 'src/types'
 
 // Types
 import {
-  Account,
   BillingInfo,
   BillingNotifySettings,
   Invoice,
@@ -14,7 +13,6 @@ import {
 } from 'src/types/billing'
 
 export interface BillingState {
-  account: Account
   billingInfo: BillingInfo
   billingSettings: BillingNotifySettings
   creditCard: CreditCardParams
@@ -25,15 +23,6 @@ export interface BillingState {
 }
 
 export const initialState = (): BillingState => ({
-  account: {
-    status: RemoteDataState.NotStarted,
-    id: null,
-    marketplace: null,
-    type: 'free',
-    balance: null,
-    users: [],
-    billingContact: null,
-  },
   billingInfo: {
     balance: null,
     region: '',
@@ -56,18 +45,6 @@ export const initialState = (): BillingState => ({
 })
 
 export type BillingReducer = React.Reducer<BillingState, Action>
-
-export const setAccount = (account: Account) =>
-  ({
-    type: 'SET_ACCOUNT',
-    account,
-  } as const)
-
-export const setAccountStatus = (status: RemoteDataState) =>
-  ({
-    type: 'SET_ACCOUNT_STATUS',
-    status,
-  } as const)
 
 export const setOrgLimits = (orgLimits: OrgLimits) =>
   ({
@@ -151,8 +128,6 @@ export const setCreditCardStatus = (status: RemoteDataState) =>
   } as const)
 
 export type Action =
-  | ReturnType<typeof setAccount>
-  | ReturnType<typeof setAccountStatus>
   | ReturnType<typeof setBillingSettings>
   | ReturnType<typeof setBillingSettingsStatus>
   | ReturnType<typeof setBillingInfo>
@@ -170,21 +145,6 @@ export const billingReducer = (
 ): BillingState =>
   produce(state, draftState => {
     switch (action.type) {
-      case 'SET_ACCOUNT': {
-        draftState.account = action.account
-
-        return
-      }
-      case 'SET_ACCOUNT_STATUS': {
-        if (!draftState.account?.status) {
-          draftState.account = {...draftState.account, status: action.status}
-
-          return
-        }
-
-        draftState.account.status = action.status
-        return
-      }
       case 'SET_BILLING_INFO': {
         draftState.billingInfo = action.billingInfo
 

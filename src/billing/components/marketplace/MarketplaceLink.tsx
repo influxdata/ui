@@ -1,4 +1,5 @@
 import React, {FC} from 'react'
+import {useSelector} from 'react-redux'
 import {
   Button,
   ComponentColor,
@@ -6,13 +7,14 @@ import {
   ButtonShape,
 } from '@influxdata/clockface'
 
-import {Marketplace} from 'src/types/marketplace'
+// Types
+import {Me} from 'src/client/unityRoutes'
 
 // Utils
-import {useBilling} from 'src/billing/components/BillingPage'
+import {getQuartzMe} from 'src/me/selectors'
 
 const buttonInfo = (
-  marketplace: Marketplace['shortName']
+  marketplace: Me['billingProvider']
 ): {link: string; text: string} => {
   switch (marketplace) {
     case 'aws':
@@ -37,9 +39,9 @@ const buttonInfo = (
 }
 
 const MarketplaceLink: FC = () => {
-  const [{account}] = useBilling()
+  const quartzMe = useSelector(getQuartzMe)
 
-  const {link, text} = buttonInfo(account.marketplace.shortName)
+  const {link, text} = buttonInfo(quartzMe.billingProvider)
 
   const handleClick = () => {
     window.open(link, '_blank')

@@ -3,8 +3,6 @@ import {Dispatch} from 'react'
 // Reducer
 import {
   Action,
-  setAccount,
-  setAccountStatus,
   setBillingInfo,
   setBillingInfoStatus,
   setBillingSettings,
@@ -17,7 +15,6 @@ import {
 
 // API
 import {
-  getAccount as apiGetAccount,
   getBillingInfo as apiGetBillingInfo,
   getBillingNotificationSettings,
   updateBillingNotificationSettings,
@@ -32,22 +29,6 @@ import {BillingNotifySettings, Invoice} from 'src/types/billing'
 // TODO(ariel): add error handling here
 // notify() will not work since Dispatch here is based on the passed in dispatch from the local reducer
 // and not from the higher level dispatch from the app.
-export const getAccount = async (dispatch: Dispatch<Action>) => {
-  try {
-    dispatch(setAccountStatus(RemoteDataState.Loading))
-    const resp = await apiGetAccount()
-
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
-
-    dispatch(setAccount({...resp.data, status: RemoteDataState.Done}))
-  } catch (error) {
-    console.error(error)
-    dispatch(setAccountStatus(RemoteDataState.Error))
-  }
-}
-
 export const getOrgLimits = async (dispatch: Dispatch<Action>) => {
   try {
     dispatch(setOrgLimitsStatus(RemoteDataState.Loading))

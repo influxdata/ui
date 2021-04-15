@@ -59,11 +59,10 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
 
   useEffect(() => {
     if (
-      (autoRefresh?.status &&
-        autoRefresh.status === AutoRefreshStatus.Active) ||
+      autoRefresh?.status &&
+      autoRefresh.status === AutoRefreshStatus.Active &&
       autoRefresh.inactivityTimeout > 0
     ) {
-      console.log('heyooooo')
       registerListeners()
     } else {
       registerStopListeners()

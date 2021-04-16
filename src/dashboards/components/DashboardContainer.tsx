@@ -34,28 +34,27 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
     if (timer) {
       registerStopListeners()
     }
-
     timer = setTimeout(() => {
       dispatch(resetDashboardAutoRefresh(dashboard))
       registerStopListeners()
-    }, 15000)
+    }, autoRefresh.inactivityTimeout)
 
     window.addEventListener('load', registerListeners)
     document.addEventListener('mousemove', registerListeners)
     document.addEventListener('keypress', registerListeners)
-  }, [dashboard])
+  }, [dashboard, autoRefresh.inactivityTimeout])
 
   const registerStopListeners = useCallback(() => {
     // Stop all existing timers and deregister everythang
-    if (!timer) {
-      return
+    if (timer) {
+      clearTimeout(timer)
+      timer = null
     }
-    clearTimeout(timer)
-    timer = null
+
     window.removeEventListener('load', registerListeners)
     document.removeEventListener('mousemove', registerListeners)
     document.removeEventListener('keypress', registerListeners)
-  }, [timer, dashboard])
+  }, [registerListeners])
 
   useEffect(() => {
     if (

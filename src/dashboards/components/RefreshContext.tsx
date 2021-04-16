@@ -33,8 +33,7 @@ const calculateTimeout = (timeout, timeoutUnit) => {
   const copyStart = startTime.unix()
   const endTime = startTime.add(timeoutNumber, timeoutUnit[0].toLowerCase())
   const cutoff = endTime.unix() - copyStart
-
-  return cutoff
+  return cutoff * 1000
 }
 
 export const createAutoRefreshInitialState = (
@@ -115,7 +114,7 @@ const AutoRefreshContextProvider: FC = ({children}) => {
         state.inactivityTimeout,
         state.inactivityTimeoutCategory
       )
-      reduxDispatch(setInactivityTimeout(currentDashboardId, cutoff * 1000))
+      reduxDispatch(setInactivityTimeout(currentDashboardId, cutoff))
     }
 
     reduxDispatch(setAutoRefreshDuration(currentDashboardId, state.duration))

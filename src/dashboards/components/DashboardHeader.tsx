@@ -31,6 +31,7 @@ import {
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {resetQueryCache} from 'src/shared/apis/queryCache'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Selectors
 import {getTimeRange} from 'src/dashboards/selectors'
@@ -200,26 +201,28 @@ const DashboardHeader: FC<Props> = ({
             selected={autoRefresh}
             showAutoRefresh={false}
           />
-          <Button
-            text={
-              autoRefresh?.status &&
-              autoRefresh.status === AutoRefreshStatus.Active
-                ? 'Stop Auto Refresh'
-                : 'Enable Auto Refresh'
-            }
-            color={
-              autoRefresh?.status &&
-              autoRefresh.status === AutoRefreshStatus.Active
-                ? ComponentColor.Danger
-                : ComponentColor.Primary
-            }
-            onClick={
-              autoRefresh?.status &&
-              autoRefresh.status === AutoRefreshStatus.Active
-                ? stopAutoRefreshAndReset
-                : openAutoRefreshModal
-            }
-          />
+          {isFlagEnabled('new-auto-refresh') && (
+            <Button
+              text={
+                autoRefresh?.status &&
+                autoRefresh.status === AutoRefreshStatus.Active
+                  ? 'Stop Auto Refresh'
+                  : 'Enable Auto Refresh'
+              }
+              color={
+                autoRefresh?.status &&
+                autoRefresh.status === AutoRefreshStatus.Active
+                  ? ComponentColor.Danger
+                  : ComponentColor.Primary
+              }
+              onClick={
+                autoRefresh?.status &&
+                autoRefresh.status === AutoRefreshStatus.Active
+                  ? stopAutoRefreshAndReset
+                  : openAutoRefreshModal
+              }
+            />
+          )}
         </Page.ControlBarRight>
       </Page.ControlBar>
     </>

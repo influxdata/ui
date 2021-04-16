@@ -42,15 +42,15 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
     window.addEventListener('load', registerListeners)
     document.addEventListener('mousemove', registerListeners)
     document.addEventListener('keypress', registerListeners)
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState !== 'visible') {
-        registerListeners()
-      } else {
-        registerStopListeners()
-      }
-    })
   }, [dashboard, autoRefresh.inactivityTimeout])
 
+  const visChangeHandler = () => {
+    if (document.visibilityState === 'hidden') {
+      registerListeners()
+    } else {
+      registerStopListeners()
+    }
+  }
   const registerStopListeners = useCallback(() => {
     // Stop all existing timers and deregister everythang
     if (timer) {
@@ -61,8 +61,9 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
     window.removeEventListener('load', registerListeners)
     document.removeEventListener('mousemove', registerListeners)
     document.removeEventListener('keypress', registerListeners)
-    document.removeEventListener('visibilitychange', registerListeners)
   }, [registerListeners])
+
+  document.addEventListener('visibilitychange', visChangeHandler)
 
   useEffect(() => {
     if (
@@ -76,6 +77,7 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
     }
     return () => {
       registerStopListeners()
+      document.removeEventListener('visibilitychange', visChangeHandler)
     }
   }, [autoRefresh?.status, autoRefresh.inactivityTimeout])
 

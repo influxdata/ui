@@ -91,7 +91,6 @@ export {
   CheckViewProperties,
   GeoViewProperties,
   RenamableField,
-  Legend,
   DecimalPlaces,
   Axes,
   Axis,

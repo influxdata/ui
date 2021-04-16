@@ -41,7 +41,6 @@ export default {
     },
   ],
 
-  legend: {},
   legendOpacity: LEGEND_OPACITY_DEFAULT,
   legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
 

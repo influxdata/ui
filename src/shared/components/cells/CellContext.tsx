@@ -204,7 +204,7 @@ const CellContext: FC<Props> = ({
         <button
           className={buttonClass}
           onClick={togglePauseCell}
-          data-testid="cell-context--pause"
+          data-testid="cell-context--pause-resume"
         >
           <Icon glyph={IconFont.Pause} />
         </button>

@@ -44,7 +44,7 @@ export const AutoRefreshForm: FC = () => {
   // Because we are not using the manual refresh in the dropdown, this function is a no-op
   const noop = useCallback((): void => {}, [])
   return (
-    <Overlay.Container maxWidth={500}>
+    <Overlay.Container maxWidth={500} testID="auto-refresh-overlay">
       <Overlay.Header title="Configure Auto Refresh" onDismiss={onClose} />
       <Grid>
         <Grid.Column className="refresh-form-column">
@@ -89,6 +89,7 @@ export const AutoRefreshForm: FC = () => {
                   })
                 }
                 buttonColor={ComponentColor.Default}
+                testID="inactivity-timeout-dropdown"
               />
               {state.inactivityTimeout !== 'None' && (
                 <SelectDropdown
@@ -102,6 +103,7 @@ export const AutoRefreshForm: FC = () => {
                     })
                   }
                   buttonColor={ComponentColor.Default}
+                  testID="inactivity-timeout-category-dropdown"
                 />
               )}
             </div>
@@ -112,6 +114,7 @@ export const AutoRefreshForm: FC = () => {
               text="Cancel"
               color={ComponentColor.Default}
               className="refresh-form-cancel-button"
+              testID="refresh-form-cancel-button"
             />
             <Button
               onClick={() => {
@@ -121,6 +124,7 @@ export const AutoRefreshForm: FC = () => {
               text="Enable"
               color={ComponentColor.Success}
               className="refresh-form-activate-button"
+              testID="refresh-form-activate-button"
             />
           </div>
         </Grid.Column>

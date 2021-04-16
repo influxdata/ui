@@ -221,6 +221,7 @@ const DashboardHeader: FC<Props> = ({
                   ? stopAutoRefreshAndReset
                   : openAutoRefreshModal
               }
+              testID="enable-auto-refresh-button"
             />
           )}
         </Page.ControlBarRight>

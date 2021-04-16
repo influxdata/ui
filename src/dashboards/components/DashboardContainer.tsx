@@ -42,6 +42,13 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
     window.addEventListener('load', registerListeners)
     document.addEventListener('mousemove', registerListeners)
     document.addEventListener('keypress', registerListeners)
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState !== 'visible') {
+        registerListeners()
+      } else {
+        registerStopListeners()
+      }
+    })
   }, [dashboard, autoRefresh.inactivityTimeout])
 
   const registerStopListeners = useCallback(() => {
@@ -54,6 +61,7 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
     window.removeEventListener('load', registerListeners)
     document.removeEventListener('mousemove', registerListeners)
     document.removeEventListener('keypress', registerListeners)
+    document.removeEventListener('visibilitychange', registerListeners)
   }, [registerListeners])
 
   useEffect(() => {

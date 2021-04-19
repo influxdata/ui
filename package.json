@@ -50,10 +50,15 @@
     "cy": "CYPRESS_baseUrl=http://localhost:9999 cypress open",
     "cy:dev": "source ../monitor-ci/.env && CYPRESS_baseUrl=https://$INGRESS_HOST:$PORT_HTTPS cypress open --config testFiles='{cloud,shared}/**/*.*'",
     "cy:dev-oss": "source ../monitor-ci/.env && CYPRESS_baseUrl=https://$INGRESS_HOST:$PORT_HTTPS cypress open --config testFiles='{oss,shared}/**/*.*'",
-    "generate": "oats https://raw.githubusercontent.com/influxdata/influxdb/master/http/swagger.yml > ./src/client/generatedRoutes.ts && yarn unity && yarn flows && yarn managedFunctions",
-    "unity": "oats ./src/client/swagger/unity.yml > ./src/client/unityRoutes.ts",
-    "flows": "oats ./src/client/swagger/flows.yml > ./src/client/flowsRoutes.ts",
-    "managedFunctions": "oats ./src/client/swagger/managedFunctions.yml > ./src/client/managedFunctionsRoutes.ts"
+    "generate": "yarn oss && yarn cloud && yarn common && yarn currentApi && yarn unity && yarn flows && yarn cloudPriv && yarn managedFunctions",
+    "oss": "oats https://raw.githubusercontent.com/influxdata/openapi/master/contracts/oss-diff.yml > ./src/client/ossRoutes.ts",
+    "cloud": "oats https://raw.githubusercontent.com/influxdata/openapi/master/contracts/cloud-diff.yml > ./src/client/cloudRoutes.ts",
+    "common": "oats https://raw.githubusercontent.com/influxdata/openapi/master/contracts/common.yml > ./src/client/commonRoutes.ts",
+    "currentApi": "oats https://raw.githubusercontent.com/influxdata/openapi/master/contracts/cloud.yml > ./src/client/generatedRoutes.ts",
+    "unity": "oats https://raw.githubusercontent.com/influxdata/openapi/master/contracts/priv/unity.yml > ./src/client/unityRoutes.ts",
+    "flows": "oats https://raw.githubusercontent.com/influxdata/openapi/master/contracts/svc/flowd.yml > ./src/client/flowsRoutes.ts",
+    "cloudPriv": "oats https://raw.githubusercontent.com/influxdata/openapi/master/contracts/priv/cloud-priv.yml > ./src/client/cloudPrivRoutes.ts",
+    "managedFunctions": "oats https://raw.githubusercontent.com/influxdata/openapi/master/contracts/managed-functions.yml > ./src/client/managedFunctionsRoutes.ts"
   },
   "author": "",
   "devDependencies": {

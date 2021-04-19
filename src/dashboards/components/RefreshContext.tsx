@@ -27,6 +27,14 @@ interface AutoRefreshState {
   refreshMilliseconds: AutoRefresh
 }
 
+const jumpAheadTime = (moveAheadNum: number) => {
+  return (
+    new Date().toISOString().slice(0, 10) +
+    ' ' +
+    new Date(Date.now() + moveAheadNum).toTimeString().slice(0, 8)
+  )
+}
+
 const calculateTimeout = (timeout, timeoutUnit) => {
   const timeoutNumber = parseInt(timeout)
   const startTime = moment(new Date())
@@ -40,11 +48,11 @@ export const createAutoRefreshInitialState = (
   override = {}
 ): AutoRefreshState => {
   return {
-    inactivityTimeout: 'None',
+    inactivityTimeout: '1',
     inactivityTimeoutCategory: 'Hours',
     duration: {
       lower: new Date().toISOString(),
-      upper: new Date().toISOString(),
+      upper: jumpAheadTime(60 * 60 * 1000),
       type: 'custom',
     } as CustomTimeRange,
     refreshMilliseconds: {

@@ -47,7 +47,7 @@ const TimeRangeDropdown: FC<Props> = ({
   }
 
   return (
-    <div ref={buttonRef} className={className}>
+    <div ref={buttonRef} className={className} data-testid="timerange-dropdown">
       <Dropdown.Button onClick={() => setPickerActive(!pickerActive)}>
         {dropdownLabel}
       </Dropdown.Button>

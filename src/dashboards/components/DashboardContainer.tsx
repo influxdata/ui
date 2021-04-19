@@ -21,6 +21,10 @@ import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 // Types
 import {AppState, ResourceType, AutoRefreshStatus} from 'src/types'
 
+// Notifications
+import {dashboardAutoRefreshTimeoutSuccess} from 'src/shared/copy/notifications'
+import {notify} from 'src/shared/actions/notifications'
+
 const {Active} = AutoRefreshStatus
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -36,6 +40,7 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
     }
     timer = setTimeout(() => {
       dispatch(resetDashboardAutoRefresh(dashboard))
+      dispatch(notify(dashboardAutoRefreshTimeoutSuccess()))
       registerStopListeners()
     }, autoRefresh.inactivityTimeout)
 
@@ -45,7 +50,10 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
   }, [dashboard, autoRefresh.inactivityTimeout])
 
   const visChangeHandler = () => {
-    if (document.visibilityState === 'hidden') {
+    if (
+      document.visibilityState === 'hidden' &&
+      autoRefresh.status === AutoRefreshStatus.Active
+    ) {
       registerListeners()
     } else {
       registerStopListeners()
@@ -82,7 +90,9 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
   }, [autoRefresh?.status, autoRefresh.inactivityTimeout])
 
   const stopFunc = useCallback(() => {
-    if (autoRefresh?.duration?.upper <= new Date().toISOString()) {
+    if (
+      new Date(autoRefresh?.duration?.upper).getTime() <= new Date().getTime()
+    ) {
       GlobalAutoRefresher.stopPolling()
       dispatch(resetDashboardAutoRefresh(dashboard))
     }

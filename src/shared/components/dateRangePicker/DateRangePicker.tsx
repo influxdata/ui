@@ -42,15 +42,13 @@ class DateRangePicker extends PureComponent<Props, State> {
       timeRange: {lower, upper},
     } = props
 
-    // The button can be disabled to start with, only activate it if the values are changed.
-    const validDateRange = false
+    const validDateRange = this.isTimeRangeValid(lower, upper)
     this.state = {lower, upper, validDateRange}
   }
 
   public render() {
     const {onClose} = this.props
     const {upper, lower, validDateRange} = this.state
-
     return (
       <ClickOutside onClickOutside={onClose}>
         <div

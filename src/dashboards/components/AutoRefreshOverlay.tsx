@@ -43,6 +43,7 @@ export const AutoRefreshForm: FC = () => {
 
   // Because we are not using the manual refresh in the dropdown, this function is a no-op
   const noop = useCallback((): void => {}, [])
+
   return (
     <Overlay.Container maxWidth={500} testID="auto-refresh-overlay">
       <Overlay.Header title="Configure Auto Refresh" onDismiss={onClose} />

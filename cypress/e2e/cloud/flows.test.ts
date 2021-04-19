@@ -152,7 +152,7 @@ describe('Flows', () => {
     cy.getByTestID('table-cell beans').should('not.exist')
   })
 
-  it('can export a task with all the neccesary variables', () => {
+  it('can export a task with all the necessary variables', () => {
     const taskName = 'the greatest task of all time'
 
     cy.getByTestID('create-flow--button')

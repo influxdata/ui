@@ -146,6 +146,9 @@ const DashboardHeader: FC<Props> = ({
     dispatch(resetDashboardAutoRefreshAction(dashboard.id))
   }
 
+  const isActive =
+    autoRefresh?.status && autoRefresh.status === AutoRefreshStatus.Active
+
   return (
     <>
       <Page.Header fullWidth={true}>
@@ -203,23 +206,10 @@ const DashboardHeader: FC<Props> = ({
           />
           {isFlagEnabled('new-auto-refresh') && (
             <Button
-              text={
-                autoRefresh?.status &&
-                autoRefresh.status === AutoRefreshStatus.Active
-                  ? 'Stop Auto Refresh'
-                  : 'Enable Auto Refresh'
-              }
-              color={
-                autoRefresh?.status &&
-                autoRefresh.status === AutoRefreshStatus.Active
-                  ? ComponentColor.Danger
-                  : ComponentColor.Primary
-              }
+              text={isActive ? 'Stop Auto Refresh' : 'Enable Auto Refresh'}
+              color={isActive ? ComponentColor.Danger : ComponentColor.Primary}
               onClick={
-                autoRefresh?.status &&
-                autoRefresh.status === AutoRefreshStatus.Active
-                  ? stopAutoRefreshAndReset
-                  : openAutoRefreshModal
+                isActive ? stopAutoRefreshAndReset : openAutoRefreshModal
               }
               testID="enable-auto-refresh-button"
             />

@@ -163,5 +163,4 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-interface OwnProps {}
-export default connector(ManualRefresh<OwnProps>(DashboardPage))
+export default connector(ManualRefresh(DashboardPage))

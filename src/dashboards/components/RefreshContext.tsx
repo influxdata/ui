@@ -3,12 +3,7 @@ import {useSelector, useDispatch} from 'react-redux'
 import moment from 'moment'
 
 // Types
-import {
-  CustomTimeRange,
-  AutoRefreshStatus,
-  AutoRefresh,
-  AppState,
-} from 'src/types'
+import {CustomTimeRange, AutoRefreshStatus, AutoRefresh} from 'src/types'
 
 // Actions
 import {
@@ -17,6 +12,7 @@ import {
   setAutoRefreshDuration,
   setInactivityTimeout,
 } from 'src/shared/actions/autoRefresh'
+import {getCurrentDashboardId} from 'src/dashboards/selectors'
 
 export const AutoRefreshContext = createContext(null)
 
@@ -55,7 +51,7 @@ export const createAutoRefreshInitialState = (
       lower: new Date().toISOString(),
       upper: jumpAheadTime(60 * 60 * 1000),
       type: 'custom',
-    } as CustomTimeRange,
+    },
     refreshMilliseconds: {
       interval: 0,
       status: AutoRefreshStatus.Paused,
@@ -96,9 +92,7 @@ const AutoRefreshContextProvider: FC = ({children}) => {
     createAutoRefreshInitialState()
   )
 
-  const {currentDashboardId} = useSelector((appState: AppState) => ({
-    currentDashboardId: appState.currentDashboard.id,
-  }))
+  const currentDashboardId = useSelector(getCurrentDashboardId)
 
   const reduxDispatch = useDispatch()
 

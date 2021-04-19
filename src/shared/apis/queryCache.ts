@@ -143,7 +143,6 @@ class QueryCache {
         delete this.cache[key]
       }
     }
-    // this.cache = {}
   }
 
   getById = (queryID: string) => {
@@ -194,17 +193,24 @@ export const resetQueryCacheByQuery = (query: string): void => {
   queryCache.resetCacheByID(queryID)
 }
 
+const calculateHashedVariables = (allVars: Variable[], query: string) => {
+  const usedVars = filterUnusedVarsBasedOnQuery(allVars, [query])
+  const variables = sortBy(usedVars, ['name'])
+
+  const simplifiedVariables = variables.map(v => asSimplyKeyValueVariables(v))
+  const stringifiedVars = JSON.stringify(simplifiedVariables)
+  // create the queryID based on the query & vars
+  const hashedVariables = `${hashCode(stringifiedVars)}`
+
+  return {variables, hashedVariables}
+}
+
 export const getFromQueryCacheByQuery = (
   query: string,
   variables: Variable[]
 ): CacheValue | null => {
   const queryID = `${hashCode(query)}`
-  const usedVars = filterUnusedVarsBasedOnQuery(variables, [query])
-  const finalVars = sortBy(usedVars, ['name'])
-  const simplifiedVariables = finalVars.map(v => asSimplyKeyValueVariables(v))
-  const stringifiedVars = JSON.stringify(simplifiedVariables)
-  // create the queryID based on the query & vars
-  const hashedVariables = `${hashCode(stringifiedVars)}`
+  const {hashedVariables} = calculateHashedVariables(variables, query)
 
   const returnedQuery = queryCache.getFromCache(queryID, hashedVariables)
   if (returnedQuery) {
@@ -232,13 +238,7 @@ export const getCachedResultsOrRunQuery = (
   const queryID = `${hashCode(query)}`
   event('Starting Query Cache Process ', {context: 'queryCache', queryID})
 
-  const usedVars = filterUnusedVarsBasedOnQuery(allVars, [query])
-  const variables = sortBy(usedVars, ['name'])
-
-  const simplifiedVariables = variables.map(v => asSimplyKeyValueVariables(v))
-  const stringifiedVars = JSON.stringify(simplifiedVariables)
-  // create the queryID based on the query & vars
-  const hashedVariables = `${hashCode(stringifiedVars)}`
+  const {variables, hashedVariables} = calculateHashedVariables(allVars, query)
 
   const cacheResults: RunQueryResult | null = queryCache.getFromCache(
     queryID,

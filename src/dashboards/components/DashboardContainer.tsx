@@ -91,12 +91,18 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
 
   const stopFunc = useCallback(() => {
     if (
+      !autoRefresh.infiniteDuration &&
       new Date(autoRefresh?.duration?.upper).getTime() <= new Date().getTime()
     ) {
       GlobalAutoRefresher.stopPolling()
       dispatch(resetDashboardAutoRefresh(dashboard))
     }
-  }, [dashboard, dispatch, autoRefresh?.duration?.upper])
+  }, [
+    dashboard,
+    dispatch,
+    autoRefresh?.duration?.upper,
+    autoRefresh.infiniteDuration,
+  ])
 
   useEffect(() => {
     if (autoRefresh.status === Active) {

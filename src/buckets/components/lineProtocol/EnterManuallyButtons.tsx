@@ -1,8 +1,9 @@
 // Libraries
 import React, {FC, useContext} from 'react'
+import {useHistory, useParams} from 'react-router'
+import {useSelector} from 'react-redux'
 
 // Components
-import {Context} from './LineProtocolWizard'
 import {
   Button,
   ButtonType,
@@ -10,19 +11,37 @@ import {
   ComponentSize,
   ComponentStatus,
 } from '@influxdata/clockface'
+import {LineProtocolContext} from 'src/buckets/components/context/lineProtocol'
+
+// Utils
+import {getByID} from 'src/resources/selectors'
 
 // Types
-import {RemoteDataState} from 'src/types'
+import {AppState, Bucket, ResourceType, RemoteDataState} from 'src/types'
 
-interface Props {
-  onSubmit: () => void
-  onCancel: () => void
-  onClose: () => void
-}
-
-const EnterManuallyButtons: FC<Props> = ({onSubmit, onCancel, onClose}) => {
-  const [{writeStatus, body}] = useContext(Context)
+const EnterManuallyButtons: FC = () => {
+  const {
+    body,
+    handleResetLineProtocol,
+    writeLineProtocol,
+    writeStatus,
+  } = useContext(LineProtocolContext)
   const status = body ? ComponentStatus.Default : ComponentStatus.Disabled
+  const history = useHistory()
+  const {orgID, bucketID} = useParams<{orgID: string; bucketID: string}>()
+
+  const handleClose = () => {
+    history.push(`/orgs/${orgID}/load-data/buckets`)
+  }
+
+  const selectedBucket =
+    useSelector((state: AppState) =>
+      getByID<Bucket>(state, ResourceType.Buckets, bucketID)
+    )?.name ?? ''
+
+  const handleSubmit = () => {
+    writeLineProtocol(selectedBucket)
+  }
 
   if (writeStatus === RemoteDataState.Error) {
     return (
@@ -31,7 +50,7 @@ const EnterManuallyButtons: FC<Props> = ({onSubmit, onCancel, onClose}) => {
         text="Cancel"
         size={ComponentSize.Medium}
         type={ButtonType.Button}
-        onClick={onCancel}
+        onClick={handleResetLineProtocol}
         testID="lp-cancel--button"
       />
     )
@@ -44,7 +63,7 @@ const EnterManuallyButtons: FC<Props> = ({onSubmit, onCancel, onClose}) => {
         text="Close"
         size={ComponentSize.Medium}
         type={ButtonType.Button}
-        onClick={onClose}
+        onClick={handleClose}
         testID="lp-close--button"
       />
     )
@@ -58,7 +77,7 @@ const EnterManuallyButtons: FC<Props> = ({onSubmit, onCancel, onClose}) => {
       type={ButtonType.Button}
       status={status}
       testID="lp-write-data--button"
-      onClick={onSubmit}
+      onClick={handleSubmit}
     />
   )
 }

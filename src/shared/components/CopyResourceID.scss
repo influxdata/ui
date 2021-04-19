@@ -1,4 +1,4 @@
-.copy-task-id {
+.copy-resource-id {
   transition: color 0.25s ease;
 
   &:hover {
@@ -7,7 +7,7 @@
   }
 }
 
-.copy-task-id--helper {
+.copy-resource-id--click-target {
   color: $g13-mist;
   transition: opacity 0.25s ease;
   opacity: 0;
@@ -15,6 +15,6 @@
   margin-left: $cf-marg-b;
 }
 
-.copy-task-id:hover .copy-task-id--helper {
+.copy-resource-id:hover .copy-resource-id--click-target {
   opacity: 1;
 }

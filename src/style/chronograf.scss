@@ -105,6 +105,7 @@
 @import 'src/shared/components/DeleteDataForm/DeleteDataForm.scss';
 @import 'src/shared/components/cloud/CloudOnly.scss';
 @import 'src/shared/components/CloudUpgradeNavBanner.scss';
+@import 'src/shared/components/CopyResourceID.scss';
 @import 'src/notifications/rules/components/NewRuleOverlay.scss';
 @import 'src/shared/components/dashed_button/DashedButton.scss';
 @import 'src/alerting/components/AlertingIndex.scss';
@@ -121,7 +122,6 @@
 @import 'src/dashboards/components/DashboardLightMode.scss';
 @import 'src/buckets/components/DemoDataDropdown.scss';
 @import 'src/buckets/components/BucketCardMeta.scss';
-@import 'src/tasks/components/TaskCardMeta.scss';
 @import 'src/cloud/components/RateLimitOverlay.scss';
 @import 'src/cloud/components/experiments/DatalessEmptyState.scss';
 @import 'src/shared/components/notifications/Notification.scss';
@@ -138,6 +138,7 @@
 @import 'src/checkout/CheckoutPage.scss';
 @import 'src/operator/OperatorNav.scss';
 @import 'src/operator/account/AccountGrid.scss';
+@import 'src/writeData/components/fileUploads/FileUploads.scss';
 
 // External
 @import '../../node_modules/@influxdata/react-custom-scrollbars/dist/styles.css';

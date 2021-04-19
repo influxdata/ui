@@ -30,7 +30,6 @@ interface OwnProps {
 }
 
 interface DefaultProps {
-  canImportFromTemplate: boolean
   status: ComponentStatus
   titleText: string
 }
@@ -41,7 +40,6 @@ type Props = OwnProps & DefaultProps & ReduxProps
 
 class AddResourceDropdown extends PureComponent<Props> {
   public static defaultProps: DefaultProps = {
-    canImportFromTemplate: false,
     status: ComponentStatus.Default,
     titleText: null,
   }
@@ -82,7 +80,6 @@ class AddResourceDropdown extends PureComponent<Props> {
   private get optionItems(): JSX.Element[] {
     const importOption = this.importOption
     const newOption = this.newOption
-    const templateOption = this.templateOption
 
     const items = [
       <Dropdown.Item
@@ -104,20 +101,6 @@ class AddResourceDropdown extends PureComponent<Props> {
         {importOption}
       </Dropdown.Item>,
     ]
-
-    if (!!this.props.canImportFromTemplate) {
-      items.push(
-        <Dropdown.Item
-          id={templateOption}
-          key={templateOption}
-          onClick={this.handleSelect}
-          value={templateOption}
-          testID="add-resource-dropdown--template"
-        >
-          {templateOption}
-        </Dropdown.Item>
-      )
-    }
 
     return items
   }

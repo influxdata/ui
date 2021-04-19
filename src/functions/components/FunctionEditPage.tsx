@@ -12,8 +12,8 @@ import FunctionHeader from 'src/functions/components/FunctionHeader'
 import FunctionForm from 'src/functions/components/FunctionForm'
 import {FunctionListContext} from 'src/functions/context/function.list'
 
-const FluxMonacoEditor = lazy(() =>
-  import('src/shared/components/FluxMonacoEditor')
+const PythonMonacoEditor = lazy(() =>
+  import('src/functions/components/PythonMonacoEditor')
 )
 
 // Utils
@@ -46,7 +46,10 @@ const FunctionEditPage: FC = () => {
                 />
               }
             >
-              <FluxMonacoEditor script={script} onChangeScript={updateScript} />
+              <PythonMonacoEditor
+                script={script}
+                onChangeScript={updateScript}
+              />
             </Suspense>
           </div>
         </div>

@@ -1,4 +1,5 @@
 // Constants
+import WRITE_DATA_FILE_UPLOAD_SECTION from 'src/writeData/constants/contentFileUploads'
 import WRITE_DATA_CLIENT_LIBRARIES_SECTION from 'src/writeData/constants/contentClientLibraries'
 import WRITE_DATA_TELEGRAF_PLUGINS_SECTION from 'src/writeData/constants/contentTelegrafPlugins'
 import WRITE_DATA_INTEGRATIONS_SECTION from 'src/writeData/constants/contentIntegrations'
@@ -24,6 +25,7 @@ export interface WriteDataSection {
 
 // Sections
 export const WRITE_DATA_SECTIONS: WriteDataSection[] = [
+  WRITE_DATA_FILE_UPLOAD_SECTION,
   WRITE_DATA_CLIENT_LIBRARIES_SECTION,
   WRITE_DATA_TELEGRAF_PLUGINS_SECTION,
   WRITE_DATA_INTEGRATIONS_SECTION,

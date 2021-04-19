@@ -7,6 +7,7 @@ import {useSelector, useDispatch} from 'react-redux'
 import {postWrite} from 'src/client'
 import {event} from 'src/cloud/utils/reporting'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
+import {getErrorMessage} from 'src/utils/api'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
@@ -15,7 +16,6 @@ import {csvUploaderErrorNotification} from 'src/shared/copy/notifications'
 
 // Types
 import {RemoteDataState, WritePrecision} from 'src/types'
-import {getErrorMessage} from 'src/utils/api'
 
 export type Props = {
   children: JSX.Element
@@ -233,7 +233,8 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
             .then(values => {
               if (values.find(v => v.status >= 400)) {
                 throw new Error(
-                  `Looks like some of the CSV data could not be written to the bucket. Please make sure that CSV was in Annotated Format`
+                  getErrorMessage(values) ||
+                    `Looks like some of the CSV data could not be written to the bucket. Please make sure that CSV was in Annotated Format`
                 )
               }
               setUploadState(RemoteDataState.Done)

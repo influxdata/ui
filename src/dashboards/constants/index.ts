@@ -41,20 +41,11 @@ export const DEFAULT_DASHBOARD_SORT_OPTIONS = {
   sortKey: 'name' as DashboardSortKey,
 }
 
-export const EMPTY_DASHBOARD: EmptyDefaultDashboard = {
-  id: '0',
-  name: '',
-  cells: [NEW_DEFAULT_DASHBOARD_CELL],
-  status: RemoteDataState.Done,
-  sortOptions: DEFAULT_DASHBOARD_SORT_OPTIONS,
-}
-
 export const DashboardTemplate: EmptyDefaultDashboard = {
   id: '0',
   name: 'Create a New Dashboard',
   cells: [],
   status: RemoteDataState.Done,
-  sortOptions: DEFAULT_DASHBOARD_SORT_OPTIONS,
 }
 
 type NewDefaultDashboard = Pick<

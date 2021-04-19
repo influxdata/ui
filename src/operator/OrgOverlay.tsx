@@ -34,7 +34,7 @@ const OrgOverlay: FC = () => {
     updateLimitStatus,
   } = useContext(OverlayContext)
 
-  const {orgID} = useParams()
+  const {orgID} = useParams<{orgID: string}>()
   const history = useHistory()
 
   const updateLimits = async () => {
@@ -47,7 +47,6 @@ const OrgOverlay: FC = () => {
     }
   }
 
-  // TODO(ariel): fix the background issue by this being on a separate page
   return (
     <Overlay
       visible={true}

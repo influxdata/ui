@@ -337,6 +337,11 @@ describe('Dashboard', () => {
                   })
                 cy.getByTestID('save-cell--button').click()
 
+                // Make sure typeAhead input box is rendered and is visible
+                cy.getByTestID(
+                  `variable-dropdown-input-typeAhead--${bucketVarName}`
+                ).should('be.visible')
+
                 // TESTING CSV VARIABLE
                 // selected value in dashboard is 1st value
                 cy.getByTestID(

@@ -154,7 +154,10 @@ describe('The Annotations UI functionality', () => {
 
     // should have the annotation created , lets click it to show the modal.
     cy.getByTestID('cell blah').within(() => {
-      cy.get('line').click()
+      // we have 2 line layers by the same id, we only want to click on the first
+      cy.get('line')
+        .first()
+        .click()
     })
 
     cy.getByTestID('delete-annotation-button').click()
@@ -181,7 +184,10 @@ describe('The Annotations UI functionality', () => {
 
     // should have the annotation created , lets click it to show the modal.
     cy.getByTestID('cell blah').within(() => {
-      cy.get('line').click()
+      // we have 2 line layers by the same id, we only want to click on the first
+      cy.get('line')
+        .first()
+        .click()
     })
 
     cy.getByTestID('edit-annotation-summary-inputfield')
@@ -215,7 +221,10 @@ describe('The Annotations UI functionality', () => {
 
     // should have the annotation created , lets click it to show the modal.
     cy.getByTestID('cell blah').within(() => {
-      cy.get('line').click()
+      // we have 2 line layers by the same id, we only want to click on the first
+      cy.get('line')
+        .first()
+        .click()
     })
 
     cy.getByTestID('edit-annotation-summary-inputfield')

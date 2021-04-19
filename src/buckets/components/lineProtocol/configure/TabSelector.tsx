@@ -1,37 +1,36 @@
-import React, {PureComponent} from 'react'
-
+// Libraries
+import React, {FC, useContext} from 'react'
 import {SelectGroup, ButtonShape} from '@influxdata/clockface'
+
+// Components
+import Tab from 'src/buckets/components/lineProtocol/configure/Tab'
+import {LineProtocolContext} from 'src/buckets/components/context/lineProtocol'
+
+// Types
 import {LineProtocolTab} from 'src/types'
 
-import Tab from 'src/buckets/components/lineProtocol/configure/Tab'
+const tabs: LineProtocolTab[] = ['Upload File', 'Enter Manually']
 
-interface Props {
-  tabs: LineProtocolTab[]
-  activeLPTab: LineProtocolTab
-  onClick: (tab: LineProtocolTab) => void
-}
-
-export default class extends PureComponent<Props> {
-  public render() {
-    const {tabs, activeLPTab} = this.props
-    return (
-      <SelectGroup shape={ButtonShape.Default}>
-        {tabs.map(t => (
-          <Tab
-            tab={t}
-            key={t}
-            active={activeLPTab === t}
-            onClick={this.handleTabClick}
-          />
-        ))}
-      </SelectGroup>
-    )
-  }
-
-  private handleTabClick = (tab: LineProtocolTab) => {
-    const {activeLPTab, onClick} = this.props
-    if (tab !== activeLPTab) {
-      onClick(tab)
+const TabSelector: FC = () => {
+  const {handleSetTab, tab: activeTab} = useContext(LineProtocolContext)
+  const handleTabClick = (tab: LineProtocolTab) => {
+    if (tab !== activeTab) {
+      handleSetTab(tab)
     }
   }
+
+  return (
+    <SelectGroup shape={ButtonShape.Default}>
+      {tabs.map(tab => (
+        <Tab
+          tab={tab}
+          key={tab}
+          active={activeTab === tab}
+          onClick={handleTabClick}
+        />
+      ))}
+    </SelectGroup>
+  )
 }
+
+export default TabSelector

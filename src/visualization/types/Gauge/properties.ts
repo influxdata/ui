@@ -8,7 +8,6 @@ import {Color, GaugeViewProperties} from 'src/types'
 export default {
   type: 'gauge',
   shape: 'chronograf-v2',
-  legend: {},
 
   queries: [
     {

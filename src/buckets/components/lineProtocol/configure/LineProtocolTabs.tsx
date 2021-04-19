@@ -5,38 +5,14 @@ import React, {useContext, FC} from 'react'
 import PrecisionDropdown from 'src/buckets/components/lineProtocol/configure/PrecisionDropdown'
 import TabSelector from 'src/buckets/components/lineProtocol/configure/TabSelector'
 import TabBody from 'src/buckets/components/lineProtocol/configure/TabBody'
-import {Context} from 'src/buckets/components/lineProtocol/LineProtocolWizard'
+import StatusIndicator from 'src/buckets/components/lineProtocol/verify/StatusIndicator'
+import {LineProtocolContext} from 'src/buckets/components/context/lineProtocol'
 
 // Types
-import {LineProtocolTab, RemoteDataState, WritePrecision} from 'src/types'
+import {RemoteDataState} from 'src/types'
 
-// Actions
-import {
-  setBody,
-  setTab,
-  setPrecision,
-} from 'src/buckets/components/lineProtocol/LineProtocol.creators'
-import StatusIndicator from '../verify/StatusIndicator'
-
-interface OwnProps {
-  tabs: LineProtocolTab[]
-  onSubmit: () => void
-}
-
-type Props = OwnProps
-
-const LineProtocolTabs: FC<Props> = ({tabs, onSubmit}) => {
-  const [state, dispatch] = useContext(Context)
-  const {tab, precision, writeStatus} = state
-
-  const handleTabClick = (tab: LineProtocolTab) => {
-    dispatch(setBody(''))
-    dispatch(setTab(tab))
-  }
-
-  const handleSetPrecision = (p: WritePrecision) => {
-    dispatch(setPrecision(p))
-  }
+const LineProtocolTabs: FC = () => {
+  const {writeStatus} = useContext(LineProtocolContext)
 
   if (writeStatus !== RemoteDataState.NotStarted) {
     return <StatusIndicator />
@@ -45,13 +21,10 @@ const LineProtocolTabs: FC<Props> = ({tabs, onSubmit}) => {
   return (
     <>
       <div className="line-protocol--header">
-        <TabSelector activeLPTab={tab} tabs={tabs} onClick={handleTabClick} />
-        <PrecisionDropdown
-          setPrecision={handleSetPrecision}
-          precision={precision}
-        />
+        <TabSelector />
+        <PrecisionDropdown />
       </div>
-      <TabBody onSubmit={onSubmit} />
+      <TabBody />
     </>
   )
 }

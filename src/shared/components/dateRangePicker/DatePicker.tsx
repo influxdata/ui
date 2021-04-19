@@ -18,6 +18,7 @@ interface Props {
   maxDate?: string
   minDate?: string
   onSelectDate: (date: string) => void
+  onInvalidInput?: () => void
 }
 
 interface State {
@@ -107,6 +108,8 @@ export default class DatePicker extends PureComponent<Props, State> {
     const {inputValue, inputFormat} = this.state
 
     if (this.isInputValueInvalid) {
+      const {onInvalidInput} = this.props
+      onInvalidInput()
       return inputValue
     }
 
@@ -155,9 +158,22 @@ export default class DatePicker extends PureComponent<Props, State> {
     return 'range-picker--day'
   }
 
+  private overrideInputState = (): void => {
+    const {dateTime} = this.props
+    const {inputFormat} = this.state
+
+    let value = moment(dateTime).format('YYYY-MM-DD HH:mm:ss.SSS')
+    if (inputFormat) {
+      value = moment(dateTime).format(inputFormat)
+    }
+
+    this.setState({inputValue: value, inputFormat: getFormat(value)})
+  }
+
   private handleSelectDate = (date: Date): void => {
     const {onSelectDate} = this.props
     onSelectDate(date.toISOString())
+    this.overrideInputState()
   }
 
   private handleChangeInput = (e: ChangeEvent<HTMLInputElement>): void => {

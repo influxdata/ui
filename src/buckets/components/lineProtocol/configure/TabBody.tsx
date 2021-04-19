@@ -1,27 +1,44 @@
 // Libraries
 import React, {FC, ChangeEvent, useContext} from 'react'
+import {useParams} from 'react-router-dom'
+import {useSelector} from 'react-redux'
 
 // Components
 import {TextArea} from '@influxdata/clockface'
 import DragAndDrop from 'src/buckets/components/lineProtocol/configure/DragAndDrop'
-import {Context} from 'src/buckets/components/lineProtocol/LineProtocolWizard'
+import {LineProtocolContext} from 'src/buckets/components/context/lineProtocol'
 
-// Action
-import {setBody} from 'src/buckets/components/lineProtocol/LineProtocol.creators'
+// Utils
+import {getByID} from 'src/resources/selectors'
 
-interface Props {
-  onSubmit: () => void
+// Types
+import {AppState, Bucket, ResourceType} from 'src/types'
+
+type Props = {
+  bucket?: string
 }
 
-const TabBody: FC<Props> = ({onSubmit}) => {
-  const [{body, tab}, dispatch] = useContext(Context)
+const TabBody: FC<Props> = ({bucket}) => {
+  const {body, handleSetBody, tab, writeLineProtocol} = useContext(
+    LineProtocolContext
+  )
+  const {bucketID} = useParams<{bucketID?: string}>()
+
+  const selectedBucket =
+    useSelector((state: AppState) =>
+      getByID<Bucket>(state, ResourceType.Buckets, bucketID)
+    )?.name ?? ''
 
   const handleTextChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    dispatch(setBody(e.target.value))
+    handleSetBody(e.target.value)
   }
 
-  const handleSetBody = (b: string) => {
-    dispatch(setBody(b))
+  const onSetBody = (b: string) => {
+    handleSetBody(b)
+  }
+
+  const handleSubmit = () => {
+    writeLineProtocol(bucket ?? selectedBucket)
   }
 
   switch (tab) {
@@ -29,8 +46,8 @@ const TabBody: FC<Props> = ({onSubmit}) => {
       return (
         <DragAndDrop
           className="line-protocol--content"
-          onSubmit={onSubmit}
-          onSetBody={handleSetBody}
+          onSubmit={handleSubmit}
+          onSetBody={onSetBody}
         />
       )
     case 'Enter Manually':

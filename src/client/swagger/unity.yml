@@ -5,24 +5,6 @@ info:
 servers:
   - url: /api/v2private
 paths:
-  '/account':
-    get:
-      operationId: GetAccount
-      tags:
-        - Account
-      responses:
-        '200':
-          description: the account
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Account'
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
   # Oats is making this incredibly annoying with naming conflicts
   '/operator/account/{accountId}':
     get:
@@ -756,7 +738,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-
+  '/cancel':
+    post:
+      operationId: PostCancel
+      tags:
+        - Account
+      responses:
+        '204':
+          description: Account cancelled
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   parameters:
     TraceSpan:
@@ -1170,16 +1165,29 @@ components:
         email:
           type: string
           description: the email associated with the user
-        account:
-          $ref: '#/components/schemas/Account'
-          description: User Account for the account
+        accountType:
+          type: string
+          description: type of the account
+          enum:
+            - free
+            - cancelled
+            - pay_as_you_go
+        billingProvider:
+          type: string
+          description: the billing provider for the account, nil if none
+          enum:
+            - zuora
+            - aws
+            - gcm
+            - azure
         isRegionBeta:
           type: boolean
           description: whether the region associated with the account is a beta region
         isOperator:
           type: boolean
           description: whether the user is an operator
-      required: [id, account, email, isOperator, isRegionBeta]
+      required:
+        [id, accountType, billingProvider, email, isOperator, isRegionBeta]
     Users:
       type: object
       properties:

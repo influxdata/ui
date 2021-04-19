@@ -363,7 +363,7 @@ class Gauge extends Component<Props> {
 
     let needleRotation: number
 
-    if (gaugePosition <= minValue) {
+    if (gaugePosition < minValue) {
       needleRotation = 0 - overflowDelta
     } else if (gaugePosition >= maxValue) {
       needleRotation = 1 + overflowDelta

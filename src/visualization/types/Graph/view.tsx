@@ -183,7 +183,6 @@ const XYPlot: FC<Props> = ({
   const makeSingleClickHandler = () => {
     const createAnnotation = userModifiedAnnotation => {
       const {message, startTime} = userModifiedAnnotation
-      event('xyplot.annotations.create_annotation.create')
       try {
         dispatch(
           writeThenFetchAndSetAnnotations([

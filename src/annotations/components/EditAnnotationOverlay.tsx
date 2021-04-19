@@ -25,6 +25,9 @@ import {
 
 import {notify} from 'src/shared/actions/notifications'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 export const EditAnnotationOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
   const dispatch = useDispatch()
@@ -34,8 +37,10 @@ export const EditAnnotationOverlay: FC = () => {
     try {
       dispatch(editAnnotation(editedAnnotation))
       dispatch(notify(editAnnotationSuccess()))
+      event('xyplot.annotations.edit_annotation.success')
       onClose()
     } catch (err) {
+      event('xyplot.annotations.edit_annotation.failure')
       dispatch(notify(editAnnotationFailed(err)))
     }
   }

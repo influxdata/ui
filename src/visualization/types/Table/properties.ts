@@ -30,7 +30,11 @@ export default {
       },
     },
   ],
-
+  tableOptions: {
+    verticalTimeAxis: true,
+    sortBy: null,
+    fixFirstColumn: false,
+  },
   colors: DEFAULT_THRESHOLDS_TABLE_COLORS as Color[],
   fieldOptions: [],
   decimalPlaces: {

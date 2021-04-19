@@ -61,6 +61,9 @@ export const RouteToDashboardList = lazy(() =>
 export const ClientLibrariesPage = lazy(() =>
   import('src/writeData/containers/ClientLibrariesPage')
 )
+export const FileUploadsPage = lazy(() =>
+  import('src/writeData/containers/FileUploadsPage')
+)
 export const TelegrafPluginsPage = lazy(() =>
   import('src/writeData/containers/TelegrafPluginsPage')
 )

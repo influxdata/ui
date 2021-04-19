@@ -8,6 +8,8 @@ import {
   Button,
   ComponentColor,
   SelectDropdown,
+  SlideToggle,
+  InputLabel,
 } from '@influxdata/clockface'
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 import AutoRefreshDropdown from 'src/shared/components/dropdown_auto_refresh/AutoRefreshDropdown'
@@ -60,15 +62,48 @@ export const AutoRefreshForm: FC = () => {
           </div>
           <div className="refresh-form-container">
             <span className="refresh-form-container-child">Until: </span>
-            <TimeRangeDropdown
-              timeRange={state.duration}
-              onSetTimeRange={(timeRange: CustomTimeRange) =>
-                setRefreshContext({type: 'SET_DURATION', duration: timeRange})
+            <InputLabel
+              active={!state.infiniteDuration}
+              className="refresh-form-time-label"
+            >
+              Custom
+            </InputLabel>
+            <SlideToggle
+              active={state.infiniteDuration}
+              onChange={() =>
+                setRefreshContext({
+                  type: 'SET_INFINITE_DURATION',
+                  infiniteDuration: !state.infiniteDuration,
+                })
               }
-              singleDirection="upper"
-              className="refresh-form-container-child"
+              className="refresh-form-timerange-toggle"
             />
+            <InputLabel
+              active={state.infiniteDuration}
+              className="refresh-form-time-label"
+            >
+              Indefinite
+            </InputLabel>
           </div>
+          {!state.infiniteDuration && (
+            <div className="refresh-form-container reverse">
+              <TimeRangeDropdown
+                timeRange={state.duration}
+                onSetTimeRange={(timeRange: CustomTimeRange) => {
+                  setRefreshContext({
+                    type: 'SET_DURATION',
+                    duration: timeRange,
+                  })
+                  setRefreshContext({
+                    type: 'SET_INFINITE_DURATION',
+                    infiniteDuration: false,
+                  })
+                }}
+                singleDirection="upper"
+                className="timerange-dropdown"
+              />
+            </div>
+          )}
           <div className="refresh-form-container">
             <span className="refresh-form-container-child">
               Inactivity Timeout:{' '}

@@ -25,6 +25,7 @@ interface AutoRefreshState {
   inactivityTimeout: string
   inactivityTimeoutCategory: string
   refreshMilliseconds: AutoRefresh
+  infiniteDuration: boolean
 }
 
 const jumpAheadTime = (moveAheadNum: number) => {
@@ -59,6 +60,7 @@ export const createAutoRefreshInitialState = (
       interval: 0,
       status: AutoRefreshStatus.Paused,
     },
+    infiniteDuration: false,
     ...override,
   }
 }
@@ -79,6 +81,8 @@ const autoRefreshReducer = (
       }
     case 'SET_REFRESH_MILLISECONDS':
       return {...state, refreshMilliseconds: action.refreshMilliseconds}
+    case 'SET_INFINITE_DURATION':
+      return {...state, infiniteDuration: action.infiniteDuration}
     case 'RESET':
       return createAutoRefreshInitialState()
     default:

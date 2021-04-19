@@ -3,6 +3,9 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 50px;
+  &.reverse {
+    flex-direction: row-reverse;
+  }
 }
 
 .refresh-form-container-child {
@@ -43,4 +46,17 @@
 .refresh-form-timeout-dropdown {
   padding: 0 0 0 10px;
   flex: 1;
+}
+
+.refresh-form-time-label {
+  font-size: 13px;
+}
+
+.timerange-dropdown {
+  justify-self: end;
+  width: 192px;
+}
+
+.refresh-form-timerange-toggle {
+  margin: 0px 10px;
 }

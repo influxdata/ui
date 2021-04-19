@@ -122,8 +122,8 @@ const DashboardHeader: FC<Props> = ({
       return
     }
 
-    if (autoRefresh.status === AutoRefreshStatus.Disabled) {
-      if (autoRefresh.interval === 0) {
+    if (autoRefresh?.status === AutoRefreshStatus.Disabled) {
+      if (autoRefresh?.interval === 0) {
         onSetAutoRefreshStatus(dashboard.id, AutoRefreshStatus.Paused)
         return
       }

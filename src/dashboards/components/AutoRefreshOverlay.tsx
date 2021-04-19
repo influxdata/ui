@@ -107,11 +107,9 @@ export const AutoRefreshForm: FC = () => {
               Inactivity Timeout:{' '}
             </span>
             <div
-              className={
-                state.inactivityTimeout === 'None'
-                  ? 'refresh-form-container-child inactive'
-                  : 'refresh-form-container-child active'
-              }
+              className={`refresh-form-container-child ${
+                state.inactivityTimeout === 'None' ? 'inactive' : 'active'
+              }`}
             >
               <SelectDropdown
                 options={INACTIVITY_ARRAY}

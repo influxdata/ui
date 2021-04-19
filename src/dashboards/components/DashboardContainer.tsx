@@ -138,7 +138,7 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
 
 const mstp = (state: AppState) => {
   const dashboard = state.currentDashboard.id
-  const autoRefresh: any = state.autoRefresh[dashboard] || AUTOREFRESH_DEFAULT
+  const autoRefresh = state.autoRefresh[dashboard] || AUTOREFRESH_DEFAULT
   return {
     autoRefresh,
     dashboard,

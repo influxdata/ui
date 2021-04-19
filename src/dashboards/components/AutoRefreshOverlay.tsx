@@ -10,6 +10,7 @@ import {
   SelectDropdown,
   SlideToggle,
   InputLabel,
+  ComponentStatus,
 } from '@influxdata/clockface'
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 import AutoRefreshDropdown from 'src/shared/components/dropdown_auto_refresh/AutoRefreshDropdown'
@@ -161,6 +162,11 @@ export const AutoRefreshForm: FC = () => {
               color={ComponentColor.Success}
               className="refresh-form-activate-button"
               testID="refresh-form-activate-button"
+              status={
+                state.refreshMilliseconds.interval === 0
+                  ? ComponentStatus.Disabled
+                  : ComponentStatus.Default
+              }
             />
           </div>
         </Grid.Column>

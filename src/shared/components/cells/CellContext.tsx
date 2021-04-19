@@ -7,7 +7,10 @@ import classnames from 'classnames'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {resetQueryCacheByQuery} from 'src/shared/apis/queryCache'
+import {
+  getFromQueryCacheByQuery,
+  togglePauseQuery,
+} from 'src/shared/apis/queryCache'
 
 // Components
 import {
@@ -24,14 +27,24 @@ import {FeatureFlag} from 'src/shared/utils/featureFlag'
 // Actions
 import {deleteCellAndView, createCellWithView} from 'src/cells/actions/thunks'
 
+// Selectors
+import {getAllVariables} from 'src/variables/selectors'
+
 // Types
-import {Cell, View, ViewProperties, MarkdownViewProperties} from 'src/types'
+import {
+  Cell,
+  View,
+  ViewProperties,
+  MarkdownViewProperties,
+  AppState,
+} from 'src/types'
 
 interface OwnProps {
   cell: Cell
   view: View
   onCSVDownload: () => void
   onRefresh: () => void
+  variables: string
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -42,11 +55,19 @@ const CellContext: FC<Props> = ({
   history,
   location,
   cell,
+  variables,
   onCloneCell,
   onDeleteCell,
   onCSVDownload,
   onRefresh,
 }) => {
+  const viewWithQueries = view as View<
+    Exclude<ViewProperties, MarkdownViewProperties>
+  >
+  const foundQueries =
+    Array.isArray(viewWithQueries?.properties?.queries) &&
+    viewWithQueries?.properties?.queries.length
+  const [isPaused, setIsPaused] = useState<boolean>(false)
   const [popoverVisible, setPopoverVisibility] = useState<boolean>(false)
   const editNoteText = !!get(view, 'properties.note') ? 'Edit Note' : 'Add Note'
   const triggerRef: RefObject<HTMLButtonElement> = useRef<HTMLButtonElement>(
@@ -80,19 +101,16 @@ const CellContext: FC<Props> = ({
     event('editCell button Click')
   }
 
-  const refreshCell = (): void => {
-    const viewWithQueries = view as View<
-      Exclude<ViewProperties, MarkdownViewProperties>
-    >
-    if (
-      Array.isArray(viewWithQueries.properties?.queries) &&
-      viewWithQueries.properties.queries.length
-    ) {
+  const togglePauseCell = (): void => {
+    if (foundQueries) {
       for (const query of viewWithQueries.properties.queries) {
-        resetQueryCacheByQuery(query.text)
+        const returnedQuery = getFromQueryCacheByQuery(query.text, variables)
+        if (returnedQuery) {
+          togglePauseQuery(returnedQuery)
+          setIsPaused(!isPaused)
+        }
       }
     }
-    onRefresh()
   }
 
   const popoverContents = (onHide): JSX.Element => {
@@ -159,10 +177,21 @@ const CellContext: FC<Props> = ({
         <FeatureFlag name="refreshSingleCell">
           <CellContextItem
             label="Refresh"
-            onClick={refreshCell}
+            onClick={onRefresh}
             icon={IconFont.Refresh}
             onHide={onHide}
             testID="cell-context--refresh"
+          />
+        </FeatureFlag>
+        <FeatureFlag name="pauseCell">
+          <CellContextItem
+            label={isPaused ? 'Resume' : 'Pause'}
+            onClick={() => {
+              togglePauseCell()
+            }}
+            icon={isPaused ? IconFont.Play : IconFont.Pause}
+            onHide={onHide}
+            testID="cell-context--pause"
           />
         </FeatureFlag>
       </div>
@@ -171,6 +200,15 @@ const CellContext: FC<Props> = ({
 
   return (
     <>
+      {isPaused && (
+        <button
+          className={buttonClass}
+          onClick={togglePauseCell}
+          data-testid="cell-context--pause-resume"
+        >
+          <Icon glyph={IconFont.Pause} />
+        </button>
+      )}
       <button
         className={buttonClass}
         ref={triggerRef}
@@ -196,11 +234,14 @@ const CellContext: FC<Props> = ({
   )
 }
 
+const mstp = (state: AppState) => ({
+  variables: getAllVariables(state),
+})
 const mdtp = {
   onDeleteCell: deleteCellAndView,
   onCloneCell: createCellWithView,
 }
 
-const connector = connect(null, mdtp)
+const connector = connect(mstp, mdtp)
 
 export default withRouter(connector(CellContext))

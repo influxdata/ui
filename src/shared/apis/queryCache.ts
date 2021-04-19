@@ -62,6 +62,7 @@ type CacheValue = {
   status: RemoteDataState
   error?: string
   values?: RunQuerySuccessResult | null
+  paused?: boolean
 }
 
 type Cache = {
@@ -129,14 +130,22 @@ class QueryCache {
   }
 
   resetCacheByID = (id: string): void => {
-    if (!this.cache[id]) {
+    if (!this.cache[id] || this.cache[id]?.paused) {
       return
     }
     delete this.cache[id]
   }
 
   resetCache = (): void => {
-    this.cache = {}
+    for (const key of Object.keys(this.cache)) {
+      if (!this.cache[key].paused) {
+        delete this.cache[key]
+      }
+    }
+  }
+
+  getById = (queryID: string) => {
+    return this.cache[queryID] ?? null
   }
 
   setCacheByID = (
@@ -176,6 +185,40 @@ queryCache.startWatchDog()
 
 export const resetQueryCache = (): void => {
   queryCache.resetCache()
+}
+
+const calculateHashedVariables = (allVars: Variable[], query: string) => {
+  const usedVars = filterUnusedVarsBasedOnQuery(allVars, [query])
+  const variables = sortBy(usedVars, ['name'])
+
+  const simplifiedVariables = variables.map(v => asSimplyKeyValueVariables(v))
+  const stringifiedVars = JSON.stringify(simplifiedVariables)
+  // create the queryID based on the query & vars
+  const hashedVariables = `${hashCode(stringifiedVars)}`
+
+  return {variables, hashedVariables}
+}
+
+export const getFromQueryCacheByQuery = (
+  query: string,
+  variables: Variable[]
+): CacheValue | null => {
+  const queryID = `${hashCode(query)}`
+  const {hashedVariables} = calculateHashedVariables(variables, query)
+
+  const returnedQuery = queryCache.getFromCache(queryID, hashedVariables)
+  if (returnedQuery) {
+    const queryObj = queryCache.getById(queryID)
+    return queryObj
+  } else {
+    return null
+  }
+}
+
+export const togglePauseQuery = (queryObj: CacheValue) => {
+  queryObj.paused = !queryObj.paused
+
+  return queryObj
 }
 
 export const resetQueryCacheByQuery = (query: string): void => {

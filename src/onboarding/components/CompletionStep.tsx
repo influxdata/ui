@@ -15,7 +15,6 @@ import {
   QuickstartDashboardCreationError,
 } from 'src/shared/copy/notifications'
 import {ossMetricsTemplate} from 'src/templates/constants/defaultTemplates'
-import {CLOUD} from 'src/shared/constants'
 
 // APIs
 import {getDashboards} from 'src/organizations/apis'
@@ -51,8 +50,6 @@ class CompletionStep extends PureComponent<Props> {
     window.removeEventListener('keydown', this.handleKeydown)
   }
 
-  private environment = CLOUD ? 'InfluxDB Cloud' : 'InfluxDB'
-
   public render() {
     const {onExit} = this.props
 
@@ -63,7 +60,7 @@ class CompletionStep extends PureComponent<Props> {
             <div className="wizard-step--scroll-content">
               <h3 className="wizard-step--title">You are ready to go!</h3>
               <h5 className="wizard-step--sub-title">
-                Your InfluxDB {CLOUD && 'Cloud '}has 1 organization, 1 user, and 1
+                Your InfluxDB has 1 organization, 1 user, and 1
                 bucket.
               </h5>
               <div className="splash-logo secondary" />
@@ -89,7 +86,7 @@ class CompletionStep extends PureComponent<Props> {
                         <dt>Timing is everything!</dt>
                         <dd>
                           This will set up local metric collection and allow you
-                          to explore the features of {this.environment} quickly.
+                          to explore the features of InfluxDB quickly.
                         </dd>
                       </div>
                     </Grid.Column>
@@ -120,7 +117,7 @@ class CompletionStep extends PureComponent<Props> {
                         />
                         <dt>I've got this...</dt>
                         <dd>
-                          Jump into {this.environment} and set up data
+                          Jump into InfluxDB and set up data
                           collection when you’re ready.
                         </dd>
                       </div>

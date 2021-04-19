@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
+import {useSelector} from 'react-redux'
 
 // Components
 import BillingFree from 'src/billing/components/Free/Free'
@@ -7,16 +8,19 @@ import BillingPayAsYouGo from 'src/billing/components/PayAsYouGo/PayAsYouGo'
 import MarketplaceBilling from 'src/billing/components/marketplace/MarketplaceBilling'
 
 // Utils
-import {useBilling} from 'src/billing/components/BillingPage'
+import {getQuartzMe} from 'src/me/selectors'
 
 const BillingPageContents: FC = () => {
-  const [{account}] = useBilling()
+  const quartzMe = useSelector(getQuartzMe)
 
-  if (!!account.marketplace) {
+  if (
+    quartzMe.accountType === 'pay_as_you_go' &&
+    quartzMe.billingProvider !== 'zuora'
+  ) {
     return <MarketplaceBilling />
   }
 
-  if (account.type === 'pay_as_you_go') {
+  if (quartzMe.accountType === 'pay_as_you_go') {
     return <BillingPayAsYouGo />
   }
 

@@ -54,6 +54,7 @@ export const getMeQuartz = (): ReturnType<typeof getMe> => {
     id: '123',
     email: 'asalem@influxdata.com',
     isRegionBeta: false,
+    billingProvider: null,
     isOperator: true,
     accountType: 'free',
   }

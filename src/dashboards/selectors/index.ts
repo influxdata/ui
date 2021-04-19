@@ -89,3 +89,6 @@ export const getAllDashboards = (state: AppState): Dashboard[] =>
 
 export const hasNoDashboards = (state: AppState): boolean =>
   state.resources.dashboards.allIDs.length === 0
+
+export const getCurrentDashboardId = (state: AppState): string =>
+  state.currentDashboard.id

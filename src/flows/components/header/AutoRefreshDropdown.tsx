@@ -33,7 +33,6 @@ const AutoRefreshDropdown: FC = () => {
       <StatelessAutoRefreshDropdown
         selected={flow.refresh}
         onChoose={updateRefresh}
-        showManualRefresh={false}
       />
     )
   }, [flow, updateRefresh])

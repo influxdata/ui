@@ -27,7 +27,6 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 interface Props {
   selected: AutoRefresh
   onChoose: (milliseconds: number) => void
-  showManualRefresh: boolean
   onManualRefresh?: () => void
   showAutoRefresh?: boolean
 }
@@ -35,7 +34,6 @@ interface Props {
 @ErrorHandling
 export default class AutoRefreshDropdown extends Component<Props> {
   public static defaultProps = {
-    showManualRefresh: true,
     showAutoRefresh: true,
     selected: {
       interval: 0,
@@ -174,9 +172,8 @@ export default class AutoRefreshDropdown extends Component<Props> {
   }
 
   private get manualRefreshButton(): JSX.Element {
-    const {showManualRefresh, onManualRefresh} = this.props
-
-    if (!showManualRefresh) {
+    const {onManualRefresh} = this.props
+    if (!onManualRefresh) {
       return
     }
 

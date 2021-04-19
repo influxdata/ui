@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useCallback} from 'react'
+import React, {FC, useContext} from 'react'
 
 // Components
 import {
@@ -26,7 +26,9 @@ import AutoRefreshContextProvider, {
 
 import './AutoRefresh.scss'
 
+// This array creates an array of [0...24] for the hours selection
 const INACTIVITY_ARRAY = [...Array(25).keys()].map(num => num.toString())
+// This line replaces the 0 (the first value) with 'None' for the dropdown
 INACTIVITY_ARRAY[0] = 'None'
 
 export const AutoRefreshForm: FC = () => {
@@ -44,9 +46,6 @@ export const AutoRefreshForm: FC = () => {
     })
   }
 
-  // Because we are not using the manual refresh in the dropdown, this function is a no-op
-  const noop = useCallback((): void => {}, [])
-
   return (
     <Overlay.Container maxWidth={500} testID="auto-refresh-overlay">
       <Overlay.Header title="Configure Auto Refresh" onDismiss={onClose} />
@@ -56,9 +55,7 @@ export const AutoRefreshForm: FC = () => {
             <span>Select Refresh Frequency: </span>
             <AutoRefreshDropdown
               onChoose={handleChooseAutoRefresh}
-              onManualRefresh={noop}
               selected={state.refreshMilliseconds}
-              showManualRefresh={false}
             />
           </div>
           <div className="refresh-form-container">

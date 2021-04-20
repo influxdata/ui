@@ -69,7 +69,7 @@ $renamable-page-title--padding: 0;
   position: absolute;
   font-size: 1.5em;
   top: 50%;
-  // right: $renamable-page-title--height / 2;
+  right: $renamable-page-title--height / 2;
   transform: translate(50%, -50%);
   opacity: 0;
   transition: opacity 0.25s ease;

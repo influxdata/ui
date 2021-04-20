@@ -257,13 +257,10 @@ describe('The Annotations UI functionality', () => {
     cy.getByTestID('button')
       .click()
       .then(() => {
-        cy.getByTestID('selector-list schmucket')
-          .click()
-          .getByTestID(`selector-list m`)
-          .click()
-          .getByTestID('selector-list v')
-          .click()
-          .getByTestID(`selector-list tv1`)
+        cy.getByTestID('selector-list schmucket').click()
+        cy.getByTestID(`selector-list m`).click()
+        cy.getByTestID('selector-list v').click()
+        cy.getByTestID(`selector-list tv1`)
           .click()
           .then(() => {
             cy.getByTestID('time-machine-submit-button').click()

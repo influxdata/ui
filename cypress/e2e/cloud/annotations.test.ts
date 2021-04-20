@@ -3,7 +3,6 @@ import {lines} from '../../support/commands'
 describe('The Annotations UI functionality', () => {
   beforeEach(() => {
     cy.flush()
-    cy.clearLocalStorage()
     cy.signin().then(() =>
       cy.fixture('routes').then(({orgs}) => {
         cy.get('@org').then(({id: orgID}: Organization) => {
@@ -55,6 +54,13 @@ describe('The Annotations UI functionality', () => {
     cy.getByTestID('toggle-annotations-controls').click()
     cy.getByTestID('annotations-control-bar').should('be.visible')
     cy.getByTestID('annotations-one-click-toggle').click()
+  })
+
+  afterEach(() => {
+    // cy.clearLocalStorage only clears for current domain/subdomain.
+    // Putting it here so it clears the data at this subdomain consistently.
+    // https://github.com/cypress-io/cypress/issues/2573
+    cy.clearLocalStorage()
   })
 
   it('can create an annotation when the graph is clicked and the control bar is open', () => {

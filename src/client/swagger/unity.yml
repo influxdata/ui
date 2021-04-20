@@ -921,24 +921,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        '404':
-          description: Org/User not found or Beta region
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
   '/cancel':
     post:
       operationId: PostCancel

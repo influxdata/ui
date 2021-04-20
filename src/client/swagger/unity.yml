@@ -364,12 +364,12 @@ paths:
               schema:
                 type: string
                 format: binary
-      default:
-        description: Unexpected error
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Error'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   '/orgs/{orgId}/invites':
     get:
       operationId: GetInvites
@@ -398,18 +398,6 @@ paths:
                 $ref: "#/components/schemas/Error"
         '404':
           description: Session user not owner or Org not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        '409':
-          description: Conflict with invite email
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        '422':
-          description: Missing information
           content:
             application/json:
               schema:
@@ -448,6 +436,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Invite'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '404':
+          description: Session user not owner or Org not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '409':
+          description: Conflict with invite email
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Missing information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         default:
           description: Unexpected error
           content:

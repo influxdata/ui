@@ -17,8 +17,24 @@ export const validateVariableName = (
   varName: string,
   id?: string
 ): {error: string | null} => {
-  if ((varName || '').match(/^\s*$/)) {
-    return {error: 'Variable name cannot be empty'}
+  const spaceRegex = /^\s*$/
+
+  // must start with a letter or underscore, can only contain letters, numbers, and underscores only
+  const validCharacters = /^[A-Za-z_]+\w*$/
+
+  const emptyErrorText = 'Variable name cannot be empty'
+  const fullErrorText =
+    'Variable name must start with a letter or underscore, and ' +
+    'contain only numbers, letters, and underscores.'
+
+  if ((varName || '').match(spaceRegex)) {
+    return {error: emptyErrorText}
+  }
+
+  // it has content; so check the full regex now:
+  // (using this regex first has a runtime error if the varName is empty/undefined)
+  if (!varName.match(validCharacters)) {
+    return {error: fullErrorText}
   }
 
   const lowerName = varName.toLocaleLowerCase()
@@ -43,18 +59,6 @@ export const validateVariableName = (
   if (!!matchingName) {
     return {
       error: `Variable name must be unique`,
-    }
-  }
-
-  if (!varName[0].match(/[A-Z]|[_]/i)) {
-    return {
-      error: `Variable name must begin with a letter or underscore`,
-    }
-  }
-
-  if (/[-\s]+/g.test(varName)) {
-    return {
-      error: `Variable name must not have any hyphens or spaces`,
     }
   }
 

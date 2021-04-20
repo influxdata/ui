@@ -25,12 +25,7 @@ export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
   )
 
   const isValidRTC3339 = (d: string): boolean => {
-    return (
-      moment(d, 'YYYY-MM-DD HH:mm', true).isValid() ||
-      moment(d, 'YYYY-MM-DD HH:mm:ss', true).isValid() ||
-      moment(d, 'YYYY-MM-DD HH:mm:ss.SSS', true).isValid() ||
-      moment(d, 'YYYY-MM-DD', true).isValid()
-    )
+    return moment(d, 'YYYY-MM-DD HH:mm:ss.SSS', true).isValid()
   }
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {

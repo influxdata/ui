@@ -730,14 +730,8 @@ paths:
             schema:
               $ref: '#/components/schemas/CheckoutRequest'
       responses:
-        '204':
-          description: Account upgraded
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+        '201':
+          description: Created
         '400':
           description: Bad Request
           content:
@@ -756,6 +750,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   '/cancel':
     post:
       operationId: PostCancel

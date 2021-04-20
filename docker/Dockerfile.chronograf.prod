@@ -52,6 +52,8 @@ RUN npx yarn install --production=false && \
     $(npm bin)/webpack --config ./webpack.${WEBPACK_FILE}.ts --bail && \
     rm -rf ./node_modules
 
+RUN mkdir /includes
+
 FROM nginx:stable-alpine AS deploy
 WORKDIR /repo
 COPY --from=repo /repo/ui/build /usr/share/nginx/html

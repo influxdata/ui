@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, ChangeEvent, KeyboardEvent} from 'react'
+import React, {FC, ChangeEvent, KeyboardEvent, useState} from 'react'
 
 // Components
 import {
@@ -9,6 +9,7 @@ import {
   Grid,
   Input,
 } from '@influxdata/clockface'
+import moment from 'moment'
 
 interface Props {
   onChange: (newTime: string) => void
@@ -17,10 +18,31 @@ interface Props {
 }
 
 export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
-  const validationMessage = props.startTime ? '' : 'This field is required'
+  // const validationMessage = props.startTime ? '' : 'This field is required'
+
+  const [inputValue, setInputValue] = useState<string>(
+    moment(props.startTime).format('YYYY-MM-DD HH:mm:ss')
+  )
+
+  const isValidRTC3339 = (d: string): boolean => {
+    return (
+      moment(d, 'YYYY-MM-DD HH:mm', true).isValid() ||
+      moment(d, 'YYYY-MM-DD HH:mm:ss', true).isValid() ||
+      moment(d, 'YYYY-MM-DD HH:mm:ss.SSS', true).isValid() ||
+      moment(d, 'YYYY-MM-DD', true).isValid()
+    )
+  }
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    props.onChange(event.target.value)
+    setInputValue(event.target.value)
+
+    if (isValidRTC3339(event.target.value)) {
+      props.onChange(
+        moment(event.target.value)
+          .toDate()
+          .toISOString()
+      )
+    }
   }
 
   const handleKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -30,6 +52,27 @@ export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
     }
   }
 
+  const getInputValue = (): string => {
+    return inputValue
+  }
+
+  const isInputValueInvalid = (): boolean => {
+    if (inputValue === null) {
+      return false
+    }
+
+    return !isValidRTC3339(inputValue)
+  }
+
+  const inputErrorMessage = (): string | undefined => {
+    if (isInputValueInvalid()) {
+      return 'Format must be YYYY-MM-DD [HH:mm:ss.SSS]'
+    }
+
+    return '\u00a0\u00a0'
+  }
+
+  const validationMessage = inputErrorMessage()
   return (
     <Grid.Column widthXS={Columns.Twelve}>
       <Form.Element
@@ -39,7 +82,7 @@ export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
       >
         <Input
           name="startTime"
-          value={new Date(props.startTime).toString()}
+          value={getInputValue()}
           onChange={handleChange}
           onKeyPress={handleKeyPress}
           status={ComponentStatus.Default}

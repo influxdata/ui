@@ -17,6 +17,7 @@ import {
   setToLocalStorage,
 } from 'src/localStorage'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {getFlags} from 'src/shared/actions/flags'
 
 // Actions
 import {notify as notifyAction} from 'src/shared/actions/notifications'
@@ -55,6 +56,7 @@ export class Signin extends PureComponent<Props, State> {
 
   public async componentDidMount() {
     this.hasMounted = true
+    this.props.onGetFlags()
     this.setState({loading: RemoteDataState.Loading})
 
     await this.checkForLogin()
@@ -139,6 +141,7 @@ export class Signin extends PureComponent<Props, State> {
 
 const mdtp = {
   notify: notifyAction,
+  onGetFlags: getFlags,
 }
 
 const connector = connect(null, mdtp)

@@ -18,9 +18,9 @@ import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 import {PROJECT_NAME} from 'src/flows'
 import {
-  PostApiV2privateFlowsOrgsFlowParams,
-  PatchApiV2privateFlowsOrgsFlowParams,
-  DeleteApiV2privateFlowsOrgsFlowParams,
+  PostFlowsOrgsFlowParams,
+  PatchFlowsOrgsFlowParams,
+  DeleteFlowsOrgsFlowParams,
 } from 'src/client/flowsRoutes'
 import {
   pooledUpdateAPI,
@@ -216,7 +216,7 @@ export const FlowListProvider: FC = ({children}) => {
       }
     }
 
-    const apiFlow: PostApiV2privateFlowsOrgsFlowParams = {
+    const apiFlow: PostFlowsOrgsFlowParams = {
       orgID,
       data: {
         orgID: orgID,
@@ -265,7 +265,7 @@ export const FlowListProvider: FC = ({children}) => {
       [id]: data,
     })
 
-    const apiFlow: PatchApiV2privateFlowsOrgsFlowParams = {
+    const apiFlow: PatchFlowsOrgsFlowParams = {
       id,
       orgID,
       data: {
@@ -283,7 +283,7 @@ export const FlowListProvider: FC = ({children}) => {
       ...flows,
     }
     try {
-      await deleteAPI({orgID, id} as DeleteApiV2privateFlowsOrgsFlowParams)
+      await deleteAPI({orgID, id} as DeleteFlowsOrgsFlowParams)
     } catch (error) {
       dispatch(notify(notebookDeleteFail()))
     }

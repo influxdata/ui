@@ -55,7 +55,7 @@
     "cloud": "oats https://raw.githubusercontent.com/influxdata/openapi/master/contracts/cloud-diff.yml > ./src/client/cloudRoutes.ts",
     "common": "oats https://raw.githubusercontent.com/influxdata/openapi/master/contracts/common.yml > ./src/client/commonRoutes.ts",
     "cloudPriv": "oats https://raw.githubusercontent.com/influxdata/openapi/master/contracts/priv/cloud-priv.yml > ./src/client/cloudPrivRoutes.ts",
-    "currentApi": "oats https://raw.githubusercontent.com/influxdata/openapi/master/contracts/cloud.yml > ./src/client/generatedRoutes.ts",
+    "currentApi": "oats https://raw.githubusercontent.com/influxdata/openapi/master/contracts/oss.yml > ./src/client/generatedRoutes.ts",
     "unity": "oats https://raw.githubusercontent.com/influxdata/openapi/master/contracts/priv/unity.yml > ./src/client/unityRoutes.ts",
     "flowd": "oats https://raw.githubusercontent.com/influxdata/openapi/master/contracts/priv/flowd.yml > ./src/client/flowsRoutes.ts",
     "annotationd": "oats https://raw.githubusercontent.com/influxdata/openapi/master/contracts/priv/annotationd.yml > ./src/client/annotationdRoutes.ts",

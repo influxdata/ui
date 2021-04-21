@@ -65,22 +65,18 @@ export const getFlags = () => async (
   }
 }
 
-export const getPublicFlags = () => async (
-  dispatch: Dispatch<Actions>
-): Promise<FlagMap> => {
+export const getPublicFlags = () => async (dispatch: Dispatch<Actions>) => {
   try {
     dispatch(setFlags(RemoteDataState.Loading))
     const url = `${getAPIBasepath()}/api/v2private/flags`
     const response = await fetch(url)
-    const resp = await response.json()
+    const flags = await response.json()
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+    if (flags?.status && flags?.status !== 200) {
+      throw new Error(flags.message)
     }
 
-    dispatch(setFlags(RemoteDataState.Done, resp.data))
-
-    return resp.data
+    dispatch(setFlags(RemoteDataState.Done, flags))
   } catch (error) {
     console.error(error)
     dispatch(setFlags(RemoteDataState.Error, null))

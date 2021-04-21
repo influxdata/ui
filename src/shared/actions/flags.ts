@@ -2,6 +2,8 @@ import {Dispatch} from 'redux'
 import {getFlags as getFlagsRequest} from 'src/client'
 import {FlagMap} from 'src/shared/reducers/flags'
 import {RemoteDataState} from 'src/types'
+import {getAPIBasepath} from 'src/utils/basepath'
+
 export const SET_FEATURE_FLAGS = 'SET_FEATURE_FLAGS'
 export const RESET_FEATURE_FLAGS = 'RESET_FEATURE_FLAGS'
 export const CLEAR_FEATURE_FLAG_OVERRIDES = 'CLEAR_FEATURE_FLAG_OVERRIDES'
@@ -57,6 +59,24 @@ export const getFlags = () => async (
     dispatch(setFlags(RemoteDataState.Done, resp.data))
 
     return resp.data
+  } catch (error) {
+    console.error(error)
+    dispatch(setFlags(RemoteDataState.Error, null))
+  }
+}
+
+export const getPublicFlags = () => async (dispatch: Dispatch<Actions>) => {
+  try {
+    dispatch(setFlags(RemoteDataState.Loading))
+    const url = `${getAPIBasepath()}/api/v2private/flags`
+    const response = await fetch(url)
+    const flags = await response.json()
+
+    if (flags?.status && flags?.status !== 200) {
+      throw new Error(flags.message)
+    }
+
+    dispatch(setFlags(RemoteDataState.Done, flags))
   } catch (error) {
     console.error(error)
     dispatch(setFlags(RemoteDataState.Error, null))

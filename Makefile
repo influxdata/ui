@@ -8,13 +8,13 @@ start:
 	# creates the container
 	# runs that container
 	docker build -t local/chronograf:latest -f docker/Dockerfile.chronograf .
-	docker run -p ${PORT_HTTPS}:${PORT_HTTPS} \
+	docker run -p ${PORT}:${PORT} \
 		-v ${PWD}/src:/repo/src:delegated \
 		-v ${PWD}/cypress:/repo/cypress:delegated \
 		-v ${PWD}/mocks:/repo/mocks:delegated \
 		-v ${PWD}/assets:/repo/assets:delegated \
 		-v ${PWD}/static:/repo/build:delegated -d \
-		-e PORT=${PORT_HTTPS} \
+		-e PORT=${PORT} \
 		-e PUBLIC=https://twodotoh.a.influxcloud.dev.local/ \
 		-e CLOUD_URL=/auth \
 		--name slowmograf local/chronograf:latest

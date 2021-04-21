@@ -4,6 +4,7 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 const {CleanWebpackPlugin} = require('clean-webpack-plugin')
+
 const webpack = require('webpack')
 const {
   GIT_SHA,
@@ -126,6 +127,7 @@ module.exports = {
       base: BASE_PATH.slice(0, -1),
       header: process.env.INJECT_HEADER || '',
       body: process.env.INJECT_BODY || '',
+      title: !!process.env.CLOUD_URL ? 'InfluxDB Cloud' : 'InfluxDB 2.0',
     }),
     new MiniCssExtractPlugin({
       filename: `${STATIC_DIRECTORY}[contenthash:10].css`,

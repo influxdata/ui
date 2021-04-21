@@ -7,12 +7,12 @@ import {
 
 const reservedVarNames = [TIME_RANGE_START, TIME_RANGE_STOP, WINDOW_PERIOD]
 
-export const fullErrorText =
+export const FULL_ERROR_TEXT =
   'Variable name must start with a letter or underscore, and ' +
   'contain only numbers, letters, and underscores.'
 
-export const emptyErrorText = 'Variable name cannot be empty'
-export const uniqError = 'Variable name must be unique'
+export const EMPTY_ERROR_TEXT = 'Variable name cannot be empty'
+export const UNIQUE_ERROR_TEXT = 'Variable name must be unique'
 
 export const makeReservedErrorText = word =>
   `Variable name is reserved: ${word}`
@@ -33,13 +33,13 @@ export const validateVariableName = (
   const validCharacters = /^[A-Za-z_]+\w*$/
 
   if ((varName || '').match(spaceRegex)) {
-    return {error: emptyErrorText}
+    return {error: EMPTY_ERROR_TEXT}
   }
 
   // it has content; so check the full regex now:
   // (using this regex first has a runtime error if the varName is empty/undefined)
   if (!varName.match(validCharacters)) {
-    return {error: fullErrorText}
+    return {error: FULL_ERROR_TEXT}
   }
 
   const lowerName = varName.toLocaleLowerCase()
@@ -63,7 +63,7 @@ export const validateVariableName = (
 
   if (!!matchingName) {
     return {
-      error: uniqError,
+      error: UNIQUE_ERROR_TEXT,
     }
   }
 

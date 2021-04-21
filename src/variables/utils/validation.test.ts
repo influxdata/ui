@@ -1,8 +1,8 @@
 import {
   validateVariableName,
-  fullErrorText,
-  emptyErrorText,
-  uniqError,
+  FULL_ERROR_TEXT,
+  EMPTY_ERROR_TEXT,
+  UNIQUE_ERROR_TEXT,
   makeReservedErrorText,
 } from 'src/variables/utils/validation'
 
@@ -30,11 +30,11 @@ describe('Validation', () => {
   describe('variable name validation', () => {
     it('rejects names with a special character in it', () => {
       const special1 = 'foo&'
-      expect(getError(special1)).toEqual(fullErrorText)
+      expect(getError(special1)).toEqual(FULL_ERROR_TEXT)
     })
     it('rejects names with a space in it', () => {
       const special1 = 'foo hello there'
-      expect(getError(special1)).toEqual(fullErrorText)
+      expect(getError(special1)).toEqual(FULL_ERROR_TEXT)
     })
     it('allows letters (or an underscore), then letters, underscore and numbers', () => {
       expect(getError('foo_78')).toBe(null)
@@ -45,18 +45,18 @@ describe('Validation', () => {
       expect(getError('_hello89_')).toBe(null)
     })
     it('disallows starting with a number', () => {
-      expect(getError('7bananas')).toEqual(fullErrorText)
+      expect(getError('7bananas')).toEqual(FULL_ERROR_TEXT)
     })
     it('disallows duplicate names', () => {
-      expect(getError('banana')).toEqual(uniqError)
-      expect(getError('apple')).toEqual(uniqError)
-      expect(getError('fig')).toEqual(uniqError)
+      expect(getError('banana')).toEqual(UNIQUE_ERROR_TEXT)
+      expect(getError('apple')).toEqual(UNIQUE_ERROR_TEXT)
+      expect(getError('fig')).toEqual(UNIQUE_ERROR_TEXT)
     })
     it('rejects empty names', () => {
-      expect(getError(null)).toEqual(emptyErrorText)
-      expect(getError('')).toEqual(emptyErrorText)
-      expect(getError(' ')).toEqual(emptyErrorText)
-      expect(getError(undefined)).toEqual(emptyErrorText)
+      expect(getError(null)).toEqual(EMPTY_ERROR_TEXT)
+      expect(getError('')).toEqual(EMPTY_ERROR_TEXT)
+      expect(getError(' ')).toEqual(EMPTY_ERROR_TEXT)
+      expect(getError(undefined)).toEqual(EMPTY_ERROR_TEXT)
     })
     it('disallows reserved names', () => {
       const checkReservedWord = word => {
@@ -67,6 +67,14 @@ describe('Validation', () => {
       checkReservedWord(TIME_RANGE_START)
       checkReservedWord(TIME_RANGE_STOP)
       checkReservedWord(WINDOW_PERIOD)
+    })
+    it('allows an existing var to keep its name (used when editing other parts of the variable)', () => {
+      const error = validateVariableName(varList, 'banana', 'banana').error
+      expect(error).toBe(null)
+
+      //now changing the name
+      const error2 = validateVariableName(varList, 'banana2', 'banana').error
+      expect(error2).toBe(null)
     })
   })
 })

@@ -77,6 +77,17 @@
   }
 }
 
+.profile-query-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-right: $cf-marg-b;
+
+  .cf-slide-toggle {
+    margin-left: $cf-marg-a;
+  }
+}
+
 @media screen and (min-width: $cf-grid--breakpoint-sm) {
   .time-machine-queries--controls {
     flex-direction: row;

@@ -133,7 +133,7 @@ export const getViewAndResultsForVEO = (
     }
     const {id: orgID} = getOrg(state)
     const pendingResults = queries.map(({text}) =>
-      getCachedResultsOrRunQuery(orgID, text, getAllVariables(state))
+      getCachedResultsOrRunQuery(orgID, text, getAllVariables(state), false)
     )
 
     // Wait for new queries to complete

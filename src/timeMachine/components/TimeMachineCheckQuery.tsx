@@ -12,6 +12,8 @@ import {
   FlexDirection,
   JustifyContent,
 } from '@influxdata/clockface'
+import {FeatureFlag} from 'src/shared/utils/featureFlag'
+import ProfleQueryToggle from 'src/timeMachine/components/ProfileQueryToggle'
 
 const TimeMachineCheckQuery: FC = () => {
   return (
@@ -24,6 +26,9 @@ const TimeMachineCheckQuery: FC = () => {
             justifyContent={JustifyContent.FlexEnd}
             margin={ComponentSize.Small}
           >
+            <FeatureFlag name="profile-query">
+              <ProfleQueryToggle />
+            </FeatureFlag>
             <RawDataToggle />
             <SubmitCheckQueryButton />
           </FlexBox>

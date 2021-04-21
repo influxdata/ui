@@ -52,6 +52,8 @@ export type Action =
   | SetActiveQueryText
   | SetIsViewingRawDataAction
   | SetIsDisabledViewRawData
+  | SetIsProfilingQueryAction
+  | SetIsDisabledProfilingQuery
   | SetGeomAction
   | SetDecimalPlaces
   | SetBackgroundThresholdColoringAction
@@ -234,6 +236,30 @@ export const setIsDisabledViewRawData = (
 ): SetIsDisabledViewRawData => ({
   type: 'SET_IS_DISABLED_VIEW_RAW_DATA',
   payload: {isDisabledViewRawData},
+})
+
+interface SetIsProfilingQueryAction {
+  type: 'SET_IS_PROFILING_QUERY'
+  payload: {isProfilingQuery: boolean}
+}
+
+export const setIsProfilingQuery = (
+  isProfilingQuery: boolean
+): SetIsProfilingQueryAction => ({
+  type: 'SET_IS_PROFILING_QUERY',
+  payload: {isProfilingQuery},
+})
+
+interface SetIsDisabledProfilingQuery {
+  type: 'SET_IS_DISABLED_PROFILING_QUERY'
+  payload: {isDisabledProfilingQuery: boolean}
+}
+
+export const setIsDisabledProfilingQuery = (
+  isDisabledProfilingQuery: boolean
+): SetIsDisabledProfilingQuery => ({
+  type: 'SET_IS_DISABLED_PROFILING_QUERY',
+  payload: {isDisabledProfilingQuery},
 })
 
 interface SetGeomAction {

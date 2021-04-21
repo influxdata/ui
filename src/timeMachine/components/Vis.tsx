@@ -30,6 +30,7 @@ import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
 import {
   setIsDisabledViewRawData,
   setIsViewingRawData,
+  setIsProfilingQuery,
 } from 'src/timeMachine/actions'
 
 // Types
@@ -37,6 +38,7 @@ import {RemoteDataState, AppState, ViewProperties} from 'src/types'
 
 // Selectors
 import {getActiveTimeRange} from 'src/timeMachine/selectors/index'
+import {setIsDisabledProfilingQuery} from '../actions/index'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
@@ -162,6 +164,7 @@ const mstp = (state: AppState) => {
   const activeTimeMachine = getActiveTimeMachine(state)
   const {
     isViewingRawData,
+    isProfilingQuery,
     view: {properties: viewProperties},
     queryResults: {status: loading, errorMessage, isInitialFetch, files},
   } = activeTimeMachine
@@ -183,6 +186,7 @@ const mstp = (state: AppState) => {
     files,
     viewProperties,
     isViewingRawData,
+    isProfilingQuery,
     giraffeResult,
     xColumn,
     yColumn,
@@ -198,6 +202,8 @@ const mstp = (state: AppState) => {
 const mdtp = {
   setViewRawData: setIsViewingRawData,
   setDisableRawData: setIsDisabledViewRawData,
+  setProfilingQuery: setIsProfilingQuery,
+  setDisableProfilingQuery: setIsDisabledProfilingQuery,
 }
 
 const connector = connect(mstp, mdtp)

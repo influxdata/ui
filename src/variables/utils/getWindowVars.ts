@@ -3,7 +3,7 @@ import {parse} from 'src/external/parser'
 
 // Utils
 import {getMinDurationFromAST} from 'src/shared/utils/getMinDurationFromAST'
-import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
+import {buildExtern} from 'src/variables/utils/buildVarsOption'
 // Constants
 import {WINDOW_PERIOD} from 'src/variables/constants'
 
@@ -63,7 +63,7 @@ export const getWindowPeriod = (
     const substitutedAST: Package = {
       package: '',
       type: 'Package',
-      files: [ast, buildVarsOption(variables)],
+      files: [ast, buildExtern(variables, false)],
     }
 
     const queryDuration = getMinDurationFromAST(substitutedAST) // in ms

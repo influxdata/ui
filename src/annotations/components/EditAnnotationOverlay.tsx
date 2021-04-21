@@ -36,8 +36,8 @@ export const EditAnnotationOverlay: FC = () => {
   const handleSubmit = (editedAnnotation: EditAnnotation): void => {
     try {
       dispatch(editAnnotation(editedAnnotation))
-      dispatch(notify(editAnnotationSuccess()))
       event('xyplot.annotations.edit_annotation.success')
+      dispatch(notify(editAnnotationSuccess()))
       onClose()
     } catch (err) {
       event('xyplot.annotations.edit_annotation.failure')

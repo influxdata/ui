@@ -62,6 +62,7 @@ export const AnnotationMessageInput: FC<Props> = (props: Props) => {
           style={{height: '80px', minHeight: '80px'}}
           ref={textArea}
           maxLength={characterLimit}
+          testID="edit-annotation-message"
         />
       </Form.Element>
     </Grid.Column>

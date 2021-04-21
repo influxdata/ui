@@ -62,7 +62,7 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('giraffe-inner-plot').click()
     })
     cy.getByTestID('overlay--container').within(() => {
-      cy.getByTestID('textarea')
+      cy.getByTestID('edit-annotation-message')
         .should('be.visible')
         .click()
         .focused()
@@ -87,7 +87,7 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('giraffe-inner-plot').click()
     })
     cy.getByTestID('overlay--container').within(() => {
-      cy.getByTestID('textarea')
+      cy.getByTestID('edit-annotation-message')
         .should('be.visible')
         .click()
         .focused()
@@ -124,7 +124,7 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('giraffe-inner-plot').click()
     })
     cy.getByTestID('overlay--container').within(() => {
-      cy.getByTestID('textarea')
+      cy.getByTestID('edit-annotation-message')
         .should('be.visible')
         .click()
         .focused()
@@ -144,7 +144,7 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('giraffe-inner-plot').click()
     })
     cy.getByTestID('overlay--container').within(() => {
-      cy.getByTestID('textarea')
+      cy.getByTestID('edit-annotation-message')
         .should('be.visible')
         .click()
         .focused()
@@ -174,7 +174,7 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('giraffe-inner-plot').click()
     })
     cy.getByTestID('overlay--container').within(() => {
-      cy.getByTestID('textarea')
+      cy.getByTestID('edit-annotation-message')
         .should('be.visible')
         .click()
         .focused()
@@ -190,7 +190,7 @@ describe('The Annotations UI functionality', () => {
         .click()
     })
 
-    cy.getByTestID('edit-annotation-summary-inputfield')
+    cy.getByTestID('edit-annotation-message')
       .clear()
       .type('lets edit this annotation...')
 
@@ -211,7 +211,7 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('giraffe-inner-plot').click()
     })
     cy.getByTestID('overlay--container').within(() => {
-      cy.getByTestID('textarea')
+      cy.getByTestID('edit-annotation-message')
         .should('be.visible')
         .click()
         .focused()
@@ -227,7 +227,7 @@ describe('The Annotations UI functionality', () => {
         .click()
     })
 
-    cy.getByTestID('edit-annotation-summary-inputfield')
+    cy.getByTestID('edit-annotation-message')
       .clear()
       .type('lets edit this annotation...')
 
@@ -276,7 +276,7 @@ describe('The Annotations UI functionality', () => {
     })
 
     cy.getByTestID('overlay--container').within(() => {
-      cy.getByTestID('textarea')
+      cy.getByTestID('edit-annotation-message')
         .should('be.visible')
         .click()
         .focused()

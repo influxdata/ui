@@ -7,6 +7,16 @@ import {
 
 const reservedVarNames = [TIME_RANGE_START, TIME_RANGE_STOP, WINDOW_PERIOD]
 
+export const fullErrorText =
+  'Variable name must start with a letter or underscore, and ' +
+  'contain only numbers, letters, and underscores.'
+
+export const emptyErrorText = 'Variable name cannot be empty'
+export const uniqError = 'Variable name must be unique'
+
+export const makeReservedErrorText = word =>
+  `Variable name is reserved: ${word}`
+
 // Two ways to use:
 //   1) varName is a new variable being created and must pass validation
 //      - id is not needed since it does not exist yet
@@ -21,11 +31,6 @@ export const validateVariableName = (
 
   // must start with a letter or underscore, can only contain letters, numbers, and underscores only
   const validCharacters = /^[A-Za-z_]+\w*$/
-
-  const emptyErrorText = 'Variable name cannot be empty'
-  const fullErrorText =
-    'Variable name must start with a letter or underscore, and ' +
-    'contain only numbers, letters, and underscores.'
 
   if ((varName || '').match(spaceRegex)) {
     return {error: emptyErrorText}
@@ -45,7 +50,7 @@ export const validateVariableName = (
 
   if (!!reservedMatch) {
     return {
-      error: `Variable name is reserved: ${reservedMatch}`,
+      error: makeReservedErrorText(reservedMatch),
     }
   }
 
@@ -58,7 +63,7 @@ export const validateVariableName = (
 
   if (!!matchingName) {
     return {
-      error: `Variable name must be unique`,
+      error: uniqError,
     }
   }
 

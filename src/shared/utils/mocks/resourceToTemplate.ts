@@ -7,8 +7,6 @@ import {
   RemoteDataState,
 } from 'src/types'
 
-import {DEFAULT_DASHBOARD_SORT_OPTIONS} from 'src/dashboards/constants'
-
 export const myCell = {
   dashboardID: 'dash_1',
   id: 'cell_view_1',
@@ -27,7 +25,6 @@ export const myDashboard: Dashboard = {
   cells: [myCell.id],
   labels: [],
   status: RemoteDataState.NotStarted,
-  sortOptions: DEFAULT_DASHBOARD_SORT_OPTIONS,
 }
 
 export const myView: View = {
@@ -78,7 +75,6 @@ export const myView: View = {
       },
     },
     type: 'xy',
-    legend: {},
     geom: 'line',
     colors: [],
     note: '',

@@ -15,7 +15,7 @@ class InitStep extends PureComponent<OnboardingStepProps> {
       <div className="wizard--bookend-step">
         <div className="splash-logo primary" />
         <h3 className="wizard-step--title" data-testid="init-step--head-main">
-          Welcome to InfluxDB 2.0
+          Welcome to InfluxDB Cloud
         </h3>
         <h5
           className="wizard-step--sub-title"

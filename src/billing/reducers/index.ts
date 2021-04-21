@@ -4,36 +4,27 @@ import {RemoteDataState} from 'src/types'
 
 // Types
 import {
-  Account,
   BillingInfo,
   BillingNotifySettings,
   Invoice,
   PaymentMethod,
   CreditCardParams,
   OrgLimits,
+  Marketplace,
 } from 'src/types/billing'
 
 export interface BillingState {
-  account: Account
   billingInfo: BillingInfo
   billingSettings: BillingNotifySettings
   creditCard: CreditCardParams
   creditCards: CreditCardParams
   invoices: Invoice[]
   invoicesStatus: RemoteDataState
+  marketplace: Marketplace
   orgLimits: OrgLimits
 }
 
 export const initialState = (): BillingState => ({
-  account: {
-    status: RemoteDataState.NotStarted,
-    id: null,
-    marketplace: null,
-    type: 'free',
-    balance: null,
-    users: [],
-    billingContact: null,
-  },
   billingInfo: {
     balance: null,
     region: '',
@@ -52,20 +43,21 @@ export const initialState = (): BillingState => ({
   creditCard: null,
   invoices: null,
   invoicesStatus: RemoteDataState.NotStarted,
+  marketplace: null,
   orgLimits: null,
 })
 
 export type BillingReducer = React.Reducer<BillingState, Action>
 
-export const setAccount = (account: Account) =>
+export const setMarketplace = (marketplace: Marketplace) =>
   ({
-    type: 'SET_ACCOUNT',
-    account,
+    type: 'SET_MARKETPLACE',
+    marketplace,
   } as const)
 
-export const setAccountStatus = (status: RemoteDataState) =>
+export const setMarketplaceStatus = (status: RemoteDataState) =>
   ({
-    type: 'SET_ACCOUNT_STATUS',
+    type: 'SET_MARKETPLACE_STATUS',
     status,
   } as const)
 
@@ -151,8 +143,6 @@ export const setCreditCardStatus = (status: RemoteDataState) =>
   } as const)
 
 export type Action =
-  | ReturnType<typeof setAccount>
-  | ReturnType<typeof setAccountStatus>
   | ReturnType<typeof setBillingSettings>
   | ReturnType<typeof setBillingSettingsStatus>
   | ReturnType<typeof setBillingInfo>
@@ -163,6 +153,8 @@ export type Action =
   | ReturnType<typeof setInvoicesStatus>
   | ReturnType<typeof setOrgLimits>
   | ReturnType<typeof setOrgLimitsStatus>
+  | ReturnType<typeof setMarketplace>
+  | ReturnType<typeof setMarketplaceStatus>
 
 export const billingReducer = (
   state: BillingState = initialState(),
@@ -170,21 +162,6 @@ export const billingReducer = (
 ): BillingState =>
   produce(state, draftState => {
     switch (action.type) {
-      case 'SET_ACCOUNT': {
-        draftState.account = action.account
-
-        return
-      }
-      case 'SET_ACCOUNT_STATUS': {
-        if (!draftState.account?.status) {
-          draftState.account = {...draftState.account, status: action.status}
-
-          return
-        }
-
-        draftState.account.status = action.status
-        return
-      }
       case 'SET_BILLING_INFO': {
         draftState.billingInfo = action.billingInfo
 
@@ -248,6 +225,24 @@ export const billingReducer = (
         }
 
         draftState.creditCard.status = action.status
+        return
+      }
+      case 'SET_MARKETPLACE': {
+        draftState.marketplace = action.marketplace
+
+        return
+      }
+      case 'SET_MARKETPLACE_STATUS': {
+        if (!draftState.marketplace?.loadingStatus) {
+          draftState.marketplace = {
+            ...draftState.marketplace,
+            loadingStatus: action.status,
+          }
+
+          return
+        }
+
+        draftState.marketplace.loadingStatus = action.status
         return
       }
       case 'SET_ORG_LIMITS': {

@@ -2,6 +2,7 @@
 import {push, goBack, RouterAction} from 'connected-react-router'
 import {Dispatch} from 'react'
 import {normalize} from 'normalizr'
+import {format_from_js_file} from '@influxdata/flux'
 
 // APIs
 import * as api from 'src/client'
@@ -30,6 +31,7 @@ import {
 
 // Constants
 import * as copy from 'src/shared/copy/notifications'
+import {parse} from 'src/external/parser'
 
 // Types
 import {
@@ -50,7 +52,8 @@ import {taskToTemplate} from 'src/shared/utils/resourceToTemplate'
 import {isLimitError} from 'src/cloud/utils/limits'
 import {checkTaskLimits} from 'src/cloud/actions/limits'
 import {getOrg} from 'src/organizations/selectors'
-import {getStatus} from 'src/resources/selectors'
+import {getAll, getStatus} from 'src/resources/selectors'
+import {incrementCloneName} from 'src/utils/naming'
 
 // Types
 import {TASK_LIMIT} from 'src/resources/constants'
@@ -244,15 +247,57 @@ export const deleteTask = (taskID: string) => async (
   }
 }
 
-export const cloneTask = (task: Task) => async (dispatch: Dispatch<Action>) => {
+export const cloneTask = (task: Task) => async (
+  dispatch: Dispatch<Action>,
+  getState: GetState
+) => {
   try {
+    const state = getState()
     const resp = await api.getTask({taskID: task.id})
 
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
     }
 
-    const newTask = await api.postTask({data: resp.data})
+    const taskName = resp.data.name
+    const tasks = getAll<Task>(state, ResourceType.Tasks)
+    const allTaskNames = tasks.map(d => d.name)
+    const clonedName = incrementCloneName(allTaskNames, taskName)
+    const {flux} = resp.data
+
+    const ast = parse(flux)
+
+    ast.body = ast.body.map(statement => {
+      if (
+        statement.type === 'OptionStatement' &&
+        statement.assignment.type === 'VariableAssignment' &&
+        statement.assignment.id.name === 'task' &&
+        statement.assignment.init.type === 'ObjectExpression'
+      ) {
+        statement.assignment.init.properties = statement.assignment.init?.properties.map(
+          property => {
+            if (
+              property.key.type === 'Identifier' &&
+              property.key.name === 'name' &&
+              property?.value?.location?.source
+            ) {
+              property.value.location.source = `"${clonedName}"`
+            }
+            return property
+          }
+        )
+      }
+      return statement
+    })
+
+    const fluxWithNewName = format_from_js_file(ast)
+
+    const newTask = await api.postTask({
+      data: {
+        ...resp.data,
+        flux: fluxWithNewName,
+      },
+    })
 
     if (newTask.status !== 201) {
       throw new Error(newTask.data.message)

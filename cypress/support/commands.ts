@@ -227,13 +227,15 @@ export const createTask = (
   orgID?: string,
   name: string = '🦄ask'
 ): Cypress.Chainable<Cypress.Response> => {
-  const flux = `option task = {
-    name: "${name}",
-    every: 24h,
-    offset: 20m
-  }
-  from(bucket: "defbuck")
-        |> range(start: -2m)`
+  const flux = `import "csv"
+
+option task = {
+  name: "${name}",
+  every: 24h,
+  offset: 20m
+}
+from(bucket: "defbuck")
+      |> range(start: -2m)`
 
   return cy.request({
     method: 'POST',
@@ -556,6 +558,19 @@ export const getByTestID = (
   return cy.get(`[data-testid="${dataTest}"]`, options)
 }
 
+export const getByTestIDAndSetInputValue = (
+  testId: string,
+  value: string | number
+): Cypress.Chainable => {
+  const val = `${value}`
+  cy.getByTestID(testId).clear()
+  cy.getByTestID(testId)
+    .focus()
+    .type(val)
+
+  return cy.getByTestID(testId).should('have.value', val)
+}
+
 export const getByTestIDSubStr = (dataTest: string): Cypress.Chainable => {
   return cy.get(`[data-testid*="${dataTest}"]`)
 }
@@ -711,4 +726,5 @@ Cypress.Commands.add(
   'fillInOSSLoginFormWithDefaults',
   fillInOSSLoginFormWithDefaults
 )
+Cypress.Commands.add('getByTestIDAndSetInputValue', getByTestIDAndSetInputValue)
 /* eslint-enable */

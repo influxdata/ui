@@ -3,7 +3,7 @@ import {Tabs, ComponentSize} from '@influxdata/clockface'
 import {Link} from 'react-router-dom'
 
 // Components
-import {OperatorContext} from './context/operator'
+import {OperatorContext} from 'src/operator/context/operator'
 
 // Types
 import {OperatorRoutes} from 'src/operator/constants'

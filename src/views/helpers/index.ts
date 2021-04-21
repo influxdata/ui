@@ -94,7 +94,6 @@ export function defaultLineViewProperties() {
     ...legendProps,
     queries: [defaultViewQuery()],
     colors: DEFAULT_LINE_COLORS as Color[],
-    legend: {},
     note: '',
     showNoteWhenEmpty: false,
     ...tickProps,
@@ -125,7 +124,6 @@ export function defaultBandViewProperties() {
     ...legendProps,
     queries: [defaultViewQuery()],
     colors: DEFAULT_LINE_COLORS as Color[],
-    legend: {},
     note: '',
     showNoteWhenEmpty: false,
     ...tickProps,
@@ -259,7 +257,6 @@ const NEW_VIEW_CREATORS = {
       ...defaultSingleStatViewProperties(),
       type: 'single-stat',
       shape: 'chronograf-v2',
-      legend: {},
     },
   }),
   gauge: (): NewView<GaugeViewProperties> => ({
@@ -268,7 +265,6 @@ const NEW_VIEW_CREATORS = {
       ...defaultGaugeViewProperties(),
       type: 'gauge',
       shape: 'chronograf-v2',
-      legend: {},
     },
   }),
   'line-plus-single-stat': (): NewView<LinePlusSingleStatProperties> => ({
@@ -387,8 +383,8 @@ const NEW_VIEW_CREATORS = {
       layers: [
         {
           type: 'pointMap',
-          colorDimension: {label: 'Duration'},
-          colorField: 'duration',
+          colorDimension: {label: 'Value'},
+          colorField: '_value',
           colors: [
             {type: 'min', hex: '#ff0000'},
             {value: 50, hex: '#343aeb'},

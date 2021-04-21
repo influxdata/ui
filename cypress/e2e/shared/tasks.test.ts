@@ -50,15 +50,12 @@ from(bucket: "${name}"{rightarrow}
       cy.get('.cf-overlay--dismiss').click()
     })
   })
-  // this test is broken due to a failure on the post route
-  it.skip('can create a task using http.post', () => {
+
+  it('can create a task using http.post', () => {
     const taskName = 'Task'
     createFirstTask(taskName, () => {
-      return `import "http{rightarrow}
-http.post(
-  url: "https://foo.bar/baz",
-  data: bytes(v: "body"{rightarrow}
-  {rightarrow}`
+      return `import "http"
+http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     })
 
     cy.getByTestID('task-save-btn').click()
@@ -139,9 +136,7 @@ http.post(
       })
   })
 
-  // skip until this issue is resolved
-  // https://github.com/influxdata/ui/issues/96
-  it.skip('can create a task with an option parameter', () => {
+  it('can create a task with an option parameter', () => {
     cy.getByTestID('empty-tasks-list').within(() => {
       cy.getByTestID('add-resource-dropdown--button')
         .click()
@@ -150,20 +145,18 @@ http.post(
         })
     })
 
-    cy.getByTestID('flux-editor').within(() => {
-      cy.get('textarea.inputarea')
-        .click()
-        .type(
-          'option task = \n' +
-            '{\n' +
-            'name: "Option Test", \n' +
-            'every: 24h, \n' +
-            'offset: 20m\n' +
-            '}\n' +
-            'from(bucket: "defbuck")\n' +
-            '\t|> range(start: -2m)'
-        )
-    })
+    cy.focused()
+
+    cy.getByTestID('flux-editor').type(
+      'option task = \n' +
+        '{\n' +
+        'name: "Option Test", \n' +
+        'every: 24h, \n' +
+        'offset: 20m\n' +
+        '}\n' +
+        'from(bucket: "defbuck")\n' +
+        '\t|> range(start: -2m)'
+    )
 
     cy.getByTestID('task-form-name')
       .click()
@@ -258,9 +251,9 @@ http.post(
         })
     })
 
-    // skipping until this issue is resolved
-    // https://github.com/influxdata/influxdb/issues/18478
-    it.skip('can clone a task and activate just the cloned one', () => {
+    it('can clone a task and activate just the cloned one', () => {
+      createTask('task1', 'buckets()')
+
       cy.getByTestID('task-card').then(() => {
         cy.get('.context-menu--container')
           .eq(1)
@@ -314,6 +307,7 @@ http.post(
       // assert the values of the task and change them
       cy.getByTestID('task-card--name')
         .eq(1)
+        .contains('🦄ask (clone 1)')
         .click()
         .then(() => {
           // focused() waits for monoco editor to get input focus
@@ -323,7 +317,7 @@ http.post(
             .contains('option task = {')
             .then(() => {
               cy.getByTestID('task-form-name')
-                .should('have.value', '🦄ask')
+                .should('have.value', '🦄ask (clone 1)')
                 .then(() => {
                   cy.getByTestID('task-form-name')
                     .should('be.visible')
@@ -351,7 +345,8 @@ http.post(
     })
 
     // skip until this issue is resolved
-    // https://github.com/influxdata/ui/issues/97
+    // IDPE: https://github.com/influxdata/idpe/issues/10368
+    // UI: https://github.com/influxdata/ui/issues/97
     it.skip('can add a comment into a task', () => {
       cy.getByTestID('task-card--name')
         .first()
@@ -448,9 +443,7 @@ http.post(
       cy.getByTestID('task-card').should('have.length', 1)
 
       // searching by task name
-      cy.getByTestID('search-widget')
-        .clear()
-        .type('bEE')
+      cy.getByTestIDAndSetInputValue('search-widget', 'bEE')
 
       cy.getByTestID('task-card').should('have.length', 1)
     })
@@ -493,15 +486,9 @@ http.post(
       const newInterval = '24h'
       const newOffset = '7h'
       // updates the data
-      cy.getByTestID('task-form-name')
-        .clear()
-        .type(newTask)
-      cy.getByTestID('task-form-schedule-input')
-        .clear()
-        .type(newInterval)
-      cy.getByTestID('task-form-offset-input')
-        .clear()
-        .type(newOffset)
+      cy.getByTestIDAndSetInputValue('task-form-name', newTask)
+      cy.getByTestIDAndSetInputValue('task-form-schedule-input', newInterval)
+      cy.getByTestIDAndSetInputValue('task-form-offset-input', newOffset)
 
       cy.getByTestID('task-save-btn').click()
       // checks to see if the data has been updated once saved
@@ -608,7 +595,127 @@ http.post(
       cy.getByTestID('task-save-btn').click()
     })
   })
+
+  it('should persist search term across pages', () => {
+    cy.getByTestID('search-widget').should('have.value', '')
+
+    const tasks = [
+      {
+        name: 'task1',
+        every: '3h30s',
+        offset: '20m',
+        query: `buckets()`,
+      },
+      {
+        name: 'task2',
+        every: '3h',
+        offset: '30m',
+        query: `buckets()`,
+      },
+    ]
+
+    tasks.forEach(task => {
+      cy.getByTestID('add-resource-dropdown')
+        .children()
+        .first()
+        .click()
+      cy.getByTestID('add-resource-dropdown--new').click()
+
+      // Fill Task Form
+      // focused() waits for monoco editor to get input focus
+      // If this isn't present then cypress shifts focus on elements
+      // making it seem randomly jumping to elements
+      cy.focused()
+
+      cy.getByTestID('flux-editor').type(task.query)
+      cy.getByTestIDAndSetInputValue('task-form-name', task.name)
+      cy.getByTestIDAndSetInputValue('task-form-schedule-input', task.every)
+      cy.getByTestIDAndSetInputValue('task-form-offset-input', task.offset)
+
+      // Save Task
+      cy.getByTestID('task-save-btn').click()
+    })
+
+    tasks.forEach(task => {
+      // Search for a task
+      const name = task.name.slice(-4)
+      cy.getByTestIDAndSetInputValue('search-widget', name)
+      cy.getByTestID('resource-list--body')
+        .children()
+        .should('have.length', 1)
+      cy.getByTestID('resource-list--body')
+        .children()
+        .getByTestID('task-card--name')
+        .click()
+
+      // Navigate away from current page back to Tasks List page
+      cy.getByTestID('task-cancel-btn').click()
+      cy.getByTestID('search-widget').should('have.value', name)
+
+      // Validate that the list has correct search results
+      cy.getByTestID('resource-list--body')
+        .children()
+        .should('have.length', 1)
+      cy.getByTestID('resource-list--body')
+        .children()
+        .getByTestID('task-card--name')
+        .contains(task.name)
+    })
+
+    // Test the browser Back click navigation condition
+    tasks.forEach(task => {
+      // Search for a task
+      const name = task.name.slice(-4)
+      cy.getByTestIDAndSetInputValue('search-widget', name)
+      cy.getByTestID('resource-list--body')
+        .children()
+        .should('have.length', 1)
+      cy.getByTestID('resource-list--body')
+        .children()
+        .getByTestID('task-card--name')
+        .click()
+
+      // Navigate away from current page back to Tasks List page
+      cy.go('back')
+      cy.getByTestID('search-widget').should('have.value', name)
+
+      // Validate that the list has correct search results
+      cy.getByTestID('resource-list--body')
+        .children()
+        .should('have.length', 1)
+      cy.getByTestID('resource-list--body')
+        .children()
+        .getByTestID('task-card--name')
+        .contains(task.name)
+    })
+  })
 })
+
+const createTask = (
+  name: string,
+  task: string,
+  every = '3h',
+  offset = '20m'
+) => {
+  cy.getByTestID('add-resource-dropdown--button')
+    .children()
+    .first()
+    .click()
+  cy.getByTestID('add-resource-dropdown--new').click()
+
+  cy.getByTestID('flux-editor').within(() => {
+    cy.get('textarea.inputarea')
+      .click({force: true})
+      .focused()
+      .type(task, {force: true, delay: 2})
+  })
+
+  cy.getByTestIDAndSetInputValue('task-form-name', name)
+  cy.getByTestIDAndSetInputValue('task-form-offset-input', offset)
+  cy.getByTestIDAndSetInputValue('task-form-schedule-input', every)
+  cy.getByTestID('task-save-btn').click()
+  cy.getByTestID('notification-success--dismiss').click()
+}
 
 function createFirstTask(
   name: string,

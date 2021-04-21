@@ -72,28 +72,28 @@ export const organizationColumnInfo: CellInfo[] = [
     defaultValue: '',
   },
   {
-    path: 'idpeID',
+    path: 'quartzId',
     name: 'org-id',
     defaultValue: '',
     renderValue: value => <Link to={`/operator/orgs/${value}`}>{value}</Link>,
   },
   {
-    path: 'account.billingContact.email',
+    path: 'relatedAccount.email',
     name: 'email',
     defaultValue: '',
   },
   {
-    path: 'account.id',
+    path: 'relatedAccount.id',
     name: 'account-id',
     defaultValue: '',
   },
   {
-    path: 'account.balance',
+    path: 'relatedAccount.balance',
     name: 'acct-balance',
     defaultValue: '',
   },
   {
-    path: 'account.type',
+    path: 'relatedAccount.type',
     name: 'acct-type',
     defaultValue: '',
   },
@@ -171,7 +171,7 @@ export const acctOrgColumnInfo: CellInfo[] = [
     defaultValue: '',
   },
   {
-    path: 'idpeID',
+    path: 'id',
     name: 'org-id',
     defaultValue: '',
     renderValue: value => <Link to={`/operator/orgs/${value}`}>{value}</Link>,
@@ -179,7 +179,7 @@ export const acctOrgColumnInfo: CellInfo[] = [
   {path: 'provider', name: 'provider', defaultValue: ''},
   {path: 'region', name: 'region', defaultValue: ''},
   {
-    path: 'account.balance',
+    path: 'relatedAccount.balance',
     name: 'acct-balance',
     defaultValue: '',
   },

@@ -17,6 +17,7 @@ import {
   OverlayController,
 } from 'src/overlays/components/OverlayController'
 import PageSpinner from 'src/perf/components/PageSpinner'
+import EngagementLink from './cloud/components/onboarding/EngagementLink'
 const SetOrg = lazy(() => import('src/shared/containers/SetOrg'))
 const CreateOrgOverlay = lazy(() =>
   import('src/organizations/components/CreateOrgOverlay')
@@ -41,6 +42,7 @@ const App: FC = () => {
       <OverlayProviderComp>
         <OverlayController />
       </OverlayProviderComp>
+      <EngagementLink />
       <TreeNav />
       <Suspense fallback={<PageSpinner />}>
         <Switch>

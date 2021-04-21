@@ -131,7 +131,9 @@ class DataListening extends PureComponent<Props, State> {
         throw new Error(result.message)
       }
 
-      responseLength = result.csv.length
+      // if the bucket is empty, the CSV returned is '\n' which has a length of 2
+      // so instead,  we check for the trimmed version.
+      responseLength = result.csv.trim().length
       timePassed = Number(new Date()) - this.startTime
     } catch (err) {
       this.setState({loading: LoadingState.Error})

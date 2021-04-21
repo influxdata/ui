@@ -36,8 +36,6 @@ export const HTTP_UNAUTHORIZED = 401
 export const HTTP_FORBIDDEN = 403
 export const HTTP_NOT_FOUND = 404
 
-export const ALLOW_IMPORT_FROM_TEMPLATE = false
-
 export const AUTOREFRESH_DEFAULT_INTERVAL = 0 // in milliseconds
 export const AUTOREFRESH_DEFAULT_STATUS = AutoRefreshStatus.Paused
 export const AUTOREFRESH_DEFAULT = {
@@ -74,6 +72,7 @@ export const HONEYBADGER_ENV = formatConstant(process.env.HONEYBADGER_ENV)
 
 export const CLOUD = !!process.env.CLOUD_URL
 export const CLOUD_SIGNIN_PATHNAME = '/api/v2/signin'
+export const CLOUD_SIGNOUT_PATHNAME = '/api/v2/signout'
 export const CLOUD_LOGIN_PATHNAME = '/login'
 export const CLOUD_BILLING_VISIBLE = CLOUD
 export const CLOUD_URL = formatConstant(process.env.CLOUD_URL)

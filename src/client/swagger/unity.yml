@@ -3,26 +3,8 @@ info:
   title: Unity API Service
   version: 0.1.0
 servers:
-  - url: /unity/v2 # to be determined
+  - url: /api/v2private
 paths:
-  '/account':
-    get:
-      operationId: GetAccount
-      tags:
-        - Account
-      responses:
-        '200':
-          description: the account
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Account'
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
   # Oats is making this incredibly annoying with naming conflicts
   '/operator/account/{accountId}':
     get:
@@ -756,7 +738,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-
+  '/cancel':
+    post:
+      operationId: PostCancel
+      tags:
+        - Account
+      responses:
+        '204':
+          description: Account cancelled
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   parameters:
     TraceSpan:
@@ -839,6 +834,12 @@ components:
         id:
           type: string
           description: account id
+        quartzId:
+          type: number
+          description: account id in quartz
+        onboardingState:
+          type: string
+          description: stage of onboarding the account is in
         marketplace:
           $ref: '#/components/schemas/Marketplace'
           description: which marketplace, nil if none
@@ -849,7 +850,6 @@ components:
             - free
             - cancelled
             - pay_as_you_go
-        # TODO(ariel): this seems cyclical since accounts and orgs are subsets of one another
         organizations:
           $ref: '#/components/schemas/Organizations'
         zuoraAccountId:
@@ -991,7 +991,7 @@ components:
           type: object
           readOnly: true
           example:
-            self: '/unity/v2/invites/1'
+            self: '/api/v2private/invites/1'
           properties:
             self:
               type: string
@@ -1128,7 +1128,7 @@ components:
         quartzId:
           description: the quartz id of the user
           readOnly: true
-          type: string
+          type: number
         onboardingState:
           description: onboarding state of the user
           type: string
@@ -1151,7 +1151,7 @@ components:
           type: object
           readOnly: true
           example:
-            self: '/unity/v2/users/1'
+            self: '/api/v2private/users/1'
           properties:
             self:
               type: string
@@ -1160,57 +1160,34 @@ components:
     Me:
       properties:
         id:
+          type: string
           description: the idpe id of the user
-          type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
         email:
           type: string
-        orgId:
-          type: string
-        accountId:
-          type: string
-        isBeta:
-          type: boolean
-          description: whether the region associated with the account is a beta region
-        isOperator:
-          type: boolean
-          description: whether the user is an operator
-        marketplace:
-          $ref: '#/components/schemas/Marketplace'
-          description: which marketplace, nil if none
-        balance:
-          type: number
-          description: remaining balance on the account, nil if none
-        billingContact:
-          $ref: '#/components/schemas/BillingContact'
-          description: billing contact for the account
-        users:
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
-        type:
+          description: the email associated with the user
+        accountType:
           type: string
           description: type of the account
           enum:
             - free
             - cancelled
             - pay_as_you_go
+        billingProvider:
+          type: string
+          description: the billing provider for the account, nil if none
+          enum:
+            - zuora
+            - aws
+            - gcm
+            - azure
+        isRegionBeta:
+          type: boolean
+          description: whether the region associated with the account is a beta region
+        isOperator:
+          type: boolean
+          description: whether the user is an operator
       required:
-        [
-          id,
-          accountId,
-          email,
-          firstName,
-          lastName,
-          isOperator,
-          isBeta,
-          orgId,
-          marketplace,
-          type,
-        ]
+        [id, accountType, billingProvider, email, isOperator, isRegionBeta]
     Users:
       type: object
       properties:
@@ -1262,9 +1239,9 @@ components:
         id:
           type: string
           description: ID of the org
-        idpeID:
-          type: string
-          description: idpe ID of the org
+        quartzId:
+          type: number
+          description: quartz ID of the org
         name:
           type: string
           description: name of the org
@@ -1277,14 +1254,35 @@ components:
         date:
           type: string
           description: date org was created
-        # TODO(ariel): this seems cyclical since accounts and orgs are subsets of one another
-        account:
-          $ref: '#/components/schemas/Account'
-      required: [id, idpeID, name, account, region, provider, date]
+        relatedAccount:
+          $ref: '#/components/schemas/RelatedAccount'
+          description: subset of related account information
+      required: [id, quartzId, name, region, provider, date]
     Organizations:
       type: array
       items:
         $ref: '#/components/schemas/Organization'
+    RelatedAccount:
+      description: Subset of Account data related to the organization
+      type: object
+      properties:
+        id:
+          type: string
+          description: account id
+        email:
+          type: string
+          description: email associated with the account
+        type:
+          type: string
+          description: type of the account
+          enum:
+            - free
+            - cancelled
+            - pay_as_you_go
+        balance:
+          type: number
+          description: remaining balance on the account, nil if none
+      required: [id, email, type, balance]
     RateLimits:
       description: Usage rate limits
       type: object

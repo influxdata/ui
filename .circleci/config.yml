@@ -17,6 +17,7 @@ jobs:
           command: cp ./monitor-ci/env.testing ./monitor-ci/.env
       - run:
           name: Build the ui docker image
+          no_output_timeout: 15m
           command: |
             cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
             docker build \
@@ -48,6 +49,7 @@ jobs:
           command: cp ./monitor-ci/env.testing.oss ./monitor-ci/.env
       - run:
           name: Build the ui oss docker image
+          no_output_timeout: 15m
           command: |
             cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
             docker build \
@@ -75,6 +77,7 @@ jobs:
       - checkout_monitor_ci
       - run:
           name: Build the ui docker image
+          no_output_timeout: 15m
           command: |
             cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
             docker build \
@@ -90,6 +93,37 @@ jobs:
             docker save -o docker-cache/image.tar quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1}
       - save_cache:
           key: UI_PROD_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - docker-cache
+  build-lighthouse-image:
+    machine:
+      image: ubuntu-2004:202008-01
+      docker_layer_caching: true
+    working_directory: ~/
+    resource_class: large
+    steps:
+      - checkout:
+          path: ./ui
+      - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
+      - checkout_monitor_ci
+      - run:
+          name: Copy over the testing variables
+          command: cp ./monitor-ci/env.testing ./monitor-ci/.env
+      - run:
+          name: Build the ui docker image
+          no_output_timeout: 15m
+          command: |
+            cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
+            docker build \
+              --build-arg UI_SHA=testing \
+              --build-arg CLOUD_URL=http://localhost/auth \
+              -t quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} \
+              -f ./monitor-ci/docker/Dockerfile.chronograf.prod \
+              ./ui
+            mkdir -p docker-cache
+            docker save -o docker-cache/image.tar quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1}
+      - save_cache:
+          key: UI_LIGHTHOUSE_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - docker-cache
   deploy:
@@ -381,7 +415,7 @@ jobs:
     resource_class: large
     steps:
       - restore_cache:
-          key: UI_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
+          key: UI_LIGHTHOUSE_DOCKER_IMAGE_CACHE_{{ .Environment.CIRCLE_SHA1 }}
       - checkout:
           path: ./ui
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
@@ -481,12 +515,51 @@ jobs:
       #       # maintained here: https://github.com/influxdata/cypress-slim
       #       - run: docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} quay.io/influxdb/ui-e2e:latest
       #       - run: docker push quay.io/influxdb/ui-e2e:latest
+  monitor-ci-tests:
+    docker:
+      - image: circleci/golang:1.15-node
+    steps:
+      - checkout
+      - run:
+          name: Run monitor-ci tests
+          command: API_KEY=${MONITOR_CI_API_KEY} PULL_REQUEST=${CIRCLE_PULL_REQUEST} MONITOR_CI_BRANCH="master" UI_BRANCH=${CIRCLE_BRANCH} SHA=${CIRCLE_SHA1} ./scripts/run-monitor-ci-tests.bash
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/results/build-oss-image
+          destination: test_artifacts/results/build-oss-image
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/results/oss-e2e
+          destination: test_artifacts/results/oss-e2e
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/results/build-image
+          destination: test_artifacts/results/build-image
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/results/cloud-e2e
+          destination: test_artifacts/results/cloud-e2e
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/results/cloud-e2e-firefox
+          destination: test_artifacts/results/cloud-e2e-firefox
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/results/cloud-e2e-k8s-idpe
+          destination: test_artifacts/results/cloud-e2e-k8s-idpe
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/results/cloud-lighthouse
+          destination: test_artifacts/results/cloud-lighthouse
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/results/smoke
+          destination: test_artifacts/results/smoke
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/results/build-prod-image
+          destination: test_artifacts/results/build-prod-image
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/results/deploy
+          destination: test_artifacts/results/deploy
 workflows:
   version: 2
   build:
     jobs:
       - build-oss-image
       - build-image
+      - build-lighthouse-image
       - build-prod-image:
           filters:
             branches:
@@ -496,7 +569,7 @@ workflows:
       - lint
       - cloud-lighthouse:
           requires:
-            - build-image
+            - build-lighthouse-image
       # - cloud-e2e-k8s-idpe:
       #     requires:
       #       - build-image
@@ -538,6 +611,7 @@ workflows:
             - cloud-e2e
             # TODO: uncomment this when we disable cloud-e2e
             # - cloud-e2e-k8s-idpe
+      - monitor-ci-tests
 commands:
   install_jsonnet_binary:
     description: >

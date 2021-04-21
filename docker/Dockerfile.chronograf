@@ -1,0 +1,77 @@
+FROM node:lts AS base
+
+RUN curl --compressed -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.22.4
+
+RUN mkdir /repo
+WORKDIR /repo
+
+# Env and Volume are listed here for documentation
+# purposes only
+# sets the Port that the webpack host runs on
+ENV PORT=8080
+
+# Sets the development environment
+ENV NODE_ENV=development
+
+# Sets the URL prefix of the UI service
+ENV BASE_PATH=/
+
+# sets the URL prefix for the API service
+ENV API_BASE_PATH=/
+
+# Shows the SHA on the landing page
+ENV UI_SHA=local_dev_mode
+
+# This is the origin of the URL needed to access the running container (optional)
+# ENV PUBLIC=http://foobar
+
+# This is the path prefix that redirects to Quartz (optional)
+# ENV CLOUD_URL=/quartz
+
+VOLUME [ "/repo/src" ]
+VOLUME [ "/repo/cypress" ]
+VOLUME [ "/repo/mocks" ]
+VOLUME [ "/repo/assets" ]
+VOLUME [ "/repo/build" ]
+
+# this layer caches the node_modules for the images
+# using the COPY --from=deps pattern allows us to differentiate
+# devDependencies and dependencies in projects that make the
+# distinction to speed image transfers
+FROM base AS deps
+COPY ./package.json /repo/
+COPY ./yarn.lock /repo/
+
+RUN bash -c ". /root/.bashrc; yarn install"
+
+# this layer caches the development environment
+FROM base AS env
+COPY --from=deps /repo/package.json ./
+COPY --from=deps /repo/node_modules ./node_modules
+COPY ./.browserslistrc ./
+COPY ./index.d.ts ./
+COPY ./global.d.ts ./
+COPY ./tsconfig.json ./
+COPY ./webpack.* ./
+COPY ./scripts/start_docker.sh ./
+
+# this layer describes the requirements for the testing environment
+FROM env AS test
+COPY ./.eslintignore ./
+COPY ./.eslintrc.js ./
+COPY ./.npmrc ./
+COPY ./.prettierrc.json ./
+COPY ./jest.config.js ./
+COPY ./jestSetup.ts ./
+COPY ./testSetup.ts ./
+COPY ./tsconfig.test.json ./
+COPY ./cypress.json ./
+
+# the port the dev server listens to
+EXPOSE 8080
+# these are the files that need to be mounted to the docker instance
+# declaring them as volumes creates them as folders, which then cannot be
+# "mounted" by jenkins (through symbolic links), so leave this commented out
+# VOLUME ["/repo/src", "/http/swagger.yml", "/repo/assets", "/repo/cypress", "/repo/__mocks__", "/repo/mocks"]
+
+CMD ["yarn", "start:docker"]

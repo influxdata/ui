@@ -85,10 +85,7 @@ class QueryCache {
     }
   }
 
-  getFromCache = (
-    id: string,
-    hashedVariables: string
-  ): RunQueryResult | null => {
+  getFromCache = (id: string, hashedVariables: string): CacheValue | null => {
     // no existing query match
     if (!this.cache[id]) {
       return null
@@ -108,7 +105,7 @@ class QueryCache {
       return null
     }
     event('Query Cache successful Get', {context: 'queryCache', queryID: id})
-    return this.cache[id].values
+    return this.cache[id]
   }
 
   initializeCacheByID = (
@@ -125,6 +122,7 @@ class QueryCache {
       isCustomTime,
       mutex: RunQueryPromiseMutex<RunQueryResult>(),
       status: RemoteDataState.Loading,
+      paused: false,
     }
     return this.cache[queryID]
   }
@@ -138,14 +136,8 @@ class QueryCache {
 
   resetCache = (): void => {
     for (const key of Object.keys(this.cache)) {
-      if (!this.cache[key].paused) {
-        delete this.cache[key]
-      }
+      this.resetCacheByID(key)
     }
-  }
-
-  getById = (queryID: string) => {
-    return this.cache[queryID] ?? null
   }
 
   setCacheByID = (
@@ -177,6 +169,13 @@ class QueryCache {
 
     this.cleanExpiredQueries()
   }
+
+  togglePause = (queryID: string, hashedVariables: string): void => {
+    const cacheResults = this.getFromCache(queryID, hashedVariables)
+    if (!!cacheResults) {
+      cacheResults.paused = !cacheResults?.paused ?? false
+    }
+  }
 }
 
 const queryCache = new QueryCache()
@@ -187,7 +186,11 @@ export const resetQueryCache = (): void => {
   queryCache.resetCache()
 }
 
-const calculateHashedVariables = (allVars: Variable[], query: string) => {
+const calculateHashedVariables = (
+  allVars: Variable[],
+  query: string
+): {queryID: string; variables: Variable[]; hashedVariables: string} => {
+  const queryID = `${hashCode(query)}`
   const usedVars = filterUnusedVarsBasedOnQuery(allVars, [query])
   const variables = sortBy(usedVars, ['name'])
 
@@ -196,29 +199,15 @@ const calculateHashedVariables = (allVars: Variable[], query: string) => {
   // create the queryID based on the query & vars
   const hashedVariables = `${hashCode(stringifiedVars)}`
 
-  return {variables, hashedVariables}
+  return {queryID, variables, hashedVariables}
 }
 
-export const getFromQueryCacheByQuery = (
+export const togglePauseQuery = (
   query: string,
   variables: Variable[]
-): CacheValue | null => {
-  const queryID = `${hashCode(query)}`
-  const {hashedVariables} = calculateHashedVariables(variables, query)
-
-  const returnedQuery = queryCache.getFromCache(queryID, hashedVariables)
-  if (returnedQuery) {
-    const queryObj = queryCache.getById(queryID)
-    return queryObj
-  } else {
-    return null
-  }
-}
-
-export const togglePauseQuery = (queryObj: CacheValue) => {
-  queryObj.paused = !queryObj.paused
-
-  return queryObj
+): void => {
+  const {queryID, hashedVariables} = calculateHashedVariables(variables, query)
+  queryCache.togglePause(queryID, hashedVariables)
 }
 
 export const resetQueryCacheByQuery = (query: string): void => {
@@ -234,26 +223,18 @@ export const getCachedResultsOrRunQuery = (
   query: string,
   allVars: Variable[]
 ): CancelBox<RunQueryResult> => {
-  const queryID = `${hashCode(query)}`
+  const {queryID, variables, hashedVariables} = calculateHashedVariables(
+    allVars,
+    query
+  )
   event('Starting Query Cache Process ', {context: 'queryCache', queryID})
 
-  const usedVars = filterUnusedVarsBasedOnQuery(allVars, [query])
-  const variables = sortBy(usedVars, ['name'])
-
-  const simplifiedVariables = variables.map(v => asSimplyKeyValueVariables(v))
-  const stringifiedVars = JSON.stringify(simplifiedVariables)
-  // create the queryID based on the query & vars
-  const hashedVariables = `${hashCode(stringifiedVars)}`
-
-  const cacheResults: RunQueryResult | null = queryCache.getFromCache(
-    queryID,
-    hashedVariables
-  )
+  const cacheResults = queryCache.getFromCache(queryID, hashedVariables)
 
   // check the cache based on text & vars
-  if (cacheResults) {
+  if (cacheResults?.values) {
     return {
-      promise: new Promise(resolve => resolve(cacheResults)),
+      promise: new Promise(resolve => resolve(cacheResults.values)),
       cancel: () => {},
     }
   }

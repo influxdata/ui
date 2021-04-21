@@ -7,10 +7,7 @@ import classnames from 'classnames'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {
-  getFromQueryCacheByQuery,
-  togglePauseQuery,
-} from 'src/shared/apis/queryCache'
+import {togglePauseQuery} from 'src/shared/apis/queryCache'
 
 // Components
 import {
@@ -31,13 +28,7 @@ import {deleteCellAndView, createCellWithView} from 'src/cells/actions/thunks'
 import {getAllVariables} from 'src/variables/selectors'
 
 // Types
-import {
-  Cell,
-  View,
-  ViewProperties,
-  MarkdownViewProperties,
-  AppState,
-} from 'src/types'
+import {Cell, View, AppState} from 'src/types'
 
 interface OwnProps {
   cell: Cell
@@ -61,12 +52,6 @@ const CellContext: FC<Props> = ({
   onCSVDownload,
   onRefresh,
 }) => {
-  const viewWithQueries = view as View<
-    Exclude<ViewProperties, MarkdownViewProperties>
-  >
-  const foundQueries =
-    Array.isArray(viewWithQueries?.properties?.queries) &&
-    viewWithQueries?.properties?.queries.length
   const [isPaused, setIsPaused] = useState<boolean>(false)
   const [popoverVisible, setPopoverVisibility] = useState<boolean>(false)
   const editNoteText = !!get(view, 'properties.note') ? 'Edit Note' : 'Add Note'
@@ -102,14 +87,14 @@ const CellContext: FC<Props> = ({
   }
 
   const togglePauseCell = (): void => {
-    if (foundQueries) {
-      for (const query of viewWithQueries.properties.queries) {
-        const returnedQuery = getFromQueryCacheByQuery(query.text, variables)
-        if (returnedQuery) {
-          togglePauseQuery(returnedQuery)
-          setIsPaused(!isPaused)
-        }
-      }
+    if (view.properties.type === 'markdown') {
+      return
+    }
+    if (view.properties.queries.length > 0) {
+      view.properties.queries.forEach(query => {
+        togglePauseQuery(query.text, variables)
+      })
+      setIsPaused(!isPaused)
     }
   }
 
@@ -186,9 +171,7 @@ const CellContext: FC<Props> = ({
         <FeatureFlag name="pauseCell">
           <CellContextItem
             label={isPaused ? 'Resume' : 'Pause'}
-            onClick={() => {
-              togglePauseCell()
-            }}
+            onClick={() => togglePauseCell()}
             icon={isPaused ? IconFont.Play : IconFont.Pause}
             onHide={onHide}
             testID="cell-context--pause"

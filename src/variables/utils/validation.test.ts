@@ -72,7 +72,7 @@ describe('Validation', () => {
       const error = validateVariableName(varList, 'banana', 'banana').error
       expect(error).toBe(null)
 
-      //now changing the name
+      // now changing the name
       const error2 = validateVariableName(varList, 'banana2', 'banana').error
       expect(error2).toBe(null)
     })

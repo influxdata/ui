@@ -70,6 +70,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Me'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Cannot get account or organization for user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
           description: Unexpected error
           content:
@@ -364,12 +376,12 @@ paths:
               schema:
                 type: string
                 format: binary
-      default:
-        description: Unexpected error
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Error'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   '/orgs/{orgId}/invites':
     get:
       operationId: GetInvites
@@ -390,6 +402,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Invites'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Session user not owner or Org not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
           description: Unexpected error
           content:
@@ -424,6 +448,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Invite'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Session user not owner or Org not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict with invite email
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Missing information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
           description: Unexpected error
           content:
@@ -491,6 +539,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Invite/Org not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   '/orgs/{orgId}/invites/{inviteId}/resend':
     post:
       operationId: PostOrgsIdInvitesId
@@ -519,6 +579,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Invite'
+        '401':
+          description: Not Authorized or Invalid Session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Session user not owner or Invite/Org not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
           description: Unexpected error
           content:
@@ -545,6 +617,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Users'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Org or Users not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
           description: Unexpected error
           content:
@@ -575,6 +659,24 @@ paths:
       responses:
         '204':
           description: User removed
+        '400':
+          description: User trying to remove self
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Session user not owner or User/Org not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
           description: Unexpected error
           content:
@@ -985,17 +1087,10 @@ components:
             - member
             - owner
         expiresAt:
+          description: when the invite will expire
+          readOnly: true
           format: date-time
           type: string
-        links:
-          type: object
-          readOnly: true
-          example:
-            self: '/api/v2private/invites/1'
-          properties:
-            self:
-              type: string
-              format: uri
       required: [id, email, role]
     Invites:
       type: object

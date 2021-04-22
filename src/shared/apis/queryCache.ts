@@ -62,7 +62,6 @@ type CacheValue = {
   status: RemoteDataState
   error?: string
   values?: RunQuerySuccessResult | null
-  paused?: boolean
 }
 
 type Cache = {
@@ -125,24 +124,19 @@ class QueryCache {
       isCustomTime,
       mutex: RunQueryPromiseMutex<RunQueryResult>(),
       status: RemoteDataState.Loading,
-      paused: false,
     }
     return this.cache[queryID]
   }
 
   resetCacheByID = (id: string): void => {
-    if (!this.cache[id] || this.cache[id]?.paused) {
+    if (!this.cache[id]) {
       return
     }
     delete this.cache[id]
   }
 
   resetCache = (): void => {
-    for (const key of Object.keys(this.cache)) {
-      if (!this.cache[key].paused) {
-        delete this.cache[key]
-      }
-    }
+    this.cache = {}
   }
 
   getById = (queryID: string) => {
@@ -193,7 +187,11 @@ export const resetQueryCacheByQuery = (query: string): void => {
   queryCache.resetCacheByID(queryID)
 }
 
-const calculateHashedVariables = (allVars: Variable[], query: string) => {
+const calculateHashedVariables = (
+  allVars: Variable[],
+  query: string
+): {queryID: string; variables: Variable[]; hashedVariables: string} => {
+  const queryID = `${hashCode(query)}`
   const usedVars = filterUnusedVarsBasedOnQuery(allVars, [query])
   const variables = sortBy(usedVars, ['name'])
 
@@ -202,29 +200,7 @@ const calculateHashedVariables = (allVars: Variable[], query: string) => {
   // create the queryID based on the query & vars
   const hashedVariables = `${hashCode(stringifiedVars)}`
 
-  return {variables, hashedVariables}
-}
-
-export const getFromQueryCacheByQuery = (
-  query: string,
-  variables: Variable[]
-): CacheValue | null => {
-  const queryID = `${hashCode(query)}`
-  const {hashedVariables} = calculateHashedVariables(variables, query)
-
-  const returnedQuery = queryCache.getFromCache(queryID, hashedVariables)
-  if (returnedQuery) {
-    const queryObj = queryCache.getById(queryID)
-    return queryObj
-  } else {
-    return null
-  }
-}
-
-export const togglePauseQuery = (queryObj: CacheValue) => {
-  queryObj.paused = !queryObj.paused
-
-  return queryObj
+  return {queryID, variables, hashedVariables}
 }
 
 const hasWindowVars = (variables: VariableAssignment[]): boolean =>
@@ -235,10 +211,11 @@ export const getCachedResultsOrRunQuery = (
   query: string,
   allVars: Variable[]
 ): CancelBox<RunQueryResult> => {
-  const queryID = `${hashCode(query)}`
+  const {queryID, variables, hashedVariables} = calculateHashedVariables(
+    allVars,
+    query
+  )
   event('Starting Query Cache Process ', {context: 'queryCache', queryID})
-
-  const {variables, hashedVariables} = calculateHashedVariables(allVars, query)
 
   const cacheResults: RunQueryResult | null = queryCache.getFromCache(
     queryID,

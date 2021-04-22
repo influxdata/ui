@@ -7,10 +7,6 @@ import classnames from 'classnames'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {
-  getFromQueryCacheByQuery,
-  togglePauseQuery,
-} from 'src/shared/apis/queryCache'
 
 // Components
 import {
@@ -31,20 +27,13 @@ import {deleteCellAndView, createCellWithView} from 'src/cells/actions/thunks'
 import {getAllVariables} from 'src/variables/selectors'
 
 // Types
-import {
-  Cell,
-  View,
-  ViewProperties,
-  MarkdownViewProperties,
-  AppState,
-} from 'src/types'
+import {Cell, View, AppState} from 'src/types'
 
 interface OwnProps {
   cell: Cell
   view: View
   onCSVDownload: () => void
   onRefresh: () => void
-  variables: string
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -55,19 +44,11 @@ const CellContext: FC<Props> = ({
   history,
   location,
   cell,
-  variables,
   onCloneCell,
   onDeleteCell,
   onCSVDownload,
   onRefresh,
 }) => {
-  const viewWithQueries = view as View<
-    Exclude<ViewProperties, MarkdownViewProperties>
-  >
-  const foundQueries =
-    Array.isArray(viewWithQueries?.properties?.queries) &&
-    viewWithQueries?.properties?.queries.length
-  const [isPaused, setIsPaused] = useState<boolean>(false)
   const [popoverVisible, setPopoverVisibility] = useState<boolean>(false)
   const editNoteText = !!get(view, 'properties.note') ? 'Edit Note' : 'Add Note'
   const triggerRef: RefObject<HTMLButtonElement> = useRef<HTMLButtonElement>(
@@ -99,18 +80,6 @@ const CellContext: FC<Props> = ({
   const handleEditCell = (): void => {
     history.push(`${location.pathname}/cells/${cell.id}/edit`)
     event('editCell button Click')
-  }
-
-  const togglePauseCell = (): void => {
-    if (foundQueries) {
-      for (const query of viewWithQueries.properties.queries) {
-        const returnedQuery = getFromQueryCacheByQuery(query.text, variables)
-        if (returnedQuery) {
-          togglePauseQuery(returnedQuery)
-          setIsPaused(!isPaused)
-        }
-      }
-    }
   }
 
   const popoverContents = (onHide): JSX.Element => {
@@ -183,32 +152,12 @@ const CellContext: FC<Props> = ({
             testID="cell-context--refresh"
           />
         </FeatureFlag>
-        <FeatureFlag name="pauseCell">
-          <CellContextItem
-            label={isPaused ? 'Resume' : 'Pause'}
-            onClick={() => {
-              togglePauseCell()
-            }}
-            icon={isPaused ? IconFont.Play : IconFont.Pause}
-            onHide={onHide}
-            testID="cell-context--pause"
-          />
-        </FeatureFlag>
       </div>
     )
   }
 
   return (
     <>
-      {isPaused && (
-        <button
-          className={buttonClass}
-          onClick={togglePauseCell}
-          data-testid="cell-context--pause-resume"
-        >
-          <Icon glyph={IconFont.Pause} />
-        </button>
-      )}
       <button
         className={buttonClass}
         ref={triggerRef}

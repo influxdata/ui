@@ -57,7 +57,7 @@ export class Signin extends PureComponent<Props, State> {
   public async componentDidMount() {
     this.hasMounted = true
     this.setState({loading: RemoteDataState.Loading})
-    this.props.onGetPublicFlags()
+    await this.props.onGetPublicFlags()
 
     await this.checkForLogin()
 

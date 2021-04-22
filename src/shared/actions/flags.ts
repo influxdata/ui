@@ -4,12 +4,14 @@ import {FlagMap} from 'src/shared/reducers/flags'
 import {getAPIBasepath} from 'src/utils/basepath'
 import {RemoteDataState} from 'src/types'
 export const SET_FEATURE_FLAGS = 'SET_FEATURE_FLAGS'
+export const SET_PUBLIC_FEATURE_FLAGS = 'SET_PUBLIC_FEATURE_FLAGS'
 export const RESET_FEATURE_FLAGS = 'RESET_FEATURE_FLAGS'
 export const CLEAR_FEATURE_FLAG_OVERRIDES = 'CLEAR_FEATURE_FLAG_OVERRIDES'
 export const SET_FEATURE_FLAG_OVERRIDE = 'SET_FEATURE_FLAG_OVERRIDE'
 
 export type Actions =
   | ReturnType<typeof setFlags>
+  | ReturnType<typeof setPublicFlags>
   | ReturnType<typeof reset>
   | ReturnType<typeof clearOverrides>
   | ReturnType<typeof setOverride>
@@ -22,6 +24,14 @@ export const setFlags = (status: RemoteDataState, flags?: FlagMap) =>
     type: SET_FEATURE_FLAGS,
     payload: {
       status,
+      flags,
+    },
+  } as const)
+
+export const setPublicFlags = (flags?: FlagMap) =>
+  ({
+    type: SET_PUBLIC_FEATURE_FLAGS,
+    payload: {
       flags,
     },
   } as const)
@@ -66,7 +76,6 @@ export const getFlags = () => async (
 
 export const getPublicFlags = () => async (dispatch: Dispatch<Actions>) => {
   try {
-    dispatch(setFlags(RemoteDataState.Loading))
     const url = `${getAPIBasepath()}/api/v2private/flags`
     const response = await fetch(url)
     const flags = await response.json()
@@ -75,9 +84,8 @@ export const getPublicFlags = () => async (dispatch: Dispatch<Actions>) => {
       throw new Error(flags.message)
     }
 
-    dispatch(setFlags(RemoteDataState.Done, flags))
+    dispatch(setPublicFlags(flags))
   } catch (error) {
     console.error(error)
-    dispatch(setFlags(RemoteDataState.Error, null))
   }
 }

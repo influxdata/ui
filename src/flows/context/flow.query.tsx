@@ -37,12 +37,14 @@ interface Stage {
 export interface FlowQueryContextType {
   generateMap: (withSideEffects?: boolean) => Stage[]
   query: (text: string) => Promise<FluxResult>
+  basic: (text: string) => any
   queryAll: () => void
 }
 
 export const DEFAULT_CONTEXT: FlowQueryContextType = {
   generateMap: () => [],
   query: (_: string) => Promise.resolve({} as FluxResult),
+  basic: (_: string) => {},
   queryAll: () => {},
 }
 
@@ -70,7 +72,7 @@ export const FlowQueryProvider: FC = ({children}) => {
   const {flow} = useContext(FlowContext)
   const {runMode} = useContext(RunModeContext)
   const {add, update} = useContext(ResultsContext)
-  const {query: queryAPI} = useContext(QueryContext)
+  const {query: queryAPI, basic: basicAPI} = useContext(QueryContext)
 
   const dispatch = useDispatch()
   const notebookQueryKey = `queryAll-${flow?.name}`
@@ -194,6 +196,10 @@ export const FlowQueryProvider: FC = ({children}) => {
     return queryAPI(text, vars)
   }
 
+  const basic = (text: string): Promise<FluxResult> => {
+    return basicAPI(text, vars)
+  }
+
   const forceUpdate = (id, data) => {
     try {
       update(id, data)
@@ -299,7 +305,7 @@ export const FlowQueryProvider: FC = ({children}) => {
   }
 
   return (
-    <FlowQueryContext.Provider value={{query, generateMap, queryAll}}>
+    <FlowQueryContext.Provider value={{query, basic, generateMap, queryAll}}>
       {children}
     </FlowQueryContext.Provider>
   )

@@ -165,7 +165,7 @@ describe('Flows', () => {
     cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
 
     // The test needs the last add button on the page and it was off the screen in circleci - JF
-    cy.scrollTo('bottom')
+    cy.getByTestID('page-contents--thumb-y').scrollTo('bottom')
     cy.getByTestIDSubStr('panel-add-btn')
       .last()
       .click()

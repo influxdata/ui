@@ -1,0 +1,200 @@
+openapi: 3.0.0
+info:
+  title: notebooksd
+  version: 1.0.0
+servers:
+  - url: http://localhost:8618
+    description: local development server
+  - url: https://https://twodotoh.a.influxcloud.dev.local:8618
+    description: k8s-idpe local development server
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  requestBodies:
+    NotebookParams:
+      description: Notebook record
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotebookParams'
+  schemas:
+    NotebookParams:
+      properties:
+        name:
+          type: string
+        orgID:
+          type: string
+        spec:
+          type: object
+    Notebook:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        orgID:
+          type: string
+        spec:
+          type: object
+        createdAt:
+          type: date-time
+        updatedAt:
+          type: date-time
+    NotebookArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/Notebook'
+    Notebooks:
+      properties:
+        flows:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notebook'
+security:
+  - bearerAuth: []
+paths:
+  /notebooks:
+    get:
+      description: get all records
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: all records
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notebooks'
+        '401':
+          description: unauthorized, no token or invalid token provided
+        '403':
+          description: unauthorized, token with invalid permissions provided
+        '500':
+          description: an internal error has occured
+    post:
+      description: creates a record
+      requestBody:
+        $ref: '#/components/requestBodies/NotebookParams'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: returns the id of the new record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notebook'
+        '401':
+          description: unauthorized, no token or invalid token provided
+        '403':
+          description: unauthorized, token with invalid permissions provided
+        '500':
+          description: an internal error has occured
+  '/notebooks/{id}':
+    get:
+      description: get single record by its ID
+      parameters:
+        - name: id
+          in: path
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: returns the record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notebook'
+        '401':
+          description: unauthorized, no token or invalid token provided
+        '403':
+          description: unauthorized, token with invalid permissions provided
+        '500':
+          description: an internal error has occured
+    delete:
+      description: deletes a single record by its ID
+      parameters:
+        - name: id
+          in: path
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: record deleted
+        '401':
+          description: unauthorized, no token or invalid token provided
+        '403':
+          description: unauthorized, token with invalid permissions provided
+        '500':
+          description: an internal error has occured
+    put:
+      description: update a single record by its ID
+      parameters:
+        - name: id
+          in: path
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/NotebookParams'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: returns the record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notebook'
+        '401':
+          description: unauthorized, no token or invalid token provided
+        '403':
+          description: unauthorized, token with invalid permissions provided
+        '500':
+          description: an internal error has occured
+    patch:
+      description: update a single record by its ID
+      parameters:
+        - name: id
+          in: path
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/NotebookParams'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: returns the record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notebook'
+        '401':
+          description: unauthorized, no token or invalid token provided
+        '403':
+          description: unauthorized, token with invalid permissions provided
+        '500':
+          description: an internal error has occured
+  /health:
+    get:
+      description: get the health of this service
+      security: []
+      responses:
+        '200':
+          description: service is up
+  /ready:
+    get:
+      description: returns whether the cluster of services are ready to rock 'n roll
+      security: []
+      responses:
+        '200':
+          description: services are ready
+        '500':
+          description: db reporting not ready
+        '503':
+          description: pm2 reporting services are not ready
+tags: []

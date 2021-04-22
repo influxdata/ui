@@ -164,10 +164,10 @@ describe('Flows', () => {
     cy.getByTestID('page-title').click()
     cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
 
-    // Have to get the second add button or we clobber the metric selector - JF
+    // The test needs the last add button on the page and it was off the screen in circleci - JF
+    cy.scrollTo('bottom')
     cy.getByTestIDSubStr('panel-add-btn')
-      .first()
-      .next() // adding
+      .last()
       .click()
 
     cy.getByTestID('add-flow-btn--toBucket').click()

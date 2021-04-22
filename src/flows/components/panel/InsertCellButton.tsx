@@ -28,16 +28,17 @@ import 'src/flows/components/panel/InsertCellButton.scss'
 
 interface Props {
   id: string
+  insertAbove?: boolean
 }
 
-const InsertCellButton: FC<Props> = ({id}) => {
+const InsertCellButton: FC<Props> = ({id, insertAbove = false}) => {
   const {flow, add} = useContext(FlowContext)
   const {generateMap} = useContext(FlowQueryContext)
   const [confirming, setConfirming] = useState(false)
   const dividerRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const popoverVisible = useRef<boolean>(false)
-  const index = flow.data.indexOf(id)
+  const index = insertAbove ? flow.data.indexOf(id) - 1 : flow.data.indexOf(id)
 
   const handlePopoverShow = () => {
     popoverVisible.current = true

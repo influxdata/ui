@@ -122,7 +122,9 @@ const FlowPanel: FC<Props> = ({id, children, controls, persistentControl}) => {
 
   return (
     <>
-      {!flow.readOnly && flow.data.indexOf(id) === 0 && <InsertCellButton id={id} insertAbove={true} />}
+      {!flow.readOnly && flow.data.indexOf(id) === 0 && (
+        <InsertCellButton id={id} insertAbove={true} />
+      )}
       <div className={panelClassName}>
         <FlowPanelHeader
           id={id}

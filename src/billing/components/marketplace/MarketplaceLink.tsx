@@ -6,43 +6,32 @@ import {
   ButtonShape,
 } from '@influxdata/clockface'
 
-import {Marketplace} from 'src/types/marketplace'
+// Types
+import {Marketplace} from 'src/types/billing'
 
 // Utils
 import {useBilling} from 'src/billing/components/BillingPage'
 
-const buttonInfo = (
-  marketplace: Marketplace['shortName']
-): {link: string; text: string} => {
+const buttonInfo = (marketplace: Marketplace['shortName']): string => {
   switch (marketplace) {
     case 'aws':
-      return {
-        link: 'https://aws.amazon.com/marketplace/library/',
-        text: 'AWS Subscription Portal',
-      }
+      return 'AWS Subscription Portal'
     case 'gcm':
-      return {
-        link: 'https://console.cloud.google.com/marketplace/yourSolutions',
-        text: 'Google Cloud Solution',
-      }
+      return 'Google Cloud Solution'
     case 'azure':
-      return {
-        link:
-          'https://portal.azure.com/#blade/Microsoft_Azure_Billing/SubscriptionsBlade',
-        text: 'Microsoft Azure Portal',
-      }
+      return 'Microsoft Azure Portal'
     default:
-      return {link: '', text: ''}
+      return ''
   }
 }
 
 const MarketplaceLink: FC = () => {
-  const [{account}] = useBilling()
+  const [{marketplace}] = useBilling()
 
-  const {link, text} = buttonInfo(account.marketplace.shortName)
+  const text = buttonInfo(marketplace.shortName)
 
   const handleClick = () => {
-    window.open(link, '_blank')
+    window.open(marketplace.url, '_blank')
   }
 
   return (

@@ -10,10 +10,10 @@ describe('Billing Page', () => {
         cy.window().then(w => {
           // I hate to add this, but the influx object isn't ready yet
           cy.wait(1000)
-          w.influx.set('unity-billing', true)
+          w.influx.set('unityBilling', true)
         })
 
-        cy.visit(`/orgs/${id}/unity-billing`)
+        cy.visit(`/orgs/${id}/billing`)
       })
     })
 

@@ -5,6 +5,7 @@ import {
   BillingInfo as GenBillingInfo,
   CreditCardParams as GenCreditCardParams,
   OrgLimits as GenOrgLimits,
+  Marketplace as GenMarketplace,
 } from 'src/client/unityRoutes'
 
 export {
@@ -38,6 +39,10 @@ export interface CreditCardParams extends GenCreditCardParams {
 
 export interface OrgLimits extends GenOrgLimits {
   status: RemoteDataState
+}
+
+export interface Marketplace extends GenMarketplace {
+  loadingStatus: RemoteDataState
 }
 
 export interface Account extends GenAccount {

@@ -10,10 +10,10 @@ describe('Users Page', () => {
         cy.window().then(w => {
           // I hate to add this, but the influx object isn't ready yet
           cy.wait(1000)
-          w.influx.set('unity', true)
+          w.influx.set('unityUsers', true)
         })
 
-        cy.visit(`/orgs/${id}/unity-users`)
+        cy.visit(`/orgs/${id}/users`)
       })
     })
 

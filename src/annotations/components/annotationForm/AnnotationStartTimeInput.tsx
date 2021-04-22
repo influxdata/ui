@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, ChangeEvent} from 'react'
+import React, {FC, ChangeEvent, KeyboardEvent} from 'react'
 
 // Components
 import {
@@ -11,12 +11,24 @@ import {
 } from '@influxdata/clockface'
 
 interface Props {
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void
+  onChange: (newTime: string) => void
+  onSubmit: () => void
   startTime: string
 }
 
 export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
   const validationMessage = props.startTime ? '' : 'This field is required'
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    props.onChange(event.target.value)
+  }
+
+  const handleKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      props.onSubmit()
+      return
+    }
+  }
 
   return (
     <Grid.Column widthXS={Columns.Twelve}>
@@ -28,7 +40,8 @@ export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
         <Input
           name="startTime"
           value={new Date(props.startTime).toString()}
-          onChange={props.onChange}
+          onChange={handleChange}
+          onKeyPress={handleKeyPress}
           status={ComponentStatus.Default}
         />
       </Form.Element>

@@ -1,3 +1,6 @@
+// Libraries
+import {InfluxColors} from '@influxdata/clockface'
+
 // Constants
 import {INFERNO, NINETEEN_EIGHTY_FOUR} from '@influxdata/giraffe'
 import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
@@ -386,9 +389,9 @@ const NEW_VIEW_CREATORS = {
           colorDimension: {label: 'Value'},
           colorField: '_value',
           colors: [
-            {type: 'min', hex: '#ff0000'},
-            {value: 50, hex: '#343aeb'},
-            {type: 'max', hex: '#343aeb'},
+            {type: 'min', hex: InfluxColors.Star},
+            {value: 50, hex: InfluxColors.Star},
+            {type: 'max', hex: InfluxColors.Star},
           ],
           isClustered: false,
         },

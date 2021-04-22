@@ -69,12 +69,14 @@ export const Submit: FC = () => {
           queryID=""
           cancelAllRunningQueries={cancelAllRunningQueries}
         />
-        <SquareButton
-          active={active}
-          onClick={onClick}
-          icon={IconFont.CaretDown}
-          color={ComponentColor.Primary}
-        />
+        {status !== RemoteDataState.Loading && (
+          <SquareButton
+            active={active}
+            onClick={onClick}
+            icon={IconFont.CaretDown}
+            color={ComponentColor.Primary}
+          />
+        )}
       </ButtonGroup>
     )
   }

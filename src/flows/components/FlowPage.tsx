@@ -28,6 +28,7 @@ const FlowFromRoute = () => {
 // within the page and not bleed it's dependencies outside
 // of the feature flag
 import 'src/flows/style.scss'
+import FlowKeyboardPreview from 'src/flows/components/FlowKeyboardPreview'
 
 const FlowContainer: FC = () => (
   <QueryProvider>
@@ -36,6 +37,7 @@ const FlowContainer: FC = () => (
         <FlowFromRoute />
         <ResultsProvider>
           <FlowQueryProvider>
+            <FlowKeyboardPreview />
             <Page titleTag={PROJECT_NAME_PLURAL}>
               <FlowHeader />
               <Page.Contents

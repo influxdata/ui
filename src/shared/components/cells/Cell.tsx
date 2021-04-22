@@ -16,15 +16,7 @@ import {getByID} from 'src/resources/selectors'
 import {resetQueryCacheByQuery} from 'src/shared/apis/queryCache'
 
 // Types
-import {
-  RemoteDataState,
-  AppState,
-  View,
-  Cell,
-  ResourceType,
-  ViewProperties,
-  MarkdownViewProperties,
-} from 'src/types'
+import {RemoteDataState, AppState, View, Cell, ResourceType} from 'src/types'
 
 interface StateProps {
   view: View

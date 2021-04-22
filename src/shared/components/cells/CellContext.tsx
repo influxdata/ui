@@ -7,13 +7,6 @@ import classnames from 'classnames'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-<<<<<<< HEAD
-import {
-  getFromQueryCacheByQuery,
-  togglePauseQuery,
-} from 'src/shared/apis/queryCache'
-=======
->>>>>>> 7482e2085abdebd22ffb2b86b6a7e9f11139cfd4
 
 // Components
 import {

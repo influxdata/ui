@@ -18,20 +18,19 @@ interface Props {
 }
 
 export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
-  // const validationMessage = props.startTime ? '' : 'This field is required'
 
   const [inputValue, setInputValue] = useState<string>(
-    moment(props.startTime).format('YYYY-MM-DD HH:mm:ss')
+    moment(props.startTime).format('YYYY-MM-DD HH:mm:ss.SSS')
   )
 
-  const isValidRTC3339 = (d: string): boolean => {
+  const isValidTimeFormat = (d: string): boolean => {
     return moment(d, 'YYYY-MM-DD HH:mm:ss.SSS', true).isValid()
   }
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value)
 
-    if (isValidRTC3339(event.target.value)) {
+    if (isValidTimeFormat(event.target.value)) {
       props.onChange(
         moment(event.target.value)
           .toDate()
@@ -56,7 +55,7 @@ export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
       return false
     }
 
-    return !isValidRTC3339(inputValue)
+    return !isValidTimeFormat(inputValue)
   }
 
   const inputErrorMessage = (): string | undefined => {

@@ -3,7 +3,7 @@ import {useSelector, useDispatch} from 'react-redux'
 import moment from 'moment'
 
 // Types
-import {CustomTimeRange, AutoRefreshStatus, AutoRefresh} from 'src/types'
+import {CustomTimeRange, AutoRefreshStatus} from 'src/types'
 
 // Actions
 import {
@@ -16,11 +16,14 @@ import {getCurrentDashboardId} from 'src/dashboards/selectors'
 
 export const AutoRefreshContext = createContext(null)
 
-interface AutoRefreshState {
+export interface AutoRefreshState {
   duration: CustomTimeRange
   inactivityTimeout: string
   inactivityTimeoutCategory: string
-  refreshMilliseconds: AutoRefresh
+  refreshMilliseconds: {
+    status: AutoRefreshStatus
+    interval: number
+  }
   infiniteDuration: boolean
 }
 

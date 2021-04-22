@@ -267,11 +267,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  '/payment/form':
+  '/payment_form/{form}':
     get:
       operationId: GetPaymentForm
       tags:
         - PaymentGateway
+      parameters:
+        - in: path
+          name: form
+          required: true
+          schema:
+            type: string
+            enum: [checkout_form, billing_form]
+          description: The name of the PaymentForm to query.
+          example: 'checkout_form'
       responses:
         '200':
           description: A CreditCard Form parameter object
@@ -279,6 +288,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreditCardParams'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '404':
+          description: User or Form not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         default:
           description: Unexpected error
           content:

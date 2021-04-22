@@ -152,7 +152,7 @@ describe('Flows', () => {
     cy.getByTestID('table-cell beans').should('not.exist')
   })
 
-  it('can export a task with all the necessary variables', () => {
+  it.only('can export a task with all the necessary variables', () => {
     const taskName = 'the greatest task of all time'
 
     cy.getByTestID('create-flow--button')
@@ -164,8 +164,10 @@ describe('Flows', () => {
     cy.getByTestID('page-title').click()
     cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
 
+    // Have to get the second add button or we clobber the metric selector - JF
     cy.getByTestIDSubStr('panel-add-btn')
       .first()
+      .next() // adding
       .click()
 
     cy.getByTestID('add-flow-btn--toBucket').click()

@@ -19,7 +19,7 @@ interface Props {
 
 export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
   // initial input value is the startTime passed
-  const [inputValue, setInputValue] = useState<string>(
+  const [startTimeValue, setStartTimeValue] = useState<string>(
     moment(props.startTime).format('YYYY-MM-DD HH:mm:ss.SSS')
   )
 
@@ -28,7 +28,7 @@ export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
   }
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value)
+    setStartTimeValue(event.target.value)
 
     if (isValidTimeFormat(event.target.value)) {
       props.onChange(
@@ -46,23 +46,23 @@ export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
     }
   }
 
-  const isInputValueInvalid = (): boolean => {
+  const isInputValueValid = (inputValue: string): boolean => {
     if (inputValue === null) {
-      return false
+      return true
     }
 
-    return !isValidTimeFormat(inputValue)
+    return isValidTimeFormat(inputValue)
   }
 
-  const inputErrorMessage = (): string | undefined => {
-    if (isInputValueInvalid()) {
+  const getInputValidationMessage = (): string => {
+    if (!isInputValueValid(startTimeValue)) {
       return 'Format must be YYYY-MM-DD [HH:mm:ss.SSS]'
     }
 
-    return '\u00a0\u00a0'
+    return ''
   }
 
-  const validationMessage = inputErrorMessage()
+  const validationMessage = getInputValidationMessage()
 
   return (
     <Grid.Column widthXS={Columns.Twelve}>
@@ -73,7 +73,7 @@ export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
       >
         <Input
           name="startTime"
-          value={inputValue}
+          value={startTimeValue}
           onChange={handleChange}
           onKeyPress={handleKeyPress}
           status={ComponentStatus.Default}

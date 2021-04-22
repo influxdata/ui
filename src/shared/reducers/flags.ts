@@ -5,12 +5,9 @@ import {
   RESET_FEATURE_FLAGS,
   CLEAR_FEATURE_FLAG_OVERRIDES,
   SET_FEATURE_FLAG_OVERRIDE,
+  FlagMap,
 } from 'src/shared/actions/flags'
 import {RemoteDataState} from 'src/types'
-
-export interface FlagMap {
-  [key: string]: string | boolean
-}
 
 export interface FlagState {
   status: RemoteDataState

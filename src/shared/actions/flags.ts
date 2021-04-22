@@ -1,10 +1,13 @@
-import {FlagMap} from 'src/shared/reducers/flags'
 import {RemoteDataState} from 'src/types'
 export const SET_FEATURE_FLAGS = 'SET_FEATURE_FLAGS'
 export const SET_PUBLIC_FEATURE_FLAGS = 'SET_PUBLIC_FEATURE_FLAGS'
 export const RESET_FEATURE_FLAGS = 'RESET_FEATURE_FLAGS'
 export const CLEAR_FEATURE_FLAG_OVERRIDES = 'CLEAR_FEATURE_FLAG_OVERRIDES'
 export const SET_FEATURE_FLAG_OVERRIDE = 'SET_FEATURE_FLAG_OVERRIDE'
+
+export interface FlagMap {
+  [key: string]: string | boolean
+}
 
 export type Actions =
   | ReturnType<typeof setFlags>

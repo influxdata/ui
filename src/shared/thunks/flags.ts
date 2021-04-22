@@ -1,6 +1,6 @@
 import {Dispatch} from 'redux'
 import {getFlags as getFlagsRequest} from 'src/client'
-import {FlagMap} from 'src/shared/reducers/flags'
+import {FlagMap} from 'src/shared/actions/flags'
 import {getAPIBasepath} from 'src/utils/basepath'
 import {RemoteDataState} from 'src/types'
 import {Actions, setFlags, setPublicFlags} from 'src/shared/actions/flags'

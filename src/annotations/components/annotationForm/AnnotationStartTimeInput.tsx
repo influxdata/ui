@@ -18,7 +18,6 @@ interface Props {
 }
 
 export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
-  // initial input value is the startTime passed
   const [startTimeValue, setStartTimeValue] = useState<string>(
     moment(props.startTime).format('YYYY-MM-DD HH:mm:ss.SSS')
   )

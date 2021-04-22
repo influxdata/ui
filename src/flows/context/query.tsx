@@ -32,6 +32,11 @@ import {
   ObjectExpression,
   CancellationError,
 } from 'src/types'
+import {RunQueryResult} from 'src/shared/apis/query'
+
+interface CancelMap {
+  [key: string]: () => void
+}
 
 interface VariableMap {
   [key: string]: Variable
@@ -201,7 +206,7 @@ export const QueryProvider: FC = ({children}) => {
   const bucketsLoadingState = useSelector((state: AppState) =>
     getStatus(state, ResourceType.Buckets)
   )
-  const [pending, setPending] = useState({})
+  const [pending, setPending] = useState({} as CancelMap)
   const org = useSelector(getOrg)
 
   const dispatch = useDispatch()
@@ -289,43 +294,44 @@ export const QueryProvider: FC = ({children}) => {
         }
         return response
       })
-      .then(response => {
-        if (response.status === 200) {
-          return response.text().then(csv => ({
-            type: 'SUCCESS',
-            csv,
-            bytesRead: csv.length,
-            didTruncate: false,
-          }))
-        }
-
-        if (response.status === RATE_LIMIT_ERROR_STATUS) {
-          const retryAfter = response.headers.get('Retry-After')
-
-          return {
-            type: 'RATE_LIMIT_ERROR',
-            retryAfter: retryAfter ? parseInt(retryAfter) : null,
-            message: RATE_LIMIT_ERROR_TEXT,
+      .then(
+        (response: Response): Promise<RunQueryResult> => {
+          if (response.status === 200) {
+            return response.text().then(csv => ({
+              type: 'SUCCESS',
+              csv,
+              bytesRead: csv.length,
+              didTruncate: false,
+            }))
           }
-        }
 
-        return response.text().then(text => {
-          try {
-            const json = JSON.parse(text)
-            const message = json.message || json.error
-            const code = json.code
+          if (response.status === RATE_LIMIT_ERROR_STATUS) {
+            const retryAfter = response.headers.get('Retry-After')
 
-            return {type: 'UNKNOWN_ERROR', message, code}
-          } catch {
-            return {
-              type: 'UNKNOWN_ERROR',
-              message: 'Failed to execute Flux query',
+            return Promise.resolve({
+              type: 'RATE_LIMIT_ERROR',
+              retryAfter: retryAfter ? parseInt(retryAfter) : null,
+              message: RATE_LIMIT_ERROR_TEXT,
+            })
+          }
+
+          return response.text().then(text => {
+            try {
+              const json = JSON.parse(text)
+              const message = json.message || json.error
+              const code = json.code
+
+              return {type: 'UNKNOWN_ERROR', message, code}
+            } catch {
+              return {
+                type: 'UNKNOWN_ERROR',
+                message: 'Failed to execute Flux query',
+              }
             }
-          }
-        })
-      })
+          })
+        }
+      )
       .catch(e => {
-        console.log('wtf?', e)
         if (e.name === 'AbortError') {
           return Promise.reject(new CancellationError())
         }

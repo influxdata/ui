@@ -24,7 +24,6 @@ const Results: FC = () => {
   const {runMode} = useContext(RunModeContext)
   const [height, setHeight] = useState(MINIMUM_RESIZER_HEIGHT)
   const [visibility, setVisibility] = useState('visible' as Visibility)
-  const [loading, setLoading] = useState(false)
   const meta = flow.meta.get(id)
   const resultsExist = !!(results?.parsed?.table || []).length
 
@@ -41,11 +40,7 @@ const Results: FC = () => {
     ? 'Download results as an annotated CSV file'
     : 'Build a query to download your results'
   const download = () => {
-    setLoading(true)
-
     basic(queryText).promise.then(response => {
-      setLoading(false)
-
       if (response.type !== 'SUCCESS') {
         return
       }

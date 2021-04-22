@@ -23,8 +23,8 @@ export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
     moment(props.startTime).format('YYYY-MM-DD HH:mm:ss.SSS')
   )
 
-  const isValidTimeFormat = (d: string): boolean => {
-    return moment(d, 'YYYY-MM-DD HH:mm:ss.SSS', true).isValid()
+  const isValidTimeFormat = (inputValue: string): boolean => {
+    return moment(inputValue, 'YYYY-MM-DD HH:mm:ss.SSS', true).isValid()
   }
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {

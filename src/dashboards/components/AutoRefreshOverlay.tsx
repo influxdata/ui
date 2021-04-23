@@ -17,7 +17,7 @@ import AutoRefreshDropdown from 'src/shared/components/dropdown_auto_refresh/Aut
 import TimeRangeDropdown from 'src/shared/components/DeleteDataForm/TimeRangeDropdown'
 
 // Types
-import {CustomTimeRange, AutoRefreshStatus} from 'src/types'
+import {CustomTimeRange, AutoRefreshStatus, TimeRangeDirection} from 'src/types'
 
 // Context
 import AutoRefreshContextProvider, {
@@ -97,7 +97,7 @@ export const AutoRefreshForm: FC = () => {
                     infiniteDuration: false,
                   })
                 }}
-                singleDirection="upper"
+                singleDirection={TimeRangeDirection.Upper}
                 className="timerange-dropdown"
               />
             </div>

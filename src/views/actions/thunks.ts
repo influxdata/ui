@@ -127,7 +127,7 @@ export const getViewAndResultsForVEO = (
       })
     )
 
-    const queries = view.properties.queries.filter(({text}) => !!text)
+    const queries = view.properties.queries.filter(({text}) => !!text.trim())
     if (!queries.length) {
       dispatch(setQueryResults(RemoteDataState.Done, [], null))
     }

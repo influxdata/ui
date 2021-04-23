@@ -16,6 +16,8 @@ import {getCurrentDashboardId} from 'src/dashboards/selectors'
 
 export const AutoRefreshContext = createContext(null)
 
+const DEFAULT_TIME_AHEAD = '01:00'
+
 export interface AutoRefreshState {
   duration: CustomTimeRange
   inactivityTimeout: string
@@ -27,19 +29,20 @@ export interface AutoRefreshState {
   infiniteDuration: boolean
 }
 
-const jumpAheadTime = (moveAheadNum: number) => {
-  return (
-    new Date().toISOString().slice(0, 10) +
-    ' ' +
-    new Date(Date.now() + moveAheadNum).toTimeString().slice(0, 8)
-  )
+const jumpAheadTime = () => {
+  return moment()
+    .add(moment.duration(DEFAULT_TIME_AHEAD))
+    .format('YYYY-MM-DD HH:mm:ss')
 }
 
-const calculateTimeout = (timeout, timeoutUnit) => {
-  const timeoutNumber = parseInt(timeout)
+const calculateTimeout = (timeout: string, timeoutUnit: string) => {
+  const timeoutNumber = parseInt(timeout, 10)
   const startTime = moment(new Date())
   const copyStart = startTime.unix()
-  const endTime = startTime.add(timeoutNumber, timeoutUnit[0].toLowerCase())
+  const endTime = startTime.add(
+    timeoutNumber as any,
+    timeoutUnit[0].toLowerCase()
+  )
   const cutoff = endTime.unix() - copyStart
   return cutoff * 1000
 }
@@ -52,7 +55,7 @@ export const createAutoRefreshInitialState = (
     inactivityTimeoutCategory: 'Hours',
     duration: {
       lower: new Date().toISOString(),
-      upper: jumpAheadTime(60 * 60 * 1000),
+      upper: jumpAheadTime(),
       type: 'custom',
     },
     refreshMilliseconds: {

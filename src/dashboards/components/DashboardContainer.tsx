@@ -25,6 +25,9 @@ import {AppState, ResourceType, AutoRefreshStatus} from 'src/types'
 import {dashboardAutoRefreshTimeoutSuccess} from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
 
+// History
+import {useRouteMatch} from 'react-router-dom'
+
 const {Active} = AutoRefreshStatus
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -33,6 +36,9 @@ type Props = ReduxProps
 let timer
 const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
   const dispatch = useDispatch()
+  const isEditing = useRouteMatch(
+    '/orgs/:orgID/dashboards/:dashboardID/cells/:cellID/edit'
+  )
 
   const registerListeners = useCallback(() => {
     if (timer) {
@@ -124,6 +130,17 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
     }
   }, [dispatch])
 
+  useEffect(() => {
+    if (isEditing) {
+      registerStopListeners()
+      GlobalAutoRefresher.stopPolling()
+    } else {
+      if (autoRefresh.status === Active) {
+        registerListeners()
+        GlobalAutoRefresher.poll(autoRefresh, stopFunc)
+      }
+    }
+  }, [isEditing?.path])
   return (
     <DashboardRoute>
       <GetResource resources={[{type: ResourceType.Dashboards, id: dashboard}]}>

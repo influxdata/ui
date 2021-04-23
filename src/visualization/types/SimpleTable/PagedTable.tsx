@@ -175,7 +175,9 @@ const subsetResult = (
             .filter(_c => !!_c.data.filter(_d => _d !== undefined).length)
         )
         .reduce((acc, curr) => {
-          // safe to assume there is only one col in here because there's only one value type allowed per table
+          if (!curr.length) {
+            return acc
+          }
           acc[curr[0].name] = curr[0]
           return acc
         }, {})

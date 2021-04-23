@@ -41,10 +41,10 @@ class CellComponent extends Component<Props, State> {
 
   private handleRefreshProcess = (): void => {
     const {view} = this.props
-    if (view.properties.type === 'markdown') {
+    if (view.properties?.type === 'markdown') {
       return
     }
-    view.properties.queries.forEach(query => {
+    view.properties?.queries?.forEach(query => {
       resetQueryCacheByQuery(query.text)
     })
   }

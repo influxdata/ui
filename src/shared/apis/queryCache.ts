@@ -195,7 +195,9 @@ const calculateHashedVariables = (
   const usedVars = filterUnusedVarsBasedOnQuery(allVars, [query])
   const variables = sortBy(usedVars, ['name'])
 
-  const simplifiedVariables = variables.map(v => asSimplyKeyValueVariables(v))
+  const simplifiedVariables = variables.map(vari =>
+    asSimplyKeyValueVariables(vari)
+  )
   const stringifiedVars = JSON.stringify(simplifiedVariables)
   // create the queryID based on the query & vars
   const hashedVariables = `${hashCode(stringifiedVars)}`

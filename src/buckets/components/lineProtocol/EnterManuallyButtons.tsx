@@ -23,6 +23,7 @@ const EnterManuallyButtons: FC = () => {
   const {
     body,
     handleResetLineProtocol,
+    handleTryAgainLineProtocol,
     writeLineProtocol,
     writeStatus,
   } = useContext(LineProtocolContext)
@@ -45,14 +46,24 @@ const EnterManuallyButtons: FC = () => {
 
   if (writeStatus === RemoteDataState.Error) {
     return (
-      <Button
-        color={ComponentColor.Default}
-        text="Cancel"
-        size={ComponentSize.Medium}
-        type={ButtonType.Button}
-        onClick={handleResetLineProtocol}
-        testID="lp-cancel--button"
-      />
+        <>
+          <Button
+              color={ComponentColor.Default}
+              text="Edit"
+              size={ComponentSize.Medium}
+              type={ButtonType.Button}
+              onClick={handleTryAgainLineProtocol}
+              testID="lp-edit--button"
+          />
+          <Button
+              color={ComponentColor.Default}
+              text="Clear"
+              size={ComponentSize.Medium}
+              type={ButtonType.Button}
+              onClick={handleResetLineProtocol}
+              testID="lp-cancel--button"
+          />
+        </>
     )
   }
 

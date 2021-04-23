@@ -12,7 +12,7 @@ import {
 import DateRangePicker from 'src/shared/components/dateRangePicker/DateRangePicker'
 
 // Types
-import {CustomTimeRange} from 'src/types'
+import {CustomTimeRange, TimeRangeDirection} from 'src/types'
 import {pastHourTimeRange} from 'src/shared/constants/timeRanges'
 import {
   convertTimeRangeToCustom,
@@ -22,7 +22,7 @@ import {
 interface Props {
   timeRange: CustomTimeRange
   onSetTimeRange: (timeRange: CustomTimeRange) => void
-  singleDirection?: string
+  singleDirection?: TimeRangeDirection
   className?: string
 }
 

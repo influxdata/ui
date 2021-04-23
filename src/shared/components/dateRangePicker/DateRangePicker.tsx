@@ -6,7 +6,7 @@ import DatePicker from 'src/shared/components/dateRangePicker/DatePicker'
 import {ClickOutside} from 'src/shared/components/ClickOutside'
 
 // Types
-import {TimeRange} from 'src/types'
+import {TimeRange, TimeRangeDirection} from 'src/types'
 import {
   Button,
   ComponentColor,
@@ -25,7 +25,7 @@ interface Props {
     left?: number
     position?: string
   }
-  singleDirection?: string
+  singleDirection?: TimeRangeDirection
 }
 
 interface State {
@@ -57,7 +57,7 @@ class DateRangePicker extends PureComponent<Props, State> {
         >
           <button className="range-picker--dismiss" onClick={onClose} />
           <div className="range-picker--date-pickers">
-            {singleDirection !== 'upper' && (
+            {singleDirection !== TimeRangeDirection.Upper && (
               <DatePicker
                 dateTime={lower}
                 onSelectDate={this.handleSelectLower}
@@ -66,7 +66,7 @@ class DateRangePicker extends PureComponent<Props, State> {
                 maxDate={upper}
               />
             )}
-            {singleDirection !== 'lower' && (
+            {singleDirection !== TimeRangeDirection.Lower && (
               <DatePicker
                 dateTime={upper}
                 onSelectDate={this.handleSelectUpper}

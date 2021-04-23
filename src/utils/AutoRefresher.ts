@@ -35,8 +35,8 @@ export class AutoRefresher {
     this.intervalID = null
   }
 
-  private refresh = (isAutoRefresh?: boolean, stopFunc?: () => void) => {
-    if (isAutoRefresh) {
+  private refresh = (isAutoRefresh = false, stopFunc?: () => void) => {
+    if (isAutoRefresh && stopFunc) {
       stopFunc()
     }
     this.subscribers.forEach(fn => fn())

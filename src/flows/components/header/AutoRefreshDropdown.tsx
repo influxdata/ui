@@ -22,6 +22,7 @@ const AutoRefreshDropdown: FC = () => {
         refresh: {
           status,
           interval,
+          infiniteDuration: false,
         },
       })
     },

@@ -31,7 +31,6 @@ export default register => {
     name: 'Simple Table',
     graphic: icon,
     initial: {type: 'simple-table', showAll: false},
-    options: () => {},
     component: view,
   })
 }

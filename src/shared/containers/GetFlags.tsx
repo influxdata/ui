@@ -11,7 +11,7 @@ import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 import {RemoteDataState, AppState} from 'src/types'
 
 // Actions
-import {getFlags} from 'src/shared/thunks/flags'
+import {getFlags} from 'src/shared/actions/flags'
 
 // Utils
 import {activeFlags} from 'src/shared/selectors/flags'

@@ -1,5 +1,5 @@
 import {AppState} from 'src/types'
-import {FlagMap} from 'src/shared/actions/flags'
+import {FlagMap} from 'src/shared/reducers/flags'
 import {CLOUD, CLOUD_BILLING_VISIBLE} from 'src/shared/constants'
 
 export const OSS_FLAGS = {

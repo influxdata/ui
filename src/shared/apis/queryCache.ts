@@ -62,7 +62,6 @@ type CacheValue = {
   status: RemoteDataState
   error?: string
   values?: RunQuerySuccessResult | null
-  paused?: boolean
 }
 
 type Cache = {
@@ -125,24 +124,19 @@ class QueryCache {
       isCustomTime,
       mutex: RunQueryPromiseMutex<RunQueryResult>(),
       status: RemoteDataState.Loading,
-      paused: false,
     }
     return this.cache[queryID]
   }
 
   resetCacheByID = (id: string): void => {
-    if (!this.cache[id] || this.cache[id]?.paused) {
+    if (!this.cache[id]) {
       return
     }
     delete this.cache[id]
   }
 
   resetCache = (): void => {
-    for (const key of Object.keys(this.cache)) {
-      if (!this.cache[key].paused) {
-        delete this.cache[key]
-      }
-    }
+    this.cache = {}
   }
 
   getById = (queryID: string) => {

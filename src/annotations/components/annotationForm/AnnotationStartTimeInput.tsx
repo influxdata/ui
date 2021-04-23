@@ -45,7 +45,7 @@ export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
     }
   }
 
-  const isInputValueValid = (inputValue: string): boolean => {
+  const isValidInputValue = (inputValue: string): boolean => {
     if (inputValue === null) {
       return true
     }
@@ -54,7 +54,7 @@ export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
   }
 
   const getInputValidationMessage = (): string => {
-    if (!isInputValueValid(startTimeValue)) {
+    if (!isValidInputValue(startTimeValue)) {
       return 'Format must be YYYY-MM-DD [HH:mm:ss.SSS]'
     }
 

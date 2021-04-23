@@ -3,10 +3,7 @@ info:
   title: notebooksd
   version: 1.0.0
 servers:
-  - url: http://localhost:8618
-    description: local development server
-  - url: https://https://twodotoh.a.influxcloud.dev.local:8618
-    description: k8s-idpe local development server
+  - url: /api/v2
 components:
   securitySchemes:
     bearerAuth:

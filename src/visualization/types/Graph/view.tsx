@@ -167,6 +167,7 @@ const XYPlot: FC<Props> = ({
     timeFormat: properties.timeFormat,
   })
 
+  console.log('about to get yformatter....', cellID)
   const yFormatter = getFormatter(result.table.getColumnType(yColumn), {
     prefix: properties.axes.y.prefix,
     suffix: properties.axes.y.suffix,

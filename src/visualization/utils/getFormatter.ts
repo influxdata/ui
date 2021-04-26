@@ -60,13 +60,24 @@ export const getFormatter = (
   }
 
   if (columnType === 'time') {
+    console.log('ack42: column type is time,,,,making/getting formatter')
     const formatOptions = {
       timeZone: timeZone === 'Local' ? undefined : timeZone,
       format: resolveTimeFormat(timeFormat),
     }
+    console.log('ack42: formatOptions: ', formatOptions)
+
+    console.log('ack42: timeFormat', timeFormat)
+
     if (timeFormat?.includes('HH')) {
       formatOptions['hour12'] = false
+      console.log('ack42: setting hour12 to false')
+    } else {
+      console.log('ack42: NOT setting hour12 to false')
     }
+
+    console.log('ack42(b): formatOPtions', formatOptions)
+
     return timeFormatter(formatOptions)
   }
 

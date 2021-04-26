@@ -46,6 +46,10 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
 
     return columnType === 'time' || columnType === 'number'
   })
+  console.log('ARGHH foo-421')
+
+  console.log('in graph view options; proprteis:', properties)
+  console.log('time format???', resolveTimeFormat(properties.timeFormat))
 
   const xColumn = defaultXColumn(results?.table, properties.xColumn)
   const yColumn = defaultYColumn(results?.table, properties.yColumn)

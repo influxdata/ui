@@ -25,8 +25,10 @@ export const FORMAT_OPTIONS: Array<{text: string}> = [
 
 export const resolveTimeFormat = (timeFormat: string) => {
   if (FORMAT_OPTIONS.find(d => d.text === timeFormat)) {
+    console.log('found something....', timeFormat)
     return timeFormat
   }
 
+  console.log('using default time format: ', DEFAULT_TIME_FORMAT)
   return DEFAULT_TIME_FORMAT
 }

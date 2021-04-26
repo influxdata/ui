@@ -181,10 +181,10 @@ const XYPlot: FC<Props> = ({
   }
 
   const makeSingleClickHandler = () => {
-    const createAnnotation = userModifiedAnnotation => {
+    const createAnnotation = async userModifiedAnnotation => {
       const {message, startTime} = userModifiedAnnotation
       try {
-        dispatch(
+        await dispatch(
           writeThenFetchAndSetAnnotations([
             {
               summary: message,
@@ -196,7 +196,7 @@ const XYPlot: FC<Props> = ({
         )
         event('xyplot.annotations.create_annotation.create')
       } catch (err) {
-        dispatch(notify(createAnnotationFailed(err)))
+        dispatch(notify(createAnnotationFailed(err.response.data.message)))
         event('xyplot.annotations.create_annotation.failure')
       }
     }

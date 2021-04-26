@@ -33,15 +33,15 @@ export const EditAnnotationOverlay: FC = () => {
   const dispatch = useDispatch()
   const {clickedAnnotation} = useSelector(getOverlayParams)
 
-  const handleSubmit = (editedAnnotation: EditAnnotation): void => {
+  const handleSubmit = async (editedAnnotation: EditAnnotation): Promise<void> => {
     try {
-      dispatch(editAnnotation(editedAnnotation))
+      await dispatch(editAnnotation(editedAnnotation))
       event('xyplot.annotations.edit_annotation.success')
       dispatch(notify(editAnnotationSuccess()))
       onClose()
     } catch (err) {
       event('xyplot.annotations.edit_annotation.failure')
-      dispatch(notify(editAnnotationFailed(err)))
+      dispatch(notify(editAnnotationFailed(err.response.data.message)))
     }
   }
 

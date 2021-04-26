@@ -273,6 +273,10 @@ describe('Buckets', () => {
         cy.getByTestID('line-protocol--text-area').type('invalid invalid')
         cy.getByTestID('lp-write-data--button').click()
         cy.getByTestID('line-protocol--status').contains('Unable')
+
+        // Using the Edit button should show the same invalid text
+        cy.getByTestID('lp-edit--button').click()
+        cy.getByTestID('line-protocol--text-area').contains('invalid invalid')
         cy.getByTestID('lp-cancel--button').click()
 
         // writing a well-formed line with millisecond precision is accepted

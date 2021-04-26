@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useCallback} from 'react'
+import React, {FC, useEffect, useCallback, useRef} from 'react'
 import {connect, ConnectedProps, useDispatch} from 'react-redux'
 
 // Components
@@ -33,18 +33,18 @@ const {Active} = AutoRefreshStatus
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
-let timer
 const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
+  const timer = useRef(null)
   const dispatch = useDispatch()
   const isEditing = useRouteMatch(
     '/orgs/:orgID/dashboards/:dashboardID/cells/:cellID/edit'
   )
-
   const registerListeners = useCallback(() => {
-    if (timer) {
+    if (timer.current) {
       registerStopListeners()
     }
-    timer = setTimeout(() => {
+
+    timer.current = setTimeout(() => {
       dispatch(resetDashboardAutoRefresh(dashboard))
       dispatch(notify(dashboardAutoRefreshTimeoutSuccess()))
       registerStopListeners()
@@ -67,17 +67,15 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
   }
   const registerStopListeners = useCallback(() => {
     // Stop all existing timers and deregister everythang
-    if (timer) {
-      clearTimeout(timer)
-      timer = null
+    if (timer.current) {
+      clearTimeout(timer.current)
+      timer.current = null
     }
 
     window.removeEventListener('load', registerListeners)
     document.removeEventListener('mousemove', registerListeners)
     document.removeEventListener('keypress', registerListeners)
-  }, [registerListeners])
-
-  document.addEventListener('visibilitychange', visChangeHandler)
+  }, [registerListeners, timer])
 
   useEffect(() => {
     if (
@@ -86,6 +84,7 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
       autoRefresh.inactivityTimeout > 0
     ) {
       registerListeners()
+      document.addEventListener('visibilitychange', visChangeHandler)
     } else {
       registerStopListeners()
     }

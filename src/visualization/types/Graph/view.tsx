@@ -58,6 +58,7 @@ import {
 } from 'src/shared/utils/vis'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
+import {getErrorMessage} from 'src/utils/api'
 
 // Notifications
 import {createAnnotationFailed} from 'src/shared/copy/notifications'
@@ -181,10 +182,6 @@ const XYPlot: FC<Props> = ({
   }
 
   const makeSingleClickHandler = () => {
-    const getErrorMessage = (err: any): string | any => {
-      return err.response?.data?.message || err
-    }
-
     const createAnnotation = async userModifiedAnnotation => {
       const {message, startTime} = userModifiedAnnotation
       try {

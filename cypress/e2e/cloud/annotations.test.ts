@@ -70,6 +70,9 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('add-annotation-submit').click()
     })
 
+    // reload to make sure the annotation was added in the backend as well.
+    cy.reload()
+
     // we need to see if the annotations got created and that the tooltip says "yoho"
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
@@ -94,6 +97,9 @@ describe('The Annotations UI functionality', () => {
         .type('im a hippopotamus')
       cy.getByTestID('add-annotation-submit').click()
     })
+
+    // reload to make sure the annotation was added in the backend as well.
+    cy.reload()
 
     // should have the annotation created and the tooltip should says "im a hippopotamus"
     cy.getByTestID('cell blah').within(() => {

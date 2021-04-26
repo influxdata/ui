@@ -162,6 +162,9 @@ describe('The Annotations UI functionality', () => {
 
     cy.getByTestID('delete-annotation-button').click()
 
+    // reload to make sure the annotation was deleted from the backend as well.
+    cy.reload()
+
     // annotation line should not exist in the dashboard cell
     cy.getByTestID('cell blah').within(() => {
       cy.get('line').should('not.exist')
@@ -195,6 +198,9 @@ describe('The Annotations UI functionality', () => {
       .type('lets edit this annotation...')
 
     cy.getByTestID('edit-annotation-submit-button').click()
+
+    // reload to make sure the annotation was edited in the backend as well.
+    cy.reload()
 
     // annotation tooltip should say the new name
     cy.getByTestID('cell blah').within(() => {

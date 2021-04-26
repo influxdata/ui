@@ -57,9 +57,7 @@ describe("buckets thunks", () => {
     it("starts", async () => {
       (api.getBuckets as any).mockImplementationOnce(createMockGetBuckets(true));
       const dispatched = [];
-      const dispatch = jest.fn((action)=>{
-        dispatched.push(action);
-      });
+      const dispatch = jest.fn(Array.prototype.push.bind(dispatched));
       const getState = jest.fn(getMockAppState) as any;
 
       await getBuckets()(dispatch, getState)

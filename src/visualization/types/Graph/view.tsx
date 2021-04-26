@@ -196,7 +196,7 @@ const XYPlot: FC<Props> = ({
         )
         event('xyplot.annotations.create_annotation.create')
       } catch (err) {
-        dispatch(notify(createAnnotationFailed(err.response.data.message)))
+        dispatch(notify(createAnnotationFailed(err.response?.data?.message || err)))
         event('xyplot.annotations.create_annotation.failure')
       }
     }

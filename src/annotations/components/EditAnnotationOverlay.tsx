@@ -43,7 +43,7 @@ export const EditAnnotationOverlay: FC = () => {
       onClose()
     } catch (err) {
       event('xyplot.annotations.edit_annotation.failure')
-      dispatch(notify(editAnnotationFailed(err.response.data.message)))
+      dispatch(notify(editAnnotationFailed(err.response?.data?.message || err)))
     }
   }
 

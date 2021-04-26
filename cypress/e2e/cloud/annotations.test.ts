@@ -70,6 +70,9 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('add-annotation-submit').click()
     })
 
+    // reload to make sure the annotation was added in the backend as well.
+    cy.reload()
+
     // we need to see if the annotations got created and that the tooltip says "yoho"
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
@@ -94,6 +97,9 @@ describe('The Annotations UI functionality', () => {
         .type('im a hippopotamus')
       cy.getByTestID('add-annotation-submit').click()
     })
+
+    // reload to make sure the annotation was added in the backend as well.
+    cy.reload()
 
     // should have the annotation created and the tooltip should says "im a hippopotamus"
     cy.getByTestID('cell blah').within(() => {
@@ -162,6 +168,9 @@ describe('The Annotations UI functionality', () => {
 
     cy.getByTestID('delete-annotation-button').click()
 
+    // reload to make sure the annotation was deleted from the backend as well.
+    cy.reload()
+
     // annotation line should not exist in the dashboard cell
     cy.getByTestID('cell blah').within(() => {
       cy.get('line').should('not.exist')
@@ -195,6 +204,9 @@ describe('The Annotations UI functionality', () => {
       .type('lets edit this annotation...')
 
     cy.getByTestID('edit-annotation-submit-button').click()
+
+    // reload to make sure the annotation was edited in the backend as well.
+    cy.reload()
 
     // annotation tooltip should say the new name
     cy.getByTestID('cell blah').within(() => {

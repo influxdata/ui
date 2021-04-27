@@ -910,7 +910,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
 
             // and also load the third result
             cy.getByTestID(
-              'variable-dropdown--input-typeAhead-dependent'
+              'variable-dropdown-input-typeAhead--dependent'
             ).should('have.value', 'beans')
 
             cy.getByTestID(

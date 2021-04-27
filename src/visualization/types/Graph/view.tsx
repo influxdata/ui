@@ -211,7 +211,7 @@ const XYPlot: FC<Props> = ({
           'add-annotation',
           {
             createAnnotation,
-            startTime: plotInteraction.valueX,
+            startTime: plotInteraction?.clampedValueX ?? plotInteraction.valueX,
           },
           () => {
             event('xyplot.annotations.create_annotation.cancel')

@@ -903,20 +903,15 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
             cy.get(`#${defaultBucket}`).click()
 
             // default select the first result
-            cy.getByTestID('variable-dropdown--build').should(
-              'contain',
-              'beans'
-            )
-
-            // and also load the third result
-            cy.getByTestID('variable-dropdown--button')
-              .eq(2)
-              .should('contain', 'beans')
-
             cy.getByTestID('variable-dropdown-input-typeAhead--build').should(
               'have.value',
               'beans'
             )
+
+            // and also load the third result
+            cy.getByTestID(
+              'variable-dropdown--input-typeAhead-dependent'
+            ).should('have.value', 'beans')
 
             cy.getByTestID(
               'variable-dropdown-input-typeAhead--dependent'

@@ -1401,4 +1401,155 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     cy.wait('@refreshCellQuery')
     cy.wait('@refreshSecondQuery')
   })
+
+  // auto refresh tests
+
+  describe('Dashboard auto refresh', () => {
+    const jumpAheadTime = (timeAhead = '00:00:00') => {
+      return Cypress.moment()
+        .add(Cypress.moment.duration(timeAhead))
+        .format('YYYY-MM-DD HH:mm:ss')
+    }
+
+    beforeEach(() => {
+      cy.get('@org').then(({id: orgID, name}: Organization) => {
+        cy.createDashboard(orgID).then(({body}) => {
+          cy.fixture('routes').then(({orgs}) => {
+            cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+            cy.getByTestID('tree-nav')
+          })
+        })
+        cy.window().then(win => {
+          cy.wait(1000)
+          win.influx.set('new-auto-refresh', true)
+        })
+        cy.createBucket(orgID, name, 'schmucket')
+        const now = Date.now()
+        cy.writeData(
+          [
+            `test,container_name=cool dopeness=12 ${now - 1000}000000`,
+            `test,container_name=beans dopeness=18 ${now - 1200}000000`,
+            `test,container_name=cool dopeness=14 ${now - 1400}000000`,
+            `test,container_name=beans dopeness=10 ${now - 1600}000000`,
+          ],
+          'schmucket'
+        )
+      })
+      cy.getByTestID('button').click()
+      cy.getByTestID('switch-to-script-editor').should('be.visible')
+      cy.getByTestID('switch-to-script-editor').click()
+      cy.getByTestID('toolbar-tab').click()
+      const query1 = `from(bucket: "schmucket")
+  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+  |> filter(fn: (r) => r["container_name"] == "cool")`
+      cy.getByTestID('flux-editor')
+        .should('be.visible')
+        .click()
+        .focused()
+        .type(query1)
+      cy.getByTestID('overlay').within(() => {
+        cy.getByTestID('page-title').click()
+        cy.getByTestID('renamable-page-title--input')
+          .clear()
+          .type('blah')
+        cy.getByTestID('save-cell--button').click()
+      })
+    })
+
+    // it('can enable the auto refresh process via the modal, then manually stop the process via the stop button', done => {
+    //   cy.getByTestID('enable-auto-refresh-button').click()
+    //   cy.getByTestID('auto-refresh-overlay').should('be.visible')
+    //   cy.getByTestID('auto-refresh-overlay').within(() => {
+    //     cy.getByTestID('autorefresh-dropdown--button').click()
+    //     cy.getByTestID('auto-refresh-5s').click()
+    //     cy.getByTestID('timerange-dropdown').click()
+    //   })
+    //   cy.getByTestID('timerange-popover--dialog').within(() => {
+    //     cy.getByTestID('timerange--input')
+    //       .clear()
+    //       .type(`${jumpAheadTime(60 * 60 * 1000)}`)
+    //     cy.getByTestID('daterange--apply-btn').click()
+    //   })
+    //   cy.intercept('POST', '/query', req => {
+    //     req.alias = 'refreshQuery'
+    //   })
+    //   cy.getByTestID('auto-refresh-overlay').within(() => {
+    //     cy.getByTestID('refresh-form-activate-button').click()
+    //   })
+    //   cy.wait('@refreshQuery')
+    //   cy.wait('@refreshQuery')
+    //   cy.getByTestID('enable-auto-refresh-button').click()
+    //   cy.getByTestID('enable-auto-refresh-button').then(el => {
+    //     expect(el[0].getAttribute('title')).to.equal('Enable Auto Refresh')
+    //   })
+    //   cy.wait('@refreshQuery')
+    //   cy.on('fail', err => {
+    //     expect(err.message).to.equal(
+    //       'Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 3rd request to the route: `refreshQuery`. No request ever occurred.'
+    //     )
+    //     done()
+    //   })
+    // })
+
+    it('can timeout on a preset timeout selected by the user', () => {
+      cy.getByTestID('enable-auto-refresh-button').click()
+      cy.getByTestID('auto-refresh-overlay').should('be.visible')
+      cy.getByTestID('auto-refresh-overlay').within(() => {
+        cy.getByTestID('autorefresh-dropdown--button').click()
+        cy.getByTestID('auto-refresh-5s').click()
+        cy.getByTestID('timerange-dropdown').click()
+      })
+      cy.getByTestID('timerange-popover--dialog').within(() => {
+        cy.getByTestID('timerange--input')
+          .clear()
+          .type(`${jumpAheadTime(20 * 1000)}`)
+        cy.getByTestID('daterange--apply-btn').click()
+      })
+      cy.intercept('POST', '/query', req => {
+        req.alias = 'refreshQuery'
+      })
+      cy.getByTestID('auto-refresh-overlay').within(() => {
+        cy.getByTestID('refresh-form-activate-button').click()
+      })
+      cy.wait('@refreshQuery')
+      cy.wait('@refreshQuery')
+      cy.wait(20000)
+      cy.getByTestID('enable-auto-refresh-button').then(el => {
+        expect(el[0].getAttribute('title')).to.equal('Enable Auto Refresh')
+      })
+    })
+
+    it.only('will stop auto refresh after inactivity timeout limit is set', () => {
+      cy.getByTestID('enable-auto-refresh-button').click()
+      cy.wait(1000)
+      cy.getByTestID('auto-refresh-overlay').within(() => {
+        cy.getByTestID('autorefresh-dropdown--button').click()
+        cy.getByTestID('auto-refresh-5s').click()
+        cy.getByTestID('timerange-dropdown').click()
+      })
+      cy.getByTestID('timerange-popover--dialog').within(() => {
+        cy.getByTestID('timerange--input')
+          .clear()
+          .type(`${jumpAheadTime('00:01:00')}`)
+        cy.getByTestID('daterange--apply-btn').click()
+      })
+      console.log(jumpAheadTime('00:01:00'))
+      cy.intercept('POST', '/query', req => {
+        req.alias = 'refreshQuery'
+      })
+      cy.getByTestID('auto-refresh-overlay').within(() => {
+        cy.getByTestID('inactivity-timeout-dropdown').click()
+        cy.get('div[title="1"]').click()
+      })
+      cy.getByTestID('auto-refresh-overlay').within(() => {
+        cy.getByTestID('refresh-form-activate-button').click()
+      })
+      cy.wait('@refreshQuery')
+      cy.wait('@refreshQuery')
+      cy.clock(Date.now())
+      cy.tick(100000)
+      // cy.wait(10000)
+
+    })
+  })
 })

@@ -14,10 +14,12 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {
+  CLOUD,
   CLOUD_URL,
   CLOUD_USAGE_PATH,
   CLOUD_BILLING_PATH,
   CLOUD_USERS_PATH,
+  CLOUD_SIGNOUT_PATHNAME,
 } from 'src/shared/constants'
 
 // Types
@@ -141,7 +143,16 @@ const UserWidget: FC<Props> = ({
         id="logout"
         label="Logout"
         testID="user-nav-item-logout"
-        linkElement={className => <Link className={className} to="/logout" />}
+        linkElement={className => (
+          <Link
+            className={className}
+            to={
+              CLOUD && isFlagEnabled('authSessionCookieOn')
+                ? CLOUD_SIGNOUT_PATHNAME
+                : '/logout'
+            }
+          />
+        )}
       />
     </TreeNav.User>
   )

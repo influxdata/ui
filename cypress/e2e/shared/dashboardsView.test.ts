@@ -839,9 +839,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       })
     })
 
-
     it('ensures that dependent variables load one another accordingly, even with reload and cleared local storage', () => {
-
       cy.get('@org').then(({id: orgID}: Organization) => {
         cy.createDashboard(orgID).then(({body: dashboard}) => {
           cy.get<string>('@defaultBucket').then((defaultBucket: string) => {

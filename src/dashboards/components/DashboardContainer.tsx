@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useEffect, useCallback, useRef} from 'react'
-import {connect, ConnectedProps, useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import GetResource from 'src/resources/components/GetResource'
@@ -28,14 +28,17 @@ import {notify} from 'src/shared/actions/notifications'
 // History
 import {useRouteMatch} from 'react-router-dom'
 
-const {Active} = AutoRefreshStatus
-
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps
-
-const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
+const DashboardContainer: FC = () => {
   const timer = useRef(null)
   const dispatch = useDispatch()
+  const {autoRefresh, dashboard} = useSelector((state: AppState) => {
+    const dashboard = state.currentDashboard.id
+    const autoRefresh = state.autoRefresh[dashboard] || AUTOREFRESH_DEFAULT
+    return {
+      autoRefresh,
+      dashboard,
+    }
+  })
   const isEditing = useRouteMatch(
     '/orgs/:orgID/dashboards/:dashboardID/cells/:cellID/edit'
   )
@@ -141,15 +144,4 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
   )
 }
 
-const mstp = (state: AppState) => {
-  const dashboard = state.currentDashboard.id
-  const autoRefresh = state.autoRefresh[dashboard] || AUTOREFRESH_DEFAULT
-  return {
-    autoRefresh,
-    dashboard,
-  }
-}
-
-const connector = connect(mstp)
-
-export default connector(DashboardContainer)
+export default DashboardContainer

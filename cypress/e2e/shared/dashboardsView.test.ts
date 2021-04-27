@@ -12,12 +12,6 @@ describe('Dashboard', () => {
         })
       })
     )
-
-    cy.window().then(win => {
-      // I hate to add this, but the influx object isn't ready yet
-      cy.wait(1000)
-      win.influx.set(typeAheadFlag, true)
-    })
   })
 
   it("can edit a dashboard's name", () => {

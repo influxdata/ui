@@ -77,23 +77,6 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
     document.removeEventListener('keypress', registerListeners)
   }, [registerListeners, timer])
 
-  useEffect(() => {
-    if (
-      autoRefresh?.status &&
-      autoRefresh.status === AutoRefreshStatus.Active &&
-      autoRefresh.inactivityTimeout > 0
-    ) {
-      registerListeners()
-      document.addEventListener('visibilitychange', visChangeHandler)
-    } else {
-      registerStopListeners()
-    }
-    return () => {
-      registerStopListeners()
-      document.removeEventListener('visibilitychange', visChangeHandler)
-    }
-  }, [autoRefresh?.status, autoRefresh.inactivityTimeout])
-
   const stopFunc = useCallback(() => {
     if (
       !autoRefresh.infiniteDuration &&
@@ -110,17 +93,34 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
   ])
 
   useEffect(() => {
-    if (autoRefresh.status === Active) {
-      GlobalAutoRefresher.poll(autoRefresh, stopFunc)
+    if (isEditing) {
+      registerStopListeners()
+      GlobalAutoRefresher.stopPolling()
       return
     }
-
-    GlobalAutoRefresher.stopPolling()
-
-    return function cleanup() {
+    if (
+      autoRefresh?.status &&
+      autoRefresh.status === AutoRefreshStatus.Active &&
+      autoRefresh.inactivityTimeout > 0
+    ) {
+      registerListeners()
+      GlobalAutoRefresher.poll(autoRefresh, stopFunc)
+      document.addEventListener('visibilitychange', visChangeHandler)
+    } else {
+      registerStopListeners()
       GlobalAutoRefresher.stopPolling()
     }
-  }, [autoRefresh.status, autoRefresh, stopFunc])
+    return () => {
+      registerStopListeners()
+      GlobalAutoRefresher.stopPolling()
+      document.removeEventListener('visibilitychange', visChangeHandler)
+    }
+  }, [
+    autoRefresh?.status,
+    autoRefresh.inactivityTimeout,
+    stopFunc,
+    isEditing?.path,
+  ])
 
   useEffect(() => {
     dispatch(setCurrentPage('dashboard'))
@@ -129,17 +129,6 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
     }
   }, [dispatch])
 
-  useEffect(() => {
-    if (isEditing) {
-      registerStopListeners()
-      GlobalAutoRefresher.stopPolling()
-    } else {
-      if (autoRefresh.status === Active) {
-        registerListeners()
-        GlobalAutoRefresher.poll(autoRefresh, stopFunc)
-      }
-    }
-  }, [isEditing?.path])
   return (
     <DashboardRoute>
       <GetResource resources={[{type: ResourceType.Dashboards, id: dashboard}]}>

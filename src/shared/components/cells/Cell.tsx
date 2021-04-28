@@ -16,10 +16,19 @@ import {getByID} from 'src/resources/selectors'
 import {resetQueryCacheByQuery} from 'src/shared/apis/queryCache'
 
 // Types
-import {RemoteDataState, AppState, View, Cell, ResourceType} from 'src/types'
+import {
+  RemoteDataState,
+  AppState,
+  View,
+  Cell,
+  ResourceType,
+  Variable,
+} from 'src/types'
+import {getAllVariables} from 'src/variables/selectors'
 
 interface StateProps {
   view: View
+  variables: Variable[]
 }
 
 interface OwnProps {
@@ -40,12 +49,12 @@ class CellComponent extends Component<Props, State> {
   }
 
   private handleRefreshProcess = (): void => {
-    const {view} = this.props
+    const {view, variables} = this.props
     if (view.properties?.type === 'markdown') {
       return
     }
     view.properties?.queries?.forEach(query => {
-      resetQueryCacheByQuery(query.text)
+      resetQueryCacheByQuery(query.text, variables)
     })
   }
 
@@ -137,8 +146,8 @@ class CellComponent extends Component<Props, State> {
 
 const mstp = (state: AppState, ownProps: OwnProps) => {
   const view = getByID<View>(state, ResourceType.Views, ownProps.cell.id)
-
-  return {view}
+  const variables = getAllVariables(state)
+  return {view, variables}
 }
 
 export default connect<StateProps, {}, OwnProps>(mstp)(CellComponent)

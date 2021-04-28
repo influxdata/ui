@@ -69,7 +69,7 @@ class SearchWidget extends Component<Props, State> {
           className="search-widget-input"
           tabIndex={tabIndex}
         >
-          <ClearButton onClear={this.clear} />
+          {searchTerm && <ClearButton onClear={this.clear} />}
         </Input>
       </ErrorBoundary>
     )

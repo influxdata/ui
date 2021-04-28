@@ -96,7 +96,7 @@ const DashboardList: FC<Props> = ({dashboards, org}) => {
         onChange={handleInputChange}
         id="filter-dashboards"
       >
-        <ClearButton onClear={clear} style={{top: 7}} />
+        {searchTerm && <ClearButton onClear={clear} />}
       </Input>
       {dashboardsList}
     </>

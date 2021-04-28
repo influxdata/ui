@@ -17,8 +17,6 @@ import {AutoRefreshStatus} from 'src/types'
 // Once the Beta region API is built out by Quartz:
 // influxdata/quartz#4369
 // Beta Regions contain the hostname of the beta regions
-export const BETA_REGIONS = ['europe-west1-1.gcp.cloud2.influxdata.com']
-
 function formatConstant(constant: string) {
   if (!constant) {
     return ''

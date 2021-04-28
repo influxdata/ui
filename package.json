@@ -59,7 +59,7 @@
     "currentApi": "oats ${REMOTE}contracts/oss.yml > ./src/client/generatedRoutes.ts",
     "unity": "oats ${REMOTE}contracts/priv/unity.yml > ./src/client/unityRoutes.ts",
     "flowd": "oats ${REMOTE}contracts/priv/flowd.yml > ./src/client/flowsRoutes.ts",
-    "notebooks": "oats ${REMOTE}contracts/priv/notebookd.yml > ./src/client/notebooksRoutes.ts",
+    "notebooks": "oats ./src/client/swagger/notebooks.yml > ./src/client/notebooksRoutes.ts",
     "annotationd": "oats ${REMOTE}contracts/priv/annotationd.yml > ./src/client/annotationdRoutes.ts",
     "mapsd": "oats ${REMOTE}contracts/mapsd.yml > ./src/client/mapsdRoutes.ts",
     "managedFunctions": "oats ${REMOTE}contracts/managed-functions.yml > ./src/client/managedFunctionsRoutes.ts"

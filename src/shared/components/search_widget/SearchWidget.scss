@@ -1,3 +1,18 @@
 .search-widget-input {
   flex: 1 0 80px;
 }
+
+.searchWidget-clearButton {
+  color: lightGray;
+  z-index: 2;
+  position: absolute;
+  top: 5px;
+  right: 8px;
+  background: inherit;
+  font-size: 1.3em;
+  border: none;
+
+  &:hover {
+    color: purple;
+  }
+}

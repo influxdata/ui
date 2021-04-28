@@ -63,7 +63,11 @@ class SearchWidget extends Component<Props, State> {
           onBlur={this.handleBlur}
           testID={testID}
           className="search-widget-input"
-        />
+        >
+          <button className="searchWidget-clearButton" onClick={this.clear}>
+            &times;
+          </button>
+        </Input>
       </ErrorBoundary>
     )
   }
@@ -77,7 +81,13 @@ class SearchWidget extends Component<Props, State> {
   }
 
   private handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    console.log('changed.... ack! valu enow: ', e.target?.value)
+
     this.setState({searchTerm: e.target.value}, this.handleSearch)
+  }
+
+  private clear = (): void => {
+    this.setState({searchTerm: ''}, this.handleSearch)
   }
 }
 

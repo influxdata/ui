@@ -9,7 +9,6 @@ import {gaEvent, updateReportingContext} from 'src/cloud/utils/reporting'
 // import {runAlertsStatusesQuery} from 'src/alerting/utils/statuses'
 
 // Actions
-// import {setAlertsStatuses, setAlertsStatusesStatus, setMe, setQuartzMe, setQuartzMeStatus} from 'src/me/actions/creators'
 import {setMe, setQuartzMe, setQuartzMeStatus} from 'src/me/actions/creators'
 
 // Reducers

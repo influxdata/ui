@@ -3,10 +3,7 @@ import React, {FC, useMemo} from 'react'
 
 // Components
 import {Panel, Heading, HeadingElement, FontWeight} from '@influxdata/clockface'
-import {
-  runAlertsStatusesQuery,
-  STATUSES_FIELDS,
-} from 'src/alerting/utils/statuses'
+import {runAlertsStatusesQuery} from 'src/alerting/utils/statuses'
 import {connect} from 'react-redux'
 import EventViewer from 'src/eventViewer/components/EventViewer'
 import EventTable from 'src/eventViewer/components/EventTable'
@@ -17,18 +14,22 @@ import {RouteComponentProps, useParams} from 'react-router'
 import GetResources from 'src/resources/components/GetResources'
 import {getCheckIDs} from 'src/checks/selectors'
 import {AppState} from 'src/types'
-
-const fields = STATUSES_FIELDS
+import {Fields} from 'src/eventViewer/types'
 
 interface StateProps {
   resourceIDs: ResourceIDs
 }
 
-type Props = RouteComponentProps<{orgID: string}> & StateProps
+interface Props {
+  fields: Fields
+}
 
-const AlertsStatuses: FC<Omit<Props, 'history' | 'location' | 'match'>> = ({
-  resourceIDs,
-}) => {
+type ComponentProps = RouteComponentProps<{orgID: string}> & StateProps & Props
+
+const AlertsStatuses: FC<Omit<
+  ComponentProps,
+  'history' | 'location' | 'match'
+>> = ({resourceIDs, fields}) => {
   const {orgID} = useParams<{orgID: string}>()
 
   const loadRows = useMemo(

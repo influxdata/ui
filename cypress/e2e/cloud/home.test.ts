@@ -52,9 +52,7 @@ from(bucket: "_tasks")
   |> range(start: -1d)
 |> v1.fieldsAsCols()
 |> distinct(column: "name")
-`
-  const script2 = `__PREVIOUS_RESULT__
-  |> keep(columns: ["_value", "taskID", "status"])
+|> keep(columns: ["_value", "taskID", "status"])
 |> rename(columns: {
   "taskID": "_check_id"{del}{del}
 })
@@ -88,15 +86,8 @@ from(bucket: "_tasks")
   cy.getByTestID('add-flow-btn--rawFluxEditor').click()
   cy.getByTestID('flux-editor').type(script1)
 
-  // Add 2nd Cell
+  // Add 2rd Cell
   cy.getByTestID('panel-add-btn-0').click()
-  cy.getByTestID('add-flow-btn--rawFluxEditor').click()
-  cy.getByTestID('flux-editor')
-    .eq(1)
-    .type(script2)
-
-  // Add 3rd Cell
-  cy.getByTestID('panel-add-btn-1').click()
   cy.getByTestID('add-flow-btn--toBucket').click()
   cy.getByTestID('flow-bucket-selector').click()
   cy.getByTestID('flow-bucket-selector--_monitoring').click()

@@ -18,6 +18,7 @@ import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
 interface OwnProps {
   taskID: string
   run: Run
+  runTask: any
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -55,6 +56,13 @@ class TaskRunsRow extends PureComponent<Props, State> {
               text="View Logs"
               onClick={this.handleToggleOverlay}
             />
+            <Button
+              key={run.id}
+              size={ComponentSize.ExtraSmall}
+              color={ComponentColor.Default}
+              text="ReRun Task"
+              onClick={this.handleRunTask}
+            />
             {this.renderLogOverlay}
           </IndexList.Cell>
         </IndexList.Row>
@@ -83,6 +91,18 @@ class TaskRunsRow extends PureComponent<Props, State> {
     getLogs(taskID, run.id)
 
     this.setState({isImportOverlayVisible: !this.state.isImportOverlayVisible})
+  }
+
+  private handleRunTask = () => {
+    const {
+      runTask,
+      taskID,
+    } = this.props
+    try {
+      runTask(taskID)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   private get renderLogOverlay(): JSX.Element {

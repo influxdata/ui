@@ -13,6 +13,7 @@ import {SortTypes} from 'src/shared/utils/sort'
 
 // Utils
 import {getSortedResources} from 'src/shared/utils/sort'
+import { runTask } from '../actions/thunks'
 
 interface Props {
   taskID: string
@@ -21,6 +22,7 @@ interface Props {
   sortDirection: Sort
   sortType: SortTypes
   onClickColumn: (nextSort: Sort, sortKey: SortKey) => void
+  runTask: any
 }
 
 type SortKey = keyof Run
@@ -96,7 +98,7 @@ export default class TaskRunsList extends PureComponent<Props> {
     )
 
     return sortedRuns.map(run => (
-      <TaskRunsRow key={`run-id==${run.id}`} taskID={taskID} run={run} />
+      <TaskRunsRow key={`run-id==${run.id}`} taskID={taskID} run={run} runTask={runTask} />
     ))
   }
 }

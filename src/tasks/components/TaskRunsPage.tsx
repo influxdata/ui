@@ -87,6 +87,7 @@ class TaskRunsPage extends PureComponent<Props, State> {
               sortDirection={sortDirection}
               sortType={sortType}
               onClickColumn={this.handleClickColumn}
+              runTask={this.handleRunTask}
             />
           </Page.Contents>
         </Page>

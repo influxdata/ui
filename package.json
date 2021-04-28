@@ -51,7 +51,7 @@
     "cy:dev": "source ../monitor-ci/.env && CYPRESS_baseUrl=https://$INGRESS_HOST:$PORT_HTTPS cypress open --config testFiles='{cloud,shared}/**/*.*'",
     "cy:dev-oss": "source ../monitor-ci/.env && CYPRESS_baseUrl=https://$INGRESS_HOST:$PORT_HTTPS cypress open --config testFiles='{oss,shared}/**/*.*'",
     "generate": "export SHA=db012e23e057e325be4e7ad9c4e3b6a49f2cbc31 && export REMOTE=https://raw.githubusercontent.com/influxdata/openapi/${SHA}/ && yarn currentApi && yarn unity && yarn flowd && yarn managedFunctions",
-    "generate-local": "export REMOTE=../openapi/ && yarn currentApi && yarn unity && yarn flowd && yarn managedFunctions",
+    "generate-local": "export REMOTE=../openapi/ && yarn currentApi && yarn unity && yarn flowd && yarn notebooks && yarn managedFunctions",
     "oss": "oats ${REMOTE}contracts/oss-diff.yml > ./src/client/ossRoutes.ts",
     "cloud": "oats ${REMOTE}contracts/cloud-diff.yml > ./src/client/cloudRoutes.ts",
     "common": "oats ${REMOTE}contracts/common.yml > ./src/client/commonRoutes.ts",
@@ -59,6 +59,7 @@
     "currentApi": "oats ${REMOTE}contracts/oss.yml > ./src/client/generatedRoutes.ts",
     "unity": "oats ${REMOTE}contracts/priv/unity.yml > ./src/client/unityRoutes.ts",
     "flowd": "oats ${REMOTE}contracts/priv/flowd.yml > ./src/client/flowsRoutes.ts",
+    "notebooks": "oats ${REMOTE}contracts/priv/notebookd.yml > ./src/client/notebooksRoutes.ts",
     "annotationd": "oats ${REMOTE}contracts/priv/annotationd.yml > ./src/client/annotationdRoutes.ts",
     "mapsd": "oats ${REMOTE}contracts/mapsd.yml > ./src/client/mapsdRoutes.ts",
     "managedFunctions": "oats ${REMOTE}contracts/managed-functions.yml > ./src/client/managedFunctionsRoutes.ts"
@@ -154,8 +155,8 @@
   "dependencies": {
     "@influxdata/clockface": "^2.6.9",
     "@influxdata/flux": "^0.5.1",
-    "@influxdata/flux-lsp-browser": "^0.5.41",
-    "@influxdata/giraffe": "^2.7.6",
+    "@influxdata/flux-lsp-browser": "^0.5.42",
+    "@influxdata/giraffe": "^2.8.0",
     "@influxdata/influx": "0.5.5",
     "@influxdata/influxdb-templates": "0.9.0",
     "@influxdata/react-custom-scrollbars": "4.3.8",

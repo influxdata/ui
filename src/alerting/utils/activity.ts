@@ -14,9 +14,9 @@ import {Fields, LoadRowsOptions, Row} from 'src/eventViewer/types'
 // Components
 import LevelTableField from 'src/alerting/components/LevelTableField'
 import TimeTableField from 'src/alerting/components/TimeTableField'
-import CheckHistoryTableField from 'src/checks/components/CheckHistoryTableField'
+import CheckActivityTableField from 'src/checks/components/CheckActivityTableField'
 
-export const runAlertsStatusesQuery = (
+export const runAlertsActivityQuery = (
   orgID: string,
   {offset, limit, since}: LoadRowsOptions
 ): CancelBox<StatusRow[]> => {
@@ -40,7 +40,7 @@ from(bucket: "${MONITORING_BUCKET}")
   |> limit(n: ${limit}, offset: ${offset})
 `
 
-  event('runQuery', {context: 'runAlertsStatusesQuery'})
+  event('runQuery', {context: 'runAlertsActivityQuery'})
 
   return processResponse(runQuery(orgID, query)) as CancelBox<StatusRow[]>
 }
@@ -98,7 +98,7 @@ export const STATUSES_FIELDS: Fields = [
     rowKey: 'checkName',
     columnName: 'Check',
     columnWidth: 150,
-    component: CheckHistoryTableField,
+    component: CheckActivityTableField,
   },
   {
     rowKey: 'checkMessage',

@@ -8,7 +8,7 @@ describe('Home Page Tests', () => {
       cy.get('@org').then(() => {
         cy.getByTestID('home-page--header').should('be.visible')
         cy.window().then(w => {
-          w.influx.set('alertsStatuses', true)
+          w.influx.set('alertsActivity', true)
           w.influx.set('notebooks', true)
         })
 
@@ -17,34 +17,34 @@ describe('Home Page Tests', () => {
     })
   })
 
-  it('should load empty Alerts Statuses dashboard', () => {
-    cy.getByTestID('alerts-statuses')
+  it('should load empty Alerts Activity dashboard', () => {
+    cy.getByTestID('alerts-activity')
       .scrollIntoView()
       .should('be.visible')
-    cy.getByTestID('alerts-statuses-table-container')
+    cy.getByTestID('alerts-activity-table-container')
       .find('.event-row')
       .should('have.length', 0)
   })
 
-  it('should populate and load populated Alerts Statuses dashboard', () => {
-    cy.getByTestID('alerts-statuses')
+  it('should populate and load populated Alerts Activity dashboard', () => {
+    cy.getByTestID('alerts-activity')
       .scrollIntoView()
       .should('be.visible')
-    cy.getByTestID('alerts-statuses-table-container')
+    cy.getByTestID('alerts-activity-table-container')
       .find('.event-row')
       .should('have.length', 0)
 
     createChecks()
-    exportMockAlertsStatuses()
+    exportMockAlertsActivity()
 
     cy.visit('/')
-    cy.getByTestID('alerts-statuses-table-container')
+    cy.getByTestID('alerts-activity-table-container')
       .find('.event-row')
       .should('have.length', 2)
   })
 })
 
-const exportMockAlertsStatuses = () => {
+const exportMockAlertsActivity = () => {
   const script1 = `import "influxdata/influxdb/v1"
 import "influxdata/influxdb/monitor"
 

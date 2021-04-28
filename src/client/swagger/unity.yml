@@ -212,6 +212,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BillingNotifySettings'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Notification Settings nil or User/Org not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '406':
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
           description: Unexpected error
           content:
@@ -236,6 +254,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BillingNotifySettings'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
           description: Unexpected error
           content:
@@ -267,11 +297,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  '/payment/form':
+  '/payment_form/{form}':
     get:
       operationId: GetPaymentForm
       tags:
         - PaymentGateway
+      parameters:
+        - in: path
+          name: form
+          required: true
+          schema:
+            type: string
+            enum: [checkout, billing]
+          description: The name of the PaymentForm to query.
+          example: 'checkout'
       responses:
         '200':
           description: A CreditCard Form parameter object
@@ -279,6 +318,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreditCardParams'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: User or Form not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '406':
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
           description: Unexpected error
           content:
@@ -832,8 +895,26 @@ paths:
             schema:
               $ref: '#/components/schemas/CheckoutRequest'
       responses:
-        '204':
-          description: Account upgraded
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Org/User not found or Beta region
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
           description: Unexpected error
           content:

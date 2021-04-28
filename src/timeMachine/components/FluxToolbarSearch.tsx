@@ -1,13 +1,11 @@
 // Libraries
-import React, {PureComponent, ChangeEvent} from 'react'
+import React, {PureComponent} from 'react'
 import {debounce} from 'lodash'
 
 // Components
-import {Input} from '@influxdata/clockface'
+import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 
 // Types
-import {InputType, IconFont} from '@influxdata/clockface'
-
 interface Props {
   onSearch: (s: string) => void
   resourceName: string
@@ -31,14 +29,14 @@ class FluxToolbarSearch extends PureComponent<Props, State> {
   }
 
   public render() {
+    const {searchTerm} = this.state
+
     return (
       <div className="flux-toolbar--search">
-        <Input
-          type={InputType.Text}
-          icon={IconFont.Search}
-          placeholder={`Filter ${this.props.resourceName}...`}
-          onChange={this.handleChange}
-          value={this.state.searchTerm}
+        <SearchWidget
+          placeholderText={`Filter ${this.props.resourceName}...`}
+          onSearch={this.handleChange}
+          searchTerm={searchTerm}
           testID="flux-toolbar-search--input"
         />
       </div>
@@ -49,8 +47,8 @@ class FluxToolbarSearch extends PureComponent<Props, State> {
     this.props.onSearch(this.state.searchTerm)
   }
 
-  private handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    this.setState({searchTerm: e.target.value}, this.handleSearch)
+  private handleChange = (searchTerm: string): void => {
+    this.setState({searchTerm}, this.handleSearch)
   }
 }
 

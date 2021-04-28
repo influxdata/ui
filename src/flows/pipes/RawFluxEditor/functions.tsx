@@ -11,6 +11,7 @@ import {
 import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
 import {FluxToolbarFunction} from 'src/types/shared'
 import Fn from './function'
+import SearchWidget from '../../../shared/components/search_widget/SearchWidget'
 
 interface Props {
   onSelect: (fn: FluxToolbarFunction) => void
@@ -74,12 +75,10 @@ const Functions: FC<Props> = ({onSelect}) => {
   return (
     <div className="flux-toolbar">
       <div className="flux-toolbar--search">
-        <Input
-          type={InputType.Text}
-          icon={IconFont.Search}
-          placeholder="Filter Functions..."
-          onChange={updateSearch}
-          value={search}
+        <SearchWidget
+          placeholderText="Filter Functions..."
+          onSearch={updateSearch}
+          searchTerm={search}
           testID="flux-toolbar-search--input"
         />
       </div>

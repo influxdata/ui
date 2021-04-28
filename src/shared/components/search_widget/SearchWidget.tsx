@@ -4,6 +4,7 @@ import {debounce} from 'lodash'
 
 // Components
 import {Input} from '@influxdata/clockface'
+import ClearButton from './ClearButton'
 
 // Types
 import {IconFont} from '@influxdata/clockface'
@@ -17,6 +18,7 @@ interface Props {
   placeholderText: string
   searchTerm: string
   testID: string
+  tabIndex?: number
 }
 
 interface State {
@@ -50,8 +52,10 @@ class SearchWidget extends Component<Props, State> {
   }
 
   public render() {
-    const {placeholderText, testID} = this.props
+    const {placeholderText, testID, tabIndex = 0} = this.props
     const {searchTerm} = this.state
+
+    // if tab index isn't there, b/c 0 is falsy it just won't be included
 
     return (
       <ErrorBoundary>
@@ -63,10 +67,9 @@ class SearchWidget extends Component<Props, State> {
           onBlur={this.handleBlur}
           testID={testID}
           className="search-widget-input"
+          tabIndex={tabIndex}
         >
-          <button className="searchWidget-clearButton" onClick={this.clear}>
-            &times;
-          </button>
+          <ClearButton onClear={this.clear} />
         </Input>
       </ErrorBoundary>
     )

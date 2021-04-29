@@ -32,14 +32,9 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
                         method: 'GET',
                       })
                       .then(secondResp => {
-                        console.log(Cypress.config().baseUrl)
-                        console.log(secondResp.headers.location)
                         cy.request({
                           url:
-                            'http://dex-twodotoh.a.influxcloud.dev.local' +
-                            // Cypress.config().baseUrl +
-                            // '/dex' + // dex in monitor-ci
-                            secondResp.headers.location,
+                            Cypress.env('dexUrl') + secondResp.headers.location,
                           method: 'POST',
                           form: true,
                           body: {

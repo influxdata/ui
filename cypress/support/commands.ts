@@ -4,7 +4,6 @@ import 'cypress-file-upload'
 
 export const signin = (): Cypress.Chainable<Cypress.Response> => {
   return cy.setupUser().then((response: any) => {
-    console.log(response)
     wrapDefaultUser()
       .then(() => wrapDefaultPassword())
       .then(() => {

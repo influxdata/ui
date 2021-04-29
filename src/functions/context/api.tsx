@@ -1,17 +1,17 @@
 import {
-  getApiV2Functions,
-  deleteApiV2Function,
-  postApiV2Function,
+  getApiV2PocFunctions,
+  deleteApiV2PocFunction,
+  postApiV2PocFunction,
   FunctionCreateRequest,
-  postApiV2FunctionsTrigger,
+  postApiV2PocFunctionsTrigger,
   FunctionTriggerRequest,
-  patchApiV2Function,
+  patchApiV2PocFunction,
   FunctionUpdateRequest,
-  getApiV2FunctionsRuns,
+  getApiV2PocFunctionsRuns,
 } from 'src/client/managedFunctionsRoutes'
 
 export const createAPI = async (functionCreate: FunctionCreateRequest) => {
-  const res = await postApiV2Function({data: functionCreate})
+  const res = await postApiV2PocFunction({data: functionCreate})
 
   if (res.status != 201) {
     throw new Error(res.data.message)
@@ -20,7 +20,7 @@ export const createAPI = async (functionCreate: FunctionCreateRequest) => {
 }
 
 export const deleteAPI = async (id: string) => {
-  const res = await deleteApiV2Function({functionID: id})
+  const res = await deleteApiV2PocFunction({functionID: id})
 
   if (res.status != 204) {
     throw new Error(res.data.message)
@@ -28,7 +28,7 @@ export const deleteAPI = async (id: string) => {
 }
 
 export const getAllAPI = async (orgID: string) => {
-  const res = await getApiV2Functions({query: {orgID}})
+  const res = await getApiV2PocFunctions({query: {orgID}})
   if (res.status != 200) {
     throw new Error(res.data.message)
   }
@@ -36,7 +36,7 @@ export const getAllAPI = async (orgID: string) => {
 }
 
 export const triggerAPI = async (triggerRequest: FunctionTriggerRequest) => {
-  const res = await postApiV2FunctionsTrigger({
+  const res = await postApiV2PocFunctionsTrigger({
     data: triggerRequest,
   })
 
@@ -50,7 +50,7 @@ export const updateAPI = async (
   functionID: string,
   updateRequest: FunctionUpdateRequest
 ) => {
-  const res = await patchApiV2Function({functionID, data: updateRequest})
+  const res = await patchApiV2PocFunction({functionID, data: updateRequest})
 
   if (res.status != 200) {
     throw new Error(res.data.message)
@@ -59,7 +59,7 @@ export const updateAPI = async (
 }
 
 export const getRunsAPI = async (functionID: string) => {
-  const res = await getApiV2FunctionsRuns({functionID})
+  const res = await getApiV2PocFunctionsRuns({functionID})
 
   if (res.status != 200) {
     throw new Error(res.data.message)

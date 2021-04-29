@@ -31,14 +31,10 @@ describe('The Annotations UI functionality', () => {
     cy.getByTestID('add-cell--button')
       .click()
       .then(() => {
-        cy.getByTestID('selector-list schmucket')
-          .click()
-          .getByTestID(`selector-list m`)
-          .click()
-          .getByTestID('selector-list v')
-          .click()
-          .getByTestID(`selector-list tv1`)
-          .click()
+        cy.getByTestID('selector-list schmucket').click()
+        cy.getByTestID(`selector-list m`).should('exist').click()
+        cy.getByTestID('selector-list v').should('exist').click()
+        cy.getByTestID(`selector-list tv1`).should('exist').click()
           .then(() => {
             cy.getByTestID('time-machine-submit-button').click()
           })
@@ -60,7 +56,12 @@ describe('The Annotations UI functionality', () => {
     // cy.clearLocalStorage only clears for current domain/subdomain.
     // Putting it here so it clears the data at this subdomain consistently.
     // https://github.com/cypress-io/cypress/issues/2573
-    cy.clearLocalStorage()
+    // cy.clearLocalStorage()
+
+    cy.window().then((window) => {
+      window.sessionStorage.clear();
+      window.localStorage.clear();
+    });
   })
 
   it('can create an annotation when the graph is clicked and the control bar is open', () => {
@@ -264,9 +265,9 @@ describe('The Annotations UI functionality', () => {
       .click()
       .then(() => {
         cy.getByTestID('selector-list schmucket').click()
-        cy.getByTestID(`selector-list m`).click()
-        cy.getByTestID('selector-list v').click()
-        cy.getByTestID(`selector-list tv1`)
+        cy.getByTestID(`selector-list m`).should('exist').click()
+        cy.getByTestID('selector-list v').should('exist').click()
+        cy.getByTestID(`selector-list tv1`).should('exist')
           .click()
           .then(() => {
             cy.getByTestID('time-machine-submit-button').click()

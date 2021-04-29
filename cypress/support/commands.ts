@@ -3,48 +3,74 @@ import {Bucket, Organization} from '../../src/client'
 import 'cypress-file-upload'
 
 export const signin = (): Cypress.Chainable<Cypress.Response> => {
-  return cy.setupUser().then(() => {
-    cy.request({
-      method: 'GET',
-      url: '/api/v2/signin?redirectTo=' + Cypress.config().baseUrl,
-      followRedirect: false,
-    }).then(resp =>
-      cy
-        .request({
-          url: resp.headers.location,
-          followRedirect: false,
-          method: 'GET',
-        })
-        .then(secondResp => {
-          console.log(Cypress.config().baseUrl)
-          console.log(secondResp.headers.location)
-          cy.request({
-            url:
-              // 'http://dex-twodotoh.a.influxcloud.dev.local' +
-              Cypress.config().baseUrl +
-              '/dex' + // dex in monitor-ci
-              secondResp.headers.location,
-            method: 'POST',
-            form: true,
-            body: {login: '1mcfly@influxdata.com', password: 'password'},
-            followRedirect: false,
-          }).then(thirdResp => {
-            const req = thirdResp.headers.location.split('/approval?req=')[1]
-            cy.request({
-              url: thirdResp.redirectedToUrl,
-              followRedirect: true,
-              form: true,
-              method: 'POST',
-              body: {req: req, approval: 'approve'},
-            }).then(() => {
-              cy.visit('/')
-              cy.getCookie('session').should('exist')
-              cy.location('pathname').should('not.eq', '/signin')
+  return cy.setupUser().then((response: any) => {
+    console.log(response)
+    wrapDefaultUser()
+      .then(() => wrapDefaultPassword())
+      .then(() => {
+        cy.get<string>('@defaultUser').then((defaultUser: string) => {
+          const username = Cypress._.get(
+            response,
+            'body.user.name',
+            defaultUser
+          )
+          cy.wrap(username)
+            .as('defaultUser')
+            .then(() => {
+              cy.get<string>('@defaultPassword').then(
+                (defaultPassword: string) => {
+                  cy.request({
+                    method: 'GET',
+                    url:
+                      '/api/v2/signin?redirectTo=' + Cypress.config().baseUrl,
+                    followRedirect: false,
+                  }).then(resp =>
+                    cy
+                      .request({
+                        url: resp.headers.location,
+                        followRedirect: false,
+                        method: 'GET',
+                      })
+                      .then(secondResp => {
+                        console.log(Cypress.config().baseUrl)
+                        console.log(secondResp.headers.location)
+                        cy.request({
+                          url:
+                            'http://dex-twodotoh.a.influxcloud.dev.local' +
+                            // Cypress.config().baseUrl +
+                            // '/dex' + // dex in monitor-ci
+                            secondResp.headers.location,
+                          method: 'POST',
+                          form: true,
+                          body: {
+                            login: username,
+                            password: defaultPassword,
+                          },
+                          followRedirect: false,
+                        }).then(thirdResp => {
+                          const req = thirdResp.headers.location.split(
+                            '/approval?req='
+                          )[1]
+                          cy.request({
+                            url: thirdResp.redirectedToUrl,
+                            followRedirect: true,
+                            form: true,
+                            method: 'POST',
+                            body: {req: req, approval: 'approve'},
+                          }).then(() => {
+                            cy.visit('/')
+                            cy.getCookie('session').should('exist')
+                            cy.location('pathname').should('not.eq', '/signin')
+                          })
+                        })
+                      })
+                      .then(() => wrapEnvironmentVariablesForCloud())
+                  )
+                }
+              )
             })
-          })
         })
-        .then(() => wrapEnvironmentVariablesForCloud())
-    )
+      })
   })
 }
 

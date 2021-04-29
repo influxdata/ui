@@ -26,9 +26,9 @@ const WriteDataSearchBar: FC = () => {
       icon={IconFont.Search}
       onChange={handleInputChange}
       autoFocus={true}
-    >
-      {searchTerm && <ClearButton style={{fontSize: '2em'}} onClear={clear} />}
-    </Input>
+      onClear={clear}
+      clearBtnStyle={{fontSize: '2.4em', top: 1}}
+    ></Input>
   )
 }
 

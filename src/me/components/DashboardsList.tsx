@@ -21,7 +21,6 @@ import {getSortedDashboardNames} from 'src/me/constants'
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 import {getAll} from 'src/resources/selectors'
-import ClearButton from '../../shared/components/search_widget/ClearButton'
 
 interface StateProps {
   dashboards: Dashboard[]
@@ -95,9 +94,8 @@ const DashboardList: FC<Props> = ({dashboards, org}) => {
         placeholder="Filter dashboards..."
         onChange={handleInputChange}
         id="filter-dashboards"
-      >
-        {searchTerm && <ClearButton onClear={clear} />}
-      </Input>
+        onClear={clear}
+      ></Input>
       {dashboardsList}
     </>
   )

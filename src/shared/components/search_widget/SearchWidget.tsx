@@ -4,7 +4,6 @@ import {debounce} from 'lodash'
 
 // Components
 import {Input} from '@influxdata/clockface'
-import ClearButton from './ClearButton'
 
 // Types
 import {IconFont} from '@influxdata/clockface'
@@ -68,9 +67,8 @@ class SearchWidget extends Component<Props, State> {
           testID={testID}
           className="search-widget-input"
           tabIndex={tabIndex}
-        >
-          {searchTerm && <ClearButton onClear={this.clear} />}
-        </Input>
+          onClear={this.clear}
+        ></Input>
       </ErrorBoundary>
     )
   }

@@ -31,7 +31,7 @@ import {
   Row,
   SearchExpr,
   SearchTagExpr,
-} from 'src/eventViewer/types'
+} from 'src/types/eventViewer'
 
 export const loadStatuses = (
   orgID: string,

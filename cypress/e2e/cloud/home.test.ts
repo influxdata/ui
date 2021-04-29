@@ -12,6 +12,8 @@ describe('Home Page Tests', () => {
           w.influx.set('notebooks', true)
         })
 
+        // setting influx flag takes a bit as cy.window is async call and the test
+        // execution starts right after before the flag change actually comes into effect
         cy.wait(1000)
       })
     })
@@ -38,6 +40,9 @@ describe('Home Page Tests', () => {
     exportMockAlertsActivity()
 
     cy.visit('/')
+    cy.getByTestID('alerts-activity')
+      .scrollIntoView()
+      .should('be.visible')
     cy.getByTestID('alerts-activity-table-container')
       .find('.event-row')
       .should('have.length', 2)

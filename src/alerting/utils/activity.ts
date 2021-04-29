@@ -9,7 +9,7 @@ import {MONITORING_BUCKET} from 'src/alerting/constants'
 // Types
 import {CancelBox, StatusRow} from 'src/types'
 import {RunQueryResult} from 'src/shared/apis/query'
-import {Fields, LoadRowsOptions, Row} from 'src/eventViewer/types'
+import {Fields, LoadRowsOptions, Row} from 'src/types/eventViewer'
 
 // Components
 import LevelTableField from 'src/alerting/components/LevelTableField'
@@ -75,34 +75,3 @@ export const processResponse = ({
     cancel,
   }
 }
-
-export const STATUSES_FIELDS: Fields = [
-  {
-    rowKey: 'time',
-    columnName: 'time',
-    columnWidth: 160,
-    component: TimeTableField,
-  },
-  {
-    rowKey: 'level',
-    columnName: 'level',
-    columnWidth: 50,
-    component: LevelTableField,
-  },
-  {
-    rowKey: 'checkID',
-    columnName: 'ID',
-    columnWidth: 150,
-  },
-  {
-    rowKey: 'checkName',
-    columnName: 'Check',
-    columnWidth: 150,
-    component: CheckActivityTableField,
-  },
-  {
-    rowKey: 'checkMessage',
-    columnName: 'Message',
-    columnWidth: 300,
-  },
-]

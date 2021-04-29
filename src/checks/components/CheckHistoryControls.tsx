@@ -5,7 +5,7 @@ import React, {FC} from 'react'
 import SearchBar from 'src/alerting/components/SearchBar'
 
 // Types
-import {EventViewerChildProps} from 'src/eventViewer/types'
+import {EventViewerChildProps} from 'src/types/eventViewer'
 
 // Constants
 import {EXAMPLE_STATUS_SEARCHES} from 'src/alerting/constants/history'

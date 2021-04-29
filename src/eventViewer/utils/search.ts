@@ -6,7 +6,7 @@ import {
   SearchBooleanExpr,
   SearchStringLiteral,
   SearchRegexLiteral,
-} from 'src/eventViewer/types'
+} from 'src/types/eventViewer'
 
 /*
   Parse search input into an AST.

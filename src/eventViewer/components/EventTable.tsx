@@ -20,7 +20,7 @@ import {
 } from 'src/eventViewer/components/EventViewer.reducer'
 
 // Types
-import {EventViewerChildProps, Fields} from 'src/eventViewer/types'
+import {EventViewerChildProps, Fields} from 'src/types/eventViewer'
 import {RemoteDataState} from 'src/types'
 
 // Constants

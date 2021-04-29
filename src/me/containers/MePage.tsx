@@ -29,9 +29,6 @@ import {AppState} from 'src/types'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-// Constants
-import {STATUSES_FIELDS} from 'src/alerting/utils/activity'
-
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
@@ -63,9 +60,7 @@ export class MePage extends PureComponent<Props> {
                     </Panel.Body>
                   </Panel>
                   <Docs />
-                  {isFlagEnabled('alertsActivity') && (
-                    <AlertsActivity fields={STATUSES_FIELDS} />
-                  )}
+                  {isFlagEnabled('alertsActivity') && <AlertsActivity />}
                 </FlexBox>
               </Grid.Column>
               <Grid.Column widthSM={Columns.Four} widthMD={Columns.Three}>

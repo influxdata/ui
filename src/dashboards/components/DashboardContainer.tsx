@@ -51,6 +51,7 @@ const DashboardContainer: FC = () => {
       dispatch(resetDashboardAutoRefresh(dashboard))
       dispatch(notify(dashboardAutoRefreshTimeoutSuccess()))
       registerStopListeners()
+      GlobalAutoRefresher.stopPolling()
     }, autoRefresh.inactivityTimeout)
 
     window.addEventListener('load', registerListeners)
@@ -101,18 +102,20 @@ const DashboardContainer: FC = () => {
       GlobalAutoRefresher.stopPolling()
       return
     }
+
     if (
       autoRefresh?.status &&
-      autoRefresh.status === AutoRefreshStatus.Active &&
-      autoRefresh.inactivityTimeout > 0
+      autoRefresh.status === AutoRefreshStatus.Active
     ) {
-      registerListeners()
       GlobalAutoRefresher.poll(autoRefresh, stopFunc)
-      document.addEventListener('visibilitychange', visChangeHandler)
+      if (autoRefresh.inactivityTimeout > 0) {
+        registerListeners()
+        document.addEventListener('visibilitychange', visChangeHandler)
+      }
     } else {
       registerStopListeners()
-      GlobalAutoRefresher.stopPolling()
     }
+
     return () => {
       registerStopListeners()
       GlobalAutoRefresher.stopPolling()

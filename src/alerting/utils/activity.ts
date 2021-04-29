@@ -9,12 +9,7 @@ import {MONITORING_BUCKET} from 'src/alerting/constants'
 // Types
 import {CancelBox, StatusRow} from 'src/types'
 import {RunQueryResult} from 'src/shared/apis/query'
-import {Fields, LoadRowsOptions, Row} from 'src/types/eventViewer'
-
-// Components
-import LevelTableField from 'src/alerting/components/LevelTableField'
-import TimeTableField from 'src/alerting/components/TimeTableField'
-import CheckActivityTableField from 'src/checks/components/CheckActivityTableField'
+import {LoadRowsOptions, Row} from 'src/types/eventViewer'
 
 export const runAlertsActivityQuery = (
   orgID: string,

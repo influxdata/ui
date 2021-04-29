@@ -3,7 +3,6 @@ import {lines} from '../../support/commands'
 describe('The Annotations UI functionality', () => {
   beforeEach(() => {
     cy.flush()
-    cy.clearLocalStorage()
     cy.signin().then(() =>
       cy.fixture('routes').then(({orgs}) => {
         cy.get('@org').then(({id: orgID}: Organization) => {
@@ -57,6 +56,13 @@ describe('The Annotations UI functionality', () => {
     cy.getByTestID('annotations-one-click-toggle').click()
   })
 
+  afterEach(() => {
+    // cy.clearLocalStorage only clears for current domain/subdomain.
+    // Putting it here so it clears the data at this subdomain consistently.
+    // https://github.com/cypress-io/cypress/issues/2573
+    cy.clearLocalStorage()
+  })
+
   it('can create an annotation when the graph is clicked and the control bar is open', () => {
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').click()
@@ -69,6 +75,9 @@ describe('The Annotations UI functionality', () => {
         .type('im a hippopotamus')
       cy.getByTestID('add-annotation-submit').click()
     })
+
+    // reload to make sure the annotation was added in the backend as well.
+    cy.reload()
 
     // we need to see if the annotations got created and that the tooltip says "yoho"
     cy.getByTestID('cell blah').within(() => {
@@ -94,6 +103,9 @@ describe('The Annotations UI functionality', () => {
         .type('im a hippopotamus')
       cy.getByTestID('add-annotation-submit').click()
     })
+
+    // reload to make sure the annotation was added in the backend as well.
+    cy.reload()
 
     // should have the annotation created and the tooltip should says "im a hippopotamus"
     cy.getByTestID('cell blah').within(() => {
@@ -162,6 +174,9 @@ describe('The Annotations UI functionality', () => {
 
     cy.getByTestID('delete-annotation-button').click()
 
+    // reload to make sure the annotation was deleted from the backend as well.
+    cy.reload()
+
     // annotation line should not exist in the dashboard cell
     cy.getByTestID('cell blah').within(() => {
       cy.get('line').should('not.exist')
@@ -195,6 +210,9 @@ describe('The Annotations UI functionality', () => {
       .type('lets edit this annotation...')
 
     cy.getByTestID('edit-annotation-submit-button').click()
+
+    // reload to make sure the annotation was edited in the backend as well.
+    cy.reload()
 
     // annotation tooltip should say the new name
     cy.getByTestID('cell blah').within(() => {
@@ -245,13 +263,10 @@ describe('The Annotations UI functionality', () => {
     cy.getByTestID('button')
       .click()
       .then(() => {
-        cy.getByTestID('selector-list schmucket')
-          .click()
-          .getByTestID(`selector-list m`)
-          .click()
-          .getByTestID('selector-list v')
-          .click()
-          .getByTestID(`selector-list tv1`)
+        cy.getByTestID('selector-list schmucket').click()
+        cy.getByTestID(`selector-list m`).click()
+        cy.getByTestID('selector-list v').click()
+        cy.getByTestID(`selector-list tv1`)
           .click()
           .then(() => {
             cy.getByTestID('time-machine-submit-button').click()

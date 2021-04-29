@@ -1,4 +1,5 @@
 export interface CancelBox<T> {
+  id?: string
   promise: Promise<T>
   cancel: () => void
 }

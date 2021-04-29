@@ -18,17 +18,19 @@ import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 import {PROJECT_NAME} from 'src/flows'
 import {
-  PostApiV2privateFlowsOrgsFlowParams,
-  PatchApiV2privateFlowsOrgsFlowParams,
-  DeleteApiV2privateFlowsOrgsFlowParams,
-} from 'src/client/flowsRoutes'
-import {
   pooledUpdateAPI,
   createAPI,
   deleteAPI,
   getAllAPI,
   migrateLocalFlowsToAPI,
 } from 'src/flows/context/api'
+import {
+  pooledUpdateAPI as pooledUpdateAPINotebooks,
+  createAPI as createAPINotebooks,
+  deleteAPI as deleteAPINotebooks,
+  getAllAPI as getAllAPINotebooks,
+  migrateLocalFlowsToAPI as migrateLocalFlowsToAPINotebooks,
+} from 'src/flows/context/notebooks.api'
 import {notify} from 'src/shared/actions/notifications'
 import {
   notebookCreateFail,
@@ -36,6 +38,7 @@ import {
 } from 'src/shared/copy/notifications'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
+const notebookAPIFlag = 'notebooks-api'
 export interface FlowListContextType extends FlowList {
   add: (flow?: Flow) => Promise<string>
   update: (id: string, flow: Flow) => void
@@ -216,7 +219,7 @@ export const FlowListProvider: FC = ({children}) => {
       }
     }
 
-    const apiFlow: PostApiV2privateFlowsOrgsFlowParams = {
+    const apiFlow = {
       orgID,
       data: {
         orgID: orgID,
@@ -226,7 +229,9 @@ export const FlowListProvider: FC = ({children}) => {
     }
     let id: string = `local_${UUID()}`
     try {
-      id = await createAPI(apiFlow)
+      id = isFlagEnabled(notebookAPIFlag)
+        ? await createAPINotebooks(apiFlow)
+        : await createAPI(apiFlow)
     } catch {
       dispatch(notify(notebookCreateFail()))
     }
@@ -265,7 +270,7 @@ export const FlowListProvider: FC = ({children}) => {
       [id]: data,
     })
 
-    const apiFlow: PatchApiV2privateFlowsOrgsFlowParams = {
+    const apiFlow = {
       id,
       orgID,
       data: {
@@ -275,7 +280,9 @@ export const FlowListProvider: FC = ({children}) => {
         spec: serialize(data),
       },
     }
-    pooledUpdateAPI(apiFlow)
+    isFlagEnabled(notebookAPIFlag)
+      ? pooledUpdateAPINotebooks(apiFlow)
+      : pooledUpdateAPI(apiFlow)
   }
 
   const remove = async (id: string) => {
@@ -283,7 +290,9 @@ export const FlowListProvider: FC = ({children}) => {
       ...flows,
     }
     try {
-      await deleteAPI({orgID, id} as DeleteApiV2privateFlowsOrgsFlowParams)
+      isFlagEnabled(notebookAPIFlag)
+        ? await deleteAPINotebooks({id})
+        : await deleteAPI({orgID, id})
     } catch (error) {
       dispatch(notify(notebookDeleteFail()))
     }
@@ -297,7 +306,9 @@ export const FlowListProvider: FC = ({children}) => {
   }
 
   const getAll = useCallback(async (): Promise<void> => {
-    const data = await getAllAPI(orgID)
+    const data = isFlagEnabled(notebookAPIFlag)
+      ? await getAllAPINotebooks(orgID)
+      : await getAllAPI(orgID)
     if (data && data.flows) {
       const _flows = {}
       data.flows.forEach(f => (_flows[f.id] = hydrate(f.spec)))
@@ -316,12 +327,9 @@ export const FlowListProvider: FC = ({children}) => {
   )
 
   const migrate = async () => {
-    const _flows = await migrateLocalFlowsToAPI(
-      orgID,
-      flows,
-      serialize,
-      dispatch
-    )
+    const _flows = isFlagEnabled(notebookAPIFlag)
+      ? await migrateLocalFlowsToAPINotebooks(orgID, flows, serialize, dispatch)
+      : await migrateLocalFlowsToAPI(orgID, flows, serialize, dispatch)
     setFlows({..._flows})
     if (currentID && currentID.includes('local')) {
       // if we migrated the local currentID flow, reset currentID

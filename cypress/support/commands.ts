@@ -6,7 +6,7 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
   return cy.setupUser().then(() => {
     cy.request({
       method: 'GET',
-      url: '/api/v2/signin?redirectTo=https://twodotoh.a.influxcloud.dev.local', // + Cypress.config().baseUrl,
+      url: '/api/v2/signin?redirectTo=' + Cypress.config().baseUrl,
       followRedirect: false,
     }).then(resp =>
       cy
@@ -16,10 +16,13 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
           method: 'GET',
         })
         .then(secondResp => {
+          console.log(Cypress.config().baseUrl)
           console.log(secondResp.headers.location)
           cy.request({
             url:
-              'http://dex-twodotoh.a.influxcloud.dev.local' +
+              // 'http://dex-twodotoh.a.influxcloud.dev.local' +
+              Cypress.config().baseUrl +
+              '/dex' + // dex in monitor-ci
               secondResp.headers.location,
             method: 'POST',
             form: true,
@@ -33,15 +36,14 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
               form: true,
               method: 'POST',
               body: {req: req, approval: 'approve'},
+            }).then(() => {
+              cy.visit('/')
+              cy.getCookie('session').should('exist')
+              cy.location('pathname').should('not.eq', '/signin')
             })
-              .then(() => {
-                cy.visit('/')
-                cy.getCookie('session').should('exist')
-                cy.location('pathname').should('not.eq', '/signin')
-              })
-              .then(() => wrapEnvironmentVariablesForCloud())
           })
         })
+        .then(() => wrapEnvironmentVariablesForCloud())
     )
   })
 }

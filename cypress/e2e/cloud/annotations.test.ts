@@ -59,11 +59,7 @@ describe('The Annotations UI functionality', () => {
   })
 
   afterEach(() => {
-    // cy.clearLocalStorage only clears for current domain/subdomain.
-    // Putting it here so it clears the data at this subdomain consistently.
-    // https://github.com/cypress-io/cypress/issues/2573
-    // cy.clearLocalStorage()
-
+    // clear the local storage after each test.
     cy.window().then(window => {
       window.sessionStorage.clear()
       window.localStorage.clear()

@@ -3,62 +3,46 @@ import {Bucket, Organization} from '../../src/client'
 import 'cypress-file-upload'
 
 export const signin = (): Cypress.Chainable<Cypress.Response> => {
-  /* \ OSS login
-    return cy.setupUser().then(body => {
-      return cy
+  return cy.setupUser().then(() => {
+    cy.request({
+      method: 'GET',
+      url: '/api/v2/signin?redirectTo=https://twodotoh.a.influxcloud.dev.local', // + Cypress.config().baseUrl,
+      followRedirect: false,
+    }).then(resp =>
+      cy
         .request({
-          method: 'POST',
-          url: '/api/v2/signin',
-          auth: {user: Cypress.env('username'), pass: Cypress.env('password')},
+          url: resp.headers.location,
+          followRedirect: false,
+          method: 'GET',
         })
-        .then(() => {
-          return cy.wrap(body)
-        })
-    })
-  \*/
-  return cy.setupUser().then(response => {
-    // const route = Cypress.env('inkind') ? '/' : '/api/v2/signin'
-    wrapDefaultUser()
-      .then(() => wrapDefaultPassword())
-      .then(() =>
-        cy
-          .visit('/')
-          .then(() => {
-            cy.get<string>('@defaultUser').then((defaultUser: string) => {
-              const username = Cypress._.get(
-                response,
-                'body.user.name',
-                defaultUser
-              )
-              cy.get('#login').type(username)
-              cy.wrap(username).as('defaultUser')
+        .then(secondResp => {
+          console.log(secondResp.headers.location)
+          cy.request({
+            url:
+              'http://dex-twodotoh.a.influxcloud.dev.local' +
+              secondResp.headers.location,
+            method: 'POST',
+            form: true,
+            body: {login: '1mcfly@influxdata.com', password: 'password'},
+            followRedirect: false,
+          }).then(thirdResp => {
+            const req = thirdResp.headers.location.split('/approval?req=')[1]
+            cy.request({
+              url: thirdResp.redirectedToUrl,
+              followRedirect: true,
+              form: true,
+              method: 'POST',
+              body: {req: req, approval: 'approve'},
             })
-          })
-          .then(() => {
-            cy.get<string>('@defaultPassword')
-              .then((defaultPassword: string) => {
-                cy.get('#password').type(defaultPassword)
-              })
-              .then(() => cy.get('#submit-login').click())
               .then(() => {
-                cy.get('body').then($body => {
-                  /**
-                   * we are conditionally rendering this test case since it's only
-                   * relevant to CLOUD tests in order to click the `Grant Access` button
-                   * that's rendered by Dex in the CLOUD development environment.
-                   *
-                   * We are using this conditional test based on the following doc suggestions:
-                   * https://docs.cypress.io/guides/core-concepts/conditional-testing.html#Element-existence
-                   **/
-                  if ($body.find('.theme-btn--success').length) {
-                    cy.get('.theme-btn--success').click()
-                  }
-                })
+                cy.visit('/')
+                cy.getCookie('session').should('exist')
+                cy.location('pathname').should('not.eq', '/signin')
               })
-              .then(() => cy.location('pathname').should('not.eq', '/signin'))
+              .then(() => wrapEnvironmentVariablesForCloud())
           })
-          .then(() => wrapEnvironmentVariablesForCloud())
-      )
+        })
+    )
   })
 }
 

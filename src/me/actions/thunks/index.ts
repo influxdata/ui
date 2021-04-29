@@ -2,7 +2,8 @@
 import HoneyBadger from 'honeybadger-js'
 
 // API
-import {client, getMeQuartz as apiGetQuartzMe} from 'src/utils/api'
+import {getMe as getMeQuartzGen} from 'src/client/unityRoutes'
+import {client} from 'src/utils/api'
 
 // Utils
 import {gaEvent, updateReportingContext} from 'src/cloud/utils/reporting'
@@ -44,7 +45,7 @@ export const getMe = () => async dispatch => {
 export const getQuartzMe = () => async dispatch => {
   try {
     dispatch(setQuartzMeStatus(RemoteDataState.Loading))
-    const resp = await apiGetQuartzMe()
+    const resp = await getMeQuartzGen({})
 
     if (resp.status !== 200) {
       throw new Error(resp.data.message)

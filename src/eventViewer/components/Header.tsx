@@ -2,7 +2,7 @@
 import React, {FC} from 'react'
 
 // Types
-import {Fields} from 'src/types/eventViewer'
+import {Fields} from 'src/types'
 
 interface Props {
   fields: Fields

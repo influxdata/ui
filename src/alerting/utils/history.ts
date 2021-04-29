@@ -26,12 +26,7 @@ import {
   AlertHistoryType,
 } from 'src/types'
 
-import {
-  LoadRowsOptions,
-  Row,
-  SearchExpr,
-  SearchTagExpr,
-} from 'src/types/eventViewer'
+import {LoadRowsOptions, Row, SearchExpr, SearchTagExpr} from 'src/types'
 
 export const loadStatuses = (
   orgID: string,

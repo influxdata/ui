@@ -9,7 +9,7 @@ import {Page} from '@influxdata/clockface'
 
 // Types
 import {AlertHistoryType} from 'src/types'
-import {EventViewerChildProps} from 'src/types/eventViewer'
+import {EventViewerChildProps} from 'src/types'
 
 // Constants
 import {

@@ -4,7 +4,7 @@ import {parseSearchInput} from 'src/eventViewer/utils/search'
 // Types
 import {Dispatch as ReactDispatch} from 'react'
 import {RemoteDataState} from 'src/types'
-import {Row, LoadRows, SearchExpr} from 'src/types/eventViewer'
+import {Row, LoadRows, SearchExpr} from 'src/types'
 
 export interface State {
   // All rows currently in the table

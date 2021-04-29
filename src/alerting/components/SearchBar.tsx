@@ -18,7 +18,7 @@ import {search} from 'src/eventViewer/components/EventViewer.reducer'
 import {isSearchInputValid} from 'src/eventViewer/utils/search'
 
 // Types
-import {EventViewerChildProps} from 'src/types/eventViewer'
+import {EventViewerChildProps} from 'src/types'
 
 const SUGGESTION_CLASS = 'status-search-bar--suggestion'
 

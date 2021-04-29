@@ -3,7 +3,7 @@ import React, {createContext, FC, useMemo} from 'react'
 
 // Types
 import {ResourceType} from 'src/types'
-import {Fields} from 'src/types/eventViewer'
+import {Fields} from 'src/types'
 
 // Components
 import {Panel, Heading, HeadingElement, FontWeight} from '@influxdata/clockface'

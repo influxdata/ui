@@ -69,6 +69,10 @@ module.exports = {
         use: [{loader: 'raw-loader'}],
       },
       {
+        test: /\.example$/,
+        use: [{loader: 'raw-loader'}],
+      },
+      {
         test: /\.s?css$/i,
         use: [
           process.env.NODE_ENV === 'production'

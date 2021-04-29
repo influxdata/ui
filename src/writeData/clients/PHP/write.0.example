@@ -1,0 +1,6 @@
+$writeApi = $client->createWriteApi();
+
+$data = "mem,host=host1 used_percent=23.43234543";
+
+$writeApi->write($data, WritePrecision::S, $bucket, $org);
+

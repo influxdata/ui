@@ -5,7 +5,7 @@ info:
 servers:
   - url: ''
 paths:
-  '/api/v2/functions':
+  '/api/v2/poc-functions':
     get:
       operationId: GetFunctions
       tags:
@@ -72,7 +72,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  '/api/v2/functions/trigger':
+  '/api/v2/poc-functions/trigger':
     post:
       operationId: PostFunctionsTrigger
       tags:
@@ -98,7 +98,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  '/api/v2/functions/{functionID}':
+  '/api/v2/poc-functions/{functionID}':
     get:
       operationId: GetFunctionsID
       tags:
@@ -179,7 +179,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  '/api/v2/functions/{functionID}/invoke':
+  '/api/v2/poc-functions/{functionID}/invoke':
     get:
       operationId: GetFunctionsIDInvoke
       tags:
@@ -228,7 +228,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FunctionHTTPResponseData'
-  '/api/v2/functions/{functionID}/runs':
+  '/api/v2/poc-functions/{functionID}/runs':
     get:
       operationId: GetFunctionsIDRuns
       tags:
@@ -266,7 +266,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  '/api/v2/functions/{functionID}/runs/{runID}':
+  '/api/v2/poc-functions/{functionID}/runs/{runID}':
     get:
       operationId: GetFunctionsIDRunsID
       tags:

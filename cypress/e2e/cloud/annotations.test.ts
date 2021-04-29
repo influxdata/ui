@@ -60,6 +60,7 @@ describe('The Annotations UI functionality', () => {
 
   afterEach(() => {
     // clear the local storage after each test.
+    // See: https://github.com/cypress-io/cypress/issues/2573
     cy.window().then(window => {
       window.sessionStorage.clear()
       window.localStorage.clear()

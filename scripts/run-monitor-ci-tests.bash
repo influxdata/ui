@@ -87,7 +87,12 @@ if [[ -z "${OSS_SHA:-}" ]]; then
 	# set the parameters for starting the monitor-ci pipeline from the UI repo
 	DEPLOY_PROD=false
 	if [[ "${UI_BRANCH}" == "master" ]]; then
-		DEPLOY_PROD=false # TODO: change this to true when we're ready to depend on this script
+		# In order to deploy to prod:
+		# - UI_BRANCH must be 'master'
+		# - MONITOR_CI_BRANCH must be 'master'
+		# - DEPLOY_PROD must be 'true'
+		# UI_BRANCH, DEPLOY_PROD are both neccesary to ensure that UI_BRANCH parameter's default in the monitor-ci pipeline doesn't deploy us to production unless started by this script.
+		DEPLOY_PROD=true
 	fi
 	pipelineStartMsg="starting monitor-ci pipeline targeting monitor-ci branch ${MONITOR_CI_BRANCH}, UI branch ${UI_BRANCH} and using UI SHA ${SHA}"
 	reqData="{\"branch\":\"${MONITOR_CI_BRANCH}\", \"parameters\":{ \"ui-sha\":\"${SHA}\", \"ui-branch\":\"${UI_BRANCH}\", \"ui-pull-request\":\"${PULL_REQUEST}\", \"deploy-prod\":${DEPLOY_PROD}}}"

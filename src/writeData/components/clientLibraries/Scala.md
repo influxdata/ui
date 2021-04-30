@@ -1,4 +1,4 @@
-For more detailed and up to date information check out the [GitHub Repository](https://github.com/influxdata/influxdb-client-java/tree/master/client-scala)
+For more detailed and up to date information check out the <a href="https://github.com/influxdata/influxdb-client-java/tree/master/client-scala" target="_blank"  rel="noreferrer">GitHub Repository</a>
 
 ##### Add Dependency
 

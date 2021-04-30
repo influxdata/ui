@@ -66,7 +66,7 @@ export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
   return (
     <Grid.Column widthXS={Columns.Twelve}>
       <Form.Element
-        label="Start Time"
+        label="Start Time (UTC)"
         required={true}
         errorMessage={validationMessage}
       >

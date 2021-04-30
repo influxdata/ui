@@ -74,18 +74,21 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
   }
 
   const handleError = (error: Error): void => {
+    const message = getErrorMessage(error)
     setUploadState(RemoteDataState.Error)
     if (error.name === 'AbortError') {
       event('Aborting_CSV_Upload')
     }
-    if (error.message.includes('incorrectly formatted')) {
+    if (
+      message.includes('incorrectly formatted') ||
+      message.includes('The CSV could not be parsed')
+    ) {
       event('CSV_Upload_Format_Error')
     } else {
       reportErrorThroughHoneyBadger(error, {
         name: 'uploadCsv function',
       })
     }
-    const message = getErrorMessage(error)
     dispatch(notify(csvUploaderErrorNotification(message)))
   }
 
@@ -97,7 +100,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
           const {table, error} = fromFlux(csv)
           if (!table.length || error) {
             throw new Error(
-              `The CSV could not be parsed. Please make sure that CSV was in Annotated Format`
+              `The CSV could not be parsed. Please make sure that the CSV was in Annotated Format`
             )
           }
           const filtered = [

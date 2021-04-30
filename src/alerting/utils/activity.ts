@@ -23,7 +23,6 @@ from(bucket: "${MONITORING_BUCKET}")
   |> filter(fn: (r) => r._measurement == "statuses" and r._field == "_message")
   |> group(columns: ["_check_name", "_check_id"])
   |> last()
-  |> group()
   |> keep(columns: ["_level", "_time", "_value", "_check_name", "_check_id"])
   |> rename(columns: {
     "_time": "time",

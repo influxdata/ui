@@ -2,70 +2,92 @@ import {NotificationEndpoint} from '../../src/types'
 import {Bucket, Organization} from '../../src/client'
 import 'cypress-file-upload'
 
+const DEX_URL_VAR = 'dexUrl'
+
 export const signin = (): Cypress.Chainable<Cypress.Response> => {
   return cy.setupUser().then((response: any) => {
     wrapDefaultUser()
       .then(() => wrapDefaultPassword())
       .then(() => {
-        cy.get<string>('@defaultUser').then((defaultUser: string) => {
-          const username = Cypress._.get(
-            response,
-            'body.user.name',
-            defaultUser
-          )
-          cy.wrap(username)
-            .as('defaultUser')
-            .then(() => {
-              cy.get<string>('@defaultPassword').then(
-                (defaultPassword: string) => {
-                  cy.request({
-                    method: 'GET',
-                    url:
-                      '/api/v2/signin?redirectTo=' + Cypress.config().baseUrl,
-                    followRedirect: false,
-                  }).then(resp =>
-                    cy
-                      .request({
-                        url: resp.headers.location,
-                        followRedirect: false,
-                        method: 'GET',
-                      })
-                      .then(secondResp => {
-                        cy.request({
-                          url:
-                            Cypress.env('dexUrl') + secondResp.headers.location,
-                          method: 'POST',
-                          form: true,
-                          body: {
-                            login: username,
-                            password: defaultPassword,
-                          },
-                          followRedirect: false,
-                        }).then(thirdResp => {
-                          const req = thirdResp.headers.location.split(
-                            '/approval?req='
-                          )[1]
-                          cy.request({
-                            url: thirdResp.redirectedToUrl,
-                            followRedirect: true,
-                            form: true,
-                            method: 'POST',
-                            body: {req: req, approval: 'approve'},
-                          }).then(() => {
-                            cy.visit('/')
-                            cy.getCookie('session').should('exist')
-                            cy.location('pathname').should('not.eq', '/signin')
-                          })
-                        })
-                      })
-                      .then(() => wrapEnvironmentVariablesForCloud())
-                  )
-                }
-              )
-            })
+        cy.visit('/').then(() => {
+          cy.get<string>('@defaultUser').then((defaultUser: string) => {
+            const username = Cypress._.get(
+              response,
+              'body.user.name',
+              defaultUser
+            )
+            cy.wrap(username)
+              .as('defaultUser')
+              .then(() => {
+                cy.get<string>('@defaultPassword').then(
+                  (defaultPassword: string) => {
+                    if (Cypress.env(DEX_URL_VAR) === 'OSS') {
+                      return loginViaOSS(username, defaultPassword)
+                    } else {
+                      return loginViaDex(username, defaultPassword)
+                    }
+                  }
+                )
+              })
+              .then(() => cy.location('pathname').should('not.eq', '/signin'))
+              .then(() => wrapEnvironmentVariablesForCloud())
+          })
         })
       })
   })
+}
+
+// login via the purple OSS screen by typing in username/password
+// this is only used if you're using monitor-ci + DEV_MODE_CLOUD=0
+export const loginViaOSS = (username: string, password: string) => {
+  cy.get('#login').type(username)
+  cy.get('#password').type(password)
+  cy.get('#submit-login').click()
+}
+
+// uses DEX APIs to perform login
+// this is neccesary because for k8s-idpe dex is hosted on an alternative domain
+// and that makes cypress angry if you try and navigate outside the baseURL
+export const loginViaDex = (username: string, password: string) => {
+  return cy
+    .request({
+      method: 'GET',
+      url: '/api/v2/signin?redirectTo=' + Cypress.config().baseUrl,
+      followRedirect: false,
+    })
+    .then(resp =>
+      cy
+        .request({
+          url: resp.headers.location,
+          followRedirect: false,
+          method: 'GET',
+        })
+        .then(secondResp => {
+          cy.request({
+            url: Cypress.env(DEX_URL_VAR) + secondResp.headers.location,
+            method: 'POST',
+            form: true,
+            body: {
+              login: username,
+              password: password,
+            },
+            followRedirect: false,
+          }).then(thirdResp => {
+            const req = thirdResp.headers.location.split('/approval?req=')[1]
+            cy.request({
+              url: thirdResp.redirectedToUrl,
+              followRedirect: true,
+              form: true,
+              method: 'POST',
+              body: {req: req, approval: 'approve'},
+            }).then(() => {
+              cy.visit('/')
+              cy.getCookie('session').should('exist')
+              cy.location('pathname').should('not.eq', '/signin')
+            })
+          })
+        })
+    )
 }
 
 export const wrapEnvironmentVariablesForCloud = (): Cypress.Chainable<Cypress.Response> => {

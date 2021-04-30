@@ -49,7 +49,7 @@
     "tsc:watch": "yarn tsc --watch",
     "cy": "CYPRESS_dexUrl=https://$INGRESS_HOST:$PORT_HTTPS CYPRESS_baseUrl=http://localhost:9999 cypress open",
     "cy:dev": "source ../monitor-ci/.env && CYPRESS_dexUrl=https://$INGRESS_HOST:$PORT_HTTPS CYPRESS_baseUrl=https://$INGRESS_HOST:$PORT_HTTPS cypress open --config testFiles='{cloud,shared}/**/*.*'",
-    "cy:dev-oss": "source ../monitor-ci/.env && CYPRESS_dexUrl=https://$INGRESS_HOST:$PORT_HTTPS CYPRESS_baseUrl=https://$INGRESS_HOST:$PORT_HTTPS cypress open --config testFiles='{oss,shared}/**/*.*'",
+    "cy:dev-oss": "source ../monitor-ci/.env && CYPRESS_dexUrl=OSS CYPRESS_baseUrl=https://$INGRESS_HOST:$PORT_HTTPS cypress open --config testFiles='{oss,shared}/**/*.*'",
     "generate": "oats https://raw.githubusercontent.com/influxdata/influxdb/master/http/swagger.yml > ./src/client/generatedRoutes.ts && yarn unity && yarn flows && yarn notebooks && yarn managedFunctions",
     "unity": "oats ./src/client/swagger/unity.yml > ./src/client/unityRoutes.ts",
     "flows": "oats ./src/client/swagger/flows.yml > ./src/client/flowsRoutes.ts",

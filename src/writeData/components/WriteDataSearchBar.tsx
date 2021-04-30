@@ -27,7 +27,7 @@ const WriteDataSearchBar: FC = () => {
       onChange={handleInputChange}
       autoFocus={true}
       onClear={clear}
-      clearBtnStyle={{fontSize: '2.4em', top: 1}}
+      clearBtnStyle={{fontSize: '2.4em', top: 7}}
     ></Input>
   )
 }

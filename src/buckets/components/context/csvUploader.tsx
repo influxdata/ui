@@ -79,7 +79,10 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
     if (error.name === 'AbortError') {
       event('Aborting_CSV_Upload')
     }
-    if (message.includes('incorrectly formatted') || message.includes('The CSV could not be parsed')) {
+    if (
+      message.includes('incorrectly formatted') ||
+      message.includes('The CSV could not be parsed')
+    ) {
       event('CSV_Upload_Format_Error')
     } else {
       reportErrorThroughHoneyBadger(error, {

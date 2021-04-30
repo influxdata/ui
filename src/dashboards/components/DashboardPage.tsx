@@ -107,7 +107,7 @@ class DashboardPage extends Component<Props> {
                 component={EditAnnotationDashboardOverlay}
               />
             )}
-            {isFlagEnabled('new-auto-refresh') && (
+            {isFlagEnabled('newAutoRefresh') && (
               <Route
                 path={`${dashRoute}/autorefresh`}
                 component={AutoRefreshOverlay}

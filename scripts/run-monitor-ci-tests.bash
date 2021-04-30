@@ -96,7 +96,7 @@ pipeline_number=$(echo ${pipeline} | jq -r '.number')
 
 printf "\nwaiting for monitor-ci pipeline to begin...\n"
 sleep 1m
-printf "\nmonitor-ci pipeline has begun. Running pipeline number ${pipeline_number} with id ${pipeline_id}"
+printf "\nmonitor-ci pipeline has begun. Running pipeline number ${pipeline_number} with id ${pipeline_id}\n"
 
 # poll the status of the monitor-ci pipeline
 is_failure=0

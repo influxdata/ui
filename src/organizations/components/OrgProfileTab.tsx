@@ -83,7 +83,7 @@ class OrgProfileTab extends PureComponent<Props> {
               <h4>Common Ids</h4>
             </Panel.Header>
             <Panel.Body>
-              <div className="code-snippet" data-testid={'code-snippet'}>
+              <div className="code-snippet" data-testid="code-snippet">
                 <div className="code-snippet--text">
                   <pre>
                     <code>{this.props.me.id}</code>
@@ -97,7 +97,7 @@ class OrgProfileTab extends PureComponent<Props> {
                   <label className="code-snippet--label">{`${this.props.me.name} | User ID`}</label>
                 </div>
               </div>
-              <div className="code-snippet" data-testid={'code-snippet'}>
+              <div className="code-snippet" data-testid="code-snippet">
                 <div className="code-snippet--text">
                   <pre>
                     <code>{this.props.org.id}</code>

@@ -17,7 +17,7 @@ interface WriteDataDetailsContextType {
   changeToken: (token: Authorization) => void
 }
 
-const DEFAULT_WRITE_DATA_DETAILS_CONTEXT: WriteDataDetailsContextType = {
+export const DEFAULT_WRITE_DATA_DETAILS_CONTEXT: WriteDataDetailsContextType = {
   bucket: null,
   changeBucket: () => {},
   token: null,

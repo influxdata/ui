@@ -1604,5 +1604,56 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
         expect(el[0].getAttribute('title')).to.equal('Enable Auto Refresh')
       })
     })
+    it('can timeout on a preset inactivity timeout', done => {
+      cy.getByTestID('enable-auto-refresh-button').click()
+      cy.getByTestID('auto-refresh-overlay').should('be.visible')
+      cy.getByTestID('auto-refresh-overlay').within(() => {
+        cy.getByTestID('autorefresh-dropdown--button').click()
+        cy.getByTestID('auto-refresh-5s').click()
+        cy.getByTestID('timerange-dropdown').click()
+      })
+      cy.getByTestID('timerange-popover--dialog').within(() => {
+        cy.getByTestID('timerange--input')
+          .clear()
+          .type(`${jumpAheadTime('00:00:30')}`)
+        cy.getByTestID('daterange--apply-btn').click()
+      })
+      cy.intercept('POST', '/query', req => {
+        req.alias = 'refreshQuery'
+      })
+
+      cy.getByTestID('auto-refresh-overlay').within(() => {
+        cy.getByTestID('refresh-form-activate-button').click()
+      })
+      cy.window()
+        .its('store')
+        .invoke('dispatch', {
+          type: 'SET_INACTIVITY_TIMEOUT',
+          ...{
+            dashboardID: cy.state().window.store.getState().currentDashboard.id,
+            inactivityTimeout: 4000,
+          },
+        })
+
+      cy.wait(4000)
+      cy.getByTestID('enable-auto-refresh-button').should(
+        'have.attr',
+        'title',
+        'Enable Auto Refresh'
+      )
+      cy.getByTestID('notification-success--children')
+        .children()
+        .should(
+          'have.text',
+          'Your dashboard auto refresh settings have been reset due to inactivity '
+        )
+      cy.wait('@refreshQuery')
+      cy.on('fail', err => {
+        expect(err.message).to.equal(
+          'Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 1st request to the route: `refreshQuery`. No request ever occurred.'
+        )
+        done()
+      })
+    })
   })
 })

@@ -14,18 +14,18 @@ jobs:
       - checkout_monitor_ci
       - run:
           name: Copy over the testing variables
-          command: cp ./monitor-ci/env.testing ./monitor-ci/.env
+          command: cp ./monitor-ci/tree/UI-1054/env.testing ./monitor-ci/tree/UI-1054/.env
       - run:
           name: Build the ui docker image
           no_output_timeout: 15m
           command: |
-            cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
+            cp ./monitor-ci/tree/UI-1054/conf/chronograf/nginx.conf ./ui/
             docker build \
               --build-arg UI_SHA=testing \
               --build-arg CLOUD_URL=http://localhost/auth \
               --build-arg WEBPACK_FILE=fast \
               -t quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} \
-              -f ./monitor-ci/docker/Dockerfile.chronograf.prod \
+              -f ./monitor-ci/tree/UI-1054/docker/Dockerfile.chronograf.prod \
               ./ui
             mkdir -p docker-cache
             docker save -o docker-cache/image.tar quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1}
@@ -46,17 +46,17 @@ jobs:
       - checkout_monitor_ci
       - run:
           name: Copy over the testing variables
-          command: cp ./monitor-ci/env.testing.oss ./monitor-ci/.env
+          command: cp ./monitor-ci/tree/UI-1054/env.testing.oss ./monitor-ci/tree/UI-1054/.env
       - run:
           name: Build the ui oss docker image
           no_output_timeout: 15m
           command: |
-            cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
+            cp ./monitor-ci/tree/UI-1054/conf/chronograf/nginx.conf ./ui/
             docker build \
               --build-arg UI_SHA=testing \
               --build-arg WEBPACK_FILE=fast \
               -t quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} \
-              -f ./monitor-ci/docker/Dockerfile.chronograf.prod \
+              -f ./monitor-ci/tree/UI-1054/docker/Dockerfile.chronograf.prod \
               ./ui
             mkdir -p docker-cache-oss
             docker save -o docker-cache-oss/image.tar quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1}
@@ -79,7 +79,7 @@ jobs:
           name: Build the ui docker image
           no_output_timeout: 15m
           command: |
-            cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
+            cp ./monitor-ci/tree/UI-1054/conf/chronograf/nginx.conf ./ui/
             docker build \
               --build-arg HONEYBADGER_KEY=${HONEYBADGER_KEY} \
               --build-arg INJECT_HEADER="<script>(function (w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' }); var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f); })(window, document, 'script', 'dataLayer', '${GTM_ID}'); </script><script>window.userpilotSettings = {token: '72cf72g10'}</script><script src = 'https://js.userpilot.io/sdk/latest.js'></script>" \
@@ -87,7 +87,7 @@ jobs:
               --build-arg UI_SHA=${CIRCLE_SHA1} \
               --build-arg CLOUD_URL=/auth \
               -t quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1} \
-              -f ./monitor-ci/docker/Dockerfile.chronograf.prod \
+              -f ./monitor-ci/tree/UI-1054/docker/Dockerfile.chronograf.prod \
               ./ui
             mkdir -p docker-cache
             docker save -o docker-cache/image.tar quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1}
@@ -108,17 +108,17 @@ jobs:
       - checkout_monitor_ci
       - run:
           name: Copy over the testing variables
-          command: cp ./monitor-ci/env.testing ./monitor-ci/.env
+          command: cp ./monitor-ci/tree/UI-1054/env.testing ./monitor-ci/tree/UI-1054/.env
       - run:
           name: Build the ui docker image
           no_output_timeout: 15m
           command: |
-            cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
+            cp ./monitor-ci/tree/UI-1054/conf/chronograf/nginx.conf ./ui/
             docker build \
               --build-arg UI_SHA=testing \
               --build-arg CLOUD_URL=http://localhost/auth \
               -t quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} \
-              -f ./monitor-ci/docker/Dockerfile.chronograf.prod \
+              -f ./monitor-ci/tree/UI-1054/docker/Dockerfile.chronograf.prod \
               ./ui
             mkdir -p docker-cache
             docker save -o docker-cache/image.tar quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1}
@@ -152,7 +152,7 @@ jobs:
       - run:
           name: Deploy the image
           command: |
-            cd ./monitor-ci/c2updater
+            cd ./monitor-ci/tree/UI-1054/c2updater
             export C2UPDATER_SIGNING_KEY=${ARGO_KEY}
             GO111MODULE=on GOPATH=/go go mod download && go run ./ ${CIRCLE_SHA1} quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1} quay.io/influxdb/influxdb-ui@$(docker image inspect quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1} --format '{{.Id}}' | tr -d '\n')
   share-testing-image:
@@ -193,21 +193,21 @@ jobs:
       - checkout_monitor_ci
       - run:
           name: Copy over the testing variables
-          command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
+          command: cp ./monitor-ci/tree/UI-1054/env.testing.cloud ./monitor-ci/tree/UI-1054/.env
       - run:
           name: Update the images we're using
           command: |
-            cd ./monitor-ci && make update && make build NODE=cypress && make build NODE=ingress && make build NODE=dex
+            cd ./monitor-ci tree/UI-1054/&& make update && make build NODE=cypress && make build NODE=ingress && make build NODE=dex
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - run:
           name: Start the cluster
-          command: cd ./monitor-ci; make start
+          command: cd ./monitor-ci;tree/UI-1054/ make start
       - run:
           name: Run e2e tests
           no_output_timeout: 30m
           command: |
-            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser chrome --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/{cloud,shared}/**/*.test.ts" | circleci tests split | paste -sd "," -)"
+            cd ./monitor-ci;tree/UI-1054/ docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser chrome --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/{cloud,shared}/**/*.test.ts" | circleci tests split | paste -sd "," -)"
       - store_test_results:
           path: monitor-ci/test-artifacts/results
       - store_artifacts:
@@ -242,24 +242,24 @@ jobs:
       - checkout_monitor_ci
       - run:
           name: Copy over the testing variables
-          command: cp ./monitor-ci/env.testing.oss ./monitor-ci/.env
+          command: cp ./monitor-ci/tree/UI-1054/env.testing.oss ./monitor-ci/tree/UI-1054/.env
       - run:
           name: Update the images we're using
           command: |
-            cd ./monitor-ci && make update && make build NODE=cypress && make build NODE=ingress
+            cd ./monitor-ci tree/UI-1054/&& make update && make build NODE=cypress && make build NODE=ingress
             docker load < ~/docker-cache-oss/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - run:
           name: Rebuild Ingress (may be removable after some time?)
-          command: cd ./monitor-ci; make rebuild NODE=ingress
+          command: cd ./monitor-ci;tree/UI-1054/ make rebuild NODE=ingress
       - run:
           name: Start the cluster
-          command: cd ./monitor-ci; make start
+          command: cd ./monitor-ci;tree/UI-1054/ make start
       - run:
           name: Run e2e tests
           no_output_timeout: 30m
           command: |
-            cd ./monitor-ci; docker-compose -f compose/fig.oss.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser chrome --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/{oss,shared}/**/*.test.ts" | circleci tests split | paste -sd "," -)"
+            cd ./monitor-ci;tree/UI-1054/ docker-compose -f compose/fig.oss.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser chrome --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/{oss,shared}/**/*.test.ts" | circleci tests split | paste -sd "," -)"
       - store_test_results:
           path: monitor-ci/test-artifacts/results
       - store_artifacts:
@@ -284,21 +284,21 @@ jobs:
       - checkout_monitor_ci
       - run:
           name: Copy over the testing variables
-          command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
+          command: cp ./monitor-ci/tree/UI-1054/env.testing.cloud ./monitor-ci/tree/UI-1054/.env
       - run:
           name: Update the images we're using
           command: |
-            cd ./monitor-ci && make update && make build NODE=cypress && make build NODE=ingress && make build NODE=dex
+            cd ./monitor-ci tree/UI-1054/&& make update && make build NODE=cypress && make build NODE=ingress && make build NODE=dex
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - run:
           name: Start the cluster
-          command: cd ./monitor-ci; make start
+          command: cd ./monitor-ci;tree/UI-1054/ make start
       - run:
           name: Run e2e tests
           no_output_timeout: 30m
           command: |
-            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser firefox --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/shared/**/*.test.ts" | circleci tests split | paste -sd "," -)"
+            cd ./monitor-ci;tree/UI-1054/ docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress ./node_modules/.bin/cypress run --browser firefox --config numTestsKeptInMemory=1 --spec "$(cd ../ui; circleci tests glob "./cypress/e2e/shared/**/*.test.ts" | circleci tests split | paste -sd "," -)"
       - store_test_results:
           path: monitor-ci/test-artifacts/results
       - store_artifacts:
@@ -322,21 +322,21 @@ jobs:
       - checkout_monitor_ci
       - run:
           name: Copy over the testing variables
-          command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
+          command: cp ./monitor-ci/tree/UI-1054/env.testing.cloud ./monitor-ci/tree/UI-1054/.env
       - run:
           name: Update the images we're using
           command: |
-            cd ./monitor-ci && make update && make build NODE=ingress && make build NODE=dex
+            cd ./monitor-ci tree/UI-1054/&& make update && make build NODE=ingress && make build NODE=dex
             docker load < ~/docker-cache/image.tar
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest
       - run:
           name: Start the cluster
-          command: cd ./monitor-ci; make start
+          command: cd ./monitor-ci;tree/UI-1054/ make start
       - run:
           name: Run smoke tests
           no_output_timeout: 30m
           command: |
-            cd ./monitor-ci; docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress-smoke
+            cd ./monitor-ci;tree/UI-1054/ docker-compose -f compose/fig.cloud.yml -f compose/fig.cypress.yml run cypress-smoke
       - store_test_results:
           path: monitor-ci/test-artifacts/results
       - store_artifacts:
@@ -423,17 +423,17 @@ jobs:
       - run:
           name: Copy over the lighthouse variables
           command: |
-            cp ./monitor-ci/env.lighthouse ./monitor-ci/.env;
+            cp ./monitor-ci/tree/UI-1054/env.lighthouse ./monitor-ci/tree/UI-1054/.env;
       - run:
           name: Add Ingress Host to /etc/hosts File
           command: |
-            INGRESS_HOST=$(grep "INGRESS_HOST=" ./monitor-ci/.env | cut -d '=' -f2);
+            INGRESS_HOST=$(grep "INGRESS_HOST=" ./monitor-ci/tree/UI-1054/.env | cut -d '=' -f2);
             grep -qxF "127.0.0.1 ${INGRESS_HOST}" /etc/hosts || sudo -- sh -c "echo \"127.0.0.1 ${INGRESS_HOST}\" >> /etc/hosts";
       - run:
           name: Update the images we're using
           command: |
             docker pull quay.io/influxdb/lighthouse;
-            cd ./monitor-ci && sudo rm -rf .persist/certs/ && make update && make build NODE=ingress;
+            cd ./monitor-ci tree/UI-1054/&& sudo rm -rf .persist/certs/ && make update && make build NODE=ingress;
             docker load < ~/docker-cache/image.tar;
             docker tag quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} quay.io/influxdb/ui-acceptance:latest;
       - run:
@@ -478,12 +478,12 @@ jobs:
             mkdir -p /tmp/cypress_artifacts
       - run:
           name: Copy over the testing variables
-          command: cp ./monitor-ci/env.testing.cloud ./monitor-ci/.env
+          command: cp ./monitor-ci/tree/UI-1054/env.testing.cloud ./monitor-ci/tree/UI-1054/.env
       - run: docker login -u=$QUAY_USER -p=$QUAY_PASS quay.io
       - run:
           name: Build ui-e2e image
           command: |
-            cd ./monitor-ci && make build NODE=cypress
+            cd ./monitor-ci tree/UI-1054/&& make build NODE=cypress
       - run:
           name: Push ui-e2e image tagged with this commit
           command: |

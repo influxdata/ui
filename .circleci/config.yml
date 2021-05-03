@@ -673,4 +673,4 @@ commands:
           name: Checkout monitor-ci repo
           environment:
             REPO: monitor-ci
-            BRANCH: UI-1054
+            BRANCH: master

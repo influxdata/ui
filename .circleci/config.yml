@@ -19,13 +19,12 @@ jobs:
           name: Build the ui docker image
           no_output_timeout: 15m
           command: |
-            cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
             docker build \
               --build-arg UI_SHA=testing \
               --build-arg CLOUD_URL=http://localhost/auth \
               --build-arg WEBPACK_FILE=fast \
               -t quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} \
-              -f ./monitor-ci/docker/Dockerfile.chronograf.prod \
+              -f ./ui/docker/Dockerfile.chronograf.prod \
               ./ui
             mkdir -p docker-cache
             docker save -o docker-cache/image.tar quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1}
@@ -51,12 +50,11 @@ jobs:
           name: Build the ui oss docker image
           no_output_timeout: 15m
           command: |
-            cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
             docker build \
               --build-arg UI_SHA=testing \
               --build-arg WEBPACK_FILE=fast \
               -t quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} \
-              -f ./monitor-ci/docker/Dockerfile.chronograf.prod \
+              -f ./ui/docker/Dockerfile.chronograf.prod \
               ./ui
             mkdir -p docker-cache-oss
             docker save -o docker-cache-oss/image.tar quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1}
@@ -79,7 +77,6 @@ jobs:
           name: Build the ui docker image
           no_output_timeout: 15m
           command: |
-            cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
             docker build \
               --build-arg HONEYBADGER_KEY=${HONEYBADGER_KEY} \
               --build-arg INJECT_HEADER="<script>(function (w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' }); var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f); })(window, document, 'script', 'dataLayer', '${GTM_ID}'); </script><script>window.userpilotSettings = {token: '72cf72g10'}</script><script src = 'https://js.userpilot.io/sdk/latest.js'></script>" \
@@ -87,7 +84,7 @@ jobs:
               --build-arg UI_SHA=${CIRCLE_SHA1} \
               --build-arg CLOUD_URL=/auth \
               -t quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1} \
-              -f ./monitor-ci/docker/Dockerfile.chronograf.prod \
+              -f ./ui/docker/Dockerfile.chronograf.prod \
               ./ui
             mkdir -p docker-cache
             docker save -o docker-cache/image.tar quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1}
@@ -113,12 +110,11 @@ jobs:
           name: Build the ui docker image
           no_output_timeout: 15m
           command: |
-            cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
             docker build \
               --build-arg UI_SHA=testing \
               --build-arg CLOUD_URL=http://localhost/auth \
               -t quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} \
-              -f ./monitor-ci/docker/Dockerfile.chronograf.prod \
+              -f ./ui/docker/Dockerfile.chronograf.prod \
               ./ui
             mkdir -p docker-cache
             docker save -o docker-cache/image.tar quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1}

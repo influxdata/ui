@@ -7,7 +7,6 @@ import classnames from 'classnames'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {resetQueryCacheByQuery} from 'src/shared/apis/queryCache'
 
 // Components
 import {
@@ -24,14 +23,18 @@ import {FeatureFlag} from 'src/shared/utils/featureFlag'
 // Actions
 import {deleteCellAndView, createCellWithView} from 'src/cells/actions/thunks'
 
+// Selectors
+import {getAllVariables} from 'src/variables/selectors'
+
 // Types
-import {Cell, View, ViewProperties, MarkdownViewProperties} from 'src/types'
+import {Cell, View, AppState} from 'src/types'
 
 interface OwnProps {
   cell: Cell
   view: View
   onCSVDownload: () => void
   onRefresh: () => void
+  variables: string
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -78,21 +81,6 @@ const CellContext: FC<Props> = ({
   const handleEditCell = (): void => {
     history.push(`${location.pathname}/cells/${cell.id}/edit`)
     event('editCell button Click')
-  }
-
-  const refreshCell = (): void => {
-    const viewWithQueries = view as View<
-      Exclude<ViewProperties, MarkdownViewProperties>
-    >
-    if (
-      Array.isArray(viewWithQueries.properties?.queries) &&
-      viewWithQueries.properties.queries.length
-    ) {
-      for (const query of viewWithQueries.properties.queries) {
-        resetQueryCacheByQuery(query.text)
-      }
-    }
-    onRefresh()
   }
 
   const popoverContents = (onHide): JSX.Element => {
@@ -159,7 +147,7 @@ const CellContext: FC<Props> = ({
         <FeatureFlag name="refreshSingleCell">
           <CellContextItem
             label="Refresh"
-            onClick={refreshCell}
+            onClick={onRefresh}
             icon={IconFont.Refresh}
             onHide={onHide}
             testID="cell-context--refresh"
@@ -196,11 +184,14 @@ const CellContext: FC<Props> = ({
   )
 }
 
+const mstp = (state: AppState) => ({
+  variables: getAllVariables(state),
+})
 const mdtp = {
   onDeleteCell: deleteCellAndView,
   onCloneCell: createCellWithView,
 }
 
-const connector = connect(null, mdtp)
+const connector = connect(mstp, mdtp)
 
 export default withRouter(connector(CellContext))

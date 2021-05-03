@@ -1,6 +1,6 @@
 // Libraries
-import React, {FC, useEffect} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
+import React, {FC, useEffect, useCallback} from 'react'
+import {connect, ConnectedProps, useDispatch} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
@@ -21,6 +21,7 @@ import {updateDashboard as updateDashboardAction} from 'src/dashboards/actions/t
 import {
   setAutoRefreshInterval as setAutoRefreshIntervalAction,
   setAutoRefreshStatus as setAutoRefreshStatusAction,
+  resetDashboardAutoRefresh as resetDashboardAutoRefreshAction,
 } from 'src/shared/actions/autoRefresh'
 import {
   setDashboardTimeRange as setDashboardTimeRangeAction,
@@ -30,6 +31,7 @@ import {
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {resetQueryCache} from 'src/shared/apis/queryCache'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Selectors
 import {getTimeRange} from 'src/dashboards/selectors'
@@ -68,14 +70,15 @@ const DashboardHeader: FC<Props> = ({
   showVariablesControls,
   onSetAutoRefreshStatus,
   setAutoRefreshInterval,
-  autoRefresh,
   timeRange,
   updateDashboard,
   updateQueryParams,
   setDashboardTimeRange,
   history,
   org,
+  autoRefresh,
 }) => {
+  const dispatch = useDispatch()
   const demoDataset = DemoDataDashboardNames[dashboard.name]
   useEffect(() => {
     if (demoDataset) {
@@ -119,8 +122,8 @@ const DashboardHeader: FC<Props> = ({
       return
     }
 
-    if (autoRefresh.status === AutoRefreshStatus.Disabled) {
-      if (autoRefresh.interval === 0) {
+    if (autoRefresh?.status === AutoRefreshStatus.Disabled) {
+      if (autoRefresh?.interval === 0) {
         onSetAutoRefreshStatus(dashboard.id, AutoRefreshStatus.Paused)
         return
       }
@@ -129,11 +132,22 @@ const DashboardHeader: FC<Props> = ({
     }
   }
 
-  const resetCacheAndRefresh = (): void => {
+  const resetCacheAndRefresh = useCallback((): void => {
     // We want to invalidate the existing cache when a user manually refreshes the dashboard
     resetQueryCache()
     onManualRefresh()
+  }, [])
+
+  const openAutoRefreshModal = () => {
+    history.push(`/orgs/${org.id}/dashboards/${dashboard.id}/autorefresh`)
   }
+
+  const stopAutoRefreshAndReset = () => {
+    dispatch(resetDashboardAutoRefreshAction(dashboard.id))
+  }
+
+  const isActive =
+    autoRefresh?.status && autoRefresh.status === AutoRefreshStatus.Active
 
   return (
     <>
@@ -180,15 +194,26 @@ const DashboardHeader: FC<Props> = ({
         </Page.ControlBarLeft>
         <Page.ControlBarRight>
           <TimeZoneDropdown />
-          <AutoRefreshDropdown
-            onChoose={handleChooseAutoRefresh}
-            onManualRefresh={resetCacheAndRefresh}
-            selected={autoRefresh}
-          />
           <TimeRangeDropdown
             onSetTimeRange={handleChooseTimeRange}
             timeRange={timeRange}
           />
+          <AutoRefreshDropdown
+            onChoose={handleChooseAutoRefresh}
+            onManualRefresh={resetCacheAndRefresh}
+            selected={autoRefresh}
+            showAutoRefresh={false}
+          />
+          {isFlagEnabled('newAutoRefresh') && (
+            <Button
+              text={isActive ? 'Stop Auto Refresh' : 'Enable Auto Refresh'}
+              color={isActive ? ComponentColor.Danger : ComponentColor.Primary}
+              onClick={
+                isActive ? stopAutoRefreshAndReset : openAutoRefreshModal
+              }
+              testID="enable-auto-refresh-button"
+            />
+          )}
         </Page.ControlBarRight>
       </Page.ControlBar>
     </>
@@ -206,11 +231,14 @@ const mstp = (state: AppState) => {
   const timeRange = getTimeRange(state)
   const org = getOrg(state)
 
+  const autoRefresh = state.autoRefresh[state.currentDashboard.id]
+
   return {
     org,
     dashboard,
     timeRange,
     showVariablesControls,
+    autoRefresh,
   }
 }
 

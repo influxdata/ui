@@ -24,7 +24,7 @@ function formatConstant(constant: string) {
   return constant.trim()
 }
 
-export const DEFAULT_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss ZZ'
+export const DEFAULT_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss a'
 
 export const DROPDOWN_MENU_MAX_HEIGHT = 240
 
@@ -39,6 +39,9 @@ export const AUTOREFRESH_DEFAULT_STATUS = AutoRefreshStatus.Paused
 export const AUTOREFRESH_DEFAULT = {
   status: AUTOREFRESH_DEFAULT_STATUS,
   interval: AUTOREFRESH_DEFAULT_INTERVAL,
+  duration: null,
+  inactivityTimeout: 0,
+  infiniteDuration: false,
 }
 
 export const LAYOUT_MARGIN = 4

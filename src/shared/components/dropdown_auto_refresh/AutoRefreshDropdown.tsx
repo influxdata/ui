@@ -18,7 +18,6 @@ import autoRefreshOptions, {
 
 // Types
 import {AutoRefresh, AutoRefreshStatus} from 'src/types'
-import {CLOUD} from 'src/shared/constants'
 
 const DROPDOWN_WIDTH_COLLAPSED = 50
 const DROPDOWN_WIDTH_FULL = 84
@@ -28,14 +27,18 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 interface Props {
   selected: AutoRefresh
   onChoose: (milliseconds: number) => void
-  showManualRefresh: boolean
   onManualRefresh?: () => void
+  showAutoRefresh?: boolean
 }
 
 @ErrorHandling
 export default class AutoRefreshDropdown extends Component<Props> {
   public static defaultProps = {
-    showManualRefresh: true,
+    showAutoRefresh: true,
+    selected: {
+      interval: 0,
+      status: 'paused',
+    },
   }
 
   constructor(props) {
@@ -47,7 +50,7 @@ export default class AutoRefreshDropdown extends Component<Props> {
   }
 
   public render() {
-    if (CLOUD) {
+    if (!this.props.showAutoRefresh) {
       return <div className={this.className}>{this.manualRefreshButton}</div>
     }
     return (
@@ -169,9 +172,8 @@ export default class AutoRefreshDropdown extends Component<Props> {
   }
 
   private get manualRefreshButton(): JSX.Element {
-    const {showManualRefresh, onManualRefresh} = this.props
-
-    if (!showManualRefresh) {
+    const {onManualRefresh} = this.props
+    if (!onManualRefresh) {
       return
     }
 

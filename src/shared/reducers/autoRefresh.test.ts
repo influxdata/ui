@@ -26,6 +26,7 @@ describe('autoRefresh reducer', () => {
     const startingAutoRefresh = {
       interval: 1000,
       status: AutoRefreshStatus.Active,
+      infiniteDuration: false,
     }
     const startingState = {
       [dashboardID]: startingAutoRefresh,
@@ -62,6 +63,7 @@ describe('autoRefresh reducer', () => {
     const startingAutoRefresh = {
       interval: 1000,
       status: AutoRefreshStatus.Active,
+      infiniteDuration: false,
     }
     const startingState = {
       [dashboardID]: startingAutoRefresh,

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, createContext, useContext, useState} from 'react'
+import React, {FC, createContext, useContext, useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
 
 // Components
@@ -47,6 +47,12 @@ interface ProviderProps {
 export const Provider: FC<ProviderProps> = ({variables, children}) => {
   const [vars, setVars] = useState(variables || {})
   const _transform = (text: string) => transform(text, vars)
+
+  useEffect(() => {
+    if (variables) {
+      setVars(variables)
+    }
+  }, [variables])
 
   return (
     <Context.Provider

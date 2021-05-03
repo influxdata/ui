@@ -39,6 +39,9 @@ export const AUTOREFRESH_DEFAULT_STATUS = AutoRefreshStatus.Paused
 export const AUTOREFRESH_DEFAULT = {
   status: AUTOREFRESH_DEFAULT_STATUS,
   interval: AUTOREFRESH_DEFAULT_INTERVAL,
+  duration: null,
+  inactivityTimeout: 0,
+  infiniteDuration: false,
 }
 
 export const LAYOUT_MARGIN = 4

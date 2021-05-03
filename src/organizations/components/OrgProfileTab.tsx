@@ -89,11 +89,13 @@ class OrgProfileTab extends PureComponent<Props> {
                     <code>{this.props.me.id}</code>
                   </pre>
                 </div>
-                <CopyButton
-                  text={this.props.me.id}
-                  onCopy={this.generateCopyText('User ID', this.props.me.id)}
-                />
-                <label className="code-snippet--label">{`${this.props.me.name} | User ID`}</label>
+                <div className="code-snippet--footer">
+                  <CopyButton
+                    text={this.props.me.id}
+                    onCopy={this.generateCopyText('User ID', this.props.me.id)}
+                  />
+                  <label className="code-snippet--label">{`${this.props.me.name} | User ID`}</label>
+                </div>
               </div>
               <div className="code-snippet" data-testid={'code-snippet'}>
                 <div className="code-snippet--text">
@@ -101,14 +103,16 @@ class OrgProfileTab extends PureComponent<Props> {
                     <code>{this.props.org.id}</code>
                   </pre>
                 </div>
-                <CopyButton
-                  text={this.props.org.id}
-                  onCopy={this.generateCopyText(
-                    'Organization ID',
-                    this.props.org.id
-                  )}
-                />
-                <label className="code-snippet--label">{`${this.props.org.name} | Organization ID`}</label>
+                <div className="code-snippet--footer">
+                  <CopyButton
+                    text={this.props.org.id}
+                    onCopy={this.generateCopyText(
+                      'Organization ID',
+                      this.props.org.id
+                    )}
+                  />
+                  <label className="code-snippet--label">{`${this.props.org.name} | Organization ID`}</label>
+                </div>
               </div>
             </Panel.Body>
           </Panel>

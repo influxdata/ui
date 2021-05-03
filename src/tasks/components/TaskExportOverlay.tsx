@@ -6,7 +6,7 @@ import {useHistory, useParams} from 'react-router-dom'
 import ExportOverlay from 'src/shared/components/ExportOverlay'
 
 // Actions
-import {convertToTemplate} from 'src/dashboards/actions/thunks'
+import {convertToTemplate} from 'src/tasks/actions/thunks'
 import {clearExportTemplate} from 'src/templates/actions/thunks'
 import {notify} from 'src/shared/actions/notifications'
 
@@ -37,9 +37,7 @@ const TaskExportOverlay: FC = () => {
     dispatch(
       notify(
         copyToClipboardSuccess(
-          `${JSON.stringify(template, null, 2)
-            .slice(0, 30)
-            .trimRight()}...`,
+          `${template.meta.name.slice(0, 30).trimRight()}...`,
           'Task'
         )
       )

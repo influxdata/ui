@@ -26,7 +26,7 @@ class CopyButton extends PureComponent<Props> {
           size={size || ComponentSize.ExtraSmall}
           color={ComponentColor.Secondary}
           titleText="Copy to Clipboard"
-          text={text}
+          text="Copy to Clipboard"
           onClick={this.handleClickCopy}
           testID="button-copy"
         />

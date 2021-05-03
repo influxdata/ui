@@ -36,33 +36,33 @@ const WriteDataDetailsProvider: FC = ({children}) => {
   const tokens = useSelector((state: AppState) =>
     getAll<Authorization>(state, ResourceType.Authorizations)
   )
-  const organization = useSelector(getOrg)
-  const {origin} = window.location
+  const org = useSelector(getOrg)
+  const server = window.location.origin
 
   const [bucket, setBucket] = useState(buckets[0])
   const [token, setToken] = useState(tokens[0])
 
   useEffect(() => {
-    if (origin === variables.origin) {
+    if (server === variables.server) {
       return
     }
 
     update({
       ...variables,
-      origin,
+      server,
     })
-  }, [variables, origin])
+  }, [variables, server])
 
   useEffect(() => {
-    if (organization?.id === variables.organization) {
+    if (org?.name === variables.org) {
       return
     }
 
     update({
       ...variables,
-      organization: organization.id,
+      org: org.name,
     })
-  }, [variables, organization?.id])
+  }, [variables, org?.name])
 
   useEffect(() => {
     if (bucket?.name === variables.bucket) {

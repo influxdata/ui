@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useEffect, useCallback, useRef} from 'react'
-import {connect, ConnectedProps, useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import GetResource from 'src/resources/components/GetResource'
@@ -28,14 +28,17 @@ import {notify} from 'src/shared/actions/notifications'
 // History
 import {useRouteMatch} from 'react-router-dom'
 
-const {Active} = AutoRefreshStatus
-
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps
-
-const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
+const DashboardContainer: FC = () => {
   const timer = useRef(null)
   const dispatch = useDispatch()
+  const {autoRefresh, dashboard} = useSelector((state: AppState) => {
+    const dashboard = state.currentDashboard.id
+    const autoRefresh = state.autoRefresh[dashboard] || AUTOREFRESH_DEFAULT
+    return {
+      autoRefresh,
+      dashboard,
+    }
+  })
   const isEditing = useRouteMatch(
     '/orgs/:orgID/dashboards/:dashboardID/cells/:cellID/edit'
   )
@@ -48,6 +51,7 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
       dispatch(resetDashboardAutoRefresh(dashboard))
       dispatch(notify(dashboardAutoRefreshTimeoutSuccess()))
       registerStopListeners()
+      GlobalAutoRefresher.stopPolling()
     }, autoRefresh.inactivityTimeout)
 
     window.addEventListener('load', registerListeners)
@@ -77,23 +81,6 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
     document.removeEventListener('keypress', registerListeners)
   }, [registerListeners, timer])
 
-  useEffect(() => {
-    if (
-      autoRefresh?.status &&
-      autoRefresh.status === AutoRefreshStatus.Active &&
-      autoRefresh.inactivityTimeout > 0
-    ) {
-      registerListeners()
-      document.addEventListener('visibilitychange', visChangeHandler)
-    } else {
-      registerStopListeners()
-    }
-    return () => {
-      registerStopListeners()
-      document.removeEventListener('visibilitychange', visChangeHandler)
-    }
-  }, [autoRefresh?.status, autoRefresh.inactivityTimeout])
-
   const stopFunc = useCallback(() => {
     if (
       !autoRefresh.infiniteDuration &&
@@ -110,17 +97,36 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
   ])
 
   useEffect(() => {
-    if (autoRefresh.status === Active) {
-      GlobalAutoRefresher.poll(autoRefresh, stopFunc)
+    if (isEditing) {
+      registerStopListeners()
+      GlobalAutoRefresher.stopPolling()
       return
     }
 
-    GlobalAutoRefresher.stopPolling()
-
-    return function cleanup() {
-      GlobalAutoRefresher.stopPolling()
+    if (
+      autoRefresh?.status &&
+      autoRefresh.status === AutoRefreshStatus.Active
+    ) {
+      GlobalAutoRefresher.poll(autoRefresh, stopFunc)
+      if (autoRefresh.inactivityTimeout > 0) {
+        registerListeners()
+        document.addEventListener('visibilitychange', visChangeHandler)
+      }
+    } else {
+      registerStopListeners()
     }
-  }, [autoRefresh.status, autoRefresh, stopFunc])
+
+    return () => {
+      registerStopListeners()
+      GlobalAutoRefresher.stopPolling()
+      document.removeEventListener('visibilitychange', visChangeHandler)
+    }
+  }, [
+    autoRefresh?.status,
+    autoRefresh.inactivityTimeout,
+    stopFunc,
+    isEditing?.path,
+  ])
 
   useEffect(() => {
     dispatch(setCurrentPage('dashboard'))
@@ -129,17 +135,6 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
     }
   }, [dispatch])
 
-  useEffect(() => {
-    if (isEditing) {
-      registerStopListeners()
-      GlobalAutoRefresher.stopPolling()
-    } else {
-      if (autoRefresh.status === Active) {
-        registerListeners()
-        GlobalAutoRefresher.poll(autoRefresh, stopFunc)
-      }
-    }
-  }, [isEditing?.path])
   return (
     <DashboardRoute>
       <GetResource resources={[{type: ResourceType.Dashboards, id: dashboard}]}>
@@ -152,15 +147,4 @@ const DashboardContainer: FC<Props> = ({autoRefresh, dashboard}) => {
   )
 }
 
-const mstp = (state: AppState) => {
-  const dashboard = state.currentDashboard.id
-  const autoRefresh = state.autoRefresh[dashboard] || AUTOREFRESH_DEFAULT
-  return {
-    autoRefresh,
-    dashboard,
-  }
-}
-
-const connector = connect(mstp)
-
-export default connector(DashboardContainer)
+export default DashboardContainer

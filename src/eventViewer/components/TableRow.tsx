@@ -1,6 +1,6 @@
 import React, {FC, CSSProperties} from 'react'
 
-import {Row, Fields} from 'src/eventViewer/types'
+import {Row, Fields} from 'src/types'
 
 interface Props {
   row: Row

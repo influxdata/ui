@@ -157,7 +157,7 @@ describe('query', () => {
       expect(runQuery).toHaveBeenCalledTimes(1)
       result.promise.then(() => {
         try {
-          resetQueryCacheByQuery(queryText)
+          resetQueryCacheByQuery(queryText, variables)
           getCachedResultsOrRunQuery(orgID, queryText, variables)
           expect(runQuery).toHaveBeenCalledTimes(2)
           done()

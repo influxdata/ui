@@ -50,9 +50,10 @@
     "cy": "CYPRESS_baseUrl=http://localhost:9999 cypress open",
     "cy:dev": "source ../monitor-ci/.env && CYPRESS_baseUrl=https://$INGRESS_HOST:$PORT_HTTPS cypress open --config testFiles='{cloud,shared}/**/*.*'",
     "cy:dev-oss": "source ../monitor-ci/.env && CYPRESS_baseUrl=https://$INGRESS_HOST:$PORT_HTTPS cypress open --config testFiles='{oss,shared}/**/*.*'",
-    "generate": "oats https://raw.githubusercontent.com/influxdata/influxdb/master/http/swagger.yml > ./src/client/generatedRoutes.ts && yarn unity && yarn flows && yarn managedFunctions",
+    "generate": "oats https://raw.githubusercontent.com/influxdata/influxdb/master/http/swagger.yml > ./src/client/generatedRoutes.ts && yarn unity && yarn flows && yarn notebooks && yarn managedFunctions",
     "unity": "oats ./src/client/swagger/unity.yml > ./src/client/unityRoutes.ts",
     "flows": "oats ./src/client/swagger/flows.yml > ./src/client/flowsRoutes.ts",
+    "notebooks": "oats ./src/client/swagger/notebooks.yml > ./src/client/notebooksRoutes.ts",
     "managedFunctions": "oats ./src/client/swagger/managedFunctions.yml > ./src/client/managedFunctionsRoutes.ts"
   },
   "author": "",
@@ -146,8 +147,8 @@
   "dependencies": {
     "@influxdata/clockface": "^2.6.9",
     "@influxdata/flux": "^0.5.1",
-    "@influxdata/flux-lsp-browser": "^0.5.41",
-    "@influxdata/giraffe": "^2.7.6",
+    "@influxdata/flux-lsp-browser": "^0.5.42",
+    "@influxdata/giraffe": "^2.9.0",
     "@influxdata/influx": "0.5.5",
     "@influxdata/influxdb-templates": "0.9.0",
     "@influxdata/react-custom-scrollbars": "4.3.8",

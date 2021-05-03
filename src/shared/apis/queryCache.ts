@@ -182,9 +182,16 @@ export const resetQueryCache = (): void => {
   queryCache.resetCache()
 }
 
-export const resetQueryCacheByQuery = (query: string): void => {
-  const queryID = `${hashCode(query)}`
-  queryCache.resetCacheByID(queryID)
+export const resetQueryCacheByQuery = (
+  query: string,
+  allVars: Variable[]
+): void => {
+  const {queryID, hashedVariables} = calculateHashedVariables(allVars, query)
+  event('Starting Query Cache Process ', {context: 'queryCache', queryID})
+
+  if (queryCache.getFromCache(queryID, hashedVariables)) {
+    queryCache.resetCacheByID(queryID)
+  }
 }
 
 const calculateHashedVariables = (

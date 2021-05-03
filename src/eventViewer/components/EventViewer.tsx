@@ -11,7 +11,7 @@ import {
 } from 'src/eventViewer/components/EventViewer.reducer'
 
 // Types
-import {LoadRows, EventViewerChildProps} from 'src/eventViewer/types'
+import {LoadRows, EventViewerChildProps} from 'src/types'
 import {State} from 'src/eventViewer/components/EventViewer.reducer'
 
 interface Props {

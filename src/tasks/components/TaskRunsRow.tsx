@@ -39,32 +39,31 @@ class TaskRunsRow extends PureComponent<Props, State> {
   public render() {
     const {run} = this.props
     return (
-        <IndexList.Row>
-          <IndexList.Cell>{run.status}</IndexList.Cell>
-          <IndexList.Cell>
-            {this.dateTimeString(run.scheduledFor)}
-          </IndexList.Cell>
-          <IndexList.Cell>{this.dateTimeString(run.startedAt)}</IndexList.Cell>
-          <IndexList.Cell>{run.duration}</IndexList.Cell>
-          <IndexList.Cell>
-            <Button
-              key={`logs-${run.id}`}
-              size={ComponentSize.ExtraSmall}
-              color={ComponentColor.Default}
-              text="View Logs"
-              onClick={this.handleToggleOverlay}
-            />
-            {run.status === 'failed' &&
+      <IndexList.Row>
+        <IndexList.Cell>{run.status}</IndexList.Cell>
+        <IndexList.Cell>{this.dateTimeString(run.scheduledFor)}</IndexList.Cell>
+        <IndexList.Cell>{this.dateTimeString(run.startedAt)}</IndexList.Cell>
+        <IndexList.Cell>{run.duration}</IndexList.Cell>
+        <IndexList.Cell>
+          <Button
+            key={`logs-${run.id}`}
+            size={ComponentSize.ExtraSmall}
+            color={ComponentColor.Default}
+            text="View Logs"
+            onClick={this.handleToggleOverlay}
+          />
+          {run.status === 'failed' && (
             <Button
               key={`retry-${run.id}`}
               size={ComponentSize.ExtraSmall}
               color={ComponentColor.Default}
               text="Retry"
               onClick={this.handleRetry}
-            />}
-            {this.renderLogOverlay}
-          </IndexList.Cell>
-        </IndexList.Row>
+            />
+          )}
+          {this.renderLogOverlay}
+        </IndexList.Cell>
+      </IndexList.Row>
     )
   }
 
@@ -92,13 +91,10 @@ class TaskRunsRow extends PureComponent<Props, State> {
   }
 
   private handleRetry = () => {
-    const {
-      retryTask,
-      taskID,
-      run
-    } = this.props
+    const {retryTask, taskID, run} = this.props
     try {
       retryTask(taskID, run.id)
+      window.location.reload()
     } catch (error) {
       console.error(error)
     }
@@ -126,7 +122,7 @@ const mstp = (state: AppState) => {
   return {logs, timeZone}
 }
 
-const mdtp = {getLogs: getLogs,   retryTask: retryTask,}
+const mdtp = {getLogs: getLogs, retryTask: retryTask}
 
 const connector = connect(mstp, mdtp)
 export default connector(TaskRunsRow)

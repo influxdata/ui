@@ -558,10 +558,9 @@ export const createTaskFromTemplate = (template: TaskTemplate) => async (
   }
 }
 
-export const retryTask = (
-  taskID: string,
-  runID: string
-) => async (dispatch: Dispatch<Action | NotificationAction>) => {
+export const retryTask = (taskID: string, runID: string) => async (
+  dispatch: Dispatch<Action | NotificationAction>
+) => {
   try {
     const resp = await api.postTasksRunsRetry({
       taskID,

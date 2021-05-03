@@ -5,8 +5,10 @@ import {Renderer} from 'react-markdown'
 
 // Components
 import {Page} from '@influxdata/clockface'
-import WriteDataCodeSnippet from 'src/writeData/components/WriteDataCodeSnippet'
 import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
+import CodeSnippet, {
+  Provider as TemplateProvider,
+} from 'src/shared/components/CodeSnippet'
 import GetResources from 'src/resources/components/GetResources'
 
 // Types
@@ -28,9 +30,9 @@ interface Props {
   children?: ReactNode
 }
 
-const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => {
-  return <WriteDataCodeSnippet code={props.value} language={props.language} />
-}
+const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => (
+  <CodeSnippet text={props.value} label={props.language} />
+)
 
 const WriteDataDetailsView: FC<Props> = ({section, children}) => {
   const {contentID} = useParams()
@@ -57,27 +59,29 @@ const WriteDataDetailsView: FC<Props> = ({section, children}) => {
     <GetResources
       resources={[ResourceType.Authorizations, ResourceType.Buckets]}
     >
-      <WriteDataDetailsContextProvider>
-        <Page
-          titleTag={pageTitleSuffixer([section.name, 'Sources', 'Load Data'])}
-        >
-          <Page.Header fullWidth={false}>
-            <Page.Title title={name} />
-          </Page.Header>
-          <Page.Contents fullWidth={false} scrollable={true}>
-            <div className="write-data--details">
-              <div className="write-data--details-thumbnail">{thumbnail}</div>
-              <div
-                className="write-data--details-content markdown-format"
-                data-testid="load-data-details-content"
-              >
-                {children}
-                {pageContent}
+      <TemplateProvider>
+        <WriteDataDetailsContextProvider>
+          <Page
+            titleTag={pageTitleSuffixer([section.name, 'Sources', 'Load Data'])}
+          >
+            <Page.Header fullWidth={false}>
+              <Page.Title title={name} />
+            </Page.Header>
+            <Page.Contents fullWidth={false} scrollable={true}>
+              <div className="write-data--details">
+                <div className="write-data--details-thumbnail">{thumbnail}</div>
+                <div
+                  className="write-data--details-content markdown-format"
+                  data-testid="load-data-details-content"
+                >
+                  {children}
+                  {pageContent}
+                </div>
               </div>
-            </div>
-          </Page.Contents>
-        </Page>
-      </WriteDataDetailsContextProvider>
+            </Page.Contents>
+          </Page>
+        </WriteDataDetailsContextProvider>
+      </TemplateProvider>
     </GetResources>
   )
 }

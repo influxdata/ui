@@ -1,62 +1,64 @@
-import React, {PureComponent} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
-import {connect, ConnectedProps} from 'react-redux'
+import React, {FC, useEffect} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
+import {useHistory} from 'react-router-dom'
 
 // Components
 import ExportOverlay from 'src/shared/components/ExportOverlay'
 
 // Actions
-import {convertToTemplate as convertToTemplateAction} from 'src/variables/actions/thunks'
-import {clearExportTemplate as clearExportTemplateAction} from 'src/templates/actions/thunks'
+import {convertToTemplate} from 'src/dashboards/actions/thunks'
+import {clearExportTemplate} from 'src/templates/actions/thunks'
+import {notify} from 'src/shared/actions/notifications'
 
 // Types
 import {AppState} from 'src/types'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = RouteComponentProps<{orgID: string; id: string}> & ReduxProps
+import {copyToClipboardSuccess} from 'src/shared/copy/notifications'
 
-class VariableExportOverlay extends PureComponent<Props> {
-  public componentDidMount() {
-    const {id, convertToTemplate} = this.props
-    convertToTemplate(id)
-  }
+const VariableExportOverlay: FC = () => {
+  const id = useSelector((state: AppState) => state.overlays.params.id)
+  const dispatch = useDispatch()
+  const history = useHistory()
 
-  public componentWillUnmount() {
-    const {clearExportTemplate} = this.props
-    clearExportTemplate()
-  }
-  public render() {
-    const {variableTemplate, status} = this.props
+  useEffect(() => {
+    if (id) {
+      dispatch(convertToTemplate(id))
+    }
+  }, [id])
 
-    return (
-      <ExportOverlay
-        resourceName="Variable"
-        resource={variableTemplate}
-        onDismissOverlay={this.onDismiss}
-        status={status}
-      />
+  const status = useSelector(
+    (state: AppState) => state.resources.templates.exportTemplate.status
+  )
+  const template = useSelector(
+    (state: AppState) => state.resources.templates.exportTemplate.item
+  )
+
+  const notes = () => {
+    dispatch(
+      notify(
+        copyToClipboardSuccess(
+          `${JSON.stringify(template, null, 2)
+            .slice(0, 30)
+            .trimRight()}...`,
+          'Variable'
+        )
+      )
     )
   }
-
-  private onDismiss = () => {
-    const {history, clearExportTemplate} = this.props
-
+  const dismiss = () => {
     history.goBack()
-    clearExportTemplate()
+    dispatch(clearExportTemplate)
   }
+
+  return (
+    <ExportOverlay
+      resourceName="Variable"
+      resource={template}
+      onDismissOverlay={dismiss}
+      onCopy={notes}
+      status={status}
+    />
+  )
 }
 
-const mstp = (state: AppState) => ({
-  id: state.overlays.params.id,
-  variableTemplate: state.resources.templates.exportTemplate.item,
-  status: state.resources.templates.exportTemplate.status,
-})
-
-const mdtp = {
-  convertToTemplate: convertToTemplateAction,
-  clearExportTemplate: clearExportTemplateAction,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(withRouter(VariableExportOverlay))
+export default VariableExportOverlay

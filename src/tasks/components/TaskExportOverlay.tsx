@@ -1,63 +1,64 @@
-import React, {PureComponent} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
-import {connect, ConnectedProps} from 'react-redux'
+import React, {FC, useEffect} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
+import {useHistory, useParams} from 'react-router-dom'
 
 // Components
 import ExportOverlay from 'src/shared/components/ExportOverlay'
 
 // Actions
-import {convertToTemplate as convertToTemplateAction} from 'src/tasks/actions/thunks'
-import {clearExportTemplate as clearExportTemplateAction} from 'src/templates/actions/thunks'
+import {convertToTemplate} from 'src/dashboards/actions/thunks'
+import {clearExportTemplate} from 'src/templates/actions/thunks'
+import {notify} from 'src/shared/actions/notifications'
 
 // Types
 import {AppState} from 'src/types'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & RouteComponentProps<{orgID: string; id: string}>
+import {copyToClipboardSuccess} from 'src/shared/copy/notifications'
 
-class TaskExportOverlay extends PureComponent<Props> {
-  public componentDidMount() {
-    const {
-      match: {
-        params: {id},
-      },
-      convertToTemplate,
-    } = this.props
+const TaskExportOverlay: FC = () => {
+  const {id} = useParams()
+  const dispatch = useDispatch()
+  const history = useHistory()
 
-    convertToTemplate(id)
-  }
+  useEffect(() => {
+    if (id) {
+      dispatch(convertToTemplate(id))
+    }
+  }, [id])
 
-  public render() {
-    const {taskTemplate, status} = this.props
+  const status = useSelector(
+    (state: AppState) => state.resources.templates.exportTemplate.status
+  )
+  const template = useSelector(
+    (state: AppState) => state.resources.templates.exportTemplate.item
+  )
 
-    return (
-      <ExportOverlay
-        resourceName="Task"
-        resource={taskTemplate}
-        onDismissOverlay={this.onDismiss}
-        status={status}
-      />
+  const notes = () => {
+    dispatch(
+      notify(
+        copyToClipboardSuccess(
+          `${JSON.stringify(template, null, 2)
+            .slice(0, 30)
+            .trimRight()}...`,
+          'Task'
+        )
+      )
     )
   }
-
-  private onDismiss = () => {
-    const {history, clearExportTemplate} = this.props
-
+  const dismiss = () => {
     history.goBack()
-    clearExportTemplate()
+    dispatch(clearExportTemplate)
   }
+
+  return (
+    <ExportOverlay
+      resourceName="Task"
+      resource={template}
+      onDismissOverlay={dismiss}
+      onCopy={notes}
+      status={status}
+    />
+  )
 }
 
-const mstp = (state: AppState) => ({
-  taskTemplate: state.resources.templates.exportTemplate.item,
-  status: state.resources.templates.exportTemplate.status,
-})
-
-const mdtp = {
-  convertToTemplate: convertToTemplateAction,
-  clearExportTemplate: clearExportTemplateAction,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(withRouter(TaskExportOverlay))
+export default TaskExportOverlay

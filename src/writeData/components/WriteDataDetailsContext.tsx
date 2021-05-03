@@ -1,47 +1,26 @@
 // Libraries
-import React, {FC, ReactNode, createContext, useState} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
+import React, {FC, createContext, useContext, useEffect, useState} from 'react'
+import {useSelector} from 'react-redux'
+import {Context as TemplateContext} from 'src/shared/components/CodeSnippet'
 
 // Utils
 import {getAll} from 'src/resources/selectors'
 import {getOrg} from 'src/organizations/selectors'
 
 // Types
-import {
-  AppState,
-  ResourceType,
-  Bucket,
-  Authorization,
-  Organization,
-} from 'src/types'
+import {AppState, ResourceType, Bucket, Authorization} from 'src/types'
 
-interface ComponentProps {
-  children: ReactNode
-}
-
-type ReduxProps = ConnectedProps<typeof connector>
-
-type Props = ComponentProps & ReduxProps
-
-export interface WriteDataDetailsContextType {
-  organization: Organization
-  origin: string
+interface WriteDataDetailsContextType {
   bucket: Bucket
-  buckets: Bucket[]
   changeBucket: (bucket: Bucket) => void
   token: Authorization
-  tokens: Authorization[]
   changeToken: (token: Authorization) => void
 }
 
-export const DEFAULT_WRITE_DATA_DETAILS_CONTEXT: WriteDataDetailsContextType = {
-  organization: null,
-  origin: '',
+const DEFAULT_WRITE_DATA_DETAILS_CONTEXT: WriteDataDetailsContextType = {
   bucket: null,
-  buckets: [],
   changeBucket: () => {},
   token: null,
-  tokens: [],
   changeToken: () => {},
 }
 
@@ -49,48 +28,76 @@ export const WriteDataDetailsContext = createContext<
   WriteDataDetailsContextType
 >(DEFAULT_WRITE_DATA_DETAILS_CONTEXT)
 
-const WriteDataDetailsContextProvider: FC<Props> = ({
-  organization,
-  buckets,
-  tokens,
-  children,
-}) => {
-  const userBuckets = buckets.filter(b => b.type === 'user')
-  const initialToken = tokens.length ? tokens[0] : null
-  const [bucket, changeBucket] = useState<Bucket>(userBuckets[0])
-  const [token, changeToken] = useState<Authorization>(initialToken)
-  const origin = window.location.origin
+const WriteDataDetailsProvider: FC = ({children}) => {
+  const {variables, update} = useContext(TemplateContext)
+  const buckets = useSelector((state: AppState) =>
+    getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
+  )
+  const tokens = useSelector((state: AppState) =>
+    getAll<Authorization>(state, ResourceType.Authorizations)
+  )
+  const organization = useSelector(getOrg)
+  const {origin} = window.location
 
-  const value = {
-    organization,
-    origin,
-    bucket,
-    buckets: userBuckets,
-    changeBucket: (toChangeBucket: Bucket) => changeBucket(toChangeBucket),
-    token,
-    tokens,
-    changeToken: (toChangeToken: Authorization) => changeToken(toChangeToken),
-  }
+  const [bucket, setBucket] = useState(buckets[0])
+  const [token, setToken] = useState(tokens[0])
+
+  useEffect(() => {
+    if (origin === variables.origin) {
+      return
+    }
+
+    update({
+      ...variables,
+      origin,
+    })
+  }, [variables, origin])
+
+  useEffect(() => {
+    if (organization?.id === variables.organization) {
+      return
+    }
+
+    update({
+      ...variables,
+      organization: organization.id,
+    })
+  }, [variables, organization?.id])
+
+  useEffect(() => {
+    if (bucket?.name === variables.bucket) {
+      return
+    }
+
+    update({
+      ...variables,
+      bucket: bucket.name,
+    })
+  }, [variables, bucket?.name])
+
+  useEffect(() => {
+    if (token?.token === variables.token) {
+      return
+    }
+
+    update({
+      ...variables,
+      token: token.token,
+    })
+  }, [variables, token?.token])
 
   return (
-    <WriteDataDetailsContext.Provider value={value}>
+    <WriteDataDetailsContext.Provider
+      value={{
+        bucket,
+        changeBucket: (toChangeBucket: Bucket) => setBucket(toChangeBucket),
+        token,
+        changeToken: (toChangeToken: Authorization) => setToken(toChangeToken),
+      }}
+    >
       {children}
     </WriteDataDetailsContext.Provider>
   )
 }
 
-const mstp = (state: AppState) => {
-  const buckets = getAll<Bucket>(state, ResourceType.Buckets)
-  const tokens = getAll<Authorization>(state, ResourceType.Authorizations)
-  const organization = getOrg(state)
-
-  return {
-    buckets,
-    tokens,
-    organization,
-  }
-}
-
-const connector = connect(mstp)
-
-export default connector(WriteDataDetailsContextProvider)
+export default WriteDataDetailsProvider

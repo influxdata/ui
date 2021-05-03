@@ -1396,6 +1396,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
   // auto refresh tests
 
   describe('Dashboard auto refresh', () => {
+    let routeToReturnTo = ''
     const jumpAheadTime = (timeAhead = '00:00:00') => {
       return Cypress.moment()
         .add(Cypress.moment.duration(timeAhead))
@@ -1406,13 +1407,14 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.get('@org').then(({id: orgID, name}: Organization) => {
         cy.createDashboard(orgID).then(({body}) => {
           cy.fixture('routes').then(({orgs}) => {
-            cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+            routeToReturnTo = `${orgs}/${orgID}/dashboards/${body.id}`
+            cy.visit(routeToReturnTo)
             cy.getByTestID('tree-nav')
           })
         })
         cy.window().then(win => {
           cy.wait(1000)
-          win.influx.set('new-auto-refresh', true)
+          win.influx.set('newAutoRefresh', true)
         })
         cy.createBucket(orgID, name, 'schmucket')
         const now = Date.now()
@@ -1493,7 +1495,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.getByTestID('timerange-popover--dialog').within(() => {
         cy.getByTestID('timerange--input')
           .clear()
-          .type(`${jumpAheadTime('00:20:00')}`)
+          .type(`${jumpAheadTime('00:00:11')}`)
         cy.getByTestID('daterange--apply-btn').click()
       })
       cy.intercept('POST', '/query', req => {
@@ -1507,59 +1509,100 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.wait('@refreshQuery')
       cy.wait('@refreshQuery')
 
-      cy.wait(20000)
+      cy.wait(2000)
 
       cy.getByTestID('enable-auto-refresh-button').then(el => {
         expect(el[0].getAttribute('title')).to.equal('Enable Auto Refresh')
       })
     })
 
-    it('will stop auto refresh after inactivity timeout limit is set', () => {
+    it('does not refresh if user leaves, until user comes back, and then continues', () => {
       cy.getByTestID('enable-auto-refresh-button').click()
-      cy.wait(1000)
-
+      cy.getByTestID('auto-refresh-overlay').should('be.visible')
       cy.getByTestID('auto-refresh-overlay').within(() => {
         cy.getByTestID('autorefresh-dropdown--button').click()
         cy.getByTestID('auto-refresh-5s').click()
         cy.getByTestID('timerange-dropdown').click()
       })
-
       cy.getByTestID('timerange-popover--dialog').within(() => {
         cy.getByTestID('timerange--input')
           .clear()
           .type(`${jumpAheadTime('00:00:10')}`)
         cy.getByTestID('daterange--apply-btn').click()
       })
-
       cy.intercept('POST', '/query', req => {
         req.alias = 'refreshQuery'
-      })
-
-      cy.getByTestID('auto-refresh-overlay').within(() => {
-        cy.getByTestID('inactivity-timeout-dropdown').click()
-        cy.get('div[title="1"]').click()
       })
 
       cy.getByTestID('auto-refresh-overlay').within(() => {
         cy.getByTestID('refresh-form-activate-button').click()
       })
 
-      // make sure the query is being made
-      cy.wait('@refreshQuery')
       cy.wait('@refreshQuery')
 
-      cy.wait(10001)
+      cy.visit('/')
 
-      // the button state text is 'Enable Auto Refresh'
+      cy.wait(5000)
+
+      const queriesMade = cy.state('requests').filter((call: any) => {
+        call.alias === 'refreshQuery'
+      }).length
+
+      expect(queriesMade).to.equal(0)
+
+      cy.visit(routeToReturnTo)
+      cy.wait('@refreshQuery')
+      cy.wait(5000)
       cy.getByTestID('enable-auto-refresh-button').then(el => {
         expect(el[0].getAttribute('title')).to.equal('Enable Auto Refresh')
       })
+    })
 
-      // TODO (Sahas): make sure no queries are being made
+    it('does not refresh if user edits cell, until user comes back, and then continues', () => {
+      cy.getByTestID('enable-auto-refresh-button').click()
+      cy.getByTestID('auto-refresh-overlay').should('be.visible')
+      cy.getByTestID('auto-refresh-overlay').within(() => {
+        cy.getByTestID('autorefresh-dropdown--button').click()
+        cy.getByTestID('auto-refresh-5s').click()
+        cy.getByTestID('timerange-dropdown').click()
+      })
+      cy.getByTestID('timerange-popover--dialog').within(() => {
+        cy.getByTestID('timerange--input')
+          .clear()
+          .type(`${jumpAheadTime('00:00:10')}`)
+        cy.getByTestID('daterange--apply-btn').click()
+      })
+      cy.intercept('POST', '/query', req => {
+        req.alias = 'refreshQuery'
+      })
 
-      const queriesMade = cy.state('requests').filter(call => {
+      cy.getByTestID('auto-refresh-overlay').within(() => {
+        cy.getByTestID('refresh-form-activate-button').click()
+      })
+
+      cy.wait('@refreshQuery')
+
+      cy.getByTestID('cell-context--toggle').click()
+      cy.getByTestID('cell-context--configure').click()
+
+      cy.wait(5000)
+
+      cy.getByTestID('overlay').within(() => {
+        cy.getByTestID('cancel-cell-edit--button').click()
+      })
+
+      const queriesMade = cy.state('requests').filter((call: any) => {
         call.alias === 'refreshQuery'
       }).length
+
+      expect(queriesMade).to.equal(0)
+
+      cy.visit(routeToReturnTo)
+      cy.wait('@refreshQuery')
+      cy.wait(5000)
+      cy.getByTestID('enable-auto-refresh-button').then(el => {
+        expect(el[0].getAttribute('title')).to.equal('Enable Auto Refresh')
+      })
     })
   })
 })

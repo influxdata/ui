@@ -26,8 +26,8 @@ set -eu -o pipefail
 # - PULL_REQUEST: the open pull request, if one exists (used for lighthouse)
 #
 # **For running from the influxdb OSS repository:**
-#	Since the OSS private CI is very simple, retrying a failing job in the private CI is not supported.
-#	Currently, only running e2e tests against the latest from the UI master branch is supported. 
+# Since the OSS private CI is very simple, retrying a failing job in the private CI is not supported.
+# Currently, only running e2e tests against the latest from the UI master branch is supported. 
 #
 # Required Env Vars for Running from the influxdb OSS Repository:
 # - OSS_SHA: the influxdb repo commit SHA we're running against
@@ -37,7 +37,7 @@ set -eu -o pipefail
 # make dir for artifacts
 mkdir -p monitor-ci/test-artifacts/results/{build-oss-image,oss-e2e,build-image,cloud-e2e,cloud-e2e-firefox,cloud-e2e-k8s-idpe,cloud-lighthouse,smoke,build-prod-image,deploy}
 
-# if we are not running from the OSS repo, OSS_SHA will be unset, so run from the UI repo.
+# if we are not running from the OSS repo, OSS_SHA will be unset, and we must be running from the UI repo.
 if [[ -z "${OSS_SHA:-}" ]]; then
 	# get monitor-ci pipelines we've already run on this SHA
 	found_passing_pipeline=0
@@ -85,7 +85,7 @@ if [[ -z "${OSS_SHA:-}" ]]; then
 		printf "\nno passing monitor-ci pipelines found for this SHA, starting a new one\n"
 	fi
 
-	# start the monitor-ci pipeline
+	# start the monitor-ci pipeline from the UI repo
 	DEPLOY_PROD=false
 	if [[ "${UI_BRANCH}" == "master" ]]; then
 		DEPLOY_PROD=false # TODO: change this to true when we're ready to depend on this script
@@ -98,9 +98,8 @@ if [[ -z "${OSS_SHA:-}" ]]; then
 		--header 'Accept: application/json'    \
 		--data "{\"branch\":\"${MONITOR_CI_BRANCH}\", \"parameters\":{ \"ui-sha\":\"${SHA}\", \"ui-branch\":\"${UI_BRANCH}\", \"ui-pull-request\":\"${PULL_REQUEST}\", \"deploy-prod\":${DEPLOY_PROD}}}")
 else
-	# running from the OSS repo.
+	# start the monitor-ci pipeline from the influxdb repo
 	printf "\nstarting monitor-ci pipeline targeting monitor-ci branch ${MONITOR_CI_BRANCH} using OSS SHA ${OSS_SHA}\n"
-	
 	pipeline=$(curl -s --fail --request POST \
 		--url https://circleci.com/api/v2/project/gh/influxdata/monitor-ci/pipeline \
 		--header "Circle-Token: ${API_KEY}" \

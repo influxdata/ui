@@ -437,12 +437,12 @@ jobs:
           no_output_timeout: 10m
           command: |
             cd monitor-ci;
-            BLAH1="$CIRCLE_PULL_REQUEST"
-            BLAH2="$UI_CI_TOKEN"
-            BLAH3="$INFLUXDB_TOKEN"
-            BLAH4="$INFLUXDB_ORGID"
-            BLAH5="$INFLUXDB_URL"
-            BLAH6="$DASHBOARD_URL"
+            BLAH1="::::test::${CIRCLE_PULL_REQUEST}::test::::"
+            BLAH2="::::test::${UI_CI_TOKEN}::test::::"
+            BLAH3="::::test::${INFLUXDB_TOKEN}::test::::"
+            BLAH4="::::test::${INFLUXDB_ORGID}::test::::"
+            BLAH5="::::test::${INFLUXDB_URL}::test::::"
+            BLAH6="::::test::${DASHBOARD_URL}::test::::"
 
             echo "::::${BLAH1}::::${BLAH2}::::${BLAH3}::::${BLAH4}::::${BLAH5}::::${BLAH6}::::"
             if [ "${CIRCLE_BRANCH}" = "master" ]; then

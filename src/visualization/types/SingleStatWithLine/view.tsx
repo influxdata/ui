@@ -65,7 +65,7 @@ import {
   makeAnnotationLayer,
 } from 'src/visualization/components/annotationController'
 
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 interface Props extends VisualizationProps {
   properties: LinePlusSingleStatProperties
@@ -92,6 +92,7 @@ const SingleStatWithLine: FC<Props> = ({
   // which are currently global values, not per dashboard
   const inAnnotationWriteMode = useSelector(isSingleClickAnnotationsEnabled)
   const annotationsAreVisible = useSelector(selectAreAnnotationsVisible)
+  const dispatch = useDispatch()
 
   const storedXDomain = useMemo(() => parseXBounds(properties.axes.x.bounds), [
     properties.axes.x.bounds,
@@ -226,6 +227,31 @@ const SingleStatWithLine: FC<Props> = ({
         hoverDimension: properties.hoverDimension,
       },
     ],
+  }
+
+  if (isFlagEnabled('annotations')) {
+    const eventPrefix = 'singleStatWline'
+
+    if (inAnnotationWriteMode && cellID) {
+      config.interactionHandlers = {
+        singleClick: makeAnnotationClickListener(dispatch, cellID, eventPrefix),
+      }
+    }
+
+    const annotationLayer: AnnotationLayerConfig = makeAnnotationLayer(
+      cellID,
+      xColumn,
+      yColumn,
+      groupKey,
+      annotations,
+      annotationsAreVisible,
+      dispatch,
+      eventPrefix
+    )
+
+    if (annotationLayer) {
+      config.layers.push(annotationLayer)
+    }
   }
 
   if (isFlagEnabled('useGiraffeGraphs')) {

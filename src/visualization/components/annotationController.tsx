@@ -96,7 +96,8 @@ export const makeAnnotationLayer = (
   groupKey,
   annotations,
   annotationsAreVisible,
-  dispatch
+  dispatch,
+  eventPrefix = 'xyplot'
 ) => {
   const cellAnnotations = annotations ? annotations[cellID] ?? [] : []
   const annotationsToRender: any[] = cellAnnotations.map(annotation => {
@@ -109,7 +110,8 @@ export const makeAnnotationLayer = (
   const handleAnnotationClick = makeAnnotationClickHandler(
     cellID,
     dispatch,
-    annotations
+    annotations,
+    eventPrefix
   )
 
   if (annotationsAreVisible && annotationsToRender.length) {

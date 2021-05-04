@@ -9,7 +9,7 @@ import WriteDataHelperTokens from 'src/writeData/components/WriteDataHelperToken
 import {auth} from 'mocks/dummyData'
 
 // Types
-import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
+import WriteDataDetailsProvider from 'src/writeData/components/WriteDataDetailsContext'
 
 // NOTE: stubbing is required here as the CopyButton component
 // requires a redux store (alex)
@@ -17,17 +17,18 @@ jest.mock('src/shared/components/CopyButton', () => () => null)
 
 const setup = (override?) => {
   const wrapper = renderWithReduxAndRouter(
-    <WriteDataDetailsContext.Provider>
+    <WriteDataDetailsProvider>
       <WriteDataHelperTokens />
-    </WriteDataDetailsContext.Provider>,
+    </WriteDataDetailsProvider>,
     state => {
       state.resources.tokens.allIDs = []
-      state.resources.tokens.byID = {}(override.tokens || [auth]).forEach(
-        token => {
-          state.resources.tokens.allIDs.push(token.id)
-          state.resources.tokens.byID[token.id] = token
-        }
-      )
+      state.resources.tokens.byID = {}
+
+      const tokens = override.tokens || [auth]
+      tokens.forEach(token => {
+        state.resources.tokens.allIDs.push(token.id)
+        state.resources.tokens.byID[token.id] = token
+      })
     }
   )
 

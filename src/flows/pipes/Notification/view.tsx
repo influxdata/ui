@@ -225,17 +225,14 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data)}`
           </FlexBox.Child>
         </FlexBox>
         <Threshold />
-        <FlexBox
-          alignItems={AlignItems.Stretch}
-          margin={ComponentSize.Medium}
-        >
+        <FlexBox alignItems={AlignItems.Stretch} margin={ComponentSize.Medium}>
           <FlexBox.Child grow={0} shrink={0}>
             <Tabs orientation={Orientation.Vertical}>{avail}</Tabs>
           </FlexBox.Child>
           <FlexBox.Child grow={1} shrink={1}>
             {React.createElement(DEFAULT_ENDPOINTS[data.endpoint].view)}
           </FlexBox.Child>
-            <FlexBox.Child grow={2} shrink={1} style={{display: 'flex'}}>
+          <FlexBox.Child grow={2} shrink={1} style={{display: 'flex'}}>
             <Form.Element label="Message Format" required={true}>
               <TextArea
                 name="message"
@@ -243,7 +240,7 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data)}`
                 value={data.message}
                 onChange={updateMessage}
                 size={ComponentSize.Medium}
-                  style={{height: '100%'}}
+                style={{height: '100%'}}
               />
             </Form.Element>
           </FlexBox.Child>

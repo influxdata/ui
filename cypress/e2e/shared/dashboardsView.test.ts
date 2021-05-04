@@ -1477,7 +1477,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       })
       cy.wait('@refreshQuery')
       cy.on('fail', err => {
-        expect(err.message).to.equal(
+        expect(err.message).to.include(
           'Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 3rd request to the route: `refreshQuery`. No request ever occurred.'
         )
         done()
@@ -1649,7 +1649,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
         )
       cy.wait('@refreshQuery')
       cy.on('fail', err => {
-        expect(err.message).to.equal(
+        expect(err.message).to.include(
           'Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 1st request to the route: `refreshQuery`. No request ever occurred.'
         )
         done()

@@ -437,7 +437,14 @@ jobs:
           no_output_timeout: 10m
           command: |
             cd monitor-ci;
-            echo "make lhr PR=\"${CIRCLE_PULL_REQUEST}\" GITHUB_TOKEN=\"::::${UI_CI_TOKEN}::::\" INFLUXDB_TOKEN=\"::::${INFLUXDB_TOKEN}::::\" INFLUXDB_ORGID=\"${INFLUXDB_ORGID}\" INFLUXDB_URL=\"${INFLUXDB_URL}\" DASHBOARD_URL=\"${DASHBOARD_URL}\"";
+            BLAH1="$CIRCLE_PULL_REQUEST"
+            BLAH2="$UI_CI_TOKEN"
+            BLAH3="$INFLUXDB_TOKEN"
+            BLAH4="$INFLUXDB_ORGID"
+            BLAH5="$INFLUXDB_URL"
+            BLAH6="$DASHBOARD_URL"
+
+            echo "::::${BLAH1}::::${BLAH2}::::${BLAH3}::::${BLAH4}::::${BLAH5}::::${BLAH6}::::"
             if [ "${CIRCLE_BRANCH}" = "master" ]; then
                     make lhr MASTER_BRANCH=1 GITHUB_TOKEN="${UI_CI_TOKEN}" INFLUXDB_TOKEN="${INFLUXDB_TOKEN}" INFLUXDB_ORGID="${INFLUXDB_ORGID}" INFLUXDB_URL="${INFLUXDB_URL}" DASHBOARD_URL="${DASHBOARD_URL}";
             else

@@ -21,8 +21,10 @@ const setup = (override?) => {
       <WriteDataHelperTokens />
     </WriteDataDetailsProvider>,
     state => {
-      state.resources.tokens.allIDs = []
-      state.resources.tokens.byID = {}
+      state.resources.tokens = {
+        allIDs: [],
+        byID: {},
+      }
 
       const tokens = override.tokens || [auth]
       tokens.forEach(token => {

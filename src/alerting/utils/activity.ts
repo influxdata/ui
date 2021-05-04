@@ -31,6 +31,7 @@ from(bucket: "${MONITORING_BUCKET}")
     "_check_id": "checkID",
     "_check_name": "checkName",
   })
+  |> group()
   |> sort(columns: ["time"], desc: true)
   |> limit(n: ${limit}, offset: ${offset})
 `

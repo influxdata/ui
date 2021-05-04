@@ -139,10 +139,6 @@ class QueryCache {
     this.cache = {}
   }
 
-  getById = (queryID: string) => {
-    return this.cache[queryID] ?? null
-  }
-
   setCacheByID = (
     queryID: string,
     hashedVariables: string,

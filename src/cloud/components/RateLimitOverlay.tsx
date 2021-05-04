@@ -36,7 +36,7 @@ const RateLimitOverlay: FC<Props> = ({onClose, orgID}) => {
   const [showForm, toggleShowForm] = useState<boolean>(false)
 
   const handleOptimizeClick = (): void => {
-    history.push(`/orgs/${orgID}/settings/templates?walkme=19-880913`)
+    history.push(`/orgs/${orgID}/settings/templates`)
     onClose()
   }
 

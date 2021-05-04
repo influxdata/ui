@@ -1,13 +1,22 @@
 // Libraries
 import React, {FC, useMemo, useContext} from 'react'
 import {
-  Plot,
+  AnnotationLayerConfig,
+  Config,
   DomainLabel,
   lineTransform,
-  getDomainDataFromLines,
   formatStatValue,
+  getDomainDataFromLines,
   getLatestValues,
+  Plot,
+  SingleStatLayerConfig,
 } from '@influxdata/giraffe'
+
+// Redux
+import {
+  isSingleClickAnnotationsEnabled,
+  selectAreAnnotationsVisible,
+} from 'src/annotations/selectors'
 
 // Components
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
@@ -50,11 +59,25 @@ import {LinePlusSingleStatProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
 import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 
+// Annotations
+import {
+  makeAnnotationClickListener,
+  makeAnnotationLayer,
+} from 'src/visualization/components/annotationController'
+
+import {useSelector} from 'react-redux'
+
 interface Props extends VisualizationProps {
   properties: LinePlusSingleStatProperties
 }
 
-const SingleStatWithLine: FC<Props> = ({properties, result, timeRange}) => {
+const SingleStatWithLine: FC<Props> = ({
+  properties,
+  result,
+  timeRange,
+  annotations,
+  cellID,
+}) => {
   const {theme, timeZone} = useContext(AppSettingContext)
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
@@ -62,6 +85,13 @@ const SingleStatWithLine: FC<Props> = ({properties, result, timeRange}) => {
   const tooltipOrientationThreshold = useLegendOrientationThreshold(
     properties.legendOrientationThreshold
   )
+
+  // these two values are set in the dashboard, and used whether or not this view
+  // is in a dashboard or in configuration/single cell popout mode
+  // would need to add the annotation control bar to the VEOHeader to get access to the controls,
+  // which are currently global values, not per dashboard
+  const inAnnotationWriteMode = useSelector(isSingleClickAnnotationsEnabled)
+  const annotationsAreVisible = useSelector(selectAreAnnotationsVisible)
 
   const storedXDomain = useMemo(() => parseXBounds(properties.axes.x.bounds), [
     properties.axes.x.bounds,
@@ -161,104 +191,70 @@ const SingleStatWithLine: FC<Props> = ({properties, result, timeRange}) => {
     lastValue: latestValue,
     cellType: 'single-stat',
   })
+
+  const config: Config = {
+    ...currentTheme,
+    table: result.table,
+    xAxisLabel: properties.axes.x.label,
+    yAxisLabel: properties.axes.y.label,
+    xDomain,
+    onSetXDomain,
+    onResetXDomain,
+    yDomain,
+    onSetYDomain,
+    onResetYDomain,
+    ...axisTicksOptions,
+    legendColumns,
+    legendOpacity: tooltipOpacity,
+    legendOrientationThreshold: tooltipOrientationThreshold,
+    legendColorizeRows: tooltipColorize,
+    valueFormatters: {
+      [xColumn]: xFormatter,
+      [yColumn]: yFormatter,
+    },
+    layers: [
+      {
+        type: 'line',
+        x: xColumn,
+        y: yColumn,
+        fill: groupKey,
+        interpolation,
+        position: properties.position,
+        colors: colorHexes,
+        shadeBelow: !!properties.shadeBelow,
+        shadeBelowOpacity: 0.08,
+        hoverDimension: properties.hoverDimension,
+      },
+    ],
+  }
+
   if (isFlagEnabled('useGiraffeGraphs')) {
-    return (
-      <Plot
-        config={{
-          ...currentTheme,
-          table: result.table,
-          xAxisLabel: properties.axes.x.label,
-          yAxisLabel: properties.axes.y.label,
-          xDomain,
-          onSetXDomain,
-          onResetXDomain,
-          yDomain,
-          onSetYDomain,
-          onResetYDomain,
-          ...axisTicksOptions,
-          legendColumns,
-          legendOpacity: tooltipOpacity,
-          legendOrientationThreshold: tooltipOrientationThreshold,
-          legendColorizeRows: tooltipColorize,
-          valueFormatters: {
-            [xColumn]: xFormatter,
-            [yColumn]: yFormatter,
-          },
-          layers: [
-            {
-              type: 'line',
-              x: xColumn,
-              y: yColumn,
-              fill: groupKey,
-              interpolation,
-              position: properties.position,
-              colors: colorHexes,
-              shadeBelow: !!properties.shadeBelow,
-              shadeBelowOpacity: 0.08,
-              hoverDimension: properties.hoverDimension,
-            },
-            {
-              type: 'single stat',
-              prefix: properties.prefix,
-              suffix: properties.suffix,
-              decimalPlaces: properties.decimalPlaces,
-              textColor: textColor,
-              textOpacity: 100,
-              backgroundColor: backgroundColor ? backgroundColor : '',
-              svgTextStyle: {
-                fontSize: '100',
-                fontWeight: 'lighter',
-                dominantBaseline: 'middle',
-                textAnchor: 'middle',
-                letterSpacing: '-0.05em',
-              },
-              svgTextAttributes: {
-                'data-testid': 'single-stat--text',
-              },
-            },
-          ],
-        }}
-      />
-    )
+    const statLayer: SingleStatLayerConfig = {
+      type: 'single stat',
+      prefix: properties.prefix,
+      suffix: properties.suffix,
+      decimalPlaces: properties.decimalPlaces,
+      textColor: textColor,
+      textOpacity: 100,
+      backgroundColor: backgroundColor ? backgroundColor : '',
+      svgTextStyle: {
+        fontSize: '100',
+        fontWeight: 'lighter',
+        dominantBaseline: 'middle',
+        textAnchor: 'middle',
+        letterSpacing: '-0.05em',
+      },
+      svgTextAttributes: {
+        'data-testid': 'single-stat--text',
+      },
+    }
+
+    config.layers.push(statLayer)
+
+    return <Plot config={config} />
   } else {
     return (
-      <Plot
-        config={{
-          ...currentTheme,
-          table: result.table,
-          xAxisLabel: properties.axes.x.label,
-          yAxisLabel: properties.axes.y.label,
-          xDomain,
-          onSetXDomain,
-          onResetXDomain,
-          yDomain,
-          onSetYDomain,
-          onResetYDomain,
-          ...axisTicksOptions,
-          legendColumns,
-          legendOpacity: tooltipOpacity,
-          legendOrientationThreshold: tooltipOrientationThreshold,
-          legendColorizeRows: tooltipColorize,
-          valueFormatters: {
-            [xColumn]: xFormatter,
-            [yColumn]: yFormatter,
-          },
-          layers: [
-            {
-              type: 'line',
-              x: xColumn,
-              y: yColumn,
-              fill: groupKey,
-              interpolation,
-              position: properties.position,
-              colors: colorHexes,
-              shadeBelow: !!properties.shadeBelow,
-              shadeBelowOpacity: 0.08,
-              hoverDimension: properties.hoverDimension,
-            },
-          ],
-        }}
-      >
+      <Plot config={config}>
         <LatestValueTransform table={result.table} allowString={true}>
           {latestValue => {
             const {

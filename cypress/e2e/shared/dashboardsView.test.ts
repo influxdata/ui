@@ -1414,6 +1414,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
         })
         cy.window().then(win => {
           cy.wait(1000)
+          // TODO: remove when feature flag is removed
           win.influx.set('newAutoRefresh', true)
         })
         cy.createBucket(orgID, name, 'schmucket')
@@ -1447,9 +1448,6 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           .type('blah')
         cy.getByTestID('save-cell--button').click()
       })
-    })
-
-    it('can enable the auto refresh process via the modal, then manually stop the process via the stop button', done => {
       cy.getByTestID('enable-auto-refresh-button').click()
       cy.getByTestID('auto-refresh-overlay').should('be.visible')
       cy.getByTestID('auto-refresh-overlay').within(() => {
@@ -1457,6 +1455,9 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
         cy.getByTestID('auto-refresh-5s').click()
         cy.getByTestID('timerange-dropdown').click()
       })
+    })
+
+    it('can enable the auto refresh process via the modal, then manually stop the process via the stop button', done => {
       cy.getByTestID('timerange-popover--dialog').within(() => {
         cy.getByTestID('timerange--input')
           .clear()
@@ -1466,9 +1467,8 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.intercept('POST', '/query', req => {
         req.alias = 'refreshQuery'
       })
-      cy.getByTestID('auto-refresh-overlay').within(() => {
-        cy.getByTestID('refresh-form-activate-button').click()
-      })
+
+      cy.getByTestID('refresh-form-activate-button').click()
       cy.wait('@refreshQuery')
       cy.wait('@refreshQuery')
       cy.getByTestID('enable-auto-refresh-button').click()
@@ -1485,13 +1485,6 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     })
 
     it('can timeout on a preset timeout selected by the user', () => {
-      cy.getByTestID('enable-auto-refresh-button').click()
-      cy.getByTestID('auto-refresh-overlay').should('be.visible')
-      cy.getByTestID('auto-refresh-overlay').within(() => {
-        cy.getByTestID('autorefresh-dropdown--button').click()
-        cy.getByTestID('auto-refresh-5s').click()
-        cy.getByTestID('timerange-dropdown').click()
-      })
       cy.getByTestID('timerange-popover--dialog').within(() => {
         cy.getByTestID('timerange--input')
           .clear()
@@ -1502,9 +1495,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
         req.alias = 'refreshQuery'
       })
 
-      cy.getByTestID('auto-refresh-overlay').within(() => {
-        cy.getByTestID('refresh-form-activate-button').click()
-      })
+      cy.getByTestID('refresh-form-activate-button').click()
 
       cy.wait('@refreshQuery')
       cy.wait('@refreshQuery')
@@ -1517,13 +1508,6 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     })
 
     it('does not refresh if user leaves, until user comes back, and then continues', () => {
-      cy.getByTestID('enable-auto-refresh-button').click()
-      cy.getByTestID('auto-refresh-overlay').should('be.visible')
-      cy.getByTestID('auto-refresh-overlay').within(() => {
-        cy.getByTestID('autorefresh-dropdown--button').click()
-        cy.getByTestID('auto-refresh-5s').click()
-        cy.getByTestID('timerange-dropdown').click()
-      })
       cy.getByTestID('timerange-popover--dialog').within(() => {
         cy.getByTestID('timerange--input')
           .clear()
@@ -1534,9 +1518,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
         req.alias = 'refreshQuery'
       })
 
-      cy.getByTestID('auto-refresh-overlay').within(() => {
-        cy.getByTestID('refresh-form-activate-button').click()
-      })
+      cy.getByTestID('refresh-form-activate-button').click()
 
       cy.wait('@refreshQuery')
 
@@ -1559,13 +1541,6 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     })
 
     it('does not refresh if user edits cell, until user comes back, and then continues', () => {
-      cy.getByTestID('enable-auto-refresh-button').click()
-      cy.getByTestID('auto-refresh-overlay').should('be.visible')
-      cy.getByTestID('auto-refresh-overlay').within(() => {
-        cy.getByTestID('autorefresh-dropdown--button').click()
-        cy.getByTestID('auto-refresh-5s').click()
-        cy.getByTestID('timerange-dropdown').click()
-      })
       cy.getByTestID('timerange-popover--dialog').within(() => {
         cy.getByTestID('timerange--input')
           .clear()
@@ -1576,9 +1551,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
         req.alias = 'refreshQuery'
       })
 
-      cy.getByTestID('auto-refresh-overlay').within(() => {
-        cy.getByTestID('refresh-form-activate-button').click()
-      })
+      cy.getByTestID('refresh-form-activate-button').click()
 
       cy.wait('@refreshQuery')
 
@@ -1605,13 +1578,6 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       })
     })
     it('can timeout on a preset inactivity timeout', done => {
-      cy.getByTestID('enable-auto-refresh-button').click()
-      cy.getByTestID('auto-refresh-overlay').should('be.visible')
-      cy.getByTestID('auto-refresh-overlay').within(() => {
-        cy.getByTestID('autorefresh-dropdown--button').click()
-        cy.getByTestID('auto-refresh-5s').click()
-        cy.getByTestID('timerange-dropdown').click()
-      })
       cy.getByTestID('timerange-popover--dialog').within(() => {
         cy.getByTestID('timerange--input')
           .clear()
@@ -1622,9 +1588,8 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
         req.alias = 'refreshQuery'
       })
 
-      cy.getByTestID('auto-refresh-overlay').within(() => {
-        cy.getByTestID('refresh-form-activate-button').click()
-      })
+      cy.getByTestID('refresh-form-activate-button').click()
+
       cy.window()
         .its('store')
         .invoke('dispatch', {

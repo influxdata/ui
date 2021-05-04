@@ -437,8 +437,6 @@ jobs:
           no_output_timeout: 10m
           command: |
             cd monitor-ci;
-            echo '${CIRCLE_PULL_REQUEST} | base64'
-            echo ${CIRCLE_PULL_REQUEST} | base64
             echo '${UI_CI_TOKEN} | base64'
             echo ${UI_CI_TOKEN} | base64
             echo '${INFLUXDB_TOKEN} | base64'

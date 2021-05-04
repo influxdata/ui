@@ -1475,6 +1475,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.getByTestID('enable-auto-refresh-button').then(el => {
         expect(el[0].getAttribute('title')).to.equal('Enable Auto Refresh')
       })
+      // Wait the duration we'd expect on the next query to ensure stopping via the button actually stops the process. The fail means the request didn't run, which is what we want
       cy.wait('@refreshQuery')
       cy.on('fail', err => {
         expect(err.message).to.include(
@@ -1613,6 +1614,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           'Your dashboard auto refresh settings have been reset due to inactivity '
         )
       cy.wait('@refreshQuery')
+      // Wait the duration we'd expect on the next query to ensure stopping via the inactivity timeout actually stops the process. The fail means the request didn't run, which is what we want
       cy.on('fail', err => {
         expect(err.message).to.include(
           'Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 1st request to the route: `refreshQuery`. No request ever occurred.'

@@ -1,5 +1,3 @@
-/// <reference types="resize-observer-browser" />
-
 import React, {
   FC,
   useContext,
@@ -9,13 +7,22 @@ import React, {
   useState,
 } from 'react'
 import {DapperScrollbars} from '@influxdata/clockface'
+import {FluxDataType} from '@influxdata/giraffe'
 import {
   SubsetTable,
   SimpleTableViewProperties,
 } from 'src/visualization/types/SimpleTable'
-import {FluxResult} from 'src/types/flows'
+import {FluxResult, Column} from 'src/types/flows'
 import {PaginationContext} from 'src/visualization/context/pagination'
 import InnerTable from 'src/visualization/types/SimpleTable/InnerTable'
+
+interface ExtendedColumn {
+  name: string
+  type: 'number' | 'time' | 'boolean' | 'string'
+  fluxDataType: FluxDataType
+  group: boolean
+  data: any[]
+}
 
 const HEADER_HEIGHT = 51
 const ROW_HEIGHT = 25
@@ -85,13 +92,20 @@ const subsetResult = (
 ): SubsetTable[] => {
   // only look at data within the page
   const subset = Object.values(result.table.columns)
-    .map(c => ({
-      ...c,
-      group: result.fluxGroupKeyUnion.includes(c.name),
-      data: c.data.slice(offset, offset + page),
-    }))
+    .map(
+      (c: Column): ExtendedColumn => ({
+        ...c,
+        group: result.fluxGroupKeyUnion.includes(c.name),
+        data: c.data.slice(offset, offset + page),
+      })
+    )
+    .filter(c => !!c.data.filter(_c => _c !== undefined).length)
     .reduce((arr, curr) => {
-      arr[curr.name] = curr
+      if (arr[curr.name]) {
+        arr[curr.name].push(curr)
+        return arr
+      }
+      arr[curr.name] = [curr]
       return arr
     }, {})
 
@@ -101,20 +115,21 @@ const subsetResult = (
   // group by table id (series)
   for (let ni = 0; ni < page; ni++) {
     if (
-      `y${subset['result'].data[ni]}:t${subset['table'].data[ni]}` === lastTable
+      `y${subset['result'][0].data[ni]}:t${subset['table'][0].data[ni]}` ===
+      lastTable
     ) {
       continue
     }
 
-    lastTable = `y${subset['result'].data[ni]}:t${subset['table'].data[ni]}`
+    lastTable = `y${subset['result'][0].data[ni]}:t${subset['table'][0].data[ni]}`
 
     if (tables.length) {
       tables[tables.length - 1].end = ni
     }
 
     tables.push({
-      idx: subset['table'].data[ni],
-      yield: subset['result'].data[ni],
+      idx: subset['table'][0].data[ni],
+      yield: subset['result'][0].data[ni],
       cols: [],
       signature: '',
       start: ni,
@@ -137,27 +152,33 @@ const subsetResult = (
       ]
         .filter(c => !!c)
         .concat(
-          Object.values(subset)
-            .filter((c: any) => {
-              return (
+          Object.entries(subset)
+            .filter(
+              ([_name, _]) =>
                 ![
                   'result',
                   'table',
                   '_measurement',
                   '_field',
                   '_value',
-                ].includes(c.name) &&
-                (disableFilter || !['_start', '_stop'].includes(c.name))
-              )
-            })
-            .sort((a: any, b: any) =>
-              a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+                ].includes(_name) &&
+                (disableFilter || !['_start', '_stop'].includes(_name))
             )
+            .sort((a: any, b: any) =>
+              a[0].toLowerCase().localeCompare(b[0].toLowerCase())
+            )
+            .map(c => c[1])
         )
-        .map(c => ({...c, data: c.data.slice(curr.start, curr.end)}))
-        .filter(c => !!c.data.filter(_c => _c !== undefined).length)
+        .map(c =>
+          c
+            .map(_c => ({..._c, data: _c.data.slice(curr.start, curr.end)}))
+            .filter(_c => !!_c.data.filter(_d => _d !== undefined).length)
+        )
         .reduce((acc, curr) => {
-          acc[curr.name] = curr
+          if (!curr.length) {
+            return acc
+          }
+          acc[curr[0].name] = curr[0]
           return acc
         }, {})
 

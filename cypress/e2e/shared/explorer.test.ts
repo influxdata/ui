@@ -374,12 +374,8 @@ describe('DataExplorer', () => {
           .clear()
           .type('2019-10-29')
 
-        // click button and see if time range has been selected
-        cy.getByTestID('daterange--apply-btn').click()
-
-        cy.getByTestID('timerange-dropdown').contains(
-          '2019-10-31 00:00 - 2019-10-29 00:00'
-        )
+        // button should be disabled
+        cy.getByTestID('daterange--apply-btn').should('be.disabled')
       })
 
       it('should error when invalid dates are input', () => {
@@ -409,6 +405,9 @@ describe('DataExplorer', () => {
 
         // invalid date errors
         cy.getByTestID('form--element-error').should('exist')
+
+        // button should be disabled
+        cy.getByTestID('daterange--apply-btn').should('be.disabled')
       })
     })
   })
@@ -800,7 +799,7 @@ describe('DataExplorer', () => {
 
         cy.getByTestID('time-machine-submit-button').click()
         cy.getByTestID('cog-cell--button').click()
-        cy.getByTestID('select-group--option')
+        cy.get('.auto-domain-input')
           .contains('Custom')
           .click()
         cy.getByTestID('auto-domain--min')
@@ -1348,9 +1347,21 @@ describe('DataExplorer', () => {
         cy.getByTestID(`selector-list m`).click()
         cy.getByTestID('save-query-as').click({force: true})
         cy.get('[id="variable"]').click()
+
+        // pre-visit the "Save as variable" tab to prevent race condition
+        cy.getByTestID('overlay--container').within(() => {
+          cy.getByTestID('variable-form-save').should('be.disabled')
+          cy.getByTestID('flux-editor').should('be.visible')
+          cy.getByTestID('flux-editor').click()
+          cy.get('.cf-overlay--dismiss').click()
+        })
       })
 
       it('can save and enable/disable submit button', () => {
+        cy.getByTestID(`selector-list m`).click()
+        cy.getByTestID('save-query-as').click({force: true})
+        cy.get('[id="variable"]').click()
+
         cy.getByTestID('overlay--container').within(() => {
           cy.getByTestID('variable-form-save').should('be.disabled')
           cy.getByTestID('flux-editor').should('be.visible')
@@ -1369,19 +1380,20 @@ describe('DataExplorer', () => {
       })
 
       it('can prevent saving variable names with hyphens or spaces', () => {
+        cy.getByTestID(`selector-list m`).click()
+        cy.getByTestID('save-query-as').click({force: true})
+        cy.get('[id="variable"]').click()
         cy.getByTestID('overlay--container').within(() => {
           cy.getByTestID('variable-form-save').should('be.disabled')
           cy.getByTestID('flux-editor').should('be.visible')
-          cy.getByTestID('flux-editor').click()
-          cy.getByTestID('variable-name-input')
-            .click()
-            .type('bad name')
+          cy.getByTestID('variable-name-input').type('bad name')
           cy.getByTestID('variable-form-save').should('be.disabled')
 
           cy.getByTestID('variable-name-input')
             .clear()
             .type('bad-name')
           cy.getByTestID('variable-form-save').should('be.disabled')
+          cy.get('.cf-overlay--dismiss').click()
         })
       })
     })

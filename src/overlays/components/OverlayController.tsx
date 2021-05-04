@@ -32,6 +32,8 @@ import UpdateVariableOverlay from 'src/variables/components/UpdateVariableOverla
 import ExportVariableOverlay from 'src/variables/components/VariableExportOverlay'
 import NewThresholdCheckEO from 'src/checks/components/NewThresholdCheckEO'
 import NewDeadmanCheckEO from 'src/checks/components/NewDeadmanCheckEO'
+import {AutoRefreshOverlay} from 'src/dashboards/components/AutoRefreshOverlay'
+
 // Actions
 import {dismissOverlay} from 'src/overlays/actions/overlays'
 
@@ -110,6 +112,9 @@ export const OverlayController: FunctionComponent = () => {
         break
       case 'export-variable':
         activeOverlay.current = <ExportVariableOverlay />
+        break
+      case 'toggle-auto-refresh':
+        activeOverlay.current = <AutoRefreshOverlay />
         break
       default:
         activeOverlay.current = null

@@ -17,14 +17,14 @@ jobs:
           command: cp ./monitor-ci/env.testing ./monitor-ci/.env
       - run:
           name: Build the ui docker image
+          no_output_timeout: 15m
           command: |
-            cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
             docker build \
               --build-arg UI_SHA=testing \
               --build-arg CLOUD_URL=http://localhost/auth \
               --build-arg WEBPACK_FILE=fast \
               -t quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} \
-              -f ./monitor-ci/docker/Dockerfile.chronograf.prod \
+              -f ./ui/docker/Dockerfile.chronograf.prod \
               ./ui
             mkdir -p docker-cache
             docker save -o docker-cache/image.tar quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1}
@@ -48,13 +48,13 @@ jobs:
           command: cp ./monitor-ci/env.testing.oss ./monitor-ci/.env
       - run:
           name: Build the ui oss docker image
+          no_output_timeout: 15m
           command: |
-            cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
             docker build \
               --build-arg UI_SHA=testing \
               --build-arg WEBPACK_FILE=fast \
               -t quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} \
-              -f ./monitor-ci/docker/Dockerfile.chronograf.prod \
+              -f ./ui/docker/Dockerfile.chronograf.prod \
               ./ui
             mkdir -p docker-cache-oss
             docker save -o docker-cache-oss/image.tar quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1}
@@ -75,8 +75,8 @@ jobs:
       - checkout_monitor_ci
       - run:
           name: Build the ui docker image
+          no_output_timeout: 15m
           command: |
-            cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
             docker build \
               --build-arg HONEYBADGER_KEY=${HONEYBADGER_KEY} \
               --build-arg INJECT_HEADER="<script>(function (w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' }); var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f); })(window, document, 'script', 'dataLayer', '${GTM_ID}'); </script><script>window.userpilotSettings = {token: '72cf72g10'}</script><script src = 'https://js.userpilot.io/sdk/latest.js'></script>" \
@@ -84,7 +84,7 @@ jobs:
               --build-arg UI_SHA=${CIRCLE_SHA1} \
               --build-arg CLOUD_URL=/auth \
               -t quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1} \
-              -f ./monitor-ci/docker/Dockerfile.chronograf.prod \
+              -f ./ui/docker/Dockerfile.chronograf.prod \
               ./ui
             mkdir -p docker-cache
             docker save -o docker-cache/image.tar quay.io/influxdb/influxdb-ui:${CIRCLE_SHA1}
@@ -108,13 +108,13 @@ jobs:
           command: cp ./monitor-ci/env.testing ./monitor-ci/.env
       - run:
           name: Build the ui docker image
+          no_output_timeout: 15m
           command: |
-            cp ./monitor-ci/conf/chronograf/nginx.conf ./ui/
             docker build \
               --build-arg UI_SHA=testing \
               --build-arg CLOUD_URL=http://localhost/auth \
               -t quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} \
-              -f ./monitor-ci/docker/Dockerfile.chronograf.prod \
+              -f ./ui/docker/Dockerfile.chronograf.prod \
               ./ui
             mkdir -p docker-cache
             docker save -o docker-cache/image.tar quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1}
@@ -438,9 +438,9 @@ jobs:
           command: |
             cd monitor-ci;
             if [ "${CIRCLE_BRANCH}" = "master" ]; then
-                    make lhr MASTER_BRANCH=1 GITHUB_TOKEN="${HERCULES_TOKEN}" INFLUXDB_TOKEN="${INFLUXDB_TOKEN}" INFLUXDB_ORGID="${INFLUXDB_ORGID}" INFLUXDB_URL="${INFLUXDB_URL}" DASHBOARD_URL="${DASHBOARD_URL}";
+                    make lhr MASTER_BRANCH=1 GITHUB_TOKEN="${UI_CI_TOKEN}" INFLUXDB_TOKEN="${INFLUXDB_TOKEN}" INFLUXDB_ORGID="${INFLUXDB_ORGID}" INFLUXDB_URL="${INFLUXDB_URL}" DASHBOARD_URL="${DASHBOARD_URL}";
             else
-                    make lhr PR="${CIRCLE_PULL_REQUEST}" GITHUB_TOKEN="${HERCULES_TOKEN}" INFLUXDB_TOKEN="${INFLUXDB_TOKEN}" INFLUXDB_ORGID="${INFLUXDB_ORGID}" INFLUXDB_URL="${INFLUXDB_URL}" DASHBOARD_URL="${DASHBOARD_URL}";
+                    make lhr PR="${CIRCLE_PULL_REQUEST}" GITHUB_TOKEN="${UI_CI_TOKEN}" INFLUXDB_TOKEN="${INFLUXDB_TOKEN}" INFLUXDB_ORGID="${INFLUXDB_ORGID}" INFLUXDB_URL="${INFLUXDB_URL}" DASHBOARD_URL="${DASHBOARD_URL}";
             fi
       - store_artifacts:
           path: /tmp/results.html
@@ -511,6 +511,44 @@ jobs:
       #       # maintained here: https://github.com/influxdata/cypress-slim
       #       - run: docker tag quay.io/influxdb/ui-e2e:${CIRCLE_SHA1} quay.io/influxdb/ui-e2e:latest
       #       - run: docker push quay.io/influxdb/ui-e2e:latest
+  monitor-ci-tests:
+    docker:
+      - image: circleci/golang:1.15-node
+    steps:
+      - checkout
+      - run:
+          name: Run monitor-ci tests
+          command: API_KEY=${MONITOR_CI_API_KEY} PULL_REQUEST=${CIRCLE_PULL_REQUEST} MONITOR_CI_BRANCH="master" UI_BRANCH=${CIRCLE_BRANCH} SHA=${CIRCLE_SHA1} ./scripts/run-monitor-ci-tests.bash
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/results/build-oss-image
+          destination: test_artifacts/results/build-oss-image
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/results/oss-e2e
+          destination: test_artifacts/results/oss-e2e
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/results/build-image
+          destination: test_artifacts/results/build-image
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/results/cloud-e2e
+          destination: test_artifacts/results/cloud-e2e
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/results/cloud-e2e-firefox
+          destination: test_artifacts/results/cloud-e2e-firefox
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/results/cloud-e2e-k8s-idpe
+          destination: test_artifacts/results/cloud-e2e-k8s-idpe
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/results/cloud-lighthouse
+          destination: test_artifacts/results/cloud-lighthouse
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/results/smoke
+          destination: test_artifacts/results/smoke
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/results/build-prod-image
+          destination: test_artifacts/results/build-prod-image
+      - store_artifacts:
+          path: monitor-ci/test-artifacts/results/deploy
+          destination: test_artifacts/results/deploy
 workflows:
   version: 2
   build:
@@ -569,6 +607,7 @@ workflows:
             - cloud-e2e
             # TODO: uncomment this when we disable cloud-e2e
             # - cloud-e2e-k8s-idpe
+      - monitor-ci-tests
 commands:
   install_jsonnet_binary:
     description: >

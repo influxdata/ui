@@ -5,7 +5,7 @@ import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 import {useBilling} from 'src/billing/components/BillingPage'
 
 // Thunks
-import {getAccount} from 'src/billing/thunks'
+import {getMarketplace} from 'src/billing/thunks'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -14,14 +14,14 @@ type Props = {
   children: ReactNode
 }
 
-const AccountWrapper: FC<Props> = ({children}) => {
-  const [{account}, dispatch] = useBilling()
+const MarketplaceWrapper: FC<Props> = ({children}) => {
+  const [{marketplace}, dispatch] = useBilling()
 
   useEffect(() => {
-    getAccount(dispatch)
+    getMarketplace(dispatch)
   }, [dispatch])
 
-  const loading = account?.status ?? RemoteDataState.NotStarted
+  const loading = marketplace?.loadingStatus ?? RemoteDataState.NotStarted
 
   return (
     <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
@@ -30,4 +30,4 @@ const AccountWrapper: FC<Props> = ({children}) => {
   )
 }
 
-export default AccountWrapper
+export default MarketplaceWrapper

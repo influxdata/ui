@@ -29,6 +29,7 @@ export const LOAD_DATA = 'load-data'
 
 export const LABELS = 'labels'
 
+export const FILE_UPLOAD = 'file-upload'
 export const CLIENT_LIBS = 'client-libraries'
 export const TELEGRAF_PLUGINS = 'telegraf-plugins'
 export const DEVELOPER_TOOLS = 'developer-tools'

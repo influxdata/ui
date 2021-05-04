@@ -8,6 +8,7 @@
 .swp
 .vs
 .vscode
+.env
 
 # directories
 build
@@ -23,3 +24,4 @@ src/client/generatedRoutes.ts
 src/client/unityRoutes.ts
 src/client/flowsRoutes.ts
 src/client/managedFunctionsRoutes.ts
+src/client/notebooksRoutes.ts

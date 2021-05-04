@@ -3,26 +3,8 @@ info:
   title: Unity API Service
   version: 0.1.0
 servers:
-  - url: /unity/v2 # to be determined
+  - url: /api/v2private
 paths:
-  '/account':
-    get:
-      operationId: GetAccount
-      tags:
-        - Account
-      responses:
-        '200':
-          description: the account
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Account'
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
   # Oats is making this incredibly annoying with naming conflicts
   '/operator/account/{accountId}':
     get:
@@ -88,6 +70,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Me'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Cannot get account or organization for user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
           description: Unexpected error
           content:
@@ -218,6 +212,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BillingNotifySettings'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Notification Settings nil or User/Org not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '406':
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
           description: Unexpected error
           content:
@@ -242,6 +254,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BillingNotifySettings'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
           description: Unexpected error
           content:
@@ -273,11 +297,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  '/payment/form':
+  '/payment_form/{form}':
     get:
       operationId: GetPaymentForm
       tags:
         - PaymentGateway
+      parameters:
+        - in: path
+          name: form
+          required: true
+          schema:
+            type: string
+            enum: [checkout, billing]
+          description: The name of the PaymentForm to query.
+          example: 'checkout'
       responses:
         '200':
           description: A CreditCard Form parameter object
@@ -285,6 +318,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreditCardParams'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: User or Form not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '406':
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
           description: Unexpected error
           content:
@@ -382,12 +439,12 @@ paths:
               schema:
                 type: string
                 format: binary
-      default:
-        description: Unexpected error
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Error'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   '/orgs/{orgId}/invites':
     get:
       operationId: GetInvites
@@ -408,6 +465,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Invites'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Session user not owner or Org not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
           description: Unexpected error
           content:
@@ -442,6 +511,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Invite'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Session user not owner or Org not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict with invite email
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Missing information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
           description: Unexpected error
           content:
@@ -509,6 +602,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Invite/Org not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   '/orgs/{orgId}/invites/{inviteId}/resend':
     post:
       operationId: PostOrgsIdInvitesId
@@ -537,6 +642,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Invite'
+        '401':
+          description: Not Authorized or Invalid Session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Session user not owner or Invite/Org not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
           description: Unexpected error
           content:
@@ -563,6 +680,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Users'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Org or Users not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
           description: Unexpected error
           content:
@@ -593,6 +722,24 @@ paths:
       responses:
         '204':
           description: User removed
+        '400':
+          description: User trying to remove self
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Session user not owner or User/Org not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
           description: Unexpected error
           content:
@@ -748,15 +895,46 @@ paths:
             schema:
               $ref: '#/components/schemas/CheckoutRequest'
       responses:
-        '204':
-          description: Account upgraded
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Org/User not found or Beta region
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
           description: Unexpected error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-
+  '/cancel':
+    post:
+      operationId: PostCancel
+      tags:
+        - Account
+      responses:
+        '204':
+          description: Account cancelled
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   parameters:
     TraceSpan:
@@ -990,17 +1168,10 @@ components:
             - member
             - owner
         expiresAt:
+          description: when the invite will expire
+          readOnly: true
           format: date-time
           type: string
-        links:
-          type: object
-          readOnly: true
-          example:
-            self: '/unity/v2/invites/1'
-          properties:
-            self:
-              type: string
-              format: uri
       required: [id, email, role]
     Invites:
       type: object
@@ -1156,7 +1327,7 @@ components:
           type: object
           readOnly: true
           example:
-            self: '/unity/v2/users/1'
+            self: '/api/v2private/users/1'
           properties:
             self:
               type: string
@@ -1170,16 +1341,29 @@ components:
         email:
           type: string
           description: the email associated with the user
-        account:
-          $ref: '#/components/schemas/Account'
-          description: User Account for the account
+        accountType:
+          type: string
+          description: type of the account
+          enum:
+            - free
+            - cancelled
+            - pay_as_you_go
+        billingProvider:
+          type: string
+          description: the billing provider for the account, nil if none
+          enum:
+            - zuora
+            - aws
+            - gcm
+            - azure
         isRegionBeta:
           type: boolean
           description: whether the region associated with the account is a beta region
         isOperator:
           type: boolean
           description: whether the user is an operator
-      required: [id, account, email, isOperator, isRegionBeta]
+      required:
+        [id, accountType, billingProvider, email, isOperator, isRegionBeta]
     Users:
       type: object
       properties:

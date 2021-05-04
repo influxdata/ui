@@ -8,9 +8,7 @@ $flow-panel--bg: $g3-castle;
 $flow-panel--node-gap: $cf-marg-d + $cf-marg-b;
 $flow-panel--node-dot: 16px;
 
-$flow-panel--insert-gap: (
-    $flow-panel--node-gap + $cf-marg-b - $cf-form-sm-height
-  ) / 2;
+$flow-panel--insert-gap: 24px;
 
 $flow-panel--insert-connector: (
     ($flow-header-height - $flow-panel--node-dot) / 2

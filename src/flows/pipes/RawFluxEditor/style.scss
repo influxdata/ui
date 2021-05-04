@@ -1,16 +1,6 @@
 @import '@influxdata/clockface/dist/variables.scss';
 @import '~src/flows/FlowVariables.scss';
 
-.query-results {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  background-color: $g0-obsidian;
-  position: relative;
-}
-
 .flow-panel--body .flux-toolbar {
   position: absolute;
   top: 0;

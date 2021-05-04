@@ -11,13 +11,13 @@ import {
 } from '@influxdata/clockface'
 
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
+import {QueryContext} from 'src/flows/context/query'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {RunModeContext, RunMode} from 'src/flows/context/runMode'
 import {notify} from 'src/shared/actions/notifications'
 import {FlowContext} from 'src/flows/context/flow.current'
 
 // Utils
-import {cancelAllRunningQueries} from 'src/timeMachine/actions/queries'
 import {event} from 'src/cloud/utils/reporting'
 
 // Styles
@@ -30,6 +30,7 @@ const fakeNotify = notify
 
 export const Submit: FC = () => {
   const {flow} = useContext(FlowContext)
+  const {cancel} = useContext(QueryContext)
   const {runMode, setRunMode} = useContext(RunModeContext)
   const {generateMap, queryAll} = useContext(FlowQueryContext)
 
@@ -67,14 +68,16 @@ export const Submit: FC = () => {
           onSubmit={handleSubmit}
           onNotify={fakeNotify}
           queryID=""
-          cancelAllRunningQueries={cancelAllRunningQueries}
+          cancelAllRunningQueries={cancel}
         />
-        <SquareButton
-          active={active}
-          onClick={onClick}
-          icon={IconFont.CaretDown}
-          color={ComponentColor.Primary}
-        />
+        {status !== RemoteDataState.Loading && (
+          <SquareButton
+            active={active}
+            onClick={onClick}
+            icon={IconFont.CaretDown}
+            color={ComponentColor.Primary}
+          />
+        )}
       </ButtonGroup>
     )
   }

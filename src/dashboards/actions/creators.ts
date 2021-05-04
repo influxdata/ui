@@ -15,6 +15,7 @@ export const REMOVE_DASHBOARD_LABEL = 'REMOVE_DASHBOARD_LABEL'
 export const SET_DASHBOARD = 'SET_DASHBOARD'
 export const SET_DASHBOARDS = 'SET_DASHBOARDS'
 export const SET_DASHBOARD_SORT = 'SET_DASHBOARD_SORT'
+export const SET_DASHBOARDS_SEARCH_TERM = 'SET_DASHBOARDS_SEARCH_TERM'
 
 export type Action =
   | ReturnType<typeof editDashboard>
@@ -24,6 +25,7 @@ export type Action =
   | ReturnType<typeof setDashboards>
   | ReturnType<typeof setLabelOnResource>
   | ReturnType<typeof setDashboardSort>
+  | ReturnType<typeof setSearchTerm>
 
 // R is the type of the value of the "result" key in normalizr's normalization
 type DashboardSchema<R extends string | string[]> = NormalizedSchema<
@@ -77,4 +79,10 @@ export const removeDashboardLabel = (dashboardID: string, labelID: string) =>
     type: REMOVE_DASHBOARD_LABEL,
     dashboardID,
     labelID,
+  } as const)
+
+export const setSearchTerm = (searchTerm: string) =>
+  ({
+    type: SET_DASHBOARDS_SEARCH_TERM,
+    searchTerm,
   } as const)

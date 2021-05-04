@@ -151,12 +151,6 @@ export const query = {
   shifts: [],
 }
 
-const defaultSortOptions = {
-  sortDirection: Sort.Ascending,
-  sortType: SortTypes.String,
-  sortKey: 'name' as DashboardSortKey,
-}
-
 // Dashboards
 export const dashboard: Dashboard = {
   id: '1',
@@ -173,7 +167,6 @@ export const dashboard: Dashboard = {
   },
   labels: [],
   status: RemoteDataState.Done,
-  sortOptions: defaultSortOptions,
 }
 
 export const labels: Label[] = [
@@ -214,7 +207,6 @@ export const dashboardWithLabels: Dashboard = {
   },
   status: RemoteDataState.Done,
   labels: labelIDs,
-  sortOptions: defaultSortOptions,
 }
 
 export const cell: Cell = {
@@ -976,7 +968,6 @@ export const viewProperties: ViewProperties = {
     },
   },
   type: 'line-plus-single-stat',
-  legend: {},
   colors: [
     {
       id: 'base',

@@ -1,5 +1,5 @@
 import {AppState} from 'src/types'
-import {FlagMap} from 'src/shared/reducers/flags'
+import {FlagMap} from 'src/shared/actions/flags'
 import {CLOUD, CLOUD_BILLING_VISIBLE} from 'src/shared/constants'
 
 export const OSS_FLAGS = {
@@ -22,6 +22,7 @@ export const OSS_FLAGS = {
   'flow-panel--raw-flux': true,
   'flow-panel--to-bucket': true,
   'flow-panel--notification': true,
+  collapseotron: false,
   disableDefaultTableSort: false,
   'load-data-client-libraries': true,
   'load-data-telegraf-plugins': true,
@@ -55,6 +56,7 @@ export const CLOUD_FLAGS = {
   'flow-panel--raw-flux': true,
   'flow-panel--to-bucket': true,
   'flow-panel--notification': true,
+  collapseotron: false,
   disableDefaultTableSort: false,
   'load-data-client-libraries': true,
   'load-data-telegraf-plugins': true,

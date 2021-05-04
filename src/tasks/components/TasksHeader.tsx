@@ -91,7 +91,6 @@ export default class TasksHeader extends PureComponent<Props> {
               />
             </FlexBox>
             <AddResourceDropdown
-              canImportFromTemplate
               onSelectNew={onCreateTask}
               onSelectImport={onImportTask}
               resourceName="Task"

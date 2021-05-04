@@ -26,7 +26,7 @@ const setup = (override?) => {
         byID: {},
       }
 
-      const tokens = override.tokens || [auth]
+      const tokens = override?.tokens || [auth]
       tokens.forEach(token => {
         state.resources.tokens.allIDs.push(token.id)
         state.resources.tokens.byID[token.id] = token

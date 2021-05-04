@@ -90,14 +90,10 @@ class TaskRunsRow extends PureComponent<Props, State> {
     this.setState({isImportOverlayVisible: !this.state.isImportOverlayVisible})
   }
 
-  private handleRetry = () => {
+  private handleRetry = async () => {
     const {retryTask, taskID, run} = this.props
-    try {
-      retryTask(taskID, run.id)
-      window.location.reload()
-    } catch (error) {
-      console.error(error)
-    }
+    await retryTask(taskID, run.id)
+    window.location.reload()
   }
 
   private get renderLogOverlay(): JSX.Element {

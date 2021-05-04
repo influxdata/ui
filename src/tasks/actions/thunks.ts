@@ -571,9 +571,9 @@ export const retryTask = (taskID: string, runID: string) => async (
       throw new Error(resp.data.message)
     }
 
-    dispatch(notify(copy.taskRetrySuccess()))
+    dispatch(notify(copy.taskRetrySuccess(runID)))
   } catch (error) {
-    console.error(error)
+    dispatch(notify(copy.taskRetryFailed(error)))
   }
 }
 

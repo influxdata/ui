@@ -9,10 +9,7 @@ import WriteDataHelperTokens from 'src/writeData/components/WriteDataHelperToken
 import {auth} from 'mocks/dummyData'
 
 // Types
-import {
-  WriteDataDetailsContext,
-  DEFAULT_WRITE_DATA_DETAILS_CONTEXT,
-} from 'src/writeData/components/WriteDataDetailsContext'
+import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 
 // NOTE: stubbing is required here as the CopyButton component
 // requires a redux store (alex)
@@ -27,8 +24,8 @@ const setup = (override?) => {
       state.resources.tokens.allIDs = []
       state.resources.tokens.byID = {}(override.tokens || [auth]).forEach(
         token => {
-          state.resources.tokens.allIDs.push(auth.id)
-          state.resources.tokens.byID[auth.id] = auth
+          state.resources.tokens.allIDs.push(token.id)
+          state.resources.tokens.byID[token.id] = token
         }
       )
     }

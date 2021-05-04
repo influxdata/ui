@@ -85,28 +85,26 @@ if [[ -z "${OSS_SHA:-}" ]]; then
 		printf "\nno passing monitor-ci pipelines found for this SHA, starting a new one\n"
 	fi
 
-	# start the monitor-ci pipeline from the UI repo
+	# set the parameters for starting the monitor-ci pipeline from the UI repo
 	DEPLOY_PROD=false
 	if [[ "${UI_BRANCH}" == "master" ]]; then
 		DEPLOY_PROD=false # TODO: change this to true when we're ready to depend on this script
 	fi
-	printf "\nstarting monitor-ci pipeline targeting monitor-ci branch ${MONITOR_CI_BRANCH}, UI branch ${UI_BRANCH} and using UI SHA ${SHA}\n"
-	pipeline=$(curl -s --fail --request POST \
-		--url https://circleci.com/api/v2/project/gh/influxdata/monitor-ci/pipeline \
-		--header "Circle-Token: ${API_KEY}" \
-		--header 'content-type: application/json' \
-		--header 'Accept: application/json'    \
-		--data "{\"branch\":\"${MONITOR_CI_BRANCH}\", \"parameters\":{ \"ui-sha\":\"${SHA}\", \"ui-branch\":\"${UI_BRANCH}\", \"ui-pull-request\":\"${PULL_REQUEST}\", \"deploy-prod\":${DEPLOY_PROD}}}")
+	pipelineStartMsg="starting monitor-ci pipeline targeting monitor-ci branch ${MONITOR_CI_BRANCH}, UI branch ${UI_BRANCH} and using UI SHA ${SHA}"
+	reqData="{\"branch\":\"${MONITOR_CI_BRANCH}\", \"parameters\":{ \"ui-sha\":\"${SHA}\", \"ui-branch\":\"${UI_BRANCH}\", \"ui-pull-request\":\"${PULL_REQUEST}\", \"deploy-prod\":${DEPLOY_PROD}}}"
 else
-	# start the monitor-ci pipeline from the influxdb repo
-	printf "\nstarting monitor-ci pipeline targeting monitor-ci branch ${MONITOR_CI_BRANCH} using OSS SHA ${OSS_SHA}\n"
-	pipeline=$(curl -s --fail --request POST \
-		--url https://circleci.com/api/v2/project/gh/influxdata/monitor-ci/pipeline \
-		--header "Circle-Token: ${API_KEY}" \
-		--header 'content-type: application/json' \
-		--header 'Accept: application/json'    \
-		--data "{\"branch\":\"${MONITOR_CI_BRANCH}\", \"parameters\":{ \"oss-sha\":\"${OSS_SHA}\" }}")
+	# set the parameters for starting the monitor-ci pipeline from the influxdb repo
+	pipelineStartMsg="starting monitor-ci pipeline targeting monitor-ci branch ${MONITOR_CI_BRANCH} using OSS SHA ${OSS_SHA}"
+	reqData="{\"branch\":\"${MONITOR_CI_BRANCH}\", \"parameters\":{ \"oss-sha\":\"${OSS_SHA}\" }}"
 fi
+
+printf "\n${pipelineStartMsg}\n"
+pipeline=$(curl -s --fail --request POST \
+	--url https://circleci.com/api/v2/project/gh/influxdata/monitor-ci/pipeline \
+	--header "Circle-Token: ${API_KEY}" \
+	--header 'content-type: application/json' \
+	--header 'Accept: application/json'    \
+	--data "${reqData}")
 
 if [ $? != 0 ]; then
 	echo "failed to start the monitor-ci pipeline, quitting"

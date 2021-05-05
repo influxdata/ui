@@ -19,7 +19,7 @@ export interface ClientRegistration {
   logo: string // and SVG string to display for the client
 
   initialize?: string | CodeSampleOption[] // code representing initializing the client library
-  write?: string | CodeSampleOption[] //code representing different ways of writing to the backend with the client
+  write?: string | CodeSampleOption[] // code representing different ways of writing to the backend with the client
   execute?: string | CodeSampleOption[] // code representing how a user would execute a query with the client library
 
   featureFlag?: string // designates a flag that should enable the client

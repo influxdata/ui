@@ -66,7 +66,7 @@ const ClientLibrariesPage: FC = () => {
   const {contentID} = useParams()
   const def = CLIENT_DEFINITIONS[contentID]
 
-  let thumbnail = (
+  const thumbnail = (
     <img
       data-testid="load-data-details-thumb"
       src={def.logo || placeholderLogo}

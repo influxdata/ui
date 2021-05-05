@@ -1561,7 +1561,6 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     })
 
     cy.intercept('POST', 'query', req => {
-      console.log(req.body.query)
       if (req.body.query === query1) {
         done()
       }

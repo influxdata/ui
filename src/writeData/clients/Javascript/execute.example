@@ -1,0 +1,19 @@
+const queryApi = client.getQueryApi(org)
+
+const query = `from(bucket: "<%= bucket %>") |> range(start: -1h)`
+queryApi.queryRows(query, {
+  next(row, tableMeta) {
+    const o = tableMeta.toObject(row)
+    console.log(
+      `${o._time} ${o._measurement} in '${o.location}' (${o.example}): ${o._field}=${o._value}`
+    )
+  },
+  error(error) {
+    console.error(error)
+    console.log('Finished ERROR')
+  },
+  complete() {
+    console.log('Finished SUCCESS')
+  }
+})
+

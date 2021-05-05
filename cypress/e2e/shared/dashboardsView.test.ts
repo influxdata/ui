@@ -14,6 +14,10 @@ describe('Dashboard', () => {
     )
   })
 
+  it("should fail - shared - REMOVE ME LATER", () => {
+    throw new Error("let's fail fast and see if this gets written somewhere different than the cloud version")
+  })
+
   it("can edit a dashboard's name", () => {
     cy.get('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {

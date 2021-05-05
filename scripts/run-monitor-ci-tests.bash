@@ -25,7 +25,7 @@ set -eu -o pipefail
 ########################
 
 # make dir for artifacts
-mkdir -p monitor-ci/test-artifacts/results/{build-oss-image,oss-e2e,build-image,cloud-e2e,cloud-e2e-firefox,cloud-e2e-k8s-idpe,cloud-lighthouse,smoke,build-prod-image,deploy}
+mkdir -p monitor-ci/test-artifacts/results/{build-oss-image,oss-e2e,build-image,cloud-e2e,cloud-e2e-firefox,cloud-e2e-k8s-idpe,cloud-lighthouse,smoke,build-prod-image,deploy,shared}
 
 # get monitor-ci pipelines we've already run on this SHA
 found_passing_pipeline=0
@@ -164,10 +164,18 @@ do
 							# download artifact
 							filename=$(basename "${path}")
 							filename="${filename::-1}" # removes extra " from end
-							curl -L -s --request GET \
-								--output "monitor-ci/test-artifacts/results/${name}/${filename}" \
-								--url "${url}" \
-								--header "Circle-Token: ${API_KEY}"
+							# put shared artifacts in the shared folder
+							if [[ "shared" == *"${path}"* ]] ; then
+							  curl -L -s --request GET \
+                  --output "monitor-ci/test-artifacts/results/shared/${name}/${filename}" \
+                  --url "${url}" \
+                  --header "Circle-Token: ${API_KEY}"
+              else
+                curl -L -s --request GET \
+                  --output "monitor-ci/test-artifacts/results/${name}/${filename}" \
+                  --url "${url}" \
+                  --header "Circle-Token: ${API_KEY}"
+							fi
 						done
 						printf "\n ${artifacts_length} artifacts successfully downloaded for this failed job.\n"
 					fi

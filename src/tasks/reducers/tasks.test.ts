@@ -1,16 +1,18 @@
 import tasksReducer from 'src/tasks/reducers'
-import {setTaskOption} from 'src/tasks/actions/creators'
+import {setTaskOption, addTask} from 'src/tasks/actions/creators'
 
 // Helpers
 import {initialState, defaultOptions} from 'src/tasks/reducers/helpers'
 
 // Types
 import {TaskSchedule} from 'src/types'
+import {normalize} from 'normalizr'
 
 describe('tasksReducer', () => {
   describe('setTaskOption', () => {
     it('should not clear the cron property from the task options when interval is selected', () => {
       const state = initialState()
+
       const cron = '0 2 * * *'
       state.taskOptions = {...defaultOptions, cron}
 
@@ -51,6 +53,42 @@ describe('tasksReducer', () => {
       }
 
       expect(actual).toEqual(expected)
+    })
+  })
+
+  describe('sample test', () => {
+    it('should work', () => {
+      const state = initialState()
+
+      console.log(`DEBUG state.taskOptions ${JSON.stringify(state.taskOptions)}`);
+
+      console.log(`DEBUG state ${JSON.stringify(state)}`)
+
+      const actual = tasksReducer(state, addTask({
+        result: 'task01', entities: { tasks:
+            {
+                 '01': { name: 'testTask',
+                  orgID: '',
+                  id: '',
+                  flux: '' },
+            },
+          }}))
+
+      const actual2 = tasksReducer(actual, addTask({
+        result: 'task02', entities: { tasks:
+            {
+              '02': { name: 'testTask',
+                orgID: '',
+                id: '',
+                flux: '' },
+            },
+        }}))
+
+      console.log(`DEBUG actual2 ${JSON.stringify(actual2)}`)
+
+      expect(actual2.allIDs).toContain('task01')
+      expect(actual2.allIDs).toContain('task02')
+
     })
   })
 })

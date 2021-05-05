@@ -1,5 +1,7 @@
 // Libraries
 import React from 'react'
+import { fireEvent } from '@testing-library/react'
+
 import {renderWithReduxAndRouter} from 'src/mockState'
 
 // Components
@@ -25,6 +27,7 @@ const setup = (override = {}) => {
     onDeleteTaskLabel: jest.fn(),
     onCreateLabel: jest.fn(),
     labels: [], // all labels
+
     ...override,
   }
 
@@ -40,17 +43,42 @@ const setup = (override = {}) => {
     },
   }
 
-  return renderWithReduxAndRouter(<TaskCard {...props} />, () => redux)
+  return { ui: renderWithReduxAndRouter(<TaskCard {...props} />, () => redux), props: props }
 }
 
 describe('Tasks.Components.TaskCard', () => {
   describe('if task has labels', () => {
     it('renders with labels', () => {
-      const {getAllByTestId} = setup()
+      const {getAllByTestId} = setup().ui
 
       const labels = getAllByTestId(/label--pill /)
 
       expect(labels.length).toEqual(task.labels.length)
+    })
+  })
+
+  describe('activation', () => {
+    beforeEach(() => {
+      jest.clearAllMocks()
+    })
+
+    it('can be deactivated',  () => {
+      const { ui, props } = setup()
+
+       fireEvent.click(ui.getByTestId('task-card--slide-toggle'))
+
+//      console.log(`DEBUG mockedOnActivate ${JSON.stringify(props.onActivate.mock)}`)
+
+      expect(props.onActivate.mock.calls[0][0].status).toEqual('inactive')
+
+      fireEvent.click(ui.getByTestId('task-card--slide-toggle'))
+
+//      console.log(`DEBUG mockedOnActivate ${JSON.stringify(props.onActivate.mock)}`)
+
+      ui.debug();
+
+      expect(props.onActivate.mock.calls[1][0].status).toEqual('active')
+
     })
   })
 })

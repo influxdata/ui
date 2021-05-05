@@ -166,17 +166,15 @@ do
 							filename=$(basename "${path}")
 							filename="${filename::-1}" # removes extra " from end
 							# put shared artifacts in the shared folder
-							if [[ *"shared"* == "${path}" ]] ; then
-							  curl -L -s --request GET \
-                  --output "monitor-ci/test-artifacts/results/shared/${name}/${filename}" \
-                  --url "${url}" \
-                  --header "Circle-Token: ${API_KEY}"
+							if [[ "${path}" == *"shared"* ]] ; then
+							  output="monitor-ci/test-artifacts/results/shared/${name}/${filename}"
               else
-                curl -L -s --request GET \
-                  --output "monitor-ci/test-artifacts/results/${name}/${filename}" \
+                output="monitor-ci/test-artifacts/results/${name}/${filename}"
+							fi
+							curl -L -s --request GET \
+                  --output "${output}" \
                   --url "${url}" \
                   --header "Circle-Token: ${API_KEY}"
-							fi
 						done
 						printf "\n ${artifacts_length} artifacts successfully downloaded for this failed job.\n"
 					fi

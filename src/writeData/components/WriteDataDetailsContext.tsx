@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, ReactNode, createContext, useState} from 'react'
+import React, {FC, ReactNode, createContext, useState, useEffect} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Utils
@@ -56,10 +56,15 @@ const WriteDataDetailsContextProvider: FC<Props> = ({
   children,
 }) => {
   const userBuckets = buckets.filter(b => b.type === 'user')
-  const initialToken = tokens.length ? tokens[0] : null
   const [bucket, changeBucket] = useState<Bucket>(userBuckets[0])
-  const [token, changeToken] = useState<Authorization>(initialToken)
+  const [token, changeToken] = useState<Authorization>(tokens[0] ?? null)
   const origin = window.location.origin
+
+  useEffect(() => {
+    if (tokens.length > 0 && !token) {
+      changeToken(tokens[0])
+    }
+  }, [tokens, token, changeToken])
 
   const value = {
     organization,

@@ -1,0 +1,6 @@
+from(bucket: "\(self.bucket)")
+                |> range(start: -10m)
+                |> filter(fn: (r) => r["_measurement"] == "cpu")
+                |> filter(fn: (r) => r["cpu"] == "cpu-total")
+                |> filter(fn: (r) => r["_field"] == "usage_user" or r["_field"] == "usage_system")
+                |> last()

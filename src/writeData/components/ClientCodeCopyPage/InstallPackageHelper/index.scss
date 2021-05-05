@@ -1,0 +1,116 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.install-package--container {
+  margin: 20px 0px;
+}
+
+.install-package--details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.install-package--details-thumbnail {
+  order: 1;
+  width: 200px;
+  margin-bottom: $cf-marg-c;
+  padding: $cf-marg-d;
+  background-color: $g3-castle;
+  border-radius: $cf-radius;
+
+  img {
+    width: 100%;
+  }
+}
+
+.install-package--details-content {
+  order: 2;
+  width: 100%;
+  font-size: 1.3em;
+}
+
+.install-package--details-widget {
+  width: 100%;
+  background-color: $g3-castle;
+  padding: $cf-marg-c;
+  margin-top: $cf-marg-c;
+  border-radius: $cf-radius;
+}
+
+.install-package--details-widget-title {
+  margin-bottom: $cf-marg-b;
+  padding-left: $cf-marg-b + $cf-marg-a;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.install-package--details-empty-state {
+  height: 200px;
+  background-color: #0f0e15;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+}
+
+.markdown-format .code-snippet--text {
+  background-color: $g1-raven;
+}
+
+@media screen and (min-width: $cf-grid--breakpoint-md) {
+  .install-package--details {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .install-package--details-thumbnail {
+    flex: 1 0 200px;
+    width: auto;
+    margin-right: $cf-marg-e;
+    margin-bottom: 0;
+  }
+
+  .install-package--details-content {
+    width: auto;
+    flex: 8 0 0;
+  }
+
+  .install-package--details-sidebar {
+    flex: 1 0 200px;
+    width: auto;
+    margin-left: $cf-marg-c;
+    margin-top: 0;
+  }
+}
+
+// Helper Widget
+.install-package-helper--heading {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  opacity: 0.75;
+  transition: opacity 0.25s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &:hover,
+  &:hover > * {
+    cursor: pointer;
+  }
+}
+
+.install-package-helper--heading__expanded {
+  opacity: 1;
+}
+
+.install-package-helper--caret {
+  transition: transform 0.25s ease;
+  transform: rotate(0deg);
+  margin-right: $cf-marg-b;
+}
+
+.install-package-helper--heading__expanded .install-package-helper--caret {
+  transform: rotate(90deg);
+}

@@ -33,9 +33,10 @@ const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => {
 interface SampleProps {
   name: string
   sample: string | CodeSampleOption[]
+  query?: string
 }
 
-const CodeSampleBlock: FC<SampleProps> = ({name, sample}) => {
+export const CodeSampleBlock: FC<SampleProps> = ({name, sample, query}) => {
   if (!sample) {
     return null
   }
@@ -57,7 +58,7 @@ const CodeSampleBlock: FC<SampleProps> = ({name, sample}) => {
   return (
     <>
       <h4>{name}</h4>
-      <WriteDataCodeSnippet code={sample} language="" />
+      <WriteDataCodeSnippet code={sample} language="" query={query} />
     </>
   )
 }
@@ -115,6 +116,7 @@ const ClientLibrariesPage: FC = () => {
                 <CodeSampleBlock
                   name="Execute a Flux query"
                   sample={def.execute}
+                  query={def.query}
                 />
               </div>
             </div>

@@ -1,0 +1,4 @@
+from(bucket: \"" INFLUXDB_BUCKET "\")
+    |> range(start: -1h)
+    |> filter(fn: (r) => r._measurement == \"wifi_status\" and r._field == \"rssi\" and r.device == \""  DEVICE  "\")
+    |> min()

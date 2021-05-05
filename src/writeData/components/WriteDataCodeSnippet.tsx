@@ -14,11 +14,16 @@ import {event} from 'src/cloud/utils/reporting'
 interface Props {
   code: string
   language?: string
+  query?: string
 }
 
 // NOTE: this is just a simplified form of the resig classic:
 // https://johnresig.com/blog/javascript-micro-templating/
 function transform(template, vars) {
+  if (vars.query) {
+    template = template.replace('<%= query %>', vars.query)
+  }
+
   const output = new Function(
     'vars',
     'var output=' +
@@ -31,7 +36,7 @@ function transform(template, vars) {
   return output(vars)
 }
 
-const WriteDataCodeSnippet: FC<Props> = ({code, language}) => {
+const WriteDataCodeSnippet: FC<Props> = ({code, language, query}) => {
   const {contentID} = useParams()
   const {bucket, token, origin, organization} = useContext(
     WriteDataDetailsContext
@@ -42,6 +47,10 @@ const WriteDataCodeSnippet: FC<Props> = ({code, language}) => {
     bucket: bucket?.name ?? '',
     server: origin,
     org: organization.name,
+  }
+
+  if (query) {
+    vars['query'] = query
   }
 
   const copyText = transform(code, vars)

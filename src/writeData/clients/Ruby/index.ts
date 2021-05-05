@@ -6,6 +6,7 @@ import writePoint from 'src/writeData/clients/Ruby/write.1.example'
 import writeHash from 'src/writeData/clients/Ruby/write.2.example'
 import writeBatch from 'src/writeData/clients/Ruby/write.3.example'
 import execute from 'src/writeData/clients/Ruby/execute.example'
+import query from 'src/writeData/clients/Ruby/query.example'
 
 export default register =>
   register({
@@ -34,4 +35,5 @@ export default register =>
       },
     ],
     execute,
+    query,
   })

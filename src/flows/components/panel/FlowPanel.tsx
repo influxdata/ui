@@ -17,6 +17,9 @@ import {PipeContextProps} from 'src/types/flows'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
+import CopyToClipboardButton from './CopyToClipboardButton'
+import PanelQueryOverlay from './PanelQueryOverlay'
+import {CopyToClipboardProvider} from 'src/flows/context/panel'
 
 export interface Props extends PipeContextProps {
   id: string
@@ -62,6 +65,7 @@ const FlowPanelHeader: FC<HeaderProps> = ({
   )
 
   const remove = useCallback(() => removePipe(), [removePipe, id])
+
   return (
     <div className="flow-panel--header">
       <div className="flow-panel--node-wrapper">
@@ -88,6 +92,10 @@ const FlowPanelHeader: FC<HeaderProps> = ({
           <div className="flow-panel--persistent-control">
             <PanelVisibilityToggle id={id} />
             <RemovePanelButton onRemove={remove} />
+            <CopyToClipboardProvider>
+              <CopyToClipboardButton />
+              <PanelQueryOverlay panelId={id} />
+            </CopyToClipboardProvider>
             {persistentControl}
           </div>
         </>

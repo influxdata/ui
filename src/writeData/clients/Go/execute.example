@@ -1,4 +1,4 @@
-query := fmt.Sprintf("from(bucket:\"%v\")|> range(start: -1h) |> filter(fn: (r) => r._measurement == \"stat\")", bucket)
+query := fmt.Sprintf("<%= query %>", bucket)
 // Get query client
 queryAPI := client.QueryAPI(org)
 // get QueryTableResult

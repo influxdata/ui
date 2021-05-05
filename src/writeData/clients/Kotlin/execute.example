@@ -1,6 +1,4 @@
-val query = ("from(bucket: \"<%= bucket %>\")"
-  + " |> range(start: -1d)"
-  + " |> filter(fn: (r) => (r[\"_measurement\"] == \"cpu\" and r[\"_field\"] == \"usage_system\"))")
+val query = "<%= query %>"
 
 // Result is returned as a stream
 val results = client.getQueryKotlinApi().query(query)

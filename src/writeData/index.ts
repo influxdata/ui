@@ -23,6 +23,8 @@ export interface ClientRegistration {
   execute?: string | CodeSampleOption[] // code representing how a user would execute a query with the client library
 
   featureFlag?: string // designates a flag that should enable the client
+
+  query?: string // Query to be rendered for examples
 }
 
 interface ClientLookup {

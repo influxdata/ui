@@ -1,3 +1,2 @@
-query = f'from(bucket: "<%= bucket %>") |> range(start: -1h)'
+query = f'<%= query %>'
 tables = client.query_api().query(query, org=org)
-

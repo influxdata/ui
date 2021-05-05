@@ -31,6 +31,7 @@ import {
   VariableAssignment,
   ObjectExpression,
   CancellationError,
+  File,
 } from 'src/types'
 import {RunQueryResult} from 'src/shared/apis/query'
 
@@ -81,6 +82,19 @@ const _walk = (node, test, acc = []) => {
   })
 
   return acc
+}
+
+export const updateBucketInAST = (ast: File, name: string) => {
+  _walk(ast, node => {
+    if (
+      node?.type === 'CallExpression' &&
+      node?.callee?.type === 'Identifier' &&
+      node?.callee?.name === 'from' &&
+      node?.arguments[0]?.properties[0]?.key?.name === 'bucket'
+    ) {
+      node.arguments[0].properties[0].value.location.source = `"${name}"`
+    }
+  })
 }
 
 const _getVars = (

@@ -16,27 +16,47 @@ interface Props {
 }
 
 const FlowContextMenu: FC<Props> = ({id, name}) => {
-  const {remove} = useContext(FlowListContext)
+  const {remove, clone} = useContext(FlowListContext)
 
   const handleDelete = () => {
     event('delete_notebook')
     remove(id)
   }
 
+  const handleClone = () => {
+    event('clone_notebook')
+    clone(id)
+  }
+
   return (
-    <Context.Menu
-      icon={IconFont.Trash}
-      color={ComponentColor.Danger}
-      shape={ButtonShape.Default}
-      text={`Delete ${PROJECT_NAME}`}
-      testID={`context-delete-menu ${name}`}
-    >
-      <Context.Item
-        label="Confirm"
-        action={handleDelete}
-        testID={`context-delete-flow ${name}`}
-      />
-    </Context.Menu>
+    <Context>
+      <Context.Menu
+        icon={IconFont.Duplicate}
+        color={ComponentColor.Secondary}
+        shape={ButtonShape.Default}
+        text="Clone"
+        testID={`context-clone-menu ${name}`}
+      >
+        <Context.Item
+          label="Clone"
+          action={handleClone}
+          testID={`context-clone-flow ${name}`}
+        />
+      </Context.Menu>
+      <Context.Menu
+        icon={IconFont.Trash}
+        color={ComponentColor.Danger}
+        shape={ButtonShape.Default}
+        text={`Delete ${PROJECT_NAME}`}
+        testID={`context-delete-menu ${name}`}
+      >
+        <Context.Item
+          label="Confirm"
+          action={handleDelete}
+          testID={`context-delete-flow ${name}`}
+        />
+      </Context.Menu>
+    </Context>
   )
 }
 

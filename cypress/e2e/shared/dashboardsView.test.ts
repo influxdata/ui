@@ -1392,4 +1392,199 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     cy.wait('@refreshCellQuery')
     cy.wait('@refreshSecondQuery')
   })
+
+  it('can pause a cell, which takes it (and only it) out of auto refresh loop, even if second cell has same query', done => {
+    cy.get('@org').then(({id: orgID, name}: Organization) => {
+      cy.createDashboard(orgID).then(({body}) => {
+        cy.fixture('routes').then(({orgs}) => {
+          cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+          cy.getByTestID('tree-nav')
+        })
+      })
+      cy.window().then(win => {
+        win.influx.set('pauseCell', true)
+        win.influx.set('newAutoRefresh', true)
+      })
+
+      cy.createBucket(orgID, name, 'schmucket')
+
+      const now = Date.now()
+      cy.writeData(
+        [
+          `test,container_name=cool dopeness=12 ${now - 1000}000000`,
+          `test,container_name=beans dopeness=18 ${now - 1200}000000`,
+          `test,container_name=cool dopeness=14 ${now - 1400}000000`,
+          `test,container_name=beans dopeness=10 ${now - 1600}000000`,
+        ],
+        'schmucket'
+      )
+    })
+
+    cy.getByTestID('button').click()
+    cy.getByTestID('switch-to-script-editor').should('be.visible')
+    cy.getByTestID('switch-to-script-editor').click()
+    cy.getByTestID('toolbar-tab').click()
+
+    const query1 = `from(bucket: "schmucket")
+|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+|> filter(fn: (r) => r["container_name"] == "cool")`
+
+    const query2 = `from(bucket: "schmucket")
+|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+|> filter(fn: (r) => r["container_name"] == "beans")`
+
+    cy.getByTestID('flux-editor')
+      .should('be.visible')
+      .click()
+      .focused()
+      .type(query1)
+
+    cy.getByTestID('overlay').within(() => {
+      cy.getByTestID('page-title').click()
+      cy.getByTestID('renamable-page-title--input')
+        .clear()
+        .type('blah')
+      cy.getByTestID('save-cell--button').click()
+    })
+
+    cy.getByTestID('button').click()
+    cy.getByTestID('switch-to-script-editor').should('be.visible')
+    cy.getByTestID('switch-to-script-editor').click()
+    cy.getByTestID('toolbar-tab').click()
+
+    cy.getByTestID('overlay').within(() => {
+      cy.getByTestID('flux-editor')
+        .should('be.visible')
+        .click()
+        .focused()
+        .type(query2)
+      cy.getByTestID('save-cell--button').click()
+    })
+
+    cy.intercept('POST', 'query', req => {
+      if (req.body.query === query1) {
+        req.alias = 'firstCellQuery'
+      }
+      if (req.body.query === query2) {
+        req.alias = 'secondCellQuery'
+      }
+    })
+    cy.getByTestID('cell blah').within(() => {
+      cy.getByTestID('cell-context--toggle').click()
+    })
+    cy.getByTestID('cell-context--pause').click()
+
+    cy.getByTestID('enable-auto-refresh-button').click()
+    cy.getByTestID('auto-refresh-overlay').should('be.visible')
+    cy.getByTestID('auto-refresh-overlay').within(() => {
+      cy.getByTestID('autorefresh-dropdown--button').click()
+      cy.getByTestID('auto-refresh-5s').click()
+      cy.getByTestID('refresh-form-activate-button').click()
+      cy.wait('@secondCellQuery')
+      cy.wait('@firstCellQuery')
+
+      cy.on('fail', err => {
+        expect(err.message).to.include(
+          'Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 1st request to the route: `firstCellQuery`. No request ever occurred.'
+        )
+        done()
+      })
+    })
+  })
+
+  it('can unpause a paused cell, which places it back in auto refresh loop', done => {
+    cy.get('@org').then(({id: orgID, name}: Organization) => {
+      cy.createDashboard(orgID).then(({body}) => {
+        cy.fixture('routes').then(({orgs}) => {
+          cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+          cy.getByTestID('tree-nav')
+        })
+      })
+      cy.window().then(win => {
+        win.influx.set('pauseCell', true)
+        win.influx.set('newAutoRefresh', true)
+      })
+
+      cy.createBucket(orgID, name, 'schmucket')
+
+      const now = Date.now()
+      cy.writeData(
+        [
+          `test,container_name=cool dopeness=12 ${now - 1000}000000`,
+          `test,container_name=beans dopeness=18 ${now - 1200}000000`,
+          `test,container_name=cool dopeness=14 ${now - 1400}000000`,
+          `test,container_name=beans dopeness=10 ${now - 1600}000000`,
+        ],
+        'schmucket'
+      )
+    })
+
+    cy.getByTestID('button').click()
+    cy.getByTestID('switch-to-script-editor').should('be.visible')
+    cy.getByTestID('switch-to-script-editor').click()
+    cy.getByTestID('toolbar-tab').click()
+
+    const query1 = `from(bucket: "schmucket")
+|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+|> filter(fn: (r) => r["container_name"] == "cool")`
+
+    const query2 = `from(bucket: "schmucket")
+|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+|> filter(fn: (r) => r["container_name"] == "beans")`
+
+    cy.getByTestID('flux-editor')
+      .should('be.visible')
+      .click()
+      .focused()
+      .type(query1)
+
+    cy.getByTestID('overlay').within(() => {
+      cy.getByTestID('page-title').click()
+      cy.getByTestID('renamable-page-title--input')
+        .clear()
+        .type('blah')
+      cy.getByTestID('save-cell--button').click()
+    })
+
+    cy.getByTestID('button').click()
+    cy.getByTestID('switch-to-script-editor').should('be.visible')
+    cy.getByTestID('switch-to-script-editor').click()
+    cy.getByTestID('toolbar-tab').click()
+
+    cy.getByTestID('overlay').within(() => {
+      cy.getByTestID('flux-editor')
+        .should('be.visible')
+        .click()
+        .focused()
+        .type(query2)
+      cy.getByTestID('save-cell--button').click()
+    })
+
+    cy.intercept('POST', 'query', req => {
+      console.log(req.body.query)
+      if (req.body.query === query1) {
+        done()
+      }
+      if (req.body.query === query2) {
+        req.alias = 'secondCellQuery'
+      }
+    })
+    cy.getByTestID('cell blah').within(() => {
+      cy.getByTestID('cell-context--toggle').click()
+    })
+    cy.getByTestID('cell-context--pause').click()
+
+    cy.getByTestID('enable-auto-refresh-button').click()
+    cy.getByTestID('auto-refresh-overlay').should('be.visible')
+    cy.getByTestID('auto-refresh-overlay').within(() => {
+      cy.getByTestID('autorefresh-dropdown--button').click()
+      cy.getByTestID('auto-refresh-5s').click()
+      cy.getByTestID('refresh-form-activate-button').click()
+      cy.wait('@secondCellQuery')
+    })
+    cy.getByTestID('cell blah').within(() => {
+      cy.getByTestID('cell-context--toggle').click()
+    })
+    cy.getByTestID('cell-context--pause').click()
+  })
 })

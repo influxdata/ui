@@ -165,7 +165,7 @@ do
 							filename=$(basename "${path}")
 							filename="${filename::-1}" # removes extra " from end
 							# put shared artifacts in the shared folder
-							if [[ "shared" == *"${path}"* ]] ; then
+							if [[ *"shared"* == "${path}" ]] ; then
 							  curl -L -s --request GET \
                   --output "monitor-ci/test-artifacts/results/shared/${name}/${filename}" \
                   --url "${url}" \

@@ -12,12 +12,6 @@ describe('Dashboard', () => {
     )
   })
 
-  it('should fail - cloud - REMOVE ME LATER', () => {
-    throw new Error(
-      "let's fail fast and see if this gets written somewhere different than the shared version"
-    )
-  })
-
   it('does not render image tags in markdown preview', () => {
     cy.get('@org').then(({id: orgID}: any) => {
       cy.createDashboard(orgID).then(({body}) => {

@@ -17,11 +17,7 @@ import {
 import CloudOnly from 'src/shared/components/cloud/CloudOnly'
 
 // Constants
-import {
-  BETA_REGIONS,
-  CLOUD_URL,
-  CLOUD_CHECKOUT_PATH,
-} from 'src/shared/constants'
+import {CLOUD_URL, CLOUD_CHECKOUT_PATH} from 'src/shared/constants'
 import {
   HIDE_UPGRADE_CTA_KEY,
   PAID_ORG_HIDE_UPGRADE_SETTING,
@@ -34,58 +30,44 @@ interface StateProps {
   inView: boolean
 }
 
-const CloudUpgradeNavBanner: FC<StateProps> = ({inView}) => {
-  // TODO(ariel): we need to build out an exception for beta regions
-  // This current hack is being placed to allow a Beta region to be deployed
-  // without allowing users to get navigated to a Quartz 404. This hack is being implemented
-  // to address the following issue:
-  // https://github.com/influxdata/ui/issues/944
-  // The follow up to this issue will address the hack here:
-  // https://github.com/influxdata/ui/issues/930
-
-  const isBetaRegion = BETA_REGIONS.some((pathName: string) =>
-    window.location.hostname.includes(pathName)
-  )
-
-  return (
-    <>
-      {inView && !isBetaRegion && (
-        <CloudOnly>
-          <Panel
-            gradient={Gradients.HotelBreakfast}
-            className="cloud-upgrade-banner"
+const CloudUpgradeNavBanner: FC<StateProps> = ({inView}) => (
+  <>
+    {inView && (
+      <CloudOnly>
+        <Panel
+          gradient={Gradients.HotelBreakfast}
+          className="cloud-upgrade-banner"
+        >
+          <Panel.Header
+            size={ComponentSize.ExtraSmall}
+            justifyContent={JustifyContent.Center}
           >
-            <Panel.Header
-              size={ComponentSize.ExtraSmall}
-              justifyContent={JustifyContent.Center}
+            <Heading element={HeadingElement.H5}>
+              Need more wiggle room?
+            </Heading>
+          </Panel.Header>
+          <Panel.Footer size={ComponentSize.ExtraSmall}>
+            <a
+              className="cf-button cf-button-md cf-button-primary cf-button-stretch cloud-upgrade-banner--button upgrade-payg--button__nav"
+              href={`${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`}
+              target="_self"
             >
-              <Heading element={HeadingElement.H5}>
-                Need more wiggle room?
-              </Heading>
-            </Panel.Header>
-            <Panel.Footer size={ComponentSize.ExtraSmall}>
-              <a
-                className="cf-button cf-button-md cf-button-primary cf-button-stretch cloud-upgrade-banner--button upgrade-payg--button__nav"
-                href={`${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`}
-                target="_self"
-              >
-                Upgrade Now
-              </a>
-            </Panel.Footer>
-          </Panel>
-          <a
-            className="cloud-upgrade-banner__collapsed"
-            href={`${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`}
-            target="_self"
-          >
-            <Icon glyph={IconFont.CrownSolid} />
-            <Heading element={HeadingElement.H5}>Upgrade Now</Heading>
-          </a>
-        </CloudOnly>
-      )}
-    </>
-  )
-}
+              Upgrade Now
+            </a>
+          </Panel.Footer>
+        </Panel>
+        <a
+          className="cloud-upgrade-banner__collapsed"
+          href={`${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`}
+          target="_self"
+        >
+          <Icon glyph={IconFont.CrownSolid} />
+          <Heading element={HeadingElement.H5}>Upgrade Now</Heading>
+        </a>
+      </CloudOnly>
+    )}
+  </>
+)
 
 const mstp = (state: AppState) => {
   const settings = get(state, 'cloud.orgSettings.settings', [])

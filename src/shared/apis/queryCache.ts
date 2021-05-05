@@ -178,9 +178,34 @@ export const resetQueryCache = (): void => {
   queryCache.resetCache()
 }
 
-export const resetQueryCacheByQuery = (query: string): void => {
+export const resetQueryCacheByQuery = (
+  query: string,
+  allVars: Variable[]
+): void => {
+  const {queryID, hashedVariables} = calculateHashedVariables(allVars, query)
+  event('Starting Query Cache Process ', {context: 'queryCache', queryID})
+
+  if (queryCache.getFromCache(queryID, hashedVariables)) {
+    queryCache.resetCacheByID(queryID)
+  }
+}
+
+const calculateHashedVariables = (
+  allVars: Variable[],
+  query: string
+): {queryID: string; variables: Variable[]; hashedVariables: string} => {
   const queryID = `${hashCode(query)}`
-  queryCache.resetCacheByID(queryID)
+  const usedVars = filterUnusedVarsBasedOnQuery(allVars, [query])
+  const variables = sortBy(usedVars, ['name'])
+
+  const simplifiedVariables = variables.map(vari =>
+    asSimplyKeyValueVariables(vari)
+  )
+  const stringifiedVars = JSON.stringify(simplifiedVariables)
+  // create the queryID based on the query & vars
+  const hashedVariables = `${hashCode(stringifiedVars)}`
+
+  return {queryID, variables, hashedVariables}
 }
 
 const hasWindowVars = (variables: VariableAssignment[]): boolean =>
@@ -191,16 +216,11 @@ export const getCachedResultsOrRunQuery = (
   query: string,
   allVars: Variable[]
 ): CancelBox<RunQueryResult> => {
-  const queryID = `${hashCode(query)}`
+  const {queryID, variables, hashedVariables} = calculateHashedVariables(
+    allVars,
+    query
+  )
   event('Starting Query Cache Process ', {context: 'queryCache', queryID})
-
-  const usedVars = filterUnusedVarsBasedOnQuery(allVars, [query])
-  const variables = sortBy(usedVars, ['name'])
-
-  const simplifiedVariables = variables.map(v => asSimplyKeyValueVariables(v))
-  const stringifiedVars = JSON.stringify(simplifiedVariables)
-  // create the queryID based on the query & vars
-  const hashedVariables = `${hashCode(stringifiedVars)}`
 
   const cacheResults: RunQueryResult | null = queryCache.getFromCache(
     queryID,

@@ -96,6 +96,7 @@ pipeline_number=$(echo ${pipeline} | jq -r '.number')
 
 printf "\nwaiting for monitor-ci pipeline to begin...\n"
 sleep 1m
+printf "\nmonitor-ci pipeline has begun. Running pipeline number ${pipeline_number} with id ${pipeline_id}\n"
 
 # poll the status of the monitor-ci pipeline
 is_failure=0
@@ -184,7 +185,7 @@ do
 	# sleep 1 minute and poll the status again
 	attempts=$(($attempts+1))
 	remaining_attempts=$(($max_attempts-$attempts))
-	printf "\nmonitor-ci pipeline isn't finished yet, waiting another minute... ($remaining_attempts minutes left)\n"
+	printf "\nmonitor-ci pipeline ${pipeline_number} isn't finished yet, waiting another minute... ($remaining_attempts minutes left)\n"
 	sleep 1m
 
 done

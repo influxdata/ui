@@ -9,7 +9,7 @@ import {MONITORING_BUCKET} from 'src/alerting/constants'
 // Types
 import {CancelBox, StatusRow, File} from 'src/types'
 import {RunQueryResult} from 'src/shared/apis/query'
-import {Row} from 'src/eventViewer/types'
+import {Row} from 'src/types'
 
 export const runStatusesQuery = (
   orgID: string,

@@ -172,9 +172,9 @@ do
                 output="monitor-ci/test-artifacts/results/${name}/${filename}"
 							fi
 							curl -L -s --request GET \
-                  --output "${output}" \
-                  --url "${url}" \
-                  --header "Circle-Token: ${API_KEY}"
+                                                            --output "${output}" \
+                                                            --url "${url}" \
+                                                            --header "Circle-Token: ${API_KEY}"
 						done
 						printf "\n ${artifacts_length} artifacts successfully downloaded for this failed job.\n"
 					fi

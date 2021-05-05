@@ -27,7 +27,7 @@ const FileUploadSection = () => {
   return (
     <div
       className="write-data--section"
-      data-testid={`write-data--section file-upload`}
+      data-testid="write-data--section file-upload"
     >
       <Heading
         element={HeadingElement.H2}

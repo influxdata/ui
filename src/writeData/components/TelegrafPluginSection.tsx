@@ -27,7 +27,7 @@ const TelegrafPluginSection = () => {
   return (
     <div
       className="write-data--section"
-      data-testid={`write-data--section telegraf-plugins`}
+      data-testid="write-data--section telegraf-plugins"
     >
       <Heading
         element={HeadingElement.H2}

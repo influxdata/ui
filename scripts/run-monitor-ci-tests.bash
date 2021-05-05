@@ -168,8 +168,8 @@ do
 							# put shared artifacts in the shared folder
 							if [[ "${path}" == *"shared"* ]] ; then
 							  output="monitor-ci/test-artifacts/results/shared/${name}/${filename}"
-              else
-                output="monitor-ci/test-artifacts/results/${name}/${filename}"
+                                                        else
+                                                          output="monitor-ci/test-artifacts/results/${name}/${filename}"
 							fi
 							curl -L -s --request GET \
                                                             --output "${output}" \

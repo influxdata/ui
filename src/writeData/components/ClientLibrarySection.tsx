@@ -27,7 +27,7 @@ const ClientLibrarySection = () => {
   return (
     <div
       className="write-data--section"
-      data-testid={`write-data--section client-libraries`}
+      data-testid="write-data--section client-libraries"
     >
       <Heading
         element={HeadingElement.H2}

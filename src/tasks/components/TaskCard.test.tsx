@@ -66,16 +66,11 @@ describe('Tasks.Components.TaskCard', () => {
       const { ui, props } = setup()
 
        fireEvent.click(ui.getByTestId('task-card--slide-toggle'))
-
-//      console.log(`DEBUG mockedOnActivate ${JSON.stringify(props.onActivate.mock)}`)
-
       expect(props.onActivate.mock.calls[0][0].status).toEqual('inactive')
 
       fireEvent.click(ui.getByTestId('task-card--slide-toggle'))
 
-//      console.log(`DEBUG mockedOnActivate ${JSON.stringify(props.onActivate.mock)}`)
-
-      ui.debug();
+//      ui.debug();
 
       expect(props.onActivate.mock.calls[1][0].status).toEqual('active')
 

@@ -56,20 +56,19 @@ describe('tasksReducer', () => {
     })
   })
 
-  describe('sample test', () => {
-    it('should work', () => {
+  // N.B. Started as learning exercise.  low value?
+  // Seems ADD_TASK simply wraps resource/reducers/helpers
+  // Which are already covered
+  describe('work with tasks', () => {
+    it('should add a task', () => {
       const state = initialState()
-
-      console.log(`DEBUG state.taskOptions ${JSON.stringify(state.taskOptions)}`);
-
-      console.log(`DEBUG state ${JSON.stringify(state)}`)
 
       const actual = tasksReducer(state, addTask({
         result: 'task01', entities: { tasks:
             {
                  '01': { name: 'testTask',
-                  orgID: '',
-                  id: '',
+                  orgID: 'MYORG',
+                  id: '0001',
                   flux: '' },
             },
           }}))
@@ -78,17 +77,14 @@ describe('tasksReducer', () => {
         result: 'task02', entities: { tasks:
             {
               '02': { name: 'testTask',
-                orgID: '',
-                id: '',
+                orgID: 'MYORG',
+                id: '0002',
                 flux: '' },
             },
         }}))
 
-      console.log(`DEBUG actual2 ${JSON.stringify(actual2)}`)
-
       expect(actual2.allIDs).toContain('task01')
       expect(actual2.allIDs).toContain('task02')
-
     })
   })
 })

@@ -38,7 +38,7 @@ import {
 } from 'src/shared/copy/notifications'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-const notebookAPIFlag = 'notebooks-api'
+const notebookAPIFlag = 'notebooksApi'
 export interface FlowListContextType extends FlowList {
   add: (flow?: Flow) => Promise<string>
   update: (id: string, flow: Flow) => void

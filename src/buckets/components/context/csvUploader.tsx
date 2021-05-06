@@ -166,12 +166,21 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
                 `The CSV you're uploading is incorrectly formatted. Please make sure that a _measurement is defined before uploading it`
               )
             }
+            // Measurement must escape comma and space
+            // https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/#special-characters
+            measurement = measurement.replace(',', '\\,').replace(' ', '\\ ')
             field = table.getColumn('_field')?.[i] ?? undefined
             if (field === undefined) {
               throw new Error(
                 `The CSV you're uploading is incorrectly formatted. Please make sure that a _field is defined before uploading it`
               )
             }
+            // Field keys must escape comma, space, equals
+            // https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/#special-characters
+            field = field
+              .replace(',', '\\,')
+              .replace(' ', '\\ ')
+              .replace('=', '\\=')
             time = table.getColumn('_time')?.[i] ?? Date.now()
             table.columnKeys
               // Matches _value, _value ('number'), _value ('string'), etc. to find value
@@ -185,10 +194,12 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
               })
             // Adds quotes to values if _value is of string type
             // https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/#quotes
-            value =
-              table.getColumnType(valueColumn) === 'string' && value
-                ? `"${value}"`
-                : value
+            if (table.getColumnType(valueColumn) === 'string' && value) {
+              // Field string values must escape double quotes and back slashes
+              // https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/#special-characters
+              value = value.replace('"', '\\"').replace('\\', '\\\\')
+              value = `"${value}"`
+            }
             tags = columns
               .filter(col => !!table.getColumn(col)[i])
               .map(

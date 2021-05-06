@@ -1,49 +1,87 @@
 // Libraries
-import React, {FC, PureComponent} from 'react'
-import {Switch, Route} from 'react-router-dom'
+import React, {FC} from 'react'
+import {useParams} from 'react-router-dom'
+import {Renderer} from 'react-markdown'
 
 // Components
-import {ErrorHandling} from 'src/shared/decorators/errors'
-import TelegrafPluginsIndex from 'src/writeData/components/telegrafPlugins/TelegrafPluginsIndex'
-import TelegrafPluginsExplainer from 'src/writeData/components/telegrafPlugins/TelegrafPluginsExplainer'
-import WriteDataDetailsView from 'src/writeData/components/WriteDataDetailsView'
+import {Page} from '@influxdata/clockface'
+import WriteDataHelper from 'src/writeData/components/WriteDataHelper'
+import WriteDataCodeSnippet from 'src/writeData/components/WriteDataCodeSnippet'
+import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
+import GetResources from 'src/resources/components/GetResources'
 
 // Constants
-import {ORGS, ORG_ID, TELEGRAF_PLUGINS} from 'src/shared/constants/routes'
-import WRITE_DATA_TELEGRAF_PLUGINS_SECTION from 'src/writeData/constants/contentTelegrafPlugins'
+import {WRITE_DATA_TELEGRAF_PLUGINS} from 'src/writeData/constants/contentTelegrafPlugins'
 
-const telegrafPluginPath = `/${ORGS}/${ORG_ID}/load-data/${TELEGRAF_PLUGINS}`
+// Types
+import {ResourceType} from 'src/types'
 
-const TelegrafPluginsDetailsPage: FC = () => {
-  return (
-    <WriteDataDetailsView section={WRITE_DATA_TELEGRAF_PLUGINS_SECTION}>
-      <TelegrafPluginsExplainer />
-    </WriteDataDetailsView>
-  )
+// Graphics
+import placeholderLogo from 'src/writeData/graphics/placeholderLogo.svg'
+
+// Utils
+import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
+
+// Styles
+import 'src/writeData/components/WriteDataDetailsView.scss'
+import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
+
+const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => {
+  return <WriteDataCodeSnippet code={props.value} language={props.language} />
 }
 
-@ErrorHandling
-class TelegrafPluginsPage extends PureComponent {
-  public render() {
-    const {children} = this.props
+const TelegrafPluginsPage: FC = () => {
+  const {contentID} = useParams()
+  const {name, markdown, image} = WRITE_DATA_TELEGRAF_PLUGINS.find(
+    item => item.id === contentID
+  )
 
-    return (
-      <>
-        <Switch>
-          <Route
-            path={telegrafPluginPath}
-            exact
-            component={TelegrafPluginsIndex}
-          />
-          <Route
-            path={`${telegrafPluginPath}/:contentID`}
-            component={TelegrafPluginsDetailsPage}
-          />
-        </Switch>
-        {children}
-      </>
+  let thumbnail = (
+    <img data-testid="load-data-details-thumb" src={image || placeholderLogo} />
+  )
+  let pageContent = <></>
+
+  if (image) {
+    thumbnail = <img data-testid="load-data-details-thumb" src={image} />
+  }
+
+  if (markdown) {
+    pageContent = (
+      <MarkdownRenderer text={markdown} cloudRenderers={{code: codeRenderer}} />
     )
   }
+
+  return (
+    <GetResources
+      resources={[ResourceType.Authorizations, ResourceType.Buckets]}
+    >
+      <WriteDataDetailsContextProvider>
+        <Page
+          titleTag={pageTitleSuffixer([
+            'Telegraf Plugin',
+            'Sources',
+            'Load Data',
+          ])}
+        >
+          <Page.Header fullWidth={false}>
+            <Page.Title title={name} />
+          </Page.Header>
+          <Page.Contents fullWidth={false} scrollable={true}>
+            <div className="write-data--details">
+              <div className="write-data--details-thumbnail">{thumbnail}</div>
+              <div
+                className="write-data--details-content markdown-format"
+                data-testid="load-data-details-content"
+              >
+                <WriteDataHelper />
+                {pageContent}
+              </div>
+            </div>
+          </Page.Contents>
+        </Page>
+      </WriteDataDetailsContextProvider>
+    </GetResources>
+  )
 }
 
 export default TelegrafPluginsPage

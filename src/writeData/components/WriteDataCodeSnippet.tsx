@@ -13,7 +13,7 @@ import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   code: string
-  language: string
+  language?: string
 }
 
 // NOTE: this is just a simplified form of the resig classic:

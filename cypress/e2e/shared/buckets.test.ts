@@ -249,7 +249,7 @@ describe('Buckets', () => {
   })
 
   describe('add data', function() {
-    it('can write data to buckets', () => {
+    it.only('can write data to buckets', () => {
       cy.get('@org').then(({id: orgID}: Organization) => {
         // writing a well-formed line is accepted
         cy.getByTestID('add-data--button').click()
@@ -277,7 +277,11 @@ describe('Buckets', () => {
         // Using the Edit button should show the same invalid text
         cy.getByTestID('lp-edit--button').click()
         cy.getByTestID('line-protocol--text-area').contains('invalid invalid')
+
+        // Using the Clear button should clear text
+        cy.getByTestID('lp-write-data--button').click()
         cy.getByTestID('lp-cancel--button').click()
+        cy.getByTestID('line-protocol--text-area').should('have.value', '');
 
         // writing a well-formed line with millisecond precision is accepted
         cy.getByTestID('wizard-step--lp-precision--dropdown').click()

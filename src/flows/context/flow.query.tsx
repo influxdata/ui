@@ -163,16 +163,19 @@ export const FlowQueryProvider: FC = ({children}) => {
           ]
         }
 
-        if (
-          PIPE_DEFINITIONS[pipe.type] &&
-          PIPE_DEFINITIONS[pipe.type].generateFlux
-        ) {
+        if (!PIPE_DEFINITIONS[pipe.type]) {
+          return stages
+        }
+
+        if (PIPE_DEFINITIONS[pipe.type].generateFlux) {
           PIPE_DEFINITIONS[pipe.type].generateFlux(
             pipe,
             create,
             append,
             withSideEffects
           )
+        } else {
+          append()
         }
 
         return stages
@@ -242,39 +245,27 @@ export const FlowQueryProvider: FC = ({children}) => {
     Promise.all(
       map
         .reduce((acc, curr) => {
-          acc.push({
-            text: curr.text,
-            instances: curr.instances.filter(i => !i.modifier).map(i => i.id),
-          })
-
           return acc.concat(
             curr.instances
               .filter(i => i.modifier)
               .map(i => ({
                 text: i.modifier,
-                instances: [i.id],
+                instance: i.id,
               }))
           )
         }, [])
-        .filter(stage => !!stage.instances.length)
         .map(stage => {
-          stage.instances.forEach(pipeID => {
-            flow.meta.update(pipeID, {loading: RemoteDataState.Loading})
-          })
+          flow.meta.update(stage.instance, {loading: RemoteDataState.Loading})
           return query(stage.text)
             .then(response => {
-              stage.instances.forEach(pipeID => {
-                flow.meta.update(pipeID, {loading: RemoteDataState.Done})
-                forceUpdate(pipeID, response)
-              })
+              flow.meta.update(stage.instance, {loading: RemoteDataState.Done})
+              forceUpdate(stage.instance, response)
             })
             .catch(e => {
-              stage.instances.forEach(pipeID => {
-                forceUpdate(pipeID, {
-                  error: e.message,
-                })
-                flow.meta.update(pipeID, {loading: RemoteDataState.Error})
+              forceUpdate(stage.instance, {
+                error: e.message,
               })
+              flow.meta.update(stage.instance, {loading: RemoteDataState.Error})
             })
         })
     )

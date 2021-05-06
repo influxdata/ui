@@ -188,10 +188,10 @@ do
 							if [[ "${path}" == *"shared"* ]] ; then
 								subdirectory="shared"
 							else
-							  if [[ "${path}" == *"cloud"* ]] ; then
-								  subdirectory="cloud"
+								if [[ "${path}" == *"cloud"* ]] ; then
+									subdirectory="cloud"
 								else
-								  subdirectory="oss"
+									subdirectory="oss"
 								fi
 							fi
 							output="monitor-ci/test-artifacts/results/${name}/${subdirectory}/${filename}"

@@ -249,7 +249,7 @@ describe('Buckets', () => {
   })
 
   describe('add data', function() {
-    it.only('can write data to buckets', () => {
+    it('can write data to buckets', () => {
       cy.get('@org').then(({id: orgID}: Organization) => {
         // writing a well-formed line is accepted
         cy.getByTestID('add-data--button').click()

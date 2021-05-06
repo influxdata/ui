@@ -20,6 +20,7 @@ describe('Flows', () => {
   })
 
   it('CRUD a flow from the index page', () => {
+    throw new Error("let's break things")
     const now = Date.now()
     cy.writeData(
       [

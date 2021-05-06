@@ -13,12 +13,22 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 
 // Utils
 import {getByID} from 'src/resources/selectors'
+import {resetQueryCacheByQuery} from 'src/shared/apis/queryCache'
 
 // Types
-import {RemoteDataState, AppState, View, Cell, ResourceType} from 'src/types'
+import {
+  RemoteDataState,
+  AppState,
+  View,
+  Cell,
+  ResourceType,
+  Variable,
+} from 'src/types'
+import {getAllVariables} from 'src/variables/selectors'
 
 interface StateProps {
   view: View
+  variables: Variable[]
 }
 
 interface OwnProps {
@@ -38,7 +48,18 @@ class CellComponent extends Component<Props, State> {
     submitToken: 0,
   }
 
+  private handleRefreshProcess = (): void => {
+    const {view, variables} = this.props
+    if (view.properties?.type === 'markdown') {
+      return
+    }
+    view.properties?.queries?.forEach(query => {
+      resetQueryCacheByQuery(query.text, variables)
+    })
+  }
+
   private handleIncrementToken = (): void => {
+    this.handleRefreshProcess()
     this.setState(s => ({...s, submitToken: s.submitToken + 1}))
   }
 
@@ -78,7 +99,7 @@ class CellComponent extends Component<Props, State> {
   private get viewNote(): string {
     const {view} = this.props
 
-    if (!view || !view.properties || !view.properties.type) {
+    if (!view?.properties?.type) {
       return ''
     }
 
@@ -125,8 +146,8 @@ class CellComponent extends Component<Props, State> {
 
 const mstp = (state: AppState, ownProps: OwnProps) => {
   const view = getByID<View>(state, ResourceType.Views, ownProps.cell.id)
-
-  return {view}
+  const variables = getAllVariables(state)
+  return {view, variables}
 }
 
 export default connect<StateProps, {}, OwnProps>(mstp)(CellComponent)

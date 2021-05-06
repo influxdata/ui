@@ -137,3 +137,11 @@ export const ExportVariableOverlay = RouteOverlay(
     history.push(`/orgs/${params.orgID}/settings/variables`)
   }
 )
+
+export const AutoRefreshOverlay = RouteOverlay(
+  OverlayHandler,
+  'toggle-auto-refresh',
+  (history, params) => {
+    history.push(`/${ORGS}/${params.orgID}/${DASHBOARDS}/${params.dashboardID}`)
+  }
+)

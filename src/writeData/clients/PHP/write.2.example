@@ -1,0 +1,7 @@
+$dataArray = ['name' => 'cpu',
+  'tags' => ['host' => 'server_nl', 'region' => 'us'],
+  'fields' => ['internal' => 5, 'external' => 6],
+  'time' => microtime(true)];
+
+$writeApi->write($dataArray, WritePrecision::S, $bucket, $org);
+

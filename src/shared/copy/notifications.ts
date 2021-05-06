@@ -1192,3 +1192,14 @@ export const createAnnotationFailed = (error: string): Notification => ({
   icon: IconFont.Cube,
   message: `Failed to create annotation: ${error}`,
 })
+
+export const dashboardAutoRefreshTimeoutSuccess = (
+  time?: string
+): Notification => ({
+  ...defaultSuccessNotification,
+  duration: INDEFINITE,
+  icon: IconFont.Clock,
+  message: `Your dashboard auto refresh settings have been reset due to inactivity ${
+    time ? 'over the last' + time : ''
+  }`,
+})

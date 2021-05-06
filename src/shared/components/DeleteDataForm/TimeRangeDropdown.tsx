@@ -12,7 +12,7 @@ import {
 import DateRangePicker from 'src/shared/components/dateRangePicker/DateRangePicker'
 
 // Types
-import {CustomTimeRange} from 'src/types'
+import {CustomTimeRange, TimeRangeDirection} from 'src/types'
 import {pastHourTimeRange} from 'src/shared/constants/timeRanges'
 import {
   convertTimeRangeToCustom,
@@ -22,9 +22,16 @@ import {
 interface Props {
   timeRange: CustomTimeRange
   onSetTimeRange: (timeRange: CustomTimeRange) => void
+  singleDirection?: TimeRangeDirection
+  className?: string
 }
 
-const TimeRangeDropdown: FC<Props> = ({timeRange, onSetTimeRange}) => {
+const TimeRangeDropdown: FC<Props> = ({
+  timeRange,
+  onSetTimeRange,
+  singleDirection,
+  className,
+}) => {
   const [pickerActive, setPickerActive] = useState(false)
   const buttonRef = useRef<HTMLDivElement>(null)
 
@@ -40,7 +47,7 @@ const TimeRangeDropdown: FC<Props> = ({timeRange, onSetTimeRange}) => {
   }
 
   return (
-    <div ref={buttonRef}>
+    <div ref={buttonRef} className={className} data-testid="timerange-dropdown">
       <Dropdown.Button onClick={() => setPickerActive(!pickerActive)}>
         {dropdownLabel}
       </Dropdown.Button>
@@ -60,6 +67,7 @@ const TimeRangeDropdown: FC<Props> = ({timeRange, onSetTimeRange}) => {
             onSetTimeRange={handleApplyTimeRange}
             onClose={() => setPickerActive(false)}
             position={{position: 'relative'}}
+            singleDirection={singleDirection}
           />
         )}
       />

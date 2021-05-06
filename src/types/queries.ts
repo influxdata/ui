@@ -19,6 +19,10 @@ export type TimeRange =
   | DurationTimeRange
   | CustomTimeRange
 
+export enum TimeRangeDirection {
+  Upper = 'upper',
+  Lower = 'lower',
+}
 export interface SelectableDurationTimeRange {
   lower: SelectableTimeRangeLower
   upper: Nullable<string>

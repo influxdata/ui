@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC, useMemo, useContext} from 'react'
 import {
-  AnnotationLayerConfig,
   Config,
   DomainLabel,
   lineTransform,
@@ -18,7 +17,7 @@ import {
   selectAreAnnotationsVisible,
 } from 'src/annotations/selectors'
 
-// Components
+// Component
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 import LatestValueTransform from 'src/visualization/components/LatestValueTransform'
 
@@ -129,28 +128,7 @@ const SingleStatWithLine: FC<Props> = ({
     result.table.getColumn(xColumn, 'number'),
     timeRange
   )
-
-  const memoizedYColumnData = useMemo(() => {
-    if (properties.position === 'stacked') {
-      const {lineData} = lineTransform(
-        result.table,
-        xColumn,
-        yColumn,
-        groupKey,
-        colorHexes,
-        properties.position
-      )
-      return getDomainDataFromLines(lineData, DomainLabel.Y)
-    }
-    return result.table.getColumn(yColumn, 'number')
-  }, [
-    result.table,
-    yColumn,
-    xColumn,
-    properties.position,
-    colorHexes,
-    groupKey,
-  ])
+  const memoizedYColumnData = setupData()
 
   const [yDomain, onSetYDomain, onResetYDomain] = useVisYDomainSettings(
     storedYDomain,
@@ -193,41 +171,9 @@ const SingleStatWithLine: FC<Props> = ({
     cellType: 'single-stat',
   })
 
-  const config: Config = {
-    ...currentTheme,
-    table: result.table,
-    xAxisLabel: properties.axes.x.label,
-    yAxisLabel: properties.axes.y.label,
-    xDomain,
-    onSetXDomain,
-    onResetXDomain,
-    yDomain,
-    onSetYDomain,
-    onResetYDomain,
-    ...axisTicksOptions,
-    legendColumns,
-    legendOpacity: tooltipOpacity,
-    legendOrientationThreshold: tooltipOrientationThreshold,
-    legendColorizeRows: tooltipColorize,
-    valueFormatters: {
-      [xColumn]: xFormatter,
-      [yColumn]: yFormatter,
-    },
-    layers: [
-      {
-        type: 'line',
-        x: xColumn,
-        y: yColumn,
-        fill: groupKey,
-        interpolation,
-        position: properties.position,
-        colors: colorHexes,
-        shadeBelow: !!properties.shadeBelow,
-        shadeBelowOpacity: 0.08,
-        hoverDimension: properties.hoverDimension,
-      },
-    ],
-  }
+  const config = makeConfig()
+
+  let annotationLayer
 
   if (isFlagEnabled('annotations')) {
     const eventPrefix = 'singleStatWline'
@@ -238,7 +184,7 @@ const SingleStatWithLine: FC<Props> = ({
       }
     }
 
-    const annotationLayer: AnnotationLayerConfig = makeAnnotationLayer(
+    annotationLayer = makeAnnotationLayer(
       cellID,
       xColumn,
       yColumn,
@@ -248,10 +194,6 @@ const SingleStatWithLine: FC<Props> = ({
       dispatch,
       eventPrefix
     )
-
-    if (annotationLayer) {
-      config.layers.push(annotationLayer)
-    }
   }
 
   if (isFlagEnabled('useGiraffeGraphs')) {
@@ -277,67 +219,138 @@ const SingleStatWithLine: FC<Props> = ({
 
     config.layers.push(statLayer)
 
+    // adding this *after* the statLayer, it has to be the top layer
+    // for clicking to edit to function.  (if it is not the top layer it shows,
+    // but the annotations are not editable)
+    if (annotationLayer) {
+      config.layers.push(annotationLayer)
+    }
+
     return <Plot config={config} />
   } else {
-    return (
-      <Plot config={config}>
-        <LatestValueTransform table={result.table} allowString={true}>
-          {latestValue => {
-            const {
-              bgColor: backgroundColor,
-              textColor,
-            } = generateThresholdsListHexs({
-              colors: properties.colors.filter(c => c.type !== 'scale'),
-              lastValue: latestValue,
-              cellType: 'single-stat',
-            })
+    const statPortion = (
+      <LatestValueTransform table={result.table} allowString={true}>
+        {latestValue => {
+          const {
+            bgColor: backgroundColor,
+            textColor,
+          } = generateThresholdsListHexs({
+            colors: properties.colors.filter(c => c.type !== 'scale'),
+            lastValue: latestValue,
+            cellType: 'single-stat',
+          })
 
-            const timeFormatter = getFormatter('time', {
-              timeZone: timeZone === 'Local' ? undefined : timeZone,
-              timeFormat: DEFAULT_TIME_FORMAT,
-            })
+          const timeFormatter = getFormatter('time', {
+            timeZone: timeZone === 'Local' ? undefined : timeZone,
+            timeFormat: DEFAULT_TIME_FORMAT,
+          })
 
-            const formattedValue =
-              result.table.getColumnType('_value') === 'time'
-                ? timeFormatter(latestValue)
-                : formatStatValue(latestValue, {
-                    decimalPlaces: properties.decimalPlaces,
-                    prefix: properties.prefix,
-                    suffix: properties.suffix,
-                  })
+          const formattedValue =
+            result.table.getColumnType('_value') === 'time'
+              ? timeFormatter(latestValue)
+              : formatStatValue(latestValue, {
+                  decimalPlaces: properties.decimalPlaces,
+                  prefix: properties.prefix,
+                  suffix: properties.suffix,
+                })
 
-            return (
-              <div
-                className="single-stat"
-                style={{backgroundColor}}
-                data-testid="single-stat"
-              >
-                <div className="single-stat--resizer">
-                  <svg
-                    width="100%"
-                    height="100%"
-                    viewBox={`0 0 ${formattedValue.length * 55} 100`}
+          return (
+            <div
+              className="single-stat"
+              style={{backgroundColor}}
+              data-testid="single-stat"
+            >
+              <div className="single-stat--resizer">
+                <svg
+                  width="100%"
+                  height="100%"
+                  viewBox={`0 0 ${formattedValue.length * 55} 100`}
+                >
+                  <text
+                    className="single-stat--text"
+                    data-testid="single-stat--text"
+                    fontSize="100"
+                    y="59%"
+                    x="50%"
+                    dominantBaseline="middle"
+                    textAnchor="middle"
+                    style={{fill: textColor}}
                   >
-                    <text
-                      className="single-stat--text"
-                      data-testid="single-stat--text"
-                      fontSize="100"
-                      y="59%"
-                      x="50%"
-                      dominantBaseline="middle"
-                      textAnchor="middle"
-                      style={{fill: textColor}}
-                    >
-                      {formattedValue}
-                    </text>
-                  </svg>
-                </div>
+                    {formattedValue}
+                  </text>
+                </svg>
               </div>
-            )
-          }}
-        </LatestValueTransform>
-      </Plot>
+            </div>
+          )
+        }}
+      </LatestValueTransform>
     )
+
+    return <Plot config={config}>{statPortion}</Plot>
+  }
+  // helper functions
+  function setupData() {
+    const memoizedYColumnData = useMemo(() => {
+      if (properties.position === 'stacked') {
+        const {lineData} = lineTransform(
+          result.table,
+          xColumn,
+          yColumn,
+          groupKey,
+          colorHexes,
+          properties.position
+        )
+        return getDomainDataFromLines(lineData, DomainLabel.Y)
+      }
+      return result.table.getColumn(yColumn, 'number')
+    }, [
+      result.table,
+      yColumn,
+      xColumn,
+      properties.position,
+      colorHexes,
+      groupKey,
+    ])
+    return memoizedYColumnData
+  }
+
+  function makeConfig() {
+    const config: Config = {
+      ...currentTheme,
+      table: result.table,
+      xAxisLabel: properties.axes.x.label,
+      yAxisLabel: properties.axes.y.label,
+      xDomain,
+      onSetXDomain,
+      onResetXDomain,
+      yDomain,
+      onSetYDomain,
+      onResetYDomain,
+      ...axisTicksOptions,
+      legendColumns,
+      legendOpacity: tooltipOpacity,
+      legendOrientationThreshold: tooltipOrientationThreshold,
+      legendColorizeRows: tooltipColorize,
+      valueFormatters: {
+        [xColumn]: xFormatter,
+        [yColumn]: yFormatter,
+      },
+      layers: [
+        {
+          type: 'line',
+          x: xColumn,
+          y: yColumn,
+          fill: groupKey,
+          interpolation,
+          position: properties.position,
+          colors: colorHexes,
+          shadeBelow: !!properties.shadeBelow,
+          shadeBelowOpacity: 0.08,
+          hoverDimension: properties.hoverDimension,
+        },
+      ],
+    }
+    return config
   }
 }
 

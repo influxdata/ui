@@ -1,5 +1,10 @@
+// React
+import {Dispatch} from 'react'
+
 // Redux
 import {writeThenFetchAndSetAnnotations} from 'src/annotations/actions/thunks'
+
+import {AnnotationsList} from 'src/types'
 
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 import {event} from 'src/cloud/utils/reporting'
@@ -14,8 +19,8 @@ import {
 } from '@influxdata/giraffe'
 
 export const makeAnnotationClickListener = (
-  dispatch,
-  cellID,
+  dispatch: Dispatch<any>,
+  cellID: string,
   eventPrefix = 'xyplot'
 ) => {
   const createAnnotation = async userModifiedAnnotation => {
@@ -61,13 +66,11 @@ export const makeAnnotationClickListener = (
 
 const makeAnnotationClickHandler = (
   cellID: string,
-  dispatch,
-  annotations,
+  dispatch: Dispatch<any>,
+  annotations: AnnotationsList,
   eventPrefix = 'xyplot'
 ) => {
-  console.log('making own here...jill42-ab-88')
-  const result = (id: string) => {
-    console.log('inside own annotation click....', id)
+  const clickHandler = (id: string) => {
     const annotationToEdit = annotations[cellID].find(
       annotation => annotation.id === id
     )
@@ -85,18 +88,17 @@ const makeAnnotationClickHandler = (
       )
     }
   }
-
-  return result
+  return clickHandler
 }
 
 export const makeAnnotationLayer = (
-  cellID,
-  xColumn,
-  yColumn,
-  groupKey,
-  annotations,
-  annotationsAreVisible,
-  dispatch,
+  cellID: string,
+  xColumn: string,
+  yColumn: string,
+  groupKey: string[],
+  annotations: AnnotationsList,
+  annotationsAreVisible: boolean,
+  dispatch: Dispatch<any>,
   eventPrefix = 'xyplot'
 ) => {
   const cellAnnotations = annotations ? annotations[cellID] ?? [] : []

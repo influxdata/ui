@@ -64,7 +64,12 @@ const FlowPanelHeader: FC<HeaderProps> = ({
     <div className="flow-panel--editable-title">Error</div>
   )
 
+  // This function allows the developer to see the queries
+  // that the panels are generating through a notebook. Each
+  // panel should have a source query, any panel that needs
+  // to display some data should have a visualization query
   const printMap = useCallback(() => {
+    // Make a dictionary of all the panels that have queries being generated
     const stages = generateMap(true).reduce((acc, curr) => {
       curr.instances.forEach(i => {
         acc[i.id] = {
@@ -77,6 +82,7 @@ const FlowPanelHeader: FC<HeaderProps> = ({
     }, {})
 
     /* eslint-disable no-console */
+    // Grab all the ids in the order that they're presented
     flow.data.allIDs.forEach(i => {
       console.log(
         `\n\n%cPanel: %c ${i}`,
@@ -85,6 +91,8 @@ const FlowPanelHeader: FC<HeaderProps> = ({
           ? 'font-weight: bold; font-size: 16px; color: #666'
           : 'font-weight: normal; font-size: 16px; color: #888'
       )
+
+      // throw up some red text if a panel isn't passing along the source query
       if (!stages[i]) {
         console.log(
           '%c *** No Queries Registered ***\n',

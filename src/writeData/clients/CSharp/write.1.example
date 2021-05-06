@@ -1,0 +1,11 @@
+var point = PointData
+  .Measurement("mem")
+  .Tag("host", "host1")
+  .Field("used_percent", 23.43234543)
+  .Timestamp(DateTime.UtcNow, WritePrecision.Ns);
+
+using (var writeApi = client.GetWriteApi())
+{
+  writeApi.WritePoint(bucket, org, point);
+}
+

@@ -46,7 +46,6 @@ const FlowHeader: FC = () => {
           <PresentationMode />
           <TimeZoneDropdown />
           <TimeRangeDropdown />
-          <AutoRefreshDropdown />
         </Page.ControlBarRight>
       </Page.ControlBar>
     </>

@@ -19,7 +19,6 @@ describe('Buckets', () => {
 
   describe('from the buckets index page', () => {
     it('can create a bucket', () => {
-      throw new Error('Tear down this wall')
       const newBucket = '🅱️ucket'
       cy.getByTestID(`bucket--card--name ${newBucket}`).should('not.exist')
 

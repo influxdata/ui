@@ -20,7 +20,6 @@ describe('Onboarding', () => {
   })
 
   it('Can Onboard to Quick Start', () => {
-    throw new Error('break this one too')
     cy.server()
 
     // Will want to capture response from this

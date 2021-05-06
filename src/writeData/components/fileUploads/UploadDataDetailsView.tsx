@@ -28,6 +28,7 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Styles
 import 'src/writeData/components/WriteDataDetailsView.scss'
+import LineProtocolFooterButtons from 'src/buckets/components/lineProtocol/LineProtocolFooterButtons'
 
 const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => {
   return <WriteDataCodeSnippet code={props.value} language={props.language} />
@@ -82,6 +83,7 @@ const UploadDataDetailsView: FC = () => {
                 </Panel>
                 {pageContent}
                 {isLP ? <LineProtocolTabs /> : <CsvMethod />}
+                {isLP ? <LineProtocolFooterButtons /> : <></>}
               </div>
             </div>
           </Page.Contents>

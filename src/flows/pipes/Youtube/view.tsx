@@ -3,7 +3,6 @@ import React, {FC, useState, useContext} from 'react'
 import {Input} from '@influxdata/clockface'
 
 // Components
-import {SquareButton, IconFont} from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 
 // Types
@@ -19,13 +18,13 @@ const Youtube: FC<PipeProp> = ({Context}) => {
     update({uri: evt.target.value})
   }
 
-  const controls = (
-    <SquareButton
-      icon={IconFont.CogThick}
-      titleText="Edit Youtube ID"
-      onClick={toggleEdit}
-    />
-  )
+  const controls = [{
+    title: 'Controls',
+    actions: [{
+      title: 'Edit Youtube ID',
+      action: toggleEdit
+    }]
+  }]
 
   const showEditing = isEditing || !data.uri
 

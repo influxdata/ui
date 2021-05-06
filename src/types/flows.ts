@@ -2,10 +2,19 @@ import {FromFluxResult, FluxDataType, Table} from '@influxdata/giraffe'
 import {FunctionComponent, ComponentClass, ReactNode} from 'react'
 import {AutoRefresh, RemoteDataState, TimeRange} from 'src/types'
 
+interface ControlAction {
+  title: string | (() => string)
+  action: () => void
+}
+
+export interface ControlSection {
+  title: string | (() => string)
+  actions: ControlAction[]
+}
+
 export interface PipeContextProps {
   children?: ReactNode
-  controls?: ReactNode
-  persistentControl?: ReactNode
+  controls?: ControlSection[]
 }
 
 export type PipeData = any

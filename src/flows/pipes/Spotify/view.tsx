@@ -17,13 +17,13 @@ const Spotify: FC<PipeProp> = ({Context}) => {
     setIsEditing(!isEditing)
   }
 
-  const controls = (
-    <SquareButton
-      icon={IconFont.CogThick}
-      titleText="Edit Spotify URI"
-      onClick={toggleEdit}
-    />
-  )
+  const controls = [{
+    title: 'Controls',
+    actions: [{
+      title: 'Edit Spotify URI',
+      action: toggleEdit
+    }]
+  }]
 
   const showEditing = isEditing || !data.uri
 

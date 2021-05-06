@@ -113,15 +113,13 @@ const Query: FC<PipeProp> = ({Context}) => {
     setShowFn(!showFn)
   }, [setShowFn, showFn])
 
-  const controls = (
-    <SquareButton
-      icon={IconFont.Function}
-      onClick={toggleFn}
-      color={showFn ? ComponentColor.Primary : ComponentColor.Default}
-      titleText="Function Reference"
-      className="flows-config-function-button"
-    />
-  )
+  const controls = [{
+    title: 'Documentation',
+    actions: [{
+      title: 'Functions',
+      action: toggleFn
+    }]
+  }]
 
   return (
     <Context controls={controls}>

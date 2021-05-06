@@ -3,8 +3,6 @@ import React, {FC, useContext, useCallback, useMemo, useState} from 'react'
 
 // Components
 import {IconFont} from '@influxdata/clockface'
-import ExportButton from 'src/flows/pipes/Visualization/ExportDashboardButton'
-import Controls from 'src/flows/pipes/Visualization/Controls'
 import Resizer from 'src/flows/shared/Resizer'
 
 // Utilities
@@ -19,9 +17,6 @@ import {PipeContext} from 'src/flows/context/pipe'
 const Visualization: FC<PipeProp> = ({Context}) => {
   const {data, range, update, loading, results} = useContext(PipeContext)
   const [optionsVisibility, setOptionsVisibility] = useState(false)
-  const toggleOptions = useCallback(() => {
-    setOptionsVisibility(!optionsVisibility)
-  }, [optionsVisibility, setOptionsVisibility])
 
   const updateProperties = useCallback(
     properties => {
@@ -49,11 +44,15 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     return 'No Data Returned'
   }, [loading])
 
-  return (
+  /*
     <Context
       controls={<Controls toggle={toggleOptions} visible={optionsVisibility} />}
       persistentControl={<ExportButton />}
     >
+   */
+
+  return (
+    <Context>
       <Resizer
         loading={loading}
         resizingEnabled={dataExists}

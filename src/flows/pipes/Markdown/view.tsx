@@ -29,46 +29,30 @@ const MarkdownMonacoEditor = lazy(() =>
 const MarkdownPanel: FC<PipeProp> = ({Context}) => {
   const {data, update} = useContext(PipeContext)
 
-  const showPlaceholder = (): void => {
-    if (data.text === MARKDOWN_PIPE_INITIAL) {
-      update({text: MARKDOWN_PIPE_PLACEHOLDER})
-    }
-  }
-
-  const hidePlaceholder = (): void => {
-    if (data.text === MARKDOWN_PIPE_PLACEHOLDER) {
-      update({text: MARKDOWN_PIPE_INITIAL})
-    }
-  }
-
-  const handleToggleMode = (mode: MarkdownMode): void => {
-    if (mode === 'preview') {
-      showPlaceholder()
-    } else if (mode === 'edit') {
-      hidePlaceholder()
-    }
-
-    update({mode})
-  }
-
-  const handleClickOutside = (): void => {
-    handleToggleMode('preview')
-  }
-
   const handlePreviewClick = (): void => {
-    handleToggleMode('edit')
+    update({mode: 'edit'})
   }
 
-  const controls = (
-    <MarkdownModeToggle mode={data.mode} onToggleMode={handleToggleMode} />
-  )
+  const controls = [{
+    title: 'Edit',
+    actions: [{
+      title: 'Edit',
+      action: () => {
+        update({mode: 'edit'})
+      }
+    }, {
+      title: 'Preview',
+      action: () => {
+        update({mode: 'preview'})
+      }
+    }]
+  }]
 
   const handleChange = (text: string): void => {
     update({text})
   }
 
   let panelContents = (
-    <ClickOutside onClickOutside={handleClickOutside}>
       <Suspense
         fallback={
           <SpinnerContainer
@@ -83,7 +67,6 @@ const MarkdownPanel: FC<PipeProp> = ({Context}) => {
           autogrow
         />
       </Suspense>
-    </ClickOutside>
   )
 
   if (data.mode === 'preview') {

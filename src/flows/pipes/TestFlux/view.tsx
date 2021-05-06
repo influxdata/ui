@@ -80,8 +80,9 @@ const TestFlux: FC<PipeProp> = ({Context}) => {
     </>
   )
 
+    //<Context controls={controls}>
   return (
-    <Context controls={controls}>
+    <Context>
       <Resizer
         resizingEnabled={!!results.parsed}
         emptyText="This cell will visualize results from uploaded CSVs"

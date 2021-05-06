@@ -38,7 +38,6 @@ const FlowPanelTitle: FC<Props> = ({id}) => {
         autoComplete="off"
         autoCorrect="off"
         spellCheck={false}
-        maxLength={30}
       />
       <Icon glyph={IconFont.Pencil} className="flow-panel--title-icon" />
     </div>

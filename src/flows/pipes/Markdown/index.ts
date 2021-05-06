@@ -1,4 +1,4 @@
-import MarkdownPanel from './MarkdownPanel'
+import MarkdownPanel from './view'
 import './style.scss'
 
 export type MarkdownMode = 'edit' | 'preview'

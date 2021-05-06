@@ -13,7 +13,6 @@ describe('Dashboard', () => {
   })
 
   it('does not render image tags in markdown preview', () => {
-    throw new Error('Breaking a test for monitor-ci testing reasons')
     cy.get('@org').then(({id: orgID}: any) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {

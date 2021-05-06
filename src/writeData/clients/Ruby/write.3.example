@@ -1,0 +1,14 @@
+point = InfluxDB2::Point.new(name: 'mem')
+  .add_tag('host', 'host1')
+  .add_field('used_percent', 23.43234543)
+  .time(Time.now.utc, InfluxDB2::WritePrecision::NANOSECOND)
+
+hash = {name: 'h2o',
+  tags: {host: 'aws', region: 'us'},
+  fields: {level: 5, saturation: '99%'},
+  time: Time.now.utc}
+
+data = 'mem,host=host1 used_percent=23.23234543'
+
+write_api.write(data: [point, hash, data], bucket: bucket, org: org)
+

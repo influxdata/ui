@@ -39,7 +39,7 @@ import {
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {incrementCloneName} from 'src/utils/naming'
 
-const notebookAPIFlag = 'notebooks-api'
+const notebookAPIFlag = 'notebooksApi'
 export interface FlowListContextType extends FlowList {
   add: (flow?: Flow) => Promise<string>
   clone: (id: string) => void

@@ -1,0 +1,26 @@
+package example;
+
+import java.time.Instant;
+import java.util.List;
+
+import com.influxdb.annotations.Column;
+import com.influxdb.annotations.Measurement;
+import com.influxdb.client.InfluxDBClient;
+import com.influxdb.client.InfluxDBClientFactory;
+import com.influxdb.client.WriteApi;
+import com.influxdb.client.domain.WritePrecision;
+import com.influxdb.client.write.Point;
+import com.influxdb.query.FluxTable;
+
+public class InfluxDB2Example {
+  public static void main(final String[] args) {
+
+    // You can generate a Token from the "Tokens Tab" in the UI
+    String token = "<%= token %>";
+    String bucket = "<%= bucket %>";
+    String org = "<%= org %>";
+
+    InfluxDBClient client = InfluxDBClientFactory.create("<%= server %>", token.toCharArray());
+  }
+}
+

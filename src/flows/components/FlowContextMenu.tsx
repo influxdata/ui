@@ -1,11 +1,17 @@
 // Libraries
 import React, {FC, useContext} from 'react'
+import {useParams, useHistory} from 'react-router-dom'
 
 // Components
 import {Context} from 'src/clockface'
-import {ButtonShape, ComponentColor, IconFont} from '@influxdata/clockface'
+import {
+  Button,
+  ButtonShape,
+  ComponentColor,
+  IconFont,
+} from '@influxdata/clockface'
 import {FlowListContext} from 'src/flows/context/flow.list'
-import {PROJECT_NAME} from 'src/flows'
+import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -17,32 +23,32 @@ interface Props {
 
 const FlowContextMenu: FC<Props> = ({id, name}) => {
   const {remove, clone} = useContext(FlowListContext)
+  const {orgID} = useParams<{orgID: string}>()
+  const history = useHistory()
 
   const handleDelete = () => {
     event('delete_notebook')
     remove(id)
   }
 
-  const handleClone = () => {
+  const handleClone = async () => {
     event('clone_notebook')
-    clone(id)
+    const clonedId = await clone(id)
+    history.push(
+      `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${clonedId}`
+    )
   }
 
   return (
     <Context>
-      <Context.Menu
+      <Button
+        text="Clone"
         icon={IconFont.Duplicate}
         color={ComponentColor.Secondary}
-        shape={ButtonShape.Default}
-        text="Clone"
-        testID={`context-clone-menu ${name}`}
-      >
-        <Context.Item
-          label="Clone"
-          action={handleClone}
-          testID={`context-clone-flow ${name}`}
-        />
-      </Context.Menu>
+        titleText="Clone"
+        testID="flow-button--clone"
+        onClick={handleClone}
+      />
       <Context.Menu
         icon={IconFont.Trash}
         color={ComponentColor.Danger}

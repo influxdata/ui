@@ -146,7 +146,7 @@ export const FlowListProvider: FC = ({children}) => {
     getAll()
   }, [])
 
-  const clone = (id: string) => {
+  const clone = async (id: string): Promise<string> => {
     if (!flows.hasOwnProperty(id)) {
       throw new Error(`${PROJECT_NAME} not found`)
     }
@@ -161,7 +161,7 @@ export const FlowListProvider: FC = ({children}) => {
       name: clonedName,
     }
 
-    add(data)
+    return await add(data)
   }
 
   const add = async (flow?: Flow): Promise<string> => {

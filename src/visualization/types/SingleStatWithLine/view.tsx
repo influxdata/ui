@@ -128,7 +128,28 @@ const SingleStatWithLine: FC<Props> = ({
     result.table.getColumn(xColumn, 'number'),
     timeRange
   )
-  const memoizedYColumnData = setupData()
+
+  const memoizedYColumnData = useMemo(() => {
+    if (properties.position === 'stacked') {
+      const {lineData} = lineTransform(
+        result.table,
+        xColumn,
+        yColumn,
+        groupKey,
+        colorHexes,
+        properties.position
+      )
+      return getDomainDataFromLines(lineData, DomainLabel.Y)
+    }
+    return result.table.getColumn(yColumn, 'number')
+  }, [
+    result.table,
+    yColumn,
+    xColumn,
+    properties.position,
+    colorHexes,
+    groupKey,
+  ])
 
   const [yDomain, onSetYDomain, onResetYDomain] = useVisYDomainSettings(
     storedYDomain,
@@ -289,31 +310,6 @@ const SingleStatWithLine: FC<Props> = ({
     return <Plot config={config}>{statPortion}</Plot>
   }
   // helper functions
-  function setupData() {
-    const memoizedYColumnData = useMemo(() => {
-      if (properties.position === 'stacked') {
-        const {lineData} = lineTransform(
-          result.table,
-          xColumn,
-          yColumn,
-          groupKey,
-          colorHexes,
-          properties.position
-        )
-        return getDomainDataFromLines(lineData, DomainLabel.Y)
-      }
-      return result.table.getColumn(yColumn, 'number')
-    }, [
-      result.table,
-      yColumn,
-      xColumn,
-      properties.position,
-      colorHexes,
-      groupKey,
-    ])
-    return memoizedYColumnData
-  }
-
   function makeConfig() {
     const config: Config = {
       ...currentTheme,

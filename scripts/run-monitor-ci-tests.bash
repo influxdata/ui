@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -eu -o pipefail
+set -x
 
 ########################
 # --- Script Summary ---

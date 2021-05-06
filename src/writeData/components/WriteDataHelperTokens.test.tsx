@@ -31,6 +31,8 @@ const setup = (override?) => {
         state.resources.tokens.allIDs.push(token.id)
         state.resources.tokens.byID[token.id] = token
       })
+
+      return state
     }
   )
 

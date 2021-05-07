@@ -113,6 +113,7 @@ jobs:
             docker build \
               --build-arg UI_SHA=testing \
               --build-arg CLOUD_URL=http://localhost/auth \
+              --build-arg WEBPACK_FILE=lighthouse \
               -t quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} \
               -f ./ui/docker/Dockerfile.chronograf.prod \
               ./ui

@@ -5,29 +5,24 @@ import React, {FC, useContext} from 'react'
 import {WriteDataSearchContext} from 'src/writeData/containers/WriteDataPage'
 
 // Constants
-import {
-  WRITE_DATA_SECTIONS,
-  sectionContainsMatchingItems,
-} from 'src/writeData/constants'
-
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {search as searchUploads} from 'src/writeData/constants/contentFileUploads'
+import {search as searchPlugins} from 'src/writeData/constants/contentTelegrafPlugins'
+import {searchClients} from 'src/writeData'
 
 // Components
 import {EmptyState, ComponentSize} from '@influxdata/clockface'
-import WriteDataSection from 'src/writeData/components/WriteDataSection'
+import FileUploadSection from 'src/writeData/components/FileUploadSection'
+import ClientLibrarySection from 'src/writeData/components/ClientLibrarySection'
+import TelegrafPluginSection from 'src/writeData/components/TelegrafPluginSection'
 
 const WriteDataSections: FC = () => {
   const {searchTerm} = useContext(WriteDataSearchContext)
+  const hasResults =
+    !!searchUploads(searchTerm).length ||
+    !!searchClients(searchTerm).length ||
+    !!searchPlugins(searchTerm).length
 
-  const filteredSections = WRITE_DATA_SECTIONS.filter(section => {
-    const containsMatches = sectionContainsMatchingItems(section, searchTerm)
-    const featureFlagEnabled = isFlagEnabled(section.featureFlag)
-
-    return containsMatches && featureFlagEnabled
-  })
-
-  if (!filteredSections.length) {
+  if (!hasResults) {
     return (
       <EmptyState size={ComponentSize.Large}>
         <h4>
@@ -39,15 +34,9 @@ const WriteDataSections: FC = () => {
 
   return (
     <>
-      {filteredSections.map(section => (
-        <WriteDataSection
-          key={section.id}
-          id={section.id}
-          name={section.name}
-          description={section.description}
-          items={section.items}
-        />
-      ))}
+      <FileUploadSection />
+      <ClientLibrarySection />
+      <TelegrafPluginSection />
     </>
   )
 }

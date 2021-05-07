@@ -37,10 +37,12 @@ import {
   notebookDeleteFail,
 } from 'src/shared/copy/notifications'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {incrementCloneName} from 'src/utils/naming'
 
-const notebookAPIFlag = 'notebooks-api'
+const notebookAPIFlag = 'notebooksApi'
 export interface FlowListContextType extends FlowList {
   add: (flow?: Flow) => Promise<string>
+  clone: (id: string) => void
   update: (id: string, flow: Flow) => void
   remove: (id: string) => void
   currentID: string | null
@@ -66,6 +68,7 @@ export const EMPTY_NOTEBOOK: FlowState = {
 export const DEFAULT_CONTEXT: FlowListContextType = {
   flows: {},
   add: (_flow?: Flow) => {},
+  clone: (_id: string) => {},
   update: (_id: string, _flow: Flow) => {},
   remove: (_id: string) => {},
   change: (_id: string) => {},
@@ -142,6 +145,24 @@ export const FlowListProvider: FC = ({children}) => {
     migrate()
     getAll()
   }, [])
+
+  const clone = async (id: string): Promise<string> => {
+    if (!flows.hasOwnProperty(id)) {
+      throw new Error(`${PROJECT_NAME} not found`)
+    }
+
+    const flow = flows[id]
+
+    const allFlowNames = Object.values(flows).map(value => value.name)
+    const clonedName = incrementCloneName(allFlowNames, flow.name)
+
+    const data = {
+      ...flow,
+      name: clonedName,
+    }
+
+    return await add(data)
+  }
 
   const add = async (flow?: Flow): Promise<string> => {
     let _flow
@@ -369,6 +390,7 @@ export const FlowListProvider: FC = ({children}) => {
       value={{
         flows: flowList,
         add,
+        clone,
         update,
         remove,
         getAll,

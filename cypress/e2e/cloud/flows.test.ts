@@ -152,6 +152,101 @@ describe('Flows', () => {
     cy.getByTestID('table-cell beans').should('not.exist')
   })
 
+  it('can create, clone a flow and persist selected data in the clone, and delete a flow from the list page', () => {
+    const newBucketName = 'shmucket'
+    const now = Date.now()
+    cy.get<Organization>('@org').then(({id, name}: Organization) => {
+      cy.createBucket(id, name, newBucketName)
+    })
+    cy.writeData(
+      [
+        `test,container_name=cool dopeness=12 ${now - 1000}000000`,
+        `test,container_name=beans dopeness=18 ${now - 1200}000000`,
+        `test,container_name=cool dopeness=14 ${now - 1400}000000`,
+        `test,container_name=beans dopeness=10 ${now - 1600}000000`,
+      ],
+      newBucketName
+    )
+
+    const flowName = 'Flowbooks'
+
+    cy.getByTestID('create-flow--button')
+      .first()
+      .click()
+    cy.getByTestID('time-machine-submit-button').should('be.visible')
+
+    cy.getByTestID('page-title').click()
+    cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
+
+    // select our bucket
+    cy.getByTestID('flow-bucket-selector').click()
+
+    cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
+
+    // select measurement and field
+    cy.getByTestID('measurement-selector test').click()
+    cy.getByTestID('field-selector dopeness').click()
+
+    // select beans tag and click preview
+    cy.getByTestID('tag-selector beans').click()
+    cy.getByTestID('time-machine-submit-button').click()
+
+    // we should only see beans in the table
+    cy.getByTestID('table').should('be.visible')
+    cy.getByTestID('table-cell beans')
+      .first()
+      .should('be.visible')
+    cy.getByTestID('table-cell cool').should('not.exist')
+
+    // This is a random validator that the autorefresh option doesn't pop up
+    // In Flows again without explicit changes
+    cy.getByTestID('autorefresh-dropdown--button').should('not.exist')
+
+    cy.getByTestID('nav-item-flows').click()
+
+    cy.getByTestID('resource-name').click()
+
+    // Validate that the selections are maintained in the original selection
+    cy.getByTestID('label--pill measurement = test').should('exist')
+    cy.getByTestID('label--pill--delete field = dopeness').should('exist')
+    cy.getByTestID('label--pill--delete container_name = beans').should('exist')
+
+    cy.getByTestID('nav-item-flows').click()
+
+    cy.get('.cf-resource-card').should('have.length', 1)
+
+    cy.getByTestID('resource-name').contains(`${flowName}`)
+
+    cy.getByTestID(`flow-card--${flowName}`).trigger('mouseover')
+    cy.getByTestID(`flow-button--clone`).click({force: true})
+
+    const clone = `${flowName} (clone 1)`
+
+    // Validate that the selections are maintained in the original selection
+    cy.getByTestID('label--pill measurement = test').should('exist')
+    cy.getByTestID('label--pill--delete field = dopeness').should('exist')
+    cy.getByTestID('label--pill--delete container_name = beans').should('exist')
+
+    // Should redirect the user to the newly cloned flow
+    // Validates that the selected clone is the clone
+    cy.getByTestID('page-title').contains(`${clone}`)
+
+    cy.getByTestID('nav-item-flows').click()
+
+    cy.get('.cf-resource-card').should('have.length', 2)
+    cy.getByTestID('resource-name')
+      .last()
+      .contains(`${clone}`)
+
+    // Delete the cloned flow
+    cy.getByTestID(`flow-card--${clone}`).trigger('mouseover')
+    cy.getByTestID(`context-delete-menu ${clone}`).click({force: true})
+    cy.getByTestID(`context-delete-flow ${clone}`).click({force: true})
+
+    cy.get('.cf-resource-card').should('have.length', 1)
+    cy.getByTestID('resource-name').contains(`${flowName}`)
+  })
+
   it('can export a task with all the necessary variables', () => {
     const taskName = 'the greatest task of all time'
 

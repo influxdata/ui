@@ -52,9 +52,9 @@ const FlowContainer: FC = () => (
               >
                 <PopupProvider>
                   <SidebarProvider>
-                  <PipeList />
-                  <Sidebar />
-                  <PopupDrawer />
+                    <PipeList />
+                    <Sidebar />
+                    <PopupDrawer />
                   </SidebarProvider>
                 </PopupProvider>
               </Page.Contents>

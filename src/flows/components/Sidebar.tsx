@@ -13,81 +13,88 @@ const Sidebar: FC = () => {
     return null
   }
 
-  const sections = [{
-    title: 'Panel',
-    actions: [{
-      title: 'Convert to |> Flux',
-      action: () => {
-        const data = flow.data.get(id)
+  const sections = [
+    {
+      title: 'Panel',
+      actions: [
+        {
+          title: 'Convert to |> Flux',
+          action: () => {
+            const data = flow.data.get(id)
 
-        event('Convert Cell To Flux', {from: data.type})
+            event('Convert Cell To Flux', {from: data.type})
+          },
+          title: 'Delete',
+          action: () => {
+            event('notebook_delete_cell')
 
-      },
-      title: 'Delete',
-      action: () => {
-        event('notebook_delete_cell')
+            flow.data.remove(id)
+            flow.meta.remove(id)
+          },
+        },
+        {
+          title: 'Duplicate',
+          action: () => {
+            // clone(focused)
+          },
+        },
+        {
+          title: () => {
+            if (flow.meta.indexOf(id) === -1) {
+              return 'Hide'
+            }
 
-        flow.data.remove(id)
-        flow.meta.remove(id)
-      }
-    }, {
-      title: 'Duplicate',
-      action: () => {
-        // clone(focused)
-      }
-    }, {
-      title: () => {
-        if (flow.meta.indexOf(id) === -1) {
-          return 'Hide'
+            if (flow.meta.get(id).visible) {
+              return 'Hide'
+            }
+            return 'Visible'
+          },
+          action: () => {
+            event('Panel Visibility Toggled', {
+              state: !flow.meta.get(id).visible ? 'true' : 'false',
+            })
+
+            flow.meta.update(id, {
+              visible: !flow.meta.get(id).visible,
+            })
+          },
+        },
+      ],
+    },
+  ]
+    .concat(controls)
+    .map(section => {
+      const links = section.actions.map(action => {
+        let title = action.title
+        if (typeof action.title === 'function') {
+          title = action.title()
         }
 
-        if (flow.meta.get(id).visible) {
-          return 'Hide'
-        }
-        return 'Visible'
-      },
-      action: () => {
-        event('Panel Visibility Toggled', {
-          state: !flow.meta.get(id).visible ? 'true' : 'false',
-        })
-
-        flow.meta.update(id, {
-          visible: !flow.meta.get(id).visible,
-        })
-      }
-    }]
-  }]
-  .concat(controls)
-  .map(section => {
-    const links = section.actions.map(action => {
-      let title = action.title
-      if (typeof action.title === 'function') {
-        title = action.title()
-      }
-
+        return (
+          <List.Item
+            onClick={() => {
+              action.action()
+            }}
+            wrapText={false}
+            title={title}
+            id={title}
+            key={title}
+          >
+            {title}
+          </List.Item>
+        )
+      })
       return (
-        <List.Item onClick={() => { action.action() }}
-          wrapText={false}
-          title={title}
-          id={title}
-          key={title}>
-          {title}
-        </List.Item>
+        <div key={section.title}>
+          <List.Divider text={`${section.title}:`} />
+          {links}
+        </div>
       )
     })
-    return (
-      <div key={section.title}>
-        <List.Divider text={`${section.title}:`} />
-      {links}
-      </div>
-    )
-  })
 
   return (
     <div className="flow-sidebar">
-      <List>
-        {sections}
-      </List>
+      <List>{sections}</List>
     </div>
   )
 }

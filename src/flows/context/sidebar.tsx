@@ -11,13 +11,13 @@ interface ContextType {
 const DEFAULT_CONTEXT: ContextType = {
   id: '',
   controls: [],
-  show: (_) => {},
-  hide: () => {}
+  show: _ => {},
+  hide: () => {},
 }
 
 export const Context = createContext<ContextType>(DEFAULT_CONTEXT)
 
-export const Provider: FC = ({ children }) => {
+export const Provider: FC = ({children}) => {
   const [focused, setFocused] = useState('')
   const [controls, setControls] = useState([])
 
@@ -32,12 +32,14 @@ export const Provider: FC = ({ children }) => {
   }
 
   return (
-    <Context.Provider value={{
-      id: focused,
-      controls,
-      show,
-      hide
-      }}>
+    <Context.Provider
+      value={{
+        id: focused,
+        controls,
+        show,
+        hide,
+      }}
+    >
       {children}
     </Context.Provider>
   )

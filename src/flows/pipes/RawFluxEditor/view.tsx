@@ -113,13 +113,17 @@ const Query: FC<PipeProp> = ({Context}) => {
     setShowFn(!showFn)
   }, [setShowFn, showFn])
 
-  const controls = [{
-    title: 'Documentation',
-    actions: [{
-      title: 'Functions',
-      action: toggleFn
-    }]
-  }]
+  const controls = [
+    {
+      title: 'Documentation',
+      actions: [
+        {
+          title: 'Functions',
+          action: toggleFn,
+        },
+      ],
+    },
+  ]
 
   return (
     <Context controls={controls}>

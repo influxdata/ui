@@ -1,0 +1,10 @@
+Point point = Point
+  .measurement("mem")
+  .addTag("host", "host1")
+  .addField("used_percent", 23.43234543)
+  .time(Instant.now(), WritePrecision.NS);
+
+try (WriteApi writeApi = client.getWriteApi()) {
+  writeApi.writePoint(bucket, org, point);
+}
+

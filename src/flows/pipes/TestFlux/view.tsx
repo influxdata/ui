@@ -80,7 +80,7 @@ const TestFlux: FC<PipeProp> = ({Context}) => {
     </>
   )
 
-    //<Context controls={controls}>
+  //<Context controls={controls}>
   return (
     <Context>
       <Resizer

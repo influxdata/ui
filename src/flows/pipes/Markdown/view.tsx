@@ -33,40 +33,45 @@ const MarkdownPanel: FC<PipeProp> = ({Context}) => {
     update({mode: 'edit'})
   }
 
-  const controls = [{
-    title: 'Edit',
-    actions: [{
+  const controls = [
+    {
       title: 'Edit',
-      action: () => {
-        update({mode: 'edit'})
-      }
-    }, {
-      title: 'Preview',
-      action: () => {
-        update({mode: 'preview'})
-      }
-    }]
-  }]
+      actions: [
+        {
+          title: 'Edit',
+          action: () => {
+            update({mode: 'edit'})
+          },
+        },
+        {
+          title: 'Preview',
+          action: () => {
+            update({mode: 'preview'})
+          },
+        },
+      ],
+    },
+  ]
 
   const handleChange = (text: string): void => {
     update({text})
   }
 
   let panelContents = (
-      <Suspense
-        fallback={
-          <SpinnerContainer
-            loading={RemoteDataState.Loading}
-            spinnerComponent={<TechnoSpinner />}
-          />
-        }
-      >
-        <MarkdownMonacoEditor
-          script={data.text}
-          onChangeScript={handleChange}
-          autogrow
+    <Suspense
+      fallback={
+        <SpinnerContainer
+          loading={RemoteDataState.Loading}
+          spinnerComponent={<TechnoSpinner />}
         />
-      </Suspense>
+      }
+    >
+      <MarkdownMonacoEditor
+        script={data.text}
+        onChangeScript={handleChange}
+        autogrow
+      />
+    </Suspense>
   )
 
   if (data.mode === 'preview') {

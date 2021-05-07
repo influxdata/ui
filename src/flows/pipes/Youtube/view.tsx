@@ -18,13 +18,17 @@ const Youtube: FC<PipeProp> = ({Context}) => {
     update({uri: evt.target.value})
   }
 
-  const controls = [{
-    title: 'Controls',
-    actions: [{
-      title: 'Edit Youtube ID',
-      action: toggleEdit
-    }]
-  }]
+  const controls = [
+    {
+      title: 'Controls',
+      actions: [
+        {
+          title: 'Edit Youtube ID',
+          action: toggleEdit,
+        },
+      ],
+    },
+  ]
 
   const showEditing = isEditing || !data.uri
 

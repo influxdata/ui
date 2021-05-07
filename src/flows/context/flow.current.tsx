@@ -40,7 +40,9 @@ export const FlowProvider: FC = ({children}) => {
 
   const addPipe = (initial: PipeData, index?: number) => {
     const id = `local_${UUID()}`
-    const title = initial.title || `${PIPE_DEFINITIONS[initial.type].button || 'Panel'} ${++GENERATOR_INDEX}`
+    const title =
+      initial.title ||
+      `${PIPE_DEFINITIONS[initial.type].button || 'Panel'} ${++GENERATOR_INDEX}`
 
     delete initial.title
 

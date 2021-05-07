@@ -57,7 +57,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   makeAnnotationClickListener,
   makeAnnotationLayer,
-} from 'src/visualization/components/annotationController'
+} from 'src/visualization/components/annotationUtils'
 
 interface Props extends VisualizationProps {
   properties: XYViewProperties

@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, useContext, useCallback, ReactNode} from 'react'
 import classnames from 'classnames'
+import {ComponentColor, IconFont, SquareButton} from '@influxdata/clockface'
 
 // Components
 import RemovePanelButton from 'src/flows/components/panel/RemovePanelButton'
@@ -17,6 +18,7 @@ import {PipeContextProps} from 'src/types/flows'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
 
 export interface Props extends PipeContextProps {
   id: string
@@ -35,6 +37,7 @@ const FlowPanelHeader: FC<HeaderProps> = ({
   persistentControl,
 }) => {
   const {flow} = useContext(FlowContext)
+  const {generateMap} = useContext(FlowQueryContext)
   const removePipe = () => {
     flow.data.remove(id)
     flow.meta.remove(id)
@@ -61,6 +64,57 @@ const FlowPanelHeader: FC<HeaderProps> = ({
     <div className="flow-panel--editable-title">Error</div>
   )
 
+  // This function allows the developer to see the queries
+  // that the panels are generating through a notebook. Each
+  // panel should have a source query, any panel that needs
+  // to display some data should have a visualization query
+  const printMap = useCallback(() => {
+    // Make a dictionary of all the panels that have queries being generated
+    const stages = generateMap(true).reduce((acc, curr) => {
+      curr.instances.forEach(i => {
+        acc[i.id] = {
+          source: curr.text,
+          visualization: i.modifier,
+        }
+      })
+
+      return acc
+    }, {})
+
+    /* eslint-disable no-console */
+    // Grab all the ids in the order that they're presented
+    flow.data.allIDs.forEach(i => {
+      console.log(
+        `\n\n%cPanel: %c ${i}`,
+        'font-family: sans-serif; font-size: 16px; font-weight: bold; color: #000',
+        i === id
+          ? 'font-weight: bold; font-size: 16px; color: #666'
+          : 'font-weight: normal; font-size: 16px; color: #888'
+      )
+
+      // throw up some red text if a panel isn't passing along the source query
+      if (!stages[i]) {
+        console.log(
+          '%c *** No Queries Registered ***\n',
+          'font-family: sans-serif; font-size: 16px; font-weight: bold; color: #F00'
+        )
+        return
+      }
+
+      console.log(
+        `%c Source Query: \n%c ${stages[i].source}`,
+        'font-family: sans-serif; font-weight: bold; font-size: 14px; color: #666',
+        'font-family: monospace; color: #888'
+      )
+      console.log(
+        `%c Visualization Query: \n%c ${stages[i].visualization}\n`,
+        'font-family: sans-serif; font-weight: bold; font-size: 14px; color: #666',
+        'font-family: monospace; color: #888'
+      )
+    })
+    /* eslint-enable no-console */
+  }, [id])
+
   const remove = useCallback(() => removePipe(), [removePipe, id])
   return (
     <div className="flow-panel--header">
@@ -86,6 +140,14 @@ const FlowPanelHeader: FC<HeaderProps> = ({
             </FeatureFlag>
           </div>
           <div className="flow-panel--persistent-control">
+            <FeatureFlag name="flow-debug-queries">
+              <SquareButton
+                icon={IconFont.BookCode}
+                onClick={printMap}
+                color={ComponentColor.Default}
+                titleText="Debug Notebook Queries"
+              />
+            </FeatureFlag>
             <PanelVisibilityToggle id={id} />
             <RemovePanelButton onRemove={remove} />
             {persistentControl}

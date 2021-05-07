@@ -347,7 +347,7 @@ class TimeSeries extends Component<Props, State> {
     }
 
     if (
-      this.state.loading === RemoteDataState.Done &&
+      this.state.loading !== RemoteDataState.Loading &&
       prevProps.submitToken !== this.props.submitToken
     ) {
       return true

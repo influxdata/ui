@@ -7,9 +7,14 @@ interface ControlAction {
   action: () => void
 }
 
+interface Submenu {
+  title: string | (() => string)
+  menu: ReactNode
+}
+
 export interface ControlSection {
   title: string | (() => string)
-  actions: ControlAction[]
+  actions: (ControlAction | Submenu)[]
 }
 
 export interface PipeContextProps {

@@ -16,6 +16,13 @@ const Sidebar: FC = () => {
   const sections = [{
     title: 'Panel',
     actions: [{
+      title: 'Convert to |> Flux',
+      action: () => {
+        const data = flow.data.get(id)
+
+        event('Convert Cell To Flux', {from: data.type})
+
+      },
       title: 'Delete',
       action: () => {
         event('notebook_delete_cell')

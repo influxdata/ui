@@ -34,6 +34,11 @@ interface Stage {
   instances: Instance[]
 }
 
+interface PanelQueries {
+  source: string
+  visual: string
+}
+
 export interface FlowQueryContextType {
   generateMap: (withSideEffects?: boolean) => Stage[]
   query: (text: string) => Promise<FluxResult>
@@ -188,6 +193,18 @@ export const FlowQueryProvider: FC = ({children}) => {
           instances: queryStruct.instances,
         }
       })
+  }
+
+  const getPanelQueries = (id: string, withSideEffects?: boolean): PanelQueries => {
+    const stages = generateMap(withSideEffects).filter(stage => stage.instances.includes(id))
+    if (!stages.length) {
+      return {
+        source: '',
+        visual: ''
+      }
+    }
+
+    debugger
   }
 
   const query = (text: string): Promise<FluxResult> => {

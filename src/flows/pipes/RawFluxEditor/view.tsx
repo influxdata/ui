@@ -23,7 +23,6 @@ import {PipeProp} from 'src/types/flows'
 
 // Components
 import {PipeContext} from 'src/flows/context/pipe'
-import Functions from 'src/flows/pipes/RawFluxEditor/functions'
 
 // Styles
 import 'src/flows/pipes/RawFluxEditor/style.scss'
@@ -34,7 +33,6 @@ const FluxMonacoEditor = lazy(() =>
 
 const Query: FC<PipeProp> = ({Context}) => {
   const {data, update} = useContext(PipeContext)
-  const [showFn, setShowFn] = useState(true)
   const [editorInstance, setEditorInstance] = useState<EditorType>(null)
   const {queries, activeQuery} = data
   const query = queries[activeQuery]
@@ -109,24 +107,8 @@ const Query: FC<PipeProp> = ({Context}) => {
     [editorInstance, query.text]
   )
 
-  const toggleFn = useCallback(() => {
-    setShowFn(!showFn)
-  }, [setShowFn, showFn])
-
-  const controls = [
-    {
-      title: 'Documentation',
-      actions: [
-        {
-          title: 'Functions',
-          action: toggleFn,
-        },
-      ],
-    },
-  ]
-
   return (
-    <Context controls={controls}>
+    <Context>
       <Suspense
         fallback={
           <SpinnerContainer
@@ -143,7 +125,6 @@ const Query: FC<PipeProp> = ({Context}) => {
           autogrow
         />
       </Suspense>
-      {showFn && <Functions onSelect={inject} />}
     </Context>
   )
 }

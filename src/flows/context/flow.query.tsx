@@ -44,6 +44,7 @@ export interface FlowQueryContextType {
   query: (text: string) => Promise<FluxResult>
   basic: (text: string) => any
   queryAll: () => void
+  getPanelQueries: (id: string, withSideEffects?: boolean) => PanelQueries
 }
 
 export const DEFAULT_CONTEXT: FlowQueryContextType = {
@@ -51,6 +52,7 @@ export const DEFAULT_CONTEXT: FlowQueryContextType = {
   query: (_: string) => Promise.resolve({} as FluxResult),
   basic: (_: string) => {},
   queryAll: () => {},
+  getPanelQueries: (_) => {}
 }
 
 export const FlowQueryContext = React.createContext<FlowQueryContextType>(
@@ -202,17 +204,21 @@ export const FlowQueryProvider: FC = ({children}) => {
     id: string,
     withSideEffects?: boolean
   ): PanelQueries => {
-    const stages = generateMap(withSideEffects).filter(stage =>
-      stage.instances.includes(id)
-    )
-    if (!stages.length) {
-      return {
-        source: '',
-        visual: '',
-      }
-    }
+    return generateMap(withSideEffects).reduce((acc, curr) => {
+      const instance = curr.instances.find(i => i.id === id)
 
-    debugger
+      if (!instance) {
+        return acc
+      }
+
+      return {
+        source: curr.text,
+        visual: instance.modifier
+      }
+    }, {
+      source: '',
+      visual: ''
+    })
   }
 
   const query = (text: string): Promise<FluxResult> => {
@@ -318,7 +324,7 @@ export const FlowQueryProvider: FC = ({children}) => {
   }
 
   return (
-    <FlowQueryContext.Provider value={{query, basic, generateMap, queryAll}}>
+    <FlowQueryContext.Provider value={{query, basic, generateMap, queryAll, getPanelQueries}}>
       {children}
     </FlowQueryContext.Provider>
   )

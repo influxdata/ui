@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC, useContext, useCallback} from 'react'
 import classnames from 'classnames'
 import {ComponentColor, IconFont, SquareButton} from '@influxdata/clockface'
 
@@ -8,6 +8,7 @@ import InsertCellButton from 'src/flows/components/panel/InsertCellButton'
 import FlowPanelTitle from 'src/flows/components/panel/FlowPanelTitle'
 import Results from 'src/flows/components/panel/Results'
 import {PIPE_DEFINITIONS} from 'src/flows'
+import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Types
 import {PipeContextProps} from 'src/types/flows'
@@ -130,6 +131,7 @@ const FlowPanel: FC<Props> = ({id, children, controls}) => {
               onClick={printMap}
               color={ComponentColor.Default}
               titleText="Debug Notebook Queries"
+              className="flows-config-panel-button"
             />
           </FeatureFlag>
           <SquareButton

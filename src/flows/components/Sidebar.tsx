@@ -1,13 +1,16 @@
 import React, {FC, useContext} from 'react'
 import {List} from '@influxdata/clockface'
 import {FlowContext} from 'src/flows/context/flow.current'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {Context as SidebarContext} from 'src/flows/context/sidebar'
+import {PIPE_DEFINITIONS} from 'src/flows'
 
 import {event} from 'src/cloud/utils/reporting'
 
 const Sidebar: FC = () => {
-  const {flow} = useContext(FlowContext)
-  const {id, controls} = useContext(SidebarContext)
+  const {flow, add} = useContext(FlowContext)
+  const {getPanelQueries} = useContext(FlowQueryContext)
+  const {id, show, hide, menu} = useContext(SidebarContext)
 
   if (!id || flow.readOnly) {
     return null
@@ -19,14 +22,44 @@ const Sidebar: FC = () => {
       actions: [
         {
           title: 'Convert to |> Flux',
-          action: () => {
-            const data = flow.data.get(id)
+          disable: () => {
+            if (flow.data.indexOf(id) === -1) {
+              return true
+            }
 
-            event('Convert Cell To Flux', {from: data.type})
+            const {type} = flow.data.get(id)
+
+            if (type === 'rawFluxEditor') {
+              return true
+            }
+
+            return false
           },
+          action: () => {
+            const {type} = flow.data.get(id)
+            const {title} = flow.meta.get(id)
+
+            event('Convert Cell To Flux', {from: type})
+
+            const {source} = getPanelQueries(id, true)
+
+            const init = JSON.parse(JSON.stringify(PIPE_DEFINITIONS['rawFluxEditor'].initial))
+            init.queries[0].text = source
+            init.title = title
+            init.type = 'rawFluxEditor'
+
+            const _id = add(init, flow.data.indexOf(id))
+            show(_id)
+
+            flow.data.remove(id)
+            flow.meta.remove(id)
+          },
+        }, {
           title: 'Delete',
           action: () => {
             event('notebook_delete_cell')
+
+            hide()
 
             flow.data.remove(id)
             flow.meta.remove(id)
@@ -34,6 +67,7 @@ const Sidebar: FC = () => {
         },
         {
           title: 'Duplicate',
+          disable: true,
           action: () => {
             // clone(focused)
           },
@@ -62,9 +96,9 @@ const Sidebar: FC = () => {
       ],
     },
   ]
-    .concat(controls)
+    .concat(menu)
     .map(section => {
-      const links = section.actions.map(action => {
+      const links = section.actions.filter(action => typeof action.disable === 'function' ? !action.disable() : !action.disable).map(action => {
         let title = action.title
         if (typeof action.title === 'function') {
           title = action.title()

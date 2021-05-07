@@ -4,11 +4,13 @@ import {AutoRefresh, RemoteDataState, TimeRange} from 'src/types'
 
 interface ControlAction {
   title: string | (() => string)
+  disable?: boolean | (() => boolean)
   action: () => void
 }
 
 interface Submenu {
   title: string | (() => string)
+  disable?: boolean | (() => boolean)
   menu: ReactNode
 }
 

@@ -2,6 +2,7 @@
 import React, {FC, useContext, useEffect} from 'react'
 import {useParams} from 'react-router-dom'
 import {Page} from '@influxdata/clockface'
+import {DapperScrollbars} from '@influxdata/clockface'
 
 // Contexts
 import CurrentFlowProvider from 'src/flows/context/flow.current'
@@ -43,22 +44,24 @@ const FlowContainer: FC = () => (
         <ResultsProvider>
           <FlowQueryProvider>
             <FlowKeyboardPreview />
-            <Page titleTag={PROJECT_NAME_PLURAL}>
-              <FlowHeader />
-              <Page.Contents
-                fullWidth={true}
-                scrollable={true}
-                className="flow-page"
-              >
-                <PopupProvider>
-                  <SidebarProvider>
-                    <PipeList />
-                    <Sidebar />
-                    <PopupDrawer />
-                  </SidebarProvider>
-                </PopupProvider>
-              </Page.Contents>
-            </Page>
+            <SidebarProvider>
+              <Page titleTag={PROJECT_NAME_PLURAL}>
+                <FlowHeader />
+                  <Page.Contents
+                    fixedWidth={false}
+                    scrollable={false}
+                    className="flow-page"
+                  >
+                    <PopupProvider>
+                      <DapperScrollbars noScrollX>
+                        <PipeList />
+                      </DapperScrollbars>
+                      <Sidebar />
+                      <PopupDrawer />
+                    </PopupProvider>
+                  </Page.Contents>
+              </Page>
+            </SidebarProvider>
           </FlowQueryProvider>
         </ResultsProvider>
       </RunModeProvider>

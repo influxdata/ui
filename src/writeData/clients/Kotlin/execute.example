@@ -1,0 +1,17 @@
+val query = ("from(bucket: \"<%= bucket %>\")"
+  + " |> range(start: -1d)"
+  + " |> filter(fn: (r) => (r[\"_measurement\"] == \"cpu\" and r[\"_field\"] == \"usage_system\"))")
+
+// Result is returned as a stream
+val results = client.getQueryKotlinApi().query(query)
+
+// Example of additional result stream processing on client side results
+  // filter on client side using `filter` built-in operator
+  .filter { "cpu0" == it.getValueByKey("cpu") }
+  // take first 20 records
+  .take(20)
+  // print results
+  .consumeEach { println("Measurement: ${it.measurement}, value: ${it.value}") }
+
+client.close()
+

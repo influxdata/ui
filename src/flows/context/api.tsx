@@ -1,28 +1,28 @@
 import {
-  postApiV2privateFlowsOrgsFlow,
-  PostApiV2privateFlowsOrgsFlowParams,
-  PatchApiV2privateFlowsOrgsFlowParams,
-  patchApiV2privateFlowsOrgsFlow,
-  deleteApiV2privateFlowsOrgsFlow,
-  getApiV2privateFlowsOrgsFlows,
-  DeleteApiV2privateFlowsOrgsFlowParams,
+  postFlowsOrgsFlow,
+  PostFlowsOrgsFlowParams,
+  PatchFlowsOrgsFlowParams,
+  patchFlowsOrgsFlow,
+  deleteFlowsOrgsFlow,
+  getFlowsOrgsFlows,
+  DeleteFlowsOrgsFlowParams,
 } from 'src/client/flowsRoutes'
 import {notebookUpdateFail} from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
 
-const DEFAULT_API_FLOW: PatchApiV2privateFlowsOrgsFlowParams = {
+const DEFAULT_API_FLOW: PatchFlowsOrgsFlowParams = {
   id: '',
   orgID: '',
   data: {},
 }
-let stagedFlow: PatchApiV2privateFlowsOrgsFlowParams = DEFAULT_API_FLOW
+let stagedFlow: PatchFlowsOrgsFlowParams = DEFAULT_API_FLOW
 let reportDecayTimeout = null
 let reportMaxTimeout = null
 
 const REPORT_DECAY = 500 // number of miliseconds to wait after last event before sending
 const REPORT_MAX_WAIT = 5000 // max number of miliseconds to wait between sends
 
-export const pooledUpdateAPI = (flow: PatchApiV2privateFlowsOrgsFlowParams) => {
+export const pooledUpdateAPI = (flow: PatchFlowsOrgsFlowParams) => {
   stagedFlow = flow
 
   if (!!reportDecayTimeout) {
@@ -54,30 +54,30 @@ export const pooledUpdateAPI = (flow: PatchApiV2privateFlowsOrgsFlowParams) => {
   }, REPORT_DECAY)
 }
 
-export const updateAPI = async (flow: PatchApiV2privateFlowsOrgsFlowParams) => {
-  const res = await patchApiV2privateFlowsOrgsFlow(flow)
+export const updateAPI = async (flow: PatchFlowsOrgsFlowParams) => {
+  const res = await patchFlowsOrgsFlow(flow)
   if (res.status != 200) {
     throw new Error(res.data.message)
   }
 }
 
-export const createAPI = async (flow: PostApiV2privateFlowsOrgsFlowParams) => {
-  const res = await postApiV2privateFlowsOrgsFlow(flow)
+export const createAPI = async (flow: PostFlowsOrgsFlowParams) => {
+  const res = await postFlowsOrgsFlow(flow)
   if (res.status != 200) {
     throw new Error(res.data.message)
   }
   return res.data.id
 }
 
-export const deleteAPI = async (ids: DeleteApiV2privateFlowsOrgsFlowParams) => {
-  const res = await deleteApiV2privateFlowsOrgsFlow(ids)
+export const deleteAPI = async (ids: DeleteFlowsOrgsFlowParams) => {
+  const res = await deleteFlowsOrgsFlow(ids)
   if (res.status != 200) {
     throw new Error(res.data.message)
   }
 }
 
 export const getAllAPI = async (orgID: string) => {
-  const res = await getApiV2privateFlowsOrgsFlows({orgID})
+  const res = await getFlowsOrgsFlows({orgID})
   if (res.status != 200) {
     throw new Error(res.data.message)
   }
@@ -95,7 +95,7 @@ export const migrateLocalFlowsToAPI = async (
     await Promise.all(
       localFlows.map(async localID => {
         const flow = flows[localID]
-        const apiFlow: PostApiV2privateFlowsOrgsFlowParams = {
+        const apiFlow: PostFlowsOrgsFlowParams = {
           orgID: orgID,
           data: {
             orgID: orgID,

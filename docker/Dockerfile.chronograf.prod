@@ -1,14 +1,5 @@
-FROM ubuntu:bionic AS base
-
-RUN apt-get update -y && \
-    apt-get install -y \
-        nginx \
-        build-essential \
-        curl \
-        git
-
-FROM base AS repo
-WORKDIR /repo
+# from node latest alpine 3.12
+FROM node:alpine3.12 AS repo
 
 # env vars to configure the system
 
@@ -38,17 +29,20 @@ ARG INJECT_HEADER
 # Injecting strings into the html never went wrong. we use this for google tag manager
 ARG INJECT_BODY
 
-ENV PATH="/node/bin:${PATH}"
-RUN mkdir /node && \
-    curl -sL https://git.io/n-install | N_PREFIX=/node bash -s -- -q
-
 COPY . /repo/ui
 WORKDIR /repo/ui
 
+RUN apk \
+    --update \
+    --no-cache \
+    --virtual build-dependencies \
+    add \
+    git
+
 # these are all run together as docker's caching mechanism
 # makes big steps like yarn install expensive
-RUN npx yarn install --production=false && \
-    npx yarn generate && \
+RUN yarn install --production=false && \
+    yarn generate && \
     $(npm bin)/webpack --config ./webpack.${WEBPACK_FILE}.ts --bail && \
     rm -rf ./node_modules
 

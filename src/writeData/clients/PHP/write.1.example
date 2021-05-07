@@ -1,0 +1,7 @@
+$point = Point::measurement('mem')
+  ->addTag('host', 'host1')
+  ->addField('used_percent', 23.43234543)
+  ->time(microtime(true));
+
+$writeApi->write($point, WritePrecision::S, $bucket, $org);
+

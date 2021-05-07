@@ -35,8 +35,7 @@ set -eu -o pipefail
 ########################
 
 # make dir for artifacts
-mkdir -p monitor-ci/test-artifacts/results/{build-oss-image,oss-e2e,build-image,cloud-e2e,cloud-e2e-firefox,cloud-e2e-k8s-idpe,cloud-lighthouse,smoke,build-prod-image,deploy,shared}
-
+mkdir -p monitor-ci/test-artifacts/results/{build-oss-image,oss-e2e,build-image,cloud-e2e,cloud-e2e-firefox,cloud-e2e-k8s-idpe,cloud-lighthouse,smoke,build-prod-image,deploy}/{shared,oss,cloud}
 # if we are not running from the OSS repo, OSS_SHA will be unset, and we must be running from the UI repo.
 if [[ -z "${OSS_SHA:-}" ]]; then
 	# get monitor-ci pipelines we've already run on this SHA
@@ -187,10 +186,15 @@ do
 							filename="${filename::-1}" # removes extra " from end
 							# put shared artifacts in the shared folder
 							if [[ "${path}" == *"shared"* ]] ; then
-								output="monitor-ci/test-artifacts/results/shared/${name}/${filename}"
+								subdirectory="shared"
 							else
-								output="monitor-ci/test-artifacts/results/${name}/${filename}"
+								if [[ "${path}" == *"cloud"* ]] ; then
+									subdirectory="cloud"
+								else
+									subdirectory="oss"
+								fi
 							fi
+							output="monitor-ci/test-artifacts/results/${name}/${subdirectory}/${filename}"
 							curl -L -s --request GET \
 								--output "${output}" \
 								--url "${url}" \

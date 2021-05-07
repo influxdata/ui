@@ -34,11 +34,11 @@ export const autoRefreshReducer = (state = initialState(), action: Action) =>
       case 'SET_AUTO_REFRESH_STATUS': {
         const {dashboardID, status} = action.payload
 
-        if (!(dashboardID in draftState)) {
+        if (!draftState[dashboardID]) {
           draftState[dashboardID] = AUTOREFRESH_DEFAULT
         }
 
-        draftState[dashboardID].status = status
+        draftState[dashboardID] = {...draftState[dashboardID], status}
 
         return
       }

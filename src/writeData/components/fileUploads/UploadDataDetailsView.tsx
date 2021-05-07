@@ -83,7 +83,7 @@ const UploadDataDetailsView: FC = () => {
                 </Panel>
                 {pageContent}
                 {isLP ? <LineProtocolTabs /> : <CsvMethod />}
-                {isLP ? <LineProtocolFooterButtons /> : <></>}
+                {isLP && <LineProtocolFooterButtons />}
               </div>
             </div>
           </Page.Contents>

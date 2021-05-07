@@ -19,6 +19,7 @@ export type Props = {
 export interface LineProtocolContextType {
   body: string
   handleResetLineProtocol: () => void
+  handleTryAgainLineProtocol: () => void
   handleSetBody: (_: string) => void
   handleSetTab: (tab: LineProtocolTab) => void
   precision: WritePrecision
@@ -32,6 +33,7 @@ export interface LineProtocolContextType {
 export const DEFAULT_CONTEXT: LineProtocolContextType = {
   body: '',
   handleResetLineProtocol: () => {},
+  handleTryAgainLineProtocol: () => {},
   handleSetBody: (_: string) => {},
   handleSetTab: (_: LineProtocolTab) => {},
   precision: WritePrecision.Ns,
@@ -57,6 +59,11 @@ export const LineProtocolProvider: FC<Props> = React.memo(({children}) => {
 
   const handleResetLineProtocol = () => {
     setBody('')
+    setWriteStatus(RemoteDataState.NotStarted)
+    setWriteError('')
+  }
+
+  const handleTryAgainLineProtocol = () => {
     setWriteStatus(RemoteDataState.NotStarted)
     setWriteError('')
   }
@@ -120,6 +127,7 @@ export const LineProtocolProvider: FC<Props> = React.memo(({children}) => {
         body,
         handleSetBody,
         handleResetLineProtocol,
+        handleTryAgainLineProtocol,
         handleSetTab,
         precision,
         setPrecision,

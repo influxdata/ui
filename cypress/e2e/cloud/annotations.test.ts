@@ -1,7 +1,7 @@
 import {Organization} from '../../../src/types'
 import {lines} from '../../support/commands'
 describe('The Annotations UI functionality', () => {
-  beforeEach(() => {
+  const setupData = (cy, singleStatTest = false) => {
     cy.flush()
     cy.signin().then(() =>
       cy.fixture('routes').then(({orgs}) => {
@@ -14,6 +14,7 @@ describe('The Annotations UI functionality', () => {
     cy.window().then(w => {
       cy.wait(1000)
       w.influx.set('annotations', true)
+      w.influx.set('useGiraffeGraphs', true)
     })
     cy.get('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
@@ -38,6 +39,14 @@ describe('The Annotations UI functionality', () => {
         cy.getByTestID('selector-list v')
           .should('exist')
           .click()
+
+        //cy.pause()
+
+        if (singleStatTest) {
+          cy.getByTestID('view-type--dropdown').click()
+          cy.getByTestID('view-type--line-plus-single-stat').click()
+        }
+
         cy.getByTestID(`selector-list tv1`)
           .should('exist')
           .click()
@@ -53,10 +62,12 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('save-cell--button').click()
     })
 
+    //cy.pause()
+
     cy.getByTestID('toggle-annotations-controls').click()
     cy.getByTestID('annotations-control-bar').should('be.visible')
     cy.getByTestID('annotations-one-click-toggle').click()
-  })
+  }
 
   afterEach(() => {
     // clear the local storage after each test.
@@ -67,7 +78,32 @@ describe('The Annotations UI functionality', () => {
     })
   })
 
-  it('can create an annotation when the graph is clicked and the control bar is open', () => {
+  it('can create an annotation on an xy line graph when the graph is clicked and the control bar is open', () => {
+    setupData(cy)
+    cy.getByTestID('cell blah').within(() => {
+      cy.getByTestID('giraffe-inner-plot').click()
+    })
+    cy.getByTestID('overlay--container').within(() => {
+      cy.getByTestID('edit-annotation-message')
+        .should('be.visible')
+        .click()
+        .focused()
+        .type('im a hippopotamus')
+      cy.getByTestID('add-annotation-submit').click()
+    })
+
+    // reload to make sure the annotation was added in the backend as well.
+    cy.reload()
+
+    // we need to see if the annotations got created and that the tooltip says "yoho"
+    cy.getByTestID('cell blah').within(() => {
+      cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
+    })
+    cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
+  })
+
+  it('can create an annotation on a single stat + line graph when the graph is clicked and the control bar is open', () => {
+    setupData(cy, true)
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').click()
     })
@@ -91,6 +127,7 @@ describe('The Annotations UI functionality', () => {
   })
 
   it('can create an annotation when graph is clicked and the control bar is closed', () => {
+    setupData(cy)
     // switch off the control bar
     cy.getByTestID('toggle-annotations-controls').click()
     cy.getByTestID('annotations-control-bar').should('not.exist')
@@ -119,11 +156,13 @@ describe('The Annotations UI functionality', () => {
   })
 
   it('can hide the Annotations Control bar after clicking on the Annotations Toggle Button', () => {
+    setupData(cy)
     cy.getByTestID('toggle-annotations-controls').click()
     cy.getByTestID('annotations-control-bar').should('not.exist')
   })
 
   it('can disable writing annotations if Enable-Annotations is disabled', () => {
+    setupData(cy)
     // turn off one-click annotation
     cy.getByTestID('annotations-one-click-toggle').click()
 
@@ -136,6 +175,7 @@ describe('The Annotations UI functionality', () => {
   })
 
   it('can show a tooltip when annotation is hovered on in the graph', () => {
+    setupData(cy)
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').click()
     })
@@ -155,6 +195,7 @@ describe('The Annotations UI functionality', () => {
   })
 
   it('can delete an annotation by clicking on the annotation line', () => {
+    setupData(cy)
     // add the annotation
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').click()
@@ -170,6 +211,7 @@ describe('The Annotations UI functionality', () => {
 
     // should have the annotation created , lets click it to show the modal.
     cy.getByTestID('cell blah').within(() => {
+      setupData(cy)
       // we have 2 line layers by the same id, we only want to click on the first
       cy.get('line')
         .first()
@@ -188,6 +230,7 @@ describe('The Annotations UI functionality', () => {
   })
 
   it('can edit an annotation by clicking on the annotation line', () => {
+    setupData(cy)
     // add the annotation
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').click()
@@ -228,6 +271,7 @@ describe('The Annotations UI functionality', () => {
   })
 
   it('can cancel an annotation edit process by clicking on the cancel button in the edit annotation form', () => {
+    setupData(cy)
     // add the annotation
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').click()
@@ -263,6 +307,7 @@ describe('The Annotations UI functionality', () => {
   })
 
   it('can create an annotation that is scoped to a dashboard cell', () => {
+    setupData(cy)
     // create a new cell
     cy.getByTestID('button')
       .click()

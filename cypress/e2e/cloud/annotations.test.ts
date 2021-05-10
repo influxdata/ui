@@ -40,8 +40,6 @@ describe('The Annotations UI functionality', () => {
           .should('exist')
           .click()
 
-        //cy.pause()
-
         if (singleStatTest) {
           cy.getByTestID('view-type--dropdown').click()
           cy.getByTestID('view-type--line-plus-single-stat').click()
@@ -62,8 +60,6 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('save-cell--button').click()
     })
 
-    //cy.pause()
-
     cy.getByTestID('toggle-annotations-controls').click()
     cy.getByTestID('annotations-control-bar').should('be.visible')
     cy.getByTestID('annotations-one-click-toggle').click()
@@ -78,8 +74,7 @@ describe('The Annotations UI functionality', () => {
     })
   })
 
-  it('can create an annotation on an xy line graph when the graph is clicked and the control bar is open', () => {
-    setupData(cy)
+  const addAnnotation = cy => {
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').click()
     })
@@ -91,39 +86,80 @@ describe('The Annotations UI functionality', () => {
         .type('im a hippopotamus')
       cy.getByTestID('add-annotation-submit').click()
     })
+  }
 
-    // reload to make sure the annotation was added in the backend as well.
-    cy.reload()
+  const graphTypes = [
+    {name: 'an xy (line) graph', singleStatTest: false},
+    {name: 'a single stat + line graph', singleStatTest: true},
+  ]
 
-    // we need to see if the annotations got created and that the tooltip says "yoho"
-    cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
+  graphTypes.forEach(graphType => {
+    it(`can create an annotation on ${graphType.name} when the graph is clicked and the control bar is open`, () => {
+      setupData(cy, graphType.singleStatTest)
+      addAnnotation(cy)
+
+      // reload to make sure the annotation was added in the backend as well.
+      cy.reload()
+
+      // we need to see if the annotations got created and that the tooltip says "I'm a hippopotamus"
+      cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
+      })
+      cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
     })
-    cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
-  })
 
-  it('can create an annotation on a single stat + line graph when the graph is clicked and the control bar is open', () => {
-    setupData(cy, true)
-    cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('giraffe-inner-plot').click()
-    })
-    cy.getByTestID('overlay--container').within(() => {
+    it(`can edit an annotation on ${graphType.name} by clicking on the annotation line`, () => {
+      setupData(cy, graphType.singleStatTest)
+      addAnnotation(cy)
+
+      // should have the annotation created , lets click it to show the modal.
+      cy.getByTestID('cell blah').within(() => {
+        // we have 2 line layers by the same id, we only want to click on the first
+        cy.get('line')
+          .first()
+          .click()
+      })
+
       cy.getByTestID('edit-annotation-message')
-        .should('be.visible')
-        .click()
-        .focused()
-        .type('im a hippopotamus')
-      cy.getByTestID('add-annotation-submit').click()
+        .clear()
+        .type('lets edit this annotation...')
+
+      cy.getByTestID('edit-annotation-submit-button').click()
+
+      // reload to make sure the annotation was edited in the backend as well.
+      cy.reload()
+
+      // annotation tooltip should say the new name
+      cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
+      })
+      cy.getByTestID('giraffe-annotation-tooltip').contains(
+        'lets edit this annotation...'
+      )
     })
 
-    // reload to make sure the annotation was added in the backend as well.
-    cy.reload()
+    it(`can delete an annotation on ${graphType.name} by clicking on the annotation line`, () => {
+      setupData(cy)
+      addAnnotation(cy)
 
-    // we need to see if the annotations got created and that the tooltip says "yoho"
-    cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
+      // should have the annotation created , lets click it to show the modal.
+      cy.getByTestID('cell blah').within(() => {
+        // we have 2 line layers by the same id, we only want to click on the first
+        cy.get('line')
+          .first()
+          .click()
+      })
+
+      cy.getByTestID('delete-annotation-button').click()
+
+      // reload to make sure the annotation was deleted from the backend as well.
+      cy.reload()
+
+      // annotation line should not exist in the dashboard cell
+      cy.getByTestID('cell blah').within(() => {
+        cy.get('line').should('not.exist')
+      })
     })
-    cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
   })
 
   it('can create an annotation when graph is clicked and the control bar is closed', () => {
@@ -132,18 +168,7 @@ describe('The Annotations UI functionality', () => {
     cy.getByTestID('toggle-annotations-controls').click()
     cy.getByTestID('annotations-control-bar').should('not.exist')
 
-    // add the annotation
-    cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('giraffe-inner-plot').click()
-    })
-    cy.getByTestID('overlay--container').within(() => {
-      cy.getByTestID('edit-annotation-message')
-        .should('be.visible')
-        .click()
-        .focused()
-        .type('im a hippopotamus')
-      cy.getByTestID('add-annotation-submit').click()
-    })
+    addAnnotation(cy)
 
     // reload to make sure the annotation was added in the backend as well.
     cy.reload()
@@ -176,17 +201,7 @@ describe('The Annotations UI functionality', () => {
 
   it('can show a tooltip when annotation is hovered on in the graph', () => {
     setupData(cy)
-    cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('giraffe-inner-plot').click()
-    })
-    cy.getByTestID('overlay--container').within(() => {
-      cy.getByTestID('edit-annotation-message')
-        .should('be.visible')
-        .click()
-        .focused()
-        .type('im a hippopotamus')
-      cy.getByTestID('add-annotation-submit').click()
-    })
+    addAnnotation(cy)
 
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
@@ -194,96 +209,9 @@ describe('The Annotations UI functionality', () => {
     cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
   })
 
-  it('can delete an annotation by clicking on the annotation line', () => {
-    setupData(cy)
-    // add the annotation
-    cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('giraffe-inner-plot').click()
-    })
-    cy.getByTestID('overlay--container').within(() => {
-      cy.getByTestID('edit-annotation-message')
-        .should('be.visible')
-        .click()
-        .focused()
-        .type('im a hippopotamus')
-      cy.getByTestID('add-annotation-submit').click()
-    })
-
-    // should have the annotation created , lets click it to show the modal.
-    cy.getByTestID('cell blah').within(() => {
-      setupData(cy)
-      // we have 2 line layers by the same id, we only want to click on the first
-      cy.get('line')
-        .first()
-        .click()
-    })
-
-    cy.getByTestID('delete-annotation-button').click()
-
-    // reload to make sure the annotation was deleted from the backend as well.
-    cy.reload()
-
-    // annotation line should not exist in the dashboard cell
-    cy.getByTestID('cell blah').within(() => {
-      cy.get('line').should('not.exist')
-    })
-  })
-
-  it('can edit an annotation by clicking on the annotation line', () => {
-    setupData(cy)
-    // add the annotation
-    cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('giraffe-inner-plot').click()
-    })
-    cy.getByTestID('overlay--container').within(() => {
-      cy.getByTestID('edit-annotation-message')
-        .should('be.visible')
-        .click()
-        .focused()
-        .type('im a hippopotamus')
-      cy.getByTestID('add-annotation-submit').click()
-    })
-
-    // should have the annotation created , lets click it to show the modal.
-    cy.getByTestID('cell blah').within(() => {
-      // we have 2 line layers by the same id, we only want to click on the first
-      cy.get('line')
-        .first()
-        .click()
-    })
-
-    cy.getByTestID('edit-annotation-message')
-      .clear()
-      .type('lets edit this annotation...')
-
-    cy.getByTestID('edit-annotation-submit-button').click()
-
-    // reload to make sure the annotation was edited in the backend as well.
-    cy.reload()
-
-    // annotation tooltip should say the new name
-    cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
-    })
-    cy.getByTestID('giraffe-annotation-tooltip').contains(
-      'lets edit this annotation...'
-    )
-  })
-
   it('can cancel an annotation edit process by clicking on the cancel button in the edit annotation form', () => {
     setupData(cy)
-    // add the annotation
-    cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('giraffe-inner-plot').click()
-    })
-    cy.getByTestID('overlay--container').within(() => {
-      cy.getByTestID('edit-annotation-message')
-        .should('be.visible')
-        .click()
-        .focused()
-        .type('im a hippopotamus')
-      cy.getByTestID('add-annotation-submit').click()
-    })
+    addAnnotation(cy)
 
     // should have the annotation created , lets click it to show the modal.
     cy.getByTestID('cell blah').within(() => {

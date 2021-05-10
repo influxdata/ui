@@ -192,7 +192,41 @@ const SingleStatWithLine: FC<Props> = ({
     cellType: 'single-stat',
   })
 
-  const config = makeConfig()
+  const config: Config = {
+    ...currentTheme,
+    table: result.table,
+    xAxisLabel: properties.axes.x.label,
+    yAxisLabel: properties.axes.y.label,
+    xDomain,
+    onSetXDomain,
+    onResetXDomain,
+    yDomain,
+    onSetYDomain,
+    onResetYDomain,
+    ...axisTicksOptions,
+    legendColumns,
+    legendOpacity: tooltipOpacity,
+    legendOrientationThreshold: tooltipOrientationThreshold,
+    legendColorizeRows: tooltipColorize,
+    valueFormatters: {
+      [xColumn]: xFormatter,
+      [yColumn]: yFormatter,
+    },
+    layers: [
+      {
+        type: 'line',
+        x: xColumn,
+        y: yColumn,
+        fill: groupKey,
+        interpolation,
+        position: properties.position,
+        colors: colorHexes,
+        shadeBelow: !!properties.shadeBelow,
+        shadeBelowOpacity: 0.08,
+        hoverDimension: properties.hoverDimension,
+      },
+    ],
+  }
 
   let annotationLayer
 
@@ -308,45 +342,6 @@ const SingleStatWithLine: FC<Props> = ({
     )
 
     return <Plot config={config}>{statPortion}</Plot>
-  }
-  // helper functions
-  function makeConfig() {
-    const config: Config = {
-      ...currentTheme,
-      table: result.table,
-      xAxisLabel: properties.axes.x.label,
-      yAxisLabel: properties.axes.y.label,
-      xDomain,
-      onSetXDomain,
-      onResetXDomain,
-      yDomain,
-      onSetYDomain,
-      onResetYDomain,
-      ...axisTicksOptions,
-      legendColumns,
-      legendOpacity: tooltipOpacity,
-      legendOrientationThreshold: tooltipOrientationThreshold,
-      legendColorizeRows: tooltipColorize,
-      valueFormatters: {
-        [xColumn]: xFormatter,
-        [yColumn]: yFormatter,
-      },
-      layers: [
-        {
-          type: 'line',
-          x: xColumn,
-          y: yColumn,
-          fill: groupKey,
-          interpolation,
-          position: properties.position,
-          colors: colorHexes,
-          shadeBelow: !!properties.shadeBelow,
-          shadeBelowOpacity: 0.08,
-          hoverDimension: properties.hoverDimension,
-        },
-      ],
-    }
-    return config
   }
 }
 

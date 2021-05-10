@@ -16,6 +16,7 @@ import {getSortedResources} from 'src/shared/utils/sort'
 
 interface Props {
   taskID: string
+  orgID: string
   runs: Run[]
   sortKey: string
   sortDirection: Sort
@@ -86,7 +87,7 @@ export default class TaskRunsList extends PureComponent<Props> {
   }
 
   private get sortedRuns(): JSX.Element[] {
-    const {runs, sortKey, sortDirection, sortType, taskID} = this.props
+    const {runs, sortKey, sortDirection, sortType, taskID, orgID} = this.props
 
     const sortedRuns = this.memGetSortedResources(
       runs,
@@ -96,7 +97,7 @@ export default class TaskRunsList extends PureComponent<Props> {
     )
 
     return sortedRuns.map(run => (
-      <TaskRunsRow key={`run-id==${run.id}`} taskID={taskID} run={run} />
+      <TaskRunsRow key={`run-id==${run.id}`} taskID={taskID} run={run} orgID={orgID} />
     ))
   }
 }

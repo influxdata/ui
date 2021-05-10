@@ -1,6 +1,7 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
+import {RouteComponentProps} from 'react-router-dom'
 import moment from 'moment'
 
 // Components
@@ -17,11 +18,12 @@ import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
 
 interface OwnProps {
   taskID: string
+  orgID: string
   run: Run
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps
+type Props = OwnProps & ReduxProps & RouteComponentProps
 
 interface State {
   isImportOverlayVisible: boolean
@@ -91,9 +93,9 @@ class TaskRunsRow extends PureComponent<Props, State> {
   }
 
   private handleRetry = async () => {
-    const {retryTask, taskID, run} = this.props
+    const {retryTask, taskID, run, orgID, history} = this.props
     await retryTask(taskID, run.id)
-    window.location.reload()
+    history.push(`/orgs/${orgID}/tasks/${taskID}/edit`)
   }
 
   private get renderLogOverlay(): JSX.Element {

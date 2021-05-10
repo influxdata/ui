@@ -48,10 +48,10 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
         const {token} = await getMapToken()
         setMapToken(token)
         setMapServiceError(RemoteDataState.Done)
-        event('maps.mapviewtype.map_token_request.success')
+        event('mapplot.map_token_request.success')
       } catch (err) {
         setMapServiceError(RemoteDataState.Error)
-        event('maps.mapviewtype.map_token_request.failure')
+        event('mapplot.map_token_request.failure')
       }
     }
     getToken()
@@ -65,10 +65,10 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
       setCoordinateFlag(coordinateFlag)
       setGeoCoordinates(coordinates)
       setCoordinateError(RemoteDataState.Done)
-      event('maps.mapviewtype.get_geo_coordinates.success')
+      event('mapplot.get_geo_coordinates.success')
     } catch (err) {
       setCoordinateError(RemoteDataState.Error)
-      event('maps.mapviewtype.get_geo_coordinates.failure')
+      event('mapplot.get_geo_coordinates.failure')
     }
   }, [result.table])
 

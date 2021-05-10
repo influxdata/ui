@@ -57,6 +57,11 @@ paths:
   /notebooks:
     get:
       description: get all records
+      parameters:
+        - name: orgID
+          in: query
+          type: string
+          required: true
       produces:
         - application/json
       responses:

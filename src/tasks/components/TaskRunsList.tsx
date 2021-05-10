@@ -96,11 +96,7 @@ export default class TaskRunsList extends PureComponent<Props> {
     )
 
     return sortedRuns.map(run => (
-      <TaskRunsRow
-        key={`run-id==${run.id}`}
-        taskID={taskID}
-        run={run}
-      />
+      <TaskRunsRow key={`run-id==${run.id}`} taskID={taskID} run={run} />
     ))
   }
 }

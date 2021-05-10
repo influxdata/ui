@@ -18,12 +18,11 @@ import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
 
 interface OwnProps {
   taskID: string
-  orgID: string
   run: Run
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps & RouteComponentProps
+type Props = OwnProps & ReduxProps & RouteComponentProps<{orgID: string}>
 
 interface State {
   isImportOverlayVisible: boolean
@@ -93,7 +92,16 @@ class TaskRunsRow extends PureComponent<Props, State> {
   }
 
   private handleRetry = async () => {
-    const {retryTask, taskID, run, orgID, history} = this.props
+    const {
+      retryTask,
+      taskID,
+      run,
+      history,
+      match: {
+        params: {orgID},
+      },
+    } = this.props
+
     await retryTask(taskID, run.id)
     history.push(`/orgs/${orgID}/tasks/${taskID}/edit`)
   }

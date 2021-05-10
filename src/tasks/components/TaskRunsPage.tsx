@@ -82,7 +82,6 @@ class TaskRunsPage extends PureComponent<Props, State> {
           <Page.Contents fullWidth={false} scrollable={true}>
             <TaskRunsList
               taskID={match.params.id}
-              orgID={match.params.orgID}
               runs={runs}
               sortKey={sortKey}
               sortDirection={sortDirection}

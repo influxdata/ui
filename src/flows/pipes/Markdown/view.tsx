@@ -7,11 +7,7 @@ import {
 } from '@influxdata/clockface'
 import classnames from 'classnames'
 
-// Types
-import {MarkdownMode} from './'
-
 // Components
-import MarkdownModeToggle from './MarkdownModeToggle'
 import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
 import {ClickOutside} from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
@@ -19,7 +15,6 @@ import {PipeProp} from 'src/types/flows'
 
 import {
   MARKDOWN_PIPE_PLACEHOLDER,
-  MARKDOWN_PIPE_INITIAL,
 } from 'src/flows/pipes/Markdown/index'
 
 const MarkdownMonacoEditor = lazy(() =>

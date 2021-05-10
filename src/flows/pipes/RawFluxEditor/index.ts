@@ -1,5 +1,4 @@
 import View from './view'
-import Functions from './functions'
 import './style.scss'
 
 const COMMENT_REMOVER = /(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm
@@ -39,12 +38,5 @@ export default register => {
       create(text)
       append(`__CURRENT_RESULT__ |> limit(n: 100)`)
     },
-    menu: [{
-      title: 'Documentation',
-      actions: [{
-        title: 'Functions',
-        menu: Functions
-      }]
-    }]
   })
 }

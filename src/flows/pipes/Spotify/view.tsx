@@ -4,7 +4,6 @@ import React, {FC, useState, useContext} from 'react'
 // Components
 import Embedded from './embedded'
 import Editor from './editor'
-import {SquareButton, IconFont} from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 
 // Types

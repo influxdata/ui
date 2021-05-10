@@ -1,9 +1,14 @@
 // Libraries
 import React, {FC, useContext} from 'react'
+import {useSelector} from 'react-redux'
 
 // Contexts
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 import CreateBucketButton from 'src/buckets/components/CreateBucketButton'
+
+// Utils
+import {getAll} from 'src/resources/selectors'
+
 // Components
 import {
   List,
@@ -15,8 +20,14 @@ import {
   EmptyState,
 } from '@influxdata/clockface'
 
+// Types
+import {AppState, ResourceType, Bucket} from 'src/types'
+
 const WriteDataHelperBuckets: FC = () => {
-  const {bucket, buckets, changeBucket} = useContext(WriteDataDetailsContext)
+  const buckets = useSelector((state: AppState) =>
+    getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
+  )
+  const {bucket, changeBucket} = useContext(WriteDataDetailsContext)
 
   let body = (
     <EmptyState className="write-data--details-empty-state">

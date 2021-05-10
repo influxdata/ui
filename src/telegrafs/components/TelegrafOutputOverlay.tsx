@@ -4,10 +4,10 @@ import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 
 // Components
-import {ErrorHandling} from 'src/shared/decorators/errors'
-import TemplatedCodeSnippet, {
+import CodeSnippet, {
   transform,
-} from 'src/shared/components/TemplatedCodeSnippet'
+  Provider as TemplateProvider,
+} from 'src/shared/components/CodeSnippet'
 import BucketDropdown from 'src/dataLoaders/components/BucketsDropdown'
 import {ComponentColor, Button, Overlay} from '@influxdata/clockface'
 
@@ -57,7 +57,6 @@ const OUTPUT_DEFAULTS = {
   bucket: 'bucketID',
 }
 
-@ErrorHandling
 class TelegrafOutputOverlay extends PureComponent<Props> {
   state = {
     selectedBucket: null,
@@ -119,17 +118,20 @@ class TelegrafOutputOverlay extends PureComponent<Props> {
           </p>
           {bucket_dd}
           <div className="output-overlay">
-            <TemplatedCodeSnippet
-              template={TELEGRAF_OUTPUT}
-              label="telegraf.conf"
-              testID="telegraf-output-overlay--code-snippet"
-              values={{
-                server,
-                org,
+            <TemplateProvider
+              variables={{
+                server: server || OUTPUT_DEFAULTS.server,
+                org: org || OUTPUT_DEFAULTS.org,
+                token: '$INFLUX_TOKEN',
                 bucket: bucket ? bucket.name : OUTPUT_DEFAULTS.bucket,
               }}
-              defaults={OUTPUT_DEFAULTS}
-            />
+            >
+              <CodeSnippet
+                text={TELEGRAF_OUTPUT}
+                label="telegraf.conf"
+                testID="telegraf-output-overlay--code-snippet"
+              />
+            </TemplateProvider>
           </div>
         </Overlay.Body>
         <Overlay.Footer>

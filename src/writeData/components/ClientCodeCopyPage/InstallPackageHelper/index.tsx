@@ -23,7 +23,7 @@ interface Props {
 }
 
 const InstallPackageHelper: FC<Props> = ({text, codeRenderer}) => {
-  const [mode, changeMode] = useState<'expanded' | 'collapsed'>('collapsed')
+  const [mode, changeMode] = useState<'expanded' | 'collapsed'>('expanded')
 
   const handleToggleClick = (): void => {
     if (mode === 'expanded') {

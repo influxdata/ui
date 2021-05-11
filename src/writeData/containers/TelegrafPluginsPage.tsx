@@ -5,7 +5,6 @@ import {Renderer} from 'react-markdown'
 
 // Components
 import {Page} from '@influxdata/clockface'
-import WriteDataHelper from 'src/writeData/components/WriteDataHelper'
 import CodeSnippet, {
   Provider as TemplateProvider,
 } from 'src/shared/components/CodeSnippet'
@@ -76,7 +75,6 @@ const TelegrafPluginsPage: FC = () => {
                   className="write-data--details-content markdown-format"
                   data-testid="load-data-details-content"
                 >
-                  <WriteDataHelper />
                   {pageContent}
                 </div>
               </div>

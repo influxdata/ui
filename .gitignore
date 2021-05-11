@@ -15,6 +15,7 @@ build
 coverage
 node_modules
 vendor
+release
 
 # files
 cypress.env.json

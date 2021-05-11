@@ -9,7 +9,6 @@ import classnames from 'classnames'
 
 // Components
 import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
-import {ClickOutside} from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 import {PipeProp} from 'src/types/flows'
 

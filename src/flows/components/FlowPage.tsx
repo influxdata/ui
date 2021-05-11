@@ -48,7 +48,7 @@ const FlowContainer: FC = () => (
               <Page titleTag={PROJECT_NAME_PLURAL}>
                 <FlowHeader />
                   <Page.Contents
-                    fixedWidth={false}
+                    fullWidth={true}
                     scrollable={false}
                     className="flow-page"
                   >

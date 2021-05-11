@@ -21,8 +21,8 @@ import {PipeProp} from 'src/types/flows'
 
 // Components
 import {PipeContext} from 'src/flows/context/pipe'
-import {SidebarContext} from 'src/flows/context/sidebar'
-import Functions from './function'
+import {Context as SidebarContext} from 'src/flows/context/sidebar'
+import Functions from './functions'
 
 // Styles
 import 'src/flows/pipes/RawFluxEditor/style.scss'
@@ -32,7 +32,7 @@ const FluxMonacoEditor = lazy(() =>
 )
 
 const Query: FC<PipeProp> = ({Context}) => {
-  const {data, update} = useContext(PipeContext)
+  const {id, data, update} = useContext(PipeContext)
   const {register, deregister} = useContext(SidebarContext)
   const [editorInstance, setEditorInstance] = useState<EditorType>(null)
   const {queries, activeQuery} = data
@@ -117,7 +117,7 @@ const Query: FC<PipeProp> = ({Context}) => {
       title: 'Documentation',
       actions: [{
         title: 'Functions',
-        menu: (<Functions inject={inject} />)
+        menu: (<Functions onSelect={inject} />)
       }]
     }])
 

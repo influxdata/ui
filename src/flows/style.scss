@@ -32,7 +32,7 @@ $cf-radius-lg: $cf-radius + 4px;
 }
 
 .flow-sidebar {
-  width: 300px;
+  flex: 0 0 300px;
 }
 
 .flow-panel {

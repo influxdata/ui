@@ -4,7 +4,6 @@ import {
   Input,
   InputType,
   IconFont,
-  DapperScrollbars,
   EmptyState,
   ComponentSize,
 } from '@influxdata/clockface'
@@ -83,11 +82,9 @@ const Functions: FC<Props> = ({onSelect}) => {
           testID="flux-toolbar-search--input"
         />
       </div>
-      <DapperScrollbars className="flux-toolbar--scroll-area">
         <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
           {fnComponent}
         </div>
-      </DapperScrollbars>
     </div>
   )
 }

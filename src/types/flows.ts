@@ -2,13 +2,13 @@ import {FromFluxResult, FluxDataType, Table} from '@influxdata/giraffe'
 import {FunctionComponent, ComponentClass, ReactNode} from 'react'
 import {AutoRefresh, RemoteDataState, TimeRange} from 'src/types'
 
-interface ControlAction {
+export interface ControlAction {
   title: string | (() => string)
   disable?: boolean | (() => boolean)
   action: () => void
 }
 
-interface Submenu {
+export interface Submenu {
   title: string | (() => string)
   disable?: boolean | (() => boolean)
   menu: ReactNode

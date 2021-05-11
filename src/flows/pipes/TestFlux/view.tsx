@@ -19,7 +19,7 @@ import {PipeContext} from 'src/flows/context/pipe'
 import {
   SUPPORTED_VISUALIZATIONS,
   View,
-  ViewTypeDropdown,
+  ViewTypeDropdown
 } from 'src/visualization'
 
 const TestFlux: FC<PipeProp> = ({Context}) => {
@@ -65,7 +65,7 @@ const TestFlux: FC<PipeProp> = ({Context}) => {
     })
   }
 
-  const controls = (
+  const _controls = (
     <>
       <ViewTypeDropdown
         viewType={data.properties.type}
@@ -79,6 +79,10 @@ const TestFlux: FC<PipeProp> = ({Context}) => {
       <input type="file" ref={uploadRef} onChange={parseCSV} hidden />
     </>
   )
+
+  if (_controls) {
+    console.log('omg typescript')
+  }
 
   //<Context controls={controls}>
   return (

@@ -52,7 +52,7 @@ export const DEFAULT_CONTEXT: FlowQueryContextType = {
   query: (_: string) => Promise.resolve({} as FluxResult),
   basic: (_: string) => {},
   queryAll: () => {},
-  getPanelQueries: (_, __) => {}
+  getPanelQueries: (_, _a) => ({source: '', visual: ''})
 }
 
 export const FlowQueryContext = React.createContext<FlowQueryContextType>(

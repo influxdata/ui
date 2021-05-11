@@ -16,7 +16,7 @@ import {PipeContext} from 'src/flows/context/pipe'
 
 const Visualization: FC<PipeProp> = ({Context}) => {
   const {data, range, update, loading, results} = useContext(PipeContext)
-  const [optionsVisibility, setOptionsVisibility] = useState(false)
+  const [optionsVisibility] = useState(false)
 
   const updateProperties = useCallback(
     properties => {

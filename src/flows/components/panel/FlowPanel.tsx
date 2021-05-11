@@ -26,7 +26,7 @@ export interface HeaderProps {
   id: string
 }
 
-const FlowPanel: FC<Props> = ({id, children, controls}) => {
+const FlowPanel: FC<Props> = ({id, children}) => {
   const {flow} = useContext(FlowContext)
   const {generateMap} = useContext(FlowQueryContext)
   const {id: focused, show, hide} = useContext(SidebarContext)
@@ -47,7 +47,7 @@ const FlowPanel: FC<Props> = ({id, children, controls}) => {
 
   const toggleSidebar = () => {
     if (id !== focused) {
-      show(id, controls)
+      show(id)
     } else {
       hide()
     }

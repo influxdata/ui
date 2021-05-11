@@ -10,7 +10,7 @@ import {
 /* Note: Axios will be removed from here as part of #511, which is the next ticket to be worked on the annotations API */
 // Libraries
 import axios from 'axios'
-import * as route from 'ui/annotationroutes.ts'
+import * as route from 'src/annotations/api/annotationroutes'
 
 // Constants
 import {API_BASE_PATH} from 'src/shared/constants'
@@ -100,11 +100,9 @@ export const getAnnotations = async (
 export const getAnnotation = async (
   annotation: GetAnnotationPayload
 ): Promise<AnnotationResponse[]> => {
-  const params = {}
-  const options = formatAnnotationQueryString(annotation)
+  const params = {annotationID: annotation.stream}
   const res = await route.getAnnotation({
     params,
-    options,
   })
 
   if (res.status >= 300) {

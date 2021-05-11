@@ -1,4 +1,4 @@
-import {cleanTags} from 'src/cloud/utils/reporting'
+import {cleanTags, normalizeEventName} from 'src/cloud/utils/reporting'
 
 describe('cleaning tags before sending to app-metrics', () => {
   // this throws a typescript error because tags cannot have boolean values. Is checking for boolean values necessary?
@@ -79,5 +79,27 @@ describe('cleaning tags before sending to app-metrics', () => {
     }
 
     expect(cleanTags(point).tags).toEqual({})
+  })
+})
+
+describe('normalizeEventName', () => {
+  it('verify', () => {
+    const tests = [
+      {input: 'To ken', normalized: 'to_ken'},
+      {input: 'to.Ken', normalized: 'to_ken'},
+      {input: 'to,Ken', normalized: 'to_ken'},
+      {input: 'to (Ken)', normalized: 'to_ken'},
+      {input: 'to-ken-1', normalized: 'to_ken_1'},
+      {input: 'token "1"', normalized: 'token_1'},
+      {input: "to-ken '1'", normalized: 'to_ken_1'},
+      {input: 'to=ken`1`', normalized: 'to_ken_1'},
+      {input: 'to;ken <1>', normalized: 'to_ken_1'},
+      {input: 'to:ken', normalized: 'to_ken'},
+      {input: 'to[ken]', normalized: 'to_ken'},
+      {input: "to[' <ke>'n]", normalized: 'to_ke_n'},
+    ]
+    tests.forEach(test => {
+      expect(normalizeEventName(test.input)).toEqual(test.normalized)
+    })
   })
 })

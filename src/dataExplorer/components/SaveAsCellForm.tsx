@@ -42,7 +42,8 @@ import {
 
 // Utils
 import {initialStateHelper} from 'src/timeMachine/reducers'
-import {event} from 'src/cloud/utils/reporting'
+import {event, normalizeEventName} from 'src/cloud/utils/reporting'
+import {chartTypeName} from 'src/visualization/utils/chartTypeName'
 
 interface State {
   targetDashboardIDs: string[]
@@ -178,7 +179,6 @@ class SaveAsCellForm extends PureComponent<Props, State> {
       this.state.newDashboardName || DEFAULT_DASHBOARD_NAME
 
     const viewWithProps: View = {...view, name: cellName}
-
     const redirectHandler = (dashboardId: string): void =>
       history.push(`/orgs/${orgID}/dashboards/${dashboardId}`)
 
@@ -207,7 +207,17 @@ class SaveAsCellForm extends PureComponent<Props, State> {
         )
       })
       this.props.setActiveTimeMachine('de', initialStateHelper())
+      event(
+        `data_explorer.${normalizeEventName(
+          chartTypeName(view.properties.type)
+        )}.save.as_dashboard_cell.success`
+      )
     } catch (error) {
+      event(
+        `data_explorer.${normalizeEventName(
+          chartTypeName(view.properties.type)
+        )}.save.as_dashboard_cell.failure`
+      )
       console.error(error)
       dismiss()
     } finally {

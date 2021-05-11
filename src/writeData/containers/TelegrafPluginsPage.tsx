@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useEffect} from 'react'
 import {Renderer} from 'react-markdown'
 import {RouteComponentProps, useParams} from 'react-router-dom'
 
@@ -24,6 +24,7 @@ import placeholderLogo from 'src/writeData/graphics/placeholderLogo.svg'
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {event, normalizeEventName} from 'src/cloud/utils/reporting'
 
 // Styles
 import 'src/writeData/components/WriteDataDetailsView.scss'
@@ -47,6 +48,18 @@ const TelegrafPluginsPage: FC<RouteComponentProps<{orgID: string}>> = props => {
   const {contentID} = useParams<ParamsType>()
   const {name = '', markdown = '', image = ''} =
     WRITE_DATA_TELEGRAF_PLUGINS.find(item => item.id === contentID) || {}
+
+  const eventName = normalizeEventName(name)
+  useEffect(() => {
+    event(`telegraf_tile.${eventName}.config_viewed`, {id: contentID, name})
+  }, [eventName, contentID, name])
+
+  const onCopy = () => {
+    event(`telegraf_tile.${eventName}.config_copied`, {id: contentID, name})
+  }
+  const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => (
+    <CodeSnippet text={props.value} label={props.language} onCopy={onCopy} />
+  )
 
   let thumbnail = (
     <img data-testid="load-data-details-thumb" src={image || placeholderLogo} />

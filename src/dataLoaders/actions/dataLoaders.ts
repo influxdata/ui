@@ -17,6 +17,7 @@ import {getDataLoaders, getSteps} from 'src/dataLoaders/selectors'
 import {getBucketByName} from 'src/buckets/selectors'
 import {getByID} from 'src/resources/selectors'
 import {getOrg} from 'src/organizations/selectors'
+import {event, normalizeEventName} from 'src/cloud/utils/reporting'
 
 // Constants
 import {
@@ -419,6 +420,10 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
 
     dispatch(editTelegraf(normTelegraf))
     dispatch(setTelegrafConfigID(telegrafConfigID))
+    event(
+      `telegraf.config.${normalizeEventName(telegrafConfigName)}.edit.success`,
+      {id: telegraf.id}
+    )
     return
   }
 
@@ -429,11 +434,14 @@ export const generateTelegrafToken = (configID: string) => async (
   dispatch,
   getState: GetState
 ) => {
+  let telegrafName: string = ''
+  let bucketName: string = ''
   try {
     const state = getState()
     const orgID = getOrg(state).id
     const telegraf = getByID<Telegraf>(state, ResourceType.Telegrafs, configID)
-    const bucketName = get(telegraf, 'metadata.buckets[0]', '')
+    telegrafName = telegraf.name
+    bucketName = get(telegraf, 'metadata.buckets[0]', '')
 
     if (bucketName === '') {
       throw new Error(
@@ -474,12 +482,12 @@ export const generateTelegrafToken = (configID: string) => async (
 
     // create token
     const createdToken = await createAuthorization(token)
-
+    event('token.create.success', {name: telegrafName, bucket: bucketName})
     // add token to data loader state
     dispatch(setToken(createdToken.token))
   } catch (error) {
     console.error(error)
-
+    event('token.create.failure', {name: telegrafName, bucket: bucketName})
     if (error.message) {
       const customNotification = {
         ...TokenCreationError,
@@ -493,12 +501,16 @@ export const generateTelegrafToken = (configID: string) => async (
 }
 
 const createTelegraf = async (dispatch, getState: GetState, plugins) => {
+  let configName = ''
+  let bucketName = ''
   try {
     const state = getState()
     const {telegrafConfigName, telegrafConfigDescription} = getDataLoaders(
       state
     )
+    configName = telegrafConfigName
     const {bucket, bucketID} = getSteps(state)
+    bucketName = bucket
     const org = getOrg(getState())
 
     const telegrafRequest: TelegrafRequest = {
@@ -560,7 +572,14 @@ const createTelegraf = async (dispatch, getState: GetState, plugins) => {
     dispatch(setTelegrafConfigID(tc.id))
     dispatch(addTelegraf(normTelegraf))
     dispatch(notify(TelegrafConfigCreationSuccess))
+    event(`telegraf.config.${normalizeEventName(configName)}.create.success`, {
+      id: tc.id,
+      bucket: bucketName,
+    })
   } catch (error) {
+    event(`telegraf.config.${normalizeEventName(configName)}.create.failure`, {
+      bucket: bucketName,
+    })
     console.error(error.message)
     dispatch(notify(TelegrafConfigCreationError))
   }

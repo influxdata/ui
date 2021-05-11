@@ -134,6 +134,13 @@ export const gaEvent = (event: string, payload: object = {}) => {
   })
 }
 
+export const normalizeEventName = (name: string) =>
+  name
+    .toLowerCase()
+    .replace(/-| |\)|\(|\.|'|"|=|,|`|\[|\]|;|:|<|>/g, '_') // replace special chars by '_'
+    .replace(/^_*([^_].*[^_])_*$/, '$1') // trim '_' char
+    .replace(/(_+)/g, '_') // deduplicate '_' char
+
 export const event = (
   measurement: string,
   meta: PointTags = {},

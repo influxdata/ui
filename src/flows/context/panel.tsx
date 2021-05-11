@@ -1,16 +1,4 @@
-import React, {
-  FC,
-  useContext,
-  useMemo,
-  useCallback,
-  createContext,
-  useState,
-} from 'react'
-import {PipeData, FluxResult} from 'src/types/flows'
-import {FlowContext} from 'src/flows/context/flow.current'
-import {ResultsContext} from 'src/flows/context/results'
-import {FlowQueryContext} from 'src/flows/context/flow.query'
-import {RemoteDataState, TimeRange} from 'src/types'
+import React, {FC, useMemo, useState} from 'react'
 
 export interface CopyToClipboardContextType {
   setVisibility: (_: boolean) => void

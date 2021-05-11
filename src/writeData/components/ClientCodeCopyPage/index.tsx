@@ -1,14 +1,11 @@
 // Libraries
-import React, {FC, useCallback, useContext, useMemo} from 'react'
+import React, {FC, useContext} from 'react'
 import {Renderer} from 'react-markdown'
-import {get, set} from 'lodash'
 
 // Components
 import WriteDataHelper from 'src/writeData/components/WriteDataHelper'
 import WriteDataCodeSnippet from 'src/writeData/components/WriteDataCodeSnippet'
-import WriteDataDetailsContextProvider, {
-  WriteDataDetailsContext,
-} from 'src/writeData/components/WriteDataDetailsContext'
+import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 import GetResources from 'src/resources/components/GetResources'
 import {CodeSampleBlock} from 'src/writeData/containers/ClientLibrariesPage'
 
@@ -25,7 +22,7 @@ import InstallPackageHelper from './InstallPackageHelper/index'
 // Utils
 import {parse} from 'src/external/parser'
 import {format_from_js_file} from '@influxdata/flux'
-import {updateBucketInAST, _walk} from 'src/flows/context/query'
+import {updateBucketInAST} from 'src/flows/context/query'
 
 const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => {
   return <WriteDataCodeSnippet code={props.value} language={props.language} />

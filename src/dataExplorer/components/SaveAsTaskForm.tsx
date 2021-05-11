@@ -23,6 +23,7 @@ import {
 import {getAllVariables, asAssignment} from 'src/variables/selectors'
 import {getOrg} from 'src/organizations/selectors'
 import {getActiveQuery} from 'src/timeMachine/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {AppState, TaskSchedule, TaskOptionKeys} from 'src/types'
@@ -102,6 +103,7 @@ class SaveAsTaskForm extends PureComponent<
 
     saveNewScript(script, preamble).then(() => {
       goToTasks()
+      event('data_explorer.script.saved.as_task')
     })
   }
 

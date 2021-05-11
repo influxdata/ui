@@ -39,7 +39,7 @@ import {
   communityTemplateRenameFailed,
 } from 'src/shared/copy/notifications'
 
-import {event} from 'src/cloud/utils/reporting'
+import {event, normalizeEventName} from 'src/cloud/utils/reporting'
 
 interface State {
   status: ComponentStatus
@@ -121,6 +121,7 @@ class CommunityTemplateInstallOverlayUnconnected extends PureComponent<Props> {
 
   private handleInstallTemplate = async () => {
     let summary
+    const templateUrl = this.props.stagedTemplateUrl
     try {
       summary = await installTemplate(
         this.props.org.id,
@@ -128,8 +129,13 @@ class CommunityTemplateInstallOverlayUnconnected extends PureComponent<Props> {
         this.props.resourcesToSkip,
         this.props.stagedTemplateEnvReferences
       )
-      event('template_install', {templateUrl: this.props.stagedTemplateUrl})
+      event('template_install.success', {
+        templateUrl,
+      })
     } catch (err) {
+      event('template_install.failure', {
+        templateUrl,
+      })
       this.props.notify(communityTemplateInstallFailed())
       reportErrorThroughHoneyBadger(err, {
         name: 'Failed to install community template',
@@ -137,20 +143,36 @@ class CommunityTemplateInstallOverlayUnconnected extends PureComponent<Props> {
       return
     }
 
+    let templateName = ''
     try {
-      const templateDetails = getTemplateNameFromUrl(
-        this.props.stagedTemplateUrl
-      )
-      await updateStackName(summary.stackID, templateDetails.name)
+      const templateDetails = getTemplateNameFromUrl(templateUrl)
+      templateName = templateDetails.name
 
-      event('template_rename', {templateName: templateDetails.name})
+      await updateStackName(summary.stackID, templateName)
+
+      event('template_rename', {
+        templateUrl,
+        templateName,
+      })
 
       this.props.setStagedTemplateUrl('')
       this.props.setTemplateUrlValidationMessage('')
 
       this.props.getBuckets()
-      this.props.notify(communityTemplateInstallSucceeded(templateDetails.name))
+      this.props.notify(communityTemplateInstallSucceeded(templateName))
+      event(
+        `community_template.${normalizeEventName(
+          templateDetails.name
+        )}.install.success`,
+        {templateUrl}
+      )
     } catch (err) {
+      event(
+        `community_template.${normalizeEventName(
+          templateName
+        )}.install.failure`,
+        {templateUrl}
+      )
       this.props.notify(communityTemplateRenameFailed())
       reportErrorThroughHoneyBadger(err, {
         name: 'The community template rename failed',

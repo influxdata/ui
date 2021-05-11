@@ -33,6 +33,7 @@ import {
 // Utils
 import {getOrg} from 'src/organizations/selectors'
 import {getLabels, getStatus} from 'src/resources/selectors'
+import {event, normalizeEventName} from 'src/cloud/utils/reporting'
 
 // Types
 import {ILabel} from '@influxdata/influx'
@@ -116,7 +117,13 @@ export const updateTelegraf = (telegraf: Telegraf) => async (
     )
 
     dispatch(editTelegraf(normTelegraf))
+    event(`telegraf.config.${normalizeEventName(telegraf.name)}.edit.success`, {
+      id: telegraf.id,
+    })
   } catch (error) {
+    event(`telegraf.config.${normalizeEventName(telegraf.name)}.edit.failure`, {
+      id: telegraf.id,
+    })
     console.error(error)
     dispatch(notify(telegrafUpdateFailed(telegraf.name)))
   }
@@ -129,7 +136,9 @@ export const deleteTelegraf = (id: string, name: string) => async (
     await client.telegrafConfigs.delete(id)
 
     dispatch(removeTelegraf(id))
+    event(`telegraf.config.${normalizeEventName(name)}.delete.success`, {id})
   } catch (error) {
+    event(`telegraf.config.${normalizeEventName(name)}.delete.failure`, {id})
     console.error(error)
     dispatch(notify(telegrafDeleteFailed(name)))
   }

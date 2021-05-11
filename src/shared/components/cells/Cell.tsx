@@ -14,6 +14,8 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 // Utils
 import {getByID} from 'src/resources/selectors'
 import {resetQueryCacheByQuery} from 'src/shared/apis/queryCache'
+import {event, normalizeEventName} from 'src/cloud/utils/reporting'
+import {chartTypeName} from 'src/visualization/utils/chartTypeName'
 
 // Types
 import {
@@ -25,9 +27,6 @@ import {
   Variable,
 } from 'src/types'
 import {getAllVariables} from 'src/variables/selectors'
-
-// Metrics
-import {event} from 'src/cloud/utils/reporting'
 
 interface StateProps {
   view: View
@@ -51,6 +50,15 @@ class CellComponent extends Component<Props, State> {
   state = {
     submitToken: 0,
     isPaused: false,
+  }
+
+  public componentDidMount() {
+    const {view} = this.props
+    event(
+      `dashboard.cell.view.${normalizeEventName(
+        chartTypeName(view.properties.type)
+      )}`
+    )
   }
 
   private handleRefreshProcess = (): void => {

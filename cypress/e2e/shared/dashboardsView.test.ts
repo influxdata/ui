@@ -1402,6 +1402,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
         })
       })
       cy.window().then(win => {
+        cy.wait(1000)
         win.influx.set('pauseCell', true)
         win.influx.set('newAutoRefresh', true)
       })
@@ -1483,6 +1484,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.wait('@secondCellQuery')
       cy.wait('@firstCellQuery')
 
+      // Even though both cells have the same query, the pause functionality only affects the cell we selected specifically
       cy.on('fail', err => {
         expect(err.message).to.include(
           'Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 1st request to the route: `firstCellQuery`. No request ever occurred.'
@@ -1501,6 +1503,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
         })
       })
       cy.window().then(win => {
+        cy.wait(1000)
         win.influx.set('pauseCell', true)
         win.influx.set('newAutoRefresh', true)
       })

@@ -11,7 +11,6 @@ import {CLIENT_DEFINITIONS} from 'src/writeData'
 import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
 import {Provider as TemplateProvider} from 'src/shared/components/CodeSnippet'
 
-
 interface OwnProps {
   panelId: string
 }

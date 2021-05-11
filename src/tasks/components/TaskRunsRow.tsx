@@ -1,7 +1,7 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {RouteComponentProps} from 'react-router-dom'
+import {withRouter, RouteComponentProps} from 'react-router-dom'
 import moment from 'moment'
 
 // Components
@@ -131,4 +131,4 @@ const mstp = (state: AppState) => {
 const mdtp = {getLogs: getLogs, retryTask: retryTask}
 
 const connector = connect(mstp, mdtp)
-export default connector(TaskRunsRow)
+export default connector(withRouter(TaskRunsRow))

@@ -1,10 +1,9 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC, useContext, useEffect, useState} from 'react'
 import {Renderer} from 'react-markdown'
 
 // Components
 import WriteDataHelper from 'src/writeData/components/WriteDataHelper'
-import WriteDataCodeSnippet from 'src/writeData/components/WriteDataCodeSnippet'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 import GetResources from 'src/resources/components/GetResources'
 import {CodeSampleBlock} from 'src/writeData/containers/ClientLibrariesPage'
@@ -23,9 +22,10 @@ import InstallPackageHelper from './InstallPackageHelper/index'
 import {parse} from 'src/external/parser'
 import {format_from_js_file} from '@influxdata/flux'
 import {updateBucketInAST} from 'src/flows/context/query'
+import CodeSnippet from 'src/shared/components/CodeSnippet'
 
 const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => {
-  return <WriteDataCodeSnippet code={props.value} language={props.language} />
+  return <CodeSnippet text={props.value} label={props.language} />
 }
 
 interface Props {
@@ -43,7 +43,9 @@ const changeQuery = (query: string, bucket: Bucket): string => {
 const ClientCodeCopyPage: FC<Props> = ({contentID, query}) => {
   const {bucket} = useContext(WriteDataDetailsContext)
   const def = CLIENT_DEFINITIONS[contentID]
-  const updatedQuery = changeQuery(query, bucket)
+  const executeDefinition = def.execute
+    .toString()
+    .replace('<%= query %>', changeQuery(query, bucket))
 
   let description
 
@@ -65,12 +67,10 @@ const ClientCodeCopyPage: FC<Props> = ({contentID, query}) => {
           className="write-data--details-content markdown-format"
           data-testid="load-data-details-content"
         >
-          <WriteDataHelper />
           {description}
           <CodeSampleBlock
             name="Initialize and Execute Flux"
-            sample={`${def.initialize}${def.execute}`}
-            query={updatedQuery}
+            sample={`${def.initialize}${executeDefinition}`}
           />
         </div>
       </div>

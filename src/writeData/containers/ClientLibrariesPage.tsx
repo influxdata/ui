@@ -35,10 +35,9 @@ const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => (
 interface SampleProps {
   name: string
   sample: string | CodeSampleOption[]
-  query?: string
 }
 
-export const CodeSampleBlock: FC<SampleProps> = ({name, sample, query}) => {
+export const CodeSampleBlock: FC<SampleProps> = ({name, sample}) => {
   if (!sample) {
     return null
   }
@@ -118,7 +117,9 @@ const ClientLibrariesPage: FC = () => {
                   <CodeSampleBlock name="Write Data" sample={def.write} />
                   <CodeSampleBlock
                     name="Execute a Flux query"
-                    sample={def.execute}
+                    sample={def.execute
+                      .toString()
+                      .replace('<%= query %>', def.query)}
                   />
                 </div>
               </div>

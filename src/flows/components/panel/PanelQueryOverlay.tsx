@@ -9,9 +9,8 @@ import ClientCodeCopyPage from 'src/writeData/components/ClientCodeCopyPage'
 import {FlowQueryContext, Stage} from 'src/flows/context/flow.query'
 import {CLIENT_DEFINITIONS} from 'src/writeData'
 import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
+import {Provider as TemplateProvider} from 'src/shared/components/CodeSnippet'
 
-// import {parse} from 'src/external/parser'
-// import {findNodes} from 'src/shared/utils/ast'
 
 interface OwnProps {
   panelId: string
@@ -41,12 +40,14 @@ const PanelQueryOverlay: FC<Props> = ({panelId}) => {
           onDismiss={() => setVisibility(!visible)}
         />
         <Overlay.Body>
-          <WriteDataDetailsContextProvider>
-            <ClientCodeCopyPage
-              contentID={contentID}
-              query={getPanelQuery(panelId)}
-            />
-          </WriteDataDetailsContextProvider>
+          <TemplateProvider variables={{bucket: 'ssss'}}>
+            <WriteDataDetailsContextProvider>
+              <ClientCodeCopyPage
+                contentID={contentID}
+                query={getPanelQuery(panelId)}
+              />
+            </WriteDataDetailsContextProvider>
+          </TemplateProvider>
         </Overlay.Body>
       </Overlay.Container>
     </Overlay>

@@ -1,5 +1,12 @@
 // Libraries
-import React, {FC, ReactNode, createContext, useState, useEffect} from 'react'
+import React, {
+  FC,
+  ReactNode,
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {useSelector} from 'react-redux'
 import {Context as TemplateContext} from 'src/shared/components/CodeSnippet'
@@ -29,7 +36,6 @@ export const WriteDataDetailsContext = createContext<
   WriteDataDetailsContextType
 >(DEFAULT_WRITE_DATA_DETAILS_CONTEXT)
 
-
 const WriteDataDetailsProvider: FC = ({children}) => {
   const {variables, update} = useContext(TemplateContext)
   const buckets = useSelector((state: AppState) =>
@@ -43,11 +49,12 @@ const WriteDataDetailsProvider: FC = ({children}) => {
 
   const [bucket, setBucket] = useState(buckets[0])
   const [token, setToken] = useState(tokens[0])
+
   useEffect(() => {
     if (tokens.length > 0 && !token) {
-      changeToken(tokens[0])
+      setToken(tokens[0])
     }
-  }, [tokens, token, changeToken])
+  }, [tokens, token, setToken])
 
   useEffect(() => {
     if (server === variables.server) {

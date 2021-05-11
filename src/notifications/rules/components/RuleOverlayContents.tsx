@@ -35,7 +35,7 @@ const RuleOverlayContents: FC<Props> = ({saveButtonText, onSave}) => {
 
     dispatch({
       type: 'UPDATE_RULE',
-      rule: {...rule, [name]: value} as NotificationRuleDraft,
+      rule: {...rule, [name]: value},
     })
   }
 
@@ -44,7 +44,7 @@ const RuleOverlayContents: FC<Props> = ({saveButtonText, onSave}) => {
   ) => {
     dispatch({
       type: 'UPDATE_RULE',
-      rule: {...rule, [key]: value} as NotificationRuleDraft,
+      rule: {...rule, [key]: value},
     })
   }
 

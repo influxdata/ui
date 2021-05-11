@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC, useContext} from 'react'
+import {useSelector} from 'react-redux'
 
 // Contexts
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
@@ -15,10 +16,19 @@ import {
   EmptyState,
 } from '@influxdata/clockface'
 
+// Utils
+import {getAll} from 'src/resources/selectors'
+
+// Types
+import {AppState, ResourceType, Authorization} from 'src/types'
+
 import GenerateTokenDropdown from 'src/authorizations/components/GenerateTokenDropdown'
 
 const WriteDataHelperTokens: FC = () => {
-  const {token, tokens, changeToken} = useContext(WriteDataDetailsContext)
+  const tokens = useSelector((state: AppState) =>
+    getAll<Authorization>(state, ResourceType.Authorizations)
+  )
+  const {token, changeToken} = useContext(WriteDataDetailsContext)
 
   let body = (
     <EmptyState

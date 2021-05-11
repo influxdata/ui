@@ -8,9 +8,11 @@ import {Panel, InfluxColors, ComponentSize} from '@influxdata/clockface'
 import {Page} from '@influxdata/clockface'
 import WriteDataHelperBuckets from 'src/writeData/components/WriteDataHelperBuckets'
 import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
+import CodeSnippet, {
+  Provider as TemplateProvider,
+} from 'src/shared/components/CodeSnippet'
 import GetResources from 'src/resources/components/GetResources'
 import CsvMethod from 'src/writeData/components/fileUploads/CsvMethod'
-import WriteDataCodeSnippet from 'src/writeData/components/WriteDataCodeSnippet'
 import LineProtocolTabs from 'src/buckets/components/lineProtocol/configure/LineProtocolTabs'
 import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
 
@@ -28,10 +30,11 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Styles
 import 'src/writeData/components/WriteDataDetailsView.scss'
+import LineProtocolFooterButtons from 'src/buckets/components/lineProtocol/LineProtocolFooterButtons'
 
-const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => {
-  return <WriteDataCodeSnippet code={props.value} language={props.language} />
-}
+const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => (
+  <CodeSnippet text={props.value} label={props.language} />
+)
 
 const UploadDataDetailsView: FC = () => {
   const {contentID} = useParams()
@@ -61,32 +64,39 @@ const UploadDataDetailsView: FC = () => {
     <GetResources
       resources={[ResourceType.Authorizations, ResourceType.Buckets]}
     >
-      <WriteDataDetailsContextProvider>
-        <Page
-          titleTag={pageTitleSuffixer(['File Upload', 'Sources', 'Load Data'])}
-        >
-          <Page.Header fullWidth={false}>
-            <Page.Title title={name} />
-          </Page.Header>
-          <Page.Contents fullWidth={false} scrollable={true}>
-            <div className="write-data--details">
-              <div className="write-data--details-thumbnail">{thumbnail}</div>
-              <div
-                className="write-data--details-content markdown-format"
-                data-testid="load-data-details-content"
-              >
-                <Panel backgroundColor={InfluxColors.Castle}>
-                  <Panel.Body size={ComponentSize.ExtraSmall}>
-                    <WriteDataHelperBuckets />
-                  </Panel.Body>
-                </Panel>
-                {pageContent}
-                {isLP ? <LineProtocolTabs /> : <CsvMethod />}
+      <TemplateProvider>
+        <WriteDataDetailsContextProvider>
+          <Page
+            titleTag={pageTitleSuffixer([
+              'File Upload',
+              'Sources',
+              'Load Data',
+            ])}
+          >
+            <Page.Header fullWidth={false}>
+              <Page.Title title={name} />
+            </Page.Header>
+            <Page.Contents fullWidth={false} scrollable={true}>
+              <div className="write-data--details">
+                <div className="write-data--details-thumbnail">{thumbnail}</div>
+                <div
+                  className="write-data--details-content markdown-format"
+                  data-testid="load-data-details-content"
+                >
+                  <Panel backgroundColor={InfluxColors.Castle}>
+                    <Panel.Body size={ComponentSize.ExtraSmall}>
+                      <WriteDataHelperBuckets />
+                    </Panel.Body>
+                  </Panel>
+                  {pageContent}
+                  {isLP ? <LineProtocolTabs /> : <CsvMethod />}
+                  {isLP && <LineProtocolFooterButtons />}
+                </div>
               </div>
-            </div>
-          </Page.Contents>
-        </Page>
-      </WriteDataDetailsContextProvider>
+            </Page.Contents>
+          </Page>
+        </WriteDataDetailsContextProvider>
+      </TemplateProvider>
     </GetResources>
   )
 }

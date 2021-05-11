@@ -32,7 +32,7 @@ const Selectors: FC = () => {
         style={{height: '304px'}}
         className="data-source--list__no-results"
       >
-        <p>{`No fields, meausurements, or tags match "${searchTerm}"`}</p>
+        <p>{`No fields, measurements, or tags match "${searchTerm}"`}</p>
       </EmptyState>
     )
   } else if (noResults && !searchTerm) {

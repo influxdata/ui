@@ -6,7 +6,9 @@ import {Renderer} from 'react-markdown'
 // Components
 import {Page} from '@influxdata/clockface'
 import WriteDataHelper from 'src/writeData/components/WriteDataHelper'
-import WriteDataCodeSnippet from 'src/writeData/components/WriteDataCodeSnippet'
+import CodeSnippet, {
+  Provider as TemplateProvider,
+} from 'src/shared/components/CodeSnippet'
 import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
 import GetResources from 'src/resources/components/GetResources'
 
@@ -26,9 +28,9 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import 'src/writeData/components/WriteDataDetailsView.scss'
 import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
 
-const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => {
-  return <WriteDataCodeSnippet code={props.value} language={props.language} />
-}
+const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => (
+  <CodeSnippet text={props.value} label={props.language} />
+)
 
 interface SampleProps {
   name: string
@@ -48,7 +50,7 @@ export const CodeSampleBlock: FC<SampleProps> = ({name, sample, query}) => {
         {sample.map((option, idx) => (
           <div key={idx}>
             <h6>{`Option ${idx + 1}: ${option.title}`}</h6>
-            <WriteDataCodeSnippet code={option.code} language="" />
+            <CodeSnippet text={option.code} />
           </div>
         ))}
       </>
@@ -58,7 +60,7 @@ export const CodeSampleBlock: FC<SampleProps> = ({name, sample, query}) => {
   return (
     <>
       <h4>{name}</h4>
-      <WriteDataCodeSnippet code={sample} language="" query={query} />
+      <CodeSnippet text={sample} />
     </>
   )
 }
@@ -88,41 +90,42 @@ const ClientLibrariesPage: FC = () => {
     <GetResources
       resources={[ResourceType.Authorizations, ResourceType.Buckets]}
     >
-      <WriteDataDetailsContextProvider>
-        <Page
-          titleTag={pageTitleSuffixer([
-            'Client Library',
-            'Sources',
-            'Load Data',
-          ])}
-        >
-          <Page.Header fullWidth={false}>
-            <Page.Title title={name} />
-          </Page.Header>
-          <Page.Contents fullWidth={false} scrollable={true}>
-            <div className="write-data--details">
-              <div className="write-data--details-thumbnail">{thumbnail}</div>
-              <div
-                className="write-data--details-content markdown-format"
-                data-testid="load-data-details-content"
-              >
-                <WriteDataHelper />
-                {description}
-                <CodeSampleBlock
-                  name="Initialize the Client"
-                  sample={def.initialize}
-                />
-                <CodeSampleBlock name="Write Data" sample={def.write} />
-                <CodeSampleBlock
-                  name="Execute a Flux query"
-                  sample={def.execute}
-                  query={def.query}
-                />
+      <TemplateProvider>
+        <WriteDataDetailsContextProvider>
+          <Page
+            titleTag={pageTitleSuffixer([
+              'Client Library',
+              'Sources',
+              'Load Data',
+            ])}
+          >
+            <Page.Header fullWidth={false}>
+              <Page.Title title={name} />
+            </Page.Header>
+            <Page.Contents fullWidth={false} scrollable={true}>
+              <div className="write-data--details">
+                <div className="write-data--details-thumbnail">{thumbnail}</div>
+                <div
+                  className="write-data--details-content markdown-format"
+                  data-testid="load-data-details-content"
+                >
+                  <WriteDataHelper />
+                  {description}
+                  <CodeSampleBlock
+                    name="Initialize the Client"
+                    sample={def.initialize}
+                  />
+                  <CodeSampleBlock name="Write Data" sample={def.write} />
+                  <CodeSampleBlock
+                    name="Execute a Flux query"
+                    sample={def.execute}
+                  />
+                </div>
               </div>
-            </div>
-          </Page.Contents>
-        </Page>
-      </WriteDataDetailsContextProvider>
+            </Page.Contents>
+          </Page>
+        </WriteDataDetailsContextProvider>
+      </TemplateProvider>
     </GetResources>
   )
 }

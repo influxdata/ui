@@ -686,6 +686,18 @@ export const taskGetFailed = (error: string): Notification => ({
   message: `Failed to get runs: ${error}`,
 })
 
+export const taskRetrySuccess = (id: string): Notification => ({
+  ...defaultSuccessNotification,
+  duration: FIVE_SECONDS,
+  message: `Task run ${id} was succesful`,
+})
+
+export const taskRetryFailed = (error: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Failed to retry Task: ${error}`,
+})
+
 export const getTelegrafConfigFailed = (): Notification => ({
   ...defaultErrorNotification,
   message: 'Failed to get telegraf config',

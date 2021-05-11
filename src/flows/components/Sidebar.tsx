@@ -4,7 +4,7 @@ import {FlowContext} from 'src/flows/context/flow.current'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {Context as SidebarContext} from 'src/flows/context/sidebar'
 import {PIPE_DEFINITIONS} from 'src/flows'
-import {ControlSection, ControlAction, SubMenu} from 'src/types/flows'
+import {ControlSection, ControlAction, Submenu} from 'src/types/flows'
 import ClientList from 'src/flows/components/ClientList'
 
 import {event} from 'src/cloud/utils/reporting'
@@ -13,7 +13,7 @@ const Sidebar: FC = () => {
   const {flow, add} = useContext(FlowContext)
   const {getPanelQueries} = useContext(FlowQueryContext)
   const {id, show, hide, menu} = useContext(SidebarContext)
-  const [submenu, setSubmenu] = useState()
+  const [submenu, setSubmenu]: [Submenu['menu'], (_?:Submenu['menu']) => void] = useState()
 
   if (!id || flow.readOnly) {
     return null
@@ -122,7 +122,7 @@ const Sidebar: FC = () => {
           return (
           <List.Item
             onClick={() => {
-              setSubmenu((action as SubMenu).menu)
+              setSubmenu((action as Submenu).menu)
             }}
             wrapText={false}
             title={title}

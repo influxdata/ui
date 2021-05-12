@@ -1,5 +1,4 @@
 import React, {PureComponent} from 'react'
-import {get} from 'lodash'
 
 // Components
 import {
@@ -18,18 +17,16 @@ import {downloadTextFile} from 'src/shared/utils/download'
 // Types
 import {DocumentCreate} from '@influxdata/influx'
 import {ComponentColor, ComponentSize} from '@influxdata/clockface'
-import {RemoteDataState, Notification} from 'src/types'
+import {RemoteDataState} from 'src/types'
 
-interface OwnProps {
+interface Props {
   onDismissOverlay: () => void
   resource: DocumentCreate
   resourceName: string
-  onCopyText?: (text: string, status: boolean) => Notification
+  onCopy?: () => void
   status: RemoteDataState
   isVisible: boolean
 }
-
-type Props = OwnProps
 
 export default class ExportOverlay extends PureComponent<Props> {
   public static defaultProps = {
@@ -95,17 +92,15 @@ export default class ExportOverlay extends PureComponent<Props> {
   }
 
   private get resourceText(): string {
-    return JSON.stringify(this.props.resource, null, 1)
+    return JSON.stringify(this.props.resource, null, 2)
   }
 
   private get copyButton(): JSX.Element {
     return (
       <CopyButton
-        textToCopy={this.resourceText}
-        contentName={this.props.resourceName}
-        onCopyText={this.props.onCopyText}
+        text={this.resourceText}
+        onCopy={this.props.onCopy}
         size={ComponentSize.Small}
-        color={ComponentColor.Secondary}
       />
     )
   }
@@ -122,7 +117,7 @@ export default class ExportOverlay extends PureComponent<Props> {
 
   private handleExport = (): void => {
     const {resource, resourceName, onDismissOverlay} = this.props
-    const name = get(resource, 'content.data.attributes.name', resourceName)
+    const name = resource?.content?.data?.attributes?.name || resourceName
     downloadTextFile(JSON.stringify(resource, null, 1), name, '.json')
     onDismissOverlay()
   }

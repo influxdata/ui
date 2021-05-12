@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, Suspense} from 'react'
-import {connect} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {useSelector} from 'react-redux'
+import {useHistory} from 'react-router-dom'
 
 // Components
 import {SelectableCard, SquareGrid, ComponentSize} from '@influxdata/clockface'
@@ -13,25 +13,25 @@ import {getOrg} from 'src/organizations/selectors'
 // Graphics
 import placeholderLogo from 'src/writeData/graphics/placeholderLogo.svg'
 
-// Types
-import {WriteDataItem} from 'src/writeData/constants'
-import {AppState} from 'src/types'
-
 // Constants
 import {ORGS} from 'src/shared/constants/routes'
 
 // Styles
 import 'src/writeData/components/WriteDataItem.scss'
 
-interface StateProps {
-  orgID: string
+interface Props {
+  id: string
+  name: string
+  url: string
+  image?: string
 }
 
-type Props = WriteDataItem & RouteComponentProps & StateProps
+const WriteDataItem: FC<Props> = ({id, name, url, image}) => {
+  const history = useHistory()
+  const org = useSelector(getOrg)
 
-const WriteDataItem: FC<Props> = ({id, name, url, image, history, orgID}) => {
   const handleClick = (): void => {
-    history.push(`/${ORGS}/${orgID}/load-data/${url}`)
+    history.push(`/${ORGS}/${org.id}/load-data/${url}`)
   }
 
   let thumb = <img src={placeholderLogo} />
@@ -62,9 +62,4 @@ const WriteDataItem: FC<Props> = ({id, name, url, image, history, orgID}) => {
   )
 }
 
-const mstp = (state: AppState) => {
-  const {id} = getOrg(state)
-  return {orgID: id}
-}
-
-export default connect<StateProps>(mstp)(withRouter(WriteDataItem))
+export default WriteDataItem

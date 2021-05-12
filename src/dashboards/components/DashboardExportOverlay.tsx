@@ -1,78 +1,55 @@
-import React, {PureComponent} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import React, {FC, useEffect} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
+import {useHistory, useParams} from 'react-router-dom'
 
 // Components
 import ExportOverlay from 'src/shared/components/ExportOverlay'
 
 // Actions
-import {convertToTemplate as convertToTemplateAction} from 'src/dashboards/actions/thunks'
-import {clearExportTemplate as clearExportTemplateAction} from 'src/templates/actions/thunks'
+import {convertToTemplate} from 'src/dashboards/actions/thunks'
+import {clearExportTemplate} from 'src/templates/actions/thunks'
+import {notify} from 'src/shared/actions/notifications'
 
 // Types
 import {AppState} from 'src/types'
 
-import {
-  dashboardCopySuccess,
-  dashboardCopyFailed,
-} from 'src/shared/copy/notifications'
+import {dashboardCopySuccess} from 'src/shared/copy/notifications'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps &
-  RouteComponentProps<{orgID: string; dashboardID: string}>
+const DashboardExportOverlay: FC = () => {
+  const {dashboardID} = useParams()
+  const dispatch = useDispatch()
+  const history = useHistory()
 
-class DashboardExportOverlay extends PureComponent<Props> {
-  public componentDidMount() {
-    const {
-      match: {
-        params: {dashboardID},
-      },
-      convertToTemplate,
-    } = this.props
-
-    convertToTemplate(dashboardID)
-  }
-
-  public render() {
-    const {status, dashboardTemplate} = this.props
-
-    const notes = (_text, success) => {
-      if (success) {
-        return dashboardCopySuccess()
-      }
-
-      return dashboardCopyFailed()
+  useEffect(() => {
+    if (dashboardID) {
+      dispatch(convertToTemplate(dashboardID))
     }
+  }, [dashboardID])
 
-    return (
-      <ExportOverlay
-        resourceName="Dashboard"
-        resource={dashboardTemplate}
-        onDismissOverlay={this.onDismiss}
-        onCopyText={notes}
-        status={status}
-      />
-    )
+  const status = useSelector(
+    (state: AppState) => state.resources.templates.exportTemplate.status
+  )
+  const template = useSelector(
+    (state: AppState) => state.resources.templates.exportTemplate.item
+  )
+
+  const notes = () => {
+    dispatch(notify(dashboardCopySuccess()))
   }
-
-  private onDismiss = () => {
-    const {history, clearExportTemplate} = this.props
-
+  const dismiss = () => {
     history.goBack()
-    clearExportTemplate()
+    dispatch(clearExportTemplate)
   }
+
+  return (
+    <ExportOverlay
+      resourceName="Dashboard"
+      resource={template}
+      onDismissOverlay={dismiss}
+      onCopy={notes}
+      status={status}
+    />
+  )
 }
 
-const mstp = (state: AppState) => ({
-  dashboardTemplate: state.resources.templates.exportTemplate.item,
-  status: state.resources.templates.exportTemplate.status,
-})
-
-const mdtp = {
-  convertToTemplate: convertToTemplateAction,
-  clearExportTemplate: clearExportTemplateAction,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(withRouter(DashboardExportOverlay))
+export default DashboardExportOverlay

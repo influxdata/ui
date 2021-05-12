@@ -113,6 +113,7 @@ jobs:
             docker build \
               --build-arg UI_SHA=testing \
               --build-arg CLOUD_URL=http://localhost/auth \
+              --build-arg WEBPACK_FILE=lighthouse \
               -t quay.io/influxdb/ui-acceptance:${CIRCLE_SHA1} \
               -f ./ui/docker/Dockerfile.chronograf.prod \
               ./ui
@@ -607,7 +608,10 @@ workflows:
             - cloud-e2e
             # TODO: uncomment this when we disable cloud-e2e
             # - cloud-e2e-k8s-idpe
-      - monitor-ci-tests
+      - monitor-ci-tests:
+          requires:
+            - unit
+            - lint
 commands:
   install_jsonnet_binary:
     description: >

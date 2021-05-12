@@ -9,7 +9,6 @@ import {AppSettingProvider} from 'src/shared/contexts/app'
 import {Page} from '@influxdata/clockface'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import TimeRangeDropdown from 'src/flows/components/header/TimeRangeDropdown'
-import AutoRefreshDropdown from 'src/flows/components/header/AutoRefreshDropdown'
 import Submit from 'src/flows/components/header/Submit'
 import PresentationMode from 'src/flows/components/header/PresentationMode'
 import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
@@ -46,7 +45,6 @@ const FlowHeader: FC = () => {
           <PresentationMode />
           <TimeZoneDropdown />
           <TimeRangeDropdown />
-          <AutoRefreshDropdown />
         </Page.ControlBarRight>
       </Page.ControlBar>
     </>

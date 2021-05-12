@@ -48,7 +48,7 @@ class TelegrafInstructions extends PureComponent<Props> {
           Finally, you can run the following command to start the Telegraf agent
           running on your machine.
         </p>
-        <CodeSnippet copyText={configScript} label="CLI" />
+        <CodeSnippet text={configScript} label="CLI" />
       </div>
     )
   }

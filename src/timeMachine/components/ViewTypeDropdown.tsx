@@ -14,6 +14,9 @@ import {AppState} from 'src/types'
 // Actions
 import {setType} from 'src/timeMachine/actions'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 export const TimeMachineViewTypeDropdown: FC<{}> = () => {
   const dispatch = useDispatch()
 
@@ -25,6 +28,9 @@ export const TimeMachineViewTypeDropdown: FC<{}> = () => {
 
   const updateType = useCallback(
     selectedType => {
+      event('dataexplorer.view_type_dropdown.selected_type', {
+        selectedType: selectedType,
+      })
       dispatch(setType(selectedType))
     },
     [dispatch]

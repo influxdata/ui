@@ -4,9 +4,9 @@ import React, {FC, useContext, useState} from 'react'
 // Components
 import {Columns, Grid, IconFont, IndexList, Input} from '@influxdata/clockface'
 import {UsersContext} from 'src/users/context/users'
-import UserListItem from 'src/users/components/users/UserListItem'
-import InviteListItem from 'src/users/components/users/InviteListItem'
-import UserListNotifications from 'src/users/components/users/UserListNotifications'
+import UserListItem from 'src/users/components/UserListItem'
+import InviteListItem from 'src/users/components/InviteListItem'
+import UserListNotifications from 'src/users/components/UserListNotifications'
 
 // Utils
 import {filter} from 'src/users/utils/filter'

@@ -10,7 +10,7 @@ import {
 } from '@influxdata/clockface'
 
 // Constants
-import {roles} from 'src/unity/constants'
+import {roles} from 'src/users/constants'
 
 // Types
 import {DraftInvite} from 'src/types'

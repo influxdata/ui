@@ -2,7 +2,7 @@
 import {Dispatch} from 'react'
 
 // API
-import {resendOrgInvite, deleteOrgInvite, deleteOrgUser} from 'src/unity/api'
+import {resendOrgInvite, deleteOrgInvite, deleteOrgUser} from 'src/users/api'
 
 import {
   getOrgsUsers,
@@ -24,14 +24,14 @@ import {
   Action,
   resetDraftInvite,
   setInvites,
-} from 'src/unity/reducers'
+} from 'src/users/reducers'
 import {RemoteDataState} from '@influxdata/clockface'
 
 // Types
 import {CloudUser as User} from 'src/types'
 
 // Constants
-import {GTM_USER_REMOVED} from 'src/unity/constants'
+import {GTM_USER_REMOVED} from 'src/users/constants'
 
 export const getUsersAndInvites = async (
   dispatch: Dispatch<Action>,

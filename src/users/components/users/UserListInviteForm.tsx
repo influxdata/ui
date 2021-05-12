@@ -23,14 +23,14 @@ import {
 import {gaEvent} from 'src/cloud/utils/reporting'
 
 // Actions
-import {editDraftInvite} from 'src/unity/reducers'
-import {onInviteUser} from 'src/unity/thunks'
+import {editDraftInvite} from 'src/users/reducers'
+import {onInviteUser} from 'src/users/thunks'
 
 // Constants
-import {GTM_INVITE_SENT} from 'src/unity/constants'
+import {GTM_INVITE_SENT} from 'src/users/constants'
 
 // Hooks
-import {useNotify} from 'src/unity/hooks'
+import {useNotify} from 'src/users/hooks'
 
 interface InviteErrors {
   email?: string

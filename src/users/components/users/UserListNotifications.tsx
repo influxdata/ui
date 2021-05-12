@@ -18,7 +18,7 @@ import {
   removeUserStatus as removeUserStatusAction,
   removeInviteStatus as removeInviteStatusAction,
   resendInviteStatus as resendInviteStatusAction,
-} from 'src/unity/reducers'
+} from 'src/users/reducers'
 
 export default function UserListNotifications() {
   const [

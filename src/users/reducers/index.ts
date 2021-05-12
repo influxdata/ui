@@ -1,5 +1,5 @@
 // Constants & Types
-import {draftInvite} from 'src/unity/constants'
+import {draftInvite} from 'src/users/constants'
 import {CloudUser as User, Invite, DraftInvite} from 'src/types'
 import {RemoteDataState} from '@influxdata/clockface'
 

@@ -9,10 +9,10 @@ import InviteListItem from './InviteListItem'
 import UserListNotifications from './UserListNotifications'
 
 // Actions
-import {Action, UserListState} from 'src/unity/reducers'
+import {Action, UserListState} from 'src/users/reducers'
 
 // Utils
-import {filter} from 'src/unity/utils/filter'
+import {filter} from 'src/users/utils/filter'
 
 const UserList: FC = () => {
   const [{users, invites}] = useContext<[UserListState, Dispatch<Action>]>(

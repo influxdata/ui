@@ -6,13 +6,13 @@ import {Dropdown, ComponentColor} from '@influxdata/clockface'
 import {UserListContext} from './UsersPage'
 
 // Constants
-import {roles} from 'src/unity/constants'
+import {roles} from 'src/users/constants'
 
 // Types
 import {Role} from 'src/types'
 
 // Actions
-import {editDraftInvite} from 'src/unity/reducers'
+import {editDraftInvite} from 'src/users/reducers'
 
 const UserRoleDropdown: FC = () => {
   const [{draftInvite}, dispatch] = useContext(UserListContext)

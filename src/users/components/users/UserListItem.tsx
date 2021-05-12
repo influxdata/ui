@@ -16,7 +16,7 @@ import {
 import {UserListContext, UserListContextResult} from './UsersPage'
 
 // Thunks
-import {removeUser} from 'src/unity/thunks'
+import {removeUser} from 'src/users/thunks'
 
 // Types
 import {CloudUser as User} from 'src/types'

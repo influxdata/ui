@@ -21,10 +21,10 @@ import {
   userListReducer,
   UserListReducer,
   initialState,
-} from 'src/unity/reducers'
+} from 'src/users/reducers'
 
 // Thunks
-import {getUsersAndInvites} from 'src/unity/thunks'
+import {getUsersAndInvites} from 'src/users/thunks'
 
 export const UserListContext = React.createContext(null)
 export type UserListContextResult = [UserListState, Dispatch<Action>]

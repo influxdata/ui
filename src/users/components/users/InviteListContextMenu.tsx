@@ -17,7 +17,7 @@ import {
 import {UserListContext, UserListContextResult} from './UsersPage'
 
 // Thunks
-import {withdrawInvite, resendInvite} from 'src/unity/thunks'
+import {withdrawInvite, resendInvite} from 'src/users/thunks'
 
 // Types
 import {Invite} from 'src/types'

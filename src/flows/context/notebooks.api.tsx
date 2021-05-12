@@ -76,7 +76,7 @@ export const deleteAPI = async (ids: DeleteNotebookParams) => {
 }
 
 export const getAllAPI = async (orgID: string) => {
-  const res = await getNotebooks({orgID})
+  const res = await getNotebooks({query: {orgID}})
   if (res.status != 200) {
     throw new Error(res.data.message)
   }

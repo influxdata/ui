@@ -1565,6 +1565,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
 
     cy.intercept('POST', 'query', req => {
       if (req.body.query === query1) {
+        // This will only fire when the first cell is unpaused AND it then gets refreshed as part of auto refresh loop, indicating successful operation
         done()
       }
       if (req.body.query === query2) {

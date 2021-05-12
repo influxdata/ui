@@ -10,7 +10,7 @@ import { taskUpdateSuccess } from 'src/shared/copy/notifications'
 
 const sampleTask = { id: '01', orgID: '01', name: 'Test Task', flux: ''}
 
-  jest.mock('src/client', () => ({
+jest.mock('src/client', () => ({
   patchTask: jest.fn(),
   getTasks: jest.fn(),
 }))

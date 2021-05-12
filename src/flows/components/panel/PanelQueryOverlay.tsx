@@ -8,7 +8,6 @@ import {CopyToClipboardContext} from 'src/flows/context/panel'
 import ClientCodeCopyPage from 'src/writeData/components/ClientCodeCopyPage'
 import {FlowQueryContext, Stage} from 'src/flows/context/flow.query'
 import {CLIENT_DEFINITIONS} from 'src/writeData'
-import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
 import {Provider as TemplateProvider} from 'src/shared/components/CodeSnippet'
 
 interface OwnProps {
@@ -39,13 +38,11 @@ const PanelQueryOverlay: FC<Props> = ({panelId}) => {
           onDismiss={() => setVisibility(!visible)}
         />
         <Overlay.Body>
-          <TemplateProvider variables={{bucket: 'ssss'}}>
-            <WriteDataDetailsContextProvider>
-              <ClientCodeCopyPage
-                contentID={contentID}
-                query={getPanelQuery(panelId)}
-              />
-            </WriteDataDetailsContextProvider>
+          <TemplateProvider>
+            <ClientCodeCopyPage
+              contentID={contentID}
+              query={getPanelQuery(panelId)}
+            />
           </TemplateProvider>
         </Overlay.Body>
       </Overlay.Container>

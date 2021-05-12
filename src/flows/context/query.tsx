@@ -1,6 +1,7 @@
 import React, {FC, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {v4 as UUID} from 'uuid'
+import {get as lodashGet} from 'lodash'
 
 import {parse} from 'src/external/parser'
 import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
@@ -84,17 +85,15 @@ const _walk = (node, test, acc = []) => {
   return acc
 }
 
-export const updateBucketInAST = (ast: File, name: string) => {
-  _walk(ast, node => {
-    if (
+export const getBucketsFromAST = (ast: File) => {
+  return _walk(
+    ast,
+    node =>
       node?.type === 'CallExpression' &&
       node?.callee?.type === 'Identifier' &&
       node?.callee?.name === 'from' &&
       node?.arguments[0]?.properties[0]?.key?.name === 'bucket'
-    ) {
-      node.arguments[0].properties[0].value.location.source = `"${name}"`
-    }
-  })
+  ).map(node => lodashGet(node, 'arguments.0.properties.0.value.value', ''))
 }
 
 const _getVars = (

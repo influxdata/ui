@@ -1,13 +1,5 @@
 // Libraries
-import React, {
-  FC,
-  ReactNode,
-  createContext,
-  useState,
-  useEffect,
-  useContext,
-} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
+import React, {FC, createContext, useState, useEffect, useContext} from 'react'
 import {useSelector} from 'react-redux'
 import {Context as TemplateContext} from 'src/shared/components/CodeSnippet'
 

@@ -54,7 +54,6 @@ export const makeAnnotationClickListener = (
           startTime: plotInteraction?.clampedValueX ?? plotInteraction.valueX,
         },
         () => {
-          event(`${eventPrefix}.annotations.create_annotation.cancel`)
           dismissOverlay()
         }
       )
@@ -81,7 +80,6 @@ const makeAnnotationClickHandler = (
           'edit-annotation',
           {clickedAnnotation: {...annotationToEdit, stream: cellID}},
           () => {
-            event(`${eventPrefix}.annotations.edit_annotation.cancel`)
             dismissOverlay()
           }
         )

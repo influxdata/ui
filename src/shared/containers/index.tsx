@@ -70,7 +70,7 @@ export const RouteToDashboardList = lazy(() =>
 export const FlowsIndex = lazy(() => import('src/flows/components/FlowsIndex'))
 export const NotFound = lazy(() => import('src/shared/components/NotFound'))
 export const UsersPage = lazy(() =>
-  import('src/unity/components/users/UsersPage')
+  import('src/users/components/users/UsersPage')
 )
 export const UsagePage = lazy(() => import('src/usage/UsagePage'))
 export const BillingPage = lazy(() =>

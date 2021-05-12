@@ -11,7 +11,7 @@ import {PIPE_DEFINITIONS} from 'src/flows'
 import {notify} from 'src/shared/actions/notifications'
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 import {parseDuration, timeRangeToDuration} from 'src/shared/utils/duration'
-import {useEvent, sendEvent} from 'src/unity/hooks/useEvent'
+import {useEvent, sendEvent} from 'src/users/hooks/useEvent'
 
 // Constants
 import {

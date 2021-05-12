@@ -2,13 +2,14 @@
 import {Dispatch} from 'react'
 
 // API
+import {resendOrgInvite, deleteOrgInvite, deleteOrgUser} from 'src/unity/api'
+
 import {
-  getOrgsInvites,
   getOrgsUsers,
-  resendOrgInvite,
-  deleteOrgInvite,
-  deleteOrgUser,
-} from 'src/unity/api'
+  getOrgsInvites,
+  postOrgsInvite,
+  Invite,
+} from 'src/client/unityRoutes'
 
 // Actions
 import {
@@ -21,20 +22,25 @@ import {
   removeInviteStatus,
   resendInviteStatus,
   Action,
-} from '../reducers'
+  resetDraftInvite,
+  setInvites,
+} from 'src/unity/reducers'
 import {RemoteDataState} from '@influxdata/clockface'
 
 // Types
-import {Invite, CloudUser as User} from 'src/types'
+import {CloudUser as User} from 'src/types'
 
 // Constants
 import {GTM_USER_REMOVED} from 'src/unity/constants'
 
-export const getUsersAndInvites = async (dispatch: Dispatch<Action>) => {
+export const getUsersAndInvites = async (
+  dispatch: Dispatch<Action>,
+  orgId: string
+) => {
   try {
     const [userResp, inviteResp] = await Promise.all([
-      getOrgsUsers(),
-      getOrgsInvites(),
+      getOrgsUsers({orgId}),
+      getOrgsInvites({orgId}),
     ])
 
     if (userResp.status !== 200) {
@@ -45,18 +51,41 @@ export const getUsersAndInvites = async (dispatch: Dispatch<Action>) => {
       throw new Error(inviteResp.data.message)
     }
 
-    const users = userResp.data.map(u => ({
-      ...u,
-      status: RemoteDataState.Done,
-    }))
-    const invites = inviteResp.data.map(i => ({
-      ...i,
-      status: RemoteDataState.Done,
-    }))
+    const users =
+      userResp.data?.users?.map(u => ({
+        ...u,
+        status: RemoteDataState.Done,
+      })) ?? []
+    const invites =
+      inviteResp.data?.invites?.map(i => ({
+        ...i,
+        status: RemoteDataState.Done,
+      })) ?? []
 
     dispatch(setAll(users, invites, RemoteDataState.Done))
   } catch (error) {
     dispatch(setAll([], [], RemoteDataState.Error))
+    console.error(error)
+  }
+}
+
+export const onInviteUser = async (
+  dispatch: Dispatch<Action>,
+  orgId: string,
+  invite: Invite,
+  invites: Invite[]
+) => {
+  dispatch(resetDraftInvite())
+
+  try {
+    const resp = await postOrgsInvite({orgId, data: invite})
+
+    if (resp.status !== 201) {
+      throw new Error(resp.data.message)
+    }
+
+    dispatch(setInvites([resp.data, ...invites]))
+  } catch (error) {
     console.error(error)
   }
 }

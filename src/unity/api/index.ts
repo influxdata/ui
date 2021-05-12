@@ -1,29 +1,15 @@
 import uuid from 'uuid'
 
 import {
-  GetOrgsUsersResult,
   DeleteOrgsInviteResult,
   DeleteOrgsUserResult,
   PostOrgsInvitesResendResult,
   PostOrgsInviteResult,
   DraftInvite,
-  GetOrgsInvitesResult,
   Invite,
 } from 'src/types'
 
 import {RemoteDataState} from '@influxdata/clockface'
-
-export const users = [
-  'watts@influxdata.com',
-  'randy@influxdata.com',
-  'iris@influxdata.com',
-]
-
-export const invites = [
-  'ari@influxdata.com',
-  'deniz@influxdata.com',
-  'palak@influxdata.com',
-]
 
 const makeResponse = (status, data, ...args) => {
   for (let i = 0; i < args.length; i++) {
@@ -35,12 +21,6 @@ const makeResponse = (status, data, ...args) => {
     headers: new Headers({'Content-Type': 'application/json'}),
     data,
   })
-}
-
-export const getOrgsUsers = (): Promise<GetOrgsUsersResult> => {
-  const data = users.map(email => ({id: uuid.v4(), email, role: 'owner'}))
-
-  return makeResponse(200, data, 'getOrgUsers')
 }
 
 const makeInvite = (email: string): Invite => {
@@ -55,20 +35,6 @@ const makeInvite = (email: string): Invite => {
     expiresAt,
     status: RemoteDataState.Done,
   }
-}
-
-export const getOrgsInvites = (): Promise<GetOrgsInvitesResult> => {
-  const data = invites.map(makeInvite)
-
-  return makeResponse(200, data)
-}
-
-export const createOrgInvite = async (
-  orgID: string,
-  draftInvite: DraftInvite
-): Promise<PostOrgsInviteResult> => {
-  const data = makeInvite(draftInvite.email)
-  return makeResponse(201, data, orgID, draftInvite)
 }
 
 export const deleteOrgInvite = async (

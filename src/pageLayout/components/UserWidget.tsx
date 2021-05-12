@@ -53,46 +53,49 @@ const UserWidget: FC<Props> = ({
           id="usage"
           label="Usage"
           testID="user-nav-item-usage"
-          linkElement={className => (
-            <a
-              className={className}
-              href={
-                isFlagEnabled('unityUsage')
-                  ? `${orgPrefix}/usage`
-                  : `${CLOUD_URL}${CLOUD_USAGE_PATH}`
-              }
-            />
-          )}
+          linkElement={className => {
+            if (isFlagEnabled('unityUsage')) {
+              return <Link className={className} to={`${orgPrefix}/usage`} />
+            }
+            return (
+              <a
+                className={className}
+                href={`${CLOUD_URL}${CLOUD_USAGE_PATH}`}
+              />
+            )
+          }}
         />
         <TreeNav.UserItem
           id="billing"
           label="Billing"
           testID="user-nav-item-billing"
-          linkElement={className => (
-            <a
-              className={className}
-              href={
-                isFlagEnabled('unityBilling')
-                  ? `${orgPrefix}/billing`
-                  : `${CLOUD_URL}${CLOUD_BILLING_PATH}`
-              }
-            />
-          )}
+          linkElement={className => {
+            if (isFlagEnabled('unityBilling')) {
+              return <Link className={className} to={`${orgPrefix}/billing`} />
+            }
+            return (
+              <a
+                className={className}
+                href={`${CLOUD_URL}${CLOUD_BILLING_PATH}`}
+              />
+            )
+          }}
         />
         <TreeNav.UserItem
           id="users"
           label="Users"
           testID="user-nav-item-users"
-          linkElement={className => (
-            <a
-              className={className}
-              href={
-                isFlagEnabled('unityUsers')
-                  ? `${orgPrefix}/users`
-                  : `${CLOUD_URL}/organizations/${org.id}${CLOUD_USERS_PATH}`
-              }
-            />
-          )}
+          linkElement={className => {
+            if (isFlagEnabled('unityUsers')) {
+              return <Link className={className} to={`${orgPrefix}/users`} />
+            }
+            return (
+              <a
+                className={className}
+                href={`${CLOUD_URL}/organizations/${org.id}${CLOUD_USERS_PATH}`}
+              />
+            )
+          }}
         />
         <TreeNav.UserItem
           id="about"

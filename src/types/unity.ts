@@ -28,40 +28,6 @@ export interface InviteErrorsJSON {
   errors: InviteErrors
 }
 
-export type GetOrgsUsersResult =
-  | GetOrgsUsersOKResult
-  | GetOrgsUsersDefaultResult
-
-// TODO(watts): delete everything below this line
-// once the mock API's are replaced with actual calls the Quartz
-interface GetOrgsUsersOKResult {
-  status: 200
-  headers: Headers
-  data: GenUser[]
-}
-
-interface GetOrgsUsersDefaultResult {
-  status: 500
-  headers: Headers
-  data: Error
-}
-
-export type GetOrgsInvitesResult =
-  | GetOrgsInvitesOKResult
-  | GetOrgsInvitesDefaultResult
-
-interface GetOrgsInvitesOKResult {
-  status: 200
-  headers: Headers
-  data: GenInvite[]
-}
-
-interface GetOrgsInvitesDefaultResult {
-  status: 500
-  headers: Headers
-  data: Error
-}
-
 export type DeleteOrgsInviteResult =
   | DeleteOrgsInviteNoContentResult
   | DeleteOrgsInviteDefaultResult

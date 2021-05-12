@@ -20,11 +20,11 @@ import {
   Panel,
 } from '@influxdata/clockface'
 
-import {createOrgInvite} from 'src/unity/api'
 import {gaEvent} from 'src/cloud/utils/reporting'
 
 // Actions
-import {editDraftInvite, resetDraftInvite, setInvites} from 'src/unity/reducers'
+import {editDraftInvite} from 'src/unity/reducers'
+import {onInviteUser} from 'src/unity/thunks'
 
 // Constants
 import {GTM_INVITE_SENT} from 'src/unity/constants'
@@ -43,24 +43,11 @@ const UserListInviteForm: FC = () => {
     UserListContextResult
   >(UserListContext)
 
-  const onInviteUser = async () => {
-    dispatch(resetDraftInvite())
-
-    try {
-      const resp = await createOrgInvite(orgID, draftInvite)
-
-      if (resp.status !== 201) {
-        throw new Error(resp.data.message)
-      }
-
-      dispatch(setInvites([resp.data, ...invites]))
-      show()
-
-      // Google Tag Manager event for sending an invitation
-      gaEvent(GTM_INVITE_SENT)
-    } catch (error) {
-      console.error(error)
-    }
+  const handleInviteUser = () => {
+    onInviteUser(dispatch, orgID, draftInvite, invites)
+    show()
+    // Google Tag Manager event for sending an invitation
+    gaEvent(GTM_INVITE_SENT)
   }
 
   const onChangeInvitee = (e: ChangeEvent<HTMLInputElement>) => {
@@ -88,7 +75,7 @@ const UserListInviteForm: FC = () => {
               </Panel.Header>
               <Panel.Body size={ComponentSize.Small}>
                 <Form
-                  onSubmit={onInviteUser}
+                  onSubmit={handleInviteUser}
                   className="user-list-invite--form"
                 >
                   <Form.Element

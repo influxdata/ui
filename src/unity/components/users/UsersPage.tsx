@@ -42,8 +42,8 @@ function UsersPage() {
   )
 
   useEffect(() => {
-    getUsersAndInvites(dispatch)
-  }, [dispatch])
+    getUsersAndInvites(dispatch, orgID)
+  }, [dispatch, orgID])
 
   const loading = state ? state.status : RemoteDataState.NotStarted
 

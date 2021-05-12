@@ -4,167 +4,152 @@ import {useDispatch, useSelector} from 'react-redux'
 
 // Utils
 import {
-  getBillingDate,
-  getBillingStats,
-  getUsageVectors,
-  getUsageStats,
-  getRateLimits,
-} from 'src/usage/api'
-import {getTimeRange} from 'src/dashboards/selectors'
-import {setTimeRange} from 'src/timeMachine/actions'
+  getOrgsUsers,
+  getOrgsInvites,
+  postOrgsInvite,
+  Invite,
+} from 'src/client/unityRoutes'
 
 // Constants
-import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 
 // Types
-import {TimeRange} from 'src/types'
-import {UsageVector} from 'src/types/billing'
+import {User} from 'src/client/unityRoutes'
+import {DraftInvite, RemoteDataState} from 'src/types'
+import {getOrg} from 'src/organizations/selectors'
 
 export type Props = {
   children: JSX.Element
 }
 
-export interface UsageContextType {
-  billingDateTime: string
-  billingStats: string[]
-  handleSetSelectedUsage: (vector: string) => void
-  handleSetTimeRange: (timeRange: TimeRange) => void
-  rateLimits: string
-  selectedUsage: string
-  timeRange: TimeRange
-  usageStats: string
-  usageVectors: UsageVector[]
+export interface UsersContextType {
+  draftInvite: DraftInvite
+  handleEditDraftInvite: (_: DraftInvite) => void
+  handleInviteUser: () => void
+  invites: Invite[]
+  removeUserStatus: RemoteDataState
+  removeInviteStatus: RemoteDataState
+  resendInviteStatus: RemoteDataState
+  status: RemoteDataState
+  users: User[]
 }
 
-export const DEFAULT_CONTEXT: UsageContextType = {
-  billingDateTime: '',
-  billingStats: [],
-  handleSetSelectedUsage: () => {},
-  handleSetTimeRange: () => {},
-  rateLimits: '',
-  selectedUsage: '',
-  timeRange: DEFAULT_TIME_RANGE,
-  usageStats: '',
-  usageVectors: [],
+export const draft: DraftInvite = {
+  email: '',
+  role: 'owner' as const,
 }
 
-export const UsageContext = React.createContext<UsageContextType>(
+export const DEFAULT_CONTEXT: UsersContextType = {
+  draftInvite: draft,
+  handleEditDraftInvite: (_: DraftInvite) => {},
+  handleInviteUser: () => {},
+  invites: [],
+  removeInviteStatus: RemoteDataState.NotStarted,
+  removeUserStatus: RemoteDataState.NotStarted,
+  resendInviteStatus: RemoteDataState.NotStarted,
+  status: RemoteDataState.NotStarted,
+  users: [],
+}
+
+export const UsersContext = React.createContext<UsersContextType>(
   DEFAULT_CONTEXT
 )
 
-export const UsageProvider: FC<Props> = React.memo(({children}) => {
-  const [billingDateTime, setBillingDateTime] = useState('')
-  const [usageVectors, setUsageVectors] = useState([])
-  const [selectedUsage, setSelectedUsage] = useState('')
-  const [billingStats, setBillingStats] = useState([])
-  const [usageStats, setUsageStats] = useState('')
-  const [rateLimits, setRateLimits] = useState('')
-
-  const timeRange = useSelector(getTimeRange)
-  const dispatch = useDispatch()
-
-  const handleSetTimeRange = (range: TimeRange) => {
-    dispatch(setTimeRange(range))
-  }
-
-  const handleSetSelectedUsage = useCallback(
-    (vector: string) => {
-      setSelectedUsage(vector)
-    },
-    [setSelectedUsage]
+export const UsersProvider: FC<Props> = React.memo(({children}) => {
+  const orgId = useSelector(getOrg)?.id
+  const [users, setUsers] = useState<User[]>([])
+  const [invites, setInvites] = useState<Invite[]>([])
+  const [draftInvite, setDraftInvite] = useState<DraftInvite>(draft)
+  const [status, setStatus] = useState(RemoteDataState.NotStarted)
+  const [removeInviteStatus, setRemoveInviteStatus] = useState(
+    RemoteDataState.NotStarted
+  )
+  const [removeUserStatus, setRemoveUserStatus] = useState(
+    RemoteDataState.NotStarted
+  )
+  const [resendInviteStatus, setRemoveInviteStatus] = useState(
+    RemoteDataState.NotStarted
   )
 
-  const handleGetUsageVectors = useCallback(async () => {
-    const resp = await getUsageVectors()
+  const getUsersAndInvites = useCallback(async () => {
+    try {
+      const [userResp, inviteResp] = await Promise.all([
+        getOrgsUsers({orgId}),
+        getOrgsInvites({orgId}),
+      ])
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+      if (userResp.status !== 200) {
+        throw new Error(userResp.data.message)
+      }
+
+      if (inviteResp.status !== 200) {
+        throw new Error(inviteResp.data.message)
+      }
+
+      const users =
+        userResp.data?.users?.map(u => ({
+          ...u,
+        })) ?? []
+      const invites =
+        inviteResp.data?.invites?.map(i => ({
+          ...i,
+        })) ?? []
+
+      setUsers(users)
+      setInvites(invites)
+      setStatus(RemoteDataState.Done)
+    } catch (error) {
+      setUsers([])
+      setInvites([])
+      setStatus(RemoteDataState.Error)
+      console.error(error)
     }
-
-    const vectors = resp.data.usageVectors
-
-    setUsageVectors(vectors)
-    handleSetSelectedUsage(vectors?.[0]?.name)
-  }, [setUsageVectors, handleSetSelectedUsage])
+  }, [orgId])
 
   useEffect(() => {
-    handleGetUsageVectors()
-  }, [handleGetUsageVectors])
+    getUsersAndInvites()
+  }, [getUsersAndInvites])
 
-  const handleGetBillingDate = useCallback(async () => {
-    const resp = await getBillingDate()
+  const handleInviteUser = useCallback(async () => {
+    try {
+      const resp = await postOrgsInvite({orgId, data: draftInvite})
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 201) {
+        throw new Error(resp.data.message)
+      }
+
+      setInvites(prevInvites => [resp.data, ...prevInvites])
+      // TODO(ariel): notify that the invite was sent successfully
+      // saying "invitation sent"
+    } catch (error) {
+      // TODO(ariel): notify that the invite failed
+      console.error(error)
     }
-    setBillingDateTime(resp.data.dateTime)
-  }, [setBillingDateTime])
+  }, [orgId, draftInvite])
 
-  useEffect(() => {
-    handleGetBillingDate()
-  }, [handleGetBillingDate])
-
-  const handleGetBillingStats = useCallback(async () => {
-    const resp = await getBillingStats()
-
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
-
-    const csvs = resp.data?.split('\n\n')
-
-    setBillingStats(csvs)
-  }, [setBillingStats])
-
-  useEffect(() => {
-    handleGetBillingStats()
-  }, [handleGetBillingStats])
-
-  const handleGetUsageStats = useCallback(async () => {
-    const resp = await getUsageStats(selectedUsage, timeRange)
-
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
-
-    setUsageStats(resp.data)
-  }, [selectedUsage, timeRange])
-
-  useEffect(() => {
-    handleGetUsageStats()
-  }, [handleGetUsageStats])
-
-  const handleGetRateLimits = useCallback(async () => {
-    const resp = await getRateLimits(timeRange)
-
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
-
-    setRateLimits(resp.data)
-  }, [timeRange])
-
-  useEffect(() => {
-    handleGetRateLimits()
-  }, [handleGetRateLimits])
+  const handleEditDraftInvite = useCallback(
+    (draft: DraftInvite) => {
+      setDraftInvite(draft)
+    },
+    [setDraftInvite]
+  )
 
   return (
-    <UsageContext.Provider
+    <UsersContext.Provider
       value={{
-        billingDateTime,
-        billingStats,
-        handleSetSelectedUsage,
-        handleSetTimeRange,
-        rateLimits,
-        selectedUsage,
-        timeRange,
-        usageStats,
-        usageVectors,
+        draftInvite,
+        handleEditDraftInvite,
+        handleInviteUser,
+        invites,
+        removeInviteStatus,
+        removeUserStatus,
+        resendInviteStatus,
+        status,
+        users,
       }}
     >
       {children}
-    </UsageContext.Provider>
+    </UsersContext.Provider>
   )
 })
 
-export default UsageProvider
+export default UsersProvider

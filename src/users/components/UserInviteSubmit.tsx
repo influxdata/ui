@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
 
 // Components
 import {
@@ -8,18 +8,14 @@ import {
   ButtonType,
   ComponentColor,
 } from '@influxdata/clockface'
+import {UsersContext} from 'src/users/context/users'
 
 // Constants
 import {roles} from 'src/users/constants'
 
-// Types
-import {DraftInvite} from 'src/types'
+const UserInviteSubmit: FC = () => {
+  const {draftInvite} = useContext(UsersContext)
 
-interface Props {
-  draftInvite: DraftInvite
-}
-
-const UserInviteSubmit: FC<Props> = ({draftInvite}) => {
   const isRoleSelected = roles.includes(draftInvite.role)
 
   const getTitleText = () => {

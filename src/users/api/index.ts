@@ -1,15 +1,9 @@
-import uuid from 'uuid'
-
 import {
   DeleteOrgsInviteResult,
   DeleteOrgsUserResult,
   PostOrgsInvitesResendResult,
-  PostOrgsInviteResult,
-  DraftInvite,
   Invite,
 } from 'src/types'
-
-import {RemoteDataState} from '@influxdata/clockface'
 
 const makeResponse = (status, data, ...args) => {
   for (let i = 0; i < args.length; i++) {
@@ -21,20 +15,6 @@ const makeResponse = (status, data, ...args) => {
     headers: new Headers({'Content-Type': 'application/json'}),
     data,
   })
-}
-
-const makeInvite = (email: string): Invite => {
-  const date = new Date()
-  date.setDate(date.getDate() + 2)
-  const expiresAt = date.toDateString()
-
-  return {
-    id: uuid.v4(),
-    email,
-    role: 'owner',
-    expiresAt,
-    status: RemoteDataState.Done,
-  }
 }
 
 export const deleteOrgInvite = async (

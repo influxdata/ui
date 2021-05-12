@@ -4,16 +4,10 @@ import {Dispatch} from 'react'
 // API
 import {resendOrgInvite, deleteOrgInvite, deleteOrgUser} from 'src/users/api'
 
-import {
-  getOrgsUsers,
-  getOrgsInvites,
-  postOrgsInvite,
-  Invite,
-} from 'src/client/unityRoutes'
+import {Invite} from 'src/client/unityRoutes'
 
 // Actions
 import {
-  setAll,
   updateUser,
   updateInvite,
   removeInvite,
@@ -22,8 +16,6 @@ import {
   removeInviteStatus,
   resendInviteStatus,
   Action,
-  resetDraftInvite,
-  setInvites,
 } from 'src/users/reducers'
 import {RemoteDataState} from '@influxdata/clockface'
 
@@ -32,63 +24,6 @@ import {CloudUser as User} from 'src/types'
 
 // Constants
 import {GTM_USER_REMOVED} from 'src/users/constants'
-
-export const getUsersAndInvites = async (
-  dispatch: Dispatch<Action>,
-  orgId: string
-) => {
-  try {
-    const [userResp, inviteResp] = await Promise.all([
-      getOrgsUsers({orgId}),
-      getOrgsInvites({orgId}),
-    ])
-
-    if (userResp.status !== 200) {
-      throw new Error(userResp.data.message)
-    }
-
-    if (inviteResp.status !== 200) {
-      throw new Error(inviteResp.data.message)
-    }
-
-    const users =
-      userResp.data?.users?.map(u => ({
-        ...u,
-        status: RemoteDataState.Done,
-      })) ?? []
-    const invites =
-      inviteResp.data?.invites?.map(i => ({
-        ...i,
-        status: RemoteDataState.Done,
-      })) ?? []
-
-    dispatch(setAll(users, invites, RemoteDataState.Done))
-  } catch (error) {
-    dispatch(setAll([], [], RemoteDataState.Error))
-    console.error(error)
-  }
-}
-
-export const onInviteUser = async (
-  dispatch: Dispatch<Action>,
-  orgId: string,
-  invite: Invite,
-  invites: Invite[]
-) => {
-  dispatch(resetDraftInvite())
-
-  try {
-    const resp = await postOrgsInvite({orgId, data: invite})
-
-    if (resp.status !== 201) {
-      throw new Error(resp.data.message)
-    }
-
-    dispatch(setInvites([resp.data, ...invites]))
-  } catch (error) {
-    console.error(error)
-  }
-}
 
 export const resendInvite = async (
   dispatch: Dispatch<Action>,

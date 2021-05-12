@@ -14,7 +14,6 @@ import {
   ConfirmationButton,
   ComponentStatus,
 } from '@influxdata/clockface'
-import {UserListContext, UserListContextResult} from './UsersPage'
 
 // Thunks
 import {withdrawInvite, resendInvite} from 'src/users/thunks'

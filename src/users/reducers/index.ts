@@ -8,7 +8,6 @@ export interface UserListState {
   invites: Invite[]
   draftInvite: DraftInvite
   status: RemoteDataState
-  currentUserID: string
   orgID: string
   removeUserStatus: RemoteDataState
   removeInviteStatus: RemoteDataState
@@ -18,24 +17,6 @@ export interface UserListState {
 export const resetDraftInvite = () =>
   ({
     type: 'RESET_DRAFT_INVITE',
-  } as const)
-
-export const editDraftInvite = (draftInvite: DraftInvite) =>
-  ({
-    type: 'EDIT_DRAFT_INVITE',
-    draftInvite,
-  } as const)
-
-export const setUsers = (users: User[]) =>
-  ({
-    type: 'SET_USERS',
-    users,
-  } as const)
-
-export const setInvites = (invites: Invite[]) =>
-  ({
-    type: 'SET_INVITES',
-    invites,
   } as const)
 
 export const removeUser = (id: string) =>
@@ -80,23 +61,7 @@ export const updateUser = (user: User) =>
     user,
   } as const)
 
-export const setAll = (
-  users: User[],
-  invites: Invite[],
-  status: RemoteDataState
-) =>
-  ({
-    type: 'SET_ALL',
-    users,
-    invites,
-    status,
-  } as const)
-
 export type Action =
-  | ReturnType<typeof editDraftInvite>
-  | ReturnType<typeof setInvites>
-  | ReturnType<typeof setUsers>
-  | ReturnType<typeof setAll>
   | ReturnType<typeof removeUser>
   | ReturnType<typeof removeInvite>
   | ReturnType<typeof resetDraftInvite>
@@ -111,7 +76,6 @@ export type UserListReducer = React.Reducer<UserListState, Action>
 export const initialState = ({
   invites = [],
   users = [],
-  currentUserID,
   orgID,
   status = RemoteDataState.NotStarted,
   removeUserStatus = RemoteDataState.NotStarted,
@@ -122,7 +86,6 @@ export const initialState = ({
   invites,
   draftInvite,
   status,
-  currentUserID,
   orgID,
   removeUserStatus,
   removeInviteStatus,
@@ -134,29 +97,6 @@ export const userListReducer = (
   action: Action
 ): UserListState => {
   switch (action.type) {
-    case 'EDIT_DRAFT_INVITE': {
-      return {...state, draftInvite: action.draftInvite}
-    }
-
-    case 'SET_USERS': {
-      return {...state, users: action.users}
-    }
-
-    case 'SET_INVITES': {
-      return {...state, invites: action.invites}
-    }
-
-    case 'SET_ALL': {
-      const {invites, users, status} = action
-
-      return {
-        ...state,
-        invites,
-        users,
-        status,
-      }
-    }
-
     case 'REMOVE_USER': {
       return {...state, users: state.users.filter(({id}) => id !== action.id)}
     }

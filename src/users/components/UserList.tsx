@@ -1,23 +1,18 @@
 // Libraries
-import React, {Dispatch, FC, useContext, useState} from 'react'
+import React, {FC, useContext, useState} from 'react'
 
 // Components
 import {Columns, Grid, IconFont, IndexList, Input} from '@influxdata/clockface'
-import {UserListContext} from './UsersPage'
-import UserListItem from './UserListItem'
-import InviteListItem from './InviteListItem'
-import UserListNotifications from './UserListNotifications'
-
-// Actions
-import {Action, UserListState} from 'src/users/reducers'
+import {UsersContext} from 'src/users/context/users'
+import UserListItem from 'src/users/components/users/UserListItem'
+import InviteListItem from 'src/users/components/users/InviteListItem'
+import UserListNotifications from 'src/users/components/users/UserListNotifications'
 
 // Utils
 import {filter} from 'src/users/utils/filter'
 
 const UserList: FC = () => {
-  const [{users, invites}] = useContext<[UserListState, Dispatch<Action>]>(
-    UserListContext
-  )
+  const {users, invites} = useContext(UsersContext)
 
   const [searchTerm, setSearchTerm] = useState('')
 

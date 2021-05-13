@@ -105,7 +105,7 @@ const setup = (override = {}) => {
   return renderWithReduxAndRouter(<TasksPage {...props}  />, () => testState)
 }
 
-describe('tasks page rendering',  () => {
+describe('Tasks.Containers.TasksPage',  () => {
 
   let ui
 

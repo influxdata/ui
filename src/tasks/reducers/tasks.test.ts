@@ -6,13 +6,11 @@ import {initialState, defaultOptions} from 'src/tasks/reducers/helpers'
 
 // Types
 import {TaskSchedule} from 'src/types'
-import {normalize} from 'normalizr'
 
 describe('tasksReducer', () => {
   describe('setTaskOption', () => {
     it('should not clear the cron property from the task options when interval is selected', () => {
       const state = initialState()
-
       const cron = '0 2 * * *'
       state.taskOptions = {...defaultOptions, cron}
 

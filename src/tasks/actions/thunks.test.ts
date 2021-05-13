@@ -1,11 +1,9 @@
 import * as thunks from './thunks'
 import * as api from 'src/client'
-import * as selectors from 'src/resources/selectors'
 import {getMockAppState} from 'src/mockAppState'
 
 import { mocked } from 'ts-jest/utils'
 import {RemoteDataState} from '../../types'
-import {PatchTaskParams} from '../../client'
 import { taskUpdateSuccess } from 'src/shared/copy/notifications'
 
 const sampleTask = { id: '01', orgID: '01', name: 'Test Task', flux: ''}
@@ -29,17 +27,6 @@ jest.mock('src/resources/selectors', () => ({
     return RemoteDataState.Loading
   })
 }))
-
-/*
-const mockTestTask = () => {
-
-  const mock: typeof thunks.testTask = () => {
-    return () => (Promise.resolve())
-  }
-
-  mocked(thunks.testTask).mockImplementation(mock)
-}
-*/
 
 const getMockAppStateWTask = () => {
     const result = getMockAppState();
@@ -77,9 +64,7 @@ const mockPatchTasks = (succeed = true) => {
 
   const headers: any = {}
 
-  const mock: typeof api.patchTask = (
-  /*  taskReq = {taskID: sampleTask.id,
-      data: {...sampleTask, status: 'active'} }*/ ) => {
+  const mock: typeof api.patchTask = () => {
 
     const res: ReturnType<typeof api.patchTask> = Promise.resolve(
       succeed ? {
@@ -97,8 +82,7 @@ const mockPatchTasks = (succeed = true) => {
   mocked(api.patchTask).mockImplementationOnce(mock)
 }
 
-
-describe('tasks thunk', () => {
+describe('Tasks.Actions.Thunks', () => {
 
   it('calls getTasks', async () => {
     await mockGetTasks()
@@ -117,19 +101,6 @@ describe('tasks thunk', () => {
 
   })
 
-/*
-  it.skip('calls test task', async () => {
-
-       mockTestTask()
-
-        const test = await thunks.testTask();
-        test();
-
-        const test2 = await thunks.testTask();
-        test2()
-  })
-*/
-
   it('calls updateTaskStatus', async () => {
 
     mockPatchTasks()
@@ -137,8 +108,6 @@ describe('tasks thunk', () => {
     const dispatch = jest.fn()
 
     await thunks.updateTaskStatus({...sampleTask, status: 'active'})(dispatch)
-
-//    console.log(`DEBUG dispatch.mock ${JSON.stringify(dispatch.mock)}`)
 
     expect(dispatch.mock.calls.length).toEqual(2)
     expect(dispatch.mock.calls[0][0].type).toBe('EDIT_TASK')

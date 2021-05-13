@@ -17,7 +17,7 @@ import {
 import {UsersContext} from 'src/users/context/users'
 
 // Types
-import {Invite} from 'src/client/unityRoutes'
+import {Invite} from 'src/types'
 
 interface Props {
   invite: Invite

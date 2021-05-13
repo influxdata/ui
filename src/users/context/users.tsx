@@ -10,7 +10,6 @@ import {
   getOrgsInvites,
   postOrgsInvite,
   postOrgsInvitesResend,
-  Invite,
 } from 'src/client/unityRoutes'
 
 // Notifications
@@ -30,8 +29,7 @@ import {
 import {GTM_USER_REMOVED} from 'src/users/constants'
 
 // Types
-import {User} from 'src/client/unityRoutes'
-import {DraftInvite, RemoteDataState} from 'src/types'
+import {CloudUser, DraftInvite, Invite, RemoteDataState} from 'src/types'
 import {getOrg} from 'src/organizations/selectors'
 
 export type Props = {
@@ -50,7 +48,7 @@ export interface UsersContextType {
   removeUserStatus: {id: string; status: RemoteDataState}
   resendInviteStatus: RemoteDataState
   status: RemoteDataState
-  users: User[]
+  users: CloudUser[]
 }
 
 export const draft: DraftInvite = {
@@ -80,7 +78,7 @@ export const UsersContext = React.createContext<UsersContextType>(
 export const UsersProvider: FC<Props> = React.memo(({children}) => {
   const dispatch = useDispatch()
   const orgId = useSelector(getOrg)?.id
-  const [users, setUsers] = useState<User[]>([])
+  const [users, setUsers] = useState<CloudUser[]>([])
   const [invites, setInvites] = useState<Invite[]>([])
   const [draftInvite, setDraftInvite] = useState<DraftInvite>(draft)
   const [status, setStatus] = useState(RemoteDataState.NotStarted)

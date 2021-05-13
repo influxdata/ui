@@ -20,7 +20,7 @@ import {UsersContext} from 'src/users/context/users'
 import {getMe} from 'src/me/selectors'
 
 // Types
-import {User} from 'src/client/unityRoutes'
+import {User} from 'src/types'
 
 interface Props {
   user: User

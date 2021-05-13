@@ -46,7 +46,6 @@ export interface UsersContextType {
   invites: Invite[]
   removeInviteStatus: {id: string; status: RemoteDataState}
   removeUserStatus: {id: string; status: RemoteDataState}
-  resendInviteStatus: RemoteDataState
   status: RemoteDataState
   users: CloudUser[]
 }
@@ -66,7 +65,6 @@ export const DEFAULT_CONTEXT: UsersContextType = {
   invites: [],
   removeInviteStatus: {id: null, status: RemoteDataState.NotStarted},
   removeUserStatus: {id: null, status: RemoteDataState.NotStarted},
-  resendInviteStatus: RemoteDataState.NotStarted,
   status: RemoteDataState.NotStarted,
   users: [],
 }
@@ -90,10 +88,6 @@ export const UsersProvider: FC<Props> = React.memo(({children}) => {
     id: null,
     status: RemoteDataState.NotStarted,
   })
-  // TODO(ariel): this might not be necessary
-  const [resendInviteStatus, setResendInviteStatus] = useState(
-    RemoteDataState.NotStarted
-  )
 
   const getUsersAndInvites = useCallback(async () => {
     try {
@@ -160,7 +154,6 @@ export const UsersProvider: FC<Props> = React.memo(({children}) => {
   const handleResendInvite = useCallback(
     async (inviteId: string) => {
       try {
-        setResendInviteStatus(RemoteDataState.Loading)
         const resp = await postOrgsInvitesResend({orgId, inviteId})
 
         if (resp.status !== 200) {
@@ -172,10 +165,8 @@ export const UsersProvider: FC<Props> = React.memo(({children}) => {
         )
 
         setInvites(updateInvites)
-        setResendInviteStatus(RemoteDataState.Done)
         dispatch(notify(invitationResentSuccessful()))
       } catch (error) {
-        setResendInviteStatus(RemoteDataState.Error)
         dispatch(notify(invitationResentFailed()))
         console.error(error)
       }
@@ -252,7 +243,6 @@ export const UsersProvider: FC<Props> = React.memo(({children}) => {
         invites,
         removeInviteStatus,
         removeUserStatus,
-        resendInviteStatus,
         status,
         users,
       }}

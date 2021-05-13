@@ -13,7 +13,7 @@ import {
 
 // Redux
 import {
-  isSingleClickAnnotationsEnabled,
+  isWriteModeEnabled,
   selectAreAnnotationsVisible,
 } from 'src/annotations/selectors'
 
@@ -89,7 +89,7 @@ const SingleStatWithLine: FC<Props> = ({
   // is in a dashboard or in configuration/single cell popout mode
   // would need to add the annotation control bar to the VEOHeader to get access to the controls,
   // which are currently global values, not per dashboard
-  const inAnnotationWriteMode = useSelector(isSingleClickAnnotationsEnabled)
+  const inAnnotationWriteMode = useSelector(isWriteModeEnabled)
   const annotationsAreVisible = useSelector(selectAreAnnotationsVisible)
   const dispatch = useDispatch()
 

@@ -7,7 +7,7 @@ import {IndexList} from '@influxdata/clockface'
 import InviteListContextMenu from './InviteListContextMenu'
 
 // Types
-import {Invite} from 'src/types'
+import {Invite} from 'src/client/unityRoutes'
 
 interface Props {
   invite: Invite

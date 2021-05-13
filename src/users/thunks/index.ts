@@ -9,12 +9,8 @@ import {Invite} from 'src/client/unityRoutes'
 // Actions
 import {
   updateUser,
-  updateInvite,
-  removeInvite,
   removeUser as removeUserAction,
   removeUserStatus,
-  removeInviteStatus,
-  resendInviteStatus,
   Action,
 } from 'src/users/reducers'
 import {RemoteDataState} from '@influxdata/clockface'
@@ -24,52 +20,6 @@ import {CloudUser as User} from 'src/types'
 
 // Constants
 import {GTM_USER_REMOVED} from 'src/users/constants'
-
-export const resendInvite = async (
-  dispatch: Dispatch<Action>,
-  orgID: string,
-  id: string,
-  invite: Invite // TODO(watts): delete this argument when un-mocking
-) => {
-  try {
-    dispatch(resendInviteStatus(RemoteDataState.Loading))
-    const resp = await resendOrgInvite(orgID, id, invite)
-
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
-
-    dispatch(updateInvite(resp.data))
-    dispatch(resendInviteStatus(RemoteDataState.Done))
-  } catch (error) {
-    dispatch(resendInviteStatus(RemoteDataState.Error))
-    console.error(error)
-  }
-}
-
-export const withdrawInvite = async (
-  dispatch: Dispatch<Action>,
-  orgID: string,
-  invite: Invite
-) => {
-  try {
-    dispatch(updateInvite({...invite, status: RemoteDataState.Loading}))
-
-    const resp = await deleteOrgInvite(orgID, invite.id)
-
-    if (resp.status !== 204) {
-      throw new Error(resp.data.message)
-    }
-
-    dispatch(removeInvite(invite.id))
-    dispatch(removeInviteStatus(RemoteDataState.Done))
-  } catch (error) {
-    console.error(error)
-
-    dispatch(updateInvite({...invite, status: RemoteDataState.Error}))
-    dispatch(removeInviteStatus(RemoteDataState.Error))
-  }
-}
 
 export const removeUser = async (
   dispatch: Dispatch<Action>,

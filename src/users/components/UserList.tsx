@@ -6,7 +6,6 @@ import {Columns, Grid, IconFont, IndexList, Input} from '@influxdata/clockface'
 import {UsersContext} from 'src/users/context/users'
 import UserListItem from 'src/users/components/UserListItem'
 import InviteListItem from 'src/users/components/InviteListItem'
-import UserListNotifications from 'src/users/components/UserListNotifications'
 
 // Utils
 import {filter} from 'src/users/utils/filter'
@@ -49,12 +48,11 @@ const UserList: FC = () => {
           {filteredInvites.map(invite => (
             <InviteListItem key={`invite-${invite.id}`} invite={invite} />
           ))}
-          {filteredUsers.map(user => (
+          {/* {filteredUsers.map(user => (
             <UserListItem key={`user-${user.id}`} user={user} />
-          ))}
+          ))} */}
         </IndexList.Body>
       </IndexList>
-      <UserListNotifications />
     </Grid>
   )
 }

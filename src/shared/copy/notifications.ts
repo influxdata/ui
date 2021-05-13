@@ -1215,3 +1215,44 @@ export const dashboardAutoRefreshTimeoutSuccess = (
     time ? 'over the last' + time : ''
   }`,
 })
+
+/* USERS NOTIFICATIONS */
+export const inviteSent = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: `invite sent`,
+})
+
+export const inviteFailed = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `invite failed`,
+})
+
+export const removeUserSuccessful = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: `User Removed`,
+})
+
+export const invitationResentSuccessful = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Invitation Sent`,
+})
+
+export const invitationResentFailed = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: `Error sending invitation`,
+})
+
+export const invitationWithdrawnSuccessful = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Invitation Withdrawn`,
+})
+
+export const invitationWithdrawnFailed = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: `Error withdrawing invite, try again`,
+})
+
+export const removeUserFailed = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Error removing user, try again`,
+})

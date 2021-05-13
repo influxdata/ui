@@ -49,6 +49,7 @@ const CloudUpgradeButton: FC<StateProps & OwnProps> = ({
     [`${className}`]: className,
   })
 
+  // TODO(ariel): update the link to the local checkout if the flag is on
   return (
     <CloudOnly>
       {inView && !isRegionBeta && (

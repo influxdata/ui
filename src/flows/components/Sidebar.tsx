@@ -1,5 +1,5 @@
-import React, {FC, useContext, useState} from 'react'
-import {List, Button} from '@influxdata/clockface'
+import React, {FC, useEffect, useContext, useState} from 'react'
+import {List, Button, DapperScrollbars} from '@influxdata/clockface'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {Context as SidebarContext} from 'src/flows/context/sidebar'
@@ -15,6 +15,10 @@ const Sidebar: FC = () => {
   const {id, show, hide, menu} = useContext(SidebarContext)
   const [submenu, setSubmenu]: [Submenu['menu'], (_?:Submenu['menu']) => void] = useState()
 
+  useEffect(() => {
+    setSubmenu()
+  }, [id])
+
   if (!id || flow.readOnly) {
     return null
   }
@@ -24,40 +28,6 @@ const Sidebar: FC = () => {
       title: 'Panel',
       actions: [
         {
-          title: 'Convert to |> Flux',
-          disable: () => {
-            if (flow.data.indexOf(id) === -1) {
-              return true
-            }
-
-            const {type} = flow.data.get(id)
-
-            if (type === 'rawFluxEditor') {
-              return true
-            }
-
-            return false
-          },
-          action: () => {
-            const {type} = flow.data.get(id)
-            const {title} = flow.meta.get(id)
-
-            event('Convert Cell To Flux', {from: type})
-
-            const {source} = getPanelQueries(id, true)
-
-            const init = JSON.parse(JSON.stringify(PIPE_DEFINITIONS['rawFluxEditor'].initial))
-            init.queries[0].text = source
-            init.title = title
-            init.type = 'rawFluxEditor'
-
-            const _id = add(init, flow.data.indexOf(id))
-            show(_id)
-
-            flow.data.remove(id)
-            flow.meta.remove(id)
-          },
-        }, {
           title: 'Delete',
           action: () => {
             event('notebook_delete_cell')
@@ -96,13 +66,46 @@ const Sidebar: FC = () => {
               visible: !flow.meta.get(id).visible,
             })
           },
-        },
-        {
-          title: 'Copy as',
+        }, {
+          title: 'Convert to |> Flux',
+          disable: () => {
+            if (flow.data.indexOf(id) === -1) {
+              return true
+            }
+
+            const {type} = flow.data.get(id)
+
+            if (type === 'rawFluxEditor') {
+              return true
+            }
+
+            return false
+          },
+          action: () => {
+            const {type} = flow.data.get(id)
+            const {title} = flow.meta.get(id)
+
+            event('Convert Cell To Flux', {from: type})
+
+            const {source} = getPanelQueries(id, true)
+
+            const init = JSON.parse(JSON.stringify(PIPE_DEFINITIONS['rawFluxEditor'].initial))
+            init.queries[0].text = source
+            init.title = title
+            init.type = 'rawFluxEditor'
+
+            const _id = add(init, flow.data.indexOf(id))
+
+            flow.data.remove(id)
+            flow.meta.remove(id)
+
+            show(_id)
+          },
+        }, {
+          title: 'Copy As',
           menu: <ClientList />
         }
       ],
-    }, {
     }
   ] as ControlSection[])
     .concat(menu)
@@ -162,7 +165,11 @@ const Sidebar: FC = () => {
   return (
     <div className="flow-sidebar">
       <Button text="Back" onClick={()=>{setSubmenu(null)}}>Back</Button>
-      <div className="flow-sidebar--submenu">{submenu}</div>
+      <div className="flow-sidebar--submenu">
+        <DapperScrollbars noScrollX={true}>
+          {submenu}
+        </DapperScrollbars>
+        </div>
     </div>
   )
     }

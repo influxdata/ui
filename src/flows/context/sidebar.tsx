@@ -47,6 +47,9 @@ export const Provider: FC = ({children}) => {
     setPipes({
       ...pipes
     })
+    if (focused === id) {
+      setMenu(pipes[id])
+    }
   }
 
   const deregister = (id: string) => {

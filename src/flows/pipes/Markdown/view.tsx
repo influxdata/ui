@@ -29,21 +29,15 @@ const MarkdownPanel: FC<PipeProp> = ({Context}) => {
 
   const controls = [
     {
-      title: 'Edit',
+      title: 'Markdown',
       actions: [
         {
-          title: 'Edit',
+          title: () => data.mode === 'edit' ? 'Preview' : 'Edit',
           action: () => {
-            update({mode: 'edit'})
+            update({mode: data.mode === 'edit' ? 'preview' : 'edit'})
           },
         },
-        {
-          title: 'Preview',
-          action: () => {
-            update({mode: 'preview'})
-          },
-        },
-      ],
+              ],
     },
   ]
 
@@ -83,7 +77,7 @@ const MarkdownPanel: FC<PipeProp> = ({Context}) => {
     )
   }
 
-  return <Context controls={controls}>{panelContents}</Context>
+  return <Context>{panelContents}</Context>
 }
 
 export default MarkdownPanel

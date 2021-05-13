@@ -1,9 +1,11 @@
 // Libraries
-import React, {FC, useContext, useCallback, useMemo, useState} from 'react'
+import React, {FC, useContext, useCallback, useEffect, useMemo, useState} from 'react'
 
 // Components
 import {IconFont} from '@influxdata/clockface'
 import Resizer from 'src/flows/shared/Resizer'
+import ExportDashboardOverlay from 'src/flows/pipes/Visualization/ExportDashboardOverlay'
+import Controls from 'src/flows/pipes/Visualization/Controls'
 
 // Utilities
 import {View, ViewOptions} from 'src/visualization'
@@ -13,10 +15,13 @@ import {RemoteDataState} from 'src/types'
 import {PipeProp} from 'src/types/flows'
 
 import {PipeContext} from 'src/flows/context/pipe'
+import {Context as SidebarContext} from 'src/flows/context/sidebar'
+import {PopupContext} from 'src/flows/context/popup'
 
 const Visualization: FC<PipeProp> = ({Context}) => {
-  const {data, range, update, loading, results} = useContext(PipeContext)
-  const [optionsVisibility] = useState(false)
+  const {id, data, range, update, loading, results, queryText} = useContext(PipeContext)
+  const {register, deregister} = useContext(SidebarContext)
+  const {launch} = useContext(PopupContext)
 
   const updateProperties = useCallback(
     properties => {
@@ -44,15 +49,44 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     return 'No Data Returned'
   }, [loading])
 
-  /*
-    <Context
-      controls={<Controls toggle={toggleOptions} visible={optionsVisibility} />}
-      persistentControl={<ExportButton />}
-    >
-   */
+  useEffect(() => {
+    if (!id) {
+      return
+    }
+
+    register(id, [{
+      title: 'Visualization',
+      actions: [{
+        title: 'Options',
+        disable: !dataExists,
+        menu: (
+          <ViewOptions
+            properties={data.properties}
+            results={results.parsed}
+            update={updateProperties}
+          />
+        )
+      }, {
+        title: 'Export to Dashboard',
+        action: () => {
+          event('Export to Dashboard Clicked')
+
+          launch(<ExportDashboardOverlay />, {
+            properties: data.properties,
+            range: range,
+            query: queryText,
+          })
+        }
+      }]
+    }])
+
+    return () => {
+      deregister(id)
+    }
+  }, [id, data.properties, queryText, results.parsed, range])
 
   return (
-    <Context>
+    <Context controls={<Controls />}>
       <Resizer
         loading={loading}
         resizingEnabled={dataExists}
@@ -77,13 +111,6 @@ const Visualization: FC<PipeProp> = ({Context}) => {
           </div>
         </div>
       </Resizer>
-      {optionsVisibility && dataExists && (
-        <ViewOptions
-          properties={data.properties}
-          results={results.parsed}
-          update={updateProperties}
-        />
-      )}
     </Context>
   )
 }

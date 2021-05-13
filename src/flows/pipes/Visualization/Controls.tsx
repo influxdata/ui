@@ -4,7 +4,6 @@ import {
   ComponentColor,
   ComponentStatus,
   IconFont,
-  SquareButton,
 } from '@influxdata/clockface'
 import {millisecondsToDuration} from 'src/shared/utils/duration'
 import {SUPPORTED_VISUALIZATIONS, ViewTypeDropdown} from 'src/visualization'
@@ -14,14 +13,9 @@ import {FUNCTIONS} from 'src/timeMachine/constants/queryBuilder'
 
 import {PipeContext} from 'src/flows/context/pipe'
 
-interface Props {
-  toggle: () => void
-  visible: boolean
-}
-
 const AVAILABLE_FUNCTIONS = FUNCTIONS.map(f => f.name)
 
-const Controls: FC<Props> = ({toggle, visible}) => {
+const Controls: FC = () => {
   const {data, range, update, results} = useContext(PipeContext)
 
   const dataExists = results.parsed && Object.entries(results.parsed).length
@@ -102,14 +96,6 @@ const Controls: FC<Props> = ({toggle, visible}) => {
       <ViewTypeDropdown
         viewType={data.properties.type}
         onUpdateType={updateType as any}
-      />
-      <SquareButton
-        icon={IconFont.CogThick}
-        onClick={toggle}
-        status={configureButtonStatus}
-        color={visible ? ComponentColor.Primary : ComponentColor.Default}
-        titleText={configureButtonTitleText}
-        className="flows-config-visualization-button"
       />
     </>
   )

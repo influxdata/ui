@@ -1,13 +1,6 @@
 @import '@influxdata/clockface/dist/variables.scss';
 @import '~src/flows/FlowVariables.scss';
 
-.flow-sidebar {
-  padding-left: $cf-marg-b;
-}
-.flow-sidebar--submenu {
-  padding-top: $cf-marg-b;
-}
-
 .flow-sidebar .flux-toolbar {
   flex-direction: column;
   background-color: $flow-panel--bg;

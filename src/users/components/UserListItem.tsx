@@ -20,10 +20,10 @@ import {UsersContext} from 'src/users/context/users'
 import {getMe} from 'src/me/selectors'
 
 // Types
-import {User} from 'src/types'
+import {CloudUser} from 'src/types'
 
 interface Props {
-  user: User
+  user: CloudUser
 }
 
 // TODO: add back in once https://github.com/influxdata/quartz/issues/2389 back-filling of names is complete

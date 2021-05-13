@@ -8,10 +8,11 @@ import {
   Button,
   ButtonShape,
   ComponentColor,
+  ComponentSize,
   IconFont,
 } from '@influxdata/clockface'
 import {FlowListContext} from 'src/flows/context/flow.list'
-import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
+import {PROJECT_NAME_PLURAL} from 'src/flows'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -45,15 +46,17 @@ const FlowContextMenu: FC<Props> = ({id, name}) => {
         text="Clone"
         icon={IconFont.Duplicate}
         color={ComponentColor.Secondary}
+        size={ComponentSize.ExtraSmall}
         titleText="Clone"
         testID="flow-button--clone"
         onClick={handleClone}
+        style={{marginRight: 10}}
       />
       <Context.Menu
         icon={IconFont.Trash}
         color={ComponentColor.Danger}
         shape={ButtonShape.Default}
-        text={`Delete ${PROJECT_NAME}`}
+        text="Delete"
         testID={`context-delete-menu ${name}`}
       >
         <Context.Item

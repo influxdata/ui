@@ -23,8 +23,6 @@ import {
 const DEFAULT_TAG_LIMIT = 200
 
 interface APIResultArray<T> {
-  search: string
-  status: RemoteDataState
   selected: T[]
   results: T[]
 }
@@ -37,14 +35,10 @@ interface QueryBuilderCard {
 
 const getDefaultCard = (): QueryBuilderCard => ({
   keys: {
-    search: '',
-    status: RemoteDataState.NotStarted,
     selected: [],
     results: [],
   },
   values: {
-    search: '',
-    status: RemoteDataState.NotStarted,
     selected: [],
     results: [],
   },
@@ -53,20 +47,25 @@ const getDefaultCard = (): QueryBuilderCard => ({
 
 interface QueryBuilderContextType {
   cards: QueryBuilderCard[]
+  keyLoading: RemoteDataState[]
+  valueLoading: RemoteDataState[]
+
   add: () => void
   remove: (idx: number) => void
   update: (idx: number, card: Partial<QueryBuilderCard>) => void
-  loadKeys: (_idx: number) => void
-  loadValues: (_idx: number) => void
+  loadKeys: (idx: number, search?: string) => void
+  loadValues: (idx: number, search?: string) => void
 }
 
 export const DEFAULT_CONTEXT: QueryBuilderContextType = {
   cards: [getDefaultCard()],
+  keyLoading: [RemoteDataState.NotStarted],
+  valueLoading: [RemoteDataState.NotStarted],
   add: () => {},
   remove: (_idx: number) => {},
   update: (_idx: number, _card: QueryBuilderCard) => {},
-  loadKeys: (_idx: number) => {},
-  loadValues: (_idx: number) => {},
+  loadKeys: (_idx: number, _search?: string) => {},
+  loadValues: (_idx: number, _search?: string) => {},
 }
 
 export const QueryBuilderContext = createContext<QueryBuilderContextType>(
@@ -95,6 +94,12 @@ export const QueryBuilderProvider: FC = ({children}) => {
   const {query} = useContext(QueryContext)
 
   const [cards, setCards] = useState(fromBuilderConfig(data.tags))
+  const [keyLoading, setKeyLoading] = useState(
+    Array(fromBuilderConfig(data.tags).length).fill(RemoteDataState.NotStarted)
+  )
+  const [valueLoading, setValueLoading] = useState(
+    Array(fromBuilderConfig(data.tags).length).fill(RemoteDataState.NotStarted)
+  )
 
   useEffect(() => {
     setCards([getDefaultCard()])
@@ -102,21 +107,26 @@ export const QueryBuilderProvider: FC = ({children}) => {
 
   const add = useCallback(() => {
     cards.push(getDefaultCard())
-    setCards(cards)
+    keyLoading.push(RemoteDataState.NotStarted)
+    valueLoading.push(RemoteDataState.NotStarted)
+
+    setCards([...cards])
+    setKeyLoading([...keyLoading])
+    setValueLoading([...valueLoading])
 
     update({tags: toBuilderConfig(cards)})
   }, [cards, setCards])
 
   const loadKeys = useCallback(
-    idx => {
+    (idx, search) => {
       const {buckets} = data
 
       if (!data.buckets[0] || !cards[idx]) {
         return
       }
 
-      cards[idx].keys.status = RemoteDataState.Loading
-      setCards(cards)
+      keyLoading[idx] = RemoteDataState.Loading
+      setKeyLoading([...keyLoading])
 
       const tagSelections = cards
         .filter(card => card.keys.selected[0] && card.values.selected.length)
@@ -136,8 +146,8 @@ export const QueryBuilderProvider: FC = ({children}) => {
       const tagString = tagSelections.length
         ? tagSelections.join(' and ')
         : 'true'
-      const searchString = cards[idx].keys.search
-        ? `\n  |> filter(fn: (r) => r._value =~ /(?i:${cards[idx].keys.search})/)`
+      const searchString = search
+        ? `\n  |> filter(fn: (r) => r._value =~ /(?i:${search})/)`
         : ''
       const previousTagSelections = cards
         .slice(0, idx)
@@ -177,26 +187,25 @@ export const QueryBuilderProvider: FC = ({children}) => {
           }
 
           cards[idx].keys = {
-            search: cards[idx].keys.search,
-            status: RemoteDataState.Done,
+            ...cards[idx].keys,
             results: keys,
-            selected: cards[idx].keys.selected,
           }
-          cards[idx].values = {
-            ...cards[idx].values,
-            status: RemoteDataState.NotStarted,
-          }
-
           setCards([...cards])
+
+          keyLoading[idx] = RemoteDataState.Done
+          setKeyLoading([...keyLoading])
+
+          valueLoading[idx] = RemoteDataState.NotStarted
+          setValueLoading([...valueLoading])
         })
     },
     [data.buckets, cards, setCards]
   )
 
   const loadValues = useCallback(
-    idx => {
-      cards[idx].values.status = RemoteDataState.Loading
-      setCards(cards)
+    (idx, search) => {
+      valueLoading[idx] = RemoteDataState.Loading
+      setValueLoading([...valueLoading])
 
       const tagSelections = cards
         .slice(0, idx)
@@ -217,8 +226,8 @@ export const QueryBuilderProvider: FC = ({children}) => {
       const tagString = tagSelections.length
         ? tagSelections.join(' and ')
         : 'true'
-      const searchString = cards[idx].values.search
-        ? `\n  |> filter(fn: (r) => r._value =~ /(?i:${cards[idx].values.search})/)`
+      const searchString = search
+        ? `\n  |> filter(fn: (r) => r._value =~ /(?i:${search})/)`
         : ''
 
       // TODO: Use the `v1.tagValues` function from the Flux standard library once
@@ -238,13 +247,14 @@ export const QueryBuilderProvider: FC = ({children}) => {
         })
         .then(values => {
           cards[idx].values = {
-            search: cards[idx].values.search,
-            status: RemoteDataState.Done,
+            ...cards[idx].values,
             results: values,
-            selected: cards[idx].values.selected,
           }
 
           setCards([...cards])
+
+          valueLoading[idx] = RemoteDataState.Done
+          setValueLoading([...valueLoading])
         })
     },
     [data.buckets, cards, setCards]
@@ -256,31 +266,37 @@ export const QueryBuilderProvider: FC = ({children}) => {
     }
 
     cards.splice(idx, 1)
-    const newCards = cards.map((card, i) => {
-      if (i < idx) {
-        return card
-      }
+    setCards([...cards])
+    setKeyLoading(
+      keyLoading.map((loading, i) => {
+        if (i < idx) {
+          return loading
+        }
 
-      return {
-        ...card,
-        keys: {
-          ...card.keys,
-          status: RemoteDataState.NotStarted,
-        },
-        values: {
-          ...card.values,
-          status: RemoteDataState.NotStarted,
-        },
-      }
-    })
-    setCards(newCards)
+        return RemoteDataState.NotStarted
+      })
+    )
+    setValueLoading(
+      valueLoading.map((loading, i) => {
+        if (i < idx) {
+          return loading
+        }
 
-    update({tags: toBuilderConfig(newCards)})
+        return RemoteDataState.NotStarted
+      })
+    )
+
+    update({tags: toBuilderConfig(cards)})
   }
 
   const updater = (idx: number, card: Partial<QueryBuilderCard>): void => {
     if (idx < 0 || idx > cards.length) {
       return
+    }
+
+    if (card.keys?.selected !== cards[idx]?.keys?.selected) {
+      valueLoading[idx] = RemoteDataState.NotStarted
+      setValueLoading([...valueLoading])
     }
 
     cards[idx] = {
@@ -300,7 +316,9 @@ export const QueryBuilderProvider: FC = ({children}) => {
         remove,
         update: updater,
         loadKeys,
+        keyLoading,
         loadValues,
+        valueLoading,
       }}
     >
       {children}

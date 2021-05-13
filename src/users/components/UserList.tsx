@@ -48,9 +48,9 @@ const UserList: FC = () => {
           {filteredInvites.map(invite => (
             <InviteListItem key={`invite-${invite.id}`} invite={invite} />
           ))}
-          {/* {filteredUsers.map(user => (
+          {filteredUsers.map(user => (
             <UserListItem key={`user-${user.id}`} user={user} />
-          ))} */}
+          ))}
         </IndexList.Body>
       </IndexList>
     </Grid>

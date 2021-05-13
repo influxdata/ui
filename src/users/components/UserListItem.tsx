@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC, useContext, useState} from 'react'
+import {useSelector} from 'react-redux'
 import {capitalize} from 'lodash'
 
 // Components
@@ -13,13 +14,13 @@ import {
   RemoteDataState,
   ComponentStatus,
 } from '@influxdata/clockface'
-import {UserListContext, UserListContextResult} from './UsersPage'
+import {UsersContext} from 'src/users/context/users'
 
-// Thunks
-import {removeUser} from 'src/users/thunks'
+// Selectors
+import {getMe} from 'src/me/selectors'
 
 // Types
-import {CloudUser as User} from 'src/types'
+import {User} from 'src/client/unityRoutes'
 
 interface Props {
   user: User
@@ -45,11 +46,10 @@ interface Props {
 
 const UserListItem: FC<Props> = ({user}) => {
   const {id, email, role} = user
-  const [{orgID, currentUserID}, dispatch] = useContext<UserListContextResult>(
-    UserListContext
-  )
+  const currentUserId = useSelector(getMe)?.id
+  const {handleRemoveUser, removeUserStatus} = useContext(UsersContext)
 
-  const isCurrentUser = id === currentUserID
+  const isCurrentUser = id === currentUserId
   const [revealOnHover, toggleRevealOnHover] = useState(true)
 
   const handleShow = () => {
@@ -61,13 +61,17 @@ const UserListItem: FC<Props> = ({user}) => {
   }
 
   const handleRemove = () => {
-    removeUser(dispatch, user, orgID)
+    handleRemoveUser(user.id)
   }
 
-  const status =
-    user.status === RemoteDataState.Loading
-      ? ComponentStatus.Loading
-      : ComponentStatus.Default
+  let status = ComponentStatus.Default
+
+  if (removeUserStatus.id === user.id) {
+    status =
+      removeUserStatus.status === RemoteDataState.Loading
+        ? ComponentStatus.Loading
+        : ComponentStatus.Default
+  }
 
   return (
     <IndexList.Row brighten={true} testID={`user-list-item ${email}`}>

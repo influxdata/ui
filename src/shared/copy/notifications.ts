@@ -1227,29 +1227,29 @@ export const inviteFailed = (): Notification => ({
   message: `invite failed`,
 })
 
-export const removeUserSuccessful = (): Notification => ({
-  ...defaultSuccessNotification,
-  message: `User Removed`,
-})
-
 export const invitationResentSuccessful = (): Notification => ({
-  ...defaultErrorNotification,
+  ...defaultSuccessNotification,
   message: `Invitation Sent`,
 })
 
 export const invitationResentFailed = (): Notification => ({
-  ...defaultSuccessNotification,
+  ...defaultErrorNotification,
   message: `Error sending invitation`,
 })
 
 export const invitationWithdrawnSuccessful = (): Notification => ({
-  ...defaultErrorNotification,
+  ...defaultSuccessNotification,
   message: `Invitation Withdrawn`,
 })
 
 export const invitationWithdrawnFailed = (): Notification => ({
-  ...defaultSuccessNotification,
+  ...defaultErrorNotification,
   message: `Error withdrawing invite, try again`,
+})
+
+export const removeUserSuccessful = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: `User Removed`,
 })
 
 export const removeUserFailed = (): Notification => ({

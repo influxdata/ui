@@ -5,14 +5,16 @@ import {useDispatch, useSelector} from 'react-redux'
 // Utils
 import {
   deleteOrgsInvite,
+  deleteOrgsUser,
   getOrgsUsers,
   getOrgsInvites,
   postOrgsInvite,
   postOrgsInvitesResend,
   Invite,
 } from 'src/client/unityRoutes'
-import {notify} from 'src/shared/actions/notifications'
 
+// Notifications
+import {notify} from 'src/shared/actions/notifications'
 import {
   inviteSent,
   inviteFailed,
@@ -20,7 +22,12 @@ import {
   invitationResentFailed,
   invitationWithdrawnSuccessful,
   invitationWithdrawnFailed,
+  removeUserFailed,
+  removeUserSuccessful,
 } from 'src/shared/copy/notifications'
+
+// Constants
+import {GTM_USER_REMOVED} from 'src/users/constants'
 
 // Types
 import {User} from 'src/client/unityRoutes'
@@ -35,11 +42,12 @@ export interface UsersContextType {
   draftInvite: DraftInvite
   handleEditDraftInvite: (_: DraftInvite) => void
   handleInviteUser: () => void
+  handleRemoveUser: (userId: string) => void
   handleResendInvite: (inviteId: string) => void
   handleWithdrawInvite: (inviteId: string) => void
   invites: Invite[]
-  removeUserStatus: RemoteDataState
   removeInviteStatus: {id: string; status: RemoteDataState}
+  removeUserStatus: {id: string; status: RemoteDataState}
   resendInviteStatus: RemoteDataState
   status: RemoteDataState
   users: User[]
@@ -54,11 +62,12 @@ export const DEFAULT_CONTEXT: UsersContextType = {
   draftInvite: draft,
   handleEditDraftInvite: (_draftInvite: DraftInvite) => {},
   handleInviteUser: () => {},
+  handleRemoveUser: (_userId: string) => {},
   handleResendInvite: (_inviteId: string) => {},
   handleWithdrawInvite: (_inviteId: string) => {},
   invites: [],
   removeInviteStatus: {id: null, status: RemoteDataState.NotStarted},
-  removeUserStatus: RemoteDataState.NotStarted,
+  removeUserStatus: {id: null, status: RemoteDataState.NotStarted},
   resendInviteStatus: RemoteDataState.NotStarted,
   status: RemoteDataState.NotStarted,
   users: [],
@@ -79,9 +88,10 @@ export const UsersProvider: FC<Props> = React.memo(({children}) => {
     id: null,
     status: RemoteDataState.NotStarted,
   })
-  const [removeUserStatus, setRemoveUserStatus] = useState(
-    RemoteDataState.NotStarted
-  )
+  const [removeUserStatus, setRemoveUserStatus] = useState({
+    id: null,
+    status: RemoteDataState.NotStarted,
+  })
   // TODO(ariel): this might not be necessary
   const [resendInviteStatus, setResendInviteStatus] = useState(
     RemoteDataState.NotStarted
@@ -188,7 +198,7 @@ export const UsersProvider: FC<Props> = React.memo(({children}) => {
         const updateInvites = invites.filter(({id}) => id !== inviteId)
 
         setInvites(updateInvites)
-        setRemoveInviteStatus({id: inviteId, status: RemoteDataState.Done})
+        setRemoveInviteStatus({id: null, status: RemoteDataState.Done})
         dispatch(notify(invitationWithdrawnSuccessful()))
       } catch (error) {
         console.error(error)
@@ -199,12 +209,46 @@ export const UsersProvider: FC<Props> = React.memo(({children}) => {
     [dispatch, invites, orgId]
   )
 
+  const handleRemoveUser = useCallback(
+    async (userId: string) => {
+      try {
+        setRemoveUserStatus({
+          id: userId,
+          status: RemoteDataState.Loading,
+        })
+
+        await deleteOrgsUser({orgId, userId})
+
+        const updatedUsers = users.filter(({id}) => userId !== id)
+
+        setUsers(updatedUsers)
+        setRemoveUserStatus({
+          id: null,
+          status: RemoteDataState.Done,
+        })
+        dispatch(notify(removeUserSuccessful()))
+        window.dataLayer.push({
+          event: GTM_USER_REMOVED,
+        })
+      } catch (error) {
+        console.error(error)
+        dispatch(notify(removeUserFailed()))
+        setRemoveUserStatus({
+          id: userId,
+          status: RemoteDataState.Error,
+        })
+      }
+    },
+    [dispatch, orgId, users]
+  )
+
   return (
     <UsersContext.Provider
       value={{
         draftInvite,
         handleEditDraftInvite,
         handleInviteUser,
+        handleRemoveUser,
         handleResendInvite,
         handleWithdrawInvite,
         invites,

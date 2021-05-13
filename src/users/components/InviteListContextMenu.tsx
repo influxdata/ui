@@ -48,6 +48,7 @@ function InviteListContextMenu({invite}: Props) {
         ? ComponentStatus.Loading
         : ComponentStatus.Default
   }
+
   if (componentStatus === ComponentStatus.Loading) {
     return (
       <IndexList.Cell alignment={Alignment.Right}>

@@ -15,7 +15,6 @@ export type Visibility = 'visible' | 'hidden'
 export interface PipeMeta {
   title: string
   visible: boolean
-  loading: RemoteDataState
   error?: string
 }
 

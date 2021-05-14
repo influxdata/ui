@@ -11,7 +11,6 @@ import {
   PipeData,
   PipeMeta,
 } from 'src/types/flows'
-import {RemoteDataState} from 'src/types'
 import {default as _asResource} from 'src/flows/context/resource.hook'
 import {PIPE_DEFINITIONS} from 'src/flows'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
@@ -123,7 +122,6 @@ export function hydrate(data) {
     const meta = {
       title: pipe.title,
       visible: pipe.visible,
-      loading: RemoteDataState.NotStarted,
     }
 
     delete pipe.title
@@ -169,38 +167,6 @@ export const FlowListProvider: FC = ({children}) => {
     let _flowData
 
     if (!flow) {
-      if (isFlagEnabled('molly-first') && Object.keys(flows).length === 0) {
-        _flowData = hydrate({
-          name: `Name this ${PROJECT_NAME}`,
-          readOnly: false,
-          range: DEFAULT_TIME_RANGE,
-          refresh: AUTOREFRESH_DEFAULT,
-          pipes: [
-            {
-              title: 'Welcome',
-              visible: true,
-              type: 'youtube',
-              uri: 'Rs16uhxK0h8',
-            },
-            {
-              title: 'Select a Metric',
-              visible: true,
-              type: 'metricSelector',
-              ...JSON.parse(
-                JSON.stringify(PIPE_DEFINITIONS['metricSelector'].initial)
-              ),
-            },
-            {
-              title: 'Visualize the Result',
-              visible: true,
-              type: 'visualization',
-              ...JSON.parse(
-                JSON.stringify(PIPE_DEFINITIONS['visualization'].initial)
-              ),
-            },
-          ],
-        })
-      } else {
         _flowData = hydrate({
           name: `Name this ${PROJECT_NAME}`,
           readOnly: false,
@@ -225,7 +191,6 @@ export const FlowListProvider: FC = ({children}) => {
             },
           ],
         })
-      }
       _flow = {
         ..._flowData,
       }

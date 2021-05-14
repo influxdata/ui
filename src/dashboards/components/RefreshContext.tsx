@@ -59,8 +59,8 @@ export const createAutoRefreshInitialState = (
       type: 'custom',
     },
     refreshMilliseconds: {
-      interval: 0,
-      status: AutoRefreshStatus.Paused,
+      interval: 60000,
+      status: AutoRefreshStatus.Active,
     },
     infiniteDuration: false,
     ...override,

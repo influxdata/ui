@@ -64,11 +64,14 @@ const DashboardContainer: FC = () => {
       document.visibilityState === 'hidden' &&
       autoRefresh.status === AutoRefreshStatus.Active
     ) {
-      registerListeners()
-    } else {
+      GlobalAutoRefresher.stopPolling()
       registerStopListeners()
+    } else if (document.visibilityState === 'visible') {
+      GlobalAutoRefresher.poll(autoRefresh, stopFunc)
+      registerListeners()
     }
   }
+
   const registerStopListeners = useCallback(() => {
     // Stop all existing timers and deregister everythang
     if (timer.current) {

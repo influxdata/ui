@@ -52,9 +52,7 @@ export const ResultsProvider: FC = ({children}) => {
         }
         const ref = flow.data.allIDs
         const index = flow.data.indexOf(id)
-        const lastOne = ref[index - 1]
         manipulator.add(id, manipulator.get(ref[index - 1]))
-        flow.meta.update(id, {loading: flow.meta.get(lastOne).loading})
       } catch (_e) {
         // swallow that
       }

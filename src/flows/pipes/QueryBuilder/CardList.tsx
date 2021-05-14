@@ -127,7 +127,7 @@ const Card: FC<Props> = ({idx}) => {
   useEffect(() => {
     if (
       keyStatus === RemoteDataState.Done &&
-      valueStatus === RemoteDataState.NotStarted
+      valueStatus !== RemoteDataState.Done
     ) {
       loadValues(idx)
     }

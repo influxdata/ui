@@ -49,7 +49,7 @@ export const DEFAULT_CONTEXT: FlowQueryContextType = {
   basic: (_: string) => {},
   queryAll: () => {},
   status: RemoteDataState.NotStarted,
-  getStatus: (_: string) => RemoteDataState.NotStarted
+  getStatus: (_: string) => RemoteDataState.NotStarted,
 }
 
 export const FlowQueryContext = React.createContext<FlowQueryContextType>(
@@ -312,7 +312,9 @@ export const FlowQueryProvider: FC = ({children}) => {
   }
 
   return (
-    <FlowQueryContext.Provider value={{query, basic, generateMap, queryAll}}>
+    <FlowQueryContext.Provider
+      value={{query, basic, generateMap, queryAll, status, getStatus}}
+    >
       {children}
     </FlowQueryContext.Provider>
   )

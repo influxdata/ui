@@ -39,7 +39,7 @@ interface PipeContextProps {
 export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
   const {flow} = useContext(FlowContext)
   const results = useContext(ResultsContext)
-  const {generateMap} = useContext(FlowQueryContext)
+  const {generateMap, getStatus} = useContext(FlowQueryContext)
 
   const stages = useMemo(() => generateMap(true), [
     generateMap,
@@ -66,10 +66,9 @@ export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
 
   return useMemo(() => {
     let data = null
-    let loading = RemoteDataState.NotStarted
+    const loading = getStatus(id)
     try {
       data = flow.data.get(id)
-      loading = flow.meta.get(id).loading
     } catch {
       return null
     }

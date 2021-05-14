@@ -38,10 +38,6 @@ const FlowPanelHeader: FC<HeaderProps> = ({
 }) => {
   const {flow} = useContext(FlowContext)
   const {generateMap} = useContext(FlowQueryContext)
-  const removePipe = () => {
-    flow.data.remove(id)
-    flow.meta.remove(id)
-  }
   const index = flow.data.indexOf(id)
   const canBeMovedUp = index > 0
   const canBeMovedDown = index < flow.data.allIDs.length - 1
@@ -115,7 +111,6 @@ const FlowPanelHeader: FC<HeaderProps> = ({
     /* eslint-enable no-console */
   }, [id])
 
-  const remove = useCallback(() => removePipe(), [removePipe, id])
   return (
     <div className="flow-panel--header">
       <div className="flow-panel--node-wrapper">
@@ -149,7 +144,7 @@ const FlowPanelHeader: FC<HeaderProps> = ({
               />
             </FeatureFlag>
             <PanelVisibilityToggle id={id} />
-            <RemovePanelButton onRemove={remove} />
+            <RemovePanelButton id={id} />
             {persistentControl}
           </div>
         </>

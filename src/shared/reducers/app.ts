@@ -3,7 +3,7 @@ import {combineReducers} from 'redux'
 // Types
 import {ActionTypes, Action} from 'src/shared/actions/app'
 import {AUTOREFRESH_DEFAULT_INTERVAL} from 'src/shared/constants'
-import {TimeZone, NavBarState, Theme} from 'src/types'
+import {TimeZone, NavBarState, Theme, VersionInfo} from 'src/types'
 
 export interface AppState {
   ephemeral: {
@@ -16,6 +16,7 @@ export interface AppState {
     timeZone: TimeZone
     navBarState: NavBarState
     theme: Theme
+    versionInfo: VersionInfo
   }
 }
 
@@ -30,6 +31,7 @@ const initialState: AppState = {
     showTemplateControlBar: false,
     timeZone: 'Local',
     navBarState: 'collapsed',
+    versionInfo: {version: '', commit: ''},
   },
 }
 
@@ -89,6 +91,13 @@ const appPersistedReducer = (
       return {
         ...state,
         autoRefresh: action.payload.milliseconds,
+      }
+    }
+
+    case ActionTypes.SetVersionInfo: {
+      return {
+        ...state,
+        versionInfo: action.payload.versionInfo,
       }
     }
 

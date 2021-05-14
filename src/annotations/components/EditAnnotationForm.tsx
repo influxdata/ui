@@ -20,7 +20,7 @@ import {ANNOTATION_FORM_WIDTH} from 'src/annotations/constants'
 import {deleteAnnotations} from 'src/annotations/actions/thunks'
 
 // Types
-import {Annotation, EditAnnotation} from 'src/types'
+import {AnnotationCreate, EditAnnotation} from 'src/types'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -37,7 +37,7 @@ import {notify} from 'src/shared/actions/notifications'
 
 interface Props {
   handleSubmit: (editedAnnotation: EditAnnotation) => void
-  annotation: Annotation
+  annotation: AnnotationCreate
   handleClose: () => void
 }
 

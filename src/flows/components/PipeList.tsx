@@ -27,7 +27,12 @@ const PipeList: FC = () => {
     return <FlowPipe key={`pipe-${id}`} id={id} />
   })
 
-  return <div className="flow"><InsertCellButton id={null} />{_pipes}</div>
+  return (
+    <div className="flow">
+      <InsertCellButton id={null} />
+      {_pipes}
+    </div>
+  )
 }
 
 export default PipeList

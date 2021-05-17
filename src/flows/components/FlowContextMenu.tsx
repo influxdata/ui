@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, useContext} from 'react'
 import {useParams, useHistory} from 'react-router-dom'
+import 'src/flows/components/FlowContextMenu.scss'
 
 // Components
 import {Context} from 'src/clockface'
@@ -41,31 +42,33 @@ const FlowContextMenu: FC<Props> = ({id, name}) => {
   }
 
   return (
-    <Context>
-      <Button
-        text="Clone"
-        icon={IconFont.Duplicate}
-        color={ComponentColor.Secondary}
-        size={ComponentSize.ExtraSmall}
-        titleText="Clone"
-        testID="flow-button--clone"
-        onClick={handleClone}
-        style={{marginRight: 10}}
-      />
-      <Context.Menu
-        icon={IconFont.Trash}
-        color={ComponentColor.Danger}
-        shape={ButtonShape.Default}
-        text="Delete"
-        testID={`context-delete-menu ${name}`}
-      >
-        <Context.Item
-          label="Confirm"
-          action={handleDelete}
-          testID={`context-delete-flow ${name}`}
+    <div className="flow-context--wrapper">
+      <Context>
+        <Button
+          text="Clone"
+          icon={IconFont.Duplicate}
+          color={ComponentColor.Secondary}
+          size={ComponentSize.ExtraSmall}
+          titleText="Clone"
+          testID="flow-button--clone"
+          onClick={handleClone}
+          className="flow-menu--clone"
         />
-      </Context.Menu>
-    </Context>
+        <Context.Menu
+          icon={IconFont.Trash}
+          color={ComponentColor.Danger}
+          shape={ButtonShape.Default}
+          text="Delete"
+          testID={`context-delete-menu ${name}`}
+        >
+          <Context.Item
+            label="Confirm"
+            action={handleDelete}
+            testID={`context-delete-flow ${name}`}
+          />
+        </Context.Menu>
+      </Context>
+    </div>
   )
 }
 

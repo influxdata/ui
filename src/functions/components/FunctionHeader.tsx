@@ -28,7 +28,7 @@ const FunctionHeader: FC = () => {
     // TODO dont allow routing away if unsaved changes exist
   }
 
-  const functionURL = `https://stag-us-east-1-3.aws.cloud2.influxdata.com/api/v2/functions/${id}/invoke`
+  const functionURL = `https://stag-us-east-1-3.aws.cloud2.influxdata.com/api/v2/poc-functions/${id}/invoke`
   const notifyCopied = () => {
     dispatch(notify(copyFunctionURL()))
   }

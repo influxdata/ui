@@ -61,25 +61,29 @@ describe('tasksReducer', () => {
     it('should add a task', () => {
       const state = initialState()
 
-      const actual = tasksReducer(state, addTask({
-        result: 'task01', entities: { tasks:
-            {
-                 '01': { name: 'testTask',
-                  orgID: 'MYORG',
-                  id: '0001',
-                  flux: '' },
+      const actual = tasksReducer(
+        state,
+        addTask({
+          result: 'task01',
+          entities: {
+            tasks: {
+              '01': {name: 'testTask', orgID: 'MYORG', id: '0001', flux: ''},
             },
-          }}))
+          },
+        })
+      )
 
-      const actual2 = tasksReducer(actual, addTask({
-        result: 'task02', entities: { tasks:
-            {
-              '02': { name: 'testTask',
-                orgID: 'MYORG',
-                id: '0002',
-                flux: '' },
+      const actual2 = tasksReducer(
+        actual,
+        addTask({
+          result: 'task02',
+          entities: {
+            tasks: {
+              '02': {name: 'testTask', orgID: 'MYORG', id: '0002', flux: ''},
             },
-        }}))
+          },
+        })
+      )
 
       expect(actual2.allIDs).toContain('task01')
       expect(actual2.allIDs).toContain('task02')

@@ -18,7 +18,7 @@ import {
 // Utils
 import {formatAnnotationQueryString} from 'src/annotations/utils/formatQueryString'
 
-export const getAnnotationStreams = async (): Promise<AnnotationStream[]> => {
+export const getAnnotationStreams = (): Promise<AnnotationStream[]> => {
   throw new Error('getAnnotationStreams is not implemented')
 }
 

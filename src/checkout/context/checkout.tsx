@@ -136,6 +136,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   }, [getZuoraParams])
 
   const getBillingSettings = useCallback(
+    // TODO(ariel): this is weird, why do we need a parameter?
     async (fields = inputs) => {
       try {
         const resp = await getSettingsNotifications({})
@@ -208,6 +209,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
 
     const {shouldNotify} = inputs
     if (!shouldNotify) {
+      // TODO(ariel): this seems like a hack to "make it work"
       getBillingSettings(fields)
       /**
        * fields.notifyEmail = default user email

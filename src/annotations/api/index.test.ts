@@ -17,7 +17,6 @@ jest.doMock('axios', () => {
 
 import {
   writeAnnotation,
-  getAnnotation,
   deleteAnnotation,
   updateAnnotation,
 } from 'src/annotations/api'
@@ -87,35 +86,6 @@ describe('annotations api calls', () => {
         ],
       },
     ]
-
-    it('retrieves annotations and returns them categorized by annotation stream', async () => {
-      const [lambeau] = annotationResponse
-      mocked(fakeAxios.get).mockImplementationOnce(() =>
-        Promise.resolve({data: [lambeau]})
-      )
-      const response = await getAnnotation({
-        startTime: Date.now().toString(),
-        endTime: Date.now().toString(),
-        stream: 'Lambeau Field',
-      })
-
-      expect(response).toEqual([lambeau])
-    })
-
-    it('handles an error and returns the error message', async () => {
-      const annotation = {
-        startTime: Date.now().toString(),
-        endTime: Date.now().toString(),
-        stream: 'Lambeau Field',
-      }
-      const message = 'OOPS YOU DONE MESSED UP SON'
-
-      mocked(fakeAxios.get).mockImplementationOnce(() =>
-        Promise.reject(new Error(message))
-      )
-
-      await expect(getAnnotation(annotation)).rejects.toThrow(message)
-    })
   })
 
   describe('PUT - annotation update api calls', () => {

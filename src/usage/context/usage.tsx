@@ -3,13 +3,12 @@ import React, {FC, useCallback, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Utils
+import {getBillingStats, getRateLimits} from 'src/usage/api'
 import {
-  getBillingDate,
-  getBillingStats,
-  getUsageStats,
-  getRateLimits,
-} from 'src/usage/api'
-import {getUsage, getUsageVectors} from 'src/client/unityRoutes'
+  getBillingStartDate,
+  getUsage,
+  getUsageVectors,
+} from 'src/client/unityRoutes'
 import {getTimeRange} from 'src/dashboards/selectors'
 import {setTimeRange} from 'src/timeMachine/actions'
 
@@ -77,16 +76,20 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   )
 
   const handleGetUsageVectors = useCallback(async () => {
-    const resp = await getUsageVectors({})
+    try {
+      const resp = await getUsageVectors({})
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      const vectors = resp.data
+
+      setUsageVectors(vectors)
+      handleSetSelectedUsage(vectors?.[0]?.name)
+    } catch (error) {
+      console.error('handleGetUsageVectors: ', error)
     }
-
-    const vectors = resp.data.usageVectors
-
-    setUsageVectors(vectors)
-    handleSetSelectedUsage(vectors?.[0]?.name)
   }, [setUsageVectors, handleSetSelectedUsage])
 
   useEffect(() => {
@@ -94,12 +97,16 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   }, [handleGetUsageVectors])
 
   const handleGetBillingDate = useCallback(async () => {
-    const resp = await getBillingDate()
+    try {
+      const resp = await getBillingStartDate({})
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+      setBillingDateTime(resp.data.dateTime)
+    } catch (error) {
+      console.error('handleGetBillingDate: ', error)
     }
-    setBillingDateTime(resp.data.dateTime)
   }, [setBillingDateTime])
 
   useEffect(() => {
@@ -123,16 +130,20 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   }, [handleGetBillingStats])
 
   const handleGetUsageStats = useCallback(async () => {
-    const resp = await getUsage({
-      vector_name: selectedUsage,
-      query: {range: timeRange.duration},
-    })
+    try {
+      const resp = await getUsage({
+        vector_name: selectedUsage,
+        query: {range: timeRange.duration},
+      })
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      setUsageStats(resp.data)
+    } catch (error) {
+      console.error('handleGetUsageStats: ', error)
     }
-
-    setUsageStats(resp.data)
   }, [selectedUsage, timeRange])
 
   useEffect(() => {

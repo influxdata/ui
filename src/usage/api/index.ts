@@ -10,66 +10,6 @@ const makeResponse = (status, data) => {
   })
 }
 
-export const getBillingDate = (): ReturnType<typeof getBillingStartDate> => {
-  const billingDate: BillingDate = {
-    dateTime: new Date().toLocaleString(),
-    status: RemoteDataState.Done,
-  }
-
-  return makeResponse(200, billingDate)
-}
-
-export const getUsageStats = (
-  _usageVector: string,
-  _timeRange: TimeRange
-): ReturnType<typeof getUsage> => {
-  const usageStats = `#group,false,false,true,false,false
-#datatype,string,long,string,dateTime:RFC3339,long
-#default,limits,,,,
-,result,table,_field,_time,_value
-,,0,limited_write,2021-01-13T22:05:00Z,0
-,,0,limited_write,2021-01-13T22:10:00Z,0
-,,0,limited_write,2021-01-13T22:15:00Z,0
-,,0,limited_write,2021-01-13T22:20:00Z,0
-,,0,limited_write,2021-01-13T22:25:00Z,0
-,,0,limited_write,2021-01-13T22:30:00Z,0
-,,0,limited_write,2021-01-13T22:35:00Z,0
-,,0,limited_write,2021-01-13T22:40:00Z,0
-,,0,limited_write,2021-01-13T22:45:00Z,0
-,,0,limited_write,2021-01-13T22:50:00Z,0
-,,0,limited_write,2021-01-13T22:55:00Z,0
-,,0,limited_write,2021-01-13T23:00:00Z,0
-,,0,limited_write,2021-01-13T23:05:00Z,0
-,,0,limited_write,2021-01-13T23:10:00Z,0
-,,0,limited_write,2021-01-13T23:15:00Z,0
-,,0,limited_write,2021-01-13T23:20:00Z,0
-,,0,limited_write,2021-01-13T23:25:00Z,0
-,,0,limited_write,2021-01-13T23:30:00Z,0
-,,0,limited_write,2021-01-13T23:35:00Z,0
-,,0,limited_write,2021-01-13T23:40:00Z,0
-,,0,limited_write,2021-01-13T23:45:00Z,0
-,,0,limited_write,2021-01-13T23:50:00Z,0
-,,0,limited_write,2021-01-13T23:55:00Z,0
-,,0,limited_write,2021-01-14T00:00:00Z,0
-,,0,limited_write,2021-01-14T00:05:00Z,0
-,,0,limited_write,2021-01-14T00:10:00Z,0
-,,0,limited_write,2021-01-14T00:15:00Z,0
-,,0,limited_write,2021-01-14T00:20:00Z,0
-,,0,limited_write,2021-01-14T00:25:00Z,0
-,,0,limited_write,2021-01-14T00:30:00Z,0
-,,0,limited_write,2021-01-14T00:35:00Z,0
-,,0,limited_write,2021-01-14T00:40:00Z,0
-,,0,limited_write,2021-01-14T00:45:00Z,0
-,,0,limited_write,2021-01-14T00:50:00Z,0
-,,0,limited_write,2021-01-14T00:55:00Z,0
-,,0,limited_write,2021-01-14T01:00:00Z,0
-,,0,limited_write,2021-01-14T01:05:00Z,0
-,,0,limited_write,2021-01-14T01:10:00Z,0
-,,0,limited_write,2021-01-14T01:15:00Z,0
-,,0,limited_write,2021-01-14T01:20:00Z,0`
-  return makeResponse(200, usageStats)
-}
-
 export const getBillingStats = (): ReturnType<typeof getUsage> => {
   const billingStats: string = `
 #group,false,false,true,true,false

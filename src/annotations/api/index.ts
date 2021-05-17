@@ -1,7 +1,6 @@
 // Types
 import {
   Annotation,
-  AnnotationCreate,
   AnnotationResponse,
   DeleteAnnotation,
   AnnotationStream,
@@ -73,7 +72,7 @@ export const getAnnotations = async (
 }
 
 export const updateAnnotation = async (
-  newAnnotation: AnnotationCreate
+  newAnnotation: AnnotationEvent
 ): Promise<AnnotationEvent> => {
   const params = {annotationID: newAnnotation.id, data: newAnnotation}
   const res = await putAnnotation(params)

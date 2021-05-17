@@ -20,7 +20,7 @@ import {ANNOTATION_FORM_WIDTH} from 'src/annotations/constants'
 import {deleteAnnotations} from 'src/annotations/actions/thunks'
 
 // Types
-import {AnnotationCreate, EditAnnotation} from 'src/types'
+import {Annotation} from 'src/types'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -36,13 +36,13 @@ import {
 import {notify} from 'src/shared/actions/notifications'
 
 interface Props {
-  handleSubmit: (editedAnnotation: EditAnnotation) => void
-  annotation: AnnotationCreate
+  handleSubmit: (editedAnnotation: Annotation) => void
+  annotation: Annotation
   handleClose: () => void
 }
 
 export const EditAnnotationForm: FC<Props> = (props: Props) => {
-  const [editedAnnotation, updateAnnotation] = useState<EditAnnotation>({
+  const [editedAnnotation, updateAnnotation] = useState<Annotation>({
     id: props.annotation.id,
     message: props.annotation.message ?? '',
     startTime: new Date(props.annotation.startTime).toISOString(),

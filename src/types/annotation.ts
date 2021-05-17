@@ -44,14 +44,4 @@ export interface DeleteAnnotation {
   stream: string
 }
 
-export interface AnnotationCreate {
-  endTime: string
-  id?: string
-  message?: string
-  startTime: string
-  stickers?: any
-  stream?: string
-  summary: string
-}
-
 export type AnnotationsList = {[stream: string]: Annotation[]}

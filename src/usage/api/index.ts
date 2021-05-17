@@ -1,10 +1,6 @@
-import {BillingDate, UsageVector} from 'src/types/billing'
+import {BillingDate} from 'src/types/billing'
 import {RemoteDataState, TimeRange} from 'src/types'
-import {
-  getBillingStartDate,
-  getUsageVectors as apiGetUsageVectors,
-  getUsage,
-} from 'src/client/unityRoutes'
+import {getBillingStartDate, getUsage} from 'src/client/unityRoutes'
 
 const makeResponse = (status, data) => {
   return Promise.resolve({
@@ -21,37 +17,6 @@ export const getBillingDate = (): ReturnType<typeof getBillingStartDate> => {
   }
 
   return makeResponse(200, billingDate)
-}
-
-export const getUsageVectors = (): ReturnType<typeof apiGetUsageVectors> => {
-  const usageVectors: UsageVector[] = [
-    {
-      name: 'Limit Events',
-      unit: '',
-      fluxKey: '_value',
-    },
-    {
-      name: 'Data In',
-      unit: 'MB',
-      fluxKey: 'writes_mb',
-    },
-    {
-      name: 'Query Count',
-      unit: '',
-      fluxKey: 'query_count',
-    },
-    {
-      name: 'Storage',
-      unit: 'GB-hr',
-      fluxKey: 'storage_gb',
-    },
-    {
-      name: 'Data Out',
-      unit: 'GB',
-      fluxKey: 'reads_gb',
-    },
-  ]
-  return makeResponse(200, {usageVectors})
 }
 
 export const getUsageStats = (

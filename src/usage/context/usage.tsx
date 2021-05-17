@@ -6,10 +6,10 @@ import {useDispatch, useSelector} from 'react-redux'
 import {
   getBillingDate,
   getBillingStats,
-  getUsageVectors,
   getUsageStats,
   getRateLimits,
 } from 'src/usage/api'
+import {getUsage, getUsageVectors} from 'src/client/unityRoutes'
 import {getTimeRange} from 'src/dashboards/selectors'
 import {setTimeRange} from 'src/timeMachine/actions'
 
@@ -60,6 +60,8 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   const [usageStats, setUsageStats] = useState('')
   const [rateLimits, setRateLimits] = useState('')
 
+  // TODO(ariel): update the timerange to be fixed to the enum provided
+  // This is to ensure that the usage page doesn't crash on large selections
   const timeRange = useSelector(getTimeRange)
   const dispatch = useDispatch()
 
@@ -75,7 +77,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   )
 
   const handleGetUsageVectors = useCallback(async () => {
-    const resp = await getUsageVectors()
+    const resp = await getUsageVectors({})
 
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
@@ -121,7 +123,10 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   }, [handleGetBillingStats])
 
   const handleGetUsageStats = useCallback(async () => {
-    const resp = await getUsageStats(selectedUsage, timeRange)
+    const resp = await getUsage({
+      vector_name: selectedUsage,
+      query: {range: timeRange.duration},
+    })
 
     if (resp.status !== 200) {
       throw new Error(resp.data.message)

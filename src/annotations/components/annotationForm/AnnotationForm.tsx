@@ -1,6 +1,9 @@
 // Libraries
 import React, {FC, FormEvent, useState} from 'react'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 // Components
 import {
   Overlay,
@@ -58,11 +61,16 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     props.onSubmit({message, startTime})
   }
 
+  const handleCancel = () => {
+    event('dashboards.annotations.create_annotation.cancel')
+    props.onClose()
+  }
+
   return (
     <Overlay.Container maxWidth={ANNOTATION_FORM_WIDTH}>
       <Overlay.Header
         title={`${props.title} Annotation`}
-        onDismiss={props.onClose}
+        onDismiss={handleCancel}
       />
       <Form onSubmit={handleSubmit}>
         <Overlay.Body>
@@ -84,7 +92,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
           </Grid>
         </Overlay.Body>
         <Overlay.Footer>
-          <Button text="Cancel" onClick={props.onClose} />
+          <Button text="Cancel" onClick={handleCancel} />
           <Button
             text="Save Annotation"
             color={ComponentColor.Primary}

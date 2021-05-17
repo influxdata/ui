@@ -16,6 +16,13 @@ const BucketSelector: FC = () => {
 
   const selectBucket = (item: string): void => {
     data.buckets = [item]
+    data.tags = [
+      {
+        key: '',
+        values: [],
+        aggregateFunctionType: 'filter',
+      },
+    ]
     update(data)
   }
 

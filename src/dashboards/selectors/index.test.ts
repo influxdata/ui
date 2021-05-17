@@ -103,6 +103,7 @@ describe('Dashboards.Selector', () => {
         navBarState: 'expanded',
         timeZone: 'Local' as TimeZone,
         theme: 'dark',
+        versionInfo: {version: '', commit: ''},
       },
     }
 
@@ -125,6 +126,7 @@ describe('Dashboards.Selector', () => {
         navBarState: 'expanded',
         timeZone: 'UTC' as TimeZone,
         theme: 'dark',
+        versionInfo: {version: '', commit: ''},
       },
     }
 
@@ -155,6 +157,7 @@ describe('Dashboards.Selector', () => {
         navBarState: 'expanded',
         timeZone: 'UTC' as TimeZone,
         theme: 'dark',
+        versionInfo: {version: '', commit: ''},
       },
     }
 
@@ -185,6 +188,7 @@ describe('Dashboards.Selector', () => {
         navBarState: 'expanded',
         timeZone: 'UTC' as TimeZone,
         theme: 'dark',
+        versionInfo: {version: '', commit: ''},
       },
     }
 

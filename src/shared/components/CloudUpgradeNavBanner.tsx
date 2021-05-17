@@ -22,17 +22,19 @@ import {
   HIDE_UPGRADE_CTA_KEY,
   PAID_ORG_HIDE_UPGRADE_SETTING,
 } from 'src/cloud/constants'
+import {getIsRegionBeta} from 'src/me/selectors'
 
 // Types
 import {AppState, OrgSetting} from 'src/types'
 
 interface StateProps {
   inView: boolean
+  isRegionBeta: boolean
 }
 
-const CloudUpgradeNavBanner: FC<StateProps> = ({inView}) => (
+const CloudUpgradeNavBanner: FC<StateProps> = ({inView, isRegionBeta}) => (
   <>
-    {inView && (
+    {inView && !isRegionBeta && (
       <CloudOnly>
         <Panel
           gradient={Gradients.HotelBreakfast}
@@ -75,13 +77,15 @@ const mstp = (state: AppState) => {
     settings,
     (setting: OrgSetting) => setting.key === HIDE_UPGRADE_CTA_KEY
   )
+  const isRegionBeta = getIsRegionBeta(state)
+  let inView = false
   if (
     !hideUpgradeButtonSetting ||
     hideUpgradeButtonSetting.value !== PAID_ORG_HIDE_UPGRADE_SETTING.value
   ) {
-    return {inView: true}
+    inView = true
   }
-  return {inView: false}
+  return {inView, isRegionBeta}
 }
 
 export default connect<StateProps>(mstp)(CloudUpgradeNavBanner)

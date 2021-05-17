@@ -209,8 +209,10 @@ do
 					fi
 				done
 
-				printf "\n\nFAILURE: monitor-ci workflow with id ${workflow_id} failed:\n"
-				printf "https://app.circleci.com/pipelines/github/influxdata/monitor-ci/${pipeline_number}/workflows/${workflow_id}"
+				printf "\n\nFAILURE: monitor-ci workflow with id ${workflow_id} failed.\n"
+				printf "\n********************************************************\n"
+				printf "monitor-ci pipeline link: https://app.circleci.com/pipelines/github/influxdata/monitor-ci/${pipeline_number}/workflows/${workflow_id}"
+				printf "\n********************************************************\n"
 			fi
 		done
 

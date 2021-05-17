@@ -260,7 +260,7 @@ describe('Flows', () => {
     cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
 
     cy.getByTestIDSubStr('panel-add-btn')
-      .first()
+      .last()
       .click()
 
     cy.getByTestID('add-flow-btn--toBucket').click()

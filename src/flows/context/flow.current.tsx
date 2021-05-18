@@ -2,7 +2,6 @@ import React, {FC, useContext, useCallback} from 'react'
 import {Flow, PipeData} from 'src/types/flows'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import {v4 as UUID} from 'uuid'
-import {RemoteDataState} from 'src/types'
 import {PROJECT_NAME, PIPE_DEFINITIONS} from 'src/flows'
 
 export interface FlowContextType {
@@ -50,7 +49,6 @@ export const FlowProvider: FC = ({children}) => {
     flows[currentID].meta.add(id, {
       title,
       visible: true,
-      loading: RemoteDataState.NotStarted,
     })
 
     if (typeof index !== 'undefined') {

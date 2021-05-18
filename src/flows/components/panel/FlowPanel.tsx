@@ -122,26 +122,30 @@ const FlowPanel: FC<Props> = ({id, controls, children}) => {
           </div>
           {title}
           {!flow.readOnly && (
-            <div className="flow-panel--hover-control">{controls}</div>
+            <>
+              <div className="flow-panel--hover-control">{controls}</div>
+              <FeatureFlag name="flow-debug-queries">
+                <SquareButton
+                  icon={IconFont.BookCode}
+                  onClick={printMap}
+                  color={ComponentColor.Default}
+                  titleText="Debug Notebook Queries"
+                  className="flows-config-panel-button"
+                />
+              </FeatureFlag>
+              <SquareButton
+                icon={IconFont.CogThick}
+                onClick={toggleSidebar}
+                color={
+                  id === focused
+                    ? ComponentColor.Secondary
+                    : ComponentColor.Default
+                }
+                titleText="Configure"
+                className="flows-config-panel-button"
+              />
+            </>
           )}
-          <FeatureFlag name="flow-debug-queries">
-            <SquareButton
-              icon={IconFont.BookCode}
-              onClick={printMap}
-              color={ComponentColor.Default}
-              titleText="Debug Notebook Queries"
-              className="flows-config-panel-button"
-            />
-          </FeatureFlag>
-          <SquareButton
-            icon={IconFont.CogThick}
-            onClick={toggleSidebar}
-            color={
-              id === focused ? ComponentColor.Secondary : ComponentColor.Default
-            }
-            titleText="Configure"
-            className="flows-config-panel-button"
-          />
         </div>
         {isVisible && <div className="flow-panel--body">{children}</div>}
         {showResults && (

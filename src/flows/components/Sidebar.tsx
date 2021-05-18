@@ -45,7 +45,8 @@ const Sidebar: FC = () => {
         {
           title: 'Delete',
           action: () => {
-            event('notebook_delete_cell')
+            const {type} = flow.data.get(id)
+            event('notebook_delete_cell', {notebooksCellType: type})
 
             hide()
 

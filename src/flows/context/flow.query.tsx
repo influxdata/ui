@@ -1,4 +1,4 @@
-import React, {FC, useContext, useMemo} from 'react'
+import React, {FC, useContext, useState, useMemo} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {getVariables} from 'src/variables/selectors'
 import {FlowContext} from 'src/flows/context/flow.current'
@@ -11,7 +11,7 @@ import {PIPE_DEFINITIONS} from 'src/flows'
 import {notify} from 'src/shared/actions/notifications'
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 import {parseDuration, timeRangeToDuration} from 'src/shared/utils/duration'
-import {useEvent, sendEvent} from 'src/unity/hooks/useEvent'
+import {useEvent, sendEvent} from 'src/users/hooks/useEvent'
 
 // Constants
 import {
@@ -45,6 +45,8 @@ export interface FlowQueryContextType {
   basic: (text: string) => any
   queryAll: () => void
   getPanelQueries: (id: string, withSideEffects?: boolean) => PanelQueries
+  status: RemoteDataState
+  getStatus: (id: string) => RemoteDataState
 }
 
 export const DEFAULT_CONTEXT: FlowQueryContextType = {
@@ -53,6 +55,8 @@ export const DEFAULT_CONTEXT: FlowQueryContextType = {
   basic: (_: string) => {},
   queryAll: () => {},
   getPanelQueries: (_, _a) => ({source: '', visual: ''}),
+  status: RemoteDataState.NotStarted,
+  getStatus: (_: string) => RemoteDataState.NotStarted,
 }
 
 export const FlowQueryContext = React.createContext<FlowQueryContextType>(
@@ -80,6 +84,7 @@ export const FlowQueryProvider: FC = ({children}) => {
   const {runMode} = useContext(RunModeContext)
   const {add, update} = useContext(ResultsContext)
   const {query: queryAPI, basic: basicAPI} = useContext(QueryContext)
+  const [loading, setLoading] = useState({})
 
   const dispatch = useDispatch()
   const notebookQueryKey = `queryAll-${flow?.name}`
@@ -127,6 +132,14 @@ export const FlowQueryProvider: FC = ({children}) => {
       return acc
     }, {})
   }, [variables, flow?.range])
+
+  const getStatus = (id: string) => {
+    if (!loading.hasOwnProperty(id)) {
+      return RemoteDataState.NotStarted
+    }
+
+    return loading[id]
+  }
 
   const generateMap = (withSideEffects?: boolean): Stage[] => {
     return flow.data.allIDs
@@ -242,7 +255,7 @@ export const FlowQueryProvider: FC = ({children}) => {
     }
   }
 
-  const statuses = flow ? flow.meta.all.map(({loading}) => loading) : []
+  const statuses = Object.values(loading)
 
   let status = RemoteDataState.Done
 
@@ -286,17 +299,20 @@ export const FlowQueryProvider: FC = ({children}) => {
           )
         }, [])
         .map(stage => {
-          flow.meta.update(stage.instance, {loading: RemoteDataState.Loading})
+          loading[stage.instance] = RemoteDataState.Loading
+          setLoading(loading)
           return query(stage.text)
             .then(response => {
-              flow.meta.update(stage.instance, {loading: RemoteDataState.Done})
+              loading[stage.instance] = RemoteDataState.Done
+              setLoading(loading)
               forceUpdate(stage.instance, response)
             })
             .catch(e => {
               forceUpdate(stage.instance, {
                 error: e.message,
               })
-              flow.meta.update(stage.instance, {loading: RemoteDataState.Error})
+              loading[stage.instance] = RemoteDataState.Error
+              setLoading(loading)
             })
         })
     )
@@ -328,7 +344,15 @@ export const FlowQueryProvider: FC = ({children}) => {
 
   return (
     <FlowQueryContext.Provider
-      value={{query, basic, generateMap, queryAll, getPanelQueries}}
+      value={{
+        query,
+        basic,
+        generateMap,
+        queryAll,
+        getPanelQueries,
+        status,
+        getStatus,
+      }}
     >
       {children}
     </FlowQueryContext.Provider>

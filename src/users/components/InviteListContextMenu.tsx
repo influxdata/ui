@@ -14,10 +14,7 @@ import {
   ConfirmationButton,
   ComponentStatus,
 } from '@influxdata/clockface'
-import {UserListContext, UserListContextResult} from './UsersPage'
-
-// Thunks
-import {withdrawInvite, resendInvite} from 'src/unity/thunks'
+import {UsersContext} from 'src/users/context/users'
 
 // Types
 import {Invite} from 'src/types'
@@ -28,20 +25,29 @@ interface Props {
 
 function InviteListContextMenu({invite}: Props) {
   const [isHover, setHover] = useState(true)
-  const [{orgID}, dispatch] = useContext<UserListContextResult>(UserListContext)
+
+  const {
+    handleResendInvite,
+    handleWithdrawInvite,
+    removeInviteStatus,
+  } = useContext(UsersContext)
 
   const handleRemove = () => {
-    withdrawInvite(dispatch, orgID, invite)
+    handleWithdrawInvite(invite.id)
   }
 
   const handleResend = () => {
-    resendInvite(dispatch, orgID, invite.id, invite)
+    handleResendInvite(invite.id)
   }
 
-  const componentStatus =
-    invite.status === RemoteDataState.Loading
-      ? ComponentStatus.Loading
-      : ComponentStatus.Default
+  let componentStatus = ComponentStatus.Default
+
+  if (invite.id === removeInviteStatus.id) {
+    componentStatus =
+      removeInviteStatus.status === RemoteDataState.Loading
+        ? ComponentStatus.Loading
+        : ComponentStatus.Default
+  }
 
   if (componentStatus === ComponentStatus.Loading) {
     return (

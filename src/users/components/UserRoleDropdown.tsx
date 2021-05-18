@@ -3,22 +3,19 @@ import React, {FC, useContext} from 'react'
 
 // Components
 import {Dropdown, ComponentColor} from '@influxdata/clockface'
-import {UserListContext} from './UsersPage'
+import {UsersContext} from 'src/users/context/users'
 
 // Constants
-import {roles} from 'src/unity/constants'
+import {roles} from 'src/users/constants'
 
 // Types
 import {Role} from 'src/types'
 
-// Actions
-import {editDraftInvite} from 'src/unity/reducers'
-
 const UserRoleDropdown: FC = () => {
-  const [{draftInvite}, dispatch] = useContext(UserListContext)
+  const {draftInvite, handleEditDraftInvite} = useContext(UsersContext)
 
   const onChangeRole = (role: Role) => () => {
-    dispatch(editDraftInvite({...draftInvite, role}))
+    handleEditDraftInvite({...draftInvite, role})
   }
 
   const dropdownButton = (active, onClick) => (

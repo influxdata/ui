@@ -8,6 +8,7 @@ import {FlowQueryContext} from 'src/flows/context/flow.query'
 // Components
 import FlowPipe from 'src/flows/components/FlowPipe'
 import EmptyPipeList from 'src/flows/components/EmptyPipeList'
+import InsertCellButton from 'src/flows/components/panel/InsertCellButton'
 
 const PipeList: FC = () => {
   const {flow} = useContext(FlowContext)
@@ -26,7 +27,12 @@ const PipeList: FC = () => {
     return <FlowPipe key={`pipe-${id}`} id={id} />
   })
 
-  return <div className="flow">{_pipes}</div>
+  return (
+    <div className="flow">
+      <InsertCellButton id={null} />
+      {_pipes}
+    </div>
+  )
 }
 
 export default PipeList

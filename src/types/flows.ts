@@ -1,6 +1,6 @@
 import {FromFluxResult, FluxDataType, Table} from '@influxdata/giraffe'
 import {FunctionComponent, ComponentClass, ReactNode} from 'react'
-import {AutoRefresh, RemoteDataState, TimeRange} from 'src/types'
+import {AutoRefresh, TimeRange} from 'src/types'
 
 export interface ControlAction {
   title: string | (() => string)
@@ -31,7 +31,6 @@ export type Visibility = 'visible' | 'hidden'
 export interface PipeMeta {
   title: string
   visible: boolean
-  loading: RemoteDataState
   error?: string
 }
 

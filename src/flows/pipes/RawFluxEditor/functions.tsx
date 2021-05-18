@@ -82,9 +82,9 @@ const Functions: FC<Props> = ({onSelect}) => {
           testID="flux-toolbar-search--input"
         />
       </div>
-        <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
-          {fnComponent}
-        </div>
+      <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
+        {fnComponent}
+      </div>
     </div>
   )
 }

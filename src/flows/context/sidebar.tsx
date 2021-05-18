@@ -1,14 +1,16 @@
 import React, {FC, createContext, useContext, useState} from 'react'
 import {FlowContext} from 'src/flows/context/flow.current'
-import {ControlSection} from 'src/types/flows'
+import {ControlSection, Submenu} from 'src/types/flows'
 
 interface ContextType {
   id: string
   menu: ControlSection[]
+  submenu?: Submenu['menu']
   show: (id: string) => void
   hide: () => void
+  showSub: (menu: Submenu['menu']) => void
+  hideSub: () => void
   register: (id: string, menu: ControlSection[]) => void
-  deregister: (id: string) => void
 }
 
 const DEFAULT_CONTEXT: ContextType = {
@@ -16,8 +18,9 @@ const DEFAULT_CONTEXT: ContextType = {
   menu: [],
   show: _ => {},
   hide: () => {},
+  showSub: _ => {},
+  hideSub: () => {},
   register: (_, __) => {},
-  deregister: (_) => {}
 }
 
 export const Context = createContext<ContextType>(DEFAULT_CONTEXT)
@@ -25,53 +28,61 @@ export const Context = createContext<ContextType>(DEFAULT_CONTEXT)
 export const Provider: FC = ({children}) => {
   const {flow} = useContext(FlowContext)
   const [focused, setFocused] = useState('')
-  const [menu, setMenu] = useState([])
   const [pipes, setPipes] = useState({})
+  const [sub, setSub] = useState(false as Submenu['menu'] | null)
 
   const show = (id: string) => {
     if (flow.data.indexOf(id) === -1) {
       return
     }
 
+    if (id === focused) {
+      return
+    }
+
     setFocused(id)
-    setMenu(pipes[id] || [])
+    if (sub) {
+      setSub(false)
+    }
   }
 
   const hide = () => {
     setFocused('')
-    setMenu([])
   }
 
   const register = (id: string, menu: ControlSection[]) => {
-    pipes[id] = menu || []
-    setPipes({
-      ...pipes
-    })
-    if (focused === id) {
-      setMenu(pipes[id])
+    if (!pipes[id] || pipes[id] !== menu) {
+      pipes[id] = menu || []
+      setPipes({
+        ...pipes,
+      })
+    }
+    if (id === focused) {
+      console.log('neat', sub)
     }
   }
 
-  const deregister = (id: string) => {
-    if (!pipes[id]) {
-      return
-    }
-
-    delete pipes[id]
-    setPipes({
-      ...pipes
-    })
+  const showSub = (menu: Submenu['menu']) => {
+    setSub(menu)
   }
+
+  const hideSub = () => {
+    setSub(false)
+  }
+
+  const menu = pipes[focused] || []
 
   return (
     <Context.Provider
       value={{
         id: focused,
         menu,
+        submenu: sub,
         show,
         hide,
+        showSub,
+        hideSub,
         register,
-        deregister
       }}
     >
       {children}

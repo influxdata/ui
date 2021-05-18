@@ -33,7 +33,7 @@ const FluxMonacoEditor = lazy(() =>
 
 const Query: FC<PipeProp> = ({Context}) => {
   const {id, data, update} = useContext(PipeContext)
-  const {register, deregister} = useContext(SidebarContext)
+  const {register} = useContext(SidebarContext)
   const [editorInstance, setEditorInstance] = useState<EditorType>(null)
   const {queries, activeQuery} = data
   const query = queries[activeQuery]
@@ -113,17 +113,17 @@ const Query: FC<PipeProp> = ({Context}) => {
       return
     }
 
-    register(id, [{
-      title: 'Documentation',
-      actions: [{
-        title: 'Functions',
-        menu: (<Functions onSelect={inject} />)
-      }]
-    }])
-
-    return () => {
-      deregister(id)
-    }
+    register(id, [
+      {
+        title: 'Documentation',
+        actions: [
+          {
+            title: 'Functions',
+            menu: <Functions onSelect={inject} />,
+          },
+        ],
+      },
+    ])
   }, [id, inject])
 
   return (

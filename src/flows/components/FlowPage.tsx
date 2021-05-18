@@ -47,19 +47,19 @@ const FlowContainer: FC = () => (
             <SidebarProvider>
               <Page titleTag={PROJECT_NAME_PLURAL}>
                 <FlowHeader />
-                  <Page.Contents
-                    fullWidth={true}
-                    scrollable={false}
-                    className="flow-page"
-                  >
-                    <PopupProvider>
-                      <DapperScrollbars noScrollX>
-                        <PipeList />
-                      </DapperScrollbars>
-                      <Sidebar />
-                      <PopupDrawer />
-                    </PopupProvider>
-                  </Page.Contents>
+                <Page.Contents
+                  fullWidth={true}
+                  scrollable={false}
+                  className="flow-page"
+                >
+                  <PopupProvider>
+                    <DapperScrollbars noScrollX>
+                      <PipeList />
+                    </DapperScrollbars>
+                    <Sidebar />
+                    <PopupDrawer />
+                  </PopupProvider>
+                </Page.Contents>
               </Page>
             </SidebarProvider>
           </FlowQueryProvider>

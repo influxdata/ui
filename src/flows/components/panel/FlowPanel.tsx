@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, ReactNode, useContext, useCallback} from 'react'
+import React, {FC, useContext, useCallback} from 'react'
 import classnames from 'classnames'
 import {ComponentColor, IconFont, SquareButton} from '@influxdata/clockface'
 
@@ -20,7 +20,6 @@ import {FlowQueryContext} from 'src/flows/context/flow.query'
 
 export interface Props extends PipeContextProps {
   id: string
-  controls?: ReactNode
 }
 
 const FlowPanel: FC<Props> = ({id, controls, children}) => {
@@ -123,10 +122,8 @@ const FlowPanel: FC<Props> = ({id, controls, children}) => {
           </div>
           {title}
           {!flow.readOnly && (
-          <div className="flow-panel--hover-control">
-            {controls}
-          </div>
-      )}
+            <div className="flow-panel--hover-control">{controls}</div>
+          )}
           <FeatureFlag name="flow-debug-queries">
             <SquareButton
               icon={IconFont.BookCode}

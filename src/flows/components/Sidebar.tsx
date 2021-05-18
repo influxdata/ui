@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useContext, useState} from 'react'
+import React, {FC, useContext} from 'react'
 import {List, Button, DapperScrollbars} from '@influxdata/clockface'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
@@ -12,15 +12,30 @@ import {event} from 'src/cloud/utils/reporting'
 const Sidebar: FC = () => {
   const {flow, add} = useContext(FlowContext)
   const {getPanelQueries} = useContext(FlowQueryContext)
-  const {id, show, hide, menu} = useContext(SidebarContext)
-  const [submenu, setSubmenu]: [Submenu['menu'], (_?:Submenu['menu']) => void] = useState()
-
-  useEffect(() => {
-    setSubmenu()
-  }, [id])
+  const {id, show, hide, menu, submenu, showSub, hideSub} = useContext(
+    SidebarContext
+  )
 
   if (!id || flow.readOnly) {
     return null
+  }
+
+  if (submenu) {
+    return (
+      <div className="flow-sidebar">
+        <Button
+          text="Back"
+          onClick={() => {
+            hideSub()
+          }}
+        >
+          Back
+        </Button>
+        <div className="flow-sidebar--submenu">
+          <DapperScrollbars noScrollX={true}>{submenu}</DapperScrollbars>
+        </div>
+      </div>
+    )
   }
 
   const sections = ([
@@ -66,7 +81,8 @@ const Sidebar: FC = () => {
               visible: !flow.meta.get(id).visible,
             })
           },
-        }, {
+        },
+        {
           title: 'Convert to |> Flux',
           disable: () => {
             if (flow.data.indexOf(id) === -1) {
@@ -89,7 +105,9 @@ const Sidebar: FC = () => {
 
             const {source} = getPanelQueries(id, true)
 
-            const init = JSON.parse(JSON.stringify(PIPE_DEFINITIONS['rawFluxEditor'].initial))
+            const init = JSON.parse(
+              JSON.stringify(PIPE_DEFINITIONS['rawFluxEditor'].initial)
+            )
             init.queries[0].text = source
             init.title = title
             init.type = 'rawFluxEditor'
@@ -101,58 +119,64 @@ const Sidebar: FC = () => {
 
             show(_id)
           },
-        }, {
+        },
+        {
           title: 'Copy As',
-          menu: <ClientList />
-        }
+          menu: <ClientList />,
+        },
       ],
-    }
+    },
   ] as ControlSection[])
     .concat(menu)
     .map(section => {
       const links = section.actions
-      .filter(action => typeof action.disable === 'function' ? !action.disable() : !action.disable)
-      .map(action => {
-        let title
-
-        if (typeof action.title === 'function') {
-          title = action.title()
-        } else {
-          title = action.title
-        }
-
-        if (action.hasOwnProperty('menu')) {
-          return (
-          <List.Item
-            onClick={() => {
-              setSubmenu((action as Submenu).menu)
-            }}
-            wrapText={false}
-            title={title}
-            id={title}
-            key={title}
-          >
-            {title}
-          </List.Item>
-          )
-        }
-
-        return (
-          <List.Item
-            onClick={() => {
-              (action as ControlAction).action()
-            }}
-            wrapText={false}
-            title={title}
-            id={title}
-            key={title}
-          >
-            {title}
-          </List.Item>
+        .filter(action =>
+          typeof action.disable === 'function'
+            ? !action.disable()
+            : !action.disable
         )
-      })
+        .map(action => {
+          let title
 
-      const sectionTitle = typeof section.title === 'function' ? section.title() : section.title
+          if (typeof action.title === 'function') {
+            title = action.title()
+          } else {
+            title = action.title
+          }
+
+          if (action.hasOwnProperty('menu')) {
+            return (
+              <List.Item
+                onClick={() => {
+                  showSub((action as Submenu).menu)
+                }}
+                wrapText={false}
+                title={title}
+                id={title}
+                key={title}
+              >
+                {title}
+              </List.Item>
+            )
+          }
+
+          return (
+            <List.Item
+              onClick={() => {
+                ;(action as ControlAction).action()
+              }}
+              wrapText={false}
+              title={title}
+              id={title}
+              key={title}
+            >
+              {title}
+            </List.Item>
+          )
+        })
+
+      const sectionTitle =
+        typeof section.title === 'function' ? section.title() : section.title
       return (
         <div key={sectionTitle}>
           <List.Divider text={`${sectionTitle}:`} />
@@ -161,18 +185,6 @@ const Sidebar: FC = () => {
       )
     })
 
-    if (submenu) {
-  return (
-    <div className="flow-sidebar">
-      <Button text="Back" onClick={()=>{setSubmenu(null)}}>Back</Button>
-      <div className="flow-sidebar--submenu">
-        <DapperScrollbars noScrollX={true}>
-          {submenu}
-        </DapperScrollbars>
-        </div>
-    </div>
-  )
-    }
   return (
     <div className="flow-sidebar">
       <List>{sections}</List>

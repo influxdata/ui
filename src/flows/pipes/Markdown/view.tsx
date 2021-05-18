@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, lazy, Suspense, useContext} from 'react'
+import React, {FC, lazy, Suspense, useContext, useEffect} from 'react'
 import {
   RemoteDataState,
   SpinnerContainer,
@@ -10,36 +10,42 @@ import classnames from 'classnames'
 // Components
 import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
 import {PipeContext} from 'src/flows/context/pipe'
+import {Context as SidebarContext} from 'src/flows/context/sidebar'
 import {PipeProp} from 'src/types/flows'
 
-import {
-  MARKDOWN_PIPE_PLACEHOLDER,
-} from 'src/flows/pipes/Markdown/index'
+import {MARKDOWN_PIPE_PLACEHOLDER} from 'src/flows/pipes/Markdown/index'
 
 const MarkdownMonacoEditor = lazy(() =>
   import('src/shared/components/MarkdownMonacoEditor')
 )
 
 const MarkdownPanel: FC<PipeProp> = ({Context}) => {
-  const {data, update} = useContext(PipeContext)
+  const {id, data, update} = useContext(PipeContext)
+  const {register} = useContext(SidebarContext)
 
   const handlePreviewClick = (): void => {
     update({mode: 'edit'})
   }
 
-  const controls = [
-    {
-      title: 'Markdown',
-      actions: [
-        {
-          title: () => data.mode === 'edit' ? 'Preview' : 'Edit',
-          action: () => {
-            update({mode: data.mode === 'edit' ? 'preview' : 'edit'})
+  useEffect(() => {
+    if (!id) {
+      return
+    }
+
+    register(id, [
+      {
+        title: 'Markdown',
+        actions: [
+          {
+            title: () => (data.mode === 'edit' ? 'Preview' : 'Edit'),
+            action: () => {
+              update({mode: data.mode === 'edit' ? 'preview' : 'edit'})
+            },
           },
-        },
-              ],
-    },
-  ]
+        ],
+      },
+    ])
+  }, [id, update, data])
 
   const handleChange = (text: string): void => {
     update({text})

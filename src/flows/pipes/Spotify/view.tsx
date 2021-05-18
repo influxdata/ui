@@ -1,37 +1,45 @@
 // Libraries
-import React, {FC, useState, useContext} from 'react'
+import React, {FC, useState, useContext, useEffect} from 'react'
 
 // Components
 import Embedded from './embedded'
 import Editor from './editor'
 import {PipeContext} from 'src/flows/context/pipe'
+import {Context as SidebarContext} from 'src/flows/context/sidebar'
 
 // Types
 import {PipeProp} from 'src/types/flows'
 
 const Spotify: FC<PipeProp> = ({Context}) => {
-  const {data} = useContext(PipeContext)
+  const {id, data} = useContext(PipeContext)
+  const {register} = useContext(SidebarContext)
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const toggleEdit = () => {
     setIsEditing(!isEditing)
   }
 
-  const controls = [
-    {
-      title: 'Controls',
-      actions: [
-        {
-          title: 'Edit Spotify URI',
-          action: toggleEdit,
-        },
-      ],
-    },
-  ]
+  useEffect(() => {
+    if (!id) {
+      return
+    }
+
+    register(id, [
+      {
+        title: 'Controls',
+        actions: [
+          {
+            title: 'Edit Spotify URI',
+            action: toggleEdit,
+          },
+        ],
+      },
+    ])
+  }, [id, toggleEdit])
 
   const showEditing = isEditing || !data.uri
 
   return (
-    <Context controls={controls}>
+    <Context>
       <div className="flow-spotify">
         <Editor visible={showEditing} />
         <Embedded visible={!showEditing} />

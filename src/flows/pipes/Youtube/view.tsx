@@ -11,7 +11,7 @@ import {PipeProp} from 'src/types/flows'
 
 const Youtube: FC<PipeProp> = ({Context}) => {
   const {id, data, update} = useContext(PipeContext)
-  const {register, deregister} = useContext(SidebarContext)
+  const {register} = useContext(SidebarContext)
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const toggleEdit = useCallback(() => {
     setIsEditing(!isEditing)
@@ -26,19 +26,17 @@ const Youtube: FC<PipeProp> = ({Context}) => {
       return
     }
 
-    register(id, [{
-      title: 'Controls',
-      actions: [
-        {
-          title: 'Edit Youtube ID',
-          action: toggleEdit,
-        },
-      ],
-    }])
-
-    return () => {
-      deregister(id)
-    }
+    register(id, [
+      {
+        title: 'Controls',
+        actions: [
+          {
+            title: 'Edit Youtube ID',
+            action: toggleEdit,
+          },
+        ],
+      },
+    ])
   }, [id, toggleEdit])
 
   const showEditing = isEditing || !data.uri

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useCallback, useEffect, useMemo, useState} from 'react'
+import React, {FC, useContext, useCallback, useEffect, useMemo} from 'react'
 
 // Components
 import {IconFont} from '@influxdata/clockface'
@@ -18,9 +18,13 @@ import {PipeContext} from 'src/flows/context/pipe'
 import {Context as SidebarContext} from 'src/flows/context/sidebar'
 import {PopupContext} from 'src/flows/context/popup'
 
+import {event} from 'src/cloud/utils/reporting'
+
 const Visualization: FC<PipeProp> = ({Context}) => {
-  const {id, data, range, update, loading, results, queryText} = useContext(PipeContext)
-  const {register, deregister} = useContext(SidebarContext)
+  const {id, data, range, update, loading, results, queryText} = useContext(
+    PipeContext
+  )
+  const {register} = useContext(SidebarContext)
   const {launch} = useContext(PopupContext)
 
   const updateProperties = useCallback(
@@ -54,35 +58,36 @@ const Visualization: FC<PipeProp> = ({Context}) => {
       return
     }
 
-    register(id, [{
-      title: 'Visualization',
-      actions: [{
-        title: 'Options',
-        disable: !dataExists,
-        menu: (
-          <ViewOptions
-            properties={data.properties}
-            results={results.parsed}
-            update={updateProperties}
-          />
-        )
-      }, {
-        title: 'Export to Dashboard',
-        action: () => {
-          event('Export to Dashboard Clicked')
+    register(id, [
+      {
+        title: 'Visualization',
+        actions: [
+          {
+            title: 'Options',
+            disable: !dataExists,
+            menu: (
+              <ViewOptions
+                properties={data.properties}
+                results={results.parsed}
+                update={updateProperties}
+              />
+            ),
+          },
+          {
+            title: 'Export to Dashboard',
+            action: () => {
+              event('Export to Dashboard Clicked')
 
-          launch(<ExportDashboardOverlay />, {
-            properties: data.properties,
-            range: range,
-            query: queryText,
-          })
-        }
-      }]
-    }])
-
-    return () => {
-      deregister(id)
-    }
+              launch(<ExportDashboardOverlay />, {
+                properties: data.properties,
+                range: range,
+                query: queryText,
+              })
+            },
+          },
+        ],
+      },
+    ])
   }, [id, data.properties, queryText, results.parsed, range])
 
   return (

@@ -19,7 +19,7 @@ import {PipeContext} from 'src/flows/context/pipe'
 import {
   SUPPORTED_VISUALIZATIONS,
   View,
-  ViewTypeDropdown
+  ViewTypeDropdown,
 } from 'src/visualization'
 
 const TestFlux: FC<PipeProp> = ({Context}) => {

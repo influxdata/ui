@@ -2,7 +2,6 @@ import React, {FC, useContext, useCallback, useEffect, useMemo} from 'react'
 import {
   MultiSelectDropdown,
   ComponentColor,
-  ComponentStatus,
   IconFont,
 } from '@influxdata/clockface'
 import {millisecondsToDuration} from 'src/shared/utils/duration'
@@ -16,17 +15,7 @@ import {PipeContext} from 'src/flows/context/pipe'
 const AVAILABLE_FUNCTIONS = FUNCTIONS.map(f => f.name)
 
 const Controls: FC = () => {
-  const {data, range, update, results} = useContext(PipeContext)
-
-  const dataExists = results.parsed && Object.entries(results.parsed).length
-
-  const configureButtonStatus = dataExists
-    ? ComponentStatus.Default
-    : ComponentStatus.Disabled
-
-  const configureButtonTitleText = dataExists
-    ? 'Configure Visualization'
-    : 'No data to visualize yet'
+  const {data, range, update} = useContext(PipeContext)
 
   const updateType = (type: ViewType) => {
     event('notebook_change_visualization_type', {

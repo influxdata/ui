@@ -75,7 +75,7 @@ const TimeMachineVis: FC<Props> = ({
     symbolColumns,
   } as ViewProperties | SimpleTableViewProperties
 
-  if (isViewingRawData && isFlagEnabled('simple-table')) {
+  if (isViewingRawData && isFlagEnabled('simpleTable')) {
     resolvedViewProperties = {
       type: 'simple-table',
       showAll: true,
@@ -112,7 +112,7 @@ const TimeMachineVis: FC<Props> = ({
     isViewingRawData &&
     files &&
     files.length &&
-    !isFlagEnabled('simple-table')
+    !isFlagEnabled('simpleTable')
   ) {
     const [parsedResults] = files.flatMap(fromFlux)
     return (

@@ -69,7 +69,7 @@ const ClientCodeCopyPage: FC<Props> = ({contentID, query}) => {
           className="write-data--details-content markdown-format"
           data-testid="load-data-details-content"
         >
-          <WriteDataHelper />
+          <WriteDataHelper collapsed={true} />
           {description}
           <CodeSampleBlock
             name="Initialize and Execute Flux"

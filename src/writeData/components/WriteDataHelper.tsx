@@ -17,8 +17,12 @@ import {
 import WriteDataHelperTokens from 'src/writeData/components/WriteDataHelperTokens'
 import WriteDataHelperBuckets from 'src/writeData/components/WriteDataHelperBuckets'
 
-const WriteDataHelper: FC<{}> = () => {
-  const [mode, changeMode] = useState<'expanded' | 'collapsed'>('expanded')
+interface Props {
+  collapsed?: boolean
+}
+
+const WriteDataHelper: FC<Props> = ({collapsed}) => {
+  const [mode, changeMode] = useState<'expanded' | 'collapsed'>(collapsed ? 'collapsed' : 'expanded')
 
   const handleToggleClick = (): void => {
     if (mode === 'expanded') {

@@ -1,0 +1,7 @@
+hash = {name: 'h2o',
+  tags: {host: 'aws', region: 'us'},
+  fields: {level: 5, saturation: '99%'},
+  time: Time.now.utc}
+
+write_api.write(data: hash, bucket: bucket, org: org)
+

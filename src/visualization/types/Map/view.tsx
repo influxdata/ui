@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, useEffect, useState} from 'react'
 import {Plot} from '@influxdata/giraffe'
-import {RemoteDataState} from '@influxdata/clockface'
+import {RemoteDataState, InfluxColors} from '@influxdata/clockface'
 
 // Types
 import {GeoViewProperties} from 'src/types'
@@ -13,6 +13,7 @@ import {
   getGeoCoordinates,
 } from 'src/shared/utils/vis'
 import {getMapToken} from './api'
+import {event} from 'src/cloud/utils/reporting'
 
 interface Props extends VisualizationProps {
   properties: GeoViewProperties
@@ -47,8 +48,10 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
         const {token} = await getMapToken()
         setMapToken(token)
         setMapServiceError(RemoteDataState.Done)
+        event('mapplot.map_token_request.success')
       } catch (err) {
         setMapServiceError(RemoteDataState.Error)
+        event('mapplot.map_token_request.failure')
       }
     }
     getToken()
@@ -62,8 +65,10 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
       setCoordinateFlag(coordinateFlag)
       setGeoCoordinates(coordinates)
       setCoordinateError(RemoteDataState.Done)
+      event('mapplot.get_geo_coordinates.success')
     } catch (err) {
       setCoordinateError(RemoteDataState.Error)
+      event('mapplot.get_geo_coordinates.failure')
     }
   }, [result.table])
 
@@ -87,7 +92,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
 
   if (mapServiceError === RemoteDataState.Error) {
     error =
-      'Map type is having issues connecting to the server. Please try again later.'
+      'We are having issues connecting to the Maps Server. Please try again later'
 
     return (
       <div className="panel-resizer--error" data-testid="geoplot-error">
@@ -96,7 +101,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     )
   } else if (coordinateError === RemoteDataState.Error) {
     error =
-      'Map type is not supported with the data provided: Missing latitude/longitude values (field values must be specified to lat or lon)'
+      'Map type is not supported with the data provided. Map type only supports latitude/longitude values (field values must be specified to either lat or lon)'
 
     return (
       <div className="panel-resizer--error" data-testid="geoplot-error">
@@ -109,6 +114,28 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     bingKey: '',
   }
 
+  let layersOpts = layers
+  if (!layers.length) {
+    layersOpts = [
+      {
+        type: 'pointMap',
+        colorDimension: {label: 'Value'},
+        colorField: '_value',
+        colors: [
+          {type: 'min', hex: InfluxColors.Star},
+          {value: 50, hex: InfluxColors.Star},
+          {type: 'max', hex: InfluxColors.Star},
+        ],
+        isClustered: false,
+      },
+    ]
+  }
+
+  let zoomOpt = zoom
+  if (zoom === 0) {
+    zoomOpt = 6
+  }
+
   return (
     <Plot
       config={{
@@ -119,11 +146,11 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
             type: 'geo',
             lat: geoCoordinates.lat,
             lon: geoCoordinates.lon,
-            zoom,
+            zoom: zoomOpt,
             allowPanAndZoom,
             detectCoordinateFields: coordinateFieldsFlag,
             mapStyle,
-            layers,
+            layers: layersOpts,
             tileServerConfiguration: tileServerConfiguration,
           },
         ],

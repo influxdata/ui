@@ -15,21 +15,21 @@ import {
 import CloudOnly from 'src/shared/components/cloud/CloudOnly'
 
 // Constants
-import {
-  BETA_REGIONS,
-  CLOUD_URL,
-  CLOUD_CHECKOUT_PATH,
-} from 'src/shared/constants'
+import {CLOUD_URL, CLOUD_CHECKOUT_PATH} from 'src/shared/constants'
 import {
   HIDE_UPGRADE_CTA_KEY,
   PAID_ORG_HIDE_UPGRADE_SETTING,
 } from 'src/cloud/constants'
+
+// Utils
+import {getIsRegionBeta} from 'src/me/selectors'
 
 // Types
 import {AppState, OrgSetting} from 'src/types'
 
 interface StateProps {
   inView: boolean
+  isRegionBeta: boolean
 }
 
 interface OwnProps {
@@ -40,6 +40,7 @@ interface OwnProps {
 
 const CloudUpgradeButton: FC<StateProps & OwnProps> = ({
   inView,
+  isRegionBeta,
   size = ComponentSize.Small,
   className,
   buttonText = 'Upgrade Now',
@@ -48,21 +49,9 @@ const CloudUpgradeButton: FC<StateProps & OwnProps> = ({
     [`${className}`]: className,
   })
 
-  // TODO(ariel): we need to build out an exception for beta regions
-  // This current hack is being placed to allow a Beta region to be deployed
-  // without allowing users to get navigated to a Quartz 404. This hack is being implemented
-  // to address the following issue:
-  // https://github.com/influxdata/ui/issues/944
-  // The follow up to this issue will address the hack here:
-  // https://github.com/influxdata/ui/issues/930
-
-  const isBetaRegion = BETA_REGIONS.some((pathName: string) =>
-    window.location.hostname.includes(pathName)
-  )
-
   return (
     <CloudOnly>
-      {inView && !isBetaRegion && (
+      {inView && !isRegionBeta && (
         <LinkButton
           icon={IconFont.CrownSolid}
           className={cloudUpgradeButtonClass}
@@ -81,17 +70,19 @@ const CloudUpgradeButton: FC<StateProps & OwnProps> = ({
 
 const mstp = (state: AppState) => {
   const settings = get(state, 'cloud.orgSettings.settings', [])
+  const isRegionBeta = getIsRegionBeta(state)
   const hideUpgradeButtonSetting = find(
     settings,
     (setting: OrgSetting) => setting.key === HIDE_UPGRADE_CTA_KEY
   )
+  let inView = false
   if (
     !hideUpgradeButtonSetting ||
     hideUpgradeButtonSetting.value !== PAID_ORG_HIDE_UPGRADE_SETTING.value
   ) {
-    return {inView: true}
+    inView = true
   }
-  return {inView: false}
+  return {inView, isRegionBeta}
 }
 
 export default connect<StateProps>(mstp)(CloudUpgradeButton)

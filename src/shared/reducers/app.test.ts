@@ -5,6 +5,7 @@ import {
   setTheme,
   setNavBarState,
   setAutoRefresh,
+  setVersionInfo,
 } from 'src/shared/actions/app'
 import {TimeZone} from 'src/types'
 import {AppState as AppPresentationState} from 'src/shared/reducers/app'
@@ -21,6 +22,7 @@ describe('Shared.Reducers.appReducer', () => {
       navBarState: 'expanded',
       timeZone: 'Local' as TimeZone,
       theme: 'dark',
+      versionInfo: {version: '', commit: ''},
     },
   }
 
@@ -72,5 +74,19 @@ describe('Shared.Reducers.appReducer', () => {
     const reducedState = appReducer(initialState, setAutoRefresh(expectedMs))
 
     expect(reducedState.persisted.autoRefresh).toBe(expectedMs)
+  })
+
+  it('should handle SET_VERSION_INFO', () => {
+    const expectedVersionInfo = {
+      version: '2.0.0',
+      commit: '1234123',
+    }
+
+    const reducedState = appReducer(
+      initialState,
+      setVersionInfo(expectedVersionInfo)
+    )
+
+    expect(reducedState.persisted.versionInfo).toBe(expectedVersionInfo)
   })
 })

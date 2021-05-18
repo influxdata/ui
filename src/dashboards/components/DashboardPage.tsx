@@ -20,6 +20,7 @@ import {
   AddNoteOverlay,
   EditNoteOverlay,
   EditAnnotationDashboardOverlay,
+  AutoRefreshOverlay,
 } from 'src/overlays/components'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
@@ -36,15 +37,11 @@ import {fetchAndSetAnnotations} from 'src/annotations/actions/thunks'
 import {getByID} from 'src/resources/selectors'
 
 // Types
-import {AppState, AutoRefresh, ResourceType, Dashboard} from 'src/types'
+import {AppState, ResourceType, Dashboard} from 'src/types'
 import {ManualRefreshProps} from 'src/shared/components/ManualRefresh'
 
-interface OwnProps {
-  autoRefresh: AutoRefresh
-}
-
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ManualRefreshProps & ReduxProps
+type Props = ManualRefreshProps & ReduxProps
 
 import {
   ORGS,
@@ -73,12 +70,7 @@ class DashboardPage extends Component<Props> {
   }
 
   public render() {
-    const {
-      autoRefresh,
-      manualRefresh,
-      onManualRefresh,
-      showAnnotationBar,
-    } = this.props
+    const {manualRefresh, onManualRefresh, showAnnotationBar} = this.props
 
     return (
       <>
@@ -86,10 +78,7 @@ class DashboardPage extends Component<Props> {
           <Page titleTag={this.pageTitle}>
             <LimitChecker>
               <HoverTimeProvider>
-                <DashboardHeader
-                  autoRefresh={autoRefresh}
-                  onManualRefresh={onManualRefresh}
-                />
+                <DashboardHeader onManualRefresh={onManualRefresh} />
                 <RateLimitAlert alertOnly={true} />
                 <VariablesControlBar />
                 <FeatureFlag name="annotations">
@@ -116,6 +105,12 @@ class DashboardPage extends Component<Props> {
               <Route
                 path={`${dashRoute}/edit-annotation`}
                 component={EditAnnotationDashboardOverlay}
+              />
+            )}
+            {isFlagEnabled('newAutoRefresh') && (
+              <Route
+                path={`${dashRoute}/autorefresh`}
+                component={AutoRefreshOverlay}
               />
             )}
           </Switch>
@@ -168,4 +163,4 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export default connector(ManualRefresh<OwnProps>(DashboardPage))
+export default connector(ManualRefresh(DashboardPage))

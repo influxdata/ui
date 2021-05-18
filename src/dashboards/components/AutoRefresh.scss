@@ -1,0 +1,63 @@
+@import '@influxdata/clockface/dist/variables.scss';
+.refresh-form-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $cf-marg-b + 4px $cf-marg-e;
+  &.reverse {
+    flex-direction: row-reverse;
+  }
+}
+
+.refresh-form-container-child {
+  flex: 1;
+  &.active {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  &.inactive {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+}
+.refresh-form-column {
+  display: grid;
+}
+
+.refresh-timeout-span {
+  flex: 1;
+}
+
+.refresh-form-buttons {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-gap: 10px;
+  padding: $cf-marg-c $cf-marg-a $cf-marg-b $cf-marg-a;
+}
+
+.refresh-form-cancel-button {
+  width: 140px;
+  justify-self: end;
+}
+
+.refresh-form-activate-button {
+  width: 140px;
+}
+
+.refresh-form-timeout-dropdown {
+  padding: 0 0 0 $cf-marg-b;
+  flex: 1;
+}
+
+.refresh-form-time-label {
+  font-size: 13px;
+}
+
+.timerange-dropdown {
+  justify-self: end;
+  width: 192px;
+}
+
+.refresh-form-timerange-toggle {
+  margin: 0px $cf-marg-b;
+}

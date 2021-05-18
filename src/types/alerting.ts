@@ -77,6 +77,7 @@ export type NotificationRuleBaseDraft = Overwrite<
     statusRules: StatusRuleDraft[]
     tagRules: TagRuleDraft[]
     labels?: string[]
+    taskID?: string
   }
 >
 
@@ -138,6 +139,7 @@ type CheckOverrides = {
   status: RemoteDataState
   activeStatus: TaskStatusType
   labels: string[]
+  taskID?: string
 }
 export type CheckBase = Omit<GenCheckBase, 'status'> & CheckOverrides
 

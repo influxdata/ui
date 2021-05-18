@@ -35,10 +35,6 @@ const SelectorList: SFC<Props> = props => {
       {items.map(item => {
         const selected = selectedItems.includes(item)
 
-        const title = selected
-          ? 'Click to remove this filter'
-          : `Click to filter by ${item}`
-
         const indicator = multiSelect && <List.Indicator type="checkbox" />
 
         return (
@@ -48,7 +44,7 @@ const SelectorList: SFC<Props> = props => {
             key={item}
             value={item}
             onClick={onSelectItem}
-            title={title}
+            title={item}
             selected={selected}
             size={ComponentSize.ExtraSmall}
             gradient={Gradients.GundamPilot}

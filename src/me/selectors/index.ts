@@ -7,3 +7,6 @@ export const getMe = (state: AppState): AppState['me'] => {
 }
 
 export const getQuartzMe = (state: AppState): Me => state.me.quartzMe
+
+export const getIsRegionBeta = (state: AppState): boolean =>
+  getQuartzMe(state)?.isRegionBeta ?? false

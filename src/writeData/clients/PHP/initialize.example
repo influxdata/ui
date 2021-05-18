@@ -1,0 +1,14 @@
+use InfluxDB2\\Client;
+use InfluxDB2\\Model\\WritePrecision;
+use InfluxDB2\\Point;
+
+# You can generate a Token from the "Tokens Tab" in the UI
+$token = '<%= token %>';
+$org = '<%= org %>';
+$bucket = '<%= bucket %>';
+
+$client = new Client([
+    "url" => "<%= server %>",
+    "token" => $token,
+]);
+

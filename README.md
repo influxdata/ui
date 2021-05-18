@@ -44,10 +44,17 @@ For the end to end tests to run properly, the server needs to be running in the 
 From the influxdb directory:
 `$ ./bin/darwin/influxd --assets-path=ui/build --e2e-testing --store=memory`
 
+**monitor-ci**
 From the ui directory. Build the javascript with
 `$ yarn start`
-To run Cypress locally
+To run Cypress locally with monitor-ci:
 `$ yarn cy:dev`
+
+**k8s-idpe**
+From the ui directory. Build the javascript with
+`$ yarn start:kind`
+To run Cypress locally with k8s-idpe:
+`$ yarn test:e2e:kind`
 
 ## Starting Dev Server
 

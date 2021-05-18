@@ -7,7 +7,7 @@ import NotificationEndpointTableField from 'src/notifications/endpoints/componen
 import SentTableField from 'src/alerting/components/SentTableField'
 
 // Types
-import {Fields} from 'src/eventViewer/types'
+import {Fields} from 'src/types'
 
 export const STATUS_FIELDS: Fields = [
   {

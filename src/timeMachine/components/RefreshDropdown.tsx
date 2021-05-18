@@ -24,7 +24,7 @@ class TimeMachineRefreshDropdown extends PureComponent<Props> {
   public componentDidMount() {
     const {autoRefresh} = this.props
     if (autoRefresh.status === AutoRefreshStatus.Active) {
-      this.autoRefresher.poll(autoRefresh.interval)
+      this.autoRefresher.poll(autoRefresh)
     }
 
     this.autoRefresher.subscribe(this.executeQueries)
@@ -35,7 +35,7 @@ class TimeMachineRefreshDropdown extends PureComponent<Props> {
 
     if (!isEqual(autoRefresh, prevProps.autoRefresh)) {
       if (autoRefresh.status === AutoRefreshStatus.Active) {
-        this.autoRefresher.poll(autoRefresh.interval)
+        this.autoRefresher.poll(autoRefresh)
         return
       }
 
@@ -56,6 +56,7 @@ class TimeMachineRefreshDropdown extends PureComponent<Props> {
         selected={autoRefresh}
         onChoose={this.handleChooseAutoRefresh}
         onManualRefresh={this.executeQueries}
+        showAutoRefresh={false}
       />
     )
   }

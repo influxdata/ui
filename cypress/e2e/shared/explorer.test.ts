@@ -799,7 +799,7 @@ describe('DataExplorer', () => {
 
         cy.getByTestID('time-machine-submit-button').click()
         cy.getByTestID('cog-cell--button').click()
-        cy.getByTestID('select-group--option')
+        cy.get('.auto-domain-input')
           .contains('Custom')
           .click()
         cy.getByTestID('auto-domain--min')

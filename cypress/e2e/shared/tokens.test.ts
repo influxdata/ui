@@ -250,13 +250,13 @@ describe('tokens', () => {
       cy.getByTestID('list--contents')
         .eq(0)
         .within(() => {
-          cy.getByTitle('Click to filter by Sicilsky Bull').click()
-          cy.getByTitle('Click to filter by A la Carta').click()
+          cy.getByTitle('Sicilsky Bull').click()
+          cy.getByTitle('A la Carta').click()
         })
       cy.getByTestID('list--contents')
         .eq(1)
         .within(() => {
-          cy.getByTitle('Click to filter by Sicilsky Bull').click()
+          cy.getByTitle('Sicilsky Bull').click()
         })
 
       cy.getByTestID('button--save').click()

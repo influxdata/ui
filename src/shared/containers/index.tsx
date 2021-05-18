@@ -34,6 +34,15 @@ export const ScrapersIndex = lazy(() =>
 export const WriteDataPage = lazy(() =>
   import('src/writeData/containers/WriteDataPage')
 )
+export const FileUploadsPage = lazy(() =>
+  import('src/writeData/containers/FileUploadsPage')
+)
+export const ClientLibrariesPage = lazy(() =>
+  import('src/writeData/containers/ClientLibrariesPage')
+)
+export const TelegrafPluginsPage = lazy(() =>
+  import('src/writeData/containers/TelegrafPluginsPage')
+)
 export const VariablesIndex = lazy(() =>
   import('src/variables/containers/VariablesIndex')
 )
@@ -58,20 +67,9 @@ export const MembersIndex = lazy(() =>
 export const RouteToDashboardList = lazy(() =>
   import('src/dashboards/components/RouteToDashboardList')
 )
-export const ClientLibrariesPage = lazy(() =>
-  import('src/writeData/containers/ClientLibrariesPage')
-)
-export const FileUploadsPage = lazy(() =>
-  import('src/writeData/containers/FileUploadsPage')
-)
-export const TelegrafPluginsPage = lazy(() =>
-  import('src/writeData/containers/TelegrafPluginsPage')
-)
 export const FlowsIndex = lazy(() => import('src/flows/components/FlowsIndex'))
 export const NotFound = lazy(() => import('src/shared/components/NotFound'))
-export const UsersPage = lazy(() =>
-  import('src/unity/components/users/UsersPage')
-)
+export const UsersPage = lazy(() => import('src/users/components/Users'))
 export const UsagePage = lazy(() => import('src/usage/UsagePage'))
 export const BillingPage = lazy(() =>
   import('src/billing/components/BillingPage')

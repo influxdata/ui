@@ -20,13 +20,10 @@ import {
   Columns,
 } from '@influxdata/clockface'
 import {ErrorHandling} from 'src/shared/decorators/errors'
-import CodeSnippet from 'src/shared/components/CodeSnippet'
+import CopyButton from 'src/shared/components/CopyButton'
 
 import {getOrg} from 'src/organizations/selectors'
-import {
-  copyToClipboardSuccess,
-  copyToClipboardFailed,
-} from 'src/shared/copy/notifications'
+import {copyToClipboardSuccess} from 'src/shared/copy/notifications'
 
 // Types
 import {ButtonType} from 'src/clockface'
@@ -86,16 +83,37 @@ class OrgProfileTab extends PureComponent<Props> {
               <h4>Common Ids</h4>
             </Panel.Header>
             <Panel.Body>
-              <CodeSnippet
-                copyText={this.props.me.id}
-                label={`${this.props.me.name} | User Id`}
-                onCopyText={this.generateCopyText('User Id')}
-              />
-              <CodeSnippet
-                copyText={this.props.org.id}
-                label={`${this.props.org.name} | Organization Id`}
-                onCopyText={this.generateCopyText('Organization Id')}
-              />
+              <div className="code-snippet" data-testid="code-snippet">
+                <div className="code-snippet--text">
+                  <pre>
+                    <code>{this.props.me.id}</code>
+                  </pre>
+                </div>
+                <div className="code-snippet--footer">
+                  <CopyButton
+                    text={this.props.me.id}
+                    onCopy={this.generateCopyText('User ID', this.props.me.id)}
+                  />
+                  <label className="code-snippet--label">{`${this.props.me.name} | User ID`}</label>
+                </div>
+              </div>
+              <div className="code-snippet" data-testid="code-snippet">
+                <div className="code-snippet--text">
+                  <pre>
+                    <code>{this.props.org.id}</code>
+                  </pre>
+                </div>
+                <div className="code-snippet--footer">
+                  <CopyButton
+                    text={this.props.org.id}
+                    onCopy={this.generateCopyText(
+                      'Organization ID',
+                      this.props.org.id
+                    )}
+                  />
+                  <label className="code-snippet--label">{`${this.props.org.name} | Organization ID`}</label>
+                </div>
+              </div>
             </Panel.Body>
           </Panel>
         </Grid.Column>
@@ -114,12 +132,8 @@ class OrgProfileTab extends PureComponent<Props> {
     history.push(`/orgs/${orgID}/about/rename`)
   }
 
-  private generateCopyText = title => (text, copySucceeded) => {
-    if (copySucceeded) {
-      return copyToClipboardSuccess(text, title)
-    } else {
-      return copyToClipboardFailed(text, title)
-    }
+  private generateCopyText = (title, text) => () => {
+    return copyToClipboardSuccess(text, title)
   }
 }
 

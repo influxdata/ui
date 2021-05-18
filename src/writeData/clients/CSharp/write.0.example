@@ -1,0 +1,6 @@
+const string data = "mem,host=host1 used_percent=23.43234543";
+using (var writeApi = client.GetWriteApi())
+{
+  writeApi.WriteRecord(bucket, org, WritePrecision.Ns, data);
+}
+

@@ -686,6 +686,18 @@ export const taskGetFailed = (error: string): Notification => ({
   message: `Failed to get runs: ${error}`,
 })
 
+export const taskRetrySuccess = (id: string): Notification => ({
+  ...defaultSuccessNotification,
+  duration: FIVE_SECONDS,
+  message: `Task run ${id} was succesful`,
+})
+
+export const taskRetryFailed = (error: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Failed to retry Task: ${error}`,
+})
+
 export const getTelegrafConfigFailed = (): Notification => ({
   ...defaultErrorNotification,
   message: 'Failed to get telegraf config',
@@ -1191,4 +1203,56 @@ export const createAnnotationFailed = (error: string): Notification => ({
   ...defaultErrorNotification,
   icon: IconFont.Cube,
   message: `Failed to create annotation: ${error}`,
+})
+
+export const dashboardAutoRefreshTimeoutSuccess = (
+  time?: string
+): Notification => ({
+  ...defaultSuccessNotification,
+  duration: INDEFINITE,
+  icon: IconFont.Clock,
+  message: `Your dashboard auto refresh settings have been reset due to inactivity ${
+    time ? 'over the last' + time : ''
+  }`,
+})
+
+/* USERS NOTIFICATIONS */
+export const inviteSent = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: `invite sent`,
+})
+
+export const inviteFailed = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `invite failed`,
+})
+
+export const invitationResentSuccessful = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: `Invitation Sent`,
+})
+
+export const invitationResentFailed = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Error sending invitation`,
+})
+
+export const invitationWithdrawnSuccessful = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: `Invitation Withdrawn`,
+})
+
+export const invitationWithdrawnFailed = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Error withdrawing invite, try again`,
+})
+
+export const removeUserSuccessful = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: `User Removed`,
+})
+
+export const removeUserFailed = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Error removing user, try again`,
 })

@@ -17,6 +17,7 @@ import Resources from 'src/me/components/Resources'
 import Docs from 'src/me/components/Docs'
 import GettingStarted from 'src/me/components/GettingStarted'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
+import AlertsActivity from 'src/me/components/AlertsActivity'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -26,6 +27,7 @@ import {AppState} from 'src/types'
 
 // Decorators
 import {ErrorHandling} from 'src/shared/decorators/errors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
@@ -58,6 +60,7 @@ export class MePage extends PureComponent<Props> {
                     </Panel.Body>
                   </Panel>
                   <Docs />
+                  {isFlagEnabled('alertsActivity') && <AlertsActivity />}
                 </FlexBox>
               </Grid.Column>
               <Grid.Column widthSM={Columns.Four} widthMD={Columns.Three}>

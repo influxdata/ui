@@ -16,7 +16,7 @@ import {
 import NotificationRuleCardContext from 'src/notifications/rules/components/RuleCardContext'
 import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
 import LastRunTaskStatus from 'src/shared/components/lastRunTaskStatus/LastRunTaskStatus'
-import {CopyResourceID} from 'src/shared/components/CopyResourceID'
+import {CopyResourceID, CopyTaskID} from 'src/shared/components/CopyResourceID'
 
 // Constants
 import {DEFAULT_NOTIFICATION_RULE_NAME} from 'src/alerting/constants'
@@ -61,13 +61,14 @@ const RuleCard: FC<Props> = ({
   history,
 }) => {
   const {
-    id,
     activeStatus,
-    name,
+    description,
+    id,
     lastRunError,
     lastRunStatus,
-    description,
     latestCompleted,
+    name,
+    taskID,
   } = rule
 
   const onUpdateName = (name: string) => {
@@ -174,6 +175,7 @@ const RuleCard: FC<Props> = ({
             <>Last completed at {latestCompleted}</>
             <>{relativeTimestampFormatter(rule.updatedAt, 'Last updated ')}</>
             <CopyResourceID resource={rule} resourceName="Rule" />
+            <CopyTaskID taskID={taskID} />
           </ResourceCard.Meta>
           <InlineLabels
             selectedLabelIDs={rule.labels}

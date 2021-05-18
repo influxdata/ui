@@ -213,6 +213,22 @@
   }
 }
 
+.query-results {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background-color: $g0-obsidian;
+  position: relative;
+}
+
+.query-results--download {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+}
+
 /*
   Flow Panel Modes
   ------------------------------------------------------------------------------

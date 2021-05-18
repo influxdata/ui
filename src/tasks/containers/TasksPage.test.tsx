@@ -1,6 +1,6 @@
 // Installed libraries
 import React from 'react'
-import {fireEvent, RenderResult, screen, waitFor} from '@testing-library/react'
+import {fireEvent, screen, waitFor} from '@testing-library/react'
 import {Task as TaskApi} from '@influxdata/influx'
 
 // Constants

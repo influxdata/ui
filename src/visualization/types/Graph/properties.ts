@@ -9,6 +9,7 @@ import {
   LEGEND_OPACITY_DEFAULT,
   LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
   STATIC_LEGEND_HEIGHT_RATIO_DEFAULT,
+  STATIC_LEGEND_HIDE_DEFAULT,
   STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
 } from 'src/visualization/constants'
 
@@ -49,7 +50,7 @@ export default {
   legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
   staticLegend: {
     heightRatio: STATIC_LEGEND_HEIGHT_RATIO_DEFAULT,
-    hide: true,
+    hide: STATIC_LEGEND_HIDE_DEFAULT,
     widthRatio: STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
   },
 

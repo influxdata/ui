@@ -190,14 +190,14 @@ const XYPlot: FC<Props> = ({
     legendOpacity: tooltipOpacity,
     legendOrientationThreshold: tooltipOrientationThreshold,
     legendColorizeRows: tooltipColorize,
-    valueFormatters: {
-      [xColumn]: xFormatter,
-      [yColumn]: yFormatter,
-    },
     staticLegend: {
       ...staticLegend,
       ...STATIC_LEGEND_STYLING,
     } as StaticLegendConfig,
+    valueFormatters: {
+      [xColumn]: xFormatter,
+      [yColumn]: yFormatter,
+    },
     layers: [
       {
         type: 'line',

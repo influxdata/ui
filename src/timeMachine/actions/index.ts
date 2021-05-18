@@ -24,19 +24,20 @@ import {TimeMachineState} from 'src/timeMachine/reducers'
 import {Action as QueryResultsAction} from 'src/timeMachine/actions/queries'
 import {Action as AlertBuilderAction} from 'src/alerting/actions/alertBuilder'
 import {
-  TimeRange,
-  ViewType,
+  AutoRefresh,
   Axes,
   DecimalPlaces,
-  XYGeom,
   FieldOption,
-  TableOptions,
-  TimeMachineTab,
-  AutoRefresh,
-  TimeMachineID,
-  XYViewProperties,
-  ViewProperties,
   GetState,
+  StaticLegend,
+  TableOptions,
+  TimeMachineID,
+  TimeMachineTab,
+  TimeRange,
+  ViewProperties,
+  ViewType,
+  XYGeom,
+  XYViewProperties,
 } from 'src/types'
 import {Color} from 'src/types/colors'
 import {HistogramPosition, LinePosition} from '@influxdata/giraffe'
@@ -94,6 +95,7 @@ export type Action =
   | ReturnType<typeof setLegendOpacity>
   | ReturnType<typeof setLegendOrientationThreshold>
   | ReturnType<typeof setLegendColorizeRows>
+  | ReturnType<typeof setStaticLegend>
   | ReturnType<typeof setGenerateXAxisTicks>
   | ReturnType<typeof setGenerateYAxisTicks>
   | ReturnType<typeof setXTotalTicks>
@@ -747,6 +749,11 @@ export const setLegendOrientationThreshold = (
 export const setLegendColorizeRows = (legendColorizeRows: boolean) => ({
   type: 'SET_LEGEND_COLORIZE_ROWS' as 'SET_LEGEND_COLORIZE_ROWS',
   payload: {legendColorizeRows},
+})
+
+export const setStaticLegend = (staticLegend: StaticLegend) => ({
+  type: 'SET_STATIC_LEGEND' as 'SET_STATIC_LEGEND',
+  payload: {staticLegend},
 })
 
 export const setGenerateXAxisTicks = (generateXAxisTicks: string[]) => ({

@@ -154,13 +154,12 @@ const FlowPanelHeader: FC<HeaderProps> = ({
             </FeatureFlag>
             <PanelVisibilityToggle id={id} />
             <RemovePanelButton onRemove={remove} />
-            {
-              isFlagEnabled('CopyClientCodeToClipboard') &&
+            {isFlagEnabled('CopyClientCodeToClipboard') && (
               <CopyToClipboardProvider>
                 <CopyToClipboardButton />
                 <PanelQueryOverlay panelId={id} />
               </CopyToClipboardProvider>
-            }
+            )}
             {persistentControl}
           </div>
         </>

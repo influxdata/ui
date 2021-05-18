@@ -18,6 +18,9 @@ import {FlowContext} from 'src/flows/context/flow.current'
 import {Context as SidebarContext} from 'src/flows/context/sidebar'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 export interface Props extends PipeContextProps {
   id: string
 }
@@ -43,8 +46,10 @@ const FlowPanel: FC<Props> = ({id, controls, children}) => {
 
   const toggleSidebar = () => {
     if (id !== focused) {
+      event('Sidebar Toggle Clicked', {state: 'opening'})
       show(id)
     } else {
+      event('Sidebar Toggle Clicked', {state: 'hidding'})
       hide()
     }
   }

@@ -4,6 +4,9 @@ import {CLIENT_DEFINITIONS} from 'src/writeData'
 import {FlexBox, SelectableCard, ComponentSize} from '@influxdata/clockface'
 import placeholderLogo from 'src/writeData/graphics/placeholderLogo.svg'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 const ClientList: FC = () => {
   const {id} = useContext(SidebarContext)
 
@@ -11,6 +14,8 @@ const ClientList: FC = () => {
     <FlexBox style={{flexWrap: 'wrap'}}>
       {Object.values(CLIENT_DEFINITIONS).map(item => {
         const click = (client: string) => {
+          event('Client Library Opened', {client})
+
           console.log('lets open the overlay', client, 'for', id)
         }
 

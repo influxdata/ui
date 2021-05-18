@@ -21,9 +21,7 @@ import {PopupContext} from 'src/flows/context/popup'
 import {event} from 'src/cloud/utils/reporting'
 
 const Visualization: FC<PipeProp> = ({Context}) => {
-  const {id, data, range, update, loading, results} = useContext(
-    PipeContext
-  )
+  const {id, data, range, update, loading, results} = useContext(PipeContext)
   const {register} = useContext(SidebarContext)
   const {launch} = useContext(PopupContext)
 

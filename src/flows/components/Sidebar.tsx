@@ -26,6 +26,7 @@ const Sidebar: FC = () => {
         <Button
           text="Back"
           onClick={() => {
+            event('Closing Submenu')
             hideSub()
           }}
         >
@@ -149,6 +150,11 @@ const Sidebar: FC = () => {
             return (
               <List.Item
                 onClick={() => {
+                  const title =
+                    typeof action.title === 'function'
+                      ? action.title()
+                      : action.title
+                  event('Notebook Nav: Opened Submenu', {menu: title})
                   showSub((action as Submenu).menu)
                 }}
                 wrapText={false}
@@ -164,6 +170,11 @@ const Sidebar: FC = () => {
           return (
             <List.Item
               onClick={() => {
+                const title =
+                  typeof action.title === 'function'
+                    ? action.title()
+                    : action.title
+                event('Notebook Nav: Called Action', {menu: title})
                 ;(action as ControlAction).action()
               }}
               wrapText={false}

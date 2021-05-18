@@ -71,7 +71,7 @@ const WriteDataDetailsProvider: FC = ({children}) => {
   }, [variables, org?.name])
 
   useEffect(() => {
-    if (bucket?.name === variables.bucket) {
+    if (!bucket || bucket?.name === variables.bucket) {
       return
     }
 
@@ -82,7 +82,7 @@ const WriteDataDetailsProvider: FC = ({children}) => {
   }, [variables, bucket?.name])
 
   useEffect(() => {
-    if (token?.token === variables.token) {
+    if (!token || token?.token === variables.token) {
       return
     }
 

@@ -1,11 +1,10 @@
 // Libraries
 import React, {FC, createContext, useState, useEffect, useContext} from 'react'
 import {CLIENT_DEFINITIONS} from '..'
-import {WriteDataDetailsContext} from './WriteDataDetailsContext'
+import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 import {getBucketsFromAST, updateBucketInAST} from 'src/flows/context/query'
 import {parse} from 'src/external/parser'
 import {format_from_js_file} from '@influxdata/flux'
-import {Bucket} from 'src/types'
 
 // Utils
 

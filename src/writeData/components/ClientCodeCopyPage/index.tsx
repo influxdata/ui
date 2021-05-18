@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useContext, useEffect, useState} from 'react'
-import {useSelector} from 'react-redux'
 import {Renderer} from 'react-markdown'
 
 // Components
@@ -17,7 +16,7 @@ import {Bucket, ResourceType} from 'src/types'
 
 // Styles
 import 'src/writeData/components/WriteDataDetailsView.scss'
-import InstallPackageHelper from './InstallPackageHelper/index'
+import InstallPackageHelper from 'src/writeData/components/ClientCodeCopyPage/InstallPackageHelper/index'
 
 // Utils
 import {parse} from 'src/external/parser'

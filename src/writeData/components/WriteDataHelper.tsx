@@ -22,7 +22,9 @@ interface Props {
 }
 
 const WriteDataHelper: FC<Props> = ({collapsed}) => {
-  const [mode, changeMode] = useState<'expanded' | 'collapsed'>(collapsed ? 'collapsed' : 'expanded')
+  const [mode, changeMode] = useState<'expanded' | 'collapsed'>(
+    collapsed ? 'collapsed' : 'expanded'
+  )
 
   const handleToggleClick = (): void => {
     if (mode === 'expanded') {

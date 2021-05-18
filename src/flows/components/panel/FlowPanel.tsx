@@ -18,8 +18,8 @@ import {PipeContextProps} from 'src/types/flows'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
-import CopyToClipboardButton from './CopyToClipboardButton'
-import PanelQueryOverlay from './PanelQueryOverlay'
+import CopyToClipboardButton from 'src/flows/components/panel/CopyToClipboardButton'
+import PanelQueryOverlay from 'src/flows/components/panel/PanelQueryOverlay'
 import {CopyToClipboardProvider} from 'src/flows/context/panel'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 

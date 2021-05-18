@@ -48,7 +48,10 @@ const GetOrganizations: FunctionComponent = () => {
   }, [dispatch, status])
 
   useEffect(() => {
-    if (quartzMeStatus === RemoteDataState.NotStarted) {
+    if (
+      isFlagEnabled('unityMeApi') &&
+      quartzMeStatus === RemoteDataState.NotStarted
+    ) {
       dispatch(getQuartzMe())
     }
   }, [dispatch, quartzMeStatus])

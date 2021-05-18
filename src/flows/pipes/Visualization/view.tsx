@@ -21,7 +21,7 @@ import {PopupContext} from 'src/flows/context/popup'
 import {event} from 'src/cloud/utils/reporting'
 
 const Visualization: FC<PipeProp> = ({Context}) => {
-  const {id, data, range, update, loading, results, queryText} = useContext(
+  const {id, data, range, update, loading, results} = useContext(
     PipeContext
   )
   const {register} = useContext(SidebarContext)
@@ -81,14 +81,14 @@ const Visualization: FC<PipeProp> = ({Context}) => {
               launch(<ExportDashboardOverlay />, {
                 properties: data.properties,
                 range: range,
-                query: queryText,
+                panel: id,
               })
             },
           },
         ],
       },
     ])
-  }, [id, data.properties, queryText, results.parsed, range])
+  }, [id, data.properties, results.parsed, range])
 
   return (
     <Context controls={<Controls />}>

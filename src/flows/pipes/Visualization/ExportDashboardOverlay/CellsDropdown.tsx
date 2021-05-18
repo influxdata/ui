@@ -45,7 +45,7 @@ const CellsDropdown: FC = () => {
   useEffect(() => {
     if (selectedDashboard) {
       getViewsForDashboard(selectedDashboard.id).then(res => {
-        setCells(res)
+        setCells(res.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())))
       })
     }
   }, [selectedDashboard])

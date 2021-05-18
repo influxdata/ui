@@ -15,7 +15,7 @@ const Visualization: FC = () => {
   const [results, setResults] = useState<FluxResult>(null)
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
   const {data} = useContext(PopupContext)
-  const {query} = useContext(FlowQueryContext)
+  const {query, getPanelQueries} = useContext(FlowQueryContext)
 
   const queryAndSetResults = useCallback(
     async text => {
@@ -28,7 +28,7 @@ const Visualization: FC = () => {
   )
 
   useEffect(() => {
-    queryAndSetResults(data.query)
+    queryAndSetResults(getPanelQueries(data.panel).visual)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (

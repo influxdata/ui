@@ -1,14 +1,14 @@
 // Libraries
 import React, {FC, createContext, useState, useEffect, useContext} from 'react'
-import {CLIENT_DEFINITIONS} from '..'
-import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
-import {getBucketsFromAST, updateBucketInAST} from 'src/flows/context/query'
-import {parse} from 'src/external/parser'
 import {format_from_js_file} from '@influxdata/flux'
 
 // Utils
+import {parse} from 'src/external/parser'
+import {getBucketsFromAST, updateBucketInAST} from 'src/flows/context/query'
+import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 
-// Types
+// Constants
+import {CLIENT_DEFINITIONS} from 'src/writeData'
 
 interface ExecuteCodeBlockContextType {
   query?: string

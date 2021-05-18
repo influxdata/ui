@@ -3,10 +3,9 @@ import React, {FC, useContext, useEffect, useState} from 'react'
 import {Renderer} from 'react-markdown'
 
 // Components
-// import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
-import GetResources from 'src/resources/components/GetResources'
-import {CodeSampleBlock} from 'src/writeData/containers/ClientLibrariesPage'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
+import {CodeSampleBlock} from 'src/writeData/containers/ClientLibrariesPage'
+import InstallPackageHelper from 'src/writeData/components/ClientCodeCopyPage/InstallPackageHelper'
 
 // Constants
 import {CLIENT_DEFINITIONS} from 'src/writeData'
@@ -16,7 +15,6 @@ import {Bucket, ResourceType} from 'src/types'
 
 // Styles
 import 'src/writeData/components/WriteDataDetailsView.scss'
-import InstallPackageHelper from 'src/writeData/components/ClientCodeCopyPage/InstallPackageHelper/index'
 
 // Utils
 import {parse} from 'src/external/parser'
@@ -24,6 +22,7 @@ import {getBucketsFromAST} from 'src/flows/context/query'
 import WriteDataHelper from '../WriteDataHelper'
 import {WriteDataDetailsContext} from '../WriteDataDetailsContext'
 import {ExecuteCodeBlockContext} from '../ExecuteCodeBlock'
+import GetResources from 'src/resources/components/GetResources'
 
 const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => {
   return <CodeSnippet text={props.value} label={props.language} />

@@ -11,13 +11,17 @@ import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
 import {Overlay} from '@influxdata/clockface'
-import {CopyToClipboardContext} from 'src/flows/context/panel'
 import ClientCodeCopyPage from 'src/writeData/components/ClientCodeCopyPage'
-import {FlowQueryContext, Stage} from 'src/flows/context/flow.query'
+
+// Constants
 import {CLIENT_DEFINITIONS} from 'src/writeData'
-import {Provider as TemplateProvider} from 'src/shared/components/CodeSnippet'
+
+// Utils
+import {CopyToClipboardContext} from 'src/flows/context/panel'
 import ExecuteCodeBlockProvider from 'src/writeData/components/ExecuteCodeBlock'
 import WriteDataDetailsProvider from 'src/writeData/components/WriteDataDetailsContext'
+import {Provider as TemplateProvider} from 'src/shared/components/CodeSnippet'
+import {FlowQueryContext, Stage} from 'src/flows/context/flow.query'
 
 interface OwnProps {
   panelId: string

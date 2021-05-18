@@ -5,12 +5,7 @@ import {Renderer} from 'react-markdown'
 
 // Components
 import {Page} from '@influxdata/clockface'
-import WriteDataHelper from 'src/writeData/components/WriteDataHelper'
-import CodeSnippet, {
-  Provider as TemplateProvider,
-} from 'src/shared/components/CodeSnippet'
-import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
-import GetResources from 'src/resources/components/GetResources'
+import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
 
 // Constants
 import {CodeSampleOption, CLIENT_DEFINITIONS} from 'src/writeData'
@@ -23,13 +18,18 @@ import placeholderLogo from 'src/writeData/graphics/placeholderLogo.svg'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-
-// Styles
-import 'src/writeData/components/WriteDataDetailsView.scss'
-import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
+import GetResources from 'src/resources/components/GetResources'
+import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
+import WriteDataHelper from 'src/writeData/components/WriteDataHelper'
+import CodeSnippet, {
+  Provider as TemplateProvider,
+} from 'src/shared/components/CodeSnippet'
 import ExecuteCodeBlockProvider, {
   ExecuteCodeBlockContext,
 } from '../components/ExecuteCodeBlock'
+
+// Styles
+import 'src/writeData/components/WriteDataDetailsView.scss'
 
 const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => (
   <CodeSnippet text={props.value} label={props.language} />

@@ -15,7 +15,8 @@ import {
 import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
 import {Renderer} from 'react-markdown'
 
-import 'src/writeData/components/ClientCodeCopyPage/InstallPackageHelper/index.scss'
+// Styles
+import 'src/writeData/components/ClientCodeCopyPage/InstallPackageHelper.scss'
 
 interface Props {
   text: string

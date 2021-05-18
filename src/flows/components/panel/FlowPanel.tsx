@@ -9,17 +9,19 @@ import InsertCellButton from 'src/flows/components/panel/InsertCellButton'
 import PanelVisibilityToggle from 'src/flows/components/panel/PanelVisibilityToggle'
 import MovePanelButton from 'src/flows/components/panel/MovePanelButton'
 import FlowPanelTitle from 'src/flows/components/panel/FlowPanelTitle'
-import {FeatureFlag, isFlagEnabled} from 'src/shared/utils/featureFlag'
 import Results from 'src/flows/components/panel/Results'
+import CopyToClipboardButton from 'src/flows/components/panel/CopyToClipboardButton'
+import PanelQueryOverlay from 'src/flows/components/panel/PanelQueryOverlay'
+
+// Constants
 import {PIPE_DEFINITIONS} from 'src/flows'
+import {FeatureFlag, isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {PipeContextProps} from 'src/types/flows'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
-import CopyToClipboardButton from 'src/flows/components/panel/CopyToClipboardButton'
-import PanelQueryOverlay from 'src/flows/components/panel/PanelQueryOverlay'
 import {CopyToClipboardProvider} from 'src/flows/context/panel'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 

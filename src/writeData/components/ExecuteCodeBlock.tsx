@@ -43,7 +43,7 @@ const ExecuteCodeBlockProvider: FC<Props> = ({query, contentID, children}) => {
   const def = CLIENT_DEFINITIONS[contentID]
   const [currentQuery, setQuery] = useState(query ?? def.query)
   const [executeCodeBlock, setExecuteCodeBlock] = useState('')
-  const {bucket, changeBucket} = useContext(WriteDataDetailsContext)
+  const {bucket} = useContext(WriteDataDetailsContext)
   const [selectedBucket, setSelectedBucket] = useState(
     query ? getBucketFromQuery(query) : bucket?.name
   )

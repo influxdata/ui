@@ -21,7 +21,7 @@ const FileUploadSection = () => {
   const items = search(searchTerm)
 
   if (!items.length) {
-    return null
+    return false
   }
 
   return (

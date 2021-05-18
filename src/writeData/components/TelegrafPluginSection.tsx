@@ -21,7 +21,7 @@ const TelegrafPluginSection = () => {
   const items = search(searchTerm)
 
   if (!items.length) {
-    return false
+    return null
   }
 
   return (

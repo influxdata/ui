@@ -105,11 +105,11 @@ export const UsersProvider: FC<Props> = React.memo(({children}) => {
       }
 
       const users =
-        userResp.data?.users?.map(u => ({
+        userResp.data?.map(u => ({
           ...u,
         })) ?? []
       const invites =
-        inviteResp.data?.invites?.map(i => ({
+        inviteResp.data?.map(i => ({
           ...i,
         })) ?? []
 

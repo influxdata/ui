@@ -69,7 +69,7 @@ const TimeMachineVis: FC<Props> = ({
     symbolColumns,
   } as ViewProperties | SimpleTableViewProperties
 
-  if (isViewingRawData && isFlagEnabled('simple-table')) {
+  if (isViewingRawData && isFlagEnabled('simpleTable')) {
     resolvedViewProperties = {
       type: 'simple-table',
       showAll: true,
@@ -89,7 +89,7 @@ const TimeMachineVis: FC<Props> = ({
       giraffeResult.table.getColumnType('_value') !== 'number' &&
       !!giraffeResult.table.length)
 
-  if (viewRawData && files && files.length && !isFlagEnabled('simple-table')) {
+  if (viewRawData && files && files.length && !isFlagEnabled('simpleTable')) {
     const [parsedResults] = files.flatMap(fromFlux)
     return (
       <div className={timeMachineViewClassName}>

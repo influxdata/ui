@@ -52,7 +52,7 @@
     "cy:dev-oss": "source ../monitor-ci/.env && CYPRESS_dexUrl=OSS CYPRESS_baseUrl=https://$INGRESS_HOST:$PORT_HTTPS cypress open --config testFiles='{oss,shared}/**/*.*'",
     "generate": "export SHA=e51ac3713a67a4e665e49c07ad1ab7fc56143d15 && export REMOTE=https://raw.githubusercontent.com/influxdata/openapi/${SHA}/ && yarn generate-meta",
     "generate-local": "export REMOTE=../openapi/ && yarn generate-meta",
-    "generate-meta": "yarn currentApi && yarn notebooks && yarn unity && yarn flows && yarn managedFunctions",
+    "generate-meta": "yarn currentApi && yarn notebooks && yarn unity && yarn flows && yarn managedFunctions && yarn annotations",
     "oss": "oats ${REMOTE}contracts/oss-diff.yml > ./src/client/ossRoutes.ts",
     "cloud": "oats ${REMOTE}contracts/cloud-diff.yml > ./src/client/cloudRoutes.ts",
     "common": "oats ${REMOTE}contracts/common.yml > ./src/client/commonRoutes.ts",
@@ -61,7 +61,7 @@
     "unity": "oats ${REMOTE}contracts/priv/unity.yml > ./src/client/unityRoutes.ts",
     "flows": "oats ${REMOTE}contracts/priv/flowd.yml > ./src/client/flowsRoutes.ts",
     "notebooks": "oats ${REMOTE}contracts/priv/notebooksd.yml > ./src/client/notebooksRoutes.ts",
-    "annotationd": "oats ${REMOTE}contracts/priv/annotationd.yml > ./src/client/annotationdRoutes.ts",
+    "annotations": "oats ${REMOTE}contracts/priv/annotationd.yml > ./src/client/annotationdRoutes.ts",
     "mapsd": "oats ${REMOTE}contracts/mapsd.yml > ./src/client/mapsdRoutes.ts",
     "managedFunctions": "oats ${REMOTE}contracts/managed-functions.yml > ./src/client/managedFunctionsRoutes.ts"
   },

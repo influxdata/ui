@@ -1,6 +1,7 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
+import {withRouter, RouteComponentProps} from 'react-router-dom'
 import moment from 'moment'
 
 // Components
@@ -8,7 +9,7 @@ import {Overlay, IndexList} from '@influxdata/clockface'
 import RunLogsOverlay from 'src/tasks/components/RunLogsList'
 
 // Actions
-import {getLogs} from 'src/tasks/actions/thunks'
+import {getLogs, retryTask} from 'src/tasks/actions/thunks'
 
 // Types
 import {ComponentSize, ComponentColor, Button} from '@influxdata/clockface'
@@ -21,7 +22,7 @@ interface OwnProps {
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps
+type Props = OwnProps & ReduxProps & RouteComponentProps<{orgID: string}>
 
 interface State {
   isImportOverlayVisible: boolean
@@ -39,26 +40,31 @@ class TaskRunsRow extends PureComponent<Props, State> {
   public render() {
     const {run} = this.props
     return (
-      <>
-        <IndexList.Row>
-          <IndexList.Cell>{run.status}</IndexList.Cell>
-          <IndexList.Cell>
-            {this.dateTimeString(run.scheduledFor)}
-          </IndexList.Cell>
-          <IndexList.Cell>{this.dateTimeString(run.startedAt)}</IndexList.Cell>
-          <IndexList.Cell>{run.duration}</IndexList.Cell>
-          <IndexList.Cell>
+      <IndexList.Row>
+        <IndexList.Cell>{run.status}</IndexList.Cell>
+        <IndexList.Cell>{this.dateTimeString(run.scheduledFor)}</IndexList.Cell>
+        <IndexList.Cell>{this.dateTimeString(run.startedAt)}</IndexList.Cell>
+        <IndexList.Cell>{run.duration}</IndexList.Cell>
+        <IndexList.Cell>
+          <Button
+            key={`logs-${run.id}`}
+            size={ComponentSize.ExtraSmall}
+            color={ComponentColor.Default}
+            text="View Logs"
+            onClick={this.handleToggleOverlay}
+          />
+          {run.status === 'failed' && (
             <Button
-              key={run.id}
+              key={`retry-${run.id}`}
               size={ComponentSize.ExtraSmall}
               color={ComponentColor.Default}
-              text="View Logs"
-              onClick={this.handleToggleOverlay}
+              text="Retry"
+              onClick={this.handleRetry}
             />
-            {this.renderLogOverlay}
-          </IndexList.Cell>
-        </IndexList.Row>
-      </>
+          )}
+          {this.renderLogOverlay}
+        </IndexList.Cell>
+      </IndexList.Row>
     )
   }
 
@@ -85,6 +91,21 @@ class TaskRunsRow extends PureComponent<Props, State> {
     this.setState({isImportOverlayVisible: !this.state.isImportOverlayVisible})
   }
 
+  private handleRetry = async () => {
+    const {
+      retryTask,
+      taskID,
+      run,
+      history,
+      match: {
+        params: {orgID},
+      },
+    } = this.props
+
+    await retryTask(taskID, run.id)
+    history.push(`/orgs/${orgID}/tasks/${taskID}/edit`)
+  }
+
   private get renderLogOverlay(): JSX.Element {
     const {isImportOverlayVisible} = this.state
     const {logs} = this.props
@@ -107,7 +128,7 @@ const mstp = (state: AppState) => {
   return {logs, timeZone}
 }
 
-const mdtp = {getLogs: getLogs}
+const mdtp = {getLogs: getLogs, retryTask: retryTask}
 
 const connector = connect(mstp, mdtp)
-export default connector(TaskRunsRow)
+export default connector(withRouter(TaskRunsRow))

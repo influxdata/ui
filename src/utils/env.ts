@@ -4,6 +4,7 @@ module.exports = (() => {
     require('child_process')
       .execSync('git rev-parse --sq HEAD')
       .toString()
+      .replace(/^'/, '')
 
   // Webpack has some specific rules about formatting
   // lets protect our developers from that!

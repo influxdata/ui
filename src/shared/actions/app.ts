@@ -1,4 +1,4 @@
-import {TimeZone, Theme, NavBarState} from 'src/types'
+import {TimeZone, Theme, NavBarState, VersionInfo} from 'src/types'
 
 export enum ActionTypes {
   EnablePresentationMode = 'ENABLE_PRESENTATION_MODE',
@@ -8,6 +8,7 @@ export enum ActionTypes {
   SetNavBarState = 'SET_NAV_BAR_STATE',
   SetAutoRefresh = 'SET_AUTOREFRESH',
   SetTimeZone = 'SET_APP_TIME_ZONE',
+  SetVersionInfo = 'SET_VERSION_INFO',
   TemplateControlBarVisibilityToggled = 'TemplateControlBarVisibilityToggledAction',
   Noop = 'NOOP',
 }
@@ -21,6 +22,7 @@ export type Action =
   | ReturnType<typeof setAutoRefresh>
   | ReturnType<typeof setTimeZone>
   | ReturnType<typeof setTheme>
+  | ReturnType<typeof setVersionInfo>
 
 // ephemeral state action creators
 
@@ -66,4 +68,10 @@ export const setTimeZone = (timeZone: TimeZone) =>
   ({
     type: ActionTypes.SetTimeZone,
     payload: {timeZone},
+  } as const)
+
+export const setVersionInfo = (versionInfo: VersionInfo) =>
+  ({
+    type: ActionTypes.SetVersionInfo,
+    payload: {versionInfo},
   } as const)

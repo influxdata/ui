@@ -107,9 +107,13 @@ export class TaskCard extends PureComponent<
 
     return (
       <Context>
-        <Context.Menu icon={IconFont.CogThick}>
+        <Context.Menu icon={IconFont.CogThick} testID="context-cog-runs">
           <Context.Item label="Export" action={this.handleExport} />
-          <Context.Item label="View Task Runs" action={this.handleViewRuns} />
+          <Context.Item
+            label="View Task Runs"
+            action={this.handleViewRuns}
+            testID="context-view-task-runs"
+          />
           <Context.Item
             label="Run Task"
             action={this.handleRunTask}

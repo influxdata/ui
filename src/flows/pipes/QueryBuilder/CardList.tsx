@@ -1,4 +1,4 @@
-import React, {FC, useContext, useEffect} from 'react'
+import React, {FC, useCallback, useContext, useEffect, useState} from 'react'
 import {
   Input,
   AlignItems,
@@ -36,11 +36,22 @@ interface Props {
 }
 
 const Card: FC<Props> = ({idx}) => {
-  const {cards, add, update, remove, loadKeys, loadValues} = useContext(
-    QueryBuilderContext
-  )
+  const {
+    cards,
+    add,
+    update,
+    remove,
+    loadKeys,
+    loadValues,
+    keyLoading,
+    valueLoading,
+  } = useContext(QueryBuilderContext)
   const {data} = useContext(PipeContext)
   const card = cards[idx]
+  const [keySearches, setKeySearches] = useState([])
+  const [valueSearches, setValueSearches] = useState([])
+  const keyStatus = keyLoading[idx]
+  const valueStatus = valueLoading[idx]
 
   const _remove =
     idx !== 0 &&
@@ -54,18 +65,16 @@ const Card: FC<Props> = ({idx}) => {
     })
   }
 
-  const keySearch = (search: string) => {
-    update(idx, {
-      keys: {
-        ...card.keys,
-        search,
-      },
-    })
-
-    debouncer(idx, () => {
-      loadKeys(idx)
-    })
-  }
+  const keySearch = useCallback(
+    (search: string) => {
+      keySearches[idx] = search
+      setKeySearches([...keySearches])
+      debouncer(idx, () => {
+        loadKeys(idx, search)
+      })
+    },
+    [loadKeys, card.keys, idx]
+  )
 
   const keySelect = val => {
     update(idx, {
@@ -73,23 +82,14 @@ const Card: FC<Props> = ({idx}) => {
         ...card.keys,
         selected: [val],
       },
-      values: {
-        ...card.values,
-        status: RemoteDataState.NotStarted,
-      },
     })
   }
 
   const valueSearch = (search: string) => {
-    update(idx, {
-      values: {
-        ...card.values,
-        search,
-      },
-    })
-
+    valueSearches[idx] = search
+    setValueSearches([...valueSearches])
     debouncer(idx, () => {
-      loadValues(idx)
+      loadValues(idx, search)
     })
   }
 
@@ -119,21 +119,21 @@ const Card: FC<Props> = ({idx}) => {
   }
 
   useEffect(() => {
-    if (data.buckets[0] && card.keys.status === RemoteDataState.NotStarted) {
+    if (data.buckets[0] && keyStatus === RemoteDataState.NotStarted) {
       loadKeys(idx)
     }
-  }, [data.buckets, card.keys.status])
+  }, [data.buckets, keyStatus])
 
   useEffect(() => {
     if (
-      card.keys.status === RemoteDataState.Done &&
-      card.values.status === RemoteDataState.NotStarted
+      keyStatus === RemoteDataState.Done &&
+      valueStatus !== RemoteDataState.Done
     ) {
       loadValues(idx)
     }
-  }, [card.keys.status, card.values.status])
+  }, [keyStatus, valueStatus])
 
-  if (card.keys.status === RemoteDataState.NotStarted) {
+  if (keyStatus === RemoteDataState.NotStarted) {
     let emptyText = 'Select a value first'
 
     if (idx === 0) {
@@ -147,7 +147,7 @@ const Card: FC<Props> = ({idx}) => {
     )
   }
 
-  if (card.keys.status === RemoteDataState.Error) {
+  if (keyStatus === RemoteDataState.Error) {
     return (
       <BuilderCard>
         <BuilderCard.Empty>Failed to load tag keys</BuilderCard.Empty>
@@ -155,7 +155,7 @@ const Card: FC<Props> = ({idx}) => {
     )
   }
 
-  if (card.keys.status === RemoteDataState.Done && !card.keys.results.length) {
+  if (keyStatus === RemoteDataState.Done && !card.keys.results.length) {
     return (
       <BuilderCard>
         <BuilderCard.Empty testID="empty-tag-keys">
@@ -167,15 +167,15 @@ const Card: FC<Props> = ({idx}) => {
 
   let _values
 
-  if (card.values.status === RemoteDataState.Error) {
+  if (valueStatus === RemoteDataState.Error) {
     _values = (
       <BuilderCard.Empty>
         {`Failed to load tag values for ${card.keys.selected[0]}`}
       </BuilderCard.Empty>
     )
   } else if (
-    card.values.status === RemoteDataState.Loading ||
-    card.values.status === RemoteDataState.NotStarted
+    valueStatus === RemoteDataState.Loading ||
+    valueStatus === RemoteDataState.NotStarted
   ) {
     _values = (
       <BuilderCard.Empty>
@@ -183,7 +183,7 @@ const Card: FC<Props> = ({idx}) => {
       </BuilderCard.Empty>
     )
   } else if (
-    card.values.status === RemoteDataState.Done &&
+    valueStatus === RemoteDataState.Done &&
     !card.values.results.length
   ) {
     _values = (
@@ -213,7 +213,7 @@ const Card: FC<Props> = ({idx}) => {
         />
         <BuilderCard.Menu>
           <Input
-            value={card.values.search}
+            value={valueSearches[idx] || ''}
             placeholder={`Search ${card.keys.selected[0]} tag values`}
             className="tag-selector--search"
             onChange={evt => {
@@ -241,12 +241,12 @@ const Card: FC<Props> = ({idx}) => {
           margin={ComponentSize.Small}
         >
           <SearchableDropdown
-            searchTerm={card.keys.search}
+            searchTerm={keySearches[idx] || ''}
             emptyText="No Tags Found"
             searchPlaceholder="Search keys..."
             selectedOption={card.keys.selected[0]}
             onSelect={keySelect}
-            buttonStatus={toComponentStatus(card.keys.status)}
+            buttonStatus={toComponentStatus(keyStatus)}
             onChangeSearchTerm={keySearch}
             testID="tag-selector--dropdown"
             buttonTestID="tag-selector--dropdown-button"
@@ -255,7 +255,7 @@ const Card: FC<Props> = ({idx}) => {
           />
         </FlexBox>
         <Input
-          value={card.values.search}
+          value={valueSearches[idx] || ''}
           placeholder={`Search ${card.keys.selected[0]} tag values`}
           className="tag-selector--search"
           onChange={evt => {

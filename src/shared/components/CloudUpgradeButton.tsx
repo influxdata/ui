@@ -21,11 +21,15 @@ import {
   PAID_ORG_HIDE_UPGRADE_SETTING,
 } from 'src/cloud/constants'
 
+// Utils
+import {getIsRegionBeta} from 'src/me/selectors'
+
 // Types
 import {AppState, OrgSetting} from 'src/types'
 
 interface StateProps {
   inView: boolean
+  isRegionBeta: boolean
 }
 
 interface OwnProps {
@@ -36,6 +40,7 @@ interface OwnProps {
 
 const CloudUpgradeButton: FC<StateProps & OwnProps> = ({
   inView,
+  isRegionBeta,
   size = ComponentSize.Small,
   className,
   buttonText = 'Upgrade Now',
@@ -46,7 +51,7 @@ const CloudUpgradeButton: FC<StateProps & OwnProps> = ({
 
   return (
     <CloudOnly>
-      {inView && (
+      {inView && !isRegionBeta && (
         <LinkButton
           icon={IconFont.CrownSolid}
           className={cloudUpgradeButtonClass}
@@ -65,17 +70,19 @@ const CloudUpgradeButton: FC<StateProps & OwnProps> = ({
 
 const mstp = (state: AppState) => {
   const settings = get(state, 'cloud.orgSettings.settings', [])
+  const isRegionBeta = getIsRegionBeta(state)
   const hideUpgradeButtonSetting = find(
     settings,
     (setting: OrgSetting) => setting.key === HIDE_UPGRADE_CTA_KEY
   )
+  let inView = false
   if (
     !hideUpgradeButtonSetting ||
     hideUpgradeButtonSetting.value !== PAID_ORG_HIDE_UPGRADE_SETTING.value
   ) {
-    return {inView: true}
+    inView = true
   }
-  return {inView: false}
+  return {inView, isRegionBeta}
 }
 
 export default connect<StateProps>(mstp)(CloudUpgradeButton)

@@ -21,7 +21,7 @@ const ClientLibrarySection = () => {
   const items = searchClients(searchTerm)
 
   if (!items.length) {
-    return
+    return null
   }
 
   return (

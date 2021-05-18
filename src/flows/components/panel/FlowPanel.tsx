@@ -9,7 +9,7 @@ import InsertCellButton from 'src/flows/components/panel/InsertCellButton'
 import PanelVisibilityToggle from 'src/flows/components/panel/PanelVisibilityToggle'
 import MovePanelButton from 'src/flows/components/panel/MovePanelButton'
 import FlowPanelTitle from 'src/flows/components/panel/FlowPanelTitle'
-import {FeatureFlag} from 'src/shared/utils/featureFlag'
+import {FeatureFlag, isFlagEnabled} from 'src/shared/utils/featureFlag'
 import Results from 'src/flows/components/panel/Results'
 import {PIPE_DEFINITIONS} from 'src/flows'
 
@@ -154,10 +154,13 @@ const FlowPanelHeader: FC<HeaderProps> = ({
             </FeatureFlag>
             <PanelVisibilityToggle id={id} />
             <RemovePanelButton onRemove={remove} />
-            <CopyToClipboardProvider>
-              <CopyToClipboardButton />
-              <PanelQueryOverlay panelId={id} />
-            </CopyToClipboardProvider>
+            {
+              isFlagEnabled('CopyClientCodeToClipboard') &&
+              <CopyToClipboardProvider>
+                <CopyToClipboardButton />
+                <PanelQueryOverlay panelId={id} />
+              </CopyToClipboardProvider>
+            }
             {persistentControl}
           </div>
         </>

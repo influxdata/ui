@@ -84,5 +84,20 @@ describe('buckets thunks', () => {
       expect(dispatched[1].schema.result).toContain('custom-id')
       expect(dispatched[1].schema.result).toContain('demo-bucket')
     })
+
+    it('failed fetch', async () => {
+      mockGetBuckets(false)
+      const dispatch = jest.fn()
+      const getState = jest.fn(getMockAppState) as any
+
+      await getBuckets()(dispatch, getState)
+
+      const dispatched = dispatch.mock.calls.map(([x]) => x)
+
+      expect(dispatched.length).toBe(3)
+      expect(dispatched[0].status).toBe(RemoteDataState.Loading)
+      expect(dispatched[1].status).toBe(RemoteDataState.Error)
+      const publishNotificationAction: PublishNotificationAction["type"] = "PUBLISH_NOTIFICATION"
+      expect(dispatched[2].type).toBe(publishNotificationAction)
   })
 })

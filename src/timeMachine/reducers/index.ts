@@ -74,7 +74,6 @@ export interface TimeMachineState {
   draftQueries: DashboardDraftQuery[]
   isViewingRawData: boolean
   isViewingVisOptions: boolean
-  isDisabledViewRawData: boolean
   activeTab: TimeMachineTab
   activeQueryIndex: number | null
   queryBuilder: QueryBuilderState
@@ -99,7 +98,6 @@ export const initialStateHelper = (): TimeMachineState => {
     draftQueries: [{...defaultViewQuery(), hidden: false}],
     isViewingRawData: false,
     isViewingVisOptions: false,
-    isDisabledViewRawData: false,
     activeTab: 'queries',
     activeQueryIndex: 0,
     queryResults: initialQueryResultsState(),
@@ -322,12 +320,6 @@ export const timeMachineReducer = (
       const {isViewingRawData} = action.payload
 
       return {...state, isViewingRawData}
-    }
-
-    case 'SET_IS_DISABLED_VIEW_RAW_DATA': {
-      const {isDisabledViewRawData} = action.payload
-
-      return {...state, isDisabledViewRawData}
     }
 
     case 'SET_ACTIVE_TAB': {

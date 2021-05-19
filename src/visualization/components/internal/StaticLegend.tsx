@@ -107,6 +107,7 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
       margin={ComponentSize.Large}
       alignItems={AlignItems.FlexStart}
       style={{marginTop: 18}}
+      testID="static-legend-options"
     >
       <Form.Element label="Static Legend" className="static-legend-options">
         <Grid>

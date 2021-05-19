@@ -12,7 +12,7 @@ import {
 
 const TYPE_DELAY = 0
 const VIS_TYPES = [
-  //    'band',
+  'band',
   //    'check',
   'gauge',
   'xy',
@@ -1058,6 +1058,44 @@ describe('DataExplorer', () => {
             .then(() => {
               cy.get(`[title="${numLines}"]`).should('be.visible')
             })
+        })
+      })
+    })
+
+    describe('static legend', () => {
+      it('can be disabled for all visualization types', () => {
+        cy.window().then(win => {
+          win.influx.set('mosaicGraphType', true)
+          win.influx.set('bandPlotType', true)
+          win.influx.set('staticLegend', false)
+          VIS_TYPES.forEach(type => {
+            cy.getByTestID('cog-cell--button').click()
+            cy.getByTestID('view-type--dropdown').click()
+            cy.getByTestID(`view-type--${type}`).click()
+            cy.getByTestID('static-legend-options').should('not.exist')
+          })
+        })
+      })
+
+      it('can only be enabled for line graph, line graph plus single stat, and band plot', () => {
+        cy.window().then(win => {
+          win.influx.set('mosaicGraphType', true)
+          win.influx.set('bandPlotType', true)
+          win.influx.set('staticLegend', true)
+          VIS_TYPES.forEach(type => {
+            cy.getByTestID('cog-cell--button').click()
+            cy.getByTestID('view-type--dropdown').click()
+            cy.getByTestID(`view-type--${type}`).click()
+            if (
+              type === 'xy' ||
+              type === 'line-plus-single-stat' ||
+              type === 'band'
+            ) {
+              cy.getByTestID('static-legend-options').should('exist')
+            } else {
+              cy.getByTestID('static-legend-options').should('not.exist')
+            }
+          })
         })
       })
     })

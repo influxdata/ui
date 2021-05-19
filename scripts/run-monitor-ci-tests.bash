@@ -22,6 +22,7 @@ set -eux -o pipefail
 # - SHA: the UI repo commit SHA we're running against
 # - API_KEY: the CircleCI API access key
 # - UI_BRANCH: the branch of the UI repo we're running against
+# - UI_GITHUB_ORG: the github org of the UI repo (e.g. influxdata)
 # - MONITOR_CI_BRANCH: the branch of the monitor-ci repo to start a pipeline with (usually 'master')
 # - PULL_REQUEST: the open pull request, if one exists (used for lighthouse)
 #
@@ -95,7 +96,7 @@ if [[ -z "${OSS_SHA:-}" ]]; then
 		DEPLOY_PROD=true
 	fi
 	pipelineStartMsg="starting monitor-ci pipeline targeting monitor-ci branch ${MONITOR_CI_BRANCH}, UI branch ${UI_BRANCH} and using UI SHA ${SHA}"
-	reqData="{\"branch\":\"${MONITOR_CI_BRANCH}\", \"parameters\":{ \"ui-sha\":\"${SHA}\", \"ui-branch\":\"${UI_BRANCH}\", \"ui-pull-request\":\"${PULL_REQUEST}\", \"deploy-prod\":${DEPLOY_PROD}}}"
+	reqData="{\"branch\":\"${MONITOR_CI_BRANCH}\", \"parameters\":{ \"ui-sha\":\"${SHA}\", \"ui-github-org\":\"${UI_GITHUB_ORG}\", \"ui-branch\":\"${UI_BRANCH}\", \"ui-pull-request\":\"${PULL_REQUEST}\", \"deploy-prod\":${DEPLOY_PROD}}}"
 else
 	# set the parameters for starting the monitor-ci pipeline from the influxdb repo
 	pipelineStartMsg="starting monitor-ci pipeline targeting monitor-ci branch ${MONITOR_CI_BRANCH} using OSS SHA ${OSS_SHA}"

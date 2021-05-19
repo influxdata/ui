@@ -1,0 +1,18 @@
+let recordPointDate = InfluxDBClient
+        .Point("demo")
+        .addTag(key: "type", value: "point-timestamp")
+        .addField(key: "value", value: .int(2))
+        .time(time: .date(Date()))
+
+client.makeWriteAPI().write(points: [recordPoint, recordPointDate]) { result, error in
+    // For handle error
+    if let error = error {
+        print("Error:\n\n\(error)")
+    }
+
+    // For Success write
+    if result != nil {
+        print("Successfully written data:\n\n\([recordPoint, recordPointDate])")
+    }
+}
+

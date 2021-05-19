@@ -1,0 +1,7 @@
+point = InfluxDB2::Point.new(name: 'mem')
+  .add_tag('host', 'host1')
+  .add_field('used_percent', 23.43234543)
+  .time(Time.now.utc, InfluxDB2::WritePrecision::NANOSECOND)
+
+write_api.write(data: point, bucket: bucket, org: org)
+

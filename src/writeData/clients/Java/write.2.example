@@ -1,0 +1,21 @@
+Mem mem = new Mem();
+mem.host = "host1";
+mem.used_percent = 23.43234543;
+mem.time = Instant.now();
+
+try (WriteApi writeApi = client.getWriteApi()) {
+  writeApi.writeMeasurement(bucket, org, WritePrecision.NS, mem);
+}
+
+
+
+@Measurement(name = "mem")
+public static class Mem {
+  @Column(tag = true)
+  String host;
+  @Column
+  Double used_percent;
+  @Column(timestamp = true)
+  Instant time;
+}
+

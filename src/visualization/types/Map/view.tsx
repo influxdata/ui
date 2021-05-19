@@ -13,6 +13,7 @@ import {
   getGeoCoordinates,
 } from 'src/shared/utils/vis'
 import {getMapToken} from './api'
+import {event} from 'src/cloud/utils/reporting'
 
 interface Props extends VisualizationProps {
   properties: GeoViewProperties
@@ -47,8 +48,10 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
         const {token} = await getMapToken()
         setMapToken(token)
         setMapServiceError(RemoteDataState.Done)
+        event('mapplot.map_token_request.success')
       } catch (err) {
         setMapServiceError(RemoteDataState.Error)
+        event('mapplot.map_token_request.failure')
       }
     }
     getToken()
@@ -62,8 +65,10 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
       setCoordinateFlag(coordinateFlag)
       setGeoCoordinates(coordinates)
       setCoordinateError(RemoteDataState.Done)
+      event('mapplot.get_geo_coordinates.success')
     } catch (err) {
       setCoordinateError(RemoteDataState.Error)
+      event('mapplot.get_geo_coordinates.failure')
     }
   }, [result.table])
 

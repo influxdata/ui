@@ -1,0 +1,54 @@
+void loop() {
+  // Construct a Flux query
+  // Query will find the worst RSSI for last hour for each connected WiFi network with this device
+  String query = "from(bucket: \"" INFLUXDB_BUCKET "\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"wifi_status\" and r._field == \"rssi\"";
+  query += " and r.device == \""  DEVICE  "\")";
+  query += "|> min()";
+
+  // Print ouput header
+  Serial.print("==== ");
+  Serial.print(selectorFunction);
+  Serial.println(" ====");
+
+  // Print composed query
+  Serial.print("Querying with: ");
+  Serial.println(query);
+
+  // Send query to the server and get result
+  FluxQueryResult result = client.query(query);
+
+  // Iterate over rows. Even there is just one row, next() must be called at least once.
+  while (result.next()) {
+    // Get converted value for flux result column 'SSID'
+    String ssid = result.getValueByName("SSID").getString();
+    Serial.print("SSID '");
+    Serial.print(ssid);
+
+    Serial.print("' with RSSI ");
+    // Get converted value for flux result column '_value' where there is RSSI value
+    long value = result.getValueByName("_value").getLong();
+    Serial.print(value);
+
+    // Get converted value for the _time column
+    FluxDateTime time = result.getValueByName("_time").getDateTime();
+
+    // Format date-time for printing
+    // Format string according to http://www.cplusplus.com/reference/ctime/strftime/
+    String timeStr = time.format("%F %T");
+
+    Serial.print(" at ");
+    Serial.print(timeStr);
+
+    Serial.println();
+  }
+
+  // Check if there was an error
+  if(result.getError() != "") {
+    Serial.print("Query result error: ");
+    Serial.println(result.getError());
+  }
+
+  // Close the result
+  result.close();
+}
+

@@ -1,0 +1,7 @@
+point = Point("mem") \
+  .tag("host", "host1") \
+  .field("used_percent", 23.43234543) \
+  .time(datetime.utcnow(), WritePrecision.NS)
+
+write_api.write(bucket, org, point)
+

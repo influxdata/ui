@@ -1,0 +1,5 @@
+write_api = client.create_write_api
+
+data = 'mem,host=host1 used_percent=23.43234543'
+write_api.write(data: data, bucket: bucket, org: org)
+

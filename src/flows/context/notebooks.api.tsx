@@ -70,13 +70,13 @@ export const createAPI = async (flow: PostNotebookParams) => {
 
 export const deleteAPI = async (ids: DeleteNotebookParams) => {
   const res = await deleteNotebook(ids)
-  if (res.status != 200) {
+  if (res.status != 204) {
     throw new Error(res.data.message)
   }
 }
 
 export const getAllAPI = async (orgID: string) => {
-  const res = await getNotebooks({orgID})
+  const res = await getNotebooks({query: {orgID}})
   if (res.status != 200) {
     throw new Error(res.data.message)
   }

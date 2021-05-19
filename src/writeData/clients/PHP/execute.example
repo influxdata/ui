@@ -1,0 +1,3 @@
+$query = "from(bucket: \"<%= bucket %>\") |> range(start: -1h)";
+$tables = $client->createQueryApi()->query($query, $org);
+

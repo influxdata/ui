@@ -307,7 +307,7 @@ describe('Checks', () => {
 
         // check for table
         cy.getByTestID('raw-data-table').should('exist')
-        cy.getByTestID('raw-data--toggle').should('have.class', 'disabled')
+        cy.getByTestID('raw-data--toggle').should('not.exist')
 
         // change field to numeric value
         cy.getByTestID(`selector-list ${field}`).click()

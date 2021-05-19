@@ -1,6 +1,8 @@
 import {Organization} from '../../../src/types'
 
-describe('Users Page', () => {
+// Skipping this until we get the CI/CD pipeline worked out for the `/quartz/me` endpoint
+
+describe.skip('Users Page', () => {
   beforeEach(() => {
     cy.flush()
 

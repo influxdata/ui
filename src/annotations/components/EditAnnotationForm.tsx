@@ -9,6 +9,7 @@ import {
   Grid,
   Overlay,
 } from '@influxdata/clockface'
+
 import {AnnotationMessageInput} from 'src/annotations/components/annotationForm/AnnotationMessageInput'
 import {AnnotationStartTimeInput} from 'src/annotations/components/annotationForm/AnnotationStartTimeInput'
 
@@ -19,7 +20,7 @@ import {ANNOTATION_FORM_WIDTH} from 'src/annotations/constants'
 import {deleteAnnotations} from 'src/annotations/actions/thunks'
 
 // Types
-import {Annotation, EditAnnotation} from 'src/types'
+import {Annotation} from 'src/types'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -35,13 +36,13 @@ import {
 import {notify} from 'src/shared/actions/notifications'
 
 interface Props {
-  handleSubmit: (editedAnnotation: EditAnnotation) => void
+  handleSubmit: (editedAnnotation: Annotation) => void
   annotation: Annotation
   handleClose: () => void
 }
 
 export const EditAnnotationForm: FC<Props> = (props: Props) => {
-  const [editedAnnotation, updateAnnotation] = useState<EditAnnotation>({
+  const [editedAnnotation, updateAnnotation] = useState<Annotation>({
     id: props.annotation.id,
     message: props.annotation.message ?? '',
     startTime: new Date(props.annotation.startTime).toISOString(),
@@ -81,6 +82,11 @@ export const EditAnnotationForm: FC<Props> = (props: Props) => {
     props.handleSubmit(editedAnnotation)
   }
 
+  const handleCancel = () => {
+    event('dashboards.annotations.edit_annotation.cancel')
+    props.handleClose()
+  }
+
   const handleDelete = () => {
     try {
       dispatch(deleteAnnotations(editedAnnotation))
@@ -97,7 +103,7 @@ export const EditAnnotationForm: FC<Props> = (props: Props) => {
     <Overlay.Container maxWidth={ANNOTATION_FORM_WIDTH}>
       <Overlay.Header
         title="Edit Annotation"
-        onDismiss={props.handleClose}
+        onDismiss={handleCancel}
         className="edit-annotation-head"
       />
       <Grid className="edit-annotation-grid">
@@ -125,7 +131,7 @@ export const EditAnnotationForm: FC<Props> = (props: Props) => {
         <div className="edit-annotation-buttons">
           <Button
             text="Cancel"
-            onClick={props.handleClose}
+            onClick={handleCancel}
             color={ComponentColor.Default}
             className="edit-annotation-cancel"
             testID="edit-annotation-cancel-button"

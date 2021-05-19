@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
 import {useParams} from 'react-router'
+import {Link} from 'react-router-dom'
 
 import {Page, Tabs, Orientation, ComponentSize} from '@influxdata/clockface'
 
@@ -26,7 +27,7 @@ const UserListContainer: FC = () => {
               text="Users"
               active={true}
               linkElement={className => (
-                <a className={className} href={`/orgs/${orgID}/users`} />
+                <Link className={className} to={`/orgs/${orgID}/users`} />
               )}
             />
             <Tabs.Tab
@@ -34,7 +35,7 @@ const UserListContainer: FC = () => {
               text="About"
               active={false}
               linkElement={className => (
-                <a className={className} href={`/orgs/${orgID}/about`} />
+                <Link className={className} to={`/orgs/${orgID}/about`} />
               )}
             />
           </Tabs>

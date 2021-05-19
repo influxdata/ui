@@ -30,6 +30,10 @@ export const localState: LocalStorage = {
       navBarState: 'expanded',
       timeZone: 'Local' as TimeZone,
       theme: 'dark',
+      versionInfo: {
+        version: '',
+        commit: '',
+      },
     },
   },
   flags: {

@@ -17,8 +17,9 @@ export default register => {
         fillValues: false,
       },
     },
-    generateFlux: (pipe, create) => {
+    generateFlux: (pipe, create, append) => {
       if (!pipe.aggregateWindow.period || !pipe.functions.length) {
+        append()
         return
       }
 

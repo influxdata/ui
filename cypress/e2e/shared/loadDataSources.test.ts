@@ -47,4 +47,16 @@ describe('Load Data Sources', () => {
     const logoElement = cy.getByTestID('load-data-details-thumb')
     logoElement.should('exist')
   })
+
+  it('let you search things', () => {
+    cy.getByTestID('write-data--search').type('diskio')
+
+    cy.getByTestID('write-data--section telegraf-plugins').should('exist')
+
+    cy.getByTestID('write-data--section file-upload').should('not.exist')
+
+    cy.getByTestID('write-data--section client-libraries').should('not.exist')
+
+    cy.getByTestID('load-data-item diskio').should('exist')
+  })
 })

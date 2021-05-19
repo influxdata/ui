@@ -21,6 +21,7 @@ export const OSS_FLAGS = {
   'flow-panel--query-builder': true,
   'flow-panel--raw-flux': true,
   'flow-panel--to-bucket': true,
+  'flow-debug-queries': false,
   collapseotron: false,
   disableDefaultTableSort: false,
   'load-data-client-libraries': true,
@@ -42,7 +43,7 @@ export const OSS_FLAGS = {
   'notification-endpoint-telegram': false,
   'molly-first': false,
   'managed-functions': false,
-  'simple-table': false,
+  simpleTable: false,
 }
 
 export const CLOUD_FLAGS = {
@@ -65,6 +66,7 @@ export const CLOUD_FLAGS = {
   'flow-panel--query-builder': true,
   'flow-panel--raw-flux': true,
   'flow-panel--to-bucket': true,
+  'flow-debug-queries': false,
   collapseotron: false,
   disableDefaultTableSort: false,
   'load-data-client-libraries': true,
@@ -87,7 +89,7 @@ export const CLOUD_FLAGS = {
   unity: false,
   'molly-first': false,
   'managed-functions': false,
-  'simple-table': false,
+  simpleTable: false,
 }
 
 export const activeFlags = (state: AppState): FlagMap => {

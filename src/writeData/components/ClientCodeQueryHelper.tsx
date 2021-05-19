@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useContext} from 'react'
+import {FC, useEffect, useContext} from 'react'
 import {format_from_js_file} from '@influxdata/flux'
 
 // Utils

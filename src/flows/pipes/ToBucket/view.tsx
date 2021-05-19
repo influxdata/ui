@@ -54,7 +54,7 @@ const ToBucket: FC<PipeProp> = ({Context}) => {
 
   return (
     <BucketProvider>
-      <Context persistentControl={persist}>
+      <Context persistentControls={persist}>
         <div className="data-source--controls">
           <BucketSelector />
         </div>

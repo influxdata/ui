@@ -92,7 +92,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
   const persist = isFlagEnabled('flow-sidebar') ? null : <ExportButton />
 
   return (
-    <Context controls={<Controls />} persistentControl={persist}>
+    <Context controls={<Controls />} persistentControls={persist}>
       <Resizer
         loading={loading}
         resizingEnabled={dataExists}

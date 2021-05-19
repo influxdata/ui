@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useCallback, ReactNode} from 'react'
+import React, {FC, useContext, useCallback} from 'react'
 import classnames from 'classnames'
 import {ComponentColor, IconFont, SquareButton} from '@influxdata/clockface'
 
@@ -27,7 +27,7 @@ export interface Props extends PipeContextProps {
   id: string
 }
 
-const FlowPanel: FC<Props> = ({id, controls, persistentControl, children}) => {
+const FlowPanel: FC<Props> = ({id, controls, persistentControls, children}) => {
   const {flow} = useContext(FlowContext)
   const {generateMap} = useContext(FlowQueryContext)
   const {id: focused, show, hide} = useContext(SidebarContext)
@@ -132,7 +132,7 @@ const FlowPanel: FC<Props> = ({id, controls, persistentControl, children}) => {
             <>
               <div className="flow-panel--hover-control">{controls}</div>
               <div className="flow-panel--persistent-control">
-                {persistentControl}
+                {persistentControls}
                 <FeatureFlag name="flow-debug-queries">
                   <SquareButton
                     icon={IconFont.BookCode}

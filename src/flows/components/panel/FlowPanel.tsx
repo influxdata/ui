@@ -10,7 +10,6 @@ import PanelVisibilityToggle from 'src/flows/components/panel/PanelVisibilityTog
 import MovePanelButton from 'src/flows/components/panel/MovePanelButton'
 import FlowPanelTitle from 'src/flows/components/panel/FlowPanelTitle'
 import Results from 'src/flows/components/panel/Results'
-import CopyToClipboardButton from 'src/flows/components/panel/CopyToClipboardButton'
 import PanelQueryOverlay from 'src/flows/components/panel/PanelQueryOverlay'
 
 // Constants
@@ -22,8 +21,11 @@ import {PipeContextProps} from 'src/types/flows'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
-import {CopyToClipboardProvider} from 'src/flows/context/panel'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
+import {PopupContext} from 'src/flows/context/popup'
+
+// Utils
+import {event} from 'src/cloud/utils/reporting'
 
 export interface Props extends PipeContextProps {
   id: string
@@ -51,13 +53,13 @@ const FlowPanelHeader: FC<HeaderProps> = ({
     if (canBeMovedUp) {
       flow.data.move(id, index - 1)
     }
-  }, [index, canBeMovedUp, flow.data])
+  }, [index, canBeMovedUp, flow.data, id])
 
   const moveDown = useCallback(() => {
     if (canBeMovedDown) {
       flow.data.move(id, index + 1)
     }
-  }, [index, canBeMovedDown, flow.data])
+  }, [index, canBeMovedDown, flow.data, id])
 
   const title = PIPE_DEFINITIONS[flow.data.get(id).type] ? (
     <FlowPanelTitle id={id} />
@@ -116,6 +118,15 @@ const FlowPanelHeader: FC<HeaderProps> = ({
     /* eslint-enable no-console */
   }, [id])
 
+  const {launch} = useContext(PopupContext)
+  const onClick = () => {
+    event('Export Client Code to Clipboard Clicked')
+    launch(<PanelQueryOverlay />, {
+      panelID: id,
+      contentID: 'python', // FIXME: Hard-coded and needs to use the user selected contentID
+    })
+  }
+
   return (
     <div className="flow-panel--header">
       <div className="flow-panel--node-wrapper">
@@ -151,10 +162,13 @@ const FlowPanelHeader: FC<HeaderProps> = ({
             <PanelVisibilityToggle id={id} />
             <RemovePanelButton id={id} />
             {isFlagEnabled('CopyClientCodeToClipboard') && (
-              <CopyToClipboardProvider>
-                <CopyToClipboardButton />
-                <PanelQueryOverlay panelId={id} />
-              </CopyToClipboardProvider>
+              <SquareButton
+                className="flows-copycb-cell"
+                testID="flows-copycb-cell"
+                icon={IconFont.Duplicate}
+                titleText="Copy to Clipboard"
+                onClick={onClick}
+              />
             )}
             {persistentControl}
           </div>

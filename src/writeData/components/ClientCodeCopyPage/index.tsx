@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useEffect, useState} from 'react'
+import React, {FC} from 'react'
 import {Renderer} from 'react-markdown'
 
 // Components
@@ -11,17 +11,13 @@ import InstallPackageHelper from 'src/writeData/components/ClientCodeCopyPage/In
 import {CLIENT_DEFINITIONS} from 'src/writeData'
 
 // Types
-import {Bucket, ResourceType} from 'src/types'
+import {ResourceType} from 'src/types'
 
 // Styles
 import 'src/writeData/components/WriteDataDetailsView.scss'
 
 // Utils
-import {parse} from 'src/external/parser'
-import {getBucketsFromAST} from 'src/flows/context/query'
 import WriteDataHelper from '../WriteDataHelper'
-import {WriteDataDetailsContext} from '../WriteDataDetailsContext'
-import {ExecuteCodeBlockContext} from '../ExecuteCodeBlock'
 import GetResources from 'src/resources/components/GetResources'
 
 const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => {
@@ -30,33 +26,10 @@ const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => {
 
 interface Props {
   contentID: string
-  query: string
 }
 
-const ClientCodeCopyPage: FC<Props> = ({contentID, query}) => {
-  const {changeBucket} = useContext(WriteDataDetailsContext)
-  const {executeCodeBlock} = useContext(ExecuteCodeBlockContext)
-  const [initialBucket, setInitialBucket] = useState(null)
-
-  useEffect(() => {
-    if (!initialBucket) {
-      const queryBucket = getBucketsFromAST(parse(query))[0]
-      setInitialBucket(queryBucket)
-      changeBucket({name: queryBucket} as Bucket)
-    }
-  }, [changeBucket, query, initialBucket, setInitialBucket])
-
+const ClientCodeCopyPage: FC<Props> = ({contentID}) => {
   const def = CLIENT_DEFINITIONS[contentID]
-  let description
-
-  if (def.description) {
-    description = (
-      <InstallPackageHelper
-        text={def.description}
-        codeRenderer={codeRenderer}
-      />
-    )
-  }
 
   return (
     <GetResources
@@ -68,10 +41,15 @@ const ClientCodeCopyPage: FC<Props> = ({contentID, query}) => {
           data-testid="load-data-details-content"
         >
           <WriteDataHelper collapsed={true} />
-          {description}
+          {!!def.description && (
+            <InstallPackageHelper
+              text={def.description}
+              codeRenderer={codeRenderer}
+            />
+          )}
           <CodeSampleBlock
             name="Initialize and Execute Flux"
-            sample={`${def.initialize}${executeCodeBlock}`}
+            sample={`${def.initialize}${def.execute}`}
           />
         </div>
       </div>

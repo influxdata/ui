@@ -1,13 +1,5 @@
 // Libraries
-import React, {
-  useContext,
-  FC,
-  memo,
-  useState,
-  useEffect,
-  useCallback,
-} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import React, {useContext, FC, useCallback} from 'react'
 
 // Components
 import {Overlay} from '@influxdata/clockface'
@@ -17,32 +9,23 @@ import ClientCodeCopyPage from 'src/writeData/components/ClientCodeCopyPage'
 import {CLIENT_DEFINITIONS} from 'src/writeData'
 
 // Utils
-import {CopyToClipboardContext} from 'src/flows/context/panel'
-import ExecuteCodeBlockProvider from 'src/writeData/components/ExecuteCodeBlock'
+import ClientCodeQueryHelper from 'src/writeData/components/ClientCodeQueryHelper'
 import WriteDataDetailsProvider from 'src/writeData/components/WriteDataDetailsContext'
 import {Provider as TemplateProvider} from 'src/shared/components/CodeSnippet'
 import {FlowQueryContext, Stage} from 'src/flows/context/flow.query'
+import {PopupContext} from 'src/flows/context/popup'
 
-interface OwnProps {
-  panelId: string
-}
-type Props = OwnProps & RouteComponentProps<{orgID: string}>
-
-const TOKEN_PLACEHOLDER = '<INFLUXDB_TOKEN>'
-
-const PanelQueryOverlay: FC<Props> = ({panelId}) => {
-  // FIXME: Remove this to use a dropdown or similar so we can select the contentID/language
-  const contentID = 'python'
+const PanelQueryOverlay: FC = () => {
+  const {data, closeFn} = useContext(PopupContext)
+  const panelID = data.panelID
+  const contentID = data.contentID
 
   const {generateMap} = useContext(FlowQueryContext)
-  const {visible, setVisibility} = useContext(CopyToClipboardContext)
-
-  const [query, setQuery] = useState(null)
 
   const getPanelQuery = useCallback(
-    (panelId: string): string => {
+    (panelID: string): string => {
       const stage = generateMap().find((stage: Stage) => {
-        return !!stage.instances.find(instance => instance.id == panelId)
+        return !!stage.instances.find(instance => instance.id == panelID)
       })
 
       return stage?.text ?? ''
@@ -50,35 +33,29 @@ const PanelQueryOverlay: FC<Props> = ({panelId}) => {
     [generateMap]
   )
 
-  useEffect(() => {
-    const currentQuery = getPanelQuery(panelId)
-    if (currentQuery !== query) {
-      setQuery(currentQuery)
-    }
-  }, [query, setQuery, panelId, getPanelQuery])
-
   return (
-    <Overlay visible={visible}>
+    <Overlay visible={true}>
       <Overlay.Container>
         <Overlay.Header
           title={`Export to ${CLIENT_DEFINITIONS[contentID].name} Client Library`}
-          onDismiss={() => setVisibility(!visible)}
+          onDismiss={closeFn}
         />
         <Overlay.Body>
-          <TemplateProvider variables={{token: TOKEN_PLACEHOLDER}}>
-            <WriteDataDetailsProvider>
-              <ExecuteCodeBlockProvider contentID={contentID} query={query}>
-                <ClientCodeCopyPage
-                  contentID={contentID}
-                  query={getPanelQuery(panelId)}
-                />
-              </ExecuteCodeBlockProvider>
-            </WriteDataDetailsProvider>
-          </TemplateProvider>
+          <ClientCodeQueryHelper
+            contentID={contentID}
+            clientQuery={getPanelQuery(panelID)}
+          />
+          <ClientCodeCopyPage contentID={contentID} />
         </Overlay.Body>
       </Overlay.Container>
     </Overlay>
   )
 }
 
-export default withRouter(memo(PanelQueryOverlay))
+export default () => (
+  <TemplateProvider>
+    <WriteDataDetailsProvider>
+      <PanelQueryOverlay />
+    </WriteDataDetailsProvider>
+  </TemplateProvider>
+)

@@ -16,7 +16,7 @@ const ClientList: FC = () => {
         const click = (client: string) => {
           event('Client Library Opened', {client})
 
-          console.log('lets open the overlay', client, 'for', id)
+          console.log('lets open the overlay', client, 'for', id) // eslint-disable-line no-console
         }
 
         const thumb = <img src={item.logo ? item.logo : placeholderLogo} />

@@ -13,6 +13,7 @@ import fromFlux from 'src/shared/utils/fromFlux.legacy'
 // Types
 import {PipeProp, FluxResult} from 'src/types/flows'
 import {ViewType, RemoteDataState} from 'src/types'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import {PipeContext} from 'src/flows/context/pipe'
 
@@ -65,7 +66,7 @@ const TestFlux: FC<PipeProp> = ({Context}) => {
     })
   }
 
-  const _controls = (
+  const controls = isFlagEnabled('flow-sidebar') ? null : (
     <>
       <ViewTypeDropdown
         viewType={data.properties.type}
@@ -80,13 +81,8 @@ const TestFlux: FC<PipeProp> = ({Context}) => {
     </>
   )
 
-  if (_controls) {
-    console.log('omg typescript')
-  }
-
-  //<Context controls={controls}>
   return (
-    <Context>
+    <Context controls={controls}>
       <Resizer
         resizingEnabled={!!results.parsed}
         emptyText="This cell will visualize results from uploaded CSVs"

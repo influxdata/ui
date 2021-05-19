@@ -57,9 +57,6 @@ export const Provider: FC = ({children}) => {
         ...pipes,
       })
     }
-    if (id === focused) {
-      console.log('neat', sub)
-    }
   }
 
   const showSub = (menu: Submenu['menu']) => {

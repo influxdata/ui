@@ -335,6 +335,8 @@ export const timeMachineReducer = (
     case 'SET_VIEW_PROPERTIES': {
       const {properties} = action.payload
 
+      console.log("properties: ", properties)
+
       return setViewProperties(state, properties)
     }
 

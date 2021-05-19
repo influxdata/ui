@@ -113,7 +113,6 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     tileServerUrl: getMapboxUrl(),
     bingKey: '',
   }
-
   let layersOpts = layers
   if (!layers.length) {
     layersOpts = [
@@ -122,14 +121,24 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
         colorDimension: {label: 'Value'},
         colorField: '_value',
         colors: [
-          {type: 'min', hex: InfluxColors.Star},
-          {value: 50, hex: InfluxColors.Star},
-          {type: 'max', hex: InfluxColors.Star},
+          {type: 'min', hex: InfluxColors.Star, id: '0'},
+          {value: 50, hex: InfluxColors.Star, id: '1'},
+          {type: 'max', hex: InfluxColors.Star, id: '2'},
         ],
         isClustered: false,
       },
     ]
   }
+
+
+  if(!layers[0].colors[0].id){
+    layersOpts[0].colors = [
+      {value:0 ,type: 'min', hex: InfluxColors.Star, id: '0', name:"star"},
+      {value: 5, hex: InfluxColors.Star, id: '1', name:"star"},
+      {value: 1,type: 'max', hex: InfluxColors.Star, id: '2', name: "star"},
+    ]
+  }
+  
 
   let zoomOpt = zoom
   if (zoom === 0) {

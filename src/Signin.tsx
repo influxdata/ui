@@ -18,6 +18,7 @@ import {
 } from 'src/localStorage'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getPublicFlags} from 'src/shared/thunks/flags'
+import {loadRudderstack, identify} from 'src/cloud/utils/rudderstack'
 
 // Actions
 import {notify as notifyAction} from 'src/shared/actions/notifications'
@@ -31,11 +32,13 @@ import {
 } from 'src/shared/constants'
 
 // Types
-import {RemoteDataState} from 'src/types'
+import {AppState, RemoteDataState} from 'src/types'
+import {getOrg} from 'src/organizations/selectors'
 
 interface State {
   loading: RemoteDataState
   auth: boolean
+  rudderStackInitialized: boolean
 }
 
 interface OwnProps {
@@ -49,7 +52,11 @@ const FETCH_WAIT = 60000
 
 @ErrorHandling
 export class Signin extends PureComponent<Props, State> {
-  public state: State = {loading: RemoteDataState.NotStarted, auth: false}
+  public state: State = {
+    loading: RemoteDataState.NotStarted,
+    auth: false,
+    rudderStackInitialized: false,
+  }
 
   private hasMounted = false
   private intervalID: NodeJS.Timer
@@ -90,8 +97,20 @@ export class Signin extends PureComponent<Props, State> {
 
   private checkForLogin = async () => {
     try {
-      await client.users.me()
-
+      const user = await client.users.me()
+      if (
+        isFlagEnabled('rudderstackReporting') &&
+        !this.state.rudderStackInitialized
+      ) {
+        loadRudderstack()
+        identify(
+          user.id,
+          {email: user.name, orgID: this.props.orgID},
+          {},
+          () => {}
+        )
+        this.setState({rudderStackInitialized: true})
+      }
       this.setState({auth: true})
       const redirectIsSet = !!getFromLocalStorage('redirectTo')
       if (redirectIsSet) {
@@ -144,6 +163,14 @@ const mdtp = {
   onGetPublicFlags: getPublicFlags,
 }
 
-const connector = connect(null, mdtp)
+const mstp = (state: AppState) => {
+  const {id} = getOrg(state)
+
+  return {
+    orgID: id,
+  }
+}
+
+const connector = connect(mstp, mdtp)
 
 export default connector(Signin)

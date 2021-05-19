@@ -8,12 +8,14 @@ import {
 import classnames from 'classnames'
 
 // Components
+import MarkdownModeToggle from './MarkdownModeToggle'
 import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
 import {PipeContext} from 'src/flows/context/pipe'
 import {Context as SidebarContext} from 'src/flows/context/sidebar'
 import {PipeProp} from 'src/types/flows'
 
 import {MARKDOWN_PIPE_PLACEHOLDER} from 'src/flows/pipes/Markdown/index'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const MarkdownMonacoEditor = lazy(() =>
   import('src/shared/components/MarkdownMonacoEditor')
@@ -83,7 +85,8 @@ const MarkdownPanel: FC<PipeProp> = ({Context}) => {
     )
   }
 
-  return <Context>{panelContents}</Context>
+  const controls = isFlagEnabled('flow-sidebar') ? null : <MarkdownModeToggle />
+  return <Context controls={controls}>{panelContents}</Context>
 }
 
 export default MarkdownPanel

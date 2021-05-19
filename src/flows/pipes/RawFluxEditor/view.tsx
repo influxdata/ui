@@ -12,6 +12,9 @@ import {
   RemoteDataState,
   SpinnerContainer,
   TechnoSpinner,
+  SquareButton,
+  IconFont,
+  ComponentColor,
 } from '@influxdata/clockface'
 
 // Types
@@ -22,7 +25,8 @@ import {PipeProp} from 'src/types/flows'
 // Components
 import {PipeContext} from 'src/flows/context/pipe'
 import {Context as SidebarContext} from 'src/flows/context/sidebar'
-import Functions from './functions'
+import Functions from 'src/flows/pipes/RawFluxEditor/functions'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Styles
 import 'src/flows/pipes/RawFluxEditor/style.scss'
@@ -33,6 +37,7 @@ const FluxMonacoEditor = lazy(() =>
 
 const Query: FC<PipeProp> = ({Context}) => {
   const {id, data, update} = useContext(PipeContext)
+  const [showFn, setShowFn] = useState(true)
   const {register} = useContext(SidebarContext)
   const [editorInstance, setEditorInstance] = useState<EditorType>(null)
   const {queries, activeQuery} = data
@@ -108,6 +113,20 @@ const Query: FC<PipeProp> = ({Context}) => {
     [editorInstance, query.text]
   )
 
+  const toggleFn = useCallback(() => {
+    setShowFn(!showFn)
+  }, [setShowFn, showFn])
+
+  const controls = isFlagEnabled('flow-sidebar') ? null : (
+    <SquareButton
+      icon={IconFont.Function}
+      onClick={toggleFn}
+      color={showFn ? ComponentColor.Primary : ComponentColor.Default}
+      titleText="Function Reference"
+      className="flows-config-function-button"
+    />
+  )
+
   useEffect(() => {
     if (!id) {
       return
@@ -127,7 +146,7 @@ const Query: FC<PipeProp> = ({Context}) => {
   }, [id, inject])
 
   return (
-    <Context>
+    <Context controls={controls}>
       <Suspense
         fallback={
           <SpinnerContainer
@@ -144,6 +163,11 @@ const Query: FC<PipeProp> = ({Context}) => {
           autogrow
         />
       </Suspense>
+      {!isFlagEnabled('flow-sidebar') && showFn && (
+        <div className="flow-nonsidebar">
+          <Functions onSelect={inject} />
+        </div>
+      )}
     </Context>
   )
 }

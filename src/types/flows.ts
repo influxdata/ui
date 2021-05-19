@@ -22,6 +22,7 @@ export interface ControlSection {
 export interface PipeContextProps {
   children?: ReactNode
   controls?: ReactNode
+  persistentControls?: ReactNode
 }
 
 export type PipeData = any

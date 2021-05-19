@@ -1,10 +1,12 @@
 // Libraries
-import React, {FC, useContext, useCallback} from 'react'
+import React, {FC, useContext, useCallback, ReactNode} from 'react'
 import classnames from 'classnames'
 import {ComponentColor, IconFont, SquareButton} from '@influxdata/clockface'
 
 // Components
+import RemovePanelButton from 'src/flows/components/panel/RemovePanelButton'
 import InsertCellButton from 'src/flows/components/panel/InsertCellButton'
+import PanelVisibilityToggle from 'src/flows/components/panel/PanelVisibilityToggle'
 import FlowPanelTitle from 'src/flows/components/panel/FlowPanelTitle'
 import Results from 'src/flows/components/panel/Results'
 import {PIPE_DEFINITIONS} from 'src/flows'
@@ -25,7 +27,7 @@ export interface Props extends PipeContextProps {
   id: string
 }
 
-const FlowPanel: FC<Props> = ({id, controls, children}) => {
+const FlowPanel: FC<Props> = ({id, controls, persistentControl, children}) => {
   const {flow} = useContext(FlowContext)
   const {generateMap} = useContext(FlowQueryContext)
   const {id: focused, show, hide} = useContext(SidebarContext)
@@ -129,26 +131,35 @@ const FlowPanel: FC<Props> = ({id, controls, children}) => {
           {!flow.readOnly && (
             <>
               <div className="flow-panel--hover-control">{controls}</div>
-              <FeatureFlag name="flow-debug-queries">
-                <SquareButton
-                  icon={IconFont.BookCode}
-                  onClick={printMap}
-                  color={ComponentColor.Default}
-                  titleText="Debug Notebook Queries"
-                  className="flows-config-panel-button"
-                />
-              </FeatureFlag>
-              <SquareButton
-                icon={IconFont.CogThick}
-                onClick={toggleSidebar}
-                color={
-                  id === focused
-                    ? ComponentColor.Secondary
-                    : ComponentColor.Default
-                }
-                titleText="Configure"
-                className="flows-config-panel-button"
-              />
+              <div className="flow-panel--persistent-control">
+                {persistentControl}
+                <FeatureFlag name="flow-debug-queries">
+                  <SquareButton
+                    icon={IconFont.BookCode}
+                    onClick={printMap}
+                    color={ComponentColor.Default}
+                    titleText="Debug Notebook Queries"
+                    className="flows-config-panel-button"
+                  />
+                </FeatureFlag>
+                <FeatureFlag name="flow-sidebar">
+                  <SquareButton
+                    icon={IconFont.CogThick}
+                    onClick={toggleSidebar}
+                    color={
+                      id === focused
+                        ? ComponentColor.Secondary
+                        : ComponentColor.Default
+                    }
+                    titleText="Configure"
+                    className="flows-config-panel-button"
+                  />
+                </FeatureFlag>
+                <FeatureFlag name="flow-sidebar" equals={false}>
+                  <PanelVisibilityToggle id={id} />
+                  <RemovePanelButton id={id} />
+                </FeatureFlag>
+              </div>
             </>
           )}
         </div>

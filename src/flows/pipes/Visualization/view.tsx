@@ -5,6 +5,7 @@ import React, {FC, useContext, useCallback, useEffect, useMemo} from 'react'
 import {IconFont} from '@influxdata/clockface'
 import Resizer from 'src/flows/shared/Resizer'
 import ExportDashboardOverlay from 'src/flows/pipes/Visualization/ExportDashboardOverlay'
+import ExportButton from 'src/flows/pipes/Visualization/ExportDashboardButton'
 import Controls from 'src/flows/pipes/Visualization/Controls'
 
 // Utilities
@@ -19,6 +20,7 @@ import {Context as SidebarContext} from 'src/flows/context/sidebar'
 import {PopupContext} from 'src/flows/context/popup'
 
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const Visualization: FC<PipeProp> = ({Context}) => {
   const {id, data, range, update, loading, results} = useContext(PipeContext)
@@ -87,9 +89,10 @@ const Visualization: FC<PipeProp> = ({Context}) => {
       },
     ])
   }, [id, data.properties, results.parsed, range])
+  const persist = isFlagEnabled('flow-sidebar') ? null : <ExportButton />
 
   return (
-    <Context controls={<Controls />}>
+    <Context controls={<Controls />} persistentControl={persist}>
       <Resizer
         loading={loading}
         resizingEnabled={dataExists}

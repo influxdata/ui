@@ -12,10 +12,12 @@ import {PopupContext} from 'src/flows/context/popup'
 
 // Components
 import BucketSelector from 'src/flows/shared/BucketSelector'
+import ExportButton from 'src/flows/pipes/ToBucket/ExportTaskButton'
 import ExportTaskOverlay from 'src/flows/pipes/ToBucket/ExportTaskOverlay'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const ToBucket: FC<PipeProp> = ({Context}) => {
   const {id, data, range} = useContext(PipeContext)
@@ -48,9 +50,11 @@ const ToBucket: FC<PipeProp> = ({Context}) => {
     ])
   }, [id, data.properties, range])
 
+  const persist = isFlagEnabled('flow-sidebar') ? null : <ExportButton />
+
   return (
     <BucketProvider>
-      <Context>
+      <Context persistentControl={persist}>
         <div className="data-source--controls">
           <BucketSelector />
         </div>

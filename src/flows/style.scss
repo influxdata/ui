@@ -108,11 +108,6 @@ $cf-radius-lg: $cf-radius + 4px;
   flex-wrap: wrap;
 }
 
-.flows-config-panel-button {
-  order: 2;
-  margin-left: $cf-marg-b;
-}
-
 .flow-panel__focus {
   border: 2px solid $c-amethyst;
 }
@@ -120,7 +115,11 @@ $cf-radius-lg: $cf-radius + 4px;
 .flow-panel--persistent-control {
   justify-content: flex-end;
   order: 3;
-  flex-grow: 1;
+  display: flex;
+
+  & > * {
+    margin-left: $cf-marg-b;
+  }
 }
 
 .flow-panel--node-wrapper {
@@ -320,4 +319,8 @@ $cf-radius-lg: $cf-radius + 4px;
   order: 1;
   padding-left: 0;
   display: flex;
+
+  > * {
+    margin-left: $cf-marg-a;
+  }
 }

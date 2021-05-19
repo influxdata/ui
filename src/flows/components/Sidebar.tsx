@@ -57,10 +57,15 @@ const Sidebar: FC = () => {
         },
         {
           title: 'Duplicate',
-          disable: true,
           action: () => {
-            console.log('just wait')
-            // clone(focused)
+            const data = flow.data.get(id)
+            const meta = flow.meta.get(id)
+
+            data.title = meta.title
+
+            event('Notebook Panel Cloned', {notebooksCellType: data.type})
+
+            add(data, flow.data.indexOf(id))
           },
         },
         {

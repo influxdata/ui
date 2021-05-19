@@ -207,7 +207,7 @@ const DashboardHeader: FC<Props> = ({
           {isFlagEnabled('newAutoRefresh') && (
             <Button
               text={isActive ? 'Stop Auto Refresh' : 'Enable Auto Refresh'}
-              color={isActive ? ComponentColor.Danger : ComponentColor.Primary}
+              color={isActive ? ComponentColor.Danger : ComponentColor.Default}
               onClick={
                 isActive ? stopAutoRefreshAndReset : openAutoRefreshModal
               }

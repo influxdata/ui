@@ -1098,6 +1098,54 @@ describe('DataExplorer', () => {
           })
         })
       })
+
+      it('should allow user to render and remove the static legend', () => {
+        cy.writeData(lines(100))
+        cy.window().then(win => {
+          win.influx.set('staticLegend', true)
+          cy.get<string>('@defaultBucketListSelector').then(
+            (defaultBucketListSelector: string) => {
+              cy.getByTestID('query-builder').should('exist')
+              // build the query to return data from beforeEach
+              cy.getByTestID('selector-list _monitoring').should('be.visible')
+              cy.getByTestID('selector-list _monitoring').click()
+
+              cy.getByTestID(defaultBucketListSelector).should('be.visible')
+              cy.getByTestID(defaultBucketListSelector).click()
+
+              cy.getByTestID('selector-list m').should('be.visible')
+              cy.getByTestID('selector-list m').clickAttached()
+
+              cy.getByTestID('selector-list v').should('be.visible')
+              cy.getByTestID('selector-list v').clickAttached()
+
+              cy.getByTestID('selector-list tv1').clickAttached()
+
+              cy.getByTestID('selector-list last')
+                .scrollIntoView()
+                .should('be.visible')
+                .click({force: true})
+
+              cy.getByTestID('time-machine-submit-button').click()
+
+              // Select line graph and open the view options
+              cy.getByTestID('cog-cell--button').click()
+              cy.getByTestID('view-type--dropdown').click()
+              cy.getByTestID(`view-type--xy`).click()
+
+              // Select "show" to render a static legend and display the height slider
+              cy.get('[for="radio_static_legend_show"]').click()
+              cy.getByTestID('giraffe-static-legend').should('exist')
+              cy.getByTestID('static-legend-height-slider').should('exist')
+
+              // Select "hide" to remove the static legend and hide the height slider
+              cy.get('[for="radio_static_legend_hide"]').click()
+              cy.getByTestID('giraffe-static-legend').should('not.exist')
+              cy.getByTestID('static-legend-height-slider').should('not.exist')
+            }
+          )
+        })
+      })
     })
   })
 

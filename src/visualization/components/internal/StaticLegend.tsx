@@ -191,6 +191,7 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
                     value={heightRatio}
                     onChange={handleSetHeightRatio}
                     hideLabels={true}
+                    testID="static-legend-height-slider"
                   />
                 </Form.Element>
               </Grid.Column>

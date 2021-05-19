@@ -1100,13 +1100,15 @@ describe('DataExplorer', () => {
       })
 
       it('should allow user to render and remove the static legend', () => {
+        // write some data
         cy.writeData(lines(100))
+
+        // set the flag, build the query, adjust the view options
         cy.window().then(win => {
           win.influx.set('staticLegend', true)
           cy.get<string>('@defaultBucketListSelector').then(
             (defaultBucketListSelector: string) => {
               cy.getByTestID('query-builder').should('exist')
-              // build the query to return data from beforeEach
               cy.getByTestID('selector-list _monitoring').should('be.visible')
               cy.getByTestID('selector-list _monitoring').click()
 

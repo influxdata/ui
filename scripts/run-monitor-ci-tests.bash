@@ -22,7 +22,6 @@ set -eux -o pipefail
 # - SHA: the UI repo commit SHA we're running against
 # - API_KEY: the CircleCI API access key
 # - UI_BRANCH: the branch of the UI repo we're running against
-# - UI_GITHUB_ORG: the github org of the UI repo (e.g. influxdata)
 # - MONITOR_CI_BRANCH: the branch of the monitor-ci repo to start a pipeline with (usually 'master')
 # - PULL_REQUEST: the open pull request, if one exists (used for lighthouse)
 #
@@ -95,6 +94,15 @@ if [[ -z "${OSS_SHA:-}" ]]; then
 		# UI_BRANCH, DEPLOY_PROD are both neccesary to ensure that UI_BRANCH parameter's default in the monitor-ci pipeline doesn't deploy us to production unless started by this script.
 		DEPLOY_PROD=true
 	fi
+	if [ -n $PULL_REQUEST ]; then
+		# if running from pull request, use github api to get source branch.
+		# this is needed to support forks of the UI repo.
+		pr=$($PULL_REQUEST | grep -oE "[^/]+$")
+		github=$(curl -s --fail --request GET \
+			--url https://api.github.com/repos/influxdata/ui/pulls/${pr})
+		UI_BRANCH=$(echo ${github} | jq -r '.head.ref')
+	fi
+
 	pipelineStartMsg="starting monitor-ci pipeline targeting monitor-ci branch ${MONITOR_CI_BRANCH}, UI branch ${UI_BRANCH} and using UI SHA ${SHA}"
 	reqData="{\"branch\":\"${MONITOR_CI_BRANCH}\", \"parameters\":{ \"ui-sha\":\"${SHA}\", \"ui-github-org\":\"${UI_GITHUB_ORG}\", \"ui-branch\":\"${UI_BRANCH}\", \"ui-pull-request\":\"${PULL_REQUEST}\", \"deploy-prod\":${DEPLOY_PROD}}}"
 else

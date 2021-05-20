@@ -5,6 +5,7 @@ import writeLP from 'src/writeData/clients/Java/write.0.example'
 import writePoint from 'src/writeData/clients/Java/write.1.example'
 import writePOJO from 'src/writeData/clients/Java/write.2.example'
 import execute from 'src/writeData/clients/Java/execute.example'
+import query from 'src/writeData/clients/Java/query.example'
 
 export default register =>
   register({
@@ -29,4 +30,5 @@ export default register =>
       },
     ],
     execute,
+    query,
   })

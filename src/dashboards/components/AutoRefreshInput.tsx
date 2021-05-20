@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react'
+import React, {FC} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Components
@@ -15,6 +15,7 @@ import {
   setAutoRefreshInterval,
   setAutoRefreshStatus,
   resetDashboardAutoRefresh,
+  setAutoRefreshInputValue,
 } from 'src/shared/actions/autoRefresh'
 
 // Selectors
@@ -34,14 +35,12 @@ const SUGGESTIONS = [
 ]
 
 const AutoRefreshInput: FC = () => {
-  const [inputValue, setInputValue] = useState('None')
   const dispatch = useDispatch()
   const currentDashboardId = useSelector(getCurrentDashboardId)
 
-  const {interval} = useSelector(getAutoRefreshForDashboard)
+  const autoRefresh = useSelector(getAutoRefreshForDashboard)
   const handleChooseAutoRefresh = (selection: string) => {
     if (selection === 'None') {
-      setInputValue('None')
       dispatch(resetDashboardAutoRefresh(currentDashboardId))
       return
     }
@@ -59,13 +58,13 @@ const AutoRefreshInput: FC = () => {
       Number(selection.slice(0, selection.length - 1)) * multiplier * 1000
 
     if (unit === 's' || unit === 'm' || unit === 'h') {
-      setInputValue(selection)
       dispatch(
         setAutoRefreshInterval(currentDashboardId, calculatedMilliseconds)
       )
       dispatch(
         setAutoRefreshStatus(currentDashboardId, AutoRefreshStatus.Active)
       )
+      dispatch(setAutoRefreshInputValue(currentDashboardId, selection))
     }
   }
 
@@ -79,7 +78,7 @@ const AutoRefreshInput: FC = () => {
     <ButtonGroup>
       <DurationInput
         submitInvalid={false}
-        value={interval === 0 ? 'None' : inputValue}
+        value={autoRefresh?.refreshInputValue ?? 'None'}
         onSubmit={handleChooseAutoRefresh}
         suggestions={SUGGESTIONS}
         customClass="refresh-input"
@@ -92,6 +91,7 @@ const AutoRefreshInput: FC = () => {
             )
           )
         }}
+        testID="auto-refresh-input"
       />
     </ButtonGroup>
   )

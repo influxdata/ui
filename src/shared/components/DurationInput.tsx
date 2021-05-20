@@ -103,6 +103,7 @@ const DurationInput: FC<Props> = ({
               key="Customize"
               onClick={dividerOnClick}
               className={SUGGESTION_CLASS}
+              testID="custom-duration-input-button"
             >
               {dividerText}
             </Dropdown.Item>

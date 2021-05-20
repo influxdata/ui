@@ -69,7 +69,10 @@ const AutoRefreshForm: FC = () => {
             </InputLabel>
           </div>
           {!state.infiniteDuration && (
-            <div className="refresh-form-container reverse">
+            <div
+              className="refresh-form-container reverse"
+              data-testid="timerange-popover-button"
+            >
               <TimeRangeDropdown
                 timeRange={state.duration}
                 onSetTimeRange={(timeRange: CustomTimeRange) => {

@@ -52,7 +52,7 @@ const DashboardContainer: FC = () => {
       dispatch(notify(dashboardAutoRefreshTimeoutSuccess()))
       registerStopListeners()
       GlobalAutoRefresher.stopPolling()
-    }, 5000)
+    }, autoRefresh.inactivityTimeout)
 
     window.addEventListener('load', registerListeners)
     document.addEventListener('mousemove', registerListeners)

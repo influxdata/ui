@@ -1,8 +1,5 @@
 import React, {FC} from 'react'
-import {
-  Grid,
-  Form,
-} from '@influxdata/clockface'
+import {Grid, Form} from '@influxdata/clockface'
 
 import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
 
@@ -27,7 +24,6 @@ export enum MapType {
 }
 
 export const GeoOptions: FC<Props> = ({properties, update}) => {
-
   const thresholdColor = properties.layers[0].colors
 
   return SHOW_GEO_OPTIONS ? (
@@ -165,7 +161,4 @@ export const GeoOptions: FC<Props> = ({properties, update}) => {
   //       break
   //   }
   // }
-
-
-  
 }

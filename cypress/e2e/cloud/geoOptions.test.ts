@@ -24,6 +24,5 @@ describe.skip('DataExplorer - Geo Map Type Customization Options', () => {
       cy.getByTestID(`view-type--geo`).click()
       cy.getByTestID('cog-cell--button').click()
     })
-
   })
 })

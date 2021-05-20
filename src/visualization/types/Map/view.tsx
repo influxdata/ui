@@ -130,15 +130,13 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     ]
   }
 
-
-  if(!layers[0].colors[0].id){
+  if (!layers[0].colors[0].id) {
     layersOpts[0].colors = [
-      {value:0 ,type: 'min', hex: InfluxColors.Star, id: '0', name:"star"},
-      {value: 5, hex: InfluxColors.Star, id: '1', name:"star"},
-      {value: 1,type: 'max', hex: InfluxColors.Star, id: '2', name: "star"},
+      {value: 0, type: 'min', hex: InfluxColors.Star, id: '0', name: 'star'},
+      {value: 5, hex: InfluxColors.Star, id: '1', name: 'star'},
+      {value: 1, type: 'max', hex: InfluxColors.Star, id: '2', name: 'star'},
     ]
   }
-  
 
   let zoomOpt = zoom
   if (zoom === 0) {

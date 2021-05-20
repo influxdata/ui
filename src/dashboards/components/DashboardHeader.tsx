@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useEffect, useCallback} from 'react'
-import {connect, ConnectedProps, useDispatch} from 'react-redux'
+import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
@@ -11,9 +11,16 @@ import DashboardLightModeToggle from 'src/dashboards/components/DashboardLightMo
 import GraphTips from 'src/shared/components/graph_tips/GraphTips'
 import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
-import {Button, IconFont, ComponentColor, Page} from '@influxdata/clockface'
+import {
+  Button,
+  IconFont,
+  ComponentColor,
+  Page,
+  ButtonGroup,
+} from '@influxdata/clockface'
 import {AnnotationsControlBarToggleButton} from 'src/annotations/components/AnnotationsControlBarToggleButton'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
+import AutoRefreshInput from 'src/dashboards/components/AutoRefreshInput'
 
 // Actions
 import {toggleShowVariablesControls as toggleShowVariablesControlsAction} from 'src/userSettings/actions'
@@ -21,7 +28,6 @@ import {updateDashboard as updateDashboardAction} from 'src/dashboards/actions/t
 import {
   setAutoRefreshInterval as setAutoRefreshIntervalAction,
   setAutoRefreshStatus as setAutoRefreshStatusAction,
-  resetDashboardAutoRefresh as resetDashboardAutoRefreshAction,
 } from 'src/shared/actions/autoRefresh'
 import {
   setDashboardTimeRange as setDashboardTimeRangeAction,
@@ -78,7 +84,6 @@ const DashboardHeader: FC<Props> = ({
   org,
   autoRefresh,
 }) => {
-  const dispatch = useDispatch()
   const demoDataset = DemoDataDashboardNames[dashboard.name]
   useEffect(() => {
     if (demoDataset) {
@@ -138,17 +143,6 @@ const DashboardHeader: FC<Props> = ({
     onManualRefresh()
   }, [])
 
-  const openAutoRefreshModal = () => {
-    history.push(`/orgs/${org.id}/dashboards/${dashboard.id}/autorefresh`)
-  }
-
-  const stopAutoRefreshAndReset = () => {
-    dispatch(resetDashboardAutoRefreshAction(dashboard.id))
-  }
-
-  const isActive =
-    autoRefresh?.status && autoRefresh.status === AutoRefreshStatus.Active
-
   return (
     <>
       <Page.Header fullWidth={true}>
@@ -161,6 +155,17 @@ const DashboardHeader: FC<Props> = ({
       </Page.Header>
       <Page.ControlBar fullWidth={true}>
         <Page.ControlBarLeft>
+          <ButtonGroup>
+            <AutoRefreshDropdown
+              onChoose={handleChooseAutoRefresh}
+              onManualRefresh={resetCacheAndRefresh}
+              selected={autoRefresh}
+              showAutoRefresh={false}
+              customClass="autoRefreshSquare"
+            />
+            {isFlagEnabled('newAutoRefresh') && <AutoRefreshInput />}
+          </ButtonGroup>
+
           <Button
             icon={IconFont.AddCell}
             color={ComponentColor.Primary}
@@ -198,22 +203,6 @@ const DashboardHeader: FC<Props> = ({
             onSetTimeRange={handleChooseTimeRange}
             timeRange={timeRange}
           />
-          <AutoRefreshDropdown
-            onChoose={handleChooseAutoRefresh}
-            onManualRefresh={resetCacheAndRefresh}
-            selected={autoRefresh}
-            showAutoRefresh={false}
-          />
-          {isFlagEnabled('newAutoRefresh') && (
-            <Button
-              text={isActive ? 'Stop Auto Refresh' : 'Enable Auto Refresh'}
-              color={isActive ? ComponentColor.Danger : ComponentColor.Default}
-              onClick={
-                isActive ? stopAutoRefreshAndReset : openAutoRefreshModal
-              }
-              testID="enable-auto-refresh-button"
-            />
-          )}
         </Page.ControlBarRight>
       </Page.ControlBar>
     </>

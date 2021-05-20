@@ -61,3 +61,14 @@
 .refresh-form-timerange-toggle {
   margin: 0px $cf-marg-b;
 }
+
+.refresh-input {
+  width: 100px;
+  input {
+    border-radius: 0px 5px 5px 0px;
+  }
+}
+
+.autoRefreshSquare {
+  border-radius: 4px 0px 0px 4px;
+}

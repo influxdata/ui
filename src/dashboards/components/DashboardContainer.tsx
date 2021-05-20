@@ -52,7 +52,7 @@ const DashboardContainer: FC = () => {
       dispatch(notify(dashboardAutoRefreshTimeoutSuccess()))
       registerStopListeners()
       GlobalAutoRefresher.stopPolling()
-    }, autoRefresh.inactivityTimeout)
+    }, 5000)
 
     window.addEventListener('load', registerListeners)
     document.addEventListener('mousemove', registerListeners)
@@ -125,6 +125,7 @@ const DashboardContainer: FC = () => {
       document.removeEventListener('visibilitychange', visChangeHandler)
     }
   }, [
+    autoRefresh.interval,
     autoRefresh?.status,
     autoRefresh.inactivityTimeout,
     stopFunc,

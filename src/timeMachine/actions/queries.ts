@@ -294,9 +294,11 @@ export const executeQueries = (abortController?: AbortController) => async (
       const extern = buildVarsOption(variableAssignments)
 
       event('runQuery', {context: 'timeMachine'})
-
       const queryID = generateHashedQueryID(text, allVariables, orgID)
-      if (isCurrentPageDashboard(state)) {
+      if (
+        isCurrentPageDashboard(state) &&
+        isFlagEnabled('queryCacheForDashboards')
+      ) {
         // reset any existing matching query in the cache
         resetQueryCacheByQuery(text)
         const result = getCachedResultsOrRunQuery(

@@ -20,7 +20,6 @@ import {
   AddNoteOverlay,
   EditNoteOverlay,
   EditAnnotationDashboardOverlay,
-  AutoRefreshOverlay,
 } from 'src/overlays/components'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
 

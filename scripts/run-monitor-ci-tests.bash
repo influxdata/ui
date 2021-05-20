@@ -97,7 +97,7 @@ if [[ -z "${OSS_SHA:-}" ]]; then
 	if [ -n $PULL_REQUEST ]; then
 		# if running from pull request, use github api to get source branch.
 		# this is needed to support forks of the UI repo.
-		pr=$($PULL_REQUEST | grep -oE "[^/]+$")
+		pr=$(echo ${PULL_REQUEST} | grep -oE "[^/]+$")
 		github=$(curl -s --fail --request GET \
 			--url https://api.github.com/repos/influxdata/ui/pulls/${pr})
 		UI_BRANCH=$(echo ${github} | jq -r '.head.ref')

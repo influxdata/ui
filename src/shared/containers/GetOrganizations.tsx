@@ -7,6 +7,9 @@ import {Route, Switch} from 'react-router-dom'
 import PageSpinner from 'src/perf/components/PageSpinner'
 import {CheckoutPage, OperatorPage} from 'src/shared/containers'
 const NoOrgsPage = lazy(() => import('src/organizations/containers/NoOrgsPage'))
+const NotebookTemplates = lazy(() =>
+  import('src/flows/components/FromTemplatePage')
+)
 const App = lazy(() => import('src/App'))
 const NotFound = lazy(() => import('src/shared/components/NotFound'))
 
@@ -63,6 +66,7 @@ const GetOrganizations: FunctionComponent = () => {
           <PageSpinner loading={quartzMeStatus}>
             <Switch>
               <Route path="/no-orgs" component={NoOrgsPage} />
+              <Route path="/notebook/from" component={NotebookTemplates} />
               <Route path="/orgs" component={App} />
               <Route exact path="/" component={RouteToOrg} />
               {CLOUD &&
@@ -79,6 +83,7 @@ const GetOrganizations: FunctionComponent = () => {
         ) : (
           <Switch>
             <Route path="/no-orgs" component={NoOrgsPage} />
+            <Route path="/notebook/from" component={NotebookTemplates} />
             <Route path="/orgs" component={App} />
             <Route exact path="/" component={RouteToOrg} />
             <Route component={NotFound} />

@@ -5,8 +5,8 @@ import {AnnotationEvent} from 'src/client/annotationdRoutes'
 export const DELETE_ANNOTATION = 'DELETE_ANNOTATION'
 export const SET_ANNOTATIONS = 'SET_ANNOTATIONS'
 export const SET_ANNOTATION_STREAMS = 'SET_ANNOTATION_STREAMS'
-export const TOGGLE_ANNOTATION_VISIBILITY = 'TOGGLE_ANNOTATION_VISIBILITY'
-export const TOGGLE_SINGLE_CLICK_ANNOTATIONS = 'TOGGLE_SINGLE_CLICK_ANNOTATIONS'
+export const TOGGLE_ANNOTATIONS_VISIBILITY = 'TOGGLE_ANNOTATIONS_VISIBILITY'
+export const TOGGLE_ANNOTATIONS_WRITE_MODE = 'TOGGLE_ANNOTATIONS_WRITE_MODE'
 export const EDIT_ANNOTATION = 'EDIT_ANNOTATION'
 
 export type Action =
@@ -14,8 +14,8 @@ export type Action =
   | ReturnType<typeof editAnnotation>
   | ReturnType<typeof setAnnotations>
   | ReturnType<typeof setAnnotationStreams>
-  | ReturnType<typeof toggleAnnotationVisibility>
-  | ReturnType<typeof toggleSingleClickAnnotations>
+  | ReturnType<typeof setAnnotationsVisibility>
+  | ReturnType<typeof setAnnotationsWriteMode>
 
 export const setAnnotations = (annotations: AnnotationResponse[]) =>
   ({
@@ -29,9 +29,10 @@ export const setAnnotationStreams = (streams: AnnotationStream[]) =>
     streams,
   } as const)
 
-export const toggleSingleClickAnnotations = () =>
+export const setAnnotationsWriteMode = (isEnabled: boolean) =>
   ({
-    type: TOGGLE_SINGLE_CLICK_ANNOTATIONS,
+    type: TOGGLE_ANNOTATIONS_WRITE_MODE,
+    isEnabled,
   } as const)
 
 export const deleteAnnotation = (annotation: AnnotationEvent) =>
@@ -43,7 +44,8 @@ export const deleteAnnotation = (annotation: AnnotationEvent) =>
 export const editAnnotation = (annotation: AnnotationEvent) =>
   ({type: EDIT_ANNOTATION, annotation} as const)
 
-export const toggleAnnotationVisibility = () =>
+export const setAnnotationsVisibility = (isVisible: boolean) =>
   ({
-    type: TOGGLE_ANNOTATION_VISIBILITY,
+    type: TOGGLE_ANNOTATIONS_VISIBILITY,
+    isVisible,
   } as const)

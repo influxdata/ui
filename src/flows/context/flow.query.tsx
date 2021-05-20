@@ -29,7 +29,7 @@ interface Instance {
   modifier?: string
 }
 
-interface Stage {
+export interface Stage {
   text: string
   instances: Instance[]
 }

@@ -6,11 +6,7 @@ import {Plot} from '@influxdata/giraffe'
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 
 // Utils
-import {
-  useLegendOpacity,
-  useLegendOrientationThreshold,
-  useLegendColorizeRows,
-} from 'src/visualization/utils/useLegendOrientation'
+import {useLegendOpacity} from 'src/visualization/utils/useLegendOrientation'
 import {useVisXDomainSettings} from 'src/visualization/utils/useVisDomainSettings'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
 import {AppSettingContext} from 'src/shared/contexts/app'
@@ -34,10 +30,8 @@ const HistogramPlot: FunctionComponent<Props> = ({result, properties}) => {
   const fillColumns = properties.fillColumns || result.fluxGroupKeyUnion
 
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
-  const tooltipColorize = useLegendColorizeRows(properties.legendColorizeRows)
-  const tooltipOrientationThreshold = useLegendOrientationThreshold(
-    properties.legendOrientationThreshold
-  )
+  const tooltipColorize = properties.legendColorizeRows
+  const tooltipOrientationThreshold = properties.legendOrientationThreshold
 
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
     properties.xDomain,

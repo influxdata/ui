@@ -5,12 +5,7 @@ import {Renderer} from 'react-markdown'
 
 // Components
 import {Page} from '@influxdata/clockface'
-import WriteDataHelper from 'src/writeData/components/WriteDataHelper'
-import CodeSnippet, {
-  Provider as TemplateProvider,
-} from 'src/shared/components/CodeSnippet'
-import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
-import GetResources from 'src/resources/components/GetResources'
+import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
 
 // Constants
 import {CodeSampleOption, CLIENT_DEFINITIONS} from 'src/writeData'
@@ -23,10 +18,16 @@ import placeholderLogo from 'src/writeData/graphics/placeholderLogo.svg'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
+import GetResources from 'src/resources/components/GetResources'
+import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
+import WriteDataHelper from 'src/writeData/components/WriteDataHelper'
+import CodeSnippet, {
+  Provider as TemplateProvider,
+} from 'src/shared/components/CodeSnippet'
 
 // Styles
 import 'src/writeData/components/WriteDataDetailsView.scss'
-import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
+import ClientCodeQueryHelper from '../components/ClientCodeQueryHelper'
 
 const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => (
   <CodeSnippet text={props.value} label={props.language} />
@@ -37,7 +38,7 @@ interface SampleProps {
   sample: string | CodeSampleOption[]
 }
 
-const CodeSampleBlock: FC<SampleProps> = ({name, sample}) => {
+export const CodeSampleBlock: FC<SampleProps> = ({name, sample}) => {
   if (!sample) {
     return null
   }
@@ -91,6 +92,7 @@ const ClientLibrariesPage: FC = () => {
     >
       <TemplateProvider>
         <WriteDataDetailsContextProvider>
+          <ClientCodeQueryHelper contentID={contentID} />
           <Page
             titleTag={pageTitleSuffixer([
               'Client Library',

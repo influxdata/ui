@@ -70,7 +70,7 @@ const FromTemplatePage: FC = () => {
     <FlowListProvider>
       <div />
       <Switch>
-        <Route path={`/notebook/from/:template`} component={Template} />
+        <Route path="/notebook/from/:template" component={Template} />
         <Route component={NotFound} />
       </Switch>
     </FlowListProvider>

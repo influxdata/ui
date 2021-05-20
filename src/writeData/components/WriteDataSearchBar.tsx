@@ -21,6 +21,7 @@ const WriteDataSearchBar: FC = () => {
       icon={IconFont.Search}
       onChange={handleInputChange}
       autoFocus={true}
+      testID="write-data--search"
     />
   )
 }

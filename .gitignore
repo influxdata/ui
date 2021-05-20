@@ -8,6 +8,7 @@
 .swp
 .vs
 .vscode
+.env
 
 # directories
 build
@@ -19,7 +20,12 @@ vendor
 cypress.env.json
 junit.xml
 npm-error.log
+
+# oats generated routes
 src/client/generatedRoutes.ts
 src/client/unityRoutes.ts
 src/client/flowsRoutes.ts
+src/client/notebooksRoutes.ts
+src/client/annotationdRoutes.ts
+src/client/mapsdRoutes.ts
 src/client/managedFunctionsRoutes.ts

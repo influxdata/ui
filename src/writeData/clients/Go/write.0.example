@@ -1,0 +1,9 @@
+// get non-blocking write client
+writeAPI := client.WriteAPI(org, bucket)
+
+// write line protocol
+writeAPI.WriteRecord(fmt.Sprintf("stat,unit=temperature avg=%f,max=%f", 23.5, 45.0))
+writeAPI.WriteRecord(fmt.Sprintf("stat,unit=temperature avg=%f,max=%f", 22.5, 45.0))
+// Flush writes
+writeAPI.Flush()
+

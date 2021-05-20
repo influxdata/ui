@@ -274,7 +274,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
         const response = await postCheckoutInformation(paymentInformation)
 
         handleSetCheckoutStatus(
-          response.status === 204 ? RemoteDataState.Done : RemoteDataState.Error
+          response.status === 201 ? RemoteDataState.Done : RemoteDataState.Error
         )
       } else {
         const errorFields = errs?.flatMap(([err]) => err)

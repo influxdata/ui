@@ -29,14 +29,14 @@ import {
   CheckHistory,
   MembersIndex,
   RouteToDashboardList,
-  ClientLibrariesPage,
-  FileUploadsPage,
-  TelegrafPluginsPage,
   FlowsIndex,
   NotFound,
   UsersPage,
   UsagePage,
   BillingPage,
+  FileUploadsPage,
+  ClientLibrariesPage,
+  TelegrafPluginsPage,
 } from 'src/shared/containers'
 
 // Types
@@ -47,8 +47,6 @@ import {CLOUD} from 'src/shared/constants'
 import {PROJECT_NAME_PLURAL} from 'src/flows'
 import {
   LOAD_DATA,
-  TELEGRAF_PLUGINS,
-  CLIENT_LIBS,
   SETTINGS,
   VARIABLES,
   LABELS,
@@ -58,6 +56,8 @@ import {
   TOKENS,
   TELEGRAFS,
   FILE_UPLOAD,
+  CLIENT_LIBS,
+  TELEGRAF_PLUGINS,
 } from 'src/shared/constants/routes'
 
 // Actions
@@ -175,15 +175,15 @@ const SetOrg: FC<Props> = ({
             component={WriteDataPage}
           />
           <Route
-            path={`${orgPath}/${LOAD_DATA}/${CLIENT_LIBS}`}
-            component={ClientLibrariesPage}
-          />
-          <Route
-            path={`${orgPath}/${LOAD_DATA}/${FILE_UPLOAD}`}
+            path={`${orgPath}/${LOAD_DATA}/${FILE_UPLOAD}/:contentID`}
             component={FileUploadsPage}
           />
           <Route
-            path={`${orgPath}/${LOAD_DATA}/${TELEGRAF_PLUGINS}`}
+            path={`${orgPath}/${LOAD_DATA}/${CLIENT_LIBS}/:contentID`}
+            component={ClientLibrariesPage}
+          />
+          <Route
+            path={`${orgPath}/${LOAD_DATA}/${TELEGRAF_PLUGINS}/:contentID`}
             component={TelegrafPluginsPage}
           />
 
@@ -231,18 +231,18 @@ const SetOrg: FC<Props> = ({
           />
 
           {/* Users */}
-          {CLOUD && isFlagEnabled('unity') && (
-            <Route path={`${orgPath}/unity-users`} component={UsersPage} />
+          {CLOUD && isFlagEnabled('unityUsers') && (
+            <Route path={`${orgPath}/users`} component={UsersPage} />
           )}
 
           {/* Billing */}
-          {CLOUD && isFlagEnabled('unity-billing') && (
-            <Route path={`${orgPath}/unity-billing`} component={BillingPage} />
+          {CLOUD && isFlagEnabled('unityBilling') && (
+            <Route path={`${orgPath}/billing`} component={BillingPage} />
           )}
 
           {/* Usage */}
-          {CLOUD && isFlagEnabled('unity-usage') && (
-            <Route path={`${orgPath}/unity-usage`} component={UsagePage} />
+          {CLOUD && isFlagEnabled('unityUsage') && (
+            <Route path={`${orgPath}/usage`} component={UsagePage} />
           )}
 
           {/* Managed Functions */}

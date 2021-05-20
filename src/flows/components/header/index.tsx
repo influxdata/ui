@@ -6,14 +6,20 @@ import {FlowContext} from 'src/flows/context/flow.current'
 import {AppSettingProvider} from 'src/shared/contexts/app'
 
 // Components
-import {Page} from '@influxdata/clockface'
+import {
+  Page,
+  SquareButton,
+  IconFont,
+  ComponentColor,
+} from '@influxdata/clockface'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import TimeRangeDropdown from 'src/flows/components/header/TimeRangeDropdown'
-import AutoRefreshDropdown from 'src/flows/components/header/AutoRefreshDropdown'
 import Submit from 'src/flows/components/header/Submit'
 import PresentationMode from 'src/flows/components/header/PresentationMode'
 import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
 import {PROJECT_NAME} from 'src/flows'
+import {serialize} from 'src/flows/context/flow.list'
+import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 const FULL_WIDTH = true
 
@@ -22,6 +28,12 @@ const FlowHeader: FC = () => {
 
   const handleRename = (name: string) => {
     update({name})
+  }
+
+  const printJSON = () => {
+    /* eslint-disable no-console */
+    console.log(JSON.stringify(serialize(flow), null, 2))
+    /* eslint-enable no-console */
   }
 
   if (!flow) {
@@ -46,7 +58,14 @@ const FlowHeader: FC = () => {
           <PresentationMode />
           <TimeZoneDropdown />
           <TimeRangeDropdown />
-          <AutoRefreshDropdown />
+          <FeatureFlag name="flow-snapshot">
+            <SquareButton
+              icon={IconFont.Export}
+              onClick={printJSON}
+              color={ComponentColor.Default}
+              titleText="Export Notebook"
+            />
+          </FeatureFlag>
         </Page.ControlBarRight>
       </Page.ControlBar>
     </>

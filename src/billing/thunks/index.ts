@@ -3,21 +3,21 @@ import {Dispatch} from 'react'
 // Reducer
 import {
   Action,
-  setAccount,
-  setAccountStatus,
   setBillingInfo,
   setBillingInfoStatus,
   setBillingSettings,
   setBillingSettingsStatus,
   setInvoices,
   setInvoicesStatus,
+  setMarketplace,
+  setMarketplaceStatus,
   setOrgLimits,
   setOrgLimitsStatus,
 } from 'src/billing/reducers'
 
 // API
 import {
-  getAccount as apiGetAccount,
+  getMarketplace as apiGetMarketplace,
   getBillingInfo as apiGetBillingInfo,
   getBillingNotificationSettings,
   updateBillingNotificationSettings,
@@ -32,19 +32,22 @@ import {BillingNotifySettings, Invoice} from 'src/types/billing'
 // TODO(ariel): add error handling here
 // notify() will not work since Dispatch here is based on the passed in dispatch from the local reducer
 // and not from the higher level dispatch from the app.
-export const getAccount = async (dispatch: Dispatch<Action>) => {
+export const getMarketplace = async (dispatch: Dispatch<Action>) => {
   try {
-    dispatch(setAccountStatus(RemoteDataState.Loading))
-    const resp = await apiGetAccount()
+    dispatch(setMarketplaceStatus(RemoteDataState.Loading))
+    const resp = await apiGetMarketplace()
 
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
     }
 
-    dispatch(setAccount({...resp.data, status: RemoteDataState.Done}))
+    dispatch(
+      setMarketplace({...resp.data, loadingStatus: RemoteDataState.Done})
+    )
   } catch (error) {
     console.error(error)
-    dispatch(setAccountStatus(RemoteDataState.Error))
+
+    dispatch(setMarketplaceStatus(RemoteDataState.Error))
   }
 }
 

@@ -33,6 +33,10 @@ const InvoiceHistoryRow: FC<Props> = ({
       justifyContent={JustifyContent.SpaceBetween}
       stretchToFitWidth={true}
     >
+      {/*
+        TODO(ariel): see if this is necessary or if we can link to the row internally:
+        https://github.com/influxdata/ui/issues/1405
+      */}
       <a href={link} target="_blank" rel="noreferrer">
         {invoiceName}
       </a>

@@ -1,5 +1,8 @@
 // Libraries
-import React, {FC, ChangeEvent, FormEvent, useState} from 'react'
+import React, {FC, FormEvent, useState} from 'react'
+
+// Utils
+import {event} from 'src/cloud/utils/reporting'
 
 // Components
 import {
@@ -13,6 +16,9 @@ import {
 } from '@influxdata/clockface'
 import {AnnotationMessageInput} from 'src/annotations/components/annotationForm/AnnotationMessageInput'
 import {AnnotationStartTimeInput} from 'src/annotations/components/annotationForm/AnnotationStartTimeInput'
+
+// Constants
+import {ANNOTATION_FORM_WIDTH} from 'src/annotations/constants'
 
 interface Annotation {
   message: string
@@ -43,19 +49,28 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     props.onSubmit({message, startTime})
   }
 
-  const updateMessage = (event: ChangeEvent<HTMLTextAreaElement>): void => {
-    setMessage(event.target.value)
+  const updateMessage = (newMessage: string): void => {
+    setMessage(newMessage)
   }
 
-  const updateStartTime = (event: ChangeEvent<HTMLInputElement>): void => {
-    setStartTime(event.target.value)
+  const updateStartTime = (newTime: string): void => {
+    setStartTime(newTime)
+  }
+
+  const handleKeyboardSubmit = () => {
+    props.onSubmit({message, startTime})
+  }
+
+  const handleCancel = () => {
+    event('dashboards.annotations.create_annotation.cancel')
+    props.onClose()
   }
 
   return (
-    <Overlay.Container maxWidth={560}>
+    <Overlay.Container maxWidth={ANNOTATION_FORM_WIDTH}>
       <Overlay.Header
         title={`${props.title} Annotation`}
-        onDismiss={props.onClose}
+        onDismiss={handleCancel}
       />
       <Form onSubmit={handleSubmit}>
         <Overlay.Body>
@@ -63,6 +78,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
             <Grid.Row>
               <AnnotationStartTimeInput
                 onChange={updateStartTime}
+                onSubmit={handleKeyboardSubmit}
                 startTime={startTime}
               />
             </Grid.Row>
@@ -70,12 +86,13 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
               <AnnotationMessageInput
                 message={message}
                 onChange={updateMessage}
+                onSubmit={handleKeyboardSubmit}
               />
             </Grid.Row>
           </Grid>
         </Overlay.Body>
         <Overlay.Footer>
-          <Button text="Cancel" onClick={props.onClose} />
+          <Button text="Cancel" onClick={handleCancel} />
           <Button
             text="Save Annotation"
             color={ComponentColor.Primary}

@@ -1,8 +1,8 @@
 import {Inputs} from 'src/checkout/context/checkout'
 import {
-  getAccount as apiGetAccount,
   getBilling,
   getOrgsLimits as apiGetOrgLimits,
+  getMarketplace as genGetMarketplace,
   postCheckout,
   getSettingsNotifications,
   getPaymentForm,
@@ -13,12 +13,12 @@ import {
 
 import {RemoteDataState} from 'src/types'
 import {
-  Account,
   Invoice,
   CreditCardParams,
   BillingInfo,
   BillingNotifySettings,
   OrgLimits,
+  Marketplace,
 } from 'src/types/billing'
 
 const makeResponse = (status, data, ...args) => {
@@ -31,19 +31,6 @@ const makeResponse = (status, data, ...args) => {
     headers: new Headers({'Content-Type': 'application/json'}),
     data,
   })
-}
-
-export const getAccount = (): ReturnType<typeof apiGetAccount> => {
-  const account: Account = {
-    id: 'account_1',
-    marketplace: null,
-    type: 'free',
-    balance: null,
-    users: [],
-    billingContact: null,
-    status: RemoteDataState.Done,
-  }
-  return makeResponse(200, account, 'getBillingAccount')
 }
 
 export const getBillingInfo = (): ReturnType<typeof getBilling> => {
@@ -88,6 +75,19 @@ export const getBillingCreditCardParams = (): ReturnType<typeof getPaymentForm> 
   }
 
   return makeResponse(200, cc, 'getBillingCreditCard')
+}
+
+export const getMarketplace = (): ReturnType<typeof genGetMarketplace> => {
+  const marketplace: Marketplace = {
+    name: 'Amazon Web Services',
+    shortName: 'aws',
+    subscriberId: null,
+    status: null,
+    url: 'www.influxdata.com',
+    loadingStatus: RemoteDataState.Done,
+  }
+
+  return makeResponse(200, marketplace, 'getMarketplace')
 }
 
 export const getOrgsLimits = (): ReturnType<typeof apiGetOrgLimits> => {

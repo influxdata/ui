@@ -22,7 +22,11 @@ const NotificationRuleCards: FC<Props> = ({rules, searchTerm}) => {
     rules.map(nr => <NotificationRuleCard key={nr.id} rule={nr} />)
 
   const filteredCards = (
-    <FilterRules list={rules} searchKeys={['name']} searchTerm={searchTerm}>
+    <FilterRules
+      list={rules}
+      searchKeys={['name', 'id']}
+      searchTerm={searchTerm}
+    >
       {filtered => (
         <ResourceList.Body
           emptyState={<EmptyNotificationRulesList searchTerm={searchTerm} />}

@@ -16,6 +16,7 @@ import {
 import CheckCardContext from 'src/checks/components/CheckCardContext'
 import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
 import LastRunTaskStatus from 'src/shared/components/lastRunTaskStatus/LastRunTaskStatus'
+import {CopyResourceID, CopyTaskID} from 'src/shared/components/CopyResourceID'
 
 // Constants
 import {DEFAULT_CHECK_NAME} from 'src/alerting/constants'
@@ -29,6 +30,8 @@ import {
   deleteCheckLabel,
   cloneCheck,
 } from 'src/checks/actions/thunks'
+
+// Notifications
 import {notify} from 'src/shared/actions/notifications'
 import {updateCheckFailed} from 'src/shared/copy/notifications'
 
@@ -59,7 +62,7 @@ const CheckCard: FC<Props> = ({
   },
   history,
 }) => {
-  const {id, activeStatus, name, description} = check
+  const {activeStatus, description, id, name, taskID} = check
 
   const onUpdateName = (name: string) => {
     try {
@@ -173,6 +176,8 @@ const CheckCard: FC<Props> = ({
           <ResourceCard.Meta>
             <>Last completed at {check.latestCompleted}</>
             <>{relativeTimestampFormatter(check.updatedAt, 'Last updated ')}</>
+            <CopyResourceID resource={check} resourceName="Check" />
+            <CopyTaskID taskID={taskID} />
           </ResourceCard.Meta>
           <InlineLabels
             selectedLabelIDs={check.labels}

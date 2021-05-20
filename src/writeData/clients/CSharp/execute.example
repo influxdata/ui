@@ -1,0 +1,2 @@
+var query = $"<%= query %>";
+var tables = await client.GetQueryApi().QueryAsync(query, org)

@@ -307,7 +307,7 @@ describe('Checks', () => {
 
         // check for table
         cy.getByTestID('raw-data-table').should('exist')
-        cy.getByTestID('raw-data--toggle').should('have.class', 'disabled')
+        cy.getByTestID('raw-data--toggle').should('not.exist')
 
         // change field to numeric value
         cy.getByTestID(`selector-list ${field}`).click()
@@ -398,24 +398,6 @@ describe('Checks', () => {
         .trigger('mousedown', {which: 1, pageX: 600, pageY: 100})
         .trigger('mousemove', {which: 1, pageX: 700, pageY: 100})
         .trigger('mouseup', {force: true})
-    })
-
-    describe('test tabbing behavior with wide screen', () => {
-      beforeEach(() => {
-        // have to make the viewport huge to get it not to switch to tablet size
-        cy.viewport(1800, 980)
-        cy.getByTestID('select-group').should('not.be.visible')
-      })
-      it('accepts keyboard tabs as navigation', () => {
-        cy.get('body').tab()
-        cy.getByTestID('filter--input checks').should('have.focus')
-
-        cy.focused().tab()
-        cy.getByTestID('filter--input endpoints').should('have.focus')
-
-        cy.focused().tab()
-        cy.getByTestID('filter--input rules').should('have.focus')
-      })
     })
 
     describe('test tabbing behavior with small screen', () => {

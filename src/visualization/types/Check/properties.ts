@@ -40,7 +40,6 @@ export default {
   ],
 
   colors: DEFAULT_LINE_COLORS as Color[],
-  legend: {},
   note: '',
   showNoteWhenEmpty: false,
   axes: {

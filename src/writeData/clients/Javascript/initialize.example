@@ -1,0 +1,9 @@
+const {InfluxDB} = require('@influxdata/influxdb-client')
+
+// You can generate a Token from the "Tokens Tab" in the UI
+const token = '<%= token %>'
+const org = '<%= org %>'
+const bucket = '<%= bucket %>'
+
+const client = new InfluxDB({url: '<%= server %>', token: token})
+

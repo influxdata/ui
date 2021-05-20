@@ -1,5 +1,7 @@
 export {Query, Dialect} from 'src/client'
 
+type Nullable<T> = T | null
+
 export type SelectableTimeRangeLower =
   | 'now() - 5m'
   | 'now() - 15m'
@@ -17,9 +19,13 @@ export type TimeRange =
   | DurationTimeRange
   | CustomTimeRange
 
+export enum TimeRangeDirection {
+  Upper = 'upper',
+  Lower = 'lower',
+}
 export interface SelectableDurationTimeRange {
   lower: SelectableTimeRangeLower
-  upper: null
+  upper: Nullable<string>
   seconds: number
   format?: string
   label: string
@@ -30,7 +36,7 @@ export interface SelectableDurationTimeRange {
 
 export interface DurationTimeRange {
   lower: string
-  upper: null
+  upper: Nullable<string>
   type: 'duration'
 }
 

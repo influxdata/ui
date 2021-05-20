@@ -11,6 +11,7 @@ import {PIPE_DEFINITIONS} from 'src/flows'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {event} from 'src/cloud/utils/reporting'
 
 import {TypeRegistration} from 'src/types/flows'
 
@@ -98,6 +99,8 @@ const AddButtons: FC<Props> = ({index, onInsert}) => {
             }
 
             onInsert && onInsert()
+
+            event('insert_notebook_cell', {notebooksCellType: def.type})
 
             add(
               {

@@ -113,7 +113,7 @@ class TasksPage extends PureComponent<Props, State> {
                 <Filter
                   list={this.filteredTasks}
                   searchTerm={searchTerm}
-                  searchKeys={['name', 'labels[].name']}
+                  searchKeys={['name', 'labels[].name', 'id']}
                 >
                   {ts => (
                     <TasksList

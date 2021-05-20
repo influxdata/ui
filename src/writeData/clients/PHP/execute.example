@@ -1,0 +1,3 @@
+$query = "<%= query %>";
+$tables = $client->createQueryApi()->query($query, $org);
+

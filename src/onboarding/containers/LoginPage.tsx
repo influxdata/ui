@@ -29,7 +29,7 @@ export const LoginPage: FC = () => (
           weight={FontWeight.Regular}
           className="cf-funnel-page--title"
         >
-          Log in to your InfluxDB Cloud Account
+          Log in to your InfluxDB Account
         </Heading>
         <LoginPageContents />
       </FunnelPage>

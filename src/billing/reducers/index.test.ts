@@ -3,8 +3,6 @@ import {billingReducer} from 'src/billing/reducers'
 
 // Actions
 import {
-  setAccount,
-  setAccountStatus,
   setBillingInfo,
   setBillingInfoStatus,
   setBillingSettings,
@@ -17,7 +15,6 @@ import {
 
 // Mocks
 import {
-  mockAccount,
   mockBillingInfo,
   mockBillingSettings,
   mockInvoices,
@@ -26,20 +23,6 @@ import {
 import {RemoteDataState} from '@influxdata/clockface'
 
 describe('billing reducer', () => {
-  it('can set the account status', () => {
-    const expected = billingReducer(
-      undefined,
-      setAccountStatus(RemoteDataState.Loading)
-    )
-
-    expect(expected.account.status).toEqual(RemoteDataState.Loading)
-  })
-  it('can set the account', () => {
-    const expected = billingReducer(undefined, setAccount(mockAccount))
-
-    expect(expected.account).toEqual(mockAccount)
-    expect(expected.account.status).toEqual(RemoteDataState.Done)
-  })
   it('can set the billing info status', () => {
     const expected = billingReducer(
       undefined,

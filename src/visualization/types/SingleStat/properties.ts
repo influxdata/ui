@@ -8,7 +8,6 @@ import {Color, SingleStatViewProperties} from 'src/types'
 export default {
   type: 'single-stat',
   shape: 'chronograf-v2',
-  legend: {},
 
   queries: [
     {

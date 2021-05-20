@@ -6,7 +6,7 @@ import {Button, IconFont} from '@influxdata/clockface'
 import {refresh} from 'src/eventViewer/components/EventViewer.reducer'
 
 // Types
-import {EventViewerChildProps} from 'src/eventViewer/types'
+import {EventViewerChildProps} from 'src/types'
 
 const BackToTopButton: FC<EventViewerChildProps> = ({
   state,

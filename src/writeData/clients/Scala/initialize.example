@@ -1,0 +1,25 @@
+package example
+
+import akka.actor.ActorSystem
+import akka.stream.scaladsl.Sink
+import com.influxdb.client.scala.InfluxDBClientScalaFactory
+import com.influxdb.query.FluxRecord
+
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
+
+object InfluxDB2ScalaExample {
+
+  implicit val system: ActorSystem = ActorSystem("it-tests")
+
+  def main(args: Array[String]): Unit = {
+
+    // You can generate a Token from the "Tokens Tab" in the UI
+    val token = "<%= token %>"
+    val org = "<%= org %>"
+    val bucket = "<%= bucket %>"
+
+    val client = InfluxDBClientScalaFactory.create("<%= server %>", token.toCharArray, org)
+  }
+}
+

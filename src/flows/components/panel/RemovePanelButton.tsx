@@ -1,25 +1,25 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
 
 // Components
 import {SquareButton, IconFont} from '@influxdata/clockface'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {FlowContext} from 'src/flows/context/flow.current'
 
 interface Props {
-  onRemove?: () => void
+  id: string
 }
 
-const RemoveButton: FC<Props> = ({onRemove}) => {
-  if (!onRemove) {
-    return null
-  }
+const RemoveButton: FC<Props> = ({id}) => {
+  const {flow} = useContext(FlowContext)
+  const remove = () => {
+    const {type} = flow.data.get(id)
+    event('notebook_delete_cell', {notebooksCellType: type})
 
-  const handleClick = (): void => {
-    event('notebook_delete_cell')
-
-    onRemove()
+    flow.data.remove(id)
+    flow.meta.remove(id)
   }
 
   return (
@@ -27,7 +27,7 @@ const RemoveButton: FC<Props> = ({onRemove}) => {
       className="flows-delete-cell"
       testID="flows-delete-cell"
       icon={IconFont.Remove}
-      onClick={handleClick}
+      onClick={remove}
       titleText="Remove this cell"
     />
   )

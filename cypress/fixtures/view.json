@@ -12,9 +12,7 @@
         "editMode": "builder",
         "name": "",
         "builderConfig": {
-          "buckets": [
-            "defbuck"
-          ],
+          "buckets": ["defbuck"],
           "tags": [
             {
               "key": "",
@@ -31,10 +29,7 @@
     ],
     "axes": {
       "x": {
-        "bounds": [
-          "",
-          ""
-        ],
+        "bounds": ["", ""],
         "label": "",
         "prefix": "",
         "suffix": "",
@@ -42,10 +37,7 @@
         "scale": "linear"
       },
       "y": {
-        "bounds": [
-          "",
-          ""
-        ],
+        "bounds": ["", ""],
         "label": "",
         "prefix": "",
         "suffix": "",
@@ -54,7 +46,6 @@
       }
     },
     "type": "xy",
-    "legend": {},
     "geom": "line",
     "colors": [
       {

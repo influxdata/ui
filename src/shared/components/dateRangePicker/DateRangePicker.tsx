@@ -6,8 +6,13 @@ import DatePicker from 'src/shared/components/dateRangePicker/DatePicker'
 import {ClickOutside} from 'src/shared/components/ClickOutside'
 
 // Types
-import {TimeRange} from 'src/types'
-import {Button, ComponentColor, ComponentSize} from '@influxdata/clockface'
+import {TimeRange, TimeRangeDirection} from 'src/types'
+import {
+  Button,
+  ComponentColor,
+  ComponentSize,
+  ComponentStatus,
+} from '@influxdata/clockface'
 
 interface Props {
   timeRange: TimeRange
@@ -20,11 +25,13 @@ interface Props {
     left?: number
     position?: string
   }
+  singleDirection?: TimeRangeDirection
 }
 
 interface State {
   lower: string
   upper: string
+  validDateRange: boolean
 }
 
 class DateRangePicker extends PureComponent<Props, State> {
@@ -35,13 +42,13 @@ class DateRangePicker extends PureComponent<Props, State> {
       timeRange: {lower, upper},
     } = props
 
-    this.state = {lower, upper}
+    const validDateRange = this.isTimeRangeValid(lower, upper)
+    this.state = {lower, upper, validDateRange}
   }
 
   public render() {
-    const {onClose} = this.props
-    const {upper, lower} = this.state
-
+    const {onClose, singleDirection} = this.props
+    const {upper, lower, validDateRange} = this.state
     return (
       <ClickOutside onClickOutside={onClose}>
         <div
@@ -50,18 +57,24 @@ class DateRangePicker extends PureComponent<Props, State> {
         >
           <button className="range-picker--dismiss" onClick={onClose} />
           <div className="range-picker--date-pickers">
-            <DatePicker
-              dateTime={lower}
-              onSelectDate={this.handleSelectLower}
-              label="Start"
-              maxDate={upper}
-            />
-            <DatePicker
-              dateTime={upper}
-              onSelectDate={this.handleSelectUpper}
-              label="Stop"
-              minDate={lower}
-            />
+            {singleDirection !== TimeRangeDirection.Upper && (
+              <DatePicker
+                dateTime={lower}
+                onSelectDate={this.handleSelectLower}
+                onInvalidInput={this.handleInvalidInput}
+                label="Start"
+                maxDate={upper}
+              />
+            )}
+            {singleDirection !== TimeRangeDirection.Lower && (
+              <DatePicker
+                dateTime={upper}
+                onSelectDate={this.handleSelectUpper}
+                onInvalidInput={this.handleInvalidInput}
+                label="Stop"
+                minDate={lower}
+              />
+            )}
           </div>
           <Button
             className="range-picker--submit"
@@ -70,6 +83,11 @@ class DateRangePicker extends PureComponent<Props, State> {
             onClick={this.handleSetTimeRange}
             text="Apply Time Range"
             testID="daterange--apply-btn"
+            status={
+              validDateRange
+                ? ComponentStatus.Default
+                : ComponentStatus.Disabled
+            }
           />
         </div>
       </ClickOutside>
@@ -108,11 +126,25 @@ class DateRangePicker extends PureComponent<Props, State> {
   }
 
   private handleSelectLower = (lower: string): void => {
-    this.setState({lower})
+    this.setState({
+      lower,
+      validDateRange: this.isTimeRangeValid(lower, this.state.upper),
+    })
   }
 
   private handleSelectUpper = (upper: string): void => {
-    this.setState({upper})
+    this.setState({
+      upper,
+      validDateRange: this.isTimeRangeValid(this.state.lower, upper),
+    })
+  }
+
+  private isTimeRangeValid = (lower: string, upper: string): boolean => {
+    return new Date(lower).getTime() < new Date(upper).getTime()
+  }
+
+  private handleInvalidInput = () => {
+    this.setState({validDateRange: false})
   }
 }
 

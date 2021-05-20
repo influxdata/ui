@@ -1,0 +1,23 @@
+using System;
+using System.Threading.Tasks;
+using InfluxDB.Client;
+using InfluxDB.Client.Api.Domain;
+using InfluxDB.Client.Core;
+using InfluxDB.Client.Writes;
+
+namespace Examples
+{
+  public class Examples
+  {
+    public static async Task Main(string[] args)
+    {
+      // You can generate a Token from the "Tokens Tab" in the UI
+      const string token = "<%= token %>";
+      const string bucket = "<%= bucket %>";
+      const string org = "<%= org %>";
+
+      var client = InfluxDBClientFactory.Create("<%= server %>", token.ToCharArray());
+    }
+  }
+}
+

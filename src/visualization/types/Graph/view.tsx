@@ -5,8 +5,6 @@ import {
   AnnotationLayerConfig,
   Config,
   DomainLabel,
-  InfluxColors,
-  InteractionHandlerArguments,
   Plot,
   getDomainDataFromLines,
   lineTransform,
@@ -19,13 +17,10 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Redux
-import {writeThenFetchAndSetAnnotations} from 'src/annotations/actions/thunks'
 import {
-  isSingleClickAnnotationsEnabled,
+  isWriteModeEnabled,
   selectAreAnnotationsVisible,
 } from 'src/annotations/selectors'
-
-import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -39,11 +34,7 @@ import {VisualizationProps} from 'src/visualization'
 // Utils
 import {useAxisTicksGenerator} from 'src/visualization/utils/useAxisTicksGenerator'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
-import {
-  useLegendOpacity,
-  useLegendOrientationThreshold,
-  useLegendColorizeRows,
-} from 'src/visualization/utils/useLegendOrientation'
+import {useLegendOpacity} from 'src/visualization/utils/useLegendOrientation'
 import {
   useVisXDomainSettings,
   useVisYDomainSettings,
@@ -57,12 +48,12 @@ import {
   defaultYColumn,
 } from 'src/shared/utils/vis'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {event} from 'src/cloud/utils/reporting'
 
-// Notifications
-import {createAnnotationFailed} from 'src/shared/copy/notifications'
-
-import {notify} from 'src/shared/actions/notifications'
+// Annotations
+import {
+  makeAnnotationClickListener,
+  makeAnnotationLayer,
+} from 'src/visualization/components/annotationUtils'
 
 interface Props extends VisualizationProps {
   properties: XYViewProperties
@@ -78,17 +69,15 @@ const XYPlot: FC<Props> = ({
   const {theme, timeZone} = useContext(AppSettingContext)
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
-  const tooltipColorize = useLegendColorizeRows(properties.legendColorizeRows)
-  const tooltipOrientationThreshold = useLegendOrientationThreshold(
-    properties.legendOrientationThreshold
-  )
+  const tooltipColorize = properties.legendColorizeRows
+  const tooltipOrientationThreshold = properties.legendOrientationThreshold
   const dispatch = useDispatch()
 
   // these two values are set in the dashboard, and used whether or not this view
   // is in a dashboard or in configuration/single cell popout mode
   // would need to add the annotation control bar to the VEOHeader to get access to the controls,
   // which are currently global values, not per dashboard
-  const inAnnotationWriteMode = useSelector(isSingleClickAnnotationsEnabled)
+  const inAnnotationWriteMode = useSelector(isWriteModeEnabled)
   const annotationsAreVisible = useSelector(selectAreAnnotationsVisible)
 
   const storedXDomain = useMemo(() => parseXBounds(properties.axes.x.bounds), [
@@ -180,50 +169,6 @@ const XYPlot: FC<Props> = ({
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
   }
 
-  const makeSingleClickHandler = () => {
-    const createAnnotation = userModifiedAnnotation => {
-      const {message, startTime} = userModifiedAnnotation
-      event('xyplot.annotations.create_annotation.create')
-      try {
-        dispatch(
-          writeThenFetchAndSetAnnotations([
-            {
-              summary: message,
-              stream: cellID,
-              startTime: new Date(startTime).getTime(),
-              endTime: new Date(startTime).getTime(),
-            },
-          ])
-        )
-        event('xyplot.annotations.create_annotation.create')
-      } catch (err) {
-        dispatch(notify(createAnnotationFailed(err)))
-        event('xyplot.annotations.create_annotation.failure')
-      }
-    }
-
-    const singleClickHandler = (
-      plotInteraction: InteractionHandlerArguments
-    ) => {
-      event('xyplot.annotations.create_annotation.show_overlay')
-      dispatch(
-        showOverlay(
-          'add-annotation',
-          {
-            createAnnotation,
-            startTime: plotInteraction.valueX,
-          },
-          () => {
-            event('xyplot.annotations.create_annotation.cancel')
-            dismissOverlay()
-          }
-        )
-      )
-    }
-
-    return singleClickHandler
-  }
-
   const config: Config = {
     ...currentTheme,
     table: result.table,
@@ -261,60 +206,23 @@ const XYPlot: FC<Props> = ({
   }
 
   if (isFlagEnabled('annotations')) {
-    // annotations and the cellID might or might be provided to this graph view
-    const cellAnnotations = annotations ? annotations[cellID] ?? [] : []
-    const annotationsToRender: any[] = cellAnnotations.map(annotation => {
-      return {
-        ...annotation,
-        color: InfluxColors.Honeydew,
-      }
-    })
-
     if (inAnnotationWriteMode && cellID) {
       config.interactionHandlers = {
-        singleClick: makeSingleClickHandler(),
+        singleClick: makeAnnotationClickListener(dispatch, cellID),
       }
     }
 
-    const handleAnnotationClick = (id: string) => {
-      const annotationToEdit = annotations[cellID].find(
-        annotation => annotation.id === id
-      )
-      if (annotationToEdit) {
-        event('xyplot.annotations.edit_annotation.show_overlay')
-        dispatch(
-          showOverlay(
-            'edit-annotation',
-            {clickedAnnotation: {...annotationToEdit, stream: cellID}},
-            () => {
-              event('xyplot.annotations.edit_annotation.cancel')
-              dismissOverlay()
-            }
-          )
-        )
-      }
-    }
-    if (annotationsAreVisible && annotationsToRender.length) {
-      const annotationLayer: AnnotationLayerConfig = {
-        type: 'annotation',
-        x: xColumn,
-        y: yColumn,
-        fill: groupKey,
-        handleAnnotationClick,
-        annotations: annotationsToRender.map(annotation => {
-          return {
-            id: annotation.id,
-            title: annotation.summary,
-            description: '',
-            color: annotation.color,
-            startValue: new Date(annotation.startTime).getTime(),
-            stopValue: new Date(annotation.endTime).getTime(),
-            dimension: 'x',
-            pin: 'start',
-          }
-        }),
-      }
+    const annotationLayer: AnnotationLayerConfig = makeAnnotationLayer(
+      cellID,
+      xColumn,
+      yColumn,
+      groupKey,
+      annotations,
+      annotationsAreVisible,
+      dispatch
+    )
 
+    if (annotationLayer) {
       config.layers.push(annotationLayer)
     }
   }

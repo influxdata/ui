@@ -132,15 +132,32 @@ const normalizeSchema = (
           (!!data.field && f === data.field) ||
           (!data.field && f.toLowerCase().includes(searchTerm.toLowerCase()))
       ),
-      tags: Object.entries(values.tags).filter(
-        ([name, values]) =>
-          !searchTerm ||
-          Array.from(values).some(value =>
-            `${('' + name).toLowerCase()} = ${(
-              '' + value
-            ).toLowerCase()}`.includes(searchTerm.toLowerCase())
-          )
-      ),
+      tags: Object.entries(values.tags)
+        .filter(
+          ([name, values]) =>
+            !searchTerm ||
+            Array.from(values).some(value =>
+              `${('' + name).toLowerCase()} = ${(
+                '' + value
+              ).toLowerCase()}`.includes(searchTerm.toLowerCase())
+            )
+        )
+        .map(([name, values]) => {
+          // there is no filter
+          if (!searchTerm) {
+            return [name, values]
+          }
+
+          // there is a match on some of the values, only show the ones that match
+          return [
+            name,
+            Array.from(values).filter(value =>
+              `${('' + name).toLowerCase()} = ${(
+                '' + value
+              ).toLowerCase()}`.includes(searchTerm.toLowerCase())
+            ),
+          ]
+        }),
     }))
     .filter(values => {
       if (data.measurement) {
@@ -165,17 +182,23 @@ const normalizeSchema = (
     })
     .reduce(
       (acc, curr) => {
-        acc.measurements[curr.measurement] = true
+        if (
+          `measurement = ${curr.measurement.toLowerCase()}`.includes(
+            searchTerm.toLowerCase()
+          )
+        ) {
+          acc.measurements[curr.measurement] = true
+        }
         curr.fields.reduce((facc, fcurr) => {
           facc[fcurr] = true
           return facc
         }, acc.fields)
         curr.tags.reduce((tacc, [tag, values]) => {
-          if (!tacc[tag]) {
-            tacc[tag] = new Set()
+          if (!tacc['' + tag]) {
+            tacc['' + tag] = new Set()
           }
 
-          values.forEach(v => tacc[tag].add('' + v))
+          Array.from(values).forEach(v => tacc['' + tag].add('' + v))
 
           return tacc
         }, acc.tags)

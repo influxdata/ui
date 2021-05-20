@@ -1,0 +1,3 @@
+String query = "<%= query %>";
+List<FluxTable> tables = client.getQueryApi().query(query, org);
+

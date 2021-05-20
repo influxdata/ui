@@ -1,5 +1,11 @@
 import React, {FC} from 'react'
-import {Grid, SelectGroup, Form, RangeSlider} from '@influxdata/clockface'
+import {
+  InfluxColors,
+  Grid,
+  SelectGroup,
+  Form,
+  RangeSlider,
+} from '@influxdata/clockface'
 
 import {CustomHeatMapOptions} from 'src/visualization/types/Map/CustomHeatmapOptions'
 
@@ -45,9 +51,9 @@ export const GeoOptions: FC<Props> = ({properties, update}) => {
               colorDimension: {label: 'Value'},
               colorField: '_value',
               colors: [
-                {type: 'min', hex: '#ff0000'},
-                {value: 50, hex: '#343aeb'},
-                {type: 'max', hex: '#343aeb'},
+                {type: 'min', hex: InfluxColors.Star},
+                {value: 50, hex: InfluxColors.Star},
+                {type: 'max', hex: InfluxColors.Star},
               ],
               isClustered: false,
             },

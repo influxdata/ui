@@ -1,5 +1,6 @@
 // Libraries
 import {Table, LineInterpolation, FromFluxResult} from '@influxdata/giraffe'
+import {S2} from 's2-geometry'
 
 // Types
 import {XYGeom, Axis} from 'src/types'
@@ -314,6 +315,83 @@ export const getMainColumnName = (
   return ''
 }
 
+enum CoordinateType {
+  S2 = 'S2 cell id',
+  Tags = 'Lat/long as tags',
+  Fields = 'Lat/Long as fields',
+  None = 'Lat/Long not provided',
+}
+
+const getCoordinateColumn = (table: Table): string => {
+  try {
+    const column = table.getColumn('s2_cell_id')
+    if (column != null) {
+      return CoordinateType.S2
+    }
+    const lat = table.getColumn('lat')
+    const lon = table.getColumn('lon')
+
+    if (lat !== null && lon !== null) {
+      return CoordinateType.Tags
+    }
+
+    const latCoordinate = getColumnValue(table, 'lat')
+    const lonCoordinate = getColumnValue(table, 'lon')
+
+    if (latCoordinate && lonCoordinate) {
+      return CoordinateType.Fields
+    }
+
+    return CoordinateType.None
+  } catch (e) {
+    throw new Error('lat_lon_not_found')
+  }
+}
+
+const getS2CellID = (table: Table, index: number): string => {
+  const column = table.getColumn('s2_cell_id')
+  if (!column) {
+    throw new Error(
+      'Cannot retrieve s2_cell_id column - table does not conform to required structure of Table type'
+    )
+  }
+
+  const value = column[index]
+  if (typeof value !== 'string') {
+    throw new Error('invalid s2_cell_id column value - value must be a string')
+  }
+  return value
+}
+
+const getPrecisionTrimmingTableValue = (): bigint[] => {
+  const precisionTable = [BigInt(1)]
+  for (let i = 1; i <= HEX_DIGIT_PRECISION; i++) {
+    precisionTable[i] = precisionTable[i - 1] * BigInt(HEX_DIGIT_PRECISION)
+  }
+  return precisionTable
+}
+
+const getCoordinateFromS2 = (table, index) => {
+  const cellId = getS2CellID(table, index)
+
+  if (cellId.length > HEX_DIGIT_PRECISION) {
+    throw new Error(
+      'invalid cellId length - value must not be longer than the defined hex digit precision'
+    )
+  }
+
+  const fixed =
+    BigInt('0x' + cellId) *
+    getPrecisionTrimmingTableValue()[HEX_DIGIT_PRECISION - cellId.length]
+
+  const geoCoordinateValue = S2.idToLatLng(fixed.toString())
+
+  return {
+    lat: geoCoordinateValue.lat,
+    lon: geoCoordinateValue.lng,
+  }
+}
+
 const getColumnValue = (table: Table, field: string) => {
   const fieldColumn = table.getColumn('_field')
 
@@ -332,12 +410,44 @@ const getColumnValue = (table: Table, field: string) => {
   return value
 }
 
-export const getGeoCoordinates = (table: Table) => {
-  const latCoordinate = getColumnValue(table, 'lat')
-  const lonCoordinate = getColumnValue(table, 'lon')
+export const getGeoCoordinates = (
+  table: Table,
+  index: number
+): {lon: number; lat: number} | null => {
+  const coordinateColumn = getCoordinateColumn(table)
 
-  return {
-    lat: parseInt(latCoordinate.toString(), 10),
-    lon: parseInt(lonCoordinate.toString(), 10),
+  switch (coordinateColumn) {
+    case CoordinateType.S2:
+      return getCoordinateFromS2(table, index)
+    case CoordinateType.Tags:
+      const latColumn = table.getColumn('lat')
+      const lonColumn = table.getColumn('lon')
+      return {
+        lat: parseCoordinates(latColumn[index]),
+        lon: parseCoordinates(lonColumn[index]),
+      }
+    case CoordinateType.Fields:
+      const latCoordinate = getColumnValue(table, 'lat')
+      const lonCoordinate = getColumnValue(table, 'lon')
+      return {
+        lat: parseCoordinates(latCoordinate),
+        lon: parseCoordinates(lonCoordinate),
+      }
+    default:
+      throw new Error('lat_lon_not_provided')
   }
+}
+
+const parseCoordinates = coordinate => parseInt(coordinate.toString(), 10)
+
+export const getDetectCoordinatingFields = (table: Table) => {
+  const coordinateColumn = getCoordinateColumn(table)
+
+  if (
+    coordinateColumn === CoordinateType.S2 ||
+    coordinateColumn === CoordinateType.Tags
+  ) {
+    return false
+  }
+  return true
 }

@@ -7,6 +7,16 @@ import {
 
 const reservedVarNames = [TIME_RANGE_START, TIME_RANGE_STOP, WINDOW_PERIOD]
 
+export const FULL_ERROR_TEXT =
+  'Variable name must start with a letter or underscore, and ' +
+  'contain only numbers, letters, and underscores.'
+
+export const EMPTY_ERROR_TEXT = 'Variable name cannot be empty'
+export const UNIQUE_ERROR_TEXT = 'Variable name must be unique'
+
+export const makeReservedErrorText = word =>
+  `Variable name is reserved: ${word}`
+
 // Two ways to use:
 //   1) varName is a new variable being created and must pass validation
 //      - id is not needed since it does not exist yet
@@ -17,8 +27,19 @@ export const validateVariableName = (
   varName: string,
   id?: string
 ): {error: string | null} => {
-  if ((varName || '').match(/^\s*$/)) {
-    return {error: 'Variable name cannot be empty'}
+  const spaceRegex = /^\s*$/
+
+  // must start with a letter or underscore, can only contain letters, numbers, and underscores only
+  const validCharacters = /^[A-Za-z_]+\w*$/
+
+  if ((varName || '').match(spaceRegex)) {
+    return {error: EMPTY_ERROR_TEXT}
+  }
+
+  // it has content; so check the full regex now:
+  // (using this regex first has a runtime error if the varName is empty/undefined)
+  if (!varName.match(validCharacters)) {
+    return {error: FULL_ERROR_TEXT}
   }
 
   const lowerName = varName.toLocaleLowerCase()
@@ -29,7 +50,7 @@ export const validateVariableName = (
 
   if (!!reservedMatch) {
     return {
-      error: `Variable name is reserved: ${reservedMatch}`,
+      error: makeReservedErrorText(reservedMatch),
     }
   }
 
@@ -42,19 +63,7 @@ export const validateVariableName = (
 
   if (!!matchingName) {
     return {
-      error: `Variable name must be unique`,
-    }
-  }
-
-  if (!varName[0].match(/[A-Z]|[_]/i)) {
-    return {
-      error: `Variable name must begin with a letter or underscore`,
-    }
-  }
-
-  if (/[-\s]+/g.test(varName)) {
-    return {
-      error: `Variable name must not have any hyphens or spaces`,
+      error: UNIQUE_ERROR_TEXT,
     }
   }
 

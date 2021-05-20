@@ -24,19 +24,27 @@ const Logout: FC<Props> = ({history}) => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    const handleSignOut = async () => {
-      if (CLOUD && isFlagEnabled('authSessionCookieOn')) {
-        const url = new URL(
-          `${window.location.origin}${CLOUD_SIGNOUT_PATHNAME}`
-        )
-        window.location.href = url.href
-        return
-      }
+    const handleReset = () => {
+      dispatch(reset())
+      dispatch({type: 'USER_LOGGED_OUT'})
+    }
 
+    const handleSignOut = async () => {
       if (CLOUD) {
-        window.location.href = `${CLOUD_URL}${CLOUD_LOGOUT_PATH}`
+        const url = isFlagEnabled('authSessionCookieOn')
+          ? new URL(`${window.location.origin}${CLOUD_SIGNOUT_PATHNAME}`).href
+          : `${CLOUD_URL}${CLOUD_LOGOUT_PATH}`
+
+        if (isFlagEnabled('authSessionCookieOn')) {
+          handleReset()
+        }
+
+        window.location.href = url
         return
       } else {
+        if (isFlagEnabled('authSessionCookieOn')) {
+          handleReset()
+        }
         const resp = await postSignout({})
 
         if (resp.status !== 204) {
@@ -46,8 +54,9 @@ const Logout: FC<Props> = ({history}) => {
         history.push(`/signin`)
       }
     }
-    dispatch(reset())
-    dispatch({type: 'USER_LOGGED_OUT'})
+    if (!isFlagEnabled('authSessionCookieOn')) {
+      handleReset()
+    }
     handleSignOut()
   }, [dispatch, history])
 

@@ -11,6 +11,7 @@ import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {CLOUD_USERS_PATH, CLOUD_URL} from 'src/shared/constants'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Decorators
 import {ErrorHandling} from 'src/shared/decorators/errors'
@@ -36,6 +37,8 @@ class OrgNavigation extends PureComponent<Props> {
   public render() {
     const {activeTab, orgID} = this.props
 
+    // TODO(ariel): once the `unityUsers` flag goes live we won't need any of the href logic:
+    // https://github.com/influxdata/ui/issues/1405
     const tabs: OrgPageTab[] = [
       {
         text: 'Members',
@@ -47,7 +50,10 @@ class OrgNavigation extends PureComponent<Props> {
         text: 'Users',
         id: 'members-quartz',
         cloudOnly: true,
-        href: `${CLOUD_URL}/organizations/${orgID}${CLOUD_USERS_PATH}`,
+        link: isFlagEnabled('unityUsers') ? `/orgs/${orgID}/users` : null,
+        href: isFlagEnabled('unityUsers')
+          ? null
+          : `${CLOUD_URL}/organizations/${orgID}${CLOUD_USERS_PATH}`,
       },
       {
         text: 'About',

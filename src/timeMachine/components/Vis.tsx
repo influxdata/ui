@@ -27,10 +27,6 @@ import {
   getYSeriesColumns,
 } from 'src/timeMachine/selectors'
 import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
-import {
-  setIsDisabledViewRawData,
-  setIsViewingRawData,
-} from 'src/timeMachine/actions'
 
 // Types
 import {RemoteDataState, AppState, ViewProperties} from 'src/types'
@@ -47,8 +43,6 @@ const TimeMachineVis: FC<Props> = ({
   timeRange,
   isInitialFetch,
   isViewingRawData,
-  setViewRawData,
-  setDisableRawData,
   files,
   viewProperties,
   giraffeResult,
@@ -75,7 +69,7 @@ const TimeMachineVis: FC<Props> = ({
     symbolColumns,
   } as ViewProperties | SimpleTableViewProperties
 
-  if (isViewingRawData && isFlagEnabled('simple-table')) {
+  if (isViewingRawData && isFlagEnabled('simpleTable')) {
     resolvedViewProperties = {
       type: 'simple-table',
       showAll: true,
@@ -89,31 +83,13 @@ const TimeMachineVis: FC<Props> = ({
   })
 
   // Handles deadman check edge case to allow non-numeric values
-  if (
-    !!giraffeResult.table.length &&
-    !isViewingRawData &&
-    resolvedViewProperties.type === 'check' &&
-    giraffeResult.table.getColumnType('_value') !== 'number'
-  ) {
-    setViewRawData(true)
-    setDisableRawData(true)
-    return null
-  } else if (
-    !!giraffeResult.table.length &&
-    isViewingRawData &&
-    resolvedViewProperties.type === 'check' &&
-    giraffeResult.table.getColumnType('_value') === 'number'
-  ) {
-    setViewRawData(false)
-    setDisableRawData(false)
-  }
+  const viewRawData =
+    isViewingRawData ||
+    (type === 'check' &&
+      giraffeResult.table.getColumnType('_value') !== 'number' &&
+      !!giraffeResult.table.length)
 
-  if (
-    isViewingRawData &&
-    files &&
-    files.length &&
-    !isFlagEnabled('simple-table')
-  ) {
+  if (viewRawData && files && files.length && !isFlagEnabled('simpleTable')) {
     const [parsedResults] = files.flatMap(fromFlux)
     return (
       <div className={timeMachineViewClassName}>
@@ -195,12 +171,7 @@ const mstp = (state: AppState) => {
   }
 }
 
-const mdtp = {
-  setViewRawData: setIsViewingRawData,
-  setDisableRawData: setIsDisabledViewRawData,
-}
-
-const connector = connect(mstp, mdtp)
+const connector = connect(mstp)
 
 export default connector(
   memo(TimeMachineVis, (prev, next) => isEqual(prev, next))

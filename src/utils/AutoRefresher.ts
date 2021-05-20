@@ -1,4 +1,4 @@
-import {CLOUD} from 'src/shared/constants'
+import {AutoRefresh} from 'src/types'
 
 type func = (...args: any[]) => any
 
@@ -15,12 +15,11 @@ export class AutoRefresher {
     this.subscribers = this.subscribers.filter(f => f !== fn)
   }
 
-  public poll(refreshMs: number) {
+  public poll(autoRefresh: AutoRefresh, stopFunc?: () => void) {
     this.clearInterval()
-
-    if (refreshMs) {
-      this.intervalID = setInterval(this.refresh, refreshMs)
-    }
+    this.intervalID = setInterval(() => {
+      this.refresh(true, stopFunc)
+    }, autoRefresh.interval)
   }
 
   public stopPolling() {
@@ -36,9 +35,9 @@ export class AutoRefresher {
     this.intervalID = null
   }
 
-  private refresh = () => {
-    if (CLOUD) {
-      return
+  private refresh = (isAutoRefresh = false, stopFunc?: () => void) => {
+    if (isAutoRefresh && stopFunc) {
+      stopFunc()
     }
     this.subscribers.forEach(fn => fn())
   }

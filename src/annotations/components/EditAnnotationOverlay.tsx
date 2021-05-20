@@ -25,18 +25,26 @@ import {
 
 import {notify} from 'src/shared/actions/notifications'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+import {getErrorMessage} from 'src/utils/api'
+
 export const EditAnnotationOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
   const dispatch = useDispatch()
   const {clickedAnnotation} = useSelector(getOverlayParams)
 
-  const handleSubmit = (editedAnnotation: EditAnnotation): void => {
+  const handleSubmit = async (
+    editedAnnotation: EditAnnotation
+  ): Promise<void> => {
     try {
-      dispatch(editAnnotation(editedAnnotation))
+      await dispatch(editAnnotation(editedAnnotation))
+      event('xyplot.annotations.edit_annotation.success')
       dispatch(notify(editAnnotationSuccess()))
       onClose()
     } catch (err) {
-      dispatch(notify(editAnnotationFailed(err)))
+      event('xyplot.annotations.edit_annotation.failure')
+      dispatch(notify(editAnnotationFailed(getErrorMessage(err))))
     }
   }
 

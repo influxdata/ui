@@ -3,11 +3,7 @@ import React, {FC, CSSProperties} from 'react'
 import classnames from 'classnames'
 import {Draggable} from 'react-beautiful-dnd'
 
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
 // Components
-import VariableDropdown from 'src/variables/components/VariableDropdown'
 import TypeAheadVariableDropdown from 'src/variables/components/TypeAheadVariableDropdown'
 
 interface Props {
@@ -21,10 +17,6 @@ const DraggableDropdown: FC<Props> = ({id, index, name}) => {
     classnames('variable-dropdown', {
       'variable-dropdown__dragging': isDragging,
     })
-
-  const DropdownComponent = isFlagEnabled('typeAheadVariableDropdown')
-    ? TypeAheadVariableDropdown
-    : VariableDropdown
 
   return (
     <Draggable index={index} draggableId={id}>
@@ -43,7 +35,7 @@ const DraggableDropdown: FC<Props> = ({id, index, name}) => {
           <div className="variable-dropdown--label">
             <span>{name}</span>
           </div>
-          <DropdownComponent variableID={id} />
+          <TypeAheadVariableDropdown variableID={id} />
         </div>
       )}
     </Draggable>

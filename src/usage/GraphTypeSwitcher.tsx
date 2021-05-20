@@ -32,7 +32,6 @@ const GENERIC_PROPERTY_DEFAULTS = {
   suffix: '',
   tickPrefix: '',
   tickSuffix: '',
-  legend: undefined,
 }
 
 const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv}) => {
@@ -55,10 +54,6 @@ const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv}) => {
     axes: {
       x: {},
       y: {},
-    },
-    legend: {
-      type: 'static',
-      orientation: 'top',
     },
     position: 'overlaid',
     geom: 'line',

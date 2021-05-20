@@ -16,8 +16,8 @@ import {
 } from '@influxdata/clockface'
 import {Context} from 'src/clockface'
 import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
-import TaskCardMeta from 'src/tasks/components/TaskCardMeta'
 import LastRunTaskStatus from 'src/shared/components/lastRunTaskStatus/LastRunTaskStatus'
+import {CopyResourceID} from 'src/shared/components/CopyResourceID'
 
 // Actions
 import {addTaskLabel, deleteTaskLabel} from 'src/tasks/actions/thunks'
@@ -79,9 +79,7 @@ export class TaskCard extends PureComponent<
             {this.activeToggle}
             <>Last completed at {task.latestCompleted}</>
             <>{`Scheduled to run ${this.schedule}`}</>
-            <>
-              <TaskCardMeta task={task} />
-            </>
+            <CopyResourceID resource={task} resourceName="Task" />
           </ResourceCard.Meta>
           {this.labels}
         </FlexBox>
@@ -109,9 +107,13 @@ export class TaskCard extends PureComponent<
 
     return (
       <Context>
-        <Context.Menu icon={IconFont.CogThick}>
+        <Context.Menu icon={IconFont.CogThick} testID="context-cog-runs">
           <Context.Item label="Export" action={this.handleExport} />
-          <Context.Item label="View Task Runs" action={this.handleViewRuns} />
+          <Context.Item
+            label="View Task Runs"
+            action={this.handleViewRuns}
+            testID="context-view-task-runs"
+          />
           <Context.Item
             label="Run Task"
             action={this.handleRunTask}

@@ -26,6 +26,11 @@ declare global {
     export default value
   }
 
+  declare module '*.example' {
+    const value: string
+    export default value
+  }
+
   declare module '*.svg' {
     export const ReactComponent: SFC<SVGProps<SVGSVGElement>>
     const src: string

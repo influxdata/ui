@@ -1,0 +1,2 @@
+query = f'<%= query %>'
+tables = client.query_api().query(query, org=org)

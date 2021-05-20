@@ -1,0 +1,16 @@
+var mem = new Mem { Host = "host1", UsedPercent = 23.43234543, Time = DateTime.UtcNow };
+
+using (var writeApi = client.GetWriteApi())
+{
+  writeApi.WriteMeasurement(bucket, org, WritePrecision.Ns, mem);
+}
+
+
+// Public class
+[Measurement("mem")]
+private class Mem
+{
+  [Column("host", IsTag = true)] public string Host { get; set; }
+  [Column("used_percent")] public double? UsedPercent { get; set; }
+  [Column(IsTimestamp = true)] public DateTime Time { get; set; }
+}

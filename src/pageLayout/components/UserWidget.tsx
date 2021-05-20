@@ -10,6 +10,7 @@ import CloudOnly from 'src/shared/components/cloud/CloudOnly'
 
 // Actions
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {
@@ -25,7 +26,6 @@ import {AppState} from 'src/types'
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 import {getNavItemActivation} from '../utils'
-import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
@@ -53,62 +53,50 @@ const UserWidget: FC<Props> = ({
           id="usage"
           label="Usage"
           testID="user-nav-item-usage"
-          linkElement={className => (
-            <a className={className} href={`${CLOUD_URL}${CLOUD_USAGE_PATH}`} />
-          )}
+          linkElement={className => {
+            if (isFlagEnabled('unityUsage')) {
+              return <Link className={className} to={`${orgPrefix}/usage`} />
+            }
+            return (
+              <a
+                className={className}
+                href={`${CLOUD_URL}${CLOUD_USAGE_PATH}`}
+              />
+            )
+          }}
         />
-        <FeatureFlag name="unity-usage">
-          <TreeNav.UserItem
-            id="unity-usage"
-            label="Unity Usage"
-            testID="user-nav-item-unity-usage"
-            linkElement={className => (
-              <a className={className} href={`/orgs/${org.id}/unity-usage`} />
-            )}
-          />
-        </FeatureFlag>
         <TreeNav.UserItem
           id="billing"
           label="Billing"
           testID="user-nav-item-billing"
-          linkElement={className => (
-            <a
-              className={className}
-              href={`${CLOUD_URL}${CLOUD_BILLING_PATH}`}
-            />
-          )}
+          linkElement={className => {
+            if (isFlagEnabled('unityBilling')) {
+              return <Link className={className} to={`${orgPrefix}/billing`} />
+            }
+            return (
+              <a
+                className={className}
+                href={`${CLOUD_URL}${CLOUD_BILLING_PATH}`}
+              />
+            )
+          }}
         />
         <TreeNav.UserItem
           id="users"
           label="Users"
           testID="user-nav-item-users"
-          linkElement={className => (
-            <a
-              className={className}
-              href={`${CLOUD_URL}/organizations/${org.id}${CLOUD_USERS_PATH}`}
-            />
-          )}
+          linkElement={className => {
+            if (isFlagEnabled('unityUsers')) {
+              return <Link className={className} to={`${orgPrefix}/users`} />
+            }
+            return (
+              <a
+                className={className}
+                href={`${CLOUD_URL}/organizations/${org.id}${CLOUD_USERS_PATH}`}
+              />
+            )
+          }}
         />
-        <FeatureFlag name="unity">
-          <TreeNav.UserItem
-            id="unity-users"
-            label="Unity Users"
-            testID="user-nav-item-unity-users"
-            linkElement={className => (
-              <a className={className} href={`/orgs/${org.id}/unity-users`} />
-            )}
-          />
-        </FeatureFlag>
-        <FeatureFlag name="unity-billing">
-          <TreeNav.UserItem
-            id="unity-billing"
-            label="Unity billing"
-            testID="user-nav-item-unity-billing"
-            linkElement={className => (
-              <a className={className} href={`/orgs/${org.id}/unity-billing`} />
-            )}
-          />
-        </FeatureFlag>
         <TreeNav.UserItem
           id="about"
           label="About"

@@ -1,96 +1,148 @@
 // Libraries
-import React, {FC, ReactNode, createContext, useState} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
+import React, {
+  FC,
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+} from 'react'
+import {useSelector} from 'react-redux'
+import {
+  Context as TemplateContext,
+  transform,
+} from 'src/shared/components/CodeSnippet'
 
 // Utils
 import {getAll} from 'src/resources/selectors'
 import {getOrg} from 'src/organizations/selectors'
 
 // Types
-import {
-  AppState,
-  ResourceType,
-  Bucket,
-  Authorization,
-  Organization,
-} from 'src/types'
+import {AppState, ResourceType, Bucket, Authorization} from 'src/types'
 
-interface ComponentProps {
-  children: ReactNode
-}
-
-type ReduxProps = ConnectedProps<typeof connector>
-
-type Props = ComponentProps & ReduxProps
-
-export interface WriteDataDetailsContextType {
-  organization: Organization
-  origin: string
+interface WriteDataDetailsContextType {
   bucket: Bucket
-  buckets: Bucket[]
   changeBucket: (bucket: Bucket) => void
   token: Authorization
-  tokens: Authorization[]
   changeToken: (token: Authorization) => void
+  query: string
+  changeQuery: (query: string) => void
 }
 
 export const DEFAULT_WRITE_DATA_DETAILS_CONTEXT: WriteDataDetailsContextType = {
-  organization: null,
-  origin: '',
   bucket: null,
-  buckets: [],
   changeBucket: () => {},
   token: null,
-  tokens: [],
   changeToken: () => {},
+  query: null,
+  changeQuery: () => {},
 }
 
 export const WriteDataDetailsContext = createContext<
   WriteDataDetailsContextType
 >(DEFAULT_WRITE_DATA_DETAILS_CONTEXT)
 
-const WriteDataDetailsContextProvider: FC<Props> = ({
-  organization,
-  buckets,
-  tokens,
-  children,
-}) => {
-  const userBuckets = buckets.filter(b => b.type === 'user')
-  const initialToken = tokens.length ? tokens[0] : null
-  const [bucket, changeBucket] = useState<Bucket>(userBuckets[0])
-  const [token, changeToken] = useState<Authorization>(initialToken)
-  const origin = window.location.origin
+const WriteDataDetailsProvider: FC = ({children}) => {
+  const {variables, update} = useContext(TemplateContext)
+  const buckets = useSelector((state: AppState) =>
+    getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
+  )
+  const tokens = useSelector((state: AppState) =>
+    getAll<Authorization>(state, ResourceType.Authorizations)
+  )
+  const org = useSelector(getOrg)
+  const server = window.location.origin
 
-  const value = {
-    organization,
-    origin,
-    bucket,
-    buckets: userBuckets,
-    changeBucket: (toChangeBucket: Bucket) => changeBucket(toChangeBucket),
-    token,
-    tokens,
-    changeToken: (toChangeToken: Authorization) => changeToken(toChangeToken),
-  }
+  const [bucket, setBucket] = useState(
+    buckets[0] ?? ({name: '<BUCKET>'} as Bucket)
+  )
+  const [token, setToken] = useState(tokens[0] ?? {token: '<INFLUX_TOKEN>'})
+  const [query, setQuery] = useState(null)
+
+  const changeBucket = useCallback(
+    (toChangeBucket: Bucket) => setBucket(toChangeBucket),
+    [setBucket]
+  )
+  const changeQuery = useCallback(
+    (toChangeQuery: string) => setQuery(toChangeQuery),
+    [setQuery]
+  )
+  const changeToken = useCallback(
+    (toChangeToken: Authorization) => setToken(toChangeToken),
+    [setToken]
+  )
+
+  useEffect(() => {
+    const _query = transform(query, variables)
+
+    if (_query === variables.query) {
+      return
+    }
+
+    update({
+      ...variables,
+      query: _query,
+    })
+  }, [variables, update, query])
+
+  useEffect(() => {
+    if (server === variables.server) {
+      return
+    }
+
+    update({
+      ...variables,
+      server,
+    })
+  }, [variables, server, update])
+
+  useEffect(() => {
+    if (org?.name === variables.org) {
+      return
+    }
+
+    update({
+      ...variables,
+      org: org.name,
+    })
+  }, [variables, org?.name, update])
+
+  useEffect(() => {
+    if (bucket?.name === variables.bucket) {
+      return
+    }
+
+    update({
+      ...variables,
+      bucket: bucket.name,
+    })
+  }, [variables, bucket?.name, bucket, update])
+
+  useEffect(() => {
+    if (token?.token === variables.token) {
+      return
+    }
+
+    update({
+      ...variables,
+      token: token.token,
+    })
+  }, [variables, token?.token, token, update])
 
   return (
-    <WriteDataDetailsContext.Provider value={value}>
+    <WriteDataDetailsContext.Provider
+      value={{
+        bucket,
+        changeBucket,
+        token,
+        changeToken,
+        query,
+        changeQuery,
+      }}
+    >
       {children}
     </WriteDataDetailsContext.Provider>
   )
 }
 
-const mstp = (state: AppState) => {
-  const buckets = getAll<Bucket>(state, ResourceType.Buckets)
-  const tokens = getAll<Authorization>(state, ResourceType.Authorizations)
-  const organization = getOrg(state)
-
-  return {
-    buckets,
-    tokens,
-    organization,
-  }
-}
-
-const connector = connect(mstp)
-
-export default connector(WriteDataDetailsContextProvider)
+export default WriteDataDetailsProvider

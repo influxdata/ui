@@ -18,7 +18,7 @@ import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Redux
 import {
-  isSingleClickAnnotationsEnabled,
+  isWriteModeEnabled,
   selectAreAnnotationsVisible,
 } from 'src/annotations/selectors'
 
@@ -83,7 +83,7 @@ const XYPlot: FC<Props> = ({
   // is in a dashboard or in configuration/single cell popout mode
   // would need to add the annotation control bar to the VEOHeader to get access to the controls,
   // which are currently global values, not per dashboard
-  const inAnnotationWriteMode = useSelector(isSingleClickAnnotationsEnabled)
+  const inAnnotationWriteMode = useSelector(isWriteModeEnabled)
   const annotationsAreVisible = useSelector(selectAreAnnotationsVisible)
 
   const storedXDomain = useMemo(() => parseXBounds(properties.axes.x.bounds), [

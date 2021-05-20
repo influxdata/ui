@@ -76,10 +76,9 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
   const handleError = (error: Error): void => {
     const message = getErrorMessage(error)
     setUploadState(RemoteDataState.Error)
-    if (error.name === 'AbortError') {
+    if (error.name === 'AbortError' || message.includes('aborted')) {
       event('Aborting_CSV_Upload')
-    }
-    if (
+    } else if (
       message.includes('incorrectly formatted') ||
       message.includes('The CSV could not be parsed')
     ) {

@@ -70,7 +70,7 @@ export const createAPI = async (flow: PostNotebookParams) => {
 
 export const deleteAPI = async (ids: DeleteNotebookParams) => {
   const res = await deleteNotebook(ids)
-  if (res.status != 200) {
+  if (res.status != 204) {
     throw new Error(res.data.message)
   }
 }

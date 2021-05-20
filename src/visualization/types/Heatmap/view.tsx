@@ -8,11 +8,7 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 // Utils
 import {useAxisTicksGenerator} from 'src/visualization/utils/useAxisTicksGenerator'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
-import {
-  useLegendOpacity,
-  useLegendOrientationThreshold,
-  useLegendColorizeRows,
-} from 'src/visualization/utils/useLegendOrientation'
+import {useLegendOpacity} from 'src/visualization/utils/useLegendOrientation'
 import {
   useVisXDomainSettings,
   useVisYDomainSettings,
@@ -52,10 +48,8 @@ const HeatmapPlot: FunctionComponent<Props> = ({
 
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
-  const tooltipColorize = useLegendColorizeRows(properties.legendColorizeRows)
-  const tooltipOrientationThreshold = useLegendOrientationThreshold(
-    properties.legendOrientationThreshold
-  )
+  const tooltipColorize = properties.legendColorizeRows
+  const tooltipOrientationThreshold = properties.legendOrientationThreshold
 
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
     properties.xDomain,

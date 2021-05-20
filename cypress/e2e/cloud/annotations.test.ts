@@ -63,7 +63,6 @@ describe('The Annotations UI functionality', () => {
 
     cy.getByTestID('toggle-annotations-controls').click()
     cy.getByTestID('annotations-control-bar').should('be.visible')
-    cy.getByTestID('annotations-one-click-toggle').click()
   }
 
   afterEach(() => {
@@ -153,7 +152,7 @@ describe('The Annotations UI functionality', () => {
     })
   }
 
-  describe('graph + single stat tests here:', () => {
+  describe('annotations on a graph + single stat graph type', () => {
     beforeEach(() => {
       setupData(cy, true)
     })
@@ -168,7 +167,7 @@ describe('The Annotations UI functionality', () => {
     })
   })
 
-  describe('graph (xy line) tests here: ', () => {
+  describe('annotations on a graph (xy line) graph type: ', () => {
     beforeEach(() => {
       setupData(cy)
     })
@@ -206,7 +205,7 @@ describe('The Annotations UI functionality', () => {
 
     it('can disable writing annotations if Enable-Annotations is disabled', () => {
       // turn off one-click annotation
-      cy.getByTestID('annotations-one-click-toggle').click()
+      cy.getByTestID('annotations-write-mode-toggle').click()
 
       // click on the graph
       cy.getByTestID('cell blah').within(() => {

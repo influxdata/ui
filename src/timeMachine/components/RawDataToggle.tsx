@@ -9,7 +9,11 @@ import {SlideToggle, InputLabel, ComponentSize} from '@influxdata/clockface'
 import {setIsViewingRawData} from 'src/timeMachine/actions'
 
 // Utils
-import {getActiveTimeMachine} from 'src/timeMachine/selectors'
+import {
+  getActiveTimeMachine,
+  getIsInCheckOverlay,
+  getVisTable,
+} from 'src/timeMachine/selectors'
 
 // Types
 import {AppState} from 'src/types'
@@ -19,7 +23,16 @@ type Props = ReduxProps
 
 class TimeMachineQueries extends PureComponent<Props> {
   public render() {
-    const {isViewingRawData, isDisabledViewRawData} = this.props
+    const {giraffeResult, isInCheckOverlay, isViewingRawData} = this.props
+
+    const hasResultsThatBreakXYPlot =
+      isInCheckOverlay &&
+      giraffeResult.table.getColumnType('_value') !== 'number' &&
+      !!giraffeResult.table.length
+
+    if (hasResultsThatBreakXYPlot) {
+      return null
+    }
 
     return (
       <div className="view-raw-data-toggle">
@@ -29,7 +42,6 @@ class TimeMachineQueries extends PureComponent<Props> {
           onChange={this.handleToggleIsViewingRawData}
           size={ComponentSize.ExtraSmall}
           testID="raw-data--toggle"
-          disabled={isDisabledViewRawData}
         />
       </div>
     )
@@ -43,9 +55,11 @@ class TimeMachineQueries extends PureComponent<Props> {
 }
 
 const mstp = (state: AppState) => {
-  const {isViewingRawData, isDisabledViewRawData} = getActiveTimeMachine(state)
+  const {isViewingRawData} = getActiveTimeMachine(state)
+  const giraffeResult = getVisTable(state)
+  const isInCheckOverlay = getIsInCheckOverlay(state)
 
-  return {isViewingRawData, isDisabledViewRawData}
+  return {giraffeResult, isInCheckOverlay, isViewingRawData}
 }
 
 const mdtp = {

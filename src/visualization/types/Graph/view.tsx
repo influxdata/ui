@@ -34,11 +34,7 @@ import {VisualizationProps} from 'src/visualization'
 // Utils
 import {useAxisTicksGenerator} from 'src/visualization/utils/useAxisTicksGenerator'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
-import {
-  useLegendOpacity,
-  useLegendOrientationThreshold,
-  useLegendColorizeRows,
-} from 'src/visualization/utils/useLegendOrientation'
+import {useLegendOpacity} from 'src/visualization/utils/useLegendOrientation'
 import {
   useVisXDomainSettings,
   useVisYDomainSettings,
@@ -73,10 +69,8 @@ const XYPlot: FC<Props> = ({
   const {theme, timeZone} = useContext(AppSettingContext)
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
-  const tooltipColorize = useLegendColorizeRows(properties.legendColorizeRows)
-  const tooltipOrientationThreshold = useLegendOrientationThreshold(
-    properties.legendOrientationThreshold
-  )
+  const tooltipColorize = properties.legendColorizeRows
+  const tooltipOrientationThreshold = properties.legendOrientationThreshold
   const dispatch = useDispatch()
 
   // these two values are set in the dashboard, and used whether or not this view

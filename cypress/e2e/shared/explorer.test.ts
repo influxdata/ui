@@ -1063,7 +1063,7 @@ describe('DataExplorer', () => {
     })
 
     describe('static legend', () => {
-      it('can be disabled for all visualization types', () => {
+      it('turns off static legend flag, so static legend option should not exist', () => {
         cy.window().then(win => {
           win.influx.set('mosaicGraphType', true)
           win.influx.set('bandPlotType', true)
@@ -1077,7 +1077,7 @@ describe('DataExplorer', () => {
         })
       })
 
-      it('can only be enabled for line graph, line graph plus single stat, and band plot', () => {
+      it('turns on static legend flag, so static legend option should exist for line graph, line graph plus single stat, and band plot', () => {
         cy.window().then(win => {
           win.influx.set('mosaicGraphType', true)
           win.influx.set('bandPlotType', true)

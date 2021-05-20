@@ -16,6 +16,7 @@ interface Props extends VisualizationOptionProps {
   properties: GeoViewProperties
 }
 
+console.log(isFlagEnabled('mapGeoOptions'))
 const SHOW_GEO_OPTIONS = isFlagEnabled('mapGeoOptions')
 // const mapTypeOptions = ['Point', 'Circle', 'Heat', 'Track']
 export enum MapType {

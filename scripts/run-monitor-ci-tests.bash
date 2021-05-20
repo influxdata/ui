@@ -102,10 +102,11 @@ if [[ -z "${OSS_SHA:-}" ]]; then
 		github=$(curl -s --fail --request GET \
 			--url https://api.github.com/repos/influxdata/ui/pulls/${pr})
 		UI_BRANCH=$(echo ${github} | jq -r '.head.ref')
+		UI_GITHUB_ORG=$(echo ${github} | jq -r '.owner.login')
 	fi
 
 	pipelineStartMsg="starting monitor-ci pipeline targeting monitor-ci branch ${MONITOR_CI_BRANCH}, UI branch ${UI_BRANCH} and using UI SHA ${SHA}"
-	reqData="{\"branch\":\"${MONITOR_CI_BRANCH}\", \"parameters\":{ \"ui-sha\":\"${SHA}\", \"ui-github-org\":\"${UI_GITHUB_ORG}\", \"ui-branch\":\"${UI_BRANCH}\", \"ui-pull-request\":\"${PULL_REQUEST}\", \"deploy-prod\":${DEPLOY_PROD}}}"
+	reqData="{\"branch\":\"${MONITOR_CI_BRANCH}\", \"parameters\":{ \"ui-sha\":\"${SHA}\", \"ui-github-org\":\"${UI_GITHUB_ORG:-influxdata}\", \"ui-branch\":\"${UI_BRANCH}\", \"ui-pull-request\":\"${PULL_REQUEST}\", \"deploy-prod\":${DEPLOY_PROD}}}"
 else
 	# set the parameters for starting the monitor-ci pipeline from the influxdb repo
 	pipelineStartMsg="starting monitor-ci pipeline targeting monitor-ci branch ${MONITOR_CI_BRANCH} using OSS SHA ${OSS_SHA}"

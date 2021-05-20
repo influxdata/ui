@@ -29,7 +29,6 @@ type Props = RouteComponentProps & ReduxProps
 require('src/cloud/utils/rudderstack')
 // }
 
-
 const GettingStarted: FunctionComponent<Props> = ({orgID, history}) => {
   const [loadDataAnimating, setLoadDataAnimation] = useState<boolean>(false)
   const handleLoadDataClick = (): void => {

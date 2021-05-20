@@ -8,6 +8,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 function initializeRudderstack() {
   ready(() => {})
   load(RUDDERSTACK_WRITE_KEY, RUDDERSTACK_DATA_PLANE_URL)
+  console.log('FOO')
 }
 
 if (isFlagEnabled('rudderstackReporting')) {

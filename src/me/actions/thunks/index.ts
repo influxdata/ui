@@ -37,10 +37,7 @@ export const getMe = () => async dispatch => {
     })
 
     if (isFlagEnabled('rudderStackReporting')) {
-      identify(
-          user.id,
-          {email: user.name, orgID: this.props.orgID}
-      )
+      identify(user.id, {email: user.name, orgID: this.props.orgID})
     }
 
     dispatch(setMe(user as MeState))

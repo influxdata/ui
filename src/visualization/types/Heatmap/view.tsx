@@ -1,5 +1,6 @@
 // Libraries
 import React, {FunctionComponent, useContext} from 'react'
+import {useDispatch} from 'react-redux'
 import {Plot} from '@influxdata/giraffe'
 
 // Components
@@ -13,6 +14,8 @@ import {
   useVisXDomainSettings,
   useVisYDomainSettings,
 } from 'src/visualization/utils/useVisDomainSettings'
+import {handleUnsupportedGraphType} from 'src/visualization/components/annotationUtils'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -93,39 +96,46 @@ const HeatmapPlot: FunctionComponent<Props> = ({
 
   const currentTheme = theme === 'light' ? VIS_THEME_LIGHT : VIS_THEME
 
-  return (
-    <Plot
-      config={{
-        ...currentTheme,
-        table: result.table,
-        xAxisLabel: properties.xAxisLabel,
-        yAxisLabel: properties.yAxisLabel,
-        xDomain,
-        onSetXDomain,
-        onResetXDomain,
-        yDomain,
-        onSetYDomain,
-        onResetYDomain,
-        ...axisTicksOptions,
-        legendOpacity: tooltipOpacity,
-        legendOrientationThreshold: tooltipOrientationThreshold,
-        legendColorizeRows: tooltipColorize,
-        valueFormatters: {
-          [xColumn]: xFormatter,
-          [yColumn]: yFormatter,
-        },
-        layers: [
-          {
-            type: 'heatmap',
-            x: xColumn,
-            y: yColumn,
-            colors,
-            binSize: properties.binSize,
-          },
-        ],
-      }}
-    />
-  )
+  const config = {
+    ...currentTheme,
+    table: result.table,
+    xAxisLabel: properties.xAxisLabel,
+    yAxisLabel: properties.yAxisLabel,
+    xDomain,
+    onSetXDomain,
+    onResetXDomain,
+    yDomain,
+    onSetYDomain,
+    onResetYDomain,
+    ...axisTicksOptions,
+    legendOpacity: tooltipOpacity,
+    legendOrientationThreshold: tooltipOrientationThreshold,
+    legendColorizeRows: tooltipColorize,
+    valueFormatters: {
+      [xColumn]: xFormatter,
+      [yColumn]: yFormatter,
+    },
+    layers: [
+      {
+        type: 'heatmap',
+        x: xColumn,
+        y: yColumn,
+        colors,
+        binSize: properties.binSize,
+      },
+    ],
+  }
+
+  const dispatch = useDispatch()
+  if (isFlagEnabled('annotations')) {
+    config.interactionHandlers = {
+      singleClick: () => {
+        dispatch(handleUnsupportedGraphType('Heatmap'))
+      },
+    }
+  }
+
+  return <Plot config={config} />
 }
 
 export default HeatmapPlot

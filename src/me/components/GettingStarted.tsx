@@ -25,6 +25,11 @@ import {getOrg} from 'src/organizations/selectors'
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = RouteComponentProps & ReduxProps
 
+// if (isFlagEnabled('rudderstackReporting')) {
+require('src/cloud/utils/rudderstack')
+// }
+
+
 const GettingStarted: FunctionComponent<Props> = ({orgID, history}) => {
   const [loadDataAnimating, setLoadDataAnimation] = useState<boolean>(false)
   const handleLoadDataClick = (): void => {

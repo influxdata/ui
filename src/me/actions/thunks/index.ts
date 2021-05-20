@@ -1,12 +1,13 @@
 // Libraries
 import HoneyBadger from 'honeybadger-js'
+import {identify} from 'rudder-sdk-js'
 
 // API
 import {client} from 'src/utils/api'
 import {getMe as apiGetQuartzMe} from 'src/client/unityRoutes'
 // Utils
 import {gaEvent, updateReportingContext} from 'src/cloud/utils/reporting'
-
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 // Actions
 import {setMe, setQuartzMe, setQuartzMeStatus} from 'src/me/actions/creators'
 
@@ -34,6 +35,13 @@ export const getMe = () => async dispatch => {
     HoneyBadger.setContext({
       user_id: user.id,
     })
+
+    if (isFlagEnabled('rudderStackReporting')) {
+      identify(
+          user.id,
+          {email: user.name, orgID: this.props.orgID}
+      )
+    }
 
     dispatch(setMe(user as MeState))
   } catch (error) {

@@ -1,5 +1,5 @@
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {track} from 'src/cloud/utils/rudderstack'
+import {track} from 'rudder-sdk-js'
 
 export interface Point {
   measurement: string
@@ -25,7 +25,7 @@ export const reportPoints = (points: Points) => {
   if (isFlagEnabled('rudderstackReporting')) {
     try {
       points.points.forEach(point => {
-        track(point.measurement, point.fields, point.tags, () => {})
+        track(point.measurement, point.fields, point.tags)
       })
     } catch (e) {
       // don't want reporting errors to effect user experience

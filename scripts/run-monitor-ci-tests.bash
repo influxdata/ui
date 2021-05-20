@@ -102,7 +102,7 @@ if [[ -z "${OSS_SHA:-}" ]]; then
 		github=$(curl -s --fail --request GET \
 			--url https://api.github.com/repos/influxdata/ui/pulls/${pr})
 		UI_BRANCH=$(echo ${github} | jq -r '.head.ref')
-		UI_GITHUB_ORG=$(echo ${github} | jq -r '.repo.owner.login')
+		UI_GITHUB_ORG=$(echo ${github} | jq -r '.head.repo.owner.login')
 	fi
 
 	pipelineStartMsg="starting monitor-ci pipeline targeting monitor-ci branch ${MONITOR_CI_BRANCH}, UI branch ${UI_BRANCH} and using UI SHA ${SHA}"

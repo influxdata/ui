@@ -14,7 +14,7 @@ import {
 interface Props {
   onChange: (newTime: string) => void
   onSubmit: () => void
-  startTime: string
+  startTime: string | number
 }
 
 export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {

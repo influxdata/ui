@@ -9,6 +9,8 @@ import InsertCellButton from 'src/flows/components/panel/InsertCellButton'
 import PanelVisibilityToggle from 'src/flows/components/panel/PanelVisibilityToggle'
 import FlowPanelTitle from 'src/flows/components/panel/FlowPanelTitle'
 import Results from 'src/flows/components/panel/Results'
+
+// Constants
 import {PIPE_DEFINITIONS} from 'src/flows'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
 

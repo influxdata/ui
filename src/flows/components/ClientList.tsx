@@ -3,20 +3,26 @@ import {Context as SidebarContext} from 'src/flows/context/sidebar'
 import {CLIENT_DEFINITIONS} from 'src/writeData'
 import {FlexBox, SelectableCard, ComponentSize} from '@influxdata/clockface'
 import placeholderLogo from 'src/writeData/graphics/placeholderLogo.svg'
+import PanelQueryOverlay from 'src/flows/components/panel/PanelQueryOverlay'
+import {PopupContext} from 'src/flows/context/popup'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
 const ClientList: FC = () => {
   const {id} = useContext(SidebarContext)
+  const {launch} = useContext(PopupContext)
 
   return (
     <FlexBox style={{flexWrap: 'wrap'}}>
       {Object.values(CLIENT_DEFINITIONS).map(item => {
         const click = (client: string) => {
-          event('Client Library Opened', {client})
+          event('Export Client Library Opened', {client})
 
-          console.log('lets open the overlay', client, 'for', id) // eslint-disable-line no-console
+          launch(<PanelQueryOverlay />, {
+            panelID: id,
+            contentID: client,
+          })
         }
 
         const thumb = <img src={item.logo ? item.logo : placeholderLogo} />

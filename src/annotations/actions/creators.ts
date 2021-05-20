@@ -1,4 +1,6 @@
-import {Annotation, AnnotationResponse, AnnotationStream} from 'src/types'
+import {AnnotationResponse, AnnotationStream} from 'src/types'
+
+import {AnnotationEvent} from 'src/client/annotationdRoutes'
 
 export const DELETE_ANNOTATION = 'DELETE_ANNOTATION'
 export const SET_ANNOTATIONS = 'SET_ANNOTATIONS'
@@ -32,13 +34,13 @@ export const toggleSingleClickAnnotations = () =>
     type: TOGGLE_SINGLE_CLICK_ANNOTATIONS,
   } as const)
 
-export const deleteAnnotation = (annotation: Annotation) =>
+export const deleteAnnotation = (annotation: AnnotationEvent) =>
   ({
     type: DELETE_ANNOTATION,
     annotation,
   } as const)
 
-export const editAnnotation = (annotation: Annotation) =>
+export const editAnnotation = (annotation: AnnotationEvent) =>
   ({type: EDIT_ANNOTATION, annotation} as const)
 
 export const toggleAnnotationVisibility = () =>

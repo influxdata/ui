@@ -60,7 +60,7 @@ const FlowHeader: FC = () => {
           <TimeRangeDropdown />
           <FeatureFlag name="flow-snapshot">
             <SquareButton
-              icon={IconFont.Polaroid}
+              icon={IconFont.Export}
               onClick={printJSON}
               color={ComponentColor.Default}
               titleText="Export Notebook"

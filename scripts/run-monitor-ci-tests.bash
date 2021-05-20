@@ -96,13 +96,13 @@ if [[ -z "${OSS_SHA:-}" ]]; then
 		DEPLOY_PROD=true
 	fi
 	if [ -n $PULL_REQUEST ]; then
-		# if running from pull request, use github api to get source branch.
+		# if running from pull request, use github api to get source org and branch.
 		# this is needed to support forks of the UI repo.
 		pr=$(echo ${PULL_REQUEST} | grep -oE "[^/]+$")
 		github=$(curl -s --fail --request GET \
 			--url https://api.github.com/repos/influxdata/ui/pulls/${pr})
 		UI_BRANCH=$(echo ${github} | jq -r '.head.ref')
-		UI_GITHUB_ORG=$(echo ${github} | jq -r '.owner.login')
+		UI_GITHUB_ORG=$(echo ${github} | jq -r '.repo.owner.login')
 	fi
 
 	pipelineStartMsg="starting monitor-ci pipeline targeting monitor-ci branch ${MONITOR_CI_BRANCH}, UI branch ${UI_BRANCH} and using UI SHA ${SHA}"

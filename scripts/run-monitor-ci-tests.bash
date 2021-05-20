@@ -22,6 +22,7 @@ set -eux -o pipefail
 # - SHA: the UI repo commit SHA we're running against
 # - API_KEY: the CircleCI API access key
 # - UI_BRANCH: the branch of the UI repo we're running against
+# - UI_GITHUB_ORG: the github org of the UI repo (e.g. influxdata)
 # - MONITOR_CI_BRANCH: the branch of the monitor-ci repo to start a pipeline with (usually 'master')
 # - PULL_REQUEST: the open pull request, if one exists (used for lighthouse)
 #

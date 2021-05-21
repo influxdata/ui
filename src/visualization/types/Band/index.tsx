@@ -8,7 +8,6 @@ export default register => {
     type: 'band',
     name: 'Band',
     graphic: icon,
-    featureFlag: 'bandPlotType',
     initial: properties,
     component: view,
     options,

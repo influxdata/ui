@@ -8,7 +8,6 @@ export default register => {
     type: 'mosaic',
     name: 'Mosaic',
     graphic: icon,
-    featureFlag: 'mosaicGraphType',
     component: view,
     initial: properties,
     options,

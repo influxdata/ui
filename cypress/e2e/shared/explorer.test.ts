@@ -870,6 +870,7 @@ describe('DataExplorer', () => {
       })
 
       // TODO: make work with annotations
+      // TODO: fix failing test - fails locally and in CI
       it.skip('can zoom and unzoom horizontal axis', () => {
         cy.getByTestID(`selector-list m`).click()
         cy.getByTestID('selector-list v').click()
@@ -902,6 +903,7 @@ describe('DataExplorer', () => {
         makeGraphSnapshot().shouldBeSameAs(snapshot)
       })
 
+      // TODO: fix failing test - fails locally and in CI
       it.skip('can zoom and unzoom vertical axis', () => {
         cy.getByTestID(`selector-list m`).click()
         cy.getByTestID('selector-list v').click()
@@ -1166,31 +1168,6 @@ describe('DataExplorer', () => {
       cy.wait(200)
       cy.get('.autorefresh-dropdown--pause').click()
       makeGraphSnapshot().shouldBeSameAs(snapshot, false)
-    })
-
-    // skip until the auto-refresh feature is added back
-    it.skip('auto refresh', () => {
-      const snapshot = makeGraphSnapshot()
-      cy.getByTestID('autorefresh-dropdown--button').click()
-      cy.getByTestID('auto-refresh-5s').click()
-
-      cy.wait(3_000)
-      makeGraphSnapshot().shouldBeSameAs(snapshot)
-
-      cy.wait(3_000)
-      const snapshot2 = makeGraphSnapshot()
-      snapshot2.shouldBeSameAs(snapshot, false)
-
-      cy.getByTestID('autorefresh-dropdown-refresh').should('not.be.visible')
-      cy.getByTestID('autorefresh-dropdown--button')
-        .should('contain.text', '5s')
-        .click()
-      cy.getByTestID('auto-refresh-paused').click()
-      cy.getByTestID('autorefresh-dropdown-refresh').should('be.visible')
-
-      // wait if graph changes after another 6s when autorefresh is paused
-      cy.wait(6_000)
-      makeGraphSnapshot().shouldBeSameAs(snapshot2)
     })
   })
 

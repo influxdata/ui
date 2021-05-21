@@ -29,8 +29,7 @@ describe('Checks', () => {
     cy.getByTestID('alerting-tab--checks').click({force: true})
   })
 
-  // TODO(watts): resolve flakeyness caused by detached elements with: https://github.com/influxdata/ui/pull/515
-  it.skip('can validate a threshold check', () => {
+  it('can validate a threshold check', () => {
     cy.log('Create threshold check')
     cy.getByTestID('create-check').click()
     cy.getByTestID('create-threshold-check').click()
@@ -39,11 +38,10 @@ describe('Checks', () => {
       .should('be.disabled')
       .and('not.contain', 'Group')
       .contains('Filter')
+    cy.getByTestID('overlay--children').should('be.visible')
     cy.get<string>('@defaultBucketListSelector').then(
       (defaultBucketListSelector: string) => {
-        cy.getByTestID(defaultBucketListSelector)
-          .wait(1200)
-          .click()
+        cy.getByTestID(defaultBucketListSelector).click()
 
         cy.log(
           'Select measurement and field; assert checklist popover and save button'
@@ -86,7 +84,7 @@ describe('Checks', () => {
         })
 
         cy.log('Name the check; save')
-        cy.getByTestID('overlay--container').within(() => {
+        cy.getByTestID('overlay--children').within(() => {
           cy.getByTestID('page-title')
             .contains('Name this Check')
             .click()
@@ -104,8 +102,7 @@ describe('Checks', () => {
     )
   })
 
-  // TODO(watts): resolve flakeyness caused by detached elements with: https://github.com/influxdata/ui/pull/515
-  it.skip('can create and filter checks', () => {
+  it('can create and filter checks', () => {
     cy.get<string>('@defaultBucketListSelector').then(
       (defaultBucketListSelector: string) => {
         cy.log('create first check')

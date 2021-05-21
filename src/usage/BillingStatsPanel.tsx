@@ -99,7 +99,7 @@ const BillingStatsPanel: FC = () => {
         alignItems={AlignItems.Stretch}
         testID="billing-stats--graphs"
       >
-        {billingStats.map((csv: string, i: number) => {
+        {billingStats?.map((csv: string, i: number) => {
           return (
             <GraphTypeSwitcher
               key={csv}

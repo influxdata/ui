@@ -85,6 +85,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
       }
 
       const vectors = resp.data
+
       setUsageVectors(vectors)
       handleSetSelectedUsage(vectors?.[0]?.name)
     } catch (error) {
@@ -114,15 +115,19 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   }, [handleGetBillingDate])
 
   const handleGetBillingStats = useCallback(async () => {
-    const resp = await getUsageBillingStats({})
+    try {
+      const resp = await getUsageBillingStats({})
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      const csvs = resp.data?.split('\n\n')
+
+      setBillingStats(csvs)
+    } catch (error) {
+      console.error('getBillingStats: ', error)
     }
-
-    const csvs = resp.data?.split('\n\n')
-
-    setBillingStats(csvs)
   }, [setBillingStats])
 
   useEffect(() => {
@@ -151,13 +156,19 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   }, [handleGetUsageStats])
 
   const handleGetRateLimits = useCallback(async () => {
-    const resp = await getUsageRateLimits(timeRange)
+    try {
+      const resp = await getUsageRateLimits({
+        query: {range: timeRange.duration},
+      })
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      setRateLimits(resp.data)
+    } catch (error) {
+      console.error('handleGetRateLimits: ', error)
     }
-
-    setRateLimits(resp.data)
   }, [timeRange])
 
   useEffect(() => {

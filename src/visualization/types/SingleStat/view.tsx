@@ -31,6 +31,7 @@ interface Props extends VisualizationProps {
 const SingleStat: FC<Props> = ({properties, result}) => {
   const {prefix, suffix, colors, decimalPlaces} = properties
   const {timeZone} = useContext(AppSettingContext)
+  const dispatch = useDispatch()
 
   if (isFlagEnabled('useGiraffeGraphs')) {
     const latestValues = getLatestValues(result.table)
@@ -67,7 +68,6 @@ const SingleStat: FC<Props> = ({properties, result}) => {
       ],
     }
 
-    const dispatch = useDispatch()
     if (isFlagEnabled('annotations')) {
       config.interactionHandlers = {
         singleClick: () => {

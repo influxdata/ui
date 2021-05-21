@@ -43,6 +43,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     lon,
   })
   const [coordinateFieldsFlag, setCoordinateFlag] = useState<boolean>(false)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const getToken = async () => {
@@ -157,7 +158,6 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     ],
   }
 
-  const dispatch = useDispatch()
   if (isFlagEnabled('annotations')) {
     config.interactionHandlers = {
       singleClick: () => {

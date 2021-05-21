@@ -41,6 +41,8 @@ const HistogramPlot: FunctionComponent<Props> = ({result, properties}) => {
     result.table.getColumn(properties.xColumn, 'number')
   )
 
+  const dispatch = useDispatch()
+
   const isValidView =
     properties.xColumn &&
     columnKeys.includes(properties.xColumn) &&
@@ -85,7 +87,6 @@ const HistogramPlot: FunctionComponent<Props> = ({result, properties}) => {
     ],
   }
 
-  const dispatch = useDispatch()
   if (isFlagEnabled('annotations')) {
     config.interactionHandlers = {
       singleClick: () => {

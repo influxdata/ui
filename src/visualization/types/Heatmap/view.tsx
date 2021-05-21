@@ -65,6 +65,8 @@ const HeatmapPlot: FunctionComponent<Props> = ({
     result.table.getColumn(yColumn, 'number')
   )
 
+  const dispatch = useDispatch()
+
   const isValidView =
     xColumn &&
     yColumn &&
@@ -126,7 +128,6 @@ const HeatmapPlot: FunctionComponent<Props> = ({
     ],
   }
 
-  const dispatch = useDispatch()
   if (isFlagEnabled('annotations')) {
     config.interactionHandlers = {
       singleClick: () => {

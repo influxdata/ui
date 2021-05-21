@@ -69,6 +69,8 @@ const ScatterPlot: FunctionComponent<Props> = ({
     result.table.getColumn(yColumn, 'number')
   )
 
+  const dispatch = useDispatch()
+
   const isValidView =
     xColumn &&
     columnKeys.includes(xColumn) &&
@@ -133,7 +135,6 @@ const ScatterPlot: FunctionComponent<Props> = ({
     ],
   }
 
-  const dispatch = useDispatch()
   if (isFlagEnabled('annotations')) {
     config.interactionHandlers = {
       singleClick: () => {

@@ -59,6 +59,8 @@ const MosaicPlot: FunctionComponent<Props> = ({
     result.table.getColumn(ySeriesColumns[0], 'string')
   )
 
+  const dispatch = useDispatch()
+
   const isValidView =
     xColumn &&
     columnKeys.includes(xColumn) &&
@@ -113,7 +115,6 @@ const MosaicPlot: FunctionComponent<Props> = ({
     ],
   }
 
-  const dispatch = useDispatch()
   if (isFlagEnabled('annotations')) {
     config.interactionHandlers = {
       singleClick: () => {

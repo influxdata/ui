@@ -45,19 +45,19 @@ describe('Home Page Tests', () => {
       .should('be.visible')
     cy.getByTestID('alerts-activity-table-container')
       .find('.event-row')
-      .should('have.length', 2)
+      .should('have.length.gte', 2)
   })
 })
 
 const exportMockAlertsActivity = () => {
-  const script1 = `import "influxdata/influxdb/v1"
-import "influxdata/influxdb/monitor"
+  const script1 = `import "influxdata/influxdb/v1{rightArrow}
+import "influxdata/influxdb/monitor{rightArrow}
 
-from(bucket: "_tasks")
-  |> range(start: -1d)
+from(bucket: "_tasks"{rightArrow}
+  |> range(start: -1d{rightArrow}
 |> v1.fieldsAsCols()
-|> distinct(column: "name")
-|> keep(columns: ["_value", "taskID", "status"])
+|> distinct(column: "name"{rightArrow}
+|> keep(columns: ["_value", "taskID", "status"{rightArrow}{rightArrow}
 |> rename(columns: {
   "taskID": "_check_id"{del}{del}
 })
@@ -70,15 +70,18 @@ from(bucket: "_tasks")
   cy.getByTestID('create-flow--button')
     .first()
     .click()
+  cy.wait(0)
   cy.getByTestID('flows-delete-cell')
     .first()
-    .click()
+    .click({force: true})
+  cy.wait(0)
   cy.getByTestID('flows-delete-cell')
     .first()
-    .click()
+    .click({force: true})
+  cy.wait(0)
   cy.getByTestID('flows-delete-cell')
     .first()
-    .click()
+    .click({force: true})
 
   // Name this Notebook
   cy.getByTestID('page-title').click()
@@ -105,6 +108,9 @@ from(bucket: "_tasks")
 
   // Run the Notebook
   cy.getByTestID('time-machine-submit-button').click()
+
+  // Random amount of wait for the export data to be available on home page
+  cy.wait(500)
 }
 
 const createChecks = () => {

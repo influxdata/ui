@@ -1,5 +1,6 @@
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {track} from 'rudder-sdk-js'
+import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 export interface Point {
   measurement: string
@@ -16,19 +17,21 @@ export interface PointFields {
   [key: string]: number | string
 }
 
-export interface Points {
+export interface PointsBatch {
   points: Array<Point>
   timestamp?: number
 }
 
-export const reportPoints = (points: Points) => {
+export const reportPoints = (batch: PointsBatch) => {
   if (isFlagEnabled('rudderstackReporting')) {
     try {
-      points.points.forEach(point => {
+      batch.points.forEach(point => {
         track(point.measurement, point.fields, point.tags)
       })
-    } catch (e) {
-      // don't want reporting errors to effect user experience
+    } catch (error) {
+      reportErrorThroughHoneyBadger(error, {
+        name: 'rudderstack event reporting',
+      })
     }
   }
   if (isFlagEnabled('appMetrics')) {
@@ -36,14 +39,16 @@ export const reportPoints = (points: Points) => {
       const url = '/api/v2/app-metrics'
       return fetch(url, {
         method: 'POST',
-        body: JSON.stringify(points),
+        body: JSON.stringify(batch),
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
       })
-    } catch (e) {
-      // don't want reporting errors to effect user experience
+    } catch (error) {
+      reportErrorThroughHoneyBadger(error, {
+        name: 'appMetrics event reporting',
+      })
     }
   }
 }

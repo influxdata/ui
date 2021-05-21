@@ -11,20 +11,20 @@ import {
 import {Button} from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 import {PopupContext} from 'src/flows/context/popup'
-import ExportTaskOverlay from 'src/flows/pipes/ToBucket/ExportTaskOverlay'
+import ExportTaskOverlay from 'src/flows/pipes/Schedule/ExportTaskOverlay'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
 const ExportTaskButton: FC = () => {
-  const {data, range, queryText} = useContext(PipeContext)
+  const {data, range} = useContext(PipeContext)
   const {launch} = useContext(PopupContext)
 
   const onClick = () => {
-    event('Export Task Clicked')
+    event('Export Task Clicked', {from: 'schedule'})
     launch(<ExportTaskOverlay />, {
       bucket: data.bucket,
-      query: queryText,
+      query: data.query,
       range,
     })
   }
@@ -35,13 +35,11 @@ const ExportTaskButton: FC = () => {
       color={ComponentColor.Success}
       type={ButtonType.Submit}
       onClick={onClick}
-      status={data.bucket ? ComponentStatus.Default : ComponentStatus.Disabled}
+      status={ComponentStatus.Default}
       testID="task-form-save"
       style={{opacity: 1}}
       icon={IconFont.Export}
-      titleText={
-        data.bucket ? 'Export As Task' : 'Select a bucket to enable export'
-      }
+      titleText="Export As Task"
     />
   )
 }

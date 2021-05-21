@@ -11,43 +11,19 @@ import {
   ComponentSize,
 } from '@influxdata/clockface'
 import {parse, format_from_js_file} from '@influxdata/flux'
+import ExportTaskButton from 'src/flows/pipes/Schedule/ExportTaskButton'
 
 // Types
 import {PipeProp} from 'src/types/flows'
 
 import {PipeContext} from 'src/flows/context/pipe'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
 
-const _pop = (node, test, acc = []) => {
-  if (!node) {
-    return acc
-  }
-
-  Object.entries(node).forEach(([key, val]) => {
-    if (Array.isArray(val)) {
-      let ni = 0
-      while (ni < val.length) {
-        if (test(val[ni])) {
-          acc.push(val[ni])
-          val.splice(ni, 1)
-          continue
-        }
-        _pop(val[ni], test, acc)
-        ni++
-      }
-    } else if (typeof val === 'object') {
-      if (val && test(val)) {
-        delete node[key]
-      } else {
-        _pop(val, test, acc)
-      }
-    }
-  })
-
-  return acc
-}
+import {remove} from 'src/flows/context/query'
 
 const Schedule: FC<PipeProp> = ({Context}) => {
   const {id, data, queryText, update} = useContext(PipeContext)
+  const {simplify} = useContext(FlowQueryContext)
   let intervalError = ''
   let offsetError = ''
 
@@ -68,18 +44,26 @@ const Schedule: FC<PipeProp> = ({Context}) => {
   }
 
   const [query, hasTaskOption] = useMemo(() => {
-    const ast = parse(queryText)
+    // simplify takes care of all the variable nonsense in the query
+    const ast = parse(simplify(queryText))
 
-    const opts = _pop(
+    // Here we take care of joining any task definition in the query with
+    // the data we have available to us from the input boxes
+    const params = remove(
       ast,
       node =>
         node.type === 'OptionStatement' && node.assignment.id.name === 'task'
-    )
+    ).reduce((acc, curr) => {
+      curr.assignment.init.properties.reduce((_acc, _curr) => {
+        _acc[_curr.key.name] = _curr.value.location.source
+        return _acc
+      }, acc)
 
-    const fixed = format_from_js_file(ast)
+      return acc
+    }, {})
 
-    const params: any = {
-      name: `"Notebook Task for ${id}"`,
+    if (!params.name) {
+      params.name = `"Notebook Task for ${id}"`
     }
 
     if (data.interval && !intervalError) {
@@ -89,11 +73,14 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     if (data.offset && !offsetError) {
       params.offset = data.offset
     }
-    const header = `option task = {${Object.entries(params)
-      .map(([key, val]) => `${key}: ${val}`)
-      .join(', ')}}\n\n`
 
-    return [header + fixed, !!opts.length]
+    const paramString = Object.entries(params)
+      .map(([key, val]) => `${key}: ${val}`)
+      .join(',\n')
+    const header = parse(`option task = {${paramString}}\n`)
+    ast.body.unshift(header.body[0])
+
+    return [format_from_js_file(ast), false]
   }, [queryText])
 
   useEffect(() => {
@@ -143,7 +130,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
   }, [hasTaskOption])
 
   return (
-    <Context>
+    <Context persistentControl={<ExportTaskButton />}>
       <FlexBox margin={ComponentSize.Medium}>
         <FlexBox.Child basis={168} grow={0} shrink={0}>
           <h5>Run this on a schedule</h5>

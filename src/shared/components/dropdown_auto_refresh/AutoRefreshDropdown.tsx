@@ -178,17 +178,13 @@ export default class AutoRefreshDropdown extends Component<Props> {
       return
     }
 
-    if (this.isPaused) {
-      return (
-        <SquareButton
-          icon={IconFont.Refresh}
-          onClick={onManualRefresh}
-          className={`autorefresh-dropdown--pause ${this.props.customClass}`}
-          testID="autorefresh-dropdown-refresh"
-        />
-      )
-    }
-
-    return null
+    return (
+      <SquareButton
+        icon={IconFont.Refresh}
+        onClick={onManualRefresh}
+        className={`autorefresh-dropdown--pause ${this.props.customClass}`}
+        testID="autorefresh-dropdown-refresh"
+      />
+    )
   }
 }

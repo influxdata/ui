@@ -1,7 +1,7 @@
 // Libraries
 import React, {FunctionComponent, useContext} from 'react'
 import {useDispatch} from 'react-redux'
-import {Plot} from '@influxdata/giraffe'
+import {Config, Plot} from '@influxdata/giraffe'
 
 // Components
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
@@ -96,7 +96,7 @@ const HeatmapPlot: FunctionComponent<Props> = ({
 
   const currentTheme = theme === 'light' ? VIS_THEME_LIGHT : VIS_THEME
 
-  const config = {
+  const config: Config = {
     ...currentTheme,
     table: result.table,
     xAxisLabel: properties.xAxisLabel,

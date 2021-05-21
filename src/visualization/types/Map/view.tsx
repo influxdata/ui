@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
-import {Plot} from '@influxdata/giraffe'
+import {Config, Plot} from '@influxdata/giraffe'
 import {RemoteDataState, InfluxColors} from '@influxdata/clockface'
 
 // Types
@@ -139,7 +139,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     zoomOpt = 6
   }
 
-  const config = {
+  const config: Config = {
     table: result.table,
     showAxes: false,
     layers: [

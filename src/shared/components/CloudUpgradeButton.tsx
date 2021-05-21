@@ -3,11 +3,12 @@ import React, {FC} from 'react'
 import {connect} from 'react-redux'
 import {get, find} from 'lodash'
 import classnames from 'classnames'
+import {useHistory} from 'react-router-dom'
 
 // Components
 import {
   IconFont,
-  LinkButton,
+  Button,
   ComponentColor,
   ComponentSize,
   ButtonShape,
@@ -26,6 +27,7 @@ import {getIsRegionBeta} from 'src/me/selectors'
 
 // Types
 import {AppState, OrgSetting} from 'src/types'
+import {isFlagEnabled} from '../utils/featureFlag'
 
 interface StateProps {
   inView: boolean
@@ -49,18 +51,26 @@ const CloudUpgradeButton: FC<StateProps & OwnProps> = ({
     [`${className}`]: className,
   })
 
-  // TODO(ariel): update the link to the local checkout if the flag is on
+  const history = useHistory()
+
+  const handleClick = () => {
+    if (isFlagEnabled('unityCheckout')) {
+      history.push('/checkout')
+    } else {
+      window.location.href = `${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`
+    }
+  }
+
   return (
     <CloudOnly>
       {inView && !isRegionBeta && (
-        <LinkButton
+        <Button
           icon={IconFont.CrownSolid}
           className={cloudUpgradeButtonClass}
           color={ComponentColor.Success}
           size={size}
           shape={ButtonShape.Default}
-          href={`${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`}
-          target="_self"
+          onClick={handleClick}
           text={buttonText}
           testID="cloud-upgrade--button"
         />

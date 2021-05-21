@@ -2,6 +2,7 @@ import logo from 'src/writeData/clients/Scala/logo.svg'
 import description from 'src/writeData/clients/Scala/description.md'
 import initialize from 'src/writeData/clients/Scala/initialize.example'
 import execute from 'src/writeData/clients/Scala/execute.example'
+import query from 'src/writeData/clients/Scala/query.example'
 
 export default register =>
   register({
@@ -12,4 +13,5 @@ export default register =>
     logo,
     initialize,
     execute,
+    query,
   })

@@ -74,7 +74,6 @@ export interface TimeMachineState {
   draftQueries: DashboardDraftQuery[]
   isViewingRawData: boolean
   isViewingVisOptions: boolean
-  isDisabledViewRawData: boolean
   activeTab: TimeMachineTab
   activeQueryIndex: number | null
   queryBuilder: QueryBuilderState
@@ -99,7 +98,6 @@ export const initialStateHelper = (): TimeMachineState => {
     draftQueries: [{...defaultViewQuery(), hidden: false}],
     isViewingRawData: false,
     isViewingVisOptions: false,
-    isDisabledViewRawData: false,
     activeTab: 'queries',
     activeQueryIndex: 0,
     queryResults: initialQueryResultsState(),
@@ -324,12 +322,6 @@ export const timeMachineReducer = (
       return {...state, isViewingRawData}
     }
 
-    case 'SET_IS_DISABLED_VIEW_RAW_DATA': {
-      const {isDisabledViewRawData} = action.payload
-
-      return {...state, isDisabledViewRawData}
-    }
-
     case 'SET_ACTIVE_TAB': {
       const {activeTab} = action.payload
 
@@ -501,6 +493,12 @@ export const timeMachineReducer = (
       const {legendColorizeRows} = action.payload
 
       return setViewProperties(state, {legendColorizeRows})
+    }
+
+    case 'SET_STATIC_LEGEND': {
+      const {staticLegend} = action.payload
+
+      return setViewProperties(state, {staticLegend})
     }
 
     case 'SET_BIN_COUNT': {

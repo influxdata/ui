@@ -25,6 +25,7 @@ import {
 } from 'src/shared/utils/vis'
 import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
 import LegendOrientation from 'src/visualization/components/internal/LegendOrientation'
+import StaticLegend from 'src/visualization/components/internal/StaticLegend'
 import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksGenerator'
 import Checkbox from 'src/shared/components/Checkbox'
 import {XYViewProperties} from 'src/types'
@@ -400,6 +401,11 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
         >
           <h5 className="view-options--header">Legend</h5>
           <LegendOrientation
+            properties={properties}
+            results={results}
+            update={update}
+          />
+          <StaticLegend
             properties={properties}
             results={results}
             update={update}

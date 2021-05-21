@@ -25,8 +25,8 @@ export const getAnnotationStreams = (state: AppState): AnnotationStream[] => {
   return state.annotations.streams
 }
 
-export const isSingleClickAnnotationsEnabled = (state: AppState): boolean => {
-  return state.annotations.enableSingleClickAnnotations
+export const isWriteModeEnabled = (state: AppState): boolean => {
+  return state.annotations.enableWriteMode
 }
 
 export const selectAreAnnotationsVisible = (state: AppState): boolean => {

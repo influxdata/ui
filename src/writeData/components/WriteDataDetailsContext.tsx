@@ -1,7 +1,17 @@
 // Libraries
-import React, {FC, createContext, useContext, useEffect, useState} from 'react'
+import React, {
+  FC,
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+} from 'react'
 import {useSelector} from 'react-redux'
-import {Context as TemplateContext} from 'src/shared/components/CodeSnippet'
+import {
+  Context as TemplateContext,
+  transform,
+} from 'src/shared/components/CodeSnippet'
 
 // Utils
 import {getAll} from 'src/resources/selectors'
@@ -15,6 +25,8 @@ interface WriteDataDetailsContextType {
   changeBucket: (bucket: Bucket) => void
   token: Authorization
   changeToken: (token: Authorization) => void
+  query: string
+  changeQuery: (query: string) => void
 }
 
 export const DEFAULT_WRITE_DATA_DETAILS_CONTEXT: WriteDataDetailsContextType = {
@@ -22,6 +34,8 @@ export const DEFAULT_WRITE_DATA_DETAILS_CONTEXT: WriteDataDetailsContextType = {
   changeBucket: () => {},
   token: null,
   changeToken: () => {},
+  query: null,
+  changeQuery: () => {},
 }
 
 export const WriteDataDetailsContext = createContext<
@@ -39,8 +53,37 @@ const WriteDataDetailsProvider: FC = ({children}) => {
   const org = useSelector(getOrg)
   const server = window.location.origin
 
-  const [bucket, setBucket] = useState(buckets[0])
-  const [token, setToken] = useState(tokens[0])
+  const [bucket, setBucket] = useState(
+    buckets[0] ?? ({name: '<BUCKET>'} as Bucket)
+  )
+  const [token, setToken] = useState(tokens[0] ?? {token: '<INFLUX_TOKEN>'})
+  const [query, setQuery] = useState(null)
+
+  const changeBucket = useCallback(
+    (toChangeBucket: Bucket) => setBucket(toChangeBucket),
+    [setBucket]
+  )
+  const changeQuery = useCallback(
+    (toChangeQuery: string) => setQuery(toChangeQuery),
+    [setQuery]
+  )
+  const changeToken = useCallback(
+    (toChangeToken: Authorization) => setToken(toChangeToken),
+    [setToken]
+  )
+
+  useEffect(() => {
+    const _query = transform(query, variables)
+
+    if (_query === variables.query) {
+      return
+    }
+
+    update({
+      ...variables,
+      query: _query,
+    })
+  }, [variables, update, query])
 
   useEffect(() => {
     if (server === variables.server) {
@@ -51,7 +94,7 @@ const WriteDataDetailsProvider: FC = ({children}) => {
       ...variables,
       server,
     })
-  }, [variables, server])
+  }, [variables, server, update])
 
   useEffect(() => {
     if (org?.name === variables.org) {
@@ -62,7 +105,7 @@ const WriteDataDetailsProvider: FC = ({children}) => {
       ...variables,
       org: org.name,
     })
-  }, [variables, org?.name])
+  }, [variables, org?.name, update])
 
   useEffect(() => {
     if (bucket?.name === variables.bucket) {
@@ -73,7 +116,7 @@ const WriteDataDetailsProvider: FC = ({children}) => {
       ...variables,
       bucket: bucket.name,
     })
-  }, [variables, bucket?.name])
+  }, [variables, bucket?.name, bucket, update])
 
   useEffect(() => {
     if (token?.token === variables.token) {
@@ -84,15 +127,17 @@ const WriteDataDetailsProvider: FC = ({children}) => {
       ...variables,
       token: token.token,
     })
-  }, [variables, token?.token])
+  }, [variables, token?.token, token, update])
 
   return (
     <WriteDataDetailsContext.Provider
       value={{
         bucket,
-        changeBucket: (toChangeBucket: Bucket) => setBucket(toChangeBucket),
+        changeBucket,
         token,
-        changeToken: (toChangeToken: Authorization) => setToken(toChangeToken),
+        changeToken,
+        query,
+        changeQuery,
       }}
     >
       {children}

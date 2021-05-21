@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useMemo, useContext} from 'react'
-import {Plot} from '@influxdata/giraffe'
+import {Plot, StaticLegend as StaticLegendConfig} from '@influxdata/giraffe'
 
 // Components
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
@@ -8,11 +8,7 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 // Utils
 import {useAxisTicksGenerator} from 'src/visualization/utils/useAxisTicksGenerator'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
-import {
-  useLegendOpacity,
-  useLegendOrientationThreshold,
-  useLegendColorizeRows,
-} from 'src/visualization/utils/useLegendOrientation'
+import {useLegendOpacity} from 'src/visualization/utils/useLegendOrientation'
 import {
   useVisXDomainSettings,
   useVisYDomainSettings,
@@ -34,6 +30,7 @@ import {
   BAND_LINE_WIDTH,
   BAND_SHADE_OPACITY,
   INVALID_DATA_COPY,
+  STATIC_LEGEND_STYLING,
 } from 'src/visualization/constants'
 import {AppSettingContext} from 'src/shared/contexts/app'
 
@@ -68,14 +65,14 @@ const BandPlot: FC<Props> = ({properties, result, timeRange}) => {
     )
   }, [activeQueryIndex, properties.queries, properties.upperColumn, properties.mainColumn, properties.lowerColumn])
    */
+  const {staticLegend} = properties
   const {theme, timeZone} = useContext(AppSettingContext)
 
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
-  const tooltipOrientationThreshold = useLegendOrientationThreshold(
-    properties.legendOrientationThreshold
-  )
-  const tooltipColorize = useLegendColorizeRows(properties.legendColorizeRows)
+  const tooltipOrientationThreshold = properties.legendOrientationThreshold
+
+  const tooltipColorize = properties.legendColorizeRows
 
   const storedXDomain = useMemo(() => parseXBounds(properties.axes.x.bounds), [
     properties.axes.x.bounds,
@@ -167,6 +164,10 @@ const BandPlot: FC<Props> = ({properties, result, timeRange}) => {
         legendOpacity: tooltipOpacity,
         legendOrientationThreshold: tooltipOrientationThreshold,
         legendColorizeRows: tooltipColorize,
+        staticLegend: {
+          ...staticLegend,
+          ...STATIC_LEGEND_STYLING,
+        } as StaticLegendConfig,
         valueFormatters: {
           [xColumn]: xFormatter,
           [yColumn]: yFormatter,

@@ -28,6 +28,7 @@ export const AnnotationsControlBarToggleButton: FC = () => {
 
   const handleClick = (): void => {
     dispatch(toggleShowAnnotationsControls())
+
     event('dashboard.annotations.control_bar_toggle_button.toggle', {
       newIsControlBarVisible: (!isVisible).toString(),
     })

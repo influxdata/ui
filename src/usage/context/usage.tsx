@@ -3,11 +3,12 @@ import React, {FC, useCallback, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Utils
-import {getBillingStats, getRateLimits} from 'src/usage/api'
 import {
   getBillingStartDate,
   getUsage,
+  getUsageBillingStats,
   getUsageVectors,
+  getUsageRateLimits,
 } from 'src/client/unityRoutes'
 import {getTimeRange} from 'src/dashboards/selectors'
 import {setTimeRange} from 'src/timeMachine/actions'
@@ -84,7 +85,6 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
       }
 
       const vectors = resp.data
-
       setUsageVectors(vectors)
       handleSetSelectedUsage(vectors?.[0]?.name)
     } catch (error) {
@@ -114,7 +114,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   }, [handleGetBillingDate])
 
   const handleGetBillingStats = useCallback(async () => {
-    const resp = await getBillingStats()
+    const resp = await getUsageBillingStats({})
 
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
@@ -151,7 +151,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   }, [handleGetUsageStats])
 
   const handleGetRateLimits = useCallback(async () => {
-    const resp = await getRateLimits(timeRange)
+    const resp = await getUsageRateLimits(timeRange)
 
     if (resp.status !== 200) {
       throw new Error(resp.data.message)

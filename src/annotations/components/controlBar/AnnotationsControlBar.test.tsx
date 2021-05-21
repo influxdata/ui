@@ -1,5 +1,6 @@
 // Installed libraries
 import React from 'react'
+import {fireEvent, cleanup, waitFor} from '@testing-library/react'
 
 // Mock State
 import {renderWithReduxAndRouter} from 'src/mockState'
@@ -10,7 +11,6 @@ import {normalize} from 'normalizr'
 import {Organization} from 'src/client'
 import {OrgEntities, RemoteDataState} from 'src/types'
 import {arrayOfOrgs} from 'src/schemas'
-import {fireEvent, cleanup, waitFor} from '@testing-library/react'
 import {AnnotationsControlBar} from './AnnotationsControlBar'
 import {
   setAnnotations,
@@ -224,18 +224,17 @@ describe('the annotations control bar ui functionality', () => {
     expect(visibleStreamsByID).toStrictEqual(['default'])
   })
 
-  it('can enable the one click add annotation', async () => {
-    const toggleButton = getByTestId('annotations-one-click-toggle')
+  it('can toggle write mode (which is on by defaul)', async () => {
+    const toggleButton = getByTestId('annotations-write-mode-toggle')
 
     await waitFor(() => {
       fireEvent.click(toggleButton)
     })
 
-    const enableSingleClickAnnotations = store.getState().annotations
-      .enableSingleClickAnnotations
+    const enableWriteMode = store.getState().annotations.enableWriteMode
 
-    // by default the annotations single click to add is disabled, above toggle enables it
-    expect(enableSingleClickAnnotations).toBeTruthy()
+    // annotation write mode is on by default
+    expect(enableWriteMode).toBeFalsy()
   })
 
   it('can toggle the visibility of annotations (which are on by default)', async () => {

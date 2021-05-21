@@ -1,2 +1,2 @@
-var query = $"from(bucket: \"<%= bucket %>\") |> range(start: -1h)";
+var query = $"<%= query %>";
 var tables = await client.GetQueryApi().QueryAsync(query, org)

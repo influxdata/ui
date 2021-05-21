@@ -3,7 +3,6 @@ import React, {ChangeEvent, FC} from 'react'
 
 // Utils
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Components
 import {
@@ -79,10 +78,6 @@ interface Props extends VisualizationOptionProps {
 const LegendOrientation: FC<Props> = ({properties, update}) => {
   const legendOpacity = properties?.legendOpacity
   const legendOrientation = properties?.legendOrientationThreshold
-
-  if (!isFlagEnabled('legendOrientation')) {
-    return null
-  }
 
   const handleSetOrientation = (threshold: number): void => {
     update({

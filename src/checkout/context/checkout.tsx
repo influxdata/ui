@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useCallback, useEffect, useState} from 'react'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
 
 // Utils
@@ -11,6 +11,7 @@ import {
   getSettingsNotifications,
   postCheckout,
 } from 'src/client/unityRoutes'
+import {getQuartzMe} from 'src/me/selectors'
 
 // Constants
 import {states} from 'src/billing/constants'
@@ -100,12 +101,13 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     EMPTY_ZUORA_PARAMS
   )
   const [isDirty, setIsDirty] = useState(false)
+  const me = useSelector(getQuartzMe)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [inputs, setInputs] = useState<Inputs>({
     paymentMethodId: null,
-    notifyEmail: '',
-    balanceThreshold: null,
+    notifyEmail: me?.email ?? '', // sets the default to the user's registered email
+    balanceThreshold: 1, // set the default to the minimum balance threshold
     shouldNotify: true,
     street1: '',
     street2: '',
@@ -147,10 +149,14 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
           ...fields,
           balanceThreshold: resp.data.balanceThreshold,
           notifyEmail: resp.data.notifyEmail,
+          shouldNotify: resp.data.isNotify,
         })
       } catch (error) {
-        // TODO(ariel): add failure notification
-        console.error('error getting the settings: ', error)
+        // We're injesting the error here and leaving the default inputs since
+        // Quartz's API returns a 404 for valid requests that don't have any data
+        // Meaning, if a user hasn't filled out the notification settings, the
+        // API response is expected to return a 404 even though the query was successful
+        console.error(error)
       }
     },
     [getSettingsNotifications] // eslint-disable-line react-hooks/exhaustive-deps

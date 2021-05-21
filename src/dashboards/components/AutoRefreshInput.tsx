@@ -44,7 +44,7 @@ const AutoRefreshInput: FC = () => {
       dispatch(resetDashboardAutoRefresh(currentDashboardId))
       return
     }
-    const unit = selection[selection.length - 1]
+    const unit = selection.charAt(selection.length - 1)
     let multiplier
     if (unit === 's') {
       multiplier = 1
@@ -54,10 +54,9 @@ const AutoRefreshInput: FC = () => {
       multiplier = 3600
     }
 
-    const calculatedMilliseconds =
-      Number(selection.slice(0, selection.length - 1)) * multiplier * 1000
-
     if (unit === 's' || unit === 'm' || unit === 'h') {
+      const calculatedMilliseconds =
+        Number(selection.slice(0, selection.length - 1)) * multiplier * 1000
       dispatch(
         setAutoRefreshInterval(currentDashboardId, calculatedMilliseconds)
       )

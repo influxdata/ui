@@ -1205,10 +1205,12 @@ export const createAnnotationFailed = (error: string): Notification => ({
   message: `Failed to create annotation: ${error}`,
 })
 
-export const annotationsUnsupportedOnGraph = (graphType: string = 'This graph type'): Notification => ({
+export const annotationsUnsupportedOnGraph = (
+  graphType: string = 'This graph type'
+): Notification => ({
   ...defaultErrorNotification,
   icon: IconFont.Cube,
-  message: `${graphType} does not support adding annotations.`
+  message: `${graphType} does not support adding annotations.`,
 })
 
 export const dashboardAutoRefreshTimeoutSuccess = (

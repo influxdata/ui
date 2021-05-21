@@ -22,15 +22,8 @@ import {AppState} from 'src/types'
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = RouteComponentProps & ReduxProps
-
-if (isFlagEnabled('rudderstackReporting')) {
-  require('src/cloud/utils/rudderstack')
-}
 
 const GettingStarted: FunctionComponent<Props> = ({orgID, history}) => {
   const [loadDataAnimating, setLoadDataAnimation] = useState<boolean>(false)

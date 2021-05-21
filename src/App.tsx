@@ -26,6 +26,13 @@ const CreateOrgOverlay = lazy(() =>
 // Types
 import {AppState} from 'src/types'
 
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+if (isFlagEnabled('rudderstackReporting')) {
+  require('src/cloud/utils/rudderstack')
+}
+
 const App: FC = () => {
   const {theme, presentationMode} = useContext(AppSettingContext)
   const currentPage = useSelector((state: AppState) => state.currentPage)

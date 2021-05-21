@@ -1,5 +1,6 @@
 // Libraries
 import React, {FunctionComponent, useContext} from 'react'
+import {useDispatch} from 'react-redux'
 import {Plot} from '@influxdata/giraffe'
 
 // Components
@@ -15,6 +16,8 @@ import {
 } from 'src/visualization/utils/useVisDomainSettings'
 import {defaultXColumn, defaultYColumn} from 'src/shared/utils/vis'
 import {AppSettingContext} from 'src/shared/contexts/app'
+import {handleUnsupportedGraphType} from 'src/visualization/components/annotationUtils'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -99,40 +102,47 @@ const ScatterPlot: FunctionComponent<Props> = ({
 
   const currentTheme = theme === 'light' ? VIS_THEME_LIGHT : VIS_THEME
 
-  return (
-    <Plot
-      config={{
-        ...currentTheme,
-        table: result.table,
-        xAxisLabel: properties.xAxisLabel,
-        yAxisLabel: properties.yAxisLabel,
-        xDomain,
-        onSetXDomain,
-        onResetXDomain,
-        yDomain,
-        onSetYDomain,
-        onResetYDomain,
-        ...axisTicksOptions,
-        legendOpacity: tooltipOpacity,
-        legendOrientationThreshold: tooltipOrientationThreshold,
-        legendColorizeRows: tooltipColorize,
-        valueFormatters: {
-          [xColumn]: xFormatter,
-          [yColumn]: yFormatter,
-        },
-        layers: [
-          {
-            type: 'scatter',
-            x: xColumn,
-            y: yColumn,
-            colors: colorHexes,
-            fill: fillColumns,
-            symbol: symbolColumns,
-          },
-        ],
-      }}
-    />
-  )
+  const config = {
+    ...currentTheme,
+    table: result.table,
+    xAxisLabel: properties.xAxisLabel,
+    yAxisLabel: properties.yAxisLabel,
+    xDomain,
+    onSetXDomain,
+    onResetXDomain,
+    yDomain,
+    onSetYDomain,
+    onResetYDomain,
+    ...axisTicksOptions,
+    legendOpacity: tooltipOpacity,
+    legendOrientationThreshold: tooltipOrientationThreshold,
+    legendColorizeRows: tooltipColorize,
+    valueFormatters: {
+      [xColumn]: xFormatter,
+      [yColumn]: yFormatter,
+    },
+    layers: [
+      {
+        type: 'scatter',
+        x: xColumn,
+        y: yColumn,
+        colors: colorHexes,
+        fill: fillColumns,
+        symbol: symbolColumns,
+      },
+    ],
+  }
+
+  const dispatch = useDispatch()
+  if (isFlagEnabled('annotations')) {
+    config.interactionHandlers = {
+      singleClick: () => {
+        dispatch(handleUnsupportedGraphType('Scatter Plot'))
+      },
+    }
+  }
+
+  return <Plot config={config} />
 }
 
 export default ScatterPlot

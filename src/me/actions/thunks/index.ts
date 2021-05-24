@@ -8,6 +8,8 @@ import {getMe as apiGetQuartzMe} from 'src/client/unityRoutes'
 // Utils
 import {gaEvent, updateReportingContext} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {CLOUD} from 'src/shared/constants'
+import {getOrg} from 'src/organizations/selectors'
 // Actions
 import {setMe, setQuartzMe, setQuartzMeStatus} from 'src/me/actions/creators'
 
@@ -15,9 +17,14 @@ import {setMe, setQuartzMe, setQuartzMeStatus} from 'src/me/actions/creators'
 import {MeState} from 'src/me/reducers'
 
 // Types
-import {RemoteDataState} from 'src/types'
+import {RemoteDataState, GetState} from 'src/types'
+import {Dispatch} from 'react'
+import {Actions} from 'src/me/actions/creators'
 
-export const getMe = () => async dispatch => {
+export const getMe = () => async (
+  dispatch: Dispatch<Actions>,
+  getState: GetState
+) => {
   try {
     const user = await client.users.me()
     updateReportingContext({userID: user.id, userEmail: user.name})
@@ -36,8 +43,10 @@ export const getMe = () => async dispatch => {
       user_id: user.id,
     })
 
-    if (isFlagEnabled('rudderStackReporting')) {
-      identify(user.id, {email: user.name, orgID: this.props.orgID})
+    if (CLOUD && isFlagEnabled('rudderStackReporting')) {
+      const state = getState()
+      const org = getOrg(state)
+      identify(user.id, {email: user.name, orgID: org.id})
     }
 
     dispatch(setMe(user as MeState))

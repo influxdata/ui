@@ -59,31 +59,6 @@ const DashboardContainer: FC = () => {
     document.addEventListener('keypress', registerListeners)
   }, [dashboard, autoRefresh.inactivityTimeout])
 
-  const visChangeHandler = () => {
-    if (
-      document.visibilityState === 'hidden' &&
-      autoRefresh.status === AutoRefreshStatus.Active
-    ) {
-      GlobalAutoRefresher.stopPolling()
-      registerStopListeners()
-    } else if (document.visibilityState === 'visible') {
-      GlobalAutoRefresher.poll(autoRefresh, stopFunc)
-      registerListeners()
-    }
-  }
-
-  const registerStopListeners = useCallback(() => {
-    // Stop all existing timers and deregister everythang
-    if (timer.current) {
-      clearTimeout(timer.current)
-      timer.current = null
-    }
-
-    window.removeEventListener('load', registerListeners)
-    document.removeEventListener('mousemove', registerListeners)
-    document.removeEventListener('keypress', registerListeners)
-  }, [registerListeners, timer])
-
   const stopFunc = useCallback(() => {
     if (
       !autoRefresh.infiniteDuration &&
@@ -99,6 +74,29 @@ const DashboardContainer: FC = () => {
     autoRefresh.infiniteDuration,
   ])
 
+  const visChangeHandler = useCallback(() => {
+    if (
+      document.visibilityState === 'hidden' &&
+      autoRefresh.status === AutoRefreshStatus.Active
+    ) {
+      GlobalAutoRefresher.stopPolling()
+    } else if (document.visibilityState === 'visible') {
+      GlobalAutoRefresher.poll(autoRefresh, stopFunc)
+    }
+  }, [autoRefresh.status, stopFunc])
+
+  const registerStopListeners = useCallback(() => {
+    // Stop all existing timers and deregister everythang
+    if (timer.current) {
+      clearTimeout(timer.current)
+      timer.current = null
+    }
+
+    window.removeEventListener('load', registerListeners)
+    document.removeEventListener('mousemove', registerListeners)
+    document.removeEventListener('keypress', registerListeners)
+  }, [registerListeners, timer])
+
   useEffect(() => {
     if (isEditing) {
       registerStopListeners()
@@ -111,9 +109,9 @@ const DashboardContainer: FC = () => {
       autoRefresh.status === AutoRefreshStatus.Active
     ) {
       GlobalAutoRefresher.poll(autoRefresh, stopFunc)
+      document.addEventListener('visibilitychange', visChangeHandler)
       if (autoRefresh.inactivityTimeout > 0) {
         registerListeners()
-        document.addEventListener('visibilitychange', visChangeHandler)
       }
     } else {
       registerStopListeners()
@@ -130,6 +128,7 @@ const DashboardContainer: FC = () => {
     autoRefresh.inactivityTimeout,
     stopFunc,
     isEditing?.path,
+    visChangeHandler,
   ])
 
   useEffect(() => {

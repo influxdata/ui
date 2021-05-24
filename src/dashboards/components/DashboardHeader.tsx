@@ -30,6 +30,7 @@ import {
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {resetQueryCache} from 'src/shared/apis/queryCache'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Selectors
 import {getTimeRange} from 'src/dashboards/selectors'
@@ -107,7 +108,9 @@ const DashboardHeader: FC<Props> = ({
   }
 
   const handleChooseTimeRange = (timeRange: TimeRange) => {
-    resetQueryCache()
+    if (isFlagEnabled('queryCacheForDashboards')) {
+      resetQueryCache()
+    }
     setDashboardTimeRange(dashboard.id, timeRange)
     updateQueryParams({
       lower: timeRange.lower,
@@ -131,7 +134,9 @@ const DashboardHeader: FC<Props> = ({
 
   const resetCacheAndRefresh = (): void => {
     // We want to invalidate the existing cache when a user manually refreshes the dashboard
-    resetQueryCache()
+    if (isFlagEnabled('queryCacheForDashboards')) {
+      resetQueryCache()
+    }
     onManualRefresh()
   }
 

@@ -59,7 +59,9 @@ const dashRoute = `/${ORGS}/${ORG_ID}/${DASHBOARDS}/${DASHBOARD_ID}`
 @ErrorHandling
 class DashboardPage extends Component<Props> {
   public componentDidMount() {
-    resetQueryCache()
+    if (isFlagEnabled('queryCacheForDashboards')) {
+      resetQueryCache()
+    }
 
     this.emitRenderCycleEvent()
 
@@ -69,7 +71,9 @@ class DashboardPage extends Component<Props> {
   }
 
   public componentWillUnmount() {
-    resetQueryCache()
+    if (isFlagEnabled('queryCacheForDashboards')) {
+      resetQueryCache()
+    }
   }
 
   public render() {

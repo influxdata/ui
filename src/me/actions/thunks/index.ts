@@ -1,6 +1,7 @@
 // Libraries
 import HoneyBadger from 'honeybadger-js'
 import {identify} from 'rudder-sdk-js'
+import {Dispatch} from 'react'
 
 // API
 import {client} from 'src/utils/api'
@@ -18,7 +19,8 @@ import {MeState} from 'src/me/reducers'
 
 // Types
 import {RemoteDataState, GetState} from 'src/types'
-import {Dispatch} from 'react'
+
+// Creators
 import {Actions} from 'src/me/actions/creators'
 
 export const getMe = () => async (

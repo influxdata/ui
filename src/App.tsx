@@ -1,10 +1,16 @@
 // Libraries
-import React, {FC, Suspense, lazy, useContext} from 'react'
+import React, {FC, Suspense, lazy, useContext, useEffect} from 'react'
 import {useSelector} from 'react-redux'
 import classnames from 'classnames'
 import {Switch, Route} from 'react-router-dom'
 
 import {AppSettingContext, AppSettingProvider} from 'src/shared/contexts/app'
+
+import {
+  RUDDERSTACK_DATA_PLANE_URL,
+  RUDDERSTACK_WRITE_KEY,
+} from 'src/shared/constants'
+import {load} from 'rudder-sdk-js'
 
 // Components
 import {AppWrapper} from '@influxdata/clockface'
@@ -28,10 +34,7 @@ import {AppState} from 'src/types'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
-if (isFlagEnabled('rudderstackReporting')) {
-  require('src/cloud/utils/rudderstack')
-}
+import {CLOUD} from 'src/shared/constants'
 
 const App: FC = () => {
   const {theme, presentationMode} = useContext(AppSettingContext)
@@ -40,6 +43,12 @@ const App: FC = () => {
   const appWrapperClass = classnames('', {
     'dashboard-light-mode': currentPage === 'dashboard' && theme === 'light',
   })
+
+  useEffect(() => {
+    if (CLOUD && isFlagEnabled('rudderstackReporting')) {
+      load(RUDDERSTACK_WRITE_KEY, RUDDERSTACK_DATA_PLANE_URL)
+    }
+  }, [RUDDERSTACK_WRITE_KEY, RUDDERSTACK_DATA_PLANE_URL])
 
   return (
     <AppWrapper presentationMode={presentationMode} className={appWrapperClass}>

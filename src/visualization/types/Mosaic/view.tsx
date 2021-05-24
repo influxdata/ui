@@ -1,6 +1,6 @@
 // Libraries
 import React, {FunctionComponent, useContext} from 'react'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {Config, Plot} from '@influxdata/giraffe'
 
 // Components
@@ -27,6 +27,9 @@ import {INVALID_DATA_COPY} from 'src/visualization/constants'
 // Types
 import {MosaicViewProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
+
+// Selectors
+import {isWriteModeEnabled} from 'src/annotations/selectors'
 
 interface Props extends VisualizationProps {
   properties: MosaicViewProperties
@@ -60,6 +63,7 @@ const MosaicPlot: FunctionComponent<Props> = ({
   )
 
   const dispatch = useDispatch()
+  const inAnnotationWriteMode = useSelector(isWriteModeEnabled)
 
   const isValidView =
     xColumn &&
@@ -115,7 +119,7 @@ const MosaicPlot: FunctionComponent<Props> = ({
     ],
   }
 
-  if (isFlagEnabled('annotations')) {
+  if (inAnnotationWriteMode && isFlagEnabled('annotations')) {
     config.interactionHandlers = {
       singleClick: () => {
         dispatch(handleUnsupportedGraphType('Mosaic'))

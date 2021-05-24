@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useEffect, useState} from 'react'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {Config, Plot} from '@influxdata/giraffe'
 import {RemoteDataState, InfluxColors} from '@influxdata/clockface'
 
@@ -17,6 +17,9 @@ import {getMapToken} from './api'
 import {event} from 'src/cloud/utils/reporting'
 import {handleUnsupportedGraphType} from 'src/visualization/components/annotationUtils'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+// Selectors
+import {isWriteModeEnabled} from 'src/annotations/selectors'
 
 interface Props extends VisualizationProps {
   properties: GeoViewProperties
@@ -44,6 +47,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
   })
   const [coordinateFieldsFlag, setCoordinateFlag] = useState<boolean>(false)
   const dispatch = useDispatch()
+  const inAnnotationWriteMode = useSelector(isWriteModeEnabled)
 
   useEffect(() => {
     const getToken = async () => {
@@ -158,7 +162,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     ],
   }
 
-  if (isFlagEnabled('annotations')) {
+  if (inAnnotationWriteMode && isFlagEnabled('annotations')) {
     config.interactionHandlers = {
       singleClick: () => {
         dispatch(handleUnsupportedGraphType('Map'))

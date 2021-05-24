@@ -110,7 +110,7 @@ from(bucket: "_tasks"{rightArrow}
   cy.getByTestID('time-machine-submit-button').click()
 
   // Random amount of wait for the export data to be available on home page
-  cy.wait(500)
+  cy.wait(1000)
 }
 
 const createChecks = () => {

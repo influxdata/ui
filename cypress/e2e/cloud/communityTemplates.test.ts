@@ -246,12 +246,15 @@ describe('Community Templates', () => {
       cy.go('back')
     })
 
-    // this behavior should be cleaned up
-    it.skip('takes you to github readme when you click on the Community Templates button', () => {
+    it('takes you to github readme when you click on the Community Templates button', () => {
+      // this request will 404 because it doesn't exist, but this will test that we're making the correct request.
+      cy.intercept(
+        'GET',
+        'https://raw.githubusercontent.com/influxdata/community-templates/master/testdata/readme.md'
+      ).as('readme')
       cy.getByTestID('community-template-readme-overlay-button').click()
-      cy.get('.markdown-format').should('contain', 'Setup Instructions')
-
-      // we should confirm the link works
+      cy.getByTestIDSubStr('overlay--child').should('be.visible')
+      cy.wait('@readme')
     })
 
     it('deletes templates', () => {

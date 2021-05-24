@@ -204,22 +204,7 @@ describe('Buckets', () => {
       cy.getByTestID('overlay--container').should('not.exist')
       cy.getByTestID('notification-success').should('have.length', 1)
     })
-    // needs relevant data in order to test functionality
-    it.skip('should require key-value pairs when deleting predicate with filters', () => {
-      // confirm delete is disabled
-      cy.getByTestID('add-filter-btn').click()
-      // checks the consent input
-      cy.getByTestID('delete-checkbox').check({force: true})
-      // cannot delete
-      cy.getByTestID('confirm-delete-btn').should('be.disabled')
-
-      // should display warnings
-      cy.getByTestID('form--element-error').should('have.length', 2)
-
-      // TODO: add filter values based on dropdown selection in key / value
-    })
   })
-
   describe('routing directly to the edit overlay', () => {
     it('reroutes to buckets view if bucket does not exist', () => {
       cy.get('@org').then(({id}: Organization) => {

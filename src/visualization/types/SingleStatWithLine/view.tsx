@@ -83,6 +83,9 @@ const SingleStatWithLine: FC<Props> = ({
   const tooltipColorize = properties.legendColorizeRows
   const tooltipOrientationThreshold = properties.legendOrientationThreshold
   const {staticLegend} = properties
+  if (!isFlagEnabled('staticLegend')) {
+    staticLegend.hide = true
+  }
 
   // these two values are set in the dashboard, and used whether or not this view
   // is in a dashboard or in configuration/single cell popout mode

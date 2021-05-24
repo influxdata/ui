@@ -21,6 +21,7 @@ import {
   defaultXColumn,
   defaultYColumn,
 } from 'src/shared/utils/vis'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -66,6 +67,9 @@ const BandPlot: FC<Props> = ({properties, result, timeRange}) => {
   }, [activeQueryIndex, properties.queries, properties.upperColumn, properties.mainColumn, properties.lowerColumn])
    */
   const {staticLegend} = properties
+  if (!isFlagEnabled('staticLegend')) {
+    staticLegend.hide = true
+  }
   const {theme, timeZone} = useContext(AppSettingContext)
 
   const axisTicksOptions = useAxisTicksGenerator(properties)

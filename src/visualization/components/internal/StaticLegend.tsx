@@ -49,21 +49,16 @@ interface Props extends VisualizationOptionProps {
 }
 
 const StaticLegend: FC<Props> = ({properties, update}) => {
-  const {staticLegend} = properties
+  const {
+    staticLegend = {
+      hide: STATIC_LEGEND_HIDE_DEFAULT,
+    } as StaticLegend,
+  } = properties
   const {valueAxis} = staticLegend
   const {heightRatio = STATIC_LEGEND_HEIGHT_RATIO_DEFAULT, hide} = staticLegend
-    ? staticLegend
-    : ({
-        hide: STATIC_LEGEND_HIDE_DEFAULT,
-      } as StaticLegend)
   const [showOptions, setShowOptions] = useState<boolean>(!hide)
+
   if (!isFlagEnabled('staticLegend')) {
-    update({
-      staticLegend: {
-        ...staticLegend,
-        hide: true,
-      },
-    })
     return null
   }
 

@@ -1,6 +1,7 @@
 // Libraries
 import React, {FunctionComponent, useContext} from 'react'
-import {Plot} from '@influxdata/giraffe'
+import {useDispatch, useSelector} from 'react-redux'
+import {Config, Plot} from '@influxdata/giraffe'
 
 // Components
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
@@ -15,6 +16,8 @@ import {
 } from 'src/visualization/utils/useVisDomainSettings'
 import {defaultXColumn} from 'src/shared/utils/vis'
 import {AppSettingContext} from 'src/shared/contexts/app'
+import {handleUnsupportedGraphType} from 'src/visualization/components/annotationUtils'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -24,6 +27,9 @@ import {INVALID_DATA_COPY} from 'src/visualization/constants'
 // Types
 import {MosaicViewProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
+
+// Selectors
+import {isWriteModeEnabled} from 'src/annotations/selectors'
 
 interface Props extends VisualizationProps {
   properties: MosaicViewProperties
@@ -56,6 +62,9 @@ const MosaicPlot: FunctionComponent<Props> = ({
     result.table.getColumn(ySeriesColumns[0], 'string')
   )
 
+  const dispatch = useDispatch()
+  const inAnnotationWriteMode = useSelector(isWriteModeEnabled)
+
   const isValidView =
     xColumn &&
     columnKeys.includes(xColumn) &&
@@ -79,39 +88,45 @@ const MosaicPlot: FunctionComponent<Props> = ({
 
   const currentTheme = theme === 'light' ? VIS_THEME_LIGHT : VIS_THEME
 
-  return (
-    <Plot
-      config={{
-        ...currentTheme,
-        table: result.table,
-        xAxisLabel: properties.xAxisLabel,
-        yAxisLabel: properties.yAxisLabel,
-        xDomain,
-        onSetXDomain,
-        onResetXDomain,
-        yDomain,
-        onSetYDomain,
-        onResetYDomain,
-        ...axisTicksOptions,
-        legendOpacity: tooltipOpacity,
-        legendOrientationThreshold: tooltipOrientationThreshold,
-        legendColorizeRows: tooltipColorize,
-        valueFormatters: {
-          [xColumn]: xFormatter,
-        },
-        layers: [
-          {
-            type: 'mosaic',
-            x: xColumn,
-            y: ySeriesColumns,
-            yLabelColumns: properties.yLabelColumns,
-            yLabelColumnSeparator: properties.yLabelColumnSeparator,
-            colors: colorHexes,
-            fill: fillColumns,
-          },
-        ],
-      }}
-    />
-  )
+  const config: Config = {
+    ...currentTheme,
+    table: result.table,
+    xAxisLabel: properties.xAxisLabel,
+    yAxisLabel: properties.yAxisLabel,
+    xDomain,
+    onSetXDomain,
+    onResetXDomain,
+    yDomain,
+    onSetYDomain,
+    onResetYDomain,
+    ...axisTicksOptions,
+    legendOpacity: tooltipOpacity,
+    legendOrientationThreshold: tooltipOrientationThreshold,
+    legendColorizeRows: tooltipColorize,
+    valueFormatters: {
+      [xColumn]: xFormatter,
+    },
+    layers: [
+      {
+        type: 'mosaic',
+        x: xColumn,
+        y: ySeriesColumns,
+        yLabelColumns: properties.yLabelColumns,
+        yLabelColumnSeparator: properties.yLabelColumnSeparator,
+        colors: colorHexes,
+        fill: fillColumns,
+      },
+    ],
+  }
+
+  if (inAnnotationWriteMode && isFlagEnabled('annotations')) {
+    config.interactionHandlers = {
+      singleClick: () => {
+        dispatch(handleUnsupportedGraphType('Mosaic'))
+      },
+    }
+  }
+
+  return <Plot config={config} />
 }
 export default MosaicPlot

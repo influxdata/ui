@@ -7,8 +7,6 @@ import {CustomTimeRange, AutoRefreshStatus} from 'src/types'
 
 // Actions
 import {
-  setAutoRefreshInterval,
-  setAutoRefreshStatus,
   setAutoRefreshDuration,
   setInactivityTimeout,
 } from 'src/shared/actions/autoRefresh'
@@ -59,8 +57,8 @@ export const createAutoRefreshInitialState = (
       type: 'custom',
     },
     refreshMilliseconds: {
-      interval: 0,
-      status: AutoRefreshStatus.Paused,
+      interval: 60000,
+      status: AutoRefreshStatus.Active,
     },
     infiniteDuration: false,
     ...override,
@@ -81,8 +79,6 @@ const autoRefreshReducer = (
         ...state,
         inactivityTimeoutCategory: action.inactivityTimeoutCategory,
       }
-    case 'SET_REFRESH_MILLISECONDS':
-      return {...state, refreshMilliseconds: action.refreshMilliseconds}
     case 'SET_INFINITE_DURATION':
       return {...state, infiniteDuration: action.infiniteDuration}
     case 'RESET':
@@ -102,25 +98,7 @@ const AutoRefreshContextProvider: FC = ({children}) => {
 
   const reduxDispatch = useDispatch()
 
-  const activateAutoRefresh = useCallback(() => {
-    reduxDispatch(
-      setAutoRefreshInterval(
-        currentDashboardId,
-        state.refreshMilliseconds.interval
-      )
-    )
-
-    if (state.refreshMilliseconds.interval === 0) {
-      reduxDispatch(
-        setAutoRefreshStatus(currentDashboardId, AutoRefreshStatus.Paused)
-      )
-      return
-    }
-
-    reduxDispatch(
-      setAutoRefreshStatus(currentDashboardId, AutoRefreshStatus.Active)
-    )
-
+  const setAutoRefreshSettings = useCallback(() => {
     if (state.inactivityTimeout !== 'None') {
       const cutoff = calculateTimeout(
         state.inactivityTimeout,
@@ -134,13 +112,14 @@ const AutoRefreshContextProvider: FC = ({children}) => {
     currentDashboardId,
     reduxDispatch,
     state.duration,
-    state.refreshMilliseconds,
     state.inactivityTimeout,
     state.inactivityTimeoutCategory,
   ])
 
   return (
-    <AutoRefreshContext.Provider value={{state, dispatch, activateAutoRefresh}}>
+    <AutoRefreshContext.Provider
+      value={{state, dispatch, setAutoRefreshSettings}}
+    >
       {children}
     </AutoRefreshContext.Provider>
   )

@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import {
   Config,
   NINETEEN_EIGHTY_FOUR,
@@ -42,6 +41,7 @@ export const AUTOREFRESH_DEFAULT = {
   duration: null,
   inactivityTimeout: 0,
   infiniteDuration: false,
+  refreshInputValue: 'None',
 }
 
 export const LAYOUT_MARGIN = 4

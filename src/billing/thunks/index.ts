@@ -19,11 +19,11 @@ import {
 import {
   getMarketplace as apiGetMarketplace,
   getBillingInfo as apiGetBillingInfo,
-  getBillingNotificationSettings,
   updateBillingNotificationSettings,
   getInvoices as apiGetInvoices,
   getOrgsLimits as apiGetOrgLimits,
 } from 'src/billing/api'
+import {getSettingsNotifications} from 'src/client/unityRoutes'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -88,7 +88,7 @@ export const getBillingInfo = async (dispatch: Dispatch<Action>) => {
 export const getBillingSettings = async (dispatch: Dispatch<Action>) => {
   try {
     dispatch(setBillingSettingsStatus(RemoteDataState.Loading))
-    const resp = await getBillingNotificationSettings()
+    const resp = await getSettingsNotifications({})
 
     if (resp.status !== 200) {
       throw new Error(resp.data.message)

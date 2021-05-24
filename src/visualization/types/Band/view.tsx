@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useMemo, useContext} from 'react'
-import {Plot, StaticLegend as StaticLegendConfig} from '@influxdata/giraffe'
+import {Plot} from '@influxdata/giraffe'
 
 // Components
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
@@ -9,6 +9,7 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 import {useAxisTicksGenerator} from 'src/visualization/utils/useAxisTicksGenerator'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
 import {useLegendOpacity} from 'src/visualization/utils/useLegendOrientation'
+import {useStaticLegend} from 'src/visualization/utils/useStaticLegend'
 import {
   useVisXDomainSettings,
   useVisYDomainSettings,
@@ -21,7 +22,6 @@ import {
   defaultXColumn,
   defaultYColumn,
 } from 'src/shared/utils/vis'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -31,7 +31,6 @@ import {
   BAND_LINE_WIDTH,
   BAND_SHADE_OPACITY,
   INVALID_DATA_COPY,
-  STATIC_LEGEND_STYLING,
 } from 'src/visualization/constants'
 import {AppSettingContext} from 'src/shared/contexts/app'
 
@@ -66,10 +65,7 @@ const BandPlot: FC<Props> = ({properties, result, timeRange}) => {
     )
   }, [activeQueryIndex, properties.queries, properties.upperColumn, properties.mainColumn, properties.lowerColumn])
    */
-  const {staticLegend} = properties
-  if (!isFlagEnabled('staticLegend')) {
-    staticLegend.hide = true
-  }
+  const staticLegend = useStaticLegend(properties)
   const {theme, timeZone} = useContext(AppSettingContext)
 
   const axisTicksOptions = useAxisTicksGenerator(properties)
@@ -168,10 +164,7 @@ const BandPlot: FC<Props> = ({properties, result, timeRange}) => {
         legendOpacity: tooltipOpacity,
         legendOrientationThreshold: tooltipOrientationThreshold,
         legendColorizeRows: tooltipColorize,
-        staticLegend: {
-          ...staticLegend,
-          ...STATIC_LEGEND_STYLING,
-        } as StaticLegendConfig,
+        staticLegend,
         valueFormatters: {
           [xColumn]: xFormatter,
           [yColumn]: yFormatter,

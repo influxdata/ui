@@ -9,7 +9,6 @@ import {
   getLatestValues,
   Plot,
   SingleStatLayerConfig,
-  StaticLegend as StaticLegendConfig,
 } from '@influxdata/giraffe'
 
 // Redux
@@ -26,6 +25,7 @@ import LatestValueTransform from 'src/visualization/components/LatestValueTransf
 import {useAxisTicksGenerator} from 'src/visualization/utils/useAxisTicksGenerator'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
 import {useLegendOpacity} from 'src/visualization/utils/useLegendOrientation'
+import {useStaticLegend} from 'src/visualization/utils/useStaticLegend'
 import {
   useVisXDomainSettings,
   useVisYDomainSettings,
@@ -48,10 +48,7 @@ import {
   VIS_THEME_LIGHT,
 } from 'src/shared/constants'
 import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
-import {
-  INVALID_DATA_COPY,
-  STATIC_LEGEND_STYLING,
-} from 'src/visualization/constants'
+import {INVALID_DATA_COPY} from 'src/visualization/constants'
 
 // Types
 import {LinePlusSingleStatProperties} from 'src/types'
@@ -82,10 +79,7 @@ const SingleStatWithLine: FC<Props> = ({
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
   const tooltipColorize = properties.legendColorizeRows
   const tooltipOrientationThreshold = properties.legendOrientationThreshold
-  const {staticLegend} = properties
-  if (!isFlagEnabled('staticLegend')) {
-    staticLegend.hide = true
-  }
+  const staticLegend = useStaticLegend(properties)
 
   // these two values are set in the dashboard, and used whether or not this view
   // is in a dashboard or in configuration/single cell popout mode
@@ -210,10 +204,7 @@ const SingleStatWithLine: FC<Props> = ({
     legendOpacity: tooltipOpacity,
     legendOrientationThreshold: tooltipOrientationThreshold,
     legendColorizeRows: tooltipColorize,
-    staticLegend: {
-      ...staticLegend,
-      ...STATIC_LEGEND_STYLING,
-    } as StaticLegendConfig,
+    staticLegend,
     valueFormatters: {
       [xColumn]: xFormatter,
       [yColumn]: yFormatter,

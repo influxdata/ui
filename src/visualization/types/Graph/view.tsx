@@ -213,7 +213,12 @@ const XYPlot: FC<Props> = ({
     if (inAnnotationWriteMode && cellID) {
       config.interactionHandlers = {
         singleClick: makeAnnotationClickListener(dispatch, cellID),
-        onXBrush: makeAnnotationRangeListener(dispatch, cellID),
+      }
+      if (isFlagEnabled('rangeAnnotations')) {
+        config.interactionHandlers.onXBrush = makeAnnotationRangeListener(
+          dispatch,
+          cellID
+        )
       }
     }
 

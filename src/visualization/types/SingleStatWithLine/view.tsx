@@ -59,6 +59,7 @@ import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 import {
   makeAnnotationClickListener,
   makeAnnotationLayer,
+  makeAnnotationRangeListener,
 } from 'src/visualization/utils/annotationUtils'
 
 import {useDispatch, useSelector} from 'react-redux'
@@ -233,6 +234,13 @@ const SingleStatWithLine: FC<Props> = ({
     if (inAnnotationWriteMode && cellID) {
       config.interactionHandlers = {
         singleClick: makeAnnotationClickListener(dispatch, cellID, eventPrefix),
+      }
+      if (isFlagEnabled('rangeAnnotations')) {
+        config.interactionHandlers.onXBrush = makeAnnotationRangeListener(
+          dispatch,
+          cellID,
+          eventPrefix
+        )
       }
     }
 

@@ -93,7 +93,6 @@ export const makeAnnotationRangeListener = (
   }
 
   const rangeHandler = (start: number | string, end: number | string) => {
-    console.log('here in rangeHandler (annotation utils)')
     event(`${eventPrefix}.annotations.create_range_annotation.show_overlay`)
     dispatch(
       showOverlay(
@@ -114,6 +113,15 @@ export const makeAnnotationRangeListener = (
   return rangeHandler
 }
 
+/**
+ *  This handles both point and range annotations
+ *  Point annotations have an stop time, it just is equal to the start time
+ *
+ *  The editing form will show the correct fields (it shows the stop time if the times are different,
+ *  else shows just the start time.
+ *
+ *  so just need one handler for both types of annotations
+ * */
 const makeAnnotationClickHandler = (
   cellID: string,
   dispatch: Dispatch<any>,
@@ -155,7 +163,6 @@ export const makeAnnotationLayer = (
     return {
       ...annotation,
       color: InfluxColors.Honeydew,
-      secondaryColor: InfluxColors.Wasabi,
     }
   })
 
@@ -179,7 +186,6 @@ export const makeAnnotationLayer = (
           title: annotation.summary,
           description: '',
           color: annotation.color,
-          secondaryColor: annotation.secondaryColor,
           startValue: new Date(annotation.startTime).getTime(),
           stopValue: new Date(annotation.endTime).getTime(),
           dimension: 'x',

@@ -83,7 +83,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
   }
 
   const handleKeyboardSubmit = () => {
-    props.onSubmit({message, startTime})
+    props.onSubmit({message, startTime, endTime})
   }
 
   const handleCancel = () => {

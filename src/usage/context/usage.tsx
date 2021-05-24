@@ -138,7 +138,8 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
     try {
       const resp = await getUsage({
         vector_name: selectedUsage,
-        query: {range: timeRange.duration},
+        query: {range: '24h'},
+        // query: {range: timeRange.duration},
       })
 
       if (resp.status !== 200) {
@@ -158,7 +159,8 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   const handleGetRateLimits = useCallback(async () => {
     try {
       const resp = await getUsageRateLimits({
-        query: {range: timeRange.duration},
+        // query: {range: timeRange.duration},
+        query: {range: '24h'},
       })
 
       if (resp.status !== 200) {

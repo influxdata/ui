@@ -1,5 +1,11 @@
 // Libraries
-import React, {FC, ChangeEvent, KeyboardEvent, useState} from 'react'
+import React, {
+  FC,
+  ChangeEvent,
+  KeyboardEvent,
+  useContext,
+  useState,
+} from 'react'
 import moment from 'moment'
 
 // Components
@@ -11,27 +17,53 @@ import {
   Input,
 } from '@influxdata/clockface'
 
+// Context
+import {AppSettingContext} from 'src/shared/contexts/app'
+
 interface Props {
   onChange: (newTime: string) => void
   onSubmit: () => void
   startTime: string | number
 }
 
+const ANNOTATION_TIME_FORMAT_UTC = 'YYYY-MM-DD HH:mm:ss' // 24 hour
+const ANNOTATION_TIME_FORMAT_LOCAL = 'YYYY-MM-DD h:mm:ss A' // 12 hour
+
 export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
+  const {timeZone} = useContext(AppSettingContext)
+
+  const momentDateWithTimezone = moment(props.startTime)
+  let timeFormat = ANNOTATION_TIME_FORMAT_LOCAL
+
+  if (timeZone === 'UTC') {
+    momentDateWithTimezone.utc()
+    timeFormat = ANNOTATION_TIME_FORMAT_UTC
+  }
+
   const [startTimeValue, setStartTimeValue] = useState<string>(
-    moment(props.startTime).format('YYYY-MM-DD HH:mm:ss.SSS')
+    momentDateWithTimezone.format(timeFormat)
   )
 
   const isValidTimeFormat = (inputValue: string): boolean => {
-    return moment(inputValue, 'YYYY-MM-DD HH:mm:ss.SSS', true).isValid()
+    return moment(inputValue, timeFormat, true).isValid()
   }
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setStartTimeValue(event.target.value)
 
     if (isValidTimeFormat(event.target.value)) {
+      if (timeZone === 'UTC') {
+        props.onChange(
+          moment
+            .utc(event.target.value, timeFormat)
+            .toDate()
+            .toISOString()
+        )
+        return
+      }
+
       props.onChange(
-        moment(event.target.value)
+        moment(event.target.value, timeFormat)
           .toDate()
           .toISOString()
       )
@@ -55,7 +87,7 @@ export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
 
   const getInputValidationMessage = (): string => {
     if (!isValidInputValue(startTimeValue)) {
-      return 'Format must be YYYY-MM-DD [HH:mm:ss.SSS]'
+      return `Format must be ${timeFormat}`
     }
 
     return ''
@@ -66,7 +98,7 @@ export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
   return (
     <Grid.Column widthXS={Columns.Twelve}>
       <Form.Element
-        label="Start Time (UTC)"
+        label="Start Time"
         required={true}
         errorMessage={validationMessage}
       >

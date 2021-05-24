@@ -34,9 +34,11 @@ import {
 
 // Constants
 import {
+  STATIC_LEGEND_HEIGHT_RATIO_DEFAULT,
   STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM,
   STATIC_LEGEND_HEIGHT_RATIO_MINIMUM,
   STATIC_LEGEND_HEIGHT_RATIO_STEP,
+  STATIC_LEGEND_HIDE_DEFAULT,
 } from 'src/visualization/constants'
 
 interface Props extends VisualizationOptionProps {
@@ -49,9 +51,19 @@ interface Props extends VisualizationOptionProps {
 const StaticLegend: FC<Props> = ({properties, update}) => {
   const {staticLegend} = properties
   const {valueAxis} = staticLegend
-  const {heightRatio, hide} = staticLegend ? staticLegend : ({} as StaticLegend)
+  const {heightRatio = STATIC_LEGEND_HEIGHT_RATIO_DEFAULT, hide} = staticLegend
+    ? staticLegend
+    : ({
+        hide: STATIC_LEGEND_HIDE_DEFAULT,
+      } as StaticLegend)
   const [showOptions, setShowOptions] = useState<boolean>(!hide)
   if (!isFlagEnabled('staticLegend')) {
+    update({
+      staticLegend: {
+        ...staticLegend,
+        hide: true,
+      },
+    })
     return null
   }
 

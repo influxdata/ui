@@ -103,6 +103,16 @@ describe('Checks', () => {
   })
 
   it('can create and filter checks', () => {
+    cy.intercept('POST', '/query', req => {
+      if (req.body.query.includes('_measurement')) {
+        req.alias = 'measurementQuery'
+      }
+    })
+    cy.intercept('POST', '/query', req => {
+      if (req.body.query.includes('distinct(column: "_field")')) {
+        req.alias = 'fieldQuery'
+      }
+    })
     cy.get<string>('@defaultBucketListSelector').then(
       (defaultBucketListSelector: string) => {
         cy.log('create first check')
@@ -110,16 +120,6 @@ describe('Checks', () => {
         cy.getByTestID('create-deadman-check').click()
 
         cy.log('select measurement and field')
-        cy.intercept('POST', '/query', req => {
-          if (req.body.query.includes('_measurement')) {
-            req.alias = 'measurementQuery'
-          }
-        })
-        cy.intercept('POST', '/query', req => {
-          if (req.body.query.includes('distinct(column: "_field")')) {
-            req.alias = 'fieldQuery'
-          }
-        })
 
         cy.getByTestID(defaultBucketListSelector).click()
         cy.wait('@measurementQuery')
@@ -141,8 +141,8 @@ describe('Checks', () => {
         cy.getByTestID('save-cell--button').click()
 
         cy.getByTestID('overlay').should('not.exist')
-        // bust the /query cache
-        cy.reload()
+
+        // create a second check
         cy.intercept('POST', '/query', req => {
           if (req.body.query.includes('_measurement')) {
             req.alias = 'measurementQueryBeta'
@@ -153,6 +153,8 @@ describe('Checks', () => {
             req.alias = 'fieldQueryBeta'
           }
         })
+        // bust the /query cache
+        cy.reload()
 
         cy.log('create second check')
         cy.getByTestID('create-check').click()

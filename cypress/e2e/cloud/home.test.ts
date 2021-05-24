@@ -39,6 +39,9 @@ describe('Home Page Tests', () => {
     createChecks()
     exportMockAlertsActivity()
 
+    // Random amount of wait for the export data to be available on home page
+    cy.wait(1000)
+
     cy.visit('/')
     cy.getByTestID('alerts-activity')
       .scrollIntoView()
@@ -92,9 +95,15 @@ from(bucket: "_tasks"{rightArrow}
   // Click on main page add button
   // Add 1st Cell
   cy.getByTestID('add-flow-btn--rawFluxEditor').click()
-  cy.getByTestID('flux-editor').type(script1)
+  cy.focused()
 
-  // Add 2rd Cell
+  cy.getByTestID('flux-editor')
+    .scrollIntoView()
+    .focused()
+    .type(Cypress.platform === 'darwin' ? '{cmd}a' : '{ctrl}a')
+    .type(script1)
+
+  // Add 2nd Cell
   cy.getByTestID('panel-add-btn-0').click()
   cy.getByTestID('add-flow-btn--toBucket').click()
   cy.getByTestID('flow-bucket-selector').click()
@@ -108,9 +117,6 @@ from(bucket: "_tasks"{rightArrow}
 
   // Run the Notebook
   cy.getByTestID('time-machine-submit-button').click()
-
-  // Random amount of wait for the export data to be available on home page
-  cy.wait(1000)
 }
 
 const createChecks = () => {

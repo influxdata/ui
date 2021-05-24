@@ -54,7 +54,8 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   makeAnnotationClickListener,
   makeAnnotationLayer,
-} from 'src/visualization/components/annotationUtils'
+  makeAnnotationRangeListener,
+} from 'src/visualization/utils/annotationUtils'
 
 interface Props extends VisualizationProps {
   properties: XYViewProperties
@@ -212,6 +213,7 @@ const XYPlot: FC<Props> = ({
     if (inAnnotationWriteMode && cellID) {
       config.interactionHandlers = {
         singleClick: makeAnnotationClickListener(dispatch, cellID),
+        onXBrush: makeAnnotationRangeListener(dispatch, cellID),
       }
     }
 

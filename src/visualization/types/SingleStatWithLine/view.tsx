@@ -59,7 +59,7 @@ import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 import {
   makeAnnotationClickListener,
   makeAnnotationLayer,
-} from 'src/visualization/components/annotationUtils'
+} from 'src/visualization/utils/annotationUtils'
 
 import {useDispatch, useSelector} from 'react-redux'
 

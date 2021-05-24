@@ -23,16 +23,18 @@ import {AppSettingContext} from 'src/shared/contexts/app'
 interface Props {
   onChange: (newTime: string) => void
   onSubmit: () => void
-  startTime: string | number
+  time: string | number
+  name: string
+  titleText?: string
 }
 
 const ANNOTATION_TIME_FORMAT_UTC = 'YYYY-MM-DD HH:mm:ss' // 24 hour
 const ANNOTATION_TIME_FORMAT_LOCAL = 'YYYY-MM-DD h:mm:ss A' // 12 hour
 
-export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
+export const AnnotationTimeInput: FC<Props> = (props: Props) => {
   const {timeZone} = useContext(AppSettingContext)
 
-  const momentDateWithTimezone = moment(props.startTime)
+  const momentDateWithTimezone = moment(props.time)
   let timeFormat = ANNOTATION_TIME_FORMAT_LOCAL
 
   if (timeZone === 'UTC') {
@@ -40,7 +42,7 @@ export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
     timeFormat = ANNOTATION_TIME_FORMAT_UTC
   }
 
-  const [startTimeValue, setStartTimeValue] = useState<string>(
+  const [timeValue, setTimeValue] = useState<string>(
     momentDateWithTimezone.format(timeFormat)
   )
 
@@ -49,7 +51,7 @@ export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
   }
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setStartTimeValue(event.target.value)
+    setTimeValue(event.target.value)
 
     if (isValidTimeFormat(event.target.value)) {
       if (timeZone === 'UTC') {
@@ -86,7 +88,7 @@ export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
   }
 
   const getInputValidationMessage = (): string => {
-    if (!isValidInputValue(startTimeValue)) {
+    if (!isValidInputValue(timeValue)) {
       return `Format must be ${timeFormat}`
     }
 
@@ -95,16 +97,17 @@ export const AnnotationStartTimeInput: FC<Props> = (props: Props) => {
 
   const validationMessage = getInputValidationMessage()
 
+  const labelText = props.titleText ?? 'Start Time'
   return (
     <Grid.Column widthXS={Columns.Twelve}>
       <Form.Element
-        label="Start Time"
+        label={labelText}
         required={true}
         errorMessage={validationMessage}
       >
         <Input
-          name="startTime"
-          value={startTimeValue}
+          name={name}
+          value={timeValue}
           onChange={handleChange}
           onKeyPress={handleKeyPress}
           status={ComponentStatus.Default}

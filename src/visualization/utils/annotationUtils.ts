@@ -66,6 +66,54 @@ export const makeAnnotationClickListener = (
   return singleClickHandler
 }
 
+export const makeAnnotationRangeListener = (
+  dispatch: Dispatch<any>,
+  cellID: string,
+  eventPrefix = 'xyplot'
+) => {
+  const createAnnotation = async userModifiedAnnotation => {
+    const {message, startTime, endTime} = userModifiedAnnotation
+
+    try {
+      await dispatch(
+        writeThenFetchAndSetAnnotations([
+          {
+            summary: message,
+            stream: cellID,
+            startTime: new Date(startTime).getTime(),
+            endTime: new Date(endTime).getTime(),
+          },
+        ])
+      )
+      event(`${eventPrefix}.annotations.create_range_annotation.create`)
+    } catch (err) {
+      dispatch(notify(createAnnotationFailed(getErrorMessage(err))))
+      event(`${eventPrefix}.annotations.create_range_annotation.failure`)
+    }
+  }
+
+  const rangeHandler = (start: number | string, end: number | string) => {
+    console.log('here in rangeHandler (annotation utils)')
+    event(`${eventPrefix}.annotations.create_range_annotation.show_overlay`)
+    dispatch(
+      showOverlay(
+        'add-annotation',
+        {
+          createAnnotation,
+          startTime: start,
+          endTime: end,
+          range: true,
+        },
+        () => {
+          dismissOverlay()
+        }
+      )
+    )
+  }
+
+  return rangeHandler
+}
+
 const makeAnnotationClickHandler = (
   cellID: string,
   dispatch: Dispatch<any>,
@@ -107,6 +155,7 @@ export const makeAnnotationLayer = (
     return {
       ...annotation,
       color: InfluxColors.Honeydew,
+      secondaryColor: InfluxColors.Wasabi,
     }
   })
 
@@ -130,6 +179,7 @@ export const makeAnnotationLayer = (
           title: annotation.summary,
           description: '',
           color: annotation.color,
+          secondaryColor: annotation.secondaryColor,
           startValue: new Date(annotation.startTime).getTime(),
           stopValue: new Date(annotation.endTime).getTime(),
           dimension: 'x',

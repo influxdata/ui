@@ -1,6 +1,6 @@
 // Libraries
 import React, {FunctionComponent, useContext} from 'react'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {Config, Plot} from '@influxdata/giraffe'
 
 // Components
@@ -26,6 +26,9 @@ import {AppSettingContext} from 'src/shared/contexts/app'
 // Types
 import {HeatmapViewProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
+
+// Selectors
+import {isWriteModeEnabled} from 'src/annotations/selectors'
 
 interface Props extends VisualizationProps {
   properties: HeatmapViewProperties
@@ -66,6 +69,7 @@ const HeatmapPlot: FunctionComponent<Props> = ({
   )
 
   const dispatch = useDispatch()
+  const inAnnotationWriteMode = useSelector(isWriteModeEnabled)
 
   const isValidView =
     xColumn &&
@@ -128,7 +132,7 @@ const HeatmapPlot: FunctionComponent<Props> = ({
     ],
   }
 
-  if (isFlagEnabled('annotations')) {
+  if (inAnnotationWriteMode && isFlagEnabled('annotations')) {
     config.interactionHandlers = {
       singleClick: () => {
         dispatch(handleUnsupportedGraphType('Heatmap'))

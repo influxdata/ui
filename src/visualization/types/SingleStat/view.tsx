@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useContext} from 'react'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Utils
 import LatestValueTransform from 'src/visualization/components/LatestValueTransform'
@@ -24,14 +24,19 @@ import './style.scss'
 import {AppSettingContext} from 'src/shared/contexts/app'
 import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
 
+// Selectors
+import {isWriteModeEnabled} from 'src/annotations/selectors'
+
 interface Props extends VisualizationProps {
   properties: SingleStatViewProperties
 }
 
 const SingleStat: FC<Props> = ({properties, result}) => {
   const {prefix, suffix, colors, decimalPlaces} = properties
+
   const {timeZone} = useContext(AppSettingContext)
   const dispatch = useDispatch()
+  const inAnnotationWriteMode = useSelector(isWriteModeEnabled)
 
   if (isFlagEnabled('useGiraffeGraphs')) {
     const latestValues = getLatestValues(result.table)
@@ -68,7 +73,7 @@ const SingleStat: FC<Props> = ({properties, result}) => {
       ],
     }
 
-    if (isFlagEnabled('annotations')) {
+    if (inAnnotationWriteMode && isFlagEnabled('annotations')) {
       config.interactionHandlers = {
         singleClick: () => {
           dispatch(handleUnsupportedGraphType('Single Stat'))

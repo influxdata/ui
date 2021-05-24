@@ -1,6 +1,7 @@
 // Libraries
 import React, {FunctionComponent, useContext} from 'react'
-import {Plot} from '@influxdata/giraffe'
+import {useDispatch} from 'react-redux'
+import {Config, Plot} from '@influxdata/giraffe'
 
 // Components
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
@@ -10,6 +11,8 @@ import {useLegendOpacity} from 'src/visualization/utils/useLegendOrientation'
 import {useVisXDomainSettings} from 'src/visualization/utils/useVisDomainSettings'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
 import {AppSettingContext} from 'src/shared/contexts/app'
+import {handleUnsupportedGraphType} from 'src/visualization/components/annotationUtils'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -38,6 +41,8 @@ const HistogramPlot: FunctionComponent<Props> = ({result, properties}) => {
     result.table.getColumn(properties.xColumn, 'number')
   )
 
+  const dispatch = useDispatch()
+
   const isValidView =
     properties.xColumn &&
     columnKeys.includes(properties.xColumn) &&
@@ -59,32 +64,38 @@ const HistogramPlot: FunctionComponent<Props> = ({result, properties}) => {
 
   const currentTheme = theme === 'light' ? VIS_THEME_LIGHT : VIS_THEME
 
-  return (
-    <Plot
-      config={{
-        ...currentTheme,
-        table: result.table,
-        xAxisLabel: properties.xAxisLabel,
-        xDomain,
-        onSetXDomain,
-        onResetXDomain,
-        valueFormatters: {[properties.xColumn]: xFormatter},
-        legendOpacity: tooltipOpacity,
-        legendOrientationThreshold: tooltipOrientationThreshold,
-        legendColorizeRows: tooltipColorize,
-        layers: [
-          {
-            type: 'histogram',
-            x: properties.xColumn,
-            colors: colorHexes,
-            fill: properties.fillColumns || [],
-            binCount: properties.binCount,
-            position: properties.position,
-          },
-        ],
-      }}
-    />
-  )
+  const config: Config = {
+    ...currentTheme,
+    table: result.table,
+    xAxisLabel: properties.xAxisLabel,
+    xDomain,
+    onSetXDomain,
+    onResetXDomain,
+    valueFormatters: {[properties.xColumn]: xFormatter},
+    legendOpacity: tooltipOpacity,
+    legendOrientationThreshold: tooltipOrientationThreshold,
+    legendColorizeRows: tooltipColorize,
+    layers: [
+      {
+        type: 'histogram',
+        x: properties.xColumn,
+        colors: colorHexes,
+        fill: properties.fillColumns || [],
+        binCount: properties.binCount,
+        position: properties.position,
+      },
+    ],
+  }
+
+  if (isFlagEnabled('annotations')) {
+    config.interactionHandlers = {
+      singleClick: () => {
+        dispatch(handleUnsupportedGraphType('Histogram'))
+      },
+    }
+  }
+
+  return <Plot config={config} />
 }
 
 export default HistogramPlot

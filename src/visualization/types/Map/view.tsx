@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, useEffect, useState} from 'react'
-import {Plot} from '@influxdata/giraffe'
+import {useDispatch} from 'react-redux'
+import {Config, Plot} from '@influxdata/giraffe'
 import {RemoteDataState, InfluxColors} from '@influxdata/clockface'
 
 // Types
@@ -14,6 +15,8 @@ import {
 } from 'src/shared/utils/vis'
 import {getMapToken} from './api'
 import {event} from 'src/cloud/utils/reporting'
+import {handleUnsupportedGraphType} from 'src/visualization/components/annotationUtils'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props extends VisualizationProps {
   properties: GeoViewProperties
@@ -40,6 +43,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     lon,
   })
   const [coordinateFieldsFlag, setCoordinateFlag] = useState<boolean>(false)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const getToken = async () => {
@@ -136,27 +140,33 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     zoomOpt = 6
   }
 
-  return (
-    <Plot
-      config={{
-        table: result.table,
-        showAxes: false,
-        layers: [
-          {
-            type: 'geo',
-            lat: geoCoordinates.lat,
-            lon: geoCoordinates.lon,
-            zoom: zoomOpt,
-            allowPanAndZoom,
-            detectCoordinateFields: coordinateFieldsFlag,
-            mapStyle,
-            layers: layersOpts,
-            tileServerConfiguration: tileServerConfiguration,
-          },
-        ],
-      }}
-    />
-  )
+  const config: Config = {
+    table: result.table,
+    showAxes: false,
+    layers: [
+      {
+        type: 'geo',
+        lat: geoCoordinates.lat,
+        lon: geoCoordinates.lon,
+        zoom: zoomOpt,
+        allowPanAndZoom,
+        detectCoordinateFields: coordinateFieldsFlag,
+        mapStyle,
+        layers: layersOpts,
+        tileServerConfiguration: tileServerConfiguration,
+      },
+    ],
+  }
+
+  if (isFlagEnabled('annotations')) {
+    config.interactionHandlers = {
+      singleClick: () => {
+        dispatch(handleUnsupportedGraphType('Map'))
+      },
+    }
+  }
+
+  return <Plot config={config} />
 }
 
 export default GeoPlot

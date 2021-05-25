@@ -142,10 +142,8 @@ export const mockAppState = {
           id: 'bucketid01',
         },
       },
-      allIDs: [
-        'bucketid01',
-      ],
-    }
+      allIDs: ['bucketid01'],
+    },
   },
   timeMachines: {
     activeTimeMachineID: 'de',

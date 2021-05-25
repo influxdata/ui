@@ -21,7 +21,7 @@ import {
   initializeAlertBuilder,
   convertCheckToCustom,
 } from 'src/alerting/actions/alertBuilder'
-import { CHECK_FIXTURE_1, CHECK_FIXTURE_3 } from 'src/checks/reducers/checks.test'
+import {CHECK_FIXTURE_1, CHECK_FIXTURE_3} from 'src/checks/reducers/checks.test'
 import {
   RemoteDataState,
   Threshold,
@@ -31,13 +31,13 @@ import {
 } from 'src/types'
 
 const check_1 = {
-  ...(CHECK_FIXTURE_1 as any as ThresholdCheck),
+  ...((CHECK_FIXTURE_1 as any) as ThresholdCheck),
   activeStatus: 'inactive' as TaskStatusType,
   status: RemoteDataState.Done,
 }
 
 const check_3 = {
-  ...(CHECK_FIXTURE_3 as any as DeadmanCheck),
+  ...((CHECK_FIXTURE_3 as any) as DeadmanCheck),
   activeStatus: 'active' as TaskStatusType,
   status: RemoteDataState.Done,
 }
@@ -62,9 +62,16 @@ const mockState = (): AlertBuilderState => ({
 describe('alertBuilderReducer', () => {
   describe('initAlertBuilder', () => {
     it('init Alert Builder State to defaults', () => {
-      const actual = alertBuilderReducer(mockState(), initializeAlertBuilder("custom"))
+      const actual = alertBuilderReducer(
+        mockState(),
+        initializeAlertBuilder('custom')
+      )
 
-      const expected = { ...initialState(), type: "custom", status: RemoteDataState.Done }
+      const expected = {
+        ...initialState(),
+        type: 'custom',
+        status: RemoteDataState.Done,
+      }
 
       expect(actual).toEqual(expected)
     })
@@ -73,7 +80,7 @@ describe('alertBuilderReducer', () => {
   it('covertCheckToCustom', () => {
     const actual = alertBuilderReducer(mockState(), convertCheckToCustom())
 
-    const expected = { ...mockState(), type: "custom" }
+    const expected = {...mockState(), type: 'custom'}
 
     expect(actual).toEqual(expected)
   })
@@ -208,12 +215,12 @@ describe('alertBuilderReducer', () => {
 
   describe('editTagSetByIndex', () => {
     it('edits Tag Set by index', () => {
-      const tagSet1 = { key: 'key1', value: 'value1' }
-      const tagSet2 = { key: 'key2', value: 'value2' }
-      const tagSet3 = { key: 'key3', value: 'value3' }
+      const tagSet1 = {key: 'key1', value: 'value1'}
+      const tagSet2 = {key: 'key2', value: 'value2'}
+      const tagSet3 = {key: 'key3', value: 'value3'}
 
       const actual = alertBuilderReducer(
-        { ...initialState(), tags: [tagSet1, tagSet2] },
+        {...initialState(), tags: [tagSet1, tagSet2]},
         editTagSetByIndex(1, tagSet3)
       )
       expect(actual.tags).toEqual([tagSet1, tagSet3])
@@ -222,13 +229,13 @@ describe('alertBuilderReducer', () => {
 
   describe('removeTagSet', () => {
     it('removes indexed tag set', () => {
-      const newTagSet1 = { key: 'key1', value: 'value1' }
-      const newTagSet2 = { key: 'key2', value: 'value2' }
+      const newTagSet1 = {key: 'key1', value: 'value1'}
+      const newTagSet2 = {key: 'key2', value: 'value2'}
 
       const tags = [newTagSet1, newTagSet2]
 
       const actual = alertBuilderReducer(
-        { ...initialState(), tags },
+        {...initialState(), tags},
         removeTagSet(0)
       )
       expect(actual.tags).toEqual([newTagSet2])
@@ -249,7 +256,7 @@ describe('alertBuilderReducer', () => {
       }
 
       const actual = alertBuilderReducer(
-        { ...initialState(), thresholds: [existingThreshold] },
+        {...initialState(), thresholds: [existingThreshold]},
         updateThreshold(newThreshold)
       )
       expect(actual.thresholds).toEqual([newThreshold])
@@ -270,7 +277,7 @@ describe('alertBuilderReducer', () => {
       }
 
       const actual = alertBuilderReducer(
-        { ...initialState(), thresholds: [existingThreshold] },
+        {...initialState(), thresholds: [existingThreshold]},
         updateThresholds([newThreshold])
       )
       expect(actual.thresholds).toEqual([newThreshold])
@@ -292,7 +299,7 @@ describe('alertBuilderReducer', () => {
       const existingThresholds = [infoThresh, critThresh]
 
       const actual = alertBuilderReducer(
-        { ...initialState(), thresholds: existingThresholds },
+        {...initialState(), thresholds: existingThresholds},
         removeThreshold('INFO')
       )
       expect(actual.thresholds).toEqual([critThresh])
@@ -303,32 +310,32 @@ describe('alertBuilderReducer', () => {
     it('changes name', () => {
       const state = mockState()
 
-      const name = "new-name";
+      const name = 'new-name'
 
-      const expected = { ...state, name };
+      const expected = {...state, name}
 
       const actual = alertBuilderReducer(state, updateName(name))
 
-      expect(actual).toEqual(expected);
+      expect(actual).toEqual(expected)
     })
   })
 
   describe('default action', () => {
     it('changes name', () => {
       const state = mockState()
-      const expected = state;
-      const actual = alertBuilderReducer(state, "" as any)
+      const expected = state
+      const actual = alertBuilderReducer(state, '' as any)
 
-      expect(actual).toEqual(expected);
+      expect(actual).toEqual(expected)
     })
   })
 
   describe('initial state', () => {
     it('changes name', () => {
-      const expected = alertBuilderReducer(initialState(), "" as any);
-      const actual = alertBuilderReducer(undefined, "" as any);
+      const expected = alertBuilderReducer(initialState(), '' as any)
+      const actual = alertBuilderReducer(undefined, '' as any)
 
-      expect(actual).toEqual(expected);
+      expect(actual).toEqual(expected)
     })
   })
 })

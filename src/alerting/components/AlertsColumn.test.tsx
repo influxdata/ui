@@ -23,6 +23,7 @@ const setup = (override = {}) => {
     tabIndex: 1,
     type: ResourceType.NotificationRules,
     children: () => <></>,
+    ...override,
   }
 
   return renderWithReduxAndRouter(<AlertsColumnHeader {...props} />)
@@ -30,7 +31,9 @@ const setup = (override = {}) => {
 
 describe('Alerts Column Header', () => {
   it('can change search box', async () => {
-    setup();
+    let currentSearch = "";
+    const children = (search: string) => { currentSearch = search; };
+    const { } = setup({ children });
 
     const titleElm = await screen.getAllByText(title);
     expect(titleElm).toHaveLength(1);
@@ -39,9 +42,10 @@ describe('Alerts Column Header', () => {
       'filter--input rules'
     )
 
-    const value = "searching for";
-    fireEvent.change(searchInput, { target: { value } })
+    const searchValue = "searching for";
+    fireEvent.change(searchInput, { target: { value: searchValue } })
 
-    expect(searchInput["value"]).toBe(value);
+    expect(searchInput["value"]).toBe(searchValue);
+    expect(currentSearch).toBe(searchValue);
   })
 })

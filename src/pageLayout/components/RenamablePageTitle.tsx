@@ -34,7 +34,7 @@ const RenamablePageTitle: FC<Props> = ({
   useEffect(() => {
     setWorkingName(name)
   }, [name])
-
+  
   const handleStartEditing = (): void => {
     setEditingState(true)
   }
@@ -45,10 +45,8 @@ const RenamablePageTitle: FC<Props> = ({
     if (onClickOutside) {
       onClickOutside(e)
     }
-
-    setEditingState(false)
   }
-
+  
   const handleInputChange = (e: ChangeEvent<InputRef>): void => {
     setWorkingName(e.target.value)
   }
@@ -74,7 +72,6 @@ const RenamablePageTitle: FC<Props> = ({
   const renamablePageTitleClass = classnames('renamable-page-title', {
     untitled: nameIsUntitled,
   })
-
   if (isEditing) {
     return (
       <ClickOutside onClickOutside={handleStopEditing}>

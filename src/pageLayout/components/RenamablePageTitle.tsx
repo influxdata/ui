@@ -34,7 +34,7 @@ const RenamablePageTitle: FC<Props> = ({
   useEffect(() => {
     setWorkingName(name)
   }, [name])
-  
+
   const handleStartEditing = (): void => {
     setEditingState(true)
   }
@@ -46,7 +46,7 @@ const RenamablePageTitle: FC<Props> = ({
       onClickOutside(e)
     }
   }
-  
+
   const handleInputChange = (e: ChangeEvent<InputRef>): void => {
     setWorkingName(e.target.value)
   }

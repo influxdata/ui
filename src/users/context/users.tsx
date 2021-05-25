@@ -41,10 +41,10 @@ export interface UsersContextType {
   handleEditDraftInvite: (_: DraftInvite) => void
   handleInviteUser: () => void
   handleRemoveUser: (userId: string) => void
-  handleResendInvite: (inviteId: string) => void
-  handleWithdrawInvite: (inviteId: string) => void
+  handleResendInvite: (inviteId: number) => void
+  handleWithdrawInvite: (inviteId: number) => void
   invites: Invite[]
-  removeInviteStatus: {id: string; status: RemoteDataState}
+  removeInviteStatus: {id: number; status: RemoteDataState}
   removeUserStatus: {id: string; status: RemoteDataState}
   status: RemoteDataState
   users: CloudUser[]
@@ -60,8 +60,8 @@ export const DEFAULT_CONTEXT: UsersContextType = {
   handleEditDraftInvite: (_draftInvite: DraftInvite) => {},
   handleInviteUser: () => {},
   handleRemoveUser: (_userId: string) => {},
-  handleResendInvite: (_inviteId: string) => {},
-  handleWithdrawInvite: (_inviteId: string) => {},
+  handleResendInvite: (_inviteId: number) => {},
+  handleWithdrawInvite: (_inviteId: number) => {},
   invites: [],
   removeInviteStatus: {id: null, status: RemoteDataState.NotStarted},
   removeUserStatus: {id: null, status: RemoteDataState.NotStarted},
@@ -146,9 +146,12 @@ export const UsersProvider: FC<Props> = React.memo(({children}) => {
   )
 
   const handleResendInvite = useCallback(
-    async (inviteId: string) => {
+    async (inviteId: number) => {
       try {
-        const resp = await postOrgsInvitesResend({orgId, inviteId})
+        const resp = await postOrgsInvitesResend({
+          orgId,
+          inviteId,
+        })
 
         if (resp.status !== 200) {
           throw new Error(resp.data.message)
@@ -169,7 +172,7 @@ export const UsersProvider: FC<Props> = React.memo(({children}) => {
   )
 
   const handleWithdrawInvite = useCallback(
-    async (inviteId: string) => {
+    async (inviteId: number) => {
       try {
         setRemoveInviteStatus({id: inviteId, status: RemoteDataState.Loading})
         const resp = await deleteOrgsInvite({orgId, inviteId})

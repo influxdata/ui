@@ -73,15 +73,15 @@ from(bucket: "_tasks"{rightArrow}
   cy.getByTestID('create-flow--button')
     .first()
     .click()
-
+  cy.wait(0)
   cy.getByTestID('flows-delete-cell')
     .first()
     .click({force: true})
-
+  cy.wait(0)
   cy.getByTestID('flows-delete-cell')
     .first()
     .click({force: true})
-
+  cy.wait(0)
   cy.getByTestID('flows-delete-cell')
     .first()
     .click({force: true})

@@ -3,6 +3,7 @@ import * as api from 'src/client'
 import {fetchDemoDataBuckets} from 'src/cloud/apis/demodata'
 import {getMockAppState} from 'src/mockAppState'
 import {RemoteDataState} from '@influxdata/clockface'
+import {PublishNotificationAction} from "src/shared/actions/notifications"
 
 jest.mock('src/client', () => ({
   getBuckets: jest.fn(),
@@ -99,5 +100,5 @@ describe('buckets thunks', () => {
       expect(dispatched[1].status).toBe(RemoteDataState.Error)
       const publishNotificationAction: PublishNotificationAction["type"] = "PUBLISH_NOTIFICATION"
       expect(dispatched[2].type).toBe(publishNotificationAction)
+    })
   })
-})

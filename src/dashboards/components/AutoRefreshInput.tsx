@@ -22,6 +22,9 @@ import {
 import {getCurrentDashboardId} from 'src/dashboards/selectors'
 import {getAutoRefreshForDashboard} from 'src/shared/selectors/autoRefresh'
 
+// Metrics
+import {event} from 'src/cloud/utils/reporting'
+
 const SUGGESTIONS = [
   'None',
   '10s',
@@ -39,6 +42,7 @@ const AutoRefreshInput: FC = () => {
   const currentDashboardId = useSelector(getCurrentDashboardId)
 
   const autoRefresh = useSelector(getAutoRefreshForDashboard)
+
   const handleChooseAutoRefresh = (selection: string) => {
     if (selection === 'None') {
       dispatch(resetDashboardAutoRefresh(currentDashboardId))
@@ -91,6 +95,11 @@ const AutoRefreshInput: FC = () => {
           )
         }}
         testID="auto-refresh-input"
+        metric={() =>
+          event('dashboards.autorefresh.autorefreshinput.intervalchange', {
+            interval: autoRefresh?.refreshInputValue,
+          })
+        }
       />
     </ButtonGroup>
   )

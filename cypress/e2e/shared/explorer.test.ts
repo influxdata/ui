@@ -1005,18 +1005,6 @@ describe('DataExplorer', () => {
     })
 
     describe('static legend', () => {
-      it('turns off static legend flag, so static legend option should not exist', () => {
-        cy.window().then(win => {
-          win.influx.set('staticLegend', false)
-          VIS_TYPES.forEach(type => {
-            cy.getByTestID('cog-cell--button').click()
-            cy.getByTestID('view-type--dropdown').click()
-            cy.getByTestID(`view-type--${type}`).click()
-            cy.getByTestID('static-legend-options').should('not.exist')
-          })
-        })
-      })
-
       it('turns on static legend flag, so static legend option should exist for line graph, line graph plus single stat, and band plot', () => {
         cy.window().then(win => {
           win.influx.set('staticLegend', true)
@@ -1037,8 +1025,19 @@ describe('DataExplorer', () => {
         })
       })
 
-      it('should allow user to render and remove the static legend', () => {
-        // write some data
+      it('turns off static legend flag so that static legend option should not exist', () => {
+        cy.window().then(win => {
+          win.influx.set('staticLegend', false)
+          VIS_TYPES.forEach(type => {
+            cy.getByTestID('cog-cell--button').click()
+            cy.getByTestID('view-type--dropdown').click()
+            cy.getByTestID(`view-type--${type}`).click()
+            cy.getByTestID('static-legend-options').should('not.exist')
+          })
+        })
+      })
+
+      it('turns on static legend flag to allow user to render and remove the static legend', () => {
         cy.writeData(lines(100))
 
         // set the flag, build the query, adjust the view options
@@ -1082,6 +1081,55 @@ describe('DataExplorer', () => {
               cy.get('[for="radio_static_legend_hide"]').click()
               cy.getByTestID('giraffe-static-legend').should('not.exist')
               cy.getByTestID('static-legend-height-slider').should('not.exist')
+            }
+          )
+        })
+      })
+
+      it('turns off static legend flag so that static legend box should not exist', () => {
+        cy.writeData(lines(100))
+
+        // set the flag, build the query, and select the graph type
+        cy.window().then(win => {
+          win.influx.set('staticLegend', false)
+          cy.get<string>('@defaultBucketListSelector').then(
+            (defaultBucketListSelector: string) => {
+              cy.getByTestID('query-builder').should('exist')
+              cy.getByTestID('selector-list _monitoring').should('be.visible')
+              cy.getByTestID('selector-list _monitoring').click()
+
+              cy.getByTestID(defaultBucketListSelector).should('be.visible')
+              cy.getByTestID(defaultBucketListSelector).click()
+
+              cy.getByTestID('selector-list m').should('be.visible')
+              cy.getByTestID('selector-list m').clickAttached()
+
+              cy.getByTestID('selector-list v').should('be.visible')
+              cy.getByTestID('selector-list v').clickAttached()
+
+              cy.getByTestID('selector-list tv1').clickAttached()
+
+              cy.getByTestID('selector-list last')
+                .scrollIntoView()
+                .should('be.visible')
+                .click({force: true})
+
+              cy.getByTestID('time-machine-submit-button').click()
+
+              // Select line graph
+              cy.getByTestID('view-type--dropdown').click()
+              cy.getByTestID(`view-type--xy`).click()
+              cy.getByTestID('giraffe-static-legend').should('not.exist')
+
+              // Select line plus single stat graph
+              cy.getByTestID('view-type--dropdown').click()
+              cy.getByTestID(`view-type--line-plus-single-stat`).click()
+              cy.getByTestID('giraffe-static-legend').should('not.exist')
+
+              // Select band plot
+              cy.getByTestID('view-type--dropdown').click()
+              cy.getByTestID(`view-type--band`).click()
+              cy.getByTestID('giraffe-static-legend').should('not.exist')
             }
           )
         })

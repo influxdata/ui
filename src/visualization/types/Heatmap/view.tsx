@@ -1,6 +1,7 @@
 // Libraries
 import React, {FunctionComponent, useContext} from 'react'
-import {Plot} from '@influxdata/giraffe'
+import {useDispatch, useSelector} from 'react-redux'
+import {Config, Plot} from '@influxdata/giraffe'
 
 // Components
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
@@ -8,15 +9,13 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 // Utils
 import {useAxisTicksGenerator} from 'src/visualization/utils/useAxisTicksGenerator'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
-import {
-  useLegendOpacity,
-  useLegendOrientationThreshold,
-  useLegendColorizeRows,
-} from 'src/visualization/utils/useLegendOrientation'
+import {useLegendOpacity} from 'src/visualization/utils/useLegendOrientation'
 import {
   useVisXDomainSettings,
   useVisYDomainSettings,
 } from 'src/visualization/utils/useVisDomainSettings'
+import {handleUnsupportedGraphType} from 'src/visualization/components/annotationUtils'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -27,6 +26,9 @@ import {AppSettingContext} from 'src/shared/contexts/app'
 // Types
 import {HeatmapViewProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
+
+// Selectors
+import {isWriteModeEnabled} from 'src/annotations/selectors'
 
 interface Props extends VisualizationProps {
   properties: HeatmapViewProperties
@@ -52,10 +54,8 @@ const HeatmapPlot: FunctionComponent<Props> = ({
 
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
-  const tooltipColorize = useLegendColorizeRows(properties.legendColorizeRows)
-  const tooltipOrientationThreshold = useLegendOrientationThreshold(
-    properties.legendOrientationThreshold
-  )
+  const tooltipColorize = properties.legendColorizeRows
+  const tooltipOrientationThreshold = properties.legendOrientationThreshold
 
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
     properties.xDomain,
@@ -67,6 +67,9 @@ const HeatmapPlot: FunctionComponent<Props> = ({
     properties.yDomain,
     result.table.getColumn(yColumn, 'number')
   )
+
+  const dispatch = useDispatch()
+  const inAnnotationWriteMode = useSelector(isWriteModeEnabled)
 
   const isValidView =
     xColumn &&
@@ -99,39 +102,45 @@ const HeatmapPlot: FunctionComponent<Props> = ({
 
   const currentTheme = theme === 'light' ? VIS_THEME_LIGHT : VIS_THEME
 
-  return (
-    <Plot
-      config={{
-        ...currentTheme,
-        table: result.table,
-        xAxisLabel: properties.xAxisLabel,
-        yAxisLabel: properties.yAxisLabel,
-        xDomain,
-        onSetXDomain,
-        onResetXDomain,
-        yDomain,
-        onSetYDomain,
-        onResetYDomain,
-        ...axisTicksOptions,
-        legendOpacity: tooltipOpacity,
-        legendOrientationThreshold: tooltipOrientationThreshold,
-        legendColorizeRows: tooltipColorize,
-        valueFormatters: {
-          [xColumn]: xFormatter,
-          [yColumn]: yFormatter,
-        },
-        layers: [
-          {
-            type: 'heatmap',
-            x: xColumn,
-            y: yColumn,
-            colors,
-            binSize: properties.binSize,
-          },
-        ],
-      }}
-    />
-  )
+  const config: Config = {
+    ...currentTheme,
+    table: result.table,
+    xAxisLabel: properties.xAxisLabel,
+    yAxisLabel: properties.yAxisLabel,
+    xDomain,
+    onSetXDomain,
+    onResetXDomain,
+    yDomain,
+    onSetYDomain,
+    onResetYDomain,
+    ...axisTicksOptions,
+    legendOpacity: tooltipOpacity,
+    legendOrientationThreshold: tooltipOrientationThreshold,
+    legendColorizeRows: tooltipColorize,
+    valueFormatters: {
+      [xColumn]: xFormatter,
+      [yColumn]: yFormatter,
+    },
+    layers: [
+      {
+        type: 'heatmap',
+        x: xColumn,
+        y: yColumn,
+        colors,
+        binSize: properties.binSize,
+      },
+    ],
+  }
+
+  if (inAnnotationWriteMode && isFlagEnabled('annotations')) {
+    config.interactionHandlers = {
+      singleClick: () => {
+        dispatch(handleUnsupportedGraphType('Heatmap'))
+      },
+    }
+  }
+
+  return <Plot config={config} />
 }
 
 export default HeatmapPlot

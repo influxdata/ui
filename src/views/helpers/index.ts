@@ -25,6 +25,7 @@ import {
 // Types
 import {
   Axis,
+  BandViewProperties,
   Base,
   BuilderConfig,
   CheckType,
@@ -32,23 +33,28 @@ import {
   Color,
   DashboardQuery,
   GaugeViewProperties,
+  GeoViewProperties,
   HeatmapViewProperties,
   HistogramViewProperties,
   LinePlusSingleStatProperties,
-  MosaicViewProperties,
   MarkdownViewProperties,
+  MosaicViewProperties,
   NewView,
   RemoteDataState,
   ScatterViewProperties,
   SingleStatViewProperties,
+  StaticLegend,
   TableViewProperties,
   ViewProperties,
   ViewType,
   XYViewProperties,
-  BandViewProperties,
-  GeoViewProperties,
 } from 'src/types'
 import {LineHoverDimension} from '@influxdata/giraffe/dist/types'
+import {
+  STATIC_LEGEND_HEIGHT_RATIO_DEFAULT,
+  STATIC_LEGEND_HIDE_DEFAULT,
+  STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
+} from 'src/visualization/constants'
 
 export const defaultView = (name: string = DEFAULT_CELL_NAME) => {
   return {
@@ -81,6 +87,12 @@ const legendProps = {
   legendColorizeRows: LEGEND_COLORIZE_ROWS_DEFAULT,
 }
 
+const staticLegend = {
+  heightRatio: STATIC_LEGEND_HEIGHT_RATIO_DEFAULT,
+  hide: STATIC_LEGEND_HIDE_DEFAULT,
+  widthRatio: STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
+} as StaticLegend
+
 const tickProps = {
   generateXAxisTicks: [],
   generateYAxisTicks: [],
@@ -95,6 +107,7 @@ const tickProps = {
 export function defaultLineViewProperties() {
   return {
     ...legendProps,
+    staticLegend,
     queries: [defaultViewQuery()],
     colors: DEFAULT_LINE_COLORS as Color[],
     note: '',
@@ -125,6 +138,7 @@ export function defaultLineViewProperties() {
 export function defaultBandViewProperties() {
   return {
     ...legendProps,
+    staticLegend,
     queries: [defaultViewQuery()],
     colors: DEFAULT_LINE_COLORS as Color[],
     note: '',

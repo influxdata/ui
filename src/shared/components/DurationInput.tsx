@@ -7,6 +7,7 @@ import {
   DropdownItem,
   ClickOutside,
   ComponentStatus,
+  Dropdown,
 } from '@influxdata/clockface'
 import {isDurationParseable} from 'src/shared/utils/duration'
 
@@ -22,6 +23,9 @@ type Props = {
   testID?: string
   validFunction?: (input: string) => boolean
   status?: ComponentStatus
+  customClass?: string
+  dividerText?: string
+  dividerOnClick?: () => void
 }
 
 const DurationInput: FC<Props> = ({
@@ -33,7 +37,10 @@ const DurationInput: FC<Props> = ({
   submitInvalid = true,
   showDivider = true,
   testID = 'duration-input',
-  validFunction = _ => false,
+  validFunction,
+  customClass,
+  dividerText,
+  dividerOnClick,
 }) => {
   const [isFocused, setIsFocused] = useState(false)
 
@@ -61,7 +68,7 @@ const DurationInput: FC<Props> = ({
   }
 
   const isValid = (i: string): boolean =>
-    isDurationParseable(i) || validFunction(i)
+    validFunction ? validFunction(i) : isDurationParseable(i)
 
   let inputStatus = controlledStatus || ComponentStatus.Default
 
@@ -77,7 +84,7 @@ const DurationInput: FC<Props> = ({
   }
 
   return (
-    <div className="duration-input">
+    <div className={`duration-input ${customClass}`}>
       <ClickOutside onClickOutside={handleClickOutside}>
         <Input
           placeholder={placeholder}
@@ -90,7 +97,18 @@ const DurationInput: FC<Props> = ({
       </ClickOutside>
       {isFocused && (
         <DropdownMenu className="duration-input--menu" noScrollX={true}>
-          {showDivider && <DropdownDivider text="Examples" />}
+          {showDivider && dividerText && dividerOnClick && (
+            <Dropdown.Item
+              value="Customize"
+              key="Customize"
+              onClick={dividerOnClick}
+              className={SUGGESTION_CLASS}
+              testID="custom-duration-input-button"
+            >
+              {dividerText}
+            </Dropdown.Item>
+          )}
+          <DropdownDivider text="" />
           {suggestions.map(s => (
             <DropdownItem
               key={s}

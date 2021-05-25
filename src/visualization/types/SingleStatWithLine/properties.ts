@@ -7,6 +7,9 @@ import {
 import {
   LEGEND_OPACITY_DEFAULT,
   LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+  STATIC_LEGEND_HEIGHT_RATIO_DEFAULT,
+  STATIC_LEGEND_HIDE_DEFAULT,
+  STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
 } from 'src/visualization/constants'
 
 import {Axis, Base, Color, LinePlusSingleStatProperties} from 'src/types'
@@ -43,6 +46,11 @@ export default {
 
   legendOpacity: LEGEND_OPACITY_DEFAULT,
   legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+  staticLegend: {
+    heightRatio: STATIC_LEGEND_HEIGHT_RATIO_DEFAULT,
+    hide: STATIC_LEGEND_HIDE_DEFAULT,
+    widthRatio: STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
+  },
 
   note: '',
   showNoteWhenEmpty: false,

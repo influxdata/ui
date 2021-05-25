@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, ReactNode} from 'react'
-import _ from 'lodash'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components

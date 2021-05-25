@@ -104,14 +104,8 @@ export const UsersProvider: FC<Props> = React.memo(({children}) => {
         throw new Error(inviteResp.data.message)
       }
 
-      const users =
-        userResp.data?.users?.map(u => ({
-          ...u,
-        })) ?? []
-      const invites =
-        inviteResp.data?.invites?.map(i => ({
-          ...i,
-        })) ?? []
+      const users = userResp?.data ?? []
+      const invites = inviteResp?.data ?? []
 
       setUsers(users)
       setInvites(invites)

@@ -20,6 +20,7 @@ export type OverlayID =
   | 'update-annotation-stream'
   | 'add-annotation'
   | 'edit-annotation'
+  | 'toggle-auto-refresh'
 
 export interface OverlayState {
   id: OverlayID | null

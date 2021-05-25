@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC} from 'react'
-import _ from 'lodash'
 
 // Components
 import {Overlay, IndexList, DapperScrollbars} from '@influxdata/clockface'

@@ -43,7 +43,7 @@ export const OSS_FLAGS = {
   'notification-endpoint-telegram': false,
   'molly-first': false,
   'managed-functions': false,
-  'simple-table': false,
+  simpleTable: false,
 }
 
 export const CLOUD_FLAGS = {
@@ -89,7 +89,7 @@ export const CLOUD_FLAGS = {
   unity: false,
   'molly-first': false,
   'managed-functions': false,
-  'simple-table': false,
+  simpleTable: false,
 }
 
 export const activeFlags = (state: AppState): FlagMap => {

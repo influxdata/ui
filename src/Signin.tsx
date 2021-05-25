@@ -49,7 +49,10 @@ const FETCH_WAIT = 60000
 
 @ErrorHandling
 export class Signin extends PureComponent<Props, State> {
-  public state: State = {loading: RemoteDataState.NotStarted, auth: false}
+  public state: State = {
+    loading: RemoteDataState.NotStarted,
+    auth: false,
+  }
 
   private hasMounted = false
   private intervalID: NodeJS.Timer
@@ -93,7 +96,6 @@ export class Signin extends PureComponent<Props, State> {
   private checkForLogin = async () => {
     try {
       await client.users.me()
-
       this.setState({auth: true})
       const redirectIsSet = !!getFromLocalStorage('redirectTo')
       if (redirectIsSet) {

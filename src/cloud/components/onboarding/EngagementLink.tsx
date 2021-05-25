@@ -31,6 +31,9 @@ const EngagementLink: FC = () => {
         orgID: org.id, // Organization ID
         region: host[0], // Cloud provider region
         provider: host[1], // Cloud provider
+        company: {
+          id: org.id, // Organization ID
+        },
       })
     }
   }

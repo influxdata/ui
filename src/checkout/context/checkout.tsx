@@ -1,16 +1,17 @@
 // Libraries
 import React, {FC, useCallback, useEffect, useState} from 'react'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
 
 // Utils
 import {notify} from 'src/shared/actions/notifications'
-import {
-  getCheckoutZuoraParams,
-  getBillingNotificationSettings,
-  postCheckoutInformation,
-} from 'src/billing/api'
 import {Contact} from 'src/checkout/utils/contact'
+import {
+  getPaymentForm,
+  getSettingsNotifications,
+  postCheckout,
+} from 'src/client/unityRoutes'
+import {getQuartzMe} from 'src/me/selectors'
 
 // Constants
 import {states} from 'src/billing/constants'
@@ -43,7 +44,6 @@ export interface CheckoutContextType {
   checkoutStatus: RemoteDataState
   errors: object
   handleCancelClick: () => void
-  handleSetCheckoutStatus: (status: RemoteDataState) => void
   handleSetError: (name: string, value: boolean) => void
   handleSetInputs: (name: string, value: string | number | boolean) => void
   handleSubmit: (paymentMethodId: string) => void
@@ -51,7 +51,6 @@ export interface CheckoutContextType {
   inputs: Inputs
   isDirty: boolean
   isSubmitting: boolean
-  onSuccessUrl: string
   setIsDirty: (_: boolean) => void
   zuoraParams: CreditCardParams
 }
@@ -74,7 +73,6 @@ export const DEFAULT_CONTEXT: CheckoutContextType = {
   checkoutStatus: RemoteDataState.NotStarted,
   errors: {},
   handleCancelClick: () => {},
-  handleSetCheckoutStatus: (_: RemoteDataState) => {},
   handleSetError: (_: string, __: boolean) => {},
   handleSetInputs: (_: string, __: string | number | boolean) => {},
   handleSubmit: (_: string) => {},
@@ -82,7 +80,6 @@ export const DEFAULT_CONTEXT: CheckoutContextType = {
   inputs: null,
   isDirty: false,
   isSubmitting: false,
-  onSuccessUrl: '',
   setIsDirty: (_: boolean) => {},
   zuoraParams: EMPTY_ZUORA_PARAMS,
 }
@@ -100,14 +97,17 @@ export type Checkout = CheckoutBase & BillingNotifySettings & Contact
 export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   const dispatch = useDispatch()
 
-  const [zuoraParams, setZuoraParams] = useState(EMPTY_ZUORA_PARAMS)
+  const [zuoraParams, setZuoraParams] = useState<CreditCardParams>(
+    EMPTY_ZUORA_PARAMS
+  )
   const [isDirty, setIsDirty] = useState(false)
+  const me = useSelector(getQuartzMe)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [inputs, setInputs] = useState<Inputs>({
     paymentMethodId: null,
-    notifyEmail: '',
-    balanceThreshold: null,
+    notifyEmail: me?.email ?? '', // sets the default to the user's registered email
+    balanceThreshold: 1, // set the default to the minimum balance threshold
     shouldNotify: true,
     street1: '',
     street2: '',
@@ -119,33 +119,47 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   })
 
   const getZuoraParams = useCallback(async () => {
-    const response = await getCheckoutZuoraParams()
-    if (response.status !== 200) {
-      throw new Error(getErrorMessage(response))
-    }
+    try {
+      const response = await getPaymentForm({form: 'checkout'})
+      if (response.status !== 200) {
+        throw new Error(getErrorMessage(response))
+      }
 
-    setZuoraParams(response.data as CreditCardParams)
+      // TODO(ariel): remove type casting here when Billing is refactored and integrated
+      setZuoraParams(response.data as CreditCardParams)
+    } catch (error) {
+      // TODO(ariel): should we notify or report the error?
+      console.error(error)
+    }
   }, [])
 
   useEffect(() => {
     getZuoraParams()
   }, [getZuoraParams])
 
-  const [onSuccessUrl, setOnSuccessUrl] = useState<string>('')
-
   const getBillingSettings = useCallback(
+    // TODO(ariel): this is weird, why do we need a parameter?
     async (fields = inputs) => {
-      const resp = await getBillingNotificationSettings()
-      if (resp.status !== 200) {
-        throw new Error(resp.data.message)
+      try {
+        const resp = await getSettingsNotifications({})
+        if (resp.status !== 200) {
+          throw new Error(resp.data.message)
+        }
+        setInputs({
+          ...fields,
+          balanceThreshold: resp.data.balanceThreshold,
+          notifyEmail: resp.data.notifyEmail,
+          shouldNotify: resp.data.isNotify,
+        })
+      } catch (error) {
+        // We're injesting the error here and leaving the default inputs since
+        // Quartz's API returns a 404 for valid requests that don't have any data
+        // Meaning, if a user hasn't filled out the notification settings, the
+        // API response is expected to return a 404 even though the query was successful
+        console.error(error)
       }
-      setInputs({
-        ...fields,
-        balanceThreshold: resp.data.balanceThreshold,
-        notifyEmail: resp.data.notifyEmail,
-      })
     },
-    [getBillingNotificationSettings] // eslint-disable-line react-hooks/exhaustive-deps
+    [getSettingsNotifications] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   useEffect(() => {
@@ -178,15 +192,6 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     [inputs, setInputs] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
-  const handleSetCheckoutStatus = useCallback(
-    (status: RemoteDataState) => {
-      setCheckoutStatus(status)
-
-      RemoteDataState.Done === status && setOnSuccessUrl(zuoraParams.url)
-    },
-    [setCheckoutStatus, zuoraParams]
-  )
-
   const handleSetError = (name: string, value: boolean): void => {
     setErrors({
       ...errors,
@@ -210,9 +215,9 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
 
     const {shouldNotify} = inputs
     if (!shouldNotify) {
+      // TODO(ariel): this seems like a hack to "make it work"
       getBillingSettings(fields)
       /**
-       *
        * fields.notifyEmail = default user email
        * fields.balanceThreshold = default balance threshold
        */
@@ -271,11 +276,13 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
       if (errs.length === 0) {
         const paymentInformation = {...inputs, paymentMethodId}
 
-        const response = await postCheckoutInformation(paymentInformation)
+        const response = await postCheckout({data: paymentInformation})
 
-        handleSetCheckoutStatus(
+        setCheckoutStatus(
           response.status === 201 ? RemoteDataState.Done : RemoteDataState.Error
         )
+        // TODO(ariel): make sure to refetch the `/me` endpoint after a user leaves the checkout
+        // TODO(ariel): where should we redirect the user to once they've upgraded?
       } else {
         const errorFields = errs?.flatMap(([err]) => err)
 
@@ -306,7 +313,6 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
         checkoutStatus,
         errors,
         handleCancelClick,
-        handleSetCheckoutStatus,
         handleSetError,
         handleSetInputs,
         handleSubmit,
@@ -314,7 +320,6 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
         inputs,
         isDirty,
         isSubmitting,
-        onSuccessUrl,
         setIsDirty,
         zuoraParams,
       }}

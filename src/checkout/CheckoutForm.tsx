@@ -48,6 +48,7 @@ const CheckoutForm: FC = () => {
       Z.submit()
     } catch (error) {
       console.error(error)
+      // TODO(ariel): what should we do if there's an error?
     }
   }
 

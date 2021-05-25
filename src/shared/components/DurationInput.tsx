@@ -26,7 +26,6 @@ type Props = {
   customClass?: string
   dividerText?: string
   dividerOnClick?: () => void
-  metric?: () => void
 }
 
 const DurationInput: FC<Props> = ({
@@ -42,7 +41,6 @@ const DurationInput: FC<Props> = ({
   customClass,
   dividerText,
   dividerOnClick,
-  metric,
 }) => {
   const [isFocused, setIsFocused] = useState(false)
 
@@ -81,10 +79,6 @@ const DurationInput: FC<Props> = ({
   const onChange = (i: string) => {
     setInputValue(i)
     if (submitInvalid || (!submitInvalid && isValid(i))) {
-      // If we've passed in a function to log an event, do it here
-      if (metric) {
-        metric()
-      }
       onSubmit(i)
     }
   }

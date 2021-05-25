@@ -41,15 +41,13 @@ const AutoRefreshForm: FC = () => {
     setAutoRefreshSettings,
   } = useContext(AutoRefreshContext)
 
+  const handleCancel = () => {
+    event('dashboards.autorefresh.autorefreshoverlay.cancelcustom')
+    onClose()
+  }
   return (
     <Overlay.Container maxWidth={500} testID="auto-refresh-overlay">
-      <Overlay.Header
-        title="Configure Auto Refresh"
-        onDismiss={() => {
-          event('dashboards.autorefresh.autorefreshoverlay.cancelcustom')
-          onClose()
-        }}
-      />
+      <Overlay.Header title="Configure Auto Refresh" onDismiss={handleCancel} />
       <Grid>
         <Grid.Column className="refresh-form-column">
           <div className="refresh-form-container">
@@ -139,10 +137,7 @@ const AutoRefreshForm: FC = () => {
           </div>
           <div className="refresh-form-buttons">
             <Button
-              onClick={() => {
-                event('dashboards.autorefresh.autorefreshoverlay.cancelcustom')
-                onClose()
-              }}
+              onClick={handleCancel}
               text="Cancel"
               color={ComponentColor.Default}
               className="refresh-form-cancel-button"

@@ -46,6 +46,9 @@ const AutoRefreshInput: FC = () => {
   const handleChooseAutoRefresh = (selection: string) => {
     if (selection === 'None') {
       dispatch(resetDashboardAutoRefresh(currentDashboardId))
+      event('dashboards.autorefresh.autorefreshinput.intervalchange', {
+        interval: 0,
+      })
       return
     }
     const unit = selection.charAt(selection.length - 1)
@@ -68,6 +71,9 @@ const AutoRefreshInput: FC = () => {
         setAutoRefreshStatus(currentDashboardId, AutoRefreshStatus.Active)
       )
       dispatch(setAutoRefreshInputValue(currentDashboardId, selection))
+      event('dashboards.autorefresh.autorefreshinput.intervalchange', {
+        interval: autoRefresh?.refreshInputValue,
+      })
     }
   }
 
@@ -95,11 +101,6 @@ const AutoRefreshInput: FC = () => {
           )
         }}
         testID="auto-refresh-input"
-        metric={() =>
-          event('dashboards.autorefresh.autorefreshinput.intervalchange', {
-            interval: autoRefresh?.refreshInputValue,
-          })
-        }
       />
     </ButtonGroup>
   )

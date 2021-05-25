@@ -86,6 +86,7 @@ class RenameOrgForm extends PureComponent<Props, State> {
                     status={this.saveButtonStatus(status)}
                     color={ComponentColor.Success}
                     type={ButtonType.Submit}
+                    testID="rename-org--button"
                   />
                 </FlexBox>
               </FlexBox>

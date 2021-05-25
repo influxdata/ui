@@ -26,6 +26,9 @@ import {
 } from 'src/types'
 import {getAllVariables} from 'src/variables/selectors'
 
+// Metrics
+import {event} from 'src/cloud/utils/reporting'
+
 interface StateProps {
   view: View
   variables: Variable[]
@@ -69,6 +72,7 @@ class CellComponent extends Component<Props, State> {
   }
 
   private handlePauseCell = (): void => {
+    event('dashboards.cell.pausecell.cellpausetoggle')
     this.setState(prevState => ({
       ...prevState,
       isPaused: !this.state.isPaused,

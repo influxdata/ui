@@ -101,6 +101,7 @@ export const EditAnnotationForm: FC<Props> = (props: Props) => {
     props.handleClose()
   }
 
+  // TODO:  get the correct prefix in there, multiple plot types have annotations now
   const handleDelete = () => {
     try {
       dispatch(deleteAnnotations(editedAnnotation))
@@ -121,7 +122,7 @@ export const EditAnnotationForm: FC<Props> = (props: Props) => {
         onSubmit={handleKeyboardSubmit}
         time={editedAnnotation.endTime}
         name="endTime"
-        titleText="Stop Time (UTC)"
+        titleText="Stop Time"
       />
     )
   }

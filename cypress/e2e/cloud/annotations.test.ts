@@ -248,20 +248,17 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
     })
 
-    it('can create an annotation that is scoped to a dashboard cell', () => {
+    it.only('can create an annotation that is scoped to a dashboard cell', () => {
       // create a new cell
       cy.getByTestID('button')
         .click()
         .then(() => {
           cy.getByTestID('selector-list schmucket').click()
           cy.getByTestID(`selector-list m`)
-            .should('exist')
             .click()
           cy.getByTestID('selector-list v')
-            .should('exist')
             .click()
           cy.getByTestID(`selector-list tv1`)
-            .should('exist')
             .click()
             .then(() => {
               cy.getByTestID('time-machine-submit-button').click()

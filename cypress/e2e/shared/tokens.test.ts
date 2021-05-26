@@ -438,9 +438,7 @@ describe('tokens', () => {
       })
   })
 
-  // skip until this issue is resolved
-  // https://github.com/influxdata/influxdb/issues/18887
-  it.skip('can Select all buckets in Generate Read/Write token', () => {
+  it('can Select all buckets in Generate Read/Write token', () => {
     // create some extra buckets
     cy.get<Organization>('@org').then(({id, name}: Organization) => {
       cy.createBucket(id, name, 'Magna Carta').then(() => {

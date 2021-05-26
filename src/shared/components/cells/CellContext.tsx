@@ -159,7 +159,7 @@ const CellContext: FC<Props> = ({
         </FeatureFlag>
         <FeatureFlag name="pauseCell">
           <CellContextItem
-            label="Pause"
+            label={isPaused ? 'Resume' : 'Pause'}
             onClick={togglePauseCell}
             icon={isPaused ? IconFont.Play : IconFont.Pause}
             onHide={onHide}

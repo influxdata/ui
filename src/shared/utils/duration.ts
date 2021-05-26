@@ -1,6 +1,6 @@
 import moment from 'moment'
 
-import {TimeRange, CustomTimeRange} from 'src/types'
+import {TimeRange, CustomTimeRange, TimeRangeDirection} from 'src/types'
 import {Duration, DurationUnit} from 'src/types/ast'
 import {TIME_RANGE_FORMAT} from 'src/shared/constants/timeRanges'
 
@@ -155,7 +155,10 @@ export const convertTimeRangeToCustom = (
   }
 }
 
-export const getTimeRangeLabel = (timeRange: TimeRange): string => {
+export const getTimeRangeLabel = (
+  timeRange: TimeRange,
+  singleDirection?: TimeRangeDirection
+): string => {
   if (timeRange.type === 'selectable-duration') {
     return timeRange.label
   }
@@ -163,8 +166,16 @@ export const getTimeRangeLabel = (timeRange: TimeRange): string => {
     return timeRange.lower
   }
   if (timeRange.type === 'custom') {
-    return `${moment(timeRange.lower).format(TIME_RANGE_FORMAT)} - ${moment(
-      timeRange.upper
-    ).format(TIME_RANGE_FORMAT)}`
+    const lower = moment(timeRange.lower).format(TIME_RANGE_FORMAT)
+    const upper = moment(timeRange.upper).format(TIME_RANGE_FORMAT)
+    if (singleDirection && singleDirection === TimeRangeDirection.Upper) {
+      return upper
+    } else if (
+      singleDirection &&
+      singleDirection === TimeRangeDirection.Lower
+    ) {
+      return lower
+    }
+    return `${lower} - ${upper}`
   }
 }

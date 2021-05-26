@@ -9,7 +9,10 @@ import {AnnotationsList} from 'src/types'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 import {event} from 'src/cloud/utils/reporting'
 import {notify} from 'src/shared/actions/notifications'
-import {createAnnotationFailed} from 'src/shared/copy/notifications'
+import {
+  annotationsUnsupportedOnGraph,
+  createAnnotationFailed,
+} from 'src/shared/copy/notifications'
 import {getErrorMessage} from 'src/utils/api'
 
 import {
@@ -138,4 +141,8 @@ export const makeAnnotationLayer = (
     return annotationLayer
   }
   return null
+}
+
+export const handleUnsupportedGraphType = graphType => {
+  return notify(annotationsUnsupportedOnGraph(graphType))
 }

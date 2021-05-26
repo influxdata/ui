@@ -40,16 +40,13 @@ export const getAccounts = (
       users: [
         {
           id: 'user1',
-          quartzId: 1,
-          onboardingState: 'complete',
-          sfdcContactId: 'sdfc_u_know_me',
+          // quartzId: 1,
+          // onboardingState: 'complete',
+          // sfdcContactId: 'sdfc_u_know_me',
           firstName: 'jr',
           lastName: 'OG',
           email: 'og@influxdata.com',
           role: 'member',
-          links: {
-            self: 'www.self.com',
-          },
         },
       ],
       type: 'pay_as_you_go',
@@ -229,14 +226,11 @@ export const getAccountById = (
     users: [
       {
         id: '1',
-        sfdcContactId: '12',
+        // sfdcContactId: '12',
         firstName: 'Ariel',
         lastName: 'Salem',
         email: 'asalem@influxdata.com',
         role: 'member',
-        links: {
-          self: 'www.self.com',
-        },
       },
     ],
     type: 'cancelled',

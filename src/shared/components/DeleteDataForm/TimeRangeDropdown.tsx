@@ -38,7 +38,7 @@ const TimeRangeDropdown: FC<Props> = ({
   let dropdownLabel = 'Select a Time Range'
 
   if (timeRange) {
-    dropdownLabel = getTimeRangeLabel(timeRange)
+    dropdownLabel = getTimeRangeLabel(timeRange, singleDirection)
   }
 
   const handleApplyTimeRange = (timeRange: CustomTimeRange) => {

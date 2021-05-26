@@ -1,13 +1,33 @@
-import {Overlay} from '@influxdata/clockface'
+// Libraries
 import React, {FC, useContext} from 'react'
-import {CheckoutContext} from 'src/checkout/context/checkout'
-import {RemoteDataState} from 'src/types'
+import {Overlay} from '@influxdata/clockface'
+import {useSelector} from 'react-redux'
 import {useHistory, withRouter} from 'react-router'
+
+// Components
+import {CheckoutContext} from 'src/checkout/context/checkout'
+
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {getOrg} from 'src/organizations/selectors'
+
+// Types
+import {RemoteDataState} from 'src/types'
+
+// Constants
+import {CLOUD_USERS_PATH, CLOUD_URL} from 'src/shared/constants'
 
 const SuccessOverlay: FC = () => {
   const history = useHistory()
-  const {checkoutStatus, onSuccessUrl} = useContext(CheckoutContext)
-  const handleClick = () => history.push(onSuccessUrl)
+  const {checkoutStatus} = useContext(CheckoutContext)
+  const orgId = useSelector(getOrg)?.id
+  const handleClick = () => {
+    if (isFlagEnabled('unityUsers')) {
+      history.push(`/orgs/${orgId}/users`)
+      return
+    }
+    window.location.href = `${CLOUD_URL}/organizations/${orgId}${CLOUD_USERS_PATH}`
+  }
 
   return (
     <Overlay visible={checkoutStatus === RemoteDataState.Done}>

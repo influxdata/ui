@@ -1,10 +1,7 @@
-import {Inputs} from 'src/checkout/context/checkout'
 import {
   getBilling,
   getOrgsLimits as apiGetOrgLimits,
   getMarketplace as genGetMarketplace,
-  postCheckout,
-  getSettingsNotifications,
   getPaymentForm,
   getBillingInvoices,
   putBillingPaymentMethod,
@@ -124,36 +121,6 @@ export const getOrgsLimits = (): ReturnType<typeof apiGetOrgLimits> => {
   return makeResponse(200, limits, 'getOrgsLimits')
 }
 
-export const getCheckoutZuoraParams = (): ReturnType<typeof getPaymentForm> => {
-  const zp: CreditCardParams = {
-    style: 'inline',
-    url: 'you-are-el',
-    submitEnabled: 'false',
-    tenantId: '12345',
-    token: 'TOW-KEN',
-    key: 'KEE',
-    signature: 'SIGNATURE',
-    id: 'eye-dee',
-    status: RemoteDataState.Done,
-  }
-
-  return makeResponse(200, zp)
-}
-
-export const getBillingNotificationSettings = (): ReturnType<typeof getSettingsNotifications> => {
-  const billingNotifySettings: BillingNotifySettings = {
-    isNotify: true,
-    balanceThreshold: 10,
-    notifyEmail: 'asalem@influxdata.com',
-    status: RemoteDataState.Done,
-  }
-  return makeResponse(
-    200,
-    billingNotifySettings,
-    'getBillingNotificationSettings'
-  )
-}
-
 export const updateBillingNotificationSettings = (
   settings: BillingNotifySettings
 ): ReturnType<typeof putSettingsNotifications> => {
@@ -197,42 +164,6 @@ export const getInvoices = (): ReturnType<typeof getBillingInvoices> => {
   return makeResponse(200, invoices, 'getInvoices')
 }
 
-export const makeCheckoutPayload = (data: Inputs): any => {
-  const {
-    shouldNotify,
-    notifyEmail,
-    balanceThreshold,
-    paymentMethodId,
-    country,
-    intlSubdivision,
-    usSubdivision,
-    street1,
-    street2,
-    city,
-    postalCode,
-  } = data
-  return {
-    isNotify: shouldNotify,
-    notifyEmail,
-    balanceThreshold,
-    paymentMethodId,
-    country,
-    subdivision: usSubdivision ?? intlSubdivision,
-    street1,
-    street2,
-    city,
-    postalCode,
-    status: RemoteDataState.Done,
-  }
-}
-
-export const postCheckoutInformation = async (
-  data: Inputs
-): ReturnType<typeof postCheckout> => {
-  const paymentInformation = makeCheckoutPayload(data)
-
-  return makeResponse(201, paymentInformation, 'postCheckoutInformation', data)
-}
 export const putBillingPaymentMethodId = async (
   paymentMethodId: string
 ): ReturnType<typeof putBillingPaymentMethod> => {

@@ -11,7 +11,7 @@ import {useLegendOpacity} from 'src/visualization/utils/useLegendOrientation'
 import {useVisXDomainSettings} from 'src/visualization/utils/useVisDomainSettings'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
 import {AppSettingContext} from 'src/shared/contexts/app'
-import {handleUnsupportedGraphType} from 'src/visualization/components/annotationUtils'
+import {handleUnsupportedGraphType} from 'src/visualization/utils/annotationUtils'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants

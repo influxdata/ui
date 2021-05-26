@@ -14,7 +14,7 @@ import {
   useVisXDomainSettings,
   useVisYDomainSettings,
 } from 'src/visualization/utils/useVisDomainSettings'
-import {handleUnsupportedGraphType} from 'src/visualization/components/annotationUtils'
+import {handleUnsupportedGraphType} from 'src/visualization/utils/annotationUtils'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants

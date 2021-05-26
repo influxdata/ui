@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import LatestValueTransform from 'src/visualization/components/LatestValueTransform'
 import {generateThresholdsListHexs} from 'src/shared/constants/colorOperations'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
-import {handleUnsupportedGraphType} from 'src/visualization/components/annotationUtils'
+import {handleUnsupportedGraphType} from 'src/visualization/utils/annotationUtils'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types

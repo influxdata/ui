@@ -16,7 +16,7 @@ import {
 } from 'src/visualization/utils/useVisDomainSettings'
 import {defaultXColumn, defaultYColumn} from 'src/shared/utils/vis'
 import {AppSettingContext} from 'src/shared/contexts/app'
-import {handleUnsupportedGraphType} from 'src/visualization/components/annotationUtils'
+import {handleUnsupportedGraphType} from 'src/visualization/utils/annotationUtils'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants

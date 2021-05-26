@@ -15,7 +15,7 @@ import {
 } from 'src/shared/utils/vis'
 import {getMapToken} from './api'
 import {event} from 'src/cloud/utils/reporting'
-import {handleUnsupportedGraphType} from 'src/visualization/components/annotationUtils'
+import {handleUnsupportedGraphType} from 'src/visualization/utils/annotationUtils'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Selectors

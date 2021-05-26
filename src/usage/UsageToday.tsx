@@ -11,7 +11,7 @@ import {
 // Components
 import UsageDropdown from 'src/usage/UsageDropdown'
 import BillingStatsPanel from 'src/usage/BillingStatsPanel'
-import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
+import UsageTimeRangeDropdown from 'src/usage/UsageTimeRangeDropdown'
 import GraphTypeSwitcher from 'src/usage/GraphTypeSwitcher'
 import {UsageContext} from 'src/usage/context/usage'
 
@@ -103,7 +103,7 @@ const UsageToday: FC = () => {
       margin={ComponentSize.Small}
     >
       <BillingStatsPanel />
-      <TimeRangeDropdown
+      <UsageTimeRangeDropdown
         onSetTimeRange={handleSetTimeRange}
         timeRange={timeRange}
       />

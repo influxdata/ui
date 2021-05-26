@@ -127,6 +127,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
       setBillingStats(csvs)
     } catch (error) {
       console.error('getBillingStats: ', error)
+      setBillingStats([''])
     }
   }, [setBillingStats])
 
@@ -149,6 +150,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
       setUsageStats(resp.data)
     } catch (error) {
       console.error('handleGetUsageStats: ', error)
+      setUsageStats('')
     }
   }, [selectedUsage, timeRange])
 
@@ -170,6 +172,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
       setRateLimits(resp.data)
     } catch (error) {
       console.error('handleGetRateLimits: ', error)
+      setRateLimits('')
     }
   }, [timeRange])
 

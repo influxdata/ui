@@ -36,13 +36,13 @@ interface Props {
   onClose: () => void
 }
 
-export const checkAnnotationFormValidity = (
+export const isValidAnnotation = (
   annotationType: string,
   message: string,
   startTime: any,
   endTime: any
 ) => {
-  const firstPart = message.length && startTime
+  const isValidPointAnnotation = message.length && startTime
 
   // not checking if start <= end right now
   // initially, the times are numbers, and then if the user manually edits them then
@@ -50,9 +50,9 @@ export const checkAnnotationFormValidity = (
   // plus, the backend checks if the startTime is before or equals the endTime
   // so, letting the backend do that check for now.
   if (annotationType === 'range') {
-    return firstPart && endTime
+    return isValidPointAnnotation && endTime
   }
-  return firstPart
+  return isValidPointAnnotation
 }
 
 export const AnnotationForm: FC<Props> = (props: Props) => {
@@ -61,7 +61,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
   const [message, setMessage] = useState('')
 
   const isValidAnnotationForm = ({message, startTime, endTime}): boolean => {
-    return checkAnnotationFormValidity(props.type, message, startTime, endTime)
+    return isValidAnnotation(props.type, message, startTime, endTime)
   }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
@@ -91,20 +91,6 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     props.onClose()
   }
 
-  let endTimeSection = null
-  if (props.type === 'range') {
-    endTimeSection = (
-      <Grid.Row>
-        <AnnotationTimeInput
-          onChange={updateEndTime}
-          onSubmit={handleKeyboardSubmit}
-          time={endTime}
-          name="endTime"
-          titleText="Stop Time"
-        />
-      </Grid.Row>
-    )
-  }
   return (
     <Overlay.Container maxWidth={ANNOTATION_FORM_WIDTH}>
       <Overlay.Header
@@ -122,7 +108,17 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
                 name="startTime"
               />
             </Grid.Row>
-            {endTimeSection}
+            {props.type === 'range' && (
+              <Grid.Row>
+                <AnnotationTimeInput
+                  onChange={updateEndTime}
+                  onSubmit={handleKeyboardSubmit}
+                  time={endTime}
+                  name="endTime"
+                  titleText="Stop Time"
+                />
+              </Grid.Row>
+            )}
             <Grid.Row>
               <AnnotationMessageInput
                 message={message}

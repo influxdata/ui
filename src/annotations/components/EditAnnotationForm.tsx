@@ -24,7 +24,7 @@ import {Annotation} from 'src/types'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {checkAnnotationFormValidity} from 'src/annotations/components/annotationForm/AnnotationForm'
+import {isValidAnnotation} from 'src/annotations/components/annotationForm/AnnotationForm'
 
 // Style
 import 'src/annotations/components/editAnnotationForm.scss'
@@ -59,7 +59,7 @@ export const EditAnnotationForm: FC<Props> = (props: Props) => {
   const dispatch = useDispatch()
 
   const isValidAnnotationForm = (): boolean => {
-    return checkAnnotationFormValidity(
+    return isValidAnnotation(
       editedAnnotation.type,
       editedAnnotation.summary,
       editedAnnotation.startTime,
@@ -67,25 +67,25 @@ export const EditAnnotationForm: FC<Props> = (props: Props) => {
     )
   }
 
-  const doUpdate = (obj: any) => {
+  const updateOneAnnotationField = (newAnnotationField: any) => {
     updateAnnotation(annotation => {
       return {
         ...annotation,
-        ...obj,
+        ...newAnnotationField,
       }
     })
   }
 
   const updateStartTime = (newStartTime: string) => {
-    doUpdate({startTime: newStartTime})
+    updateOneAnnotationField({startTime: newStartTime})
   }
 
   const updateEndTime = (newTime: string) => {
-    doUpdate({endTime: newTime})
+    updateOneAnnotationField({endTime: newTime})
   }
 
   const updateMessage = (newMessage: string) => {
-    doUpdate({summary: newMessage})
+    updateOneAnnotationField({summary: newMessage})
   }
 
   const handleSubmit = () => {
@@ -114,19 +114,6 @@ export const EditAnnotationForm: FC<Props> = (props: Props) => {
     }
   }
 
-  let endTimeSection = null
-  if (editedAnnotation.type === 'range') {
-    endTimeSection = (
-      <AnnotationTimeInput
-        onChange={updateEndTime}
-        onSubmit={handleKeyboardSubmit}
-        time={editedAnnotation.endTime}
-        name="endTime"
-        titleText="Stop Time"
-      />
-    )
-  }
-
   return (
     <Overlay.Container maxWidth={ANNOTATION_FORM_WIDTH}>
       <Overlay.Header
@@ -142,7 +129,15 @@ export const EditAnnotationForm: FC<Props> = (props: Props) => {
             time={editedAnnotation.startTime}
             name="startTime"
           />
-          {endTimeSection}
+          {editedAnnotation.type === 'range' && (
+            <AnnotationTimeInput
+              onChange={updateEndTime}
+              onSubmit={handleKeyboardSubmit}
+              time={editedAnnotation.endTime}
+              name="endTime"
+              titleText="Stop Time"
+            />
+          )}
           <AnnotationMessageInput
             message={editedAnnotation.summary}
             onChange={updateMessage}

@@ -248,7 +248,7 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
     })
 
-    it.only('can create an annotation that is scoped to a dashboard cell', () => {
+    it('can create an annotation that is scoped to a dashboard cell', () => {
       // create a new cell
       cy.getByTestID('button')
         .click()

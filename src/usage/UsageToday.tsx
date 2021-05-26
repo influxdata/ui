@@ -73,28 +73,15 @@ const UsageToday: FC = () => {
   } = useContext(UsageContext)
 
   const getUsageSparkline = () => {
-    let graphInfo = usageGraphInfo.find(stat => stat.title === selectedUsage)
-    // TODO(ariel): figure out what to do if there's no match
+    let graphInfo = usageGraphInfo.find(stat =>
+      stat.title.includes(selectedUsage)
+    )
+
     if (!graphInfo) {
       graphInfo = usageGraphInfo[0]
     }
     return <GraphTypeSwitcher csv={usageStats} graphInfo={graphInfo} />
   }
-
-  const getTimeRangeLabel = () => {
-    switch (timeRange.type) {
-      case 'selectable-duration':
-        return timeRange.label
-      case 'duration':
-        return `from ${timeRange.lower} to now`
-      default:
-        return `from ${new Date(timeRange.lower).toISOString()} to ${new Date(
-          timeRange.upper
-        ).toISOString()}`
-    }
-  }
-
-  const timeRangeLabel = getTimeRangeLabel()
 
   return (
     <FlexBox
@@ -109,7 +96,7 @@ const UsageToday: FC = () => {
       />
       <Panel className="usage--panel">
         <Panel.Header>
-          <h4 data-testid="usage-header--timerange">{`Usage ${timeRangeLabel}`}</h4>
+          <h4 data-testid="usage-header--timerange">{`Usage ${timeRange.label}`}</h4>
           <UsageDropdown />
         </Panel.Header>
         <Panel.Body
@@ -122,7 +109,7 @@ const UsageToday: FC = () => {
       </Panel>
       <Panel className="usage--panel">
         <Panel.Header>
-          <h4 data-testid="rate-limits-header--timerange">{`Rate Limits ${timeRangeLabel}`}</h4>
+          <h4 data-testid="rate-limits-header--timerange">{`Rate Limits ${timeRange.label}`}</h4>
         </Panel.Header>
         <Panel.Body
           direction={FlexDirection.Column}

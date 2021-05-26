@@ -43,6 +43,7 @@ const TimeRangeDropdown: FC<Props> = ({onSetTimeRange, timeRange}) => {
     const timeRange = SELECTABLE_USAGE_TIME_RANGES.find(t => t.label === label)
     onSetTimeRange(timeRange)
   }
+
   return (
     <>
       <Popover
@@ -66,7 +67,7 @@ const TimeRangeDropdown: FC<Props> = ({onSetTimeRange, timeRange}) => {
       />
       <Form.Element label="Time Range">
         <Dropdown
-          style={{width: 200}}
+          style={{width: 200, marginBottom: 8}}
           testID="timerange-dropdown"
           button={(active, onClick) => (
             <Dropdown.Button

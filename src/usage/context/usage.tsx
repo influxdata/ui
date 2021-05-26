@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useCallback, useEffect, useState} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
 
 // Utils
 import {
@@ -10,14 +9,12 @@ import {
   getUsageVectors,
   getUsageRateLimits,
 } from 'src/client/unityRoutes'
-import {getTimeRange} from 'src/dashboards/selectors'
-import {setTimeRange} from 'src/timeMachine/actions'
 
 // Constants
-import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
+import {DEFAULT_USAGE_TIME_RANGE} from 'src/shared/constants/timeRanges'
 
 // Types
-import {TimeRange} from 'src/types'
+import {SelectableDurationTimeRange} from 'src/types'
 import {UsageVector} from 'src/types/billing'
 
 export type Props = {
@@ -28,10 +25,10 @@ export interface UsageContextType {
   billingDateTime: string
   billingStats: string[]
   handleSetSelectedUsage: (vector: string) => void
-  handleSetTimeRange: (timeRange: TimeRange) => void
+  handleSetTimeRange: (timeRange: SelectableDurationTimeRange) => void
   rateLimits: string
   selectedUsage: string
-  timeRange: TimeRange
+  timeRange: SelectableDurationTimeRange
   usageStats: string
   usageVectors: UsageVector[]
 }
@@ -43,7 +40,7 @@ export const DEFAULT_CONTEXT: UsageContextType = {
   handleSetTimeRange: () => {},
   rateLimits: '',
   selectedUsage: '',
-  timeRange: DEFAULT_TIME_RANGE,
+  timeRange: DEFAULT_USAGE_TIME_RANGE,
   usageStats: '',
   usageVectors: [],
 }
@@ -59,15 +56,16 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   const [billingStats, setBillingStats] = useState([])
   const [usageStats, setUsageStats] = useState('')
   const [rateLimits, setRateLimits] = useState('')
+  const [timeRange, setTimeRange] = useState<SelectableDurationTimeRange>(
+    DEFAULT_USAGE_TIME_RANGE
+  )
 
-  // TODO(ariel): update the timerange to be fixed to the enum provided
-  // This is to ensure that the usage page doesn't crash on large selections
-  const timeRange = useSelector(getTimeRange)
-  const dispatch = useDispatch()
-
-  const handleSetTimeRange = (range: TimeRange) => {
-    dispatch(setTimeRange(range))
-  }
+  const handleSetTimeRange = useCallback(
+    (range: SelectableDurationTimeRange) => {
+      setTimeRange(range)
+    },
+    [setTimeRange]
+  )
 
   const handleSetSelectedUsage = useCallback(
     (vector: string) => {
@@ -122,12 +120,15 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
         throw new Error(resp.data.message)
       }
 
+      // TODO(ariel): keeping this in for testing purposes in staging
+      // This will need to be removed for flipping the feature flag on
+      console.warn({resp})
+
       const csvs = resp.data?.split('\n\n')
 
       setBillingStats(csvs)
     } catch (error) {
       console.error('getBillingStats: ', error)
-      setBillingStats([''])
     }
   }, [setBillingStats])
 
@@ -136,21 +137,22 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   }, [handleGetBillingStats])
 
   const handleGetUsageStats = useCallback(async () => {
-    try {
-      const resp = await getUsage({
-        vector_name: selectedUsage,
-        query: {range: '24h'},
-        // query: {range: timeRange.duration},
-      })
+    if (selectedUsage.length > 0) {
+      try {
+        const resp = await getUsage({
+          vector_name: selectedUsage,
+          query: {range: timeRange.duration},
+        })
 
-      if (resp.status !== 200) {
-        throw new Error(resp.data.message)
+        if (resp.status !== 200) {
+          throw new Error(resp.data.message)
+        }
+
+        setUsageStats(resp.data)
+      } catch (error) {
+        console.error('handleGetUsageStats: ', error)
+        setUsageStats('')
       }
-
-      setUsageStats(resp.data)
-    } catch (error) {
-      console.error('handleGetUsageStats: ', error)
-      setUsageStats('')
     }
   }, [selectedUsage, timeRange])
 
@@ -161,8 +163,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   const handleGetRateLimits = useCallback(async () => {
     try {
       const resp = await getUsageRateLimits({
-        // query: {range: timeRange.duration},
-        query: {range: '24h'},
+        query: {range: timeRange.duration},
       })
 
       if (resp.status !== 200) {

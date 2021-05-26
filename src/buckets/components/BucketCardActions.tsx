@@ -71,10 +71,14 @@ const BucketCardActions: FC<Props> = ({
   }
 
   const handleAddLineProtocol = () => {
+    onSetDataLoadersBucket(orgID, bucket.name, bucket.id)
+
     history.push(`/orgs/${orgID}/load-data/file-upload/lp`)
   }
 
   const handleCSVUploader = () => {
+    onSetDataLoadersBucket(orgID, bucket.name, bucket.id)
+
     history.push(`/orgs/${orgID}/load-data/file-upload/csv`)
   }
 

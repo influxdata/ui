@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, ChangeEvent, useContext} from 'react'
-import {useParams} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
 // Components
@@ -27,15 +26,9 @@ const TabBody: FC<Props> = ({bucket}) => {
 
   const {bucket: chosenUploadBucket} = useContext(WriteDataDetailsContext)
 
-  const {bucketID} = useParams<{bucketID?: string}>()
-
   const selectedBucket =
     useSelector((state: AppState) =>
-      getByID<Bucket>(
-        state,
-        ResourceType.Buckets,
-        bucketID ?? chosenUploadBucket?.id
-      )
+      getByID<Bucket>(state, ResourceType.Buckets, chosenUploadBucket?.id)
     )?.name ?? ''
 
   const handleTextChange = (e: ChangeEvent<HTMLTextAreaElement>) => {

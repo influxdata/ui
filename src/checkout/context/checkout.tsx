@@ -12,6 +12,7 @@ import {
   postCheckout,
 } from 'src/client/unityRoutes'
 import {getQuartzMe} from 'src/me/selectors'
+import {getQuartzMe as getQuartzMeThunk} from 'src/me/actions/thunks'
 
 // Constants
 import {states} from 'src/billing/constants'
@@ -128,7 +129,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
       // TODO(ariel): remove type casting here when Billing is refactored and integrated
       setZuoraParams(response.data as CreditCardParams)
     } catch (error) {
-      // TODO(ariel): should we notify or report the error?
+      // Ingest the error since the Zuora Form will return an error form based on the error returned
       console.error(error)
     }
   }, [])
@@ -137,30 +138,26 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     getZuoraParams()
   }, [getZuoraParams])
 
-  const getBillingSettings = useCallback(
-    // TODO(ariel): this is weird, why do we need a parameter?
-    async (fields = inputs) => {
-      try {
-        const resp = await getSettingsNotifications({})
-        if (resp.status !== 200) {
-          throw new Error(resp.data.message)
-        }
-        setInputs({
-          ...fields,
-          balanceThreshold: resp.data.balanceThreshold,
-          notifyEmail: resp.data.notifyEmail,
-          shouldNotify: resp.data.isNotify,
-        })
-      } catch (error) {
-        // We're injesting the error here and leaving the default inputs since
-        // Quartz's API returns a 404 for valid requests that don't have any data
-        // Meaning, if a user hasn't filled out the notification settings, the
-        // API response is expected to return a 404 even though the query was successful
-        console.error(error)
+  const getBillingSettings = useCallback(async () => {
+    try {
+      const resp = await getSettingsNotifications({})
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
       }
-    },
-    [getSettingsNotifications] // eslint-disable-line react-hooks/exhaustive-deps
-  )
+      setInputs({
+        ...inputs,
+        balanceThreshold: resp.data.balanceThreshold,
+        notifyEmail: resp.data.notifyEmail,
+        shouldNotify: resp.data.isNotify,
+      })
+    } catch (error) {
+      // We're injesting the error here and leaving the default inputs since
+      // Quartz's API returns a 404 for valid requests that don't have any data
+      // Meaning, if a user hasn't filled out the notification settings, the
+      // API response is expected to return a 404 even though the query was successful
+      console.error(error)
+    }
+  }, [inputs])
 
   useEffect(() => {
     getBillingSettings()
@@ -215,12 +212,8 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
 
     const {shouldNotify} = inputs
     if (!shouldNotify) {
-      // TODO(ariel): this seems like a hack to "make it work"
-      getBillingSettings(fields)
-      /**
-       * fields.notifyEmail = default user email
-       * fields.balanceThreshold = default balance threshold
-       */
+      fields.notifyEmail = me?.email ?? '' // sets the default to the user's registered email
+      fields.balanceThreshold = 1 // set the default to the minimum balance threshold
     }
 
     return Object.entries(fields).filter(([key, value]) => {
@@ -249,7 +242,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
       }
       return false
     })
-  }, [getBillingSettings, inputs])
+  }, [me?.email, inputs])
 
   const handleFormValidation = (): number => {
     const errs = getInvalidFields()
@@ -274,22 +267,35 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
 
     try {
       if (errs.length === 0) {
-        const paymentInformation = {...inputs, paymentMethodId}
+        const formData = {
+          ...inputs,
+          subdivision:
+            inputs.country === 'United States'
+              ? inputs.usSubdivision
+              : inputs.intlSubdivision,
+        }
+
+        delete formData.usSubdivision
+        delete formData.intlSubdivision
+
+        const paymentInformation = {...formData, paymentMethodId}
 
         const response = await postCheckout({data: paymentInformation})
 
-        setCheckoutStatus(
-          response.status === 201 ? RemoteDataState.Done : RemoteDataState.Error
-        )
-        // TODO(ariel): make sure to refetch the `/me` endpoint after a user leaves the checkout
-        // TODO(ariel): where should we redirect the user to once they've upgraded?
+        if (response.status !== 201) {
+          throw new Error(response.data.message)
+        }
+
+        setCheckoutStatus(RemoteDataState.Done)
+        // Call the `quartz/me` endpoint to update the existing user metadata
+        dispatch(getQuartzMeThunk())
       } else {
         const errorFields = errs?.flatMap(([err]) => err)
-
+        setCheckoutStatus(RemoteDataState.Error)
         handleSetErrors(errorFields)
       }
     } catch (error) {
-      console.error({error})
+      console.error(error)
 
       dispatch(notify(submitError()))
     }

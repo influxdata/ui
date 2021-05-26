@@ -56,11 +56,7 @@ import {VisualizationProps} from 'src/visualization'
 import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 
 // Annotations
-import {
-  makeAnnotationClickListener,
-  makeAnnotationLayer,
-  makeAnnotationRangeListener,
-} from 'src/visualization/utils/annotationUtils'
+import {addAnnotationLayer} from 'src/visualization/utils/annotationUtils'
 
 import {useDispatch, useSelector} from 'react-redux'
 
@@ -226,36 +222,6 @@ const SingleStatWithLine: FC<Props> = ({
     ],
   }
 
-  let annotationLayer
-
-  if (isFlagEnabled('annotations')) {
-    const eventPrefix = 'singleStatWline'
-
-    if (inAnnotationWriteMode && cellID) {
-      config.interactionHandlers = {
-        singleClick: makeAnnotationClickListener(dispatch, cellID, eventPrefix),
-      }
-      if (isFlagEnabled('rangeAnnotations')) {
-        config.interactionHandlers.onXBrush = makeAnnotationRangeListener(
-          dispatch,
-          cellID,
-          eventPrefix
-        )
-      }
-    }
-
-    annotationLayer = makeAnnotationLayer(
-      cellID,
-      xColumn,
-      yColumn,
-      groupKey,
-      annotations,
-      annotationsAreVisible,
-      dispatch,
-      eventPrefix
-    )
-  }
-
   if (isFlagEnabled('useGiraffeGraphs')) {
     const statLayer: SingleStatLayerConfig = {
       type: 'single stat',
@@ -282,9 +248,19 @@ const SingleStatWithLine: FC<Props> = ({
     // adding this *after* the statLayer, it has to be the top layer
     // for clicking to edit to function.  (if it is not the top layer it shows,
     // but the annotations are not editable)
-    if (annotationLayer) {
-      config.layers.push(annotationLayer)
-    }
+
+    addAnnotationLayer(
+      config,
+      inAnnotationWriteMode,
+      cellID,
+      xColumn,
+      yColumn,
+      groupKey,
+      annotations,
+      annotationsAreVisible,
+      dispatch,
+      'singleStatWline'
+    )
 
     return <Plot config={config} />
   } else {

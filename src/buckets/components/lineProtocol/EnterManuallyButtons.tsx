@@ -34,7 +34,7 @@ const EnterManuallyButtons: FC = () => {
 
   const status = body ? ComponentStatus.Default : ComponentStatus.Disabled
   const history = useHistory()
-  const {orgID, bucketID} = useParams<{orgID: string; bucketID: string}>()
+  const {orgID} = useParams<{orgID: string; bucketID: string}>()
 
   const handleClose = () => {
     history.push(`/orgs/${orgID}/load-data/buckets`)
@@ -42,11 +42,7 @@ const EnterManuallyButtons: FC = () => {
 
   const selectedBucket =
     useSelector((state: AppState) =>
-      getByID<Bucket>(
-        state,
-        ResourceType.Buckets,
-        bucketID ?? chosenUploadBucket?.id
-      )
+      getByID<Bucket>(state, ResourceType.Buckets, chosenUploadBucket?.id)
     )?.name ?? ''
 
   const handleSubmit = () => {

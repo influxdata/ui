@@ -1227,7 +1227,7 @@ export const dashboardAutoRefreshTimeoutSuccess = (
 /* USERS NOTIFICATIONS */
 export const inviteSent = (): Notification => ({
   ...defaultSuccessNotification,
-  message: `invite sent`,
+  message: `Invitation Sent`,
 })
 
 export const inviteFailed = (): Notification => ({

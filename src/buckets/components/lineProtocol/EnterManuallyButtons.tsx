@@ -19,6 +19,9 @@ import {getByID} from 'src/resources/selectors'
 // Types
 import {AppState, Bucket, ResourceType, RemoteDataState} from 'src/types'
 
+// Context
+import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
+
 const EnterManuallyButtons: FC = () => {
   const {
     body,
@@ -27,6 +30,8 @@ const EnterManuallyButtons: FC = () => {
     writeLineProtocol,
     writeStatus,
   } = useContext(LineProtocolContext)
+  const {bucket: chosenUploadBucket} = useContext(WriteDataDetailsContext)
+
   const status = body ? ComponentStatus.Default : ComponentStatus.Disabled
   const history = useHistory()
   const {orgID, bucketID} = useParams<{orgID: string; bucketID: string}>()
@@ -37,7 +42,11 @@ const EnterManuallyButtons: FC = () => {
 
   const selectedBucket =
     useSelector((state: AppState) =>
-      getByID<Bucket>(state, ResourceType.Buckets, bucketID)
+      getByID<Bucket>(
+        state,
+        ResourceType.Buckets,
+        bucketID ?? chosenUploadBucket?.id
+      )
     )?.name ?? ''
 
   const handleSubmit = () => {

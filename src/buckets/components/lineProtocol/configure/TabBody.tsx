@@ -18,15 +18,24 @@ type Props = {
   bucket?: string
 }
 
+import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
+
 const TabBody: FC<Props> = ({bucket}) => {
   const {body, handleSetBody, tab, writeLineProtocol} = useContext(
     LineProtocolContext
   )
+
+  const {bucket: chosenUploadBucket} = useContext(WriteDataDetailsContext)
+
   const {bucketID} = useParams<{bucketID?: string}>()
 
   const selectedBucket =
     useSelector((state: AppState) =>
-      getByID<Bucket>(state, ResourceType.Buckets, bucketID)
+      getByID<Bucket>(
+        state,
+        ResourceType.Buckets,
+        bucketID ?? chosenUploadBucket?.id
+      )
     )?.name ?? ''
 
   const handleTextChange = (e: ChangeEvent<HTMLTextAreaElement>) => {

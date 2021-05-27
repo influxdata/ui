@@ -1,0 +1,31 @@
+kind: Project
+name: ui
+environments:
+  - name: dev
+providers:
+  - name: kubernetes
+    environments: ["dev"]
+    context:  gke_deployments-team-01_us-east1_gke-remocal-standard-01
+    defaultHostname: ${local.env.USER || local.username}-influx.io
+    kaniko:
+      extraFlags: ["--use-new-run", "--log-timestamp"]
+      image: gcr.io/kaniko-project/executor:debug-v1.2.0
+    buildMode: kaniko
+---
+kind: Module
+name: ui
+type: container
+include: ["**/*"]
+dockerfile: docker/Dockerfile.chronograf.prod
+services:
+  - name: ui
+    ports:
+      - name: http
+        containerPort: 9999
+    healthCheck:
+      httpGet:
+        path: /
+        port: http
+    ingresses:
+      - path: /*
+        port: http    

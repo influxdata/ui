@@ -1,0 +1,17 @@
+FROM node:alpine3.12 AS repo
+
+WORKDIR /ui
+
+RUN apk \
+    --update \
+    --no-cache \
+    --virtual build-dependencies \
+    add \
+    git
+
+COPY . /ui
+RUN yarn install --production=false  && \
+yarn generate &&  yarn run build:vendor 
+
+RUN git init
+CMD ["npm", "run", "start:dev"] 

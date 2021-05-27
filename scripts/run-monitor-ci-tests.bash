@@ -91,10 +91,11 @@ if [[ -z "${OSS_SHA:-}" ]]; then
 		# - UI_BRANCH must be 'master'
 		# - MONITOR_CI_BRANCH must be 'master'
 		# - DEPLOY_PROD must be 'true'
+		# - UI_GITHUB_ORG must be 'influxdata'
 		# UI_BRANCH, DEPLOY_PROD are both neccesary to ensure that UI_BRANCH parameter's default in the monitor-ci pipeline doesn't deploy us to production unless started by this script.
 		DEPLOY_PROD=true
 	fi
-	if [ -n $PULL_REQUEST ]; then
+	if [ -n "${PULL_REQUEST}" ]; then
 		# if running from pull request, use github api to get source org and branch.
 		# this is needed to support forks of the UI repo.
 		pr=$(echo ${PULL_REQUEST} | grep -oE "[^/]+$")

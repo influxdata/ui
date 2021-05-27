@@ -48,8 +48,9 @@ const AutoRefreshForm: FC = () => {
   return (
     <Overlay.Container maxWidth={500} testID="auto-refresh-overlay">
       <Overlay.Header title="Configure Auto Refresh" onDismiss={handleCancel} />
-      <Grid>
-        <Grid.Column className="refresh-form-column">
+
+      <Grid.Column className="refresh-form-column">
+        <Overlay.Body>
           <div className="refresh-form-container">
             <span className="refresh-form-container-child">Until: </span>
             <InputLabel
@@ -135,36 +136,35 @@ const AutoRefreshForm: FC = () => {
               )}
             </div>
           </div>
-          <Overlay.Footer className="autoRefreshOverlayFooter">
-            <Button
-              onClick={handleCancel}
-              text="Cancel"
-              color={ComponentColor.Default}
-              className="refresh-form-cancel-button"
-              testID="refresh-form-cancel-button"
-            />
-            <Button
-              onClick={() => {
-                setAutoRefreshSettings()
-                onClose()
-                event(
-                  'dashboards.autorefresh.autorefreshoverlay.confirmcustom',
-                  {customAutoRefreshState: JSON.stringify(state)}
-                )
-              }}
-              text="Confirm"
-              color={ComponentColor.Primary}
-              className="refresh-form-activate-button"
-              testID="refresh-form-activate-button"
-              status={
-                state.refreshMilliseconds.interval === 0
-                  ? ComponentStatus.Disabled
-                  : ComponentStatus.Default
-              }
-            />
-          </Overlay.Footer>
-        </Grid.Column>
-      </Grid>
+        </Overlay.Body>
+        <Overlay.Footer className="autoRefreshOverlayFooter">
+          <Button
+            onClick={handleCancel}
+            text="Cancel"
+            color={ComponentColor.Default}
+            className="refresh-form-cancel-button"
+            testID="refresh-form-cancel-button"
+          />
+          <Button
+            onClick={() => {
+              setAutoRefreshSettings()
+              onClose()
+              event('dashboards.autorefresh.autorefreshoverlay.confirmcustom', {
+                customAutoRefreshState: JSON.stringify(state),
+              })
+            }}
+            text="Confirm"
+            color={ComponentColor.Primary}
+            className="refresh-form-activate-button"
+            testID="refresh-form-activate-button"
+            status={
+              state.refreshMilliseconds.interval === 0
+                ? ComponentStatus.Disabled
+                : ComponentStatus.Default
+            }
+          />
+        </Overlay.Footer>
+      </Grid.Column>
     </Overlay.Container>
   )
 }

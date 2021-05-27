@@ -52,7 +52,6 @@ const makeAnnotationClickListener = (
   const singleClickHandler = (plotInteraction: InteractionHandlerArguments) => {
     event(`${eventPrefix}.annotations.create_annotation.show_overlay`)
 
-    console.log('about to create an annotation......', plotInteraction)
     dispatch(
       showOverlay(
         'add-annotation',

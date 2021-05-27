@@ -51,10 +51,15 @@ const WriteDataDetailsProvider: FC = ({children}) => {
     getAll<Authorization>(state, ResourceType.Authorizations)
   )
   const org = useSelector(getOrg)
+  const bucketname = useSelector(
+    (state: AppState) => state.dataLoading?.steps?.bucket
+  )
   const server = window.location.origin
 
+  const toLoadBucket = buckets?.find(b => b.name === bucketname)
+
   const [bucket, setBucket] = useState(
-    buckets[0] ?? ({name: '<BUCKET>'} as Bucket)
+    toLoadBucket ?? buckets[0] ?? ({name: '<BUCKET>'} as Bucket)
   )
   const [token, setToken] = useState(tokens[0] ?? {token: '<INFLUX_TOKEN>'})
   const [query, setQuery] = useState(null)

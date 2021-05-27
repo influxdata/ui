@@ -135,7 +135,7 @@ const AutoRefreshForm: FC = () => {
               )}
             </div>
           </div>
-          <div className="refresh-form-buttons">
+          <Overlay.Footer className="autoRefreshOverlayFooter">
             <Button
               onClick={handleCancel}
               text="Cancel"
@@ -162,7 +162,7 @@ const AutoRefreshForm: FC = () => {
                   : ComponentStatus.Default
               }
             />
-          </div>
+          </Overlay.Footer>
         </Grid.Column>
       </Grid>
     </Overlay.Container>

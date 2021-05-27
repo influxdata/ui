@@ -28,11 +28,8 @@
   flex: 1;
 }
 
-.refresh-form-buttons {
-  display: grid;
-  grid-template-columns: auto auto;
-  grid-gap: 10px;
-  padding: $cf-marg-c $cf-marg-a $cf-marg-b $cf-marg-a;
+.autoRefreshOverlayFooter {
+  margin-top: 10px;
 }
 
 .refresh-form-cancel-button {

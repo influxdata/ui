@@ -139,8 +139,12 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   const handleGetUsageStats = useCallback(async () => {
     if (selectedUsage.length > 0) {
       try {
+        const vector = usageVectors.find(
+          vector => selectedUsage === vector.name
+        )
+
         const resp = await getUsage({
-          vector_name: selectedUsage,
+          vector_name: vector.fluxKey,
           query: {range: timeRange.duration},
         })
 
@@ -154,7 +158,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
         setUsageStats('')
       }
     }
-  }, [selectedUsage, timeRange])
+  }, [selectedUsage, timeRange, usageVectors])
 
   useEffect(() => {
     handleGetUsageStats()

@@ -1,47 +1,48 @@
 import React, {FC} from 'react'
+import {useSelector} from 'react-redux'
 import {Grid, Columns} from '@influxdata/clockface'
 import OrgLimitStat from 'src/billing/components/Free/OrgLimitStat'
 
-// Utils
-import {useBilling} from 'src/billing/components/BillingPage'
-
 // Types
-import {OrgLimits} from 'src/types/billing'
+import {AppState, Limit} from 'src/types'
+import {LimitsState} from 'src/cloud/reducers/limits'
 
-type KV = [string, string | number]
-
-const excludeOrgIDAndStatus = (limitEntries: KV[]): KV[] => {
-  return limitEntries.filter(
-    ([limitName]) => limitName !== 'orgID' && limitName !== 'status'
+const limits = (orgLimits: LimitsState | {}) =>
+  Object.entries(orgLimits).filter(
+    ([limitName]) =>
+      limitName !== 'orgID' &&
+      limitName !== 'status' &&
+      limitName !== 'endpoints'
   )
-}
-
-const rejectConcurrencyLimits = (limitEntries: KV[]): KV[] => {
-  const excludedLimits = [
-    'blockedNotificationRules',
-    'blockedNotificationEndpoints',
-  ]
-  return limitEntries.filter(
-    ([limitName, _limitValue]) => !excludedLimits.includes(limitName)
-  )
-}
-
-const limits = (orgLimits: OrgLimits): KV[] => {
-  const limitsByCategory = excludeOrgIDAndStatus(Object.entries(orgLimits))
-
-  return limitsByCategory.flatMap(([_category, limits]) =>
-    rejectConcurrencyLimits(Object.entries(limits))
-  )
-}
 
 const OrgLimits: FC = () => {
-  const [{orgLimits}] = useBilling()
+  const orgLimits = useSelector((state: AppState) => state.cloud?.limits ?? {})
 
   return (
     <Grid>
-      {limits(orgLimits).flatMap(([name, value]) => {
+      {limits(orgLimits).flatMap(([name, value]: [string, Limit]) => {
+        if (name === 'buckets') {
+          return Object.entries(value)
+            .filter(([n]) => n !== 'limitStatus')
+            .map(([n, v]: [string, number]) => {
+              return (
+                <Grid.Column
+                  key={n}
+                  widthXS={Columns.Twelve}
+                  widthSM={Columns.Six}
+                  widthMD={Columns.Four}
+                  widthLG={Columns.Three}
+                >
+                  <OrgLimitStat
+                    name={n === 'maxAllowed' ? name : n}
+                    value={v}
+                  />
+                </Grid.Column>
+              )
+            })
+        }
         if (name === 'rate') {
-          return Object.entries(value).map(([n, v]) => {
+          return Object.entries(value).map(([n, v]: [string, Limit]) => {
             return (
               <Grid.Column
                 key={n}
@@ -50,7 +51,7 @@ const OrgLimits: FC = () => {
                 widthMD={Columns.Four}
                 widthLG={Columns.Three}
               >
-                <OrgLimitStat name={n} value={v} />
+                <OrgLimitStat name={n} value={v.maxAllowed} />
               </Grid.Column>
             )
           })
@@ -63,7 +64,7 @@ const OrgLimits: FC = () => {
             widthMD={Columns.Four}
             widthLG={Columns.Three}
           >
-            <OrgLimitStat name={name} value={value} />
+            <OrgLimitStat name={name} value={value.maxAllowed} />
           </Grid.Column>
         )
       })}

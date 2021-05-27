@@ -34,7 +34,7 @@ const EnterManuallyButtons: FC = () => {
 
   const status = body ? ComponentStatus.Default : ComponentStatus.Disabled
   const history = useHistory()
-  const {orgID} = useParams<{orgID: string; bucketID: string}>()
+  const {orgID} = useParams<{orgID: string}>()
 
   const handleClose = () => {
     history.push(`/orgs/${orgID}/load-data/buckets`)

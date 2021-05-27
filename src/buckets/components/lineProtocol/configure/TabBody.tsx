@@ -13,13 +13,9 @@ import {getByID} from 'src/resources/selectors'
 // Types
 import {AppState, Bucket, ResourceType} from 'src/types'
 
-type Props = {
-  bucket?: string
-}
-
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 
-const TabBody: FC<Props> = ({bucket}) => {
+const TabBody: FC = () => {
   const {body, handleSetBody, tab, writeLineProtocol} = useContext(
     LineProtocolContext
   )

@@ -1502,7 +1502,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       })
     })
 
-    it('does not refresh if user leaves (pauses autorefresh)', () => {
+    it('does not refresh if user leaves', () => {
       cy.getByTestID('auto-refresh-input')
         .clear()
         .type('5s')
@@ -1529,6 +1529,8 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       const queriesMade = cy.state('requests').filter((call: any) => {
         call.alias === 'refreshQuery'
       }).length
+
+      expect(queriesMade).to.equal(0)
     })
 
     it('does not refresh if user edits cell, until user comes back, and then continues', () => {

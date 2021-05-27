@@ -36,7 +36,7 @@ const TabBody: FC = () => {
   }
 
   const handleSubmit = () => {
-    writeLineProtocol(bucket ?? selectedBucket)
+    writeLineProtocol(selectedBucket)
   }
 
   switch (tab) {

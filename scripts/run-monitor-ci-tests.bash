@@ -91,11 +91,22 @@ if [[ -z "${OSS_SHA:-}" ]]; then
 		# - UI_BRANCH must be 'master'
 		# - MONITOR_CI_BRANCH must be 'master'
 		# - DEPLOY_PROD must be 'true'
+		# - UI_GITHUB_ORG must be 'influxdata'
 		# UI_BRANCH, DEPLOY_PROD are both neccesary to ensure that UI_BRANCH parameter's default in the monitor-ci pipeline doesn't deploy us to production unless started by this script.
 		DEPLOY_PROD=true
 	fi
+	if [ -n "${PULL_REQUEST}" ]; then
+		# if running from pull request, use github api to get source org and branch.
+		# this is needed to support forks of the UI repo.
+		pr=$(echo ${PULL_REQUEST} | grep -oE "[^/]+$")
+		github=$(curl -s --fail --request GET \
+			--url https://api.github.com/repos/influxdata/ui/pulls/${pr})
+		UI_BRANCH=$(echo ${github} | jq -r '.head.ref')
+		UI_GITHUB_ORG=$(echo ${github} | jq -r '.head.repo.owner.login')
+	fi
+
 	pipelineStartMsg="starting monitor-ci pipeline targeting monitor-ci branch ${MONITOR_CI_BRANCH}, UI branch ${UI_BRANCH} and using UI SHA ${SHA}"
-	reqData="{\"branch\":\"${MONITOR_CI_BRANCH}\", \"parameters\":{ \"ui-sha\":\"${SHA}\", \"ui-branch\":\"${UI_BRANCH}\", \"ui-pull-request\":\"${PULL_REQUEST}\", \"deploy-prod\":${DEPLOY_PROD}}}"
+	reqData="{\"branch\":\"${MONITOR_CI_BRANCH}\", \"parameters\":{ \"ui-sha\":\"${SHA}\", \"ui-github-org\":\"${UI_GITHUB_ORG:-influxdata}\", \"ui-branch\":\"${UI_BRANCH}\", \"ui-pull-request\":\"${PULL_REQUEST}\", \"deploy-prod\":${DEPLOY_PROD}}}"
 else
 	# set the parameters for starting the monitor-ci pipeline from the influxdb repo
 	pipelineStartMsg="starting monitor-ci pipeline targeting monitor-ci branch ${MONITOR_CI_BRANCH} using OSS SHA ${OSS_SHA}"

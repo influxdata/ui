@@ -24,10 +24,10 @@ import {
 
 // Utils
 import {getIsRegionBeta} from 'src/me/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {AppState, OrgSetting} from 'src/types'
-import {isFlagEnabled} from '../utils/featureFlag'
 
 interface StateProps {
   inView: boolean

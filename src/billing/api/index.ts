@@ -1,6 +1,5 @@
 import {
   getBilling,
-  getOrgsLimits as apiGetOrgLimits,
   getMarketplace as genGetMarketplace,
   getPaymentForm,
   getBillingInvoices,
@@ -14,7 +13,6 @@ import {
   CreditCardParams,
   BillingInfo,
   BillingNotifySettings,
-  OrgLimits,
   Marketplace,
 } from 'src/types/billing'
 
@@ -85,40 +83,6 @@ export const getMarketplace = (): ReturnType<typeof genGetMarketplace> => {
   }
 
   return makeResponse(200, marketplace, 'getMarketplace')
-}
-
-export const getOrgsLimits = (): ReturnType<typeof apiGetOrgLimits> => {
-  const limits: OrgLimits = {
-    orgID: 'org123',
-    rate: {
-      readKBs: 100,
-      writeKBs: 100,
-      cardinality: 1,
-    },
-    bucket: {
-      maxRetentionDuration: 3,
-      maxBuckets: 2,
-    },
-    task: {
-      maxTasks: 10,
-    },
-    dashboard: {
-      maxDashboards: 7,
-    },
-    check: {
-      maxChecks: 4,
-    },
-    notificationEndpoint: {
-      blockedNotificationEndpoints: 'slack',
-    },
-    notificationRule: {
-      maxNotifications: 9,
-      blockedNotificationRules: 'cancelled',
-    },
-    status: RemoteDataState.Done,
-  }
-
-  return makeResponse(200, limits, 'getOrgsLimits')
 }
 
 export const updateBillingNotificationSettings = (

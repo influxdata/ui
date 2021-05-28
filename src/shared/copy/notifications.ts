@@ -18,7 +18,6 @@ import {
 import {QUICKSTART_SCRAPER_TARGET_URL} from 'src/dataLoaders/constants/pluginConfigs'
 import {QUICKSTART_DASHBOARD_NAME} from 'src/onboarding/constants/index'
 import {IconFont} from '@influxdata/clockface'
-import {info} from 'console'
 
 const bytesFormatter = binaryPrefixFormatter({
   suffix: 'B',

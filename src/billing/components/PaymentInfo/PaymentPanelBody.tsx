@@ -1,75 +1,33 @@
 // Libraries
-import React, {FC, useCallback, useEffect, useState} from 'react'
+import React, {FC, useContext, useEffect} from 'react'
 
 // Components
 import {Panel, ComponentSize} from '@influxdata/clockface'
-import PaymentDisplay from './PaymentDisplay'
-import PaymentForm from './PaymentForm'
-
-// Types
-import {CreditCardParams} from 'src/types/billing'
-import {RemoteDataState} from 'src/types'
-
-import {
-  getBillingCreditCardParams,
-  putBillingPaymentMethodId,
-} from 'src/billing/api'
-import {getErrorMessage} from 'src/utils/api'
+import PaymentDisplay from 'src/billing/components/PaymentInfo/PaymentDisplay'
+import CreditCardForm from 'src/shared/components/CreditCardForm'
+import PageSpinner from 'src/perf/components/PageSpinner'
+import {BillingContext} from 'src/billing/context/billing'
 
 interface Props {
   isEditing: boolean
-  onCancel: () => void
+  onSubmit: (paymentMethodId: string) => void
 }
 
-const EMPTY_CREDIT_CARD_PARAMS: CreditCardParams = {
-  id: '',
-  tenantId: '',
-  key: '',
-  signature: '',
-  token: '',
-  style: '',
-  submitEnabled: 'false',
-  url: '',
-  status: RemoteDataState.NotStarted,
-}
-
-const PaymentPanelBody: FC<Props> = ({isEditing, onCancel}) => {
-  const [errorMessage, setErrorMessage] = useState('')
-  const [creditCardParams, setCreditCardParams] = useState(
-    EMPTY_CREDIT_CARD_PARAMS
+const PaymentPanelBody: FC<Props> = ({isEditing, onSubmit}) => {
+  const {handleGetZuoraParams, zuoraParams, zuoraParamsStatus} = useContext(
+    BillingContext
   )
 
-  const onSubmit = async (paymentMethodId: string): Promise<void> => {
-    const response = await putBillingPaymentMethodId(paymentMethodId)
-    if (response.status !== 200) {
-      setErrorMessage(getErrorMessage(response))
-    } else {
-      onCancel()
-      setErrorMessage('')
-    }
-  }
-
-  const getCreditCardParams = useCallback(async () => {
-    const response = await getBillingCreditCardParams()
-    if (response.status !== 200) {
-      throw new Error(getErrorMessage(response))
-    }
-
-    setCreditCardParams(response.data as CreditCardParams)
-  }, [])
-
   useEffect(() => {
-    getCreditCardParams()
-  }, [getCreditCardParams])
+    handleGetZuoraParams()
+  }, [handleGetZuoraParams])
 
   if (isEditing) {
     return (
       <Panel.Body size={ComponentSize.Large}>
-        <PaymentForm
-          zuoraParams={creditCardParams}
-          onSubmit={onSubmit}
-          errorMessage={errorMessage}
-        />
+        <PageSpinner loading={zuoraParamsStatus}>
+          <CreditCardForm zuoraParams={zuoraParams} onSubmit={onSubmit} />
+        </PageSpinner>
       </Panel.Body>
     )
   }

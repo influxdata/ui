@@ -1264,3 +1264,9 @@ export const removeUserFailed = (): Notification => ({
   ...defaultErrorNotification,
   message: `Error removing user, try again`,
 })
+
+/* Billing Notifications */
+export const zuoraParamsGetFailure = (message): Notification => ({
+  ...defaultErrorNotification,
+  message,
+})

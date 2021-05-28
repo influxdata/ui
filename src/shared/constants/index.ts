@@ -10,17 +10,19 @@ import {
 } from '@influxdata/giraffe'
 import {InfluxColors} from '@influxdata/clockface'
 
-import {AutoRefreshStatus} from 'src/types'
+import {AutoRefreshStatus, CreditCardParams} from 'src/types'
 
-// This is temporary and should be resolved
-// Once the Beta region API is built out by Quartz:
-// influxdata/quartz#4369
-// Beta Regions contain the hostname of the beta regions
-function formatConstant(constant: string) {
-  if (!constant) {
-    return ''
-  }
-  return constant.trim()
+// If we don't initialize these params here, then the UI will start
+// showing a popup and cypress tests will start failing.
+export const EMPTY_ZUORA_PARAMS: CreditCardParams = {
+  id: '',
+  tenantId: '',
+  key: '',
+  signature: '',
+  token: '',
+  style: '',
+  submitEnabled: 'false',
+  url: '',
 }
 
 export const DEFAULT_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss a'
@@ -64,26 +66,23 @@ export const MIN_HANDLE_PIXELS = 20
 export const MAX_SIZE = 1
 export const MIN_SIZE = 0
 
-export const VERSION = formatConstant(process.env.npm_package_version)
-export const GIT_SHA = formatConstant(process.env.GIT_SHA)
-export const BASE_PATH = formatConstant(process.env.STATIC_PREFIX)
-export const API_BASE_PATH = formatConstant(process.env.API_PREFIX)
-export const HONEYBADGER_KEY = formatConstant(process.env.HONEYBADGER_KEY)
-export const HONEYBADGER_ENV = formatConstant(process.env.HONEYBADGER_ENV)
+export const VERSION = process.env.npm_package_version
+export const GIT_SHA = process.env.GIT_SHA
+export const BASE_PATH = process.env.STATIC_PREFIX
+export const API_BASE_PATH = process.env.API_PREFIX
+export const HONEYBADGER_KEY = process.env.HONEYBADGER_KEY
+export const HONEYBADGER_ENV = process.env.HONEYBADGER_ENV
 
-export const RUDDERSTACK_DATA_PLANE_URL = formatConstant(
-  process.env.RUDDERSTACK_DATA_PLANE_URL
-)
-export const RUDDERSTACK_WRITE_KEY = formatConstant(
-  process.env.RUDDERSTACK_WRITE_KEY
-)
+export const RUDDERSTACK_DATA_PLANE_URL = process.env.RUDDERSTACK_DATA_PLANE_URL
+
+export const RUDDERSTACK_WRITE_KEY = process.env.RUDDERSTACK_WRITE_KEY
 
 export const CLOUD = !!process.env.CLOUD_URL
 export const CLOUD_SIGNIN_PATHNAME = '/api/v2/signin'
 export const CLOUD_SIGNOUT_PATHNAME = '/api/v2/signout'
 export const CLOUD_LOGIN_PATHNAME = '/login'
 export const CLOUD_BILLING_VISIBLE = CLOUD
-export const CLOUD_URL = formatConstant(process.env.CLOUD_URL)
+export const CLOUD_URL = process.env.CLOUD_URL
 export const CLOUD_CHECKOUT_PATH = '/checkout'
 export const CLOUD_BILLING_PATH = '/billing'
 export const CLOUD_USAGE_PATH = '/usage'

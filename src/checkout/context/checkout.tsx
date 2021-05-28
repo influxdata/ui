@@ -17,6 +17,7 @@ import {getQuartzMe as getQuartzMeThunk} from 'src/me/actions/thunks'
 // Constants
 import {states} from 'src/billing/constants'
 import {submitError} from 'src/shared/copy/notifications'
+import {EMPTY_ZUORA_PARAMS} from 'src/shared/constants'
 
 // Types
 import {
@@ -59,20 +60,6 @@ export interface CheckoutContextType {
   zuoraParams: CreditCardParams
 }
 
-// If we don't initialize these params here, then the UI will start
-// showing a popup and cypress tests will start failing.
-const EMPTY_ZUORA_PARAMS: CreditCardParams = {
-  id: '',
-  tenantId: '',
-  key: '',
-  signature: '',
-  token: '',
-  style: '',
-  submitEnabled: 'false',
-  url: '',
-  status: RemoteDataState.NotStarted,
-}
-
 export const DEFAULT_CONTEXT: CheckoutContextType = {
   checkoutStatus: RemoteDataState.NotStarted,
   errors: {},
@@ -111,7 +98,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   const [inputs, setInputs] = useState<Inputs>({
     paymentMethodId: null,
     notifyEmail: me?.email ?? '', // sets the default to the user's registered email
-    balanceThreshold: 1, // set the default to the minimum balance threshold
+    balanceThreshold: 10, // set the default to the minimum balance threshold
     shouldNotify: true,
     street1: '',
     street2: '',
@@ -215,7 +202,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     const {shouldNotify} = inputs
     if (!shouldNotify) {
       fields.notifyEmail = me?.email ?? '' // sets the default to the user's registered email
-      fields.balanceThreshold = 1 // set the default to the minimum balance threshold
+      fields.balanceThreshold = 10 // set the default to the minimum balance threshold
     }
 
     return Object.entries(fields).filter(([key, value]) => {

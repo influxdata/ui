@@ -124,7 +124,7 @@ const AutoRefreshContextProvider: FC = ({children}) => {
       setAutoRefreshStatus(currentDashboardId, AutoRefreshStatus.Active)
     )
 
-    if (state.inactivityTimeout !== 'None') {
+    if (state.inactivityTimeout !== 'Never') {
       const cutoff = calculateTimeout(
         state.inactivityTimeout,
         state.inactivityTimeoutCategory

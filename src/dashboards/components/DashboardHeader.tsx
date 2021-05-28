@@ -200,7 +200,9 @@ const DashboardHeader: FC<Props> = ({
           {isFlagEnabled('newAutoRefresh') && (
             <Button
               text={
-                isActive ? `Refresh Every ${autoRefresh.label}` : 'Auto Refresh'
+                isActive
+                  ? `Refreshing Every ${autoRefresh.label}`
+                  : 'Enable Auto Refresh'
               }
               color={
                 isActive ? ComponentColor.Secondary : ComponentColor.Default

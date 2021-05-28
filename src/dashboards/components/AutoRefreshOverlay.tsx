@@ -31,8 +31,8 @@ import {event} from 'src/cloud/utils/reporting'
 
 // This array creates an array of [0...24] for the hours selection
 const INACTIVITY_ARRAY = [...Array(25).keys()].map(num => num.toString())
-// This line replaces the 0 (the first value) with 'None' for the dropdown
-INACTIVITY_ARRAY[0] = 'None'
+// This line replaces the 0 (the first value) with 'Never' for the dropdown
+INACTIVITY_ARRAY[0] = 'Never'
 
 const AutoRefreshForm: FC = () => {
   const {onClose} = useContext(OverlayContext)
@@ -104,7 +104,7 @@ const AutoRefreshForm: FC = () => {
             </span>
             <div
               className={`refresh-form-container-child ${
-                state.inactivityTimeout === 'None' ? 'inactive' : 'active'
+                state.inactivityTimeout === 'Never' ? 'inactive' : 'active'
               }`}
             >
               <SelectDropdown
@@ -119,7 +119,7 @@ const AutoRefreshForm: FC = () => {
                 buttonColor={ComponentColor.Default}
                 testID="inactivity-timeout-dropdown"
               />
-              {state.inactivityTimeout !== 'None' && (
+              {state.inactivityTimeout !== 'Never' && (
                 <SelectDropdown
                   className="refresh-form-timeout-dropdown"
                   options={['Hours', 'Days']}

@@ -24,12 +24,13 @@ import 'src/flows/style.scss'
 
 const FlowFromRoute = () => {
   const {id} = useParams<{id: string}>()
-  const {change} = useContext(FlowListContext)
+  const {change, flows, currentID} = useContext(FlowListContext)
 
   useEffect(() => {
     change(id)
   }, [id, change])
 
+  document.title = flows[currentID]?.name ?? 'Notebooks'
   return null
 }
 

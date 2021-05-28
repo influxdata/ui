@@ -88,6 +88,7 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
   }
 
   const handleSubmitContactInfo = async contact => {
+    // TODO(ariel): move this into context
     const payload = {
       contact: convertKeysToSnakecase(contact),
     }
@@ -152,6 +153,7 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
   return (
     <>
       <Panel.Body size={ComponentSize.Large}>
+        {/* TODO(ariel): update this so that it's a notification like all other parts of the app */}
         {errorMessage && (
           <Alert
             color={ComponentColor.Danger}

@@ -10,6 +10,7 @@ import {BillingContext} from 'src/billing/context/billing'
 const PaymentPanel: FC = () => {
   const {
     billingInfo: {paymentMethod},
+    handleUpdatePaymentMethod,
   } = useContext(BillingContext)
 
   const [isEditing, setIsEditing] = useState(paymentMethod === null)
@@ -24,6 +25,15 @@ const PaymentPanel: FC = () => {
     setIsEditing(false)
   }
 
+  const onSubmit = async (paymentMethodId: string): Promise<void> => {
+    try {
+      await handleUpdatePaymentMethod(paymentMethodId)
+      onCancel()
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return (
     <Panel className="checkout-panel payment-method-panel">
       <PaymentPanelHeader
@@ -32,7 +42,7 @@ const PaymentPanel: FC = () => {
         isEditing={isEditing}
         hasExistingPayment={hasExistingPayment}
       />
-      <PaymentPanelBody isEditing={isEditing} onCancel={onCancel} />
+      <PaymentPanelBody isEditing={isEditing} onSubmit={onSubmit} />
     </Panel>
   )
 }

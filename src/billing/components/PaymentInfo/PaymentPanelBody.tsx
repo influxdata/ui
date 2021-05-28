@@ -1,38 +1,22 @@
 // Libraries
-import React, {FC, useContext, useEffect, useState} from 'react'
+import React, {FC, useContext, useEffect} from 'react'
 
 // Components
 import {Panel, ComponentSize} from '@influxdata/clockface'
 import PaymentDisplay from 'src/billing/components/PaymentInfo/PaymentDisplay'
-import PaymentForm from 'src/billing/components/PaymentInfo/PaymentForm'
+import CreditCardForm from 'src/shared/components/CreditCardForm'
+import PageSpinner from 'src/perf/components/PageSpinner'
 import {BillingContext} from 'src/billing/context/billing'
-
-// Types
-import {getErrorMessage} from 'src/utils/api'
 
 interface Props {
   isEditing: boolean
-  onCancel: () => void
+  onSubmit: (paymentMethodId: string) => void
 }
 
-const PaymentPanelBody: FC<Props> = ({isEditing, onCancel}) => {
-  const {
-    handleGetZuoraParams,
-    handleUpdatePaymentMethod,
-    zuoraParams,
-  } = useContext(BillingContext)
-  const [errorMessage, setErrorMessage] = useState('')
-
-  const onSubmit = async (paymentMethodId: string): Promise<void> => {
-    // TODO(ariel): refactor this to be in the context
-    try {
-      await handleUpdatePaymentMethod(paymentMethodId)
-      onCancel()
-      setErrorMessage('')
-    } catch (error) {
-      setErrorMessage(getErrorMessage(error))
-    }
-  }
+const PaymentPanelBody: FC<Props> = ({isEditing, onSubmit}) => {
+  const {handleGetZuoraParams, zuoraParams, zuoraParamsStatus} = useContext(
+    BillingContext
+  )
 
   useEffect(() => {
     handleGetZuoraParams()
@@ -41,11 +25,9 @@ const PaymentPanelBody: FC<Props> = ({isEditing, onCancel}) => {
   if (isEditing) {
     return (
       <Panel.Body size={ComponentSize.Large}>
-        <PaymentForm
-          zuoraParams={zuoraParams}
-          onSubmit={onSubmit}
-          errorMessage={errorMessage}
-        />
+        <PageSpinner loading={zuoraParamsStatus}>
+          <CreditCardForm zuoraParams={zuoraParams} onSubmit={onSubmit} />
+        </PageSpinner>
       </Panel.Body>
     )
   }

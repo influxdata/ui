@@ -1,20 +1,23 @@
 // Libraries
-import React, {FC, useCallback, useEffect, useState} from 'react'
+import React, {FC, useCallback, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Utils
 import {notify} from 'src/shared/actions/notifications'
-import {Contact} from 'src/checkout/utils/contact'
 import {
   getBilling,
   getBillingInvoices,
   getMarketplace,
   getPaymentForm,
   getSettingsNotifications,
-  putBillingPaymentMethod,
+  // putBillingPaymentMethod,
   putSettingsNotifications,
 } from 'src/client/unityRoutes'
 import {getQuartzMe} from 'src/me/selectors'
+
+// Constants
+import {EMPTY_ZUORA_PARAMS} from 'src/shared/constants'
+import {zuoraParamsGetFailure} from 'src/shared/copy/notifications'
 
 // Types
 import {
@@ -32,17 +35,6 @@ export type Props = {
   children: JSX.Element
 }
 
-export type Inputs = {
-  paymentMethodId: string
-  street1: string
-  street2: string
-  city: string
-  country: string
-  intlSubdivision: string
-  usSubdivision: string
-  postalCode: string
-}
-
 export interface BillingContextType {
   billingInfo: BillingInfo
   billingInfoStatus: RemoteDataState
@@ -53,6 +45,7 @@ export interface BillingContextType {
   handleGetInvoices: () => void
   handleGetMarketplace: () => void
   handleGetZuoraParams: () => void
+  handleUpdateBillingInfo: (contact: BillingContact) => void
   handleUpdateBillingSettings: (settings: BillingNotifySettings) => void
   handleUpdatePaymentMethod: (id: string) => void
   invoices: Invoices
@@ -60,19 +53,7 @@ export interface BillingContextType {
   marketplace: Marketplace
   marketplaceStatus: RemoteDataState
   zuoraParams: CreditCardParams
-}
-
-// If we don't initialize these params here, then the UI will start
-// showing a popup and cypress tests will start failing.
-const EMPTY_ZUORA_PARAMS: CreditCardParams = {
-  id: '',
-  tenantId: '',
-  key: '',
-  signature: '',
-  token: '',
-  style: '',
-  submitEnabled: 'false',
-  url: '',
+  zuoraParamsStatus: RemoteDataState
 }
 
 export const DEFAULT_CONTEXT: BillingContextType = {
@@ -89,6 +70,7 @@ export const DEFAULT_CONTEXT: BillingContextType = {
   handleGetInvoices: () => {},
   handleGetMarketplace: () => {},
   handleGetZuoraParams: () => {},
+  handleUpdateBillingInfo: (_contact: BillingContact) => {},
   handleUpdateBillingSettings: (_settings: BillingNotifySettings) => {},
   handleUpdatePaymentMethod: (_id: string) => {},
   invoices: [],
@@ -96,21 +78,19 @@ export const DEFAULT_CONTEXT: BillingContextType = {
   marketplace: null,
   marketplaceStatus: RemoteDataState.NotStarted,
   zuoraParams: EMPTY_ZUORA_PARAMS,
+  zuoraParamsStatus: RemoteDataState.NotStarted,
 }
 
 export const BillingContext = React.createContext<BillingContextType>(
   DEFAULT_CONTEXT
 )
 
-interface CheckoutBase {
-  paymentMethodId?: string
-}
-
-export type Checkout = CheckoutBase & Contact
-
 export const BillingProvider: FC<Props> = React.memo(({children}) => {
   const dispatch = useDispatch()
 
+  const [zuoraParamsStatus, setZuoraParamsStatus] = useState(
+    RemoteDataState.NotStarted
+  )
   const [zuoraParams, setZuoraParams] = useState<CreditCardParams>(
     EMPTY_ZUORA_PARAMS
   )
@@ -142,23 +122,27 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
 
   const handleGetZuoraParams = useCallback(async () => {
     try {
+      setZuoraParamsStatus(RemoteDataState.Loading)
       const response = await getPaymentForm({form: 'billing'})
 
       if (response.status !== 200) {
-        throw new Error(getErrorMessage(response))
+        throw new Error(response.data.message)
       }
 
+      setZuoraParamsStatus(RemoteDataState.Done)
       setZuoraParams(response.data)
     } catch (error) {
-      // Ingest the error since the Zuora Form will return an error form based on the error returned
-      console.error(error)
+      const message = getErrorMessage(error)
+      dispatch(notify(zuoraParamsGetFailure(message)))
+      setZuoraParamsStatus(RemoteDataState.Error)
     }
-  }, [])
+  }, [dispatch])
 
   const handleUpdatePaymentMethod = useCallback(
-    async (paymentMethodId: string) => {
+    async (_paymentMethodId: string) => {
       try {
-        const response = await putBillingPaymentMethod({data: paymentMethodId})
+        const response = await getPaymentForm({form: 'billing'})
+        // const response = await putBillingPaymentMethod({data: paymentMethodId})
 
         if (response.status !== 200) {
           throw new Error(getErrorMessage(response))
@@ -167,7 +151,6 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
         // TODO(ariel): set the payment method of the billingInfo
         // setPaymentMethod(response.data)
       } catch (error) {
-        // Ingest the error since the Zuora Form will return an error form based on the error returned
         console.error(error)
       }
     },
@@ -211,7 +194,7 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
   }, [])
 
   const handleUpdateBillingInfo = useCallback(
-    async (contact: BillingContact) => {
+    async (_contact: BillingContact) => {
       try {
         setBillingInfoStatus(RemoteDataState.Loading)
         // TODO(ariel): update the contact
@@ -315,6 +298,7 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
         handleGetInvoices,
         handleGetMarketplace,
         handleGetZuoraParams,
+        handleUpdateBillingInfo,
         handleUpdateBillingSettings,
         handleUpdatePaymentMethod,
         invoices,
@@ -322,6 +306,7 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
         marketplace,
         marketplaceStatus,
         zuoraParams,
+        zuoraParamsStatus,
       }}
     >
       {children}

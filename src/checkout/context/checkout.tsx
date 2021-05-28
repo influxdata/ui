@@ -5,7 +5,6 @@ import {useHistory} from 'react-router-dom'
 
 // Utils
 import {notify} from 'src/shared/actions/notifications'
-import {Contact} from 'src/checkout/utils/contact'
 import {
   getPaymentForm,
   getSettingsNotifications,
@@ -20,11 +19,7 @@ import {submitError} from 'src/shared/copy/notifications'
 import {EMPTY_ZUORA_PARAMS} from 'src/shared/constants'
 
 // Types
-import {
-  BillingNotifySettings,
-  CreditCardParams,
-  RemoteDataState,
-} from 'src/types'
+import {CreditCardParams, RemoteDataState} from 'src/types'
 import {getErrorMessage} from 'src/utils/api'
 
 export type Props = {
@@ -78,12 +73,6 @@ export const DEFAULT_CONTEXT: CheckoutContextType = {
 export const CheckoutContext = React.createContext<CheckoutContextType>(
   DEFAULT_CONTEXT
 )
-
-interface CheckoutBase {
-  paymentMethodId?: string
-}
-
-export type Checkout = CheckoutBase & BillingNotifySettings & Contact
 
 export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   const dispatch = useDispatch()

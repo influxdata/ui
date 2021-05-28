@@ -12,6 +12,12 @@ export {
   UsageVector,
 } from 'src/client/unityRoutes'
 
+export interface ZuoraResponse {
+  success: boolean
+  responseFrom: string
+  refId: string
+}
+
 export type ZuoraResponseHandler = (response: ZuoraResponse) => void
 
 export interface ZuoraClient {

@@ -9,13 +9,26 @@ import {
   Heading,
   HeadingElement,
   FontWeight,
-  CTALinkButton,
+  Button,
 } from '@influxdata/clockface'
+import {useHistory} from 'react-router-dom'
+
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {CLOUD_URL, CLOUD_CHECKOUT_PATH} from 'src/shared/constants'
 
 const PAYGConversion: FC = () => {
+  const history = useHistory()
+
+  const handleClick = () => {
+    if (isFlagEnabled('unityCheckout')) {
+      history.push('/checkout')
+    } else {
+      window.location.href = `${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`
+    }
+  }
   return (
     <>
       <Heading
@@ -57,11 +70,12 @@ const PAYGConversion: FC = () => {
                 size={ComponentSize.Medium}
                 testID="payg-button--upgrade"
               >
-                <CTALinkButton
+                <Button
                   color={ComponentColor.Primary}
+                  size={ComponentSize.Large}
                   text="Upgrade to a Usage-Based Plan"
-                  className="conversion-panel--cta"
-                  href={`${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`}
+                  className="cf-cta-button conversion-panel--cta"
+                  onClick={handleClick}
                 />
               </Panel.Footer>
             </Panel>

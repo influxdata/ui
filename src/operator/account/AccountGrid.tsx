@@ -65,7 +65,9 @@ const AccountGrid: FC = () => {
         />
         <AccountField
           header="Salesforce ID"
-          body={account?.users?.[0]?.sfdcContactId ?? 'N/A'}
+          body="N/A" // TODO(ariel): update this to account for OperatorAccount type
+          // https://github.com/influxdata/ui/issues/1513
+          // body={account?.users?.[0]?.sfdcContactId ?? 'N/A'}
           testID="salesforce-id"
         />
       </FlexBox>

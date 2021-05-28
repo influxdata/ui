@@ -42,7 +42,7 @@ function InviteListContextMenu({invite}: Props) {
 
   let componentStatus = ComponentStatus.Default
 
-  if (invite.id === removeInviteStatus.id) {
+  if (invite && invite?.id === removeInviteStatus?.id) {
     componentStatus =
       removeInviteStatus.status === RemoteDataState.Loading
         ? ComponentStatus.Loading

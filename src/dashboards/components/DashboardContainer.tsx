@@ -28,6 +28,9 @@ import {notify} from 'src/shared/actions/notifications'
 // History
 import {useRouteMatch} from 'react-router-dom'
 
+// Metrics
+import {event} from 'src/cloud/utils/reporting'
+
 const DashboardContainer: FC = () => {
   const timer = useRef(null)
   const dispatch = useDispatch()
@@ -52,6 +55,9 @@ const DashboardContainer: FC = () => {
       dispatch(notify(dashboardAutoRefreshTimeoutSuccess()))
       registerStopListeners()
       GlobalAutoRefresher.stopPolling()
+      event('dashboards.autorefresh.dashboardcontainer.inactivitytimeout', {
+        timeout: autoRefresh.inactivityTimeout,
+      })
     }, autoRefresh.inactivityTimeout)
 
     window.addEventListener('load', registerListeners)

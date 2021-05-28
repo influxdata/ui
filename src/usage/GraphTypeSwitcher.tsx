@@ -26,7 +26,7 @@ interface OwnProps {
 const GENERIC_PROPERTY_DEFAULTS = {
   colors: [],
   queries: [],
-  note: 'No Date to Display',
+  note: 'No Data to Display',
   showNoteWhenEmpty: true,
   prefix: '',
   suffix: '',

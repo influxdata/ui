@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, ChangeEvent, useContext} from 'react'
-import {useParams} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
 // Components
@@ -14,19 +13,18 @@ import {getByID} from 'src/resources/selectors'
 // Types
 import {AppState, Bucket, ResourceType} from 'src/types'
 
-type Props = {
-  bucket?: string
-}
+import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 
-const TabBody: FC<Props> = ({bucket}) => {
+const TabBody: FC = () => {
   const {body, handleSetBody, tab, writeLineProtocol} = useContext(
     LineProtocolContext
   )
-  const {bucketID} = useParams<{bucketID?: string}>()
+
+  const {bucket: chosenUploadBucket} = useContext(WriteDataDetailsContext)
 
   const selectedBucket =
     useSelector((state: AppState) =>
-      getByID<Bucket>(state, ResourceType.Buckets, bucketID)
+      getByID<Bucket>(state, ResourceType.Buckets, chosenUploadBucket?.id)
     )?.name ?? ''
 
   const handleTextChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -38,7 +36,7 @@ const TabBody: FC<Props> = ({bucket}) => {
   }
 
   const handleSubmit = () => {
-    writeLineProtocol(bucket ?? selectedBucket)
+    writeLineProtocol(selectedBucket)
   }
 
   switch (tab) {

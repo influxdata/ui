@@ -54,13 +54,13 @@ const AutoRefreshForm: FC = () => {
           <div className="refresh-form-container">
             <span className="refresh-form-container-child">Until: </span>
             <InputLabel
-              active={!state.infiniteDuration}
+              active={state.infiniteDuration}
               className="refresh-form-time-label"
             >
-              Custom
+              Indefinite
             </InputLabel>
             <SlideToggle
-              active={state.infiniteDuration}
+              active={!state.infiniteDuration}
               onChange={() =>
                 setRefreshContext({
                   type: 'SET_INFINITE_DURATION',
@@ -70,10 +70,10 @@ const AutoRefreshForm: FC = () => {
               className="refresh-form-timerange-toggle"
             />
             <InputLabel
-              active={state.infiniteDuration}
+              active={!state.infiniteDuration}
               className="refresh-form-time-label"
             >
-              Indefinite
+              Custom
             </InputLabel>
           </div>
           {!state.infiniteDuration && (

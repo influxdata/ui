@@ -61,7 +61,7 @@ export const DEFAULT_CONTEXT: BillingContextType = {
   billingInfoStatus: RemoteDataState.NotStarted,
   billingSettings: {
     notifyEmail: '',
-    balanceThreshold: 1,
+    balanceThreshold: 10,
     isNotify: true,
   },
   billingSettingsStatus: RemoteDataState.NotStarted,
@@ -98,7 +98,7 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
   const me = useSelector(getQuartzMe)
   const [billingSettings, setBillingSettings] = useState({
     notifyEmail: me?.email ?? '', // sets the default to the user's registered email
-    balanceThreshold: 1, // set the default to the minimum balance threshold
+    balanceThreshold: 10, // set the default to the minimum balance threshold
     isNotify: true,
   })
   const [billingSettingsStatus, setBillingSettingsStatus] = useState(

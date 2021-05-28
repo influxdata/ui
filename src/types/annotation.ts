@@ -6,6 +6,7 @@ export interface Annotation {
   stickers?: any
   stream?: string
   summary?: string
+  type?: 'range' | 'point'
 }
 
 export interface EditAnnotation {

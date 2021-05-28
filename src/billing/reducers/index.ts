@@ -9,7 +9,6 @@ import {
   Invoice,
   PaymentMethod,
   CreditCardParams,
-  OrgLimits,
   Marketplace,
 } from 'src/types/billing'
 
@@ -21,7 +20,6 @@ export interface BillingState {
   invoices: Invoice[]
   invoicesStatus: RemoteDataState
   marketplace: Marketplace
-  orgLimits: OrgLimits
 }
 
 export const initialState = (): BillingState => ({
@@ -44,7 +42,6 @@ export const initialState = (): BillingState => ({
   invoices: null,
   invoicesStatus: RemoteDataState.NotStarted,
   marketplace: null,
-  orgLimits: null,
 })
 
 export type BillingReducer = React.Reducer<BillingState, Action>
@@ -58,18 +55,6 @@ export const setMarketplace = (marketplace: Marketplace) =>
 export const setMarketplaceStatus = (status: RemoteDataState) =>
   ({
     type: 'SET_MARKETPLACE_STATUS',
-    status,
-  } as const)
-
-export const setOrgLimits = (orgLimits: OrgLimits) =>
-  ({
-    type: 'SET_ORG_LIMITS',
-    orgLimits,
-  } as const)
-
-export const setOrgLimitsStatus = (status: RemoteDataState) =>
-  ({
-    type: 'SET_ORG_LIMITS_STATUS',
     status,
   } as const)
 
@@ -151,8 +136,6 @@ export type Action =
   | ReturnType<typeof setCreditCardStatus>
   | ReturnType<typeof setInvoices>
   | ReturnType<typeof setInvoicesStatus>
-  | ReturnType<typeof setOrgLimits>
-  | ReturnType<typeof setOrgLimitsStatus>
   | ReturnType<typeof setMarketplace>
   | ReturnType<typeof setMarketplaceStatus>
 
@@ -243,24 +226,6 @@ export const billingReducer = (
         }
 
         draftState.marketplace.loadingStatus = action.status
-        return
-      }
-      case 'SET_ORG_LIMITS': {
-        draftState.orgLimits = action.orgLimits
-
-        return
-      }
-      case 'SET_ORG_LIMITS_STATUS': {
-        if (!draftState.orgLimits?.status) {
-          draftState.orgLimits = {
-            ...draftState.orgLimits,
-            status: action.status,
-          }
-
-          return
-        }
-
-        draftState.orgLimits.status = action.status
         return
       }
     }

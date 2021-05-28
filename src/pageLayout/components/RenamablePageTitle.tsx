@@ -33,6 +33,10 @@ const RenamablePageTitle: FC<Props> = ({
 
   useEffect(() => {
     setWorkingName(name)
+
+    return function cleanUp() {
+      setEditingState(false)
+    }
   }, [name])
 
   const handleStartEditing = (): void => {
@@ -41,11 +45,12 @@ const RenamablePageTitle: FC<Props> = ({
 
   const handleStopEditing = (e: MouseEvent<any>): void => {
     onRename(workingName)
-
     if (onClickOutside) {
       onClickOutside(e)
     }
+  }
 
+  const handleOnBlur = (): void => {
     setEditingState(false)
   }
 
@@ -87,6 +92,7 @@ const RenamablePageTitle: FC<Props> = ({
             autoFocus={true}
             spellCheck={false}
             placeholder={placeholder}
+            onBlur={handleOnBlur}
             onFocus={handleInputFocus}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}

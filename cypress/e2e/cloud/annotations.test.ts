@@ -254,14 +254,9 @@ describe('The Annotations UI functionality', () => {
         .click()
         .then(() => {
           cy.getByTestID('selector-list schmucket').click()
-          cy.getByTestID(`selector-list m`)
-            .should('exist')
-            .click()
-          cy.getByTestID('selector-list v')
-            .should('exist')
-            .click()
+          cy.getByTestID(`selector-list m`).click()
+          cy.getByTestID('selector-list v').click()
           cy.getByTestID(`selector-list tv1`)
-            .should('exist')
             .click()
             .then(() => {
               cy.getByTestID('time-machine-submit-button').click()

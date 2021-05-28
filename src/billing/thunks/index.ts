@@ -11,19 +11,16 @@ import {
   setInvoicesStatus,
   setMarketplace,
   setMarketplaceStatus,
-  setOrgLimits,
-  setOrgLimitsStatus,
 } from 'src/billing/reducers'
 
 // API
 import {
   getMarketplace as apiGetMarketplace,
   getBillingInfo as apiGetBillingInfo,
-  getBillingNotificationSettings,
   updateBillingNotificationSettings,
   getInvoices as apiGetInvoices,
-  getOrgsLimits as apiGetOrgLimits,
 } from 'src/billing/api'
+import {getSettingsNotifications} from 'src/client/unityRoutes'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -51,23 +48,6 @@ export const getMarketplace = async (dispatch: Dispatch<Action>) => {
   }
 }
 
-export const getOrgLimits = async (dispatch: Dispatch<Action>) => {
-  try {
-    dispatch(setOrgLimitsStatus(RemoteDataState.Loading))
-    const resp = await apiGetOrgLimits()
-
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
-
-    dispatch(setOrgLimits({...resp.data, status: RemoteDataState.Done}))
-  } catch (error) {
-    console.error(error)
-
-    dispatch(setOrgLimitsStatus(RemoteDataState.Error))
-  }
-}
-
 export const getBillingInfo = async (dispatch: Dispatch<Action>) => {
   try {
     dispatch(setBillingInfoStatus(RemoteDataState.Loading))
@@ -88,7 +68,7 @@ export const getBillingInfo = async (dispatch: Dispatch<Action>) => {
 export const getBillingSettings = async (dispatch: Dispatch<Action>) => {
   try {
     dispatch(setBillingSettingsStatus(RemoteDataState.Loading))
-    const resp = await getBillingNotificationSettings()
+    const resp = await getSettingsNotifications({})
 
     if (resp.status !== 200) {
       throw new Error(resp.data.message)

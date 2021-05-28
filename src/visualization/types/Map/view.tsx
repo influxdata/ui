@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useEffect, useState} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
 import {Config, Plot} from '@influxdata/giraffe'
 import {RemoteDataState, InfluxColors} from '@influxdata/clockface'
 
@@ -15,11 +14,6 @@ import {
 } from 'src/shared/utils/vis'
 import {getMapToken} from './api'
 import {event} from 'src/cloud/utils/reporting'
-import {handleUnsupportedGraphType} from 'src/visualization/components/annotationUtils'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
-// Selectors
-import {isWriteModeEnabled} from 'src/annotations/selectors'
 
 interface Props extends VisualizationProps {
   properties: GeoViewProperties
@@ -46,8 +40,6 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     lon,
   })
   const [coordinateFieldsFlag, setCoordinateFlag] = useState<boolean>(false)
-  const dispatch = useDispatch()
-  const inAnnotationWriteMode = useSelector(isWriteModeEnabled)
 
   useEffect(() => {
     const getToken = async () => {
@@ -121,7 +113,6 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     tileServerUrl: getMapboxUrl(),
     bingKey: '',
   }
-
   let layersOpts = layers
   if (!layers.length) {
     layersOpts = [
@@ -130,12 +121,20 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
         colorDimension: {label: 'Value'},
         colorField: '_value',
         colors: [
-          {type: 'min', hex: InfluxColors.Star},
-          {value: 50, hex: InfluxColors.Star},
-          {type: 'max', hex: InfluxColors.Star},
+          {type: 'min', hex: InfluxColors.Star, id: '0'},
+          {value: 50, hex: InfluxColors.Star, id: '1'},
+          {type: 'max', hex: InfluxColors.Star, id: '2'},
         ],
         isClustered: false,
       },
+    ]
+  }
+
+  if (!layers[0].colors[0].id) {
+    layersOpts[0].colors = [
+      {value: 0, type: 'min', hex: InfluxColors.Star, id: '0', name: 'star'},
+      {value: 5, hex: InfluxColors.Star, id: '1', name: 'star'},
+      {value: 1, type: 'max', hex: InfluxColors.Star, id: '2', name: 'star'},
     ]
   }
 
@@ -160,14 +159,6 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
         tileServerConfiguration: tileServerConfiguration,
       },
     ],
-  }
-
-  if (inAnnotationWriteMode && isFlagEnabled('annotations')) {
-    config.interactionHandlers = {
-      singleClick: () => {
-        dispatch(handleUnsupportedGraphType('Map'))
-      },
-    }
   }
 
   return <Plot config={config} />

@@ -214,34 +214,35 @@ export const addAnnotationLayer = (
   dispatch: Dispatch<any>,
   eventPrefix = 'xyplot'
 ) => {
-  if (isFlagEnabled('annotations')) {
-    if (inAnnotationWriteMode && cellID) {
-      config.interactionHandlers = {
-        singleClick: makeAnnotationClickListener(dispatch, cellID, 'band'),
-      }
-      if (isFlagEnabled('rangeAnnotations')) {
-        config.interactionHandlers.onXBrush = makeAnnotationRangeListener(
-          dispatch,
-          cellID,
-          eventPrefix
-        )
-      }
+  if (!isFlagEnabled('annotations')) {
+    return
+  }
+  if (inAnnotationWriteMode && cellID) {
+    config.interactionHandlers = {
+      singleClick: makeAnnotationClickListener(dispatch, cellID, 'band'),
     }
-
-    const annotationLayer: AnnotationLayerConfig = makeAnnotationLayer(
-      cellID,
-      xColumn,
-      yColumn,
-      groupKey,
-      annotations,
-      annotationsAreVisible,
-      dispatch,
-      eventPrefix
-    )
-
-    if (annotationLayer) {
-      config.layers.push(annotationLayer)
+    if (isFlagEnabled('rangeAnnotations')) {
+      config.interactionHandlers.onXBrush = makeAnnotationRangeListener(
+        dispatch,
+        cellID,
+        eventPrefix
+      )
     }
+  }
+
+  const annotationLayer: AnnotationLayerConfig = makeAnnotationLayer(
+    cellID,
+    xColumn,
+    yColumn,
+    groupKey,
+    annotations,
+    annotationsAreVisible,
+    dispatch,
+    eventPrefix
+  )
+
+  if (annotationLayer) {
+    config.layers.push(annotationLayer)
   }
 }
 

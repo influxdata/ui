@@ -1,32 +1,19 @@
-import React, {FC} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
+import React, {FC, useContext} from 'react'
 
 // Components
 import DurationInput from 'src/shared/components/DurationInput'
 import {ButtonGroup} from '@influxdata/clockface'
-// Actions
-import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Types
 import {AutoRefreshStatus} from 'src/types'
 
-// Actions
-import {
-  setAutoRefreshInterval,
-  setAutoRefreshStatus,
-  resetDashboardAutoRefresh,
-  setAutoRefreshInputValue,
-} from 'src/shared/actions/autoRefresh'
-
-// Selectors
-import {getCurrentDashboardId} from 'src/dashboards/selectors'
-import {getAutoRefreshForDashboard} from 'src/shared/selectors/autoRefresh'
-
 // Metrics
 import {event} from 'src/cloud/utils/reporting'
 
+// Context
+import {AutoRefreshContext} from 'src/dashboards/components/RefreshContext'
 const SUGGESTIONS = [
-  'None',
+  'Paused',
   '10s',
   '15s',
   '30s',
@@ -38,14 +25,18 @@ const SUGGESTIONS = [
 ]
 
 const AutoRefreshInput: FC = () => {
-  const dispatch = useDispatch()
-  const currentDashboardId = useSelector(getCurrentDashboardId)
-
-  const autoRefresh = useSelector(getAutoRefreshForDashboard)
+  const {state, dispatch: setRefreshContext} = useContext(AutoRefreshContext)
 
   const handleChooseAutoRefresh = (selection: string) => {
-    if (selection === 'None') {
-      dispatch(resetDashboardAutoRefresh(currentDashboardId))
+    if (selection === 'Paused') {
+      setRefreshContext({
+        type: 'SET_REFRESH_MILLISECONDS',
+        refreshMilliseconds: {
+          interval: 0,
+          status: AutoRefreshStatus.Paused,
+          label: 'Paused',
+        },
+      })
       event('dashboards.autorefresh.autorefreshinput.intervalchange', {
         interval: 0,
       })
@@ -64,15 +55,17 @@ const AutoRefreshInput: FC = () => {
     if (unit === 's' || unit === 'm' || unit === 'h') {
       const calculatedMilliseconds =
         Number(selection.slice(0, selection.length - 1)) * multiplier * 1000
-      dispatch(
-        setAutoRefreshInterval(currentDashboardId, calculatedMilliseconds)
-      )
-      dispatch(
-        setAutoRefreshStatus(currentDashboardId, AutoRefreshStatus.Active)
-      )
-      dispatch(setAutoRefreshInputValue(currentDashboardId, selection))
+
+      setRefreshContext({
+        type: 'SET_REFRESH_MILLISECONDS',
+        refreshMilliseconds: {
+          interval: calculatedMilliseconds,
+          status: AutoRefreshStatus.Active,
+          label: selection,
+        },
+      })
       event('dashboards.autorefresh.autorefreshinput.intervalchange', {
-        interval: autoRefresh?.refreshInputValue,
+        interval: calculatedMilliseconds,
       })
     }
   }
@@ -87,19 +80,11 @@ const AutoRefreshInput: FC = () => {
     <ButtonGroup>
       <DurationInput
         submitInvalid={false}
-        value={autoRefresh?.refreshInputValue ?? 'None'}
+        value={state.refreshMilliseconds?.label ?? 'Paused'}
         onSubmit={handleChooseAutoRefresh}
         suggestions={SUGGESTIONS}
         customClass="refresh-input"
         validFunction={isValidInput}
-        dividerText="Customize"
-        dividerOnClick={() => {
-          dispatch(
-            showOverlay('toggle-auto-refresh', null, () =>
-              dispatch(dismissOverlay())
-            )
-          )
-        }}
         testID="auto-refresh-input"
       />
     </ButtonGroup>

@@ -14,6 +14,7 @@ import {
 } from '@influxdata/clockface'
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 import TimeRangeDropdown from 'src/shared/components/DeleteDataForm/TimeRangeDropdown'
+import AutoRefreshInput from 'src/dashboards/components/AutoRefreshInput'
 
 // Types
 import {CustomTimeRange, TimeRangeDirection} from 'src/types'
@@ -134,6 +135,12 @@ const AutoRefreshForm: FC = () => {
                 />
               )}
             </div>
+          </div>
+          <div className="refresh-form-container">
+            <span className="refresh-form-container-child">
+              Refresh Interval:{' '}
+            </span>
+            <AutoRefreshInput />
           </div>
           <div className="refresh-form-buttons">
             <Button

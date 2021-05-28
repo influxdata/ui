@@ -20,13 +20,14 @@ export const autoRefreshReducer = (state = initialState(), action: Action) =>
   produce(state, draftState => {
     switch (action.type) {
       case 'SET_AUTO_REFRESH_INTERVAL': {
-        const {dashboardID, milliseconds} = action.payload
+        const {dashboardID, milliseconds, label} = action.payload
 
         if (!draftState[dashboardID]) {
           draftState[dashboardID] = AUTOREFRESH_DEFAULT
         }
 
         draftState[dashboardID].interval = milliseconds
+        draftState[dashboardID].label = action.payload.label
 
         return
       }
@@ -65,11 +66,6 @@ export const autoRefreshReducer = (state = initialState(), action: Action) =>
         return
       }
 
-      case 'SET_AUTO_REFRESH_INPUT_VALUE': {
-        const {dashboardID, refreshInputValue} = action
-        draftState[dashboardID].refreshInputValue = refreshInputValue
-        return
-      }
       case 'RESET_DASHBOARD_AUTO_REFRESH': {
         const {dashboardID} = action
         draftState[dashboardID] = AUTOREFRESH_DEFAULT

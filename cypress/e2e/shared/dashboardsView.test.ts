@@ -1502,37 +1502,6 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       })
     })
 
-    it('does not refresh if user leaves', () => {
-      cy.getByTestID('auto-refresh-input')
-        .clear()
-        .type('5s')
-      cy.getByTestID('custom-duration-input-button').click()
-      cy.getByTestID('timerange-popover-button').click()
-      cy.getByTestID('timerange-popover--dialog').within(() => {
-        cy.getByTestID('timerange--input')
-          .clear()
-          .type(`${jumpAheadTime('00:00:10')}`)
-        cy.getByTestID('daterange--apply-btn').click()
-      })
-      cy.intercept('POST', '/query', req => {
-        req.alias = 'refreshQuery'
-      })
-
-      cy.getByTestID('refresh-form-activate-button').click()
-
-      cy.wait('@refreshQuery')
-
-      cy.visit('/')
-
-      cy.wait(5000)
-
-      const queriesMade = cy.state('requests').filter((call: any) => {
-        call.alias === 'refreshQuery'
-      }).length
-
-      expect(queriesMade).to.equal(0)
-    })
-
     it('does not refresh if user edits cell, until user comes back, and then continues', () => {
       cy.getByTestID('auto-refresh-input')
         .clear()

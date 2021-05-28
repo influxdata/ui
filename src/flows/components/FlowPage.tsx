@@ -22,6 +22,8 @@ import {PROJECT_NAME_PLURAL} from 'src/flows'
 
 import 'src/flows/style.scss'
 
+import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
+
 const FlowFromRoute = () => {
   const {id} = useParams<{id: string}>()
   const {change, flows, currentID} = useContext(FlowListContext)
@@ -30,36 +32,41 @@ const FlowFromRoute = () => {
     change(id)
   }, [id, change])
 
-  document.title = flows[currentID]?.name ?? 'Notebooks'
+  document.title = pageTitleSuffixer([
+    flows[currentID]?.name,
+    PROJECT_NAME_PLURAL,
+  ])
+
   return null
 }
 
-const FlowContainer: FC = () => (
-  <QueryProvider>
-    <CurrentFlowProvider>
-      <RunModeProvider>
-        <FlowFromRoute />
-        <ResultsProvider>
-          <FlowQueryProvider>
-            <FlowKeyboardPreview />
-            <Page titleTag={PROJECT_NAME_PLURAL}>
-              <FlowHeader />
-              <Page.Contents
-                fullWidth={true}
-                scrollable={true}
-                className="flow-page"
-              >
-                <PopupProvider>
-                  <PipeList />
-                  <PopupDrawer />
-                </PopupProvider>
-              </Page.Contents>
-            </Page>
-          </FlowQueryProvider>
-        </ResultsProvider>
-      </RunModeProvider>
-    </CurrentFlowProvider>
-  </QueryProvider>
-)
-
+const FlowContainer: FC = () => {
+  return (
+    <QueryProvider>
+      <CurrentFlowProvider>
+        <RunModeProvider>
+          <FlowFromRoute />
+          <ResultsProvider>
+            <FlowQueryProvider>
+              <FlowKeyboardPreview />
+              <Page>
+                <FlowHeader />
+                <Page.Contents
+                  fullWidth={true}
+                  scrollable={true}
+                  className="flow-page"
+                >
+                  <PopupProvider>
+                    <PipeList />
+                    <PopupDrawer />
+                  </PopupProvider>
+                </Page.Contents>
+              </Page>
+            </FlowQueryProvider>
+          </ResultsProvider>
+        </RunModeProvider>
+      </CurrentFlowProvider>
+    </QueryProvider>
+  )
+}
 export default FlowContainer

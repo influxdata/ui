@@ -19,8 +19,11 @@ import {states} from 'src/billing/constants'
 import {submitError} from 'src/shared/copy/notifications'
 
 // Types
-import {RemoteDataState} from 'src/types'
-import {BillingNotifySettings, CreditCardParams} from 'src/types/billing'
+import {
+  BillingNotifySettings,
+  CreditCardParams,
+  RemoteDataState,
+} from 'src/types'
 import {getErrorMessage} from 'src/utils/api'
 
 export type Props = {
@@ -126,8 +129,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
         throw new Error(getErrorMessage(response))
       }
 
-      // TODO(ariel): remove type casting here when Billing is refactored and integrated
-      setZuoraParams(response.data as CreditCardParams)
+      setZuoraParams(response.data)
     } catch (error) {
       // Ingest the error since the Zuora Form will return an error form based on the error returned
       console.error(error)

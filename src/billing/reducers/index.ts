@@ -3,40 +3,19 @@ import produce from 'immer'
 import {RemoteDataState} from 'src/types'
 
 // Types
-import {BillingInfo, PaymentMethod, CreditCardParams} from 'src/types/billing'
+import {PaymentMethod, CreditCardParams} from 'src/types/billing'
 
 export interface BillingState {
-  billingInfo: BillingInfo
   creditCard: CreditCardParams
   creditCards: CreditCardParams
 }
 
 export const initialState = (): BillingState => ({
-  billingInfo: {
-    balance: null,
-    region: '',
-    paymentMethod: null,
-    balanceUpdatedAt: '',
-    contact: null,
-    status: RemoteDataState.NotStarted,
-  },
   creditCards: null,
   creditCard: null,
 })
 
 export type BillingReducer = React.Reducer<BillingState, Action>
-
-export const setBillingInfo = (billingInfo: BillingInfo) =>
-  ({
-    type: 'SET_BILLING_INFO',
-    billingInfo,
-  } as const)
-
-export const setBillingInfoStatus = (status: RemoteDataState) =>
-  ({
-    type: 'SET_BILLING_INFO_STATUS',
-    status,
-  } as const)
 
 export const setPaymentMethods = (
   paymentMethods: PaymentMethod[],
@@ -71,8 +50,6 @@ export const setCreditCardStatus = (status: RemoteDataState) =>
   } as const)
 
 export type Action =
-  | ReturnType<typeof setBillingInfo>
-  | ReturnType<typeof setBillingInfoStatus>
   | ReturnType<typeof setCreditCard>
   | ReturnType<typeof setCreditCardStatus>
 
@@ -82,24 +59,6 @@ export const billingReducer = (
 ): BillingState =>
   produce(state, draftState => {
     switch (action.type) {
-      case 'SET_BILLING_INFO': {
-        draftState.billingInfo = action.billingInfo
-
-        return
-      }
-      case 'SET_BILLING_INFO_STATUS': {
-        if (!draftState.billingInfo?.status) {
-          draftState.billingInfo = {
-            ...draftState.billingInfo,
-            status: action.status,
-          }
-
-          return
-        }
-
-        draftState.billingInfo.status = action.status
-        return
-      }
       case 'SET_CREDIT_CARD': {
         draftState.creditCard = action.creditCard
 

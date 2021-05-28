@@ -1,20 +1,16 @@
 // Libraries
-import React, {FC, useState} from 'react'
+import React, {FC, useContext, useState} from 'react'
 
 // Components
 import {Panel} from '@influxdata/clockface'
 import PaymentPanelHeader from './PaymentPanelHeader'
 import PaymentPanelBody from './PaymentPanelBody'
-
-// Types
-import {useBilling} from 'src/billing/components/BillingPage'
+import {BillingContext} from 'src/billing/context/billing'
 
 const PaymentPanel: FC = () => {
-  const [
-    {
-      billingInfo: {paymentMethod},
-    },
-  ] = useBilling()
+  const {
+    billingInfo: {paymentMethod},
+  } = useContext(BillingContext)
 
   const [isEditing, setIsEditing] = useState(paymentMethod === null)
 

@@ -2,55 +2,13 @@
 import {billingReducer} from 'src/billing/reducers'
 
 // Actions
-import {
-  setBillingInfo,
-  setBillingInfoStatus,
-  setInvoices,
-  setInvoicesStatus,
-  setCreditCard,
-  setCreditCardStatus,
-} from 'src/billing/reducers'
+import {setCreditCard, setCreditCardStatus} from 'src/billing/reducers'
 
 // Mocks
-import {
-  mockBillingInfo,
-  mockInvoices,
-  mockCreditCard,
-} from 'src/billing/reducers/mockBillingData'
+import {mockCreditCard} from 'src/billing/reducers/mockBillingData'
 import {RemoteDataState} from '@influxdata/clockface'
 
 describe('billing reducer', () => {
-  it('can set the billing info status', () => {
-    const expected = billingReducer(
-      undefined,
-      setBillingInfoStatus(RemoteDataState.Loading)
-    )
-
-    expect(expected.billingInfo.status).toEqual(RemoteDataState.Loading)
-  })
-  it('can set the billing info', () => {
-    const expected = billingReducer(undefined, setBillingInfo(mockBillingInfo))
-
-    expect(expected.billingInfo).toEqual(mockBillingInfo)
-    expect(expected.billingInfo.status).toEqual(RemoteDataState.Done)
-  })
-  it('can set the invoices status', () => {
-    const expected = billingReducer(
-      undefined,
-      setInvoicesStatus(RemoteDataState.Loading)
-    )
-
-    expect(expected.invoicesStatus).toEqual(RemoteDataState.Loading)
-  })
-  it('can set the invoices', () => {
-    const expected = billingReducer(
-      undefined,
-      setInvoices(mockInvoices, RemoteDataState.Done)
-    )
-
-    expect(expected.invoices).toEqual(mockInvoices)
-    expect(expected.invoicesStatus).toEqual(RemoteDataState.Done)
-  })
   it('can set the credit card status', () => {
     const expected = billingReducer(
       undefined,

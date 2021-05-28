@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FC, useState} from 'react'
+import React, {ChangeEvent, FC, useContext, useState} from 'react'
 import {
   Form,
   Input,
@@ -15,23 +15,20 @@ import {
   Alert,
   IconFont,
 } from '@influxdata/clockface'
-
+import {BillingContext} from 'src/billing/context/billing'
 import BillingContactSubdivision from 'src/billing/components/Checkout/BillingContactSudivision'
 import {states, countries} from 'src/billing/constants'
 
 import {convertKeysToSnakecase} from 'src/billing/utils/checkout'
-import {useBilling} from 'src/billing/components/BillingPage'
 
 type Props = {
   onSubmitForm: () => void
 }
 
 const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
-  const [
-    {
-      billingInfo: {contact},
-    },
-  ] = useBilling()
+  const {
+    billingInfo: {contact},
+  } = useContext(BillingContext)
 
   const [inputs, setInputs] = useState({
     firstName: contact.firstName,
@@ -95,6 +92,7 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
       contact: convertKeysToSnakecase(contact),
     }
     setIsSubmittingContact(true)
+    // TODO(ariel): get the definition for this
     await fetch(`APIPrivate/billing_contact`, {
       method: 'PUT',
       body: JSON.stringify(payload),

@@ -1,5 +1,5 @@
 import {RemoteDataState} from 'src/types'
-import {BillingInfo, Invoice, CreditCardParams} from 'src/types/billing'
+import {BillingInfo, CreditCardParams} from 'src/types/billing'
 
 export const mockBillingInfo: BillingInfo = {
   balance: 100,
@@ -25,21 +25,6 @@ export const mockBillingInfo: BillingInfo = {
   },
   status: RemoteDataState.Done,
 }
-
-export const mockInvoices: Invoice[] = [
-  {
-    status: 'unpaid',
-    amount: 100,
-    targetDate: '02/01/2021',
-    filesId: 'abc123',
-  },
-  {
-    status: 'paid',
-    amount: 0,
-    targetDate: '01/01/2021',
-    filesId: 'xyz123',
-  },
-]
 
 export const mockCreditCard: CreditCardParams = {
   id: 'cc-123',

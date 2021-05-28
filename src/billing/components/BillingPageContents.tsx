@@ -13,16 +13,16 @@ import {getQuartzMe} from 'src/me/selectors'
 const BillingPageContents: FC = () => {
   const quartzMe = useSelector(getQuartzMe)
 
-  // if (
-  //   quartzMe.accountType === 'pay_as_you_go' &&
-  //   quartzMe.billingProvider !== 'zuora'
-  // ) {
-  //   return <MarketplaceBilling />
-  // }
+  if (
+    quartzMe.accountType === 'pay_as_you_go' &&
+    quartzMe.billingProvider !== 'zuora'
+  ) {
+    return <MarketplaceBilling />
+  }
 
-  // if (quartzMe.accountType === 'pay_as_you_go') {
-  //   return <BillingPayAsYouGo />
-  // }
+  if (quartzMe.accountType === 'pay_as_you_go') {
+    return <BillingPayAsYouGo />
+  }
 
   return <BillingFree />
 }

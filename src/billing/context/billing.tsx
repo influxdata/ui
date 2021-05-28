@@ -1,28 +1,25 @@
 // Libraries
 import React, {FC, useCallback, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {useHistory} from 'react-router-dom'
 
 // Utils
 import {notify} from 'src/shared/actions/notifications'
 import {Contact} from 'src/checkout/utils/contact'
 import {
+  getBilling,
   getBillingInvoices,
   getMarketplace,
   getPaymentForm,
   getSettingsNotifications,
+  putBillingPaymentMethod,
   putSettingsNotifications,
-  postCheckout,
 } from 'src/client/unityRoutes'
 import {getQuartzMe} from 'src/me/selectors'
-import {getQuartzMe as getQuartzMeThunk} from 'src/me/actions/thunks'
-
-// Constants
-import {states} from 'src/billing/constants'
-import {submitError} from 'src/shared/copy/notifications'
 
 // Types
 import {
+  BillingContact,
+  BillingInfo,
   BillingNotifySettings,
   Invoices,
   Marketplace,
@@ -47,26 +44,21 @@ export type Inputs = {
 }
 
 export interface BillingContextType {
+  billingInfo: BillingInfo
+  billingInfoStatus: RemoteDataState
   billingSettings: BillingNotifySettings
   billingSettingsStatus: RemoteDataState
-  errors: object
-  handleCancelClick: () => void
+  handleGetBillingInfo: () => void
   handleGetBillingSettings: () => void
   handleGetInvoices: () => void
   handleGetMarketplace: () => void
+  handleGetZuoraParams: () => void
   handleUpdateBillingSettings: (settings: BillingNotifySettings) => void
-  handleSetError: (name: string, value: boolean) => void
-  handleSetInputs: (name: string, value: string | number | boolean) => void
-  handleSubmit: (paymentMethodId: string) => void
-  handleFormValidation: () => number
+  handleUpdatePaymentMethod: (id: string) => void
   invoices: Invoices
   invoicesStatus: RemoteDataState
   marketplace: Marketplace
   marketplaceStatus: RemoteDataState
-  inputs: Inputs
-  isDirty: boolean
-  isSubmitting: boolean
-  setIsDirty: (_: boolean) => void
   zuoraParams: CreditCardParams
 }
 
@@ -81,34 +73,28 @@ const EMPTY_ZUORA_PARAMS: CreditCardParams = {
   style: '',
   submitEnabled: 'false',
   url: '',
-  status: RemoteDataState.NotStarted,
 }
 
 export const DEFAULT_CONTEXT: BillingContextType = {
+  billingInfo: null,
+  billingInfoStatus: RemoteDataState.NotStarted,
   billingSettings: {
     notifyEmail: '',
     balanceThreshold: 1,
     isNotify: true,
   },
   billingSettingsStatus: RemoteDataState.NotStarted,
-  errors: {},
-  handleCancelClick: () => {},
+  handleGetBillingInfo: () => {},
   handleGetBillingSettings: () => {},
   handleGetInvoices: () => {},
   handleGetMarketplace: () => {},
+  handleGetZuoraParams: () => {},
   handleUpdateBillingSettings: (_settings: BillingNotifySettings) => {},
-  handleSetError: (_: string, __: boolean) => {},
-  handleSetInputs: (_: string, __: string | number | boolean) => {},
-  handleSubmit: (_: string) => {},
-  handleFormValidation: () => 0,
+  handleUpdatePaymentMethod: (_id: string) => {},
   invoices: [],
   invoicesStatus: RemoteDataState.NotStarted,
   marketplace: null,
   marketplaceStatus: RemoteDataState.NotStarted,
-  inputs: null,
-  isDirty: false,
-  isSubmitting: false,
-  setIsDirty: (_: boolean) => {},
   zuoraParams: EMPTY_ZUORA_PARAMS,
 }
 
@@ -128,7 +114,6 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
   const [zuoraParams, setZuoraParams] = useState<CreditCardParams>(
     EMPTY_ZUORA_PARAMS
   )
-  const [isDirty, setIsDirty] = useState(false)
 
   const me = useSelector(getQuartzMe)
   const [billingSettings, setBillingSettings] = useState({
@@ -150,36 +135,44 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
     RemoteDataState.NotStarted
   )
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [inputs, setInputs] = useState<Inputs>({
-    paymentMethodId: null,
-    street1: '',
-    street2: '',
-    city: '',
-    country: 'United States',
-    intlSubdivision: '',
-    usSubdivision: states[0],
-    postalCode: '',
-  })
+  const [billingInfo, setBillingInfo] = useState(null)
+  const [billingInfoStatus, setBillingInfoStatus] = useState(
+    RemoteDataState.NotStarted
+  )
 
-  const getZuoraParams = useCallback(async () => {
+  const handleGetZuoraParams = useCallback(async () => {
     try {
-      const response = await getPaymentForm({form: 'checkout'})
+      const response = await getPaymentForm({form: 'billing'})
+
       if (response.status !== 200) {
         throw new Error(getErrorMessage(response))
       }
 
-      // TODO(ariel): remove type casting here when Billing is refactored and integrated
-      setZuoraParams(response.data as CreditCardParams)
+      setZuoraParams(response.data)
     } catch (error) {
       // Ingest the error since the Zuora Form will return an error form based on the error returned
       console.error(error)
     }
   }, [])
 
-  useEffect(() => {
-    getZuoraParams()
-  }, [getZuoraParams])
+  const handleUpdatePaymentMethod = useCallback(
+    async (paymentMethodId: string) => {
+      try {
+        const response = await putBillingPaymentMethod({data: paymentMethodId})
+
+        if (response.status !== 200) {
+          throw new Error(getErrorMessage(response))
+        }
+
+        // TODO(ariel): set the payment method of the billingInfo
+        // setPaymentMethod(response.data)
+      } catch (error) {
+        // Ingest the error since the Zuora Form will return an error form based on the error returned
+        console.error(error)
+      }
+    },
+    []
+  )
 
   const handleGetInvoices = useCallback(async () => {
     try {
@@ -198,6 +191,50 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
       setInvoicesStatus(RemoteDataState.Error)
     }
   }, [])
+
+  const handleGetBillingInfo = useCallback(async () => {
+    try {
+      setBillingInfoStatus(RemoteDataState.Loading)
+      const resp = await getBilling({})
+
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      setBillingInfo(resp.data)
+      setBillingInfoStatus(RemoteDataState.Done)
+    } catch (error) {
+      // TODO(ariel): notify the users that something is wrong
+      console.error(error)
+      setBillingInfoStatus(RemoteDataState.Error)
+    }
+  }, [])
+
+  const handleUpdateBillingInfo = useCallback(
+    async (contact: BillingContact) => {
+      try {
+        setBillingInfoStatus(RemoteDataState.Loading)
+        // TODO(ariel): update the contact
+        // const resp = await updateBillingContact({data: contact})
+        const resp = await getBilling({})
+
+        if (resp.status !== 200) {
+          throw new Error(resp.data.message)
+        }
+
+        // TODO(ariel): set the response to update the contact, not the entire billingInfo
+        setBillingInfo(resp.data)
+        setBillingInfoStatus(RemoteDataState.Done)
+      } catch (error) {
+        // TODO(ariel): notify the users that something is wrong
+        console.error(error)
+        setBillingInfoStatus(RemoteDataState.Error)
+      }
+    },
+    []
+  )
+
+  // TODO(ariel): handleUpdateBillingInfo
 
   const handleGetMarketplace = useCallback(async () => {
     try {
@@ -266,81 +303,24 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
     []
   )
 
-  const [errors, setErrors] = useState({
-    notifyEmail: false,
-    balanceThreshold: false,
-    city: false,
-    country: false,
-    usSubdivision: false,
-    postalCode: false,
-  })
-
-  const [checkoutStatus, setCheckoutStatus] = useState(
-    RemoteDataState.NotStarted
-  )
-
-  const handleSetInputs = useCallback(
-    (name: string, value: string | number | boolean) => {
-      if (isDirty === false) {
-        setIsDirty(true)
-      }
-      setInputs({
-        ...inputs,
-        [name]: value,
-      })
-    },
-    [inputs, setInputs] // eslint-disable-line react-hooks/exhaustive-deps
-  )
-
-  const handleSetError = (name: string, value: boolean): void => {
-    setErrors({
-      ...errors,
-      [name]: value,
-    })
-  }
-
-  const handleSetErrors = (errorFields: string[]): void => {
-    const errObj = {}
-    errorFields.forEach(fieldName => {
-      errObj[fieldName] = true
-    })
-    setErrors({
-      ...errors,
-      ...errObj,
-    })
-  }
-
-  const history = useHistory()
-
-  const handleCancelClick = () => {
-    if (!!window?._abcr && isDirty) {
-      window._abcr?.triggerAbandonedCart()
-    }
-
-    history.goBack()
-  }
-
   return (
     <BillingContext.Provider
       value={{
+        billingInfo,
+        billingInfoStatus,
         billingSettings,
         billingSettingsStatus,
-        errors,
-        handleCancelClick,
+        handleGetBillingInfo,
         handleGetBillingSettings,
         handleGetInvoices,
         handleGetMarketplace,
+        handleGetZuoraParams,
         handleUpdateBillingSettings,
-        handleSetError,
-        handleSetInputs,
+        handleUpdatePaymentMethod,
         invoices,
         invoicesStatus,
         marketplace,
         marketplaceStatus,
-        inputs,
-        isDirty,
-        isSubmitting,
-        setIsDirty,
         zuoraParams,
       }}
     >

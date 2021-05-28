@@ -31,26 +31,19 @@ describe('Alerts SearchBar', () => {
   it('show/hide autocomplete', async () => {
     const {baseElement} = setup({})
 
-    // console.log(prettyDOM(baseElement));
-
     const searchInput = screen.getByTestId('check-status-input')
     fireEvent.focus(searchInput)
 
-    // console.log(prettyDOM(baseElement));
-
     exampleSearches.forEach(text=>{
-      const autocompleteElm = screen.getAllByText(text);
+      const autocompleteElm = screen.queryAllByText(text);
       expect(autocompleteElm.length).toBe(1);
     })
 
-    fireEvent.blur(searchInput)
+    fireEvent.mouseDown(baseElement)
 
-    // console.log(prettyDOM(baseElement));
-
-    // exampleSearches.forEach(text=>{
-    //   const autocompleteElm = screen.getAllByText(text);
-    //   expect(autocompleteElm.length).toBe(0);
-    // })
-
+    exampleSearches.forEach(text=>{
+      const autocompleteElm = screen.queryAllByText(text);
+      expect(autocompleteElm.length).toBe(0);
+    })
   })
 })

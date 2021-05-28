@@ -16,7 +16,7 @@ const RuleCardContext: FunctionComponent<Props> = ({
   onDelete,
   onClone,
   onView,
-  onEditTask
+  onEditTask,
 }) => {
   return (
     <Context>

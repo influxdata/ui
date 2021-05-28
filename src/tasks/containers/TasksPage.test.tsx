@@ -13,6 +13,7 @@ import {createMemoryHistory} from 'history'
 // Items under test
 import TasksPage from './TasksPage'
 
+// comment
 const InactiveTask = {
   id: '02f12c50dcb93000',
   orgID: '02ee9e2a29d73000',

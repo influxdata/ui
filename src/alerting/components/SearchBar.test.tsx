@@ -1,6 +1,6 @@
 // Libraries
 import React from 'react'
-import {screen, fireEvent, prettyDOM} from '@testing-library/react'
+import {screen, fireEvent, prettyDOM, cleanup} from '@testing-library/react'
 
 // Components
 import SearchBar from 'src/alerting/components/SearchBar'
@@ -28,6 +28,8 @@ const setup = (override = {}) => {
 }
 
 describe('Alerts SearchBar', () => {
+  beforeEach(cleanup)
+
   it('show/hide autocomplete', async () => {
     const {baseElement} = setup({})
 
@@ -45,5 +47,16 @@ describe('Alerts SearchBar', () => {
       const autocompleteElm = screen.queryAllByText(text);
       expect(autocompleteElm.length).toBe(0);
     })
+  })
+
+  it('matches snapshot', () => {
+    const {container} = setup();
+    expect(container).toMatchSnapshot();
+    
+    const searchInput = screen.getByTestId('check-status-input')
+    fireEvent.focus(searchInput)
+
+    expect(container).toMatchSnapshot();
+
   })
 })

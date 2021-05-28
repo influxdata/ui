@@ -2,6 +2,7 @@
 import React, {FC, useRef, useState} from 'react'
 import {ProtocolToMonacoConverter} from 'monaco-languageclient/lib/monaco-converter'
 import classnames from 'classnames'
+import {debounce} from 'lodash'
 
 // Components
 import MonacoEditor from 'react-monaco-editor'
@@ -23,6 +24,8 @@ import './FluxMonacoEditor.scss'
 import {Diagnostic} from 'monaco-languageclient/lib/services'
 
 const p2m = new ProtocolToMonacoConverter()
+
+const DEBOUNCE_DELAY = 370
 
 export interface EditorProps {
   script: string
@@ -47,6 +50,8 @@ const FluxEditorMonaco: FC<Props> = ({
   const lspServer = useRef<LSPServer>(null)
   const [editorInst, seteditorInst] = useState<EditorType | null>(null)
   const [docURI, setDocURI] = useState('')
+
+  const debouncedOnChangeScript = debounce(onChangeScript, DEBOUNCE_DELAY)
 
   const wrapperClassName = classnames('flux-editor--monaco', {
     'flux-editor--monaco__autogrow': autogrow,
@@ -105,7 +110,7 @@ const FluxEditorMonaco: FC<Props> = ({
   }
 
   const onChange = async (text: string) => {
-    onChangeScript(text)
+    debouncedOnChangeScript(text)
     try {
       const diagnostics = await lspServer.current.didChange(docURI, text)
       updateDiagnostics(diagnostics)

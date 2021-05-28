@@ -1099,13 +1099,13 @@ export const communityTemplateRenameFailed = (): Notification => ({
 export const editCheckCodeWarning = (): Notification => ({
   ...defaultErrorNotification,
   style: NotificationStyle.Info,
-  message: `Changes to Check code may prevent you from editing the Check in the visual editing experience.`,
+  message: 'Changes to Check code may prevent you from editing the Check in the visual editing experience.',
 })
 
 export const editNotificationRuleCodeWarning = (): Notification => ({
   ...defaultErrorNotification,
   style: NotificationStyle.Info,
-  message: `Changes to Notification Rule code may prevent you from editing the Notification Rule in the visual editing experience.`,
+  message: 'Changes to Notification Rule code may prevent you from editing the Notification Rule in the visual editing experience.',
 })
 
 // Notebooks

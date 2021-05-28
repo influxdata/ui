@@ -33,7 +33,7 @@ import {
 
 // Notifications
 import {notify} from 'src/shared/actions/notifications'
-import {updateCheckFailed} from 'src/shared/copy/notifications'
+import {updateCheckFailed, editCheckCodeWarning} from 'src/shared/copy/notifications'
 
 // Types
 import {Check, Label} from 'src/types'
@@ -118,6 +118,11 @@ const CheckCard: FC<Props> = ({
     onRemoveCheckLabel(id, label.id)
   }
 
+  const onEditTask = () => {
+    history.push(`/orgs/${orgID}/tasks/${check.taskID}/edit`)
+    onNotify(editCheckCodeWarning())
+  };
+
   return (
     <ErrorBoundary>
       <ResourceCard
@@ -132,6 +137,7 @@ const CheckCard: FC<Props> = ({
             onView={onView}
             onDelete={onDelete}
             onClone={onClone}
+            onEditTask={onEditTask}
           />
         }
       >

@@ -9,20 +9,27 @@ interface Props {
   onDelete: () => void
   onClone: () => void
   onView: () => void
+  onEditTask: () => void
 }
 
 const RuleCardContext: FunctionComponent<Props> = ({
   onDelete,
   onClone,
   onView,
+  onEditTask
 }) => {
   return (
     <Context>
-      <Context.Menu icon={IconFont.EyeOpen} testID="context-history-menu">
+      <Context.Menu icon={IconFont.CogThick} testID="context-history-menu">
         <Context.Item
           label="View History"
           action={onView}
           testID="context-history-task"
+        />
+        <Context.Item
+          label="Edit Task"
+          action={onEditTask}
+          testID="context-edit-task"
         />
       </Context.Menu>
       <Context.Menu

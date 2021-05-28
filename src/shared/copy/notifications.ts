@@ -18,6 +18,7 @@ import {
 import {QUICKSTART_SCRAPER_TARGET_URL} from 'src/dataLoaders/constants/pluginConfigs'
 import {QUICKSTART_DASHBOARD_NAME} from 'src/onboarding/constants/index'
 import {IconFont} from '@influxdata/clockface'
+import { info } from 'console'
 
 const bytesFormatter = binaryPrefixFormatter({
   suffix: 'B',
@@ -1094,6 +1095,18 @@ export const communityTemplateUnsupportedFormatError = (): Notification => ({
 export const communityTemplateRenameFailed = (): Notification => ({
   ...defaultErrorNotification,
   message: `We've successfully installed your template but weren't able to name it properly. It may appear as a blank template.`,
+})
+
+export const editCheckCodeWarning = (): Notification => ({
+  ...defaultErrorNotification,
+  style: NotificationStyle.Info,
+  message: `Changes to Check code may prevent you from editing the Check in the visual editing experience.`,
+})
+
+export const editNotificationRuleCodeWarning = (): Notification => ({
+  ...defaultErrorNotification,
+  style: NotificationStyle.Info,
+  message: `Changes to Notification Rule code may prevent you from editing the Notification Rule in the visual editing experience.`,
 })
 
 // Notebooks

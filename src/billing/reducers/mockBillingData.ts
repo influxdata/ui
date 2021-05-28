@@ -1,10 +1,5 @@
 import {RemoteDataState} from 'src/types'
-import {
-  BillingInfo,
-  BillingNotifySettings,
-  Invoice,
-  CreditCardParams,
-} from 'src/types/billing'
+import {BillingInfo, Invoice, CreditCardParams} from 'src/types/billing'
 
 export const mockBillingInfo: BillingInfo = {
   balance: 100,
@@ -28,13 +23,6 @@ export const mockBillingInfo: BillingInfo = {
     subdivision: 'NY',
     postalCode: 30000,
   },
-  status: RemoteDataState.Done,
-}
-
-export const mockBillingSettings: BillingNotifySettings = {
-  balanceThreshold: 100,
-  isNotify: true,
-  notifyEmail: 'ariel@influxdata.com',
   status: RemoteDataState.Done,
 }
 

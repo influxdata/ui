@@ -7,8 +7,11 @@ import {useHistory} from 'react-router-dom'
 import {notify} from 'src/shared/actions/notifications'
 import {Contact} from 'src/checkout/utils/contact'
 import {
+  getBillingInvoices,
+  getMarketplace,
   getPaymentForm,
   getSettingsNotifications,
+  putSettingsNotifications,
   postCheckout,
 } from 'src/client/unityRoutes'
 import {getQuartzMe} from 'src/me/selectors'
@@ -19,8 +22,13 @@ import {states} from 'src/billing/constants'
 import {submitError} from 'src/shared/copy/notifications'
 
 // Types
-import {RemoteDataState} from 'src/types'
-import {BillingNotifySettings, CreditCardParams} from 'src/types/billing'
+import {
+  BillingNotifySettings,
+  Invoices,
+  Marketplace,
+  RemoteDataState,
+} from 'src/types'
+import {CreditCardParams} from 'src/types/billing'
 import {getErrorMessage} from 'src/utils/api'
 
 export type Props = {
@@ -29,9 +37,6 @@ export type Props = {
 
 export type Inputs = {
   paymentMethodId: string
-  notifyEmail: string
-  balanceThreshold: number
-  shouldNotify: boolean
   street1: string
   street2: string
   city: string
@@ -41,14 +46,23 @@ export type Inputs = {
   postalCode: string
 }
 
-export interface CheckoutContextType {
-  checkoutStatus: RemoteDataState
+export interface BillingContextType {
+  billingSettings: BillingNotifySettings
+  billingSettingsStatus: RemoteDataState
   errors: object
   handleCancelClick: () => void
+  handleGetBillingSettings: () => void
+  handleGetInvoices: () => void
+  handleGetMarketplace: () => void
+  handleUpdateBillingSettings: (settings: BillingNotifySettings) => void
   handleSetError: (name: string, value: boolean) => void
   handleSetInputs: (name: string, value: string | number | boolean) => void
   handleSubmit: (paymentMethodId: string) => void
   handleFormValidation: () => number
+  invoices: Invoices
+  invoicesStatus: RemoteDataState
+  marketplace: Marketplace
+  marketplaceStatus: RemoteDataState
   inputs: Inputs
   isDirty: boolean
   isSubmitting: boolean
@@ -70,14 +84,27 @@ const EMPTY_ZUORA_PARAMS: CreditCardParams = {
   status: RemoteDataState.NotStarted,
 }
 
-export const DEFAULT_CONTEXT: CheckoutContextType = {
-  checkoutStatus: RemoteDataState.NotStarted,
+export const DEFAULT_CONTEXT: BillingContextType = {
+  billingSettings: {
+    notifyEmail: '',
+    balanceThreshold: 1,
+    isNotify: true,
+  },
+  billingSettingsStatus: RemoteDataState.NotStarted,
   errors: {},
   handleCancelClick: () => {},
+  handleGetBillingSettings: () => {},
+  handleGetInvoices: () => {},
+  handleGetMarketplace: () => {},
+  handleUpdateBillingSettings: (_settings: BillingNotifySettings) => {},
   handleSetError: (_: string, __: boolean) => {},
   handleSetInputs: (_: string, __: string | number | boolean) => {},
   handleSubmit: (_: string) => {},
   handleFormValidation: () => 0,
+  invoices: [],
+  invoicesStatus: RemoteDataState.NotStarted,
+  marketplace: null,
+  marketplaceStatus: RemoteDataState.NotStarted,
   inputs: null,
   isDirty: false,
   isSubmitting: false,
@@ -85,7 +112,7 @@ export const DEFAULT_CONTEXT: CheckoutContextType = {
   zuoraParams: EMPTY_ZUORA_PARAMS,
 }
 
-export const CheckoutContext = React.createContext<CheckoutContextType>(
+export const BillingContext = React.createContext<BillingContextType>(
   DEFAULT_CONTEXT
 )
 
@@ -93,23 +120,39 @@ interface CheckoutBase {
   paymentMethodId?: string
 }
 
-export type Checkout = CheckoutBase & BillingNotifySettings & Contact
+export type Checkout = CheckoutBase & Contact
 
-export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
+export const BillingProvider: FC<Props> = React.memo(({children}) => {
   const dispatch = useDispatch()
 
   const [zuoraParams, setZuoraParams] = useState<CreditCardParams>(
     EMPTY_ZUORA_PARAMS
   )
   const [isDirty, setIsDirty] = useState(false)
+
   const me = useSelector(getQuartzMe)
+  const [billingSettings, setBillingSettings] = useState({
+    notifyEmail: me?.email ?? '', // sets the default to the user's registered email
+    balanceThreshold: 1, // set the default to the minimum balance threshold
+    isNotify: true,
+  })
+  const [billingSettingsStatus, setBillingSettingsStatus] = useState(
+    RemoteDataState.NotStarted
+  )
+
+  const [invoices, setInvoices] = useState([])
+  const [invoicesStatus, setInvoicesStatus] = useState(
+    RemoteDataState.NotStarted
+  )
+
+  const [marketplace, setMarketplace] = useState(null)
+  const [marketplaceStatus, setMarketplaceStatus] = useState(
+    RemoteDataState.NotStarted
+  )
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [inputs, setInputs] = useState<Inputs>({
     paymentMethodId: null,
-    notifyEmail: me?.email ?? '', // sets the default to the user's registered email
-    balanceThreshold: 1, // set the default to the minimum balance threshold
-    shouldNotify: true,
     street1: '',
     street2: '',
     city: '',
@@ -138,30 +181,90 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     getZuoraParams()
   }, [getZuoraParams])
 
-  const getBillingSettings = useCallback(async () => {
+  const handleGetInvoices = useCallback(async () => {
     try {
-      const resp = await getSettingsNotifications({})
+      setInvoicesStatus(RemoteDataState.Loading)
+      const resp = await getBillingInvoices({})
+
       if (resp.status !== 200) {
         throw new Error(resp.data.message)
       }
-      setInputs({
-        ...inputs,
-        balanceThreshold: resp.data.balanceThreshold,
-        notifyEmail: resp.data.notifyEmail,
-        shouldNotify: resp.data.isNotify,
-      })
+
+      setInvoices(resp.data)
+      setInvoicesStatus(RemoteDataState.Done)
+    } catch (error) {
+      // TODO(ariel): notify the users that something is wrong
+      console.error(error)
+      setInvoicesStatus(RemoteDataState.Error)
+    }
+  }, [])
+
+  const handleGetMarketplace = useCallback(async () => {
+    try {
+      setMarketplaceStatus(RemoteDataState.Loading)
+      const resp = await getMarketplace({})
+
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      setMarketplace(resp.data)
+      setMarketplaceStatus(RemoteDataState.Done)
+    } catch (error) {
+      // TODO(ariel): notify the users that something is wrong
+      console.error(error)
+      setMarketplaceStatus(RemoteDataState.Error)
+    }
+  }, [])
+
+  const handleGetBillingSettings = useCallback(async () => {
+    try {
+      setBillingSettingsStatus(RemoteDataState.Loading)
+      const resp = await getSettingsNotifications({})
+
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      setBillingSettings(resp.data)
     } catch (error) {
       // We're injesting the error here and leaving the default inputs since
       // Quartz's API returns a 404 for valid requests that don't have any data
       // Meaning, if a user hasn't filled out the notification settings, the
       // API response is expected to return a 404 even though the query was successful
       console.error(error)
+    } finally {
+      setBillingSettingsStatus(RemoteDataState.Done)
     }
-  }, [inputs])
+  }, [])
 
-  useEffect(() => {
-    getBillingSettings()
-  }, [getBillingSettings])
+  const handleUpdateBillingSettings = useCallback(
+    async (settings: BillingNotifySettings) => {
+      try {
+        setBillingSettingsStatus(RemoteDataState.Loading)
+        const resp = await putSettingsNotifications({data: settings})
+
+        if (resp.status !== 200) {
+          throw new Error(resp.data.message)
+        }
+
+        setBillingSettings({
+          balanceThreshold: resp.data.balanceThreshold,
+          notifyEmail: resp.data.notifyEmail,
+          isNotify: resp.data.isNotify,
+        })
+      } catch (error) {
+        // We're injesting the error here and leaving the default inputs since
+        // Quartz's API returns a 404 for valid requests that don't have any data
+        // Meaning, if a user hasn't filled out the notification settings, the
+        // API response is expected to return a 404 even though the query was successful
+        console.error(error)
+      } finally {
+        setBillingSettingsStatus(RemoteDataState.Done)
+      }
+    },
+    []
+  )
 
   const [errors, setErrors] = useState({
     notifyEmail: false,
@@ -207,102 +310,6 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     })
   }
 
-  const getInvalidFields = useCallback(() => {
-    const fields = {...inputs}
-
-    const {shouldNotify} = inputs
-    if (!shouldNotify) {
-      fields.notifyEmail = me?.email ?? '' // sets the default to the user's registered email
-      fields.balanceThreshold = 1 // set the default to the minimum balance threshold
-    }
-
-    return Object.entries(fields).filter(([key, value]) => {
-      if (shouldNotify && key === 'notifyEmail' && value === '') {
-        return true
-      }
-      if (shouldNotify && key === 'balanceThreshold' && value === '') {
-        return true
-      }
-      if (
-        key === 'usSubdivision' &&
-        fields.country === 'United States' &&
-        value === ''
-      ) {
-        return true
-      }
-      if (
-        key === 'postalCode' &&
-        fields.country === 'United States' &&
-        value === ''
-      ) {
-        return true
-      }
-      if (key === 'city' && value === '') {
-        return true
-      }
-      return false
-    })
-  }, [me?.email, inputs])
-
-  const handleFormValidation = (): number => {
-    const errs = getInvalidFields()
-
-    if (errs.length > 0) {
-      const errorFields = errs?.flatMap(([err]) => err)
-
-      handleSetErrors(errorFields)
-    }
-
-    return errs.length
-  }
-
-  const handleSubmit = async (paymentMethodId: string) => {
-    if (isDirty === false) {
-      setIsDirty(true)
-    }
-    setIsSubmitting(true)
-
-    // Check to see if the form is valid using the validate form
-    const errs = getInvalidFields()
-
-    try {
-      if (errs.length === 0) {
-        const formData = {
-          ...inputs,
-          subdivision:
-            inputs.country === 'United States'
-              ? inputs.usSubdivision
-              : inputs.intlSubdivision,
-        }
-
-        delete formData.usSubdivision
-        delete formData.intlSubdivision
-
-        const paymentInformation = {...formData, paymentMethodId}
-
-        const response = await postCheckout({data: paymentInformation})
-
-        if (response.status !== 201) {
-          throw new Error(response.data.message)
-        }
-
-        setCheckoutStatus(RemoteDataState.Done)
-        // Call the `quartz/me` endpoint to update the existing user metadata
-        dispatch(getQuartzMeThunk())
-      } else {
-        const errorFields = errs?.flatMap(([err]) => err)
-        setCheckoutStatus(RemoteDataState.Error)
-        handleSetErrors(errorFields)
-      }
-    } catch (error) {
-      console.error(error)
-
-      dispatch(notify(submitError()))
-    }
-
-    setIsSubmitting(false)
-  }
-
   const history = useHistory()
 
   const handleCancelClick = () => {
@@ -314,15 +321,22 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   }
 
   return (
-    <CheckoutContext.Provider
+    <BillingContext.Provider
       value={{
-        checkoutStatus,
+        billingSettings,
+        billingSettingsStatus,
         errors,
         handleCancelClick,
+        handleGetBillingSettings,
+        handleGetInvoices,
+        handleGetMarketplace,
+        handleUpdateBillingSettings,
         handleSetError,
         handleSetInputs,
-        handleSubmit,
-        handleFormValidation,
+        invoices,
+        invoicesStatus,
+        marketplace,
+        marketplaceStatus,
         inputs,
         isDirty,
         isSubmitting,
@@ -331,8 +345,8 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
       }}
     >
       {children}
-    </CheckoutContext.Provider>
+    </BillingContext.Provider>
   )
 })
 
-export default CheckoutProvider
+export default BillingProvider

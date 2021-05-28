@@ -1,8 +1,8 @@
-import React, {FC, ReactNode, useEffect} from 'react'
+import React, {FC, ReactNode, useEffect, useContext} from 'react'
 import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 
-// Hooks
-import {useBilling} from 'src/billing/components/BillingPage'
+// Components
+import {BillingContext} from 'src/billing/context/billing'
 
 // Thunks
 import {getBillingInfo} from 'src/billing/thunks'
@@ -15,13 +15,13 @@ type Props = {
 }
 
 const BillingInfoWrapper: FC<Props> = ({children}) => {
-  const [{billingInfo}, dispatch] = useBilling()
+  const {} = useContext(BillingContext)
 
-  useEffect(() => {
-    getBillingInfo(dispatch)
-  }, [dispatch])
+  // useEffect(() => {
+  //   getBillingInfo(dispatch)
+  // }, [dispatch])
 
-  const loading = billingInfo?.status ?? RemoteDataState.NotStarted
+  // const loading = billingInfo?.status ?? RemoteDataState.NotStarted
 
   return (
     <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>

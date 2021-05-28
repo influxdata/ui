@@ -3,23 +3,12 @@ import produce from 'immer'
 import {RemoteDataState} from 'src/types'
 
 // Types
-import {
-  BillingInfo,
-  BillingNotifySettings,
-  Invoice,
-  PaymentMethod,
-  CreditCardParams,
-  Marketplace,
-} from 'src/types/billing'
+import {BillingInfo, PaymentMethod, CreditCardParams} from 'src/types/billing'
 
 export interface BillingState {
   billingInfo: BillingInfo
-  billingSettings: BillingNotifySettings
   creditCard: CreditCardParams
   creditCards: CreditCardParams
-  invoices: Invoice[]
-  invoicesStatus: RemoteDataState
-  marketplace: Marketplace
 }
 
 export const initialState = (): BillingState => ({
@@ -31,32 +20,11 @@ export const initialState = (): BillingState => ({
     contact: null,
     status: RemoteDataState.NotStarted,
   },
-  billingSettings: {
-    balanceThreshold: 0,
-    isNotify: false,
-    notifyEmail: '',
-    status: RemoteDataState.NotStarted,
-  },
   creditCards: null,
   creditCard: null,
-  invoices: null,
-  invoicesStatus: RemoteDataState.NotStarted,
-  marketplace: null,
 })
 
 export type BillingReducer = React.Reducer<BillingState, Action>
-
-export const setMarketplace = (marketplace: Marketplace) =>
-  ({
-    type: 'SET_MARKETPLACE',
-    marketplace,
-  } as const)
-
-export const setMarketplaceStatus = (status: RemoteDataState) =>
-  ({
-    type: 'SET_MARKETPLACE_STATUS',
-    status,
-  } as const)
 
 export const setBillingInfo = (billingInfo: BillingInfo) =>
   ({
@@ -68,31 +36,6 @@ export const setBillingInfoStatus = (status: RemoteDataState) =>
   ({
     type: 'SET_BILLING_INFO_STATUS',
     status,
-  } as const)
-
-export const setBillingSettings = (billingSettings: BillingNotifySettings) =>
-  ({
-    type: 'SET_BILLING_SETTINGS',
-    billingSettings,
-  } as const)
-
-export const setBillingSettingsStatus = (status: RemoteDataState) =>
-  ({
-    type: 'SET_BILLING_SETTINGS_STATUS',
-    status,
-  } as const)
-
-export const setInvoices = (invoices: Invoice[], status: RemoteDataState) =>
-  ({
-    type: 'SET_INVOICES',
-    invoices,
-    invoiceStatus: status,
-  } as const)
-
-export const setInvoicesStatus = (status: RemoteDataState) =>
-  ({
-    type: 'SET_INVOICES_STATUS',
-    invoiceStatus: status,
   } as const)
 
 export const setPaymentMethods = (
@@ -128,16 +71,10 @@ export const setCreditCardStatus = (status: RemoteDataState) =>
   } as const)
 
 export type Action =
-  | ReturnType<typeof setBillingSettings>
-  | ReturnType<typeof setBillingSettingsStatus>
   | ReturnType<typeof setBillingInfo>
   | ReturnType<typeof setBillingInfoStatus>
   | ReturnType<typeof setCreditCard>
   | ReturnType<typeof setCreditCardStatus>
-  | ReturnType<typeof setInvoices>
-  | ReturnType<typeof setInvoicesStatus>
-  | ReturnType<typeof setMarketplace>
-  | ReturnType<typeof setMarketplaceStatus>
 
 export const billingReducer = (
   state: BillingState = initialState(),
@@ -163,35 +100,6 @@ export const billingReducer = (
         draftState.billingInfo.status = action.status
         return
       }
-      case 'SET_BILLING_SETTINGS': {
-        draftState.billingSettings = action.billingSettings
-
-        return
-      }
-      case 'SET_BILLING_SETTINGS_STATUS': {
-        if (!draftState.billingSettings?.status) {
-          draftState.billingSettings = {
-            ...draftState.billingSettings,
-            status: action.status,
-          }
-
-          return
-        }
-
-        draftState.billingSettings.status = action.status
-        return
-      }
-      case 'SET_INVOICES': {
-        draftState.invoices = action.invoices
-        draftState.invoicesStatus = action.invoiceStatus
-
-        return
-      }
-      case 'SET_INVOICES_STATUS': {
-        draftState.invoicesStatus = action.invoiceStatus
-
-        return
-      }
       case 'SET_CREDIT_CARD': {
         draftState.creditCard = action.creditCard
 
@@ -208,24 +116,6 @@ export const billingReducer = (
         }
 
         draftState.creditCard.status = action.status
-        return
-      }
-      case 'SET_MARKETPLACE': {
-        draftState.marketplace = action.marketplace
-
-        return
-      }
-      case 'SET_MARKETPLACE_STATUS': {
-        if (!draftState.marketplace?.loadingStatus) {
-          draftState.marketplace = {
-            ...draftState.marketplace,
-            loadingStatus: action.status,
-          }
-
-          return
-        }
-
-        draftState.marketplace.loadingStatus = action.status
         return
       }
     }

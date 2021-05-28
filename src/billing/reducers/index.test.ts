@@ -5,8 +5,6 @@ import {billingReducer} from 'src/billing/reducers'
 import {
   setBillingInfo,
   setBillingInfoStatus,
-  setBillingSettings,
-  setBillingSettingsStatus,
   setInvoices,
   setInvoicesStatus,
   setCreditCard,
@@ -16,7 +14,6 @@ import {
 // Mocks
 import {
   mockBillingInfo,
-  mockBillingSettings,
   mockInvoices,
   mockCreditCard,
 } from 'src/billing/reducers/mockBillingData'
@@ -36,23 +33,6 @@ describe('billing reducer', () => {
 
     expect(expected.billingInfo).toEqual(mockBillingInfo)
     expect(expected.billingInfo.status).toEqual(RemoteDataState.Done)
-  })
-  it('can set the billing settings status', () => {
-    const expected = billingReducer(
-      undefined,
-      setBillingSettingsStatus(RemoteDataState.Loading)
-    )
-
-    expect(expected.billingSettings.status).toEqual(RemoteDataState.Loading)
-  })
-  it('can set the billing settings', () => {
-    const expected = billingReducer(
-      undefined,
-      setBillingSettings(mockBillingSettings)
-    )
-
-    expect(expected.billingSettings).toEqual(mockBillingSettings)
-    expect(expected.billingSettings.status).toEqual(RemoteDataState.Done)
   })
   it('can set the invoices status', () => {
     const expected = billingReducer(

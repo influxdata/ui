@@ -19,7 +19,6 @@ import {FeatureFlag} from 'src/shared/utils/featureFlag'
 import {toggleShowVariablesControls as toggleShowVariablesControlsAction} from 'src/userSettings/actions'
 import {updateDashboard as updateDashboardAction} from 'src/dashboards/actions/thunks'
 import {
-  setAutoRefreshInterval as setAutoRefreshIntervalAction,
   setAutoRefreshStatus as setAutoRefreshStatusAction,
   resetDashboardAutoRefresh as resetDashboardAutoRefreshAction,
 } from 'src/shared/actions/autoRefresh'
@@ -73,7 +72,6 @@ const DashboardHeader: FC<Props> = ({
   toggleShowVariablesControls,
   showVariablesControls,
   onSetAutoRefreshStatus,
-  setAutoRefreshInterval,
   timeRange,
   updateDashboard,
   updateQueryParams,
@@ -246,7 +244,6 @@ const mdtp = {
   onSetAutoRefreshStatus: setAutoRefreshStatusAction,
   updateQueryParams: updateQueryParamsAction,
   setDashboardTimeRange: setDashboardTimeRangeAction,
-  setAutoRefreshInterval: setAutoRefreshIntervalAction,
   resetAutoRefresh: resetDashboardAutoRefreshAction,
   showOverlay: showOverlayAction,
   dismissOverlay: dismissOverlayAction,

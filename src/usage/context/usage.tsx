@@ -126,6 +126,9 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
 
       const csvs = resp.data?.split('\n\n')
 
+      // TODO(ariel): keeping this in for testing purposes in staging
+      // This will need to be removed for flipping the feature flag on
+      console.warn({csvs})
       setBillingStats(csvs)
     } catch (error) {
       console.error('getBillingStats: ', error)

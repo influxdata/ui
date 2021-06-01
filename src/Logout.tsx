@@ -31,6 +31,10 @@ const Logout: FC<Props> = ({history}) => {
 
     const handleSignOut = async () => {
       if (CLOUD) {
+        /**
+         * We'll need this authSessionCookieOn flag off for tools until
+         * Quartz is integrated into that environment
+         */
         const url = isFlagEnabled('authSessionCookieOn')
           ? new URL(`${window.location.origin}${CLOUD_SIGNOUT_PATHNAME}`).href
           : `${CLOUD_URL}${CLOUD_LOGOUT_PATH}`

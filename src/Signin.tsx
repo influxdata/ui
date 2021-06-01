@@ -108,7 +108,10 @@ export class Signin extends PureComponent<Props, State> {
       } = this.props
 
       clearInterval(this.intervalID)
-
+      /**
+       * We'll need this authSessionCookieOn flag off for tools until
+       * Quartz is integrated into that environment
+       */
       if (CLOUD && isFlagEnabled('authSessionCookieOn')) {
         const url = new URL(
           `${window.location.origin}${CLOUD_LOGIN_PATHNAME}?redirectTo=${window.location.href}`

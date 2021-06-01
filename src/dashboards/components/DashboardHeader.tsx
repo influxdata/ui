@@ -104,17 +104,6 @@ const DashboardHeader: FC<Props> = ({
     updateDashboard(dashboard.id, {name})
   }
 
-  const handleChooseAutoRefresh = (milliseconds: number) => {
-    setAutoRefreshInterval(dashboard.id, milliseconds)
-
-    if (milliseconds === 0) {
-      onSetAutoRefreshStatus(dashboard.id, AutoRefreshStatus.Paused)
-      return
-    }
-
-    onSetAutoRefreshStatus(dashboard.id, AutoRefreshStatus.Active)
-  }
-
   const handleChooseTimeRange = (timeRange: TimeRange) => {
     resetQueryCache()
     setDashboardTimeRange(dashboard.id, timeRange)
@@ -192,7 +181,7 @@ const DashboardHeader: FC<Props> = ({
         </Page.ControlBarLeft>
         <Page.ControlBarRight>
           <AutoRefreshDropdown
-            onChoose={handleChooseAutoRefresh}
+            onChoose={() => {}}
             onManualRefresh={resetCacheAndRefresh}
             selected={autoRefresh}
             showAutoRefresh={false}

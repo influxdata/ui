@@ -29,10 +29,6 @@ import './AutoRefresh.scss'
 // Metrics
 import {event} from 'src/cloud/utils/reporting'
 
-// This array creates an array of [0...24] for the hours selection
-
-// This line replaces the 0 (the first value) with 'Never' for the dropdown
-
 const selectInactivityArray = (unit: string) => {
   let selectionAmount = 0
   switch (unit) {
@@ -46,10 +42,13 @@ const selectInactivityArray = (unit: string) => {
       selectionAmount = 30
       break
   }
+  // This array creates an array of [0...24] for the hours selection, [0...59] for the minutes, and [0...30] for the days
   const INACTIVITY_ARRAY = [...Array(selectionAmount).keys()].map(num =>
     num.toString()
   )
+  // This line replaces the 0 (the first value) with 'Never' for the dropdown
   INACTIVITY_ARRAY[0] = 'Never'
+
   return INACTIVITY_ARRAY
 }
 const AutoRefreshForm: FC = () => {

@@ -350,7 +350,7 @@ describe('DataExplorer', () => {
           .clear()
           .type('2019-10-29T08:00:00.000Z')
 
-        // button should be disabled
+        // button should not be disabled
         cy.getByTestID('daterange--apply-btn').should('not.be.disabled')
       })
     })

@@ -342,16 +342,16 @@ describe('DataExplorer', () => {
         // invalid date errors
         cy.getByTestID('form--element-error').should('exist')
 
-        // Validate that ISO String formatted texts are valid
-        cy.get('input[title="Stop"]')
-          .clear()
-          .type('2019-10-29T08:00:00.000Z')
-
-        // invalid date errors
-        cy.getByTestID('form--element-error').should('not.exist')
-
         // button should be disabled
         cy.getByTestID('daterange--apply-btn').should('be.disabled')
+
+        // Validate that ISO String formatted texts are valid
+        cy.get('input[title="Stop"]')
+        .clear()
+        .type('2019-10-29T08:00:00.000Z')
+
+        // button should be disabled
+        cy.getByTestID('daterange--apply-btn').should('not.be.disabled')
       })
     })
   })

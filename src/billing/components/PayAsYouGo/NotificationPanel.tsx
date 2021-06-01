@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react'
+import React, {FC, useContext, useState} from 'react'
 
 import {
   Panel,
@@ -7,10 +7,10 @@ import {
   ComponentColor,
 } from '@influxdata/clockface'
 import NotificationSettingsOverlay from 'src/billing/components/PayAsYouGo/NotificationSettingsOverlay'
-import {useBilling} from 'src/billing/components/BillingPage'
+import {BillingContext} from 'src/billing/context/billing'
 
 const NotificationPanel: FC = () => {
-  const [{billingSettings}] = useBilling()
+  const {billingSettings} = useContext(BillingContext)
   const [isOverlayVisible, setIsOverlayVisible] = useState(false)
 
   const handleShowOverlay = () => {

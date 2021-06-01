@@ -10,17 +10,32 @@ import {
 } from '@influxdata/giraffe'
 import {InfluxColors} from '@influxdata/clockface'
 
-import {AutoRefreshStatus} from 'src/types'
+import {AutoRefreshStatus, CreditCardParams} from 'src/types'
 
-// This is temporary and should be resolved
-// Once the Beta region API is built out by Quartz:
-// influxdata/quartz#4369
-// Beta Regions contain the hostname of the beta regions
+/**
+ * UPDATE: the original integration of this had linked to a Quartz issue that has
+ * since been resolved. However, removing this function caused our unit tests
+ * to fail in CI since the GIT_SHA was undefined. We need to resolve that issue
+ * before we can remove this function from the app
+ */
 function formatConstant(constant: string) {
   if (!constant) {
     return ''
   }
   return constant.trim()
+}
+
+// If we don't initialize these params here, then the UI will start
+// showing a popup and cypress tests will start failing.
+export const EMPTY_ZUORA_PARAMS: CreditCardParams = {
+  id: '',
+  tenantId: '',
+  key: '',
+  signature: '',
+  token: '',
+  style: '',
+  submitEnabled: 'false',
+  url: '',
 }
 
 export const DEFAULT_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss a'

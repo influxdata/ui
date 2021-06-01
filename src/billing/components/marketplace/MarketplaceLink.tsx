@@ -1,16 +1,14 @@
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
 import {
   Button,
   ComponentColor,
   ComponentSize,
   ButtonShape,
 } from '@influxdata/clockface'
+import {BillingContext} from 'src/billing/context/billing'
 
 // Types
 import {Marketplace} from 'src/types/billing'
-
-// Utils
-import {useBilling} from 'src/billing/components/BillingPage'
 
 const buttonInfo = (marketplace: Marketplace['shortName']): string => {
   switch (marketplace) {
@@ -26,7 +24,7 @@ const buttonInfo = (marketplace: Marketplace['shortName']): string => {
 }
 
 const MarketplaceLink: FC = () => {
-  const [{marketplace}] = useBilling()
+  const {marketplace} = useContext(BillingContext)
 
   const text = buttonInfo(marketplace.shortName)
 

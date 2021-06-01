@@ -59,6 +59,10 @@ const GetOrganizations: FunctionComponent = () => {
   return (
     <PageSpinner loading={status}>
       <Suspense fallback={<PageSpinner />}>
+        {/*
+          NOTE: We'll need this here until Tools gets Quartz integrated
+          Since the API request will fail in a tools environment.
+        */}
         {isFlagEnabled('unityMeApi') ? (
           <PageSpinner loading={quartzMeStatus}>
             <Switch>

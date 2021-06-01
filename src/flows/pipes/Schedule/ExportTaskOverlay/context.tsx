@@ -90,7 +90,6 @@ export const Provider: FC = ({children}) => {
 
     if (!_taskName) {
       if (activeTab === ExportAsTask.Create) {
-        console.log('ugh', params.name.replace(/^"(.*)"$/, '$1'))
         setTaskName(params.name.replace(/^"(.*)"$/, '$1') || 'Name this Task')
       }
     } else {

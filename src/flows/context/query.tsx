@@ -369,7 +369,9 @@ export const simplify = (text, vars: VariableMap = {}) => {
     .reverse()
     .reduce((acc, curr) => {
       ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
-        _acc[_curr.key.name] = _curr.value.location.source
+        if (_curr.key?.name && _curr.value?.location?.source) {
+          _acc[_curr.key.name] = _curr.value.location.source
+        }
 
         return _acc
       }, acc)

@@ -47,20 +47,22 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     // simplify takes care of all the variable nonsense in the query
     const ast = parse(simplify(queryText))
 
-    // Here we take care of joining any task definition in the query with
-    // the data we have available to us from the input boxes
     const params = remove(
       ast,
       node =>
         node.type === 'OptionStatement' && node.assignment.id.name === 'task'
     ).reduce((acc, curr) => {
-      curr.assignment.init.properties.reduce((_acc, _curr) => {
-        _acc[_curr.key.name] = _curr.value.location.source
+      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
+        if (_curr.key?.name && _curr.value?.location?.source) {
+          _acc[_curr.key.name] = _curr.value.location.source
+        }
+
         return _acc
       }, acc)
 
       return acc
     }, {})
+    const hasTask = Object.keys(params).length
 
     if (!params.name) {
       params.name = `"Notebook Task for ${id}"`
@@ -80,8 +82,8 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     const header = parse(`option task = {${paramString}}\n`)
     ast.body.unshift(header.body[0])
 
-    return [format_from_js_file(ast), false]
-  }, [queryText])
+    return [format_from_js_file(ast), hasTask]
+  }, [queryText, data.interval, data.offset])
 
   useEffect(() => {
     if (data.query === query) {

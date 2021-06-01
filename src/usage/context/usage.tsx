@@ -5,7 +5,6 @@ import React, {FC, useCallback, useEffect, useState} from 'react'
 import {
   getBillingStartDate,
   getUsage,
-  // getUsageBillingStats,
   getUsageVectors,
   getUsageRateLimits,
 } from 'src/client/unityRoutes'
@@ -143,16 +142,6 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
       console.warn({csvs})
 
       setBillingStats(csvs ?? [''])
-
-      // const resp = await getUsageBillingStats({})
-
-      // if (resp.status !== 200) {
-      //   throw new Error(resp.data.message)
-      // }
-
-      // const csvs = result?.csv?.split('\n\n')
-
-      // setBillingStats(csvs)
     } catch (error) {
       console.error('getBillingStats: ', error)
     }

@@ -1,33 +1,20 @@
-import React, {FC, ReactNode, useEffect} from 'react'
-import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
+import React, {FC, ReactChild, useEffect, useContext} from 'react'
 
-// Hooks
-import {useBilling} from 'src/billing/components/BillingPage'
-
-// Thunks
-import {getInvoices} from 'src/billing/thunks'
-
-// Types
-import {RemoteDataState} from 'src/types'
+// Components
+import {BillingContext} from 'src/billing/context/billing'
+import PageSpinner from 'src/perf/components/PageSpinner'
 
 type Props = {
-  children: ReactNode
+  children: ReactChild
 }
 
 const InvoiceWrapper: FC<Props> = ({children}) => {
-  const [{invoicesStatus}, dispatch] = useBilling()
-
+  const {handleGetInvoices, invoicesStatus} = useContext(BillingContext)
   useEffect(() => {
-    getInvoices(dispatch)
-  }, [dispatch])
+    handleGetInvoices()
+  }, [handleGetInvoices])
 
-  const loading = invoicesStatus ?? RemoteDataState.NotStarted
-
-  return (
-    <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
-      {children}
-    </SpinnerContainer>
-  )
+  return <PageSpinner loading={invoicesStatus}>{children}</PageSpinner>
 }
 
 export default InvoiceWrapper

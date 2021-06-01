@@ -1,9 +1,6 @@
 // Libraries
 import React, {FC, useState} from 'react'
 
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
 // Components
 import {ValueTickInput} from 'src/visualization/components/internal/ValueTickInput'
 import {TimeTickInput} from 'src/visualization/components/internal/TimeTickInput'
@@ -84,10 +81,6 @@ const AxisTicksGenerator: FC<Props> = ({
       return total
     }, 0) > 0
   )
-
-  if (!isFlagEnabled('axisTicksGenerator')) {
-    return null
-  }
 
   const isTimeColumn = columnType === '_time' ? true : false
 

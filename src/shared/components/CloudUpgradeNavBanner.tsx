@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
 import {connect} from 'react-redux'
+import {Link} from 'react-router-dom'
 import {get, find} from 'lodash'
 
 // Components
@@ -23,6 +24,7 @@ import {
   PAID_ORG_HIDE_UPGRADE_SETTING,
 } from 'src/cloud/constants'
 import {getIsRegionBeta} from 'src/me/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {AppState, OrgSetting} from 'src/types'
@@ -49,23 +51,39 @@ const CloudUpgradeNavBanner: FC<StateProps> = ({inView, isRegionBeta}) => (
             </Heading>
           </Panel.Header>
           <Panel.Footer size={ComponentSize.ExtraSmall}>
-            <a
-              className="cf-button cf-button-md cf-button-primary cf-button-stretch cloud-upgrade-banner--button upgrade-payg--button__nav"
-              href={`${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`}
-              target="_self"
-            >
-              Upgrade Now
-            </a>
+            {isFlagEnabled('unityCheckout') ? (
+              <Link
+                className="cf-button cf-button-md cf-button-primary cf-button-stretch cloud-upgrade-banner--button upgrade-payg--button__nav"
+                to="/checkout"
+              >
+                Upgrade Now
+              </Link>
+            ) : (
+              <a
+                className="cf-button cf-button-md cf-button-primary cf-button-stretch cloud-upgrade-banner--button upgrade-payg--button__nav"
+                href={`${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`}
+                target="_self"
+              >
+                Upgrade Now
+              </a>
+            )}
           </Panel.Footer>
         </Panel>
-        <a
-          className="cloud-upgrade-banner__collapsed"
-          href={`${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`}
-          target="_self"
-        >
-          <Icon glyph={IconFont.CrownSolid} />
-          <Heading element={HeadingElement.H5}>Upgrade Now</Heading>
-        </a>
+        {isFlagEnabled('unityCheckout') ? (
+          <Link className="cloud-upgrade-banner__collapsed" to="/checkout">
+            <Icon glyph={IconFont.CrownSolid} />
+            <Heading element={HeadingElement.H5}>Upgrade Now</Heading>
+          </Link>
+        ) : (
+          <a
+            className="cloud-upgrade-banner__collapsed"
+            href={`${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`}
+            target="_self"
+          >
+            <Icon glyph={IconFont.CrownSolid} />
+            <Heading element={HeadingElement.H5}>Upgrade Now</Heading>
+          </a>
+        )}
       </CloudOnly>
     )}
   </>

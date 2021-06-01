@@ -495,6 +495,12 @@ export const timeMachineReducer = (
       return setViewProperties(state, {legendColorizeRows})
     }
 
+    case 'SET_STATIC_LEGEND': {
+      const {staticLegend} = action.payload
+
+      return setViewProperties(state, {staticLegend})
+    }
+
     case 'SET_BIN_COUNT': {
       const {binCount} = action.payload
 

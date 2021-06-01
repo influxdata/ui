@@ -1,5 +1,5 @@
 import {Organization} from '../../../src/types'
-import {lines} from '../../support/commands'
+import {lines, makeGraphSnapshot} from '../../support/commands'
 import {
   FROM,
   RANGE,
@@ -12,7 +12,7 @@ import {
 
 const TYPE_DELAY = 0
 const VIS_TYPES = [
-  //    'band',
+  'band',
   //    'check',
   'gauge',
   'xy',
@@ -39,66 +39,6 @@ function getTimeMachineText() {
     })
     .invoke('text')
 }
-
-type GraphSnapshot = {
-  shouldBeSameAs: (
-    other: GraphSnapshot,
-    same?: boolean,
-    part?: 'axes' | 'layer' | 'both'
-  ) => void
-  name: string
-}
-
-const makeGraphSnapshot = (() => {
-  // local properties for makeGraphSnapshot function
-  let lastGraphSnapsotIndex = 0
-  const getNameAxes = (name: string) => `${name}-axes`
-  const getNameLayer = (name: string) => `${name}-layer`
-
-  return (): GraphSnapshot => {
-    // generate unique name for snapshot for saving as cy var
-    const name = `graph-snapshot-${lastGraphSnapsotIndex++}`
-
-    // wait for drawing done
-    cy.wait(500)
-    cy.get('[data-testid|=giraffe-layer]')
-      .then($layer => ($layer[0] as HTMLCanvasElement).toDataURL('image/jpeg'))
-      .as(getNameLayer(name))
-
-    cy.getByTestID('giraffe-axes')
-      .then($axes => ($axes[0] as HTMLCanvasElement).toDataURL('image/jpeg'))
-      .as(getNameAxes(name))
-
-    return {
-      name,
-      shouldBeSameAs: ({name: nameOther}, same = true, part = 'both') => {
-        const assert = (str: any, str2: any, same: boolean) => {
-          if (same) {
-            expect(str).to.eq(str2)
-          } else {
-            expect(str).to.not.eq(str2)
-          }
-        }
-
-        if (part === 'both' || part === 'axes') {
-          cy.get(`@${getNameAxes(name)}`).then(axes => {
-            cy.get(`@${getNameAxes(nameOther)}`).then(axesOther => {
-              assert(axes, axesOther, same)
-            })
-          })
-        }
-
-        if (part === 'both' || part === 'layer') {
-          cy.get(`@${getNameLayer(name)}`).then(layer => {
-            cy.get(`@${getNameLayer(nameOther)}`).then(layerOther => {
-              assert(layer, layerOther, same)
-            })
-          })
-        }
-      },
-    }
-  }
-})()
 
 describe('DataExplorer', () => {
   beforeEach(() => {
@@ -870,6 +810,7 @@ describe('DataExplorer', () => {
       })
 
       // TODO: make work with annotations
+      // TODO: fix failing test - fails locally and in CI
       it.skip('can zoom and unzoom horizontal axis', () => {
         cy.getByTestID(`selector-list m`).click()
         cy.getByTestID('selector-list v').click()
@@ -902,6 +843,7 @@ describe('DataExplorer', () => {
         makeGraphSnapshot().shouldBeSameAs(snapshot)
       })
 
+      // TODO: fix failing test - fails locally and in CI
       it.skip('can zoom and unzoom vertical axis', () => {
         cy.getByTestID(`selector-list m`).click()
         cy.getByTestID('selector-list v').click()
@@ -1061,6 +1003,138 @@ describe('DataExplorer', () => {
         })
       })
     })
+
+    describe('static legend', () => {
+      it('turns on static legend flag, so static legend option should exist for line graph, line graph plus single stat, and band plot', () => {
+        cy.window().then(win => {
+          win.influx.set('staticLegend', true)
+          VIS_TYPES.forEach(type => {
+            cy.getByTestID('cog-cell--button').click()
+            cy.getByTestID('view-type--dropdown').click()
+            cy.getByTestID(`view-type--${type}`).click()
+            if (
+              type === 'xy' ||
+              type === 'line-plus-single-stat' ||
+              type === 'band'
+            ) {
+              cy.getByTestID('static-legend-options').should('exist')
+            } else {
+              cy.getByTestID('static-legend-options').should('not.exist')
+            }
+          })
+        })
+      })
+
+      it('turns off static legend flag so that static legend option should not exist', () => {
+        cy.window().then(win => {
+          win.influx.set('staticLegend', false)
+          VIS_TYPES.forEach(type => {
+            cy.getByTestID('cog-cell--button').click()
+            cy.getByTestID('view-type--dropdown').click()
+            cy.getByTestID(`view-type--${type}`).click()
+            cy.getByTestID('static-legend-options').should('not.exist')
+          })
+        })
+      })
+
+      it('turns on static legend flag to allow user to render and remove the static legend', () => {
+        cy.writeData(lines(100))
+
+        // set the flag, build the query, adjust the view options
+        cy.window().then(win => {
+          win.influx.set('staticLegend', true)
+          cy.get<string>('@defaultBucketListSelector').then(
+            (defaultBucketListSelector: string) => {
+              cy.getByTestID('query-builder').should('exist')
+              cy.getByTestID('selector-list _monitoring').should('be.visible')
+              cy.getByTestID('selector-list _monitoring').click()
+
+              cy.getByTestID(defaultBucketListSelector).should('be.visible')
+              cy.getByTestID(defaultBucketListSelector).click()
+
+              cy.getByTestID('selector-list m').should('be.visible')
+              cy.getByTestID('selector-list m').clickAttached()
+
+              cy.getByTestID('selector-list v').should('be.visible')
+              cy.getByTestID('selector-list v').clickAttached()
+
+              cy.getByTestID('selector-list tv1').clickAttached()
+
+              cy.getByTestID('selector-list last')
+                .scrollIntoView()
+                .should('be.visible')
+                .click({force: true})
+
+              cy.getByTestID('time-machine-submit-button').click()
+
+              // Select line graph and open the view options
+              cy.getByTestID('cog-cell--button').click()
+              cy.getByTestID('view-type--dropdown').click()
+              cy.getByTestID(`view-type--xy`).click()
+
+              // Select "show" to render a static legend and display the height slider
+              cy.get('[for="radio_static_legend_show"]').click()
+              cy.getByTestID('giraffe-static-legend').should('exist')
+              cy.getByTestID('static-legend-height-slider').should('exist')
+
+              // Select "hide" to remove the static legend and hide the height slider
+              cy.get('[for="radio_static_legend_hide"]').click()
+              cy.getByTestID('giraffe-static-legend').should('not.exist')
+              cy.getByTestID('static-legend-height-slider').should('not.exist')
+            }
+          )
+        })
+      })
+
+      it('turns off static legend flag so that static legend box should not exist', () => {
+        cy.writeData(lines(100))
+
+        // set the flag, build the query, and select the graph type
+        cy.window().then(win => {
+          win.influx.set('staticLegend', false)
+          cy.get<string>('@defaultBucketListSelector').then(
+            (defaultBucketListSelector: string) => {
+              cy.getByTestID('query-builder').should('exist')
+              cy.getByTestID('selector-list _monitoring').should('be.visible')
+              cy.getByTestID('selector-list _monitoring').click()
+
+              cy.getByTestID(defaultBucketListSelector).should('be.visible')
+              cy.getByTestID(defaultBucketListSelector).click()
+
+              cy.getByTestID('selector-list m').should('be.visible')
+              cy.getByTestID('selector-list m').clickAttached()
+
+              cy.getByTestID('selector-list v').should('be.visible')
+              cy.getByTestID('selector-list v').clickAttached()
+
+              cy.getByTestID('selector-list tv1').clickAttached()
+
+              cy.getByTestID('selector-list last')
+                .scrollIntoView()
+                .should('be.visible')
+                .click({force: true})
+
+              cy.getByTestID('time-machine-submit-button').click()
+
+              // Select line graph
+              cy.getByTestID('view-type--dropdown').click()
+              cy.getByTestID(`view-type--xy`).click()
+              cy.getByTestID('giraffe-static-legend').should('not.exist')
+
+              // Select line plus single stat graph
+              cy.getByTestID('view-type--dropdown').click()
+              cy.getByTestID(`view-type--line-plus-single-stat`).click()
+              cy.getByTestID('giraffe-static-legend').should('not.exist')
+
+              // Select band plot
+              cy.getByTestID('view-type--dropdown').click()
+              cy.getByTestID(`view-type--band`).click()
+              cy.getByTestID('giraffe-static-legend').should('not.exist')
+            }
+          )
+        })
+      })
+    })
   })
 
   describe('refresh', () => {
@@ -1082,31 +1156,6 @@ describe('DataExplorer', () => {
       cy.wait(200)
       cy.get('.autorefresh-dropdown--pause').click()
       makeGraphSnapshot().shouldBeSameAs(snapshot, false)
-    })
-
-    // skip until the auto-refresh feature is added back
-    it.skip('auto refresh', () => {
-      const snapshot = makeGraphSnapshot()
-      cy.getByTestID('autorefresh-dropdown--button').click()
-      cy.getByTestID('auto-refresh-5s').click()
-
-      cy.wait(3_000)
-      makeGraphSnapshot().shouldBeSameAs(snapshot)
-
-      cy.wait(3_000)
-      const snapshot2 = makeGraphSnapshot()
-      snapshot2.shouldBeSameAs(snapshot, false)
-
-      cy.getByTestID('autorefresh-dropdown-refresh').should('not.be.visible')
-      cy.getByTestID('autorefresh-dropdown--button')
-        .should('contain.text', '5s')
-        .click()
-      cy.getByTestID('auto-refresh-paused').click()
-      cy.getByTestID('autorefresh-dropdown-refresh').should('be.visible')
-
-      // wait if graph changes after another 6s when autorefresh is paused
-      cy.wait(6_000)
-      makeGraphSnapshot().shouldBeSameAs(snapshot2)
     })
   })
 

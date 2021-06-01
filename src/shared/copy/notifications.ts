@@ -1096,6 +1096,20 @@ export const communityTemplateRenameFailed = (): Notification => ({
   message: `We've successfully installed your template but weren't able to name it properly. It may appear as a blank template.`,
 })
 
+export const editCheckCodeWarning = (): Notification => ({
+  ...defaultErrorNotification,
+  style: NotificationStyle.Info,
+  message:
+    'Changes to Check code may prevent you from editing the Check in the visual editing experience.',
+})
+
+export const editNotificationRuleCodeWarning = (): Notification => ({
+  ...defaultErrorNotification,
+  style: NotificationStyle.Info,
+  message:
+    'Changes to Notification Rule code may prevent you from editing the Notification Rule in the visual editing experience.',
+})
+
 // Notebooks
 
 export const notebookRunSuccess = (
@@ -1205,6 +1219,14 @@ export const createAnnotationFailed = (error: string): Notification => ({
   message: `Failed to create annotation: ${error}`,
 })
 
+export const annotationsUnsupportedOnGraph = (
+  graphType: string = 'This graph type'
+): Notification => ({
+  ...defaultErrorNotification,
+  icon: IconFont.Cube,
+  message: `${graphType} does not support adding annotations.`,
+})
+
 export const dashboardAutoRefreshTimeoutSuccess = (
   time?: string
 ): Notification => ({
@@ -1219,7 +1241,7 @@ export const dashboardAutoRefreshTimeoutSuccess = (
 /* USERS NOTIFICATIONS */
 export const inviteSent = (): Notification => ({
   ...defaultSuccessNotification,
-  message: `invite sent`,
+  message: `Invitation Sent`,
 })
 
 export const inviteFailed = (): Notification => ({
@@ -1255,4 +1277,10 @@ export const removeUserSuccessful = (): Notification => ({
 export const removeUserFailed = (): Notification => ({
   ...defaultErrorNotification,
   message: `Error removing user, try again`,
+})
+
+/* Billing Notifications */
+export const zuoraParamsGetFailure = (message): Notification => ({
+  ...defaultErrorNotification,
+  message,
 })

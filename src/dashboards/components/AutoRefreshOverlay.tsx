@@ -13,11 +13,10 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 import {OverlayContext} from 'src/overlays/components/OverlayController'
-import AutoRefreshDropdown from 'src/shared/components/dropdown_auto_refresh/AutoRefreshDropdown'
 import TimeRangeDropdown from 'src/shared/components/DeleteDataForm/TimeRangeDropdown'
 
 // Types
-import {CustomTimeRange, AutoRefreshStatus, TimeRangeDirection} from 'src/types'
+import {CustomTimeRange, TimeRangeDirection} from 'src/types'
 
 // Context
 import AutoRefreshContextProvider, {
@@ -26,38 +25,31 @@ import AutoRefreshContextProvider, {
 
 import './AutoRefresh.scss'
 
+// Metrics
+import {event} from 'src/cloud/utils/reporting'
+
 // This array creates an array of [0...24] for the hours selection
 const INACTIVITY_ARRAY = [...Array(25).keys()].map(num => num.toString())
 // This line replaces the 0 (the first value) with 'None' for the dropdown
 INACTIVITY_ARRAY[0] = 'None'
 
-export const AutoRefreshForm: FC = () => {
+const AutoRefreshForm: FC = () => {
   const {onClose} = useContext(OverlayContext)
-  const {state, dispatch: setRefreshContext, activateAutoRefresh} = useContext(
-    AutoRefreshContext
-  )
+  const {
+    state,
+    dispatch: setRefreshContext,
+    setAutoRefreshSettings,
+  } = useContext(AutoRefreshContext)
 
-  const handleChooseAutoRefresh = milliseconds => {
-    const status =
-      milliseconds === 0 ? AutoRefreshStatus.Paused : AutoRefreshStatus.Active
-    setRefreshContext({
-      type: 'SET_REFRESH_MILLISECONDS',
-      refreshMilliseconds: {status, interval: milliseconds},
-    })
+  const handleCancel = () => {
+    event('dashboards.autorefresh.autorefreshoverlay.cancelcustom')
+    onClose()
   }
-
   return (
     <Overlay.Container maxWidth={500} testID="auto-refresh-overlay">
-      <Overlay.Header title="Configure Auto Refresh" onDismiss={onClose} />
+      <Overlay.Header title="Configure Auto Refresh" onDismiss={handleCancel} />
       <Grid>
         <Grid.Column className="refresh-form-column">
-          <div className="refresh-form-container">
-            <span>Select Refresh Frequency: </span>
-            <AutoRefreshDropdown
-              onChoose={handleChooseAutoRefresh}
-              selected={state.refreshMilliseconds}
-            />
-          </div>
           <div className="refresh-form-container">
             <span className="refresh-form-container-child">Until: </span>
             <InputLabel
@@ -84,7 +76,10 @@ export const AutoRefreshForm: FC = () => {
             </InputLabel>
           </div>
           {!state.infiniteDuration && (
-            <div className="refresh-form-container reverse">
+            <div
+              className="refresh-form-container reverse"
+              data-testid="timerange-popover-button"
+            >
               <TimeRangeDropdown
                 timeRange={state.duration}
                 onSetTimeRange={(timeRange: CustomTimeRange) => {
@@ -142,7 +137,7 @@ export const AutoRefreshForm: FC = () => {
           </div>
           <div className="refresh-form-buttons">
             <Button
-              onClick={onClose}
+              onClick={handleCancel}
               text="Cancel"
               color={ComponentColor.Default}
               className="refresh-form-cancel-button"
@@ -150,11 +145,15 @@ export const AutoRefreshForm: FC = () => {
             />
             <Button
               onClick={() => {
-                activateAutoRefresh()
+                setAutoRefreshSettings()
                 onClose()
+                event(
+                  'dashboards.autorefresh.autorefreshoverlay.confirmcustom',
+                  {customAutoRefreshState: JSON.stringify(state)}
+                )
               }}
-              text="Enable"
-              color={ComponentColor.Success}
+              text="Confirm"
+              color={ComponentColor.Primary}
               className="refresh-form-activate-button"
               testID="refresh-form-activate-button"
               status={
@@ -169,10 +168,12 @@ export const AutoRefreshForm: FC = () => {
     </Overlay.Container>
   )
 }
-export const AutoRefreshOverlay: FC = () => {
+const AutoRefreshOverlay: FC = () => {
   return (
     <AutoRefreshContextProvider>
       <AutoRefreshForm />
     </AutoRefreshContextProvider>
   )
 }
+
+export default AutoRefreshOverlay

@@ -6,6 +6,7 @@ export type Action =
   | ReturnType<typeof setAutoRefreshDuration>
   | ReturnType<typeof resetDashboardAutoRefresh>
   | ReturnType<typeof setInactivityTimeout>
+  | ReturnType<typeof setAutoRefreshInputValue>
 
 interface SetAutoRefresh {
   type: 'SET_AUTO_REFRESH_INTERVAL'
@@ -57,4 +58,14 @@ export const setInactivityTimeout = (
     type: 'SET_INACTIVITY_TIMEOUT',
     dashboardID,
     inactivityTimeout,
+  } as const)
+
+export const setAutoRefreshInputValue = (
+  dashboardID: string,
+  refreshInputValue: string
+) =>
+  ({
+    type: 'SET_AUTO_REFRESH_INPUT_VALUE',
+    dashboardID,
+    refreshInputValue,
   } as const)

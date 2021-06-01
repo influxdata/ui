@@ -25,13 +25,20 @@ import {PROJECT_NAME_PLURAL} from 'src/flows'
 
 import 'src/flows/style.scss'
 
+import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
+
 const FlowFromRoute = () => {
   const {id} = useParams<{id: string}>()
-  const {change} = useContext(FlowListContext)
+  const {change, flows, currentID} = useContext(FlowListContext)
 
   useEffect(() => {
     change(id)
   }, [id, change])
+
+  document.title = pageTitleSuffixer([
+    flows[currentID]?.name,
+    PROJECT_NAME_PLURAL,
+  ])
 
   return null
 }
@@ -45,7 +52,7 @@ const FlowContainer: FC = () => (
           <FlowQueryProvider>
             <FlowKeyboardPreview />
             <SidebarProvider>
-              <Page titleTag={PROJECT_NAME_PLURAL}>
+              <Page>
                 <FlowHeader />
                 <Page.Contents
                   fullWidth={true}

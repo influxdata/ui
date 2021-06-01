@@ -40,6 +40,7 @@ import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksG
 import Checkbox from 'src/shared/components/Checkbox'
 import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
 import LegendOrientation from 'src/visualization/components/internal/LegendOrientation'
+import StaticLegend from 'src/visualization/components/internal/StaticLegend'
 import {LinePlusSingleStatProperties, Color} from 'src/types'
 import {VisualizationOptionProps} from 'src/visualization'
 
@@ -502,6 +503,11 @@ const SingleStatWithLineOptions: FC<Props> = ({
         >
           <h5 className="view-options--header">Legend</h5>
           <LegendOrientation
+            properties={properties}
+            results={results}
+            update={update}
+          />
+          <StaticLegend
             properties={properties}
             results={results}
             update={update}

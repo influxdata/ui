@@ -27,7 +27,7 @@ export const autoRefreshReducer = (state = initialState(), action: Action) =>
         }
 
         draftState[dashboardID].interval = milliseconds
-        draftState[dashboardID].label = action.payload.label
+        draftState[dashboardID].label = label
 
         return
       }

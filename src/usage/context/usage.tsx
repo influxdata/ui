@@ -5,17 +5,17 @@ import React, {FC, useCallback, useEffect, useState} from 'react'
 import {
   getBillingStartDate,
   getUsage,
+  getUsageBillingStats,
   getUsageVectors,
   getUsageRateLimits,
 } from 'src/client/unityRoutes'
-import {processResponse} from 'src/shared/apis/query'
 
 // Constants
 import {DEFAULT_USAGE_TIME_RANGE} from 'src/shared/constants/timeRanges'
-import {API_BASE_PATH} from 'src/shared/constants'
 
 // Types
-import {SelectableDurationTimeRange, UsageVector} from 'src/types'
+import {SelectableDurationTimeRange} from 'src/types'
+import {UsageVector} from 'src/types/billing'
 
 export type Props = {
   children: JSX.Element
@@ -114,34 +114,22 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
 
   const handleGetBillingStats = useCallback(async () => {
     try {
-      // TODO(ariel): making a custom function here because oats can't handle CSV responses?
-      const request = fetch(
-        `${API_BASE_PATH}api/v2/quartz/usage/billing_stats`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept-Encoding': 'gzip',
-          },
-        }
-      )
+      const resp = await getUsageBillingStats({})
 
-      const result = await request.then(processResponse)
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
 
       // TODO(ariel): keeping this in for testing purposes in staging
       // This will need to be removed for flipping the feature flag on
-      console.warn({result})
+      console.warn({resp})
 
-      if (result.type !== 'SUCCESS') {
-        throw new Error(result.message)
-      }
+      const csvs = resp.data?.split('\n\n')
 
-      const csvs = result?.csv?.split('\n\n')
       // TODO(ariel): keeping this in for testing purposes in staging
       // This will need to be removed for flipping the feature flag on
       console.warn({csvs})
-
-      setBillingStats(csvs ?? [''])
+      setBillingStats(csvs)
     } catch (error) {
       console.error('getBillingStats: ', error)
     }

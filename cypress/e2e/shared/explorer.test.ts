@@ -347,8 +347,8 @@ describe('DataExplorer', () => {
 
         // Validate that ISO String formatted texts are valid
         cy.get('input[title="Stop"]')
-        .clear()
-        .type('2019-10-29T08:00:00.000Z')
+          .clear()
+          .type('2019-10-29T08:00:00.000Z')
 
         // button should be disabled
         cy.getByTestID('daterange--apply-btn').should('not.be.disabled')

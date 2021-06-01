@@ -252,10 +252,12 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
               inputs.country === 'United States'
                 ? inputs.usSubdivision
                 : inputs.intlSubdivision,
+            isNotify: inputs.shouldNotify,
           }
 
           delete formData.usSubdivision
           delete formData.intlSubdivision
+          delete formData.shouldNotify
 
           const paymentInformation = {...formData, paymentMethodId}
 

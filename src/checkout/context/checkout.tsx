@@ -234,52 +234,55 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     return errs.length
   }
 
-  const handleSubmit = async (paymentMethodId: string) => {
-    if (isDirty === false) {
-      setIsDirty(true)
-    }
-    setIsSubmitting(true)
-
-    // Check to see if the form is valid using the validate form
-    const errs = getInvalidFields()
-
-    try {
-      if (errs.length === 0) {
-        const formData = {
-          ...inputs,
-          subdivision:
-            inputs.country === 'United States'
-              ? inputs.usSubdivision
-              : inputs.intlSubdivision,
-        }
-
-        delete formData.usSubdivision
-        delete formData.intlSubdivision
-
-        const paymentInformation = {...formData, paymentMethodId}
-
-        const response = await postCheckout({data: paymentInformation})
-
-        if (response.status !== 201) {
-          throw new Error(response.data.message)
-        }
-
-        setCheckoutStatus(RemoteDataState.Done)
-        // Call the `quartz/me` endpoint to update the existing user metadata
-        dispatch(getQuartzMeThunk())
-      } else {
-        const errorFields = errs?.flatMap(([err]) => err)
-        setCheckoutStatus(RemoteDataState.Error)
-        handleSetErrors(errorFields)
+  const handleSubmit = useCallback(
+    async (paymentMethodId: string) => {
+      if (isDirty === false) {
+        setIsDirty(true)
       }
-    } catch (error) {
-      console.error(error)
+      setIsSubmitting(true)
 
-      dispatch(notify(submitError()))
-    }
+      // Check to see if the form is valid using the validate form
+      const errs = getInvalidFields()
 
-    setIsSubmitting(false)
-  }
+      try {
+        if (errs.length === 0) {
+          const formData = {
+            ...inputs,
+            subdivision:
+              inputs.country === 'United States'
+                ? inputs.usSubdivision
+                : inputs.intlSubdivision,
+          }
+
+          delete formData.usSubdivision
+          delete formData.intlSubdivision
+
+          const paymentInformation = {...formData, paymentMethodId}
+
+          const response = await postCheckout({data: paymentInformation})
+
+          if (response.status !== 201) {
+            throw new Error(response.data.message)
+          }
+
+          setCheckoutStatus(RemoteDataState.Done)
+          // Call the `quartz/me` endpoint to update the existing user metadata
+          dispatch(getQuartzMeThunk())
+        } else {
+          const errorFields = errs?.flatMap(([err]) => err)
+          setCheckoutStatus(RemoteDataState.Error)
+          handleSetErrors(errorFields)
+        }
+      } catch (error) {
+        console.error(error)
+
+        dispatch(notify(submitError()))
+      }
+
+      setIsSubmitting(false)
+    },
+    [dispatch, getInvalidFields, handleSetErrors, inputs, isDirty]
+  )
 
   const history = useHistory()
 

@@ -135,7 +135,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
         <FlexBox.Child basis={168} grow={0} shrink={0}>
           <h5>Run this on a schedule</h5>
         </FlexBox.Child>
-        <FlexBox.Child grow={1} shrink={1}>
+        <FlexBox.Child grow={1} shrink={1} style={{alignSelf: 'start'}}>
           <Form.Element
             label="Every"
             required={true}
@@ -155,7 +155,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
           </Form.Element>
         </FlexBox.Child>
 
-        <FlexBox.Child grow={1} shrink={1}>
+        <FlexBox.Child grow={1} shrink={1} style={{alignSelf: 'start'}}>
           <Form.Element
             label="Offset"
             required={false}

@@ -327,7 +327,9 @@ export const simplify = (text, vars: VariableMap = {}) => {
     node => node.type === 'OptionStatement' && node.assignment.id.name === 'v'
   ).reduce((acc, curr) => {
     curr.assignment.init.properties.reduce((_acc, _curr) => {
-      _acc[_curr.key.name] = _curr.value.location.source
+      if (_curr.key?.name && _curr.value?.location?.source) {
+        _acc[_curr.key.name] = _curr.value.location.source
+      }
 
       return _acc
     }, acc)
@@ -366,7 +368,7 @@ export const simplify = (text, vars: VariableMap = {}) => {
   )
     .reverse()
     .reduce((acc, curr) => {
-      curr.assignment.init.properties.reduce((_acc, _curr) => {
+      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
         _acc[_curr.key.name] = _curr.value.location.source
 
         return _acc
@@ -433,7 +435,6 @@ export const QueryProvider: FC = ({children}) => {
 
   const basic = (text: string, vars: VariableMap = {}) => {
     const query = simplify(text, vars)
-    console.log('im trying', query)
 
     // Here we grab the org from the contents of the query, in case it references a sampledata bucket
     const orgID = _getOrg(parse(query))

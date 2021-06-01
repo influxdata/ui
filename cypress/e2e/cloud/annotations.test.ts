@@ -82,16 +82,10 @@ describe('The Annotations UI functionality', () => {
     cy.reload()
 
     // we need to see if the annotations got created and that the tooltip says "I'm a hippopotamus"
-    cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
-    })
-    cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
+    checkAnnotationText(cy, 'im a hippopotamus')
   }
 
-  const editAnnotationTest = cy => {
-    addAnnotation(cy)
-
-    // should have the annotation created , lets click it to show the modal.
+  const editTheAnnotation = cy => {
     cy.getByTestID('cell blah').within(() => {
       // we have 2 line layers by the same id, we only want to click on the first
       cy.get('line')
@@ -104,6 +98,13 @@ describe('The Annotations UI functionality', () => {
       .type('lets edit this annotation...')
 
     cy.getByTestID('edit-annotation-submit-button').click()
+  }
+
+  const editAnnotationTest = cy => {
+    addAnnotation(cy)
+
+    // should have the annotation created , lets click it to show the modal.
+    editTheAnnotation(cy)
 
     // reload to make sure the annotation was edited in the backend as well.
     cy.reload()
@@ -117,9 +118,7 @@ describe('The Annotations UI functionality', () => {
     )
   }
 
-  const deleteAnnotationTest = cy => {
-    addAnnotation(cy)
-
+  function actuallyDeleteAnnotation(cy) {
     // should have the annotation created , lets click it to show the modal.
     cy.getByTestID('cell blah').within(() => {
       // we have 2 line layers by the same id, we only want to click on the first
@@ -139,6 +138,12 @@ describe('The Annotations UI functionality', () => {
     })
   }
 
+  const deleteAnnotationTest = cy => {
+    addAnnotation(cy)
+
+    actuallyDeleteAnnotation(cy)
+  }
+
   const addAnnotation = cy => {
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').click()
@@ -151,6 +156,13 @@ describe('The Annotations UI functionality', () => {
         .type('im a hippopotamus')
       cy.getByTestID('add-annotation-submit').click()
     })
+  }
+
+  const checkAnnotationText = (cy, text) => {
+    cy.getByTestID('cell blah').within(() => {
+      cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
+    })
+    cy.getByTestID('giraffe-annotation-tooltip').contains(text)
   }
 
   const addRangeAnnotation = cy => {
@@ -171,7 +183,6 @@ describe('The Annotations UI functionality', () => {
         cy.wrap(canvas).trigger('mouseup', {force: true})
       })
     })
-    cy.pause()
 
     cy.getByTestID('overlay--container').within(() => {
       cy.getByTestID('edit-annotation-message')
@@ -181,7 +192,6 @@ describe('The Annotations UI functionality', () => {
         .type('range annotation here!')
       cy.getByTestID('add-annotation-submit').click()
     })
-    cy.pause()
   }
 
   describe('annotations on a graph + single stat graph type', () => {
@@ -213,15 +223,24 @@ describe('The Annotations UI functionality', () => {
       deleteAnnotationTest(cy)
     })
 
-    it.only('can add a range annotation', () => {
+    it('can add a range annotation', () => {
       addRangeAnnotation(cy)
+      checkAnnotationText(cy, 'range annotation here!')
+    })
 
-      cy.getByTestID('cell blah').within(() => {
-        cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
-      })
-      cy.getByTestID('giraffe-annotation-tooltip').contains(
-        'range annotation here!'
-      )
+    it('can add and edit a range annotation', () => {
+      addRangeAnnotation(cy)
+      editTheAnnotation(cy)
+
+      // reload to make sure the annotation was edited in the backend as well.
+      cy.reload()
+
+      checkAnnotationText(cy, 'lets edit this annotation...')
+    })
+
+    it('can add and then delete a range annotation', () => {
+      addRangeAnnotation(cy)
+      actuallyDeleteAnnotation(cy)
     })
 
     it('can create an annotation when graph is clicked and the control bar is closed', () => {

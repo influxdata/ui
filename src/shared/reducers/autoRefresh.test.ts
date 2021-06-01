@@ -12,7 +12,7 @@ describe('autoRefresh reducer', () => {
     const interval = 1000
     const actual = autoRefreshReducer(
       initialState(),
-      setAutoRefreshInterval('dashID', interval)
+      setAutoRefreshInterval('dashID', interval, '1s')
     )
 
     const expected = {['dashID']: {...AUTOREFRESH_DEFAULT, interval}}
@@ -34,11 +34,11 @@ describe('autoRefresh reducer', () => {
     }
     const actual = autoRefreshReducer(
       startingState,
-      setAutoRefreshInterval(dashboardID, interval)
+      setAutoRefreshInterval(dashboardID, interval, '1s')
     )
 
     const expected = {
-      [dashboardID]: {...startingAutoRefresh, interval},
+      [dashboardID]: {...startingAutoRefresh, interval, label: '1s'},
       ['dash']: AUTOREFRESH_DEFAULT,
     }
 

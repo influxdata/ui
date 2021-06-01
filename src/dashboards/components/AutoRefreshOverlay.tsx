@@ -30,10 +30,28 @@ import './AutoRefresh.scss'
 import {event} from 'src/cloud/utils/reporting'
 
 // This array creates an array of [0...24] for the hours selection
-const INACTIVITY_ARRAY = [...Array(25).keys()].map(num => num.toString())
-// This line replaces the 0 (the first value) with 'Never' for the dropdown
-INACTIVITY_ARRAY[0] = 'Never'
 
+// This line replaces the 0 (the first value) with 'Never' for the dropdown
+
+const selectInactivityArray = (unit: string) => {
+  let selectionAmount = 0
+  switch (unit) {
+    case 'Minutes':
+      selectionAmount = 60
+      break
+    case 'Hours':
+      selectionAmount = 25
+      break
+    case 'Days':
+      selectionAmount = 30
+      break
+  }
+  const INACTIVITY_ARRAY = [...Array(selectionAmount).keys()].map(num =>
+    num.toString()
+  )
+  INACTIVITY_ARRAY[0] = 'Never'
+  return INACTIVITY_ARRAY
+}
 const AutoRefreshForm: FC = () => {
   const {onClose} = useContext(OverlayContext)
   const {
@@ -108,7 +126,7 @@ const AutoRefreshForm: FC = () => {
               }`}
             >
               <SelectDropdown
-                options={INACTIVITY_ARRAY}
+                options={selectInactivityArray(state.inactivityTimeoutCategory)}
                 selectedOption={state.inactivityTimeout}
                 onSelect={(timeout: string) =>
                   setRefreshContext({
@@ -122,7 +140,7 @@ const AutoRefreshForm: FC = () => {
               {state.inactivityTimeout !== 'Never' && (
                 <SelectDropdown
                   className="refresh-form-timeout-dropdown"
-                  options={['Hours', 'Days']}
+                  options={['Minutes', 'Hours', 'Days']}
                   selectedOption={state.inactivityTimeoutCategory}
                   onSelect={(timeoutCategory: string) =>
                     setRefreshContext({

@@ -215,6 +215,13 @@ describe('The Annotations UI functionality', () => {
 
     it.only('can add a range annotation', () => {
       addRangeAnnotation(cy)
+
+      cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
+      })
+      cy.getByTestID('giraffe-annotation-tooltip').contains(
+        'range annotation here!'
+      )
     })
 
     it('can create an annotation when graph is clicked and the control bar is closed', () => {

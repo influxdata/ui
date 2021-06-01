@@ -402,17 +402,17 @@ describe('DataExplorer', () => {
       cy.getByTestID('flux-editor', {timeout: 30000}).should('be.visible')
       cy.getByTestID('functions-toolbar-contents--functions').should('exist')
       cy.getByTestID('flux--from--inject').click({force: true})
-      cy.wait(100)
+      cy.wait(250)
       cy.getByTestID('flux--range--inject').click({force: true})
-      cy.wait(100)
+      cy.wait(250)
       cy.getByTestID('flux--math.abs--inject').click({force: true})
-      cy.wait(100)
+      cy.wait(250)
       cy.getByTestID('flux--math.floor--inject').click({force: true})
-      cy.wait(100)
+      cy.wait(250)
       cy.getByTestID('flux--strings.title--inject').click({force: true})
-      cy.wait(100)
+      cy.wait(250)
       cy.getByTestID('flux--strings.trim--inject').click({force: true})
-      cy.wait(100)
+      cy.wait(250)
 
       getTimeMachineText().then(text => {
         const expected = `

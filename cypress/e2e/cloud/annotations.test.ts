@@ -16,6 +16,7 @@ describe('The Annotations UI functionality', () => {
       cy.wait(1000)
       w.influx.set('annotations', true)
       w.influx.set('useGiraffeGraphs', true)
+      w.influx.set('rangeAnnotations', true)
     })
     cy.get('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
@@ -152,6 +153,37 @@ describe('The Annotations UI functionality', () => {
     })
   }
 
+  const addRangeAnnotation = cy => {
+    cy.getByTestID('cell blah').within(() => {
+      cy.getByTestID('giraffe-layer-line').then(([canvas]) => {
+        const {width, height} = canvas
+
+        cy.wrap(canvas).trigger('mousedown', {
+          x: width / 3,
+          y: height / 2,
+          force: true,
+        })
+        cy.wrap(canvas).trigger('mousemove', {
+          x: (width * 2) / 3,
+          y: height / 2,
+          force: true,
+        })
+        cy.wrap(canvas).trigger('mouseup', {force: true})
+      })
+    })
+    cy.pause()
+
+    cy.getByTestID('overlay--container').within(() => {
+      cy.getByTestID('edit-annotation-message')
+        .should('be.visible')
+        .click()
+        .focused()
+        .type('range annotation here!')
+      cy.getByTestID('add-annotation-submit').click()
+    })
+    cy.pause()
+  }
+
   describe('annotations on a graph + single stat graph type', () => {
     beforeEach(() => {
       setupData(cy, true)
@@ -179,6 +211,10 @@ describe('The Annotations UI functionality', () => {
     })
     it('can delete an annotation  for the xy line graph', () => {
       deleteAnnotationTest(cy)
+    })
+
+    it.only('can add a range annotation', () => {
+      addRangeAnnotation(cy)
     })
 
     it('can create an annotation when graph is clicked and the control bar is closed', () => {

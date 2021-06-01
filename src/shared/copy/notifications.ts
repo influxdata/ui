@@ -1096,6 +1096,20 @@ export const communityTemplateRenameFailed = (): Notification => ({
   message: `We've successfully installed your template but weren't able to name it properly. It may appear as a blank template.`,
 })
 
+export const editCheckCodeWarning = (): Notification => ({
+  ...defaultErrorNotification,
+  style: NotificationStyle.Info,
+  message:
+    'Changes to Check code may prevent you from editing the Check in the visual editing experience.',
+})
+
+export const editNotificationRuleCodeWarning = (): Notification => ({
+  ...defaultErrorNotification,
+  style: NotificationStyle.Info,
+  message:
+    'Changes to Notification Rule code may prevent you from editing the Notification Rule in the visual editing experience.',
+})
+
 // Notebooks
 
 export const notebookRunSuccess = (

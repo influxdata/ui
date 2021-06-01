@@ -52,7 +52,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
       node =>
         node.type === 'OptionStatement' && node.assignment.id.name === 'task'
     ).reduce((acc, curr) => {
-      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
+      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {  // eslint-disable-line no-extra-semi
         if (_curr.key?.name && _curr.value?.location?.source) {
           _acc[_curr.key.name] = _curr.value.location.source
         }

@@ -164,7 +164,7 @@ export const Provider: FC = ({children}) => {
     } else {
       event('Export Task Completed', {exportType: 'update'})
 
-      //TODO: get these values from the query and not the data store
+      // TODO: get these values from the query and not the data store
       try {
         const resp = await patchTask({
           taskID: selectedTask.id,

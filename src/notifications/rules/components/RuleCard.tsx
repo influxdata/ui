@@ -34,6 +34,10 @@ import {
   cloneRule,
 } from 'src/notifications/rules/actions/thunks'
 
+// Notifications
+import {notify} from 'src/shared/actions/notifications'
+import {editNotificationRuleCodeWarning} from 'src/shared/copy/notifications'
+
 // Types
 import {NotificationRuleDraft, Label, AlertHistoryType} from 'src/types'
 
@@ -53,6 +57,7 @@ const RuleCard: FC<Props> = ({
   onUpdateRuleProperties,
   deleteNotificationRule,
   onCloneRule,
+  onNotify,
   onAddRuleLabel,
   onRemoveRuleLabel,
   match: {
@@ -108,6 +113,11 @@ const RuleCard: FC<Props> = ({
     history.push(`/orgs/${orgID}/alert-history?${queryParams}`)
   }
 
+  const onEditTask = () => {
+    history.push(`/orgs/${orgID}/tasks/${rule.taskID}/edit`)
+    onNotify(editNotificationRuleCodeWarning())
+  }
+
   const handleAddRuleLabel = (label: Label) => {
     onAddRuleLabel(id, label)
   }
@@ -130,6 +140,7 @@ const RuleCard: FC<Props> = ({
             onView={onView}
             onClone={onClone}
             onDelete={onDelete}
+            onEditTask={onEditTask}
           />
         }
       >
@@ -194,6 +205,7 @@ const mdtp = {
   onAddRuleLabel: addRuleLabel,
   onRemoveRuleLabel: deleteRuleLabel,
   onCloneRule: cloneRule,
+  onNotify: notify,
 }
 
 const connector = connect(null, mdtp)

@@ -13,6 +13,9 @@ set -eu -o pipefail
 # This script waits 40 minutes for the private CI to complete otherwise it fails.
 #
 # **For Running from the UI Repository:**
+# If you want to retry failed jobs in the private CI, simply retry this job from the public CI.
+#  - This script uses your commit SHA to search for a failed pipeline to retry before starting a new one.
+#
 # If you retry a failing job in the private CI and it passes, you can safely rerun this job in the public CI.
 #  - This script uses your commit SHA to search for a passing pipeline before starting a new one.
 #  - If you rerun the private CI and it passes, this script will find that pipeline and will not start a new one.
@@ -33,6 +36,60 @@ set -eu -o pipefail
 # - OSS_SHA: the influxdb repo commit SHA we're running against
 # - MONITOR_CI_BRANCH: the branch of the monitor-ci repo to start a pipeline with (usually 'master')
 ########################
+
+# starts a new monitor-ci pipeline with provided parameters
+startNewPipeline() {
+	pipelineStartMsg=$1
+	reqData=$2
+
+	printf "\n${pipelineStartMsg}\n"
+	pipeline=$(curl -s --fail --request POST \
+		--url https://circleci.com/api/v2/project/gh/influxdata/monitor-ci/pipeline \
+		--header "Circle-Token: ${API_KEY}" \
+		--header 'content-type: application/json' \
+		--header 'Accept: application/json'    \
+		--data "${reqData}")
+
+	if [ $? != 0 ]; then
+		echo "failed to start the monitor-ci pipeline, quitting"
+		exit 1
+	fi
+
+	# set variables to identify pipeline to watch
+	pipeline_id=$(echo ${pipeline} | jq  -r '.id')
+	pipeline_number=$(echo ${pipeline} | jq -r '.number')
+
+	printf "\nwaiting for monitor-ci pipeline to begin...\n"
+	sleep 1m
+	printf "\nmonitor-ci pipeline has begun. Running pipeline number ${pipeline_number} with id ${pipeline_id}\n"
+}
+
+# retries all failed jobs from a previously failed monitor-ci pipeline
+retryFailedPipeline() {
+	failed_pipeline_workflow_id=$1
+	failed_pipeline_id=$2
+	failed_pipeline_number=$3
+
+	pipeline=$(curl -s --fail --request POST \
+		--url https://circleci.com/api/v2/workflow/${failed_pipeline_workflow_id}/rerun \
+		--header "Circle-Token: ${API_KEY}" \
+		--header 'content-type: application/json' \
+		--header 'Accept: application/json'    \
+		--data "{ \"from_failed\": true }")
+
+	if [ $? != 0 ]; then
+		echo "failed to re-run the monitor-ci pipeline, quitting"
+		exit 1
+	fi
+
+	# set variables to identify pipeline to watch
+	pipeline_id=$failed_pipeline_id
+	pipeline_number=$failed_pipeline_number
+
+	printf "\nwaiting for monitor-ci pipeline to begin the re-run...\n"
+	sleep 1m
+	printf "\nmonitor-ci pipeline re-run has begun. Running pipeline number ${pipeline_number} with id ${pipeline_id}\n"
+}
 
 # make dir for artifacts
 mkdir -p monitor-ci/test-artifacts/results/{build-oss-image,oss-e2e,build-image,cloud-e2e,cloud-e2e-firefox,cloud-e2e-k8s-idpe,cloud-lighthouse,smoke,build-prod-image,deploy}/{shared,oss,cloud}
@@ -73,6 +130,16 @@ if [[ -z "${OSS_SHA:-}" ]]; then
 				found_passing_pipeline=1
 				break
 			fi
+
+			number_build_failed_workflows=$(echo ${workflows} | jq '.items | map(select(.name == "build" and .status == "failed")) | length')
+			if [ $number_build_failed_workflows -gt 0 ]; then
+				# there's a failed run, let's retry it
+				found_failed_pipeline=1
+				failed_pipeline_workflow_id=$(echo ${workflows} | jq -r '.items | .[0] | .id')
+				failed_pipeline_id=$pipeline_id
+				failed_pipeline_number=$(echo ${all_pipelines} | jq -r --arg pipeline_id "${pipeline_id}" '.items | map(select(.id == $pipeline_id)) | .[0] | .number')
+				break
+			fi
 		fi
 	done
 
@@ -80,6 +147,8 @@ if [[ -z "${OSS_SHA:-}" ]]; then
 	if [ $found_passing_pipeline -eq 1 ]; then
 		printf "\nSUCCESS: Found a passing monitor-ci pipeline for this SHA, will not re-run these tests\n"
 		exit 0
+	elif [ $found_failed_pipeline -eq 1 ]; then
+		printf "\nfound a failed monitor-ci pipeline for this SHA, will retry the failed jobs\n"
 	else
 		printf "\nno passing monitor-ci pipelines found for this SHA, starting a new one\n"
 	fi
@@ -113,25 +182,12 @@ else
 	reqData="{\"branch\":\"${MONITOR_CI_BRANCH}\", \"parameters\":{ \"oss-sha\":\"${OSS_SHA}\" }}"
 fi
 
-printf "\n${pipelineStartMsg}\n"
-pipeline=$(curl -s --fail --request POST \
-	--url https://circleci.com/api/v2/project/gh/influxdata/monitor-ci/pipeline \
-	--header "Circle-Token: ${API_KEY}" \
-	--header 'content-type: application/json' \
-	--header 'Accept: application/json'    \
-	--data "${reqData}")
-
-if [ $? != 0 ]; then
-	echo "failed to start the monitor-ci pipeline, quitting"
-	exit 1
+# start a new pipeline if we didn't find an existing one to retry
+if [ -z $found_failed_pipeline ]; then
+	startNewPipeline $pipelineStartMsg $reqData
+else
+	retryFailedPipeline $failed_pipeline_workflow_id $failed_pipeline_id $failed_pipeline_number
 fi
-
-pipeline_id=$(echo ${pipeline} | jq  -r '.id')
-pipeline_number=$(echo ${pipeline} | jq -r '.number')
-
-printf "\nwaiting for monitor-ci pipeline to begin...\n"
-sleep 1m
-printf "\nmonitor-ci pipeline has begun. Running pipeline number ${pipeline_number} with id ${pipeline_id}\n"
 
 # poll the status of the monitor-ci pipeline
 is_failure=0

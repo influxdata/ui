@@ -813,9 +813,9 @@ describe('DataExplorer', () => {
         cy.getByTestID('dropdown-y').contains('_time')
       })
 
-      // TODO: make work with annotations
-      // TODO: fix failing test - fails locally and in CI
-      it.skip('can zoom and unzoom horizontal axis', () => {
+      // passes now, as there is no annotations in explorer mode anymore;
+      // and zooming is fixed (no more phantom single clicks!)
+      it('can zoom and unzoom horizontal axis', () => {
         cy.getByTestID(`selector-list m`).click()
         cy.getByTestID('selector-list v').click()
         cy.getByTestID(`selector-list tv1`).click()
@@ -847,8 +847,9 @@ describe('DataExplorer', () => {
         makeGraphSnapshot().shouldBeSameAs(snapshot)
       })
 
-      // TODO: fix failing test - fails locally and in CI
-      it.skip('can zoom and unzoom vertical axis', () => {
+      // passes now, as there is no annotations in explorer mode anymore;
+      // and zooming is fixed (no more phantom single clicks!)
+      it('can zoom and unzoom vertical axis', () => {
         cy.getByTestID(`selector-list m`).click()
         cy.getByTestID('selector-list v').click()
         cy.getByTestID(`selector-list tv1`).click()

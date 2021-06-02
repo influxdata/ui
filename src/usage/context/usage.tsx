@@ -124,7 +124,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
       // This will need to be removed for flipping the feature flag on
       console.warn(resp.data)
 
-      const csvs = resp.data?.split('\r\n')
+      const csvs = resp.data?.trim().split('\n\n')
 
       // TODO(ariel): keeping this in for testing purposes in staging
       // This will need to be removed for flipping the feature flag on

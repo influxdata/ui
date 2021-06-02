@@ -31,7 +31,8 @@ const isValidRTC3339 = (d: string): boolean => {
     moment(d, 'YYYY-MM-DD HH:mm', true).isValid() ||
     moment(d, 'YYYY-MM-DD HH:mm:ss', true).isValid() ||
     moment(d, 'YYYY-MM-DD HH:mm:ss.SSS', true).isValid() ||
-    moment(d, 'YYYY-MM-DD', true).isValid()
+    moment(d, 'YYYY-MM-DD', true).isValid() ||
+    moment(d).toISOString() === d
   )
 }
 
@@ -117,7 +118,7 @@ export default class DatePicker extends PureComponent<Props, State> {
       return moment(dateTime).format(inputFormat)
     }
 
-    return moment(dateTime).format('YYYY-MM-DD HH:mm:ss.SSS')
+    return moment(dateTime).toISOString()
   }
 
   private get isInputValueInvalid(): boolean {
@@ -162,7 +163,7 @@ export default class DatePicker extends PureComponent<Props, State> {
     const {dateTime} = this.props
     const {inputFormat} = this.state
 
-    let value = moment(dateTime).format('YYYY-MM-DD HH:mm:ss.SSS')
+    let value = moment(dateTime).toISOString()
     if (inputFormat) {
       value = moment(dateTime).format(inputFormat)
     }

@@ -194,6 +194,21 @@ describe('The Annotations UI functionality', () => {
         .click()
         .focused()
         .type('range annotation here!')
+
+      //make sure the two times (start and end) are not equal:
+      cy.getByTestID('endTime-testID')
+        .invoke('val')
+        .then(endTimeValue => {
+          console.log('end time value+??', endTimeValue)
+          //cy.getByTestID('startTime-testID').should('not.equal', endTimeValue)
+          cy.getByTestID('startTime-testID')
+            .invoke('val')
+            .then(startTimeValue => {
+              console.log('start time value???', startTimeValue)
+              expect(endTimeValue).to.not.equal(startTimeValue)
+            })
+        })
+
       cy.getByTestID('add-annotation-submit').click()
     })
   }

@@ -16,7 +16,7 @@ import {RemoteDataState} from 'src/types'
 import {PipeProp} from 'src/types/flows'
 
 import {PipeContext} from 'src/flows/context/pipe'
-import {Context as SidebarContext} from 'src/flows/context/sidebar'
+import {SidebarContext} from 'src/flows/context/sidebar'
 import {PopupContext} from 'src/flows/context/popup'
 
 import {event} from 'src/cloud/utils/reporting'

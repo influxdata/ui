@@ -7,7 +7,7 @@ import {PipeProp} from 'src/types/flows'
 // Contexts
 import BucketProvider from 'src/flows/context/buckets'
 import {PipeContext} from 'src/flows/context/pipe'
-import {Context as SidebarContext} from 'src/flows/context/sidebar'
+import {SidebarContext} from 'src/flows/context/sidebar'
 import {PopupContext} from 'src/flows/context/popup'
 
 // Components

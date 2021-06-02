@@ -4,7 +4,7 @@ import {Input} from '@influxdata/clockface'
 
 // Components
 import {PipeContext} from 'src/flows/context/pipe'
-import {Context as SidebarContext} from 'src/flows/context/sidebar'
+import {SidebarContext} from 'src/flows/context/sidebar'
 
 // Types
 import {PipeProp} from 'src/types/flows'

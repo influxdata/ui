@@ -5,7 +5,7 @@ import React, {FC, useState, useContext, useEffect} from 'react'
 import Embedded from './embedded'
 import Editor from './editor'
 import {PipeContext} from 'src/flows/context/pipe'
-import {Context as SidebarContext} from 'src/flows/context/sidebar'
+import {SidebarContext} from 'src/flows/context/sidebar'
 
 // Types
 import {PipeProp} from 'src/types/flows'

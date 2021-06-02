@@ -12,7 +12,7 @@ import {FlowQueryProvider} from 'src/flows/context/flow.query'
 import {FlowListContext} from 'src/flows/context/flow.list'
 import {PopupDrawer, PopupProvider} from 'src/flows/context/popup'
 import {ResultsProvider} from 'src/flows/context/results'
-import {Provider as SidebarProvider} from 'src/flows/context/sidebar'
+import {SidebarProvider} from 'src/flows/context/sidebar'
 
 // Components
 import PipeList from 'src/flows/components/PipeList'

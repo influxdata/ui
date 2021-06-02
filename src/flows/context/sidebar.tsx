@@ -23,9 +23,9 @@ const DEFAULT_CONTEXT: ContextType = {
   register: (_, __) => {},
 }
 
-export const Context = createContext<ContextType>(DEFAULT_CONTEXT)
+export const SidebarContext = createContext<ContextType>(DEFAULT_CONTEXT)
 
-export const Provider: FC = ({children}) => {
+export const SidebarProvider: FC = ({children}) => {
   const {flow} = useContext(FlowContext)
   const [focused, setFocused] = useState('')
   const [pipes, setPipes] = useState({})
@@ -70,7 +70,7 @@ export const Provider: FC = ({children}) => {
   const menu = pipes[focused] || []
 
   return (
-    <Context.Provider
+    <SidebarContext.Provider
       value={{
         id: focused,
         menu,
@@ -83,6 +83,6 @@ export const Provider: FC = ({children}) => {
       }}
     >
       {children}
-    </Context.Provider>
+    </SidebarContext.Provider>
   )
 }

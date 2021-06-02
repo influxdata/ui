@@ -24,7 +24,7 @@ import {PipeProp} from 'src/types/flows'
 
 // Components
 import {PipeContext} from 'src/flows/context/pipe'
-import {Context as SidebarContext} from 'src/flows/context/sidebar'
+import {SidebarContext} from 'src/flows/context/sidebar'
 import Functions from 'src/flows/pipes/RawFluxEditor/functions'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 

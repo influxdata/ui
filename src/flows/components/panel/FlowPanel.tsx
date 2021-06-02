@@ -19,7 +19,7 @@ import {PipeContextProps} from 'src/types/flows'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
-import {Context as SidebarContext} from 'src/flows/context/sidebar'
+import {SidebarContext} from 'src/flows/context/sidebar'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 
 // Utils
@@ -37,8 +37,7 @@ const FlowPanel: FC<Props> = ({id, controls, persistentControls, children}) => {
   const isVisible = flow.meta.get(id).visible
 
   const panelClassName = classnames('flow-panel', {
-    [`flow-panel__visible`]: isVisible,
-    [`flow-panel__hidden`]: !isVisible,
+    [`flow-panel__${isVisible ? 'visible' : 'hidden'}`]: true,
     'flow-panel__focus': focused === id,
   })
 

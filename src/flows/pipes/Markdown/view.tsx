@@ -11,7 +11,7 @@ import classnames from 'classnames'
 import MarkdownModeToggle from './MarkdownModeToggle'
 import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
 import {PipeContext} from 'src/flows/context/pipe'
-import {Context as SidebarContext} from 'src/flows/context/sidebar'
+import {SidebarContext} from 'src/flows/context/sidebar'
 import {PipeProp} from 'src/types/flows'
 
 import {MARKDOWN_PIPE_PLACEHOLDER} from 'src/flows/pipes/Markdown/index'

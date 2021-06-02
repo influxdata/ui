@@ -1,5 +1,5 @@
 import React, {FC, useContext} from 'react'
-import {Context as SidebarContext} from 'src/flows/context/sidebar'
+import {SidebarContext} from 'src/flows/context/sidebar'
 import {CLIENT_DEFINITIONS} from 'src/writeData'
 import {FlexBox, SelectableCard, ComponentSize} from '@influxdata/clockface'
 import placeholderLogo from 'src/writeData/graphics/placeholderLogo.svg'

@@ -44,7 +44,7 @@ const URL_REGEXP = /((http|https)?:\/\/[^\s]+)/g
 
 // NOTE: rip this out if you spend time any here as per:
 // https://stackoverflow.com/questions/1500260/detect-urls-in-text-with-javascript/1500501#1500501
-function asLink(str) {
+export function asLink(str) {
   const isURL = `${str}`.includes('http://') || `${str}`.includes('https://')
   if (isURL === false) {
     return str

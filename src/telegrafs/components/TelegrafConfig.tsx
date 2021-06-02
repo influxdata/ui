@@ -36,7 +36,7 @@ export class TelegrafConfig extends PureComponent<Props> {
         <Editor
           script={config}
           onChangeScript={onChangeConfig}
-          readOnly={isFlagEnabled('editTelegrafs') === false}
+          readOnly={false}
         />
       </Suspense>
     )

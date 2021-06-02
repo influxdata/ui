@@ -15,14 +15,10 @@ import {ResourceType} from 'src/types'
 
 const TelegrafConfigOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
-  const titleVerb = isFlagEnabled('editTelegrafs') ? 'Edit ' : ''
 
   return (
     <Overlay.Container maxWidth={1200} testID="telegraf-overlay">
-      <Overlay.Header
-        title={`${titleVerb}Telegraf Configuration`}
-        onDismiss={onClose}
-      />
+      <Overlay.Header title="Edit Telegraf Configuration" onDismiss={onClose} />
       <GetResources resources={[ResourceType.Telegrafs]}>
         <TelegrafConfigOverlayForm />
       </GetResources>

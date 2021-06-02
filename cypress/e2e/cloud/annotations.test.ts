@@ -172,8 +172,20 @@ describe('The Annotations UI functionality', () => {
     cy.getByTestID('giraffe-annotation-tooltip').contains(text)
   }
 
-  const addRangeAnnotation = (cy, saveTimes = false) => {
-    cy.getByTestID('cell blah').within(() => {
+  const ensureRangeAnnotationTimesAreNotEqual = cy => {
+    cy.getByTestID('endTime-testID')
+      .invoke('val')
+      .then(endTimeValue => {
+        cy.getByTestID('startTime-testID')
+          .invoke('val')
+          .then(startTimeValue => {
+            expect(endTimeValue).to.not.equal(startTimeValue)
+          })
+      })
+  }
+
+  const addRangeAnnotation = cy => {
+   cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-layer-line').then(([canvas]) => {
         const {width, height} = canvas
 
@@ -198,31 +210,15 @@ describe('The Annotations UI functionality', () => {
         .focused()
         .type('range annotation here!')
 
-      if (saveTimes) {
-        cy.getByTestID('endTime-testID')
-          .invoke('val')
-          .as('endTimeValue')
-        cy.getByTestID('startTime-testID')
-          .invoke('val')
-          .as('startTimeValue')
-      }
-
-      cy.getByTestID('endTime-testID')
-        .invoke('val')
-        .then(endTimeValue => {
-          cy.getByTestID('startTime-testID')
-            .invoke('val')
-            .then(startTimeValue => {
-              expect(endTimeValue).to.not.equal(startTimeValue)
-            })
-        })
+      // make sure the two times (start and end) are not equal:
+      ensureRangeAnnotationTimesAreNotEqual(cy)
 
       cy.getByTestID('add-annotation-submit').click()
     })
   }
 
   const editRangeAnnotationTest = cy => {
-    addRangeAnnotation(cy, true)
+    addRangeAnnotation(cy)
 
     startEditingAnnotation(cy)
 
@@ -230,20 +226,7 @@ describe('The Annotations UI functionality', () => {
       .clear()
       .type('editing the text here for the range annotation')
 
-    // make sure the two times (start and end) are not equal:
-    cy.getByTestID('endTime-testID')
-      .invoke('val')
-      .then(endTimeValue => {
-        cy.wait('@endTimeValue').to.equal(endTimeValue)
-
-        cy.getByTestID('startTime-testID')
-          .invoke('val')
-          .then(startTimeValue => {
-            expect(endTimeValue).to.not.equal(startTimeValue)
-
-            cy.wait('@startTimeValue').to.equal(startTimeValue)
-          })
-      })
+    ensureRangeAnnotationTimesAreNotEqual(cy)
 
     cy.getByTestID('edit-annotation-submit-button').click()
 

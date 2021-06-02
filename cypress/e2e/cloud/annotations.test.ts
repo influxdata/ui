@@ -2,7 +2,10 @@ import {Organization} from '../../../src/types'
 import {lines} from '../../support/commands'
 
 describe('The Annotations UI functionality', () => {
-  const setupData = (cy, singleStatTest = false) => {
+  const singleStatSuffix = 'line-plus-single-stat'
+  const bandSuffix = 'band'
+
+  const setupData = (cy, plotTypeSuffix = '') => {
     cy.flush()
     cy.signin().then(() =>
       cy.fixture('routes').then(({orgs}) => {
@@ -42,9 +45,9 @@ describe('The Annotations UI functionality', () => {
           .should('exist')
           .click()
 
-        if (singleStatTest) {
+        if (plotTypeSuffix) {
           cy.getByTestID('view-type--dropdown').click()
-          cy.getByTestID('view-type--line-plus-single-stat').click()
+          cy.getByTestID(`view-type--${plotTypeSuffix}`).click()
         }
 
         cy.getByTestID(`selector-list tv1`)
@@ -169,18 +172,6 @@ describe('The Annotations UI functionality', () => {
     cy.getByTestID('giraffe-annotation-tooltip').contains(text)
   }
 
-  const ensureRangeAnnotationTimesAreNotEqual = cy => {
-    cy.getByTestID('endTime-testID')
-      .invoke('val')
-      .then(endTimeValue => {
-        cy.getByTestID('startTime-testID')
-          .invoke('val')
-          .then(startTimeValue => {
-            expect(endTimeValue).to.not.equal(startTimeValue)
-          })
-      })
-  }
-
   const addRangeAnnotation = (cy, saveTimes = false) => {
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-layer-line').then(([canvas]) => {
@@ -216,7 +207,15 @@ describe('The Annotations UI functionality', () => {
           .as('startTimeValue')
       }
 
-      ensureRangeAnnotationTimesAreNotEqual(cy)
+      cy.getByTestID('endTime-testID')
+        .invoke('val')
+        .then(endTimeValue => {
+          cy.getByTestID('startTime-testID')
+            .invoke('val')
+            .then(startTimeValue => {
+              expect(endTimeValue).to.not.equal(startTimeValue)
+            })
+        })
 
       cy.getByTestID('add-annotation-submit').click()
     })
@@ -256,7 +255,33 @@ describe('The Annotations UI functionality', () => {
 
   describe('annotations on a graph + single stat graph type', () => {
     beforeEach(() => {
-      setupData(cy, true)
+      setupData(cy, singleStatSuffix)
+    })
+    it('can create an annotation on the single stat + line graph', () => {
+      addAnnotationTest(cy)
+    })
+    it('can edit an annotation for the single stat + line graph', () => {
+      editAnnotationTest(cy)
+    })
+    it('can delete an annotation for the single stat + line graph', () => {
+      deleteAnnotationTest(cy)
+    })
+    it('can add a range annotation for the xy single stat + line graph', () => {
+      addRangeAnnotation(cy)
+      checkAnnotationText(cy, 'range annotation here!')
+    })
+    it('can add and edit a range annotation for the single stat + line graph', () => {
+      editRangeAnnotationTest(cy)
+    })
+    it('can add and then delete a range annotation for the single stat + line graph', () => {
+      addRangeAnnotation(cy)
+      actuallyDeleteAnnotation(cy)
+    })
+  })
+
+  describe('annotations on a band plot graph type', () => {
+    beforeEach(() => {
+      setupData(cy, bandSuffix)
     })
     it('can create an annotation on the single stat + line graph', () => {
       addAnnotationTest(cy)

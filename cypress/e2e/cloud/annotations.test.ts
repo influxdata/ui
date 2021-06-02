@@ -253,11 +253,9 @@ describe('The Annotations UI functionality', () => {
       addRangeAnnotation(cy)
       checkAnnotationText(cy, 'range annotation here!')
     })
-
     it('can add and edit a range annotation for the single stat + line graph', () => {
       editRangeAnnotationTest(cy)
     })
-
     it('can add and then delete a range annotation for the single stat + line graph', () => {
       addRangeAnnotation(cy)
       actuallyDeleteAnnotation(cy)
@@ -277,16 +275,13 @@ describe('The Annotations UI functionality', () => {
     it('can delete an annotation  for the xy line graph', () => {
       deleteAnnotationTest(cy)
     })
-
     it('can add a range annotation for the xy line graph', () => {
       addRangeAnnotation(cy)
       checkAnnotationText(cy, 'range annotation here!')
     })
-
     it('can add and edit a range annotation for the xy line graph', () => {
       editRangeAnnotationTest(cy)
     })
-
     it('can add and then delete a range annotation for the xy line graph', () => {
       addRangeAnnotation(cy)
       actuallyDeleteAnnotation(cy)

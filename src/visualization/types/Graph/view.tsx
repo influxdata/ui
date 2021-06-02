@@ -2,7 +2,6 @@
 import React, {FC, useMemo, useContext} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {
-  AnnotationLayerConfig,
   Config,
   DomainLabel,
   Plot,
@@ -48,14 +47,9 @@ import {
   defaultXColumn,
   defaultYColumn,
 } from 'src/shared/utils/vis'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Annotations
-import {
-  makeAnnotationClickListener,
-  makeAnnotationLayer,
-  makeAnnotationRangeListener,
-} from 'src/visualization/utils/annotationUtils'
+import {addAnnotationLayer} from 'src/visualization/utils/annotationUtils'
 
 interface Props extends VisualizationProps {
   properties: XYViewProperties
@@ -209,33 +203,18 @@ const XYPlot: FC<Props> = ({
     ],
   }
 
-  if (isFlagEnabled('annotations')) {
-    if (inAnnotationWriteMode && cellID) {
-      config.interactionHandlers = {
-        singleClick: makeAnnotationClickListener(dispatch, cellID),
-      }
-      if (isFlagEnabled('rangeAnnotations')) {
-        config.interactionHandlers.onXBrush = makeAnnotationRangeListener(
-          dispatch,
-          cellID
-        )
-      }
-    }
+  addAnnotationLayer(
+    config,
+    inAnnotationWriteMode,
+    cellID,
+    xColumn,
+    yColumn,
+    groupKey,
+    annotations,
+    annotationsAreVisible,
+    dispatch
+  )
 
-    const annotationLayer: AnnotationLayerConfig = makeAnnotationLayer(
-      cellID,
-      xColumn,
-      yColumn,
-      groupKey,
-      annotations,
-      annotationsAreVisible,
-      dispatch
-    )
-
-    if (annotationLayer) {
-      config.layers.push(annotationLayer)
-    }
-  }
   return <Plot config={config} />
 }
 

@@ -303,7 +303,7 @@ describe('DataExplorer', () => {
         cy.getByTestID('timerange-popover--dialog').should('have.length', 1)
       })
 
-      it('should error when submitting stop dates that are before start dates', () => {
+      it('should error when submitting stop dates that are before start dates and should error when invalid dates are input', () => {
         cy.get('input[title="Start"]')
           .should('have.length', 1)
           .clear()
@@ -316,15 +316,12 @@ describe('DataExplorer', () => {
 
         // button should be disabled
         cy.getByTestID('daterange--apply-btn').should('be.disabled')
-      })
 
-      it('should error when invalid dates are input', () => {
         // default inputs should be valid
         cy.getByTestID('input-error').should('not.exist')
 
         // type incomplete input
         cy.get('input[title="Start"]')
-          .should('have.length', 1)
           .clear()
           .type('2019-10')
 
@@ -339,7 +336,6 @@ describe('DataExplorer', () => {
 
         // type invalid stop date
         cy.get('input[title="Stop"]')
-          .should('have.length', 1)
           .clear()
           .type('2019-10-')
 
@@ -348,6 +344,14 @@ describe('DataExplorer', () => {
 
         // button should be disabled
         cy.getByTestID('daterange--apply-btn').should('be.disabled')
+
+        // Validate that ISO String formatted texts are valid
+        cy.get('input[title="Stop"]')
+          .clear()
+          .type('2019-10-29T08:00:00.000Z')
+
+        // button should not be disabled
+        cy.getByTestID('daterange--apply-btn').should('not.be.disabled')
       })
     })
   })
@@ -809,9 +813,9 @@ describe('DataExplorer', () => {
         cy.getByTestID('dropdown-y').contains('_time')
       })
 
-      // TODO: make work with annotations
-      // TODO: fix failing test - fails locally and in CI
-      it.skip('can zoom and unzoom horizontal axis', () => {
+      // passes now, as there is no annotations in explorer mode anymore;
+      // and zooming is fixed (no more phantom single clicks!)
+      it('can zoom and unzoom horizontal axis', () => {
         cy.getByTestID(`selector-list m`).click()
         cy.getByTestID('selector-list v').click()
         cy.getByTestID(`selector-list tv1`).click()
@@ -843,8 +847,9 @@ describe('DataExplorer', () => {
         makeGraphSnapshot().shouldBeSameAs(snapshot)
       })
 
-      // TODO: fix failing test - fails locally and in CI
-      it.skip('can zoom and unzoom vertical axis', () => {
+      // passes now, as there is no annotations in explorer mode anymore;
+      // and zooming is fixed (no more phantom single clicks!)
+      it('can zoom and unzoom vertical axis', () => {
         cy.getByTestID(`selector-list m`).click()
         cy.getByTestID('selector-list v').click()
         cy.getByTestID(`selector-list tv1`).click()

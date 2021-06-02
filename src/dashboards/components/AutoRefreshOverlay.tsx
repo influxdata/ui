@@ -14,6 +14,7 @@ import {
 } from '@influxdata/clockface'
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 import TimeRangeDropdown from 'src/shared/components/DeleteDataForm/TimeRangeDropdown'
+import AutoRefreshInput from 'src/dashboards/components/AutoRefreshInput'
 
 // Types
 import {CustomTimeRange, TimeRangeDirection} from 'src/types'
@@ -28,11 +29,28 @@ import './AutoRefresh.scss'
 // Metrics
 import {event} from 'src/cloud/utils/reporting'
 
-// This array creates an array of [0...24] for the hours selection
-const INACTIVITY_ARRAY = [...Array(25).keys()].map(num => num.toString())
-// This line replaces the 0 (the first value) with 'None' for the dropdown
-INACTIVITY_ARRAY[0] = 'None'
+const selectInactivityArray = (unit: string) => {
+  let selectionAmount = 0
+  switch (unit) {
+    case 'Minutes':
+      selectionAmount = 60
+      break
+    case 'Hours':
+      selectionAmount = 25
+      break
+    case 'Days':
+      selectionAmount = 30
+      break
+  }
+  // This array creates an array of [0...24] for the hours selection, [0...59] for the minutes, and [0...30] for the days
+  const INACTIVITY_ARRAY = [...Array(selectionAmount).keys()].map(num =>
+    num.toString()
+  )
+  // This line replaces the 0 (the first value) with 'Never' for the dropdown
+  INACTIVITY_ARRAY[0] = 'Never'
 
+  return INACTIVITY_ARRAY
+}
 const AutoRefreshForm: FC = () => {
   const {onClose} = useContext(OverlayContext)
   const {
@@ -53,13 +71,13 @@ const AutoRefreshForm: FC = () => {
           <div className="refresh-form-container">
             <span className="refresh-form-container-child">Until: </span>
             <InputLabel
-              active={!state.infiniteDuration}
+              active={state.infiniteDuration}
               className="refresh-form-time-label"
             >
-              Custom
+              Indefinite
             </InputLabel>
             <SlideToggle
-              active={state.infiniteDuration}
+              active={!state.infiniteDuration}
               onChange={() =>
                 setRefreshContext({
                   type: 'SET_INFINITE_DURATION',
@@ -69,10 +87,10 @@ const AutoRefreshForm: FC = () => {
               className="refresh-form-timerange-toggle"
             />
             <InputLabel
-              active={state.infiniteDuration}
+              active={!state.infiniteDuration}
               className="refresh-form-time-label"
             >
-              Indefinite
+              Custom
             </InputLabel>
           </div>
           {!state.infiniteDuration && (
@@ -103,11 +121,11 @@ const AutoRefreshForm: FC = () => {
             </span>
             <div
               className={`refresh-form-container-child ${
-                state.inactivityTimeout === 'None' ? 'inactive' : 'active'
+                state.inactivityTimeout === 'Never' ? 'inactive' : 'active'
               }`}
             >
               <SelectDropdown
-                options={INACTIVITY_ARRAY}
+                options={selectInactivityArray(state.inactivityTimeoutCategory)}
                 selectedOption={state.inactivityTimeout}
                 onSelect={(timeout: string) =>
                   setRefreshContext({
@@ -118,10 +136,10 @@ const AutoRefreshForm: FC = () => {
                 buttonColor={ComponentColor.Default}
                 testID="inactivity-timeout-dropdown"
               />
-              {state.inactivityTimeout !== 'None' && (
+              {state.inactivityTimeout !== 'Never' && (
                 <SelectDropdown
                   className="refresh-form-timeout-dropdown"
-                  options={['Hours', 'Days']}
+                  options={['Minutes', 'Hours', 'Days']}
                   selectedOption={state.inactivityTimeoutCategory}
                   onSelect={(timeoutCategory: string) =>
                     setRefreshContext({
@@ -134,6 +152,12 @@ const AutoRefreshForm: FC = () => {
                 />
               )}
             </div>
+          </div>
+          <div className="refresh-form-container">
+            <span className="refresh-form-container-child">
+              Refresh Interval:{' '}
+            </span>
+            <AutoRefreshInput />
           </div>
           <div className="refresh-form-buttons">
             <Button

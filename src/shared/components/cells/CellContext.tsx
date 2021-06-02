@@ -98,6 +98,13 @@ const CellContext: FC<Props> = ({
             onHide={onHide}
             testID="cell-context--note"
           />
+          <CellContextItem
+            label="Clone"
+            onClick={handleCloneCell}
+            icon={IconFont.Duplicate}
+            onHide={onHide}
+            testID="cell-context--clone"
+          />
           <CellContextDangerItem
             label="Delete"
             onClick={handleDeleteCell}

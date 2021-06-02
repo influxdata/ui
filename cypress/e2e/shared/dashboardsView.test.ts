@@ -1454,14 +1454,13 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.intercept('POST', '/query', req => {
         req.alias = 'refreshQuery'
       })
+      cy.getByTestID('enable-auto-refresh-button').click()
       cy.getByTestID('auto-refresh-input')
         .clear()
-        .type('5s')
+        .type('2s')
+      cy.getByTestID('refresh-form-activate-button').click()
       cy.wait('@refreshQuery')
-
-      cy.getByTestID('auto-refresh-input')
-        .clear()
-        .type('None')
+      cy.getByTestID('enable-auto-refresh-button').click()
       // Wait the duration we'd expect on the next query to ensure stopping via the button actually stops the process. The fail means the request didn't run, which is what we want
       cy.wait('@refreshQuery')
       cy.on('fail', err => {
@@ -1473,11 +1472,10 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     })
 
     it('can timeout on a preset timeout selected by the user', done => {
+      cy.getByTestID('enable-auto-refresh-button').click()
       cy.getByTestID('auto-refresh-input')
         .clear()
         .type('2s')
-      cy.getByTestID('auto-refresh-input').click()
-      cy.getByTestID('custom-duration-input-button').click()
       cy.getByTestID('timerange-popover-button').click()
       cy.getByTestID('timerange-popover--dialog').within(() => {
         cy.getByTestID('timerange--input')
@@ -1503,10 +1501,10 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     })
 
     it('does not refresh if user edits cell, until user comes back, and then continues', () => {
+      cy.getByTestID('enable-auto-refresh-button').click()
       cy.getByTestID('auto-refresh-input')
         .clear()
-        .type('5s')
-      cy.getByTestID('custom-duration-input-button').click()
+        .type('2s')
       cy.getByTestID('timerange-popover-button').click()
       cy.getByTestID('timerange-popover--dialog').within(() => {
         cy.getByTestID('timerange--input')
@@ -1540,15 +1538,15 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.visit(routeToReturnTo)
       cy.wait('@refreshQuery')
       cy.wait(5000)
-      cy.getByTestID('auto-refresh-input').then(el => {
-        expect(el[0].getAttribute('value')).to.equal('None')
+      cy.getByTestID('enable-auto-refresh-button').then(el => {
+        expect(el[0].innerText).to.equal('Enable Auto Refresh')
       })
     })
     it('can timeout on a preset inactivity timeout', done => {
+      cy.getByTestID('enable-auto-refresh-button').click()
       cy.getByTestID('auto-refresh-input')
         .clear()
-        .type('2s')
-      cy.getByTestID('custom-duration-input-button').click()
+        .type('3s')
       cy.getByTestID('timerange-popover-button').click()
       cy.getByTestID('timerange-popover--dialog').within(() => {
         cy.getByTestID('timerange--input')
@@ -1573,7 +1571,9 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
         })
 
       cy.wait(3100)
-      cy.getByTestID('auto-refresh-input').should('have.attr', 'value', 'None')
+      cy.getByTestID('enable-auto-refresh-button').then(el => {
+        expect(el[0].innerText).to.equal('Enable Auto Refresh')
+      })
       cy.getByTestID('notification-success--children')
         .children()
         .should(
@@ -1674,10 +1674,11 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     })
     cy.getByTestID('cell-context--pause').click()
 
+    cy.getByTestID('enable-auto-refresh-button').click()
     cy.getByTestID('auto-refresh-input')
       .clear()
       .type('2s')
-
+    cy.getByTestID('refresh-form-activate-button').click()
     cy.wait('@secondCellQuery')
     cy.wait('@firstCellQuery')
 
@@ -1773,9 +1774,11 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     })
     cy.getByTestID('cell-context--pause').click()
 
+    cy.getByTestID('enable-auto-refresh-button').click()
     cy.getByTestID('auto-refresh-input')
       .clear()
       .type('2s')
+    cy.getByTestID('refresh-form-activate-button').click()
 
     cy.wait('@secondCellQuery')
     cy.getByTestID('cell blah').within(() => {

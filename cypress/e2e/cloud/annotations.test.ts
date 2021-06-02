@@ -181,7 +181,7 @@ describe('The Annotations UI functionality', () => {
       })
   }
 
-  const addRangeAnnotation = cy => {
+  const addRangeAnnotation = (cy, saveTimes = false) => {
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-layer-line').then(([canvas]) => {
         const {width, height} = canvas
@@ -207,7 +207,15 @@ describe('The Annotations UI functionality', () => {
         .focused()
         .type('range annotation here!')
 
-      // make sure the two times (start and end) are not equal:
+      if (saveTimes) {
+        cy.getByTestID('endTime-testID')
+          .invoke('val')
+          .as('endTimeValue')
+        cy.getByTestID('startTime-testID')
+          .invoke('val')
+          .as('startTimeValue')
+      }
+
       ensureRangeAnnotationTimesAreNotEqual(cy)
 
       cy.getByTestID('add-annotation-submit').click()
@@ -215,7 +223,7 @@ describe('The Annotations UI functionality', () => {
   }
 
   const editRangeAnnotationTest = cy => {
-    addRangeAnnotation(cy)
+    addRangeAnnotation(cy, true)
 
     startEditingAnnotation(cy)
 
@@ -223,7 +231,20 @@ describe('The Annotations UI functionality', () => {
       .clear()
       .type('editing the text here for the range annotation')
 
-    ensureRangeAnnotationTimesAreNotEqual(cy)
+    // make sure the two times (start and end) are not equal:
+    cy.getByTestID('endTime-testID')
+      .invoke('val')
+      .then(endTimeValue => {
+        cy.wait('@endTimeValue').to.equal(endTimeValue)
+
+        cy.getByTestID('startTime-testID')
+          .invoke('val')
+          .then(startTimeValue => {
+            expect(endTimeValue).to.not.equal(startTimeValue)
+
+            cy.wait('@startTimeValue').to.equal(startTimeValue)
+          })
+      })
 
     cy.getByTestID('edit-annotation-submit-button').click()
 

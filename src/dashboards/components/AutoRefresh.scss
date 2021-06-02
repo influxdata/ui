@@ -64,11 +64,4 @@
 
 .refresh-input {
   width: 100px;
-  input {
-    border-radius: 0px $cf-radius + 1px $cf-radius + 1px 0px;
-  }
-}
-
-.autoRefreshSquare {
-  border-radius: $cf-radius 0px 0px $cf-radius;
 }

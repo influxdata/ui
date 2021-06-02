@@ -217,6 +217,25 @@ describe('The Annotations UI functionality', () => {
     })
   }
 
+  const editRangeAnnotationTest = cy => {
+    addRangeAnnotation(cy)
+
+    startEditingAnnotation(cy)
+
+    cy.getByTestID('edit-annotation-message')
+      .clear()
+      .type('editing the text here for the range annotation')
+
+    ensureRangeAnnotationTimesAreNotEqual(cy)
+
+    cy.getByTestID('edit-annotation-submit-button').click()
+
+    // reload to make sure the annotation was edited in the backend as well.
+    cy.reload()
+
+    checkAnnotationText(cy, 'editing the text here for the range annotation')
+  }
+
   describe('annotations on a graph + single stat graph type', () => {
     beforeEach(() => {
       setupData(cy, true)
@@ -229,6 +248,19 @@ describe('The Annotations UI functionality', () => {
     })
     it('can delete an annotation for the single stat + line graph', () => {
       deleteAnnotationTest(cy)
+    })
+    it('can add a range annotation for the xy single stat + line graph', () => {
+      addRangeAnnotation(cy)
+      checkAnnotationText(cy, 'range annotation here!')
+    })
+
+    it('can add and edit a range annotation for the single stat + line graph', () => {
+      editRangeAnnotationTest(cy)
+    })
+
+    it('can add and then delete a range annotation for the single stat + line graph', () => {
+      addRangeAnnotation(cy)
+      actuallyDeleteAnnotation(cy)
     })
   })
 
@@ -251,25 +283,8 @@ describe('The Annotations UI functionality', () => {
       checkAnnotationText(cy, 'range annotation here!')
     })
 
-    it.only('can add and edit a range annotation for the xy line graph', () => {
-      addRangeAnnotation(cy)
-
-      startEditingAnnotation(cy)
-
-      cy.getByTestID('edit-annotation-message')
-        .clear()
-        .type('editing the text here for the range annotation')
-
-      cy.pause()
-
-      ensureRangeAnnotationTimesAreNotEqual(cy)
-
-      cy.getByTestID('edit-annotation-submit-button').click()
-
-      // reload to make sure the annotation was edited in the backend as well.
-      cy.reload()
-
-      checkAnnotationText(cy, 'editing the text here for the range annotation')
+    it('can add and edit a range annotation for the xy line graph', () => {
+      editRangeAnnotationTest(cy)
     })
 
     it('can add and then delete a range annotation for the xy line graph', () => {

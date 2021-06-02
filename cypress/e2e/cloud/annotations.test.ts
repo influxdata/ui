@@ -85,13 +85,17 @@ describe('The Annotations UI functionality', () => {
     checkAnnotationText(cy, 'im a hippopotamus')
   }
 
-  const editTheAnnotation = cy => {
+  const startEditingAnnotation = cy => {
     cy.getByTestID('cell blah').within(() => {
       // we have 2 line layers by the same id, we only want to click on the first
       cy.get('line')
         .first()
         .click()
     })
+  }
+
+  const editTheAnnotation = cy => {
+    startEditingAnnotation(cy)
 
     cy.getByTestID('edit-annotation-message')
       .clear()
@@ -223,22 +227,45 @@ describe('The Annotations UI functionality', () => {
       deleteAnnotationTest(cy)
     })
 
-    it('can add a range annotation', () => {
+    it('can add a range annotation for the xy line graph', () => {
       addRangeAnnotation(cy)
       checkAnnotationText(cy, 'range annotation here!')
     })
 
-    it('can add and edit a range annotation', () => {
+    it.only('can add and edit a range annotation for the xy line graph', () => {
       addRangeAnnotation(cy)
-      editTheAnnotation(cy)
+
+      startEditingAnnotation(cy)
+
+      cy.getByTestID('edit-annotation-message')
+        .clear()
+        .type('editing the text here for the range annotation')
+
+      cy.pause()
+
+      //make sure the two times are *both there* and that they are not equal to each other:
+      cy.getByTestID('endTime-testID')
+        .invoke('val')
+        .then(endTimeValue => {
+          console.log('end time value+??', endTimeValue)
+          //cy.getByTestID('startTime-testID').should('not.equal', endTimeValue)
+          cy.getByTestID('startTime-testID')
+            .invoke('val')
+            .then(startTimeValue => {
+              console.log('start time value???', startTimeValue)
+              expect(endTimeValue).to.not.equal(startTimeValue)
+            })
+        })
+
+      cy.getByTestID('edit-annotation-submit-button').click()
 
       // reload to make sure the annotation was edited in the backend as well.
       cy.reload()
 
-      checkAnnotationText(cy, 'lets edit this annotation...')
+      checkAnnotationText(cy, 'editing the text here for the range annotation')
     })
 
-    it('can add and then delete a range annotation', () => {
+    it('can add and then delete a range annotation for the xy line graph', () => {
       addRangeAnnotation(cy)
       actuallyDeleteAnnotation(cy)
     })

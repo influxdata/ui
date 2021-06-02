@@ -96,8 +96,9 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
   }
 
   const validationMessage = getInputValidationMessage()
-
+  const testID = `${props.name}-testID`
   const labelText = props.titleText ?? 'Start Time'
+
   return (
     <Grid.Column widthXS={Columns.Twelve}>
       <Form.Element
@@ -106,8 +107,9 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
         errorMessage={validationMessage}
       >
         <Input
-          name={name}
+          name={props.name}
           value={timeValue}
+          testID={testID}
           onChange={handleChange}
           onKeyPress={handleKeyPress}
           status={ComponentStatus.Default}

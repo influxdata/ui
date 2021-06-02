@@ -44,13 +44,21 @@ export const isValidAnnotation = (
 ) => {
   const isValidPointAnnotation = message.length && startTime
 
+  console.log(
+    'in valid check....',
+    isValidPointAnnotation,
+    annotationType,
+    endTime
+  )
   // not checking if start <= end right now
   // initially, the times are numbers, and then if the user manually edits them then
   // they are strings, so the simple compare is non-trivial.
   // plus, the backend checks if the startTime is before or equals the endTime
   // so, letting the backend do that check for now.
   if (annotationType === 'range') {
-    return isValidPointAnnotation && endTime
+    const result = isValidPointAnnotation && endTime
+    console.log('is range (77b)', result)
+    return result
   }
   return isValidPointAnnotation
 }
@@ -59,15 +67,16 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
   const [startTime, setStartTime] = useState(props.startTime)
   const [endTime, setEndTime] = useState(props.endTime)
   const [message, setMessage] = useState('')
+  const [annotationType, setAnnotationType] = useState(props.type)
 
   const isValidAnnotationForm = ({message, startTime, endTime}): boolean => {
-    return isValidAnnotation(props.type, message, startTime, endTime)
+    return isValidAnnotation(annotationType, message, startTime, endTime)
   }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault()
 
-    props.onSubmit({message, startTime, endTime})
+    props.onSubmit({message, startTime, endTime, annotationType})
   }
 
   const updateMessage = (newMessage: string): void => {
@@ -91,6 +100,17 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     props.onClose()
   }
 
+  const changeToRangeType = () => {
+    setAnnotationType('range')
+    if (!endTime) {
+      setEndTime(startTime)
+    }
+  }
+
+  const changeToPointType = () => {
+    setAnnotationType('point')
+  }
+
   return (
     <Overlay.Container maxWidth={ANNOTATION_FORM_WIDTH}>
       <Overlay.Header
@@ -100,6 +120,22 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
       <Form onSubmit={handleSubmit}>
         <Overlay.Body>
           <Grid>
+            <Grid.Column>
+              <Form.Label label="Type" style={{paddingLeft: 0}} />
+              <Grid.Row style={{marginBottom: 8}}>
+                <Button
+                  onClick={changeToPointType}
+                  text="Point"
+                  active={'point' === annotationType}
+                />
+
+                <Button
+                  onClick={changeToRangeType}
+                  text="Range"
+                  active={'range' === annotationType}
+                />
+              </Grid.Row>
+            </Grid.Column>
             <Grid.Row>
               <AnnotationTimeInput
                 onChange={updateStartTime}
@@ -108,7 +144,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
                 name="startTime"
               />
             </Grid.Row>
-            {props.type === 'range' && (
+            {annotationType === 'range' && (
               <Grid.Row>
                 <AnnotationTimeInput
                   onChange={updateEndTime}

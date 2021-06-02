@@ -194,6 +194,7 @@ fi
 is_failure=0
 attempts=0
 max_attempts=40 # minutes
+required_workflows=( "build" )
 while [ $attempts -le $max_attempts ];
 do
 
@@ -207,17 +208,18 @@ do
 
 	# when the pipeline has finished
 	if [ ${number_running_workflows} -eq 0 ]; then
-		workflows_ids=( $(echo ${workflows} | jq -r '.items | .[].id') )
+		# report failed jobs per required workflow
+		for required_workflow_name in "${required_workflows[@]}"; do
+			workflow_id=$(echo ${workflows} | jq -r --arg name "${required_workflow_name}" '.items | map(select(.name == $name and .status == "success")) | .[].id')
 
-		# report failed jobs per workflow
-		for workflow_id in "${workflows_ids[@]}"; do
-			workflow_status=$(echo ${workflows} | jq -r --arg id "${workflow_id}" '.items | map(select(.id == $id)) | .[].status')
-
-			if [[ "$workflow_status" == "success" ]]; then
+			if [ -n "${workflow_id}" ]; then
 				printf "\nSUCCESS: monitor-ci workflow with id ${workflow_id} passed: https://app.circleci.com/pipelines/github/influxdata/monitor-ci/${pipeline_number}/workflows/${workflow_id} \n"
 			else
 				# set job failure
 				is_failure=1
+
+				# get the workflow_id of this failed required workflow
+				workflow_id=$(echo ${workflows} | jq -r --arg name "${required_workflow_name}" '.items | map(select(.name == $name and .status == "failed")) | .[].id')
 
 				# get the jobs that failed for this workflow
 				jobs=$(curl -s --request GET \

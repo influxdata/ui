@@ -185,9 +185,9 @@ fi
 
 # start a new pipeline if we didn't find an existing one to retry
 if [ $found_failed_pipeline -eq 0 ]; then
-	startNewPipeline $pipelineStartMsg $reqData
+	startNewPipeline "${pipelineStartMsg}" "${reqData}"
 else
-	retryFailedPipeline $failed_pipeline_workflow_id $failed_pipeline_id $failed_pipeline_number
+	retryFailedPipeline ${failed_pipeline_workflow_id} ${failed_pipeline_id} ${failed_pipeline_number}
 fi
 
 # poll the status of the monitor-ci pipeline

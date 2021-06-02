@@ -185,7 +185,7 @@ describe('The Annotations UI functionality', () => {
   }
 
   const addRangeAnnotation = cy => {
-   cy.getByTestID('cell blah').within(() => {
+    cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-layer-line').then(([canvas]) => {
         const {width, height} = canvas
 

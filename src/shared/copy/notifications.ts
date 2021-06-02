@@ -104,6 +104,12 @@ export const submitError = (): Notification => ({
     'There was an error submitting the upgrade request, please try again.',
 })
 
+export const getBillingSettingsError = (message: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `There was an error getting your billing settings: ${message}`,
+})
+
 // Operator Notifications
 export const getOrgsError = (): Notification => ({
   ...defaultErrorNotification,

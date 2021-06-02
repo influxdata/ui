@@ -46,8 +46,6 @@ const FormInput: FC<Props> = ({label, required, id, ...args}) => {
     }
   }
 
-  console.log({args})
-
   return (
     <Form.Element
       htmlFor={id}
@@ -64,6 +62,10 @@ const FormInput: FC<Props> = ({label, required, id, ...args}) => {
         onChange={handleChange}
         testID={`${id}--input`}
         onFocus={handleOnFocus}
+        // The args we're spreading here are optional parameters that may or may not exist:
+        // 1. type
+        // 2. min
+        // 3. step
         {...args}
       />
     </Form.Element>

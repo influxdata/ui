@@ -9,9 +9,6 @@ import {
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
 
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
 const Editor = lazy(() => import('src/shared/components/TomlMonacoEditor'))
 
 interface Props {

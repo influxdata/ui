@@ -5,7 +5,6 @@ import React, {FC, useContext} from 'react'
 import {Overlay} from '@influxdata/clockface'
 import GetResources from 'src/resources/components/GetResources'
 import TelegrafConfigOverlayForm from 'src/telegrafs/components/TelegrafConfigOverlayForm'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'

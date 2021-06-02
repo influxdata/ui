@@ -2,7 +2,6 @@
 import {valueFetcher, ValueFetcher} from 'src/variables/utils/ValueFetcher'
 import Deferred from 'src/utils/Deferred'
 import {asAssignment} from 'src/variables/selectors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {OPTION_NAME, BOUNDARY_GROUP} from 'src/variables/constants/index'
@@ -114,47 +113,6 @@ const collectAncestors = (
 }
 
 /*
-  Using the current node as the root, create a PostOrder DFS for the given node
-  Where we check each cascading parent's children in order to hydrate the children before the parents
-
-  In the example below, we have 3 variables `a`, `b`, `c` where `a` is a parent to `b`, which a parent to `c`:
-
-  a --> b --> c
-
-  If `a`, `b`, or `c` are passed into this function, we should expect that the output for each should be:
-
-  `c` with a reference to its parent `b`, which should have a reference to its parent `a`
-*/
-
-const postOrderDFS = (
-  node: VariableNode,
-  acc: Set<VariableNode> = new Set(),
-  cache: {[key: string]: boolean | undefined} = {}
-): VariableNode[] => {
-  // Handle the edge case that the function is
-  // called without providing the root node
-  if (!node) {
-    return [...acc]
-  }
-
-  for (const child of node.children) {
-    // by checking the cache for existing variables, we ensure that the graph stops
-    // when an existing node has already been encountered, invalidating a cycle if one exists
-    if (!cache[child.variable.id]) {
-      cache[child.variable.id] = true
-      // Recurse down the n-ary tree until we reach a leaf (node with no children)
-      // where this loop will not execute
-      postOrderDFS(child, acc, cache)
-    }
-  }
-
-  // Add the current node only after visiting all of its children, left to right
-  acc.add(node)
-
-  return [...acc]
-}
-
-/*
   Filters out any parents that have already been referenced in a previous node
 
   A node `a` & `c` are children of `b` if there exists a path:
@@ -172,79 +130,6 @@ export interface DeduplicatedRoot {
   subsetIDs: {[key: string]: boolean}
 }
 
-const getDeduplicatedRootChild = (
-  node: VariableNode,
-  subsetIDs: {[key: string]: boolean | undefined}
-): DeduplicatedRoot => {
-  for (const n of node.parents) {
-    if (!subsetIDs[n.variable.id]) {
-      subsetIDs[n.variable.id] = true
-      getDeduplicatedRootChild(n, subsetIDs)
-    } else {
-      node.parents = []
-    }
-  }
-  return {node, subsetIDs}
-}
-
-/*
-  Given a variable graph, return the minimal subgraph containing only the nodes
-  needed to hydrate the values for variables in the passed `variables` argument.
-
-  We discard all nodes in the graph unless:
-
-  - It is the node for one of the passed variables
-  - The node for one of the passed variables depends on this node
-
-*/
-// TODO(ariel): rename this back to findSubgraph & update tests once feature flag is removed
-export const findSubgraphFeature = (
-  graph: VariableNode[],
-  variables: Variable[]
-): VariableNode[] => {
-  const subgraph: Set<VariableNode> = new Set()
-  // use an ID array to reduce the chance of reference errors
-  const varIDs = variables.map(v => v.id)
-  // create an ID reference object to identify relevant root variables to hydrate
-  let subgraphIDs = {}
-  for (const node of graph) {
-    const shouldKeep = varIDs.includes(node.variable.id)
-    if (shouldKeep) {
-      const postOrderNodeList = postOrderDFS(node)
-      postOrderNodeList.forEach(variableNode => {
-        const {id} = variableNode.variable
-        // Checking whether the subgraphIDs[id] !== true, we are ensuring that the
-        // node has been added to the subgraph. This prevents excessive variable rehydration
-        if (subgraphIDs[id] !== true) {
-          /*
-            Once a node exists within the subgraph (whether nested as a parent or as the input node)
-            we want to remove any further reference to that node within the subgraph.
-            This can be particularly challenging when a parent node has multiple child nodes that have been passed in.
-            For example, if variables `a` and `b` are both children to `c`,
-            and `a` & `b` are both variables that should be hydrated, we would need to reset a parent
-            reference for one of the variables so that `c` is not hydrated twice.
-            This can be achieved by storing a reference to all the existing nodeIDs within the subgraph to the `graphIDs`
-            and checking for any collisions before adding the node to the subgraph.
-            If a parent collision is detected, that node's parent is simply set to [] since we know that
-            the parent was already hydrated based on a previous input
-          */
-          const {node: filteredNodes, subsetIDs} = getDeduplicatedRootChild(
-            variableNode,
-            subgraphIDs
-          )
-          subgraph.add(filteredNodes)
-          subgraphIDs = {
-            [id]: true,
-            ...subgraphIDs,
-            ...subsetIDs,
-          }
-        }
-      })
-    }
-  }
-
-  return [...subgraph]
-}
 export const findSubgraph = (
   graph: VariableNode[],
   variables: Variable[]
@@ -517,12 +402,7 @@ export const hydrateVars = (
   allVariables: Variable[],
   options: HydrateVarsOptions
 ): EventedCancelBox<Variable[]> => {
-  let findSubgraphFunction = findSubgraph
-  if (isFlagEnabled('hydratevars')) {
-    findSubgraphFunction = findSubgraphFeature
-  }
-
-  const graph = findSubgraphFunction(
+  const graph = findSubgraph(
     createVariableGraph(allVariables),
     variables
   ).filter(n => n.variable.arguments.type !== 'system')

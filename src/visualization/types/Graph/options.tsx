@@ -193,7 +193,7 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
           )}
           <Form.Element label="Line Colors">
             <ColorSchemeDropdown
-              value={properties.colors.filter(c => c.type === 'scale')}
+              value={properties.colors?.filter(c => c.type === 'scale') ?? []}
               onChange={colors => {
                 update({colors})
               }}

@@ -15,7 +15,10 @@ import {getQuartzMe as getQuartzMeThunk} from 'src/me/actions/thunks'
 
 // Constants
 import {states} from 'src/billing/constants'
-import {submitError} from 'src/shared/copy/notifications'
+import {
+  getBillingSettingsError,
+  submitError,
+} from 'src/shared/copy/notifications'
 import {EMPTY_ZUORA_PARAMS} from 'src/shared/constants'
 
 // Types
@@ -119,27 +122,35 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   const getBillingSettings = useCallback(async () => {
     try {
       const resp = await getSettingsNotifications({})
+      if (resp.status === 404) {
+        // We're injesting the 404 error here and leaving the default inputs since
+        // Quartz's API returns a 404 for valid requests that don't have any data
+        // Meaning, if a user hasn't filled out the notification settings, the
+        // API response is expected to return a 404 even though the query was successful
+        return
+      }
       if (resp.status !== 200) {
         throw new Error(resp.data.message)
       }
-      setInputs({
-        ...inputs,
+      setInputs(prevInputs => ({
+        ...prevInputs,
         balanceThreshold: resp.data.balanceThreshold,
         notifyEmail: resp.data.notifyEmail,
         shouldNotify: resp.data.isNotify,
-      })
+      }))
     } catch (error) {
-      // We're injesting the error here and leaving the default inputs since
-      // Quartz's API returns a 404 for valid requests that don't have any data
-      // Meaning, if a user hasn't filled out the notification settings, the
-      // API response is expected to return a 404 even though the query was successful
-      console.error(error)
+      const message = getErrorMessage(error)
+      dispatch(notify(getBillingSettingsError(message)))
     }
-  }, [inputs])
+  }, [dispatch])
 
   useEffect(() => {
     getBillingSettings()
-  }, [getBillingSettings])
+    return () => {
+      // Call the `quartz/me` endpoint to update the existing user metadata
+      dispatch(getQuartzMeThunk())
+    }
+  }, [dispatch, getBillingSettings])
 
   const [errors, setErrors] = useState({
     notifyEmail: false,
@@ -159,12 +170,12 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
       if (isDirty === false) {
         setIsDirty(true)
       }
-      setInputs({
-        ...inputs,
+      setInputs(prevInputs => ({
+        ...prevInputs,
         [name]: value,
-      })
+      }))
     },
-    [inputs, setInputs] // eslint-disable-line react-hooks/exhaustive-deps
+    [isDirty, setInputs]
   )
 
   const handleSetError = (name: string, value: boolean): void => {
@@ -174,16 +185,16 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     })
   }
 
-  const handleSetErrors = (errorFields: string[]): void => {
+  const handleSetErrors = useCallback((errorFields: string[]): void => {
     const errObj = {}
     errorFields.forEach(fieldName => {
       errObj[fieldName] = true
     })
-    setErrors({
-      ...errors,
+    setErrors(prevErrors => ({
+      ...prevErrors,
       ...errObj,
-    })
-  }
+    }))
+  }, [])
 
   const getInvalidFields = useCallback(() => {
     const fields = {...inputs}
@@ -244,7 +255,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
       // Check to see if the form is valid using the validate form
       const errs = getInvalidFields()
 
-      if (errs.length > 0) {
+      if (errs.length !== 0) {
         const errorFields = errs?.flatMap(([err]) => err)
 
         setCheckoutStatus(RemoteDataState.Error)
@@ -277,8 +288,6 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
         }
 
         setCheckoutStatus(RemoteDataState.Done)
-        // Call the `quartz/me` endpoint to update the existing user metadata
-        dispatch(getQuartzMeThunk())
       } catch (error) {
         console.error(error)
 

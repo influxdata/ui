@@ -542,7 +542,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       {
         name: 'v',
         desc: 'The value to convert.',
-        type: 'String, Integer, UInteger, Float',
+        type: 'String | Integer | UInteger | Float',
       },
     ],
     package: '',
@@ -590,7 +590,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       {
         name: 'v',
         desc: 'The value to convert.',
-        type: 'String, Integer, UInteger, Float, Boolean',
+        type: 'String | Integer | UInteger | Float | Boolean',
       },
     ],
     package: '',
@@ -645,12 +645,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       {
         name: 'value',
         desc: 'The value to search for.',
-        type: 'Boolean, Integer, UInteger, Float, String, Time',
+        type: 'Boolean | Integer | UInteger | Float | String | Time',
       },
       {
         name: 'set',
         desc: 'The set of values in which to search.',
-        type: 'Boolean, Integer, UInteger, Float, String, Time',
+        type: 'Boolean | Integer | UInteger | Float | String | Time',
       },
     ],
     package: '',
@@ -2084,7 +2084,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       {
         name: 'v',
         desc: 'The value to convert.',
-        type: 'String, Integer, UInteger, Boolean',
+        type: 'String | Integer | UInteger | Boolean',
       },
     ],
     package: '',
@@ -3087,7 +3087,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       {
         name: 'v',
         desc: 'The value to convert.',
-        type: 'String, Integer, UInteger, Float, Boolean',
+        type: 'String | Integer | UInteger | Float | Boolean',
       },
     ],
     package: '',
@@ -3182,7 +3182,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       {
         name: 'v',
         desc: 'The value to encode.',
-        type: 'Boolean, Duration, Float, Integer, String, Time, UInteger',
+        type: 'Boolean | Duration | Float | Integer | String | Time | UInteger',
       },
     ],
     package: 'json',
@@ -6525,7 +6525,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       {
         name: 'v',
         desc: 'The value to convert.',
-        type: 'Integer, UInteger, Float, Boolean, Duration, Time',
+        type: 'Integer | UInteger | Float | Boolean | Duration | Time',
       },
     ],
     package: '',
@@ -7953,7 +7953,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       {
         name: 'v',
         desc: 'The value to convert.',
-        type: 'String, Integer, UInteger',
+        type: 'String | Integer | UInteger',
       },
     ],
     package: '',
@@ -8245,7 +8245,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       {
         name: 'v',
         desc: 'The value to convert.',
-        type: 'String, Integer, Boolean',
+        type: 'String | Integer | Boolean',
       },
     ],
     package: '',

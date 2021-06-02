@@ -159,7 +159,7 @@ describe('TimeMachine.Components.SubmitQueryButton', () => {
 
     fireEvent.click(getByTitle('Submit'))
     expect(getByTitle('Submit')).toBeTruthy()
-    await window['flushAllPromises']()
+    await window.flushAllPromises()
 
     expect(mocked(fetch)).toHaveBeenCalledWith(
       'http://example.com/api/v2/query?orgID=orgid',

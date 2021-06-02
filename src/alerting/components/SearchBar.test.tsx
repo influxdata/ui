@@ -1,6 +1,6 @@
 // Libraries
 import React from 'react'
-import {screen, fireEvent, prettyDOM, cleanup} from '@testing-library/react'
+import {screen, fireEvent, cleanup} from '@testing-library/react'
 
 // Components
 import SearchBar from 'src/alerting/components/SearchBar'
@@ -10,7 +10,7 @@ import {withRouterProps} from 'mocks/dummyData'
 
 jest.mock('src/resources/components/GetResources')
 
-const exampleSearches = ["search 1", "example 2", "text 3"];
+const exampleSearches = ['search 1', 'example 2', 'text 3']
 
 const setup = (override = {}) => {
   const props: Parameters<typeof SearchBar>[0] = {
@@ -18,9 +18,9 @@ const setup = (override = {}) => {
     dispatch: jest.fn(),
     exampleSearches,
     loadRows: jest.fn(),
-    state: { searchInput: "" } as any,
+    state: {searchInput: ''} as any,
     children: <></>,
-    placeholder: "",
+    placeholder: '',
     ...override,
   }
 
@@ -30,33 +30,32 @@ const setup = (override = {}) => {
 describe('Alerts SearchBar', () => {
   beforeEach(cleanup)
 
-  it('show/hide autocomplete', async () => {
+  it('show/hide autocomplete', () => {
     const {baseElement} = setup({})
 
     const searchInput = screen.getByTestId('check-status-input')
     fireEvent.focus(searchInput)
 
-    exampleSearches.forEach(text=>{
-      const autocompleteElm = screen.queryAllByText(text);
-      expect(autocompleteElm.length).toBe(1);
+    exampleSearches.forEach(text => {
+      const autocompleteElm = screen.queryAllByText(text)
+      expect(autocompleteElm.length).toBe(1)
     })
 
     fireEvent.mouseDown(baseElement)
 
-    exampleSearches.forEach(text=>{
-      const autocompleteElm = screen.queryAllByText(text);
-      expect(autocompleteElm.length).toBe(0);
+    exampleSearches.forEach(text => {
+      const autocompleteElm = screen.queryAllByText(text)
+      expect(autocompleteElm.length).toBe(0)
     })
   })
 
   it('matches snapshot', () => {
-    const {container} = setup();
-    expect(container).toMatchSnapshot();
-    
+    const {container} = setup()
+    expect(container).toMatchSnapshot()
+
     const searchInput = screen.getByTestId('check-status-input')
     fireEvent.focus(searchInput)
 
-    expect(container).toMatchSnapshot();
-
+    expect(container).toMatchSnapshot()
   })
 })

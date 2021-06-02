@@ -309,7 +309,6 @@ describe('alertBuilderReducer', () => {
   describe('updateName', () => {
     it('changes name', () => {
       const state = mockState()
-
       const name = 'new-name'
 
       const expected = {...state, name}
@@ -322,9 +321,8 @@ describe('alertBuilderReducer', () => {
 
   describe('default action', () => {
     it('changes name', () => {
-      const state = mockState()
-      const expected = state
-      const actual = alertBuilderReducer(state, '' as any)
+      const expected = mockState()
+      const actual = alertBuilderReducer(expected, {type: '' as any})
 
       expect(actual).toEqual(expected)
     })
@@ -332,8 +330,8 @@ describe('alertBuilderReducer', () => {
 
   describe('initial state', () => {
     it('changes name', () => {
-      const expected = alertBuilderReducer(initialState(), '' as any)
-      const actual = alertBuilderReducer(undefined, '' as any)
+      const expected = alertBuilderReducer(initialState(), {type: '' as any})
+      const actual = alertBuilderReducer(undefined, {type: '' as any})
 
       expect(actual).toEqual(expected)
     })

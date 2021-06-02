@@ -34,7 +34,7 @@ describe('Alerts Column Header', () => {
     const children = (search: string) => {
       currentSearch = search
     }
-    const {} = setup({children})
+    setup({children})
 
     const titleElm = await screen.getAllByText(title)
     expect(titleElm).toHaveLength(1)

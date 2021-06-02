@@ -173,12 +173,9 @@ describe('The Annotations UI functionality', () => {
     cy.getByTestID('endTime-testID')
       .invoke('val')
       .then(endTimeValue => {
-        console.log('end time value+??', endTimeValue)
-        //cy.getByTestID('startTime-testID').should('not.equal', endTimeValue)
         cy.getByTestID('startTime-testID')
           .invoke('val')
           .then(startTimeValue => {
-            console.log('start time value???', startTimeValue)
             expect(endTimeValue).to.not.equal(startTimeValue)
           })
       })

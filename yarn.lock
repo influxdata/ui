@@ -715,10 +715,10 @@
   resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-2.8.0.tgz#92327287aeced602ff20819b10cb23380b8fec0e"
   integrity sha512-EQ/t4OX6pq2LvNhc/ba0wAT0enfH165+Ih/86g3nwk0BFNmRIoNmZ2osuCgw/pyslX+5xxdPaEfMe3lsXmXriw==
 
-"@influxdata/flux-lsp-browser@^0.5.47":
-  version "0.5.47"
-  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.5.47.tgz#25b2abc6397e01ad47cc8b1f93cb83d14ba4e76d"
-  integrity sha512-Ejml0Ez4SAf0TE9UVRZS+noY9e73MfG2d+fLu0BNR876ih90205xAdkf3uUvfB3nXOs33Tq2HhfkZHGXkSRP6g==
+"@influxdata/flux-lsp-browser@^0.5.48":
+  version "0.5.48"
+  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.5.48.tgz#e27c3823e935216a174e325a5562c606b63f2a44"
+  integrity sha512-uXk1vUN6BOtHO8xuipqM0Pu4yFH4yVP7foSkR3fRch1vxww0nO9V2+4kwCGozWL1QcH/tLu5DGYa9pQRGXZcaQ==
 
 "@influxdata/flux@^0.5.1":
   version "0.5.1"
@@ -744,10 +744,10 @@
   resolved "https://registry.yarnpkg.com/@influxdata/influxdb-templates/-/influxdb-templates-0.9.0.tgz#d4b1f727c8949147d2ade63f5754425a0d1a0e9d"
   integrity sha512-R/QhYJz+nNPGT8LkWHXKOLYYUROavDPfIFoGP7sIrxhStjm+hb0TzHYeQ75HLPQqKh54zCB8cv/TINwRgijYBw==
 
-"@influxdata/oats@0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@influxdata/oats/-/oats-0.5.0.tgz#0fdd308524fa407303ffa6a3d60fe959777dcfcb"
-  integrity sha512-oBlSB5ROM6JMqsVBDLlJzkBiMvAom+b4dszH83LPdM9H+pUtj2SeUoMpQhj9/4ioCnUVZx8HFN58/a/pkmADAQ==
+"@influxdata/oats@0.5.3":
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/@influxdata/oats/-/oats-0.5.3.tgz#eacedf71c802396d981fac447274a5cc34f5d932"
+  integrity sha512-OG3kr6p5U+wpa2qny+Cu8CBqHJne9mKEC5ux4JJTnk1eQnfAtNv+DGdz0QH+Ouz/8cqjl2erkPx6RPMGmUYMeA==
   dependencies:
     commander "^2.20.0"
     humps "^2.0.1"

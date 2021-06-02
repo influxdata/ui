@@ -303,7 +303,7 @@ describe('DataExplorer', () => {
         cy.getByTestID('timerange-popover--dialog').should('have.length', 1)
       })
 
-      it('should error when submitting stop dates that are before start dates', () => {
+      it('should error when submitting stop dates that are before start dates and should error when invalid dates are input', () => {
         cy.get('input[title="Start"]')
           .should('have.length', 1)
           .clear()
@@ -316,15 +316,12 @@ describe('DataExplorer', () => {
 
         // button should be disabled
         cy.getByTestID('daterange--apply-btn').should('be.disabled')
-      })
 
-      it('should error when invalid dates are input', () => {
         // default inputs should be valid
         cy.getByTestID('input-error').should('not.exist')
 
         // type incomplete input
         cy.get('input[title="Start"]')
-          .should('have.length', 1)
           .clear()
           .type('2019-10')
 
@@ -339,7 +336,6 @@ describe('DataExplorer', () => {
 
         // type invalid stop date
         cy.get('input[title="Stop"]')
-          .should('have.length', 1)
           .clear()
           .type('2019-10-')
 
@@ -348,6 +344,14 @@ describe('DataExplorer', () => {
 
         // button should be disabled
         cy.getByTestID('daterange--apply-btn').should('be.disabled')
+
+        // Validate that ISO String formatted texts are valid
+        cy.get('input[title="Stop"]')
+          .clear()
+          .type('2019-10-29T08:00:00.000Z')
+
+        // button should not be disabled
+        cy.getByTestID('daterange--apply-btn').should('not.be.disabled')
       })
     })
   })

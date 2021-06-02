@@ -6,7 +6,7 @@ import {CheckoutContext} from 'src/checkout/context/checkout'
 
 type Props = FormElementProps & InputProps
 
-const FormInput: FC<Props> = ({label, required, id}) => {
+const FormInput: FC<Props> = ({label, required, id, ...args}) => {
   const {
     errors,
     handleSetInputs,
@@ -46,6 +46,8 @@ const FormInput: FC<Props> = ({label, required, id}) => {
     }
   }
 
+  console.log({args})
+
   return (
     <Form.Element
       htmlFor={id}
@@ -62,6 +64,7 @@ const FormInput: FC<Props> = ({label, required, id}) => {
         onChange={handleChange}
         testID={`${id}--input`}
         onFocus={handleOnFocus}
+        {...args}
       />
     </Form.Element>
   )

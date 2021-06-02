@@ -97,6 +97,7 @@ mkdir -p monitor-ci/test-artifacts/results/{build-oss-image,oss-e2e,build-image,
 if [[ -z "${OSS_SHA:-}" ]]; then
 	# get monitor-ci pipelines we've already run on this SHA
 	found_passing_pipeline=0
+	found_failed_pipeline=0
 	all_pipelines=$(curl -s --request GET \
 			--url "https://circleci.com/api/v2/project/gh/influxdata/monitor-ci/pipeline" \
 			--header "Circle-Token: ${API_KEY}" \
@@ -183,7 +184,7 @@ else
 fi
 
 # start a new pipeline if we didn't find an existing one to retry
-if [ -z $found_failed_pipeline ]; then
+if [ $found_failed_pipeline -eq 0 ]; then
 	startNewPipeline $pipelineStartMsg $reqData
 else
 	retryFailedPipeline $failed_pipeline_workflow_id $failed_pipeline_id $failed_pipeline_number

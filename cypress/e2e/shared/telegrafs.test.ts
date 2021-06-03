@@ -178,6 +178,16 @@ describe('Collectors', () => {
         cy.getByTestID('telegraf-delete-button').click()
         cy.getByTestID('empty-state').should('exist')
       })
+
+      it('can clone a config', () => {
+        cy.getByTestID('resource-card').should('have.length', 1)
+        cy.getByTestID('telegraf-clone-menu').click({force: true})
+        cy.getByTestID('telegraf-clone-button').click()
+        cy.getByTestID('resource-card').should('have.length', 2)
+        cy.getByTestID('collector-card--name').then(el => {
+          expect(el[1].innerText).to.equal('New Config (clone 1)')
+        })
+      })
     })
 
     describe('sorting & filtering', () => {

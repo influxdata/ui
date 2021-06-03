@@ -402,13 +402,13 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
         type: 'Array of Objects',
       },
     ],
-    package: 'experimental/array',
+    package: 'array',
     desc: 'Constructs a table from an array of objects.',
     example:
       'array.from(rows: [{_time: 2020-01-01T00:00:00Z, _value: "foo"},{_time: 2020-01-02T00:00:00Z, _value: "bar"}])',
     category: 'Inputs',
     link:
-      'https://docs.influxdata.com/influxdb/cloud/reference/flux/stdlib/experimental/array/from/',
+      'https://docs.influxdata.com/influxdb/cloud/reference/flux/stdlib/array/from/',
   },
   {
     name: 'bigpanda.endpoint',
@@ -1393,7 +1393,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     args: [
       {
         name: 'unit',
-        desc: 'The unit time to return. Defaults to `1s`.',
+        desc: 'The unit of time to return. Defaults to `1s`.',
         type: 'Duration',
       },
       {

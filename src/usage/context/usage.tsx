@@ -131,7 +131,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
 
       // TODO(ariel): keeping this in for testing purposes in staging
       // This will need to be removed for flipping the feature flag on
-      console.warn({csvs, trimmedCSV})
+      console.warn({csvs, trimmedCsvs})
       setBillingStats(csvs)
     } catch (error) {
       console.error('getBillingStats: ', error)

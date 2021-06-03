@@ -50,6 +50,10 @@ export const AnnotationsControlBar: FC = () => {
     dispatch(setAnnotationsVisibility(!annotationsAreVisible))
   }
 
+  const infoText =
+    'Click on a graph to create a point annotion, click + shift + drag to create a range annotation.' +
+    'press the annotations button again to turn off annotation mode'
+
   return (
     <ErrorBoundary>
       <Toolbar
@@ -61,7 +65,7 @@ export const AnnotationsControlBar: FC = () => {
           <TextBlock
             backgroundColor={InfluxColors.Obsidian}
             textColor={InfluxColors.Mist}
-            text="*Currently, we only support annotations on Plots of type 'Graph', 'Graph + Single Stat', and 'Band'"
+            text={infoText}
           />
         </FlexBoxChild>
         <FlexBoxChild grow={1} />

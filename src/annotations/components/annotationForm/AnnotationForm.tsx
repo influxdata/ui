@@ -6,13 +6,15 @@ import {event} from 'src/cloud/utils/reporting'
 
 // Components
 import {
-  Overlay,
   Button,
+  ButtonType,
   ComponentColor,
+  ComponentSize,
+  ComponentStatus,
   Form,
   Grid,
-  ButtonType,
-  ComponentStatus,
+  Overlay,
+  SelectGroup,
 } from '@influxdata/clockface'
 import {AnnotationMessageInput} from 'src/annotations/components/annotationForm/AnnotationMessageInput'
 import {AnnotationTimeInput} from 'src/annotations/components/annotationForm/AnnotationTimeInput'
@@ -133,47 +135,51 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
         <Overlay.Body>
           <Grid>
             <Grid.Column>
-              <Form.Label label="Type" style={{paddingLeft: 0}} />
-              <Grid.Row style={{marginBottom: 8}}>
-                <Button
+              <Form.Label label="Type" />
+              <SelectGroup
+                size={ComponentSize.Medium}
+                style={{marginBottom: 8}}
+              >
+                <SelectGroup.Option
                   onClick={changeToPointType}
-                  text="Point"
                   active={'point' === annotationType}
-                />
-
-                <Button
+                  id="annotation-form-point-type"
+                  value="point"
+                >
+                  Point
+                </SelectGroup.Option>
+                <SelectGroup.Option
                   onClick={changeToRangeType}
-                  text="Range"
+                  value="range"
                   active={'range' === annotationType}
-                />
-              </Grid.Row>
+                  id="annotation-form-range-type"
+                >
+                  Range
+                </SelectGroup.Option>
+              </SelectGroup>
             </Grid.Column>
-            <Grid.Row>
-              <AnnotationTimeInput
-                onChange={updateStartTime}
-                onSubmit={handleKeyboardSubmit}
-                time={startTime}
-                name="startTime"
-              />
-            </Grid.Row>
+            <AnnotationTimeInput
+              onChange={updateStartTime}
+              onSubmit={handleKeyboardSubmit}
+              time={startTime}
+              name="startTime"
+            />
+
             {annotationType === 'range' && (
-              <Grid.Row>
-                <AnnotationTimeInput
-                  onChange={updateEndTime}
-                  onSubmit={handleKeyboardSubmit}
-                  time={endTime}
-                  name="endTime"
-                  titleText="Stop Time"
-                />
-              </Grid.Row>
-            )}
-            <Grid.Row>
-              <AnnotationMessageInput
-                message={summary}
-                onChange={updateSummary}
+              <AnnotationTimeInput
+                onChange={updateEndTime}
                 onSubmit={handleKeyboardSubmit}
+                time={endTime}
+                name="endTime"
+                titleText="Stop Time"
               />
-            </Grid.Row>
+            )}
+
+            <AnnotationMessageInput
+              message={summary}
+              onChange={updateSummary}
+              onSubmit={handleKeyboardSubmit}
+            />
           </Grid>
         </Overlay.Body>
         <Overlay.Footer>

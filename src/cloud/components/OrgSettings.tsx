@@ -1,61 +1,27 @@
 // Libraries
-import {FC, useEffect, useState} from 'react'
-import {connect, ConnectedProps, useDispatch} from 'react-redux'
+import {FC, useEffect} from 'react'
+import {useSelector} from 'react-redux'
 
-// Constants
-import {CLOUD} from 'src/shared/constants'
-
-// Types
-import {AppState} from 'src/types'
-
-// Actions
-import {getOrgSettings as getOrgSettingsAction} from 'src/cloud/actions/orgsettings'
-
-import {getOrg} from 'src/organizations/selectors'
-import {getOrgSettings} from 'src/cloud/selectors/orgsettings'
 import {updateReportingContext} from 'src/cloud/utils/reporting'
+import {getQuartzMe} from 'src/me/selectors'
 
-interface PassedInProps {
+interface Props {
   children: React.ReactElement<any>
 }
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & PassedInProps
-
-const OrgSettings: FC<Props> = ({org, settings, children}) => {
-  const dispatch = useDispatch()
-  const [hasFetchedOrgSettings, setHasFetchedOrgSettings] = useState<boolean>(
-    false
-  )
+const OrgSettings: FC<Props> = ({children}) => {
+  const quartzMe = useSelector(getQuartzMe)
+  const isRegionBeta = quartzMe?.isRegionBeta ?? false
+  const accountType = quartzMe?.accountType ?? 'free'
 
   useEffect(() => {
-    if (CLOUD && org && !hasFetchedOrgSettings) {
-      setHasFetchedOrgSettings(true)
-      dispatch(getOrgSettingsAction())
-    }
-  }, [dispatch, org, hasFetchedOrgSettings])
-
-  useEffect(() => {
-    updateReportingContext(
-      settings.reduce((prev, curr) => {
-        prev[`org (${curr.key})`] = curr.value
-        return prev
-      }, {})
-    )
-  }, [settings])
+    updateReportingContext({
+      'org (hide_upgrade_cta)': `${accountType === 'free' && !isRegionBeta}`,
+      'org (account_type)': accountType,
+    })
+  }, [accountType, isRegionBeta])
 
   return children
 }
 
-const mstp = (state: AppState) => ({
-  org: getOrg(state),
-  settings: getOrgSettings(state),
-})
-
-const mdtp = {
-  getOrgSettings: getOrgSettingsAction,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(OrgSettings)
+export default OrgSettings

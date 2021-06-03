@@ -17,15 +17,15 @@ import ExportTaskOverlay from 'src/flows/pipes/ToBucket/ExportTaskOverlay'
 import {event} from 'src/cloud/utils/reporting'
 
 const ExportTaskButton: FC = () => {
-  const {data, range, queryText} = useContext(PipeContext)
+  const {id, data, range} = useContext(PipeContext)
   const {launch} = useContext(PopupContext)
 
   const onClick = () => {
     event('Export Task Clicked')
     launch(<ExportTaskOverlay />, {
       bucket: data.bucket,
-      query: queryText,
       range,
+      panel: id,
     })
   }
 

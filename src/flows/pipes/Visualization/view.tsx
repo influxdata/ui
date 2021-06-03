@@ -1,11 +1,12 @@
 // Libraries
-import React, {FC, useContext, useCallback, useMemo, useState} from 'react'
+import React, {FC, useContext, useCallback, useEffect, useMemo} from 'react'
 
 // Components
 import {IconFont} from '@influxdata/clockface'
+import Resizer from 'src/flows/shared/Resizer'
+import ExportDashboardOverlay from 'src/flows/pipes/Visualization/ExportDashboardOverlay'
 import ExportButton from 'src/flows/pipes/Visualization/ExportDashboardButton'
 import Controls from 'src/flows/pipes/Visualization/Controls'
-import Resizer from 'src/flows/shared/Resizer'
 
 // Utilities
 import {View, ViewOptions} from 'src/visualization'
@@ -15,13 +16,16 @@ import {RemoteDataState} from 'src/types'
 import {PipeProp} from 'src/types/flows'
 
 import {PipeContext} from 'src/flows/context/pipe'
+import {SidebarContext} from 'src/flows/context/sidebar'
+import {PopupContext} from 'src/flows/context/popup'
+
+import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const Visualization: FC<PipeProp> = ({Context}) => {
-  const {data, range, update, loading, results} = useContext(PipeContext)
-  const [optionsVisibility, setOptionsVisibility] = useState(false)
-  const toggleOptions = useCallback(() => {
-    setOptionsVisibility(!optionsVisibility)
-  }, [optionsVisibility, setOptionsVisibility])
+  const {id, data, range, update, loading, results} = useContext(PipeContext)
+  const {register} = useContext(SidebarContext)
+  const {launch} = useContext(PopupContext)
 
   const updateProperties = useCallback(
     properties => {
@@ -49,11 +53,46 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     return 'No Data Returned'
   }, [loading])
 
+  useEffect(() => {
+    if (!id) {
+      return
+    }
+
+    register(id, [
+      {
+        title: 'Visualization',
+        actions: [
+          {
+            title: 'Options',
+            disable: !dataExists,
+            menu: (
+              <ViewOptions
+                properties={data.properties}
+                results={results.parsed}
+                update={updateProperties}
+              />
+            ),
+          },
+          {
+            title: 'Export to Dashboard',
+            action: () => {
+              event('Export to Dashboard Clicked')
+
+              launch(<ExportDashboardOverlay />, {
+                properties: data.properties,
+                range: range,
+                panel: id,
+              })
+            },
+          },
+        ],
+      },
+    ])
+  }, [id, data.properties, results.parsed, range])
+  const persist = isFlagEnabled('flow-sidebar') ? null : <ExportButton />
+
   return (
-    <Context
-      controls={<Controls toggle={toggleOptions} visible={optionsVisibility} />}
-      persistentControl={<ExportButton />}
-    >
+    <Context controls={<Controls />} persistentControls={persist}>
       <Resizer
         loading={loading}
         resizingEnabled={dataExists}
@@ -78,13 +117,6 @@ const Visualization: FC<PipeProp> = ({Context}) => {
           </div>
         </div>
       </Resizer>
-      {optionsVisibility && dataExists && (
-        <ViewOptions
-          properties={data.properties}
-          results={results.parsed}
-          update={updateProperties}
-        />
-      )}
     </Context>
   )
 }

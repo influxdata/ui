@@ -101,7 +101,6 @@ const AddButtons: FC<Props> = ({index, onInsert}) => {
             onInsert && onInsert()
 
             event('insert_notebook_cell', {notebooksCellType: def.type})
-
             add(
               {
                 ...data,

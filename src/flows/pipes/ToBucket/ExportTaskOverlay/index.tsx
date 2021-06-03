@@ -23,16 +23,25 @@ import {
   Orientation,
 } from '@influxdata/clockface'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 const ExportTaskOverlay: FC = () => {
   const {activeTab, handleSetActiveTab} = useContext(Context)
   const {closeFn} = useContext(PopupContext)
+
+  const closer = () => {
+    event('Export Task Overlay Closed')
+
+    closeFn()
+  }
 
   return (
     <Overlay visible={true}>
       <Overlay.Container maxWidth={700}>
         <Overlay.Header
           title="Export As Task"
-          onDismiss={closeFn}
+          onDismiss={closer}
           testID="export-as-overlay--header"
         />
         <Overlay.Body>

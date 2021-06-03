@@ -29,7 +29,7 @@ const makeCreateMethod = (
   eventPrefix = 'xyplot'
 ) => {
   const createAnnotation = async userModifiedAnnotation => {
-    const {message, startTime, endTime, annotationType} = userModifiedAnnotation
+    const {summary, startTime, endTime, annotationType} = userModifiedAnnotation
 
     const actualEndTime = annotationType === 'point' ? startTime : endTime
 
@@ -37,7 +37,7 @@ const makeCreateMethod = (
       await dispatch(
         writeThenFetchAndSetAnnotations([
           {
-            summary: message,
+            summary,
             stream: cellID,
             startTime: new Date(startTime).getTime(),
             endTime: new Date(actualEndTime).getTime(),

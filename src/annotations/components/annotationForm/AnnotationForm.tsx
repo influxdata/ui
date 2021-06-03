@@ -31,6 +31,8 @@ interface Props {
   startTime: string
   endTime?: string
   title: 'Edit' | 'Add'
+  id?: string
+  summary?: string
   type: AnnotationType
   onSubmit: (Annotation) => void
   onClose: () => void
@@ -38,11 +40,11 @@ interface Props {
 
 export const isValidAnnotation = (
   annotationType: string,
-  message: string,
+  summary: string,
   startTime: any,
   endTime: any
 ) => {
-  const isValidPointAnnotation = message.length && startTime
+  const isValidPointAnnotation = summary.length && startTime
 
   console.log(
     'in valid check....',
@@ -66,21 +68,21 @@ export const isValidAnnotation = (
 export const AnnotationForm: FC<Props> = (props: Props) => {
   const [startTime, setStartTime] = useState(props.startTime)
   const [endTime, setEndTime] = useState(props.endTime)
-  const [message, setMessage] = useState('')
+  const [summary, setSummary] = useState('')
   const [annotationType, setAnnotationType] = useState(props.type)
 
-  const isValidAnnotationForm = ({message, startTime, endTime}): boolean => {
-    return isValidAnnotation(annotationType, message, startTime, endTime)
+  const isValidAnnotationForm = ({summary, startTime, endTime}): boolean => {
+    return isValidAnnotation(annotationType, summary, startTime, endTime)
   }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault()
 
-    props.onSubmit({message, startTime, endTime, annotationType})
+    props.onSubmit({summary, startTime, endTime, annotationType})
   }
 
-  const updateMessage = (newMessage: string): void => {
-    setMessage(newMessage)
+  const updateSummary = (newSummary: string): void => {
+    setSummary(newSummary)
   }
 
   const updateStartTime = (newTime: string): void => {
@@ -92,7 +94,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
   }
 
   const handleKeyboardSubmit = () => {
-    props.onSubmit({message, startTime, endTime})
+    props.onSubmit({summary, startTime, endTime})
   }
 
   const handleCancel = () => {
@@ -157,8 +159,8 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
             )}
             <Grid.Row>
               <AnnotationMessageInput
-                message={message}
-                onChange={updateMessage}
+                message={summary}
+                onChange={updateSummary}
                 onSubmit={handleKeyboardSubmit}
               />
             </Grid.Row>
@@ -171,7 +173,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
             color={ComponentColor.Primary}
             type={ButtonType.Submit}
             status={
-              isValidAnnotationForm({startTime, endTime, message})
+              isValidAnnotationForm({startTime, endTime, summary})
                 ? ComponentStatus.Default
                 : ComponentStatus.Disabled
             }

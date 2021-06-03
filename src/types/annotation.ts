@@ -13,6 +13,7 @@ export interface EditAnnotation {
   id: string
   message: string
   startTime: string
+  endTime: string
   stream: string
   summary: string
 }

@@ -28,6 +28,7 @@ import {notify} from 'src/shared/actions/notifications'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {getErrorMessage} from 'src/utils/api'
+import {AnnotationForm} from './annotationForm/AnnotationForm'
 
 export const EditAnnotationOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
@@ -35,7 +36,8 @@ export const EditAnnotationOverlay: FC = () => {
   const {clickedAnnotation} = useSelector(getOverlayParams)
 
   const handleSubmit = async (
-    editedAnnotation: EditAnnotation
+    editedAnnotation: EditAnnotation,
+    eventPrefix = 'xyplot'
   ): Promise<void> => {
     try {
       await dispatch(editAnnotation(editedAnnotation))
@@ -48,11 +50,20 @@ export const EditAnnotationOverlay: FC = () => {
     }
   }
 
+  const annoType =
+    clickedAnnotation.startTime === clickedAnnotation.endTime
+      ? 'point'
+      : 'range'
+
   return (
-    <EditAnnotationForm
-      handleSubmit={handleSubmit}
-      annotation={clickedAnnotation}
-      handleClose={onClose}
+    <AnnotationForm
+      onSubmit={handleSubmit}
+      startTime={clickedAnnotation.startTime}
+      id={clickedAnnotation.id}
+      endTime={clickedAnnotation.endTime}
+      type={annoType}
+      summary={clickedAnnotation.message}
+      onClose={onClose}
     />
   )
 }

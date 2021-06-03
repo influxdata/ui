@@ -18,7 +18,7 @@ import CloudOnly from 'src/shared/components/cloud/CloudOnly'
 import {CLOUD_URL, CLOUD_CHECKOUT_PATH} from 'src/shared/constants'
 
 // Utils
-import {getQuartzMe} from 'src/me/selectors'
+import {shouldShowUpgradeButton} from 'src/me/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface OwnProps {
@@ -32,9 +32,7 @@ const CloudUpgradeButton: FC<OwnProps> = ({
   className,
   buttonText = 'Upgrade Now',
 }) => {
-  const quartzMe = useSelector(getQuartzMe)
-  const isRegionBeta = quartzMe?.isRegionBeta ?? false
-  const accountType = quartzMe?.accountType ?? 'free'
+  const showUpgradeButton = useSelector(shouldShowUpgradeButton)
 
   const cloudUpgradeButtonClass = classnames('upgrade-payg--button', {
     [`${className}`]: className,
@@ -52,7 +50,7 @@ const CloudUpgradeButton: FC<OwnProps> = ({
 
   return (
     <CloudOnly>
-      {accountType === 'free' && !isRegionBeta && (
+      {showUpgradeButton && (
         <Button
           icon={IconFont.CrownSolid}
           className={cloudUpgradeButtonClass}

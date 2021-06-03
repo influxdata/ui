@@ -15,7 +15,7 @@ import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 
 // Actions
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
-import {getQuartzMe} from 'src/me/selectors'
+import {shouldShowUpgradeButton} from 'src/me/selectors'
 
 interface Props {
   className?: string
@@ -23,9 +23,7 @@ interface Props {
 
 const RateLimitAlertContent: FC<Props> = ({className}) => {
   const dispatch = useDispatch()
-  const quartzMe = useSelector(getQuartzMe)
-  const isRegionBeta = quartzMe?.isRegionBeta ?? false
-  const accountType = quartzMe?.accountType ?? 'free'
+  const showUpgradeButton = useSelector(shouldShowUpgradeButton)
   const rateLimitAlertContentClass = classnames('rate-alert--content', {
     [`${className}`]: className,
   })
@@ -34,7 +32,7 @@ const RateLimitAlertContent: FC<Props> = ({className}) => {
     dispatch(showOverlay('rate-limit', null, dispatch(dismissOverlay)))
   }
 
-  if (accountType === 'free' && !isRegionBeta) {
+  if (showUpgradeButton) {
     return (
       <div
         className={`${rateLimitAlertContentClass} rate-alert--content__free`}

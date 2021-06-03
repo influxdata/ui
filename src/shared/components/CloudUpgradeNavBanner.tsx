@@ -19,15 +19,13 @@ import CloudOnly from 'src/shared/components/cloud/CloudOnly'
 // Constants
 import {CLOUD_URL, CLOUD_CHECKOUT_PATH} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {getQuartzMe} from 'src/me/selectors'
+import {shouldShowUpgradeButton} from 'src/me/selectors'
 
 const CloudUpgradeNavBanner: FC = () => {
-  const quartzMe = useSelector(getQuartzMe)
-  const isRegionBeta = quartzMe?.isRegionBeta ?? false
-  const accountType = quartzMe?.accountType ?? 'free'
+  const showUpgradeButton = useSelector(shouldShowUpgradeButton)
   return (
     <>
-      {accountType === 'free' && !isRegionBeta && (
+      {showUpgradeButton && (
         <CloudOnly>
           <Panel
             gradient={Gradients.HotelBreakfast}

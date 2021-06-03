@@ -121,13 +121,22 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
 
   // TODO:  get the correct prefix in there, multiple plot types have annotations now
   const handleDelete = () => {
+    const editedAnnotation = {
+      summary,
+      startTime,
+      endTime,
+      type: annotationType,
+      id: props.id,
+      stream: props.stream,
+    }
+
     try {
       dispatch(deleteAnnotations(editedAnnotation))
-      event('xyplot.annotations.delete_annotation.success')
-      dispatch(notify(deleteAnnotationSuccess(editedAnnotation.message)))
-      props.handleClose()
+      event('annotations.delete_annotation.success')
+      dispatch(notify(deleteAnnotationSuccess(editedAnnotation.summary)))
+      props.onClose()
     } catch (err) {
-      event('xyplot.annotations.delete_annotation.failure')
+      event('annotations.delete_annotation.failure')
       dispatch(notify(deleteAnnotationFailed(err)))
     }
   }

@@ -1,13 +1,26 @@
 import {asLink} from './TableCell'
 
 describe('TableCell.asLink', () => {
-  it('Properly handles various base data types', () => {
+  it('Properly handles various base data types, ignoring non-strings', () => {
     expect(asLink('a regular string')).toEqual('a regular string')
     expect(asLink(NaN)).toEqual(NaN)
     expect(asLink(true)).toEqual(true)
     expect(asLink(42)).toEqual(42)
     expect(asLink(undefined)).toEqual(undefined)
     expect(asLink(null)).toEqual(null)
+    expect(asLink({})).toEqual({})
+    expect(asLink([])).toEqual([])
+    const array = [1, 'a']
+    expect(asLink(array)).toEqual(array)
+    const jsonObject = {color: '#4286f4', description: 'the best of labels'}
+    expect(asLink(jsonObject)).toEqual(jsonObject)
+    const regularObject = {}
+    regularObject['color'] = '#4286f4'
+    regularObject['description'] = 'the best of labels'
+    expect(asLink(regularObject)).toEqual(regularObject)
+
+    const objectPropertiesAreIgnored = {'https://www.google.com': 'not a link'}
+    expect(objectPropertiesAreIgnored).toEqual(objectPropertiesAreIgnored)
   })
 
   it('Handles basic links', () => {
@@ -22,6 +35,15 @@ describe('TableCell.asLink', () => {
     expect(secureLink).toHaveLength(1)
     expect(secureLink[0].props.href).toEqual('https://www.influxdata.com')
     expect(secureLink[0].props.children).toEqual('https://www.influxdata.com')
+
+    const signupLink = asLink('https://cloud2.influxdata.com/signup')
+    expect(signupLink).toHaveLength(1)
+    expect(signupLink[0].props.href).toEqual(
+      'https://cloud2.influxdata.com/signup'
+    )
+    expect(signupLink[0].props.children).toEqual(
+      'https://cloud2.influxdata.com/signup'
+    )
   })
 
   it('Handles text and link combinations appropriately', () => {
@@ -104,5 +126,17 @@ describe('TableCell.asLink', () => {
     expect(soclose2).toEqual('http:/www.google.com')
     const backwards = asLink('http:\\\\www.google.com')
     expect(backwards).toEqual('http:\\\\www.google.com')
+  })
+
+  it('can handle stringified json gracefully', () => {
+    const json = JSON.stringify({
+      message: 'not a link',
+      url: 'https://www.google.com',
+    })
+    const jsonAsLink = asLink(json)
+    expect(jsonAsLink).toHaveLength(2)
+    expect(jsonAsLink[0]).toEqual('{"message":"not a link","url":"')
+    // The link is bad but we can't stop people adding bad links.  At least it won't fall over - JF
+    expect(jsonAsLink[1].props.href).toEqual('https://www.google.com"}')
   })
 })

@@ -75,6 +75,11 @@ export function asLink(str) {
     }
   } while (m)
 
+  // Add leftover non link string if it exists
+  if (str.slice(idx).length > 0) {
+    out.push(str.slice(idx))
+  }
+
   return out
 }
 

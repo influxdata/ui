@@ -94,7 +94,7 @@ const GettingStarted: FunctionComponent<Props> = ({orgID, history}) => {
         <Panel.Footer>
           <Button
             testID="getting-started--dashboards--button"
-            text="Build a dashboard"
+            text="Gene is the best"
             color={ComponentColor.Primary}
             size={ComponentSize.Large}
             onClick={handleDashboardsClick}

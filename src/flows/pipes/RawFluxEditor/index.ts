@@ -1,7 +1,29 @@
+import {parse, format_from_js_file} from '@influxdata/flux'
 import View from './view'
 import './style.scss'
 
-const COMMENT_REMOVER = /(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm
+// TODO: replaces this with the src/flows/context/query:find export once that's merged
+const _walk = (node, test, acc = []) => {
+  if (!node) {
+    return acc
+  }
+
+  if (test(node)) {
+    acc.push(node)
+  }
+
+  Object.values(node).forEach(val => {
+    if (Array.isArray(val)) {
+      val.forEach(_val => {
+        _walk(_val, test, acc)
+      })
+    } else if (typeof val === 'object') {
+      _walk(val, test, acc)
+    }
+  })
+
+  return acc
+}
 
 export default register => {
   register({
@@ -27,9 +49,13 @@ export default register => {
       ],
     },
     generateFlux: (pipe, create, append) => {
-      const text = pipe.queries[pipe.activeQuery].text
-        .replace(COMMENT_REMOVER, '')
-        .trim()
+      const ast = parse(pipe.queries[pipe.activeQuery].text)
+      _walk(ast, node => !!Object.keys(node.comments || {}).length).forEach(
+        node => {
+          delete node.comments
+        }
+      )
+      const text = format_from_js_file(ast)
 
       if (!text.length) {
         return

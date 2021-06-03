@@ -120,15 +120,18 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
         throw new Error(resp.data.message)
       }
 
+      const csv = resp.data
+      const trimmedCSV = resp.data?.trim()
       // TODO(ariel): keeping this in for testing purposes in staging
       // This will need to be removed for flipping the feature flag on
-      console.warn(resp.data)
+      console.warn({csv, trimmedCSV})
 
-      const csvs = resp.data?.trim().split('\n\n')
+      const csvs = csv.split('\n\n')
+      const trimmedCsvs = trimmedCSV.split('\n\n')
 
       // TODO(ariel): keeping this in for testing purposes in staging
       // This will need to be removed for flipping the feature flag on
-      console.warn({csvs})
+      console.warn({csvs, trimmedCsvs})
       setBillingStats(csvs)
     } catch (error) {
       console.error('getBillingStats: ', error)

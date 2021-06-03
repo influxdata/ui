@@ -33,13 +33,3 @@ export const DemoDataTemplates = {
     DemoDataDashboards[WebsiteMonitoringBucket]
   ),
 }
-
-export const HIDE_UPGRADE_CTA_KEY = 'hide_upgrade_cta'
-export const FREE_ORG_HIDE_UPGRADE_SETTING = {
-  key: HIDE_UPGRADE_CTA_KEY,
-  value: 'false',
-}
-export const PAID_ORG_HIDE_UPGRADE_SETTING = {
-  key: HIDE_UPGRADE_CTA_KEY,
-  value: 'true',
-}

@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC, FormEvent, useState} from 'react'
+import {useDispatch} from 'react-redux'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -18,6 +19,14 @@ import {
 } from '@influxdata/clockface'
 import {AnnotationMessageInput} from 'src/annotations/components/annotationForm/AnnotationMessageInput'
 import {AnnotationTimeInput} from 'src/annotations/components/annotationForm/AnnotationTimeInput'
+
+import {deleteAnnotations} from 'src/annotations/actions/thunks'
+// Notifications
+import {
+  deleteAnnotationFailed,
+  deleteAnnotationSuccess,
+} from 'src/shared/copy/notifications'
+import {notify} from 'src/shared/actions/notifications'
 
 // Constants
 import {ANNOTATION_FORM_WIDTH} from 'src/annotations/constants'
@@ -74,6 +83,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
   const [summary, setSummary] = useState(props.summary)
   const [annotationType, setAnnotationType] = useState(props.type)
 
+  const dispatch = useDispatch()
   console.log('here in annotation form; props??', props)
 
   const isValidAnnotationForm = ({summary, startTime, endTime}): boolean => {
@@ -109,6 +119,19 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     props.onSubmit({summary, startTime, endTime})
   }
 
+  // TODO:  get the correct prefix in there, multiple plot types have annotations now
+  const handleDelete = () => {
+    try {
+      dispatch(deleteAnnotations(editedAnnotation))
+      event('xyplot.annotations.delete_annotation.success')
+      dispatch(notify(deleteAnnotationSuccess(editedAnnotation.message)))
+      props.handleClose()
+    } catch (err) {
+      event('xyplot.annotations.delete_annotation.failure')
+      dispatch(notify(deleteAnnotationFailed(err)))
+    }
+  }
+
   const handleCancel = () => {
     event('dashboards.annotations.create_annotation.cancel')
     props.onClose()
@@ -125,6 +148,8 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     setAnnotationType('point')
   }
 
+  const saveTextSuffix = props.id ? 'Annotation' : 'Changes'
+
   return (
     <Overlay.Container maxWidth={ANNOTATION_FORM_WIDTH}>
       <Overlay.Header
@@ -137,8 +162,9 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
             <Grid.Column>
               <Form.Label label="Type" />
               <SelectGroup
-                size={ComponentSize.Medium}
+                size={ComponentSize.Small}
                 style={{marginBottom: 8}}
+                color={ComponentColor.Default}
               >
                 <SelectGroup.Option
                   onClick={changeToPointType}
@@ -183,18 +209,33 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
           </Grid>
         </Overlay.Body>
         <Overlay.Footer>
-          <Button text="Cancel" onClick={handleCancel} />
-          <Button
-            text="Save Annotation"
-            color={ComponentColor.Primary}
-            type={ButtonType.Submit}
-            status={
-              isValidAnnotationForm({startTime, endTime, summary})
-                ? ComponentStatus.Default
-                : ComponentStatus.Disabled
-            }
-            testID="add-annotation-submit"
-          />
+          {props.id && (
+            <Button
+              text="Delete Annotation"
+              onClick={handleDelete}
+              color={ComponentColor.Danger}
+              style={{marginRight: '15px'}}
+              testID="delete-annotation-button"
+            />
+          )}
+          <>
+            <Button
+              text="Cancel"
+              onClick={handleCancel}
+              testID="edit-annotation-cancel-button"
+            />
+            <Button
+              text={`Save ${saveTextSuffix}`}
+              color={ComponentColor.Primary}
+              type={ButtonType.Submit}
+              status={
+                isValidAnnotationForm({startTime, endTime, summary})
+                  ? ComponentStatus.Default
+                  : ComponentStatus.Disabled
+              }
+              testID="add-annotation-submit"
+            />
+          </>
         </Overlay.Footer>
       </Form>
     </Overlay.Container>

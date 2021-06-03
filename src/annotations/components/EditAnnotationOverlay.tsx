@@ -3,8 +3,7 @@ import React, {FC, useContext} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 
 // Components
-import {EditAnnotationForm} from 'src/annotations/components/EditAnnotationForm'
-
+import {AnnotationForm} from 'src/annotations/components/annotationForm/AnnotationForm'
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
@@ -28,7 +27,6 @@ import {notify} from 'src/shared/actions/notifications'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {getErrorMessage} from 'src/utils/api'
-import {AnnotationForm} from './annotationForm/AnnotationForm'
 
 export const EditAnnotationOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
@@ -53,8 +51,6 @@ export const EditAnnotationOverlay: FC = () => {
     clickedAnnotation.startTime === clickedAnnotation.endTime
       ? 'point'
       : 'range'
-
-  console.log('about to edit this annotation...', clickedAnnotation)
 
   return (
     <AnnotationForm

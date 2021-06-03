@@ -33,6 +33,7 @@ interface Props {
   title: 'Edit' | 'Add'
   id?: string
   summary?: string
+  stream?: string
   type: AnnotationType
   onSubmit: (Annotation) => void
   onClose: () => void
@@ -44,7 +45,7 @@ export const isValidAnnotation = (
   startTime: any,
   endTime: any
 ) => {
-  const isValidPointAnnotation = summary.length && startTime
+  const isValidPointAnnotation = summary && summary.length && startTime
 
   console.log(
     'in valid check....',
@@ -68,8 +69,10 @@ export const isValidAnnotation = (
 export const AnnotationForm: FC<Props> = (props: Props) => {
   const [startTime, setStartTime] = useState(props.startTime)
   const [endTime, setEndTime] = useState(props.endTime)
-  const [summary, setSummary] = useState('')
+  const [summary, setSummary] = useState(props.summary)
   const [annotationType, setAnnotationType] = useState(props.type)
+
+  console.log('here in annotation form; props??', props)
 
   const isValidAnnotationForm = ({summary, startTime, endTime}): boolean => {
     return isValidAnnotation(annotationType, summary, startTime, endTime)
@@ -78,7 +81,14 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault()
 
-    props.onSubmit({summary, startTime, endTime, annotationType})
+    props.onSubmit({
+      summary,
+      startTime,
+      endTime,
+      type: annotationType,
+      id: props.id,
+      stream: props.stream,
+    })
   }
 
   const updateSummary = (newSummary: string): void => {

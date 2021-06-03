@@ -36,16 +36,15 @@ export const EditAnnotationOverlay: FC = () => {
   const {clickedAnnotation} = useSelector(getOverlayParams)
 
   const handleSubmit = async (
-    editedAnnotation: EditAnnotation,
-    eventPrefix = 'xyplot'
+    editedAnnotation: EditAnnotation
   ): Promise<void> => {
     try {
       await dispatch(editAnnotation(editedAnnotation))
-      event('xyplot.annotations.edit_annotation.success')
+      event('annotations.edit_annotation.success')
       dispatch(notify(editAnnotationSuccess()))
       onClose()
     } catch (err) {
-      event('xyplot.annotations.edit_annotation.failure')
+      event('annotations.edit_annotation.failure')
       dispatch(notify(editAnnotationFailed(getErrorMessage(err))))
     }
   }
@@ -55,6 +54,8 @@ export const EditAnnotationOverlay: FC = () => {
       ? 'point'
       : 'range'
 
+  console.log('about to edit this annotation...', clickedAnnotation)
+
   return (
     <AnnotationForm
       onSubmit={handleSubmit}
@@ -62,8 +63,10 @@ export const EditAnnotationOverlay: FC = () => {
       id={clickedAnnotation.id}
       endTime={clickedAnnotation.endTime}
       type={annoType}
-      summary={clickedAnnotation.message}
+      summary={clickedAnnotation.summary}
+      stream={clickedAnnotation.stream}
       onClose={onClose}
+      title="Edit"
     />
   )
 }

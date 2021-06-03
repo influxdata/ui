@@ -29,9 +29,9 @@ const makeCreateMethod = (
   eventPrefix = 'xyplot'
 ) => {
   const createAnnotation = async userModifiedAnnotation => {
-    const {summary, startTime, endTime, annotationType} = userModifiedAnnotation
+    const {summary, startTime, endTime, type} = userModifiedAnnotation
 
-    const actualEndTime = annotationType === 'point' ? startTime : endTime
+    const actualEndTime = type === 'point' ? startTime : endTime
 
     try {
       await dispatch(
@@ -44,14 +44,10 @@ const makeCreateMethod = (
           },
         ])
       )
-      event(
-        `${eventPrefix}.annotations.create_${annotationType}_annotation.create`
-      )
+      event(`${eventPrefix}.annotations.create_${type}_annotation.create`)
     } catch (err) {
       dispatch(notify(createAnnotationFailed(getErrorMessage(err))))
-      event(
-        `${eventPrefix}.annotations.create_${annotationType}_annotation.failure`
-      )
+      event(`${eventPrefix}.annotations.create_${type}_annotation.failure`)
     }
   }
 

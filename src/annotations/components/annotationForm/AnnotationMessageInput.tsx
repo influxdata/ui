@@ -23,7 +23,7 @@ export const AnnotationMessageInput: FC<Props> = (props: Props) => {
   const textArea = useRef(null)
   const validationMessage = props.message ? '' : 'This field is required'
   const [characterCount, setCharacterCount] = useState(
-    props.message.length ?? 0
+    props.message?.length ?? 0
   )
 
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {

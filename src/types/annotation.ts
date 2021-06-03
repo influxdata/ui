@@ -16,6 +16,7 @@ export interface EditAnnotation {
   endTime: string
   stream: string
   summary: string
+  type: string
 }
 
 export interface AnnotationResponse {

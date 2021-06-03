@@ -117,6 +117,9 @@ from(bucket: "_tasks"{rightArrow}
 
   // Run the Notebook
   cy.getByTestID('time-machine-submit-button').click()
+
+  // FIXME: Temporary wait until we figure out a better solution
+  cy.wait(2000)
 }
 
 const createChecks = () => {

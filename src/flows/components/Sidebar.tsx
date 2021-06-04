@@ -180,6 +180,7 @@ const Sidebar: FC = () => {
                     ? action.title()
                     : action.title
                 event('Notebook Nav: Called Action', {menu: title})
+                // eslint-disable-next no-extra-semi
                 ;(action as ControlAction).action()
               }}
               wrapText={false}

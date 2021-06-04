@@ -80,7 +80,7 @@ export const Provider: FC = ({children}) => {
       node =>
         node.type === 'OptionStatement' && node.assignment.id.name === 'task'
     ).reduce((acc, curr) => {
-      // eslint-disable-next no-extra-semi
+      // eslint-disable-next-line no-extra-semi
       ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
         _acc[_curr.key.name] = _curr.value.location.source
         return _acc

@@ -33,6 +33,7 @@ import ExportVariableOverlay from 'src/variables/components/VariableExportOverla
 import NewThresholdCheckEO from 'src/checks/components/NewThresholdCheckEO'
 import NewDeadmanCheckEO from 'src/checks/components/NewDeadmanCheckEO'
 import AutoRefreshOverlay from 'src/dashboards/components/AutoRefreshOverlay'
+import CellCloneOverlay from 'src/shared/components/cells/CellCloneOverlay'
 
 // Actions
 import {dismissOverlay} from 'src/overlays/actions/overlays'
@@ -115,6 +116,9 @@ export const OverlayController: FunctionComponent = () => {
         break
       case 'toggle-auto-refresh':
         activeOverlay.current = <AutoRefreshOverlay />
+        break
+      case 'cell-copy-overlay':
+        activeOverlay.current = <CellCloneOverlay />
         break
       default:
         activeOverlay.current = null

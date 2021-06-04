@@ -107,6 +107,7 @@ const BillingStatsPanel: FC = () => {
               key={csv}
               graphInfo={graphInfo[i]}
               csv={csv.trim()}
+              length={billingStats.length}
             />
           )
         })}

@@ -9,13 +9,7 @@ import React, {
 import moment from 'moment'
 
 // Components
-import {
-  Columns,
-  ComponentStatus,
-  Form,
-  Grid,
-  Input,
-} from '@influxdata/clockface'
+import {ComponentStatus, Form, Input} from '@influxdata/clockface'
 
 // Context
 import {AppSettingContext} from 'src/shared/contexts/app'
@@ -100,21 +94,19 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
   const labelText = props.titleText ?? 'Start Time'
 
   return (
-    <Grid.Column widthXS={Columns.Twelve}>
-      <Form.Element
-        label={labelText}
-        required={true}
-        errorMessage={validationMessage}
-      >
-        <Input
-          name={props.name}
-          value={timeValue}
-          testID={testID}
-          onChange={handleChange}
-          onKeyPress={handleKeyPress}
-          status={ComponentStatus.Default}
-        />
-      </Form.Element>
-    </Grid.Column>
+    <Form.Element
+      label={labelText}
+      required={true}
+      errorMessage={validationMessage}
+    >
+      <Input
+        name={name}
+        value={timeValue}
+        testID={testID}
+        onChange={handleChange}
+        onKeyPress={handleKeyPress}
+        status={ComponentStatus.Default}
+      />
+    </Form.Element>
   )
 }

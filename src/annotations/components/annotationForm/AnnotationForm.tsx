@@ -14,7 +14,6 @@ import {
   ComponentSize,
   ComponentStatus,
   Form,
-  Grid,
   Overlay,
   SelectGroup,
 } from '@influxdata/clockface'
@@ -169,56 +168,52 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
       />
       <Form onSubmit={handleSubmit}>
         <Overlay.Body>
-          <Grid className="edit-annotation-grid">
-            <Grid.Column>
-              <Form.Label label="Type" />
-              <SelectGroup
-                size={ComponentSize.Small}
-                style={{marginBottom: 8}}
-                color={ComponentColor.Default}
-              >
-                <SelectGroup.Option
-                  onClick={changeToPointType}
-                  active={'point' === annotationType}
-                  id="annotation-form-point-type"
-                  value="point"
-                >
-                  Point
-                </SelectGroup.Option>
-                <SelectGroup.Option
-                  onClick={changeToRangeType}
-                  value="range"
-                  active={'range' === annotationType}
-                  id="annotation-form-range-type"
-                >
-                  Range
-                </SelectGroup.Option>
-              </SelectGroup>
-            </Grid.Column>
-            <div style={{display: 'flex', width: '100%'}}>
-              <AnnotationTimeInput
-                onChange={updateStartTime}
-                onSubmit={handleKeyboardSubmit}
-                time={startTime}
-                name="startTime"
-              />
-
-              {annotationType === 'range' && (
-                <AnnotationTimeInput
-                  onChange={updateEndTime}
-                  onSubmit={handleKeyboardSubmit}
-                  time={endTime}
-                  name="endTime"
-                  titleText="Stop Time"
-                />
-              )}
-            </div>
-            <AnnotationMessageInput
-              message={summary}
-              onChange={updateSummary}
+          <Form.Label label="Type" />
+          <SelectGroup
+            size={ComponentSize.Small}
+            style={{marginBottom: 8}}
+            color={ComponentColor.Default}
+          >
+            <SelectGroup.Option
+              onClick={changeToPointType}
+              active={'point' === annotationType}
+              id="annotation-form-point-type"
+              value="point"
+            >
+              Point
+            </SelectGroup.Option>
+            <SelectGroup.Option
+              onClick={changeToRangeType}
+              value="range"
+              active={'range' === annotationType}
+              id="annotation-form-range-type"
+            >
+              Range
+            </SelectGroup.Option>
+          </SelectGroup>
+          <div style={{display: 'flex', width: '100%'}}>
+            <AnnotationTimeInput
+              onChange={updateStartTime}
               onSubmit={handleKeyboardSubmit}
+              time={startTime}
+              name="startTime"
             />
-          </Grid>
+
+            {annotationType === 'range' && (
+              <AnnotationTimeInput
+                onChange={updateEndTime}
+                onSubmit={handleKeyboardSubmit}
+                time={endTime}
+                name="endTime"
+                titleText="Stop Time"
+              />
+            )}
+          </div>
+          <AnnotationMessageInput
+            message={summary}
+            onChange={updateSummary}
+            onSubmit={handleKeyboardSubmit}
+          />
         </Overlay.Body>
         <Overlay.Footer className={footerClasses}>
           {props.id && (

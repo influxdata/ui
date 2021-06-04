@@ -16,6 +16,9 @@ import {
   EmptyState,
 } from '@influxdata/clockface'
 
+// Constants
+import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
+
 // Utils
 import {getAll} from 'src/resources/selectors'
 
@@ -38,7 +41,7 @@ const WriteDataHelperTokens: FC = () => {
       <span>
         You don't have any{' '}
         <a
-          href="https://docs.influxdata.com/influxdb/cloud/security/tokens/"
+          href={`https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/security/tokens/`}
           target="_blank"
           rel="noreferrer"
         >

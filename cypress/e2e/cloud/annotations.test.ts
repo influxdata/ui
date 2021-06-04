@@ -266,23 +266,23 @@ describe('The Annotations UI functionality', () => {
     beforeEach(() => {
       setupData(cy, bandSuffix)
     })
-    it('can create an annotation on the single stat + line graph', () => {
+    it('can create an annotation on the band plot', () => {
       addAnnotationTest(cy)
     })
-    it('can edit an annotation for the single stat + line graph', () => {
+    it('can edit an annotation for the band plot', () => {
       editAnnotationTest(cy)
     })
-    it('can delete an annotation for the single stat + line graph', () => {
+    it('can delete an annotation for the band plot ', () => {
       deleteAnnotationTest(cy)
     })
-    it('can add a range annotation for the xy single stat + line graph', () => {
+    it('can add a range annotation for the band plot', () => {
       addRangeAnnotation(cy)
       checkAnnotationText(cy, 'range annotation here!')
     })
-    it('can add and edit a range annotation for the single stat + line graph', () => {
+    it('can add and edit a range annotation for the band plot', () => {
       editRangeAnnotationTest(cy)
     })
-    it('can add and then delete a range annotation for the single stat + line graph', () => {
+    it('can add and then delete a range annotation for the band plot', () => {
       addRangeAnnotation(cy)
       actuallyDeleteAnnotation(cy)
     })

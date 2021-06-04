@@ -68,7 +68,7 @@ describe('buckets thunks', () => {
   })
 
   describe('getBuckets', () => {
-    it('success', async () => {
+    it('should return results upon success', async () => {
       mockGetBuckets(true)
       const dispatch = jest.fn()
       const getState = jest.fn(getMockAppState) as any
@@ -84,7 +84,7 @@ describe('buckets thunks', () => {
       expect(dispatched[1].schema.result).toContain('demo-bucket')
     })
 
-    it('failed fetch', async () => {
+    it('should throw an error upon failure', async () => {
       mockGetBuckets(false)
       const dispatch = jest.fn()
       const getState = jest.fn(getMockAppState) as any

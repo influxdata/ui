@@ -320,7 +320,7 @@ describe('alertBuilderReducer', () => {
   })
 
   describe('default action', () => {
-    it('changes name', () => {
+    it("shouldn't change state when action type isn't recognized by reducer", () => {
       const expected = mockState()
       const actual = alertBuilderReducer(expected, {type: '' as any})
 
@@ -329,7 +329,7 @@ describe('alertBuilderReducer', () => {
   })
 
   describe('initial state', () => {
-    it('changes name', () => {
+    it('initializes state if undefined is passed', () => {
       const expected = alertBuilderReducer(initialState(), {type: '' as any})
       const actual = alertBuilderReducer(undefined, {type: '' as any})
 

@@ -120,7 +120,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
         throw new Error(resp.data.message)
       }
 
-      const csv = resp.data?.trim().replace('\r\n', '\n')
+      const csv = resp.data?.trim().replace(/\r\n/g, '\n')
       // TODO(ariel): keeping this in for testing purposes in staging
       // This will need to be removed for flipping the feature flag on
       console.warn({csv, json: JSON.stringify(resp.data)})

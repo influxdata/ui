@@ -9,6 +9,7 @@ import {
   LEGEND_OPACITY_DEFAULT,
   LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
   LEGEND_COLORIZE_ROWS_DEFAULT,
+  LEGEND_HIDE_DEFAULT,
 } from 'src/shared/constants'
 import {
   DEFAULT_GAUGE_COLORS,
@@ -85,6 +86,7 @@ const legendProps = {
   legendOpacity: LEGEND_OPACITY_DEFAULT,
   legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
   legendColorizeRows: LEGEND_COLORIZE_ROWS_DEFAULT,
+  legendHide: LEGEND_HIDE_DEFAULT,
 }
 
 const staticLegend = {

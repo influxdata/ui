@@ -495,6 +495,12 @@ export const timeMachineReducer = (
       return setViewProperties(state, {legendColorizeRows})
     }
 
+    case 'SET_LEGEND_HIDE': {
+      const {legendHide} = action.payload
+
+      return setViewProperties(state, {legendHide})
+    }
+
     case 'SET_STATIC_LEGEND': {
       const {staticLegend} = action.payload
 

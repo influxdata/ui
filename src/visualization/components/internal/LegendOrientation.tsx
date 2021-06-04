@@ -99,13 +99,26 @@ const LegendOrientation: FC<Props> = ({properties, update}) => {
     }
   }
 
+  const getHoverLegendHideStatus = (legendHide: boolean): string => {
+    if (legendHide) {
+      return 'Hidden'
+    }
+    return 'Shown'
+  }
+
+  const handleSetHoverLegendHide = (): void => {
+    update({
+      legendHide: !properties.legendHide,
+    })
+  }
+
   const handleSetColorization = (): void => {
     update({
       legendColorizeRows: !properties.legendColorizeRows,
     })
   }
 
-  const toggleStyle = {marginTop: 4}
+  const toggleStyle = {marginTop: '1em'}
   const toggleLabelStyle = {color: '#999dab'}
 
   // without the toFixed(0) sometimes you
@@ -117,9 +130,9 @@ const LegendOrientation: FC<Props> = ({properties, update}) => {
       direction={FlexDirection.Column}
       margin={ComponentSize.Large}
       alignItems={AlignItems.FlexStart}
-      style={{marginBottom: 18}}
+      style={{marginBottom: '1.5em'}}
     >
-      <InputLabel style={toggleLabelStyle}>Legend Orientation</InputLabel>
+      <InputLabel style={toggleLabelStyle}>Orientation</InputLabel>
       <Toggle
         tabIndex={1}
         value="horizontal"
@@ -168,6 +181,22 @@ const LegendOrientation: FC<Props> = ({properties, update}) => {
 
   return (
     <>
+      <FlexBox
+        direction={FlexDirection.Row}
+        alignItems={AlignItems.Center}
+        margin={ComponentSize.Medium}
+        stretchToFitWidth={true}
+        style={{marginTop: '0.5em', marginBottom: '1.5em'}}
+      >
+        <SlideToggle
+          active={!properties.legendHide}
+          size={ComponentSize.ExtraSmall}
+          onChange={handleSetHoverLegendHide}
+        />
+        <InputLabel style={toggleLabelStyle}>
+          Hover Legend {getHoverLegendHideStatus(properties.legendHide)}
+        </InputLabel>
+      </FlexBox>
       {orientationToggle}
       <Form.Element label={`Opacity: ${percentLegendOpacity}%`}>
         <RangeSlider

@@ -69,6 +69,7 @@ const XYPlot: FC<Props> = ({
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
   const tooltipColorize = properties.legendColorizeRows
+  const tooltipHide = properties.legendHide
   const tooltipOrientationThreshold = properties.legendOrientationThreshold
   const staticLegend = useStaticLegend(properties)
   const dispatch = useDispatch()
@@ -198,6 +199,7 @@ const XYPlot: FC<Props> = ({
     legendOpacity: tooltipOpacity,
     legendOrientationThreshold: tooltipOrientationThreshold,
     legendColorizeRows: tooltipColorize,
+    legendHide: tooltipHide,
     staticLegend,
     valueFormatters: {
       [xColumn]: xFormatter,

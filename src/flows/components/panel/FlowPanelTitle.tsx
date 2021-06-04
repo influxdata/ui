@@ -20,14 +20,11 @@ const FlowPanelTitle: FC<Props> = ({id}) => {
     })
   }
 
-  let sourceName
-  let titleElement = <div className="flow-panel--title">{title}</div>
-
   const onChange = (e: ChangeEvent<HTMLInputElement>): void => {
     onTitleChange(e.target.value)
   }
 
-  titleElement = (
+  return (
     <div className="flow-panel--title">
       <input
         type="text"
@@ -38,17 +35,9 @@ const FlowPanelTitle: FC<Props> = ({id}) => {
         autoComplete="off"
         autoCorrect="off"
         spellCheck={false}
-        maxLength={30}
       />
       <Icon glyph={IconFont.Pencil} className="flow-panel--title-icon" />
     </div>
-  )
-
-  return (
-    <>
-      {sourceName}
-      {titleElement}
-    </>
   )
 }
 

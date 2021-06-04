@@ -15,7 +15,7 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 import {AnnotationMessageInput} from 'src/annotations/components/annotationForm/AnnotationMessageInput'
-import {AnnotationStartTimeInput} from 'src/annotations/components/annotationForm/AnnotationStartTimeInput'
+import {AnnotationTimeInput} from 'src/annotations/components/annotationForm/AnnotationTimeInput'
 
 // Constants
 import {ANNOTATION_FORM_WIDTH} from 'src/annotations/constants'
@@ -29,24 +29,45 @@ type AnnotationType = 'point' | 'range'
 
 interface Props {
   startTime: string
+  endTime?: string
   title: 'Edit' | 'Add'
   type: AnnotationType
   onSubmit: (Annotation) => void
   onClose: () => void
 }
 
+export const isValidAnnotation = (
+  annotationType: string,
+  message: string,
+  startTime: any,
+  endTime: any
+) => {
+  const isValidPointAnnotation = message.length && startTime
+
+  // not checking if start <= end right now
+  // initially, the times are numbers, and then if the user manually edits them then
+  // they are strings, so the simple compare is non-trivial.
+  // plus, the backend checks if the startTime is before or equals the endTime
+  // so, letting the backend do that check for now.
+  if (annotationType === 'range') {
+    return isValidPointAnnotation && endTime
+  }
+  return isValidPointAnnotation
+}
+
 export const AnnotationForm: FC<Props> = (props: Props) => {
   const [startTime, setStartTime] = useState(props.startTime)
+  const [endTime, setEndTime] = useState(props.endTime)
   const [message, setMessage] = useState('')
 
-  const isValidAnnotationForm = ({message, startTime}): boolean => {
-    return message.length && startTime
+  const isValidAnnotationForm = ({message, startTime, endTime}): boolean => {
+    return isValidAnnotation(props.type, message, startTime, endTime)
   }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault()
 
-    props.onSubmit({message, startTime})
+    props.onSubmit({message, startTime, endTime})
   }
 
   const updateMessage = (newMessage: string): void => {
@@ -57,8 +78,12 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     setStartTime(newTime)
   }
 
+  const updateEndTime = (newTime: string): void => {
+    setEndTime(newTime)
+  }
+
   const handleKeyboardSubmit = () => {
-    props.onSubmit({message, startTime})
+    props.onSubmit({message, startTime, endTime})
   }
 
   const handleCancel = () => {
@@ -76,12 +101,24 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
         <Overlay.Body>
           <Grid>
             <Grid.Row>
-              <AnnotationStartTimeInput
+              <AnnotationTimeInput
                 onChange={updateStartTime}
                 onSubmit={handleKeyboardSubmit}
-                startTime={startTime}
+                time={startTime}
+                name="startTime"
               />
             </Grid.Row>
+            {props.type === 'range' && (
+              <Grid.Row>
+                <AnnotationTimeInput
+                  onChange={updateEndTime}
+                  onSubmit={handleKeyboardSubmit}
+                  time={endTime}
+                  name="endTime"
+                  titleText="Stop Time"
+                />
+              </Grid.Row>
+            )}
             <Grid.Row>
               <AnnotationMessageInput
                 message={message}
@@ -98,7 +135,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
             color={ComponentColor.Primary}
             type={ButtonType.Submit}
             status={
-              isValidAnnotationForm({startTime, message})
+              isValidAnnotationForm({startTime, endTime, message})
                 ? ComponentStatus.Default
                 : ComponentStatus.Disabled
             }

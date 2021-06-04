@@ -12,17 +12,26 @@ import {
 } from '@influxdata/clockface'
 import {parse, format_from_js_file} from '@influxdata/flux'
 import ExportTaskButton from 'src/flows/pipes/Schedule/ExportTaskButton'
+import ExportTaskOverlay from 'src/flows/pipes/Schedule/ExportTaskOverlay'
 
 // Types
 import {PipeProp} from 'src/types/flows'
 
 import {PipeContext} from 'src/flows/context/pipe'
+import {PopupContext} from 'src/flows/context/popup'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
+import {SidebarContext} from 'src/flows/context/sidebar'
 
 import {remove} from 'src/flows/context/query'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
 const Schedule: FC<PipeProp> = ({Context}) => {
-  const {id, data, queryText, update} = useContext(PipeContext)
+  const {id, data, queryText, update, range} = useContext(PipeContext)
+  const {register} = useContext(SidebarContext)
+  const {launch} = useContext(PopupContext)
   const {simplify} = useContext(FlowQueryContext)
   let intervalError = ''
   let offsetError = ''
@@ -133,8 +142,35 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     )
   }, [hasTaskOption])
 
+  useEffect(() => {
+    if (!id) {
+      return
+    }
+
+    register(id, [
+      {
+        title: 'Schedule Panel',
+        actions: [
+          {
+            title: 'Export as Task',
+            action: () => {
+              event('Export Task Clicked', {scope: 'schedule'})
+
+              launch(<ExportTaskOverlay />, {
+                properties: data.properties,
+                range: range,
+                query: data.query,
+              })
+            },
+          },
+        ],
+      },
+    ])
+  }, [id, data.query, data.properties, range])
+  const persist = isFlagEnabled('flow-sidebar') ? null : <ExportTaskButton />
+
   return (
-    <Context persistentControl={<ExportTaskButton />}>
+    <Context persistentControls={persist}>
       <FlexBox margin={ComponentSize.Medium}>
         <FlexBox.Child basis={168} grow={0} shrink={0}>
           <h5>Run this on a schedule</h5>

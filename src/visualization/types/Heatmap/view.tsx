@@ -1,6 +1,7 @@
 // Libraries
 import React, {FunctionComponent, useContext} from 'react'
-import {Plot} from '@influxdata/giraffe'
+import {useDispatch, useSelector} from 'react-redux'
+import {Config, Plot} from '@influxdata/giraffe'
 
 // Components
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
@@ -13,6 +14,8 @@ import {
   useVisXDomainSettings,
   useVisYDomainSettings,
 } from 'src/visualization/utils/useVisDomainSettings'
+import {handleUnsupportedGraphType} from 'src/visualization/utils/annotationUtils'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -23,6 +26,9 @@ import {AppSettingContext} from 'src/shared/contexts/app'
 // Types
 import {HeatmapViewProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
+
+// Selectors
+import {isWriteModeEnabled} from 'src/annotations/selectors'
 
 interface Props extends VisualizationProps {
   properties: HeatmapViewProperties
@@ -62,6 +68,9 @@ const HeatmapPlot: FunctionComponent<Props> = ({
     result.table.getColumn(yColumn, 'number')
   )
 
+  const dispatch = useDispatch()
+  const inAnnotationWriteMode = useSelector(isWriteModeEnabled)
+
   const isValidView =
     xColumn &&
     yColumn &&
@@ -93,39 +102,45 @@ const HeatmapPlot: FunctionComponent<Props> = ({
 
   const currentTheme = theme === 'light' ? VIS_THEME_LIGHT : VIS_THEME
 
-  return (
-    <Plot
-      config={{
-        ...currentTheme,
-        table: result.table,
-        xAxisLabel: properties.xAxisLabel,
-        yAxisLabel: properties.yAxisLabel,
-        xDomain,
-        onSetXDomain,
-        onResetXDomain,
-        yDomain,
-        onSetYDomain,
-        onResetYDomain,
-        ...axisTicksOptions,
-        legendOpacity: tooltipOpacity,
-        legendOrientationThreshold: tooltipOrientationThreshold,
-        legendColorizeRows: tooltipColorize,
-        valueFormatters: {
-          [xColumn]: xFormatter,
-          [yColumn]: yFormatter,
-        },
-        layers: [
-          {
-            type: 'heatmap',
-            x: xColumn,
-            y: yColumn,
-            colors,
-            binSize: properties.binSize,
-          },
-        ],
-      }}
-    />
-  )
+  const config: Config = {
+    ...currentTheme,
+    table: result.table,
+    xAxisLabel: properties.xAxisLabel,
+    yAxisLabel: properties.yAxisLabel,
+    xDomain,
+    onSetXDomain,
+    onResetXDomain,
+    yDomain,
+    onSetYDomain,
+    onResetYDomain,
+    ...axisTicksOptions,
+    legendOpacity: tooltipOpacity,
+    legendOrientationThreshold: tooltipOrientationThreshold,
+    legendColorizeRows: tooltipColorize,
+    valueFormatters: {
+      [xColumn]: xFormatter,
+      [yColumn]: yFormatter,
+    },
+    layers: [
+      {
+        type: 'heatmap',
+        x: xColumn,
+        y: yColumn,
+        colors,
+        binSize: properties.binSize,
+      },
+    ],
+  }
+
+  if (inAnnotationWriteMode && isFlagEnabled('annotations')) {
+    config.interactionHandlers = {
+      singleClick: () => {
+        dispatch(handleUnsupportedGraphType('Heatmap'))
+      },
+    }
+  }
+
+  return <Plot config={config} />
 }
 
 export default HeatmapPlot

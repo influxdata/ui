@@ -55,6 +55,8 @@ const BillingStatsPanel: FC = () => {
   const today = new Date().toISOString()
   const dateRange = `${billingDateTime} UTC to ${today} UTC`
 
+  const [billingDate] = billingDateTime.split('T')
+
   return (
     <Panel className="plan-type-panel usage--panel billing-stats--panel">
       <Panel.Header className="usage--billing-header">
@@ -70,7 +72,7 @@ const BillingStatsPanel: FC = () => {
           data-testid="usage-billing--title"
         >
           <h4 className="usage--billing-date-range">
-            {`Billing Stats For ${billingDateTime} to Today`}
+            {`Billing Stats For ${billingDate} to Today`}
           </h4>
         </ReflessPopover>
         <QuestionMarkTooltip
@@ -83,7 +85,7 @@ const BillingStatsPanel: FC = () => {
               <br />
               <br />
               <a
-                href="https://v2.docs.influxdata.com/v2.0/account-management/data-usage/"
+                href="https://docs.influxdata.com/influxdb/cloud/account-management/data-usage/"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -99,7 +101,7 @@ const BillingStatsPanel: FC = () => {
         alignItems={AlignItems.Stretch}
         testID="billing-stats--graphs"
       >
-        {billingStats.map((csv: string, i: number) => {
+        {billingStats?.map((csv: string, i: number) => {
           return (
             <GraphTypeSwitcher
               key={csv}

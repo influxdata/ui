@@ -1,15 +1,13 @@
-import React from 'react'
+import React, {FC, useContext} from 'react'
 import {Panel, Grid, ComponentSize} from '@influxdata/clockface'
 
 import BillingContactItem from 'src/billing/components/BillingContactItem'
-import {useBilling} from 'src/billing/components/BillingPage'
+import {BillingContext} from 'src/billing/context/billing'
 
-const BillingContactDisplay = () => {
-  const [
-    {
-      billingInfo: {contact},
-    },
-  ] = useBilling()
+const BillingContactDisplay: FC = () => {
+  const {
+    billingInfo: {contact},
+  } = useContext(BillingContext)
 
   return (
     <>

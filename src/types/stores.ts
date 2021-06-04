@@ -30,7 +30,6 @@ import {LimitsState} from 'src/cloud/reducers/limits'
 import {AlertBuilderState} from 'src/alerting/reducers/alertBuilder'
 import {CurrentPage} from 'src/shared/reducers/currentPage'
 import {DemoDataState} from 'src/cloud/reducers/demodata'
-import {OrgSettingsState} from 'src/cloud/reducers/orgsettings'
 import {PerfState} from 'src/perf/reducers'
 import {MeState} from 'src/me/reducers'
 
@@ -42,7 +41,6 @@ export interface AppState {
   cloud: {
     limits: LimitsState
     demoData: DemoDataState
-    orgSettings: OrgSettingsState
   }
   currentPage: CurrentPage
   currentDashboard: CurrentDashboardState

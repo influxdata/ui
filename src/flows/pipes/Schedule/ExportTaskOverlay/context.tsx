@@ -80,7 +80,7 @@ export const Provider: FC = ({children}) => {
       node =>
         node.type === 'OptionStatement' && node.assignment.id.name === 'task'
     ).reduce((acc, curr) => {
-      curr.assignment.init.properties.reduce((_acc, _curr) => {
+      (curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
         _acc[_curr.key.name] = _curr.value.location.source
         return _acc
       }, acc)
@@ -90,7 +90,7 @@ export const Provider: FC = ({children}) => {
 
     if (!_taskName) {
       if (activeTab === ExportAsTask.Create) {
-        setTaskName(params.name.replace(/^"(.*)"$/, '$1') || 'Name this Task')
+        setTaskName((params.name || '').replace(/^"(.*)"$/, '$1') || 'Name this Task')
       }
     } else {
       params.name = `"${_taskName || 'Name this task'}"`

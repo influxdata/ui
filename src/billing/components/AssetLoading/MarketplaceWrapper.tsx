@@ -1,33 +1,21 @@
-import React, {FC, ReactNode, useEffect} from 'react'
-import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
+import React, {FC, ReactChild, useEffect, useContext} from 'react'
 
-// Hooks
-import {useBilling} from 'src/billing/components/BillingPage'
-
-// Thunks
-import {getMarketplace} from 'src/billing/thunks'
-
-// Types
-import {RemoteDataState} from 'src/types'
+// Components
+import {BillingContext} from 'src/billing/context/billing'
+import PageSpinner from 'src/perf/components/PageSpinner'
 
 type Props = {
-  children: ReactNode
+  children: ReactChild
 }
 
 const MarketplaceWrapper: FC<Props> = ({children}) => {
-  const [{marketplace}, dispatch] = useBilling()
+  const {handleGetMarketplace, marketplaceStatus} = useContext(BillingContext)
 
   useEffect(() => {
-    getMarketplace(dispatch)
-  }, [dispatch])
+    handleGetMarketplace()
+  }, [handleGetMarketplace])
 
-  const loading = marketplace?.loadingStatus ?? RemoteDataState.NotStarted
-
-  return (
-    <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
-      {children}
-    </SpinnerContainer>
-  )
+  return <PageSpinner loading={marketplaceStatus}>{children}</PageSpinner>
 }
 
 export default MarketplaceWrapper

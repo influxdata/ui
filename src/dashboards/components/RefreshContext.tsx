@@ -7,10 +7,10 @@ import {CustomTimeRange, AutoRefreshStatus} from 'src/types'
 
 // Actions
 import {
-  setAutoRefreshInterval,
-  setAutoRefreshStatus,
   setAutoRefreshDuration,
   setInactivityTimeout,
+  setAutoRefreshInterval,
+  setAutoRefreshStatus,
 } from 'src/shared/actions/autoRefresh'
 import {getCurrentDashboardId} from 'src/dashboards/selectors'
 
@@ -25,6 +25,7 @@ export interface AutoRefreshState {
   refreshMilliseconds: {
     status: AutoRefreshStatus
     interval: number
+    label: string
   }
   infiniteDuration: boolean
 }
@@ -59,8 +60,9 @@ export const createAutoRefreshInitialState = (
       type: 'custom',
     },
     refreshMilliseconds: {
-      interval: 0,
-      status: AutoRefreshStatus.Paused,
+      interval: 60000,
+      status: AutoRefreshStatus.Active,
+      label: '60s',
     },
     infiniteDuration: false,
     ...override,
@@ -72,6 +74,8 @@ const autoRefreshReducer = (
   action
 ) => {
   switch (action.type) {
+    case 'SET_REFRESH_MILLISECONDS':
+      return {...state, refreshMilliseconds: action.refreshMilliseconds}
     case 'SET_DURATION':
       return {...state, duration: action.duration}
     case 'SET_INACTIVITY_TIMEOUT':
@@ -81,8 +85,6 @@ const autoRefreshReducer = (
         ...state,
         inactivityTimeoutCategory: action.inactivityTimeoutCategory,
       }
-    case 'SET_REFRESH_MILLISECONDS':
-      return {...state, refreshMilliseconds: action.refreshMilliseconds}
     case 'SET_INFINITE_DURATION':
       return {...state, infiniteDuration: action.infiniteDuration}
     case 'RESET':
@@ -102,11 +104,12 @@ const AutoRefreshContextProvider: FC = ({children}) => {
 
   const reduxDispatch = useDispatch()
 
-  const activateAutoRefresh = useCallback(() => {
+  const setAutoRefreshSettings = useCallback(() => {
     reduxDispatch(
       setAutoRefreshInterval(
         currentDashboardId,
-        state.refreshMilliseconds.interval
+        state.refreshMilliseconds.interval,
+        state.refreshMilliseconds.label
       )
     )
 
@@ -121,7 +124,7 @@ const AutoRefreshContextProvider: FC = ({children}) => {
       setAutoRefreshStatus(currentDashboardId, AutoRefreshStatus.Active)
     )
 
-    if (state.inactivityTimeout !== 'None') {
+    if (state.inactivityTimeout !== 'Never') {
       const cutoff = calculateTimeout(
         state.inactivityTimeout,
         state.inactivityTimeoutCategory
@@ -134,13 +137,15 @@ const AutoRefreshContextProvider: FC = ({children}) => {
     currentDashboardId,
     reduxDispatch,
     state.duration,
-    state.refreshMilliseconds,
     state.inactivityTimeout,
     state.inactivityTimeoutCategory,
+    state.refreshMilliseconds,
   ])
 
   return (
-    <AutoRefreshContext.Provider value={{state, dispatch, activateAutoRefresh}}>
+    <AutoRefreshContext.Provider
+      value={{state, dispatch, setAutoRefreshSettings}}
+    >
       {children}
     </AutoRefreshContext.Provider>
   )

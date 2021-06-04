@@ -11,13 +11,13 @@ import BucketProvider from 'src/flows/context/buckets'
 import BucketSelector from 'src/flows/shared/BucketSelector'
 
 const ToBucket: FC<PipeProp> = ({Context}) => (
-  <BucketProvider>
-    <Context>
-      <div className="data-source--controls">
-        <BucketSelector />
-      </div>
-    </Context>
-  </BucketProvider>
-)
+    <BucketProvider>
+      <Context>
+        <div className="data-source--controls">
+          <BucketSelector />
+        </div>
+      </Context>
+    </BucketProvider>
+  )
 
 export default ToBucket

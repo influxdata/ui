@@ -75,7 +75,9 @@ export const runQuery = (
   }
 }
 
-const processResponse = async (response: Response): Promise<RunQueryResult> => {
+export const processResponse = async (
+  response: Response
+): Promise<RunQueryResult> => {
   switch (response.status) {
     case 200:
       return processSuccessResponse(response)

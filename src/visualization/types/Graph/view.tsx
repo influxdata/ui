@@ -2,10 +2,12 @@
 import React, {FC, useMemo, useContext} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {
-  AnnotationLayerConfig,
   Config,
   DomainLabel,
+  LINE_COUNT,
   Plot,
+  STACKED_LINE_CUMULATIVE,
+  createGroupIDColumn,
   getDomainDataFromLines,
   lineTransform,
 } from '@influxdata/giraffe'
@@ -35,6 +37,7 @@ import {VisualizationProps} from 'src/visualization'
 import {useAxisTicksGenerator} from 'src/visualization/utils/useAxisTicksGenerator'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
 import {useLegendOpacity} from 'src/visualization/utils/useLegendOrientation'
+import {useStaticLegend} from 'src/visualization/utils/useStaticLegend'
 import {
   useVisXDomainSettings,
   useVisYDomainSettings,
@@ -47,13 +50,9 @@ import {
   defaultXColumn,
   defaultYColumn,
 } from 'src/shared/utils/vis'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Annotations
-import {
-  makeAnnotationClickListener,
-  makeAnnotationLayer,
-} from 'src/visualization/components/annotationUtils'
+import {addAnnotationLayer} from 'src/visualization/utils/annotationUtils'
 
 interface Props extends VisualizationProps {
   properties: XYViewProperties
@@ -71,6 +70,7 @@ const XYPlot: FC<Props> = ({
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
   const tooltipColorize = properties.legendColorizeRows
   const tooltipOrientationThreshold = properties.legendOrientationThreshold
+  const staticLegend = useStaticLegend(properties)
   const dispatch = useDispatch()
 
   // these two values are set in the dashboard, and used whether or not this view
@@ -100,14 +100,18 @@ const XYPlot: FC<Props> = ({
     yColumn &&
     columnKeys.includes(yColumn)
 
-  const colorHexes =
-    properties.colors && properties.colors.length
-      ? properties.colors.map(c => c.hex)
-      : DEFAULT_LINE_COLORS.map(c => c.hex)
+  const colorHexes = useMemo(() => {
+    if (properties.colors && properties.colors.length) {
+      return properties.colors.map(color => color.hex)
+    }
+    return DEFAULT_LINE_COLORS.map(color => color.hex)
+  }, [properties.colors])
 
   const interpolation = geomToInterpolation(properties.geom)
 
-  const groupKey = [...result.fluxGroupKeyUnion, 'result']
+  const groupKey = useMemo(() => [...result.fluxGroupKeyUnion, 'result'], [
+    result,
+  ])
 
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
     storedXDomain,
@@ -125,16 +129,17 @@ const XYPlot: FC<Props> = ({
         colorHexes,
         properties.position
       )
-      return getDomainDataFromLines(lineData, DomainLabel.Y)
+      const [fillColumn] = createGroupIDColumn(result.table, groupKey)
+      return getDomainDataFromLines(lineData, [...fillColumn], DomainLabel.Y)
     }
     return result.table.getColumn(yColumn, 'number')
   }, [
     result.table,
-    yColumn,
     xColumn,
-    properties.position,
-    colorHexes,
+    yColumn,
     groupKey,
+    colorHexes,
+    properties.position,
   ])
 
   const [yDomain, onSetYDomain, onResetYDomain] = useVisYDomainSettings(
@@ -143,7 +148,15 @@ const XYPlot: FC<Props> = ({
   )
 
   const legendColumns = filterNoisyColumns(
-    [...groupKey, xColumn, yColumn],
+    properties.position === 'stacked'
+      ? [
+          ...groupKey,
+          xColumn,
+          yColumn,
+          `_${STACKED_LINE_CUMULATIVE}`,
+          `_${LINE_COUNT}`,
+        ]
+      : [...groupKey, xColumn, yColumn],
     result.table
   )
 
@@ -185,6 +198,7 @@ const XYPlot: FC<Props> = ({
     legendOpacity: tooltipOpacity,
     legendOrientationThreshold: tooltipOrientationThreshold,
     legendColorizeRows: tooltipColorize,
+    staticLegend,
     valueFormatters: {
       [xColumn]: xFormatter,
       [yColumn]: yFormatter,
@@ -205,27 +219,18 @@ const XYPlot: FC<Props> = ({
     ],
   }
 
-  if (isFlagEnabled('annotations')) {
-    if (inAnnotationWriteMode && cellID) {
-      config.interactionHandlers = {
-        singleClick: makeAnnotationClickListener(dispatch, cellID),
-      }
-    }
+  addAnnotationLayer(
+    config,
+    inAnnotationWriteMode,
+    cellID,
+    xColumn,
+    yColumn,
+    groupKey,
+    annotations,
+    annotationsAreVisible,
+    dispatch
+  )
 
-    const annotationLayer: AnnotationLayerConfig = makeAnnotationLayer(
-      cellID,
-      xColumn,
-      yColumn,
-      groupKey,
-      annotations,
-      annotationsAreVisible,
-      dispatch
-    )
-
-    if (annotationLayer) {
-      config.layers.push(annotationLayer)
-    }
-  }
   return <Plot config={config} />
 }
 

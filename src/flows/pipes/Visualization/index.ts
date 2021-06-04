@@ -24,6 +24,7 @@ export default register => {
       }
 
       if (!pipe.period) {
+        append()
         return
       }
 

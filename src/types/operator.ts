@@ -8,20 +8,6 @@ export {
   User,
 } from 'src/client/unityRoutes'
 
-export interface MarketplaceSubscription {
-  marketplace: string
-  subscriberId: string
-  status: string
-}
-
-export interface TestResource {
-  name: string
-  id: string
-  email: string
-  operator: boolean
-  account: Account
-}
-
 export interface CellInfo {
   path: string
   name: string

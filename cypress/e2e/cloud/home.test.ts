@@ -39,25 +39,28 @@ describe('Home Page Tests', () => {
     createChecks()
     exportMockAlertsActivity()
 
+    // Random amount of wait for the export data to be available on home page
+    cy.wait(1000)
+
     cy.visit('/')
     cy.getByTestID('alerts-activity')
       .scrollIntoView()
       .should('be.visible')
     cy.getByTestID('alerts-activity-table-container')
       .find('.event-row')
-      .should('have.length', 2)
+      .should('have.length.gte', 2)
   })
 })
 
 const exportMockAlertsActivity = () => {
-  const script1 = `import "influxdata/influxdb/v1"
-import "influxdata/influxdb/monitor"
+  const script1 = `import "influxdata/influxdb/v1{rightArrow}
+import "influxdata/influxdb/monitor{rightArrow}
 
-from(bucket: "_tasks")
-  |> range(start: -1d)
+from(bucket: "_tasks"{rightArrow}
+  |> range(start: -1d{rightArrow}
 |> v1.fieldsAsCols()
-|> distinct(column: "name")
-|> keep(columns: ["_value", "taskID", "status"])
+|> distinct(column: "name"{rightArrow}
+|> keep(columns: ["_value", "taskID", "status"{rightArrow}{rightArrow}
 |> rename(columns: {
   "taskID": "_check_id"{del}{del}
 })
@@ -70,15 +73,18 @@ from(bucket: "_tasks")
   cy.getByTestID('create-flow--button')
     .first()
     .click()
+  cy.wait(0)
   cy.getByTestID('flows-delete-cell')
     .first()
-    .click()
+    .click({force: true})
+  cy.wait(0)
   cy.getByTestID('flows-delete-cell')
     .first()
-    .click()
+    .click({force: true})
+  cy.wait(0)
   cy.getByTestID('flows-delete-cell')
     .first()
-    .click()
+    .click({force: true})
 
   // Name this Notebook
   cy.getByTestID('page-title').click()
@@ -89,9 +95,15 @@ from(bucket: "_tasks")
   // Click on main page add button
   // Add 1st Cell
   cy.getByTestID('add-flow-btn--rawFluxEditor').click()
-  cy.getByTestID('flux-editor').type(script1)
+  cy.focused()
 
-  // Add 2rd Cell
+  cy.getByTestID('flux-editor')
+    .scrollIntoView()
+    .focused()
+    .type(Cypress.platform === 'darwin' ? '{cmd}a' : '{ctrl}a')
+    .type(script1)
+
+  // Add 2nd Cell
   cy.getByTestID('panel-add-btn-0').click()
   cy.getByTestID('add-flow-btn--toBucket').click()
   cy.getByTestID('flow-bucket-selector').click()

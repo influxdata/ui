@@ -16,7 +16,9 @@ const AccountGrid: FC = () => {
     if (!account?.marketplace) {
       return account?.zuoraAccountId ?? 'N/A'
     } else {
-      return account?.marketplace?.subscriberId ?? 'N/A'
+      return 'N/A'
+      // TODO(ariel): get this going when the OperatorAccount is defined in the API
+      // return account?.marketplace?.subscriberId ?? 'N/A'
     }
   }
 
@@ -65,7 +67,9 @@ const AccountGrid: FC = () => {
         />
         <AccountField
           header="Salesforce ID"
-          body={account?.users?.[0]?.sfdcContactId ?? 'N/A'}
+          body="N/A" // TODO(ariel): update this to account for OperatorAccount type
+          // https://github.com/influxdata/ui/issues/1513
+          // body={account?.users?.[0]?.sfdcContactId ?? 'N/A'}
           testID="salesforce-id"
         />
       </FlexBox>
@@ -76,7 +80,9 @@ const AccountGrid: FC = () => {
       >
         <AccountField
           header="Subscription Status"
-          body={account?.marketplace?.status ?? 'N/A'}
+          body="N/A"
+          // TODO(ariel): get this going when the OperatorAccount is going
+          // body={account?.marketplace?.status ?? 'N/A'}
           testID="subscription-status"
         />
         <AccountBillingContact />

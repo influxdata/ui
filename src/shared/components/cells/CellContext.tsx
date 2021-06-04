@@ -98,6 +98,13 @@ const CellContext: FC<Props> = ({
             onHide={onHide}
             testID="cell-context--note"
           />
+          <CellContextItem
+            label="Clone"
+            onClick={handleCloneCell}
+            icon={IconFont.Duplicate}
+            onHide={onHide}
+            testID="cell-context--clone"
+          />
           <CellContextDangerItem
             label="Delete"
             onClick={handleDeleteCell}
@@ -159,7 +166,7 @@ const CellContext: FC<Props> = ({
         </FeatureFlag>
         <FeatureFlag name="pauseCell">
           <CellContextItem
-            label="Pause"
+            label={isPaused ? 'Resume' : 'Pause'}
             onClick={togglePauseCell}
             icon={isPaused ? IconFont.Play : IconFont.Pause}
             onHide={onHide}

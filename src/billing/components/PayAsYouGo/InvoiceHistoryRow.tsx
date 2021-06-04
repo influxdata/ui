@@ -16,12 +16,12 @@ const getPreviousMonth = date => {
 }
 
 const InvoiceHistoryRow: FC<Props> = ({
-  invoice: {status, amount, targetDate, filesId},
+  invoice: {status, amount, targetDate, id},
 }) => {
   const invoiceName = `${getPreviousMonth(new Date(targetDate))} ${new Date(
     targetDate
   ).getFullYear()} Invoice`
-  const link = `/billing/invoices/${filesId}`
+  const link = `/billing/invoices/${id}`
   const statusClassName = classnames('invoice-details invoice-status', {
     ['paid']: status === 'Paid',
   })

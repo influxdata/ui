@@ -15,6 +15,7 @@ import {
   removeTelegrafLabelsAsync,
 } from 'src/telegrafs/actions/thunks'
 
+import {createTelegraf} from 'src/telegrafs/actions/thunks'
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 
@@ -23,6 +24,9 @@ import {DEFAULT_COLLECTOR_NAME} from 'src/dashboards/constants'
 
 // Types
 import {AppState, Label, Telegraf} from 'src/types'
+
+// Utils
+import {incrementCloneName} from 'src/utils/naming'
 
 interface OwnProps {
   collector: Telegraf
@@ -80,6 +84,17 @@ class CollectorRow extends PureComponent<
   private get contextMenu(): JSX.Element {
     return (
       <Context>
+        <Context.Menu
+          icon={IconFont.Duplicate}
+          color={ComponentColor.Secondary}
+          testID="telegraf-clone-menu"
+        >
+          <Context.Item
+            label="Clone"
+            action={this.cloneTelegraf}
+            testID="telegraf-clone-button"
+          />
+        </Context.Menu>
         <Context.Menu
           testID="telegraf-delete-menu"
           icon={IconFont.Trash}
@@ -143,6 +158,15 @@ class CollectorRow extends PureComponent<
     history.push(`/orgs/${org.id}/load-data/telegrafs/${collector.id}/view`)
   }
 
+  private cloneTelegraf = (): void => {
+    const allTelegrafNames = Object.values(this.props.telegrafs).map(
+      t => t.name
+    )
+    this.props.onCloneTelegraf({
+      ...this.props.collector,
+      name: incrementCloneName(allTelegrafNames, this.props.collector.name),
+    })
+  }
   private handleDeleteConfig = (): void => {
     this.props.onDelete(this.props.collector)
   }
@@ -150,11 +174,12 @@ class CollectorRow extends PureComponent<
 
 const mstp = (state: AppState) => {
   const org = getOrg(state)
-
-  return {org}
+  const telegrafs = state.resources.telegrafs.byID
+  return {org, telegrafs}
 }
 
 const mdtp = {
+  onCloneTelegraf: createTelegraf,
   onAddLabels: addTelegrafLabelsAsync,
   onRemoveLabels: removeTelegrafLabelsAsync,
 }

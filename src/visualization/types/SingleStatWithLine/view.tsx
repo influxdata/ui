@@ -3,12 +3,15 @@ import React, {FC, useMemo, useContext} from 'react'
 import {
   Config,
   DomainLabel,
-  lineTransform,
+  LINE_COUNT,
+  Plot,
+  STACKED_LINE_CUMULATIVE,
+  SingleStatLayerConfig,
+  createGroupIDColumn,
   formatStatValue,
   getDomainDataFromLines,
   getLatestValues,
-  Plot,
-  SingleStatLayerConfig,
+  lineTransform,
 } from '@influxdata/giraffe'
 
 // Redux
@@ -25,6 +28,7 @@ import LatestValueTransform from 'src/visualization/components/LatestValueTransf
 import {useAxisTicksGenerator} from 'src/visualization/utils/useAxisTicksGenerator'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
 import {useLegendOpacity} from 'src/visualization/utils/useLegendOrientation'
+import {useStaticLegend} from 'src/visualization/utils/useStaticLegend'
 import {
   useVisXDomainSettings,
   useVisYDomainSettings,
@@ -55,10 +59,7 @@ import {VisualizationProps} from 'src/visualization'
 import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 
 // Annotations
-import {
-  makeAnnotationClickListener,
-  makeAnnotationLayer,
-} from 'src/visualization/components/annotationUtils'
+import {addAnnotationLayer} from 'src/visualization/utils/annotationUtils'
 
 import {useDispatch, useSelector} from 'react-redux'
 
@@ -78,6 +79,7 @@ const SingleStatWithLine: FC<Props> = ({
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
   const tooltipColorize = properties.legendColorizeRows
   const tooltipOrientationThreshold = properties.legendOrientationThreshold
+  const staticLegend = useStaticLegend(properties)
 
   // these two values are set in the dashboard, and used whether or not this view
   // is in a dashboard or in configuration/single cell popout mode
@@ -107,15 +109,19 @@ const SingleStatWithLine: FC<Props> = ({
     yColumn &&
     columnKeys.includes(yColumn)
 
-  const _colors = properties.colors.filter(c => c.type === 'scale')
-  const colorHexes =
-    _colors && _colors.length
-      ? _colors.map(c => c.hex)
-      : DEFAULT_LINE_COLORS.map(c => c.hex)
+  const colorHexes = useMemo(() => {
+    const _colors = properties.colors.filter(c => c.type === 'scale')
+    if (_colors && _colors.length) {
+      return _colors.map(color => color.hex)
+    }
+    return DEFAULT_LINE_COLORS.map(color => color.hex)
+  }, [properties.colors])
 
   const interpolation = geomToInterpolation('line')
 
-  const groupKey = [...result.fluxGroupKeyUnion, 'result']
+  const groupKey = useMemo(() => [...result.fluxGroupKeyUnion, 'result'], [
+    result,
+  ])
 
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
     storedXDomain,
@@ -133,16 +139,17 @@ const SingleStatWithLine: FC<Props> = ({
         colorHexes,
         properties.position
       )
-      return getDomainDataFromLines(lineData, DomainLabel.Y)
+      const [fillColumn] = createGroupIDColumn(result.table, groupKey)
+      return getDomainDataFromLines(lineData, [...fillColumn], DomainLabel.Y)
     }
     return result.table.getColumn(yColumn, 'number')
   }, [
     result.table,
-    yColumn,
     xColumn,
-    properties.position,
-    colorHexes,
+    yColumn,
     groupKey,
+    colorHexes,
+    properties.position,
   ])
 
   const [yDomain, onSetYDomain, onResetYDomain] = useVisYDomainSettings(
@@ -151,7 +158,15 @@ const SingleStatWithLine: FC<Props> = ({
   )
 
   const legendColumns = filterNoisyColumns(
-    [...groupKey, xColumn, yColumn],
+    properties.position === 'stacked'
+      ? [
+          ...groupKey,
+          xColumn,
+          yColumn,
+          `_${STACKED_LINE_CUMULATIVE}`,
+          `_${LINE_COUNT}`,
+        ]
+      : [...groupKey, xColumn, yColumn],
     result.table
   )
 
@@ -202,6 +217,7 @@ const SingleStatWithLine: FC<Props> = ({
     legendOpacity: tooltipOpacity,
     legendOrientationThreshold: tooltipOrientationThreshold,
     legendColorizeRows: tooltipColorize,
+    staticLegend,
     valueFormatters: {
       [xColumn]: xFormatter,
       [yColumn]: yFormatter,
@@ -220,29 +236,6 @@ const SingleStatWithLine: FC<Props> = ({
         hoverDimension: properties.hoverDimension,
       },
     ],
-  }
-
-  let annotationLayer
-
-  if (isFlagEnabled('annotations')) {
-    const eventPrefix = 'singleStatWline'
-
-    if (inAnnotationWriteMode && cellID) {
-      config.interactionHandlers = {
-        singleClick: makeAnnotationClickListener(dispatch, cellID, eventPrefix),
-      }
-    }
-
-    annotationLayer = makeAnnotationLayer(
-      cellID,
-      xColumn,
-      yColumn,
-      groupKey,
-      annotations,
-      annotationsAreVisible,
-      dispatch,
-      eventPrefix
-    )
   }
 
   if (isFlagEnabled('useGiraffeGraphs')) {
@@ -271,9 +264,19 @@ const SingleStatWithLine: FC<Props> = ({
     // adding this *after* the statLayer, it has to be the top layer
     // for clicking to edit to function.  (if it is not the top layer it shows,
     // but the annotations are not editable)
-    if (annotationLayer) {
-      config.layers.push(annotationLayer)
-    }
+
+    addAnnotationLayer(
+      config,
+      inAnnotationWriteMode,
+      cellID,
+      xColumn,
+      yColumn,
+      groupKey,
+      annotations,
+      annotationsAreVisible,
+      dispatch,
+      'singleStatWline'
+    )
 
     return <Plot config={config} />
   } else {

@@ -1,4 +1,4 @@
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
 
 // Components
 import {
@@ -7,9 +7,7 @@ import {
   InfluxColors,
   Panel,
 } from '@influxdata/clockface'
-
-// Utils
-import {useBilling} from 'src/billing/components/BillingPage'
+import {BillingContext} from 'src/billing/context/billing'
 
 const TimeOptions = {
   month: 'numeric',
@@ -20,7 +18,7 @@ const TimeOptions = {
 }
 
 const PlanTypePanel: FC = () => {
-  const [{billingInfo}] = useBilling()
+  const {billingInfo} = useContext(BillingContext)
 
   return (
     <Panel className="plan-type-panel">

@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useEffect, useCallback} from 'react'
-import {connect, ConnectedProps, useDispatch} from 'react-redux'
+import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
@@ -19,7 +19,6 @@ import {FeatureFlag} from 'src/shared/utils/featureFlag'
 import {toggleShowVariablesControls as toggleShowVariablesControlsAction} from 'src/userSettings/actions'
 import {updateDashboard as updateDashboardAction} from 'src/dashboards/actions/thunks'
 import {
-  setAutoRefreshInterval as setAutoRefreshIntervalAction,
   setAutoRefreshStatus as setAutoRefreshStatusAction,
   resetDashboardAutoRefresh as resetDashboardAutoRefreshAction,
 } from 'src/shared/actions/autoRefresh'
@@ -27,6 +26,10 @@ import {
   setDashboardTimeRange as setDashboardTimeRangeAction,
   updateQueryParams as updateQueryParamsAction,
 } from 'src/dashboards/actions/ranges'
+import {
+  showOverlay as showOverlayAction,
+  dismissOverlay as dismissOverlayAction,
+} from 'src/overlays/actions/overlays'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -69,7 +72,6 @@ const DashboardHeader: FC<Props> = ({
   toggleShowVariablesControls,
   showVariablesControls,
   onSetAutoRefreshStatus,
-  setAutoRefreshInterval,
   timeRange,
   updateDashboard,
   updateQueryParams,
@@ -77,8 +79,10 @@ const DashboardHeader: FC<Props> = ({
   history,
   org,
   autoRefresh,
+  resetAutoRefresh,
+  showOverlay,
+  dismissOverlay,
 }) => {
-  const dispatch = useDispatch()
   const demoDataset = DemoDataDashboardNames[dashboard.name]
   useEffect(() => {
     if (demoDataset) {
@@ -96,17 +100,6 @@ const DashboardHeader: FC<Props> = ({
 
   const handleRenameDashboard = (name: string) => {
     updateDashboard(dashboard.id, {name})
-  }
-
-  const handleChooseAutoRefresh = (milliseconds: number) => {
-    setAutoRefreshInterval(dashboard.id, milliseconds)
-
-    if (milliseconds === 0) {
-      onSetAutoRefreshStatus(dashboard.id, AutoRefreshStatus.Paused)
-      return
-    }
-
-    onSetAutoRefreshStatus(dashboard.id, AutoRefreshStatus.Active)
   }
 
   const handleChooseTimeRange = (timeRange: TimeRange) => {
@@ -137,14 +130,6 @@ const DashboardHeader: FC<Props> = ({
     resetQueryCache()
     onManualRefresh()
   }, [])
-
-  const openAutoRefreshModal = () => {
-    history.push(`/orgs/${org.id}/dashboards/${dashboard.id}/autorefresh`)
-  }
-
-  const stopAutoRefreshAndReset = () => {
-    dispatch(resetDashboardAutoRefreshAction(dashboard.id))
-  }
 
   const isActive =
     autoRefresh?.status && autoRefresh.status === AutoRefreshStatus.Active
@@ -193,27 +178,38 @@ const DashboardHeader: FC<Props> = ({
           <GraphTips />
         </Page.ControlBarLeft>
         <Page.ControlBarRight>
-          <TimeZoneDropdown />
-          <TimeRangeDropdown
-            onSetTimeRange={handleChooseTimeRange}
-            timeRange={timeRange}
-          />
           <AutoRefreshDropdown
-            onChoose={handleChooseAutoRefresh}
+            onChoose={() => {}}
             onManualRefresh={resetCacheAndRefresh}
             selected={autoRefresh}
             showAutoRefresh={false}
           />
           {isFlagEnabled('newAutoRefresh') && (
             <Button
-              text={isActive ? 'Stop Auto Refresh' : 'Enable Auto Refresh'}
-              color={isActive ? ComponentColor.Danger : ComponentColor.Primary}
+              text={
+                isActive
+                  ? `Refreshing Every ${autoRefresh.label}`
+                  : 'Enable Auto Refresh'
+              }
+              color={
+                isActive ? ComponentColor.Secondary : ComponentColor.Default
+              }
               onClick={
-                isActive ? stopAutoRefreshAndReset : openAutoRefreshModal
+                isActive
+                  ? () => resetAutoRefresh(dashboard.id)
+                  : () =>
+                      showOverlay('toggle-auto-refresh', null, () =>
+                        dismissOverlay()
+                      )
               }
               testID="enable-auto-refresh-button"
             />
           )}
+          <TimeZoneDropdown />
+          <TimeRangeDropdown
+            onSetTimeRange={handleChooseTimeRange}
+            timeRange={timeRange}
+          />
         </Page.ControlBarRight>
       </Page.ControlBar>
     </>
@@ -248,7 +244,9 @@ const mdtp = {
   onSetAutoRefreshStatus: setAutoRefreshStatusAction,
   updateQueryParams: updateQueryParamsAction,
   setDashboardTimeRange: setDashboardTimeRangeAction,
-  setAutoRefreshInterval: setAutoRefreshIntervalAction,
+  resetAutoRefresh: resetDashboardAutoRefreshAction,
+  showOverlay: showOverlayAction,
+  dismissOverlay: dismissOverlayAction,
 }
 
 const connector = connect(mstp, mdtp)

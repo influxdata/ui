@@ -1448,34 +1448,49 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           .type('blah')
         cy.getByTestID('save-cell--button').click()
       })
+    })
+
+    it('can enable the auto refresh process, then manually stop the process via the dropdown', done => {
+      cy.intercept('POST', '/query', req => {
+        req.alias = 'refreshQuery'
+      })
       cy.getByTestID('enable-auto-refresh-button').click()
-      cy.getByTestID('auto-refresh-overlay').should('be.visible')
-      cy.getByTestID('auto-refresh-overlay').within(() => {
-        cy.getByTestID('autorefresh-dropdown--button').click()
-        cy.getByTestID('auto-refresh-5s').click()
-        cy.getByTestID('timerange-dropdown').click()
+      cy.getByTestID('auto-refresh-input')
+        .clear()
+        .type('2s')
+      cy.getByTestID('refresh-form-activate-button').click()
+      cy.wait('@refreshQuery')
+      cy.getByTestID('enable-auto-refresh-button').click()
+      // Wait the duration we'd expect on the next query to ensure stopping via the button actually stops the process. The fail means the request didn't run, which is what we want
+      cy.wait('@refreshQuery')
+      cy.on('fail', err => {
+        expect(err.message).to.include(
+          'Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 2nd request to the route: `refreshQuery`. No request ever occurred.'
+        )
+        done()
       })
     })
 
-    it('can enable the auto refresh process via the modal, then manually stop the process via the stop button', done => {
+    it('can timeout on a preset timeout selected by the user', done => {
+      cy.getByTestID('enable-auto-refresh-button').click()
+      cy.getByTestID('auto-refresh-input')
+        .clear()
+        .type('2s')
+      cy.getByTestID('timerange-popover-button').click()
       cy.getByTestID('timerange-popover--dialog').within(() => {
         cy.getByTestID('timerange--input')
           .clear()
-          .type(`${jumpAheadTime('00:20:00')}`)
+          .type(`${jumpAheadTime('00:00:05')}`)
         cy.getByTestID('daterange--apply-btn').click()
       })
+      cy.getByTestID('refresh-form-activate-button').click()
+
       cy.intercept('POST', '/query', req => {
         req.alias = 'refreshQuery'
       })
 
-      cy.getByTestID('refresh-form-activate-button').click()
       cy.wait('@refreshQuery')
       cy.wait('@refreshQuery')
-      cy.getByTestID('enable-auto-refresh-button').click()
-      cy.getByTestID('enable-auto-refresh-button').then(el => {
-        expect(el[0].getAttribute('title')).to.equal('Enable Auto Refresh')
-      })
-      // Wait the duration we'd expect on the next query to ensure stopping via the button actually stops the process. The fail means the request didn't run, which is what we want
       cy.wait('@refreshQuery')
       cy.on('fail', err => {
         expect(err.message).to.include(
@@ -1485,63 +1500,12 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       })
     })
 
-    it('can timeout on a preset timeout selected by the user', () => {
-      cy.getByTestID('timerange-popover--dialog').within(() => {
-        cy.getByTestID('timerange--input')
-          .clear()
-          .type(`${jumpAheadTime('00:00:11')}`)
-        cy.getByTestID('daterange--apply-btn').click()
-      })
-      cy.intercept('POST', '/query', req => {
-        req.alias = 'refreshQuery'
-      })
-
-      cy.getByTestID('refresh-form-activate-button').click()
-
-      cy.wait('@refreshQuery')
-      cy.wait('@refreshQuery')
-
-      cy.wait(2000)
-
-      cy.getByTestID('enable-auto-refresh-button').then(el => {
-        expect(el[0].getAttribute('title')).to.equal('Enable Auto Refresh')
-      })
-    })
-
-    it('does not refresh if user leaves, until user comes back, and then continues', () => {
-      cy.getByTestID('timerange-popover--dialog').within(() => {
-        cy.getByTestID('timerange--input')
-          .clear()
-          .type(`${jumpAheadTime('00:00:10')}`)
-        cy.getByTestID('daterange--apply-btn').click()
-      })
-      cy.intercept('POST', '/query', req => {
-        req.alias = 'refreshQuery'
-      })
-
-      cy.getByTestID('refresh-form-activate-button').click()
-
-      cy.wait('@refreshQuery')
-
-      cy.visit('/')
-
-      cy.wait(5000)
-
-      const queriesMade = cy.state('requests').filter((call: any) => {
-        call.alias === 'refreshQuery'
-      }).length
-
-      expect(queriesMade).to.equal(0)
-
-      cy.visit(routeToReturnTo)
-      cy.wait('@refreshQuery')
-      cy.wait(5000)
-      cy.getByTestID('enable-auto-refresh-button').then(el => {
-        expect(el[0].getAttribute('title')).to.equal('Enable Auto Refresh')
-      })
-    })
-
     it('does not refresh if user edits cell, until user comes back, and then continues', () => {
+      cy.getByTestID('enable-auto-refresh-button').click()
+      cy.getByTestID('auto-refresh-input')
+        .clear()
+        .type('2s')
+      cy.getByTestID('timerange-popover-button').click()
       cy.getByTestID('timerange-popover--dialog').within(() => {
         cy.getByTestID('timerange--input')
           .clear()
@@ -1575,14 +1539,19 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.wait('@refreshQuery')
       cy.wait(5000)
       cy.getByTestID('enable-auto-refresh-button').then(el => {
-        expect(el[0].getAttribute('title')).to.equal('Enable Auto Refresh')
+        expect(el[0].innerText).to.equal('Enable Auto Refresh')
       })
     })
     it('can timeout on a preset inactivity timeout', done => {
+      cy.getByTestID('enable-auto-refresh-button').click()
+      cy.getByTestID('auto-refresh-input')
+        .clear()
+        .type('3s')
+      cy.getByTestID('timerange-popover-button').click()
       cy.getByTestID('timerange-popover--dialog').within(() => {
         cy.getByTestID('timerange--input')
           .clear()
-          .type(`${jumpAheadTime('00:00:30')}`)
+          .type(`${jumpAheadTime('00:00:08')}`)
         cy.getByTestID('daterange--apply-btn').click()
       })
       cy.intercept('POST', '/query', req => {
@@ -1597,16 +1566,14 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           type: 'SET_INACTIVITY_TIMEOUT',
           ...{
             dashboardID: cy.state().window.store.getState().currentDashboard.id,
-            inactivityTimeout: 4000,
+            inactivityTimeout: 3000,
           },
         })
 
-      cy.wait(4000)
-      cy.getByTestID('enable-auto-refresh-button').should(
-        'have.attr',
-        'title',
-        'Enable Auto Refresh'
-      )
+      cy.wait(3100)
+      cy.getByTestID('enable-auto-refresh-button').then(el => {
+        expect(el[0].innerText).to.equal('Enable Auto Refresh')
+      })
       cy.getByTestID('notification-success--children')
         .children()
         .should(
@@ -1614,10 +1581,11 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           'Your dashboard auto refresh settings have been reset due to inactivity '
         )
       cy.wait('@refreshQuery')
+      cy.wait('@refreshQuery')
       // Wait the duration we'd expect on the next query to ensure stopping via the inactivity timeout actually stops the process. The fail means the request didn't run, which is what we want
       cy.on('fail', err => {
         expect(err.message).to.include(
-          'Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 1st request to the route: `refreshQuery`. No request ever occurred.'
+          'Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 2nd request to the route: `refreshQuery`. No request ever occurred.'
         )
         done()
       })
@@ -1707,21 +1675,19 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     cy.getByTestID('cell-context--pause').click()
 
     cy.getByTestID('enable-auto-refresh-button').click()
-    cy.getByTestID('auto-refresh-overlay').should('be.visible')
-    cy.getByTestID('auto-refresh-overlay').within(() => {
-      cy.getByTestID('autorefresh-dropdown--button').click()
-      cy.getByTestID('auto-refresh-5s').click()
-      cy.getByTestID('refresh-form-activate-button').click()
-      cy.wait('@secondCellQuery')
-      cy.wait('@firstCellQuery')
+    cy.getByTestID('auto-refresh-input')
+      .clear()
+      .type('2s')
+    cy.getByTestID('refresh-form-activate-button').click()
+    cy.wait('@secondCellQuery')
+    cy.wait('@firstCellQuery')
 
-      // Even though both cells have the same query, the pause functionality only affects the cell we selected specifically
-      cy.on('fail', err => {
-        expect(err.message).to.include(
-          'Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 1st request to the route: `firstCellQuery`. No request ever occurred.'
-        )
-        done()
-      })
+    // Even though both cells have the same query, the pause functionality only affects the cell we selected specifically
+    cy.on('fail', err => {
+      expect(err.message).to.include(
+        'Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 1st request to the route: `firstCellQuery`. No request ever occurred.'
+      )
+      done()
     })
   })
 
@@ -1809,13 +1775,12 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     cy.getByTestID('cell-context--pause').click()
 
     cy.getByTestID('enable-auto-refresh-button').click()
-    cy.getByTestID('auto-refresh-overlay').should('be.visible')
-    cy.getByTestID('auto-refresh-overlay').within(() => {
-      cy.getByTestID('autorefresh-dropdown--button').click()
-      cy.getByTestID('auto-refresh-5s').click()
-      cy.getByTestID('refresh-form-activate-button').click()
-      cy.wait('@secondCellQuery')
-    })
+    cy.getByTestID('auto-refresh-input')
+      .clear()
+      .type('2s')
+    cy.getByTestID('refresh-form-activate-button').click()
+
+    cy.wait('@secondCellQuery')
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('cell-context--toggle').click()
     })

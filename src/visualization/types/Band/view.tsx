@@ -1,6 +1,18 @@
 // Libraries
 import React, {FC, useMemo, useContext} from 'react'
-import {Plot} from '@influxdata/giraffe'
+
+import {Config, Plot} from '@influxdata/giraffe'
+
+// Redux
+import {
+  isWriteModeEnabled,
+  selectAreAnnotationsVisible,
+} from 'src/annotations/selectors'
+
+import {useDispatch, useSelector} from 'react-redux'
+
+// Annotations
+import {addAnnotationLayer} from 'src/visualization/utils/annotationUtils'
 
 // Components
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
@@ -9,6 +21,7 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 import {useAxisTicksGenerator} from 'src/visualization/utils/useAxisTicksGenerator'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
 import {useLegendOpacity} from 'src/visualization/utils/useLegendOrientation'
+import {useStaticLegend} from 'src/visualization/utils/useStaticLegend'
 import {
   useVisXDomainSettings,
   useVisYDomainSettings,
@@ -41,7 +54,13 @@ interface Props extends VisualizationProps {
   properties: BandViewProperties
 }
 
-const BandPlot: FC<Props> = ({properties, result, timeRange}) => {
+const BandPlot: FC<Props> = ({
+  properties,
+  result,
+  annotations,
+  cellID,
+  timeRange,
+}) => {
   const mainColumnName = properties.mainColumn
   /*
   const mainColumnName = useMemo(() => {
@@ -64,7 +83,9 @@ const BandPlot: FC<Props> = ({properties, result, timeRange}) => {
     )
   }, [activeQueryIndex, properties.queries, properties.upperColumn, properties.mainColumn, properties.lowerColumn])
    */
+  const staticLegend = useStaticLegend(properties)
   const {theme, timeZone} = useContext(AppSettingContext)
+  const dispatch = useDispatch()
 
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
@@ -122,6 +143,13 @@ const BandPlot: FC<Props> = ({properties, result, timeRange}) => {
     result.table
   )
 
+  // these two values are set in the dashboard, and used whether or not this view
+  // is in a dashboard or in configuration/single cell popout mode
+  // would need to add the annotation control bar to the VEOHeader to get access to the controls,
+  // which are currently global values, not per dashboard
+  const inAnnotationWriteMode = useSelector(isWriteModeEnabled)
+  const annotationsAreVisible = useSelector(selectAreAnnotationsVisible)
+
   const xFormatter = getFormatter(result.table.getColumnType(xColumn), {
     prefix: properties.axes.x.prefix,
     suffix: properties.axes.x.suffix,
@@ -144,48 +172,60 @@ const BandPlot: FC<Props> = ({properties, result, timeRange}) => {
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
   }
 
-  return (
-    <Plot
-      config={{
-        ...currentTheme,
-        table: result.table,
-        xAxisLabel: properties.axes.x.label,
-        yAxisLabel: properties.axes.y.label,
-        xDomain,
-        onSetXDomain,
-        onResetXDomain,
-        yDomain,
-        onSetYDomain,
-        onResetYDomain,
-        ...axisTicksOptions,
-        legendColumns,
-        legendOpacity: tooltipOpacity,
-        legendOrientationThreshold: tooltipOrientationThreshold,
-        legendColorizeRows: tooltipColorize,
-        valueFormatters: {
-          [xColumn]: xFormatter,
-          [yColumn]: yFormatter,
-        },
-        layers: [
-          {
-            type: 'band',
-            x: xColumn,
-            y: yColumn,
-            fill: groupKey,
-            interpolation,
-            colors: colorHexes,
-            lineWidth: BAND_LINE_WIDTH,
-            lineOpacity: BAND_LINE_OPACITY,
-            shadeOpacity: BAND_SHADE_OPACITY,
-            hoverDimension: properties.hoverDimension,
-            upperColumnName: properties.upperColumn,
-            mainColumnName,
-            lowerColumnName: properties.lowerColumn,
-          },
-        ],
-      }}
-    />
+  const config: Config = {
+    ...currentTheme,
+    table: result.table,
+    xAxisLabel: properties.axes.x.label,
+    yAxisLabel: properties.axes.y.label,
+    xDomain,
+    onSetXDomain,
+    onResetXDomain,
+    yDomain,
+    onSetYDomain,
+    onResetYDomain,
+    ...axisTicksOptions,
+    legendColumns,
+    legendOpacity: tooltipOpacity,
+    legendOrientationThreshold: tooltipOrientationThreshold,
+    legendColorizeRows: tooltipColorize,
+    staticLegend,
+    valueFormatters: {
+      [xColumn]: xFormatter,
+      [yColumn]: yFormatter,
+    },
+    layers: [
+      {
+        type: 'band',
+        x: xColumn,
+        y: yColumn,
+        fill: groupKey,
+        interpolation,
+        colors: colorHexes,
+        lineWidth: BAND_LINE_WIDTH,
+        lineOpacity: BAND_LINE_OPACITY,
+        shadeOpacity: BAND_SHADE_OPACITY,
+        hoverDimension: properties.hoverDimension,
+        upperColumnName: properties.upperColumn,
+        mainColumnName,
+        lowerColumnName: properties.lowerColumn,
+      },
+    ],
+  }
+
+  addAnnotationLayer(
+    config,
+    inAnnotationWriteMode,
+    cellID,
+    xColumn,
+    yColumn,
+    groupKey,
+    annotations,
+    annotationsAreVisible,
+    dispatch,
+    'band'
   )
+
+  return <Plot config={config} />
 }
 
 export default BandPlot

@@ -12,7 +12,9 @@ import {getAllTasks as getAllTasksSelector} from 'src/resources/selectors'
 const TaskDropdown: FC = () => {
   const {handleSetTask, selectedTask} = useContext(Context)
 
-  const tasks = useSelector(getAllTasksSelector)
+  const tasks = useSelector(getAllTasksSelector).sort((a, b) =>
+    a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+  )
 
   let buttonText = 'Loading tasks...'
 

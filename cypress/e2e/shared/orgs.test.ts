@@ -20,7 +20,7 @@ describe('Orgs', () => {
       cy.getByTestID('create-org-name-input')
         .click()
         .type(extraText)
-      cy.get('button.cf-button.cf-button-success').click()
+      cy.getByTestID('rename-org-submit--button').click()
       cy.get('.cf-tree-nav--team')
         .contains(extraText)
         .should('have.length', 1)

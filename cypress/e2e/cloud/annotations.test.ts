@@ -184,9 +184,9 @@ describe('The Annotations UI functionality', () => {
       })
   }
 
-  const addRangeAnnotation = cy => {
+  const addRangeAnnotation = (cy, layerTestID = 'line') => {
     cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('giraffe-layer-line').then(([canvas]) => {
+      cy.getByTestID(`giraffe-layer-${layerTestID}`).then(([canvas]) => {
         const {width, height} = canvas
 
         cy.wrap(canvas).trigger('mousedown', {
@@ -217,8 +217,8 @@ describe('The Annotations UI functionality', () => {
     })
   }
 
-  const editRangeAnnotationTest = cy => {
-    addRangeAnnotation(cy)
+  const editRangeAnnotationTest = (cy, layerTestID = 'line') => {
+    addRangeAnnotation(cy, layerTestID)
 
     startEditingAnnotation(cy)
 
@@ -276,18 +276,17 @@ describe('The Annotations UI functionality', () => {
       deleteAnnotationTest(cy)
     })
 
-    // skipping range annotations tests for now (not passing on ci)
-    // it('can add a range annotation for the band plot', () => {
-    //   addRangeAnnotation(cy)
-    //   checkAnnotationText(cy, 'range annotation here!')
-    // })
-    // it('can add and edit a range annotation for the band plot', () => {
-    //   editRangeAnnotationTest(cy)
-    // })
-    // it('can add and then delete a range annotation for the band plot', () => {
-    //   addRangeAnnotation(cy)
-    //   actuallyDeleteAnnotation(cy)
-    // })
+    it('can add a range annotation for the band plot', () => {
+      addRangeAnnotation(cy, 'band-chart')
+      checkAnnotationText(cy, 'range annotation here!')
+    })
+    it('can add and edit a range annotation for the band plot', () => {
+      editRangeAnnotationTest(cy, 'band-chart')
+    })
+    it('can add and then delete a range annotation for the band plot', () => {
+      addRangeAnnotation(cy, 'band-chart')
+      actuallyDeleteAnnotation(cy)
+    })
   })
 
   describe('annotations on a graph (xy line) graph type: ', () => {

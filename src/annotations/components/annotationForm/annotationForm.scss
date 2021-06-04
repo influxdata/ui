@@ -13,8 +13,9 @@
   height: 100px;
 }
 
+/* need the  42px to match the padding in the form + the elements in the form */
 .annotation-form-footer {
-  padding: 25px;
+  padding: 25px 42px;
 }
 
 .edit-annotation-form-footer {

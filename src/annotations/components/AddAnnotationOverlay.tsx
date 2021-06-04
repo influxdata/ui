@@ -18,7 +18,6 @@ export const AddAnnotationOverlay: FC = () => {
   )
 
   const handleSubmit = (modifiedAnnotation): void => {
-    console.log('ack! in handlesubmit here...4288a')
     createAnnotation(modifiedAnnotation)
     onClose()
   }

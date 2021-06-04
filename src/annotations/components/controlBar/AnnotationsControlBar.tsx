@@ -51,7 +51,7 @@ export const AnnotationsControlBar: FC = () => {
   }
 
   const infoText =
-    'Click on a graph to create a point annotion, click + shift + drag to create a range annotation.' +
+    'Click on a graph to create a point annotation, click + shift + drag to create a range annotation.' +
     'press the annotations button again to turn off annotation mode'
 
   return (

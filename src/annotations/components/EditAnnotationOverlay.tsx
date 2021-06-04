@@ -36,7 +36,6 @@ export const EditAnnotationOverlay: FC = () => {
   const handleSubmit = async (
     editedAnnotation: EditAnnotation
   ): Promise<void> => {
-    console.log('inside hks...')
     try {
       await dispatch(editAnnotation(editedAnnotation))
       event('annotations.edit_annotation.success')

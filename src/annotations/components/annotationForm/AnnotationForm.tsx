@@ -165,6 +165,8 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     'edit-annotation-form-footer': props.id,
   })
 
+  const buttonClasses = classnames({'edit-annotation-buttons': props.id})
+
   return (
     <Overlay.Container maxWidth={ANNOTATION_FORM_WIDTH}>
       <Overlay.Header
@@ -200,23 +202,24 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
                 </SelectGroup.Option>
               </SelectGroup>
             </Grid.Column>
-            <AnnotationTimeInput
-              onChange={updateStartTime}
-              onSubmit={handleKeyboardSubmit}
-              time={startTime}
-              name="startTime"
-            />
-
-            {annotationType === 'range' && (
+            <div style={{display: 'flex', width: '100%'}}>
               <AnnotationTimeInput
-                onChange={updateEndTime}
+                onChange={updateStartTime}
                 onSubmit={handleKeyboardSubmit}
-                time={endTime}
-                name="endTime"
-                titleText="Stop Time"
+                time={startTime}
+                name="startTime"
               />
-            )}
 
+              {annotationType === 'range' && (
+                <AnnotationTimeInput
+                  onChange={updateEndTime}
+                  onSubmit={handleKeyboardSubmit}
+                  time={endTime}
+                  name="endTime"
+                  titleText="Stop Time"
+                />
+              )}
+            </div>
             <AnnotationMessageInput
               message={summary}
               onChange={updateSummary}
@@ -234,7 +237,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
               testID="delete-annotation-button"
             />
           )}
-          <div className="edit-annotation-buttons">
+          <div className={buttonClasses}>
             <Button
               text="Cancel"
               onClick={handleCancel}

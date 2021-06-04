@@ -1,5 +1,12 @@
 // Libraries
-import React, {FC, useContext, useCallback, useEffect, useMemo} from 'react'
+import React, {
+  FC,
+  useContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 
 // Components
 import {IconFont} from '@influxdata/clockface'
@@ -26,6 +33,10 @@ const Visualization: FC<PipeProp> = ({Context}) => {
   const {id, data, range, update, loading, results} = useContext(PipeContext)
   const {register} = useContext(SidebarContext)
   const {launch} = useContext(PopupContext)
+  const [optionsVisibility, setOptionsVisibility] = useState(false)
+  const toggleOptions = useCallback(() => {
+    setOptionsVisibility(!optionsVisibility)
+  }, [optionsVisibility, setOptionsVisibility])
 
   const updateProperties = useCallback(
     properties => {
@@ -89,10 +100,14 @@ const Visualization: FC<PipeProp> = ({Context}) => {
       },
     ])
   }, [id, data.properties, results.parsed, range])
+
   const persist = isFlagEnabled('flow-sidebar') ? null : <ExportButton />
 
   return (
-    <Context controls={<Controls />} persistentControls={persist}>
+    <Context
+      controls={<Controls toggle={toggleOptions} visible={optionsVisibility} />}
+      persistentControls={persist}
+    >
       <Resizer
         loading={loading}
         resizingEnabled={dataExists}
@@ -117,6 +132,13 @@ const Visualization: FC<PipeProp> = ({Context}) => {
           </div>
         </div>
       </Resizer>
+      {optionsVisibility && dataExists && (
+        <ViewOptions
+          properties={data.properties}
+          results={results.parsed}
+          update={updateProperties}
+        />
+      )}
     </Context>
   )
 }

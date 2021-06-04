@@ -104,7 +104,7 @@ describe('The Annotations UI functionality', () => {
       .clear()
       .type('lets edit this annotation...')
 
-    cy.getByTestID('edit-annotation-submit-button').click()
+    cy.getByTestID('annotation-submit-button').click()
   }
 
   const editAnnotationTest = cy => {
@@ -161,7 +161,7 @@ describe('The Annotations UI functionality', () => {
         .click()
         .focused()
         .type('im a hippopotamus')
-      cy.getByTestID('add-annotation-submit').click()
+      cy.getByTestID('annotation-submit-button').click()
     })
   }
 
@@ -419,7 +419,7 @@ describe('The Annotations UI functionality', () => {
           .click()
           .focused()
           .type('annotation in newCell')
-        cy.getByTestID('add-annotation-submit').click()
+        cy.getByTestID('annotation-submit-button').click()
       })
 
       // should have the annotation created and the tooltip should says "annotation in newCell"

@@ -368,9 +368,8 @@ export const simplify = (text, vars: VariableMap = {}) => {
   )
     .reverse()
     .reduce((acc, curr) => {
-      // eslint-disable no-extra-semi
+      // eslint-disable-next no-extra-semi
       ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
-        // eslint-enable no-extra-semi
         if (_curr.key?.name && _curr.value?.location?.source) {
           _acc[_curr.key.name] = _curr.value.location.source
         }

@@ -252,11 +252,7 @@ export const simplify = (text, vars: VariableMap = {}) => {
     }
 
     if (v.id === WINDOW_PERIOD) {
-      _val = (v.arguments.values[0] || 10000) + 'ms'
-
-      if (_val) {
-        acc[WINDOW_PERIOD] = _val
-      }
+      acc[v.id] = (v.arguments?.values || [10000])[0] + 'ms'
 
       return acc
     }

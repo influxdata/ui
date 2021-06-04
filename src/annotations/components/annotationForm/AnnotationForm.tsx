@@ -4,6 +4,7 @@ import {useDispatch} from 'react-redux'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import classnames from 'classnames'
 
 // Components
 import {
@@ -30,6 +31,9 @@ import {notify} from 'src/shared/actions/notifications'
 
 // Constants
 import {ANNOTATION_FORM_WIDTH} from 'src/annotations/constants'
+
+// Style
+import 'src/annotations/components/annotationForm/annotationForm.scss'
 
 interface Annotation {
   message: string
@@ -58,21 +62,13 @@ export const isValidAnnotation = (
 ) => {
   const isValidPointAnnotation = summary && summary.length && startTime
 
-  console.log(
-    'in valid check....',
-    isValidPointAnnotation,
-    annotationType,
-    endTime
-  )
   // not checking if start <= end right now
   // initially, the times are numbers, and then if the user manually edits them then
   // they are strings, so the simple compare is non-trivial.
   // plus, the backend checks if the startTime is before or equals the endTime
   // so, letting the backend do that check for now.
   if (annotationType === 'range') {
-    const result = isValidPointAnnotation && endTime
-    console.log('is range (77b)', result)
-    return result
+    return isValidPointAnnotation && endTime
   }
   return isValidPointAnnotation
 }
@@ -84,7 +80,6 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
   const [annotationType, setAnnotationType] = useState(props.type)
 
   const dispatch = useDispatch()
-  console.log('here in annotation form; props??', props)
 
   const isValidAnnotationForm = ({summary, startTime, endTime}): boolean => {
     return isValidAnnotation(annotationType, summary, startTime, endTime)
@@ -116,7 +111,14 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
   }
 
   const handleKeyboardSubmit = () => {
-    props.onSubmit({summary, startTime, endTime})
+    props.onSubmit({
+      summary,
+      startTime,
+      endTime,
+      type: annotationType,
+      id: props.id,
+      stream: props.stream,
+    })
   }
 
   // TODO:  get the correct prefix in there, multiple plot types have annotations now
@@ -157,17 +159,22 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     setAnnotationType('point')
   }
 
-  const saveTextSuffix = props.id ? 'Annotation' : 'Changes'
+  const saveTextSuffix = props.id ? 'Changes' : 'Annotation'
+
+  const footerClasses = classnames('annotation-form-footer', {
+    'edit-annotation-form-footer': props.id,
+  })
 
   return (
     <Overlay.Container maxWidth={ANNOTATION_FORM_WIDTH}>
       <Overlay.Header
         title={`${props.title} Annotation`}
         onDismiss={handleCancel}
+        className="edit-annotation-head"
       />
       <Form onSubmit={handleSubmit}>
         <Overlay.Body>
-          <Grid>
+          <Grid className="edit-annotation-grid">
             <Grid.Column>
               <Form.Label label="Type" />
               <SelectGroup
@@ -217,7 +224,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
             />
           </Grid>
         </Overlay.Body>
-        <Overlay.Footer>
+        <Overlay.Footer className={footerClasses}>
           {props.id && (
             <Button
               text="Delete Annotation"
@@ -227,11 +234,12 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
               testID="delete-annotation-button"
             />
           )}
-          <>
+          <div className="edit-annotation-buttons">
             <Button
               text="Cancel"
               onClick={handleCancel}
               testID="edit-annotation-cancel-button"
+              className="edit-annotation-cancel"
             />
             <Button
               text={`Save ${saveTextSuffix}`}
@@ -244,7 +252,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
               }
               testID="add-annotation-submit"
             />
-          </>
+          </div>
         </Overlay.Footer>
       </Form>
     </Overlay.Container>

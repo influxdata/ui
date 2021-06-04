@@ -3,8 +3,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import {v4 as UUID} from 'uuid'
 
 import {parse} from 'src/external/parser'
-import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
-import {asAssignment} from 'src/variables/selectors'
+import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {getOrg} from 'src/organizations/selectors'
 import {getBuckets} from 'src/buckets/actions/thunks'
 import {getSortedBuckets} from 'src/buckets/selectors'
@@ -270,10 +269,9 @@ export const QueryProvider: FC = ({children}) => {
     // Some preamble for setting the stage
     const baseAST = parse(text)
     const usedVars = _getVars(baseAST, vars)
-    const optionAST = buildVarsOption(
-      Object.values(usedVars)
-        .filter(v => !!v)
-        .map(v => asAssignment(v))
+    const optionAST = buildUsedVarsOption(
+      text,
+      Object.values(usedVars).filter(v => !!v)
     )
 
     // Make a version of the query with the variables loaded

@@ -26,8 +26,8 @@ import {
 import {getActiveTimeMachine, getActiveQuery} from 'src/timeMachine/selectors'
 import fromFlux from 'src/shared/utils/fromFlux'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {getAllVariables, asAssignment} from 'src/variables/selectors'
-import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
+import {getAllVariables} from 'src/variables/selectors'
+import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {findNodes} from 'src/shared/utils/ast'
 import {
   isDemoDataAvailabilityError,
@@ -288,10 +288,6 @@ export const executeQueries = (abortController?: AbortController) => async (
 
     const allVariables = getAllVariables(state)
 
-    const variableAssignments = allVariables
-      .map(v => asAssignment(v))
-      .filter(v => !!v)
-
     const startTime = window.performance.now()
     const startDate = Date.now()
 
@@ -305,7 +301,7 @@ export const executeQueries = (abortController?: AbortController) => async (
         event('demoData_queried')
       }
 
-      const extern = buildVarsOption(variableAssignments)
+      const extern = buildUsedVarsOption(text, allVariables)
 
       event('runQuery', {context: 'timeMachine'})
 
@@ -338,7 +334,7 @@ export const executeQueries = (abortController?: AbortController) => async (
     } = state
 
     if (checkID) {
-      const extern = buildVarsOption(variableAssignments)
+      const extern = buildUsedVarsOption(queries as string[], allVariables)
       pendingCheckStatuses = runStatusesQuery(getOrg(state).id, checkID, extern)
       statuses = await pendingCheckStatuses.promise
     }

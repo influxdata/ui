@@ -26,7 +26,7 @@ import {notify} from 'src/shared/actions/notifications'
 // selectors
 import {getOrg} from 'src/organizations/selectors'
 import {getVariables, asAssignment} from 'src/variables/selectors'
-import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
+import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {getWindowVars} from 'src/variables/utils/getWindowVars'
 
 // constants
@@ -103,11 +103,12 @@ export const executePreviewQuery = (query: string) => async (
     // which means we have to drag around all this asAssignment
     // garbage to be able to run a query instead of just being able
     // to executeQuery as normal
-    const variableAssignments = getVariables(state)
+    const allVariables = getVariables(state)
+    const variableAssignments = allVariables
       .map(v => asAssignment(v))
       .filter(v => !!v)
     const windowVars = getWindowVars(query, variableAssignments)
-    const extern = buildVarsOption([...variableAssignments, ...windowVars])
+    const extern = buildUsedVarsOption(query, allVariables, windowVars)
     const result = await runQuery(orgID, query, extern).promise
 
     if (result.type === 'UNKNOWN_ERROR') {

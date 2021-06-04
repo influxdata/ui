@@ -63,6 +63,7 @@ export const getWindowPeriod = (
     const substitutedAST: Package = {
       package: '',
       type: 'Package',
+      // TODO: Discuss this cycle
       files: [ast, buildVarsOption(variables)],
     }
 

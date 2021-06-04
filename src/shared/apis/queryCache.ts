@@ -3,7 +3,7 @@ import {sortBy} from 'lodash'
 
 // Utils
 import {asAssignment, getAllVariables} from 'src/variables/selectors'
-import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
+import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
 import {event} from 'src/cloud/utils/reporting'
 import {getWindowVars} from 'src/variables/utils/getWindowVars'
@@ -245,7 +245,7 @@ export const getCachedResultsOrRunQuery = (
   }
 
   // otherwise query & set results
-  const extern = buildVarsOption([...variableAssignments, ...windowVars])
+  const extern = buildUsedVarsOption(query, variables, windowVars)
   const {mutex} = queryCache.initializeCacheByID(queryID, hashedVariables)
   const results = mutex.run(orgID, query, extern)
   results.promise = results.promise

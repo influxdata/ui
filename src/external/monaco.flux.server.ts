@@ -316,6 +316,7 @@ export class LSPServer {
       .map(v => asAssignment(v))
       .filter(v => !!v)
 
+    // TODO: Check if we need to Change This?
     const file = buildVarsOption(variables)
 
     const parts = uri.split('/')

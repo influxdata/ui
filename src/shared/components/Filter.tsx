@@ -5,7 +5,6 @@ import {
   get,
   sortBy,
   isString,
-  isArray,
   isEmpty,
   isObject,
   flatMap,
@@ -104,7 +103,7 @@ export default class FilterList<T> extends PureComponent<Props<T>> {
   }
 
   private isStringArray(value: any): boolean {
-    if (!isArray(value)) {
+    if (!Array.isArray(value)) {
       return false
     }
 

@@ -54,25 +54,6 @@ interface Props {
   onClose: () => void
 }
 
-export const isValidAnnotation = (
-  annotationType: string,
-  summary: string,
-  startTime: any,
-  endTime: any
-) => {
-  const isValidPointAnnotation = summary && summary.length && startTime
-
-  // not checking if start <= end right now
-  // initially, the times are numbers, and then if the user manually edits them then
-  // they are strings, so the simple compare is non-trivial.
-  // plus, the backend checks if the startTime is before or equals the endTime
-  // so, letting the backend do that check for now.
-  if (annotationType === 'range') {
-    return isValidPointAnnotation && endTime
-  }
-  return isValidPointAnnotation
-}
-
 export const AnnotationForm: FC<Props> = (props: Props) => {
   const [startTime, setStartTime] = useState(props.startTime)
   const [endTime, setEndTime] = useState(props.endTime)
@@ -81,8 +62,20 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
 
   const dispatch = useDispatch()
 
-  const isValidAnnotationForm = ({summary, startTime, endTime}): boolean => {
-    return isValidAnnotation(annotationType, summary, startTime, endTime)
+  const isValidAnnotationForm = (): boolean => {
+    const isValidPointAnnotation = Boolean(
+      summary && summary.length && startTime
+    )
+
+    // not checking if start <= end right now
+    // initially, the times are numbers, and then if the user manually edits them then
+    // they are strings, so the simple compare is non-trivial.
+    // plus, the backend checks if the startTime is before or equals the endTime
+    // so, letting the backend do that check for now.
+    if (annotationType === 'range') {
+      return Boolean(isValidPointAnnotation && endTime)
+    }
+    return isValidPointAnnotation
   }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
@@ -249,7 +242,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
               color={ComponentColor.Primary}
               type={ButtonType.Submit}
               status={
-                isValidAnnotationForm({startTime, endTime, summary})
+                isValidAnnotationForm()
                   ? ComponentStatus.Default
                   : ComponentStatus.Disabled
               }

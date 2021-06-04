@@ -1,5 +1,6 @@
 // Libraries
 import React, {
+  CSSProperties,
   FC,
   ChangeEvent,
   KeyboardEvent,
@@ -20,6 +21,7 @@ interface Props {
   time: string | number
   name: string
   titleText?: string
+  style?: CSSProperties
 }
 
 const ANNOTATION_TIME_FORMAT_UTC = 'YYYY-MM-DD HH:mm:ss' // 24 hour
@@ -98,6 +100,7 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
       label={labelText}
       required={true}
       errorMessage={validationMessage}
+      style={props.style}
     >
       <Input
         name={name}

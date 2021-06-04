@@ -206,6 +206,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
                 time={endTime}
                 name="endTime"
                 titleText="Stop Time"
+                style={{marginLeft: 10}}
               />
             )}
           </div>

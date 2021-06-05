@@ -110,7 +110,6 @@ const BillingStatsPanel: FC = () => {
           // Find the matching CSV for the usageVector
           const csv =
             billingStats.find((stat: string) => {
-              // get the
               const {table, error} = fromFlux(stat)
               if (!table.length || error) {
                 return false

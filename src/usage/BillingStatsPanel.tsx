@@ -109,7 +109,7 @@ const BillingStatsPanel: FC = () => {
           const graph = graphInfo.find(g => g.column === vector.fluxKey)
           // Find the matching CSV for the usageVector
           const csv =
-            billingStats.find((stat: string) => {
+            billingStats?.find((stat: string) => {
               const {table, error} = fromFlux(stat)
               if (!table.length || error) {
                 return false

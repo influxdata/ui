@@ -14,8 +14,7 @@ import {
 import {DEFAULT_USAGE_TIME_RANGE} from 'src/shared/constants/timeRanges'
 
 // Types
-import {SelectableDurationTimeRange} from 'src/types'
-import {UsageVector} from 'src/types/billing'
+import {SelectableDurationTimeRange, UsageVector} from 'src/types'
 
 export type Props = {
   children: JSX.Element

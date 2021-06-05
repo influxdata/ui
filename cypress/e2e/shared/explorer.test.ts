@@ -1602,14 +1602,12 @@ describe('DataExplorer', () => {
       })
 
       cy.get('@org').then(({id: orgID}: Organization) => {
-        cy.createDashboard(orgID).then(({body}) => {
-          cy.getByTestID('tree-nav')
-          cy.createBucket(orgID, name, simpleLarge)
-          cy.writeData(lines(300), simpleLarge)
-          cy.createBucket(orgID, name, simpleSmall)
-          cy.writeData(lines(30), simpleSmall)
-          cy.reload()
-        })
+        cy.getByTestID('tree-nav')
+        cy.createBucket(orgID, name, simpleLarge)
+        cy.writeData(lines(300), simpleLarge)
+        cy.createBucket(orgID, name, simpleSmall)
+        cy.writeData(lines(30), simpleSmall)
+        cy.reload()
       })
     })
 
@@ -1661,7 +1659,7 @@ describe('DataExplorer', () => {
 
       // verify table still exists
       cy.getByTestID('table').should('exist')
-      // TODO: uncomment when this bug in clockface is fixed: https://github.com/influxdata/clockface/pull/634
+      // TODO: uncomment when this bug in clockface is fixed: https://github.com/influxdata/clockface/pull/635
       // verify page 1 is selected
       // cy.getByTestID('pagination-item')
       //   .first()

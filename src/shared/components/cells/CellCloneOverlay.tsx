@@ -14,29 +14,37 @@ import {
   Form,
 } from '@influxdata/clockface'
 
-// Selectors
-import {getAllDashboards} from 'src/dashboards/selectors'
-
 // Actions
 import {createCellWithView, deleteCellAndView} from 'src/cells/actions/thunks'
 import {getOverlayParams} from 'src/overlays/selectors'
-import {getDashboards} from 'src/dashboards/actions/thunks'
+import {getDashboardIDs} from 'src/dashboards/utils/getDashboardIds'
+import {getOrg} from 'src/organizations/selectors'
 
 // Types
 import {AppState} from 'src/types'
-const CellCloneOverlay: FC = () => {
-  const dispatch = useDispatch()
 
-  useEffect(() => {
-    dispatch(getDashboards())
-  }, [dispatch])
-  const {onClose} = useContext(OverlayContext)
-  const dashboards = useSelector(getAllDashboards)
+// Metrics
+import {event} from 'src/cloud/utils/reporting'
+import {Dashboard} from 'src/client'
+
+const CellCloneOverlay: FC = () => {
+  const [otherDashboards, setOtherDashboards] = useState<Dashboard[]>([])
+  const dispatch = useDispatch()
+  const {id: orgID} = useSelector(getOrg)
+
   const currentDashboardID = useSelector(
     (state: AppState) => state.currentDashboard.id
   )
 
-  const otherDashboards = dashboards.filter(d => d.id !== currentDashboardID)
+  useEffect(() => {
+    getDashboardIDs(orgID).then(retrievedBoards => {
+      setOtherDashboards(
+        retrievedBoards.filter(board => board.id !== currentDashboardID)
+      )
+    })
+  }, [])
+
+  const {onClose} = useContext(OverlayContext)
 
   const {view, cell} = useSelector(getOverlayParams)
 
@@ -52,7 +60,16 @@ const CellCloneOverlay: FC = () => {
   }
 
   const copyCellToDashboard = () => {
-    dispatch(createCellWithView(destinationDashboardID, view, cell))
+    dispatch(
+      createCellWithView(
+        destinationDashboardID,
+        {...view, dashboardID: destinationDashboardID},
+        {...cell, dashboardID: destinationDashboardID},
+        null,
+        null,
+        true
+      )
+    )
   }
 
   const selectedDashboard = otherDashboards.find(
@@ -65,7 +82,7 @@ const CellCloneOverlay: FC = () => {
       <Overlay.Body className="cellCloneOverlayBody">
         <Form.Element label="" className="otherDashboardDropdown">
           <Dropdown
-            style={{width: '80%'}}
+            className="otherDashboardDropdown"
             button={(active, onClick) => (
               <Dropdown.Button
                 active={active}
@@ -109,6 +126,7 @@ const CellCloneOverlay: FC = () => {
             active={removeFromCurrentBoard}
             onChange={() => setRemoveFromCurrentBoard(!removeFromCurrentBoard)}
             testID="clone-cell-type-toggle"
+            className="cloneCellTypeToggle"
           />
           <InputLabel
             active={removeFromCurrentBoard}
@@ -121,6 +139,18 @@ const CellCloneOverlay: FC = () => {
       <Overlay.Footer>
         <Button
           onClick={() => {
+            onClose()
+          }}
+          color={ComponentColor.Default}
+          text="Cancel"
+          testID="copy-cell-cancel-button"
+        />
+        <Button
+          onClick={() => {
+            event('relocating cell', {
+              operationType: removeFromCurrentBoard ? 'Move' : 'Copy',
+            })
+
             copyCellToDashboard()
             if (removeFromCurrentBoard) {
               handleDeleteCell()

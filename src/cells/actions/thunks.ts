@@ -72,7 +72,8 @@ export const createCellWithView = (
   view: NewView,
   clonedCell?: Cell,
   redirect?: (destinationId: string) => void,
-  timeRange?: TimeRange
+  timeRange?: TimeRange,
+  differentDashboard?: boolean
 ) => async (dispatch, getState: GetState): Promise<void> => {
   const state = getState()
   let workingView = view
@@ -97,7 +98,10 @@ export const createCellWithView = (
       const {entities, result} = normDash
 
       dashboard = entities.dashboards[result]
-      dispatch(setDashboard(resp.data.id, RemoteDataState.Done, normDash))
+
+      if (!differentDashboard) {
+        dispatch(setDashboard(resp.data.id, RemoteDataState.Done, normDash))
+      }
     }
 
     const cell: NewCell = getNewDashboardCell(state, dashboard, clonedCell)

@@ -23,6 +23,7 @@ import {
   WriteDataPage,
   VariablesIndex,
   LabelsIndex,
+  SecretsIndex,
   OrgProfilePage,
   AlertingIndex,
   AlertHistoryIndex,
@@ -58,6 +59,7 @@ import {
   FILE_UPLOAD,
   CLIENT_LIBS,
   TELEGRAF_PLUGINS,
+  SECRETS,
 } from 'src/shared/constants/routes'
 
 // Actions
@@ -224,6 +226,13 @@ const SetOrg: FC<Props> = ({
             path={`${orgPath}/${SETTINGS}/${LABELS}`}
             component={LabelsIndex}
           />
+          {isFlagEnabled('secretsUI') && (
+              <Route
+                  exact
+                  path={`${orgPath}/${SETTINGS}/${SECRETS}`}
+                  component={SecretsIndex}
+              />
+          )}
           <Route
             exact
             path={`${orgPath}/${SETTINGS}`}

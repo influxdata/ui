@@ -6,7 +6,7 @@ import {RemoteDataState, InfluxColors} from '@influxdata/clockface'
 // Types
 import {GeoViewProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
-
+import {DEFAULT_THRESHOLDS_GEO_COLORS} from 'src/shared/constants/thresholds'
 // Utils
 import {
   getDetectCoordinatingFields,
@@ -120,11 +120,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
         type: 'pointMap',
         colorDimension: {label: 'Value'},
         colorField: '_value',
-        colors: [
-          {type: 'min', hex: InfluxColors.Star, id: '0'},
-          {value: 50, hex: InfluxColors.Star, id: '1'},
-          {type: 'max', hex: InfluxColors.Star, id: '2'},
-        ],
+        colors: DEFAULT_THRESHOLDS_GEO_COLORS,
         isClustered: false,
       },
     ]

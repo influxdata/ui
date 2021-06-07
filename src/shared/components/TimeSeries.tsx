@@ -262,7 +262,7 @@ class TimeSeries extends Component<Props, State> {
 
       let statuses = [] as StatusRow[][]
       if (check) {
-        const extern = buildUsedVarsOption(queries as string[], variables)
+        const extern = buildUsedVarsOption(queries.map(query => query.text), variables)
         this.pendingCheckStatuses = runStatusesQuery(
           this.props.match.params.orgID,
           check.id,

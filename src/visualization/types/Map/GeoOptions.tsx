@@ -23,8 +23,6 @@ export enum MapType {
 }
 
 export const GeoOptions: FC<Props> = ({properties, update}) => {
-  const thresholdColor = properties.layers[0].colors
-
   return SHOW_GEO_OPTIONS ? (
     <>
       {/* <SelectGroup className="mapTypeOptions">
@@ -48,7 +46,7 @@ export const GeoOptions: FC<Props> = ({properties, update}) => {
       <Grid.Column>
         <Form.Element label="Colorized Thresholds">
           <ThresholdsSettings
-            thresholds={thresholdColor}
+            thresholds={properties.layers[0].colors.filter(c => c.type !== 'scale')}
             onSetThresholds={colors => {
               update({
                 layers: [

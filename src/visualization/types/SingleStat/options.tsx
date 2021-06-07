@@ -32,6 +32,7 @@ interface Props extends VisualizationOptionProps {
 }
 
 const SingleStatOptions: FC<Props> = ({properties, update}) => {
+
   const setDigits = (digits: number | null) => {
     update({
       decimalPlaces: {

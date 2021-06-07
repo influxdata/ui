@@ -1,5 +1,5 @@
 // Libraries
-import {isNumber, isString} from 'lodash'
+import {isString} from 'lodash'
 
 // Types
 import {DecimalPlaces} from 'src/types/dashboards'
@@ -38,7 +38,7 @@ export const formatStatValue = (
 
   digits = Math.min(digits, MAX_DECIMAL_PLACES)
 
-  if (isNumber(value)) {
+  if (typeof value === 'number') {
     const [wholeNumber, fractionalNumber] = Number(value)
       .toFixed(digits)
       .split('.')

@@ -314,6 +314,33 @@ describe('The Annotations UI functionality', () => {
       actuallyDeleteAnnotation(cy)
     })
 
+    it.only('can add an annotation; that is originally a point and then switch to a range', () => {
+      cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot').click()
+      })
+      cy.getByTestID('overlay--container').within(() => {
+        cy.getByTestID('edit-annotation-message')
+          .should('be.visible')
+          .click()
+          .focused()
+          .type('random annotation, should be a range')
+
+        // should be of type 'point'
+        cy.getByTestID('annotation-form-point-type-option--input').should(
+          'be.checked'
+        )
+
+        // confirm that the 'endTime' input is NOT THERE
+        cy.getByTestID('endTime-testID').should('not.exist')
+
+        // now: click the button to switch to range:
+        cy.getByTestID('annotation-form-range-type-option').click()
+
+        // now, the end time input SHOULD show up
+        cy.getByTestID('endTime-testID').should('be.visible')
+      })
+    })
+
     it('can create an annotation when graph is clicked and the control bar is closed', () => {
       // switch off the control bar
       cy.getByTestID('toggle-annotations-controls').click()

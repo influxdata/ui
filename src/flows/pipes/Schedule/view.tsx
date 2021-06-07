@@ -28,6 +28,8 @@ import {remove} from 'src/flows/context/query'
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
+import './style.scss'
+
 const Schedule: FC<PipeProp> = ({Context}) => {
   const {id, data, queryText, update, range} = useContext(PipeContext)
   const {register} = useContext(SidebarContext)
@@ -171,8 +173,14 @@ const Schedule: FC<PipeProp> = ({Context}) => {
   return (
     <Context persistentControls={persist}>
       <FlexBox margin={ComponentSize.Medium}>
-        <FlexBox.Child basis={168} grow={0} shrink={0}>
+        <FlexBox.Child
+          basis={168}
+          grow={0}
+          shrink={0}
+          className="flow-panel-schedule--header"
+        >
           <h5>Run this on a schedule</h5>
+          <p>Must be exported as a task</p>
         </FlexBox.Child>
         <FlexBox.Child grow={1} shrink={1} style={{alignSelf: 'start'}}>
           <Form.Element

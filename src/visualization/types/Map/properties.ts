@@ -2,8 +2,8 @@ import {
   DEFAULT_FILLVALUES,
   AGG_WINDOW_AUTO,
 } from 'src/timeMachine/constants/queryBuilder'
-import {DEFAULT_THRESHOLDS_LIST_COLORS} from 'src/shared/constants/thresholds'
-import {Color, GeoViewProperties} from 'src/types'
+import {DEFAULT_THRESHOLDS_GEO_COLORS} from 'src/shared/constants/thresholds'
+import {GeoViewProperties} from 'src/types'
 
 export default {
   type: 'geo',
@@ -40,5 +40,5 @@ export default {
   mapStyle: '',
   note: '',
   showNoteWhenEmpty: false,
-  layers: [{colors: DEFAULT_THRESHOLDS_LIST_COLORS as Color[]}],
+  layers: [{colors: DEFAULT_THRESHOLDS_GEO_COLORS}],
 } as GeoViewProperties

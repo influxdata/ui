@@ -1,6 +1,3 @@
-// Libraries
-import {InfluxColors} from '@influxdata/clockface'
-
 // Constants
 import {INFERNO, NINETEEN_EIGHTY_FOUR} from '@influxdata/giraffe'
 import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'

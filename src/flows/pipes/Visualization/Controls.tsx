@@ -10,29 +10,19 @@ import {millisecondsToDuration} from 'src/shared/utils/duration'
 import {SUPPORTED_VISUALIZATIONS, ViewTypeDropdown} from 'src/visualization'
 import {ViewType} from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {FUNCTIONS} from 'src/timeMachine/constants/queryBuilder'
 
 import {PipeContext} from 'src/flows/context/pipe'
+
+const AVAILABLE_FUNCTIONS = FUNCTIONS.map(f => f.name)
 
 interface Props {
   toggle: () => void
   visible: boolean
 }
-
-const AVAILABLE_FUNCTIONS = FUNCTIONS.map(f => f.name)
-
 const Controls: FC<Props> = ({toggle, visible}) => {
   const {data, range, update, results} = useContext(PipeContext)
-
-  const dataExists = results.parsed && Object.entries(results.parsed).length
-
-  const configureButtonStatus = dataExists
-    ? ComponentStatus.Default
-    : ComponentStatus.Disabled
-
-  const configureButtonTitleText = dataExists
-    ? 'Configure Visualization'
-    : 'No data to visualize yet'
 
   const updateType = (type: ViewType) => {
     event('notebook_change_visualization_type', {
@@ -88,6 +78,29 @@ const Controls: FC<Props> = ({toggle, visible}) => {
     }
   }, [range, options])
 
+  // TODO remove this after the sidebar stabilizes
+  const dataExists = results.parsed && Object.entries(results.parsed).length
+
+  const configureButtonStatus = dataExists
+    ? ComponentStatus.Default
+    : ComponentStatus.Disabled
+
+  const configureButtonTitleText = dataExists
+    ? 'Configure Visualization'
+    : 'No data to visualize yet'
+
+  const toggler = isFlagEnabled('flow-sidebar') ? null : (
+    <SquareButton
+      icon={IconFont.CogThick}
+      onClick={toggle}
+      status={configureButtonStatus}
+      color={visible ? ComponentColor.Primary : ComponentColor.Default}
+      titleText={configureButtonTitleText}
+      className="flows-config-visualization-button"
+    />
+  )
+  // end TODO
+
   return (
     <>
       <MultiSelectDropdown
@@ -103,14 +116,7 @@ const Controls: FC<Props> = ({toggle, visible}) => {
         viewType={data.properties.type}
         onUpdateType={updateType as any}
       />
-      <SquareButton
-        icon={IconFont.CogThick}
-        onClick={toggle}
-        status={configureButtonStatus}
-        color={visible ? ComponentColor.Primary : ComponentColor.Default}
-        titleText={configureButtonTitleText}
-        className="flows-config-visualization-button"
-      />
+      {toggler}
     </>
   )
 }

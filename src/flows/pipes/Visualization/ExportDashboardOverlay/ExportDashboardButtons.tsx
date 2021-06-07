@@ -13,6 +13,7 @@ import {
   CREATE_CELL,
 } from 'src/flows/pipes/Visualization/ExportDashboardOverlay/context'
 import {PopupContext} from 'src/flows/context/popup'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -53,8 +54,9 @@ const ExportDashboardButtons: FC = () => {
     dashboardName,
   } = useContext(Context)
   const {data, closeFn} = useContext(PopupContext)
+  const {getPanelQueries} = useContext(FlowQueryContext)
 
-  const text = formatQueryText(data.query)
+  const text = formatQueryText(getPanelQueries(data.panel).visual)
 
   const dispatch = useDispatch()
   const org = useSelector(getOrg)

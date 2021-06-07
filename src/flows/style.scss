@@ -1,10 +1,17 @@
 @import '@influxdata/clockface/dist/variables.scss';
 @import '~src/flows/FlowVariables.scss';
 
+$cf-radius-lg: $cf-radius + 4px;
+
+.flow-page .cf-page-contents__fluid {
+  display: flex;
+}
+
 .flow {
   width: 100%;
   height: 100%;
   display: flex;
+  padding-right: 18px;
   flex-direction: column;
   align-items: stretch;
 }
@@ -25,12 +32,48 @@
   padding: 0 $flow-panel--gutter;
 }
 
+.flow-sidebar {
+  flex: 0 0 300px;
+  width: 300px;
+  padding-left: $cf-marg-b;
+
+  .sidebar--item {
+    width: 137px;
+    height: 137px;
+    margin-bottom: $cf-marg-b;
+    margin-right: $cf-marg-b;
+
+    .cf-selectable-card--body {
+      overflow: hidden;
+    }
+
+    .cf-selectable-card--children {
+      width: calc(100% - 48px);
+      height: calc(100% - 48px);
+    }
+  }
+  .sidebar--item-thumb {
+    width: 100%;
+    height: 100%;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+}
+
+.flow-sidebar--submenu {
+  padding-top: $cf-marg-b;
+  height: 100%;
+}
+
 .flow-panel {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  border-radius: $cf-radius;
+  border-radius: $cf-radius-lg;
   background-color: $flow-panel--bg;
 
   // Vertical line on left side of panel
@@ -57,7 +100,7 @@
 }
 
 .flow-panel--header {
-  border-radius: $cf-radius $cf-radius 0 0;
+  border-radius: $cf-radius-lg $cf-radius-lg 0 0;
   padding: $cf-marg-b;
   display: flex;
   align-items: center;
@@ -65,37 +108,18 @@
   flex-wrap: wrap;
 }
 
-.flow-panel--hover-control,
-.flow-panel--persistent-control {
-  display: flex;
-  align-items: center;
-
-  > * {
-    margin-left: $cf-marg-a;
-  }
-}
-
-.flow-panel--hover-control {
-  order: 4;
-  flex: 1 0 100%;
-  padding-left: 28px;
-
-  & > * {
-    margin-top: $cf-marg-a;
-  }
-}
-
-.flow-panel__focus,
-.flow-panel:hover {
-  .flow-panel--hover-control > * {
-    opacity: 1;
-  }
+.flow-panel__focus {
+  border: 2px solid $c-amethyst;
 }
 
 .flow-panel--persistent-control {
   justify-content: flex-end;
   order: 3;
-  flex-grow: 1;
+  display: flex;
+
+  & > * {
+    margin-left: $cf-marg-b;
+  }
 }
 
 .flow-panel--node-wrapper {
@@ -132,10 +156,9 @@
 }
 
 .flow-panel--title {
-  order: 2;
+  order: 1;
   color: $g15-platinum;
-  width: 230px;
-  flex: 0 0 230px;
+  flex: 1 1;
   height: $cf-form-sm-height;
   position: relative;
   margin-left: $cf-marg-b;
@@ -290,24 +313,14 @@
   }
 }
 
-// Responsive Layout
-// The 1200px number is somewhat arbitrary but works with the current design
-// Adjust as needed
-@media screen and (min-width: 1200px) {
-  .flow-panel--hover-control {
-    flex: 1 0 0;
-    order: 3;
-    justify-content: flex-end;
-    padding-left: 0;
+.flow-panel--hover-control {
+  flex: 1 0 0;
+  justify-content: flex-end;
+  order: 1;
+  padding-left: 0;
+  display: flex;
 
-    & > * {
-      margin-top: 0;
-      opacity: 0;
-    }
-  }
-
-  .flow-panel--persistent-control {
-    flex: initial;
-    order: 4;
+  > * {
+    margin-left: $cf-marg-a;
   }
 }

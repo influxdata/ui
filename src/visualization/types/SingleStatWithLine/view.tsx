@@ -3,12 +3,15 @@ import React, {FC, useMemo, useContext} from 'react'
 import {
   Config,
   DomainLabel,
-  lineTransform,
+  LINE_COUNT,
+  Plot,
+  STACKED_LINE_CUMULATIVE,
+  SingleStatLayerConfig,
+  createGroupIDColumn,
   formatStatValue,
   getDomainDataFromLines,
   getLatestValues,
-  Plot,
-  SingleStatLayerConfig,
+  lineTransform,
 } from '@influxdata/giraffe'
 
 // Redux
@@ -106,15 +109,19 @@ const SingleStatWithLine: FC<Props> = ({
     yColumn &&
     columnKeys.includes(yColumn)
 
-  const _colors = properties.colors.filter(c => c.type === 'scale')
-  const colorHexes =
-    _colors && _colors.length
-      ? _colors.map(c => c.hex)
-      : DEFAULT_LINE_COLORS.map(c => c.hex)
+  const colorHexes = useMemo(() => {
+    const _colors = properties.colors.filter(c => c.type === 'scale')
+    if (_colors && _colors.length) {
+      return _colors.map(color => color.hex)
+    }
+    return DEFAULT_LINE_COLORS.map(color => color.hex)
+  }, [properties.colors])
 
   const interpolation = geomToInterpolation('line')
 
-  const groupKey = [...result.fluxGroupKeyUnion, 'result']
+  const groupKey = useMemo(() => [...result.fluxGroupKeyUnion, 'result'], [
+    result,
+  ])
 
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
     storedXDomain,
@@ -132,16 +139,17 @@ const SingleStatWithLine: FC<Props> = ({
         colorHexes,
         properties.position
       )
-      return getDomainDataFromLines(lineData, DomainLabel.Y)
+      const [fillColumn] = createGroupIDColumn(result.table, groupKey)
+      return getDomainDataFromLines(lineData, [...fillColumn], DomainLabel.Y)
     }
     return result.table.getColumn(yColumn, 'number')
   }, [
     result.table,
-    yColumn,
     xColumn,
-    properties.position,
-    colorHexes,
+    yColumn,
     groupKey,
+    colorHexes,
+    properties.position,
   ])
 
   const [yDomain, onSetYDomain, onResetYDomain] = useVisYDomainSettings(
@@ -150,7 +158,15 @@ const SingleStatWithLine: FC<Props> = ({
   )
 
   const legendColumns = filterNoisyColumns(
-    [...groupKey, xColumn, yColumn],
+    properties.position === 'stacked'
+      ? [
+          ...groupKey,
+          xColumn,
+          yColumn,
+          `_${STACKED_LINE_CUMULATIVE}`,
+          `_${LINE_COUNT}`,
+        ]
+      : [...groupKey, xColumn, yColumn],
     result.table
   )
 

@@ -4,7 +4,10 @@ import {useDispatch, useSelector} from 'react-redux'
 import {
   Config,
   DomainLabel,
+  LINE_COUNT,
   Plot,
+  STACKED_LINE_CUMULATIVE,
+  createGroupIDColumn,
   getDomainDataFromLines,
   lineTransform,
 } from '@influxdata/giraffe'
@@ -97,14 +100,18 @@ const XYPlot: FC<Props> = ({
     yColumn &&
     columnKeys.includes(yColumn)
 
-  const colorHexes =
-    properties.colors && properties.colors.length
-      ? properties.colors.map(c => c.hex)
-      : DEFAULT_LINE_COLORS.map(c => c.hex)
+  const colorHexes = useMemo(() => {
+    if (properties.colors && properties.colors.length) {
+      return properties.colors.map(color => color.hex)
+    }
+    return DEFAULT_LINE_COLORS.map(color => color.hex)
+  }, [properties.colors])
 
   const interpolation = geomToInterpolation(properties.geom)
 
-  const groupKey = [...result.fluxGroupKeyUnion, 'result']
+  const groupKey = useMemo(() => [...result.fluxGroupKeyUnion, 'result'], [
+    result,
+  ])
 
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
     storedXDomain,
@@ -122,16 +129,17 @@ const XYPlot: FC<Props> = ({
         colorHexes,
         properties.position
       )
-      return getDomainDataFromLines(lineData, DomainLabel.Y)
+      const [fillColumn] = createGroupIDColumn(result.table, groupKey)
+      return getDomainDataFromLines(lineData, [...fillColumn], DomainLabel.Y)
     }
     return result.table.getColumn(yColumn, 'number')
   }, [
     result.table,
-    yColumn,
     xColumn,
-    properties.position,
-    colorHexes,
+    yColumn,
     groupKey,
+    colorHexes,
+    properties.position,
   ])
 
   const [yDomain, onSetYDomain, onResetYDomain] = useVisYDomainSettings(
@@ -140,7 +148,15 @@ const XYPlot: FC<Props> = ({
   )
 
   const legendColumns = filterNoisyColumns(
-    [...groupKey, xColumn, yColumn],
+    properties.position === 'stacked'
+      ? [
+          ...groupKey,
+          xColumn,
+          yColumn,
+          `_${STACKED_LINE_CUMULATIVE}`,
+          `_${LINE_COUNT}`,
+        ]
+      : [...groupKey, xColumn, yColumn],
     result.table
   )
 

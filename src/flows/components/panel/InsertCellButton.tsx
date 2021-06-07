@@ -23,6 +23,9 @@ import {PIPE_DEFINITIONS} from 'src/flows'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 // Styles
 import 'src/flows/components/panel/InsertCellButton.scss'
 
@@ -40,12 +43,17 @@ const InsertCellButton: FC<Props> = ({id}) => {
   const index = flow.data.indexOf(id)
 
   const handlePopoverShow = () => {
+    event('Insert Cell Clicked')
     popoverVisible.current = true
     dividerRef.current &&
       dividerRef.current.classList.add('flow-divider__popped')
   }
 
   const handlePopoverHide = () => {
+    if (popoverVisible.current === false) {
+      return
+    }
+    event('Insert Cell Dismissed')
     popoverVisible.current = false
     dividerRef.current &&
       dividerRef.current.classList.remove('flow-divider__popped')

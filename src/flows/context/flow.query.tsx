@@ -34,11 +34,17 @@ export interface Stage {
   instances: Instance[]
 }
 
+interface PanelQueries {
+  source: string
+  visual: string
+}
+
 export interface FlowQueryContextType {
   generateMap: (withSideEffects?: boolean) => Stage[]
   query: (text: string) => Promise<FluxResult>
   basic: (text: string) => any
   queryAll: () => void
+  getPanelQueries: (id: string, withSideEffects?: boolean) => PanelQueries
   status: RemoteDataState
   getStatus: (id: string) => RemoteDataState
 }
@@ -48,6 +54,7 @@ export const DEFAULT_CONTEXT: FlowQueryContextType = {
   query: (_: string) => Promise.resolve({} as FluxResult),
   basic: (_: string) => {},
   queryAll: () => {},
+  getPanelQueries: (_, _a) => ({source: '', visual: ''}),
   status: RemoteDataState.NotStarted,
   getStatus: (_: string) => RemoteDataState.NotStarted,
 }
@@ -206,6 +213,30 @@ export const FlowQueryProvider: FC = ({children}) => {
       })
   }
 
+  const getPanelQueries = (
+    id: string,
+    withSideEffects?: boolean
+  ): PanelQueries => {
+    return generateMap(withSideEffects).reduce(
+      (acc, curr) => {
+        const instance = curr.instances.find(i => i.id === id)
+
+        if (!instance) {
+          return acc
+        }
+
+        return {
+          source: curr.text,
+          visual: instance.modifier,
+        }
+      },
+      {
+        source: '',
+        visual: '',
+      }
+    )
+  }
+
   const query = (text: string): Promise<FluxResult> => {
     event('runQuery', {context: 'flows'})
 
@@ -313,7 +344,15 @@ export const FlowQueryProvider: FC = ({children}) => {
 
   return (
     <FlowQueryContext.Provider
-      value={{query, basic, generateMap, queryAll, status, getStatus}}
+      value={{
+        query,
+        basic,
+        generateMap,
+        queryAll,
+        getPanelQueries,
+        status,
+        getStatus,
+      }}
     >
       {children}
     </FlowQueryContext.Provider>

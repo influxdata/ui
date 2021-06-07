@@ -19,15 +19,8 @@
   }
 }
 
-.flow-visualization .view-options {
-  background-color: $g2-kevlar;
-  border-radius: $cf-radius;
-  margin-top: $cf-marg-b;
-  padding: $cf-marg-c;
-
-  h5.view-options--header {
-    margin-top: 0;
-  }
+.flow-sidebar--submenu .view-options {
+  padding: 0;
 }
 
 .flow-visualization--export-warning {

@@ -39,11 +39,15 @@ export const FlowProvider: FC = ({children}) => {
 
   const addPipe = (initial: PipeData, index?: number) => {
     const id = `local_${UUID()}`
+    const title =
+      initial.title ||
+      `${PIPE_DEFINITIONS[initial.type].button || 'Panel'} ${++GENERATOR_INDEX}`
+
+    delete initial.title
 
     flows[currentID].data.add(id, initial)
     flows[currentID].meta.add(id, {
-      title: `${PIPE_DEFINITIONS[initial.type].button ||
-        'Panel'} ${++GENERATOR_INDEX}`,
+      title,
       visible: true,
     })
 

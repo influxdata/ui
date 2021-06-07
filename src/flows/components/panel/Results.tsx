@@ -16,6 +16,9 @@ import {RemoteDataState} from 'src/types'
 import {Visibility} from 'src/types/flows'
 import {View} from 'src/visualization'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 const Results: FC = () => {
   const {id, results, queryText} = useContext(PipeContext)
   const {basic, getStatus} = useContext(FlowQueryContext)
@@ -38,6 +41,7 @@ const Results: FC = () => {
     ? 'Download results as an annotated CSV file'
     : 'Build a query to download your results'
   const download = () => {
+    event('CSV Download Initiated')
     basic(queryText).promise.then(response => {
       if (response.type !== 'SUCCESS') {
         return
@@ -58,7 +62,10 @@ const Results: FC = () => {
       height={height}
       onUpdateHeight={height => setHeight(height)}
       visibility={visibility}
-      onUpdateVisibility={visibility => setVisibility(visibility)}
+      onUpdateVisibility={visibility => {
+        event('Results visibility toggled', {state: visibility})
+        setVisibility(visibility)
+      }}
     >
       <div className="query-results">
         <View

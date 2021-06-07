@@ -13,6 +13,7 @@ import fromFlux from 'src/shared/utils/fromFlux.legacy'
 // Types
 import {PipeProp, FluxResult} from 'src/types/flows'
 import {ViewType, RemoteDataState} from 'src/types'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import {PipeContext} from 'src/flows/context/pipe'
 
@@ -65,7 +66,7 @@ const TestFlux: FC<PipeProp> = ({Context}) => {
     })
   }
 
-  const controls = (
+  const controls = isFlagEnabled('flow-sidebar') ? null : (
     <>
       <ViewTypeDropdown
         viewType={data.properties.type}

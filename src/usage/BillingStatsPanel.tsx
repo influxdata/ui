@@ -1,5 +1,5 @@
+// Libraries
 import React, {FC, useContext} from 'react'
-
 import {
   AlignItems,
   Appearance,
@@ -11,9 +11,12 @@ import {
   PopoverPosition,
   QuestionMarkTooltip,
 } from '@influxdata/clockface'
-
 import GraphTypeSwitcher from 'src/usage/GraphTypeSwitcher'
 import {UsageContext} from 'src/usage/context/usage'
+import {fromFlux} from '@influxdata/giraffe'
+
+// Types
+import {UsageVector} from 'src/types'
 
 const graphInfo = [
   {
@@ -50,7 +53,7 @@ const graphInfo = [
   },
 ]
 const BillingStatsPanel: FC = () => {
-  const {billingDateTime, billingStats} = useContext(UsageContext)
+  const {billingDateTime, billingStats, usageVectors} = useContext(UsageContext)
 
   const today = new Date().toISOString()
   const dateRange = `${billingDateTime} UTC to ${today} UTC`
@@ -101,12 +104,25 @@ const BillingStatsPanel: FC = () => {
         alignItems={AlignItems.Stretch}
         testID="billing-stats--graphs"
       >
-        {billingStats?.map((csv: string, i: number) => {
+        {usageVectors?.map((vector: UsageVector) => {
+          // Find the matching graphInfo for the usage vector
+          const graph = graphInfo.find(g => g.column === vector.fluxKey)
+          // Find the matching CSV for the usageVector
+          const csv =
+            billingStats?.find((stat: string) => {
+              const {table, error} = fromFlux(stat)
+              if (!table.length || error) {
+                return false
+              }
+              return table.columnKeys.includes(vector.fluxKey)
+            }) ?? ''
+
           return (
             <GraphTypeSwitcher
-              key={csv}
-              graphInfo={graphInfo[i]}
+              key={vector.fluxKey}
+              graphInfo={graph}
               csv={csv.trim()}
+              length={usageVectors.length}
             />
           )
         })}

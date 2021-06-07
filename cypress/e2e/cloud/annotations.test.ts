@@ -104,7 +104,7 @@ describe('The Annotations UI functionality', () => {
       .clear()
       .type('lets edit this annotation...')
 
-    cy.getByTestID('edit-annotation-submit-button').click()
+    cy.getByTestID('annotation-submit-button').click()
   }
 
   const editAnnotationTest = cy => {
@@ -161,7 +161,7 @@ describe('The Annotations UI functionality', () => {
         .click()
         .focused()
         .type('im a hippopotamus')
-      cy.getByTestID('add-annotation-submit').click()
+      cy.getByTestID('annotation-submit-button').click()
     })
   }
 
@@ -213,7 +213,7 @@ describe('The Annotations UI functionality', () => {
       // make sure the two times (start and end) are not equal:
       ensureRangeAnnotationTimesAreNotEqual(cy)
 
-      cy.getByTestID('add-annotation-submit').click()
+      cy.getByTestID('annotation-submit-button').click()
     })
   }
 
@@ -228,7 +228,7 @@ describe('The Annotations UI functionality', () => {
 
     ensureRangeAnnotationTimesAreNotEqual(cy)
 
-    cy.getByTestID('edit-annotation-submit-button').click()
+    cy.getByTestID('annotation-submit-button').click()
 
     // reload to make sure the annotation was edited in the backend as well.
     cy.reload()
@@ -312,6 +312,157 @@ describe('The Annotations UI functionality', () => {
     it('can add and then delete a range annotation for the xy line graph', () => {
       addRangeAnnotation(cy)
       actuallyDeleteAnnotation(cy)
+    })
+
+    it('can add a range annotation, then edit it and switch back and forth from point->range and the endtime stays the same', () => {
+      addRangeAnnotation(cy)
+      startEditingAnnotation(cy)
+
+      // verify there is an end time:
+      cy.getByTestID('endTime-testID').should('be.visible')
+
+      // verify that it is range annotation (the range selector option is selected)
+      cy.getByTestID('annotation-form-range-type-option--input').should(
+        'be.checked'
+      )
+
+      // get the 'end time' value:
+      cy.getByTestID('endTime-testID')
+        .invoke('val')
+        .then(endTimeValue => {
+          // switch it to a point annotation
+          cy.getByTestID('annotation-form-point-type-option').click()
+
+          // the endTime input should disappear
+          cy.getByTestID('endTime-testID').should('not.exist')
+
+          // switch back to range:
+          cy.getByTestID('annotation-form-range-type-option').click()
+
+          cy.getByTestID('endTime-testID')
+            .should('be.visible')
+            .invoke('val')
+            .then(endTimeValue2 => {
+              expect(endTimeValue).to.equal(endTimeValue2)
+            })
+        })
+    })
+    it('can add a range annotation, then edit it and change to a point annotation', () => {
+      addRangeAnnotation(cy)
+      cy.reload()
+      startEditingAnnotation(cy)
+
+      // verify that it is range annotation (the range selector option is selected)
+      cy.getByTestID('annotation-form-range-type-option--input').should(
+        'be.checked'
+      )
+
+      // switch it to a point annotation
+      cy.getByTestID('annotation-form-point-type-option').click()
+
+      // verify that it is point  annotation now
+      cy.getByTestID('annotation-form-point-type-option--input').should(
+        'be.checked'
+      )
+
+      // the endTime input should disappear
+      cy.getByTestID('endTime-testID').should('not.exist')
+
+      // save it
+      cy.getByTestID('annotation-submit-button').click()
+
+      // reload to make sure it gets to the backend
+      cy.reload()
+      startEditingAnnotation(cy)
+
+      // make sure it is (still) a point annotation:
+      cy.getByTestID('endTime-testID').should('not.exist')
+      cy.getByTestID('annotation-form-point-type-option--input').should(
+        'be.checked'
+      )
+    })
+    it('can add an annotation; that is originally a point and then switch to a range', () => {
+      cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot').click()
+      })
+      cy.getByTestID('overlay--container').within(() => {
+        cy.getByTestID('edit-annotation-message')
+          .should('be.visible')
+          .click()
+          .focused()
+          .type('random annotation, should be a range')
+
+        // should be of type 'point'
+        cy.getByTestID('annotation-form-point-type-option--input').should(
+          'be.checked'
+        )
+
+        // confirm that the 'endTime' input is NOT THERE
+        cy.getByTestID('endTime-testID').should('not.exist')
+
+        // now: click the button to switch to range:
+        cy.getByTestID('annotation-form-range-type-option').click()
+
+        // now, the end time input SHOULD show up
+        cy.getByTestID('endTime-testID').should('be.visible')
+
+        // at first the two times are equal; check that; then upgrade the time by 10 minutes; and save it
+        cy.getByTestID('startTime-testID')
+          .invoke('val')
+          .then(startTimeValue => {
+            cy.getByTestID('endTime-testID')
+              .invoke('val')
+              .then(endTimeValue => {
+                expect(endTimeValue).to.equal(startTimeValue)
+
+                const newEndTime = Cypress.moment(endTimeValue)
+                  .add(10, 'minutes')
+                  .format('YYYY-MM-DD hh:mm:ss a')
+
+                cy.getByTestID('endTime-testID')
+                  .click()
+                  .focused()
+                  .clear()
+                  .type(newEndTime)
+
+                cy.getByTestID('annotation-submit-button').click()
+
+                // reload to make sure the annotation was added in the backend as well.
+                cy.reload()
+              })
+          })
+      }) // end overlay-container within
+      checkAnnotationText(cy, 'random annotation, should be a range')
+
+      startEditingAnnotation(cy)
+
+      // verify there is an end time:
+      cy.getByTestID('endTime-testID').should('be.visible')
+
+      // verify that it is range annotation (the range selector option is selected)
+      cy.getByTestID('annotation-form-range-type-option--input').should(
+        'be.checked'
+      )
+
+      cy.getByTestID('startTime-testID')
+        .invoke('val')
+        .then(startTimeValue => {
+          cy.getByTestID('endTime-testID')
+            .invoke('val')
+            .then(endTimeValue => {
+              expect(endTimeValue).to.not.equal(startTimeValue)
+
+              // should be 10 minutes between them:
+              const duration = Cypress.moment.duration(
+                Cypress.moment(endTimeValue).diff(
+                  Cypress.moment(startTimeValue)
+                )
+              )
+              const minutes = duration.asMinutes()
+
+              expect(minutes).to.equal(10)
+            })
+        })
     })
 
     it('can create an annotation when graph is clicked and the control bar is closed', () => {
@@ -419,7 +570,7 @@ describe('The Annotations UI functionality', () => {
           .click()
           .focused()
           .type('annotation in newCell')
-        cy.getByTestID('add-annotation-submit').click()
+        cy.getByTestID('annotation-submit-button').click()
       })
 
       // should have the annotation created and the tooltip should says "annotation in newCell"

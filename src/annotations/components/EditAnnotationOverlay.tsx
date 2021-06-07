@@ -3,8 +3,7 @@ import React, {FC, useContext} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 
 // Components
-import {EditAnnotationForm} from 'src/annotations/components/EditAnnotationForm'
-
+import {AnnotationForm} from 'src/annotations/components/annotationForm/AnnotationForm'
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
@@ -39,20 +38,31 @@ export const EditAnnotationOverlay: FC = () => {
   ): Promise<void> => {
     try {
       await dispatch(editAnnotation(editedAnnotation))
-      event('xyplot.annotations.edit_annotation.success')
+      event('annotations.edit_annotation.success')
       dispatch(notify(editAnnotationSuccess()))
       onClose()
     } catch (err) {
-      event('xyplot.annotations.edit_annotation.failure')
+      event('annotations.edit_annotation.failure')
       dispatch(notify(editAnnotationFailed(getErrorMessage(err))))
     }
   }
 
+  const annoType =
+    clickedAnnotation.startTime === clickedAnnotation.endTime
+      ? 'point'
+      : 'range'
+
   return (
-    <EditAnnotationForm
-      handleSubmit={handleSubmit}
-      annotation={clickedAnnotation}
-      handleClose={onClose}
+    <AnnotationForm
+      onSubmit={handleSubmit}
+      startTime={clickedAnnotation.startTime}
+      annotationId={clickedAnnotation.id}
+      endTime={clickedAnnotation.endTime}
+      type={annoType}
+      summary={clickedAnnotation.summary}
+      stream={clickedAnnotation.stream}
+      onClose={onClose}
+      title="Edit"
     />
   )
 }

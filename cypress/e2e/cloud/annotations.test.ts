@@ -2,7 +2,10 @@ import {Organization} from '../../../src/types'
 import {lines} from '../../support/commands'
 
 describe('The Annotations UI functionality', () => {
-  const setupData = (cy, singleStatTest = false) => {
+  const singleStatSuffix = 'line-plus-single-stat'
+  const bandSuffix = 'band'
+
+  const setupData = (cy, plotTypeSuffix = '') => {
     cy.flush()
     cy.signin().then(() =>
       cy.fixture('routes').then(({orgs}) => {
@@ -16,6 +19,7 @@ describe('The Annotations UI functionality', () => {
       cy.wait(1000)
       w.influx.set('annotations', true)
       w.influx.set('useGiraffeGraphs', true)
+      w.influx.set('rangeAnnotations', true)
     })
     cy.get('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
@@ -41,9 +45,9 @@ describe('The Annotations UI functionality', () => {
           .should('exist')
           .click()
 
-        if (singleStatTest) {
+        if (plotTypeSuffix) {
           cy.getByTestID('view-type--dropdown').click()
-          cy.getByTestID('view-type--line-plus-single-stat').click()
+          cy.getByTestID(`view-type--${plotTypeSuffix}`).click()
         }
 
         cy.getByTestID(`selector-list tv1`)
@@ -81,28 +85,33 @@ describe('The Annotations UI functionality', () => {
     cy.reload()
 
     // we need to see if the annotations got created and that the tooltip says "I'm a hippopotamus"
-    cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
-    })
-    cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
+    checkAnnotationText(cy, 'im a hippopotamus')
   }
 
-  const editAnnotationTest = cy => {
-    addAnnotation(cy)
-
-    // should have the annotation created , lets click it to show the modal.
+  const startEditingAnnotation = cy => {
     cy.getByTestID('cell blah').within(() => {
       // we have 2 line layers by the same id, we only want to click on the first
       cy.get('line')
         .first()
         .click()
     })
+  }
+
+  const editTheAnnotation = cy => {
+    startEditingAnnotation(cy)
 
     cy.getByTestID('edit-annotation-message')
       .clear()
       .type('lets edit this annotation...')
 
     cy.getByTestID('edit-annotation-submit-button').click()
+  }
+
+  const editAnnotationTest = cy => {
+    addAnnotation(cy)
+
+    // should have the annotation created , lets click it to show the modal.
+    editTheAnnotation(cy)
 
     // reload to make sure the annotation was edited in the backend as well.
     cy.reload()
@@ -116,9 +125,7 @@ describe('The Annotations UI functionality', () => {
     )
   }
 
-  const deleteAnnotationTest = cy => {
-    addAnnotation(cy)
-
+  function actuallyDeleteAnnotation(cy) {
     // should have the annotation created , lets click it to show the modal.
     cy.getByTestID('cell blah').within(() => {
       // we have 2 line layers by the same id, we only want to click on the first
@@ -138,6 +145,12 @@ describe('The Annotations UI functionality', () => {
     })
   }
 
+  const deleteAnnotationTest = cy => {
+    addAnnotation(cy)
+
+    actuallyDeleteAnnotation(cy)
+  }
+
   const addAnnotation = cy => {
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').click()
@@ -152,9 +165,80 @@ describe('The Annotations UI functionality', () => {
     })
   }
 
+  const checkAnnotationText = (cy, text) => {
+    cy.getByTestID('cell blah').within(() => {
+      cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
+    })
+    cy.getByTestID('giraffe-annotation-tooltip').contains(text)
+  }
+
+  const ensureRangeAnnotationTimesAreNotEqual = cy => {
+    cy.getByTestID('endTime-testID')
+      .invoke('val')
+      .then(endTimeValue => {
+        cy.getByTestID('startTime-testID')
+          .invoke('val')
+          .then(startTimeValue => {
+            expect(endTimeValue).to.not.equal(startTimeValue)
+          })
+      })
+  }
+
+  const addRangeAnnotation = (cy, layerTestID = 'line') => {
+    cy.getByTestID('cell blah').within(() => {
+      cy.getByTestID(`giraffe-layer-${layerTestID}`).then(([canvas]) => {
+        const {width, height} = canvas
+
+        cy.wrap(canvas).trigger('mousedown', {
+          x: width / 3,
+          y: height / 2,
+          force: true,
+        })
+        cy.wrap(canvas).trigger('mousemove', {
+          x: (width * 2) / 3,
+          y: height / 2,
+          force: true,
+        })
+        cy.wrap(canvas).trigger('mouseup', {force: true})
+      })
+    })
+
+    cy.getByTestID('overlay--container').within(() => {
+      cy.getByTestID('edit-annotation-message')
+        .should('be.visible')
+        .click()
+        .focused()
+        .type('range annotation here!')
+
+      // make sure the two times (start and end) are not equal:
+      ensureRangeAnnotationTimesAreNotEqual(cy)
+
+      cy.getByTestID('add-annotation-submit').click()
+    })
+  }
+
+  const editRangeAnnotationTest = (cy, layerTestID = 'line') => {
+    addRangeAnnotation(cy, layerTestID)
+
+    startEditingAnnotation(cy)
+
+    cy.getByTestID('edit-annotation-message')
+      .clear()
+      .type('editing the text here for the range annotation')
+
+    ensureRangeAnnotationTimesAreNotEqual(cy)
+
+    cy.getByTestID('edit-annotation-submit-button').click()
+
+    // reload to make sure the annotation was edited in the backend as well.
+    cy.reload()
+
+    checkAnnotationText(cy, 'editing the text here for the range annotation')
+  }
+
   describe('annotations on a graph + single stat graph type', () => {
     beforeEach(() => {
-      setupData(cy, true)
+      setupData(cy, singleStatSuffix)
     })
     it('can create an annotation on the single stat + line graph', () => {
       addAnnotationTest(cy)
@@ -164,6 +248,44 @@ describe('The Annotations UI functionality', () => {
     })
     it('can delete an annotation for the single stat + line graph', () => {
       deleteAnnotationTest(cy)
+    })
+    it('can add a range annotation for the xy single stat + line graph', () => {
+      addRangeAnnotation(cy)
+      checkAnnotationText(cy, 'range annotation here!')
+    })
+    it('can add and edit a range annotation for the single stat + line graph', () => {
+      editRangeAnnotationTest(cy)
+    })
+    it('can add and then delete a range annotation for the single stat + line graph', () => {
+      addRangeAnnotation(cy)
+      actuallyDeleteAnnotation(cy)
+    })
+  })
+
+  describe('annotations on a band plot graph type', () => {
+    beforeEach(() => {
+      setupData(cy, bandSuffix)
+    })
+    it('can create an annotation on the band plot', () => {
+      addAnnotationTest(cy)
+    })
+    it('can edit an annotation for the band plot', () => {
+      editAnnotationTest(cy)
+    })
+    it('can delete an annotation for the band plot ', () => {
+      deleteAnnotationTest(cy)
+    })
+
+    it('can add a range annotation for the band plot', () => {
+      addRangeAnnotation(cy, 'band-chart')
+      checkAnnotationText(cy, 'range annotation here!')
+    })
+    it('can add and edit a range annotation for the band plot', () => {
+      editRangeAnnotationTest(cy, 'band-chart')
+    })
+    it('can add and then delete a range annotation for the band plot', () => {
+      addRangeAnnotation(cy, 'band-chart')
+      actuallyDeleteAnnotation(cy)
     })
   })
 
@@ -179,6 +301,17 @@ describe('The Annotations UI functionality', () => {
     })
     it('can delete an annotation  for the xy line graph', () => {
       deleteAnnotationTest(cy)
+    })
+    it('can add a range annotation for the xy line graph', () => {
+      addRangeAnnotation(cy)
+      checkAnnotationText(cy, 'range annotation here!')
+    })
+    it('can add and edit a range annotation for the xy line graph', () => {
+      editRangeAnnotationTest(cy)
+    })
+    it('can add and then delete a range annotation for the xy line graph', () => {
+      addRangeAnnotation(cy)
+      actuallyDeleteAnnotation(cy)
     })
 
     it('can create an annotation when graph is clicked and the control bar is closed', () => {

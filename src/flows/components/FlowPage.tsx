@@ -2,6 +2,7 @@
 import React, {FC, useContext, useEffect} from 'react'
 import {useParams} from 'react-router-dom'
 import {Page} from '@influxdata/clockface'
+import {DapperScrollbars} from '@influxdata/clockface'
 
 // Contexts
 import CurrentFlowProvider from 'src/flows/context/flow.current'
@@ -11,9 +12,11 @@ import {FlowQueryProvider} from 'src/flows/context/flow.query'
 import {FlowListContext} from 'src/flows/context/flow.list'
 import {PopupDrawer, PopupProvider} from 'src/flows/context/popup'
 import {ResultsProvider} from 'src/flows/context/results'
+import {SidebarProvider} from 'src/flows/context/sidebar'
 
 // Components
 import PipeList from 'src/flows/components/PipeList'
+import Sidebar from 'src/flows/components/Sidebar'
 import FlowHeader from 'src/flows/components/header'
 import FlowKeyboardPreview from 'src/flows/components/FlowKeyboardPreview'
 
@@ -22,13 +25,20 @@ import {PROJECT_NAME_PLURAL} from 'src/flows'
 
 import 'src/flows/style.scss'
 
+import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
+
 const FlowFromRoute = () => {
   const {id} = useParams<{id: string}>()
-  const {change} = useContext(FlowListContext)
+  const {change, flows, currentID} = useContext(FlowListContext)
 
   useEffect(() => {
     change(id)
   }, [id, change])
+
+  document.title = pageTitleSuffixer([
+    flows[currentID]?.name,
+    PROJECT_NAME_PLURAL,
+  ])
 
   return null
 }
@@ -41,19 +51,24 @@ const FlowContainer: FC = () => (
         <ResultsProvider>
           <FlowQueryProvider>
             <FlowKeyboardPreview />
-            <Page titleTag={PROJECT_NAME_PLURAL}>
-              <FlowHeader />
-              <Page.Contents
-                fullWidth={true}
-                scrollable={true}
-                className="flow-page"
-              >
-                <PopupProvider>
-                  <PipeList />
-                  <PopupDrawer />
-                </PopupProvider>
-              </Page.Contents>
-            </Page>
+            <SidebarProvider>
+              <Page>
+                <FlowHeader />
+                <Page.Contents
+                  fullWidth={true}
+                  scrollable={false}
+                  className="flow-page"
+                >
+                  <PopupProvider>
+                    <DapperScrollbars noScrollX>
+                      <PipeList />
+                    </DapperScrollbars>
+                    <Sidebar />
+                    <PopupDrawer />
+                  </PopupProvider>
+                </Page.Contents>
+              </Page>
+            </SidebarProvider>
           </FlowQueryProvider>
         </ResultsProvider>
       </RunModeProvider>

@@ -2,10 +2,16 @@ import React, {FC, useContext} from 'react'
 import {SlideToggle, InputLabel} from '@influxdata/clockface'
 import {FlowContext} from 'src/flows/context/flow.current'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 const PresentationMode: FC = () => {
   const {flow, update} = useContext(FlowContext)
 
   const handleChange = () => {
+    event('Presentation Mode Toggled', {
+      state: !flow.readOnly ? 'edit' : 'presentation',
+    })
     update({readOnly: !flow.readOnly})
   }
 

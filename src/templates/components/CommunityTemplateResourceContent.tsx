@@ -405,6 +405,7 @@ class CommunityTemplateResourceContentUnconnected extends PureComponent<Props> {
                         )
                       }}
                       key={label.templateMetaName}
+                      title={label.templateMetaName}
                     >
                       <Label
                         description={label.properties.description}

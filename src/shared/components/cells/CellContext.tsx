@@ -35,6 +35,8 @@ interface OwnProps {
   onCSVDownload: () => void
   onRefresh: () => void
   variables: string
+  isPaused: boolean
+  togglePauseCell: () => void
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -49,6 +51,8 @@ const CellContext: FC<Props> = ({
   onDeleteCell,
   onCSVDownload,
   onRefresh,
+  isPaused,
+  togglePauseCell,
 }) => {
   const [popoverVisible, setPopoverVisibility] = useState<boolean>(false)
   const editNoteText = !!get(view, 'properties.note') ? 'Edit Note' : 'Add Note'
@@ -93,6 +97,13 @@ const CellContext: FC<Props> = ({
             icon={IconFont.TextBlock}
             onHide={onHide}
             testID="cell-context--note"
+          />
+          <CellContextItem
+            label="Clone"
+            onClick={handleCloneCell}
+            icon={IconFont.Duplicate}
+            onHide={onHide}
+            testID="cell-context--clone"
           />
           <CellContextDangerItem
             label="Delete"
@@ -153,12 +164,30 @@ const CellContext: FC<Props> = ({
             testID="cell-context--refresh"
           />
         </FeatureFlag>
+        <FeatureFlag name="pauseCell">
+          <CellContextItem
+            label={isPaused ? 'Resume' : 'Pause'}
+            onClick={togglePauseCell}
+            icon={isPaused ? IconFont.Play : IconFont.Pause}
+            onHide={onHide}
+            testID="cell-context--pause"
+          />
+        </FeatureFlag>
       </div>
     )
   }
 
   return (
     <>
+      {isPaused && (
+        <button
+          className={buttonClass}
+          onClick={togglePauseCell}
+          data-testid="cell-context--pause-resume"
+        >
+          <Icon glyph={IconFont.Pause} />
+        </button>
+      )}
       <button
         className={buttonClass}
         ref={triggerRef}

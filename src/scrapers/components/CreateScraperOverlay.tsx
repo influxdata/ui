@@ -42,7 +42,8 @@ class CreateScraperOverlay extends PureComponent<Props, State> {
       buckets,
     } = this.props
 
-    const firstBucketID = get(buckets, '0.id', '')
+    // The first two buckets are system buckets
+    const firstBucketID = get(buckets, '2.id', '')
 
     this.state = {
       scraper: {

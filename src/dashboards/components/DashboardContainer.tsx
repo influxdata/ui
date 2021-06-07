@@ -28,6 +28,9 @@ import {notify} from 'src/shared/actions/notifications'
 // History
 import {useRouteMatch} from 'react-router-dom'
 
+// Metrics
+import {event} from 'src/cloud/utils/reporting'
+
 const DashboardContainer: FC = () => {
   const timer = useRef(null)
   const dispatch = useDispatch()
@@ -52,34 +55,15 @@ const DashboardContainer: FC = () => {
       dispatch(notify(dashboardAutoRefreshTimeoutSuccess()))
       registerStopListeners()
       GlobalAutoRefresher.stopPolling()
+      event('dashboards.autorefresh.dashboardcontainer.inactivitytimeout', {
+        timeout: autoRefresh.inactivityTimeout,
+      })
     }, autoRefresh.inactivityTimeout)
 
     window.addEventListener('load', registerListeners)
     document.addEventListener('mousemove', registerListeners)
     document.addEventListener('keypress', registerListeners)
   }, [dashboard, autoRefresh.inactivityTimeout])
-
-  const visChangeHandler = () => {
-    if (
-      document.visibilityState === 'hidden' &&
-      autoRefresh.status === AutoRefreshStatus.Active
-    ) {
-      registerListeners()
-    } else {
-      registerStopListeners()
-    }
-  }
-  const registerStopListeners = useCallback(() => {
-    // Stop all existing timers and deregister everythang
-    if (timer.current) {
-      clearTimeout(timer.current)
-      timer.current = null
-    }
-
-    window.removeEventListener('load', registerListeners)
-    document.removeEventListener('mousemove', registerListeners)
-    document.removeEventListener('keypress', registerListeners)
-  }, [registerListeners, timer])
 
   const stopFunc = useCallback(() => {
     if (
@@ -96,6 +80,29 @@ const DashboardContainer: FC = () => {
     autoRefresh.infiniteDuration,
   ])
 
+  const visChangeHandler = useCallback(() => {
+    if (
+      document.visibilityState === 'hidden' &&
+      autoRefresh.status === AutoRefreshStatus.Active
+    ) {
+      GlobalAutoRefresher.stopPolling()
+    } else if (document.visibilityState === 'visible') {
+      GlobalAutoRefresher.poll(autoRefresh, stopFunc)
+    }
+  }, [autoRefresh.status, stopFunc])
+
+  const registerStopListeners = useCallback(() => {
+    // Stop all existing timers and deregister everythang
+    if (timer.current) {
+      clearTimeout(timer.current)
+      timer.current = null
+    }
+
+    window.removeEventListener('load', registerListeners)
+    document.removeEventListener('mousemove', registerListeners)
+    document.removeEventListener('keypress', registerListeners)
+  }, [registerListeners, timer])
+
   useEffect(() => {
     if (isEditing) {
       registerStopListeners()
@@ -108,9 +115,9 @@ const DashboardContainer: FC = () => {
       autoRefresh.status === AutoRefreshStatus.Active
     ) {
       GlobalAutoRefresher.poll(autoRefresh, stopFunc)
+      document.addEventListener('visibilitychange', visChangeHandler)
       if (autoRefresh.inactivityTimeout > 0) {
         registerListeners()
-        document.addEventListener('visibilitychange', visChangeHandler)
       }
     } else {
       registerStopListeners()
@@ -122,10 +129,12 @@ const DashboardContainer: FC = () => {
       document.removeEventListener('visibilitychange', visChangeHandler)
     }
   }, [
+    autoRefresh.interval,
     autoRefresh?.status,
     autoRefresh.inactivityTimeout,
     stopFunc,
     isEditing?.path,
+    visChangeHandler,
   ])
 
   useEffect(() => {

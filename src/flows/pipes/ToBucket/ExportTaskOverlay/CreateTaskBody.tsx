@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC, lazy, Suspense, useContext} from 'react'
 
 // Components
 import {
@@ -10,11 +10,22 @@ import {
   Input,
   InputType,
   ComponentSize,
+  RemoteDataState,
+  SpinnerContainer,
+  TechnoSpinner,
 } from '@influxdata/clockface'
-import QueryTextPreview from 'src/flows/components/QueryTextPreview'
 
 // Contexts
 import {Context} from 'src/flows/pipes/ToBucket/ExportTaskOverlay/context'
+import {PopupContext} from 'src/flows/context/popup'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
+
+// Utils
+import {formatQueryText} from 'src/flows/shared/utils'
+
+const FluxMonacoEditor = lazy(() =>
+  import('src/shared/components/FluxMonacoEditor')
+)
 
 const CreateTaskBody: FC = () => {
   const {
@@ -24,6 +35,9 @@ const CreateTaskBody: FC = () => {
     taskName,
     taskNameError,
   } = useContext(Context)
+  const {data} = useContext(PopupContext)
+  const {getPanelQueries} = useContext(FlowQueryContext)
+  const script = formatQueryText(getPanelQueries(data.panel, true).source)
 
   return (
     <>
@@ -64,7 +78,21 @@ const CreateTaskBody: FC = () => {
       </Grid.Column>
       <Grid.Column>
         <Form.Element label="Preview">
-          <QueryTextPreview />
+          <Suspense
+            fallback={
+              <SpinnerContainer
+                loading={RemoteDataState.Loading}
+                spinnerComponent={<TechnoSpinner />}
+              />
+            }
+          >
+            <FluxMonacoEditor
+              script={script}
+              onChangeScript={() => {}}
+              readOnly
+              autogrow
+            />
+          </Suspense>
         </Form.Element>
       </Grid.Column>
     </>

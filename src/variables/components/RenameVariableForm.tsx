@@ -1,6 +1,5 @@
 // Libraries
 import React, {PureComponent, ChangeEvent, FormEvent} from 'react'
-import _ from 'lodash'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 

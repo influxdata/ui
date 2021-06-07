@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useEffect, useState} from 'react'
-import {Plot} from '@influxdata/giraffe'
+import {Config, Plot} from '@influxdata/giraffe'
 import {RemoteDataState, InfluxColors} from '@influxdata/clockface'
 
 // Types
@@ -13,6 +13,7 @@ import {
   getGeoCoordinates,
 } from 'src/shared/utils/vis'
 import {getMapToken} from './api'
+import {event} from 'src/cloud/utils/reporting'
 
 interface Props extends VisualizationProps {
   properties: GeoViewProperties
@@ -47,8 +48,10 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
         const {token} = await getMapToken()
         setMapToken(token)
         setMapServiceError(RemoteDataState.Done)
+        event('mapplot.map_token_request.success')
       } catch (err) {
         setMapServiceError(RemoteDataState.Error)
+        event('mapplot.map_token_request.failure')
       }
     }
     getToken()
@@ -62,8 +65,10 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
       setCoordinateFlag(coordinateFlag)
       setGeoCoordinates(coordinates)
       setCoordinateError(RemoteDataState.Done)
+      event('mapplot.get_geo_coordinates.success')
     } catch (err) {
       setCoordinateError(RemoteDataState.Error)
+      event('mapplot.get_geo_coordinates.failure')
     }
   }, [result.table])
 
@@ -108,7 +113,6 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     tileServerUrl: getMapboxUrl(),
     bingKey: '',
   }
-
   let layersOpts = layers
   if (!layers.length) {
     layersOpts = [
@@ -117,12 +121,20 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
         colorDimension: {label: 'Value'},
         colorField: '_value',
         colors: [
-          {type: 'min', hex: InfluxColors.Star},
-          {value: 50, hex: InfluxColors.Star},
-          {type: 'max', hex: InfluxColors.Star},
+          {type: 'min', hex: InfluxColors.Star, id: '0'},
+          {value: 50, hex: InfluxColors.Star, id: '1'},
+          {type: 'max', hex: InfluxColors.Star, id: '2'},
         ],
         isClustered: false,
       },
+    ]
+  }
+
+  if (!layers[0].colors[0].id) {
+    layersOpts[0].colors = [
+      {value: 0, type: 'min', hex: InfluxColors.Star, id: '0', name: 'star'},
+      {value: 5, hex: InfluxColors.Star, id: '1', name: 'star'},
+      {value: 1, type: 'max', hex: InfluxColors.Star, id: '2', name: 'star'},
     ]
   }
 
@@ -131,27 +143,25 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     zoomOpt = 6
   }
 
-  return (
-    <Plot
-      config={{
-        table: result.table,
-        showAxes: false,
-        layers: [
-          {
-            type: 'geo',
-            lat: geoCoordinates.lat,
-            lon: geoCoordinates.lon,
-            zoom: zoomOpt,
-            allowPanAndZoom,
-            detectCoordinateFields: coordinateFieldsFlag,
-            mapStyle,
-            layers: layersOpts,
-            tileServerConfiguration: tileServerConfiguration,
-          },
-        ],
-      }}
-    />
-  )
+  const config: Config = {
+    table: result.table,
+    showAxes: false,
+    layers: [
+      {
+        type: 'geo',
+        lat: geoCoordinates.lat,
+        lon: geoCoordinates.lon,
+        zoom: zoomOpt,
+        allowPanAndZoom,
+        detectCoordinateFields: coordinateFieldsFlag,
+        mapStyle,
+        layers: layersOpts,
+        tileServerConfiguration: tileServerConfiguration,
+      },
+    ],
+  }
+
+  return <Plot config={config} />
 }
 
 export default GeoPlot

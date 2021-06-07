@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import {sortBy} from 'lodash'
 import chroma from 'chroma-js'
 
 import {
@@ -21,7 +21,7 @@ const getLegibleTextColor = bgColorHex => {
 }
 
 const findNearestCrossedThreshold = (colors, lastValue) => {
-  const sortedColors = _.sortBy(colors, color => Number(color.value))
+  const sortedColors = sortBy(colors, color => Number(color.value))
 
   // If the value is less than zero, clamp to the lowest value
   // See https://github.com/influxdata/influxdb/issues/20750

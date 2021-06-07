@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC} from 'react'
-import classnames from 'classnames'
 import {useSelector} from 'react-redux'
 import {Panel, ComponentSize, InfluxColors} from '@influxdata/clockface'
 import {fromFlux} from '@influxdata/giraffe'
@@ -21,12 +20,13 @@ import {
 interface OwnProps {
   graphInfo: any
   csv: string
+  length?: number
 }
 
 const GENERIC_PROPERTY_DEFAULTS = {
   colors: [],
   queries: [],
-  note: 'No Date to Display',
+  note: 'No Data to Display',
   showNoteWhenEmpty: true,
   prefix: '',
   suffix: '',
@@ -34,7 +34,7 @@ const GENERIC_PROPERTY_DEFAULTS = {
   tickSuffix: '',
 }
 
-const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv}) => {
+const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv, length = 1}) => {
   const giraffeResult = fromFlux(csv)
 
   const timeRange = useSelector(getTimeRangeWithTimezone)
@@ -59,9 +59,7 @@ const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv}) => {
     geom: 'line',
   }
 
-  const graphTypeClassname = classnames('panel-body--size', {
-    'usage-plot': graphInfo?.type === 'sparkline',
-  })
+  const isSparkline = graphInfo?.type === 'sparkline'
 
   return (
     <Panel
@@ -72,14 +70,15 @@ const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv}) => {
       <Panel.Header size={ComponentSize.ExtraSmall}>
         <h5>{graphInfo?.title}</h5>
       </Panel.Header>
-      <Panel.Body className={graphTypeClassname}>
+      <Panel.Body
+        className="panel-body--size"
+        style={{height: isSparkline ? 250 : 200 / length}}
+      >
         <View
           loading={RemoteDataState.Done}
           error=""
           isInitial={false}
-          properties={
-            graphInfo?.type === 'stat' ? singleStatProperties : xyProperties
-          }
+          properties={isSparkline ? xyProperties : singleStatProperties}
           result={giraffeResult}
           timeRange={timeRange}
         />

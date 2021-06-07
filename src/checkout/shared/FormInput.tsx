@@ -6,7 +6,7 @@ import {CheckoutContext} from 'src/checkout/context/checkout'
 
 type Props = FormElementProps & InputProps
 
-const FormInput: FC<Props> = ({label, required, id}) => {
+const FormInput: FC<Props> = ({label, required, id, ...args}) => {
   const {
     errors,
     handleSetInputs,
@@ -62,6 +62,11 @@ const FormInput: FC<Props> = ({label, required, id}) => {
         onChange={handleChange}
         testID={`${id}--input`}
         onFocus={handleOnFocus}
+        // The args we're spreading here are optional parameters that may or may not exist:
+        // 1. type
+        // 2. min
+        // 3. step
+        {...args}
       />
     </Form.Element>
   )

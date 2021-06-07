@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
+import {useDispatch} from 'react-redux'
 import {
   Button,
   ComponentColor,
@@ -10,37 +10,41 @@ import {
   DapperScrollbars,
 } from '@influxdata/clockface'
 
-// Decorator
-import {Notification} from 'src/types'
-
 // Components
 import CopyButton from 'src/shared/components/CopyButton'
 
+// Constants
+import {copyToClipboardSuccess} from 'src/shared/copy/notifications'
+
 // Actions
 import {generateTelegrafToken} from 'src/dataLoaders/actions/dataLoaders'
+import {notify} from 'src/shared/actions/notifications'
 
-export interface OwnProps {
+interface Props {
   configID: string
   label: string
-  onCopyText?: (text: string, status: boolean) => Notification
-  onGenerateTelegrafToken: typeof generateTelegrafToken
   testID?: string
   token: string
 }
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps
-
 const TokenCodeSnippet: FC<Props> = ({
   configID,
-  onCopyText,
   label = 'Code Snippet',
   testID,
   token,
-  onGenerateTelegrafToken,
 }) => {
+  const dispatch = useDispatch()
+
   const handleRefreshClick = () => {
-    onGenerateTelegrafToken(configID)
+    dispatch(generateTelegrafToken(configID))
+  }
+
+  const onCopy = () => {
+    dispatch(
+      notify(
+        copyToClipboardSuccess(`${token.slice(0, 30).trimRight()}...`, 'Script')
+      )
+    )
   }
 
   return (
@@ -56,11 +60,7 @@ const TokenCodeSnippet: FC<Props> = ({
       </DapperScrollbars>
       <div className="code-snippet--footer">
         <div>
-          <CopyButton
-            textToCopy={token}
-            onCopyText={onCopyText}
-            contentName="Script"
-          />
+          <CopyButton text={token} onCopy={onCopy} />
           <Button
             size={ComponentSize.ExtraSmall}
             status={
@@ -82,9 +82,4 @@ const TokenCodeSnippet: FC<Props> = ({
   )
 }
 
-const mdtp = {
-  onGenerateTelegrafToken: generateTelegrafToken,
-}
-
-const connector = connect(null, mdtp)
-export default connector(TokenCodeSnippet)
+export default TokenCodeSnippet

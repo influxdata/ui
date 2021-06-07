@@ -1,6 +1,7 @@
 import React, {FC, CSSProperties} from 'react'
 
 import {Row, Fields} from 'src/types'
+import {asLink} from 'src/visualization/types/Table/TableCell'
 
 interface Props {
   row: Row
@@ -22,7 +23,7 @@ const TableRow: FC<Props> = ({row, style, fields}) => {
           } else if (Component) {
             content = <Component key={rowKey} row={row} />
           } else {
-            content = String(row[rowKey])
+            content = asLink(row[rowKey])
           }
 
           return (

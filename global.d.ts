@@ -1,5 +1,4 @@
-import {MonacoType} from 'src/types'
-import {ZuoraClient} from 'src/types/billing'
+import {MonacoType, ZuoraClient} from 'src/types'
 import {AdMinds} from 'src/types/adminds'
 
 //

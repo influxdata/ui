@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, useContext} from 'react'
 import {useParams, useHistory} from 'react-router-dom'
+import 'src/flows/components/FlowContextMenu.scss'
 
 // Components
 import {Context} from 'src/clockface'
@@ -8,10 +9,11 @@ import {
   Button,
   ButtonShape,
   ComponentColor,
+  ComponentSize,
   IconFont,
 } from '@influxdata/clockface'
 import {FlowListContext} from 'src/flows/context/flow.list'
-import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
+import {PROJECT_NAME_PLURAL} from 'src/flows'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -40,29 +42,33 @@ const FlowContextMenu: FC<Props> = ({id, name}) => {
   }
 
   return (
-    <Context>
-      <Button
-        text="Clone"
-        icon={IconFont.Duplicate}
-        color={ComponentColor.Secondary}
-        titleText="Clone"
-        testID="flow-button--clone"
-        onClick={handleClone}
-      />
-      <Context.Menu
-        icon={IconFont.Trash}
-        color={ComponentColor.Danger}
-        shape={ButtonShape.Default}
-        text={`Delete ${PROJECT_NAME}`}
-        testID={`context-delete-menu ${name}`}
-      >
-        <Context.Item
-          label="Confirm"
-          action={handleDelete}
-          testID={`context-delete-flow ${name}`}
+    <div className="flow-context--wrapper">
+      <Context>
+        <Button
+          text="Clone"
+          icon={IconFont.Duplicate}
+          color={ComponentColor.Secondary}
+          size={ComponentSize.ExtraSmall}
+          titleText="Clone"
+          testID="flow-button--clone"
+          onClick={handleClone}
+          className="flow-menu--clone"
         />
-      </Context.Menu>
-    </Context>
+        <Context.Menu
+          icon={IconFont.Trash}
+          color={ComponentColor.Danger}
+          shape={ButtonShape.Default}
+          text="Delete"
+          testID={`context-delete-menu ${name}`}
+        >
+          <Context.Item
+            label="Confirm"
+            action={handleDelete}
+            testID={`context-delete-flow ${name}`}
+          />
+        </Context.Menu>
+      </Context>
+    </div>
   )
 }
 

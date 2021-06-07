@@ -5,7 +5,6 @@ import {Button, ComponentStatus, IconFont} from '@influxdata/clockface'
 // Components
 import Resizer from 'src/flows/shared/Resizer'
 
-import {FlowContext} from 'src/flows/context/flow.current'
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {RunModeContext} from 'src/flows/context/runMode'
@@ -17,20 +16,22 @@ import {RemoteDataState} from 'src/types'
 import {Visibility} from 'src/types/flows'
 import {View} from 'src/visualization'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 const Results: FC = () => {
-  const {flow} = useContext(FlowContext)
   const {id, results, queryText} = useContext(PipeContext)
-  const {basic} = useContext(FlowQueryContext)
+  const {basic, getStatus} = useContext(FlowQueryContext)
   const {runMode} = useContext(RunModeContext)
   const [height, setHeight] = useState(MINIMUM_RESIZER_HEIGHT)
   const [visibility, setVisibility] = useState('visible' as Visibility)
-  const meta = flow.meta.get(id)
   const resultsExist = !!(results?.parsed?.table || []).length
+  const status = getStatus(id)
 
   let emptyText
-  if (meta.loading === RemoteDataState.NotStarted) {
+  if (status === RemoteDataState.NotStarted) {
     emptyText = `Click ${runMode} to see results`
-  } else if (meta.loading === RemoteDataState.Loading) {
+  } else if (status === RemoteDataState.Loading) {
     emptyText = 'Loading...'
   } else {
     emptyText = 'No Data Returned'
@@ -40,6 +41,7 @@ const Results: FC = () => {
     ? 'Download results as an annotated CSV file'
     : 'Build a query to download your results'
   const download = () => {
+    event('CSV Download Initiated')
     basic(queryText).promise.then(response => {
       if (response.type !== 'SUCCESS') {
         return
@@ -51,7 +53,7 @@ const Results: FC = () => {
 
   return (
     <Resizer
-      loading={meta.loading}
+      loading={status}
       resizingEnabled={resultsExist}
       emptyText={emptyText}
       error={results.error}
@@ -60,7 +62,10 @@ const Results: FC = () => {
       height={height}
       onUpdateHeight={height => setHeight(height)}
       visibility={visibility}
-      onUpdateVisibility={visibility => setVisibility(visibility)}
+      onUpdateVisibility={visibility => {
+        event('Results visibility toggled', {state: visibility})
+        setVisibility(visibility)
+      }}
     >
       <div className="query-results">
         <View

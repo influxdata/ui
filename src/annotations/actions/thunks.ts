@@ -55,9 +55,14 @@ export const deleteAnnotations = annotation => async (
 export const editAnnotation = annotation => async (
   dispatch: Dispatch<AnnotationAction | NotificationAction>
 ) => {
+  let {endTime} = annotation
+  if (annotation.type === 'point') {
+    endTime = annotation.startTime
+  }
+
   const updatedAnnotation = await updateAnnotation({
     ...annotation,
-    endTime: annotation.startTime,
+    endTime,
   })
   dispatch(editAnnotationAction(updatedAnnotation))
 }

@@ -15,7 +15,6 @@ import {QueryContext} from 'src/flows/context/query'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {RunModeContext, RunMode} from 'src/flows/context/runMode'
 import {notify} from 'src/shared/actions/notifications'
-import {FlowContext} from 'src/flows/context/flow.current'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -29,28 +28,15 @@ import {RemoteDataState} from 'src/types'
 const fakeNotify = notify
 
 export const Submit: FC = () => {
-  const {flow} = useContext(FlowContext)
   const {cancel} = useContext(QueryContext)
   const {runMode, setRunMode} = useContext(RunModeContext)
-  const {generateMap, queryAll} = useContext(FlowQueryContext)
+  const {generateMap, queryAll, status} = useContext(FlowQueryContext)
 
   const hasQueries = useMemo(() => generateMap().length > 0, [generateMap])
 
   const handleSubmit = () => {
     event('Notebook Submit Button Clicked')
     queryAll()
-  }
-
-  const statuses = flow.meta.all.map(({loading}) => loading)
-
-  let status = RemoteDataState.Done
-
-  if (statuses.every(s => s === RemoteDataState.NotStarted)) {
-    status = RemoteDataState.NotStarted
-  } else if (statuses.includes(RemoteDataState.Error)) {
-    status = RemoteDataState.Error
-  } else if (statuses.includes(RemoteDataState.Loading)) {
-    status = RemoteDataState.Loading
   }
 
   const DropdownButton = (

@@ -17,13 +17,13 @@ import {
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import Toolbar from 'src/shared/components/toolbar/Toolbar'
 import {
-  toggleAnnotationVisibility,
-  toggleSingleClickAnnotations,
+  setAnnotationsVisibility,
+  setAnnotationsWriteMode,
 } from 'src/annotations/actions/creators'
 
 // Selectors
 import {
-  isSingleClickAnnotationsEnabled,
+  isWriteModeEnabled,
   selectAreAnnotationsVisible,
 } from 'src/annotations/selectors'
 
@@ -31,8 +31,8 @@ import {
 import {event} from 'src/cloud/utils/reporting'
 
 export const AnnotationsControlBar: FC = () => {
-  const inWriteMode = useSelector(isSingleClickAnnotationsEnabled)
   const annotationsAreVisible = useSelector(selectAreAnnotationsVisible)
+  const inWriteMode = useSelector(isWriteModeEnabled)
 
   const dispatch = useDispatch()
 
@@ -40,14 +40,14 @@ export const AnnotationsControlBar: FC = () => {
     event('dashboard.annotations.change_write_mode.toggle', {
       newIsWriteModeEnabled: (!inWriteMode).toString(),
     })
-    dispatch(toggleSingleClickAnnotations())
+    dispatch(setAnnotationsWriteMode(!inWriteMode))
   }
 
   const changeAnnotationVisibility = () => {
     event('dashboard.annotations.change_visibility_mode.toggle', {
       newAnnotationsAreVisible: (!annotationsAreVisible).toString(),
     })
-    dispatch(toggleAnnotationVisibility())
+    dispatch(setAnnotationsVisibility(!annotationsAreVisible))
   }
 
   return (
@@ -61,7 +61,7 @@ export const AnnotationsControlBar: FC = () => {
           <TextBlock
             backgroundColor={InfluxColors.Obsidian}
             textColor={InfluxColors.Mist}
-            text="*Currently, we only support annotations on XY Plots"
+            text="*Currently, we only support annotations on Plots of type 'Graph', 'Graph + Single Stat', and 'Band'"
           />
         </FlexBoxChild>
         <FlexBoxChild grow={1} />
@@ -90,10 +90,10 @@ export const AnnotationsControlBar: FC = () => {
             onChange={changeWriteMode}
             color={ComponentColor.Primary}
             size={ComponentSize.ExtraSmall}
-            testID="annotations-one-click-toggle"
+            testID="annotations-write-mode-toggle"
           >
             <InputLabel htmlFor="enable-annotation-mode">
-              Enable 1-Click Annotations
+              Enable Write Mode
             </InputLabel>
           </Toggle>
         </FlexBoxChild>

@@ -24,12 +24,14 @@ const BillingPayAsYouGo: FC = () => (
     margin={ComponentSize.Small}
   >
     <BillingInfoWrapper>
-      <PlanTypePanel />
-      <InvoiceLoadingWrapper>
-        <InvoiceHistory />
-      </InvoiceLoadingWrapper>
-      <PaymentPanel />
-      <BillingContactInfo />
+      <>
+        <PlanTypePanel />
+        <InvoiceLoadingWrapper>
+          <InvoiceHistory />
+        </InvoiceLoadingWrapper>
+        <PaymentPanel />
+        <BillingContactInfo />
+      </>
     </BillingInfoWrapper>
     <BillingLoadingWrapper>
       <NotificationPanel />

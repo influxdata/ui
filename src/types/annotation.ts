@@ -1,11 +1,12 @@
 export interface Annotation {
-  endTime: number
+  endTime?: number | string
   id?: string
   message?: string
-  startTime: number
+  startTime?: number | string
   stickers?: any
   stream?: string
-  summary: string
+  summary?: string
+  type?: 'range' | 'point'
 }
 
 export interface EditAnnotation {

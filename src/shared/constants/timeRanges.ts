@@ -34,6 +34,16 @@ export const pastFifteenMinTimeRange: SelectableDurationTimeRange = {
   windowPeriod: 10000, // 10s
 }
 
+export const pastDayTimeRange: SelectableDurationTimeRange = {
+  seconds: 86400,
+  lower: 'now() - 24h',
+  upper: null,
+  label: 'Past 24h',
+  duration: '24h',
+  type: 'selectable-duration',
+  windowPeriod: 240000, // 4m
+}
+
 export const CUSTOM_TIME_RANGE: {label: string; type: 'custom'} = {
   label: 'Custom Time Range' as 'Custom Time Range',
   type: 'custom',
@@ -78,15 +88,7 @@ export const SELECTABLE_TIME_RANGES: SelectableDurationTimeRange[] = [
     type: 'selectable-duration',
     windowPeriod: 120000, // 2m
   },
-  {
-    seconds: 86400,
-    lower: 'now() - 24h',
-    upper: null,
-    label: 'Past 24h',
-    duration: '24h',
-    type: 'selectable-duration',
-    windowPeriod: 240000, // 4m
-  },
+  pastDayTimeRange,
   {
     seconds: 172800,
     lower: 'now() - 2d',
@@ -108,4 +110,19 @@ export const SELECTABLE_TIME_RANGES: SelectableDurationTimeRange[] = [
   pastThirtyDaysTimeRange,
 ]
 
+export const SELECTABLE_USAGE_TIME_RANGES: SelectableDurationTimeRange[] = [
+  pastDayTimeRange,
+  {
+    seconds: 604800,
+    lower: 'now() - 7d',
+    upper: null,
+    label: 'Past 7d',
+    duration: '7d',
+    type: 'selectable-duration',
+    windowPeriod: 1800000, // 30 min
+  },
+  pastThirtyDaysTimeRange,
+]
+
+export const DEFAULT_USAGE_TIME_RANGE = pastDayTimeRange
 export const DEFAULT_TIME_RANGE = pastHourTimeRange

@@ -35,7 +35,6 @@ import {findDependentVariables} from 'src/variables/utils/exportVariables'
 import {getOrg} from 'src/organizations/selectors'
 import {getLabels, getStatus} from 'src/resources/selectors'
 import {currentContext} from 'src/shared/selectors/currentContext'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import * as copy from 'src/shared/copy/notifications'
@@ -179,34 +178,6 @@ export const hydrateVariables = (
         )
       }
 
-      const _variable = normalize<Variable, VariableEntities, string>(
-        variable,
-        variableSchema
-      )
-      dispatch(setVariable(variable.id, RemoteDataState.Done, _variable))
-    }
-  })
-  await hydration.promise
-}
-
-export const hydrateChangedVariable = (variableID: string) => async (
-  dispatch: Dispatch<Action>,
-  getState: GetState
-) => {
-  const state = getState()
-  const org = getOrg(state)
-  const variable = getVariableFromState(state, variableID)
-  const hydration = hydrateVars([variable], getAllVariablesFromState(state), {
-    orgID: org.id,
-    url: state.links.query.self,
-    skipCache: true,
-  })
-  hydration.on('status', (variable, status) => {
-    if (status === RemoteDataState.Loading) {
-      dispatch(setVariable(variable.id, status))
-      return
-    }
-    if (status === RemoteDataState.Done) {
       const _variable = normalize<Variable, VariableEntities, string>(
         variable,
         variableSchema
@@ -527,11 +498,7 @@ export const selectValue = (variableID: string, selected: string) => async (
   }
 
   await dispatch(selectValueInState(contextID, variableID, selected))
-  // only hydrate the changedVariable
-  if (isFlagEnabled('hydratevars')) {
-    dispatch(hydrateChangedVariable(variableID))
-  } else {
-    dispatch(hydrateVariables(true))
-  }
+
+  dispatch(hydrateVariables(true))
   dispatch(updateQueryVars({[variable.name]: selected}))
 }

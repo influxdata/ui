@@ -677,6 +677,66 @@ export const clickAttached = (subject?: JQuery<HTMLElement>) => {
   })
 }
 
+type GraphSnapshot = {
+  shouldBeSameAs: (
+    other: GraphSnapshot,
+    same?: boolean,
+    part?: 'axes' | 'layer' | 'both'
+  ) => void
+  name: string
+}
+
+export const makeGraphSnapshot = (() => {
+  // local properties for makeGraphSnapshot function
+  let lastGraphSnapsotIndex = 0
+  const getNameAxes = (name: string) => `${name}-axes`
+  const getNameLayer = (name: string) => `${name}-layer`
+
+  return (): GraphSnapshot => {
+    // generate unique name for snapshot for saving as cy var
+    const name = `graph-snapshot-${lastGraphSnapsotIndex++}`
+
+    // wait for drawing done
+    cy.wait(500)
+    cy.get('[data-testid|=giraffe-layer]')
+      .then($layer => ($layer[0] as HTMLCanvasElement).toDataURL('image/jpeg'))
+      .as(getNameLayer(name))
+
+    cy.getByTestID('giraffe-axes')
+      .then($axes => ($axes[0] as HTMLCanvasElement).toDataURL('image/jpeg'))
+      .as(getNameAxes(name))
+
+    return {
+      name,
+      shouldBeSameAs: ({name: nameOther}, same = true, part = 'both') => {
+        const assert = (str: any, str2: any, same: boolean) => {
+          if (same) {
+            expect(str).to.eq(str2)
+          } else {
+            expect(str).to.not.eq(str2)
+          }
+        }
+
+        if (part === 'both' || part === 'axes') {
+          cy.get(`@${getNameAxes(name)}`).then(axes => {
+            cy.get(`@${getNameAxes(nameOther)}`).then(axesOther => {
+              assert(axes, axesOther, same)
+            })
+          })
+        }
+
+        if (part === 'both' || part === 'layer') {
+          cy.get(`@${getNameLayer(name)}`).then(layer => {
+            cy.get(`@${getNameLayer(nameOther)}`).then(layerOther => {
+              assert(layer, layerOther, same)
+            })
+          })
+        }
+      },
+    }
+  }
+})()
+
 /* eslint-disable */
 // notification endpoints
 Cypress.Commands.add('createEndpoint', createEndpoint)

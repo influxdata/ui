@@ -1,5 +1,5 @@
 // Libraries
-import {isObject, isArray} from 'lodash'
+import {isObject} from 'lodash'
 
 /*
   Find all nodes in a tree matching the `predicate` function. Each node in the
@@ -18,7 +18,7 @@ export const findNodes = (
   for (const value of Object.values(node)) {
     if (isObject(value)) {
       findNodes(value, predicate, acc)
-    } else if (isArray(value)) {
+    } else if (Array.isArray(value)) {
       for (const innerValue of value) {
         findNodes(innerValue, predicate, acc)
       }

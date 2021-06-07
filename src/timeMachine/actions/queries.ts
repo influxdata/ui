@@ -334,7 +334,10 @@ export const executeQueries = (abortController?: AbortController) => async (
     } = state
 
     if (checkID) {
-      const extern = buildUsedVarsOption(queries.map(query => query.text), allVariables)
+      const extern = buildUsedVarsOption(
+        queries.map(query => query.text),
+        allVariables
+      )
       pendingCheckStatuses = runStatusesQuery(getOrg(state).id, checkID, extern)
       statuses = await pendingCheckStatuses.promise
     }

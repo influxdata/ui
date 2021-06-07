@@ -36,10 +36,14 @@ export const AnnotationsControlBar: FC = () => {
     dispatch(setAnnotationsMode(!inAnnotationsMode))
   }
 
-  const infoText =
-    'Click on a graph to create a point annotation, click + shift + drag to create a range annotation.' +
-    'press the annotations button again to turn off annotation mode'
+  const infoText1 =
+    'Click on a graph to create a point annotation, click + shift + drag to create a range annotation.'
 
+  const infoText2 =
+    'Press the annotations button again to turn off annotation mode'
+
+  // make both textblocks have 'inline' style to get them on the same line; else there is a line break.
+  // using two elements to put space between them.
   return (
     <ErrorBoundary>
       <Toolbar
@@ -51,7 +55,14 @@ export const AnnotationsControlBar: FC = () => {
           <TextBlock
             backgroundColor={InfluxColors.Obsidian}
             textColor={InfluxColors.Mist}
-            text={infoText}
+            text={infoText1}
+            style={{display: 'inline'}}
+          />
+          <TextBlock
+            backgroundColor={InfluxColors.Obsidian}
+            textColor={InfluxColors.Mist}
+            text={infoText2}
+            style={{display: 'inline'}}
           />
         </FlexBoxChild>
         <FlexBoxChild grow={1} />

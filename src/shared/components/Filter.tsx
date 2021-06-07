@@ -1,15 +1,7 @@
 // Libraries
 import {PureComponent} from 'react'
 
-import {
-  get,
-  sortBy,
-  isArray,
-  isEmpty,
-  isObject,
-  flatMap,
-  sortedIndex,
-} from 'lodash'
+import {get, sortBy, isEmpty, isObject, flatMap, sortedIndex} from 'lodash'
 
 // Types
 import {Label} from 'src/types'
@@ -103,7 +95,7 @@ export default class FilterList<T> extends PureComponent<Props<T>> {
   }
 
   private isStringArray(value: any): boolean {
-    if (!isArray(value)) {
+    if (!Array.isArray(value)) {
       return false
     }
 

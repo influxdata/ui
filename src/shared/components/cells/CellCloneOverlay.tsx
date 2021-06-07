@@ -26,6 +26,11 @@ import {AppState} from 'src/types'
 // Metrics
 import {event} from 'src/cloud/utils/reporting'
 import {Dashboard} from 'src/client'
+import {notify} from 'src/shared/actions/notifications'
+import {
+  dashboardsGetFailed,
+  cellCloneSuccess,
+} from 'src/shared/copy/notifications'
 
 const CellCloneOverlay: FC = () => {
   const [otherDashboards, setOtherDashboards] = useState<Dashboard[]>([])
@@ -37,11 +42,18 @@ const CellCloneOverlay: FC = () => {
   )
 
   useEffect(() => {
-    getDashboardIDs(orgID).then(retrievedBoards => {
-      setOtherDashboards(
-        retrievedBoards.filter(board => board.id !== currentDashboardID)
-      )
-    })
+    getDashboardIDs(orgID)
+      .then(retrievedBoards => {
+        setOtherDashboards(
+          retrievedBoards.filter(board => board.id !== currentDashboardID)
+        )
+      })
+      .catch(err => {
+        event('dashboards.cloneCell.getDashboardsFailed', {
+          context: JSON.stringify(err),
+        })
+        dispatch(notify(dashboardsGetFailed(err)))
+      })
   }, [])
 
   const {onClose} = useContext(OverlayContext)
@@ -68,6 +80,15 @@ const CellCloneOverlay: FC = () => {
         null,
         null,
         true
+      )
+    )
+    dispatch(
+      notify(
+        cellCloneSuccess(
+          destinationDashboardID,
+          removeFromCurrentBoard ? 'moved' : 'copied',
+          cell.name ?? null
+        )
       )
     )
   }

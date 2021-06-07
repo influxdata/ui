@@ -46,7 +46,9 @@ export const GeoOptions: FC<Props> = ({properties, update}) => {
       <Grid.Column>
         <Form.Element label="Colorized Thresholds">
           <ThresholdsSettings
-            thresholds={properties.layers[0].colors.filter(c => c.type !== 'scale')}
+            thresholds={properties.layers[0].colors.filter(
+              c => c.type !== 'scale'
+            )}
             onSetThresholds={colors => {
               update({
                 layers: [

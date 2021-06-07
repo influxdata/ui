@@ -40,5 +40,5 @@ export default {
   mapStyle: '',
   note: '',
   showNoteWhenEmpty: false,
-  layers: [{ colors: DEFAULT_THRESHOLDS_LIST_COLORS as Color[]}],
+  layers: [{colors: DEFAULT_THRESHOLDS_LIST_COLORS as Color[]}],
 } as GeoViewProperties

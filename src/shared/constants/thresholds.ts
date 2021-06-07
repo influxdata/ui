@@ -129,7 +129,7 @@ export const DEFAULT_THRESHOLDS_GEO_COLORS = [
     id: 2,
     name: THRESHOLD_COLORS[12].name,
     value: DEFAULT_VALUE_MAX,
-  }
+  },
 ]
 
 export const DEFAULT_THRESHOLDS_LIST_COLORS = [

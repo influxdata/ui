@@ -56,7 +56,7 @@ export const EditAnnotationOverlay: FC = () => {
     <AnnotationForm
       onSubmit={handleSubmit}
       startTime={clickedAnnotation.startTime}
-      id={clickedAnnotation.id}
+      annotationId={clickedAnnotation.id}
       endTime={clickedAnnotation.endTime}
       type={annoType}
       summary={clickedAnnotation.summary}

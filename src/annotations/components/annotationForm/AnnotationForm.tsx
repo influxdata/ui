@@ -45,7 +45,7 @@ interface Props {
   startTime: string
   endTime?: string
   title: 'Edit' | 'Add'
-  id?: string
+  annotationId?: string
   summary?: string
   stream?: string
   type: AnnotationType
@@ -62,9 +62,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
   const dispatch = useDispatch()
 
   const isValidAnnotationForm = (): boolean => {
-    const isValidPointAnnotation = Boolean(
-      summary && summary.length && startTime
-    )
+    const isValidPointAnnotation = Boolean(summary?.length && startTime)
 
     // not checking if start <= end right now
     // initially, the times are numbers, and then if the user manually edits them then
@@ -85,7 +83,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
       startTime,
       endTime,
       type: annotationType,
-      id: props.id,
+      id: props.annotationId,
       stream: props.stream,
     })
   }
@@ -108,7 +106,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
       startTime,
       endTime,
       type: annotationType,
-      id: props.id,
+      id: props.annotationId,
       stream: props.stream,
     })
   }
@@ -120,7 +118,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
       startTime,
       endTime,
       type: annotationType,
-      id: props.id,
+      id: props.annotationId,
       stream: props.stream,
     }
 
@@ -151,13 +149,15 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     setAnnotationType('point')
   }
 
-  const saveTextSuffix = props.id ? 'Changes' : 'Annotation'
+  const isEditing = Boolean(props.annotationId)
+
+  const saveTextSuffix = isEditing ? 'Changes' : 'Annotation'
 
   const footerClasses = classnames('annotation-form-footer', {
-    'edit-annotation-form-footer': props.id,
+    'edit-annotation-form-footer': isEditing,
   })
 
-  const buttonClasses = classnames({'edit-annotation-buttons': props.id})
+  const buttonClasses = classnames({'edit-annotation-buttons': isEditing})
 
   return (
     <Overlay.Container maxWidth={ANNOTATION_FORM_WIDTH}>
@@ -178,6 +178,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
               onClick={changeToPointType}
               active={'point' === annotationType}
               id="annotation-form-point-type"
+              testID="annotation-form-point-type-option"
               value="point"
             >
               Point
@@ -187,11 +188,12 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
               value="range"
               active={'range' === annotationType}
               id="annotation-form-range-type"
+              testID="annotation-form-range-type-option"
             >
               Range
             </SelectGroup.Option>
           </SelectGroup>
-          <div style={{display: 'flex', width: '100%'}}>
+          <div className="annotation-type-option-line">
             <AnnotationTimeInput
               onChange={updateStartTime}
               onSubmit={handleKeyboardSubmit}
@@ -217,7 +219,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
           />
         </Overlay.Body>
         <Overlay.Footer className={footerClasses}>
-          {props.id && (
+          {isEditing && (
             <Button
               text="Delete Annotation"
               onClick={handleDelete}

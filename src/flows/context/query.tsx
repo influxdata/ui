@@ -322,7 +322,7 @@ export const simplify = (text, vars: VariableMap = {}) => {
     ast,
     node => node.type === 'OptionStatement' && node.assignment.id.name === 'v'
   ).reduce((acc, curr) => {
-      // eslint-disable-next-line no-extra-semi
+    // eslint-disable-next-line no-extra-semi
     ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
       if (_curr.key?.name && _curr.value?.location?.source) {
         _acc[_curr.key.name] = _curr.value.location.source

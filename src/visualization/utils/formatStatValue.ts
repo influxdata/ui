@@ -1,6 +1,3 @@
-// Libraries
-import {isString} from 'lodash'
-
 // Types
 import {DecimalPlaces} from 'src/types/dashboards'
 
@@ -50,7 +47,7 @@ export const formatStatValue = (
     if (fractionalNumber) {
       localeFormattedValue += `.${fractionalNumber}`
     }
-  } else if (isString(value)) {
+  } else if (typeof value === 'string') {
     localeFormattedValue = value
   } else {
     return 'Data cannot be displayed'

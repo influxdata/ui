@@ -1,5 +1,5 @@
 // Libraries
-import {isString, isNull, isObject} from 'lodash'
+import {isNull, isObject} from 'lodash'
 
 // Utils
 import {validateAndTypeRange} from 'src/dashboards/utils/time'
@@ -7,7 +7,7 @@ import {validateAndTypeRange} from 'src/dashboards/utils/time'
 // Types
 import {RangeState} from 'src/dashboards/reducers/ranges'
 
-const isCorrectType = (bound: any) => isString(bound) || isNull(bound)
+const isCorrectType = (bound: any) => typeof bound === 'string' || isNull(bound)
 
 export const getLocalStateRangesAsArray = (ranges: any[]): RangeState => {
   const normalizedRanges = ranges.filter(r => {

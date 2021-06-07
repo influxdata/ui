@@ -16,39 +16,29 @@ import {
 } from '@influxdata/clockface'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import Toolbar from 'src/shared/components/toolbar/Toolbar'
-import {
-  setAnnotationsVisibility,
-  setAnnotationsWriteMode,
-} from 'src/annotations/actions/creators'
+import {setAnnotationsMode} from 'src/annotations/actions/creators'
 
 // Selectors
-import {
-  isWriteModeEnabled,
-  selectAreAnnotationsVisible,
-} from 'src/annotations/selectors'
+import {isAnnotationsModeEnabled} from 'src/annotations/selectors'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
 export const AnnotationsControlBar: FC = () => {
-  const annotationsAreVisible = useSelector(selectAreAnnotationsVisible)
-  const inWriteMode = useSelector(isWriteModeEnabled)
+  const inAnnotationsMode = useSelector(isAnnotationsModeEnabled)
 
   const dispatch = useDispatch()
 
-  const changeWriteMode = () => {
-    event('dashboard.annotations.change_write_mode.toggle', {
-      newIsWriteModeEnabled: (!inWriteMode).toString(),
+  const changeAnnotationsMode = () => {
+    event('dashboard.annotations.change_mode.toggle', {
+      newIsAnnotationsModeEnabled: (!inAnnotationsMode).toString(),
     })
-    dispatch(setAnnotationsWriteMode(!inWriteMode))
+    dispatch(setAnnotationsMode(!inAnnotationsMode))
   }
 
-  const changeAnnotationVisibility = () => {
-    event('dashboard.annotations.change_visibility_mode.toggle', {
-      newAnnotationsAreVisible: (!annotationsAreVisible).toString(),
-    })
-    dispatch(setAnnotationsVisibility(!annotationsAreVisible))
-  }
+  const infoText =
+    'Click on a graph to create a point annotation, click + shift + drag to create a range annotation.' +
+    'press the annotations button again to turn off annotation mode'
 
   return (
     <ErrorBoundary>
@@ -61,39 +51,23 @@ export const AnnotationsControlBar: FC = () => {
           <TextBlock
             backgroundColor={InfluxColors.Obsidian}
             textColor={InfluxColors.Mist}
-            text="*Currently, we only support annotations on Plots of type 'Graph', 'Graph + Single Stat', and 'Band'"
+            text={infoText}
           />
         </FlexBoxChild>
         <FlexBoxChild grow={1} />
         <FlexBoxChild grow={0}>
           <Toggle
             style={{marginRight: 20}}
-            id="enable-annotation-visibility"
-            type={InputToggleType.Checkbox}
-            checked={annotationsAreVisible}
-            onChange={changeAnnotationVisibility}
-            color={ComponentColor.Primary}
-            size={ComponentSize.ExtraSmall}
-            testID="annotations-visibility-toggle"
-          >
-            <InputLabel htmlFor="enable-annotation-visibility">
-              Show Annotations
-            </InputLabel>
-          </Toggle>
-        </FlexBoxChild>
-        <FlexBoxChild grow={0}>
-          <Toggle
-            style={{marginRight: 20}}
             id="enable-annotation-mode"
             type={InputToggleType.Checkbox}
-            checked={inWriteMode}
-            onChange={changeWriteMode}
+            checked={inAnnotationsMode}
+            onChange={changeAnnotationsMode}
             color={ComponentColor.Primary}
             size={ComponentSize.ExtraSmall}
             testID="annotations-write-mode-toggle"
           >
             <InputLabel htmlFor="enable-annotation-mode">
-              Enable Write Mode
+              Enable Annotations Mode
             </InputLabel>
           </Toggle>
         </FlexBoxChild>

@@ -5,8 +5,7 @@ import {AnnotationEvent} from 'src/client/annotationdRoutes'
 export const DELETE_ANNOTATION = 'DELETE_ANNOTATION'
 export const SET_ANNOTATIONS = 'SET_ANNOTATIONS'
 export const SET_ANNOTATION_STREAMS = 'SET_ANNOTATION_STREAMS'
-export const TOGGLE_ANNOTATIONS_VISIBILITY = 'TOGGLE_ANNOTATIONS_VISIBILITY'
-export const TOGGLE_ANNOTATIONS_WRITE_MODE = 'TOGGLE_ANNOTATIONS_WRITE_MODE'
+export const TOGGLE_ANNOTATIONS_MODE = 'TOGGLE_ANNOTATIONS_MODE'
 export const EDIT_ANNOTATION = 'EDIT_ANNOTATION'
 
 export type Action =
@@ -14,8 +13,7 @@ export type Action =
   | ReturnType<typeof editAnnotation>
   | ReturnType<typeof setAnnotations>
   | ReturnType<typeof setAnnotationStreams>
-  | ReturnType<typeof setAnnotationsVisibility>
-  | ReturnType<typeof setAnnotationsWriteMode>
+  | ReturnType<typeof setAnnotationsMode>
 
 export const setAnnotations = (annotations: AnnotationResponse[]) =>
   ({
@@ -29,9 +27,9 @@ export const setAnnotationStreams = (streams: AnnotationStream[]) =>
     streams,
   } as const)
 
-export const setAnnotationsWriteMode = (isEnabled: boolean) =>
+export const setAnnotationsMode = (isEnabled: boolean) =>
   ({
-    type: TOGGLE_ANNOTATIONS_WRITE_MODE,
+    type: TOGGLE_ANNOTATIONS_MODE,
     isEnabled,
   } as const)
 
@@ -43,9 +41,3 @@ export const deleteAnnotation = (annotation: AnnotationEvent) =>
 
 export const editAnnotation = (annotation: AnnotationEvent) =>
   ({type: EDIT_ANNOTATION, annotation} as const)
-
-export const setAnnotationsVisibility = (isVisible: boolean) =>
-  ({
-    type: TOGGLE_ANNOTATIONS_VISIBILITY,
-    isVisible,
-  } as const)

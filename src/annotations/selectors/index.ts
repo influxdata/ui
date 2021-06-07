@@ -25,10 +25,6 @@ export const getAnnotationStreams = (state: AppState): AnnotationStream[] => {
   return state.annotations.streams
 }
 
-export const isWriteModeEnabled = (state: AppState): boolean => {
-  return state.annotations.enableWriteMode
-}
-
-export const selectAreAnnotationsVisible = (state: AppState): boolean => {
-  return state.annotations.annotationsAreVisible
+export const isAnnotationsModeEnabled = (state: AppState): boolean => {
+  return state.annotations.enableAnnotationsMode
 }

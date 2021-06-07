@@ -274,30 +274,27 @@ $cell--header-button-active-color: $c-pool;
   }
 }
 
-.otherDashboardDropdown {
+.dashboard-clonecell--dropdownopen {
   align-items: center !important;
+  width: 80%;
 }
-.moveCellRemoveCurrent {
+.dashboard-clonecell--removecurrent {
   justify-content: center;
   flex-direction: row !important;
   align-items: center !important;
   padding-top: $form-sm-padding;
 }
 
-.cellCloneOverlayBody {
+.dashboard-clonecell--overlayopen {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.moveType {
+.dashboard-clonecell--movetype {
   margin-right: 15px;
 }
 
-.otherDashboardDropdown {
-  width: 80%;
-}
-
-.cloneCellTypeToggle {
+.dashboard-clonecell--typetoggle {
   margin: 5px;
 }

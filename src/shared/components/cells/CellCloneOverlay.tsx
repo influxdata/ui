@@ -100,10 +100,10 @@ const CellCloneOverlay: FC = () => {
   return (
     <Overlay.Container maxWidth={400}>
       <Overlay.Header title="Move Cell" onDismiss={onClose} />
-      <Overlay.Body className="cellCloneOverlayBody">
-        <Form.Element label="" className="otherDashboardDropdown">
+      <Overlay.Body className="dashboard-clonecell--overlayopen">
+        <Form.Element label="" className="dashboard-clonecell--dropdownopen">
           <Dropdown
-            className="otherDashboardDropdown"
+            className="dashboard-clonecell--dropdownopen"
             button={(active, onClick) => (
               <Dropdown.Button
                 active={active}
@@ -135,8 +135,8 @@ const CellCloneOverlay: FC = () => {
             )}
           />
         </Form.Element>
-        <Form.Element label="" className="moveCellRemoveCurrent">
-          <span className="moveType">Move type: </span>
+        <Form.Element label="" className="dashboard-clonecell--removecurrent">
+          <span className="dashboard-clonecell--movetype">Move type: </span>
           <InputLabel
             active={!removeFromCurrentBoard}
             className="refresh-form-time-label"
@@ -147,7 +147,7 @@ const CellCloneOverlay: FC = () => {
             active={removeFromCurrentBoard}
             onChange={() => setRemoveFromCurrentBoard(!removeFromCurrentBoard)}
             testID="clone-cell-type-toggle"
-            className="cloneCellTypeToggle"
+            className="dashboard-clonecell--typetoggle"
           />
           <InputLabel
             active={removeFromCurrentBoard}

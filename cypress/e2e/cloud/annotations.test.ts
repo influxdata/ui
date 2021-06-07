@@ -213,7 +213,7 @@ describe('The Annotations UI functionality', () => {
       // make sure the two times (start and end) are not equal:
       ensureRangeAnnotationTimesAreNotEqual(cy)
 
-      cy.getByTestID('add-annotation-submit').click()
+      cy.getByTestID('annotation-submit-button').click()
     })
   }
 
@@ -228,7 +228,7 @@ describe('The Annotations UI functionality', () => {
 
     ensureRangeAnnotationTimesAreNotEqual(cy)
 
-    cy.getByTestID('edit-annotation-submit-button').click()
+    cy.getByTestID('annotation-submit-button').click()
 
     // reload to make sure the annotation was edited in the backend as well.
     cy.reload()

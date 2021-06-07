@@ -1,5 +1,6 @@
 // Libraries
-import React, {ChangeEvent, FC} from 'react'
+import React, {ChangeEvent, CSSProperties, FC} from 'react'
+import {InfluxColors} from '@influxdata/clockface'
 
 // Utils
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
@@ -118,8 +119,12 @@ const LegendOrientation: FC<Props> = ({properties, update}) => {
     })
   }
 
-  const toggleStyle = {marginTop: '1em'}
-  const toggleLabelStyle = {color: '#999dab'}
+  const getToggleColor = (toggle: boolean): CSSProperties => {
+    if (toggle) {
+      return {color: InfluxColors.Cloud}
+    }
+    return {color: InfluxColors.Sidewalk}
+  }
 
   // without the toFixed(0) sometimes you
   // can get numbers like 45.000009% which we want to avoid
@@ -132,7 +137,7 @@ const LegendOrientation: FC<Props> = ({properties, update}) => {
       alignItems={AlignItems.FlexStart}
       style={{marginBottom: '1.5em'}}
     >
-      <InputLabel style={toggleLabelStyle}>Orientation</InputLabel>
+      <InputLabel style={{color: InfluxColors.Cloud}}>Orientation</InputLabel>
       <Toggle
         tabIndex={1}
         value="horizontal"
@@ -193,7 +198,7 @@ const LegendOrientation: FC<Props> = ({properties, update}) => {
           size={ComponentSize.ExtraSmall}
           onChange={handleSetHoverLegendHide}
         />
-        <InputLabel style={toggleLabelStyle}>
+        <InputLabel style={getToggleColor(!properties.legendHide)}>
           Hover Legend {getHoverLegendHideStatus(properties.legendHide)}
         </InputLabel>
       </FlexBox>
@@ -213,14 +218,16 @@ const LegendOrientation: FC<Props> = ({properties, update}) => {
         alignItems={AlignItems.Center}
         margin={ComponentSize.Medium}
         stretchToFitWidth={true}
-        style={toggleStyle}
+        style={{marginTop: '1em'}}
       >
         <SlideToggle
           active={properties.legendColorizeRows}
           size={ComponentSize.ExtraSmall}
           onChange={handleSetColorization}
         />
-        <InputLabel style={toggleLabelStyle}>Colorize Rows</InputLabel>
+        <InputLabel style={getToggleColor(properties.legendColorizeRows)}>
+          Colorize Rows
+        </InputLabel>
       </FlexBox>
     </>
   )

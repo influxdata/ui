@@ -338,7 +338,64 @@ describe('The Annotations UI functionality', () => {
 
         // now, the end time input SHOULD show up
         cy.getByTestID('endTime-testID').should('be.visible')
-      })
+
+        // at first the two times are equal; check that; then upgrade the time by 10 minutes; and save it
+        cy.getByTestID('startTime-testID')
+          .invoke('val')
+          .then(startTimeValue => {
+            cy.getByTestID('endTime-testID')
+              .invoke('val')
+              .then(endTimeValue => {
+                expect(endTimeValue).to.equal(startTimeValue)
+
+                const newEndTime = Cypress.moment(endTimeValue)
+                  .add(10, 'minutes')
+                  .format('YYYY-MM-DD hh:mm:ss a')
+
+                cy.getByTestID('endTime-testID')
+                  .click()
+                  .focused()
+                  .clear()
+                  .type(newEndTime)
+
+                cy.getByTestID('annotation-submit-button').click()
+
+                // reload to make sure the annotation was added in the backend as well.
+                cy.reload()
+              })
+          })
+      }) // end overlay-container within
+      checkAnnotationText(cy, 'random annotation, should be a range')
+
+      startEditingAnnotation(cy)
+
+      // verify there is an end time:
+      cy.getByTestID('endTime-testID').should('be.visible')
+
+      // verify that it is range annotation (the range selector option is selected)
+      cy.getByTestID('annotation-form-range-type-option--input').should(
+        'be.checked'
+      )
+
+      cy.getByTestID('startTime-testID')
+        .invoke('val')
+        .then(startTimeValue => {
+          cy.getByTestID('endTime-testID')
+            .invoke('val')
+            .then(endTimeValue => {
+              expect(endTimeValue).to.not.equal(startTimeValue)
+
+              // should be 10 minutes between them:
+              const duration = Cypress.moment.duration(
+                Cypress.moment(endTimeValue).diff(
+                  Cypress.moment(startTimeValue)
+                )
+              )
+              const minutes = duration.asMinutes()
+
+              expect(minutes).to.equal(10)
+            })
+        })
     })
 
     it('can create an annotation when graph is clicked and the control bar is closed', () => {

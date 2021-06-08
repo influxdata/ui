@@ -532,7 +532,7 @@ describe('Checks', () => {
                   .its('body')
                   .should(
                     'match',
-                    /https:\/\/docs\.influxdata\.com\/influxdb\/(cloud||v2.0)\/monitor-alert\/checks\/create\//i
+                    /https:\/\/docs\.influxdata\.com\/influxdb\/.+?\/monitor-alert\/checks\/create\//i
                   )
               })
             })

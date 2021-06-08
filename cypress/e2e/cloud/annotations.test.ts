@@ -65,7 +65,7 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('save-cell--button').click()
     })
 
-    //cy.getByTestID('toggle-annotations-controls').click()
+    // annotations are on by default; so the bar should be visible:
     cy.getByTestID('annotations-control-bar').should('be.visible')
   }
 
@@ -189,9 +189,6 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID(`giraffe-layer-${layerTestID}`).then(([canvas]) => {
         const {width, height} = canvas
 
-        //cy.wrap(canvas).trigger('keydown', {key: 'shift', force: true})
-        // cy.wrap(canvas).trigger('keydown', {keyCode: 16, which: 16,force:true,release:false,delay:10})
-        //adding {shift:true} to the options for mouse up did not work
         cy.wrap(canvas).trigger('mousedown', {
           x: width / 3,
           y: height / 2,
@@ -307,7 +304,7 @@ describe('The Annotations UI functionality', () => {
     it('can delete an annotation  for the xy line graph', () => {
       deleteAnnotationTest(cy)
     })
-    it.only('can add a range annotation for the xy line graph', () => {
+    it('can add a range annotation for the xy line graph', () => {
       addRangeAnnotation(cy)
       checkAnnotationText(cy, 'range annotation here!')
     })
@@ -470,38 +467,42 @@ describe('The Annotations UI functionality', () => {
         })
     })
 
-    it('can create an annotation when graph is clicked and the control bar is closed', () => {
-      // switch off the control bar
-      cy.getByTestID('toggle-annotations-controls').click()
-      cy.getByTestID('annotations-control-bar').should('not.exist')
-
+    it('can create an annotation, and then after turning off annotation mode annotations disappear', () => {
+      // create an annotation
       addAnnotation(cy)
 
       // reload to make sure the annotation was added in the backend as well.
       cy.reload()
 
-      // should have the annotation created and the tooltip should says "im a hippopotamus"
+      // verify the tooltip shows up
+      checkAnnotationText(cy, 'im a hippopotamus')
+
+      // turn off annotations mode
+      cy.getByTestID('toggle-annotations-controls').click()
+
+      // verify the annotation does NOT show up
       cy.getByTestID('cell blah').within(() => {
         cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
       })
-      cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
+
+      cy.getByTestID('giraffe-annotation-tooltip').should('not.exist')
+    })
+
+    it('cannot create an annotation when graph is clicked and the control bar is closed', () => {
+      // switch off the control bar
+      cy.getByTestID('toggle-annotations-controls').click()
+      cy.getByTestID('annotations-control-bar').should('not.exist')
+
+      cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot').click()
+      })
+
+      cy.getByTestID('overlay--container').should('not.exist')
     })
 
     it('can hide the Annotations Control bar after clicking on the Annotations Toggle Button', () => {
       cy.getByTestID('toggle-annotations-controls').click()
       cy.getByTestID('annotations-control-bar').should('not.exist')
-    })
-
-    it('can disable writing annotations if Enable-Annotations is disabled', () => {
-      // turn off one-click annotation
-      cy.getByTestID('annotations-write-mode-toggle').click()
-
-      // click on the graph
-      cy.getByTestID('cell blah').within(() => {
-        cy.getByTestID('giraffe-inner-plot').click()
-      })
-      // should not show an overlay
-      cy.getByTestID('overlay').should('not.exist')
     })
 
     it('can show a tooltip when annotation is hovered on in the graph', () => {

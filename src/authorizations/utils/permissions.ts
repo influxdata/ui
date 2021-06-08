@@ -36,11 +36,14 @@ const ensureT = (orgID: string, userID: string) => (
 ): Permission[] => {
   switch (t) {
     case 'authorizations':
+    case 'annotations':
     case 'buckets':
     case 'checks':
     case 'dashboards':
     case 'dbrp':
     case 'documents':
+    case 'flows':
+    case 'functions':
     case 'labels':
     case 'notificationRules':
     case 'notificationEndpoints':

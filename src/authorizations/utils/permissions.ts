@@ -14,7 +14,6 @@ const allPermissionTypes: PermissionTypes[] = [
   'dbrp',
   'documents',
   'labels',
-  'notebooks',
   'notificationRules',
   'notificationEndpoints',
   'orgs',
@@ -43,7 +42,6 @@ const ensureT = (orgID: string, userID: string) => (
     case 'dbrp':
     case 'documents':
     case 'labels':
-    case 'notebooks':
     case 'notificationRules':
     case 'notificationEndpoints':
     case 'secrets':

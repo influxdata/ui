@@ -11,6 +11,7 @@ describe('Flows', () => {
 
           cy.window().then(win => {
             win.influx.set('notebooks', true)
+            win.influx.set('simpleTable', true)
           })
 
           cy.getByTestID('nav-item-flows').click()
@@ -134,7 +135,7 @@ describe('Flows', () => {
     cy.getByTestID('time-machine-submit-button').click()
 
     // we should only see beans in the table
-    cy.getByTestID('table').should('be.visible')
+    cy.getByTestID('simple-table').should('be.visible')
     cy.getByTestID('table-cell beans')
       .first()
       .should('be.visible')
@@ -145,7 +146,7 @@ describe('Flows', () => {
     cy.getByTestID('time-machine-submit-button').click()
 
     // we should only see cool in the table
-    cy.getByTestID('table').should('be.visible')
+    cy.getByTestID('simple-table').should('be.visible')
     cy.getByTestID('table-cell cool')
       .first()
       .should('be.visible')
@@ -192,7 +193,7 @@ describe('Flows', () => {
     cy.getByTestID('time-machine-submit-button').click()
 
     // we should only see beans in the table
-    cy.getByTestID('table').should('be.visible')
+    cy.getByTestID('simple-table').should('be.visible')
     cy.getByTestID('table-cell beans')
       .first()
       .should('be.visible')

@@ -1,16 +1,7 @@
 // Libraries
 import {PureComponent} from 'react'
 
-import {
-  get,
-  sortBy,
-  isString,
-  isArray,
-  isEmpty,
-  isObject,
-  flatMap,
-  sortedIndex,
-} from 'lodash'
+import {get, sortBy, isEmpty, isObject, flatMap, sortedIndex} from 'lodash'
 
 // Types
 import {Label} from 'src/types'
@@ -52,7 +43,7 @@ export default class FilterList<T> extends PureComponent<Props<T>> {
       (item: T) => {
         const value = get(item, this.props.sortByKey)
 
-        if (!!value && isString(value)) {
+        if (!!value && typeof value === 'string') {
           return value.toLocaleLowerCase()
         }
 
@@ -104,11 +95,11 @@ export default class FilterList<T> extends PureComponent<Props<T>> {
   }
 
   private isStringArray(value: any): boolean {
-    if (!isArray(value)) {
+    if (!Array.isArray(value)) {
       return false
     }
 
-    if (isEmpty(value) || isString(value[0])) {
+    if (isEmpty(value) || typeof value[0] === 'string') {
       return true
     }
 

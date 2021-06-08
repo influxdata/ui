@@ -1,6 +1,3 @@
-// Libraries
-import {InfluxColors} from '@influxdata/clockface'
-
 // Constants
 import {INFERNO, NINETEEN_EIGHTY_FOUR} from '@influxdata/giraffe'
 import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
@@ -13,6 +10,7 @@ import {
 import {
   DEFAULT_GAUGE_COLORS,
   DEFAULT_THRESHOLDS_LIST_COLORS,
+  DEFAULT_THRESHOLDS_GEO_COLORS,
   DEFAULT_THRESHOLDS_TABLE_COLORS,
 } from 'src/shared/constants/thresholds'
 import {DEFAULT_CHECK_EVERY} from 'src/alerting/constants'
@@ -386,7 +384,6 @@ const NEW_VIEW_CREATORS = {
       type: 'geo',
       shape: 'chronograf-v2',
       queries: [defaultViewQuery()],
-      colors: [],
       note: '',
       showNoteWhenEmpty: false,
       center: {
@@ -402,11 +399,7 @@ const NEW_VIEW_CREATORS = {
           type: 'pointMap',
           colorDimension: {label: 'Value'},
           colorField: '_value',
-          colors: [
-            {type: 'min', hex: InfluxColors.Star},
-            {value: 50, hex: InfluxColors.Star},
-            {type: 'max', hex: InfluxColors.Star},
-          ],
+          colors: DEFAULT_THRESHOLDS_GEO_COLORS,
           isClustered: false,
         },
       ],

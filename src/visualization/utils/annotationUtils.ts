@@ -23,31 +23,43 @@ import {
 } from '@influxdata/giraffe'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-const makeAnnotationClickListener = (
+const makeCreateMethod = (
   dispatch: Dispatch<any>,
   cellID: string,
   eventPrefix = 'xyplot'
 ) => {
   const createAnnotation = async userModifiedAnnotation => {
-    const {message, startTime} = userModifiedAnnotation
+    const {summary, startTime, endTime, type} = userModifiedAnnotation
+
+    const actualEndTime = type === 'point' ? startTime : endTime
 
     try {
       await dispatch(
         writeThenFetchAndSetAnnotations([
           {
-            summary: message,
+            summary,
             stream: cellID,
             startTime: new Date(startTime).getTime(),
-            endTime: new Date(startTime).getTime(),
+            endTime: new Date(actualEndTime).getTime(),
           },
         ])
       )
-      event(`${eventPrefix}.annotations.create_annotation.create`)
+      event(`${eventPrefix}.annotations.create_${type}_annotation.create`)
     } catch (err) {
       dispatch(notify(createAnnotationFailed(getErrorMessage(err))))
-      event(`${eventPrefix}.annotations.create_annotation.failure`)
+      event(`${eventPrefix}.annotations.create_${type}_annotation.failure`)
     }
   }
+
+  return createAnnotation
+}
+
+const makeAnnotationClickListener = (
+  dispatch: Dispatch<any>,
+  cellID: string,
+  eventPrefix = 'xyplot'
+) => {
+  const createAnnotation = makeCreateMethod(dispatch, cellID, eventPrefix)
 
   const singleClickHandler = (plotInteraction: InteractionHandlerArguments) => {
     event(`${eventPrefix}.annotations.create_annotation.show_overlay`)
@@ -74,26 +86,7 @@ const makeAnnotationRangeListener = (
   cellID: string,
   eventPrefix = 'xyplot'
 ) => {
-  const createAnnotation = async userModifiedAnnotation => {
-    const {message, startTime, endTime} = userModifiedAnnotation
-
-    try {
-      await dispatch(
-        writeThenFetchAndSetAnnotations([
-          {
-            summary: message,
-            stream: cellID,
-            startTime: new Date(startTime).getTime(),
-            endTime: new Date(endTime).getTime(),
-          },
-        ])
-      )
-      event(`${eventPrefix}.annotations.create_range_annotation.create`)
-    } catch (err) {
-      dispatch(notify(createAnnotationFailed(getErrorMessage(err))))
-      event(`${eventPrefix}.annotations.create_range_annotation.failure`)
-    }
-  }
+  const createAnnotation = makeCreateMethod(dispatch, cellID, eventPrefix)
 
   const rangeHandler = (start: number | string, end: number | string) => {
     event(`${eventPrefix}.annotations.create_range_annotation.show_overlay`)

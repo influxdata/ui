@@ -14,8 +14,7 @@ import {
 import {DEFAULT_USAGE_TIME_RANGE} from 'src/shared/constants/timeRanges'
 
 // Types
-import {SelectableDurationTimeRange} from 'src/types'
-import {UsageVector} from 'src/types/billing'
+import {SelectableDurationTimeRange, UsageVector} from 'src/types'
 
 export type Props = {
   children: JSX.Element
@@ -87,7 +86,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
       setUsageVectors(vectors)
       handleSetSelectedUsage(vectors?.[0]?.name)
     } catch (error) {
-      console.error('handleGetUsageVectors: ', error)
+      console.error(error)
     }
   }, [setUsageVectors, handleSetSelectedUsage])
 
@@ -102,9 +101,10 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
       if (resp.status !== 200) {
         throw new Error(resp.data.message)
       }
+
       setBillingDateTime(resp.data.dateTime)
     } catch (error) {
-      console.error('handleGetBillingDate: ', error)
+      console.error(error)
     }
   }, [setBillingDateTime])
 
@@ -121,18 +121,12 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
       }
 
       const csv = resp.data?.trim().replace(/\r\n/g, '\n')
-      // TODO(ariel): keeping this in for testing purposes in staging
-      // This will need to be removed for flipping the feature flag on
-      console.warn({csv, json: JSON.stringify(resp.data)})
 
       const csvs = csv.split('\n\n')
 
-      // TODO(ariel): keeping this in for testing purposes in staging
-      // This will need to be removed for flipping the feature flag on
-      console.warn({csvs})
       setBillingStats(csvs)
     } catch (error) {
-      console.error('getBillingStats: ', error)
+      console.error(error)
     }
   }, [setBillingStats])
 
@@ -158,7 +152,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
 
         setUsageStats(resp.data)
       } catch (error) {
-        console.error('handleGetUsageStats: ', error)
+        console.error(error)
         setUsageStats('')
       }
     }
@@ -180,7 +174,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
 
       setRateLimits(resp.data)
     } catch (error) {
-      console.error('handleGetRateLimits: ', error)
+      console.error(error)
       setRateLimits('')
     }
   }, [timeRange])

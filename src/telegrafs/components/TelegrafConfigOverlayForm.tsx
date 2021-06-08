@@ -106,23 +106,21 @@ const TelegrafConfigOverlayForm: FC = () => {
           />
         </div>
       </Overlay.Body>
-      <FeatureFlag name="editTelegrafs">
-        <Overlay.Footer>
-          <Button
-            color={ComponentColor.Default}
-            text="Cancel"
-            onClick={onClose}
-          />
-          <ConfirmationButton
-            color={ComponentColor.Success}
-            text="Save Changes"
-            onConfirm={handleSaveConfig}
-            confirmationButtonText="Save"
-            confirmationButtonColor={ComponentColor.Success}
-            confirmationLabel="This cannot be undone, are you sure?"
-          />
-        </Overlay.Footer>
-      </FeatureFlag>
+      <Overlay.Footer>
+        <Button
+          color={ComponentColor.Default}
+          text="Cancel"
+          onClick={onClose}
+        />
+        <ConfirmationButton
+          color={ComponentColor.Success}
+          text="Save Changes"
+          onConfirm={handleSaveConfig}
+          confirmationButtonText="Save"
+          confirmationButtonColor={ComponentColor.Success}
+          confirmationLabel="This cannot be undone, are you sure?"
+        />
+      </Overlay.Footer>
     </>
   )
 }

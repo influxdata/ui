@@ -4,6 +4,7 @@ import {InfluxColors} from '@influxdata/clockface'
 
 // Utils
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
+import {upperFirst} from 'src/shared/utils/upperFirst'
 
 // Components
 import {
@@ -40,6 +41,7 @@ import {
   LEGEND_OPACITY_STEP,
   LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL,
   LEGEND_ORIENTATION_THRESHOLD_VERTICAL,
+  LegendDisplayStatus,
 } from 'src/visualization/constants'
 
 // Metrics
@@ -91,9 +93,9 @@ const HoverLegendToggle: FC<HoverLegendToggleProps> = ({
 }) => {
   const getHoverLegendHideStatus = (legendHide: boolean): string => {
     if (legendHide) {
-      return 'Hide'
+      return upperFirst(LegendDisplayStatus.HIDE)
     }
-    return 'Show'
+    return upperFirst(LegendDisplayStatus.SHOW)
   }
 
   return (
@@ -236,7 +238,9 @@ const LegendOrientation: FC<LegendOrientationProps> = ({
     update({
       legendHide: !properties.legendHide,
     })
-    const metricValue = properties.legendHide ? 'hide' : 'show'
+    const metricValue = properties.legendHide
+      ? LegendDisplayStatus.HIDE
+      : LegendDisplayStatus.SHOW
     event(`${eventPrefix}.hoverLegend.${metricValue}`, {
       type: properties.type,
     })

@@ -95,6 +95,7 @@ export type Action =
   | ReturnType<typeof setLegendOpacity>
   | ReturnType<typeof setLegendOrientationThreshold>
   | ReturnType<typeof setLegendColorizeRows>
+  | ReturnType<typeof setLegendHide>
   | ReturnType<typeof setStaticLegend>
   | ReturnType<typeof setGenerateXAxisTicks>
   | ReturnType<typeof setGenerateYAxisTicks>
@@ -749,6 +750,11 @@ export const setLegendOrientationThreshold = (
 export const setLegendColorizeRows = (legendColorizeRows: boolean) => ({
   type: 'SET_LEGEND_COLORIZE_ROWS' as 'SET_LEGEND_COLORIZE_ROWS',
   payload: {legendColorizeRows},
+})
+
+export const setLegendHide = (legendHide: boolean) => ({
+  type: 'SET_LEGEND_HIDE' as 'SET_LEGEND_HIDE',
+  payload: {legendHide},
 })
 
 export const setStaticLegend = (staticLegend: StaticLegend) => ({

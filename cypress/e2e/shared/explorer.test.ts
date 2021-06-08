@@ -1009,6 +1009,72 @@ describe('DataExplorer', () => {
       })
     })
 
+    describe('hover legend aka "tooltip"', () => {
+      it('gives the user a toggle for hide the tooltip only for line graph, line graph plus single stat, and band plot', () => {
+        VIS_TYPES.forEach(type => {
+          cy.getByTestID('cog-cell--button').click()
+          cy.getByTestID('view-type--dropdown').click()
+          cy.getByTestID(`view-type--${type}`).click()
+          if (
+            type === 'xy' ||
+            type === 'line-plus-single-stat' ||
+            type === 'band'
+          ) {
+            cy.getByTestID('hover-legend-toggle').should('exist')
+          } else {
+            cy.getByTestID('hover-legend-toggle').should('not.exist')
+          }
+        })
+      })
+
+      it('allows the user to toggle the hover legend to hide or show it', () => {
+        cy.writeData(lines(100))
+        cy.get<string>('@defaultBucketListSelector').then(
+          (defaultBucketListSelector: string) => {
+            cy.getByTestID('query-builder').should('exist')
+            cy.getByTestID('selector-list _monitoring').should('be.visible')
+            cy.getByTestID('selector-list _monitoring').click()
+
+            cy.getByTestID(defaultBucketListSelector).should('be.visible')
+            cy.getByTestID(defaultBucketListSelector).click()
+
+            cy.getByTestID('selector-list m').should('be.visible')
+            cy.getByTestID('selector-list m').clickAttached()
+
+            cy.getByTestID('selector-list v').should('be.visible')
+            cy.getByTestID('selector-list v').clickAttached()
+
+            cy.getByTestID('selector-list tv1').clickAttached()
+
+            cy.getByTestID('selector-list last')
+              .scrollIntoView()
+              .should('be.visible')
+              .click({force: true})
+
+            cy.getByTestID('time-machine-submit-button').click()
+
+            cy.getByTestID('cog-cell--button').click()
+            cy.getByTestID('view-type--dropdown').click()
+            cy.getByTestID('view-type--xy').click()
+
+            // No legend should exist just from opening the options
+            cy.get('.giraffe-tooltip-container').should('not.exist')
+
+            // Hovering over the graph should trigger a legend
+            cy.getByTestID('giraffe-layer-line').trigger('mouseover')
+            cy.get('.giraffe-tooltip-container').should('exist')
+
+            // Slide the toggle off and then hovering should not trigger a legend
+            cy.getByTestID('hover-legend-toggle')
+              .find('.cf-slide-toggle--knob')
+              .click()
+            cy.getByTestID('giraffe-layer-line').trigger('mouseover')
+            cy.get('.giraffe-tooltip-container').should('not.exist')
+          }
+        )
+      })
+    })
+
     describe('static legend', () => {
       it('turns on static legend flag, so static legend option should exist for line graph, line graph plus single stat, and band plot', () => {
         cy.window().then(win => {

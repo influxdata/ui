@@ -48,6 +48,10 @@ export const filterNoisyColumns = (columns: string[], table: Table): string[] =>
 
     const keyData = table.getColumn(key)
 
+    if (keyData === null) {
+      return false
+    }
+
     for (const d of keyData) {
       if (d !== keyData[0]) {
         return true

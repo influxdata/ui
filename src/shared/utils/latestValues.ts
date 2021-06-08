@@ -1,4 +1,4 @@
-import {range, flatMap, isFinite, isString} from 'lodash'
+import {range, flatMap, isFinite} from 'lodash'
 import {Table, NumericColumnData} from '@influxdata/giraffe'
 
 /*
@@ -102,7 +102,7 @@ export const latestValues = (table: Table): number[] => {
     if (
       time &&
       valueColsData.some(colData => {
-        return isFinite(colData[i]) || isString(colData[i])
+        return isFinite(colData[i]) || typeof colData[i] === 'string'
       })
     ) {
       return time
@@ -119,7 +119,7 @@ export const latestValues = (table: Table): number[] => {
   )
 
   const definedLatestValues = latestValues.filter(
-    x => isFinite(x) || isString(x)
+    x => isFinite(x) || typeof x === 'string'
   )
 
   return definedLatestValues

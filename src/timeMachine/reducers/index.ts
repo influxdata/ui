@@ -1,5 +1,5 @@
 // Libraries
-import {cloneDeep, isNumber, get, map} from 'lodash'
+import {cloneDeep, get, map} from 'lodash'
 import {produce} from 'immer'
 
 // Utils
@@ -310,7 +310,7 @@ export const timeMachineReducer = (
           draftState.queryResults.statuses = statuses
         }
 
-        if (isNumber(fetchDuration)) {
+        if (typeof fetchDuration === 'number') {
           draftState.queryResults.fetchDuration = fetchDuration
         }
       })
@@ -493,6 +493,12 @@ export const timeMachineReducer = (
       const {legendColorizeRows} = action.payload
 
       return setViewProperties(state, {legendColorizeRows})
+    }
+
+    case 'SET_LEGEND_HIDE': {
+      const {legendHide} = action.payload
+
+      return setViewProperties(state, {legendHide})
     }
 
     case 'SET_STATIC_LEGEND': {

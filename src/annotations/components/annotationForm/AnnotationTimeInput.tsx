@@ -1,5 +1,6 @@
 // Libraries
 import React, {
+  CSSProperties,
   FC,
   ChangeEvent,
   KeyboardEvent,
@@ -9,13 +10,7 @@ import React, {
 import moment from 'moment'
 
 // Components
-import {
-  Columns,
-  ComponentStatus,
-  Form,
-  Grid,
-  Input,
-} from '@influxdata/clockface'
+import {ComponentStatus, Form, Input} from '@influxdata/clockface'
 
 // Context
 import {AppSettingContext} from 'src/shared/contexts/app'
@@ -26,6 +21,7 @@ interface Props {
   time: string | number
   name: string
   titleText?: string
+  style?: CSSProperties
 }
 
 const ANNOTATION_TIME_FORMAT_UTC = 'YYYY-MM-DD HH:mm:ss' // 24 hour
@@ -96,23 +92,24 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
   }
 
   const validationMessage = getInputValidationMessage()
-
+  const testID = `${props.name}-testID`
   const labelText = props.titleText ?? 'Start Time'
+
   return (
-    <Grid.Column widthXS={Columns.Twelve}>
-      <Form.Element
-        label={labelText}
-        required={true}
-        errorMessage={validationMessage}
-      >
-        <Input
-          name={name}
-          value={timeValue}
-          onChange={handleChange}
-          onKeyPress={handleKeyPress}
-          status={ComponentStatus.Default}
-        />
-      </Form.Element>
-    </Grid.Column>
+    <Form.Element
+      label={labelText}
+      required={true}
+      errorMessage={validationMessage}
+      style={props.style}
+    >
+      <Input
+        name={name}
+        value={timeValue}
+        testID={testID}
+        onChange={handleChange}
+        onKeyPress={handleKeyPress}
+        status={ComponentStatus.Default}
+      />
+    </Form.Element>
   )
 }

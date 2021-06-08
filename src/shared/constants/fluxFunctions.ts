@@ -2450,7 +2450,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     package: 'experimental/geo',
     desc:
       'Pivots geo-temporal data into row-wise sets based on time and other correlation columns.',
-    example: 'geo.toRows(correlationKey: ["_time"])',
+    example: 'geo.toRows()',
     category: 'Transformations',
     link:
       'https://docs.influxdata.com/influxdb/cloud/reference/flux/stdlib/experimental/geo/torows/',

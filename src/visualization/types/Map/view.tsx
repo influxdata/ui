@@ -115,15 +115,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
   }
   let layersOpts = layers
   if (!layers.length) {
-    layersOpts = [
-      {
-        type: 'pointMap',
-        colorDimension: {label: 'Value'},
-        colorField: '_value',
-        colors: DEFAULT_THRESHOLDS_GEO_COLORS,
-        isClustered: false,
-      },
-    ]
+    layersOpts = DEFAULT_THRESHOLDS_GEO_COLORS
   }
 
   if (!layers[0].colors[0].id) {

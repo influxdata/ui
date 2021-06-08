@@ -2,10 +2,6 @@
 import {AppState, AnnotationStream} from 'src/types'
 import {sortBy} from 'lodash'
 
-export const getAnnotationControlsVisibility = (state: AppState): boolean => {
-  return state.userSettings.showAnnotationsControls || false
-}
-
 export const getVisibleAnnotationStreams = (state: AppState): string[] => {
   const visibleStreams = state.annotations.visibleStreamsByID
 

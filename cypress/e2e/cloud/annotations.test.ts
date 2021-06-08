@@ -65,7 +65,7 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('save-cell--button').click()
     })
 
-    cy.getByTestID('toggle-annotations-controls').click()
+    //cy.getByTestID('toggle-annotations-controls').click()
     cy.getByTestID('annotations-control-bar').should('be.visible')
   }
 
@@ -189,17 +189,22 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID(`giraffe-layer-${layerTestID}`).then(([canvas]) => {
         const {width, height} = canvas
 
+        //cy.wrap(canvas).trigger('keydown', {key: 'shift', force: true})
+        // cy.wrap(canvas).trigger('keydown', {keyCode: 16, which: 16,force:true,release:false,delay:10})
+        //adding {shift:true} to the options for mouse up did not work
         cy.wrap(canvas).trigger('mousedown', {
           x: width / 3,
           y: height / 2,
           force: true,
+          shiftKey: true,
         })
         cy.wrap(canvas).trigger('mousemove', {
           x: (width * 2) / 3,
           y: height / 2,
           force: true,
+          shiftKey: true,
         })
-        cy.wrap(canvas).trigger('mouseup', {force: true})
+        cy.wrap(canvas).trigger('mouseup', {force: true, shiftKey: true})
       })
     })
 
@@ -302,7 +307,7 @@ describe('The Annotations UI functionality', () => {
     it('can delete an annotation  for the xy line graph', () => {
       deleteAnnotationTest(cy)
     })
-    it('can add a range annotation for the xy line graph', () => {
+    it.only('can add a range annotation for the xy line graph', () => {
       addRangeAnnotation(cy)
       checkAnnotationText(cy, 'range annotation here!')
     })

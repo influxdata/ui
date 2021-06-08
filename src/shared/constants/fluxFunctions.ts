@@ -1,6 +1,6 @@
 import {FluxToolbarFunction} from 'src/types/shared'
 
-export const DOCS_URL_VERSION = !!process.env.CLOUD_URL ? 'cloud' : 'v2.0'
+export const DOCS_URL_VERSION = !!process.env.CLOUD_URL ? 'cloud' : 'latest'
 
 export const FROM: FluxToolbarFunction = {
   name: 'from',

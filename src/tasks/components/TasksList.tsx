@@ -102,7 +102,6 @@ export default class TasksList extends PureComponent<Props, State> {
       sortType
     )
 
-
     return sortedTasks.map(task => (
       <TaskCard
         key={`task-id--${task.id}`}
@@ -114,7 +113,6 @@ export default class TasksList extends PureComponent<Props, State> {
         onRunTask={onRunTask}
         onFilterChange={onFilterChange}
       />
-      
     ))
   }
 }

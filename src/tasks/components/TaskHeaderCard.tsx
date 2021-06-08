@@ -2,7 +2,7 @@
 import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
-import Moment from 'react-moment';
+import Moment from 'react-moment'
 
 // Components
 import {
@@ -17,7 +17,12 @@ import {
 } from '@influxdata/clockface'
 
 // Actions
-import {addTaskLabel, deleteTaskLabel, runTask, getRuns} from 'src/tasks/actions/thunks'
+import {
+  addTaskLabel,
+  deleteTaskLabel,
+  runTask,
+  getRuns,
+} from 'src/tasks/actions/thunks'
 
 // Types
 import {ComponentColor, Button} from '@influxdata/clockface'
@@ -26,7 +31,8 @@ import {Task, AppState} from 'src/types'
 interface PassedProps {
   task: Task
   onActivate: (task: Task) => void
-  onRunTask: (taskID: string) => void
+  onRunTask: () => void
+  onEditTask: () => void
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -54,37 +60,39 @@ export class TaskHeaderCard extends PureComponent<
           alignItems={AlignItems.FlexStart}
           direction={FlexDirection.Column}
           margin={ComponentSize.Large}
-          style={{ width: '50%' }}
+          style={{width: '50%'}}
         >
-          <ResourceCard.Name
-            name={task.name}
-            testID="task-card--name"
-          />
+          <ResourceCard.Name name={task.name} testID="task-card--name" />
           <ResourceCard.Meta>
             {this.activeToggle}
             <>Created at: {task.createdAt}</>
             <>Created by: {task.name}</>
-            <>Last Used: <Moment fromNow ago>{task.latestCompleted}</Moment> ago</>
+            <>
+              Last Used:{' '}
+              <Moment fromNow ago>
+                {task.latestCompleted}
+              </Moment>{' '}
+              ago
+            </>
             <>{task.org}</>
           </ResourceCard.Meta>
-          
         </FlexBox>
 
         <FlexBox
           justifyContent={JustifyContent.FlexEnd}
           direction={FlexDirection.Row}
-          style={{ width: '50%' }}
+          style={{width: '50%'}}
         >
-              <Button
-                onClick={this.handleRunTask}
-                text="Run Task"
-                style={{ marginRight: 10 }}
-              />
-              <Button
-                onClick={this.handleEditTask}
-                text="Edit Task"
-                color={ComponentColor.Primary}
-              />
+          <Button
+            onClick={this.handleRunTask}
+            text="Run Task"
+            style={{marginRight: 10}}
+          />
+          <Button
+            onClick={this.handleEditTask}
+            text="Edit Task"
+            color={ComponentColor.Primary}
+          />
         </FlexBox>
       </ResourceCard>
     )
@@ -105,12 +113,10 @@ export class TaskHeaderCard extends PureComponent<
     )
   }
 
-
-  
   private handleRunTask = () => {
     const {onRunTask, match, getRuns} = this.props
     try {
-      onRunTask(match.params.id)
+      onRunTask()
       getRuns(match.params.id)
     } catch (error) {
       console.error(error)
@@ -127,12 +133,7 @@ export class TaskHeaderCard extends PureComponent<
     } = this.props
 
     history.push(`/orgs/${orgID}/tasks/${currentTask.id}/edit`)
-    
-
-    
   }
-
-  
 
   private get isTaskActive(): boolean {
     const {task} = this.props
@@ -167,7 +168,7 @@ const mdtp = {
   onAddTaskLabel: addTaskLabel,
   onDeleteTaskLabel: deleteTaskLabel,
   onRunTask: runTask,
-  getRuns
+  getRuns,
 }
 
 const connector = connect(mstp, mdtp)

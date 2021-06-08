@@ -18,7 +18,6 @@ import {
   IconFont,
   ConfirmationButton,
 } from '@influxdata/clockface'
-import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'

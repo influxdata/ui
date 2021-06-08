@@ -117,15 +117,6 @@ class TaskRunsPage extends PureComponent<Props, State> {
     this.setState({sortKey, sortDirection: nextSort, sortType})
   }
 
-  private get title() {
-    const {currentTask} = this.props
-
-    if (currentTask) {
-      return `${currentTask.name} - Runs`
-    }
-    return 'Runs'
-  }
-
   private goBackToTasksPage = () => {
     const {
       history,
@@ -157,7 +148,7 @@ class TaskRunsPage extends PureComponent<Props, State> {
     history.push(`/orgs/${orgID}/tasks/${currentTask.id}/edit`)
   }
 
-  private handleActivate = (task: Task) => {
+  private handleActivate = (task: any) => {
     this.props.updateTaskStatus(task)
   }
 }

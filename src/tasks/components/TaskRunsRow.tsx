@@ -52,6 +52,7 @@ class TaskRunsRow extends PureComponent<Props, State> {
             color={ComponentColor.Default}
             text="View Logs"
             onClick={this.handleToggleOverlay}
+            style={{ marginRight: 10 }}
           />
           {run.status === 'failed' && (
             <Button

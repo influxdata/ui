@@ -2,7 +2,6 @@
 import React, {FC} from 'react'
 import {useSelector} from 'react-redux'
 import {Panel, ComponentSize, InfluxColors} from '@influxdata/clockface'
-import {FromFluxResult} from '@influxdata/giraffe'
 
 // Components
 import {View} from 'src/visualization'
@@ -20,14 +19,14 @@ import {
 
 interface OwnProps {
   graphInfo: any
-  fromFluxResult: InternalFromFluxResult | FromFluxResult
+  fromFluxResult: InternalFromFluxResult
   length?: number
 }
 
 const GENERIC_PROPERTY_DEFAULTS = {
   colors: [],
   queries: [],
-  note: 'No Data to Display',
+  note: '',
   showNoteWhenEmpty: true,
   prefix: '',
   suffix: '',
@@ -64,6 +63,8 @@ const GraphTypeSwitcher: FC<OwnProps> = ({
 
   const isXy = graphInfo?.type === 'xy'
 
+  const error = fromFluxResult?.table?.columns?.error?.data?.[0]
+
   return (
     <Panel
       backgroundColor={InfluxColors.Raven}
@@ -78,8 +79,8 @@ const GraphTypeSwitcher: FC<OwnProps> = ({
         style={{height: isXy ? 250 : 200 / length}}
       >
         <View
-          loading={RemoteDataState.Done}
-          error=""
+          loading={error ? RemoteDataState.Error : RemoteDataState.Done}
+          error={`${error ?? ''}`}
           isInitial={false}
           properties={isXy ? xyProperties : singleStatProperties}
           result={fromFluxResult}

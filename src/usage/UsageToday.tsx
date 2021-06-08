@@ -76,7 +76,7 @@ const UsageToday: FC = () => {
   const getUsageSparkline = () => {
     const usage = usageVectors.find(vector => selectedUsage === vector.name)
     const graphInfo =
-      usageGraphInfo.find(stat => stat.column === usage.fluxKey) ??
+      usageGraphInfo.find(stat => stat.column === usage?.fluxKey) ??
       usageGraphInfo[0]
 
     return (

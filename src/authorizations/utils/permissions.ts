@@ -35,7 +35,7 @@ const ossPermissionTypes: PermissionTypes[] = []
 // TODO: replace this with some server side mechanism
 const allPermissionTypes: PermissionTypes[] = sharedPermissionTypes.concat(
   CLOUD ? cloudPermissionTypes : ossPermissionTypes
-) as const
+)
 
 const ensureT = (orgID: string, userID: string) => (
   t: PermissionTypes
@@ -64,7 +64,7 @@ const ensureT = (orgID: string, userID: string) => (
     ]
   }
 
-  if (allPermissionTypes.indexOf(t) === -1) {
+  if (!allPermissionTypes.includes(t)) {
     throw new Error('Unexpected object: ' + t)
   }
 

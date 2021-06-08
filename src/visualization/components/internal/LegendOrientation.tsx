@@ -42,12 +42,16 @@ import {
   LEGEND_ORIENTATION_THRESHOLD_VERTICAL,
 } from 'src/visualization/constants'
 
+// Metrics
+import {event} from 'src/cloud/utils/reporting'
+
 interface HoverLegendToggleProps {
   legendHide: boolean
   handleSetHoverLegendHide: () => void
 }
 
 interface OrientationToggleProps {
+  graphType: string
   legendOrientation: number
   handleSetOrientation: (threshold: number) => void
 }
@@ -71,6 +75,8 @@ interface LegendOrientationProps extends VisualizationOptionProps {
     | MosaicViewProperties
     | ScatterViewProperties
 }
+
+const eventPrefix = 'visualization.customize'
 
 const getToggleColor = (toggle: boolean): CSSProperties => {
   if (toggle) {
@@ -112,9 +118,20 @@ const HoverLegendToggle: FC<HoverLegendToggleProps> = ({
 }
 
 const OrientationToggle: FC<OrientationToggleProps> = ({
+  graphType,
   legendOrientation,
   handleSetOrientation,
 }) => {
+  const setOrientation = (orientation: string): void => {
+    if (orientation === 'vertical') {
+      handleSetOrientation(LEGEND_ORIENTATION_THRESHOLD_VERTICAL)
+    } else {
+      handleSetOrientation(LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL)
+    }
+    event(`${eventPrefix}.legend.orientation.${orientation}`, {
+      type: graphType,
+    })
+  }
   return (
     <FlexBox
       direction={FlexDirection.Column}
@@ -129,9 +146,7 @@ const OrientationToggle: FC<OrientationToggleProps> = ({
         id="horizontal-legend-orientation"
         name="legendOr"
         checked={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL}
-        onChange={() =>
-          handleSetOrientation(LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL)
-        }
+        onChange={setOrientation}
         type={InputToggleType.Radio}
         size={ComponentSize.ExtraSmall}
         color={ComponentColor.Primary}
@@ -151,9 +166,7 @@ const OrientationToggle: FC<OrientationToggleProps> = ({
         id="vertical-legend-orientation"
         name="lengendOr"
         checked={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_VERTICAL}
-        onChange={() =>
-          handleSetOrientation(LEGEND_ORIENTATION_THRESHOLD_VERTICAL)
-        }
+        onChange={setOrientation}
         type={InputToggleType.Radio}
         size={ComponentSize.ExtraSmall}
         color={ComponentColor.Primary}
@@ -223,24 +236,37 @@ const LegendOrientation: FC<LegendOrientationProps> = ({
     update({
       legendHide: !properties.legendHide,
     })
+    const metricValue = properties.legendHide ? 'hide' : 'show'
+    event(`${eventPrefix}.hoverLegend.${metricValue}`, {
+      type: properties.type,
+    })
   }
 
   const handleSetOrientation = (threshold: number): void => {
     update({
       legendOrientationThreshold: threshold,
     })
+    // eventing is done by the consuming component because there are only 2 values
   }
 
-  const handleSetOpacity = (event: ChangeEvent<HTMLInputElement>): void => {
-    const value = convertUserInputToNumOrNaN(event)
+  const handleSetOpacity = (e: ChangeEvent<HTMLInputElement>): void => {
+    const value = convertUserInputToNumOrNaN(e)
 
     if (isNaN(value) || value < LEGEND_OPACITY_MINIMUM) {
       update({
         legendOpacity: LEGEND_OPACITY_MAXIMUM,
       })
+      event(`${eventPrefix}.legend.opacity`, {
+        type: properties.type,
+        opacity: LEGEND_OPACITY_MAXIMUM,
+      })
     } else {
       update({
         legendOpacity: value,
+      })
+      event(`${eventPrefix}.legend.opacity`, {
+        type: properties.type,
+        opacity: value,
       })
     }
   }
@@ -249,6 +275,14 @@ const LegendOrientation: FC<LegendOrientationProps> = ({
     update({
       legendColorizeRows: !properties.legendColorizeRows,
     })
+    event(
+      `${eventPrefix}.legend.colorizeRows.${Boolean(
+        properties.legendColorizeRows
+      )}`,
+      {
+        type: properties.type,
+      }
+    )
   }
 
   return (
@@ -262,6 +296,7 @@ const LegendOrientation: FC<LegendOrientationProps> = ({
         />
       ) : null}
       <OrientationToggle
+        graphType={properties.type}
         legendOrientation={properties.legendOrientationThreshold}
         handleSetOrientation={handleSetOrientation}
       />

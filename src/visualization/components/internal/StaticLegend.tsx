@@ -41,6 +41,11 @@ import {
   STATIC_LEGEND_HIDE_DEFAULT,
 } from 'src/visualization/constants'
 
+// Metrics
+import {event} from 'src/cloud/utils/reporting'
+
+const eventPrefix = 'visualization.customize.staticlegend'
+
 interface Props extends VisualizationOptionProps {
   properties:
     | BandViewProperties
@@ -70,6 +75,9 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
         hide: true,
       },
     })
+    event(`${eventPrefix}.hide`, {
+      type: properties.type,
+    })
   }
 
   const handleChooseShow = () => {
@@ -80,10 +88,13 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
         hide: false,
       },
     })
+    event(`${eventPrefix}.show`, {
+      type: properties.type,
+    })
   }
 
-  const handleSetHeightRatio = (event: ChangeEvent<HTMLInputElement>): void => {
-    const value = convertUserInputToNumOrNaN(event)
+  const handleSetHeightRatio = (e: ChangeEvent<HTMLInputElement>): void => {
+    const value = convertUserInputToNumOrNaN(e)
 
     if (isNaN(value) || value < STATIC_LEGEND_HEIGHT_RATIO_MINIMUM) {
       update({
@@ -92,9 +103,17 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
           heightRatio: STATIC_LEGEND_HEIGHT_RATIO_MINIMUM,
         },
       })
+      event(`${eventPrefix}.heightRatio`, {
+        type: properties.type,
+        heightRatio: STATIC_LEGEND_HEIGHT_RATIO_MINIMUM,
+      })
     } else {
       update({
         staticLegend: {...staticLegend, heightRatio: value},
+      })
+      event(`${eventPrefix}.heightRatio`, {
+        type: properties.type,
+        heightRatio: value,
       })
     }
   }

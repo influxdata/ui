@@ -47,6 +47,9 @@ import {
 // Metrics
 import {event} from 'src/cloud/utils/reporting'
 
+// Styles
+import 'src/visualization/components/internal/LegendOrientation.scss'
+
 interface HoverLegendToggleProps {
   legendHide: boolean
   handleSetHoverLegendHide: () => void
@@ -104,7 +107,7 @@ const HoverLegendToggle: FC<HoverLegendToggleProps> = ({
       alignItems={AlignItems.Center}
       margin={ComponentSize.Medium}
       stretchToFitWidth={true}
-      style={{marginTop: '0.5em', marginBottom: '1.5em'}}
+      className="hover-legend-toggle"
       testID="hover-legend-toggle"
     >
       <SlideToggle
@@ -139,25 +142,25 @@ const OrientationToggle: FC<OrientationToggleProps> = ({
       direction={FlexDirection.Column}
       margin={ComponentSize.Large}
       alignItems={AlignItems.FlexStart}
-      style={{marginBottom: '1.5em'}}
+      className="legend-orientation-toggle"
     >
-      <InputLabel style={{color: InfluxColors.Cloud}}>Orientation</InputLabel>
+      <InputLabel id="legend-orientation-label">Orientation</InputLabel>
       <Toggle
         tabIndex={1}
         value="horizontal"
-        id="horizontal-legend-orientation"
         name="legendOr"
+        className="legend-orientation--horizontal"
+        id="legend-orientation--horizontal"
         checked={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL}
         onChange={setOrientation}
         type={InputToggleType.Radio}
         size={ComponentSize.ExtraSmall}
         color={ComponentColor.Primary}
         appearance={Appearance.Outline}
-        style={{marginBottom: 6}}
       >
         <InputLabel
           active={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL}
-          htmlFor="horizontal-legend-orientation"
+          htmlFor="legend-orientation--horizontal"
         >
           Horizontal
         </InputLabel>
@@ -165,7 +168,8 @@ const OrientationToggle: FC<OrientationToggleProps> = ({
       <Toggle
         tabIndex={2}
         value="vertical"
-        id="vertical-legend-orientation"
+        className="legend-orientation--vertical"
+        id="legend-orientation--vertical"
         name="lengendOr"
         checked={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_VERTICAL}
         onChange={setOrientation}
@@ -176,7 +180,7 @@ const OrientationToggle: FC<OrientationToggleProps> = ({
       >
         <InputLabel
           active={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_VERTICAL}
-          htmlFor="vertical-legend-orientation"
+          htmlFor="legend-orientation--vertical"
         >
           Vertical
         </InputLabel>
@@ -193,7 +197,10 @@ const OpacitySlider: FC<OpacitySliderProps> = ({
   // can get numbers like 45.000009% which we want to avoid
   const percentLegendOpacity = (legendOpacity * 100).toFixed(0)
   return (
-    <Form.Element label={`Opacity: ${percentLegendOpacity}%`}>
+    <Form.Element
+      className="legend-opacity-slider"
+      label={`Opacity: ${percentLegendOpacity}%`}
+    >
       <RangeSlider
         max={LEGEND_OPACITY_MAXIMUM}
         min={LEGEND_OPACITY_MINIMUM}
@@ -216,7 +223,7 @@ const ColorizeRowsToggle: FC<ColorizeRowsToggleProps> = ({
       alignItems={AlignItems.Center}
       margin={ComponentSize.Medium}
       stretchToFitWidth={true}
-      style={{marginTop: '1em'}}
+      className="legend-colorize-rows-toggle"
     >
       <SlideToggle
         active={legendColorizeRows}

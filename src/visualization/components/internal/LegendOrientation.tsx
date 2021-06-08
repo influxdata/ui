@@ -90,35 +90,26 @@ const HoverLegendToggle: FC<HoverLegendToggleProps> = ({
     return 'Show'
   }
 
-  const getHoverLegendHideStatus = (legendHide: boolean): string => {
-    if (legendHide) {
-      return 'Hidden'
-    }
-    return 'Shown'
-  }
-
-  const handleSetHoverLegendHide = (): void => {
-    update({
-      legendHide: !properties.legendHide,
-    })
-  }
-
-  const handleSetColorization = (): void => {
-    update({
-      legendColorizeRows: !properties.legendColorizeRows,
-    })
-  }
-
-  const getToggleColor = (toggle: boolean): CSSProperties => {
-    if (toggle) {
-      return {color: InfluxColors.Cloud}
-    }
-    return {color: InfluxColors.Sidewalk}
-  }
-
-  // without the toFixed(0) sometimes you
-  // can get numbers like 45.000009% which we want to avoid
-  const percentLegendOpacity = (legendOpacity * 100).toFixed(0)
+  return (
+    <FlexBox
+      direction={FlexDirection.Row}
+      alignItems={AlignItems.Center}
+      margin={ComponentSize.Medium}
+      stretchToFitWidth={true}
+      style={{marginTop: '0.5em', marginBottom: '1.5em'}}
+      testID="hover-legend-toggle"
+    >
+      <SlideToggle
+        active={!legendHide}
+        size={ComponentSize.ExtraSmall}
+        onChange={handleSetHoverLegendHide}
+      />
+      <InputLabel style={getToggleColor(!legendHide)}>
+        Hover Legend {getHoverLegendHideStatus(legendHide)}
+      </InputLabel>
+    </FlexBox>
+  )
+}
 
 const OrientationToggle: FC<OrientationToggleProps> = ({
   legendOrientation,
@@ -262,49 +253,26 @@ const LegendOrientation: FC<LegendOrientationProps> = ({
 
   return (
     <>
-      <FlexBox
-        direction={FlexDirection.Row}
-        alignItems={AlignItems.Center}
-        margin={ComponentSize.Medium}
-        stretchToFitWidth={true}
-        style={{marginTop: '0.5em', marginBottom: '1.5em'}}
-      >
-        <SlideToggle
-          active={!properties.legendHide}
-          size={ComponentSize.ExtraSmall}
-          onChange={handleSetHoverLegendHide}
+      {properties.type === 'xy' ||
+      properties.type === 'line-plus-single-stat' ||
+      properties.type === 'band' ? (
+        <HoverLegendToggle
+          legendHide={properties.legendHide}
+          handleSetHoverLegendHide={handleSetHoverLegendHide}
         />
-        <InputLabel style={getToggleColor(!properties.legendHide)}>
-          Hover Legend {getHoverLegendHideStatus(properties.legendHide)}
-        </InputLabel>
-      </FlexBox>
-      {orientationToggle}
-      <Form.Element label={`Opacity: ${percentLegendOpacity}%`}>
-        <RangeSlider
-          max={LEGEND_OPACITY_MAXIMUM}
-          min={LEGEND_OPACITY_MINIMUM}
-          step={LEGEND_OPACITY_STEP}
-          value={legendOpacity}
-          onChange={handleSetOpacity}
-          hideLabels={true}
-        />
-      </Form.Element>
-      <FlexBox
-        direction={FlexDirection.Row}
-        alignItems={AlignItems.Center}
-        margin={ComponentSize.Medium}
-        stretchToFitWidth={true}
-        style={{marginTop: '1em'}}
-      >
-        <SlideToggle
-          active={properties.legendColorizeRows}
-          size={ComponentSize.ExtraSmall}
-          onChange={handleSetColorization}
-        />
-        <InputLabel style={getToggleColor(properties.legendColorizeRows)}>
-          Colorize Rows
-        </InputLabel>
-      </FlexBox>
+      ) : null}
+      <OrientationToggle
+        legendOrientation={properties.legendOrientationThreshold}
+        handleSetOrientation={handleSetOrientation}
+      />
+      <OpacitySlider
+        legendOpacity={properties.legendOpacity}
+        handleSetOpacity={handleSetOpacity}
+      />
+      <ColorizeRowsToggle
+        legendColorizeRows={properties.legendColorizeRows}
+        handleSetColorization={handleSetColorization}
+      />
     </>
   )
 }

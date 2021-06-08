@@ -87,7 +87,7 @@ const measurePage = (
 const subsetResult = (
   result: FluxResult['parsed'],
   offset: number,
-  page: number,
+  size: number,
   disableFilter: boolean
 ): SubsetTable[] => {
   // only look at data within the page
@@ -96,7 +96,7 @@ const subsetResult = (
       (c: Column): ExtendedColumn => ({
         ...c,
         group: result.fluxGroupKeyUnion.includes(c.name),
-        data: c.data.slice(offset, offset + page),
+        data: c.data.slice(offset, offset + size),
       })
     )
     .filter(c => !!c.data.filter(_c => _c !== undefined).length)
@@ -113,7 +113,7 @@ const subsetResult = (
   let lastTable
 
   // group by table id (series)
-  for (let ni = 0; ni < page; ni++) {
+  for (let ni = 0; ni < size; ni++) {
     if (
       `y${subset['result'][0].data[ni]}:t${subset['table'][0].data[ni]}` ===
       lastTable
@@ -138,7 +138,7 @@ const subsetResult = (
   }
 
   if (tables.length) {
-    tables[tables.length - 1].end = page
+    tables[tables.length - 1].end = size
   }
 
   // reorder the column names, filter empty columns, join repeating tables under one header
@@ -221,7 +221,7 @@ interface Props {
 }
 
 const PagedTable: FC<Props> = ({result, properties}) => {
-  const {offset, setSize} = useContext(PaginationContext)
+  const {offset, setSize, setPage} = useContext(PaginationContext)
   const [height, setHeight] = useState(0)
   const ref = useRef()
 
@@ -262,16 +262,20 @@ const PagedTable: FC<Props> = ({result, properties}) => {
     }
   }, [ref?.current])
 
-  const page = useMemo(() => {
+  const size = useMemo(() => {
     return measurePage(result, offset, height)
   }, [result, offset, height])
   const tables = useMemo(() => {
-    return subsetResult(result, offset, page, properties.showAll)
-  }, [result, offset, page])
+    return subsetResult(result, offset, size, properties.showAll)
+  }, [result, offset, size])
 
   useEffect(() => {
-    setSize(page)
-  }, [page])
+    setSize(size)
+  }, [size])
+
+  useEffect(() => {
+    setPage(1)
+  }, [result])
 
   const inner = tables.map((t, tIdx) => (
     <InnerTable table={t} key={`table${tIdx}`} />

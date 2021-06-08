@@ -51,7 +51,12 @@ const InnerTable: FC<InnerProps> = ({table}) => {
     })
 
   return (
-    <Table fontSize={ComponentSize.Small} striped highlight>
+    <Table
+      fontSize={ComponentSize.Small}
+      striped
+      highlight
+      testID="simple-table"
+    >
       <Table.Header>
         <Table.Row>{headers}</Table.Row>
       </Table.Header>

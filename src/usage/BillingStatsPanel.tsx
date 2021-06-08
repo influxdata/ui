@@ -103,6 +103,7 @@ const BillingStatsPanel: FC = () => {
         margin={ComponentSize.Small}
         alignItems={AlignItems.Stretch}
         testID="billing-stats--graphs"
+        className="billing-stats--graph-body"
       >
         {usageVectors?.map((vector: UsageVector) => {
           // Find the matching graphInfo for the usage vector

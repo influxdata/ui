@@ -120,8 +120,9 @@ class TaskRunsPage extends PureComponent<Props, State> {
   private goBackToTasksPage = () => {
     const {
       history,
-      currentTask = {},
+      currentTask
     } = this.props;
+
 
     history.push(`orgs/${currentTask.orgID}`);
   };

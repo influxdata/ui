@@ -184,7 +184,6 @@ export class TaskCard extends PureComponent<
       },
     } = this.props
     history.push(`/orgs/${orgID}/tasks/${task.id}/runs`)
-    console.log(task)
   }
 
   private handleRenameTask = (name: string) => {

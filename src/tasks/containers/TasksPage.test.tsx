@@ -12,23 +12,58 @@ import {createMemoryHistory} from 'history'
 
 // Items under test
 import TasksPage from './TasksPage'
+import {deleteTask, postTask, getTask} from 'src/client'
+import {parse} from 'src/external/parser'
+import {mocked} from 'ts-jest/utils'
+
+const sampleScript =
+  'option task = {\n  name: "beetle",\n  every: 1h,\n}\n' +
+  'from(bucket: "inbucket")\n' +
+  '  |> range(start: -task.every)\n' +
+  '  |> filter(fn: (r) => r["_measurement"] == "activity")\n' +
+  '  |> filter(fn: (r) => r["target"] == "crumbs")\n'
 
 const InactiveTask = {
   id: '02f12c50dcb93000',
   orgID: '02ee9e2a29d73000',
   name: 'Dead Beetle',
   status: TaskApi.StatusEnum.Inactive,
-  flux:
-    'option task = {\n  name: "beetle",\n  every: 1h,\n}\nfrom(bucket: "inbucket") \n|> range(start: -task.every)',
+  flux: sampleScript,
+  // 'option task = {\n  name: "beetle",\n  every: 1h,\n}\nfrom(bucket: "inbucket") \n|> range(start: -task.every)',
   every: '1h',
   org: 'default',
   labels: [],
 }
 
+const replacementID = '02f12c50dcb9300f'
+const replacementName = 'Resurrected Beetle'
+
 const localTasks = [...tasks, InactiveTask]
 const localHistory = createMemoryHistory({initialEntries: ['/']})
 
 withRouterProps.match.params.orgID = orgs[0].id
+
+/*
+  N.B. when using react testing library render()
+  the mocked values in src/external/parser are ignored.
+  So, need to mock here as well
+*/
+jest.mock('src/external/parser', () => ({
+  parse: jest.fn(() => {
+    return {
+      type: 'File',
+      package: {
+        name: {
+          name: 'fake',
+          type: 'Identifier',
+        },
+        type: 'PackageClause',
+      },
+      imports: [],
+      body: [],
+    }
+  }),
+}))
 
 jest.mock('src/client', () => ({
   getTasks: jest.fn(() => {
@@ -51,6 +86,24 @@ jest.mock('src/client', () => ({
       status: 200,
     }
   }),
+  getTask: jest.fn(() => {
+    return {
+      data: InactiveTask,
+      headers: {},
+      status: 200,
+    }
+  }),
+  postTask: jest.fn(() => {
+    return {
+      headers: {},
+      status: 201,
+      data: {...InactiveTask, name: replacementName, id: replacementID},
+    }
+  }),
+  deleteTask: jest.fn(() => ({
+    headers: {},
+    status: 204,
+  })),
 }))
 
 const defaultProps: any = {
@@ -178,6 +231,77 @@ describe('Tasks.Containers.TasksPage', () => {
           }),
         ])
       )
+    })
+  })
+
+  describe('manage tasks', () => {
+    it('deletes a task', async () => {
+      const taskCard = (await screen.findAllByTestId('task-card'))[0]
+
+      expect(
+        taskCard.querySelector("[data-testid='task-card--name']").textContent
+      ).toContain('Dead Beetle')
+
+      const deleteButton = taskCard.querySelector(
+        "[data-testid='context-delete-task']"
+      )
+
+      const taskID = taskCard
+        .querySelector("[class='copy-resource-id']")
+        .textContent.split(':')[1]
+        .split('C')[0]
+        .trim()
+
+      expect(ui.store.getState().resources.tasks.byID[taskID]).toBeTruthy()
+      expect(ui.store.getState().resources.tasks.allIDs).toContain(taskID)
+
+      fireEvent.click(deleteButton)
+
+      await waitFor(() => expect(deleteTask).toBeCalled())
+
+      expect(mocked(deleteTask).mock.calls[0][0]['taskID']).toEqual(taskID)
+      expect(ui.store.getState().resources.tasks.byID[taskID]).toBeFalsy()
+      expect(ui.store.getState().resources.tasks.allIDs).not.toContain(taskID)
+    })
+
+    it('clones a task', async () => {
+      expect(ui.store.getState().resources.tasks.allIDs.length).toEqual(
+        localTasks.length
+      )
+
+      const taskCard = (await screen.findAllByTestId('task-card'))[0]
+      const cloneButton = taskCard.querySelector(
+        '[data-testid=context-menu] + div [data-testid=context-menu-item]'
+      )
+      const name = taskCard.querySelector("[data-testid='task-card--name']")
+        .textContent
+      expect(name).toContain(InactiveTask.name)
+
+      fireEvent.click(cloneButton)
+
+      await waitFor(() => expect(postTask).toBeCalled())
+
+      expect(mocked(getTask).mock.calls[0][0].taskID).toEqual(InactiveTask.id)
+
+      expect(mocked(parse).mock.calls[0][0]).toEqual(sampleScript)
+
+      expect(mocked(postTask).mock.calls[0][0].data.id).toEqual(InactiveTask.id)
+      expect(mocked(postTask).mock.calls[0][0].data.name).toEqual(
+        InactiveTask.name
+      )
+      expect(mocked(postTask).mock.calls[0][0].data.status).toEqual(
+        InactiveTask.status
+      )
+
+      expect(ui.store.getState().resources.tasks.allIDs.length).toEqual(
+        localTasks.length + 1
+      )
+      expect(ui.store.getState().resources.tasks.allIDs).toContain(
+        replacementID
+      )
+      expect(
+        ui.store.getState().resources.tasks.byID[replacementID].name
+      ).toEqual(replacementName)
     })
   })
 })

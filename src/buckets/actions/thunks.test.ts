@@ -50,7 +50,7 @@ const mockGetBuckets = (shouldSucess: boolean) => {
 
 describe('buckets thunks', () => {
   describe('fetchAllBuckets', () => {
-    it('success', async () => {
+    it('should return results upon success', async () => {
       mockGetBuckets(true)
 
       const bucks = await fetchAllBuckets('ord01')
@@ -58,7 +58,7 @@ describe('buckets thunks', () => {
       expect(bucks.result).toContain('demo-bucket')
     })
 
-    it('fails', async () => {
+    it('should throw an error upon failure', async () => {
       mockGetBuckets(false)
 
       await expect(fetchAllBuckets('ord01')).rejects.toThrowError(
@@ -68,7 +68,7 @@ describe('buckets thunks', () => {
   })
 
   describe('getBuckets', () => {
-    it('should return results upon success', async () => {
+    it('should load and dispatch successfully', async () => {
       mockGetBuckets(true)
       const dispatch = jest.fn()
       const getState = jest.fn(getMockAppState) as any
@@ -84,7 +84,7 @@ describe('buckets thunks', () => {
       expect(dispatched[1].schema.result).toContain('demo-bucket')
     })
 
-    it('should throw an error upon failure', async () => {
+    it('should throw an error upon failure message received', async () => {
       mockGetBuckets(false)
       const dispatch = jest.fn()
       const getState = jest.fn(getMockAppState) as any

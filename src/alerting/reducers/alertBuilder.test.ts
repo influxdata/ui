@@ -20,6 +20,7 @@ import {
   updateName,
   initializeAlertBuilder,
   convertCheckToCustom,
+  Action,
 } from 'src/alerting/actions/alertBuilder'
 import {CHECK_FIXTURE_1, CHECK_FIXTURE_3} from 'src/checks/reducers/checks.test'
 import {
@@ -29,6 +30,8 @@ import {
   ThresholdCheck,
   DeadmanCheck,
 } from 'src/types'
+
+const noopAction: Action = {type: undefined}
 
 const check_1 = {
   ...((CHECK_FIXTURE_1 as any) as ThresholdCheck),
@@ -322,7 +325,7 @@ describe('alertBuilderReducer', () => {
   describe('default action', () => {
     it("shouldn't change state when action type isn't recognized by reducer", () => {
       const expected = mockState()
-      const actual = alertBuilderReducer(expected, {type: '' as any})
+      const actual = alertBuilderReducer(expected, noopAction)
 
       expect(actual).toEqual(expected)
     })
@@ -330,8 +333,8 @@ describe('alertBuilderReducer', () => {
 
   describe('initial state', () => {
     it('initializes state if undefined is passed', () => {
-      const expected = alertBuilderReducer(initialState(), {type: '' as any})
-      const actual = alertBuilderReducer(undefined, {type: '' as any})
+      const expected = alertBuilderReducer(initialState(), noopAction)
+      const actual = alertBuilderReducer(undefined, noopAction)
 
       expect(actual).toEqual(expected)
     })

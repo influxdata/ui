@@ -46,7 +46,7 @@ const GraphTypeSwitcher: FC<OwnProps> = ({
     type: 'single-stat',
     shape: 'chronograf-v2',
     suffix: ` ${graphInfo?.units ?? ''}`,
-    decimalPlaces: {isEnforced: true, digits: 2},
+    decimalPlaces: {isEnforced: false, digits: 0},
   }
 
   const xyProperties: XYViewProperties = {

@@ -1,12 +1,9 @@
 import {Bucket, Permission} from 'src/types'
+import {CLOUD} from 'src/shared/constants'
 
 type PermissionTypes = Permission['resource']['type']
 
-function assertNever(x: never): never {
-  throw new Error('Unexpected object: ' + x)
-}
-
-const allPermissionTypes: PermissionTypes[] = [
+const sharedPermissionTypes: PermissionTypes[] = [
   'authorizations',
   'buckets',
   'checks',
@@ -27,66 +24,60 @@ const allPermissionTypes: PermissionTypes[] = [
   'views',
 ]
 
-// The switch statement below will cause a TS error
-// if all allowable PermissionTypes generated in the client
-// generatedRoutes are not included in the switch statement BUT
-// they will need to be added to both the switch statement AND the allPermissionTypes array.
+const cloudPermissionTypes: PermissionTypes[] = [
+  'annotations',
+  'flows',
+  'functions',
+]
+
+const ossPermissionTypes: PermissionTypes[] = []
+
+// TODO: replace this with some server side mechanism
+const allPermissionTypes: PermissionTypes[] = sharedPermissionTypes.concat(
+  CLOUD ? cloudPermissionTypes : ossPermissionTypes
+) as const
+
 const ensureT = (orgID: string, userID: string) => (
   t: PermissionTypes
 ): Permission[] => {
-  switch (t) {
-    case 'authorizations':
-    case 'annotations':
-    case 'buckets':
-    case 'checks':
-    case 'dashboards':
-    case 'dbrp':
-    case 'documents':
-    case 'flows':
-    case 'functions':
-    case 'labels':
-    case 'notificationRules':
-    case 'notificationEndpoints':
-    case 'secrets':
-    case 'scrapers':
-    case 'sources':
-    case 'tasks':
-    case 'telegrafs':
-    case 'variables':
-    case 'views':
-      return [
-        {
-          action: 'read' as 'read',
-          resource: {type: t, orgID},
-        },
-        {
-          action: 'write' as 'write',
-          resource: {type: t, orgID},
-        },
-      ]
-    case 'orgs':
-      // 'orgs' used to only have read permissions so that's all we'll give again.
-      // In production, orgs with an orgID returns a permissions error.
-      return [
-        {
-          action: 'read' as 'read',
-          resource: {type: t, id: orgID},
-        },
-      ]
-    case 'users':
-      return [
-        {
-          action: 'read' as 'read',
-          resource: {type: t, id: userID},
-        },
-        {
-          action: 'write' as 'write',
-          resource: {type: t, id: userID},
-        },
-      ]
-    default:
-      return assertNever(t)
+  if (t === 'orgs') {
+    // 'orgs' used to only have read permissions so that's all we'll give again.
+    // In production, orgs with an orgID returns a permissions error.
+    return [
+      {
+        action: 'read' as 'read',
+        resource: {type: t, id: orgID},
+      },
+    ]
   }
+
+  if (t === 'users') {
+    return [
+      {
+        action: 'read' as 'read',
+        resource: {type: t, id: userID},
+      },
+      {
+        action: 'write' as 'write',
+        resource: {type: t, id: userID},
+      },
+    ]
+  }
+
+  if (allPermissionTypes.indexOf(t) === -1) {
+    throw new Error('Unexpected object: ' + t)
+  }
+
+  return [
+    {
+      action: 'read' as 'read',
+      resource: {type: t, orgID},
+    },
+    {
+      action: 'write' as 'write',
+      resource: {type: t, orgID},
+    },
+  ]
 }
 
 export const allAccessPermissions = (

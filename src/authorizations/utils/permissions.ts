@@ -31,6 +31,10 @@ const allPermissionTypes: PermissionTypes[] = sharedPermissionTypes.concat(
   (CLOUD ? cloudPermissionTypes : ossPermissionTypes) as PermissionTypes[]
 )
 
+allPermissionTypes.sort((a, b) =>
+  a.toLowerCase().localeCompare(b.toLowerCase())
+)
+
 const ensureT = (orgID: string, userID: string) => (
   t: PermissionTypes
 ): Permission[] => {

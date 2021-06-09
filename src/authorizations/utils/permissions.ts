@@ -15,8 +15,6 @@ const sharedPermissionTypes: PermissionTypes[] = [
   'notificationEndpoints',
   'orgs',
   'secrets',
-  'scrapers',
-  'sources',
   'tasks',
   'telegrafs',
   'users',
@@ -24,17 +22,13 @@ const sharedPermissionTypes: PermissionTypes[] = [
   'views',
 ]
 
-const cloudPermissionTypes: PermissionTypes[] = [
-  'annotations',
-  'flows',
-  'functions',
-]
+const cloudPermissionTypes = ['annotations', 'flows', 'functions']
 
-const ossPermissionTypes: PermissionTypes[] = []
+const ossPermissionTypes = ['scrapers', 'sources']
 
 // TODO: replace this with some server side mechanism
 const allPermissionTypes: PermissionTypes[] = sharedPermissionTypes.concat(
-  CLOUD ? cloudPermissionTypes : ossPermissionTypes
+  (CLOUD ? cloudPermissionTypes : ossPermissionTypes) as PermissionTypes[]
 )
 
 const ensureT = (orgID: string, userID: string) => (

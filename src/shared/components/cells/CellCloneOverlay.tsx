@@ -105,7 +105,7 @@ const CellCloneOverlay: FC = () => {
       view.name
     )
 
-    dispatch(
+    await dispatch(
       createCellWithView(
         destinationDashboardID,
         {

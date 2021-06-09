@@ -1811,7 +1811,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     cy.getByTestID('cell-context--pause').click()
   })
 
-  describe.only('clone cell', () => {
+  describe('clone cell', () => {
     let otherBoardID: string
     let orgId: string
     let allOrgs: any

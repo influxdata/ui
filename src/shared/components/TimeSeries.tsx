@@ -19,7 +19,6 @@ import {
 } from 'src/dashboards/selectors'
 import {getVariables, asAssignment} from 'src/variables/selectors'
 import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
-import {isInQuery} from 'src/variables/utils/hydrateVars'
 import {getWindowVars} from 'src/variables/utils/getWindowVars'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import 'intersection-observer'
@@ -59,6 +58,7 @@ import {
   NotificationButtonElement,
 } from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
+import {parseASTIM} from 'src/variables/utils/astim'
 
 interface QueriesState {
   files: string[] | null
@@ -383,9 +383,8 @@ const mstp = (state: AppState, props: OwnProps) => {
   const queries = props.queries
     ? props.queries.map(q => q.text).filter(t => !!t.trim())
     : []
-  const vars = getVariables(state).filter(v =>
-    queries.some(t => isInQuery(t, v))
-  )
+  const astims = queries.map(query => parseASTIM(query))
+  const vars = getVariables(state).filter(v => astims.some(a => a.hasVariable(v.name)))
   const variables = [
     ...vars,
     getRangeVariable(TIME_RANGE_START, timeRange),

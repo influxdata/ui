@@ -1,9 +1,9 @@
 // Utils
 import {get} from 'lodash'
-import {isInQuery} from 'src/variables/utils/hydrateVars'
 
 // Types
 import {QueryViewProperties, View, ViewProperties, Variable} from 'src/types'
+import {parseASTIM} from 'src/variables/utils/astim'
 
 function isQueryViewProperties(vp: ViewProperties): vp is QueryViewProperties {
   return (vp as QueryViewProperties).queries !== undefined
@@ -19,7 +19,8 @@ export const getAllUsedVars = (
   usedVars.forEach((vari: Variable) => {
     if (vari.arguments.type === 'query') {
       const queryText = get(vari, 'arguments.values.query', '')
-      const usedV = variables.filter(variable => isInQuery(queryText, variable))
+      const astim = parseASTIM(queryText)
+      const usedV = variables.filter(variable => astim.hasVariable(variable.name))
       varsInUse = varsInUse.concat(usedV)
     }
   })
@@ -52,10 +53,8 @@ export const filterUnusedVarsBasedOnQuery = (
   variables: Variable[],
   queryTexts: string[]
 ): Variable[] => {
-  const varsInUse = variables.filter(variable =>
-    queryTexts.some(text => isInQuery(text, variable))
-  )
-
+  const astims = queryTexts.map(query => parseASTIM(query))
+  const varsInUse = variables.filter(variable => astims.some(a => a.hasVariable(variable.name)))
   const cachedVars = createdUsedVarsCache(varsInUse)
 
   return getAllUsedVars(variables, varsInUse, cachedVars)

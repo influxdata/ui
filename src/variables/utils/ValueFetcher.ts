@@ -9,14 +9,14 @@ import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {event} from 'src/cloud/utils/reporting'
 
 // Types
-import {VariableAssignment, VariableValues, FluxColumnType} from 'src/types'
+import {VariableValues, FluxColumnType, Variable} from 'src/types'
 import {CancelBox} from 'src/types/promises'
 
 const cacheKey = (
   url: string,
   orgID: string,
   query: string,
-  variables: VariableAssignment[]
+  variables: Variable[]
 ): string => {
   return `${query}\n\n${formatVarsOption(variables)}\n\n${orgID}\n\n${url}`
 }
@@ -59,7 +59,7 @@ export interface ValueFetcher {
     url: string,
     orgID: string,
     query: string,
-    variables: VariableAssignment[],
+    variables: Variable[],
     prevSelection: string,
     defaultSelection: string,
     skipCache: boolean,
@@ -81,6 +81,7 @@ export class DefaultValueFetcher implements ValueFetcher {
     abortController
   ) {
     const key = cacheKey(url, orgID, query, variables)
+
     if (!skipCache) {
       const cachedValues = this.cachedValues(
         key,

@@ -13,6 +13,7 @@ export const buildUsedVarsOption = (
   windowVars?: VariableAssignment[]
 ): File => {
   let filteredVars
+
   if (Array.isArray(query)) {
     filteredVars = filterUnusedVarsBasedOnQuery(allVariables, query)
   } else {

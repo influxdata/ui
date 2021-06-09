@@ -1,7 +1,12 @@
+// Libraries
+import {get} from 'lodash'
+
 // Utils
 import {valueFetcher, ValueFetcher} from 'src/variables/utils/ValueFetcher'
 import Deferred from 'src/utils/Deferred'
 import {asAssignment} from 'src/variables/selectors'
+import {findNodes} from 'src/shared/utils/ast'
+import {parseASTIM} from 'src/variables/utils/astim'
 
 // Constants
 import {OPTION_NAME, BOUNDARY_GROUP} from 'src/variables/constants/index'
@@ -12,8 +17,10 @@ import {
   Variable,
   VariableValues,
   ValueSelections,
+  File,
 } from 'src/types'
 import {CancelBox, CancellationError} from 'src/types/promises'
+import {parse} from 'src/external/parser'
 
 export interface VariableNode {
   variable: Variable
@@ -74,14 +81,6 @@ export const createVariableGraph = (
   return Object.values(nodesByID)
 }
 
-export const isInQuery = (query: string, v: Variable): boolean => {
-  const regexp = new RegExp(
-    `${BOUNDARY_GROUP}${OPTION_NAME}.${v.name}${BOUNDARY_GROUP}`
-  )
-
-  return regexp.test(query)
-}
-
 const getVarChildren = (
   {
     arguments: {
@@ -89,7 +88,13 @@ const getVarChildren = (
     },
   }: Variable,
   allVariables: Variable[]
-) => allVariables.filter(maybeChild => isInQuery(query, maybeChild))
+) => {
+  const astim = parseASTIM(query)
+
+  return allVariables.filter(maybeChild => {
+    return astim.hasVariable(maybeChild.name)
+  })
+}
 
 /*
   Collect all ancestors of a node.
@@ -240,10 +245,7 @@ const hydrateVarsHelper = async (
       })
   }
 
-  const descendants = collectDescendants(node)
-  const assignments = descendants
-    .map(node => asAssignment(node.variable))
-    .filter(v => !!v)
+  const descendants = collectDescendants(node).map(node => node.variable)
 
   const {url, orgID} = options
   const {query} = node.variable.arguments.values
@@ -253,7 +255,7 @@ const hydrateVarsHelper = async (
     url,
     orgID,
     query,
-    assignments,
+    descendants,
     null,
     '',
     options.skipCache,

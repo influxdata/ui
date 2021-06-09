@@ -1811,7 +1811,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     cy.getByTestID('cell-context--pause').click()
   })
 
-  describe('clone cell', () => {
+  describe.only('clone cell', () => {
     let otherBoardID: string
     let orgId: string
     let allOrgs: any
@@ -1872,18 +1872,23 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     it('clones a cell to another dashboard and displays it there', () => {
       cy.getByTestID('clone-to-other-dashboard').click()
       cy.getByTestID(`other-dashboard-${otherBoardID}`).click()
+      cy.intercept('PATCH', 'view').as('setView')
       cy.getByTestID('confirm-clone-cell-button').click()
+
+      cy.wait('@setView')
       cy.visit(`${allOrgs}/${orgId}/dashboards/${otherBoardID}`)
-      cy.getByTestID('cell blah (Clone)').should('be.visible')
+      cy.getByTestID('cell blah (clone 1)').should('be.visible')
     })
 
     it('moves a cell to another dashboard and removes it from the current one', () => {
       cy.getByTestID('clone-to-other-dashboard').click()
       cy.getByTestID(`other-dashboard-${otherBoardID}`).click()
       cy.getByTestID('clone-cell-type-toggle').click()
+      cy.intercept('PATCH', 'view').as('setView')
       cy.getByTestID('confirm-clone-cell-button').click()
+      cy.wait('@setView')
       cy.visit(`${allOrgs}/${orgId}/dashboards/${otherBoardID}`)
-      cy.getByTestID('cell blah (Clone)').should('be.visible')
+      cy.getByTestID('cell blah (clone 1)').should('be.visible')
       cy.go('back')
       cy.getByTestID('empty-state--text').should('be.visible')
     })

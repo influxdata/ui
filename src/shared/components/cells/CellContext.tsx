@@ -123,7 +123,7 @@ const CellContext: FC<Props> = ({
               }
               icon={IconFont.Export}
               onHide={onHide}
-              testID="cell-context--pause"
+              testID="cell-context--copy"
             />
           </FeatureFlag>
           <CellContextDangerItem

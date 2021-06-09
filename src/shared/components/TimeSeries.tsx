@@ -384,7 +384,9 @@ const mstp = (state: AppState, props: OwnProps) => {
     ? props.queries.map(q => q.text).filter(t => !!t.trim())
     : []
   const astims = queries.map(query => parseASTIM(query))
-  const vars = getVariables(state).filter(v => astims.some(a => a.hasVariable(v.name)))
+  const vars = getVariables(state).filter(v =>
+    astims.some(a => a.hasVariable(v.name))
+  )
   const variables = [
     ...vars,
     getRangeVariable(TIME_RANGE_START, timeRange),

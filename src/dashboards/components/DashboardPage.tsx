@@ -1,6 +1,6 @@
 // Libraries
 import React, {Component} from 'react'
-import {connect, ConnectedProps, useSelector} from 'react-redux'
+import {connect, ConnectedProps} from 'react-redux'
 import {Switch, Route} from 'react-router-dom'
 
 // Components
@@ -49,7 +49,6 @@ import {
   DASHBOARD_ID,
 } from 'src/shared/constants/routes'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
-import {isAnnotationsModeEnabled} from '../../annotations/selectors'
 
 const dashRoute = `/${ORGS}/${ORG_ID}/${DASHBOARDS}/${DASHBOARD_ID}`
 

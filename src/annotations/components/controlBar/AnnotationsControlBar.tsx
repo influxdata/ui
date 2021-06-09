@@ -12,7 +12,7 @@ import {
 } from '@influxdata/clockface'
 
 import {useSelector} from 'react-redux'
-import {isAnnotationsModeEnabled} from '../../selectors'
+import {isAnnotationsModeEnabled} from 'src/annotations/selectors'
 
 export const AnnotationsControlBar: FC = () => {
   const infoText1 =

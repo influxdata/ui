@@ -38,7 +38,7 @@ type ReduxProps = ConnectedProps<typeof connector>
 type Props = PassedProps & ReduxProps
 
 export class TaskHeaderCard extends PureComponent<
-  Props & RouteComponentProps<{orgID: string, id: string}>
+  Props & RouteComponentProps<{orgID: string; id: string}>
 > {
   public render() {
     const {task} = this.props

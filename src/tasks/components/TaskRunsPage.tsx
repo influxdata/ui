@@ -63,7 +63,7 @@ class TaskRunsPage extends PureComponent<Props, State> {
                   onClick: this.goBackToTasksPage,
                 },
                 {
-                  text: currentTask ? `${currentTask.name}  Runs`: ''
+                  text: currentTask ? `${currentTask.name}  Runs` : '',
                 },
               ]}
             />

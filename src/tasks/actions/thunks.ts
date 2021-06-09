@@ -362,13 +362,7 @@ export const setAllTaskOptionsByID = (taskID: string) => async (
   }
 }
 
-export const goToTasks = () => (
-  dispatch: Dispatch<Action | RouterAction>,
-  // getState: GetState
-) => {
-  // const org = getOrg(getState())
-
-  // dispatch(push(`/orgs/${org.id}/tasks`))
+export const goToTasks = () => (dispatch: Dispatch<Action | RouterAction>) => {
   dispatch(goBack())
 }
 

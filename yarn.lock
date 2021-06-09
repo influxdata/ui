@@ -715,10 +715,10 @@
   resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-2.10.0.tgz#41b915ef8070a95e13eb6e5d8f1b74cc22ae49cc"
   integrity sha512-DCXi76RP8wgcgaT1V0FdzbPQEAMMrB7KgAjKfDvGXHO/iB/S+RG1Wf43/MLVbEO0QnrTrolvkfh8LnV5SsR+ng==
 
-"@influxdata/flux-lsp-browser@^0.5.48":
-  version "0.5.48"
-  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.5.48.tgz#e27c3823e935216a174e325a5562c606b63f2a44"
-  integrity sha512-uXk1vUN6BOtHO8xuipqM0Pu4yFH4yVP7foSkR3fRch1vxww0nO9V2+4kwCGozWL1QcH/tLu5DGYa9pQRGXZcaQ==
+"@influxdata/flux-lsp-browser@^0.5.49":
+  version "0.5.49"
+  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.5.49.tgz#9d2940ad3a987a99fdf708a58c8510c10aedb25a"
+  integrity sha512-LSArwD7nT064hq6T/O50OkQamVd9HwEsi6GD2/cHnYn8TC+JGIE2VXne+w641kiPWRc5TkjNnPhKc5wWG0ITTg==
 
 "@influxdata/flux@^0.5.1":
   version "0.5.1"

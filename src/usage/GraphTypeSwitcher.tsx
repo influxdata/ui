@@ -76,7 +76,7 @@ const GraphTypeSwitcher: FC<OwnProps> = ({
       </Panel.Header>
       <Panel.Body
         className="panel-body--size"
-        style={{height: isXy ? 250 : 200 / length}}
+        style={{height: isXy ? 250 : 300 / length}}
       >
         <View
           loading={error ? RemoteDataState.Error : RemoteDataState.Done}

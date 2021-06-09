@@ -93,7 +93,7 @@ const CellCloneOverlay: FC = () => {
           destinationDashboardID
         )
       } catch (err) {
-        dispatch(cellCopyFailed(err.message))
+        dispatch(notify(cellCopyFailed(err.message)))
         return
       }
     } else {

@@ -1,6 +1,5 @@
 import {allAccessPermissions, toggleSelectedBucket} from './permissions'
 import {CLOUD} from 'src/shared/constants'
-import {Permission} from 'src/types'
 
 // TODO remove all of this when we move to server side authority
 const ossHvhs = [

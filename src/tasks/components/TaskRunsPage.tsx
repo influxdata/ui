@@ -73,7 +73,6 @@ class TaskRunsPage extends PureComponent<Props, State> {
             <TaskHeaderCard
               task={currentTask}
               onActivate={this.handleActivate}
-              onRunTask={this.handleRunTask}
               onEditTask={this.handleEditTask}
             />
           </Page.ControlBar>
@@ -115,18 +114,6 @@ class TaskRunsPage extends PureComponent<Props, State> {
     const {history, currentTask} = this.props
 
     history.push(`orgs/${currentTask.orgID}/tasks`)
-  }
-
-  private handleRunTask = () => {
-    const {onRunTask, match, getRuns} = this.props
-
-  console.log(match)
-    try {
-      onRunTask(match.params.id)
-      getRuns(match.params.id)
-    } catch (error) {
-      console.error(error)
-    }
   }
 
   private handleEditTask = () => {

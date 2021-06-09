@@ -31,7 +31,6 @@ import {Task, AppState} from 'src/types'
 interface PassedProps {
   task: Task
   onActivate: (task: Task) => void
-  onRunTask: () => void
   onEditTask: () => void
 }
 
@@ -39,7 +38,7 @@ type ReduxProps = ConnectedProps<typeof connector>
 type Props = PassedProps & ReduxProps
 
 export class TaskHeaderCard extends PureComponent<
-  Props & RouteComponentProps<{orgID: string}>
+  Props & RouteComponentProps<{orgID: string, id: string}>
 > {
   public render() {
     const {task} = this.props
@@ -116,7 +115,7 @@ export class TaskHeaderCard extends PureComponent<
   private handleRunTask = () => {
     const {onRunTask, match, getRuns} = this.props
     try {
-      onRunTask()
+      onRunTask(match.params.id)
       getRuns(match.params.id)
     } catch (error) {
       console.error(error)

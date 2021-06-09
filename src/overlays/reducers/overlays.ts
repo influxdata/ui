@@ -21,6 +21,7 @@ export type OverlayID =
   | 'add-annotation'
   | 'edit-annotation'
   | 'toggle-auto-refresh'
+  | 'cell-copy-overlay'
 
 export interface OverlayState {
   id: OverlayID | null

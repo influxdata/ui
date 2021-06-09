@@ -1,7 +1,8 @@
 import {allAccessPermissions, toggleSelectedBucket} from './permissions'
-import {Permission} from 'src/types'
+import {CLOUD} from 'src/shared/constants'
 
-const hvhs: Permission[] = [
+// TODO remove all of this when we move to server side authority
+const ossHvhs = [
   {
     action: 'read',
     resource: {
@@ -104,28 +105,28 @@ const hvhs: Permission[] = [
     action: 'read',
     resource: {
       orgID: 'bulldogs',
-      type: 'notificationRules',
+      type: 'notificationEndpoints',
     },
   },
   {
     action: 'write',
     resource: {
       orgID: 'bulldogs',
-      type: 'notificationRules',
+      type: 'notificationEndpoints',
     },
   },
   {
     action: 'read',
     resource: {
       orgID: 'bulldogs',
-      type: 'notificationEndpoints',
+      type: 'notificationRules',
     },
   },
   {
     action: 'write',
     resource: {
       orgID: 'bulldogs',
-      type: 'notificationEndpoints',
+      type: 'notificationRules',
     },
   },
   {
@@ -139,28 +140,28 @@ const hvhs: Permission[] = [
     action: 'read',
     resource: {
       orgID: 'bulldogs',
-      type: 'secrets',
+      type: 'scrapers',
     },
   },
   {
     action: 'write',
     resource: {
       orgID: 'bulldogs',
-      type: 'secrets',
+      type: 'scrapers',
     },
   },
   {
     action: 'read',
     resource: {
       orgID: 'bulldogs',
-      type: 'scrapers',
+      type: 'secrets',
     },
   },
   {
     action: 'write',
     resource: {
       orgID: 'bulldogs',
-      type: 'scrapers',
+      type: 'secrets',
     },
   },
   {
@@ -248,9 +249,274 @@ const hvhs: Permission[] = [
     },
   },
 ]
+const cloudHvhs = [
+  {
+    action: 'read',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'annotations',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'annotations',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'authorizations',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'authorizations',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'buckets',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'buckets',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'checks',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'checks',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'dashboards',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'dashboards',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'dbrp',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'dbrp',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'documents',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'documents',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'flows',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'flows',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'functions',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'functions',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'labels',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'labels',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'notificationEndpoints',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'notificationEndpoints',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'notificationRules',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'notificationRules',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      id: 'bulldogs',
+      type: 'orgs',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'secrets',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'secrets',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'tasks',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'tasks',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'telegrafs',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'telegrafs',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      id: 'mario',
+      type: 'users',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      id: 'mario',
+      type: 'users',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'variables',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'variables',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'views',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'views',
+    },
+  },
+]
 
 test('all-access tokens/authorizations production test', () => {
-  expect(allAccessPermissions('bulldogs', 'mario')).toMatchObject(hvhs)
+  if (CLOUD) {
+    expect(allAccessPermissions('bulldogs', 'mario')).toMatchObject(cloudHvhs)
+  } else {
+    expect(allAccessPermissions('bulldogs', 'mario')).toMatchObject(ossHvhs)
+  }
 })
 
 test('toggleSelectedBucket test', () => {

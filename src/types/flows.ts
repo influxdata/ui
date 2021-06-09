@@ -61,7 +61,7 @@ interface InternalTable extends Table {
   columns?: Columns
 }
 
-interface InternalFromFluxResult extends FromFluxResult {
+export interface InternalFromFluxResult extends FromFluxResult {
   table: InternalTable
 }
 

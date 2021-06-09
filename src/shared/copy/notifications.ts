@@ -245,6 +245,12 @@ export const dashboardGetFailed = (
   message: `Failed to load dashboard with id "${dashboardID}": ${error}`,
 })
 
+export const dashboardsGetFailed = (error: string): Notification => ({
+  ...defaultErrorNotification,
+  icon: IconFont.DashH,
+  message: `Failed to retrieve dashboards: ${error}`,
+})
+
 export const dashboardUpdateFailed = (): Notification => ({
   ...defaultErrorNotification,
   icon: IconFont.DashH,
@@ -299,6 +305,17 @@ export const cellAddFailed = (
 ): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to add cell: ${message}`,
+})
+
+export const cellCloneSuccess = (
+  destinationDashboardID: string,
+  operationType: string,
+  cellName?: string
+): Notification => ({
+  ...defaultSuccessNotification,
+  icon: IconFont.DashH,
+  message: `Cell ${cellName ??
+    ''} successfully ${operationType} to dashboard with id ${destinationDashboardID}`,
 })
 
 export const cellCopyFailed = (): Notification => ({

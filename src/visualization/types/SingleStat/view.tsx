@@ -25,7 +25,7 @@ import {AppSettingContext} from 'src/shared/contexts/app'
 import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
 
 // Selectors
-import {isWriteModeEnabled} from 'src/annotations/selectors'
+import {isAnnotationsModeEnabled} from 'src/annotations/selectors'
 
 interface Props extends VisualizationProps {
   properties: SingleStatViewProperties
@@ -36,7 +36,7 @@ const SingleStat: FC<Props> = ({properties, result}) => {
 
   const {timeZone} = useContext(AppSettingContext)
   const dispatch = useDispatch()
-  const inAnnotationWriteMode = useSelector(isWriteModeEnabled)
+  const inAnnotationMode = useSelector(isAnnotationsModeEnabled)
 
   if (isFlagEnabled('useGiraffeGraphs')) {
     const latestValues = getLatestValues(result.table)
@@ -73,7 +73,7 @@ const SingleStat: FC<Props> = ({properties, result}) => {
       ],
     }
 
-    if (inAnnotationWriteMode && isFlagEnabled('annotations')) {
+    if (inAnnotationMode && isFlagEnabled('annotations')) {
       config.interactionHandlers = {
         singleClick: () => {
           dispatch(handleUnsupportedGraphType('Single Stat'))

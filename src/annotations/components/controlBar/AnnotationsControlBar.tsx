@@ -1,103 +1,53 @@
 // Libraries
 import React, {FC} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {
-  ComponentColor,
   ComponentSize,
+  FlexBox,
   FlexBoxChild,
   InfluxColors,
-  InputLabel,
-  InputToggleType,
   JustifyContent,
   TextBlock,
-  Toggle,
 } from '@influxdata/clockface'
-import ErrorBoundary from 'src/shared/components/ErrorBoundary'
-import Toolbar from 'src/shared/components/toolbar/Toolbar'
-import {
-  setAnnotationsVisibility,
-  setAnnotationsWriteMode,
-} from 'src/annotations/actions/creators'
 
-// Selectors
-import {
-  isWriteModeEnabled,
-  selectAreAnnotationsVisible,
-} from 'src/annotations/selectors'
-
-// Utils
-import {event} from 'src/cloud/utils/reporting'
+import {useSelector} from 'react-redux'
+import {isAnnotationsModeEnabled} from 'src/annotations/selectors'
 
 export const AnnotationsControlBar: FC = () => {
-  const annotationsAreVisible = useSelector(selectAreAnnotationsVisible)
-  const inWriteMode = useSelector(isWriteModeEnabled)
+  const infoText1 =
+    'Click on a graph to create a point annotation, click + shift + drag to create a range annotation.'
 
-  const dispatch = useDispatch()
+  const infoText2 =
+    'Press the annotations button again to turn off annotation mode'
 
-  const changeWriteMode = () => {
-    event('dashboard.annotations.change_write_mode.toggle', {
-      newIsWriteModeEnabled: (!inWriteMode).toString(),
-    })
-    dispatch(setAnnotationsWriteMode(!inWriteMode))
+  const showAnnotationBar = useSelector(isAnnotationsModeEnabled)
+
+  if (!showAnnotationBar) {
+    return null
   }
-
-  const changeAnnotationVisibility = () => {
-    event('dashboard.annotations.change_visibility_mode.toggle', {
-      newAnnotationsAreVisible: (!annotationsAreVisible).toString(),
-    })
-    dispatch(setAnnotationsVisibility(!annotationsAreVisible))
-  }
-
+  // make both textblocks have 'inline' style to get them on the same line; else there is a line break.
+  // using two elements to put space between them.
   return (
-    <ErrorBoundary>
-      <Toolbar
-        testID="annotations-control-bar"
-        justifyContent={JustifyContent.FlexEnd}
-        margin={ComponentSize.Large}
-      >
-        <FlexBoxChild grow={0}>
-          <TextBlock
-            backgroundColor={InfluxColors.Obsidian}
-            textColor={InfluxColors.Mist}
-            text="*Currently, we only support annotations on Plots of type 'Graph', 'Graph + Single Stat', and 'Band'"
-          />
-        </FlexBoxChild>
-        <FlexBoxChild grow={1} />
-        <FlexBoxChild grow={0}>
-          <Toggle
-            style={{marginRight: 20}}
-            id="enable-annotation-visibility"
-            type={InputToggleType.Checkbox}
-            checked={annotationsAreVisible}
-            onChange={changeAnnotationVisibility}
-            color={ComponentColor.Primary}
-            size={ComponentSize.ExtraSmall}
-            testID="annotations-visibility-toggle"
-          >
-            <InputLabel htmlFor="enable-annotation-visibility">
-              Show Annotations
-            </InputLabel>
-          </Toggle>
-        </FlexBoxChild>
-        <FlexBoxChild grow={0}>
-          <Toggle
-            style={{marginRight: 20}}
-            id="enable-annotation-mode"
-            type={InputToggleType.Checkbox}
-            checked={inWriteMode}
-            onChange={changeWriteMode}
-            color={ComponentColor.Primary}
-            size={ComponentSize.ExtraSmall}
-            testID="annotations-write-mode-toggle"
-          >
-            <InputLabel htmlFor="enable-annotation-mode">
-              Enable Write Mode
-            </InputLabel>
-          </Toggle>
-        </FlexBoxChild>
-      </Toolbar>
-    </ErrorBoundary>
+    <FlexBox
+      testID="annotations-control-bar"
+      justifyContent={JustifyContent.FlexStart}
+      margin={ComponentSize.Large}
+    >
+      <FlexBoxChild grow={0}>
+        <TextBlock
+          backgroundColor={InfluxColors.Obsidian}
+          textColor={InfluxColors.Mist}
+          text={infoText1}
+          style={{display: 'inline'}}
+        />
+        <TextBlock
+          backgroundColor={InfluxColors.Obsidian}
+          textColor={InfluxColors.Mist}
+          text={infoText2}
+          style={{display: 'inline'}}
+        />
+      </FlexBoxChild>
+    </FlexBox>
   )
 }

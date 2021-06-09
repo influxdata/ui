@@ -21,7 +21,7 @@ export default class PageBreadcrumbs extends PureComponent<Props> {
     let text: string = page.text
 
     if (!isItTheLastPage) {
-        text += ' > '
+      text += ' > '
     }
 
     const styles = {marginRight: 10}

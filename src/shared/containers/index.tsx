@@ -44,7 +44,7 @@ export const TelegrafPluginsPage = lazy(() =>
   import('src/writeData/containers/TelegrafPluginsPage')
 )
 export const SecretsIndex = lazy(() =>
-    import('src/secrets/containers/SecretsIndex')
+  import('src/secrets/containers/SecretsIndex')
 )
 export const VariablesIndex = lazy(() =>
   import('src/variables/containers/VariablesIndex')

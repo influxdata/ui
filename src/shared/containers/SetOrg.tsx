@@ -227,11 +227,11 @@ const SetOrg: FC<Props> = ({
             component={LabelsIndex}
           />
           {isFlagEnabled('secretsUI') && (
-              <Route
-                  exact
-                  path={`${orgPath}/${SETTINGS}/${SECRETS}`}
-                  component={SecretsIndex}
-              />
+            <Route
+              exact
+              path={`${orgPath}/${SETTINGS}/${SECRETS}`}
+              component={SecretsIndex}
+            />
           )}
           <Route
             exact

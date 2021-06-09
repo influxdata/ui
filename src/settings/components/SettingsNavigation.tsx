@@ -46,7 +46,7 @@ class SettingsNavigation extends PureComponent<Props> {
     if (isFlagEnabled('secretsUI')) {
       tabs.push({
         text: 'Secrets',
-        id: 'secrets'
+        id: 'secrets',
       })
     }
 

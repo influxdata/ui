@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
-import {useSelector, connect} from 'react-redux'
+import {useSelector} from 'react-redux'
 
 // Components
 import SettingsTabbedPage from 'src/settings/components/SettingsTabbedPage'

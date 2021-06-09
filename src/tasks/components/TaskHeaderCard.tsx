@@ -54,12 +54,12 @@ export class TaskHeaderCard extends PureComponent<
         alignItems={AlignItems.Center}
         margin={ComponentSize.Large}
         direction={FlexDirection.Row}
+        justifyContent={JustifyContent.SpaceBetween}
       >
         <FlexBox
           alignItems={AlignItems.FlexStart}
           direction={FlexDirection.Column}
           margin={ComponentSize.Large}
-          style={{width: '50%'}}
         >
           <ResourceCard.Name name={task.name} testID="task-card--name" />
           <ResourceCard.Meta>
@@ -80,7 +80,6 @@ export class TaskHeaderCard extends PureComponent<
         <FlexBox
           justifyContent={JustifyContent.FlexEnd}
           direction={FlexDirection.Row}
-          style={{width: '50%'}}
         >
           <Button
             onClick={this.handleRunTask}

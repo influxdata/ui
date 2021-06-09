@@ -81,7 +81,7 @@ class DashboardPage extends Component<Props> {
                 <RateLimitAlert alertOnly={true} />
                 <VariablesControlBar />
                 <FeatureFlag name="annotations">
-                  {<AnnotationsControlBar />}
+                  <AnnotationsControlBar />
                 </FeatureFlag>
                 <ErrorBoundary>
                   <DashboardComponent manualRefresh={manualRefresh} />

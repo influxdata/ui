@@ -54,7 +54,9 @@ describe('Dashboard', () => {
     // Create View cell
     cy.getByTestID('add-cell--button').click()
     cy.getByTestID('save-cell--button').click()
-    cy.getByTestID('cell-context--toggle').click()
+    cy.getByTestID('cell-context--toggle')
+      .last()
+      .click()
     cy.getByTestID('cell-context--configure').click()
 
     // Rename View cell
@@ -189,7 +191,9 @@ describe('Dashboard', () => {
     cy.wait(200)
 
     // Clone View cell
-    cy.getByTestID('cell-context--toggle').click()
+    cy.getByTestID('cell-context--toggle')
+      .last()
+      .click()
     cy.getByTestID('cell-context--clone').click()
 
     // Ensure that the clone exists
@@ -200,7 +204,9 @@ describe('Dashboard', () => {
       .click()
     cy.getByTestID('cell-context--delete').click()
     cy.getByTestID('cell-context--delete-confirm').click()
-    cy.getByTestID('cell-context--toggle').click()
+    cy.getByTestID('cell-context--toggle')
+      .last()
+      .click()
     cy.getByTestID('cell-context--delete').click()
     cy.getByTestID('cell-context--delete-confirm').click()
 
@@ -229,7 +235,9 @@ describe('Dashboard', () => {
         // cellContent is yielded as a cutesy phrase from src/shared/copy/cell
 
         // open Cell Editor Overlay
-        cy.getByTestID('cell-context--toggle').click()
+        cy.getByTestID('cell-context--toggle')
+          .last()
+          .click()
         cy.getByTestID('cell-context--configure').click()
 
         // Cancel edit
@@ -454,7 +462,9 @@ describe('Dashboard', () => {
               // end typeAhead section; rest is normal behavior
 
               // open VEO
-              cy.getByTestID('cell-context--toggle').click()
+              cy.getByTestID('cell-context--toggle')
+                .last()
+                .click()
               cy.getByTestID('cell-context--configure').click()
 
               // selected value in cell context is 2nd value (making sure it reverts back!)
@@ -521,7 +531,9 @@ describe('Dashboard', () => {
                 .should('equal', 'v2')
 
               // open VEO
-              cy.getByTestID('cell-context--toggle').click()
+              cy.getByTestID('cell-context--toggle')
+                .last()
+                .click()
               cy.getByTestID('cell-context--configure').click()
               cy.getByTestID('toolbar-tab').should('be.visible')
 
@@ -558,7 +570,9 @@ describe('Dashboard', () => {
                 .pipe(getSelectedVariable(dashboard.id, 2))
                 .should('equal', 'v1')
 
-              cy.getByTestID('cell-context--toggle').click()
+              cy.getByTestID('cell-context--toggle')
+                .last()
+                .click()
               cy.getByTestID('cell-context--delete').click()
               cy.getByTestID('cell-context--delete-confirm').click()
 
@@ -1302,7 +1316,9 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       }
     })
     cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('cell-context--toggle').click()
+      cy.getByTestID('cell-context--toggle')
+        .last()
+        .click()
     })
     cy.getByTestID('cell-context--refresh').click()
     cy.wait('@refreshCellQuery')
@@ -1520,7 +1536,9 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
 
       cy.wait('@refreshQuery')
 
-      cy.getByTestID('cell-context--toggle').click()
+      cy.getByTestID('cell-context--toggle')
+        .last()
+        .click()
       cy.getByTestID('cell-context--configure').click()
 
       cy.wait(5000)
@@ -1670,7 +1688,9 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       }
     })
     cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('cell-context--toggle').click()
+      cy.getByTestID('cell-context--toggle')
+        .last()
+        .click()
     })
     cy.getByTestID('cell-context--pause').click()
 
@@ -1770,7 +1790,9 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       }
     })
     cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('cell-context--toggle').click()
+      cy.getByTestID('cell-context--toggle')
+        .last()
+        .click()
     })
     cy.getByTestID('cell-context--pause').click()
 
@@ -1782,7 +1804,9 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
 
     cy.wait('@secondCellQuery')
     cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('cell-context--toggle').click()
+      cy.getByTestID('cell-context--toggle')
+        .last()
+        .click()
     })
     cy.getByTestID('cell-context--pause').click()
   })

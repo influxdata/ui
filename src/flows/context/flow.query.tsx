@@ -4,7 +4,7 @@ import {getVariables} from 'src/variables/selectors'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {RunModeContext, RunMode} from 'src/flows/context/runMode'
 import {ResultsContext} from 'src/flows/context/results'
-import {QueryContext} from 'src/flows/context/query'
+import {QueryContext, simplify} from 'src/flows/context/query'
 import {event} from 'src/cloud/utils/reporting'
 import {FluxResult} from 'src/types/flows'
 import {PIPE_DEFINITIONS} from 'src/flows'
@@ -43,6 +43,7 @@ export interface FlowQueryContextType {
   generateMap: (withSideEffects?: boolean) => Stage[]
   query: (text: string) => Promise<FluxResult>
   basic: (text: string) => any
+  simplify: (text: string) => string
   queryAll: () => void
   getPanelQueries: (id: string, withSideEffects?: boolean) => PanelQueries
   status: RemoteDataState
@@ -53,6 +54,7 @@ export const DEFAULT_CONTEXT: FlowQueryContextType = {
   generateMap: () => [],
   query: (_: string) => Promise.resolve({} as FluxResult),
   basic: (_: string) => {},
+  simplify: (_: string) => '',
   queryAll: () => {},
   getPanelQueries: (_, _a) => ({source: '', visual: ''}),
   status: RemoteDataState.NotStarted,
@@ -329,6 +331,10 @@ export const FlowQueryProvider: FC = ({children}) => {
       })
   }
 
+  const simple = (text: string) => {
+    return simplify(text, vars)
+  }
+
   if (!flow) {
     return (
       <EmptyGraphMessage
@@ -347,6 +353,7 @@ export const FlowQueryProvider: FC = ({children}) => {
       value={{
         query,
         basic,
+        simplify: simple,
         generateMap,
         queryAll,
         getPanelQueries,

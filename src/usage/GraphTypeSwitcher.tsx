@@ -2,7 +2,6 @@
 import React, {FC} from 'react'
 import {useSelector} from 'react-redux'
 import {Panel, ComponentSize, InfluxColors} from '@influxdata/clockface'
-import {fromFlux} from '@influxdata/giraffe'
 
 // Components
 import {View} from 'src/visualization'
@@ -15,18 +14,19 @@ import {
   SingleStatViewProperties,
   RemoteDataState,
   XYViewProperties,
+  InternalFromFluxResult,
 } from 'src/types'
 
 interface OwnProps {
   graphInfo: any
-  csv: string
+  fromFluxResult: InternalFromFluxResult
   length?: number
 }
 
 const GENERIC_PROPERTY_DEFAULTS = {
   colors: [],
   queries: [],
-  note: 'No Data to Display',
+  note: '',
   showNoteWhenEmpty: true,
   prefix: '',
   suffix: '',
@@ -34,9 +34,11 @@ const GENERIC_PROPERTY_DEFAULTS = {
   tickSuffix: '',
 }
 
-const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv, length = 1}) => {
-  const giraffeResult = fromFlux(csv)
-
+const GraphTypeSwitcher: FC<OwnProps> = ({
+  graphInfo,
+  fromFluxResult,
+  length = 1,
+}) => {
   const timeRange = useSelector(getTimeRangeWithTimezone)
 
   const singleStatProperties: SingleStatViewProperties = {
@@ -44,7 +46,7 @@ const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv, length = 1}) => {
     type: 'single-stat',
     shape: 'chronograf-v2',
     suffix: ` ${graphInfo?.units ?? ''}`,
-    decimalPlaces: {isEnforced: true, digits: 2},
+    decimalPlaces: {isEnforced: false, digits: 0},
   }
 
   const xyProperties: XYViewProperties = {
@@ -59,7 +61,9 @@ const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv, length = 1}) => {
     geom: 'line',
   }
 
-  const isSparkline = graphInfo?.type === 'sparkline'
+  const isXy = graphInfo?.type === 'xy'
+
+  const error = fromFluxResult?.table?.columns?.error?.data?.[0]
 
   return (
     <Panel
@@ -72,14 +76,14 @@ const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv, length = 1}) => {
       </Panel.Header>
       <Panel.Body
         className="panel-body--size"
-        style={{height: isSparkline ? 250 : 200 / length}}
+        style={{height: isXy ? 250 : 300 / length}}
       >
         <View
-          loading={RemoteDataState.Done}
-          error=""
+          loading={error ? RemoteDataState.Error : RemoteDataState.Done}
+          error={`${error ?? ''}`}
           isInitial={false}
-          properties={isSparkline ? xyProperties : singleStatProperties}
-          result={giraffeResult}
+          properties={isXy ? xyProperties : singleStatProperties}
+          result={fromFluxResult}
           timeRange={timeRange}
         />
       </Panel.Body>

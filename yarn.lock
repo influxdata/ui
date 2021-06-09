@@ -710,25 +710,25 @@
     debug "^3.1.0"
     lodash.once "^4.1.1"
 
-"@influxdata/clockface@^2.8.0":
-  version "2.8.0"
-  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-2.8.0.tgz#92327287aeced602ff20819b10cb23380b8fec0e"
-  integrity sha512-EQ/t4OX6pq2LvNhc/ba0wAT0enfH165+Ih/86g3nwk0BFNmRIoNmZ2osuCgw/pyslX+5xxdPaEfMe3lsXmXriw==
+"@influxdata/clockface@^2.10.0":
+  version "2.10.0"
+  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-2.10.0.tgz#41b915ef8070a95e13eb6e5d8f1b74cc22ae49cc"
+  integrity sha512-DCXi76RP8wgcgaT1V0FdzbPQEAMMrB7KgAjKfDvGXHO/iB/S+RG1Wf43/MLVbEO0QnrTrolvkfh8LnV5SsR+ng==
 
-"@influxdata/flux-lsp-browser@^0.5.48":
-  version "0.5.48"
-  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.5.48.tgz#e27c3823e935216a174e325a5562c606b63f2a44"
-  integrity sha512-uXk1vUN6BOtHO8xuipqM0Pu4yFH4yVP7foSkR3fRch1vxww0nO9V2+4kwCGozWL1QcH/tLu5DGYa9pQRGXZcaQ==
+"@influxdata/flux-lsp-browser@^0.5.49":
+  version "0.5.49"
+  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.5.49.tgz#9d2940ad3a987a99fdf708a58c8510c10aedb25a"
+  integrity sha512-LSArwD7nT064hq6T/O50OkQamVd9HwEsi6GD2/cHnYn8TC+JGIE2VXne+w641kiPWRc5TkjNnPhKc5wWG0ITTg==
 
 "@influxdata/flux@^0.5.1":
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/@influxdata/flux/-/flux-0.5.1.tgz#e39e7a7af9163fc9494422c8fed77f3ae1b68f56"
   integrity sha512-GHlkXBhSdJ2m56JzDkbnKPAqLj3/lexPooacu14AWTO4f2sDGLmzM7r0AxgdtU1M2x7EXNBwgGOI5EOAdN6mkw==
 
-"@influxdata/giraffe@^2.12.0":
-  version "2.12.0"
-  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.12.0.tgz#5eb7fcda226896504d02c068f7810b8eed0887d2"
-  integrity sha512-yN7hSKCHlGKRKpBtqAqnaP1Lk5vBPTNIJUtwtGFUS2niCR+K83s02oNzgHz4Jk1JNExeZmEOtg9uzeRsDT9csg==
+"@influxdata/giraffe@^2.13.1":
+  version "2.13.1"
+  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.13.1.tgz#bc4cfcab19082122a12c80182fbe07bc92f8bcb0"
+  integrity sha512-lkwSGfeJHkCzi4ptngi3NqA+fREMjJdeKCNUC6GxTKg4j5anODLKjwW4SSEDFK68A0AegawuUkY/DIjuMwBZ5A==
   dependencies:
     merge-images "^2.0.0"
 
@@ -1906,9 +1906,9 @@ async-each@^1.0.1:
   integrity sha512-z/WhQ5FPySLdvREByI2vZiTWwCnF0moMJ1hK9YQwDTHKh6I7/uSckMetoRGb5UBZPC1z0jlw+n/XCgjeH7y1AQ==
 
 async-limiter@~1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/async-limiter/-/async-limiter-1.0.0.tgz#78faed8c3d074ab81f22b4e985d79e8738f720f8"
-  integrity sha512-jp/uFnooOiO+L211eZOoSyzpOITMXx1rBITauYykG3BRYPu8h0UcxsPNB04RR5vo4Tyz3+ay17tR6JVf9qzYWg==
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/async-limiter/-/async-limiter-1.0.1.tgz#dd379e94f0db8310b08291f9d64c3209766617fd"
+  integrity sha512-csOlWGAcRFJaI6m+F2WKdnMKr4HhdhFVBk0H/QbJFMCr+uO2kwohwXQPxw/9OCxp05r5ghVBFSyioixx3gfkNQ==
 
 async@^2.5.0, async@^2.6.2:
   version "2.6.3"
@@ -8923,9 +8923,9 @@ querystring@0.2.0:
   integrity sha1-sgmEkgO7Jd+CDadW50cAWHhSFiA=
 
 querystringify@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/querystringify/-/querystringify-2.1.1.tgz#60e5a5fd64a7f8bfa4d2ab2ed6fdf4c85bad154e"
-  integrity sha512-w7fLxIRCRT7U8Qu53jQnJyPkYZIaR4n5151KMfcJlO/A9397Wxb1amJvROTK6TOnp7PfoAmg/qXiNHI+08jRfA==
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/querystringify/-/querystringify-2.2.0.tgz#3345941b4153cb9d082d8eee4cda2016a9aef7f6"
+  integrity sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==
 
 raf-schd@^4.0.2:
   version "4.0.2"
@@ -11186,9 +11186,9 @@ url-join@^4.0.1:
   integrity sha512-jk1+QP6ZJqyOiuEI9AEWQfju/nB2Pw466kbA0LEZljHwKeMgd9WrAEgEGxjPDD2+TNbbb37rTyhEfrCXfuKXnA==
 
 url-parse@^1.4.3:
-  version "1.4.7"
-  resolved "https://registry.yarnpkg.com/url-parse/-/url-parse-1.4.7.tgz#a8a83535e8c00a316e403a5db4ac1b9b853ae278"
-  integrity sha512-d3uaVyzDB9tQoSXFvuSUNFibTd9zxd2bkVrDRvF5TmvWWQwqE4lgYJ5m+x1DbecWkw+LK4RNl2CU1hHuOKPVlg==
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/url-parse/-/url-parse-1.5.1.tgz#d5fa9890af8a5e1f274a2c98376510f6425f6e3b"
+  integrity sha512-HOfCOUJt7iSYzEx/UqgtwKRMC6EU91NFhsCHMv9oM03VJcVo2Qrp8T8kI9D7amFf1cu+/3CEhgb3rF9zL7k85Q==
   dependencies:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
@@ -11710,9 +11710,9 @@ write@1.0.3:
     mkdirp "^0.5.1"
 
 ws@^5.2.0:
-  version "5.2.2"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-5.2.2.tgz#dffef14866b8e8dc9133582514d1befaf96e980f"
-  integrity sha512-jaHFD6PFv6UgoIVda6qZllptQsMlDEJkTQcybzzXDYM1XO9Y8em691FGMPmM46WGyLU4z9KMgQN+qrux/nhlHA==
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-5.2.3.tgz#05541053414921bc29c63bee14b8b0dd50b07b3d"
+  integrity sha512-jZArVERrMsKUatIdnLzqvcfydI85dvd/Fp1u/VOpfdDWQ4c9qWXe+VIeAbQ5FrDwciAkr+lzofXLz3Kuf26AOA==
   dependencies:
     async-limiter "~1.0.0"
 

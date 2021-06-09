@@ -89,6 +89,7 @@ const BandPlot: FC<Props> = ({
   const tooltipOrientationThreshold = properties.legendOrientationThreshold
 
   const tooltipColorize = properties.legendColorizeRows
+  const tooltipHide = properties.legendHide
 
   const storedXDomain = useMemo(() => parseXBounds(properties.axes.x.bounds), [
     properties.axes.x.bounds,
@@ -184,6 +185,7 @@ const BandPlot: FC<Props> = ({
     legendOpacity: tooltipOpacity,
     legendOrientationThreshold: tooltipOrientationThreshold,
     legendColorizeRows: tooltipColorize,
+    legendHide: tooltipHide,
     staticLegend,
     valueFormatters: {
       [xColumn]: xFormatter,

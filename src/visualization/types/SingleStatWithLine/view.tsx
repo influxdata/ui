@@ -75,6 +75,7 @@ const SingleStatWithLine: FC<Props> = ({
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
   const tooltipColorize = properties.legendColorizeRows
+  const tooltipHide = properties.legendHide
   const tooltipOrientationThreshold = properties.legendOrientationThreshold
   const staticLegend = useStaticLegend(properties)
 
@@ -213,6 +214,7 @@ const SingleStatWithLine: FC<Props> = ({
     legendOpacity: tooltipOpacity,
     legendOrientationThreshold: tooltipOrientationThreshold,
     legendColorizeRows: tooltipColorize,
+    legendHide: tooltipHide,
     staticLegend,
     valueFormatters: {
       [xColumn]: xFormatter,

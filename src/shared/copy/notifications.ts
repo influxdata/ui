@@ -318,9 +318,9 @@ export const cellCloneSuccess = (
     ''} successfully ${operationType} to dashboard with id ${destinationDashboardID}`,
 })
 
-export const cellCopyFailed = (): Notification => ({
+export const cellCopyFailed = (err?: string): Notification => ({
   ...defaultErrorNotification,
-  message: 'Cell copy failed',
+  message: `Cell copy failed: ${err}`,
 })
 
 export const cellUpdateFailed = (): Notification => ({

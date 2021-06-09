@@ -17,7 +17,10 @@ import {
 // Actions
 import {createCellWithView, deleteCellAndView} from 'src/cells/actions/thunks'
 import {getOverlayParams} from 'src/overlays/selectors'
-import {getDashboardIDs} from 'src/dashboards/utils/getDashboardIds'
+import {
+  getDashboardIDs,
+  getNewDashboardViewNames,
+} from 'src/dashboards/utils/getDashboardData'
 import {getOrg} from 'src/organizations/selectors'
 
 // Types
@@ -30,7 +33,10 @@ import {notify} from 'src/shared/actions/notifications'
 import {
   dashboardsGetFailed,
   cellCloneSuccess,
+  cellCopyFailed,
 } from 'src/shared/copy/notifications'
+
+import {incrementCloneName} from 'src/utils/naming'
 
 const CellCloneOverlay: FC = () => {
   const [otherDashboards, setOtherDashboards] = useState<Dashboard[]>([])
@@ -40,6 +46,9 @@ const CellCloneOverlay: FC = () => {
   const currentDashboardID = useSelector(
     (state: AppState) => state.currentDashboard.id
   )
+
+  const allViews =
+    useSelector((state: AppState) => state.resources.views.byID) ?? {}
 
   useEffect(() => {
     getDashboardIDs(orgID)
@@ -71,12 +80,44 @@ const CellCloneOverlay: FC = () => {
     dispatch(deleteCellAndView(currentDashboardID, cell.id, view.id))
   }
 
-  const copyCellToDashboard = () => {
+  const copyCellToDashboard = async () => {
+    let destinationViewNames
+    const viewsForDashboard = Object.values(allViews)?.filter(
+      view => view.dashboardID === destinationDashboardID
+    )
+
+    if (!viewsForDashboard?.length) {
+      try {
+        destinationViewNames = await getNewDashboardViewNames(
+          destinationDashboardID
+        )
+      } catch (err) {
+        dispatch(cellCopyFailed(err.message))
+        return
+      }
+    } else {
+      destinationViewNames = viewsForDashboard.map(v => v.name)
+    }
+
     dispatch(
       createCellWithView(
         destinationDashboardID,
-        {...view, dashboardID: destinationDashboardID},
-        {...cell, dashboardID: destinationDashboardID},
+        {
+          ...view,
+          dashboardID: destinationDashboardID,
+          name: incrementCloneName(
+            destinationViewNames ?? [view.name],
+            view.name
+          ),
+        },
+        {
+          ...cell,
+          dashboardID: destinationDashboardID,
+          name: incrementCloneName(
+            destinationViewNames ?? [view.name],
+            view.name
+          ),
+        },
         null,
         null,
         true

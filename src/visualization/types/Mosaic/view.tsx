@@ -29,7 +29,7 @@ import {MosaicViewProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
 
 // Selectors
-import {isWriteModeEnabled} from 'src/annotations/selectors'
+import {isAnnotationsModeEnabled} from 'src/annotations/selectors'
 
 interface Props extends VisualizationProps {
   properties: MosaicViewProperties
@@ -63,7 +63,7 @@ const MosaicPlot: FunctionComponent<Props> = ({
   )
 
   const dispatch = useDispatch()
-  const inAnnotationWriteMode = useSelector(isWriteModeEnabled)
+  const inAnnotationMode = useSelector(isAnnotationsModeEnabled)
 
   const isValidView =
     xColumn &&
@@ -119,7 +119,7 @@ const MosaicPlot: FunctionComponent<Props> = ({
     ],
   }
 
-  if (inAnnotationWriteMode && isFlagEnabled('annotations')) {
+  if (inAnnotationMode && isFlagEnabled('annotations')) {
     config.interactionHandlers = {
       singleClick: () => {
         dispatch(handleUnsupportedGraphType('Mosaic'))

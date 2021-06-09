@@ -4,10 +4,7 @@ import React, {FC, useMemo, useContext} from 'react'
 import {Config, Plot} from '@influxdata/giraffe'
 
 // Redux
-import {
-  isWriteModeEnabled,
-  selectAreAnnotationsVisible,
-} from 'src/annotations/selectors'
+import {isAnnotationsModeEnabled} from 'src/annotations/selectors'
 
 import {useDispatch, useSelector} from 'react-redux'
 
@@ -148,8 +145,7 @@ const BandPlot: FC<Props> = ({
   // is in a dashboard or in configuration/single cell popout mode
   // would need to add the annotation control bar to the VEOHeader to get access to the controls,
   // which are currently global values, not per dashboard
-  const inAnnotationWriteMode = useSelector(isWriteModeEnabled)
-  const annotationsAreVisible = useSelector(selectAreAnnotationsVisible)
+  const inAnnotationMode = useSelector(isAnnotationsModeEnabled)
 
   const xFormatter = getFormatter(result.table.getColumnType(xColumn), {
     prefix: properties.axes.x.prefix,
@@ -216,13 +212,12 @@ const BandPlot: FC<Props> = ({
 
   addAnnotationLayer(
     config,
-    inAnnotationWriteMode,
+    inAnnotationMode,
     cellID,
     xColumn,
     yColumn,
     groupKey,
     annotations,
-    annotationsAreVisible,
     dispatch,
     'band'
   )

@@ -29,7 +29,7 @@ import {ScatterViewProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
 
 // Selectors
-import {isWriteModeEnabled} from 'src/annotations/selectors'
+import {isAnnotationsModeEnabled} from 'src/annotations/selectors'
 
 interface Props extends VisualizationProps {
   properties: ScatterViewProperties
@@ -73,7 +73,7 @@ const ScatterPlot: FunctionComponent<Props> = ({
   )
 
   const dispatch = useDispatch()
-  const inAnnotationWriteMode = useSelector(isWriteModeEnabled)
+  const inAnnotationMode = useSelector(isAnnotationsModeEnabled)
 
   const isValidView =
     xColumn &&
@@ -139,7 +139,7 @@ const ScatterPlot: FunctionComponent<Props> = ({
     ],
   }
 
-  if (inAnnotationWriteMode && isFlagEnabled('annotations')) {
+  if (inAnnotationMode && isFlagEnabled('annotations')) {
     config.interactionHandlers = {
       singleClick: () => {
         dispatch(handleUnsupportedGraphType('Scatter Plot'))

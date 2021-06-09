@@ -15,10 +15,7 @@ import {
 } from '@influxdata/giraffe'
 
 // Redux
-import {
-  isWriteModeEnabled,
-  selectAreAnnotationsVisible,
-} from 'src/annotations/selectors'
+import {isAnnotationsModeEnabled} from 'src/annotations/selectors'
 
 // Component
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
@@ -86,8 +83,7 @@ const SingleStatWithLine: FC<Props> = ({
   // is in a dashboard or in configuration/single cell popout mode
   // would need to add the annotation control bar to the VEOHeader to get access to the controls,
   // which are currently global values, not per dashboard
-  const inAnnotationWriteMode = useSelector(isWriteModeEnabled)
-  const annotationsAreVisible = useSelector(selectAreAnnotationsVisible)
+  const inAnnotationMode = useSelector(isAnnotationsModeEnabled)
   const dispatch = useDispatch()
 
   const storedXDomain = useMemo(() => parseXBounds(properties.axes.x.bounds), [
@@ -269,13 +265,12 @@ const SingleStatWithLine: FC<Props> = ({
 
     addAnnotationLayer(
       config,
-      inAnnotationWriteMode,
+      inAnnotationMode,
       cellID,
       xColumn,
       yColumn,
       groupKey,
       annotations,
-      annotationsAreVisible,
       dispatch,
       'singleStatWline'
     )

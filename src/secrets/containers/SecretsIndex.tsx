@@ -14,18 +14,18 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {getOrg} from 'src/organizations/selectors'
 
 const SecretsIndex: FC = () => {
-        const org = useSelector(getOrg)
+  const org = useSelector(getOrg)
 
-        return (
-            <>
-                <Page titleTag={pageTitleSuffixer(['Secrets', 'Settings'])}>
-                    <SettingsHeader />
-                    <SettingsTabbedPage activeTab="secrets" orgID={org.id}>
-                        <div>Placeholder</div>
-                    </SettingsTabbedPage>
-                </Page>
-            </>
-        )
+  return (
+    <>
+      <Page titleTag={pageTitleSuffixer(['Secrets', 'Settings'])}>
+        <SettingsHeader />
+        <SettingsTabbedPage activeTab="secrets" orgID={org.id}>
+          <div>Placeholder</div>
+        </SettingsTabbedPage>
+      </Page>
+    </>
+  )
 }
 
 export default SecretsIndex

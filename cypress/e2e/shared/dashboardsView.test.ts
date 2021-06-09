@@ -54,7 +54,9 @@ describe('Dashboard', () => {
     // Create View cell
     cy.getByTestID('add-cell--button').click()
     cy.getByTestID('save-cell--button').click()
-    cy.getByTestID('cell-context--toggle').click()
+    cy.getByTestID('cell-context--toggle')
+      .last()
+      .click()
     cy.getByTestID('cell-context--configure').click()
 
     // Rename View cell
@@ -189,7 +191,9 @@ describe('Dashboard', () => {
     cy.wait(200)
 
     // Clone View cell
-    cy.getByTestID('cell-context--toggle').click()
+    cy.getByTestID('cell-context--toggle')
+      .last()
+      .click()
     cy.getByTestID('cell-context--clone').click()
 
     // Ensure that the clone exists
@@ -200,7 +204,9 @@ describe('Dashboard', () => {
       .click()
     cy.getByTestID('cell-context--delete').click()
     cy.getByTestID('cell-context--delete-confirm').click()
-    cy.getByTestID('cell-context--toggle').click()
+    cy.getByTestID('cell-context--toggle')
+      .last()
+      .click()
     cy.getByTestID('cell-context--delete').click()
     cy.getByTestID('cell-context--delete-confirm').click()
 
@@ -229,7 +235,9 @@ describe('Dashboard', () => {
         // cellContent is yielded as a cutesy phrase from src/shared/copy/cell
 
         // open Cell Editor Overlay
-        cy.getByTestID('cell-context--toggle').click()
+        cy.getByTestID('cell-context--toggle')
+          .last()
+          .click()
         cy.getByTestID('cell-context--configure').click()
 
         // Cancel edit
@@ -454,7 +462,9 @@ describe('Dashboard', () => {
               // end typeAhead section; rest is normal behavior
 
               // open VEO
-              cy.getByTestID('cell-context--toggle').click()
+              cy.getByTestID('cell-context--toggle')
+                .last()
+                .click()
               cy.getByTestID('cell-context--configure').click()
 
               // selected value in cell context is 2nd value (making sure it reverts back!)
@@ -521,7 +531,9 @@ describe('Dashboard', () => {
                 .should('equal', 'v2')
 
               // open VEO
-              cy.getByTestID('cell-context--toggle').click()
+              cy.getByTestID('cell-context--toggle')
+                .last()
+                .click()
               cy.getByTestID('cell-context--configure').click()
               cy.getByTestID('toolbar-tab').should('be.visible')
 
@@ -558,7 +570,9 @@ describe('Dashboard', () => {
                 .pipe(getSelectedVariable(dashboard.id, 2))
                 .should('equal', 'v1')
 
-              cy.getByTestID('cell-context--toggle').click()
+              cy.getByTestID('cell-context--toggle')
+                .last()
+                .click()
               cy.getByTestID('cell-context--delete').click()
               cy.getByTestID('cell-context--delete-confirm').click()
 
@@ -1302,7 +1316,9 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       }
     })
     cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('cell-context--toggle').click()
+      cy.getByTestID('cell-context--toggle')
+        .last()
+        .click()
     })
     cy.getByTestID('cell-context--refresh').click()
     cy.wait('@refreshCellQuery')
@@ -1520,7 +1536,9 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
 
       cy.wait('@refreshQuery')
 
-      cy.getByTestID('cell-context--toggle').click()
+      cy.getByTestID('cell-context--toggle')
+        .last()
+        .click()
       cy.getByTestID('cell-context--configure').click()
 
       cy.wait(5000)
@@ -1670,7 +1688,9 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       }
     })
     cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('cell-context--toggle').click()
+      cy.getByTestID('cell-context--toggle')
+        .last()
+        .click()
     })
     cy.getByTestID('cell-context--pause').click()
 
@@ -1770,7 +1790,9 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       }
     })
     cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('cell-context--toggle').click()
+      cy.getByTestID('cell-context--toggle')
+        .last()
+        .click()
     })
     cy.getByTestID('cell-context--pause').click()
 
@@ -1782,8 +1804,88 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
 
     cy.wait('@secondCellQuery')
     cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('cell-context--toggle').click()
+      cy.getByTestID('cell-context--toggle')
+        .last()
+        .click()
     })
     cy.getByTestID('cell-context--pause').click()
+  })
+
+  describe('clone cell', () => {
+    let otherBoardID: string
+    let orgId: string
+    let allOrgs: any
+    beforeEach(() => {
+      cy.get('@org').then(({id: orgID, name}: Organization) => {
+        orgId = orgID
+        cy.createDashboard(orgID, 'other-dashboard').then(({body}) => {
+          otherBoardID = body.id
+        })
+        cy.createDashboard(orgID).then(({body}) => {
+          cy.fixture('routes').then(({orgs}) => {
+            allOrgs = orgs
+            cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+            cy.getByTestID('tree-nav')
+          })
+        })
+        cy.window().then(win => {
+          cy.wait(1000)
+          // TODO: remove when feature flag is removed
+          win.influx.set('cloneToOtherBoards', true)
+        })
+        cy.createBucket(orgID, name, 'schmucket')
+        const now = Date.now()
+        cy.writeData(
+          [
+            `test,container_name=cool dopeness=12 ${now - 1000}000000`,
+            `test,container_name=beans dopeness=18 ${now - 1200}000000`,
+            `test,container_name=cool dopeness=14 ${now - 1400}000000`,
+            `test,container_name=beans dopeness=10 ${now - 1600}000000`,
+          ],
+          'schmucket'
+        )
+      })
+      cy.getByTestID('button').click()
+      cy.getByTestID('switch-to-script-editor').should('be.visible')
+      cy.getByTestID('switch-to-script-editor').click()
+      cy.getByTestID('toolbar-tab').click()
+      const query1 = `from(bucket: "schmucket")
+  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+  |> filter(fn: (r) => r["container_name"] == "cool")`
+      cy.getByTestID('flux-editor')
+        .should('be.visible')
+        .click()
+        .focused()
+        .type(query1)
+      cy.getByTestID('overlay').within(() => {
+        cy.getByTestID('page-title').click()
+        cy.getByTestID('renamable-page-title--input')
+          .clear()
+          .type('blah')
+        cy.getByTestID('save-cell--button').click()
+      })
+      cy.getByTestID('cell-context--toggle')
+        .first()
+        .click()
+      cy.getByTestID('cell-context--copy').click()
+    })
+    it('clones a cell to another dashboard and displays it there', () => {
+      cy.getByTestID('clone-to-other-dashboard').click()
+      cy.getByTestID(`other-dashboard-${otherBoardID}`).click()
+      cy.getByTestID('confirm-clone-cell-button').click()
+      cy.visit(`${allOrgs}/${orgId}/dashboards/${otherBoardID}`)
+      cy.getByTestID('cell blah (Clone)').should('be.visible')
+    })
+
+    it('moves a cell to another dashboard and removes it from the current one', () => {
+      cy.getByTestID('clone-to-other-dashboard').click()
+      cy.getByTestID(`other-dashboard-${otherBoardID}`).click()
+      cy.getByTestID('clone-cell-type-toggle').click()
+      cy.getByTestID('confirm-clone-cell-button').click()
+      cy.visit(`${allOrgs}/${orgId}/dashboards/${otherBoardID}`)
+      cy.getByTestID('cell blah (Clone)').should('be.visible')
+      cy.go('back')
+      cy.getByTestID('empty-state--text').should('be.visible')
+    })
   })
 })

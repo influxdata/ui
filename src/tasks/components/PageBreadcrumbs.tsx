@@ -20,7 +20,9 @@ export default class PageBreadcrumbs extends PureComponent<Props> {
   private getCrumb(page: PageInfo, isItTheLastPage: boolean) {
     let text: string = page.text
 
-    if (!isItTheLastPage) text += ' > '
+    if (!isItTheLastPage) {
+        text += ' > '
+    }
 
     const styles = {marginRight: 10}
 

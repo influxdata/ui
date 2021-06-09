@@ -12,6 +12,7 @@ import {
   InputLabel,
   SlideToggle,
   Form,
+  ComponentStatus,
 } from '@influxdata/clockface'
 
 // Actions
@@ -99,24 +100,23 @@ const CellCloneOverlay: FC = () => {
       destinationViewNames = viewsForDashboard.map(v => v.name)
     }
 
+    const newName = incrementCloneName(
+      destinationViewNames ?? [view.name],
+      view.name
+    )
+
     dispatch(
       createCellWithView(
         destinationDashboardID,
         {
           ...view,
           dashboardID: destinationDashboardID,
-          name: incrementCloneName(
-            destinationViewNames ?? [view.name],
-            view.name
-          ),
+          name: newName,
         },
         {
           ...cell,
           dashboardID: destinationDashboardID,
-          name: incrementCloneName(
-            destinationViewNames ?? [view.name],
-            view.name
-          ),
+          name: newName,
         },
         null,
         null,
@@ -222,6 +222,11 @@ const CellCloneOverlay: FC = () => {
           color={ComponentColor.Primary}
           text="Confirm"
           testID="confirm-clone-cell-button"
+          status={
+            !otherDashboards.length
+              ? ComponentStatus.Disabled
+              : ComponentStatus.Default
+          }
         />
       </Overlay.Footer>
     </Overlay.Container>

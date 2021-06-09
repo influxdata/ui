@@ -8,7 +8,9 @@ import {getAllDashboards} from 'src/dashboards/selectors'
 const DashboardDropdown: FC = () => {
   const {handleSetDashboard, selectedDashboard} = useContext(Context)
 
-  const dashboards = useSelector(getAllDashboards)
+  const dashboards = useSelector(getAllDashboards).sort((a, b) =>
+    a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+  )
 
   let buttonText = 'Loading dashboards...'
 

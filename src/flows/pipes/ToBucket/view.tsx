@@ -11,7 +11,6 @@ import {PipeContext} from 'src/flows/context/pipe'
 
 // Components
 import BucketSelector from 'src/flows/shared/BucketSelector'
-import ExportTaskButton from 'src/flows/pipes/ToBucket/ExportTaskButton'
 
 const ToBucket: FC<PipeProp> = ({Context}) => {
   const {data, update} = useContext(PipeContext)
@@ -20,9 +19,10 @@ const ToBucket: FC<PipeProp> = ({Context}) => {
       bucket,
     })
   }
+
   return (
     <BucketProvider>
-      <Context persistentControl={<ExportTaskButton />}>
+      <Context>
         <div className="data-source--controls">
           <BucketSelector
             selected={data.bucket}

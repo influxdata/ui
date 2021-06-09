@@ -9,7 +9,7 @@ import React, {
 } from 'react'
 
 // Components
-import {Columns, Form, Grid, TextArea} from '@influxdata/clockface'
+import {Form, TextArea} from '@influxdata/clockface'
 
 interface Props {
   message: string
@@ -23,7 +23,7 @@ export const AnnotationMessageInput: FC<Props> = (props: Props) => {
   const textArea = useRef(null)
   const validationMessage = props.message ? '' : 'This field is required'
   const [characterCount, setCharacterCount] = useState(
-    props.message.length ?? 0
+    props.message?.length ?? 0
   )
 
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
@@ -48,23 +48,21 @@ export const AnnotationMessageInput: FC<Props> = (props: Props) => {
   }, [])
 
   return (
-    <Grid.Column widthXS={Columns.Twelve}>
-      <Form.Element
-        label={`Message (${characterCount} / ${characterLimit})`}
-        required={true}
-        errorMessage={validationMessage}
-      >
-        <TextArea
-          name="message"
-          value={props.message}
-          onChange={handleChange}
-          onKeyPress={handleKeyPress}
-          style={{height: '80px', minHeight: '80px'}}
-          ref={textArea}
-          maxLength={characterLimit}
-          testID="edit-annotation-message"
-        />
-      </Form.Element>
-    </Grid.Column>
+    <Form.Element
+      label={`Message (${characterCount} / ${characterLimit})`}
+      required={true}
+      errorMessage={validationMessage}
+    >
+      <TextArea
+        name="message"
+        value={props.message}
+        onChange={handleChange}
+        onKeyPress={handleKeyPress}
+        style={{height: '80px', minHeight: '80px'}}
+        ref={textArea}
+        maxLength={characterLimit}
+        testID="edit-annotation-message"
+      />
+    </Form.Element>
   )
 }

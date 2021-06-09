@@ -28,6 +28,10 @@ ARG HONEYBADGER_KEY
 ARG INJECT_HEADER
 # Injecting strings into the html never went wrong. we use this for google tag manager
 ARG INJECT_BODY
+# Location for Rudderstack data
+ARG RUDDERSTACK_DATA_PLANE_URL
+# Rudderstack write key
+ARG RUDDERSTACK_WRITE_KEY
 
 COPY . /repo/ui
 WORKDIR /repo/ui

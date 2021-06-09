@@ -1,6 +1,5 @@
 import React, {FC, useCallback, useEffect, useState} from 'react'
-import {useDispatch} from 'react-redux'
-import {useParams} from 'react-router-dom'
+import {useDispatch, useSelector} from 'react-redux'
 import useLocalStorageState from 'use-local-storage-state'
 import {v4 as UUID} from 'uuid'
 import {
@@ -11,7 +10,7 @@ import {
   PipeData,
   PipeMeta,
 } from 'src/types/flows'
-import {RemoteDataState} from 'src/types'
+import {getOrg} from 'src/organizations/selectors'
 import {default as _asResource} from 'src/flows/context/resource.hook'
 import {PIPE_DEFINITIONS} from 'src/flows'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
@@ -37,10 +36,12 @@ import {
   notebookDeleteFail,
 } from 'src/shared/copy/notifications'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {incrementCloneName} from 'src/utils/naming'
 
 const notebookAPIFlag = 'notebooksApi'
 export interface FlowListContextType extends FlowList {
   add: (flow?: Flow) => Promise<string>
+  clone: (id: string) => void
   update: (id: string, flow: Flow) => void
   remove: (id: string) => void
   currentID: string | null
@@ -66,6 +67,7 @@ export const EMPTY_NOTEBOOK: FlowState = {
 export const DEFAULT_CONTEXT: FlowListContextType = {
   flows: {},
   add: (_flow?: Flow) => {},
+  clone: (_id: string) => {},
   update: (_id: string, _flow: Flow) => {},
   remove: (_id: string) => {},
   change: (_id: string) => {},
@@ -120,7 +122,6 @@ export function hydrate(data) {
     const meta = {
       title: pipe.title,
       visible: pipe.visible,
-      loading: RemoteDataState.NotStarted,
     }
 
     delete pipe.title
@@ -136,75 +137,60 @@ export function hydrate(data) {
 export const FlowListProvider: FC = ({children}) => {
   const [flows, setFlows] = useLocalStorageState('flows', DEFAULT_CONTEXT.flows)
   const [currentID, setCurrentID] = useState(DEFAULT_CONTEXT.currentID)
-  const {orgID} = useParams<{orgID: string}>()
+  const org = useSelector(getOrg)
   const dispatch = useDispatch()
   useEffect(() => {
     migrate()
     getAll()
   }, [])
 
+  const clone = async (id: string): Promise<string> => {
+    if (!flows.hasOwnProperty(id)) {
+      throw new Error(`${PROJECT_NAME} not found`)
+    }
+
+    const flow = flows[id]
+
+    const allFlowNames = Object.values(flows).map(value => value.name)
+    const clonedName = incrementCloneName(allFlowNames, flow.name)
+
+    const data = {
+      ...flow,
+      name: clonedName,
+    }
+
+    return await add(data)
+  }
+
   const add = async (flow?: Flow): Promise<string> => {
     let _flow
     let _flowData
 
     if (!flow) {
-      if (isFlagEnabled('molly-first') && Object.keys(flows).length === 0) {
-        _flowData = hydrate({
-          name: `Name this ${PROJECT_NAME}`,
-          readOnly: false,
-          range: DEFAULT_TIME_RANGE,
-          refresh: AUTOREFRESH_DEFAULT,
-          pipes: [
-            {
-              title: 'Welcome',
-              visible: true,
-              type: 'youtube',
-              uri: 'Rs16uhxK0h8',
-            },
-            {
-              title: 'Select a Metric',
-              visible: true,
-              type: 'metricSelector',
-              ...JSON.parse(
-                JSON.stringify(PIPE_DEFINITIONS['metricSelector'].initial)
-              ),
-            },
-            {
-              title: 'Visualize the Result',
-              visible: true,
-              type: 'visualization',
-              ...JSON.parse(
-                JSON.stringify(PIPE_DEFINITIONS['visualization'].initial)
-              ),
-            },
-          ],
-        })
-      } else {
-        _flowData = hydrate({
-          name: `Name this ${PROJECT_NAME}`,
-          readOnly: false,
-          range: DEFAULT_TIME_RANGE,
-          refresh: AUTOREFRESH_DEFAULT,
-          pipes: [
-            {
-              title: 'Select a Metric',
-              visible: true,
-              type: 'metricSelector',
-              ...JSON.parse(
-                JSON.stringify(PIPE_DEFINITIONS['metricSelector'].initial)
-              ),
-            },
-            {
-              title: 'Visualize the Result',
-              visible: true,
-              type: 'visualization',
-              ...JSON.parse(
-                JSON.stringify(PIPE_DEFINITIONS['visualization'].initial)
-              ),
-            },
-          ],
-        })
-      }
+      _flowData = hydrate({
+        name: `Name this ${PROJECT_NAME}`,
+        readOnly: false,
+        range: DEFAULT_TIME_RANGE,
+        refresh: AUTOREFRESH_DEFAULT,
+        pipes: [
+          {
+            title: 'Select a Metric',
+            visible: true,
+            type: 'metricSelector',
+            ...JSON.parse(
+              JSON.stringify(PIPE_DEFINITIONS['metricSelector'].initial)
+            ),
+          },
+          {
+            title: 'Visualize the Result',
+            visible: true,
+            type: 'visualization',
+            ...JSON.parse(
+              JSON.stringify(PIPE_DEFINITIONS['visualization'].initial)
+            ),
+          },
+        ],
+      })
       _flow = {
         ..._flowData,
       }
@@ -220,9 +206,9 @@ export const FlowListProvider: FC = ({children}) => {
     }
 
     const apiFlow = {
-      orgID,
+      orgID: org.id,
       data: {
-        orgID: orgID,
+        orgID: org.id,
         name: _flow.name,
         spec: serialize(_flow),
       },
@@ -272,10 +258,10 @@ export const FlowListProvider: FC = ({children}) => {
 
     const apiFlow = {
       id,
-      orgID,
+      orgID: org.id,
       data: {
         id,
-        orgID,
+        orgID: org.id,
         name: flow.name,
         spec: serialize(data),
       },
@@ -292,7 +278,7 @@ export const FlowListProvider: FC = ({children}) => {
     try {
       isFlagEnabled(notebookAPIFlag)
         ? await deleteAPINotebooks({id})
-        : await deleteAPI({orgID, id})
+        : await deleteAPI({orgID: org.id, id})
     } catch (error) {
       dispatch(notify(notebookDeleteFail()))
     }
@@ -307,14 +293,14 @@ export const FlowListProvider: FC = ({children}) => {
 
   const getAll = useCallback(async (): Promise<void> => {
     const data = isFlagEnabled(notebookAPIFlag)
-      ? await getAllAPINotebooks(orgID)
-      : await getAllAPI(orgID)
+      ? await getAllAPINotebooks(org.id)
+      : await getAllAPI(org.id)
     if (data && data.flows) {
       const _flows = {}
       data.flows.forEach(f => (_flows[f.id] = hydrate(f.spec)))
       setFlows(_flows)
     }
-  }, [orgID, setFlows])
+  }, [org.id, setFlows])
 
   const change = useCallback(
     (id: string) => {
@@ -328,8 +314,13 @@ export const FlowListProvider: FC = ({children}) => {
 
   const migrate = async () => {
     const _flows = isFlagEnabled(notebookAPIFlag)
-      ? await migrateLocalFlowsToAPINotebooks(orgID, flows, serialize, dispatch)
-      : await migrateLocalFlowsToAPI(orgID, flows, serialize, dispatch)
+      ? await migrateLocalFlowsToAPINotebooks(
+          org.id,
+          flows,
+          serialize,
+          dispatch
+        )
+      : await migrateLocalFlowsToAPI(org.id, flows, serialize, dispatch)
     setFlows({..._flows})
     if (currentID && currentID.includes('local')) {
       // if we migrated the local currentID flow, reset currentID
@@ -369,6 +360,7 @@ export const FlowListProvider: FC = ({children}) => {
       value={{
         flows: flowList,
         add,
+        clone,
         update,
         remove,
         getAll,

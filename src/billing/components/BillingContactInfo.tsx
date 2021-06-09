@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react'
+import React, {FC, useContext, useState} from 'react'
 import classnames from 'classnames'
 import {
   Button,
@@ -8,30 +8,19 @@ import {
 } from '@influxdata/clockface'
 
 // Components
+import {BillingContext} from 'src/billing/context/billing'
 import BillingContactForm from 'src/billing/components/Checkout/BillingContactForm'
 import BillingContactDisplay from 'src/billing/components/BillingContactDisplay'
 
-// Utils
-import {useBilling} from 'src/billing/components/BillingPage'
-import {getBillingInfo} from 'src/billing/thunks'
-
 const BillingContactInfo: FC = () => {
-  const [
-    {
-      billingInfo: {contact},
-    },
-    dispatch,
-  ] = useBilling()
+  const {
+    billingInfo: {contact},
+  } = useContext(BillingContext)
 
   // Contact is created during signup but city (required) is not collected then
   const isFirstContactSaved = contact && contact.city
 
   const [isEditing, setIsEditing] = useState(!isFirstContactSaved)
-
-  const handleSubmitEditForm = () => {
-    setIsEditing(false)
-    getBillingInfo(dispatch)
-  }
 
   const panelClass = classnames('checkout-panel billing-contact-panel', {
     hide: false,
@@ -62,7 +51,7 @@ const BillingContactInfo: FC = () => {
         )}
       </Panel.Header>
       {isEditing ? (
-        <BillingContactForm onSubmitForm={handleSubmitEditForm} />
+        <BillingContactForm onSubmitForm={() => setIsEditing(false)} />
       ) : (
         <BillingContactDisplay />
       )}

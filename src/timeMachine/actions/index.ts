@@ -24,19 +24,20 @@ import {TimeMachineState} from 'src/timeMachine/reducers'
 import {Action as QueryResultsAction} from 'src/timeMachine/actions/queries'
 import {Action as AlertBuilderAction} from 'src/alerting/actions/alertBuilder'
 import {
-  TimeRange,
-  ViewType,
+  AutoRefresh,
   Axes,
   DecimalPlaces,
-  XYGeom,
   FieldOption,
-  TableOptions,
-  TimeMachineTab,
-  AutoRefresh,
-  TimeMachineID,
-  XYViewProperties,
-  ViewProperties,
   GetState,
+  StaticLegend,
+  TableOptions,
+  TimeMachineID,
+  TimeMachineTab,
+  TimeRange,
+  ViewProperties,
+  ViewType,
+  XYGeom,
+  XYViewProperties,
 } from 'src/types'
 import {Color} from 'src/types/colors'
 import {HistogramPosition, LinePosition} from '@influxdata/giraffe'
@@ -51,7 +52,6 @@ export type Action =
   | SetTypeAction
   | SetActiveQueryText
   | SetIsViewingRawDataAction
-  | SetIsDisabledViewRawData
   | SetGeomAction
   | SetDecimalPlaces
   | SetBackgroundThresholdColoringAction
@@ -95,6 +95,8 @@ export type Action =
   | ReturnType<typeof setLegendOpacity>
   | ReturnType<typeof setLegendOrientationThreshold>
   | ReturnType<typeof setLegendColorizeRows>
+  | ReturnType<typeof setLegendHide>
+  | ReturnType<typeof setStaticLegend>
   | ReturnType<typeof setGenerateXAxisTicks>
   | ReturnType<typeof setGenerateYAxisTicks>
   | ReturnType<typeof setXTotalTicks>
@@ -222,18 +224,6 @@ export const setIsViewingRawData = (
 ): SetIsViewingRawDataAction => ({
   type: 'SET_IS_VIEWING_RAW_DATA',
   payload: {isViewingRawData},
-})
-
-interface SetIsDisabledViewRawData {
-  type: 'SET_IS_DISABLED_VIEW_RAW_DATA'
-  payload: {isDisabledViewRawData: boolean}
-}
-
-export const setIsDisabledViewRawData = (
-  isDisabledViewRawData: boolean
-): SetIsDisabledViewRawData => ({
-  type: 'SET_IS_DISABLED_VIEW_RAW_DATA',
-  payload: {isDisabledViewRawData},
 })
 
 interface SetGeomAction {
@@ -760,6 +750,16 @@ export const setLegendOrientationThreshold = (
 export const setLegendColorizeRows = (legendColorizeRows: boolean) => ({
   type: 'SET_LEGEND_COLORIZE_ROWS' as 'SET_LEGEND_COLORIZE_ROWS',
   payload: {legendColorizeRows},
+})
+
+export const setLegendHide = (legendHide: boolean) => ({
+  type: 'SET_LEGEND_HIDE' as 'SET_LEGEND_HIDE',
+  payload: {legendHide},
+})
+
+export const setStaticLegend = (staticLegend: StaticLegend) => ({
+  type: 'SET_STATIC_LEGEND' as 'SET_STATIC_LEGEND',
+  payload: {staticLegend},
 })
 
 export const setGenerateXAxisTicks = (generateXAxisTicks: string[]) => ({

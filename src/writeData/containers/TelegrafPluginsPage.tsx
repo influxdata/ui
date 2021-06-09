@@ -5,8 +5,9 @@ import {Renderer} from 'react-markdown'
 
 // Components
 import {Page} from '@influxdata/clockface'
-import WriteDataHelper from 'src/writeData/components/WriteDataHelper'
-import WriteDataCodeSnippet from 'src/writeData/components/WriteDataCodeSnippet'
+import CodeSnippet, {
+  Provider as TemplateProvider,
+} from 'src/shared/components/CodeSnippet'
 import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
 import GetResources from 'src/resources/components/GetResources'
 
@@ -26,9 +27,9 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import 'src/writeData/components/WriteDataDetailsView.scss'
 import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
 
-const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => {
-  return <WriteDataCodeSnippet code={props.value} language={props.language} />
-}
+const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => (
+  <CodeSnippet text={props.value} label={props.language} />
+)
 
 const TelegrafPluginsPage: FC = () => {
   const {contentID} = useParams()
@@ -55,31 +56,32 @@ const TelegrafPluginsPage: FC = () => {
     <GetResources
       resources={[ResourceType.Authorizations, ResourceType.Buckets]}
     >
-      <WriteDataDetailsContextProvider>
-        <Page
-          titleTag={pageTitleSuffixer([
-            'Telegraf Plugin',
-            'Sources',
-            'Load Data',
-          ])}
-        >
-          <Page.Header fullWidth={false}>
-            <Page.Title title={name} />
-          </Page.Header>
-          <Page.Contents fullWidth={false} scrollable={true}>
-            <div className="write-data--details">
-              <div className="write-data--details-thumbnail">{thumbnail}</div>
-              <div
-                className="write-data--details-content markdown-format"
-                data-testid="load-data-details-content"
-              >
-                <WriteDataHelper />
-                {pageContent}
+      <TemplateProvider>
+        <WriteDataDetailsContextProvider>
+          <Page
+            titleTag={pageTitleSuffixer([
+              'Telegraf Plugin',
+              'Sources',
+              'Load Data',
+            ])}
+          >
+            <Page.Header fullWidth={false}>
+              <Page.Title title={name} />
+            </Page.Header>
+            <Page.Contents fullWidth={false} scrollable={true}>
+              <div className="write-data--details">
+                <div className="write-data--details-thumbnail">{thumbnail}</div>
+                <div
+                  className="write-data--details-content markdown-format"
+                  data-testid="load-data-details-content"
+                >
+                  {pageContent}
+                </div>
               </div>
-            </div>
-          </Page.Contents>
-        </Page>
-      </WriteDataDetailsContextProvider>
+            </Page.Contents>
+          </Page>
+        </WriteDataDetailsContextProvider>
+      </TemplateProvider>
     </GetResources>
   )
 }

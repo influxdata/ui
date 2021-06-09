@@ -26,6 +26,9 @@ import {
 } from 'src/types'
 import {getAllVariables} from 'src/variables/selectors'
 
+// Metrics
+import {event} from 'src/cloud/utils/reporting'
+
 interface StateProps {
   view: View
   variables: Variable[]
@@ -38,6 +41,7 @@ interface OwnProps {
 
 interface State {
   submitToken: number
+  isPaused: boolean
 }
 
 type Props = StateProps & OwnProps
@@ -46,6 +50,7 @@ type Props = StateProps & OwnProps
 class CellComponent extends Component<Props, State> {
   state = {
     submitToken: 0,
+    isPaused: false,
   }
 
   private handleRefreshProcess = (): void => {
@@ -59,8 +64,21 @@ class CellComponent extends Component<Props, State> {
   }
 
   private handleIncrementToken = (): void => {
+    if (this.state.isPaused) {
+      return
+    }
     this.handleRefreshProcess()
     this.setState(s => ({...s, submitToken: s.submitToken + 1}))
+  }
+
+  private handlePauseCell = (): void => {
+    event('dashboards.autorefresh.cell.pause', {
+      paused: this.state.isPaused.toString(),
+    })
+    this.setState(prevState => ({
+      ...prevState,
+      isPaused: !this.state.isPaused,
+    }))
   }
 
   public render() {
@@ -74,6 +92,8 @@ class CellComponent extends Component<Props, State> {
             view={view}
             onCSVDownload={this.handleCSVDownload}
             onRefresh={this.handleIncrementToken}
+            isPaused={this.state.isPaused}
+            togglePauseCell={this.handlePauseCell}
           />
         </CellHeader>
         <div

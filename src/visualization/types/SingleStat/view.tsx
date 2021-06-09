@@ -1,10 +1,13 @@
 // Libraries
 import React, {FC, useContext} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Utils
 import LatestValueTransform from 'src/visualization/components/LatestValueTransform'
 import {generateThresholdsListHexs} from 'src/shared/constants/colorOperations'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
+import {handleUnsupportedGraphType} from 'src/visualization/utils/annotationUtils'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {SingleStatViewProperties} from 'src/types/dashboards'
@@ -18,9 +21,11 @@ import {
 } from '@influxdata/giraffe'
 
 import './style.scss'
-import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 import {AppSettingContext} from 'src/shared/contexts/app'
 import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+
+// Selectors
+import {isAnnotationsModeEnabled} from 'src/annotations/selectors'
 
 interface Props extends VisualizationProps {
   properties: SingleStatViewProperties
@@ -28,7 +33,10 @@ interface Props extends VisualizationProps {
 
 const SingleStat: FC<Props> = ({properties, result}) => {
   const {prefix, suffix, colors, decimalPlaces} = properties
+
   const {timeZone} = useContext(AppSettingContext)
+  const dispatch = useDispatch()
+  const inAnnotationMode = useSelector(isAnnotationsModeEnabled)
 
   if (isFlagEnabled('useGiraffeGraphs')) {
     const latestValues = getLatestValues(result.table)
@@ -64,6 +72,15 @@ const SingleStat: FC<Props> = ({properties, result}) => {
         },
       ],
     }
+
+    if (inAnnotationMode && isFlagEnabled('annotations')) {
+      config.interactionHandlers = {
+        singleClick: () => {
+          dispatch(handleUnsupportedGraphType('Single Stat'))
+        },
+      }
+    }
+
     return <Plot config={config} />
   } else {
     return (

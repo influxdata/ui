@@ -1,5 +1,5 @@
 // Libraries
-import {cloneDeep, isNumber, get, map} from 'lodash'
+import {cloneDeep, get, map} from 'lodash'
 import {produce} from 'immer'
 
 // Utils
@@ -74,7 +74,6 @@ export interface TimeMachineState {
   draftQueries: DashboardDraftQuery[]
   isViewingRawData: boolean
   isViewingVisOptions: boolean
-  isDisabledViewRawData: boolean
   activeTab: TimeMachineTab
   activeQueryIndex: number | null
   queryBuilder: QueryBuilderState
@@ -99,7 +98,6 @@ export const initialStateHelper = (): TimeMachineState => {
     draftQueries: [{...defaultViewQuery(), hidden: false}],
     isViewingRawData: false,
     isViewingVisOptions: false,
-    isDisabledViewRawData: false,
     activeTab: 'queries',
     activeQueryIndex: 0,
     queryResults: initialQueryResultsState(),
@@ -312,7 +310,7 @@ export const timeMachineReducer = (
           draftState.queryResults.statuses = statuses
         }
 
-        if (isNumber(fetchDuration)) {
+        if (typeof fetchDuration === 'number') {
           draftState.queryResults.fetchDuration = fetchDuration
         }
       })
@@ -322,12 +320,6 @@ export const timeMachineReducer = (
       const {isViewingRawData} = action.payload
 
       return {...state, isViewingRawData}
-    }
-
-    case 'SET_IS_DISABLED_VIEW_RAW_DATA': {
-      const {isDisabledViewRawData} = action.payload
-
-      return {...state, isDisabledViewRawData}
     }
 
     case 'SET_ACTIVE_TAB': {
@@ -501,6 +493,18 @@ export const timeMachineReducer = (
       const {legendColorizeRows} = action.payload
 
       return setViewProperties(state, {legendColorizeRows})
+    }
+
+    case 'SET_LEGEND_HIDE': {
+      const {legendHide} = action.payload
+
+      return setViewProperties(state, {legendHide})
+    }
+
+    case 'SET_STATIC_LEGEND': {
+      const {staticLegend} = action.payload
+
+      return setViewProperties(state, {staticLegend})
     }
 
     case 'SET_BIN_COUNT': {

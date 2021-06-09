@@ -104,6 +104,12 @@ export const submitError = (): Notification => ({
     'There was an error submitting the upgrade request, please try again.',
 })
 
+export const getBillingSettingsError = (message: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `There was an error getting your billing settings: ${message}`,
+})
+
 // Operator Notifications
 export const getOrgsError = (): Notification => ({
   ...defaultErrorNotification,
@@ -239,6 +245,12 @@ export const dashboardGetFailed = (
   message: `Failed to load dashboard with id "${dashboardID}": ${error}`,
 })
 
+export const dashboardsGetFailed = (error: string): Notification => ({
+  ...defaultErrorNotification,
+  icon: IconFont.DashH,
+  message: `Failed to retrieve dashboards: ${error}`,
+})
+
 export const dashboardUpdateFailed = (): Notification => ({
   ...defaultErrorNotification,
   icon: IconFont.DashH,
@@ -293,6 +305,17 @@ export const cellAddFailed = (
 ): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to add cell: ${message}`,
+})
+
+export const cellCloneSuccess = (
+  destinationDashboardID: string,
+  operationType: string,
+  cellName?: string
+): Notification => ({
+  ...defaultSuccessNotification,
+  icon: IconFont.DashH,
+  message: `Cell ${cellName ??
+    ''} successfully ${operationType} to dashboard with id ${destinationDashboardID}`,
 })
 
 export const cellCopyFailed = (): Notification => ({
@@ -684,6 +707,18 @@ export const taskGetFailed = (error: string): Notification => ({
   ...defaultErrorNotification,
   duration: FIVE_SECONDS,
   message: `Failed to get runs: ${error}`,
+})
+
+export const taskRetrySuccess = (id: string): Notification => ({
+  ...defaultSuccessNotification,
+  duration: FIVE_SECONDS,
+  message: `Task run ${id} was succesful`,
+})
+
+export const taskRetryFailed = (error: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `Failed to retry Task: ${error}`,
 })
 
 export const getTelegrafConfigFailed = (): Notification => ({
@@ -1084,6 +1119,20 @@ export const communityTemplateRenameFailed = (): Notification => ({
   message: `We've successfully installed your template but weren't able to name it properly. It may appear as a blank template.`,
 })
 
+export const editCheckCodeWarning = (): Notification => ({
+  ...defaultErrorNotification,
+  style: NotificationStyle.Info,
+  message:
+    'Changes to Check code may prevent you from editing the Check in the visual editing experience.',
+})
+
+export const editNotificationRuleCodeWarning = (): Notification => ({
+  ...defaultErrorNotification,
+  style: NotificationStyle.Info,
+  message:
+    'Changes to Notification Rule code may prevent you from editing the Notification Rule in the visual editing experience.',
+})
+
 // Notebooks
 
 export const notebookRunSuccess = (
@@ -1193,6 +1242,14 @@ export const createAnnotationFailed = (error: string): Notification => ({
   message: `Failed to create annotation: ${error}`,
 })
 
+export const annotationsUnsupportedOnGraph = (
+  graphType: string = 'This graph type'
+): Notification => ({
+  ...defaultErrorNotification,
+  icon: IconFont.Cube,
+  message: `${graphType} does not support adding annotations.`,
+})
+
 export const dashboardAutoRefreshTimeoutSuccess = (
   time?: string
 ): Notification => ({
@@ -1202,4 +1259,51 @@ export const dashboardAutoRefreshTimeoutSuccess = (
   message: `Your dashboard auto refresh settings have been reset due to inactivity ${
     time ? 'over the last' + time : ''
   }`,
+})
+
+/* USERS NOTIFICATIONS */
+export const inviteSent = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: `Invitation Sent`,
+})
+
+export const inviteFailed = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `invite failed`,
+})
+
+export const invitationResentSuccessful = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: `Invitation Sent`,
+})
+
+export const invitationResentFailed = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Error sending invitation`,
+})
+
+export const invitationWithdrawnSuccessful = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: `Invitation Withdrawn`,
+})
+
+export const invitationWithdrawnFailed = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Error withdrawing invite, try again`,
+})
+
+export const removeUserSuccessful = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: `User Removed`,
+})
+
+export const removeUserFailed = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Error removing user, try again`,
+})
+
+/* Billing Notifications */
+export const zuoraParamsGetFailure = (message): Notification => ({
+  ...defaultErrorNotification,
+  message,
 })

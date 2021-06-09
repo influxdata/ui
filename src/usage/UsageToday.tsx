@@ -11,7 +11,7 @@ import {
 // Components
 import UsageDropdown from 'src/usage/UsageDropdown'
 import BillingStatsPanel from 'src/usage/BillingStatsPanel'
-import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
+import UsageTimeRangeDropdown from 'src/usage/UsageTimeRangeDropdown'
 import GraphTypeSwitcher from 'src/usage/GraphTypeSwitcher'
 import {UsageContext} from 'src/usage/context/usage'
 
@@ -22,7 +22,7 @@ const usageGraphInfo = [
     column: 'write_mb',
     units: 'MB',
     isGrouped: true,
-    type: 'sparkline',
+    type: 'xy',
     pricingVersions: [3, 4],
   },
   {
@@ -31,7 +31,7 @@ const usageGraphInfo = [
     column: 'query_count',
     units: '',
     isGrouped: false,
-    type: 'sparkline',
+    type: 'xy',
     pricingVersions: [4],
   },
   {
@@ -40,7 +40,7 @@ const usageGraphInfo = [
     column: 'storage_gb',
     units: 'GB',
     isGrouped: false,
-    type: 'sparkline',
+    type: 'xy',
     pricingVersions: [3, 4],
   },
   {
@@ -49,7 +49,7 @@ const usageGraphInfo = [
     column: 'reads_gb',
     units: 'GB',
     isGrouped: false,
-    type: 'sparkline',
+    type: 'xy',
     pricingVersions: [4],
   },
 ]
@@ -60,7 +60,7 @@ const rateLimitGraphInfo = {
   column: '_value',
   units: '',
   isGrouped: true,
-  type: 'sparkline',
+  type: 'xy',
 }
 
 const UsageToday: FC = () => {
@@ -70,31 +70,19 @@ const UsageToday: FC = () => {
     selectedUsage,
     timeRange,
     usageStats,
+    usageVectors,
   } = useContext(UsageContext)
 
   const getUsageSparkline = () => {
-    let graphInfo = usageGraphInfo.find(stat => stat.title === selectedUsage)
-    // TODO(ariel): figure out what to do if there's no match
-    if (!graphInfo) {
-      graphInfo = usageGraphInfo[0]
-    }
-    return <GraphTypeSwitcher csv={usageStats} graphInfo={graphInfo} />
-  }
+    const usage = usageVectors.find(vector => selectedUsage === vector.name)
+    const graphInfo =
+      usageGraphInfo.find(stat => stat.column === usage?.fluxKey) ??
+      usageGraphInfo[0]
 
-  const getTimeRangeLabel = () => {
-    switch (timeRange.type) {
-      case 'selectable-duration':
-        return timeRange.label
-      case 'duration':
-        return `from ${timeRange.lower} to now`
-      default:
-        return `from ${new Date(timeRange.lower).toISOString()} to ${new Date(
-          timeRange.upper
-        ).toISOString()}`
-    }
+    return (
+      <GraphTypeSwitcher fromFluxResult={usageStats} graphInfo={graphInfo} />
+    )
   }
-
-  const timeRangeLabel = getTimeRangeLabel()
 
   return (
     <FlexBox
@@ -103,13 +91,13 @@ const UsageToday: FC = () => {
       margin={ComponentSize.Small}
     >
       <BillingStatsPanel />
-      <TimeRangeDropdown
+      <UsageTimeRangeDropdown
         onSetTimeRange={handleSetTimeRange}
         timeRange={timeRange}
       />
       <Panel className="usage--panel">
         <Panel.Header>
-          <h4 data-testid="usage-header--timerange">{`Usage ${timeRangeLabel}`}</h4>
+          <h4 data-testid="usage-header--timerange">{`Usage ${timeRange.label}`}</h4>
           <UsageDropdown />
         </Panel.Header>
         <Panel.Body
@@ -122,7 +110,7 @@ const UsageToday: FC = () => {
       </Panel>
       <Panel className="usage--panel">
         <Panel.Header>
-          <h4 data-testid="rate-limits-header--timerange">{`Rate Limits ${timeRangeLabel}`}</h4>
+          <h4 data-testid="rate-limits-header--timerange">{`Rate Limits ${timeRange.label}`}</h4>
         </Panel.Header>
         <Panel.Body
           direction={FlexDirection.Column}
@@ -130,7 +118,7 @@ const UsageToday: FC = () => {
           alignItems={AlignItems.Stretch}
         >
           <GraphTypeSwitcher
-            csv={rateLimits}
+            fromFluxResult={rateLimits}
             graphInfo={rateLimitGraphInfo}
             key={rateLimitGraphInfo.title}
           />

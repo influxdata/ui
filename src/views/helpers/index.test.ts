@@ -10,6 +10,7 @@ import {
   LEGEND_OPACITY_DEFAULT,
   LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
   LEGEND_COLORIZE_ROWS_DEFAULT,
+  LEGEND_HIDE_DEFAULT,
 } from 'src/shared/constants'
 
 describe('intro test', () => {
@@ -49,6 +50,7 @@ describe('testing view refactoring/components', () => {
     legendOpacity: LEGEND_OPACITY_DEFAULT,
     legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
     legendColorizeRows: LEGEND_COLORIZE_ROWS_DEFAULT,
+    legendHide: LEGEND_HIDE_DEFAULT,
   }
 
   const checkLegendProps = graphProps => {
@@ -59,6 +61,7 @@ describe('testing view refactoring/components', () => {
     expect(graphProps.legendColorizeRows).toEqual(
       legendProps.legendColorizeRows
     )
+    expect(graphProps.legendHide).toEqual(legendProps.legendHide)
   }
 
   it('xy configuration test should be the same (ticks & legend)', () => {

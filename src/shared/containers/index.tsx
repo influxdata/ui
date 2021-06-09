@@ -43,6 +43,9 @@ export const ClientLibrariesPage = lazy(() =>
 export const TelegrafPluginsPage = lazy(() =>
   import('src/writeData/containers/TelegrafPluginsPage')
 )
+export const SecretsIndex = lazy(() =>
+  import('src/secrets/containers/SecretsIndex')
+)
 export const VariablesIndex = lazy(() =>
   import('src/variables/containers/VariablesIndex')
 )
@@ -69,9 +72,7 @@ export const RouteToDashboardList = lazy(() =>
 )
 export const FlowsIndex = lazy(() => import('src/flows/components/FlowsIndex'))
 export const NotFound = lazy(() => import('src/shared/components/NotFound'))
-export const UsersPage = lazy(() =>
-  import('src/unity/components/users/UsersPage')
-)
+export const UsersPage = lazy(() => import('src/users/components/Users'))
 export const UsagePage = lazy(() => import('src/usage/UsagePage'))
 export const BillingPage = lazy(() =>
   import('src/billing/components/BillingPage')

@@ -1,10 +1,8 @@
 import React, {FC, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {v4 as UUID} from 'uuid'
+import {parse, format_from_js_file} from '@influxdata/flux'
 
-import {parse} from 'src/external/parser'
-import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
-import {asAssignment} from 'src/variables/selectors'
 import {getOrg} from 'src/organizations/selectors'
 import {getBuckets} from 'src/buckets/actions/thunks'
 import {getSortedBuckets} from 'src/buckets/selectors'
@@ -20,6 +18,11 @@ import {
   RATE_LIMIT_ERROR_STATUS,
   RATE_LIMIT_ERROR_TEXT,
 } from 'src/cloud/constants'
+import {
+  TIME_RANGE_START,
+  TIME_RANGE_STOP,
+  WINDOW_PERIOD,
+} from 'src/variables/constants'
 
 // Types
 import {
@@ -31,6 +34,7 @@ import {
   VariableAssignment,
   ObjectExpression,
   CancellationError,
+  File,
 } from 'src/types'
 import {RunQueryResult} from 'src/shared/apis/query'
 
@@ -61,7 +65,9 @@ export const QueryContext = React.createContext<QueryContextType>(
 const DESIRED_POINTS_PER_GRAPH = 360
 const FALLBACK_WINDOW_PERIOD = 15000
 
-const _walk = (node, test, acc = []) => {
+// Finds all instances of nodes that match with the test function
+// and returns them as an array
+export const find = (node: File, test, acc = []) => {
   if (!node) {
     return acc
   }
@@ -73,10 +79,41 @@ const _walk = (node, test, acc = []) => {
   Object.values(node).forEach(val => {
     if (Array.isArray(val)) {
       val.forEach(_val => {
-        _walk(_val, test, acc)
+        find(_val, test, acc)
       })
     } else if (typeof val === 'object') {
-      _walk(val, test, acc)
+      find(val, test, acc)
+    }
+  })
+
+  return acc
+}
+
+// Removes all instances of nodes that match with the test function
+// and returns the nodes that were returned as an array
+export const remove = (node: File, test, acc = []) => {
+  if (!node) {
+    return acc
+  }
+
+  Object.entries(node).forEach(([key, val]) => {
+    if (Array.isArray(val)) {
+      let ni = 0
+      while (ni < val.length) {
+        if (test(val[ni])) {
+          acc.push(val[ni])
+          val.splice(ni, 1)
+          continue
+        }
+        remove(val[ni], test, acc)
+        ni++
+      }
+    } else if (typeof val === 'object') {
+      if (val && test(val)) {
+        delete node[key]
+      } else {
+        remove(val, test, acc)
+      }
     }
   })
 
@@ -88,7 +125,7 @@ const _getVars = (
   allVars: VariableMap = {},
   acc: VariableMap = {}
 ): VariableMap =>
-  _walk(
+  find(
     ast,
     node => node?.type === 'MemberExpression' && node?.object?.name === 'v'
   )
@@ -112,7 +149,7 @@ const _getVars = (
     }, acc)
 
 const _addWindowPeriod = (ast, optionAST): void => {
-  const queryRanges = _walk(
+  const queryRanges = find(
     ast,
     node =>
       node?.callee?.type === 'Identifier' && node?.callee?.name === 'range'
@@ -201,6 +238,162 @@ const _addWindowPeriod = (ast, optionAST): void => {
   })
 }
 
+export const simplify = (text, vars: VariableMap = {}) => {
+  const ast = parse(text)
+  const usedVars = _getVars(ast, vars)
+
+  // Grab all global variables and turn them into a hashmap
+  // TODO: move off this variable junk and just use strings
+  const globalDefinedVars = Object.values(usedVars).reduce((acc, v) => {
+    let _val
+
+    if (!v) {
+      return acc
+    }
+
+    if (v.id === WINDOW_PERIOD) {
+      acc[v.id] = (v.arguments?.values || [10000])[0] + 'ms'
+
+      return acc
+    }
+
+    if (v.id === TIME_RANGE_START || v.id === TIME_RANGE_STOP) {
+      const val = v.arguments.values[0]
+
+      if (!isNaN(Date.parse(val))) {
+        acc[v.id] = new Date(val).toISOString()
+        return acc
+      }
+
+      if (typeof val === 'string') {
+        if (val) {
+          acc[v.id] = val
+        }
+
+        return acc
+      }
+
+      _val = '-' + val[0].magnitude + val[0].unit
+
+      if (_val !== '-') {
+        acc[v.id] = _val
+      }
+
+      return acc
+    }
+
+    if (v.arguments.type === 'map') {
+      _val =
+        v.arguments.values[
+          v.selected ? v.selected[0] : Object.keys(v.arguments.values)[0]
+        ]
+
+      if (_val) {
+        acc[v.id] = _val
+      }
+
+      return acc
+    }
+
+    if (v.arguments.type === 'constant') {
+      _val = v.selected ? v.selected[0] : v.arguments.values[0]
+
+      if (_val) {
+        acc[v.id] = _val
+      }
+
+      return acc
+    }
+
+    if (v.arguments.type === 'query') {
+      if (!v.selected || !v.selected[0]) {
+        return
+      }
+
+      acc[v.id] = v.selected[0]
+      return acc
+    }
+
+    return acc
+  }, {})
+
+  // Grab all variables that are defined in the query while removing the old definition from the AST
+  const queryDefinedVars = remove(
+    ast,
+    node => node.type === 'OptionStatement' && node.assignment.id.name === 'v'
+  ).reduce((acc, curr) => {
+    // eslint-disable-next-line no-extra-semi
+    ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
+      if (_curr.key?.name && _curr.value?.location?.source) {
+        _acc[_curr.key.name] = _curr.value.location.source
+      }
+
+      return _acc
+    }, acc)
+
+    return acc
+  }, {})
+
+  // Merge the two variable maps, allowing for any user defined variables to override
+  // global system variables
+  const joinedVars = Object.keys(usedVars).reduce((acc, curr) => {
+    if (globalDefinedVars.hasOwnProperty(curr)) {
+      acc[curr] = globalDefinedVars[curr]
+    }
+
+    if (queryDefinedVars.hasOwnProperty(curr)) {
+      acc[curr] = queryDefinedVars[curr]
+    }
+
+    return acc
+  }, {})
+
+  const varVals = Object.entries(joinedVars)
+    .map(([k, v]) => `${k}: ${v}`)
+    .join(',\n')
+  const optionAST = parse(`option v = {\n${varVals}\n}\n`)
+
+  if (varVals.length) {
+    ast.body.unshift(optionAST.body[0])
+  }
+
+  // Join together any duplicate task options
+  const taskParams = remove(
+    ast,
+    node =>
+      node.type === 'OptionStatement' && node.assignment.id.name === 'task'
+  )
+    .reverse()
+    .reduce((acc, curr) => {
+      // eslint-disable-next-line no-extra-semi
+      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
+        if (_curr.key?.name && _curr.value?.location?.source) {
+          _acc[_curr.key.name] = _curr.value.location.source
+        }
+
+        return _acc
+      }, acc)
+
+      return acc
+    }, {})
+
+  if (Object.keys(taskParams).length) {
+    const taskVals = Object.entries(taskParams)
+      .map(([k, v]) => `${k}: ${v}`)
+      .join(',\n')
+    const taskAST = parse(`option task = {\n${taskVals}\n}\n`)
+    ast.body.unshift(taskAST.body[0])
+  }
+
+  // load in windowPeriod at the last second, because it needs to self reference all the things
+  if (usedVars.hasOwnProperty('windowPeriod')) {
+    _addWindowPeriod(ast, optionAST)
+  }
+
+  // turn it back into a query
+  return format_from_js_file(ast)
+}
+
 export const QueryProvider: FC = ({children}) => {
   const buckets = useSelector((state: AppState) => getSortedBuckets(state))
   const bucketsLoadingState = useSelector((state: AppState) =>
@@ -226,7 +419,7 @@ export const QueryProvider: FC = ({children}) => {
   }, [])
 
   const _getOrg = ast => {
-    const queryBuckets = _walk(
+    const queryBuckets = find(
       ast,
       node =>
         node?.type === 'CallExpression' &&
@@ -241,29 +434,10 @@ export const QueryProvider: FC = ({children}) => {
   }
 
   const basic = (text: string, vars: VariableMap = {}) => {
-    // Some preamble for setting the stage
-    const baseAST = parse(text)
-    const usedVars = _getVars(baseAST, vars)
-    const optionAST = buildVarsOption(
-      Object.values(usedVars)
-        .filter(v => !!v)
-        .map(v => asAssignment(v))
-    )
-
-    // Make a version of the query with the variables loaded
-    const ast = {
-      package: '',
-      type: 'Package',
-      files: [baseAST, optionAST],
-    }
+    const query = simplify(text, vars)
 
     // Here we grab the org from the contents of the query, in case it references a sampledata bucket
-    const orgID = _getOrg(ast)
-
-    // load in windowPeriod at the last second, because it needs to self reference all the things
-    if (usedVars.hasOwnProperty('windowPeriod')) {
-      _addWindowPeriod(ast, optionAST)
-    }
+    const orgID = _getOrg(parse(query))
 
     const url = `${API_BASE_PATH}api/v2/query?${new URLSearchParams({orgID})}`
 
@@ -273,8 +447,7 @@ export const QueryProvider: FC = ({children}) => {
     }
 
     const body = {
-      query: text,
-      extern: optionAST,
+      query,
       dialect: {annotations: ['group', 'datatype', 'default']},
     }
 

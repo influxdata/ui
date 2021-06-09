@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
-import {connect} from 'react-redux'
-import {get, find} from 'lodash'
+import {useSelector} from 'react-redux'
+import {Link} from 'react-router-dom'
 
 // Components
 import {
@@ -18,70 +18,65 @@ import CloudOnly from 'src/shared/components/cloud/CloudOnly'
 
 // Constants
 import {CLOUD_URL, CLOUD_CHECKOUT_PATH} from 'src/shared/constants'
-import {
-  HIDE_UPGRADE_CTA_KEY,
-  PAID_ORG_HIDE_UPGRADE_SETTING,
-} from 'src/cloud/constants'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {shouldShowUpgradeButton} from 'src/me/selectors'
 
-// Types
-import {AppState, OrgSetting} from 'src/types'
-
-interface StateProps {
-  inView: boolean
-}
-
-const CloudUpgradeNavBanner: FC<StateProps> = ({inView}) => (
-  <>
-    {inView && (
-      <CloudOnly>
-        <Panel
-          gradient={Gradients.HotelBreakfast}
-          className="cloud-upgrade-banner"
-        >
-          <Panel.Header
-            size={ComponentSize.ExtraSmall}
-            justifyContent={JustifyContent.Center}
+const CloudUpgradeNavBanner: FC = () => {
+  const showUpgradeButton = useSelector(shouldShowUpgradeButton)
+  return (
+    <>
+      {showUpgradeButton && (
+        <CloudOnly>
+          <Panel
+            gradient={Gradients.HotelBreakfast}
+            className="cloud-upgrade-banner"
           >
-            <Heading element={HeadingElement.H5}>
-              Need more wiggle room?
-            </Heading>
-          </Panel.Header>
-          <Panel.Footer size={ComponentSize.ExtraSmall}>
+            <Panel.Header
+              size={ComponentSize.ExtraSmall}
+              justifyContent={JustifyContent.Center}
+            >
+              <Heading element={HeadingElement.H5}>
+                Need more wiggle room?
+              </Heading>
+            </Panel.Header>
+            <Panel.Footer size={ComponentSize.ExtraSmall}>
+              {isFlagEnabled('unityCheckout') ? (
+                <Link
+                  className="cf-button cf-button-md cf-button-primary cf-button-stretch cloud-upgrade-banner--button upgrade-payg--button__nav"
+                  to="/checkout"
+                >
+                  Upgrade Now
+                </Link>
+              ) : (
+                <a
+                  className="cf-button cf-button-md cf-button-primary cf-button-stretch cloud-upgrade-banner--button upgrade-payg--button__nav"
+                  href={`${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`}
+                  target="_self"
+                >
+                  Upgrade Now
+                </a>
+              )}
+            </Panel.Footer>
+          </Panel>
+          {isFlagEnabled('unityCheckout') ? (
+            <Link className="cloud-upgrade-banner__collapsed" to="/checkout">
+              <Icon glyph={IconFont.CrownSolid} />
+              <Heading element={HeadingElement.H5}>Upgrade Now</Heading>
+            </Link>
+          ) : (
             <a
-              className="cf-button cf-button-md cf-button-primary cf-button-stretch cloud-upgrade-banner--button upgrade-payg--button__nav"
+              className="cloud-upgrade-banner__collapsed"
               href={`${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`}
               target="_self"
             >
-              Upgrade Now
+              <Icon glyph={IconFont.CrownSolid} />
+              <Heading element={HeadingElement.H5}>Upgrade Now</Heading>
             </a>
-          </Panel.Footer>
-        </Panel>
-        <a
-          className="cloud-upgrade-banner__collapsed"
-          href={`${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`}
-          target="_self"
-        >
-          <Icon glyph={IconFont.CrownSolid} />
-          <Heading element={HeadingElement.H5}>Upgrade Now</Heading>
-        </a>
-      </CloudOnly>
-    )}
-  </>
-)
-
-const mstp = (state: AppState) => {
-  const settings = get(state, 'cloud.orgSettings.settings', [])
-  const hideUpgradeButtonSetting = find(
-    settings,
-    (setting: OrgSetting) => setting.key === HIDE_UPGRADE_CTA_KEY
+          )}
+        </CloudOnly>
+      )}
+    </>
   )
-  if (
-    !hideUpgradeButtonSetting ||
-    hideUpgradeButtonSetting.value !== PAID_ORG_HIDE_UPGRADE_SETTING.value
-  ) {
-    return {inView: true}
-  }
-  return {inView: false}
 }
 
-export default connect<StateProps>(mstp)(CloudUpgradeNavBanner)
+export default CloudUpgradeNavBanner

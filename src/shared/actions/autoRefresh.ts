@@ -9,15 +9,16 @@ export type Action =
 
 interface SetAutoRefresh {
   type: 'SET_AUTO_REFRESH_INTERVAL'
-  payload: {dashboardID: string; milliseconds: number}
+  payload: {dashboardID: string; milliseconds: number; label: string}
 }
 
 export const setAutoRefreshInterval = (
   dashboardID: string,
-  milliseconds: number
+  milliseconds: number,
+  label: string
 ): SetAutoRefresh => ({
   type: 'SET_AUTO_REFRESH_INTERVAL',
-  payload: {dashboardID, milliseconds},
+  payload: {dashboardID, milliseconds, label},
 })
 
 interface SetAutoRefreshStatus {

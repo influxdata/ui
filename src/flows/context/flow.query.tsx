@@ -1,17 +1,17 @@
-import React, {FC, useContext, useMemo} from 'react'
+import React, {FC, useContext, useState, useMemo} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {getVariables} from 'src/variables/selectors'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {RunModeContext, RunMode} from 'src/flows/context/runMode'
 import {ResultsContext} from 'src/flows/context/results'
-import {QueryContext} from 'src/flows/context/query'
+import {QueryContext, simplify} from 'src/flows/context/query'
 import {event} from 'src/cloud/utils/reporting'
 import {FluxResult} from 'src/types/flows'
 import {PIPE_DEFINITIONS} from 'src/flows'
 import {notify} from 'src/shared/actions/notifications'
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 import {parseDuration, timeRangeToDuration} from 'src/shared/utils/duration'
-import {useEvent, sendEvent} from 'src/unity/hooks/useEvent'
+import {useEvent, sendEvent} from 'src/users/hooks/useEvent'
 
 // Constants
 import {
@@ -29,23 +29,36 @@ interface Instance {
   modifier?: string
 }
 
-interface Stage {
+export interface Stage {
   text: string
   instances: Instance[]
+}
+
+interface PanelQueries {
+  source: string
+  visual: string
 }
 
 export interface FlowQueryContextType {
   generateMap: (withSideEffects?: boolean) => Stage[]
   query: (text: string) => Promise<FluxResult>
   basic: (text: string) => any
+  simplify: (text: string) => string
   queryAll: () => void
+  getPanelQueries: (id: string, withSideEffects?: boolean) => PanelQueries
+  status: RemoteDataState
+  getStatus: (id: string) => RemoteDataState
 }
 
 export const DEFAULT_CONTEXT: FlowQueryContextType = {
   generateMap: () => [],
   query: (_: string) => Promise.resolve({} as FluxResult),
   basic: (_: string) => {},
+  simplify: (_: string) => '',
   queryAll: () => {},
+  getPanelQueries: (_, _a) => ({source: '', visual: ''}),
+  status: RemoteDataState.NotStarted,
+  getStatus: (_: string) => RemoteDataState.NotStarted,
 }
 
 export const FlowQueryContext = React.createContext<FlowQueryContextType>(
@@ -73,6 +86,7 @@ export const FlowQueryProvider: FC = ({children}) => {
   const {runMode} = useContext(RunModeContext)
   const {add, update} = useContext(ResultsContext)
   const {query: queryAPI, basic: basicAPI} = useContext(QueryContext)
+  const [loading, setLoading] = useState({})
 
   const dispatch = useDispatch()
   const notebookQueryKey = `queryAll-${flow?.name}`
@@ -121,6 +135,14 @@ export const FlowQueryProvider: FC = ({children}) => {
     }, {})
   }, [variables, flow?.range])
 
+  const getStatus = (id: string) => {
+    if (!loading.hasOwnProperty(id)) {
+      return RemoteDataState.NotStarted
+    }
+
+    return loading[id]
+  }
+
   const generateMap = (withSideEffects?: boolean): Stage[] => {
     return flow.data.allIDs
       .reduce((stages, pipeID) => {
@@ -163,16 +185,19 @@ export const FlowQueryProvider: FC = ({children}) => {
           ]
         }
 
-        if (
-          PIPE_DEFINITIONS[pipe.type] &&
-          PIPE_DEFINITIONS[pipe.type].generateFlux
-        ) {
+        if (!PIPE_DEFINITIONS[pipe.type]) {
+          return stages
+        }
+
+        if (PIPE_DEFINITIONS[pipe.type].generateFlux) {
           PIPE_DEFINITIONS[pipe.type].generateFlux(
             pipe,
             create,
             append,
             withSideEffects
           )
+        } else {
+          append()
         }
 
         return stages
@@ -188,6 +213,30 @@ export const FlowQueryProvider: FC = ({children}) => {
           instances: queryStruct.instances,
         }
       })
+  }
+
+  const getPanelQueries = (
+    id: string,
+    withSideEffects?: boolean
+  ): PanelQueries => {
+    return generateMap(withSideEffects).reduce(
+      (acc, curr) => {
+        const instance = curr.instances.find(i => i.id === id)
+
+        if (!instance) {
+          return acc
+        }
+
+        return {
+          source: curr.text,
+          visual: instance.modifier,
+        }
+      },
+      {
+        source: '',
+        visual: '',
+      }
+    )
   }
 
   const query = (text: string): Promise<FluxResult> => {
@@ -208,7 +257,7 @@ export const FlowQueryProvider: FC = ({children}) => {
     }
   }
 
-  const statuses = flow ? flow.meta.all.map(({loading}) => loading) : []
+  const statuses = Object.values(loading)
 
   let status = RemoteDataState.Done
 
@@ -242,39 +291,30 @@ export const FlowQueryProvider: FC = ({children}) => {
     Promise.all(
       map
         .reduce((acc, curr) => {
-          acc.push({
-            text: curr.text,
-            instances: curr.instances.filter(i => !i.modifier).map(i => i.id),
-          })
-
           return acc.concat(
             curr.instances
               .filter(i => i.modifier)
               .map(i => ({
                 text: i.modifier,
-                instances: [i.id],
+                instance: i.id,
               }))
           )
         }, [])
-        .filter(stage => !!stage.instances.length)
         .map(stage => {
-          stage.instances.forEach(pipeID => {
-            flow.meta.update(pipeID, {loading: RemoteDataState.Loading})
-          })
+          loading[stage.instance] = RemoteDataState.Loading
+          setLoading(loading)
           return query(stage.text)
             .then(response => {
-              stage.instances.forEach(pipeID => {
-                flow.meta.update(pipeID, {loading: RemoteDataState.Done})
-                forceUpdate(pipeID, response)
-              })
+              loading[stage.instance] = RemoteDataState.Done
+              setLoading(loading)
+              forceUpdate(stage.instance, response)
             })
             .catch(e => {
-              stage.instances.forEach(pipeID => {
-                forceUpdate(pipeID, {
-                  error: e.message,
-                })
-                flow.meta.update(pipeID, {loading: RemoteDataState.Error})
+              forceUpdate(stage.instance, {
+                error: e.message,
               })
+              loading[stage.instance] = RemoteDataState.Error
+              setLoading(loading)
             })
         })
     )
@@ -291,6 +331,10 @@ export const FlowQueryProvider: FC = ({children}) => {
       })
   }
 
+  const simple = (text: string) => {
+    return simplify(text, vars)
+  }
+
   if (!flow) {
     return (
       <EmptyGraphMessage
@@ -305,7 +349,18 @@ export const FlowQueryProvider: FC = ({children}) => {
   }
 
   return (
-    <FlowQueryContext.Provider value={{query, basic, generateMap, queryAll}}>
+    <FlowQueryContext.Provider
+      value={{
+        query,
+        basic,
+        simplify: simple,
+        generateMap,
+        queryAll,
+        getPanelQueries,
+        status,
+        getStatus,
+      }}
+    >
       {children}
     </FlowQueryContext.Provider>
   )

@@ -20,7 +20,6 @@ import {
   AddNoteOverlay,
   EditNoteOverlay,
   EditAnnotationDashboardOverlay,
-  AutoRefreshOverlay,
 } from 'src/overlays/components'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
@@ -70,7 +69,7 @@ class DashboardPage extends Component<Props> {
   }
 
   public render() {
-    const {manualRefresh, onManualRefresh, showAnnotationBar} = this.props
+    const {manualRefresh, onManualRefresh} = this.props
 
     return (
       <>
@@ -82,7 +81,7 @@ class DashboardPage extends Component<Props> {
                 <RateLimitAlert alertOnly={true} />
                 <VariablesControlBar />
                 <FeatureFlag name="annotations">
-                  {showAnnotationBar && <AnnotationsControlBar />}
+                  <AnnotationsControlBar />
                 </FeatureFlag>
                 <ErrorBoundary>
                   <DashboardComponent manualRefresh={manualRefresh} />
@@ -105,12 +104,6 @@ class DashboardPage extends Component<Props> {
               <Route
                 path={`${dashRoute}/edit-annotation`}
                 component={EditAnnotationDashboardOverlay}
-              />
-            )}
-            {isFlagEnabled('newAutoRefresh') && (
-              <Route
-                path={`${dashRoute}/autorefresh`}
-                component={AutoRefreshOverlay}
               />
             )}
           </Switch>
@@ -148,12 +141,9 @@ const mstp = (state: AppState) => {
     state.currentDashboard.id
   )
 
-  const showAnnotationBar = state.userSettings.showAnnotationsControls ?? false
-
   return {
     startVisitMs: state.perf.dashboard.byID[dashboard.id]?.startVisitMs,
     dashboard,
-    showAnnotationBar,
   }
 }
 

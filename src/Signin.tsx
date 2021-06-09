@@ -49,7 +49,10 @@ const FETCH_WAIT = 60000
 
 @ErrorHandling
 export class Signin extends PureComponent<Props, State> {
-  public state: State = {loading: RemoteDataState.NotStarted, auth: false}
+  public state: State = {
+    loading: RemoteDataState.NotStarted,
+    auth: false,
+  }
 
   private hasMounted = false
   private intervalID: NodeJS.Timer
@@ -57,7 +60,9 @@ export class Signin extends PureComponent<Props, State> {
   public async componentDidMount() {
     this.hasMounted = true
     this.setState({loading: RemoteDataState.Loading})
-    await this.props.onGetPublicFlags()
+    if (CLOUD) {
+      await this.props.onGetPublicFlags()
+    }
 
     await this.checkForLogin()
 
@@ -91,7 +96,6 @@ export class Signin extends PureComponent<Props, State> {
   private checkForLogin = async () => {
     try {
       await client.users.me()
-
       this.setState({auth: true})
       const redirectIsSet = !!getFromLocalStorage('redirectTo')
       if (redirectIsSet) {
@@ -104,7 +108,10 @@ export class Signin extends PureComponent<Props, State> {
       } = this.props
 
       clearInterval(this.intervalID)
-
+      /**
+       * We'll need this authSessionCookieOn flag off for tools until
+       * Quartz is integrated into that environment
+       */
       if (CLOUD && isFlagEnabled('authSessionCookieOn')) {
         const url = new URL(
           `${window.location.origin}${CLOUD_LOGIN_PATHNAME}?redirectTo=${window.location.href}`

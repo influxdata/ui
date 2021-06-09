@@ -1,6 +1,6 @@
 const queryApi = client.getQueryApi(org)
 
-const query = `from(bucket: "<%= bucket %>") |> range(start: -1h)`
+const query = `<%= query %>`
 queryApi.queryRows(query, {
   next(row, tableMeta) {
     const o = tableMeta.toObject(row)

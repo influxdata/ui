@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react'
+import React, {FC, useContext, useState} from 'react'
 
 import {
   Panel,
@@ -9,11 +9,11 @@ import {
   JustifyContent,
   FlexBox,
 } from '@influxdata/clockface'
+import {BillingContext} from 'src/billing/context/billing'
 
 import InvoiceHistoryRows from 'src/billing/components/PayAsYouGo/InvoiceHistoryRows'
 import {getSortedResources, SortTypes} from 'src/shared/utils/sort'
 import {Invoice} from 'src/types/billing'
-import {useBilling} from 'src/billing/components/BillingPage'
 
 const sortType = (sortKey: string): SortTypes => {
   switch (sortKey) {
@@ -26,7 +26,7 @@ const sortType = (sortKey: string): SortTypes => {
 }
 
 const InvoiceHistory: FC = () => {
-  const [{invoices}] = useBilling()
+  const {invoices} = useContext(BillingContext)
   const [sortDirection, setSortDirection] = useState(Sort.Descending)
   const [sortKey, setSortKey] = useState('targetDate')
 

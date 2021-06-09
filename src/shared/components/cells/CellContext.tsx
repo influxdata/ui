@@ -22,6 +22,7 @@ import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Actions
 import {deleteCellAndView, createCellWithView} from 'src/cells/actions/thunks'
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Selectors
 import {getAllVariables} from 'src/variables/selectors'
@@ -35,6 +36,8 @@ interface OwnProps {
   onCSVDownload: () => void
   onRefresh: () => void
   variables: string
+  isPaused: boolean
+  togglePauseCell: () => void
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -49,6 +52,10 @@ const CellContext: FC<Props> = ({
   onDeleteCell,
   onCSVDownload,
   onRefresh,
+  isPaused,
+  togglePauseCell,
+  onShowOverlay,
+  onDismissOverlay,
 }) => {
   const [popoverVisible, setPopoverVisibility] = useState<boolean>(false)
   const editNoteText = !!get(view, 'properties.note') ? 'Edit Note' : 'Add Note'
@@ -94,6 +101,31 @@ const CellContext: FC<Props> = ({
             onHide={onHide}
             testID="cell-context--note"
           />
+          <CellContextItem
+            label="Clone"
+            onClick={handleCloneCell}
+            icon={IconFont.Duplicate}
+            onHide={onHide}
+            testID="cell-context--clone"
+          />
+          <FeatureFlag name="cloneToOtherBoards">
+            <CellContextItem
+              label="Relocate"
+              onClick={() =>
+                onShowOverlay(
+                  'cell-copy-overlay',
+                  {
+                    view,
+                    cell,
+                  },
+                  onDismissOverlay
+                )
+              }
+              icon={IconFont.Export}
+              onHide={onHide}
+              testID="cell-context--copy"
+            />
+          </FeatureFlag>
           <CellContextDangerItem
             label="Delete"
             onClick={handleDeleteCell}
@@ -153,12 +185,48 @@ const CellContext: FC<Props> = ({
             testID="cell-context--refresh"
           />
         </FeatureFlag>
+        <FeatureFlag name="pauseCell">
+          <CellContextItem
+            label={isPaused ? 'Resume' : 'Pause'}
+            onClick={togglePauseCell}
+            icon={isPaused ? IconFont.Play : IconFont.Pause}
+            onHide={onHide}
+            testID="cell-context--pause"
+          />
+        </FeatureFlag>
+        <FeatureFlag name="cloneToOtherBoards">
+          <CellContextItem
+            label="Relocate"
+            onClick={() =>
+              onShowOverlay(
+                'cell-copy-overlay',
+                {
+                  view,
+                  cell,
+                },
+                onDismissOverlay
+              )
+            }
+            icon={IconFont.Export}
+            onHide={onHide}
+            testID="cell-context--copy"
+          />
+        </FeatureFlag>
       </div>
     )
   }
 
   return (
     <>
+      {isPaused && (
+        <button
+          className={buttonClass}
+          onClick={togglePauseCell}
+          data-testid="cell-context--pause-resume"
+        >
+          <Icon glyph={IconFont.Pause} />
+        </button>
+      )}
       <button
         className={buttonClass}
         ref={triggerRef}
@@ -190,6 +258,8 @@ const mstp = (state: AppState) => ({
 const mdtp = {
   onDeleteCell: deleteCellAndView,
   onCloneCell: createCellWithView,
+  onShowOverlay: showOverlay,
+  onDismissOverlay: dismissOverlay,
 }
 
 const connector = connect(mstp, mdtp)

@@ -204,22 +204,7 @@ describe('Buckets', () => {
       cy.getByTestID('overlay--container').should('not.exist')
       cy.getByTestID('notification-success').should('have.length', 1)
     })
-    // needs relevant data in order to test functionality
-    it.skip('should require key-value pairs when deleting predicate with filters', () => {
-      // confirm delete is disabled
-      cy.getByTestID('add-filter-btn').click()
-      // checks the consent input
-      cy.getByTestID('delete-checkbox').check({force: true})
-      // cannot delete
-      cy.getByTestID('confirm-delete-btn').should('be.disabled')
-
-      // should display warnings
-      cy.getByTestID('form--element-error').should('have.length', 2)
-
-      // TODO: add filter values based on dropdown selection in key / value
-    })
   })
-
   describe('routing directly to the edit overlay', () => {
     it('reroutes to buckets view if bucket does not exist', () => {
       cy.get('@org').then(({id}: Organization) => {
@@ -273,7 +258,15 @@ describe('Buckets', () => {
         cy.getByTestID('line-protocol--text-area').type('invalid invalid')
         cy.getByTestID('lp-write-data--button').click()
         cy.getByTestID('line-protocol--status').contains('Unable')
+
+        // Using the Edit button should show the same invalid text
+        cy.getByTestID('lp-edit--button').click()
+        cy.getByTestID('line-protocol--text-area').contains('invalid invalid')
+
+        // Using the Clear button should clear text
+        cy.getByTestID('lp-write-data--button').click()
         cy.getByTestID('lp-cancel--button').click()
+        cy.getByTestID('line-protocol--text-area').should('have.value', '')
 
         // writing a well-formed line with millisecond precision is accepted
         cy.getByTestID('wizard-step--lp-precision--dropdown').click()

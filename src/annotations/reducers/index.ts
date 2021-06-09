@@ -4,8 +4,7 @@ import {
   EDIT_ANNOTATION,
   SET_ANNOTATIONS,
   SET_ANNOTATION_STREAMS,
-  TOGGLE_ANNOTATION_VISIBILITY,
-  TOGGLE_SINGLE_CLICK_ANNOTATIONS,
+  TOGGLE_ANNOTATIONS_MODE,
 } from 'src/annotations/actions/creators'
 
 import {Annotation, AnnotationsList, AnnotationStream} from 'src/types'
@@ -13,17 +12,15 @@ import {Annotation, AnnotationsList, AnnotationStream} from 'src/types'
 export interface AnnotationsState {
   streams: AnnotationStream[]
   annotations: AnnotationsList
-  annotationsAreVisible: boolean // a temporary (we'll see) measure until we enable streams
   visibleStreamsByID: string[]
-  enableSingleClickAnnotations: boolean
+  enableAnnotationsMode: boolean // if this on, can see annotations and write annotations. if off, cannot see nor write annotations
 }
 
 export const initialState = (): AnnotationsState => ({
   annotations: {
     default: [] as Annotation[],
   },
-  annotationsAreVisible: true,
-  enableSingleClickAnnotations: false,
+  enableAnnotationsMode: true,
   streams: [],
   visibleStreamsByID: [],
 })
@@ -81,19 +78,10 @@ export const annotationsReducer = (
       }
     }
 
-    case TOGGLE_ANNOTATION_VISIBILITY: {
+    case TOGGLE_ANNOTATIONS_MODE: {
       return {
         ...state,
-        annotationsAreVisible: !state.annotationsAreVisible,
-      }
-    }
-
-    case TOGGLE_SINGLE_CLICK_ANNOTATIONS: {
-      const newVal = !state.enableSingleClickAnnotations
-
-      return {
-        ...state,
-        enableSingleClickAnnotations: newVal,
+        enableAnnotationsMode: action.isEnabled,
       }
     }
     default:

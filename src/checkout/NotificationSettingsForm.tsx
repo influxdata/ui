@@ -44,7 +44,7 @@ const NotificationSettingsForm: FC = () => {
                 label="Limit ($1 minimum)"
                 min={1}
                 required
-                step={0.01}
+                step={1}
                 type={InputType.Number}
               />
             </Grid.Column>

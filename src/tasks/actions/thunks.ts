@@ -558,6 +558,25 @@ export const createTaskFromTemplate = (template: TaskTemplate) => async (
   }
 }
 
+export const retryTask = (taskID: string, runID: string) => async (
+  dispatch: Dispatch<Action | NotificationAction>
+) => {
+  try {
+    const resp = await api.postTasksRunsRetry({
+      taskID,
+      runID,
+    })
+
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
+    }
+
+    dispatch(notify(copy.taskRetrySuccess(runID)))
+  } catch (error) {
+    dispatch(notify(copy.taskRetryFailed(error)))
+  }
+}
+
 export const runDuration = (finishedAt: Date, startedAt: Date): string => {
   let timeTag = 'seconds'
 

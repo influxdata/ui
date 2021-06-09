@@ -1,7 +1,7 @@
 // Libraries
 import {useMemo} from 'react'
 import {NumericColumnData} from '@influxdata/giraffe'
-import {isNull, isNumber} from 'lodash'
+import {isNull} from 'lodash'
 
 // Utils
 import {useOneWayState} from 'src/shared/utils/useOneWayState'
@@ -56,7 +56,9 @@ export const useVisXDomainSettings = (
 }
 
 const isValidStoredDomainValue = (value): boolean => {
-  return isNumber(value) && !Number.isNaN(value) && Number.isFinite(value)
+  return (
+    typeof value === 'number' && !Number.isNaN(value) && Number.isFinite(value)
+  )
 }
 
 export const getRemainingRange = (

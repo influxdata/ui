@@ -2,7 +2,7 @@ import React, {FC, useCallback, useEffect, useRef, useState} from 'react'
 
 // Context
 import {CreditCardParams} from 'src/client/unityRoutes'
-import {ZuoraClient} from 'src/types/billing'
+import {ZuoraClient} from 'src/types'
 
 export const ZUORA_SCRIPT_URL =
   'https://apisandboxstatic.zuora.com/Resources/libs/hosted/1.3.0/zuora-min.js'
@@ -67,6 +67,11 @@ const CreditCardForm: FC<Props> = ({
       document.body.appendChild(script)
 
       script.onload = () => {
+        /**
+         * For context, Z is a globally defined ZuoraClient in Quartz
+         * that is set when the ZuoraAPI is queried. In this case, Z serves as a
+         * a hosted iframe to render a credit card form to the UI
+         */
         setClient(window.Z)
       }
     }

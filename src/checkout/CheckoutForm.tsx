@@ -47,6 +47,8 @@ const CheckoutForm: FC = () => {
     try {
       Z.submit()
     } catch (error) {
+      // Ingest the error since the Zuora Form will return an error form based on the error returned
+      // And the parent component will notify the user of an error based on error state and a notification
       console.error(error)
     }
   }

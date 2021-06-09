@@ -1,11 +1,28 @@
 import {FromFluxResult, FluxDataType, Table} from '@influxdata/giraffe'
 import {FunctionComponent, ComponentClass, ReactNode} from 'react'
-import {AutoRefresh, RemoteDataState, TimeRange} from 'src/types'
+import {AutoRefresh, TimeRange} from 'src/types'
+
+export interface ControlAction {
+  title: string | (() => string)
+  disable?: boolean | (() => boolean)
+  action: () => void
+}
+
+export interface Submenu {
+  title: string | (() => string)
+  disable?: boolean | (() => boolean)
+  menu: ReactNode
+}
+
+export interface ControlSection {
+  title: string | (() => string)
+  actions: (ControlAction | Submenu)[]
+}
 
 export interface PipeContextProps {
   children?: ReactNode
   controls?: ReactNode
-  persistentControl?: ReactNode
+  persistentControls?: ReactNode
 }
 
 export type PipeData = any
@@ -15,7 +32,6 @@ export type Visibility = 'visible' | 'hidden'
 export interface PipeMeta {
   title: string
   visible: boolean
-  loading: RemoteDataState
   error?: string
 }
 
@@ -45,7 +61,7 @@ interface InternalTable extends Table {
   columns?: Columns
 }
 
-interface InternalFromFluxResult extends FromFluxResult {
+export interface InternalFromFluxResult extends FromFluxResult {
   table: InternalTable
 }
 

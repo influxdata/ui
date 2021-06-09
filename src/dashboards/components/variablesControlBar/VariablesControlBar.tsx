@@ -48,7 +48,7 @@ const VariablesControlBar: FC = () => {
       <EmptyState.Text className="margin-zero">
         This dashboard doesn't have any cells with defined variables.{' '}
         <a
-          href="https://v2.docs.influxdata.com/v2.0/visualize-data/variables/"
+          href="https://docs.influxdata.com/influxdb/cloud/visualize-data/variables/"
           target="_blank"
           rel="noreferrer"
         >

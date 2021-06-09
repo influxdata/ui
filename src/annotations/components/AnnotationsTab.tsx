@@ -63,7 +63,6 @@ export const AnnotationsTab: FC = () => {
   }, [dispatch])
 
   const annotationStreams = useSelector(getAnnotationStreams)
-
   const [searchTerm, setSearchTerm] = useState<string>('')
 
   // TODO: make these stateful

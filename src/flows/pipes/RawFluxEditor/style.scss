@@ -1,12 +1,21 @@
 @import '@influxdata/clockface/dist/variables.scss';
 @import '~src/flows/FlowVariables.scss';
 
-.flow-panel--body .flux-toolbar {
+.flow-sidebar {
+  .flux-toolbar {
+    flex-direction: column;
+  }
+}
+
+.flow-nonsidebar {
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   width: 300px;
-  flex-direction: column;
-  background-color: $flow-panel--bg;
+
+  .flux-toolbar {
+    flex-direction: column;
+    background-color: $flow-panel--bg;
+  }
 }

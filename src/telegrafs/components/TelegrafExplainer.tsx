@@ -39,7 +39,7 @@ const TelegrafExplainer: FunctionComponent<Props> = ({
       <br />
       Here's a handy guide for{' '}
       <a
-        href="https://v2.docs.influxdata.com/v2.0/write-data/no-code/use-telegraf/"
+        href="https://docs.influxdata.com/influxdb/cloud/write-data/no-code/use-telegraf/"
         target="_blank"
         rel="noreferrer"
       >

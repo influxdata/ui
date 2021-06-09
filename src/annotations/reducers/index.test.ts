@@ -50,8 +50,7 @@ describe('the annotations reducer', () => {
           },
         ],
       },
-      annotationsAreVisible: true,
-      enableSingleClickAnnotations: false,
+      enableAnnotationsMode: true,
       visibleStreamsByID: [],
       streams: [],
     })

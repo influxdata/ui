@@ -1,24 +1,21 @@
 // Libraries
 import React, {FC, useCallback, useEffect, useState} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
+import {fromFlux, FromFluxResult} from '@influxdata/giraffe'
 
 // Utils
 import {
-  getBillingDate,
-  getBillingStats,
+  getBillingStartDate,
+  getUsage,
+  getUsageBillingStats,
   getUsageVectors,
-  getUsageStats,
-  getRateLimits,
-} from 'src/usage/api'
-import {getTimeRange} from 'src/dashboards/selectors'
-import {setTimeRange} from 'src/timeMachine/actions'
+  getUsageRateLimits,
+} from 'src/client/unityRoutes'
 
 // Constants
-import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
+import {DEFAULT_USAGE_TIME_RANGE} from 'src/shared/constants/timeRanges'
 
 // Types
-import {TimeRange} from 'src/types'
-import {UsageVector} from 'src/types/billing'
+import {SelectableDurationTimeRange, UsageVector} from 'src/types'
 
 export type Props = {
   children: JSX.Element
@@ -26,13 +23,13 @@ export type Props = {
 
 export interface UsageContextType {
   billingDateTime: string
-  billingStats: string[]
+  billingStats: FromFluxResult[]
   handleSetSelectedUsage: (vector: string) => void
-  handleSetTimeRange: (timeRange: TimeRange) => void
-  rateLimits: string
+  handleSetTimeRange: (timeRange: SelectableDurationTimeRange) => void
+  rateLimits: FromFluxResult
   selectedUsage: string
-  timeRange: TimeRange
-  usageStats: string
+  timeRange: SelectableDurationTimeRange
+  usageStats: FromFluxResult
   usageVectors: UsageVector[]
 }
 
@@ -41,10 +38,10 @@ export const DEFAULT_CONTEXT: UsageContextType = {
   billingStats: [],
   handleSetSelectedUsage: () => {},
   handleSetTimeRange: () => {},
-  rateLimits: '',
+  rateLimits: null,
   selectedUsage: '',
-  timeRange: DEFAULT_TIME_RANGE,
-  usageStats: '',
+  timeRange: DEFAULT_USAGE_TIME_RANGE,
+  usageStats: null,
   usageVectors: [],
 }
 
@@ -56,16 +53,19 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   const [billingDateTime, setBillingDateTime] = useState('')
   const [usageVectors, setUsageVectors] = useState([])
   const [selectedUsage, setSelectedUsage] = useState('')
-  const [billingStats, setBillingStats] = useState([])
-  const [usageStats, setUsageStats] = useState('')
-  const [rateLimits, setRateLimits] = useState('')
+  const [billingStats, setBillingStats] = useState<FromFluxResult[]>([])
+  const [usageStats, setUsageStats] = useState<FromFluxResult>(null)
+  const [rateLimits, setRateLimits] = useState<FromFluxResult>(null)
+  const [timeRange, setTimeRange] = useState<SelectableDurationTimeRange>(
+    DEFAULT_USAGE_TIME_RANGE
+  )
 
-  const timeRange = useSelector(getTimeRange)
-  const dispatch = useDispatch()
-
-  const handleSetTimeRange = (range: TimeRange) => {
-    dispatch(setTimeRange(range))
-  }
+  const handleSetTimeRange = useCallback(
+    (range: SelectableDurationTimeRange) => {
+      setTimeRange(range)
+    },
+    [setTimeRange]
+  )
 
   const handleSetSelectedUsage = useCallback(
     (vector: string) => {
@@ -75,16 +75,20 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   )
 
   const handleGetUsageVectors = useCallback(async () => {
-    const resp = await getUsageVectors()
+    try {
+      const resp = await getUsageVectors({})
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      const vectors = resp.data
+
+      setUsageVectors(vectors)
+      handleSetSelectedUsage(vectors?.[0]?.name)
+    } catch (error) {
+      console.error(error)
     }
-
-    const vectors = resp.data.usageVectors
-
-    setUsageVectors(vectors)
-    handleSetSelectedUsage(vectors?.[0]?.name)
   }, [setUsageVectors, handleSetSelectedUsage])
 
   useEffect(() => {
@@ -92,12 +96,17 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   }, [handleGetUsageVectors])
 
   const handleGetBillingDate = useCallback(async () => {
-    const resp = await getBillingDate()
+    try {
+      const resp = await getBillingStartDate({})
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      setBillingDateTime(resp.data.dateTime)
+    } catch (error) {
+      console.error(error)
     }
-    setBillingDateTime(resp.data.dateTime)
   }, [setBillingDateTime])
 
   useEffect(() => {
@@ -105,15 +114,21 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   }, [handleGetBillingDate])
 
   const handleGetBillingStats = useCallback(async () => {
-    const resp = await getBillingStats()
+    try {
+      const resp = await getUsageBillingStats({})
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      const csv = resp.data?.trim().replace(/\r\n/g, '\n')
+
+      const csvs = csv.split('\n\n').map(c => fromFlux(c))
+
+      setBillingStats(csvs)
+    } catch (error) {
+      console.error(error)
     }
-
-    const csvs = resp.data?.split('\n\n')
-
-    setBillingStats(csvs)
   }, [setBillingStats])
 
   useEffect(() => {
@@ -121,27 +136,52 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   }, [handleGetBillingStats])
 
   const handleGetUsageStats = useCallback(async () => {
-    const resp = await getUsageStats(selectedUsage, timeRange)
+    if (selectedUsage.length > 0) {
+      try {
+        const vector = usageVectors.find(
+          vector => selectedUsage === vector.name
+        )
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+        const resp = await getUsage({
+          vector_name: vector.fluxKey,
+          query: {range: timeRange.duration},
+        })
+
+        if (resp.status !== 200) {
+          throw new Error(resp.data.message)
+        }
+
+        const fromFluxResult = fromFlux(resp.data)
+
+        setUsageStats(fromFluxResult)
+      } catch (error) {
+        console.error(error)
+        setUsageStats(null)
+      }
     }
-
-    setUsageStats(resp.data)
-  }, [selectedUsage, timeRange])
+  }, [selectedUsage, timeRange, usageVectors])
 
   useEffect(() => {
     handleGetUsageStats()
   }, [handleGetUsageStats])
 
   const handleGetRateLimits = useCallback(async () => {
-    const resp = await getRateLimits(timeRange)
+    try {
+      const resp = await getUsageRateLimits({
+        query: {range: timeRange.duration},
+      })
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      const fromFluxResult = fromFlux(resp.data)
+
+      setRateLimits(fromFluxResult)
+    } catch (error) {
+      console.error(error)
+      setRateLimits(null)
     }
-
-    setRateLimits(resp.data)
   }, [timeRange])
 
   useEffect(() => {

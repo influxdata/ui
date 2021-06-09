@@ -20,6 +20,8 @@ export type OverlayID =
   | 'update-annotation-stream'
   | 'add-annotation'
   | 'edit-annotation'
+  | 'toggle-auto-refresh'
+  | 'cell-copy-overlay'
 
 export interface OverlayState {
   id: OverlayID | null

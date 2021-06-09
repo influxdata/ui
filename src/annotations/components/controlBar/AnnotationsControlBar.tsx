@@ -10,8 +10,7 @@ import {
   JustifyContent,
   TextBlock,
 } from '@influxdata/clockface'
-import ErrorBoundary from 'src/shared/components/ErrorBoundary'
-import Toolbar from 'src/shared/components/toolbar/Toolbar'
+
 import {useSelector} from 'react-redux'
 import {isAnnotationsModeEnabled} from '../../selectors'
 
@@ -32,7 +31,7 @@ export const AnnotationsControlBar: FC = () => {
   return (
     <FlexBox
       testID="annotations-control-bar"
-      justifyContent={JustifyContent.FlexEnd}
+      justifyContent={JustifyContent.FlexStart}
       margin={ComponentSize.Large}
     >
       <FlexBoxChild grow={0}>

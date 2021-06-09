@@ -44,5 +44,5 @@ export const getNewDashboardViewNames = async (dashboardID: string) => {
 
   const views = normalize<View, ViewEntities, string[]>(viewsData, arrayOfViews)
 
-  return Object.values(views?.entities.views)?.map(view => view.name) ?? []
+  return Object.values(views.entities?.views)?.map(view => view.name) ?? []
 }

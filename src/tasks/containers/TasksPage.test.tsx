@@ -12,7 +12,7 @@ import {createMemoryHistory} from 'history'
 
 // Items under test
 import TasksPage from './TasksPage'
-import {deleteTask, postTask, getTask} from 'src/client'
+import {deleteTask, patchTask, postTask, getTask} from 'src/client'
 import {parse} from 'src/external/parser'
 import {mocked} from 'ts-jest/utils'
 
@@ -29,7 +29,6 @@ const InactiveTask = {
   name: 'Dead Beetle',
   status: TaskApi.StatusEnum.Inactive,
   flux: sampleScript,
-  // 'option task = {\n  name: "beetle",\n  every: 1h,\n}\nfrom(bucket: "inbucket") \n|> range(start: -task.every)',
   every: '1h',
   org: 'default',
   labels: [],
@@ -98,6 +97,13 @@ jest.mock('src/client', () => ({
       headers: {},
       status: 201,
       data: {...InactiveTask, name: replacementName, id: replacementID},
+    }
+  }),
+  patchTask: jest.fn(() => {
+    return {
+      headers: {},
+      status: 200,
+      data: {...InactiveTask, status: 'active'},
     }
   }),
   deleteTask: jest.fn(() => ({
@@ -302,6 +308,27 @@ describe('Tasks.Containers.TasksPage', () => {
       expect(
         ui.store.getState().resources.tasks.byID[replacementID].name
       ).toEqual(replacementName)
+    })
+
+    it('activates a task', async () => {
+      expect(
+        ui.store.getState().resources.tasks.byID[InactiveTask.id].status
+      ).toEqual('inactive')
+
+      const taskCard = (await screen.findAllByTestId('task-card'))[0]
+      const activateToggle = taskCard.querySelector(
+        '[data-testid=task-card--slide-toggle]'
+      )
+
+      fireEvent.click(activateToggle)
+
+      await waitFor(() => expect(patchTask).toBeCalled())
+
+      expect(mocked(patchTask).mock.calls[0][0].data.status).toEqual('active')
+
+      expect(
+        ui.store.getState().resources.tasks.byID[InactiveTask.id].status
+      ).toEqual('active')
     })
   })
 })

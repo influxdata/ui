@@ -84,7 +84,7 @@ export class TaskHeaderCard extends PureComponent<
           <Button
             onClick={this.handleRunTask}
             text="Run Task"
-            style={{marginRight: 10}}
+            className="task-header-card-btn"
           />
           <Button
             onClick={this.handleEditTask}

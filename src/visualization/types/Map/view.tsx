@@ -11,7 +11,6 @@ import {DEFAULT_THRESHOLDS_GEO_COLORS} from 'src/shared/constants/thresholds'
 import {
   getDetectCoordinatingFields,
   getGeoCoordinates,
-  filterNoisyColumns,
 } from 'src/shared/utils/vis'
 import {getMapToken} from './api'
 import {event} from 'src/cloud/utils/reporting'
@@ -28,6 +27,8 @@ type GeoCoordinates = {
 const GeoPlot: FC<Props> = ({result, properties}) => {
   const {layers, zoom, allowPanAndZoom, mapStyle} = properties
   const {lat, lon} = properties.center
+  const tooltipColumns =
+    properties.layers.tooltipColumns || result.fluxGroupKeyUnion || []
 
   const [mapServiceError, setMapServiceError] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
@@ -91,16 +92,6 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     return null
   }
 
-  const groupKey = [...result.fluxGroupKeyUnion, 'result']
-  const xColumn =  (result.table, '_time')
-  const yColumn = (result.table, '_duration')
-
-  const legendColumns = filterNoisyColumns(
-    [...groupKey, xColumn, yColumn],
-    result.table
-  )
-
-
   if (mapServiceError === RemoteDataState.Error) {
     error =
       'We are having issues connecting to the Maps Server. Please try again later'
@@ -149,7 +140,6 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
   const config: Config = {
     table: result.table,
     showAxes: false,
-    legendColumns,
     layers: [
       {
         type: 'geo',
@@ -161,10 +151,10 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
         mapStyle,
         layers: layersOpts,
         tileServerConfiguration: tileServerConfiguration,
+        tooltipColumns: tooltipColumns,
       },
     ],
   }
-
   return <Plot config={config} />
 }
 

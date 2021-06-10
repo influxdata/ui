@@ -19,6 +19,9 @@ import {
 // Utils
 import {BillingContext} from 'src/billing/context/billing'
 
+// Constants
+import {BALANCE_THRESHOLD_DEFAULT} from 'src/shared/constants'
+
 // Types
 import {BillingNotifySettings} from 'src/types/billing'
 
@@ -42,7 +45,7 @@ const NotificationSettingsOverlay: FC<Props> = ({
   const onSubmitThreshold = () => {
     const settings = {
       notifyEmail,
-      balanceThreshold: balanceThreshold,
+      balanceThreshold,
       isNotify: isNotifyActive,
     } as BillingNotifySettings
     handleUpdateBillingSettings(settings)
@@ -63,8 +66,11 @@ const NotificationSettingsOverlay: FC<Props> = ({
     setBalanceThreshold(e.target.value)
   }
 
+  // TODO(ariel): should this be 10 or 1?
   const saveStatus =
-    balanceThreshold < 10 ? ComponentStatus.Disabled : ComponentStatus.Default
+    balanceThreshold < BALANCE_THRESHOLD_DEFAULT
+      ? ComponentStatus.Disabled
+      : ComponentStatus.Default
 
   return (
     <Overlay visible={isOverlayVisible}>

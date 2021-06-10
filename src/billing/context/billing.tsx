@@ -175,9 +175,11 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
 
   const handleCancelAccount = useCallback(async () => {
     try {
-      const resp = await postAccountCancellation({})
+      // TODO(ariel): this needs to be created
+      // const resp = await postAccountCancellation({})
+      const resp = await getBilling({})
 
-      if (resp.status !== 204) {
+      if (resp.status !== 200) {
         throw new Error(resp.data.message)
       }
 

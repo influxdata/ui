@@ -141,6 +141,13 @@ export const updateBillingInfoError = (message: string): Notification => ({
   message: `There was an error updating your billing info: ${message}`,
 })
 
+export const billingContactIncompleteError = (): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message:
+    'Looks like your billing information is incomplete. Please complete the form before resubmitting.',
+})
+
 export const updatePaymentMethodError = (message: string): Notification => ({
   ...defaultErrorNotification,
   duration: FIVE_SECONDS,

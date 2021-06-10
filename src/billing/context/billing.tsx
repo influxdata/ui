@@ -60,7 +60,7 @@ export interface BillingContextType {
   handleGetInvoices: () => void
   handleGetMarketplace: () => void
   handleGetZuoraParams: () => void
-  handleUpdateBillingInfo: (contact: BillingContact) => void
+  handleUpdateBillingContact: (contact: BillingContact) => void
   handleUpdateBillingSettings: (settings: BillingNotifySettings) => void
   handleUpdatePaymentMethod: (id: string) => void
   invoices: Invoices
@@ -82,7 +82,7 @@ export const DEFAULT_CONTEXT: BillingContextType = {
   handleGetInvoices: () => {},
   handleGetMarketplace: () => {},
   handleGetZuoraParams: () => {},
-  handleUpdateBillingInfo: (_contact: BillingContact) => {},
+  handleUpdateBillingContact: (_contact: BillingContact) => {},
   handleUpdateBillingSettings: (_settings: BillingNotifySettings) => {},
   handleUpdatePaymentMethod: (_id: string) => {},
   invoices: [],
@@ -227,10 +227,9 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
     }
   }, [dispatch])
 
-  const handleUpdateBillingInfo = useCallback(
+  const handleUpdateBillingContact = useCallback(
     async (contact: BillingContact) => {
       try {
-        setBillingInfoStatus(RemoteDataState.Loading)
         const resp = await putBillingContact({data: contact})
 
         if (resp.status !== 200) {
@@ -241,11 +240,9 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
           ...prevBilling,
           contact: resp.data,
         }))
-        setBillingInfoStatus(RemoteDataState.Done)
       } catch (error) {
         const message = getErrorMessage(error)
         dispatch(notify(updateBillingInfoError(message)))
-        setBillingInfoStatus(RemoteDataState.Error)
       }
     },
     [dispatch]
@@ -331,7 +328,7 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
         handleGetInvoices,
         handleGetMarketplace,
         handleGetZuoraParams,
-        handleUpdateBillingInfo,
+        handleUpdateBillingContact,
         handleUpdateBillingSettings,
         handleUpdatePaymentMethod,
         invoices,

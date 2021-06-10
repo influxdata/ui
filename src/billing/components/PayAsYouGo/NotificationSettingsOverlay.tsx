@@ -20,7 +20,7 @@ import {
 import {BillingContext} from 'src/billing/context/billing'
 
 // Constants
-import {BALANCE_THRESHOLD_DEFAULT} from 'src/shared/constants'
+import {MINIMUM_BALANCE_THRESHOLD} from 'src/shared/constants'
 
 // Types
 import {BillingNotifySettings} from 'src/types/billing'
@@ -66,9 +66,8 @@ const NotificationSettingsOverlay: FC<Props> = ({
     setBalanceThreshold(e.target.value)
   }
 
-  // TODO(ariel): should this be 10 or 1?
   const saveStatus =
-    balanceThreshold < BALANCE_THRESHOLD_DEFAULT
+    balanceThreshold < MINIMUM_BALANCE_THRESHOLD
       ? ComponentStatus.Disabled
       : ComponentStatus.Default
 

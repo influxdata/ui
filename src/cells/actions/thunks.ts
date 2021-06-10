@@ -115,7 +115,7 @@ export const createCellWithView = (
 
     const cellID = cellResp.data.id
 
-    if (clonedCell) {
+    if (clonedCell && !differentDashboard) {
       workingView = {...workingView, name: `${view.name} (Clone)`}
     }
 

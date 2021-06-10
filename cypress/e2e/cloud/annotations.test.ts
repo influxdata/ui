@@ -545,11 +545,14 @@ describe('The Annotations UI functionality', () => {
         .then(() => {
           cy.getByTestID('selector-list schmucket').click()
           cy.getByTestID(`selector-list m`).click()
-          cy.getByTestID('selector-list v').click()
-          cy.getByTestID(`selector-list tv1`)
+          cy.getByTestID('selector-list v')
             .click()
             .then(() => {
-              cy.getByTestID('time-machine-submit-button').click()
+              cy.getByTestID(`selector-list tv1`)
+                .click()
+                .then(() => {
+                  cy.getByTestID('time-machine-submit-button').click()
+                })
             })
         })
       cy.getByTestID('overlay').within(() => {

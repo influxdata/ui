@@ -12,12 +12,16 @@ import {
   InputLabel,
   SlideToggle,
   Form,
+  ComponentStatus,
 } from '@influxdata/clockface'
 
 // Actions
 import {createCellWithView, deleteCellAndView} from 'src/cells/actions/thunks'
 import {getOverlayParams} from 'src/overlays/selectors'
-import {getDashboardIDs} from 'src/dashboards/utils/getDashboardIds'
+import {
+  getDashboardIDs,
+  getNewDashboardViewNames,
+} from 'src/dashboards/utils/getDashboardData'
 import {getOrg} from 'src/organizations/selectors'
 
 // Types
@@ -30,7 +34,10 @@ import {notify} from 'src/shared/actions/notifications'
 import {
   dashboardsGetFailed,
   cellCloneSuccess,
+  cellCopyFailed,
 } from 'src/shared/copy/notifications'
+
+import {incrementCloneName} from 'src/utils/naming'
 
 const CellCloneOverlay: FC = () => {
   const [otherDashboards, setOtherDashboards] = useState<Dashboard[]>([])
@@ -40,6 +47,9 @@ const CellCloneOverlay: FC = () => {
   const currentDashboardID = useSelector(
     (state: AppState) => state.currentDashboard.id
   )
+
+  const allViews =
+    useSelector((state: AppState) => state.resources.views.byID) ?? {}
 
   useEffect(() => {
     getDashboardIDs(orgID)
@@ -71,12 +81,43 @@ const CellCloneOverlay: FC = () => {
     dispatch(deleteCellAndView(currentDashboardID, cell.id, view.id))
   }
 
-  const copyCellToDashboard = () => {
-    dispatch(
+  const copyCellToDashboard = async () => {
+    let destinationViewNames
+    const viewsForDashboard = Object.values(allViews)?.filter(
+      view => view.dashboardID === destinationDashboardID
+    )
+
+    if (!viewsForDashboard?.length) {
+      try {
+        destinationViewNames = await getNewDashboardViewNames(
+          destinationDashboardID
+        )
+      } catch (err) {
+        dispatch(notify(cellCopyFailed(err.message)))
+        return
+      }
+    } else {
+      destinationViewNames = viewsForDashboard.map(v => v.name)
+    }
+
+    const newName = incrementCloneName(
+      destinationViewNames ?? [view.name],
+      view.name
+    )
+
+    await dispatch(
       createCellWithView(
         destinationDashboardID,
-        {...view, dashboardID: destinationDashboardID},
-        {...cell, dashboardID: destinationDashboardID},
+        {
+          ...view,
+          dashboardID: destinationDashboardID,
+          name: newName,
+        },
+        {
+          ...cell,
+          dashboardID: destinationDashboardID,
+          name: newName,
+        },
         null,
         null,
         true
@@ -181,6 +222,11 @@ const CellCloneOverlay: FC = () => {
           color={ComponentColor.Primary}
           text="Confirm"
           testID="confirm-clone-cell-button"
+          status={
+            !otherDashboards.length
+              ? ComponentStatus.Disabled
+              : ComponentStatus.Default
+          }
         />
       </Overlay.Footer>
     </Overlay.Container>

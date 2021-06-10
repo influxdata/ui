@@ -102,13 +102,15 @@ export const dashboardsReducer = (
 
         const cellID = schema.result
         const cell = schema.entities.cells[cellID]
-        const {cells} = draftState.byID[cell.dashboardID]
+        const dashboards = draftState.byID[cell.dashboardID]
 
-        if (cells.includes(cellID)) {
+        if (dashboards?.cells.includes(cellID)) {
           return
         }
 
-        draftState.byID[cell.dashboardID].cells.push(cellID)
+        if (draftState.byID[cell.dashboardID]) {
+          draftState.byID[cell.dashboardID].cells.push(cellID)
+        }
 
         return
       }

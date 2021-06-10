@@ -21,6 +21,9 @@ import {
 import NotificationRuleCards from 'src/notifications/rules/components/RuleCards'
 import AlertsColumn from 'src/alerting/components/AlertsColumn'
 
+// Constants
+import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
+
 // Selectors
 import {getAll} from 'src/resources/selectors'
 
@@ -59,7 +62,7 @@ const NotificationRulesColumn: FunctionComponent<Props> = ({
       <br />
       <br />
       <a
-        href="https://docs.influxdata.com/influxdb/cloud/monitor-alert/notification-rules/create/"
+        href={`https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/monitor-alert/notification-rules/create/`}
         target="_blank"
         rel="noreferrer"
       >

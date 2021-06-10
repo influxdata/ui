@@ -21,7 +21,6 @@ const parseAllVariables = (ast: File): any[] => {
 export const parseASTIM = (query: string): ASTIM => {
   const ast: File = query !== '' ? parse(query) : null
   const variables = ast ? parseAllVariables(ast) : []
-  console.log({ast: JSON.stringify(ast), query})
 
   const hasVariable = (v: string): boolean => {
     const hasAny = variables.some(variable => variable.property.name === v)

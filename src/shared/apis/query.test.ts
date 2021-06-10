@@ -7,7 +7,7 @@ import {
   baseQueryVariable,
   bucketVariable,
   valuesVariable,
-  brokerHostVariable
+  brokerHostVariable,
 } from 'src/shared/utils/mocks/data'
 import {getMockedParse} from 'src/shared/utils/mocks/mockedParse'
 

@@ -15,6 +15,9 @@ import {
   SpinnerContainer,
 } from '@influxdata/clockface'
 
+// Constants
+import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
+
 // Utils
 import {getOrg} from 'src/organizations/selectors'
 import {getAll} from 'src/resources/selectors'
@@ -113,7 +116,7 @@ const DatalessEmptyState: FC<Props> = ({orgID, buckets, children}) => {
         <EmptyState.Text>
           Looks like you haven’t{' '}
           <a
-            href="https://docs.influxdata.com/influxdb/cloud/write-data/"
+            href={`https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/write-data/`}
             className="dataless-empty-state--docs-link"
             target="blank"
           >

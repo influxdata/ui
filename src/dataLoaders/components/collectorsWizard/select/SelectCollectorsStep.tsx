@@ -8,6 +8,9 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 import StreamingSelector from 'src/dataLoaders/components/collectorsWizard/select/StreamingSelector'
 import OnboardingButtons from 'src/onboarding/components/OnboardingButtons'
 
+// Constants
+import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
+
 // Actions
 import {
   addPluginBundleWithPlugins,
@@ -74,7 +77,7 @@ export class SelectCollectorsStep extends PureComponent<Props> {
             </a>
             &nbsp; and how to &nbsp;
             <a
-              href="https://docs.influxdata.com/influxdb/cloud/write-data/no-code/use-telegraf/manual-config/"
+              href={`https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/write-data/no-code/use-telegraf/manual-config/`}
               target="_blank"
               rel="noreferrer"
             >

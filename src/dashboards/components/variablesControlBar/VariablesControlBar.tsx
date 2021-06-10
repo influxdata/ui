@@ -10,6 +10,9 @@ import {
 } from '@influxdata/clockface'
 import Toolbar from 'src/shared/components/toolbar/Toolbar'
 
+// Constants
+import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
+
 // Utils
 import {
   getDashboardVariablesStatus,
@@ -48,7 +51,7 @@ const VariablesControlBar: FC = () => {
       <EmptyState.Text className="margin-zero">
         This dashboard doesn't have any cells with defined variables.{' '}
         <a
-          href="https://docs.influxdata.com/influxdb/cloud/visualize-data/variables/"
+          href={`https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/visualize-data/variables/`}
           target="_blank"
           rel="noreferrer"
         >

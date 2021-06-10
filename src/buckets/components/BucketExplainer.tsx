@@ -4,6 +4,9 @@ import React, {FunctionComponent} from 'react'
 // Components
 import {Panel, Gradients} from '@influxdata/clockface'
 
+// Constants
+import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
+
 const BucketExplainer: FunctionComponent = () => (
   <Panel gradient={Gradients.PolarExpress} border={true}>
     <Panel.Header>
@@ -18,7 +21,7 @@ const BucketExplainer: FunctionComponent = () => (
         <br />
         Here's{' '}
         <a
-          href="https://docs.influxdata.com/influxdb/cloud/write-data/"
+          href={`https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/write-data/`}
           target="_blank"
           rel="noreferrer"
         >

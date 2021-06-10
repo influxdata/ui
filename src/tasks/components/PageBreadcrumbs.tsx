@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react'
+import React, {FC} from 'react'
 
 // Components
 import {FlexBox, FlexDirection} from '@influxdata/clockface'
@@ -12,12 +12,8 @@ type Props = {
   pages: Array<PageInfo>
 }
 
-export default class PageBreadcrumbs extends PureComponent<Props> {
-  constructor(props) {
-    super(props)
-  }
-
-  private getCrumb(page: PageInfo, isItTheLastPage: boolean) {
+const PageBreadcrumbs: FC<Props> = ({pages}) => {
+  const getCrumb = (page: PageInfo, isItTheLastPage: boolean) => {
     let text: string = page.text
 
     if (!isItTheLastPage) {
@@ -35,17 +31,15 @@ export default class PageBreadcrumbs extends PureComponent<Props> {
     )
   }
 
-  public render() {
-    return (
-      <FlexBox direction={FlexDirection.Row}>
-        {this.props.pages.map((page: PageInfo, index: number) => {
-          const isItTheLastPage: boolean = index + 1 === this.props.pages.length
+  return (
+    <FlexBox direction={FlexDirection.Row}>
+      {pages.map((page: PageInfo, index: number) => {
+        const isItTheLastPage: boolean = index + 1 === pages.length
 
-          return (
-            <div key={page.text}>{this.getCrumb(page, isItTheLastPage)}</div>
-          )
-        })}
-      </FlexBox>
-    )
-  }
+        return <div key={page.text}>{getCrumb(page, isItTheLastPage)}</div>
+      })}
+    </FlexBox>
+  )
 }
+
+export default PageBreadcrumbs

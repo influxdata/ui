@@ -10,8 +10,15 @@ export const formatVarsOption = (
     return ''
   }
 
-  const lines = variables
-    .map(v => (v.type === 'VariableAssignment' ? v : asAssignment(v)))
+  const assignments = []
+  // Looping over instead of map to get around ts interface signature incompatibility error
+  variables.forEach(v =>
+    v.type === 'VariableAssignment'
+      ? assignments.push(v)
+      : assignments.push(asAssignment(v))
+  )
+
+  const lines = assignments
     .filter(v => !!v)
     .map(v => `${v.id.name}: ${formatExpression(v.init)}`)
 

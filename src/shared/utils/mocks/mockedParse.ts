@@ -7,7 +7,7 @@ import {
 const deploymentQuery = deploymentVariable.arguments.values.query
 const buildQuery = buildVariable.arguments.values.query
 
-export const getMockedParse = () => {
+export const getMockedParse = (additionalMappings = {}) => {
   const queryASTMapping = {
     'v.build': {
       type: 'File',
@@ -1908,8 +1908,11 @@ export const getMockedParse = () => {
     },
   }
 
+  Object.keys(additionalMappings).forEach(
+    key => (queryASTMapping[key] = additionalMappings[key])
+  )
+
   const mockedParse = query => {
-    console.log('QUERYYYYYYYYYYYYYYY: ', query)
     return queryASTMapping[query]
   }
 

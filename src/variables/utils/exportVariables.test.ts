@@ -1,6 +1,17 @@
-import {exportVariables} from 'src/variables/utils/exportVariables'
 // Mocks
-import {createVariable} from 'src/variables/mocks'
+import {
+  createVariable,
+  exportVariablesAdditionalMappings,
+} from 'src/variables/mocks'
+import {getMockedParse} from 'src/shared/utils/mocks/mockedParse'
+
+jest.mock('src/external/parser', () => {
+  return {
+    parse: jest.fn(getMockedParse(exportVariablesAdditionalMappings)),
+  }
+})
+
+import {exportVariables} from 'src/variables/utils/exportVariables'
 
 describe('exportVariables', () => {
   it('should find dependent variables', () => {

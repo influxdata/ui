@@ -1,15 +1,7 @@
-// Libraries
-import {get} from 'lodash'
-
 // Utils
 import {valueFetcher, ValueFetcher} from 'src/variables/utils/ValueFetcher'
 import Deferred from 'src/utils/Deferred'
-import {asAssignment} from 'src/variables/selectors'
-import {findNodes} from 'src/shared/utils/ast'
 import {parseASTIM} from 'src/variables/utils/astim'
-
-// Constants
-import {OPTION_NAME, BOUNDARY_GROUP} from 'src/variables/constants/index'
 
 // Types
 import {
@@ -17,10 +9,8 @@ import {
   Variable,
   VariableValues,
   ValueSelections,
-  File,
 } from 'src/types'
 import {CancelBox, CancellationError} from 'src/types/promises'
-import {parse} from 'src/external/parser'
 
 export interface VariableNode {
   variable: Variable

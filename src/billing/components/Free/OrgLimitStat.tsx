@@ -1,9 +1,10 @@
+// Libraries
 import React, {FC} from 'react'
 import {startCase, floor} from 'lodash'
 
+// Componentd
 import {ComponentSize, InfluxColors, Panel} from '@influxdata/clockface'
 import {secondsToDays, minToSeconds} from 'src/billing/utils/timeHelpers'
-import {kbToMb} from 'src/billing/utils/unitHelpers'
 
 interface Props {
   name: string
@@ -32,7 +33,7 @@ const getStat = (name: string, value: any) => {
     case 'writeKBs':
     case 'readKBs':
       const sIn5Min = minToSeconds(5)
-      const mbPerSecond = kbToMb(value)
+      const mbPerSecond = value / 1000
       const mb5Min = floor(mbPerSecond * sIn5Min)
       return `${mb5Min} MB / 5 min`
     case 'maxRetentionSeconds':

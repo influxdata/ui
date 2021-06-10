@@ -1,7 +1,6 @@
 import React, {FC, useContext, useState} from 'react'
 
 import {
-  Panel,
   EmptyState,
   ResourceList,
   Sort,
@@ -52,60 +51,53 @@ const InvoiceHistory: FC = () => {
   }
 
   return (
-    <Panel>
-      <Panel.Header>
-        <h4>Past Invoices</h4>
-      </Panel.Header>
-      <Panel.Body>
-        <ResourceList>
-          {!!invoices.length && (
-            <ResourceList.Header className="invoice-headers">
-              <FlexBox
-                className="invoice-headers--sorters"
-                direction={FlexDirection.Row}
-                justifyContent={JustifyContent.SpaceBetween}
-                stretchToFitWidth={true}
-              >
-                <ResourceList.Sorter
-                  name="Invoice Date"
-                  onClick={handleSort}
-                  sort={sortKey === 'targetDate' ? sortDirection : Sort.None}
-                  sortKey="targetDate"
-                  className="invoice-header"
-                />
-                <FlexBox direction={FlexDirection.Row}>
-                  <ResourceList.Sorter
-                    name="Amount"
-                    onClick={handleSort}
-                    sort={sortKey === 'amount' ? sortDirection : Sort.None}
-                    sortKey="amount"
-                    className="invoice-header"
-                  />
-                  <ResourceList.Sorter
-                    name="Status"
-                    onClick={handleSort}
-                    sort={sortKey === 'status' ? sortDirection : Sort.None}
-                    sortKey="status"
-                    className="invoice-header status"
-                  />
-                </FlexBox>
-              </FlexBox>
-            </ResourceList.Header>
-          )}
-          <ResourceList.Body
-            emptyState={
-              <EmptyState>
-                <EmptyState.Text>
-                  Your invoices will appear here after each billing period
-                </EmptyState.Text>
-              </EmptyState>
-            }
+    <>
+      {!!invoices.length && (
+        <ResourceList.Header className="invoice-headers">
+          <FlexBox
+            className="invoice-headers--sorters"
+            direction={FlexDirection.Row}
+            justifyContent={JustifyContent.SpaceBetween}
+            stretchToFitWidth={true}
           >
-            {invoiceRows}
-          </ResourceList.Body>
-        </ResourceList>
-      </Panel.Body>
-    </Panel>
+            <ResourceList.Sorter
+              name="Invoice Date"
+              onClick={handleSort}
+              sort={sortKey === 'targetDate' ? sortDirection : Sort.None}
+              sortKey="targetDate"
+              className="invoice-header"
+            />
+            <FlexBox direction={FlexDirection.Row}>
+              <ResourceList.Sorter
+                name="Amount"
+                onClick={handleSort}
+                sort={sortKey === 'amount' ? sortDirection : Sort.None}
+                sortKey="amount"
+                className="invoice-header"
+              />
+              <ResourceList.Sorter
+                name="Status"
+                onClick={handleSort}
+                sort={sortKey === 'status' ? sortDirection : Sort.None}
+                sortKey="status"
+                className="invoice-header status"
+              />
+            </FlexBox>
+          </FlexBox>
+        </ResourceList.Header>
+      )}
+      <ResourceList.Body
+        emptyState={
+          <EmptyState>
+            <EmptyState.Text>
+              Your invoices will appear here after each billing period
+            </EmptyState.Text>
+          </EmptyState>
+        }
+      >
+        {invoiceRows}
+      </ResourceList.Body>
+    </>
   )
 }
 

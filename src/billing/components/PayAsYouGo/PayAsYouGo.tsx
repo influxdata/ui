@@ -1,9 +1,11 @@
 import React, {FC} from 'react'
 import {
-  FlexDirection,
-  FlexBox,
-  ComponentSize,
   AlignItems,
+  ComponentSize,
+  FlexBox,
+  FlexDirection,
+  Panel,
+  ResourceList,
 } from '@influxdata/clockface'
 
 // Components
@@ -14,7 +16,6 @@ import InvoiceHistory from 'src/billing/components/PayAsYouGo/InvoiceHistory'
 import CancellationPanel from 'src/billing/components/PayAsYouGo/CancellationPanel'
 import NotificationPanel from 'src/billing/components/PayAsYouGo/NotificationPanel'
 import InvoiceLoadingWrapper from 'src/billing/components/AssetLoading/InvoiceWrapper'
-import BillingLoadingWrapper from 'src/billing/components/AssetLoading/BillingWrapper'
 import BillingInfoWrapper from 'src/billing/components/AssetLoading/BillingInfoWrapper'
 
 const BillingPayAsYouGo: FC = () => (
@@ -26,16 +27,23 @@ const BillingPayAsYouGo: FC = () => (
     <BillingInfoWrapper>
       <>
         <PlanTypePanel />
-        <InvoiceLoadingWrapper>
-          <InvoiceHistory />
-        </InvoiceLoadingWrapper>
+        <Panel>
+          <Panel.Header>
+            <h4>Past Invoices</h4>
+          </Panel.Header>
+          <Panel.Body>
+            <ResourceList>
+              <InvoiceLoadingWrapper>
+                <InvoiceHistory />
+              </InvoiceLoadingWrapper>
+            </ResourceList>
+          </Panel.Body>
+        </Panel>
         <PaymentPanel />
         <BillingContactInfo />
       </>
     </BillingInfoWrapper>
-    <BillingLoadingWrapper>
-      <NotificationPanel />
-    </BillingLoadingWrapper>
+    <NotificationPanel />
     <CancellationPanel />
   </FlexBox>
 )

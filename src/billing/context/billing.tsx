@@ -10,13 +10,27 @@ import {
   getMarketplace,
   getPaymentForm,
   getSettingsNotifications,
-  // putBillingPaymentMethod,
+  putBillingPaymentMethod,
   putSettingsNotifications,
+  putBillingContact,
 } from 'src/client/unityRoutes'
 import {getQuartzMe} from 'src/me/selectors'
+import {
+  accountCancellationError,
+  getBillingInfoError,
+  getBillingSettingsError,
+  getInvoicesError,
+  getMarketplaceError,
+  updateBillingInfoError,
+  updateBillingSettingsError,
+  updatePaymentMethodError,
+} from 'src/shared/copy/notifications'
 
 // Constants
-import {EMPTY_ZUORA_PARAMS} from 'src/shared/constants'
+import {
+  BALANCE_THRESHOLD_DEFAULT,
+  EMPTY_ZUORA_PARAMS,
+} from 'src/shared/constants'
 import {zuoraParamsGetFailure} from 'src/shared/copy/notifications'
 
 // Types
@@ -40,6 +54,7 @@ export interface BillingContextType {
   billingInfoStatus: RemoteDataState
   billingSettings: BillingNotifySettings
   billingSettingsStatus: RemoteDataState
+  handleCancelAccount: () => void
   handleGetBillingInfo: () => void
   handleGetBillingSettings: () => void
   handleGetInvoices: () => void
@@ -59,12 +74,9 @@ export interface BillingContextType {
 export const DEFAULT_CONTEXT: BillingContextType = {
   billingInfo: null,
   billingInfoStatus: RemoteDataState.NotStarted,
-  billingSettings: {
-    notifyEmail: '',
-    balanceThreshold: 10,
-    isNotify: true,
-  },
+  billingSettings: null,
   billingSettingsStatus: RemoteDataState.NotStarted,
+  handleCancelAccount: () => {},
   handleGetBillingInfo: () => {},
   handleGetBillingSettings: () => {},
   handleGetInvoices: () => {},
@@ -98,7 +110,7 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
   const me = useSelector(getQuartzMe)
   const [billingSettings, setBillingSettings] = useState({
     notifyEmail: me?.email ?? '', // sets the default to the user's registered email
-    balanceThreshold: 10, // set the default to the minimum balance threshold
+    balanceThreshold: BALANCE_THRESHOLD_DEFAULT, // set the default to the minimum balance threshold
     isNotify: true,
   })
   const [billingSettingsStatus, setBillingSettingsStatus] = useState(
@@ -139,23 +151,43 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
   }, [dispatch])
 
   const handleUpdatePaymentMethod = useCallback(
-    async (_paymentMethodId: string) => {
+    async (paymentMethodId: string) => {
       try {
-        const response = await getPaymentForm({form: 'billing'})
-        // const response = await putBillingPaymentMethod({data: paymentMethodId})
+        const resp = await putBillingPaymentMethod({
+          data: {paymentMethodId},
+        })
 
-        if (response.status !== 200) {
-          throw new Error(getErrorMessage(response))
+        if (resp.status !== 200) {
+          throw new Error(resp.data.message)
         }
 
-        // TODO(ariel): set the payment method of the billingInfo
-        // setPaymentMethod(response.data)
+        setBillingInfo(prevBilling => ({
+          ...prevBilling,
+          paymentMethod: resp.data,
+        }))
       } catch (error) {
-        console.error(error)
+        const message = getErrorMessage(error)
+        dispatch(notify(updatePaymentMethodError(message)))
       }
     },
-    []
+    [dispatch]
   )
+
+  const handleCancelAccount = useCallback(async () => {
+    try {
+      const resp = await postAccountCancellation({})
+
+      if (resp.status !== 204) {
+        throw new Error(resp.data.message)
+      }
+
+      // TODO(ariel): wait for product to handle what we do here
+      // history.push('/')
+    } catch (error) {
+      const message = getErrorMessage(error)
+      dispatch(notify(accountCancellationError(message)))
+    }
+  }, [dispatch])
 
   const handleGetInvoices = useCallback(async () => {
     try {
@@ -169,11 +201,11 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
       setInvoices(resp.data)
       setInvoicesStatus(RemoteDataState.Done)
     } catch (error) {
-      // TODO(ariel): notify the users that something is wrong
-      console.error(error)
+      const message = getErrorMessage(error)
+      dispatch(notify(getInvoicesError(message)))
       setInvoicesStatus(RemoteDataState.Error)
     }
-  }, [])
+  }, [dispatch])
 
   const handleGetBillingInfo = useCallback(async () => {
     try {
@@ -187,37 +219,35 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
       setBillingInfo(resp.data)
       setBillingInfoStatus(RemoteDataState.Done)
     } catch (error) {
-      // TODO(ariel): notify the users that something is wrong
-      console.error(error)
+      const message = getErrorMessage(error)
+      dispatch(notify(getBillingInfoError(message)))
       setBillingInfoStatus(RemoteDataState.Error)
     }
-  }, [])
+  }, [dispatch])
 
   const handleUpdateBillingInfo = useCallback(
-    async (_contact: BillingContact) => {
+    async (contact: BillingContact) => {
       try {
         setBillingInfoStatus(RemoteDataState.Loading)
-        // TODO(ariel): update the contact
-        // const resp = await updateBillingContact({data: contact})
-        const resp = await getBilling({})
+        const resp = await putBillingContact({data: contact})
 
         if (resp.status !== 200) {
           throw new Error(resp.data.message)
         }
 
-        // TODO(ariel): set the response to update the contact, not the entire billingInfo
-        setBillingInfo(resp.data)
+        setBillingInfo(prevBilling => ({
+          ...prevBilling,
+          contact: resp.data,
+        }))
         setBillingInfoStatus(RemoteDataState.Done)
       } catch (error) {
-        // TODO(ariel): notify the users that something is wrong
-        console.error(error)
+        const message = getErrorMessage(error)
+        dispatch(notify(updateBillingInfoError(message)))
         setBillingInfoStatus(RemoteDataState.Error)
       }
     },
-    []
+    [dispatch]
   )
-
-  // TODO(ariel): handleUpdateBillingInfo
 
   const handleGetMarketplace = useCallback(async () => {
     try {
@@ -231,32 +261,35 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
       setMarketplace(resp.data)
       setMarketplaceStatus(RemoteDataState.Done)
     } catch (error) {
-      // TODO(ariel): notify the users that something is wrong
-      console.error(error)
+      const message = getErrorMessage(error)
+      dispatch(notify(getMarketplaceError(message)))
       setMarketplaceStatus(RemoteDataState.Error)
     }
-  }, [])
+  }, [dispatch])
 
   const handleGetBillingSettings = useCallback(async () => {
     try {
       setBillingSettingsStatus(RemoteDataState.Loading)
       const resp = await getSettingsNotifications({})
-
+      if (resp.status === 404) {
+        // We're injesting the 404 error here and leaving the default inputs since
+        // Quartz's API returns a 404 for valid requests that don't have any data
+        // Meaning, if a user hasn't filled out the notification settings, the
+        // API response is expected to return a 404 even though the query was successful
+        return
+      }
       if (resp.status !== 200) {
         throw new Error(resp.data.message)
       }
 
       setBillingSettings(resp.data)
-    } catch (error) {
-      // We're injesting the error here and leaving the default inputs since
-      // Quartz's API returns a 404 for valid requests that don't have any data
-      // Meaning, if a user hasn't filled out the notification settings, the
-      // API response is expected to return a 404 even though the query was successful
-      console.error(error)
-    } finally {
       setBillingSettingsStatus(RemoteDataState.Done)
+    } catch (error) {
+      setBillingSettingsStatus(RemoteDataState.Error)
+      const message = getErrorMessage(error)
+      dispatch(notify(getBillingSettingsError(message)))
     }
-  }, [])
+  }, [dispatch])
 
   const handleUpdateBillingSettings = useCallback(
     async (settings: BillingNotifySettings) => {
@@ -273,17 +306,14 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
           notifyEmail: resp.data.notifyEmail,
           isNotify: resp.data.isNotify,
         })
-      } catch (error) {
-        // We're injesting the error here and leaving the default inputs since
-        // Quartz's API returns a 404 for valid requests that don't have any data
-        // Meaning, if a user hasn't filled out the notification settings, the
-        // API response is expected to return a 404 even though the query was successful
-        console.error(error)
-      } finally {
         setBillingSettingsStatus(RemoteDataState.Done)
+      } catch (error) {
+        setBillingSettingsStatus(RemoteDataState.Error)
+        const message = getErrorMessage(error)
+        dispatch(notify(updateBillingSettingsError(message)))
       }
     },
-    []
+    [dispatch]
   )
 
   return (
@@ -293,6 +323,7 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
         billingInfoStatus,
         billingSettings,
         billingSettingsStatus,
+        handleCancelAccount,
         handleGetBillingInfo,
         handleGetBillingSettings,
         handleGetInvoices,

@@ -14,13 +14,13 @@ const BillingPageContents: FC = () => {
   const quartzMe = useSelector(getQuartzMe)
 
   if (
-    quartzMe.accountType === 'pay_as_you_go' &&
-    quartzMe.billingProvider !== 'zuora'
+    quartzMe?.accountType === 'pay_as_you_go' &&
+    quartzMe?.billingProvider !== 'zuora'
   ) {
     return <MarketplaceBilling />
   }
 
-  if (quartzMe.accountType === 'pay_as_you_go') {
+  if (quartzMe?.accountType === 'pay_as_you_go') {
     return <BillingPayAsYouGo />
   }
 

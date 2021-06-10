@@ -19,7 +19,10 @@ import {
   getBillingSettingsError,
   submitError,
 } from 'src/shared/copy/notifications'
-import {EMPTY_ZUORA_PARAMS} from 'src/shared/constants'
+import {
+  BALANCE_THRESHOLD_DEFAULT,
+  EMPTY_ZUORA_PARAMS,
+} from 'src/shared/constants'
 
 // Types
 import {CreditCardParams, RemoteDataState} from 'src/types'
@@ -90,7 +93,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   const [inputs, setInputs] = useState<Inputs>({
     paymentMethodId: null,
     notifyEmail: me?.email ?? '', // sets the default to the user's registered email
-    balanceThreshold: 10, // set the default to the minimum balance threshold
+    balanceThreshold: BALANCE_THRESHOLD_DEFAULT, // set the default to the minimum balance threshold
     shouldNotify: true,
     street1: '',
     street2: '',
@@ -202,7 +205,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     const {shouldNotify} = inputs
     if (!shouldNotify) {
       fields.notifyEmail = me?.email ?? '' // sets the default to the user's registered email
-      fields.balanceThreshold = 10 // set the default to the minimum balance threshold
+      fields.balanceThreshold = BALANCE_THRESHOLD_DEFAULT // set the default to the minimum balance threshold
     }
 
     return Object.entries(fields).filter(([key, value]) => {

@@ -110,6 +110,49 @@ export const getBillingSettingsError = (message: string): Notification => ({
   message: `There was an error getting your billing settings: ${message}`,
 })
 
+// Billing Notifications
+export const updateBillingSettingsError = (message: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `There was an error updating your billing settings: ${message}`,
+})
+
+export const getInvoicesError = (message: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `There was an error getting your invoices: ${message}`,
+})
+
+export const getMarketplaceError = (message: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `There was an error getting your marketplace details: ${message}`,
+})
+
+export const getBillingInfoError = (message: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `There was an error getting your billing info: ${message}`,
+})
+
+export const updateBillingInfoError = (message: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `There was an error updating your billing info: ${message}`,
+})
+
+export const updatePaymentMethodError = (message: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `There was an error updating your payment method: ${message}`,
+})
+
+export const accountCancellationError = (message: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `There was an error cancelled your account: ${message}`,
+})
+
 // Operator Notifications
 export const getOrgsError = (): Notification => ({
   ...defaultErrorNotification,

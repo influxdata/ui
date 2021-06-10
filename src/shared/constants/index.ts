@@ -38,6 +38,8 @@ export const EMPTY_ZUORA_PARAMS: CreditCardParams = {
   url: '',
 }
 
+export const BALANCE_THRESHOLD_DEFAULT = 10
+
 export const DEFAULT_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss a'
 
 export const DROPDOWN_MENU_MAX_HEIGHT = 240

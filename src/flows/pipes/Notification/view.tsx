@@ -1,5 +1,6 @@
 // Libraries
-import React, {FC, useContext, useEffect} from 'react'
+import React, {FC, useContext, useCallback, useMemo, useEffect} from 'react'
+import {parse, format_from_js_file} from '@influxdata/flux'
 import {
   ComponentStatus,
   Form,
@@ -17,23 +18,38 @@ import {
 import {RemoteDataState} from 'src/types'
 
 import {PipeContext} from 'src/flows/context/pipe'
+import {PopupContext} from 'src/flows/context/popup'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
+import {SidebarContext} from 'src/flows/context/sidebar'
+import {remove} from 'src/flows/context/query'
+
 import Threshold, {
   THRESHOLD_TYPES,
 } from 'src/flows/pipes/Notification/Threshold'
 import {DEFAULT_ENDPOINTS} from 'src/flows/pipes/Notification/Endpoints'
+import ExportTaskButton from 'src/flows/pipes/Schedule/ExportTaskButton'
+import ExportTaskOverlay from 'src/flows/pipes/Schedule/ExportTaskOverlay'
 
 // Types
 import {PipeProp} from 'src/types/flows'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
 const Notification: FC<PipeProp> = ({Context}) => {
-  const {id, data, queryText, update, results, loading} = useContext(
+  const {id, data, queryText, update, range, results, loading} = useContext(
     PipeContext
   )
+  const {register} = useContext(SidebarContext)
+  const {launch} = useContext(PopupContext)
+  const {simplify} = useContext(FlowQueryContext)
+
   let intervalError = ''
   let offsetError = ''
 
   if (!data.interval) {
-    intervalError = 'An Interval is Required'
+    intervalError = 'Required'
   } else if (
     data.interval !==
     data.interval.match(/(?:(\d+(y|mo|s|m|w|h){1}))/g)?.join('')
@@ -48,51 +64,29 @@ const Notification: FC<PipeProp> = ({Context}) => {
     offsetError = 'Invalid Time'
   }
 
-  useEffect(() => {
-    if (intervalError || offsetError) {
-      update({
-        query: '',
-      })
+  const hasTaskOption = useMemo(
+    () =>
+      !!Object.keys(
+        remove(
+          parse(simplify(queryText)),
+          node =>
+            node.type === 'OptionStatement' &&
+            node.assignment.id.name === 'task'
+        ).reduce((acc, curr) => {
+          // eslint-disable-next-line no-extra-semi
+          ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
+            if (_curr.key?.name && _curr.value?.location?.source) {
+              _acc[_curr.key.name] = _curr.value.location.source
+            }
 
-      return
-    }
+            return _acc
+          }, acc)
 
-    const condition = THRESHOLD_TYPES[data.threshold.type].condition(data)
-    const query = `
-import "strings"
-import "regexp"
-import "influxdata/influxdb/monitor"
-import "influxdata/influxdb/schema"
-import "influxdata/influxdb/secrets"
-import "experimental"
-${DEFAULT_ENDPOINTS[data.endpoint]?.generateImports()}
-
-option task = {name: "Notebook Generated Task From Panel ${id}", every: ${
-      data.interval
-    }, offset: ${data.offset || 0}}
-check = {
-	_check_id: "${id}",
-	_check_name: "Notebook Generated Check",
-	_type: "custom",
-	tags: {},
-}
-notification = {
-	_notification_rule_id: "${id}",
-	_notification_rule_name: "Notebook Generated Rule",
-	_notification_endpoint_id: "${id}",
-	_notification_endpoint_name: "Notebook Generated Endpoint",
-}
-
-task_data = ${queryText}
-trigger = ${condition}
-messageFn = (r) => ("${data.message}")
-
-${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data)}`
-
-    update({
-      query,
-    })
-  }, [queryText, id, intervalError, offsetError])
+          return acc
+        }, {})
+      ).length,
+    [queryText]
+  )
 
   const numericColumns = (results.parsed.table?.columnKeys || []).filter(
     key => {
@@ -131,6 +125,31 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data)}`
     })
   }
 
+  const warningMessage = useMemo(() => {
+    if (!hasTaskOption) {
+      return
+    }
+
+    return (
+      <div className="flow-error">
+        <div className="flow-error--header">
+          <Icon
+            glyph={IconFont.AlertTriangle}
+            className="flow-error--vis-toggle"
+          />
+        </div>
+        <div className="flow-error--body">
+          <h1>The task option is reserved</h1>
+          <p>
+            This panel will take precedence over any task configuration and
+            overwrite the option. Remove it from your source query to remove
+            this message
+          </p>
+        </div>
+      </div>
+    )
+  }, [hasTaskOption])
+
   const avail = Object.keys(DEFAULT_ENDPOINTS).map(k => (
     <Tabs.Tab
       key={k}
@@ -140,6 +159,146 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data)}`
       active={data.endpoint === k}
     />
   ))
+
+  const generateTask = useCallback(() => {
+    // simplify takes care of all the variable nonsense in the query
+    const ast = parse(simplify(queryText))
+
+    const vars = remove(
+      ast,
+      node => node.type === 'OptionStatement' && node.assignment.id.name === 'v'
+    ).reduce((acc, curr) => {
+      // eslint-disable-next-line no-extra-semi
+      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
+        if (_curr.key?.name && _curr.value?.location?.source) {
+          _acc[_curr.key.name] = _curr.value.location.source
+        }
+
+        return _acc
+      }, acc)
+
+      return acc
+    }, {})
+    const params = remove(
+      ast,
+      node =>
+        node.type === 'OptionStatement' && node.assignment.id.name === 'task'
+    ).reduce((acc, curr) => {
+      // eslint-disable-next-line no-extra-semi
+      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
+        if (_curr.key?.name && _curr.value?.location?.source) {
+          _acc[_curr.key.name] = _curr.value.location.source
+        }
+
+        return _acc
+      }, acc)
+
+      return acc
+    }, {})
+    const condition = THRESHOLD_TYPES[data.threshold.type].condition(
+      data.threshold
+    )
+    const newQuery = `
+import "strings"
+import "regexp"
+import "influxdata/influxdb/monitor"
+import "influxdata/influxdb/schema"
+import "influxdata/influxdb/secrets"
+import "experimental"
+${DEFAULT_ENDPOINTS[data.endpoint]?.generateImports()}
+
+check = {
+	_check_id: "${id}",
+	_check_name: "Notebook Generated Check",
+	_type: "custom",
+	tags: {},
+}
+notification = {
+	_notification_rule_id: "${id}",
+	_notification_rule_name: "Notebook Generated Rule",
+	_notification_endpoint_id: "${id}",
+	_notification_endpoint_name: "Notebook Generated Endpoint",
+}
+
+task_data = ${format_from_js_file(ast)}
+trigger = ${condition}
+messageFn = (r) => ("${data.message}")
+
+${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
+
+    const newAST = parse(newQuery)
+
+    if (!params.name) {
+      params.name = `"Notebook Task for ${id}"`
+    }
+
+    if (data.interval) {
+      params.every = data.interval
+    }
+
+    if (data.offset) {
+      params.offset = data.offset
+    }
+
+    if (Object.keys(vars).length) {
+      const varString = Object.entries(vars)
+        .map(([key, val]) => `${key}: ${val}`)
+        .join(',\n')
+      const varHeader = parse(`option v = {${varString}}\n`)
+      newAST.body.unshift(varHeader.body[0])
+    }
+
+    const paramString = Object.entries(params)
+      .map(([key, val]) => `${key}: ${val}`)
+      .join(',\n')
+    const taskHeader = parse(`option task = {${paramString}}\n`)
+    newAST.body.unshift(taskHeader.body[0])
+
+    return format_from_js_file(newAST)
+  }, [
+    id,
+    queryText,
+    data.every,
+    data.offset,
+    data.endpointData,
+    data.endpoint,
+    data.threshold,
+    data.message,
+  ])
+
+  useEffect(() => {
+    if (!id) {
+      return
+    }
+
+    register(id, [
+      {
+        title: 'Notification Panel',
+        actions: [
+          {
+            title: 'Export as Task',
+            action: () => {
+              if (intervalError || offsetError) {
+                return
+              }
+
+              event('Export Task Clicked', {scope: 'notification'})
+
+              launch(<ExportTaskOverlay />, {
+                properties: data.properties,
+                range: range,
+                query: generateTask(),
+              })
+            },
+          },
+        ],
+      },
+    ])
+  }, [id, data.properties, range, generateTask])
+
+  const persist = isFlagEnabled('flow-sidebar') ? null : (
+    <ExportTaskButton generate={generateTask} />
+  )
 
   if (
     loading === RemoteDataState.NotStarted ||
@@ -157,6 +316,7 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data)}`
             </div>
           </div>
         </div>
+        {warningMessage}
       </Context>
     )
   }
@@ -174,12 +334,13 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data)}`
             </div>
           </div>
         </div>
+        {warningMessage}
       </Context>
     )
   }
 
   return (
-    <Context>
+    <Context persistentControls={persist}>
       <div className="notification">
         <FlexBox margin={ComponentSize.Medium}>
           <FlexBox.Child grow={1} shrink={1}>
@@ -246,6 +407,7 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data)}`
           </FlexBox.Child>
         </FlexBox>
       </div>
+      {warningMessage}
     </Context>
   )
 }

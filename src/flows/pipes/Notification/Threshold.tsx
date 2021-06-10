@@ -20,50 +20,44 @@ export const THRESHOLD_TYPES = {
   greater: {
     name: 'Greater Than',
     format: ThresholdFormat.Value,
-    condition: data =>
-      `(r) => (r["${data.threshold.field}"] > ${data.threshold.value})`,
+    condition: data => `(r) => (r["${data.field}"] > ${data.value})`,
   },
   'greater-equal': {
     name: 'Greater Than or Equal To',
     format: ThresholdFormat.Value,
-    condition: data =>
-      `(r) => (r["${data.threshold.field}"] >= ${data.threshold.value})`,
+    condition: data => `(r) => (r["${data.field}"] >= ${data.value})`,
   },
   less: {
     name: 'Less Than',
     format: ThresholdFormat.Value,
-    condition: data =>
-      `(r) => (r["${data.threshold.field}"] < ${data.threshold.value})`,
+    condition: data => `(r) => (r["${data.field}"] < ${data.value})`,
   },
   'less-equal': {
     name: 'Less Than or Equal To',
     format: ThresholdFormat.Value,
-    condition: data =>
-      `(r) => (r["${data.threshold.field}"] <= ${data.threshold.value})`,
+    condition: data => `(r) => (r["${data.field}"] <= ${data.value})`,
   },
   equal: {
     name: 'Equal To',
     format: ThresholdFormat.Value,
-    condition: data =>
-      `(r) => (r["${data.threshold.field}"] == ${data.threshold.value})`,
+    condition: data => `(r) => (r["${data.field}"] == ${data.value})`,
   },
   'not-equal': {
     name: 'Not Equal To',
     format: ThresholdFormat.Value,
-    condition: data =>
-      `(r) => (r["${data.threshold.field}"] != ${data.threshold.value})`,
+    condition: data => `(r) => (r["${data.field}"] != ${data.value})`,
   },
   between: {
     name: 'Between',
     format: ThresholdFormat.Range,
     condition: data =>
-      `(r) => (r["${data.threshold.field}"] > ${data.threshold.min} and r["${data.threshold.field}"] < ${data.threshold.max})`,
+      `(r) => (r["${data.field}"] > ${data.min} and r["${data.field}"] < ${data.max})`,
   },
   'not-between': {
     name: 'Not Between',
     format: ThresholdFormat.Range,
     condition: data =>
-      `(r) => (r["${data.threshold.field}"] < ${data.threshold.min} or r["${data.threshold.field}"] > ${data.threshold.max})`,
+      `(r) => (r["${data.field}"] < ${data.min} or r["${data.field}"] > ${data.max})`,
   },
 }
 

@@ -18,12 +18,12 @@ const PagerDuty: FC = () => {
     })
   }
 
-  const updateUrl = text => {
-    updater('url', text)
+  const updateUrl = evt => {
+    updater('url', evt.target.value)
   }
 
-  const updateKey = key => {
-    updater('key', key)
+  const updateKey = evt => {
+    updater('key', evt.target.value)
   }
 
   const defaultEndpoint = `${window.location.origin}/org/${org.id}/alert-history`

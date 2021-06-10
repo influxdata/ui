@@ -10,7 +10,7 @@ import {File} from 'src/types'
 
 export interface ASTIM {
   variables: any[]
-  getAST: (v: string) => File
+  getAST: () => File
   hasVariable: (v: string) => boolean
 }
 
@@ -19,8 +19,9 @@ const parseAllVariables = (ast: File): any[] => {
 }
 
 export const parseASTIM = (query: string): ASTIM => {
-  const ast: File = parse(query)
-  const variables = parseAllVariables(ast)
+  const ast: File = query !== '' ? parse(query) : null
+  const variables = ast ? parseAllVariables(ast) : []
+  console.log({ast: JSON.stringify(ast), query})
 
   const hasVariable = (v: string): boolean => {
     const hasAny = variables.some(variable => variable.property.name === v)

@@ -11,7 +11,9 @@ export const formatVarsOption = (
   }
 
   const lines = variables
-    .map(v => (v.type === 'VariableAssignment' ? v : asAssignment(v)))
+    .map(v => {
+      return v.type === 'VariableAssignment' ? v : asAssignment(v)
+    })
     .filter(v => !!v)
     .map(v => `${v.id.name}: ${formatExpression(v.init)}`)
 

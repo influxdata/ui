@@ -114,7 +114,8 @@ class DashboardPage extends Component<Props> {
 
   private get pageTitle(): string {
     const {dashboard} = this.props
-    const title = dashboard && dashboard.name ? dashboard.name : 'Loading...'
+    const title =
+      dashboard && dashboard.name ? dashboard.name : 'Name this Dashboard'
 
     return pageTitleSuffixer([title])
   }

@@ -126,7 +126,6 @@ const MosaicPlot: FunctionComponent<Props> = ({
       },
     }
   }
-
   return <Plot config={config} />
 }
 export default MosaicPlot

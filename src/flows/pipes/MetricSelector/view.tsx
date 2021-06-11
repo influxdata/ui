@@ -15,9 +15,13 @@ import FieldsList from 'src/flows/pipes/MetricSelector/FieldsList'
 import FilterTags from 'src/flows/pipes/MetricSelector/FilterTags'
 import SearchBar from 'src/flows/pipes/MetricSelector/SearchBar'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 const DataSource: FC<PipeProp> = ({Context}) => {
   const {data, update} = useContext(PipeContext)
   const updateBucket = (bucket: Bucket) => {
+    event('Updated Bucket', {context: 'metric selector'})
     update({
       bucket,
     })

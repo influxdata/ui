@@ -119,6 +119,8 @@ const Notification: FC<PipeProp> = ({Context}) => {
   }
 
   const updateEndpoint = which => {
+    event('Changed Notification Endpoint', {which})
+
     update({
       endpoint: which,
       endpointData: DEFAULT_ENDPOINTS[which].data,

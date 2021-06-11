@@ -12,9 +12,13 @@ import {PipeContext} from 'src/flows/context/pipe'
 // Components
 import BucketSelector from 'src/flows/shared/BucketSelector'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 const ToBucket: FC<PipeProp> = ({Context}) => {
   const {data, update} = useContext(PipeContext)
   const updateBucket = (bucket: Bucket) => {
+    event('Updated Bucket', {context: 'to bucket'})
     update({
       bucket,
     })

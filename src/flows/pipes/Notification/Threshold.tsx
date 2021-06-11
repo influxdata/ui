@@ -11,6 +11,9 @@ import {
 
 import {PipeContext} from 'src/flows/context/pipe'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 enum ThresholdFormat {
   Value = 'value',
   Range = 'range',
@@ -79,6 +82,8 @@ const Threshold: FC = () => {
       return
     }
 
+    event('Changed Notification Threshold', {type})
+
     if (THRESHOLD_TYPES[type].format === ThresholdFormat.Range) {
       update({
         threshold: {
@@ -100,6 +105,8 @@ const Threshold: FC = () => {
   }
 
   const setColumn = column => {
+    event('Changed Notification Threshold Column')
+
     update({
       threshold: {
         ...data.threshold,
@@ -189,7 +196,7 @@ const Threshold: FC = () => {
     })
   }
 
-  const feet =
+  const thresholdEntry =
     THRESHOLD_TYPES[data.threshold?.type].format === ThresholdFormat.Range ? (
       <FlexBox
         direction={FlexDirection.Row}
@@ -259,7 +266,7 @@ const Threshold: FC = () => {
           {funcDropdown}
         </FlexBox.Child>
         <FlexBox.Child grow={3} testID="component-spacer--flex-child">
-          {feet}
+          {thresholdEntry}
         </FlexBox.Child>
       </FlexBox>
     </FlexBox>

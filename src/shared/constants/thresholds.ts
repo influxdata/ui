@@ -111,24 +111,24 @@ export const DEFAULT_GAUGE_COLORS = [
 export const DEFAULT_THRESHOLDS_GEO_COLORS = [
   {
     type: COLOR_TYPE_MIN,
-    hex: THRESHOLD_COLORS[10].hex,
-    id: 0,
-    name: THRESHOLD_COLORS[10].name,
     value: DEFAULT_VALUE_MIN,
+    hex: THRESHOLD_COLORS[13].hex,
+    id: '0',
+    name: THRESHOLD_COLORS[13].name,
   },
   {
     type: THRESHOLD_TYPE_TEXT,
-    hex: THRESHOLD_COLORS[11].hex,
-    id: 1,
-    name: THRESHOLD_COLORS[11].name,
     value: 50,
+    hex: THRESHOLD_COLORS[13].hex,
+    id: '1',
+    name: THRESHOLD_COLORS[13].name,
   },
   {
     type: COLOR_TYPE_MAX,
-    hex: THRESHOLD_COLORS[12].hex,
-    id: 2,
-    name: THRESHOLD_COLORS[12].name,
     value: DEFAULT_VALUE_MAX,
+    hex: THRESHOLD_COLORS[13].hex,
+    id: '2',
+    name: THRESHOLD_COLORS[13].name,
   },
 ]
 

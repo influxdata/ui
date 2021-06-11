@@ -17,7 +17,7 @@ import {
   getTimeRangeWithTimezone,
   isCurrentPageDashboard as isCurrentPageDashboardSelector,
 } from 'src/dashboards/selectors'
-import {getVariables, asAssignment} from 'src/variables/selectors'
+import {getVariables} from 'src/variables/selectors'
 import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
 import {getWindowVars} from 'src/variables/utils/getWindowVars'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
@@ -235,13 +235,12 @@ class TimeSeries extends Component<Props, State> {
         await new Promise(() => {})
       }
 
-      const vars = variables.map(v => asAssignment(v))
       // Issue new queries
       this.pendingResults = queries.map(({text}) => {
         const orgID =
           getOrgIDFromBuckets(text, buckets) || this.props.match.params.orgID
 
-        const windowVars = getWindowVars(text, vars)
+        const windowVars = getWindowVars(text, variables)
         const extern = buildUsedVarsOption(text, variables, windowVars)
 
         event('runQuery', {context: 'TimeSeries'})

@@ -3,7 +3,7 @@ import {parse} from 'src/external/parser'
 
 // Utils
 import {getMinDurationFromAST} from 'src/shared/utils/getMinDurationFromAST'
-import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
+import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 // Constants
 import {WINDOW_PERIOD} from 'src/variables/constants'
 
@@ -20,7 +20,7 @@ const FALLBACK_WINDOW_PERIOD = 15000
 */
 export const getWindowVars = (
   query: string,
-  variables: VariableAssignment[]
+  variables: Variable[]
 ): VariableAssignment[] => {
   if (!query.includes(WINDOW_PERIOD)) {
     return []
@@ -53,18 +53,19 @@ export const calcWindowPeriodForDuration = (queryDuration: number) =>
 */
 export const getWindowPeriod = (
   query: string,
-  variables: VariableAssignment[]
+  variables: Variable[]
 ): number | null => {
   if (query.length === 0) {
     return null
   }
   try {
     const ast = parse(query)
+    const extern = buildUsedVarsOption(query, variables)
     const substitutedAST: Package = {
       package: '',
       type: 'Package',
       // TODO: Discuss this cycle
-      files: [ast, buildVarsOption(variables)],
+      files: [ast, extern],
     }
 
     const queryDuration = getMinDurationFromAST(substitutedAST) // in ms
@@ -85,7 +86,7 @@ export const getWindowPeriod = (
 
 export const getWindowPeriodVariable = (
   query: string,
-  variables: VariableAssignment[]
+  variables: Variable[]
 ): Variable[] | null => {
   const total = getWindowPeriod(query, variables)
 

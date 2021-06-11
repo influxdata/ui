@@ -1,5 +1,5 @@
 import {getWindowPeriodVariable} from 'src/variables/utils/getWindowVars'
-import {defaultVariableAssignments} from 'src/variables/mocks'
+import {defaultVariables} from 'src/variables/mocks'
 
 describe('getWindowPeriodVariable', () => {
   beforeEach(() => {
@@ -17,7 +17,7 @@ describe('getWindowPeriodVariable', () => {
     const query = `from(bucket: "Cool Story")
     |> filter(fn: (r) => r._measurement == "cpu")
     |> filter(fn: (r) => r._field == "usage_user")`
-    const actual = getWindowPeriodVariable(query, defaultVariableAssignments)
+    const actual = getWindowPeriodVariable(query, defaultVariables)
     expect(actual).toEqual(null)
   })
 
@@ -30,7 +30,7 @@ describe('getWindowPeriodVariable', () => {
     |> filter(fn: (r) => r["_measurement"] == "query_request_duration")
     |> filter(fn: (r) => r["_field"] == "success_rate")`
 
-    const actual = getWindowPeriodVariable(query, defaultVariableAssignments)
+    const actual = getWindowPeriodVariable(query, defaultVariables)
     expect(actual).toEqual(null)
   })
 
@@ -40,7 +40,7 @@ describe('getWindowPeriodVariable', () => {
     |> filter(fn: (r) => r["_measurement"] == "query_request_duration")
     |> filter(fn: (r) => r["_field"] == "success_rate")`
 
-    const actual = getWindowPeriodVariable(query, defaultVariableAssignments)
+    const actual = getWindowPeriodVariable(query, defaultVariables)
     expect(actual).toEqual(null)
   })
 
@@ -77,7 +77,7 @@ describe('getWindowPeriodVariable', () => {
 
     const actual = getWindowVars.getWindowPeriodVariable(
       query,
-      defaultVariableAssignments
+      defaultVariables
     )
     const expected = [
       {

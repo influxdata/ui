@@ -27,7 +27,7 @@ import {
 } from 'src/shared/utils/duration'
 
 // Selectors
-import {getAllVariables, asAssignment} from 'src/variables/selectors'
+import {getAllVariables} from 'src/variables/selectors'
 import {getTimeRange} from 'src/dashboards/selectors'
 
 // Types
@@ -91,7 +91,8 @@ export const getActiveQueryIndex = (state: AppState): number => {
 // TODO kill this function
 export const getActiveWindowPeriod = (state: AppState) => {
   const {text} = getActiveQuery(state)
-  const variables = getAllVariables(state).map(v => asAssignment(v))
+  const variables = getAllVariables(state)
+
   return getWindowPeriod(text, variables)
 }
 

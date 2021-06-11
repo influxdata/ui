@@ -160,17 +160,9 @@ export const getVariable = (state: AppState, variableID: string): Variable => {
     const timeVars = [
       getRangeVariable(TIME_RANGE_START, range),
       getRangeVariable(TIME_RANGE_STOP, range),
-    ].map(v => asAssignment(v))
+    ]
 
-    const assignments = variables.reduce((acc, curr) => {
-      if (!curr.name || !curr.selected) {
-        return acc
-      }
-
-      return [...acc, asAssignment(curr)]
-    }, timeVars)
-
-    vari = (getWindowPeriodVariable(text, assignments) || [])[0]
+    vari = (getWindowPeriodVariable(text, [...timeVars, ...variables]) || [])[0]
   }
 
   if (!vari) {

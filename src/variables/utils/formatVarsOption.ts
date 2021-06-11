@@ -10,7 +10,22 @@ export const formatVarsOption = (
     return ''
   }
 
+  const lines = getAssignmentVariables(variables).map(
+    v => `${v.id.name}: ${formatExpression(v.init)}`
+  )
+
+  const option = `option ${OPTION_NAME} = {
+  ${lines.join(',\n  ')}
+}`
+
+  return option
+}
+
+const getAssignmentVariables = (
+  variables: Variable[] | VariableAssignment[]
+): VariableAssignment[] => {
   const assignments = []
+
   // Looping over instead of map to get around ts interface signature incompatibility error
   variables.forEach(v =>
     v.type === 'VariableAssignment'
@@ -18,13 +33,5 @@ export const formatVarsOption = (
       : assignments.push(asAssignment(v))
   )
 
-  const lines = assignments
-    .filter(v => !!v)
-    .map(v => `${v.id.name}: ${formatExpression(v.init)}`)
-
-  const option = `option ${OPTION_NAME} = {
-  ${lines.join(',\n  ')}
-}`
-
-  return option
+  return assignments.filter(v => !!v)
 }

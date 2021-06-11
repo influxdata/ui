@@ -241,7 +241,7 @@ export const getCachedResultsOrRunQuery = (
   let windowVars = []
 
   if (hasWindowVars(variableAssignments) === false) {
-    windowVars = getWindowVars(query, variableAssignments)
+    windowVars = getWindowVars(query, variables)
   }
 
   // otherwise query & set results

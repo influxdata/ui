@@ -100,9 +100,15 @@ class CommunityTemplateInstallOverlayUnconnected extends PureComponent<Props> {
       return summary
     } catch (err) {
       this.props.notify(communityTemplateInstallFailed(err.message))
-      reportErrorThroughHoneyBadger(err, {
-        name: 'The community template fetch for preview failed',
-      })
+      if (
+        err.message.includes('mapping values are not allowed in this context')
+      ) {
+        event('review_template', {templateUrl})
+      } else {
+        reportErrorThroughHoneyBadger(err, {
+          name: 'The community template fetch for preview failed',
+        })
+      }
     }
   }
 

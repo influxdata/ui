@@ -22,7 +22,6 @@ import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
 import {getWindowVars} from 'src/variables/utils/getWindowVars'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import 'intersection-observer'
-import {getAll} from 'src/resources/selectors'
 import {getOrgIDFromBuckets} from 'src/timeMachine/actions/queries'
 import {
   isDemoDataAvailabilityError,
@@ -31,6 +30,8 @@ import {
 import {hashCode} from 'src/shared/apis/queryCache'
 import {RunQueryPromiseMutex} from 'src/shared/apis/singleQuery'
 import {getDemoDataErrorButton} from 'src/shared/components/notifications/NotificationButtons'
+import {event} from 'src/cloud/utils/reporting'
+import {parseASTIM} from 'src/variables/utils/astim'
 
 // Constants
 import {
@@ -41,6 +42,7 @@ import {
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 
 // Actions & Selectors
+import {getAll} from 'src/resources/selectors'
 import {notify as notifyAction} from 'src/shared/actions/notifications'
 import {hasUpdatedTimeRangeInVEO} from 'src/shared/selectors/app'
 import {setCellMount as setCellMountAction} from 'src/perf/actions'
@@ -57,8 +59,6 @@ import {
   CancelBox,
   NotificationButtonElement,
 } from 'src/types'
-import {event} from 'src/cloud/utils/reporting'
-import {parseASTIM} from 'src/variables/utils/astim'
 
 interface QueriesState {
   files: string[] | null

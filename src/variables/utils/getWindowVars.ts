@@ -60,12 +60,11 @@ export const getWindowPeriod = (
   }
   try {
     const ast = parse(query)
-    const extern = buildUsedVarsOption(query, variables)
     const substitutedAST: Package = {
       package: '',
       type: 'Package',
       // TODO: Discuss this cycle
-      files: [ast, extern],
+      files: [ast, buildUsedVarsOption(query, variables)],
     }
 
     const queryDuration = getMinDurationFromAST(substitutedAST) // in ms

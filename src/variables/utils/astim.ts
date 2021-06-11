@@ -22,10 +22,11 @@ export const parseASTIM = (query: string): ASTIM => {
   const ast: File = query !== '' ? parse(query) : null
   const variables = ast ? parseAllVariables(ast) : []
 
-  const hasVariable = (v: string): boolean => {
-    const hasAny = variables.some(variable => variable.property.name === v)
+  const variableNames = new Set()
+  variables.forEach(variable => variableNames.add(variable.property.name))
 
-    return hasAny
+  const hasVariable = (v: string): boolean => {
+    return variableNames.has(v)
   }
 
   const getAST = (): File => {

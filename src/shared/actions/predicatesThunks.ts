@@ -9,6 +9,8 @@ import {extractBoxedCol} from 'src/timeMachine/apis/queryBuilder'
 
 // utils
 import fromFlux from 'src/shared/utils/fromFlux'
+import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
+import {getWindowVars} from 'src/variables/utils/getWindowVars'
 
 // actions
 import {
@@ -26,8 +28,6 @@ import {notify} from 'src/shared/actions/notifications'
 // selectors
 import {getOrg} from 'src/organizations/selectors'
 import {getVariables} from 'src/variables/selectors'
-import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
-import {getWindowVars} from 'src/variables/utils/getWindowVars'
 
 // constants
 import {

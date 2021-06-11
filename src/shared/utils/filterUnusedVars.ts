@@ -1,9 +1,11 @@
-// Utils
+// Libraries
 import {get} from 'lodash'
+
+// Utils
+import {parseASTIM} from 'src/variables/utils/astim'
 
 // Types
 import {QueryViewProperties, View, ViewProperties, Variable} from 'src/types'
-import {parseASTIM} from 'src/variables/utils/astim'
 
 function isQueryViewProperties(vp: ViewProperties): vp is QueryViewProperties {
   return (vp as QueryViewProperties).queries !== undefined
@@ -57,7 +59,7 @@ export const filterUnusedVarsBasedOnQuery = (
 ): Variable[] => {
   const astims = queryTexts.map(query => parseASTIM(query))
   const varsInUse = variables.filter(variable =>
-    astims.some(a => a.hasVariable(variable.name))
+    astims.some(astim => astim.hasVariable(variable.name))
   )
   const cachedVars = createdUsedVarsCache(varsInUse)
 

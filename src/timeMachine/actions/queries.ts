@@ -23,10 +23,8 @@ import {
 } from 'src/shared/copy/notifications'
 
 // Utils
-import {getActiveTimeMachine, getActiveQuery} from 'src/timeMachine/selectors'
 import fromFlux from 'src/shared/utils/fromFlux'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {getAllVariables} from 'src/variables/selectors'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {findNodes} from 'src/shared/utils/ast'
 import {
@@ -61,6 +59,8 @@ import {
 import {getOrg} from 'src/organizations/selectors'
 import {getAll} from 'src/resources/selectors/index'
 import {isCurrentPageDashboard} from 'src/dashboards/selectors'
+import {getAllVariables} from 'src/variables/selectors'
+import {getActiveTimeMachine, getActiveQuery} from 'src/timeMachine/selectors'
 
 export type Action = SaveDraftQueriesAction | SetQueryResults
 

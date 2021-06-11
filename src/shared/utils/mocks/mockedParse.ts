@@ -1912,9 +1912,7 @@ export const getMockedParse = (additionalMappings = {}) => {
     key => (queryASTMapping[key] = additionalMappings[key])
   )
 
-  const mockedParse = query => {
+  return query => {
     return queryASTMapping[query]
   }
-
-  return mockedParse
 }

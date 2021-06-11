@@ -21,7 +21,7 @@ const InvoiceHistoryRow: FC<Props> = ({
   const invoiceName = `${getPreviousMonth(new Date(targetDate))} ${new Date(
     targetDate
   ).getFullYear()} Invoice`
-  const link = `/billing/invoices/${id}`
+  const link = `/api/v2/quartz/billing/invoices/${id}`
   const statusClassName = classnames('invoice-details invoice-status', {
     ['paid']: status === 'Paid',
   })

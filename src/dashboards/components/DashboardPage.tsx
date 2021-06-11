@@ -69,7 +69,7 @@ class DashboardPage extends Component<Props> {
   }
 
   public render() {
-    const {manualRefresh, onManualRefresh, showAnnotationBar} = this.props
+    const {manualRefresh, onManualRefresh} = this.props
 
     return (
       <>
@@ -81,7 +81,7 @@ class DashboardPage extends Component<Props> {
                 <RateLimitAlert alertOnly={true} />
                 <VariablesControlBar />
                 <FeatureFlag name="annotations">
-                  {showAnnotationBar && <AnnotationsControlBar />}
+                  <AnnotationsControlBar />
                 </FeatureFlag>
                 <ErrorBoundary>
                   <DashboardComponent manualRefresh={manualRefresh} />
@@ -114,7 +114,8 @@ class DashboardPage extends Component<Props> {
 
   private get pageTitle(): string {
     const {dashboard} = this.props
-    const title = dashboard && dashboard.name ? dashboard.name : 'Loading...'
+    const title =
+      dashboard && dashboard.name ? dashboard.name : 'Name this Dashboard'
 
     return pageTitleSuffixer([title])
   }
@@ -141,12 +142,9 @@ const mstp = (state: AppState) => {
     state.currentDashboard.id
   )
 
-  const showAnnotationBar = state.userSettings.showAnnotationsControls ?? false
-
   return {
     startVisitMs: state.perf.dashboard.byID[dashboard.id]?.startVisitMs,
     dashboard,
-    showAnnotationBar,
   }
 }
 

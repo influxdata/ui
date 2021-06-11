@@ -22,6 +22,7 @@ import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Actions
 import {deleteCellAndView, createCellWithView} from 'src/cells/actions/thunks'
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Selectors
 import {getAllVariables} from 'src/variables/selectors'
@@ -53,6 +54,8 @@ const CellContext: FC<Props> = ({
   onRefresh,
   isPaused,
   togglePauseCell,
+  onShowOverlay,
+  onDismissOverlay,
 }) => {
   const [popoverVisible, setPopoverVisibility] = useState<boolean>(false)
   const editNoteText = !!get(view, 'properties.note') ? 'Edit Note' : 'Add Note'
@@ -105,6 +108,24 @@ const CellContext: FC<Props> = ({
             onHide={onHide}
             testID="cell-context--clone"
           />
+          <FeatureFlag name="cloneToOtherBoards">
+            <CellContextItem
+              label="Relocate"
+              onClick={() =>
+                onShowOverlay(
+                  'cell-copy-overlay',
+                  {
+                    view,
+                    cell,
+                  },
+                  onDismissOverlay
+                )
+              }
+              icon={IconFont.Export}
+              onHide={onHide}
+              testID="cell-context--copy"
+            />
+          </FeatureFlag>
           <CellContextDangerItem
             label="Delete"
             onClick={handleDeleteCell}
@@ -173,6 +194,24 @@ const CellContext: FC<Props> = ({
             testID="cell-context--pause"
           />
         </FeatureFlag>
+        <FeatureFlag name="cloneToOtherBoards">
+          <CellContextItem
+            label="Relocate"
+            onClick={() =>
+              onShowOverlay(
+                'cell-copy-overlay',
+                {
+                  view,
+                  cell,
+                },
+                onDismissOverlay
+              )
+            }
+            icon={IconFont.Export}
+            onHide={onHide}
+            testID="cell-context--copy"
+          />
+        </FeatureFlag>
       </div>
     )
   }
@@ -219,6 +258,8 @@ const mstp = (state: AppState) => ({
 const mdtp = {
   onDeleteCell: deleteCellAndView,
   onCloneCell: createCellWithView,
+  onShowOverlay: showOverlay,
+  onDismissOverlay: dismissOverlay,
 }
 
 const connector = connect(mstp, mdtp)

@@ -110,6 +110,56 @@ export const getBillingSettingsError = (message: string): Notification => ({
   message: `There was an error getting your billing settings: ${message}`,
 })
 
+// Billing Notifications
+export const updateBillingSettingsError = (message: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `There was an error updating your billing settings: ${message}`,
+})
+
+export const getInvoicesError = (message: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `There was an error getting your invoices: ${message}`,
+})
+
+export const getMarketplaceError = (message: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `There was an error getting your marketplace details: ${message}`,
+})
+
+export const getBillingInfoError = (message: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `There was an error getting your billing info: ${message}`,
+})
+
+export const updateBillingInfoError = (message: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `There was an error updating your billing info: ${message}`,
+})
+
+export const billingContactIncompleteError = (): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message:
+    'Looks like your billing information is incomplete. Please complete the form before resubmitting.',
+})
+
+export const updatePaymentMethodError = (message: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `There was an error updating your payment method: ${message}`,
+})
+
+export const accountCancellationError = (message: string): Notification => ({
+  ...defaultErrorNotification,
+  duration: FIVE_SECONDS,
+  message: `There was an error cancelled your account: ${message}`,
+})
+
 // Operator Notifications
 export const getOrgsError = (): Notification => ({
   ...defaultErrorNotification,
@@ -245,6 +295,12 @@ export const dashboardGetFailed = (
   message: `Failed to load dashboard with id "${dashboardID}": ${error}`,
 })
 
+export const dashboardsGetFailed = (error: string): Notification => ({
+  ...defaultErrorNotification,
+  icon: IconFont.DashH,
+  message: `Failed to retrieve dashboards: ${error}`,
+})
+
 export const dashboardUpdateFailed = (): Notification => ({
   ...defaultErrorNotification,
   icon: IconFont.DashH,
@@ -301,9 +357,20 @@ export const cellAddFailed = (
   message: `Failed to add cell: ${message}`,
 })
 
-export const cellCopyFailed = (): Notification => ({
+export const cellCloneSuccess = (
+  destinationDashboardID: string,
+  operationType: string,
+  cellName?: string
+): Notification => ({
+  ...defaultSuccessNotification,
+  icon: IconFont.DashH,
+  message: `Cell ${cellName ??
+    ''} successfully ${operationType} to dashboard with id ${destinationDashboardID}`,
+})
+
+export const cellCopyFailed = (err?: string): Notification => ({
   ...defaultErrorNotification,
-  message: 'Cell copy failed',
+  message: `Cell copy failed: ${err}`,
 })
 
 export const cellUpdateFailed = (): Notification => ({

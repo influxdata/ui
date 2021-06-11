@@ -38,6 +38,9 @@ export const EMPTY_ZUORA_PARAMS: CreditCardParams = {
   url: '',
 }
 
+export const BALANCE_THRESHOLD_DEFAULT = 10
+export const MINIMUM_BALANCE_THRESHOLD = 1
+
 export const DEFAULT_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss a'
 
 export const DROPDOWN_MENU_MAX_HEIGHT = 240
@@ -159,6 +162,7 @@ export const LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL = 100000000
 export const LEGEND_ORIENTATION_THRESHOLD_DEFAULT = LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL
 
 export const LEGEND_COLORIZE_ROWS_DEFAULT = true
+export const LEGEND_HIDE_DEFAULT = false
 
 export const QUERY_BUILDER_MODE = 'builder'
 export const SCRIPT_EDITOR_MODE = 'advanced'

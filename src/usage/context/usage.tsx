@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC, useCallback, useEffect, useState} from 'react'
+import {fromFlux, FromFluxResult} from '@influxdata/giraffe'
 
 // Utils
 import {
@@ -14,8 +15,7 @@ import {
 import {DEFAULT_USAGE_TIME_RANGE} from 'src/shared/constants/timeRanges'
 
 // Types
-import {SelectableDurationTimeRange} from 'src/types'
-import {UsageVector} from 'src/types/billing'
+import {SelectableDurationTimeRange, UsageVector} from 'src/types'
 
 export type Props = {
   children: JSX.Element
@@ -23,13 +23,13 @@ export type Props = {
 
 export interface UsageContextType {
   billingDateTime: string
-  billingStats: string[]
+  billingStats: FromFluxResult[]
   handleSetSelectedUsage: (vector: string) => void
   handleSetTimeRange: (timeRange: SelectableDurationTimeRange) => void
-  rateLimits: string
+  rateLimits: FromFluxResult
   selectedUsage: string
   timeRange: SelectableDurationTimeRange
-  usageStats: string
+  usageStats: FromFluxResult
   usageVectors: UsageVector[]
 }
 
@@ -38,10 +38,10 @@ export const DEFAULT_CONTEXT: UsageContextType = {
   billingStats: [],
   handleSetSelectedUsage: () => {},
   handleSetTimeRange: () => {},
-  rateLimits: '',
+  rateLimits: null,
   selectedUsage: '',
   timeRange: DEFAULT_USAGE_TIME_RANGE,
-  usageStats: '',
+  usageStats: null,
   usageVectors: [],
 }
 
@@ -53,9 +53,9 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   const [billingDateTime, setBillingDateTime] = useState('')
   const [usageVectors, setUsageVectors] = useState([])
   const [selectedUsage, setSelectedUsage] = useState('')
-  const [billingStats, setBillingStats] = useState([])
-  const [usageStats, setUsageStats] = useState('')
-  const [rateLimits, setRateLimits] = useState('')
+  const [billingStats, setBillingStats] = useState<FromFluxResult[]>([])
+  const [usageStats, setUsageStats] = useState<FromFluxResult>(null)
+  const [rateLimits, setRateLimits] = useState<FromFluxResult>(null)
   const [timeRange, setTimeRange] = useState<SelectableDurationTimeRange>(
     DEFAULT_USAGE_TIME_RANGE
   )
@@ -87,7 +87,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
       setUsageVectors(vectors)
       handleSetSelectedUsage(vectors?.[0]?.name)
     } catch (error) {
-      console.error('handleGetUsageVectors: ', error)
+      console.error(error)
     }
   }, [setUsageVectors, handleSetSelectedUsage])
 
@@ -102,9 +102,10 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
       if (resp.status !== 200) {
         throw new Error(resp.data.message)
       }
+
       setBillingDateTime(resp.data.dateTime)
     } catch (error) {
-      console.error('handleGetBillingDate: ', error)
+      console.error(error)
     }
   }, [setBillingDateTime])
 
@@ -121,18 +122,12 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
       }
 
       const csv = resp.data?.trim().replace(/\r\n/g, '\n')
-      // TODO(ariel): keeping this in for testing purposes in staging
-      // This will need to be removed for flipping the feature flag on
-      console.warn({csv, json: JSON.stringify(resp.data)})
 
-      const csvs = csv.split('\n\n')
+      const csvs = csv.split('\n\n').map(c => fromFlux(c))
 
-      // TODO(ariel): keeping this in for testing purposes in staging
-      // This will need to be removed for flipping the feature flag on
-      console.warn({csvs})
       setBillingStats(csvs)
     } catch (error) {
-      console.error('getBillingStats: ', error)
+      console.error(error)
     }
   }, [setBillingStats])
 
@@ -156,10 +151,12 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
           throw new Error(resp.data.message)
         }
 
-        setUsageStats(resp.data)
+        const fromFluxResult = fromFlux(resp.data)
+
+        setUsageStats(fromFluxResult)
       } catch (error) {
-        console.error('handleGetUsageStats: ', error)
-        setUsageStats('')
+        console.error(error)
+        setUsageStats(null)
       }
     }
   }, [selectedUsage, timeRange, usageVectors])
@@ -178,10 +175,12 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
         throw new Error(resp.data.message)
       }
 
-      setRateLimits(resp.data)
+      const fromFluxResult = fromFlux(resp.data)
+
+      setRateLimits(fromFluxResult)
     } catch (error) {
-      console.error('handleGetRateLimits: ', error)
-      setRateLimits('')
+      console.error(error)
+      setRateLimits(null)
     }
   }, [timeRange])
 

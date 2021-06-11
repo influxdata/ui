@@ -1,5 +1,5 @@
-import React, {PureComponent} from 'react'
-
+// Libraries
+import React, {FC, useContext, useState} from 'react'
 import {
   Overlay,
   Alert,
@@ -10,109 +10,66 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 
-import TermsCancellationOverlay from './TermsCancellationOverlay'
-import ConfirmCancellationOverlay from './ConfirmCancellationOverlay'
+// Components
+import TermsCancellationOverlay from 'src/billing/components/PayAsYouGo/TermsCancellationOverlay'
+import ConfirmCancellationOverlay from 'src/billing/components/PayAsYouGo/ConfirmCancellationOverlay'
+import {BillingContext} from 'src/billing/context/billing'
 
 interface Props {
   isOverlayVisible: boolean
   onHideOverlay: () => void
 }
-interface State {
-  hasAgreedToTerms: boolean
-  hasClickedCancel: boolean
-}
 
-class CancellationOverlay extends PureComponent<Props, State> {
-  private ref: React.RefObject<HTMLFormElement>
+const CancellationOverlay: FC<Props> = ({isOverlayVisible, onHideOverlay}) => {
+  const {handleCancelAccount} = useContext(BillingContext)
+  const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false)
+  const [hasClickedCancel, setHasClickedCancel] = useState(false)
 
-  constructor(props) {
-    super(props)
-
-    this.ref = React.createRef<HTMLFormElement>()
-
-    this.state = {
-      hasAgreedToTerms: false,
-      hasClickedCancel: false,
-    }
-  }
-
-  render() {
-    const {isOverlayVisible, onHideOverlay} = this.props
-
-    return (
-      <form action="/billing/account_cancellation" method="POST" ref={this.ref}>
-        <Overlay visible={isOverlayVisible} className="cancellation-overlay">
-          <Overlay.Container maxWidth={600}>
-            <Overlay.Header title="Cancel Service" onDismiss={onHideOverlay} />
-            <Overlay.Body>
-              <Alert
-                color={ComponentColor.Danger}
-                icon={IconFont.AlertTriangle}
-              >
-                This action cannot be undone
-              </Alert>
-              {this.overlayBody}
-            </Overlay.Body>
-            <Overlay.Footer>
-              <Button
-                color={ComponentColor.Danger}
-                onClick={this.handleCancelService}
-                text={this.buttonText}
-                size={ComponentSize.Small}
-                status={this.buttonStatus}
-              />
-            </Overlay.Footer>
-          </Overlay.Container>
-        </Overlay>
-      </form>
-    )
-  }
-
-  private get buttonStatus() {
-    const {hasAgreedToTerms} = this.state
-    return hasAgreedToTerms ? ComponentStatus.Default : ComponentStatus.Disabled
-  }
-
-  private get overlayBody() {
-    const {hasClickedCancel, hasAgreedToTerms} = this.state
-
+  const handleCancelService = () => {
     if (!hasClickedCancel) {
-      return (
-        <TermsCancellationOverlay
-          hasAgreedToTerms={hasAgreedToTerms}
-          onAgreedToTerms={this.handleAgreeToTerms}
-        />
-      )
-    }
-    return <ConfirmCancellationOverlay />
-  }
-
-  private get buttonText() {
-    const {hasClickedCancel} = this.state
-
-    if (!hasClickedCancel) {
-      return 'I understand, Cancel Service'
-    }
-    return 'Confirm and Cancel Service'
-  }
-
-  private handleAgreeToTerms = () => {
-    const {hasAgreedToTerms} = this.state
-    this.setState({hasAgreedToTerms: !hasAgreedToTerms})
-  }
-
-  private handleCancelService = () => {
-    const {hasClickedCancel} = this.state
-    const {onHideOverlay} = this.props
-
-    if (!hasClickedCancel) {
-      this.setState({hasClickedCancel: true})
+      setHasClickedCancel(true)
     } else {
-      this.ref.current.submit()
-
-      onHideOverlay()
+      handleCancelAccount()
     }
   }
+
+  return (
+    <Overlay visible={isOverlayVisible} className="cancellation-overlay">
+      <Overlay.Container maxWidth={600}>
+        <Overlay.Header title="Cancel Service" onDismiss={onHideOverlay} />
+        <Overlay.Body>
+          <Alert color={ComponentColor.Danger} icon={IconFont.AlertTriangle}>
+            This action cannot be undone
+          </Alert>
+          {hasClickedCancel ? (
+            <ConfirmCancellationOverlay />
+          ) : (
+            <TermsCancellationOverlay
+              hasAgreedToTerms={hasAgreedToTerms}
+              onAgreedToTerms={() => setHasAgreedToTerms(prev => !prev)}
+            />
+          )}
+        </Overlay.Body>
+        <Overlay.Footer>
+          <Button
+            color={ComponentColor.Danger}
+            onClick={handleCancelService}
+            text={
+              hasClickedCancel === false
+                ? 'I understand, Cancel Service'
+                : 'Confirm and Cancel Service'
+            }
+            size={ComponentSize.Small}
+            status={
+              hasAgreedToTerms
+                ? ComponentStatus.Default
+                : ComponentStatus.Disabled
+            }
+          />
+        </Overlay.Footer>
+      </Overlay.Container>
+    </Overlay>
+  )
 }
 
 export default CancellationOverlay

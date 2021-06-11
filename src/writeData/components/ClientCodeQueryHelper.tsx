@@ -4,16 +4,41 @@ import {format_from_js_file} from '@influxdata/flux'
 
 // Utils
 import {parse} from 'src/external/parser'
-import {getBucketsFromAST, updateBucketInAST} from 'src/flows/context/query'
+import {find} from 'src/flows/context/query'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 
 // Constants
 import {CLIENT_DEFINITIONS} from 'src/writeData'
-import {Bucket} from 'src/types'
+import {Bucket, File} from 'src/types'
 
 interface Props {
   clientQuery?: string
   contentID: string
+}
+
+const updateBucketInAST = (ast: File, name: string) => {
+  find(
+    ast,
+    node =>
+      node?.type === 'CallExpression' &&
+      node?.callee?.type === 'Identifier' &&
+      node?.callee?.name === 'from' &&
+      node?.arguments[0]?.properties[0]?.key?.name === 'bucket'
+  ).map(
+    node =>
+      (node.arguments[0].properties[0].value.location.source = `"${name}"`)
+  )
+}
+
+const getBucketsFromAST = (ast: File) => {
+  return find(
+    ast,
+    node =>
+      node?.type === 'CallExpression' &&
+      node?.callee?.type === 'Identifier' &&
+      node?.callee?.name === 'from' &&
+      node?.arguments[0]?.properties[0]?.key?.name === 'bucket'
+  ).map(node => node?.arguments[0]?.properties[0]?.value.value)
 }
 
 const ClientCodeQueryHelper: FC<Props> = ({clientQuery, contentID}) => {

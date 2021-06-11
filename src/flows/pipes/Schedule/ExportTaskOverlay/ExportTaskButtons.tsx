@@ -5,7 +5,7 @@ import React, {FC, useContext} from 'react'
 import {Button, ButtonType, ComponentColor, Form} from '@influxdata/clockface'
 
 // Contexts
-import {Context} from 'src/flows/pipes/ToBucket/ExportTaskOverlay/context'
+import {Context} from 'src/flows/pipes/Schedule/ExportTaskOverlay/context'
 import {PopupContext} from 'src/flows/context/popup'
 
 const ExportTaskButtons: FC = () => {

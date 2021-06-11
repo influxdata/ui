@@ -39,6 +39,7 @@ import {getOrg} from 'src/organizations/selectors'
 import {getStatus} from 'src/resources/selectors'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 import {readMeFormatter} from 'src/templates/utils'
+import {event} from 'src/cloud/utils/reporting'
 
 type Action = TemplateAction | NotifyAction
 
@@ -108,9 +109,13 @@ export const fetchAndSetReadme = (name: string, directory: string) => async (
     const readme = readMeFormatter(response)
     dispatch(setTemplateReadMe(name, readme))
   } catch (error) {
-    reportErrorThroughHoneyBadger(error, {
-      name: `The community template github readme fetch failed for ${name}`,
-    })
+    if (name === 'dashboard') {
+      event('Community template README failed', {context: name})
+    } else {
+      reportErrorThroughHoneyBadger(error, {
+        name: `The community template github readme fetch failed for ${name}`,
+      })
+    }
     dispatch(
       setTemplateReadMe(
         name,

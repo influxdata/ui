@@ -24,7 +24,7 @@ import {HistogramViewProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
 
 // Selectors
-import {isWriteModeEnabled} from 'src/annotations/selectors'
+import {isAnnotationsModeEnabled} from 'src/annotations/selectors'
 
 interface Props extends VisualizationProps {
   properties: HistogramViewProperties
@@ -45,7 +45,7 @@ const HistogramPlot: FunctionComponent<Props> = ({result, properties}) => {
   )
 
   const dispatch = useDispatch()
-  const inAnnotationWriteMode = useSelector(isWriteModeEnabled)
+  const inAnnotationMode = useSelector(isAnnotationsModeEnabled)
 
   const isValidView =
     properties.xColumn &&
@@ -91,7 +91,7 @@ const HistogramPlot: FunctionComponent<Props> = ({result, properties}) => {
     ],
   }
 
-  if (inAnnotationWriteMode && isFlagEnabled('annotations')) {
+  if (inAnnotationMode && isFlagEnabled('annotations')) {
     config.interactionHandlers = {
       singleClick: () => {
         dispatch(handleUnsupportedGraphType('Histogram'))

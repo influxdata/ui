@@ -9,14 +9,6 @@ import {
 } from '@influxdata/clockface'
 import {BillingContext} from 'src/billing/context/billing'
 
-const TimeOptions = {
-  month: 'numeric',
-  day: 'numeric',
-  year: 'numeric',
-  hour: 'numeric',
-  minute: '2-digit',
-}
-
 const PlanTypePanel: FC = () => {
   const {billingInfo} = useContext(BillingContext)
 
@@ -58,10 +50,13 @@ const PlanTypePanel: FC = () => {
             <h5>Last Update</h5>
           </Panel.Header>
           <Panel.Body size={ComponentSize.ExtraSmall}>
-            {new Date(billingInfo.balanceUpdatedAt).toLocaleString(
-              'default',
-              TimeOptions
-            )}{' '}
+            {new Date(billingInfo.balanceUpdatedAt).toLocaleString('default', {
+              month: 'numeric',
+              day: 'numeric',
+              year: 'numeric',
+              hour: 'numeric',
+              minute: '2-digit',
+            })}{' '}
           </Panel.Body>
           <Panel.Footer
             size={ComponentSize.ExtraSmall}

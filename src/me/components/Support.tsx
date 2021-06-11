@@ -1,9 +1,12 @@
 // Libraries
 import React, {PureComponent} from 'react'
 
+// Constants
+import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
+
 const supportLinks = [
   {
-    link: 'https://docs.influxdata.com/influxdb/cloud/',
+    link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/`,
     title: '📜 Documentation',
   },
   {link: 'https://community.influxdata.com', title: '💭 Community Forum'},

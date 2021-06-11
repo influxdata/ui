@@ -19,10 +19,7 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Redux
-import {
-  isWriteModeEnabled,
-  selectAreAnnotationsVisible,
-} from 'src/annotations/selectors'
+import {isAnnotationsModeEnabled} from 'src/annotations/selectors'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -69,6 +66,7 @@ const XYPlot: FC<Props> = ({
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
   const tooltipColorize = properties.legendColorizeRows
+  const tooltipHide = properties.legendHide
   const tooltipOrientationThreshold = properties.legendOrientationThreshold
   const staticLegend = useStaticLegend(properties)
   const dispatch = useDispatch()
@@ -77,8 +75,7 @@ const XYPlot: FC<Props> = ({
   // is in a dashboard or in configuration/single cell popout mode
   // would need to add the annotation control bar to the VEOHeader to get access to the controls,
   // which are currently global values, not per dashboard
-  const inAnnotationWriteMode = useSelector(isWriteModeEnabled)
-  const annotationsAreVisible = useSelector(selectAreAnnotationsVisible)
+  const inAnnotationMode = useSelector(isAnnotationsModeEnabled)
 
   const storedXDomain = useMemo(() => parseXBounds(properties.axes.x.bounds), [
     properties.axes.x.bounds,
@@ -198,6 +195,7 @@ const XYPlot: FC<Props> = ({
     legendOpacity: tooltipOpacity,
     legendOrientationThreshold: tooltipOrientationThreshold,
     legendColorizeRows: tooltipColorize,
+    legendHide: tooltipHide,
     staticLegend,
     valueFormatters: {
       [xColumn]: xFormatter,
@@ -221,13 +219,12 @@ const XYPlot: FC<Props> = ({
 
   addAnnotationLayer(
     config,
-    inAnnotationWriteMode,
+    inAnnotationMode,
     cellID,
     xColumn,
     yColumn,
     groupKey,
     annotations,
-    annotationsAreVisible,
     dispatch
   )
 

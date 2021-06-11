@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, useEffect, useState} from 'react'
 import {Config, Plot} from '@influxdata/giraffe'
-import {RemoteDataState, InfluxColors} from '@influxdata/clockface'
+import {RemoteDataState} from '@influxdata/clockface'
 
 // Types
 import {GeoViewProperties} from 'src/types'

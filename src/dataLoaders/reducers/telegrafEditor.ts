@@ -104,7 +104,7 @@ hostname = ""
 ## If set to true, do no set the "host" tag in the telegraf agent.
   omit_hostname = false
 `,
-  },
+  } as TelegrafEditorBasicPlugin,
   {
     name: '__default__',
     type: 'bundle',

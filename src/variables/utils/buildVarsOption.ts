@@ -15,13 +15,10 @@ export const buildUsedVarsOption = (
   allVariables: Variable[],
   windowVars?: VariableAssignment[]
 ): File => {
-  let filteredVars
-
-  if (Array.isArray(query)) {
-    filteredVars = filterUnusedVarsBasedOnQuery(allVariables, query)
-  } else {
-    filteredVars = filterUnusedVarsBasedOnQuery(allVariables, [query])
-  }
+  const filteredVars = filterUnusedVarsBasedOnQuery(
+    allVariables,
+    Array.isArray(query) ? query : [query]
+  )
 
   const filteredAssignmentVars = filteredVars
     .map(v => asAssignment(v))

@@ -71,7 +71,7 @@ export const createAPI = async (flow: PostFlowsOrgsFlowParams) => {
 
 export const deleteAPI = async (ids: DeleteFlowsOrgsFlowParams) => {
   const res = await deleteFlowsOrgsFlow(ids)
-  if (res.status != 200) {
+  if (res.status < 200 || res.status >= 300) {
     throw new Error(res.data.message)
   }
 }

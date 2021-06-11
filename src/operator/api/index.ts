@@ -35,7 +35,7 @@ export const getAccounts = (
         street1: '123 Main St',
         city: 'New York',
         subdivision: 'NY',
-        postalCode: '30000',
+        postalCode: 30000,
       },
       users: [
         {
@@ -68,7 +68,7 @@ export const getAccounts = (
         street1: '345 Main St',
         city: 'Austin',
         subdivision: 'TX',
-        postalCode: '50000',
+        postalCode: 50000,
       },
       users: [],
       type: 'cancelled',
@@ -90,7 +90,7 @@ export const getAccounts = (
         street1: '678 Main St',
         city: 'Seattle',
         subdivision: 'WA',
-        postalCode: '80000',
+        postalCode: 80000,
       },
       users: [],
       type: 'free',
@@ -220,7 +220,7 @@ export const getAccountById = (
       street1: '345 Main St',
       city: 'Austin',
       subdivision: 'TX',
-      postalCode: '50000',
+      postalCode: 50000,
     },
     deletable: true,
     users: [

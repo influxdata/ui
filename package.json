@@ -82,7 +82,6 @@
     "@types/d3-color": "^1.2.1",
     "@types/d3-scale": "^2.0.1",
     "@types/history": "4.7.6",
-    "@types/jest": "^26.0.23",
     "@types/lodash": "^4.14.116",
     "@types/memoize-one": "^4.0.2",
     "@types/node": "^12.6.8",

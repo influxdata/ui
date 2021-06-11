@@ -14,11 +14,7 @@ type Props = {
 
 const PageBreadcrumbs: FC<Props> = ({pages}) => {
   const getCrumb = (page: PageInfo, isItTheLastPage: boolean) => {
-    let text: string = page.text
-
-    if (!isItTheLastPage) {
-      text += ' > '
-    }
+    const text = `${page.text}${!isItTheLastPage ? ' >' : ''}`
 
     const styles = {marginRight: 10}
 

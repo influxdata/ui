@@ -150,7 +150,7 @@ class TelegrafOutputOverlay extends PureComponent<Props> {
             <Link to={`/orgs/${orgID}/load-data/tokens`}>&nbsp;Tokens tab</Link>
             .
           </p>
-          {bucket_dd}
+          <p>{bucket_dd}</p>
           <div className="output-overlay">
             <TemplateProvider
               variables={{

@@ -90,8 +90,9 @@ const UploadDataDetailsView: FC = () => {
                     </Panel.Body>
                   </Panel>
                   {pageContent}
-                  {!isNonannotatedCSV && (isLP ? <LineProtocolTabs /> : <CsvMethod />)}
-                  {!isNonannotatedCSV && (isLP && <LineProtocolFooterButtons />)}
+                  {!isNonannotatedCSV &&
+                    (isLP ? <LineProtocolTabs /> : <CsvMethod />)}
+                  {!isNonannotatedCSV && isLP && <LineProtocolFooterButtons />}
                 </div>
               </div>
             </Page.Contents>

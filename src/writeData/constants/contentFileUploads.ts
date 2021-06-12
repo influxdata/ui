@@ -1,5 +1,6 @@
 // Constants
 import LPMarkdown from 'src/writeData/components/fileUploads/LP.md'
+import AnnotatedCSVMarkdown from 'src/writeData/components/fileUploads/AnnotatedCSV.md'
 import CSVMarkdown from 'src/writeData/components/fileUploads/CSV.md'
 
 // Graphics
@@ -16,8 +17,14 @@ export interface FileUpload {
 
 export const WRITE_DATA_FILE_UPLOADS: FileUpload[] = [
   {
+    id: 'annotated_csv',
+    name: 'Flux Annotated CSV',
+    image: CSVLogo,
+    markdown: AnnotatedCSVMarkdown,
+  },
+  {
     id: 'csv',
-    name: 'Annotated CSV',
+    name: 'CSV Data',
     image: CSVLogo,
     markdown: CSVMarkdown,
   },

@@ -59,6 +59,7 @@ const UploadDataDetailsView: FC = () => {
   }
 
   const isLP = contentID === 'lp'
+  const isNonannotatedCSV = contentID === 'csv'
 
   return (
     <GetResources
@@ -89,8 +90,9 @@ const UploadDataDetailsView: FC = () => {
                     </Panel.Body>
                   </Panel>
                   {pageContent}
-                  {isLP ? <LineProtocolTabs /> : <CsvMethod />}
-                  {isLP && <LineProtocolFooterButtons />}
+                  {!isNonannotatedCSV &&
+                    (isLP ? <LineProtocolTabs /> : <CsvMethod />)}
+                  {!isNonannotatedCSV && isLP && <LineProtocolFooterButtons />}
                 </div>
               </div>
             </Page.Contents>

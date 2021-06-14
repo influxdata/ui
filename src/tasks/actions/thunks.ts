@@ -1,5 +1,5 @@
 // Libraries
-import {push, goBack, RouterAction} from 'connected-react-router'
+import {goBack, RouterAction} from 'connected-react-router'
 import {Dispatch} from 'react'
 import {normalize} from 'normalizr'
 import {format_from_js_file} from '@influxdata/flux'
@@ -362,13 +362,8 @@ export const setAllTaskOptionsByID = (taskID: string) => async (
   }
 }
 
-export const goToTasks = () => (
-  dispatch: Dispatch<Action | RouterAction>,
-  getState: GetState
-) => {
-  const org = getOrg(getState())
-
-  dispatch(push(`/orgs/${org.id}/tasks`))
+export const goToTasks = () => (dispatch: Dispatch<Action | RouterAction>) => {
+  dispatch(goBack())
 }
 
 export const cancel = () => (dispatch: Dispatch<Action | RouterAction>) => {

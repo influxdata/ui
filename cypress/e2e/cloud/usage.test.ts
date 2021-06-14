@@ -1,4 +1,5 @@
 import {Organization} from '../../../src/types'
+import {set} from '../../../src/shared/utils/featureFlag'
 
 // Skipping this until we get the CI/CD pipeline worked out for the `/quartz/me` endpoint
 describe.skip('Usage Page', () => {
@@ -8,11 +9,7 @@ describe.skip('Usage Page', () => {
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
         cy.getByTestID('tree-nav')
-        cy.window().then(w => {
-          // I hate to add this, but the influx object isn't ready yet
-          cy.wait(1000)
-          w.influx.set('unityUsage', true)
-        })
+        set('unityUsage', true)
 
         cy.visit(`/orgs/${id}/usage`)
       })

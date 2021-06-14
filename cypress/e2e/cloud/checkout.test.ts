@@ -1,4 +1,5 @@
 import {Organization} from '../../../src/types'
+import {set} from '../../../src/shared/utils/featureFlag'
 
 const resetInputs = () => {
   cy.getByTestID('notifyEmail--input')
@@ -29,11 +30,8 @@ describe.skip('Checkout Page', () => {
     cy.signin().then(() => {
       cy.get('@org').then(() => {
         cy.getByTestID('home-page--header').should('be.visible')
-        cy.window().then(w => {
-          w.influx.set('unityMeApi', true)
-          w.influx.set('unityCheckout', true)
-          cy.wait(1000)
-        })
+        set('unityMeApi', true)
+        set('unityCheckout', true)
 
         cy.visit(`/checkout`)
       })

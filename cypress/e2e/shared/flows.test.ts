@@ -1,4 +1,5 @@
 import {Organization} from '../../src/types'
+import {set} from '../../../src/shared/utils/featureFlag'
 
 describe('Flows', () => {
   beforeEach(() => {
@@ -9,10 +10,8 @@ describe('Flows', () => {
           cy.visit(`${orgs}/${id}`)
           cy.getByTestID('tree-nav')
 
-          cy.window().then(win => {
-            win.influx.set('notebooks', true)
-            win.influx.set('simpleTable', true)
-          })
+          set('notebooks', true)
+          set('simpleTable', true)
 
           cy.getByTestID('nav-item-flows').click()
         })

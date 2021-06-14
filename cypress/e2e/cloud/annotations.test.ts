@@ -1,5 +1,6 @@
 import {Organization} from '../../../src/types'
 import {lines} from '../../support/commands'
+import {set} from '../../../src/shared/utils/featureFlag'
 
 describe('The Annotations UI functionality', () => {
   const singleStatSuffix = 'line-plus-single-stat'
@@ -15,12 +16,9 @@ describe('The Annotations UI functionality', () => {
         })
       })
     )
-    cy.window().then(w => {
-      cy.wait(1000)
-      w.influx.set('annotations', true)
-      w.influx.set('useGiraffeGraphs', true)
-      w.influx.set('rangeAnnotations', true)
-    })
+    set('annotations', true)
+    set('useGiraffeGraphs', true)
+    set('rangeAnnotations', true)
     cy.get('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {

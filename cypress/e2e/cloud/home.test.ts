@@ -1,4 +1,5 @@
 import {Organization} from '../../../src/types'
+import {set} from '../../../src/shared/utils/featureFlag'
 
 describe('Home Page Tests', () => {
   beforeEach(() => {
@@ -7,14 +8,8 @@ describe('Home Page Tests', () => {
     cy.signin().then(() => {
       cy.get('@org').then(() => {
         cy.getByTestID('home-page--header').should('be.visible')
-        cy.window().then(w => {
-          w.influx.set('alertsActivity', true)
-          w.influx.set('notebooks', true)
-        })
-
-        // setting influx flag takes a bit as cy.window is async call and the test
-        // execution starts right after before the flag change actually comes into effect
-        cy.wait(1000)
+        set('alertsActivity', true)
+        set('notebooks', true)
       })
     })
   })

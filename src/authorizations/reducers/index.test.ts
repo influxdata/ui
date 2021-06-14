@@ -1,15 +1,23 @@
 import {normalize} from 'normalizr'
-import {authsReducer, AuthsState} from 'src/authorizations/reducers'
+import {authsReducer} from 'src/authorizations/reducers'
 import {authSchema} from 'src/schemas'
-import {AuthEntities, Authorization, RemoteDataState} from 'src/types'
+import {
+  AuthEntities,
+  Authorization,
+  RemoteDataState,
+  ResourceState,
+} from 'src/types'
 import {
   addAuthorization,
   editAuthorization,
   setAuthorizations,
   removeAuthorization,
 } from '../actions/creators'
+import {Action} from 'src/authorizations/actions/creators'
 
-const mockState = (): AuthsState => ({
+const noopAction: Action = {type: undefined, id: ''}
+
+const mockState = (): ResourceState['tokens'] => ({
   allIDs: ['id01', 'id02'],
   byID: {
     id01: {
@@ -23,7 +31,7 @@ const mockState = (): AuthsState => ({
 
 describe('the authorizations reducer', () => {
   it('initialize empty state', () => {
-    const newState = authsReducer(undefined, '' as any)
+    const newState = authsReducer(undefined, noopAction)
 
     expect(newState.byID).toEqual({})
     expect(newState.allIDs).toEqual([])

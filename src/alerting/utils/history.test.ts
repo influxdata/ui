@@ -29,8 +29,6 @@ const alwaysZero = new Proxy([], {
 const csv = 'some csv'
 const cancel = jest.fn()
 
-// jest.mock('src/alerting/utils/history')
-
 describe('history utils', () => {
   beforeEach(jest.clearAllMocks)
 

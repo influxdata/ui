@@ -17,7 +17,7 @@ const tests: [Duration, string][] = [
   ],
 ]
 
-const durationToSecodns = ({days, hours, minutes, seconds}: Duration) =>
+const durationToSeconds = ({days, hours, minutes, seconds}: Duration) =>
   ((days * 24 + hours) * 60 + minutes) * 60 + seconds
 
 describe('utils formating', () => {
@@ -27,7 +27,7 @@ describe('utils formating', () => {
 
   it('should format arbitrary duration', () => {
     tests.forEach(([duration, expected]) => {
-      const seconds = durationToSecodns(duration)
+      const seconds = durationToSeconds(duration)
 
       expect(ruleToString(seconds)).toBe(expected)
     })

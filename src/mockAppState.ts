@@ -1,4 +1,3 @@
-// TODO: why is this file tsx ?
 import {RemoteDataState, ResourceType} from 'src/types'
 
 export const getMockAppState = (query?: string, variables?: []) => {

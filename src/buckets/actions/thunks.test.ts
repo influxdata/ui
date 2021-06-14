@@ -4,6 +4,7 @@ import {fetchDemoDataBuckets} from 'src/cloud/apis/demodata'
 import {getMockAppState} from 'src/mockAppState'
 import {RemoteDataState} from '@influxdata/clockface'
 import {PublishNotificationAction} from 'src/shared/actions/notifications'
+import {mocked} from 'ts-jest/utils'
 
 jest.mock('src/client', () => ({
   getBuckets: jest.fn(),
@@ -25,10 +26,9 @@ jest.mock('src/cloud/apis/demodata', () => ({
 }))
 
 const mockGetBuckets = (shouldSucess: boolean) => {
-  const headers = {} as any
-
-  const mock: typeof api.getBuckets = () => {
-    const res: ReturnType<typeof api.getBuckets> = Promise.resolve(
+  const headers = {}
+  const mock = () =>
+    Promise.resolve(
       shouldSucess
         ? {
             data: {
@@ -42,10 +42,8 @@ const mockGetBuckets = (shouldSucess: boolean) => {
             headers,
             status: 500,
           }
-    )
-    return res
-  }
-  ;(api.getBuckets as any).mockImplementationOnce(mock)
+    ) as ReturnType<typeof api.getBuckets>
+  mocked(api.getBuckets).mockImplementationOnce(mock)
 }
 
 describe('buckets thunks', () => {
@@ -71,7 +69,7 @@ describe('buckets thunks', () => {
     it('should load and dispatch successfully', async () => {
       mockGetBuckets(true)
       const dispatch = jest.fn()
-      const getState = jest.fn(getMockAppState) as any
+      const getState = jest.fn(getMockAppState)
 
       await getBuckets()(dispatch, getState)
 
@@ -87,7 +85,7 @@ describe('buckets thunks', () => {
     it('should throw an error upon failure message received', async () => {
       mockGetBuckets(false)
       const dispatch = jest.fn()
-      const getState = jest.fn(getMockAppState) as any
+      const getState = jest.fn(getMockAppState)
 
       await getBuckets()(dispatch, getState)
 

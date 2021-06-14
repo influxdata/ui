@@ -24,7 +24,7 @@ import {
   editResource,
 } from 'src/resources/reducers/helpers'
 
-export type AuthsState = ResourceState['tokens']
+type AuthsState = ResourceState['tokens']
 const {Authorizations} = ResourceType
 
 const initialState = (): AuthsState => ({

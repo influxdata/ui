@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useCallback, useEffect, useState} from 'react'
+import React, {FC, useCallback, useState} from 'react'
 import {useDispatch} from 'react-redux'
 
 // Utils
@@ -26,7 +26,7 @@ export interface OverlayContextType {
   limitsStatus: RemoteDataState
   handleGetLimits: (id: string) => void
   handleGetOrg: (id: string) => void
-  handleUpdateLimits: (limits: OrgLimits) => void
+  handleUpdateLimits: (limits: OrgLimits, orgID: string) => void
   organization: OperatorOrg
   orgStatus: RemoteDataState
   setLimits: (_: OrgLimits) => void
@@ -36,7 +36,7 @@ export interface OverlayContextType {
 export const DEFAULT_CONTEXT: OverlayContextType = {
   handleGetLimits: (_: string) => {},
   handleGetOrg: (_: string) => {},
-  handleUpdateLimits: (_: OrgLimits) => {},
+  handleUpdateLimits: (_limits: OrgLimits, _id: string) => {},
   limits: null,
   limitsStatus: RemoteDataState.NotStarted,
   organization: null,
@@ -84,11 +84,6 @@ export const OverlayProvider: FC<Props> = React.memo(({children}) => {
     [dispatch]
   )
 
-  useEffect(() => {
-    // TODO(ariel): this is just wrong, the operator isn't using the parameters to get the limits for the org, it's getting that from an input
-    handleGetLimits(orgID)
-  }, [handleGetLimits, orgID])
-
   const handleGetOrg = useCallback(
     async (id: string) => {
       try {
@@ -111,23 +106,18 @@ export const OverlayProvider: FC<Props> = React.memo(({children}) => {
     [dispatch]
   )
 
-  useEffect(() => {
-    handleGetOrg(orgID)
-  }, [handleGetOrg, handleGetLimits, orgID])
-
   const handleUpdateLimits = useCallback(
-    async (updatedLimits: OrgLimits) => {
+    async (updatedLimits: OrgLimits, orgID: string) => {
       try {
         setUpdateLimitStatus(RemoteDataState.Loading)
         await updateOrgLimits(orgID, updatedLimits)
         setUpdateLimitStatus(RemoteDataState.Done)
         dispatch(notify(updateLimitsSuccess(orgID)))
       } catch (error) {
-        console.error({error})
         dispatch(notify(updateLimitsError(orgID)))
       }
     },
-    [dispatch, orgID]
+    [dispatch]
   )
 
   return (

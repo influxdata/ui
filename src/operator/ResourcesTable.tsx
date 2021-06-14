@@ -24,7 +24,6 @@ import {
 } from 'src/operator/constants'
 
 // Types
-import {Account, Organization} from 'src/types'
 import {OperatorRoutes} from 'src/operator/constants'
 
 const ResourcesTable: FC = () => {
@@ -34,11 +33,7 @@ const ResourcesTable: FC = () => {
 
   const isOrgsTab = pathname.includes(OperatorRoutes.organizations)
 
-  // TODO(ariel): remove type forcing here, this should be resolved with
-  // API integration
-  const resources: (Account | Organization)[] = isOrgsTab
-    ? organizations
-    : accounts
+  const resources = isOrgsTab ? organizations : accounts
   const headers = isOrgsTab ? organizationColumnHeaders : accountHeaderInfo
   const infos = isOrgsTab ? organizationColumnInfo : accountColumnInfo
 

@@ -78,7 +78,7 @@ const GetOrganizations: FunctionComponent = () => {
                 canAccessCheckout(me) && (
                   <Route path="/checkout" component={CheckoutPage} />
                 )}
-              {CLOUD && isFlagEnabled('unityOperator') && me?.isOperator && (
+              {CLOUD && isFlagEnabled('unityOperator') && (
                 <Route path="/operator" component={OperatorPage} />
               )}
               <Route component={NotFound} />

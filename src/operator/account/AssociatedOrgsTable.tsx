@@ -15,7 +15,7 @@ const AssociatedOrgsTable: FC = () => {
   const {account} = useContext(AccountContext)
   return (
     <FlexBox direction={FlexDirection.Column} margin={ComponentSize.Large}>
-      {account?.organizations?.length ? (
+      {account?.organizations?.length ? ( // TODO(ariel): sort this out
         <Table>
           <Table.Header>
             <Table.Row>

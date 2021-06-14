@@ -16,7 +16,7 @@ import {
 } from 'src/shared/copy/notifications'
 
 // Types
-import {Account, RemoteDataState} from 'src/types'
+import {Account, Organizations, RemoteDataState} from 'src/types'
 
 export type Props = {
   children: JSX.Element
@@ -29,6 +29,7 @@ export interface AccountContextType {
   handleDeleteAccount: () => void
   handleGetAccount: () => void
   handleRemoveUserFromAccount: (id: string) => void
+  organizations: Organizations
   setVisible: (vis: boolean) => void
   visible: boolean
 }
@@ -40,6 +41,7 @@ export const DEFAULT_CONTEXT: AccountContextType = {
   handleDeleteAccount: () => {},
   handleGetAccount: () => {},
   handleRemoveUserFromAccount: (_: string) => {},
+  organizations: null,
   setVisible: (_: boolean) => {},
   visible: false,
 }
@@ -49,7 +51,8 @@ export const AccountContext = React.createContext<AccountContextType>(
 )
 
 export const AccountProvider: FC<Props> = React.memo(({children}) => {
-  const [account, setAccount] = useState(null)
+  const [account, setAccount] = useState<Account>(null)
+  const [organizations, setOrganizations] = useState<Organizations>(null)
   const [visible, setVisible] = useState(false)
   const [accountStatus, setAccountStatus] = useState(RemoteDataState.NotStarted)
   const [deleteStatus, setDeleteStatus] = useState(RemoteDataState.NotStarted)
@@ -68,7 +71,10 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
         throw new Error(resp.data.message)
       }
 
+      const {organizations}: {organizations: Organizations} = resp.data
+
       setAccount(resp.data)
+      setOrganizations(organizations)
       setAccountStatus(RemoteDataState.Done)
     } catch (error) {
       setAccountStatus(RemoteDataState.Error)
@@ -121,10 +127,11 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
       value={{
         account,
         accountStatus,
+        deleteStatus,
         handleDeleteAccount,
         handleGetAccount,
         handleRemoveUserFromAccount,
-        deleteStatus,
+        organizations,
         setVisible,
         visible,
       }}

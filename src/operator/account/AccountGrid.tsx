@@ -10,7 +10,7 @@ import AccountField from 'src/operator/account/AccountField'
 import {AccountContext} from 'src/operator/context/account'
 
 const AccountGrid: FC = () => {
-  const {account} = useContext(AccountContext)
+  const {account, organizations} = useContext(AccountContext)
 
   const billingAccountID = () => {
     if (!account?.marketplaceSubscription) {
@@ -43,7 +43,7 @@ const AccountGrid: FC = () => {
         />
         <AccountField
           header="Cloud Provider"
-          body={account?.organizations?.[0]?.provider ?? 'N/A'} // TODO(ariel): fix this
+          body={organizations?.[0]?.provider ?? 'N/A'}
           testID="cloud-provider"
         />
       </FlexBox>

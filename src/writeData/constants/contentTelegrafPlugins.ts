@@ -510,7 +510,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPlugin[] = [
   },
   {
     id: 'cisco_telemetry_mdt',
-    name: 'Cisco model-driven telemetry (MDT)',
+    name: 'Cisco Model-Driven Telemetry (MDT)',
     markdown: cisco_telemetry_mdtMarkdown,
     image: cisco_telemetry_mdtLogo,
   },

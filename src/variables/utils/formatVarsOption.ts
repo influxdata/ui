@@ -27,11 +27,13 @@ const getAssignmentVariables = (
   const assignments = []
 
   // Looping over instead of map to get around ts interface signature incompatibility error
-  variables.forEach(v =>
-    v.type === 'VariableAssignment'
-      ? assignments.push(v)
-      : assignments.push(asAssignment(v))
-  )
+  variables.forEach(v => {
+    if (!!v) {
+      v.type === 'VariableAssignment'
+        ? assignments.push(v)
+        : assignments.push(asAssignment(v))
+    }
+  })
 
   return assignments.filter(v => !!v)
 }

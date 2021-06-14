@@ -25,7 +25,7 @@ export const buildUsedVarsOption = (
     .filter(v => !!v)
 
   windowVars = windowVars ?? []
-  return buildVarsOption([...filteredAssignmentVars, ...windowVars])
+  return buildVarsOption([...filteredAssignmentVars, ...(windowVars ?? [])])
 }
 
 export const buildVarsOption = (variables: VariableAssignment[]): File => ({

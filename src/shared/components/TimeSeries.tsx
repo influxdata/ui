@@ -384,7 +384,7 @@ const mstp = (state: AppState, props: OwnProps) => {
     : []
   const astims = queries.map(query => parseASTIM(query))
   const vars = getVariables(state).filter(v =>
-    astims.some(a => a.hasVariable(v.name))
+    astims.some(astim => astim.hasVariable(v.name))
   )
   const variables = [
     ...vars,

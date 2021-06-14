@@ -39,7 +39,6 @@
     "test:e2e:kind": "CYPRESS_dexUrl=http://dex-twodotoh.a.influxcloud.dev.local CYPRESS_baseUrl=https://twodotoh.a.influxcloud.dev.local CYPRESS_password=password cypress open --browser chrome --config chromeWebSecurity=false",
     "test:circleci": "yarn run test:ci --maxWorkers=2",
     "test:ci": "JEST_JUNIT_OUTPUT_DIR=\"./coverage\" jest --ci --coverage",
-    "test:cis": "JEST_JUNIT_OUTPUT_DIR=\"./coverage\" jest --ci src/shared/apis/query.test.ts src/shared/utils/filterUnusedVars.test.ts",
     "lint": "yarn tsc && yarn prettier && yarn eslint",
     "eslint": "eslint '{src,cypress}/**/*.{ts,tsx}'",
     "eslint:circleci": "eslint",

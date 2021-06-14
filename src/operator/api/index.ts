@@ -262,10 +262,11 @@ export const deleteAccountById = (
   return makeResponse(204, 'ok')
 }
 
-export const removeUserFromAccount = (
-  _accountID: string,
-  _id: string
-): ReturnType<typeof deleteOperatorAccountsUser> => {
+export const removeUserFromAccount = ({
+  accountID,
+  userID,
+}): ReturnType<typeof deleteOperatorAccountsUser> => {
+  console.warn({accountID, userID})
   return makeResponse(204, 'ok')
 }
 

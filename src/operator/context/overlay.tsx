@@ -1,5 +1,6 @@
 // Libraries
-import React, {FC, useCallback, useState} from 'react'
+import React, {FC, useCallback, useEffect, useState} from 'react'
+import {useParams} from 'react-router-dom'
 import {useDispatch} from 'react-redux'
 
 // Utils
@@ -26,7 +27,7 @@ export interface OverlayContextType {
   limitsStatus: RemoteDataState
   handleGetLimits: (id: string) => void
   handleGetOrg: (id: string) => void
-  handleUpdateLimits: (limits: OrgLimits, orgID: string) => void
+  handleUpdateLimits: (limits: OrgLimits) => void
   organization: OperatorOrg
   orgStatus: RemoteDataState
   setLimits: (_: OrgLimits) => void
@@ -36,7 +37,7 @@ export interface OverlayContextType {
 export const DEFAULT_CONTEXT: OverlayContextType = {
   handleGetLimits: (_: string) => {},
   handleGetOrg: (_: string) => {},
-  handleUpdateLimits: (_limits: OrgLimits, _id: string) => {},
+  handleUpdateLimits: (_: OrgLimits) => {},
   limits: null,
   limitsStatus: RemoteDataState.NotStarted,
   organization: null,
@@ -56,6 +57,10 @@ export const OverlayProvider: FC<Props> = React.memo(({children}) => {
     RemoteDataState.NotStarted
   )
   const [orgStatus, setOrgStatus] = useState(RemoteDataState.NotStarted)
+
+  // Getting the orgID here since the parameter is only available in the overlay path
+  const {orgID} = useParams<{orgID: string}>()
+
   const dispatch = useDispatch()
 
   const [organization, setOrganization] = useState(null)
@@ -84,6 +89,10 @@ export const OverlayProvider: FC<Props> = React.memo(({children}) => {
     [dispatch]
   )
 
+  useEffect(() => {
+    handleGetLimits(orgID)
+  }, [handleGetLimits, orgID])
+
   const handleGetOrg = useCallback(
     async (id: string) => {
       try {
@@ -106,18 +115,23 @@ export const OverlayProvider: FC<Props> = React.memo(({children}) => {
     [dispatch]
   )
 
+  useEffect(() => {
+    handleGetOrg(orgID)
+  }, [handleGetOrg, handleGetLimits, orgID])
+
   const handleUpdateLimits = useCallback(
-    async (updatedLimits: OrgLimits, orgID: string) => {
+    async (updatedLimits: OrgLimits) => {
       try {
         setUpdateLimitStatus(RemoteDataState.Loading)
         await updateOrgLimits(orgID, updatedLimits)
         setUpdateLimitStatus(RemoteDataState.Done)
         dispatch(notify(updateLimitsSuccess(orgID)))
       } catch (error) {
+        console.error({error})
         dispatch(notify(updateLimitsError(orgID)))
       }
     },
-    [dispatch]
+    [dispatch, orgID]
   )
 
   return (

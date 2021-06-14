@@ -54,7 +54,7 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
   const [accountStatus, setAccountStatus] = useState(RemoteDataState.NotStarted)
   const [deleteStatus, setDeleteStatus] = useState(RemoteDataState.NotStarted)
 
-  const {accountID} = useParams()
+  const {accountID} = useParams<{accountID: string}>()
   const history = useHistory()
   const dispatch = useDispatch()
 
@@ -94,13 +94,13 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
       console.error({error})
       dispatch(notify(deleteAccountError(accountID)))
     }
-  }, [dispatch]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dispatch, history, accountID])
 
   const handleRemoveUserFromAccount = useCallback(
     async (userID: string) => {
       try {
         setDeleteStatus(RemoteDataState.Loading)
-        const resp = await removeUserFromAccount(accountID, userID)
+        const resp = await removeUserFromAccount({accountID, userID})
         if (resp.status !== 204) {
           throw new Error(resp.data.message)
         }
@@ -113,7 +113,7 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
         await handleGetAccount()
       }
     },
-    [dispatch] // eslint-disable-line react-hooks/exhaustive-deps
+    [dispatch, handleGetAccount, history, accountID]
   )
 
   return (

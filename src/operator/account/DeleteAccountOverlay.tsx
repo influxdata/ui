@@ -1,4 +1,5 @@
 import React, {FC, useContext} from 'react'
+import {useParams} from 'react-router-dom'
 import {
   Overlay,
   Gradients,

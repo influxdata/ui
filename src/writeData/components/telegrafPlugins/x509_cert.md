@@ -3,14 +3,15 @@
 This plugin provides information about X509 certificate accessible via local
 file or network connection.
 
-
 ### Configuration
 
 ```toml
 # Reads metrics from a SSL certificate
 [[inputs.x509_cert]]
-  ## List certificate sources
-  sources = ["/etc/ssl/certs/ssl-cert-snakeoil.pem", "https://example.org:443"]
+  ## List certificate sources, support wildcard expands for files
+  ## Prefix your entry with 'file://' if you intend to use relative paths
+  sources = ["/etc/ssl/certs/ssl-cert-snakeoil.pem", "tcp://example.org:443",
+            "/etc/mycerts/*.mydomain.org.pem", "file:///path/to/*.pem"]
 
   ## Timeout for SSL connection
   # timeout = "5s"
@@ -27,7 +28,6 @@ file or network connection.
   # tls_key = "/etc/telegraf/key.pem"
   # tls_server_name = "myhost.example.org"
 ```
-
 
 ### Metrics
 
@@ -53,7 +53,6 @@ file or network connection.
     - age (int, seconds)
     - startdate (int, seconds)
     - enddate (int, seconds)
-
 
 ### Example output
 

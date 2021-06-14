@@ -16,9 +16,12 @@ in Prometheus format.
   ## value in both plugins to ensure metrics are round-tripped without
   ## modification.
   ##
-  ##   example: metric_version = 1; deprecated in 1.13
+  ##   example: metric_version = 1;
   ##            metric_version = 2; recommended version
   # metric_version = 1
+
+  ## Url tag name (tag containing scrapped url. optional, default is "url")
+  # url_tag = "url"
 
   ## An array of Kubernetes services to scrape metrics from.
   # kubernetes_services = ["http://my-service-dns.my-namespace:9100/metrics"]
@@ -29,20 +32,24 @@ in Prometheus format.
   ## Scrape Kubernetes pods for the following prometheus annotations:
   ## - prometheus.io/scrape: Enable scraping for this pod
   ## - prometheus.io/scheme: If the metrics endpoint is secured then you will need to
-  ##     set this to `https` & most likely set the tls config.
+  ##     set this to 'https' & most likely set the tls config.
   ## - prometheus.io/path: If the metrics path is not /metrics, define it with this annotation.
   ## - prometheus.io/port: If port is not 9102 use this annotation
   # monitor_kubernetes_pods = true
+
   ## Get the list of pods to scrape with either the scope of
-  ## - cluster: the kubernetes watch api (default), no need to specify
+  ## - cluster: the kubernetes watch api (default, no need to specify)
   ## - node: the local cadvisor api; for scalability. Note that the config node_ip or the environment variable NODE_IP must be set to the host IP.
   # pod_scrape_scope = "cluster"
+
   ## Only for node scrape scope: node IP of the node that telegraf is running on.
   ## Either this config or the environment variable NODE_IP must be set.
   # node_ip = "10.180.1.1"
-  ## Only for node scrape scope: interval in seconds for how often to get updated pod list for scraping
+
+  ## Only for node scrape scope: interval in seconds for how often to get updated pod list for scraping.
   ## Default is 60 seconds.
   # pod_scrape_interval = 60
+
   ## Restricts Kubernetes monitoring to a single namespace
   ##   ex: monitor_kubernetes_pods_namespace = "default"
   # monitor_kubernetes_pods_namespace = ""
@@ -69,6 +76,7 @@ in Prometheus format.
   # tls_ca = /path/to/cafile
   # tls_cert = /path/to/certfile
   # tls_key = /path/to/keyfile
+
   ## Use TLS but skip chain & host verification
   # insecure_skip_verify = false
 ```

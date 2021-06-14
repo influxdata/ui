@@ -14,13 +14,16 @@ the [upgrading steps][upgrading].
   ## specify dovecot servers via an address:port list
   ##  e.g.
   ##    localhost:24242
+  ## or as an UDS socket
+  ##  e.g.
+  ##    /var/run/dovecot/old-stats
   ##
   ## If no servers are specified, then localhost is used as the host.
   servers = ["localhost:24242"]
 
   ## Type is one of "user", "domain", "ip", or "global"
   type = "global"
-  
+
   ## Wildcard matches like "*.com". An empty string "" is same as "*"
   ## If type = "ip" filters should be <IP/network>
   filters = [""]
@@ -30,36 +33,35 @@ the [upgrading steps][upgrading].
 
 - dovecot
   - tags:
-	- server (hostname)
-	- type (query type)
-	- ip (ip addr)
-	- user (username)
-	- domain (domain name)
+    - server (hostname)
+    - type (query type)
+    - ip (ip addr)
+    - user (username)
+    - domain (domain name)
   - fields:
-	- reset_timestamp (string)
-	- last_update (string)
-	- num_logins (integer)
-	- num_cmds (integer)
-	- num_connected_sessions (integer)
-	- user_cpu (float)
-	- sys_cpu (float)
-	- clock_time (float)
-	- min_faults (integer)
-	- maj_faults (integer)
-	- vol_cs (integer)
-	- invol_cs (integer)
-	- disk_input (integer)
-	- disk_output (integer)
-	- read_count (integer)
-	- read_bytes (integer)
-	- write_count (integer)
-	- write_bytes (integer)
-	- mail_lookup_path (integer)
-	- mail_lookup_attr (integer)
-	- mail_read_count (integer)
-	- mail_read_bytes (integer)
-	- mail_cache_hits (integer)
-
+    - reset_timestamp (string)
+    - last_update (string)
+    - num_logins (integer)
+    - num_cmds (integer)
+    - num_connected_sessions (integer)
+    - user_cpu (float)
+    - sys_cpu (float)
+    - clock_time (float)
+    - min_faults (integer)
+    - maj_faults (integer)
+    - vol_cs (integer)
+    - invol_cs (integer)
+    - disk_input (integer)
+    - disk_output (integer)
+    - read_count (integer)
+    - read_bytes (integer)
+    - write_count (integer)
+    - write_bytes (integer)
+    - mail_lookup_path (integer)
+    - mail_lookup_attr (integer)
+    - mail_read_count (integer)
+    - mail_read_bytes (integer)
+    - mail_cache_hits (integer)
 
 ### Example Output:
 

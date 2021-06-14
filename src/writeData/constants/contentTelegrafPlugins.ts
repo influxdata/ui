@@ -38,6 +38,7 @@ import dns_queryMarkdown from 'src/writeData/components/telegrafPlugins/dns_quer
 import docker_logMarkdown from 'src/writeData/components/telegrafPlugins/docker_log.md'
 import dockerMarkdown from 'src/writeData/components/telegrafPlugins/docker.md'
 import dovecotMarkdown from 'src/writeData/components/telegrafPlugins/dovecot.md'
+import dpdkMarkdown from 'src/writeData/components/telegrafPlugins/dpdk.md'
 import ecsMarkdown from 'src/writeData/components/telegrafPlugins/ecs.md'
 import elasticsearchMarkdown from 'src/writeData/components/telegrafPlugins/elasticsearch.md'
 import ethtoolMarkdown from 'src/writeData/components/telegrafPlugins/ethtool.md'
@@ -84,6 +85,7 @@ import kernel_vmstatMarkdown from 'src/writeData/components/telegrafPlugins/kern
 import kernelMarkdown from 'src/writeData/components/telegrafPlugins/kernel.md'
 import kibanaMarkdown from 'src/writeData/components/telegrafPlugins/kibana.md'
 import kinesis_consumerMarkdown from 'src/writeData/components/telegrafPlugins/kinesis_consumer.md'
+import knx_listenerMarkdown from 'src/writeData/components/telegrafPlugins/knx_listener.md'
 import kube_inventoryMarkdown from 'src/writeData/components/telegrafPlugins/kube_inventory.md'
 import kubernetesMarkdown from 'src/writeData/components/telegrafPlugins/kubernetes.md'
 import lanzMarkdown from 'src/writeData/components/telegrafPlugins/lanz.md'
@@ -126,6 +128,7 @@ import opcuaMarkdown from 'src/writeData/components/telegrafPlugins/opcua.md'
 import openldapMarkdown from 'src/writeData/components/telegrafPlugins/openldap.md'
 import openntpdMarkdown from 'src/writeData/components/telegrafPlugins/openntpd.md'
 import opensmtpdMarkdown from 'src/writeData/components/telegrafPlugins/opensmtpd.md'
+import opentelemetryMarkdown from 'src/writeData/components/telegrafPlugins/opentelemetry.md'
 import openweathermapMarkdown from 'src/writeData/components/telegrafPlugins/openweathermap.md'
 import passengerMarkdown from 'src/writeData/components/telegrafPlugins/passenger.md'
 import pfMarkdown from 'src/writeData/components/telegrafPlugins/pf.md'
@@ -232,6 +235,7 @@ import dns_queryLogo from 'src/writeData/graphics/dns_query.svg'
 import docker_logLogo from 'src/writeData/graphics/docker_log.svg'
 import dockerLogo from 'src/writeData/graphics/docker.svg'
 import dovecotLogo from 'src/writeData/graphics/dovecot.svg'
+import dpdkLogo from 'src/writeData/graphics/dpdk.svg'
 import ecsLogo from 'src/writeData/graphics/ecs.svg'
 import elasticsearchLogo from 'src/writeData/graphics/elasticsearch.svg'
 import ethtoolLogo from 'src/writeData/graphics/ethtool.svg'
@@ -278,6 +282,7 @@ import kernel_vmstatLogo from 'src/writeData/graphics/kernel_vmstat.svg'
 import kernelLogo from 'src/writeData/graphics/kernel.svg'
 import kibanaLogo from 'src/writeData/graphics/kibana.svg'
 import kinesis_consumerLogo from 'src/writeData/graphics/kinesis_consumer.svg'
+import knx_listenerLogo from 'src/writeData/graphics/knx_listener.svg'
 import kube_inventoryLogo from 'src/writeData/graphics/kube_inventory.svg'
 import kubernetesLogo from 'src/writeData/graphics/kubernetes.svg'
 import lanzLogo from 'src/writeData/graphics/lanz.svg'
@@ -320,6 +325,7 @@ import opcuaLogo from 'src/writeData/graphics/opcua.svg'
 import openldapLogo from 'src/writeData/graphics/openldap.svg'
 import openntpdLogo from 'src/writeData/graphics/openntpd.svg'
 import opensmtpdLogo from 'src/writeData/graphics/opensmtpd.svg'
+import opentelemetryLogo from 'src/writeData/graphics/opentelemetry.svg'
 import openweathermapLogo from 'src/writeData/graphics/openweathermap.svg'
 import passengerLogo from 'src/writeData/graphics/passenger.svg'
 import pfLogo from 'src/writeData/graphics/pf.svg'
@@ -408,7 +414,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPlugin[] = [
   },
   {
     id: 'aliyuncms',
-    name: 'Alibaba (aka Aliyun) CloudMonitor Service Statistics Input',
+    name: 'Alibaba (Aliyun) CloudMonitor Service Statistics',
     markdown: aliyuncmsMarkdown,
     image: aliyuncmsLogo,
   },
@@ -504,7 +510,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPlugin[] = [
   },
   {
     id: 'cisco_telemetry_mdt',
-    name: 'Cisco Model-Driven Telemetry (MDT)',
+    name: 'Cisco model-driven telemetry (MDT)',
     markdown: cisco_telemetry_mdtMarkdown,
     image: cisco_telemetry_mdtLogo,
   },
@@ -627,6 +633,12 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPlugin[] = [
     name: 'Dovecot',
     markdown: dovecotMarkdown,
     image: dovecotLogo,
+  },
+  {
+    id: 'dpdk',
+    name: 'Data Plane Development Kit (DPDK)',
+    markdown: dpdkMarkdown,
+    image: dpdkLogo,
   },
   {
     id: 'ecs',
@@ -905,6 +917,12 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPlugin[] = [
     image: kinesis_consumerLogo,
   },
   {
+    id: 'knx_listener',
+    name: 'Schneider Electric KNX',
+    markdown: knx_listenerMarkdown,
+    image: knx_listenerLogo,
+  },
+  {
     id: 'kube_inventory',
     name: 'Kubernetes Inventory',
     markdown: kube_inventoryMarkdown,
@@ -1155,6 +1173,12 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPlugin[] = [
     name: 'OpenSMTPD',
     markdown: opensmtpdMarkdown,
     image: opensmtpdLogo,
+  },
+  {
+    id: 'opentelemetry',
+    name: 'OpenTelemetry',
+    markdown: opentelemetryMarkdown,
+    image: opentelemetryLogo,
   },
   {
     id: 'openweathermap',

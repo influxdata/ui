@@ -6,7 +6,7 @@ known to work with Filebeat and Kafkabeat.
 ### Configuration:
 
 ```toml
-  ## An URL from which to read beat-formatted JSON
+  ## An URL from which to read Beat-formatted JSON
   ## Default is "http://127.0.0.1:5066".
   url = "http://127.0.0.1:5066"
 

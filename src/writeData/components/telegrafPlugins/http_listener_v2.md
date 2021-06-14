@@ -1,11 +1,13 @@
 # HTTP Listener v2 Input Plugin
 
 HTTP Listener v2 is a service input plugin that listens for metrics sent via
-HTTP. Metrics may be sent in any supported [data format][data_format].
+HTTP. Metrics may be sent in any supported [data format][data_format]. For metrics in
+[InfluxDB Line Protocol][line_protocol] it's recommended to use the [`influxdb_listener`][influxdb_listener]
+or [`influxdb_v2_listener`][influxdb_v2_listener] instead.
 
 **Note:** The plugin previously known as `http_listener` has been renamed
-`influxdb_listener`.  If you would like Telegraf to act as a proxy/relay for
-InfluxDB it is recommended to use [`influxdb_listener`][influxdb_listener].
+`influxdb_listener`. If you would like Telegraf to act as a proxy/relay for
+InfluxDB it is recommended to use [`influxdb_listener`][influxdb_listener] or [`influxdb_v2_listener`][influxdb_v2_listener].
 
 ### Configuration:
 
@@ -57,7 +59,7 @@ This is a sample configuration for the plugin.
   ## Each data format has its own unique set of configuration options, read
   ## more about them here:
   ## https://github.com/influxdata/telegraf/blob/master/docs/DATA_FORMATS_INPUT.md
-  data_format = "influx"
+  data_format = "json"
 ```
 
 ### Metrics:
@@ -67,19 +69,24 @@ Metrics are collected from the part of the request specified by the `data_source
 ### Troubleshooting:
 
 **Send Line Protocol**
+
 ```
 curl -i -XPOST 'http://localhost:8080/telegraf' --data-binary 'cpu_load_short,host=server01,region=us-west value=0.64 1434055562000000000'
 ```
 
 **Send JSON**
+
 ```
 curl -i -XPOST 'http://localhost:8080/telegraf' --data-binary '{"value1": 42, "value2": 42}'
 ```
 
 **Send query params**
+
 ```
 curl -i -XGET 'http://localhost:8080/telegraf?host=server01&value=0.42'
 ```
 
 [data_format]: /docs/DATA_FORMATS_INPUT.md
 [influxdb_listener]: /plugins/inputs/influxdb_listener/README.md
+[line_protocol]: https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/
+[influxdb_v2_listener]: /plugins/inputs/influxdb_v2_listener/README.md

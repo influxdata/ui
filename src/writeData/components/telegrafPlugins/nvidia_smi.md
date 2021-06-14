@@ -22,6 +22,7 @@ On Windows 10, you may also find this located here `C:\Windows\System32\nvidia-s
 You'll need to escape the `\` within the `telegraf.conf` like this: `C:\\Program Files\\NVIDIA Corporation\\NVSMI\\nvidia-smi.exe`
 
 ### Metrics
+
 - measurement: `nvidia_smi`
   - tags
     - `name` (type of GPU e.g. `GeForce GTX 1070 Ti`)
@@ -68,11 +69,13 @@ SELECT mean("temperature_gpu") FROM "nvidia_smi" WHERE time > now() - 5m GROUP B
 Check the full output by running `nvidia-smi` binary manually.
 
 Linux:
+
 ```sh
 sudo -u telegraf -- /usr/bin/nvidia-smi -q -x
 ```
 
 Windows:
+
 ```
 "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe" -q -x
 ```
@@ -80,6 +83,7 @@ Windows:
 Please include the output of this command if opening an GitHub issue.
 
 ### Example Output
+
 ```
 nvidia_smi,compute_mode=Default,host=8218cf,index=0,name=GeForce\ GTX\ 1070,pstate=P2,uuid=GPU-823bc202-6279-6f2c-d729-868a30f14d96 fan_speed=100i,memory_free=7563i,memory_total=8112i,memory_used=549i,temperature_gpu=53i,utilization_gpu=100i,utilization_memory=90i 1523991122000000000
 nvidia_smi,compute_mode=Default,host=8218cf,index=1,name=GeForce\ GTX\ 1080,pstate=P2,uuid=GPU-f9ba66fc-a7f5-94c5-da19-019ef2f9c665 fan_speed=100i,memory_free=7557i,memory_total=8114i,memory_used=557i,temperature_gpu=50i,utilization_gpu=100i,utilization_memory=85i 1523991122000000000
@@ -87,5 +91,8 @@ nvidia_smi,compute_mode=Default,host=8218cf,index=2,name=GeForce\ GTX\ 1080,psta
 ```
 
 ### Limitations
+
 Note that there seems to be an issue with getting current memory clock values when the memory is overclocked.
 This may or may not apply to everyone but it's confirmed to be an issue on an EVGA 2080 Ti.
+
+**NOTE:** For use with docker either generate your own custom docker image based on nvidia/cuda which also installs a telegraf package or use [volume mount binding](https://docs.docker.com/storage/bind-mounts/) to inject the required binary into the docker container.

@@ -1,7 +1,6 @@
 # HTTP Input Plugin
 
-The HTTP input plugin collects metrics from one or more HTTP(S) endpoints.  The endpoint should have metrics formatted in one of the supported [input data formats](../../../docs/DATA_FORMATS_INPUT.md).  Each data format has its own unique set of configuration options which can be added to the input configuration.
-
+The HTTP input plugin collects metrics from one or more HTTP(S) endpoints. The endpoint should have metrics formatted in one of the supported [input data formats](https://github.com/influxdata/telegraf/blob/master/docs/DATA_FORMATS_INPUT.md). Each data format has its own unique set of configuration options which can be added to the input configuration.
 
 ### Configuration:
 
@@ -33,6 +32,12 @@ The HTTP input plugin collects metrics from one or more HTTP(S) endpoints.  The 
   ## Optional HTTP Basic Auth Credentials
   # username = "username"
   # password = "pa$$word"
+
+  ## OAuth2 Client Credentials. The options 'client_id', 'client_secret', and 'token_url' are required to use OAuth2.
+  # client_id = "clientid"
+  # client_secret = "secret"
+  # token_url = "https://indentityprovider/oauth2/v1/token"
+  # scopes = ["urn:opc:idm:__myscopes__"]
 
   ## HTTP Proxy support
   # http_proxy_url = ""

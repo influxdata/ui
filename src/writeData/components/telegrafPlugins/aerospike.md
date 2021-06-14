@@ -10,6 +10,7 @@ The metric names, to make it less complicated in querying, have replaced all `-`
 All metrics are attempted to be cast to integers, then booleans, then strings.
 
 ### Configuration:
+
 ```toml
 # Read stats from aerospike server(s)
 [[inputs.aerospike]]
@@ -28,18 +29,17 @@ All metrics are attempted to be cast to integers, then booleans, then strings.
   # tls_key = "/etc/telegraf/key.pem"
   ## If false, skip chain & host verification
   # insecure_skip_verify = true
-  
+
   # Feature Options
   # Add namespace variable to limit the namespaces executed on
   # Leave blank to do all
   # disable_query_namespaces = true # default false
   # namespaces = ["namespace1", "namespace2"]
 
-  # Enable set level telmetry
+  # Enable set level telemetry
   # query_sets = true # default: false
   # Add namespace set combinations to limit sets executed on
-  # Leave blank to do all
-  # sets = ["namespace1/set1", "namespace1/set2"]
+  # Leave blank to do all sets
   # sets = ["namespace1/set1", "namespace1/set2", "namespace3"]
 
   # Histograms
@@ -48,19 +48,17 @@ All metrics are attempted to be cast to integers, then booleans, then strings.
 
   # by default, aerospike produces a 100 bucket histogram
   # this is not great for most graphing tools, this will allow
-  # the ability to squash this to a smaller number of buckets 
-  # To have a balanced histogram, the number of buckets chosen 
+  # the ability to squash this to a smaller number of buckets
+  # To have a balanced histogram, the number of buckets chosen
   # should divide evenly into 100.
   # num_histogram_buckets = 100 # default: 10
-
-
 ```
 
 ### Measurements:
 
 The aerospike metrics are under a few measurement names:
 
-***aerospike_node***: These are the aerospike **node** measurements, which are
+**_aerospike_node_**: These are the aerospike **node** measurements, which are
 available from the aerospike `statistics` command.
 
       ie,
@@ -70,7 +68,7 @@ available from the aerospike `statistics` command.
         ...
       ```
 
-***aerospike_namespace***: These are aerospike namespace measurements, which
+**_aerospike_namespace_**: These are aerospike namespace measurements, which
 are available from the aerospike `namespace/<namespace_name>` command.
 
       ie,
@@ -81,7 +79,8 @@ are available from the aerospike `namespace/<namespace_name>` command.
         namespace/<namespace_name>
         ...
       ```
-***aerospike_set***: These are aerospike set measurements, which
+
+**_aerospike_set_**: These are aerospike set measurements, which
 are available from the aerospike `sets/<namespace_name>/<set_name>` command.
 
       ie,
@@ -92,7 +91,8 @@ are available from the aerospike `sets/<namespace_name>/<set_name>` command.
         sets/<namespace_name>/<set_name>
         ...
       ```
-***aerospike_histogram_ttl***: These are aerospike ttl hisogram measurements, which
+
+**_aerospike_histogram_ttl_**: These are aerospike ttl hisogram measurements, which
 is available from the aerospike `histogram:namespace=<namespace_name>;[set=<set_name>;]type=ttl` command.
 
       ie,
@@ -102,7 +102,8 @@ is available from the aerospike `histogram:namespace=<namespace_name>;[set=<set_
         histogram:namespace=<namespace_name>;[set=<set_name>;]type=ttl
         ...
       ```
-***aerospike_histogram_object_size_linear***: These are aerospike object size linear histogram measurements, which is available from the aerospike `histogram:namespace=<namespace_name>;[set=<set_name>;]type=object_size_linear` command.
+
+**_aerospike_histogram_object_size_linear_**: These are aerospike object size linear histogram measurements, which is available from the aerospike `histogram:namespace=<namespace_name>;[set=<set_name>;]type=object_size_linear` command.
 
       ie,
       ```
@@ -129,6 +130,7 @@ Set metrics have tags:
 - set_name
 
 Histogram metrics have tags:
+
 - namespace_name
 - set_name (optional)
 - type

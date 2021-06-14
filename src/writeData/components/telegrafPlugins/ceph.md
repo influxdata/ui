@@ -4,48 +4,47 @@ Collects performance metrics from the MON and OSD nodes in a Ceph storage cluste
 
 Ceph has introduced a Telegraf and Influx plugin in the 13.x Mimic release. The Telegraf module sends to a Telegraf configured with a socket_listener. [Learn more in their docs](http://docs.ceph.com/docs/mimic/mgr/telegraf/)
 
-*Admin Socket Stats*
+_Admin Socket Stats_
 
-This gatherer works by scanning the configured SocketDir for OSD, MON, MDS and RGW socket files.  When it finds
-a MON socket, it runs **ceph --admin-daemon $file perfcounters_dump**. For OSDs it runs **ceph --admin-daemon $file perf dump**
+This gatherer works by scanning the configured SocketDir for OSD, MON, MDS and RGW socket files. When it finds
+a MON socket, it runs **ceph --admin-daemon \$file perfcounters_dump**. For OSDs it runs **ceph --admin-daemon \$file perf dump**
 
-The resulting JSON is parsed and grouped into collections, based on top-level key.  Top-level keys are
+The resulting JSON is parsed and grouped into collections, based on top-level key. Top-level keys are
 used as collection tags, and all sub-keys are flattened. For example:
 
 ```json
- {
-   "paxos": {
-     "refresh": 9363435,
-     "refresh_latency": {
-       "avgcount": 9363435,
-       "sum": 5378.794002000
-     }
-   }
- }
+{
+  "paxos": {
+    "refresh": 9363435,
+    "refresh_latency": {
+      "avgcount": 9363435,
+      "sum": 5378.794002
+    }
+  }
+}
 ```
 
 Would be parsed into the following metrics, all of which would be tagged with collection=paxos:
 
- - refresh = 9363435
- - refresh_latency.avgcount: 9363435
- - refresh_latency.sum: 5378.794002000
+- refresh = 9363435
+- refresh_latency.avgcount: 9363435
+- refresh_latency.sum: 5378.794002000
 
-
-*Cluster Stats*
+_Cluster Stats_
 
 This gatherer works by invoking ceph commands against the cluster thus only requires the ceph client, valid
 ceph configuration and an access key to function (the ceph_config and ceph_user configuration variables work
 in conjunction to specify these prerequisites). It may be run on any server you wish which has access to
-the cluster.  The currently supported commands are:
+the cluster. The currently supported commands are:
 
-* ceph status
-* ceph df
-* ceph osd pool stats
+- ceph status
+- ceph df
+- ceph osd pool stats
 
 ### Configuration:
 
 ```toml
-# Collects performance metrics from the MON and OSD nodes in a Ceph storage cluster.
+# Collects performance metrics from the MON, OSD, MDS and RGW nodes in a Ceph storage cluster.
 [[inputs.ceph]]
   ## This is the recommended interval to poll.  Too frequent and you will lose
   ## data points due to timeouts during rebalancing and recovery
@@ -91,7 +90,7 @@ the cluster.  The currently supported commands are:
 
 ### Metrics:
 
-*Admin Socket Stats*
+_Admin Socket Stats_
 
 All fields are collected under the **ceph** measurement and stored as float64s. For a full list of fields, see the sample perf dumps in ceph_test.go.
 
@@ -167,14 +166,14 @@ All admin measurements will have the following tags:
     - throttle-objecter_ops
     - throttle-rgw_async_rados_ops
 
-*Cluster Stats*
+_Cluster Stats_
 
-+ ceph_health
+- ceph_health
   - fields:
     - status
     - overall_status
 
-- ceph_osdmap
+* ceph_osdmap
   - fields:
     - epoch (float)
     - num_osds (float)
@@ -184,7 +183,7 @@ All admin measurements will have the following tags:
     - nearfull (bool)
     - num_remapped_pgs (float)
 
-+ ceph_pgmap
+- ceph_pgmap
   - fields:
     - version (float)
     - num_pgs (float)
@@ -198,13 +197,13 @@ All admin measurements will have the following tags:
     - read_op_per_sec (float)
     - write_op_per_sec (float)
 
-- ceph_pgmap_state
+* ceph_pgmap_state
   - tags:
     - state
   - fields:
     - count (float)
 
-+ ceph_usage
+- ceph_usage
   - fields:
     - total_bytes (float)
     - total_used_bytes (float)
@@ -213,7 +212,7 @@ All admin measurements will have the following tags:
     - total_used (float, exists only in ceph <0.84)
     - total_avail (float, exists only in ceph <0.84)
 
-- ceph_pool_usage
+* ceph_pool_usage
   - tags:
     - name
   - fields:
@@ -223,7 +222,7 @@ All admin measurements will have the following tags:
     - percent_used (float)
     - max_avail (float)
 
-+ ceph_pool_stats
+- ceph_pool_stats
   - tags:
     - name
   - fields:
@@ -236,10 +235,9 @@ All admin measurements will have the following tags:
     - recovering_bytes_per_sec (float)
     - recovering_keys_per_sec (float)
 
-
 ### Example Output:
 
-*Cluster Stats*
+_Cluster Stats_
 
 ```
 ceph_health,host=stefanmon1 overall_status="",status="HEALTH_WARN" 1587118504000000000
@@ -251,7 +249,7 @@ ceph_pool_usage,host=stefanmon1,name=cephfs_data bytes_used=0,kb_used=0,max_avai
 ceph_pool_stats,host=stefanmon1,name=cephfs_data read_bytes_sec=0,read_op_per_sec=0,recovering_bytes_per_sec=0,recovering_keys_per_sec=0,recovering_objects_per_sec=0,write_bytes_sec=0,write_op_per_sec=0 1587118506000000000
 ```
 
-*Admin Socket Stats*
+_Admin Socket Stats_
 
 ```
 > ceph,collection=cct,host=stefanmon1,id=stefanmon1,type=monitor total_workers=0,unhealthy_workers=0 1587117563000000000

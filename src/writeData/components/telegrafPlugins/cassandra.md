@@ -3,6 +3,7 @@
 ### **Deprecated in version 1.7**: Please use the [jolokia2](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/jolokia2) plugin with the [cassandra.conf](/plugins/inputs/jolokia2/examples/cassandra.conf) example configuration.
 
 #### Plugin arguments:
+
 - **context** string: Context root used for jolokia url
 - **servers** []string: List of servers with the format "<user:passwd@><host>:port"
 - **metrics** []string: List of Jmx paths that identify mbeans attributes
@@ -14,15 +15,32 @@ The Cassandra plugin collects Cassandra 3 / JVM metrics exposed as MBean's attri
 See: https://jolokia.org/ and [Cassandra Documentation](http://docs.datastax.com/en/cassandra/3.x/cassandra/operations/monitoringCassandraTOC.html)
 
 # Measurements:
-Cassandra plugin produces one or more measurements for each metric configured, adding Server's name  as `host` tag. More than one measurement is generated when querying table metrics with a wildcard for the keyspace or table name.
+
+Cassandra plugin produces one or more measurements for each metric configured, adding Server's name as `host` tag. More than one measurement is generated when querying table metrics with a wildcard for the keyspace or table name.
 
 Given a configuration like:
 
 ```toml
+# Read Cassandra metrics through Jolokia
 [[inputs.cassandra]]
+  ## DEPRECATED: The cassandra plugin has been deprecated.  Please use the
+  ## jolokia2 plugin instead.
+  ##
+  ## see https://github.com/influxdata/telegraf/tree/master/plugins/inputs/jolokia2
+
   context = "/jolokia/read"
-  servers = [":8778"]
-  metrics = ["/java.lang:type=Memory/HeapMemoryUsage"]
+  ## List of cassandra servers exposing jolokia read service
+  servers = ["myuser:mypassword@10.10.10.1:8778","10.10.10.2:8778",":8778"]
+  ## List of metrics collected on above servers
+  ## Each metric consists of a jmx path.
+  ## This will collect all heap memory usage metrics from the jvm and
+  ## ReadLatency metrics for all keyspaces and tables.
+  ## "type=Table" in the query works with Cassandra3.0. Older versions might
+  ## need to use "type=ColumnFamily"
+  metrics  = [
+    "/java.lang:type=Memory/HeapMemoryUsage",
+    "/org.apache.cassandra.metrics:type=Table,keyspace=*,scope=*,name=ReadLatency"
+  ]
 ```
 
 The collected metrics will be:
@@ -98,6 +116,7 @@ Here is a list of metrics that might be useful to monitor your cassandra cluster
 - /org.apache.cassandra.metrics:type=Storage,name=Exceptions
 
 #### measurement = cassandraTable
+
 Using wildcards for "keyspace" and "scope" can create a lot of series as metrics will be reported for every table and keyspace including internal system tables. Specify a keyspace name and/or a table name to limit them.
 
 - /org.apache.cassandra.metrics:type=Table,keyspace=\*,scope=\*,name=LiveDiskSpaceUsed
@@ -108,20 +127,17 @@ Using wildcards for "keyspace" and "scope" can create a lot of series as metrics
 - /org.apache.cassandra.metrics:type=Table,keyspace=\*,scope=\*,name=ReadTotalLatency
 - /org.apache.cassandra.metrics:type=Table,keyspace=\*,scope=\*,name=WriteTotalLatency
 
-
 #### measurement = cassandraThreadPools
 
 - /org.apache.cassandra.metrics:type=ThreadPools,path=internal,scope=CompactionExecutor,name=ActiveTasks
 - /org.apache.cassandra.metrics:type=ThreadPools,path=internal,scope=AntiEntropyStage,name=ActiveTasks
--  /org.apache.cassandra.metrics:type=ThreadPools,path=request,scope=CounterMutationStage,name=PendingTasks
-- /org.apache.cassandra.metrics:type=ThreadPools,path=request,scope=CounterMutationStage,name=CurrentlyBlockedTasks        
+- /org.apache.cassandra.metrics:type=ThreadPools,path=request,scope=CounterMutationStage,name=PendingTasks
+- /org.apache.cassandra.metrics:type=ThreadPools,path=request,scope=CounterMutationStage,name=CurrentlyBlockedTasks
 - /org.apache.cassandra.metrics:type=ThreadPools,path=request,scope=MutationStage,name=PendingTasks
 - /org.apache.cassandra.metrics:type=ThreadPools,path=request,scope=MutationStage,name=CurrentlyBlockedTasks
 - /org.apache.cassandra.metrics:type=ThreadPools,path=request,scope=ReadRepairStage,name=PendingTasks
 - /org.apache.cassandra.metrics:type=ThreadPools,path=request,scope=ReadRepairStage,name=CurrentlyBlockedTasks
 - /org.apache.cassandra.metrics:type=ThreadPools,path=request,scope=ReadStage,name=PendingTasks
 - /org.apache.cassandra.metrics:type=ThreadPools,path=request,scope=ReadStage,name=CurrentlyBlockedTasks
--  /org.apache.cassandra.metrics:type=ThreadPools,path=request,scope=RequestResponseStage,name=PendingTasks        
+- /org.apache.cassandra.metrics:type=ThreadPools,path=request,scope=RequestResponseStage,name=PendingTasks
 - /org.apache.cassandra.metrics:type=ThreadPools,path=request,scope=RequestResponseStage,name=CurrentlyBlockedTasks
-
-

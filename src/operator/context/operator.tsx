@@ -9,8 +9,7 @@ import {getAccounts, getOrgs} from 'src/operator/api'
 import {getAccountsError, getOrgsError} from 'src/shared/copy/notifications'
 
 // Types
-import {Account, Organization} from 'src/types/operator'
-import {RemoteDataState} from 'src/types'
+import {Account, OperatorOrg, RemoteDataState} from 'src/types'
 import {OperatorRoutes} from 'src/operator/constants'
 
 export type Props = {
@@ -21,7 +20,7 @@ export interface OperatorContextType {
   accounts: Account[]
   handleGetAccounts: () => void
   handleGetOrgs: () => void
-  organizations: Organization[]
+  organizations: OperatorOrg[]
   pathname: string
   searchTerm: string
   setSearchTerm: (searchTerm?: string) => void

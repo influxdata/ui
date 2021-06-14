@@ -24,7 +24,7 @@ import {
 } from 'src/operator/constants'
 
 // Types
-import {Account, Organization} from 'src/types/operator'
+import {Account, Organization} from 'src/types'
 import {OperatorRoutes} from 'src/operator/constants'
 
 const ResourcesTable: FC = () => {

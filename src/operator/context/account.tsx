@@ -16,8 +16,7 @@ import {
 } from 'src/shared/copy/notifications'
 
 // Types
-import {Account} from 'src/types/operator'
-import {RemoteDataState} from 'src/types'
+import {Account, RemoteDataState} from 'src/types'
 
 export type Props = {
   children: JSX.Element

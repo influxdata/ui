@@ -1,14 +1,12 @@
 import {
   deleteOperatorAccount,
-  deleteOperatorAccountUser,
   getOperatorAccount,
   getOperatorAccounts,
   getOperatorOrgs,
-  getOrg,
   getOrgsLimits,
   putOrgsLimits,
 } from 'src/client/unityRoutes'
-import {Account, Organization, OrgLimits} from 'src/types/operator'
+import {Account, OperatorOrg, OrgLimits} from 'src/types'
 
 const makeResponse = (status, data) => {
   return Promise.resolve({
@@ -109,7 +107,7 @@ export const getAccounts = (
 export const getOrgs = (
   searchTerm?: string
 ): ReturnType<typeof getOperatorOrgs> => {
-  const organizations: Organization[] = [
+  const organizations: OperatorOrg[] = [
     {
       id: '123',
       quartzId: 12,
@@ -166,7 +164,7 @@ export const getOrgs = (
 }
 
 export const getOrgById = (_id: string): ReturnType<typeof getOrg> => {
-  const organization: Organization = {
+  const organization: OperatorOrg = {
     id: '123',
     quartzId: 123,
     name: 'Best Org',

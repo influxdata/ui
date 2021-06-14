@@ -1,11 +1,9 @@
 export {
   Account,
-  Me,
-  BillingContact,
-  Organization,
+  Organization as OperatorOrg,
   Organizations,
   OrgLimits,
-  User,
+  User as OperatorUser,
 } from 'src/client/unityRoutes'
 
 export interface CellInfo {

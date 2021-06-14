@@ -1,5 +1,5 @@
 import React from 'react'
-import {CellInfo, ResourceInfo} from 'src/types/operator'
+import {CellInfo, ResourceInfo} from 'src/types'
 import {Link} from 'react-router-dom'
 
 export const accountHeaderInfo = [

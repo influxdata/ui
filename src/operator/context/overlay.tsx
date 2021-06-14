@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useCallback, useEffect, useState} from 'react'
-import {useParams} from 'react-router-dom'
 import {useDispatch} from 'react-redux'
 
 // Utils
@@ -15,7 +14,7 @@ import {
 import {toDisplayLimits} from 'src/operator/utils'
 
 // Types
-import {OrgLimits, Organization} from 'src/types/operator'
+import {OrgLimits, OperatorOrg} from 'src/types'
 import {RemoteDataState} from 'src/types'
 
 export type Props = {
@@ -28,7 +27,7 @@ export interface OverlayContextType {
   handleGetLimits: (id: string) => void
   handleGetOrg: (id: string) => void
   handleUpdateLimits: (limits: OrgLimits) => void
-  organization: Organization
+  organization: OperatorOrg
   orgStatus: RemoteDataState
   setLimits: (_: OrgLimits) => void
   updateLimitStatus: RemoteDataState
@@ -57,7 +56,6 @@ export const OverlayProvider: FC<Props> = React.memo(({children}) => {
     RemoteDataState.NotStarted
   )
   const [orgStatus, setOrgStatus] = useState(RemoteDataState.NotStarted)
-  const {orgID} = useParams()
   const dispatch = useDispatch()
 
   const [organization, setOrganization] = useState(null)
@@ -87,6 +85,7 @@ export const OverlayProvider: FC<Props> = React.memo(({children}) => {
   )
 
   useEffect(() => {
+    // TODO(ariel): this is just wrong, the operator isn't using the parameters to get the limits for the org, it's getting that from an input
     handleGetLimits(orgID)
   }, [handleGetLimits, orgID])
 

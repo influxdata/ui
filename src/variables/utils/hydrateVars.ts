@@ -3,6 +3,12 @@ import {valueFetcher, ValueFetcher} from 'src/variables/utils/ValueFetcher'
 import Deferred from 'src/utils/Deferred'
 import {parseASTIM} from 'src/variables/utils/astim'
 
+// Selectors
+import {asAssignment} from 'src/variables/selectors'
+
+// Constants
+import {OPTION_NAME, BOUNDARY_GROUP} from 'src/variables/constants/index'
+
 // Types
 import {
   RemoteDataState,
@@ -11,6 +17,7 @@ import {
   ValueSelections,
 } from 'src/types'
 import {CancelBox, CancellationError} from 'src/types/promises'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export interface VariableNode {
   variable: Variable
@@ -71,6 +78,14 @@ export const createVariableGraph = (
   return Object.values(nodesByID)
 }
 
+export const isInQuery = (query: string, v: Variable): boolean => {
+  const regexp = new RegExp(
+    `${BOUNDARY_GROUP}${OPTION_NAME}.${v.name}${BOUNDARY_GROUP}`
+  )
+
+  return regexp.test(query)
+}
+
 const getVarChildren = (
   {
     arguments: {
@@ -79,11 +94,15 @@ const getVarChildren = (
   }: Variable,
   allVariables: Variable[]
 ) => {
-  const astim = parseASTIM(query)
+  if (isFlagEnabled('FilterExtern')) {
+    const astim = parseASTIM(query)
 
-  return allVariables.filter(maybeChild => {
-    return astim.hasVariable(maybeChild.name)
-  })
+    return allVariables.filter(maybeChild => {
+      return astim.hasVariable(maybeChild.name)
+    })
+  } else {
+    return allVariables.filter(maybeChild => isInQuery(query, maybeChild))
+  }
 }
 
 /*
@@ -235,7 +254,15 @@ const hydrateVarsHelper = async (
       })
   }
 
-  const descendants = collectDescendants(node).map(node => node.variable)
+  let descendants, assignments
+  if (isFlagEnabled('FilterExtern')) {
+    descendants = collectDescendants(node).map(node => node.variable)
+  } else {
+    descendants = collectDescendants(node)
+    assignments = descendants
+      .map(node => asAssignment(node.variable))
+      .filter(v => !!v)
+  }
 
   const {url, orgID} = options
   const {query} = node.variable.arguments.values
@@ -245,7 +272,7 @@ const hydrateVarsHelper = async (
     url,
     orgID,
     query,
-    descendants,
+    isFlagEnabled('FilterExtern') ? descendants : assignments,
     null,
     '',
     options.skipCache,

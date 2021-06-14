@@ -3,10 +3,16 @@ import {sortBy} from 'lodash'
 
 // Utils
 import {asAssignment, getAllVariables} from 'src/variables/selectors'
-import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
+import {
+  buildUsedVarsOption,
+  buildVarsOption,
+} from 'src/variables/utils/buildVarsOption'
 import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
 import {event} from 'src/cloud/utils/reporting'
-import {getWindowVars} from 'src/variables/utils/getWindowVars'
+import {
+  getWindowVars,
+  getWindowVarsFromVariables,
+} from 'src/variables/utils/getWindowVars'
 
 // Types
 import {
@@ -26,6 +32,7 @@ import {RunQueryPromiseMutex} from 'src/shared/apis/singleQuery'
 
 // Constants
 import {WINDOW_PERIOD} from 'src/variables/constants'
+import {isFlagEnabled} from '../utils/featureFlag'
 
 export const TIME_INVALIDATION = 1000 * 60 * 10 // 10 minutes
 
@@ -241,11 +248,20 @@ export const getCachedResultsOrRunQuery = (
   let windowVars = []
 
   if (hasWindowVars(variableAssignments) === false) {
-    windowVars = getWindowVars(query, variables)
+    if (isFlagEnabled('FilterExtern')) {
+      windowVars = getWindowVarsFromVariables(query, variables)
+    } else {
+      windowVars = getWindowVars(query, variableAssignments)
+    }
   }
 
   // otherwise query & set results
-  const extern = buildUsedVarsOption(query, variables, windowVars)
+  let extern
+  if (isFlagEnabled('FilterExtern')) {
+    extern = buildUsedVarsOption(query, variables, windowVars)
+  } else {
+    extern = buildVarsOption([...variableAssignments, ...windowVars])
+  }
   const {mutex} = queryCache.initializeCacheByID(queryID, hashedVariables)
   const results = mutex.run(orgID, query, extern)
   results.promise = results.promise

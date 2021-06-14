@@ -9,8 +9,14 @@ import {extractBoxedCol} from 'src/timeMachine/apis/queryBuilder'
 
 // utils
 import fromFlux from 'src/shared/utils/fromFlux'
-import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
-import {getWindowVars} from 'src/variables/utils/getWindowVars'
+import {
+  buildUsedVarsOption,
+  buildVarsOption,
+} from 'src/variables/utils/buildVarsOption'
+import {
+  getWindowVars,
+  getWindowVarsFromVariables,
+} from 'src/variables/utils/getWindowVars'
 
 // actions
 import {
@@ -27,7 +33,7 @@ import {notify} from 'src/shared/actions/notifications'
 
 // selectors
 import {getOrg} from 'src/organizations/selectors'
-import {getVariables} from 'src/variables/selectors'
+import {asAssignment, getVariables} from 'src/variables/selectors'
 
 // constants
 import {
@@ -41,6 +47,7 @@ import {
 
 // types
 import {Filter, GetState, RemoteDataState} from 'src/types'
+import {isFlagEnabled} from '../utils/featureFlag'
 
 const formatFilters = (filters: Filter[]) =>
   filters.map(f => `${f.key} ${f.equality} ${f.value}`).join(' AND ')
@@ -103,11 +110,20 @@ export const executePreviewQuery = (query: string) => async (
     // which means we have to drag around all this asAssignment
     // garbage to be able to run a query instead of just being able
     // to executeQuery as normal
-    const allVariables = getVariables(state)
-    const windowVars = getWindowVars(query, allVariables)
-    const extern = buildUsedVarsOption(query, allVariables, windowVars)
-    const result = await runQuery(orgID, query, extern).promise
+    let extern
+    if (isFlagEnabled('FilterExtern')) {
+      const allVariables = getVariables(state)
+      const windowVars = getWindowVarsFromVariables(query, allVariables)
+      extern = buildUsedVarsOption(query, allVariables, windowVars)
+    } else {
+      const variableAssignments = getVariables(state)
+        .map(v => asAssignment(v))
+        .filter(v => !!v)
+      const windowVars = getWindowVars(query, variableAssignments)
+      extern = buildVarsOption([...variableAssignments, ...windowVars])
+    }
 
+    const result = await runQuery(orgID, query, extern).promise
     if (result.type === 'UNKNOWN_ERROR') {
       throw new Error(result.message)
     }

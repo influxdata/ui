@@ -18,6 +18,7 @@ import {
 import {
   getWindowPeriod,
   calcWindowPeriodForDuration,
+  getWindowPeriodFromVariables,
 } from 'src/variables/utils/getWindowVars'
 import {
   timeRangeToDuration,
@@ -27,7 +28,7 @@ import {
 } from 'src/shared/utils/duration'
 
 // Selectors
-import {getAllVariables} from 'src/variables/selectors'
+import {getAllVariables, asAssignment} from 'src/variables/selectors'
 import {getTimeRange} from 'src/dashboards/selectors'
 
 // Types
@@ -40,6 +41,7 @@ import {
   QueryView,
   TimeRange,
 } from 'src/types'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export const getActiveTimeMachine = (state: AppState) => {
   if (!state.timeMachines) {
@@ -91,9 +93,13 @@ export const getActiveQueryIndex = (state: AppState): number => {
 // TODO kill this function
 export const getActiveWindowPeriod = (state: AppState) => {
   const {text} = getActiveQuery(state)
-  const variables = getAllVariables(state)
-
-  return getWindowPeriod(text, variables)
+  if (isFlagEnabled('FilterExtern')) {
+    const variables = getAllVariables(state)
+    return getWindowPeriodFromVariables(text, variables)
+  } else {
+    const variables = getAllVariables(state).map(v => asAssignment(v))
+    return getWindowPeriod(text, variables)
+  }
 }
 
 export const getWindowPeriodFromTimeRange = (state: AppState): string => {

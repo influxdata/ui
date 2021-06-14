@@ -1,6 +1,7 @@
 import {getWindowPeriodVariable} from 'src/variables/utils/getWindowVars'
 import {defaultVariableAssignments} from 'src/variables/mocks'
 
+// TODO: As part of #1708, move the contents of this file to getWindowVars.test.ts and remove this file.
 describe('getWindowPeriodVariable', () => {
   beforeEach(() => {
     // NOTE: as long as you mock children like below, before importing your

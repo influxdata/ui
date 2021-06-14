@@ -5,18 +5,27 @@ import {fromFlux} from '@influxdata/giraffe'
 // Utils
 import {resolveSelectedKey} from 'src/variables/utils/resolveSelectedValue'
 import {formatVarsOption} from 'src/variables/utils/formatVarsOption'
-import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
+import {
+  buildVarsOption,
+  buildUsedVarsOption,
+} from 'src/variables/utils/buildVarsOption'
 import {event} from 'src/cloud/utils/reporting'
 
 // Types
-import {VariableValues, FluxColumnType, Variable} from 'src/types'
+import {
+  VariableAssignment,
+  VariableValues,
+  FluxColumnType,
+  Variable,
+} from 'src/types'
 import {CancelBox} from 'src/types/promises'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const cacheKey = (
   url: string,
   orgID: string,
   query: string,
-  variables: Variable[]
+  variables: Variable[] | VariableAssignment[]
 ): string => {
   return `${query}\n\n${formatVarsOption(variables)}\n\n${orgID}\n\n${url}`
 }
@@ -59,7 +68,7 @@ export interface ValueFetcher {
     url: string,
     orgID: string,
     query: string,
-    variables: Variable[],
+    variables: Variable[] | VariableAssignment[],
     prevSelection: string,
     defaultSelection: string,
     skipCache: boolean,
@@ -94,7 +103,12 @@ export class DefaultValueFetcher implements ValueFetcher {
       }
     }
 
-    const extern = buildUsedVarsOption(query, variables)
+    let extern
+    if (isFlagEnabled('FilterExtern')) {
+      extern = buildUsedVarsOption(query, variables)
+    } else {
+      extern = buildVarsOption(variables)
+    }
     const request = runQuery(orgID, query, extern, abortController)
     event('runQuery', {context: 'variables'})
 

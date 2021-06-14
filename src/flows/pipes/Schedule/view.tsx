@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useEffect, useMemo} from 'react'
+import React, {FC, useContext, useCallback, useEffect, useMemo} from 'react'
 import {
   ComponentStatus,
   Form,
@@ -54,58 +54,29 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     offsetError = 'Invalid Time'
   }
 
-  const [query, hasTaskOption] = useMemo(() => {
-    // simplify takes care of all the variable nonsense in the query
-    const ast = parse(simplify(queryText))
+  const hasTaskOption = useMemo(
+    () =>
+      !!Object.keys(
+        remove(
+          parse(simplify(queryText)),
+          node =>
+            node.type === 'OptionStatement' &&
+            node.assignment.id.name === 'task'
+        ).reduce((acc, curr) => {
+          // eslint-disable-next-line no-extra-semi
+          ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
+            if (_curr.key?.name && _curr.value?.location?.source) {
+              _acc[_curr.key.name] = _curr.value.location.source
+            }
 
-    const params = remove(
-      ast,
-      node =>
-        node.type === 'OptionStatement' && node.assignment.id.name === 'task'
-    ).reduce((acc, curr) => {
-      // eslint-disable-next-line no-extra-semi
-      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
-        if (_curr.key?.name && _curr.value?.location?.source) {
-          _acc[_curr.key.name] = _curr.value.location.source
-        }
+            return _acc
+          }, acc)
 
-        return _acc
-      }, acc)
-
-      return acc
-    }, {})
-    const hasTask = Object.keys(params).length
-
-    if (!params.name) {
-      params.name = `"Notebook Task for ${id}"`
-    }
-
-    if (data.interval && !intervalError) {
-      params.every = data.interval
-    }
-
-    if (data.offset && !offsetError) {
-      params.offset = data.offset
-    }
-
-    const paramString = Object.entries(params)
-      .map(([key, val]) => `${key}: ${val}`)
-      .join(',\n')
-    const header = parse(`option task = {${paramString}}\n`)
-    ast.body.unshift(header.body[0])
-
-    return [format_from_js_file(ast), hasTask]
-  }, [queryText, data.interval, data.offset])
-
-  useEffect(() => {
-    if (data.query === query) {
-      return
-    }
-
-    update({
-      query: query,
-    })
-  }, [query])
+          return acc
+        }, {})
+      ).length,
+    [queryText]
+  )
 
   const updateInterval = evt => {
     update({
@@ -143,6 +114,48 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     )
   }, [hasTaskOption])
 
+  const generateTask = useCallback(() => {
+    // simplify takes care of all the variable nonsense in the query
+    const ast = parse(simplify(queryText))
+
+    const params = remove(
+      ast,
+      node =>
+        node.type === 'OptionStatement' && node.assignment.id.name === 'task'
+    ).reduce((acc, curr) => {
+      // eslint-disable-next-line no-extra-semi
+      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
+        if (_curr.key?.name && _curr.value?.location?.source) {
+          _acc[_curr.key.name] = _curr.value.location.source
+        }
+
+        return _acc
+      }, acc)
+
+      return acc
+    }, {})
+
+    if (!params.name) {
+      params.name = `"Notebook Task for ${id}"`
+    }
+
+    if (data.interval && !intervalError) {
+      params.every = data.interval
+    }
+
+    if (data.offset && !offsetError) {
+      params.offset = data.offset
+    }
+
+    const paramString = Object.entries(params)
+      .map(([key, val]) => `${key}: ${val}`)
+      .join(',\n')
+    const header = parse(`option task = {${paramString}}\n`)
+    ast.body.unshift(header.body[0])
+
+    return format_from_js_file(ast)
+  }, [queryText, data.interval, data.offset])
+
   useEffect(() => {
     if (!id) {
       return
@@ -160,15 +173,17 @@ const Schedule: FC<PipeProp> = ({Context}) => {
               launch(<ExportTaskOverlay />, {
                 properties: data.properties,
                 range: range,
-                query: data.query,
+                query: generateTask(),
               })
             },
           },
         ],
       },
     ])
-  }, [id, data.query, data.properties, range])
-  const persist = isFlagEnabled('flow-sidebar') ? null : <ExportTaskButton />
+  }, [id, data.properties, range, generateTask])
+  const persist = isFlagEnabled('flow-sidebar') ? null : (
+    <ExportTaskButton generate={generateTask} />
+  )
 
   return (
     <Context persistentControls={persist}>

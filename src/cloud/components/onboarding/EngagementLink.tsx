@@ -19,7 +19,6 @@ const EngagementLink: FC = () => {
   const me = useSelector((state: AppState) => state.me)
 
   const {usageDataStates} = useGetUserStatus()
-
   useEffect(() => {
     if (userpilot) {
       if (usageDataStates.length) {

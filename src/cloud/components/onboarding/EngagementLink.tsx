@@ -5,6 +5,8 @@ import {useSelector} from 'react-redux'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
+import useGetUserStatus from 'src/cloud/components/onboarding/useGetUserStatus'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {AppState} from 'src/types'
@@ -15,14 +17,16 @@ const EngagementLink: FC = () => {
   const org = useSelector(getOrg)
   const me = useSelector((state: AppState) => state.me)
 
+  const {usageDataStates} = useGetUserStatus()
+
   useEffect(() => {
     if (userpilot) {
-      sendToUserPilot()
+      usageDataStates?.length ? sendToUserPilot(true) : sendToUserPilot()
       userpilot.reload()
     }
-  }, [pathname, org, me])
+  }, [pathname, org, me, usageDataStates.length])
 
-  const sendToUserPilot = (): void => {
+  const sendToUserPilot = (includeUsageStates: boolean = false): void => {
     const host = window?.location?.hostname.split('.')
 
     if (org && me) {
@@ -34,6 +38,8 @@ const EngagementLink: FC = () => {
         company: {
           id: org.id, // Organization ID
         },
+        ...(isFlagEnabled('newUsageAPI') &&
+          includeUsageStates && {usageDataStates}),
       })
     }
   }

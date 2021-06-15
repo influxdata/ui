@@ -23,7 +23,7 @@ export const getAllUsedVars = (
   if (isFlagEnabled('FilterExtern')) {
     usedVars.forEach((vari: Variable) => {
       if (vari.arguments.type === 'query') {
-        const queryText = get(vari, 'arguments.values.query', '')
+        const queryText = vari?.arguments?.values?.query || ''
         const astim = parseASTIM(queryText)
         const usedV = variables.filter(variable =>
           astim.hasVariable(variable.name)
@@ -34,7 +34,7 @@ export const getAllUsedVars = (
   } else {
     usedVars.forEach((vari: Variable) => {
       if (vari.arguments.type === 'query') {
-        const queryText = get(vari, 'arguments.values.query', '')
+        const queryText = vari?.arguments?.values?.query || ''
         const usedV = variables.filter(variable =>
           isInQuery(queryText, variable)
         )

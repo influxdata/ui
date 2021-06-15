@@ -32,7 +32,7 @@ import {RunQueryPromiseMutex} from 'src/shared/apis/singleQuery'
 
 // Constants
 import {WINDOW_PERIOD} from 'src/variables/constants'
-import {isFlagEnabled} from '../utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export const TIME_INVALIDATION = 1000 * 60 * 10 // 10 minutes
 

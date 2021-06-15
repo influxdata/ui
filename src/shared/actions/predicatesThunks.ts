@@ -47,7 +47,7 @@ import {
 
 // types
 import {Filter, GetState, RemoteDataState} from 'src/types'
-import {isFlagEnabled} from '../utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const formatFilters = (filters: Filter[]) =>
   filters.map(f => `${f.key} ${f.equality} ${f.value}`).join(' AND ')

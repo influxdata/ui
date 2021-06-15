@@ -1,5 +1,5 @@
 // Libraries
-import {FC, useEffect} from 'react'
+import {FC, useEffect, useState} from 'react'
 import {useLocation} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -12,6 +12,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {AppState} from 'src/types'
 
 const EngagementLink: FC = () => {
+  const [dataStates, setDataStates] = useState([])
   const pathname = useLocation().pathname
   const userpilot = window['userpilot']
   const org = useSelector(getOrg)
@@ -21,12 +22,15 @@ const EngagementLink: FC = () => {
 
   useEffect(() => {
     if (userpilot) {
-      usageDataStates?.length ? sendToUserPilot(true) : sendToUserPilot()
+      if (usageDataStates.length) {
+        setDataStates(usageDataStates)
+      }
+      sendToUserPilot()
       userpilot.reload()
     }
-  }, [pathname, org, me, usageDataStates.length])
+  }, [pathname, org, me, usageDataStates])
 
-  const sendToUserPilot = (includeUsageStates: boolean = false): void => {
+  const sendToUserPilot = (): void => {
     const host = window?.location?.hostname.split('.')
 
     if (org && me) {
@@ -39,7 +43,7 @@ const EngagementLink: FC = () => {
           id: org.id, // Organization ID
         },
         ...(isFlagEnabled('newUsageAPI') &&
-          includeUsageStates && {usageDataStates}),
+          dataStates.length && {usageDataStates}),
       })
     }
   }

@@ -1,4 +1,4 @@
-import {useEffect, useState, useCallback, useMemo} from 'react'
+import {useEffect, useState, useCallback} from 'react'
 import {getOrgsUsage} from 'src/client'
 import {fromFlux} from '@influxdata/giraffe'
 import {usageStatsCsv} from 'src/shared/utils/mocks/usagestats'
@@ -6,6 +6,7 @@ import {useSelector} from 'react-redux'
 import {getOrg} from 'src/organizations/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {Table} from '@influxdata/giraffe'
 
 export enum USER_PILOT_USER_STATUS {
   NEW_USER = 'NEW_USER',
@@ -15,18 +16,20 @@ export enum USER_PILOT_USER_STATUS {
   ACTIVE_WRITING_USER = 'ACTIVE_WRITING_USER',
   WRITING_NOT_READING_USER = 'WRITING_NOT_READING_USER',
 }
-export const getUserStatus = (table: any): USER_PILOT_USER_STATUS[] => {
+export const getUserStatus = (table: Table): USER_PILOT_USER_STATUS[] => {
   const dataStates: USER_PILOT_USER_STATUS[] = []
 
-  const measurement = table.getColumn('_measurement') ?? []
+  const measurement = (table.getColumn('_measurement') as string[]) ?? []
 
+  // this looks up storage amounts to see if the user has stored data
   const storageBytes = measurement.find((v, i) => {
     return (
       measurement[i] === 'storage_usage_bucket_bytes' &&
-      table.getColumn('_value')[i] > 0
+      table.getColumn('_value', 'number')[i] > 0
     )
   })
 
+  // This looks up requests that are POSTs to our query endpoints for writing data
   const requestInByte = measurement.find((v, i) => {
     return (
       measurement[i] === 'http_request' &&
@@ -34,12 +37,16 @@ export const getUserStatus = (table: any): USER_PILOT_USER_STATUS[] => {
         table.getColumn('endpoint', 'string')[i]
       ) &&
       table.getColumn('_field')[i] === 'req_bytes' &&
-      table.getColumn('_value')[i] > 0
+      table.getColumn('_value', 'number')[i] > 0
     )
   })
 
+  // This looks up a total of query counts in general to see if the user has read values
   const queryCount = measurement.find((v, i) => {
-    return measurement[i] === 'query_count' && table.getColumn('_value')[i] > 0
+    return (
+      measurement[i] === 'query_count' &&
+      table.getColumn('_value', 'number')[i] > 0
+    )
   })
 
   if (!storageBytes && !requestInByte) {
@@ -99,12 +106,7 @@ const useGetUserStatus = () => {
     }
   }, [getUserStatusDefinition])
 
-  return useMemo(
-    () => ({
-      usageDataStates,
-    }),
-    [usageDataStates]
-  )
+  return {usageDataStates}
 }
 
 export default useGetUserStatus

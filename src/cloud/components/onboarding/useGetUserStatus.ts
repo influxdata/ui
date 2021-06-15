@@ -22,7 +22,7 @@ export const getUserStatus = (table: Table): USER_PILOT_USER_STATUS[] => {
   const measurement = (table.getColumn('_measurement') as string[]) ?? []
 
   // this looks up storage amounts to see if the user has stored data
-  const storageBytes = measurement.find((v, i) => {
+  const storageBytes = measurement.find((_v, i) => {
     return (
       measurement[i] === 'storage_usage_bucket_bytes' &&
       table.getColumn('_value', 'number')[i] > 0
@@ -30,7 +30,7 @@ export const getUserStatus = (table: Table): USER_PILOT_USER_STATUS[] => {
   })
 
   // This looks up requests that are POSTs to our query endpoints for writing data
-  const requestInByte = measurement.find((v, i) => {
+  const requestInByte = measurement.find((_v, i) => {
     return (
       measurement[i] === 'http_request' &&
       ['/api/v2/query', '/query'].includes(
@@ -42,7 +42,7 @@ export const getUserStatus = (table: Table): USER_PILOT_USER_STATUS[] => {
   })
 
   // This looks up a total of query counts in general to see if the user has read values
-  const queryCount = measurement.find((v, i) => {
+  const queryCount = measurement.find((_v, i) => {
     return (
       measurement[i] === 'query_count' &&
       table.getColumn('_value', 'number')[i] > 0

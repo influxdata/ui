@@ -10,16 +10,14 @@ import AccountField from 'src/operator/account/AccountField'
 import {AccountContext} from 'src/operator/context/account'
 
 const AccountGrid: FC = () => {
-  const {account} = useContext(AccountContext)
+  const {account, organizations} = useContext(AccountContext)
 
   const billingAccountID = () => {
-    if (!account?.marketplace) {
+    if (!account?.marketplaceSubscription) {
       return account?.zuoraAccountId ?? 'N/A'
-    } else {
-      return 'N/A'
-      // TODO(ariel): get this going when the OperatorAccount is defined in the API
-      // return account?.marketplace?.subscriberId ?? 'N/A'
     }
+
+    return account?.marketplaceSubscription?.subscriberId ?? 'N/A'
   }
 
   return (
@@ -45,7 +43,7 @@ const AccountGrid: FC = () => {
         />
         <AccountField
           header="Cloud Provider"
-          body={account?.organizations?.[0]?.provider ?? 'N/A'}
+          body={organizations?.[0]?.provider ?? 'N/A'}
           testID="cloud-provider"
         />
       </FlexBox>
@@ -57,7 +55,7 @@ const AccountGrid: FC = () => {
       >
         <AccountField
           header="Billing Provider"
-          body={account?.marketplace?.shortName ?? 'Zuora'}
+          body={account?.marketplaceSubscription?.marketplace ?? 'Zuora'}
           testID="billing-provider"
         />
         <AccountField
@@ -67,9 +65,7 @@ const AccountGrid: FC = () => {
         />
         <AccountField
           header="Salesforce ID"
-          body="N/A" // TODO(ariel): update this to account for OperatorAccount type
-          // https://github.com/influxdata/ui/issues/1513
-          // body={account?.users?.[0]?.sfdcContactId ?? 'N/A'}
+          body={account?.users?.[0]?.sfdcContactId ?? 'N/A'}
           testID="salesforce-id"
         />
       </FlexBox>
@@ -80,9 +76,7 @@ const AccountGrid: FC = () => {
       >
         <AccountField
           header="Subscription Status"
-          body="N/A"
-          // TODO(ariel): get this going when the OperatorAccount is going
-          // body={account?.marketplace?.status ?? 'N/A'}
+          body={account?.marketplaceSubscription?.status ?? 'pending'}
           testID="subscription-status"
         />
         <AccountBillingContact />

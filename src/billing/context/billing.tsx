@@ -10,6 +10,7 @@ import {
   getMarketplace,
   getPaymentForm,
   getSettingsNotifications,
+  postCancel,
   putBillingPaymentMethod,
   putSettingsNotifications,
   putBillingContact,
@@ -175,11 +176,9 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
 
   const handleCancelAccount = useCallback(async () => {
     try {
-      // TODO(ariel): this needs to be created
-      // const resp = await postAccountCancellation({})
-      const resp = await getBilling({})
+      const resp = await postCancel({})
 
-      if (resp.status !== 200) {
+      if (resp.status !== 204) {
         throw new Error(resp.data.message)
       }
 
@@ -187,6 +186,7 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
       // history.push('/')
     } catch (error) {
       const message = getErrorMessage(error)
+      console.error({error})
       dispatch(notify(accountCancellationError(message)))
     }
   }, [dispatch])

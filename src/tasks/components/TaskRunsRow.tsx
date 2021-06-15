@@ -5,7 +5,7 @@ import {withRouter, RouteComponentProps} from 'react-router-dom'
 import moment from 'moment'
 
 // Components
-import {Overlay, IndexList} from '@influxdata/clockface'
+import {Overlay, IndexList, FlexBox} from '@influxdata/clockface'
 import RunLogsOverlay from 'src/tasks/components/RunLogsList'
 
 // Actions
@@ -46,23 +46,27 @@ class TaskRunsRow extends PureComponent<Props, State> {
         <IndexList.Cell>{this.dateTimeString(run.startedAt)}</IndexList.Cell>
         <IndexList.Cell>{run.duration}</IndexList.Cell>
         <IndexList.Cell>
-          <Button
-            key={`logs-${run.id}`}
-            size={ComponentSize.ExtraSmall}
-            color={ComponentColor.Default}
-            text="View Logs"
-            onClick={this.handleToggleOverlay}
-          />
-          {run.status === 'failed' && (
+          <FlexBox
+            margin={ComponentSize.Medium}
+          >
             <Button
-              key={`retry-${run.id}`}
+              key={`logs-${run.id}`}
               size={ComponentSize.ExtraSmall}
               color={ComponentColor.Default}
-              text="Retry"
-              onClick={this.handleRetry}
+              text="View Logs"
+              onClick={this.handleToggleOverlay}
             />
-          )}
-          {this.renderLogOverlay}
+            {run.status === 'failed' && (
+              <Button
+                key={`retry-${run.id}`}
+                size={ComponentSize.ExtraSmall}
+                color={ComponentColor.Default}
+                text="Retry"
+                onClick={this.handleRetry}
+              />
+            )}
+            {this.renderLogOverlay}
+          </FlexBox>
         </IndexList.Cell>
       </IndexList.Row>
     )
@@ -132,3 +136,4 @@ const mdtp = {getLogs: getLogs, retryTask: retryTask}
 
 const connector = connect(mstp, mdtp)
 export default connector(withRouter(TaskRunsRow))
+

@@ -12,7 +12,7 @@ import {AccountContext} from 'src/operator/context/account'
 import {acctOrgColumnInfo, accountOrgHeaders} from 'src/operator/constants'
 
 const AssociatedOrgsTable: FC = () => {
-  const {account, organizations} = useContext(AccountContext)
+  const {organizations} = useContext(AccountContext)
   return (
     <FlexBox direction={FlexDirection.Column} margin={ComponentSize.Large}>
       {organizations?.length ? (

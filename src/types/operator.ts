@@ -1,5 +1,6 @@
 export {
-  Account,
+  OperatorAccount,
+  OperatorAccounts,
   Organization as OperatorOrg,
   Organizations,
   OrgLimits,

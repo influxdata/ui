@@ -9,7 +9,7 @@ import {getAccounts, getOrgs} from 'src/operator/api'
 import {getAccountsError, getOrgsError} from 'src/shared/copy/notifications'
 
 // Types
-import {Account, OperatorOrg, RemoteDataState} from 'src/types'
+import {OperatorAccount, OperatorOrg, RemoteDataState} from 'src/types'
 import {OperatorRoutes} from 'src/operator/constants'
 
 export type Props = {
@@ -17,7 +17,7 @@ export type Props = {
 }
 
 export interface OperatorContextType {
-  accounts: Account[]
+  accounts: OperatorAccount[]
   handleGetAccounts: () => void
   handleGetOrgs: () => void
   organizations: OperatorOrg[]
@@ -43,7 +43,7 @@ export const OperatorContext = React.createContext<OperatorContextType>(
 )
 
 export const OperatorProvider: FC<Props> = React.memo(({children}) => {
-  const [accounts, setAccounts] = useState([])
+  const [accounts, setAccounts] = useState<OperatorAccount[]>([])
   const [accountStatus, setAccountStatus] = useState(RemoteDataState.NotStarted)
   const [orgsStatus, setOrgsStatus] = useState(RemoteDataState.NotStarted)
   const [searchTerm, setSearchTerm] = useState('')

@@ -8,7 +8,7 @@ import {
   getOrgsLimits,
   putOrgsLimits,
 } from 'src/client/unityRoutes'
-import {Account, OperatorOrg, OrgLimits} from 'src/types'
+import {OperatorAccount, OperatorOrg, OrgLimits} from 'src/types'
 
 const makeResponse = (status, data) => {
   return Promise.resolve({
@@ -21,7 +21,7 @@ const makeResponse = (status, data) => {
 export const getAccounts = (
   searchTerm?: string
 ): ReturnType<typeof getOperatorAccounts> => {
-  const accounts: Account[] = [
+  const accounts: OperatorAccount[] = [
     {
       id: 123,
       marketplaceSubscription: null,

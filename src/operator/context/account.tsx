@@ -16,14 +16,14 @@ import {
 } from 'src/shared/copy/notifications'
 
 // Types
-import {Account, Organizations, RemoteDataState} from 'src/types'
+import {OperatorAccount, Organizations, RemoteDataState} from 'src/types'
 
 export type Props = {
   children: JSX.Element
 }
 
 export interface AccountContextType {
-  account: Account
+  account: OperatorAccount
   accountStatus: RemoteDataState
   deleteStatus: RemoteDataState
   handleDeleteAccount: () => void
@@ -51,7 +51,7 @@ export const AccountContext = React.createContext<AccountContextType>(
 )
 
 export const AccountProvider: FC<Props> = React.memo(({children}) => {
-  const [account, setAccount] = useState<Account>(null)
+  const [account, setAccount] = useState<OperatorAccount>(null)
   const [organizations, setOrganizations] = useState<Organizations>(null)
   const [visible, setVisible] = useState(false)
   const [accountStatus, setAccountStatus] = useState(RemoteDataState.NotStarted)

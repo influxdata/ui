@@ -75,7 +75,7 @@ export const getUserStatus = (table: Table): USER_PILOT_USER_STATUS[] => {
 }
 
 const useGetUserStatus = () => {
-  const [usageDataStates, setUserStatus] = useState([])
+  const [usageDataStates, setUsageDataStates] = useState([])
   const org = useSelector(getOrg)
 
   const getUserStatusDefinition = useCallback(async () => {
@@ -95,7 +95,7 @@ const useGetUserStatus = () => {
         csvToParse = usageStatsCsv
       }
       const {table} = fromFlux(csvToParse)
-      setUserStatus(getUserStatus(table))
+      setUsageDataStates(getUserStatus(table))
     }
   }, [org?.id])
 
@@ -106,7 +106,7 @@ const useGetUserStatus = () => {
       event('cloud.onboarding.set_user_status_failure', {
         context: JSON.stringify(err),
       })
-      setUserStatus([])
+      setUsageDataStates([])
     }
   }, [getUserStatusDefinition])
 

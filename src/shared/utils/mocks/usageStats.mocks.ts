@@ -1,4 +1,4 @@
-const usageStatsCsv = `#group,false,false,true,true,false,false,true,true,true,true
+export const usageStatsCsv = `#group,false,false,true,true,false,false,true,true,true,true
 #datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,dateTime:RFC3339,double,string,string,string,string
 #default,_result,,,,,,,,,
 ,result,table,_start,_stop,_time,_value,_field,_measurement,bucket_id,org_id
@@ -8522,4 +8522,3 @@ const usageStatsCsv = `#group,false,false,true,true,false,false,true,true,true,t
 ,,5,2021-05-15T13:33:29.743615351Z,2021-06-14T13:33:29.743615351Z,2021-06-09T21:00:00Z,1166,resp_bytes,http_request,/api/v2/query,351438333495bd60,404
 ,,5,2021-05-15T13:33:29.743615351Z,2021-06-14T13:33:29.743615351Z,2021-06-10T19:00:00Z,106,resp_bytes,http_request,/api/v2/query,351438333495bd60,404`
 
-module.exports = {usageStatsCsv}

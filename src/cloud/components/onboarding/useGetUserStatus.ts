@@ -1,7 +1,7 @@
 import {useEffect, useState, useCallback} from 'react'
 import {getOrgsUsage} from 'src/client'
 import {fromFlux} from '@influxdata/giraffe'
-import {usageStatsCsv} from 'src/shared/utils/mocks/usagestats'
+import {usageStatsCsv} from 'src/shared/utils/mocks/usageStats.mocks'
 import {useSelector} from 'react-redux'
 import {getOrg} from 'src/organizations/selectors'
 import {event} from 'src/cloud/utils/reporting'

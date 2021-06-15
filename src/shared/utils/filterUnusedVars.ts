@@ -1,6 +1,3 @@
-// Libraries
-import {get} from 'lodash'
-
 // Utils
 import {parseASTIM} from 'src/variables/utils/astim'
 import {isInQuery} from 'src/variables/utils/hydrateVars'

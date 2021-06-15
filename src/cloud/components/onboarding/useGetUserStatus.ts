@@ -7,10 +7,11 @@ import {getOrg} from 'src/organizations/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {Table} from '@influxdata/giraffe'
+import {CLOUD} from 'src/shared/constants'
 
 let getOrgsUsage = null
 
-if (process.env.CLOUD_URL) {
+if (CLOUD) {
   getOrgsUsage = require('src/client').getOrgsUsage
 } else {
   getOrgsUsage = null

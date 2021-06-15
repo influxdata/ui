@@ -16,7 +16,7 @@ import {
 } from 'src/shared/copy/notifications'
 
 // Types
-import {OperatorAccount, Organizations, RemoteDataState} from 'src/types'
+import {OperatorAccount, OperatorOrg, RemoteDataState} from 'src/types'
 
 export type Props = {
   children: JSX.Element
@@ -29,7 +29,7 @@ export interface AccountContextType {
   handleDeleteAccount: () => void
   handleGetAccount: () => void
   handleRemoveUserFromAccount: (id: string) => void
-  organizations: Organizations
+  organizations: OperatorOrg[]
   setVisible: (vis: boolean) => void
   visible: boolean
 }
@@ -52,7 +52,7 @@ export const AccountContext = React.createContext<AccountContextType>(
 
 export const AccountProvider: FC<Props> = React.memo(({children}) => {
   const [account, setAccount] = useState<OperatorAccount>(null)
-  const [organizations, setOrganizations] = useState<Organizations>(null)
+  const [organizations, setOrganizations] = useState<OperatorOrg[]>(null)
   const [visible, setVisible] = useState(false)
   const [accountStatus, setAccountStatus] = useState(RemoteDataState.NotStarted)
   const [deleteStatus, setDeleteStatus] = useState(RemoteDataState.NotStarted)
@@ -71,7 +71,7 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
         throw new Error(resp.data.message)
       }
 
-      const {organizations}: {organizations: Organizations} = resp.data
+      const {organizations}: {organizations: OperatorOrg[]} = resp.data
 
       setAccount(resp.data)
       setOrganizations(organizations)

@@ -49,7 +49,7 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
   const [searchTerm, setSearchTerm] = useState('')
   const dispatch = useDispatch()
 
-  const [organizations, setOrganizations] = useState([])
+  const [organizations, setOrganizations] = useState<OperatorOrg[]>([])
 
   const handleGetAccounts = useCallback(async () => {
     try {

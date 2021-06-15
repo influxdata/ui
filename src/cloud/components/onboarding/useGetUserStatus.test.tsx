@@ -2,6 +2,7 @@ import {getUserStatus, USER_PILOT_USER_STATUS} from './useGetUserStatus'
 import {usageStatsCsv} from 'src/shared/utils/mocks/usagestats'
 import {fromFlux} from '@influxdata/giraffe'
 
+jest.mock('src/client')
 describe('useGetUserStatus helper', () => {
   const parsedTable = fromFlux(usageStatsCsv)
 

@@ -1,5 +1,4 @@
 import {Organization} from '../../../src/types'
-import {setOverride} from 'src/shared/actions/flags'
 
 const resetInputs = () => {
   cy.getByTestID('notifyEmail--input')
@@ -30,10 +29,10 @@ describe.skip('Checkout Page', () => {
     cy.signin().then(() => {
       cy.get('@org').then(() => {
         cy.getByTestID('home-page--header').should('be.visible')
-        cy.window().then(win => {
-          win.store.dispatch(setOverride('unityMeApi', true))
-          win.store.dispatch(setOverride('unityCheckout', true))
-        })
+        cy.setFeatureFlags([
+          {flag: 'unityMeApi', value: true},
+          {flag: 'unityCheckout', value: true},
+        ])
         cy.visit(`/checkout`)
       })
     })

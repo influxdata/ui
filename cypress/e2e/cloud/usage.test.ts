@@ -1,5 +1,4 @@
 import {Organization} from '../../../src/types'
-import {setOverride} from 'src/shared/actions/flags'
 
 // Skipping this until we get the CI/CD pipeline worked out for the `/quartz/me` endpoint
 describe.skip('Usage Page', () => {
@@ -9,9 +8,7 @@ describe.skip('Usage Page', () => {
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
         cy.getByTestID('tree-nav')
-        cy.window().then(win => {
-          win.store.dispatch(setOverride('unityUsage', true))
-        })
+        cy.setFeatureFlags([{flag: 'unityUsage', value: true}])
         cy.visit(`/orgs/${id}/usage`)
       })
     })

@@ -9,7 +9,6 @@ import {
   STRINGS_TITLE,
   STRINGS_TRIM,
 } from '../../../src/shared/constants/fluxFunctions'
-import {setOverride} from 'src/shared/actions/flags'
 
 const TYPE_DELAY = 0
 const VIS_TYPES = [
@@ -1078,9 +1077,7 @@ describe('DataExplorer', () => {
 
     describe('static legend', () => {
       it('turns on static legend flag, so static legend option should exist for line graph, line graph plus single stat, and band plot', () => {
-        cy.window().then(win => {
-          win.store.dispatch(setOverride('staticLegend', true))
-        })
+        cy.setFeatureFlags([{flag: 'staticLegend', value: true}])
         VIS_TYPES.forEach(type => {
           cy.getByTestID('cog-cell--button').click()
           cy.getByTestID('view-type--dropdown').click()
@@ -1098,9 +1095,7 @@ describe('DataExplorer', () => {
       })
 
       it('turns off static legend flag so that static legend option should not exist', () => {
-        cy.window().then(win => {
-          win.store.dispatch(setOverride('staticLegend', false))
-        })
+        cy.setFeatureFlags([{flag: 'staticLegend', value: false}])
         VIS_TYPES.forEach(type => {
           cy.getByTestID('cog-cell--button').click()
           cy.getByTestID('view-type--dropdown').click()
@@ -1113,9 +1108,7 @@ describe('DataExplorer', () => {
         cy.writeData(lines(100))
 
         // set the flag, build the query, adjust the view options
-        cy.window().then(win => {
-          win.store.dispatch(setOverride('staticLegend', true))
-        })
+        cy.setFeatureFlags([{flag: 'staticLegend', value: true}])
         cy.get<string>('@defaultBucketListSelector').then(
           (defaultBucketListSelector: string) => {
             cy.getByTestID('query-builder').should('exist')
@@ -1162,9 +1155,7 @@ describe('DataExplorer', () => {
         cy.writeData(lines(100))
 
         // set the flag, build the query, and select the graph type
-        cy.window().then(win => {
-          win.store.dispatch(setOverride('staticLegend', false))
-        })
+        cy.setFeatureFlags([{flag: 'staticLegend', value: false}])
         cy.get<string>('@defaultBucketListSelector').then(
           (defaultBucketListSelector: string) => {
             cy.getByTestID('query-builder').should('exist')
@@ -1598,9 +1589,7 @@ describe('DataExplorer', () => {
     const simpleSmall = 'simple-small'
     const simpleLarge = 'simple-large'
     beforeEach(() => {
-      cy.window().then(win => {
-        win.store.dispatch(setOverride('simpleTable', true))
-      })
+      cy.setFeatureFlags([{flag: 'simpleTable', value: true}])
 
       cy.get('@org').then(({id: orgID}: Organization) => {
         cy.getByTestID('tree-nav')

@@ -1,5 +1,4 @@
 import {Organization} from '../../src/types'
-import {setOverride} from 'src/shared/actions/flags'
 
 describe('Flows', () => {
   beforeEach(() => {
@@ -9,11 +8,11 @@ describe('Flows', () => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${id}`)
           cy.getByTestID('tree-nav')
+          cy.setFeatureFlags([
+            {flag: 'notebooks', value: true},
+            {flag: 'simpleTable', value: true},
+          ])
 
-          cy.window().then(win => {
-            win.store.dispatch(setOverride('notebooks', true))
-            win.store.dispatch(setOverride('simpleTable', true))
-          })
           cy.getByTestID('nav-item-flows').click()
         })
       )

@@ -1,4 +1,3 @@
-import {setOverride} from 'src/shared/actions/flags'
 import {Organization, AppState, Dashboard} from '../../../src/types'
 import {lines} from '../../support/commands'
 
@@ -1245,9 +1244,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           cy.getByTestID('tree-nav')
         })
       })
-      cy.window().then(win => {
-        win.store.dispatch(setOverride('refreshSingleCell', true))
-      })
+      cy.setFeatureFlags([{flag: 'refreshSingleCell', value: true}])
 
       cy.createBucket(orgID, name, 'schmucket')
 
@@ -1333,9 +1330,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           cy.getByTestID('tree-nav')
         })
       })
-      cy.window().then(win => {
-        win.store.dispatch(setOverride('refreshSingleCell', true))
-      })
+      cy.setFeatureFlags([{flag: 'refreshSingleCell', value: true}])
 
       cy.createBucket(orgID, name, 'schmucket')
 
@@ -1430,9 +1425,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           })
         })
         // TODO: remove when feature flag is removed
-        cy.window().then(win => {
-          win.store.dispatch(setOverride('newAutoRefresh', true))
-        })
+        cy.setFeatureFlags([{flag: 'newAutoRefresh', value: true}])
         cy.createBucket(orgID, name, 'schmucket')
         const now = Date.now()
         cy.writeData(
@@ -1618,10 +1611,10 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           cy.getByTestID('tree-nav')
         })
       })
-      cy.window().then(win => {
-        win.store.dispatch(setOverride('pauseCell', true))
-        win.store.dispatch(setOverride('newAutoRefresh', true))
-      })
+      cy.setFeatureFlags([
+        {flag: 'pauseCell', value: true},
+        {flag: 'newAutoRefresh', value: true},
+      ])
 
       cy.createBucket(orgID, name, 'schmucket')
 
@@ -1718,10 +1711,10 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           cy.getByTestID('tree-nav')
         })
       })
-      cy.window().then(win => {
-        win.store.dispatch(setOverride('pauseCell', true))
-        win.store.dispatch(setOverride('newAutoRefresh', true))
-      })
+      cy.setFeatureFlags([
+        {flag: 'pauseCell', value: true},
+        {flag: 'newAutoRefresh', value: true},
+      ])
 
       cy.createBucket(orgID, name, 'schmucket')
 
@@ -1827,9 +1820,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           })
         })
         // TODO: remove when feature flag is removed
-        cy.window().then(win => {
-          win.store.dispatch(setOverride('cloneToOtherBoards', true))
-        })
+        cy.setFeatureFlags([{flag: 'cloneToOtherBoards', value: true}])
         cy.createBucket(orgID, name, 'schmucket')
         const now = Date.now()
         cy.writeData(

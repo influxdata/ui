@@ -1,5 +1,4 @@
 import {Organization} from '../../../src/types'
-import {setOverride} from 'src/shared/actions/flags'
 
 describe('Home Page Tests', () => {
   beforeEach(() => {
@@ -8,10 +7,10 @@ describe('Home Page Tests', () => {
     cy.signin().then(() => {
       cy.get('@org').then(() => {
         cy.getByTestID('home-page--header').should('be.visible')
-        cy.window().then(win => {
-          win.store.dispatch(setOverride('alertsActivity', true))
-          win.store.dispatch(setOverride('notebooks', true))
-        })
+        cy.setFeatureFlags([
+          {flag: 'alertsActivity', value: true},
+          {flag: 'notebooks', value: true},
+        ])
       })
     })
   })

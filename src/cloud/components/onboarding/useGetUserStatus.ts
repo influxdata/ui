@@ -87,7 +87,9 @@ const useGetUserStatus = () => {
       },
     })
     if (usage.status === 200 && isFlagEnabled('newUsageAPI')) {
-      csvToParse = usage.data
+      console.warn(`Usage: ${usage}`)
+      csvToParse = usage.data?.trim().replace(/\r\n/g, '\n')
+      console.warn(`CSVTOPARSE: ${csvToParse}`)
     } else {
       csvToParse = usageStatsCsv
     }

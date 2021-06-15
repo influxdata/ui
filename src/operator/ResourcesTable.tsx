@@ -22,10 +22,10 @@ import {
   organizationColumnHeaders,
   organizationColumnInfo,
 } from 'src/operator/constants'
+import {OperatorRoutes} from 'src/operator/constants'
 
 // Types
-import {Account, Organization} from 'src/types/operator'
-import {OperatorRoutes} from 'src/operator/constants'
+import {OperatorOrg, OperatorAccount} from 'src/types'
 
 const ResourcesTable: FC = () => {
   const {pathname, accounts, organizations, status} = useContext(
@@ -36,7 +36,7 @@ const ResourcesTable: FC = () => {
 
   // TODO(ariel): remove type forcing here, this should be resolved with
   // API integration
-  const resources: (Account | Organization)[] = isOrgsTab
+  const resources: (OperatorAccount | OperatorOrg)[] = isOrgsTab
     ? organizations
     : accounts
   const headers = isOrgsTab ? organizationColumnHeaders : accountHeaderInfo

@@ -80,22 +80,24 @@ const useGetUserStatus = () => {
 
   const getUserStatusDefinition = useCallback(async () => {
     let csvToParse = ''
-    const usage = await getOrgsUsage({
-      orgID: org.id,
-      query: {
-        start: '-30d',
-      },
-    })
-    if (usage.status === 200 && isFlagEnabled('newUsageAPI')) {
-      console.warn(`Usage: ${usage}`)
-      csvToParse = usage.data?.trim().replace(/\r\n/g, '\n')
-      console.warn(`CSVTOPARSE: ${csvToParse}`)
-    } else {
-      csvToParse = usageStatsCsv
+    if (org?.id) {
+      const usage = await getOrgsUsage({
+        orgID: org.id,
+        query: {
+          start: '-30d',
+        },
+      })
+      if (usage.status === 200 && isFlagEnabled('newUsageAPI')) {
+        console.warn(`Usage: ${usage}`)
+        csvToParse = usage.data?.trim().replace(/\r\n/g, '\n')
+        console.warn(`CSVTOPARSE: ${csvToParse}`)
+      } else {
+        csvToParse = usageStatsCsv
+      }
+      const {table} = fromFlux(csvToParse)
+      setUserStatus(getUserStatus(table))
     }
-    const {table} = fromFlux(csvToParse)
-    setUserStatus(getUserStatus(table))
-  }, [org.id])
+  }, [org?.id])
 
   useEffect(() => {
     try {

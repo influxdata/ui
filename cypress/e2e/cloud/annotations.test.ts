@@ -1,6 +1,6 @@
 import {Organization} from '../../../src/types'
 import {lines} from '../../support/commands'
-import {set} from 'src/shared/utils/featureFlag'
+import {setOverride} from 'src/shared/actions/flags'
 
 describe('The Annotations UI functionality', () => {
   const singleStatSuffix = 'line-plus-single-stat'
@@ -16,9 +16,11 @@ describe('The Annotations UI functionality', () => {
         })
       })
     )
-    set('annotations', true)
-    set('useGiraffeGraphs', true)
-    set('rangeAnnotations', true)
+    cy.window().then(win => {
+      win.store.dispatch(setOverride('annotations', true))
+      win.store.dispatch(setOverride('useGiraffeGraphs', true))
+      win.store.dispatch(setOverride('rangeAnnotations', true))
+    })
     cy.get('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {

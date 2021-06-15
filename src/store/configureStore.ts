@@ -154,6 +154,10 @@ export const getStore = () => {
     storeSingleton = configureStore()
   }
 
+  if (process.env.NODE_ENV === 'development') {
+    window.store = storeSingleton
+  }
+
   return storeSingleton
 }
 

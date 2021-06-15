@@ -1,5 +1,5 @@
 import {Organization} from '../../../src/types'
-import {set} from 'src/shared/utils/featureFlag'
+import {setOverride} from 'src/shared/actions/flags'
 
 describe.skip('DataExplorer - Geo Map Type Customization Options', () => {
   beforeEach(() => {
@@ -11,7 +11,9 @@ describe.skip('DataExplorer - Geo Map Type Customization Options', () => {
         cy.fixture('routes').then(({orgs, explorer}) => {
           cy.visit(`${orgs}/${id}${explorer}`)
           cy.getByTestID('tree-nav')
-          set('mapGeo', true)
+          cy.window().then(win => {
+            win.store.dispatch(setOverride('mapGeo', true))
+          })
         })
       })
     })

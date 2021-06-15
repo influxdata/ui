@@ -1,5 +1,5 @@
 import {Organization} from '../../../src/types'
-import {set} from 'src/shared/utils/featureFlag'
+import {setOverride} from 'src/shared/actions/flags'
 
 // Skipping this until we get the CI/CD pipeline worked out for the `/quartz/me` endpoint
 describe.skip('Billing Page', () => {
@@ -9,8 +9,9 @@ describe.skip('Billing Page', () => {
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
         cy.getByTestID('tree-nav')
-        set('unityBilling', true)
-
+        cy.window().then(win => {
+          win.store.dispatch(setOverride('unityBilling', true))
+        })
         cy.visit(`/orgs/${id}/billing`)
       })
     })

@@ -67,21 +67,13 @@ export class TaskHeaderCard extends PureComponent<
             {this.activeToggle}
             <>Created at: {task.createdAt}</>
             <>Created by: {task.name}</>
-            <>
-              Last Used: {moment(task.latestCompleted).fromNow()}
-            </>
+            <>Last Used: {moment(task.latestCompleted).fromNow()}</>
             <>{task.org}</>
           </ResourceCard.Meta>
         </FlexBox>
 
-        <FlexBox
-          margin={ComponentSize.Medium}
-          direction={FlexDirection.Row}
-        >
-          <Button
-            onClick={this.handleRunTask}
-            text="Run Task"
-          />
+        <FlexBox margin={ComponentSize.Medium} direction={FlexDirection.Row}>
+          <Button onClick={this.handleRunTask} text="Run Task" />
           <Button
             onClick={this.handleEditTask}
             text="Edit Task"

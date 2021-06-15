@@ -46,9 +46,7 @@ class TaskRunsRow extends PureComponent<Props, State> {
         <IndexList.Cell>{this.dateTimeString(run.startedAt)}</IndexList.Cell>
         <IndexList.Cell>{run.duration}</IndexList.Cell>
         <IndexList.Cell>
-          <FlexBox
-            margin={ComponentSize.Medium}
-          >
+          <FlexBox margin={ComponentSize.Medium}>
             <Button
               key={`logs-${run.id}`}
               size={ComponentSize.ExtraSmall}
@@ -136,4 +134,3 @@ const mdtp = {getLogs: getLogs, retryTask: retryTask}
 
 const connector = connect(mstp, mdtp)
 export default connector(withRouter(TaskRunsRow))
-

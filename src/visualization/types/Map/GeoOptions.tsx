@@ -1,11 +1,29 @@
-import React, {FC} from 'react'
-import {Grid, Form} from '@influxdata/clockface'
+import React, {CSSProperties, FC, useState} from 'react'
+import {
+  Grid,
+  Form,
+  Input,
+  InputType,
+  ComponentSize,
+  InputLabel,
+  FlexBox,
+  FlexDirection,
+  JustifyContent,
+  AlignItems,
+  Dropdown,
+  ComponentStatus,
+  DropdownMenuTheme,
+  InfluxColors,
+  SlideToggle,
+} from '@influxdata/clockface'
 
 import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
 
 import {GeoViewProperties} from 'src/types'
 import {VisualizationOptionProps} from 'src/visualization'
 import {isFlagEnabled} from '../../../shared/utils/featureFlag'
+
+import {findTags} from './utils'
 
 import './GeoOptions.scss'
 
@@ -22,28 +40,88 @@ export enum MapType {
   Track = 'trackMap',
 }
 
-export const GeoOptions: FC<Props> = ({properties, update}) => {
+export const GeoOptions: FC<Props> = ({properties, update, results}) => {
+  const [useS2CellID, setUseS2CellID] = useState(true)
+
+  const tags = findTags(results.table)
+
+  const handleSetUseS2CellID = (): void => {
+    update({
+      legendHide: !properties.useS2CellID,
+    })
+  }
+
+  const getToggleColor = (toggle: boolean): CSSProperties => {
+    if (toggle) {
+      return {color: InfluxColors.Cloud}
+    }
+    return {color: InfluxColors.Sidewalk}
+  }
+
+  console.log('tags: ', tags)
   return SHOW_GEO_OPTIONS ? (
     <>
-      {/* <SelectGroup className="mapTypeOptions">
-        {mapTypeOptions.map((mapTypeOption: string, index: number) => (
-          <SelectGroup.Option
-            key={mapTypeOption}
-            id={mapTypeOption}
-            name="mapTypeOptions"
-            value={mapTypeOption}
-            active={properties?.layers[0]?.type === MapType[mapTypeOption]}
-            onClick={handleSelectGroupClick}
-            tabIndex={index + 1}
-            testID={`${mapTypeOption}-option`}
-            disabled={mapTypeOption === 'Track'}
-          >
-            {mapTypeOption}
-          </SelectGroup.Option>
-        ))}
-        </SelectGroup> */}
-
       <Grid.Column>
+        <Grid.Row>
+          <FlexBox
+            direction={FlexDirection.Row}
+            alignItems={AlignItems.Center}
+            margin={ComponentSize.Medium}
+            stretchToFitWidth={true}
+            style={{marginTop: '0.5em', marginBottom: '1.5em'}}
+            testID="hover-legend-toggle"
+          >
+            <SlideToggle
+              active={useS2CellID}
+              size={ComponentSize.ExtraSmall}
+              onChange={handleSetUseS2CellID}
+            />
+            <InputLabel style={getToggleColor(useS2CellID)}>
+              Use S2 Cell ID for lat/lon
+            </InputLabel>
+          </FlexBox>
+          <Dropdown
+            style={{flex: '0 0 120px'}}
+            button={(active, onClick) => (
+              <Dropdown.Button
+                active={active}
+                onClick={onClick}
+                status={ComponentStatus.Default}
+              >
+                <div className="color-dropdown--item">
+                  <div className="color-dropdown--name">
+                    Name of something here
+                  </div>
+                </div>
+              </Dropdown.Button>
+            )}
+            menu={onCollapse => (
+              <Dropdown.Menu
+                onCollapse={onCollapse}
+                theme={DropdownMenuTheme.Onyx}
+              >
+                {tags.map(tag => {
+                  const index = tags.indexOf(tag)
+                  return (
+                    <Dropdown.Item
+                      id={index}
+                      key={tag.key}
+                      value={tag.column}
+                      selected={tag.key === ''}
+                      onClick={() => console.log('chosen')}
+                    >
+                      <div className="color-dropdown--item">
+                        <div className="color-dropdown--name">
+                          Some capitalized name
+                        </div>
+                      </div>
+                    </Dropdown.Item>
+                  )
+                })}
+              </Dropdown.Menu>
+            )}
+          />
+        </Grid.Row>
         <Form.Element label="Colorized Thresholds">
           <ThresholdsSettings
             thresholds={properties.layers[0].colors.filter(

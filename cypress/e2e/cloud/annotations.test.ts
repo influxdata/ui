@@ -1,6 +1,6 @@
 import {Organization} from '../../../src/types'
 import {lines} from '../../support/commands'
-import {set} from '../../../src/shared/utils/featureFlag'
+import {set} from 'src/shared/utils/featureFlag'
 
 describe('The Annotations UI functionality', () => {
   const singleStatSuffix = 'line-plus-single-stat'

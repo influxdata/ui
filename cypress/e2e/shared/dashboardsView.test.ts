@@ -1,4 +1,4 @@
-import {set} from '../../../src/shared/utils/featureFlag'
+import {set} from 'src/shared/utils/featureFlag'
 import {Organization, AppState, Dashboard} from '../../../src/types'
 import {lines} from '../../support/commands'
 

@@ -1,5 +1,5 @@
 import {Organization} from '../../../src/types'
-import {set} from '../../../src/shared/utils/featureFlag'
+import {set} from 'src/shared/utils/featureFlag'
 
 // Skipping this until we get the CI/CD pipeline worked out for the `/quartz/me` endpoint
 describe.skip('Usage Page', () => {

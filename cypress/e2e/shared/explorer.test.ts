@@ -9,7 +9,7 @@ import {
   STRINGS_TITLE,
   STRINGS_TRIM,
 } from '../../../src/shared/constants/fluxFunctions'
-import {set} from '../../../src/shared/utils/featureFlag'
+import {set} from 'src/shared/utils/featureFlag'
 
 const TYPE_DELAY = 0
 const VIS_TYPES = [

@@ -1,13 +1,36 @@
 {
   "compilerOptions": {
     "strict": true,
-    "baseUrl": "../node_modules",
-    "target": "es5",
-    "lib": ["es2017", "dom"],
     "types": ["cypress", "mocha", "node"],
+    "target": "es2017",
+    "module": "esNext",
+    "moduleResolution": "node",
+    "lib": ["es2017", "es2018", "esnext", "dom"],
+    "skipLibCheck": true,
+    "isolatedModules": false,
     "jsx": "react",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "noImplicitAny": false,
+    "noImplicitUseStrict": false,
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
+    "removeComments": true,
+    "importHelpers": true,
+    "noLib": false,
+    "noEmitHelpers": true,
+    "preserveConstEnums": true,
+    "suppressImplicitAnyIndexErrors": true,
     "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true
+    "allowJs": true,
+    "checkJs": false,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "baseUrl": "../",
+    "resolveJsonModule": true,
+    "paths": {
+      "src/*": ["../src/*"]
+    }
   },
-  "include": ["**/*.ts"]
+  "include": ["**/*.ts", "../src/**/*"]
 }

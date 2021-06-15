@@ -1,5 +1,5 @@
 import {Organization} from '../../../src/types'
-import {set} from '../../../src/shared/utils/featureFlag'
+import {set} from 'src/shared/utils/featureFlag'
 
 describe.skip('DataExplorer - Geo Map Type Customization Options', () => {
   beforeEach(() => {

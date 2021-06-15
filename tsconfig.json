@@ -39,6 +39,7 @@
     "src/**/*.test.ts",
     "src/**/*.test.tsx",
     "src/**/*mocks.ts",
+    "src/shared/utils/mocks/*",
     "coverage"
   ],
   "include": ["src/**/*.ts", "src/**/*.tsx", "global.d.ts"]

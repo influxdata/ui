@@ -1,5 +1,5 @@
 import {useEffect, useState, useCallback} from 'react'
-import {getOrgsUsage} from 'src/client'
+
 import {fromFlux} from '@influxdata/giraffe'
 import {usageStatsCsv} from 'src/shared/utils/mocks/usageStats.mocks'
 import {useSelector} from 'react-redux'
@@ -7,6 +7,14 @@ import {getOrg} from 'src/organizations/selectors'
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {Table} from '@influxdata/giraffe'
+
+let getOrgsUsage = null
+
+if (process.env.CLOUD_URL) {
+  getOrgsUsage = require('src/client').getOrgsUsage
+} else {
+  getOrgsUsage = null
+}
 
 export enum USER_PILOT_USER_STATUS {
   NEW_USER = 'NEW_USER',
@@ -80,7 +88,7 @@ const useGetUserStatus = () => {
 
   const getUserStatusDefinition = useCallback(async () => {
     let csvToParse = ''
-    if (org?.id) {
+    if (org?.id && getOrgsUsage) {
       const usage = await getOrgsUsage({
         orgID: org.id,
         query: {

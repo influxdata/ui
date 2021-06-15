@@ -10,7 +10,7 @@ describe.skip('DataExplorer - Geo Map Type Customization Options', () => {
         cy.fixture('routes').then(({orgs, explorer}) => {
           cy.visit(`${orgs}/${id}${explorer}`)
           cy.getByTestID('tree-nav')
-          cy.setFeatureFlags([{flag: 'mapGeo', value: true}])
+          cy.setFeatureFlags({mapGeo: true})
         })
       })
     })

@@ -8,12 +8,9 @@ describe('Flows', () => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${id}`)
           cy.getByTestID('tree-nav')
-          cy.setFeatureFlags([
-            {flag: 'notebooks', value: true},
-            {flag: 'simpleTable', value: true},
-          ])
-
-          cy.getByTestID('nav-item-flows').click()
+          cy.setFeatureFlags({notebooks: true, simpleTable: true}).then(() => {
+            cy.getByTestID('nav-item-flows').click()
+          })
         })
       )
     })

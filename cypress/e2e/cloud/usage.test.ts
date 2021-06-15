@@ -8,12 +8,12 @@ describe.skip('Usage Page', () => {
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
         cy.getByTestID('tree-nav')
-        cy.setFeatureFlags([{flag: 'unityUsage', value: true}])
-        cy.visit(`/orgs/${id}/usage`)
+        cy.setFeatureFlags({unityUsage: true}).then(() => {
+          cy.visit(`/orgs/${id}/usage`)
+          cy.getByTestID('usage-page--header').should('be.visible')
+        })
       })
     })
-
-    cy.getByTestID('usage-page--header').should('be.visible')
   })
 
   it('should display the usage page', () => {

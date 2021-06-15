@@ -9,12 +9,12 @@ describe.skip('Users Page', () => {
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
         cy.getByTestID('tree-nav')
-        cy.setFeatureFlags([{flag: 'unityUsers', value: true}])
-        cy.visit(`/orgs/${id}/users`)
+        cy.setFeatureFlags({unityUsers: true}).then(() => {
+          cy.visit(`/orgs/${id}/users`)
+          cy.getByTestID('users-page--header').should('be.visible')
+        })
       })
     })
-
-    cy.getByTestID('users-page--header').should('be.visible')
   })
 
   it('can CRUD Invites and Users', () => {

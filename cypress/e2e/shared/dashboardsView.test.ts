@@ -1244,7 +1244,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           cy.getByTestID('tree-nav')
         })
       })
-      cy.setFeatureFlags([{flag: 'refreshSingleCell', value: true}])
+      cy.setFeatureFlags({refreshSingleCell: true})
 
       cy.createBucket(orgID, name, 'schmucket')
 
@@ -1330,7 +1330,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           cy.getByTestID('tree-nav')
         })
       })
-      cy.setFeatureFlags([{flag: 'refreshSingleCell', value: true}])
+      cy.setFeatureFlags({refreshSingleCell: true})
 
       cy.createBucket(orgID, name, 'schmucket')
 
@@ -1425,7 +1425,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           })
         })
         // TODO: remove when feature flag is removed
-        cy.setFeatureFlags([{flag: 'newAutoRefresh', value: true}])
+        cy.setFeatureFlags({newAutoRefresh: true})
         cy.createBucket(orgID, name, 'schmucket')
         const now = Date.now()
         cy.writeData(
@@ -1611,10 +1611,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           cy.getByTestID('tree-nav')
         })
       })
-      cy.setFeatureFlags([
-        {flag: 'pauseCell', value: true},
-        {flag: 'newAutoRefresh', value: true},
-      ])
+      cy.setFeatureFlags({pauseCell: true, newAutoRefresh: true})
 
       cy.createBucket(orgID, name, 'schmucket')
 
@@ -1711,10 +1708,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           cy.getByTestID('tree-nav')
         })
       })
-      cy.setFeatureFlags([
-        {flag: 'pauseCell', value: true},
-        {flag: 'newAutoRefresh', value: true},
-      ])
+      cy.setFeatureFlags({pauseCell: true, newAutoRefresh: true})
 
       cy.createBucket(orgID, name, 'schmucket')
 
@@ -1820,7 +1814,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           })
         })
         // TODO: remove when feature flag is removed
-        cy.setFeatureFlags([{flag: 'cloneToOtherBoards', value: true}])
+        cy.setFeatureFlags({cloneToOtherBoards: true})
         cy.createBucket(orgID, name, 'schmucket')
         const now = Date.now()
         cy.writeData(

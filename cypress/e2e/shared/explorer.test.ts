@@ -1077,7 +1077,7 @@ describe('DataExplorer', () => {
 
     describe('static legend', () => {
       it('turns on static legend flag, so static legend option should exist for line graph, line graph plus single stat, and band plot', () => {
-        cy.setFeatureFlags([{flag: 'staticLegend', value: true}])
+        cy.setFeatureFlags({staticLegend: true})
         VIS_TYPES.forEach(type => {
           cy.getByTestID('cog-cell--button').click()
           cy.getByTestID('view-type--dropdown').click()
@@ -1095,7 +1095,7 @@ describe('DataExplorer', () => {
       })
 
       it('turns off static legend flag so that static legend option should not exist', () => {
-        cy.setFeatureFlags([{flag: 'staticLegend', value: false}])
+        cy.setFeatureFlags({staticLegend: false})
         VIS_TYPES.forEach(type => {
           cy.getByTestID('cog-cell--button').click()
           cy.getByTestID('view-type--dropdown').click()
@@ -1108,7 +1108,7 @@ describe('DataExplorer', () => {
         cy.writeData(lines(100))
 
         // set the flag, build the query, adjust the view options
-        cy.setFeatureFlags([{flag: 'staticLegend', value: true}])
+        cy.setFeatureFlags({staticLegend: true})
         cy.get<string>('@defaultBucketListSelector').then(
           (defaultBucketListSelector: string) => {
             cy.getByTestID('query-builder').should('exist')
@@ -1155,7 +1155,7 @@ describe('DataExplorer', () => {
         cy.writeData(lines(100))
 
         // set the flag, build the query, and select the graph type
-        cy.setFeatureFlags([{flag: 'staticLegend', value: false}])
+        cy.setFeatureFlags({staticLegend: false})
         cy.get<string>('@defaultBucketListSelector').then(
           (defaultBucketListSelector: string) => {
             cy.getByTestID('query-builder').should('exist')
@@ -1589,7 +1589,7 @@ describe('DataExplorer', () => {
     const simpleSmall = 'simple-small'
     const simpleLarge = 'simple-large'
     beforeEach(() => {
-      cy.setFeatureFlags([{flag: 'simpleTable', value: true}])
+      cy.setFeatureFlags({simpleTable: true})
 
       cy.get('@org').then(({id: orgID}: Organization) => {
         cy.getByTestID('tree-nav')

@@ -29,15 +29,12 @@ describe.skip('Checkout Page', () => {
     cy.signin().then(() => {
       cy.get('@org').then(() => {
         cy.getByTestID('home-page--header').should('be.visible')
-        cy.setFeatureFlags([
-          {flag: 'unityMeApi', value: true},
-          {flag: 'unityCheckout', value: true},
-        ])
-        cy.visit(`/checkout`)
+        cy.setFeatureFlags({unityMeApi: true, unityCheckout: true}).then(() => {
+          cy.visit(`/checkout`)
+          cy.getByTestID('checkout-page--header').should('be.visible')
+        })
       })
     })
-
-    cy.getByTestID('checkout-page--header').should('be.visible')
   })
 
   it('should render Set My Limits', () => {

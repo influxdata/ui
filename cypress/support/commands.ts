@@ -1,6 +1,6 @@
 import {NotificationEndpoint} from '../../src/types'
 import {Bucket, Organization} from '../../src/client'
-import {setOverride} from 'src/shared/actions/flags'
+import {setOverrides, FlagMap} from 'src/shared/actions/flags'
 import 'cypress-file-upload'
 
 const DEX_URL_VAR = 'dexUrl'
@@ -738,16 +738,10 @@ export const makeGraphSnapshot = (() => {
   }
 })()
 
-type FeatureFlag = {
-  flag: string
-  value: string | boolean
-}
-export const setFeatureFlags = (flags: [FeatureFlag]): Cypress.Chainable => {
+export const setFeatureFlags = (flags: FlagMap): Cypress.Chainable => {
   return cy.window().then(win => {
-    for (const f of flags) {
-      // eslint-disable-next-line no-extra-semi
-      ;(win as any).store.dispatch(setOverride(f.flag, f.value))
-    }
+    // eslint-disable-next-line no-extra-semi
+    ;(win as any).store.dispatch(setOverrides(flags))
   })
 }
 

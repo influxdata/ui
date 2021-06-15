@@ -7,10 +7,10 @@ describe('Home Page Tests', () => {
     cy.signin().then(() => {
       cy.get('@org').then(() => {
         cy.getByTestID('home-page--header').should('be.visible')
-        cy.setFeatureFlags([
-          {flag: 'alertsActivity', value: true},
-          {flag: 'notebooks', value: true},
-        ])
+        cy.setFeatureFlags({
+          alertsActivity: true,
+          notebooks: true,
+        })
       })
     })
   })

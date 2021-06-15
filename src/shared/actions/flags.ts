@@ -4,7 +4,7 @@ export const SET_PUBLIC_FEATURE_FLAGS = 'SET_PUBLIC_FEATURE_FLAGS'
 export const RESET_FEATURE_FLAGS = 'RESET_FEATURE_FLAGS'
 export const CLEAR_FEATURE_FLAG_OVERRIDES = 'CLEAR_FEATURE_FLAG_OVERRIDES'
 export const SET_FEATURE_FLAG_OVERRIDE = 'SET_FEATURE_FLAG_OVERRIDE'
-
+export const SET_FEATURE_FLAG_OVERRIDES = 'SET_FEATURE_FLAG_OVERRIDES'
 export interface FlagMap {
   [key: string]: string | boolean
 }
@@ -15,6 +15,7 @@ export type Actions =
   | ReturnType<typeof reset>
   | ReturnType<typeof clearOverrides>
   | ReturnType<typeof setOverride>
+  | ReturnType<typeof setOverrides>
 
 // NOTE: this doesnt have a type as it will be determined
 // by the backend at a later time and keeping the format
@@ -51,5 +52,13 @@ export const setOverride = (flag: string, value: string | boolean) =>
     type: SET_FEATURE_FLAG_OVERRIDE,
     payload: {
       [flag]: value,
+    },
+  } as const)
+
+export const setOverrides = (flags: FlagMap) =>
+  ({
+    type: SET_FEATURE_FLAG_OVERRIDES,
+    payload: {
+      flags,
     },
   } as const)

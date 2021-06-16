@@ -8,7 +8,6 @@ describe.skip('Users Page', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.getByTestID('tree-nav')
         cy.setFeatureFlags({unityUsers: true}).then(() => {
           cy.visit(`/orgs/${id}/users`)
           cy.getByTestID('users-page--header').should('be.visible')

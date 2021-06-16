@@ -7,7 +7,6 @@ describe.skip('Billing Page', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.getByTestID('tree-nav')
         cy.setFeatureFlags({unityBilling: true}).then(() => {
           cy.visit(`/orgs/${id}/billing`)
           cy.getByTestID('billing-page--header').should('be.visible')

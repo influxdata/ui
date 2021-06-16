@@ -11,7 +11,6 @@ describe('The Annotations UI functionality', () => {
       cy.fixture('routes').then(({orgs}) => {
         cy.get('@org').then(({id: orgID}: Organization) => {
           cy.visit(`${orgs}/${orgID}/dashboards-list`)
-          cy.getByTestID('tree-nav')
           cy.setFeatureFlags({
             annotations: true,
             useGiraffeGraphs: true,

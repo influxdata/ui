@@ -739,6 +739,8 @@ export const makeGraphSnapshot = (() => {
 })()
 
 export const setFeatureFlags = (flags: FlagMap): Cypress.Chainable => {
+  // make sure the app is loaded before dispatching
+  cy.getByTestID('tree-nav')
   return cy.window().then(win => {
     // eslint-disable-next-line no-extra-semi
     ;(win as any).store.dispatch(setOverrides(flags))

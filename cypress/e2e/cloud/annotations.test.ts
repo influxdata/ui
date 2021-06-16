@@ -551,7 +551,6 @@ describe('The Annotations UI functionality', () => {
           cy.getByTestID('selector-list v')
             .click()
             .then(() => {
-              cy.getByTestID(`selector-list tv1`).should('be.visible')
               cy.getByTestID(`selector-list tv1`)
                 .click()
                 .then(() => {

@@ -20,7 +20,11 @@ import LastRunTaskStatus from 'src/shared/components/lastRunTaskStatus/LastRunTa
 import {CopyResourceID} from 'src/shared/components/CopyResourceID'
 
 // Actions
-import {addTaskLabel, deleteTaskLabel, setTasksPageAsCurrent} from 'src/tasks/actions/thunks'
+import {
+  addTaskLabel,
+  deleteTaskLabel,
+  setTasksPageAsCurrent,
+} from 'src/tasks/actions/thunks'
 
 // Types
 import {ComponentColor} from '@influxdata/clockface'

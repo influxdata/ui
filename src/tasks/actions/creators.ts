@@ -147,6 +147,5 @@ export const setLogs = (logs: LogEvent[]) =>
 export const setCurrentTasksPage = (page: string) =>
   ({
     type: SET_CURRENT_TASKS_PAGE,
-    tasksPage: page
+    tasksPage: page,
   } as const)
-

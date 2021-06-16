@@ -169,6 +169,5 @@ export default (
         draftState.currentPage = action.tasksPage
         return
       }
-
     }
   })

@@ -32,6 +32,7 @@ describe('The Annotations UI functionality', () => {
       })
     )
 
+    cy.reload()
     // make a dashboard cell
     cy.getByTestID('add-cell--button')
       .click()

@@ -32,7 +32,8 @@ export const geomToInterpolation = (geom: XYGeom): LineInterpolation => {
   }
 }
 
-const NOISY_LEGEND_COLUMNS = new Set(['_start', '_stop', 'result'])
+export const NOISY_LEGEND_COLUMN_NAMES = ['_start', '_stop', 'result']
+const NOISY_LEGEND_COLUMNS = new Set(NOISY_LEGEND_COLUMN_NAMES)
 
 /*
   Some columns (e.g. `_start` and `_stop`) appear frequently in Flux group

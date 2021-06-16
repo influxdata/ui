@@ -30,7 +30,6 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
   const tooltipColumns =
     properties.layers[0].tooltipColumns || result.fluxGroupKeyUnion || []
 
-  console.log(tooltipColumns)
   const [mapServiceError, setMapServiceError] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
@@ -156,6 +155,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
       },
     ],
   }
+
   return <Plot config={config} />
 }
 

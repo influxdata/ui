@@ -1,7 +1,5 @@
 // Libraries
 import React, {FC, useContext} from 'react'
-import {useParams} from 'react-router-dom'
-import {useSelector} from 'react-redux'
 import {ProgressBar} from '@influxdata/clockface'
 
 // Components
@@ -11,28 +9,21 @@ import DragAndDrop from 'src/buckets/components/csvUploader/DragAndDrop'
 import {CsvUploaderContext} from 'src/buckets/components/context/csvUploader'
 
 // Utils
-import {getByID} from 'src/resources/selectors'
 import {event} from 'src/cloud/utils/reporting'
 
 // Types
-import {AppState, Bucket, RemoteDataState, ResourceType} from 'src/types'
+import {RemoteDataState} from 'src/types'
 
 type Props = {
-  bucket?: string
+  bucket: string
 }
 
 const CsvUploaderBody: FC<Props> = ({bucket}) => {
   const {uploadState, progress, uploadCsv} = useContext(CsvUploaderContext)
 
-  const {bucketID} = useParams()
-  const selectedBucket =
-    useSelector((state: AppState) =>
-      getByID<Bucket>(state, ResourceType.Buckets, bucketID)
-    )?.name ?? ''
-
   const handleUploadCsv = (csv: string) => {
     event('Uploading_CSV')
-    uploadCsv(csv, bucket ?? selectedBucket)
+    uploadCsv(csv, bucket)
   }
 
   return (

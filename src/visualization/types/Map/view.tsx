@@ -153,6 +153,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
         mapStyle,
         layers: layersOpts,
         tileServerConfiguration: tileServerConfiguration,
+        tooltipColumns: tooltipColumns,
       },
     ],
   }

@@ -15,14 +15,17 @@ import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {generateNavItems} from 'src/pageLayout/constants/navigationHierarchy'
+import {CLOUD} from 'src/shared/constants'
 
 // Utils
 import {getNavItemActivation} from 'src/pageLayout/utils'
 import {getOrg} from 'src/organizations/selectors'
 import {AppSettingContext} from 'src/shared/contexts/app'
+import {getQuartzMe} from 'src/me/selectors'
 
 const TreeSidebar: FC = () => {
   const org = useSelector(getOrg)
+  const me = useSelector(getQuartzMe)
   const {presentationMode, navbarMode, setNavbarMode} = useContext(
     AppSettingContext
   )
@@ -121,7 +124,28 @@ const TreeSidebar: FC = () => {
                       )
                     }
 
-                    if (menuItem.featureFlag) {
+                    if (
+                      CLOUD &&
+                      item.featureFlag === 'unityOperator' &&
+                      me?.isOperator
+                    ) {
+                      navItemElement = (
+                        <FeatureFlag
+                          key={item.id}
+                          name={item.featureFlag}
+                          equals={item.featureFlagValue}
+                        >
+                          {navItemElement}
+                        </FeatureFlag>
+                      )
+                    }
+
+                    // TODO(ariel): sort this out for the operator to render for operators and not to render for non operators
+
+                    if (
+                      item.featureFlag &&
+                      item.featureFlag !== 'unityOperator'
+                    ) {
                       navSubItemElement = (
                         <FeatureFlag
                           key={menuItem.id}
@@ -152,7 +176,19 @@ const TreeSidebar: FC = () => {
             )
           }
 
-          if (item.featureFlag) {
+          if (CLOUD && item.featureFlag === 'unityOperator' && me?.isOperator) {
+            navItemElement = (
+              <FeatureFlag
+                key={item.id}
+                name={item.featureFlag}
+                equals={item.featureFlagValue}
+              >
+                {navItemElement}
+              </FeatureFlag>
+            )
+          }
+
+          if (item.featureFlag && item.featureFlag !== 'unityOperator') {
             navItemElement = (
               <FeatureFlag
                 key={item.id}

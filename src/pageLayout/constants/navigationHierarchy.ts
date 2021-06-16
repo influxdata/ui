@@ -223,7 +223,6 @@ export const generateNavItems = (orgID: string): NavItem[] => {
       testID: 'nav-item-operator',
       icon: IconFont.Shield,
       label: 'Operator',
-      cloudOnly: true,
       featureFlag: 'unityOperator',
       shortLabel: 'Operator',
       link: {

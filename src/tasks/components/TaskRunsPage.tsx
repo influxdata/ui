@@ -4,21 +4,18 @@ import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
-import {Page, IconFont, Sort} from '@influxdata/clockface'
+import {Page, Sort} from '@influxdata/clockface'
 import TaskRunsList from 'src/tasks/components/TaskRunsList'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
+import {TaskRunsCard} from 'src/tasks/components/TaskRunsCard'
+import {PageBreadcrumbs} from 'src/tasks/components/PageBreadcrumbs'
 
 // Types
 import {AppState, Run} from 'src/types'
-import {
-  SpinnerContainer,
-  TechnoSpinner,
-  Button,
-  ComponentColor,
-} from '@influxdata/clockface'
+import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 
 // Actions
-import {getRuns, runTask} from 'src/tasks/actions/thunks'
+import {getRuns, runTask, updateTaskStatus} from 'src/tasks/actions/thunks'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -49,7 +46,7 @@ class TaskRunsPage extends PureComponent<Props, State> {
   }
 
   public render() {
-    const {match, runs} = this.props
+    const {match, runs, currentTask} = this.props
     const {sortKey, sortDirection, sortType} = this.state
 
     return (
@@ -59,24 +56,29 @@ class TaskRunsPage extends PureComponent<Props, State> {
       >
         <Page titleTag={pageTitleSuffixer(['Task Runs'])}>
           <Page.Header fullWidth={false}>
-            <Page.Title title={this.title} />
+            <PageBreadcrumbs
+              pages={[
+                {
+                  text: 'Tasks',
+                  onClick: this.goBackToTasksPage,
+                },
+                {
+                  text: currentTask ? `${currentTask.name}  Runs` : '',
+                },
+              ]}
+            />
             <RateLimitAlert />
           </Page.Header>
           <Page.ControlBar fullWidth={false}>
-            <Page.ControlBarLeft>
-              <Button
-                onClick={this.handleEditTask}
-                text="Edit Task"
-                color={ComponentColor.Primary}
-              />
-            </Page.ControlBarLeft>
+            <TaskRunsCard
+              task={currentTask}
+              onActivate={this.handleActivate}
+              onEditTask={this.handleEditTask}
+            />
+          </Page.ControlBar>
+          <Page.ControlBar fullWidth={false}>
             <Page.ControlBarRight>
               <TimeZoneDropdown />
-              <Button
-                onClick={this.handleRunTask}
-                text="Run Task"
-                icon={IconFont.Play}
-              />
             </Page.ControlBarRight>
           </Page.ControlBar>
           <Page.Contents fullWidth={false} scrollable={true}>
@@ -108,23 +110,10 @@ class TaskRunsPage extends PureComponent<Props, State> {
     this.setState({sortKey, sortDirection: nextSort, sortType})
   }
 
-  private get title() {
-    const {currentTask} = this.props
+  private goBackToTasksPage = () => {
+    const {history, currentTask} = this.props
 
-    if (currentTask) {
-      return `${currentTask.name} - Runs`
-    }
-    return 'Runs'
-  }
-
-  private handleRunTask = () => {
-    const {onRunTask, match, getRuns} = this.props
-    try {
-      onRunTask(match.params.id)
-      getRuns(match.params.id)
-    } catch (error) {
-      console.error(error)
-    }
+    history.push(`orgs/${currentTask.orgID}/tasks`)
   }
 
   private handleEditTask = () => {
@@ -137,6 +126,10 @@ class TaskRunsPage extends PureComponent<Props, State> {
     } = this.props
 
     history.push(`/orgs/${orgID}/tasks/${currentTask.id}/edit`)
+  }
+
+  private handleActivate = (task: any) => {
+    this.props.updateTaskStatus(task)
   }
 }
 
@@ -151,7 +144,8 @@ const mstp = (state: AppState) => {
 }
 
 const mdtp = {
-  getRuns: getRuns,
+  updateTaskStatus,
+  getRuns,
   onRunTask: runTask,
 }
 

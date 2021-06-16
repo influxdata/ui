@@ -163,6 +163,7 @@ import snmp_trapMarkdown from 'src/writeData/components/telegrafPlugins/snmp_tra
 import snmpMarkdown from 'src/writeData/components/telegrafPlugins/snmp.md'
 import socket_listenerMarkdown from 'src/writeData/components/telegrafPlugins/socket_listener.md'
 import solrMarkdown from 'src/writeData/components/telegrafPlugins/solr.md'
+import sqlMarkdown from 'src/writeData/components/telegrafPlugins/sql.md'
 import sqlserverMarkdown from 'src/writeData/components/telegrafPlugins/sqlserver.md'
 import stackdriverMarkdown from 'src/writeData/components/telegrafPlugins/stackdriver.md'
 import statsdMarkdown from 'src/writeData/components/telegrafPlugins/statsd.md'
@@ -360,6 +361,7 @@ import snmp_trapLogo from 'src/writeData/graphics/snmp_trap.svg'
 import snmpLogo from 'src/writeData/graphics/snmp.svg'
 import socket_listenerLogo from 'src/writeData/graphics/socket_listener.svg'
 import solrLogo from 'src/writeData/graphics/solr.svg'
+import sqlLogo from 'src/writeData/graphics/sql.svg'
 import sqlserverLogo from 'src/writeData/graphics/sqlserver.svg'
 import stackdriverLogo from 'src/writeData/graphics/stackdriver.svg'
 import statsdLogo from 'src/writeData/graphics/statsd.svg'
@@ -1383,6 +1385,12 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPlugin[] = [
     name: 'Solr',
     markdown: solrMarkdown,
     image: solrLogo,
+  },
+  {
+    id: 'sql',
+    name: 'SQL',
+    markdown: sqlMarkdown,
+    image: sqlLogo,
   },
   {
     id: 'sqlserver',

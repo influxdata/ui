@@ -48,10 +48,9 @@ messages of one datapoint-type to multiple measurements.
 Received KNX data is stored in the named measurement as configured above using
 the "value" field. Additional to the value, there are the following tags added
 to the datapoint:
-
-- "groupaddress": KNX group-address corresponding to the value
-- "unit": unit of the value
-- "source": KNX physical address sending the value
+  - "groupaddress": KNX group-address corresponding to the value
+  - "unit":         unit of the value
+  - "source":       KNX physical address sending the value
 
 To find out about the datatype of the datapoint please check your KNX project,
 the KNX-specification or the "knx-go" project for the corresponding DPT.

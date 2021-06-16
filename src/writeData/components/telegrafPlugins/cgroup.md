@@ -8,37 +8,38 @@ any cardinality issues.
 
 Following file formats are supported:
 
-- Single value
+* Single value
 
 ```
 VAL\n
 ```
 
-- New line separated values
+* New line separated values
 
 ```
 VAL0\n
 VAL1\n
 ```
 
-- Space separated values
+* Space separated values
 
 ```
 VAL0 VAL1 ...\n
 ```
 
-- New line separated key-space-value's
+* New line separated key-space-value's
 
 ```
 KEY0 VAL0\n
 KEY1 VAL1\n
 ```
 
+
 ### Tags:
 
 All measurements have the following tags:
+  - path
 
-- path
 
 ### Configuration:
 

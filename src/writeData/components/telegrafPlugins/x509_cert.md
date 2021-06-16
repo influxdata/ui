@@ -3,6 +3,7 @@
 This plugin provides information about X509 certificate accessible via local
 file or network connection.
 
+
 ### Configuration
 
 ```toml
@@ -29,6 +30,7 @@ file or network connection.
   # tls_server_name = "myhost.example.org"
 ```
 
+
 ### Metrics
 
 - x509_cert
@@ -53,6 +55,7 @@ file or network connection.
     - age (int, seconds)
     - startdate (int, seconds)
     - enddate (int, seconds)
+
 
 ### Example output
 

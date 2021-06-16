@@ -30,9 +30,7 @@ to discover and test the capabilities of DPDK libraries and to explore the expos
 > interface to allow Telegraf to access it, or Telegraf should run with root privileges.
 
 ## Configuration
-
 This plugin offers multiple configuration options, please review examples below for additional usage information.
-
 ```toml
 # Reads metrics from DPDK applications using v2 telemetry interface.
 [[inputs.dpdk]]
@@ -53,7 +51,7 @@ This plugin offers multiple configuration options, please review examples below 
   ## List of custom, application-specific telemetry commands to query
   ## The list of available commands depend on the application deployed. Applications can register their own commands
   ##   via telemetry library API http://doc.dpdk.org/guides/prog_guide/telemetry_lib.html#registering-commands
-  ## For e.g. L3 Forwarding with Power Management Sample Application this could be:
+  ## For e.g. L3 Forwarding with Power Management Sample Application this could be: 
   ##   additional_commands = ["/l3fwd-power/stats"]
   # additional_commands = []
 
@@ -63,34 +61,28 @@ This plugin offers multiple configuration options, please review examples below 
     exclude_commands = ["/ethdev/link_status"]
 
   ## When running multiple instances of the plugin it's recommended to add a unique tag to each instance to identify
-  ## metrics exposed by an instance of DPDK application. This is useful when multiple DPDK apps run on a single host.
+  ## metrics exposed by an instance of DPDK application. This is useful when multiple DPDK apps run on a single host.  
   ##  [inputs.dpdk.tags]
   ##    dpdk_instance = "my-fwd-app"
 ```
 
 ### Example: Minimal Configuration for NIC metrics
-
 This configuration allows getting metrics for all devices reported via `/ethdev/list` command:
-
-- `/ethdev/stats` - basic device statistics (since `DPDK 20.11`)
-- `/ethdev/xstats` - extended device statistics
-- `/ethdev/link_status` - up/down link status
-
+* `/ethdev/stats` - basic device statistics (since `DPDK 20.11`)
+* `/ethdev/xstats` - extended device statistics
+* `/ethdev/link_status` - up/down link status
 ```toml
 [[inputs.dpdk]]
   device_types = ["ethdev"]
 ```
-
 Since this configuration will query `/ethdev/link_status` it's recommended to increase timeout to `socket_access_timeout = "10s"`.
 
 The [plugin collecting interval](https://github.com/influxdata/telegraf/blob/master/docs/CONFIGURATION.md#input-plugins)
 should be adjusted accordingly (e.g. `interval = "30s"`).
 
 ### Example: Excluding NIC link status from being collected
-
 Checking link status depending on underlying implementation may take more time to complete.
 This configuration can be used to exclude this telemetry command to allow faster response for metrics.
-
 ```toml
 [[inputs.dpdk]]
   device_types = ["ethdev"]
@@ -98,16 +90,13 @@ This configuration can be used to exclude this telemetry command to allow faster
   [inputs.dpdk.ethdev]
     exclude_commands = ["/ethdev/link_status"]
 ```
-
 A separate plugin instance with higher timeout settings can be used to get `/ethdev/link_status` independently.
 Consult [Independent NIC link status configuration](#example-independent-nic-link-status-configuration)
 and [Getting metrics from multiple DPDK instances running on same host](#example-getting-metrics-from-multiple-dpdk-instances-running-on-same-host)
 examples for further details.
 
 ### Example: Independent NIC link status configuration
-
 This configuration allows getting `/ethdev/link_status` using separate configuration, with higher timeout.
-
 ```toml
 [[inputs.dpdk]]
   interval = "30s"
@@ -119,10 +108,8 @@ This configuration allows getting `/ethdev/link_status` using separate configura
 ```
 
 ### Example: Getting application-specific metrics
-
 This configuration allows reading custom metrics exposed by applications. Example telemetry command obtained from  
 [L3 Forwarding with Power Management Sample Application](https://doc.dpdk.org/guides/sample_app_ug/l3_forward_power_man.html).
-
 ```toml
 [[inputs.dpdk]]
   device_types = ["ethdev"]
@@ -131,22 +118,18 @@ This configuration allows reading custom metrics exposed by applications. Exampl
   [inputs.dpdk.ethdev]
     exclude_commands = ["/ethdev/link_status"]
 ```
-
 Command entries specified in `additional_commands` should match DPDK command format:
-
-- Command entry format: either `command` or `command,params` for commands that expect parameters, where comma (`,`) separates command from params.
-- Command entry length (command with params) should be `< 1024` characters.
-- Command length (without params) should be `< 56` characters.
-- Commands have to start with `/`.
+* Command entry format: either `command` or `command,params` for commands that expect parameters, where comma (`,`) separates command from params.
+* Command entry length (command with params) should be `< 1024` characters.
+* Command length (without params) should be `< 56` characters.
+* Commands have to start with `/`.
 
 Providing invalid commands will prevent the plugin from starting. Additional commands allow duplicates, but they
-will be removed during execution so each command will be executed only once during each metric gathering interval.
+will be removed during execution so each command will be executed only once during each metric gathering interval. 
 
 ### Example: Getting metrics from multiple DPDK instances running on same host
-
 This configuration allows getting metrics from two separate applications exposing their telemetry interfaces
-via separate sockets. For each plugin instance a unique tag `[inputs.dpdk.tags]` allows distinguishing between them.
-
+via separate sockets. For each plugin instance a unique tag `[inputs.dpdk.tags]` allows distinguishing between them. 
 ```toml
 # Instance #1 - L3 Forwarding with Power Management Application
 [[inputs.dpdk]]
@@ -171,38 +154,33 @@ via separate sockets. For each plugin instance a unique tag `[inputs.dpdk.tags]`
   [inputs.dpdk.tags]
     dpdk_instance = "l2fwd-cat"
 ```
-
 This utilizes Telegraf's standard capability of [adding custom tags](https://github.com/influxdata/telegraf/blob/master/docs/CONFIGURATION.md#input-plugins)
 to input plugin's measurements.
 
 ## Metrics
-
 The DPDK socket accepts `command,params` requests and returns metric data in JSON format. All metrics from DPDK socket
-become flattened using [Telegraf's JSON Flattener](../../parsers/json/README.md) and exposed as fields.
+become flattened using [Telegraf's JSON Flattener](https://github.com/influxdata/telegraf/tree/master/plugins/parsers/json) and exposed as fields. 
 If DPDK response contains no information (is empty or is null) then such response will be discarded.
 
-> **NOTE:** Since DPDK allows registering custom metrics in its telemetry framework the JSON response from DPDK
+> **NOTE:**  Since DPDK allows registering custom metrics in its telemetry framework the JSON response from DPDK 
 > may contain various sets of metrics. While metrics from `/ethdev/stats` should be most stable, the `/ethdev/xstats`
 > may contain driver-specific metrics (depending on DPDK application configuration). The application-specific commands
 > like `/l3fwd-power/stats` can return their own specific set of metrics.
 
 ## Example output
-
 The output consists of plugin name (`dpdk`), and a set of tags that identify querying hierarchy:
-
 ```
 dpdk,host=dpdk-host,dpdk_instance=l3fwd-power,command=/ethdev/stats,params=0 [fields] [timestamp]
 ```
 
-| Tag             | Description                                                                                                                                                                        |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `host`          | hostname of the machine (consult [Telegraf Agent configuration](https://github.com/influxdata/telegraf/blob/master/docs/CONFIGURATION.md#agent) for additional details)            |
-| `dpdk_instance` | custom tag from `[inputs.dpdk.tags]` (optional)                                                                                                                                    |
-| `command`       | executed command (without params)                                                                                                                                                  |
-| `params`        | command parameter, e.g. for `/ethdev/stats` it is the id of NIC as exposed by `/ethdev/list`<br>For DPDK app that uses 2 NICs the metrics will output e.g. `params=0`, `params=1`. |
+| Tag | Description |
+|-----|-------------|
+| `host` | hostname of the machine (consult [Telegraf Agent configuration](https://github.com/influxdata/telegraf/blob/master/docs/CONFIGURATION.md#agent) for additional details) |
+| `dpdk_instance` | custom tag from `[inputs.dpdk.tags]` (optional) |
+| `command` | executed command (without params) |
+| `params` | command parameter, e.g. for `/ethdev/stats` it is the id of NIC as exposed by `/ethdev/list`<br>For DPDK app that uses 2 NICs the metrics will output e.g. `params=0`, `params=1`. |
 
 When running plugin configuration below...
-
 ```toml
 [[inputs.dpdk]]
   device_types = ["ethdev"]
@@ -212,7 +190,6 @@ When running plugin configuration below...
 ```
 
 ...expected output for `dpdk` plugin instance running on host named `host=dpdk-host`:
-
 ```
 dpdk,command=/ethdev/stats,dpdk_instance=l3fwd-power,host=dpdk-host,params=0 q_opackets_0=0,q_ipackets_5=0,q_errors_11=0,ierrors=0,q_obytes_5=0,q_obytes_10=0,q_opackets_10=0,q_ipackets_4=0,q_ipackets_7=0,q_ipackets_15=0,q_ibytes_5=0,q_ibytes_6=0,q_ibytes_9=0,obytes=0,q_opackets_1=0,q_opackets_11=0,q_obytes_7=0,q_errors_5=0,q_errors_10=0,q_ibytes_4=0,q_obytes_6=0,q_errors_1=0,q_opackets_5=0,q_errors_3=0,q_errors_12=0,q_ipackets_11=0,q_ipackets_12=0,q_obytes_14=0,q_opackets_15=0,q_obytes_2=0,q_errors_8=0,q_opackets_12=0,q_errors_0=0,q_errors_9=0,q_opackets_14=0,q_ibytes_3=0,q_ibytes_15=0,q_ipackets_13=0,q_ipackets_14=0,q_obytes_3=0,q_errors_13=0,q_opackets_3=0,q_ibytes_0=7092,q_ibytes_2=0,q_ibytes_8=0,q_ipackets_8=0,q_ipackets_10=0,q_obytes_4=0,q_ibytes_10=0,q_ibytes_13=0,q_ibytes_1=0,q_ibytes_12=0,opackets=0,q_obytes_1=0,q_errors_15=0,q_opackets_2=0,oerrors=0,rx_nombuf=0,q_opackets_8=0,q_ibytes_11=0,q_ipackets_3=0,q_obytes_0=0,q_obytes_12=0,q_obytes_11=0,q_obytes_13=0,q_errors_6=0,q_ipackets_1=0,q_ipackets_6=0,q_ipackets_9=0,q_obytes_15=0,q_opackets_7=0,q_ibytes_14=0,ipackets=98,q_ipackets_2=0,q_opackets_6=0,q_ibytes_7=0,imissed=0,q_opackets_4=0,q_opackets_9=0,q_obytes_8=0,q_obytes_9=0,q_errors_4=0,q_errors_14=0,q_opackets_13=0,ibytes=7092,q_ipackets_0=98,q_errors_2=0,q_errors_7=0 1606310780000000000
 dpdk,command=/ethdev/stats,dpdk_instance=l3fwd-power,host=dpdk-host,params=1 q_opackets_0=0,q_ipackets_5=0,q_errors_11=0,ierrors=0,q_obytes_5=0,q_obytes_10=0,q_opackets_10=0,q_ipackets_4=0,q_ipackets_7=0,q_ipackets_15=0,q_ibytes_5=0,q_ibytes_6=0,q_ibytes_9=0,obytes=0,q_opackets_1=0,q_opackets_11=0,q_obytes_7=0,q_errors_5=0,q_errors_10=0,q_ibytes_4=0,q_obytes_6=0,q_errors_1=0,q_opackets_5=0,q_errors_3=0,q_errors_12=0,q_ipackets_11=0,q_ipackets_12=0,q_obytes_14=0,q_opackets_15=0,q_obytes_2=0,q_errors_8=0,q_opackets_12=0,q_errors_0=0,q_errors_9=0,q_opackets_14=0,q_ibytes_3=0,q_ibytes_15=0,q_ipackets_13=0,q_ipackets_14=0,q_obytes_3=0,q_errors_13=0,q_opackets_3=0,q_ibytes_0=7092,q_ibytes_2=0,q_ibytes_8=0,q_ipackets_8=0,q_ipackets_10=0,q_obytes_4=0,q_ibytes_10=0,q_ibytes_13=0,q_ibytes_1=0,q_ibytes_12=0,opackets=0,q_obytes_1=0,q_errors_15=0,q_opackets_2=0,oerrors=0,rx_nombuf=0,q_opackets_8=0,q_ibytes_11=0,q_ipackets_3=0,q_obytes_0=0,q_obytes_12=0,q_obytes_11=0,q_obytes_13=0,q_errors_6=0,q_ipackets_1=0,q_ipackets_6=0,q_ipackets_9=0,q_obytes_15=0,q_opackets_7=0,q_ibytes_14=0,ipackets=98,q_ipackets_2=0,q_opackets_6=0,q_ibytes_7=0,imissed=0,q_opackets_4=0,q_opackets_9=0,q_obytes_8=0,q_obytes_9=0,q_errors_4=0,q_errors_14=0,q_opackets_13=0,ibytes=7092,q_ipackets_0=98,q_errors_2=0,q_errors_7=0 1606310780000000000

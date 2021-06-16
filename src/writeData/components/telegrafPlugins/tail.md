@@ -9,10 +9,10 @@ tail -F --lines=0 myfile.log
 ```
 
 - `-F` means that it will follow the _name_ of the given file, so
-  that it will be compatible with log-rotated files, and that it will retry on
-  inaccessible files.
+that it will be compatible with log-rotated files, and that it will retry on
+inaccessible files.
 - `--lines=0` means that it will start at the end of the file (unless
-  the `from_beginning` option is set).
+the `from_beginning` option is set).
 
 see http://man7.org/linux/man-pages/man1/tail.1.html for more details.
 
@@ -77,7 +77,7 @@ The plugin expects messages in one of the
     ## multi-line event.
     #match_which_line = "previous"
 
-    ## The invert_match can be true or false (defaults to false).
+    ## The invert_match can be true or false (defaults to false). 
     ## If true, a message not matching the pattern will constitute a match of the multiline filter and the what will be applied. (vice-versa is also true)
     #invert_match = false
 
@@ -87,5 +87,5 @@ The plugin expects messages in one of the
 
 ### Metrics
 
-Metrics are produced according to the `data_format` option. Additionally a
+Metrics are produced according to the `data_format` option.  Additionally a
 tag labeled `path` is added to the metric containing the filename being tailed.

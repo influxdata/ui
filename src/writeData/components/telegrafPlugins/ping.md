@@ -2,18 +2,17 @@
 
 Sends a ping message by executing the system ping command and reports the results.
 
-This plugin has two main methods of operation: `exec` and `native`. The
+This plugin has two main methods of operation: `exec` and `native`.  The
 recommended method is `native`, which has greater system compatibility and
-performance. However, for backwards compatibility the `exec` method is the
+performance.  However, for backwards compatibility the `exec` method is the
 default.
 
 When using `method = "exec"`, the systems ping utility is executed to send the
 ping packets.
 
 Most ping command implementations are supported, one notable exception being
-that there is currently no support for GNU Inetutils ping. You may instead use
+that there is currently no support for GNU Inetutils ping.  You may instead use
 the iputils-ping implementation:
-
 ```
 apt-get install iputils-ping
 ```
@@ -80,28 +79,26 @@ native Go by the Telegraf process, eliminating the need to execute the system
 #### File Limit
 
 Since this plugin runs the ping command, it may need to open multiple files per
-host. The number of files used is lessened with the `native` option but still
-many files are used. With a large host list you may receive a `too many open files` error.
+host.  The number of files used is lessened with the `native` option but still
+many files are used.  With a large host list you may receive a `too many open
+files` error.
 
 To increase this limit on platforms using systemd the recommended method is to
 use the "drop-in directory", usually located at
 `/etc/systemd/system/telegraf.service.d`.
 
 You can create or edit a drop-in file in the correct location using:
-
 ```sh
 $ systemctl edit telegraf
 ```
 
 Increase the number of open files:
-
 ```ini
 [Service]
 LimitNOFILE=8192
 ```
 
 Restart Telegraf:
-
 ```sh
 $ systemctl edit telegraf
 ```
@@ -109,26 +106,22 @@ $ systemctl edit telegraf
 #### Linux Permissions
 
 When using `method = "native"`, Telegraf will attempt to use privileged raw
-ICMP sockets. On most systems, doing so requires `CAP_NET_RAW` capabilities or for Telegraf to be run as root.
+ICMP sockets.  On most systems, doing so requires `CAP_NET_RAW` capabilities or for Telegraf to be run as root.
 
 With systemd:
-
 ```sh
 $ systemctl edit telegraf
 ```
-
 ```ini
 [Service]
 CapabilityBoundingSet=CAP_NET_RAW
 AmbientCapabilities=CAP_NET_RAW
 ```
-
 ```sh
 $ systemctl restart telegraf
 ```
 
 Without systemd:
-
 ```sh
 $ setcap cap_net_raw=eip /usr/bin/telegraf
 ```
@@ -140,7 +133,7 @@ setting capabilities.
 
 #### Other OS Permissions
 
-When using `method = "native"`, you will need permissions similar to the executable ping program for your OS.
+When using `method = "native"`, you will need permissions similar to the executable ping program for your OS. 
 
 ### Metrics
 
@@ -156,7 +149,7 @@ When using `method = "native"`, you will need permissions similar to the executa
     - minimum_response_ms (float)
     - maximum_response_ms (float)
     - standard_deviation_ms (float, Available on Windows only with method = "native")
-    - percentile\<N\>\_ms (float, Where `<N>` is the percentile specified in `percentiles`. Available with method = "native" only)
+    - percentile\<N\>_ms (float, Where `<N>` is the percentile specified in `percentiles`. Available with method = "native" only)
     - errors (float, Windows only)
     - reply_received (integer, Windows with method = "exec" only)
     - percent_reply_loss (float, Windows with method = "exec" only)
@@ -164,13 +157,14 @@ When using `method = "native"`, you will need permissions similar to the executa
 
 ##### reply_received vs packets_received
 
-On Windows systems with `method = "exec"`, the "Destination net unreachable" reply will increment `packets_received` but not `reply_received`\*.
+On Windows systems with `method = "exec"`, the "Destination net unreachable" reply will increment `packets_received` but not `reply_received`*.
 
 ##### ttl
 
 There is currently no support for TTL on windows with `"native"`; track
 progress at https://github.com/golang/go/issues/7175 and
 https://github.com/golang/go/issues/7174
+
 
 ### Example Output
 

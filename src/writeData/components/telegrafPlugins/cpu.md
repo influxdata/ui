@@ -3,7 +3,6 @@
 The `cpu` plugin gather metrics on the system CPUs.
 
 #### Configuration
-
 ```toml
 # Read metrics about cpu usage
 [[inputs.cpu]]

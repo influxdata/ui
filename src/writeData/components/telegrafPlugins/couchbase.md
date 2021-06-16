@@ -1,5 +1,4 @@
 # Couchbase Input Plugin
-
 Couchbase is a distributed NoSQL database.
 This plugin gets metrics for each Couchbase node, as well as detailed metrics for each bucket, for a given couchbase server.
 
@@ -28,24 +27,20 @@ This plugin gets metrics for each Couchbase node, as well as detailed metrics fo
 ### couchbase_node
 
 Tags:
-
 - cluster: sanitized string from `servers` configuration field e.g.: `http://user:password@couchbase-0.example.com:8091/endpoint` -> `http://couchbase-0.example.com:8091/endpoint`
 - hostname: Couchbase's name for the node and port, e.g., `172.16.10.187:8091`
 
 Fields:
-
 - memory_free (unit: bytes, example: 23181365248.0)
 - memory_total (unit: bytes, example: 64424656896.0)
 
 ### couchbase_bucket
 
 Tags:
-
 - cluster: whatever you called it in `servers` in the configuration, e.g.: `http://couchbase-0.example.com/`)
 - bucket: the name of the couchbase bucket, e.g., `blastro-df`
 
 Default bucket fields:
-
 - quota_percent_used (unit: percent, example: 68.85424936294555)
 - ops_per_sec (unit: count, example: 5686.789686789687)
 - disk_fetches (unit: count, example: 0.0)
@@ -55,8 +50,7 @@ Default bucket fields:
 - mem_used (unit: bytes, example: 202156957464.0)
 
 Additional fields that can be configured with the `bucket_stats_included` option:
-
-- couch_total_disk_size
+- couch_total_disk_size                    
 - couch_docs_fragmentation
 - couch_views_fragmentation
 - hit_ratio
@@ -271,6 +265,7 @@ Additional fields that can be configured with the `bucket_stats_included` option
 - rest_requests
 - swap_total
 - swap_used
+
 
 ## Example output
 

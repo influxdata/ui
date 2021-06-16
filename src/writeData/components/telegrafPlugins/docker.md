@@ -46,23 +46,23 @@ to gather stats from the [Engine API](https://docs.docker.com/engine/api/v1.24/)
   ## Whether to report for each container per-device blkio (8:0, 8:1...),
   ## network (eth0, eth1, ...) and cpu (cpu0, cpu1, ...) stats or not.
   ## Usage of this setting is discouraged since it will be deprecated in favor of 'perdevice_include'.
-  ## Default value is 'true' for backwards compatibility, please set it to 'false' so that 'perdevice_include' setting
+  ## Default value is 'true' for backwards compatibility, please set it to 'false' so that 'perdevice_include' setting 
   ## is honored.
   perdevice = true
-
+  
   ## Specifies for which classes a per-device metric should be issued
   ## Possible values are 'cpu' (cpu0, cpu1, ...), 'blkio' (8:0, 8:1, ...) and 'network' (eth0, eth1, ...)
   ## Please note that this setting has no effect if 'perdevice' is set to 'true'
   # perdevice_include = ["cpu"]
-
+  
   ## Whether to report for each container total blkio and network stats or not.
   ## Usage of this setting is discouraged since it will be deprecated in favor of 'total_include'.
-  ## Default value is 'false' for backwards compatibility, please set it to 'true' so that 'total_include' setting
+  ## Default value is 'false' for backwards compatibility, please set it to 'true' so that 'total_include' setting 
   ## is honored.
   total = false
-
+  
   ## Specifies for which classes a total metric should be issued. Total is an aggregated of the 'perdevice' values.
-  ## Possible values are 'cpu', 'blkio' and 'network'
+  ## Possible values are 'cpu', 'blkio' and 'network'  
   ## Total 'cpu' is reported directly by Docker daemon, and 'network' and 'blkio' totals are aggregated by this plugin.
   ## Please note that this setting has no effect if 'total' is set to 'false'
   # total_include = ["cpu", "blkio", "network"]
@@ -128,14 +128,14 @@ This will cause all measurements to have the `source` tag be set to the first 12
 
 Kubernetes may add many labels to your containers, if they are not needed you
 may prefer to exclude them:
-
 ```
   docker_label_exclude = ["annotation.kubernetes*"]
 ```
 
+
 #### Docker-compose Labels
 
-Docker-compose will add labels to your containers. You can limit restrict labels to selected ones, e.g.
+Docker-compose will add labels to your containers. You can limit restrict labels to selected ones, e.g. 
 
 ```
   docker_label_include = [
@@ -147,6 +147,7 @@ Docker-compose will add labels to your containers. You can limit restrict labels
   ]
 ```
 
+
 ### Metrics:
 
 - docker
@@ -154,7 +155,7 @@ Docker-compose will add labels to your containers. You can limit restrict labels
     - unit
     - engine_host
     - server_version
-  * fields:
+  + fields:
     - n_used_file_descriptors
     - n_cpus
     - n_containers
@@ -170,22 +171,22 @@ Docker-compose will add labels to your containers. You can limit restrict labels
 The `docker_data` and `docker_metadata` measurements are available only for
 some storage drivers such as devicemapper.
 
-- docker_data (deprecated see: `docker_devicemapper`)
++ docker_data (deprecated see: `docker_devicemapper`)
   - tags:
     - unit
     - engine_host
     - server_version
-  * fields:
+  + fields:
     - available
     - total
     - used
 
-* docker_metadata (deprecated see: `docker_devicemapper`)
+- docker_metadata (deprecated see: `docker_devicemapper`)
   - tags:
     - unit
     - engine_host
     - server_version
-  * fields:
+  + fields:
     - available
     - total
     - used
@@ -197,7 +198,7 @@ The above measurements for the devicemapper storage driver can now be found in t
     - engine_host
     - server_version
     - pool_name
-  * fields:
+  + fields:
     - pool_blocksize_bytes
     - data_space_used_bytes
     - data_space_total_bytes
@@ -207,7 +208,7 @@ The above measurements for the devicemapper storage driver can now be found in t
     - metadata_space_available_bytes
     - thin_pool_minimum_free_space_bytes
 
-* docker_container_mem
++ docker_container_mem
   - tags:
     - engine_host
     - server_version
@@ -215,7 +216,7 @@ The above measurements for the devicemapper storage driver can now be found in t
     - container_name
     - container_status
     - container_version
-  * fields:
+  + fields:
     - total_pgmajfault
     - cache
     - mapped_file
@@ -260,7 +261,7 @@ The above measurements for the devicemapper storage driver can now be found in t
     - container_status
     - container_version
     - cpu
-  * fields:
+  + fields:
     - throttling_periods
     - throttling_throttled_periods
     - throttling_throttled_time
@@ -271,7 +272,7 @@ The above measurements for the devicemapper storage driver can now be found in t
     - usage_percent
     - container_id
 
-* docker_container_net
++ docker_container_net
   - tags:
     - engine_host
     - server_version
@@ -280,7 +281,7 @@ The above measurements for the devicemapper storage driver can now be found in t
     - container_status
     - container_version
     - network
-  * fields:
+  + fields:
     - rx_dropped
     - rx_bytes
     - rx_errors
@@ -318,7 +319,6 @@ The `docker_container_health` measurements report on a containers
 status if configured.
 
 - docker_container_health (container must use the HEALTHCHECK)
-
   - tags:
     - engine_host
     - server_version
@@ -326,10 +326,11 @@ status if configured.
     - container_name
     - container_status
     - container_version
-  - fields: - health_status (string) - failing_streak (integer)
+  - fields:
+  	- health_status (string)
+  	- failing_streak (integer)
 
 - docker_container_status
-
   - tags:
     - engine_host
     - server_version

@@ -6,12 +6,12 @@ This plugin receives traces, metrics and logs from [OpenTelemetry](https://opent
 
 ```toml
 [[inputs.opentelemetry]]
-  ## Override the OpenTelemetry gRPC service address:port
+  ## Override the OpenTelemetry gRPC service address:port 
   # service_address = "0.0.0.0:4317"
-
+  
   ## Override the default request timeout
   # timeout = "5s"
-
+  
   ## Select a schema for metrics: "prometheus-v1" or "prometheus-v2"
   ## For more information about the alternatives, read the Prometheus input
   ## plugin notes.
@@ -34,7 +34,6 @@ Metrics received with `metrics_schema=prometheus-v2` are stored in measurement `
 ### Example Output
 
 #### Tracing Spans
-
 ```
 spans end_time_unix_nano="2021-02-19 20:50:25.6893952 +0000 UTC",instrumentation_library_name="tracegen",kind="SPAN_KIND_INTERNAL",name="okey-dokey",net.peer.ip="1.2.3.4",parent_span_id="d5270e78d85f570f",peer.service="tracegen-client",service.name="tracegen",span.kind="server",span_id="4c28227be6a010e1",status_code="STATUS_CODE_OK",trace_id="7d4854815225332c9834e6dbf85b9380" 1613767825689169000
 spans end_time_unix_nano="2021-02-19 20:50:25.6893952 +0000 UTC",instrumentation_library_name="tracegen",kind="SPAN_KIND_INTERNAL",name="lets-go",net.peer.ip="1.2.3.4",peer.service="tracegen-server",service.name="tracegen",span.kind="client",span_id="d5270e78d85f570f",status_code="STATUS_CODE_OK",trace_id="7d4854815225332c9834e6dbf85b9380" 1613767825689135000
@@ -44,7 +43,6 @@ spans end_time_unix_nano="2021-02-19 20:50:25.6896741 +0000 UTC",instrumentation
 ```
 
 ### Metrics - `prometheus-v1`
-
 ```
 cpu_temp,foo=bar gauge=87.332
 http_requests_total,method=post,code=200 counter=1027
@@ -54,7 +52,6 @@ rpc_duration_seconds 0.01=3102,0.05=3272,0.5=4773,0.9=9001,0.99=76656,sum=1.7560
 ```
 
 ### Metrics - `prometheus-v2`
-
 ```
 prometheus,foo=bar cpu_temp=87.332
 prometheus,method=post,code=200 http_requests_total=1027
@@ -74,7 +71,6 @@ prometheus               rpc_duration_seconds_count=1.7560473e+07,rpc_duration_s
 ```
 
 ### Logs
-
 ```
 logs fluent.tag="fluent.info",pid=18i,ppid=9i,worker=0i 1613769568895331700
 logs fluent.tag="fluent.debug",instance=1720i,queue_size=0i,stage_size=0i 1613769568895697200

@@ -3,6 +3,7 @@
 The [Kinesis][kinesis] consumer plugin reads from a Kinesis data stream
 and creates metrics using one of the supported [input data formats][].
 
+
 ### Configuration
 
 ```toml
@@ -70,18 +71,18 @@ and creates metrics using one of the supported [input data formats][].
     table_name = "default"
 ```
 
+
 #### Required AWS IAM permissions
 
 Kinesis:
-
-- DescribeStream
-- GetRecords
-- GetShardIterator
+ - DescribeStream
+ - GetRecords
+ - GetShardIterator
 
 DynamoDB:
+ - GetItem
+ - PutItem
 
-- GetItem
-- PutItem
 
 #### DynamoDB Checkpoint
 
@@ -92,6 +93,7 @@ this functionality, create a table with the following string type keys:
 Partition key: namespace
 Sort key: shard_id
 ```
+
 
 [kinesis]: https://aws.amazon.com/kinesis/
 [input data formats]: /docs/DATA_FORMATS_INPUT.md

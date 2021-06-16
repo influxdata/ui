@@ -20,14 +20,14 @@ The following is an example config for RavenDB. **Note:** The client certificate
   ## Optional request timeout
   ##
   ## Timeout, specifies the amount of time to wait
-  ## for a server's response headers after fully writing the request and
+  ## for a server's response headers after fully writing the request and 
   ## time limit for requests made by this client
   # timeout = "5s"
 
   ## List of statistics which are collected
   # At least one is required
   # Allowed values: server, databases, indexes, collections
-  #
+  #  
   # stats_include = ["server", "databases", "indexes", "collections"]
 
   ## List of db where database stats are collected
@@ -37,7 +37,7 @@ The following is an example config for RavenDB. **Note:** The client certificate
   ## List of db where index status are collected
   ## If empty, all indexes from all db are concerned
   # index_stats_dbs = []
-
+  
   ## List of db where collection status are collected
   ## If empty, all collections from all db are concerned
   # collection_stats_dbs = []
@@ -46,19 +46,18 @@ The following is an example config for RavenDB. **Note:** The client certificate
 ### Metrics
 
 - ravendb_server
-
   - tags:
     - url
     - node_tag
     - cluster_id
-    - public_server_url (optional)
+    - public_server_url (optional)  
   - fields:
     - backup_current_number_of_running_backups
     - backup_max_number_of_concurrent_backups
     - certificate_server_certificate_expiration_left_in_sec (optional)
     - certificate_well_known_admin_certificates (optional, separated by ';')
     - cluster_current_term
-    - cluster_index
+    - cluster_index      
     - cluster_node_state
       - 0 -> Passive
       - 1 -> Candidate
@@ -85,7 +84,7 @@ The following is an example config for RavenDB. **Note:** The client certificate
     - license_max_cores
     - license_type
     - license_utilized_cpu_cores
-    - memory_allocated_in_mb
+    - memory_allocated_in_mb  
     - memory_installed_in_mb
     - memory_low_memory_severity
       - 0 -> None
@@ -106,9 +105,8 @@ The following is an example config for RavenDB. **Note:** The client certificate
     - server_process_id
     - server_version
     - uptime_in_sec
-
+  
 - ravendb_databases
-
   - tags:
     - url
     - database_name
@@ -149,8 +147,7 @@ The following is an example config for RavenDB. **Note:** The client certificate
     - uptime_in_sec
 
 - ravendb_indexes
-
-  - tags:
+  - tags: 
     - database_name
     - index_name
     - node_tag

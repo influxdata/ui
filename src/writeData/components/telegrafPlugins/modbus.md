@@ -128,7 +128,6 @@ with N decimal places'.
 from unsigned values).
 
 ### Trouble shooting
-
 Modbus documentations are often a mess. People confuse memory-address (starts at one) and register address (starts at zero) or stay unclear about the used word-order. Furthermore, there are some non-standard implementations that also
 swap the bytes within the register word (16-bit).
 

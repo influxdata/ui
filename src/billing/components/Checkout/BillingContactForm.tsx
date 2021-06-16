@@ -1,4 +1,5 @@
-import React, {ChangeEvent, FC, useState} from 'react'
+// Library
+import React, {ChangeEvent, FC, useContext, useState} from 'react'
 import {
   Form,
   Input,
@@ -12,26 +13,34 @@ import {
   ComponentSize,
   FlexBox,
   JustifyContent,
-  Alert,
-  IconFont,
 } from '@influxdata/clockface'
+import {useDispatch} from 'react-redux'
 
+// Components
+import {BillingContext} from 'src/billing/context/billing'
 import BillingContactSubdivision from 'src/billing/components/Checkout/BillingContactSudivision'
+
+// Utils
+import {notify} from 'src/shared/actions/notifications'
+import {billingContactIncompleteError} from 'src/shared/copy/notifications'
+
+// Constants
 import {states, countries} from 'src/billing/constants'
 
-import {convertKeysToSnakecase} from 'src/billing/utils/checkout'
-import {useBilling} from 'src/billing/components/BillingPage'
+// Types
+import {BillingContact} from 'src/types'
 
 type Props = {
-  onSubmitForm: () => void
+  toggleEditingOff: () => void
 }
 
-const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
-  const [
-    {
-      billingInfo: {contact},
-    },
-  ] = useBilling()
+const BillingContactForm: FC<Props> = ({toggleEditingOff}) => {
+  const {
+    billingInfo: {contact},
+    handleUpdateBillingContact,
+  } = useContext(BillingContext)
+
+  const dispatch = useDispatch()
 
   const [inputs, setInputs] = useState({
     firstName: contact.firstName,
@@ -52,7 +61,6 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
   const [subdivisionError, setSubdivisionError] = useState(false)
 
   const [isSubmittingContact, setIsSubmittingContact] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
 
   const requiredErrorText = 'This is a required field'
 
@@ -90,18 +98,6 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
     setSubdivisionError(state === '')
   }
 
-  const handleSubmitContactInfo = async contact => {
-    const payload = {
-      contact: convertKeysToSnakecase(contact),
-    }
-    setIsSubmittingContact(true)
-    await fetch(`APIPrivate/billing_contact`, {
-      method: 'PUT',
-      body: JSON.stringify(payload),
-    })
-    setIsSubmittingContact(false)
-  }
-
   const isContactInfoValid = () => {
     if (country.trim() === '') {
       setCountryError(true)
@@ -118,9 +114,7 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
     })
   }
 
-  const handleConfirmContactInfo = async e => {
-    e.preventDefault()
-
+  const handleConfirmContactInfo = async () => {
     const contact = {
       firstName: inputs.firstName,
       lastName: inputs.lastName,
@@ -131,38 +125,23 @@ const BillingContactForm: FC<Props> = ({onSubmitForm}) => {
       city: inputs.city,
       subdivision,
       postalCode: inputs.postalCode,
-    }
+    } as BillingContact
+
+    setIsSubmittingContact(true)
 
     if (isContactInfoValid()) {
-      try {
-        await handleSubmitContactInfo(contact)
-        onSubmitForm()
-      } catch (_e) {
-        setErrorMessage(
-          'Could not update contact information, please try again.'
-        )
-        setIsSubmittingContact(false)
-      }
-    } else {
-      setErrorMessage(
-        'Looks like your billing information is incomplete. Please complete the form before resubmitting.'
-      )
+      await handleUpdateBillingContact(contact)
+      toggleEditingOff()
       setIsSubmittingContact(false)
+    } else {
+      dispatch(notify(billingContactIncompleteError()))
     }
+    setIsSubmittingContact(false)
   }
 
   return (
     <>
       <Panel.Body size={ComponentSize.Large}>
-        {errorMessage && (
-          <Alert
-            color={ComponentColor.Danger}
-            icon={IconFont.AlertTriangle}
-            className="billing-contact--alert"
-          >
-            {errorMessage}
-          </Alert>
-        )}
         <Form>
           <Grid>
             <Grid.Row>

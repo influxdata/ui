@@ -1,14 +1,14 @@
 import {
   deleteOperatorAccount,
-  deleteOperatorAccountUser,
+  deleteOperatorAccountsUser,
   getOperatorAccount,
   getOperatorAccounts,
+  getOperatorOrg,
   getOperatorOrgs,
-  getOrg,
   getOrgsLimits,
   putOrgsLimits,
 } from 'src/client/unityRoutes'
-import {Account, Organization, OrgLimits} from 'src/types/operator'
+import {OperatorAccount, OperatorOrg, OrgLimits} from 'src/types'
 
 const makeResponse = (status, data) => {
   return Promise.resolve({
@@ -21,10 +21,10 @@ const makeResponse = (status, data) => {
 export const getAccounts = (
   searchTerm?: string
 ): ReturnType<typeof getOperatorAccounts> => {
-  const accounts: Account[] = [
+  const accounts: OperatorAccount[] = [
     {
-      id: '123',
-      marketplace: null,
+      id: 123,
+      marketplaceSubscription: null,
       balance: 0,
       billingContact: {
         companyName: 'Influx',
@@ -35,28 +35,29 @@ export const getAccounts = (
         street1: '123 Main St',
         city: 'New York',
         subdivision: 'NY',
-        postalCode: 30000,
+        postalCode: '30000',
       },
       users: [
         {
+          accountId: 123,
           id: 'user1',
-          // quartzId: 1,
-          // onboardingState: 'complete',
-          // sfdcContactId: 'sdfc_u_know_me',
+          idpeId: 'idpe-123',
           firstName: 'jr',
           lastName: 'OG',
+          operator: false,
+          sfdcContactId: 'z123',
+          onboardingState: 'on',
           email: 'og@influxdata.com',
-          role: 'member',
         },
       ],
       type: 'pay_as_you_go',
     },
     {
-      id: '345',
-      marketplace: {
-        shortName: 'aws',
-        name: 'Amazon Web Services',
-        url: 'smile.amazon.com',
+      id: 345,
+      marketplaceSubscription: {
+        marketplace: 'aws',
+        status: 'unsubscribed',
+        subscriberId: 'aws123',
       },
       balance: 10,
       billingContact: {
@@ -68,29 +69,29 @@ export const getAccounts = (
         street1: '345 Main St',
         city: 'Austin',
         subdivision: 'TX',
-        postalCode: 50000,
+        postalCode: '50000',
       },
       users: [],
       type: 'cancelled',
     },
     {
-      id: '678',
-      marketplace: {
-        shortName: 'gcm',
-        name: 'Google Cloud Marketplace',
-        url: 'www.google.com',
+      id: 678,
+      marketplaceSubscription: {
+        marketplace: 'gcm',
+        subscriberId: 'gcm1',
+        status: 'subscribed',
       },
       balance: 20,
       billingContact: {
         companyName: 'Pineapple',
-        email: 'desa@influxdata.com',
+        email: 'desa@influxta.com',
         firstName: 'Michael',
         lastName: 'De Sa',
         country: 'USA',
         street1: '678 Main St',
         city: 'Seattle',
         subdivision: 'WA',
-        postalCode: 80000,
+        postalCode: '80000',
       },
       users: [],
       type: 'free',
@@ -109,76 +110,78 @@ export const getAccounts = (
 export const getOrgs = (
   searchTerm?: string
 ): ReturnType<typeof getOperatorOrgs> => {
-  const organizations: Organization[] = [
+  const organizations: OperatorOrg[] = [
     {
-      id: '123',
-      quartzId: 12,
+      id: 123,
+      idpeId: '12',
       name: 'Best Org',
       region: 'us-west',
       provider: 'Zuora',
       date: '01/01/2010',
-      relatedAccount: {
+      account: {
         type: 'pay_as_you_go',
         balance: 0,
         id: 'account123',
         email: 'account@account.com',
       },
+      billingContact: null,
     },
     {
-      id: '345',
-      quartzId: 345,
+      idpeId: '345',
+      id: 345,
       name: 'Second_best_org',
       region: 'eu-central',
       provider: 'aws',
       date: '01/01/2011',
-      relatedAccount: {
+      account: {
         type: 'cancelled',
         balance: 0,
         id: 'cancelled1',
         email: 'cancelled@account.com',
       },
+      billingContact: null,
     },
     {
-      id: '678',
-      quartzId: 678,
+      idpeId: '678',
+      id: 678,
       name: 'Lucky 3',
       region: 'gcp-west',
       provider: 'gcm',
       date: '01/01/2012',
-      relatedAccount: {
+      account: {
         type: 'free',
         balance: 0,
         id: 'free123',
         email: 'free@account.com',
       },
+      billingContact: null,
     },
   ]
 
   const filtered = organizations.filter(org => {
     if (searchTerm) {
-      return (
-        org.id.includes(searchTerm) || `${org.quartzId}`.includes(searchTerm)
-      )
+      return org.idpeId.includes(searchTerm) || `${org.id}`.includes(searchTerm)
     }
     return true
   })
   return makeResponse(200, filtered)
 }
 
-export const getOrgById = (_id: string): ReturnType<typeof getOrg> => {
-  const organization: Organization = {
-    id: '123',
-    quartzId: 123,
+export const getOrgById = (_id: string): ReturnType<typeof getOperatorOrg> => {
+  const organization: OperatorOrg = {
+    idpeId: '123',
+    id: 123,
     name: 'Best Org',
     region: 'us-west',
     provider: 'Zuora',
     date: '01/01/2010',
-    relatedAccount: {
+    account: {
       type: 'pay_as_you_go',
       balance: 10,
       id: 'pay123',
       email: 'paid@account.com',
     },
+    billingContact: null,
   }
 
   return makeResponse(200, organization)
@@ -187,27 +190,38 @@ export const getOrgById = (_id: string): ReturnType<typeof getOrg> => {
 export const getAccountById = (
   _id: string
 ): ReturnType<typeof getOperatorAccount> => {
-  const account: Account = {
-    id: '345',
-    marketplace: {
-      name: 'Amazon Web Services',
-      url: 'smile.amazon.com',
-      shortName: 'aws',
+  const account = {
+    id: 345,
+    marketplaceSubscription: {
+      marketplace: 'aws',
+      status: 'unsubscribed',
+      subscriberId: 'aws123',
     },
     balance: 10,
     organizations: [
       {
-        id: 'orgid',
-        quartzId: 1001,
+        idpeId: 'orgid',
+        id: 1001,
         name: 'name',
         region: 'region',
         provider: 'provider',
         date: '01/01/2021',
-        relatedAccount: {
+        account: {
           type: 'free',
           balance: 0,
           id: 'freeme1',
           email: 'free1@account.com',
+        },
+        billingContact: {
+          companyName: 'Data',
+          email: 'watts@influxdata.com',
+          firstName: 'Andrew',
+          lastName: 'Watkins',
+          country: 'USA',
+          street1: '345 Main St',
+          city: 'Austin',
+          subdivision: 'TX',
+          postalCode: '50000',
         },
       },
     ],
@@ -220,17 +234,20 @@ export const getAccountById = (
       street1: '345 Main St',
       city: 'Austin',
       subdivision: 'TX',
-      postalCode: 50000,
+      postalCode: '50000',
     },
     deletable: true,
     users: [
       {
-        id: '1',
-        // sfdcContactId: '12',
-        firstName: 'Ariel',
-        lastName: 'Salem',
-        email: 'asalem@influxdata.com',
-        role: 'member',
+        accountId: 123,
+        id: 'user1',
+        idpeId: 'idpe-123',
+        firstName: 'jr',
+        lastName: 'OG',
+        operator: false,
+        sfdcContactId: 'z123',
+        onboardingState: 'on',
+        email: 'og@influxdata.com',
       },
     ],
     type: 'cancelled',
@@ -245,10 +262,11 @@ export const deleteAccountById = (
   return makeResponse(204, 'ok')
 }
 
-export const removeUserFromAccount = (
-  _accountID: string,
-  _id: string
-): ReturnType<typeof deleteOperatorAccountUser> => {
+export const removeUserFromAccount = ({
+  accountID,
+  userID,
+}): ReturnType<typeof deleteOperatorAccountsUser> => {
+  console.warn({accountID, userID})
   return makeResponse(204, 'ok')
 }
 

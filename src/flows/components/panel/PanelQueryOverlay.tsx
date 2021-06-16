@@ -1,5 +1,5 @@
 // Libraries
-import React, {useContext, FC, useCallback} from 'react'
+import React, {useContext, FC} from 'react'
 
 // Components
 import {Overlay} from '@influxdata/clockface'
@@ -12,26 +12,17 @@ import {CLIENT_DEFINITIONS} from 'src/writeData'
 import ClientCodeQueryHelper from 'src/writeData/components/ClientCodeQueryHelper'
 import WriteDataDetailsProvider from 'src/writeData/components/WriteDataDetailsContext'
 import {Provider as TemplateProvider} from 'src/shared/components/CodeSnippet'
-import {FlowQueryContext, Stage} from 'src/flows/context/flow.query'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {PopupContext} from 'src/flows/context/popup'
 
 const PanelQueryOverlay: FC = () => {
-  const {data, closeFn} = useContext(PopupContext)
-  const panelID = data.panelID
-  const contentID = data.contentID
+  const {
+    data: {contentID, panelID},
+    closeFn,
+  } = useContext(PopupContext)
+  const {getPanelQueries, simplify} = useContext(FlowQueryContext)
 
-  const {generateMap} = useContext(FlowQueryContext)
-
-  const getPanelQuery = useCallback(
-    (panelID: string): string => {
-      const stage = generateMap().find((stage: Stage) => {
-        return !!stage.instances.find(instance => instance.id == panelID)
-      })
-
-      return stage?.text ?? ''
-    },
-    [generateMap]
-  )
+  const query = simplify(getPanelQueries(panelID, true).source)
 
   return (
     <Overlay visible={true}>
@@ -41,10 +32,7 @@ const PanelQueryOverlay: FC = () => {
           onDismiss={closeFn}
         />
         <Overlay.Body>
-          <ClientCodeQueryHelper
-            contentID={contentID}
-            clientQuery={getPanelQuery(panelID)}
-          />
+          <ClientCodeQueryHelper contentID={contentID} clientQuery={query} />
           <ClientCodeCopyPage contentID={contentID} />
         </Overlay.Body>
       </Overlay.Container>

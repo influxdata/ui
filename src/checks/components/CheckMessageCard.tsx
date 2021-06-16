@@ -11,6 +11,9 @@ import {
 } from '@influxdata/clockface'
 import BuilderCard from 'src/timeMachine/components/builderCard/BuilderCard'
 
+// Constants
+import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
+
 // Actions & Selectors
 import {setStatusMessageTemplate} from 'src/alerting/actions/alertBuilder'
 
@@ -72,7 +75,7 @@ const CheckMessageCard: FC<Props> = ({
           <p>
             Need help? Check out the Status Message Template{' '}
             <a
-              href="https://v2.docs.influxdata.com/v2.0/monitor-alert/checks/create/#flux-only-interpolates-string-values"
+              href={`https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/monitor-alert/checks/create/#flux-only-interpolates-string-values`}
               target="_blank"
               rel="noreferrer"
             >

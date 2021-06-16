@@ -9,6 +9,9 @@ import EndpointCards from 'src/notifications/endpoints/components/EndpointCards'
 import AlertsColumn from 'src/alerting/components/AlertsColumn'
 import {AppState, NotificationEndpoint, ResourceType} from 'src/types'
 
+// Constants
+import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
+
 // Utils
 import {getAll} from 'src/resources/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -43,7 +46,7 @@ const EndpointsColumn: FC<Props> = ({history, match, endpoints, tabIndex}) => {
       <br />
       <br />
       <a
-        href="https://v2.docs.influxdata.com/v2.0/monitor-alert/notification-endpoints/create"
+        href={`https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/monitor-alert/notification-endpoints/create/`}
         target="_blank"
         rel="noreferrer"
       >

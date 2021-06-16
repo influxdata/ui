@@ -11,28 +11,25 @@ import DashboardLightModeToggle from 'src/dashboards/components/DashboardLightMo
 import GraphTips from 'src/shared/components/graph_tips/GraphTips'
 import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
-import {
-  Button,
-  IconFont,
-  ComponentColor,
-  Page,
-  ButtonGroup,
-} from '@influxdata/clockface'
+import {Button, IconFont, ComponentColor, Page} from '@influxdata/clockface'
 import {AnnotationsControlBarToggleButton} from 'src/annotations/components/AnnotationsControlBarToggleButton'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
-import AutoRefreshInput from 'src/dashboards/components/AutoRefreshInput'
 
 // Actions
 import {toggleShowVariablesControls as toggleShowVariablesControlsAction} from 'src/userSettings/actions'
 import {updateDashboard as updateDashboardAction} from 'src/dashboards/actions/thunks'
 import {
-  setAutoRefreshInterval as setAutoRefreshIntervalAction,
   setAutoRefreshStatus as setAutoRefreshStatusAction,
+  resetDashboardAutoRefresh as resetDashboardAutoRefreshAction,
 } from 'src/shared/actions/autoRefresh'
 import {
   setDashboardTimeRange as setDashboardTimeRangeAction,
   updateQueryParams as updateQueryParamsAction,
 } from 'src/dashboards/actions/ranges'
+import {
+  showOverlay as showOverlayAction,
+  dismissOverlay as dismissOverlayAction,
+} from 'src/overlays/actions/overlays'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -75,7 +72,6 @@ const DashboardHeader: FC<Props> = ({
   toggleShowVariablesControls,
   showVariablesControls,
   onSetAutoRefreshStatus,
-  setAutoRefreshInterval,
   timeRange,
   updateDashboard,
   updateQueryParams,
@@ -83,6 +79,9 @@ const DashboardHeader: FC<Props> = ({
   history,
   org,
   autoRefresh,
+  resetAutoRefresh,
+  showOverlay,
+  dismissOverlay,
 }) => {
   const demoDataset = DemoDataDashboardNames[dashboard.name]
   useEffect(() => {
@@ -101,17 +100,6 @@ const DashboardHeader: FC<Props> = ({
 
   const handleRenameDashboard = (name: string) => {
     updateDashboard(dashboard.id, {name})
-  }
-
-  const handleChooseAutoRefresh = (milliseconds: number) => {
-    setAutoRefreshInterval(dashboard.id, milliseconds)
-
-    if (milliseconds === 0) {
-      onSetAutoRefreshStatus(dashboard.id, AutoRefreshStatus.Paused)
-      return
-    }
-
-    onSetAutoRefreshStatus(dashboard.id, AutoRefreshStatus.Active)
   }
 
   const handleChooseTimeRange = (timeRange: TimeRange) => {
@@ -143,6 +131,9 @@ const DashboardHeader: FC<Props> = ({
     onManualRefresh()
   }, [])
 
+  const isActive =
+    autoRefresh?.status && autoRefresh.status === AutoRefreshStatus.Active
+
   return (
     <>
       <Page.Header fullWidth={true}>
@@ -155,17 +146,6 @@ const DashboardHeader: FC<Props> = ({
       </Page.Header>
       <Page.ControlBar fullWidth={true}>
         <Page.ControlBarLeft>
-          <ButtonGroup>
-            <AutoRefreshDropdown
-              onChoose={handleChooseAutoRefresh}
-              onManualRefresh={resetCacheAndRefresh}
-              selected={autoRefresh}
-              showAutoRefresh={false}
-              customClass="autoRefreshSquare"
-            />
-            {isFlagEnabled('newAutoRefresh') && <AutoRefreshInput />}
-          </ButtonGroup>
-
           <Button
             icon={IconFont.AddCell}
             color={ComponentColor.Primary}
@@ -198,6 +178,33 @@ const DashboardHeader: FC<Props> = ({
           <GraphTips />
         </Page.ControlBarLeft>
         <Page.ControlBarRight>
+          <AutoRefreshDropdown
+            onChoose={() => {}}
+            onManualRefresh={resetCacheAndRefresh}
+            selected={autoRefresh}
+            showAutoRefresh={false}
+          />
+          {isFlagEnabled('newAutoRefresh') && (
+            <Button
+              text={
+                isActive
+                  ? `Refreshing Every ${autoRefresh.label}`
+                  : 'Enable Auto Refresh'
+              }
+              color={
+                isActive ? ComponentColor.Secondary : ComponentColor.Default
+              }
+              onClick={
+                isActive
+                  ? () => resetAutoRefresh(dashboard.id)
+                  : () =>
+                      showOverlay('toggle-auto-refresh', null, () =>
+                        dismissOverlay()
+                      )
+              }
+              testID="enable-auto-refresh-button"
+            />
+          )}
           <TimeZoneDropdown />
           <TimeRangeDropdown
             onSetTimeRange={handleChooseTimeRange}
@@ -237,7 +244,9 @@ const mdtp = {
   onSetAutoRefreshStatus: setAutoRefreshStatusAction,
   updateQueryParams: updateQueryParamsAction,
   setDashboardTimeRange: setDashboardTimeRangeAction,
-  setAutoRefreshInterval: setAutoRefreshIntervalAction,
+  resetAutoRefresh: resetDashboardAutoRefreshAction,
+  showOverlay: showOverlayAction,
+  dismissOverlay: dismissOverlayAction,
 }
 
 const connector = connect(mstp, mdtp)

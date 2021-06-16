@@ -1,0 +1,23 @@
+.cf-funnel-page--footer .cf-cta-button {
+  margin: $cf-marg-c 0;
+}
+
+.powered-by-payment-header {
+  width: 100%;
+}
+
+.billing-form--frame {
+  position: relative;
+}
+
+.v2-zuora-form {
+  min-height: 226px;
+}
+
+/* Zuora Payment Widget */
+#zuora_payment {
+  & > iframe {
+    background-color: transparent;
+    width: 100%;
+  }
+}

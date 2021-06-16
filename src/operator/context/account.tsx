@@ -16,20 +16,20 @@ import {
 } from 'src/shared/copy/notifications'
 
 // Types
-import {Account} from 'src/types/operator'
-import {RemoteDataState} from 'src/types'
+import {OperatorAccount, OperatorOrg, RemoteDataState} from 'src/types'
 
 export type Props = {
   children: JSX.Element
 }
 
 export interface AccountContextType {
-  account: Account
+  account: OperatorAccount
   accountStatus: RemoteDataState
   deleteStatus: RemoteDataState
   handleDeleteAccount: () => void
   handleGetAccount: () => void
   handleRemoveUserFromAccount: (id: string) => void
+  organizations: OperatorOrg[]
   setVisible: (vis: boolean) => void
   visible: boolean
 }
@@ -41,6 +41,7 @@ export const DEFAULT_CONTEXT: AccountContextType = {
   handleDeleteAccount: () => {},
   handleGetAccount: () => {},
   handleRemoveUserFromAccount: (_: string) => {},
+  organizations: null,
   setVisible: (_: boolean) => {},
   visible: false,
 }
@@ -50,12 +51,13 @@ export const AccountContext = React.createContext<AccountContextType>(
 )
 
 export const AccountProvider: FC<Props> = React.memo(({children}) => {
-  const [account, setAccount] = useState(null)
+  const [account, setAccount] = useState<OperatorAccount>(null)
+  const [organizations, setOrganizations] = useState<OperatorOrg[]>(null)
   const [visible, setVisible] = useState(false)
   const [accountStatus, setAccountStatus] = useState(RemoteDataState.NotStarted)
   const [deleteStatus, setDeleteStatus] = useState(RemoteDataState.NotStarted)
 
-  const {accountID} = useParams()
+  const {accountID} = useParams<{accountID: string}>()
   const history = useHistory()
   const dispatch = useDispatch()
 
@@ -69,7 +71,10 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
         throw new Error(resp.data.message)
       }
 
+      const {organizations}: {organizations: OperatorOrg[]} = resp.data
+
       setAccount(resp.data)
+      setOrganizations(organizations)
       setAccountStatus(RemoteDataState.Done)
     } catch (error) {
       setAccountStatus(RemoteDataState.Error)
@@ -95,13 +100,13 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
       console.error({error})
       dispatch(notify(deleteAccountError(accountID)))
     }
-  }, [dispatch]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dispatch, history, accountID])
 
   const handleRemoveUserFromAccount = useCallback(
     async (userID: string) => {
       try {
         setDeleteStatus(RemoteDataState.Loading)
-        const resp = await removeUserFromAccount(accountID, userID)
+        const resp = await removeUserFromAccount({accountID, userID})
         if (resp.status !== 204) {
           throw new Error(resp.data.message)
         }
@@ -114,7 +119,7 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
         await handleGetAccount()
       }
     },
-    [dispatch] // eslint-disable-line react-hooks/exhaustive-deps
+    [dispatch, handleGetAccount, history, accountID]
   )
 
   return (
@@ -122,10 +127,11 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
       value={{
         account,
         accountStatus,
+        deleteStatus,
         handleDeleteAccount,
         handleGetAccount,
         handleRemoveUserFromAccount,
-        deleteStatus,
+        organizations,
         setVisible,
         visible,
       }}

@@ -22,7 +22,7 @@ const usageGraphInfo = [
     column: 'write_mb',
     units: 'MB',
     isGrouped: true,
-    type: 'sparkline',
+    type: 'xy',
     pricingVersions: [3, 4],
   },
   {
@@ -31,7 +31,7 @@ const usageGraphInfo = [
     column: 'query_count',
     units: '',
     isGrouped: false,
-    type: 'sparkline',
+    type: 'xy',
     pricingVersions: [4],
   },
   {
@@ -40,7 +40,7 @@ const usageGraphInfo = [
     column: 'storage_gb',
     units: 'GB',
     isGrouped: false,
-    type: 'sparkline',
+    type: 'xy',
     pricingVersions: [3, 4],
   },
   {
@@ -49,7 +49,7 @@ const usageGraphInfo = [
     column: 'reads_gb',
     units: 'GB',
     isGrouped: false,
-    type: 'sparkline',
+    type: 'xy',
     pricingVersions: [4],
   },
 ]
@@ -60,7 +60,7 @@ const rateLimitGraphInfo = {
   column: '_value',
   units: '',
   isGrouped: true,
-  type: 'sparkline',
+  type: 'xy',
 }
 
 const UsageToday: FC = () => {
@@ -70,17 +70,18 @@ const UsageToday: FC = () => {
     selectedUsage,
     timeRange,
     usageStats,
+    usageVectors,
   } = useContext(UsageContext)
 
   const getUsageSparkline = () => {
-    let graphInfo = usageGraphInfo.find(stat =>
-      stat.title.includes(selectedUsage)
-    )
+    const usage = usageVectors.find(vector => selectedUsage === vector.name)
+    const graphInfo =
+      usageGraphInfo.find(stat => stat.column === usage?.fluxKey) ??
+      usageGraphInfo[0]
 
-    if (!graphInfo) {
-      graphInfo = usageGraphInfo[0]
-    }
-    return <GraphTypeSwitcher csv={usageStats} graphInfo={graphInfo} />
+    return (
+      <GraphTypeSwitcher fromFluxResult={usageStats} graphInfo={graphInfo} />
+    )
   }
 
   return (
@@ -117,7 +118,7 @@ const UsageToday: FC = () => {
           alignItems={AlignItems.Stretch}
         >
           <GraphTypeSwitcher
-            csv={rateLimits}
+            fromFluxResult={rateLimits}
             graphInfo={rateLimitGraphInfo}
             key={rateLimitGraphInfo.title}
           />

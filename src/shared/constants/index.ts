@@ -10,18 +10,36 @@ import {
 } from '@influxdata/giraffe'
 import {InfluxColors} from '@influxdata/clockface'
 
-import {AutoRefreshStatus} from 'src/types'
+import {AutoRefreshStatus, CreditCardParams} from 'src/types'
 
-// This is temporary and should be resolved
-// Once the Beta region API is built out by Quartz:
-// influxdata/quartz#4369
-// Beta Regions contain the hostname of the beta regions
+/**
+ * UPDATE: the original integration of this had linked to a Quartz issue that has
+ * since been resolved. However, removing this function caused our unit tests
+ * to fail in CI since the GIT_SHA was undefined. We need to resolve that issue
+ * before we can remove this function from the app
+ */
 function formatConstant(constant: string) {
   if (!constant) {
     return ''
   }
   return constant.trim()
 }
+
+// If we don't initialize these params here, then the UI will start
+// showing a popup and cypress tests will start failing.
+export const EMPTY_ZUORA_PARAMS: CreditCardParams = {
+  id: '',
+  tenantId: '',
+  key: '',
+  signature: '',
+  token: '',
+  style: '',
+  submitEnabled: 'false',
+  url: '',
+}
+
+export const BALANCE_THRESHOLD_DEFAULT = 10
+export const MINIMUM_BALANCE_THRESHOLD = 1
 
 export const DEFAULT_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss a'
 
@@ -41,7 +59,6 @@ export const AUTOREFRESH_DEFAULT = {
   duration: null,
   inactivityTimeout: 0,
   infiniteDuration: false,
-  refreshInputValue: 'None',
 }
 
 export const LAYOUT_MARGIN = 4
@@ -145,6 +162,7 @@ export const LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL = 100000000
 export const LEGEND_ORIENTATION_THRESHOLD_DEFAULT = LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL
 
 export const LEGEND_COLORIZE_ROWS_DEFAULT = true
+export const LEGEND_HIDE_DEFAULT = false
 
 export const QUERY_BUILDER_MODE = 'builder'
 export const SCRIPT_EDITOR_MODE = 'advanced'

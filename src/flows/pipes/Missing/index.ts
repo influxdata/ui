@@ -8,5 +8,8 @@ export default register => {
     priority: 1,
     component: View,
     initial: {},
+    generateFlux: (_data, _create, append, _withSideEffects) => {
+      append()
+    },
   })
 }

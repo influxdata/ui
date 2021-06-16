@@ -38,8 +38,16 @@ import {
   STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM,
   STATIC_LEGEND_HEIGHT_RATIO_MINIMUM,
   STATIC_LEGEND_HEIGHT_RATIO_STEP,
-  STATIC_LEGEND_HIDE_DEFAULT,
+  STATIC_LEGEND_SHOW_DEFAULT,
 } from 'src/visualization/constants'
+
+// Metrics
+import {event} from 'src/cloud/utils/reporting'
+
+// Styles
+import 'src/visualization/components/internal/StaticLegend.scss'
+
+const eventPrefix = 'visualization.customize.staticlegend'
 
 interface Props extends VisualizationOptionProps {
   properties:
@@ -51,12 +59,12 @@ interface Props extends VisualizationOptionProps {
 const StaticLegend: FC<Props> = ({properties, update}) => {
   const {
     staticLegend = {
-      hide: STATIC_LEGEND_HIDE_DEFAULT,
+      show: STATIC_LEGEND_SHOW_DEFAULT,
     } as StaticLegend,
   } = properties
   const {valueAxis} = staticLegend
-  const {heightRatio = STATIC_LEGEND_HEIGHT_RATIO_DEFAULT, hide} = staticLegend
-  const [showOptions, setShowOptions] = useState<boolean>(!hide)
+  const {heightRatio = STATIC_LEGEND_HEIGHT_RATIO_DEFAULT, show} = staticLegend
+  const [showOptions, setShowOptions] = useState<boolean>(show)
 
   if (!isFlagEnabled('staticLegend')) {
     return null
@@ -67,8 +75,11 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
     update({
       staticLegend: {
         ...staticLegend,
-        hide: true,
+        show: false,
       },
+    })
+    event(`${eventPrefix}.hide`, {
+      type: properties.type,
     })
   }
 
@@ -77,13 +88,16 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
     update({
       staticLegend: {
         ...staticLegend,
-        hide: false,
+        show: true,
       },
+    })
+    event(`${eventPrefix}.show`, {
+      type: properties.type,
     })
   }
 
-  const handleSetHeightRatio = (event: ChangeEvent<HTMLInputElement>): void => {
-    const value = convertUserInputToNumOrNaN(event)
+  const handleSetHeightRatio = (e: ChangeEvent<HTMLInputElement>): void => {
+    const value = convertUserInputToNumOrNaN(e)
 
     if (isNaN(value) || value < STATIC_LEGEND_HEIGHT_RATIO_MINIMUM) {
       update({
@@ -92,9 +106,17 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
           heightRatio: STATIC_LEGEND_HEIGHT_RATIO_MINIMUM,
         },
       })
+      event(`${eventPrefix}.heightRatio`, {
+        type: properties.type,
+        heightRatio: STATIC_LEGEND_HEIGHT_RATIO_MINIMUM,
+      })
     } else {
       update({
         staticLegend: {...staticLegend, heightRatio: value},
+      })
+      event(`${eventPrefix}.heightRatio`, {
+        type: properties.type,
+        heightRatio: value,
       })
     }
   }
@@ -113,7 +135,7 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
       direction={FlexDirection.Column}
       margin={ComponentSize.Large}
       alignItems={AlignItems.FlexStart}
-      style={{marginTop: 18}}
+      className="static-legend-options"
       testID="static-legend-options"
     >
       <Form.Element label="Static Legend" className="static-legend-options">
@@ -154,13 +176,13 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
                   tabIndex={1}
                   value="y"
                   id="latest-y-axis"
+                  className="latest-y-axis"
                   name="valueAxis"
                   checked={valueAxis !== 'x'}
                   onChange={handleSetValueAxis}
                   type={InputToggleType.Radio}
                   size={ComponentSize.ExtraSmall}
                   appearance={Appearance.Outline}
-                  style={{marginTop: '1em', marginBottom: '0.5em'}}
                 >
                   <InputLabel
                     active={valueAxis !== 'x'}
@@ -173,13 +195,13 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
                   tabIndex={2}
                   value="x"
                   id="latest-x-axis"
+                  className="latest-x-axis"
                   name="valueAxis"
                   checked={valueAxis === 'x'}
                   onChange={handleSetValueAxis}
                   type={InputToggleType.Radio}
                   size={ComponentSize.ExtraSmall}
                   appearance={Appearance.Outline}
-                  style={{marginBottom: '1em'}}
                 >
                   <InputLabel
                     active={valueAxis === 'x'}
@@ -189,6 +211,7 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
                   </InputLabel>
                 </Toggle>
                 <Form.Element
+                  className="static-legend-height-slider"
                   label={convertHeightRatioToPercentage(heightRatio)}
                 >
                   <RangeSlider

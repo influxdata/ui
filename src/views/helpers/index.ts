@@ -1,6 +1,3 @@
-// Libraries
-import {InfluxColors} from '@influxdata/clockface'
-
 // Constants
 import {INFERNO, NINETEEN_EIGHTY_FOUR} from '@influxdata/giraffe'
 import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
@@ -9,10 +6,12 @@ import {
   LEGEND_OPACITY_DEFAULT,
   LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
   LEGEND_COLORIZE_ROWS_DEFAULT,
+  LEGEND_HIDE_DEFAULT,
 } from 'src/shared/constants'
 import {
   DEFAULT_GAUGE_COLORS,
   DEFAULT_THRESHOLDS_LIST_COLORS,
+  DEFAULT_THRESHOLDS_GEO_COLORS,
   DEFAULT_THRESHOLDS_TABLE_COLORS,
 } from 'src/shared/constants/thresholds'
 import {DEFAULT_CHECK_EVERY} from 'src/alerting/constants'
@@ -52,7 +51,7 @@ import {
 import {LineHoverDimension} from '@influxdata/giraffe/dist/types'
 import {
   STATIC_LEGEND_HEIGHT_RATIO_DEFAULT,
-  STATIC_LEGEND_HIDE_DEFAULT,
+  STATIC_LEGEND_SHOW_DEFAULT,
   STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
 } from 'src/visualization/constants'
 
@@ -85,11 +84,12 @@ const legendProps = {
   legendOpacity: LEGEND_OPACITY_DEFAULT,
   legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
   legendColorizeRows: LEGEND_COLORIZE_ROWS_DEFAULT,
+  legendHide: LEGEND_HIDE_DEFAULT,
 }
 
 const staticLegend = {
   heightRatio: STATIC_LEGEND_HEIGHT_RATIO_DEFAULT,
-  hide: STATIC_LEGEND_HIDE_DEFAULT,
+  show: STATIC_LEGEND_SHOW_DEFAULT,
   widthRatio: STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
 } as StaticLegend
 
@@ -386,7 +386,6 @@ const NEW_VIEW_CREATORS = {
       type: 'geo',
       shape: 'chronograf-v2',
       queries: [defaultViewQuery()],
-      colors: [],
       note: '',
       showNoteWhenEmpty: false,
       center: {
@@ -402,11 +401,7 @@ const NEW_VIEW_CREATORS = {
           type: 'pointMap',
           colorDimension: {label: 'Value'},
           colorField: '_value',
-          colors: [
-            {type: 'min', hex: InfluxColors.Star},
-            {value: 50, hex: InfluxColors.Star},
-            {type: 'max', hex: InfluxColors.Star},
-          ],
+          colors: DEFAULT_THRESHOLDS_GEO_COLORS,
           isClustered: false,
         },
       ],

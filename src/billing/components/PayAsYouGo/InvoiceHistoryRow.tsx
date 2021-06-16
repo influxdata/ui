@@ -16,12 +16,12 @@ const getPreviousMonth = date => {
 }
 
 const InvoiceHistoryRow: FC<Props> = ({
-  invoice: {status, amount, targetDate, filesId},
+  invoice: {status, amount, targetDate, id},
 }) => {
   const invoiceName = `${getPreviousMonth(new Date(targetDate))} ${new Date(
     targetDate
   ).getFullYear()} Invoice`
-  const link = `/billing/invoices/${filesId}`
+  const link = `/api/v2/quartz/billing/invoices/${id}`
   const statusClassName = classnames('invoice-details invoice-status', {
     ['paid']: status === 'Paid',
   })
@@ -33,10 +33,6 @@ const InvoiceHistoryRow: FC<Props> = ({
       justifyContent={JustifyContent.SpaceBetween}
       stretchToFitWidth={true}
     >
-      {/*
-        TODO(ariel): see if this is necessary or if we can link to the row internally:
-        https://github.com/influxdata/ui/issues/1405
-      */}
       <a href={link} target="_blank" rel="noreferrer">
         {invoiceName}
       </a>

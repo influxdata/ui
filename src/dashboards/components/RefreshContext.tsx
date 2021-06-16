@@ -9,6 +9,8 @@ import {CustomTimeRange, AutoRefreshStatus} from 'src/types'
 import {
   setAutoRefreshDuration,
   setInactivityTimeout,
+  setAutoRefreshInterval,
+  setAutoRefreshStatus,
 } from 'src/shared/actions/autoRefresh'
 import {getCurrentDashboardId} from 'src/dashboards/selectors'
 
@@ -23,6 +25,7 @@ export interface AutoRefreshState {
   refreshMilliseconds: {
     status: AutoRefreshStatus
     interval: number
+    label: string
   }
   infiniteDuration: boolean
 }
@@ -59,6 +62,7 @@ export const createAutoRefreshInitialState = (
     refreshMilliseconds: {
       interval: 60000,
       status: AutoRefreshStatus.Active,
+      label: '60s',
     },
     infiniteDuration: false,
     ...override,
@@ -70,6 +74,8 @@ const autoRefreshReducer = (
   action
 ) => {
   switch (action.type) {
+    case 'SET_REFRESH_MILLISECONDS':
+      return {...state, refreshMilliseconds: action.refreshMilliseconds}
     case 'SET_DURATION':
       return {...state, duration: action.duration}
     case 'SET_INACTIVITY_TIMEOUT':
@@ -99,7 +105,26 @@ const AutoRefreshContextProvider: FC = ({children}) => {
   const reduxDispatch = useDispatch()
 
   const setAutoRefreshSettings = useCallback(() => {
-    if (state.inactivityTimeout !== 'None') {
+    reduxDispatch(
+      setAutoRefreshInterval(
+        currentDashboardId,
+        state.refreshMilliseconds.interval,
+        state.refreshMilliseconds.label
+      )
+    )
+
+    if (state.refreshMilliseconds.interval === 0) {
+      reduxDispatch(
+        setAutoRefreshStatus(currentDashboardId, AutoRefreshStatus.Paused)
+      )
+      return
+    }
+
+    reduxDispatch(
+      setAutoRefreshStatus(currentDashboardId, AutoRefreshStatus.Active)
+    )
+
+    if (state.inactivityTimeout !== 'Never') {
       const cutoff = calculateTimeout(
         state.inactivityTimeout,
         state.inactivityTimeoutCategory
@@ -114,6 +139,7 @@ const AutoRefreshContextProvider: FC = ({children}) => {
     state.duration,
     state.inactivityTimeout,
     state.inactivityTimeoutCategory,
+    state.refreshMilliseconds,
   ])
 
   return (

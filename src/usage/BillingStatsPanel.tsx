@@ -1,5 +1,5 @@
+// Libraries
 import React, {FC, useContext} from 'react'
-
 import {
   AlignItems,
   Appearance,
@@ -11,9 +11,12 @@ import {
   PopoverPosition,
   QuestionMarkTooltip,
 } from '@influxdata/clockface'
-
 import GraphTypeSwitcher from 'src/usage/GraphTypeSwitcher'
 import {UsageContext} from 'src/usage/context/usage'
+import {FromFluxResult} from '@influxdata/giraffe'
+
+// Types
+import {UsageVector, InternalFromFluxResult} from 'src/types'
 
 const graphInfo = [
   {
@@ -50,7 +53,7 @@ const graphInfo = [
   },
 ]
 const BillingStatsPanel: FC = () => {
-  const {billingDateTime, billingStats} = useContext(UsageContext)
+  const {billingDateTime, billingStats, usageVectors} = useContext(UsageContext)
 
   const today = new Date().toISOString()
   const dateRange = `${billingDateTime} UTC to ${today} UTC`
@@ -85,7 +88,7 @@ const BillingStatsPanel: FC = () => {
               <br />
               <br />
               <a
-                href="https://v2.docs.influxdata.com/v2.0/account-management/data-usage/"
+                href="https://docs.influxdata.com/influxdb/cloud/account-management/data-usage/"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -100,13 +103,34 @@ const BillingStatsPanel: FC = () => {
         margin={ComponentSize.Small}
         alignItems={AlignItems.Stretch}
         testID="billing-stats--graphs"
+        className="billing-stats--graph-body"
       >
-        {billingStats?.map((csv: string, i: number) => {
+        {usageVectors?.map((vector: UsageVector) => {
+          // Find the matching graphInfo for the usage vector
+          const graph = graphInfo.find(g => g.column === vector.fluxKey)
+          // Find the matching CSV for the usageVector
+          const fromFluxResult = (billingStats?.find(
+            (result: FromFluxResult) => {
+              const {table, error} = result
+              if (!table.length || error) {
+                return false
+              }
+              return table.columnKeys.includes(vector.fluxKey)
+            }
+          ) ?? {table: {}}) as InternalFromFluxResult
+
+          // update the CSV's _value column to the fluxKey since Giraffe only displays the `_value` of the parsed results
+          if (fromFluxResult.table?.columns) {
+            fromFluxResult.table.columns['_value'] =
+              fromFluxResult.table.columns[vector.fluxKey]
+          }
+
           return (
             <GraphTypeSwitcher
-              key={csv}
-              graphInfo={graphInfo[i]}
-              csv={csv.trim()}
+              key={vector.fluxKey}
+              graphInfo={graph}
+              fromFluxResult={fromFluxResult}
+              length={usageVectors.length}
             />
           )
         })}

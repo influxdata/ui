@@ -8,5 +8,9 @@
   "defaultCommandTimeout": 10000,
   "videoUploadOnPasses": false,
   "chromeWebSecurity": false,
-  "blockHosts": ["www.google-analytics.com", "www.googletagmanager.com"]
+  "blockHosts": [
+    "www.google-analytics.com",
+    "www.googletagmanager.com",
+    "www.honeybadger.io"
+  ]
 }

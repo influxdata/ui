@@ -17,6 +17,11 @@ export const BAND_LINE_OPACITY = 0.7
 export const BAND_LINE_WIDTH = 3
 export const BAND_SHADE_OPACITY = 0.3
 
+export enum LegendDisplayStatus {
+  HIDE = 'hide',
+  SHOW = 'show',
+}
+
 export const LEGEND_OPACITY_MINIMUM = 0.2
 export const LEGEND_OPACITY_MAXIMUM = 1.0
 export const LEGEND_OPACITY_DEFAULT = LEGEND_OPACITY_MAXIMUM
@@ -32,7 +37,7 @@ export const STATIC_LEGEND_HEIGHT_RATIO_MINIMUM = 0.05
 export const STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM = 0.8
 export const STATIC_LEGEND_HEIGHT_RATIO_DEFAULT = 0.2
 export const STATIC_LEGEND_HEIGHT_RATIO_STEP = 0.01
-export const STATIC_LEGEND_HIDE_DEFAULT = true
+export const STATIC_LEGEND_SHOW_DEFAULT = false
 export const STATIC_LEGEND_WIDTH_RATIO_DEFAULT = 1.0
 
 export const STATIC_LEGEND_STYLING = {

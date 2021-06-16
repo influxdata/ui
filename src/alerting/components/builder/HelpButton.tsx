@@ -4,10 +4,13 @@ import React, {FunctionComponent} from 'react'
 // Components
 import {Button} from '@influxdata/clockface'
 
+// Constants
+import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
+
 const HelpButton: FunctionComponent = () => {
   const handleClick = () => {
     const newTab = window.open(
-      'https://v2.docs.influxdata.com/v2.0/monitor-alert/checks/create/#configure-the-check'
+      `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/monitor-alert/checks/create/#configure-the-check`
     )
     newTab.focus()
   }

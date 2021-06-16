@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {FC, useContext, useState} from 'react'
 
 import {
   Overlay,
@@ -17,14 +17,26 @@ import {
 } from '@influxdata/clockface'
 
 // Utils
-import {useBilling} from 'src/billing/components/BillingPage'
-import {updateBillingSettings} from 'src/billing/thunks'
+import {BillingContext} from 'src/billing/context/billing'
+
+// Constants
+import {MINIMUM_BALANCE_THRESHOLD} from 'src/shared/constants'
 
 // Types
 import {BillingNotifySettings} from 'src/types/billing'
 
-const NotificationSettingsOverlay = ({onHideOverlay, isOverlayVisible}) => {
-  const [{billingSettings}, dispatch] = useBilling()
+type Props = {
+  isOverlayVisible: boolean
+  onHideOverlay: () => void
+}
+
+const NotificationSettingsOverlay: FC<Props> = ({
+  onHideOverlay,
+  isOverlayVisible,
+}) => {
+  const {billingSettings, handleUpdateBillingSettings} = useContext(
+    BillingContext
+  )
   const [isNotifyActive, setIsNotifyActive] = useState(billingSettings.isNotify)
   const [balanceThreshold, setBalanceThreshold] = useState(
     billingSettings.balanceThreshold
@@ -33,10 +45,10 @@ const NotificationSettingsOverlay = ({onHideOverlay, isOverlayVisible}) => {
   const onSubmitThreshold = () => {
     const settings = {
       notifyEmail,
-      balanceThreshold: balanceThreshold,
+      balanceThreshold,
       isNotify: isNotifyActive,
     } as BillingNotifySettings
-    updateBillingSettings(dispatch, settings)
+    handleUpdateBillingSettings(settings)
     onHideOverlay()
   }
 
@@ -55,7 +67,9 @@ const NotificationSettingsOverlay = ({onHideOverlay, isOverlayVisible}) => {
   }
 
   const saveStatus =
-    balanceThreshold < 10 ? ComponentStatus.Disabled : ComponentStatus.Default
+    balanceThreshold < MINIMUM_BALANCE_THRESHOLD
+      ? ComponentStatus.Disabled
+      : ComponentStatus.Default
 
   return (
     <Overlay visible={isOverlayVisible}>

@@ -63,7 +63,6 @@ COPY ./.npmrc ./
 COPY ./.prettierrc.json ./
 COPY ./jest.config.js ./
 COPY ./jestSetup.ts ./
-COPY ./testSetup.ts ./
 COPY ./tsconfig.test.json ./
 COPY ./cypress.json ./
 

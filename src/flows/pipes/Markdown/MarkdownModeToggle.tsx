@@ -1,31 +1,26 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
 
 // Components
 import {SelectGroup} from '@influxdata/clockface'
+import {PipeContext} from 'src/flows/context/pipe'
 
-// Types
-import {MarkdownMode} from './'
+const MarkdownModeToggle: FC = () => {
+  const {data, update} = useContext(PipeContext)
 
-interface Props {
-  mode: MarkdownMode
-  onToggleMode: (mode: MarkdownMode) => void
-}
-
-const MarkdownModeToggle: FC<Props> = ({mode, onToggleMode}) => {
   return (
     <SelectGroup>
       <SelectGroup.Option
-        active={mode === 'edit'}
-        onClick={onToggleMode}
+        active={data.mode === 'edit'}
+        onClick={() => update({mode: 'edit'})}
         value="edit"
         id="edit"
       >
         Edit
       </SelectGroup.Option>
       <SelectGroup.Option
-        active={mode === 'preview'}
-        onClick={onToggleMode}
+        active={data.mode === 'preview'}
+        onClick={() => update({mode: 'preview'})}
         value="preview"
         id="preview"
       >

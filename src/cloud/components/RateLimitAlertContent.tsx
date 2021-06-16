@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
-import {get, find} from 'lodash'
+import {useDispatch, useSelector} from 'react-redux'
 import classnames from 'classnames'
 
 // Components
@@ -14,39 +13,26 @@ import {
 } from '@influxdata/clockface'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 
-// Constants
-import {
-  HIDE_UPGRADE_CTA_KEY,
-  PAID_ORG_HIDE_UPGRADE_SETTING,
-} from 'src/cloud/constants'
-
 // Actions
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+import {shouldShowUpgradeButton} from 'src/me/selectors'
 
-// Types
-import {AppState, OrgSetting} from 'src/types'
-
-interface OwnProps {
+interface Props {
   className?: string
 }
 
-type ReduxProps = ConnectedProps<typeof connector>
-
-const RateLimitAlertContent: FC<OwnProps & ReduxProps> = ({
-  className,
-  showUpgrade,
-  onShowOverlay,
-  onDismissOverlay,
-}) => {
+const RateLimitAlertContent: FC<Props> = ({className}) => {
+  const dispatch = useDispatch()
+  const showUpgradeButton = useSelector(shouldShowUpgradeButton)
   const rateLimitAlertContentClass = classnames('rate-alert--content', {
     [`${className}`]: className,
   })
 
   const handleShowOverlay = () => {
-    onShowOverlay('rate-limit', null, onDismissOverlay)
+    dispatch(showOverlay('rate-limit', null, dispatch(dismissOverlay)))
   }
 
-  if (showUpgrade) {
+  if (showUpgradeButton) {
     return (
       <div
         className={`${rateLimitAlertContentClass} rate-alert--content__free`}
@@ -103,26 +89,4 @@ const RateLimitAlertContent: FC<OwnProps & ReduxProps> = ({
   )
 }
 
-const mstp = (state: AppState) => {
-  const settings = get(state, 'cloud.orgSettings.settings', [])
-  const hideUpgradeButtonSetting = find(
-    settings,
-    (setting: OrgSetting) => setting.key === HIDE_UPGRADE_CTA_KEY
-  )
-  if (
-    !hideUpgradeButtonSetting ||
-    hideUpgradeButtonSetting.value !== PAID_ORG_HIDE_UPGRADE_SETTING.value
-  ) {
-    return {showUpgrade: true}
-  }
-  return {showUpgrade: false}
-}
-
-const mdtp = {
-  onShowOverlay: showOverlay,
-  onDismissOverlay: dismissOverlay,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(RateLimitAlertContent)
+export default RateLimitAlertContent

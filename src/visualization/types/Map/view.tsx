@@ -1,12 +1,12 @@
 // Libraries
 import React, {FC, useEffect, useState} from 'react'
 import {Config, Plot} from '@influxdata/giraffe'
-import {RemoteDataState, InfluxColors} from '@influxdata/clockface'
+import {RemoteDataState} from '@influxdata/clockface'
 
 // Types
 import {GeoViewProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
-
+import {DEFAULT_THRESHOLDS_GEO_COLORS} from 'src/shared/constants/thresholds'
 // Utils
 import {
   getDetectCoordinatingFields,
@@ -120,22 +120,14 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
         type: 'pointMap',
         colorDimension: {label: 'Value'},
         colorField: '_value',
-        colors: [
-          {type: 'min', hex: InfluxColors.Star, id: '0'},
-          {value: 50, hex: InfluxColors.Star, id: '1'},
-          {type: 'max', hex: InfluxColors.Star, id: '2'},
-        ],
+        colors: DEFAULT_THRESHOLDS_GEO_COLORS,
         isClustered: false,
       },
     ]
   }
 
   if (!layers[0].colors[0].id) {
-    layersOpts[0].colors = [
-      {value: 0, type: 'min', hex: InfluxColors.Star, id: '0', name: 'star'},
-      {value: 5, hex: InfluxColors.Star, id: '1', name: 'star'},
-      {value: 1, type: 'max', hex: InfluxColors.Star, id: '2', name: 'star'},
-    ]
+    layersOpts[0].colors = DEFAULT_THRESHOLDS_GEO_COLORS
   }
 
   let zoomOpt = zoom

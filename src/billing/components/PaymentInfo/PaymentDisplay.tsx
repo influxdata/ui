@@ -1,12 +1,10 @@
-import React, {FC} from 'react'
-import {useBilling} from 'src/billing/components/BillingPage'
+import React, {FC, useContext} from 'react'
+import {BillingContext} from 'src/billing/context/billing'
 
 const PaymentDisplay: FC = () => {
-  const [
-    {
-      billingInfo: {paymentMethod},
-    },
-  ] = useBilling()
+  const {
+    billingInfo: {paymentMethod},
+  } = useContext(BillingContext)
 
   return (
     <div data-testid="payment-display">

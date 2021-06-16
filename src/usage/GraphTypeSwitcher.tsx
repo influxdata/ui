@@ -1,9 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
-import classnames from 'classnames'
 import {useSelector} from 'react-redux'
 import {Panel, ComponentSize, InfluxColors} from '@influxdata/clockface'
-import {fromFlux} from '@influxdata/giraffe'
 
 // Components
 import {View} from 'src/visualization'
@@ -16,17 +14,19 @@ import {
   SingleStatViewProperties,
   RemoteDataState,
   XYViewProperties,
+  InternalFromFluxResult,
 } from 'src/types'
 
 interface OwnProps {
   graphInfo: any
-  csv: string
+  fromFluxResult: InternalFromFluxResult
+  length?: number
 }
 
 const GENERIC_PROPERTY_DEFAULTS = {
   colors: [],
   queries: [],
-  note: 'No Data to Display',
+  note: '',
   showNoteWhenEmpty: true,
   prefix: '',
   suffix: '',
@@ -34,9 +34,11 @@ const GENERIC_PROPERTY_DEFAULTS = {
   tickSuffix: '',
 }
 
-const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv}) => {
-  const giraffeResult = fromFlux(csv)
-
+const GraphTypeSwitcher: FC<OwnProps> = ({
+  graphInfo,
+  fromFluxResult,
+  length = 1,
+}) => {
   const timeRange = useSelector(getTimeRangeWithTimezone)
 
   const singleStatProperties: SingleStatViewProperties = {
@@ -44,7 +46,7 @@ const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv}) => {
     type: 'single-stat',
     shape: 'chronograf-v2',
     suffix: ` ${graphInfo?.units ?? ''}`,
-    decimalPlaces: {isEnforced: true, digits: 2},
+    decimalPlaces: {isEnforced: false, digits: 0},
   }
 
   const xyProperties: XYViewProperties = {
@@ -59,9 +61,9 @@ const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv}) => {
     geom: 'line',
   }
 
-  const graphTypeClassname = classnames('panel-body--size', {
-    'usage-plot': graphInfo?.type === 'sparkline',
-  })
+  const isXy = graphInfo?.type === 'xy'
+
+  const error = fromFluxResult?.table?.columns?.error?.data?.[0]
 
   return (
     <Panel
@@ -72,15 +74,16 @@ const GraphTypeSwitcher: FC<OwnProps> = ({graphInfo, csv}) => {
       <Panel.Header size={ComponentSize.ExtraSmall}>
         <h5>{graphInfo?.title}</h5>
       </Panel.Header>
-      <Panel.Body className={graphTypeClassname}>
+      <Panel.Body
+        className="panel-body--size"
+        style={{height: isXy ? 250 : 300 / length}}
+      >
         <View
-          loading={RemoteDataState.Done}
-          error=""
+          loading={error ? RemoteDataState.Error : RemoteDataState.Done}
+          error={`${error ?? ''}`}
           isInitial={false}
-          properties={
-            graphInfo?.type === 'stat' ? singleStatProperties : xyProperties
-          }
-          result={giraffeResult}
+          properties={isXy ? xyProperties : singleStatProperties}
+          result={fromFluxResult}
           timeRange={timeRange}
         />
       </Panel.Body>

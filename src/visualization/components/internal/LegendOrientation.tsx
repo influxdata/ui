@@ -1,8 +1,10 @@
 // Libraries
-import React, {ChangeEvent, FC} from 'react'
+import React, {ChangeEvent, CSSProperties, FC} from 'react'
+import {InfluxColors} from '@influxdata/clockface'
 
 // Utils
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
+import {upperFirst} from 'src/shared/utils/upperFirst'
 
 // Components
 import {
@@ -39,9 +41,36 @@ import {
   LEGEND_OPACITY_STEP,
   LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL,
   LEGEND_ORIENTATION_THRESHOLD_VERTICAL,
+  LegendDisplayStatus,
 } from 'src/visualization/constants'
 
-interface Props extends VisualizationOptionProps {
+// Metrics
+import {event} from 'src/cloud/utils/reporting'
+
+// Styles
+import 'src/visualization/components/internal/LegendOrientation.scss'
+
+interface HoverLegendToggleProps {
+  legendHide: boolean
+  handleSetHoverLegendHide: () => void
+}
+
+interface OrientationToggleProps {
+  graphType: string
+  legendOrientation: number
+  handleSetOrientation: (threshold: number) => void
+}
+
+interface OpacitySliderProps {
+  legendOpacity: number
+  handleSetOpacity: (event: ChangeEvent<HTMLInputElement>) => void
+}
+
+interface ColorizeRowsToggleProps {
+  legendColorizeRows: boolean
+  handleSetColorization: () => void
+}
+interface LegendOrientationProps extends VisualizationOptionProps {
   properties:
     | BandViewProperties
     | XYViewProperties
@@ -52,49 +81,203 @@ interface Props extends VisualizationOptionProps {
     | ScatterViewProperties
 }
 
-/**
- *  The LegendOrientation Component consists of three properties:
- *  1.  The Orientation itself (horizontal vs. vertical); horizontal is the default
- *  2.  opacity of the legend (ranges from 20% to 100%); default is 100%
- *  3.  row colorization:  does each row have colored text (the default), or does each row have a dot of color prefacing it, with
- *  text all the same default (foreground) color
- *
- *  The above is what the user sees.
- *
- *  what is actually happening:
- *
- *    1.  Legend Orientation.  Default is horizontal
- *          behind the scenes it is a 'rotation threshold'.  if the number of items is above the threshold, then
- *          the legend is displayed vertically (each line is a column); if the number of items is below the threshold, then the legend is
- *          displayed horizontally (each line is a row).  therefore, since the default is horizontal, the numbers being set are very high
- *          for horizontal (high enough that the database would thrash out/throttle before it got that high), or low (0 for vertical, since
- *          to display something it has to be higher than zero).  The default number itself has changed, so some users may see their graphs flip
- *          (before; without the feature flag enabled, the default was hard-coded to 10; so graphs with more than 10 lines of  data in the tooltip
- *          were vertical)
- *
- *    2.  Legend Opacity.  The actual number is between the minimum .2 and the maximum 1.0; but we are displaying it as a matter of percentage
- *    3.  Row Colorization.  This is the simplest.  just a true/false flag, it is true by default.
- */
-const LegendOrientation: FC<Props> = ({properties, update}) => {
-  const legendOpacity = properties?.legendOpacity
-  const legendOrientation = properties?.legendOrientationThreshold
+const eventPrefix = 'visualization.customize'
+
+const getToggleColor = (toggle: boolean): CSSProperties => {
+  if (toggle) {
+    return {color: InfluxColors.Cloud}
+  }
+  return {color: InfluxColors.Sidewalk}
+}
+
+const HoverLegendToggle: FC<HoverLegendToggleProps> = ({
+  legendHide,
+  handleSetHoverLegendHide,
+}) => {
+  const getHoverLegendHideStatus = (legendHide: boolean): string => {
+    if (legendHide) {
+      return upperFirst(LegendDisplayStatus.HIDE)
+    }
+    return upperFirst(LegendDisplayStatus.SHOW)
+  }
+
+  return (
+    <FlexBox
+      direction={FlexDirection.Row}
+      alignItems={AlignItems.Center}
+      margin={ComponentSize.Medium}
+      stretchToFitWidth={true}
+      className="hover-legend-toggle"
+      testID="hover-legend-toggle"
+    >
+      <SlideToggle
+        active={!legendHide}
+        size={ComponentSize.ExtraSmall}
+        onChange={handleSetHoverLegendHide}
+      />
+      <InputLabel style={getToggleColor(!legendHide)}>
+        Hover Legend {getHoverLegendHideStatus(legendHide)}
+      </InputLabel>
+    </FlexBox>
+  )
+}
+
+const OrientationToggle: FC<OrientationToggleProps> = ({
+  graphType,
+  legendOrientation,
+  handleSetOrientation,
+}) => {
+  const setOrientation = (orientation: string): void => {
+    if (orientation === 'vertical') {
+      handleSetOrientation(LEGEND_ORIENTATION_THRESHOLD_VERTICAL)
+    } else {
+      handleSetOrientation(LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL)
+    }
+    event(`${eventPrefix}.legend.orientation.${orientation}`, {
+      type: graphType,
+    })
+  }
+  return (
+    <FlexBox
+      direction={FlexDirection.Column}
+      margin={ComponentSize.Large}
+      alignItems={AlignItems.FlexStart}
+      className="legend-orientation-toggle"
+    >
+      <InputLabel id="legend-orientation-label">Orientation</InputLabel>
+      <Toggle
+        tabIndex={1}
+        value="horizontal"
+        name="legendOr"
+        className="legend-orientation--horizontal"
+        id="legend-orientation--horizontal"
+        checked={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL}
+        onChange={setOrientation}
+        type={InputToggleType.Radio}
+        size={ComponentSize.ExtraSmall}
+        color={ComponentColor.Primary}
+        appearance={Appearance.Outline}
+      >
+        <InputLabel
+          active={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL}
+          htmlFor="legend-orientation--horizontal"
+        >
+          Horizontal
+        </InputLabel>
+      </Toggle>
+      <Toggle
+        tabIndex={2}
+        value="vertical"
+        className="legend-orientation--vertical"
+        id="legend-orientation--vertical"
+        name="lengendOr"
+        checked={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_VERTICAL}
+        onChange={setOrientation}
+        type={InputToggleType.Radio}
+        size={ComponentSize.ExtraSmall}
+        color={ComponentColor.Primary}
+        appearance={Appearance.Outline}
+      >
+        <InputLabel
+          active={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_VERTICAL}
+          htmlFor="legend-orientation--vertical"
+        >
+          Vertical
+        </InputLabel>
+      </Toggle>
+    </FlexBox>
+  )
+}
+
+const OpacitySlider: FC<OpacitySliderProps> = ({
+  legendOpacity,
+  handleSetOpacity,
+}) => {
+  // without the toFixed(0) sometimes you
+  // can get numbers like 45.000009% which we want to avoid
+  const percentLegendOpacity = (legendOpacity * 100).toFixed(0)
+  return (
+    <Form.Element
+      className="legend-opacity-slider"
+      label={`Opacity: ${percentLegendOpacity}%`}
+    >
+      <RangeSlider
+        max={LEGEND_OPACITY_MAXIMUM}
+        min={LEGEND_OPACITY_MINIMUM}
+        step={LEGEND_OPACITY_STEP}
+        value={legendOpacity}
+        onChange={handleSetOpacity}
+        hideLabels={true}
+      />
+    </Form.Element>
+  )
+}
+
+const ColorizeRowsToggle: FC<ColorizeRowsToggleProps> = ({
+  legendColorizeRows,
+  handleSetColorization,
+}) => {
+  return (
+    <FlexBox
+      direction={FlexDirection.Row}
+      alignItems={AlignItems.Center}
+      margin={ComponentSize.Medium}
+      stretchToFitWidth={true}
+      className="legend-colorize-rows-toggle"
+    >
+      <SlideToggle
+        active={legendColorizeRows}
+        size={ComponentSize.ExtraSmall}
+        onChange={handleSetColorization}
+      />
+      <InputLabel style={getToggleColor(legendColorizeRows)}>
+        Colorize Rows
+      </InputLabel>
+    </FlexBox>
+  )
+}
+
+const LegendOrientation: FC<LegendOrientationProps> = ({
+  properties,
+  update,
+}) => {
+  const handleSetHoverLegendHide = (): void => {
+    update({
+      legendHide: !properties.legendHide,
+    })
+    const metricValue = properties.legendHide
+      ? LegendDisplayStatus.HIDE
+      : LegendDisplayStatus.SHOW
+    event(`${eventPrefix}.hoverLegend.${metricValue}`, {
+      type: properties.type,
+    })
+  }
 
   const handleSetOrientation = (threshold: number): void => {
     update({
       legendOrientationThreshold: threshold,
     })
+    // eventing is done by the consuming component because there are only 2 values
   }
 
-  const handleSetOpacity = (event: ChangeEvent<HTMLInputElement>): void => {
-    const value = convertUserInputToNumOrNaN(event)
+  const handleSetOpacity = (e: ChangeEvent<HTMLInputElement>): void => {
+    const value = convertUserInputToNumOrNaN(e)
 
     if (isNaN(value) || value < LEGEND_OPACITY_MINIMUM) {
       update({
         legendOpacity: LEGEND_OPACITY_MAXIMUM,
       })
+      event(`${eventPrefix}.legend.opacity`, {
+        type: properties.type,
+        opacity: LEGEND_OPACITY_MAXIMUM,
+      })
     } else {
       update({
         legendOpacity: value,
+      })
+      event(`${eventPrefix}.legend.opacity`, {
+        type: properties.type,
+        opacity: value,
       })
     }
   }
@@ -103,96 +286,39 @@ const LegendOrientation: FC<Props> = ({properties, update}) => {
     update({
       legendColorizeRows: !properties.legendColorizeRows,
     })
+    event(
+      `${eventPrefix}.legend.colorizeRows.${Boolean(
+        properties.legendColorizeRows
+      )}`,
+      {
+        type: properties.type,
+      }
+    )
   }
-
-  const toggleStyle = {marginTop: 4}
-  const toggleLabelStyle = {color: '#999dab'}
-
-  // without the toFixed(0) sometimes you
-  // can get numbers like 45.000009% which we want to avoid
-  const percentLegendOpacity = (legendOpacity * 100).toFixed(0)
-
-  const orientationToggle = (
-    <FlexBox
-      direction={FlexDirection.Column}
-      margin={ComponentSize.Large}
-      alignItems={AlignItems.FlexStart}
-      style={{marginBottom: 18}}
-    >
-      <InputLabel style={toggleLabelStyle}>Legend Orientation</InputLabel>
-      <Toggle
-        tabIndex={1}
-        value="horizontal"
-        id="horizontal-legend-orientation"
-        name="legendOr"
-        checked={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL}
-        onChange={() =>
-          handleSetOrientation(LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL)
-        }
-        type={InputToggleType.Radio}
-        size={ComponentSize.ExtraSmall}
-        color={ComponentColor.Primary}
-        appearance={Appearance.Outline}
-        style={{marginBottom: 6}}
-      >
-        <InputLabel
-          active={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL}
-          htmlFor="horizontal-legend-orientation"
-        >
-          Horizontal
-        </InputLabel>
-      </Toggle>
-      <Toggle
-        tabIndex={2}
-        value="vertical"
-        id="vertical-legend-orientation"
-        name="lengendOr"
-        checked={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_VERTICAL}
-        onChange={() =>
-          handleSetOrientation(LEGEND_ORIENTATION_THRESHOLD_VERTICAL)
-        }
-        type={InputToggleType.Radio}
-        size={ComponentSize.ExtraSmall}
-        color={ComponentColor.Primary}
-        appearance={Appearance.Outline}
-      >
-        <InputLabel
-          active={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_VERTICAL}
-          htmlFor="vertical-legend-orientation"
-        >
-          Vertical
-        </InputLabel>
-      </Toggle>
-    </FlexBox>
-  )
 
   return (
     <>
-      {orientationToggle}
-      <Form.Element label={`Opacity: ${percentLegendOpacity}%`}>
-        <RangeSlider
-          max={LEGEND_OPACITY_MAXIMUM}
-          min={LEGEND_OPACITY_MINIMUM}
-          step={LEGEND_OPACITY_STEP}
-          value={legendOpacity}
-          onChange={handleSetOpacity}
-          hideLabels={true}
+      {properties.type === 'xy' ||
+      properties.type === 'line-plus-single-stat' ||
+      properties.type === 'band' ? (
+        <HoverLegendToggle
+          legendHide={properties.legendHide}
+          handleSetHoverLegendHide={handleSetHoverLegendHide}
         />
-      </Form.Element>
-      <FlexBox
-        direction={FlexDirection.Row}
-        alignItems={AlignItems.Center}
-        margin={ComponentSize.Medium}
-        stretchToFitWidth={true}
-        style={toggleStyle}
-      >
-        <SlideToggle
-          active={properties.legendColorizeRows}
-          size={ComponentSize.ExtraSmall}
-          onChange={handleSetColorization}
-        />
-        <InputLabel style={toggleLabelStyle}>Colorize Rows</InputLabel>
-      </FlexBox>
+      ) : null}
+      <OrientationToggle
+        graphType={properties.type}
+        legendOrientation={properties.legendOrientationThreshold}
+        handleSetOrientation={handleSetOrientation}
+      />
+      <OpacitySlider
+        legendOpacity={properties.legendOpacity}
+        handleSetOpacity={handleSetOpacity}
+      />
+      <ColorizeRowsToggle
+        legendColorizeRows={properties.legendColorizeRows}
+        handleSetColorization={handleSetColorization}
+      />
     </>
   )
 }

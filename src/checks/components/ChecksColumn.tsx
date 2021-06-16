@@ -14,6 +14,9 @@ import CheckCards from 'src/checks/components/CheckCards'
 import AlertsColumn from 'src/alerting/components/AlertsColumn'
 import CreateCheckDropdown from 'src/checks/components/CreateCheckDropdown'
 
+// Constants
+import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
+
 // Types
 import {
   Check,
@@ -62,7 +65,7 @@ const ChecksColumn: FunctionComponent<Props> = ({
       <br />
       <br />
       <a
-        href="https://v2.docs.influxdata.com/v2.0/monitor-alert/checks/create/"
+        href={`https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/monitor-alert/checks/create/`}
         target="_blank"
         rel="noreferrer"
       >

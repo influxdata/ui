@@ -310,7 +310,7 @@ describe('Tasks.Containers.TasksPage', () => {
       ).toEqual(replacementName)
     })
 
-    it('activates a task', async () => {
+    it.skip('activates a task', async () => {
       expect(
         ui.store.getState().resources.tasks.byID[InactiveTask.id].status
       ).toEqual('inactive')

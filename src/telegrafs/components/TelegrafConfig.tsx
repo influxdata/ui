@@ -9,9 +9,6 @@ import {
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
 
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
 const Editor = lazy(() => import('src/shared/components/TomlMonacoEditor'))
 
 interface Props {
@@ -36,7 +33,7 @@ export class TelegrafConfig extends PureComponent<Props> {
         <Editor
           script={config}
           onChangeScript={onChangeConfig}
-          readOnly={isFlagEnabled('editTelegrafs') === false}
+          readOnly={false}
         />
       </Suspense>
     )

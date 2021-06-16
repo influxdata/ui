@@ -303,7 +303,7 @@ describe('DataExplorer', () => {
         cy.getByTestID('timerange-popover--dialog').should('have.length', 1)
       })
 
-      it('should error when submitting stop dates that are before start dates', () => {
+      it('should error when submitting stop dates that are before start dates and should error when invalid dates are input', () => {
         cy.get('input[title="Start"]')
           .should('have.length', 1)
           .clear()
@@ -316,15 +316,12 @@ describe('DataExplorer', () => {
 
         // button should be disabled
         cy.getByTestID('daterange--apply-btn').should('be.disabled')
-      })
 
-      it('should error when invalid dates are input', () => {
         // default inputs should be valid
         cy.getByTestID('input-error').should('not.exist')
 
         // type incomplete input
         cy.get('input[title="Start"]')
-          .should('have.length', 1)
           .clear()
           .type('2019-10')
 
@@ -339,7 +336,6 @@ describe('DataExplorer', () => {
 
         // type invalid stop date
         cy.get('input[title="Stop"]')
-          .should('have.length', 1)
           .clear()
           .type('2019-10-')
 
@@ -348,6 +344,14 @@ describe('DataExplorer', () => {
 
         // button should be disabled
         cy.getByTestID('daterange--apply-btn').should('be.disabled')
+
+        // Validate that ISO String formatted texts are valid
+        cy.get('input[title="Stop"]')
+          .clear()
+          .type('2019-10-29T08:00:00.000Z')
+
+        // button should not be disabled
+        cy.getByTestID('daterange--apply-btn').should('not.be.disabled')
       })
     })
   })
@@ -809,9 +813,9 @@ describe('DataExplorer', () => {
         cy.getByTestID('dropdown-y').contains('_time')
       })
 
-      // TODO: make work with annotations
-      // TODO: fix failing test - fails locally and in CI
-      it.skip('can zoom and unzoom horizontal axis', () => {
+      // passes now, as there is no annotations in explorer mode anymore;
+      // and zooming is fixed (no more phantom single clicks!)
+      it('can zoom and unzoom horizontal axis', () => {
         cy.getByTestID(`selector-list m`).click()
         cy.getByTestID('selector-list v').click()
         cy.getByTestID(`selector-list tv1`).click()
@@ -843,8 +847,9 @@ describe('DataExplorer', () => {
         makeGraphSnapshot().shouldBeSameAs(snapshot)
       })
 
-      // TODO: fix failing test - fails locally and in CI
-      it.skip('can zoom and unzoom vertical axis', () => {
+      // passes now, as there is no annotations in explorer mode anymore;
+      // and zooming is fixed (no more phantom single clicks!)
+      it('can zoom and unzoom vertical axis', () => {
         cy.getByTestID(`selector-list m`).click()
         cy.getByTestID('selector-list v').click()
         cy.getByTestID(`selector-list tv1`).click()
@@ -1001,6 +1006,72 @@ describe('DataExplorer', () => {
               cy.get(`[title="${numLines}"]`).should('be.visible')
             })
         })
+      })
+    })
+
+    describe('hover legend aka "tooltip"', () => {
+      it('gives the user a toggle for hide the tooltip only for line graph, line graph plus single stat, and band plot', () => {
+        VIS_TYPES.forEach(type => {
+          cy.getByTestID('cog-cell--button').click()
+          cy.getByTestID('view-type--dropdown').click()
+          cy.getByTestID(`view-type--${type}`).click()
+          if (
+            type === 'xy' ||
+            type === 'line-plus-single-stat' ||
+            type === 'band'
+          ) {
+            cy.getByTestID('hover-legend-toggle').should('exist')
+          } else {
+            cy.getByTestID('hover-legend-toggle').should('not.exist')
+          }
+        })
+      })
+
+      it('allows the user to toggle the hover legend to hide or show it', () => {
+        cy.writeData(lines(100))
+        cy.get<string>('@defaultBucketListSelector').then(
+          (defaultBucketListSelector: string) => {
+            cy.getByTestID('query-builder').should('exist')
+            cy.getByTestID('selector-list _monitoring').should('be.visible')
+            cy.getByTestID('selector-list _monitoring').click()
+
+            cy.getByTestID(defaultBucketListSelector).should('be.visible')
+            cy.getByTestID(defaultBucketListSelector).click()
+
+            cy.getByTestID('selector-list m').should('be.visible')
+            cy.getByTestID('selector-list m').clickAttached()
+
+            cy.getByTestID('selector-list v').should('be.visible')
+            cy.getByTestID('selector-list v').clickAttached()
+
+            cy.getByTestID('selector-list tv1').clickAttached()
+
+            cy.getByTestID('selector-list last')
+              .scrollIntoView()
+              .should('be.visible')
+              .click({force: true})
+
+            cy.getByTestID('time-machine-submit-button').click()
+
+            cy.getByTestID('cog-cell--button').click()
+            cy.getByTestID('view-type--dropdown').click()
+            cy.getByTestID('view-type--xy').click()
+
+            // No legend should exist just from opening the options
+            cy.get('.giraffe-tooltip-container').should('not.exist')
+
+            // Hovering over the graph should trigger a legend
+            cy.getByTestID('giraffe-layer-line').trigger('mouseover')
+            cy.get('.giraffe-tooltip-container').should('exist')
+
+            // Slide the toggle off and then hovering should not trigger a legend
+            cy.getByTestID('hover-legend-toggle')
+              .find('.cf-slide-toggle--knob')
+              .click()
+            cy.getByTestID('giraffe-layer-line').trigger('mouseover')
+            cy.get('.giraffe-tooltip-container').should('not.exist')
+          }
+        )
       })
     })
 
@@ -1519,6 +1590,93 @@ describe('DataExplorer', () => {
       cy.getByTestID('form--element-error').should('have.length', 2)
 
       // TODO: add filter values based on dropdown selection in key / value
+    })
+  })
+
+  describe('simple table interactions', () => {
+    const simpleSmall = 'simple-small'
+    const simpleLarge = 'simple-large'
+    beforeEach(() => {
+      cy.window().then(win => {
+        // I hate to add this, but the influx object isn't ready yet
+        cy.wait(1000)
+        win.influx.set('simpleTable', true)
+      })
+
+      cy.get('@org').then(({id: orgID}: Organization) => {
+        cy.getByTestID('tree-nav')
+        cy.createBucket(orgID, name, simpleLarge)
+        cy.writeData(lines(300), simpleLarge)
+        cy.createBucket(orgID, name, simpleSmall)
+        cy.writeData(lines(30), simpleSmall)
+        cy.reload()
+      })
+    })
+
+    it('should render correctly after switching from a dataset with more pages to one with fewer', () => {
+      cy.getByTestID('query-builder').should('exist')
+
+      // show raw data view of data with 100 pages
+      cy.getByTestID(`selector-list ${simpleLarge}`).should('be.visible')
+      cy.getByTestID(`selector-list ${simpleLarge}`).click()
+
+      cy.getByTestID('selector-list m').should('be.visible')
+      cy.getByTestID('selector-list m').clickAttached()
+
+      cy.getByTestID('selector-list v').should('be.visible')
+      cy.getByTestID('selector-list v').clickAttached()
+
+      cy.getByTestID('selector-list tv1').clickAttached()
+
+      cy.getByTestID('time-machine-submit-button').click()
+
+      cy.getByTestID('raw-data--toggle').click()
+      cy.getByTestID('simple-table').should('exist')
+
+      // click last page
+      cy.getByTestID('pagination-item')
+        .last()
+        .should('be.visible')
+      cy.getByTestID('pagination-item')
+        .last()
+        .click()
+      // verify correct number of pages
+      cy.getByTestID('pagination-item')
+        .last()
+        .contains('100')
+
+      // show raw data view of data with 10 pages
+      cy.getByTestID(`selector-list ${simpleSmall}`).should('be.visible')
+      cy.getByTestID(`selector-list ${simpleSmall}`).click()
+
+      cy.getByTestID('selector-list m').should('be.visible')
+      cy.getByTestID('selector-list m').clickAttached()
+
+      cy.getByTestID('selector-list v').should('be.visible')
+      cy.getByTestID('selector-list v').clickAttached()
+
+      cy.getByTestID('selector-list tv1').clickAttached()
+
+      cy.getByTestID('time-machine-submit-button').click()
+
+      // verify table still exists
+      cy.getByTestID('simple-table').should('exist')
+      // verify page 1 is selected
+      cy.getByTestID('pagination-item')
+        .first()
+        .within(() => {
+          cy.getByTestID('button').should(
+            'have.class',
+            'cf-button cf-button-md cf-button-tertiary cf-button-square active'
+          )
+        })
+      // verify correct number of pages
+      cy.getByTestID('pagination-item')
+        .last()
+        .should('be.visible')
+      cy.getByTestID('pagination-item')
+        .last()
+        .contains('10')
     })
   })
 })

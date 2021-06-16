@@ -13,23 +13,22 @@ import InsertCellButton from 'src/flows/components/panel/InsertCellButton'
 const PipeList: FC = () => {
   const {flow} = useContext(FlowContext)
   const {queryAll} = useContext(FlowQueryContext)
-  const {data} = flow
 
   useEffect(() => {
     queryAll()
   }, [])
 
-  if (!data || !data.allIDs.length) {
+  if (!flow.data || !flow.data.allIDs.length) {
     return <EmptyPipeList />
   }
 
-  const _pipes = data.allIDs.map(id => {
+  const _pipes = flow.data.allIDs.map(id => {
     return <FlowPipe key={`pipe-${id}`} id={id} />
   })
 
   return (
     <div className="flow">
-      <InsertCellButton id={null} />
+      {!flow.readOnly && <InsertCellButton id={null} />}
       {_pipes}
     </div>
   )

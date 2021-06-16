@@ -39,6 +39,5 @@ export default {
   mapStyle: '',
   note: '',
   showNoteWhenEmpty: false,
-  colors: null,
   layers: [],
 } as GeoViewProperties

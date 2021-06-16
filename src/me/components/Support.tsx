@@ -1,8 +1,14 @@
 // Libraries
 import React, {PureComponent} from 'react'
 
+// Constants
+import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
+
 const supportLinks = [
-  {link: 'https://v2.docs.influxdata.com/v2.0/', title: '📜 Documentation'},
+  {
+    link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/`,
+    title: '📜 Documentation',
+  },
   {link: 'https://community.influxdata.com', title: '💭 Community Forum'},
   {
     link:
@@ -10,8 +16,7 @@ const supportLinks = [
     title: '✨ Feature Requests',
   },
   {
-    link:
-      'https://github.com/influxdata/influxdb/issues/new?template=bug_report.md',
+    link: 'https://github.com/influxdata/ui/issues/new',
     title: '🐛 Report a bug',
   },
 ]

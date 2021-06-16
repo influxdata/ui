@@ -6,6 +6,9 @@ import {useSelector} from 'react-redux'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 import CreateBucketButton from 'src/buckets/components/CreateBucketButton'
 
+// Constants
+import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
+
 // Utils
 import {getAll} from 'src/resources/selectors'
 
@@ -34,7 +37,7 @@ const WriteDataHelperBuckets: FC = () => {
       <span>
         You don't have any{' '}
         <a
-          href="https://docs.influxdata.com/influxdb/cloud/organizations/buckets/"
+          href={`https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/organizations/buckets/`}
           target="_blank"
           rel="noreferrer"
         >
@@ -56,8 +59,8 @@ const WriteDataHelperBuckets: FC = () => {
     body = (
       <List
         backgroundColor={InfluxColors.Obsidian}
-        style={{height: '200px'}}
-        maxHeight="200px"
+        style={{height: '118px'}}
+        maxHeight="118px"
       >
         {buckets.map(b => (
           <List.Item

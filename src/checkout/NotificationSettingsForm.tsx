@@ -15,6 +15,9 @@ import FormToggle from 'src/checkout/shared/FormToggle'
 // Context
 import {CheckoutContext} from 'src/checkout/context/checkout'
 
+// Constants
+import {MINIMUM_BALANCE_THRESHOLD} from 'src/shared/constants'
+
 const NotificationSettingsForm: FC = () => {
   const {inputs} = useContext(CheckoutContext)
 
@@ -41,10 +44,10 @@ const NotificationSettingsForm: FC = () => {
             <Grid.Column widthSM={Columns.Three}>
               <FormInput
                 id="balanceThreshold"
-                label="Limit ($1 minimum)"
-                min={1}
+                label={`Limit (${MINIMUM_BALANCE_THRESHOLD} minimum)`}
+                min={MINIMUM_BALANCE_THRESHOLD}
                 required
-                step={0.01}
+                step={1}
                 type={InputType.Number}
               />
             </Grid.Column>

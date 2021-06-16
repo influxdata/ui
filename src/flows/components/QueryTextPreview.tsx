@@ -14,6 +14,7 @@ import {formatQueryText} from 'src/flows/shared/utils'
 
 // Contexts
 import {PopupContext} from 'src/flows/context/popup'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
 
 const FluxMonacoEditor = lazy(() =>
   import('src/shared/components/FluxMonacoEditor')
@@ -21,7 +22,8 @@ const FluxMonacoEditor = lazy(() =>
 
 const QueryTextPreview: FC = () => {
   const {data} = useContext(PopupContext)
-  const script = formatQueryText(data.query)
+  const {getPanelQueries} = useContext(FlowQueryContext)
+  const script = formatQueryText(getPanelQueries(data.panel).visual)
 
   return (
     <Form.Element label="">

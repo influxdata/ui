@@ -2,10 +2,12 @@
 import React, {FC, useMemo, useContext} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {
-  AnnotationLayerConfig,
   Config,
   DomainLabel,
+  LINE_COUNT,
   Plot,
+  STACKED_LINE_CUMULATIVE,
+  createGroupIDColumn,
   getDomainDataFromLines,
   lineTransform,
 } from '@influxdata/giraffe'
@@ -17,10 +19,7 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Redux
-import {
-  isWriteModeEnabled,
-  selectAreAnnotationsVisible,
-} from 'src/annotations/selectors'
+import {isAnnotationsModeEnabled} from 'src/annotations/selectors'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -48,14 +47,9 @@ import {
   defaultXColumn,
   defaultYColumn,
 } from 'src/shared/utils/vis'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Annotations
-import {
-  makeAnnotationClickListener,
-  makeAnnotationLayer,
-  makeAnnotationRangeListener,
-} from 'src/visualization/utils/annotationUtils'
+import {addAnnotationLayer} from 'src/visualization/utils/annotationUtils'
 
 interface Props extends VisualizationProps {
   properties: XYViewProperties
@@ -72,6 +66,7 @@ const XYPlot: FC<Props> = ({
   const axisTicksOptions = useAxisTicksGenerator(properties)
   const tooltipOpacity = useLegendOpacity(properties.legendOpacity)
   const tooltipColorize = properties.legendColorizeRows
+  const tooltipHide = properties.legendHide
   const tooltipOrientationThreshold = properties.legendOrientationThreshold
   const staticLegend = useStaticLegend(properties)
   const dispatch = useDispatch()
@@ -80,8 +75,7 @@ const XYPlot: FC<Props> = ({
   // is in a dashboard or in configuration/single cell popout mode
   // would need to add the annotation control bar to the VEOHeader to get access to the controls,
   // which are currently global values, not per dashboard
-  const inAnnotationWriteMode = useSelector(isWriteModeEnabled)
-  const annotationsAreVisible = useSelector(selectAreAnnotationsVisible)
+  const inAnnotationMode = useSelector(isAnnotationsModeEnabled)
 
   const storedXDomain = useMemo(() => parseXBounds(properties.axes.x.bounds), [
     properties.axes.x.bounds,
@@ -103,14 +97,18 @@ const XYPlot: FC<Props> = ({
     yColumn &&
     columnKeys.includes(yColumn)
 
-  const colorHexes =
-    properties.colors && properties.colors.length
-      ? properties.colors.map(c => c.hex)
-      : DEFAULT_LINE_COLORS.map(c => c.hex)
+  const colorHexes = useMemo(() => {
+    if (properties.colors && properties.colors.length) {
+      return properties.colors.map(color => color.hex)
+    }
+    return DEFAULT_LINE_COLORS.map(color => color.hex)
+  }, [properties.colors])
 
   const interpolation = geomToInterpolation(properties.geom)
 
-  const groupKey = [...result.fluxGroupKeyUnion, 'result']
+  const groupKey = useMemo(() => [...result.fluxGroupKeyUnion, 'result'], [
+    result,
+  ])
 
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
     storedXDomain,
@@ -128,16 +126,17 @@ const XYPlot: FC<Props> = ({
         colorHexes,
         properties.position
       )
-      return getDomainDataFromLines(lineData, DomainLabel.Y)
+      const [fillColumn] = createGroupIDColumn(result.table, groupKey)
+      return getDomainDataFromLines(lineData, [...fillColumn], DomainLabel.Y)
     }
     return result.table.getColumn(yColumn, 'number')
   }, [
     result.table,
-    yColumn,
     xColumn,
-    properties.position,
-    colorHexes,
+    yColumn,
     groupKey,
+    colorHexes,
+    properties.position,
   ])
 
   const [yDomain, onSetYDomain, onResetYDomain] = useVisYDomainSettings(
@@ -146,7 +145,15 @@ const XYPlot: FC<Props> = ({
   )
 
   const legendColumns = filterNoisyColumns(
-    [...groupKey, xColumn, yColumn],
+    properties.position === 'stacked'
+      ? [
+          ...groupKey,
+          xColumn,
+          yColumn,
+          `_${STACKED_LINE_CUMULATIVE}`,
+          `_${LINE_COUNT}`,
+        ]
+      : [...groupKey, xColumn, yColumn],
     result.table
   )
 
@@ -188,6 +195,7 @@ const XYPlot: FC<Props> = ({
     legendOpacity: tooltipOpacity,
     legendOrientationThreshold: tooltipOrientationThreshold,
     legendColorizeRows: tooltipColorize,
+    legendHide: tooltipHide,
     staticLegend,
     valueFormatters: {
       [xColumn]: xFormatter,
@@ -209,33 +217,17 @@ const XYPlot: FC<Props> = ({
     ],
   }
 
-  if (isFlagEnabled('annotations')) {
-    if (inAnnotationWriteMode && cellID) {
-      config.interactionHandlers = {
-        singleClick: makeAnnotationClickListener(dispatch, cellID),
-      }
-      if (isFlagEnabled('rangeAnnotations')) {
-        config.interactionHandlers.onXBrush = makeAnnotationRangeListener(
-          dispatch,
-          cellID
-        )
-      }
-    }
+  addAnnotationLayer(
+    config,
+    inAnnotationMode,
+    cellID,
+    xColumn,
+    yColumn,
+    groupKey,
+    annotations,
+    dispatch
+  )
 
-    const annotationLayer: AnnotationLayerConfig = makeAnnotationLayer(
-      cellID,
-      xColumn,
-      yColumn,
-      groupKey,
-      annotations,
-      annotationsAreVisible,
-      dispatch
-    )
-
-    if (annotationLayer) {
-      config.layers.push(annotationLayer)
-    }
-  }
   return <Plot config={config} />
 }
 

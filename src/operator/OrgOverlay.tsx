@@ -42,8 +42,10 @@ const OrgOverlay: FC = () => {
       const backendLimits = fromDisplayLimits(limits)
       await handleUpdateLimits(backendLimits)
       history.goBack()
-    } catch (error) {
-      console.error(error)
+    } catch {
+      // We want to keep the operator on the overlay if an error occurred
+      // If an error occurs the operator will be notified when the API function fails
+      return
     }
   }
 
@@ -59,7 +61,7 @@ const OrgOverlay: FC = () => {
       <Overlay.Container maxWidth={1000}>
         <Overlay.Header
           title={orgID}
-          style={{color: '#FFFFFF'}}
+          className="overlay-header--color"
           onDismiss={() => history.goBack()}
         />
         <SpinnerContainer
@@ -75,17 +77,17 @@ const OrgOverlay: FC = () => {
                 </Grid.Column>
                 <Grid.Column widthMD={4}>
                   <label>Account Type</label>
-                  <p>{organization?.relatedAccount?.type ?? ''}</p>
+                  <p>{organization?.account?.type ?? ''}</p>
                 </Grid.Column>
                 <Grid.Column widthMD={4}>
                   <LinkButton
                     color={ComponentColor.Secondary}
-                    size={ComponentSize.Small}
+                    size={ComponentSize.Medium}
                     shape={ButtonShape.Default}
-                    style={{padding: '7px 10px'}}
                     testID="usage-button"
                     text="View Usage Dashboard"
                     target={LinkTarget.Blank}
+                    className="overlay-button--link"
                     href={`https://influxdb.aws.influxdata.io/orgs/844910ece80be8bc/dashboards/0649b03029c49000?vars%5Borgid%5D=${orgID}`}
                   />
                 </Grid.Column>

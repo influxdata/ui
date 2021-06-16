@@ -24,12 +24,16 @@ const MarketplaceBilling: FC = () => (
       <Panel.Header size={ComponentSize.Large}>
         <h4>Subscription Management:</h4>
       </Panel.Header>
-      <MarketplaceWrapper>
-        <Panel.Body size={ComponentSize.Large}>
-          You can manage your subscription, review billing, and find licensing
-          terms on your <MarketplaceLink />
-        </Panel.Body>
-      </MarketplaceWrapper>
+      <Panel.Body size={ComponentSize.Large}>
+        <>
+          <MarketplaceWrapper>
+            <>
+              You can manage your subscription, review billing, and find
+              licensing terms on your <MarketplaceLink />
+            </>
+          </MarketplaceWrapper>
+        </>
+      </Panel.Body>
     </SubscriptionManagerPanel>
   </FlexBox>
 )

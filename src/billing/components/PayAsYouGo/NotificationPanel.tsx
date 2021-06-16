@@ -7,10 +7,10 @@ import {
   ComponentColor,
 } from '@influxdata/clockface'
 import NotificationSettingsOverlay from 'src/billing/components/PayAsYouGo/NotificationSettingsOverlay'
-import {useBilling} from 'src/billing/components/BillingPage'
+import NotificationPanelBody from 'src/billing/components/PayAsYouGo/NotificationPanelBody'
+import BillingLoadingWrapper from 'src/billing/components/AssetLoading/BillingWrapper'
 
 const NotificationPanel: FC = () => {
-  const [{billingSettings}] = useBilling()
   const [isOverlayVisible, setIsOverlayVisible] = useState(false)
 
   const handleShowOverlay = () => {
@@ -35,14 +35,9 @@ const NotificationPanel: FC = () => {
         </Panel.Header>
         <Panel.Body>
           <div className="billing-notification">
-            {billingSettings.isNotify ? (
-              <p>
-                Sending Notifications to {billingSettings.notifyEmail} when
-                monthly usage exceeds ${billingSettings.balanceThreshold}
-              </p>
-            ) : (
-              <p>Usage Notifications disabled</p>
-            )}
+            <BillingLoadingWrapper>
+              <NotificationPanelBody />
+            </BillingLoadingWrapper>
           </div>
         </Panel.Body>
       </Panel>

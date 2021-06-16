@@ -12,26 +12,26 @@ describe('The Annotations UI functionality', () => {
         cy.get('@org').then(({id: orgID}: Organization) => {
           cy.visit(`${orgs}/${orgID}/dashboards-list`)
           cy.getByTestID('tree-nav')
-        })
-      })
-    )
-    cy.setFeatureFlags({
-      annotations: true,
-      useGiraffeGraphs: true,
-      rangeAnnotations: true,
-    }).then(() => {
-      cy.get('@org').then(({id: orgID}: Organization) => {
-        cy.createDashboard(orgID).then(({body}) => {
-          cy.fixture('routes').then(({orgs}) => {
-            cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
-            cy.getByTestID('tree-nav')
-            cy.createBucket(orgID, name, 'schmucket')
-            // have to add large amount of data to fill the window so that the random click for annotation works
-            cy.writeData(lines(3000), 'schmucket')
+          cy.setFeatureFlags({
+            annotations: true,
+            useGiraffeGraphs: true,
+            rangeAnnotations: true,
+          }).then(() => {
+            cy.get('@org').then(({id: orgID}: Organization) => {
+              cy.createDashboard(orgID).then(({body}) => {
+                cy.fixture('routes').then(({orgs}) => {
+                  cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+                  cy.getByTestID('tree-nav')
+                  cy.createBucket(orgID, name, 'schmucket')
+                  // have to add large amount of data to fill the window so that the random click for annotation works
+                  cy.writeData(lines(3000), 'schmucket')
+                })
+              })
+            })
           })
         })
       })
-    })
+    )
 
     // make a dashboard cell
     cy.getByTestID('add-cell--button')

@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, useCallback, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
+import {useHistory} from 'react-router-dom'
 
 // Utils
 import {notify} from 'src/shared/actions/notifications'
@@ -174,6 +175,8 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
     [dispatch]
   )
 
+  const history = useHistory()
+
   const handleCancelAccount = useCallback(async () => {
     try {
       const resp = await postCancel({})
@@ -182,14 +185,13 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
         throw new Error(resp.data.message)
       }
 
-      // TODO(ariel): wait for product to handle what we do here
-      // history.push('/')
+      history.push(`/logout`)
     } catch (error) {
       const message = getErrorMessage(error)
       console.error({error})
       dispatch(notify(accountCancellationError(message)))
     }
-  }, [dispatch])
+  }, [dispatch, history])
 
   const handleGetInvoices = useCallback(async () => {
     try {
@@ -294,6 +296,7 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
     async (settings: BillingNotifySettings) => {
       try {
         setBillingSettingsStatus(RemoteDataState.Loading)
+
         const resp = await putSettingsNotifications({data: settings})
 
         if (resp.status !== 200) {

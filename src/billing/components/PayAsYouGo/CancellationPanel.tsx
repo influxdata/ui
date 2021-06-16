@@ -1,5 +1,5 @@
+// Libraries
 import React, {FC, useState} from 'react'
-
 import {
   Panel,
   ComponentSize,
@@ -7,6 +7,7 @@ import {
   Button,
 } from '@influxdata/clockface'
 
+// Components
 import CancellationOverlay from 'src/billing/components/PayAsYouGo/CancellationOverlay'
 
 const CancellationPanel: FC = () => {
@@ -18,6 +19,7 @@ const CancellationPanel: FC = () => {
   const handleHideOverlay = () => {
     setIsOverlayVisible(false)
   }
+
   return (
     <>
       <Panel>

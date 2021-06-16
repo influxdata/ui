@@ -38,7 +38,7 @@ import {
   STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM,
   STATIC_LEGEND_HEIGHT_RATIO_MINIMUM,
   STATIC_LEGEND_HEIGHT_RATIO_STEP,
-  STATIC_LEGEND_HIDE_DEFAULT,
+  STATIC_LEGEND_SHOW_DEFAULT,
 } from 'src/visualization/constants'
 
 // Metrics
@@ -59,12 +59,12 @@ interface Props extends VisualizationOptionProps {
 const StaticLegend: FC<Props> = ({properties, update}) => {
   const {
     staticLegend = {
-      hide: STATIC_LEGEND_HIDE_DEFAULT,
+      show: STATIC_LEGEND_SHOW_DEFAULT,
     } as StaticLegend,
   } = properties
   const {valueAxis} = staticLegend
-  const {heightRatio = STATIC_LEGEND_HEIGHT_RATIO_DEFAULT, hide} = staticLegend
-  const [showOptions, setShowOptions] = useState<boolean>(!hide)
+  const {heightRatio = STATIC_LEGEND_HEIGHT_RATIO_DEFAULT, show} = staticLegend
+  const [showOptions, setShowOptions] = useState<boolean>(show)
 
   if (!isFlagEnabled('staticLegend')) {
     return null
@@ -75,7 +75,7 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
     update({
       staticLegend: {
         ...staticLegend,
-        hide: true,
+        show: false,
       },
     })
     event(`${eventPrefix}.hide`, {
@@ -88,7 +88,7 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
     update({
       staticLegend: {
         ...staticLegend,
-        hide: false,
+        show: true,
       },
     })
     event(`${eventPrefix}.show`, {

@@ -1,4 +1,4 @@
-For more detailed and up to date information check out the <a href="https://v2.docs.influxdata.com/v2.0/reference/syntax/line-protocol/" target="_blank" rel="noreferrer">Line Protocol Documentation</a>
+For more detailed and up to date information check out the [Line Protocol Documentation](https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/).
 
 ##### Getting Started
 

@@ -4,24 +4,24 @@ import React, {PureComponent} from 'react'
 // Components
 import {Panel, Heading, HeadingElement, FontWeight} from '@influxdata/clockface'
 
+// Constants
+import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
+
 const supportLinks = [
   {
-    link: 'https://docs.influxdata.com/influxdb/cloud/query-data/get-started/',
+    link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/query-data/get-started/`,
     title: 'Get Started with Flux',
   },
   {
-    link:
-      'https://docs.influxdata.com/influxdb/cloud/query-data/execute-queries/data-explorer/',
+    link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/query-data/execute-queries/data-explorer/`,
     title: 'Explore Metrics',
   },
   {
-    link:
-      'https://docs.influxdata.com/influxdb/cloud/visualize-data/dashboards/',
+    link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/visualize-data/dashboards/`,
     title: 'Build a Dashboard',
   },
   {
-    link:
-      'https://docs.influxdata.com/influxdb/cloud/process-data/get-started/',
+    link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/process-data/get-started/`,
     title: 'Write a Task',
   },
 ]

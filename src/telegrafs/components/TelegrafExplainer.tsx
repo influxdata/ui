@@ -10,6 +10,9 @@ import {
   ComponentSize,
 } from '@influxdata/clockface'
 
+// Constants
+import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
+
 interface Props {
   hasNoTelegrafs?: boolean
   textAlign?: CSSProperties['textAlign']
@@ -39,7 +42,7 @@ const TelegrafExplainer: FunctionComponent<Props> = ({
       <br />
       Here's a handy guide for{' '}
       <a
-        href="https://docs.influxdata.com/influxdb/cloud/write-data/no-code/use-telegraf/"
+        href={`https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/write-data/no-code/use-telegraf/`}
         target="_blank"
         rel="noreferrer"
       >

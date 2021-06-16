@@ -140,7 +140,7 @@ export const Provider: FC = ({children}) => {
     return true
   }
 
-  const submit = async (): void => {
+  const submit = async () => {
     if (!validateForm()) {
       return
     }

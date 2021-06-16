@@ -2,7 +2,7 @@ import React, {FC} from 'react'
 import {Input, InputType} from '@influxdata/clockface'
 import {get} from 'lodash'
 import {set} from 'lodash/fp'
-import {OrgLimits} from 'src/types/operator'
+import {OrgLimits} from 'src/types'
 
 interface Props {
   type: InputType

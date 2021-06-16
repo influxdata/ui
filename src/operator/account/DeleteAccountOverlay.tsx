@@ -11,9 +11,13 @@ import {
 import {AccountContext} from 'src/operator/context/account'
 
 const DeleteAccountOverlay: FC = () => {
-  const {account, handleDeleteAccount, setVisible, visible} = useContext(
-    AccountContext
-  )
+  const {
+    account,
+    handleDeleteAccount,
+    organizations,
+    setVisible,
+    visible,
+  } = useContext(AccountContext)
 
   const deleteAccount = () => {
     if (account?.deletable) {
@@ -29,7 +33,7 @@ const DeleteAccountOverlay: FC = () => {
     This action will permanently delete the Account
     ${account?.id ?? 'N/A'} for user
     ${account?.billingContact?.email ?? 'N/A'} and organization
-    ${account?.organizations?.[0]?.name ?? 'N/A'}.`
+    ${organizations?.[0]?.name ?? 'N/A'}.`
   return (
     <Overlay
       visible={visible}

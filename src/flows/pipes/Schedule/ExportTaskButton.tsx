@@ -16,7 +16,11 @@ import ExportTaskOverlay from 'src/flows/pipes/Schedule/ExportTaskOverlay'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
-const ExportTaskButton: FC = () => {
+interface Props {
+  generate?: () => string
+}
+
+const ExportTaskButton: FC<Props> = ({generate}) => {
   const {data, range} = useContext(PipeContext)
   const {launch} = useContext(PopupContext)
 
@@ -24,7 +28,7 @@ const ExportTaskButton: FC = () => {
     event('Export Task Clicked', {from: 'schedule'})
     launch(<ExportTaskOverlay />, {
       bucket: data.bucket,
-      query: data.query,
+      query: generate ? generate() : data.query,
       range,
     })
   }

@@ -15,7 +15,7 @@ import {
 import {toDisplayLimits} from 'src/operator/utils'
 
 // Types
-import {OrgLimits, Organization} from 'src/types/operator'
+import {OrgLimits, OperatorOrg} from 'src/types'
 import {RemoteDataState} from 'src/types'
 
 export type Props = {
@@ -28,7 +28,7 @@ export interface OverlayContextType {
   handleGetLimits: (id: string) => void
   handleGetOrg: (id: string) => void
   handleUpdateLimits: (limits: OrgLimits) => void
-  organization: Organization
+  organization: OperatorOrg
   orgStatus: RemoteDataState
   setLimits: (_: OrgLimits) => void
   updateLimitStatus: RemoteDataState
@@ -57,7 +57,10 @@ export const OverlayProvider: FC<Props> = React.memo(({children}) => {
     RemoteDataState.NotStarted
   )
   const [orgStatus, setOrgStatus] = useState(RemoteDataState.NotStarted)
-  const {orgID} = useParams()
+
+  // Getting the orgID here since the parameter is only available in the overlay path
+  const {orgID} = useParams<{orgID: string}>()
+
   const dispatch = useDispatch()
 
   const [organization, setOrganization] = useState(null)

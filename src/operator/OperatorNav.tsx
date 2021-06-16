@@ -10,11 +10,11 @@ import {
 } from '@influxdata/clockface'
 import {Link} from 'react-router-dom'
 
-// Types
-import {AppState} from 'src/types'
+// Utils
+import {getQuartzMe} from 'src/me/selectors'
 
 const OperatorNav: FC = () => {
-  const operator = useSelector((state: AppState) => state.me.quartzMe)
+  const operator = useSelector(getQuartzMe)
   return (
     <ReflessPopover
       position={PopoverPosition.ToTheLeft}

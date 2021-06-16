@@ -16,11 +16,10 @@ import ConfirmCancellationOverlay from 'src/billing/components/PayAsYouGo/Confir
 import {BillingContext} from 'src/billing/context/billing'
 
 interface Props {
-  isOverlayVisible: boolean
   onHideOverlay: () => void
 }
 
-const CancellationOverlay: FC<Props> = ({isOverlayVisible, onHideOverlay}) => {
+const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
   const {handleCancelAccount} = useContext(BillingContext)
   const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false)
   const [hasClickedCancel, setHasClickedCancel] = useState(false)
@@ -33,10 +32,15 @@ const CancellationOverlay: FC<Props> = ({isOverlayVisible, onHideOverlay}) => {
     }
   }
 
+  const handleDismiss = () => {
+    setHasClickedCancel(false)
+    onHideOverlay()
+  }
+
   return (
-    <Overlay visible={isOverlayVisible} className="cancellation-overlay">
+    <Overlay visible={true} className="cancellation-overlay">
       <Overlay.Container maxWidth={600}>
-        <Overlay.Header title="Cancel Service" onDismiss={onHideOverlay} />
+        <Overlay.Header title="Cancel Service" onDismiss={handleDismiss} />
         <Overlay.Body>
           <Alert color={ComponentColor.Danger} icon={IconFont.AlertTriangle}>
             This action cannot be undone

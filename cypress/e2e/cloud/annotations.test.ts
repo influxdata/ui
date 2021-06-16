@@ -544,17 +544,15 @@ describe('The Annotations UI functionality', () => {
         .click()
         .then(() => {
           // Look at this article for removing flakiness https://www.cypress.io/blog/2020/07/22/do-not-get-too-detached/
-          cy.getByTestID('selector-list schmucket')
-            .should('be.visible')
-            .click()
-          cy.getByTestID(`selector-list m`)
-            .should('be.visible')
-            .click()
+          cy.getByTestID('selector-list schmucket').should('be.visible')
+          cy.getByTestID('selector-list schmucket').click()
+          cy.getByTestID(`selector-list m`).should('be.visible')
+          cy.getByTestID(`selector-list m`).click()
           cy.getByTestID('selector-list v')
             .click()
             .then(() => {
+              cy.getByTestID(`selector-list tv1`).should('be.visible')
               cy.getByTestID(`selector-list tv1`)
-                .should('be.visible')
                 .click()
                 .then(() => {
                   cy.getByTestID('time-machine-submit-button').click()

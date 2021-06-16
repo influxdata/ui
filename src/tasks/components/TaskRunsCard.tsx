@@ -158,6 +158,4 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export const TaskRunsCard = connector(
-  withRouter(UnconnectedTaskRunsCard)
-)
+export const TaskRunsCard = connector(withRouter(UnconnectedTaskRunsCard))

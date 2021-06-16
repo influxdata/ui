@@ -41,5 +41,3 @@ export const PageBreadcrumbs: FC<Props> = ({pages}) => {
     </FlexBox>
   )
 }
-
-

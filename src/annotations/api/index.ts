@@ -12,7 +12,6 @@ import {
   postAnnotation,
   putAnnotation,
   AnnotationEvent,
-  GetAnnotationsParams,
 } from 'src/client/annotationdRoutes'
 
 // Utils
@@ -23,7 +22,8 @@ export const getAnnotationStreams = (): Promise<AnnotationStream[]> => {
 }
 
 export const writeAnnotation = async (
-  annotations: Annotation[]
+  annotations: Annotation[],
+  orgID: string
 ): Promise<Annotation[]> => {
   // RFC 3339 is the standard serialization format for dates across the wire for annotations
   const annotationsRequestConverted = annotations.map(annotation => {
@@ -33,7 +33,7 @@ export const writeAnnotation = async (
       endTime: new Date(annotation.endTime).toISOString(),
     }
   })
-  const params = {data: annotationsRequestConverted}
+  const params = {data: annotationsRequestConverted, query: {orgID}}
   const res = await postAnnotation(params)
 
   if (res.status >= 300) {
@@ -55,10 +55,11 @@ export const writeAnnotation = async (
 }
 
 export const getAnnotations = async (
+  orgID: string,
   stream?: string
 ): Promise<AnnotationResponse[]> => {
-  const params: GetAnnotationsParams = {
-    query: {AnnotationListFilter: formatAnnotationQueryString({stream})},
+  const params = {
+    query: {AnnotationListFilter: formatAnnotationQueryString({stream}), orgID},
   }
   const res = await getAnnotationsApi(params)
   if (res.status >= 300) {

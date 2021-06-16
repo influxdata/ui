@@ -14,7 +14,15 @@ import {
   deleteAnnotation as deleteAnnotationAction,
 } from 'src/annotations/actions/creators'
 
-import {Annotation, AnnotationStream, NotificationAction} from 'src/types'
+import {
+  Annotation,
+  AnnotationStream,
+  NotificationAction,
+  GetState,
+} from 'src/types'
+
+// Selectors
+import {getOrg} from 'src/organizations/selectors'
 
 export const fetchAndSetAnnotationStreams = async (
   dispatch: Dispatch<AnnotationAction>
@@ -25,9 +33,11 @@ export const fetchAndSetAnnotationStreams = async (
 }
 
 export const fetchAndSetAnnotations = () => async (
-  dispatch: Dispatch<AnnotationAction>
+  dispatch: Dispatch<AnnotationAction>,
+  getState: GetState
 ): Promise<void> => {
-  const annotations = await getAnnotations()
+  const org = getOrg(getState())
+  const annotations = await getAnnotations(org.id)
 
   dispatch(setAnnotations(annotations))
 }
@@ -35,11 +45,13 @@ export const fetchAndSetAnnotations = () => async (
 export const writeThenFetchAndSetAnnotations = (
   annotations: Annotation[]
 ) => async (
-  dispatch: Dispatch<AnnotationAction | NotificationAction>
+  dispatch: Dispatch<AnnotationAction | NotificationAction>,
+  getState: GetState
 ): Promise<void> => {
-  await writeAnnotation(annotations)
+  const org = getOrg(getState())
+  await writeAnnotation(annotations, org.id)
 
-  fetchAndSetAnnotations()(dispatch)
+  fetchAndSetAnnotations()(dispatch, getState)
 }
 
 export const deleteAnnotations = annotation => async (

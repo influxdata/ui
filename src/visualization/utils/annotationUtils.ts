@@ -146,7 +146,8 @@ const makeAnnotationClickHandler = (
 
 // want all the ranges *before* all the points,
 // so that can click on points that overlap ranges
-const sortAnnotations = (anno1, anno2) => {
+// exporting for testing
+export const sortAnnotations = (anno1, anno2) => {
   // if they are both ranges or both points, return 0
   // if anno1 is a range, and anno2 is a point return -1;
   // else return 1

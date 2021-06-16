@@ -578,11 +578,10 @@ describe('The Annotations UI functionality', () => {
       })
 
       cy.getByTestID('overlay--container').within(() => {
-        cy.getByTestID('edit-annotation-message')
-          .should('be.visible')
-          .click()
-          .focused()
-          .type('annotation in newCell')
+        cy.getByTestID('edit-annotation-message').should('be.visible')
+        cy.getByTestID('edit-annotation-message').click()
+        cy.getByTestID('edit-annotation-message').focused()
+        cy.getByTestID('edit-annotation-message').type('annotation in newCell')
         cy.getByTestID('annotation-submit-button').click()
       })
 

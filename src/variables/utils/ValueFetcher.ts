@@ -104,7 +104,7 @@ export class DefaultValueFetcher implements ValueFetcher {
     }
 
     let extern
-    if (isFlagEnabled('FilterExtern')) {
+    if (isFlagEnabled('filterExtern')) {
       extern = buildUsedVarsOption(query, variables)
     } else {
       extern = buildVarsOption(variables)

@@ -111,7 +111,7 @@ export const executePreviewQuery = (query: string) => async (
     // garbage to be able to run a query instead of just being able
     // to executeQuery as normal
     let extern
-    if (isFlagEnabled('FilterExtern')) {
+    if (isFlagEnabled('filterExtern')) {
       const allVariables = getVariables(state)
       const windowVars = getWindowVarsFromVariables(query, allVariables)
       extern = buildUsedVarsOption(query, allVariables, windowVars)

@@ -309,7 +309,7 @@ export const executeQueries = (abortController?: AbortController) => async (
       }
 
       let extern
-      if (isFlagEnabled('FilterExtern')) {
+      if (isFlagEnabled('filterExtern')) {
         extern = buildUsedVarsOption(text, allVariables)
       } else {
         extern = buildVarsOption(variableAssignments)

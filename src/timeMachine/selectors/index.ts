@@ -93,7 +93,7 @@ export const getActiveQueryIndex = (state: AppState): number => {
 // TODO kill this function
 export const getActiveWindowPeriod = (state: AppState) => {
   const {text} = getActiveQuery(state)
-  if (isFlagEnabled('FilterExtern')) {
+  if (isFlagEnabled('filterExtern')) {
     const variables = getAllVariables(state)
     return getWindowPeriodFromVariables(text, variables)
   } else {

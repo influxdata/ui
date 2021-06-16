@@ -71,11 +71,11 @@ const stateOverride = {
 
 describe('TimeMachine.Components.SubmitQueryButton', () => {
   beforeAll(() => {
-    window.influx.set('FilterExtern', true)
+    window.influx.set('filterExtern', true)
   })
 
   afterAll(() => {
-    window.influx.set('FilterExtern', false)
+    window.influx.set('filterExtern', false)
   })
 
   it('it changes the Submit button to Cancel when the request is in flight, then back to Submit after the request has resolved', async () => {

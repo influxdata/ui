@@ -249,7 +249,7 @@ class TimeSeries extends Component<Props, State> {
           getOrgIDFromBuckets(text, buckets) || this.props.match.params.orgID
 
         let extern
-        if (isFlagEnabled('FilterExtern')) {
+        if (isFlagEnabled('filterExtern')) {
           const windowVars = getWindowVarsFromVariables(text, variables)
           extern = buildUsedVarsOption(text, variables, windowVars)
         } else {
@@ -276,7 +276,7 @@ class TimeSeries extends Component<Props, State> {
       let statuses = [] as StatusRow[][]
       if (check) {
         let extern
-        if (isFlagEnabled('FilterExtern')) {
+        if (isFlagEnabled('filterExtern')) {
           extern = buildUsedVarsOption(
             queries.map(query => query.text),
             variables
@@ -402,7 +402,7 @@ const mstp = (state: AppState, props: OwnProps) => {
     ? props.queries.map(q => q.text).filter(t => !!t.trim())
     : []
   let vars
-  if (isFlagEnabled('FilterExtern')) {
+  if (isFlagEnabled('filterExtern')) {
     const astims = queries.map(query => parseASTIM(query))
     vars = getVariables(state).filter(v =>
       astims.some(astim => astim.hasVariable(v.name))

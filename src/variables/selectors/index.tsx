@@ -166,7 +166,7 @@ export const getVariable = (state: AppState, variableID: string): Variable => {
       getRangeVariable(TIME_RANGE_STOP, range),
     ]
 
-    if (isFlagEnabled('FilterExtern')) {
+    if (isFlagEnabled('filterExtern')) {
       vari = (getWindowPeriodVariableFromVariables(text, [
         ...timeVars,
         ...variables,

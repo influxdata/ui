@@ -94,7 +94,7 @@ const getVarChildren = (
   }: Variable,
   allVariables: Variable[]
 ) => {
-  if (isFlagEnabled('FilterExtern')) {
+  if (isFlagEnabled('filterExtern')) {
     const astim = parseASTIM(query)
 
     return allVariables.filter(maybeChild => {
@@ -255,7 +255,7 @@ const hydrateVarsHelper = async (
   }
 
   let descendants, assignments
-  if (isFlagEnabled('FilterExtern')) {
+  if (isFlagEnabled('filterExtern')) {
     descendants = collectDescendants(node).map(node => node.variable)
   } else {
     descendants = collectDescendants(node)
@@ -272,7 +272,7 @@ const hydrateVarsHelper = async (
     url,
     orgID,
     query,
-    isFlagEnabled('FilterExtern') ? descendants : assignments,
+    isFlagEnabled('filterExtern') ? descendants : assignments,
     null,
     '',
     options.skipCache,

@@ -248,7 +248,7 @@ export const getCachedResultsOrRunQuery = (
   let windowVars = []
 
   if (hasWindowVars(variableAssignments) === false) {
-    if (isFlagEnabled('FilterExtern')) {
+    if (isFlagEnabled('filterExtern')) {
       windowVars = getWindowVarsFromVariables(query, variables)
     } else {
       windowVars = getWindowVars(query, variableAssignments)
@@ -257,7 +257,7 @@ export const getCachedResultsOrRunQuery = (
 
   // otherwise query & set results
   let extern
-  if (isFlagEnabled('FilterExtern')) {
+  if (isFlagEnabled('filterExtern')) {
     extern = buildUsedVarsOption(query, variables, windowVars)
   } else {
     extern = buildVarsOption([...variableAssignments, ...windowVars])

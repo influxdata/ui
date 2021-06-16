@@ -17,7 +17,7 @@ export const getAllUsedVars = (
 ): Variable[] => {
   const vars = usedVars.slice()
   let varsInUse = []
-  if (isFlagEnabled('FilterExtern')) {
+  if (isFlagEnabled('filterExtern')) {
     usedVars.forEach((vari: Variable) => {
       if (vari.arguments.type === 'query') {
         const queryText = vari?.arguments?.values?.query || ''
@@ -69,7 +69,7 @@ export const filterUnusedVarsBasedOnQuery = (
   queryTexts: string[]
 ): Variable[] => {
   let varsInUse
-  if (isFlagEnabled('FilterExtern')) {
+  if (isFlagEnabled('filterExtern')) {
     const astims = queryTexts.map(query => parseASTIM(query))
     varsInUse = variables.filter(variable =>
       astims.some(astim => astim.hasVariable(variable.name))

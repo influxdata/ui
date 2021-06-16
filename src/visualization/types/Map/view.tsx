@@ -28,8 +28,9 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
   const {layers, zoom, allowPanAndZoom, mapStyle} = properties
   const {lat, lon} = properties.center
   const tooltipColumns =
-    properties.layers.tooltipColumns || result.fluxGroupKeyUnion || []
+    properties.layers[0].tooltipColumns || result.fluxGroupKeyUnion || []
 
+  console.log(tooltipColumns)
   const [mapServiceError, setMapServiceError] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
@@ -124,6 +125,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
         colorField: '_value',
         colors: DEFAULT_THRESHOLDS_GEO_COLORS,
         isClustered: false,
+        tooltipColumns: tooltipColumns,
       },
     ]
   }
@@ -151,7 +153,6 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
         mapStyle,
         layers: layersOpts,
         tileServerConfiguration: tileServerConfiguration,
-        tooltipColumns: tooltipColumns,
       },
     ],
   }

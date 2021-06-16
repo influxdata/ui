@@ -19,6 +19,7 @@ import {
   SET_LOGS,
   EDIT_TASK,
   REMOVE_TASK,
+  SET_CURRENT_TASKS_PAGE,
 } from 'src/tasks/actions/creators'
 import {ResourceType, ResourceState, TaskSchedule, Task} from 'src/types'
 
@@ -163,5 +164,11 @@ export default (
 
         return
       }
+
+      case SET_CURRENT_TASKS_PAGE: {
+        draftState.currentPage = action.tasksPage
+        return
+      }
+
     }
   })

@@ -26,6 +26,7 @@ import {
   removeTask,
   setNewScript,
   clearCurrentTask,
+  setCurrentTasksPage,
   Action as TaskAction,
 } from 'src/tasks/actions/creators'
 
@@ -362,14 +363,29 @@ export const setAllTaskOptionsByID = (taskID: string) => async (
   }
 }
 
-export const goToTasks = () => (
+export const goToTasks = () => (  
   dispatch: Dispatch<Action | RouterAction>,
   getState: GetState
-) => {
+  ) => {
   const org = getOrg(getState())
-
-  dispatch(push(`/orgs/${org.id}/tasks`))
+  
+  dispatch(push(`/orgs/${org.id}/tasks/`))
 }
+
+export const goToTaskRuns = () => (  
+  dispatch: Dispatch<Action | RouterAction>,
+  getState: GetState
+  ) => {
+    const state = getState()
+    const {
+      tasks: {currentTask},
+    } = state.resources
+
+    const org = getOrg(getState())
+
+    dispatch(push(`/orgs/${org.id}/tasks/${currentTask.id}/runs`))
+}
+
 
 export const cancel = () => (dispatch: Dispatch<Action | RouterAction>) => {
   dispatch(clearCurrentTask())
@@ -383,7 +399,7 @@ export const updateScript = () => async (
   try {
     const state = getState()
     const {
-      tasks: {currentScript: script, currentTask: task, taskOptions},
+      tasks: {currentScript: script, currentTask: task, taskOptions, currentPage},
     } = state.resources
 
     const updatedTask: Partial<Task> & {
@@ -411,7 +427,12 @@ export const updateScript = () => async (
       throw new Error(resp.data.message)
     }
 
-    dispatch(goToTasks())
+    if (currentPage === 'TasksPage') {
+      dispatch(goToTasks())
+    } else if (currentPage === 'TaskRunsPage') {
+      dispatch(goToTaskRuns());
+    }
+
     dispatch(clearCurrentTask())
     dispatch(notify(copy.taskUpdateSuccess()))
   } catch (error) {
@@ -591,4 +612,16 @@ export const runDuration = (finishedAt: Date, startedAt: Date): string => {
   }
 
   return diff + ' ' + timeTag
+}
+
+export const setTasksPageAsCurrent = () => async (
+  dispatch: Dispatch<Action>
+) => {
+  dispatch(setCurrentTasksPage('TasksPage'));
+}
+
+export const setTaskRunsPageAsCurrent = () => async (
+  dispatch: Dispatch<Action>
+) => {
+  dispatch(setCurrentTasksPage('TaskRunsPage'));
 }

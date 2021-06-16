@@ -22,6 +22,7 @@ import {
   deleteTaskLabel,
   runTask,
   getRuns,
+  setTaskRunsPageAsCurrent,
 } from 'src/tasks/actions/thunks'
 
 // Types
@@ -112,11 +113,12 @@ class UnconnectedTaskRunsCard extends PureComponent<
     const {
       history,
       currentTask,
+      setTaskRunsPageAsCurrent,
       match: {
         params: {orgID},
       },
     } = this.props
-
+    setTaskRunsPageAsCurrent()
     history.push(`/orgs/${orgID}/tasks/${currentTask.id}/edit`)
   }
 
@@ -154,6 +156,7 @@ const mdtp = {
   onDeleteTaskLabel: deleteTaskLabel,
   onRunTask: runTask,
   getRuns,
+  setTaskRunsPageAsCurrent,
 }
 
 const connector = connect(mstp, mdtp)

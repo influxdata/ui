@@ -1,7 +1,7 @@
 import {hoursToNs, nsToHours} from 'src/billing/utils/timeHelpers'
 
 // Types
-import {OrgLimits} from 'src/types/operator'
+import {OrgLimits} from 'src/types'
 
 const updateMaxRetentionWithCallback = (
   limits: OrgLimits,

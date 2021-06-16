@@ -7,8 +7,8 @@ import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {Page, Sort} from '@influxdata/clockface'
 import TaskRunsList from 'src/tasks/components/TaskRunsList'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
-import TaskHeaderCard from 'src/tasks/components/TaskHeaderCard'
-import PageBreadcrumbs from 'src/tasks/components/PageBreadcrumbs'
+import {TaskRunsCard} from 'src/tasks/components/TaskRunsCard'
+import {PageBreadcrumbs} from 'src/tasks/components/PageBreadcrumbs'
 
 // Types
 import {AppState, Run} from 'src/types'
@@ -70,7 +70,7 @@ class TaskRunsPage extends PureComponent<Props, State> {
             <RateLimitAlert />
           </Page.Header>
           <Page.ControlBar fullWidth={false}>
-            <TaskHeaderCard
+            <TaskRunsCard
               task={currentTask}
               onActivate={this.handleActivate}
               onEditTask={this.handleEditTask}

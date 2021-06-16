@@ -12,7 +12,7 @@ type Props = {
   pages: PageInfo[]
 }
 
-const PageBreadcrumbs: FC<Props> = ({pages}) => {
+export const PageBreadcrumbs: FC<Props> = ({pages}) => {
   const getCrumb = (page: PageInfo, isItTheLastPage: boolean) => {
     const text = `${page.text}${!isItTheLastPage ? ' >' : ''}`
 
@@ -20,7 +20,7 @@ const PageBreadcrumbs: FC<Props> = ({pages}) => {
       return <h1 className="bread-crumb-title">{text}</h1>
     } else {
       return (
-        <h1 id="bread-crumb-title" onClick={page.onClick}>
+        <h1 className="bread-crumb-title" onClick={page.onClick}>
           {text}
         </h1>
       )
@@ -42,4 +42,4 @@ const PageBreadcrumbs: FC<Props> = ({pages}) => {
   )
 }
 
-export default PageBreadcrumbs
+

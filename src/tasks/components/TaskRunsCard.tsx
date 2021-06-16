@@ -22,7 +22,6 @@ import {
   deleteTaskLabel,
   runTask,
   getRuns,
-  // setTaskRunsPageAsCurrent,
 } from 'src/tasks/actions/thunks'
 
 // Types
@@ -38,7 +37,7 @@ interface PassedProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = PassedProps & ReduxProps
 
-export class TaskHeaderCard extends PureComponent<
+class UnconnectedTaskRunsCard extends PureComponent<
   Props & RouteComponentProps<{orgID: string; id: string}>
 > {
   public render() {
@@ -50,7 +49,7 @@ export class TaskHeaderCard extends PureComponent<
 
     return (
       <ResourceCard
-        testID="task-card"
+        testID="task-runs-task-card"
         disabled={!this.isTaskActive}
         alignItems={AlignItems.Center}
         margin={ComponentSize.Large}
@@ -159,4 +158,6 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export default connector(withRouter(TaskHeaderCard))
+export const TaskRunsCard = connector(
+  withRouter(UnconnectedTaskRunsCard)
+)

@@ -218,7 +218,7 @@ describe('Tasks.Components.TaskCard', () => {
   })
 
   it('saves a new TaskCard', async () => {
-    const localTasks = { ...testTasks}
+    const localTasks = {...testTasks}
 
     localTasks['taskOptions'] = {
       name: 'FOOBAR',

@@ -310,14 +310,7 @@ describe('Tasks.Containers.TasksPage', () => {
       ).toEqual(replacementName)
     })
 
-    /*
-    NB was working up until most recent rebase 0bfc0bb370af 21.6.16
-    Now throws error on fire event
-
-    [Util] handleError::  Cannot assign to read only property 'status' of object '#<Object>'
-     :-/
-    */
-    it.skip('activates a task', async () => {
+    it('activates a task', async () => {
       expect(
         ui.store.getState().resources.tasks.byID[InactiveTask.id].status
       ).toEqual('inactive')

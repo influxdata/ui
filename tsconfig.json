@@ -38,12 +38,9 @@
     "webpack.*.ts",
     "src/**/*.test.ts",
     "src/**/*.test.tsx",
-    "src/**/mocks.ts",
+    "src/**/*mocks.ts",
+    "src/shared/utils/mocks/*",
     "coverage"
   ],
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "global.d.ts"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "global.d.ts"]
 }

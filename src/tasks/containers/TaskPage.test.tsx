@@ -218,7 +218,7 @@ describe('Tasks.Components.TaskCard', () => {
   })
 
   it('saves a new TaskCard', async () => {
-    const localTasks = testTasks
+    const localTasks = { ...testTasks}
 
     localTasks['taskOptions'] = {
       name: 'FOOBAR',
@@ -273,7 +273,7 @@ describe('Tasks.Components.TaskCard', () => {
   })
 
   it('handles error on save', async () => {
-    const localTasks = testTasks
+    const localTasks = {...testTasks}
 
     localTasks['taskOptions'] = {
       name: 'FOOBAR',
@@ -315,7 +315,7 @@ describe('Tasks.Components.TaskCard', () => {
 
   // ensure clean destruction
   it('clears the task state', () => {
-    const localTasks = testTasks
+    const localTasks = {...testTasks}
 
     localTasks['taskOptions'] = {
       name: 'FOOBAR',

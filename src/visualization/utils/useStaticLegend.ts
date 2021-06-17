@@ -123,13 +123,12 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
             estimatedHeight = length * sampleMaxHeight + padding
           }
 
-          const updatedRatio = estimatedHeight / totalHeight
+          let heightRatio = estimatedHeight / totalHeight
 
-          let heightRatio = updatedRatio
-          if (updatedRatio > STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM) {
+          if (heightRatio > STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM) {
             heightRatio = STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM
           }
-          if (updatedRatio < STATIC_LEGEND_HEIGHT_RATIO_MINIMUM) {
+          if (heightRatio < STATIC_LEGEND_HEIGHT_RATIO_MINIMUM) {
             heightRatio = STATIC_LEGEND_HEIGHT_RATIO_MINIMUM
           }
 

@@ -51,157 +51,147 @@ const TreeSidebar: FC = () => {
         onToggleClick={handleToggleNavExpansion}
         bannerElement={<CloudUpgradeNavBanner />}
       >
-        {generateNavItems(org.id).map(item => {
-          const linkElement = (className: string): JSX.Element => {
-            if (item.link.type === 'href') {
-              return <a href={item.link.location} className={className} />
+        {generateNavItems(org.id)
+          .filter(item => {
+            if (item.id === 'operator') {
+              return CLOUD && me?.isOperator
             }
+            return true
+          })
+          .map(item => {
+            const linkElement = (className: string): JSX.Element => {
+              if (item.link.type === 'href') {
+                return <a href={item.link.location} className={className} />
+              }
 
-            return <Link to={item.link.location} className={className} />
-          }
-          let navItemElement = (
-            <TreeNav.Item
-              key={item.id}
-              id={item.id}
-              testID={item.testID}
-              icon={<Icon glyph={item.icon} />}
-              label={item.label}
-              shortLabel={item.shortLabel}
-              active={getNavItemActivation(
-                item.activeKeywords,
-                location.pathname
-              )}
-              linkElement={linkElement}
-            >
-              {Boolean(item.menu) && (
-                <TreeNav.SubMenu>
-                  {item.menu.map(menuItem => {
-                    const linkElement = (className: string): JSX.Element => {
-                      if (menuItem.link.type === 'href') {
+              return <Link to={item.link.location} className={className} />
+            }
+            let navItemElement = (
+              <TreeNav.Item
+                key={item.id}
+                id={item.id}
+                testID={item.testID}
+                icon={<Icon glyph={item.icon} />}
+                label={item.label}
+                shortLabel={item.shortLabel}
+                active={getNavItemActivation(
+                  item.activeKeywords,
+                  location.pathname
+                )}
+                linkElement={linkElement}
+              >
+                {Boolean(item.menu) && (
+                  <TreeNav.SubMenu>
+                    {item.menu.map(menuItem => {
+                      const linkElement = (className: string): JSX.Element => {
+                        if (menuItem.link.type === 'href') {
+                          return (
+                            <a
+                              href={menuItem.link.location}
+                              className={className}
+                            />
+                          )
+                        }
+
                         return (
-                          <a
-                            href={menuItem.link.location}
+                          <Link
+                            to={menuItem.link.location}
                             className={className}
                           />
                         )
                       }
 
-                      return (
-                        <Link
-                          to={menuItem.link.location}
-                          className={className}
+                      let navSubItemElement = (
+                        <TreeNav.SubItem
+                          key={menuItem.id}
+                          id={menuItem.id}
+                          testID={menuItem.testID}
+                          active={getNavItemActivation(
+                            [menuItem.id],
+                            location.pathname
+                          )}
+                          label={menuItem.label}
+                          linkElement={linkElement}
                         />
                       )
-                    }
 
-                    let navSubItemElement = (
-                      <TreeNav.SubItem
-                        key={menuItem.id}
-                        id={menuItem.id}
-                        testID={menuItem.testID}
-                        active={getNavItemActivation(
-                          [menuItem.id],
-                          location.pathname
-                        )}
-                        label={menuItem.label}
-                        linkElement={linkElement}
-                      />
-                    )
+                      if (menuItem.cloudExclude) {
+                        navSubItemElement = (
+                          <CloudExclude key={menuItem.id}>
+                            {navSubItemElement}
+                          </CloudExclude>
+                        )
+                      }
 
-                    if (menuItem.cloudExclude) {
-                      navSubItemElement = (
-                        <CloudExclude key={menuItem.id}>
-                          {navSubItemElement}
-                        </CloudExclude>
-                      )
-                    }
+                      if (menuItem.cloudOnly) {
+                        navSubItemElement = (
+                          <CloudOnly key={menuItem.id}>
+                            {navSubItemElement}
+                          </CloudOnly>
+                        )
+                      }
 
-                    if (menuItem.cloudOnly) {
-                      navSubItemElement = (
-                        <CloudOnly key={menuItem.id}>
-                          {navSubItemElement}
-                        </CloudOnly>
-                      )
-                    }
+                      if (item.featureFlag) {
+                        navItemElement = (
+                          <FeatureFlag
+                            key={item.id}
+                            name={item.featureFlag}
+                            equals={item.featureFlagValue}
+                          >
+                            {navItemElement}
+                          </FeatureFlag>
+                        )
+                      }
 
-                    if (
-                      CLOUD &&
-                      item.featureFlag === 'unityOperator' &&
-                      me?.isOperator
-                    ) {
-                      navItemElement = (
-                        <FeatureFlag
-                          key={item.id}
-                          name={item.featureFlag}
-                          equals={item.featureFlagValue}
-                        >
-                          {navItemElement}
-                        </FeatureFlag>
-                      )
-                    }
-
-                    // TODO(ariel): sort this out for the operator to render for operators and not to render for non operators
-
-                    if (
-                      item.featureFlag &&
-                      item.featureFlag !== 'unityOperator'
-                    ) {
-                      navSubItemElement = (
-                        <FeatureFlag
-                          key={menuItem.id}
-                          name={menuItem.featureFlag}
-                          equals={menuItem.featureFlagValue}
-                        >
-                          {navSubItemElement}
-                        </FeatureFlag>
-                      )
-                    }
-
-                    return navSubItemElement
-                  })}
-                </TreeNav.SubMenu>
-              )}
-            </TreeNav.Item>
-          )
-
-          if (item.cloudExclude) {
-            navItemElement = (
-              <CloudExclude key={item.id}>{navItemElement}</CloudExclude>
+                      return navSubItemElement
+                    })}
+                  </TreeNav.SubMenu>
+                )}
+              </TreeNav.Item>
             )
-          }
 
-          if (item.cloudOnly) {
-            navItemElement = (
-              <CloudOnly key={item.id}>{navItemElement}</CloudOnly>
-            )
-          }
+            if (item.cloudExclude) {
+              navItemElement = (
+                <CloudExclude key={item.id}>{navItemElement}</CloudExclude>
+              )
+            }
 
-          if (CLOUD && item.featureFlag === 'unityOperator' && me?.isOperator) {
-            navItemElement = (
-              <FeatureFlag
-                key={item.id}
-                name={item.featureFlag}
-                equals={item.featureFlagValue}
-              >
-                {navItemElement}
-              </FeatureFlag>
-            )
-          }
+            if (item.cloudOnly) {
+              navItemElement = (
+                <CloudOnly key={item.id}>{navItemElement}</CloudOnly>
+              )
+            }
 
-          if (item.featureFlag && item.featureFlag !== 'unityOperator') {
-            navItemElement = (
-              <FeatureFlag
-                key={item.id}
-                name={item.featureFlag}
-                equals={item.featureFlagValue}
-              >
-                {navItemElement}
-              </FeatureFlag>
-            )
-          }
+            if (
+              CLOUD &&
+              item.featureFlag === 'unityOperator' &&
+              me?.isOperator
+            ) {
+              navItemElement = (
+                <FeatureFlag
+                  key={item.id}
+                  name={item.featureFlag}
+                  equals={item.featureFlagValue}
+                >
+                  {navItemElement}
+                </FeatureFlag>
+              )
+            }
 
-          return navItemElement
-        })}
+            if (item.featureFlag && item.featureFlag !== 'unityOperator') {
+              navItemElement = (
+                <FeatureFlag
+                  key={item.id}
+                  name={item.featureFlag}
+                  equals={item.featureFlagValue}
+                >
+                  {navItemElement}
+                </FeatureFlag>
+              )
+            }
+
+            return navItemElement
+          })}
       </TreeNav>
     </OrgSettings>
   )

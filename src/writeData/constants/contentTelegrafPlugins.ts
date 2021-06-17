@@ -920,7 +920,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPlugin[] = [
   },
   {
     id: 'knx_listener',
-    name: 'Schneider Electric KNX',
+    name: 'KNX',
     markdown: knx_listenerMarkdown,
     image: knx_listenerLogo,
   },

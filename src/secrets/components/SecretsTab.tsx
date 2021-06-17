@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useState} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
+import {useSelector} from 'react-redux'
 
 // Components
 import {
@@ -19,34 +19,22 @@ import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/R
 import GetResources from 'src/resources/components/GetResources'
 
 // Selectors
-import {getAll} from 'src/resources/selectors'
+import {getAllSecrets} from 'src/resources/selectors'
 
 // Types
-import {AppState, ResourceType, Secret} from 'src/types'
+import {ResourceType, Secret} from 'src/types'
 import {SortTypes} from 'src/shared/utils/sort'
 import {SecretSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 
-interface OwnProps {
-  secrets: Secret[]
-  searchTerm?: string
-  // importOverlayState?: OverlayState
-  sortDirection?: Sort
-  sortType?: SortTypes
-}
-
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps
-
-const SecretsTab: FC<Props> = ({
-  secrets,
-  // importOverlayState = OverlayState.Closed,
-}) => {
+const SecretsTab: FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [sortDirection, setSortDirection] = useState<Sort>(Sort.Ascending)
   const [sortKey, setSortKey] = useState<string>('id')
   const [sortType, setSortType] = useState<SortTypes>(SortTypes.String)
 
   const FilterSecrets = FilterList<Secret>()
+
+  const secrets = useSelector(getAllSecrets)
 
   const handleOpenCreateOverlay = () => {}
 
@@ -163,16 +151,4 @@ const SecretsTab: FC<Props> = ({
   )
 }
 
-const mstp = (state: AppState) => {
-  const secrets = getAll<Secret>(state, ResourceType.Secrets)
-
-  return {secrets}
-}
-
-// const mdtp = {
-//     onDeleteSecret: deleteSecret,
-// }
-
-const connector = connect(mstp, null)
-
-export default connector(SecretsTab)
+export default SecretsTab

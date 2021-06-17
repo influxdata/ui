@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
-import {connect, ConnectedProps, useSelector} from 'react-redux'
+import {useSelector} from 'react-redux'
 
 // Components
 import SettingsTabbedPage from 'src/settings/components/SettingsTabbedPage'
@@ -12,13 +12,11 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
-import {AppState, ResourceType} from 'src/types'
+import {ResourceType} from 'src/types'
 import SecretsTab from 'src/secrets/components/SecretsTab'
 import GetResources from 'src/resources/components/GetResources'
 
-type ReduxProps = ConnectedProps<typeof connector>
-
-const SecretsIndex: FC<ReduxProps> = () => {
+const SecretsIndex: FC = () => {
   const org = useSelector(getOrg)
 
   return (
@@ -35,8 +33,4 @@ const SecretsIndex: FC<ReduxProps> = () => {
   )
 }
 
-const mstp = (state: AppState) => ({org: getOrg(state)})
-
-const connector = connect(mstp, null)
-
-export default connector(SecretsIndex)
+export default SecretsIndex

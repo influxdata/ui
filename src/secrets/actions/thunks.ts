@@ -40,9 +40,7 @@ import {getOrg} from 'src/organizations/selectors'
 import {getStatus} from 'src/resources/selectors'
 
 const makeEntitiesForSecrets = (response: Array<string>) => {
-  const processedData = []
-  response.forEach(element => processedData.push({id: element, key: element}))
-  return processedData
+  return response.map(element => {id: element, key: element})
 }
 
 export const getSecrets = () => async (

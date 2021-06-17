@@ -618,14 +618,4 @@ export const runDuration = (finishedAt: Date, startedAt: Date): string => {
   return diff + ' ' + timeTag
 }
 
-// export const setTasksPageAsCurrent = () => async (
-//   dispatch: Dispatch<Action>
-// ) => {
-//   dispatch(setCurrentTasksPage(TaskPage.TasksPage))
-// }
 
-// export const setTaskRunsPageAsCurrent = () => async (
-//   dispatch: Dispatch<Action>
-// ) => {
-//   dispatch(setCurrentTasksPage(TaskPage.TaskRunsPage))
-// }

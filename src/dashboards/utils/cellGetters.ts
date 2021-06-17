@@ -55,7 +55,14 @@ export const getNewDashboardCell = (
     id: uuid.v4(),
     x: 0,
     y: 0,
-    h: isStaticLegendType ? STATIC_LEGEND_CELL_HEIGHT_DEFAULT : 4,
+    h:
+      isStaticLegendType &&
+      (viewProperties as
+        | XYViewProperties
+        | LinePlusSingleStatProperties
+        | BandViewProperties)?.staticLegend?.show
+        ? STATIC_LEGEND_CELL_HEIGHT_DEFAULT
+        : 4,
     w: 4,
     links: {
       self: '',

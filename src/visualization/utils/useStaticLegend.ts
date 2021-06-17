@@ -131,6 +131,9 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
           if (heightRatio < STATIC_LEGEND_HEIGHT_RATIO_MINIMUM) {
             heightRatio = STATIC_LEGEND_HEIGHT_RATIO_MINIMUM
           }
+          if (typeof heightRatio !== 'number' || heightRatio !== heightRatio) {
+            heightRatio = STATIC_LEGEND_HEIGHT_RATIO_DEFAULT
+          }
 
           update({
             heightRatio,

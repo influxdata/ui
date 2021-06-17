@@ -146,7 +146,7 @@ const Query: FC<PipeProp> = ({Context}) => {
   }, [id, inject])
 
   return (
-    <Context controls={controls}>
+    <Context controls={controls} resizes>
       <Suspense
         fallback={
           <SpinnerContainer

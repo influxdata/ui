@@ -9,11 +9,11 @@ import React, {
 } from 'react'
 
 // Components
-import {IconFont} from '@influxdata/clockface'
-import Resizer from 'src/flows/shared/Resizer'
+import {Icon, IconFont} from '@influxdata/clockface'
 import ExportDashboardOverlay from 'src/flows/pipes/Visualization/ExportDashboardOverlay'
 import ExportButton from 'src/flows/pipes/Visualization/ExportDashboardButton'
 import Controls from 'src/flows/pipes/Visualization/Controls'
+import FriendlyQueryError from 'src/flows/shared/FriendlyQueryError'
 
 // Utilities
 import {View, ViewOptions} from 'src/visualization'
@@ -103,35 +103,66 @@ const Visualization: FC<PipeProp> = ({Context}) => {
 
   const persist = isFlagEnabled('flow-sidebar') ? null : <ExportButton />
 
+  if (results.error) {
+    return (
+      <Context
+        controls={
+          <Controls toggle={toggleOptions} visible={optionsVisibility} />
+        }
+        persistentControls={persist}
+      >
+        <div className="panel-resizer panel-resizer__visible panel-resizer--error-state">
+          <div className="panel-resizer--header panel-resizer--header__multiple-controls">
+            <Icon
+              glyph={IconFont.AlertTriangle}
+              className="panel-resizer--vis-toggle"
+            />
+          </div>
+          <FriendlyQueryError error={results.error} />
+        </div>
+      </Context>
+    )
+  }
+
+  if (!dataExists) {
+    return (
+      <Context
+        controls={
+          <Controls toggle={toggleOptions} visible={optionsVisibility} />
+        }
+        persistentControls={persist}
+      >
+        <div className="panel-resizer panel-resizer__visible">
+          <div className="panel-resizer--header panel-resizer--header__multiple-controls">
+            <Icon
+              glyph={IconFont.BarChart}
+              className="panel-resizer--vis-toggle"
+            />
+          </div>
+          <div className="panel-resizer--body">
+            <div className="panel-resizer--empty">{loadingText}</div>
+          </div>
+        </div>
+      </Context>
+    )
+  }
+
   return (
     <Context
       controls={<Controls toggle={toggleOptions} visible={optionsVisibility} />}
       persistentControls={persist}
+      resizes
     >
-      <Resizer
-        loading={loading}
-        resizingEnabled={dataExists}
-        minimumHeight={200}
-        emptyText={loadingText}
-        emptyIcon={IconFont.BarChart}
-        toggleVisibilityEnabled={false}
-        height={data.panelHeight}
-        onUpdateHeight={panelHeight => update({panelHeight})}
-        visibility={data.panelVisibility}
-        onUpdateVisibility={panelVisibility => update({panelVisibility})}
-      >
-        <div className="flow-visualization">
-          <div className="flow-visualization--view">
-            <View
-              loading={RemoteDataState.Done}
-              error={results?.error}
-              properties={data.properties}
-              result={results.parsed}
-              timeRange={range}
-            />
-          </div>
+      <div className="flow-visualization">
+        <div className="flow-visualization--view">
+          <View
+            loading={loading}
+            properties={data.properties}
+            result={results.parsed}
+            timeRange={range}
+          />
         </div>
-      </Resizer>
+      </div>
       {optionsVisibility && dataExists && (
         <ViewOptions
           properties={data.properties}

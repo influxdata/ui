@@ -6,12 +6,13 @@ $panel-resizer--drag-handle: 30px;
 .panel-resizer {
   display: flex;
   flex-direction: row;
-  align-items: stretch;
+  align-items: center;
   width: 100%;
   border: $cf-border solid $g0-obsidian;
   background-color: $g0-obsidian;
   border-radius: $cf-radius 0 0 $cf-radius;
   position: relative;
+  height: 100%;
 }
 
 .panel-resizer--error-state {

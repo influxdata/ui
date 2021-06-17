@@ -529,7 +529,10 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('button')
         .click()
         .then(() => {
+          // Look at this article for removing flakiness https://www.cypress.io/blog/2020/07/22/do-not-get-too-detached/
+          cy.getByTestID('selector-list schmucket').should('be.visible')
           cy.getByTestID('selector-list schmucket').click()
+          cy.getByTestID(`selector-list m`).should('be.visible')
           cy.getByTestID(`selector-list m`).click()
           cy.getByTestID('selector-list v')
             .click()
@@ -560,11 +563,10 @@ describe('The Annotations UI functionality', () => {
       })
 
       cy.getByTestID('overlay--container').within(() => {
-        cy.getByTestID('edit-annotation-message')
-          .should('be.visible')
-          .click()
-          .focused()
-          .type('annotation in newCell')
+        cy.getByTestID('edit-annotation-message').should('be.visible')
+        cy.getByTestID('edit-annotation-message').click()
+        cy.getByTestID('edit-annotation-message').focused()
+        cy.getByTestID('edit-annotation-message').type('annotation in newCell')
         cy.getByTestID('annotation-submit-button').click()
       })
 

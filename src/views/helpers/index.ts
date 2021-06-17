@@ -403,6 +403,7 @@ const NEW_VIEW_CREATORS = {
           colorField: '_value',
           colors: DEFAULT_THRESHOLDS_GEO_COLORS,
           isClustered: false,
+          tooltipColumns: [],
         },
       ],
     },

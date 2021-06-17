@@ -40,7 +40,7 @@ import {getOrg} from 'src/organizations/selectors'
 import {getStatus} from 'src/resources/selectors'
 
 const makeEntitiesForSecrets = (response: Array<string>) => {
-  return response.map(element => {id: element, key: element})
+  return response.map(element => ({id: element, key: element}))
 }
 
 export const getSecrets = () => async (

@@ -17,6 +17,7 @@ import {getTasks} from 'src/tasks/actions/thunks'
 import {getTelegrafs} from 'src/telegrafs/actions/thunks'
 import {getTemplates} from 'src/templates/actions/thunks'
 import {getVariables} from 'src/variables/actions/thunks'
+import {getSecrets} from 'src/secrets/actions/thunks'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -120,6 +121,10 @@ class GetResources extends PureComponent<Props> {
         return this.props.getEndpoints()
       }
 
+      case ResourceType.Secrets: {
+        return this.props.getSecrets()
+      }
+
       default: {
         throw new Error('incorrect resource type provided')
       }
@@ -163,6 +168,7 @@ const mdtp = {
   getChecks: getChecks,
   getNotificationRules: getNotificationRules,
   getEndpoints: getEndpoints,
+  getSecrets: getSecrets,
 }
 
 const connector = connect(mstp, mdtp)

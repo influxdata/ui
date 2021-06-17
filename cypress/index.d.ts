@@ -37,6 +37,8 @@ import {
   createDashWithViewAndVar,
   createRule,
   clickAttached,
+  upsertSecret,
+  setFeatureFlags,
 } from './support/commands'
 
 declare global {
@@ -83,6 +85,7 @@ declare global {
       createEndpoint: typeof createEndpoint
       createRule: typeof createRule
       setFeatureFlags: typeof setFeatureFlags
+      upsertSecret: typeof upsertSecret
     }
   }
 }

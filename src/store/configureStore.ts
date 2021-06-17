@@ -49,6 +49,7 @@ import {demoDataReducer, DemoDataState} from 'src/cloud/reducers/demodata'
 import checksReducer from 'src/checks/reducers'
 import rulesReducer from 'src/notifications/rules/reducers'
 import endpointsReducer from 'src/notifications/endpoints/reducers'
+import {secretsReducer} from 'src/secrets/reducers'
 import {
   pluginsReducer,
   activePluginsReducer,
@@ -107,6 +108,7 @@ export const rootReducer = (history: History) => (state, action) => {
       orgs: orgsReducer,
       rules: rulesReducer,
       scrapers: scrapersReducer,
+      secrets: secretsReducer,
       tasks: tasksReducer,
       telegrafs: telegrafsReducer,
       templates: templatesReducer,

@@ -1,4 +1,4 @@
-import {NotificationEndpoint} from '../../src/types'
+import {NotificationEndpoint, Secret} from '../../src/types'
 import {Bucket, Organization} from '../../src/client'
 import {setOverrides, FlagMap} from 'src/shared/actions/flags'
 import 'cypress-file-upload'
@@ -248,6 +248,17 @@ export const createBucket = (
       organization,
       retentionRules: [],
     },
+  })
+}
+
+export const upsertSecret = (
+  orgID: string,
+  secret: Secret
+): Cypress.Chainable<Cypress.Response> => {
+  return cy.request({
+    method: 'PATCH',
+    url: `/api/v2/orgs/${orgID}/secrets`,
+    body: secret,
   })
 }
 
@@ -814,6 +825,9 @@ Cypress.Commands.add('createMapVariable', createMapVariable)
 // labels
 Cypress.Commands.add('createLabel', createLabel)
 Cypress.Commands.add('createAndAddLabel', createAndAddLabel)
+
+// secrets
+Cypress.Commands.add('upsertSecret', upsertSecret)
 
 // test
 Cypress.Commands.add('writeData', writeData)

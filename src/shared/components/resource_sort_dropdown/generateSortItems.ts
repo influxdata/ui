@@ -17,6 +17,7 @@ import {
 export type DashboardSortKey = keyof Dashboard | 'meta.updatedAt'
 export type TaskSortKey = keyof Task
 export type VariableSortKey = keyof Variable | 'arguments.type'
+export type SecretSortKey = string
 export type LabelSortKey = keyof Label | 'properties.description'
 export type TemplateSortKey = keyof Template | 'meta.name' | 'meta.description'
 export type BucketSortKey = keyof Bucket | 'retentionRules[0].everySeconds'
@@ -29,6 +30,7 @@ export type SortKey =
   | DashboardSortKey
   | TaskSortKey
   | VariableSortKey
+  | SecretSortKey
   | LabelSortKey
   | TemplateSortKey
   | BucketSortKey
@@ -149,6 +151,21 @@ export const generateSortItems = (
         {
           label: 'Type (Z → A)',
           sortKey: 'arguments.type',
+          sortType: SortTypes.String,
+          sortDirection: Sort.Descending,
+        },
+      ]
+    case ResourceType.Secrets:
+      return [
+        {
+          label: 'Name (A → Z)',
+          sortKey: 'id',
+          sortType: SortTypes.String,
+          sortDirection: Sort.Ascending,
+        },
+        {
+          label: 'Name (Z → A)',
+          sortKey: 'id',
           sortType: SortTypes.String,
           sortDirection: Sort.Descending,
         },

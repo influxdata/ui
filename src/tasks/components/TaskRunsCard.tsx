@@ -132,6 +132,7 @@ class UnconnectedTaskRunsCard extends PureComponent<
 
   private changeToggle = () => {
     const {task, onActivate} = this.props
+    
     if (task.status === 'active') {
       task.status = 'inactive'
     } else {

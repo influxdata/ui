@@ -165,7 +165,6 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     ],
   }
 
-  console.log(config)
   return <Plot config={config} />
 }
 

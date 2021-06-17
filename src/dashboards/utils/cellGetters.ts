@@ -48,11 +48,14 @@ export const getNewDashboardCell = (
   clonedCell: Cell,
   viewProperties: ViewProperties
 ): NewCell => {
+  const staticLegendTypes = new Set(['xy', 'line-plus-single-stat', 'band'])
+  const isStaticLegendType = staticLegendTypes.has(viewProperties?.type)
+
   const defaultCell = {
     id: uuid.v4(),
     x: 0,
     y: 0,
-    h: 4,
+    h: isStaticLegendType ? STATIC_LEGEND_CELL_HEIGHT_DEFAULT : 4,
     w: 4,
     links: {
       self: '',
@@ -76,8 +79,7 @@ export const getNewDashboardCell = (
   const mostCommonCellWidth = getMostCommonValue(existingCellWidths)
   let mostCommonCellHeight = getMostCommonValue(existingCellHeights)
 
-  const staticLegendTypes = new Set(['xy', 'line-plus-single-stat', 'band'])
-  if (staticLegendTypes.has(viewProperties?.type)) {
+  if (isStaticLegendType) {
     const {staticLegend} = viewProperties as
       | XYViewProperties
       | LinePlusSingleStatProperties

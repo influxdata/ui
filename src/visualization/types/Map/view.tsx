@@ -28,9 +28,6 @@ type GeoCoordinates = {
 const GeoPlot: FC<Props> = ({result, properties}) => {
   const {layers, zoom, allowPanAndZoom, mapStyle} = properties
   const {lat, lon} = properties.center
-  const tooltipColumns = _.isEmpty(properties.layers[0].tooltipColumns)
-    ? result.fluxGroupKeyUnion
-    : properties.layers[0].tooltipColumns
 
   const [mapServiceError, setMapServiceError] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
@@ -117,6 +114,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     tileServerUrl: getMapboxUrl(),
     bingKey: '',
   }
+
   let layersOpts = layers
   if (!layers.length) {
     layersOpts = [
@@ -126,16 +124,23 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
         colorField: '_value',
         colors: DEFAULT_THRESHOLDS_GEO_COLORS,
         isClustered: false,
-        tooltipColumns: tooltipColumns,
+        tooltipColumns: [],
       },
     ]
+    properties.layers = layersOpts
   }
 
+  const tooltipColumns = _.isEmpty(properties.layers[0].tooltipColumns)
+    ? result.fluxGroupKeyUnion
+    : properties.layers[0].tooltipColumns
+
+  const colorChoice = _.isEmpty(properties.layers[0].colors)
+    ? DEFAULT_THRESHOLDS_GEO_COLORS
+    : properties.layers[0].colors
+
+  // auto assign these variables
   layersOpts[0].tooltipColumns = tooltipColumns
-
-  if (!layers[0].colors[0].id) {
-    layersOpts[0].colors = DEFAULT_THRESHOLDS_GEO_COLORS
-  }
+  layersOpts[0].colors = colorChoice
 
   let zoomOpt = zoom
   if (zoom === 0) {
@@ -159,6 +164,8 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
       },
     ],
   }
+
+  console.log(config)
   return <Plot config={config} />
 }
 

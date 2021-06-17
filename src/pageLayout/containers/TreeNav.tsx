@@ -54,7 +54,7 @@ const TreeSidebar: FC = () => {
         {generateNavItems(org.id)
           .filter(item => {
             if (item.id === 'operator') {
-              return CLOUD && me?.isOperator
+              return CLOUD && me?.isOperator === true
             }
             return true
           })

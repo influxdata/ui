@@ -41,7 +41,9 @@ describe('Secrets', () => {
         .then(() => {
           cy.reload()
           cy.getByTestID('secret-card--toEverybody').should('exist')
+          cy.getByTestID('secret-card--toEverybody').should('be.visible')
           cy.getByTestID('secret-card--CocaColaRecipe').should('exist')
+          cy.getByTestID('secret-card--CocaColaRecipe').should('be.visible')
 
           // Test copy to clipboard via clicking key name
           cy.getByTestID('secret-card--name CocaColaRecipe')

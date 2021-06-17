@@ -1,5 +1,10 @@
 import React, {FC, useContext, useEffect, useState} from 'react'
-import {FluxResult, Resource, ResourceManipulator} from 'src/types/flows'
+import {
+  FluxResult,
+  Resource,
+  ResourceManipulator,
+  ResourceUpdater,
+} from 'src/types/flows'
 import useResource from 'src/flows/context/resource.hook'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {PIPE_DEFINITIONS} from 'src/flows'
@@ -37,6 +42,7 @@ export const ResultsProvider: FC = ({children}) => {
     setResults({...EMPTY_STATE})
   }, [id])
 
+  console.log(flow, 'RESULTS')
   const manipulator = useResource<FluxResult>(results, setResults)
 
   const value = {
@@ -45,6 +51,11 @@ export const ResultsProvider: FC = ({children}) => {
       try {
         if (result) {
           manipulator.add(id, result)
+          setResults(prev => ({
+            ...prev,
+            byID: {...prev.byID, [id]: result},
+            allIDs: prev.allIDs.concat([id]),
+          }))
           return
         }
         if (PIPE_DEFINITIONS[flow.data.get(id).type].family === 'inputs') {

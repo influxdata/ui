@@ -22,7 +22,6 @@ function useResource<T>(
       if (data) {
         resource.byID[id] = data
         resource.allIDs.push(id)
-        onChange(resource)
         return
       }
 

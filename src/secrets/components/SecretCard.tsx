@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
+import {useDispatch} from 'react-redux'
 import CopyToClipboard from 'react-copy-to-clipboard'
 
 // Components
@@ -12,28 +12,27 @@ import {Secret} from 'src/types'
 
 // Actions
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
-import {notify as notifyAction} from 'src/shared/actions/notifications'
+import {notify} from 'src/shared/actions/notifications'
 import {
   copyToClipboardFailed,
   copyToClipboardSuccess,
 } from 'src/shared/copy/notifications'
 
-interface OwnProps {
+interface Props {
   secret: Secret
 }
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps
+const SecretCard: FC<Props> = ({secret}) => {
+  const dispatch = useDispatch()
 
-const SecretCard: FC<Props> = ({secret, notify}) => {
   const handleCopyAttempt = (
     copiedText: string,
     isSuccessful: boolean
   ): void => {
     if (isSuccessful) {
-      notify(copyToClipboardSuccess(copiedText, 'Secret ID'))
+      dispatch(notify(copyToClipboardSuccess(copiedText, 'Secret ID')))
     } else {
-      notify(copyToClipboardFailed(copiedText, 'Secret ID'))
+      dispatch(notify(copyToClipboardFailed(copiedText, 'Secret ID')))
     }
   }
 
@@ -57,10 +56,4 @@ const SecretCard: FC<Props> = ({secret, notify}) => {
   )
 }
 
-const mdtp = {
-  notify: notifyAction,
-}
-
-const connector = connect(null, mdtp)
-
-export default connector(SecretCard)
+export default SecretCard

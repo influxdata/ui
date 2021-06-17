@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import {connect, ConnectedProps} from 'react-redux'
+import {useDispatch} from 'react-redux'
 
 // Components
 import {
@@ -12,7 +12,7 @@ import {
 } from '@influxdata/clockface'
 
 // Actions
-import {notify as notifyAction} from 'src/shared/actions/notifications'
+import {notify} from 'src/shared/actions/notifications'
 
 // Notifications
 import {
@@ -24,22 +24,21 @@ import {
 import {Secret} from 'src/types'
 import {Context} from 'src/clockface'
 
-interface OwnProps {
+interface Props {
   secret: Secret
 }
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps
+const SecretContextMenu: FC<Props> = ({secret}) => {
+  const dispatch = useDispatch()
 
-const SecretContextMenu: FC<Props> = ({secret, notify}) => {
   const handleCopyAttempt = (
     copiedText: string,
     isSuccessful: boolean
   ): void => {
     if (isSuccessful) {
-      notify(copyToClipboardSuccess(copiedText, 'Secret ID'))
+      dispatch(notify(copyToClipboardSuccess(copiedText, 'Secret ID')))
     } else {
-      notify(copyToClipboardFailed(copiedText, 'Secret ID'))
+      dispatch(notify(copyToClipboardFailed(copiedText, 'Secret ID')))
     }
   }
 
@@ -60,10 +59,4 @@ const SecretContextMenu: FC<Props> = ({secret, notify}) => {
   )
 }
 
-const mdtp = {
-  notify: notifyAction,
-}
-
-const connector = connect(null, mdtp)
-
-export default connector(SecretContextMenu)
+export default SecretContextMenu

@@ -99,11 +99,11 @@ jest.mock('src/client', () => ({
       data: {...InactiveTask, name: replacementName, id: replacementID},
     }
   }),
-  patchTask: jest.fn(() => {
+  patchTask: jest.fn(args => {
     return {
       headers: {},
       status: 200,
-      data: {...InactiveTask, status: 'active'},
+      data: {...InactiveTask, status: args.data.status},
     }
   }),
   deleteTask: jest.fn(() => ({
@@ -321,7 +321,6 @@ describe('Tasks.Containers.TasksPage', () => {
       )
 
       fireEvent.click(activateToggle)
-
       await waitFor(() => expect(patchTask).toBeCalled())
 
       expect(mocked(patchTask).mock.calls[0][0].data.status).toEqual('active')
@@ -329,6 +328,17 @@ describe('Tasks.Containers.TasksPage', () => {
       expect(
         ui.store.getState().resources.tasks.byID[InactiveTask.id].status
       ).toEqual('active')
+
+      fireEvent.click(activateToggle)
+      await waitFor(() => expect(patchTask).toBeCalledTimes(2))
+
+      await expect(mocked(patchTask).mock.calls[1][0].data.status).toEqual(
+        'inactive'
+      )
+
+      expect(
+        ui.store.getState().resources.tasks.byID[InactiveTask.id].status
+      ).toEqual('inactive')
     })
   })
 })

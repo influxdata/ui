@@ -1,6 +1,5 @@
 // Libraries
 import React from 'react'
-import {fireEvent} from '@testing-library/react'
 import {renderWithReduxAndRouter} from 'src/mockState'
 
 // Components
@@ -58,19 +57,5 @@ describe('Tasks.Components.TaskCard', () => {
     })
   })
 
-  describe('activation', () => {
-    beforeEach(() => {
-      jest.clearAllMocks()
-    })
-
-    it('can trigger deactivation', () => {
-      const {ui, props} = setup()
-
-      fireEvent.click(ui.getByTestId('task-card--slide-toggle'))
-      expect(props.onActivate.mock.calls[0][0].status).toEqual('inactive')
-
-      fireEvent.click(ui.getByTestId('task-card--slide-toggle'))
-      expect(props.onActivate.mock.calls[1][0].status).toEqual('active')
-    })
-  })
+  // N.B. moved activation test to TasksPage container test
 })

@@ -152,7 +152,7 @@ const SecretsTab: FC<Props> = ({
               secrets={sc}
               emptyState={SecretsEmptyState()}
               onDeleteSecret={() => {}}
-              sortKey='key'
+              sortKey="key"
               sortDirection={sortDirection}
               sortType={sortType}
             />

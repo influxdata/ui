@@ -16,6 +16,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   STATIC_LEGEND_HEIGHT_RATIO_DEFAULT,
   STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM,
+  STATIC_LEGEND_HEIGHT_RATIO_MINIMUM,
   STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
   STATIC_LEGEND_SHOW_DEFAULT,
   STATIC_LEGEND_STYLING,
@@ -123,10 +124,14 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
           }
 
           const updatedRatio = estimatedHeight / totalHeight
-          const heightRatio =
-            updatedRatio <= STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM
-              ? updatedRatio
-              : STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM
+
+          let heightRatio = updatedRatio
+          if (updatedRatio > STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM) {
+            heightRatio = STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM
+          }
+          if (updatedRatio < STATIC_LEGEND_HEIGHT_RATIO_MINIMUM) {
+            heightRatio = STATIC_LEGEND_HEIGHT_RATIO_MINIMUM
+          }
 
           update({
             heightRatio,

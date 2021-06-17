@@ -46,7 +46,7 @@ export const FlowProvider: FC = ({children}) => {
     delete initial.title
 
     flows[currentID].data.add(id, initial)
-    flows[currentID].meta.add(id, {
+    const {resource, onChange} = flows[currentID].meta.add(id, {
       title,
       visible: true,
     })
@@ -55,6 +55,7 @@ export const FlowProvider: FC = ({children}) => {
       flows[currentID].data.move(id, index + 1)
     }
 
+    onChange(resource)
     return id
   }
 

@@ -85,7 +85,7 @@ export type ResourceUpdater<T> = (resource: Resource<T>) => void
 
 export interface ResourceManipulator<T> {
   get: (id: string) => T
-  add: (id: string, data?: T) => void
+  add: (id: string, data?: T) => {resource: Resource<T>; onChange: (_) => void}
   update: (id: string, data: Partial<T>) => void
   remove: (id: string) => void
   indexOf: (id: string) => number

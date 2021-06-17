@@ -1,10 +1,5 @@
 import React, {FC, useContext, useEffect, useState} from 'react'
-import {
-  FluxResult,
-  Resource,
-  ResourceManipulator,
-  ResourceUpdater,
-} from 'src/types/flows'
+import {FluxResult, Resource, ResourceManipulator} from 'src/types/flows'
 import useResource from 'src/flows/context/resource.hook'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {PIPE_DEFINITIONS} from 'src/flows'
@@ -18,7 +13,7 @@ const EMPTY_STATE = {
 
 const DEFAULT_CONTEXT: ResultsContextType = {
   get: _id => null as FluxResult,
-  add: (_id, _data) => {},
+  add: (_id, _data) => ({resource: null, onChange: null}),
   update: (_id, _data) => {},
   remove: _id => {},
   indexOf: _id => -1,

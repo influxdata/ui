@@ -22,7 +22,8 @@ function useResource<T>(
       if (data) {
         resource.byID[id] = data
         resource.allIDs.push(id)
-        return
+
+        return {resource, onChange}
       }
 
       let _data

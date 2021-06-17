@@ -617,5 +617,3 @@ export const runDuration = (finishedAt: Date, startedAt: Date): string => {
 
   return diff + ' ' + timeTag
 }
-
-

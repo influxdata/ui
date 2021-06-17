@@ -42,7 +42,6 @@ export const ResultsProvider: FC = ({children}) => {
     setResults({...EMPTY_STATE})
   }, [id])
 
-  console.log(flow, 'RESULTS')
   const manipulator = useResource<FluxResult>(results, setResults)
 
   const value = {

@@ -47,49 +47,58 @@ export const getSecrets = () => async (
   dispatch: Dispatch<Action>,
   getState: GetState
 ) => {
-  const state = getState()
-  if (getStatus(state, ResourceType.Secrets) === RemoteDataState.NotStarted) {
-    dispatch(setSecrets(RemoteDataState.Loading))
-  }
+  try {
+    const state = getState()
+    if (getStatus(state, ResourceType.Secrets) === RemoteDataState.NotStarted) {
+      dispatch(setSecrets(RemoteDataState.Loading))
+    }
 
-  const org = getOrg(state)
+    const org = getOrg(state)
 
-  const resp = await apiGetSecrets({orgID: org.id})
+    const resp = await apiGetSecrets({orgID: org.id})
 
-  if (resp.status === 200) {
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
+    }
+
     const secrets = makeEntitiesForSecrets(resp.data.secrets)
     const test = normalize<Secret, SecretEntities, string[]>(
       secrets,
       arrayOfSecrets
     )
     dispatch(setSecrets(RemoteDataState.Done, test))
-  } else {
-    console.error(resp.data.message)
+  } catch (error) {
+    console.error(error)
     dispatch(setSecrets(RemoteDataState.Error))
     dispatch(notify(getSecretsFailed()))
   }
 }
 
-export const upsertSecret = (_secretKey: string, secretValue: string) => async (
+export const upsertSecret = (secretKey: string, secretValue: string) => async (
   dispatch: Dispatch<Action>,
   getState: GetState
 ): Promise<void> => {
-  const org = getOrg(getState())
-  const resp = await apiUpdateSecret({
-    orgID: org.id,
-    data: {
-      _secretKey: secretValue,
-    },
-  })
+  try {
+    const org = getOrg(getState())
+    const resp = await apiUpdateSecret({
+      orgID: org.id,
+      data: {
+        [secretKey]: secretValue,
+      },
+    })
 
-  if (resp.status === 204) {
+    if (resp.status !== 204) {
+      throw new Error()
+    }
+
     const secret = normalize<Secret, SecretEntities, string>(
       resp.data.secret,
       secretsSchema
     )
+
     dispatch(setSecret(resp.data.secret.id, RemoteDataState.Done, secret))
-  } else {
-    console.error(resp.data.message)
+  } catch (error) {
+    console.error(error)
     dispatch(notify(upsertSecretFailed()))
   }
 }
@@ -98,18 +107,22 @@ export const deleteSecret = (id: string) => async (
   dispatch: Dispatch<Action>,
   getState: GetState
 ) => {
-  const org = getOrg(getState())
-  const resp = await apiDeleteSecret({
-    orgID: org.id,
-    data: {
-      secrets: [id],
-    },
-  })
+  try {
+    const org = getOrg(getState())
+    const resp = await apiDeleteSecret({
+      orgID: org.id,
+      data: {
+        secrets: [id],
+      },
+    })
 
-  if (resp.status === 204) {
+    if (resp.status !== 204) {
+      throw new Error(resp.data.message)
+    }
+
     dispatch(removeSecret(id))
-  } else {
-    console.error(resp.data.message)
+  } catch (error) {
+    console.error(error)
     dispatch(notify(deleteSecretsFailed()))
   }
 }

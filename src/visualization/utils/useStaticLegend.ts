@@ -135,11 +135,11 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
             heightRatio = STATIC_LEGEND_HEIGHT_RATIO_DEFAULT
           }
 
-          update({
-            heightRatio,
-          })
           event(`${eventPrefix}.heightRatio.autoAdjust`, {
             type: properties.type,
+            heightRatio,
+          })
+          update({
             heightRatio,
           })
         }

@@ -48,14 +48,4 @@ describe('Alerts SearchBar', () => {
       expect(autocompleteElm.length).toBe(0)
     })
   })
-
-  it('matches snapshot', () => {
-    const {container} = setup()
-    expect(container).toMatchSnapshot()
-
-    const searchInput = screen.getByTestId('check-status-input')
-    fireEvent.focus(searchInput)
-
-    expect(container).toMatchSnapshot()
-  })
 })

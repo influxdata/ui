@@ -40,6 +40,7 @@ function useResource<T>(
       resource.byID[id] = _data
       resource.allIDs.push(id)
       onChange(resource)
+      return null
     },
     update: (id: string, data: Partial<T>) => {
       if (!resource.byID.hasOwnProperty(id)) {

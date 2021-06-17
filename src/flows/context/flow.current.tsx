@@ -3,6 +3,7 @@ import {Flow, PipeData} from 'src/types/flows'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import {v4 as UUID} from 'uuid'
 import {PROJECT_NAME, PIPE_DEFINITIONS} from 'src/flows'
+import {Resource} from 'src/types'
 
 export interface FlowContextType {
   id: string | null
@@ -49,7 +50,7 @@ export const FlowProvider: FC = ({children}) => {
     const {resource, onChange} = flows[currentID].meta.add(id, {
       title,
       visible: true,
-    })
+    }) as {resource: Resource<any>; onChange: (_: Resource<any>) => {}}
 
     if (typeof index !== 'undefined') {
       flows[currentID].data.move(id, index + 1)

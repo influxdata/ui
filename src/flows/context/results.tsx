@@ -13,7 +13,7 @@ const EMPTY_STATE = {
 
 const DEFAULT_CONTEXT: ResultsContextType = {
   get: _id => null as FluxResult,
-  add: (_id, _data) => ({resource: null, onChange: null}),
+  add: (_id, _data) => {},
   update: (_id, _data) => {},
   remove: _id => {},
   indexOf: _id => -1,
@@ -41,15 +41,10 @@ export const ResultsProvider: FC = ({children}) => {
 
   const value = {
     ...manipulator,
-    add: (id: string, result?: FluxResult) => {
+    add: (id: string, result?: FluxResult): void => {
       try {
         if (result) {
           manipulator.add(id, result)
-          setResults(prev => ({
-            ...prev,
-            byID: {...prev.byID, [id]: result},
-            allIDs: prev.allIDs.concat([id]),
-          }))
           return
         }
         if (PIPE_DEFINITIONS[flow.data.get(id).type].family === 'inputs') {

@@ -20,11 +20,8 @@ import LastRunTaskStatus from 'src/shared/components/lastRunTaskStatus/LastRunTa
 import {CopyResourceID} from 'src/shared/components/CopyResourceID'
 
 // Actions
-import {
-  addTaskLabel,
-  deleteTaskLabel,
-  setTasksPageAsCurrent,
-} from 'src/tasks/actions/thunks'
+import {addTaskLabel, deleteTaskLabel} from 'src/tasks/actions/thunks'
+import {TaskPage, setCurrentTasksPage} from 'src/tasks/actions/creators'
 
 // Types
 import {ComponentColor} from '@influxdata/clockface'
@@ -153,10 +150,10 @@ export class TaskCard extends PureComponent<
       },
       history,
       task,
-      setTasksPageAsCurrent,
+      setCurrentTasksPage,
     } = this.props
     const url = `/orgs/${orgID}/tasks/${task.id}/edit`
-    setTasksPageAsCurrent()
+    setCurrentTasksPage(TaskPage.TasksPage)
 
     if (event.metaKey) {
       window.open(url, '_blank')
@@ -270,7 +267,7 @@ export class TaskCard extends PureComponent<
 const mdtp = {
   onAddTaskLabel: addTaskLabel,
   onDeleteTaskLabel: deleteTaskLabel,
-  setTasksPageAsCurrent,
+  setCurrentTasksPage,
 }
 
 const connector = connect(null, mdtp)

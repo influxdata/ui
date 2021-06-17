@@ -89,11 +89,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: influx:cluster:viewer
   labels:
-    rbac.authorization.k8s.io/aggregate-view-telegraf: 'true'
+    rbac.authorization.k8s.io/aggregate-view-telegraf: "true"
 rules:
-  - apiGroups: ['']
-    resources: ['persistentvolumes', 'nodes']
-    verbs: ['get', 'list']
+  - apiGroups: [""]
+    resources: ["persistentvolumes", "nodes"]
+    verbs: ["get", "list"]
 
 ---
 kind: ClusterRole
@@ -103,9 +103,9 @@ metadata:
 aggregationRule:
   clusterRoleSelectors:
     - matchLabels:
-        rbac.authorization.k8s.io/aggregate-view-telegraf: 'true'
+        rbac.authorization.k8s.io/aggregate-view-telegraf: "true"
     - matchLabels:
-        rbac.authorization.k8s.io/aggregate-to-view: 'true'
+        rbac.authorization.k8s.io/aggregate-to-view: "true"
 rules: [] # Rules are automatically filled in by the controller manager.
 ```
 

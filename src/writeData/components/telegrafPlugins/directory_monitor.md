@@ -22,7 +22,7 @@ This plugin is intended to read files that are moved or copied to the monitored 
   ## The amount of time a file is allowed to sit in the directory before it is picked up.
   ## This time can generally be low but if you choose to have a very large file written to the directory and it's potentially slow,
   ## set this higher so that the plugin will wait until the file is fully copied to the directory.
-  # directory_duration_threshold = "50ms"
+  # directory_duration_threshold = "50ms" 
   #
   ## A list of the only file names to monitor, if necessary. Supports regex. If left blank, all files are ingested.
   # files_to_monitor = ["^.*\.csv"]

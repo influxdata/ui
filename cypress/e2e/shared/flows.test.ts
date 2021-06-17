@@ -7,14 +7,9 @@ describe('Flows', () => {
       cy.get('@org').then(({id}: Organization) =>
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${id}`)
-          cy.getByTestID('tree-nav')
-
-          cy.window().then(win => {
-            win.influx.set('notebooks', true)
-            win.influx.set('simpleTable', true)
+          cy.setFeatureFlags({notebooks: true, simpleTable: true}).then(() => {
+            cy.getByTestID('nav-item-flows').click()
           })
-
-          cy.getByTestID('nav-item-flows').click()
         })
       )
     })

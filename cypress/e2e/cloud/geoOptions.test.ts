@@ -1,4 +1,5 @@
 import {Organization} from '../../../src/types'
+
 describe.skip('DataExplorer - Geo Map Type Customization Options', () => {
   beforeEach(() => {
     cy.flush()
@@ -8,12 +9,7 @@ describe.skip('DataExplorer - Geo Map Type Customization Options', () => {
         cy.createMapVariable(id)
         cy.fixture('routes').then(({orgs, explorer}) => {
           cy.visit(`${orgs}/${id}${explorer}`)
-          cy.getByTestID('tree-nav')
-          cy.window().then(w => {
-            // I hate to add this, but the influx object isn't ready yet
-            cy.wait(1000)
-            w.influx.set('mapGeo', true)
-          })
+          cy.setFeatureFlags({mapGeo: true})
         })
       })
     })

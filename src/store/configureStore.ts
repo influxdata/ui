@@ -154,6 +154,11 @@ export const getStore = () => {
     storeSingleton = configureStore()
   }
 
+  if (process.env.NODE_ENV === 'development') {
+    // eslint-disable-next-line no-extra-semi
+    ;(window as any).store = storeSingleton
+  }
+
   return storeSingleton
 }
 

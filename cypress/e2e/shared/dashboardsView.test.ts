@@ -1244,9 +1244,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           cy.getByTestID('tree-nav')
         })
       })
-      cy.window().then(win => {
-        win.influx.set('refreshSingleCell', true)
-      })
+      cy.setFeatureFlags({refreshSingleCell: true})
 
       cy.createBucket(orgID, name, 'schmucket')
 
@@ -1332,9 +1330,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           cy.getByTestID('tree-nav')
         })
       })
-      cy.window().then(win => {
-        win.influx.set('refreshSingleCell', true)
-      })
+      cy.setFeatureFlags({refreshSingleCell: true})
 
       cy.createBucket(orgID, name, 'schmucket')
 
@@ -1428,11 +1424,8 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
             cy.getByTestID('tree-nav')
           })
         })
-        cy.window().then(win => {
-          cy.wait(1000)
-          // TODO: remove when feature flag is removed
-          win.influx.set('newAutoRefresh', true)
-        })
+        // TODO: remove when feature flag is removed
+        cy.setFeatureFlags({newAutoRefresh: true})
         cy.createBucket(orgID, name, 'schmucket')
         const now = Date.now()
         cy.writeData(
@@ -1618,11 +1611,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           cy.getByTestID('tree-nav')
         })
       })
-      cy.window().then(win => {
-        cy.wait(1000)
-        win.influx.set('pauseCell', true)
-        win.influx.set('newAutoRefresh', true)
-      })
+      cy.setFeatureFlags({pauseCell: true, newAutoRefresh: true})
 
       cy.createBucket(orgID, name, 'schmucket')
 
@@ -1719,11 +1708,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           cy.getByTestID('tree-nav')
         })
       })
-      cy.window().then(win => {
-        cy.wait(1000)
-        win.influx.set('pauseCell', true)
-        win.influx.set('newAutoRefresh', true)
-      })
+      cy.setFeatureFlags({pauseCell: true, newAutoRefresh: true})
 
       cy.createBucket(orgID, name, 'schmucket')
 
@@ -1828,11 +1813,8 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
             cy.getByTestID('tree-nav')
           })
         })
-        cy.window().then(win => {
-          cy.wait(1000)
-          // TODO: remove when feature flag is removed
-          win.influx.set('cloneToOtherBoards', true)
-        })
+        // TODO: remove when feature flag is removed
+        cy.setFeatureFlags({cloneToOtherBoards: true})
         cy.createBucket(orgID, name, 'schmucket')
         const now = Date.now()
         cy.writeData(

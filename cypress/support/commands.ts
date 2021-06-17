@@ -1,5 +1,6 @@
 import {NotificationEndpoint} from '../../src/types'
 import {Bucket, Organization} from '../../src/client'
+import {setOverrides, FlagMap} from 'src/shared/actions/flags'
 import 'cypress-file-upload'
 
 const DEX_URL_VAR = 'dexUrl'
@@ -737,6 +738,15 @@ export const makeGraphSnapshot = (() => {
   }
 })()
 
+export const setFeatureFlags = (flags: FlagMap): Cypress.Chainable => {
+  // make sure the app is loaded before dispatching
+  cy.getByTestID('tree-nav')
+  return cy.window().then(win => {
+    // eslint-disable-next-line no-extra-semi
+    ;(win as any).store.dispatch(setOverrides(flags))
+  })
+}
+
 /* eslint-disable */
 // notification endpoints
 Cypress.Commands.add('createEndpoint', createEndpoint)
@@ -815,4 +825,5 @@ Cypress.Commands.add(
   fillInOSSLoginFormWithDefaults
 )
 Cypress.Commands.add('getByTestIDAndSetInputValue', getByTestIDAndSetInputValue)
+Cypress.Commands.add('setFeatureFlags', setFeatureFlags)
 /* eslint-enable */

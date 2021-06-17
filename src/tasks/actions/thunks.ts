@@ -26,7 +26,7 @@ import {
   removeTask,
   setNewScript,
   clearCurrentTask,
-  setCurrentTasksPage,
+  TaskPage,
   Action as TaskAction,
 } from 'src/tasks/actions/creators'
 
@@ -431,9 +431,9 @@ export const updateScript = () => async (
       throw new Error(resp.data.message)
     }
 
-    if (currentPage === 'TasksPage') {
+    if (currentPage === TaskPage.TasksPage) {
       dispatch(goToTasks())
-    } else if (currentPage === 'TaskRunsPage') {
+    } else if (currentPage === TaskPage.TaskRunsPage) {
       dispatch(goToTaskRuns())
     }
 
@@ -618,14 +618,14 @@ export const runDuration = (finishedAt: Date, startedAt: Date): string => {
   return diff + ' ' + timeTag
 }
 
-export const setTasksPageAsCurrent = () => async (
-  dispatch: Dispatch<Action>
-) => {
-  dispatch(setCurrentTasksPage('TasksPage'))
-}
+// export const setTasksPageAsCurrent = () => async (
+//   dispatch: Dispatch<Action>
+// ) => {
+//   dispatch(setCurrentTasksPage(TaskPage.TasksPage))
+// }
 
-export const setTaskRunsPageAsCurrent = () => async (
-  dispatch: Dispatch<Action>
-) => {
-  dispatch(setCurrentTasksPage('TaskRunsPage'))
-}
+// export const setTaskRunsPageAsCurrent = () => async (
+//   dispatch: Dispatch<Action>
+// ) => {
+//   dispatch(setCurrentTasksPage(TaskPage.TaskRunsPage))
+// }

@@ -22,8 +22,8 @@ import {
   deleteTaskLabel,
   runTask,
   getRuns,
-  setTaskRunsPageAsCurrent,
 } from 'src/tasks/actions/thunks'
+import {TaskPage, setCurrentTasksPage} from 'src/tasks/actions/creators'
 
 // Types
 import {ComponentColor, Button} from '@influxdata/clockface'
@@ -113,12 +113,12 @@ class UnconnectedTaskRunsCard extends PureComponent<
     const {
       history,
       currentTask,
-      setTaskRunsPageAsCurrent,
+      setCurrentTasksPage,
       match: {
         params: {orgID},
       },
     } = this.props
-    setTaskRunsPageAsCurrent()
+    setCurrentTasksPage(TaskPage.TaskRunsPage)
     history.push(`/orgs/${orgID}/tasks/${currentTask.id}/edit`)
   }
 
@@ -156,7 +156,7 @@ const mdtp = {
   onDeleteTaskLabel: deleteTaskLabel,
   onRunTask: runTask,
   getRuns,
-  setTaskRunsPageAsCurrent,
+  setCurrentTasksPage,
 }
 
 const connector = connect(mstp, mdtp)

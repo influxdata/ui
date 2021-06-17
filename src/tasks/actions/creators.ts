@@ -144,7 +144,11 @@ export const setLogs = (logs: LogEvent[]) =>
     logs,
   } as const)
 
-export const setCurrentTasksPage = (page: string) =>
+export enum TaskPage {
+  TasksPage = 'TasksPage',
+  TaskRunsPage = 'TaskRunsPage',
+}
+export const setCurrentTasksPage = (page: TaskPage) =>
   ({
     type: SET_CURRENT_TASKS_PAGE,
     tasksPage: page,

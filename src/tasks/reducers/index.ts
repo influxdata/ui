@@ -167,6 +167,7 @@ export default (
 
       case SET_CURRENT_TASKS_PAGE: {
         draftState.currentPage = action.tasksPage
+
         return
       }
     }

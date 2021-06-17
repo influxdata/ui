@@ -12,7 +12,6 @@ export type Action =
 export const SET_SECRETS = 'SET_SECRETS'
 export const SET_SECRET = 'SET_SECRET'
 export const REMOVE_SECRET = 'REMOVE_SECRET'
-export const SET_SECRET_ON_RESOURCE = 'SET_SECRET_ON_RESOURCE'
 
 type SecretsSchema<R extends string | string[]> = NormalizedSchema<
   SecretEntities,
@@ -45,14 +44,4 @@ export const removeSecret = (id: string) =>
   ({
     type: REMOVE_SECRET,
     id,
-  } as const)
-
-export const setSecretOnResource = (
-  resourceID: string,
-  schema: SecretsSchema<string>
-) =>
-  ({
-    type: SET_SECRET_ON_RESOURCE,
-    resourceID,
-    schema,
   } as const)

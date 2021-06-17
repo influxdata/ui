@@ -158,7 +158,7 @@ export const updateTaskStatus = (task: Task) => async (
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
     }
-
+    
     const normTask = normalize<Task, TaskEntities, string>(
       resp.data,
       taskSchema

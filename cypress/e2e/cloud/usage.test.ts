@@ -7,18 +7,12 @@ describe.skip('Usage Page', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.getByTestID('tree-nav')
-        cy.window().then(w => {
-          // I hate to add this, but the influx object isn't ready yet
-          cy.wait(1000)
-          w.influx.set('unityUsage', true)
+        cy.setFeatureFlags({unityUsage: true}).then(() => {
+          cy.visit(`/orgs/${id}/usage`)
+          cy.getByTestID('usage-page--header').should('be.visible')
         })
-
-        cy.visit(`/orgs/${id}/usage`)
       })
     })
-
-    cy.getByTestID('usage-page--header').should('be.visible')
   })
 
   it('should display the usage page', () => {

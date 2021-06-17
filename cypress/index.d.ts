@@ -82,6 +82,7 @@ declare global {
       fillInOSSLoginFormWithDefaults: typeof fillInOSSLoginFormWithDefaults
       createEndpoint: typeof createEndpoint
       createRule: typeof createRule
+      setFeatureFlags: typeof setFeatureFlags
     }
   }
 }

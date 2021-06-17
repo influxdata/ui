@@ -104,7 +104,12 @@ export const createCellWithView = (
       }
     }
 
-    const cell: NewCell = getNewDashboardCell(state, dashboard, clonedCell)
+    const cell: NewCell = getNewDashboardCell(
+      state,
+      dashboard,
+      clonedCell,
+      view?.properties
+    )
 
     // Create the cell
     const cellResp = await postDashboardsCell({dashboardID, data: cell})

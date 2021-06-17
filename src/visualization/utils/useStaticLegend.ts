@@ -1,4 +1,9 @@
-import {useMemo} from 'react'
+// Libraries
+import {useMemo, useCallback} from 'react'
+import {useDispatch} from 'react-redux'
+
+// Actions
+import {setStaticLegend} from 'src/timeMachine/actions'
 
 // Types
 import {StaticLegend as StaticLegendConfig} from '@influxdata/giraffe'
@@ -9,9 +14,20 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {
+  STATIC_LEGEND_HEIGHT_RATIO_DEFAULT,
+  STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM,
+  STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
   STATIC_LEGEND_SHOW_DEFAULT,
   STATIC_LEGEND_STYLING,
 } from 'src/visualization/constants'
+import {
+  LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL,
+  LEGEND_ORIENTATION_THRESHOLD_VERTICAL,
+} from 'src/shared/constants'
+import {NOISY_LEGEND_COLUMN_NAMES} from 'src/shared/utils/vis'
+
+// Metrics
+import {event} from 'src/cloud/utils/reporting'
 
 /*
  ***************************************************************
@@ -42,8 +58,23 @@ import {
 
 const convertShowToHide = (showState: boolean): boolean => !showState
 
-export const useStaticLegend = (properties): StaticLegendConfig =>
-  useMemo(() => {
+const eventPrefix = 'visualization.customize.staticlegend'
+
+export const useStaticLegend = (properties): StaticLegendConfig => {
+  const {legendOrientationThreshold} = properties
+  const dispatch = useDispatch()
+  const update = useCallback(
+    (staticLegend: StaticLegendAPI) => {
+      dispatch(
+        setStaticLegend({
+          ...properties.staticLegend,
+          ...staticLegend,
+        })
+      )
+    },
+    [dispatch, properties.staticLegend]
+  )
+  return useMemo(() => {
     const {
       staticLegend = {
         show: STATIC_LEGEND_SHOW_DEFAULT,
@@ -52,9 +83,60 @@ export const useStaticLegend = (properties): StaticLegendConfig =>
 
     const {show, ...config} = staticLegend
 
-    if (!isFlagEnabled('staticLegend')) {
-      return {...config, ...STATIC_LEGEND_STYLING, hide: true}
-    }
+    return {
+      ...config,
+      hide: isFlagEnabled('staticLegend') ? convertShowToHide(show) : true,
+      ...STATIC_LEGEND_STYLING,
+      renderEffect: options => {
+        const {
+          staticLegendHeight,
+          totalHeight,
+          legendDataLength,
+          lineCount,
+          padding,
+          headerTextMetrics,
+          sampleTextMetrics,
+        } = options
 
-    return {...config, hide: convertShowToHide(show), ...STATIC_LEGEND_STYLING}
-  }, [properties])
+        const headerMaxHeight = headerTextMetrics.height
+        const sampleMaxHeight = sampleTextMetrics.height
+
+        if (staticLegendHeight === STATIC_LEGEND_HEIGHT_RATIO_NOT_SET) {
+          let estimatedHeight = STATIC_LEGEND_HEIGHT_RATIO_DEFAULT
+
+          if (
+            legendOrientationThreshold ===
+            LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL
+          ) {
+            estimatedHeight =
+              lineCount * sampleMaxHeight + headerMaxHeight + padding / 2
+          }
+
+          if (
+            legendOrientationThreshold === LEGEND_ORIENTATION_THRESHOLD_VERTICAL
+          ) {
+            const length =
+              legendDataLength - NOISY_LEGEND_COLUMN_NAMES.length > 0
+                ? legendDataLength - NOISY_LEGEND_COLUMN_NAMES.length
+                : legendDataLength
+            estimatedHeight = length * sampleMaxHeight + padding
+          }
+
+          const updatedRatio = estimatedHeight / totalHeight
+          const heightRatio =
+            updatedRatio <= STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM
+              ? updatedRatio
+              : STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM
+
+          update({
+            heightRatio,
+          })
+          event(`${eventPrefix}.heightRatio.autoAdjust`, {
+            type: properties.type,
+            heightRatio,
+          })
+        }
+      },
+    }
+  }, [legendOrientationThreshold, properties, update])
+}

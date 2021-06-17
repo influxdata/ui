@@ -8,18 +8,12 @@ describe.skip('Users Page', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.getByTestID('tree-nav')
-        cy.window().then(w => {
-          // I hate to add this, but the influx object isn't ready yet
-          cy.wait(1000)
-          w.influx.set('unityUsers', true)
+        cy.setFeatureFlags({unityUsers: true}).then(() => {
+          cy.visit(`/orgs/${id}/users`)
+          cy.getByTestID('users-page--header').should('be.visible')
         })
-
-        cy.visit(`/orgs/${id}/users`)
       })
     })
-
-    cy.getByTestID('users-page--header').should('be.visible')
   })
 
   it('can CRUD Invites and Users', () => {

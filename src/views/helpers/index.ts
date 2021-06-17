@@ -50,7 +50,7 @@ import {
 } from 'src/types'
 import {LineHoverDimension} from '@influxdata/giraffe/dist/types'
 import {
-  STATIC_LEGEND_HEIGHT_RATIO_DEFAULT,
+  STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
   STATIC_LEGEND_SHOW_DEFAULT,
   STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
 } from 'src/visualization/constants'
@@ -88,7 +88,7 @@ const legendProps = {
 }
 
 const staticLegend = {
-  heightRatio: STATIC_LEGEND_HEIGHT_RATIO_DEFAULT,
+  heightRatio: STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
   show: STATIC_LEGEND_SHOW_DEFAULT,
   widthRatio: STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
 } as StaticLegend

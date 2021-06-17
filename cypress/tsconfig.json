@@ -1,13 +1,16 @@
 {
   "compilerOptions": {
     "strict": true,
-    "baseUrl": "../node_modules",
+    "baseUrl": "../",
     "target": "es5",
     "lib": ["es2017", "dom"],
     "types": ["cypress", "mocha", "node"],
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "paths": {
+      "src/*": ["../src/*"]
+    }
   },
-  "include": ["**/*.ts"]
+  "include": ["**/*.ts", "../src/**/*"]
 }

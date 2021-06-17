@@ -7,18 +7,12 @@ describe.skip('Billing Page', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.getByTestID('tree-nav')
-        cy.window().then(w => {
-          // I hate to add this, but the influx object isn't ready yet
-          cy.wait(1000)
-          w.influx.set('unityBilling', true)
+        cy.setFeatureFlags({unityBilling: true}).then(() => {
+          cy.visit(`/orgs/${id}/billing`)
+          cy.getByTestID('billing-page--header').should('be.visible')
         })
-
-        cy.visit(`/orgs/${id}/billing`)
       })
     })
-
-    cy.getByTestID('billing-page--header').should('be.visible')
   })
 
   it('should display the free billing page', () => {

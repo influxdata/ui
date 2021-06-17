@@ -162,23 +162,7 @@ const TreeSidebar: FC = () => {
               )
             }
 
-            if (
-              CLOUD &&
-              item.featureFlag === 'unityOperator' &&
-              me?.isOperator
-            ) {
-              navItemElement = (
-                <FeatureFlag
-                  key={item.id}
-                  name={item.featureFlag}
-                  equals={item.featureFlagValue}
-                >
-                  {navItemElement}
-                </FeatureFlag>
-              )
-            }
-
-            if (item.featureFlag && item.featureFlag !== 'unityOperator') {
+            if (item.featureFlag) {
               navItemElement = (
                 <FeatureFlag
                   key={item.id}

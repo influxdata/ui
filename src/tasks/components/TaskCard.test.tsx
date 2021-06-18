@@ -56,6 +56,4 @@ describe('Tasks.Components.TaskCard', () => {
       expect(labels.length).toEqual(task.labels.length)
     })
   })
-
-  // N.B. moved activation test to TasksPage container test
 })

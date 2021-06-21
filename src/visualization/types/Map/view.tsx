@@ -11,10 +11,13 @@ import {DEFAULT_THRESHOLDS_GEO_COLORS} from 'src/shared/constants/thresholds'
 // Utils
 import {
   getDetectCoordinatingFields,
+  getDetectCoordinatingFieldsFlagged,
   getGeoCoordinates,
+  getGeoCoordinatesFlagged,
 } from 'src/shared/utils/vis'
 import {getMapToken} from './api'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 
 interface Props extends VisualizationProps {
   properties: GeoViewProperties
@@ -36,6 +39,13 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     latLonColumns,
   } = properties
   const {lat, lon} = properties.center
+<<<<<<< HEAD
+=======
+  const tooltipColumns = _.isEmpty(properties.layers[0].tooltipColumns)
+    ? result.fluxGroupKeyUnion
+    : properties.layers[0].tooltipColumns
+  const isBehindFlag = isFlagEnabled('mapGeoOptions')
+>>>>>>> fix: use feature flag for building config in maps
 
   const [mapServiceError, setMapServiceError] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
@@ -48,7 +58,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     lat,
     lon,
   })
-  // const [coordinateFieldsFlag, setCoordinateFlag] = useState<boolean>(false)
+  const [coordinateFieldsFlag, setCoordinateFlag] = useState<boolean>(false)
 
   useEffect(() => {
     const getToken = async () => {
@@ -69,28 +79,35 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
   useEffect(() => {
     try {
       setCoordinateError(RemoteDataState.Loading)
-      const coordinates = getGeoCoordinates(
-        result.table,
-        0,
-        useS2CellID,
-        s2Column,
-        latLonColumns
-      )
-      // const coordinateFlag = getDetectCoordinatingFields(
-      //   result.table,
-      //   useS2CellID,
-      //   s2Column,
-      //   latLonColumns
-      // )
-      // setCoordinateFlag(coordinateFlag)
-      setGeoCoordinates(coordinates)
+      if (isBehindFlag) {
+        const coordinates = getGeoCoordinatesFlagged(
+          result.table,
+          0,
+          useS2CellID,
+          s2Column,
+          latLonColumns
+        )
+        const coordinateFlag = getDetectCoordinatingFieldsFlagged(
+          result.table,
+          useS2CellID,
+          s2Column,
+          latLonColumns
+        )
+        setCoordinateFlag(coordinateFlag)
+        setGeoCoordinates(coordinates)
+      } else {
+        const coordinates = getGeoCoordinates(result.table, 0)
+        const coordinateFlag = getDetectCoordinatingFields(result.table)
+        setCoordinateFlag(coordinateFlag)
+        setGeoCoordinates(coordinates)
+      }
       setCoordinateError(RemoteDataState.Done)
       event('mapplot.get_geo_coordinates.success')
     } catch (err) {
       setCoordinateError(RemoteDataState.Error)
       event('mapplot.get_geo_coordinates.failure')
     }
-  }, [useS2CellID, s2Column, latLonColumns, result.table])
+  }, [useS2CellID, s2Column, latLonColumns, result.table, isBehindFlag])
 
   let error = ''
 
@@ -165,27 +182,48 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     zoomOpt = 6
   }
 
-  const config: Config = {
-    table: result.table,
-    showAxes: false,
-    layers: [
-      {
-        type: 'geo',
-        lat: geoCoordinates.lat,
-        lon: geoCoordinates.lon,
-        zoom: zoomOpt,
-        allowPanAndZoom,
-        detectCoordinateFields: true,
-        mapStyle,
-        layers: layersOpts,
-        tileServerConfiguration: tileServerConfiguration,
-        useS2CellID: useS2CellID,
-        s2Column: s2Column,
-        latLonColumns: latLonColumns,
-      },
-    ],
-  }
+  let config: Config
 
+  if (isBehindFlag) {
+    config = {
+      table: result.table,
+      showAxes: false,
+      layers: [
+        {
+          type: 'geo',
+          lat: geoCoordinates.lat,
+          lon: geoCoordinates.lon,
+          zoom: zoomOpt,
+          allowPanAndZoom,
+          detectCoordinateFields: true,
+          mapStyle,
+          layers: layersOpts,
+          tileServerConfiguration: tileServerConfiguration,
+          useS2CellID: useS2CellID,
+          s2Column: s2Column,
+          latLonColumns: latLonColumns,
+        },
+      ],
+    }
+  } else {
+    config = {
+      table: result.table,
+      showAxes: false,
+      layers: [
+        {
+          type: 'geo',
+          lat: geoCoordinates.lat,
+          lon: geoCoordinates.lon,
+          zoom: zoomOpt,
+          allowPanAndZoom,
+          detectCoordinateFields: coordinateFieldsFlag,
+          mapStyle,
+          layers: layersOpts,
+          tileServerConfiguration: tileServerConfiguration,
+        },
+      ],
+    }
+  }
   return <Plot config={config} />
 }
 

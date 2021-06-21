@@ -397,7 +397,7 @@ const NEW_VIEW_CREATORS = {
       detectCoordinateFields: false,
       mapStyle: '',
       useS2CellID: true,
-      s2Column: '',
+      s2Column: 's2_cell_id',
       latLonColumns: {
         lat: {key: '', column: ''},
         lon: {key: '', column: ''}

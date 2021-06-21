@@ -39,7 +39,7 @@ export interface Props extends PipeContextProps {
 }
 
 export const DEFAULT_RESIZER_HEIGHT = 360
-export const MINIMUM_RESIZER_HEIGHT = 40
+export const MINIMUM_RESIZER_HEIGHT = 220
 
 const FlowPanel: FC<Props> = ({
   id,
@@ -174,6 +174,12 @@ const FlowPanel: FC<Props> = ({
     window.removeEventListener('mousemove', handleMouseMove)
     window.removeEventListener('mouseup', handleMouseUp)
   }
+
+  useEffect(() => {
+    flow.meta.update(id, {
+      height: size,
+    })
+  }, [flow, size])
 
   const title = PIPE_DEFINITIONS[flow.data.get(id).type] ? (
     <FlowPanelTitle id={id} />

@@ -161,7 +161,7 @@ $cf-radius-lg: $cf-radius + 4px;
   .cf-draggable-resizer--handle-gradient2 {
     height: 2px;
     width: 32px;
-    background-color: #fff;
+    background-color: $g5-pepper;
   }
 }
 
@@ -239,6 +239,9 @@ $cf-radius-lg: $cf-radius + 4px;
   top: -2px;
 }
 
+.flow-panel--body {
+  overflow: hidden;
+}
 .flow-panel--body,
 .flow-panel--results {
   border-radius: 0 0 $cf-radius $cf-radius;

@@ -81,7 +81,7 @@ const measurePage = (
     rowIdx++
   }
 
-  return rowIdx - offset
+  return Math.max(0, rowIdx - offset)
 }
 
 const subsetResult = (
@@ -277,9 +277,9 @@ const PagedTable: FC<Props> = ({result, properties}) => {
     setPage(1)
   }, [result])
 
-  const inner = tables.map((t, tIdx) => (
-    <InnerTable table={t} key={`table${tIdx}`} />
-  ))
+  const inner =
+    !!size &&
+    tables.map((t, tIdx) => <InnerTable table={t} key={`table${tIdx}`} />)
 
   return (
     <div className="visualization--simple-table--results" ref={ref}>

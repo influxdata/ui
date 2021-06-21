@@ -112,22 +112,19 @@ class UnconnectedTaskRunsCard extends PureComponent<
   private handleEditTask = () => {
     const {
       history,
-      currentTask,
+      task,
       setCurrentTasksPage,
       match: {
         params: {orgID},
       },
     } = this.props
     setCurrentTasksPage(TaskPage.TaskRunsPage)
-    history.push(`/orgs/${orgID}/tasks/${currentTask.id}/edit`)
+    history.push(`/orgs/${orgID}/tasks/${task.id}/edit`)
   }
 
   private get isTaskActive(): boolean {
-    const {currentTask} = this.props
-    if (currentTask.status === 'active') {
-      return true
-    }
-    return false
+    const {task} = this.props
+    return task.status === 'active'
   }
 
   private changeToggle = () => {
@@ -138,12 +135,11 @@ class UnconnectedTaskRunsCard extends PureComponent<
 }
 
 const mstp = (state: AppState) => {
-  const {runs, runStatus, currentTask} = state.resources.tasks
+  const {runs, runStatus} = state.resources.tasks
 
   return {
     runs,
     runStatus,
-    currentTask,
   }
 }
 

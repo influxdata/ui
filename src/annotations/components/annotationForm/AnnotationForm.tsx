@@ -65,6 +65,22 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     // they are strings, so the simple compare is non-trivial.
     // plus, the backend checks if the startTime is before or equals the endTime
     // so, letting the backend do that check for now.
+
+    //an actual time check:
+    /**
+     * if point annotation, do nothing
+     *
+     * if range:
+     * a) make sure times are not the same; if so; tell the user!
+     * (times are the same, so you are creating a point and not a range annotation.  please adjust the times and try again, else
+     * change the type to a point annotation)
+     *
+     * b) convert them to numbers (if not already)
+     *     -> make sure that 'end' is after 'start'
+     *         --> if not, tell the user:  'stopTime is not after start time.  please adjust the times accordingly and try again'
+     *         TODO:  look up/adjust actual error messages
+     * */
+
     if (annotationType === 'range') {
       return Boolean(isValidPointAnnotation && endTime)
     }

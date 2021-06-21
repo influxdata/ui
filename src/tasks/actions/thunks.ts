@@ -162,11 +162,11 @@ export const updateTaskStatus = (task: Task) => async (
     const normTask = normalize<Task, TaskEntities, string>(
       resp.data,
       taskSchema
-      )
+    )
 
     dispatch(editTask(normTask))
     dispatch(notify(copy.taskUpdateSuccess()))
-    dispatch(setCurrentTask(normTask));
+    dispatch(setCurrentTask(normTask))
   } catch (e) {
     console.error(e)
     const message = getErrorMessage(e)

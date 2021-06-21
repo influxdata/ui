@@ -2,19 +2,21 @@
 import React, {FC} from 'react'
 import {useParams} from 'react-router'
 import {Link} from 'react-router-dom'
-
 import {Page, Tabs, Orientation, ComponentSize} from '@influxdata/clockface'
 
 // Components
-import UserList from './UserList'
-import UserListInviteForm from './UserListInviteForm'
+import UserList from 'src/users/components/UserList'
+import UserListInviteForm from 'src/users/components/UserListInviteForm'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
+
+// Utils
+import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 const UserListContainer: FC = () => {
   const {orgID} = useParams<{orgID: string}>()
 
   return (
-    <Page titleTag="Users">
+    <Page titleTag={pageTitleSuffixer(['Users', 'Organization'])}>
       <Page.Header fullWidth={true} testID="users-page--header">
         <Page.Title title="Organization" />
         <RateLimitAlert />

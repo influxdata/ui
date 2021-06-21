@@ -80,7 +80,6 @@ const SingleStat: FC<Props> = ({properties, result}) => {
         },
       }
     }
-
     return <Plot config={config} />
   } else {
     return (

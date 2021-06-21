@@ -8,9 +8,12 @@ import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import LimitChecker from 'src/cloud/components/LimitChecker'
 import BillingProvider from 'src/billing/context/billing'
 
+// Utils
+import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
+
 const BillingPage: FC = () => (
   <BillingProvider>
-    <Page titleTag="Billing">
+    <Page titleTag={pageTitleSuffixer(['Billing'])}>
       <Page.Header fullWidth={false} testID="billing-page--header">
         <Page.Title title="Billing" />
         <LimitChecker>

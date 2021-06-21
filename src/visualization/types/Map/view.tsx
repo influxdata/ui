@@ -2,6 +2,7 @@
 import React, {FC, useEffect, useState} from 'react'
 import {Config, Plot} from '@influxdata/giraffe'
 import {RemoteDataState} from '@influxdata/clockface'
+import _ from 'lodash'
 
 // Types
 import {GeoViewProperties} from 'src/types'
@@ -27,6 +28,9 @@ type GeoCoordinates = {
 const GeoPlot: FC<Props> = ({result, properties}) => {
   const {layers, zoom, allowPanAndZoom, mapStyle} = properties
   const {lat, lon} = properties.center
+  const tooltipColumns = _.isEmpty(properties.layers[0].tooltipColumns)
+    ? result.fluxGroupKeyUnion
+    : properties.layers[0].tooltipColumns
 
   const [mapServiceError, setMapServiceError] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
@@ -122,9 +126,12 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
         colorField: '_value',
         colors: DEFAULT_THRESHOLDS_GEO_COLORS,
         isClustered: false,
+        tooltipColumns: tooltipColumns,
       },
     ]
   }
+
+  layersOpts[0].tooltipColumns = tooltipColumns
 
   if (!layers[0].colors[0].id) {
     layersOpts[0].colors = DEFAULT_THRESHOLDS_GEO_COLORS
@@ -152,7 +159,6 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
       },
     ],
   }
-
   return <Plot config={config} />
 }
 

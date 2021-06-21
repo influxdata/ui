@@ -48,6 +48,7 @@ const GaugeChart: FC<Props> = ({result, properties}) => {
         },
       ],
     }
+
     return <Plot config={config} />
   }
   return (

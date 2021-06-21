@@ -1,20 +1,20 @@
 import {IconFont} from '@influxdata/clockface'
 import {PROJECT_NAME_PLURAL, PROJECT_NAME_SHORT} from 'src/flows'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {getStore} from 'src/store/configureStore'
 
-export interface NavItemLink {
-  type: 'link' | 'href'
-  location: string
-}
+// Constants
+import {CLOUD} from 'src/shared/constants'
+
+// Types
+import {AppState} from 'src/types'
 
 export interface NavSubItem {
   id: string
   testID: string
   label: string
-  link: NavItemLink
-  cloudExclude?: boolean
-  cloudOnly?: boolean
-  featureFlag?: string
-  featureFlagValue?: boolean
+  link: string
+  enabled?: () => boolean
 }
 
 export interface NavItem {
@@ -22,77 +22,60 @@ export interface NavItem {
   testID: string
   label: string
   shortLabel?: string
-  link: NavItemLink
+  link: string
   icon: IconFont
-  cloudExclude?: boolean
-  cloudOnly?: boolean
-  featureFlag?: string
-  featureFlagValue?: boolean
+  enabled?: () => boolean
   menu?: NavSubItem[]
   activeKeywords: string[]
 }
 
-export const generateNavItems = (orgID: string): NavItem[] => {
+export const generateNavItems = (): NavItem[] => {
+  const state: AppState = getStore().getState()
+  const orgID = state?.resources?.orgs?.org?.id ?? ''
+  const quartzMe = state?.me?.quartzMe ?? null
+
   const orgPrefix = `/orgs/${orgID}`
 
-  return [
+  let navItems = [
     {
       id: 'load-data',
       testID: 'nav-item-load-data',
       icon: IconFont.DisksNav,
       label: 'Load Data',
       shortLabel: 'Data',
-      link: {
-        type: 'link',
-        location: `${orgPrefix}/load-data/sources`,
-      },
+      link: `${orgPrefix}/load-data/sources`,
       activeKeywords: ['load-data'],
       menu: [
         {
           id: 'sources',
           testID: 'nav-subitem-sources',
           label: 'Sources',
-          link: {
-            type: 'link',
-            location: `${orgPrefix}/load-data/sources`,
-          },
+          link: `${orgPrefix}/load-data/sources`,
         },
         {
           id: 'buckets',
           testID: 'nav-subitem-buckets',
           label: 'Buckets',
-          link: {
-            type: 'link',
-            location: `${orgPrefix}/load-data/buckets`,
-          },
+          link: `${orgPrefix}/load-data/buckets`,
         },
         {
           id: 'telegrafs',
           testID: 'nav-subitem-telegrafs',
           label: 'Telegraf',
-          link: {
-            type: 'link',
-            location: `${orgPrefix}/load-data/telegrafs`,
-          },
+          link: `${orgPrefix}/load-data/telegrafs`,
         },
         {
           id: 'scrapers',
           testID: 'nav-subitem-scrapers',
           label: 'Scrapers',
-          link: {
-            type: 'link',
-            location: `${orgPrefix}/load-data/scrapers`,
-          },
-          cloudExclude: true,
+          link: `${orgPrefix}/load-data/scrapers`,
+          enabled: () => !CLOUD,
         },
         {
           id: 'tokens',
           testID: 'nav-subitem-tokens',
           label: 'Tokens',
-          link: {
-            type: 'link',
-            location: `${orgPrefix}/load-data/tokens`,
-          },
+          link: `${orgPrefix}/load-data/tokens`,
         },
       ],
     },
@@ -102,10 +85,7 @@ export const generateNavItems = (orgID: string): NavItem[] => {
       icon: IconFont.GraphLine,
       label: 'Data Explorer',
       shortLabel: 'Explore',
-      link: {
-        type: 'link',
-        location: `${orgPrefix}/data-explorer`,
-      },
+      link: `${orgPrefix}/data-explorer`,
       activeKeywords: ['data-explorer'],
     },
     {
@@ -113,12 +93,9 @@ export const generateNavItems = (orgID: string): NavItem[] => {
       testID: 'nav-item-flows',
       icon: IconFont.BookPencil,
       label: PROJECT_NAME_PLURAL,
-      featureFlag: 'notebooks',
+      enabled: () => isFlagEnabled('notebooks'),
       shortLabel: PROJECT_NAME_SHORT,
-      link: {
-        type: 'link',
-        location: `${orgPrefix}/${PROJECT_NAME_PLURAL.toLowerCase()}`,
-      },
+      link: `${orgPrefix}/${PROJECT_NAME_PLURAL.toLowerCase()}`,
       activeKeywords: [PROJECT_NAME_PLURAL.toLowerCase()],
     },
     {
@@ -127,10 +104,7 @@ export const generateNavItems = (orgID: string): NavItem[] => {
       icon: IconFont.Dashboards,
       label: 'Dashboards',
       shortLabel: 'Boards',
-      link: {
-        type: 'link',
-        location: `${orgPrefix}/dashboards-list`,
-      },
+      link: `${orgPrefix}/dashboards-list`,
       activeKeywords: ['dashboards', 'dashboards-list'],
     },
     {
@@ -138,10 +112,7 @@ export const generateNavItems = (orgID: string): NavItem[] => {
       testID: 'nav-item-tasks',
       icon: IconFont.Calendar,
       label: 'Tasks',
-      link: {
-        type: 'link',
-        location: `${orgPrefix}/tasks`,
-      },
+      link: `${orgPrefix}/tasks`,
       activeKeywords: ['tasks'],
     },
     {
@@ -149,20 +120,14 @@ export const generateNavItems = (orgID: string): NavItem[] => {
       testID: 'nav-item-alerting',
       icon: IconFont.Bell,
       label: 'Alerts',
-      link: {
-        type: 'link',
-        location: `${orgPrefix}/alerting`,
-      },
+      link: `${orgPrefix}/alerting`,
       activeKeywords: ['alerting'],
       menu: [
         {
           id: 'history',
           testID: 'nav-subitem-history',
           label: 'Alert History',
-          link: {
-            type: 'link',
-            location: `${orgPrefix}/alert-history`,
-          },
+          link: `${orgPrefix}/alert-history`,
         },
       ],
     },
@@ -171,66 +136,67 @@ export const generateNavItems = (orgID: string): NavItem[] => {
       testID: 'nav-item-settings',
       icon: IconFont.WrenchNav,
       label: 'Settings',
-      link: {
-        type: 'link',
-        location: `${orgPrefix}/settings/variables`,
-      },
+      link: `${orgPrefix}/settings/variables`,
       activeKeywords: ['settings'],
       menu: [
         {
           id: 'variables',
           testID: 'nav-subitem-variables',
           label: 'Variables',
-          link: {
-            type: 'link',
-            location: `${orgPrefix}/settings/variables`,
-          },
+          link: `${orgPrefix}/settings/variables`,
         },
         {
           id: 'templates',
           testID: 'nav-subitem-templates',
           label: 'Templates',
-          link: {
-            type: 'link',
-            location: `${orgPrefix}/settings/templates`,
-          },
+          link: `${orgPrefix}/settings/templates`,
         },
         {
           id: 'labels',
           testID: 'nav-subitem-labels',
           label: 'Labels',
-          link: {
-            type: 'link',
-            location: `${orgPrefix}/settings/labels`,
-          },
+          link: `${orgPrefix}/settings/labels`,
         },
       ],
     },
     {
       id: 'functions',
+      enabled: () => isFlagEnabled('managed-functions'),
       testID: 'nav-item-functions',
       icon: IconFont.Function,
       label: 'Function',
-      link: {
-        type: 'link',
-        location: `${orgPrefix}/functions/`,
-      },
+      link: `${orgPrefix}/functions/`,
       activeKeywords: ['functions'],
-      featureFlag: 'managed-functions',
     },
     {
       id: 'operator',
+      enabled: () =>
+        CLOUD &&
+        quartzMe?.isOperator === true &&
+        isFlagEnabled('unityOperator'),
       testID: 'nav-item-operator',
       icon: IconFont.Shield,
       label: 'Operator',
-      cloudOnly: true,
-      featureFlag: 'unityOperator',
       shortLabel: 'Operator',
-      link: {
-        type: 'link',
-        location: `/operator`,
-      },
+      link: `/operator`,
       activeKeywords: ['operator'],
     },
   ]
+
+  navItems = navItems.filter(item => {
+    if (item?.menu) {
+      item.menu = item.menu.filter(sub => {
+        if (sub?.enabled) {
+          return sub.enabled()
+        }
+        return true
+      })
+    }
+    if (item?.enabled) {
+      return item.enabled()
+    }
+    return true
+  })
+
+  return navItems
 }

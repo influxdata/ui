@@ -5,6 +5,13 @@ import 'cypress-file-upload'
 
 const DEX_URL_VAR = 'dexUrl'
 
+Cypress.on('uncaught:exception', () => {
+  // returning false here prevents Cypress from failing the test when there are console errors.
+  // this was the default behavior until cypress v7.
+  // TODO: catch specific errors and don't always return 'false' here.
+  return false
+})
+
 export const signin = (): Cypress.Chainable<Cypress.Response> => {
   return cy.setupUser().then((response: any) => {
     wrapDefaultUser()

@@ -12,7 +12,7 @@ import {tasks, orgs, withRouterProps, labels} from 'mocks/dummyData'
 import {renderWithReduxAndRouter} from 'src/mockState'
 import {mockAppState} from 'src/mockAppState'
 import {RemoteDataState} from 'src/types'
-import {mocked} from 'ts-jest'
+import {mocked} from 'ts-jest/utils'
 
 const runIDs = [
   '07a7f99e81cf2000',
@@ -185,6 +185,16 @@ jest.mock('src/client', () => ({
     status: 201,
   })),
 }))
+
+jest.mock('src/resources/selectors', () => {
+  return {
+    getByID: jest.fn(() => {
+      return tasks[0]
+    }),
+  }
+})
+
+jest.mock('src/resources/components/GetResources')
 
 const setup = () => {
   const props: any = {

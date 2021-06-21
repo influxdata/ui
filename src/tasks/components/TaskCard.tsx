@@ -240,13 +240,9 @@ export class TaskCard extends PureComponent<
   }
 
   private changeToggle = () => {
-    const {task, onActivate} = this.props
-    if (task.status === 'active') {
-      task.status = 'inactive'
-    } else {
-      task.status = 'active'
-    }
-    onActivate(task)
+    const {task, onActivate} = this.props;
+    const newStatus = (task.status === 'active') ? 'inactive' : 'active'
+    onActivate({...task, status: newStatus})
   }
 
   private get schedule(): string {

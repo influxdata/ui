@@ -1305,7 +1305,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.getByTestID('giraffe-inner-plot')
     })
 
-    cy.intercept('POST', 'query', req => {
+    cy.intercept('POST', '/api/v2/query?*', req => {
       if (req.body.query === query1) {
         req.alias = 'refreshCellQuery'
       }
@@ -1391,7 +1391,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.getByTestID('giraffe-inner-plot')
     })
 
-    cy.intercept('POST', 'query', req => {
+    cy.intercept('POST', '/api/v2/query?*', req => {
       if (req.body.query === query1) {
         req.alias = 'refreshCellQuery'
       }
@@ -1460,7 +1460,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     })
 
     it('can enable the auto refresh process, then manually stop the process via the dropdown', done => {
-      cy.intercept('POST', '/query', req => {
+      cy.intercept('POST', '/api/v2/query?*', req => {
         req.alias = 'refreshQuery'
       })
       cy.getByTestID('enable-auto-refresh-button').click()
@@ -1494,7 +1494,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       })
       cy.getByTestID('refresh-form-activate-button').click()
 
-      cy.intercept('POST', '/query', req => {
+      cy.intercept('POST', '/api/v2/query?*', req => {
         req.alias = 'refreshQuery'
       })
 
@@ -1521,7 +1521,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           .type(`${jumpAheadTime('00:00:10')}`)
         cy.getByTestID('daterange--apply-btn').click()
       })
-      cy.intercept('POST', '/query', req => {
+      cy.intercept('POST', '/api/v2/query?*', req => {
         req.alias = 'refreshQuery'
       })
 
@@ -1565,7 +1565,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           .type(`${jumpAheadTime('00:00:08')}`)
         cy.getByTestID('daterange--apply-btn').click()
       })
-      cy.intercept('POST', '/query', req => {
+      cy.intercept('POST', '/api/v2/query?*', req => {
         req.alias = 'refreshQuery'
       })
 
@@ -1668,12 +1668,14 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.getByTestID('save-cell--button').click()
     })
 
-    cy.intercept('POST', 'query', req => {
-      if (req.body.query === query1) {
-        req.alias = 'firstCellQuery'
-      }
+    cy.intercept('POST', '/api/v2/query?*', req => {
       if (req.body.query === query2) {
         req.alias = 'secondCellQuery'
+      }
+    })
+    cy.intercept('POST', '/api/v2/query?*', req => {
+      if (req.body.query === query1) {
+        req.alias = 'firstCellQuery'
       }
     })
     cy.getByTestID('cell blah').within(() => {
@@ -1765,7 +1767,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.getByTestID('save-cell--button').click()
     })
 
-    cy.intercept('POST', 'query', req => {
+    cy.intercept('POST', '/api/v2/query?*', req => {
       if (req.body.query === query1) {
         // This will only fire when the first cell is unpaused AND it then gets refreshed as part of auto refresh loop, indicating successful operation
         done()
@@ -1854,7 +1856,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     it('clones a cell to another dashboard and displays it there', () => {
       cy.getByTestID('clone-to-other-dashboard').click()
       cy.getByTestID(`other-dashboard-${otherBoardID}`).click()
-      cy.intercept('PATCH', 'view').as('setView')
+      cy.intercept('PATCH', '/api/v2/view').as('setView')
       cy.getByTestID('confirm-clone-cell-button').click()
 
       cy.wait('@setView')
@@ -1866,7 +1868,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.getByTestID('clone-to-other-dashboard').click()
       cy.getByTestID(`other-dashboard-${otherBoardID}`).click()
       cy.getByTestID('clone-cell-type-toggle').click()
-      cy.intercept('PATCH', 'view').as('setView')
+      cy.intercept('PATCH', '/api/v2/view').as('setView')
       cy.getByTestID('confirm-clone-cell-button').click()
       cy.wait('@setView')
       cy.visit(`${allOrgs}/${orgId}/dashboards/${otherBoardID}`)

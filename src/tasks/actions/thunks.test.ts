@@ -103,7 +103,7 @@ describe('Tasks.Actions.Thunks', () => {
 
     await thunks.updateTaskStatus({...sampleTask, status: 'active'})(dispatch)
 
-    expect(dispatch.mock.calls.length).toEqual(2)
+    expect(dispatch.mock.calls.length).toEqual(3)
     expect(dispatch.mock.calls[0][0].type).toBe('EDIT_TASK')
     expect(
       dispatch.mock.calls[0][0].schema.entities.tasks[sampleTask.id]

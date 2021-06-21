@@ -2,7 +2,14 @@
 import {get} from 'lodash'
 
 // Types
-import {AppState, ResourceType, RemoteDataState, Label, Task} from 'src/types'
+import {
+  AppState,
+  Label,
+  RemoteDataState,
+  ResourceType,
+  Secret,
+  Task,
+} from 'src/types'
 
 export const getStatus = (
   {resources}: AppState,
@@ -25,6 +32,9 @@ export const getAllTasks = (state: AppState): Task[] =>
 
 export const hasNoTasks = (state: AppState): boolean =>
   getAll(state, ResourceType.Tasks).length === 0
+
+export const getAllSecrets = (state: AppState): Secret[] =>
+  getAll(state, ResourceType.Secrets) || []
 
 export const getToken = (state: AppState): string =>
   get(state, 'dataLoading.dataLoaders.token', '') || ''

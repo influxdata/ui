@@ -131,7 +131,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
 
   const tooltipColumns = _.isEmpty(layersOpts[0].tooltipColumns)
     ? result.fluxGroupKeyUnion
-    :layersOpts[0].tooltipColumns
+    : layersOpts[0].tooltipColumns
 
   const colorChoice = _.isEmpty(layersOpts[0].colors)
     ? DEFAULT_THRESHOLDS_GEO_COLORS

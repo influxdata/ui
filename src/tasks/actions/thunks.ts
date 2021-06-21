@@ -158,14 +158,15 @@ export const updateTaskStatus = (task: Task) => async (
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
     }
-    
+
     const normTask = normalize<Task, TaskEntities, string>(
       resp.data,
       taskSchema
-    )
+      )
 
     dispatch(editTask(normTask))
     dispatch(notify(copy.taskUpdateSuccess()))
+    dispatch(setCurrentTask(normTask));
   } catch (e) {
     console.error(e)
     const message = getErrorMessage(e)

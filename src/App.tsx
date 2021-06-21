@@ -3,7 +3,7 @@ import React, {FC, Suspense, lazy, useContext, useEffect} from 'react'
 import {useSelector} from 'react-redux'
 import classnames from 'classnames'
 import {Switch, Route} from 'react-router-dom'
-
+import {setAutoFreeze} from 'immer'
 import {AppSettingContext, AppSettingProvider} from 'src/shared/contexts/app'
 
 import {
@@ -48,6 +48,7 @@ const App: FC = () => {
     if (CLOUD && isFlagEnabled('rudderstackReporting')) {
       load(RUDDERSTACK_WRITE_KEY, RUDDERSTACK_DATA_PLANE_URL)
     }
+    setAutoFreeze(process.env.NODE_ENV !== 'production')
   }, [RUDDERSTACK_WRITE_KEY, RUDDERSTACK_DATA_PLANE_URL])
 
   return (

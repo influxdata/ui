@@ -41,7 +41,7 @@ export const ResultsProvider: FC = ({children}) => {
 
   const value = {
     ...manipulator,
-    add: (id: string, result?: FluxResult) => {
+    add: (id: string, result?: FluxResult): void => {
       try {
         if (result) {
           manipulator.add(id, result)

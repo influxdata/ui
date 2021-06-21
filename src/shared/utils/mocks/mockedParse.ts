@@ -3808,7 +3808,6 @@ export const getMockedParse = (additionalMappings = {}) => {
   )
 
   return query => {
-    console.log({query})
     return queryASTMapping[query]
   }
 }

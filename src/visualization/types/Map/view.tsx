@@ -122,21 +122,20 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
         type: 'pointMap',
         colorDimension: {label: 'Value'},
         colorField: '_value',
-        colors: DEFAULT_THRESHOLDS_GEO_COLORS,
+        colors: [],
         isClustered: false,
         tooltipColumns: [],
       },
     ]
-    properties.layers = layersOpts
   }
 
-  const tooltipColumns = _.isEmpty(properties.layers[0].tooltipColumns)
+  const tooltipColumns = _.isEmpty(layersOpts[0].tooltipColumns)
     ? result.fluxGroupKeyUnion
-    : properties.layers[0].tooltipColumns
+    :layersOpts[0].tooltipColumns
 
-  const colorChoice = _.isEmpty(properties.layers[0].colors)
+  const colorChoice = _.isEmpty(layersOpts[0].colors)
     ? DEFAULT_THRESHOLDS_GEO_COLORS
-    : properties.layers[0].colors
+    : layersOpts[0].colors
 
   // auto assign these variables
   layersOpts[0].tooltipColumns = tooltipColumns

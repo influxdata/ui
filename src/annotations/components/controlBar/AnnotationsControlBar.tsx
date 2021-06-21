@@ -2,11 +2,7 @@
 import React, {FC} from 'react'
 
 // Components
-import {
-  ComponentSize,
-  InfluxColors,
-  TextBlock,
-} from '@influxdata/clockface'
+import {ComponentSize, InfluxColors, TextBlock} from '@influxdata/clockface'
 
 import {useSelector} from 'react-redux'
 import {isAnnotationsModeEnabled} from 'src/annotations/selectors'

@@ -9,6 +9,7 @@ import {
   ButtonShape,
   ComponentColor,
   ComponentSize,
+  IconFont,
 } from '@influxdata/clockface'
 
 // Actions
@@ -16,8 +17,8 @@ import {notify} from 'src/shared/actions/notifications'
 
 // Notifications
 import {
-  copyToClipboardSuccess,
   copyToClipboardFailed,
+  copyToClipboardSuccess,
 } from 'src/shared/copy/notifications'
 
 // Types
@@ -26,9 +27,10 @@ import {Context} from 'src/clockface'
 
 interface Props {
   secret: Secret
+  onDeleteSecret: () => void
 }
 
-const SecretContextMenu: FC<Props> = ({secret}) => {
+const SecretContextMenu: FC<Props> = ({secret, onDeleteSecret}) => {
   const dispatch = useDispatch()
 
   const handleCopyAttempt = (
@@ -50,11 +52,25 @@ const SecretContextMenu: FC<Props> = ({secret}) => {
           size={ComponentSize.Small}
           color={ComponentColor.Secondary}
           text="Copy to Clipboard"
-          className="secret-context-menu--copy-to-clipboard"
           shape={ButtonShape.StretchToFit}
           style={{margin: '4px 0 0 0'}}
         />
       </CopyToClipboard>
+      <Context.Menu
+        testID={`delete-secret-context--${secret.id}`}
+        size={ComponentSize.Small}
+        color={ComponentColor.Danger}
+        icon={IconFont.Trash}
+        text="Delete"
+        shape={ButtonShape.StretchToFit}
+        style={{margin: '4px 0 0 10px'}}
+      >
+        <Context.Item
+          label="Delete"
+          action={onDeleteSecret}
+          testID={`context-delete-secret--${secret.id}`}
+        />
+      </Context.Menu>
     </Context>
   )
 }

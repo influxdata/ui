@@ -103,7 +103,7 @@ export const upsertSecret = (secretKey: string, secretValue: string) => async (
   }
 }
 
-export const deleteSecret = (id: string) => async (
+export const deleteSecret = (secret: Secret) => async (
   dispatch: Dispatch<Action>,
   getState: GetState
 ) => {
@@ -112,7 +112,7 @@ export const deleteSecret = (id: string) => async (
     const resp = await apiDeleteSecret({
       orgID: org.id,
       data: {
-        secrets: [id],
+        secrets: [secret.id],
       },
     })
 
@@ -120,7 +120,7 @@ export const deleteSecret = (id: string) => async (
       throw new Error(resp.data.message)
     }
 
-    dispatch(removeSecret(id))
+    dispatch(removeSecret(secret.id))
   } catch (error) {
     console.error(error)
     dispatch(notify(deleteSecretsFailed()))

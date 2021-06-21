@@ -20,9 +20,10 @@ import {
 
 interface Props {
   secret: Secret
+  onDeleteSecret: (secret: Secret) => void
 }
 
-const SecretCard: FC<Props> = ({secret}) => {
+const SecretCard: FC<Props> = ({secret, onDeleteSecret}) => {
   const dispatch = useDispatch()
 
   const handleCopyAttempt = (
@@ -36,12 +37,16 @@ const SecretCard: FC<Props> = ({secret}) => {
     }
   }
 
+  const handleDelete = () => onDeleteSecret(secret)
+
   return (
     <ErrorBoundary>
       <ResourceCard
         key={`secret-id--${secret.id}`}
         testID={`secret-card--${secret.id}`}
-        contextMenu={<SecretContextMenu secret={secret} />}
+        contextMenu={
+          <SecretContextMenu secret={secret} onDeleteSecret={handleDelete} />
+        }
         direction={FlexDirection.Row}
         alignItems={AlignItems.Center}
       >

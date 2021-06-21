@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useState} from 'react'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {
@@ -26,7 +26,11 @@ import {ResourceType, Secret} from 'src/types'
 import {SortTypes} from 'src/shared/utils/sort'
 import {SecretSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 
+// Actions
+import {deleteSecret} from 'src/secrets/actions/thunks'
+
 const SecretsTab: FC = () => {
+  const dispatch = useDispatch()
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [sortDirection, setSortDirection] = useState<Sort>(Sort.Ascending)
   const [sortKey, setSortKey] = useState<string>('id')
@@ -89,6 +93,10 @@ const SecretsTab: FC = () => {
     setSortType(sortType)
   }
 
+  const handleDeleteSecret = (secret: Secret) => {
+    dispatch(deleteSecret(secret))
+  }
+
   // const handleOpenImportOverlay = (): void => {
   // const {history, match} = props
   //
@@ -99,11 +107,6 @@ const SecretsTab: FC = () => {
   // const {history, match} = props
   //
   // history.push(`/orgs/${match.params.orgID}/settings/variables/new`)
-  // }
-
-  // const handleDeleteSecret = (secret: Secret): void => {
-  // const {onDeleteSecret} = props
-  // onDeleteSecret(secret.id)
   // }
 
   const leftHeaderItems = (
@@ -139,7 +142,7 @@ const SecretsTab: FC = () => {
             <SecretsList
               secrets={sc}
               emptyState={SecretsEmptyState()}
-              onDeleteSecret={() => {}}
+              onDeleteSecret={handleDeleteSecret}
               sortKey="key"
               sortDirection={sortDirection}
               sortType={sortType}

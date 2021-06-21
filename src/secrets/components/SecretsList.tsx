@@ -29,7 +29,7 @@ const SecretsList: FC<Props> = props => {
     sortKey,
     sortDirection,
     sortType,
-    // onDeleteSecret,
+    onDeleteSecret,
   } = props
 
   const sortedSecrets = useMemo(
@@ -45,7 +45,7 @@ const SecretsList: FC<Props> = props => {
             <SecretCard
               key={secret.id || `secret-${index}`}
               secret={secret}
-              // onDeleteSecret={onDeleteSecret}
+              onDeleteSecret={onDeleteSecret}
             />
           ))}
         </ResourceList.Body>

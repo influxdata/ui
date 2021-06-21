@@ -1,6 +1,9 @@
 // Utils
 import {valueFetcher, ValueFetcher} from 'src/variables/utils/ValueFetcher'
 import Deferred from 'src/utils/Deferred'
+import {parseASTIM} from 'src/variables/utils/astim'
+
+// Selectors
 import {asAssignment} from 'src/variables/selectors'
 
 // Constants
@@ -14,6 +17,7 @@ import {
   ValueSelections,
 } from 'src/types'
 import {CancelBox, CancellationError} from 'src/types/promises'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export interface VariableNode {
   variable: Variable
@@ -89,7 +93,17 @@ const getVarChildren = (
     },
   }: Variable,
   allVariables: Variable[]
-) => allVariables.filter(maybeChild => isInQuery(query, maybeChild))
+) => {
+  if (isFlagEnabled('filterExtern')) {
+    const astim = parseASTIM(query)
+
+    return allVariables.filter(maybeChild => {
+      return astim.hasVariable(maybeChild.name)
+    })
+  } else {
+    return allVariables.filter(maybeChild => isInQuery(query, maybeChild))
+  }
+}
 
 /*
   Collect all ancestors of a node.
@@ -240,10 +254,15 @@ const hydrateVarsHelper = async (
       })
   }
 
-  const descendants = collectDescendants(node)
-  const assignments = descendants
-    .map(node => asAssignment(node.variable))
-    .filter(v => !!v)
+  let descendants, assignments
+  if (isFlagEnabled('filterExtern')) {
+    descendants = collectDescendants(node).map(node => node.variable)
+  } else {
+    descendants = collectDescendants(node)
+    assignments = descendants
+      .map(node => asAssignment(node.variable))
+      .filter(v => !!v)
+  }
 
   const {url, orgID} = options
   const {query} = node.variable.arguments.values
@@ -253,7 +272,7 @@ const hydrateVarsHelper = async (
     url,
     orgID,
     query,
-    assignments,
+    isFlagEnabled('filterExtern') ? descendants : assignments,
     null,
     '',
     options.skipCache,

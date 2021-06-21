@@ -227,7 +227,7 @@ export const addAnnotationLayer = (
   }
   if (inAnnotationMode && cellID) {
     config.interactionHandlers = {
-      singleClick: makeAnnotationClickListener(dispatch, cellID, eventPrefix),
+      singleShiftClick: makeAnnotationClickListener(dispatch, cellID, eventPrefix),
     }
     if (isFlagEnabled('rangeAnnotations')) {
       config.interactionHandlers.onXBrush = makeAnnotationRangeListener(

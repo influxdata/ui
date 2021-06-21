@@ -26,7 +26,15 @@ type GeoCoordinates = {
 }
 
 const GeoPlot: FC<Props> = ({result, properties}) => {
-  const {layers, zoom, allowPanAndZoom, mapStyle} = properties
+  const {
+    layers,
+    zoom,
+    allowPanAndZoom,
+    mapStyle,
+    useS2CellID,
+    s2Column,
+    latLonColumns,
+  } = properties
   const {lat, lon} = properties.center
 
   const [mapServiceError, setMapServiceError] = useState<RemoteDataState>(
@@ -40,7 +48,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     lat,
     lon,
   })
-  const [coordinateFieldsFlag, setCoordinateFlag] = useState<boolean>(false)
+  // const [coordinateFieldsFlag, setCoordinateFlag] = useState<boolean>(false)
 
   useEffect(() => {
     const getToken = async () => {
@@ -61,9 +69,20 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
   useEffect(() => {
     try {
       setCoordinateError(RemoteDataState.Loading)
-      const coordinates = getGeoCoordinates(result.table, 0)
-      const coordinateFlag = getDetectCoordinatingFields(result.table)
-      setCoordinateFlag(coordinateFlag)
+      const coordinates = getGeoCoordinates(
+        result.table,
+        0,
+        useS2CellID,
+        s2Column,
+        latLonColumns
+      )
+      // const coordinateFlag = getDetectCoordinatingFields(
+      //   result.table,
+      //   useS2CellID,
+      //   s2Column,
+      //   latLonColumns
+      // )
+      // setCoordinateFlag(coordinateFlag)
       setGeoCoordinates(coordinates)
       setCoordinateError(RemoteDataState.Done)
       event('mapplot.get_geo_coordinates.success')
@@ -71,7 +90,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
       setCoordinateError(RemoteDataState.Error)
       event('mapplot.get_geo_coordinates.failure')
     }
-  }, [result.table])
+  }, [useS2CellID, s2Column, latLonColumns, result.table])
 
   let error = ''
 
@@ -156,10 +175,13 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
         lon: geoCoordinates.lon,
         zoom: zoomOpt,
         allowPanAndZoom,
-        detectCoordinateFields: coordinateFieldsFlag,
+        detectCoordinateFields: true,
         mapStyle,
         layers: layersOpts,
         tileServerConfiguration: tileServerConfiguration,
+        useS2CellID: useS2CellID,
+        s2Column: s2Column,
+        latLonColumns: latLonColumns,
       },
     ],
   }

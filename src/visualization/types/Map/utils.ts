@@ -1,5 +1,5 @@
-import {Table} from "@influxdata/giraffe"
-import _ from "lodash"
+import {Table} from '@influxdata/giraffe'
+import _ from 'lodash'
 
 export const findTags = (table: Table, latLon: boolean = false) => {
   return table.columnKeys.reduce((acc, k) => {
@@ -30,7 +30,7 @@ export const findTags = (table: Table, latLon: boolean = false) => {
   }, {})
 }
 
-const findFields = (table: Table) => {
+export const findFields = (table: Table) => {
   const fieldValues = table.getColumn('_field')
   const uniqueFields = _.uniq(fieldValues)
   const fields = uniqueFields.reduce(function(result, item) {

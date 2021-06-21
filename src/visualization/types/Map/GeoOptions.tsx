@@ -1,18 +1,12 @@
-import React, {CSSProperties, FC, useState} from 'react'
+import React, {CSSProperties, FC} from 'react'
 import {
   Grid,
   Form,
-  Input,
-  InputType,
   ComponentSize,
   InputLabel,
   FlexBox,
   FlexDirection,
-  JustifyContent,
   AlignItems,
-  Dropdown,
-  ComponentStatus,
-  DropdownMenuTheme,
   InfluxColors,
   SlideToggle,
 } from '@influxdata/clockface'
@@ -23,9 +17,9 @@ import {GeoViewProperties} from 'src/types'
 import {VisualizationOptionProps} from 'src/visualization'
 import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 
-import {findTags} from './utils'
-
+import {S2ColumnOptions} from './S2ColumnOptions'
 import './GeoOptions.scss'
+import {LatLonColumnOptions} from './LatLonColumnOptions'
 
 interface Props extends VisualizationOptionProps {
   properties: GeoViewProperties
@@ -41,13 +35,10 @@ export enum MapType {
 }
 
 export const GeoOptions: FC<Props> = ({properties, update, results}) => {
-  const [useS2CellID, setUseS2CellID] = useState(true)
-
-  const tags = findTags(results.table)
-
+  const {useS2CellID} = properties
   const handleSetUseS2CellID = (): void => {
     update({
-      legendHide: !properties.useS2CellID,
+      useS2CellID: !useS2CellID,
     })
   }
 
@@ -58,7 +49,6 @@ export const GeoOptions: FC<Props> = ({properties, update, results}) => {
     return {color: InfluxColors.Sidewalk}
   }
 
-  console.log('tags: ', tags)
   return SHOW_GEO_OPTIONS ? (
     <>
       <Grid.Column>
@@ -80,47 +70,19 @@ export const GeoOptions: FC<Props> = ({properties, update, results}) => {
               Use S2 Cell ID for lat/lon
             </InputLabel>
           </FlexBox>
-          <Dropdown
-            style={{flex: '0 0 120px'}}
-            button={(active, onClick) => (
-              <Dropdown.Button
-                active={active}
-                onClick={onClick}
-                status={ComponentStatus.Default}
-              >
-                <div className="color-dropdown--item">
-                  <div className="color-dropdown--name">
-                    Name of something here
-                  </div>
-                </div>
-              </Dropdown.Button>
-            )}
-            menu={onCollapse => (
-              <Dropdown.Menu
-                onCollapse={onCollapse}
-                theme={DropdownMenuTheme.Onyx}
-              >
-                {tags.map(tag => {
-                  const index = tags.indexOf(tag)
-                  return (
-                    <Dropdown.Item
-                      id={index}
-                      key={tag.key}
-                      value={tag.column}
-                      selected={tag.key === ''}
-                      onClick={() => console.log('chosen')}
-                    >
-                      <div className="color-dropdown--item">
-                        <div className="color-dropdown--name">
-                          Some capitalized name
-                        </div>
-                      </div>
-                    </Dropdown.Item>
-                  )
-                })}
-              </Dropdown.Menu>
-            )}
-          />
+          {useS2CellID ? (
+            <S2ColumnOptions
+              properties={properties}
+              update={update}
+              results={results}
+            />
+          ) : (
+            <LatLonColumnOptions
+              properties={properties}
+              update={update}
+              results={results}
+            />
+          )}
         </Grid.Row>
         <Form.Element label="Colorized Thresholds">
           <ThresholdsSettings

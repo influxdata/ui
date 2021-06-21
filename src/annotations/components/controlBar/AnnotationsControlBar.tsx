@@ -33,21 +33,20 @@ export const AnnotationsControlBar: FC = () => {
     <Toolbar
       testID="annotations-control-bar"
       margin={ComponentSize.Large}
-      style={{justifyContent:'center', padding:'0 32px', width:'100%' }}
+      style={{justifyContent: 'center', padding: '0 32px', width: '100%'}}
     >
-        <TextBlock
-          backgroundColor={InfluxColors.Obsidian}
-          textColor={InfluxColors.Mist}
-          text={infoText1}
-          style={{marginRight:8, paddingRight:0}}
-        />
-        <TextBlock
-          backgroundColor={InfluxColors.Obsidian}
-          textColor={InfluxColors.Mist}
-          text={infoText2}
-          style={{paddingLeft:0}}
-        />
-
+      <TextBlock
+        backgroundColor={InfluxColors.Obsidian}
+        textColor={InfluxColors.Mist}
+        text={infoText1}
+        style={{marginRight: 8, paddingRight: 0}}
+      />
+      <TextBlock
+        backgroundColor={InfluxColors.Obsidian}
+        textColor={InfluxColors.Mist}
+        text={infoText2}
+        style={{paddingLeft: 0}}
+      />
     </Toolbar>
   )
 }

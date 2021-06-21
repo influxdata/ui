@@ -5,7 +5,11 @@ describe('The Annotations UI functionality', () => {
   const singleStatSuffix = 'line-plus-single-stat'
   const bandSuffix = 'band'
 
-  const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') => {
+  const setupData = (
+    cy: Cypress.Chainable,
+    plotTypeSuffix = '',
+    enableRangeAnnotations = true
+  ) => {
     cy.flush()
     return cy.signin().then(() =>
       cy.get('@org').then(({id: orgID}: Organization) =>
@@ -16,7 +20,7 @@ describe('The Annotations UI functionality', () => {
               .setFeatureFlags({
                 annotations: true,
                 useGiraffeGraphs: true,
-                rangeAnnotations: true,
+                rangeAnnotations: enableRangeAnnotations,
               })
               .then(() => {
                 cy.createBucket(orgID, name, 'schmucket')
@@ -278,6 +282,30 @@ describe('The Annotations UI functionality', () => {
       actuallyDeleteAnnotation(cy)
     })
   })
+  describe('point annotations only, range annotations are off: ', () => {
+    beforeEach(() => setupData(cy, '', false))
+
+    it('can show the correct message on the annotation bar when range annotations are OFF', () => {
+      cy.getByTestID('annotations-control-bar').should(
+        'contain',
+        'Shift + click on a graph to create a point annotation'
+      )
+      cy.getByTestID('annotations-control-bar').should(
+        'not.contain',
+        'click + shift + drag to create a range annotation'
+      )
+    })
+
+    it('hides the range/point annotation type picker when range annotations are OFF', () => {
+      cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
+      })
+      cy.getByTestID('overlay--container').within(() => {
+        cy.getByTestID('annotation-form-point-type-option').should('not.exist')
+        cy.getByTestID('annotation-form-range-type-option').should('not.exist')
+      })
+    })
+  })
 
   describe('annotations on a graph (xy line) graph type: ', () => {
     beforeEach(() => setupData(cy))
@@ -302,6 +330,26 @@ describe('The Annotations UI functionality', () => {
       actuallyDeleteAnnotation(cy)
     })
 
+    it('can show the correct message on the annotation bar when range annotations are on', () => {
+      cy.getByTestID('annotations-control-bar').should(
+        'contain',
+        'Shift + click on a graph to create a point annotation'
+      )
+      cy.getByTestID('annotations-control-bar').should(
+        'contain',
+        'click + shift + drag to create a range annotation'
+      )
+    })
+
+    it('shows the range/point annotation type picker when range annotations are on', () => {
+      cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
+      })
+      cy.getByTestID('overlay--container').within(() => {
+        cy.getByTestID('annotation-form-point-type-option').should('be.visible')
+        cy.getByTestID('annotation-form-range-type-option').should('be.visible')
+      })
+    })
     it('can add a range annotation, then edit it and switch back and forth from point->range and the endtime stays the same', () => {
       addRangeAnnotation(cy)
       startEditingAnnotation(cy)

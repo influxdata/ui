@@ -48,6 +48,14 @@ class FakeFetcher implements ValueFetcher {
 }
 
 describe('hydrate vars', () => {
+  beforeAll(() => {
+    window.influx.set('filterExtern', true)
+  })
+
+  afterAll(() => {
+    window.influx.set('filterExtern', false)
+  })
+
   test('should invalidate cyclic subgraphs', async () => {
     // Construct the following graph:
     //

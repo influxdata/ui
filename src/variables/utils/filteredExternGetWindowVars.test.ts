@@ -1,8 +1,24 @@
-import {getWindowPeriodVariable} from 'src/variables/utils/getWindowVars'
+// Mocks
 import {defaultVariableAssignments} from 'src/variables/mocks'
+import {getMockedParse} from 'src/shared/utils/mocks/mockedParse'
+
+jest.mock('src/external/parser', () => {
+  return {
+    parse: jest.fn(getMockedParse()),
+  }
+})
+import {getWindowPeriodVariable} from 'src/variables/utils/getWindowVars'
 
 // TODO: As part of #1708, move the contents of this file to getWindowVars.test.ts and remove this file.
 describe('getWindowPeriodVariable', () => {
+  beforeAll(() => {
+    window.influx.set('filterExtern', true)
+  })
+
+  afterAll(() => {
+    window.influx.set('filterExtern', false)
+  })
+
   beforeEach(() => {
     // NOTE: as long as you mock children like below, before importing your
     // component by using a require().default pattern, this will reset your

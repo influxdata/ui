@@ -9,6 +9,1901 @@ const buildQuery = buildVariable.arguments.values.query
 
 export const getMockedParse = (additionalMappings = {}) => {
   const queryASTMapping = {
+    'match me!': {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 9},
+        source: 'match me',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 6},
+            source: 'match',
+          },
+          expression: {
+            type: 'Identifier',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 6},
+              source: 'match',
+            },
+            name: 'match',
+          },
+        },
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 7},
+            end: {line: 1, column: 9},
+            source: 'me',
+          },
+          expression: {
+            type: 'Identifier',
+            location: {
+              start: {line: 1, column: 7},
+              end: {line: 1, column: 9},
+              source: 'me',
+            },
+            name: 'me',
+          },
+        },
+      ],
+    },
+    'other=~v.target': {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 16},
+        source: 'other=~v.target',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 16},
+            source: 'other=~v.target',
+          },
+          expression: {
+            type: 'BinaryExpression',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 16},
+              source: 'other=~v.target',
+            },
+            operator: '=~',
+            left: {
+              type: 'Identifier',
+              location: {
+                start: {line: 1, column: 1},
+                end: {line: 1, column: 6},
+                source: 'other',
+              },
+              name: 'other',
+            },
+            right: {
+              type: 'MemberExpression',
+              location: {
+                start: {line: 1, column: 8},
+                end: {line: 1, column: 16},
+                source: 'v.target',
+              },
+              object: {
+                type: 'Identifier',
+                location: {
+                  start: {line: 1, column: 8},
+                  end: {line: 1, column: 9},
+                  source: 'v',
+                },
+                name: 'v',
+              },
+              property: {
+                type: 'Identifier',
+                location: {
+                  start: {line: 1, column: 10},
+                  end: {line: 1, column: 16},
+                  source: 'target',
+                },
+                name: 'target',
+              },
+            },
+          },
+        },
+      ],
+    },
+    'broke!': {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 6},
+        source: 'broke',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 6},
+            source: 'broke',
+          },
+          expression: {
+            type: 'Identifier',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 6},
+              source: 'broke',
+            },
+            name: 'broke',
+          },
+        },
+      ],
+    },
+    '(r)=>v.target==r.field\n': {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 23},
+        source: '(r)=>v.target==r.field',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 23},
+            source: '(r)=>v.target==r.field',
+          },
+          expression: {
+            type: 'FunctionExpression',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 23},
+              source: '(r)=>v.target==r.field',
+            },
+            params: [
+              {
+                type: 'Property',
+                location: {
+                  start: {line: 1, column: 2},
+                  end: {line: 1, column: 3},
+                  source: 'r',
+                },
+                key: {
+                  type: 'Identifier',
+                  location: {
+                    start: {line: 1, column: 2},
+                    end: {line: 1, column: 3},
+                    source: 'r',
+                  },
+                  name: 'r',
+                },
+                value: null,
+              },
+            ],
+            body: {
+              type: 'BinaryExpression',
+              location: {
+                start: {line: 1, column: 6},
+                end: {line: 1, column: 23},
+                source: 'v.target==r.field',
+              },
+              operator: '==',
+              left: {
+                type: 'MemberExpression',
+                location: {
+                  start: {line: 1, column: 6},
+                  end: {line: 1, column: 14},
+                  source: 'v.target',
+                },
+                object: {
+                  type: 'Identifier',
+                  location: {
+                    start: {line: 1, column: 6},
+                    end: {line: 1, column: 7},
+                    source: 'v',
+                  },
+                  name: 'v',
+                },
+                property: {
+                  type: 'Identifier',
+                  location: {
+                    start: {line: 1, column: 8},
+                    end: {line: 1, column: 14},
+                    source: 'target',
+                  },
+                  name: 'target',
+                },
+              },
+              right: {
+                type: 'MemberExpression',
+                location: {
+                  start: {line: 1, column: 16},
+                  end: {line: 1, column: 23},
+                  source: 'r.field',
+                },
+                object: {
+                  type: 'Identifier',
+                  location: {
+                    start: {line: 1, column: 16},
+                    end: {line: 1, column: 17},
+                    source: 'r',
+                  },
+                  name: 'r',
+                },
+                property: {
+                  type: 'Identifier',
+                  location: {
+                    start: {line: 1, column: 18},
+                    end: {line: 1, column: 23},
+                    source: 'field',
+                  },
+                  name: 'field',
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
+    'v.target!=r.field': {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 18},
+        source: 'v.target!=r.field',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 18},
+            source: 'v.target!=r.field',
+          },
+          expression: {
+            type: 'BinaryExpression',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 18},
+              source: 'v.target!=r.field',
+            },
+            operator: '!=',
+            left: {
+              type: 'MemberExpression',
+              location: {
+                start: {line: 1, column: 1},
+                end: {line: 1, column: 9},
+                source: 'v.target',
+              },
+              object: {
+                type: 'Identifier',
+                location: {
+                  start: {line: 1, column: 1},
+                  end: {line: 1, column: 2},
+                  source: 'v',
+                },
+                name: 'v',
+              },
+              property: {
+                type: 'Identifier',
+                location: {
+                  start: {line: 1, column: 3},
+                  end: {line: 1, column: 9},
+                  source: 'target',
+                },
+                name: 'target',
+              },
+            },
+            right: {
+              type: 'MemberExpression',
+              location: {
+                start: {line: 1, column: 11},
+                end: {line: 1, column: 18},
+                source: 'r.field',
+              },
+              object: {
+                type: 'Identifier',
+                location: {
+                  start: {line: 1, column: 11},
+                  end: {line: 1, column: 12},
+                  source: 'r',
+                },
+                name: 'r',
+              },
+              property: {
+                type: 'Identifier',
+                location: {
+                  start: {line: 1, column: 13},
+                  end: {line: 1, column: 18},
+                  source: 'field',
+                },
+                name: 'field',
+              },
+            },
+          },
+        },
+      ],
+    },
+    '\nv.target//wat?': {
+      type: 'File',
+      location: {
+        start: {line: 2, column: 1},
+        end: {line: 2, column: 9},
+        source: 'v.target',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 2, column: 1},
+            end: {line: 2, column: 9},
+            source: 'v.target',
+          },
+          expression: {
+            type: 'MemberExpression',
+            location: {
+              start: {line: 2, column: 1},
+              end: {line: 2, column: 9},
+              source: 'v.target',
+            },
+            object: {
+              type: 'Identifier',
+              location: {
+                start: {line: 2, column: 1},
+                end: {line: 2, column: 2},
+                source: 'v',
+              },
+              name: 'v',
+            },
+            property: {
+              type: 'Identifier',
+              location: {
+                start: {line: 2, column: 3},
+                end: {line: 2, column: 9},
+                source: 'target',
+              },
+              name: 'target',
+            },
+          },
+        },
+      ],
+      eof: {lit: '//wat?', next: null},
+    },
+    '{beep:v.target}\n': {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 16},
+        source: '{beep:v.target}',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 16},
+            source: '{beep:v.target}',
+          },
+          expression: {
+            type: 'ObjectExpression',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 16},
+              source: '{beep:v.target}',
+            },
+            properties: [
+              {
+                type: 'Property',
+                location: {
+                  start: {line: 1, column: 2},
+                  end: {line: 1, column: 15},
+                  source: 'beep:v.target',
+                },
+                key: {
+                  type: 'Identifier',
+                  location: {
+                    start: {line: 1, column: 2},
+                    end: {line: 1, column: 6},
+                    source: 'beep',
+                  },
+                  name: 'beep',
+                },
+                value: {
+                  type: 'MemberExpression',
+                  location: {
+                    start: {line: 1, column: 7},
+                    end: {line: 1, column: 15},
+                    source: 'v.target',
+                  },
+                  object: {
+                    type: 'Identifier',
+                    location: {
+                      start: {line: 1, column: 7},
+                      end: {line: 1, column: 8},
+                      source: 'v',
+                    },
+                    name: 'v',
+                  },
+                  property: {
+                    type: 'Identifier',
+                    location: {
+                      start: {line: 1, column: 9},
+                      end: {line: 1, column: 15},
+                      source: 'target',
+                    },
+                    name: 'target',
+                  },
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+    'x=v.target\n': {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 11},
+        source: 'x=v.target',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'VariableAssignment',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 11},
+            source: 'x=v.target',
+          },
+          id: {
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 2},
+              source: 'x',
+            },
+            name: 'x',
+          },
+          init: {
+            type: 'MemberExpression',
+            location: {
+              start: {line: 1, column: 3},
+              end: {line: 1, column: 11},
+              source: 'v.target',
+            },
+            object: {
+              type: 'Identifier',
+              location: {
+                start: {line: 1, column: 3},
+                end: {line: 1, column: 4},
+                source: 'v',
+              },
+              name: 'v',
+            },
+            property: {
+              type: 'Identifier',
+              location: {
+                start: {line: 1, column: 5},
+                end: {line: 1, column: 11},
+                source: 'target',
+              },
+              name: 'target',
+            },
+          },
+        },
+      ],
+    },
+    '1>v.target<2': {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 13},
+        source: '1>v.target<2',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 13},
+            source: '1>v.target<2',
+          },
+          expression: {
+            type: 'BinaryExpression',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 13},
+              source: '1>v.target<2',
+            },
+            operator: '<',
+            left: {
+              type: 'BinaryExpression',
+              location: {
+                start: {line: 1, column: 1},
+                end: {line: 1, column: 11},
+                source: '1>v.target',
+              },
+              operator: '>',
+              left: {
+                type: 'IntegerLiteral',
+                location: {
+                  start: {line: 1, column: 1},
+                  end: {line: 1, column: 2},
+                  source: '1',
+                },
+                value: '1',
+              },
+              right: {
+                type: 'MemberExpression',
+                location: {
+                  start: {line: 1, column: 3},
+                  end: {line: 1, column: 11},
+                  source: 'v.target',
+                },
+                object: {
+                  type: 'Identifier',
+                  location: {
+                    start: {line: 1, column: 3},
+                    end: {line: 1, column: 4},
+                    source: 'v',
+                  },
+                  name: 'v',
+                },
+                property: {
+                  type: 'Identifier',
+                  location: {
+                    start: {line: 1, column: 5},
+                    end: {line: 1, column: 11},
+                    source: 'target',
+                  },
+                  name: 'target',
+                },
+              },
+            },
+            right: {
+              type: 'IntegerLiteral',
+              location: {
+                start: {line: 1, column: 12},
+                end: {line: 1, column: 13},
+                source: '2',
+              },
+              value: '2',
+            },
+          },
+        },
+      ],
+    },
+    '1+v.target%2': {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 13},
+        source: '1+v.target%2',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 13},
+            source: '1+v.target%2',
+          },
+          expression: {
+            type: 'BinaryExpression',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 13},
+              source: '1+v.target%2',
+            },
+            operator: '+',
+            left: {
+              type: 'IntegerLiteral',
+              location: {
+                start: {line: 1, column: 1},
+                end: {line: 1, column: 2},
+                source: '1',
+              },
+              value: '1',
+            },
+            right: {
+              type: 'BinaryExpression',
+              location: {
+                start: {line: 1, column: 3},
+                end: {line: 1, column: 13},
+                source: 'v.target%2',
+              },
+              operator: '%',
+              left: {
+                type: 'MemberExpression',
+                location: {
+                  start: {line: 1, column: 3},
+                  end: {line: 1, column: 11},
+                  source: 'v.target',
+                },
+                object: {
+                  type: 'Identifier',
+                  location: {
+                    start: {line: 1, column: 3},
+                    end: {line: 1, column: 4},
+                    source: 'v',
+                  },
+                  name: 'v',
+                },
+                property: {
+                  type: 'Identifier',
+                  location: {
+                    start: {line: 1, column: 5},
+                    end: {line: 1, column: 11},
+                    source: 'target',
+                  },
+                  name: 'target',
+                },
+              },
+              right: {
+                type: 'IntegerLiteral',
+                location: {
+                  start: {line: 1, column: 12},
+                  end: {line: 1, column: 13},
+                  source: '2',
+                },
+                value: '2',
+              },
+            },
+          },
+        },
+      ],
+    },
+    '1*v.target/2': {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 13},
+        source: '1*v.target/2',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 13},
+            source: '1*v.target/2',
+          },
+          expression: {
+            type: 'BinaryExpression',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 13},
+              source: '1*v.target/2',
+            },
+            operator: '/',
+            left: {
+              type: 'BinaryExpression',
+              location: {
+                start: {line: 1, column: 1},
+                end: {line: 1, column: 11},
+                source: '1*v.target',
+              },
+              operator: '*',
+              left: {
+                type: 'IntegerLiteral',
+                location: {
+                  start: {line: 1, column: 1},
+                  end: {line: 1, column: 2},
+                  source: '1',
+                },
+                value: '1',
+              },
+              right: {
+                type: 'MemberExpression',
+                location: {
+                  start: {line: 1, column: 3},
+                  end: {line: 1, column: 11},
+                  source: 'v.target',
+                },
+                object: {
+                  type: 'Identifier',
+                  location: {
+                    start: {line: 1, column: 3},
+                    end: {line: 1, column: 4},
+                    source: 'v',
+                  },
+                  name: 'v',
+                },
+                property: {
+                  type: 'Identifier',
+                  location: {
+                    start: {line: 1, column: 5},
+                    end: {line: 1, column: 11},
+                    source: 'target',
+                  },
+                  name: 'target',
+                },
+              },
+            },
+            right: {
+              type: 'IntegerLiteral',
+              location: {
+                start: {line: 1, column: 12},
+                end: {line: 1, column: 13},
+                source: '2',
+              },
+              value: '2',
+            },
+          },
+        },
+      ],
+    },
+    '1+v.target-2': {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 13},
+        source: '1+v.target-2',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 13},
+            source: '1+v.target-2',
+          },
+          expression: {
+            type: 'BinaryExpression',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 13},
+              source: '1+v.target-2',
+            },
+            operator: '-',
+            left: {
+              type: 'BinaryExpression',
+              location: {
+                start: {line: 1, column: 1},
+                end: {line: 1, column: 11},
+                source: '1+v.target',
+              },
+              operator: '+',
+              left: {
+                type: 'IntegerLiteral',
+                location: {
+                  start: {line: 1, column: 1},
+                  end: {line: 1, column: 2},
+                  source: '1',
+                },
+                value: '1',
+              },
+              right: {
+                type: 'MemberExpression',
+                location: {
+                  start: {line: 1, column: 3},
+                  end: {line: 1, column: 11},
+                  source: 'v.target',
+                },
+                object: {
+                  type: 'Identifier',
+                  location: {
+                    start: {line: 1, column: 3},
+                    end: {line: 1, column: 4},
+                    source: 'v',
+                  },
+                  name: 'v',
+                },
+                property: {
+                  type: 'Identifier',
+                  location: {
+                    start: {line: 1, column: 5},
+                    end: {line: 1, column: 11},
+                    source: 'target',
+                  },
+                  name: 'target',
+                },
+              },
+            },
+            right: {
+              type: 'IntegerLiteral',
+              location: {
+                start: {line: 1, column: 12},
+                end: {line: 1, column: 13},
+                source: '2',
+              },
+              value: '2',
+            },
+          },
+        },
+      ],
+    },
+    '(v.target)': {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 11},
+        source: '(v.target)',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 11},
+            source: '(v.target)',
+          },
+          expression: {
+            type: 'ParenExpression',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 11},
+              source: '(v.target)',
+            },
+            expression: {
+              type: 'MemberExpression',
+              location: {
+                start: {line: 1, column: 2},
+                end: {line: 1, column: 10},
+                source: 'v.target',
+              },
+              object: {
+                type: 'Identifier',
+                location: {
+                  start: {line: 1, column: 2},
+                  end: {line: 1, column: 3},
+                  source: 'v',
+                },
+                name: 'v',
+              },
+              property: {
+                type: 'Identifier',
+                location: {
+                  start: {line: 1, column: 4},
+                  end: {line: 1, column: 10},
+                  source: 'target',
+                },
+                name: 'target',
+              },
+            },
+          },
+        },
+      ],
+    },
+    '[v.target, other]': {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 18},
+        source: '[v.target, other]',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 18},
+            source: '[v.target, other]',
+          },
+          expression: {
+            type: 'ArrayExpression',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 18},
+              source: '[v.target, other]',
+            },
+            elements: [
+              {
+                type: 'MemberExpression',
+                location: {
+                  start: {line: 1, column: 2},
+                  end: {line: 1, column: 10},
+                  source: 'v.target',
+                },
+                object: {
+                  type: 'Identifier',
+                  location: {
+                    start: {line: 1, column: 2},
+                    end: {line: 1, column: 3},
+                    source: 'v',
+                  },
+                  name: 'v',
+                },
+                property: {
+                  type: 'Identifier',
+                  location: {
+                    start: {line: 1, column: 4},
+                    end: {line: 1, column: 10},
+                    source: 'target',
+                  },
+                  name: 'target',
+                },
+              },
+              {
+                type: 'Identifier',
+                location: {
+                  start: {line: 1, column: 12},
+                  end: {line: 1, column: 17},
+                  source: 'other',
+                },
+                name: 'other',
+              },
+            ],
+          },
+        },
+      ],
+    },
+    'f(x: v.target)': {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 15},
+        source: 'f(x: v.target)',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 15},
+            source: 'f(x: v.target)',
+          },
+          expression: {
+            type: 'CallExpression',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 15},
+              source: 'f(x: v.target)',
+            },
+            callee: {
+              type: 'Identifier',
+              location: {
+                start: {line: 1, column: 1},
+                end: {line: 1, column: 2},
+                source: 'f',
+              },
+              name: 'f',
+            },
+            arguments: [
+              {
+                type: 'ObjectExpression',
+                location: {
+                  start: {line: 1, column: 3},
+                  end: {line: 1, column: 14},
+                  source: 'x: v.target',
+                },
+                properties: [
+                  {
+                    type: 'Property',
+                    location: {
+                      start: {line: 1, column: 3},
+                      end: {line: 1, column: 14},
+                      source: 'x: v.target',
+                    },
+                    key: {
+                      type: 'Identifier',
+                      location: {
+                        start: {line: 1, column: 3},
+                        end: {line: 1, column: 4},
+                        source: 'x',
+                      },
+                      name: 'x',
+                    },
+                    value: {
+                      type: 'MemberExpression',
+                      location: {
+                        start: {line: 1, column: 6},
+                        end: {line: 1, column: 14},
+                        source: 'v.target',
+                      },
+                      object: {
+                        type: 'Identifier',
+                        location: {
+                          start: {line: 1, column: 6},
+                          end: {line: 1, column: 7},
+                          source: 'v',
+                        },
+                        name: 'v',
+                      },
+                      property: {
+                        type: 'Identifier',
+                        location: {
+                          start: {line: 1, column: 8},
+                          end: {line: 1, column: 14},
+                          source: 'target',
+                        },
+                        name: 'target',
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      ],
+    },
+    'f(x: v.b)': {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 10},
+        source: 'f(x: v.b)',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 10},
+            source: 'f(x: v.b)',
+          },
+          expression: {
+            type: 'CallExpression',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 10},
+              source: 'f(x: v.b)',
+            },
+            callee: {
+              type: 'Identifier',
+              location: {
+                start: {line: 1, column: 1},
+                end: {line: 1, column: 2},
+                source: 'f',
+              },
+              name: 'f',
+            },
+            arguments: [
+              {
+                type: 'ObjectExpression',
+                location: {
+                  start: {line: 1, column: 3},
+                  end: {line: 1, column: 9},
+                  source: 'x: v.b',
+                },
+                properties: [
+                  {
+                    type: 'Property',
+                    location: {
+                      start: {line: 1, column: 3},
+                      end: {line: 1, column: 9},
+                      source: 'x: v.b',
+                    },
+                    key: {
+                      type: 'Identifier',
+                      location: {
+                        start: {line: 1, column: 3},
+                        end: {line: 1, column: 4},
+                        source: 'x',
+                      },
+                      name: 'x',
+                    },
+                    value: {
+                      type: 'MemberExpression',
+                      location: {
+                        start: {line: 1, column: 6},
+                        end: {line: 1, column: 9},
+                        source: 'v.b',
+                      },
+                      object: {
+                        type: 'Identifier',
+                        location: {
+                          start: {line: 1, column: 6},
+                          end: {line: 1, column: 7},
+                          source: 'v',
+                        },
+                        name: 'v',
+                      },
+                      property: {
+                        type: 'Identifier',
+                        location: {
+                          start: {line: 1, column: 8},
+                          end: {line: 1, column: 9},
+                          source: 'b',
+                        },
+                        name: 'b',
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      ],
+    },
+    cool: {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 5},
+        source: 'cool',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 5},
+            source: 'cool',
+          },
+          expression: {
+            type: 'Identifier',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 5},
+              source: 'cool',
+            },
+            name: 'cool',
+          },
+        },
+      ],
+    },
+    'nooo!': {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 5},
+        source: 'nooo',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 5},
+            source: 'nooo',
+          },
+          expression: {
+            type: 'Identifier',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 5},
+              source: 'nooo',
+            },
+            name: 'nooo',
+          },
+        },
+      ],
+    },
+    'f(x: v.b, y: v.c)': {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 18},
+        source: 'f(x: v.b, y: v.c)',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 18},
+            source: 'f(x: v.b, y: v.c)',
+          },
+          expression: {
+            type: 'CallExpression',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 18},
+              source: 'f(x: v.b, y: v.c)',
+            },
+            callee: {
+              type: 'Identifier',
+              location: {
+                start: {line: 1, column: 1},
+                end: {line: 1, column: 2},
+                source: 'f',
+              },
+              name: 'f',
+            },
+            arguments: [
+              {
+                type: 'ObjectExpression',
+                location: {
+                  start: {line: 1, column: 3},
+                  end: {line: 1, column: 17},
+                  source: 'x: v.b, y: v.c',
+                },
+                properties: [
+                  {
+                    type: 'Property',
+                    location: {
+                      start: {line: 1, column: 3},
+                      end: {line: 1, column: 9},
+                      source: 'x: v.b',
+                    },
+                    key: {
+                      type: 'Identifier',
+                      location: {
+                        start: {line: 1, column: 3},
+                        end: {line: 1, column: 4},
+                        source: 'x',
+                      },
+                      name: 'x',
+                    },
+                    value: {
+                      type: 'MemberExpression',
+                      location: {
+                        start: {line: 1, column: 6},
+                        end: {line: 1, column: 9},
+                        source: 'v.b',
+                      },
+                      object: {
+                        type: 'Identifier',
+                        location: {
+                          start: {line: 1, column: 6},
+                          end: {line: 1, column: 7},
+                          source: 'v',
+                        },
+                        name: 'v',
+                      },
+                      property: {
+                        type: 'Identifier',
+                        location: {
+                          start: {line: 1, column: 8},
+                          end: {line: 1, column: 9},
+                          source: 'b',
+                        },
+                        name: 'b',
+                      },
+                    },
+                  },
+                  {
+                    type: 'Property',
+                    location: {
+                      start: {line: 1, column: 11},
+                      end: {line: 1, column: 17},
+                      source: 'y: v.c',
+                    },
+                    key: {
+                      type: 'Identifier',
+                      location: {
+                        start: {line: 1, column: 11},
+                        end: {line: 1, column: 12},
+                        source: 'y',
+                      },
+                      name: 'y',
+                    },
+                    value: {
+                      type: 'MemberExpression',
+                      location: {
+                        start: {line: 1, column: 14},
+                        end: {line: 1, column: 17},
+                        source: 'v.c',
+                      },
+                      object: {
+                        type: 'Identifier',
+                        location: {
+                          start: {line: 1, column: 14},
+                          end: {line: 1, column: 15},
+                          source: 'v',
+                        },
+                        name: 'v',
+                      },
+                      property: {
+                        type: 'Identifier',
+                        location: {
+                          start: {line: 1, column: 16},
+                          end: {line: 1, column: 17},
+                          source: 'c',
+                        },
+                        name: 'c',
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      ],
+    },
+    'f(x: v.f, y: v.e)': {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 18},
+        source: 'f(x: v.f, y: v.e)',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 18},
+            source: 'f(x: v.f, y: v.e)',
+          },
+          expression: {
+            type: 'CallExpression',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 18},
+              source: 'f(x: v.f, y: v.e)',
+            },
+            callee: {
+              type: 'Identifier',
+              location: {
+                start: {line: 1, column: 1},
+                end: {line: 1, column: 2},
+                source: 'f',
+              },
+              name: 'f',
+            },
+            arguments: [
+              {
+                type: 'ObjectExpression',
+                location: {
+                  start: {line: 1, column: 3},
+                  end: {line: 1, column: 17},
+                  source: 'x: v.f, y: v.e',
+                },
+                properties: [
+                  {
+                    type: 'Property',
+                    location: {
+                      start: {line: 1, column: 3},
+                      end: {line: 1, column: 9},
+                      source: 'x: v.f',
+                    },
+                    key: {
+                      type: 'Identifier',
+                      location: {
+                        start: {line: 1, column: 3},
+                        end: {line: 1, column: 4},
+                        source: 'x',
+                      },
+                      name: 'x',
+                    },
+                    value: {
+                      type: 'MemberExpression',
+                      location: {
+                        start: {line: 1, column: 6},
+                        end: {line: 1, column: 9},
+                        source: 'v.f',
+                      },
+                      object: {
+                        type: 'Identifier',
+                        location: {
+                          start: {line: 1, column: 6},
+                          end: {line: 1, column: 7},
+                          source: 'v',
+                        },
+                        name: 'v',
+                      },
+                      property: {
+                        type: 'Identifier',
+                        location: {
+                          start: {line: 1, column: 8},
+                          end: {line: 1, column: 9},
+                          source: 'f',
+                        },
+                        name: 'f',
+                      },
+                    },
+                  },
+                  {
+                    type: 'Property',
+                    location: {
+                      start: {line: 1, column: 11},
+                      end: {line: 1, column: 17},
+                      source: 'y: v.e',
+                    },
+                    key: {
+                      type: 'Identifier',
+                      location: {
+                        start: {line: 1, column: 11},
+                        end: {line: 1, column: 12},
+                        source: 'y',
+                      },
+                      name: 'y',
+                    },
+                    value: {
+                      type: 'MemberExpression',
+                      location: {
+                        start: {line: 1, column: 14},
+                        end: {line: 1, column: 17},
+                        source: 'v.e',
+                      },
+                      object: {
+                        type: 'Identifier',
+                        location: {
+                          start: {line: 1, column: 14},
+                          end: {line: 1, column: 15},
+                          source: 'v',
+                        },
+                        name: 'v',
+                      },
+                      property: {
+                        type: 'Identifier',
+                        location: {
+                          start: {line: 1, column: 16},
+                          end: {line: 1, column: 17},
+                          source: 'e',
+                        },
+                        name: 'e',
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      ],
+    },
+    'f(x: v.g)': {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 10},
+        source: 'f(x: v.g)',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 10},
+            source: 'f(x: v.g)',
+          },
+          expression: {
+            type: 'CallExpression',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 10},
+              source: 'f(x: v.g)',
+            },
+            callee: {
+              type: 'Identifier',
+              location: {
+                start: {line: 1, column: 1},
+                end: {line: 1, column: 2},
+                source: 'f',
+              },
+              name: 'f',
+            },
+            arguments: [
+              {
+                type: 'ObjectExpression',
+                location: {
+                  start: {line: 1, column: 3},
+                  end: {line: 1, column: 9},
+                  source: 'x: v.g',
+                },
+                properties: [
+                  {
+                    type: 'Property',
+                    location: {
+                      start: {line: 1, column: 3},
+                      end: {line: 1, column: 9},
+                      source: 'x: v.g',
+                    },
+                    key: {
+                      type: 'Identifier',
+                      location: {
+                        start: {line: 1, column: 3},
+                        end: {line: 1, column: 4},
+                        source: 'x',
+                      },
+                      name: 'x',
+                    },
+                    value: {
+                      type: 'MemberExpression',
+                      location: {
+                        start: {line: 1, column: 6},
+                        end: {line: 1, column: 9},
+                        source: 'v.g',
+                      },
+                      object: {
+                        type: 'Identifier',
+                        location: {
+                          start: {line: 1, column: 6},
+                          end: {line: 1, column: 7},
+                          source: 'v',
+                        },
+                        name: 'v',
+                      },
+                      property: {
+                        type: 'Identifier',
+                        location: {
+                          start: {line: 1, column: 8},
+                          end: {line: 1, column: 9},
+                          source: 'g',
+                        },
+                        name: 'g',
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      ],
+    },
+    'nooooo!': {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 7},
+        source: 'nooooo',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 7},
+            source: 'nooooo',
+          },
+          expression: {
+            type: 'Identifier',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 7},
+              source: 'nooooo',
+            },
+            name: 'nooooo',
+          },
+        },
+      ],
+    },
+    pick: {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 5},
+        source: 'pick',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 5},
+            source: 'pick',
+          },
+          expression: {
+            type: 'Identifier',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 5},
+              source: 'pick',
+            },
+            name: 'pick',
+          },
+        },
+      ],
+    },
+    'f(x: v.a, y: v.b)': {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 18},
+        source: 'f(x: v.a, y: v.b)',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 18},
+            source: 'f(x: v.a, y: v.b)',
+          },
+          expression: {
+            type: 'CallExpression',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 18},
+              source: 'f(x: v.a, y: v.b)',
+            },
+            callee: {
+              type: 'Identifier',
+              location: {
+                start: {line: 1, column: 1},
+                end: {line: 1, column: 2},
+                source: 'f',
+              },
+              name: 'f',
+            },
+            arguments: [
+              {
+                type: 'ObjectExpression',
+                location: {
+                  start: {line: 1, column: 3},
+                  end: {line: 1, column: 17},
+                  source: 'x: v.a, y: v.b',
+                },
+                properties: [
+                  {
+                    type: 'Property',
+                    location: {
+                      start: {line: 1, column: 3},
+                      end: {line: 1, column: 9},
+                      source: 'x: v.a',
+                    },
+                    key: {
+                      type: 'Identifier',
+                      location: {
+                        start: {line: 1, column: 3},
+                        end: {line: 1, column: 4},
+                        source: 'x',
+                      },
+                      name: 'x',
+                    },
+                    value: {
+                      type: 'MemberExpression',
+                      location: {
+                        start: {line: 1, column: 6},
+                        end: {line: 1, column: 9},
+                        source: 'v.a',
+                      },
+                      object: {
+                        type: 'Identifier',
+                        location: {
+                          start: {line: 1, column: 6},
+                          end: {line: 1, column: 7},
+                          source: 'v',
+                        },
+                        name: 'v',
+                      },
+                      property: {
+                        type: 'Identifier',
+                        location: {
+                          start: {line: 1, column: 8},
+                          end: {line: 1, column: 9},
+                          source: 'a',
+                        },
+                        name: 'a',
+                      },
+                    },
+                  },
+                  {
+                    type: 'Property',
+                    location: {
+                      start: {line: 1, column: 11},
+                      end: {line: 1, column: 17},
+                      source: 'y: v.b',
+                    },
+                    key: {
+                      type: 'Identifier',
+                      location: {
+                        start: {line: 1, column: 11},
+                        end: {line: 1, column: 12},
+                        source: 'y',
+                      },
+                      name: 'y',
+                    },
+                    value: {
+                      type: 'MemberExpression',
+                      location: {
+                        start: {line: 1, column: 14},
+                        end: {line: 1, column: 17},
+                        source: 'v.b',
+                      },
+                      object: {
+                        type: 'Identifier',
+                        location: {
+                          start: {line: 1, column: 14},
+                          end: {line: 1, column: 15},
+                          source: 'v',
+                        },
+                        name: 'v',
+                      },
+                      property: {
+                        type: 'Identifier',
+                        location: {
+                          start: {line: 1, column: 16},
+                          end: {line: 1, column: 17},
+                          source: 'b',
+                        },
+                        name: 'b',
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      ],
+    },
+    yay: {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 4},
+        source: 'yay',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 4},
+            source: 'yay',
+          },
+          expression: {
+            type: 'Identifier',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 4},
+              source: 'yay',
+            },
+            name: 'yay',
+          },
+        },
+      ],
+    },
+    'v.target': {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 1},
+        end: {line: 1, column: 9},
+        source: 'v.target',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 1},
+            end: {line: 1, column: 9},
+            source: 'v.target',
+          },
+          expression: {
+            type: 'MemberExpression',
+            location: {
+              start: {line: 1, column: 1},
+              end: {line: 1, column: 9},
+              source: 'v.target',
+            },
+            object: {
+              type: 'Identifier',
+              location: {
+                start: {line: 1, column: 1},
+                end: {line: 1, column: 2},
+                source: 'v',
+              },
+              name: 'v',
+            },
+            property: {
+              type: 'Identifier',
+              location: {
+                start: {line: 1, column: 3},
+                end: {line: 1, column: 9},
+                source: 'target',
+              },
+              name: 'target',
+            },
+          },
+        },
+      ],
+    },
+    '\tv.target\n': {
+      type: 'File',
+      location: {
+        start: {line: 1, column: 5},
+        end: {line: 1, column: 13},
+        source: 'v.target',
+      },
+      metadata: 'parser-type=rust',
+      package: null,
+      imports: [],
+      body: [
+        {
+          type: 'ExpressionStatement',
+          location: {
+            start: {line: 1, column: 5},
+            end: {line: 1, column: 13},
+            source: 'v.target',
+          },
+          expression: {
+            type: 'MemberExpression',
+            location: {
+              start: {line: 1, column: 5},
+              end: {line: 1, column: 13},
+              source: 'v.target',
+            },
+            object: {
+              type: 'Identifier',
+              location: {
+                start: {line: 1, column: 5},
+                end: {line: 1, column: 6},
+                source: 'v',
+              },
+              name: 'v',
+            },
+            property: {
+              type: 'Identifier',
+              location: {
+                start: {line: 1, column: 7},
+                end: {line: 1, column: 13},
+                source: 'target',
+              },
+              name: 'target',
+            },
+          },
+        },
+      ],
+    },
     'v.build': {
       type: 'File',
       location: {
@@ -1913,6 +3808,7 @@ export const getMockedParse = (additionalMappings = {}) => {
   )
 
   return query => {
+    console.log({query})
     return queryASTMapping[query]
   }
 }

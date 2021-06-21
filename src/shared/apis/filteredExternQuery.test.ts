@@ -77,6 +77,14 @@ const variables: Variable[] = [
 ]
 
 describe('query', () => {
+  beforeAll(() => {
+    window.influx.set('filterExtern', true)
+  })
+
+  afterAll(() => {
+    window.influx.set('filterExtern', false)
+  })
+
   describe('runQuery', () => {
     beforeEach(() => {
       jest.clearAllMocks()

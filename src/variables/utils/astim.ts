@@ -18,7 +18,7 @@ const parseAllVariables = (ast: File): MemberExpression[] => {
 export const parseASTIM = (query: string): ASTIM => {
   const ast: File = parse(query)
   // Using `any` to circumvent ts error
-  const variables: any = parseAllVariables(ast)
+  const variables: any = ast ? parseAllVariables(ast) : []
   const variableNames = new Set()
   variables.forEach(variable => variableNames.add(variable.property.name))
 

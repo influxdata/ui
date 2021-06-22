@@ -400,7 +400,7 @@ const NEW_VIEW_CREATORS = {
       s2Column: 's2_cell_id',
       latLonColumns: {
         lat: {key: '', column: ''},
-        lon: {key: '', column: ''}
+        lon: {key: '', column: ''},
       },
       layers: [
         {

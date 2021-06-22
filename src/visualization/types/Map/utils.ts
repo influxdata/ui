@@ -33,13 +33,13 @@ export const findTags = (table: Table, latLon: boolean = false) => {
 export const findFields = (table: Table) => {
   const fieldValues: ColumnData = table.getColumn('_field')
   const fields = new Set([...fieldValues])
-  const results = {};
+  const results = {}
   fields.forEach((field: string) => {
     results[field] = {
       key: 'field',
       column: field,
     }
   })
-    
+
   return results
 }

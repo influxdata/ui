@@ -42,5 +42,5 @@ export default {
   layers: [],
   useS2CellID: true,
   s2Column: '',
-  latLonColumns: { lat: { key: "", column: "" }, lon: { key: "", column: "" } }
+  latLonColumns: {lat: {key: '', column: ''}, lon: {key: '', column: ''}},
 } as GeoViewProperties

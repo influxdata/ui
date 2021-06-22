@@ -1,5 +1,10 @@
 // Libraries
-import {Table, LineInterpolation, FromFluxResult, LatLonColumns} from '@influxdata/giraffe'
+import {
+  Table,
+  LineInterpolation,
+  FromFluxResult,
+  LatLonColumns,
+} from '@influxdata/giraffe'
 import {S2} from 's2-geometry'
 
 // Types
@@ -457,44 +462,52 @@ export const getDetectCoordinatingFields = (table: Table) => {
   return true
 }
 
-const latLonAsTags = (latLonColumns) => {
-  if (
-    latLonColumns?.lat?.key === 'tag' &&
-    latLonColumns?.lon?.key === 'tag'
-  ) {
+const latLonAsTags = latLonColumns => {
+  if (latLonColumns?.lat?.key === 'tag' && latLonColumns?.lon?.key === 'tag') {
     return true
   }
   return false
 }
 
-const getCoordinateColumnFlagged = (table: Table, useS2CellID: boolean, s2Column: string, latLonColumns: LatLonColumns): string => {
-try {
-  if (useS2CellID && s2Column !== "") {
-    const column = table.getColumn(s2Column || 's2_cell_id')
-    if (column != null) {
-      return CoordinateType.S2
+const getCoordinateColumnFlagged = (
+  table: Table,
+  useS2CellID: boolean,
+  s2Column: string,
+  latLonColumns: LatLonColumns
+): string => {
+  try {
+    if (useS2CellID && s2Column !== '') {
+      const column = table.getColumn(s2Column || 's2_cell_id')
+      if (column != null) {
+        return CoordinateType.S2
+      }
     }
-  }
-  if (latLonAsTags(latLonColumns)) {
-    const lat = table.getColumn(latLonColumns?.lat?.column || 'lat')
-    const lon = table.getColumn(latLonColumns?.lon?.column || 'lon')
+    if (latLonAsTags(latLonColumns)) {
+      const lat = table.getColumn(latLonColumns?.lat?.column || 'lat')
+      const lon = table.getColumn(latLonColumns?.lon?.column || 'lon')
 
-    if (lat !== null && lon !== null) {
-      return CoordinateType.Tags
+      if (lat !== null && lon !== null) {
+        return CoordinateType.Tags
+      }
     }
+
+    const latCoordinate = getColumnValue(
+      table,
+      latLonColumns?.lat?.column || 'lat'
+    )
+    const lonCoordinate = getColumnValue(
+      table,
+      latLonColumns?.lon?.column || 'lon'
+    )
+
+    if (latCoordinate && lonCoordinate) {
+      return CoordinateType.Fields
+    }
+
+    return CoordinateType.None
+  } catch (e) {
+    throw new Error('lat_lon_not_found')
   }
-
-  const latCoordinate = getColumnValue(table, latLonColumns?.lat?.column || 'lat')
-  const lonCoordinate = getColumnValue(table, latLonColumns?.lon?.column || 'lon')
-
-  if (latCoordinate && lonCoordinate) {
-    return CoordinateType.Fields
-  }
-
-  return CoordinateType.None
-} catch (e) {
-  throw new Error('lat_lon_not_found')
-}
 }
 
 export const getGeoCoordinatesFlagged = (
@@ -504,21 +517,32 @@ export const getGeoCoordinatesFlagged = (
   s2Column: string,
   latLonColumns: LatLonColumns
 ): {lon: number; lat: number} | null => {
-  const coordinateColumn = getCoordinateColumnFlagged(table, useS2CellID, s2Column, latLonColumns)
+  const coordinateColumn = getCoordinateColumnFlagged(
+    table,
+    useS2CellID,
+    s2Column,
+    latLonColumns
+  )
 
   switch (coordinateColumn) {
     case CoordinateType.S2:
       return getCoordinateFromS2(table, index)
     case CoordinateType.Tags:
       const latColumn = table.getColumn(latLonColumns?.lat?.column || 'lat')
-      const lonColumn = table.getColumn(latLonColumns?.lon?.column||'lon')
+      const lonColumn = table.getColumn(latLonColumns?.lon?.column || 'lon')
       return {
         lat: parseCoordinates(latColumn[index]),
         lon: parseCoordinates(lonColumn[index]),
       }
     case CoordinateType.Fields:
-      const latCoordinate = getColumnValue(table, latLonColumns?.lat?.column || 'lat')
-      const lonCoordinate = getColumnValue(table, latLonColumns?.lon?.column || 'lon')
+      const latCoordinate = getColumnValue(
+        table,
+        latLonColumns?.lat?.column || 'lat'
+      )
+      const lonCoordinate = getColumnValue(
+        table,
+        latLonColumns?.lon?.column || 'lon'
+      )
       return {
         lat: parseCoordinates(latCoordinate),
         lon: parseCoordinates(lonCoordinate),
@@ -528,8 +552,18 @@ export const getGeoCoordinatesFlagged = (
   }
 }
 
-export const getDetectCoordinatingFieldsFlagged = (table: Table, useS2CellID: boolean, s2Column: string, latLonColumns: LatLonColumns) => {
-  const coordinateColumn = getCoordinateColumnFlagged(table, useS2CellID, s2Column, latLonColumns)
+export const getDetectCoordinatingFieldsFlagged = (
+  table: Table,
+  useS2CellID: boolean,
+  s2Column: string,
+  latLonColumns: LatLonColumns
+) => {
+  const coordinateColumn = getCoordinateColumnFlagged(
+    table,
+    useS2CellID,
+    s2Column,
+    latLonColumns
+  )
 
   if (
     coordinateColumn === CoordinateType.S2 ||

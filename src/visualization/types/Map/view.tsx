@@ -132,8 +132,13 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
       </div>
     )
   } else if (coordinateError === RemoteDataState.Error) {
-    error =
-      'Map type is not supported with the data provided. Map type only supports latitude/longitude values (field values must be specified to either lat or lon)'
+    if (isBehindFlag) {
+      error =
+        'Map type is not supported with the data provided. Please use customization options to select correct fields to use for lat/lon'
+    } else {
+      error =
+        'Map type is not supported with the data provided. Map type only supports latitude/longitude values (field values must be specified to either lat or lon)'
+    }
 
     return (
       <div className="panel-resizer--error" data-testid="geoplot-error">
@@ -168,9 +173,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     ? DEFAULT_THRESHOLDS_GEO_COLORS
     : layersOpts[0].colors
 
-  // auto assign these variables
-  layersOpts[0].tooltipColumns = tooltipColumns
-  layersOpts[0].colors = colorChoice
+  layersOpts[0] = {...layersOpts[0], tooltipColumns, colors: colorChoice}
 
   let zoomOpt = zoom
   if (zoom === 0) {

@@ -31,7 +31,7 @@ export const findTags = (table: Table, latLon: boolean = false) => {
 }
 
 export const findFields = (table: Table) => {
-  const fieldValues = table.getColumn('_field')
+  const fieldValues: any = table.getColumn('_field')
   const uniqueFields = _.uniq(fieldValues)
   const fields = uniqueFields.reduce(function(result, item) {
     result[item] = {

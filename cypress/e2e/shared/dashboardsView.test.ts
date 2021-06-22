@@ -1,6 +1,6 @@
 import {Organization, AppState, Dashboard} from '../../../src/types'
 import {lines} from '../../support/commands'
-import moment from 'moment'
+import * as moment from 'moment'
 
 describe('Dashboard', () => {
   beforeEach(() => {
@@ -1857,7 +1857,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     it('clones a cell to another dashboard and displays it there', () => {
       cy.getByTestID('clone-to-other-dashboard').click()
       cy.getByTestID(`other-dashboard-${otherBoardID}`).click()
-      cy.intercept('PATCH', '/api/v2/view').as('setView')
+      cy.intercept('PATCH', '/api/v2/dashboards/*/cells/*/view').as('setView')
       cy.getByTestID('confirm-clone-cell-button').click()
 
       cy.wait('@setView')
@@ -1869,7 +1869,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.getByTestID('clone-to-other-dashboard').click()
       cy.getByTestID(`other-dashboard-${otherBoardID}`).click()
       cy.getByTestID('clone-cell-type-toggle').click()
-      cy.intercept('PATCH', '/api/v2/view').as('setView')
+      cy.intercept('PATCH', '/api/v2/dashboards/*/cells/*/view').as('setView')
       cy.getByTestID('confirm-clone-cell-button').click()
       cy.wait('@setView')
       cy.visit(`${allOrgs}/${orgId}/dashboards/${otherBoardID}`)

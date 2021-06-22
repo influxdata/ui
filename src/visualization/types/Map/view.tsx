@@ -39,13 +39,8 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     latLonColumns,
   } = properties
   const {lat, lon} = properties.center
-<<<<<<< HEAD
-=======
-  const tooltipColumns = _.isEmpty(properties.layers[0].tooltipColumns)
-    ? result.fluxGroupKeyUnion
-    : properties.layers[0].tooltipColumns
+
   const isBehindFlag = isFlagEnabled('mapGeoOptions')
->>>>>>> fix: use feature flag for building config in maps
 
   const [mapServiceError, setMapServiceError] = useState<RemoteDataState>(
     RemoteDataState.NotStarted

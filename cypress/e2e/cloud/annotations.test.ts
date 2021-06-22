@@ -1,6 +1,6 @@
 import {Organization} from '../../../src/types'
 import {lines} from '../../support/commands'
-import moment from 'moment'
+import * as moment from 'moment'
 
 describe('The Annotations UI functionality', () => {
   const singleStatSuffix = 'line-plus-single-stat'

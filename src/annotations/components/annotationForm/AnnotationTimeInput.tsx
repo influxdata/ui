@@ -45,7 +45,9 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
   )
 
   const isValidTimeFormat = (inputValue: string): boolean => {
-    return moment(inputValue, timeFormat, true).isValid()
+    const isValid = moment(inputValue, timeFormat, true).isValid()
+    props.onValidityCheck(isValid)
+    return isValid
   }
 
   const getInputValidationMessage = (): string => {

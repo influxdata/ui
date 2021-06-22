@@ -146,7 +146,7 @@ describe('The Annotations UI functionality', () => {
 
   const addAnnotation = (cy: Cypress.Chainable) => {
     cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('giraffe-inner-plot').click()
+      cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
     })
     cy.getByTestID('overlay--container').within(() => {
       cy.getByTestID('edit-annotation-message')
@@ -419,7 +419,7 @@ describe('The Annotations UI functionality', () => {
     })
     it('can add an annotation; that is originally a point and then switch to a range', () => {
       cy.getByTestID('cell blah').within(() => {
-        cy.getByTestID('giraffe-inner-plot').click()
+        cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
       })
       cy.getByTestID('overlay--container').within(() => {
         cy.getByTestID('edit-annotation-message')
@@ -528,6 +528,14 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('annotations-control-bar').should('not.exist')
 
       cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
+      })
+
+      cy.getByTestID('overlay--container').should('not.exist')
+    })
+
+    it('cannot create an annotation when the shift key is NOT pressed down', () => {
+      cy.getByTestID('cell blah').within(() => {
         cy.getByTestID('giraffe-inner-plot').click()
       })
 
@@ -607,7 +615,7 @@ describe('The Annotations UI functionality', () => {
 
       // create a new annotation in it
       cy.getByTestID('cell newCell').within(() => {
-        cy.getByTestID('giraffe-inner-plot').click()
+        cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
       })
 
       cy.getByTestID('overlay--container').within(() => {

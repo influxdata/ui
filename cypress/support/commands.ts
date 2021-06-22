@@ -9,7 +9,11 @@ Cypress.on('uncaught:exception', (err, _) => {
   // returning false here prevents Cypress from failing the test when there are console errors.
   // this was the default behavior until cypress v7.
   // we expect a 401 error when logging in with DEX's APIs, so ignore that but fail for all other console errors.
-  return !err.message.includes('Request failed with status code 401')
+  // we also can ignore AbortErrors for when network requests are terminated early.
+  return !(
+    err.message.includes('Request failed with status code 401') ||
+    err.message.includes('AbortError')
+  )
 })
 
 export const signin = (): Cypress.Chainable<Cypress.Response> => {

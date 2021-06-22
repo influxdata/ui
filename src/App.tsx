@@ -48,7 +48,7 @@ const App: FC = () => {
     if (CLOUD && isFlagEnabled('rudderstackReporting')) {
       load(RUDDERSTACK_WRITE_KEY, RUDDERSTACK_DATA_PLANE_URL)
     }
-    setAutoFreeze(process.env.NODE_ENV !== 'production')
+    setAutoFreeze(false)
   }, [RUDDERSTACK_WRITE_KEY, RUDDERSTACK_DATA_PLANE_URL])
 
   return (

@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, FormEvent, useState} from 'react'
 import {useDispatch} from 'react-redux'
+import moment from 'moment'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -152,17 +153,22 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
      * if point annotation, do nothing
      *
      * if range:
-     * a) make sure times are not the same; if so; tell the user!
-     * (times are the same, so you are creating a point and not a range annotation.  please adjust the times and try again, else
-     * change the type to a point annotation)
+     * making sure they are not the same, and also that 'end' is after 'start'
      */
 
-    console.log(`times??? ${startTime}: ${endTime}`)
-    /**
-     * b) convert them to numbers (if not already)
-     *     -> make sure that 'end' is after 'start'
-     *         --> if not, tell the user:  'stopTime is not after start time.  please adjust the times accordingly and try again'
-     */
+    // console.log(`times??? ${startTime}: ${endTime}`)
+    // console.log(`types??? ${typeof(startTime)} : ${typeof(endTime)}`)
+
+    const start = moment(startTime)
+    const end = moment(endTime)
+
+    if (end.isSame(start)) {
+      return 'End Time is the same as start time, please adjust or create a point annotation instead.'
+    }
+
+    if (!end.isAfter(start)) {
+      return 'End Time must be after the start time'
+    }
   }
 
   const changeToRangeType = () => {

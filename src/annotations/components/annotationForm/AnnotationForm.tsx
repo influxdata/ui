@@ -57,10 +57,17 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
   const [summary, setSummary] = useState(props.summary)
   const [annotationType, setAnnotationType] = useState(props.type)
 
+  // since we start with default times via the mouse, they are valid at first
+  // (until the user edits it)
+  const [endTimeValid, setEndTimeValid] = useState(true)
+  const [startTimeValid, setStartTimeValid] = useState(true)
+
   const dispatch = useDispatch()
 
   const isValidAnnotationForm = (): boolean => {
-    const isValidPointAnnotation = Boolean(summary?.length && startTime)
+    const isValidPointAnnotation = Boolean(
+      summary?.length && startTime && startTimeValid && isStartTimeValid()
+    )
 
     // not checking if start <= end right now
     // initially, the times are numbers, and then if the user manually edits them then
@@ -68,7 +75,9 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     // plus, the backend checks if the startTime is before or equals the endTime
     // so, letting the backend do that check for now.
     if (annotationType === 'range') {
-      return Boolean(isValidPointAnnotation && endTime && isEndTimeValid())
+      return Boolean(
+        isValidPointAnnotation && endTime && endTimeValid && isEndTimeValid()
+      )
     }
     return isValidPointAnnotation
   }
@@ -138,6 +147,17 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     props.onClose()
   }
 
+  const isTimeInFuture = timeToCheck => {
+    return moment(timeToCheck).isAfter(moment())
+  }
+
+  const validateStartTime = () => {
+    if (isTimeInFuture(startTime)) {
+      return {isValid: false, message: 'Start Time cannot be in the future'}
+    }
+    return {isValid: true}
+  }
+
   /**
    * if there is a problem with the end time (with respect to the start time)
    * return an error message here, along with the isValid flag
@@ -174,6 +194,10 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
       return {isValid: false, message: 'End Time must be after the start time'}
     }
 
+    if (isTimeInFuture(endTime)) {
+      return {isValid: false, message: 'End Time cannot be in the future'}
+    }
+
     return {isValid: true, message: null}
   }
 
@@ -183,6 +207,14 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
 
   const isEndTimeValid = () => {
     return validateEndTime().isValid
+  }
+
+  const getStartTimeValidationMessage = () => {
+    return validateStartTime().message
+  }
+
+  const isStartTimeValid = () => {
+    return validateStartTime().isValid
   }
 
   const changeToRangeType = () => {
@@ -252,6 +284,8 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
               onSubmit={handleKeyboardSubmit}
               time={startTime}
               name="startTime"
+              onValidityCheck={setStartTimeValid}
+              invalidMessage={getStartTimeValidationMessage()}
             />
 
             {annotationType === 'range' && (
@@ -259,6 +293,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
                 onChange={updateEndTime}
                 onSubmit={handleKeyboardSubmit}
                 invalidMessage={getEndTimeValidationMessage()}
+                onValidityCheck={setEndTimeValid}
                 time={endTime}
                 name="endTime"
                 titleText="Stop Time"

@@ -137,6 +137,34 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     props.onClose()
   }
 
+  /**
+   * if there is a problem with the end time (with respect to the start time)
+   * return an error message here
+   *
+   * if no message, then it is valid
+   * */
+  const validateEndTime = () => {
+    if (annotationType === 'point') {
+      return ''
+    }
+
+    /**
+     * if point annotation, do nothing
+     *
+     * if range:
+     * a) make sure times are not the same; if so; tell the user!
+     * (times are the same, so you are creating a point and not a range annotation.  please adjust the times and try again, else
+     * change the type to a point annotation)
+     */
+
+    console.log(`times??? ${startTime}: ${endTime}`)
+    /**
+     * b) convert them to numbers (if not already)
+     *     -> make sure that 'end' is after 'start'
+     *         --> if not, tell the user:  'stopTime is not after start time.  please adjust the times accordingly and try again'
+     */
+  }
+
   const changeToRangeType = () => {
     setAnnotationType('range')
     if (!endTime) {
@@ -210,6 +238,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
               <AnnotationTimeInput
                 onChange={updateEndTime}
                 onSubmit={handleKeyboardSubmit}
+                invalidMessage={validateEndTime()}
                 time={endTime}
                 name="endTime"
                 titleText="Stop Time"

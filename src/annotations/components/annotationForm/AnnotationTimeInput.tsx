@@ -22,6 +22,8 @@ interface Props {
   name: string
   titleText?: string
   style?: CSSProperties
+  invalidMessage?: string
+  onValidityCheck: () => void
 }
 
 const ANNOTATION_TIME_FORMAT_UTC = 'YYYY-MM-DD HH:mm:ss' // 24 hour
@@ -44,6 +46,25 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
 
   const isValidTimeFormat = (inputValue: string): boolean => {
     return moment(inputValue, timeFormat, true).isValid()
+  }
+
+  const getInputValidationMessage = (): string => {
+    // if the parent is giving us a message to display; do it.
+    // else make our own.
+
+    if (props.invalidMessage) {
+      return props.invalidMessage
+    }
+    if (timeValue === null) {
+      return '' // it's not filled in yet...don't show an error (parent takes care of required fields)
+    }
+
+    if (!isValidTimeFormat(timeValue)) {
+      return `Format must be ${timeFormat}`
+    }
+
+    // it is valid
+    return null
   }
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -73,22 +94,6 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
       props.onSubmit()
       return
     }
-  }
-
-  const isValidInputValue = (inputValue: string): boolean => {
-    if (inputValue === null) {
-      return true
-    }
-
-    return isValidTimeFormat(inputValue)
-  }
-
-  const getInputValidationMessage = (): string => {
-    if (!isValidInputValue(timeValue)) {
-      return `Format must be ${timeFormat}`
-    }
-
-    return ''
   }
 
   const validationMessage = getInputValidationMessage()

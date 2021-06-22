@@ -68,7 +68,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     // plus, the backend checks if the startTime is before or equals the endTime
     // so, letting the backend do that check for now.
     if (annotationType === 'range') {
-      return Boolean(isValidPointAnnotation && endTime)
+      return Boolean(isValidPointAnnotation && endTime && isEndTimeValid())
     }
     return isValidPointAnnotation
   }
@@ -140,13 +140,13 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
 
   /**
    * if there is a problem with the end time (with respect to the start time)
-   * return an error message here
+   * return an error message here, along with the isValid flag
    *
-   * if no message, then it is valid
+   * if no message, then it is valid (just return a true isValid flag)
    * */
   const validateEndTime = () => {
     if (annotationType === 'point') {
-      return ''
+      return {isValid: true}
     }
 
     /**
@@ -163,12 +163,26 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     const end = moment(endTime)
 
     if (end.isSame(start)) {
-      return 'End Time is the same as start time, please adjust or create a point annotation instead.'
+      return {
+        isValid: false,
+        message:
+          'End Time is the same as start time, please adjust or create a point annotation instead.',
+      }
     }
 
     if (!end.isAfter(start)) {
-      return 'End Time must be after the start time'
+      return {isValid: false, message: 'End Time must be after the start time'}
     }
+
+    return {isValid: true, message: null}
+  }
+
+  const getEndTimeValidationMessage = () => {
+    return validateEndTime().message
+  }
+
+  const isEndTimeValid = () => {
+    return validateEndTime().isValid
   }
 
   const changeToRangeType = () => {
@@ -244,7 +258,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
               <AnnotationTimeInput
                 onChange={updateEndTime}
                 onSubmit={handleKeyboardSubmit}
-                invalidMessage={validateEndTime()}
+                invalidMessage={getEndTimeValidationMessage()}
                 time={endTime}
                 name="endTime"
                 titleText="Stop Time"

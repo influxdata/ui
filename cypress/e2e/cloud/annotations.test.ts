@@ -1,5 +1,11 @@
 import {Organization} from '../../../src/types'
 import {lines} from '../../support/commands'
+import {
+  END_TIME_IN_FUTURE_MESSAGE,
+  START_TIME_IN_FUTURE_MESSAGE,
+  TIMES_ARE_SAME_MESSAGE,
+  WRONG_ORDER_MESSAGE,
+} from '../../../src/annotations/components/annotationForm/AnnotationForm'
 import * as moment from 'moment'
 
 describe('The Annotations UI functionality', () => {
@@ -550,6 +556,214 @@ describe('The Annotations UI functionality', () => {
         cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
       })
       cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
+    })
+
+    it('does not allow the form to be submitted if there is a validation error', () => {
+      // first create a range annotation:
+      cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID(`giraffe-layer-line`).then(([canvas]) => {
+          const {width, height} = canvas
+
+          cy.wrap(canvas).trigger('mousedown', {
+            x: width / 3,
+            y: height / 2,
+            force: true,
+            shiftKey: true,
+          })
+          cy.wrap(canvas).trigger('mousemove', {
+            x: (width * 2) / 3,
+            y: height / 2,
+            force: true,
+            shiftKey: true,
+          })
+          cy.wrap(canvas).trigger('mouseup', {force: true, shiftKey: true})
+        })
+      })
+
+      cy.getByTestID('overlay--container').within(() => {
+        cy.getByTestID('edit-annotation-message')
+          .should('be.visible')
+          .click()
+          .focused()
+          .type('range annotation here!')
+
+        // submit should be enabled:
+        cy.getByTestID('annotation-submit-button').should('not.be.disabled')
+
+        // ok; cause an error:
+        cy.getByTestID('endTime-testID')
+          .invoke('val')
+          .then(endTimeValue => {
+            cy.getByTestID('endTime-testID')
+              .should('be.visible')
+              .click()
+              .clear()
+
+            // no end time should cause an error:
+            cy.getByTestID('annotation-submit-button').should('be.disabled')
+
+            // check the error message itself:
+            cy.getByTestID('form--element-error').contains('Required')
+
+            cy.getByTestID('endTime-testID')
+              .should('be.visible')
+              .click()
+              .type('2021-06-30 :32:00 AM')
+
+            // (leaving actual format string out because it could change)
+            cy.getByTestID('form--element-error').contains('Format must be ')
+
+            // put the text back; should be valid again:
+            cy.getByTestID('endTime-testID').type(endTimeValue)
+            cy.getByTestID('annotation-submit-button').should('not.be.disabled')
+
+            // put the end time BEFORE the start time ; should get an error:
+            cy.getByTestID('startTime-testID')
+              .invoke('val')
+              .then(startTimeValue => {
+                // make a time 1 minute before the starttime, set the endtime to that:
+
+                const badEndTime = moment(startTimeValue)
+                  .subtract(1, 'minutes')
+                  .format('YYYY-MM-DD hh:mm:ss a')
+
+                cy.getByTestID('endTime-testID')
+                  .click()
+                  .focus()
+                  .clear()
+                  .type(badEndTime)
+
+                cy.getByTestID('annotation-submit-button').should('be.disabled')
+
+                cy.getByTestID('form--element-error').contains(
+                  WRONG_ORDER_MESSAGE
+                )
+
+                // put the time back, error should go away
+                cy.getByTestID('endTime-testID')
+                  .click()
+                  .focus()
+                  .clear()
+                  .type(endTimeValue)
+                cy.getByTestID('annotation-submit-button').should(
+                  'not.be.disabled'
+                )
+                cy.getByTestID('form--element-error').should('not.exist')
+
+                // ensure that zero'ing out the start time also yields an error:
+                cy.getByTestID('startTime-testID')
+                  .should('be.visible')
+                  .click()
+                  .clear()
+
+                cy.getByTestID('annotation-submit-button').should('be.disabled')
+
+                // check the error message itself:
+                cy.getByTestID('form--element-error').contains('Required')
+
+                // put in a badly formatted time:
+                const badDate =
+                  startTimeValue.substring(0, 8) + startTimeValue.substring(10)
+                cy.getByTestID('startTime-testID')
+                  .should('be.visible')
+                  .click()
+                  .type(badDate)
+
+                cy.getByTestID('form--element-error').contains(
+                  'Format must be '
+                )
+
+                // put it back:
+                cy.getByTestID('startTime-testID')
+                  .should('be.visible')
+                  .click()
+                  .type(startTimeValue)
+
+                // future time:  nothing in the future should work
+                const badEndTimeInFuture = moment(startTimeValue)
+                  .add(3, 'days')
+                  .format('YYYY-MM-DD hh:mm:ss a')
+
+                cy.getByTestID('endTime-testID')
+                  .click()
+                  .focus()
+                  .clear()
+                  .type(badEndTimeInFuture)
+
+                cy.getByTestID('annotation-submit-button').should('be.disabled')
+
+                cy.getByTestID('form--element-error').contains(
+                  END_TIME_IN_FUTURE_MESSAGE
+                )
+
+                // restore; should be fine; then do it again with the start time:
+                cy.getByTestID('endTime-testID')
+                  .click()
+                  .focus()
+                  .clear()
+                  .type(endTimeValue)
+                cy.getByTestID('annotation-submit-button').should(
+                  'not.be.disabled'
+                )
+                cy.getByTestID('form--element-error').should('not.exist')
+
+                const badStartTimeInFuture = moment(startTimeValue)
+                  .add(3, 'days')
+                  .format('YYYY-MM-DD hh:mm:ss a')
+
+                cy.getByTestID('startTime-testID')
+                  .click()
+                  .focus()
+                  .clear()
+                  .type(badStartTimeInFuture)
+
+                cy.getByTestID('annotation-submit-button').should('be.disabled')
+
+                cy.getByTestID('form--element-error').contains(
+                  START_TIME_IN_FUTURE_MESSAGE
+                )
+
+                // restore; should be fine; then do it again with the start time:
+                cy.getByTestID('startTime-testID')
+                  .click()
+                  .focus()
+                  .clear()
+                  .type(startTimeValue)
+                cy.getByTestID('annotation-submit-button').should(
+                  'not.be.disabled'
+                )
+                cy.getByTestID('form--element-error').should('not.exist')
+
+                // last one:  make the times the same:
+                cy.getByTestID('endTime-testID')
+                  .click()
+                  .focus()
+                  .clear()
+                  .type(startTimeValue)
+                cy.getByTestID('annotation-submit-button').should('be.disabled')
+
+                cy.getByTestID('form--element-error').contains(
+                  TIMES_ARE_SAME_MESSAGE
+                )
+
+                // restore:
+                cy.getByTestID('endTime-testID')
+                  .click()
+                  .focus()
+                  .clear()
+                  .type(endTimeValue)
+                cy.getByTestID('annotation-submit-button').should(
+                  'not.be.disabled'
+                )
+                cy.getByTestID('form--element-error').should('not.exist')
+
+                // actually add it now:
+                cy.getByTestID('annotation-submit-button').click()
+
+                checkAnnotationText(cy, 'range annotation here!')
+              })
+          })
+      })
     })
 
     it('can create an annotation that is scoped to a dashboard cell', () => {

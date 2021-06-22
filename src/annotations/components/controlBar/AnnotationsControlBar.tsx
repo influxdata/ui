@@ -16,7 +16,6 @@ export const AnnotationsControlBar: FC = () => {
 
   const infoText1 = `Shift + click on a graph to create a point annotation${rangeText}.`
 
-
   const infoText2 =
     'Press the annotations button again to turn off annotation mode'
 

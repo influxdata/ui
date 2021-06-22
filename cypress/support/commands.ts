@@ -5,11 +5,11 @@ import 'cypress-file-upload'
 
 const DEX_URL_VAR = 'dexUrl'
 
-Cypress.on('uncaught:exception', () => {
+Cypress.on('uncaught:exception', (err, _) => {
   // returning false here prevents Cypress from failing the test when there are console errors.
   // this was the default behavior until cypress v7.
-  // TODO: catch specific errors and don't always return 'false' here.
-  return false
+  // we expect a 401 error when logging in with DEX's APIs, so ignore that but fail for all other console errors.
+  return !err.message.includes('Request failed with status code 401')
 })
 
 export const signin = (): Cypress.Chainable<Cypress.Response> => {

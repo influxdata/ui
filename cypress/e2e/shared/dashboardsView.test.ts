@@ -1,5 +1,6 @@
 import {Organization, AppState, Dashboard} from '../../../src/types'
 import {lines} from '../../support/commands'
+import moment from 'moment'
 
 describe('Dashboard', () => {
   beforeEach(() => {
@@ -1410,8 +1411,8 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
   describe('Dashboard auto refresh', () => {
     let routeToReturnTo = ''
     const jumpAheadTime = (timeAhead = '00:00:00') => {
-      return Cypress.moment()
-        .add(Cypress.moment.duration(timeAhead))
+      return moment()
+        .add(moment.duration(timeAhead))
         .format('YYYY-MM-DD HH:mm:ss')
     }
 

@@ -1,5 +1,6 @@
 import {Organization} from '../../../src/types'
 import {lines} from '../../support/commands'
+import moment from 'moment'
 
 describe('The Annotations UI functionality', () => {
   const singleStatSuffix = 'line-plus-single-stat'
@@ -451,7 +452,7 @@ describe('The Annotations UI functionality', () => {
               .then(endTimeValue => {
                 expect(endTimeValue).to.equal(startTimeValue)
 
-                const newEndTime = Cypress.moment(endTimeValue)
+                const newEndTime = moment(endTimeValue)
                   .add(10, 'minutes')
                   .format('YYYY-MM-DD hh:mm:ss a')
 
@@ -489,10 +490,8 @@ describe('The Annotations UI functionality', () => {
               expect(endTimeValue).to.not.equal(startTimeValue)
 
               // should be 10 minutes between them:
-              const duration = Cypress.moment.duration(
-                Cypress.moment(endTimeValue).diff(
-                  Cypress.moment(startTimeValue)
-                )
+              const duration = moment.duration(
+                moment(endTimeValue).diff(moment(startTimeValue))
               )
               const minutes = duration.asMinutes()
 

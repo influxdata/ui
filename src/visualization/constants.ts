@@ -48,7 +48,7 @@ export const STATIC_LEGEND_CELL_HEIGHT_DEFAULT = 5
 export const STATIC_LEGEND_STYLING = {
   backgroundColor: 'transparent',
   border: 'none',
-  style: {margin: '1.75em', padding: '0 1.75em'},
+  style: {padding: '1em 0 0 1em'},
 }
 
 export const TICK_PROPERTY_PREFIX = 'Tick'

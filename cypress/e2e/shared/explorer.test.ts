@@ -1063,9 +1063,7 @@ describe('DataExplorer', () => {
             cy.get('.giraffe-tooltip-container').should('exist')
 
             // Slide the toggle off and then hovering should not trigger a legend
-            cy.getByTestID('hover-legend-toggle')
-              .find('.cf-slide-toggle--knob')
-              .click()
+            cy.get('label[for="radio_hover_legend_hide"]').click()
             cy.getByTestID('giraffe-layer-line').trigger('mouseover')
             cy.get('.giraffe-tooltip-container').should('not.exist')
           }

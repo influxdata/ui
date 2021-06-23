@@ -239,7 +239,10 @@ const HoverLegendToggle: FC<HoverLegendToggleProps> = ({
       <Grid>
         <Grid.Row>
           <Grid.Column widthXS={Columns.Twelve}>
-            <SelectGroup shape={ButtonShape.StretchToFit}>
+            <SelectGroup
+              shape={ButtonShape.StretchToFit}
+              testID="hover-legend-toggle"
+            >
               <SelectGroup.Option
                 name="hover-legend-hide"
                 id="radio_hover_legend_hide"

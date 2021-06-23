@@ -39,7 +39,7 @@ import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSche
 import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksGenerator'
 import Checkbox from 'src/shared/components/Checkbox'
 import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
-import LegendOrientation from 'src/visualization/components/internal/LegendOrientation'
+import HoverLegend from 'src/visualization/components/internal/HoverLegend'
 import StaticLegend from 'src/visualization/components/internal/StaticLegend'
 import {LinePlusSingleStatProperties, Color} from 'src/types'
 import {VisualizationOptionProps} from 'src/visualization'
@@ -502,7 +502,7 @@ const SingleStatWithLineOptions: FC<Props> = ({
           widthLG={Columns.Four}
         >
           <h5 className="view-options--header">Legend</h5>
-          <LegendOrientation
+          <HoverLegend
             properties={properties}
             results={results}
             update={update}

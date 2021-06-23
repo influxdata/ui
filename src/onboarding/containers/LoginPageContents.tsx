@@ -30,6 +30,8 @@ import {notify} from 'src/shared/actions/notifications'
 import {passwordResetSuccessfully} from 'src/shared/copy/notifications'
 import {getAuth0Config} from 'src/authorizations/apis'
 import {getFromLocalStorage} from 'src/localStorage'
+import { getAuthConnection } from 'src/client/unityRoutes'
+import { getErrorMessage } from 'src/utils/api'
 
 interface ErrorObject {
   emailError?: string
@@ -62,6 +64,7 @@ class LoginPageContents extends PureComponent<Props> {
     try {
       const redirectTo = getFromLocalStorage('redirectTo') || '/'
       const config = await getAuth0Config(redirectTo)
+      console.log({config})
       this.auth0 = new auth0js.WebAuth({
         domain: config.domain,
         clientID: config.clientID,
@@ -178,7 +181,7 @@ class LoginPageContents extends PureComponent<Props> {
     hasError: errorMessage !== '',
   })
 
-  private handleSubmit = (event: FormEvent) => {
+  private handleSubmit = async (event: FormEvent) => {
     const {isValid, errors} = this.validateFieldValues
     const {email, password} = this.state
 
@@ -187,6 +190,25 @@ class LoginPageContents extends PureComponent<Props> {
     if (!isValid) {
       this.setState(errors)
       return
+    }
+
+    if (email) {
+      // quartz@axemworx.com
+      // FIXME (Subir): Change encodeURL to encodeURIComponent
+      const response = await getAuthConnection({query: {email: encodeURI(email)}})
+      // const response = await getAuthConnection({query: {email: encodeURIComponent(email)}})
+
+      console.log({response})
+
+      if (response.status === 200) {
+        this.auth0.authorize({
+          connection: response.data,
+        })
+        // this.handleSocialClick(response.data as Auth0Connection)
+        return
+      } else if (response.status >= 500) {
+        throw new Error(getErrorMessage(response.data))
+      }
     }
 
     this.setState({buttonStatus: ComponentStatus.Loading})

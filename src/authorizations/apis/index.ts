@@ -27,8 +27,10 @@ export const getAuth0Config = async (
     if (redirectTo) {
       url = `${getAPIBasepath()}/api/v2private/oauth/clientConfig?redirectTo=${redirectTo}`
     }
+    console.log({url})
     const response = await fetch(url)
     const data = await response.json()
+    console.log({data})
     return data
   } catch (error) {
     console.error(error)

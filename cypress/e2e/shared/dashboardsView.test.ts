@@ -1836,9 +1836,9 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       const query1 = `from(bucket: "schmucket")
   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
   |> filter(fn: (r) => r["container_name"] == "cool")`
+      cy.getByTestID('flux-editor').should('be.visible')
+      cy.getByTestID('flux-editor').click()
       cy.getByTestID('flux-editor')
-        .should('be.visible')
-        .click()
         .focused()
         .type(query1)
       cy.getByTestID('overlay').within(() => {
@@ -1861,6 +1861,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
 
       cy.wait('@setView')
       cy.visit(`${allOrgs}/${orgId}/dashboards/${otherBoardID}`)
+      cy.getByTestID('tree-nav')
       cy.getByTestID('cell blah (clone 1)').should('be.visible')
     })
 
@@ -1872,8 +1873,10 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.getByTestID('confirm-clone-cell-button').click()
       cy.wait('@setView')
       cy.visit(`${allOrgs}/${orgId}/dashboards/${otherBoardID}`)
+      cy.getByTestID('tree-nav')
       cy.getByTestID('cell blah (clone 1)').should('be.visible')
       cy.go('back')
+      cy.getByTestID('tree-nav')
       cy.getByTestID('empty-state--text').should('be.visible')
     })
   })

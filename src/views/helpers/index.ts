@@ -396,6 +396,12 @@ const NEW_VIEW_CREATORS = {
       allowPanAndZoom: true,
       detectCoordinateFields: false,
       mapStyle: '',
+      useS2CellID: true,
+      s2Column: 's2_cell_id',
+      latLonColumns: {
+        lat: {key: '', column: ''},
+        lon: {key: '', column: ''},
+      },
       layers: [
         {
           type: 'pointMap',

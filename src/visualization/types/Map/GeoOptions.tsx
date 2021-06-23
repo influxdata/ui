@@ -1,5 +1,15 @@
-import React, {FC} from 'react'
-import {Grid, Form} from '@influxdata/clockface'
+import React, {CSSProperties, FC} from 'react'
+import {
+  Grid,
+  Form,
+  ComponentSize,
+  InputLabel,
+  FlexBox,
+  FlexDirection,
+  AlignItems,
+  InfluxColors,
+  SlideToggle,
+} from '@influxdata/clockface'
 
 import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
 
@@ -7,7 +17,9 @@ import {GeoViewProperties} from 'src/types'
 import {VisualizationOptionProps} from 'src/visualization'
 import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 
+import {S2ColumnOptions} from './S2ColumnOptions'
 import './GeoOptions.scss'
+import {LatLonColumnOptions} from './LatLonColumnOptions'
 
 interface Props extends VisualizationOptionProps {
   properties: GeoViewProperties
@@ -22,28 +34,56 @@ export enum MapType {
   Track = 'trackMap',
 }
 
-export const GeoOptions: FC<Props> = ({properties, update}) => {
+export const GeoOptions: FC<Props> = ({properties, update, results}) => {
+  const {useS2CellID} = properties
+  const handleSetUseS2CellID = (): void => {
+    update({
+      useS2CellID: !useS2CellID,
+    })
+  }
+
+  const getToggleColor = (toggle: boolean): CSSProperties => {
+    if (toggle) {
+      return {color: InfluxColors.Cloud}
+    }
+    return {color: InfluxColors.Sidewalk}
+  }
+
   return SHOW_GEO_OPTIONS ? (
     <>
-      {/* <SelectGroup className="mapTypeOptions">
-        {mapTypeOptions.map((mapTypeOption: string, index: number) => (
-          <SelectGroup.Option
-            key={mapTypeOption}
-            id={mapTypeOption}
-            name="mapTypeOptions"
-            value={mapTypeOption}
-            active={properties?.layers[0]?.type === MapType[mapTypeOption]}
-            onClick={handleSelectGroupClick}
-            tabIndex={index + 1}
-            testID={`${mapTypeOption}-option`}
-            disabled={mapTypeOption === 'Track'}
-          >
-            {mapTypeOption}
-          </SelectGroup.Option>
-        ))}
-        </SelectGroup> */}
-
       <Grid.Column>
+        <Grid.Row>
+          <FlexBox
+            direction={FlexDirection.Row}
+            alignItems={AlignItems.Center}
+            margin={ComponentSize.Medium}
+            stretchToFitWidth={true}
+            style={{marginTop: '0.5em', marginBottom: '1.5em'}}
+            testID="hover-legend-toggle"
+          >
+            <SlideToggle
+              active={useS2CellID}
+              size={ComponentSize.ExtraSmall}
+              onChange={handleSetUseS2CellID}
+            />
+            <InputLabel style={getToggleColor(useS2CellID)}>
+              Use S2 Cell ID for lat/lon
+            </InputLabel>
+          </FlexBox>
+          {useS2CellID ? (
+            <S2ColumnOptions
+              properties={properties}
+              update={update}
+              results={results}
+            />
+          ) : (
+            <LatLonColumnOptions
+              properties={properties}
+              update={update}
+              results={results}
+            />
+          )}
+        </Grid.Row>
         <Form.Element label="Colorized Thresholds">
           <ThresholdsSettings
             thresholds={properties.layers[0].colors.filter(

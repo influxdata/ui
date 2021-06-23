@@ -1,4 +1,4 @@
-import React, {FC, useState, useContext} from 'react'
+import React, {FC, useContext} from 'react'
 
 import {
   Dropdown,
@@ -23,21 +23,16 @@ const SampleCSVs = {
 
 const RemoteCSV: FC<PipeProp> = ({Context}) => {
   const {data, update} = useContext(PipeContext)
-  const [selectedCSV, setSelectedCSV] = useState(data.csvType ?? '')
-  const [selectedCSVURL, setSelectedCSVURL] = useState(
-    data.url.length ? data.url : ''
-  )
 
   const handleChange = (e: any) => {
-    setSelectedCSVURL(e.target.value)
     update({url: e.target.value})
   }
 
   const handleSelectFromDropdown = (selected: string) => {
     update({csvType: selected, url: SampleCSVs[selected] ?? ''})
-    setSelectedCSV(selected)
-    setSelectedCSVURL(SampleCSVs[selected])
   }
+
+  const {csvType, url} = data
 
   return (
     <Context>
@@ -53,7 +48,7 @@ const RemoteCSV: FC<PipeProp> = ({Context}) => {
                 color={ComponentColor.Primary}
                 testID="dropdown-button--remote-csv"
               >
-                {selectedCSV.length ? selectedCSV : 'Import Sample CSV'}
+                {csvType.length ? csvType : 'Import Sample CSV'}
               </Dropdown.Button>
             )}
             menu={onCollapse => (
@@ -65,7 +60,7 @@ const RemoteCSV: FC<PipeProp> = ({Context}) => {
                     key={m}
                     value={m}
                     onClick={() => handleSelectFromDropdown(m)}
-                    selected={m === selectedCSV}
+                    selected={m === csvType}
                   >
                     {m}
                   </Dropdown.Item>
@@ -76,10 +71,10 @@ const RemoteCSV: FC<PipeProp> = ({Context}) => {
           <div data-testid="csvimporturl" className="remote-csv-url-input">
             <Input
               type={InputType.Text}
-              value={selectedCSVURL}
+              value={url}
               onChange={handleChange}
               status={
-                selectedCSV.length && selectedCSV !== 'Custom'
+                csvType.length && csvType !== 'Custom'
                   ? ComponentStatus.Disabled
                   : ComponentStatus.Default
               }

@@ -1,6 +1,7 @@
 import AJAX from 'src/utils/ajax'
 import {Authorization, Auth0Config} from 'src/types'
 import {getAPIBasepath} from 'src/utils/basepath'
+import {getAuthConnection} from 'src/client/unityRoutes'
 
 export const createAuthorization = async (
   authorization
@@ -27,13 +28,25 @@ export const getAuth0Config = async (
     if (redirectTo) {
       url = `${getAPIBasepath()}/api/v2private/oauth/clientConfig?redirectTo=${redirectTo}`
     }
-    console.log({url})
     const response = await fetch(url)
     const data = await response.json()
-    console.log({data})
+
     return data
   } catch (error) {
     console.error(error)
     throw error
+  }
+}
+
+export const getConnection = async (email: string): Promise<string> => {
+  // FIXME: When #4824 gets fixed. Change encodeURI to encodeURIComponent
+  const response = await getAuthConnection({query: {email: encodeURI(email)}})
+
+  if (response.status >= 500) {
+    throw new Error(response.data)
+  }
+
+  if (response.status === 200) {
+    return response.data
   }
 }

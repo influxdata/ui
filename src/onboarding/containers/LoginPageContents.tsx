@@ -28,10 +28,10 @@ import {Auth0Connection, FormFieldValidation} from 'src/types'
 // APIs & Actions
 import {notify} from 'src/shared/actions/notifications'
 import {passwordResetSuccessfully} from 'src/shared/copy/notifications'
-import {getAuth0Config} from 'src/authorizations/apis'
+import {getAuth0Config, getConnection} from 'src/authorizations/apis'
 import {getFromLocalStorage} from 'src/localStorage'
-import { getAuthConnection } from 'src/client/unityRoutes'
-import { getErrorMessage } from 'src/utils/api'
+import {getErrorMessage} from 'src/utils/api'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface ErrorObject {
   emailError?: string
@@ -64,7 +64,6 @@ class LoginPageContents extends PureComponent<Props> {
     try {
       const redirectTo = getFromLocalStorage('redirectTo') || '/'
       const config = await getAuth0Config(redirectTo)
-      console.log({config})
       this.auth0 = new auth0js.WebAuth({
         domain: config.domain,
         clientID: config.clientID,
@@ -162,7 +161,10 @@ class LoginPageContents extends PureComponent<Props> {
     const {email, password} = this.state
 
     const emailError = email === '' ? 'Email is required' : ''
-    const passwordError = password === '' ? 'Password is required' : ''
+    const passwordError =
+      password === '' && !isFlagEnabled('ssoLogin')
+        ? 'Password is required'
+        : ''
 
     const errors: ErrorObject = {
       emailError,
@@ -192,22 +194,17 @@ class LoginPageContents extends PureComponent<Props> {
       return
     }
 
-    if (email) {
-      // quartz@axemworx.com
-      // FIXME (Subir): Change encodeURL to encodeURIComponent
-      const response = await getAuthConnection({query: {email: encodeURI(email)}})
-      // const response = await getAuthConnection({query: {email: encodeURIComponent(email)}})
-
-      console.log({response})
-
-      if (response.status === 200) {
-        this.auth0.authorize({
-          connection: response.data,
-        })
-        // this.handleSocialClick(response.data as Auth0Connection)
-        return
-      } else if (response.status >= 500) {
-        throw new Error(getErrorMessage(response.data))
+    if (isFlagEnabled('ssoLogin') && email) {
+      try {
+        const connection = await getConnection(email)
+        if (!!connection) {
+          return this.auth0.authorize({connection})
+        }
+      } catch (e) {
+        const emailError = `${getErrorMessage(
+          e
+        )}. If this issue persists, please contact support@influxdata.com`
+        return this.setState({emailError})
       }
     }
 

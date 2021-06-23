@@ -2,12 +2,12 @@ import View from './view'
 import './styles.scss'
 export default register => {
   register({
-    type: 'csvImport',
+    type: 'remoteCSV',
     family: 'inputs',
     priority: 1,
     component: View,
-    featureFlag: 'flow-panel--csv-import',
-    button: 'CSV Import',
+    featureFlag: 'flow-panel--remote-csv',
+    button: 'Remote CSV',
     initial: {
       csvType: '',
       url: '',

@@ -21,7 +21,7 @@ const SampleCSVs = {
   Custom: '',
 }
 
-const CsvImporter: FC<PipeProp> = ({Context}) => {
+const RemoteCSV: FC<PipeProp> = ({Context}) => {
   const {data, update} = useContext(PipeContext)
   const [selectedCSV, setSelectedCSV] = useState(data.csvType ?? '')
   const [selectedCSVURL, setSelectedCSVURL] = useState(
@@ -41,17 +41,17 @@ const CsvImporter: FC<PipeProp> = ({Context}) => {
 
   return (
     <Context>
-      <div className="csv-import-container" data-testid="csvimporturl">
-        <div className="csv-import-card">
+      <div className="remote-csv-container" data-testid="csvimporturl">
+        <div className="remote-csv-card">
           <Dropdown
-            testID="csv-import--dropdown"
+            testID="remote-csv--dropdown"
             style={{width: '220px'}}
             button={(active, onClick) => (
               <Dropdown.Button
                 active={active}
                 onClick={onClick}
                 color={ComponentColor.Primary}
-                testID="dropdown-button--csv-import"
+                testID="dropdown-button--remote-csv"
               >
                 {selectedCSV.length ? selectedCSV : 'Import Sample CSV'}
               </Dropdown.Button>
@@ -60,7 +60,7 @@ const CsvImporter: FC<PipeProp> = ({Context}) => {
               <Dropdown.Menu onCollapse={onCollapse}>
                 {Object.keys(SampleCSVs).map(m => (
                   <Dropdown.Item
-                    testID={`csv-import--dropdown-item-${m}`}
+                    testID={`remote-csv--dropdown-item-${m}`}
                     id={m}
                     key={m}
                     value={m}
@@ -73,7 +73,7 @@ const CsvImporter: FC<PipeProp> = ({Context}) => {
               </Dropdown.Menu>
             )}
           />
-          <div data-testid="csvimporturl" className="csv-import-url-input">
+          <div data-testid="csvimporturl" className="remote-csv-url-input">
             <Input
               type={InputType.Text}
               value={selectedCSVURL}
@@ -91,4 +91,4 @@ const CsvImporter: FC<PipeProp> = ({Context}) => {
   )
 }
 
-export default CsvImporter
+export default RemoteCSV

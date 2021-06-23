@@ -2,15 +2,15 @@
 @import '~src/flows/FlowVariables.scss';
 
 $cf-radius-lg: $cf-radius + 4px;
-.csv-import-card {
+.remote-csv-card {
   display: flex;
 }
 
-.csv-import--dropdown {
+.remote-csv--dropdown {
   flex: 1;
 }
 
-.csv-import-url-input {
+.remote-csv-url-input {
   flex: 4;
   width: 100%;
 }

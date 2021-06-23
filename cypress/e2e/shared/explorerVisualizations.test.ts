@@ -1,0 +1,773 @@
+import {Organization} from '../../../src/types'
+import {lines, makeGraphSnapshot} from '../../support/commands'
+const VIS_TYPES = [
+  'band',
+  //    'check',
+  'gauge',
+  'xy',
+  'heatmap',
+  'histogram',
+  //  'map',
+  'mosaic',
+  'scatter',
+  'single-stat',
+  'line-plus-single-stat',
+  'table',
+]
+describe('visualizations', () => {
+  beforeEach(() => {
+    cy.flush()
+
+    cy.signin().then(() => {
+      cy.get('@org').then(({id}: Organization) => {
+        cy.createMapVariable(id)
+        cy.fixture('routes').then(({orgs, explorer}) => {
+          cy.visit(`${orgs}/${id}${explorer}`)
+          cy.getByTestID('tree-nav')
+        })
+      })
+    })
+  })
+  describe('empty states', () => {
+    it('shows a message if no queries have been created', () => {
+      cy.getByTestID('empty-graph--no-queries').should('exist')
+    })
+
+    it('shows an error if a query is syntactically invalid', () => {
+      cy.getByTestID('switch-to-script-editor').click()
+
+      cy.getByTestID('time-machine--bottom').within(() => {
+        const remove = cy.state().window.store.subscribe(() => {
+          remove()
+          cy.getByTestID('time-machine-submit-button').click()
+          cy.getByTestID('empty-graph--error').should('exist')
+        })
+        cy.getByTestID('flux-editor')
+          .click({force: true})
+          .focused()
+          .clear()
+          .type('from(', {force: true, delay: 2})
+        cy.getByTestID('time-machine-submit-button').click()
+      })
+    })
+  })
+
+  const numLines = 360
+  describe(`visualize with ${numLines} lines`, () => {
+    beforeEach(() => {
+      // POST 360 lines to the server
+      cy.writeData(lines(numLines))
+    })
+
+    it('can view time-series data', () => {
+      cy.get<string>('@defaultBucketListSelector').then(
+        (defaultBucketListSelector: string) => {
+          cy.log('can switch between editor modes')
+          cy.getByTestID('selector-list _monitoring').should('be.visible')
+          cy.getByTestID('selector-list _monitoring').click()
+
+          cy.getByTestID(defaultBucketListSelector).should('be.visible')
+          cy.getByTestID(defaultBucketListSelector).click()
+
+          cy.getByTestID('selector-list m').should('be.visible')
+          cy.getByTestID('selector-list m').clickAttached()
+
+          cy.getByTestID('selector-list v').should('be.visible')
+          cy.getByTestID('selector-list v').clickAttached()
+
+          cy.getByTestID('switch-to-script-editor').click()
+          cy.getByTestID('flux-editor').should('be.visible')
+
+          cy.log('revert back to query builder mode (without confirmation)')
+          cy.getByTestID('switch-to-query-builder').click()
+          cy.getByTestID('query-builder').should('be.visible')
+
+          cy.log('can revert back to query builder mode (with confirmation)')
+          cy.getByTestID('switch-to-script-editor')
+            .should('be.visible')
+            .click()
+          cy.getByTestID('flux--aggregate.rate--inject').click()
+
+          cy.log('check to see if import is defaulted to the top')
+          cy.get('.view-line')
+            .first()
+            .contains('import')
+
+          cy.log('check to see if new aggregate rate is at the bottom')
+          cy.get('.view-line')
+            .last()
+            .contains('aggregate.')
+          cy.getByTestID('flux-editor').should('exist')
+          cy.getByTestID('flux-editor').within(() => {
+            cy.get('textarea').type('yoyoyoyoyo', {force: true})
+          })
+
+          cy.log('can over over flux functions')
+          cy.getByTestID('flux-docs--aggregateWindow').should('not.exist')
+          cy.getByTestID('flux--aggregateWindow').trigger('mouseover')
+          cy.getByTestID('flux-docs--aggregateWindow').should('exist')
+
+          cy.getByTestID('switch-query-builder-confirm--button').click()
+
+          cy.getByTestID(
+            'switch-query-builder-confirm--popover--contents'
+          ).within(() => {
+            cy.getByTestID(
+              'switch-query-builder-confirm--confirm-button'
+            ).click()
+          })
+
+          cy.getByTestID('query-builder').should('exist')
+          // build the query to return data from beforeEach
+          cy.getByTestID('selector-list _monitoring').should('be.visible')
+          cy.getByTestID('selector-list _monitoring').click()
+
+          cy.getByTestID(defaultBucketListSelector).should('be.visible')
+          cy.getByTestID(defaultBucketListSelector).click()
+
+          cy.getByTestID('selector-list m').should('be.visible')
+          cy.getByTestID('selector-list m').clickAttached()
+
+          cy.getByTestID('selector-list v').should('be.visible')
+          cy.getByTestID('selector-list v').clickAttached()
+
+          cy.getByTestID('selector-list tv1').clickAttached()
+
+          cy.getByTestID('selector-list last')
+            .scrollIntoView()
+            .should('be.visible')
+            .click({force: true})
+
+          cy.getByTestID('time-machine-submit-button').click()
+
+          // cycle through all the visualizations of the data
+          VIS_TYPES.forEach(type => {
+            if (type !== 'mosaic' && type !== 'band') {
+              // mosaic graph is behind feature flag
+              cy.getByTestID('view-type--dropdown').click()
+              cy.getByTestID(`view-type--${type}`).click()
+              cy.getByTestID(`vis-graphic--${type}`).should('exist')
+              if (type.includes('single-stat')) {
+                cy.getByTestID('single-stat--text').should(
+                  'contain',
+                  `${numLines}`
+                )
+              }
+            }
+          })
+
+          // force the last selected visualization to be a graph for the next test
+          cy.getByTestID('view-type--dropdown').click()
+          cy.getByTestID(`view-type--xy`).click()
+          cy.getByTestID(`vis-graphic--xy`).should('exist')
+
+          // view raw data table
+          cy.getByTestID('raw-data--toggle').click()
+          cy.getByTestID('raw-data-table').should('exist')
+          cy.getByTestID('raw-data--toggle').click()
+          cy.getByTestID('giraffe-axes').should('exist')
+        }
+      )
+    })
+
+    it('can set min or max y-axis values', () => {
+      // build the query to return data from beforeEach
+      cy.getByTestID(`selector-list m`).click()
+      cy.getByTestID('selector-list v').click()
+      cy.getByTestID(`selector-list tv1`).click()
+
+      cy.getByTestID('time-machine-submit-button').click()
+      cy.getByTestID('cog-cell--button').click()
+      cy.get('.auto-domain-input')
+        .contains('Custom')
+        .click()
+      cy.getByTestID('auto-domain--min')
+        .type('-100')
+        .blur()
+
+      cy.getByTestID('form--element-error').should('not.exist')
+      // find no errors
+      cy.getByTestID('auto-domain--max')
+        .type('450')
+        .blur()
+      // find no errors
+      cy.getByTestID('form--element-error').should('not.exist')
+      cy.getByTestID('auto-domain--min')
+        .clear()
+        .blur()
+      cy.getByTestID('form--element-error').should('not.exist')
+    })
+
+    it('can set x-axis and y-axis values', () => {
+      // build the query to return data from beforeEach
+      cy.getByTestID(`selector-list m`).click()
+      cy.getByTestID('selector-list v').click()
+      cy.getByTestID(`selector-list tv1`).click()
+
+      cy.getByTestID('time-machine-submit-button').click()
+      cy.getByTestID('cog-cell--button').click()
+
+      // check stop
+      cy.getByTestID('dropdown-x').click()
+      cy.getByTitle('_stop').click()
+      cy.getByTestID('dropdown-x').contains('_stop')
+
+      // check Value
+      cy.getByTestID('dropdown-x').click()
+      cy.getByTitle('_value').click()
+      cy.getByTestID('dropdown-x').contains('_value')
+
+      // check start
+      cy.getByTestID('dropdown-x').click()
+      cy.getByTitle('_start').click()
+      cy.getByTestID('dropdown-x').contains('_start')
+
+      // check time
+      cy.getByTestID('dropdown-x').click()
+      cy.getByTitle('_time').click()
+      cy.getByTestID('dropdown-x').contains('_time')
+
+      // check stop
+      cy.getByTestID('dropdown-y').click()
+      cy.getByTitle('_stop').click()
+      cy.getByTestID('dropdown-y').contains('_stop')
+
+      // check Value
+      cy.getByTestID('dropdown-y').click()
+      cy.getByTitle('_value').click()
+      cy.getByTestID('dropdown-y').contains('_value')
+
+      // check start
+      cy.getByTestID('dropdown-y').click()
+      cy.getByTitle('_start').click()
+      cy.getByTestID('dropdown-y').contains('_start')
+
+      // check time
+      cy.getByTestID('dropdown-y').click()
+      cy.getByTitle('_time').click()
+      cy.getByTestID('dropdown-y').contains('_time')
+    })
+
+    // passes now, as there is no annotations in explorer mode anymore;
+    // and zooming is fixed (no more phantom single clicks!)
+    it('can zoom and unzoom horizontal axis', () => {
+      cy.getByTestID(`selector-list m`).click()
+      cy.getByTestID('selector-list v').click()
+      cy.getByTestID(`selector-list tv1`).click()
+
+      cy.getByTestID('time-machine-submit-button').click()
+
+      const snapshot = makeGraphSnapshot()
+
+      cy.getByTestID('giraffe-layer-line').then(([canvas]) => {
+        const {width, height} = canvas
+
+        cy.wrap(canvas).trigger('mousedown', {
+          x: width / 3,
+          y: height / 2,
+          force: true,
+        })
+        cy.wrap(canvas).trigger('mousemove', {
+          x: (width * 2) / 3,
+          y: height / 2,
+          force: true,
+        })
+        cy.wrap(canvas).trigger('mouseup', {force: true})
+      })
+
+      const snapshot2 = makeGraphSnapshot()
+      snapshot.shouldBeSameAs(snapshot2, false)
+
+      cy.getByTestID('giraffe-layer-line').dblclick({force: true})
+      makeGraphSnapshot().shouldBeSameAs(snapshot)
+    })
+
+    // passes now, as there is no annotations in explorer mode anymore;
+    // and zooming is fixed (no more phantom single clicks!)
+    it('can zoom and unzoom vertical axis', () => {
+      cy.getByTestID(`selector-list m`).click()
+      cy.getByTestID('selector-list v').click()
+      cy.getByTestID(`selector-list tv1`).click()
+
+      cy.getByTestID('time-machine-submit-button').click()
+
+      const snapshot = makeGraphSnapshot()
+
+      cy.getByTestID('giraffe-layer-line').then(([canvas]) => {
+        const {width, height} = canvas
+
+        cy.wrap(canvas).trigger('mousedown', {
+          x: width / 2,
+          y: height / 3,
+          force: true,
+        })
+        cy.wrap(canvas).trigger('mousemove', {
+          x: width / 2,
+          y: (height * 2) / 3,
+          force: true,
+        })
+        cy.wrap(canvas).trigger('mouseup', {force: true})
+      })
+
+      const snapshot2 = makeGraphSnapshot()
+      snapshot.shouldBeSameAs(snapshot2, false)
+
+      cy.getByTestID('giraffe-layer-line').dblclick({force: true})
+      makeGraphSnapshot().shouldBeSameAs(snapshot)
+    })
+
+    // TODO - fix failing test (works locally, fails in circleci)
+    it.skip('can hover over graph to show tooltip', () => {
+      // build the query to return data from beforeEach
+      cy.getByTestID(`selector-list m`).click()
+      cy.getByTestID('selector-list v').click()
+      cy.getByTestID(`selector-list tv1`).click()
+
+      cy.getByTestID('time-machine-submit-button').click()
+
+      cy.getByTestID('giraffe-tooltip').should('not.visible')
+      cy.getByTestID('giraffe-layer-line')
+        .click()
+        .trigger('mouseover')
+
+      cy.wait(100)
+      cy.getByTestID('giraffe-layer-line').trigger('mousemove', {force: true})
+
+      cy.getByTestID('giraffe-tooltip').should('be.visible')
+      cy.getByTestID('giraffe-layer-line').trigger('mouseout', {force: true})
+      cy.getByTestID('giraffe-tooltip').should('not.visible')
+    })
+
+    it('can view table data & sort values numerically', () => {
+      // build the query to return data from beforeEach
+      cy.getByTestID(`selector-list m`).click()
+      cy.getByTestID('selector-list v').click()
+      cy.getByTestID(`selector-list tv1`).click()
+      cy.getByTestID(`custom-function`).click()
+      cy.getByTestID('selector-list sort').click({force: true})
+
+      cy.getByTestID('time-machine-submit-button').click()
+
+      cy.getByTestID('view-type--dropdown').click()
+      cy.getByTestID(`view-type--table`).click()
+      // check to see that the FE rows are NOT sorted with flux sort
+      cy.get('.table-graph-cell__sort-asc').should('not.exist')
+      cy.get('.table-graph-cell__sort-desc').should('not.exist')
+      cy.getByTestID('_value-table-header')
+        .should('exist')
+        .then(el => {
+          // get the column index
+          const columnIndex = el[0].getAttribute('data-column-index')
+          let prev = -Infinity
+          // get all the column values for that one and see if they are in order
+          cy.get(`[data-column-index="${columnIndex}"]`).each(val => {
+            const num = Number(val.text())
+            if (isNaN(num) === false) {
+              expect(num > prev).to.equal(true)
+              prev = num
+            }
+          })
+        })
+      cy.getByTestID('_value-table-header').click()
+      cy.get('.table-graph-cell__sort-asc').should('exist')
+      cy.getByTestID('_value-table-header').click()
+      cy.get('.table-graph-cell__sort-desc').should('exist')
+      cy.getByTestID('_value-table-header').then(el => {
+        // get the column index
+        const columnIndex = el[0].getAttribute('data-column-index')
+        let prev = Infinity
+        // get all the column values for that one and see if they are in order
+        cy.get(`[data-column-index="${columnIndex}"]`).each(val => {
+          const num = Number(val.text())
+          if (isNaN(num) === false) {
+            expect(num < prev).to.equal(true)
+            prev = num
+          }
+        })
+      })
+    })
+
+    it('can view table data with raw data & scroll to bottom', () => {
+      // build the query to return data from beforeEach
+      cy.getByTestID(`selector-list m`).click()
+      cy.getByTestID('selector-list v').click()
+      cy.getByTestID(`selector-list tv1`).click()
+      cy.getByTestID(`custom-function`).click()
+      cy.getByTestID('selector-list sort').click({force: true})
+
+      cy.getByTestID('time-machine-submit-button').click()
+
+      cy.getByTestID('view-type--dropdown').click()
+      cy.getByTestID(`view-type--table`).click()
+      // view raw data table
+      cy.getByTestID('raw-data--toggle').click()
+
+      cy.get('.time-machine--view').within(() => {
+        cy.getByTestID('rawdata-table--scrollbar--thumb-y')
+          .trigger('mousedown', {force: true})
+          .trigger('mousemove', {clientY: 5000})
+          .trigger('mouseup')
+
+        cy.getByTestID('rawdata-table--scrollbar--thumb-x')
+          .trigger('mousedown', {force: true})
+          .trigger('mousemove', {clientX: 1000})
+          .trigger('mouseup')
+      })
+
+      cy.getByTestID(`raw-flux-data-table--cell ${numLines}`).should(
+        'be.visible'
+      )
+    })
+
+    it('can view table data & scroll to bottom', () => {
+      // build the query to return data from beforeEach
+      cy.getByTestID(`selector-list m`).click()
+      cy.getByTestID('selector-list v').click()
+      cy.getByTestID(`selector-list tv1`).click()
+      cy.getByTestID(`custom-function`).click()
+      cy.getByTestID('selector-list sort').click({force: true})
+
+      cy.getByTestID('time-machine-submit-button').click()
+
+      cy.getByTestID('view-type--dropdown').click()
+      cy.getByTestID(`view-type--table`).click()
+
+      cy.get('.time-machine--view').within(() => {
+        cy.getByTestID('dapper-scrollbars--thumb-y')
+          .trigger('mousedown', {force: true})
+          .trigger('mousemove', {clientY: 5000})
+          .trigger('mouseup')
+          .then(() => {
+            cy.get(`[title="${numLines}"]`).should('be.visible')
+          })
+      })
+    })
+  })
+
+  describe('hover legend aka "tooltip"', () => {
+    it('gives the user a toggle for hide the tooltip only for line graph, line graph plus single stat, and band plot', () => {
+      VIS_TYPES.forEach(type => {
+        cy.getByTestID('cog-cell--button').click()
+        cy.getByTestID('view-type--dropdown').click()
+        cy.getByTestID(`view-type--${type}`).click()
+        if (
+          type === 'xy' ||
+          type === 'line-plus-single-stat' ||
+          type === 'band'
+        ) {
+          cy.getByTestID('hover-legend-toggle').should('exist')
+        } else {
+          cy.getByTestID('hover-legend-toggle').should('not.exist')
+        }
+      })
+    })
+
+    it('allows the user to toggle the hover legend to hide or show it', () => {
+      cy.writeData(lines(100))
+      cy.get<string>('@defaultBucketListSelector').then(
+        (defaultBucketListSelector: string) => {
+          cy.getByTestID('query-builder').should('exist')
+          cy.getByTestID('selector-list _monitoring').should('be.visible')
+          cy.getByTestID('selector-list _monitoring').click()
+
+          cy.getByTestID(defaultBucketListSelector).should('be.visible')
+          cy.getByTestID(defaultBucketListSelector).click()
+
+          cy.getByTestID('selector-list m').should('be.visible')
+          cy.getByTestID('selector-list m').clickAttached()
+
+          cy.getByTestID('selector-list v').should('be.visible')
+          cy.getByTestID('selector-list v').clickAttached()
+
+          cy.getByTestID('selector-list tv1').clickAttached()
+
+          cy.getByTestID('selector-list mean')
+            .scrollIntoView()
+            .should('be.visible')
+            .click({force: true})
+
+          cy.getByTestID('time-machine-submit-button').click()
+          cy.getByTestID('cog-cell--button').click()
+
+          // ----------------------------------------------------------------
+          // Select line graph
+          cy.getByTestID('view-type--dropdown').click()
+          cy.getByTestID('view-type--xy').click()
+
+          // No legend should exist just from opening the options
+          cy.get('.giraffe-tooltip-container').should('not.exist')
+
+          // Defaults to showing the hover legend options
+          cy.getByTestID('hover-legend-orientation-toggle').should('exist')
+          cy.getByTestID('hover-legend-opacity-slider').should('exist')
+          cy.getByTestID('hover-legend-colorize-rows-toggle').should('exist')
+
+          // Hovering over the graph should trigger a legend
+          cy.getByTestID('giraffe-layer-line').trigger('mouseover')
+          cy.get('.giraffe-tooltip-container').should('exist')
+
+          // Slide the toggle off and then hovering should not trigger a legend
+          cy.get('label[for="radio_hover_legend_hide"]').click()
+          cy.getByTestID('giraffe-layer-line').trigger('mouseover')
+          cy.get('.giraffe-tooltip-container').should('not.exist')
+
+          // Hover Legend options should not show
+          cy.getByTestID('hover-legend-orientation-toggle').should(
+            'not.exist'
+          )
+          cy.getByTestID('hover-legend-opacity-slider').should('not.exist')
+          cy.getByTestID('hover-legend-colorize-rows-toggle').should(
+            'not.exist'
+          )
+
+          // ----------------------------------------------------------------
+          // Select line plus single stat graph
+          cy.getByTestID('view-type--dropdown').click()
+          cy.getByTestID('view-type--line-plus-single-stat').click()
+
+          // No legend should exist just from opening the options
+          cy.get('.giraffe-tooltip-container').should('not.exist')
+
+          // Defaults to showing the hover legend options
+          cy.getByTestID('hover-legend-orientation-toggle').should('exist')
+          cy.getByTestID('hover-legend-opacity-slider').should('exist')
+          cy.getByTestID('hover-legend-colorize-rows-toggle').should('exist')
+
+          // Hovering over the graph should trigger a legend
+          cy.getByTestID('single-stat').trigger('mouseover')
+          cy.get('.giraffe-tooltip-container').should('exist')
+
+          // Slide the toggle off and then hovering should not trigger a legend
+          cy.get('label[for="radio_hover_legend_hide"]').click()
+          cy.getByTestID('single-stat').trigger('mouseover')
+          cy.get('.giraffe-tooltip-container').should('not.exist')
+
+          // Hover Legend options should not show
+          cy.getByTestID('hover-legend-orientation-toggle').should(
+            'not.exist'
+          )
+          cy.getByTestID('hover-legend-opacity-slider').should('not.exist')
+          cy.getByTestID('hover-legend-colorize-rows-toggle').should(
+            'not.exist'
+          )
+
+          // ----------------------------------------------------------------
+          // Select band plot
+          cy.getByTestID('view-type--dropdown').click()
+          cy.getByTestID('view-type--band').click()
+
+          // No legend should exist just from opening the options
+          cy.get('.giraffe-tooltip-container').should('not.exist')
+
+          // Defaults to showing the hover legend options
+          cy.getByTestID('hover-legend-orientation-toggle').should('exist')
+          cy.getByTestID('hover-legend-opacity-slider').should('exist')
+          cy.getByTestID('hover-legend-colorize-rows-toggle').should('exist')
+
+          // Hovering over the graph should trigger a legend
+          cy.getByTestID('giraffe-layer-band-chart').trigger('mouseover')
+          cy.get('.giraffe-tooltip-container').should('exist')
+
+          // Slide the toggle off and then hovering should not trigger a legend
+          cy.get('label[for="radio_hover_legend_hide"]').click()
+          cy.getByTestID('giraffe-layer-band-chart').trigger('mouseover')
+          cy.get('.giraffe-tooltip-container').should('not.exist')
+
+          // Hover Legend options should not show
+          cy.getByTestID('hover-legend-orientation-toggle').should(
+            'not.exist'
+          )
+          cy.getByTestID('hover-legend-opacity-slider').should('not.exist')
+          cy.getByTestID('hover-legend-colorize-rows-toggle').should(
+            'not.exist'
+          )
+        }
+      )
+    })
+  })
+
+  describe('static legend', () => {
+    it('turns on static legend flag, so static legend option should exist for line graph, line graph plus single stat, and band plot', () => {
+      cy.setFeatureFlags({staticLegend: true})
+      VIS_TYPES.forEach(type => {
+        cy.getByTestID('cog-cell--button').click()
+        cy.getByTestID('view-type--dropdown').click()
+        cy.getByTestID(`view-type--${type}`).click()
+        if (
+          type === 'xy' ||
+          type === 'line-plus-single-stat' ||
+          type === 'band'
+        ) {
+          cy.getByTestID('static-legend-options').should('exist')
+        } else {
+          cy.getByTestID('static-legend-options').should('not.exist')
+        }
+      })
+    })
+
+    it('turns off static legend flag so that static legend option should not exist', () => {
+      cy.setFeatureFlags({staticLegend: false})
+      VIS_TYPES.forEach(type => {
+        cy.getByTestID('cog-cell--button').click()
+        cy.getByTestID('view-type--dropdown').click()
+        cy.getByTestID(`view-type--${type}`).click()
+        cy.getByTestID('static-legend-options').should('not.exist')
+      })
+    })
+
+    it('turns on static legend flag to allow user to render and remove the static legend', () => {
+      cy.writeData(lines(100))
+
+      // set the flag, build the query, adjust the view options
+      cy.setFeatureFlags({staticLegend: true})
+      cy.get<string>('@defaultBucketListSelector').then(
+        (defaultBucketListSelector: string) => {
+          cy.getByTestID('query-builder').should('exist')
+          cy.getByTestID('selector-list _monitoring').should('be.visible')
+          cy.getByTestID('selector-list _monitoring').click()
+
+          cy.getByTestID(defaultBucketListSelector).should('be.visible')
+          cy.getByTestID(defaultBucketListSelector).click()
+
+          cy.getByTestID('selector-list m').should('be.visible')
+          cy.getByTestID('selector-list m').clickAttached()
+
+          cy.getByTestID('selector-list v').should('be.visible')
+          cy.getByTestID('selector-list v').clickAttached()
+
+          cy.getByTestID('selector-list tv1').clickAttached()
+
+          cy.getByTestID('selector-list mean')
+            .scrollIntoView()
+            .should('be.visible')
+            .click({force: true})
+
+          cy.getByTestID('time-machine-submit-button').click()
+          cy.getByTestID('cog-cell--button').click()
+
+          // ----------------------------------------------------------------
+          // Select line graph
+          cy.getByTestID('view-type--dropdown').click()
+          cy.getByTestID(`view-type--xy`).click()
+
+          // Select "show" to render a static legend and options
+          cy.get('[for="radio_static_legend_show"]').click()
+          cy.getByTestID('giraffe-static-legend').should('exist')
+          cy.getByTestID('static-legend-height-slider').should('exist')
+          cy.getByTestID('static-legend-orientation-toggle').should('exist')
+          cy.getByTestID('static-legend-opacity-slider').should('exist')
+          cy.getByTestID('static-legend-colorize-rows-toggle').should('exist')
+
+          // Select "hide" to remove the static legend and hide the options
+          cy.get('[for="radio_static_legend_hide"]').click()
+          cy.getByTestID('giraffe-static-legend').should('not.exist')
+          cy.getByTestID('static-legend-height-slider').should('not.exist')
+          cy.getByTestID('static-legend-orientation-toggle').should(
+            'not.exist'
+          )
+          cy.getByTestID('static-legend-opacity-slider').should('not.exist')
+          cy.getByTestID('static-legend-colorize-rows-toggle').should(
+            'not.exist'
+          )
+
+          // ----------------------------------------------------------------
+          // Select line plus single stat graph
+          cy.getByTestID('view-type--dropdown').click()
+          cy.getByTestID('view-type--line-plus-single-stat').click()
+
+          // Select "show" to render a static legend and options
+          cy.get('[for="radio_static_legend_show"]').click()
+          cy.getByTestID('giraffe-static-legend').should('exist')
+          cy.getByTestID('static-legend-height-slider').should('exist')
+          cy.getByTestID('static-legend-orientation-toggle').should('exist')
+          cy.getByTestID('static-legend-opacity-slider').should('exist')
+          cy.getByTestID('static-legend-colorize-rows-toggle').should('exist')
+
+          // Select "hide" to remove the static legend and hide the options
+          cy.get('[for="radio_static_legend_hide"]').click()
+          cy.getByTestID('giraffe-static-legend').should('not.exist')
+          cy.getByTestID('static-legend-height-slider').should('not.exist')
+          cy.getByTestID('static-legend-orientation-toggle').should(
+            'not.exist'
+          )
+          cy.getByTestID('static-legend-opacity-slider').should('not.exist')
+          cy.getByTestID('static-legend-colorize-rows-toggle').should(
+            'not.exist'
+          )
+
+          // ----------------------------------------------------------------
+          // Select band plot
+          cy.getByTestID('view-type--dropdown').click()
+          cy.getByTestID('view-type--band').click()
+
+          // Select "show" to render a static legend and options
+          cy.get('[for="radio_static_legend_show"]').click()
+          cy.getByTestID('giraffe-static-legend').should('exist')
+          cy.getByTestID('static-legend-height-slider').should('exist')
+          cy.getByTestID('static-legend-orientation-toggle').should('exist')
+          cy.getByTestID('static-legend-opacity-slider').should('exist')
+          cy.getByTestID('static-legend-colorize-rows-toggle').should('exist')
+
+          // Select "hide" to remove the static legend and hide the options
+          cy.get('[for="radio_static_legend_hide"]').click()
+          cy.getByTestID('giraffe-static-legend').should('not.exist')
+          cy.getByTestID('static-legend-height-slider').should('not.exist')
+          cy.getByTestID('static-legend-orientation-toggle').should(
+            'not.exist'
+          )
+          cy.getByTestID('static-legend-opacity-slider').should('not.exist')
+          cy.getByTestID('static-legend-colorize-rows-toggle').should(
+            'not.exist'
+          )
+        }
+      )
+    })
+
+    it('turns off static legend flag so that static legend box should not exist', () => {
+      cy.writeData(lines(100))
+
+      // set the flag, build the query, and select the graph type
+      cy.setFeatureFlags({staticLegend: false})
+      cy.get<string>('@defaultBucketListSelector').then(
+        (defaultBucketListSelector: string) => {
+          cy.getByTestID('query-builder').should('exist')
+          cy.getByTestID('selector-list _monitoring').should('be.visible')
+          cy.getByTestID('selector-list _monitoring').click()
+
+          cy.getByTestID(defaultBucketListSelector).should('be.visible')
+          cy.getByTestID(defaultBucketListSelector).click()
+
+          cy.getByTestID('selector-list m').should('be.visible')
+          cy.getByTestID('selector-list m').clickAttached()
+
+          cy.getByTestID('selector-list v').should('be.visible')
+          cy.getByTestID('selector-list v').clickAttached()
+
+          cy.getByTestID('selector-list tv1').clickAttached()
+
+          cy.getByTestID('selector-list mean')
+            .scrollIntoView()
+            .should('be.visible')
+            .click({force: true})
+
+          cy.getByTestID('time-machine-submit-button').click()
+
+          // Select line graph
+          cy.getByTestID('view-type--dropdown').click()
+          cy.getByTestID(`view-type--xy`).click()
+          cy.getByTestID('giraffe-static-legend').should('not.exist')
+
+          // Select line plus single stat graph
+          cy.getByTestID('view-type--dropdown').click()
+          cy.getByTestID(`view-type--line-plus-single-stat`).click()
+          cy.getByTestID('giraffe-static-legend').should('not.exist')
+
+          // Select band plot
+          cy.getByTestID('view-type--dropdown').click()
+          cy.getByTestID(`view-type--band`).click()
+          cy.getByTestID('giraffe-static-legend').should('not.exist')
+        }
+      )
+    })
+  })
+})

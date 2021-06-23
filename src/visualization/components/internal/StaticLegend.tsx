@@ -39,6 +39,7 @@ import {
   STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
   STATIC_LEGEND_HEIGHT_RATIO_STEP,
   STATIC_LEGEND_SHOW_DEFAULT,
+  LegendDisplayStatus,
 } from 'src/visualization/constants'
 
 // Metrics
@@ -70,28 +71,15 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
     return null
   }
 
-  const handleChooseHide = () => {
-    setShowOptions(false)
+  const handleChooseStaticLegend = (value: string) => {
+    setShowOptions(value === LegendDisplayStatus.SHOW)
     update({
       staticLegend: {
         ...staticLegend,
-        show: false,
+        show: value === LegendDisplayStatus.SHOW,
       },
     })
-    event(`${eventPrefix}.hide`, {
-      type: properties.type,
-    })
-  }
-
-  const handleChooseShow = () => {
-    setShowOptions(true)
-    update({
-      staticLegend: {
-        ...staticLegend,
-        show: true,
-      },
-    })
-    event(`${eventPrefix}.show`, {
+    event(`${eventPrefix}.${value}`, {
       type: properties.type,
     })
   }
@@ -148,8 +136,8 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
                   id="radio_static_legend_hide"
                   titleText="Hide"
                   active={!showOptions}
-                  onClick={handleChooseHide}
-                  value="Auto"
+                  onClick={handleChooseStaticLegend}
+                  value={LegendDisplayStatus.HIDE}
                 >
                   Hide
                 </SelectGroup.Option>
@@ -158,8 +146,8 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
                   id="radio_static_legend_show"
                   titleText="Show"
                   active={showOptions}
-                  onClick={handleChooseShow}
-                  value="Custom"
+                  onClick={handleChooseStaticLegend}
+                  value={LegendDisplayStatus.SHOW}
                 >
                   Show
                 </SelectGroup.Option>

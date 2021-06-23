@@ -1,23 +1,26 @@
 // Libraries
-import React, {ChangeEvent, CSSProperties, FC} from 'react'
-import {InfluxColors} from '@influxdata/clockface'
+import React, {ChangeEvent, CSSProperties, FC, useEffect, useState} from 'react'
 
 // Utils
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
-import {upperFirst} from 'src/shared/utils/upperFirst'
 
 // Components
 import {
   AlignItems,
   Appearance,
+  ButtonShape,
+  Columns,
   ComponentColor,
   ComponentSize,
   FlexBox,
   FlexDirection,
   Form,
+  Grid,
+  InfluxColors,
   InputLabel,
   InputToggleType,
   RangeSlider,
+  SelectGroup,
   SlideToggle,
   Toggle,
 } from '@influxdata/clockface'
@@ -51,8 +54,13 @@ import {event} from 'src/cloud/utils/reporting'
 import 'src/visualization/components/internal/LegendOrientation.scss'
 
 interface HoverLegendToggleProps {
-  legendHide: boolean
-  handleSetHoverLegendHide: () => void
+  properties:
+    | BandViewProperties
+    | XYViewProperties
+    | LinePlusSingleStatProperties
+  handlers: {
+    [handle: string]: (arg?: any) => void
+  }
 }
 
 interface OrientationToggleProps {
@@ -88,38 +96,6 @@ const getToggleColor = (toggle: boolean): CSSProperties => {
     return {color: InfluxColors.Cloud}
   }
   return {color: InfluxColors.Sidewalk}
-}
-
-const HoverLegendToggle: FC<HoverLegendToggleProps> = ({
-  legendHide,
-  handleSetHoverLegendHide,
-}) => {
-  const getHoverLegendHideStatus = (legendHide: boolean): string => {
-    if (legendHide) {
-      return upperFirst(LegendDisplayStatus.HIDE)
-    }
-    return upperFirst(LegendDisplayStatus.SHOW)
-  }
-
-  return (
-    <FlexBox
-      direction={FlexDirection.Row}
-      alignItems={AlignItems.Center}
-      margin={ComponentSize.Medium}
-      stretchToFitWidth={true}
-      className="hover-legend-toggle"
-      testID="hover-legend-toggle"
-    >
-      <SlideToggle
-        active={!legendHide}
-        size={ComponentSize.ExtraSmall}
-        onChange={handleSetHoverLegendHide}
-      />
-      <InputLabel style={getToggleColor(!legendHide)}>
-        Hover Legend {getHoverLegendHideStatus(legendHide)}
-      </InputLabel>
-    </FlexBox>
-  )
 }
 
 const OrientationToggle: FC<OrientationToggleProps> = ({
@@ -237,15 +213,92 @@ const ColorizeRowsToggle: FC<ColorizeRowsToggleProps> = ({
   )
 }
 
+const HoverLegendToggle: FC<HoverLegendToggleProps> = ({
+  properties,
+  handlers,
+}) => {
+  const {
+    handleSetHoverLegendHide,
+    handleSetOrientation,
+    handleSetOpacity,
+    handleSetColorization,
+  } = handlers
+
+  const showStaticLegend = !!properties?.staticLegend?.show
+  const showLegend = !properties?.legendHide
+  const [showOptions, setShowOptions] = useState<boolean>(
+    showLegend || showStaticLegend
+  )
+
+  useEffect(() => {
+    setShowOptions(showLegend || showStaticLegend)
+  }, [showLegend, showStaticLegend])
+
+  return (
+    <Form.Element label="Hover Legend" className="legend-options">
+      <Grid>
+        <Grid.Row>
+          <Grid.Column widthXS={Columns.Twelve}>
+            <SelectGroup shape={ButtonShape.StretchToFit}>
+              <SelectGroup.Option
+                name="hover-legend-hide"
+                id="radio_hover_legend_hide"
+                titleText="Hide"
+                active={properties.legendHide}
+                onClick={handleSetHoverLegendHide}
+                value={true}
+              >
+                Hide
+              </SelectGroup.Option>
+              <SelectGroup.Option
+                name="hover-legend-show"
+                id="radio_hover_legend_show"
+                titleText="Show"
+                active={!properties.legendHide}
+                onClick={handleSetHoverLegendHide}
+                value={false}
+              >
+                Show
+              </SelectGroup.Option>
+            </SelectGroup>
+          </Grid.Column>
+        </Grid.Row>
+        {showOptions && (
+          <Grid.Row>
+            <Grid.Column
+              widthXS={Columns.Twelve}
+              className="legend-options--show"
+            >
+              <OrientationToggle
+                graphType={properties.type}
+                legendOrientation={properties.legendOrientationThreshold}
+                handleSetOrientation={handleSetOrientation}
+              />
+              <OpacitySlider
+                legendOpacity={properties.legendOpacity}
+                handleSetOpacity={handleSetOpacity}
+              />
+              <ColorizeRowsToggle
+                legendColorizeRows={properties.legendColorizeRows}
+                handleSetColorization={handleSetColorization}
+              />
+            </Grid.Column>
+          </Grid.Row>
+        )}
+      </Grid>
+    </Form.Element>
+  )
+}
+
 const LegendOrientation: FC<LegendOrientationProps> = ({
   properties,
   update,
 }) => {
-  const handleSetHoverLegendHide = (): void => {
+  const handleSetHoverLegendHide = (legendHide: boolean): void => {
     update({
-      legendHide: !properties.legendHide,
+      legendHide,
     })
-    const metricValue = properties.legendHide
+    const metricValue = legendHide
       ? LegendDisplayStatus.HIDE
       : LegendDisplayStatus.SHOW
     event(`${eventPrefix}.hoverLegend.${metricValue}`, {
@@ -257,7 +310,8 @@ const LegendOrientation: FC<LegendOrientationProps> = ({
     update({
       legendOrientationThreshold: threshold,
     })
-    // eventing is done by the consuming component because there are only 2 values
+    // eventing is done by <OrientationToggle> because UI defines orientation
+    // as either horizontal or vertical
   }
 
   const handleSetOpacity = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -296,16 +350,20 @@ const LegendOrientation: FC<LegendOrientationProps> = ({
     )
   }
 
-  return (
+  return properties.type === 'xy' ||
+    properties.type === 'line-plus-single-stat' ||
+    properties.type === 'band' ? (
+    <HoverLegendToggle
+      properties={properties}
+      handlers={{
+        handleSetHoverLegendHide,
+        handleSetOrientation,
+        handleSetOpacity,
+        handleSetColorization,
+      }}
+    />
+  ) : (
     <>
-      {properties.type === 'xy' ||
-      properties.type === 'line-plus-single-stat' ||
-      properties.type === 'band' ? (
-        <HoverLegendToggle
-          legendHide={properties.legendHide}
-          handleSetHoverLegendHide={handleSetHoverLegendHide}
-        />
-      ) : null}
       <OrientationToggle
         graphType={properties.type}
         legendOrientation={properties.legendOrientationThreshold}

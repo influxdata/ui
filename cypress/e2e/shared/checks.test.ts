@@ -103,12 +103,12 @@ describe('Checks', () => {
   })
 
   it('can create and filter checks', () => {
-    cy.intercept('POST', '/query', req => {
+    cy.intercept('POST', '/api/v2/query?*', req => {
       if (req.body.query.includes('_measurement')) {
         req.alias = 'measurementQuery'
       }
     })
-    cy.intercept('POST', '/query', req => {
+    cy.intercept('POST', '/api/v2/query?*', req => {
       if (req.body.query.includes('distinct(column: "_field")')) {
         req.alias = 'fieldQuery'
       }
@@ -143,12 +143,12 @@ describe('Checks', () => {
         cy.getByTestID('overlay').should('not.exist')
 
         // create a second check
-        cy.intercept('POST', '/query', req => {
+        cy.intercept('POST', '/api/v2/query?*', req => {
           if (req.body.query.includes('_measurement')) {
             req.alias = 'measurementQueryBeta'
           }
         })
-        cy.intercept('POST', '/query', req => {
+        cy.intercept('POST', '/api/v2/query?*', req => {
           if (req.body.query.includes('distinct(column: "_field")')) {
             req.alias = 'fieldQueryBeta'
           }

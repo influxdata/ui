@@ -194,12 +194,12 @@ const createCheck = (
   cy.getByTestID('create-threshold-check').click()
 
   cy.log('select measurement and field')
-  cy.intercept('POST', '/query', req => {
+  cy.intercept('POST', '/api/v2/query?*', req => {
     if (req.body.query.includes('_measurement')) {
       req.alias = 'measurementQuery'
     }
   })
-  cy.intercept('POST', '/query', req => {
+  cy.intercept('POST', '/api/v2/query?*', req => {
     if (req.body.query.includes('distinct(column: "_field")')) {
       req.alias = 'fieldQuery'
     }
@@ -232,12 +232,12 @@ const createCheck = (
   cy.getByTestID('overlay').should('not.exist')
   // bust the /query cache
   cy.reload()
-  cy.intercept('POST', '/query', req => {
+  cy.intercept('POST', '/api/v2/query?*', req => {
     if (req.body.query.includes('_measurement')) {
       req.alias = 'measurementQueryBeta'
     }
   })
-  cy.intercept('POST', '/query', req => {
+  cy.intercept('POST', '/api/v2/query?*', req => {
     if (req.body.query.includes('distinct(column: "_field")')) {
       req.alias = 'fieldQueryBeta'
     }

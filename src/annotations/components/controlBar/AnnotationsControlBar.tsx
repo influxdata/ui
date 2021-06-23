@@ -7,10 +7,14 @@ import {ComponentSize, InfluxColors, TextBlock} from '@influxdata/clockface'
 import {useSelector} from 'react-redux'
 import {isAnnotationsModeEnabled} from 'src/annotations/selectors'
 import Toolbar from 'src/shared/components/toolbar/Toolbar'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export const AnnotationsControlBar: FC = () => {
-  const infoText1 =
-    'Shift + click on a graph to create a point annotation, click + shift + drag to create a range annotation.'
+  const rangeText = isFlagEnabled('rangeAnnotations')
+    ? ', click + shift + drag to create a range annotation'
+    : ''
+
+  const infoText1 = `Shift + click on a graph to create a point annotation${rangeText}.`
 
   const infoText2 =
     'Press the annotations button again to turn off annotation mode'

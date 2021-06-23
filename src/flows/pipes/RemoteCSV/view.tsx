@@ -13,7 +13,6 @@ import {PipeContext} from 'src/flows/context/pipe'
 const SampleCSVs = {
   Sample_Air_Sensor_Data:
     'https://raw.githubusercontent.com/influxdata/influxdb2-sample-data/master/air-sensor-data/air-sensor-data-annotated.csv',
-  NOAA_Weather_Data: 'https://influx-testdata.s3.amazonaws.com/noaa.csv',
   USGS_Earthquake_Data:
     'https://raw.githubusercontent.com/influxdata/influxdb2-sample-data/master/usgs-earthquake-data/all_week-annotated.csv',
   'NOAA_National_Buoy_Data_Center_(NDBC)':

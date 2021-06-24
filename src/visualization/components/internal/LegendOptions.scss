@@ -7,14 +7,11 @@
   margin-top: $cf-marg-b;
   margin-bottom: $cf-marg-c;
 
-  label {
+  label.legend-orientation-label {
+    color: $g11-sidewalk;
   }
 }
 
 .legend-orientation--horizontal {
   margin-bottom: $cf-marg-b !important;
-}
-
-.legend-orientation-label {
-  color: $g11-sidewalk;
 }

@@ -32,8 +32,6 @@ const timestamp = 426196800000
   MMMM D, YYYY hh:mm:ss a
   dddd, MMMM D, YYYY HH:mm:ss
   dddd, MMMM D, YYYY hh:mm:ss a
-
-
 */
 
 const isDST = () => {
@@ -50,9 +48,6 @@ const isDST = () => {
 }
 
 describe('the DateTime formatter', () => {
-  // this is liable to break around daylight savings changes.
-  // if this breaks CI, feel free to skip the entire suite
-  // describe.skip('the DateTime formatter', () => {
   let timeZone = 'PST'
   let hour = '12'
   const hourUTC = '8'
@@ -63,86 +58,6 @@ describe('the DateTime formatter', () => {
     hour = '1'
     hour24 = '13'
   }
-
-  describe('formatting DateTimes in local timezones', () => {
-    it('formats DateTimes in the default time, YYYY-MM-DD hh:mm:ss a', () => {
-      const date = new Date(timestamp)
-      const formatter = createDateTimeFormatter('YYYY-MM-DD hh:mm:ss a')
-      expect(formatter.format(date)).toBe(`1983-07-04 ${hour}:00:00 PM`)
-    })
-
-    it('formats DateTimes in the format YYYY-MM-DD hh:mm:ss a ZZ', () => {
-      const date = new Date(timestamp)
-      const formatter = createDateTimeFormatter('YYYY-MM-DD hh:mm:ss a ZZ')
-      expect(formatter.format(date)).toBe(
-        `1983-07-04 ${hour}:00:00 PM ${timeZone}`
-      )
-    })
-
-    it('formats DateTimes in the format DD/MM/YYYY HH:mm:ss.sss', () => {
-      const date = new Date(timestamp)
-      const formatter = createDateTimeFormatter('DD/MM/YYYY HH:mm:ss.sss')
-      expect(formatter.format(date)).toBe(`04/07/1983 ${hour24}:00:00.000`)
-    })
-
-    it('formats DateTimes in the format DD/MM/YYYY hh:mm:ss.sss a', () => {
-      const date = new Date(timestamp)
-      const formatter = createDateTimeFormatter('DD/MM/YYYY hh:mm:ss.sss a')
-      expect(formatter.format(date)).toBe(`04/07/1983 ${hour}:00:00.000 PM`)
-    })
-
-    it('formats DateTimes in the format MM/DD/YYYY HH:mm:ss.sss', () => {
-      const date = new Date(timestamp)
-      const formatter = createDateTimeFormatter('MM/DD/YYYY HH:mm:ss.sss')
-      expect(formatter.format(date)).toBe(`07/04/1983 ${hour24}:00:00.000`)
-    })
-
-    it('formats DateTimes in the format MM/DD/YYYY hh:mm:ss.sss a', () => {
-      const date = new Date(timestamp)
-      const formatter = createDateTimeFormatter('MM/DD/YYYY hh:mm:ss.sss a')
-      expect(formatter.format(date)).toBe(`07/04/1983 ${hour}:00:00.000 PM`)
-    })
-
-    it('formats DateTimes in the format YYYY/MM/DD HH:mm:ss', () => {
-      const date = new Date(timestamp)
-      const formatter = createDateTimeFormatter('YYYY/MM/DD HH:mm:ss')
-      expect(formatter.format(date)).toBe(`1983/07/04 ${hour24}:00:00`)
-    })
-
-    it('formats DateTimes in the format YYYY/MM/DD hh:mm:ss a', () => {
-      const date = new Date(timestamp)
-      const formatter = createDateTimeFormatter('YYYY/MM/DD hh:mm:ss a')
-      expect(formatter.format(date)).toBe(`1983/07/04 ${hour}:00:00 PM`)
-    })
-
-    it('formats DateTimes in the format MMMM D, YYYY HH:mm:ss', () => {
-      const date = new Date(timestamp)
-      const formatter = createDateTimeFormatter('MMMM D, YYYY HH:mm:ss')
-      expect(formatter.format(date)).toBe(`July 4, 1983 ${hour24}:00:00`)
-    })
-
-    it('formats DateTimes in the format MMMM D, YYYY hh:mm:ss a', () => {
-      const date = new Date(timestamp)
-      const formatter = createDateTimeFormatter('MMMM D, YYYY hh:mm:ss a')
-      expect(formatter.format(date)).toBe(`July 4, 1983 ${hour}:00:00 PM`)
-    })
-
-    it('formats DateTimes in the format dddd, MMMM D, YYYY HH:mm:ss', () => {
-      const date = new Date(timestamp)
-      const formatter = createDateTimeFormatter('dddd, MMMM D, YYYY HH:mm:ss')
-      expect(formatter.format(date)).toBe(
-        `Monday, July 4, 1983 ${hour24}:00:00`
-      )
-    })
-
-    it('formats DateTimes in the format dddd, MMMM D, YYYY hh:mm:ss a', () => {
-      const date = new Date(timestamp)
-      const formatter = createDateTimeFormatter('dddd, MMMM D, YYYY hh:mm:ss a')
-      expect(formatter.format(date)).toBe(
-        `Monday, July 4, 1983 ${hour}:00:00 PM`
-      )
-    })
-  })
 
   describe('formatting DateTimes in UTC', () => {
     it('formats DateTimes in the default time, YYYY-MM-DD hh:mm:ss a in UTC', () => {
@@ -261,56 +176,6 @@ describe('the DateTime formatter', () => {
     })
   })
 
-  describe('formatting times without dates in local time', () => {
-    it('formats times in the format HH:mm', () => {
-      const date = new Date(timestamp)
-      const formatter = createDateTimeFormatter('HH:mm')
-      expect(formatter.format(date)).toBe(`${hour24}:00`)
-    })
-
-    it('formats times in the format hh:mm a', () => {
-      const date = new Date(timestamp)
-      const formatter = createDateTimeFormatter('hh:mm a')
-      expect(formatter.format(date)).toBe(`${hour}:00 PM`)
-    })
-
-    it('formats times in the format HH:mm:ss', () => {
-      const date = new Date(timestamp)
-      const formatter = createDateTimeFormatter('HH:mm:ss')
-      expect(formatter.format(date)).toBe(`${hour24}:00:00`)
-    })
-
-    it('formats times in the format hh:mm:ss a', () => {
-      const date = new Date(timestamp)
-      const formatter = createDateTimeFormatter('hh:mm:ss a')
-      expect(formatter.format(date)).toBe(`${hour}:00:00 PM`)
-    })
-
-    it('formats times in the format HH:mm:ss ZZ', () => {
-      const date = new Date(timestamp)
-      const formatter = createDateTimeFormatter('HH:mm:ss ZZ')
-      expect(formatter.format(date)).toBe(`${hour24}:00:00 ${timeZone}`)
-    })
-
-    it('formats times in the format hh:mm:ss a ZZ', () => {
-      const date = new Date(timestamp)
-      const formatter = createDateTimeFormatter('hh:mm:ss a ZZ')
-      expect(formatter.format(date)).toBe(`${hour}:00:00 PM ${timeZone}`)
-    })
-
-    it('formats times in the format HH:mm:ss.sss', () => {
-      const date = new Date(timestamp)
-      const formatter = createDateTimeFormatter('HH:mm:ss.sss')
-      expect(formatter.format(date)).toBe(`${hour24}:00:00.000`)
-    })
-
-    it('formats times in the format hh:mm:ss.sss a', () => {
-      const date = new Date(timestamp)
-      const formatter = createDateTimeFormatter('hh:mm:ss.sss a')
-      expect(formatter.format(date)).toBe(`${hour}:00:00.000 PM`)
-    })
-  })
-
   describe('formatting times without dates in UTC', () => {
     it('formats times in the format HH:mm in UTC', () => {
       const date = new Date(timestamp)
@@ -358,6 +223,137 @@ describe('the DateTime formatter', () => {
       const date = new Date(timestamp)
       const formatter = createDateTimeFormatter('hh:mm:ss.sss a', 'UTC')
       expect(formatter.format(date)).toBe(`${hourUTC}:00:00.000 PM`)
+    })
+  })
+
+  // these work locally if you can control the timezone
+  describe.skip('formatting DateTimes in local timezones', () => {
+    it('formats DateTimes in the default time, YYYY-MM-DD hh:mm:ss a', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('YYYY-MM-DD hh:mm:ss a')
+      expect(formatter.format(date)).toBe(`1983-07-04 ${hour}:00:00 PM`)
+    })
+
+    it('formats DateTimes in the format YYYY-MM-DD hh:mm:ss a ZZ', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('YYYY-MM-DD hh:mm:ss a ZZ')
+      expect(formatter.format(date)).toBe(
+        `1983-07-04 ${hour}:00:00 PM ${timeZone}`
+      )
+    })
+
+    it('formats DateTimes in the format DD/MM/YYYY HH:mm:ss.sss', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('DD/MM/YYYY HH:mm:ss.sss')
+      expect(formatter.format(date)).toBe(`04/07/1983 ${hour24}:00:00.000`)
+    })
+
+    it('formats DateTimes in the format DD/MM/YYYY hh:mm:ss.sss a', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('DD/MM/YYYY hh:mm:ss.sss a')
+      expect(formatter.format(date)).toBe(`04/07/1983 ${hour}:00:00.000 PM`)
+    })
+
+    it('formats DateTimes in the format MM/DD/YYYY HH:mm:ss.sss', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('MM/DD/YYYY HH:mm:ss.sss')
+      expect(formatter.format(date)).toBe(`07/04/1983 ${hour24}:00:00.000`)
+    })
+
+    it('formats DateTimes in the format MM/DD/YYYY hh:mm:ss.sss a', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('MM/DD/YYYY hh:mm:ss.sss a')
+      expect(formatter.format(date)).toBe(`07/04/1983 ${hour}:00:00.000 PM`)
+    })
+
+    it('formats DateTimes in the format YYYY/MM/DD HH:mm:ss', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('YYYY/MM/DD HH:mm:ss')
+      expect(formatter.format(date)).toBe(`1983/07/04 ${hour24}:00:00`)
+    })
+
+    it('formats DateTimes in the format YYYY/MM/DD hh:mm:ss a', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('YYYY/MM/DD hh:mm:ss a')
+      expect(formatter.format(date)).toBe(`1983/07/04 ${hour}:00:00 PM`)
+    })
+
+    it('formats DateTimes in the format MMMM D, YYYY HH:mm:ss', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('MMMM D, YYYY HH:mm:ss')
+      expect(formatter.format(date)).toBe(`July 4, 1983 ${hour24}:00:00`)
+    })
+
+    it('formats DateTimes in the format MMMM D, YYYY hh:mm:ss a', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('MMMM D, YYYY hh:mm:ss a')
+      expect(formatter.format(date)).toBe(`July 4, 1983 ${hour}:00:00 PM`)
+    })
+
+    it('formats DateTimes in the format dddd, MMMM D, YYYY HH:mm:ss', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('dddd, MMMM D, YYYY HH:mm:ss')
+      expect(formatter.format(date)).toBe(
+        `Monday, July 4, 1983 ${hour24}:00:00`
+      )
+    })
+
+    it('formats DateTimes in the format dddd, MMMM D, YYYY hh:mm:ss a', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('dddd, MMMM D, YYYY hh:mm:ss a')
+      expect(formatter.format(date)).toBe(
+        `Monday, July 4, 1983 ${hour}:00:00 PM`
+      )
+    })
+  })
+
+  describe.skip('formatting times without dates in local time', () => {
+    it('formats times in the format HH:mm', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('HH:mm')
+      expect(formatter.format(date)).toBe(`${hour24}:00`)
+    })
+
+    it('formats times in the format hh:mm a', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('hh:mm a')
+      expect(formatter.format(date)).toBe(`${hour}:00 PM`)
+    })
+
+    it('formats times in the format HH:mm:ss', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('HH:mm:ss')
+      expect(formatter.format(date)).toBe(`${hour24}:00:00`)
+    })
+
+    it('formats times in the format hh:mm:ss a', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('hh:mm:ss a')
+      expect(formatter.format(date)).toBe(`${hour}:00:00 PM`)
+    })
+
+    it('formats times in the format HH:mm:ss ZZ', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('HH:mm:ss ZZ')
+      expect(formatter.format(date)).toBe(`${hour24}:00:00 ${timeZone}`)
+    })
+
+    it('formats times in the format hh:mm:ss a ZZ', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('hh:mm:ss a ZZ')
+      expect(formatter.format(date)).toBe(`${hour}:00:00 PM ${timeZone}`)
+    })
+
+    it('formats times in the format HH:mm:ss.sss', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('HH:mm:ss.sss')
+      expect(formatter.format(date)).toBe(`${hour24}:00:00.000`)
+    })
+
+    it('formats times in the format hh:mm:ss.sss a', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('hh:mm:ss.sss a')
+      expect(formatter.format(date)).toBe(`${hour}:00:00.000 PM`)
     })
   })
 })

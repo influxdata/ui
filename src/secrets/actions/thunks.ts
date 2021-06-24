@@ -74,7 +74,7 @@ export const getSecrets = () => async (
   }
 }
 
-export const upsertSecret = (secretKey: string, secretValue: string) => async (
+export const upsertSecret = (newSecret: Secret) => async (
   dispatch: Dispatch<Action>,
   getState: GetState
 ): Promise<void> => {
@@ -83,7 +83,7 @@ export const upsertSecret = (secretKey: string, secretValue: string) => async (
     const resp = await apiUpdateSecret({
       orgID: org.id,
       data: {
-        [secretKey]: secretValue,
+        [newSecret.key]: newSecret.value,
       },
     })
 
@@ -91,12 +91,15 @@ export const upsertSecret = (secretKey: string, secretValue: string) => async (
       throw new Error()
     }
 
+    // Secret values shouldn't be kept around in the store! -JF
+    const strippedSecret = {id: newSecret.key, key: newSecret.key}
+
     const secret = normalize<Secret, SecretEntities, string>(
-      resp.data.secret,
+      strippedSecret,
       secretsSchema
     )
 
-    dispatch(setSecret(resp.data.secret.id, RemoteDataState.Done, secret))
+    dispatch(setSecret(newSecret.key, RemoteDataState.Done, secret))
   } catch (error) {
     console.error(error)
     dispatch(notify(upsertSecretFailed()))

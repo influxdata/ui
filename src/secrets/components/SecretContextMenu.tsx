@@ -4,22 +4,13 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import {useDispatch} from 'react-redux'
 
 // Components
-import {
-  Button,
-  ButtonShape,
-  ComponentColor,
-  ComponentSize,
-  IconFont,
-} from '@influxdata/clockface'
+import {Button, ButtonShape, ComponentColor, ComponentSize, IconFont,} from '@influxdata/clockface'
 
 // Actions
 import {notify} from 'src/shared/actions/notifications'
 
 // Notifications
-import {
-  copyToClipboardFailed,
-  copyToClipboardSuccess,
-} from 'src/shared/copy/notifications'
+import {copyToClipboardFailed, copyToClipboardSuccess,} from 'src/shared/copy/notifications'
 
 // Types
 import {Secret} from 'src/types'
@@ -44,8 +35,10 @@ const SecretContextMenu: FC<Props> = ({secret, onDeleteSecret}) => {
     }
   }
 
+  // Note to self: add a class on the context element to push everything left about
+  // 20 pixels because there's no padding on the rightmost button for reasons
   return (
-    <Context>
+    <Context className={'secrets-context-menu'}>
       <CopyToClipboard text={secret.id} onCopy={handleCopyAttempt}>
         <Button
           testID={`copy-to-clipboard--${secret.id}`}

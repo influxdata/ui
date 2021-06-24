@@ -1485,7 +1485,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.getByTestID('enable-auto-refresh-button').click()
       cy.getByTestID('auto-refresh-input')
         .clear()
-        .type('2s')
+        .type('4s')
       cy.getByTestID('timerange-popover-button').click()
       cy.getByTestID('timerange-popover--dialog').within(() => {
         cy.getByTestID('timerange--input')
@@ -1501,10 +1501,9 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
 
       cy.wait('@refreshQuery')
       cy.wait('@refreshQuery')
-      cy.wait('@refreshQuery')
       cy.on('fail', err => {
         expect(err.message).to.include(
-          'Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 3rd request to the route: `refreshQuery`. No request ever occurred.'
+          'Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 2nd request to the route: `refreshQuery`. No request ever occurred.'
         )
         done()
       })
@@ -1837,9 +1836,9 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       const query1 = `from(bucket: "schmucket")
   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
   |> filter(fn: (r) => r["container_name"] == "cool")`
+      cy.getByTestID('flux-editor').should('be.visible')
+      cy.getByTestID('flux-editor').click()
       cy.getByTestID('flux-editor')
-        .should('be.visible')
-        .click()
         .focused()
         .type(query1)
       cy.getByTestID('overlay').within(() => {
@@ -1862,6 +1861,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
 
       cy.wait('@setView')
       cy.visit(`${allOrgs}/${orgId}/dashboards/${otherBoardID}`)
+      cy.getByTestID('tree-nav')
       cy.getByTestID('cell blah (clone 1)').should('be.visible')
     })
 
@@ -1873,8 +1873,10 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.getByTestID('confirm-clone-cell-button').click()
       cy.wait('@setView')
       cy.visit(`${allOrgs}/${orgId}/dashboards/${otherBoardID}`)
+      cy.getByTestID('tree-nav')
       cy.getByTestID('cell blah (clone 1)').should('be.visible')
       cy.go('back')
+      cy.getByTestID('tree-nav')
       cy.getByTestID('empty-state--text').should('be.visible')
     })
   })

@@ -1044,13 +1044,15 @@ describe('DataExplorer', () => {
 
             cy.getByTestID('selector-list tv1').clickAttached()
 
-            cy.getByTestID('selector-list last')
+            cy.getByTestID('selector-list mean')
               .scrollIntoView()
               .should('be.visible')
               .click({force: true})
 
             cy.getByTestID('time-machine-submit-button').click()
 
+            // ----------------------------------------------------------------
+            // Select line graph
             cy.getByTestID('cog-cell--button').click()
             cy.getByTestID('view-type--dropdown').click()
             cy.getByTestID('view-type--xy').click()
@@ -1065,6 +1067,40 @@ describe('DataExplorer', () => {
             // Slide the toggle off and then hovering should not trigger a legend
             cy.get('label[for="radio_hover_legend_hide"]').click()
             cy.getByTestID('giraffe-layer-line').trigger('mouseover')
+            cy.get('.giraffe-tooltip-container').should('not.exist')
+
+            // ----------------------------------------------------------------
+            // Select line plus single stat graph
+            cy.getByTestID('view-type--dropdown').click()
+            cy.getByTestID('view-type--line-plus-single-stat').click()
+
+            // No legend should exist just from opening the options
+            cy.get('.giraffe-tooltip-container').should('not.exist')
+
+            // Hovering over the graph should trigger a legend
+            cy.getByTestID('single-stat').trigger('mouseover')
+            cy.get('.giraffe-tooltip-container').should('exist')
+
+            // Slide the toggle off and then hovering should not trigger a legend
+            cy.get('label[for="radio_hover_legend_hide"]').click()
+            cy.getByTestID('single-stat').trigger('mouseover')
+            cy.get('.giraffe-tooltip-container').should('not.exist')
+
+            // ----------------------------------------------------------------
+            // Select band plot
+            cy.getByTestID('view-type--dropdown').click()
+            cy.getByTestID('view-type--band').click()
+
+            // No legend should exist just from opening the options
+            cy.get('.giraffe-tooltip-container').should('not.exist')
+
+            // Hovering over the graph should trigger a legend
+            cy.getByTestID('giraffe-layer-band-chart').trigger('mouseover')
+            cy.get('.giraffe-tooltip-container').should('exist')
+
+            // Slide the toggle off and then hovering should not trigger a legend
+            cy.get('label[for="radio_hover_legend_hide"]').click()
+            cy.getByTestID('giraffe-layer-band-chart').trigger('mouseover')
             cy.get('.giraffe-tooltip-container').should('not.exist')
           }
         )
@@ -1169,7 +1205,7 @@ describe('DataExplorer', () => {
 
             cy.getByTestID('selector-list tv1').clickAttached()
 
-            cy.getByTestID('selector-list last')
+            cy.getByTestID('selector-list mean')
               .scrollIntoView()
               .should('be.visible')
               .click({force: true})

@@ -26,7 +26,7 @@ const NotificationSettingsForm: FC = () => {
       <FormToggle
         icon={IconFont.Checkmark}
         id="shouldNotify"
-        label="Send an email notification when my usage exceeds the limit I have set"
+        label="Send me an email when my bill exceeds a certain amount"
         tabIndex={0}
         type={InputToggleType.Checkbox}
       />
@@ -44,7 +44,7 @@ const NotificationSettingsForm: FC = () => {
             <Grid.Column widthSM={Columns.Three}>
               <FormInput
                 id="balanceThreshold"
-                label={`Limit (${MINIMUM_BALANCE_THRESHOLD} minimum)`}
+                label={`Amount (${MINIMUM_BALANCE_THRESHOLD} minimum)`}
                 min={MINIMUM_BALANCE_THRESHOLD}
                 required
                 step={1}

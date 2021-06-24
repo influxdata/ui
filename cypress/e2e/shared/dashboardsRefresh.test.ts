@@ -90,7 +90,7 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('enable-auto-refresh-button').click()
       cy.getByTestID('auto-refresh-input')
         .clear()
-        .type('2s')
+        .type('4s')
       cy.getByTestID('timerange-popover-button').click()
       cy.getByTestID('timerange-popover--dialog').within(() => {
         cy.getByTestID('timerange--input')
@@ -106,10 +106,9 @@ describe('Dashboard refresh', () => {
 
       cy.wait('@refreshQuery')
       cy.wait('@refreshQuery')
-      cy.wait('@refreshQuery')
       cy.on('fail', err => {
         expect(err.message).to.include(
-          'Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 3rd request to the route: `refreshQuery`. No request ever occurred.'
+          'Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 2nd request to the route: `refreshQuery`. No request ever occurred.'
         )
         done()
       })

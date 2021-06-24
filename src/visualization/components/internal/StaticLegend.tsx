@@ -274,14 +274,17 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
                 legendOrientation={orientationThreshold}
                 parentName="static-legend"
                 handleSetOrientation={handleSetOrientation}
+                testID="static-legend-orientation-toggle"
               />
               <OpacitySlider
                 legendOpacity={opacity}
                 handleSetOpacity={handleSetOpacity}
+                testID="static-legend-opacity-slider"
               />
               <ColorizeRowsToggle
                 legendColorizeRows={colorizeRows}
                 handleSetColorization={handleSetColorization}
+                testID="static-legend-colorize-rows-toggle"
               />
             </Grid.Column>
           </Grid.Row>

@@ -39,16 +39,19 @@ interface OrientationToggleProps {
   legendOrientation: number
   parentName: string
   handleSetOrientation: (threshold: number) => void
+  testID?: string
 }
 
 interface OpacitySliderProps {
   legendOpacity: number
   handleSetOpacity: (event: ChangeEvent<HTMLInputElement>) => void
+  testID?: string
 }
 
 interface ColorizeRowsToggleProps {
   legendColorizeRows: boolean
   handleSetColorization: () => void
+  testID?: string
 }
 
 const getToggleColor = (toggle: boolean): CSSProperties => {
@@ -64,6 +67,7 @@ export const OrientationToggle: FC<OrientationToggleProps> = ({
   legendOrientation,
   parentName,
   handleSetOrientation,
+  testID = 'orientation-toggle',
 }) => {
   const setOrientation = (orientation: string): void => {
     if (orientation === 'vertical') {
@@ -81,6 +85,7 @@ export const OrientationToggle: FC<OrientationToggleProps> = ({
       margin={ComponentSize.Large}
       alignItems={AlignItems.FlexStart}
       className="legend-orientation-toggle"
+      testID={testID}
     >
       <InputLabel className="legend-orientation-label">Orientation</InputLabel>
       <Toggle
@@ -130,6 +135,7 @@ export const OrientationToggle: FC<OrientationToggleProps> = ({
 export const OpacitySlider: FC<OpacitySliderProps> = ({
   legendOpacity,
   handleSetOpacity,
+  testID = 'opacity-slider',
 }) => {
   // without the toFixed(0) sometimes you
   // can get numbers like 45.000009% which we want to avoid
@@ -138,6 +144,7 @@ export const OpacitySlider: FC<OpacitySliderProps> = ({
     <Form.Element
       className="legend-opacity-slider"
       label={`Opacity: ${percentLegendOpacity}%`}
+      testID={testID}
     >
       <RangeSlider
         max={LEGEND_OPACITY_MAXIMUM}
@@ -154,6 +161,7 @@ export const OpacitySlider: FC<OpacitySliderProps> = ({
 export const ColorizeRowsToggle: FC<ColorizeRowsToggleProps> = ({
   legendColorizeRows,
   handleSetColorization,
+  testID = 'colorize-rows-toggle',
 }) => {
   return (
     <FlexBox
@@ -162,6 +170,7 @@ export const ColorizeRowsToggle: FC<ColorizeRowsToggleProps> = ({
       margin={ComponentSize.Medium}
       stretchToFitWidth={true}
       className="legend-colorize-rows-toggle"
+      testID={testID}
     >
       <SlideToggle
         active={legendColorizeRows}

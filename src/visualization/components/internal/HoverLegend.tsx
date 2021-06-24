@@ -90,9 +90,9 @@ const HoverLegendToggle: FC<HoverLegendToggleProps> = ({
   const showLegend = !legendHide
   const [showOptions, setShowOptions] = useState<boolean>(showLegend)
 
-  const handleChooseHoverLegend = (value: boolean) => {
-    setShowOptions(value)
-    handleSetHoverLegendHide(value)
+  const handleChooseHoverLegend = (value: string) => {
+    setShowOptions(value === LegendDisplayStatus.SHOW)
+    handleSetHoverLegendHide(value === LegendDisplayStatus.HIDE)
   }
 
   return (
@@ -110,7 +110,7 @@ const HoverLegendToggle: FC<HoverLegendToggleProps> = ({
                 titleText="Hide"
                 active={legendHide}
                 onClick={handleChooseHoverLegend}
-                value={true}
+                value={LegendDisplayStatus.HIDE}
               >
                 Hide
               </SelectGroup.Option>
@@ -120,7 +120,7 @@ const HoverLegendToggle: FC<HoverLegendToggleProps> = ({
                 titleText="Show"
                 active={!legendHide}
                 onClick={handleChooseHoverLegend}
-                value={false}
+                value={LegendDisplayStatus.SHOW}
               >
                 Show
               </SelectGroup.Option>
@@ -139,14 +139,17 @@ const HoverLegendToggle: FC<HoverLegendToggleProps> = ({
                 legendOrientation={legendOrientationThreshold}
                 parentName="hover-legend"
                 handleSetOrientation={handleSetOrientation}
+                testID="hover-legend-orientation-toggle"
               />
               <OpacitySlider
                 legendOpacity={legendOpacity}
                 handleSetOpacity={handleSetOpacity}
+                testID="hover-legend-opacity-slider"
               />
               <ColorizeRowsToggle
                 legendColorizeRows={legendColorizeRows}
                 handleSetColorization={handleSetColorization}
+                testID="hover-legend-colorize-rows-toggle"
               />
             </Grid.Column>
           </Grid.Row>
@@ -234,14 +237,17 @@ const HoverLegend: FC<HoverLegendProps> = ({properties, update}) => {
         legendOrientation={legendOrientationThreshold}
         parentName="hover-legend"
         handleSetOrientation={handleSetOrientation}
+        testID="hover-legend-orientation-toggle"
       />
       <OpacitySlider
         legendOpacity={legendOpacity}
         handleSetOpacity={handleSetOpacity}
+        testID="hover-legend-opacity-slider"
       />
       <ColorizeRowsToggle
         legendColorizeRows={legendColorizeRows}
         handleSetColorization={handleSetColorization}
+        testID="hover-legend-colorize-rows-toggle"
       />
     </>
   )

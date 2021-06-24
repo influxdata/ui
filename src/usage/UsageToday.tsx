@@ -27,14 +27,25 @@ const UsageToday: FC = () => {
 
   const getUsageSparkline = () => {
     const usage = usageVectors.find(vector => selectedUsage === vector.name)
-
-    return (
-      <GraphTypeSwitcher
-        fromFluxResult={usageStats}
-        usageVector={usage}
-        type="xy"
-      />
-    )
+    if (usage) {
+      return (
+        <GraphTypeSwitcher
+          fromFluxResult={usageStats}
+          usageVector={usage}
+          type="xy"
+        />
+      )
+    }
+    if (usageVectors.length > 0) {
+      return (
+        <GraphTypeSwitcher
+          fromFluxResult={usageStats}
+          usageVector={usageVectors[0]}
+          type="xy"
+        />
+      )
+    }
+    return null
   }
 
   return (

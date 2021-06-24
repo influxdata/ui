@@ -78,7 +78,7 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
   } = properties
   const {valueAxis} = staticLegend
   const {
-    colorizeRows = LEGEND_COLORIZE_ROWS_DEFAULT,
+    colorizeRows = false, // undefined is considered false because of omitempty
     heightRatio = STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
     opacity = LEGEND_OPACITY_DEFAULT,
     orientationThreshold = LEGEND_ORIENTATION_THRESHOLD_DEFAULT,

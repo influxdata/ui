@@ -78,6 +78,12 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
   )
   return useMemo(() => {
     const {
+      legendColorizeRows = LEGEND_COLORIZE_ROWS_DEFAULT,
+      legendOpacity = LEGEND_OPACITY_DEFAULT,
+      legendOrientationThreshold = LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+    } = properties
+
+    const {
       staticLegend = {
         colorizeRows: LEGEND_COLORIZE_ROWS_DEFAULT,
         heightRatio: STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
@@ -89,15 +95,25 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
     } = properties
 
     const {
-      orientationThreshold = LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+      heightRatio = STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
+      orientationThreshold = legendOrientationThreshold,
       show = STATIC_LEGEND_SHOW_DEFAULT,
       ...config
     } = staticLegend
 
+    if (!show && heightRatio === STATIC_LEGEND_HEIGHT_RATIO_NOT_SET) {
+      update({
+        colorizeRows: legendColorizeRows,
+        opacity: legendOpacity,
+        orientationThreshold: legendOrientationThreshold,
+      })
+    }
+
     return {
       ...config,
-      orientationThreshold,
+      heightRatio,
       hide: isFlagEnabled('staticLegend') ? convertShowToHide(show) : true,
+      orientationThreshold,
       ...STATIC_LEGEND_STYLING,
       renderEffect: options => {
         const {
@@ -131,24 +147,28 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
             estimatedHeight = length * sampleMaxHeight + padding
           }
 
-          let heightRatio = estimatedHeight / totalHeight
+          let updatedHeightRatio = estimatedHeight / totalHeight
 
-          if (heightRatio > STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM) {
-            heightRatio = STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM
+          if (updatedHeightRatio > STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM) {
+            updatedHeightRatio = STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM
           }
-          if (heightRatio < STATIC_LEGEND_HEIGHT_RATIO_MINIMUM) {
-            heightRatio = STATIC_LEGEND_HEIGHT_RATIO_MINIMUM
+          if (updatedHeightRatio < STATIC_LEGEND_HEIGHT_RATIO_MINIMUM) {
+            updatedHeightRatio = STATIC_LEGEND_HEIGHT_RATIO_MINIMUM
           }
-          if (typeof heightRatio !== 'number' || heightRatio !== heightRatio) {
-            heightRatio = STATIC_LEGEND_HEIGHT_RATIO_DEFAULT
+          if (
+            typeof updatedHeightRatio !== 'number' ||
+            updatedHeightRatio !== updatedHeightRatio
+          ) {
+            updatedHeightRatio = STATIC_LEGEND_HEIGHT_RATIO_DEFAULT
           }
 
           event(`${eventPrefix}.heightRatio.autoAdjust`, {
             type: properties.type,
-            heightRatio,
+            updatedHeightRatio,
           })
+
           update({
-            heightRatio,
+            heightRatio: updatedHeightRatio,
           })
         }
       },

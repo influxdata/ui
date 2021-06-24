@@ -53,5 +53,11 @@ export const STATIC_LEGEND_STYLING = {
   style: {padding: '1em 0 0 1em'},
 }
 
+export const staticLegendTypes = new Set([
+  'xy',
+  'line-plus-single-stat',
+  'band',
+])
+
 export const TICK_PROPERTY_PREFIX = 'Tick'
 export const TICK_PROPERTY_SUFFIX = 'Ticks'

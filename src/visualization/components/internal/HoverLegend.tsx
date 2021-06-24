@@ -165,6 +165,7 @@ const HoverLegend: FC<HoverLegendProps> = ({properties, update}) => {
     legendOpacity = LEGEND_OPACITY_DEFAULT,
     legendOrientationThreshold = LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
   } = properties
+
   const handleSetHoverLegendHide = (legendHide: boolean): void => {
     update({
       legendHide,

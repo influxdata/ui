@@ -475,15 +475,14 @@ describe('DataExplorer', () => {
 
     it('shows the empty state when the query returns no results', () => {
       cy.getByTestID('time-machine--bottom').within(() => {
+        cy.getByTestID('flux-editor').should('be.visible')
+        cy.getByTestID('flux-editor').click()
         cy.getByTestID('flux-editor')
-          .should('be.visible')
-          .click()
           .focused()
           .type(
             `from(bucket: "defbuck"{rightarrow}
   |> range(start: -10s{rightarrow}
-  |> filter(fn: (r{rightarrow} => r._measurement == "no exist"{rightarrow}`,
-            {force: true, delay: TYPE_DELAY}
+  |> filter(fn: (r{rightarrow} => r._measurement == "no exist"{rightarrow}`
           )
         cy.getByTestID('time-machine-submit-button').click()
       })
@@ -495,15 +494,14 @@ describe('DataExplorer', () => {
       const taskName = 'tax'
       // begin flux
       cy.getByTestID('flux-editor').within(() => {
+        cy.get('.react-monaco-editor-container').should('be.visible')
+        cy.get('.react-monaco-editor-container').click()
         cy.get('.react-monaco-editor-container')
-          .should('be.visible')
-          .click()
           .focused()
           .type(
             `from(bucket: "defbuck"{rightarrow}
   |> range(start: -15m, stop: now({rightarrow}{rightarrow}
-  |> filter(fn: (r{rightarrow} => r._measurement ==`,
-            {force: true, delay: TYPE_DELAY}
+  |> filter(fn: (r{rightarrow} => r._measurement ==`
           )
       })
 

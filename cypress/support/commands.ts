@@ -12,7 +12,7 @@ Cypress.on('uncaught:exception', (err, _) => {
   // we also can ignore AbortErrors for when network requests are terminated early.
   return !(
     err.message.includes('Request failed with status code 401') ||
-    err.message.includes('AbortError') ||
+    err.message.includes('The operation was aborted') ||
     err.message.includes('NetworkError')
   )
 })

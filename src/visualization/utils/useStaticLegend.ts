@@ -88,7 +88,11 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
       } as StaticLegendAPI,
     } = properties
 
-    const {orientationThreshold, show, ...config} = staticLegend
+    const {
+      orientationThreshold = LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+      show = STATIC_LEGEND_SHOW_DEFAULT,
+      ...config
+    } = staticLegend
 
     return {
       ...config,

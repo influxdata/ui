@@ -31,7 +31,6 @@ export const loadLocalStorage = (): LocalStorage => {
 
 export const setToLocalStorage = (prop: string, value: any): void => {
   try {
-    console.log({prop, value})
     window.localStorage.setItem(prop, value)
   } catch (error) {
     console.error('unable to setItem onto localStorage: ', error)
@@ -40,7 +39,6 @@ export const setToLocalStorage = (prop: string, value: any): void => {
 
 export const getFromLocalStorage = (prop: string): any => {
   try {
-    console.log({prop})
     return window.localStorage.getItem(prop)
   } catch (error) {
     console.error('unable to getItem onto localStorage: ', error)

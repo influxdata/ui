@@ -7,13 +7,13 @@ import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 
 // Components
 import {
-  AlignItems,
+  // AlignItems,
   Appearance,
   ButtonShape,
   Columns,
   ComponentSize,
-  FlexBox,
-  FlexDirection,
+  // FlexBox,
+  // FlexDirection,
   Form,
   Grid,
   InputLabel,
@@ -22,6 +22,11 @@ import {
   SelectGroup,
   Toggle,
 } from '@influxdata/clockface'
+import {
+  OrientationToggle,
+  OpacitySlider,
+  ColorizeRowsToggle,
+} from 'src/visualization/components/internal/LegendOptions'
 
 // Types
 import {VisualizationOptionProps} from 'src/visualization'
@@ -34,12 +39,18 @@ import {
 
 // Constants
 import {
+  LEGEND_COLORIZE_ROWS_DEFAULT,
+  LEGEND_OPACITY_DEFAULT,
+  LEGEND_OPACITY_MAXIMUM,
+  LEGEND_OPACITY_MINIMUM,
+  LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+  LegendDisplayStatus,
   STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM,
   STATIC_LEGEND_HEIGHT_RATIO_MINIMUM,
   STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
   STATIC_LEGEND_HEIGHT_RATIO_STEP,
   STATIC_LEGEND_SHOW_DEFAULT,
-  LegendDisplayStatus,
+  STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
 } from 'src/visualization/constants'
 
 // Metrics
@@ -60,11 +71,22 @@ interface Props extends VisualizationOptionProps {
 const StaticLegend: FC<Props> = ({properties, update}) => {
   const {
     staticLegend = {
+      colorizeRows: LEGEND_COLORIZE_ROWS_DEFAULT,
+      heightRatio: STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
+      opacity: LEGEND_OPACITY_DEFAULT,
+      orientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
       show: STATIC_LEGEND_SHOW_DEFAULT,
+      widthRatio: STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
     } as StaticLegend,
   } = properties
   const {valueAxis} = staticLegend
-  const {heightRatio = STATIC_LEGEND_HEIGHT_RATIO_NOT_SET, show} = staticLegend
+  const {
+    colorizeRows = LEGEND_COLORIZE_ROWS_DEFAULT,
+    heightRatio = STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
+    opacity = LEGEND_OPACITY_DEFAULT,
+    orientationThreshold = LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+    show,
+  } = staticLegend
   const [showOptions, setShowOptions] = useState<boolean>(show)
 
   if (!isFlagEnabled('staticLegend')) {
@@ -118,106 +140,154 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
     })
   }
 
+  const handleSetOrientation = (threshold: number): void => {
+    update({
+      staticLegend: {...staticLegend, orientationThreshold: threshold},
+    })
+    // eventing is done by <OrientationToggle> because
+    // UI's definition of orientation is either horizontal or vertical
+    // which is less intricate than Giraffe's
+  }
+
+  const handleSetOpacity = (e: ChangeEvent<HTMLInputElement>): void => {
+    const value = convertUserInputToNumOrNaN(e)
+
+    if (isNaN(value) || value < LEGEND_OPACITY_MINIMUM) {
+      update({
+        staticLegend: {...staticLegend, opacity: LEGEND_OPACITY_MAXIMUM},
+      })
+      event(`${eventPrefix}.opacity`, {
+        type: properties.type,
+        opacity: LEGEND_OPACITY_MAXIMUM,
+      })
+    } else {
+      update({
+        staticLegend: {...staticLegend, opacity: value},
+      })
+      event(`${eventPrefix}.opacity`, {
+        type: properties.type,
+        opacity: value,
+      })
+    }
+  }
+
+  const handleSetColorization = (): void => {
+    update({
+      staticLegend: {
+        ...staticLegend,
+        colorizeRows: !colorizeRows,
+      },
+    })
+    event(`${eventPrefix}.colorizeRows.${!colorizeRows}`, {
+      type: properties.type,
+    })
+  }
+
   return (
-    <FlexBox
-      direction={FlexDirection.Column}
-      margin={ComponentSize.Large}
-      alignItems={AlignItems.FlexStart}
+    <Form.Element
+      label="Static Legend"
       className="static-legend-options"
       testID="static-legend-options"
     >
-      <Form.Element label="Static Legend" className="static-legend-options">
-        <Grid>
+      <Grid>
+        <Grid.Row>
+          <Grid.Column widthXS={Columns.Twelve}>
+            <SelectGroup shape={ButtonShape.StretchToFit}>
+              <SelectGroup.Option
+                name="static-legend-hide"
+                id="radio_static_legend_hide"
+                titleText="Hide"
+                active={!showOptions}
+                onClick={handleChooseStaticLegend}
+                value={LegendDisplayStatus.HIDE}
+              >
+                Hide
+              </SelectGroup.Option>
+              <SelectGroup.Option
+                name="static-legend-show"
+                id="radio_static_legend_show"
+                titleText="Show"
+                active={showOptions}
+                onClick={handleChooseStaticLegend}
+                value={LegendDisplayStatus.SHOW}
+              >
+                Show
+              </SelectGroup.Option>
+            </SelectGroup>
+          </Grid.Column>
+        </Grid.Row>
+        {showOptions && (
           <Grid.Row>
-            <Grid.Column widthXS={Columns.Twelve}>
-              <SelectGroup shape={ButtonShape.StretchToFit}>
-                <SelectGroup.Option
-                  name="static-legend-hide"
-                  id="radio_static_legend_hide"
-                  titleText="Hide"
-                  active={!showOptions}
-                  onClick={handleChooseStaticLegend}
-                  value={LegendDisplayStatus.HIDE}
-                >
-                  Hide
-                </SelectGroup.Option>
-                <SelectGroup.Option
-                  name="static-legend-show"
-                  id="radio_static_legend_show"
-                  titleText="Show"
-                  active={showOptions}
-                  onClick={handleChooseStaticLegend}
-                  value={LegendDisplayStatus.SHOW}
-                >
-                  Show
-                </SelectGroup.Option>
-              </SelectGroup>
+            <Grid.Column
+              widthXS={Columns.Twelve}
+              className="static-legend-options--show"
+            >
+              <Toggle
+                tabIndex={1}
+                value="y"
+                id="latest-y-axis"
+                className="latest-y-axis"
+                name="valueAxis"
+                checked={valueAxis !== 'x'}
+                onChange={handleSetValueAxis}
+                type={InputToggleType.Radio}
+                size={ComponentSize.ExtraSmall}
+                appearance={Appearance.Outline}
+              >
+                <InputLabel active={valueAxis !== 'x'} htmlFor="latest-y-axis">
+                  Latest Y Axis
+                </InputLabel>
+              </Toggle>
+              <Toggle
+                tabIndex={2}
+                value="x"
+                id="latest-x-axis"
+                className="latest-x-axis"
+                name="valueAxis"
+                checked={valueAxis === 'x'}
+                onChange={handleSetValueAxis}
+                type={InputToggleType.Radio}
+                size={ComponentSize.ExtraSmall}
+                appearance={Appearance.Outline}
+              >
+                <InputLabel active={valueAxis === 'x'} htmlFor="latest-x-axis">
+                  Latest X Axis
+                </InputLabel>
+              </Toggle>
+              <Form.Element
+                className="static-legend-height-slider"
+                label={convertHeightRatioToPercentage(heightRatio)}
+              >
+                <RangeSlider
+                  max={STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM}
+                  min={STATIC_LEGEND_HEIGHT_RATIO_MINIMUM}
+                  step={STATIC_LEGEND_HEIGHT_RATIO_STEP}
+                  value={heightRatio}
+                  onChange={handleSetHeightRatio}
+                  hideLabels={true}
+                  testID="static-legend-height-slider"
+                />
+              </Form.Element>
+              <OrientationToggle
+                eventName={`${eventPrefix}.orientation`}
+                graphType={properties.type}
+                legendOrientation={orientationThreshold}
+                parentName="static-legend"
+                handleSetOrientation={handleSetOrientation}
+              />
+              <OpacitySlider
+                legendOpacity={opacity}
+                handleSetOpacity={handleSetOpacity}
+              />
+              <ColorizeRowsToggle
+                legendColorizeRows={colorizeRows}
+                handleSetColorization={handleSetColorization}
+              />
             </Grid.Column>
           </Grid.Row>
-          {showOptions && (
-            <Grid.Row>
-              <Grid.Column
-                widthXS={Columns.Twelve}
-                className="static-legend-options--show"
-              >
-                <Toggle
-                  tabIndex={1}
-                  value="y"
-                  id="latest-y-axis"
-                  className="latest-y-axis"
-                  name="valueAxis"
-                  checked={valueAxis !== 'x'}
-                  onChange={handleSetValueAxis}
-                  type={InputToggleType.Radio}
-                  size={ComponentSize.ExtraSmall}
-                  appearance={Appearance.Outline}
-                >
-                  <InputLabel
-                    active={valueAxis !== 'x'}
-                    htmlFor="latest-y-axis"
-                  >
-                    Latest Y Axis
-                  </InputLabel>
-                </Toggle>
-                <Toggle
-                  tabIndex={2}
-                  value="x"
-                  id="latest-x-axis"
-                  className="latest-x-axis"
-                  name="valueAxis"
-                  checked={valueAxis === 'x'}
-                  onChange={handleSetValueAxis}
-                  type={InputToggleType.Radio}
-                  size={ComponentSize.ExtraSmall}
-                  appearance={Appearance.Outline}
-                >
-                  <InputLabel
-                    active={valueAxis === 'x'}
-                    htmlFor="latest-x-axis"
-                  >
-                    Latest X Axis
-                  </InputLabel>
-                </Toggle>
-                <Form.Element
-                  className="static-legend-height-slider"
-                  label={convertHeightRatioToPercentage(heightRatio)}
-                >
-                  <RangeSlider
-                    max={STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM}
-                    min={STATIC_LEGEND_HEIGHT_RATIO_MINIMUM}
-                    step={STATIC_LEGEND_HEIGHT_RATIO_STEP}
-                    value={heightRatio}
-                    onChange={handleSetHeightRatio}
-                    hideLabels={true}
-                    testID="static-legend-height-slider"
-                  />
-                </Form.Element>
-              </Grid.Column>
-            </Grid.Row>
-          )}
-        </Grid>
-      </Form.Element>
-    </FlexBox>
+        )}
+      </Grid>
+    </Form.Element>
   )
 }
 

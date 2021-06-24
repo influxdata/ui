@@ -34,8 +34,10 @@ import {event} from 'src/cloud/utils/reporting'
 import 'src/visualization/components/internal/LegendOptions.scss'
 
 interface OrientationToggleProps {
+  eventName: string
   graphType: string
   legendOrientation: number
+  parentName: string
   handleSetOrientation: (threshold: number) => void
 }
 
@@ -49,8 +51,6 @@ interface ColorizeRowsToggleProps {
   handleSetColorization: () => void
 }
 
-const eventPrefix = 'visualization.customize'
-
 const getToggleColor = (toggle: boolean): CSSProperties => {
   if (toggle) {
     return {color: InfluxColors.Cloud}
@@ -59,8 +59,10 @@ const getToggleColor = (toggle: boolean): CSSProperties => {
 }
 
 export const OrientationToggle: FC<OrientationToggleProps> = ({
+  eventName,
   graphType,
   legendOrientation,
+  parentName,
   handleSetOrientation,
 }) => {
   const setOrientation = (orientation: string): void => {
@@ -69,7 +71,7 @@ export const OrientationToggle: FC<OrientationToggleProps> = ({
     } else {
       handleSetOrientation(LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL)
     }
-    event(`${eventPrefix}.legend.orientation.${orientation}`, {
+    event(`${eventName}.${orientation}`, {
       type: graphType,
     })
   }
@@ -80,13 +82,13 @@ export const OrientationToggle: FC<OrientationToggleProps> = ({
       alignItems={AlignItems.FlexStart}
       className="legend-orientation-toggle"
     >
-      <InputLabel id="legend-orientation-label">Orientation</InputLabel>
+      <InputLabel className="legend-orientation-label">Orientation</InputLabel>
       <Toggle
         tabIndex={1}
         value="horizontal"
-        name="legendOr"
         className="legend-orientation--horizontal"
-        id="legend-orientation--horizontal"
+        id={`${parentName}-orientation--horizontal`}
+        name={`${parentName}-orientation--horizontal`}
         checked={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL}
         onChange={setOrientation}
         type={InputToggleType.Radio}
@@ -96,7 +98,7 @@ export const OrientationToggle: FC<OrientationToggleProps> = ({
       >
         <InputLabel
           active={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL}
-          htmlFor="legend-orientation--horizontal"
+          htmlFor={`${parentName}-orientation--horizontal`}
         >
           Horizontal
         </InputLabel>
@@ -105,8 +107,8 @@ export const OrientationToggle: FC<OrientationToggleProps> = ({
         tabIndex={2}
         value="vertical"
         className="legend-orientation--vertical"
-        id="legend-orientation--vertical"
-        name="lengendOr"
+        id={`${parentName}-orientation--vertical`}
+        name={`${parentName}-orientation--vertical`}
         checked={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_VERTICAL}
         onChange={setOrientation}
         type={InputToggleType.Radio}
@@ -116,7 +118,7 @@ export const OrientationToggle: FC<OrientationToggleProps> = ({
       >
         <InputLabel
           active={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_VERTICAL}
-          htmlFor="legend-orientation--vertical"
+          htmlFor={`${parentName}-orientation--vertical`}
         >
           Vertical
         </InputLabel>

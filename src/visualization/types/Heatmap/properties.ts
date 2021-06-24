@@ -1,6 +1,7 @@
 import {INFERNO} from '@influxdata/giraffe'
 import {HeatmapViewProperties} from 'src/types'
 import {
+  LEGEND_COLORIZE_ROWS_DEFAULT,
   LEGEND_OPACITY_DEFAULT,
   LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
 } from 'src/visualization/constants'
@@ -20,6 +21,7 @@ export default {
   yPrefix: '',
   ySuffix: '',
   colors: INFERNO,
+  legendColorizeRows: LEGEND_COLORIZE_ROWS_DEFAULT,
   legendOpacity: LEGEND_OPACITY_DEFAULT,
   legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
 

@@ -6,12 +6,15 @@
 .legend-colorize-rows-toggle {
   margin-top: $cf-marg-b;
   margin-bottom: $cf-marg-c;
+
+  label {
+  }
 }
 
 .legend-orientation--horizontal {
   margin-bottom: $cf-marg-b !important;
 }
 
-#legend-orientation-label {
+.legend-orientation-label {
   color: $g11-sidewalk;
 }

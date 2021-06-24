@@ -1,5 +1,5 @@
 // Libraries
-import React, {ChangeEvent, FC, useEffect, useState} from 'react'
+import React, {ChangeEvent, FC, useState} from 'react'
 
 // Utils
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
@@ -32,8 +32,12 @@ import {
 
 // Constants
 import {
+  LEGEND_COLORIZE_ROWS_DEFAULT,
+  LEGEND_HIDE_DEFAULT,
+  LEGEND_OPACITY_DEFAULT,
   LEGEND_OPACITY_MAXIMUM,
   LEGEND_OPACITY_MINIMUM,
+  LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
   LegendDisplayStatus,
 } from 'src/visualization/constants'
 
@@ -64,12 +68,18 @@ interface HoverLegendProps extends VisualizationOptionProps {
     | ScatterViewProperties
 }
 
-const eventPrefix = 'visualization.customize'
+const eventPrefix = 'visualization.customize.hoverLegend'
 
 const HoverLegendToggle: FC<HoverLegendToggleProps> = ({
   properties,
   handlers,
 }) => {
+  const {
+    legendColorizeRows = LEGEND_COLORIZE_ROWS_DEFAULT,
+    legendOpacity = LEGEND_OPACITY_DEFAULT,
+    legendOrientationThreshold = LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+    legendHide = LEGEND_HIDE_DEFAULT,
+  } = properties
   const {
     handleSetHoverLegendHide,
     handleSetOrientation,
@@ -77,15 +87,13 @@ const HoverLegendToggle: FC<HoverLegendToggleProps> = ({
     handleSetColorization,
   } = handlers
 
-  const showStaticLegend = !!properties?.staticLegend?.show
-  const showLegend = !properties?.legendHide
-  const [showOptions, setShowOptions] = useState<boolean>(
-    showLegend || showStaticLegend
-  )
+  const showLegend = !legendHide
+  const [showOptions, setShowOptions] = useState<boolean>(showLegend)
 
-  useEffect(() => {
-    setShowOptions(showLegend || showStaticLegend)
-  }, [showLegend, showStaticLegend])
+  const handleChooseHoverLegend = (value: boolean) => {
+    setShowOptions(value)
+    handleSetHoverLegendHide(value)
+  }
 
   return (
     <Form.Element label="Hover Legend" className="legend-options">
@@ -100,8 +108,8 @@ const HoverLegendToggle: FC<HoverLegendToggleProps> = ({
                 name="hover-legend-hide"
                 id="radio_hover_legend_hide"
                 titleText="Hide"
-                active={properties.legendHide}
-                onClick={handleSetHoverLegendHide}
+                active={legendHide}
+                onClick={handleChooseHoverLegend}
                 value={true}
               >
                 Hide
@@ -110,8 +118,8 @@ const HoverLegendToggle: FC<HoverLegendToggleProps> = ({
                 name="hover-legend-show"
                 id="radio_hover_legend_show"
                 titleText="Show"
-                active={!properties.legendHide}
-                onClick={handleSetHoverLegendHide}
+                active={!legendHide}
+                onClick={handleChooseHoverLegend}
                 value={false}
               >
                 Show
@@ -126,16 +134,18 @@ const HoverLegendToggle: FC<HoverLegendToggleProps> = ({
               className="legend-options--show"
             >
               <OrientationToggle
+                eventName={`${eventPrefix}.orientation`}
                 graphType={properties.type}
-                legendOrientation={properties.legendOrientationThreshold}
+                legendOrientation={legendOrientationThreshold}
+                parentName="hover-legend"
                 handleSetOrientation={handleSetOrientation}
               />
               <OpacitySlider
-                legendOpacity={properties.legendOpacity}
+                legendOpacity={legendOpacity}
                 handleSetOpacity={handleSetOpacity}
               />
               <ColorizeRowsToggle
-                legendColorizeRows={properties.legendColorizeRows}
+                legendColorizeRows={legendColorizeRows}
                 handleSetColorization={handleSetColorization}
               />
             </Grid.Column>
@@ -147,6 +157,11 @@ const HoverLegendToggle: FC<HoverLegendToggleProps> = ({
 }
 
 const HoverLegend: FC<HoverLegendProps> = ({properties, update}) => {
+  const {
+    legendColorizeRows = LEGEND_COLORIZE_ROWS_DEFAULT,
+    legendOpacity = LEGEND_OPACITY_DEFAULT,
+    legendOrientationThreshold = LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+  } = properties
   const handleSetHoverLegendHide = (legendHide: boolean): void => {
     update({
       legendHide,
@@ -154,7 +169,7 @@ const HoverLegend: FC<HoverLegendProps> = ({properties, update}) => {
     const metricValue = legendHide
       ? LegendDisplayStatus.HIDE
       : LegendDisplayStatus.SHOW
-    event(`${eventPrefix}.hoverLegend.${metricValue}`, {
+    event(`${eventPrefix}.${metricValue}`, {
       type: properties.type,
     })
   }
@@ -163,8 +178,9 @@ const HoverLegend: FC<HoverLegendProps> = ({properties, update}) => {
     update({
       legendOrientationThreshold: threshold,
     })
-    // eventing is done by <OrientationToggle> because UI defines orientation
-    // as either horizontal or vertical
+    // eventing is done by <OrientationToggle> because
+    // UI's definition of orientation is either horizontal or vertical
+    // which is less intricate than Giraffe's
   }
 
   const handleSetOpacity = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -174,7 +190,7 @@ const HoverLegend: FC<HoverLegendProps> = ({properties, update}) => {
       update({
         legendOpacity: LEGEND_OPACITY_MAXIMUM,
       })
-      event(`${eventPrefix}.legend.opacity`, {
+      event(`${eventPrefix}.opacity`, {
         type: properties.type,
         opacity: LEGEND_OPACITY_MAXIMUM,
       })
@@ -182,7 +198,7 @@ const HoverLegend: FC<HoverLegendProps> = ({properties, update}) => {
       update({
         legendOpacity: value,
       })
-      event(`${eventPrefix}.legend.opacity`, {
+      event(`${eventPrefix}.opacity`, {
         type: properties.type,
         opacity: value,
       })
@@ -191,16 +207,11 @@ const HoverLegend: FC<HoverLegendProps> = ({properties, update}) => {
 
   const handleSetColorization = (): void => {
     update({
-      legendColorizeRows: !properties.legendColorizeRows,
+      legendColorizeRows: !legendColorizeRows,
     })
-    event(
-      `${eventPrefix}.legend.colorizeRows.${Boolean(
-        properties.legendColorizeRows
-      )}`,
-      {
-        type: properties.type,
-      }
-    )
+    event(`${eventPrefix}.colorizeRows.${!legendColorizeRows}`, {
+      type: properties.type,
+    })
   }
 
   return properties.type === 'xy' ||
@@ -218,16 +229,18 @@ const HoverLegend: FC<HoverLegendProps> = ({properties, update}) => {
   ) : (
     <>
       <OrientationToggle
+        eventName={`${eventPrefix}.orientation`}
         graphType={properties.type}
-        legendOrientation={properties.legendOrientationThreshold}
+        legendOrientation={legendOrientationThreshold}
+        parentName="hover-legend"
         handleSetOrientation={handleSetOrientation}
       />
       <OpacitySlider
-        legendOpacity={properties.legendOpacity}
+        legendOpacity={legendOpacity}
         handleSetOpacity={handleSetOpacity}
       />
       <ColorizeRowsToggle
-        legendColorizeRows={properties.legendColorizeRows}
+        legendColorizeRows={legendColorizeRows}
         handleSetColorization={handleSetColorization}
       />
     </>

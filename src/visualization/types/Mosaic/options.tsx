@@ -12,7 +12,7 @@ import {
   MultiSelectDropdown,
 } from '@influxdata/clockface'
 import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
-import LegendOrientation from 'src/visualization/components/internal/LegendOrientation'
+import HoverLegend from 'src/visualization/components/internal/HoverLegend'
 import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksGenerator'
 import {
   FORMAT_OPTIONS,
@@ -248,7 +248,7 @@ const MosaicOptions: FC<Props> = props => {
           widthLG={Columns.Four}
         >
           <h5 className="view-options--header">Legend</h5>
-          <LegendOrientation
+          <HoverLegend
             properties={properties}
             results={results}
             update={update}

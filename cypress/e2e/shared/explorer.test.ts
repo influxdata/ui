@@ -1044,30 +1044,106 @@ describe('DataExplorer', () => {
 
             cy.getByTestID('selector-list tv1').clickAttached()
 
-            cy.getByTestID('selector-list last')
+            cy.getByTestID('selector-list mean')
               .scrollIntoView()
               .should('be.visible')
               .click({force: true})
 
             cy.getByTestID('time-machine-submit-button').click()
-
             cy.getByTestID('cog-cell--button').click()
+
+            // ----------------------------------------------------------------
+            // Select line graph
             cy.getByTestID('view-type--dropdown').click()
             cy.getByTestID('view-type--xy').click()
 
             // No legend should exist just from opening the options
             cy.get('.giraffe-tooltip-container').should('not.exist')
 
+            // Defaults to showing the hover legend options
+            cy.getByTestID('hover-legend-orientation-toggle').should('exist')
+            cy.getByTestID('hover-legend-opacity-slider').should('exist')
+            cy.getByTestID('hover-legend-colorize-rows-toggle').should('exist')
+
             // Hovering over the graph should trigger a legend
             cy.getByTestID('giraffe-layer-line').trigger('mouseover')
             cy.get('.giraffe-tooltip-container').should('exist')
 
             // Slide the toggle off and then hovering should not trigger a legend
-            cy.getByTestID('hover-legend-toggle')
-              .find('.cf-slide-toggle--knob')
-              .click()
+            cy.get('label[for="radio_hover_legend_hide"]').click()
             cy.getByTestID('giraffe-layer-line').trigger('mouseover')
             cy.get('.giraffe-tooltip-container').should('not.exist')
+
+            // Hover Legend options should not show
+            cy.getByTestID('hover-legend-orientation-toggle').should(
+              'not.exist'
+            )
+            cy.getByTestID('hover-legend-opacity-slider').should('not.exist')
+            cy.getByTestID('hover-legend-colorize-rows-toggle').should(
+              'not.exist'
+            )
+
+            // ----------------------------------------------------------------
+            // Select line plus single stat graph
+            cy.getByTestID('view-type--dropdown').click()
+            cy.getByTestID('view-type--line-plus-single-stat').click()
+
+            // No legend should exist just from opening the options
+            cy.get('.giraffe-tooltip-container').should('not.exist')
+
+            // Defaults to showing the hover legend options
+            cy.getByTestID('hover-legend-orientation-toggle').should('exist')
+            cy.getByTestID('hover-legend-opacity-slider').should('exist')
+            cy.getByTestID('hover-legend-colorize-rows-toggle').should('exist')
+
+            // Hovering over the graph should trigger a legend
+            cy.getByTestID('single-stat').trigger('mouseover')
+            cy.get('.giraffe-tooltip-container').should('exist')
+
+            // Slide the toggle off and then hovering should not trigger a legend
+            cy.get('label[for="radio_hover_legend_hide"]').click()
+            cy.getByTestID('single-stat').trigger('mouseover')
+            cy.get('.giraffe-tooltip-container').should('not.exist')
+
+            // Hover Legend options should not show
+            cy.getByTestID('hover-legend-orientation-toggle').should(
+              'not.exist'
+            )
+            cy.getByTestID('hover-legend-opacity-slider').should('not.exist')
+            cy.getByTestID('hover-legend-colorize-rows-toggle').should(
+              'not.exist'
+            )
+
+            // ----------------------------------------------------------------
+            // Select band plot
+            cy.getByTestID('view-type--dropdown').click()
+            cy.getByTestID('view-type--band').click()
+
+            // No legend should exist just from opening the options
+            cy.get('.giraffe-tooltip-container').should('not.exist')
+
+            // Defaults to showing the hover legend options
+            cy.getByTestID('hover-legend-orientation-toggle').should('exist')
+            cy.getByTestID('hover-legend-opacity-slider').should('exist')
+            cy.getByTestID('hover-legend-colorize-rows-toggle').should('exist')
+
+            // Hovering over the graph should trigger a legend
+            cy.getByTestID('giraffe-layer-band-chart').trigger('mouseover')
+            cy.get('.giraffe-tooltip-container').should('exist')
+
+            // Slide the toggle off and then hovering should not trigger a legend
+            cy.get('label[for="radio_hover_legend_hide"]').click()
+            cy.getByTestID('giraffe-layer-band-chart').trigger('mouseover')
+            cy.get('.giraffe-tooltip-container').should('not.exist')
+
+            // Hover Legend options should not show
+            cy.getByTestID('hover-legend-orientation-toggle').should(
+              'not.exist'
+            )
+            cy.getByTestID('hover-legend-opacity-slider').should('not.exist')
+            cy.getByTestID('hover-legend-colorize-rows-toggle').should(
+              'not.exist'
+            )
           }
         )
       })
@@ -1124,27 +1200,88 @@ describe('DataExplorer', () => {
 
             cy.getByTestID('selector-list tv1').clickAttached()
 
-            cy.getByTestID('selector-list last')
+            cy.getByTestID('selector-list mean')
               .scrollIntoView()
               .should('be.visible')
               .click({force: true})
 
             cy.getByTestID('time-machine-submit-button').click()
-
-            // Select line graph and open the view options
             cy.getByTestID('cog-cell--button').click()
+
+            // ----------------------------------------------------------------
+            // Select line graph
             cy.getByTestID('view-type--dropdown').click()
             cy.getByTestID(`view-type--xy`).click()
 
-            // Select "show" to render a static legend and display the height slider
+            // Select "show" to render a static legend and options
             cy.get('[for="radio_static_legend_show"]').click()
             cy.getByTestID('giraffe-static-legend').should('exist')
             cy.getByTestID('static-legend-height-slider').should('exist')
+            cy.getByTestID('static-legend-orientation-toggle').should('exist')
+            cy.getByTestID('static-legend-opacity-slider').should('exist')
+            cy.getByTestID('static-legend-colorize-rows-toggle').should('exist')
 
-            // Select "hide" to remove the static legend and hide the height slider
+            // Select "hide" to remove the static legend and hide the options
             cy.get('[for="radio_static_legend_hide"]').click()
             cy.getByTestID('giraffe-static-legend').should('not.exist')
             cy.getByTestID('static-legend-height-slider').should('not.exist')
+            cy.getByTestID('static-legend-orientation-toggle').should(
+              'not.exist'
+            )
+            cy.getByTestID('static-legend-opacity-slider').should('not.exist')
+            cy.getByTestID('static-legend-colorize-rows-toggle').should(
+              'not.exist'
+            )
+
+            // ----------------------------------------------------------------
+            // Select line plus single stat graph
+            cy.getByTestID('view-type--dropdown').click()
+            cy.getByTestID('view-type--line-plus-single-stat').click()
+
+            // Select "show" to render a static legend and options
+            cy.get('[for="radio_static_legend_show"]').click()
+            cy.getByTestID('giraffe-static-legend').should('exist')
+            cy.getByTestID('static-legend-height-slider').should('exist')
+            cy.getByTestID('static-legend-orientation-toggle').should('exist')
+            cy.getByTestID('static-legend-opacity-slider').should('exist')
+            cy.getByTestID('static-legend-colorize-rows-toggle').should('exist')
+
+            // Select "hide" to remove the static legend and hide the options
+            cy.get('[for="radio_static_legend_hide"]').click()
+            cy.getByTestID('giraffe-static-legend').should('not.exist')
+            cy.getByTestID('static-legend-height-slider').should('not.exist')
+            cy.getByTestID('static-legend-orientation-toggle').should(
+              'not.exist'
+            )
+            cy.getByTestID('static-legend-opacity-slider').should('not.exist')
+            cy.getByTestID('static-legend-colorize-rows-toggle').should(
+              'not.exist'
+            )
+
+            // ----------------------------------------------------------------
+            // Select band plot
+            cy.getByTestID('view-type--dropdown').click()
+            cy.getByTestID('view-type--band').click()
+
+            // Select "show" to render a static legend and options
+            cy.get('[for="radio_static_legend_show"]').click()
+            cy.getByTestID('giraffe-static-legend').should('exist')
+            cy.getByTestID('static-legend-height-slider').should('exist')
+            cy.getByTestID('static-legend-orientation-toggle').should('exist')
+            cy.getByTestID('static-legend-opacity-slider').should('exist')
+            cy.getByTestID('static-legend-colorize-rows-toggle').should('exist')
+
+            // Select "hide" to remove the static legend and hide the options
+            cy.get('[for="radio_static_legend_hide"]').click()
+            cy.getByTestID('giraffe-static-legend').should('not.exist')
+            cy.getByTestID('static-legend-height-slider').should('not.exist')
+            cy.getByTestID('static-legend-orientation-toggle').should(
+              'not.exist'
+            )
+            cy.getByTestID('static-legend-opacity-slider').should('not.exist')
+            cy.getByTestID('static-legend-colorize-rows-toggle').should(
+              'not.exist'
+            )
           }
         )
       })
@@ -1171,7 +1308,7 @@ describe('DataExplorer', () => {
 
             cy.getByTestID('selector-list tv1').clickAttached()
 
-            cy.getByTestID('selector-list last')
+            cy.getByTestID('selector-list mean')
               .scrollIntoView()
               .should('be.visible')
               .click({force: true})

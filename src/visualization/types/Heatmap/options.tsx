@@ -22,7 +22,7 @@ import {defaultXColumn, defaultYColumn} from 'src/shared/utils/vis'
 // Components
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import HexColorSchemeDropdown from 'src/visualization/components/internal/HexColorSchemeDropdown'
-import LegendOrientation from 'src/visualization/components/internal/LegendOrientation'
+import HoverLegend from 'src/visualization/components/internal/HoverLegend'
 import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksGenerator'
 
 import {HeatmapViewProperties} from 'src/types'
@@ -247,7 +247,7 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
           widthLG={Columns.Four}
         >
           <h5 className="view-options--header">Legend</h5>
-          <LegendOrientation
+          <HoverLegend
             properties={properties}
             results={results}
             update={update}

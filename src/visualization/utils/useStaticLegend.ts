@@ -14,17 +14,19 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {
+  LEGEND_COLORIZE_ROWS_DEFAULT,
+  LEGEND_OPACITY_DEFAULT,
+  LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+  LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL,
+  LEGEND_ORIENTATION_THRESHOLD_VERTICAL,
   STATIC_LEGEND_HEIGHT_RATIO_DEFAULT,
   STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM,
   STATIC_LEGEND_HEIGHT_RATIO_MINIMUM,
   STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
   STATIC_LEGEND_SHOW_DEFAULT,
   STATIC_LEGEND_STYLING,
+  STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
 } from 'src/visualization/constants'
-import {
-  LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL,
-  LEGEND_ORIENTATION_THRESHOLD_VERTICAL,
-} from 'src/shared/constants'
 import {NOISY_LEGEND_COLUMN_NAMES} from 'src/shared/utils/vis'
 
 // Metrics
@@ -62,7 +64,6 @@ const convertShowToHide = (showState: boolean): boolean => !showState
 const eventPrefix = 'visualization.customize.staticlegend'
 
 export const useStaticLegend = (properties): StaticLegendConfig => {
-  const {legendOrientationThreshold} = properties
   const dispatch = useDispatch()
   const update = useCallback(
     (staticLegend: StaticLegendAPI) => {
@@ -77,16 +78,44 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
   )
   return useMemo(() => {
     const {
+      legendColorizeRows = LEGEND_COLORIZE_ROWS_DEFAULT,
+      legendOpacity = LEGEND_OPACITY_DEFAULT,
+      legendOrientationThreshold = LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+    } = properties
+
+    const {
       staticLegend = {
+        colorizeRows: LEGEND_COLORIZE_ROWS_DEFAULT,
+        heightRatio: STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
+        opacity: LEGEND_OPACITY_DEFAULT,
+        orientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
         show: STATIC_LEGEND_SHOW_DEFAULT,
+        widthRatio: STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
       } as StaticLegendAPI,
     } = properties
 
-    const {show, ...config} = staticLegend
+    const {
+      colorizeRows = false, // undefined is false because of omitempty
+      heightRatio = STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
+      orientationThreshold = legendOrientationThreshold,
+      show = STATIC_LEGEND_SHOW_DEFAULT,
+      ...config
+    } = staticLegend
+
+    if (!show && heightRatio === STATIC_LEGEND_HEIGHT_RATIO_NOT_SET) {
+      update({
+        colorizeRows: legendColorizeRows,
+        opacity: legendOpacity,
+        orientationThreshold: legendOrientationThreshold,
+      })
+    }
 
     return {
       ...config,
+      colorizeRows,
+      heightRatio,
       hide: isFlagEnabled('staticLegend') ? convertShowToHide(show) : true,
+      orientationThreshold,
       ...STATIC_LEGEND_STYLING,
       renderEffect: options => {
         const {
@@ -106,16 +135,13 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
           let estimatedHeight = STATIC_LEGEND_HEIGHT_RATIO_DEFAULT
 
           if (
-            legendOrientationThreshold ===
-            LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL
+            orientationThreshold === LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL
           ) {
             estimatedHeight =
               lineCount * sampleMaxHeight + headerMaxHeight + padding / 2
           }
 
-          if (
-            legendOrientationThreshold === LEGEND_ORIENTATION_THRESHOLD_VERTICAL
-          ) {
+          if (orientationThreshold === LEGEND_ORIENTATION_THRESHOLD_VERTICAL) {
             const length =
               legendDataLength - NOISY_LEGEND_COLUMN_NAMES.length > 0
                 ? legendDataLength - NOISY_LEGEND_COLUMN_NAMES.length
@@ -123,27 +149,31 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
             estimatedHeight = length * sampleMaxHeight + padding
           }
 
-          let heightRatio = estimatedHeight / totalHeight
+          let updatedHeightRatio = estimatedHeight / totalHeight
 
-          if (heightRatio > STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM) {
-            heightRatio = STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM
+          if (updatedHeightRatio > STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM) {
+            updatedHeightRatio = STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM
           }
-          if (heightRatio < STATIC_LEGEND_HEIGHT_RATIO_MINIMUM) {
-            heightRatio = STATIC_LEGEND_HEIGHT_RATIO_MINIMUM
+          if (updatedHeightRatio < STATIC_LEGEND_HEIGHT_RATIO_MINIMUM) {
+            updatedHeightRatio = STATIC_LEGEND_HEIGHT_RATIO_MINIMUM
           }
-          if (typeof heightRatio !== 'number' || heightRatio !== heightRatio) {
-            heightRatio = STATIC_LEGEND_HEIGHT_RATIO_DEFAULT
+          if (
+            typeof updatedHeightRatio !== 'number' ||
+            updatedHeightRatio !== updatedHeightRatio
+          ) {
+            updatedHeightRatio = STATIC_LEGEND_HEIGHT_RATIO_DEFAULT
           }
 
           event(`${eventPrefix}.heightRatio.autoAdjust`, {
             type: properties.type,
-            heightRatio,
+            updatedHeightRatio,
           })
+
           update({
-            heightRatio,
+            heightRatio: updatedHeightRatio,
           })
         }
       },
     }
-  }, [legendOrientationThreshold, properties, update])
+  }, [properties, update])
 }

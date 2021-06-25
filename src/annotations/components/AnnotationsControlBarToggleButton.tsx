@@ -14,6 +14,8 @@ import {Button, ComponentColor, IconFont} from '@influxdata/clockface'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
 /**
  * This turns annotation on and off.
  * the control bar itself just shows messages at this point.
@@ -26,9 +28,13 @@ export const AnnotationsControlBarToggleButton: FC = () => {
     ? ComponentColor.Secondary
     : ComponentColor.Default
 
+  const rangeText = isFlagEnabled('rangeAnnotations')
+    ? ', Shift + Drag to annotate a range'
+    : ''
+
   const titleText = inAnnotationsMode
-    ? 'Annotations are on, Click here to turn Annotations off'
-    : 'Annotations are off, Click here to turn Annotations on'
+    ? `Shift + Click to annotate a point${rangeText}. Click to turn Annotations off`
+    : 'Click to turn Annotations on'
 
   const handleClick = (): void => {
     event('dashboard.annotations.change_mode.toggle', {

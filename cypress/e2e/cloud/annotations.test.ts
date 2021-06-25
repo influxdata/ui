@@ -286,17 +286,6 @@ describe('The Annotations UI functionality', () => {
   describe('point annotations only, range annotations are off: ', () => {
     beforeEach(() => setupData(cy, '', false))
 
-    it('can show the correct message on the annotation bar when range annotations are OFF', () => {
-      cy.getByTestID('annotations-control-bar').should(
-        'contain',
-        'Shift + click on a graph to create a point annotation'
-      )
-      cy.getByTestID('annotations-control-bar').should(
-        'not.contain',
-        'click + shift + drag to create a range annotation'
-      )
-    })
-
     it('hides the range/point annotation type picker when range annotations are OFF', () => {
       cy.getByTestID('cell blah').within(() => {
         cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
@@ -329,17 +318,6 @@ describe('The Annotations UI functionality', () => {
     it('can add and then delete a range annotation for the xy line graph', () => {
       addRangeAnnotation(cy)
       actuallyDeleteAnnotation(cy)
-    })
-
-    it('can show the correct message on the annotation bar when range annotations are on', () => {
-      cy.getByTestID('annotations-control-bar').should(
-        'contain',
-        'Shift + click on a graph to create a point annotation'
-      )
-      cy.getByTestID('annotations-control-bar').should(
-        'contain',
-        'click + shift + drag to create a range annotation'
-      )
     })
 
     it('shows the range/point annotation type picker when range annotations are on', () => {

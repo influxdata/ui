@@ -1,7 +1,9 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
 .static-legend-options {
-  margin-top: $cf-marg-c;
+  .latest-axis-label {
+    color: $g11-sidewalk;
+  }
 }
 
 .latest-y-axis {

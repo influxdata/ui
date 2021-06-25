@@ -247,7 +247,7 @@ const MosaicOptions: FC<Props> = props => {
           widthMD={Columns.Six}
           widthLG={Columns.Four}
         >
-          <h5 className="view-options--header">Legend</h5>
+          <h5 className="view-options--header">Hover Legend</h5>
           <HoverLegend
             properties={properties}
             results={results}

@@ -30,7 +30,6 @@ import {notify} from 'src/shared/actions/notifications'
 import {passwordResetSuccessfully} from 'src/shared/copy/notifications'
 import {getAuth0Config, getConnection} from 'src/authorizations/apis'
 import {getFromLocalStorage} from 'src/localStorage'
-import {getErrorMessage} from 'src/utils/api'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface ErrorObject {
@@ -191,10 +190,7 @@ class LoginPageContents extends PureComponent<Props> {
           return this.auth0.authorize({connection})
         }
       } catch (e) {
-        const emailError = `${getErrorMessage(
-          e
-        )}. If this issue persists, please contact support@influxdata.com`
-        return this.setState({emailError})
+        console.error(e)
       }
     }
 

@@ -29,11 +29,11 @@ export const AnnotationsControlBarToggleButton: FC = () => {
     : ComponentColor.Default
 
   const rangeText = isFlagEnabled('rangeAnnotations')
-    ? ', Shift + Drag to annotate a range'
+    ? ', Shift + Drag on a graph to annotate a range'
     : ''
 
   const titleText = inAnnotationsMode
-    ? `Shift + Click to annotate a point${rangeText}. Click to turn Annotations off`
+    ? `Shift + Click on a graph to annotate a point${rangeText}.`
     : 'Click to turn Annotations on'
 
   const handleClick = (): void => {

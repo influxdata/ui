@@ -161,10 +161,7 @@ class LoginPageContents extends PureComponent<Props> {
     const {email, password} = this.state
 
     const emailError = email === '' ? 'Email is required' : ''
-    const passwordError =
-      password === '' && !isFlagEnabled('ssoLogin')
-        ? 'Password is required'
-        : ''
+    const passwordError = password === '' ? 'Password is required' : ''
 
     const errors: ErrorObject = {
       emailError,
@@ -184,15 +181,8 @@ class LoginPageContents extends PureComponent<Props> {
   })
 
   private handleSubmit = async (event: FormEvent) => {
-    const {isValid, errors} = this.validateFieldValues
-    const {email, password} = this.state
-
     event.preventDefault()
-
-    if (!isValid) {
-      this.setState(errors)
-      return
-    }
+    const {email, password} = this.state
 
     if (isFlagEnabled('ssoLogin') && email) {
       try {
@@ -206,6 +196,13 @@ class LoginPageContents extends PureComponent<Props> {
         )}. If this issue persists, please contact support@influxdata.com`
         return this.setState({emailError})
       }
+    }
+
+    const {isValid, errors} = this.validateFieldValues
+
+    if (!isValid) {
+      this.setState(errors)
+      return
     }
 
     this.setState({buttonStatus: ComponentStatus.Loading})

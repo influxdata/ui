@@ -1,7 +1,7 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import moment from 'moment'
+import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 
 // Actions
 import {
@@ -26,7 +26,7 @@ import {Context} from 'src/clockface'
 import {Authorization} from 'src/types'
 import {
   DEFAULT_TOKEN_DESCRIPTION,
-  UPDATED_AT_TIME_FORMAT,
+  DEFAULT_TIME_FORMAT
 } from 'src/dashboards/constants'
 
 interface OwnProps {
@@ -43,6 +43,11 @@ class TokenRow extends PureComponent<Props> {
     const {description} = this.props.auth
     const {auth} = this.props
     const labelText = this.isTokenEnabled ? 'Active' : 'Inactive'
+
+    const date = new Date(auth.createdAt)
+    const formatter = createDateTimeFormatter(DEFAULT_TIME_FORMAT)
+    const updated = formatter.format(date)
+
     return (
       <ResourceCard
         contextMenu={this.contextMenu}
@@ -59,7 +64,7 @@ class TokenRow extends PureComponent<Props> {
           {[
             <React.Fragment key={auth.id}>
               Created at:{' '}
-              {moment(auth.createdAt).format(UPDATED_AT_TIME_FORMAT)}
+              {updated}
             </React.Fragment>,
           ]}
         </ResourceCard.Meta>

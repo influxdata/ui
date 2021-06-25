@@ -191,10 +191,7 @@ class LoginPageContents extends PureComponent<Props> {
           return this.auth0.authorize({connection})
         }
       } catch (e) {
-        const emailError = `${getErrorMessage(
-          e
-        )}. If this issue persists, please contact support@influxdata.com`
-        return this.setState({emailError})
+        console.error(e)
       }
     }
 

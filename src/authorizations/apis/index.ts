@@ -1,6 +1,7 @@
 import AJAX from 'src/utils/ajax'
 import {Authorization, Auth0Config} from 'src/types'
 import {getAPIBasepath} from 'src/utils/basepath'
+import {getAuthConnection} from 'src/client/unityRoutes'
 
 export const createAuthorization = async (
   authorization
@@ -29,9 +30,24 @@ export const getAuth0Config = async (
     }
     const response = await fetch(url)
     const data = await response.json()
+
     return data
   } catch (error) {
     console.error(error)
     throw error
+  }
+}
+
+export const getConnection = async (email: string): Promise<string | Error> => {
+  const response = await getAuthConnection({
+    query: {email: encodeURIComponent(email)},
+  })
+
+  if (response.status >= 500) {
+    throw new Error(response.data)
+  }
+
+  if (response.status === 200) {
+    return response.data
   }
 }

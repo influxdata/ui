@@ -28,8 +28,10 @@ import {Auth0Connection, FormFieldValidation} from 'src/types'
 // APIs & Actions
 import {notify} from 'src/shared/actions/notifications'
 import {passwordResetSuccessfully} from 'src/shared/copy/notifications'
-import {getAuth0Config} from 'src/authorizations/apis'
+import {getAuth0Config, getConnection} from 'src/authorizations/apis'
 import {getFromLocalStorage} from 'src/localStorage'
+import {getErrorMessage} from 'src/utils/api'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface ErrorObject {
   emailError?: string
@@ -178,11 +180,25 @@ class LoginPageContents extends PureComponent<Props> {
     hasError: errorMessage !== '',
   })
 
-  private handleSubmit = (event: FormEvent) => {
-    const {isValid, errors} = this.validateFieldValues
+  private handleSubmit = async (event: FormEvent) => {
+    event.preventDefault()
     const {email, password} = this.state
 
-    event.preventDefault()
+    if (isFlagEnabled('ssoLogin') && email) {
+      try {
+        const connection = await getConnection(email)
+        if (!!connection) {
+          return this.auth0.authorize({connection})
+        }
+      } catch (e) {
+        const emailError = `${getErrorMessage(
+          e
+        )}. If this issue persists, please contact support@influxdata.com`
+        return this.setState({emailError})
+      }
+    }
+
+    const {isValid, errors} = this.validateFieldValues
 
     if (!isValid) {
       this.setState(errors)

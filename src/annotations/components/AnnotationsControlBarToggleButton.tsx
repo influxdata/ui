@@ -33,7 +33,7 @@ export const AnnotationsControlBarToggleButton: FC = () => {
     : ''
 
   const titleText = inAnnotationsMode
-    ? `Shift + Click on a graph to annotate a point${rangeText}.`
+    ? `Shift + Click on a graph to annotate a point${rangeText}`
     : 'Click to turn Annotations on'
 
   const handleClick = (): void => {

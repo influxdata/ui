@@ -1,28 +1,27 @@
 import {
-  postFlowsOrgsFlow,
-  PostFlowsOrgsFlowParams,
-  PatchFlowsOrgsFlowParams,
-  patchFlowsOrgsFlow,
-  deleteFlowsOrgsFlow,
-  getFlowsOrgsFlows,
-  DeleteFlowsOrgsFlowParams,
-} from 'src/client/flowsRoutes'
+  PatchNotebookParams,
+  patchNotebook,
+  PostNotebookParams,
+  postNotebook,
+  DeleteNotebookParams,
+  deleteNotebook,
+  getNotebooks,
+} from 'src/client/notebooksRoutes'
 import {notebookUpdateFail} from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
 
-const DEFAULT_API_FLOW: PatchFlowsOrgsFlowParams = {
+const DEFAULT_API_FLOW: PatchNotebookParams = {
   id: '',
-  orgID: '',
   data: {},
 }
-let stagedFlow: PatchFlowsOrgsFlowParams = DEFAULT_API_FLOW
+let stagedFlow: PatchNotebookParams = DEFAULT_API_FLOW
 let reportDecayTimeout = null
 let reportMaxTimeout = null
 
 const REPORT_DECAY = 500 // number of miliseconds to wait after last event before sending
 const REPORT_MAX_WAIT = 5000 // max number of miliseconds to wait between sends
 
-export const pooledUpdateAPI = (flow: PatchFlowsOrgsFlowParams) => {
+export const pooledUpdateAPI = (flow: PatchNotebookParams) => {
   stagedFlow = flow
 
   if (!!reportDecayTimeout) {
@@ -54,30 +53,30 @@ export const pooledUpdateAPI = (flow: PatchFlowsOrgsFlowParams) => {
   }, REPORT_DECAY)
 }
 
-export const updateAPI = async (flow: PatchFlowsOrgsFlowParams) => {
-  const res = await patchFlowsOrgsFlow(flow)
+export const updateAPI = async (flow: PatchNotebookParams) => {
+  const res = await patchNotebook(flow)
   if (res.status != 200) {
     throw new Error(res.data.message)
   }
 }
 
-export const createAPI = async (flow: PostFlowsOrgsFlowParams) => {
-  const res = await postFlowsOrgsFlow(flow)
+export const createAPI = async (flow: PostNotebookParams) => {
+  const res = await postNotebook(flow)
   if (res.status != 200) {
     throw new Error(res.data.message)
   }
   return res.data.id
 }
 
-export const deleteAPI = async (ids: DeleteFlowsOrgsFlowParams) => {
-  const res = await deleteFlowsOrgsFlow(ids)
-  if (res.status < 200 || res.status >= 300) {
+export const deleteAPI = async (ids: DeleteNotebookParams) => {
+  const res = await deleteNotebook(ids)
+  if (res.status != 204) {
     throw new Error(res.data.message)
   }
 }
 
 export const getAllAPI = async (orgID: string) => {
-  const res = await getFlowsOrgsFlows({orgID})
+  const res = await getNotebooks({query: {orgID}})
   if (res.status != 200) {
     throw new Error(res.data.message)
   }
@@ -95,8 +94,7 @@ export const migrateLocalFlowsToAPI = async (
     await Promise.all(
       localFlows.map(async localID => {
         const flow = flows[localID]
-        const apiFlow: PostFlowsOrgsFlowParams = {
-          orgID: orgID,
+        const apiFlow: PostNotebookParams = {
           data: {
             orgID: orgID,
             name: flow.name,

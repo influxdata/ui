@@ -17,7 +17,7 @@ import SecretsList from 'src/secrets/components/SecretsList'
 import FilterList from 'src/shared/components/FilterList'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 import GetResources from 'src/resources/components/GetResources'
-import CreateSecretOverlay from 'src/secrets/components/CreateSecretOverlay'
+import ModifySecretOverlay from 'src/secrets/components/ModifySecretOverlay'
 
 // Selectors
 import {getAllSecrets} from 'src/resources/selectors'
@@ -36,6 +36,8 @@ const SecretsTab: FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [sortDirection, setSortDirection] = useState<Sort>(Sort.Ascending)
   const [sortKey, setSortKey] = useState<string>('id')
+  const [overlayMode, setOverlayMode] = useState<string>('CREATE')
+  const [defaultKey, setDefaultKey] = useState<string>('')
   const [sortType, setSortType] = useState<SortTypes>(SortTypes.String)
   const [isOverlayVisible, setIsOverlayVisible] = useState<boolean>(false)
 
@@ -43,7 +45,11 @@ const SecretsTab: FC = () => {
 
   const secrets = useSelector(getAllSecrets)
 
-  const handleShowOverlay = () => setIsOverlayVisible(true)
+  const handleCreateSecret = () => {
+    setOverlayMode('CREATE')
+    setDefaultKey('')
+    setIsOverlayVisible(true)
+  }
 
   const handleHideOverlay = () => setIsOverlayVisible(false)
 
@@ -69,12 +75,18 @@ const SecretsTab: FC = () => {
     dispatch(deleteSecret(secret))
   }
 
-  const createSecret = (newSecret: Secret) => {
+  const handleUpsertSecret = (newSecret: Secret) => {
     dispatch(upsertSecret(newSecret))
   }
 
+  const handleEditSecret = (defaultKey: string) => {
+    setDefaultKey(defaultKey)
+    setOverlayMode('UPDATE')
+    setIsOverlayVisible(true)
+  }
+
   const handleKeyValidation = (key: string): string | null => {
-    if (!key) {
+    if (!key || overlayMode === 'UPDATE') {
       return null
     }
 
@@ -95,7 +107,7 @@ const SecretsTab: FC = () => {
       text="Add Secret"
       color={ComponentColor.Primary}
       icon={IconFont.Plus}
-      onClick={handleShowOverlay}
+      onClick={handleCreateSecret}
       testID="button-add-secret"
     />
   )
@@ -122,12 +134,6 @@ const SecretsTab: FC = () => {
       </>
     )
   }
-
-  // const handleOpenImportOverlay = (): void => {
-  // const {history, match} = props
-  //
-  // history.push(`/orgs/${match.params.orgID}/settings/variables/import`)
-  // }
 
   const leftHeaderItems = (
     <>
@@ -166,14 +172,17 @@ const SecretsTab: FC = () => {
               sortKey="key"
               sortDirection={sortDirection}
               sortType={sortType}
+              handleEditSecret={handleEditSecret}
             />
           )}
         </FilterSecrets>
-        <CreateSecretOverlay
+        <ModifySecretOverlay
           isVisible={isOverlayVisible}
-          createSecret={createSecret}
+          handleUpsertSecret={handleUpsertSecret}
           onDismiss={handleHideOverlay}
           onKeyValidation={handleKeyValidation}
+          defaultKey={defaultKey}
+          mode={overlayMode}
           />
       </GetResources>
     </>

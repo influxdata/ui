@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState} from 'react'
+import React, {FC, useState, useEffect} from 'react'
 
 // Types
 import {
@@ -20,44 +20,59 @@ import WarningPanel from 'src/secrets/components/WarningPanel'
 
 interface Props {
     onHideOverlay: () => void
-    createSecret: (secret: Secret) => void
+    handleUpsertSecret: (secret: Secret) => void
     onKeyValidation: (key: string) => string | null
+    mode: string
+    defaultKey?: string
 }
 
-const CreateSecretForm: FC<Props> = ({onHideOverlay, createSecret, onKeyValidation}) => {
+const ModifySecretForm: FC<Props> = ({onHideOverlay, handleUpsertSecret, onKeyValidation, mode, defaultKey}) => {
     const [newSecret, setNewSecret] = useState<Secret>({})
 
     const isFormValid = (): boolean => {
-        return (newSecret?.key?.length > 0 && newSecret?.value?.length > 0 && onKeyValidation(newSecret.key) === null)
+        return ((mode === 'UPDATE') || (newSecret?.key?.length > 0 && newSecret?.value?.length > 0 && onKeyValidation(newSecret.key) === null))
     }
 
     const handleChangeInput = ({target}) => {
         const {name, value} = target
 
+        // In update mode we want to keep the key fixed because changing the key would create a new secret
+        if (mode === 'UPDATE' && name === 'key') {
+            return
+        }
         setNewSecret(prevState => ({...prevState, [name]: value}))
     }
 
     const handleSubmit = () => {
         try {
-            createSecret(newSecret)
+            handleUpsertSecret(newSecret)
         } finally {
             onHideOverlay()
         }
     }
+
+    const submitButtonText = (mode === "CREATE") ? "Add Secret" : "Edit Secret"
+
+    const warningText = (mode === "CREATE") ? 'Make sure you know your secret value! You will be able to reference the secret in queries by key but you will not be able to see the value again.' : "Updating this secret could cause queries that rely on this secret to break"
+
+    useEffect(() => {
+        if ((mode === 'UPDATE')) {
+            setNewSecret({"key": defaultKey})
+        }
+    }, [mode])
 
     return (
         <Form onSubmit={handleSubmit} testID="variable-form--root">
             <Grid>
                 <Grid.Row>
                     <Grid.Column>
-                        <WarningPanel />
+                        <WarningPanel warningText={warningText}/>
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
                     <Grid.Column>
                         <Form.ValidationElement
                             label="Key"
-                            placeholder="your_secret_name"
                             required={true}
                             validationFunc={onKeyValidation}
                             value={newSecret.key}>
@@ -65,7 +80,7 @@ const CreateSecretForm: FC<Props> = ({onHideOverlay, createSecret, onKeyValidati
                                 <Input
                                 autoFocus={true}
                                 name="key"
-                                titleText="your_secret_name"
+                                titleText="This is how you will reference your secret in Flux"
                                 value={newSecret.key}
                                 status={status}
                                 onChange={handleChangeInput}
@@ -86,7 +101,7 @@ const CreateSecretForm: FC<Props> = ({onHideOverlay, createSecret, onKeyValidati
                             onChange={handleChangeInput}
                             required={true}
                             name="value"
-                            titleText="your_secret_value"
+                            titleText="This is the value that will be injected by the server when your secret is in use"
                             value={newSecret.value}
                         />
                     </Grid.Column>
@@ -96,7 +111,7 @@ const CreateSecretForm: FC<Props> = ({onHideOverlay, createSecret, onKeyValidati
                         <Form.Footer>
                             <Button text="Cancel" onClick={onHideOverlay} />
                             <Button
-                                text={"Add Secret"}
+                                text={submitButtonText}
                                 type={ButtonType.Submit}
                                 testID="variable-form-save"
                                 color={ComponentColor.Success}
@@ -115,4 +130,4 @@ const CreateSecretForm: FC<Props> = ({onHideOverlay, createSecret, onKeyValidati
     )
 }
 
-export default CreateSecretForm
+export default ModifySecretForm

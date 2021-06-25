@@ -10,7 +10,11 @@ import {
     Panel,
 } from '@influxdata/clockface'
 
-const WarningPanel: FC = () => (
+interface Props {
+    warningText: string
+}
+
+const WarningPanel: FC<Props> = ({warningText}) => (
     <Panel
         gradient={Gradients.LostGalaxy}
         testID="panel"
@@ -27,7 +31,7 @@ const WarningPanel: FC = () => (
         >
             <Icon glyph={IconFont.AlertTriangle} className='warning-panel-icon'/>
             <p className="margin-zero">
-                Make sure you know your secret! You will be able to reference the secret in queries but you will not be able to see it again.
+                {warningText}
             </p>
         </Panel.Body>
     </Panel>

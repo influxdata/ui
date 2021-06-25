@@ -3,7 +3,7 @@ import React, {FC} from 'react'
 
 // Components
 import {Overlay} from '@influxdata/clockface'
-import CreateSecretForm from 'src/secrets/components/CreateSecretForm'
+import ModifySecretForm from 'src/secrets/components/ModifySecretForm'
 
 // Types
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
@@ -12,32 +12,34 @@ import {Secret, ResourceType} from 'src/types'
 
 interface Props {
     isVisible: boolean
-    createSecret: (secret: Secret) => void
+    handleUpsertSecret: (secret: Secret) => void
     onDismiss: () => void
+    mode: string
+    defaultKey: string
     onKeyValidation: (key: string) => string | null
 }
 
-const CreateSecretOverlay: FC<Props> = ({isVisible, createSecret, onDismiss, onKeyValidation}) => {
+const ModifySecretOverlay: FC<Props> = ({isVisible, handleUpsertSecret, onDismiss, onKeyValidation, mode, defaultKey}) => {
+    const headerTitle = (mode === "CREATE") ? "Add Secret" : "Edit Secret"
 
     return (
         <Overlay visible={isVisible}>
             <Overlay.Container maxWidth={750}>
                 <Overlay.Header
-                    title="Add Secret"
+                    title={headerTitle}
                     onDismiss={onDismiss}
-                    testID="create-secret-overlay-header"
+                    testID="modify-secret-overlay-header"
                 />
                 <Overlay.Body>
                     <GetResources resources={[ResourceType.Secrets]}>
                         <ErrorBoundary>
-                            <CreateSecretForm onHideOverlay={onDismiss} createSecret={createSecret} onKeyValidation={onKeyValidation}/>
+                            <ModifySecretForm onHideOverlay={onDismiss} handleUpsertSecret={handleUpsertSecret} onKeyValidation={onKeyValidation} mode={mode} defaultKey={defaultKey}/>
                         </ErrorBoundary>
                     </GetResources>
                 </Overlay.Body>
             </Overlay.Container>
         </Overlay>
     )
-
 }
 
-export default CreateSecretOverlay
+export default ModifySecretOverlay

@@ -49,8 +49,8 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('switch-to-script-editor').click()
       cy.getByTestID('toolbar-tab').click()
       const query1 = `from(bucket: "schmucket")
-  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-  |> filter(fn: (r) => r["container_name"] == "cool")`
+|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+|> filter(fn: (r) => r["container_name"] == "cool")`
       cy.getByTestID('flux-editor')
         .should('be.visible')
         .click()
@@ -239,12 +239,12 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('toolbar-tab').click()
 
       const query1 = `from(bucket: "schmucket")
-    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-    |> filter(fn: (r) => r["container_name"] == "cool")`
+|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+|> filter(fn: (r) => r["container_name"] == "cool")`
 
       const query2 = `from(bucket: "schmucket")
-    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-    |> filter(fn: (r) => r["container_name"] == "beans")`
+|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+|> filter(fn: (r) => r["container_name"] == "beans")`
 
       cy.getByTestID('flux-editor')
         .should('be.visible')
@@ -338,12 +338,12 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('toolbar-tab').click()
 
       const query1 = `from(bucket: "schmucket")
-    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-    |> filter(fn: (r) => r["container_name"] == "cool")`
+|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+|> filter(fn: (r) => r["container_name"] == "cool")`
 
       const query2 = `from(bucket: "schmucket")
-    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-    |> filter(fn: (r) => r["container_name"] == "beans")`
+|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+|> filter(fn: (r) => r["container_name"] == "beans")`
 
       cy.getByTestID('flux-editor')
         .should('be.visible')
@@ -436,12 +436,12 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('toolbar-tab').click()
 
       const query1 = `from(bucket: "schmucket")
-  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-  |> filter(fn: (r) => r["container_name"] == "cool")`
+|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+|> filter(fn: (r) => r["container_name"] == "cool")`
 
       const query2 = `from(bucket: "schmucket")
-  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-  |> filter(fn: (r) => r["container_name"] == "beans")`
+|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+|> filter(fn: (r) => r["container_name"] == "beans")`
 
       cy.getByTestID('flux-editor')
         .should('be.visible')
@@ -522,12 +522,12 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('toolbar-tab').click()
 
       const query1 = `from(bucket: "schmucket")
-  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-  |> filter(fn: (r) => r["container_name"] == "cool")`
+|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+|> filter(fn: (r) => r["container_name"] == "cool")`
 
       const query2 = `from(bucket: "schmucket")
-  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-  |> filter(fn: (r) => r["container_name"] == "beans")`
+|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+|> filter(fn: (r) => r["container_name"] == "beans")`
 
       cy.getByTestID('flux-editor')
         .should('be.visible')

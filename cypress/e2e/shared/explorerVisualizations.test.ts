@@ -512,9 +512,7 @@ describe('visualizations', () => {
           cy.get('.giraffe-tooltip-container').should('not.exist')
 
           // Hover Legend options should not show
-          cy.getByTestID('hover-legend-orientation-toggle').should(
-            'not.exist'
-          )
+          cy.getByTestID('hover-legend-orientation-toggle').should('not.exist')
           cy.getByTestID('hover-legend-opacity-slider').should('not.exist')
           cy.getByTestID('hover-legend-colorize-rows-toggle').should(
             'not.exist'
@@ -543,9 +541,7 @@ describe('visualizations', () => {
           cy.get('.giraffe-tooltip-container').should('not.exist')
 
           // Hover Legend options should not show
-          cy.getByTestID('hover-legend-orientation-toggle').should(
-            'not.exist'
-          )
+          cy.getByTestID('hover-legend-orientation-toggle').should('not.exist')
           cy.getByTestID('hover-legend-opacity-slider').should('not.exist')
           cy.getByTestID('hover-legend-colorize-rows-toggle').should(
             'not.exist'
@@ -574,9 +570,7 @@ describe('visualizations', () => {
           cy.get('.giraffe-tooltip-container').should('not.exist')
 
           // Hover Legend options should not show
-          cy.getByTestID('hover-legend-orientation-toggle').should(
-            'not.exist'
-          )
+          cy.getByTestID('hover-legend-orientation-toggle').should('not.exist')
           cy.getByTestID('hover-legend-opacity-slider').should('not.exist')
           cy.getByTestID('hover-legend-colorize-rows-toggle').should(
             'not.exist'
@@ -662,9 +656,7 @@ describe('visualizations', () => {
           cy.get('[for="radio_static_legend_hide"]').click()
           cy.getByTestID('giraffe-static-legend').should('not.exist')
           cy.getByTestID('static-legend-height-slider').should('not.exist')
-          cy.getByTestID('static-legend-orientation-toggle').should(
-            'not.exist'
-          )
+          cy.getByTestID('static-legend-orientation-toggle').should('not.exist')
           cy.getByTestID('static-legend-opacity-slider').should('not.exist')
           cy.getByTestID('static-legend-colorize-rows-toggle').should(
             'not.exist'
@@ -687,9 +679,7 @@ describe('visualizations', () => {
           cy.get('[for="radio_static_legend_hide"]').click()
           cy.getByTestID('giraffe-static-legend').should('not.exist')
           cy.getByTestID('static-legend-height-slider').should('not.exist')
-          cy.getByTestID('static-legend-orientation-toggle').should(
-            'not.exist'
-          )
+          cy.getByTestID('static-legend-orientation-toggle').should('not.exist')
           cy.getByTestID('static-legend-opacity-slider').should('not.exist')
           cy.getByTestID('static-legend-colorize-rows-toggle').should(
             'not.exist'
@@ -712,9 +702,7 @@ describe('visualizations', () => {
           cy.get('[for="radio_static_legend_hide"]').click()
           cy.getByTestID('giraffe-static-legend').should('not.exist')
           cy.getByTestID('static-legend-height-slider').should('not.exist')
-          cy.getByTestID('static-legend-orientation-toggle').should(
-            'not.exist'
-          )
+          cy.getByTestID('static-legend-orientation-toggle').should('not.exist')
           cy.getByTestID('static-legend-opacity-slider').should('not.exist')
           cy.getByTestID('static-legend-colorize-rows-toggle').should(
             'not.exist'

@@ -8,5 +8,5 @@
   "rules": "/rules",
   "buckets": "/load-data/buckets",
   "telegrafs": "/load-data/telegrafs",
-  "flows": "/flows"
+  "notebooks": "/notebooks"
 }

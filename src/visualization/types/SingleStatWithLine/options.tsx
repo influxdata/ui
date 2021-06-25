@@ -501,12 +501,13 @@ const SingleStatWithLineOptions: FC<Props> = ({
           widthMD={Columns.Six}
           widthLG={Columns.Four}
         >
-          <h5 className="view-options--header">Legend</h5>
+          <h5 className="view-options--header">Hover Legend</h5>
           <HoverLegend
             properties={properties}
             results={results}
             update={update}
           />
+          <h5 className="view-options--header">Static Legend</h5>
           <StaticLegend
             properties={properties}
             results={results}

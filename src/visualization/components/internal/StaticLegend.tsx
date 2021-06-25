@@ -182,7 +182,7 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
 
   return (
     <Form.Element
-      label="Static Legend"
+      label="Display Static Legend"
       className="static-legend-options"
       testID="static-legend-options"
     >
@@ -219,6 +219,27 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
               widthXS={Columns.Twelve}
               className="static-legend-options--show"
             >
+              <OrientationToggle
+                eventName={`${eventPrefix}.orientation`}
+                graphType={properties.type}
+                legendOrientation={orientationThreshold}
+                parentName="static-legend"
+                handleSetOrientation={handleSetOrientation}
+                testID="static-legend-orientation-toggle"
+              />
+              <OpacitySlider
+                legendOpacity={opacity}
+                handleSetOpacity={handleSetOpacity}
+                testID="static-legend-opacity-slider"
+              />
+              <ColorizeRowsToggle
+                legendColorizeRows={colorizeRows}
+                handleSetColorization={handleSetColorization}
+                testID="static-legend-colorize-rows-toggle"
+              />
+              <InputLabel className="latest-axis-label">
+                Displayed Value
+              </InputLabel>
               <Toggle
                 tabIndex={1}
                 value="y"
@@ -265,24 +286,6 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
                   testID="static-legend-height-slider"
                 />
               </Form.Element>
-              <OrientationToggle
-                eventName={`${eventPrefix}.orientation`}
-                graphType={properties.type}
-                legendOrientation={orientationThreshold}
-                parentName="static-legend"
-                handleSetOrientation={handleSetOrientation}
-                testID="static-legend-orientation-toggle"
-              />
-              <OpacitySlider
-                legendOpacity={opacity}
-                handleSetOpacity={handleSetOpacity}
-                testID="static-legend-opacity-slider"
-              />
-              <ColorizeRowsToggle
-                legendColorizeRows={colorizeRows}
-                handleSetColorization={handleSetColorization}
-                testID="static-legend-colorize-rows-toggle"
-              />
             </Grid.Column>
           </Grid.Row>
         )}

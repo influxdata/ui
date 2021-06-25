@@ -96,7 +96,7 @@ const HoverLegendToggle: FC<HoverLegendToggleProps> = ({
   }
 
   return (
-    <Form.Element label="Hover Legend" className="legend-options">
+    <Form.Element label="Display Hover Legend" className="legend-options">
       <Grid>
         <Grid.Row>
           <Grid.Column widthXS={Columns.Twelve}>

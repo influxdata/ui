@@ -39,7 +39,6 @@ export const getAuth0Config = async (
 }
 
 export const getConnection = async (email: string): Promise<string | Error> => {
-  // FIXME: When Quartz #4824 gets fixed. Change encodeURI to encodeURIComponent
   const response = await getAuthConnection({
     query: {email: encodeURIComponent(email)},
   })

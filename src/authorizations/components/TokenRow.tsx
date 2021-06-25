@@ -24,10 +24,8 @@ import {Context} from 'src/clockface'
 
 // Types
 import {Authorization} from 'src/types'
-import {
-  DEFAULT_TOKEN_DESCRIPTION,
-  DEFAULT_TIME_FORMAT
-} from 'src/dashboards/constants'
+import {DEFAULT_TOKEN_DESCRIPTION} from 'src/dashboards/constants'
+import {FORMAT_OPTIONS} from 'src/visualization/utils/timeFormat'
 
 interface OwnProps {
   auth: Authorization
@@ -44,8 +42,9 @@ class TokenRow extends PureComponent<Props> {
     const {auth} = this.props
     const labelText = this.isTokenEnabled ? 'Active' : 'Inactive'
 
+    console.log(FORMAT_OPTIONS[0].text)
     const date = new Date(auth.createdAt)
-    const formatter = createDateTimeFormatter(DEFAULT_TIME_FORMAT)
+    const formatter = createDateTimeFormatter(FORMAT_OPTIONS[0].text)
     const updated = formatter.format(date)
 
     return (

@@ -51,32 +51,37 @@ interface Props {
   eventPrefix: string
 }
 
+export const WRONG_ORDER_MESSAGE = 'End Time must be after the start time'
+export const END_TIME_IN_FUTURE_MESSAGE = 'End Time cannot be in the future'
+export const TIMES_ARE_SAME_MESSAGE =
+  'End Time is the same as start time, please adjust or create a point annotation instead.'
+export const START_TIME_IN_FUTURE_MESSAGE = 'Start Time cannot be in the future'
+
 export const AnnotationForm: FC<Props> = (props: Props) => {
   const [startTime, setStartTime] = useState(props.startTime)
   const [endTime, setEndTime] = useState(props.endTime)
   const [summary, setSummary] = useState(props.summary)
   const [annotationType, setAnnotationType] = useState(props.type)
 
-  // since we start with default times via the mouse, they are valid at first
+  // in the time by itself valid ?(is the format valid)
+  // since we start with default times via the mouse, the formats are valid at first
   // (until the user edits it)
-  const [endTimeValid, setEndTimeValid] = useState(true)
-  const [startTimeValid, setStartTimeValid] = useState(true)
+  const [endTimeFormatValid, setEndTimeFormatValid] = useState(true)
+  const [startTimeFormatValid, setStartTimeFormatValid] = useState(true)
 
   const dispatch = useDispatch()
 
   const isValidAnnotationForm = (): boolean => {
     const isValidPointAnnotation = Boolean(
-      summary?.length && startTime && startTimeValid && isStartTimeValid()
+      summary?.length && startTime && startTimeFormatValid && isStartTimeValid()
     )
 
-    // not checking if start <= end right now
-    // initially, the times are numbers, and then if the user manually edits them then
-    // they are strings, so the simple compare is non-trivial.
-    // plus, the backend checks if the startTime is before or equals the endTime
-    // so, letting the backend do that check for now.
     if (annotationType === 'range') {
       return Boolean(
-        isValidPointAnnotation && endTime && endTimeValid && isEndTimeValid()
+        isValidPointAnnotation &&
+          endTime &&
+          endTimeFormatValid &&
+          isEndTimeValid()
       )
     }
     return isValidPointAnnotation
@@ -139,6 +144,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     }
   }
 
+  // TODO:  distinguish between editing and creating for this cancel event
   const handleCancel = () => {
     const annoMode = isEditing ? 'edit' : 'create'
     event(
@@ -153,16 +159,16 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
 
   const validateStartTime = () => {
     if (isTimeInFuture(startTime)) {
-      return {isValid: false, message: 'Start Time cannot be in the future'}
+      return {isValid: false, message: START_TIME_IN_FUTURE_MESSAGE}
     }
     return {isValid: true}
   }
 
   /**
-   * if there is a problem with the end time (with respect to the start time)
+   * If there is a problem with the end time (with respect to the start time)
    * return an error message here, along with the isValid flag
    *
-   * if no message, then it is valid (just return a true isValid flag)
+   * If no message, then it is valid (just return a true isValid flag)
    * */
   const validateEndTime = () => {
     if (annotationType === 'point') {
@@ -185,17 +191,16 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     if (end.isSame(start)) {
       return {
         isValid: false,
-        message:
-          'End Time is the same as start time, please adjust or create a point annotation instead.',
+        message: TIMES_ARE_SAME_MESSAGE,
       }
     }
 
     if (!end.isAfter(start)) {
-      return {isValid: false, message: 'End Time must be after the start time'}
+      return {isValid: false, message: WRONG_ORDER_MESSAGE}
     }
 
     if (isTimeInFuture(endTime)) {
-      return {isValid: false, message: 'End Time cannot be in the future'}
+      return {isValid: false, message: END_TIME_IN_FUTURE_MESSAGE}
     }
 
     return {isValid: true, message: null}
@@ -284,7 +289,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
               onSubmit={handleKeyboardSubmit}
               time={startTime}
               name="startTime"
-              onValidityCheck={setStartTimeValid}
+              onValidityCheck={setStartTimeFormatValid}
               invalidMessage={getStartTimeValidationMessage()}
             />
 
@@ -293,7 +298,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
                 onChange={updateEndTime}
                 onSubmit={handleKeyboardSubmit}
                 invalidMessage={getEndTimeValidationMessage()}
-                onValidityCheck={setEndTimeValid}
+                onValidityCheck={setEndTimeFormatValid}
                 time={endTime}
                 name="endTime"
                 titleText="Stop Time"

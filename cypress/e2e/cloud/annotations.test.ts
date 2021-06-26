@@ -51,11 +51,6 @@ describe('The Annotations UI functionality', () => {
                     .type('blah')
                   cy.getByTestID('save-cell--button').click()
                 })
-
-                // annotations are on by default; so the bar should be visible:
-                return cy
-                  .getByTestID('annotations-control-bar')
-                  .should('be.visible')
               })
           })
         )

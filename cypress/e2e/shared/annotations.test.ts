@@ -616,7 +616,7 @@ describe('The Annotations UI functionality', () => {
             cy.getByTestID('startTime-testID')
               .invoke('val')
               .then(startTimeValue => {
-                //make a time 1 minute before the starttime, set the endtime to that:
+                // make a time 1 minute before the starttime, set the endtime to that:
 
                 const badEndTime = moment(startTimeValue)
                   .subtract(1, 'minutes')

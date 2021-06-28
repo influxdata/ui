@@ -23,7 +23,7 @@ interface Props {
   titleText?: string
   style?: CSSProperties
   invalidMessage?: string
-  onValidityCheck: () => void
+  onValidityCheck: (isValid: boolean) => void
 }
 
 const ANNOTATION_TIME_FORMAT_UTC = 'YYYY-MM-DD HH:mm:ss' // 24 hour

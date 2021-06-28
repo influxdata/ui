@@ -30,7 +30,7 @@ const WriteLimitAlertContent: FC<Props> = ({className}) => {
     dispatch(showOverlay('write-limit', null, dispatch(dismissOverlay)))
   }
 
-  if (showUpgradeButton === false) {
+  if (showUpgradeButton) {
     return (
       <UpgradeContent
         type="write"

@@ -9,7 +9,7 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 // Utils
 import {useAxisTicksGenerator} from 'src/visualization/utils/useAxisTicksGenerator'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
-import {useLegendOpacity} from 'src/visualization/utils/useLegendOrientation'
+import {useLegendOpacity} from 'src/visualization/utils/useLegendOpacity'
 import {
   useVisXDomainSettings,
   useVisYDomainSettings,

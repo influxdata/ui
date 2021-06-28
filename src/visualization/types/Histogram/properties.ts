@@ -1,6 +1,7 @@
 import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {Color, HistogramViewProperties} from 'src/types'
 import {
+  LEGEND_COLORIZE_ROWS_DEFAULT,
   LEGEND_OPACITY_DEFAULT,
   LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
 } from 'src/visualization/constants'
@@ -16,6 +17,7 @@ export default {
   position: 'stacked',
   binCount: 30,
   colors: DEFAULT_LINE_COLORS as Color[],
+  legendColorizeRows: LEGEND_COLORIZE_ROWS_DEFAULT,
   legendOpacity: LEGEND_OPACITY_DEFAULT,
   legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
 

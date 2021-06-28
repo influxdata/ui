@@ -25,7 +25,7 @@ import {
   parseYBounds,
 } from 'src/shared/utils/vis'
 import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
-import LegendOrientation from 'src/visualization/components/internal/LegendOrientation'
+import HoverLegend from 'src/visualization/components/internal/HoverLegend'
 import StaticLegend from 'src/visualization/components/internal/StaticLegend'
 import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksGenerator'
 
@@ -420,12 +420,13 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
           widthMD={Columns.Six}
           widthLG={Columns.Four}
         >
-          <h5 className="view-options--header">Legend</h5>
-          <LegendOrientation
+          <h5 className="view-options--header">Hover Legend</h5>
+          <HoverLegend
             properties={properties}
             results={results}
             update={update}
           />
+          <h5 className="view-options--header">Static Legend</h5>
           <StaticLegend
             properties={properties}
             results={results}

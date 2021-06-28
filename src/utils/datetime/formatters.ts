@@ -313,7 +313,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
       }
     }
 
-    /********************  LONG DATE FORMATTING  ********************/
+    /** ******************  LONG DATE FORMATTING  ********************/
 
     case 'MMMM D, YYYY HH:mm:ss': {
       const options = {
@@ -439,7 +439,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
       }
     }
 
-    /********************  TIME FORMATTING  ********************/
+    /** ******************  TIME FORMATTING  ********************/
 
     case 'HH:mm': {
       const options = {

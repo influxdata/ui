@@ -10,7 +10,7 @@ set -eu -o pipefail
 #
 # If the private CI fails, this script will collect the names and artifacts of the failed jobs and report them.
 # This script should support multiple workflows if more are added, although it has not been tested.
-# This script waits 40 minutes for the private CI to complete otherwise it fails.
+# This script waits 50 minutes for the private CI to complete otherwise it fails.
 #
 # **For Running from the UI Repository:**
 # If you want to retry failed jobs in the private CI, simply retry this job from the public CI.
@@ -193,7 +193,7 @@ fi
 # poll the status of the monitor-ci pipeline
 is_failure=0
 attempts=0
-max_attempts=40 # minutes
+max_attempts=50 # minutes
 required_workflows=( "build" )
 while [ $attempts -le $max_attempts ];
 do

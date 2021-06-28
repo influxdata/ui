@@ -725,10 +725,10 @@
   resolved "https://registry.yarnpkg.com/@influxdata/flux/-/flux-0.5.1.tgz#e39e7a7af9163fc9494422c8fed77f3ae1b68f56"
   integrity sha512-GHlkXBhSdJ2m56JzDkbnKPAqLj3/lexPooacu14AWTO4f2sDGLmzM7r0AxgdtU1M2x7EXNBwgGOI5EOAdN6mkw==
 
-"@influxdata/giraffe@^2.15.4":
-  version "2.15.4"
-  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.15.4.tgz#c5d7d89a0000f1c2410001b595c06839ff64dfb5"
-  integrity sha512-x+BBXwMlsZXaJkUmXc4Hh7WqCQzZJYFI1QvvlM24MNFAC3bU5Wnh2UHIqjKg/ldX/u6zGHAbmPXYtlbd/bKHIg==
+"@influxdata/giraffe@^2.15.6":
+  version "2.15.6"
+  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.15.6.tgz#1c961e7303791c4ddd273b57d10255177a7e1b9b"
+  integrity sha512-dGUzGSlTzyBEjHsyaU1+64dRM0BhPyevr148dvlLkEbX6KDgni0vbhAImKEG95IUOfyTo05rrwzLQxg5oFCrpQ==
   dependencies:
     merge-images "^2.0.0"
 
@@ -3541,7 +3541,7 @@ cypress-plugin-tab@^1.0.5:
   dependencies:
     ally.js "^1.4.1"
 
-cypress@^7.5.0:
+cypress@7.5.0:
   version "7.5.0"
   resolved "https://registry.yarnpkg.com/cypress/-/cypress-7.5.0.tgz#72dd342e3b45f54b63cd46819f38d126feff5954"
   integrity sha512-tw3v6nrTJoEzT37+Nf6RK+DvdTfhMb8EJYskZx7oskZ+J9qQ1QHWA4dH8Eoe/Mr/wE47o+7PK6O9tgqhRy6IHg==

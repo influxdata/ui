@@ -74,11 +74,7 @@ export const getSecrets = () => async (
   }
 }
 
-<<<<<<< HEAD
 export const upsertSecret = (newSecret: Secret) => async (
-=======
-export const upsertSecret = (secretKey: string, secretValue: string) => async (
->>>>>>> 13f44092cb7d2b696603ceac41cf78b9877e0998
   dispatch: Dispatch<Action>,
   getState: GetState
 ): Promise<void> => {
@@ -87,11 +83,7 @@ export const upsertSecret = (secretKey: string, secretValue: string) => async (
     const resp = await apiUpdateSecret({
       orgID: org.id,
       data: {
-<<<<<<< HEAD
         [newSecret.key]: newSecret.value,
-=======
-        [secretKey]: secretValue,
->>>>>>> 13f44092cb7d2b696603ceac41cf78b9877e0998
       },
     })
 
@@ -99,7 +91,6 @@ export const upsertSecret = (secretKey: string, secretValue: string) => async (
       throw new Error()
     }
 
-<<<<<<< HEAD
     // Secret values shouldn't be kept around in the store! -JF
     const strippedSecret = {id: newSecret.key, key: newSecret.key}
 
@@ -109,25 +100,13 @@ export const upsertSecret = (secretKey: string, secretValue: string) => async (
     )
 
     dispatch(setSecret(newSecret.key, RemoteDataState.Done, secret))
-=======
-    const secret = normalize<Secret, SecretEntities, string>(
-      resp.data.secret,
-      secretsSchema
-    )
-
-    dispatch(setSecret(resp.data.secret.id, RemoteDataState.Done, secret))
->>>>>>> 13f44092cb7d2b696603ceac41cf78b9877e0998
   } catch (error) {
     console.error(error)
     dispatch(notify(upsertSecretFailed()))
   }
 }
 
-<<<<<<< HEAD
 export const deleteSecret = (secret: Secret) => async (
-=======
-export const deleteSecret = (id: string) => async (
->>>>>>> 13f44092cb7d2b696603ceac41cf78b9877e0998
   dispatch: Dispatch<Action>,
   getState: GetState
 ) => {
@@ -136,11 +115,7 @@ export const deleteSecret = (id: string) => async (
     const resp = await apiDeleteSecret({
       orgID: org.id,
       data: {
-<<<<<<< HEAD
         secrets: [secret.id],
-=======
-        secrets: [id],
->>>>>>> 13f44092cb7d2b696603ceac41cf78b9877e0998
       },
     })
 
@@ -148,11 +123,7 @@ export const deleteSecret = (id: string) => async (
       throw new Error(resp.data.message)
     }
 
-<<<<<<< HEAD
     dispatch(removeSecret(secret.id))
-=======
-    dispatch(removeSecret(id))
->>>>>>> 13f44092cb7d2b696603ceac41cf78b9877e0998
   } catch (error) {
     console.error(error)
     dispatch(notify(deleteSecretsFailed()))

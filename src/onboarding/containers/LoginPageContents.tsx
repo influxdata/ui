@@ -183,7 +183,7 @@ class LoginPageContents extends PureComponent<Props> {
     event.preventDefault()
     const {email, password} = this.state
 
-    if (isFlagEnabled('ssoLogin') && email) {
+    if (email) {
       try {
         const connection = await getConnection(email)
         if (!!connection) {

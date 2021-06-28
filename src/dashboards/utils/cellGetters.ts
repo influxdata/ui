@@ -16,7 +16,10 @@ import {
 
 // Constants
 import {UNTITLED_GRAPH} from 'src/dashboards/constants'
-import {STATIC_LEGEND_CELL_HEIGHT_DEFAULT} from 'src/visualization/constants'
+import {
+  STATIC_LEGEND_CELL_HEIGHT_DEFAULT,
+  staticLegendTypes,
+} from 'src/visualization/constants'
 
 const getMostCommonValue = (values: number[]): number => {
   const results = values.reduce(
@@ -48,7 +51,6 @@ export const getNewDashboardCell = (
   clonedCell: Cell,
   viewProperties: ViewProperties
 ): NewCell => {
-  const staticLegendTypes = new Set(['xy', 'line-plus-single-stat', 'band'])
   const isStaticLegendType = staticLegendTypes.has(viewProperties?.type)
 
   const defaultCell = {

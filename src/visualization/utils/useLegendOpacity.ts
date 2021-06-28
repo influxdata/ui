@@ -2,7 +2,7 @@ import {useMemo} from 'react'
 import {
   LEGEND_OPACITY_DEFAULT,
   LEGEND_OPACITY_MINIMUM,
-} from 'src/shared/constants'
+} from 'src/visualization/constants'
 
 export const useLegendOpacity = (legendOpacity: number) =>
   useMemo(() => {

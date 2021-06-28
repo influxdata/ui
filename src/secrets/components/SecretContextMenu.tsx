@@ -50,7 +50,7 @@ const SecretContextMenu: FC<Props> = ({secret, onDeleteSecret}) => {
         />
       </CopyToClipboard>
       <Context.Menu
-        testID={`delete-secret-context--${secret.id}`}
+        testID={`delete-secret-initial--${secret.id}`}
         size={ComponentSize.Small}
         color={ComponentColor.Danger}
         icon={IconFont.Trash}
@@ -61,7 +61,7 @@ const SecretContextMenu: FC<Props> = ({secret, onDeleteSecret}) => {
         <Context.Item
           label="Delete"
           action={onDeleteSecret}
-          testID={`context-delete-secret--${secret.id}`}
+          testID={`delete-secret-confirm--${secret.id}`}
         />
       </Context.Menu>
     </Context>

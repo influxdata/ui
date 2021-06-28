@@ -16,6 +16,7 @@ export type OverlayID =
   | 'create-bucket'
   | 'asset-limit'
   | 'rate-limit'
+  | 'write-limit'
   | 'create-annotation-stream'
   | 'update-annotation-stream'
   | 'add-annotation'

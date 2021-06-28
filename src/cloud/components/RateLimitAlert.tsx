@@ -29,7 +29,7 @@ import {CLOUD} from 'src/shared/constants'
 import {AppState} from 'src/types'
 import {LimitStatus} from 'src/cloud/actions/limits'
 import RateLimitAlertContent from 'src/cloud/components/RateLimitAlertContent'
-
+import WriteLimitAlertContent from 'src/cloud/components/WriteLimitAlertContent'
 interface StateProps {
   resources: string[]
   status: LimitStatus
@@ -50,28 +50,46 @@ const RateLimitAlert: FC<Props> = ({
     [`${className}`]: className,
   })
 
-  if (
-    CLOUD &&
-    status === LimitStatus.EXCEEDED &&
-    resources.includes('cardinality')
-  ) {
+  if (CLOUD && status === LimitStatus.EXCEEDED) {
     return (
-      <FlexBox
-        direction={FlexDirection.Column}
-        alignItems={AlignItems.Center}
-        margin={ComponentSize.Large}
-        className={rateLimitAlertClass}
-      >
-        <BannerPanel
-          size={ComponentSize.ExtraSmall}
-          gradient={Gradients.PolarExpress}
-          icon={IconFont.Cloud}
-          hideMobileIcon={true}
-          textColor={InfluxColors.Yeti}
-        >
-          <RateLimitAlertContent />
-        </BannerPanel>
-      </FlexBox>
+      <>
+        {resources.includes('cardinality') ? (
+          <FlexBox
+            direction={FlexDirection.Column}
+            alignItems={AlignItems.Center}
+            margin={ComponentSize.Large}
+            className={rateLimitAlertClass}
+          >
+            <BannerPanel
+              size={ComponentSize.ExtraSmall}
+              gradient={Gradients.PolarExpress}
+              icon={IconFont.Cloud}
+              hideMobileIcon={true}
+              textColor={InfluxColors.Yeti}
+            >
+              <RateLimitAlertContent />
+            </BannerPanel>
+          </FlexBox>
+        ) : null}
+        {resources.includes('write') ? (
+          <FlexBox
+            direction={FlexDirection.Column}
+            alignItems={AlignItems.Center}
+            margin={ComponentSize.Large}
+            className={rateLimitAlertClass}
+          >
+            <BannerPanel
+              size={ComponentSize.ExtraSmall}
+              gradient={Gradients.PolarExpress}
+              icon={IconFont.Cloud}
+              hideMobileIcon={true}
+              textColor={InfluxColors.Yeti}
+            >
+              <WriteLimitAlertContent />
+            </BannerPanel>
+          </FlexBox>
+        ) : null}
+      </>
     )
   }
 
@@ -89,7 +107,6 @@ const mstp = (state: AppState) => {
 
   const resources = extractRateLimitResources(limits)
   const status = extractRateLimitStatus(limits)
-
   return {
     status,
     resources,

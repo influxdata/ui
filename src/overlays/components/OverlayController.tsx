@@ -23,6 +23,7 @@ import OrgSwitcherOverlay from 'src/pageLayout/components/OrgSwitcherOverlay'
 import CreateBucketOverlay from 'src/buckets/components/CreateBucketOverlay'
 import AssetLimitOverlay from 'src/cloud/components/AssetLimitOverlay'
 import RateLimitOverlay from 'src/cloud/components/RateLimitOverlay'
+import WriteLimitOverlay from 'src/cloud/components/WriteLimitOverlay'
 import {AddAnnotationOverlay} from 'src/annotations/components/AddAnnotationOverlay'
 import {EditAnnotationOverlay} from 'src/annotations/components/EditAnnotationOverlay'
 import CreateVariableOverlay from 'src/variables/components/CreateVariableOverlay'
@@ -87,6 +88,9 @@ export const OverlayController: FunctionComponent = () => {
       case 'rate-limit':
         activeOverlay.current = <RateLimitOverlay onClose={onClose} />
         break
+      case 'write-limit':
+        activeOverlay.current = <WriteLimitOverlay onClose={onClose} />
+        break
       case 'add-annotation':
         activeOverlay.current = <AddAnnotationOverlay />
         break
@@ -150,7 +154,7 @@ const OverlayProvider: FunctionComponent = props => {
 
   const closer = useCallback(() => {
     dispatch(dismissOverlay())
-    if (onClose) {
+    if (onClose && typeof onClose === 'function') {
       onClose()
     }
   }, [onClose, dispatch])

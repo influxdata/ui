@@ -37,7 +37,7 @@ const SecretCard: FC<Props> = ({secret, handleEditSecret, onDeleteSecret}) => {
       >
         <ResourceCard.Name
           name={secret.id}
-          testID={`secret-card--name ${secret.id}`}
+          testID={`secret-card--name-${secret.id}`}
           onClick={editSecret}
         />
       </ResourceCard>

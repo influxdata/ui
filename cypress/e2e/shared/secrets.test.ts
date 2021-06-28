@@ -111,7 +111,7 @@ describe('Secrets', () => {
           .then(() => {
             cy.getByTestID('secret-card--Shhhhh').should('exist')
             cy.getByTestID('secret-card--Shhhhh').should('be.visible')
-            cy.getByTestID('secret-card--name Shhhhh')
+            cy.getByTestID('secret-card--name-Shhhhh')
               .click()
               .then(() => {
                 cy.getByTestID('input-field')

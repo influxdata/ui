@@ -95,7 +95,7 @@ const SecretsTab: FC = () => {
     }
     const existingIds = secrets.map(s => s.id)
 
-    if (existingIds.indexOf(key) > -1) {
+    if (existingIds.includes(key)) {
       return 'Key is already in use'
     }
 

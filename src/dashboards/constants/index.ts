@@ -86,4 +86,4 @@ export const DYNAMIC_SOURCE_INFO = {
   link: '',
 }
 
-export const UPDATED_AT_TIME_FORMAT = 'YYYY-MM-DD HH:MM:ss'
+export const UPDATED_AT_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss'

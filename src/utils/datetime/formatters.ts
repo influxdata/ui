@@ -79,7 +79,6 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
       }
     }
 
-    case 'YYYY-MM-DD HH:MM:ss':
     case 'YYYY-MM-DD HH:mm:ss': {
       const options = {
         ...dateTimeOptions,

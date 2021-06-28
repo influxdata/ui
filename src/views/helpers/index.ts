@@ -7,7 +7,10 @@ import {
   LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
   LEGEND_COLORIZE_ROWS_DEFAULT,
   LEGEND_HIDE_DEFAULT,
-} from 'src/shared/constants'
+  STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
+  STATIC_LEGEND_SHOW_DEFAULT,
+  STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
+} from 'src/visualization/constants'
 import {
   DEFAULT_GAUGE_COLORS,
   DEFAULT_THRESHOLDS_LIST_COLORS,
@@ -49,11 +52,6 @@ import {
   XYViewProperties,
 } from 'src/types'
 import {LineHoverDimension} from '@influxdata/giraffe/dist/types'
-import {
-  STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
-  STATIC_LEGEND_SHOW_DEFAULT,
-  STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
-} from 'src/visualization/constants'
 
 export const defaultView = (name: string = DEFAULT_CELL_NAME) => {
   return {
@@ -81,14 +79,17 @@ export function defaultBuilderConfig(): BuilderConfig {
 }
 
 const legendProps = {
-  legendOpacity: LEGEND_OPACITY_DEFAULT,
-  legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
   legendColorizeRows: LEGEND_COLORIZE_ROWS_DEFAULT,
   legendHide: LEGEND_HIDE_DEFAULT,
+  legendOpacity: LEGEND_OPACITY_DEFAULT,
+  legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
 }
 
 const staticLegend = {
+  colorizeRows: LEGEND_COLORIZE_ROWS_DEFAULT,
   heightRatio: STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
+  opacity: LEGEND_OPACITY_DEFAULT,
+  orientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
   show: STATIC_LEGEND_SHOW_DEFAULT,
   widthRatio: STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
 } as StaticLegend
@@ -396,6 +397,12 @@ const NEW_VIEW_CREATORS = {
       allowPanAndZoom: true,
       detectCoordinateFields: false,
       mapStyle: '',
+      useS2CellID: true,
+      s2Column: 's2_cell_id',
+      latLonColumns: {
+        lat: {key: '', column: ''},
+        lon: {key: '', column: ''},
+      },
       layers: [
         {
           type: 'pointMap',

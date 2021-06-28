@@ -18,12 +18,17 @@ import {
   isCurrentPageDashboard as isCurrentPageDashboardSelector,
 } from 'src/dashboards/selectors'
 import {getVariables, asAssignment} from 'src/variables/selectors'
-import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
 import {isInQuery} from 'src/variables/utils/hydrateVars'
-import {getWindowVars} from 'src/variables/utils/getWindowVars'
-import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
+import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
+import {
+  getWindowVars,
+  getWindowVarsFromVariables,
+} from 'src/variables/utils/getWindowVars'
+import {
+  buildVarsOption,
+  buildUsedVarsOption,
+} from 'src/variables/utils/buildVarsOption'
 import 'intersection-observer'
-import {getAll} from 'src/resources/selectors'
 import {getOrgIDFromBuckets} from 'src/timeMachine/actions/queries'
 import {
   isDemoDataAvailabilityError,
@@ -32,6 +37,7 @@ import {
 import {hashCode} from 'src/shared/apis/queryCache'
 import {RunQueryPromiseMutex} from 'src/shared/apis/singleQuery'
 import {getDemoDataErrorButton} from 'src/shared/components/notifications/NotificationButtons'
+import {parseASTIM} from 'src/variables/utils/astim'
 
 // Constants
 import {
@@ -42,6 +48,7 @@ import {
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 
 // Actions & Selectors
+import {getAll} from 'src/resources/selectors'
 import {notify as notifyAction} from 'src/shared/actions/notifications'
 import {hasUpdatedTimeRangeInVEO} from 'src/shared/selectors/app'
 import {setCellMount as setCellMountAction} from 'src/perf/actions'
@@ -241,8 +248,15 @@ class TimeSeries extends Component<Props, State> {
         const orgID =
           getOrgIDFromBuckets(text, buckets) || this.props.match.params.orgID
 
-        const windowVars = getWindowVars(text, vars)
-        const extern = buildVarsOption([...vars, ...windowVars])
+        let extern
+        if (isFlagEnabled('filterExtern')) {
+          const windowVars = getWindowVarsFromVariables(text, variables)
+          extern = buildUsedVarsOption(text, variables, windowVars)
+        } else {
+          const windowVars = getWindowVars(text, vars)
+          extern = buildVarsOption([...vars, ...windowVars])
+        }
+
         event('runQuery', {context: 'TimeSeries'})
         if (isCurrentPageDashboard) {
           return onGetCachedResultsThunk(orgID, text)
@@ -261,7 +275,15 @@ class TimeSeries extends Component<Props, State> {
 
       let statuses = [] as StatusRow[][]
       if (check) {
-        const extern = buildVarsOption(vars)
+        let extern
+        if (isFlagEnabled('filterExtern')) {
+          extern = buildUsedVarsOption(
+            queries.map(query => query.text),
+            variables
+          )
+        } else {
+          extern = buildVarsOption(vars)
+        }
         this.pendingCheckStatuses = runStatusesQuery(
           this.props.match.params.orgID,
           check.id,
@@ -379,9 +401,15 @@ const mstp = (state: AppState, props: OwnProps) => {
   const queries = props.queries
     ? props.queries.map(q => q.text).filter(t => !!t.trim())
     : []
-  const vars = getVariables(state).filter(v =>
-    queries.some(t => isInQuery(t, v))
-  )
+  let vars
+  if (isFlagEnabled('filterExtern')) {
+    const astims = queries.map(query => parseASTIM(query))
+    vars = getVariables(state).filter(v =>
+      astims.some(astim => astim.hasVariable(v.name))
+    )
+  } else {
+    vars = getVariables(state).filter(v => queries.some(t => isInQuery(t, v)))
+  }
   const variables = [
     ...vars,
     getRangeVariable(TIME_RANGE_START, timeRange),

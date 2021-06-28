@@ -23,11 +23,12 @@ import {
 } from 'src/shared/copy/notifications'
 
 // Utils
-import {getActiveTimeMachine, getActiveQuery} from 'src/timeMachine/selectors'
 import fromFlux from 'src/shared/utils/fromFlux'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {getAllVariables, asAssignment} from 'src/variables/selectors'
-import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
+import {
+  buildVarsOption,
+  buildUsedVarsOption,
+} from 'src/variables/utils/buildVarsOption'
 import {findNodes} from 'src/shared/utils/ast'
 import {
   isDemoDataAvailabilityError,
@@ -61,6 +62,8 @@ import {
 import {getOrg} from 'src/organizations/selectors'
 import {getAll} from 'src/resources/selectors/index'
 import {isCurrentPageDashboard} from 'src/dashboards/selectors'
+import {getAllVariables, asAssignment} from 'src/variables/selectors'
+import {getActiveTimeMachine, getActiveQuery} from 'src/timeMachine/selectors'
 
 export type Action = SaveDraftQueriesAction | SetQueryResults
 
@@ -305,7 +308,12 @@ export const executeQueries = (abortController?: AbortController) => async (
         event('demoData_queried')
       }
 
-      const extern = buildVarsOption(variableAssignments)
+      let extern
+      if (isFlagEnabled('filterExtern')) {
+        extern = buildUsedVarsOption(text, allVariables)
+      } else {
+        extern = buildVarsOption(variableAssignments)
+      }
 
       event('runQuery', {context: 'timeMachine'})
 
@@ -338,7 +346,10 @@ export const executeQueries = (abortController?: AbortController) => async (
     } = state
 
     if (checkID) {
-      const extern = buildVarsOption(variableAssignments)
+      const extern = buildUsedVarsOption(
+        queries.map(query => query.text),
+        allVariables
+      )
       pendingCheckStatuses = runStatusesQuery(getOrg(state).id, checkID, extern)
       statuses = await pendingCheckStatuses.promise
     }

@@ -4,6 +4,7 @@ import {
   AGG_WINDOW_AUTO,
 } from 'src/timeMachine/constants/queryBuilder'
 import {
+  LEGEND_COLORIZE_ROWS_DEFAULT,
   LEGEND_OPACITY_DEFAULT,
   LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
 } from 'src/visualization/constants'
@@ -37,6 +38,7 @@ export default {
   ],
 
   colors: NINETEEN_EIGHTY_FOUR,
+  legendColorizeRows: LEGEND_COLORIZE_ROWS_DEFAULT,
   legendOpacity: LEGEND_OPACITY_DEFAULT,
   legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
 

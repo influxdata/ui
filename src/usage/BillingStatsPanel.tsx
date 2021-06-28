@@ -18,40 +18,6 @@ import {FromFluxResult} from '@influxdata/giraffe'
 // Types
 import {UsageVector, InternalFromFluxResult} from 'src/types'
 
-const graphInfo = [
-  {
-    title: 'Data In',
-    groupColumns: [],
-    column: 'writes_mb',
-    units: 'MB',
-    isGrouped: false,
-    type: 'stat',
-  },
-  {
-    title: 'Query Count',
-    groupColumns: [],
-    column: 'query_count',
-    units: '',
-    isGrouped: false,
-    type: 'stat',
-  },
-  {
-    title: 'Storage',
-    groupColumns: [],
-    column: 'storage_gb',
-    units: 'GB-hr',
-    isGrouped: false,
-    type: 'stat',
-  },
-  {
-    title: 'Data Out',
-    groupColumns: [],
-    column: 'reads_gb',
-    units: 'GB',
-    isGrouped: false,
-    type: 'stat',
-  },
-]
 const BillingStatsPanel: FC = () => {
   const {billingDateTime, billingStats, usageVectors} = useContext(UsageContext)
 
@@ -106,8 +72,6 @@ const BillingStatsPanel: FC = () => {
         className="billing-stats--graph-body"
       >
         {usageVectors?.map((vector: UsageVector) => {
-          // Find the matching graphInfo for the usage vector
-          const graph = graphInfo.find(g => g.column === vector.fluxKey)
           // Find the matching CSV for the usageVector
           const fromFluxResult = (billingStats?.find(
             (result: FromFluxResult) => {
@@ -128,7 +92,8 @@ const BillingStatsPanel: FC = () => {
           return (
             <GraphTypeSwitcher
               key={vector.fluxKey}
-              graphInfo={graph}
+              usageVector={vector}
+              type="stat"
               fromFluxResult={fromFluxResult}
               length={usageVectors.length}
             />

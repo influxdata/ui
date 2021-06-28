@@ -5,6 +5,7 @@ import {useDispatch} from 'react-redux'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import classnames from 'classnames'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Components
 import {
@@ -33,11 +34,6 @@ import {ANNOTATION_FORM_WIDTH} from 'src/annotations/constants'
 
 // Style
 import 'src/annotations/components/annotationForm/annotationForm.scss'
-
-interface Annotation {
-  message: string
-  startTime: number | string
-}
 
 type AnnotationType = 'point' | 'range'
 
@@ -159,6 +155,36 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
 
   const buttonClasses = classnames({'edit-annotation-buttons': isEditing})
 
+  const annoTypePicker = (
+    <React.Fragment>
+      <Form.Label label="Type" />
+      <SelectGroup
+        size={ComponentSize.Small}
+        style={{marginBottom: 8}}
+        color={ComponentColor.Default}
+      >
+        <SelectGroup.Option
+          onClick={changeToPointType}
+          active={'point' === annotationType}
+          id="annotation-form-point-type"
+          testID="annotation-form-point-type-option"
+          value="point"
+        >
+          Point
+        </SelectGroup.Option>
+        <SelectGroup.Option
+          onClick={changeToRangeType}
+          value="range"
+          active={'range' === annotationType}
+          id="annotation-form-range-type"
+          testID="annotation-form-range-type-option"
+        >
+          Range
+        </SelectGroup.Option>
+      </SelectGroup>
+    </React.Fragment>
+  )
+
   return (
     <Overlay.Container maxWidth={ANNOTATION_FORM_WIDTH}>
       <Overlay.Header
@@ -168,31 +194,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
       />
       <Form onSubmit={handleSubmit}>
         <Overlay.Body>
-          <Form.Label label="Type" />
-          <SelectGroup
-            size={ComponentSize.Small}
-            style={{marginBottom: 8}}
-            color={ComponentColor.Default}
-          >
-            <SelectGroup.Option
-              onClick={changeToPointType}
-              active={'point' === annotationType}
-              id="annotation-form-point-type"
-              testID="annotation-form-point-type-option"
-              value="point"
-            >
-              Point
-            </SelectGroup.Option>
-            <SelectGroup.Option
-              onClick={changeToRangeType}
-              value="range"
-              active={'range' === annotationType}
-              id="annotation-form-range-type"
-              testID="annotation-form-range-type-option"
-            >
-              Range
-            </SelectGroup.Option>
-          </SelectGroup>
+          {isFlagEnabled('rangeAnnotations') && annoTypePicker}
           <div className="annotation-type-option-line">
             <AnnotationTimeInput
               onChange={updateStartTime}

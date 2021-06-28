@@ -23,6 +23,7 @@ import {
   runTask,
   getRuns,
 } from 'src/tasks/actions/thunks'
+import {TaskPage, setCurrentTasksPage} from 'src/tasks/actions/creators'
 
 // Types
 import {ComponentColor, Button} from '@influxdata/clockface'
@@ -111,41 +112,35 @@ class UnconnectedTaskRunsCard extends PureComponent<
   private handleEditTask = () => {
     const {
       history,
-      currentTask,
+      task,
+      setCurrentTasksPage,
       match: {
         params: {orgID},
       },
     } = this.props
-
-    history.push(`/orgs/${orgID}/tasks/${currentTask.id}/edit`)
+    setCurrentTasksPage(TaskPage.TaskRunsPage)
+    history.push(`/orgs/${orgID}/tasks/${task.id}/edit`)
   }
 
   private get isTaskActive(): boolean {
     const {task} = this.props
-    if (task.status === 'active') {
-      return true
-    }
-    return false
+    return task.status === 'active'
   }
 
   private changeToggle = () => {
-    const {task, onActivate} = this.props
-    if (task.status === 'active') {
-      task.status = 'inactive'
-    } else {
-      task.status = 'active'
-    }
+    const {onActivate} = this.props
+    const task = {...this.props.task}
+    task.status = task.status === 'active' ? 'inactive' : 'active'
     onActivate(task)
   }
 }
 
 const mstp = (state: AppState) => {
-  const {runs, runStatus, currentTask} = state.resources.tasks
+  const {runs, runStatus} = state.resources.tasks
 
   return {
     runs,
     runStatus,
-    currentTask,
   }
 }
 
@@ -154,6 +149,7 @@ const mdtp = {
   onDeleteTaskLabel: deleteTaskLabel,
   onRunTask: runTask,
   getRuns,
+  setCurrentTasksPage,
 }
 
 const connector = connect(mstp, mdtp)

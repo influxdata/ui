@@ -18,6 +18,7 @@ export const initialState = (): ResourceState['tasks'] => ({
   runStatus: RemoteDataState.NotStarted,
   runs: [],
   logs: [],
+  currentPage: 'TasksPage',
 })
 
 export const defaultOptions: TaskOptions = {

@@ -15,11 +15,13 @@ import {
   RemoteDataState,
   XYViewProperties,
   InternalFromFluxResult,
+  UsageVector,
 } from 'src/types'
 
 interface OwnProps {
-  graphInfo: any
+  usageVector: UsageVector
   fromFluxResult: InternalFromFluxResult
+  type: 'xy' | 'stat'
   length?: number
 }
 
@@ -35,8 +37,9 @@ const GENERIC_PROPERTY_DEFAULTS = {
 }
 
 const GraphTypeSwitcher: FC<OwnProps> = ({
-  graphInfo,
+  usageVector,
   fromFluxResult,
+  type,
   length = 1,
 }) => {
   const timeRange = useSelector(getTimeRangeWithTimezone)
@@ -45,7 +48,7 @@ const GraphTypeSwitcher: FC<OwnProps> = ({
     ...GENERIC_PROPERTY_DEFAULTS,
     type: 'single-stat',
     shape: 'chronograf-v2',
-    suffix: ` ${graphInfo?.units ?? ''}`,
+    suffix: ` ${usageVector?.unit ?? ''}`,
     decimalPlaces: {isEnforced: false, digits: 0},
   }
 
@@ -58,10 +61,11 @@ const GraphTypeSwitcher: FC<OwnProps> = ({
       y: {},
     },
     position: 'overlaid',
+    yColumn: usageVector.fluxKey,
     geom: 'line',
   }
 
-  const isXy = graphInfo?.type === 'xy'
+  const isXy = type === 'xy'
 
   const error = fromFluxResult?.table?.columns?.error?.data?.[0]
 
@@ -72,7 +76,9 @@ const GraphTypeSwitcher: FC<OwnProps> = ({
       testID="graph-type--panel"
     >
       <Panel.Header size={ComponentSize.ExtraSmall}>
-        <h5>{graphInfo?.title}</h5>
+        <h5>{`${usageVector.name} ${
+          usageVector.unit !== '' ? `(${usageVector.unit})` : ''
+        }`}</h5>
       </Panel.Header>
       <Panel.Body
         className="panel-body--size"

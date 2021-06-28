@@ -90,16 +90,18 @@ const useGetUserStatus = () => {
   const getUserStatusDefinition = useCallback(async () => {
     let csvToParse = ''
     if (org?.id && getOrgsUsage) {
-      const usage = await getOrgsUsage({
-        orgID: org.id,
-        query: {
-          start: '-30d',
-        },
-      })
-      if (usage.status === 200 && isFlagEnabled('newUsageAPI')) {
-        console.warn(`Usage: ${usage}`)
-        csvToParse = usage.data?.trim().replace(/\r\n/g, '\n')
-        console.warn(`CSVTOPARSE: ${csvToParse}`)
+      if (isFlagEnabled('newUsageAPI')) {
+        const usage = await getOrgsUsage({
+          orgID: org.id,
+          query: {
+            start: '-30d',
+          },
+        })
+        if (usage?.status === 200) {
+          console.warn(`Usage: ${usage}`)
+          csvToParse = usage.data?.trim().replace(/\r\n/g, '\n')
+          console.warn(`CSVTOPARSE: ${csvToParse}`)
+        }
       } else {
         csvToParse = usageStatsCsv
       }

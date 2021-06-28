@@ -1,9 +1,10 @@
 // Utils
-import {get} from 'lodash'
+import {parseASTIM} from 'src/variables/utils/astim'
 import {isInQuery} from 'src/variables/utils/hydrateVars'
 
 // Types
 import {QueryViewProperties, View, ViewProperties, Variable} from 'src/types'
+import {isFlagEnabled} from './featureFlag'
 
 function isQueryViewProperties(vp: ViewProperties): vp is QueryViewProperties {
   return (vp as QueryViewProperties).queries !== undefined
@@ -16,13 +17,28 @@ export const getAllUsedVars = (
 ): Variable[] => {
   const vars = usedVars.slice()
   let varsInUse = []
-  usedVars.forEach((vari: Variable) => {
-    if (vari.arguments.type === 'query') {
-      const queryText = get(vari, 'arguments.values.query', '')
-      const usedV = variables.filter(variable => isInQuery(queryText, variable))
-      varsInUse = varsInUse.concat(usedV)
-    }
-  })
+  if (isFlagEnabled('filterExtern')) {
+    usedVars.forEach((vari: Variable) => {
+      if (vari.arguments.type === 'query') {
+        const queryText = vari?.arguments?.values?.query || ''
+        const astim = parseASTIM(queryText)
+        const usedV = variables.filter(variable =>
+          astim.hasVariable(variable.name)
+        )
+        varsInUse = varsInUse.concat(usedV)
+      }
+    })
+  } else {
+    usedVars.forEach((vari: Variable) => {
+      if (vari.arguments.type === 'query') {
+        const queryText = vari?.arguments?.values?.query || ''
+        const usedV = variables.filter(variable =>
+          isInQuery(queryText, variable)
+        )
+        varsInUse = varsInUse.concat(usedV)
+      }
+    })
+  }
 
   varsInUse.forEach((v: Variable) => {
     if (!cache[v.name]) {
@@ -52,10 +68,17 @@ export const filterUnusedVarsBasedOnQuery = (
   variables: Variable[],
   queryTexts: string[]
 ): Variable[] => {
-  const varsInUse = variables.filter(variable =>
-    queryTexts.some(text => isInQuery(text, variable))
-  )
-
+  let varsInUse
+  if (isFlagEnabled('filterExtern')) {
+    const astims = queryTexts.map(query => parseASTIM(query))
+    varsInUse = variables.filter(variable =>
+      astims.some(astim => astim.hasVariable(variable.name))
+    )
+  } else {
+    varsInUse = variables.filter(variable =>
+      queryTexts.some(text => isInQuery(text, variable))
+    )
+  }
   const cachedVars = createdUsedVarsCache(varsInUse)
 
   return getAllUsedVars(variables, varsInUse, cachedVars)

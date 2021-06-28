@@ -1,11 +1,16 @@
 import {Organization} from '../../../src/types'
 import {lines} from '../../support/commands'
+import * as moment from 'moment'
 
 describe('The Annotations UI functionality', () => {
   const singleStatSuffix = 'line-plus-single-stat'
   const bandSuffix = 'band'
 
-  const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') => {
+  const setupData = (
+    cy: Cypress.Chainable,
+    plotTypeSuffix = '',
+    enableRangeAnnotations = true
+  ) => {
     cy.flush()
     return cy.signin().then(() =>
       cy.get('@org').then(({id: orgID}: Organization) =>
@@ -16,7 +21,7 @@ describe('The Annotations UI functionality', () => {
               .setFeatureFlags({
                 annotations: true,
                 useGiraffeGraphs: true,
-                rangeAnnotations: true,
+                rangeAnnotations: enableRangeAnnotations,
               })
               .then(() => {
                 cy.createBucket(orgID, name, 'schmucket')
@@ -142,7 +147,7 @@ describe('The Annotations UI functionality', () => {
 
   const addAnnotation = (cy: Cypress.Chainable) => {
     cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('giraffe-inner-plot').click()
+      cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
     })
     cy.getByTestID('overlay--container').within(() => {
       cy.getByTestID('edit-annotation-message')
@@ -278,6 +283,30 @@ describe('The Annotations UI functionality', () => {
       actuallyDeleteAnnotation(cy)
     })
   })
+  describe('point annotations only, range annotations are off: ', () => {
+    beforeEach(() => setupData(cy, '', false))
+
+    it('can show the correct message on the annotation bar when range annotations are OFF', () => {
+      cy.getByTestID('annotations-control-bar').should(
+        'contain',
+        'Shift + click on a graph to create a point annotation'
+      )
+      cy.getByTestID('annotations-control-bar').should(
+        'not.contain',
+        'click + shift + drag to create a range annotation'
+      )
+    })
+
+    it('hides the range/point annotation type picker when range annotations are OFF', () => {
+      cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
+      })
+      cy.getByTestID('overlay--container').within(() => {
+        cy.getByTestID('annotation-form-point-type-option').should('not.exist')
+        cy.getByTestID('annotation-form-range-type-option').should('not.exist')
+      })
+    })
+  })
 
   describe('annotations on a graph (xy line) graph type: ', () => {
     beforeEach(() => setupData(cy))
@@ -302,6 +331,26 @@ describe('The Annotations UI functionality', () => {
       actuallyDeleteAnnotation(cy)
     })
 
+    it('can show the correct message on the annotation bar when range annotations are on', () => {
+      cy.getByTestID('annotations-control-bar').should(
+        'contain',
+        'Shift + click on a graph to create a point annotation'
+      )
+      cy.getByTestID('annotations-control-bar').should(
+        'contain',
+        'click + shift + drag to create a range annotation'
+      )
+    })
+
+    it('shows the range/point annotation type picker when range annotations are on', () => {
+      cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
+      })
+      cy.getByTestID('overlay--container').within(() => {
+        cy.getByTestID('annotation-form-point-type-option').should('be.visible')
+        cy.getByTestID('annotation-form-range-type-option').should('be.visible')
+      })
+    })
     it('can add a range annotation, then edit it and switch back and forth from point->range and the endtime stays the same', () => {
       addRangeAnnotation(cy)
       startEditingAnnotation(cy)
@@ -371,7 +420,7 @@ describe('The Annotations UI functionality', () => {
     })
     it('can add an annotation; that is originally a point and then switch to a range', () => {
       cy.getByTestID('cell blah').within(() => {
-        cy.getByTestID('giraffe-inner-plot').click()
+        cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
       })
       cy.getByTestID('overlay--container').within(() => {
         cy.getByTestID('edit-annotation-message')
@@ -403,7 +452,7 @@ describe('The Annotations UI functionality', () => {
               .then(endTimeValue => {
                 expect(endTimeValue).to.equal(startTimeValue)
 
-                const newEndTime = Cypress.moment(endTimeValue)
+                const newEndTime = moment(endTimeValue)
                   .add(10, 'minutes')
                   .format('YYYY-MM-DD hh:mm:ss a')
 
@@ -441,10 +490,8 @@ describe('The Annotations UI functionality', () => {
               expect(endTimeValue).to.not.equal(startTimeValue)
 
               // should be 10 minutes between them:
-              const duration = Cypress.moment.duration(
-                Cypress.moment(endTimeValue).diff(
-                  Cypress.moment(startTimeValue)
-                )
+              const duration = moment.duration(
+                moment(endTimeValue).diff(moment(startTimeValue))
               )
               const minutes = duration.asMinutes()
 
@@ -479,6 +526,14 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('toggle-annotations-controls').click()
       cy.getByTestID('annotations-control-bar').should('not.exist')
 
+      cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
+      })
+
+      cy.getByTestID('overlay--container').should('not.exist')
+    })
+
+    it('cannot create an annotation when the shift key is NOT pressed down', () => {
       cy.getByTestID('cell blah').within(() => {
         cy.getByTestID('giraffe-inner-plot').click()
       })
@@ -559,7 +614,7 @@ describe('The Annotations UI functionality', () => {
 
       // create a new annotation in it
       cy.getByTestID('cell newCell').within(() => {
-        cy.getByTestID('giraffe-inner-plot').click()
+        cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
       })
 
       cy.getByTestID('overlay--container').within(() => {

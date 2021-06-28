@@ -315,9 +315,7 @@ export class LSPServer {
     const variables = getAllVariables(state)
       .map(v => asAssignment(v))
       .filter(v => !!v)
-
     const file = buildVarsOption(variables)
-
     const parts = uri.split('/')
     parts.pop()
     const dir = parts.join('/')

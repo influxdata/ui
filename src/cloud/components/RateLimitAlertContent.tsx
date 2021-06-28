@@ -58,7 +58,7 @@ const RateLimitAlertContent: FC<Props> = ({className}) => {
   })
 
   const handleShowOverlay = () => {
-    dispatch(showOverlay('rate-limit', null, dispatch(dismissOverlay)))
+    dispatch(showOverlay('rate-limit', null, () => dispatch(dismissOverlay)))
   }
 
   if (showUpgradeButton) {

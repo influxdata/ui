@@ -27,7 +27,7 @@ const WriteLimitAlertContent: FC<Props> = ({className}) => {
   })
 
   const handleShowOverlay = () => {
-    dispatch(showOverlay('write-limit', null, dispatch(dismissOverlay)))
+    dispatch(showOverlay('write-limit', null, () => dispatch(dismissOverlay)))
   }
 
   if (showUpgradeButton) {

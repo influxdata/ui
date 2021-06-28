@@ -121,10 +121,11 @@ export const getOrgs = (
       account: {
         type: 'pay_as_you_go',
         balance: 0,
-        id: 'account123',
-        email: 'account@account.com',
+        id: 123,
+        deletable: false,
+        updatedAt: new Date().toString(),
+        billingContact: null,
       },
-      billingContact: null,
     },
     {
       idpeId: '345',
@@ -136,10 +137,11 @@ export const getOrgs = (
       account: {
         type: 'cancelled',
         balance: 0,
-        id: 'cancelled1',
-        email: 'cancelled@account.com',
+        id: 1,
+        deletable: true,
+        updatedAt: new Date().toString(),
+        billingContact: null,
       },
-      billingContact: null,
     },
     {
       idpeId: '678',
@@ -151,10 +153,11 @@ export const getOrgs = (
       account: {
         type: 'free',
         balance: 0,
-        id: 'free123',
-        email: 'free@account.com',
+        id: 123,
+        deletable: false,
+        updatedAt: new Date().toString(),
+        billingContact: null,
       },
-      billingContact: null,
     },
   ]
 
@@ -178,10 +181,11 @@ export const getOrgById = (_id: string): ReturnType<typeof getOperatorOrg> => {
     account: {
       type: 'pay_as_you_go',
       balance: 10,
-      id: 'pay123',
-      email: 'paid@account.com',
+      id: 123,
+      deletable: false,
+      updatedAt: new Date().toString(),
+      billingContact: null,
     },
-    billingContact: null,
   }
 
   return makeResponse(200, organization)

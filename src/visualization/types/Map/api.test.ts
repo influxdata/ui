@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import { mocked } from 'ts-jest/utils'
+import {mocked} from 'ts-jest/utils'
 import axios from 'axios'
-import { getMapToken } from './api'
+import {getMapToken} from './api'
 
 jest.mock('axios')
 
 describe('map api calls', () => {
   it('can get a map token', async () => {
     const mapTokenResponse = {
-      token: "MapTempToken"
+      token: 'MapTempToken',
     }
 
-    mocked(axios.get).mockImplementationOnce(() => 
+    mocked(axios.get).mockImplementationOnce(() =>
       Promise.resolve({data: mapTokenResponse})
     )
 
@@ -24,7 +24,7 @@ describe('map api calls', () => {
   it('handles an error from the server', async () => {
     const message = '401 unauthorized'
 
-    mocked(axios.get).mockImplementationOnce(() => 
+    mocked(axios.get).mockImplementationOnce(() =>
       Promise.reject(new Error(message))
     )
 

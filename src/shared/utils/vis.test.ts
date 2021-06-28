@@ -7,7 +7,7 @@ import {
   getGeoCoordinates,
   parseCoordinates,
   getCoordinateColumn,
-  CoordinateType
+  CoordinateType,
 } from 'src/shared/utils/vis'
 import {Table} from '@influxdata/giraffe'
 
@@ -165,18 +165,18 @@ describe('getGeoCoordinates - retrieve latitude and longitude values for map geo
 
 describe('parseCoordinates', () => {
   it('returns the coordinate as an integer', () => {
-    const coordinateStr = "23.50"
+    const coordinateStr = '23.50'
     const coodinateInt = parseCoordinates(coordinateStr)
     expect(coodinateInt).toEqual(23)
- })
+  })
 })
 
 describe('getCoordinateColumn', () => {
   it('returns S2 Coordinate Column type', () => {
     const table = ({
-      getColumn: (columnName) => {
+      getColumn: columnName => {
         if (columnName === 's2_cell_id') {
-          return [23.50, 53, 36]
+          return [23.5, 53, 36]
         }
         return null
       },
@@ -187,11 +187,10 @@ describe('getCoordinateColumn', () => {
   })
   it('returns Lat/Lon as tags Coordinate Column type', () => {
     const table = ({
-      getColumn: (columnName) => {
+      getColumn: columnName => {
         if (columnName === 'lat') {
           return [5, 6, 7]
-        }
-        else if (columnName === 'lon') {
+        } else if (columnName === 'lon') {
           return [5, 6, 7]
         }
         return null
@@ -203,11 +202,10 @@ describe('getCoordinateColumn', () => {
 
   it('returns Lat/Lon as fields Coordinate Column type', () => {
     const table = ({
-      getColumn: (columnName) => {
+      getColumn: columnName => {
         if (columnName === '_field') {
           return ['lat', 'lon', 'lat']
-        }
-        else if (columnName === '_value') {
+        } else if (columnName === '_value') {
           return [5, 6, 7]
         }
         return null
@@ -225,13 +223,13 @@ describe('getCoordinateColumn', () => {
     } as unknown) as Table
 
     expect(() => getCoordinateColumn(table)).toThrow()
- })
+  })
 })
 
 describe('getGeoCoordinate', () => {
   it('returns S2 Coordinate Column type', () => {
     const table = ({
-      getColumn: (columnName) => {
+      getColumn: columnName => {
         if (columnName === 's2_cell_id') {
           return ['164b35c', '164b3dc', '17b4854', '17b4854']
         }
@@ -239,44 +237,42 @@ describe('getGeoCoordinate', () => {
       },
     } as unknown) as Table
 
-    const expectedCoordinates = { "lat": 8.342754582399051, "lon": 39.00853461594906 }
+    const expectedCoordinates = {lat: 8.342754582399051, lon: 39.00853461594906}
 
     const coordinates = getGeoCoordinates(table, 0)
     expect(coordinates).toEqual(expectedCoordinates)
   })
   it('returns Lat/Lon as tags Coordinate Column type', () => {
     const table = ({
-      getColumn: (columnName) => {
+      getColumn: columnName => {
         if (columnName === 'lat') {
           return [5, 6, 7]
-        }
-        else if (columnName === 'lon') {
+        } else if (columnName === 'lon') {
           return [5, 6, 7]
         }
         return null
       },
     } as unknown) as Table
 
-    const expectedCoordinates = { "lat": 5, "lon": 5 }
-    
+    const expectedCoordinates = {lat: 5, lon: 5}
+
     const coordinates = getGeoCoordinates(table, 0)
     expect(coordinates).toEqual(expectedCoordinates)
   })
 
   it('returns Lat/Lon as fields Coordinate Column type', () => {
     const table = ({
-      getColumn: (columnName) => {
+      getColumn: columnName => {
         if (columnName === '_field') {
           return ['lat', 'lon', 'lat', 'lon']
-        }
-        else if (columnName === '_value') {
+        } else if (columnName === '_value') {
           return [5, 6, 7, 8]
         }
         return null
       },
     } as unknown) as Table
 
-    const expectedCoordinates = {"lat": 5, "lon": 6}
+    const expectedCoordinates = {lat: 5, lon: 6}
     const coordinates = getGeoCoordinates(table, 0)
     expect(coordinates).toEqual(expectedCoordinates)
   })

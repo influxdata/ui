@@ -394,7 +394,8 @@ const getColumnValue = (table: Table, field: string) => {
   return value
 }
 
-export const parseCoordinates = coordinate => parseInt(coordinate.toString(), 10)
+export const parseCoordinates = coordinate =>
+  parseInt(coordinate.toString(), 10)
 
 export const getCoordinateColumn = (table: Table): string => {
   try {

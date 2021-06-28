@@ -31,7 +31,7 @@ const SecretsList: FC<Props> = props => {
     sortDirection,
     sortType,
     onDeleteSecret,
-    handleEditSecret
+    handleEditSecret,
   } = props
 
   const sortedSecrets = useMemo(

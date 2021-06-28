@@ -88,49 +88,64 @@ describe('Secrets', () => {
     })
   })
 
-    it('Can perform basic CRUD via the UI', () => {
-        cy.intercept('PATCH', '**/secrets').as('upsertSecret')
-        cy.intercept('DELETE', '**/secrets').as('deleteSecret')
-        cy.getByTestID('button-add-secret')
-            .first() // There's a second one in the empty state.
-            .click()
-            .then(() => {
-                cy.getByTestID('variable-form-save').should('be.disabled')
-                cy.getByTestID('input-field').first().type("Shhhhh")
-                cy.getByTestID('variable-form-save').should('be.disabled')
-                cy.getByTestID('input-field').last().type("I'm hunting wabbits")
+  it('Can perform basic CRUD via the UI', () => {
+    cy.intercept('PATCH', '**/secrets').as('upsertSecret')
+    cy.intercept('DELETE', '**/secrets').as('deleteSecret')
+    cy.getByTestID('button-add-secret')
+      .first() // There's a second one in the empty state.
+      .click()
+      .then(() => {
+        cy.getByTestID('variable-form-save').should('be.disabled')
+        cy.getByTestID('input-field')
+          .first()
+          .type('Shhhhh')
+        cy.getByTestID('variable-form-save').should('be.disabled')
+        cy.getByTestID('input-field')
+          .last()
+          .type("I'm hunting wabbits")
+        cy.getByTestID('variable-form-save').should('be.enabled')
+        cy.getByTestID('variable-form-save').click()
+        cy.wait('@upsertSecret')
+          .its('response.statusCode')
+          .should('eq', 204)
+          .then(() => {
+            cy.getByTestID('secret-card--Shhhhh').should('exist')
+            cy.getByTestID('secret-card--Shhhhh').should('be.visible')
+            cy.getByTestID('secret-card--name Shhhhh')
+              .click()
+              .then(() => {
+                cy.getByTestID('input-field')
+                  .first()
+                  .type('This should do nothing')
+                cy.getByTestID('input-field')
+                  .first()
+                  .should('not.contain.text', 'This should do nothing')
+                cy.getByTestID('input-field')
+                  .last()
+                  .type("I'm hunting rabbits")
                 cy.getByTestID('variable-form-save').should('be.enabled')
                 cy.getByTestID('variable-form-save').click()
                 cy.wait('@upsertSecret')
-                    .its('response.statusCode')
-                    .should('eq', 204)
-                    .then(() => {
-                    cy.getByTestID('secret-card--Shhhhh').should('exist')
-                    cy.getByTestID('secret-card--Shhhhh').should('be.visible')
-                    cy.getByTestID('secret-card--name Shhhhh').click().then(() => {
-                        cy.getByTestID('input-field').first().type("This should do nothing")
-                        cy.getByTestID('input-field').first().should('not.contain.text', 'This should do nothing')
-                        cy.getByTestID('input-field').last().type("I'm hunting rabbits")
-                        cy.getByTestID('variable-form-save').should('be.enabled')
-                        cy.getByTestID('variable-form-save').click()
-                        cy.wait('@upsertSecret')
-                            .its('response.statusCode')
-                            .should('eq', 204)
-                            .then(() => {
-                            cy.getByTestID('delete-secret-initial--Shhhhh').click({force:true}).then(() => {
-                                cy.getByTestID('delete-secret-confirm--Shhhhh').should('be.visible')
-                                cy.getByTestID('delete-secret-confirm--Shhhhh').click()
-                                cy.wait('@deleteSecret')
-                                    .its('response.statusCode')
-                                    .should('eq', 204)
-                                // After deletion empty state should be visible
-                                cy.getByTestID('empty-state').should('be.visible')
-                                cy.getByTestID('empty-state').contains('Secrets')
-
-                            })
-                        })
-                    })
-                })
-            })
-    })
+                  .its('response.statusCode')
+                  .should('eq', 204)
+                  .then(() => {
+                    cy.getByTestID('delete-secret-initial--Shhhhh')
+                      .click({force: true})
+                      .then(() => {
+                        cy.getByTestID('delete-secret-confirm--Shhhhh').should(
+                          'be.visible'
+                        )
+                        cy.getByTestID('delete-secret-confirm--Shhhhh').click()
+                        cy.wait('@deleteSecret')
+                          .its('response.statusCode')
+                          .should('eq', 204)
+                        // After deletion empty state should be visible
+                        cy.getByTestID('empty-state').should('be.visible')
+                        cy.getByTestID('empty-state').contains('Secrets')
+                      })
+                  })
+              })
+          })
+      })
+  })
 })

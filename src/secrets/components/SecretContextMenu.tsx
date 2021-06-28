@@ -4,13 +4,22 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import {useDispatch} from 'react-redux'
 
 // Components
-import {Button, ButtonShape, ComponentColor, ComponentSize, IconFont,} from '@influxdata/clockface'
+import {
+  Button,
+  ButtonShape,
+  ComponentColor,
+  ComponentSize,
+  IconFont,
+} from '@influxdata/clockface'
 
 // Actions
 import {notify} from 'src/shared/actions/notifications'
 
 // Notifications
-import {copyToClipboardFailed, copyToClipboardSuccess,} from 'src/shared/copy/notifications'
+import {
+  copyToClipboardFailed,
+  copyToClipboardSuccess,
+} from 'src/shared/copy/notifications'
 
 // Types
 import {Secret} from 'src/types'

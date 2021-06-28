@@ -62,9 +62,9 @@ const SecretsTab: FC = () => {
   }
 
   const handleSort = (
-      sortKey: SecretSortKey,
-      sortDirection: Sort,
-      sortType: SortTypes
+    sortKey: SecretSortKey,
+    sortDirection: Sort,
+    sortType: SortTypes
   ): void => {
     setSortDirection(sortDirection)
     setSortKey(sortKey)
@@ -183,7 +183,7 @@ const SecretsTab: FC = () => {
           onKeyValidation={handleKeyValidation}
           defaultKey={defaultKey}
           mode={overlayMode}
-          />
+        />
       </GetResources>
     </>
   )

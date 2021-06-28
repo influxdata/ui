@@ -1,4 +1,4 @@
-import React, {FC, useState, useEffect} from 'react'
+import React, {FC} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import classnames from 'classnames'
 

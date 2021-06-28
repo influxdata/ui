@@ -53,8 +53,7 @@ const ClientCodeQueryHelper: FC<Props> = ({clientQuery, contentID}) => {
 
     const ast = parse(clientQuery)
     const queryBucket = getBucketsFromAST(ast)[0]
-
-    changeBucket({name: queryBucket} as Bucket)
+    queryBucket && changeBucket({name: queryBucket} as Bucket)
     updateBucketInAST(ast, '<%= bucket %>')
     changeQuery(format_from_js_file(ast))
   }, [clientQuery, def.query, changeBucket, changeQuery])

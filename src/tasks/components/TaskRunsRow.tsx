@@ -15,6 +15,7 @@ import {getLogs, retryTask} from 'src/tasks/actions/thunks'
 import {ComponentSize, ComponentColor, Button} from '@influxdata/clockface'
 import {AppState, Run} from 'src/types'
 import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 
 interface OwnProps {
   taskID: string
@@ -76,12 +77,11 @@ class TaskRunsRow extends PureComponent<Props, State> {
     }
     const newdate = new Date(dt)
     const {timeZone} = this.props
+
     const formatted =
       timeZone === 'UTC'
-        ? moment(newdate)
-            .utc()
-            .format(DEFAULT_TIME_FORMAT)
-        : moment(newdate).format(DEFAULT_TIME_FORMAT)
+      ? createDateTimeFormatter(DEFAULT_TIME_FORMAT, 'UTC').format(newdate)
+        : createDateTimeFormatter(DEFAULT_TIME_FORMAT).format(newdate)
 
     return formatted
   }

@@ -42,7 +42,9 @@ class RunLogRow extends PureComponent<Props> {
     }
 
     const newdate = new Date(dt)
-    const formatted = createDateTimeFormatter(resolveTimeFormat(DEFAULT_TIME_FORMAT)).format(newdate)
+    const formatted = createDateTimeFormatter(
+      resolveTimeFormat(DEFAULT_TIME_FORMAT)
+    ).format(newdate)
 
     return formatted
   }

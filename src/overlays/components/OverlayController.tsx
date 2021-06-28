@@ -89,7 +89,7 @@ export const OverlayController: FunctionComponent = () => {
         activeOverlay.current = <RateLimitOverlay onClose={onClose} />
         break
       case 'write-limit':
-        activeOverlay.current = <WriteLimitOverlay onClose={onClose} />
+        activeOverlay.current = <WriteLimitOverlay />
         break
       case 'add-annotation':
         activeOverlay.current = <AddAnnotationOverlay />

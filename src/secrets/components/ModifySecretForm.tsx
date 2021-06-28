@@ -106,7 +106,7 @@ const ModifySecretForm: FC<Props> = ({
         </Grid.Row>
         <Grid.Row>
           <Grid.Column>
-            <Form.Label label='Value' />
+            <Form.Label label="Value" />
           </Grid.Column>
         </Grid.Row>
         <Grid.Row>

@@ -54,7 +54,7 @@ interface Props {
 export const WRONG_ORDER_MESSAGE = 'End Time must be after the start time'
 export const END_TIME_IN_FUTURE_MESSAGE = 'End Time cannot be in the future'
 export const TIMES_ARE_SAME_MESSAGE =
-  'End Time is the same as start time, please adjust or create a point annotation instead.'
+  'End Time is the same as start time, it must be after the start time for range annotations.'
 export const START_TIME_IN_FUTURE_MESSAGE = 'Start Time cannot be in the future'
 
 export const AnnotationForm: FC<Props> = (props: Props) => {
@@ -169,6 +169,8 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
    * return an error message here, along with the isValid flag
    *
    * If no message, then it is valid (just return a true isValid flag)
+   *
+   * since this is only vaild for range annotations, if it is a point annotations just return true
    * */
   const validateEndTime = () => {
     if (annotationType === 'point') {
@@ -181,9 +183,6 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
      * if range:
      * making sure they are not the same, and also that 'end' is after 'start'
      */
-
-    // console.log(`times??? ${startTime}: ${endTime}`)
-    // console.log(`types??? ${typeof(startTime)} : ${typeof(endTime)}`)
 
     const start = moment(startTime)
     const end = moment(endTime)

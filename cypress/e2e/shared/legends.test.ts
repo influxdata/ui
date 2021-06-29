@@ -440,7 +440,9 @@ describe('Legends', () => {
               .click({force: true})
 
             // Submit the query before saving
+            cy.get('.giraffe-plot').should('not.exist')
             cy.getByTestID('time-machine-submit-button').click()
+            cy.get('.giraffe-plot').should('be.visible')
 
             // Select "show" to open the static legend options
             cy.getByTestID('cog-cell--button').click()
@@ -587,7 +589,9 @@ describe('Legends', () => {
             .click({force: true})
 
           // Submit the query before saving
+          cy.get('.giraffe-plot').should('not.exist')
           cy.getByTestID('time-machine-submit-button').click()
+          cy.get('.giraffe-plot').should('be.visible')
 
           // Select "show" to open the static legend options
           cy.getByTestID('cog-cell--button').click()

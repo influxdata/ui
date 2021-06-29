@@ -125,7 +125,7 @@ export const UsersProvider: FC<Props> = React.memo(({children}) => {
   const handleInviteUser = useCallback(async () => {
     try {
       const resp = await postOrgsInvite({orgId, data: draftInvite})
-      console.log('resp" ', resp)
+
       if (resp.status !== 201) {
         throw new Error(resp.data.message)
       }

@@ -121,11 +121,10 @@ export const getOrgs = (
       account: {
         type: 'pay_as_you_go',
         balance: 0,
-        id: 123,
-        deletable: false,
-        updatedAt: new Date().toString(),
-        billingContact: null,
+        id: '123',
+        email: 'pay@influxdata.com',
       },
+      billingContact: null,
     },
     {
       idpeId: '345',
@@ -137,11 +136,10 @@ export const getOrgs = (
       account: {
         type: 'cancelled',
         balance: 0,
-        id: 1,
-        deletable: true,
-        updatedAt: new Date().toString(),
-        billingContact: null,
+        id: '1',
+        email: 'cancelled@influxdata.com',
       },
+      billingContact: null,
     },
     {
       idpeId: '678',
@@ -153,11 +151,10 @@ export const getOrgs = (
       account: {
         type: 'free',
         balance: 0,
-        id: 123,
-        deletable: false,
-        updatedAt: new Date().toString(),
-        billingContact: null,
+        id: '123',
+        email: 'free@influxdata.com',
       },
+      billingContact: null,
     },
   ]
 
@@ -181,11 +178,10 @@ export const getOrgById = (_id: string): ReturnType<typeof getOperatorOrg> => {
     account: {
       type: 'pay_as_you_go',
       balance: 10,
-      id: 123,
-      deletable: false,
-      updatedAt: new Date().toString(),
-      billingContact: null,
+      email: 'payg@influxdata.com',
+      id: '123',
     },
+    billingContact: null,
   }
 
   return makeResponse(200, organization)

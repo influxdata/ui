@@ -1154,7 +1154,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
         })
       })
     })
-    const timeFormatOriginal = 'YYYY-MM-DD HH:mm:ss a'
+    const timeFormatOriginal = 'YYYY-MM-DD HH:mm:ss'
     const timeFormatNew = 'hh:mm a'
 
     cy.log('creating new dashboard cell')

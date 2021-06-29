@@ -398,6 +398,9 @@ describe('Legends', () => {
             cy.getByTestID('overlay--container').should('exist')
             cy.getByTestID('save-as-dashboard-cell--dropdown').click()
             cy.getByTestID('save-as-dashboard-cell--create-new-dash').click()
+            cy.getByTestID('save-as-dashboard-cell--dashboard-name')
+              .clear()
+              .type('Static Legend DE1')
             cy.getByTestID('save-as-dashboard-cell--cell-name')
               .click()
               .type(cellName)
@@ -454,6 +457,9 @@ describe('Legends', () => {
             cy.getByTestID('overlay--container').should('exist')
             cy.getByTestID('save-as-dashboard-cell--dropdown').click()
             cy.getByTestID('save-as-dashboard-cell--create-new-dash').click()
+            cy.getByTestID('save-as-dashboard-cell--dashboard-name')
+              .clear()
+              .type('Static Legend DE2')
             cy.getByTestID('save-as-dashboard-cell--cell-name')
               .click()
               .type(cellName)
@@ -486,10 +492,14 @@ describe('Legends', () => {
 
       cy.setFeatureFlags({staticLegend: true})
 
-      cy.getByTestID('add-resource-dropdown--button').click()
+      cy.getByTestID('add-resource-dropdown--button')
+        .first()
+        .click()
       cy.getByTestID('add-resource-dropdown--new').click()
 
-      cy.getByTestID('page-title').should('exist')
+      cy.getByTestID('page-title')
+        .should('exist')
+        .type('Static Legend D1')
       cy.get('button[title*="Add cell"').click()
 
       cy.get<string>('@defaultBucketListSelector').then(
@@ -544,10 +554,14 @@ describe('Legends', () => {
 
       cy.setFeatureFlags({staticLegend: true})
 
-      cy.getByTestID('add-resource-dropdown--button').click()
+      cy.getByTestID('add-resource-dropdown--button')
+        .first()
+        .click()
       cy.getByTestID('add-resource-dropdown--new').click()
 
-      cy.getByTestID('page-title').should('exist')
+      cy.getByTestID('page-title')
+        .should('exist')
+        .type('Static Legend D2')
       cy.get('button[title*="Add cell"').click()
 
       cy.get<string>('@defaultBucketListSelector').then(

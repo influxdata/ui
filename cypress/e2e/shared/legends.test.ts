@@ -383,11 +383,10 @@ describe('Legends', () => {
               .should('be.visible')
               .click({force: true})
 
+            // Select "show" to open the static legend options
             cy.getByTestID('cog-cell--button').click()
             cy.getByTestID('view-type--dropdown').click()
             cy.getByTestID(`view-type--xy`).click()
-
-            // Select "show" to open the static legend options
             cy.get('[for="radio_static_legend_show"]').click()
             cy.getByTestID('static-legend-height-slider').should('exist')
             cy.getByTestID('static-legend-orientation-toggle').should('exist')
@@ -437,19 +436,18 @@ describe('Legends', () => {
               .should('be.visible')
               .click({force: true})
 
+            // Submit the query before saving
+            cy.getByTestID('time-machine-submit-button').click()
+
+            // Select "show" to open the static legend options
             cy.getByTestID('cog-cell--button').click()
             cy.getByTestID('view-type--dropdown').click()
             cy.getByTestID(`view-type--xy`).click()
-
-            // Select "show" to open the static legend options
             cy.get('[for="radio_static_legend_show"]').click()
             cy.getByTestID('static-legend-height-slider').should('exist')
             cy.getByTestID('static-legend-orientation-toggle').should('exist')
             cy.getByTestID('static-legend-opacity-slider').should('exist')
             cy.getByTestID('static-legend-colorize-rows-toggle').should('exist')
-
-            // Submit the query before saving
-            cy.getByTestID('time-machine-submit-button').click()
 
             // Save it to a dashboard
             cy.getByTestID('save-query-as').click()
@@ -518,6 +516,8 @@ describe('Legends', () => {
 
           // Select "show" to open the static legend options
           cy.getByTestID('cog-cell--button').click()
+          cy.getByTestID('view-type--dropdown').click()
+          cy.getByTestID(`view-type--xy`).click()
           cy.get('[for="radio_static_legend_show"]').click()
           cy.getByTestID('static-legend-height-slider').should('exist')
           cy.getByTestID('static-legend-orientation-toggle').should('exist')
@@ -572,8 +572,13 @@ describe('Legends', () => {
             .should('be.visible')
             .click({force: true})
 
+          // Submit the query before saving
+          cy.getByTestID('time-machine-submit-button').click()
+
           // Select "show" to open the static legend options
           cy.getByTestID('cog-cell--button').click()
+          cy.getByTestID('view-type--dropdown').click()
+          cy.getByTestID(`view-type--xy`).click()
           cy.get('[for="radio_static_legend_show"]').click()
           cy.getByTestID('static-legend-height-slider').should('exist')
           cy.getByTestID('static-legend-orientation-toggle').should('exist')
@@ -585,9 +590,6 @@ describe('Legends', () => {
               .click()
               .type(cellName)
           })
-
-          // Submit the query before saving
-          cy.getByTestID('time-machine-submit-button').click()
 
           // Save it to a dashboard
           cy.getByTestID('save-cell--button').click()

@@ -72,32 +72,38 @@ const RateLimitAlert: FC<Props> = ({
   }
 
   useEffect(() => {
-    if (!showUpgrade) {
-      sendNotify(
-        writeLimitReached(
-          '',
-          <UpgradeContent
-            type="write"
-            link="https://docs.influxdata.com/influxdb/v2.0/write-data/best-practices/optimize-writes/"
-            className="flex-upgrade-content"
-          />
+    if (
+      CLOUD &&
+      status === LimitStatus.EXCEEDED &&
+      resources.includes('write')
+    ) {
+      if (showUpgrade) {
+        sendNotify(
+          writeLimitReached(
+            '',
+            <UpgradeContent
+              type="write"
+              link="https://docs.influxdata.com/influxdb/v2.0/write-data/best-practices/optimize-writes/"
+              className="flex-upgrade-content"
+            />
+          )
         )
-      )
-    } else {
-      sendNotify(
-        writeLimitReached(
-          "Data in has stopped because you've hit the query write limit. Let's get it flowing again: ",
-          <Button
-            className="rate-alert-overlay-button"
-            color={ComponentColor.Primary}
-            size={ComponentSize.Small}
-            onClick={appearOverlay}
-            text="Request Write Limit Increase"
-          />
+      } else {
+        sendNotify(
+          writeLimitReached(
+            "Data in has stopped because you've hit the query write limit. Let's get it flowing again: ",
+            <Button
+              className="rate-alert-overlay-button"
+              color={ComponentColor.Primary}
+              size={ComponentSize.Small}
+              onClick={appearOverlay}
+              text="Request Write Limit Increase"
+            />
+          )
         )
-      )
+      }
     }
-  }, [showUpgrade])
+  }, [showUpgrade, status])
   const rateLimitAlertClass = classnames('rate-alert', {
     [`${className}`]: className,
   })

@@ -316,8 +316,7 @@ describe('visualizations', () => {
       makeGraphSnapshot().shouldBeSameAs(snapshot)
     })
 
-    // TODO - fix failing test (works locally, fails in circleci)
-    it.skip('can hover over graph to show tooltip', () => {
+    it('can hover over graph to show tooltip', () => {
       // build the query to return data from beforeEach
       cy.getByTestID(`selector-list m`).click()
       cy.getByTestID('selector-list v').click()
@@ -325,17 +324,13 @@ describe('visualizations', () => {
 
       cy.getByTestID('time-machine-submit-button').click()
 
-      cy.getByTestID('giraffe-tooltip').should('not.visible')
-      cy.getByTestID('giraffe-layer-line')
-        .click()
-        .trigger('mouseover')
+      cy.get('.giraffe-tooltip-container').should('not.exist')
 
-      cy.wait(100)
-      cy.getByTestID('giraffe-layer-line').trigger('mousemove', {force: true})
-
-      cy.getByTestID('giraffe-tooltip').should('be.visible')
-      cy.getByTestID('giraffe-layer-line').trigger('mouseout', {force: true})
-      cy.getByTestID('giraffe-tooltip').should('not.visible')
+      // check for existence only, do not check for visibility
+      // because the tooltip has height only when the mouse is located
+      // in certain parts of the plot which requires precise mouse positioning
+      cy.get('.giraffe-inner-plot').trigger('mouseover')
+      cy.get('.giraffe-tooltip-container').should('exist')
     })
 
     it('can view table data & sort values numerically', () => {

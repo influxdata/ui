@@ -26,6 +26,7 @@ import {
   removeTask,
   setNewScript,
   clearCurrentTask,
+  TaskPage,
   Action as TaskAction,
 } from 'src/tasks/actions/creators'
 
@@ -368,7 +369,21 @@ export const goToTasks = () => (
 ) => {
   const org = getOrg(getState())
 
-  dispatch(push(`/orgs/${org.id}/tasks`))
+  dispatch(push(`/orgs/${org.id}/tasks/`))
+}
+
+export const goToTaskRuns = () => (
+  dispatch: Dispatch<Action | RouterAction>,
+  getState: GetState
+) => {
+  const state = getState()
+  const {
+    tasks: {currentTask},
+  } = state.resources
+
+  const org = getOrg(getState())
+
+  dispatch(push(`/orgs/${org.id}/tasks/${currentTask.id}/runs`))
 }
 
 export const cancel = () => (dispatch: Dispatch<Action | RouterAction>) => {
@@ -383,7 +398,12 @@ export const updateScript = () => async (
   try {
     const state = getState()
     const {
-      tasks: {currentScript: script, currentTask: task, taskOptions},
+      tasks: {
+        currentScript: script,
+        currentTask: task,
+        taskOptions,
+        currentPage,
+      },
     } = state.resources
 
     const updatedTask: Partial<Task> & {
@@ -411,7 +431,12 @@ export const updateScript = () => async (
       throw new Error(resp.data.message)
     }
 
-    dispatch(goToTasks())
+    if (currentPage === TaskPage.TasksPage) {
+      dispatch(goToTasks())
+    } else if (currentPage === TaskPage.TaskRunsPage) {
+      dispatch(goToTaskRuns())
+    }
+
     dispatch(clearCurrentTask())
     dispatch(notify(copy.taskUpdateSuccess()))
   } catch (error) {

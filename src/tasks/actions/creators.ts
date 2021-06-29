@@ -23,6 +23,7 @@ export const SET_RUNS = 'SET_RUNS'
 export const SET_LOGS = 'SET_LOGS'
 export const REMOVE_TASK = 'REMOVE_TASK'
 export const ADD_TASK = 'ADD_TASK'
+export const SET_CURRENT_TASKS_PAGE = 'SET_CURRENT_TASKS_PAGE'
 
 export type Action =
   | ReturnType<typeof setTasks>
@@ -41,6 +42,7 @@ export type Action =
   | ReturnType<typeof clearCurrentTask>
   | ReturnType<typeof removeTask>
   | ReturnType<typeof addTask>
+  | ReturnType<typeof setCurrentTasksPage>
 
 // R is the type of the value of the "result" key in normalizr's normalization
 type TasksSchema<R extends string | string[]> = NormalizedSchema<
@@ -140,4 +142,14 @@ export const setLogs = (logs: LogEvent[]) =>
   ({
     type: SET_LOGS,
     logs,
+  } as const)
+
+export enum TaskPage {
+  TasksPage = 'TasksPage',
+  TaskRunsPage = 'TaskRunsPage',
+}
+export const setCurrentTasksPage = (page: TaskPage) =>
+  ({
+    type: SET_CURRENT_TASKS_PAGE,
+    tasksPage: page,
   } as const)

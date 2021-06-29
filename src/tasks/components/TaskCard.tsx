@@ -21,6 +21,7 @@ import {CopyResourceID} from 'src/shared/components/CopyResourceID'
 
 // Actions
 import {addTaskLabel, deleteTaskLabel} from 'src/tasks/actions/thunks'
+import {TaskPage, setCurrentTasksPage} from 'src/tasks/actions/creators'
 
 // Types
 import {ComponentColor} from '@influxdata/clockface'
@@ -149,8 +150,10 @@ export class TaskCard extends PureComponent<
       },
       history,
       task,
+      setCurrentTasksPage,
     } = this.props
     const url = `/orgs/${orgID}/tasks/${task.id}/edit`
+    setCurrentTasksPage(TaskPage.TasksPage)
 
     if (event.metaKey) {
       window.open(url, '_blank')
@@ -237,12 +240,9 @@ export class TaskCard extends PureComponent<
   }
 
   private changeToggle = () => {
-    const {task, onActivate} = this.props
-    if (task.status === 'active') {
-      task.status = 'inactive'
-    } else {
-      task.status = 'active'
-    }
+    const {onActivate} = this.props
+    const task = {...this.props.task}
+    task.status = task.status === 'active' ? 'inactive' : 'active'
     onActivate(task)
   }
 
@@ -264,6 +264,7 @@ export class TaskCard extends PureComponent<
 const mdtp = {
   onAddTaskLabel: addTaskLabel,
   onDeleteTaskLabel: deleteTaskLabel,
+  setCurrentTasksPage,
 }
 
 const connector = connect(null, mdtp)

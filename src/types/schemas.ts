@@ -16,6 +16,7 @@ import {
   View,
   NotificationRule,
   NotificationEndpoint,
+  Secret,
 } from 'src/types'
 
 // AuthEntities defines the result of normalizr's normalization
@@ -106,6 +107,14 @@ export interface RuleEntities {
 export interface ScraperEntities {
   scrapers: {
     [uuid: string]: Scraper
+  }
+}
+
+// SecretEntities defines the result of normalizr's normalization
+// of the "secrets" resource
+export interface SecretEntities {
+  secrets: {
+    [key: string]: Secret
   }
 }
 

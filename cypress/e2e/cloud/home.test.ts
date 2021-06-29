@@ -7,14 +7,10 @@ describe('Home Page Tests', () => {
     cy.signin().then(() => {
       cy.get('@org').then(() => {
         cy.getByTestID('home-page--header').should('be.visible')
-        cy.window().then(w => {
-          w.influx.set('alertsActivity', true)
-          w.influx.set('notebooks', true)
+        cy.setFeatureFlags({
+          alertsActivity: true,
+          notebooks: true,
         })
-
-        // setting influx flag takes a bit as cy.window is async call and the test
-        // execution starts right after before the flag change actually comes into effect
-        cy.wait(1000)
       })
     })
   })
@@ -198,12 +194,12 @@ const createCheck = (
   cy.getByTestID('create-threshold-check').click()
 
   cy.log('select measurement and field')
-  cy.intercept('POST', '/query', req => {
+  cy.intercept('POST', '/api/v2/query?*', req => {
     if (req.body.query.includes('_measurement')) {
       req.alias = 'measurementQuery'
     }
   })
-  cy.intercept('POST', '/query', req => {
+  cy.intercept('POST', '/api/v2/query?*', req => {
     if (req.body.query.includes('distinct(column: "_field")')) {
       req.alias = 'fieldQuery'
     }
@@ -236,12 +232,12 @@ const createCheck = (
   cy.getByTestID('overlay').should('not.exist')
   // bust the /query cache
   cy.reload()
-  cy.intercept('POST', '/query', req => {
+  cy.intercept('POST', '/api/v2/query?*', req => {
     if (req.body.query.includes('_measurement')) {
       req.alias = 'measurementQueryBeta'
     }
   })
-  cy.intercept('POST', '/query', req => {
+  cy.intercept('POST', '/api/v2/query?*', req => {
     if (req.body.query.includes('distinct(column: "_field")')) {
       req.alias = 'fieldQueryBeta'
     }

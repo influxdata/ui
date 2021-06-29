@@ -2,10 +2,24 @@
 import uuid from 'uuid'
 
 // Types
-import {NewCell, Cell, Dashboard, AppState, RemoteDataState} from 'src/types'
+import {
+  NewCell,
+  Cell,
+  Dashboard,
+  AppState,
+  RemoteDataState,
+  ViewProperties,
+  XYViewProperties,
+  LinePlusSingleStatProperties,
+  BandViewProperties,
+} from 'src/types'
 
 // Constants
 import {UNTITLED_GRAPH} from 'src/dashboards/constants'
+import {
+  STATIC_LEGEND_CELL_HEIGHT_DEFAULT,
+  staticLegendTypes,
+} from 'src/visualization/constants'
 
 const getMostCommonValue = (values: number[]): number => {
   const results = values.reduce(
@@ -34,13 +48,23 @@ export const isCellUntitled = (cellName: string): boolean => {
 export const getNewDashboardCell = (
   state: AppState,
   dashboard: Dashboard,
-  clonedCell?: Cell
+  clonedCell: Cell,
+  viewProperties: ViewProperties
 ): NewCell => {
+  const isStaticLegendType = staticLegendTypes.has(viewProperties?.type)
+
   const defaultCell = {
     id: uuid.v4(),
     x: 0,
     y: 0,
-    h: 4,
+    h:
+      isStaticLegendType &&
+      (viewProperties as
+        | XYViewProperties
+        | LinePlusSingleStatProperties
+        | BandViewProperties)?.staticLegend?.show
+        ? STATIC_LEGEND_CELL_HEIGHT_DEFAULT
+        : 4,
     w: 4,
     links: {
       self: '',
@@ -62,7 +86,21 @@ export const getNewDashboardCell = (
   const existingCellHeights = cells.map(cell => cell.h)
 
   const mostCommonCellWidth = getMostCommonValue(existingCellWidths)
-  const mostCommonCellHeight = getMostCommonValue(existingCellHeights)
+  let mostCommonCellHeight = getMostCommonValue(existingCellHeights)
+
+  if (isStaticLegendType) {
+    const {staticLegend} = viewProperties as
+      | XYViewProperties
+      | LinePlusSingleStatProperties
+      | BandViewProperties
+
+    if (staticLegend.show) {
+      mostCommonCellHeight = Math.max(
+        STATIC_LEGEND_CELL_HEIGHT_DEFAULT,
+        mostCommonCellHeight
+      )
+    }
+  }
 
   let newCell = {
     ...defaultCell,

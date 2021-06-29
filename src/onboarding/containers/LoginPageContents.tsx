@@ -28,7 +28,7 @@ import {Auth0Connection, FormFieldValidation} from 'src/types'
 // APIs & Actions
 import {notify} from 'src/shared/actions/notifications'
 import {passwordResetSuccessfully} from 'src/shared/copy/notifications'
-import {getAuth0Config} from 'src/authorizations/apis'
+import {getAuth0Config, getConnection} from 'src/authorizations/apis'
 import {getFromLocalStorage} from 'src/localStorage'
 
 interface ErrorObject {
@@ -178,11 +178,22 @@ class LoginPageContents extends PureComponent<Props> {
     hasError: errorMessage !== '',
   })
 
-  private handleSubmit = (event: FormEvent) => {
-    const {isValid, errors} = this.validateFieldValues
+  private handleSubmit = async (event: FormEvent) => {
+    event.preventDefault()
     const {email, password} = this.state
 
-    event.preventDefault()
+    if (email) {
+      try {
+        const connection = await getConnection(email)
+        if (!!connection) {
+          return this.auth0.authorize({connection})
+        }
+      } catch (e) {
+        console.error(e)
+      }
+    }
+
+    const {isValid, errors} = this.validateFieldValues
 
     if (!isValid) {
       this.setState(errors)

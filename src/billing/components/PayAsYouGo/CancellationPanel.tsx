@@ -12,13 +12,6 @@ import CancellationOverlay from 'src/billing/components/PayAsYouGo/CancellationO
 
 const CancellationPanel: FC = () => {
   const [isOverlayVisible, setIsOverlayVisible] = useState(false)
-  const handleShowOverlay = () => {
-    setIsOverlayVisible(true)
-  }
-
-  const handleHideOverlay = () => {
-    setIsOverlayVisible(false)
-  }
 
   return (
     <>
@@ -27,7 +20,7 @@ const CancellationPanel: FC = () => {
           <h4>Cancel Service</h4>
           <Button
             color={ComponentColor.Default}
-            onClick={handleShowOverlay}
+            onClick={() => setIsOverlayVisible(true)}
             text="Cancel Service"
             size={ComponentSize.Small}
           />
@@ -39,10 +32,9 @@ const CancellationPanel: FC = () => {
           </p>
         </Panel.Body>
       </Panel>
-      <CancellationOverlay
-        isOverlayVisible={isOverlayVisible}
-        onHideOverlay={handleHideOverlay}
-      />
+      {isOverlayVisible && (
+        <CancellationOverlay onHideOverlay={() => setIsOverlayVisible(false)} />
+      )}
     </>
   )
 }

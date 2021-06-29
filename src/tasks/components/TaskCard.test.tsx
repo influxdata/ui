@@ -1,6 +1,5 @@
 // Libraries
 import React from 'react'
-import {fireEvent} from '@testing-library/react'
 import {renderWithReduxAndRouter} from 'src/mockState'
 
 // Components
@@ -25,6 +24,7 @@ const setup = (override = {}) => {
     onAddTaskLabel: jest.fn(),
     onDeleteTaskLabel: jest.fn(),
     onCreateLabel: jest.fn(),
+    setCurrentTasksPage: jest.fn(),
     labels: [], // all labels
     ...override,
   }
@@ -55,22 +55,6 @@ describe('Tasks.Components.TaskCard', () => {
       const labels = getAllByTestId(/label--pill /)
 
       expect(labels.length).toEqual(task.labels.length)
-    })
-  })
-
-  describe('activation', () => {
-    beforeEach(() => {
-      jest.clearAllMocks()
-    })
-
-    it('can trigger deactivation', () => {
-      const {ui, props} = setup()
-
-      fireEvent.click(ui.getByTestId('task-card--slide-toggle'))
-      expect(props.onActivate.mock.calls[0][0].status).toEqual('inactive')
-
-      fireEvent.click(ui.getByTestId('task-card--slide-toggle'))
-      expect(props.onActivate.mock.calls[1][0].status).toEqual('active')
     })
   })
 })

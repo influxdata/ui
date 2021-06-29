@@ -565,6 +565,27 @@ export const deleteLabelFailed = (): Notification => ({
   message: 'Failed to delete label',
 })
 
+// Secrets
+export const getSecretsFailed = (): Notification => ({
+  ...defaultErrorNotification,
+  message: 'Failed to fetch secrets',
+})
+
+export const createSecretFailed = (): Notification => ({
+  ...defaultErrorNotification,
+  message: 'Failed to create secret',
+})
+
+export const upsertSecretFailed = (): Notification => ({
+  ...defaultErrorNotification,
+  message: 'Failed to create or update secret',
+})
+
+export const deleteSecretsFailed = (): Notification => ({
+  ...defaultErrorNotification,
+  message: 'Failed to delete secret',
+})
+
 // Buckets
 export const getBucketsFailed = (): Notification => ({
   ...defaultErrorNotification,

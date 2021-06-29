@@ -25,6 +25,7 @@ export interface TasksState extends NormalizedState<Task> {
   runs: Run[]
   runStatus: RemoteDataState
   logs: LogEvent[]
+  currentPage: string
 }
 
 export enum TaskSchedule {

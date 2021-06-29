@@ -26,28 +26,34 @@ import {MINIMUM_BALANCE_THRESHOLD} from 'src/shared/constants'
 import {BillingNotifySettings} from 'src/types/billing'
 
 type Props = {
-  isOverlayVisible: boolean
   onHideOverlay: () => void
 }
 
-const NotificationSettingsOverlay: FC<Props> = ({
-  onHideOverlay,
-  isOverlayVisible,
-}) => {
+const NotificationSettingsOverlay: FC<Props> = ({onHideOverlay}) => {
   const {billingSettings, handleUpdateBillingSettings} = useContext(
     BillingContext
   )
-  const [isNotifyActive, setIsNotifyActive] = useState(billingSettings.isNotify)
-  const [balanceThreshold, setBalanceThreshold] = useState(
-    billingSettings.balanceThreshold
+  const [isNotifyActive, setIsNotifyActive] = useState<boolean>(
+    billingSettings.isNotify
   )
+  const [balanceThreshold, setBalanceThreshold] = useState<number>(
+    billingSettings.balanceThreshold ?? MINIMUM_BALANCE_THRESHOLD
+  )
+  const [hasThresholdError, setHasThresholdError] = useState<boolean>(false)
 
   const onSubmitThreshold = () => {
-    const settings = {
+    if (`${balanceThreshold}`.includes('.')) {
+      setHasThresholdError(true)
+      return
+    }
+    const settings: BillingNotifySettings = {
       notifyEmail,
-      balanceThreshold,
+      balanceThreshold:
+        typeof balanceThreshold === 'string'
+          ? parseFloat(balanceThreshold)
+          : balanceThreshold,
       isNotify: isNotifyActive,
-    } as BillingNotifySettings
+    }
     handleUpdateBillingSettings(settings)
     onHideOverlay()
   }
@@ -63,16 +69,19 @@ const NotificationSettingsOverlay: FC<Props> = ({
   }
 
   const onBalanceThresholdChange = e => {
+    if (hasThresholdError) {
+      setHasThresholdError(false)
+    }
     setBalanceThreshold(e.target.value)
   }
 
   const saveStatus =
-    balanceThreshold < MINIMUM_BALANCE_THRESHOLD
+    Number(balanceThreshold) < MINIMUM_BALANCE_THRESHOLD
       ? ComponentStatus.Disabled
       : ComponentStatus.Default
 
   return (
-    <Overlay visible={isOverlayVisible}>
+    <Overlay visible={true}>
       <Overlay.Container>
         <Overlay.Header
           title="Notification Settings"
@@ -107,7 +116,12 @@ const NotificationSettingsOverlay: FC<Props> = ({
                     onChange={onEmailChange}
                   />
                 </Form.Element>
-                <Form.Element label="Send email when usage bill exceeds">
+                <Form.Element
+                  label="Send email when usage bill exceeds"
+                  errorMessage={
+                    hasThresholdError && 'Please provide a whole number'
+                  }
+                >
                   <Input
                     type={InputType.Number}
                     min={10}

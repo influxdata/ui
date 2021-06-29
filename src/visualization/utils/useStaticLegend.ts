@@ -1,4 +1,9 @@
-import {useMemo} from 'react'
+// Libraries
+import {useMemo, useCallback} from 'react'
+import {useDispatch} from 'react-redux'
+
+// Actions
+import {setStaticLegend} from 'src/timeMachine/actions'
 
 // Types
 import {StaticLegend as StaticLegendConfig} from '@influxdata/giraffe'
@@ -9,9 +14,23 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {
+  LEGEND_COLORIZE_ROWS_DEFAULT,
+  LEGEND_OPACITY_DEFAULT,
+  LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+  LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL,
+  LEGEND_ORIENTATION_THRESHOLD_VERTICAL,
+  STATIC_LEGEND_HEIGHT_RATIO_DEFAULT,
+  STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM,
+  STATIC_LEGEND_HEIGHT_RATIO_MINIMUM,
+  STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
   STATIC_LEGEND_SHOW_DEFAULT,
   STATIC_LEGEND_STYLING,
+  STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
 } from 'src/visualization/constants'
+import {NOISY_LEGEND_COLUMN_NAMES} from 'src/shared/utils/vis'
+
+// Metrics
+import {event} from 'src/cloud/utils/reporting'
 
 /*
  ***************************************************************
@@ -42,19 +61,119 @@ import {
 
 const convertShowToHide = (showState: boolean): boolean => !showState
 
-export const useStaticLegend = (properties): StaticLegendConfig =>
-  useMemo(() => {
+const eventPrefix = 'visualization.customize.staticlegend'
+
+export const useStaticLegend = (properties): StaticLegendConfig => {
+  const dispatch = useDispatch()
+  const update = useCallback(
+    (staticLegend: StaticLegendAPI) => {
+      dispatch(
+        setStaticLegend({
+          ...properties.staticLegend,
+          ...staticLegend,
+        })
+      )
+    },
+    [dispatch, properties.staticLegend]
+  )
+  return useMemo(() => {
+    const {
+      legendColorizeRows = LEGEND_COLORIZE_ROWS_DEFAULT,
+      legendOpacity = LEGEND_OPACITY_DEFAULT,
+      legendOrientationThreshold = LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+    } = properties
+
     const {
       staticLegend = {
+        colorizeRows: LEGEND_COLORIZE_ROWS_DEFAULT,
+        heightRatio: STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
+        opacity: LEGEND_OPACITY_DEFAULT,
+        orientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
         show: STATIC_LEGEND_SHOW_DEFAULT,
+        widthRatio: STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
       } as StaticLegendAPI,
     } = properties
 
-    const {show, ...config} = staticLegend
+    const {
+      colorizeRows = false, // undefined is false because of omitempty
+      heightRatio = STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
+      orientationThreshold = legendOrientationThreshold,
+      show = STATIC_LEGEND_SHOW_DEFAULT,
+      ...config
+    } = staticLegend
 
-    if (!isFlagEnabled('staticLegend')) {
-      return {...config, ...STATIC_LEGEND_STYLING, hide: true}
+    if (!show && heightRatio === STATIC_LEGEND_HEIGHT_RATIO_NOT_SET) {
+      update({
+        colorizeRows: legendColorizeRows,
+        opacity: legendOpacity,
+        orientationThreshold: legendOrientationThreshold,
+      })
     }
 
-    return {...config, hide: convertShowToHide(show), ...STATIC_LEGEND_STYLING}
-  }, [properties])
+    return {
+      ...config,
+      colorizeRows,
+      heightRatio,
+      hide: isFlagEnabled('staticLegend') ? convertShowToHide(show) : true,
+      orientationThreshold,
+      ...STATIC_LEGEND_STYLING,
+      renderEffect: options => {
+        const {
+          staticLegendHeight,
+          totalHeight,
+          legendDataLength,
+          lineCount,
+          padding,
+          headerTextMetrics,
+          sampleTextMetrics,
+        } = options
+
+        const headerMaxHeight = headerTextMetrics.height
+        const sampleMaxHeight = sampleTextMetrics.height
+
+        if (staticLegendHeight === STATIC_LEGEND_HEIGHT_RATIO_NOT_SET) {
+          let estimatedHeight = STATIC_LEGEND_HEIGHT_RATIO_DEFAULT
+
+          if (
+            orientationThreshold === LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL
+          ) {
+            estimatedHeight =
+              lineCount * sampleMaxHeight + headerMaxHeight + padding / 2
+          }
+
+          if (orientationThreshold === LEGEND_ORIENTATION_THRESHOLD_VERTICAL) {
+            const length =
+              legendDataLength - NOISY_LEGEND_COLUMN_NAMES.length > 0
+                ? legendDataLength - NOISY_LEGEND_COLUMN_NAMES.length
+                : legendDataLength
+            estimatedHeight = length * sampleMaxHeight + padding
+          }
+
+          let updatedHeightRatio = estimatedHeight / totalHeight
+
+          if (updatedHeightRatio > STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM) {
+            updatedHeightRatio = STATIC_LEGEND_HEIGHT_RATIO_MAXIMUM
+          }
+          if (updatedHeightRatio < STATIC_LEGEND_HEIGHT_RATIO_MINIMUM) {
+            updatedHeightRatio = STATIC_LEGEND_HEIGHT_RATIO_MINIMUM
+          }
+          if (
+            typeof updatedHeightRatio !== 'number' ||
+            updatedHeightRatio !== updatedHeightRatio
+          ) {
+            updatedHeightRatio = STATIC_LEGEND_HEIGHT_RATIO_DEFAULT
+          }
+
+          event(`${eventPrefix}.heightRatio.autoAdjust`, {
+            type: properties.type,
+            updatedHeightRatio,
+          })
+
+          update({
+            heightRatio: updatedHeightRatio,
+          })
+        }
+      },
+    }
+  }, [properties, update])
+}

@@ -5,15 +5,29 @@ import {
   ButtonType,
   ComponentColor,
   ComponentSize,
+  Panel,
 } from '@influxdata/clockface'
 
 // Components
 import {CsvUploaderContext} from 'src/buckets/components/context/csvUploader'
-import {getCsvBody} from 'src/buckets/components/csvUploader/CsvUploaderWizard'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
+import CsvUploaderBody from 'src/buckets/components/csvUploader/CsvUploaderBody'
+import CsvUploaderSuccess from 'src/buckets/components/csvUploader/CsvUploaderSuccess'
+import CsvUploaderError from 'src/buckets/components/csvUploader/CsvUploaderError'
 
 // Types
 import {RemoteDataState} from 'src/types'
+
+const getCsvBody = (uploadState: RemoteDataState, bucket?: string) => {
+  switch (uploadState) {
+    case RemoteDataState.Done:
+      return <CsvUploaderSuccess />
+    case RemoteDataState.Error:
+      return <CsvUploaderError />
+    default:
+      return <CsvUploaderBody bucket={bucket} />
+  }
+}
 
 const CsvMethod: FC = () => {
   const {uploadState, resetUploadState} = useContext(CsvUploaderContext)
@@ -25,30 +39,34 @@ const CsvMethod: FC = () => {
     buttonText = 'Cancel'
   }
 
-  if (
-    uploadState === RemoteDataState.Error ||
-    uploadState === RemoteDataState.Done
-  ) {
-    buttonText = 'Clear'
+  if (uploadState === RemoteDataState.Done) {
+    buttonText = 'Upload More Data'
+  }
+  if (uploadState === RemoteDataState.Error) {
+    buttonText = 'Clear Error'
   }
 
   return (
-    <>
-      {getCsvBody(uploadState, bucket.name)}
+    <Panel>
+      <Panel.Body className="csv-body--padding">
+        {getCsvBody(uploadState, bucket.name)}
+      </Panel.Body>
       {uploadState !== RemoteDataState.NotStarted && (
-        <div className="csv-button--wrapper">
-          <Button
-            color={ComponentColor.Default}
-            text={buttonText}
-            size={ComponentSize.Medium}
-            type={ButtonType.Button}
-            onClick={resetUploadState}
-            testID="csv-state--button"
-            style={{minWidth: 100}}
-          />
-        </div>
+        <Panel.Footer>
+          <div className="csv-button--wrapper">
+            <Button
+              color={ComponentColor.Default}
+              text={buttonText}
+              size={ComponentSize.Medium}
+              type={ButtonType.Button}
+              onClick={resetUploadState}
+              testID="csv-state--button"
+              style={{minWidth: 100}}
+            />
+          </div>
+        </Panel.Footer>
       )}
-    </>
+    </Panel>
   )
 }
 

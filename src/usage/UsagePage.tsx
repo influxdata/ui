@@ -8,9 +8,12 @@ import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import LimitChecker from 'src/cloud/components/LimitChecker'
 import UsageProvider from 'src/usage/context/usage'
 
+// Utils
+import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
+
 const Usage: FC = () => (
   <UsageProvider>
-    <Page titleTag="Usage">
+    <Page titleTag={pageTitleSuffixer(['Usage'])}>
       <Page.Header fullWidth={false} testID="usage-page--header">
         <Page.Title title="Usage" />
         <LimitChecker>

@@ -1,3 +1,5 @@
+const clipboardy = require('clipboardy')
+
 module.exports = on => {
   on('before:browser:launch', (browser = {}, launchOptions) => {
     // see https://github.com/flotwig/cypress-log-to-output/issues/5
@@ -30,5 +32,10 @@ module.exports = on => {
     }
 
     return launchOptions
-  })
+  }),
+    on('task', {
+      getClipboard: () => {
+        return clipboardy.readSync()
+      },
+    })
 }

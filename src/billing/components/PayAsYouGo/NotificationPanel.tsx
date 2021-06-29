@@ -41,10 +41,9 @@ const NotificationPanel: FC = () => {
           </div>
         </Panel.Body>
       </Panel>
-      <NotificationSettingsOverlay
-        isOverlayVisible={isOverlayVisible}
-        onHideOverlay={handleHideOverlay}
-      />
+      {isOverlayVisible && (
+        <NotificationSettingsOverlay onHideOverlay={handleHideOverlay} />
+      )}
     </>
   )
 }

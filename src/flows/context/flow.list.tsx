@@ -23,22 +23,13 @@ import {
   getAllAPI,
   migrateLocalFlowsToAPI,
 } from 'src/flows/context/api'
-import {
-  pooledUpdateAPI as pooledUpdateAPINotebooks,
-  createAPI as createAPINotebooks,
-  deleteAPI as deleteAPINotebooks,
-  getAllAPI as getAllAPINotebooks,
-  migrateLocalFlowsToAPI as migrateLocalFlowsToAPINotebooks,
-} from 'src/flows/context/notebooks.api'
 import {notify} from 'src/shared/actions/notifications'
 import {
   notebookCreateFail,
   notebookDeleteFail,
 } from 'src/shared/copy/notifications'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {incrementCloneName} from 'src/utils/naming'
 
-const notebookAPIFlag = 'notebooksApi'
 export interface FlowListContextType extends FlowList {
   add: (flow?: Flow) => Promise<string>
   clone: (id: string) => void
@@ -221,9 +212,7 @@ export const FlowListProvider: FC = ({children}) => {
     }
     let id: string = `local_${UUID()}`
     try {
-      id = isFlagEnabled(notebookAPIFlag)
-        ? await createAPINotebooks(apiFlow)
-        : await createAPI(apiFlow)
+      id = await createAPI(apiFlow)
     } catch {
       dispatch(notify(notebookCreateFail()))
     }
@@ -272,9 +261,7 @@ export const FlowListProvider: FC = ({children}) => {
         spec: serialize(data),
       },
     }
-    isFlagEnabled(notebookAPIFlag)
-      ? pooledUpdateAPINotebooks(apiFlow)
-      : pooledUpdateAPI(apiFlow)
+    pooledUpdateAPI(apiFlow)
   }
 
   const remove = async (id: string) => {
@@ -282,9 +269,7 @@ export const FlowListProvider: FC = ({children}) => {
       ...flows,
     }
     try {
-      isFlagEnabled(notebookAPIFlag)
-        ? await deleteAPINotebooks({id})
-        : await deleteAPI({orgID: org.id, id})
+      await deleteAPI({id})
     } catch (error) {
       dispatch(notify(notebookDeleteFail()))
     }
@@ -298,9 +283,7 @@ export const FlowListProvider: FC = ({children}) => {
   }
 
   const getAll = useCallback(async (): Promise<void> => {
-    const data = isFlagEnabled(notebookAPIFlag)
-      ? await getAllAPINotebooks(org.id)
-      : await getAllAPI(org.id)
+    const data = await getAllAPI(org.id)
     if (data && data.flows) {
       const _flows = {}
       data.flows.forEach(f => (_flows[f.id] = hydrate(f.spec)))
@@ -319,14 +302,12 @@ export const FlowListProvider: FC = ({children}) => {
   )
 
   const migrate = async () => {
-    const _flows = isFlagEnabled(notebookAPIFlag)
-      ? await migrateLocalFlowsToAPINotebooks(
-          org.id,
-          flows,
-          serialize,
-          dispatch
-        )
-      : await migrateLocalFlowsToAPI(org.id, flows, serialize, dispatch)
+    const _flows = await migrateLocalFlowsToAPI(
+      org.id,
+      flows,
+      serialize,
+      dispatch
+    )
     setFlows({..._flows})
     if (currentID && currentID.includes('local')) {
       // if we migrated the local currentID flow, reset currentID

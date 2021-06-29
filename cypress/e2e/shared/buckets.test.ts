@@ -9,9 +9,6 @@ describe('Buckets', () => {
         cy.fixture('routes').then(({orgs, buckets}) => {
           cy.visit(`${orgs}/${id}${buckets}`)
           cy.getByTestID('tree-nav')
-          cy.window().then(() => {
-            cy.getByTestID('tree-nav')
-          })
         })
       )
     })
@@ -104,7 +101,7 @@ describe('Buckets', () => {
       cy.reload()
       cy.getByTestID(`bucket-card ${bucket1}`).trigger('mouseover')
       cy.getByTestID(`context-delete-menu ${bucket1}`).click()
-      cy.intercept('DELETE', '/buckets').as('deleteBucket')
+      cy.intercept('DELETE', '/api/v2/buckets/*').as('deleteBucket')
       cy.getByTestID(`context-delete-bucket ${bucket1}`).click({force: true})
       cy.wait('@deleteBucket')
       cy.getByTestID(`bucket--card--name ${bucket1}`).should('not.exist')

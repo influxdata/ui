@@ -12,6 +12,9 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
+import {ResourceType} from 'src/types'
+import SecretsTab from 'src/secrets/components/SecretsTab'
+import GetResources from 'src/resources/components/GetResources'
 
 const SecretsIndex: FC = () => {
   const org = useSelector(getOrg)
@@ -21,7 +24,9 @@ const SecretsIndex: FC = () => {
       <Page titleTag={pageTitleSuffixer(['Secrets', 'Settings'])}>
         <SettingsHeader />
         <SettingsTabbedPage activeTab="secrets" orgID={org.id}>
-          <div>Placeholder</div>
+          <GetResources resources={[ResourceType.Secrets]}>
+            <SecretsTab />
+          </GetResources>
         </SettingsTabbedPage>
       </Page>
     </>

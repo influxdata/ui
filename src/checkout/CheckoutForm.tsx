@@ -91,7 +91,7 @@ const CheckoutForm: FC = () => {
                   element={HeadingElement.H2}
                   appearance={HeadingElement.H5}
                 >
-                  Set My Limits
+                  Send Me Alerts
                 </Heading>
               }
             />

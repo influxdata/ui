@@ -3,7 +3,10 @@ import {parse} from 'src/external/parser'
 
 // Utils
 import {getMinDurationFromAST} from 'src/shared/utils/getMinDurationFromAST'
-import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
+import {
+  buildUsedVarsOption,
+  buildVarsOption,
+} from 'src/variables/utils/buildVarsOption'
 // Constants
 import {WINDOW_PERIOD} from 'src/variables/constants'
 
@@ -18,6 +21,32 @@ const FALLBACK_WINDOW_PERIOD = 15000
 /*
   Compute the `v.windowPeriod` variable assignment for a query.
 */
+export const getWindowVarsFromVariables = (
+  query: string,
+  variables: Variable[]
+): VariableAssignment[] => {
+  if (!query.includes(WINDOW_PERIOD)) {
+    return []
+  }
+
+  const windowPeriod =
+    getWindowPeriodFromVariables(query, variables) || FALLBACK_WINDOW_PERIOD
+
+  return [
+    {
+      type: 'VariableAssignment',
+      id: {
+        type: 'Identifier',
+        name: WINDOW_PERIOD,
+      },
+      init: {
+        type: 'DurationLiteral',
+        values: [{magnitude: windowPeriod, unit: 'ms'}],
+      },
+    },
+  ]
+}
+
 export const getWindowVars = (
   query: string,
   variables: VariableAssignment[]
@@ -82,11 +111,66 @@ export const getWindowPeriod = (
   }
 }
 
+export const getWindowPeriodFromVariables = (
+  query: string,
+  variables: Variable[]
+): number | null => {
+  if (query.length === 0) {
+    return null
+  }
+  try {
+    const ast = parse(query)
+    const substitutedAST: Package = {
+      package: '',
+      type: 'Package',
+      files: [ast, buildUsedVarsOption(query, variables)],
+    }
+
+    const queryDuration = getMinDurationFromAST(substitutedAST) // in ms
+
+    const foundDuration = SELECTABLE_TIME_RANGES.find(
+      tr => tr.seconds * 1000 === queryDuration
+    )
+
+    if (foundDuration) {
+      return foundDuration.windowPeriod
+    }
+
+    return calcWindowPeriodForDuration(queryDuration)
+  } catch (error) {
+    return null
+  }
+}
+
 export const getWindowPeriodVariable = (
   query: string,
   variables: VariableAssignment[]
 ): Variable[] | null => {
   const total = getWindowPeriod(query, variables)
+
+  if (total === null || total === Infinity) {
+    return null
+  }
+
+  const windowPeriodVariable: Variable = {
+    orgID: '',
+    id: WINDOW_PERIOD,
+    name: WINDOW_PERIOD,
+    arguments: {
+      type: 'system',
+      values: [total],
+    },
+    status: RemoteDataState.Done,
+    labels: [],
+  }
+
+  return [windowPeriodVariable]
+}
+export const getWindowPeriodVariableFromVariables = (
+  query: string,
+  variables: Variable[]
+): Variable[] | null => {
+  const total = getWindowPeriodFromVariables(query, variables)
 
   if (total === null || total === Infinity) {
     return null

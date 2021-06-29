@@ -30,10 +30,10 @@ const InnerTable: FC<InnerProps> = ({table}) => {
       const cells = Object.values(table.cols).map(c => {
         let val = c.data[idx]
 
-        if (c.type === 'time') {
+        if (val && c.type === 'time') {
           val = new Date(val).toISOString()
         }
-        if (c.type === 'boolean') {
+        if (val && c.type === 'boolean') {
           val = val ? 'true' : 'false'
         }
 
@@ -42,7 +42,7 @@ const InnerTable: FC<InnerProps> = ({table}) => {
             key={`h${c.name}:r${idx}`}
             testID={`table-cell ${c.data[idx]}`}
           >
-            {val}
+            {val?.toString()}
           </Table.Cell>
         )
       })

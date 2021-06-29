@@ -23,3 +23,8 @@
     cursor: default;
   }
 }
+
+.graph-tips-line {
+  display: grid;
+  grid-template-columns: 120px auto;
+}

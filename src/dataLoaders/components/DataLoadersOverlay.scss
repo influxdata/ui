@@ -101,3 +101,9 @@ $line-protocol--content-height: 206px;
   justify-content: center;
   flex-direction: column;
 }
+
+.cf-panel {
+  .csv-body--padding {
+    padding: $cf-marg-d $cf-marg-c;
+  }
+}

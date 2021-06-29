@@ -9,8 +9,7 @@ import {getAccounts, getOrgs} from 'src/operator/api'
 import {getAccountsError, getOrgsError} from 'src/shared/copy/notifications'
 
 // Types
-import {Account, Organization} from 'src/types/operator'
-import {RemoteDataState} from 'src/types'
+import {OperatorAccount, OperatorOrg, RemoteDataState} from 'src/types'
 import {OperatorRoutes} from 'src/operator/constants'
 
 export type Props = {
@@ -18,10 +17,10 @@ export type Props = {
 }
 
 export interface OperatorContextType {
-  accounts: Account[]
+  accounts: OperatorAccount[]
   handleGetAccounts: () => void
   handleGetOrgs: () => void
-  organizations: Organization[]
+  organizations: OperatorOrg[]
   pathname: string
   searchTerm: string
   setSearchTerm: (searchTerm?: string) => void
@@ -44,13 +43,13 @@ export const OperatorContext = React.createContext<OperatorContextType>(
 )
 
 export const OperatorProvider: FC<Props> = React.memo(({children}) => {
-  const [accounts, setAccounts] = useState([])
+  const [accounts, setAccounts] = useState<OperatorAccount[]>([])
   const [accountStatus, setAccountStatus] = useState(RemoteDataState.NotStarted)
   const [orgsStatus, setOrgsStatus] = useState(RemoteDataState.NotStarted)
   const [searchTerm, setSearchTerm] = useState('')
   const dispatch = useDispatch()
 
-  const [organizations, setOrganizations] = useState([])
+  const [organizations, setOrganizations] = useState<OperatorOrg[]>([])
 
   const handleGetAccounts = useCallback(async () => {
     try {

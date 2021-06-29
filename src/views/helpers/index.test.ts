@@ -11,7 +11,7 @@ import {
   LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
   LEGEND_COLORIZE_ROWS_DEFAULT,
   LEGEND_HIDE_DEFAULT,
-} from 'src/shared/constants'
+} from 'src/visualization/constants'
 
 describe('intro test', () => {
   it('get the dbc (default bucket config)', () => {
@@ -47,10 +47,10 @@ describe('testing view refactoring/components', () => {
   }
 
   const legendProps = {
-    legendOpacity: LEGEND_OPACITY_DEFAULT,
-    legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
     legendColorizeRows: LEGEND_COLORIZE_ROWS_DEFAULT,
     legendHide: LEGEND_HIDE_DEFAULT,
+    legendOpacity: LEGEND_OPACITY_DEFAULT,
+    legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
   }
 
   const checkLegendProps = graphProps => {

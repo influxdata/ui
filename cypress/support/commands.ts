@@ -1,8 +1,22 @@
-import {NotificationEndpoint} from '../../src/types'
+import {NotificationEndpoint, Secret} from '../../src/types'
 import {Bucket, Organization} from '../../src/client'
+import {setOverrides, FlagMap} from 'src/shared/actions/flags'
 import 'cypress-file-upload'
 
 const DEX_URL_VAR = 'dexUrl'
+
+Cypress.on('uncaught:exception', (err, _) => {
+  // returning false here prevents Cypress from failing the test when there are console errors.
+  // this was the default behavior until cypress v7.
+  // we expect a 401 error when logging in with DEX's APIs, so ignore that but fail for all other console errors.
+  // we also can ignore AbortErrors for when network requests are terminated early.
+  return !(
+    err.message.includes('Request failed with status code 401') ||
+    err.message.includes('The operation was aborted') ||
+    err.message.includes('NetworkError') ||
+    err.message.includes('path not found')
+  )
+})
 
 export const signin = (): Cypress.Chainable<Cypress.Response> => {
   return cy.setupUser().then((response: any) => {
@@ -247,6 +261,17 @@ export const createBucket = (
       organization,
       retentionRules: [],
     },
+  })
+}
+
+export const upsertSecret = (
+  orgID: string,
+  secret: Secret
+): Cypress.Chainable<Cypress.Response> => {
+  return cy.request({
+    method: 'PATCH',
+    url: `/api/v2/orgs/${orgID}/secrets`,
+    body: secret,
   })
 }
 
@@ -737,6 +762,15 @@ export const makeGraphSnapshot = (() => {
   }
 })()
 
+export const setFeatureFlags = (flags: FlagMap): Cypress.Chainable => {
+  // make sure the app is loaded before dispatching
+  cy.getByTestID('tree-nav')
+  return cy.window().then(win => {
+    // eslint-disable-next-line no-extra-semi
+    ;(win as any).store.dispatch(setOverrides(flags))
+  })
+}
+
 /* eslint-disable */
 // notification endpoints
 Cypress.Commands.add('createEndpoint', createEndpoint)
@@ -805,6 +839,9 @@ Cypress.Commands.add('createMapVariable', createMapVariable)
 Cypress.Commands.add('createLabel', createLabel)
 Cypress.Commands.add('createAndAddLabel', createAndAddLabel)
 
+// secrets
+Cypress.Commands.add('upsertSecret', upsertSecret)
+
 // test
 Cypress.Commands.add('writeData', writeData)
 
@@ -815,4 +852,5 @@ Cypress.Commands.add(
   fillInOSSLoginFormWithDefaults
 )
 Cypress.Commands.add('getByTestIDAndSetInputValue', getByTestIDAndSetInputValue)
+Cypress.Commands.add('setFeatureFlags', setFeatureFlags)
 /* eslint-enable */

@@ -1,72 +1,61 @@
 import {Organization} from '../../../src/types'
 import {lines} from '../../support/commands'
+import * as moment from 'moment'
 
 describe('The Annotations UI functionality', () => {
   const singleStatSuffix = 'line-plus-single-stat'
   const bandSuffix = 'band'
 
-  const setupData = (cy, plotTypeSuffix = '') => {
+  const setupData = (
+    cy: Cypress.Chainable,
+    plotTypeSuffix = '',
+    enableRangeAnnotations = true
+  ) => {
     cy.flush()
-    cy.signin().then(() =>
-      cy.fixture('routes').then(({orgs}) => {
-        cy.get('@org').then(({id: orgID}: Organization) => {
-          cy.visit(`${orgs}/${orgID}/dashboards-list`)
-          cy.getByTestID('tree-nav')
-        })
-      })
-    )
-    cy.window().then(w => {
-      cy.wait(1000)
-      w.influx.set('annotations', true)
-      w.influx.set('useGiraffeGraphs', true)
-      w.influx.set('rangeAnnotations', true)
-    })
-    cy.get('@org').then(({id: orgID}: Organization) => {
-      cy.createDashboard(orgID).then(({body}) => {
-        cy.fixture('routes').then(({orgs}) => {
-          cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
-          cy.getByTestID('tree-nav')
-          cy.createBucket(orgID, name, 'schmucket')
-          // have to add large amount of data to fill the window so that the random click for annotation works
-          cy.writeData(lines(3000), 'schmucket')
-        })
-      })
-    })
+    return cy.signin().then(() =>
+      cy.get('@org').then(({id: orgID}: Organization) =>
+        cy.createDashboard(orgID).then(({body}) =>
+          cy.fixture('routes').then(({orgs}) => {
+            cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+            return cy
+              .setFeatureFlags({
+                annotations: true,
+                useGiraffeGraphs: true,
+                rangeAnnotations: enableRangeAnnotations,
+              })
+              .then(() => {
+                cy.createBucket(orgID, name, 'schmucket')
+                // have to add large amount of data to fill the window so that the random click for annotation works
+                cy.writeData(lines(3000), 'schmucket')
 
-    // make a dashboard cell
-    cy.getByTestID('add-cell--button')
-      .click()
-      .then(() => {
-        cy.getByTestID('selector-list schmucket').click()
-        cy.getByTestID(`selector-list m`)
-          .should('exist')
-          .click()
-        cy.getByTestID('selector-list v')
-          .should('exist')
-          .click()
+                // make a dashboard cell
+                cy.getByTestID('add-cell--button').click()
+                cy.getByTestID('selector-list schmucket').should('be.visible')
+                cy.getByTestID('selector-list schmucket').click()
+                cy.getByTestID(`selector-list m`).should('be.visible')
+                cy.getByTestID(`selector-list m`).click()
+                cy.getByTestID('selector-list v').should('be.visible')
+                cy.getByTestID(`selector-list v`).click()
 
-        if (plotTypeSuffix) {
-          cy.getByTestID('view-type--dropdown').click()
-          cy.getByTestID(`view-type--${plotTypeSuffix}`).click()
-        }
+                if (plotTypeSuffix) {
+                  cy.getByTestID('view-type--dropdown').click()
+                  cy.getByTestID(`view-type--${plotTypeSuffix}`).click()
+                }
 
-        cy.getByTestID(`selector-list tv1`)
-          .should('exist')
-          .click()
-          .then(() => {
-            cy.getByTestID('time-machine-submit-button').click()
+                cy.getByTestID(`selector-list tv1`).click()
+                cy.getByTestID('time-machine-submit-button').click()
+                cy.getByTestID('overlay').within(() => {
+                  cy.getByTestID('page-title').click()
+                  cy.getByTestID('renamable-page-title--input')
+                    .clear()
+                    .type('blah')
+                  cy.getByTestID('save-cell--button').click()
+                })
+              })
           })
-      })
-    cy.getByTestID('overlay').within(() => {
-      cy.getByTestID('page-title').click()
-      cy.getByTestID('renamable-page-title--input')
-        .clear()
-        .type('blah')
-      cy.getByTestID('save-cell--button').click()
-    })
-
-    // annotations are on by default; so the bar should be visible:
-    cy.getByTestID('annotations-control-bar').should('be.visible')
+        )
+      )
+    )
   }
 
   afterEach(() => {
@@ -78,7 +67,7 @@ describe('The Annotations UI functionality', () => {
     })
   })
 
-  const addAnnotationTest = cy => {
+  const addAnnotationTest = (cy: Cypress.Chainable) => {
     addAnnotation(cy)
 
     // reload to make sure the annotation was added in the backend as well.
@@ -88,7 +77,7 @@ describe('The Annotations UI functionality', () => {
     checkAnnotationText(cy, 'im a hippopotamus')
   }
 
-  const startEditingAnnotation = cy => {
+  const startEditingAnnotation = (cy: Cypress.Chainable) => {
     cy.getByTestID('cell blah').within(() => {
       // we have 2 line layers by the same id, we only want to click on the first
       cy.get('line')
@@ -97,7 +86,7 @@ describe('The Annotations UI functionality', () => {
     })
   }
 
-  const editTheAnnotation = cy => {
+  const editTheAnnotation = (cy: Cypress.Chainable) => {
     startEditingAnnotation(cy)
 
     cy.getByTestID('edit-annotation-message')
@@ -107,7 +96,7 @@ describe('The Annotations UI functionality', () => {
     cy.getByTestID('annotation-submit-button').click()
   }
 
-  const editAnnotationTest = cy => {
+  const editAnnotationTest = (cy: Cypress.Chainable) => {
     addAnnotation(cy)
 
     // should have the annotation created , lets click it to show the modal.
@@ -125,7 +114,7 @@ describe('The Annotations UI functionality', () => {
     )
   }
 
-  function actuallyDeleteAnnotation(cy) {
+  const actuallyDeleteAnnotation = (cy: Cypress.Chainable) => {
     // should have the annotation created , lets click it to show the modal.
     cy.getByTestID('cell blah').within(() => {
       // we have 2 line layers by the same id, we only want to click on the first
@@ -145,15 +134,15 @@ describe('The Annotations UI functionality', () => {
     })
   }
 
-  const deleteAnnotationTest = cy => {
+  const deleteAnnotationTest = (cy: Cypress.Chainable) => {
     addAnnotation(cy)
 
     actuallyDeleteAnnotation(cy)
   }
 
-  const addAnnotation = cy => {
+  const addAnnotation = (cy: Cypress.Chainable) => {
     cy.getByTestID('cell blah').within(() => {
-      cy.getByTestID('giraffe-inner-plot').click()
+      cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
     })
     cy.getByTestID('overlay--container').within(() => {
       cy.getByTestID('edit-annotation-message')
@@ -165,14 +154,14 @@ describe('The Annotations UI functionality', () => {
     })
   }
 
-  const checkAnnotationText = (cy, text) => {
+  const checkAnnotationText = (cy: Cypress.Chainable, text: string) => {
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
     })
     cy.getByTestID('giraffe-annotation-tooltip').contains(text)
   }
 
-  const ensureRangeAnnotationTimesAreNotEqual = cy => {
+  const ensureRangeAnnotationTimesAreNotEqual = (cy: Cypress.Chainable) => {
     cy.getByTestID('endTime-testID')
       .invoke('val')
       .then(endTimeValue => {
@@ -184,7 +173,7 @@ describe('The Annotations UI functionality', () => {
       })
   }
 
-  const addRangeAnnotation = (cy, layerTestID = 'line') => {
+  const addRangeAnnotation = (cy: Cypress.Chainable, layerTestID = 'line') => {
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID(`giraffe-layer-${layerTestID}`).then(([canvas]) => {
         const {width, height} = canvas
@@ -219,7 +208,10 @@ describe('The Annotations UI functionality', () => {
     })
   }
 
-  const editRangeAnnotationTest = (cy, layerTestID = 'line') => {
+  const editRangeAnnotationTest = (
+    cy: Cypress.Chainable,
+    layerTestID = 'line'
+  ) => {
     addRangeAnnotation(cy, layerTestID)
 
     startEditingAnnotation(cy)
@@ -239,9 +231,7 @@ describe('The Annotations UI functionality', () => {
   }
 
   describe('annotations on a graph + single stat graph type', () => {
-    beforeEach(() => {
-      setupData(cy, singleStatSuffix)
-    })
+    beforeEach(() => setupData(cy, singleStatSuffix))
     it('can create an annotation on the single stat + line graph', () => {
       addAnnotationTest(cy)
     })
@@ -265,9 +255,7 @@ describe('The Annotations UI functionality', () => {
   })
 
   describe('annotations on a band plot graph type', () => {
-    beforeEach(() => {
-      setupData(cy, bandSuffix)
-    })
+    beforeEach(() => setupData(cy, bandSuffix))
     it('can create an annotation on the band plot', () => {
       addAnnotationTest(cy)
     })
@@ -290,11 +278,22 @@ describe('The Annotations UI functionality', () => {
       actuallyDeleteAnnotation(cy)
     })
   })
+  describe('point annotations only, range annotations are off: ', () => {
+    beforeEach(() => setupData(cy, '', false))
+
+    it('hides the range/point annotation type picker when range annotations are OFF', () => {
+      cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
+      })
+      cy.getByTestID('overlay--container').within(() => {
+        cy.getByTestID('annotation-form-point-type-option').should('not.exist')
+        cy.getByTestID('annotation-form-range-type-option').should('not.exist')
+      })
+    })
+  })
 
   describe('annotations on a graph (xy line) graph type: ', () => {
-    beforeEach(() => {
-      setupData(cy)
-    })
+    beforeEach(() => setupData(cy))
     it('can create an annotation on the xy line graph', () => {
       addAnnotationTest(cy)
     })
@@ -316,6 +315,15 @@ describe('The Annotations UI functionality', () => {
       actuallyDeleteAnnotation(cy)
     })
 
+    it('shows the range/point annotation type picker when range annotations are on', () => {
+      cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
+      })
+      cy.getByTestID('overlay--container').within(() => {
+        cy.getByTestID('annotation-form-point-type-option').should('be.visible')
+        cy.getByTestID('annotation-form-range-type-option').should('be.visible')
+      })
+    })
     it('can add a range annotation, then edit it and switch back and forth from point->range and the endtime stays the same', () => {
       addRangeAnnotation(cy)
       startEditingAnnotation(cy)
@@ -385,7 +393,7 @@ describe('The Annotations UI functionality', () => {
     })
     it('can add an annotation; that is originally a point and then switch to a range', () => {
       cy.getByTestID('cell blah').within(() => {
-        cy.getByTestID('giraffe-inner-plot').click()
+        cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
       })
       cy.getByTestID('overlay--container').within(() => {
         cy.getByTestID('edit-annotation-message')
@@ -417,7 +425,7 @@ describe('The Annotations UI functionality', () => {
               .then(endTimeValue => {
                 expect(endTimeValue).to.equal(startTimeValue)
 
-                const newEndTime = Cypress.moment(endTimeValue)
+                const newEndTime = moment(endTimeValue)
                   .add(10, 'minutes')
                   .format('YYYY-MM-DD hh:mm:ss a')
 
@@ -455,10 +463,8 @@ describe('The Annotations UI functionality', () => {
               expect(endTimeValue).to.not.equal(startTimeValue)
 
               // should be 10 minutes between them:
-              const duration = Cypress.moment.duration(
-                Cypress.moment(endTimeValue).diff(
-                  Cypress.moment(startTimeValue)
-                )
+              const duration = moment.duration(
+                moment(endTimeValue).diff(moment(startTimeValue))
               )
               const minutes = duration.asMinutes()
 
@@ -493,6 +499,14 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('toggle-annotations-controls').click()
       cy.getByTestID('annotations-control-bar').should('not.exist')
 
+      cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
+      })
+
+      cy.getByTestID('overlay--container').should('not.exist')
+    })
+
+    it('cannot create an annotation when the shift key is NOT pressed down', () => {
       cy.getByTestID('cell blah').within(() => {
         cy.getByTestID('giraffe-inner-plot').click()
       })
@@ -543,7 +557,10 @@ describe('The Annotations UI functionality', () => {
       cy.getByTestID('button')
         .click()
         .then(() => {
+          // Look at this article for removing flakiness https://www.cypress.io/blog/2020/07/22/do-not-get-too-detached/
+          cy.getByTestID('selector-list schmucket').should('be.visible')
           cy.getByTestID('selector-list schmucket').click()
+          cy.getByTestID(`selector-list m`).should('be.visible')
           cy.getByTestID(`selector-list m`).click()
           cy.getByTestID('selector-list v')
             .click()
@@ -570,15 +587,14 @@ describe('The Annotations UI functionality', () => {
 
       // create a new annotation in it
       cy.getByTestID('cell newCell').within(() => {
-        cy.getByTestID('giraffe-inner-plot').click()
+        cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
       })
 
       cy.getByTestID('overlay--container').within(() => {
-        cy.getByTestID('edit-annotation-message')
-          .should('be.visible')
-          .click()
-          .focused()
-          .type('annotation in newCell')
+        cy.getByTestID('edit-annotation-message').should('be.visible')
+        cy.getByTestID('edit-annotation-message').click()
+        cy.getByTestID('edit-annotation-message').focused()
+        cy.getByTestID('edit-annotation-message').type('annotation in newCell')
         cy.getByTestID('annotation-submit-button').click()
       })
 

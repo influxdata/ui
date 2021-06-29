@@ -15,54 +15,6 @@ import UsageTimeRangeDropdown from 'src/usage/UsageTimeRangeDropdown'
 import GraphTypeSwitcher from 'src/usage/GraphTypeSwitcher'
 import {UsageContext} from 'src/usage/context/usage'
 
-const usageGraphInfo = [
-  {
-    title: 'Data In (MB)',
-    groupColumns: [],
-    column: 'write_mb',
-    units: 'MB',
-    isGrouped: true,
-    type: 'xy',
-    pricingVersions: [3, 4],
-  },
-  {
-    title: 'Query Count',
-    groupColumns: [],
-    column: 'query_count',
-    units: '',
-    isGrouped: false,
-    type: 'xy',
-    pricingVersions: [4],
-  },
-  {
-    title: 'Storage (GB-hr)',
-    groupColumns: [],
-    column: 'storage_gb',
-    units: 'GB',
-    isGrouped: false,
-    type: 'xy',
-    pricingVersions: [3, 4],
-  },
-  {
-    title: 'Data Out (GB)',
-    groupColumns: [],
-    column: 'reads_gb',
-    units: 'GB',
-    isGrouped: false,
-    type: 'xy',
-    pricingVersions: [4],
-  },
-]
-
-const rateLimitGraphInfo = {
-  title: 'Limit Events',
-  groupColumns: ['_field'],
-  column: '_value',
-  units: '',
-  isGrouped: true,
-  type: 'xy',
-}
-
 const UsageToday: FC = () => {
   const {
     handleSetTimeRange,
@@ -75,13 +27,25 @@ const UsageToday: FC = () => {
 
   const getUsageSparkline = () => {
     const usage = usageVectors.find(vector => selectedUsage === vector.name)
-    const graphInfo =
-      usageGraphInfo.find(stat => stat.column === usage?.fluxKey) ??
-      usageGraphInfo[0]
-
-    return (
-      <GraphTypeSwitcher fromFluxResult={usageStats} graphInfo={graphInfo} />
-    )
+    if (usage) {
+      return (
+        <GraphTypeSwitcher
+          fromFluxResult={usageStats}
+          usageVector={usage}
+          type="xy"
+        />
+      )
+    }
+    if (usageVectors.length > 0) {
+      return (
+        <GraphTypeSwitcher
+          fromFluxResult={usageStats}
+          usageVector={usageVectors[0]}
+          type="xy"
+        />
+      )
+    }
+    return null
   }
 
   return (
@@ -119,8 +83,12 @@ const UsageToday: FC = () => {
         >
           <GraphTypeSwitcher
             fromFluxResult={rateLimits}
-            graphInfo={rateLimitGraphInfo}
-            key={rateLimitGraphInfo.title}
+            usageVector={{
+              name: 'Limit Events',
+              fluxKey: '_value',
+              unit: '',
+            }}
+            type="xy"
           />
         </Panel.Body>
       </Panel>

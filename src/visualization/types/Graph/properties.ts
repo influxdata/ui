@@ -6,9 +6,10 @@ import {
 
 import {Axis, Base, Color, XYViewProperties} from 'src/types'
 import {
+  LEGEND_COLORIZE_ROWS_DEFAULT,
   LEGEND_OPACITY_DEFAULT,
   LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
-  STATIC_LEGEND_HEIGHT_RATIO_DEFAULT,
+  STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
   STATIC_LEGEND_SHOW_DEFAULT,
   STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
 } from 'src/visualization/constants'
@@ -46,10 +47,14 @@ export default {
   ],
 
   colors: DEFAULT_LINE_COLORS as Color[],
+  legendColorizeRows: LEGEND_COLORIZE_ROWS_DEFAULT,
   legendOpacity: LEGEND_OPACITY_DEFAULT,
   legendOrientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
   staticLegend: {
-    heightRatio: STATIC_LEGEND_HEIGHT_RATIO_DEFAULT,
+    colorizeRows: LEGEND_COLORIZE_ROWS_DEFAULT,
+    heightRatio: STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
+    opacity: LEGEND_OPACITY_DEFAULT,
+    orientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
     show: STATIC_LEGEND_SHOW_DEFAULT,
     widthRatio: STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
   },

@@ -1,0 +1,16 @@
+@import '@influxdata/clockface/dist/variables.scss';
+@import '~src/flows/FlowVariables.scss';
+
+$cf-radius-lg: $cf-radius + 4px;
+.remote-csv-card {
+  display: flex;
+}
+
+.remote-csv--dropdown {
+  flex: 1;
+}
+
+.remote-csv-url-input {
+  flex: 4;
+  width: 100%;
+}

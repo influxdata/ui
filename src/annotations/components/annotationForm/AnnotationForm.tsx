@@ -37,7 +37,6 @@ import 'src/annotations/components/annotationForm/annotationForm.scss'
 
 type AnnotationType = 'point' | 'range'
 
-//TODO:  make the prefix required!
 interface Props {
   startTime: string
   endTime?: string
@@ -48,7 +47,7 @@ interface Props {
   type: AnnotationType
   onSubmit: (Annotation) => void
   onClose: () => void
-  eventPrefix?: string
+  eventPrefix: string
 }
 
 export const AnnotationForm: FC<Props> = (props: Props) => {
@@ -56,8 +55,6 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
   const [endTime, setEndTime] = useState(props.endTime)
   const [summary, setSummary] = useState(props.summary)
   const [annotationType, setAnnotationType] = useState(props.type)
-
-  console.log('in annotation form; props??', props)
 
   const dispatch = useDispatch()
 

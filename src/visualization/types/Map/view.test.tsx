@@ -30,7 +30,7 @@ const setup = () => {
 }
 
 describe('Map component renders', () => {
-  it('returns with helpful error message when map data is not provided', () => {
+  it('returns with helpful error message when map service is down', () => {
     jest.mock('src/visualization/types/Map/api', () => {
       throw new Error('Service Unavailable')
     })
@@ -38,14 +38,3 @@ describe('Map component renders', () => {
     expect(queryByTestId('panel-resizer--error')).toEqual(null)
   })
 })
-
-// describe('Map component throws an error', () => {
-//   it('returns with helpful error message when map data is not provided', () => {
-
-// jest.mock('src/visualization/types/Map/api', () => {
-//   ;() => {
-//     'RandomTempTokenHere'
-//   }
-// }) // </whatever> in the describe block of your tests for the "happy path" cases
-//   })
-// })

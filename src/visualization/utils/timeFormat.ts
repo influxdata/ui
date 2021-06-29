@@ -1,7 +1,7 @@
 import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
 
 export const FORMAT_OPTIONS: Array<{text: string}> = [
-  {text: DEFAULT_TIME_FORMAT},
+  {text: DEFAULT_TIME_FORMAT}, // 'YYYY-MM-DD HH:mm:ss'
   {text: 'YYYY-MM-DD hh:mm:ss a ZZ'},
   {text: 'DD/MM/YYYY HH:mm:ss.sss'},
   {text: 'DD/MM/YYYY hh:mm:ss.sss a'},

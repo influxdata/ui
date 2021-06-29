@@ -355,7 +355,7 @@ describe('Legends', () => {
         )
       })
 
-      it('saves to a dashboard as a cell without submitting the query and with the static legend options open', () => {
+      it('saves to a dashboard as a cell with the static legend options open and without submitting the query', () => {
         const cellName = 'anti-crash test'
         cy.writeData(lines(100))
 
@@ -404,7 +404,64 @@ describe('Legends', () => {
               .type(cellName)
             cy.getByTestID('save-as-dashboard-cell--submit').click()
             cy.get('.cell--name').should('have.text', cellName)
-            cy.getByTestID('giraffe-static-legend').should('not.exist')
+            cy.getByTestID('giraffe-legend-table').should('not.exist')
+          }
+        )
+      })
+
+      it('saves to a dashboard as a cell with the static legend options open and with the query pre-submitted', () => {
+        const cellName = 'anti-crash test'
+        cy.writeData(lines(100))
+
+        // set the flag, build the query, adjust the view options
+        cy.setFeatureFlags({staticLegend: true})
+        cy.get<string>('@defaultBucketListSelector').then(
+          (defaultBucketListSelector: string) => {
+            cy.getByTestID('query-builder').should('exist')
+            cy.getByTestID('selector-list _monitoring').should('be.visible')
+            cy.getByTestID('selector-list _monitoring').click()
+
+            cy.getByTestID(defaultBucketListSelector).should('be.visible')
+            cy.getByTestID(defaultBucketListSelector).click()
+
+            cy.getByTestID('selector-list m').should('be.visible')
+            cy.getByTestID('selector-list m').clickAttached()
+
+            cy.getByTestID('selector-list v').should('be.visible')
+            cy.getByTestID('selector-list v').clickAttached()
+
+            cy.getByTestID('selector-list tv1').clickAttached()
+
+            cy.getByTestID('selector-list mean')
+              .scrollIntoView()
+              .should('be.visible')
+              .click({force: true})
+
+            cy.getByTestID('cog-cell--button').click()
+            cy.getByTestID('view-type--dropdown').click()
+            cy.getByTestID(`view-type--xy`).click()
+
+            // Select "show" to open the static legend options
+            cy.get('[for="radio_static_legend_show"]').click()
+            cy.getByTestID('static-legend-height-slider').should('exist')
+            cy.getByTestID('static-legend-orientation-toggle').should('exist')
+            cy.getByTestID('static-legend-opacity-slider').should('exist')
+            cy.getByTestID('static-legend-colorize-rows-toggle').should('exist')
+
+            // Submit the query before saving
+            cy.getByTestID('time-machine-submit-button').click()
+
+            // Save it to a dashboard
+            cy.getByTestID('save-query-as').click()
+            cy.getByTestID('overlay--container').should('exist')
+            cy.getByTestID('save-as-dashboard-cell--dropdown').click()
+            cy.getByTestID('save-as-dashboard-cell--create-new-dash').click()
+            cy.getByTestID('save-as-dashboard-cell--cell-name')
+              .click()
+              .type(cellName)
+            cy.getByTestID('save-as-dashboard-cell--submit').click()
+            cy.get('.cell--name').should('have.text', cellName)
+            cy.getByTestID('giraffe-legend-table').should('be.visible')
           }
         )
       })
@@ -425,7 +482,7 @@ describe('Legends', () => {
       )
     })
 
-    it('adds a new cell to a dashboard without submitting the query and with the static legend options open', () => {
+    it('adds a new cell to a dashboard with the static legend options open and without submitting the query', () => {
       const cellName = 'anti-crash test'
       cy.writeData(lines(100))
 
@@ -476,7 +533,66 @@ describe('Legends', () => {
           // Without submitting the query, save it to a dashboard
           cy.getByTestID('save-cell--button').click()
           cy.get('.cell--name').should('have.text', cellName)
-          cy.getByTestID('giraffe-static-legend').should('not.exist')
+          cy.getByTestID('giraffe-legend-table').should('not.exist')
+        }
+      )
+    })
+
+    it('adds a new cell to a dashboard with the static legend options open and with the query pre-submitted', () => {
+      const cellName = 'anti-crash test'
+      cy.writeData(lines(100))
+
+      cy.setFeatureFlags({staticLegend: true})
+
+      cy.getByTestID('add-resource-dropdown--button').click()
+      cy.getByTestID('add-resource-dropdown--new').click()
+
+      cy.getByTestID('page-title').should('exist')
+      cy.get('button[title*="Add cell"').click()
+
+      cy.get<string>('@defaultBucketListSelector').then(
+        (defaultBucketListSelector: string) => {
+          cy.getByTestID('query-builder').should('exist')
+          cy.getByTestID('selector-list _monitoring').should('be.visible')
+          cy.getByTestID('selector-list _monitoring').click()
+
+          cy.getByTestID(defaultBucketListSelector).should('be.visible')
+          cy.getByTestID(defaultBucketListSelector).click()
+
+          cy.getByTestID('selector-list m').should('be.visible')
+          cy.getByTestID('selector-list m').clickAttached()
+
+          cy.getByTestID('selector-list v').should('be.visible')
+          cy.getByTestID('selector-list v').clickAttached()
+
+          cy.getByTestID('selector-list tv1').clickAttached()
+
+          cy.getByTestID('selector-list mean')
+            .scrollIntoView()
+            .should('be.visible')
+            .click({force: true})
+
+          // Select "show" to open the static legend options
+          cy.getByTestID('cog-cell--button').click()
+          cy.get('[for="radio_static_legend_show"]').click()
+          cy.getByTestID('static-legend-height-slider').should('exist')
+          cy.getByTestID('static-legend-orientation-toggle').should('exist')
+          cy.getByTestID('static-legend-opacity-slider').should('exist')
+          cy.getByTestID('static-legend-colorize-rows-toggle').should('exist')
+
+          cy.getByTestID('overlay').within(() => {
+            cy.getByTestID('page-header')
+              .click()
+              .type(cellName)
+          })
+
+          // Submit the query before saving
+          cy.getByTestID('time-machine-submit-button').click()
+
+          // Save it to a dashboard
+          cy.getByTestID('save-cell--button').click()
+          cy.get('.cell--name').should('have.text', cellName)
+          cy.getByTestID('giraffe-legend-table').should('be.visible')
         }
       )
     })

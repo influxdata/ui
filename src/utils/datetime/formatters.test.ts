@@ -65,8 +65,8 @@ describe('the DateTime formatter', () => {
       let formatter = createDateTimeFormatter('YYYY-MM-DD hh:mm:ss a', 'UTC')
       expect(formatter.format(date)).toBe(`1983-07-04 ${hourUTC}:00:00 PM`)
 
-      formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss a', 'UTC')
-      expect(formatter.format(date)).toBe(`1983-07-04 ${hourUTC}:00:00 PM`)
+      formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss', 'UTC')
+      expect(formatter.format(date)).toBe(`1983-07-04 ${hourUTC}:00:00`)
     })
 
     it('formats DateTimes in the format YYYY-MM-DD hh:mm:ss a ZZ in UTC', () => {

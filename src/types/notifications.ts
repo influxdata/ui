@@ -28,4 +28,5 @@ export enum NotificationStyle {
   Info = 'info',
   Primary = 'primary',
   Warning = 'warning',
+  Secondary = 'secondary',
 }

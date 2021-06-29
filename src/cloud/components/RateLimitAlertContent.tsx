@@ -24,7 +24,13 @@ interface Props {
   className?: string
 }
 
-export const UpgradeContent = ({type, link, className}) => {
+interface UpgradeProps {
+  type: string
+  link: string
+  className?: string
+}
+
+export const UpgradeContent: FC<UpgradeProps> = ({type, link, className}) => {
   event(`user.limits.${type}`)
   return (
     <div className={`${className} rate-alert--content__free`}>

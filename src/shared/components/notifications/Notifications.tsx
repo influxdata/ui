@@ -19,6 +19,7 @@ const matchGradientToColor = (style: NotificationStyle): Gradients => {
     [NotificationStyle.Success]: Gradients.HotelBreakfast,
     [NotificationStyle.Error]: Gradients.DangerDark,
     [NotificationStyle.Info]: Gradients.DefaultLight,
+    [NotificationStyle.Secondary]: Gradients.SecondaryDark,
   }
   return get(converter, style, Gradients.DefaultLight)
 }

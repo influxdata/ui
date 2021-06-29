@@ -49,7 +49,7 @@ const Notifications: FC = () => {
               onTimeout={handleDismiss}
               onDismiss={handleDismiss}
               testID={`notification-${style}`}
-              style={{maxWidth: '600px'}}
+              style={{maxWidth: '600px', alignItems: 'center'}}
             >
               <span className="notification--message">{message}</span>
               {buttonElement && buttonElement(handleDismiss)}

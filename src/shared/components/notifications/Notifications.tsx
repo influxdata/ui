@@ -44,11 +44,12 @@ const Notifications: FC = () => {
               id={id}
               icon={icon}
               duration={duration}
-              size={ComponentSize.ExtraSmall}
+              size={ComponentSize.Small}
               gradient={gradient}
               onTimeout={handleDismiss}
               onDismiss={handleDismiss}
               testID={`notification-${style}`}
+              style={{maxWidth: '600px'}}
             >
               <span className="notification--message">{message}</span>
               {buttonElement && buttonElement(handleDismiss)}

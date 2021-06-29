@@ -83,29 +83,67 @@ export const getUserStatus = (table: Table): USER_PILOT_USER_STATUS[] => {
   return dataStates
 }
 
+export const queryUsage = async (
+  orgID: string,
+  queryLength?: string
+): Promise<Table> => {
+  let csvToParse = ''
+  if (getOrgsUsage) {
+    if (isFlagEnabled('newUsageAPI')) {
+      const usage = await getOrgsUsage({
+        orgID,
+        query: {
+          start: queryLength ?? '-30d',
+        },
+      })
+      if (usage?.status === 200) {
+        console.warn(`Usage: ${usage}`)
+        csvToParse = usage.data?.trim().replace(/\r\n/g, '\n')
+        console.warn(`CSVTOPARSE: ${csvToParse}`)
+      }
+    } else {
+      csvToParse = usageStatsCsv
+    }
+    const {table} = fromFlux(csvToParse)
+
+    return table
+  }
+}
+
+export const getUserWriteLimitHits = async (
+  orgID: string,
+  queryLength?: string
+): Promise<number> => {
+  try {
+    const table = await queryUsage(orgID, queryLength ?? '-1h')
+
+    const measurement = (table.getColumn('_measurement') as string[]) ?? []
+
+    const queryWriteLimitHits = measurement.reduce((a, b, i) => {
+      if (
+        b === 'event' &&
+        table.getColumn('_field')[i] === 'event_type_limited_write' &&
+        table.getColumn('_value', 'number')[i] > 0
+      ) {
+        return a + table.getColumn('_value', 'number')[i]
+      } else {
+        return a
+      }
+    }, 0)
+
+    return queryWriteLimitHits
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 const useGetUserStatus = () => {
   const [usageDataStates, setUsageDataStates] = useState([])
   const org = useSelector(getOrg)
 
   const getUserStatusDefinition = useCallback(async () => {
-    let csvToParse = ''
-    if (org?.id && getOrgsUsage) {
-      if (isFlagEnabled('newUsageAPI')) {
-        const usage = await getOrgsUsage({
-          orgID: org.id,
-          query: {
-            start: '-30d',
-          },
-        })
-        if (usage?.status === 200) {
-          console.warn(`Usage: ${usage}`)
-          csvToParse = usage.data?.trim().replace(/\r\n/g, '\n')
-          console.warn(`CSVTOPARSE: ${csvToParse}`)
-        }
-      } else {
-        csvToParse = usageStatsCsv
-      }
-      const {table} = fromFlux(csvToParse)
+    if (org?.id) {
+      const table = await queryUsage(org.id)
       setUsageDataStates(getUserStatus(table))
     }
   }, [org?.id])

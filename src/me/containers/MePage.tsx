@@ -12,6 +12,8 @@ import {
   Grid,
   Columns,
   Page,
+  Button,
+  ComponentColor,
 } from '@influxdata/clockface'
 import Resources from 'src/me/components/Resources'
 import Docs from 'src/me/components/Docs'
@@ -21,7 +23,9 @@ import AlertsActivity from 'src/me/components/AlertsActivity'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-
+import {getOrg} from 'src/organizations/selectors'
+import {notify} from 'src/shared/actions/notifications'
+import {shouldShowUpgradeButton} from 'src/me/selectors'
 // Types
 import {AppState} from 'src/types'
 
@@ -29,11 +33,64 @@ import {AppState} from 'src/types'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
+import {getUserWriteLimitHits} from 'src/cloud/components/onboarding/useGetUserStatus'
+import {writeLimitReached} from 'src/shared/copy/notifications'
+
+// Components
+import {UpgradeContent} from 'src/cloud/components/RateLimitAlertContent'
+import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
+
+const QUERY_WRITE_LIMIT_HITS = 100
+
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
+let hasCalled = false // We only want to show the write limit notification once
+
 @ErrorHandling
 export class MePage extends PureComponent<Props> {
+  async componentDidMount() {
+    const hits = await getUserWriteLimitHits(this.props.orgID)
+    if (hits > QUERY_WRITE_LIMIT_HITS && !hasCalled) {
+      hasCalled = true
+      if (this.props.shouldUpgrade) {
+        this.props.sendNotify(
+          writeLimitReached(
+            '',
+            <UpgradeContent
+              type="write"
+              link="https://docs.influxdata.com/influxdb/v2.0/write-data/best-practices/optimize-writes/"
+              className="flex-upgrade-content"
+              limitText={`${hits} times in the last hour`}
+            />,
+            Infinity
+          )
+        )
+      } else {
+        this.props.sendNotify(
+          writeLimitReached(
+            `Data in has stopped because you've hit the query write limit ${hits} times in the last hour. Let's get it flowing again: `,
+            <Button
+              className="rate-alert-overlay-button"
+              color={ComponentColor.Primary}
+              size={ComponentSize.Small}
+              onClick={this.appearOverlay}
+              text="Request Write Limit Increase"
+            />,
+            Infinity
+          )
+        )
+      }
+    }
+  }
+
+  private appearOverlay = () => {
+    this.props.handleShowOverlay(
+      'write-limit',
+      null,
+      this.props.handleHideOverlay
+    )
+  }
   public render() {
     const {me} = this.props
 
@@ -76,10 +133,17 @@ export class MePage extends PureComponent<Props> {
 
 const mstp = (state: AppState) => {
   const {me} = state
+  const {id} = getOrg(state)
+  const shouldUpgrade = shouldShowUpgradeButton(state)
 
-  return {me}
+  return {me, orgID: id, shouldUpgrade}
 }
 
-const connector = connect(mstp)
+const mdtp = {
+  sendNotify: notify,
+  handleShowOverlay: showOverlay,
+  handleHideOverlay: dismissOverlay,
+}
+const connector = connect(mstp, mdtp)
 
 export default connector(MePage)

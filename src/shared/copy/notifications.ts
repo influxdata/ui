@@ -685,10 +685,14 @@ export const rateLimitReached = (secs?: number): Notification => {
   }
 }
 
-export const writeLimitReached = (message: string, Button: any) => ({
+export const writeLimitReached = (
+  message: string,
+  Button: any,
+  duration?: number
+) => ({
   ...defaultErrorNotification,
   message,
-  duration: TEN_SECONDS,
+  duration: duration ?? TEN_SECONDS,
   type: 'writeLimitReached',
   style: NotificationStyle.Secondary,
   buttonElement: () => Button,

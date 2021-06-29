@@ -356,7 +356,7 @@ describe('Legends', () => {
       })
 
       it('saves to a dashboard as a cell with the static legend options open and without submitting the query', () => {
-        const cellName = 'anti-crash test'
+        const cellName = 'anti-crash test not submitted data explorer'
         cy.writeData(lines(100))
 
         // set the flag, build the query, adjust the view options
@@ -409,7 +409,7 @@ describe('Legends', () => {
       })
 
       it('saves to a dashboard as a cell with the static legend options open and with the query pre-submitted', () => {
-        const cellName = 'anti-crash test'
+        const cellName = 'anti-crash test pre-submitted data explorer'
         cy.writeData(lines(100))
 
         // set the flag, build the query, adjust the view options
@@ -481,7 +481,7 @@ describe('Legends', () => {
     })
 
     it('adds a new cell to a dashboard with the static legend options open and without submitting the query', () => {
-      const cellName = 'anti-crash test'
+      const cellName = 'anti-crash test not subbmited dashboard add cell'
       cy.writeData(lines(100))
 
       cy.setFeatureFlags({staticLegend: true})
@@ -539,7 +539,7 @@ describe('Legends', () => {
     })
 
     it('adds a new cell to a dashboard with the static legend options open and with the query pre-submitted', () => {
-      const cellName = 'anti-crash test'
+      const cellName = 'anti-crash test pre-submitted dashboard add cell'
       cy.writeData(lines(100))
 
       cy.setFeatureFlags({staticLegend: true})

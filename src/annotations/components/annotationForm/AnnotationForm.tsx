@@ -53,8 +53,7 @@ interface Props {
 
 export const WRONG_ORDER_MESSAGE = 'Stop Time must be after the start time'
 export const END_TIME_IN_FUTURE_MESSAGE = 'Stop Time cannot be in the future'
-export const TIMES_ARE_SAME_MESSAGE =
-  'Stop Time is the same as start time, it must be after the start time for range annotations.'
+export const TIMES_ARE_SAME_MESSAGE = 'Stop Time must be after the start time'
 export const START_TIME_IN_FUTURE_MESSAGE = 'Start Time cannot be in the future'
 
 export const AnnotationForm: FC<Props> = (props: Props) => {
@@ -113,14 +112,16 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
   }
 
   const handleKeyboardSubmit = () => {
-    props.onSubmit({
-      summary,
-      startTime,
-      endTime,
-      type: annotationType,
-      id: props.annotationId,
-      stream: props.stream,
-    })
+    if (isValidAnnotationForm()) {
+      props.onSubmit({
+        summary,
+        startTime,
+        endTime,
+        type: annotationType,
+        id: props.annotationId,
+        stream: props.stream,
+      })
+    }
   }
 
   const handleDelete = () => {

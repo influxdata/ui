@@ -1,7 +1,7 @@
 // Libraries
 import React, {useEffect, useState, FC, Suspense} from 'react'
-import {connect, ConnectedProps, useDispatch} from 'react-redux'
-import {Route, Switch} from 'react-router-dom'
+import {useDispatch, useSelector} from 'react-redux'
+import {Route, Switch, useHistory, useParams} from 'react-router-dom'
 
 // Components
 import {CommunityTemplatesIndex} from 'src/templates/containers/CommunityTemplatesIndex'
@@ -77,22 +77,15 @@ import {RemoteDataState} from '@influxdata/clockface'
 import {getAll} from 'src/resources/selectors'
 import FunctionsRouter from 'src/functions/containers/FunctionsRouter'
 
-interface OwnProps {
-  children: React.ReactElement<any>
-}
-
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & OwnProps & RouteComponentProps<{orgID: string}>
-
-const SetOrg: FC<Props> = ({
-  match: {
-    params: {orgID},
-  },
-  orgs,
-  history,
-}) => {
+const SetOrg: FC = () => {
   const [loading, setLoading] = useState(RemoteDataState.Loading)
   const dispatch = useDispatch()
+  const orgs = useSelector((state: AppState) =>
+    getAll<Organization>(state, ResourceType.Orgs)
+  )
+  const history = useHistory()
+  const {orgID} = useParams<{orgID: string}>()
+
   const foundOrg = orgs.find(o => o.id === orgID)
   const firstOrgID = orgs[0]?.id
 
@@ -116,6 +109,9 @@ const SetOrg: FC<Props> = ({
   }, [orgID, firstOrgID, foundOrg, dispatch, history, orgs.length])
 
   const orgPath = '/orgs/:orgID'
+
+  console.log('SET ORG')
+  console.log({loading})
 
   return (
     <PageSpinner loading={loading}>
@@ -277,12 +273,4 @@ const SetOrg: FC<Props> = ({
   )
 }
 
-const mstp = (state: AppState) => {
-  const orgs = getAll<Organization>(state, ResourceType.Orgs)
-
-  return {orgs}
-}
-
-const connector = connect(mstp)
-
-export default connector(SetOrg)
+export default SetOrg

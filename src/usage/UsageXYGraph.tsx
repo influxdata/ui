@@ -61,7 +61,7 @@ const UsageXYGraph: FC<Props> = ({usageVector, fromFluxResult, status}) => {
           loading={status}
           error={`${error ?? ''}`}
           properties={xyProperties}
-          // result={fromFluxResult}
+          result={fromFluxResult}
           timeRange={timeRange}
         />
       </Panel.Body>

@@ -227,7 +227,6 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
         billingDateTime,
         billingStats,
         billingStatsStatus,
-        handleGetRateLimits,
         handleSetSelectedUsage,
         handleSetTimeRange,
         rateLimits,

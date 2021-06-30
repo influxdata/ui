@@ -171,11 +171,11 @@ describe('Flows', () => {
 
   describe('Flows Copy To Clipboard', () => {
     beforeEach(() => {
-      return cy.signin().then(() => {
-        return cy.get('@org').then(({id}: Organization) => {
-          return cy.fixture('routes').then(({orgs}) => {
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) => {
+          cy.fixture('routes').then(({orgs}) => {
             cy.request('api/v2/authorizations').then(({body}) => {
-              return cy.wrap(body.authorizations).as('tokens')
+              cy.wrap(body.authorizations).as('tokens')
             })
             cy.visit(`${orgs}/${id}`)
             cy.getByTestID('tree-nav')
@@ -185,12 +185,7 @@ describe('Flows', () => {
               simpleTable: true,
             })
 
-            cy.intercept('GET', '/api/v2private/notebooks?orgID=*', req => {
-              req.alias = 'GetNotebooks'
-            })
-
             cy.getByTestID('nav-item-flows').click()
-            return cy.wait('@GetNotebooks')
           })
         })
       })

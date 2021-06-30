@@ -37,6 +37,8 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
                   (defaultPassword: string) => {
                     if (Cypress.env(DEX_URL_VAR) === 'OSS') {
                       return loginViaOSS(username, defaultPassword)
+                    } else if (Cypress.env(DEX_URL_VAR) === 'CLOUD') {
+                      return loginViaDexUI(username, defaultPassword)
                     } else {
                       return loginViaDex(username, defaultPassword)
                     }
@@ -49,6 +51,13 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
         })
       })
   })
+}
+
+export const loginViaDexUI = (username: string, password: string) => {
+  cy.get('#login').type(username)
+  cy.get('#password').type(password)
+  cy.get('#submit-login').click()
+  cy.get('.theme-btn--success').click()
 }
 
 // login via the purple OSS screen by typing in username/password

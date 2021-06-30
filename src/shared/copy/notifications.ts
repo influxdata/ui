@@ -1345,7 +1345,7 @@ export const inviteFailed = (): Notification => ({
 
 export const invitationResentSuccessful = (): Notification => ({
   ...defaultSuccessNotification,
-  message: `Invitation resent`,
+  message: `Invitation Re-sent`,
 })
 
 export const invitationResentFailed = (): Notification => ({

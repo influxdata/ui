@@ -97,6 +97,7 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
     const {
       colorizeRows = false, // undefined is false because of omitempty
       heightRatio = STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
+      opacity = LEGEND_OPACITY_DEFAULT,
       orientationThreshold = legendOrientationThreshold,
       show = STATIC_LEGEND_SHOW_DEFAULT,
       ...config
@@ -115,6 +116,7 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
       colorizeRows,
       heightRatio,
       hide: isFlagEnabled('staticLegend') ? convertShowToHide(show) : true,
+      opacity,
       orientationThreshold,
       ...STATIC_LEGEND_STYLING,
       renderEffect: options => {

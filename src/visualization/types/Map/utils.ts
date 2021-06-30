@@ -4,7 +4,7 @@ import _ from 'lodash'
 export const findTags = (table: Table, latLon: boolean = false) => {
   return table.columnKeys.reduce((acc, k) => {
     const columnType = table.getColumnType(k)
-    if (columnType === 'number' || columnType === 'time') {
+    if (columnType === 'time') {
       return acc
     }
 

@@ -47,7 +47,10 @@ const UsageSingleStat: FC<Props> = ({
       className="graph-type--panel"
       testID="graph-type--panel"
     >
-      <Panel.Header size={ComponentSize.ExtraSmall}>
+      <Panel.Header
+        size={ComponentSize.ExtraSmall}
+        testID="usage-single-stat--header"
+      >
         <h5>{`${usageVector.name} ${
           usageVector.unit !== '' ? `(${usageVector.unit})` : ''
         }`}</h5>

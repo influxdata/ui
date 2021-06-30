@@ -51,7 +51,10 @@ const UsageXYGraph: FC<Props> = ({usageVector, fromFluxResult, status}) => {
       className="graph-type--panel"
       testID="graph-type--panel"
     >
-      <Panel.Header size={ComponentSize.ExtraSmall}>
+      <Panel.Header
+        size={ComponentSize.ExtraSmall}
+        testID="usage-xy-graph--header"
+      >
         <h5>{`${usageVector.name} ${
           usageVector.unit !== '' ? `(${usageVector.unit})` : ''
         }`}</h5>

@@ -50,36 +50,38 @@ let hasCalled = false // We only want to show the write limit notification once
 @ErrorHandling
 export class MePage extends PureComponent<Props> {
   async componentDidMount() {
-    const hits = await getUserWriteLimitHits(this.props.orgID)
-    if (hits > QUERY_WRITE_LIMIT_HITS && !hasCalled) {
-      hasCalled = true
-      if (this.props.shouldUpgrade) {
-        this.props.sendNotify(
-          writeLimitReached(
-            '',
-            <UpgradeContent
-              type="write"
-              link="https://docs.influxdata.com/influxdb/v2.0/write-data/best-practices/optimize-writes/"
-              className="flex-upgrade-content"
-              limitText={`${hits} times in the last hour`}
-            />,
-            Infinity
+    if (isFlagEnabled('newUsageAPI')) {
+      const hits = await getUserWriteLimitHits(this.props.orgID)
+      if (hits > QUERY_WRITE_LIMIT_HITS && !hasCalled) {
+        hasCalled = true
+        if (this.props.shouldUpgrade) {
+          this.props.sendNotify(
+            writeLimitReached(
+              '',
+              <UpgradeContent
+                type="write"
+                link="https://docs.influxdata.com/influxdb/v2.0/write-data/best-practices/optimize-writes/"
+                className="flex-upgrade-content"
+                limitText={`${hits} times in the last hour`}
+              />,
+              Infinity
+            )
           )
-        )
-      } else {
-        this.props.sendNotify(
-          writeLimitReached(
-            `Data in has stopped because you've hit the query write limit ${hits} times in the last hour. Let's get it flowing again: `,
-            <Button
-              className="rate-alert-overlay-button"
-              color={ComponentColor.Primary}
-              size={ComponentSize.Small}
-              onClick={this.appearOverlay}
-              text="Request Write Limit Increase"
-            />,
-            Infinity
+        } else {
+          this.props.sendNotify(
+            writeLimitReached(
+              `Data in has stopped because you've hit the query write limit ${hits} times in the last hour. Let's get it flowing again: `,
+              <Button
+                className="rate-alert-overlay-button"
+                color={ComponentColor.Primary}
+                size={ComponentSize.Small}
+                onClick={this.appearOverlay}
+                text="Request Write Limit Increase"
+              />,
+              Infinity
+            )
           )
-        )
+        }
       }
     }
   }

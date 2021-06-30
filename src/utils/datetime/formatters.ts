@@ -20,8 +20,7 @@ const timeOptions: any = {
 export const createDateTimeFormatter = (format, timeZone = 'local') => {
   switch (format) {
     default:
-    case 'YYYY-MM-DD hh:mm:ss a':
-    case 'YYYY-MM-DD HH:mm:ss a': {
+    case 'YYYY-MM-DD hh:mm:ss a': {
       const options = {
         ...dateTimeOptions,
       }

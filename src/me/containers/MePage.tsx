@@ -39,6 +39,7 @@ import {writeLimitReached} from 'src/shared/copy/notifications'
 // Components
 import {UpgradeContent} from 'src/cloud/components/RateLimitAlertContent'
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
+import {CLOUD} from 'src/shared/constants'
 
 const QUERY_WRITE_LIMIT_HITS = 100
 
@@ -50,10 +51,10 @@ let hasCalled = false // We only want to show the write limit notification once
 @ErrorHandling
 export class MePage extends PureComponent<Props> {
   async componentDidMount() {
-    if (isFlagEnabled('newUsageAPI')) {
+    if (isFlagEnabled('newUsageAPI') && !hasCalled && CLOUD) {
       const hits = await getUserWriteLimitHits(this.props.orgID)
-      if (hits > QUERY_WRITE_LIMIT_HITS && !hasCalled) {
-        hasCalled = true
+      hasCalled = true
+      if (hits > QUERY_WRITE_LIMIT_HITS) {
         if (this.props.shouldUpgrade) {
           this.props.sendNotify(
             writeLimitReached(

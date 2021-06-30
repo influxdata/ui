@@ -100,6 +100,8 @@ export const queryUsage = async (
         console.warn(`Usage: ${usage}`)
         csvToParse = usage.data?.trim().replace(/\r\n/g, '\n')
         console.warn(`CSVTOPARSE: ${csvToParse}`)
+      } else {
+        csvToParse = usageStatsCsv
       }
     } else {
       csvToParse = usageStatsCsv
@@ -137,29 +139,30 @@ export const getUserWriteLimitHits = async (
   }
 }
 
-const useGetUserStatus = () => {
-  const [usageDataStates, setUsageDataStates] = useState([])
-  const org = useSelector(getOrg)
+let hasCalledGetStatus = false
+const handleGetUserStatus = async (orgID: string) => {
+  let usageDataStates = []
 
-  const getUserStatusDefinition = useCallback(async () => {
-    if (org?.id) {
-      const table = await queryUsage(org.id)
-      setUsageDataStates(getUserStatus(table))
+  const getUserStatusDefinition = async () => {
+    if (orgID) {
+      const table = await queryUsage(orgID)
+      usageDataStates = getUserStatus(table)
     }
-  }, [org?.id])
+  }
 
-  useEffect(() => {
-    try {
-      getUserStatusDefinition()
-    } catch (err) {
-      event('cloud.onboarding.set_user_status_failure', {
-        context: JSON.stringify(err),
-      })
-      setUsageDataStates([])
+  try {
+    if (!hasCalledGetStatus) {
+      await getUserStatusDefinition()
+      hasCalledGetStatus = true
     }
-  }, [getUserStatusDefinition])
+  } catch (err) {
+    console.error(err)
+    event('cloud.onboarding.set_user_status_failure', {
+      context: JSON.stringify(err),
+    })
+  }
 
   return {usageDataStates}
 }
 
-export default useGetUserStatus
+export default handleGetUserStatus

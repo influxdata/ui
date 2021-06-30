@@ -1,6 +1,5 @@
 // Libraries
 import React, {PureComponent} from 'react'
-import moment from 'moment'
 
 // Components
 import {IndexList} from '@influxdata/clockface'
@@ -8,6 +7,7 @@ import {IndexList} from '@influxdata/clockface'
 // Types
 import {LogEvent} from 'src/types'
 import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 
 interface Props {
   log: LogEvent
@@ -41,7 +41,9 @@ class RunLogRow extends PureComponent<Props> {
     }
 
     const newdate = new Date(dt)
-    const formatted = moment(newdate).format(DEFAULT_TIME_FORMAT)
+    const formatted = createDateTimeFormatter(DEFAULT_TIME_FORMAT).format(
+      newdate
+    )
 
     return formatted
   }

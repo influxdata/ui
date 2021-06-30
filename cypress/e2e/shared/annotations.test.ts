@@ -663,7 +663,7 @@ describe('The Annotations UI functionality', () => {
                 // check the error message itself:
                 cy.getByTestID('form--element-error').contains('Required')
 
-                //put in a badly formatted time:
+                // put in a badly formatted time:
                 const badDate =
                   startTimeValue.substring(0, 8) + startTimeValue.substring(10)
                 cy.getByTestID('startTime-testID')

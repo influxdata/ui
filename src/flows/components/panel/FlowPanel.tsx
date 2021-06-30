@@ -176,6 +176,14 @@ const FlowPanel: FC<Props> = ({
   }
 
   useEffect(() => {
+    if (size === flow.meta.get(id).height) {
+      return
+    }
+
+    if (size === DEFAULT_RESIZER_HEIGHT) {
+      return
+    }
+
     flow.meta.update(id, {
       height: size,
     })

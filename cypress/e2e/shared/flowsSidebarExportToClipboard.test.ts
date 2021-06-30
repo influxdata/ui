@@ -1,5 +1,5 @@
 import {Authorization} from 'src/client'
-import {Organization} from '../../src/types'
+import {Organization} from 'src/types'
 
 const openCopyAs = () => {
   cy.getByTestID('square-button')

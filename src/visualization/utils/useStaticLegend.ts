@@ -1,6 +1,6 @@
 // Libraries
 import {useMemo, useCallback} from 'react'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Actions
 import {setStaticLegend} from 'src/timeMachine/actions'
@@ -11,6 +11,7 @@ import {StaticLegend as StaticLegendAPI} from 'src/types'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 
 // Constants
 import {
@@ -64,6 +65,7 @@ const convertShowToHide = (showState: boolean): boolean => !showState
 const eventPrefix = 'visualization.customize.staticlegend'
 
 export const useStaticLegend = (properties): StaticLegendConfig => {
+  const {isViewingVisOptions} = useSelector(getActiveTimeMachine)
   const dispatch = useDispatch()
   const update = useCallback(
     (staticLegend: StaticLegendAPI) => {
@@ -97,12 +99,18 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
     const {
       colorizeRows = false, // undefined is false because of omitempty
       heightRatio = STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
+      opacity = LEGEND_OPACITY_DEFAULT,
       orientationThreshold = legendOrientationThreshold,
       show = STATIC_LEGEND_SHOW_DEFAULT,
       ...config
     } = staticLegend
 
-    if (!show && heightRatio === STATIC_LEGEND_HEIGHT_RATIO_NOT_SET) {
+    if (
+      isFlagEnabled('staticLegend') &&
+      isViewingVisOptions &&
+      !show &&
+      heightRatio === STATIC_LEGEND_HEIGHT_RATIO_NOT_SET
+    ) {
       update({
         colorizeRows: legendColorizeRows,
         opacity: legendOpacity,
@@ -115,6 +123,7 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
       colorizeRows,
       heightRatio,
       hide: isFlagEnabled('staticLegend') ? convertShowToHide(show) : true,
+      opacity,
       orientationThreshold,
       ...STATIC_LEGEND_STYLING,
       renderEffect: options => {
@@ -175,5 +184,5 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
         }
       },
     }
-  }, [properties, update])
+  }, [properties, isViewingVisOptions, update])
 }

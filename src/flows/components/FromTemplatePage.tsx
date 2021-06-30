@@ -43,7 +43,7 @@ downsample: {
     seconds: 300,
     type: 'selectable-duration',
     upper: null,
-    windowPeriod: 10000
+    windowPeriod: 10000,
   },
   refresh: {
     duration: null,

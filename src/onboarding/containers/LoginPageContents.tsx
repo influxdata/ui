@@ -30,7 +30,6 @@ import {notify} from 'src/shared/actions/notifications'
 import {passwordResetSuccessfully} from 'src/shared/copy/notifications'
 import {getAuth0Config, getConnection} from 'src/authorizations/apis'
 import {getFromLocalStorage} from 'src/localStorage'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const TOKEN_EXP = 10 * 60 * 1000 // 10 minutes
 
@@ -203,7 +202,7 @@ class LoginPageContents extends PureComponent<Props> {
     event.preventDefault()
     const {email, password} = this.state
 
-    if (isFlagEnabled('ssoLogin') && email) {
+    if (email) {
       try {
         const connection = await getConnection(email)
         if (!!connection) {

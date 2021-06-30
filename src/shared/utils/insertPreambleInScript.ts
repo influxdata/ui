@@ -26,7 +26,7 @@ export const insertPreambleInScript = async (
 
   const ast = resp.data.ast as Package
 
-  const imports: ImportDeclaration[] = get(ast, 'files.0.imports', [])
+  const imports: ImportDeclaration[] = ast?.files[0]?.imports ?? []
   const body: Statement[] = get(ast, 'files.0.body', [])
 
   const importsText = imports.map(d => d.location.source).join('\n')

@@ -11,6 +11,7 @@ Cypress.on('uncaught:exception', (err, _) => {
   // we expect a 401 error when logging in with DEX's APIs, so ignore that but fail for all other console errors.
   // we also can ignore AbortErrors for when network requests are terminated early.
   return !(
+    err.message.includes('unauthorized access') ||
     err.message.includes('Request failed with status code 401') ||
     err.message.includes('The operation was aborted') ||
     err.message.includes('NetworkError') ||

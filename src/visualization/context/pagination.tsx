@@ -53,7 +53,9 @@ export const PaginationProvider: FC<PaginationProviderProps> = ({
 
   const setPage = useCallback(
     (page: number) => {
-      setOffset(Math.min(Math.max(0, (page - 1) * size), total - size))
+      setOffset(
+        Math.min(Math.max(0, (page - 1) * size), Math.max(0, total - size))
+      )
     },
     [offset, size, setOffset]
   )

@@ -14,24 +14,21 @@ import RateLimits from 'src/usage/RateLimits'
 import BillingStatsPanel from 'src/usage/BillingStatsPanel'
 import UsageTimeRangeDropdown from 'src/usage/UsageTimeRangeDropdown'
 
-const UsageToday: FC = () => {
-  console.log('go nuts')
-  return (
-    <FlexBox
-      alignItems={AlignItems.Stretch}
-      direction={FlexDirection.Column}
-      margin={ComponentSize.Small}
-    >
-      <UsageProvider>
-        <>
-          <BillingStatsPanel />
-          <UsageTimeRangeDropdown />
-          <UsageResults />
-          <RateLimits />
-        </>
-      </UsageProvider>
-    </FlexBox>
-  )
-}
+const UsageToday: FC = () => (
+  <FlexBox
+    alignItems={AlignItems.Stretch}
+    direction={FlexDirection.Column}
+    margin={ComponentSize.Small}
+  >
+    <UsageProvider>
+      <>
+        <BillingStatsPanel />
+        <UsageTimeRangeDropdown />
+        <UsageResults />
+        <RateLimits />
+      </>
+    </UsageProvider>
+  </FlexBox>
+)
 
 export default UsageToday

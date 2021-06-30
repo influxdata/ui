@@ -219,8 +219,6 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
     handleGetRateLimits(timeRange.duration)
   }, [handleGetRateLimits, timeRange.duration])
 
-  console.log('SURRENDER')
-
   return (
     <UsageContext.Provider
       value={{

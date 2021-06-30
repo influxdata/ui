@@ -10,21 +10,18 @@ import LimitChecker from 'src/cloud/components/LimitChecker'
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
-const Usage: FC = () => {
-  console.log('USAGE')
-  return (
-    <Page titleTag={pageTitleSuffixer(['Usage'])}>
-      <Page.Header fullWidth={false} testID="usage-page--header">
-        <Page.Title title="Usage" />
-        <LimitChecker>
-          <RateLimitAlert />
-        </LimitChecker>
-      </Page.Header>
-      <Page.Contents scrollable={true}>
-        <UsageToday />
-      </Page.Contents>
-    </Page>
-  )
-}
+const Usage: FC = () => (
+  <Page titleTag={pageTitleSuffixer(['Usage'])}>
+    <Page.Header fullWidth={false} testID="usage-page--header">
+      <Page.Title title="Usage" />
+      <LimitChecker>
+        <RateLimitAlert />
+      </LimitChecker>
+    </Page.Header>
+    <Page.Contents scrollable={true}>
+      <UsageToday />
+    </Page.Contents>
+  </Page>
+)
 
 export default Usage

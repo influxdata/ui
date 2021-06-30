@@ -70,7 +70,6 @@ import {updateReportingContext} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Decorators
-import {RouteComponentProps} from 'react-router-dom'
 import {RemoteDataState} from '@influxdata/clockface'
 
 // Selectors
@@ -109,9 +108,6 @@ const SetOrg: FC = () => {
   }, [orgID, firstOrgID, foundOrg, dispatch, history, orgs.length])
 
   const orgPath = '/orgs/:orgID'
-
-  console.log('SET ORG')
-  console.log({loading})
 
   return (
     <PageSpinner loading={loading}>

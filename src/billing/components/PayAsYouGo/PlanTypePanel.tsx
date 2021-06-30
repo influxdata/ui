@@ -14,7 +14,7 @@ const PlanTypePanel: FC = () => {
 
   return (
     <Panel className="plan-type-panel">
-      <Panel.Header>
+      <Panel.Header testID="payg-plan--header">
         <h4>Pay As You Go</h4>
       </Panel.Header>
       <Panel.Body alignItems={AlignItems.Stretch}>
@@ -22,10 +22,16 @@ const PlanTypePanel: FC = () => {
           backgroundColor={InfluxColors.Onyx}
           className="plan-type-panel--detail"
         >
-          <Panel.Header size={ComponentSize.ExtraSmall}>
+          <Panel.Header
+            size={ComponentSize.ExtraSmall}
+            testID="payg-plan--region-header"
+          >
             <h5>Region</h5>
           </Panel.Header>
-          <Panel.Body size={ComponentSize.ExtraSmall}>
+          <Panel.Body
+            size={ComponentSize.ExtraSmall}
+            testID="payg-plan--region-body"
+          >
             {billingInfo.region}
           </Panel.Body>
         </Panel>
@@ -33,10 +39,16 @@ const PlanTypePanel: FC = () => {
           backgroundColor={InfluxColors.Onyx}
           className="plan-type-panel--detail"
         >
-          <Panel.Header size={ComponentSize.ExtraSmall}>
+          <Panel.Header
+            size={ComponentSize.ExtraSmall}
+            testID="payg-plan--balance-header"
+          >
             <h5>Account Balance</h5>
           </Panel.Header>
-          <Panel.Body size={ComponentSize.ExtraSmall}>
+          <Panel.Body
+            size={ComponentSize.ExtraSmall}
+            testID="payg-plan--balance-body"
+          >
             <span className="money">
               {parseFloat(`${billingInfo.balance}`).toFixed(2)}
             </span>
@@ -46,10 +58,16 @@ const PlanTypePanel: FC = () => {
           backgroundColor={InfluxColors.Onyx}
           className="plan-type-panel--detail"
         >
-          <Panel.Header size={ComponentSize.ExtraSmall}>
+          <Panel.Header
+            size={ComponentSize.ExtraSmall}
+            testID="payg-plan--updated-header"
+          >
             <h5>Last Update</h5>
           </Panel.Header>
-          <Panel.Body size={ComponentSize.ExtraSmall}>
+          <Panel.Body
+            size={ComponentSize.ExtraSmall}
+            testID="payg-plan--updated-body"
+          >
             {new Date(billingInfo.balanceUpdatedAt).toLocaleString('default', {
               month: 'numeric',
               day: 'numeric',

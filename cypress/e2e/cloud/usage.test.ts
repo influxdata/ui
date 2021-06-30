@@ -13,13 +13,14 @@ describe('Usage Page Free User No Data', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.quartzProvision({
-          hasData: false,
-          accountType: 'free',
-        }).then(() => {
-          cy.wait(1000)
-          cy.visit(`/orgs/${id}/usage`)
-          cy.getByTestID('usage-page--header').should('be.visible')
+        cy.setFeatureFlags({unityUsage: true}).then(() => {
+          cy.quartzProvision({
+            hasData: false,
+            accountType: 'free',
+          }).then(() => {
+            cy.visit(`/orgs/${id}/usage`)
+            cy.getByTestID('usage-page--header').should('be.visible')
+          })
         })
       })
     })
@@ -121,7 +122,6 @@ describe('Usage Page PAYG With Data', () => {
             hasData: true,
             accountType: 'pay_as_you_go',
           }).then(() => {
-            cy.wait(1000)
             cy.visit(`/orgs/${id}/usage`)
             cy.getByTestID('usage-page--header').should('be.visible')
           })
@@ -131,6 +131,7 @@ describe('Usage Page PAYG With Data', () => {
   })
 
   it('should display the usage page with data for a PAYG user', () => {
+    // The implication here is that there is no Upgrade Now button
     cy.get('.cf-page-header--fixed')
       .children()
       .should('have.length', 1)

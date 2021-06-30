@@ -42,7 +42,11 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
       <Overlay.Container maxWidth={600}>
         <Overlay.Header title="Cancel Service" onDismiss={handleDismiss} />
         <Overlay.Body>
-          <Alert color={ComponentColor.Danger} icon={IconFont.AlertTriangle}>
+          <Alert
+            color={ComponentColor.Danger}
+            icon={IconFont.AlertTriangle}
+            testID="cancel-overlay--alert"
+          >
             This action cannot be undone
           </Alert>
           {hasClickedCancel ? (
@@ -69,6 +73,7 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
                 ? ComponentStatus.Default
                 : ComponentStatus.Disabled
             }
+            testID="cancel-service-confirmation--button"
           />
         </Overlay.Footer>
       </Overlay.Container>

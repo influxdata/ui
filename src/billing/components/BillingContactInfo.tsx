@@ -15,13 +15,14 @@ const BillingContactInfo: FC = () => {
 
   return (
     <Panel className="checkout-panel billing-contact-panel">
-      <Panel.Header size={ComponentSize.Large}>
+      <Panel.Header size={ComponentSize.Large} testID="billing-contact--header">
         <h4>{`${isEditing ? 'Enter ' : ''}Contact Information`}</h4>
         <Button
           color={ComponentColor.Default}
           onClick={() => setIsEditing(!isEditing)}
           text={isEditing ? 'Cancel Change' : 'Edit Information'}
           size={ComponentSize.Small}
+          testID="edit-contact--button"
         />
       </Panel.Header>
       {isEditing ? (

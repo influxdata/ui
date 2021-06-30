@@ -138,14 +138,14 @@ export const OpacitySlider: FC<OpacitySliderProps> = ({
   handleSetOpacity,
   testID = 'opacity-slider',
 }) => {
-  let validOpacity = legendOpacity
+  let validOpacity = LEGEND_OPACITY_DEFAULT
   if (
-    typeof validOpacity !== 'number' ||
-    validOpacity !== validOpacity ||
-    validOpacity < LEGEND_OPACITY_MINIMUM ||
-    validOpacity > LEGEND_OPACITY_MAXIMUM
+    typeof validOpacity === 'number' &&
+    validOpacity === validOpacity &&
+    validOpacity >= LEGEND_OPACITY_MINIMUM &&
+    validOpacity <= LEGEND_OPACITY_MAXIMUM
   ) {
-    validOpacity = LEGEND_OPACITY_DEFAULT
+    validOpacity = legendOpacity
   }
   const percentLegendOpacity = (validOpacity * 100).toFixed(0)
 

@@ -181,11 +181,11 @@ const HoverLegend: FC<HoverLegendProps> = ({properties, update}) => {
   }
 
   const handleSetOrientation = (threshold: number): void => {
-    let validThreshold = threshold
+    let validThreshold: number
     if (
-      typeof validThreshold !== 'number' ||
-      validThreshold !== validThreshold ||
-      validThreshold > 0
+      typeof threshold !== 'number' ||
+      threshold !== threshold ||
+      threshold > 0
     ) {
       validThreshold = LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL
     } else {

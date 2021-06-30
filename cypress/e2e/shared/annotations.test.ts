@@ -605,6 +605,13 @@ describe('The Annotations UI functionality', () => {
             cy.getByTestID('annotation-submit-button').should('be.disabled')
 
             // check the error message itself:
+            cy.getByTestID('form--element-error').contains('Required')
+
+            cy.getByTestID('endTime-testID')
+              .should('be.visible')
+              .click()
+              .type('2021-06-30 :32:00 AM')
+
             // (leaving actual format string out because it could change)
             cy.getByTestID('form--element-error').contains('Format must be ')
 
@@ -654,6 +661,16 @@ describe('The Annotations UI functionality', () => {
                 cy.getByTestID('annotation-submit-button').should('be.disabled')
 
                 // check the error message itself:
+                cy.getByTestID('form--element-error').contains('Required')
+
+                //put in a badly formatted time:
+                const badDate =
+                  startTimeValue.substring(0, 8) + startTimeValue.substring(10)
+                cy.getByTestID('startTime-testID')
+                  .should('be.visible')
+                  .click()
+                  .type(badDate)
+
                 cy.getByTestID('form--element-error').contains(
                   'Format must be '
                 )

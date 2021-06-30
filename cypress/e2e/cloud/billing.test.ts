@@ -1,6 +1,6 @@
 import {Organization} from '../../../src/types'
 
-describe('Billing Page', () => {
+describe.skip('Billing Page', () => {
   beforeEach(() => {
     cy.flush()
 

@@ -12,16 +12,30 @@ const GraphTips: FC = () => (
     testID="graphtips-question-mark"
     tooltipContents={
       <>
-        <h1>Graph Tips:</h1>
-        <p>
-          <code>Click + Drag</code> Zoom in (X or Y)
-          <br />
-          <code>Double Click</code> Reset Graph Window
-          <br />
+        <h5>Graph Tips:</h5>
+        <div>
+          <div className="graph-tips-line">
+            <code>Click + Drag</code> <span>Zoom in (X or Y)</span>
+          </div>
+          <div className="graph-tips-line">
+            <code>Double Click</code> <span>Reset Graph Window</span>
+          </div>
           <FeatureFlag name="annotations">
-            <code>Single Click</code> Annotate the Graph
+            <br />
+            <span>When Annotations button is on:</span>
+            <div className="graph-tips-line">
+              <code>Shift + Click</code>{' '}
+              <span> Annotate a point on a graph</span>
+            </div>
           </FeatureFlag>
-        </p>
+
+          <FeatureFlag name="rangeAnnotations">
+            <div className="graph-tips-line">
+              <code>Shift + Drag</code>{' '}
+              <span> Annotate a range on a graph </span>
+            </div>
+          </FeatureFlag>
+        </div>
       </>
     }
   />

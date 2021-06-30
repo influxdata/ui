@@ -8093,12 +8093,6 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
         type: 'Duration',
       },
       {
-        name: 'intervals',
-        desc:
-          'A function that returns an interval generator, a set of intervals used as windows. See docs for an example.',
-        type: 'Function',
-      },
-      {
         name: 'timeColumn',
         desc: 'The column containing time. Defaults to `"_time"`.',
         type: 'String',

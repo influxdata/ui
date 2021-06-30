@@ -599,8 +599,10 @@ export type ProvisionData = {
   a pay as you go user.
 */
 
-export const quartzProvision = (data: ProvisionData) => {
-  cy.request('/api/v2/quartz/provision', data).then(response => {
+export const quartzProvision = (
+  data: ProvisionData
+): Cypress.Chainable<Cypress.Response> => {
+  return cy.request('/api/v2/quartz/provision', data).then(response => {
     expect(response.status).to.eq(200)
   })
 }

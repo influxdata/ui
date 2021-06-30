@@ -1,71 +1,43 @@
 // Libraries
-import React, {FC} from 'react'
-import {useSelector} from 'react-redux'
+import React, {FC, useContext} from 'react'
 import {Panel, ComponentSize, InfluxColors} from '@influxdata/clockface'
 
 // Components
 import {View} from 'src/visualization'
-
-// Utils
-import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
+import {UsageContext} from 'src/usage/context/usage'
 
 // Types
 import {
   SingleStatViewProperties,
-  RemoteDataState,
-  XYViewProperties,
   InternalFromFluxResult,
   UsageVector,
 } from 'src/types'
 
-interface OwnProps {
+interface Props {
   usageVector: UsageVector
   fromFluxResult: InternalFromFluxResult
-  type: 'xy' | 'stat'
   length?: number
 }
 
-const GENERIC_PROPERTY_DEFAULTS = {
-  colors: [],
-  queries: [],
-  note: '',
-  showNoteWhenEmpty: true,
-  prefix: '',
-  suffix: '',
-  tickPrefix: '',
-  tickSuffix: '',
-}
-
-const GraphTypeSwitcher: FC<OwnProps> = ({
+const UsageSingleStat: FC<Props> = ({
   usageVector,
   fromFluxResult,
-  type,
   length = 1,
 }) => {
-  const timeRange = useSelector(getTimeRangeWithTimezone)
-
+  const {timeRange, billingStatsStatus} = useContext(UsageContext)
   const singleStatProperties: SingleStatViewProperties = {
-    ...GENERIC_PROPERTY_DEFAULTS,
+    colors: [],
+    queries: [],
+    note: '',
+    showNoteWhenEmpty: true,
+    prefix: '',
+    tickPrefix: '',
+    tickSuffix: '',
     type: 'single-stat',
     shape: 'chronograf-v2',
     suffix: ` ${usageVector?.unit ?? ''}`,
     decimalPlaces: {isEnforced: false, digits: 0},
   }
-
-  const xyProperties: XYViewProperties = {
-    ...GENERIC_PROPERTY_DEFAULTS,
-    type: 'xy',
-    shape: 'chronograf-v2',
-    axes: {
-      x: {},
-      y: {},
-    },
-    position: 'overlaid',
-    yColumn: usageVector.fluxKey,
-    geom: 'line',
-  }
-
-  const isXy = type === 'xy'
 
   const error = fromFluxResult?.table?.columns?.error?.data?.[0]
 
@@ -80,15 +52,11 @@ const GraphTypeSwitcher: FC<OwnProps> = ({
           usageVector.unit !== '' ? `(${usageVector.unit})` : ''
         }`}</h5>
       </Panel.Header>
-      <Panel.Body
-        className="panel-body--size"
-        style={{height: isXy ? 250 : 300 / length}}
-      >
+      <Panel.Body className="panel-body--size" style={{height: 300 / length}}>
         <View
-          loading={error ? RemoteDataState.Error : RemoteDataState.Done}
+          loading={billingStatsStatus}
           error={`${error ?? ''}`}
-          isInitial={false}
-          properties={isXy ? xyProperties : singleStatProperties}
+          properties={singleStatProperties}
           result={fromFluxResult}
           timeRange={timeRange}
         />
@@ -97,4 +65,4 @@ const GraphTypeSwitcher: FC<OwnProps> = ({
   )
 }
 
-export default GraphTypeSwitcher
+export default UsageSingleStat

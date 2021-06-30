@@ -6,13 +6,13 @@ import {Page} from '@influxdata/clockface'
 import UsageToday from 'src/usage/UsageToday'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import LimitChecker from 'src/cloud/components/LimitChecker'
-import UsageProvider from 'src/usage/context/usage'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
-const Usage: FC = () => (
-  <UsageProvider>
+const Usage: FC = () => {
+  console.log('USAGE')
+  return (
     <Page titleTag={pageTitleSuffixer(['Usage'])}>
       <Page.Header fullWidth={false} testID="usage-page--header">
         <Page.Title title="Usage" />
@@ -24,7 +24,7 @@ const Usage: FC = () => (
         <UsageToday />
       </Page.Contents>
     </Page>
-  </UsageProvider>
-)
+  )
+}
 
 export default Usage

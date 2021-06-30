@@ -1,7 +1,6 @@
 import {Organization} from '../../../src/types'
 
-// Skipping this until we get the CI/CD pipeline worked out for the `/quartz/me` endpoint
-describe.skip('Usage Page', () => {
+describe('Usage Page', () => {
   beforeEach(() => {
     cy.flush()
 
@@ -15,71 +14,97 @@ describe.skip('Usage Page', () => {
     })
   })
 
-  it('should display the usage page', () => {
+  it.skip('should display the usage page common features', () => {
+    // Display the upgrade button when the user is a free user
+    cy.get('.cf-page-header--fixed')
+      .children()
+      .should('have.length', 2)
     cy.getByTestID('cloud-upgrade--button').should('be.visible')
 
-    // Billing Stat Single Stats based on pricing version 4
     cy.getByTestID('billing-stats--graphs').within(() => {
       cy.getByTestID('graph-type--panel').should('have.length', 4)
     })
 
-    cy.getByTestID('usage-header--timerange').contains('Usage Past 1h')
-    cy.getByTestID('rate-limits-header--timerange').contains(
-      'Rate Limits Past 1h'
-    )
+    cy.getByTestID('usage-header--timerange').contains('Usage Past 24h')
+    cy.getByTestID('rate-limits-header--timerange')
+      .scrollIntoView()
+      .contains('Rate Limits Past 24h')
 
     // Checks the daterange picker
-    // TODO(ariel): get more data in to see if things change in the results
-    cy.get('.cf-dropdown--selected')
-      .contains('Past 1')
-      .should('have.length', 1)
-    cy.getByTestID('timerange-popover--dialog').should('not.exist')
-    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('usage-timerange--selected').within(() => {
+      cy.contains('Past 24h')
+    })
 
-    cy.getByTestID('dropdown-item-past15m').click()
-    cy.get('.cf-dropdown--selected')
-      .contains('Past 15m')
-      .should('have.length', 1)
+    cy.getByTestID('usage-timerange--dropdown').scrollIntoView()
+    cy.getByTestID('usage-timerange--dropdown').click()
 
-    cy.getByTestID('usage-header--timerange').contains('Usage Past 15m')
-    cy.getByTestID('rate-limits-header--timerange').contains(
-      'Rate Limits Past 15m'
-    )
+    // TODO(ariel): something gets busted trying to select the past 7d
+    cy.getByTestID('dropdown-item-past7d').click()
 
-    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('usage-timerange--selected').within(() => {
+      cy.contains('Past 7d')
+    })
 
-    cy.getByTestID('timerange-popover--dialog').should('not.exist')
+    cy.getByTestID('usage-header--timerange').contains('Usage Past 7d')
+    cy.getByTestID('rate-limits-header--timerange')
+      .scrollIntoView()
+      .contains('Rate Limits Past 7d')
 
-    cy.getByTestID('dropdown-item-customtimerange').click()
-    cy.getByTestID('timerange-popover--dialog').should('have.length', 1)
+    cy.getByTestID('usage-timerange--selected').within(() => {
+      cy.contains('Past 7d')
+    })
 
-    cy.getByTestID('timerange--input')
-      .first()
-      .clear()
-      .type('2019-10-29 08:00:00.000')
+    cy.getByTestID('usage-timerange--dropdown').click()
 
-    // Set the stop date to Oct 29, 2019
-    cy.getByTestID('timerange--input')
-      .last()
-      .clear()
-      .type('2019-10-29 09:00:00.000')
+    cy.getByTestID('dropdown-item-past30d').click()
 
-    // click button and see if time range has been selected
-    cy.getByTestID('daterange--apply-btn').click()
-    const reg = /2019-10-29T\d\d:00:00\.000Z to 2019-10-29T\d\d:00:00\.000Z/g
-    cy.getByTestID('usage-header--timerange').contains(reg)
-    cy.getByTestID('rate-limits-header--timerange').contains(reg)
+    cy.getByTestID('usage-timerange--selected').within(() => {
+      cy.contains('Past 30d')
+    })
+
+    cy.getByTestID('usage-header--timerange').contains('Usage Past 30d')
+    cy.getByTestID('rate-limits-header--timerange')
+      .scrollIntoView()
+      .contains('Rate Limits Past 30d')
 
     // This is based on stubbed out data and should be replaced when the API is hooked up
     cy.getByTestID('usage-page--dropdown')
-      .contains('Limit Events')
+      .contains('Data In')
       .click()
     cy.getByTestID('dropdown-item')
-      .should('have.length', 5)
+      .should('have.length', 4)
       .last()
       .contains('Data Out')
       .click({force: true})
 
     cy.getByTestID('usage-page--dropdown').contains('Data Out')
+  })
+})
+
+describe('Usage Page With Data', () => {
+  beforeEach(() => {
+    cy.flush()
+
+    cy.signin().then(() => {
+      cy.get('@org').then(({id}: Organization) => {
+        cy.setFeatureFlags({unityUsage: true}).then(() => {
+          cy.quartzProvision({
+            hasData: true,
+            accountType: 'pay_as_you_go',
+          }).then(() => {
+            cy.wait(1000)
+            cy.visit(`/orgs/${id}/usage`)
+            cy.getByTestID('usage-page--header').should('be.visible')
+          })
+        })
+      })
+    })
+  })
+
+  it.only('should display the usage page with data for a PAYG user', () => {
+    // TODO(ariel): fix the provisioning
+    cy.get('.cf-page-header--fixed')
+      .children()
+      .should('have.length', 1)
   })
 })

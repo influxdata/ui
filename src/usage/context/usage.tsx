@@ -15,7 +15,11 @@ import {
 import {DEFAULT_USAGE_TIME_RANGE} from 'src/shared/constants/timeRanges'
 
 // Types
-import {SelectableDurationTimeRange, UsageVector} from 'src/types'
+import {
+  RemoteDataState,
+  SelectableDurationTimeRange,
+  UsageVector,
+} from 'src/types'
 
 export type Props = {
   children: JSX.Element
@@ -24,24 +28,30 @@ export type Props = {
 export interface UsageContextType {
   billingDateTime: string
   billingStats: FromFluxResult[]
+  billingStatsStatus: RemoteDataState
   handleSetSelectedUsage: (vector: string) => void
   handleSetTimeRange: (timeRange: SelectableDurationTimeRange) => void
   rateLimits: FromFluxResult
+  rateLimitsStatus: RemoteDataState
   selectedUsage: string
   timeRange: SelectableDurationTimeRange
   usageStats: FromFluxResult
+  usageStatsStatus: RemoteDataState
   usageVectors: UsageVector[]
 }
 
 export const DEFAULT_CONTEXT: UsageContextType = {
   billingDateTime: '',
   billingStats: [],
+  billingStatsStatus: RemoteDataState.NotStarted,
   handleSetSelectedUsage: () => {},
   handleSetTimeRange: () => {},
   rateLimits: null,
+  rateLimitsStatus: RemoteDataState.NotStarted,
   selectedUsage: '',
   timeRange: DEFAULT_USAGE_TIME_RANGE,
   usageStats: null,
+  usageStatsStatus: RemoteDataState.NotStarted,
   usageVectors: [],
 }
 
@@ -54,8 +64,17 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   const [usageVectors, setUsageVectors] = useState([])
   const [selectedUsage, setSelectedUsage] = useState('')
   const [billingStats, setBillingStats] = useState<FromFluxResult[]>([])
+  const [billingStatsStatus, setBillingStatsStatus] = useState(
+    RemoteDataState.NotStarted
+  )
   const [usageStats, setUsageStats] = useState<FromFluxResult>(null)
+  const [usageStatsStatus, setUsageStatsStatus] = useState(
+    RemoteDataState.NotStarted
+  )
   const [rateLimits, setRateLimits] = useState<FromFluxResult>(null)
+  const [rateLimitsStatus, setRateLimitsStatus] = useState(
+    RemoteDataState.NotStarted
+  )
   const [timeRange, setTimeRange] = useState<SelectableDurationTimeRange>(
     DEFAULT_USAGE_TIME_RANGE
   )
@@ -115,6 +134,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
 
   const handleGetBillingStats = useCallback(async () => {
     try {
+      setBillingStatsStatus(RemoteDataState.Loading)
       const resp = await getUsageBillingStats({})
 
       if (resp.status !== 200) {
@@ -125,9 +145,11 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
 
       const csvs = csv.split('\n\n').map(c => fromFlux(c))
 
+      setBillingStatsStatus(RemoteDataState.Done)
       setBillingStats(csvs)
     } catch (error) {
       console.error(error)
+      setBillingStatsStatus(RemoteDataState.Error)
     }
   }, [setBillingStats])
 
@@ -135,40 +157,47 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
     handleGetBillingStats()
   }, [handleGetBillingStats])
 
-  const handleGetUsageStats = useCallback(async () => {
-    if (selectedUsage.length > 0) {
-      try {
-        const vector = usageVectors.find(
-          vector => selectedUsage === vector.name
-        )
+  const handleGetUsageStats = useCallback(
+    async (duration: string, selectedUsage: string) => {
+      if (selectedUsage.length > 0) {
+        try {
+          setUsageStatsStatus(RemoteDataState.Loading)
+          const vector = usageVectors.find(
+            vector => selectedUsage === vector.name
+          )
 
-        const resp = await getUsage({
-          vector_name: vector.fluxKey,
-          query: {range: timeRange.duration},
-        })
+          const resp = await getUsage({
+            vector_name: vector.fluxKey,
+            query: {range: duration},
+          })
 
-        if (resp.status !== 200) {
-          throw new Error(resp.data.message)
+          if (resp.status !== 200) {
+            throw new Error(resp.data.message)
+          }
+
+          const fromFluxResult = fromFlux(resp.data)
+
+          setUsageStats(fromFluxResult)
+          setUsageStatsStatus(RemoteDataState.Done)
+        } catch (error) {
+          console.error(error)
+          setUsageStatsStatus(RemoteDataState.Error)
+          setUsageStats(null)
         }
-
-        const fromFluxResult = fromFlux(resp.data)
-
-        setUsageStats(fromFluxResult)
-      } catch (error) {
-        console.error(error)
-        setUsageStats(null)
       }
-    }
-  }, [selectedUsage, timeRange, usageVectors])
+    },
+    [usageVectors]
+  )
 
   useEffect(() => {
-    handleGetUsageStats()
-  }, [handleGetUsageStats])
+    handleGetUsageStats(timeRange.duration, selectedUsage)
+  }, [handleGetUsageStats, timeRange.duration, selectedUsage])
 
-  const handleGetRateLimits = useCallback(async () => {
+  const handleGetRateLimits = useCallback(async (duration: string) => {
     try {
+      setRateLimitsStatus(RemoteDataState.Loading)
       const resp = await getUsageRateLimits({
-        query: {range: timeRange.duration},
+        query: {range: duration},
       })
 
       if (resp.status !== 200) {
@@ -178,27 +207,35 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
       const fromFluxResult = fromFlux(resp.data)
 
       setRateLimits(fromFluxResult)
+      setRateLimitsStatus(RemoteDataState.Done)
     } catch (error) {
+      setRateLimitsStatus(RemoteDataState.Error)
       console.error(error)
       setRateLimits(null)
     }
-  }, [timeRange])
+  }, [])
 
   useEffect(() => {
-    handleGetRateLimits()
-  }, [handleGetRateLimits])
+    handleGetRateLimits(timeRange.duration)
+  }, [handleGetRateLimits, timeRange.duration])
+
+  console.log('SURRENDER')
 
   return (
     <UsageContext.Provider
       value={{
         billingDateTime,
         billingStats,
+        billingStatsStatus,
+        handleGetRateLimits,
         handleSetSelectedUsage,
         handleSetTimeRange,
         rateLimits,
+        rateLimitsStatus,
         selectedUsage,
         timeRange,
         usageStats,
+        usageStatsStatus,
         usageVectors,
       }}
     >

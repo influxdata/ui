@@ -3,6 +3,7 @@ export {Query, Dialect} from 'src/client'
 type Nullable<T> = T | null
 
 export type SelectableTimeRangeLower =
+  | 'now() - 1m'
   | 'now() - 5m'
   | 'now() - 15m'
   | 'now() - 1h'

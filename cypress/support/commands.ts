@@ -1,4 +1,4 @@
-import {NotificationEndpoint, Secret} from '../../src/types'
+import {AccountType, NotificationEndpoint, Secret} from '../../src/types'
 import {Bucket, Organization} from '../../src/client'
 import {setOverrides, FlagMap} from 'src/shared/actions/flags'
 import 'cypress-file-upload'
@@ -574,6 +574,48 @@ export const flush = () => {
   })
 }
 
+export type ProvisionData = {
+  accountType?: AccountType
+  hasData?: boolean
+  isOperator?: boolean
+  isRegionBeta?: boolean
+}
+
+/*
+  This step provisions some meta data for the quartz mock API and allows the UI
+  to create different states with which to test the API. More specifically, this
+  allows us to test scenarios when a user is:
+  - pay_as_you_go vs free
+  - is an operator
+  - is in a beta region
+  - has usage data vs has no usage data
+
+  Defaults for these are set in memory on the server when requests are made. The defaults are:
+
+  - accountType = free
+  - hasData = false
+  - isOperator = false
+  - isRegionBeta = false
+
+  In order to update any of these properties for testing purposes, all you need to do is
+  pass in the data you want to set and let the server take care of the rest.
+
+  For example:
+
+  cy.quartzProvision({accountType: 'pay_as_you_go'})
+
+  Will set the server session in memory to allow for tests to be run within the context of
+  a pay as you go user.
+*/
+
+export const quartzProvision = (
+  data: ProvisionData
+): Cypress.Chainable<Cypress.Response> => {
+  return cy.request('/api/v2/quartz/provision', data).then(response => {
+    expect(response.status).to.eq(200)
+  })
+}
+
 export const lines = (numLines = 3) => {
   // each line is 10 seconds before the previous line
   const offset_ms = 10_000
@@ -832,6 +874,7 @@ Cypress.Commands.add('createTelegraf', createTelegraf)
 
 // general
 Cypress.Commands.add('flush', flush)
+Cypress.Commands.add('quartzProvision', quartzProvision)
 
 // tasks
 Cypress.Commands.add('createTask', createTask)

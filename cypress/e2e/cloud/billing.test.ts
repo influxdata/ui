@@ -1,6 +1,5 @@
 import {Organization} from '../../../src/types'
 
-// Skipping this until we get the CI/CD pipeline worked out for the `/quartz/me` endpoint
 describe.skip('Billing Page', () => {
   beforeEach(() => {
     cy.flush()
@@ -13,6 +12,16 @@ describe.skip('Billing Page', () => {
         })
       })
     })
+  })
+
+  it('should display the free billing page for free users', () => {
+    cy.getByTestID('cloud-upgrade--button').should('be.visible')
+    cy.getByTestID('title-header--name')
+      .should('not.have.value', 'blockedNotificationRules')
+      .and('not.have.value', 'blockedNotificationEndpoints')
+
+    cy.getByTestID('payg-grid--container').scrollIntoView()
+    cy.getByTestID('payg-button--upgrade').should('be.visible')
   })
 
   it('should display the free billing page', () => {

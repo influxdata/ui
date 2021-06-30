@@ -121,8 +121,8 @@ export const getOrgs = (
       account: {
         type: 'pay_as_you_go',
         balance: 0,
-        id: 'account123',
-        email: 'account@account.com',
+        id: '123',
+        email: 'pay@influxdata.com',
       },
       billingContact: null,
     },
@@ -136,8 +136,8 @@ export const getOrgs = (
       account: {
         type: 'cancelled',
         balance: 0,
-        id: 'cancelled1',
-        email: 'cancelled@account.com',
+        id: '1',
+        email: 'cancelled@influxdata.com',
       },
       billingContact: null,
     },
@@ -151,8 +151,8 @@ export const getOrgs = (
       account: {
         type: 'free',
         balance: 0,
-        id: 'free123',
-        email: 'free@account.com',
+        id: '123',
+        email: 'free@influxdata.com',
       },
       billingContact: null,
     },
@@ -178,8 +178,8 @@ export const getOrgById = (_id: string): ReturnType<typeof getOperatorOrg> => {
     account: {
       type: 'pay_as_you_go',
       balance: 10,
-      id: 'pay123',
-      email: 'paid@account.com',
+      email: 'payg@influxdata.com',
+      id: '123',
     },
     billingContact: null,
   }

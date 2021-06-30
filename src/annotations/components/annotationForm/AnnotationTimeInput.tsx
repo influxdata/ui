@@ -57,8 +57,8 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
     if (props.invalidMessage) {
       return props.invalidMessage
     }
-    if (timeValue === null) {
-      return '' // it's not filled in yet...don't show an error (parent takes care of required fields)
+    if (!timeValue) {
+      return 'Required'
     }
 
     if (!isValidTimeFormat(timeValue)) {
@@ -66,7 +66,7 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
     }
 
     // it is valid
-    return null
+    return ''
   }
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {

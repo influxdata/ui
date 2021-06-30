@@ -37,7 +37,7 @@ const GetFlags: FC = () => {
         return prev
       }, {})
     )
-  }, [Object.keys(flags).length]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [flags])
 
   return (
     <SpinnerContainer loading={status} spinnerComponent={<TechnoSpinner />}>

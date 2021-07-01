@@ -55,6 +55,7 @@ class UnconnectedTaskRunsCard extends PureComponent<
     if (!task) {
       return null
     }
+
     return (
       <ResourceCard
         testID="task-runs-task-card"

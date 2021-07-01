@@ -5,7 +5,7 @@ export const calcNextPageOffset = (
   offset: number,
   size: number,
   total: number
-) => Math.min(offset + size, total - size)
+) => (total <= offset + size ? offset : offset + size)
 
 export const calcPrevPageOffset = (offset: number, size: number) =>
   Math.max(offset - size, 0)

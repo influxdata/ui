@@ -24,10 +24,13 @@ describe('pagination utils tests', () => {
       expect(calcNextPageOffset(0, 1, 1)).toBe(0)
     })
     it('offset: 2, size: 2, total: 3', () => {
-      expect(calcNextPageOffset(2, 2, 3)).toBe(1)
+      expect(calcNextPageOffset(2, 2, 3)).toBe(2)
     })
-    it('offset: 3, size: 2, total: 6', () => {
-      expect(calcNextPageOffset(3, 2, 6)).toBe(4)
+    it('offset: 2, size: 2, total: 6', () => {
+      expect(calcNextPageOffset(2, 2, 6)).toBe(4)
+    })
+    it('offset: 4, size: 2, total: 6', () => {
+      expect(calcNextPageOffset(4, 2, 6)).toBe(4)
     })
   })
 

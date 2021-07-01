@@ -285,9 +285,9 @@ const PagedTable: FC<Props> = ({result, properties}) => {
     }
   }, [height, result])
 
-  const inner = !!size && tables.map((t, tIdx) => (
-    <InnerTable table={t} key={`table${tIdx}`} />
-  ))
+  const inner =
+    !!size &&
+    tables.map((t, tIdx) => <InnerTable table={t} key={`table${tIdx}`} />)
 
   return (
     <div className="visualization--simple-table--results" ref={ref}>

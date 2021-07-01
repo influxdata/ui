@@ -25,9 +25,7 @@ import {
 } from 'src/tasks/actions/thunks'
 
 // Actions For Members
-import {
-  getMembers,
-} from 'src/members/actions/thunks'
+import {getMembers} from 'src/members/actions/thunks'
 
 import {TaskPage, setCurrentTasksPage} from 'src/tasks/actions/creators'
 
@@ -48,7 +46,7 @@ class UnconnectedTaskRunsCard extends PureComponent<
   Props & RouteComponentProps<{orgID: string; id: string}>
 > {
   componentDidMount() {
-    this.props.getMembers();
+    this.props.getMembers()
   }
 
   public render() {
@@ -94,10 +92,10 @@ class UnconnectedTaskRunsCard extends PureComponent<
   }
 
   private get ownerName(): string {
-    const { task, members } = this.props;
+    const {task, members} = this.props
 
-    if (members[task.ownerID]) return members[task.ownerID].name;
-    return '';
+    if (members[task.ownerID]) return members[task.ownerID].name
+    return ''
   }
 
   private get activeToggle(): JSX.Element {

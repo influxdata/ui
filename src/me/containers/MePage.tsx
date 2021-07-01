@@ -52,7 +52,7 @@ let hasCalled = false // We only want to show the write limit notification once
 export class MePage extends PureComponent<Props> {
   async componentDidMount() {
     if (isFlagEnabled('newUsageAPI') && !hasCalled && CLOUD) {
-      const hits = await getUserWriteLimitHits(this.props.orgID)
+      const hits = await getUserWriteLimitHits()
       hasCalled = true
       if (hits > QUERY_WRITE_LIMIT_HITS) {
         if (this.props.shouldUpgrade) {

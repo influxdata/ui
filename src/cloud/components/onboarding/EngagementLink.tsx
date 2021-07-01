@@ -19,12 +19,12 @@ const EngagementLink: FC = () => {
   const me = useSelector((state: AppState) => state.me)
 
   useEffect(() => {
-    if (org.id) {
-      handleGetUserStatus(org.id).then(({usageDataStates}) =>
+    if (isFlagEnabled('newUsageAPI')) {
+      handleGetUserStatus().then(({usageDataStates}) =>
         setDataStates(usageDataStates)
       )
     }
-  }, [org.id])
+  }, [])
 
   useEffect(() => {
     if (userpilot) {

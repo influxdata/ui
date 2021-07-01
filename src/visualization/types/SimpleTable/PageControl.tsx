@@ -6,14 +6,15 @@ import {PaginationContext} from 'src/visualization/context/pagination'
 import {PaginationNav} from '@influxdata/clockface'
 
 const PageControl: FC = () => {
-  const {offset, size, total, setPage} = useContext(PaginationContext)
-
+  const {offset, size, total, totalPages, setPage} = useContext(
+    PaginationContext
+  )
   return (
     <div className="visualization--simple-table--paging">
       {total && size > 0 && (
         <PaginationNav.PaginationNav
-          totalPages={Math.ceil(total / size)}
-          currentPage={Math.floor(offset / size) + 1}
+          totalPages={totalPages}
+          currentPage={Math.min(Math.floor(offset / size) + 1, totalPages)}
           pageRangeOffset={1}
           onChange={setPage}
         />

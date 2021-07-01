@@ -20,6 +20,7 @@ import {
 
 // Constants
 import {
+  LEGEND_OPACITY_DEFAULT,
   LEGEND_OPACITY_MAXIMUM,
   LEGEND_OPACITY_MINIMUM,
   LEGEND_OPACITY_STEP,
@@ -114,7 +115,7 @@ export const OrientationToggle: FC<OrientationToggleProps> = ({
         className="legend-orientation--vertical"
         id={`${parentName}-orientation--vertical`}
         name={`${parentName}-orientation--vertical`}
-        checked={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_VERTICAL}
+        checked={legendOrientation <= 0}
         onChange={setOrientation}
         type={InputToggleType.Radio}
         size={ComponentSize.ExtraSmall}
@@ -122,7 +123,7 @@ export const OrientationToggle: FC<OrientationToggleProps> = ({
         appearance={Appearance.Outline}
       >
         <InputLabel
-          active={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_VERTICAL}
+          active={legendOrientation <= 0}
           htmlFor={`${parentName}-orientation--vertical`}
         >
           Vertical
@@ -137,9 +138,17 @@ export const OpacitySlider: FC<OpacitySliderProps> = ({
   handleSetOpacity,
   testID = 'opacity-slider',
 }) => {
-  // without the toFixed(0) sometimes you
-  // can get numbers like 45.000009% which we want to avoid
-  const percentLegendOpacity = (legendOpacity * 100).toFixed(0)
+  let validOpacity = LEGEND_OPACITY_DEFAULT
+  if (
+    typeof legendOpacity === 'number' &&
+    legendOpacity === legendOpacity &&
+    legendOpacity >= LEGEND_OPACITY_MINIMUM &&
+    legendOpacity <= LEGEND_OPACITY_MAXIMUM
+  ) {
+    validOpacity = legendOpacity
+  }
+  const percentLegendOpacity = (validOpacity * 100).toFixed(0)
+
   return (
     <Form.Element
       className="legend-opacity-slider"
@@ -150,7 +159,7 @@ export const OpacitySlider: FC<OpacitySliderProps> = ({
         max={LEGEND_OPACITY_MAXIMUM}
         min={LEGEND_OPACITY_MINIMUM}
         step={LEGEND_OPACITY_STEP}
-        value={legendOpacity}
+        value={validOpacity}
         onChange={handleSetOpacity}
         hideLabels={true}
       />

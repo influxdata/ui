@@ -49,7 +49,7 @@ const App: FC = () => {
       load(RUDDERSTACK_WRITE_KEY, RUDDERSTACK_DATA_PLANE_URL)
     }
     setAutoFreeze(false)
-  }, [RUDDERSTACK_WRITE_KEY, RUDDERSTACK_DATA_PLANE_URL])
+  }, [])
 
   return (
     <AppWrapper presentationMode={presentationMode} className={appWrapperClass}>

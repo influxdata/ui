@@ -11,7 +11,7 @@ import {
   PopoverPosition,
   QuestionMarkTooltip,
 } from '@influxdata/clockface'
-import GraphTypeSwitcher from 'src/usage/GraphTypeSwitcher'
+import UsageSingleStat from 'src/usage/UsageSingleStat'
 import {UsageContext} from 'src/usage/context/usage'
 import {FromFluxResult} from '@influxdata/giraffe'
 
@@ -90,10 +90,9 @@ const BillingStatsPanel: FC = () => {
           }
 
           return (
-            <GraphTypeSwitcher
+            <UsageSingleStat
               key={vector.fluxKey}
               usageVector={vector}
-              type="stat"
               fromFluxResult={fromFluxResult}
               length={usageVectors.length}
             />

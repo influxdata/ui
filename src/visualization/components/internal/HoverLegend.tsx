@@ -38,6 +38,8 @@ import {
   LEGEND_OPACITY_MAXIMUM,
   LEGEND_OPACITY_MINIMUM,
   LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+  LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL,
+  LEGEND_ORIENTATION_THRESHOLD_VERTICAL,
   LegendDisplayStatus,
 } from 'src/visualization/constants'
 
@@ -179,8 +181,18 @@ const HoverLegend: FC<HoverLegendProps> = ({properties, update}) => {
   }
 
   const handleSetOrientation = (threshold: number): void => {
+    let validThreshold: number
+    if (
+      typeof threshold !== 'number' ||
+      threshold !== threshold ||
+      threshold > 0
+    ) {
+      validThreshold = LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL
+    } else {
+      validThreshold = LEGEND_ORIENTATION_THRESHOLD_VERTICAL
+    }
     update({
-      legendOrientationThreshold: threshold,
+      legendOrientationThreshold: validThreshold,
     })
     // eventing is done by <OrientationToggle> because
     // UI's definition of orientation is either horizontal or vertical

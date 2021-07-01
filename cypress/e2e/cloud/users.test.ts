@@ -1,8 +1,6 @@
 import {Organization} from '../../../src/types'
 
-// Skipping this until we get the CI/CD pipeline worked out for the `/quartz/me` endpoint
-
-describe.skip('Users Page', () => {
+describe('Users Page', () => {
   beforeEach(() => {
     cy.flush()
 
@@ -22,7 +20,7 @@ describe.skip('Users Page', () => {
     cy.getByTestID('email--input').type(email)
     cy.getByTestID('user-list-invite--button').click()
 
-    cy.getByTestID('invite-sent-success--dismiss').click()
+    cy.getByTestID('notification-success--dismiss').click()
 
     cy.getByTestID(`invite-list-item ${email}`).should('contain', email)
     cy.getByTestID(`invite-list-item ${email}`).within(() => {
@@ -30,7 +28,7 @@ describe.skip('Users Page', () => {
       cy.contains('expiration', {matchCase: false})
     })
 
-    cy.getByTestIDSubStr('invite-list-item').should('have.length', 4)
+    cy.getByTestIDSubStr('invite-list-item').should('have.length', 1)
 
     cy.log('resending an invite')
     cy.getByTestID(`invite-list-item ${email}`).within(() => {
@@ -40,8 +38,7 @@ describe.skip('Users Page', () => {
       cy.getByTestID('resend-invite').click()
     })
 
-    cy.getByTestID('invitation-sent').should('be.visible')
-    cy.getByTestID('invitation-sent--dismiss').click()
+    cy.getByTestID('notification-success--dismiss').click()
 
     cy.log('withdrawing an invite')
     cy.getByTestID(`invite-list-item ${email}`).within(() => {
@@ -54,12 +51,12 @@ describe.skip('Users Page', () => {
     cy.getByTestID('withdraw-invite--confirm-button').should('be.visible')
     cy.getByTestID('withdraw-invite--confirm-button').click()
 
-    cy.getByTestID('invitation-withdrawn').should('be.visible')
-    cy.getByTestID('invitation-withdrawn--dismiss').click()
+    cy.getByTestID('notification-success--dismiss').click()
 
-    cy.getByTestIDSubStr('invite-list-item').should('have.length', 3)
+    cy.getByTestIDSubStr('invite-list-item').should('have.length', 0)
+    cy.getByTestIDSubStr('user-list-item').should('have.length', 1)
 
-    cy.getByTestID(`user-list-item iris@influxdata.com`).within(() => {
+    cy.getByTestID(`user-list-item user@influxdata.com`).within(() => {
       cy.getByTestID('delete-user--button').trigger('mouseover')
       // TODO figure out how to have cypress handle hover events
       // cy.getByTestID('delete-user--button').should('be.visible')
@@ -69,9 +66,8 @@ describe.skip('Users Page', () => {
     cy.getByTestID('delete-user--confirm-button').should('be.visible')
     cy.getByTestID('delete-user--confirm-button').click()
 
-    cy.getByTestID('user-removed').should('be.visible')
-    cy.getByTestID('user-removed--dismiss').click()
+    cy.getByTestID('notification-success--dismiss').click()
 
-    cy.getByTestIDSubStr('user-list-item').should('have.length', 2)
+    cy.getByTestIDSubStr('user-list-item').should('have.length', 0)
   })
 })

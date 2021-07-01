@@ -1,6 +1,6 @@
 // Libraries
 import React, {useEffect, FC} from 'react'
-import {connect, ConnectedProps, useDispatch} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 import {Switch, Route} from 'react-router-dom'
 import GetOrganizations from 'src/shared/containers/GetOrganizations'
 
@@ -17,11 +17,12 @@ import {getFlags} from 'src/shared/thunks/flags'
 import {activeFlags} from 'src/shared/selectors/flags'
 import {updateReportingContext} from 'src/cloud/utils/reporting'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps
-
-const GetFlags: FC<Props> = ({status, flags}) => {
+const GetFlags: FC = () => {
   const dispatch = useDispatch()
+  const flags = useSelector(activeFlags)
+  const status = useSelector(
+    (state: AppState) => state.flags.status || RemoteDataState.NotStarted
+  )
   useEffect(() => {
     if (status === RemoteDataState.NotStarted) {
       dispatch(getFlags())
@@ -47,11 +48,4 @@ const GetFlags: FC<Props> = ({status, flags}) => {
   )
 }
 
-const mstp = (state: AppState) => ({
-  flags: activeFlags(state),
-  status: state.flags.status || RemoteDataState.NotStarted,
-})
-
-const connector = connect(mstp)
-
-export default connector(GetFlags)
+export default GetFlags

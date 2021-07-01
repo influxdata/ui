@@ -38,11 +38,15 @@ export const EditAnnotationOverlay: FC = () => {
   ): Promise<void> => {
     try {
       await dispatch(editAnnotation(editedAnnotation))
-      event('annotations.edit_annotation.success')
+      event(
+        `${clickedAnnotation.eventPrefix}.annotations.edit_annotation.success`
+      )
       dispatch(notify(editAnnotationSuccess()))
       onClose()
     } catch (err) {
-      event('annotations.edit_annotation.failure')
+      event(
+        `${clickedAnnotation.eventPrefix}.annotations.edit_annotation.failure`
+      )
       dispatch(notify(editAnnotationFailed(getErrorMessage(err))))
     }
   }
@@ -63,6 +67,7 @@ export const EditAnnotationOverlay: FC = () => {
       stream={clickedAnnotation.stream}
       onClose={onClose}
       title="Edit"
+      eventPrefix={clickedAnnotation.eventPrefix}
     />
   )
 }

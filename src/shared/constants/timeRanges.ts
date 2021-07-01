@@ -51,6 +51,15 @@ export const CUSTOM_TIME_RANGE: {label: string; type: 'custom'} = {
 
 export const SELECTABLE_TIME_RANGES: SelectableDurationTimeRange[] = [
   {
+    seconds: 60,
+    lower: 'now() - 1m',
+    upper: null,
+    label: 'Past 1m',
+    duration: '1m',
+    type: 'selectable-duration',
+    windowPeriod: 1000, // 1s
+  },
+  {
     seconds: 300,
     lower: 'now() - 5m',
     upper: null,

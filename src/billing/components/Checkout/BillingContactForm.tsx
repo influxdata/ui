@@ -157,6 +157,7 @@ const BillingContactForm: FC<Props> = ({toggleEditingOff}) => {
                     name="firstName"
                     titleText="First Name"
                     value={inputs.firstName}
+                    testID="form-input--firstname"
                   />
                 </Form.Element>
               </Grid.Column>
@@ -171,6 +172,7 @@ const BillingContactForm: FC<Props> = ({toggleEditingOff}) => {
                     name="lastName"
                     titleText="Last Name"
                     value={inputs.lastName}
+                    testID="form-input--lastname"
                   />
                 </Form.Element>
               </Grid.Column>
@@ -283,6 +285,7 @@ const BillingContactForm: FC<Props> = ({toggleEditingOff}) => {
                 ? ComponentStatus.Loading
                 : ComponentStatus.Default
             }
+            testID="save-contact--button"
           />
         </FlexBox>
       </Panel.Footer>

@@ -60,20 +60,22 @@ const InvoiceHistory: FC = () => {
             justifyContent={JustifyContent.SpaceBetween}
             stretchToFitWidth={true}
           >
-            <ResourceList.Sorter
-              name="Invoice Date"
-              onClick={handleSort}
-              sort={sortKey === 'targetDate' ? sortDirection : Sort.None}
-              sortKey="targetDate"
-              className="invoice-header"
-            />
             <FlexBox direction={FlexDirection.Row}>
+              <ResourceList.Sorter
+                name="Invoice Date"
+                onClick={handleSort}
+                sort={sortKey === 'targetDate' ? sortDirection : Sort.None}
+                sortKey="targetDate"
+                className="invoice-header"
+                testID="invoice-date--sorter"
+              />
               <ResourceList.Sorter
                 name="Amount"
                 onClick={handleSort}
                 sort={sortKey === 'amount' ? sortDirection : Sort.None}
                 sortKey="amount"
                 className="invoice-header"
+                testID="invoice-amount--sorter"
               />
               <ResourceList.Sorter
                 name="Status"
@@ -81,6 +83,7 @@ const InvoiceHistory: FC = () => {
                 sort={sortKey === 'status' ? sortDirection : Sort.None}
                 sortKey="status"
                 className="invoice-header status"
+                testID="invoice-status--sorter"
               />
             </FlexBox>
           </FlexBox>

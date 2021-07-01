@@ -28,7 +28,7 @@ const BillingPayAsYouGo: FC = () => (
       <>
         <PlanTypePanel />
         <Panel>
-          <Panel.Header>
+          <Panel.Header testID="past-invoices--header">
             <h4>Past Invoices</h4>
           </Panel.Header>
           <Panel.Body>

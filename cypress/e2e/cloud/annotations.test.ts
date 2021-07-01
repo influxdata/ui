@@ -464,7 +464,9 @@ describe('The Annotations UI functionality', () => {
 
               // should be 10 minutes between them:
               const duration = moment.duration(
-                moment(endTimeValue).diff(moment(startTimeValue))
+                moment(endTimeValue, 'YYYY-MM-DD hh:mm:ss a').diff(
+                  moment(startTimeValue, 'YYYY-MM-DD hh:mm:ss a')
+                )
               )
               const minutes = duration.asMinutes()
 

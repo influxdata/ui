@@ -39,6 +39,7 @@ import {
   clickAttached,
   upsertSecret,
   setFeatureFlags,
+  quartzProvision,
 } from './support/commands'
 
 declare global {
@@ -86,6 +87,7 @@ declare global {
       createRule: typeof createRule
       setFeatureFlags: typeof setFeatureFlags
       upsertSecret: typeof upsertSecret
+      quartzProvision: typeof quartzProvision
     }
   }
 }

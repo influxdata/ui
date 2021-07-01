@@ -47,6 +47,7 @@ interface Props {
   type: AnnotationType
   onSubmit: (Annotation) => void
   onClose: () => void
+  eventPrefix: string
 }
 
 export const AnnotationForm: FC<Props> = (props: Props) => {
@@ -107,7 +108,6 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     })
   }
 
-  // TODO:  get the correct prefix in there, multiple plot types have annotations now
   const handleDelete = () => {
     const editedAnnotation = {
       summary,
@@ -120,17 +120,20 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
 
     try {
       dispatch(deleteAnnotations(editedAnnotation))
-      event('annotations.delete_annotation.success')
+      event(`${props.eventPrefix}.annotations.delete_annotation.success`)
       dispatch(notify(deleteAnnotationSuccess(editedAnnotation.summary)))
       props.onClose()
     } catch (err) {
-      event('annotations.delete_annotation.failure')
+      event(`${props.eventPrefix}.annotations.delete_annotation.failure`)
       dispatch(notify(deleteAnnotationFailed(err)))
     }
   }
 
   const handleCancel = () => {
-    event('dashboards.annotations.create_annotation.cancel')
+    const annoMode = isEditing ? 'edit' : 'create'
+    event(
+      `${props.eventPrefix}.dashboards.annotations.${annoMode}_annotation.cancel`
+    )
     props.onClose()
   }
 

@@ -16,13 +16,17 @@ const CancellationPanel: FC = () => {
   return (
     <>
       <Panel>
-        <Panel.Header size={ComponentSize.Medium}>
+        <Panel.Header
+          size={ComponentSize.Medium}
+          testID="cancel-service--header"
+        >
           <h4>Cancel Service</h4>
           <Button
             color={ComponentColor.Default}
             onClick={() => setIsOverlayVisible(true)}
             text="Cancel Service"
             size={ComponentSize.Small}
+            testID="cancel-service--button"
           />
         </Panel.Header>
         <Panel.Body size={ComponentSize.Medium}>

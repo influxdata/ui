@@ -325,7 +325,7 @@ export const getMainColumnName = (
   return ''
 }
 
-enum CoordinateType {
+export enum CoordinateType {
   S2 = 'S2 cell id',
   Tags = 'Lat/long as tags',
   Fields = 'Lat/Long as fields',
@@ -394,12 +394,13 @@ const getColumnValue = (table: Table, field: string) => {
   return value
 }
 
-const parseCoordinates = coordinate => parseInt(coordinate.toString(), 10)
+export const parseCoordinates = coordinate =>
+  parseInt(coordinate.toString(), 10)
 
-const getCoordinateColumn = (table: Table): string => {
+export const getCoordinateColumn = (table: Table): string => {
   try {
     const column = table.getColumn('s2_cell_id')
-    if (column != null) {
+    if (column !== null) {
       return CoordinateType.S2
     }
     const lat = table.getColumn('lat')
@@ -417,7 +418,7 @@ const getCoordinateColumn = (table: Table): string => {
     }
 
     return CoordinateType.None
-  } catch (e) {
+  } catch {
     throw new Error('lat_lon_not_found')
   }
 }
@@ -463,10 +464,7 @@ export const getDetectCoordinatingFields = (table: Table) => {
 }
 
 const latLonAsTags = latLonColumns => {
-  if (latLonColumns?.lat?.key === 'tag' && latLonColumns?.lon?.key === 'tag') {
-    return true
-  }
-  return false
+  return latLonColumns?.lat?.key === 'tag' && latLonColumns?.lon?.key === 'tag'
 }
 
 const getCoordinateColumnFlagged = (
@@ -478,7 +476,7 @@ const getCoordinateColumnFlagged = (
   try {
     if (useS2CellID && s2Column !== '') {
       const column = table.getColumn(s2Column || 's2_cell_id')
-      if (column != null) {
+      if (column !== null) {
         return CoordinateType.S2
       }
     }
@@ -505,7 +503,7 @@ const getCoordinateColumnFlagged = (
     }
 
     return CoordinateType.None
-  } catch (e) {
+  } catch {
     throw new Error('lat_lon_not_found')
   }
 }

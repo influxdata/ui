@@ -13,9 +13,13 @@ import {getOverlayParams} from 'src/overlays/selectors'
 
 export const AddAnnotationOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
-  const {createAnnotation, startTime, endTime, range} = useSelector(
-    getOverlayParams
-  )
+  const {
+    createAnnotation,
+    startTime,
+    endTime,
+    range,
+    eventPrefix,
+  } = useSelector(getOverlayParams)
 
   const handleSubmit = (modifiedAnnotation): void => {
     createAnnotation(modifiedAnnotation)
@@ -32,6 +36,7 @@ export const AddAnnotationOverlay: FC = () => {
       onSubmit={handleSubmit}
       startTime={startTime}
       endTime={endTime}
+      eventPrefix={eventPrefix}
     />
   )
 }

@@ -21,8 +21,7 @@ const resetInputs = () => {
     .should('have.value', '')
 }
 
-// Skipping this until we get the CI/CD pipeline worked out for the `/quartz/me` endpoint
-describe.skip('Checkout Page', () => {
+describe('Checkout Page', () => {
   beforeEach(() => {
     cy.flush()
 
@@ -30,17 +29,18 @@ describe.skip('Checkout Page', () => {
       cy.get('@org').then(() => {
         cy.getByTestID('home-page--header').should('be.visible')
         cy.setFeatureFlags({unityMeApi: true, unityCheckout: true}).then(() => {
-          cy.visit(`/checkout`)
-          cy.getByTestID('checkout-page--header').should('be.visible')
+          cy.quartzProvision({
+            accountType: 'free',
+          }).then(() => {
+            cy.visit(`/checkout`)
+            cy.getByTestID('checkout-page--header').should('be.visible')
+          })
         })
       })
     })
   })
 
   it('should render Set My Limits', () => {
-    // This should only pass based on the currently mocked API response.
-    // FIXME: Revisit this test when it's hooked up to the API since the defaults
-    // for the user(s) might be different.
     const email = 'asalem@influxdata.com'
     const limit = 10
     const numberError = 'Please enter a value of 1 or greater'
@@ -172,5 +172,28 @@ describe.skip('Checkout Page', () => {
         expect(loc.pathname).to.include(`/orgs/${org.id}`)
       })
     })
+  })
+})
+
+describe('Checkout Page should not be accessible for non-free users', () => {
+  beforeEach(() => {
+    cy.flush()
+
+    cy.signin().then(() => {
+      cy.get('@org').then(() => {
+        cy.getByTestID('home-page--header').should('be.visible')
+        cy.setFeatureFlags({unityMeApi: true, unityCheckout: true}).then(() => {
+          cy.quartzProvision({
+            accountType: 'pay_as_you_go',
+          }).then(() => {
+            cy.visit(`/checkout`)
+          })
+        })
+      })
+    })
+  })
+
+  it('should render a 404', () => {
+    cy.getByTestID('not-found').should('exist')
   })
 })

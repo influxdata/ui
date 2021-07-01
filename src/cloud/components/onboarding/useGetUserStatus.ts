@@ -124,7 +124,7 @@ export const getUserWriteLimitHits = async (): Promise<number> => {
     const fieldNumbers = table.getColumn('_field') as number[]
     // const limitedWrite = table.getColumn('limited_write', 'number')
 
-    const queryWriteLimitHits = fieldNumbers.reduce((a, b, i) => {
+    const queryWriteLimitHits = fieldNumbers.reduce((a, _b, i) => {
       if (
         table.getColumn('_field')[i] === 'limited_write' &&
         table.getColumn('_value', 'number')[i] > 0

@@ -1,12 +1,12 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {PureComponent, ReactElement} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
-import moment from 'moment'
 
 // Components
 import {Overlay, IndexList, FlexBox} from '@influxdata/clockface'
 import RunLogsOverlay from 'src/tasks/components/RunLogsList'
+import {FormattedDateTime} from 'src/utils/datetime/FormattedDateTime'
 
 // Actions
 import {getLogs, retryTask} from 'src/tasks/actions/thunks'
@@ -70,20 +70,13 @@ class TaskRunsRow extends PureComponent<Props, State> {
     )
   }
 
-  private dateTimeString(dt: string): string {
+  private dateTimeString(dt: string): ReactElement {
     if (!dt) {
-      return ''
+      return null
     }
-    const newdate = new Date(dt)
-    const {timeZone} = this.props
-    const formatted =
-      timeZone === 'UTC'
-        ? moment(newdate)
-            .utc()
-            .format(DEFAULT_TIME_FORMAT)
-        : moment(newdate).format(DEFAULT_TIME_FORMAT)
-
-    return formatted
+    return (
+      <FormattedDateTime format={DEFAULT_TIME_FORMAT} date={new Date(dt)} />
+    )
   }
 
   private handleToggleOverlay = () => {

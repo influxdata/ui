@@ -1,5 +1,7 @@
 // TODO: handle these any types
 
+import {TimeZone} from 'src/types'
+
 const dateTimeOptions: any = {
   hour12: true,
   day: '2-digit',
@@ -17,7 +19,10 @@ const timeOptions: any = {
   second: 'numeric',
 }
 
-export const createDateTimeFormatter = (format, timeZone = 'local') => {
+export const createDateTimeFormatter = (
+  format: string,
+  timeZone: TimeZone = 'Local'
+) => {
   switch (format) {
     default:
     case 'YYYY-MM-DD hh:mm:ss a': {
@@ -25,7 +30,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
         ...dateTimeOptions,
       }
 
-      if (timeZone.toLowerCase() === 'utc') {
+      if (timeZone === 'UTC') {
         options.timeZone = 'UTC'
       }
 
@@ -54,7 +59,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
         timeZoneName: 'short',
       }
 
-      if (timeZone.toLowerCase() === 'utc') {
+      if (timeZone === 'UTC') {
         options.timeZone = 'UTC'
       }
 
@@ -84,7 +89,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
         hour12: false,
       }
 
-      if (timeZone.toLowerCase() === 'utc') {
+      if (timeZone === 'UTC') {
         options.timeZone = 'UTC'
       }
       const formatter = Intl.DateTimeFormat('en-us', options)
@@ -113,7 +118,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
         hour12: false,
       }
 
-      if (timeZone.toLowerCase() === 'utc') {
+      if (timeZone === 'UTC') {
         options.timeZone = 'UTC'
       }
       const formatter = Intl.DateTimeFormat('en-us', options)
@@ -143,7 +148,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
         hour12: false,
       }
 
-      if (timeZone.toLowerCase() === 'utc') {
+      if (timeZone === 'UTC') {
         options.timeZone = 'UTC'
       }
       const formatter = Intl.DateTimeFormat('en-us', options)
@@ -172,7 +177,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
         fractionalSecondDigits: 3,
       }
 
-      if (timeZone.toLowerCase() === 'utc') {
+      if (timeZone === 'UTC') {
         options.timeZone = 'UTC'
       }
       const formatter = Intl.DateTimeFormat('en-us', options)
@@ -202,7 +207,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
         fractionalSecondDigits: 3,
       }
 
-      if (timeZone.toLowerCase() === 'utc') {
+      if (timeZone === 'UTC') {
         options.timeZone = 'UTC'
       }
       const formatter = Intl.DateTimeFormat('en-us', options)
@@ -231,7 +236,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
         fractionalSecondDigits: 3,
       }
 
-      if (timeZone.toLowerCase() === 'utc') {
+      if (timeZone === 'UTC') {
         options.timeZone = 'UTC'
       }
       const formatter = Intl.DateTimeFormat('en-us', options)
@@ -260,7 +265,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
         hour12: false,
       }
 
-      if (timeZone.toLowerCase() === 'utc') {
+      if (timeZone === 'UTC') {
         options.timeZone = 'UTC'
       }
       const formatter = Intl.DateTimeFormat('en-us', options)
@@ -288,7 +293,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
         ...dateTimeOptions,
       }
 
-      if (timeZone.toLowerCase() === 'utc') {
+      if (timeZone === 'UTC') {
         options.timeZone = 'UTC'
       }
       const formatter = Intl.DateTimeFormat('en-us', options)
@@ -321,7 +326,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
         hour12: false,
       }
 
-      if (timeZone.toLowerCase() === 'utc') {
+      if (timeZone === 'UTC') {
         options.timeZone = 'UTC'
       }
       const formatter = Intl.DateTimeFormat('en-us', options)
@@ -351,7 +356,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
         day: 'numeric',
       }
 
-      if (timeZone.toLowerCase() === 'utc') {
+      if (timeZone === 'UTC') {
         options.timeZone = 'UTC'
       }
       const formatter = Intl.DateTimeFormat('en-us', options)
@@ -383,7 +388,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
         hour12: false,
       }
 
-      if (timeZone.toLowerCase() === 'utc') {
+      if (timeZone === 'UTC') {
         options.timeZone = 'UTC'
       }
       const formatter = Intl.DateTimeFormat('en-us', options)
@@ -414,7 +419,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
         weekday: 'long',
       }
 
-      if (timeZone.toLowerCase() === 'utc') {
+      if (timeZone === 'UTC') {
         options.timeZone = 'UTC'
       }
       const formatter = Intl.DateTimeFormat('en-us', options)
@@ -445,7 +450,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
         hour12: false,
       }
 
-      if (timeZone.toLowerCase() === 'utc') {
+      if (timeZone === 'UTC') {
         options.timeZone = 'UTC'
       }
       const formatter = Intl.DateTimeFormat('en-us', options)
@@ -473,7 +478,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
         ...timeOptions,
       }
 
-      if (timeZone.toLowerCase() === 'utc') {
+      if (timeZone === 'UTC') {
         options.timeZone = 'UTC'
       }
       const formatter = Intl.DateTimeFormat('en-us', options)
@@ -502,7 +507,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
         hour12: false,
       }
 
-      if (timeZone.toLowerCase() === 'utc') {
+      if (timeZone === 'UTC') {
         options.timeZone = 'UTC'
       }
       const formatter = Intl.DateTimeFormat('en-us', options)
@@ -530,7 +535,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
         ...timeOptions,
       }
 
-      if (timeZone.toLowerCase() === 'utc') {
+      if (timeZone === 'UTC') {
         options.timeZone = 'UTC'
       }
       const formatter = Intl.DateTimeFormat('en-us', options)
@@ -560,7 +565,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
         timeZoneName: 'short',
       }
 
-      if (timeZone.toLowerCase() === 'utc') {
+      if (timeZone === 'UTC') {
         options.timeZone = 'UTC'
       }
       const formatter = Intl.DateTimeFormat('en-us', options)
@@ -589,7 +594,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
         timeZoneName: 'short',
       }
 
-      if (timeZone.toLowerCase() === 'utc') {
+      if (timeZone === 'UTC') {
         options.timeZone = 'UTC'
       }
       const formatter = Intl.DateTimeFormat('en-us', options)
@@ -619,7 +624,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
         fractionalSecondDigits: 3,
       }
 
-      if (timeZone.toLowerCase() === 'utc') {
+      if (timeZone === 'UTC') {
         options.timeZone = 'UTC'
       }
       const formatter = Intl.DateTimeFormat('en-us', options)
@@ -648,7 +653,7 @@ export const createDateTimeFormatter = (format, timeZone = 'local') => {
         fractionalSecondDigits: 3,
       }
 
-      if (timeZone.toLowerCase() === 'utc') {
+      if (timeZone === 'UTC') {
         options.timeZone = 'UTC'
       }
       const formatter = Intl.DateTimeFormat('en-us', options)

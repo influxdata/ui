@@ -1,13 +1,15 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {PureComponent, ReactElement} from 'react'
 
 // Components
 import {IndexList} from '@influxdata/clockface'
 
 // Types
 import {LogEvent} from 'src/types'
+
+// DateTime
 import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
-import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
+import {FormattedDateTime} from 'src/utils/datetime/FormattedDateTime'
 
 interface Props {
   log: LogEvent
@@ -35,17 +37,14 @@ class RunLogRow extends PureComponent<Props> {
     )
   }
 
-  private dateTimeString(dt: string): string {
+  private dateTimeString(dt: string): ReactElement {
     if (!dt) {
-      return ''
+      return null
     }
 
-    const newdate = new Date(dt)
-    const formatted = createDateTimeFormatter(DEFAULT_TIME_FORMAT).format(
-      newdate
+    return (
+      <FormattedDateTime format={DEFAULT_TIME_FORMAT} date={new Date(dt)} />
     )
-
-    return formatted
   }
 }
 

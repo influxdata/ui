@@ -45,7 +45,7 @@ const TermsCancellationOverlay: FC<Props> = ({
         series data.
       </li>
     </ul>
-    <span onClick={onAgreedToTerms}>
+    <span onClick={onAgreedToTerms} data-testid="agree-terms--input">
       <FlexBox
         alignItems={AlignItems.Center}
         direction={FlexDirection.Row}
@@ -59,6 +59,7 @@ const TermsCancellationOverlay: FC<Props> = ({
           size={ComponentSize.Small}
           titleText="I understand and agree to these conditions"
           type={InputType.Checkbox}
+          testID="agree-terms--checkbox"
         />
         <InputLabel active={hasAgreedToTerms} size={ComponentSize.Small}>
           I understand and agree to these conditions

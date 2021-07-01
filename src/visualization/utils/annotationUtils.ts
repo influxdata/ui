@@ -54,6 +54,8 @@ const makeCreateMethod = (
   return createAnnotation
 }
 
+// for point annotations only:
+// (initially, the user can then change to a range once the dialog is up)
 const makeAnnotationClickListener = (
   dispatch: Dispatch<any>,
   cellID: string,
@@ -70,6 +72,7 @@ const makeAnnotationClickListener = (
         {
           createAnnotation,
           startTime: plotInteraction?.clampedValueX ?? plotInteraction.valueX,
+          eventPrefix,
         },
         () => {
           dismissOverlay()
@@ -98,6 +101,7 @@ const makeAnnotationRangeListener = (
           startTime: start,
           endTime: end,
           range: true,
+          eventPrefix,
         },
         () => {
           dismissOverlay()
@@ -110,6 +114,8 @@ const makeAnnotationRangeListener = (
 }
 
 /**
+ *  For editing annotations
+ *
  *  This handles both point and range annotations
  *  Point annotations have an stop time, it just is equal to the start time
  *
@@ -133,7 +139,13 @@ const makeAnnotationClickHandler = (
       dispatch(
         showOverlay(
           'edit-annotation',
-          {clickedAnnotation: {...annotationToEdit, stream: cellID}},
+          {
+            clickedAnnotation: {
+              ...annotationToEdit,
+              stream: cellID,
+              eventPrefix,
+            },
+          },
           () => {
             dismissOverlay()
           }

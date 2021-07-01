@@ -166,6 +166,7 @@ const Sidebar: FC = () => {
                 title={title}
                 id={title}
                 key={title}
+                testID={`${title}--list-item`}
               >
                 {title}
               </List.Item>
@@ -187,6 +188,7 @@ const Sidebar: FC = () => {
               title={title}
               id={title}
               key={title}
+              testID={`${title}--list-item`}
             >
               {title}
             </List.Item>

@@ -30,7 +30,8 @@ import {notify} from 'src/shared/actions/notifications'
 import {passwordResetSuccessfully} from 'src/shared/copy/notifications'
 import {getAuth0Config, getConnection} from 'src/authorizations/apis'
 import {getFromLocalStorage} from 'src/localStorage'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+const TOKEN_EXP = 10 * 60 * 1000 // 10 minutes
 
 interface ErrorObject {
   emailError?: string
@@ -50,6 +51,7 @@ type Props = ReduxProps
 
 class LoginPageContents extends PureComponent<Props> {
   private auth0: typeof WebAuth
+  private interval: NodeJS.Timeout
 
   state: State = {
     buttonStatus: ComponentStatus.Default,
@@ -59,9 +61,10 @@ class LoginPageContents extends PureComponent<Props> {
     passwordError: '',
   }
 
-  public async componentDidMount() {
+  private getAuth0Config = async (
+    redirectTo: string
+  ): Promise<void | Error> => {
     try {
-      const redirectTo = getFromLocalStorage('redirectTo') || '/'
       const config = await getAuth0Config(redirectTo)
       this.auth0 = new auth0js.WebAuth({
         domain: config.domain,
@@ -74,6 +77,22 @@ class LoginPageContents extends PureComponent<Props> {
       console.error(error)
       throw error
     }
+  }
+
+  public componentDidMount() {
+    const redirectTo = getFromLocalStorage('redirectTo') || '/'
+    this.getAuth0Config(redirectTo)
+    // set an interval to get a new state session since the old one is only valid for ten minutes
+    this.interval = setInterval(() => {
+      this.getAuth0Config(redirectTo)
+    }, TOKEN_EXP)
+  }
+
+  public componentWillUnmount() {
+    // reset the auth0 client config
+    this.auth0 = {}
+    // reset the setInterval when unmounting
+    clearInterval(this.interval)
   }
 
   render() {
@@ -183,7 +202,7 @@ class LoginPageContents extends PureComponent<Props> {
     event.preventDefault()
     const {email, password} = this.state
 
-    if (isFlagEnabled('ssoLogin') && email) {
+    if (email) {
       try {
         const connection = await getConnection(email)
         if (!!connection) {

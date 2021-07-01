@@ -6,7 +6,10 @@ import {
 
 export const useLegendOpacity = (legendOpacity: number) =>
   useMemo(() => {
-    if (legendOpacity < LEGEND_OPACITY_MINIMUM) {
+    if (
+      legendOpacity < LEGEND_OPACITY_MINIMUM ||
+      legendOpacity !== legendOpacity
+    ) {
       return LEGEND_OPACITY_DEFAULT
     }
     return legendOpacity

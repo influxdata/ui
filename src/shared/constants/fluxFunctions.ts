@@ -572,12 +572,12 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       {
         name: 'v',
         desc: 'The value to convert.',
-        type: 'String | Integer | UInteger | Float | Boolean',
+        type: 'String',
       },
     ],
     package: '',
     desc: 'Converts a single value to bytes.',
-    example: 'bytes(t: r._value)',
+    example: 'bytes(v: r._value)',
     category: 'Type Conversions',
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/type-conversions/bytes/`,
   },
@@ -2962,7 +2962,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       {
         name: 'v',
         desc: 'The value to convert.',
-        type: 'String | Integer | UInteger | Float | Boolean',
+        type: 'Boolean | Duration | Float | Numeric String | Time | Uinteger',
       },
     ],
     package: '',
@@ -7891,7 +7891,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
       {
         name: 'v',
         desc: 'The value to convert.',
-        type: 'String | Integer | Boolean',
+        type: 'Boolean | Duration | Float | Integer | Numeric String | Time',
       },
     ],
     package: '',
@@ -8091,12 +8091,6 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
         desc:
           'The offset duration relative to the `location` offset. It can be negative, indicating that the offset goes backwards in time. The default aligns the window boundaries with `now`.',
         type: 'Duration',
-      },
-      {
-        name: 'intervals',
-        desc:
-          'A function that returns an interval generator, a set of intervals used as windows. See docs for an example.',
-        type: 'Function',
       },
       {
         name: 'timeColumn',

@@ -1,5 +1,5 @@
 // Libraries
-import {FC, useEffect, useState} from 'react'
+import {FC, useEffect, useState, memo} from 'react'
 import {useLocation} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -54,4 +54,4 @@ const EngagementLink: FC = () => {
   return null
 }
 
-export default EngagementLink
+export default memo(EngagementLink)

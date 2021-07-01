@@ -9,8 +9,6 @@ let getUsage = null
 
 if (CLOUD) {
   getUsage = require('src/client/unityRoutes').getUsage
-} else {
-  getUsage = null
 }
 
 export enum USER_PILOT_USER_STATUS {
@@ -149,7 +147,9 @@ const handleGetUserStatus = async () => {
 
   const getUserStatusDefinition = async () => {
     const tables = await queryUsage()
-    usageDataStates = getUserStatus(tables)
+    if (tables) {
+      usageDataStates = getUserStatus(tables)
+    }
   }
 
   try {

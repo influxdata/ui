@@ -33,6 +33,7 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {ResourceIDs} from 'src/checks/reducers'
 import {ResourceType, AlertHistoryType, AppState} from 'src/types'
 import {RouteComponentProps} from 'react-router-dom'
+import TimeZoneDropdown from '../../shared/components/TimeZoneDropdown'
 
 export const ResourceIDsContext = createContext<ResourceIDs>(null)
 
@@ -84,15 +85,18 @@ const AlertHistoryIndex: FC<Props> = ({
                 <RateLimitAlert />
               </Page.Header>
               <Page.ControlBar fullWidth={true}>
-                <AlertHistoryQueryParams
-                  searchInput={props.state.searchInput}
-                  historyType={historyType}
-                />
-                <AlertHistoryControls
-                  historyType={historyType}
-                  onSetHistoryType={setHistoryType}
-                  eventViewerProps={props}
-                />
+                <Page.ControlBarRight>
+                  <AlertHistoryQueryParams
+                    searchInput={props.state.searchInput}
+                    historyType={historyType}
+                  />
+                  <AlertHistoryControls
+                    historyType={historyType}
+                    onSetHistoryType={setHistoryType}
+                    eventViewerProps={props}
+                  />
+                  <TimeZoneDropdown />
+                </Page.ControlBarRight>
               </Page.ControlBar>
               <Page.Contents
                 fullWidth={true}

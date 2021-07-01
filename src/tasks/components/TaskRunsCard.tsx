@@ -94,7 +94,9 @@ class UnconnectedTaskRunsCard extends PureComponent<
   private get ownerName(): string {
     const {task, members} = this.props
 
-    if (members[task.ownerID]) return members[task.ownerID].name
+    if (members[task.ownerID]) {
+      return members[task.ownerID].name
+    }
     return ''
   }
 

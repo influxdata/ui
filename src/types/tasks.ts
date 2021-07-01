@@ -2,6 +2,7 @@ import {Task as ITask} from 'src/client'
 import {NormalizedState, Run, RemoteDataState, LogEvent} from 'src/types'
 
 export interface Task extends Omit<ITask, 'labels'> {
+  ownerID: any
   labels?: string[]
 }
 export interface TaskOptions {

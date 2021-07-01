@@ -16,13 +16,19 @@ import {
   JustifyContent,
 } from '@influxdata/clockface'
 
-// Actions
+// Actions For Tasks
 import {
   addTaskLabel,
   deleteTaskLabel,
   runTask,
   getRuns,
 } from 'src/tasks/actions/thunks'
+
+// Actions For Members
+import {
+  getMembers,
+} from 'src/members/actions/thunks'
+
 import {TaskPage, setCurrentTasksPage} from 'src/tasks/actions/creators'
 
 // Types
@@ -41,13 +47,16 @@ type Props = PassedProps & ReduxProps
 class UnconnectedTaskRunsCard extends PureComponent<
   Props & RouteComponentProps<{orgID: string; id: string}>
 > {
+  componentDidMount() {
+    this.props.getMembers();
+  }
+
   public render() {
     const {task} = this.props
 
     if (!task) {
       return null
     }
-
     return (
       <ResourceCard
         testID="task-runs-task-card"
@@ -66,7 +75,7 @@ class UnconnectedTaskRunsCard extends PureComponent<
           <ResourceCard.Meta>
             {this.activeToggle}
             <>Created at: {task.createdAt}</>
-            <>Created by: {task.name}</>
+            <>Created by: {this.ownerName}</>
             <>Last Used: {moment(task.latestCompleted).fromNow()}</>
             <>{task.org}</>
           </ResourceCard.Meta>
@@ -82,6 +91,13 @@ class UnconnectedTaskRunsCard extends PureComponent<
         </FlexBox>
       </ResourceCard>
     )
+  }
+
+  private get ownerName(): string {
+    const { task, members } = this.props;
+
+    if (members[task.ownerID]) return members[task.ownerID].name;
+    return '';
   }
 
   private get activeToggle(): JSX.Element {
@@ -137,10 +153,12 @@ class UnconnectedTaskRunsCard extends PureComponent<
 
 const mstp = (state: AppState) => {
   const {runs, runStatus} = state.resources.tasks
+  const {byID} = state.resources.members
 
   return {
     runs,
     runStatus,
+    members: byID,
   }
 }
 
@@ -150,6 +168,7 @@ const mdtp = {
   onRunTask: runTask,
   getRuns,
   setCurrentTasksPage,
+  getMembers,
 }
 
 const connector = connect(mstp, mdtp)

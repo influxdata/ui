@@ -24,13 +24,14 @@ const NotificationPanel: FC = () => {
   return (
     <>
       <Panel testID="notification-settings">
-        <Panel.Header>
+        <Panel.Header testID="notification-settings--header">
           <h4>Notification Settings</h4>
           <Button
             color={ComponentColor.Default}
             onClick={handleShowOverlay}
             text="Notification Settings"
             size={ComponentSize.Small}
+            testID="notification-settings--button"
           />
         </Panel.Header>
         <Panel.Body>

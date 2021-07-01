@@ -100,7 +100,7 @@ const NotificationSettingsOverlay: FC<Props> = ({onHideOverlay}) => {
                   onChange={onToggleChange}
                   active={isNotifyActive}
                   size={ComponentSize.ExtraSmall}
-                  testID="should-notify"
+                  testID="should-notify--toggle"
                 />
                 <InputLabel active={isNotifyActive}>
                   Send email notifications
@@ -140,6 +140,7 @@ const NotificationSettingsOverlay: FC<Props> = ({onHideOverlay}) => {
             text="Save"
             size={ComponentSize.Small}
             status={saveStatus}
+            testID="save-settings--button"
           />
         </Overlay.Footer>
       </Overlay.Container>

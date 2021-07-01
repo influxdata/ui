@@ -20,7 +20,7 @@ const PaymentPanelHeader: FC<Props> = ({
   hasExistingPayment,
 }) => {
   return (
-    <Panel.Header size={ComponentSize.Large}>
+    <Panel.Header size={ComponentSize.Large} testID="payment-method--header">
       <h4>Payment Method</h4>
       <PaymentPanelHeaderButton
         isEditing={isEditing}
@@ -52,7 +52,7 @@ const PaymentPanelHeaderButton: FC<ButtonProps> = ({
         onClick={onEdit}
         text="Change Payment"
         size={ComponentSize.Small}
-        testID="edit-button"
+        testID="edit-payment--button"
       />
     )
   }
@@ -64,7 +64,7 @@ const PaymentPanelHeaderButton: FC<ButtonProps> = ({
         onClick={onCancel}
         text="Cancel Change"
         size={ComponentSize.Small}
-        testID="cancel-button"
+        testID="cancel-change--button"
       />
     )
   }

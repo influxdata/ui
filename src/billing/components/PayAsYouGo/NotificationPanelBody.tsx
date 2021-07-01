@@ -8,12 +8,12 @@ const NotificationPanelBody: FC = () => {
   return (
     <>
       {billingSettings.isNotify ? (
-        <p>
+        <p data-testid="billing-settings--text">
           Sending Notifications to {billingSettings.notifyEmail} when monthly
           usage exceeds ${billingSettings.balanceThreshold}
         </p>
       ) : (
-        <p>Usage Notifications disabled</p>
+        <p data-testid="billing-settings--text">Usage Notifications disabled</p>
       )}
     </>
   )

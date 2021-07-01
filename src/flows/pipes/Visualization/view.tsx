@@ -9,7 +9,7 @@ import React, {
 } from 'react'
 
 // Components
-import {Icon, IconFont} from '@influxdata/clockface'
+import {Icon, IconFont, DapperScrollbars} from '@influxdata/clockface'
 import ExportDashboardOverlay from 'src/flows/pipes/Visualization/ExportDashboardOverlay'
 import ExportButton from 'src/flows/pipes/Visualization/ExportDashboardButton'
 import Controls from 'src/flows/pipes/Visualization/Controls'
@@ -102,7 +102,6 @@ const Visualization: FC<PipeProp> = ({Context}) => {
   }, [id, data.properties, results.parsed, range])
 
   const persist = isFlagEnabled('flow-sidebar') ? null : <ExportButton />
-
   if (results.error) {
     return (
       <Context
@@ -162,14 +161,16 @@ const Visualization: FC<PipeProp> = ({Context}) => {
             timeRange={range}
           />
         </div>
+        {optionsVisibility && dataExists && (
+          <DapperScrollbars style={{width: '400px'}}>
+            <ViewOptions
+              properties={data.properties}
+              results={results.parsed}
+              update={updateProperties}
+            />
+          </DapperScrollbars>
+        )}
       </div>
-      {optionsVisibility && dataExists && (
-        <ViewOptions
-          properties={data.properties}
-          results={results.parsed}
-          update={updateProperties}
-        />
-      )}
     </Context>
   )
 }

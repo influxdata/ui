@@ -425,7 +425,7 @@ describe('The Annotations UI functionality', () => {
               .then(endTimeValue => {
                 expect(endTimeValue).to.equal(startTimeValue)
 
-                const newEndTime = moment(endTimeValue)
+                const newEndTime = moment(endTimeValue, 'YYYY-MM-DD hh:mm:ss a')
                   .add(10, 'minutes')
                   .format('YYYY-MM-DD hh:mm:ss a')
 

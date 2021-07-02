@@ -25,12 +25,14 @@ interface OwnProps {
   className?: string
   buttonText?: string
   size?: ComponentSize
+  metric?: () => void
 }
 
 const CloudUpgradeButton: FC<OwnProps> = ({
   size = ComponentSize.Small,
   className,
   buttonText = 'Upgrade Now',
+  metric,
 }) => {
   const showUpgradeButton = useSelector(shouldShowUpgradeButton)
 
@@ -41,6 +43,9 @@ const CloudUpgradeButton: FC<OwnProps> = ({
   const history = useHistory()
 
   const handleClick = () => {
+    if (metric) {
+      metric()
+    }
     if (isFlagEnabled('unityCheckout')) {
       history.push('/checkout')
     } else {

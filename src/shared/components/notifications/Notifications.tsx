@@ -19,6 +19,7 @@ const matchGradientToColor = (style: NotificationStyle): Gradients => {
     [NotificationStyle.Success]: Gradients.HotelBreakfast,
     [NotificationStyle.Error]: Gradients.DangerDark,
     [NotificationStyle.Info]: Gradients.DefaultLight,
+    [NotificationStyle.Secondary]: Gradients.SecondaryDark,
   }
   return get(converter, style, Gradients.DefaultLight)
 }
@@ -43,11 +44,12 @@ const Notifications: FC = () => {
               id={id}
               icon={icon}
               duration={duration}
-              size={ComponentSize.ExtraSmall}
+              size={ComponentSize.Small}
               gradient={gradient}
               onTimeout={handleDismiss}
               onDismiss={handleDismiss}
               testID={`notification-${style}`}
+              style={{maxWidth: '600px', alignItems: 'center'}}
             >
               <span className="notification--message">{message}</span>
               {buttonElement && buttonElement(handleDismiss)}

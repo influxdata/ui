@@ -140,10 +140,10 @@ export const OpacitySlider: FC<OpacitySliderProps> = ({
 }) => {
   let validOpacity = LEGEND_OPACITY_DEFAULT
   if (
-    typeof validOpacity === 'number' &&
-    validOpacity === validOpacity &&
-    validOpacity >= LEGEND_OPACITY_MINIMUM &&
-    validOpacity <= LEGEND_OPACITY_MAXIMUM
+    typeof legendOpacity === 'number' &&
+    legendOpacity === legendOpacity &&
+    legendOpacity >= LEGEND_OPACITY_MINIMUM &&
+    legendOpacity <= LEGEND_OPACITY_MAXIMUM
   ) {
     validOpacity = legendOpacity
   }

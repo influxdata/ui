@@ -221,7 +221,9 @@ interface Props {
 }
 
 const PagedTable: FC<Props> = ({result, properties}) => {
-  const {offset, setSize, setPage} = useContext(PaginationContext)
+  const {offset, setSize, setPage, setTotalPages} = useContext(
+    PaginationContext
+  )
   const [height, setHeight] = useState(0)
   const ref = useRef()
 
@@ -276,6 +278,12 @@ const PagedTable: FC<Props> = ({result, properties}) => {
   useEffect(() => {
     setPage(1)
   }, [result])
+
+  useEffect(() => {
+    if (size) {
+      setTotalPages(Math.ceil((result?.table?.length ?? 0) / size))
+    }
+  }, [height, result])
 
   const inner = tables.map((t, tIdx) => (
     <InnerTable table={t} key={`table${tIdx}`} />

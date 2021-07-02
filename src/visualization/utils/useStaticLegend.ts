@@ -17,6 +17,8 @@ import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 import {
   LEGEND_COLORIZE_ROWS_DEFAULT,
   LEGEND_OPACITY_DEFAULT,
+  LEGEND_OPACITY_MINIMUM,
+  LEGEND_OPACITY_MAXIMUM,
   LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
   LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL,
   LEGEND_ORIENTATION_THRESHOLD_VERTICAL,
@@ -111,10 +113,31 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
       !show &&
       heightRatio === STATIC_LEGEND_HEIGHT_RATIO_NOT_SET
     ) {
+      let validOpacity = LEGEND_OPACITY_DEFAULT
+      if (
+        typeof legendOpacity === 'number' &&
+        legendOpacity === legendOpacity &&
+        legendOpacity >= LEGEND_OPACITY_MINIMUM &&
+        legendOpacity <= LEGEND_OPACITY_MAXIMUM
+      ) {
+        validOpacity = legendOpacity
+      }
+
+      let validThreshold: number
+      if (
+        typeof legendOrientationThreshold !== 'number' ||
+        legendOrientationThreshold !== legendOrientationThreshold ||
+        legendOrientationThreshold > 0
+      ) {
+        validThreshold = LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL
+      } else {
+        validThreshold = LEGEND_ORIENTATION_THRESHOLD_VERTICAL
+      }
+
       update({
         colorizeRows: legendColorizeRows,
-        opacity: legendOpacity,
-        orientationThreshold: legendOrientationThreshold,
+        opacity: validOpacity,
+        orientationThreshold: validThreshold,
       })
     }
 

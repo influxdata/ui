@@ -15,7 +15,9 @@ const PipeList: FC = () => {
   const {queryAll} = useContext(FlowQueryContext)
 
   useEffect(() => {
-    queryAll()
+    if (flow.readOnly) {
+      queryAll()
+    }
   }, [])
 
   if (!flow.data || !flow.data.allIDs.length) {

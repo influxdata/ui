@@ -153,13 +153,17 @@ describe('tokens', () => {
   it('can delete a token', () => {
     cy.get('.cf-resource-card').should('have.length', 4)
 
+    cy.intercept('**/authorizations/*').as('deleteToken')
+
     cy.getByTestID('token-card token test 03').within(() => {
-      cy.getByTestID('context-menu').click()
+      cy.getByTestID('context-menu').click({force: true})
 
       cy.getByTestID('delete-token')
         .contains('Delete')
         .click()
     })
+
+    cy.wait('@deleteToken')
 
     cy.get('.cf-resource-card').should('have.length', 3)
 
@@ -169,27 +173,29 @@ describe('tokens', () => {
     cy.get('.cf-resource-card')
       .first()
       .within(() => {
-        cy.getByTestID('context-menu').click()
+        cy.getByTestID('context-menu').click({force: true})
 
         cy.getByTestID('delete-token')
           .contains('Delete')
           .click()
       })
 
+    cy.wait('@deleteToken')
     cy.get('.cf-resource-card')
       .first()
       .within(() => {
-        cy.getByTestID('context-menu').click()
+        cy.getByTestID('context-menu').click({force: true})
 
         cy.getByTestID('delete-token')
           .contains('Delete')
           .click()
       })
 
+    cy.wait('@deleteToken')
     cy.get('.cf-resource-card')
       .first()
       .within(() => {
-        cy.getByTestID('context-menu').click()
+        cy.getByTestID('context-menu').click({force: true})
 
         cy.getByTestID('delete-token')
           .contains('Delete')

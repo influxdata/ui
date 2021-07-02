@@ -7,6 +7,7 @@ import {
 interface PaginationContextType {
   offset: number // the start index
   size: number // the size of the page
+  maxSize: number // the max size of the page
   total: number // the total number of entries
   totalPages: number // the total number of pages
 
@@ -14,6 +15,7 @@ interface PaginationContextType {
   previous: () => void
 
   setSize: (size: number) => void
+  setMaxSize: (page: number) => void
   setPage: (page: number) => void
   setTotalPages: (totalPages: number) => void
 }
@@ -21,6 +23,7 @@ interface PaginationContextType {
 const DEFAULT_CONTEXT: PaginationContextType = {
   offset: 0,
   size: 0,
+  maxSize: 0,
   total: 0,
   totalPages: 0,
 
@@ -28,6 +31,7 @@ const DEFAULT_CONTEXT: PaginationContextType = {
   previous: () => {},
 
   setSize: (_size: number) => {},
+  setMaxSize: (_maxSize: number) => {},
   setPage: (_page: number) => {},
   setTotalPages: (_totalPages: number) => {},
 }
@@ -46,8 +50,9 @@ export const PaginationProvider: FC<PaginationProviderProps> = ({
 }) => {
   const [offset, setOffset] = useState(DEFAULT_CONTEXT.offset)
   const [size, setSize] = useState(DEFAULT_CONTEXT.size)
+  const [maxSize, setMaxSize] = useState(DEFAULT_CONTEXT.maxSize)
   const [totalPages, setTotalPages] = useState(DEFAULT_CONTEXT.totalPages)
-
+    
   const next = useCallback(() => {
     if (total) {
       setOffset(calcNextPageOffset(offset, size, total))
@@ -62,9 +67,9 @@ export const PaginationProvider: FC<PaginationProviderProps> = ({
 
   const setPage = useCallback(
     (page: number) => {
-      setOffset(calcOffset(page, size, total))
+      setOffset(calcOffset(page, maxSize, total))
     },
-    [offset, size, setOffset]
+    [offset, maxSize, setOffset]
   )
 
   return (
@@ -72,11 +77,13 @@ export const PaginationProvider: FC<PaginationProviderProps> = ({
       value={{
         offset,
         size,
+        maxSize,
         total,
         totalPages,
         next,
         previous,
         setSize,
+        setMaxSize,
         setPage,
         setTotalPages,
       }}

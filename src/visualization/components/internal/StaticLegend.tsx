@@ -144,7 +144,7 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
     if (
       typeof threshold !== 'number' ||
       threshold !== threshold ||
-      threshold > 0
+      threshold >= 0
     ) {
       validThreshold = LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL
     } else {

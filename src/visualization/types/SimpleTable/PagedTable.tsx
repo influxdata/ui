@@ -221,9 +221,14 @@ interface Props {
 }
 
 const PagedTable: FC<Props> = ({result, properties}) => {
-  const {offset, setSize, maxSize, setMaxSize, setPage, setTotalPages} = useContext(
-    PaginationContext
-  )
+  const {
+    offset,
+    setSize,
+    maxSize,
+    setMaxSize,
+    setPage,
+    setTotalPages,
+  } = useContext(PaginationContext)
   const [height, setHeight] = useState(0)
   const ref = useRef()
 

@@ -52,7 +52,7 @@ export const PaginationProvider: FC<PaginationProviderProps> = ({
   const [size, setSize] = useState(DEFAULT_CONTEXT.size)
   const [maxSize, setMaxSize] = useState(DEFAULT_CONTEXT.maxSize)
   const [totalPages, setTotalPages] = useState(DEFAULT_CONTEXT.totalPages)
-    
+
   const next = useCallback(() => {
     if (total) {
       setOffset(calcNextPageOffset(offset, size, total))

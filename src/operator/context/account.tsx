@@ -114,7 +114,6 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
           throw new Error(resp.data.message)
         }
         setDeleteStatus(RemoteDataState.Done)
-        history.push('/operator')
       } catch (error) {
         console.error({error})
         dispatch(notify(deleteAccountError(accountID)))
@@ -122,7 +121,7 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
         await handleGetAccount()
       }
     },
-    [dispatch, handleGetAccount, history, accountID]
+    [dispatch, handleGetAccount, accountID]
   )
 
   return (

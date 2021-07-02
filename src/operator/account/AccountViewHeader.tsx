@@ -24,7 +24,7 @@ const AccountViewHeader: FC = () => {
       stretchToFitWidth={true}
     >
       <FlexBox.Child>
-        <Link to="/operator" data-testid="back-button">
+        <Link to="/operator" data-testid="account-view--back-button">
           <Icon glyph={IconFont.CaretLeft} />
           Back to Account List
         </Link>
@@ -38,7 +38,7 @@ const AccountViewHeader: FC = () => {
             ? ComponentStatus.Default
             : ComponentStatus.Disabled
         }
-        testID="delete-button"
+        testID="account-delete--button"
       >
         Delete Account
       </ButtonBase>

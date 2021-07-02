@@ -24,6 +24,7 @@ const LimitsInput: FC<Props> = ({type, name, limits, onChangeLimits}) => {
       name={name}
       value={get(limits, name, '')}
       onChange={onChange}
+      testID={`limits-${name}--input`}
     />
   )
 }

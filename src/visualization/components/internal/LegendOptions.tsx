@@ -95,7 +95,7 @@ export const OrientationToggle: FC<OrientationToggleProps> = ({
         className="legend-orientation--horizontal"
         id={`${parentName}-orientation--horizontal`}
         name={`${parentName}-orientation--horizontal`}
-        checked={legendOrientation >= 0}
+        checked={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL}
         onChange={setOrientation}
         type={InputToggleType.Radio}
         size={ComponentSize.ExtraSmall}
@@ -103,7 +103,7 @@ export const OrientationToggle: FC<OrientationToggleProps> = ({
         appearance={Appearance.Outline}
       >
         <InputLabel
-          active={legendOrientation >= 0}
+          active={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL}
           htmlFor={`${parentName}-orientation--horizontal`}
         >
           Horizontal
@@ -115,7 +115,7 @@ export const OrientationToggle: FC<OrientationToggleProps> = ({
         className="legend-orientation--vertical"
         id={`${parentName}-orientation--vertical`}
         name={`${parentName}-orientation--vertical`}
-        checked={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_VERTICAL}
+        checked={legendOrientation <= 0}
         onChange={setOrientation}
         type={InputToggleType.Radio}
         size={ComponentSize.ExtraSmall}
@@ -123,7 +123,7 @@ export const OrientationToggle: FC<OrientationToggleProps> = ({
         appearance={Appearance.Outline}
       >
         <InputLabel
-          active={legendOrientation === LEGEND_ORIENTATION_THRESHOLD_VERTICAL}
+          active={legendOrientation <= 0}
           htmlFor={`${parentName}-orientation--vertical`}
         >
           Vertical

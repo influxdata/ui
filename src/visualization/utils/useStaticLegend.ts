@@ -127,7 +127,7 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
       if (
         typeof legendOrientationThreshold !== 'number' ||
         legendOrientationThreshold !== legendOrientationThreshold ||
-        legendOrientationThreshold >= 0
+        legendOrientationThreshold > 0
       ) {
         validThreshold = LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL
       } else {

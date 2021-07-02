@@ -159,6 +159,7 @@ const FlowPanel: FC<Props> = ({id, controls, persistentControls, children}) => {
                         : ComponentColor.Default
                     }
                     className="flows-config-panel-button"
+                    testID="square-button"
                   ></Button>
                   {id === focused && <Sidebar />}
                 </FeatureFlag>

@@ -4,7 +4,11 @@ import {useParams} from 'react-router-dom'
 import {useDispatch} from 'react-redux'
 
 // Utils
-import {getOrgLimits, getOrgById, updateOrgLimits} from 'src/operator/api'
+import {
+  getOperatorOrgsLimits,
+  getOperatorOrg,
+  putOperatorOrgsLimits,
+} from 'src/client/unityRoutes'
 import {notify} from 'src/shared/actions/notifications'
 import {
   getOrgError,
@@ -69,7 +73,7 @@ export const OverlayProvider: FC<Props> = React.memo(({children}) => {
     async (id: string) => {
       try {
         setLimitsStatus(RemoteDataState.Loading)
-        const resp = await getOrgLimits(id)
+        const resp = await getOperatorOrgsLimits({orgId: id})
 
         if (resp.status !== 200) {
           setLimitsStatus(RemoteDataState.Error)
@@ -97,7 +101,7 @@ export const OverlayProvider: FC<Props> = React.memo(({children}) => {
     async (id: string) => {
       try {
         setOrgStatus(RemoteDataState.Loading)
-        const resp = await getOrgById(id)
+        const resp = await getOperatorOrg({orgId: id})
 
         if (resp.status !== 200) {
           setOrgStatus(RemoteDataState.Error)
@@ -123,7 +127,7 @@ export const OverlayProvider: FC<Props> = React.memo(({children}) => {
     async (updatedLimits: OrgLimits) => {
       try {
         setUpdateLimitStatus(RemoteDataState.Loading)
-        await updateOrgLimits(orgID, updatedLimits)
+        await putOperatorOrgsLimits({orgId: orgID, data: updatedLimits})
         setUpdateLimitStatus(RemoteDataState.Done)
         dispatch(notify(updateLimitsSuccess(orgID)))
       } catch (error) {

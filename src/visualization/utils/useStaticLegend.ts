@@ -122,10 +122,22 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
       ) {
         validOpacity = legendOpacity
       }
+
+      let validThreshold: number
+      if (
+        typeof legendOrientationThreshold !== 'number' ||
+        legendOrientationThreshold !== legendOrientationThreshold ||
+        legendOrientationThreshold >= 0
+      ) {
+        validThreshold = LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL
+      } else {
+        validThreshold = LEGEND_ORIENTATION_THRESHOLD_VERTICAL
+      }
+
       update({
         colorizeRows: legendColorizeRows,
         opacity: validOpacity,
-        orientationThreshold: legendOrientationThreshold,
+        orientationThreshold: validThreshold,
       })
     }
 

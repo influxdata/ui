@@ -33,7 +33,13 @@ export const SubSideBar: FC = () => {
           Back
         </Button>
         <div className="flow-sidebar--submenu">
-          <DapperScrollbars noScrollX={true}>{submenu}</DapperScrollbars>
+          <DapperScrollbars
+            noScrollX={true}
+            thumbStopColor="gray"
+            thumbStartColor="gray"
+          >
+            {submenu}
+          </DapperScrollbars>
         </div>
       </div>
     )

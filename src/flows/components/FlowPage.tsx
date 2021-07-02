@@ -60,7 +60,11 @@ const FlowContainer: FC = () => (
                   className="flow-page"
                 >
                   <PopupProvider>
-                    <DapperScrollbars noScrollX>
+                    <DapperScrollbars
+                      noScrollX
+                      thumbStartColor="gray"
+                      thumbStopColor="gray"
+                    >
                       <PipeList />
                     </DapperScrollbars>
                     <SubSideBar />

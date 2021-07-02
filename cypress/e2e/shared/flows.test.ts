@@ -8,6 +8,7 @@ describe('Flows', () => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${id}`)
           cy.setFeatureFlags({notebooks: true, simpleTable: true}).then(() => {
+            cy.getByTestID('nav-item-flows').should('be.visible')
             cy.getByTestID('nav-item-flows').click()
           })
         })
@@ -241,5 +242,120 @@ describe('Flows', () => {
 
     cy.get('.cf-resource-card').should('have.length', 1)
     cy.getByTestID('resource-name').contains(`${flowName}`)
+  })
+
+  it('should not run Preview when presentation mode is off', () => {
+    const newBucketName = 'shmucket'
+    const now = Date.now()
+    cy.get<Organization>('@org').then(({id, name}: Organization) => {
+      cy.createBucket(id, name, newBucketName)
+    })
+    cy.writeData(
+      [
+        `test,container_name=cool dopeness=12 ${now - 1000}000000`,
+        `test,container_name=beans dopeness=18 ${now - 1200}000000`,
+        `test,container_name=cool dopeness=14 ${now - 1400}000000`,
+        `test,container_name=beans dopeness=10 ${now - 1600}000000`,
+      ],
+      newBucketName
+    )
+
+    const flowName = 'Flowbooks'
+
+    cy.getByTestID('create-flow--button')
+      .first()
+      .click()
+    cy.getByTestID('time-machine-submit-button').should('be.visible')
+
+    cy.getByTestID('page-title').click()
+    cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
+
+    // select our bucket
+    cy.getByTestID('flow-bucket-selector').click()
+
+    cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
+
+    // select measurement and field
+    cy.getByTestID('measurement-selector test').click()
+    cy.getByTestID('field-selector dopeness').click()
+
+    // select beans tag and click preview
+    cy.getByTestID('tag-selector beans').click()
+    cy.getByTestID('time-machine-submit-button').click()
+
+    // we should only see beans in the table
+    cy.getByTestID('simple-table').should('be.visible')
+    cy.getByTestID('table-cell beans')
+      .first()
+      .should('be.visible')
+    cy.getByTestID('table-cell cool').should('not.exist')
+
+    // exit the flow, reload, and come back in
+    cy.getByTestID('nav-item-flows').click()
+    cy.reload()
+    cy.getByTestID('resource-name').should('be.visible')
+    cy.getByTestID('resource-name').click()
+
+    // visualizations should not exist
+    cy.getByTestID('simple-table').should('not.exist')
+    cy.getByTestID('giraffe-inner-plot').should('not.exist')
+  })
+  it('should run Preview when presentation mode is on', () => {
+    const newBucketName = 'shmucket'
+    const now = Date.now()
+    cy.get<Organization>('@org').then(({id, name}: Organization) => {
+      cy.createBucket(id, name, newBucketName)
+    })
+    cy.writeData(
+      [
+        `test,container_name=cool dopeness=12 ${now - 1000}000000`,
+        `test,container_name=beans dopeness=18 ${now - 1200}000000`,
+        `test,container_name=cool dopeness=14 ${now - 1400}000000`,
+        `test,container_name=beans dopeness=10 ${now - 1600}000000`,
+      ],
+      newBucketName
+    )
+
+    const flowName = 'Flowbooks'
+
+    cy.getByTestID('create-flow--button')
+      .first()
+      .click()
+    cy.getByTestID('time-machine-submit-button').should('be.visible')
+
+    cy.getByTestID('page-title').click()
+    cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
+
+    // select our bucket
+    cy.getByTestID('flow-bucket-selector').click()
+
+    cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
+
+    // select measurement and field
+    cy.getByTestID('measurement-selector test').click()
+    cy.getByTestID('field-selector dopeness').click()
+
+    // select beans tag and click preview
+    cy.getByTestID('tag-selector beans').click()
+    cy.getByTestID('time-machine-submit-button').click()
+
+    // we should only see beans in the table
+    cy.getByTestID('simple-table').should('be.visible')
+    cy.getByTestID('table-cell beans')
+      .first()
+      .should('be.visible')
+    cy.getByTestID('table-cell cool').should('not.exist')
+
+    // enable presentation mode
+    cy.getByTestID('slide-toggle').click()
+
+    // exit the flow, reload, and come back in
+    cy.getByTestID('nav-item-flows').click()
+    cy.reload()
+    cy.getByTestID('resource-name').should('be.visible')
+    cy.getByTestID('resource-name').click()
+
+    // visualizations should exist
+    cy.getByTestID('giraffe-inner-plot').should('be.visible')
   })
 })

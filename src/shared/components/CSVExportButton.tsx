@@ -1,7 +1,6 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import {connect} from 'react-redux'
-import moment from 'moment'
 
 // Components
 import {Button, ComponentStatus, IconFont} from '@influxdata/clockface'
@@ -9,6 +8,7 @@ import {Button, ComponentStatus, IconFont} from '@influxdata/clockface'
 // Utils
 import {downloadTextFile} from 'src/shared/utils/download'
 import {getActiveTimeMachine} from 'src/timeMachine/selectors'
+import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 
 // Types
 import {AppState} from 'src/types'
@@ -53,7 +53,7 @@ class CSVExportButton extends PureComponent<StateProps, {}> {
   private handleClick = () => {
     const {files} = this.props
     const csv = files.join('\n\n')
-    const now = moment().format('YYYY-MM-DD-HH-mm')
+    const now = createDateTimeFormatter('YYYY-MM-DD-HH-mm').format(new Date())
     const filename = `${now} InfluxDB Data`
 
     downloadTextFile(csv, filename, '.csv', 'text/csv')

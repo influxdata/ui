@@ -120,7 +120,9 @@ describe('Operator Page', () => {
 
     cy.getByTestID('account-id')
       .first()
-      .within(() => cy.get('a').click())
+      .within(() => {
+        cy.get('a').click()
+      })
 
     cy.location().should(loc => {
       expect(loc.pathname).to.eq('/operator/accounts/1')
@@ -164,7 +166,9 @@ describe('Operator Page', () => {
     // Renders the org overlay
     cy.getByTestID('org-id')
       .last()
-      .within(() => cy.get('a').click())
+      .within(() => {
+        cy.get('a').click()
+      })
 
     cy.location().should(loc => {
       expect(loc.pathname).to.eq('/operator/orgs/678')
@@ -187,7 +191,9 @@ describe('Operator Page', () => {
 
     cy.getByTestID('account-id')
       .last()
-      .within(() => cy.get('a').click())
+      .within(() => {
+        cy.get('a').click()
+      })
 
     cy.location().should(loc => {
       expect(loc.pathname).to.eq('/operator/accounts/3')
@@ -216,7 +222,9 @@ describe('Operator Page', () => {
 
     cy.getByTestID('org-id')
       .last()
-      .within(() => cy.get('a').click())
+      .within(() => {
+        cy.get('a').click()
+      })
 
     cy.location().should(loc => {
       expect(loc.pathname).to.eq('/operator/orgs/678')

@@ -82,6 +82,7 @@ export function serialize(flow) {
       if (meta) {
         return {
           ...flow.data.byID[id],
+          id,
           title: meta.title,
           visible: meta.visible,
         }

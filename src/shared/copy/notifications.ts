@@ -1164,12 +1164,10 @@ export const communityTemplateInstallSucceeded = (
   message: `We've successfully installed: ${templateName}`,
 })
 
-export const communityTemplateInstallFailed = (
-  errorMessage: string = ''
-): Notification => ({
+export const communityTemplateInstallFailed = (): Notification => ({
   ...defaultErrorNotification,
   duration: INDEFINITE,
-  message: `There was a problem installing the template: ${errorMessage}`,
+  message: 'There was a problem installing the template. Please try again.',
 })
 
 export const communityTemplateDeleteSucceeded = (
@@ -1179,18 +1177,15 @@ export const communityTemplateDeleteSucceeded = (
   message: `We've successfully deleted: ${templateName}`,
 })
 
-export const communityTemplateDeleteFailed = (
-  message: string
-): Notification => ({
+export const communityTemplateDeleteFailed = (): Notification => ({
   ...defaultErrorNotification,
-  message: `Delete failed, please check error message: ${message}`,
+  message: 'We were unable to delete the template. Please try again.',
 })
 
-export const communityTemplateFetchStackFailed = (
-  message: string
-): Notification => ({
+export const communityTemplateFetchStackFailed = (): Notification => ({
   ...defaultErrorNotification,
-  message: `We could not fetch your installed resources, please reload the page: ${message}`,
+  message:
+    'We could not fetch your installed resources. Please reload the page to try again.',
 })
 
 export const communityTemplateUnsupportedFormatError = (): Notification => ({

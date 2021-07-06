@@ -185,39 +185,39 @@ describe('Operator Page', () => {
 
     cy.getByTestID('account-view--back-button').click()
 
-    cy.getByTestID('operator-resource--searchbar').type('ariel', {
-      force: true,
-      delay: 50,
-    })
+    // cy.getByTestID('operator-resource--searchbar').type('ariel', {
+    //   force: true,
+    //   delay: 50,
+    // })
 
-    cy.getByTestID('account-id')
-      .last()
-      .within(() => {
-        cy.get('a').click()
-      })
+    // cy.getByTestID('account-id')
+    //   .last()
+    //   .within(() => {
+    //     cy.get('a').click()
+    //   })
 
-    cy.location().should(loc => {
-      expect(loc.pathname).to.eq('/operator/accounts/3')
-    })
+    // cy.location().should(loc => {
+    //   expect(loc.pathname).to.eq('/operator/accounts/3')
+    // })
 
-    cy.getByTestID('account-delete--button').click()
+    // cy.getByTestID('account-delete--button').click()
 
-    cy.getByTestID('cf-icon alert-triangle cf-alert--icon').should('exist')
+    // cy.getByTestID('cf-icon alert-triangle cf-alert--icon').should('exist')
 
-    cy.getByTestID('delete-account--confirmation-button').click()
+    // cy.getByTestID('delete-account--confirmation-button').click()
 
     // redirect the operator back to the operator page once deleting an account
-    cy.location().should(loc => {
-      expect(loc.pathname).to.eq('/operator')
-    })
+    // cy.location().should(loc => {
+    //   expect(loc.pathname).to.eq('/operator')
+    // })
 
-    cy.getByTestID('operator-resource--searchbar').type('ariel', {
-      force: true,
-      delay: 50,
-    })
+    // cy.getByTestID('operator-resource--searchbar').type('ariel', {
+    //   force: true,
+    //   delay: 50,
+    // })
 
-    // confirm that the account has been deleted
-    cy.getByTestID('empty-state').should('exist')
+    // // confirm that the account has been deleted
+    // cy.getByTestID('empty-state').should('exist')
 
     cy.getByTestID('orgTab').click()
 

@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useState} from 'react'
-import moment from 'moment'
 
 // Components
 import {
@@ -16,6 +15,9 @@ import FunctionRunLogsOverlay from 'src/functions/components/FunctionRunLogsOver
 import {FunctionRun} from 'src/client/managedFunctionsRoutes'
 import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
 
+// Utils
+import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
+
 interface Props {
   run: FunctionRun
 }
@@ -27,7 +29,8 @@ const FunctionRunsRow: FC<Props> = ({run}) => {
       return ''
     }
     const newdate = new Date(dt)
-    const formatted = moment(newdate).format(DEFAULT_TIME_FORMAT)
+    const formatter = createDateTimeFormatter(DEFAULT_TIME_FORMAT)
+    const formatted = formatter.format(newdate)
 
     return formatted
   }

@@ -41,8 +41,8 @@ const defaultErrorNotification: NotificationExcludingMessage = {
 
 const defaultWarningNotification: NotificationExcludingMessage = {
   buttonElement: defaultButtonElement,
-  style: NotificationStyle.Error,
-  icon: IconFont.AlertTriangle,
+  style: NotificationStyle.Warning,
+  icon: IconFont.Group,
   duration: TEN_SECONDS,
 }
 
@@ -1399,7 +1399,8 @@ export const accountSelfDeletionFailed = (): Notification => ({
   message: `There was an error deleting the organization, please try again.`,
 })
 
-export const deleteAccountWarning = (): Notification => ({
+export const deleteAccountWarning = (buttonElement): Notification => ({
   ...defaultWarningNotification,
-  message: `All additional Users must be removed from the Organization before the account can be deleted.`,
+  message: `All additional users must be removed from the Organization before the account can be deleted.\n`,
+  buttonElement,
 })

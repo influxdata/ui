@@ -21,6 +21,7 @@ import {
 import CopyButton from 'src/shared/components/CopyButton'
 import PageSpinner from 'src/perf/components/PageSpinner'
 import {UsersContext} from 'src/users/context/users'
+import {getDeleteAccountWarningButton} from 'src/shared/components/notifications/NotificationButtons'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
@@ -30,6 +31,7 @@ import {deleteAccountWarning} from 'src/shared/copy/notifications'
 
 // Types
 import {getMe, getQuartzMe} from 'src/me/selectors'
+import {NotificationButtonElement} from 'src/types'
 
 const OrgProfileTab: FC = () => {
   const me = useSelector(getMe)
@@ -48,7 +50,9 @@ const OrgProfileTab: FC = () => {
   }
 
   const handleShowWarning = () => {
-    dispatch(notify(deleteAccountWarning()))
+    const buttonElement: NotificationButtonElement = onDismiss =>
+      getDeleteAccountWarningButton(`/users`, onDismiss)
+    dispatch(notify(deleteAccountWarning(buttonElement)))
   }
 
   const generateCopyText = (title, text) => () => {

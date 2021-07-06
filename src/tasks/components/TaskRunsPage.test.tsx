@@ -1,6 +1,7 @@
 // Installed libraries
 import React from 'react'
 import {fireEvent, screen, waitFor} from '@testing-library/react'
+import {mocked} from 'ts-jest/utils'
 
 // Items under test
 import TaskRunsPage from './TaskRunsPage'
@@ -12,7 +13,10 @@ import {tasks, orgs, withRouterProps, labels} from 'mocks/dummyData'
 import {renderWithReduxAndRouter} from 'src/mockState'
 import {mockAppState} from 'src/mockAppState'
 import {RemoteDataState} from 'src/types'
-import {mocked} from 'ts-jest/utils'
+
+// DateTime
+import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 
 const runIDs = [
   '07a7f99e81cf2000',
@@ -163,6 +167,48 @@ const dummyTaskRuns: Array<Run> = [
   },
 ]
 
+const dummyMembers = {
+	"links": {
+		"self": "/api/v2/orgs/c407211f02faa1ef/members"
+	},
+	"users": []
+}
+
+const dummyOwners = {
+	"links": {
+		"self": "/api/v2/orgs/c407211f02faa1ef/owners"
+	},
+	"users": [
+		{
+			"role": "owner",
+			"links": {
+				"self": "/api/v2/users/07aee60ba0658000"
+			},
+			"id": "07aee60ba0658000",
+			"name": "idpe-admin",
+			"status": "active"
+		},
+		{
+			"role": "owner",
+			"links": {
+				"self": "/api/v2/users/07aee61007a58000"
+			},
+			"id": "07aee61007a58000",
+			"name": "mcfly@influxdata.com",
+			"status": "active"
+		},
+		{
+			"role": "owner",
+			"links": {
+				"self": "/api/v2/users/07aee6106d658000"
+			},
+			"id": "07aee6106d658000",
+			"name": "orgc407211f02faa1ef-user-20070",
+			"status": "active"
+		}
+	]
+}
+
 jest.mock('src/client', () => ({
   getTasksRuns: jest.fn(() => {
     return Promise.resolve({
@@ -184,6 +230,20 @@ jest.mock('src/client', () => ({
     headers: {},
     status: 201,
   })),
+  getOrgsOwners: jest.fn(() => {
+    return {
+      data: dummyOwners,
+      headers: {},
+      status: 200
+    }
+  }),
+  getOrgsMembers: jest.fn(() => {
+    return {
+      data: dummyMembers,
+      headers: {},
+      status: 200
+    }
+  })
 }))
 
 jest.mock('src/resources/selectors', () => {
@@ -191,6 +251,9 @@ jest.mock('src/resources/selectors', () => {
     getByID: jest.fn(() => {
       return tasks[0]
     }),
+    getStatus: jest.fn(() => {
+      return RemoteDataState.NotStarted
+    })
   }
 })
 
@@ -239,27 +302,17 @@ const setup = () => {
   return renderWithReduxAndRouter(<TaskRunsPage {...props} />, () => testState)
 }
 
-const verifyRecStatus = (rec: HTMLElement, run: Run) => {
-  const cells = rec.querySelectorAll('[data-testid=table-cell]')
+const verifyRowMetaData = (row: HTMLElement, run: Run) => {
+  const cells = row.querySelectorAll('[data-testid=table-cell]')
   expect(cells[0].textContent.trim()).toEqual(run.status)
-  let testString = run.scheduledFor.replace('T', ' ').replace('Z', '')
+  const formattedDate = createDateTimeFormatter(DEFAULT_TIME_FORMAT).format(new Date(run.scheduledFor))
 
-  // ignore adjustment for local time zone but check the rest
-  testString =
-    '^' + testString.substring(0, 11) + '\\d\\d' + testString.substring(13)
-
-  expect(cells[1].textContent.trim()).toMatch(new RegExp(testString))
+  expect(cells[1].textContent.trim()).toMatch(formattedDate)
 
   if (run.startedAt) {
-    testString = run.startedAt.replace('T', ' ').replace('Z', '')
-    // ignore adjustment for local time zone but check the rest
-    testString = (
-      '^' +
-      testString.substring(0, 11) +
-      '\\d\\d' +
-      testString.substring(13)
-    ).split('.')[0]
-    expect(cells[2].textContent.trim()).toMatch(new RegExp(testString))
+    const formattedDate = createDateTimeFormatter(DEFAULT_TIME_FORMAT).format(new Date(run.startedAt))
+
+    expect(cells[2].textContent.trim()).toMatch(formattedDate)
   }
 }
 
@@ -283,7 +336,7 @@ describe('Tasks.Components.TaskRunsPage', () => {
 
     // default sort is reverse of dummyTaskRuns declaration above
     for (let i = 0; i < rows.length; i++) {
-      verifyRecStatus(rows[i], dummyTaskRuns[rows.length - (i + 1)])
+      verifyRowMetaData(rows[i], dummyTaskRuns[rows.length - (i + 1)])
     }
 
     const cells = rows[4].querySelectorAll('[data-testid=table-cell]')

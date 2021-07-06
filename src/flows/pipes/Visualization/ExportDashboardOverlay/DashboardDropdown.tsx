@@ -23,18 +23,20 @@ const DashboardDropdown: FC = () => {
   if (dashboards.length) {
     menuItems = (
       <>
-        {dashboards.map((dashboard, i) => (
-          <Dropdown.Item
-            key={`${dashboard.name}${i}`}
-            value={dashboard}
-            onClick={dashboard => handleSetDashboard(dashboard)}
-            selected={dashboard.name === selectedDashboard?.name}
-            title={dashboard.name}
-            wrapText={true}
-          >
-            {dashboard.name}
-          </Dropdown.Item>
-        ))}
+        {dashboards
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((dashboard, i) => (
+            <Dropdown.Item
+              key={`${dashboard.name}${i}`}
+              value={dashboard}
+              onClick={dashboard => handleSetDashboard(dashboard)}
+              selected={dashboard.name === selectedDashboard?.name}
+              title={dashboard.name}
+              wrapText={true}
+            >
+              {dashboard.name}
+            </Dropdown.Item>
+          ))}
       </>
     )
   }

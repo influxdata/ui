@@ -157,10 +157,10 @@ describe('tokens', () => {
 
     cy.getByTestID('token-card token test 03').within(() => {
       cy.getByTestID('context-menu').click({force: true})
+    })
 
-      cy.getByTestID('delete-token')
-        .contains('Delete')
-        .click()
+    cy.getByTestID('token-card token test 03').within(() => {
+      cy.getByTestID('delete-token').click({force: true})
     })
 
     cy.wait('@deleteToken')
@@ -174,10 +174,12 @@ describe('tokens', () => {
       .first()
       .within(() => {
         cy.getByTestID('context-menu').click({force: true})
+      })
 
-        cy.getByTestID('delete-token')
-          .contains('Delete')
-          .click()
+    cy.get('.cf-resource-card')
+      .first()
+      .within(() => {
+        cy.getByTestID('delete-token').click({force: true})
       })
 
     cy.wait('@deleteToken')
@@ -185,10 +187,12 @@ describe('tokens', () => {
       .first()
       .within(() => {
         cy.getByTestID('context-menu').click({force: true})
+      })
 
-        cy.getByTestID('delete-token')
-          .contains('Delete')
-          .click()
+    cy.get('.cf-resource-card')
+      .first()
+      .within(() => {
+        cy.getByTestID('delete-token').click({force: true})
       })
 
     cy.wait('@deleteToken')
@@ -196,10 +200,12 @@ describe('tokens', () => {
       .first()
       .within(() => {
         cy.getByTestID('context-menu').click({force: true})
+      })
 
-        cy.getByTestID('delete-token')
-          .contains('Delete')
-          .click()
+    cy.get('.cf-resource-card')
+      .first()
+      .within(() => {
+        cy.getByTestID('delete-token').click({force: true})
       })
 
     // Assert empty state

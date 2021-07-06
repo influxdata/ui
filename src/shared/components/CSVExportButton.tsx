@@ -52,7 +52,7 @@ class CSVExportButton extends PureComponent<StateProps, {}> {
 
   private handleClick = () => {
     const {files} = this.props
-    const formatter = createDateTimeFormatter('YYYY-MM-DD-HH-mm')
+    const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm')
     const csv = files.join('\n\n')
     const now = formatter.format(new Date())
     const filename = `${now} InfluxDB Data`

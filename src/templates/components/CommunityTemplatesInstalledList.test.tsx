@@ -163,7 +163,7 @@ describe('the Community Templates installed List', () => {
       })
       const [notifyCallArguments] = mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
-      expect(notifyMessage).toEqual(communityTemplateDeleteFailed('fake error'))
+      expect(notifyMessage).toEqual(communityTemplateDeleteFailed())
 
       const [honeyBadgerCallArguments] = mocked(
         reportErrorThroughHoneyBadger

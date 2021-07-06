@@ -14,12 +14,14 @@ const FunctionRunLogRow: FC<FunctionRunLog> = ({
   timestamp,
   severity,
 }) => {
-
   return (
     <IndexList.Row>
       <IndexList.Cell>
         <span className="run-logs--list-time">
-          <FormattedDateTime format={DEFAULT_TIME_FORMAT} date={new Date(timestamp)}/>
+          <FormattedDateTime
+            format={DEFAULT_TIME_FORMAT}
+            date={new Date(timestamp)}
+          />
         </span>
       </IndexList.Cell>
       <IndexList.Cell>

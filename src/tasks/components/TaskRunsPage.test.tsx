@@ -168,45 +168,45 @@ const dummyTaskRuns: Array<Run> = [
 ]
 
 const dummyMembers = {
-	"links": {
-		"self": "/api/v2/orgs/c407211f02faa1ef/members"
-	},
-	"users": []
+  links: {
+    self: '/api/v2/orgs/c407211f02faa1ef/members',
+  },
+  users: [],
 }
 
 const dummyOwners = {
-	"links": {
-		"self": "/api/v2/orgs/c407211f02faa1ef/owners"
-	},
-	"users": [
-		{
-			"role": "owner",
-			"links": {
-				"self": "/api/v2/users/07aee60ba0658000"
-			},
-			"id": "07aee60ba0658000",
-			"name": "idpe-admin",
-			"status": "active"
-		},
-		{
-			"role": "owner",
-			"links": {
-				"self": "/api/v2/users/07aee61007a58000"
-			},
-			"id": "07aee61007a58000",
-			"name": "mcfly@influxdata.com",
-			"status": "active"
-		},
-		{
-			"role": "owner",
-			"links": {
-				"self": "/api/v2/users/07aee6106d658000"
-			},
-			"id": "07aee6106d658000",
-			"name": "orgc407211f02faa1ef-user-20070",
-			"status": "active"
-		}
-	]
+  links: {
+    self: '/api/v2/orgs/c407211f02faa1ef/owners',
+  },
+  users: [
+    {
+      role: 'owner',
+      links: {
+        self: '/api/v2/users/07aee60ba0658000',
+      },
+      id: '07aee60ba0658000',
+      name: 'idpe-admin',
+      status: 'active',
+    },
+    {
+      role: 'owner',
+      links: {
+        self: '/api/v2/users/07aee61007a58000',
+      },
+      id: '07aee61007a58000',
+      name: 'mcfly@influxdata.com',
+      status: 'active',
+    },
+    {
+      role: 'owner',
+      links: {
+        self: '/api/v2/users/07aee6106d658000',
+      },
+      id: '07aee6106d658000',
+      name: 'orgc407211f02faa1ef-user-20070',
+      status: 'active',
+    },
+  ],
 }
 
 jest.mock('src/client', () => ({
@@ -234,16 +234,16 @@ jest.mock('src/client', () => ({
     return {
       data: dummyOwners,
       headers: {},
-      status: 200
+      status: 200,
     }
   }),
   getOrgsMembers: jest.fn(() => {
     return {
       data: dummyMembers,
       headers: {},
-      status: 200
+      status: 200,
     }
-  })
+  }),
 }))
 
 jest.mock('src/resources/selectors', () => {
@@ -253,7 +253,7 @@ jest.mock('src/resources/selectors', () => {
     }),
     getStatus: jest.fn(() => {
       return RemoteDataState.NotStarted
-    })
+    }),
   }
 })
 
@@ -305,12 +305,16 @@ const setup = () => {
 const verifyRowMetaData = (row: HTMLElement, run: Run) => {
   const cells = row.querySelectorAll('[data-testid=table-cell]')
   expect(cells[0].textContent.trim()).toEqual(run.status)
-  const formattedDate = createDateTimeFormatter(DEFAULT_TIME_FORMAT).format(new Date(run.scheduledFor))
+  const formattedDate = createDateTimeFormatter(DEFAULT_TIME_FORMAT).format(
+    new Date(run.scheduledFor)
+  )
 
   expect(cells[1].textContent.trim()).toMatch(formattedDate)
 
   if (run.startedAt) {
-    const formattedDate = createDateTimeFormatter(DEFAULT_TIME_FORMAT).format(new Date(run.startedAt))
+    const formattedDate = createDateTimeFormatter(DEFAULT_TIME_FORMAT).format(
+      new Date(run.startedAt)
+    )
 
     expect(cells[2].textContent.trim()).toMatch(formattedDate)
   }

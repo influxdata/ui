@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, useState} from 'react'
 import {useHistory} from 'react-router-dom'
-import {useSelector} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 import {
   Alert,
   AlignItems,
@@ -21,14 +21,33 @@ import {
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
+import {deleteAccount} from 'src/client/unityRoutes'
+import {notify} from 'src/shared/actions/notifications'
+import {accountSelfDeletionFailed} from 'src/shared/copy/notifications'
 
 const DelteOrgOverlay: FC = () => {
   const history = useHistory()
   const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false)
   const org = useSelector(getOrg)
+  const dispatch = useDispatch()
 
   const handleClose = () => {
     history.push(`/orgs/${org.id}/about`)
+  }
+
+  const handleDeleteAccount = async () => {
+    try {
+      const resp = await deleteAccount({})
+
+      if (resp.status !== 204) {
+        throw new Error(resp.data.message)
+      }
+
+      // TODO(arieL): redirect to offboarding page
+      window.location.href = `https://www.influxdata.com/free_cancel/`
+    } catch {
+      dispatch(notify(accountSelfDeletionFailed()))
+    }
   }
 
   return (
@@ -85,7 +104,7 @@ const DelteOrgOverlay: FC = () => {
                 ? ComponentStatus.Default
                 : ComponentStatus.Disabled
             }
-            onClick={() => console.log('do stuff')}
+            onClick={handleDeleteAccount}
           />
         </Overlay.Footer>
       </Overlay.Container>

@@ -39,6 +39,13 @@ const defaultErrorNotification: NotificationExcludingMessage = {
   duration: TEN_SECONDS,
 }
 
+const defaultWarningNotification: NotificationExcludingMessage = {
+  buttonElement: defaultButtonElement,
+  style: NotificationStyle.Error,
+  icon: IconFont.AlertTriangle,
+  duration: TEN_SECONDS,
+}
+
 const defaultSuccessNotification: NotificationExcludingMessage = {
   buttonElement: defaultButtonElement,
   style: NotificationStyle.Success,
@@ -1385,4 +1392,14 @@ export const removeUserFailed = (): Notification => ({
 export const zuoraParamsGetFailure = (message): Notification => ({
   ...defaultErrorNotification,
   message,
+})
+
+export const accountSelfDeletionFailed = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `There was an error deleting the organization, please try again.`,
+})
+
+export const deleteAccountWarning = (): Notification => ({
+  ...defaultWarningNotification,
+  message: `All additional Users must be removed from the Organization before the account can be deleted.`,
 })

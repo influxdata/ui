@@ -18,15 +18,17 @@ const AccountView: FC = () => {
   return (
     <PageSpinner loading={accountStatus}>
       <AppWrapper>
-        <Page titleTag={`Account ${account?.id}`}>
+        <Page titleTag={`Account ${account?.id}`} testID="account-view--header">
           <AppPageHeader title={`Account ${account?.id}`} />
           <Page.Contents scrollable={true}>
             <DeleteAccountOverlay />
             <AccountViewHeader />
             <AccountGrid />
-            <h2>Associated Users</h2>
+            <h2 data-testid="associated-users--title">Associated Users</h2>
             <AssociatedUsersTable />
-            <h2>Associated Organizations</h2>
+            <h2 data-testid="associated-orgs--title">
+              Associated Organizations
+            </h2>
             <AssociatedOrgsTable />
           </Page.Contents>
         </Page>

@@ -63,7 +63,7 @@ const DeleteAccountOverlay: FC = () => {
             color={ComponentColor.Danger}
             shape={ButtonShape.Default}
             onClick={deleteAccount}
-            testID="confirmation-button"
+            testID="delete-account--confirmation-button"
           >
             I understand, delete account.
           </ButtonBase>

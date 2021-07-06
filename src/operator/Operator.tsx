@@ -17,7 +17,7 @@ import {OrgOverlay} from 'src/shared/containers'
 
 const Operator: FC = () => (
   <AppWrapper>
-    <Page titleTag="Operator UI">
+    <Page titleTag="Operator UI" testID="operator-page--title">
       <FlexBox direction={FlexDirection.Row}>
         <FlexBoxChild>
           <AppPageHeader title="Cloud 2.0 Resources" />

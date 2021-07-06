@@ -64,7 +64,7 @@ class CommunityTemplatesInstalledListUnconnected extends PureComponent<Props> {
     try {
       this.props.fetchAndSetStacks(this.props.orgID)
     } catch (err) {
-      this.props.notify(communityTemplateFetchStackFailed(err.message))
+      this.props.notify(communityTemplateFetchStackFailed())
       reportErrorThroughHoneyBadger(err, {
         name: 'The community template fetch stack failed',
       })
@@ -94,7 +94,7 @@ class CommunityTemplatesInstalledListUnconnected extends PureComponent<Props> {
         this.props.notify(communityTemplateDeleteSucceeded(stackName))
         this.props.getBuckets()
       } catch (err) {
-        this.props.notify(communityTemplateDeleteFailed(err.message))
+        this.props.notify(communityTemplateDeleteFailed())
         reportErrorThroughHoneyBadger(err, {
           name: 'The community template delete failed',
         })

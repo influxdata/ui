@@ -78,7 +78,7 @@ export const organizationColumnInfo: CellInfo[] = [
     renderValue: value => <Link to={`/operator/orgs/${value}`}>{value}</Link>,
   },
   {
-    path: 'account.email',
+    path: 'account.billingContact.email',
     name: 'email',
     defaultValue: '',
   },

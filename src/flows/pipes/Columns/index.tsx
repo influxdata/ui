@@ -1,4 +1,5 @@
-import View from './view'
+import View, {TableColumnKey} from './view'
+
 export default register => {
   register({
     type: 'columnEditor',
@@ -6,16 +7,47 @@ export default register => {
     component: View,
     button: 'Column Editor',
     initial: {
-      table: {
-        columnKeys: [],
-        columns: {},
-      },
+      updatedTableKeys: {},
     },
     generateFlux: (pipe, create, append) => {
-      console.log(pipe)
-      const ast = `__PREVIOUS_RESULT__ `
-      create(ast)
       append(`__CURRENT_RESULT__ |> limit(n: 100)`)
+      if (!Object.values(pipe.updatedTableKeys).length) {
+        return
+      }
+
+      const toggleHide = Object.entries(
+        pipe.updatedTableKeys as {[_: string]: TableColumnKey}
+      ).reduce((a, [k, v]) => {
+        if (!v.visible) {
+          a.push(`"${v.name}"`)
+          return a
+        } else {
+          return a
+        }
+      }, [])
+
+      const rename = Object.entries(
+        pipe.updatedTableKeys as {[_: string]: TableColumnKey}
+      ).reduce((a, [k, v]) => {
+        if (k === v.name) {
+          return a
+        } else {
+          a.push(`${k}: "${v.name}"`)
+          return a
+        }
+      }, [])
+
+      if (rename.length) {
+        create(`
+                __PREVIOUS_RESULT__
+                |> rename(columns: {${rename.join(', ')}})
+                `)
+      }
+
+      if (toggleHide.length) {
+        create(`__PREVIOUS_RESULT__
+               |> drop(columns: [${rename.join(', ')}])`)
+      }
     },
   })
 }

@@ -53,7 +53,7 @@ const View: FC<PipeProp> = ({Context}) => {
   }, [tableColumnKeys])
 
   const handleUpdateName = (newName: any, oldName: string) => {
-    if (oldName === newName) {
+    if (tableColumnKeys[oldName].name === newName) {
       return
     }
     setTableColumnKeys(prev => ({

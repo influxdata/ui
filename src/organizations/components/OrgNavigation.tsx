@@ -23,25 +23,31 @@ interface OrgPageTab {
   link: string
 }
 
+enum Tab {
+  Members = 'members-oss',
+  Users = 'users',
+  About = 'about',
+}
+
 const OrgNavigation: FC<Props> = ({activeTab}) => {
   const orgID = useSelector(getOrg)?.id
 
   const tabs: OrgPageTab[] = [
     {
       text: 'Members',
-      id: 'members-oss',
+      id: Tab.Members,
       enabled: () => !CLOUD,
       link: `/orgs/${orgID}/members`,
     },
     {
       text: 'Users',
-      id: 'users',
+      id: Tab.Users,
       enabled: () => CLOUD,
       link: `/orgs/${orgID}/users`,
     },
     {
       text: 'About',
-      id: 'about',
+      id: Tab.About,
       link: `/orgs/${orgID}/about`,
     },
   ]
@@ -57,7 +63,7 @@ const OrgNavigation: FC<Props> = ({activeTab}) => {
         })
         .map(t => {
           let isActive = t.id === activeTab
-          if (t.id === 'members-oss' && activeTab === 'members') {
+          if (t.id === Tab.Members && activeTab === 'members') {
             isActive = true
           }
 

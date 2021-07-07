@@ -142,7 +142,7 @@ describe('Variables', () => {
 
     cy.getByTestID('context-rename-variable').click({force: true})
 
-    cy.getByTestID('danger-confirmation-button').click()
+    cy.getByTestID('danger-confirmation--button').click()
 
     cy.getByInputName('name').type('Renamed')
 

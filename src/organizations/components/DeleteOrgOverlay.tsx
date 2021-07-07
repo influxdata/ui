@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, useState} from 'react'
 import {useHistory} from 'react-router-dom'
-import {useSelector, useDispatch} from 'react-redux'
+import {useDispatch} from 'react-redux'
 import {
   Alert,
   AlignItems,
@@ -20,19 +20,17 @@ import {
 } from '@influxdata/clockface'
 
 // Utils
-import {getOrg} from 'src/organizations/selectors'
 import {deleteAccount} from 'src/client/unityRoutes'
 import {notify} from 'src/shared/actions/notifications'
 import {accountSelfDeletionFailed} from 'src/shared/copy/notifications'
 
-const DelteOrgOverlay: FC = () => {
+const DeleteOrgOverlay: FC = () => {
   const history = useHistory()
   const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false)
-  const org = useSelector(getOrg)
   const dispatch = useDispatch()
 
   const handleClose = () => {
-    history.push(`/orgs/${org.id}/about`)
+    history.goBack()
   }
 
   const handleDeleteAccount = async () => {
@@ -50,7 +48,7 @@ const DelteOrgOverlay: FC = () => {
   }
 
   return (
-    <Overlay visible={true}>
+    <Overlay visible={true} testID="delete-org--overlay">
       <Overlay.Container maxWidth={400}>
         <Overlay.Header title="Delete Organization" onDismiss={handleClose} />
         <Overlay.Body>
@@ -97,7 +95,7 @@ const DelteOrgOverlay: FC = () => {
           <Button
             color={ComponentColor.Danger}
             text="Delete Organization"
-            testID="danger-confirmation-button"
+            testID="delete-org--button"
             status={
               hasAgreedToTerms
                 ? ComponentStatus.Default
@@ -111,4 +109,4 @@ const DelteOrgOverlay: FC = () => {
   )
 }
 
-export default DelteOrgOverlay
+export default DeleteOrgOverlay

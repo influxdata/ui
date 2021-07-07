@@ -10,11 +10,11 @@ import {Page} from '@influxdata/clockface'
 import OrgProfileTab from 'src/organizations/components/OrgProfileTab'
 import RenameOrgOverlay from 'src/organizations/components/RenameOrgOverlay'
 import DeleteOrgOverlay from 'src/organizations/components/DeleteOrgOverlay'
-import UsersProvider from 'src/users/context/users'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {getQuartzMe} from 'src/me/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const OrgProfilePage: FC = () => {
   const quartzMe = useSelector(getQuartzMe)
@@ -22,16 +22,14 @@ const OrgProfilePage: FC = () => {
   return (
     <>
       <Page titleTag={pageTitleSuffixer(['About', 'Organization'])}>
-        <OrgHeader />
+        <OrgHeader testID="about-page--header" />
         <OrgTabbedPage activeTab="about">
-          <UsersProvider>
-            <OrgProfileTab />
-          </UsersProvider>
+          <OrgProfileTab />
         </OrgTabbedPage>
       </Page>
       <Switch>
         <Route path="/orgs/:orgID/about/rename" component={RenameOrgOverlay} />
-        {quartzMe?.accountType === 'free' && (
+        {isFlagEnabled('selfDeletion') && quartzMe?.accountType === 'free' && (
           <Route
             path="/orgs/:orgID/about/delete"
             component={DeleteOrgOverlay}

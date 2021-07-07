@@ -33,7 +33,7 @@ export const getDeleteAccountWarningButton = (
   onDismiss: NotificationDismiss
 ): JSX.Element => {
   return (
-    <Link to={url} onClick={onDismiss}>
+    <Link to={url} onClick={onDismiss} data-testID="go-to-users--link">
       Go to Users page
     </Link>
   )

@@ -45,14 +45,9 @@ class RenameOrgOverlay extends PureComponent<
   }
 
   private handleClose = () => {
-    const {
-      history,
-      match: {
-        params: {orgID},
-      },
-    } = this.props
+    const {history} = this.props
 
-    history.push(`/orgs/${orgID}/about`)
+    history.goBack()
   }
 }
 

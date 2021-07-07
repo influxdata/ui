@@ -70,7 +70,10 @@ const OrgProfileTab: FC = () => {
                   justifyContent={JustifyContent.SpaceBetween}
                 >
                   <div>
-                    <h5 style={{marginBottom: '0'}}>
+                    <h5
+                      style={{marginBottom: '0'}}
+                      data-testid="danger-zone--org-name"
+                    >
                       Rename Organization {org.name}
                     </h5>
                     <p style={{marginTop: '2px'}}>
@@ -131,7 +134,10 @@ const OrgProfileTab: FC = () => {
                   onCopy={generateCopyText('Organization ID', org.id)}
                   testID="copy-btn--orgid"
                 />
-                <label className="code-snippet--label">{`${org.name} | Organization ID`}</label>
+                <label
+                  className="code-snippet--label"
+                  data-testid="org-profile--name"
+                >{`${org.name} | Organization ID`}</label>
               </div>
             </div>
           </Panel.Body>

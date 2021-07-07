@@ -106,6 +106,7 @@ export const loginViaDex = (username: string, password: string) => {
               body: {req: req, approval: 'approve'},
             }).then(() => {
               cy.visit('/')
+              // cy.getCookie('session').should('exist')
               cy.location('pathname').should('not.eq', '/signin')
             })
           })

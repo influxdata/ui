@@ -35,14 +35,22 @@ describe('About Page', () => {
       .contains('Name is required')
     cy.getByTestID('rename-org-submit--button').should('be.disabled')
 
-    const newOrgName = 'hard@knock.life'
+    const newOrgName = `hard@knock.life${Math.random()}`
+
+    cy.intercept('PATCH', 'api/v2/orgs/*').as('patchOrg')
+
     cy.getByTestID('create-org-name-input').type(newOrgName)
     cy.getByTestID('rename-org-submit--button')
       .should('not.be.disabled')
       .click()
 
+    cy.wait('@patchOrg')
+
     cy.getByTestID('notification-success')
       .should('be.visible')
       .contains(newOrgName)
+
+    cy.getByTestID('org-profile--name').contains(newOrgName)
+    cy.getByTestID('danger-zone--org-name').contains(newOrgName)
   })
 })

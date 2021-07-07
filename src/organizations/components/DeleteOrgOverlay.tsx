@@ -95,7 +95,7 @@ const DeleteOrgOverlay: FC = () => {
           <Button
             color={ComponentColor.Danger}
             text="Delete Organization"
-            testID="delete-org--button"
+            testID="delete-organization--button"
             status={
               hasAgreedToTerms
                 ? ComponentStatus.Default

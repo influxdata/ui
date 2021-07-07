@@ -6,7 +6,7 @@ describe('About Page for free users with only 1 user', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.setFeatureFlags({unityUsers: true, selfDeletion: true}).then(() => {
+        cy.setFeatureFlags({selfDeletion: true, unityUsers: true}).then(() => {
           cy.quartzProvision({
             accountType: 'free',
             hasUsers: false,
@@ -20,25 +20,31 @@ describe('About Page for free users with only 1 user', () => {
   })
 
   it('should allow the delete account functionality', () => {
-    cy.intercept('DELETE', '/api/v2/quartz/account', {
-      status: 204,
-      data: 'ok',
-    }).as('deleteAccount')
     cy.getByTestID('delete-org--button')
       .should('exist')
       .click()
-    cy.getByTestID('Warning').should('not.exist')
-    cy.getByTestID('delete-org--overlay').should('exist')
 
-    cy.getByTestID('delete-org--button').should('be.disabled')
+    cy.getByTestID('notification-warning').should('not.exist')
 
-    cy.getByTestID('agree-terms--input').click()
-    cy.getByTestID('agree-terms--checkbox').should('be.checked')
-    cy.getByTestID('delete-org--button')
-      .should('not.be.disabled')
-      .click()
+    cy.location()
+      .should(loc => {
+        expect(loc.pathname).to.include(`/about/delete`)
+      })
+      .then(() => {
+        cy.getByTestID('delete-org--overlay').should('exist')
 
-    cy.wait('@deleteAccount')
+        cy.getByTestID('delete-organization--button').should('be.disabled')
+
+        cy.getByTestID('agree-terms--input').click()
+        cy.getByTestID('agree-terms--checkbox').should('be.checked')
+        cy.getByTestID('delete-organization--button')
+          .should('not.be.disabled')
+          .click()
+
+        cy.location().should(loc => {
+          expect(loc.href).to.eq(`https://www.influxdata.com/free_cancel/`)
+        })
+      })
   })
 })
 
@@ -65,7 +71,8 @@ describe('About Page for free users with multiple users', () => {
     cy.getByTestID('delete-org--button')
       .should('exist')
       .click()
-    cy.getByTestID('Warning')
+
+    cy.getByTestID('notification-warning')
       .should('exist')
       .within(() => {
         cy.getByTestID('go-to-users--link').click()

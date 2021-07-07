@@ -293,6 +293,7 @@ describe('Flows', () => {
     // exit the flow, reload, and come back in
     cy.getByTestID('nav-item-flows').click()
     cy.reload()
+    cy.getByTestID('tree-nav').should('be.visible')
     cy.getByTestID('resource-name').should('be.visible')
     cy.getByTestID('resource-name').click()
 
@@ -300,6 +301,7 @@ describe('Flows', () => {
     cy.getByTestID('simple-table').should('not.exist')
     cy.getByTestID('giraffe-inner-plot').should('not.exist')
   })
+
   it('should run Preview when presentation mode is on', () => {
     const newBucketName = 'shmucket'
     const now = Date.now()
@@ -346,12 +348,18 @@ describe('Flows', () => {
       .should('be.visible')
     cy.getByTestID('table-cell cool').should('not.exist')
 
+    cy.intercept('PATCH', '**/notebooks/*').as('notebooksSave')
+
     // enable presentation mode
     cy.getByTestID('slide-toggle').click()
+
+    // wait for notebook to save
+    cy.wait('@notebooksSave')
 
     // exit the flow, reload, and come back in
     cy.getByTestID('nav-item-flows').click()
     cy.reload()
+    cy.getByTestID('tree-nav').should('be.visible')
     cy.getByTestID('resource-name').should('be.visible')
     cy.getByTestID('resource-name').click()
 

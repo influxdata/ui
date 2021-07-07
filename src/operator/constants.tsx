@@ -72,7 +72,7 @@ export const organizationColumnInfo: CellInfo[] = [
     defaultValue: '',
   },
   {
-    path: 'id',
+    path: 'idpeId',
     name: 'org-id',
     defaultValue: '',
     renderValue: value => <Link to={`/operator/orgs/${value}`}>{value}</Link>,
@@ -171,7 +171,7 @@ export const acctOrgColumnInfo: CellInfo[] = [
     defaultValue: '',
   },
   {
-    path: 'id',
+    path: 'idpeId',
     name: 'org-id',
     defaultValue: '',
     renderValue: value => <Link to={`/operator/orgs/${value}`}>{value}</Link>,

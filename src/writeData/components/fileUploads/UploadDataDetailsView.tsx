@@ -54,7 +54,11 @@ const UploadDataDetailsView: FC = () => {
 
   if (markdown) {
     pageContent = (
-      <MarkdownRenderer text={markdown} cloudRenderers={{code: codeRenderer}} />
+      <MarkdownRenderer
+        text={markdown}
+        cloudRenderers={{code: codeRenderer}}
+        escapeHtml={false}
+      />
     )
   }
 

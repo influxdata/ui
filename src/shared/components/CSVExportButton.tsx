@@ -54,8 +54,7 @@ class CSVExportButton extends PureComponent<StateProps, {}> {
     const {files} = this.props
     const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm')
     const csv = files.join('\n\n')
-    let now = formatter.format(new Date())
-    now = now.replace(/\s+/gi, '_')
+    const now = formatter.format(new Date()).replace(/\s+/gi, '_')
     const filename = `${now} InfluxDB Data`
 
     downloadTextFile(csv, filename, '.csv', 'text/csv')

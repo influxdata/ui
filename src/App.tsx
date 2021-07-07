@@ -16,6 +16,7 @@ import {load} from 'rudder-sdk-js'
 import {AppWrapper} from '@influxdata/clockface'
 import TreeNav from 'src/pageLayout/containers/TreeNav'
 import TooltipPortal from 'src/portals/TooltipPortal'
+import SearchPortal from 'src/portals/SearchPortal'
 import NotesPortal from 'src/portals/NotesPortal'
 import Notifications from 'src/shared/components/notifications/Notifications'
 import {
@@ -55,6 +56,7 @@ const App: FC = () => {
     <AppWrapper presentationMode={presentationMode} className={appWrapperClass}>
       <Notifications />
       <TooltipPortal />
+      <SearchPortal />
       <NotesPortal />
       <OverlayProviderComp>
         <OverlayController />

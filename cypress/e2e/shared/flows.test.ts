@@ -359,8 +359,6 @@ describe('Flows', () => {
 
     // wait for notebook to save
     cy.wait('@notebooksSave')
-      .its('response.statusCode')
-      .should('eq', 200)
 
     // exit the flow, reload, and come back in
     cy.getByTestID('nav-item-flows').click()

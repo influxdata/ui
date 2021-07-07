@@ -11,6 +11,7 @@ export type NotificationButtonElement = (
 
 export interface Notification {
   id?: string
+  styles?: object
   style: NotificationStyle
   icon: IconFont
   duration?: number

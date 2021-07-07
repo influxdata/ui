@@ -28,17 +28,14 @@ export const getDemoDataSuccessButton = (
   )
 }
 
-// TODO(ariel): get this to appear on the bottom of the notification
 export const getDeleteAccountWarningButton = (
   url: string,
   onDismiss: NotificationDismiss
 ): JSX.Element => {
   return (
-    <div>
-      <Link to={url} onClick={onDismiss}>
-        Go to Users page
-      </Link>
-    </div>
+    <Link to={url} onClick={onDismiss}>
+      Go to Users page
+    </Link>
   )
 }
 

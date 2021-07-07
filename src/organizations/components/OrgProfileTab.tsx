@@ -51,7 +51,7 @@ const OrgProfileTab: FC = () => {
 
   const handleShowWarning = () => {
     const buttonElement: NotificationButtonElement = onDismiss =>
-      getDeleteAccountWarningButton(`/users`, onDismiss)
+      getDeleteAccountWarningButton(`/orgs/${org.id}/users`, onDismiss)
     dispatch(notify(deleteAccountWarning(buttonElement)))
   }
 

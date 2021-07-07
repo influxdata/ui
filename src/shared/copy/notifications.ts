@@ -1403,4 +1403,7 @@ export const deleteAccountWarning = (buttonElement): Notification => ({
   ...defaultWarningNotification,
   message: `All additional users must be removed from the Organization before the account can be deleted.\n`,
   buttonElement,
+  styles: {
+    flexWrap: 'wrap',
+  },
 })

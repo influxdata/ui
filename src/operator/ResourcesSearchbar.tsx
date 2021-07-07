@@ -10,7 +10,7 @@ import {OperatorRoutes} from 'src/operator/constants'
 const ResourcesSearchbar: FC = () => {
   const {pathname, searchTerm, setSearchTerm} = useContext(OperatorContext)
 
-  const debounceFunc = debounce(setSearchTerm, 350)
+  const debounceFunc = debounce(setSearchTerm, 50)
 
   const changeSearchTerm = (event: ChangeEvent<HTMLInputElement>) => {
     debounceFunc(event.target.value)
@@ -29,7 +29,7 @@ const ResourcesSearchbar: FC = () => {
       inputStyle={{width: '500px'}}
       value={searchTerm}
       onChange={changeSearchTerm}
-      testID="searchbar"
+      testID="operator-resource--searchbar"
     />
   )
 }

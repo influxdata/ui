@@ -12,12 +12,12 @@ const AccountField: FC<Props> = ({header, body, testID}) => {
       <TextBlock
         className="account-grid-text heading"
         text={header}
-        testID={`${testID}-header`}
+        testID={`${testID}--header`}
       />
       <TextBlock
         className="account-grid-text body"
         text={body}
-        testID={`${testID}-body`}
+        testID={`${testID}--body`}
       />
     </>
   )

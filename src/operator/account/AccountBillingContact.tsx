@@ -31,14 +31,14 @@ const AccountBillingContact: FC = () => {
   }
 
   return (
-    <div>
+    <>
       <TextBlock
         className="account-grid-text heading"
         text="Billing Contact"
-        testID="billing-contact-header"
+        testID="billing-contact--header"
       />
       {createBillingContact()}
-    </div>
+    </>
   )
 }
 

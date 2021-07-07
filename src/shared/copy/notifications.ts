@@ -685,6 +685,19 @@ export const rateLimitReached = (secs?: number): Notification => {
   }
 }
 
+export const writeLimitReached = (
+  message: string,
+  Button: any,
+  duration?: number
+) => ({
+  ...defaultErrorNotification,
+  message,
+  duration: duration ?? TEN_SECONDS,
+  type: 'writeLimitReached',
+  style: NotificationStyle.Secondary,
+  buttonElement: () => Button,
+})
+
 export const resourceLimitReached = (resourceName: string): Notification => ({
   ...defaultErrorNotification,
   message: `Oops. It looks like you have reached the maximum number of ${resourceName} allowed as part of your plan. If you would like to upgrade and remove this restriction, reach out to support@influxdata.com.`,
@@ -1151,12 +1164,10 @@ export const communityTemplateInstallSucceeded = (
   message: `We've successfully installed: ${templateName}`,
 })
 
-export const communityTemplateInstallFailed = (
-  errorMessage: string = ''
-): Notification => ({
+export const communityTemplateInstallFailed = (): Notification => ({
   ...defaultErrorNotification,
   duration: INDEFINITE,
-  message: `There was a problem installing the template: ${errorMessage}`,
+  message: 'There was a problem installing the template. Please try again.',
 })
 
 export const communityTemplateDeleteSucceeded = (
@@ -1166,18 +1177,15 @@ export const communityTemplateDeleteSucceeded = (
   message: `We've successfully deleted: ${templateName}`,
 })
 
-export const communityTemplateDeleteFailed = (
-  message: string
-): Notification => ({
+export const communityTemplateDeleteFailed = (): Notification => ({
   ...defaultErrorNotification,
-  message: `Delete failed, please check error message: ${message}`,
+  message: 'We were unable to delete the template. Please try again.',
 })
 
-export const communityTemplateFetchStackFailed = (
-  message: string
-): Notification => ({
+export const communityTemplateFetchStackFailed = (): Notification => ({
   ...defaultErrorNotification,
-  message: `We could not fetch your installed resources, please reload the page: ${message}`,
+  message:
+    'We could not fetch your installed resources. Please reload the page to try again.',
 })
 
 export const communityTemplateUnsupportedFormatError = (): Notification => ({

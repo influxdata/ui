@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC} from 'react'
-import moment from 'moment'
 
 // Components
 import {IndexList} from '@influxdata/clockface'
@@ -8,27 +7,22 @@ import {IndexList} from '@influxdata/clockface'
 // Types
 import {FunctionRunLog} from 'src/client/managedFunctionsRoutes'
 import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {FormattedDateTime} from 'src/utils/datetime/FormattedDateTime'
 
 const FunctionRunLogRow: FC<FunctionRunLog> = ({
   message,
   timestamp,
   severity,
 }) => {
-  const dateTimeIfy = (dt: string): string => {
-    if (!dt) {
-      return ''
-    }
-
-    const newdate = new Date(dt)
-    const formatted = moment(newdate).format(DEFAULT_TIME_FORMAT)
-
-    return formatted
-  }
-
   return (
     <IndexList.Row>
       <IndexList.Cell>
-        <span className="run-logs--list-time">{dateTimeIfy(timestamp)}</span>
+        <span className="run-logs--list-time">
+          <FormattedDateTime
+            format={DEFAULT_TIME_FORMAT}
+            date={new Date(timestamp)}
+          />
+        </span>
       </IndexList.Cell>
       <IndexList.Cell>
         <span className="run-logs--list-time">{severity}</span>

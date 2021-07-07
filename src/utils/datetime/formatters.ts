@@ -33,16 +33,18 @@ const relativeDivisions: Division[] = [
   {scale: 'seconds', ms: 1000},
 ]
 
-export const createRelativeFormatter = () => {
+export const createRelativeFormatter = (
+  numeric: Intl.RelativeTimeFormatNumeric = 'always'
+) => {
   const formatter = new Intl.RelativeTimeFormat(undefined, {
-    numeric: 'auto',
+    numeric,
   })
 
   const formatDateRelative = date => {
     let millisecondsAgo = date.getTime() - Date.now()
 
     for (const {scale, ms} of relativeDivisions) {
-      if (Math.abs(millisecondsAgo) > ms || scale === 'seconds') {
+      if (Math.abs(millisecondsAgo) >= ms || scale === 'seconds') {
         return formatter.format(Math.round(millisecondsAgo / ms), scale)
       }
     }

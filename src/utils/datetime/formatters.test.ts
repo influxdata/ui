@@ -1,5 +1,9 @@
-import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
+import {
+  createDateTimeFormatter,
+  createRelativeFormatter,
+} from 'src/utils/datetime/formatters'
 
+// July 4th, 1983, 20:00:00 UTC
 const timestamp = 426196800000
 
 /*
@@ -352,5 +356,71 @@ describe('the DateTime formatter', () => {
       const formatter = createDateTimeFormatter('hh:mm:ss.sss a')
       expect(formatter.format(date)).toBe(`${hour}:00:00.000 PM`)
     })
+  })
+})
+
+describe('the relative DateTime formatter', () => {
+  it('compares a date to now', () => {
+    const mockTimestamp = new Date(timestamp + 35 * 1000).getTime() // timestamp + 35 seconds
+    const dateSpy = jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
+
+    const formatter = createRelativeFormatter()
+
+    const date = new Date(timestamp)
+    expect(formatter.formatRelative(date)).toBe('35 seconds ago')
+  })
+
+  it('handles minutes', () => {
+    const mockTimestamp = new Date(timestamp + 60 * 17 * 1000).getTime() // timestamp + 17 minutes
+
+    const dateSpy = jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
+
+    const formatter = createRelativeFormatter()
+
+    const date = new Date(timestamp)
+    expect(formatter.formatRelative(date)).toBe('17 minutes ago')
+  })
+
+  it('handles hours', () => {
+    const mockTimestamp = new Date(timestamp + 60 * 60 * 2 * 1000).getTime() // timestamp + 2 hours
+    const dateSpy = jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
+
+    const formatter = createRelativeFormatter()
+
+    const date = new Date(timestamp)
+    expect(formatter.formatRelative(date)).toBe('2 hours ago')
+  })
+
+  it('handles days', () => {
+    const mockTimestamp = new Date(
+      timestamp + 60 * 60 * 24 * 5 * 1000
+    ).getTime() // timestamp + 5 days
+    const dateSpy = jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
+
+    const formatter = createRelativeFormatter()
+
+    const date = new Date(timestamp)
+    expect(formatter.formatRelative(date)).toBe('5 days ago')
+  })
+
+  it('handles years', () => {
+    const mockTimestamp = new Date(805159563000).getTime() // July 1995
+    const dateSpy = jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
+
+    const formatter = createRelativeFormatter()
+
+    const date = new Date(timestamp)
+    expect(formatter.formatRelative(date)).toBe('12 years ago')
+  })
+
+  it("handles times that aren't prefectly rounded off to the minute and second", () => {
+    const mockTimestamp = new Date(432505644000).getTime() // September 15, 1983 8:27:24
+
+    const dateSpy = jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
+
+    const formatter = createRelativeFormatter()
+
+    const date = new Date(timestamp)
+    expect(formatter.formatRelative(date)).toBe('2 months ago')
   })
 })

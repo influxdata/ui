@@ -19,7 +19,11 @@ export default register => {
         pipe.updatedTableKeys as {[_: string]: TableColumnKey}
       ).reduce((a, [k, v]) => {
         if (!v.visible) {
-          a.push(`"${v.name}"`)
+          if (v.name !== k) {
+            a.push(`"${v.name}"`)
+          } else {
+            a.push(`"${k}"`)
+          }
           return a
         } else {
           return a
@@ -46,7 +50,7 @@ export default register => {
 
       if (toggleHide.length) {
         create(`__PREVIOUS_RESULT__
-               |> drop(columns: [${rename.join(', ')}])`)
+               |> drop(columns: [${toggleHide.join(', ')}])`)
       }
     },
   })

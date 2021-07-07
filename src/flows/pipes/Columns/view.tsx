@@ -39,16 +39,16 @@ const View: FC<PipeProp> = ({Context}) => {
   }, [results?.parsed?.table])
 
   useEffect(() => {
-    const updatedKeys = Object.entries(tableColumnKeys).reduce((a, [k, v]) => {
-      if (v.name === k) {
-        return a
-      } else {
-        return {...a, [k]: {...v}}
-      }
-    }, {})
+    // const updatedKeys = Object.entries(tableColumnKeys).reduce((a, [k, v]) => {
+    //   if (v.name === k) {
+    //     return a
+    //   } else {
+    //     return {...a, [k]: {...v}}
+    //   }
+    // }, {})
 
     update({
-      updatedTableKeys: updatedKeys,
+      updatedTableKeys: tableColumnKeys,
     })
   }, [tableColumnKeys])
 
@@ -65,18 +65,15 @@ const View: FC<PipeProp> = ({Context}) => {
     }))
   }
 
-  const handleUpdateVisible = (
-    columnName: string,
-    newVisibleStatus: boolean
-  ) => {
-    if (tableColumnKeys[columnName].visible === newVisibleStatus) {
+  const handleUpdateVisible = (oldName: string, newVisibleStatus: boolean) => {
+    if (tableColumnKeys[oldName].visible === newVisibleStatus) {
       return
     }
 
     setTableColumnKeys(prev => ({
       ...prev,
-      [columnName]: {
-        ...tableColumnKeys[columnName],
+      [oldName]: {
+        ...tableColumnKeys[oldName],
         visible: newVisibleStatus,
       },
     }))
@@ -103,7 +100,7 @@ const View: FC<PipeProp> = ({Context}) => {
               />
               <ResourceCard.Meta>
                 {[
-                  <React.Fragment key={k}>
+                  <React.Fragment key={v.name + Math.random()}>
                     <FlexBox
                       direction={FlexDirection.Row}
                       alignItems={AlignItems.Center}
@@ -111,7 +108,7 @@ const View: FC<PipeProp> = ({Context}) => {
                       stretchToFitWidth={true}
                     >
                       <SlideToggle
-                        onChange={() => handleUpdateVisible(v.name, !v.visible)}
+                        onChange={() => handleUpdateVisible(k, !v.visible)}
                         active={v.visible}
                       />
                       <InputLabel active={v.visible}>Visible</InputLabel>

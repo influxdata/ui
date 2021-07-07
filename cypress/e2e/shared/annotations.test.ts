@@ -5,7 +5,7 @@ import {
   START_TIME_IN_FUTURE_MESSAGE,
   TIMES_ARE_SAME_MESSAGE,
   WRONG_ORDER_MESSAGE,
-} from '../../../src/annotations/components/annotationForm/AnnotationForm'
+} from '../../../src/shared/constants/annotationErrors'
 import * as moment from 'moment'
 
 describe('The Annotations UI functionality', () => {

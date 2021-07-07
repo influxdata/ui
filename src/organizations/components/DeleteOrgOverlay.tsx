@@ -43,7 +43,6 @@ const DelteOrgOverlay: FC = () => {
         throw new Error(resp.data.message)
       }
 
-      // TODO(arieL): redirect to offboarding page
       window.location.href = `https://www.influxdata.com/free_cancel/`
     } catch {
       dispatch(notify(accountSelfDeletionFailed()))

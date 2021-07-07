@@ -10,7 +10,7 @@ describe('Home Page Tests', () => {
         cy.setFeatureFlags({
           alertsActivity: true,
           notebooks: true,
-        })
+        }).then(() => cy.getByTestID('nav-item-flows').should('be.visible'))
       })
     })
   })

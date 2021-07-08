@@ -41,7 +41,7 @@ export const createRelativeFormatter = (
   })
 
   const formatDateRelative = date => {
-    let millisecondsAgo = date.getTime() - Date.now()
+    const millisecondsAgo = date.getTime() - Date.now()
 
     for (const {scale, ms} of relativeDivisions) {
       if (Math.abs(millisecondsAgo) >= ms || scale === 'seconds') {

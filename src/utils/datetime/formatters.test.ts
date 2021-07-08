@@ -363,7 +363,7 @@ describe('the relative DateTime formatter', () => {
   describe('comparing past dates', () => {
     it('compares a date to now', () => {
       const mockTimestamp = new Date(timestamp + 35 * 1000).getTime() // timestamp + 35 seconds
-      const dateSpy = jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
+      jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
 
       const formatter = createRelativeFormatter()
 
@@ -374,7 +374,7 @@ describe('the relative DateTime formatter', () => {
     it('handles minutes', () => {
       const mockTimestamp = new Date(timestamp + 60 * 17 * 1000).getTime() // timestamp + 17 minutes
 
-      const dateSpy = jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
+      jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
 
       const formatter = createRelativeFormatter()
 
@@ -384,7 +384,7 @@ describe('the relative DateTime formatter', () => {
 
     it('handles hours', () => {
       const mockTimestamp = new Date(timestamp + 60 * 60 * 2 * 1000).getTime() // timestamp + 2 hours
-      const dateSpy = jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
+      jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
 
       const formatter = createRelativeFormatter()
 
@@ -396,7 +396,7 @@ describe('the relative DateTime formatter', () => {
       const mockTimestamp = new Date(
         timestamp + 60 * 60 * 24 * 5 * 1000
       ).getTime() // timestamp + 5 days
-      const dateSpy = jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
+      jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
 
       const formatter = createRelativeFormatter()
 
@@ -406,7 +406,7 @@ describe('the relative DateTime formatter', () => {
 
     it('says 24 hours is 1 day', () => {
       const mockTimestamp = new Date(timestamp + 60 * 60 * 24 * 1000).getTime() // timestamp + 1 day
-      const dateSpy = jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
+      jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
 
       const formatter = createRelativeFormatter()
 
@@ -418,7 +418,7 @@ describe('the relative DateTime formatter', () => {
       const mockTimestamp = new Date(
         timestamp + 60 * 60 * 24 * 30 * 1000
       ).getTime() // timestamp + 31 days
-      const dateSpy = jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
+      jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
 
       const formatter = createRelativeFormatter()
 
@@ -430,7 +430,7 @@ describe('the relative DateTime formatter', () => {
       const mockTimestamp = new Date(
         timestamp + 60 * 60 * 24 * 45 * 1000
       ).getTime() // timestamp + 45 days
-      const dateSpy = jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
+      jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
 
       const formatter = createRelativeFormatter()
 
@@ -442,7 +442,7 @@ describe('the relative DateTime formatter', () => {
       const mockTimestamp = new Date(
         timestamp + 60 * 60 * 24 * 31 * 1000
       ).getTime() // timestamp + 31 days
-      const dateSpy = jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
+      jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
 
       const formatter = createRelativeFormatter()
 
@@ -452,7 +452,7 @@ describe('the relative DateTime formatter', () => {
 
     it('handles years', () => {
       const mockTimestamp = new Date(805159563000).getTime() // July 1995
-      const dateSpy = jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
+      jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
 
       const formatter = createRelativeFormatter()
 
@@ -464,7 +464,7 @@ describe('the relative DateTime formatter', () => {
       const mockTimestamp = new Date(
         timestamp + 60 * 60 * 24 * 365 * 1000
       ).getTime() // timestamp + 365 days
-      const dateSpy = jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
+      jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
 
       const formatter = createRelativeFormatter()
 
@@ -475,7 +475,7 @@ describe('the relative DateTime formatter', () => {
     it("handles times that aren't prefectly rounded off to the minute and second", () => {
       const mockTimestamp = new Date(432505644000).getTime() // September 15, 1983 8:27:24
 
-      const dateSpy = jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
+      jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
 
       const formatter = createRelativeFormatter()
 
@@ -488,9 +488,7 @@ describe('the relative DateTime formatter', () => {
         const mockTimestamp = new Date(
           timestamp + 60 * 60 * 24 * 1000
         ).getTime() // timestamp + 1 day
-        const dateSpy = jest
-          .spyOn(Date, 'now')
-          .mockReturnValueOnce(mockTimestamp)
+        jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
 
         const formatter = createRelativeFormatter('auto')
 
@@ -502,9 +500,7 @@ describe('the relative DateTime formatter', () => {
         const mockTimestamp = new Date(
           timestamp + 60 * 60 * 24 * 35 * 1000
         ).getTime() // timestamp + 35 days
-        const dateSpy = jest
-          .spyOn(Date, 'now')
-          .mockReturnValueOnce(mockTimestamp)
+        jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
 
         const formatter = createRelativeFormatter('auto')
 
@@ -516,9 +512,7 @@ describe('the relative DateTime formatter', () => {
         const mockTimestamp = new Date(
           timestamp + 60 * 60 * 24 * 367 * 1000
         ).getTime() // timestamp + 357 days
-        const dateSpy = jest
-          .spyOn(Date, 'now')
-          .mockReturnValueOnce(mockTimestamp)
+        jest.spyOn(Date, 'now').mockReturnValueOnce(mockTimestamp)
 
         const formatter = createRelativeFormatter('auto')
 

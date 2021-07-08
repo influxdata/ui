@@ -12,6 +12,7 @@ import {
 import {useHistory} from 'react-router-dom'
 import Notifications from 'src/shared/components/notifications/Notifications'
 import {client} from 'src/utils/api'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Components
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
@@ -35,7 +36,7 @@ export const LoginPage: FC = () => {
 
   const history = useHistory()
 
-  if (hasValidSession) {
+  if (hasValidSession && isFlagEnabled('loginRedirectBack')) {
     history.goBack()
     return null
   }

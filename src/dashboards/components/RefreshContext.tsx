@@ -44,15 +44,15 @@ const jumpAheadTime = () => {
 function add(input: Date, value: number, unit: string): Date {
   const result = new Date(input)
   switch (unit) {
-    case "m" : {
+    case 'm': {
       result.setMinutes(input.getMinutes() + value)
       return result
     }
-    case "h" : {
+    case 'h': {
       result.setHours(input.getHours() + value)
       return result
     }
-    case "d" : {
+    case 'd': {
       result.setDate(input.getDate() + value)
       return result
     }

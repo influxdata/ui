@@ -33,7 +33,10 @@ export interface AutoRefreshState {
   infiniteDuration: boolean
 }
 
-function add(input: Date, value: number, unit: string): Date {
+// takes in Date object and adds a duration to it.
+// To add 1 hour, value = 1, unit = 'h'
+// similarly, to add a minute. value = 1, unit = 'm'
+function incrementDate(input: Date, value: number, unit: string): Date {
   const result = new Date(input)
   switch (unit) {
     case 'm': {
@@ -55,7 +58,7 @@ function add(input: Date, value: number, unit: string): Date {
 }
 
 const jumpAheadTime = () => {
-  const newTime = add(new Date(), DEFAULT_TIME_AHEAD, 'h')
+  const newTime = incrementDate(new Date(), DEFAULT_TIME_AHEAD, 'h')
 
   const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss')
   return formatter.format(newTime)
@@ -65,7 +68,7 @@ const calculateTimeout = (timeout: string, timeoutUnit: string) => {
   const timeoutNumber = parseInt(timeout, 10)
   const startTime = new Date()
   const copyStart = startTime.getTime()
-  const endTime = add(startTime, timeoutNumber, timeoutUnit[0].toLowerCase())
+  const endTime = incrementDate(startTime, timeoutNumber, timeoutUnit[0].toLowerCase())
   const cutoff = endTime.getTime() - copyStart
 
   return cutoff

@@ -31,7 +31,9 @@ export const LoginPage: FC = () => {
   }, [])
 
   useEffect(() => {
-    getSessionValidity()
+    if (isFlagEnabled('loginRedirectBack')) {
+      getSessionValidity()
+    }
   }, [getSessionValidity])
 
   const history = useHistory()

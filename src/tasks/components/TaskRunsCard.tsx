@@ -15,7 +15,6 @@ import {
   JustifyContent,
 } from '@influxdata/clockface'
 
-
 // Actions For Tasks
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
 

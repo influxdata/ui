@@ -61,7 +61,7 @@ describe('navigation', () => {
     // User Nav -- About
     cy.getByTestID('user-nav').click()
     cy.getByTestID('user-nav-item-about').click()
-    cy.getByTestID('member-page--header').should('exist')
+    cy.getByTestID('about-page--header').should('exist')
     cy.url().should('contain', 'about')
 
     /** \

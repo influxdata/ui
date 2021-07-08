@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useCallback, useEffect, useState} from 'react'
 import {
   AppWrapper,
   FontWeight,
@@ -9,30 +9,56 @@ import {
   InfluxDBCloudLogo,
   Typeface,
 } from '@influxdata/clockface'
+import {useHistory} from 'react-router-dom'
 import Notifications from 'src/shared/components/notifications/Notifications'
+import {client} from 'src/utils/api'
 
 // Components
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import LoginPageContents from 'src/onboarding/containers/LoginPageContents'
 
-export const LoginPage: FC = () => (
-  <ErrorBoundary>
-    <AppWrapper>
-      <Notifications />
-      <FunnelPage
-        enableGraphic={true}
-        logo={<InfluxDBCloudLogo cloud={true} className="login-page--logo" />}
-      >
-        <Heading
-          element={HeadingElement.H1}
-          type={Typeface.Rubik}
-          weight={FontWeight.Regular}
-          className="cf-funnel-page--title"
+export const LoginPage: FC = () => {
+  const [hasValidSession, setHasValidSession] = useState(false)
+
+  const getSessionValidity = useCallback(async () => {
+    try {
+      await client.users.me()
+      setHasValidSession(true)
+    } catch {
+      setHasValidSession(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    getSessionValidity()
+  }, [getSessionValidity])
+
+  const history = useHistory()
+
+  if (hasValidSession) {
+    history.goBack()
+    return null
+  }
+
+  return (
+    <ErrorBoundary>
+      <AppWrapper>
+        <Notifications />
+        <FunnelPage
+          enableGraphic={true}
+          logo={<InfluxDBCloudLogo cloud={true} className="login-page--logo" />}
         >
-          Log in to your InfluxDB Account
-        </Heading>
-        <LoginPageContents />
-      </FunnelPage>
-    </AppWrapper>
-  </ErrorBoundary>
-)
+          <Heading
+            element={HeadingElement.H1}
+            type={Typeface.Rubik}
+            weight={FontWeight.Regular}
+            className="cf-funnel-page--title"
+          >
+            Log in to your InfluxDB Account
+          </Heading>
+          <LoginPageContents />
+        </FunnelPage>
+      </AppWrapper>
+    </ErrorBoundary>
+  )
+}

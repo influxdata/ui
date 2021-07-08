@@ -18,6 +18,8 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import LoginPageContents from 'src/onboarding/containers/LoginPageContents'
 
+const EMPTY_HISTORY_STACK_LENGTH = 2
+
 export const LoginPage: FC = () => {
   const [hasValidSession, setHasValidSession] = useState(false)
 
@@ -39,7 +41,12 @@ export const LoginPage: FC = () => {
   const history = useHistory()
 
   if (hasValidSession && isFlagEnabled('loginRedirectBack')) {
-    history.goBack()
+    if (history.length <= EMPTY_HISTORY_STACK_LENGTH) {
+      // If the user directly navigates to the login page after having a session but no stack
+      history.push('/')
+    } else {
+      history.goBack()
+    }
     return null
   }
 

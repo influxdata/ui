@@ -13,12 +13,13 @@ import {
 interface Props {
   text: string
   size?: ComponentSize
+  testID?: string
   onCopy?: () => void
 }
 
 class CopyButton extends PureComponent<Props> {
   public render() {
-    const {text, size} = this.props
+    const {text, testID, size} = this.props
     return (
       <CopyToClipboard text={text} onCopy={this.handleCopyAttempt}>
         <Button
@@ -28,7 +29,7 @@ class CopyButton extends PureComponent<Props> {
           titleText="Copy to Clipboard"
           text="Copy to Clipboard"
           onClick={this.handleClickCopy}
-          testID="button-copy"
+          testID={testID ?? 'button-copy'}
         />
       </CopyToClipboard>
     )

@@ -30,6 +30,7 @@ export interface EditorProps {
   onSubmitScript?: () => void
   autogrow?: boolean
   readOnly?: boolean
+  wrapLines?: 'off' | 'on' | 'bounded'
 }
 
 interface Props extends EditorProps {
@@ -43,6 +44,7 @@ const FluxEditorMonaco: FC<Props> = ({
   setEditorInstance,
   autogrow,
   readOnly,
+  wrapLines,
 }) => {
   const lspServer = useRef<LSPServer>(null)
   const [editorInst, seteditorInst] = useState<EditorType | null>(null)
@@ -133,6 +135,7 @@ const FluxEditorMonaco: FC<Props> = ({
           overviewRulerBorder: false,
           automaticLayout: true,
           readOnly: readOnly || false,
+          wordWrap: wrapLines ?? 'off',
         }}
         editorDidMount={editorDidMount}
       />

@@ -19,6 +19,42 @@ const timeOptions: any = {
   second: 'numeric',
 }
 
+interface Division {
+  ms: number
+  scale: Intl.RelativeTimeFormatUnit
+}
+
+const relativeDivisions: Division[] = [
+  {scale: 'years', ms: 31536000000},
+  {scale: 'months', ms: 2628000000},
+  {scale: 'days', ms: 86400000},
+  {scale: 'hours', ms: 3600000},
+  {scale: 'minutes', ms: 60000},
+  {scale: 'seconds', ms: 1000},
+]
+
+export const createRelativeFormatter = (
+  numeric: Intl.RelativeTimeFormatNumeric = 'always'
+) => {
+  const formatter = new Intl.RelativeTimeFormat('en-us', {
+    numeric,
+  })
+
+  const formatDateRelative = date => {
+    const millisecondsAgo = date.getTime() - Date.now()
+
+    for (const {scale, ms} of relativeDivisions) {
+      if (Math.abs(millisecondsAgo) >= ms || scale === 'seconds') {
+        return formatter.format(Math.round(millisecondsAgo / ms), scale)
+      }
+    }
+  }
+
+  return {
+    formatRelative: formatDateRelative,
+  }
+}
+
 export const createDateTimeFormatter = (
   format: string,
   timeZone: TimeZone = 'Local'

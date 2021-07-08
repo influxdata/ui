@@ -33,14 +33,6 @@ export interface AutoRefreshState {
   infiniteDuration: boolean
 }
 
-const jumpAheadTime = () => {
-  const newTime = new Date()
-  newTime.setMinutes(newTime.getMinutes() + DEFAULT_TIME_AHEAD)
-
-  const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss')
-  return formatter.format(newTime)
-}
-
 function add(input: Date, value: number, unit: string): Date {
   const result = new Date(input)
   switch (unit) {
@@ -60,6 +52,13 @@ function add(input: Date, value: number, unit: string): Date {
       return new Date()
     }
   }
+}
+
+const jumpAheadTime = () => {
+  const newTime = add(new Date(), DEFAULT_TIME_AHEAD, 'h')
+
+  const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss')
+  return formatter.format(newTime)
 }
 
 const calculateTimeout = (timeout: string, timeoutUnit: string) => {

@@ -17,6 +17,7 @@ describe('Home Page Tests', () => {
   })
 
   it.only('should redirect the user back home when trying to access the /login route directly with a valid session', () => {
+    cy.visit('/login')
     cy.location().should(loc => {
       expect(loc.pathname).to.not.eq('/login')
     })

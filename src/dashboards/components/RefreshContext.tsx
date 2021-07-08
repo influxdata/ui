@@ -14,9 +14,13 @@ import {
 } from 'src/shared/actions/autoRefresh'
 import {getCurrentDashboardId} from 'src/dashboards/selectors'
 
+// Utils
+import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
+
 export const AutoRefreshContext = createContext(null)
 
-const DEFAULT_TIME_AHEAD = '01:00'
+// default time increment is 1 hour
+const DEFAULT_TIME_AHEAD = 1
 
 export interface AutoRefreshState {
   duration: CustomTimeRange
@@ -31,9 +35,11 @@ export interface AutoRefreshState {
 }
 
 const jumpAheadTime = () => {
-  return moment()
-    .add(moment.duration(DEFAULT_TIME_AHEAD))
-    .format('YYYY-MM-DD HH:mm:ss')
+  const newTime = new Date()
+  newTime.setMinutes(newTime.getMinutes() + DEFAULT_TIME_AHEAD)
+
+  const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss')
+  return formatter.format(newTime)
 }
 
 const calculateTimeout = (timeout: string, timeoutUnit: string) => {

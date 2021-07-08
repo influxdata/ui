@@ -68,7 +68,11 @@ const calculateTimeout = (timeout: string, timeoutUnit: string) => {
   const timeoutNumber = parseInt(timeout, 10)
   const startTime = new Date()
   const copyStart = startTime.getTime()
-  const endTime = incrementDate(startTime, timeoutNumber, timeoutUnit[0].toLowerCase())
+  const endTime = incrementDate(
+    startTime,
+    timeoutNumber,
+    timeoutUnit[0].toLowerCase()
+  )
   const cutoff = endTime.getTime() - copyStart
 
   return cutoff

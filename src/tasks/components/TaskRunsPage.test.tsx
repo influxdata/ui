@@ -14,6 +14,10 @@ import {mockAppState} from 'src/mockAppState'
 import {RemoteDataState} from 'src/types'
 import {mocked} from 'ts-jest/utils'
 
+// DateTime
+import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
+
 const runIDs = [
   '07a7f99e81cf2000',
   '07a7f99e81cf3000',
@@ -239,27 +243,21 @@ const setup = () => {
   return renderWithReduxAndRouter(<TaskRunsPage {...props} />, () => testState)
 }
 
-const verifyRecStatus = (rec: HTMLElement, run: Run) => {
-  const cells = rec.querySelectorAll('[data-testid=table-cell]')
+const verifyRowMetaData = (row: HTMLElement, run: Run) => {
+  const cells = row.querySelectorAll('[data-testid=table-cell]')
   expect(cells[0].textContent.trim()).toEqual(run.status)
-  let testString = run.scheduledFor.replace('T', ' ').replace('Z', '')
+  const formattedDate = createDateTimeFormatter(DEFAULT_TIME_FORMAT).format(
+    new Date(run.scheduledFor)
+  )
 
-  // ignore adjustment for local time zone but check the rest
-  testString =
-    '^' + testString.substring(0, 11) + '\\d\\d' + testString.substring(13)
-
-  expect(cells[1].textContent.trim()).toMatch(new RegExp(testString))
+  expect(cells[1].textContent.trim()).toMatch(formattedDate)
 
   if (run.startedAt) {
-    testString = run.startedAt.replace('T', ' ').replace('Z', '')
-    // ignore adjustment for local time zone but check the rest
-    testString = (
-      '^' +
-      testString.substring(0, 11) +
-      '\\d\\d' +
-      testString.substring(13)
-    ).split('.')[0]
-    expect(cells[2].textContent.trim()).toMatch(new RegExp(testString))
+    const formattedDate = createDateTimeFormatter(DEFAULT_TIME_FORMAT).format(
+      new Date(run.startedAt)
+    )
+
+    expect(cells[2].textContent.trim()).toMatch(formattedDate)
   }
 }
 
@@ -283,7 +281,7 @@ describe('Tasks.Components.TaskRunsPage', () => {
 
     // default sort is reverse of dummyTaskRuns declaration above
     for (let i = 0; i < rows.length; i++) {
-      verifyRecStatus(rows[i], dummyTaskRuns[rows.length - (i + 1)])
+      verifyRowMetaData(rows[i], dummyTaskRuns[rows.length - (i + 1)])
     }
 
     const cells = rows[4].querySelectorAll('[data-testid=table-cell]')

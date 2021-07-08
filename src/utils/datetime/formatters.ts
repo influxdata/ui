@@ -40,7 +40,7 @@ export const createRelativeFormatter = (
     numeric,
   })
 
-  const formatDateRelative = date => {
+  const formatDateRelative = (date: Date) => {
     const millisecondsAgo = date.getTime() - Date.now()
 
     for (const {scale, ms} of relativeDivisions) {

@@ -76,7 +76,13 @@ class UnconnectedTaskRunsCard extends PureComponent<
           <ResourceCard.Name name={task.name} testID="task-card--name" />
           <ResourceCard.Meta>
             {this.activeToggle}
-            <>Created at: <FormattedDateTime format={DEFAULT_TIME_FORMAT} date={new Date(task.createdAt)}/></>
+            <>
+              Created at:{' '}
+              <FormattedDateTime
+                format={DEFAULT_TIME_FORMAT}
+                date={new Date(task.createdAt)}
+              />
+            </>
             <>Created by: {this.ownerName}</>
             <>Last Used: {moment(task.latestCompleted).fromNow()}</>
             <>{task.org}</>

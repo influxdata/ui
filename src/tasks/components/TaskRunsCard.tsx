@@ -2,7 +2,6 @@
 import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
-import moment from 'moment'
 
 // Components
 import {
@@ -15,6 +14,8 @@ import {
   FlexDirection,
   JustifyContent,
 } from '@influxdata/clockface'
+
+import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
 
 // Actions
 import {
@@ -67,7 +68,7 @@ class UnconnectedTaskRunsCard extends PureComponent<
             {this.activeToggle}
             <>Created at: {task.createdAt}</>
             <>Created by: {task.name}</>
-            <>Last Used: {moment(task.latestCompleted).fromNow()}</>
+            <>Last Used: {relativeTimestampFormatter(task.latestCompleted)}</>
             <>{task.org}</>
           </ResourceCard.Meta>
         </FlexBox>

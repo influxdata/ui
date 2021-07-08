@@ -244,6 +244,7 @@ export const tasks: Task[] = [
     cron: '2 0 * * *',
     org: 'default',
     labels: [],
+    createdAt: '2021-06-08T00:25:17.501582756Z'
   },
   {
     id: '02f12c50dba72000',
@@ -255,6 +256,7 @@ export const tasks: Task[] = [
     every: '1m0s',
     org: 'default',
     labels: labelIDs,
+    createdAt: '2021-06-08T00:25:17.501582756Z'
   },
 ]
 

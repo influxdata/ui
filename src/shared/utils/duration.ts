@@ -136,16 +136,16 @@ export const convertTimeRangeToCustom = (
   let lower = ''
 
   if (timeRange.type === 'selectable-duration') {
-    lower = moment()
-      .subtract(timeRange.seconds, 's')
-      .toISOString()
+    const lowerDate = new Date()
+    lowerDate.setSeconds(new Date().getSeconds() - timeRange.seconds)
+    lower = lowerDate.toISOString()
   } else if (timeRange.type === 'duration') {
     const millisecondDuration = durationToMilliseconds(
       parseDuration(timeRangeToDuration(timeRange))
     )
-    lower = moment()
-      .subtract(millisecondDuration, 'milliseconds')
-      .toISOString()
+    const lowerDate = new Date()
+    lowerDate.setMilliseconds(new Date().getMilliseconds() - millisecondDuration)
+    lower = lowerDate.toISOString()
   }
 
   return {

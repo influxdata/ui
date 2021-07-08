@@ -33,9 +33,6 @@ import {
   Permission,
   PermissionResource,
 } from '@influxdata/influx'
-import {SortTypes} from 'src/shared/utils/sort'
-import {Sort} from '@influxdata/clockface'
-import {DashboardSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 
 export const links: Links = {
   authorizations: '/api/v2/authorizations',

@@ -10,6 +10,7 @@ interface Props {
   className?: string
   cloudRenderers?: Renderers
   text: string
+  escapeHtml?: boolean
 }
 
 // In cloud environments, we want to render the literal markdown image tag
@@ -50,6 +51,7 @@ export const MarkdownRenderer: FC<Props> = ({
   className = '',
   cloudRenderers = {},
   text,
+  escapeHtml = true,
 }) => {
   // don't parse images in cloud environments to prevent arbitrary script execution via images
   if (CLOUD) {
@@ -60,7 +62,7 @@ export const MarkdownRenderer: FC<Props> = ({
         className={className}
         renderers={{...renderers, ...cloudRenderers}}
         astPlugins={[parseHtml]}
-        escapeHtml={false}
+        escapeHtml={escapeHtml}
       />
     )
   }

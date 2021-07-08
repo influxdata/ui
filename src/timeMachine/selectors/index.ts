@@ -271,17 +271,21 @@ export const getStartTime = (timeRange: TimeRange) => {
   switch (timeRange.type) {
     case 'custom':
       return moment(timeRange.lower).valueOf()
-    case 'selectable-duration':
-      return moment()
-        .subtract(timeRange.seconds, 'seconds')
-        .valueOf()
-    case 'duration':
+    case 'selectable-duration': {
+      const startTime = new Date()
+      startTime.setSeconds(new Date().getSeconds() - timeRange.seconds)
+      return startTime.getTime()
+    }
+    case 'duration': {
       const millisecondDuration = durationToMilliseconds(
         parseDuration(timeRangeToDuration(timeRange))
       )
-      return moment()
-        .subtract(millisecondDuration, 'milliseconds')
-        .valueOf()
+      const startTime = new Date()
+      startTime.setMilliseconds(
+        new Date().getMilliseconds() - millisecondDuration
+      )
+      return startTime.getTime()
+    }
     default:
       throw new Error(
         'unknown timeRange type ${timeRange.type} provided to getStartTime'

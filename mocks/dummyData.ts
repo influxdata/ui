@@ -245,6 +245,7 @@ export const tasks: Task[] = [
     org: 'default',
     labels: [],
     createdAt: '2021-06-08T00:25:17.501582756Z'
+    latestCompleted: '2021-06-08T02:25:52.118899855Z',
   },
   {
     id: '02f12c50dba72000',
@@ -257,6 +258,7 @@ export const tasks: Task[] = [
     org: 'default',
     labels: labelIDs,
     createdAt: '2021-06-08T00:25:17.501582756Z'
+    latestCompleted: '2021-06-08T02:25:52.118899855Z',
   },
 ]
 

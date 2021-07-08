@@ -36,7 +36,7 @@ const relativeDivisions: Division[] = [
 export const createRelativeFormatter = (
   numeric: Intl.RelativeTimeFormatNumeric = 'always'
 ) => {
-  const formatter = new Intl.RelativeTimeFormat(undefined, {
+  const formatter = new Intl.RelativeTimeFormat('en-us', {
     numeric,
   })
 

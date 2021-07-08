@@ -1,6 +1,5 @@
 import React, {createContext, useReducer, useCallback, FC} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
-import moment from 'moment'
 
 // Types
 import {CustomTimeRange, AutoRefreshStatus} from 'src/types'
@@ -42,16 +41,35 @@ const jumpAheadTime = () => {
   return formatter.format(newTime)
 }
 
+function add(input: Date, value: number, unit: string): Date {
+  const result = new Date(input)
+  switch (unit) {
+    case "m" : {
+      result.setMinutes(input.getMinutes() + value)
+      return result
+    }
+    case "h" : {
+      result.setHours(input.getHours() + value)
+      return result
+    }
+    case "d" : {
+      result.setDate(input.getDate() + value)
+      return result
+    }
+    default: {
+      return new Date()
+    }
+  }
+}
+
 const calculateTimeout = (timeout: string, timeoutUnit: string) => {
   const timeoutNumber = parseInt(timeout, 10)
-  const startTime = moment(new Date())
-  const copyStart = startTime.unix()
-  const endTime = startTime.add(
-    timeoutNumber as any,
-    timeoutUnit[0].toLowerCase()
-  )
-  const cutoff = endTime.unix() - copyStart
-  return cutoff * 1000
+  const startTime = new Date()
+  const copyStart = startTime.getTime()
+  const endTime = add(startTime, timeoutNumber, timeoutUnit[0].toLowerCase())
+  const cutoff = endTime.getTime() - copyStart
+
+  return cutoff
 }
 
 export const createAutoRefreshInitialState = (

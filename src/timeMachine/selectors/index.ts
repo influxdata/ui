@@ -273,7 +273,7 @@ export const getStartTime = (timeRange: TimeRange) => {
       return moment(timeRange.lower).valueOf()
     case 'selectable-duration': {
       const startTime = new Date()
-      startTime.setSeconds(new Date().getSeconds() - timeRange.seconds)
+      startTime.setSeconds(startTime.getSeconds() - timeRange.seconds)
       return startTime.getTime()
     }
     case 'duration': {
@@ -282,7 +282,7 @@ export const getStartTime = (timeRange: TimeRange) => {
       )
       const startTime = new Date()
       startTime.setMilliseconds(
-        new Date().getMilliseconds() - millisecondDuration
+        startTime.getMilliseconds() - millisecondDuration
       )
       return startTime.getTime()
     }

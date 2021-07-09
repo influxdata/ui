@@ -3,6 +3,7 @@ import {
   addRangeAnnotation,
   checkAnnotationText,
   clearLocalStorage,
+  reloadAndHandleAnnotationDefaultStatus,
   setupData,
   startEditingAnnotation,
 } from '../util/annotationsSetup'
@@ -106,7 +107,7 @@ describe('Annotations, but in a different test suite', () => {
     })
     it('can add a range annotation, then edit it and change to a point annotation', () => {
       addRangeAnnotation(cy)
-      cy.reload()
+      reloadAndHandleAnnotationDefaultStatus()
       startEditingAnnotation(cy)
 
       // verify that it is range annotation (the range selector option is selected)
@@ -129,7 +130,7 @@ describe('Annotations, but in a different test suite', () => {
       cy.getByTestID('annotation-submit-button').click()
 
       // reload to make sure it gets to the backend
-      cy.reload()
+      reloadAndHandleAnnotationDefaultStatus()
       startEditingAnnotation(cy)
 
       // make sure it is (still) a point annotation:
@@ -185,7 +186,7 @@ describe('Annotations, but in a different test suite', () => {
                 cy.getByTestID('annotation-submit-button').click()
 
                 // reload to make sure the annotation was added in the backend as well.
-                cy.reload()
+                reloadAndHandleAnnotationDefaultStatus()
               })
           })
       }) // end overlay-container within
@@ -227,7 +228,7 @@ describe('Annotations, but in a different test suite', () => {
       addAnnotation(cy)
 
       // reload to make sure the annotation was added in the backend as well.
-      cy.reload()
+      reloadAndHandleAnnotationDefaultStatus()
 
       // verify the tooltip shows up
       checkAnnotationText(cy, 'im a hippopotamus')

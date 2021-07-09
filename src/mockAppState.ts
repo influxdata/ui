@@ -1,4 +1,4 @@
-import {RemoteDataState} from 'src/types'
+import {RemoteDataState, ResourceType} from 'src/types'
 
 export const getMockAppState = (query?: string, variables?: []) => {
   const newAppState = Object.assign({}, mockAppState)
@@ -133,6 +133,15 @@ export const mockAppState = {
         '05e6e4fb0887b000',
         '05aeb0ad75aca001',
       ],
+    },
+    [ResourceType.Buckets]: {
+      status: RemoteDataState.NotStarted,
+      byID: {
+        bucketid01: {
+          id: 'bucketid01',
+        },
+      },
+      allIDs: ['bucketid01'],
     },
   },
   timeMachines: {

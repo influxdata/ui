@@ -1,12 +1,12 @@
 // Libraries
 import React, {FC} from 'react'
-import moment from 'moment'
 
 // Constants
 import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
 
 // Types
 import {StatusRow, NotificationRow} from 'src/types'
+import {FormattedDateTime} from 'src/utils/datetime/FormattedDateTime'
 
 interface Props {
   row: StatusRow | NotificationRow
@@ -15,7 +15,7 @@ interface Props {
 const TimeTableField: FC<Props> = ({row: {time}}) => {
   return (
     <div className="time-table-field">
-      {moment.utc(time).format(DEFAULT_TIME_FORMAT)}
+      <FormattedDateTime format={DEFAULT_TIME_FORMAT} date={new Date(time)} />
     </div>
   )
 }

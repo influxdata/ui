@@ -1,21 +1,21 @@
 import React, {FC, useContext} from 'react'
-import {List, Button, DapperScrollbars} from '@influxdata/clockface'
+import {
+  Button,
+  DapperScrollbars,
+  DropdownMenu,
+  DropdownItem,
+} from '@influxdata/clockface'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {SidebarContext} from 'src/flows/context/sidebar'
 import {PIPE_DEFINITIONS} from 'src/flows'
 import {ControlSection, ControlAction, Submenu} from 'src/types/flows'
 import ClientList from 'src/flows/components/ClientList'
-
+import './Sidebar.scss'
 import {event} from 'src/cloud/utils/reporting'
-
-const Sidebar: FC = () => {
-  const {flow, add} = useContext(FlowContext)
-  const {getPanelQueries} = useContext(FlowQueryContext)
-  const {id, show, hide, menu, submenu, showSub, hideSub} = useContext(
-    SidebarContext
-  )
-
+export const SubSideBar: FC = () => {
+  const {flow} = useContext(FlowContext)
+  const {id, submenu, hideSub} = useContext(SidebarContext)
   if (!id || flow.readOnly) {
     return null
   }
@@ -33,15 +33,29 @@ const Sidebar: FC = () => {
           Back
         </Button>
         <div className="flow-sidebar--submenu">
-          <DapperScrollbars noScrollX={true}>{submenu}</DapperScrollbars>
+          <DapperScrollbars
+            noScrollX={true}
+            thumbStopColor="gray"
+            thumbStartColor="gray"
+          >
+            {submenu}
+          </DapperScrollbars>
         </div>
       </div>
     )
+  } else {
+    return null
   }
+}
+
+const Sidebar: FC = () => {
+  const {flow, add} = useContext(FlowContext)
+  const {getPanelQueries} = useContext(FlowQueryContext)
+  const {id, show, hide, menu, showSub} = useContext(SidebarContext)
 
   const sections = ([
     {
-      title: 'Panel',
+      title: '',
       actions: [
         {
           title: 'Delete',
@@ -153,7 +167,7 @@ const Sidebar: FC = () => {
 
           if (action.hasOwnProperty('menu')) {
             return (
-              <List.Item
+              <DropdownItem
                 onClick={() => {
                   const title =
                     typeof action.title === 'function'
@@ -169,12 +183,12 @@ const Sidebar: FC = () => {
                 testID={`${title}--list-item`}
               >
                 {title}
-              </List.Item>
+              </DropdownItem>
             )
           }
 
           return (
-            <List.Item
+            <DropdownItem
               onClick={() => {
                 const title =
                   typeof action.title === 'function'
@@ -191,24 +205,19 @@ const Sidebar: FC = () => {
               testID={`${title}--list-item`}
             >
               {title}
-            </List.Item>
+            </DropdownItem>
           )
         })
 
       const sectionTitle =
         typeof section.title === 'function' ? section.title() : section.title
-      return (
-        <div key={sectionTitle}>
-          <List.Divider text={`${sectionTitle}:`} />
-          {links}
-        </div>
-      )
+      return <div key={sectionTitle}>{links}</div>
     })
 
   return (
-    <div className="flow-sidebar">
-      <List>{sections}</List>
-    </div>
+    <DropdownMenu className="flows-sidebar--dropdownmenu">
+      {sections}
+    </DropdownMenu>
   )
 }
 

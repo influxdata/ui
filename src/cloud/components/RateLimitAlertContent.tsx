@@ -24,8 +24,19 @@ interface Props {
   className?: string
 }
 
-export const UpgradeContent = ({type, link, className}) => {
-  event(`user.limits.${type}`)
+interface UpgradeProps {
+  type: string
+  link: string
+  className?: string
+  limitText?: string
+}
+
+export const UpgradeContent: FC<UpgradeProps> = ({
+  type,
+  link,
+  className,
+  limitText,
+}) => {
   return (
     <div className={`${className} rate-alert--content__free`}>
       <span>
@@ -38,13 +49,17 @@ export const UpgradeContent = ({type, link, className}) => {
         >
           {type === 'series cardinality' ? 'series cardinality' : 'query write'}
         </a>{' '}
-        limit and your data stopped writing. Don’t lose important metrics.
+        limit {limitText ?? ''} and your data stopped writing. Don’t lose
+        important metrics.
       </span>
       <FlexBox
         justifyContent={JustifyContent.Center}
         className="rate-alert--button"
       >
-        <CloudUpgradeButton className="upgrade-payg--button__rate-alert" />
+        <CloudUpgradeButton
+          className="upgrade-payg--button__rate-alert"
+          metric={() => event(`user.limits.${type}.upgrade`)}
+        />
       </FlexBox>
     </div>
   )

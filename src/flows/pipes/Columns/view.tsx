@@ -6,7 +6,6 @@ import {
   ResourceCard,
   SlideToggle,
   FlexBox,
-  InputLabel,
   FlexDirection,
   AlignItems,
   ComponentSize,
@@ -39,14 +38,6 @@ const View: FC<PipeProp> = ({Context}) => {
   }, [results?.parsed?.table])
 
   useEffect(() => {
-    // const updatedKeys = Object.entries(tableColumnKeys).reduce((a, [k, v]) => {
-    //   if (v.name === k) {
-    //     return a
-    //   } else {
-    //     return {...a, [k]: {...v}}
-    //   }
-    // }, {})
-
     update({
       updatedTableKeys: tableColumnKeys,
     })
@@ -88,17 +79,8 @@ const View: FC<PipeProp> = ({Context}) => {
       <div className="columns-panel--grid">
         {Object.entries(tableColumnKeys).map(
           ([k, v]: [string, TableColumnKey]) => (
-            <ResourceCard key={k}>
-              <ResourceCard.EditableName
-                name={v.name}
-                onClick={() => {}}
-                onUpdate={e => handleUpdateName(e, k)}
-                testID={`column-card--name ${k}`}
-                inputTestID="column-card--input"
-                buttonTestID="column-card--name-button"
-                noNameString="Column name"
-              />
-              <ResourceCard.Meta>
+            <ResourceCard key={k} className="column-card--content">
+              <ResourceCard.Meta className="column-card--vistoggle">
                 {[
                   <React.Fragment key={v.name + Math.random()}>
                     <FlexBox
@@ -111,11 +93,20 @@ const View: FC<PipeProp> = ({Context}) => {
                         onChange={() => handleUpdateVisible(k, !v.visible)}
                         active={v.visible}
                       />
-                      <InputLabel active={v.visible}>Visible</InputLabel>
                     </FlexBox>
                   </React.Fragment>,
                 ]}
               </ResourceCard.Meta>
+              <ResourceCard.EditableName
+                name={v.name}
+                onClick={() => {}}
+                onUpdate={e => handleUpdateName(e, k)}
+                testID={`column-card--name ${k}`}
+                inputTestID="column-card--input"
+                buttonTestID="column-card--name-button"
+                noNameString="Column name"
+                className="column-card--name"
+              />
             </ResourceCard>
           )
         )}

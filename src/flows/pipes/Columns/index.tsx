@@ -18,14 +18,14 @@ export default register => {
       const toggleHide = Object.entries(
         pipe.updatedTableKeys as {[_: string]: TableColumnKey}
       ).reduce((a, [k, v]) => {
-        if (!v.visible) {
+        if (v.visible) {
+          return a
+        } else {
           if (v.name !== k) {
             a.push(`"${v.name}"`)
           } else {
             a.push(`"${k}"`)
           }
-          return a
-        } else {
           return a
         }
       }, [])

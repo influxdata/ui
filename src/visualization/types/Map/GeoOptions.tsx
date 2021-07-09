@@ -1,6 +1,4 @@
 import React, {CSSProperties, FC} from 'react'
-import {isEmpty} from 'lodash'
-import {DEFAULT_THRESHOLDS_GEO_COLORS} from 'src/shared/constants/thresholds'
 
 import {
   Grid,
@@ -39,26 +37,6 @@ export enum MapType {
 
 export const GeoOptions: FC<Props> = ({properties, update, results}) => {
   const {useS2CellID} = properties
-
-  if (!properties.layers.length) {
-    const layersOpts = [
-      {
-        type: 'pointMap',
-        colorDimension: {label: 'Value'},
-        colorField: '_value',
-        colors: [],
-        isClustered: false,
-        tooltipColumns: [],
-      },
-    ]
-    const colorChoice = isEmpty(layersOpts[0].colors)
-      ? DEFAULT_THRESHOLDS_GEO_COLORS
-      : layersOpts[0].colors
-
-    properties.layers.push(
-      (layersOpts[0] = {...layersOpts[0], colors: colorChoice})
-    )
-  }
 
   const handleSetUseS2CellID = (): void => {
     update({

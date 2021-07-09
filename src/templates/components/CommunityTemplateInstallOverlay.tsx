@@ -99,7 +99,7 @@ class CommunityTemplateInstallOverlayUnconnected extends PureComponent<Props> {
       this.props.setStagedCommunityTemplate(summary)
       return summary
     } catch (err) {
-      this.props.notify(communityTemplateInstallFailed(err.message))
+      this.props.notify(communityTemplateInstallFailed())
       if (
         err.message.includes('mapping values are not allowed in this context')
       ) {
@@ -130,7 +130,7 @@ class CommunityTemplateInstallOverlayUnconnected extends PureComponent<Props> {
       )
       event('template_install', {templateUrl: this.props.stagedTemplateUrl})
     } catch (err) {
-      this.props.notify(communityTemplateInstallFailed(err.message))
+      this.props.notify(communityTemplateInstallFailed())
       reportErrorThroughHoneyBadger(err, {
         name: 'Failed to install community template',
       })

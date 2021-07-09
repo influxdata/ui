@@ -27,7 +27,7 @@ export const S2ColumnOptions: FC<Props> = ({properties, update, results}) => {
   return (
     <>
       <Dropdown
-        style={{flex: '0 0 120px'}}
+        className="geo-dropdowns"
         button={(active, onClick) => (
           <Dropdown.Button
             active={active}
@@ -44,7 +44,7 @@ export const S2ColumnOptions: FC<Props> = ({properties, update, results}) => {
               return (
                 <Dropdown.Item
                   id={tagValue.column}
-                  key={tagValue.key}
+                  key={tagValue.column}
                   value={tagValue.column}
                   selected={tagValue.column === s2Column}
                   onClick={handleS2Select}

@@ -1,10 +1,11 @@
-import moment from 'moment'
+import {createRelativeFormatter} from 'src/utils/datetime/formatters'
 
 export const relativeTimestampFormatter = (
   time: string,
   prefix?: string
 ): string => {
-  const timeFromNow = moment(time).fromNow()
+  const formatter = createRelativeFormatter()
+  const timeFromNow = formatter.formatRelative(new Date(time))
 
   if (prefix) {
     return `${prefix}${timeFromNow}`

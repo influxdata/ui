@@ -5,7 +5,7 @@ import {useLocation} from 'react-router-dom'
 
 // Utils
 import {notify} from 'src/shared/actions/notifications'
-import {getAccounts, getOrgs} from 'src/operator/api'
+import {getOperatorAccounts, getOperatorOrgs} from 'src/client/unityRoutes'
 import {getAccountsError, getOrgsError} from 'src/shared/copy/notifications'
 
 // Types
@@ -54,7 +54,11 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
   const handleGetAccounts = useCallback(async () => {
     try {
       setAccountStatus(RemoteDataState.Loading)
-      const resp = await getAccounts(searchTerm)
+      const resp = await getOperatorAccounts({
+        query: {
+          query: searchTerm,
+        },
+      })
 
       if (resp.status !== 200) {
         throw new Error(resp.data.message)
@@ -72,7 +76,7 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
   const handleGetOrgs = useCallback(async () => {
     try {
       setOrgsStatus(RemoteDataState.Loading)
-      const resp = await getOrgs(searchTerm)
+      const resp = await getOperatorOrgs({query: {query: searchTerm}})
 
       if (resp.status !== 200) {
         throw new Error(resp.data.message)

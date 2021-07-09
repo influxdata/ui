@@ -33,9 +33,6 @@ import {
   Permission,
   PermissionResource,
 } from '@influxdata/influx'
-import {SortTypes} from 'src/shared/utils/sort'
-import {Sort} from '@influxdata/clockface'
-import {DashboardSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 
 export const links: Links = {
   authorizations: '/api/v2/authorizations',
@@ -247,6 +244,8 @@ export const tasks: Task[] = [
     cron: '2 0 * * *',
     org: 'default',
     labels: [],
+    createdAt: '2021-06-08T00:25:17.501582756Z',
+    latestCompleted: '2021-06-08T02:25:52.118899855Z',
   },
   {
     id: '02f12c50dba72000',
@@ -258,6 +257,8 @@ export const tasks: Task[] = [
     every: '1m0s',
     org: 'default',
     labels: labelIDs,
+    createdAt: '2021-06-08T00:25:17.501582756Z',
+    latestCompleted: '2021-06-08T02:25:52.118899855Z',
   },
 ]
 

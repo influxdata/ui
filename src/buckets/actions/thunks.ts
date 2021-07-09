@@ -54,6 +54,7 @@ import {BUCKET_LIMIT} from 'src/resources/constants'
 
 type Action = BucketAction | NotifyAction
 
+// todo: probably isn't thunk ? (should be moved to utils or something like that)
 export const fetchAllBuckets = async (orgID: string) => {
   const resp = await api.getBuckets({
     query: {orgID, limit: BUCKET_LIMIT},

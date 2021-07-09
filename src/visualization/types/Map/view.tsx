@@ -222,6 +222,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
       ],
     }
   }
+
   return <Plot config={config} />
 }
 

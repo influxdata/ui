@@ -1,10 +1,13 @@
 // Libraries
-import React, {FC, useCallback, useEffect, useState} from 'react'
-import {useParams} from 'react-router-dom'
+import React, {FC, useCallback, useState} from 'react'
 import {useDispatch} from 'react-redux'
 
 // Utils
-import {getOrgLimits, getOrgById, updateOrgLimits} from 'src/operator/api'
+import {
+  getOperatorOrgsLimits,
+  getOperatorOrg,
+  putOperatorOrgsLimits,
+} from 'src/client/unityRoutes'
 import {notify} from 'src/shared/actions/notifications'
 import {
   getOrgError,
@@ -27,7 +30,7 @@ export interface OverlayContextType {
   limitsStatus: RemoteDataState
   handleGetLimits: (id: string) => void
   handleGetOrg: (id: string) => void
-  handleUpdateLimits: (limits: OrgLimits) => void
+  handleUpdateLimits: (id: string, limits: OrgLimits) => void
   organization: OperatorOrg
   orgStatus: RemoteDataState
   setLimits: (_: OrgLimits) => void
@@ -37,7 +40,7 @@ export interface OverlayContextType {
 export const DEFAULT_CONTEXT: OverlayContextType = {
   handleGetLimits: (_: string) => {},
   handleGetOrg: (_: string) => {},
-  handleUpdateLimits: (_: OrgLimits) => {},
+  handleUpdateLimits: (_id: string, _limits: OrgLimits) => {},
   limits: null,
   limitsStatus: RemoteDataState.NotStarted,
   organization: null,
@@ -58,9 +61,6 @@ export const OverlayProvider: FC<Props> = React.memo(({children}) => {
   )
   const [orgStatus, setOrgStatus] = useState(RemoteDataState.NotStarted)
 
-  // Getting the orgID here since the parameter is only available in the overlay path
-  const {orgID} = useParams<{orgID: string}>()
-
   const dispatch = useDispatch()
 
   const [organization, setOrganization] = useState(null)
@@ -69,7 +69,7 @@ export const OverlayProvider: FC<Props> = React.memo(({children}) => {
     async (id: string) => {
       try {
         setLimitsStatus(RemoteDataState.Loading)
-        const resp = await getOrgLimits(id)
+        const resp = await getOperatorOrgsLimits({orgId: id})
 
         if (resp.status !== 200) {
           setLimitsStatus(RemoteDataState.Error)
@@ -89,15 +89,11 @@ export const OverlayProvider: FC<Props> = React.memo(({children}) => {
     [dispatch]
   )
 
-  useEffect(() => {
-    handleGetLimits(orgID)
-  }, [handleGetLimits, orgID])
-
   const handleGetOrg = useCallback(
     async (id: string) => {
       try {
         setOrgStatus(RemoteDataState.Loading)
-        const resp = await getOrgById(id)
+        const resp = await getOperatorOrg({orgId: id})
 
         if (resp.status !== 200) {
           setOrgStatus(RemoteDataState.Error)
@@ -115,23 +111,19 @@ export const OverlayProvider: FC<Props> = React.memo(({children}) => {
     [dispatch]
   )
 
-  useEffect(() => {
-    handleGetOrg(orgID)
-  }, [handleGetOrg, handleGetLimits, orgID])
-
   const handleUpdateLimits = useCallback(
-    async (updatedLimits: OrgLimits) => {
+    async (id: string, updatedLimits: OrgLimits) => {
       try {
         setUpdateLimitStatus(RemoteDataState.Loading)
-        await updateOrgLimits(orgID, updatedLimits)
+        await putOperatorOrgsLimits({orgId: id, data: updatedLimits})
         setUpdateLimitStatus(RemoteDataState.Done)
-        dispatch(notify(updateLimitsSuccess(orgID)))
+        dispatch(notify(updateLimitsSuccess(id)))
       } catch (error) {
         console.error({error})
-        dispatch(notify(updateLimitsError(orgID)))
+        dispatch(notify(updateLimitsError(id)))
       }
     },
-    [dispatch, orgID]
+    [dispatch]
   )
 
   return (

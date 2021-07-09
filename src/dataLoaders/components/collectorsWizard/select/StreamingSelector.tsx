@@ -38,6 +38,7 @@ export interface Props {
 interface State {
   gridSizerUpdateFlag: string
   searchTerm: string
+  recommended: string
 }
 
 @ErrorHandling
@@ -47,6 +48,7 @@ class StreamingSelector extends PureComponent<Props, State> {
     this.state = {
       gridSizerUpdateFlag: uuid.v4(),
       searchTerm: '',
+      recommended: 'System',
     }
   }
 
@@ -67,7 +69,7 @@ class StreamingSelector extends PureComponent<Props, State> {
 
   public render() {
     const {buckets} = this.props
-    const {searchTerm} = this.state
+    const {searchTerm, recommended} = this.state
 
     const cardSize = `${100 / (PLUGIN_BUNDLE_OPTIONS.length + 1)}%`
     return (
@@ -83,8 +85,6 @@ class StreamingSelector extends PureComponent<Props, State> {
                     onSelectBucket={this.handleSelectBucket}
                   />
                 </FormElement>
-              </Grid.Column>
-              <Grid.Column widthSM={Columns.Five} offsetSM={Columns.Two}>
                 <FormElement label="">
                   <Input
                     className="wizard-step--filter"
@@ -96,8 +96,23 @@ class StreamingSelector extends PureComponent<Props, State> {
                     placeholder="Filter Plugins..."
                   />
                 </FormElement>
-              </Grid.Column>
+                </Grid.Column>
             </Grid.Row>
+            <SquareGrid cardSize={cardSize} gutter={ComponentSize.Small}>
+                  <SquareGrid.Card key={recommended}>
+                    <SelectableCard
+                      id={recommended}
+                      formName="telegraf-plugins"
+                      label={recommended}
+                      testID={`telegraf-plugins--${recommended}`}
+                      // selected={this.isRecommendedChecked(recommended)}
+                      onClick={this.handleToggle}
+                      icon={IconFont.Checkmark}
+                    >
+                      {createElement(BUNDLE_LOGOS[recommended])}
+                    </SelectableCard>
+                  </SquareGrid.Card>
+            </SquareGrid>
             <SquareGrid cardSize={cardSize} gutter={ComponentSize.Small}>
               {this.filteredBundles.map(b => {
                 return (
@@ -159,8 +174,9 @@ class StreamingSelector extends PureComponent<Props, State> {
 
   private get filteredBundles(): BundleName[] {
     const {searchTerm} = this.state
+    const removeSystem = PLUGIN_BUNDLE_OPTIONS.filter(item => item !== 'System')
 
-    return PLUGIN_BUNDLE_OPTIONS.filter(b =>
+    return removeSystem.filter(b =>
       b.toLowerCase().includes(searchTerm.toLowerCase())
     )
   }

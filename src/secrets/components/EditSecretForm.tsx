@@ -41,7 +41,7 @@ const EditSecretForm: FC = () => {
 
   const handleSubmit = () => {
     try {
-      dispatch(upsertSecret({[secretName]: newValue}))
+      dispatch(upsertSecret({key: secretName, value: newValue}))
     } finally {
       handleDismiss()
     }

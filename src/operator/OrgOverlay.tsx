@@ -1,4 +1,4 @@
-import React, {FC, useContext} from 'react'
+import React, {FC, useContext, useEffect} from 'react'
 import {useHistory, useParams} from 'react-router-dom'
 
 import {
@@ -28,6 +28,8 @@ const OrgOverlay: FC = () => {
   const {
     limits,
     limitsStatus,
+    handleGetLimits,
+    handleGetOrg,
     handleUpdateLimits,
     organization,
     orgStatus,
@@ -38,10 +40,18 @@ const OrgOverlay: FC = () => {
   const {orgID} = useParams<{orgID: string}>()
   const history = useHistory()
 
+  useEffect(() => {
+    handleGetLimits(orgID)
+  }, [handleGetLimits, orgID])
+
+  useEffect(() => {
+    handleGetOrg(orgID)
+  }, [handleGetOrg, orgID])
+
   const updateLimits = async () => {
     try {
       const backendLimits = fromDisplayLimits(limits)
-      await handleUpdateLimits(backendLimits)
+      await handleUpdateLimits(orgID, backendLimits)
       history.goBack()
     } catch {
       // We want to keep the operator on the overlay if an error occurred

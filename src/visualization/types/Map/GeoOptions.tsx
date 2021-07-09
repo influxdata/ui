@@ -41,7 +41,6 @@ export const GeoOptions: FC<Props> = ({properties, update, results}) => {
   const {useS2CellID} = properties
 
   if (!properties.layers.length) {
-    console.log('reaching here')
     const layersOpts = [
       {
         type: 'pointMap',
@@ -60,8 +59,6 @@ export const GeoOptions: FC<Props> = ({properties, update, results}) => {
       (layersOpts[0] = {...layersOpts[0], colors: colorChoice})
     )
   }
-
-  console.log(properties)
 
   const handleSetUseS2CellID = (): void => {
     update({

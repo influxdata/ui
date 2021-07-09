@@ -19,7 +19,7 @@ const GlobalSearch: FC = () => {
       // Set debug to true if you want to inspect the dropdown
       debug: true,
       algoliaOptions: {
-        facetFilters: ['project:influxdb, project:telegraf, flux:true'],
+        facetFilters: [['project: influxdb', 'flux:true'], 'version: cloud'],
       },
     })
   }, [])

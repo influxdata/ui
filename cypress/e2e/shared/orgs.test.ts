@@ -16,7 +16,7 @@ describe('Orgs', () => {
       cy.getByTestID('user-nav-item-about').click()
       cy.get('span:contains("About")').click()
       cy.getByTestID('rename-org--button').click()
-      cy.getByTestID('danger-confirmation-button').click()
+      cy.getByTestID('danger-confirmation--button').click()
       cy.getByTestID('create-org-name-input')
         .click()
         .type(extraText)

@@ -621,6 +621,7 @@ describe('The Annotations UI functionality', () => {
               .focus()
               .clear()
               .type(endTimeValue)
+
             cy.getByTestID('annotation-submit-button').should('not.be.disabled')
 
             // put the end time BEFORE the start time ; should get an error:

@@ -161,6 +161,7 @@ const Query: FC<PipeProp> = ({Context}) => {
           onSubmitScript={() => {}}
           setEditorInstance={setEditorInstance}
           autogrow
+          wrapLines="on"
         />
       </Suspense>
       {!isFlagEnabled('flow-sidebar') && showFn && (

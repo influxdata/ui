@@ -616,7 +616,11 @@ describe('The Annotations UI functionality', () => {
             cy.getByTestID('form--element-error').contains('Format must be ')
 
             // put the text back; should be valid again:
-            cy.getByTestID('endTime-testID').type(endTimeValue)
+            cy.getByTestID('endTime-testID')
+              .click()
+              .focus()
+              .clear()
+              .type(endTimeValue)
             cy.getByTestID('annotation-submit-button').should('not.be.disabled')
 
             // put the end time BEFORE the start time ; should get an error:
@@ -679,6 +683,8 @@ describe('The Annotations UI functionality', () => {
                 cy.getByTestID('startTime-testID')
                   .should('be.visible')
                   .click()
+                  .focus()
+                  .clear()
                   .type(startTimeValue)
 
                 // future time:  nothing in the future should work

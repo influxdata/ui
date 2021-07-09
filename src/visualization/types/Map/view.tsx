@@ -7,7 +7,6 @@ import {isEmpty} from 'lodash'
 // Types
 import {GeoViewProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
-import {DEFAULT_THRESHOLDS_GEO_COLORS} from 'src/shared/constants/thresholds'
 // Utils
 import {
   getDetectCoordinatingFields,
@@ -169,11 +168,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     ? result.fluxGroupKeyUnion
     : layersOpts[0].tooltipColumns
 
-  const colorChoice = isEmpty(layersOpts[0].colors)
-    ? DEFAULT_THRESHOLDS_GEO_COLORS
-    : layersOpts[0].colors
-
-  layersOpts[0] = {...layersOpts[0], tooltipColumns, colors: colorChoice}
+  layersOpts[0] = {...layersOpts[0], tooltipColumns}
 
   let zoomOpt = zoom
   if (zoom === 0) {

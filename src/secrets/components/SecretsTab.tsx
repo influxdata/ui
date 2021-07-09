@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
+import {useHistory} from 'react-router-dom'
 
 // Components
 import {
@@ -17,7 +18,6 @@ import SecretsList from 'src/secrets/components/SecretsList'
 import FilterList from 'src/shared/components/FilterList'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 import GetResources from 'src/resources/components/GetResources'
-import ModifySecretOverlay from 'src/secrets/components/ModifySecretOverlay'
 
 // Selectors
 import {getAllSecrets} from 'src/resources/selectors'
@@ -28,7 +28,8 @@ import {SortTypes} from 'src/shared/utils/sort'
 import {SecretSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 
 // Actions
-import {deleteSecret, upsertSecret} from 'src/secrets/actions/thunks'
+import {deleteSecret} from 'src/secrets/actions/thunks'
+import {getOrg} from 'src/organizations/selectors'
 
 const SecretsTab: FC = () => {
   const dispatch = useDispatch()
@@ -36,22 +37,13 @@ const SecretsTab: FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [sortDirection, setSortDirection] = useState<Sort>(Sort.Ascending)
   const [sortKey, setSortKey] = useState<string>('id')
-  const [overlayMode, setOverlayMode] = useState<string>('CREATE')
-  const [defaultKey, setDefaultKey] = useState<string>('')
   const [sortType, setSortType] = useState<SortTypes>(SortTypes.String)
-  const [isOverlayVisible, setIsOverlayVisible] = useState<boolean>(false)
 
-  const FilterSecrets = FilterList<Secret>()
+  const history = useHistory()
 
   const secrets = useSelector(getAllSecrets)
-
-  const handleCreateSecret = () => {
-    setOverlayMode('CREATE')
-    setDefaultKey('')
-    setIsOverlayVisible(true)
-  }
-
-  const handleHideOverlay = () => setIsOverlayVisible(false)
+  const orgId = useSelector(getOrg).id
+  const FilterSecrets = FilterList<Secret>()
 
   const handleFilterChange = (searchTerm: string) => {
     handleFilterUpdate(searchTerm)
@@ -75,118 +67,84 @@ const SecretsTab: FC = () => {
     dispatch(deleteSecret(secret))
   }
 
-  const handleUpsertSecret = (newSecret: Secret) => {
-    dispatch(upsertSecret(newSecret))
+  const handleCreateSecret = () => {
+    history.push(`/orgs/${orgId}/settings/secrets/new`)
   }
 
-  const handleEditSecret = (defaultKey: string) => {
-    setDefaultKey(defaultKey)
-    setOverlayMode('UPDATE')
-    setIsOverlayVisible(true)
-  }
-
-  const handleKeyValidation = (key: string): string | null => {
-    if (!key || overlayMode === 'UPDATE') {
-      return null
-    }
-
-    if (key.trim() === '') {
-      return 'Key is required'
-    }
-    const existingIds = secrets.map(s => s.id)
-
-    if (existingIds.includes(key)) {
-      return 'Key is already in use'
-    }
-
-    return null
-  }
-
-  const addSecretButton = (
-    <Button
-      text="Add Secret"
-      color={ComponentColor.Primary}
-      icon={IconFont.Plus}
-      onClick={handleCreateSecret}
-      testID="button-add-secret"
-    />
+  let secretsEmptyState = (
+    <EmptyState size={ComponentSize.Medium}>
+      <EmptyState.Text>No Secrets match your query</EmptyState.Text>
+    </EmptyState>
   )
 
-  const SecretsEmptyState = (): JSX.Element => {
-    if (!searchTerm) {
-      return (
-        <>
-          <EmptyState size={ComponentSize.Medium}>
-            <EmptyState.Text>
-              Looks like there aren't any <b>Secrets</b>, why not create one?
-            </EmptyState.Text>
-            {addSecretButton}
-          </EmptyState>
-        </>
-      )
-    }
-
-    return (
+  if (!searchTerm) {
+    secretsEmptyState = (
       <>
         <EmptyState size={ComponentSize.Medium}>
-          <EmptyState.Text>No Secrets match your query</EmptyState.Text>
+          <EmptyState.Text>
+            Looks like there aren't any <b>Secrets</b>, why not create one?
+          </EmptyState.Text>
+          <Button
+            text="Add Secret"
+            color={ComponentColor.Primary}
+            icon={IconFont.Plus}
+            onClick={handleCreateSecret}
+            testID="button-add-secret"
+          />
         </EmptyState>
       </>
     )
-  }
 
-  const leftHeaderItems = (
-    <>
-      <SearchWidget
-        placeholderText="Filter secrets..."
-        searchTerm={searchTerm}
-        onSearch={handleFilterChange}
-      />
-      <ResourceSortDropdown
-        onSelect={handleSort}
-        resourceType={ResourceType.Secrets}
-        sortDirection={sortDirection}
-        sortKey={sortKey}
-        sortType={sortType}
-      />
-    </>
-  )
-
-  return (
-    <>
-      <TabbedPageHeader
-        childrenLeft={leftHeaderItems}
-        childrenRight={addSecretButton}
-      />
-      <GetResources resources={[ResourceType.Secrets]}>
-        <FilterSecrets
-          list={secrets}
-          searchTerm={searchTerm}
-          searchKeys={['key', 'secret[].key']}
-        >
-          {sc => (
-            <SecretsList
-              secrets={sc}
-              emptyState={SecretsEmptyState()}
-              onDeleteSecret={handleDeleteSecret}
-              sortKey="key"
-              sortDirection={sortDirection}
-              sortType={sortType}
-              handleEditSecret={handleEditSecret}
+    return (
+      <>
+        <TabbedPageHeader
+          childrenLeft={
+            <>
+              <SearchWidget
+                placeholderText="Filter secrets..."
+                searchTerm={searchTerm}
+                onSearch={handleFilterChange}
+              />
+              <ResourceSortDropdown
+                onSelect={handleSort}
+                resourceType={ResourceType.Secrets}
+                sortDirection={sortDirection}
+                sortKey={sortKey}
+                sortType={sortType}
+              />
+            </>
+          }
+          childrenRight={
+            <Button
+              text="Add Secret"
+              color={ComponentColor.Primary}
+              icon={IconFont.Plus}
+              onClick={handleCreateSecret}
+              testID="button-add-secret"
             />
-          )}
-        </FilterSecrets>
-        <ModifySecretOverlay
-          isVisible={isOverlayVisible}
-          handleUpsertSecret={handleUpsertSecret}
-          onDismiss={handleHideOverlay}
-          onKeyValidation={handleKeyValidation}
-          defaultKey={defaultKey}
-          mode={overlayMode}
+          }
         />
-      </GetResources>
-    </>
-  )
+        <GetResources resources={[ResourceType.Secrets]}>
+          <FilterSecrets
+            list={secrets}
+            searchTerm={searchTerm}
+            searchKeys={['key', 'secret[].key']}
+          >
+            {sc => (
+              <SecretsList
+                secrets={sc}
+                emptyState={secretsEmptyState}
+                onDeleteSecret={handleDeleteSecret}
+                sortKey="key"
+                sortDirection={sortDirection}
+                sortType={sortType}
+              />
+            )}
+          </FilterSecrets>
+        </GetResources>
+      </>
+    )
+  }
 }
 
 export default SecretsTab

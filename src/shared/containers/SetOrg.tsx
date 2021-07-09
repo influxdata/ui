@@ -38,6 +38,8 @@ import {
   FileUploadsPage,
   ClientLibrariesPage,
   TelegrafPluginsPage,
+  EditSecretOverlay,
+  CreateSecretOverlay,
 } from 'src/shared/containers'
 
 // Types
@@ -223,6 +225,20 @@ const SetOrg: FC = () => {
               exact
               path={`${orgPath}/${SETTINGS}/${SECRETS}`}
               component={SecretsIndex}
+            />
+          )}
+          {isFlagEnabled('secretsUI') && (
+            <Route
+              exact
+              path={`${orgPath}/${SETTINGS}/${SECRETS}/new`}
+              component={CreateSecretOverlay}
+            />
+          )}
+          {isFlagEnabled('secretsUI') && (
+            <Route
+              exact
+              path={`${orgPath}/${SETTINGS}/${SECRETS}/:secretName/edit`}
+              component={EditSecretOverlay}
             />
           )}
           <Route

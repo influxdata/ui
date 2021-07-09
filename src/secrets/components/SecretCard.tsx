@@ -1,27 +1,31 @@
 // Libraries
 import React, {FC} from 'react'
+import {useHistory} from 'react-router-dom'
+import {useSelector} from 'react-redux'
 
 // Components
 import {AlignItems, FlexDirection, ResourceCard} from '@influxdata/clockface'
 import SecretContextMenu from 'src/secrets/components/SecretContextMenu'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 // Types
 import {Secret} from 'src/types'
 
-// Actions
-import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+// Utils
+import {getOrg} from 'src/organizations/selectors'
 
 interface Props {
   secret: Secret
   onDeleteSecret: (secret: Secret) => void
-  handleEditSecret: (defaultKey: string) => void
 }
 
-const SecretCard: FC<Props> = ({secret, handleEditSecret, onDeleteSecret}) => {
+const SecretCard: FC<Props> = ({secret, onDeleteSecret}) => {
   const handleDelete = () => onDeleteSecret(secret)
+  const history = useHistory()
+  const orgId = useSelector(getOrg).id
 
   const editSecret = () => {
-    handleEditSecret(secret.key)
+    history.push(`orgs/${orgId}/settings/secrets/${secret.key}/edit`)
   }
 
   return (

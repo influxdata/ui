@@ -137,7 +137,7 @@ export const convertTimeRangeToCustom = (
 
   if (timeRange.type === 'selectable-duration') {
     const lowerDate = new Date()
-    lowerDate.setSeconds(new Date().getSeconds() - timeRange.seconds)
+    lowerDate.setSeconds(lowerDate.getSeconds() - timeRange.seconds)
     lower = lowerDate.toISOString()
   } else if (timeRange.type === 'duration') {
     const millisecondDuration = durationToMilliseconds(
@@ -145,7 +145,7 @@ export const convertTimeRangeToCustom = (
     )
     const lowerDate = new Date()
     lowerDate.setMilliseconds(
-      new Date().getMilliseconds() - millisecondDuration
+      lowerDate.getMilliseconds() - millisecondDuration
     )
     lower = lowerDate.toISOString()
   }

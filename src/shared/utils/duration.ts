@@ -144,9 +144,7 @@ export const convertTimeRangeToCustom = (
       parseDuration(timeRangeToDuration(timeRange))
     )
     const lowerDate = new Date()
-    lowerDate.setMilliseconds(
-      lowerDate.getMilliseconds() - millisecondDuration
-    )
+    lowerDate.setMilliseconds(lowerDate.getMilliseconds() - millisecondDuration)
     lower = lowerDate.toISOString()
   }
 

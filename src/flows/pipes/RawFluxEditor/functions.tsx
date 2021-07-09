@@ -48,57 +48,59 @@ const Functions: FC<Props> = ({onSelect}) => {
     [search]
   )
 
-  let fnComponent
+  return useMemo(() => {
+    let fnComponent
 
-  if (!Object.keys(filteredFunctions).length) {
-    fnComponent = (
-      <EmptyState size={ComponentSize.ExtraSmall}>
-        <EmptyState.Text>No functions match your search</EmptyState.Text>
-      </EmptyState>
-    )
-  } else {
-    fnComponent = Object.entries(filteredFunctions).map(([category, fns]) => (
-      <dl className="flux-toolbar--category" key={category}>
-        <dt className="flux-toolbar--heading">{category}</dt>
-        {fns.map(fn => (
-          <Fn
-            onClickFunction={onSelect}
-            key={`${fn.name}_${fn.desc}`}
-            func={fn}
-            testID={fn.name}
-          />
-        ))}
-      </dl>
-    ))
-  }
+    if (!Object.keys(filteredFunctions).length) {
+      fnComponent = (
+        <EmptyState size={ComponentSize.ExtraSmall}>
+          <EmptyState.Text>No functions match your search</EmptyState.Text>
+        </EmptyState>
+      )
+    } else {
+      fnComponent = Object.entries(filteredFunctions).map(([category, fns]) => (
+        <dl className="flux-toolbar--category" key={category}>
+          <dt className="flux-toolbar--heading">{category}</dt>
+          {fns.map(fn => (
+            <Fn
+              onClickFunction={onSelect}
+              key={`${fn.name}_${fn.desc}`}
+              func={fn}
+              testID={fn.name}
+            />
+          ))}
+        </dl>
+      ))
+    }
 
-  const body = isFlagEnabled('flow-sidebar') ? (
-    <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
-      {fnComponent}
-    </div>
-  ) : (
-    <DapperScrollbars className="flux-toolbar--scroll-area">
+    const body = isFlagEnabled('flow-sidebar') ? (
       <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
         {fnComponent}
       </div>
-    </DapperScrollbars>
-  )
+    ) : (
+      <DapperScrollbars className="flux-toolbar--scroll-area">
+        <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
+          {fnComponent}
+        </div>
+      </DapperScrollbars>
+    )
 
-  return (
-    <div className="flux-toolbar">
-      <div className="flux-toolbar--search">
-        <Input
-          type={InputType.Text}
-          icon={IconFont.Search}
-          placeholder="Filter Functions..."
-          onChange={updateSearch}
-          value={search}
-          testID="flux-toolbar-search--input"
-        />
+    return (
+      <div className="flux-toolbar">
+        <div className="flux-toolbar--search">
+          <Input
+            type={InputType.Text}
+            icon={IconFont.Search}
+            placeholder="Filter Functions..."
+            onChange={updateSearch}
+            value={search}
+            testID="flux-toolbar-search--input"
+          />
+        </div>
+        {body}
       </div>
-      {body}
-    </div>
-  )
+    )
+  }, [search])
 }
 
 export default Functions

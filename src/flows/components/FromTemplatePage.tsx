@@ -170,7 +170,7 @@ const TEMPLATE_MAP = {
               editMode: 'builder',
               name: '',
               text: '',
-            }
+            },
           ],
           shape: 'chronograf-v2',
           showNoteWhenEmpty: false,

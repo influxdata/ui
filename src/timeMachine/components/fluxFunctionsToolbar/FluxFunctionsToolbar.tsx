@@ -12,11 +12,14 @@ import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 // Actions
 import {setActiveQueryText} from 'src/timeMachine/actions'
 
+// Utils
+import {getActiveQuery} from 'src/timeMachine/selectors'
+
 // Constants
 import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
 
 // Types
-import {FluxToolbarFunction} from 'src/types'
+import {AppState, FluxToolbarFunction} from 'src/types'
 
 interface OwnProps {
   onInsertFluxFunction: (func: FluxToolbarFunction) => void
@@ -64,10 +67,16 @@ const FluxFunctionsToolbar: FC<Props> = (props: Props) => {
   }, [searchTerm])
 }
 
+const mstp = (state: AppState) => {
+  const activeQueryText = getActiveQuery(state).text
+
+  return {activeQueryText}
+}
+
 const mdtp = {
   onSetActiveQueryText: setActiveQueryText,
 }
 
-const connector = connect(null, mdtp)
+const connector = connect(mstp, mdtp)
 
 export default connector(FluxFunctionsToolbar)

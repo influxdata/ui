@@ -5,9 +5,12 @@ describe('Secrets', () => {
     cy.flush()
     return cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) =>
-        cy.setFeatureFlags({secretsUI: true}).then(() => {
-          cy.visit(`orgs/${id}/settings/`)
-          return cy.getByTestID('secrets--tab').click()
+        cy.fixture('routes').then(({orgs}) => {
+          cy.visit(`${orgs}/${id}/settings/`)
+          cy.getByTestID('tree-nav')
+          return cy.setFeatureFlags({secretsUI: true}).then(() => {
+            return cy.getByTestID('secrets--tab').click()
+          })
         })
       )
     })
@@ -83,22 +86,6 @@ describe('Secrets', () => {
             })
         })
     })
-  })
-
-  it.only('breaks every time', () => {
-    cy.getByTestID('button-add-secret')
-      .first() // There's a second one in the empty state.
-      .click()
-    cy.getByTestID('input-field')
-      .first()
-      .type('Shhhhh')
-    cy.getByTestID('input-field')
-      .last()
-      .type("I'm hunting wabbits")
-    cy.getByTestID('variable-form-save').click()
-    // cy.getByTestID('button-add-secret')
-    //   .first() // There's a second one in the empty state.
-    //   .click()
   })
 
   it('Can perform basic CRUD via the UI', () => {

@@ -18,6 +18,8 @@ export const S2ColumnOptions: FC<Props> = ({properties, update, results}) => {
 
   const tags = findTags(results.table)
 
+  console.log('Tags: ', tags)
+
   const handleS2Select = (selection: string): void => {
     update({
       s2Column: selection,
@@ -44,7 +46,7 @@ export const S2ColumnOptions: FC<Props> = ({properties, update, results}) => {
               return (
                 <Dropdown.Item
                   id={tagValue.column}
-                  key={tagValue.key}
+                  key={tagValue.column}
                   value={tagValue.column}
                   selected={tagValue.column === s2Column}
                   onClick={handleS2Select}

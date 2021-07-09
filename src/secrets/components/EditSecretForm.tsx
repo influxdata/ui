@@ -1,5 +1,7 @@
 // Libraries
 import React, {FC, useState} from 'react'
+import {useSelector, useDispatch} from 'react-redux'
+import {useHistory, useParams} from 'react-router-dom'
 
 // Types
 import {
@@ -11,43 +13,20 @@ import {
   Input,
 } from '@influxdata/clockface'
 import {Secret} from 'src/types'
-
-// Components
 import WarningPanel from 'src/secrets/components/WarningPanel'
 
+// Utils
+import { upsertSecret } from 'src/secrets/actions/thunks'
+import { getAllSecrets } from 'src/resources/selectors'
+
 // Components
 
-interface Props {
-  onHideOverlay: () => void
-  handleUpsertSecret: (secret: Secret) => void
-  onKeyValidation: (key: string) => string | null
-  mode: string
-  defaultKey?: string
-}
 
-const EditSecretForm: FC<Props> = ({
-  onHideOverlay,
-  handleUpsertSecret,
-  onKeyValidation,
-  mode,
-  defaultKey,
-}) => {
-  const handleKeyValidation = (key: string): string | null => {
-    if (!key) {
-      return null
-    }
-
-    if (key.trim() === '') {
-      return 'Key is required'
-    }
-    const existingIds = secrets.map(s => s.id)
-
-    if (existingIds.includes(key)) {
-      return 'Key is already in use'
-    }
-
-    return null
-  }
+const EditSecretForm: FC = () => {
+  const dispatch = useDispatch()
+  const history = useHistory()
+  const secrets = useSelector(getAllSecrets)
+  const {secretName} = useParams<{secretName: string}>()
 
   const [newSecret, setNewSecret] = useState<Secret>({})
 
@@ -55,7 +34,6 @@ const EditSecretForm: FC<Props> = ({
     return (
       newSecret?.key?.length > 0 &&
       newSecret?.value?.length > 0 &&
-      onKeyValidation(newSecret.key) === null
     )
   }
 
@@ -63,7 +41,7 @@ const EditSecretForm: FC<Props> = ({
     const {name, value} = target
 
     // In update mode we want to keep the key fixed because changing the key would create a new secret
-    if (mode === 'UPDATE' && name === 'key') {
+    if (name === 'key') {
       return
     }
     setNewSecret(prevState => ({...prevState, [name]: value}))
@@ -71,9 +49,9 @@ const EditSecretForm: FC<Props> = ({
 
   const handleSubmit = () => {
     try {
-      handleUpsertSecret(newSecret)
+      dispatch(upsertSecret(newSecret))
     } finally {
-      onHideOverlay()
+      history.goBack()
     }
   }
 

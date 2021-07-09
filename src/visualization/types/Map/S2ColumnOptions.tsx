@@ -18,8 +18,6 @@ export const S2ColumnOptions: FC<Props> = ({properties, update, results}) => {
 
   const tags = findTags(results.table)
 
-  console.log('Tags: ', tags)
-
   const handleS2Select = (selection: string): void => {
     update({
       s2Column: selection,

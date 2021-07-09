@@ -82,14 +82,12 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
           s2Column,
           latLonColumns
         )
-        console.log('here')
         const coordinateFlag = getDetectCoordinatingFieldsFlagged(
           result.table,
           useS2CellID,
           s2Column,
           latLonColumns
         )
-        console.log('here2')
         setCoordinateFlag(coordinateFlag)
         setGeoCoordinates(coordinates)
       } else {
@@ -225,7 +223,6 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     }
   }
 
-  console.log('config: ', config)
   return <Plot config={config} />
 }
 

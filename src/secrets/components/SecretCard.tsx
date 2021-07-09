@@ -1,7 +1,5 @@
 // Libraries
 import React, {FC} from 'react'
-import {useDispatch} from 'react-redux'
-import CopyToClipboard from 'react-copy-to-clipboard'
 
 // Components
 import {AlignItems, FlexDirection, ResourceCard} from '@influxdata/clockface'
@@ -12,28 +10,18 @@ import {Secret} from 'src/types'
 
 // Actions
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
-import {notify} from 'src/shared/actions/notifications'
-import {
-  copyToClipboardFailed,
-  copyToClipboardSuccess,
-} from 'src/shared/copy/notifications'
 
 interface Props {
   secret: Secret
+  onDeleteSecret: (secret: Secret) => void
+  handleEditSecret: (defaultKey: string) => void
 }
 
-const SecretCard: FC<Props> = ({secret}) => {
-  const dispatch = useDispatch()
+const SecretCard: FC<Props> = ({secret, handleEditSecret, onDeleteSecret}) => {
+  const handleDelete = () => onDeleteSecret(secret)
 
-  const handleCopyAttempt = (
-    copiedText: string,
-    isSuccessful: boolean
-  ): void => {
-    if (isSuccessful) {
-      dispatch(notify(copyToClipboardSuccess(copiedText, 'Secret ID')))
-    } else {
-      dispatch(notify(copyToClipboardFailed(copiedText, 'Secret ID')))
-    }
+  const editSecret = () => {
+    handleEditSecret(secret.key)
   }
 
   return (
@@ -41,16 +29,17 @@ const SecretCard: FC<Props> = ({secret}) => {
       <ResourceCard
         key={`secret-id--${secret.id}`}
         testID={`secret-card--${secret.id}`}
-        contextMenu={<SecretContextMenu secret={secret} />}
+        contextMenu={
+          <SecretContextMenu secret={secret} onDeleteSecret={handleDelete} />
+        }
         direction={FlexDirection.Row}
         alignItems={AlignItems.Center}
       >
-        <CopyToClipboard text={secret.id} onCopy={handleCopyAttempt}>
-          <ResourceCard.Name
-            name={secret.id}
-            testID={`secret-card--name ${secret.id}`}
-          />
-        </CopyToClipboard>
+        <ResourceCard.Name
+          name={secret.id}
+          testID={`secret-card--name-${secret.id}`}
+          onClick={editSecret}
+        />
       </ResourceCard>
     </ErrorBoundary>
   )

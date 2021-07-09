@@ -1,5 +1,5 @@
 import React, {CSSProperties, FC} from 'react'
-import _ from 'lodash'
+import {isEmpty} from 'lodash'
 import {DEFAULT_THRESHOLDS_GEO_COLORS} from 'src/shared/constants/thresholds'
 
 import {
@@ -51,7 +51,7 @@ export const GeoOptions: FC<Props> = ({properties, update, results}) => {
         tooltipColumns: [],
       },
     ]
-    const colorChoice = _.isEmpty(layersOpts[0].colors)
+    const colorChoice = isEmpty(layersOpts[0].colors)
       ? DEFAULT_THRESHOLDS_GEO_COLORS
       : layersOpts[0].colors
 

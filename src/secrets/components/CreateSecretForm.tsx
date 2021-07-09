@@ -18,9 +18,11 @@ import WarningPanel from 'src/secrets/components/WarningPanel'
 // Utils
 import {getAllSecrets} from 'src/resources/selectors'
 import {upsertSecret} from 'src/secrets/actions/thunks'
+import {getOrg} from 'src/organizations/selectors'
 
 const CreateSecretForm: FC = () => {
   const secrets = useSelector(getAllSecrets)
+  const orgId = useSelector(getOrg)
   const handleKeyValidation = (key: string): string | null => {
     if (!key) {
       return null
@@ -60,10 +62,14 @@ const CreateSecretForm: FC = () => {
     dispatch(upsertSecret(newSecret))
   }
 
+  const handleDismiss = () => {
+    history.push(`/orgs/${orgId}/settings/secrets`)
+  }
+
   const handleSubmit = async () => {
     try {
       await handleUpsertSecret(newSecret)
-      history.goBack()
+      handleDismiss()
     } catch (error) {
       console.error('error')
     }
@@ -117,7 +123,7 @@ const CreateSecretForm: FC = () => {
       <Grid.Row>
         <Grid.Column>
           <Form.Footer>
-            <Button text="Cancel" onClick={() => history.goBack()} />
+            <Button text="Cancel" onClick={handleDismiss} />
             <Button
               text="Add Secret"
               testID="variable-form-save"

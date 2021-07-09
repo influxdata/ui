@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useState} from 'react'
-import {useSelector, useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {useHistory, useParams} from 'react-router-dom'
 
 // Types
@@ -12,46 +12,38 @@ import {
   Grid,
   Input,
 } from '@influxdata/clockface'
-import {Secret} from 'src/types'
 import WarningPanel from 'src/secrets/components/WarningPanel'
 
 // Utils
-import { upsertSecret } from 'src/secrets/actions/thunks'
-import { getAllSecrets } from 'src/resources/selectors'
+import {upsertSecret} from 'src/secrets/actions/thunks'
+import {getOrg} from 'src/organizations/selectors'
 
 // Components
-
 
 const EditSecretForm: FC = () => {
   const dispatch = useDispatch()
   const history = useHistory()
-  const secrets = useSelector(getAllSecrets)
+  const orgId = useSelector(getOrg).id
   const {secretName} = useParams<{secretName: string}>()
 
-  const [newSecret, setNewSecret] = useState<Secret>({})
+  const [newValue, setNewValue] = useState<string>('')
 
-  const isFormValid = (): boolean => {
-    return (
-      newSecret?.key?.length > 0 &&
-      newSecret?.value?.length > 0 &&
-    )
-  }
+  const isFormValid = (): boolean => newValue?.length > 0
 
   const handleChangeInput = ({target}) => {
-    const {name, value} = target
+    const {value} = target
+    setNewValue(value)
+  }
 
-    // In update mode we want to keep the key fixed because changing the key would create a new secret
-    if (name === 'key') {
-      return
-    }
-    setNewSecret(prevState => ({...prevState, [name]: value}))
+  const handleDismiss = () => {
+    history.push(`/orgs/${orgId}/settings/secrets`)
   }
 
   const handleSubmit = () => {
     try {
-      dispatch(upsertSecret(newSecret))
+      dispatch(upsertSecret({[secretName]: newValue}))
     } finally {
-      history.goBack()
+      handleDismiss()
     }
   }
 
@@ -69,23 +61,12 @@ const EditSecretForm: FC = () => {
       </Grid.Row>
       <Grid.Row>
         <Grid.Column>
-          <Form.ValidationElement
-            label="Key"
-            required={true}
-            validationFunc={onKeyValidation}
-            value={newSecret.key}
-          >
-            {status => (
-              <Input
-                autoFocus={true}
-                name="key"
-                titleText="This is how you will reference your secret in Flux"
-                value={newSecret.key}
-                status={status}
-                onChange={handleChangeInput}
-              />
-            )}
-          </Form.ValidationElement>
+          <Input
+            name="key"
+            titleText="This is how you will reference your secret in Flux"
+            value={secretName}
+            status={ComponentStatus.Disabled}
+          />
         </Grid.Column>
       </Grid.Row>
       <Grid.Row>
@@ -101,14 +82,14 @@ const EditSecretForm: FC = () => {
             required={true}
             name="value"
             titleText="This is the value that will be injected by the server when your secret is in use"
-            value={newSecret.value}
+            value={newValue}
           />
         </Grid.Column>
       </Grid.Row>
       <Grid.Row>
         <Grid.Column>
           <Form.Footer>
-            <Button text="Cancel" onClick={onHideOverlay} />
+            <Button text="Cancel" onClick={handleDismiss} />
             <Button
               text={submitButtonText}
               onClick={handleSubmit}

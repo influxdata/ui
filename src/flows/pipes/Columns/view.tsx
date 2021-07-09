@@ -56,16 +56,12 @@ const View: FC<PipeProp> = ({Context}) => {
     }))
   }
 
-  const handleUpdateVisible = (oldName: string, newVisibleStatus: boolean) => {
-    if (tableColumnKeys[oldName].visible === newVisibleStatus) {
-      return
-    }
-
+  const handleUpdateVisible = (oldName: string) => {
     setTableColumnKeys(prev => ({
       ...prev,
       [oldName]: {
         ...tableColumnKeys[oldName],
-        visible: newVisibleStatus,
+        visible: !tableColumnKeys[oldName].visible,
       },
     }))
   }
@@ -90,7 +86,7 @@ const View: FC<PipeProp> = ({Context}) => {
                       stretchToFitWidth={true}
                     >
                       <SlideToggle
-                        onChange={() => handleUpdateVisible(k, !v.visible)}
+                        onChange={() => handleUpdateVisible(k)}
                         active={v.visible}
                       />
                     </FlexBox>

@@ -160,7 +160,7 @@ const FlowPanel: FC<Props> = ({id, controls, persistentControls, children}) => {
                     }
                     className="flows-config-panel-button"
                     testID="square-button"
-                  ></Button>
+                  />
                   {id === focused && <Sidebar />}
                 </FeatureFlag>
                 <FeatureFlag name="flow-sidebar" equals={false}>

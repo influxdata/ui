@@ -11,7 +11,7 @@ import {SidebarContext} from 'src/flows/context/sidebar'
 import {PIPE_DEFINITIONS} from 'src/flows'
 import {ControlSection, ControlAction, Submenu} from 'src/types/flows'
 import ClientList from 'src/flows/components/ClientList'
-
+import './Sidebar.scss'
 import {event} from 'src/cloud/utils/reporting'
 export const SubSideBar: FC = () => {
   const {flow} = useContext(FlowContext)
@@ -215,15 +215,7 @@ const Sidebar: FC = () => {
     })
 
   return (
-    <DropdownMenu
-      style={{
-        width: '200px',
-        position: 'absolute',
-        top: '40px',
-        zIndex: 2,
-        padding: '10px 0px',
-      }}
-    >
+    <DropdownMenu className="flows-sidebar--dropdownmenu">
       {sections}
     </DropdownMenu>
   )

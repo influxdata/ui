@@ -20,7 +20,6 @@ interface Props {
   sortKey: string
   sortDirection: Sort
   sortType: SortTypes
-  handleEditSecret: (defaultKey: string) => void
 }
 
 const SecretsList: FC<Props> = props => {
@@ -31,7 +30,6 @@ const SecretsList: FC<Props> = props => {
     sortDirection,
     sortType,
     onDeleteSecret,
-    handleEditSecret,
   } = props
 
   const sortedSecrets = useMemo(
@@ -48,7 +46,6 @@ const SecretsList: FC<Props> = props => {
               key={secret.id || `secret-${index}`}
               secret={secret}
               onDeleteSecret={onDeleteSecret}
-              handleEditSecret={handleEditSecret}
             />
           ))}
         </ResourceList.Body>

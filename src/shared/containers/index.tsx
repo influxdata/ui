@@ -43,6 +43,12 @@ export const ClientLibrariesPage = lazy(() =>
 export const TelegrafPluginsPage = lazy(() =>
   import('src/writeData/containers/TelegrafPluginsPage')
 )
+export const EditSecretOverlay = lazy(() =>
+  import('src/secrets/components/EditSecretOverlay')
+)
+export const CreateSecretOverlay = lazy(() =>
+  import('src/secrets/components/CreateSecretOverlay')
+)
 export const SecretsIndex = lazy(() =>
   import('src/secrets/containers/SecretsIndex')
 )

@@ -113,7 +113,7 @@ const TEMPLATE_MAP = {
               prefix: '',
               scale: 'linear',
               suffix: '',
-            }
+            },
           },
           colors: [
             {

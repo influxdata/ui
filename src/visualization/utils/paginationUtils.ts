@@ -1,5 +1,5 @@
-export const calcOffset = (page: number, size: number, total: number) =>
-  Math.min(Math.max(0, (page - 1) * size), total - 1)
+export const calcOffset = (page: number, maxSize: number, total: number) =>
+  Math.min(Math.max(0, (page - 1) * maxSize), total - 1)
 
 export const calcNextPageOffset = (
   offset: number,

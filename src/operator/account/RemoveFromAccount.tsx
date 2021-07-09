@@ -13,6 +13,7 @@ const RemoveFromAccount: FC<Props> = ({removeUser}) => {
         confirmationLabel="This will not delete a user. It will remove them from their account and org allowing them to join a new organization. Are you sure?"
         onConfirm={removeUser}
         text="Remove User"
+        testID="remove-user"
       />
     </Table.Cell>
   )

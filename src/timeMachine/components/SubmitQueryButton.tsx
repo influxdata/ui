@@ -77,6 +77,10 @@ class SubmitQueryButton extends PureComponent<Props> {
   }
 
   componentWillUnmount() {
+    // Clearing and removing timer before the component is unmounted
+    clearTimeout(this.timer)
+    delete this.timer
+
     this.props.cancelAllRunningQueries()
   }
 

@@ -106,7 +106,7 @@ export const loginViaDex = (username: string, password: string) => {
               body: {req: req, approval: 'approve'},
             }).then(() => {
               cy.visit('/')
-              cy.getCookie('session').should('exist')
+              // cy.getCookie('session').should('exist')
               cy.location('pathname').should('not.eq', '/signin')
             })
           })
@@ -578,6 +578,7 @@ export const flush = () => {
 export type ProvisionData = {
   accountType?: AccountType
   hasData?: boolean
+  hasUsers?: boolean
   isOperator?: boolean
   isRegionBeta?: boolean
 }
@@ -588,6 +589,7 @@ export type ProvisionData = {
   allows us to test scenarios when a user is:
   - pay_as_you_go vs free
   - is an operator
+  - has users
   - is in a beta region
   - has usage data vs has no usage data
 
@@ -595,6 +597,7 @@ export type ProvisionData = {
 
   - accountType = free
   - hasData = false
+  - hasUsers = false
   - isOperator = false
   - isRegionBeta = false
 

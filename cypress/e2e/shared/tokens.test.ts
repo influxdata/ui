@@ -153,13 +153,17 @@ describe('tokens', () => {
   it('can delete a token', () => {
     cy.get('.cf-resource-card').should('have.length', 4)
 
-    cy.getByTestID('token-card token test 03').within(() => {
-      cy.getByTestID('context-menu').click()
+    cy.intercept('**/authorizations/*').as('deleteToken')
 
-      cy.getByTestID('delete-token')
-        .contains('Delete')
-        .click()
+    cy.getByTestID('token-card token test 03').within(() => {
+      cy.getByTestID('context-menu').click({force: true})
     })
+
+    cy.getByTestID('token-card token test 03').within(() => {
+      cy.getByTestID('delete-token').click({force: true})
+    })
+
+    cy.wait('@deleteToken')
 
     cy.get('.cf-resource-card').should('have.length', 3)
 
@@ -169,31 +173,39 @@ describe('tokens', () => {
     cy.get('.cf-resource-card')
       .first()
       .within(() => {
-        cy.getByTestID('context-menu').click()
-
-        cy.getByTestID('delete-token')
-          .contains('Delete')
-          .click()
+        cy.getByTestID('context-menu').click({force: true})
       })
 
     cy.get('.cf-resource-card')
       .first()
       .within(() => {
-        cy.getByTestID('context-menu').click()
+        cy.getByTestID('delete-token').click({force: true})
+      })
 
-        cy.getByTestID('delete-token')
-          .contains('Delete')
-          .click()
+    cy.wait('@deleteToken')
+    cy.get('.cf-resource-card')
+      .first()
+      .within(() => {
+        cy.getByTestID('context-menu').click({force: true})
       })
 
     cy.get('.cf-resource-card')
       .first()
       .within(() => {
-        cy.getByTestID('context-menu').click()
+        cy.getByTestID('delete-token').click({force: true})
+      })
 
-        cy.getByTestID('delete-token')
-          .contains('Delete')
-          .click()
+    cy.wait('@deleteToken')
+    cy.get('.cf-resource-card')
+      .first()
+      .within(() => {
+        cy.getByTestID('context-menu').click({force: true})
+      })
+
+    cy.get('.cf-resource-card')
+      .first()
+      .within(() => {
+        cy.getByTestID('delete-token').click({force: true})
       })
 
     // Assert empty state

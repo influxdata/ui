@@ -17,6 +17,10 @@ import {
   setTimeSince,
   setLevel,
   updateThresholds,
+  updateName,
+  initializeAlertBuilder,
+  convertCheckToCustom,
+  Action,
 } from 'src/alerting/actions/alertBuilder'
 import {CHECK_FIXTURE_1, CHECK_FIXTURE_3} from 'src/checks/reducers/checks.test'
 import {
@@ -27,14 +31,16 @@ import {
   DeadmanCheck,
 } from 'src/types'
 
+const noopAction: Action = {type: undefined}
+
 const check_1 = {
-  ...(CHECK_FIXTURE_1 as ThresholdCheck),
+  ...((CHECK_FIXTURE_1 as any) as ThresholdCheck),
   activeStatus: 'inactive' as TaskStatusType,
   status: RemoteDataState.Done,
 }
 
 const check_3 = {
-  ...(CHECK_FIXTURE_3 as DeadmanCheck),
+  ...((CHECK_FIXTURE_3 as any) as DeadmanCheck),
   activeStatus: 'active' as TaskStatusType,
   status: RemoteDataState.Done,
 }
@@ -57,6 +63,31 @@ const mockState = (): AlertBuilderState => ({
 })
 
 describe('alertBuilderReducer', () => {
+  describe('initAlertBuilder', () => {
+    it('init Alert Builder State to defaults', () => {
+      const actual = alertBuilderReducer(
+        mockState(),
+        initializeAlertBuilder('custom')
+      )
+
+      const expected = {
+        ...initialState(),
+        type: 'custom',
+        status: RemoteDataState.Done,
+      }
+
+      expect(actual).toEqual(expected)
+    })
+  })
+
+  it('covertCheckToCustom', () => {
+    const actual = alertBuilderReducer(mockState(), convertCheckToCustom())
+
+    const expected = {...mockState(), type: 'custom'}
+
+    expect(actual).toEqual(expected)
+  })
+
   describe('resetAlertBuilder', () => {
     it('resets Alert Builder State to defaults', () => {
       const actual = alertBuilderReducer(mockState(), resetAlertBuilder())
@@ -66,6 +97,7 @@ describe('alertBuilderReducer', () => {
       expect(actual).toEqual(expected)
     })
   })
+
   describe('loadCheck', () => {
     it('Loads threshold check properties in to alert builder', () => {
       const actual = alertBuilderReducer(
@@ -274,6 +306,37 @@ describe('alertBuilderReducer', () => {
         removeThreshold('INFO')
       )
       expect(actual.thresholds).toEqual([critThresh])
+    })
+  })
+
+  describe('updateName', () => {
+    it('changes name', () => {
+      const state = mockState()
+      const name = 'new-name'
+
+      const expected = {...state, name}
+
+      const actual = alertBuilderReducer(state, updateName(name))
+
+      expect(actual).toEqual(expected)
+    })
+  })
+
+  describe('default action', () => {
+    it("shouldn't change state when action type isn't recognized by reducer", () => {
+      const expected = mockState()
+      const actual = alertBuilderReducer(expected, noopAction)
+
+      expect(actual).toEqual(expected)
+    })
+  })
+
+  describe('initial state', () => {
+    it('initializes state if undefined is passed', () => {
+      const expected = alertBuilderReducer(initialState(), noopAction)
+      const actual = alertBuilderReducer(undefined, noopAction)
+
+      expect(actual).toEqual(expected)
     })
   })
 })

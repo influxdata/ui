@@ -29,7 +29,7 @@ const AssociatedTableUsers: FC = () => {
               ))}
             </Table.Row>
           </Table.Header>
-          <Table.Body>
+          <Table.Body testID="associated-users--table-body">
             {account?.users.map(resource => (
               <ResourcesTableRow
                 key={resource.id}

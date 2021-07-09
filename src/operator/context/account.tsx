@@ -5,10 +5,10 @@ import {useDispatch} from 'react-redux'
 
 // Utils
 import {
-  getAccountById,
-  deleteAccountById,
-  removeUserFromAccount,
-} from 'src/operator/api'
+  deleteOperatorAccount,
+  getOperatorAccount,
+  deleteOperatorAccountsUser,
+} from 'src/client/unityRoutes'
 import {notify} from 'src/shared/actions/notifications'
 import {
   getAccountError,
@@ -64,7 +64,7 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
   const handleGetAccount = useCallback(async () => {
     try {
       setAccountStatus(RemoteDataState.Loading)
-      const resp = await getAccountById(accountID)
+      const resp = await getOperatorAccount({accountId: accountID})
 
       if (resp.status !== 200) {
         setAccountStatus(RemoteDataState.Error)
@@ -90,7 +90,7 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
   const handleDeleteAccount = useCallback(async () => {
     try {
       setDeleteStatus(RemoteDataState.Loading)
-      const resp = await deleteAccountById(accountID)
+      const resp = await deleteOperatorAccount({accountId: accountID})
       if (resp.status !== 204) {
         throw new Error(resp.data.message)
       }
@@ -106,12 +106,14 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
     async (userID: string) => {
       try {
         setDeleteStatus(RemoteDataState.Loading)
-        const resp = await removeUserFromAccount({accountID, userID})
+        const resp = await deleteOperatorAccountsUser({
+          accountId: accountID,
+          userId: userID,
+        })
         if (resp.status !== 204) {
           throw new Error(resp.data.message)
         }
         setDeleteStatus(RemoteDataState.Done)
-        history.push('/operator')
       } catch (error) {
         console.error({error})
         dispatch(notify(deleteAccountError(accountID)))
@@ -119,7 +121,7 @@ export const AccountProvider: FC<Props> = React.memo(({children}) => {
         await handleGetAccount()
       }
     },
-    [dispatch, handleGetAccount, history, accountID]
+    [dispatch, handleGetAccount, accountID]
   )
 
   return (

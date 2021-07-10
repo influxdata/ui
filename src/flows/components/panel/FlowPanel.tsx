@@ -1,7 +1,12 @@
 // Libraries
 import React, {FC, useContext, useCallback} from 'react'
 import classnames from 'classnames'
-import {ComponentColor, IconFont, SquareButton} from '@influxdata/clockface'
+import {
+  ComponentColor,
+  Button,
+  IconFont,
+  SquareButton,
+} from '@influxdata/clockface'
 
 // Components
 import RemovePanelButton from 'src/flows/components/panel/RemovePanelButton'
@@ -9,7 +14,7 @@ import InsertCellButton from 'src/flows/components/panel/InsertCellButton'
 import PanelVisibilityToggle from 'src/flows/components/panel/PanelVisibilityToggle'
 import FlowPanelTitle from 'src/flows/components/panel/FlowPanelTitle'
 import Results from 'src/flows/components/panel/Results'
-
+import Sidebar from 'src/flows/components/Sidebar'
 // Constants
 import {PIPE_DEFINITIONS} from 'src/flows'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
@@ -50,6 +55,7 @@ const FlowPanel: FC<Props> = ({id, controls, persistentControls, children}) => {
   const toggleSidebar = () => {
     if (id !== focused) {
       event('Sidebar Toggle Clicked', {state: 'opening'})
+
       show(id)
     } else {
       event('Sidebar Toggle Clicked', {state: 'hidding'})
@@ -144,7 +150,7 @@ const FlowPanel: FC<Props> = ({id, controls, persistentControls, children}) => {
                   />
                 </FeatureFlag>
                 <FeatureFlag name="flow-sidebar">
-                  <SquareButton
+                  <Button
                     icon={IconFont.CogThick}
                     onClick={toggleSidebar}
                     color={
@@ -152,9 +158,10 @@ const FlowPanel: FC<Props> = ({id, controls, persistentControls, children}) => {
                         ? ComponentColor.Secondary
                         : ComponentColor.Default
                     }
-                    titleText="Configure"
                     className="flows-config-panel-button"
+                    testID="square-button"
                   />
+                  {id === focused && <Sidebar />}
                 </FeatureFlag>
                 <FeatureFlag name="flow-sidebar" equals={false}>
                   <PanelVisibilityToggle id={id} />

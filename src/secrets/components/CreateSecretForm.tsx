@@ -58,20 +58,15 @@ const CreateSecretForm: FC = () => {
     setNewSecret(prevState => ({...prevState, [name]: value}))
   }
 
-  const handleUpsertSecret = (newSecret: Secret) => {
-    dispatch(upsertSecret(newSecret))
-  }
-
   const handleDismiss = () => {
     history.push(`/orgs/${orgId}/settings/secrets`)
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     try {
-      await handleUpsertSecret(newSecret)
+      dispatch(upsertSecret(newSecret))
+    } finally {
       handleDismiss()
-    } catch (error) {
-      console.error('error')
     }
   }
 

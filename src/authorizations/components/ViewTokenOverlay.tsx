@@ -32,7 +32,11 @@ export default class ViewTokenOverlay extends PureComponent<Props> {
           wrapText={true}
         />
         <Overlay.Body>
-          <CodeSnippet text={this.props.auth.token} label={description} />
+          <CodeSnippet
+            text={this.props.auth.token}
+            label={description}
+            type="Token"
+          />
           <PermissionsWidget
             mode={PermissionsWidgetMode.Read}
             heightPixels={500}

@@ -71,16 +71,20 @@ interface Props {
   text: string
   label?: string
   testID?: string
+  type?: string
 }
 
-const CodeSnippet: FC<Props> = ({text, label, testID}) => {
+const CodeSnippet: FC<Props> = ({text, label, testID, type}) => {
   const {transform} = useContext(Context)
   const dispatch = useDispatch()
   const _text = transform(text)
   const onCopy = () => {
     dispatch(
       notify(
-        copyToClipboardSuccess(`${_text.slice(0, 30).trimRight()}...`, 'Script')
+        copyToClipboardSuccess(
+          `${_text.slice(0, 30).trimRight()}...`,
+          type ?? 'Script'
+        )
       )
     )
   }

@@ -1,19 +1,14 @@
 import {Organization} from '../../../src/types'
 import {
-  addAnnotation,
   addRangeAnnotation,
   checkAnnotationText,
   clearLocalStorage,
-  editAnnotation,
-  ensureRangeAnnotationTimesAreNotEqual,
   setupData,
-  startEditingAnnotation,
   testAddAnnotation,
   testEditAnnotation,
   testEditRangeAnnotation,
   testDeleteAnnotation,
 } from '../util/annotationsSetup'
-import * as moment from 'moment'
 
 describe('The Annotations UI functionality, test suite one', () => {
   const singleStatSuffix = 'line-plus-single-stat'

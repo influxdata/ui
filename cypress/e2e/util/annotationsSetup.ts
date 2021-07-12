@@ -1,3 +1,4 @@
+import {Organization} from '../../../src/types'
 import {lines} from '../../support/commands'
 
 export const clearLocalStorage = () => {
@@ -121,7 +122,7 @@ export const checkAnnotationText = (cy: Cypress.Chainable, text: string) => {
   cy.getByTestID('giraffe-annotation-tooltip').contains(text)
 }
 
-export const ensureRangeAnnotationTimesAreNotEqual = (
+const ensureRangeAnnotationTimesAreNotEqual = (
   cy: Cypress.Chainable
 ) => {
   cy.getByTestID('endTime-testID')
@@ -183,6 +184,24 @@ export const testAddAnnotation = (cy: Cypress.Chainable) => {
   checkAnnotationText(cy, 'im a hippopotamus')
 }
 
+const testEditAnnotation = (cy: Cypress.Chainable) => {
+  addAnnotation(cy)
+
+  // should have the annotation created , lets click it to show the modal.
+  editAnnotation(cy)
+
+  // reload to make sure the annotation was edited in the backend as well.
+  cy.reload()
+
+  // annotation tooltip should say the new name
+  cy.getByTestID('cell blah').within(() => {
+    cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
+  })
+  cy.getByTestID('giraffe-annotation-tooltip').contains(
+    'lets edit this annotation...'
+  )
+}
+
 export const testEditRangeAnnotation = (
   cy: Cypress.Chainable,
   layerTestID = 'line'
@@ -209,22 +228,4 @@ export const testDeleteAnnotation = (cy: Cypress.Chainable) => {
   addAnnotation(cy)
 
   deleteAnnotation(cy)
-}
-
-export const testEditAnnotation = (cy: Cypress.Chainable) => {
-  addAnnotation(cy)
-
-  // should have the annotation created , lets click it to show the modal.
-  editAnnotation(cy)
-
-  // reload to make sure the annotation was edited in the backend as well.
-  cy.reload()
-
-  // annotation tooltip should say the new name
-  cy.getByTestID('cell blah').within(() => {
-    cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
-  })
-  cy.getByTestID('giraffe-annotation-tooltip').contains(
-    'lets edit this annotation...'
-  )
 }

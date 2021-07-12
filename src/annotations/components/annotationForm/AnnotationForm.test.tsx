@@ -11,8 +11,6 @@ import {fireEvent} from '@testing-library/react'
 import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 import {REQUIRED_ERROR} from 'src/annotations/components/annotationForm/AnnotationTimeInput'
 
-//jest.mock('src/resources/components/GetResources')
-//jest.mock('src/annotations/actions/thunks')
 const setup = (annoType: 'point' | 'range', startTime, endTime) => {
   const doNothing = () => {}
 
@@ -173,7 +171,6 @@ describe('Annotation Form Component tests', () => {
     expect(queryByTestId('form--element-error')).toBeNull()
     expect(getByTestId('annotation-submit-button')).not.toBeDisabled()
   })
-
   it('should not allow an empty end time', () => {
     const {queryByTestId, getByTestId} = setupRange(oneHourAgo, fiveMinutesAgo)
 

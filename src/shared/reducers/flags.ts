@@ -81,7 +81,10 @@ export default (state = defaultState, action: Actions): FlagState => {
     case SET_FEATURE_FLAG_OVERRIDES:
       return {
         ...state,
-        override: action.payload.flags,
+        override: {
+          ...(state.override || {}),
+          ...action.payload.flags,
+        },
       }
     default:
       return state

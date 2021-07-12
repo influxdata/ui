@@ -15,6 +15,7 @@ import DeleteOrgOverlay from 'src/organizations/components/DeleteOrgOverlay'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {getQuartzMe} from 'src/me/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {CLOUD} from 'src/shared/constants'
 
 const OrgProfilePage: FC = () => {
   const quartzMe = useSelector(getQuartzMe)
@@ -29,12 +30,14 @@ const OrgProfilePage: FC = () => {
       </Page>
       <Switch>
         <Route path="/orgs/:orgID/about/rename" component={RenameOrgOverlay} />
-        {isFlagEnabled('selfDeletion') && quartzMe?.accountType === 'free' && (
-          <Route
-            path="/orgs/:orgID/about/delete"
-            component={DeleteOrgOverlay}
-          />
-        )}
+        {CLOUD &&
+          isFlagEnabled('selfDeletion') &&
+          quartzMe?.accountType === 'free' && (
+            <Route
+              path="/orgs/:orgID/about/delete"
+              component={DeleteOrgOverlay}
+            />
+          )}
       </Switch>
     </>
   )

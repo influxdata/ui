@@ -34,6 +34,7 @@ export const validateLabelUniqueness = (
 export const validateHexCode = (colorHex: string): string | null => {
   const isValidLength = colorHex.length === HEX_CODE_CHAR_LENGTH
   const beginsWithHash = colorHex.substring(0, 1) === '#'
+  const containsValidCharacters = /^([0-9A-F]*)$/i.test(colorHex.substring(1))
 
   const errorMessage = []
 
@@ -46,6 +47,14 @@ export const validateHexCode = (colorHex: string): string | null => {
       errorMessage.push(`and must be ${HEX_CODE_CHAR_LENGTH} characters`)
     } else {
       errorMessage.push(`Hexcodes must be ${HEX_CODE_CHAR_LENGTH} characters`)
+    }
+  }
+
+  if (!containsValidCharacters) {
+    if (errorMessage.length) {
+      errorMessage.push(`and must must contain only 0-9,A-F characters`)
+    } else {
+      errorMessage.push(`Hexcodes must contain only 0-9,A-F characters`)
     }
   }
 

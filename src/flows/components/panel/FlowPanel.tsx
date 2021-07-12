@@ -8,7 +8,12 @@ import React, {
   useEffect,
 } from 'react'
 import classnames from 'classnames'
-import {ComponentColor, IconFont, SquareButton} from '@influxdata/clockface'
+import {
+  ComponentColor,
+  Button,
+  IconFont,
+  SquareButton,
+} from '@influxdata/clockface'
 
 // Components
 import RemovePanelButton from 'src/flows/components/panel/RemovePanelButton'
@@ -16,6 +21,7 @@ import Handle from 'src/flows/components/panel/Handle'
 import InsertCellButton from 'src/flows/components/panel/InsertCellButton'
 import PanelVisibilityToggle from 'src/flows/components/panel/PanelVisibilityToggle'
 import FlowPanelTitle from 'src/flows/components/panel/FlowPanelTitle'
+import Sidebar from 'src/flows/components/Sidebar'
 
 // Constants
 import {PIPE_DEFINITIONS} from 'src/flows'
@@ -62,6 +68,7 @@ const FlowPanel: FC<Props> = ({
   const toggleSidebar = () => {
     if (id !== focused) {
       event('Sidebar Toggle Clicked', {state: 'opening'})
+
       show(id)
     } else {
       event('Sidebar Toggle Clicked', {state: 'hidding'})
@@ -225,7 +232,7 @@ const FlowPanel: FC<Props> = ({
                   />
                 </FeatureFlag>
                 <FeatureFlag name="flow-sidebar">
-                  <SquareButton
+                  <Button
                     icon={IconFont.CogThick}
                     onClick={toggleSidebar}
                     color={
@@ -233,9 +240,10 @@ const FlowPanel: FC<Props> = ({
                         ? ComponentColor.Secondary
                         : ComponentColor.Default
                     }
-                    titleText="Configure"
                     className="flows-config-panel-button"
+                    testID="square-button"
                   />
+                  {id === focused && <Sidebar />}
                 </FeatureFlag>
                 <FeatureFlag name="flow-sidebar" equals={false}>
                   <PanelVisibilityToggle id={id} />

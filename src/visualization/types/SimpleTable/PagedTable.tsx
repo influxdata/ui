@@ -42,7 +42,7 @@ const measurePage = (
   let lastSignature
   let signature
 
-  while (rowIdx <= result.table.length) {
+  while (rowIdx < result.table.length) {
     if (result.table.columns.table.data[rowIdx] !== currentTable) {
       signature = Object.values(result.table.columns)
         .map(
@@ -221,9 +221,14 @@ interface Props {
 }
 
 const PagedTable: FC<Props> = ({result, properties}) => {
-  const {offset, setSize, setPage, setTotalPages} = useContext(
-    PaginationContext
-  )
+  const {
+    offset,
+    setSize,
+    maxSize,
+    setMaxSize,
+    setPage,
+    setTotalPages,
+  } = useContext(PaginationContext)
   const [height, setHeight] = useState(0)
   const ref = useRef()
 
@@ -273,6 +278,12 @@ const PagedTable: FC<Props> = ({result, properties}) => {
 
   useEffect(() => {
     setSize(size)
+  }, [size])
+
+  useEffect(() => {
+    if (size > maxSize) {
+      setMaxSize(size)
+    }
   }, [size])
 
   useEffect(() => {

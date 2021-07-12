@@ -82,6 +82,7 @@ const ClientLibrariesPage: FC = () => {
       <MarkdownRenderer
         text={def.description}
         cloudRenderers={{code: codeRenderer}}
+        escapeHtml={false}
       />
     )
   }

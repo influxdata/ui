@@ -31,7 +31,7 @@ const Notifications: FC = () => {
   return (
     <>
       {notifications.map(
-        ({duration, icon, id, message, style, buttonElement}) => {
+        ({duration, icon, id, message, style, styles = {}, buttonElement}) => {
           const gradient = matchGradientToColor(style)
 
           const handleDismiss = (): void => {
@@ -51,8 +51,10 @@ const Notifications: FC = () => {
               testID={`notification-${style}`}
               style={{maxWidth: '600px', alignItems: 'center'}}
             >
-              <span className="notification--message">{message}</span>
-              {buttonElement && buttonElement(handleDismiss)}
+              <span style={styles}>
+                <span className="notification--message">{message}</span>
+                {buttonElement && buttonElement(handleDismiss)}
+              </span>
             </Notification>
           )
         }

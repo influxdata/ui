@@ -332,8 +332,8 @@ export enum CoordinateType {
   None = 'Lat/Long not provided',
 }
 
-const getS2CellID = (table: Table, index: number): string => {
-  const column = table.getColumn('s2_cell_id')
+const getS2CellID = (s2Column: string, table: Table, index: number): string => {
+  const column = table.getColumn(s2Column)
   if (!column) {
     throw new Error(
       'Cannot retrieve s2_cell_id column - table does not conform to required structure of Table type'
@@ -355,8 +355,8 @@ const getPrecisionTrimmingTableValue = (): bigint[] => {
   return precisionTable
 }
 
-const getCoordinateFromS2 = (table, index) => {
-  const cellId = getS2CellID(table, index)
+const getCoordinateFromS2 = (s2Column, table, index) => {
+  const cellId = getS2CellID(s2Column, table, index)
 
   if (cellId.length > HEX_DIGIT_PRECISION) {
     throw new Error(
@@ -431,7 +431,7 @@ export const getGeoCoordinates = (
 
   switch (coordinateColumn) {
     case CoordinateType.S2:
-      return getCoordinateFromS2(table, index)
+      return getCoordinateFromS2('s2_cell_id', table, index)
     case CoordinateType.Tags:
       const latColumn = table.getColumn('lat')
       const lonColumn = table.getColumn('lon')
@@ -524,7 +524,7 @@ export const getGeoCoordinatesFlagged = (
 
   switch (coordinateColumn) {
     case CoordinateType.S2:
-      return getCoordinateFromS2(table, index)
+      return getCoordinateFromS2(s2Column, table, index)
     case CoordinateType.Tags:
       const latColumn = table.getColumn(latLonColumns?.lat?.column || 'lat')
       const lonColumn = table.getColumn(latLonColumns?.lon?.column || 'lon')

@@ -348,7 +348,11 @@ describe('Flows', () => {
       .should('be.visible')
     cy.getByTestID('table-cell cool').should('not.exist')
 
-    cy.intercept('PATCH', '**/notebooks/*').as('notebooksSave')
+    cy.intercept('PATCH', '**/notebooks/*', req => {
+      if (req.body.spec.readOnly === true) {
+        req.alias = 'notebooksSave'
+      }
+    })
 
     // enable presentation mode
     cy.getByTestID('slide-toggle').click()

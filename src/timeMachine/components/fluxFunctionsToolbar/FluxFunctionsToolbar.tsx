@@ -12,14 +12,11 @@ import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 // Actions
 import {setActiveQueryText} from 'src/timeMachine/actions'
 
-// Utils
-import {getActiveQuery} from 'src/timeMachine/selectors'
-
 // Constants
 import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
 
 // Types
-import {AppState, FluxToolbarFunction} from 'src/types'
+import {FluxToolbarFunction} from 'src/types'
 
 interface OwnProps {
   onInsertFluxFunction: (func: FluxToolbarFunction) => void
@@ -64,19 +61,13 @@ const FluxFunctionsToolbar: FC<Props> = (props: Props) => {
         </DapperScrollbars>
       </ErrorBoundary>
     )
-  }, [searchTerm])
-}
-
-const mstp = (state: AppState) => {
-  const activeQueryText = getActiveQuery(state).text
-
-  return {activeQueryText}
+  }, [searchTerm, props.onInsertFluxFunction])
 }
 
 const mdtp = {
   onSetActiveQueryText: setActiveQueryText,
 }
 
-const connector = connect(mstp, mdtp)
+const connector = connect(null, mdtp)
 
 export default connector(FluxFunctionsToolbar)

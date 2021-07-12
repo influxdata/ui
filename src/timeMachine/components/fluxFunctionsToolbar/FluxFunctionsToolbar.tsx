@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useMemo, useState} from 'react'
+import React, {FC, useMemo, useState, useCallback} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
@@ -32,9 +32,12 @@ const FluxFunctionsToolbar: FC<Props> = (props: Props) => {
     setSearchTerm(searchTerm)
   }
 
-  const handleClickFunction = (func: FluxToolbarFunction) => {
-    props.onInsertFluxFunction(func)
-  }
+  const handleClickFunction = useCallback(
+    (func: FluxToolbarFunction) => {
+      props.onInsertFluxFunction(func)
+    },
+    [props.onInsertFluxFunction]
+  )
 
   return useMemo(() => {
     return (
@@ -61,7 +64,7 @@ const FluxFunctionsToolbar: FC<Props> = (props: Props) => {
         </DapperScrollbars>
       </ErrorBoundary>
     )
-  }, [searchTerm, props.onInsertFluxFunction])
+  }, [searchTerm, handleClickFunction])
 }
 
 const mdtp = {

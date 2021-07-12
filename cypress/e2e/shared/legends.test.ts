@@ -500,7 +500,7 @@ describe('Legends', () => {
         .click()
       cy.getByTestID('add-resource-dropdown--new').click()
 
-      cy.getByTestID('page').should('exist')
+      cy.getByTestID('dashboard-page').should('exist')
       cy.getByTestID('page-title').click()
       cy.getByTestID('renamable-page-title')
         .should('exist')
@@ -567,7 +567,7 @@ describe('Legends', () => {
         .click()
       cy.getByTestID('add-resource-dropdown--new').click()
 
-      cy.getByTestID('page').should('exist')
+      cy.getByTestID('dashboard-page').should('exist')
       cy.getByTestID('page-title').click()
       cy.getByTestID('renamable-page-title')
         .should('exist')

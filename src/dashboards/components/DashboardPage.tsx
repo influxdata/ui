@@ -72,7 +72,7 @@ class DashboardPage extends Component<Props> {
     return (
       <>
         <ErrorBoundary>
-          <Page titleTag={this.pageTitle}>
+          <Page titleTag={this.pageTitle} testID="dashboard-page">
             <LimitChecker>
               <HoverTimeProvider>
                 <DashboardHeader onManualRefresh={onManualRefresh} />

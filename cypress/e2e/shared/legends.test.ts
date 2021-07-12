@@ -572,7 +572,7 @@ describe('Legends', () => {
       cy.getByTestID('renamable-page-title')
         .should('exist')
         .clear()
-        .type('Static Legend D1')
+        .type('Static Legend D2')
         .type('{enter}')
       cy.get('button[title*="Add cell"').click()
 

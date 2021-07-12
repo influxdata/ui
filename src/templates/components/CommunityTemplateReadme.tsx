@@ -32,6 +32,7 @@ class CommunityTemplateReadmeUnconnected extends Component<Props> {
       <MarkdownRenderer
         text={readme}
         className="markdown-format community-templates--readme"
+        escapeHtml={false}
       />
     )
   }

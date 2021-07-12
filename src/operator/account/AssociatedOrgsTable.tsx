@@ -24,7 +24,7 @@ const AssociatedOrgsTable: FC = () => {
               ))}
             </Table.Row>
           </Table.Header>
-          <Table.Body>
+          <Table.Body testID="associated-orgs--table-body">
             {organizations.map(resource => (
               <ResourcesTableRow
                 key={resource.id}

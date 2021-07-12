@@ -60,6 +60,7 @@ const InstallPackageHelper: FC<Props> = ({text, codeRenderer}) => {
             <MarkdownRenderer
               text={text}
               cloudRenderers={{code: codeRenderer}}
+              escapeHtml={false}
             />
           </Panel.Body>
         )}

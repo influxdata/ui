@@ -92,10 +92,11 @@ export const CLOUD_FLAGS = {
   'client-library--scala': true,
   'client-library--swift': true,
   'notification-endpoint-telegram': false,
-  unity: false,
+  selfDeletion: false,
   'molly-first': false,
   'managed-functions': false,
   simpleTable: false,
+  secretsUI: true,
 }
 
 export const activeFlags = (state: AppState): FlagMap => {

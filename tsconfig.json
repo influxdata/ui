@@ -42,5 +42,5 @@
     "src/shared/utils/mocks/*",
     "coverage"
   ],
-  "include": ["src/**/*.ts", "src/**/*.tsx", "global.d.ts"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "global.d.ts", "intl.d.ts"]
 }

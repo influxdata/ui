@@ -25,6 +25,7 @@ const AccountGrid: FC = () => {
       direction={FlexDirection.Row}
       margin={ComponentSize.Large}
       alignItems={AlignItems.FlexStart}
+      testID="account-grid--wrapper"
     >
       <FlexBox
         direction={FlexDirection.Column}
@@ -47,7 +48,6 @@ const AccountGrid: FC = () => {
           testID="cloud-provider"
         />
       </FlexBox>
-
       <FlexBox
         direction={FlexDirection.Column}
         margin={ComponentSize.ExtraSmall}

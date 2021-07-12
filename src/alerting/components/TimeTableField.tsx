@@ -6,7 +6,7 @@ import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
 
 // Types
 import {StatusRow, NotificationRow} from 'src/types'
-import {FormattedDateTime} from '../../utils/datetime/FormattedDateTime'
+import {FormattedDateTime} from 'src/utils/datetime/FormattedDateTime'
 
 interface Props {
   row: StatusRow | NotificationRow

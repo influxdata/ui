@@ -40,7 +40,7 @@ describe('Checkout Page', () => {
     })
   })
 
-  it('should render Set My Limits', () => {
+  it('should render the checkout page and allow for pointing and clicking', () => {
     const email = 'asalem@influxdata.com'
     const limit = 10
     const numberError = 'Please enter a value of 1 or greater'

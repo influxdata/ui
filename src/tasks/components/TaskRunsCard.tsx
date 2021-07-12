@@ -2,7 +2,6 @@
 import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
-import moment from 'moment'
 
 // Components
 import {
@@ -16,6 +15,9 @@ import {
   JustifyContent,
 } from '@influxdata/clockface'
 
+// Actions For Tasks
+import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
+
 // Actions
 import {
   addTaskLabel,
@@ -23,12 +25,19 @@ import {
   runTask,
   getRuns,
 } from 'src/tasks/actions/thunks'
+
+// Actions For Members
+import {getMembers} from 'src/members/actions/thunks'
+
 import {TaskPage, setCurrentTasksPage} from 'src/tasks/actions/creators'
 
 // Types
 import {ComponentColor, Button} from '@influxdata/clockface'
 import {Task, AppState} from 'src/types'
 
+// DateTime
+import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {FormattedDateTime} from 'src/utils/datetime/FormattedDateTime'
 interface PassedProps {
   task: Task
   onActivate: (task: Task) => void
@@ -41,13 +50,16 @@ type Props = PassedProps & ReduxProps
 class UnconnectedTaskRunsCard extends PureComponent<
   Props & RouteComponentProps<{orgID: string; id: string}>
 > {
+  componentDidMount() {
+    this.props.getMembers()
+  }
+
   public render() {
     const {task} = this.props
 
     if (!task) {
       return null
     }
-
     return (
       <ResourceCard
         testID="task-runs-task-card"
@@ -65,9 +77,15 @@ class UnconnectedTaskRunsCard extends PureComponent<
           <ResourceCard.Name name={task.name} testID="task-card--name" />
           <ResourceCard.Meta>
             {this.activeToggle}
-            <>Created at: {task.createdAt}</>
-            <>Created by: {task.name}</>
-            <>Last Used: {moment(task.latestCompleted).fromNow()}</>
+            <>
+              Created at:{' '}
+              <FormattedDateTime
+                format={DEFAULT_TIME_FORMAT}
+                date={new Date(task.createdAt)}
+              />
+            </>
+            <>Created by: {this.ownerName}</>
+            <>Last Used: {relativeTimestampFormatter(task.latestCompleted)}</>
             <>{task.org}</>
           </ResourceCard.Meta>
         </FlexBox>
@@ -82,6 +100,15 @@ class UnconnectedTaskRunsCard extends PureComponent<
         </FlexBox>
       </ResourceCard>
     )
+  }
+
+  private get ownerName(): string {
+    const {task, members} = this.props
+
+    if (members[task.ownerID]) {
+      return members[task.ownerID].name
+    }
+    return ''
   }
 
   private get activeToggle(): JSX.Element {
@@ -137,10 +164,12 @@ class UnconnectedTaskRunsCard extends PureComponent<
 
 const mstp = (state: AppState) => {
   const {runs, runStatus} = state.resources.tasks
+  const {byID} = state.resources.members
 
   return {
     runs,
     runStatus,
+    members: byID,
   }
 }
 
@@ -150,6 +179,7 @@ const mdtp = {
   onRunTask: runTask,
   getRuns,
   setCurrentTasksPage,
+  getMembers,
 }
 
 const connector = connect(mstp, mdtp)

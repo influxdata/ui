@@ -33,7 +33,7 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {ResourceIDs} from 'src/checks/reducers'
 import {ResourceType, AlertHistoryType, AppState} from 'src/types'
 import {RouteComponentProps} from 'react-router-dom'
-import TimeZoneDropdown from '../../shared/components/TimeZoneDropdown'
+import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 
 export const ResourceIDsContext = createContext<ResourceIDs>(null)
 

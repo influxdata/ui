@@ -48,7 +48,7 @@ export const LatLonColumnOptions: FC<Props> = ({
   return (
     <>
       <Dropdown
-        style={{flex: '0 0 120px'}}
+        className="geo-dropdowns"
         button={(active, onClick) => (
           <Dropdown.Button
             active={active}
@@ -80,7 +80,7 @@ export const LatLonColumnOptions: FC<Props> = ({
         )}
       />
       <Dropdown
-        style={{flex: '0 0 120px'}}
+        className="geo-dropdowns"
         button={(active, onClick) => (
           <Dropdown.Button
             active={active}

@@ -8,6 +8,8 @@ import {
 } from 'src/shared/utils/duration'
 import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
 
+import {CustomTimeRange, SelectableDurationTimeRange} from 'src/types'
+
 const TEST_CASES = [
   ['1d', [{magnitude: 1, unit: 'd'}]],
   [
@@ -117,4 +119,35 @@ describe('isDurationParseable', () => {
       expect(isDurationParseable(input)).toEqual(true)
     }
   )
+})
+
+describe('convertTimeRangeToCustom', () => {
+  test('conversion of SelectableDurationTimeRange to custom ', async () => {
+    const pastHourTimeRange: SelectableDurationTimeRange = {
+      seconds: 3600,
+      lower: 'now() - 1h',
+      upper: null,
+      label: 'Past 1h',
+      duration: '1h',
+      type: 'selectable-duration',
+      windowPeriod: 10000, // 10s
+    }
+
+    const lowerDate = new Date(1466424490000)
+    lowerDate.setHours(lowerDate.getHours() - 1)
+
+    const mockDate = new Date(1466424490000)
+
+    const spy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
+
+    const expected: CustomTimeRange = {
+      lower: lowerDate.toISOString(),
+      upper: new Date().toISOString(),
+      type: 'custom',
+    }
+    const {convertTimeRangeToCustom} = await import('src/shared/utils/duration')
+
+    expect(convertTimeRangeToCustom(pastHourTimeRange)).toStrictEqual(expected)
+    spy.mockRestore()
+  })
 })

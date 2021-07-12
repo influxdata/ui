@@ -5,16 +5,10 @@ import {
   clearLocalStorage,
   setupData,
   startEditingAnnotation,
-  testEditAnnotation,
-  testEditRangeAnnotation,
-  testDeleteAnnotation,
 } from '../util/annotationsSetup'
 import * as moment from 'moment'
 
 describe('Annotations, but in a different test suite', () => {
-  const singleStatSuffix = 'line-plus-single-stat'
-  const bandSuffix = 'band'
-
   afterEach(clearLocalStorage)
   beforeEach(() => setupData(cy))
 

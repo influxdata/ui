@@ -1,4 +1,3 @@
-import {Organization} from '../../../src/types'
 import {
   addRangeAnnotation,
   checkAnnotationText,

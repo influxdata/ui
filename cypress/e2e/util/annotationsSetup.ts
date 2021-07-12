@@ -182,7 +182,7 @@ export const testAddAnnotation = (cy: Cypress.Chainable) => {
   checkAnnotationText(cy, 'im a hippopotamus')
 }
 
-const testEditAnnotation = (cy: Cypress.Chainable) => {
+export const testEditAnnotation = (cy: Cypress.Chainable) => {
   addAnnotation(cy)
 
   // should have the annotation created , lets click it to show the modal.

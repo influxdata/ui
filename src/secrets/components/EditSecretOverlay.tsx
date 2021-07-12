@@ -15,7 +15,7 @@ import {getOrg} from 'src/organizations/selectors'
 
 const EditSecretOverlay: FC = () => {
   const history = useHistory()
-  const orgId = useSelector(getOrg)
+  const orgId = useSelector(getOrg)?.id
 
   return (
     <Overlay visible={true}>

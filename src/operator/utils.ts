@@ -6,7 +6,7 @@ import {OrgLimits} from 'src/types'
 const updateMaxRetentionWithCallback = (
   limits: OrgLimits,
   cb: typeof nsToHours | typeof hoursToNs
-) => ({
+): OrgLimits => ({
   ...limits,
   bucket: {
     ...limits?.bucket,
@@ -14,8 +14,8 @@ const updateMaxRetentionWithCallback = (
   },
 })
 
-export const toDisplayLimits = (limits: OrgLimits) =>
+export const toDisplayLimits = (limits: OrgLimits): OrgLimits =>
   updateMaxRetentionWithCallback(limits, nsToHours)
 
-export const fromDisplayLimits = (displayLimits: OrgLimits) =>
+export const fromDisplayLimits = (displayLimits: OrgLimits): OrgLimits =>
   updateMaxRetentionWithCallback(displayLimits, hoursToNs)

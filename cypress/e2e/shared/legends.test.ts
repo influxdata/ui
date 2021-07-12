@@ -500,9 +500,13 @@ describe('Legends', () => {
         .click()
       cy.getByTestID('add-resource-dropdown--new').click()
 
-      cy.getByTestID('page-title')
+      cy.getByTestID('page').should('exist')
+      cy.getByTestID('page-title').click()
+      cy.getByTestID('renamable-page-title')
         .should('exist')
+        .clear()
         .type('Static Legend D1')
+        .type('{enter}')
       cy.get('button[title*="Add cell"').click()
 
       cy.get<string>('@defaultBucketListSelector').then(
@@ -563,9 +567,13 @@ describe('Legends', () => {
         .click()
       cy.getByTestID('add-resource-dropdown--new').click()
 
-      cy.getByTestID('page-title')
+      cy.getByTestID('page').should('exist')
+      cy.getByTestID('page-title').click()
+      cy.getByTestID('renamable-page-title')
         .should('exist')
-        .type('Static Legend D2')
+        .clear()
+        .type('Static Legend D1')
+        .type('{enter}')
       cy.get('button[title*="Add cell"').click()
 
       cy.get<string>('@defaultBucketListSelector').then(

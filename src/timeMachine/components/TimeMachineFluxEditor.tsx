@@ -50,7 +50,7 @@ const TimeMachineFluxEditor: FC<Props> = ({
           p.lineNumber,
           p.column
         ),
-        text: `v.${variableName}`,
+        text: `v["${variableName}"]`,
       },
     ])
     onSetActiveQueryText(editorInstance.getValue())

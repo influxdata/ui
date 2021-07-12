@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useMemo, useState, useCallback} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import TransformToolbarFunctions from 'src/timeMachine/components/fluxFunctionsToolbar/TransformToolbarFunctions'
@@ -8,9 +7,6 @@ import FunctionCategory from 'src/timeMachine/components/fluxFunctionsToolbar/Fu
 import FluxToolbarSearch from 'src/timeMachine/components/FluxToolbarSearch'
 import {DapperScrollbars} from '@influxdata/clockface'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
-
-// Actions
-import {setActiveQueryText} from 'src/timeMachine/actions'
 
 // Constants
 import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
@@ -22,10 +18,7 @@ interface OwnProps {
   onInsertFluxFunction: (func: FluxToolbarFunction) => void
 }
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps
-
-const FluxFunctionsToolbar: FC<Props> = (props: Props) => {
+const FluxFunctionsToolbar: FC<OwnProps> = (props: OwnProps) => {
   const [searchTerm, setSearchTerm] = useState('')
 
   const handleSearch = (searchTerm: string): void => {
@@ -67,10 +60,4 @@ const FluxFunctionsToolbar: FC<Props> = (props: Props) => {
   }, [searchTerm, handleClickFunction])
 }
 
-const mdtp = {
-  onSetActiveQueryText: setActiveQueryText,
-}
-
-const connector = connect(null, mdtp)
-
-export default connector(FluxFunctionsToolbar)
+export default FluxFunctionsToolbar

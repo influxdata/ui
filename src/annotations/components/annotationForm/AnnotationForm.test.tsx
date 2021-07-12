@@ -37,11 +37,18 @@ describe('Annotation Form Component tests', () => {
     expect(queryByTestId('form--element-error')).toBeNull()
   })
 
-  it.skip('should disallow a start time in the future', () => {
+  it('should disallow a start time in the future', () => {
     const oneHourInFuture = startTime + 60 * 60 * 1000
 
     const {getByTestId} = setup('point', oneHourInFuture)
 
-    //getByTestId('edit-annotation-message--default').set
+    fireEvent.change(getByTestId('edit-annotation-message'), {
+      target: {value: 'abcde'},
+    })
+
+    expect(getByTestId('form--element-error')).toHaveTextContent('Start Time cannot be in the future')
+
+
+
   })
 })

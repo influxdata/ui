@@ -22,7 +22,7 @@ import {getOrg} from 'src/organizations/selectors'
 
 const CreateSecretForm: FC = () => {
   const secrets = useSelector(getAllSecrets)
-  const orgId = useSelector(getOrg)
+  const orgId = useSelector(getOrg)?.id
   const handleKeyValidation = (key: string): string | null => {
     if (!key) {
       return null

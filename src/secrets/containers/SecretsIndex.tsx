@@ -7,7 +7,8 @@ import {Switch, Route} from 'react-router-dom'
 import SettingsTabbedPage from 'src/settings/components/SettingsTabbedPage'
 import SettingsHeader from 'src/settings/components/SettingsHeader'
 import {Page} from '@influxdata/clockface'
-import {EditSecretOverlay, CreateSecretOverlay} from 'src/shared/containers'
+import EditSecretOverlay from 'src/secrets/components/EditSecretOverlay'
+import CreateSecretOverlay from 'src/secrets/components/CreateSecretOverlay'
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 

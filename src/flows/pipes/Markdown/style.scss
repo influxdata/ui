@@ -10,10 +10,7 @@
 
 .flow-panel--body .markdown-editor--monaco {
   position: relative;
-
-  .react-monaco-editor-container {
-    min-height: 100px;
-  }
+  height: 100%;
 }
 
 .flow-panel--markdown__placeholder.markdown-format {

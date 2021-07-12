@@ -174,6 +174,12 @@ export const FlowListProvider: FC = ({children}) => {
             ),
           },
           {
+            title: 'Validate the Data',
+            visible: true,
+            type: 'visualization',
+            properties: {type: 'simple-table', showAll: false},
+          },
+          {
             title: 'Visualize the Result',
             visible: true,
             type: 'visualization',

@@ -122,9 +122,7 @@ export const checkAnnotationText = (cy: Cypress.Chainable, text: string) => {
   cy.getByTestID('giraffe-annotation-tooltip').contains(text)
 }
 
-const ensureRangeAnnotationTimesAreNotEqual = (
-  cy: Cypress.Chainable
-) => {
+const ensureRangeAnnotationTimesAreNotEqual = (cy: Cypress.Chainable) => {
   cy.getByTestID('endTime-testID')
     .invoke('val')
     .then(endTimeValue => {

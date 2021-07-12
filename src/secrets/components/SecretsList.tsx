@@ -16,23 +16,13 @@ import {getSortedResources} from 'src/shared/utils/sort'
 interface Props {
   secrets: Secret[]
   emptyState: JSX.Element
-  onDeleteSecret: (secret: Secret) => void
   sortKey: string
   sortDirection: Sort
   sortType: SortTypes
-  handleEditSecret: (defaultKey: string) => void
 }
 
 const SecretsList: FC<Props> = props => {
-  const {
-    emptyState,
-    secrets,
-    sortKey,
-    sortDirection,
-    sortType,
-    onDeleteSecret,
-    handleEditSecret,
-  } = props
+  const {emptyState, secrets, sortKey, sortDirection, sortType} = props
 
   const sortedSecrets = useMemo(
     () => getSortedResources(secrets, sortKey, sortDirection, sortType),
@@ -44,12 +34,7 @@ const SecretsList: FC<Props> = props => {
       <ResourceList>
         <ResourceList.Body emptyState={emptyState}>
           {sortedSecrets.map((secret, index) => (
-            <SecretCard
-              key={secret.id || `secret-${index}`}
-              secret={secret}
-              onDeleteSecret={onDeleteSecret}
-              handleEditSecret={handleEditSecret}
-            />
+            <SecretCard key={secret?.id || `secret-${index}`} secret={secret} />
           ))}
         </ResourceList.Body>
       </ResourceList>

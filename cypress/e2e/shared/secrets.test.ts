@@ -89,6 +89,7 @@ describe('Secrets', () => {
   })
 
   it('Can perform basic CRUD via the UI', () => {
+    const secretName = 'Shhhhh'
     cy.intercept('PATCH', '**/secrets').as('upsertSecret')
     cy.intercept('DELETE', '**/secrets').as('deleteSecret')
     cy.getByTestID('button-add-secret')
@@ -98,7 +99,7 @@ describe('Secrets', () => {
         cy.getByTestID('variable-form-save').should('be.disabled')
         cy.getByTestID('input-field')
           .first()
-          .type('Shhhhh')
+          .type(secretName)
         cy.getByTestID('variable-form-save').should('be.disabled')
         cy.getByTestID('input-field')
           .last()
@@ -109,17 +110,13 @@ describe('Secrets', () => {
           .its('response.statusCode')
           .should('eq', 204)
           .then(() => {
-            cy.getByTestID('secret-card--Shhhhh').should('exist')
-            cy.getByTestID('secret-card--Shhhhh').should('be.visible')
-            cy.getByTestID('secret-card--name-Shhhhh')
+            cy.getByTestID(`secret-card--${secretName}`).should('exist')
+            cy.getByTestID(`secret-card--${secretName}`).should('be.visible')
+            cy.getByTestID(`secret-card--name-${secretName}`)
               .click()
               .then(() => {
-                cy.getByTestID('input-field')
-                  .first()
-                  .type('This should do nothing')
-                cy.getByTestID('input-field')
-                  .first()
-                  .should('not.contain.text', 'This should do nothing')
+                cy.getByTestID('input-field').should('be.disabled')
+                cy.getByTestID('input-field').should('have.value', secretName)
                 cy.getByTestID('input-field')
                   .last()
                   .type("I'm hunting rabbits")

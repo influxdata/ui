@@ -220,7 +220,6 @@ const SetOrg: FC = () => {
           />
           {isFlagEnabled('secretsUI') && (
             <Route
-              exact
               path={`${orgPath}/${SETTINGS}/${SECRETS}`}
               component={SecretsIndex}
             />

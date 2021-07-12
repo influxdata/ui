@@ -149,7 +149,7 @@ const OrgOverlay: FC = () => {
                     />
                   </Grid.Column>
                   <Grid.Column widthMD={Columns.Three}>
-                    <Form.Label label="Max Retention Duration (hours)"></Form.Label>
+                    <Form.Label label="Max Retention Duration (hours)" />
                     <LimitsInput
                       type={InputType.Number}
                       name="bucket.maxRetentionDuration"

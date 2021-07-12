@@ -91,7 +91,7 @@ describe('Secrets', () => {
   it('Can perform basic CRUD via the UI', () => {
     const secretName = 'Shhhhh'
     cy.intercept('PATCH', '**/secrets').as('upsertSecret')
-    cy.intercept('DELETE', '**/secrets').as('deleteSecret')
+    cy.intercept('POST', '**/secrets/delete').as('deleteSecret')
     cy.getByTestID('button-add-secret')
       .first() // There's a second one in the empty state.
       .click()
@@ -103,7 +103,7 @@ describe('Secrets', () => {
         cy.getByTestID('variable-form-save').should('be.disabled')
         cy.getByTestID('input-field')
           .last()
-          .type("I'm hunting wabbits")
+          .type("I'm a secret!")
         cy.getByTestID('variable-form-save').should('be.enabled')
         cy.getByTestID('variable-form-save').click()
         cy.wait('@upsertSecret')
@@ -130,7 +130,7 @@ describe('Secrets', () => {
                       .click({force: true})
                       .then(() => {
                         cy.getByTestID('delete-secret-confirm--Shhhhh').should(
-                          'be.visible'
+                          'exist'
                         )
                         cy.getByTestID('delete-secret-confirm--Shhhhh').click()
                         cy.wait('@deleteSecret')

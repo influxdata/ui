@@ -24,7 +24,7 @@ describe('The Annotations UI functionality, test suite one', () => {
       testEditAnnotation(cy)
     })
     it('can delete an annotation for the single stat + line graph', () => {
-      testDeleteAnnotationTest(cy)
+      testDeleteAnnotation(cy)
     })
     it('can add a range annotation for the xy single stat + line graph', () => {
       addRangeAnnotation(cy)
@@ -48,7 +48,7 @@ describe('The Annotations UI functionality, test suite one', () => {
       testEditAnnotation(cy)
     })
     it('can delete an annotation for the band plot ', () => {
-      testDeleteAnnotationTest(cy)
+      testDeleteAnnotation(cy)
     })
 
     it('can add a range annotation for the band plot', () => {
@@ -87,7 +87,7 @@ describe('The Annotations UI functionality, test suite one', () => {
       testEditAnnotation(cy)
     })
     it('can delete an annotation  for the xy line graph', () => {
-      testDeleteAnnotationTest(cy)
+      testDeleteAnnotation(cy)
     })
     it('can add a range annotation for the xy line graph', () => {
       addRangeAnnotation(cy)

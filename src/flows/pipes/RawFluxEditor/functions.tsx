@@ -100,7 +100,7 @@ const Functions: FC<Props> = ({onSelect}) => {
         {body}
       </div>
     )
-  }, [search])
+  }, [search, onSelect])
 }
 
 export default Functions

@@ -7,6 +7,7 @@ import React, {
   useState,
   useContext,
   useCallback,
+  useMemo,
 } from 'react'
 import {
   RemoteDataState,
@@ -145,32 +146,34 @@ const Query: FC<PipeProp> = ({Context}) => {
     ])
   }, [id, inject])
 
-  return (
-    <Context controls={controls} resizes>
-      <Suspense
-        fallback={
-          <SpinnerContainer
-            loading={RemoteDataState.Loading}
-            spinnerComponent={<TechnoSpinner />}
+  return useMemo(() => {
+    return (
+      <Context controls={controls} resizes>
+        <Suspense
+          fallback={
+            <SpinnerContainer
+              loading={RemoteDataState.Loading}
+              spinnerComponent={<TechnoSpinner />}
+            />
+          }
+        >
+          <FluxMonacoEditor
+            script={query.text}
+            onChangeScript={updateText}
+            onSubmitScript={() => {}}
+            setEditorInstance={setEditorInstance}
+            autogrow
+            wrapLines="on"
           />
-        }
-      >
-        <FluxMonacoEditor
-          script={query.text}
-          onChangeScript={updateText}
-          onSubmitScript={() => {}}
-          setEditorInstance={setEditorInstance}
-          autogrow
-          wrapLines="on"
-        />
-      </Suspense>
-      {!isFlagEnabled('flow-sidebar') && showFn && (
-        <div className="flow-nonsidebar">
-          <Functions onSelect={inject} />
-        </div>
-      )}
-    </Context>
-  )
+        </Suspense>
+        {!isFlagEnabled('flow-sidebar') && showFn && (
+          <div className="flow-nonsidebar">
+            <Functions onSelect={inject} />
+          </div>
+        )}
+      </Context>
+    )
+  }, [editorInstance, showFn])
 }
 
 export default Query

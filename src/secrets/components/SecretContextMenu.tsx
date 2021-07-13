@@ -25,13 +25,19 @@ import {
 import {Secret} from 'src/types'
 import {Context} from 'src/clockface'
 
+// Utils
+import {deleteSecret} from 'src/secrets/actions/thunks'
+
 interface Props {
   secret: Secret
-  onDeleteSecret: () => void
 }
 
-const SecretContextMenu: FC<Props> = ({secret, onDeleteSecret}) => {
+const SecretContextMenu: FC<Props> = ({secret}) => {
   const dispatch = useDispatch()
+
+  const handleDelete = () => {
+    dispatch(deleteSecret(secret))
+  }
 
   const handleCopyAttempt = (
     copiedText: string,
@@ -69,7 +75,7 @@ const SecretContextMenu: FC<Props> = ({secret, onDeleteSecret}) => {
       >
         <Context.Item
           label="Delete"
-          action={onDeleteSecret}
+          action={handleDelete}
           testID={`delete-secret-confirm--${secret.id}`}
         />
       </Context.Menu>

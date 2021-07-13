@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
 import {useHistory} from 'react-router-dom'
-import {useSelector, useDispatch} from 'react-redux'
+import {useSelector} from 'react-redux'
 
 // Components
 import {AlignItems, FlexDirection, ResourceCard} from '@influxdata/clockface'
@@ -13,19 +13,12 @@ import {Secret} from 'src/types'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
-import {deleteSecret} from '../actions/thunks'
 
 interface Props {
   secret: Secret
 }
 
 const SecretCard: FC<Props> = ({secret}) => {
-  const dispatch = useDispatch()
-
-  const handleDelete = () => {
-    dispatch(deleteSecret(secret))
-  }
-
   const history = useHistory()
   const orgId = useSelector(getOrg)?.id
 
@@ -38,7 +31,7 @@ const SecretCard: FC<Props> = ({secret}) => {
       <ResourceCard
         testID={`secret-card--${secret?.key}`}
         contextMenu={
-          <SecretContextMenu secret={secret} onDeleteSecret={handleDelete} />
+          <SecretContextMenu secret={secret} />
         }
         direction={FlexDirection.Row}
         alignItems={AlignItems.Center}

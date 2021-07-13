@@ -28,11 +28,13 @@ import {
 import {
   TimeRange,
   CustomTimeRange,
-  SelectableDurationTimeRange,
+  SelectableDurationTimeRange, TimeZone,
 } from 'src/types'
+import {connect} from 'react-redux'
 
 interface Props {
   timeRange: TimeRange
+  timeZone: TimeZone
   onSetTimeRange: (timeRange: TimeRange) => void
   width?: number
 }
@@ -52,7 +54,7 @@ class TimeRangeDropdown extends PureComponent<Props, State> {
 
   public render() {
     const timeRange = this.timeRange
-    const timeRangeLabel = getTimeRangeLabel(timeRange)
+    const timeRangeLabel = getTimeRangeLabel(timeRange, this.props.timeZone)
     return (
       <>
         <Popover
@@ -180,4 +182,10 @@ class TimeRangeDropdown extends PureComponent<Props, State> {
   }
 }
 
-export default TimeRangeDropdown
+const mapStateToProps = state => ({
+  timeZone: state.app.persisted.timeZone || 'Local'
+})
+
+
+export default connect(mapStateToProps)(TimeRangeDropdown)
+

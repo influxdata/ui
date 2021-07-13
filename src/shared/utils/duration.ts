@@ -1,8 +1,9 @@
 import moment from 'moment'
 
-import {TimeRange, CustomTimeRange, TimeRangeDirection} from 'src/types'
+import {TimeRange, CustomTimeRange, TimeRangeDirection, TimeZone} from 'src/types'
 import {Duration, DurationUnit} from 'src/types/ast'
 import {TIME_RANGE_FORMAT} from 'src/shared/constants/timeRanges'
+import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 
 export const removeSpacesAndNow = (input: string): string =>
   input.replace(/\s/g, '').replace(/now\(\)-/, '')
@@ -157,7 +158,8 @@ export const convertTimeRangeToCustom = (
 
 export const getTimeRangeLabel = (
   timeRange: TimeRange,
-  singleDirection?: TimeRangeDirection
+  timeZone?: TimeZone,
+  singleDirection?: TimeRangeDirection,
 ): string => {
   if (timeRange.type === 'selectable-duration') {
     return timeRange.label
@@ -166,8 +168,9 @@ export const getTimeRangeLabel = (
     return timeRange.lower
   }
   if (timeRange.type === 'custom') {
-    const lower = moment(timeRange.lower).format(TIME_RANGE_FORMAT)
-    const upper = moment(timeRange.upper).format(TIME_RANGE_FORMAT)
+    const formatter = createDateTimeFormatter(TIME_RANGE_FORMAT, timeZone)
+    const lower = formatter.format(new Date(timeRange.lower))
+    const upper = formatter.format(new Date(timeRange.upper))
     if (singleDirection && singleDirection === TimeRangeDirection.Upper) {
       return upper
     } else if (

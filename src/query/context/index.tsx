@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, createContext, useState} from 'react'
 import {runQuery} from 'src/shared/apis/query'
-import {RemoteDataState, TimePeriod} from 'src/types'
+import {AppState, RemoteDataState, TimePeriod, Variable} from 'src/types'
 
 // Utils
 import {find} from 'src/flows/context/query'
@@ -10,8 +10,12 @@ import {find} from 'src/flows/context/query'
 import {ASTIM, parseASTIM} from 'src/variables/utils/astim'
 import {format_from_js_file} from '@influxdata/flux'
 import {getOrg} from 'src/organizations/selectors'
-import {useSelector} from 'react-redux'
+import {connect, ConnectedProps, useSelector} from 'react-redux'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
+import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
+import {getVariables} from 'src/variables/selectors'
+import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
+import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 
 type Tags = Set<string> | null
 
@@ -23,6 +27,7 @@ interface QueryResult {
 class Query {
   private astim: ASTIM
   private orgId: string
+  private vars: Variable[] | null
   private abortController: AbortController
 
   status: RemoteDataState
@@ -47,6 +52,14 @@ class Query {
     this.astim = null
     this.status = null
     this.result = null
+  }
+
+  variables(vars: Variable[] | null = null) {
+    if (!vars) {
+      return this.vars
+    }
+
+    this.vars = vars
   }
 
   bucket(name: string | null) {
@@ -104,13 +117,13 @@ class Query {
     }
 
     this.status = RemoteDataState.Loading
-    const extern = buildUsedVarsOption(this.get(), this.astim.variables)
-    runQuery(this.orgId, this.get(), extern, abortController)
+    const extern = buildUsedVarsOption(this.get(), this.variables())
+    runQuery(this.orgId, this.get(), extern, this.abortController)
       .promise.then((...args) => {
-        ret.resolve.apply(ret, args) // eslint-disable-line prefer-spread
+        console.log({args})
       })
       .catch((error: Error) => {
-        ret.reject(error)
+        console.log({error})
       })
     // do something with AbortController
     this.status = RemoteDataState.Done
@@ -145,6 +158,13 @@ class Query {
   }
 }
 
+interface OwnProps {
+  children: (r) => JSX.Element
+}
+
+type ReduxProps = ConnectedProps<typeof connector>
+type Props = OwnProps & ReduxProps
+
 interface QueryContextType {
   queries: Query[]
   runQueries: (tags: Tags) => void
@@ -165,12 +185,14 @@ export const QueryBatchContext = createContext<QueryContextType>(
   DEFAULT_QUERY_CONTEXT
 )
 
-const QueryProvider: FC = ({children}) => {
+const QueryProvider: FC<Props> = ({children, variables}) => {
   const orgId = useSelector(getOrg).id
   const [queries, setQueries] = useState<Query[]>([])
 
-  const addQuery = (query: string, tags: Tags = null) => {
-    queries.push(new Query(orgId, query, tags))
+  const addQuery = (rawQuery: string, tags: Tags = null) => {
+    const query = new Query(orgId, rawQuery, tags)
+    query.variables(variables)
+    queries.push(query)
 
     setQueries(queries)
   }
@@ -213,4 +235,20 @@ const QueryProvider: FC = ({children}) => {
   )
 }
 
-export default QueryProvider
+const mstp = (state: AppState) => {
+  const timeRange = getTimeRangeWithTimezone(state)
+
+  const variables = [
+    ...getVariables(state),
+    getRangeVariable(TIME_RANGE_START, timeRange),
+    getRangeVariable(TIME_RANGE_STOP, timeRange),
+  ]
+
+  return {
+    variables,
+  }
+}
+
+const connector = connect(mstp, {})
+
+export default connector(QueryProvider)

@@ -36,7 +36,7 @@ const SecretCard: FC<Props> = ({secret}) => {
   return (
     <ErrorBoundary>
       <ResourceCard
-        testID={`secret-card--${secret?.id}`}
+        testID={`secret-card--${secret?.key}`}
         contextMenu={
           <SecretContextMenu secret={secret} onDeleteSecret={handleDelete} />
         }
@@ -44,8 +44,8 @@ const SecretCard: FC<Props> = ({secret}) => {
         alignItems={AlignItems.Center}
       >
         <ResourceCard.Name
-          name={secret?.id}
-          testID={`secret-card--name-${secret?.id}`}
+          name={secret?.key}
+          testID={`secret-card--name-${secret?.key}`}
           onClick={editSecret}
         />
       </ResourceCard>

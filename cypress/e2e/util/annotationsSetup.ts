@@ -104,12 +104,7 @@ export const editAnnotation = (cy: Cypress.Chainable) => {
 
 export const deleteAnnotation = (cy: Cypress.Chainable) => {
   // should have the annotation created , lets click it to show the modal.
-  cy.getByTestID('cell blah').within(() => {
-    // we have 2 line layers by the same id, we only want to click on the first
-    cy.get('line')
-      .first()
-      .click()
-  })
+  startEditingAnnotation(cy)
 
   cy.getByTestID('delete-annotation-button').click()
 

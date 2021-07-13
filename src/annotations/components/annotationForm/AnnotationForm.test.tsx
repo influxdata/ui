@@ -12,7 +12,7 @@ import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 import {REQUIRED_ERROR} from 'src/annotations/components/annotationForm/AnnotationTimeInput'
 
 const setup = (annoType: 'point' | 'range', startTime, endTime) => {
-  const doNothing = () => {}
+  const doNothing = jest.fn()
 
   return renderWithRedux(
     <AnnotationForm
@@ -35,7 +35,7 @@ const setupRange = (start, end) => {
   return setup('range', start, end)
 }
 
-describe('Annotation Form Component tests', () => {
+describe('Annotation Form Component', () => {
   const fiveMinutesAgo = new Date().getTime() - 1000 * 60 * 5
   const oneHourAgo = new Date().getTime() - 1000 * 60 * 60
   const oneHourInFuture = fiveMinutesAgo + 60 * 60 * 1000

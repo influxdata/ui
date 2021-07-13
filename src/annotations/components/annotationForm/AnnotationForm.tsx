@@ -70,16 +70,15 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
   const dispatch = useDispatch()
 
   const isValidAnnotationForm = (): boolean => {
-    const isValidPointAnnotation = Boolean(
+    const isValidPointAnnotation =
       summary?.length && startTime && startTimeFormatValid && isStartTimeValid()
-    )
 
     if (annotationType === 'range') {
-      return Boolean(
+      return (
         isValidPointAnnotation &&
-          endTime &&
-          endTimeFormatValid &&
-          isEndTimeValid()
+        endTime &&
+        endTimeFormatValid &&
+        isEndTimeValid()
       )
     }
     return isValidPointAnnotation
@@ -152,11 +151,21 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     props.onClose()
   }
 
-  const isTimeInFuture = timeToCheck => {
+  /**
+   * timeToCheck is either a string or a number, moment does the conversion for us.
+   * at first; it's a number like:  1626185380000
+   * then, if the user edits it, then it's a string: like:  2021-07-13T15:31:40.000Z
+   * */
+  const isTimeInFuture = (timeToCheck): boolean => {
     return moment(timeToCheck).isAfter(moment())
   }
 
-  const validateStartTime = () => {
+  interface ValidityInfo {
+    message?: string
+    isValid: boolean
+  }
+
+  const validateStartTime = (): ValidityInfo => {
     if (isTimeInFuture(startTime)) {
       return {isValid: false, message: START_TIME_IN_FUTURE_MESSAGE}
     }
@@ -171,7 +180,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
    *
    * since this is only vaild for range annotations, if it is a point annotations just return true
    * */
-  const validateEndTime = () => {
+  const validateEndTime = (): ValidityInfo => {
     if (annotationType === 'point') {
       return {isValid: true}
     }
@@ -204,19 +213,19 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     return {isValid: true, message: null}
   }
 
-  const getEndTimeValidationMessage = () => {
+  const getEndTimeValidationMessage = (): string => {
     return validateEndTime().message
   }
 
-  const isEndTimeValid = () => {
+  const isEndTimeValid = (): boolean => {
     return validateEndTime().isValid
   }
 
-  const getStartTimeValidationMessage = () => {
+  const getStartTimeValidationMessage = (): string => {
     return validateStartTime().message
   }
 
-  const isStartTimeValid = () => {
+  const isStartTimeValid = (): boolean => {
     return validateStartTime().isValid
   }
 

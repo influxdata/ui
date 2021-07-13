@@ -1,4 +1,4 @@
-import React, {FC, useEffect, memo, useState} from 'react'
+import React, {FC, useEffect, memo, useState, useMemo} from 'react'
 
 import {DocSearchModal} from '@docsearch/react'
 
@@ -6,13 +6,14 @@ import '@docsearch/react/style'
 
 import './GlobalSearch.scss'
 
-const Hit: FC<any> = ({hit, children}) => {
+const Hit: FC<any> = memo(({hit, children}) => {
   return (
     <a href={hit.url} rel="noreferrer" target="_blank">
       {children}
     </a>
   )
-}
+})
+
 const GlobalSearch: FC = () => {
   const [showState, setShowState] = useState(false)
   const toggleShowSearch = (event: KeyboardEvent) => {
@@ -56,6 +57,12 @@ const GlobalSearch: FC = () => {
   //     },
   //   })
   // }, [])
+  const facetFilters = useMemo(
+    () => ({
+      facetFilters: [['project: influxdb', 'flux:true'], 'version: cloud'],
+    }),
+    []
+  )
   return showState ? (
     // <div id="spotlight_wrapper">
     //   <input
@@ -71,9 +78,7 @@ const GlobalSearch: FC = () => {
       appId="WHM9UWMP6M"
       placeholder="Search our docs: "
       initialScrollY={0}
-      searchParameters={{
-        facetFilters: [['project: influxdb', 'flux:true'], 'version: cloud'],
-      }}
+      searchParameters={facetFilters}
       hitComponent={Hit}
     />
   ) : null

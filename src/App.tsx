@@ -1,5 +1,13 @@
 // Libraries
-import React, {FC, Suspense, lazy, useContext, useEffect} from 'react'
+import React, {
+  FC,
+  Suspense,
+  lazy,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from 'react'
 import {useSelector} from 'react-redux'
 import classnames from 'classnames'
 import {Switch, Route} from 'react-router-dom'
@@ -16,9 +24,9 @@ import {load} from 'rudder-sdk-js'
 import {AppWrapper} from '@influxdata/clockface'
 import TreeNav from 'src/pageLayout/containers/TreeNav'
 import TooltipPortal from 'src/portals/TooltipPortal'
-import SearchPortal from 'src/portals/SearchPortal'
 import NotesPortal from 'src/portals/NotesPortal'
 import Notifications from 'src/shared/components/notifications/Notifications'
+import GlobalSearch from 'src/shared/search/GlobalSearch'
 import {
   OverlayProviderComp,
   OverlayController,
@@ -54,9 +62,9 @@ const App: FC = () => {
 
   return (
     <AppWrapper presentationMode={presentationMode} className={appWrapperClass}>
+      <GlobalSearch />
       <Notifications />
       <TooltipPortal />
-      <SearchPortal />
       <NotesPortal />
       <OverlayProviderComp>
         <OverlayController />

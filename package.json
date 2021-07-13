@@ -156,6 +156,7 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
+    "@docsearch/react": "^3.0.0-alpha.37",
     "@influxdata/clockface": "^2.10.0",
     "@influxdata/flux": "^0.5.1",
     "@influxdata/flux-lsp-browser": "^0.5.51",

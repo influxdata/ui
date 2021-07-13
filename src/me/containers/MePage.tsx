@@ -40,7 +40,7 @@ import {writeLimitReached} from 'src/shared/copy/notifications'
 import {UpgradeContent} from 'src/cloud/components/RateLimitAlertContent'
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 import {CLOUD} from 'src/shared/constants'
-import GlobalSearch from 'src/shared/search/GlobalSearch'
+
 const QUERY_WRITE_LIMIT_HITS = 100
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -104,7 +104,6 @@ export class MePage extends PureComponent<Props> {
           <RateLimitAlert />
         </Page.Header>
         <Page.Contents fullWidth={false} scrollable={true}>
-          <GlobalSearch />
           <Grid>
             <Grid.Row>
               <Grid.Column widthSM={Columns.Eight} widthMD={Columns.Nine}>

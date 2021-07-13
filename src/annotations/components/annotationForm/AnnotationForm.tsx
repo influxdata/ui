@@ -49,6 +49,7 @@ interface Props {
   onSubmit: (Annotation) => void
   onClose: () => void
   eventPrefix: string
+  getNow?: () => number
 }
 export const WRONG_ORDER_MESSAGE = 'Stop Time must be after the start time'
 export const END_TIME_IN_FUTURE_MESSAGE = 'Stop Time cannot be in the future'
@@ -157,7 +158,14 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
    * then, if the user edits it, then it's a string: like:  2021-07-13T15:31:40.000Z
    * */
   const isTimeInFuture = (timeToCheck): boolean => {
-    return moment(timeToCheck).isAfter(moment())
+    let now = null
+    if (props.getNow) {
+      now = moment(props.getNow())
+    } else {
+      now = moment()
+    }
+
+    return moment(timeToCheck).isAfter(now)
   }
 
   interface ValidityInfo {

@@ -62,7 +62,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
   const [summary, setSummary] = useState(props.summary)
   const [annotationType, setAnnotationType] = useState(props.type)
 
-  // in the time by itself valid ?(is the format valid)
+  // is the time by itself valid? (is the format valid)
   // since we start with default times via the mouse, the formats are valid at first
   // (until the user edits it)
   const [endTimeFormatValid, setEndTimeFormatValid] = useState(true)

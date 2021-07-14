@@ -14,7 +14,9 @@ describe('Annotations, but in a different test suite', () => {
   beforeEach(() => setupData(cy))
 
   describe('administrative functions like the tests being on and off', () => {
-    it('can create an annotation that is scoped to a dashboard cell', () => {
+    // this test appears to be causing about 90% of the flakiness in this suite.
+    // see https://github.com/influxdata/ui/issues/1945
+    it.skip('can create an annotation that is scoped to a dashboard cell', () => {
       // create a new cell
       cy.getByTestID('button')
         .click()

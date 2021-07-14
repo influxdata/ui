@@ -28,7 +28,8 @@ import {
 import {
   TimeRange,
   CustomTimeRange,
-  SelectableDurationTimeRange, TimeZone,
+  SelectableDurationTimeRange,
+  TimeZone,
 } from 'src/types'
 import {connect} from 'react-redux'
 
@@ -183,9 +184,7 @@ class TimeRangeDropdown extends PureComponent<Props, State> {
 }
 
 const mapStateToProps = state => ({
-  timeZone: state.app.persisted.timeZone || 'Local'
+  timeZone: state.app.persisted.timeZone || 'Local',
 })
 
-
 export default connect(mapStateToProps)(TimeRangeDropdown)
-

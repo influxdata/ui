@@ -2,6 +2,7 @@
 import React, {PureComponent, ChangeEvent} from 'react'
 import ReactDatePicker from 'react-datepicker'
 import moment from 'moment'
+import {connect} from 'react-redux'
 
 // Components
 import {Input, Grid, Form} from '@influxdata/clockface'
@@ -11,10 +12,15 @@ import 'react-datepicker/dist/react-datepicker.css'
 
 // Types
 import {Columns, ComponentSize, ComponentStatus} from '@influxdata/clockface'
+import {TimeZone} from 'src/types'
+
+// Utils
+import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 
 interface Props {
   label: string
   dateTime: string
+  timeZone: TimeZone
   maxDate?: string
   minDate?: string
   onSelectDate: (date: string) => void
@@ -52,7 +58,7 @@ const getFormat = (d: string): string => {
   return null
 }
 
-export default class DatePicker extends PureComponent<Props, State> {
+class DatePicker extends PureComponent<Props, State> {
   private inCurrentMonth: boolean = false
   state = {
     inputValue: null,
@@ -105,7 +111,7 @@ export default class DatePicker extends PureComponent<Props, State> {
   }
 
   private get inputValue(): string {
-    const {dateTime} = this.props
+    const {dateTime, timeZone} = this.props
     const {inputValue, inputFormat} = this.state
 
     if (this.isInputValueInvalid) {
@@ -115,10 +121,15 @@ export default class DatePicker extends PureComponent<Props, State> {
     }
 
     if (inputFormat) {
-      return moment(dateTime).format(inputFormat)
+      const formatter = createDateTimeFormatter(inputFormat, timeZone)
+      return formatter.format(new Date(dateTime))
     }
+    const formatter = createDateTimeFormatter(
+      'YYYY-MM-DD HH:mm:ss ZZ',
+      timeZone
+    )
 
-    return moment(dateTime).toISOString()
+    return formatter.format(new Date(dateTime))
   }
 
   private get isInputValueInvalid(): boolean {
@@ -190,3 +201,9 @@ export default class DatePicker extends PureComponent<Props, State> {
     this.setState({inputValue: value, inputFormat: null})
   }
 }
+
+const mapStateToProps = state => ({
+  timeZone: state.app.persisted.timeZone || 'Local',
+})
+
+export default connect(mapStateToProps)(DatePicker)

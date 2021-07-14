@@ -112,6 +112,36 @@ export const createDateTimeFormatter = (
       }
     }
 
+    case 'YYYY-MM-DD HH:mm:ss ZZ': {
+      const options = {
+        ...dateTimeOptions,
+        hour12: false,
+        timeZoneName: 'short',
+      }
+
+      if (timeZone === 'UTC') {
+        options.timeZone = 'UTC'
+      }
+      const formatter = Intl.DateTimeFormat('en-us', options)
+
+      const formatDate = date => {
+        const parts = formatter.formatToParts(date)
+        const dateParts: any = {}
+
+        parts
+          .filter(part => part.type !== 'literal')
+          .forEach(part => {
+            dateParts[part.type] = part.value
+          })
+
+        return `${dateParts.year}-${dateParts.month}-${dateParts.day} ${dateParts.hour}:${dateParts.minute}:${dateParts.second} ${dateParts.timeZoneName}`
+      }
+
+      return {
+        format: formatDate,
+      }
+    }
+
     case 'YYYY-MM-DD HH:mm': {
       const options = {
         ...dateTimeOptions,

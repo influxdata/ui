@@ -16,6 +16,9 @@ import {TaskSortKey} from 'src/shared/components/resource_sort_dropdown/generate
 // Selectors
 import {getSortedResources} from 'src/shared/utils/sort'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 interface Props {
   tasks: Task[]
   searchTerm: string
@@ -61,6 +64,15 @@ export default class TasksList extends PureComponent<Props, State> {
   public render() {
     const {searchTerm, onCreate, totalCount, onImportTask} = this.props
 
+    const creater = () => {
+      event('Task Created From Dropdown', {source: 'list'})
+      onCreate()
+    }
+    const importer = () => {
+      event('Task Imported From Dropdown', {source: 'list'})
+      onImportTask()
+    }
+
     return (
       <>
         <ResourceList>
@@ -68,9 +80,9 @@ export default class TasksList extends PureComponent<Props, State> {
             emptyState={
               <EmptyTasksList
                 searchTerm={searchTerm}
-                onCreate={onCreate}
+                onCreate={creater}
                 totalCount={totalCount}
-                onImportTask={onImportTask}
+                onImportTask={importer}
               />
             }
           >

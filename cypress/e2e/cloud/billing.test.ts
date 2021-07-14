@@ -217,7 +217,7 @@ describe('Billing Page PAYG Users', () => {
     // check that the button is disabled
     cy.getByTestID('cancel-service-confirmation--button').should('be.disabled')
     cy.getByTestID('agree-terms--checkbox').should('not.be.checked')
-    // TODO(ariel): fix this so that it checks the box, check() didn't work
+
     cy.getByTestID('agree-terms--input').click()
     cy.getByTestID('agree-terms--checkbox').should('be.checked')
     cy.getByTestID('cancel-service-confirmation--button')

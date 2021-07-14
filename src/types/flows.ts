@@ -23,6 +23,7 @@ export interface PipeContextProps {
   children?: ReactNode
   controls?: ReactNode
   persistentControls?: ReactNode
+  resizes?: boolean
 }
 
 export type PipeData = any
@@ -31,6 +32,7 @@ export type Visibility = 'visible' | 'hidden'
 
 export interface PipeMeta {
   title: string
+  height?: number
   visible: boolean
   error?: string
 }

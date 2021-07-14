@@ -6,7 +6,7 @@ The systemd_units plugin gathers systemd unit status on Linux. It relies on
 The results are tagged with the unit name and provide enumerated fields for
 loaded, active and running fields, indicating the unit health.
 
-This plugin is related to the [win_services module](/plugins/inputs/win_services/), which
+This plugin is related to the [win_services module](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/win_services/), which
 fulfills the same purpose on windows.
 
 In addition to services, this plugin can gather other unit types as well,

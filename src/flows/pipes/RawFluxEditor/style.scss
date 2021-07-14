@@ -19,3 +19,9 @@
     background-color: $flow-panel--bg;
   }
 }
+
+.flow-panel--body {
+  .flux-editor--monaco {
+    height: 100%;
+  }
+}

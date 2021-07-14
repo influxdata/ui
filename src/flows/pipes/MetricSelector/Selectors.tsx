@@ -14,12 +14,7 @@ const Selectors: FC = () => {
   const noResults = !fields.length && !measurements.length && !tags.length
 
   let list = (
-    <List
-      className="data-source--list"
-      backgroundColor={InfluxColors.Obsidian}
-      maxHeight="304px"
-      style={{height: '304px'}}
-    >
+    <List className="data-source--list" backgroundColor={InfluxColors.Obsidian}>
       <MeasurementSelectors measurements={measurements} />
       <FieldSelectors fields={fields} />
       <TagSelectors tags={tags} />
@@ -28,19 +23,13 @@ const Selectors: FC = () => {
 
   if (noResults && searchTerm) {
     list = (
-      <EmptyState
-        style={{height: '304px'}}
-        className="data-source--list__no-results"
-      >
+      <EmptyState className="data-source--list__no-results">
         <p>{`No fields, measurements, or tags match "${searchTerm}"`}</p>
       </EmptyState>
     )
   } else if (noResults && !searchTerm) {
     list = (
-      <EmptyState
-        style={{height: '304px'}}
-        className="data-source--list__no-results"
-      >
+      <EmptyState className="data-source--list__no-results">
         <h5>No tags found in the selected time range</h5>
         <p>Try selecting a different time range</p>
       </EmptyState>

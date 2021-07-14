@@ -50,7 +50,7 @@ describe('the annotations reducer', () => {
           },
         ],
       },
-      enableAnnotationsMode: true,
+      enableAnnotationsMode: false,
       visibleStreamsByID: [],
       streams: [],
     })

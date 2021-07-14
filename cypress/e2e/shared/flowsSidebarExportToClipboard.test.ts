@@ -38,6 +38,11 @@ const createEmptyNotebook = () => {
     .scrollIntoView()
     .click({force: true})
   cy.getByTestID('Delete--list-item').click()
+  cy.getByTestID('square-button')
+    .eq(1)
+    .scrollIntoView()
+    .click({force: true})
+  cy.getByTestID('Delete--list-item').click()
 }
 
 const verifyClientCode = (client: any) => {

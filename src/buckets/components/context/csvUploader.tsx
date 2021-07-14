@@ -49,7 +49,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
 
   const org = useSelector(getOrg)
 
-  const controller = useRef(new AbortController())
+  const controller = useRef<AbortController>(null)
 
   const resetUploadState = (): void => {
     setUploadState(RemoteDataState.NotStarted)
@@ -89,6 +89,7 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
   const uploadCsv = useCallback(
     async (csv: string, bucket: string) => {
       setUploadState(RemoteDataState.Loading)
+      controller.current = new AbortController()
       try {
         const query = `import "csv"
 csv.from(csv: "${csv}")

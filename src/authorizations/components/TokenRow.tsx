@@ -1,7 +1,7 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import moment from 'moment'
+import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 
 // Actions
 import {
@@ -38,11 +38,13 @@ type ReduxProps = ConnectedProps<typeof connector>
 
 type Props = ReduxProps & OwnProps
 
+const formatter = createDateTimeFormatter(UPDATED_AT_TIME_FORMAT)
 class TokenRow extends PureComponent<Props> {
   public render() {
     const {description} = this.props.auth
     const {auth} = this.props
     const labelText = this.isTokenEnabled ? 'Active' : 'Inactive'
+    const date = new Date(auth.createdAt)
     return (
       <ResourceCard
         contextMenu={this.contextMenu}
@@ -58,8 +60,7 @@ class TokenRow extends PureComponent<Props> {
         <ResourceCard.Meta>
           {[
             <React.Fragment key={auth.id}>
-              Created at:{' '}
-              {moment(auth.createdAt).format(UPDATED_AT_TIME_FORMAT)}
+              Created at: {formatter.format(date)}
             </React.Fragment>,
           ]}
         </ResourceCard.Meta>

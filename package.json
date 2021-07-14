@@ -41,6 +41,7 @@
     "test:circleci": "yarn run test:ci --maxWorkers=2",
     "test:ci": "JEST_JUNIT_OUTPUT_DIR=\"./coverage\" jest --ci --coverage",
     "lint": "yarn tsc && yarn prettier && yarn eslint",
+    "lint:fix": "yarn tsc && yarn prettier:fix && yarn eslint:fix",
     "eslint": "eslint '{src,cypress}/**/*.{ts,tsx}'",
     "eslint:circleci": "eslint",
     "eslint:fix": "eslint --fix '{src,cypress}/**/*.{ts,tsx}'",
@@ -158,8 +159,8 @@
   "dependencies": {
     "@influxdata/clockface": "^2.10.0",
     "@influxdata/flux": "^0.5.1",
-    "@influxdata/flux-lsp-browser": "^0.5.51",
-    "@influxdata/giraffe": "^2.15.8",
+    "@influxdata/flux-lsp-browser": "^0.5.53",
+    "@influxdata/giraffe": "^2.16.0",
     "@influxdata/influx": "0.5.5",
     "@influxdata/influxdb-templates": "0.9.0",
     "@influxdata/react-custom-scrollbars": "4.3.8",

@@ -11,10 +11,7 @@ const PageControl: FC = () => {
   )
   return (
     <div className="visualization--simple-table--paging">
-      <span className="visualization--simple-table--paging-label">
-        Showing most recent 100 results per series
-      </span>
-      {total && size && (
+      {total && size > 0 && (
         <PaginationNav.PaginationNav
           totalPages={totalPages}
           currentPage={Math.min(Math.floor(offset / size) + 1, totalPages)}

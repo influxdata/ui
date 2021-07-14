@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, lazy, Suspense, useState} from 'react'
+import React, {FC, lazy, Suspense, useState, useMemo} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {
   RemoteDataState,
@@ -35,6 +35,7 @@ const TimeMachineFluxEditor: FC<Props> = ({
   onSubmitQueries,
   onSetActiveQueryText,
   activeTab,
+  activeQueryIndex,
 }) => {
   const [editorInstance, setEditorInstance] = useState<EditorType>(null)
   const handleInsertVariable = (variableName: string): void => {
@@ -141,43 +142,45 @@ const TimeMachineFluxEditor: FC<Props> = ({
     onSetActiveQueryText(editorInstance.getValue())
   }
 
-  return (
-    <div className="flux-editor">
-      <div className="flux-editor--left-panel">
-        <Suspense
-          fallback={
-            <SpinnerContainer
-              loading={RemoteDataState.Loading}
-              spinnerComponent={<TechnoSpinner />}
+  return useMemo(() => {
+    return (
+      <div className="flux-editor">
+        <div className="flux-editor--left-panel">
+          <Suspense
+            fallback={
+              <SpinnerContainer
+                loading={RemoteDataState.Loading}
+                spinnerComponent={<TechnoSpinner />}
+              />
+            }
+          >
+            <FluxEditor
+              script={activeQueryText}
+              onChangeScript={onSetActiveQueryText}
+              onSubmitScript={onSubmitQueries}
+              setEditorInstance={setEditorInstance}
             />
-          }
-        >
-          <FluxEditor
-            script={activeQueryText}
-            onChangeScript={onSetActiveQueryText}
-            onSubmitScript={onSubmitQueries}
-            setEditorInstance={setEditorInstance}
+          </Suspense>
+        </div>
+        <div className="flux-editor--right-panel">
+          <FluxToolbar
+            activeQueryBuilderTab={activeTab}
+            onInsertFluxFunction={handleInsertFluxFunction}
+            onInsertVariable={handleInsertVariable}
           />
-        </Suspense>
+        </div>
       </div>
-      <div className="flux-editor--right-panel">
-        <FluxToolbar
-          activeQueryBuilderTab={activeTab}
-          onInsertFluxFunction={handleInsertFluxFunction}
-          onInsertVariable={handleInsertVariable}
-        />
-      </div>
-    </div>
-  )
+    )
+  }, [editorInstance, activeQueryIndex])
 }
 
 export {TimeMachineFluxEditor}
 
 const mstp = (state: AppState) => {
   const activeQueryText = getActiveQuery(state).text
-  const {activeTab} = getActiveTimeMachine(state)
+  const {activeTab, activeQueryIndex} = getActiveTimeMachine(state)
 
-  return {activeQueryText, activeTab}
+  return {activeQueryText, activeTab, activeQueryIndex}
 }
 
 const mdtp = {

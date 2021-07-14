@@ -149,19 +149,15 @@ const SetOrg: FC = () => {
           />
 
           {/* Flows  */}
-          {isFlagEnabled('notebooks') && (
-            <Route
-              path={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}/:id`}
-              component={FlowPage}
-            />
-          )}
+          <Route
+            path={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}/:id`}
+            component={FlowPage}
+          />
 
-          {isFlagEnabled('notebooks') && (
-            <Route
-              path={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}`}
-              component={FlowsIndex}
-            />
-          )}
+          <Route
+            path={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}`}
+            component={FlowsIndex}
+          />
 
           {/* Write Data */}
           <Route

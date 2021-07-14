@@ -88,7 +88,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
     [queryText]
   )
 
-  const numericColumns = (results.parsed.table?.columnKeys || []).filter(
+  const numericColumns = (results?.parsed?.table?.columnKeys || []).filter(
     key => {
       if (key === 'result' || key === 'table') {
         return false

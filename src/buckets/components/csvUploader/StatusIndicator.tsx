@@ -43,8 +43,27 @@ const className = status =>
 const StatusIndicator: FC = () => {
   const {uploadError, uploadState} = useContext(CsvUploaderContext)
 
+  let testID = ''
+
+  switch (uploadState) {
+    case RemoteDataState.Done:
+      testID = 'success'
+      break
+    case RemoteDataState.Loading:
+      testID = 'loading'
+      break
+    case RemoteDataState.Error:
+      testID = 'error'
+      break
+    default:
+      testID = ''
+  }
+
   return (
-    <div className="line-protocol--spinner">
+    <div
+      className="line-protocol--spinner"
+      data-testid={`csv-uploader--${testID}`}
+    >
       <p data-testid="line-protocol--status" className={className(status)}>
         {getStatusText(uploadState, uploadError).status}
       </p>

@@ -75,12 +75,12 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
         message.includes('The CSV could not be parsed')
       ) {
         event('CSV_Upload_Format_Error')
-        setUploadError(message)
       } else {
         reportErrorThroughHoneyBadger(error, {
           name: 'uploadCsv function',
         })
       }
+      setUploadError(message)
       dispatch(notify(csvUploaderErrorNotification(message)))
     },
     [dispatch]
@@ -92,8 +92,8 @@ export const CsvUploaderProvider: FC<Props> = React.memo(({children}) => {
       controller.current = new AbortController()
       try {
         const query = `import "csv"
-csv.from(csv: "${csv}")
-|> to(bucket: "${bucket}")`
+          csv.from(csv: ${JSON.stringify(csv)})
+          |> to(bucket: "${bucket}")`
 
         const resp = await runQuery(
           org?.id,
@@ -113,8 +113,7 @@ csv.from(csv: "${csv}")
         }
         if (resp.type === 'UNKNOWN_ERROR') {
           const error = getErrorMessage(resp)
-          setUploadState(RemoteDataState.Error)
-          setUploadError(error)
+          throw new Error(error)
         }
       } catch (error) {
         handleError(error)

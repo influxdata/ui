@@ -88,7 +88,7 @@ export const startEditingAnnotation = (cy: Cypress.Chainable) => {
     // we have 2 line layers by the same id, we only want to click on the first
     cy.get('line')
       .first()
-      .click()
+      .click({force: true})
   })
 }
 

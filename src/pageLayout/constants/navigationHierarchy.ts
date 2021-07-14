@@ -93,7 +93,6 @@ export const generateNavItems = (): NavItem[] => {
       testID: 'nav-item-flows',
       icon: IconFont.BookPencil,
       label: PROJECT_NAME_PLURAL,
-      enabled: () => isFlagEnabled('notebooks'),
       shortLabel: PROJECT_NAME_SHORT,
       link: `${orgPrefix}/${PROJECT_NAME_PLURAL.toLowerCase()}`,
       activeKeywords: [PROJECT_NAME_PLURAL.toLowerCase()],

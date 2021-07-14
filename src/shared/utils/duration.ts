@@ -176,10 +176,7 @@ export const getTimeRangeLabel = (
     const upper = formatter.format(new Date(timeRange.upper))
     if (singleDirection === TimeRangeDirection.Upper) {
       return upper
-    } else if (
-      singleDirection &&
-      singleDirection === TimeRangeDirection.Lower
-    ) {
+    } else if (singleDirection === TimeRangeDirection.Lower) {
       return lower
     }
     return `${lower} - ${upper}`

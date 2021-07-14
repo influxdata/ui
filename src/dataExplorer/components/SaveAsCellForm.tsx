@@ -42,6 +42,7 @@ import {
 
 // Utils
 import {initialStateHelper} from 'src/timeMachine/reducers'
+import {event} from 'src/cloud/utils/reporting'
 
 interface State {
   targetDashboardIDs: string[]
@@ -171,6 +172,7 @@ class SaveAsCellForm extends PureComponent<Props, State> {
     } = this.props
     const {targetDashboardIDs} = this.state
 
+    event('Data Explorer Save as Dashboard Submitted')
     const cellName = this.state.cellName || DEFAULT_CELL_NAME
     const newDashboardName =
       this.state.newDashboardName || DEFAULT_DASHBOARD_NAME

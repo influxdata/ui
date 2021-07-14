@@ -55,11 +55,18 @@ export const setupData = (
                   .type('blah')
                 cy.getByTestID('save-cell--button').click()
               })
+
+              cy.getByTestID('toggle-annotations-controls').click()
             })
         })
       )
     )
   )
+}
+
+export const reloadAndHandleAnnotationDefaultStatus = () => {
+  cy.reload()
+  cy.getByTestID('toggle-annotations-controls').click()
 }
 
 export const addAnnotation = (cy: Cypress.Chainable) => {
@@ -97,17 +104,12 @@ export const editAnnotation = (cy: Cypress.Chainable) => {
 
 export const deleteAnnotation = (cy: Cypress.Chainable) => {
   // should have the annotation created , lets click it to show the modal.
-  cy.getByTestID('cell blah').within(() => {
-    // we have 2 line layers by the same id, we only want to click on the first
-    cy.get('line')
-      .first()
-      .click()
-  })
+  startEditingAnnotation(cy)
 
   cy.getByTestID('delete-annotation-button').click()
 
   // reload to make sure the annotation was deleted from the backend as well.
-  cy.reload()
+  reloadAndHandleAnnotationDefaultStatus()
 
   // annotation line should not exist in the dashboard cell
   cy.getByTestID('cell blah').within(() => {
@@ -176,7 +178,7 @@ export const testAddAnnotation = (cy: Cypress.Chainable) => {
   addAnnotation(cy)
 
   // reload to make sure the annotation was added in the backend as well.
-  cy.reload()
+  reloadAndHandleAnnotationDefaultStatus()
 
   // we need to see if the annotations got created and that the tooltip says "I'm a hippopotamus"
   checkAnnotationText(cy, 'im a hippopotamus')
@@ -189,7 +191,7 @@ export const testEditAnnotation = (cy: Cypress.Chainable) => {
   editAnnotation(cy)
 
   // reload to make sure the annotation was edited in the backend as well.
-  cy.reload()
+  reloadAndHandleAnnotationDefaultStatus()
 
   // annotation tooltip should say the new name
   cy.getByTestID('cell blah').within(() => {
@@ -217,7 +219,7 @@ export const testEditRangeAnnotation = (
   cy.getByTestID('annotation-submit-button').click()
 
   // reload to make sure the annotation was edited in the backend as well.
-  cy.reload()
+  reloadAndHandleAnnotationDefaultStatus()
 
   checkAnnotationText(cy, 'editing the text here for the range annotation')
 }

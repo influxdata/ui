@@ -66,9 +66,16 @@ class DatePicker extends PureComponent<Props, State> {
   }
 
   public render() {
-    const {dateTime, label, maxDate, minDate} = this.props
+    const {dateTime, label, maxDate, minDate, timeZone} = this.props
 
     const date = new Date(dateTime)
+
+    if (timeZone === 'UTC') {
+      // (sahas): the react-datepicker forces the timezone to be the Local timezone.
+      // so when our app in in UTC mode, to make the datepicker respect that timezone,
+      // we have to manually manipulate the Local time and add the offset so that it displays the correct UTC time in the picker
+      date.setMinutes(date.getMinutes() + date.getTimezoneOffset())
+    }
 
     return (
       <div className="range-picker--date-picker">
@@ -124,10 +131,7 @@ class DatePicker extends PureComponent<Props, State> {
       const formatter = createDateTimeFormatter(inputFormat, timeZone)
       return formatter.format(new Date(dateTime))
     }
-    const formatter = createDateTimeFormatter(
-      'YYYY-MM-DD HH:mm:ss ZZ',
-      timeZone
-    )
+    const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss', timeZone)
 
     return formatter.format(new Date(dateTime))
   }
@@ -143,7 +147,7 @@ class DatePicker extends PureComponent<Props, State> {
 
   private get inputErrorMessage(): string | undefined {
     if (this.isInputValueInvalid) {
-      return 'Format must be YYYY-MM-DD [HH:mm:ss.SSS]'
+      return 'Format must be YYYY-MM-DD HH:mm:ss'
     }
 
     return '\u00a0\u00a0'
@@ -183,7 +187,15 @@ class DatePicker extends PureComponent<Props, State> {
   }
 
   private handleSelectDate = (date: Date): void => {
-    const {onSelectDate} = this.props
+    const {onSelectDate, timeZone} = this.props
+
+    if (timeZone === 'UTC') {
+      // (sahas): the react-datepicker forces the timezone to be the Local timezone.
+      // so when our app in in UTC mode, to make the datepicker respect that timezone,
+      // we have to manually manipulate the Local time and add the offset so that it displays the correct UTC time in the picker
+      date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
+    }
+
     onSelectDate(date.toISOString())
     this.overrideInputState()
   }

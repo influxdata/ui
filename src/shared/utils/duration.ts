@@ -1,6 +1,11 @@
 import moment from 'moment'
 
-import {TimeRange, CustomTimeRange, TimeRangeDirection, TimeZone} from 'src/types'
+import {
+  TimeRange,
+  CustomTimeRange,
+  TimeRangeDirection,
+  TimeZone,
+} from 'src/types'
 import {Duration, DurationUnit} from 'src/types/ast'
 import {TIME_RANGE_FORMAT} from 'src/shared/constants/timeRanges'
 import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
@@ -159,7 +164,7 @@ export const convertTimeRangeToCustom = (
 export const getTimeRangeLabel = (
   timeRange: TimeRange,
   timeZone?: TimeZone,
-  singleDirection?: TimeRangeDirection,
+  singleDirection?: TimeRangeDirection
 ): string => {
   if (timeRange.type === 'selectable-duration') {
     return timeRange.label

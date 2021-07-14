@@ -1,4 +1,3 @@
-
 import {
   TimeRange,
   CustomTimeRange,
@@ -175,7 +174,7 @@ export const getTimeRangeLabel = (
     const formatter = createDateTimeFormatter(TIME_RANGE_FORMAT, timeZone)
     const lower = formatter.format(new Date(timeRange.lower))
     const upper = formatter.format(new Date(timeRange.upper))
-    if (singleDirection && singleDirection === TimeRangeDirection.Upper) {
+    if (singleDirection === TimeRangeDirection.Upper) {
       return upper
     } else if (
       singleDirection &&

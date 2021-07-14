@@ -12,22 +12,10 @@ import {
 import {CsvUploaderContext} from 'src/buckets/components/context/csvUploader'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 import CsvUploaderBody from 'src/buckets/components/csvUploader/CsvUploaderBody'
-import CsvUploaderSuccess from 'src/buckets/components/csvUploader/CsvUploaderSuccess'
-import CsvUploaderError from 'src/buckets/components/csvUploader/CsvUploaderError'
+import StatusIndicator from 'src/buckets/components/csvUploader/StatusIndicator'
 
 // Types
 import {RemoteDataState} from 'src/types'
-
-const getCsvBody = (uploadState: RemoteDataState, bucket?: string) => {
-  switch (uploadState) {
-    case RemoteDataState.Done:
-      return <CsvUploaderSuccess />
-    case RemoteDataState.Error:
-      return <CsvUploaderError />
-    default:
-      return <CsvUploaderBody bucket={bucket} />
-  }
-}
 
 const CsvMethod: FC = () => {
   const {uploadState, resetUploadState} = useContext(CsvUploaderContext)
@@ -46,11 +34,15 @@ const CsvMethod: FC = () => {
     buttonText = 'Clear Error'
   }
 
+  let body = <CsvUploaderBody bucket={bucket.name} />
+
+  if (uploadState !== RemoteDataState.NotStarted) {
+    body = <StatusIndicator />
+  }
+
   return (
     <Panel>
-      <Panel.Body className="csv-body--padding">
-        {getCsvBody(uploadState, bucket.name)}
-      </Panel.Body>
+      <Panel.Body className="csv-body--padding">{body}</Panel.Body>
       {uploadState !== RemoteDataState.NotStarted && (
         <Panel.Footer>
           <div className="csv-button--wrapper">

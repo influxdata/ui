@@ -11,6 +11,9 @@ import BucketCardActions from 'src/buckets/components/BucketCardActions'
 // Constants
 import {isSystemBucket} from 'src/buckets/constants/index'
 
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
 // Types
 import {OwnBucket} from 'src/types'
 
@@ -33,7 +36,11 @@ const BucketCard: FC<Props & RouteComponentProps<{orgID: string}>> = ({
   },
 }) => {
   const handleNameClick = () => {
-    history.push(`/orgs/${orgID}/data-explorer?bucket=${bucket.name}`)
+    if (isFlagEnabled('exploreWithFlows')) {
+      history.push(`/notebook/from/bucket/${bucket.name}`)
+    } else {
+      history.push(`/orgs/${orgID}/data-explorer?bucket=${bucket.name}`)
+    }
   }
 
   return (

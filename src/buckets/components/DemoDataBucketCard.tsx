@@ -29,6 +29,9 @@ import {Context} from 'src/clockface'
 import {deleteDemoDataBucketMembership} from 'src/cloud/actions/thunks'
 import {notify as notifyAction} from 'src/shared/actions/notifications'
 
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
 // Types
 import {DemoBucket} from 'src/types'
 
@@ -49,7 +52,11 @@ const DemoDataBucketCard: FC<Props> = ({
   notify,
 }) => {
   const handleNameClick = () => {
-    history.push(`/orgs/${orgID}/data-explorer?bucket=${bucket.name}`)
+    if (isFlagEnabled('exploreWithFlows')) {
+      history.push(`/notebook/from/bucket/${bucket.name}`)
+    } else {
+      history.push(`/orgs/${orgID}/data-explorer?bucket=${bucket.name}`)
+    }
   }
 
   const handleCopyAttempt = (

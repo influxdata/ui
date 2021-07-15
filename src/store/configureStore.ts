@@ -56,7 +56,6 @@ import {
   editorReducer,
   pluginsResourceReducer,
 } from 'src/dataLoaders/reducers/telegrafEditor'
-import {predicatesReducer} from 'src/shared/reducers/predicates'
 import alertBuilderReducer from 'src/alerting/reducers/alertBuilder'
 import perfReducer from 'src/perf/reducers'
 
@@ -95,7 +94,6 @@ export const rootReducer = (history: History) => (state, action) => {
     overlays: overlaysReducer,
     perf: perfReducer,
     plugins: pluginsResourceReducer,
-    predicates: predicatesReducer,
     ranges: rangesReducer,
     resources: combineReducers({
       buckets: bucketsReducer,

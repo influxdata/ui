@@ -23,6 +23,7 @@ import {
 import {getAllVariables, asAssignment} from 'src/variables/selectors'
 import {getOrg} from 'src/organizations/selectors'
 import {getActiveQuery} from 'src/timeMachine/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {AppState, TaskSchedule, TaskOptionKeys} from 'src/types'
@@ -89,6 +90,8 @@ class SaveAsTaskForm extends PureComponent<
 
   private handleSubmit = () => {
     const {saveNewScript, newScript, taskOptions, goToTasks} = this.props
+
+    event('Data Explorer Save as Task Submitted')
 
     // Don't embed variables that are not used in the script
     const vars = [...this.props.userDefinedVars].filter(assignment =>

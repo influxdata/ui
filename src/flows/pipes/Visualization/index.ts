@@ -21,7 +21,7 @@ export default register => {
         return
       }
 
-      if (!pipe.functions.length) {
+      if (!pipe.functions || !pipe.functions.length) {
         append('__CURRENT_RESULT__')
         return
       }

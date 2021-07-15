@@ -62,7 +62,7 @@ const App: FC = () => {
 
   return (
     <AppWrapper presentationMode={presentationMode} className={appWrapperClass}>
-      <GlobalSearch />
+      {isFlagEnabled('globalSearch') && <GlobalSearch />}
       <Notifications />
       <TooltipPortal />
       <NotesPortal />

@@ -1,12 +1,14 @@
 // Libraries
 import React, {FC} from 'react'
 import {useSelector} from 'react-redux'
+import {Switch, Route} from 'react-router-dom'
 
 // Components
 import SettingsTabbedPage from 'src/settings/components/SettingsTabbedPage'
 import SettingsHeader from 'src/settings/components/SettingsHeader'
 import {Page} from '@influxdata/clockface'
-
+import EditSecretOverlay from 'src/secrets/components/EditSecretOverlay'
+import CreateSecretOverlay from 'src/secrets/components/CreateSecretOverlay'
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
@@ -29,6 +31,18 @@ const SecretsIndex: FC = () => {
           </GetResources>
         </SettingsTabbedPage>
       </Page>
+      <Switch>
+        <Route
+          exact
+          path={`/orgs/${org.id}/settings/secrets/new`}
+          component={CreateSecretOverlay}
+        />
+        <Route
+          exact
+          path={`/orgs/${org.id}/settings/secrets/:secretName/edit`}
+          component={EditSecretOverlay}
+        />
+      </Switch>
     </>
   )
 }

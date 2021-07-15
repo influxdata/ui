@@ -2,7 +2,6 @@
 import React, {
   FC,
   ChangeEvent,
-  KeyboardEvent,
   useEffect,
   useRef,
   useState,
@@ -21,6 +20,7 @@ const characterLimit = 255
 
 export const AnnotationMessageInput: FC<Props> = (props: Props) => {
   const textArea = useRef(null)
+  console.log('ack! a ')
   const validationMessage = props.message ? '' : 'This field is required'
   const [characterCount, setCharacterCount] = useState(
     props.message?.length ?? 0
@@ -29,13 +29,6 @@ export const AnnotationMessageInput: FC<Props> = (props: Props) => {
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setCharacterCount(event.target.value.length)
     props.onChange(event.target.value)
-  }
-
-  const handleKeyPress = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'Enter') {
-      props.onSubmit()
-      return
-    }
   }
 
   useEffect(() => {
@@ -57,7 +50,6 @@ export const AnnotationMessageInput: FC<Props> = (props: Props) => {
         name="message"
         value={props.message}
         onChange={handleChange}
-        onKeyPress={handleKeyPress}
         style={{height: '80px', minHeight: '80px'}}
         ref={textArea}
         maxLength={characterLimit}

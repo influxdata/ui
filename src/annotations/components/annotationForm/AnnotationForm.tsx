@@ -56,6 +56,10 @@ export const END_TIME_IN_FUTURE_MESSAGE = 'Stop Time cannot be in the future'
 export const TIMES_ARE_SAME_MESSAGE = 'Stop Time must be after the start time'
 export const START_TIME_IN_FUTURE_MESSAGE = 'Start Time cannot be in the future'
 
+/**
+ *  Form for editing and creating annotations.
+ *  It does support multi-line annotations, but the tradeoff is that the user cannot then press 'return' to submit the form.
+ * */
 export const AnnotationForm: FC<Props> = (props: Props) => {
   const [startTime, setStartTime] = useState(props.startTime)
   const [endTime, setEndTime] = useState(props.endTime)
@@ -324,7 +328,6 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
           <AnnotationMessageInput
             message={summary}
             onChange={updateSummary}
-            onSubmit={handleKeyboardSubmit}
           />
         </Overlay.Body>
         <Overlay.Footer className={footerClasses}>

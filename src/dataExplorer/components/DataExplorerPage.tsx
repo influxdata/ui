@@ -9,10 +9,8 @@ import SaveAsButton from 'src/dataExplorer/components/SaveAsButton'
 import VisOptionsButton from 'src/timeMachine/components/VisOptionsButton'
 import GetResources from 'src/resources/components/GetResources'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
-import DeleteDataButton from 'src/dataExplorer/components/DeleteDataButton'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import SaveAsOverlay from 'src/dataExplorer/components/SaveAsOverlay'
-import DEDeleteDataOverlay from 'src/dataExplorer/components/DeleteDataOverlay'
 import ViewTypeDropdown from 'src/timeMachine/components/ViewTypeDropdown'
 import {AddAnnotationDEOverlay} from 'src/overlays/components/index'
 import {EditAnnotationDEOverlay} from 'src/overlays/components/index'
@@ -34,10 +32,6 @@ const DataExplorerPage: FC = () => {
         <Route
           path="/orgs/:orgID/data-explorer/save"
           component={SaveAsOverlay}
-        />
-        <Route
-          path="/orgs/:orgID/data-explorer/delete-data"
-          component={DEDeleteDataOverlay}
         />
         {isFlagEnabled('annotations') && (
           <Route
@@ -63,7 +57,6 @@ const DataExplorerPage: FC = () => {
             <VisOptionsButton />
           </Page.ControlBarLeft>
           <Page.ControlBarRight>
-            <DeleteDataButton />
             <TimeZoneDropdown />
             <SaveAsButton />
           </Page.ControlBarRight>

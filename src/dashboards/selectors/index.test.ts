@@ -3,6 +3,7 @@ import {mocked} from 'ts-jest/utils'
 import {
   getTimeRange,
   getTimeRangeWithTimezone,
+  setTimeToUTC,
 } from 'src/dashboards/selectors/index'
 import {getTimezoneOffset} from 'src/dashboards/utils/getTimezoneOffset'
 
@@ -203,5 +204,49 @@ describe('Dashboards.Selector', () => {
     expect(
       untypedGetTimeRangeWithTimeZone({ranges, currentDashboard, app})
     ).toEqual(expected)
+  })
+})
+
+describe('Dashboards.Selector helper method(s)', () => {
+  it('should swap the time zone with UTC without affecting the hours when local timezone is GMT-7', () => {
+    // Example: user selected 10-11:00am and sets the dropdown to UTC
+    // Query should run against 10-11:00am UTC rather than querying
+    // 10-11:00am local time (offset depending on timezone)
+
+    const localTimeString = '2021-07-04 12:00:00 GMT-7'
+    const expectedUTCTime = '2021-07-04T12:00:00Z'
+
+    // mock the time zone offset for GMT-7
+    mocked(getTimezoneOffset).mockImplementation(() => 420)
+
+    expect(setTimeToUTC(localTimeString)).toEqual(expectedUTCTime)
+  })
+
+  it('should swap the time zone with UTC without affecting the hours when local timezone is GMT-5', () => {
+    // Example: user selected 10-11:00am and sets the dropdown to UTC
+    // Query should run against 10-11:00am UTC rather than querying
+    // 10-11:00am local time (offset depending on timezone)
+
+    const localTimeString = '2021-07-04 12:00:00 GMT-5'
+    const expectedUTCTime = '2021-07-04T12:00:00Z'
+
+    // mock the time zone offset for GMT-5
+    mocked(getTimezoneOffset).mockImplementation(() => 300)
+
+    expect(setTimeToUTC(localTimeString)).toEqual(expectedUTCTime)
+  })
+
+  it('should swap the time zone with UTC without affecting the hours when local timezone is GMT', () => {
+    // Example: user selected 10-11:00am and sets the dropdown to UTC
+    // Query should run against 10-11:00am UTC rather than querying
+    // 10-11:00am local time (offset depending on timezone)
+
+    const localTimeString = '2021-07-04 12:00:00 GMT'
+    const expectedUTCTime = '2021-07-04T12:00:00Z'
+
+    // mock the time zone offset for GMT
+    mocked(getTimezoneOffset).mockImplementation(() => 0)
+
+    expect(setTimeToUTC(localTimeString)).toEqual(expectedUTCTime)
   })
 })

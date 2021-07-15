@@ -98,13 +98,7 @@ class StreamingSelector extends PureComponent<Props, State> {
                 </FormElement>
                 </Grid.Column>
             </Grid.Row>
-            <Heading
-        element={HeadingElement.H2}
-        weight={FontWeight.Regular}
-        className="section-header"
-      >
-        Need more wiggle room?
-      </Heading>
+            <h4 className="wizard-step--sub-title">Recommended for first time users</h4>
             <SquareGrid cardSize={cardSize} gutter={ComponentSize.Small}>
                   <SquareGrid.Card key={recommended}>
                     <SelectableCard
@@ -120,13 +114,7 @@ class StreamingSelector extends PureComponent<Props, State> {
                     </SelectableCard>
                   </SquareGrid.Card>
             </SquareGrid>
-            <Heading
-        element={HeadingElement.H2}
-        weight={FontWeight.Regular}
-        className="section-header"
-      >
-        Need more wiggle room?
-      </Heading>
+            <h4 className="wizard-step--sub-title">Telegraf Plugin List</h4>
             <SquareGrid cardSize={cardSize} gutter={ComponentSize.Small}>
               {this.filteredBundles.map(b => {
                 return (

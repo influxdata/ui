@@ -1,14 +1,42 @@
-import React, {FC, useEffect, memo, useState, useMemo} from 'react'
-
+import React, {FC, useEffect, memo, useState, useMemo, useCallback} from 'react'
+import {useLocation} from 'react-router-dom'
 import {DocSearchModal} from '@docsearch/react'
+import {v4 as uuid} from 'uuid'
 
 import '@docsearch/react/style'
 
 import './GlobalSearch.scss'
 
+import {event} from 'src/cloud/utils/reporting'
+
 const Hit: FC<any> = memo(({hit, children}) => {
+  const linkID = uuid()
+  const location = useLocation()
+  const logClickedSearchQuery = useCallback(() => {
+    const clickedElem = document.getElementById(linkID) as HTMLLinkElement
+    const searchQuery = document.getElementById(
+      'docsearch-input'
+    ) as HTMLInputElement
+    event(
+      'clicked search result',
+      {
+        resultURL: clickedElem.href,
+        fromPage: location.pathname,
+        query: searchQuery?.value,
+      },
+      {}
+    )
+  }, [linkID, location.pathname])
+
+  useEffect(() => {
+    const linkedElement = document.getElementById(linkID)
+
+    linkedElement.addEventListener('click', logClickedSearchQuery)
+    return () =>
+      linkedElement.removeEventListener('click', logClickedSearchQuery)
+  }, [linkID])
   return (
-    <a href={hit.url} rel="noreferrer" target="_blank">
+    <a href={hit.url} rel="noreferrer" target="_blank" id={linkID}>
       {children}
     </a>
   )
@@ -16,11 +44,12 @@ const Hit: FC<any> = memo(({hit, children}) => {
 
 const GlobalSearch: FC = () => {
   const [showState, setShowState] = useState(false)
-  const toggleShowSearch = (event: KeyboardEvent) => {
-    const x = document.getElementById('spotlight_wrapper')
-    if (event.ctrlKey && event.shiftKey && event.key === 'D') {
+  const location = useLocation()
+  const toggleShowSearch = (e: KeyboardEvent) => {
+    if (e.ctrlKey && e.key === 'h') {
       setShowState(true)
-    } else if (event.key === 'Escape') {
+      event(`Global search opened from url ${location.pathname}`)
+    } else if (e.key === 'Escape') {
       setShowState(false)
     }
   }
@@ -28,35 +57,7 @@ const GlobalSearch: FC = () => {
     document.addEventListener('keydown', toggleShowSearch)
     return () => document.removeEventListener('keydown', toggleShowSearch)
   }, [])
-  // useEffect(() => {
-  //   docSearch({
-  //     apiKey: ,
-  //     appId: 'WHM9UWMP6M',
-  //     indexName: 'influxdata',
-  //     inputSelector: '#spotlight',
-  //     // Set debug to true if you want to inspect the dropdown
-  //     debug: true,
-  //     algoliaOptions: {
-  //       facetFilters: [['project: influxdb', 'flux:true'], 'version: cloud'],
-  //     },
-  //     handleSelected: function(
-  //       input,
-  //       _event,
-  //       suggestion,
-  //       _datasetNumber,
-  //       context
-  //     ) {
-  //       // Prevents the default behavior on click and rather opens the suggestion
-  //       // in a new tab.
-  //       if (context.selectionMethod === 'click') {
-  //         input.setVal('')
 
-  //         const windowReference = window.open(suggestion.url, '_blank')
-  //         windowReference.focus()
-  //       }
-  //     },
-  //   })
-  // }, [])
   const facetFilters = useMemo(
     () => ({
       facetFilters: [['project: influxdb', 'flux:true'], 'version: cloud'],
@@ -64,14 +65,6 @@ const GlobalSearch: FC = () => {
     []
   )
   return showState ? (
-    // <div id="spotlight_wrapper">
-    //   <input
-    //     type="text"
-    //     id="spotlight"
-    //     name="spotlight"
-    //     placeholder="Search our documentation: "
-    //   />
-    // </div>,
     <DocSearchModal
       apiKey="ba4435a9d456ac0d954cc276206eac06"
       indexName="influxdata"

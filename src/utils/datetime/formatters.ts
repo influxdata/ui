@@ -60,7 +60,15 @@ export const createDateTimeFormatter = (
   timeZone: TimeZone = 'Local'
 ) => {
   switch (format) {
-    default:
+    default: {
+      if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+        console.warn(
+          'createDateTimeFormatter: the format argument provided is either invalid or not supported at the moment.'
+        )
+      }
+      break
+    }
+
     case 'YYYY-MM-DD hh:mm:ss a': {
       const options = {
         ...dateTimeOptions,

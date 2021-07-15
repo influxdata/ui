@@ -37,7 +37,7 @@ const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => (
 )
 
 const UploadDataDetailsView: FC = () => {
-  const {contentID} = useParams()
+  const {contentID} = useParams<{contentID: string}>()
   const {name, markdown, image} = WRITE_DATA_FILE_UPLOADS.find(
     item => item.id === contentID
   )
@@ -92,8 +92,12 @@ const UploadDataDetailsView: FC = () => {
                       <WriteDataHelperBuckets />
                     </Panel.Body>
                   </Panel>
-                  <p>{isLP ? <LineProtocolTabs /> : <CsvMethod />}</p>
-                  <p>{isLP && <LineProtocolFooterButtons />}</p>
+                  <div className="write-data--uploader-wrapper">
+                    {isLP ? <LineProtocolTabs /> : <CsvMethod />}
+                  </div>
+                  <div className="write-data--uploader-wrapper">
+                    {isLP && <LineProtocolFooterButtons />}
+                  </div>
                   {pageContent}
                 </div>
               </div>

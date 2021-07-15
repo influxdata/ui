@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useEffect, useState} from 'react'
-import moment from 'moment'
 import {connect, ConnectedProps} from 'react-redux'
 import {
   Columns,
@@ -103,7 +102,7 @@ const DeleteDataForm: FC<Props> = ({
     const {lower, upper} = timeRange
 
     let query = `from(bucket: "${name}")
-      |> range(start: ${moment(lower).toISOString()}, stop: ${moment(
+      |> range(start: ${new Date(lower).toISOString()}, stop: ${new Date(
       upper
     ).toISOString()})`
 

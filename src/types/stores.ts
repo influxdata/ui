@@ -10,7 +10,6 @@ import {OnboardingState} from 'src/onboarding/reducers'
 import {
   Links,
   Notification,
-  PredicatesState,
   ResourceState,
   TimeRange,
   VariableEditorState,
@@ -54,7 +53,6 @@ export interface AppState {
   onboarding: OnboardingState
   overlays: OverlayState
   perf: PerfState
-  predicates: PredicatesState
   ranges: RangeState
   resources: ResourceState
   telegrafEditorPlugins: TelegrafEditorPluginState

@@ -14,7 +14,6 @@ import CollectorsWizard from 'src/dataLoaders/components/collectorsWizard/Collec
 import UpdateBucketOverlay from 'src/buckets/components/UpdateBucketOverlay'
 import RenameBucketOverlay from 'src/buckets/components/RenameBucketOverlay'
 import CreateScraperOverlay from 'src/scrapers/components/CreateScraperOverlay'
-import DeleteDataOverlay from 'src/shared/components/DeleteDataOverlay'
 import {Page} from '@influxdata/clockface'
 
 // Utils
@@ -61,10 +60,6 @@ class BucketsIndex extends Component {
             component={CreateScraperOverlay}
           />
           <Route path={`${bucketsPath}/edit`} component={UpdateBucketOverlay} />
-          <Route
-            path={`${bucketsPath}/delete-data`}
-            component={DeleteDataOverlay}
-          />
           <Route
             path={`${bucketsPath}/rename`}
             component={RenameBucketOverlay}

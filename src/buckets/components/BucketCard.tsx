@@ -19,7 +19,6 @@ import {OwnBucket} from 'src/types'
 
 interface Props {
   bucket: OwnBucket
-  onDeleteData: (b: OwnBucket) => void
   onDeleteBucket: (b: OwnBucket) => void
   onUpdateBucket: (b: OwnBucket) => void
   onFilterChange: (searchTerm: string) => void
@@ -29,7 +28,6 @@ const BucketCard: FC<Props & RouteComponentProps<{orgID: string}>> = ({
   bucket,
   onDeleteBucket,
   onFilterChange,
-  onDeleteData,
   history,
   match: {
     params: {orgID},
@@ -62,7 +60,6 @@ const BucketCard: FC<Props & RouteComponentProps<{orgID: string}>> = ({
         bucket={bucket}
         orgID={orgID}
         bucketType={bucket.type}
-        onDeleteData={onDeleteData}
         onFilterChange={onFilterChange}
       />
     </ResourceCard>

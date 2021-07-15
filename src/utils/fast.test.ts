@@ -1,12 +1,5 @@
 import {range} from 'lodash'
-import {
-  fastCloneArray,
-  fastConcat,
-  fastFilter,
-  fastForEach,
-  fastMap,
-  fastReduce,
-} from './fast'
+import {fastFilter, fastMap, fastReduce} from './fast'
 
 describe('fast', () => {
   describe('reduce', () => {
@@ -65,31 +58,5 @@ describe('fast', () => {
       i % 5 === 2 || (it > 8000 && it < 100000)
 
     expect(fastFilter(arr, predicate)).toEqual(arr.filter(predicate))
-  })
-
-  it('foreach', () => {
-    const arr = range(100).map(x => x ** 3 - 5)
-    const fnc = jest.fn()
-    const fnc1 = jest.fn()
-
-    arr.forEach(fnc)
-    fastForEach(arr, fnc1)
-
-    expect(fnc.mock.calls).toEqual(fnc1.mock.calls)
-  })
-
-  it('concats', () => {
-    const arrs = range(10).map(l => range(l * 5).map(x => x.toString(13)))
-    const expected = arrs.reduce((acc, it) => acc.concat(it), [])
-
-    expect(fastConcat(...arrs)).toEqual(expected)
-  })
-
-  it('clones', () => {
-    const arr = range(20)
-    const clone = fastCloneArray(arr)
-
-    expect(clone).not.toBe(arr)
-    expect(clone).toEqual(arr)
   })
 })

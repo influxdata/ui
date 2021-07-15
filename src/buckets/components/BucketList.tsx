@@ -22,7 +22,6 @@ interface Props {
   buckets: Bucket[]
   emptyState: JSX.Element
   onUpdateBucket: (b: OwnBucket) => void
-  onDeleteBucket: (b: OwnBucket) => void
   onFilterChange: (searchTerm: string) => void
   sortKey: string
   sortDirection: Sort
@@ -52,7 +51,6 @@ class BucketList extends PureComponent<
       sortKey,
       sortDirection,
       sortType,
-      onDeleteBucket,
       onFilterChange,
       onUpdateBucket,
     } = this.props
@@ -71,21 +69,11 @@ class BucketList extends PureComponent<
         <BucketCard
           key={bucket.id}
           bucket={bucket}
-          onDeleteBucket={onDeleteBucket}
-          onDeleteData={this.handleStartDeleteData}
           onUpdateBucket={onUpdateBucket}
           onFilterChange={onFilterChange}
         />
       )
     })
-  }
-
-  private handleStartDeleteData = (bucket: OwnBucket) => {
-    const {orgID} = this.props.match.params
-
-    this.props.history.push(
-      `/orgs/${orgID}/load-data/buckets/${bucket.id}/delete-data`
-    )
   }
 }
 

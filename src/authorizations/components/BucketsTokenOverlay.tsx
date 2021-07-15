@@ -187,7 +187,7 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
   private handleReadDeselectAllBuckets = () => {
     this.setState({readBuckets: []})
   }
-  j
+
   private handleWriteSelectAllBuckets = () => {
     const writeBuckets = this.props.buckets.map(b => b.name)
     this.setState({writeBuckets})

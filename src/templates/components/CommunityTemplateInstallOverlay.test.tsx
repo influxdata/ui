@@ -151,6 +151,10 @@ describe('the Community Templates Install Overlay', () => {
         fireEvent.click(installButton)
       })
 
+      const [, , installEventCallArguments] = mocked(event).mock.calls
+      const [eventName2] = installEventCallArguments
+      expect(eventName2).toBe('community_template.fn-template.install.failure')
+
       const [notifyCallArguments] = mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(communityTemplateRenameFailed())
@@ -221,7 +225,7 @@ describe('the Community Templates Install Overlay', () => {
 
       const [, installEventCallArguments] = mocked(event).mock.calls
       const [eventName2] = installEventCallArguments
-      expect(eventName2).toBe('template_install')
+      expect(eventName2).toBe('template_install.success')
 
       expect(updateStackName).toHaveBeenCalled()
 
@@ -234,6 +238,10 @@ describe('the Community Templates Install Overlay', () => {
       expect(notifyMessage).toEqual(
         communityTemplateInstallSucceeded('fn-template')
       )
+
+      const [, , , ctInstallEventCallArguments] = mocked(event).mock.calls
+      const [eventName4] = ctInstallEventCallArguments
+      expect(eventName4).toBe('community_template.fn-template.install.success')
     })
   })
 })

@@ -18,6 +18,7 @@ import TreeNav from 'src/pageLayout/containers/TreeNav'
 import TooltipPortal from 'src/portals/TooltipPortal'
 import NotesPortal from 'src/portals/NotesPortal'
 import Notifications from 'src/shared/components/notifications/Notifications'
+import GlobalSearch from 'src/shared/search/GlobalSearch'
 import {
   OverlayProviderComp,
   OverlayController,
@@ -53,6 +54,7 @@ const App: FC = () => {
 
   return (
     <AppWrapper presentationMode={presentationMode} className={appWrapperClass}>
+      {isFlagEnabled('globalSearch') && <GlobalSearch />}
       <Notifications />
       <TooltipPortal />
       <NotesPortal />

@@ -9,6 +9,8 @@ import './GlobalSearch.scss'
 
 import {event} from 'src/cloud/utils/reporting'
 
+import {GLOBALSEARCH_API_KEY, GLOBALSEARCH_APP_ID} from 'src/shared/constants'
+
 const Hit: FC<any> = memo(({hit, children}) => {
   const linkID = uuid()
   const location = useLocation()
@@ -64,12 +66,14 @@ const GlobalSearch: FC = () => {
     }),
     []
   )
-  return showState ? (
+  return showState &&
+    GLOBALSEARCH_API_KEY?.length &&
+    GLOBALSEARCH_APP_ID?.length ? (
     <ClickOutside onClickOutside={() => setShowState(false)}>
       <DocSearchModal
-        apiKey="ba4435a9d456ac0d954cc276206eac06"
+        apiKey={GLOBALSEARCH_API_KEY}
         indexName="influxdata"
-        appId="WHM9UWMP6M"
+        appId={GLOBALSEARCH_APP_ID}
         placeholder="Search our docs: "
         initialScrollY={0}
         searchParameters={facetFilters}

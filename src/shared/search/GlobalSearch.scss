@@ -127,6 +127,10 @@ $article-link: #00a3ff;
   font-size: 21px !important;
 }
 
+.DocSearch-LoadingIndicator {
+  display: none !important;
+}
+
 .DocSearch-Hit-path {
   font-weight: bold;
 }

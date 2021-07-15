@@ -3,12 +3,13 @@ import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {Table} from '@influxdata/giraffe'
 import {CLOUD} from 'src/shared/constants'
+import {usageStatsCsv} from 'src/shared/utils/mocks/usageStats.mocks'
 import _ from 'lodash'
 
 let getUsage = null
 
 if (CLOUD) {
-  getUsage = require('src/client/unityRoutes').getUsage
+  getUsage = require('src/client').getOrgsUsage
 }
 
 export enum USER_PILOT_USER_STATUS {
@@ -16,36 +17,46 @@ export enum USER_PILOT_USER_STATUS {
   DELETED_ALL_DATA = 'DELETED_ALL_DATA',
   NON_WRITING_USER = 'NON_WRITING_USER',
   ACTIVE_USER = 'ACTIVE_USER',
-  ACTIVE_WRITING_USER = 'ACTIVE_WRITING_USER',
   WRITING_NOT_READING_USER = 'WRITING_NOT_READING_USER',
 }
-export const getUserStatus = (tables: any): USER_PILOT_USER_STATUS[] => {
+export const getUserStatus = (table: Table): USER_PILOT_USER_STATUS[] => {
   const dataStates: USER_PILOT_USER_STATUS[] = []
 
-  const {storage_gb, writes_mb, query_count} = tables
+  const measurement = (table.getColumn('_measurement') as string[]) ?? []
+
   // this looks up storage amounts to see if the user has stored data
-  const storageBytes = storage_gb
-    .getColumn('storage_gb', 'number')
-    .find(v => v > 0)
+  const storageBytes = measurement.find((_v, i) => {
+    return (
+      measurement[i] === 'storage_usage_bucket_bytes' &&
+      table.getColumn('_value', 'number')[i] > 0
+    )
+  })
 
   // This looks up requests that are POSTs to our query endpoints for writing data
-  const requestInByte = writes_mb
-    .getColumn('writes_mb', 'number')
-    .find(v => v > 0)
+  const requestInByte = measurement.find((_v, i) => {
+    return (
+      measurement[i] === 'http_request' &&
+      ['/api/v2/query', '/query'].includes(
+        table.getColumn('endpoint', 'string')[i]
+      ) &&
+      table.getColumn('_field')[i] === 'req_bytes' &&
+      table.getColumn('_value', 'number')[i] > 0
+    )
+  })
 
   // This looks up a total of query counts in general to see if the user has read values
-  const queryCount = query_count
-    .getColumn('query_count', 'number')
-    .find(v => v > 0)
+  const queryCount = measurement.find((_v, i) => {
+    return (
+      measurement[i] === 'query_count' &&
+      table.getColumn('_value', 'number')[i] > 0
+    )
+  })
 
   if (!storageBytes && !requestInByte) {
     dataStates.push(USER_PILOT_USER_STATUS.NEW_USER)
   }
   if (!storageBytes && requestInByte) {
     dataStates.push(USER_PILOT_USER_STATUS.DELETED_ALL_DATA)
-  }
-  if (storageBytes && requestInByte) {
-    dataStates.push(USER_PILOT_USER_STATUS.ACTIVE_WRITING_USER)
   }
   if (storageBytes && !requestInByte) {
     dataStates.push(USER_PILOT_USER_STATUS.NON_WRITING_USER)
@@ -64,69 +75,40 @@ export const getUserStatus = (tables: any): USER_PILOT_USER_STATUS[] => {
   return dataStates
 }
 
-export const queryUsage = async (vector?: string, range?: string) => {
+export const queryUsage = async (orgID: string, range?: string) => {
+  let csvToParse = ''
   if (getUsage) {
-    if (vector) {
-      const usage = await getUsage({
-        vector_name: vector,
-        query: {
-          range: range ?? '30d',
-        },
-      })
-      const {table} = fromFlux(usage.data)
-      return table
+    const usage = await getUsage({
+      orgID,
+      query: {
+        start: range ?? '-30d',
+      },
+    })
+    if (usage?.status === 200) {
+      console.warn(`Usage: ${usage}`)
+      csvToParse = usage.data?.trim().replace(/\r\n/g, '\n')
+      console.warn(`CSVTOPARSE: ${csvToParse}`)
     } else {
-      const data = await Promise.all([
-        getUsage({
-          vector_name: 'writes_mb',
-          query: {
-            range: range ?? '30d',
-          },
-        }),
-        getUsage({
-          vector_name: 'storage_gb',
-          query: {
-            range: range ?? '30d',
-          },
-        }),
-        getUsage({
-          vector_name: 'query_count',
-          query: {
-            range: range ?? '30d',
-          },
-        }),
-      ])
-      if (_.every(data, d => d.status === 200)) {
-        const tablesToParse = {}
-        data.forEach(d => {
-          const {table} = fromFlux(d.data)
-          if (table.getColumn('storage_gb')) {
-            tablesToParse['storage_gb'] = table
-          } else if (table.getColumn('writes_mb')) {
-            tablesToParse['writes_mb'] = table
-          } else if (table.getColumn('query_count')) {
-            tablesToParse['query_count'] = table
-          }
-        })
-
-        return tablesToParse
-      }
+      csvToParse = usageStatsCsv
     }
   } else {
-    return {}
+    csvToParse = usageStatsCsv
   }
+
+  const {table} = fromFlux(csvToParse)
+  return table
 }
 
-export const getUserWriteLimitHits = async (): Promise<number> => {
+export const getUserWriteLimitHits = async (orgID: string): Promise<number> => {
   try {
-    const table = (await queryUsage('rate_limits', '30d')) as Table
+    const table = await queryUsage(orgID)
 
-    const fieldNumbers = table.getColumn('_field') as number[]
-    // const limitedWrite = table.getColumn('limited_write', 'number')
+    const measurement = (table.getColumn('_measurement') as string[]) ?? []
 
-    const queryWriteLimitHits = fieldNumbers.reduce((a, _b, i) => {
+    const queryWriteLimitHits = measurement.reduce((a, b, i) => {
       if (
-        table.getColumn('_field')[i] === 'limited_write' &&
+        b === 'event' &&
+        table.getColumn('_field')[i] === 'event_type_limited_write' &&
         table.getColumn('_value', 'number')[i] > 0
       ) {
         return a + table.getColumn('_value', 'number')[i]
@@ -134,7 +116,6 @@ export const getUserWriteLimitHits = async (): Promise<number> => {
         return a
       }
     }, 0)
-
     return queryWriteLimitHits
   } catch (err) {
     console.error(err)
@@ -142,11 +123,11 @@ export const getUserWriteLimitHits = async (): Promise<number> => {
 }
 
 let hasCalledGetStatus = false
-const handleGetUserStatus = async () => {
+const handleGetUserStatus = async (orgID: string) => {
   let usageDataStates = []
 
   const getUserStatusDefinition = async () => {
-    const tables = await queryUsage()
+    const tables = await queryUsage(orgID)
     if (tables) {
       usageDataStates = getUserStatus(tables)
     }

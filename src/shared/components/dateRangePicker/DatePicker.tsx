@@ -16,6 +16,7 @@ import {TimeZone} from 'src/types'
 
 // Utils
 import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
+import {getTimeZone} from 'src/dashboards/selectors'
 
 interface Props {
   label: string
@@ -216,7 +217,7 @@ class DatePicker extends PureComponent<Props, State> {
 }
 
 const mapStateToProps = state => ({
-  timeZone: state.app.persisted.timeZone || 'Local',
+  timeZone: getTimeZone(state),
 })
 
 export default connect(mapStateToProps)(DatePicker)

@@ -32,7 +32,8 @@ import {
   TimeZone,
 } from 'src/types'
 import {connect} from 'react-redux'
-import {getTimeZone} from '../../dashboards/selectors'
+
+import {getTimeZone} from 'src/dashboards/selectors'
 
 interface Props {
   timeRange: TimeRange

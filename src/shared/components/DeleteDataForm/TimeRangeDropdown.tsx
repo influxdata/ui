@@ -1,5 +1,5 @@
 // Libraries
-import React, {useRef, useState, FC} from 'react'
+import React, {useRef, useState, FC, useContext} from 'react'
 
 // Components
 import {
@@ -18,6 +18,7 @@ import {
   convertTimeRangeToCustom,
   getTimeRangeLabel,
 } from 'src/shared/utils/duration'
+import {AppSettingContext} from 'src/shared/contexts/app'
 
 interface Props {
   timeRange: CustomTimeRange
@@ -34,11 +35,12 @@ const TimeRangeDropdown: FC<Props> = ({
 }) => {
   const [pickerActive, setPickerActive] = useState(false)
   const buttonRef = useRef<HTMLDivElement>(null)
+  const {timeZone} = useContext(AppSettingContext)
 
   let dropdownLabel = 'Select a Time Range'
 
   if (timeRange) {
-    dropdownLabel = getTimeRangeLabel(timeRange, singleDirection)
+    dropdownLabel = getTimeRangeLabel(timeRange, timeZone, singleDirection)
   }
 
   const handleApplyTimeRange = (timeRange: CustomTimeRange) => {

@@ -71,10 +71,7 @@ class DatePicker extends PureComponent<Props, State> {
     const date = new Date(dateTime)
 
     if (timeZone === 'UTC') {
-      // (sahas): the react-datepicker forces the timezone to be the Local timezone.
-      // so when our app in in UTC mode, to make the datepicker respect that timezone,
-      // we have to manually manipulate the Local time and add the offset so that it displays the correct UTC time in the picker
-      date.setMinutes(date.getMinutes() + date.getTimezoneOffset())
+      this.applyTimeZoneOffset(date)
     }
 
     return (
@@ -115,6 +112,13 @@ class DatePicker extends PureComponent<Props, State> {
         </Grid.Row>
       </div>
     )
+  }
+
+  // (sahas): the react-datepicker forces the timezone to be the Local timezone.
+  // so when our app in in UTC mode, to make the datepicker respect that timezone,
+  // we have to manually manipulate the Local time and add the offset so that it displays the correct UTC time in the picker
+  private applyTimeZoneOffset = (date: Date): void => {
+    date.setMinutes(date.getMinutes() + date.getTimezoneOffset())
   }
 
   private get inputValue(): string {
@@ -190,10 +194,7 @@ class DatePicker extends PureComponent<Props, State> {
     const {onSelectDate, timeZone} = this.props
 
     if (timeZone === 'UTC') {
-      // (sahas): the react-datepicker forces the timezone to be the Local timezone.
-      // so when our app in in UTC mode, to make the datepicker respect that timezone,
-      // we have to manually manipulate the Local time and add the offset so that it displays the correct UTC time in the picker
-      date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
+      this.applyTimeZoneOffset(date)
     }
 
     onSelectDate(date.toISOString())

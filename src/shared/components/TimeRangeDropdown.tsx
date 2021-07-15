@@ -32,6 +32,7 @@ import {
   TimeZone,
 } from 'src/types'
 import {connect} from 'react-redux'
+import {getTimeZone} from '../../dashboards/selectors'
 
 interface Props {
   timeRange: TimeRange
@@ -184,7 +185,7 @@ class TimeRangeDropdown extends PureComponent<Props, State> {
 }
 
 const mapStateToProps = state => ({
-  timeZone: state.app.persisted.timeZone || 'Local',
+  timeZone: getTimeZone(state),
 })
 
 export default connect(mapStateToProps)(TimeRangeDropdown)

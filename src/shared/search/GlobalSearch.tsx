@@ -2,7 +2,7 @@ import React, {FC, useEffect, memo, useState, useMemo, useCallback} from 'react'
 import {useLocation} from 'react-router-dom'
 import {DocSearchModal} from '@docsearch/react'
 import {v4 as uuid} from 'uuid'
-
+import {ClickOutside} from 'src/shared/components/ClickOutside'
 import '@docsearch/react/style'
 
 import './GlobalSearch.scss'
@@ -65,15 +65,17 @@ const GlobalSearch: FC = () => {
     []
   )
   return showState ? (
-    <DocSearchModal
-      apiKey="ba4435a9d456ac0d954cc276206eac06"
-      indexName="influxdata"
-      appId="WHM9UWMP6M"
-      placeholder="Search our docs: "
-      initialScrollY={0}
-      searchParameters={facetFilters}
-      hitComponent={Hit}
-    />
+    <ClickOutside onClickOutside={() => setShowState(false)}>
+      <DocSearchModal
+        apiKey="ba4435a9d456ac0d954cc276206eac06"
+        indexName="influxdata"
+        appId="WHM9UWMP6M"
+        placeholder="Search our docs: "
+        initialScrollY={0}
+        searchParameters={facetFilters}
+        hitComponent={Hit}
+      />
+    </ClickOutside>
   ) : null
 }
 

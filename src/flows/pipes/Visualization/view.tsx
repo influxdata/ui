@@ -9,7 +9,13 @@ import React, {
 } from 'react'
 
 // Components
-import {Icon, IconFont, DapperScrollbars} from '@influxdata/clockface'
+import {
+  Icon,
+  IconFont,
+  DapperScrollbars,
+  Button,
+  ComponentStatus,
+} from '@influxdata/clockface'
 import ExportDashboardOverlay from 'src/flows/pipes/Visualization/ExportDashboardOverlay'
 import ExportButton from 'src/flows/pipes/Visualization/ExportDashboardButton'
 import Controls from 'src/flows/pipes/Visualization/Controls'
@@ -23,14 +29,19 @@ import {RemoteDataState} from 'src/types'
 import {PipeProp} from 'src/types/flows'
 
 import {PipeContext} from 'src/flows/context/pipe'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {SidebarContext} from 'src/flows/context/sidebar'
 import {PopupContext} from 'src/flows/context/popup'
 
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {downloadTextFile} from 'src/shared/utils/download'
 
 const Visualization: FC<PipeProp> = ({Context}) => {
-  const {id, data, range, update, loading, results} = useContext(PipeContext)
+  const {id, data, range, update, loading, results, queryText} = useContext(
+    PipeContext
+  )
+  const {basic} = useContext(FlowQueryContext)
   const {register} = useContext(SidebarContext)
   const {launch} = useContext(PopupContext)
   const [optionsVisibility, setOptionsVisibility] = useState(false)
@@ -51,6 +62,20 @@ const Visualization: FC<PipeProp> = ({Context}) => {
   )
 
   const dataExists = !!(results?.parsed?.table || []).length
+
+  const downloadTitle = queryText
+    ? 'Download results as an annotated CSV file'
+    : 'Build a query to download your results'
+  const download = () => {
+    event('CSV Download Initiated')
+    basic(queryText).promise.then(response => {
+      if (response.type !== 'SUCCESS') {
+        return
+      }
+
+      downloadTextFile(response.csv, 'influx.data', '.csv', 'text/csv')
+    })
+  }
 
   const loadingText = useMemo(() => {
     if (loading === RemoteDataState.Loading) {
@@ -85,6 +110,11 @@ const Visualization: FC<PipeProp> = ({Context}) => {
             ),
           },
           {
+            title: 'Download as CSV',
+            disable: !dataExists,
+            action: download,
+          },
+          {
             title: 'Export to Dashboard',
             action: () => {
               event('Export to Dashboard Clicked')
@@ -101,7 +131,19 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     ])
   }, [id, data.properties, results.parsed, range])
 
-  const persist = isFlagEnabled('flow-sidebar') ? null : <ExportButton />
+  const persist = isFlagEnabled('flow-sidebar') ? null : (
+    <>
+      <Button
+        titleText={downloadTitle}
+        text="CSV"
+        icon={IconFont.Download}
+        onClick={download}
+        status={dataExists ? ComponentStatus.Default : ComponentStatus.Disabled}
+      />
+      <ExportButton />
+    </>
+  )
+
   if (results.error) {
     return (
       <Context

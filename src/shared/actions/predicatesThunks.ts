@@ -1,6 +1,5 @@
 // libraries
 import {Dispatch} from 'react'
-import moment from 'moment'
 
 // api
 import {postDelete} from 'src/client'
@@ -64,8 +63,9 @@ export const deleteWithPredicate = () => async (
   const orgID = getOrg(getState()).id
 
   const data = {
-    start: moment(timeRange.lower).toISOString(),
-    stop: moment(timeRange.upper).toISOString(),
+
+    start: new Date(timeRange.lower).toISOString(),
+    stop: new Date(timeRange.upper).toISOString(),
   }
 
   if (filters.length > 0) {

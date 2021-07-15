@@ -21,6 +21,7 @@ release
 cypress.env.json
 junit.xml
 npm-error.log
+yarn-error.log
 
 # oats generated routes
 src/client/generatedRoutes.ts

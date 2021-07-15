@@ -207,7 +207,8 @@ describe('DataExplorer', () => {
       cy.getByTestID(`view-type--gauge`).click()
       cy.getByTestID('cog-cell--button').click()
     })
-    it('can add prefix and suffix values', () => {
+
+    it('can add prefix and suffix labels', () => {
       cy.get('.view-options').within(() => {
         cy.getByTestID('prefix-input')
           .click()
@@ -225,18 +226,20 @@ describe('DataExplorer', () => {
           .should('have.length', 0)
       })
     })
-    it('can add and remove tick values', () => {
+    it('can add and remove tick labels', () => {
       cy.get('.view-options').within(() => {
-        cy.getByTestID('tickprefix-input')
+        cy.getByTestID('tick-prefix-input')
           .click()
+          .type('mph')
           .invoke('val')
-          .should('equal', '')
+          .should('equal', 'mph')
           .getByTestID('input-field--error')
           .should('have.length', 0)
-        cy.getByTestID('ticksuffix-input')
+        cy.getByTestID('tick-suffix-input')
           .click()
+          .type('mph')
           .invoke('val')
-          .should('equal', '')
+          .should('equal', 'mph')
           .getByTestID('input-field--error')
           .should('have.length', 0)
       })

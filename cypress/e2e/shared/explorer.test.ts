@@ -201,45 +201,139 @@ describe('DataExplorer', () => {
     })
   })
 
-  describe('optional suffix and prefix in gauge', () => {
-    beforeEach(() => {
-      cy.getByTestID('view-type--dropdown').click()
-      cy.getByTestID(`view-type--gauge`).click()
-      cy.getByTestID('cog-cell--button').click()
+  describe('optional prefix and suffix in gauge', () => {
+    const prefix = 'speed: '
+    const suffix = ' mph'
+    it('can add prefix and suffix labels when using Giraffe gauge', () => {
+      cy.setFeatureFlags({useGiraffeGraphs: true})
+      cy.writeData(lines(10))
+      cy.get<string>('@defaultBucketListSelector').then(
+        (defaultBucketListSelector: string) => {
+          cy.getByTestID('view-type--dropdown').click()
+          cy.getByTestID(`view-type--gauge`).click()
+
+          cy.getByTestID('query-builder').should('exist')
+          cy.getByTestID('selector-list _monitoring').should('be.visible')
+          cy.getByTestID('selector-list _monitoring').click()
+
+          cy.getByTestID(defaultBucketListSelector).should('be.visible')
+          cy.getByTestID(defaultBucketListSelector).click()
+
+          cy.getByTestID('selector-list m').should('be.visible')
+          cy.getByTestID('selector-list m').clickAttached()
+
+          cy.getByTestID('selector-list v').should('be.visible')
+          cy.getByTestID('selector-list v').clickAttached()
+
+          cy.getByTestID('selector-list tv1').clickAttached()
+
+          cy.getByTestID('selector-list mean')
+            .scrollIntoView()
+            .should('be.visible')
+            .click({force: true})
+
+          cy.getByTestID('time-machine-submit-button').click()
+          cy.get('canvas.giraffe-gauge').should('be.visible')
+
+          cy.getByTestID('cog-cell--button').click()
+          cy.get('.view-options').within(() => {
+            cy.getByTestID('prefix-input')
+              .click()
+              .type(`${prefix}`)
+              .invoke('val')
+              .should('equal', prefix)
+              .getByTestID('input-field--error')
+              .should('have.length', 0)
+            cy.getByTestID('suffix-input')
+              .click()
+              .type(`${suffix}`)
+              .invoke('val')
+              .should('equal', suffix)
+              .getByTestID('input-field--error')
+              .should('have.length', 0)
+            cy.getByTestID('tick-prefix-input')
+              .click()
+              .type(`${prefix}`)
+              .invoke('val')
+              .should('equal', prefix)
+              .getByTestID('input-field--error')
+              .should('have.length', 0)
+            cy.getByTestID('tick-suffix-input')
+              .click()
+              .type(`${suffix}`)
+              .invoke('val')
+              .should('equal', suffix)
+              .getByTestID('input-field--error')
+              .should('have.length', 0)
+          })
+        }
+      )
     })
-    it('can add prefix and suffix values', () => {
-      cy.get('.view-options').within(() => {
-        cy.getByTestID('prefix-input')
-          .click()
-          .type('mph')
-          .invoke('val')
-          .should('equal', 'mph')
-          .getByTestID('input-field--error')
-          .should('have.length', 0)
-        cy.getByTestID('suffix-input')
-          .click()
-          .type('mph')
-          .invoke('val')
-          .should('equal', 'mph')
-          .getByTestID('input-field--error')
-          .should('have.length', 0)
-      })
-    })
-    it('can add and remove tick values', () => {
-      cy.get('.view-options').within(() => {
-        cy.getByTestID('tickprefix-input')
-          .click()
-          .invoke('val')
-          .should('equal', '')
-          .getByTestID('input-field--error')
-          .should('have.length', 0)
-        cy.getByTestID('ticksuffix-input')
-          .click()
-          .invoke('val')
-          .should('equal', '')
-          .getByTestID('input-field--error')
-          .should('have.length', 0)
-      })
+
+    it('can add prefix and suffix labels when using original built-in gauge', () => {
+      cy.setFeatureFlags({useGiraffeGraphs: false})
+      cy.writeData(lines(10))
+      cy.get<string>('@defaultBucketListSelector').then(
+        (defaultBucketListSelector: string) => {
+          cy.getByTestID('view-type--dropdown').click()
+          cy.getByTestID(`view-type--gauge`).click()
+
+          cy.getByTestID('query-builder').should('exist')
+          cy.getByTestID('selector-list _monitoring').should('be.visible')
+          cy.getByTestID('selector-list _monitoring').click()
+
+          cy.getByTestID(defaultBucketListSelector).should('be.visible')
+          cy.getByTestID(defaultBucketListSelector).click()
+
+          cy.getByTestID('selector-list m').should('be.visible')
+          cy.getByTestID('selector-list m').clickAttached()
+
+          cy.getByTestID('selector-list v').should('be.visible')
+          cy.getByTestID('selector-list v').clickAttached()
+
+          cy.getByTestID('selector-list tv1').clickAttached()
+
+          cy.getByTestID('selector-list mean')
+            .scrollIntoView()
+            .should('be.visible')
+            .click({force: true})
+
+          cy.getByTestID('time-machine-submit-button').click()
+          cy.get('canvas.gauge').should('be.visible')
+
+          cy.getByTestID('cog-cell--button').click()
+          cy.get('.view-options').within(() => {
+            cy.getByTestID('prefix-input')
+              .click()
+              .type(`${prefix}`)
+              .invoke('val')
+              .should('equal', prefix)
+              .getByTestID('input-field--error')
+              .should('have.length', 0)
+            cy.getByTestID('suffix-input')
+              .click()
+              .type(`${suffix}`)
+              .invoke('val')
+              .should('equal', suffix)
+              .getByTestID('input-field--error')
+              .should('have.length', 0)
+            cy.getByTestID('tick-prefix-input')
+              .click()
+              .type(`${prefix}`)
+              .invoke('val')
+              .should('equal', prefix)
+              .getByTestID('input-field--error')
+              .should('have.length', 0)
+            cy.getByTestID('tick-suffix-input')
+              .click()
+              .type(`${suffix}`)
+              .invoke('val')
+              .should('equal', suffix)
+              .getByTestID('input-field--error')
+              .should('have.length', 0)
+          })
+        }
+      )
     })
   })
 
@@ -884,80 +978,6 @@ describe('DataExplorer', () => {
           cy.get('.cf-overlay--dismiss').click()
         })
       })
-    })
-  })
-
-  // skipping until feature flag feature is removed for deleteWithPredicate
-  describe.skip('delete with predicate', () => {
-    beforeEach(() => {
-      cy.getByTestID('delete-data-predicate').click()
-      cy.getByTestID('overlay--container').should('have.length', 1)
-    })
-
-    it('requires consent to perform delete with predicate', () => {
-      // confirm delete is disabled
-      cy.getByTestID('confirm-delete-btn').should('be.disabled')
-      // checks the consent input
-      cy.getByTestID('delete-checkbox').check({force: true})
-      // can delete
-      cy.getByTestID('confirm-delete-btn')
-        .should('not.be.disabled')
-        .click()
-    })
-
-    it('should set the default bucket in the dropdown to the selected bucket', () => {
-      cy.get<string>('@defaultBucketListSelector').then(
-        (defaultBucketListSelector: string) => {
-          cy.get('.cf-overlay--dismiss').click()
-          cy.getByTestID(defaultBucketListSelector).click()
-          cy.getByTestID('delete-data-predicate')
-            .click()
-            .then(() => {
-              cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
-                cy.getByTestID('dropdown--button').contains(defaultBucket)
-                cy.get('.cf-overlay--dismiss').click()
-              })
-            })
-            .then(() => {
-              cy.getByTestID('selector-list _monitoring').click()
-              cy.getByTestID('delete-data-predicate')
-                .click()
-                .then(() => {
-                  cy.getByTestID('dropdown--button').contains('_monitoring')
-                  cy.get('.cf-overlay--dismiss').click()
-                })
-            })
-            .then(() => {
-              cy.getByTestID('selector-list _tasks').click()
-              cy.getByTestID('delete-data-predicate')
-                .click()
-                .then(() => {
-                  cy.getByTestID('dropdown--button').contains('_tasks')
-                })
-            })
-        }
-      )
-    })
-
-    it('closes the overlay upon a successful delete with predicate submission', () => {
-      cy.getByTestID('delete-checkbox').check({force: true})
-      cy.getByTestID('confirm-delete-btn').click()
-      cy.getByTestID('overlay--container').should('not.exist')
-      cy.getByTestID('notification-success').should('have.length', 1)
-    })
-    // needs relevant data in order to test functionality
-    it('should require key-value pairs when deleting predicate with filters', () => {
-      // confirm delete is disabled
-      cy.getByTestID('add-filter-btn').click()
-      // checks the consent input
-      cy.getByTestID('delete-checkbox').check({force: true})
-      // cannot delete
-      cy.getByTestID('confirm-delete-btn').should('be.disabled')
-
-      // should display warnings
-      cy.getByTestID('form--element-error').should('have.length', 2)
-
-      // TODO: add filter values based on dropdown selection in key / value
     })
   })
 })

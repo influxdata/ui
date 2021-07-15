@@ -72,20 +72,11 @@ class BucketList extends PureComponent<
           key={bucket.id}
           bucket={bucket}
           onDeleteBucket={onDeleteBucket}
-          onDeleteData={this.handleStartDeleteData}
           onUpdateBucket={onUpdateBucket}
           onFilterChange={onFilterChange}
         />
       )
     })
-  }
-
-  private handleStartDeleteData = (bucket: OwnBucket) => {
-    const {orgID} = this.props.match.params
-
-    this.props.history.push(
-      `/orgs/${orgID}/load-data/buckets/${bucket.id}/delete-data`
-    )
   }
 }
 

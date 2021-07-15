@@ -1,5 +1,12 @@
 // Libraries
-import React, {FC, useContext, useCallback} from 'react'
+import React, {
+  FC,
+  useContext,
+  useCallback,
+  useState,
+  useRef,
+  useEffect,
+} from 'react'
 import classnames from 'classnames'
 import {
   ComponentColor,
@@ -10,11 +17,12 @@ import {
 
 // Components
 import RemovePanelButton from 'src/flows/components/panel/RemovePanelButton'
+import Handle from 'src/flows/components/panel/Handle'
 import InsertCellButton from 'src/flows/components/panel/InsertCellButton'
 import PanelVisibilityToggle from 'src/flows/components/panel/PanelVisibilityToggle'
 import FlowPanelTitle from 'src/flows/components/panel/FlowPanelTitle'
-import Results from 'src/flows/components/panel/Results'
 import Sidebar from 'src/flows/components/Sidebar'
+
 // Constants
 import {PIPE_DEFINITIONS} from 'src/flows'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
@@ -30,11 +38,22 @@ import {FlowQueryContext} from 'src/flows/context/flow.query'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
+import 'src/flows/shared/Resizer.scss'
+
 export interface Props extends PipeContextProps {
   id: string
 }
 
-const FlowPanel: FC<Props> = ({id, controls, persistentControls, children}) => {
+export const DEFAULT_RESIZER_HEIGHT = 360
+export const MINIMUM_RESIZER_HEIGHT = 220
+
+const FlowPanel: FC<Props> = ({
+  id,
+  controls,
+  persistentControls,
+  resizes,
+  children,
+}) => {
   const {flow} = useContext(FlowContext)
   const {generateMap} = useContext(FlowQueryContext)
   const {id: focused, show, hide} = useContext(SidebarContext)
@@ -45,12 +64,6 @@ const FlowPanel: FC<Props> = ({id, controls, persistentControls, children}) => {
     [`flow-panel__${isVisible ? 'visible' : 'hidden'}`]: true,
     'flow-panel__focus': focused === id,
   })
-
-  const showResults =
-    PIPE_DEFINITIONS[flow.data.get(id).type] &&
-    ['inputs', 'transform'].includes(
-      PIPE_DEFINITIONS[flow.data.get(id).type].family
-    )
 
   const toggleSidebar = () => {
     if (id !== focused) {
@@ -114,6 +127,75 @@ const FlowPanel: FC<Props> = ({id, controls, persistentControls, children}) => {
     /* eslint-enable no-console */
   }, [id])
 
+  const [size, updateSize] = useState<number>(
+    flow.meta.get(id).height || DEFAULT_RESIZER_HEIGHT
+  )
+  const [isDragging, setIsDragging] = useState(false)
+  const bodyRef = useRef<HTMLDivElement>(null)
+  const handleRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (isDragging === true) {
+      handleRef.current &&
+        handleRef.current.classList.add('panel-resizer--drag-handle__dragging')
+    }
+
+    if (isDragging === false) {
+      handleRef.current &&
+        handleRef.current.classList.remove(
+          'panel-resizer--drag-handle__dragging'
+        )
+      flow.meta.update(id, {height: size})
+    }
+  }, [isDragging]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleMouseMove = (e: MouseEvent): void => {
+    if (!bodyRef.current) {
+      return
+    }
+
+    const {pageY} = e
+    const {top} = bodyRef.current.getBoundingClientRect()
+
+    const updatedHeight = Math.round(
+      Math.max(pageY - top, MINIMUM_RESIZER_HEIGHT)
+    )
+
+    updateSize(updatedHeight)
+  }
+
+  const handleMouseDown = (): void => {
+    setIsDragging(true)
+    const body = document.getElementsByTagName('body')[0]
+    body && body.classList.add('panel-resizer-dragging')
+
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mouseup', handleMouseUp)
+  }
+
+  const handleMouseUp = (): void => {
+    setIsDragging(false)
+    const body = document.getElementsByTagName('body')[0]
+    body && body.classList.remove('panel-resizer-dragging')
+
+    window.removeEventListener('mousemove', handleMouseMove)
+    window.removeEventListener('mouseup', handleMouseUp)
+  }
+
+  useEffect(() => {
+    if (size === flow.meta.get(id).height) {
+      return
+    }
+
+    if (size === DEFAULT_RESIZER_HEIGHT) {
+      return
+    }
+
+    flow.meta.update(id, {
+      height: size,
+    })
+  }, [flow, size])
+
   const title = PIPE_DEFINITIONS[flow.data.get(id).type] ? (
     <FlowPanelTitle id={id} />
   ) : (
@@ -171,11 +253,21 @@ const FlowPanel: FC<Props> = ({id, controls, persistentControls, children}) => {
             </>
           )}
         </div>
-        {isVisible && <div className="flow-panel--body">{children}</div>}
-        {showResults && (
-          <div className="flow-panel--results">
-            <Results />
+        {isVisible && (
+          <div
+            className="flow-panel--body"
+            ref={bodyRef}
+            style={resizes ? {height: `${size}px`} : {}}
+          >
+            {children}
           </div>
+        )}
+        {isVisible && resizes && (
+          <Handle
+            dragRef={handleRef}
+            onStartDrag={handleMouseDown}
+            dragging={isDragging}
+          />
         )}
       </div>
       {!flow.readOnly && <InsertCellButton id={id} />}

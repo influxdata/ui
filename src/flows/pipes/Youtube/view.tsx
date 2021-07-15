@@ -42,7 +42,7 @@ const Youtube: FC<PipeProp> = ({Context}) => {
   const showEditing = isEditing || !data.uri
 
   return (
-    <Context>
+    <Context resizes>
       <div className="flow-youtube">
         {showEditing && (
           <div className="flow-youtube--editor">
@@ -53,7 +53,7 @@ const Youtube: FC<PipeProp> = ({Context}) => {
         {!showEditing && (
           <iframe
             width="100%"
-            height="448"
+            height="100%"
             src={`https://www.youtube.com/embed/${data.uri}?autoplay=1`}
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

@@ -79,7 +79,6 @@ export const OverlayProvider: FC<Props> = React.memo(({children}) => {
         setLimitsStatus(RemoteDataState.Done)
         const displayLimits = toDisplayLimits(resp.data)
         setLimits(displayLimits)
-        setLimits(resp.data)
       } catch (error) {
         setLimitsStatus(RemoteDataState.Error)
         console.error({error})

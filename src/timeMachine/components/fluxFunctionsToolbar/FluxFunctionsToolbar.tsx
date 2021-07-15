@@ -1,49 +1,41 @@
 // Libraries
-import React, {PureComponent} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
+import React, {FC, useMemo, useState, useCallback} from 'react'
 
 // Components
 import TransformToolbarFunctions from 'src/timeMachine/components/fluxFunctionsToolbar/TransformToolbarFunctions'
 import FunctionCategory from 'src/timeMachine/components/fluxFunctionsToolbar/FunctionCategory'
 import FluxToolbarSearch from 'src/timeMachine/components/FluxToolbarSearch'
 import {DapperScrollbars} from '@influxdata/clockface'
-import {ErrorHandling} from 'src/shared/decorators/errors'
-
-// Actions
-import {setActiveQueryText} from 'src/timeMachine/actions'
-
-// Utils
-import {getActiveQuery} from 'src/timeMachine/selectors'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 // Constants
 import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
 
 // Types
-import {AppState, FluxToolbarFunction} from 'src/types'
+import {FluxToolbarFunction} from 'src/types'
 
 interface OwnProps {
   onInsertFluxFunction: (func: FluxToolbarFunction) => void
 }
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps
+const FluxFunctionsToolbar: FC<OwnProps> = (props: OwnProps) => {
+  const [searchTerm, setSearchTerm] = useState('')
 
-interface State {
-  searchTerm: string
-}
+  const handleSearch = (searchTerm: string): void => {
+    setSearchTerm(searchTerm)
+  }
 
-class FluxFunctionsToolbar extends PureComponent<Props, State> {
-  public state: State = {searchTerm: ''}
+  const handleClickFunction = useCallback(
+    (func: FluxToolbarFunction) => {
+      props.onInsertFluxFunction(func)
+    },
+    [props.onInsertFluxFunction]
+  )
 
-  public render() {
-    const {searchTerm} = this.state
-
+  return useMemo(() => {
     return (
-      <>
-        <FluxToolbarSearch
-          onSearch={this.handleSearch}
-          resourceName="Functions"
-        />
+      <ErrorBoundary>
+        <FluxToolbarSearch onSearch={handleSearch} resourceName="Functions" />
         <DapperScrollbars className="flux-toolbar--scroll-area">
           <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
             <TransformToolbarFunctions
@@ -56,36 +48,16 @@ class FluxFunctionsToolbar extends PureComponent<Props, State> {
                     key={category}
                     category={category}
                     funcs={funcs}
-                    onClickFunction={this.handleClickFunction}
+                    onClickFunction={handleClickFunction}
                   />
                 ))
               }
             </TransformToolbarFunctions>
           </div>
         </DapperScrollbars>
-      </>
+      </ErrorBoundary>
     )
-  }
-
-  private handleSearch = (searchTerm: string): void => {
-    this.setState({searchTerm})
-  }
-
-  private handleClickFunction = (func: FluxToolbarFunction) => {
-    this.props.onInsertFluxFunction(func)
-  }
+  }, [searchTerm, handleClickFunction])
 }
 
-const mstp = (state: AppState) => {
-  const activeQueryText = getActiveQuery(state).text
-
-  return {activeQueryText}
-}
-
-const mdtp = {
-  onSetActiveQueryText: setActiveQueryText,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(ErrorHandling(FluxFunctionsToolbar))
+export default FluxFunctionsToolbar

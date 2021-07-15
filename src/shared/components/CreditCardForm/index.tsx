@@ -1,8 +1,11 @@
+// Library
 import React, {FC, useCallback, useEffect, useRef, useState} from 'react'
 
-// Context
-import {CreditCardParams} from 'src/client/unityRoutes'
-import {ZuoraClient} from 'src/types'
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
+// Types
+import {CreditCardParams, ZuoraClient} from 'src/types'
 
 export const ZUORA_SCRIPT_URL =
   'https://apisandboxstatic.zuora.com/Resources/libs/hosted/1.3.0/zuora-min.js'
@@ -72,7 +75,12 @@ const CreditCardForm: FC<Props> = ({
          * that is set when the ZuoraAPI is queried. In this case, Z serves as a
          * a hosted iframe to render a credit card form to the UI
          */
+        event('zuora_form_success')
         setClient(window.Z)
+      }
+
+      script.onerror = () => {
+        event('zuora_form_failure')
       }
     }
   }, [client])

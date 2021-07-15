@@ -86,7 +86,11 @@ const MarkdownPanel: FC<PipeProp> = ({Context}) => {
   }
 
   const controls = isFlagEnabled('flow-sidebar') ? null : <MarkdownModeToggle />
-  return <Context controls={controls}>{panelContents}</Context>
+  return (
+    <Context controls={controls} resizes>
+      {panelContents}
+    </Context>
+  )
 }
 
 export default MarkdownPanel

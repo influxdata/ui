@@ -3,6 +3,7 @@ import {
   AGG_WINDOW_AUTO,
 } from 'src/timeMachine/constants/queryBuilder'
 import {GeoViewProperties} from 'src/types'
+import {DEFAULT_THRESHOLDS_GEO_COLORS} from 'src/shared/constants/thresholds'
 
 export default {
   type: 'geo',
@@ -39,7 +40,16 @@ export default {
   mapStyle: '',
   note: '',
   showNoteWhenEmpty: false,
-  layers: [],
+  layers: [
+    {
+      type: 'pointMap',
+      colorDimension: {label: 'Value'},
+      colorField: '_value',
+      colors: DEFAULT_THRESHOLDS_GEO_COLORS,
+      isClustered: false,
+      tooltipColumns: [],
+    },
+  ],
   useS2CellID: true,
   s2Column: '',
   latLonColumns: {lat: {key: '', column: ''}, lon: {key: '', column: ''}},

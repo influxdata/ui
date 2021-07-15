@@ -1,1 +1,1 @@
-export const ANNOTATION_FORM_WIDTH = 560
+export const ANNOTATION_FORM_WIDTH = 640

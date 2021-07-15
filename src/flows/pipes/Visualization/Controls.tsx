@@ -101,6 +101,21 @@ const Controls: FC<Props> = ({toggle, visible}) => {
   )
   // end TODO
 
+  if (data.properties.type === 'simple-table') {
+    return (
+      <>
+        <label style={{alignSelf: 'center', marginRight: '12px'}}>
+          Limited to most recent 100 results per series
+        </label>
+        <ViewTypeDropdown
+          viewType={data.properties.type}
+          onUpdateType={updateType as any}
+        />
+        {toggler}
+      </>
+    )
+  }
+
   return (
     <>
       <MultiSelectDropdown

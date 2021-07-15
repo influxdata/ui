@@ -1259,6 +1259,11 @@ export const csvUploaderErrorNotification = (
   message: `Failed to upload the selected CSV: ${message}`,
 })
 
+export const csvUploadCancelled = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: 'Successfully cancelled CSV Upload',
+})
+
 // Functions
 export const functionGetFail = (): Notification => ({
   ...defaultErrorNotification,

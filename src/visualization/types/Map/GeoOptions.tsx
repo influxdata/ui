@@ -1,4 +1,5 @@
 import React, {CSSProperties, FC} from 'react'
+
 import {
   Grid,
   Form,
@@ -36,6 +37,7 @@ export enum MapType {
 
 export const GeoOptions: FC<Props> = ({properties, update, results}) => {
   const {useS2CellID} = properties
+
   const handleSetUseS2CellID = (): void => {
     update({
       useS2CellID: !useS2CellID,

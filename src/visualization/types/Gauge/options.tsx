@@ -4,16 +4,10 @@ import {
   Grid,
   Columns,
   Form,
-  Toggle,
   AutoInput,
   AutoInputMode,
   Input,
   InputType,
-  InputToggleType,
-  InputLabel,
-  FlexBox,
-  AlignItems,
-  ComponentSize,
 } from '@influxdata/clockface'
 
 import ThresholdsSettings from 'src/visualization/components/internal/ThresholdsSettings'
@@ -46,13 +40,14 @@ const GaugeOptions: FC<Props> = ({properties, update}) => {
       setDigits(2)
     }
   }
+
   return (
     <Grid>
       <Grid.Row>
         <Grid.Column>
           <Grid.Row>
             <Grid.Column widthXS={Columns.Six}>
-              <Form.Element label="Prefix">
+              <Form.Element label="Value Prefix">
                 <Input
                   testID="prefix-input"
                   value={properties.prefix}
@@ -64,7 +59,7 @@ const GaugeOptions: FC<Props> = ({properties, update}) => {
               </Form.Element>
             </Grid.Column>
             <Grid.Column widthXS={Columns.Six}>
-              <Form.Element label="Suffix">
+              <Form.Element label="Value Suffix">
                 <Input
                   testID="suffix-input"
                   value={properties.suffix}
@@ -78,46 +73,28 @@ const GaugeOptions: FC<Props> = ({properties, update}) => {
           </Grid.Row>
           <Grid.Row>
             <Grid.Column widthXS={Columns.Six}>
-              <FlexBox
-                alignItems={AlignItems.Center}
-                margin={ComponentSize.Small}
-                className="view-options--checkbox"
-              >
-                <Toggle
-                  id="prefixoptional"
-                  testID="tickprefix-input"
-                  type={InputToggleType.Checkbox}
+              <Form.Element label="Axis Prefix">
+                <Input
+                  testID="tick-prefix-input"
                   value={properties.tickPrefix}
-                  onChange={val => {
-                    update({tickPrefix: val === 'false' || !!!val})
+                  onChange={evt => {
+                    update({tickPrefix: evt.target.value})
                   }}
-                  size={ComponentSize.ExtraSmall}
+                  placeholder="%, MPH, etc."
                 />
-                <InputLabel active={!!properties.tickPrefix}>
-                  Optional Prefix
-                </InputLabel>
-              </FlexBox>
+              </Form.Element>
             </Grid.Column>
             <Grid.Column widthXS={Columns.Six}>
-              <FlexBox
-                alignItems={AlignItems.Center}
-                margin={ComponentSize.Small}
-                className="view-options--checkbox"
-              >
-                <Toggle
-                  id="suffixoptional"
-                  testID="ticksuffix-input"
-                  type={InputToggleType.Checkbox}
+              <Form.Element label="Axis Suffix">
+                <Input
+                  testID="tick-suffix-input"
                   value={properties.tickSuffix}
-                  onChange={val => {
-                    update({tickSuffix: val === 'false' || !!!val})
+                  onChange={evt => {
+                    update({tickSuffix: evt.target.value})
                   }}
-                  size={ComponentSize.ExtraSmall}
+                  placeholder="%, MPH, etc."
                 />
-                <InputLabel active={!!properties.tickSuffix}>
-                  Optional Suffix
-                </InputLabel>
-              </FlexBox>
+              </Form.Element>
             </Grid.Column>
           </Grid.Row>
           {properties.decimalPlaces && (

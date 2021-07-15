@@ -201,48 +201,139 @@ describe('DataExplorer', () => {
     })
   })
 
-  describe('optional suffix and prefix in gauge', () => {
-    beforeEach(() => {
-      cy.getByTestID('view-type--dropdown').click()
-      cy.getByTestID(`view-type--gauge`).click()
-      cy.getByTestID('cog-cell--button').click()
+  describe('optional prefix and suffix in gauge', () => {
+    const prefix = 'speed: '
+    const suffix = ' mph'
+    it('can add prefix and suffix labels when using Giraffe gauge', () => {
+      cy.setFeatureFlags({useGiraffeGraphs: true})
+      cy.writeData(lines(10))
+      cy.get<string>('@defaultBucketListSelector').then(
+        (defaultBucketListSelector: string) => {
+          cy.getByTestID('view-type--dropdown').click()
+          cy.getByTestID(`view-type--gauge`).click()
+
+          cy.getByTestID('query-builder').should('exist')
+          cy.getByTestID('selector-list _monitoring').should('be.visible')
+          cy.getByTestID('selector-list _monitoring').click()
+
+          cy.getByTestID(defaultBucketListSelector).should('be.visible')
+          cy.getByTestID(defaultBucketListSelector).click()
+
+          cy.getByTestID('selector-list m').should('be.visible')
+          cy.getByTestID('selector-list m').clickAttached()
+
+          cy.getByTestID('selector-list v').should('be.visible')
+          cy.getByTestID('selector-list v').clickAttached()
+
+          cy.getByTestID('selector-list tv1').clickAttached()
+
+          cy.getByTestID('selector-list mean')
+            .scrollIntoView()
+            .should('be.visible')
+            .click({force: true})
+
+          cy.getByTestID('time-machine-submit-button').click()
+          cy.get('canvas.giraffe-gauge').should('be.visible')
+
+          cy.getByTestID('cog-cell--button').click()
+          cy.get('.view-options').within(() => {
+            cy.getByTestID('prefix-input')
+              .click()
+              .type(`${prefix}`)
+              .invoke('val')
+              .should('equal', prefix)
+              .getByTestID('input-field--error')
+              .should('have.length', 0)
+            cy.getByTestID('suffix-input')
+              .click()
+              .type(`${suffix}`)
+              .invoke('val')
+              .should('equal', suffix)
+              .getByTestID('input-field--error')
+              .should('have.length', 0)
+            cy.getByTestID('tick-prefix-input')
+              .click()
+              .type(`${prefix}`)
+              .invoke('val')
+              .should('equal', prefix)
+              .getByTestID('input-field--error')
+              .should('have.length', 0)
+            cy.getByTestID('tick-suffix-input')
+              .click()
+              .type(`${suffix}`)
+              .invoke('val')
+              .should('equal', suffix)
+              .getByTestID('input-field--error')
+              .should('have.length', 0)
+          })
+        }
+      )
     })
 
-    it('can add prefix and suffix labels', () => {
-      cy.get('.view-options').within(() => {
-        cy.getByTestID('prefix-input')
-          .click()
-          .type('mph')
-          .invoke('val')
-          .should('equal', 'mph')
-          .getByTestID('input-field--error')
-          .should('have.length', 0)
-        cy.getByTestID('suffix-input')
-          .click()
-          .type('mph')
-          .invoke('val')
-          .should('equal', 'mph')
-          .getByTestID('input-field--error')
-          .should('have.length', 0)
-      })
-    })
-    it('can add and remove tick labels', () => {
-      cy.get('.view-options').within(() => {
-        cy.getByTestID('tick-prefix-input')
-          .click()
-          .type('mph')
-          .invoke('val')
-          .should('equal', 'mph')
-          .getByTestID('input-field--error')
-          .should('have.length', 0)
-        cy.getByTestID('tick-suffix-input')
-          .click()
-          .type('mph')
-          .invoke('val')
-          .should('equal', 'mph')
-          .getByTestID('input-field--error')
-          .should('have.length', 0)
-      })
+    it('can add prefix and suffix labels when using original built-in gauge', () => {
+      cy.setFeatureFlags({useGiraffeGraphs: false})
+      cy.writeData(lines(10))
+      cy.get<string>('@defaultBucketListSelector').then(
+        (defaultBucketListSelector: string) => {
+          cy.getByTestID('view-type--dropdown').click()
+          cy.getByTestID(`view-type--gauge`).click()
+
+          cy.getByTestID('query-builder').should('exist')
+          cy.getByTestID('selector-list _monitoring').should('be.visible')
+          cy.getByTestID('selector-list _monitoring').click()
+
+          cy.getByTestID(defaultBucketListSelector).should('be.visible')
+          cy.getByTestID(defaultBucketListSelector).click()
+
+          cy.getByTestID('selector-list m').should('be.visible')
+          cy.getByTestID('selector-list m').clickAttached()
+
+          cy.getByTestID('selector-list v').should('be.visible')
+          cy.getByTestID('selector-list v').clickAttached()
+
+          cy.getByTestID('selector-list tv1').clickAttached()
+
+          cy.getByTestID('selector-list mean')
+            .scrollIntoView()
+            .should('be.visible')
+            .click({force: true})
+
+          cy.getByTestID('time-machine-submit-button').click()
+          cy.get('canvas.gauge').should('be.visible')
+
+          cy.getByTestID('cog-cell--button').click()
+          cy.get('.view-options').within(() => {
+            cy.getByTestID('prefix-input')
+              .click()
+              .type(`${prefix}`)
+              .invoke('val')
+              .should('equal', prefix)
+              .getByTestID('input-field--error')
+              .should('have.length', 0)
+            cy.getByTestID('suffix-input')
+              .click()
+              .type(`${suffix}`)
+              .invoke('val')
+              .should('equal', suffix)
+              .getByTestID('input-field--error')
+              .should('have.length', 0)
+            cy.getByTestID('tick-prefix-input')
+              .click()
+              .type(`${prefix}`)
+              .invoke('val')
+              .should('equal', prefix)
+              .getByTestID('input-field--error')
+              .should('have.length', 0)
+            cy.getByTestID('tick-suffix-input')
+              .click()
+              .type(`${suffix}`)
+              .invoke('val')
+              .should('equal', suffix)
+              .getByTestID('input-field--error')
+              .should('have.length', 0)
+          })
+        }
+      )
     })
   })
 

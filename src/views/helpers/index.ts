@@ -139,7 +139,7 @@ type CreateViewType = ViewType | CheckType
 export function createView<T extends ViewProperties = ViewProperties>(
   viewType: CreateViewType = 'xy'
 ): NewView<T> {
-  //these aren't currently supported visualizations
+  // these aren't currently supported visualizations
   if (SPECIAL_TYPES[viewType]) {
     return SPECIAL_TYPES[viewType]() as NewView<T>
   }

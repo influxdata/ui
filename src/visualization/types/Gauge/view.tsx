@@ -10,7 +10,12 @@ import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 
 // delete after testing
 import {AutoSizer} from 'react-virtualized'
-import {GAUGE_THEME_LIGHT, GAUGE_THEME_DARK} from './constants'
+import {
+  GAUGE_ARC_LENGTH_DEFAULT,
+  GAUGE_THEME_LIGHT,
+  GAUGE_THEME_DARK,
+  GAUGE_VALUE_POSITION_Y_OFFSET_DEFAULT,
+} from './constants'
 import {AppSettingContext} from 'src/shared/contexts/app'
 import Gauge from './Gauge'
 import LatestValueTransform from 'src/visualization/components/LatestValueTransform'
@@ -45,6 +50,10 @@ const GaugeChart: FC<Props> = ({result, properties}) => {
           tickSuffix: tickSuffix,
           decimalPlaces: decimalPlaces,
           gaugeColors: colors,
+          gaugeSize: GAUGE_ARC_LENGTH_DEFAULT,
+          gaugeTheme: {
+            valuePositionYOffset: GAUGE_VALUE_POSITION_Y_OFFSET_DEFAULT,
+          },
         },
       ],
     }

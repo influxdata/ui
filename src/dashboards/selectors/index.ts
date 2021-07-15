@@ -1,6 +1,5 @@
 // Libraries
 import {get} from 'lodash'
-import moment from 'moment'
 
 // Types
 import {
@@ -64,11 +63,13 @@ export const isCurrentPageDashboard = (state: AppState): boolean =>
 // Example: user selected 10-11:00am and sets the dropdown to UTC
 // Query should run against 10-11:00am UTC rather than querying
 // 10-11:00am local time (offset depending on timezone)
-export const setTimeToUTC = (date: string): string =>
-  moment
-    .utc(date)
-    .subtract(getTimezoneOffset(), 'minutes')
-    .format()
+export const setTimeToUTC = (date: string): string => {
+  const utcTime = new Date(date)
+  utcTime.setUTCMinutes(utcTime.getUTCMinutes() - getTimezoneOffset())
+
+  return utcTime.toISOString().split('.')[0]+"Z"
+}
+
 
 export const getTimeZone = (state: AppState): TimeZone => {
   return state.app.persisted.timeZone || 'Local'

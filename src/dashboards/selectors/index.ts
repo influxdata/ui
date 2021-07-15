@@ -67,9 +67,8 @@ export const setTimeToUTC = (date: string): string => {
   const utcTime = new Date(date)
   utcTime.setUTCMinutes(utcTime.getUTCMinutes() - getTimezoneOffset())
 
-  return utcTime.toISOString().split('.')[0]+"Z"
+  return utcTime.toISOString().split('.')[0] + 'Z'
 }
-
 
 export const getTimeZone = (state: AppState): TimeZone => {
   return state.app.persisted.timeZone || 'Local'

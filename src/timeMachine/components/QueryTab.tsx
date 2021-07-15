@@ -144,7 +144,8 @@ class TimeMachineQueryTab extends PureComponent<Props, State> {
 
   private get showHideButton(): JSX.Element {
     const {query} = this.props
-    if (this.state.isEditingName || !this.isRemovable) {
+
+    if (this.state.isEditingName || (!this.isRemovable && !query?.hidden)) {
       return null
     }
 

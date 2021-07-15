@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState} from 'react'
+import React, {FC, useState, useEffect} from 'react'
 import {useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
 
@@ -43,10 +43,6 @@ const SecretsTab: FC = () => {
   const FilterSecrets = FilterList<Secret>()
 
   const handleFilterChange = (searchTerm: string) => {
-    handleFilterUpdate(searchTerm)
-  }
-
-  const handleFilterUpdate = (searchTerm: string) => {
     setSearchTerm(searchTerm)
   }
 
@@ -65,13 +61,6 @@ const SecretsTab: FC = () => {
   }
 
   let secretsEmptyState = (
-    <EmptyState size={ComponentSize.Medium}>
-      <EmptyState.Text>No Secrets match your query</EmptyState.Text>
-    </EmptyState>
-  )
-
-  if (!searchTerm) {
-    secretsEmptyState = (
       <>
         <EmptyState size={ComponentSize.Medium}>
           <EmptyState.Text>
@@ -87,6 +76,33 @@ const SecretsTab: FC = () => {
         </EmptyState>
       </>
     )
+
+    useEffect(() => {
+      if (searchTerm) {
+        secretsEmptyState = (
+        <EmptyState size={ComponentSize.Medium}>
+          <EmptyState.Text>No Secrets match your query</EmptyState.Text>
+        </EmptyState>
+        )
+      } else {
+        secretsEmptyState = (
+            <>
+              <EmptyState size={ComponentSize.Medium}>
+                <EmptyState.Text>
+                  Looks like there aren't any <b>Secrets</b>, why not create one?
+                </EmptyState.Text>
+                <Button
+                    text="Add Secret"
+                    color={ComponentColor.Primary}
+                    icon={IconFont.Plus}
+                    onClick={handleCreateSecret}
+                    testID="button-add-secret"
+                />
+              </EmptyState>
+            </>
+        )
+      }
+    }, [searchTerm])
 
     return (
       <>
@@ -136,7 +152,6 @@ const SecretsTab: FC = () => {
         </GetResources>
       </>
     )
-  }
 }
 
 export default SecretsTab

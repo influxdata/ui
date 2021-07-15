@@ -19,15 +19,14 @@ const WarningPanel: FC<Props> = ({warningText}) => (
     gradient={Gradients.LostGalaxy}
     testID="panel"
     border={true}
-    style={{marginBottom: '8px'}}
+    className="warning-panel"
   >
     <Panel.Body
       justifyContent={JustifyContent.FlexStart}
       alignItems={AlignItems.Center}
       direction={FlexDirection.Row}
-      margin={ComponentSize.Large}
+      margin={ComponentSize.Small}
       size={ComponentSize.ExtraSmall}
-      style={{padding: '8px 12px'}}
     >
       <Icon glyph={IconFont.AlertTriangle} className="warning-panel-icon" />
       <p className="margin-zero">{warningText}</p>

@@ -11,38 +11,38 @@ import {event} from 'src/cloud/utils/reporting'
 
 import {GLOBALSEARCH_API_KEY, GLOBALSEARCH_APP_ID} from 'src/shared/constants'
 
+const propsAreEqual = (prev, next) => {
+  return prev.url === next.url
+}
 const Hit: FC<any> = memo(({hit, children}) => {
-  const linkID = uuid()
   const location = useLocation()
-  const logClickedSearchQuery = useCallback(() => {
-    const clickedElem = document.getElementById(linkID) as HTMLLinkElement
-    const searchQuery = document.getElementById(
-      'docsearch-input'
-    ) as HTMLInputElement
+  const inputElem = document.getElementById(
+    'docsearch-input'
+  ) as HTMLInputElement
+
+  const logClickedSearchQuery = (e: any) => {
     event(
       'clicked search result',
       {
-        resultURL: clickedElem.href,
+        resultURL: e.target?.parentElement?.parentElement?.parentElement?.href,
         fromPage: location.pathname,
-        query: searchQuery?.value,
+        query: inputElem.value,
       },
       {}
     )
-  }, [linkID, location.pathname])
+  }
 
-  useEffect(() => {
-    const linkedElement = document.getElementById(linkID)
-
-    linkedElement.addEventListener('click', logClickedSearchQuery)
-    return () =>
-      linkedElement.removeEventListener('click', logClickedSearchQuery)
-  }, [linkID])
   return (
-    <a href={hit.url} rel="noreferrer" target="_blank" id={linkID}>
+    <a
+      href={hit.url}
+      rel="noreferrer"
+      target="_blank"
+      onClick={logClickedSearchQuery}
+    >
       {children}
     </a>
   )
-})
+}, propsAreEqual)
 
 const GlobalSearch: FC = () => {
   const [showState, setShowState] = useState(false)

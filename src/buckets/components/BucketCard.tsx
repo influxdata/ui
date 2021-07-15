@@ -11,12 +11,14 @@ import BucketCardActions from 'src/buckets/components/BucketCardActions'
 // Constants
 import {isSystemBucket} from 'src/buckets/constants/index'
 
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
 // Types
 import {OwnBucket} from 'src/types'
 
 interface Props {
   bucket: OwnBucket
-  onDeleteData: (b: OwnBucket) => void
   onDeleteBucket: (b: OwnBucket) => void
   onUpdateBucket: (b: OwnBucket) => void
   onFilterChange: (searchTerm: string) => void
@@ -26,14 +28,17 @@ const BucketCard: FC<Props & RouteComponentProps<{orgID: string}>> = ({
   bucket,
   onDeleteBucket,
   onFilterChange,
-  onDeleteData,
   history,
   match: {
     params: {orgID},
   },
 }) => {
   const handleNameClick = () => {
-    history.push(`/orgs/${orgID}/data-explorer?bucket=${bucket.name}`)
+    if (isFlagEnabled('exploreWithFlows')) {
+      history.push(`/notebook/from/bucket/${bucket.name}`)
+    } else {
+      history.push(`/orgs/${orgID}/data-explorer?bucket=${bucket.name}`)
+    }
   }
 
   return (
@@ -55,7 +60,6 @@ const BucketCard: FC<Props & RouteComponentProps<{orgID: string}>> = ({
         bucket={bucket}
         orgID={orgID}
         bucketType={bucket.type}
-        onDeleteData={onDeleteData}
         onFilterChange={onFilterChange}
       />
     </ResourceCard>

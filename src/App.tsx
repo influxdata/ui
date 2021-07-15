@@ -1,13 +1,5 @@
 // Libraries
-import React, {
-  FC,
-  Suspense,
-  lazy,
-  useContext,
-  useEffect,
-  useState,
-  useCallback,
-} from 'react'
+import React, {FC, Suspense, lazy, useContext, useEffect} from 'react'
 import {useSelector} from 'react-redux'
 import classnames from 'classnames'
 import {Switch, Route} from 'react-router-dom'

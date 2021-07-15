@@ -158,9 +158,17 @@ export const FlowListProvider: FC = ({children}) => {
     let _flow
     let _flowData
 
+    let {name} = org
+
+    if (name.includes('@')) {
+      name = name.split('@')[0]
+    }
+
+    name = `${name}-${PROJECT_NAME.toLowerCase()}-${new Date().toISOString()}`
+
     if (!flow) {
       _flowData = hydrate({
-        name: `Name this ${PROJECT_NAME}`,
+        name,
         readOnly: false,
         range: DEFAULT_TIME_RANGE,
         refresh: AUTOREFRESH_DEFAULT,

@@ -18,6 +18,7 @@ import StatusIndicator from 'src/buckets/components/csvUploader/StatusIndicator'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -48,7 +49,11 @@ const CsvMethod: FC = () => {
   }
 
   const handleSeeUploadedData = () => {
-    history.push(`/orgs/${orgId}/data-explorer?bucket=${bucket.name}`)
+    if (isFlagEnabled('exploreWithFlows')) {
+      history.push(`/notebook/from/bucket/${bucket.name}`)
+    } else {
+      history.push(`/orgs/${orgId}/data-explorer?bucket=${bucket.name}`)
+    }
   }
 
   return (

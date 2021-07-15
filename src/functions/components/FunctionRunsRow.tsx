@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useState} from 'react'
-import moment from 'moment'
 
 // Components
 import {
@@ -15,6 +14,9 @@ import FunctionRunLogsOverlay from 'src/functions/components/FunctionRunLogsOver
 // Types
 import {FunctionRun} from 'src/client/managedFunctionsRoutes'
 import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {FormattedDateTime} from '../../utils/datetime/FormattedDateTime'
+
+// Utils
 
 interface Props {
   run: FunctionRun
@@ -22,21 +24,17 @@ interface Props {
 
 const FunctionRunsRow: FC<Props> = ({run}) => {
   const [overlayVisible, setOverlayVisibility] = useState(false)
-  const dateTimeIfy = (dt: string): string => {
-    if (!dt) {
-      return ''
-    }
-    const newdate = new Date(dt)
-    const formatted = moment(newdate).format(DEFAULT_TIME_FORMAT)
-
-    return formatted
-  }
 
   return (
     <IndexList.Row>
       <IndexList.Cell>{run.status}</IndexList.Cell>
       <IndexList.Cell>{run.id}</IndexList.Cell>
-      <IndexList.Cell>{dateTimeIfy(run.startedAt)}</IndexList.Cell>
+      <IndexList.Cell>
+        <FormattedDateTime
+          format={DEFAULT_TIME_FORMAT}
+          date={new Date(run.startedAt)}
+        />
+      </IndexList.Cell>
       <IndexList.Cell></IndexList.Cell>
       <IndexList.Cell>
         <Button

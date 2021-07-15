@@ -1,6 +1,5 @@
 import React, {createContext, useReducer, useCallback, FC} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
-import moment from 'moment'
 
 // Types
 import {CustomTimeRange, AutoRefreshStatus} from 'src/types'
@@ -14,9 +13,13 @@ import {
 } from 'src/shared/actions/autoRefresh'
 import {getCurrentDashboardId} from 'src/dashboards/selectors'
 
+// Utils
+import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
+
 export const AutoRefreshContext = createContext(null)
 
-const DEFAULT_TIME_AHEAD = '01:00'
+// default time increment is 1 hour
+const DEFAULT_TIME_AHEAD = 1
 
 export interface AutoRefreshState {
   duration: CustomTimeRange
@@ -30,22 +33,49 @@ export interface AutoRefreshState {
   infiniteDuration: boolean
 }
 
+// takes in Date object and adds a duration to it.
+// To add 1 hour, value = 1, unit = 'h'
+// similarly, to add a minute. value = 1, unit = 'm'
+function incrementDate(input: Date, value: number, unit: string): Date {
+  const result = new Date(input)
+  switch (unit) {
+    case 'm': {
+      result.setMinutes(input.getMinutes() + value)
+      return result
+    }
+    case 'h': {
+      result.setHours(input.getHours() + value)
+      return result
+    }
+    case 'd': {
+      result.setDate(input.getDate() + value)
+      return result
+    }
+    default: {
+      return new Date()
+    }
+  }
+}
+
 const jumpAheadTime = () => {
-  return moment()
-    .add(moment.duration(DEFAULT_TIME_AHEAD))
-    .format('YYYY-MM-DD HH:mm:ss')
+  const newTime = incrementDate(new Date(), DEFAULT_TIME_AHEAD, 'h')
+
+  const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss')
+  return formatter.format(newTime)
 }
 
 const calculateTimeout = (timeout: string, timeoutUnit: string) => {
   const timeoutNumber = parseInt(timeout, 10)
-  const startTime = moment(new Date())
-  const copyStart = startTime.unix()
-  const endTime = startTime.add(
-    timeoutNumber as any,
+  const startTime = new Date()
+  const copyStart = startTime.getTime()
+  const endTime = incrementDate(
+    startTime,
+    timeoutNumber,
     timeoutUnit[0].toLowerCase()
   )
-  const cutoff = endTime.unix() - copyStart
-  return cutoff * 1000
+  const cutoff = endTime.getTime() - copyStart
+
+  return cutoff
 }
 
 export const createAutoRefreshInitialState = (

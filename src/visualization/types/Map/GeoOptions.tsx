@@ -26,7 +26,6 @@ interface Props extends VisualizationOptionProps {
   properties: GeoViewProperties
 }
 
-const SHOW_GEO_OPTIONS = isFlagEnabled('mapGeoOptions')
 // const mapTypeOptions = ['Point', 'Circle', 'Heat', 'Track']
 export enum MapType {
   Point = 'pointMap',
@@ -51,7 +50,7 @@ export const GeoOptions: FC<Props> = ({properties, update, results}) => {
     return {color: InfluxColors.Sidewalk}
   }
 
-  return SHOW_GEO_OPTIONS ? (
+  return isFlagEnabled('mapGeoOptions') ? (
     <>
       <Grid.Column>
         <Grid.Row>

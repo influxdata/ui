@@ -1,7 +1,6 @@
-import React, {FC, useEffect, memo, useState, useMemo, useCallback} from 'react'
+import React, {FC, useEffect, memo, useState, useMemo} from 'react'
 import {useLocation} from 'react-router-dom'
 import {DocSearchModal} from '@docsearch/react'
-import {v4 as uuid} from 'uuid'
 import {ClickOutside} from 'src/shared/components/ClickOutside'
 import '@docsearch/react/style'
 

@@ -49,7 +49,7 @@ const App: FC = () => {
     if (CLOUD && isFlagEnabled('rudderstackReporting')) {
       try {
         load(RUDDERSTACK_WRITE_KEY, RUDDERSTACK_DATA_PLANE_URL)
-      } catch (e) {
+      } catch {
         console.error(
           'Error loading Rudderstack with wk: ',
           RUDDERSTACK_WRITE_KEY,

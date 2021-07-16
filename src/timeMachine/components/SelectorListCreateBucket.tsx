@@ -29,7 +29,7 @@ import {
 } from 'src/cloud/utils/limits'
 
 // Actions
-import {checkBucketLimits, LimitStatus} from 'src/cloud/actions/limits'
+import {checkBucketLimits} from 'src/cloud/actions/limits'
 import {createBucket} from 'src/buckets/actions/thunks'
 
 // Types
@@ -66,7 +66,7 @@ const SelectorListCreateBucket: FC<Props> = ({
     reduxDispatch(checkBucketLimits())
   }, [reduxDispatch])
 
-  const limitExceeded = limitStatus === LimitStatus.EXCEEDED
+  const limitExceeded = limitStatus === 'exceeded'
 
   let titleText = 'Click to create a bucket'
   let buttonDisabled = false

@@ -1,5 +1,5 @@
 import AJAX from 'src/utils/ajax'
-import {Authorization, Auth0Config} from 'src/types'
+import {Authorization, OAuthClientConfig} from 'src/types'
 import {getAPIBasepath} from 'src/utils/basepath'
 import {getAuthConnection} from 'src/client/unityRoutes'
 
@@ -22,8 +22,9 @@ export const createAuthorization = async (
 
 export const getAuth0Config = async (
   redirectTo?: string
-): Promise<Auth0Config> => {
+): Promise<OAuthClientConfig> => {
   try {
+    // TODO(ariel): make this a generated route with a query param
     let url = `${getAPIBasepath()}/api/v2private/oauth/clientConfig`
     if (redirectTo) {
       url = `${getAPIBasepath()}/api/v2private/oauth/clientConfig?redirectTo=${redirectTo}`

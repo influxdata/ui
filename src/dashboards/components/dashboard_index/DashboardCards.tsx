@@ -12,15 +12,14 @@ import AssetLimitAlert from 'src/cloud/components/AssetLimitAlert'
 import {getSortedResources, SortTypes} from 'src/shared/utils/sort'
 
 // Types
-import {AppState, Dashboard, RemoteDataState} from 'src/types'
+import {AppState, Dashboard, LimitStatus, RemoteDataState} from 'src/types'
 import {Sort} from 'src/clockface'
-import {LimitStatus} from 'src/cloud/actions/limits'
 
 // Utils
 import {extractDashboardLimits} from 'src/cloud/utils/limits'
 
 interface StateProps {
-  limitStatus: LimitStatus
+  limitStatus: LimitStatus['status']
 }
 
 interface OwnProps {

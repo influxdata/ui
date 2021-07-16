@@ -17,18 +17,17 @@ import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/R
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
 // Types
-import {LimitStatus} from 'src/cloud/actions/limits'
 import {setSearchTerm as setSearchTermAction} from 'src/tasks/actions/creators'
 import {TaskSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 import {SortTypes} from 'src/shared/utils/sort'
-import {ResourceType} from 'src/types'
+import {LimitStatus, ResourceType} from 'src/types'
 
 interface Props {
   onCreateTask: () => void
   setShowInactive: () => void
   showInactive: boolean
   onImportTask: () => void
-  limitStatus: LimitStatus
+  limitStatus: LimitStatus['status']
   searchTerm: string
   setSearchTerm: typeof setSearchTermAction
   sortKey: TaskSortKey

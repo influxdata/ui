@@ -19,16 +19,16 @@ import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 import {CLOUD} from 'src/shared/constants'
 
 // Types
-import {LimitStatus} from 'src/cloud/actions/limits'
+import {LimitStatus} from 'src/types'
 
 interface Props {
-  limitStatus: LimitStatus
+  limitStatus: LimitStatus['status']
   resourceName: string
   className?: string
 }
 
 const AssetLimitAlert: FC<Props> = ({limitStatus, resourceName, className}) => {
-  if (CLOUD && limitStatus === LimitStatus.EXCEEDED) {
+  if (CLOUD && limitStatus === 'exceeded') {
     return (
       <GradientBox
         borderGradient={Gradients.MiyazakiSky}

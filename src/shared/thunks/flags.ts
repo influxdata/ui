@@ -1,7 +1,7 @@
 import {Dispatch} from 'redux'
 import {getFlags as getFlagsRequest} from 'src/client'
+import {getFlags as getCloudPublicFlags} from 'src/client/cloudPrivRoutes'
 import {FlagMap} from 'src/shared/actions/flags'
-import {getAPIBasepath} from 'src/utils/basepath'
 import {RemoteDataState} from 'src/types'
 import {Actions, setFlags, setPublicFlags} from 'src/shared/actions/flags'
 
@@ -26,13 +26,11 @@ export const getFlags = () => async (
 }
 
 export const getPublicFlags = () => async (dispatch: Dispatch<Actions>) => {
-  const url = `${getAPIBasepath()}/api/v2private/flags`
-  const response = await fetch(url)
-  const flags = await response.json()
+  const resp = await getCloudPublicFlags({})
 
-  if (flags?.status && flags?.status !== 200) {
-    throw new Error(flags.message)
+  if (resp.status !== 200) {
+    throw new Error(resp.data.message)
   }
 
-  dispatch(setPublicFlags(flags))
+  dispatch(setPublicFlags(resp.data))
 }

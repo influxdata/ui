@@ -9,8 +9,7 @@ import {Dropdown, ComponentColor, IconFont} from '@influxdata/clockface'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Types
-import {CheckType} from 'src/types'
-import {LimitStatus} from 'src/cloud/actions/limits'
+import {CheckType, LimitStatus} from 'src/types'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
@@ -18,7 +17,7 @@ import {CLOUD} from 'src/shared/constants'
 interface OwnProps {
   onCreateThreshold: () => void
   onCreateDeadman: () => void
-  limitStatus: LimitStatus
+  limitStatus: LimitStatus['status']
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -31,7 +30,7 @@ const CreateCheckDropdown: FunctionComponent<OwnProps & ReduxProps> = ({
   limitStatus,
 }) => {
   const handleItemClick = (type: CheckType): void => {
-    if (CLOUD && limitStatus === LimitStatus.EXCEEDED) {
+    if (CLOUD && limitStatus === 'exceeded') {
       onShowOverlay('asset-limit', {asset: 'Checks'}, onDismissOverlay)
       return
     }

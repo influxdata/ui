@@ -7,7 +7,7 @@ import {Button, IconFont, ComponentColor} from '@influxdata/clockface'
 import AssetLimitButton from 'src/cloud/components/AssetLimitButton'
 
 // Actions
-import {checkBucketLimits, LimitStatus} from 'src/cloud/actions/limits'
+import {checkBucketLimits} from 'src/cloud/actions/limits'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Utils
@@ -36,7 +36,7 @@ const CreateBucketButton: FC<ReduxProps> = ({
     onShowOverlay('create-bucket', null, onDismissOverlay)
   }
 
-  if (CLOUD && limitStatus === LimitStatus.EXCEEDED) {
+  if (CLOUD && limitStatus === 'exceeded') {
     return <AssetLimitButton resourceName="Bucket" />
   }
 

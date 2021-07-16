@@ -28,8 +28,7 @@ import {
 import {CLOUD} from 'src/shared/constants'
 
 // Types
-import {AppState} from 'src/types'
-import {LimitStatus} from 'src/cloud/actions/limits'
+import {AppState, LimitStatus} from 'src/types'
 import RateLimitAlertContent from 'src/cloud/components/RateLimitAlertContent'
 
 import {notify} from 'src/shared/actions/notifications'
@@ -44,7 +43,7 @@ import './RateLimitAlert.scss'
 
 interface StateProps {
   resources: string[]
-  status: LimitStatus
+  status: LimitStatus['status']
   showUpgrade: boolean
 }
 
@@ -72,11 +71,7 @@ const RateLimitAlert: FC<Props> = ({
   }
 
   useEffect(() => {
-    if (
-      CLOUD &&
-      status === LimitStatus.EXCEEDED &&
-      resources.includes('write')
-    ) {
+    if (CLOUD && status === 'exceeded' && resources.includes('write')) {
       if (showUpgrade) {
         sendNotify(
           writeLimitReached(
@@ -108,11 +103,7 @@ const RateLimitAlert: FC<Props> = ({
     [`${className}`]: className,
   })
 
-  if (
-    CLOUD &&
-    status === LimitStatus.EXCEEDED &&
-    resources.includes('cardinality')
-  ) {
+  if (CLOUD && status === 'exceeded' && resources.includes('cardinality')) {
     return (
       <FlexBox
         direction={FlexDirection.Column}

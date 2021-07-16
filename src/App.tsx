@@ -9,7 +9,6 @@ import {AppSettingContext, AppSettingProvider} from 'src/shared/contexts/app'
 import {
   RUDDERSTACK_DATA_PLANE_URL,
   RUDDERSTACK_WRITE_KEY,
-  GLOBALSEARCH_API_KEY,
 } from 'src/shared/constants'
 import {load} from 'rudder-sdk-js'
 

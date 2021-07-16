@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect} from 'react'
+import React, {FC} from 'react'
 
 // Components
 import DocSearch from 'src/shared/search/DocSearch'

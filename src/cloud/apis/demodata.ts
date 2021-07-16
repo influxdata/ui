@@ -1,7 +1,12 @@
 // Libraries
 import {get} from 'lodash'
-import {getBuckets, getBucket} from 'src/client'
-import AJAX from 'src/utils/ajax'
+import {
+  deleteExperimentalSampledataBucketsMembers,
+  getBuckets,
+  getBucket,
+  getExperimentalSampledataBuckets,
+  postExperimentalSampledataBucketsMember,
+} from 'src/client'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -13,18 +18,16 @@ import {normalize} from 'normalizr'
 import {bucketSchema} from 'src/schemas'
 import {NormalizedSchema} from 'normalizr'
 
-const baseURL = '/api/v2/experimental/sampledata'
-
 export const getDemoDataBuckets = async (): Promise<Bucket[]> => {
-  // todo (deniz) convert to fetch
-  const {data} = await AJAX({
-    method: 'GET',
-    url: `${baseURL}/buckets`,
-  })
+  const resp = await getExperimentalSampledataBuckets({})
+
+  if (resp.status !== 200) {
+    throw new Error(resp.data.message)
+  }
 
   // if sampledata endpoints are not available in a cluster
   // gateway responds with a list of links where 'buckets' field is a string
-  const buckets = get(data, 'buckets', null)
+  const buckets = get(resp.data, 'buckets', null)
   if (!Array.isArray(buckets)) {
     throw new Error('Could not reach demodata endpoint')
   }
@@ -34,10 +37,7 @@ export const getDemoDataBuckets = async (): Promise<Bucket[]> => {
 
 // member's id is looked up from the session token passed with the request.
 export const getDemoDataBucketMembership = async (bucketID: string) => {
-  const response = await AJAX({
-    method: 'POST',
-    url: `${baseURL}/buckets/${bucketID}/members`,
-  })
+  const response = await postExperimentalSampledataBucketsMember({bucketID})
 
   if (response.status === 200) {
     // if sampledata route is not available gateway responds with 200 a correct success code is 204
@@ -45,15 +45,14 @@ export const getDemoDataBucketMembership = async (bucketID: string) => {
   }
 
   if (response.status !== 204) {
-    throw new Error(response.data)
+    throw new Error(response.data.message)
   }
 }
 
 export const deleteDemoDataBucketMembership = async (bucketID: string) => {
   try {
-    const response = await AJAX({
-      method: 'DELETE',
-      url: `${baseURL}/buckets/${bucketID}/members`,
+    const response = await deleteExperimentalSampledataBucketsMembers({
+      bucketID,
     })
 
     if (response.status === 200) {
@@ -62,7 +61,7 @@ export const deleteDemoDataBucketMembership = async (bucketID: string) => {
     }
 
     if (response.status !== 204) {
-      throw new Error(response.data)
+      throw new Error(response.data.message)
     }
   } catch (error) {
     console.error(error)

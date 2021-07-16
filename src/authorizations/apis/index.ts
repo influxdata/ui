@@ -1,19 +1,21 @@
-import AJAX from 'src/utils/ajax'
 import {Authorization, OAuthClientConfig} from 'src/types'
 import {getAPIBasepath} from 'src/utils/basepath'
+import {postAuthorization} from 'src/client'
 import {getAuthConnection} from 'src/client/unityRoutes'
 
 export const createAuthorization = async (
   authorization
 ): Promise<Authorization> => {
   try {
-    const {data} = await AJAX({
-      method: 'POST',
-      url: '/api/v2/authorizations',
+    const resp = await postAuthorization({
       data: authorization,
     })
 
-    return data
+    if (resp.status !== 201) {
+      throw new Error(resp.data.message)
+    }
+
+    return resp.data
   } catch (error) {
     console.error(error)
     throw error
@@ -24,7 +26,7 @@ export const getAuth0Config = async (
   redirectTo?: string
 ): Promise<OAuthClientConfig> => {
   try {
-    // TODO(ariel): make this a generated route with a query param
+    // TODO(ariel): need to see if there's a way to conditionally add a query parameter to generate this
     let url = `${getAPIBasepath()}/api/v2private/oauth/clientConfig`
     if (redirectTo) {
       url = `${getAPIBasepath()}/api/v2private/oauth/clientConfig?redirectTo=${redirectTo}`

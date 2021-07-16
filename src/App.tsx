@@ -11,6 +11,7 @@ import {
   RUDDERSTACK_WRITE_KEY,
 } from 'src/shared/constants'
 import {load} from 'rudder-sdk-js'
+import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 // Components
 import {AppWrapper} from '@influxdata/clockface'
@@ -49,13 +50,16 @@ const App: FC = () => {
     if (CLOUD && isFlagEnabled('rudderstackReporting')) {
       try {
         load(RUDDERSTACK_WRITE_KEY, RUDDERSTACK_DATA_PLANE_URL)
-      } catch {
+      } catch (error) {
         console.error(
           'Error loading Rudderstack with wk: ',
           RUDDERSTACK_WRITE_KEY,
           ' at: ',
           RUDDERSTACK_DATA_PLANE_URL
         )
+        reportErrorThroughHoneyBadger(error, {
+          name: 'Rudderstack Loading Function',
+        })
       }
     }
     setAutoFreeze(false)

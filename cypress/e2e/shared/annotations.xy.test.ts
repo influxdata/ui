@@ -29,7 +29,8 @@ describe('The Annotations UI functionality, on a graph (xy line) graph type', ()
   it('can add and edit a range annotation for the xy line graph', () => {
     testEditRangeAnnotation(cy)
   })
-  it('can add and then delete a range annotation for the xy line graph', () => {
+
+  it.skip('can add and then delete a range annotation for the xy line graph', () => {
     addRangeAnnotation(cy)
     testDeleteAnnotation(cy)
   })

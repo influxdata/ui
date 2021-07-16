@@ -14,7 +14,7 @@ describe('Annotations, but in a different test suite', () => {
   beforeEach(() => setupData(cy))
 
   describe('administrative functions like the tests being on and off', () => {
-    it('can create an annotation that is scoped to a dashboard cell', () => {
+    it.skip('can create an annotation that is scoped to a dashboard cell', () => {
       // create a new cell
       cy.getByTestID('button')
         .click()

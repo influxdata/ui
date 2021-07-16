@@ -30,9 +30,7 @@ const SecretCard: FC<Props> = ({secret}) => {
     <ErrorBoundary>
       <ResourceCard
         testID={`secret-card--${secret?.key}`}
-        contextMenu={
-          <SecretContextMenu secret={secret} />
-        }
+        contextMenu={<SecretContextMenu secret={secret} />}
         direction={FlexDirection.Row}
         alignItems={AlignItems.Center}
       >

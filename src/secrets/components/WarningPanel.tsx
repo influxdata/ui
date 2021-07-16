@@ -25,11 +25,11 @@ const WarningPanel: FC<Props> = ({warningText}) => (
       justifyContent={JustifyContent.FlexStart}
       alignItems={AlignItems.Center}
       direction={FlexDirection.Row}
-      margin={ComponentSize.Small}
+      margin={ComponentSize.ExtraSmall}
       size={ComponentSize.ExtraSmall}
     >
       <Icon glyph={IconFont.AlertTriangle} className="warning-panel-icon" />
-      <p className="margin-zero">{warningText}</p>
+      <p className="warning-panel-text margin-top-zero">{warningText}</p>
     </Panel.Body>
   </Panel>
 )

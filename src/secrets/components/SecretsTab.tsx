@@ -61,69 +61,36 @@ const SecretsTab: FC = () => {
   }
 
   let secretsEmptyState = (
-      <>
-        <EmptyState size={ComponentSize.Medium}>
-          <EmptyState.Text>
-            Looks like there aren't any <b>Secrets</b>, why not create one?
-          </EmptyState.Text>
-          <Button
-            text="Add Secret"
-            color={ComponentColor.Primary}
-            icon={IconFont.Plus}
-            onClick={handleCreateSecret}
-            testID="button-add-secret"
-          />
-        </EmptyState>
-      </>
-    )
+    <>
+      <EmptyState size={ComponentSize.Medium}>
+        <EmptyState.Text>
+          Looks like there aren't any <b>Secrets</b>, why not create one?
+        </EmptyState.Text>
+        <Button
+          text="Add Secret"
+          color={ComponentColor.Primary}
+          icon={IconFont.Plus}
+          onClick={handleCreateSecret}
+          testID="button-add-secret"
+        />
+      </EmptyState>
+    </>
+  )
 
-    useEffect(() => {
-      if (searchTerm) {
-        secretsEmptyState = (
+  useEffect(() => {
+    if (searchTerm) {
+      secretsEmptyState = (
         <EmptyState size={ComponentSize.Medium}>
           <EmptyState.Text>No Secrets match your query</EmptyState.Text>
         </EmptyState>
-        )
-      } else {
-        secretsEmptyState = (
-            <>
-              <EmptyState size={ComponentSize.Medium}>
-                <EmptyState.Text>
-                  Looks like there aren't any <b>Secrets</b>, why not create one?
-                </EmptyState.Text>
-                <Button
-                    text="Add Secret"
-                    color={ComponentColor.Primary}
-                    icon={IconFont.Plus}
-                    onClick={handleCreateSecret}
-                    testID="button-add-secret"
-                />
-              </EmptyState>
-            </>
-        )
-      }
-    }, [searchTerm])
-
-    return (
-      <>
-        <TabbedPageHeader
-          childrenLeft={
-            <>
-              <SearchWidget
-                placeholderText="Filter secrets..."
-                searchTerm={searchTerm}
-                onSearch={handleFilterChange}
-              />
-              <ResourceSortDropdown
-                onSelect={handleSort}
-                resourceType={ResourceType.Secrets}
-                sortDirection={sortDirection}
-                sortKey={sortKey}
-                sortType={sortType}
-              />
-            </>
-          }
-          childrenRight={
+      )
+    } else {
+      secretsEmptyState = (
+        <>
+          <EmptyState size={ComponentSize.Medium}>
+            <EmptyState.Text>
+              Looks like there aren't any <b>Secrets</b>, why not create one?
+            </EmptyState.Text>
             <Button
               text="Add Secret"
               color={ComponentColor.Primary}
@@ -131,27 +98,60 @@ const SecretsTab: FC = () => {
               onClick={handleCreateSecret}
               testID="button-add-secret"
             />
-          }
-        />
-        <GetResources resources={[ResourceType.Secrets]}>
-          <FilterSecrets
-            list={secrets}
-            searchTerm={searchTerm}
-            searchKeys={['key', 'secret[].key']}
-          >
-            {sc => (
-              <SecretsList
-                secrets={sc}
-                emptyState={secretsEmptyState}
-                sortKey="key"
-                sortDirection={sortDirection}
-                sortType={sortType}
-              />
-            )}
-          </FilterSecrets>
-        </GetResources>
-      </>
-    )
+          </EmptyState>
+        </>
+      )
+    }
+  }, [searchTerm])
+
+  return (
+    <>
+      <TabbedPageHeader
+        childrenLeft={
+          <>
+            <SearchWidget
+              placeholderText="Filter secrets..."
+              searchTerm={searchTerm}
+              onSearch={handleFilterChange}
+            />
+            <ResourceSortDropdown
+              onSelect={handleSort}
+              resourceType={ResourceType.Secrets}
+              sortDirection={sortDirection}
+              sortKey={sortKey}
+              sortType={sortType}
+            />
+          </>
+        }
+        childrenRight={
+          <Button
+            text="Add Secret"
+            color={ComponentColor.Primary}
+            icon={IconFont.Plus}
+            onClick={handleCreateSecret}
+            testID="button-add-secret"
+          />
+        }
+      />
+      <GetResources resources={[ResourceType.Secrets]}>
+        <FilterSecrets
+          list={secrets}
+          searchTerm={searchTerm}
+          searchKeys={['key', 'secret[].key']}
+        >
+          {sc => (
+            <SecretsList
+              secrets={sc}
+              emptyState={secretsEmptyState}
+              sortKey="key"
+              sortDirection={sortDirection}
+              sortType={sortType}
+            />
+          )}
+        </FilterSecrets>
+      </GetResources>
+    </>
+  )
 }
 
 export default SecretsTab

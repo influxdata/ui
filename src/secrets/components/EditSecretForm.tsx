@@ -11,8 +11,9 @@ import {
   Form,
   Grid,
   Input,
+  Alert,
+  IconFont,
 } from '@influxdata/clockface'
-import WarningPanel from 'src/secrets/components/WarningPanel'
 
 // Utils
 import {upsertSecret} from 'src/secrets/actions/thunks'
@@ -56,7 +57,13 @@ const EditSecretForm: FC = () => {
     <Grid>
       <Grid.Row>
         <Grid.Column>
-          <WarningPanel warningText={warningText} />
+          <Alert
+            className={'warning-panel'}
+            icon={IconFont.AlertTriangle}
+            color={ComponentColor.Warning}
+          >
+            {warningText}
+          </Alert>
         </Grid.Column>
       </Grid.Row>
       <Grid.Row>
@@ -71,7 +78,7 @@ const EditSecretForm: FC = () => {
       </Grid.Row>
       <Grid.Row>
         <Grid.Column>
-          <Form.Label label="Value" />
+          <Form.Label label="New Value" />
         </Grid.Column>
       </Grid.Row>
       <Grid.Row>
@@ -94,7 +101,7 @@ const EditSecretForm: FC = () => {
               text={submitButtonText}
               onClick={handleSubmit}
               testID="variable-form-save"
-              color={ComponentColor.Success}
+              color={ComponentColor.Warning}
               status={
                 isFormValid()
                   ? ComponentStatus.Default

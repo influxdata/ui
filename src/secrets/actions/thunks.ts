@@ -5,7 +5,7 @@ import {normalize} from 'normalizr'
 import {
   getOrgsSecrets as apiGetSecrets,
   patchOrgsSecrets as apiUpdateSecret,
-  postOrgsSecretsDelete as apiDeleteSecret,
+  deleteOrgsSecret as apiDeleteSecret,
 } from 'src/client'
 
 // Schemas
@@ -114,9 +114,7 @@ export const deleteSecret = (secret: Secret) => async (
     const org = getOrg(getState())
     const resp = await apiDeleteSecret({
       orgID: org.id,
-      data: {
-        secrets: [secret.id],
-      },
+      secretID: secret.id,
     })
 
     if (resp.status !== 204) {

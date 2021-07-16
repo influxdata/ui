@@ -14,9 +14,9 @@ import FunctionRunLogsOverlay from 'src/functions/components/FunctionRunLogsOver
 // Types
 import {FunctionRun} from 'src/client/managedFunctionsRoutes'
 import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
-import {FormattedDateTime} from '../../utils/datetime/FormattedDateTime'
 
 // Utils
+import {FormattedDateTime} from 'src/utils/datetime/FormattedDateTime'
 
 interface Props {
   run: FunctionRun

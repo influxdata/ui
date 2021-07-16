@@ -325,10 +325,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
               />
             )}
           </div>
-          <AnnotationMessageInput
-            message={summary}
-            onChange={updateSummary}
-          />
+          <AnnotationMessageInput message={summary} onChange={updateSummary} />
         </Overlay.Body>
         <Overlay.Footer className={footerClasses}>
           {isEditing && (

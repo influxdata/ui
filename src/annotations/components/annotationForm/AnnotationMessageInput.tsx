@@ -1,11 +1,5 @@
 // Libraries
-import React, {
-  FC,
-  ChangeEvent,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import React, {FC, ChangeEvent, useEffect, useRef, useState} from 'react'
 
 // Components
 import {Form, TextArea} from '@influxdata/clockface'

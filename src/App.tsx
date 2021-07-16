@@ -47,7 +47,11 @@ const App: FC = () => {
 
   useEffect(() => {
     if (CLOUD && isFlagEnabled('rudderstackReporting')) {
-      load(RUDDERSTACK_WRITE_KEY, RUDDERSTACK_DATA_PLANE_URL)
+        try {
+            load(RUDDERSTACK_WRITE_KEY, RUDDERSTACK_DATA_PLANE_URL)
+        } catch (e) {
+            console.error("Error loading Rudderstack with wk: ", RUDDERSTACK_WRITE_KEY, " at: ", RUDDERSTACK_DATA_PLANE_URL)
+        }
     }
     setAutoFreeze(false)
   }, [])

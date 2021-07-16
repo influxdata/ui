@@ -9,25 +9,49 @@ $article-link: #00a3ff;
 
 @import '@influxdata/clockface/dist/variables.scss';
 
-.GlobalSearch {
+.WidgetSearch {
+  .WidgetHelperText {
+    text-align: right;
+  }
   .DocSearch-Modal {
     background-color: $g5-pepper !important;
     box-shadow: none;
-    min-width: 690px !important;
-    width: 40vw !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    margin: 0 auto !important;
   }
 
+  .DocSearch-StartScreen {
+    display: none;
+  }
   .DocSearch-Footer {
     background: none;
     box-shadow: none;
     .DocSearch-Commands {
       display: none !important;
     }
+    height: 20px !important;
+    display: flex !important;
+    align-items: flex-start !important;
+  }
+
+  .DocSearch-Logo {
+    position: absolute;
+    bottom: 6px;
+  }
+
+  .DocSearch-Label {
+    margin-top: 3px;
+  }
+
+  .emptyFooter {
+    display: none !important;
   }
   .DocSearch-Container {
     background: transparent;
     height: auto !important;
-    position: absolute !important;
+    position: relative !important;
+    width: 100% !important;
   }
 
   .DocSearch-Hit {

@@ -3,9 +3,6 @@ import React, {PureComponent} from 'react'
 
 // Components
 import Support from 'src/me/components/Support'
-import LogoutButton from 'src/me/components/LogoutButton'
-import DashboardsList from 'src/me/components/DashboardsList'
-import GetResources from 'src/resources/components/GetResources'
 import {
   Panel,
   FlexBox,
@@ -19,7 +16,9 @@ import {
 import VersionInfo from 'src/shared/components/VersionInfo'
 
 // Types
-import {AppState, ResourceType} from 'src/types'
+import {AppState} from 'src/types'
+
+import DocSearchWidget from 'src/me/components/DocSearchWidget'
 
 interface Props {
   me: AppState['me']
@@ -34,32 +33,18 @@ class ResourceLists extends PureComponent<Props> {
         stretchToFitWidth={true}
         margin={ComponentSize.Small}
       >
-        <Panel>
-          <Panel.Header>
-            <Heading
-              element={HeadingElement.H2}
-              weight={FontWeight.Light}
-              className="cf-heading__h4"
-            >
-              Account
-            </Heading>
-            <LogoutButton />
-          </Panel.Header>
-        </Panel>
         <Panel testID="recent-dashboards--panel">
           <Panel.Header>
             <Heading
               element={HeadingElement.H2}
-              weight={FontWeight.Light}
+              weight={FontWeight.Medium}
               className="cf-heading__h4"
             >
-              <label htmlFor="filter-dashboards">Recent Dashboards</label>
+              <label htmlFor="documentation-search">Documentation</label>
             </Heading>
           </Panel.Header>
           <Panel.Body>
-            <GetResources resources={[ResourceType.Dashboards]}>
-              <DashboardsList />
-            </GetResources>
+            <DocSearchWidget />
           </Panel.Body>
         </Panel>
         <Panel>

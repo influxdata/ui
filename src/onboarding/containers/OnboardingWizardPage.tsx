@@ -1,6 +1,5 @@
 // Libraries
 import React, {ReactElement, PureComponent} from 'react'
-import {connect} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // APIs
@@ -21,8 +20,7 @@ import Notifications from 'src/shared/components/notifications/Notifications'
 
 // Types
 import {ComponentColor, ComponentSize} from '@influxdata/clockface'
-import {RemoteDataState, AppState} from 'src/types'
-import {Links} from 'src/types/links'
+import {RemoteDataState} from 'src/types'
 
 interface State {
   loading: RemoteDataState
@@ -33,13 +31,7 @@ interface PassedProps {
   children: ReactElement<any>
 }
 
-interface ConnectedStateProps {
-  links: Links
-}
-
-type Props = PassedProps &
-  RouteComponentProps<{stepID: string}> &
-  ConnectedStateProps
+type Props = PassedProps & RouteComponentProps<{stepID: string}>
 
 @ErrorHandling
 export class OnboardingWizardPage extends PureComponent<Props, State> {
@@ -151,9 +143,4 @@ export class OnboardingWizardPage extends PureComponent<Props, State> {
   }
 }
 
-const mstp = ({links}: AppState) => ({links})
-
-export default connect<ConnectedStateProps, null, PassedProps>(
-  mstp,
-  null
-)(withRouter(OnboardingWizardPage))
+export default withRouter(OnboardingWizardPage)

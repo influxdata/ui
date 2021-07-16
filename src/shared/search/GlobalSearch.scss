@@ -1,13 +1,8 @@
-$fontcolor: #666666;
-$black: #000;
-$sidebar-search-bg: rgb(70, 70, 82);
-$sidebar-search-shadow: rgba(#0f0e15, 0.5);
-$article-heading: #ffffff;
-$article-hr: #383846;
-$article-text: #d4d7dd;
-$article-link: #00a3ff;
-
 @import '@influxdata/clockface/dist/variables.scss';
+
+$article-heading: #ffffff;
+
+$article-text: #d4d7dd;
 
 .GlobalSearch {
   .DocSearch-Modal {

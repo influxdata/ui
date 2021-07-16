@@ -7,8 +7,6 @@ import {GLOBALSEARCH_API_KEY, GLOBALSEARCH_APP_ID} from 'src/shared/constants'
 import {DocSearchModal} from '@docsearch/react'
 import '@docsearch/react/style'
 
-import './GlobalSearch.scss'
-
 const DocSearch: FC = () => {
   const facetFilters = useMemo(
     () => ({

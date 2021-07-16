@@ -9,6 +9,8 @@ import {GLOBALSEARCH_API_KEY, GLOBALSEARCH_APP_ID} from 'src/shared/constants'
 
 import DocSearch from 'src/shared/search/DocSearch'
 
+import './GlobalSearch.scss'
+
 const GlobalSearch: FC = () => {
   const [showState, setShowState] = useState(false)
   const location = useLocation()

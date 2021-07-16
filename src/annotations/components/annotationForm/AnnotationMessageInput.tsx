@@ -20,7 +20,6 @@ const characterLimit = 255
 
 export const AnnotationMessageInput: FC<Props> = (props: Props) => {
   const textArea = useRef(null)
-  console.log('ack! a ')
   const validationMessage = props.message ? '' : 'This field is required'
   const [characterCount, setCharacterCount] = useState(
     props.message?.length ?? 0

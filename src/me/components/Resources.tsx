@@ -19,6 +19,7 @@ import VersionInfo from 'src/shared/components/VersionInfo'
 import {AppState} from 'src/types'
 
 import DocSearchWidget from 'src/me/components/DocSearchWidget'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props {
   me: AppState['me']
@@ -43,9 +44,11 @@ class ResourceLists extends PureComponent<Props> {
               <label htmlFor="documentation-search">Documentation</label>
             </Heading>
           </Panel.Header>
-          <Panel.Body>
-            <DocSearchWidget />
-          </Panel.Body>
+          {isFlagEnabled('docSearchWidget') && (
+            <Panel.Body>
+              <DocSearchWidget />
+            </Panel.Body>
+          )}
         </Panel>
         <Panel>
           <Panel.Header>

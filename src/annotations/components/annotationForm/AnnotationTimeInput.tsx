@@ -28,7 +28,7 @@ interface Props {
 }
 
 const ANNOTATION_TIME_FORMAT_UTC = 'YYYY-MM-DD HH:mm:ss' // 24 hour
-const ANNOTATION_TIME_FORMAT_LOCAL = 'YYYY-MM-DD hh:mm:ss a' // 12 hour
+const ANNOTATION_TIME_FORMAT_LOCAL = 'YYYY-MM-DD h:mm:ss a' // 12 hour
 
 /** all of these annotation time input fields are required fields */
 export const REQUIRED_ERROR = 'Required'
@@ -65,6 +65,7 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
       return REQUIRED_ERROR
     }
 
+    console.log(timeValue)
     if (!isValidTimeFormat(timeValue)) {
       return `Format must be ${timeFormat}`
     }

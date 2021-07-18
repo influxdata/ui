@@ -14,6 +14,7 @@ import {ComponentStatus, Form, Input} from '@influxdata/clockface'
 
 // Context
 import {AppSettingContext} from 'src/shared/contexts/app'
+import {setTimeToUTC} from 'src/dashboards/selectors'
 
 interface Props {
   onChange: (newTime: string) => void
@@ -27,7 +28,7 @@ interface Props {
 }
 
 const ANNOTATION_TIME_FORMAT_UTC = 'YYYY-MM-DD HH:mm:ss' // 24 hour
-const ANNOTATION_TIME_FORMAT_LOCAL = 'YYYY-MM-DD h:mm:ss A' // 12 hour
+const ANNOTATION_TIME_FORMAT_LOCAL = 'YYYY-MM-DD hh:mm:ss a' // 12 hour
 
 /** all of these annotation time input fields are required fields */
 export const REQUIRED_ERROR = 'Required'
@@ -78,17 +79,13 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
     if (isValidTimeFormat(event.target.value)) {
       if (timeZone === 'UTC') {
         props.onChange(
-          moment
-            .utc(event.target.value, timeFormat)
-            .toDate()
-            .toISOString()
+          setTimeToUTC(event.target.value)
         )
         return
       }
 
       props.onChange(
-        moment(event.target.value, timeFormat)
-          .toDate()
+        new Date(event.target.value)
           .toISOString()
       )
     }

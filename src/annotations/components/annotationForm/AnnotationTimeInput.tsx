@@ -78,16 +78,11 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
 
     if (isValidTimeFormat(event.target.value)) {
       if (timeZone === 'UTC') {
-        props.onChange(
-          setTimeToUTC(event.target.value)
-        )
+        props.onChange(setTimeToUTC(event.target.value))
         return
       }
 
-      props.onChange(
-        new Date(event.target.value)
-          .toISOString()
-      )
+      props.onChange(new Date(event.target.value).toISOString())
     }
   }
 

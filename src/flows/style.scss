@@ -241,7 +241,7 @@ $cf-radius-lg: $cf-radius + 4px;
 
 .flow-panel--body {
   overflow-x: visible;
-  overflow-y: hidden;
+  overflow-y: visible;
 }
 .flow-panel--body,
 .flow-panel--results {

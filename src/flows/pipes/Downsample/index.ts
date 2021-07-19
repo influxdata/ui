@@ -10,6 +10,7 @@ export default register => {
     component: View,
     featureFlag: 'flow-panel--downsample',
     button: 'Downsample',
+    description: 'Apply an aggreagte function to simplify dense data',
     initial: {
       functions: [{name: 'mean'}],
       aggregateWindow: {

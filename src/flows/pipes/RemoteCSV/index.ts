@@ -8,6 +8,8 @@ export default register => {
     component: View,
     featureFlag: 'flow-panel--remote-csv',
     button: 'Remote CSV',
+    description:
+      'Run queries against remotely hosted CSVs. Use ours or bring your own',
     initial: {
       csvType: '',
       url: '',

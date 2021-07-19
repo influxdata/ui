@@ -37,6 +37,7 @@ import {FlowQueryContext} from 'src/flows/context/flow.query'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import 'src/flows/shared/Resizer.scss'
 
@@ -270,7 +271,9 @@ const FlowPanel: FC<Props> = ({
           />
         )}
       </div>
-      {!flow.readOnly && <InsertCellButton id={id} />}
+      {!flow.readOnly && !isFlagEnabled('flow-description') && (
+        <InsertCellButton id={id} />
+      )}
     </>
   )
 }

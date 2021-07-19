@@ -8,6 +8,8 @@ export default register => {
     component: View,
     featureFlag: 'flow-panel--to-bucket',
     button: 'Output to Bucket',
+    description:
+      'Write the results from the query to another bucket within the system',
     generateFlux: (data, create, append, withSideEffects) => {
       if (withSideEffects && data?.bucket) {
         const query = `__PREVIOUS_RESULT__ |> to(bucket: "${data.bucket?.name.trim()}")`

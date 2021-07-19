@@ -10,6 +10,7 @@ export default register => {
     family: 'passThrough',
     component: View,
     button: 'Visualization',
+    description: 'Get a multidimensional view into your data',
     initial: {
       functions: [{name: 'mean'}],
       period: '',

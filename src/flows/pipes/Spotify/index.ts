@@ -8,6 +8,7 @@ export default register => {
     priority: -1,
     featureFlag: 'flow-panel--spotify',
     button: 'Music',
+    description: 'Capture the mood, share it with others',
     component: View,
     initial: {
       uri: 'spotify:track:55A8N3HXzIecctUSvru3Ch',

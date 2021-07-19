@@ -1,4 +1,4 @@
-import React, {FC, useContext, useCallback} from 'react'
+import React, {FC, useContext, useCallback, useState, useEffect} from 'react'
 import {Flow, PipeData} from 'src/types/flows'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import {v4 as UUID} from 'uuid'
@@ -9,6 +9,8 @@ export interface FlowContextType {
   id: string | null
   name: string
   flow: Flow | null
+  insertIndex: number
+  setInsertIndex: (idx: number) => void
   add: (data: Partial<PipeData>, index?: number) => string
   update: (flow: Partial<Flow>) => void
 }
@@ -17,6 +19,8 @@ export const DEFAULT_CONTEXT: FlowContextType = {
   id: null,
   name: `Name this ${PROJECT_NAME}`,
   flow: null,
+  insertIndex: 0,
+  setInsertIndex: _ => {},
   add: () => '',
   update: () => {},
 }
@@ -27,6 +31,7 @@ let GENERATOR_INDEX = 0
 
 export const FlowProvider: FC = ({children}) => {
   const {flows, update, currentID} = useContext(FlowListContext)
+  const [insertIndex, setInsertIndex] = useState<number>(0)
 
   const updateCurrent = useCallback(
     (flow: Flow) => {
@@ -37,6 +42,10 @@ export const FlowProvider: FC = ({children}) => {
     },
     [currentID, flows[currentID]]
   )
+
+  useEffect(() => {
+    setInsertIndex(flows[currentID]?.data?.allIDs?.length ?? 0)
+  }, [currentID])
 
   const addPipe = (initial: PipeData, index?: number) => {
     const id = `local_${UUID()}`
@@ -56,6 +65,8 @@ export const FlowProvider: FC = ({children}) => {
       flows[currentID].data.move(id, index + 1)
     }
 
+    setInsertIndex(insertIndex + 1)
+
     onChange(resource)
     return id
   }
@@ -70,6 +81,8 @@ export const FlowProvider: FC = ({children}) => {
         id: currentID,
         name,
         flow: flows[currentID],
+        insertIndex,
+        setInsertIndex,
         add: addPipe,
         update: updateCurrent,
       }}

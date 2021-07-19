@@ -11,9 +11,11 @@ $cf-radius-lg: $cf-radius + 4px;
   width: 100%;
   height: 100%;
   display: flex;
-  padding-right: 18px;
+  padding: 0 18px;
   flex-direction: column;
   align-items: stretch;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .flow--add-cell-label {
@@ -347,5 +349,22 @@ $cf-radius-lg: $cf-radius + 4px;
 
   > * {
     margin-left: $cf-marg-a;
+  }
+}
+
+.flow-dnd {
+  .flow-panel {
+    margin-bottom: 12px;
+    &:after {
+      display: none;
+    }
+  }
+
+  .flow-panel--body {
+    padding-left: 8px;
+  }
+
+  .flow-panel--node-wrapper {
+    display: none;
   }
 }

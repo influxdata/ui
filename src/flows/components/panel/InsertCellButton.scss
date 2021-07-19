@@ -31,10 +31,6 @@
     transform: translate(-50%, 100%);
     @include gradient-v($c-amethyst, $g5-pepper);
   }
-
-  &:last-child {
-    margin-bottom: 25vh;
-  }
 }
 
 .flow-divider:last-child:after {

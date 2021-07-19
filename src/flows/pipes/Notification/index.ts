@@ -8,6 +8,7 @@ export default register => {
     component: View,
     featureFlag: 'flow-panel--notification',
     button: 'Notification',
+    description: 'Set up alerts for when your data crosses a threshold',
     initial: {
       interval: '10m',
       offset: '0s',

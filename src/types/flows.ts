@@ -151,6 +151,7 @@ export interface TypeRegistration {
   featureFlag?: string // designates a flag that should enable the panel type
   component: FunctionComponent<PipeProp> | ComponentClass<PipeProp> // the view component for rendering the interface
   button: string // a human readable string for appending the type
+  description?: string // sometimes a name isn't enough
   initial: any // the default state for an add
   generateFlux?: (
     pipe: PipeData,

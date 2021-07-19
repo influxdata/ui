@@ -11,6 +11,7 @@ export default register => {
     component: View,
     featureFlag: 'flow-panel--query-builder',
     button: 'Query Builder',
+    description: 'Start structuring queries on your high cardinality data',
     initial: {
       buckets: [],
       tags: [

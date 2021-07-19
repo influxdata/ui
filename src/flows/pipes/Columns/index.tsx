@@ -3,9 +3,10 @@ import View, {TableColumnKey} from './view'
 export default register => {
   register({
     type: 'columnEditor',
-    family: 'passThrough',
+    family: 'transform',
     component: View,
     button: 'Column Editor',
+    description: 'Drop and rename columns from a result set',
     initial: {
       updatedTableKeys: {},
     },

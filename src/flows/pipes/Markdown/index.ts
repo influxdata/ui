@@ -175,6 +175,7 @@ export default register => {
     component: MarkdownPanel,
     featureFlag: 'flow-panel--markdown',
     button: 'Markdown',
+    description: 'Make notes along the way',
     initial: () => ({
       text: TEST_MODE ? TESTCASE : MARKDOWN_PIPE_INITIAL,
       mode: 'edit',

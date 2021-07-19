@@ -33,6 +33,8 @@ export default register => {
     component: View,
     featureFlag: 'flow-panel--raw-flux',
     button: 'Flux Script',
+    description:
+      'Unlock the full potential of the system with a raw flux editor',
     initial: {
       activeQuery: 0,
       queries: [

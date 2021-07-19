@@ -9,6 +9,7 @@ export default register => {
     priority: 1,
     component: View,
     button: 'Metric Selector',
+    description: 'Select your data by searching your schema',
     initial: {
       field: '',
       measurement: '',

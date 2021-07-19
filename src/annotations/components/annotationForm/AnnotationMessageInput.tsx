@@ -7,7 +7,6 @@ import {Form, TextArea} from '@influxdata/clockface'
 interface Props {
   message: string
   onChange: (newMessage: string) => void
-  onSubmit: () => void
 }
 
 const characterLimit = 255

@@ -240,8 +240,8 @@ $cf-radius-lg: $cf-radius + 4px;
 }
 
 .flow-panel--body {
-  overflow-x: hidden;
-  overflow-y: visible;
+  overflow-x: visible;
+  overflow-y: hidden;
 }
 .flow-panel--body,
 .flow-panel--results {

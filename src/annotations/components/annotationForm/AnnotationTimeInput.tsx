@@ -65,7 +65,6 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
       return REQUIRED_ERROR
     }
 
-    console.log(timeValue)
     if (!isValidTimeFormat(timeValue)) {
       return `Format must be ${timeFormat}`
     }

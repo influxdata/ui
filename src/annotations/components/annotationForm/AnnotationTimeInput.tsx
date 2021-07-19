@@ -56,7 +56,8 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
     if (timeFormat === ANNOTATION_TIME_FORMAT_LOCAL && isValid) {
       if (
         !(
-          inputValue.split(' ')[2] === 'AM' || inputValue.split(' ')[2] === 'PM'
+          inputValue.split(' ')[2].toUpperCase() === 'AM' ||
+          inputValue.split(' ')[2].toUpperCase() === 'PM'
         )
       ) {
         isValid = false

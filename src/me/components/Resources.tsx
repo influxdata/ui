@@ -16,10 +16,14 @@ import {
 import VersionInfo from 'src/shared/components/VersionInfo'
 
 // Types
-import {AppState} from 'src/types'
 
 import DocSearchWidget from 'src/me/components/DocSearchWidget'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+import LogoutButton from 'src/me/components/LogoutButton'
+import DashboardsList from 'src/me/components/DashboardsList'
+import GetResources from 'src/resources/components/GetResources'
+import {AppState, ResourceType} from 'src/types'
 
 interface Props {
   me: AppState['me']
@@ -34,22 +38,54 @@ class ResourceLists extends PureComponent<Props> {
         stretchToFitWidth={true}
         margin={ComponentSize.Small}
       >
-        <Panel testID="recent-dashboards--panel">
-          <Panel.Header>
-            <Heading
-              element={HeadingElement.H2}
-              weight={FontWeight.Medium}
-              className="cf-heading__h4"
-            >
-              <label htmlFor="documentation-search">Documentation</label>
-            </Heading>
-          </Panel.Header>
-          {isFlagEnabled('docSearchWidget') && (
+        {isFlagEnabled('docSearchWidget') ? (
+          <Panel testID="documentation--panel">
+            <Panel.Header>
+              <Heading
+                element={HeadingElement.H2}
+                weight={FontWeight.Medium}
+                className="cf-heading__h4"
+              >
+                <label htmlFor="documentation">Documentation</label>
+              </Heading>
+            </Panel.Header>
             <Panel.Body>
               <DocSearchWidget />
             </Panel.Body>
-          )}
-        </Panel>
+          </Panel>
+        ) : (
+          <>
+            <Panel>
+              <Panel.Header>
+                <Heading
+                  element={HeadingElement.H2}
+                  weight={FontWeight.Light}
+                  className="cf-heading__h4"
+                >
+                  Account
+                </Heading>
+                <LogoutButton />
+              </Panel.Header>
+            </Panel>
+            <Panel testID="recent-dashboards--panel">
+              <Panel.Header>
+                <Heading
+                  element={HeadingElement.H2}
+                  weight={FontWeight.Light}
+                  className="cf-heading__h4"
+                >
+                  <label htmlFor="filter-dashboards">Recent Dashboards</label>
+                </Heading>
+              </Panel.Header>
+              <Panel.Body>
+                <GetResources resources={[ResourceType.Dashboards]}>
+                  <DashboardsList />
+                </GetResources>
+              </Panel.Body>
+            </Panel>
+          </>
+        )}
+
         <Panel>
           <Panel.Header>
             <Heading

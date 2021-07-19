@@ -1,13 +1,11 @@
 // Libraries
 import React, {PureComponent, ChangeEvent, FormEvent} from 'react'
-import moment from 'moment'
 
 // Components
 import {Form, Input, Button, Grid} from '@influxdata/clockface'
 import Retention from 'src/buckets/components/Retention'
 
 // Constants
-import {MIN_RETENTION_SECONDS} from 'src/buckets/constants'
 import {isSystemBucket} from 'src/buckets/constants/index'
 
 // Types
@@ -76,7 +74,6 @@ export default class BucketOverlayForm extends PureComponent<Props> {
               </Form.ValidationElement>
               <Form.Element
                 label="Delete Data"
-                errorMessage={this.ruleErrorMessage}
               >
                 <Retention
                   type={ruleType}
@@ -151,28 +148,10 @@ export default class BucketOverlayForm extends PureComponent<Props> {
     const {name} = this.props
     const nameHasErrors = this.handleNameValidation(name)
 
-    if (nameHasErrors || this.retentionIsTooShort) {
+    if (nameHasErrors) {
       return ComponentStatus.Disabled
     }
 
     return ComponentStatus.Default
-  }
-
-  private get retentionIsTooShort(): boolean {
-    const {retentionSeconds, ruleType} = this.props
-
-    return ruleType === 'expire' && retentionSeconds < MIN_RETENTION_SECONDS
-  }
-
-  private get ruleErrorMessage(): string {
-    if (this.retentionIsTooShort) {
-      const humanDuration = moment
-        .duration(MIN_RETENTION_SECONDS, 'seconds')
-        .humanize()
-
-      return `Retention period must be at least ${humanDuration}`
-    }
-
-    return ''
   }
 }

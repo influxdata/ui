@@ -61,47 +61,47 @@ export const limitsReducer = (
       case ActionTypes.SetLimits: {
         const {limits} = action.payload
 
-        if (limits?.bucket) {
-          const {maxBuckets, maxRetentionDuration} = limits?.bucket
+        if (limits.bucket) {
+          const {maxBuckets, maxRetentionDuration} = limits.bucket
           draftState.buckets.maxAllowed = maxBuckets
           draftState.buckets.maxRetentionSeconds = maxRetentionDuration / 1e9
         }
 
-        if (limits?.dashboard) {
-          const {maxDashboards} = limits?.dashboard
+        if (limits.dashboard) {
+          const {maxDashboards} = limits.dashboard
           draftState.dashboards.maxAllowed = maxDashboards
         }
 
-        if (limits?.task) {
-          const {maxTasks} = limits?.task
+        if (limits.task) {
+          const {maxTasks} = limits.task
           draftState.tasks.maxAllowed = maxTasks
         }
 
-        if (limits?.check) {
-          const {maxChecks} = limits?.check
+        if (limits.check) {
+          const {maxChecks} = limits.check
           draftState.checks.maxAllowed = maxChecks
         }
 
-        if (limits?.notificationRule) {
+        if (limits.notificationRule) {
           const {
             maxNotifications,
             blockedNotificationRules,
-          } = limits?.notificationRule
+          } = limits.notificationRule
           draftState.rules.maxAllowed = maxNotifications
           draftState.rules.blocked = blockedNotificationRules
             .split(',')
             .map(r => r.trim())
         }
 
-        if (limits?.notificationEndpoint) {
-          const {blockedNotificationEndpoints} = limits?.notificationEndpoint
+        if (limits.notificationEndpoint) {
+          const {blockedNotificationEndpoints} = limits.notificationEndpoint
           draftState.endpoints.blocked = blockedNotificationEndpoints
             .split(',')
             .map(r => r.trim())
         }
 
-        if (limits?.rate) {
-          const {readKBs, writeKBs, cardinality} = limits?.rate
+        if (limits.rate) {
+          const {readKBs, writeKBs, cardinality} = limits.rate
 
           draftState.rate.readKBs.maxAllowed = readKBs
           draftState.rate.writeKBs.maxAllowed = writeKBs

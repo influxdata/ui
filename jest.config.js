@@ -21,7 +21,7 @@ module.exports = {
     'ts-jest': {
       tsConfig: 'tsconfig.test.json',
       diagnostics: {
-        ignoreCodes: [6133, 6192, 2339], // ignore unused variable errors
+        ignoreCodes: [6133, 6192], // ignore unused variable errors
       },
     },
   },

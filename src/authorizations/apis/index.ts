@@ -4,13 +4,7 @@ import {postAuthorization} from 'src/client'
 import {getAuthConnection} from 'src/client/unityRoutes'
 import {getOauthClientConfig} from 'src/client/cloudPrivRoutes'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {CLOUD} from 'src/shared/constants'
-
-let OAuthClientConfig = null
-
-if (CLOUD) {
-  OAuthClientConfig = require('src/client/cloudPrivRoutes').OAuthClientConfig
-}
+import {OAuthClientConfig} from 'src/client/cloudPrivRoutes'
 
 export const createAuthorization = async (
   authorization

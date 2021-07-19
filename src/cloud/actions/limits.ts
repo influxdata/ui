@@ -15,10 +15,7 @@ import {
   ResourceType,
   ColumnTypes,
 } from 'src/types'
-import {
-  Limits as CloudLimits,
-  LimitStatus as CloudLimitStatus,
-} from 'src/types/cloud'
+import {Limits, LimitStatus} from 'src/types/cloud'
 
 // Selectors
 import {
@@ -32,12 +29,8 @@ import {
 import {getOrg} from 'src/organizations/selectors'
 import {getAll} from 'src/resources/selectors'
 
-interface OSSLimitStatus {
-  status: 'ok' | 'exceeded'
-}
-
 export type MonitoringLimits = {
-  [type in ColumnTypes]: CloudLimitStatus['status'] | OSSLimitStatus['status']
+  [type in ColumnTypes]: LimitStatus['status']
 }
 
 export enum ActionTypes {
@@ -67,46 +60,12 @@ export type Actions =
   | SetWriteRateLimitStatus
   | SetCardinalityLimitStatus
 
-interface OSSLimits {
-  orgID?: string
-  rate: {
-    readKBs: number
-    concurrentReadRequests: number
-    writeKBs: number
-    concurrentWriteRequests: number
-    cardinality: number
-  }
-  bucket: {
-    maxBuckets: number
-    maxRetentionDuration: number
-  }
-  task: {
-    maxTasks: number
-  }
-  dashboard: {
-    maxDashboards: number
-  }
-  check: {
-    maxChecks: number
-  }
-  notificationRule: {
-    maxNotifications: number
-    blockedNotificationRules?: string
-  }
-  notificationEndpoint: {
-    blockedNotificationEndpoints?: string
-  }
-  features?: {
-    allowDelete?: boolean
-  }
-}
-
 export interface SetLimits {
   type: ActionTypes.SetLimits
-  payload: {limits: CloudLimits | OSSLimits}
+  payload: {limits: Limits}
 }
 
-export const setLimits = (limits: CloudLimits | OSSLimits): SetLimits => {
+export const setLimits = (limits: Limits): SetLimits => {
   return {
     type: ActionTypes.SetLimits,
     payload: {limits},
@@ -115,11 +74,11 @@ export const setLimits = (limits: CloudLimits | OSSLimits): SetLimits => {
 
 export interface SetDashboardLimitStatus {
   type: ActionTypes.SetDashboardLimitStatus
-  payload: {limitStatus: CloudLimitStatus['status'] | OSSLimitStatus['status']}
+  payload: {limitStatus: LimitStatus['status']}
 }
 
 export const setDashboardLimitStatus = (
-  limitStatus: CloudLimitStatus['status'] | OSSLimitStatus['status']
+  limitStatus: LimitStatus['status']
 ): SetDashboardLimitStatus => {
   return {
     type: ActionTypes.SetDashboardLimitStatus,
@@ -129,11 +88,11 @@ export const setDashboardLimitStatus = (
 
 export interface SetBucketLimitStatus {
   type: ActionTypes.SetBucketLimitStatus
-  payload: {limitStatus: CloudLimitStatus['status'] | OSSLimitStatus['status']}
+  payload: {limitStatus: LimitStatus['status']}
 }
 
 export const setBucketLimitStatus = (
-  limitStatus: CloudLimitStatus['status'] | OSSLimitStatus['status']
+  limitStatus: LimitStatus['status']
 ): SetBucketLimitStatus => {
   return {
     type: ActionTypes.SetBucketLimitStatus,
@@ -143,11 +102,11 @@ export const setBucketLimitStatus = (
 
 export interface SetTaskLimitStatus {
   type: ActionTypes.SetTaskLimitStatus
-  payload: {limitStatus: CloudLimitStatus['status'] | OSSLimitStatus['status']}
+  payload: {limitStatus: LimitStatus['status']}
 }
 
 export const setTaskLimitStatus = (
-  limitStatus: CloudLimitStatus['status'] | OSSLimitStatus['status']
+  limitStatus: LimitStatus['status']
 ): SetTaskLimitStatus => {
   return {
     type: ActionTypes.SetTaskLimitStatus,
@@ -157,11 +116,11 @@ export const setTaskLimitStatus = (
 
 export interface SetChecksLimitStatus {
   type: ActionTypes.SetChecksLimitStatus
-  payload: {limitStatus: CloudLimitStatus['status'] | OSSLimitStatus['status']}
+  payload: {limitStatus: LimitStatus['status']}
 }
 
 export const setChecksLimitStatus = (
-  limitStatus: CloudLimitStatus['status'] | OSSLimitStatus['status']
+  limitStatus: LimitStatus['status']
 ): SetChecksLimitStatus => {
   return {
     type: ActionTypes.SetChecksLimitStatus,
@@ -171,11 +130,11 @@ export const setChecksLimitStatus = (
 
 export interface SetRulesLimitStatus {
   type: ActionTypes.SetRulesLimitStatus
-  payload: {limitStatus: CloudLimitStatus['status'] | OSSLimitStatus['status']}
+  payload: {limitStatus: LimitStatus['status']}
 }
 
 export const setRulesLimitStatus = (
-  limitStatus: CloudLimitStatus['status'] | OSSLimitStatus['status']
+  limitStatus: LimitStatus['status']
 ): SetRulesLimitStatus => {
   return {
     type: ActionTypes.SetRulesLimitStatus,
@@ -185,11 +144,11 @@ export const setRulesLimitStatus = (
 
 export interface SetEndpointsLimitStatus {
   type: ActionTypes.SetEndpointsLimitStatus
-  payload: {limitStatus: CloudLimitStatus['status'] | OSSLimitStatus['status']}
+  payload: {limitStatus: LimitStatus['status']}
 }
 
 export const setEndpointsLimitStatus = (
-  limitStatus: CloudLimitStatus['status'] | OSSLimitStatus['status']
+  limitStatus: LimitStatus['status']
 ): SetEndpointsLimitStatus => {
   return {
     type: ActionTypes.SetEndpointsLimitStatus,
@@ -199,11 +158,11 @@ export const setEndpointsLimitStatus = (
 
 export interface SetReadRateLimitStatus {
   type: ActionTypes.SetReadRateLimitStatus
-  payload: {limitStatus: CloudLimitStatus['status'] | OSSLimitStatus['status']}
+  payload: {limitStatus: LimitStatus['status']}
 }
 
 export const setReadRateLimitStatus = (
-  limitStatus: CloudLimitStatus['status'] | OSSLimitStatus['status']
+  limitStatus: LimitStatus['status']
 ): SetReadRateLimitStatus => {
   return {
     type: ActionTypes.SetReadRateLimitStatus,
@@ -213,11 +172,11 @@ export const setReadRateLimitStatus = (
 
 export interface SetWriteRateLimitStatus {
   type: ActionTypes.SetWriteRateLimitStatus
-  payload: {limitStatus: CloudLimitStatus['status'] | OSSLimitStatus['status']}
+  payload: {limitStatus: LimitStatus['status']}
 }
 
 export const setWriteRateLimitStatus = (
-  limitStatus: CloudLimitStatus['status'] | OSSLimitStatus['status']
+  limitStatus: LimitStatus['status']
 ): SetWriteRateLimitStatus => {
   return {
     type: ActionTypes.SetWriteRateLimitStatus,
@@ -227,11 +186,11 @@ export const setWriteRateLimitStatus = (
 
 export interface SetCardinalityLimitStatus {
   type: ActionTypes.SetCardinalityLimitStatus
-  payload: {limitStatus: CloudLimitStatus['status'] | OSSLimitStatus['status']}
+  payload: {limitStatus: LimitStatus['status']}
 }
 
 export const setCardinalityLimitStatus = (
-  limitStatus: CloudLimitStatus['status'] | OSSLimitStatus['status']
+  limitStatus: LimitStatus['status']
 ): SetCardinalityLimitStatus => {
   return {
     type: ActionTypes.SetCardinalityLimitStatus,
@@ -302,7 +261,7 @@ export const getAssetLimits = () => async (dispatch, getState: GetState) => {
       throw new Error(resp.data.message)
     }
 
-    const limits: CloudLimits = resp.data
+    const limits: Limits = resp.data
 
     dispatch(setLimits(limits))
     dispatch(setLimitsStatus(RemoteDataState.Done))

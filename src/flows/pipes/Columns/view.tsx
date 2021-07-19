@@ -66,8 +66,16 @@ const View: FC<PipeProp> = ({Context}) => {
     }))
   }
 
-  if (!Object.values(tableColumnKeys)) {
-    return <h1>No Columns To Show. Preview To See Results.</h1>
+  if (!Object.values(tableColumnKeys).length) {
+    return (
+      <Context>
+        <div className="columns-panel--grid">
+          <div className="panel-resizer--empty">
+            No Columns To Show. Preview To See Results.
+          </div>
+        </div>
+      </Context>
+    )
   }
 
   return (

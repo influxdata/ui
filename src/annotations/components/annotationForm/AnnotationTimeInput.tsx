@@ -49,7 +49,19 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
   )
 
   const isValidTimeFormat = (inputValue: string): boolean => {
-    const isValid = moment(inputValue, timeFormat, true).isValid()
+    let isValid = moment(inputValue, timeFormat, true).isValid()
+
+    // momentjs says this format is valid: '2021-07-19 12:01:20 P' whereas the Date library needs the extra M like this: '2021-07-19 12:01:20 PM'
+    // and that throws off the validation logic. temporary solution is to check whether meridian are the correct format
+    if (timeFormat === ANNOTATION_TIME_FORMAT_LOCAL && isValid) {
+      if (
+        !(
+          inputValue.split(' ')[2] === 'AM' || inputValue.split(' ')[2] === 'PM'
+        )
+      ) {
+        isValid = false
+      }
+    }
     props.onValidityCheck(isValid)
     return isValid
   }

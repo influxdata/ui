@@ -278,7 +278,6 @@ class Gauge extends Component<Props> {
     maxValue
   ) => {
     const {tickPrefix, tickSuffix, decimalPlaces} = this.props
-    let {prefix, suffix} = this.props
     const {degree, lineCount, labelColor, labelFontSize} = this.props.theme
 
     const tickSplit = Math.abs(maxValue - minValue) / lineCount
@@ -289,16 +288,12 @@ class Gauge extends Component<Props> {
       maxValue,
     ]
 
-    if (tickPrefix === 'true') {
-      prefix = ''
-    }
-
-    if (tickSuffix === 'true') {
-      suffix = ''
-    }
-
     const labels = tickValues.map(tick =>
-      formatStatValue(tick, {decimalPlaces, prefix, suffix})
+      formatStatValue(tick, {
+        decimalPlaces,
+        prefix: tickPrefix,
+        suffix: tickSuffix,
+      })
     )
 
     const startDegree = degree * 135

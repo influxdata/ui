@@ -96,7 +96,6 @@ export class MePage extends PureComponent<Props> {
   }
   public render() {
     const {me} = this.props
-
     return (
       <Page titleTag={pageTitleSuffixer(['Home'])}>
         <Page.Header fullWidth={false}>

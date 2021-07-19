@@ -12,6 +12,7 @@ import TokensTab from 'src/authorizations/components/TokensTab'
 import {
   AllAccessTokenOverlay,
   BucketsTokenOverlay,
+  CustomApiTokenOverlay,
 } from 'src/overlays/components'
 
 // Utils
@@ -45,6 +46,10 @@ class TokensIndex extends Component {
           <Route
             path={`${tokensPath}/buckets`}
             component={BucketsTokenOverlay}
+          />
+          <Route
+            path={`${tokensPath}/custom-api`}
+            component={CustomApiTokenOverlay}
           />
         </Switch>
       </>

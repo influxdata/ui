@@ -35,6 +35,7 @@ import NewThresholdCheckEO from 'src/checks/components/NewThresholdCheckEO'
 import NewDeadmanCheckEO from 'src/checks/components/NewDeadmanCheckEO'
 import AutoRefreshOverlay from 'src/dashboards/components/AutoRefreshOverlay'
 import CellCloneOverlay from 'src/shared/components/cells/CellCloneOverlay'
+import CustomApiTokenOverlay from 'src/authorizations/components/CustomApiTokenOverlay'
 
 // Actions
 import {dismissOverlay} from 'src/overlays/actions/overlays'
@@ -66,6 +67,9 @@ export const OverlayController: FunctionComponent = () => {
         break
       case 'add-master-token':
         activeOverlay.current = <AllAccessTokenOverlay onClose={onClose} />
+        break
+      case 'add-custom-token':
+        activeOverlay.current = <CustomApiTokenOverlay onClose={onClose} />
         break
       case 'add-token':
         activeOverlay.current = <BucketsTokenOverlay onClose={onClose} />

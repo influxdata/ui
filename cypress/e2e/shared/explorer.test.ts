@@ -361,12 +361,16 @@ describe('DataExplorer', () => {
       cy.getByTestID('timerange--input')
         .first()
         .clear()
+        .click()
+        .focused()
         .type('2019-10-29 08:00:00.000')
 
       // Set the stop date to Oct 29, 2019
       cy.getByTestID('timerange--input')
         .last()
         .clear()
+        .click()
+        .focused()
         .type('2019-10-29 09:00:00.000')
 
       // click button and see if time range has been selected

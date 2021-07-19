@@ -2,6 +2,7 @@ import {
   addRangeAnnotation,
   checkAnnotationText,
   clearLocalStorage,
+  deleteAnnotation,
   setupData,
   testAddAnnotation,
   testEditAnnotation,
@@ -31,8 +32,9 @@ describe('The Annotations UI functionality on a graph + single stat graph type',
   it('can add and edit a range annotation for the single stat + line graph', () => {
     testEditRangeAnnotation(cy)
   })
+
   it('can add and then delete a range annotation for the single stat + line graph', () => {
     addRangeAnnotation(cy)
-    testDeleteAnnotation(cy)
+    deleteAnnotation(cy)
   })
 })

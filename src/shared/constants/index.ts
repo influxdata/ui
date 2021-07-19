@@ -156,3 +156,10 @@ export const SCRIPT_EDITOR_MODE = 'advanced'
 
 export const MARKDOWN_UNSUPPORTED_IMAGE =
   "We don't support images in markdown for security purposes"
+
+export const GLOBALSEARCH_APP_ID = formatConstant(
+  process.env.GLOBALSEARCH_APP_ID
+)
+export const GLOBALSEARCH_API_KEY = formatConstant(
+  process.env.GLOBALSEARCH_API_KEY
+)

@@ -2,6 +2,7 @@ import {
   addRangeAnnotation,
   checkAnnotationText,
   clearLocalStorage,
+  deleteAnnotation,
   setupData,
   testAddAnnotation,
   testEditAnnotation,
@@ -29,8 +30,9 @@ describe('The Annotations UI functionality, on a graph (xy line) graph type', ()
   it('can add and edit a range annotation for the xy line graph', () => {
     testEditRangeAnnotation(cy)
   })
+
   it('can add and then delete a range annotation for the xy line graph', () => {
     addRangeAnnotation(cy)
-    testDeleteAnnotation(cy)
+    deleteAnnotation(cy)
   })
 })

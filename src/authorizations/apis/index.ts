@@ -1,9 +1,16 @@
-import {Authorization, OAuthClientConfig} from 'src/types'
+import {Authorization} from 'src/types'
 import {getAPIBasepath} from 'src/utils/basepath'
 import {postAuthorization} from 'src/client'
 import {getAuthConnection} from 'src/client/unityRoutes'
 import {getOauthClientConfig} from 'src/client/cloudPrivRoutes'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {CLOUD} from 'src/shared/constants'
+
+let OAuthClientConfig = null
+
+if (CLOUD) {
+  OAuthClientConfig = require('src/client/cloudPrivRoutes').OAuthClientConfig
+}
 
 export const createAuthorization = async (
   authorization
@@ -26,7 +33,7 @@ export const createAuthorization = async (
 
 export const getAuth0Config = async (
   redirectTo?: string
-): Promise<OAuthClientConfig> => {
+): Promise<typeof OAuthClientConfig> => {
   try {
     if (isFlagEnabled('useGeneratedAuthCallback')) {
       // TODO(ariel): need to see if there's a way to conditionally add a query parameter to generate this

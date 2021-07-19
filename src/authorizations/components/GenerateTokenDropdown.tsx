@@ -14,7 +14,7 @@ import {getOrg} from 'src/organizations/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
-import {CLOUD, CLOUD_URL} from 'src/shared/constants'
+import {CLOUD} from 'src/shared/constants'
 
 type GenerateTokenProps = RouteComponentProps
 
@@ -36,11 +36,18 @@ const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
   const handleReadWrite = () => {
     history.push(`/orgs/${org.id}/load-data/tokens/generate/buckets`)
   }
+
+  const handleCustomApi = () => {
+    history.push(`/orgs/${org.id}/load-data/tokens/generate/custom-api`)
+  }
+
   const handleSelect = (selection: string): void => {
     if (selection === allAccessOption) {
       handleAllAccess()
     } else if (selection === bucketReadWriteOption) {
       handleReadWrite()
+    } else if (selection === customApiOption) {
+      handleCustomApi()
     }
   }
 

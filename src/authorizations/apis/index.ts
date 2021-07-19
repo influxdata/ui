@@ -2,6 +2,8 @@ import {Authorization, OAuthClientConfig} from 'src/types'
 import {getAPIBasepath} from 'src/utils/basepath'
 import {postAuthorization} from 'src/client'
 import {getAuthConnection} from 'src/client/unityRoutes'
+import {getOauthClientConfig} from 'src/client/cloudPrivRoutes'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export const createAuthorization = async (
   authorization
@@ -26,11 +28,31 @@ export const getAuth0Config = async (
   redirectTo?: string
 ): Promise<OAuthClientConfig> => {
   try {
-    // TODO(ariel): need to see if there's a way to conditionally add a query parameter to generate this
+    if (isFlagEnabled('useGeneratedAuthCallback')) {
+      // TODO(ariel): need to see if there's a way to conditionally add a query parameter to generate this
+      let resp
+      if (redirectTo) {
+        resp = await getOauthClientConfig({
+          query: {
+            redirectTo,
+          },
+        })
+      } else {
+        resp = await getOauthClientConfig({})
+      }
+
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      return resp.data
+    }
+
     let url = `${getAPIBasepath()}/api/v2private/oauth/clientConfig`
     if (redirectTo) {
       url = `${getAPIBasepath()}/api/v2private/oauth/clientConfig?redirectTo=${redirectTo}`
     }
+
     const response = await fetch(url)
     const data = await response.json()
 

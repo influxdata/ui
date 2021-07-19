@@ -7,6 +7,7 @@ import {isEmpty} from 'lodash'
 // Types
 import {GeoViewProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
+
 // Utils
 import {
   getDetectCoordinatingFields,
@@ -14,7 +15,7 @@ import {
   getGeoCoordinates,
   getGeoCoordinatesFlagged,
 } from 'src/shared/utils/vis'
-import {getMapToken} from './api'
+import {getMapToken} from 'src/client/mapsdRoutes'
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 
@@ -58,7 +59,13 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     const getToken = async () => {
       try {
         setMapServiceError(RemoteDataState.Loading)
-        const {token} = await getMapToken()
+        const resp = await getMapToken({})
+
+        if (resp.status !== 200) {
+          throw new Error(resp.data.message)
+        }
+
+        const {token} = resp.data
         setMapToken(token)
         setMapServiceError(RemoteDataState.Done)
         event('mapplot.map_token_request.success')

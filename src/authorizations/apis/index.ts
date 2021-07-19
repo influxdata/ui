@@ -27,7 +27,7 @@ export const createAuthorization = async (
 
 export const getAuth0Config = async (
   redirectTo?: string
-): Promise<typeof OAuthClientConfig> => {
+): Promise<OAuthClientConfig> => {
   try {
     if (isFlagEnabled('useGeneratedAuthCallback')) {
       // TODO(ariel): need to see if there's a way to conditionally add a query parameter to generate this

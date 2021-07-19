@@ -261,7 +261,9 @@ export const getAssetLimits = () => async (dispatch, getState: GetState) => {
       throw new Error(resp.data.message)
     }
 
-    dispatch(setLimits(resp.data))
+    const limits: Limits = resp.data
+
+    dispatch(setLimits(limits))
     dispatch(setLimitsStatus(RemoteDataState.Done))
   } catch (error) {
     console.error(error)

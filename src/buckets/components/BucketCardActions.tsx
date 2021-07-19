@@ -12,7 +12,6 @@ import {
 } from '@influxdata/clockface'
 import BucketAddDataButton from 'src/buckets/components/BucketAddDataButton'
 import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
-import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Actions
 import {addBucketLabel, deleteBucketLabel} from 'src/buckets/actions/thunks'
@@ -27,7 +26,6 @@ interface OwnProps {
   bucket: OwnBucket
   bucketType: 'user' | 'system'
   orgID: string
-  onDeleteData: (b: OwnBucket) => void
   onFilterChange: (searchTerm: string) => void
 }
 
@@ -42,7 +40,6 @@ const BucketCardActions: FC<Props> = ({
   onFilterChange,
   onAddBucketLabel,
   onDeleteBucketLabel,
-  onDeleteData,
   history,
   onSetDataLoadersBucket,
   onSetDataLoadersType,
@@ -121,14 +118,6 @@ const BucketCardActions: FC<Props> = ({
         size={ComponentSize.ExtraSmall}
         onClick={handleClickSettings}
       />
-      <FeatureFlag name="deleteWithPredicate">
-        <Button
-          text="Delete Data By Filter"
-          testID="bucket-delete-bucket"
-          size={ComponentSize.ExtraSmall}
-          onClick={() => onDeleteData(bucket)}
-        />
-      </FeatureFlag>
     </FlexBox>
   )
 }

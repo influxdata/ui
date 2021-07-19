@@ -109,7 +109,7 @@ $cf-radius-lg: $cf-radius + 4px;
 }
 
 .flow-panel__focus {
-  border: 2px solid $c-amethyst;
+  border: 2px solid skyblue;
 }
 
 .flow-panel--persistent-control {
@@ -150,6 +150,19 @@ $cf-radius-lg: $cf-radius + 4px;
   font-weight: $cf-font-weight--medium;
   user-select: none;
   margin-right: $cf-marg-b !important;
+}
+
+.flow-panel .cf-draggable-resizer--handle {
+  height: 48px;
+  margin-left: 32px;
+  .cf-draggable-resizer--handle-pill1,
+  .cf-draggable-resizer--handle-pill2,
+  .cf-draggable-resizer--handle-gradient1,
+  .cf-draggable-resizer--handle-gradient2 {
+    height: 2px;
+    width: 32px;
+    background-color: $g5-pepper;
+  }
 }
 
 .flow-panel--data-source {
@@ -226,6 +239,9 @@ $cf-radius-lg: $cf-radius + 4px;
   top: -2px;
 }
 
+.flow-panel--body {
+  overflow: hidden;
+}
 .flow-panel--body,
 .flow-panel--results {
   border-radius: 0 0 $cf-radius $cf-radius;

@@ -16,7 +16,7 @@ import {SidebarProvider} from 'src/flows/context/sidebar'
 
 // Components
 import PipeList from 'src/flows/components/PipeList'
-import Sidebar from 'src/flows/components/Sidebar'
+import {SubSideBar} from 'src/flows/components/Sidebar'
 import FlowHeader from 'src/flows/components/header'
 import FlowKeyboardPreview from 'src/flows/components/FlowKeyboardPreview'
 
@@ -60,10 +60,14 @@ const FlowContainer: FC = () => (
                   className="flow-page"
                 >
                   <PopupProvider>
-                    <DapperScrollbars noScrollX>
+                    <DapperScrollbars
+                      noScrollX
+                      thumbStartColor="gray"
+                      thumbStopColor="gray"
+                    >
                       <PipeList />
                     </DapperScrollbars>
-                    <Sidebar />
+                    <SubSideBar />
                     <PopupDrawer />
                   </PopupProvider>
                 </Page.Contents>

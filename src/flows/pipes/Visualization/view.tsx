@@ -9,11 +9,17 @@ import React, {
 } from 'react'
 
 // Components
-import {IconFont} from '@influxdata/clockface'
-import Resizer from 'src/flows/shared/Resizer'
+import {
+  Icon,
+  IconFont,
+  DapperScrollbars,
+  Button,
+  ComponentStatus,
+} from '@influxdata/clockface'
 import ExportDashboardOverlay from 'src/flows/pipes/Visualization/ExportDashboardOverlay'
 import ExportButton from 'src/flows/pipes/Visualization/ExportDashboardButton'
 import Controls from 'src/flows/pipes/Visualization/Controls'
+import FriendlyQueryError from 'src/flows/shared/FriendlyQueryError'
 
 // Utilities
 import {View, ViewOptions} from 'src/visualization'
@@ -23,14 +29,19 @@ import {RemoteDataState} from 'src/types'
 import {PipeProp} from 'src/types/flows'
 
 import {PipeContext} from 'src/flows/context/pipe'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {SidebarContext} from 'src/flows/context/sidebar'
 import {PopupContext} from 'src/flows/context/popup'
 
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {downloadTextFile} from 'src/shared/utils/download'
 
 const Visualization: FC<PipeProp> = ({Context}) => {
-  const {id, data, range, update, loading, results} = useContext(PipeContext)
+  const {id, data, range, update, loading, results, queryText} = useContext(
+    PipeContext
+  )
+  const {basic} = useContext(FlowQueryContext)
   const {register} = useContext(SidebarContext)
   const {launch} = useContext(PopupContext)
   const [optionsVisibility, setOptionsVisibility] = useState(false)
@@ -51,6 +62,20 @@ const Visualization: FC<PipeProp> = ({Context}) => {
   )
 
   const dataExists = !!(results?.parsed?.table || []).length
+
+  const downloadTitle = queryText
+    ? 'Download results as an annotated CSV file'
+    : 'Build a query to download your results'
+  const download = () => {
+    event('CSV Download Initiated')
+    basic(queryText).promise.then(response => {
+      if (response.type !== 'SUCCESS') {
+        return
+      }
+
+      downloadTextFile(response.csv, 'influx.data', '.csv', 'text/csv')
+    })
+  }
 
   const loadingText = useMemo(() => {
     if (loading === RemoteDataState.Loading) {
@@ -85,6 +110,11 @@ const Visualization: FC<PipeProp> = ({Context}) => {
             ),
           },
           {
+            title: 'Download as CSV',
+            disable: !dataExists,
+            action: download,
+          },
+          {
             title: 'Export to Dashboard',
             action: () => {
               event('Export to Dashboard Clicked')
@@ -101,44 +131,88 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     ])
   }, [id, data.properties, results.parsed, range])
 
-  const persist = isFlagEnabled('flow-sidebar') ? null : <ExportButton />
+  const persist = isFlagEnabled('flow-sidebar') ? null : (
+    <>
+      <Button
+        titleText={downloadTitle}
+        text="CSV"
+        icon={IconFont.Download}
+        onClick={download}
+        status={dataExists ? ComponentStatus.Default : ComponentStatus.Disabled}
+      />
+      <ExportButton />
+    </>
+  )
+
+  if (results.error) {
+    return (
+      <Context
+        controls={
+          <Controls toggle={toggleOptions} visible={optionsVisibility} />
+        }
+        persistentControls={persist}
+      >
+        <div className="panel-resizer panel-resizer__visible panel-resizer--error-state">
+          <div className="panel-resizer--header panel-resizer--header__multiple-controls">
+            <Icon
+              glyph={IconFont.AlertTriangle}
+              className="panel-resizer--vis-toggle"
+            />
+          </div>
+          <FriendlyQueryError error={results.error} />
+        </div>
+      </Context>
+    )
+  }
+
+  if (!dataExists) {
+    return (
+      <Context
+        controls={
+          <Controls toggle={toggleOptions} visible={optionsVisibility} />
+        }
+        persistentControls={persist}
+      >
+        <div className="panel-resizer panel-resizer__visible">
+          <div className="panel-resizer--header panel-resizer--header__multiple-controls">
+            <Icon
+              glyph={IconFont.BarChart}
+              className="panel-resizer--vis-toggle"
+            />
+          </div>
+          <div className="panel-resizer--body">
+            <div className="panel-resizer--empty">{loadingText}</div>
+          </div>
+        </div>
+      </Context>
+    )
+  }
 
   return (
     <Context
       controls={<Controls toggle={toggleOptions} visible={optionsVisibility} />}
       persistentControls={persist}
+      resizes
     >
-      <Resizer
-        loading={loading}
-        resizingEnabled={dataExists}
-        minimumHeight={200}
-        emptyText={loadingText}
-        emptyIcon={IconFont.BarChart}
-        toggleVisibilityEnabled={false}
-        height={data.panelHeight}
-        onUpdateHeight={panelHeight => update({panelHeight})}
-        visibility={data.panelVisibility}
-        onUpdateVisibility={panelVisibility => update({panelVisibility})}
-      >
-        <div className="flow-visualization">
-          <div className="flow-visualization--view">
-            <View
-              loading={RemoteDataState.Done}
-              error={results?.error}
-              properties={data.properties}
-              result={results.parsed}
-              timeRange={range}
-            />
-          </div>
+      <div className="flow-visualization">
+        <div className="flow-visualization--view">
+          <View
+            loading={loading}
+            properties={data.properties}
+            result={results.parsed}
+            timeRange={range}
+          />
         </div>
-      </Resizer>
-      {optionsVisibility && dataExists && (
-        <ViewOptions
-          properties={data.properties}
-          results={results.parsed}
-          update={updateProperties}
-        />
-      )}
+        {optionsVisibility && dataExists && (
+          <DapperScrollbars style={{width: '400px'}}>
+            <ViewOptions
+              properties={data.properties}
+              results={results.parsed}
+              update={updateProperties}
+            />
+          </DapperScrollbars>
+        )}
+      </div>
     </Context>
   )
 }

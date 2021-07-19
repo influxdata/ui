@@ -1,0 +1,40 @@
+import {
+  addRangeAnnotation,
+  checkAnnotationText,
+  clearLocalStorage,
+  setupData,
+  testAddAnnotation,
+  testEditAnnotation,
+  testEditRangeAnnotation,
+  testDeleteAnnotation,
+} from '../util/annotationsSetup'
+
+describe('The Annotations UI functionality on a band plot graph type', () => {
+  const bandSuffix = 'band'
+
+  beforeEach(() => setupData(cy, bandSuffix))
+  afterEach(clearLocalStorage)
+
+  it('can create an annotation on the band plot', () => {
+    testAddAnnotation(cy)
+  })
+  it('can edit an annotation for the band plot', () => {
+    testEditAnnotation(cy)
+  })
+  it('can delete an annotation for the band plot ', () => {
+    testDeleteAnnotation(cy)
+  })
+
+  it('can add a range annotation for the band plot', () => {
+    addRangeAnnotation(cy, 'band-chart')
+    checkAnnotationText(cy, 'range annotation here!')
+  })
+  it('can add and edit a range annotation for the band plot', () => {
+    testEditRangeAnnotation(cy, 'band-chart')
+  })
+
+  it.skip('can add and then delete a range annotation for the band plot', () => {
+    addRangeAnnotation(cy, 'band-chart')
+    testDeleteAnnotation(cy)
+  })
+})

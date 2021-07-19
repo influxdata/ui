@@ -39,6 +39,13 @@ const defaultErrorNotification: NotificationExcludingMessage = {
   duration: TEN_SECONDS,
 }
 
+const defaultWarningNotification: NotificationExcludingMessage = {
+  buttonElement: defaultButtonElement,
+  style: NotificationStyle.Warning,
+  icon: IconFont.Group,
+  duration: TEN_SECONDS,
+}
+
 const defaultSuccessNotification: NotificationExcludingMessage = {
   buttonElement: defaultButtonElement,
   style: NotificationStyle.Success,
@@ -1252,6 +1259,11 @@ export const csvUploaderErrorNotification = (
   message: `Failed to upload the selected CSV: ${message}`,
 })
 
+export const csvUploadCancelled = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: 'Successfully cancelled CSV Upload',
+})
+
 // Functions
 export const functionGetFail = (): Notification => ({
   ...defaultErrorNotification,
@@ -1385,4 +1397,18 @@ export const removeUserFailed = (): Notification => ({
 export const zuoraParamsGetFailure = (message): Notification => ({
   ...defaultErrorNotification,
   message,
+})
+
+export const accountSelfDeletionFailed = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `There was an error deleting the organization, please try again.`,
+})
+
+export const deleteAccountWarning = (buttonElement): Notification => ({
+  ...defaultWarningNotification,
+  message: `All additional users must be removed from the Organization before the account can be deleted.\n`,
+  buttonElement,
+  styles: {
+    flexWrap: 'wrap',
+  },
 })

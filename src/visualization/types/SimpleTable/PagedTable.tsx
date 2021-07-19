@@ -42,7 +42,7 @@ const measurePage = (
   let lastSignature
   let signature
 
-  while (rowIdx <= result.table.length) {
+  while (rowIdx < result.table.length) {
     if (result.table.columns.table.data[rowIdx] !== currentTable) {
       signature = Object.values(result.table.columns)
         .map(
@@ -81,7 +81,7 @@ const measurePage = (
     rowIdx++
   }
 
-  return rowIdx - offset
+  return Math.max(0, rowIdx - offset)
 }
 
 const subsetResult = (
@@ -221,9 +221,14 @@ interface Props {
 }
 
 const PagedTable: FC<Props> = ({result, properties}) => {
-  const {offset, setSize, setPage, setTotalPages} = useContext(
-    PaginationContext
-  )
+  const {
+    offset,
+    setSize,
+    maxSize,
+    setMaxSize,
+    setPage,
+    setTotalPages,
+  } = useContext(PaginationContext)
   const [height, setHeight] = useState(0)
   const ref = useRef()
 
@@ -276,6 +281,12 @@ const PagedTable: FC<Props> = ({result, properties}) => {
   }, [size])
 
   useEffect(() => {
+    if (size > maxSize) {
+      setMaxSize(size)
+    }
+  }, [size])
+
+  useEffect(() => {
     setPage(1)
   }, [result])
 
@@ -285,9 +296,9 @@ const PagedTable: FC<Props> = ({result, properties}) => {
     }
   }, [height, result])
 
-  const inner = tables.map((t, tIdx) => (
-    <InnerTable table={t} key={`table${tIdx}`} />
-  ))
+  const inner =
+    !!size &&
+    tables.map((t, tIdx) => <InnerTable table={t} key={`table${tIdx}`} />)
 
   return (
     <div className="visualization--simple-table--results" ref={ref}>

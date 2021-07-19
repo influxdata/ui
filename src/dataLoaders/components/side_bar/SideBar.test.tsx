@@ -12,7 +12,7 @@ import {renderWithReduxAndRouter} from 'src/mockState'
 
 const onClick = jest.fn(() => {})
 
-const childrenArray = [
+const children = [
   <SideBar.Tab
     label="a"
     key="a"
@@ -33,14 +33,14 @@ const childrenArray = [
   />,
 ]
 
-const setup = (override?, childrenArray = []) => {
+const setup = (override?) => {
   const props = {
     title: 'titleString',
     visible: true,
     ...override,
   }
 
-  renderWithReduxAndRouter(<SideBar {...props}>{childrenArray} </SideBar>)
+  renderWithReduxAndRouter(<SideBar {...props} />)
 }
 
 describe('SideBar', () => {
@@ -54,11 +54,11 @@ describe('SideBar', () => {
     })
 
     it('renders with children, and renders its children', async () => {
-      setup(null, childrenArray)
+      setup({children})
       const elm = await screen.findByTestId('side-bar')
 
       expect(elm).toBeVisible()
-      childrenArray.forEach(child => {
+      children.forEach(child => {
         expect(elm.innerHTML).toContain(render(child).container.innerHTML)
       })
     })

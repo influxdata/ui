@@ -11,6 +11,7 @@ import {
   RUDDERSTACK_WRITE_KEY,
 } from 'src/shared/constants'
 import {load} from 'rudder-sdk-js'
+import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 // Components
 import {AppWrapper} from '@influxdata/clockface'
@@ -18,6 +19,7 @@ import TreeNav from 'src/pageLayout/containers/TreeNav'
 import TooltipPortal from 'src/portals/TooltipPortal'
 import NotesPortal from 'src/portals/NotesPortal'
 import Notifications from 'src/shared/components/notifications/Notifications'
+import GlobalSearch from 'src/shared/search/GlobalSearch'
 import {
   OverlayProviderComp,
   OverlayController,
@@ -46,13 +48,26 @@ const App: FC = () => {
 
   useEffect(() => {
     if (CLOUD && isFlagEnabled('rudderstackReporting')) {
-      load(RUDDERSTACK_WRITE_KEY, RUDDERSTACK_DATA_PLANE_URL)
+      try {
+        load(RUDDERSTACK_WRITE_KEY, RUDDERSTACK_DATA_PLANE_URL)
+      } catch (error) {
+        console.error(
+          'Error loading Rudderstack with wk: ',
+          RUDDERSTACK_WRITE_KEY,
+          ' at: ',
+          RUDDERSTACK_DATA_PLANE_URL
+        )
+        reportErrorThroughHoneyBadger(error, {
+          name: 'Rudderstack Loading Function',
+        })
+      }
     }
     setAutoFreeze(false)
   }, [])
 
   return (
     <AppWrapper presentationMode={presentationMode} className={appWrapperClass}>
+      {isFlagEnabled('globalSearch') && <GlobalSearch />}
       <Notifications />
       <TooltipPortal />
       <NotesPortal />

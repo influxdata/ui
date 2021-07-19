@@ -22,10 +22,15 @@ interface Props {
   name: string
   titleText?: string
   style?: CSSProperties
+  invalidMessage?: string
+  onValidityCheck: (isValid: boolean) => void
 }
 
 const ANNOTATION_TIME_FORMAT_UTC = 'YYYY-MM-DD HH:mm:ss' // 24 hour
 const ANNOTATION_TIME_FORMAT_LOCAL = 'YYYY-MM-DD h:mm:ss A' // 12 hour
+
+/** all of these annotation time input fields are required fields */
+export const REQUIRED_ERROR = 'Required'
 
 export const AnnotationTimeInput: FC<Props> = (props: Props) => {
   const {timeZone} = useContext(AppSettingContext)
@@ -43,7 +48,28 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
   )
 
   const isValidTimeFormat = (inputValue: string): boolean => {
-    return moment(inputValue, timeFormat, true).isValid()
+    const isValid = moment(inputValue, timeFormat, true).isValid()
+    props.onValidityCheck(isValid)
+    return isValid
+  }
+
+  const getInputValidationMessage = (): string => {
+    // if the parent is giving us a message to display; do it.
+    // else make our own.
+
+    if (props.invalidMessage) {
+      return props.invalidMessage
+    }
+    if (!timeValue) {
+      return REQUIRED_ERROR
+    }
+
+    if (!isValidTimeFormat(timeValue)) {
+      return `Format must be ${timeFormat}`
+    }
+
+    // it is valid
+    return ''
   }
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -68,27 +94,13 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
     }
   }
 
+  // the AnnotationForm's submit method checks if the form is valid;
+  // so this is not a bug (no accidental submits with invalid fields)
   const handleKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       props.onSubmit()
       return
     }
-  }
-
-  const isValidInputValue = (inputValue: string): boolean => {
-    if (inputValue === null) {
-      return true
-    }
-
-    return isValidTimeFormat(inputValue)
-  }
-
-  const getInputValidationMessage = (): string => {
-    if (!isValidInputValue(timeValue)) {
-      return `Format must be ${timeFormat}`
-    }
-
-    return ''
   }
 
   const validationMessage = getInputValidationMessage()

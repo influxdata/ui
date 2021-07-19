@@ -7,31 +7,27 @@ import {
   ComponentSize,
   Panel,
 } from '@influxdata/clockface'
+import {useHistory} from 'react-router-dom'
+import {useSelector} from 'react-redux'
 
 // Components
 import {CsvUploaderContext} from 'src/buckets/components/context/csvUploader'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 import CsvUploaderBody from 'src/buckets/components/csvUploader/CsvUploaderBody'
-import CsvUploaderSuccess from 'src/buckets/components/csvUploader/CsvUploaderSuccess'
-import CsvUploaderError from 'src/buckets/components/csvUploader/CsvUploaderError'
+import StatusIndicator from 'src/buckets/components/csvUploader/StatusIndicator'
+
+// Utils
+import {getOrg} from 'src/organizations/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {RemoteDataState} from 'src/types'
 
-const getCsvBody = (uploadState: RemoteDataState, bucket?: string) => {
-  switch (uploadState) {
-    case RemoteDataState.Done:
-      return <CsvUploaderSuccess />
-    case RemoteDataState.Error:
-      return <CsvUploaderError />
-    default:
-      return <CsvUploaderBody bucket={bucket} />
-  }
-}
-
 const CsvMethod: FC = () => {
   const {uploadState, resetUploadState} = useContext(CsvUploaderContext)
   const {bucket} = useContext(WriteDataDetailsContext)
+  const orgId = useSelector(getOrg)?.id
+  const history = useHistory()
 
   let buttonText = 'Close'
 
@@ -46,11 +42,23 @@ const CsvMethod: FC = () => {
     buttonText = 'Clear Error'
   }
 
+  let body = <CsvUploaderBody bucket={bucket.name} />
+
+  if (uploadState !== RemoteDataState.NotStarted) {
+    body = <StatusIndicator />
+  }
+
+  const handleSeeUploadedData = () => {
+    if (isFlagEnabled('exploreWithFlows')) {
+      history.push(`/notebook/from/bucket/${bucket.name}`)
+    } else {
+      history.push(`/orgs/${orgId}/data-explorer?bucket=${bucket.name}`)
+    }
+  }
+
   return (
     <Panel>
-      <Panel.Body className="csv-body--padding">
-        {getCsvBody(uploadState, bucket.name)}
-      </Panel.Body>
+      <Panel.Body className="csv-body--padding">{body}</Panel.Body>
       {uploadState !== RemoteDataState.NotStarted && (
         <Panel.Footer>
           <div className="csv-button--wrapper">
@@ -60,9 +68,20 @@ const CsvMethod: FC = () => {
               size={ComponentSize.Medium}
               type={ButtonType.Button}
               onClick={resetUploadState}
+              className="csv-upload--button"
               testID="csv-state--button"
-              style={{minWidth: 100}}
             />
+            {uploadState === RemoteDataState.Done && (
+              <Button
+                color={ComponentColor.Default}
+                text="See Uploaded Data"
+                size={ComponentSize.Medium}
+                type={ButtonType.Button}
+                onClick={handleSeeUploadedData}
+                testID="see-csv-data--button"
+                className="csv-upload--button"
+              />
+            )}
           </div>
         </Panel.Footer>
       )}

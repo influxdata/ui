@@ -30,19 +30,21 @@ const DataSource: FC<PipeProp> = ({Context}) => {
   return (
     <BucketProvider>
       <SchemaProvider>
-        <Context>
-          <div className="data-source--controls">
-            <div className="data-source--bucket">
-              <BucketSelector
-                selected={data.bucket}
-                onSelect={updateBucket}
-                style={{width: '250px', flex: '0 0 250px'}}
-              />
+        <Context resizes>
+          <div className="data-source">
+            <div className="data-source--controls">
+              <div className="data-source--bucket">
+                <BucketSelector
+                  selected={data.bucket}
+                  onSelect={updateBucket}
+                  style={{width: '250px', flex: '0 0 250px'}}
+                />
+              </div>
+              <FilterTags />
             </div>
-            <FilterTags />
+            <SearchBar />
+            <FieldsList />
           </div>
-          <SearchBar />
-          <FieldsList />
         </Context>
       </SchemaProvider>
     </BucketProvider>

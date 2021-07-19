@@ -20,7 +20,7 @@ export const initialState = (): AnnotationsState => ({
   annotations: {
     default: [] as Annotation[],
   },
-  enableAnnotationsMode: true,
+  enableAnnotationsMode: false,
   streams: [],
   visibleStreamsByID: [],
 })

@@ -1,6 +1,5 @@
 // Libraries
 import memoizeOne from 'memoize-one'
-import moment from 'moment'
 import {get} from 'lodash'
 import {fromFlux, Table} from '@influxdata/giraffe'
 
@@ -42,6 +41,7 @@ import {
   TimeRange,
 } from 'src/types'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {getTimezoneOffset} from '../../dashboards/utils/getTimezoneOffset'
 
 export const getActiveTimeMachine = (state: AppState) => {
   if (!state.timeMachines) {
@@ -270,7 +270,8 @@ export const getStartTime = (timeRange: TimeRange) => {
   }
   switch (timeRange.type) {
     case 'custom':
-      return moment(timeRange.lower).valueOf()
+      const startTime = setTimeToLocal(timeRange.lower)
+      return startTime.valueOf()
     case 'selectable-duration': {
       const startTime = new Date()
       startTime.setSeconds(startTime.getSeconds() - timeRange.seconds)
@@ -293,14 +294,25 @@ export const getStartTime = (timeRange: TimeRange) => {
   }
 }
 
+const setTimeToLocal = (date?: string): Date => {
+  const localTime = date ? new Date(date) : new Date()
+  localTime.setMinutes(localTime.getMinutes() + getTimezoneOffset())
+
+  return localTime
+}
+
 export const getEndTime = (timeRange: TimeRange): number => {
   if (!timeRange) {
     return null
   }
   if (timeRange.type === 'custom') {
-    return moment(timeRange.upper).valueOf()
+    const endTime = setTimeToLocal(timeRange.upper)
+
+    return endTime.valueOf()
   }
-  return moment().valueOf()
+  const endTime = setTimeToLocal()
+
+  return endTime.valueOf()
 }
 
 export const getActiveTimeRange = (

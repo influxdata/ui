@@ -1,6 +1,6 @@
 import {CLOUD_FLAGS, OSS_FLAGS} from 'src/shared/selectors/flags'
 
-describe.skip("getting the user's feature flags", () => {
+describe("getting the user's feature flags", () => {
   beforeEach(() => {
     jest.resetModules()
   })

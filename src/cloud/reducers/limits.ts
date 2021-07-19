@@ -2,7 +2,8 @@ import {produce} from 'immer'
 
 // Types
 import {Actions, ActionTypes} from 'src/cloud/actions/limits'
-import {Limit, RemoteDataState} from 'src/types'
+import {Limit} from 'src/types/cloud'
+import {RemoteDataState} from 'src/types'
 
 interface LimitWithBlocked extends Limit {
   blocked: string[]

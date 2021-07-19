@@ -12,7 +12,8 @@ import AssetLimitAlert from 'src/cloud/components/AssetLimitAlert'
 import {getSortedResources, SortTypes} from 'src/shared/utils/sort'
 
 // Types
-import {AppState, Dashboard, LimitStatus, RemoteDataState} from 'src/types'
+import {AppState, Dashboard, RemoteDataState} from 'src/types'
+import {LimitStatus} from 'src/types/cloud'
 import {Sort} from 'src/clockface'
 
 // Utils

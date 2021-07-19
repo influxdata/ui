@@ -20,7 +20,8 @@ import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import {setSearchTerm as setSearchTermAction} from 'src/tasks/actions/creators'
 import {TaskSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 import {SortTypes} from 'src/shared/utils/sort'
-import {LimitStatus, ResourceType} from 'src/types'
+import {ResourceType} from 'src/types'
+import {LimitStatus} from 'src/types/cloud'
 
 interface Props {
   onCreateTask: () => void

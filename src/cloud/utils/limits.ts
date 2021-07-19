@@ -1,7 +1,8 @@
 import {get} from 'lodash'
 import {ASSET_LIMIT_ERROR_STATUS} from 'src/cloud/constants/index'
 import {LimitsState} from 'src/cloud/reducers/limits'
-import {AppState, LimitStatus} from 'src/types'
+import {AppState} from 'src/types'
+import {LimitStatus} from 'src/types/cloud'
 
 export const isLimitError = (error): boolean => {
   return get(error, 'response.status', '') === ASSET_LIMIT_ERROR_STATUS

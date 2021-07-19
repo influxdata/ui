@@ -15,7 +15,7 @@ import {
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Types
-import {LimitStatus} from 'src/types'
+import {LimitStatus} from 'src/types/cloud'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'

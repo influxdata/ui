@@ -19,7 +19,7 @@ import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 import {CLOUD} from 'src/shared/constants'
 
 // Types
-import {LimitStatus} from 'src/types'
+import {LimitStatus} from 'src/types/cloud'
 
 interface Props {
   limitStatus: LimitStatus['status']

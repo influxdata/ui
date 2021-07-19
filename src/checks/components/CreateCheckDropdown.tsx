@@ -9,7 +9,8 @@ import {Dropdown, ComponentColor, IconFont} from '@influxdata/clockface'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Types
-import {CheckType, LimitStatus} from 'src/types'
+import {CheckType} from 'src/types'
+import {LimitStatus} from 'src/types/cloud'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'

@@ -11,12 +11,11 @@ import {readLimitReached} from 'src/shared/copy/notifications'
 import {
   Bucket,
   GetState,
-  Limits,
   RemoteDataState,
   ResourceType,
   ColumnTypes,
-  LimitStatus,
 } from 'src/types'
+import {Limits, LimitStatus} from 'src/types/cloud'
 
 // Selectors
 import {

@@ -28,7 +28,8 @@ import {
 import {CLOUD} from 'src/shared/constants'
 
 // Types
-import {AppState, LimitStatus} from 'src/types'
+import {AppState} from 'src/types'
+import {LimitStatus} from 'src/types/cloud'
 import RateLimitAlertContent from 'src/cloud/components/RateLimitAlertContent'
 
 import {notify} from 'src/shared/actions/notifications'

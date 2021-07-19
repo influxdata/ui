@@ -72,9 +72,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
                   />
                 )}
               </Form.ValidationElement>
-              <Form.Element
-                label="Delete Data"
-              >
+              <Form.Element label="Delete Data">
                 <Retention
                   type={ruleType}
                   retentionSeconds={retentionSeconds}

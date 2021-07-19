@@ -66,7 +66,7 @@ const View: FC<PipeProp> = ({Context}) => {
     }))
   }
 
-  if (!Object.values(tableColumnKeys).length) {
+  if (!Object.values(tableColumnKeys)?.length) {
     return (
       <Context>
         <div className="columns-panel--grid">

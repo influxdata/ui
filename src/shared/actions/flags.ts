@@ -1,4 +1,4 @@
-import {RemoteDataState} from 'src/types'
+import {RemoteDataState} from 'src/types/flux'
 export const SET_FEATURE_FLAGS = 'SET_FEATURE_FLAGS'
 export const SET_PUBLIC_FEATURE_FLAGS = 'SET_PUBLIC_FEATURE_FLAGS'
 export const RESET_FEATURE_FLAGS = 'RESET_FEATURE_FLAGS'

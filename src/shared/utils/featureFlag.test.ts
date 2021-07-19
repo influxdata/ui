@@ -10,7 +10,6 @@ describe("getting the user's feature flags", () => {
       CLOUD: false,
       CLOUD_BILLING_VISIBLE: true,
     }))
-    jest.mock('src/types/cloud')
     const {getUserFlags} = require('src/shared/utils/featureFlag')
 
     const flags = getUserFlags()
@@ -22,7 +21,6 @@ describe("getting the user's feature flags", () => {
       CLOUD: true,
       CLOUD_BILLING_VISIBLE: false,
     }))
-    jest.mock('src/types/cloud')
     const {getUserFlags} = require('src/shared/utils/featureFlag')
 
     const flags = getUserFlags()

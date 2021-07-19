@@ -26,6 +26,8 @@ import {
   millisecondsToDuration,
 } from 'src/shared/utils/duration'
 
+import {getTimezoneOffset} from 'src/dashboards/utils/getTimezoneOffset'
+
 // Selectors
 import {getAllVariables, asAssignment} from 'src/variables/selectors'
 import {getTimeRange} from 'src/dashboards/selectors'
@@ -41,7 +43,6 @@ import {
   TimeRange,
 } from 'src/types'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {getTimezoneOffset} from '../../dashboards/utils/getTimezoneOffset'
 
 export const getActiveTimeMachine = (state: AppState) => {
   if (!state.timeMachines) {

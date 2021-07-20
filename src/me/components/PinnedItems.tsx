@@ -11,13 +11,13 @@ import {ResourceCard} from '@influxdata/clockface'
 
 import {useHistory} from 'react-router-dom'
 
-const RecentlyUsed: FC = () => {
+const PinnedItems: FC = () => {
   const history = useHistory()
   const followMetadataToRoute = useCallback(
-    (data: RecentlyUsedItem) => {
+    (data: PinnedItem) => {
       let routeToFollow
       switch (data.type) {
-        case RecentlyUsedItemTypes.Dashboard:
+        case PinnedItemTypes.Dashboard:
           // @ts-ignore
           routeToFollow = `/orgs/${data.orgID}/dashboards/${data.metadata.dashboardID}`
           break
@@ -38,8 +38,8 @@ const RecentlyUsed: FC = () => {
   console.log(pinnedItems)
   return (
     <>
-      <h2 className="recently-used--header">Recently Used</h2>
-      <div className="recently-used--container">
+      <h2 className="pinned-items--header">Pinned Items</h2>
+      <div className="pinned-items--container">
         {pinnedItems?.map(item => (
           <ResourceCard key={item.id}>
             <ResourceCard.Name
@@ -56,4 +56,4 @@ const RecentlyUsed: FC = () => {
   )
 }
 
-export default memo(RecentlyUsed)
+export default memo(PinnedItems)

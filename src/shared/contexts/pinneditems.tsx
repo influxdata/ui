@@ -1,4 +1,5 @@
 import React, {createContext, FC, useEffect, useState} from 'react'
+import {API_BASE_PATH} from 'src/shared/constants'
 
 export interface PinnedItem {
   orgID: string
@@ -10,7 +11,7 @@ export interface PinnedItem {
   type: string
 }
 
-export enum PinnedItemType {
+export enum PinnedItemTypes {
   Dashboard = 'dashboard',
   Cell = 'cell',
   Notebook = 'notebook',
@@ -20,31 +21,31 @@ export enum PinnedItemType {
   UploadLP = 'uploadLP',
   ClientLibrary = 'clientLibrary',
 }
-export const PinnedItemContext = createContext(null)
+export const PinnedItemsContext = createContext(null)
 
 const getPinnedItems = async () => {
-  return await fetch('http://localhost:8772/recentlyused', {
+  return await fetch(`${API_BASE_PATH}/api/v2private/pinned`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjY3OTc4MzAsImlzcyI6InRlc3QiLCJzdWIiOiJ0ZXN0Iiwia2lkIjoic3RhdGljIiwicGVybWlzc2lvbnMiOlt7ImFjdGlvbiI6InJlYWQiLCJyZXNvdXJjZSI6eyJ0eXBlIjoiZmxvd3MifX0seyJhY3Rpb24iOiJ3cml0ZSIsInJlc291cmNlIjp7InR5cGUiOiJmbG93cyJ9fV0sInVpZCI6IjA2NGEyZDRiOGM4ZTEwMDAiLCJvaWQiOiJiYWM0Y2I2NWUyYzJhZWFkIn0.rH56QSumB6nc7UQIVWLCfKp7_O1WOo7Td7oqHXy9qPs`,
+      authorization: `Bearer `,
     },
   })
 }
 
-export const addPinnedItem = async (item: Partial<PinnedItem>) => {
+const addPinnedItem = async (item: Partial<PinnedItem>) => {
   const added = await fetch('http://localhost:8772/recentlyused', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjY3OTc4MzAsImlzcyI6InRlc3QiLCJzdWIiOiJ0ZXN0Iiwia2lkIjoic3RhdGljIiwicGVybWlzc2lvbnMiOlt7ImFjdGlvbiI6InJlYWQiLCJyZXNvdXJjZSI6eyJ0eXBlIjoiZmxvd3MifX0seyJhY3Rpb24iOiJ3cml0ZSIsInJlc291cmNlIjp7InR5cGUiOiJmbG93cyJ9fV0sInVpZCI6IjA2NGEyZDRiOGM4ZTEwMDAiLCJvaWQiOiJiYWM0Y2I2NWUyYzJhZWFkIn0.rH56QSumB6nc7UQIVWLCfKp7_O1WOo7Td7oqHXy9qPs`,
+      authorization: `Bearer`,
     },
     body: JSON.stringify(item),
   })
   return await added.json()
 }
 
-export const pushRecentlyUsedItem = async (newItem: Partial<PinnedItem>) => {
+export const pushPinnedItem = async (newItem: Partial<PinnedItem>) => {
   try {
     await addPinnedItem(newItem)
   } catch (err) {
@@ -61,9 +62,9 @@ const PinnedItemsProvider: FC = ({children}) => {
   }, [])
 
   return (
-    <PinnedItemContext.Provider value={{pinnedItems}}>
+    <PinnedItemsContext.Provider value={{pinnedItems}}>
       {children}
-    </PinnedItemContext.Provider>
+    </PinnedItemsContext.Provider>
   )
 }
 

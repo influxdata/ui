@@ -1,8 +1,8 @@
-.recently-used--header {
+.pinned-items--header {
   font-weight: 400;
 }
 
-.recently-used--container {
+.pinned-items--container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 30px;

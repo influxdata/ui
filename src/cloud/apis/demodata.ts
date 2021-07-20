@@ -1,6 +1,6 @@
 // Libraries
 import {get} from 'lodash'
-import * as api from 'src/client'
+import {getBucket, getBuckets} from 'src/client'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -15,11 +15,24 @@ import {normalize} from 'normalizr'
 import {bucketSchema} from 'src/schemas'
 import {NormalizedSchema} from 'normalizr'
 
+let getExperimentalSampledataBuckets = null
+let postExperimentalSampledataBucketsMember = null
+let deleteExperimentalSampledataBucketsMembers = null
+
+if (CLOUD) {
+  getExperimentalSampledataBuckets = require('src/client')
+    .getExperimentalSampledataBuckets
+  postExperimentalSampledataBucketsMember = require('src/client')
+    .postExperimentalSampledataBucketsMember
+  deleteExperimentalSampledataBucketsMembers = require('src/client')
+    .deleteExperimentalSampledataBucketsMembers
+}
+
 export const getDemoDataBuckets = async (): Promise<Bucket[]> => {
-  if (!CLOUD) {
+  if (!CLOUD || !getExperimentalSampledataBuckets) {
     return []
   }
-  const resp = await api?.getExperimentalSampledataBuckets({})
+  const resp = await getExperimentalSampledataBuckets({})
 
   if (resp.status !== 200) {
     throw new Error(resp.data.message)
@@ -37,10 +50,10 @@ export const getDemoDataBuckets = async (): Promise<Bucket[]> => {
 
 // member's id is looked up from the session token passed with the request.
 export const getDemoDataBucketMembership = async (bucketID: string) => {
-  if (!CLOUD) {
+  if (!CLOUD || !postExperimentalSampledataBucketsMember) {
     return
   }
-  const response = await api?.postExperimentalSampledataBucketsMember({
+  const response = await postExperimentalSampledataBucketsMember({
     bucketID,
   })
 
@@ -55,11 +68,11 @@ export const getDemoDataBucketMembership = async (bucketID: string) => {
 }
 
 export const deleteDemoDataBucketMembership = async (bucketID: string) => {
-  if (!CLOUD) {
+  if (!CLOUD || !deleteExperimentalSampledataBucketsMembers) {
     return
   }
   try {
-    const response = await api?.deleteExperimentalSampledataBucketsMembers({
+    const response = await deleteExperimentalSampledataBucketsMembers({
       bucketID,
     })
 
@@ -93,7 +106,7 @@ export const fetchDemoDataBuckets = async (): Promise<Bucket[]> => {
       throw new Error('Could not get demodata orgID')
     }
 
-    const resp = await api?.getBuckets({
+    const resp = await getBuckets({
       query: {orgID: demodataOrgID, limit: LIMIT},
     })
 
@@ -115,7 +128,7 @@ export const fetchDemoDataBuckets = async (): Promise<Bucket[]> => {
 export const getNormalizedDemoDataBucket = async (
   bucketID: string
 ): Promise<NormalizedSchema<BucketEntities, string>> => {
-  const resp = await api?.getBucket({bucketID})
+  const resp = await getBucket({bucketID})
 
   if (resp.status !== 200) {
     throw new Error(

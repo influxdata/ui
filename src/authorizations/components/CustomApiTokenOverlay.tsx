@@ -19,12 +19,12 @@ const CustomApiTokenOverlay: FC<OwnProps> = props => {
   const handleDismiss = () => {
     props.onClose()
   }
-  const [description, setDescription] = useState("")
+  const [description, setDescription] = useState('')
 
-  const handleInputChange = (event) => {
+  const handleInputChange = event => {
     setDescription(event.target.value)
   }
-  
+
   return (
     <Overlay.Container maxWidth={500}>
       <Overlay.Header
@@ -32,22 +32,22 @@ const CustomApiTokenOverlay: FC<OwnProps> = props => {
         onDismiss={handleDismiss}
       />
       <Overlay.Body>
-          <Form>
-            <FlexBox
-              alignItems={AlignItems.Center}
-              direction={FlexDirection.Column}
-              margin={ComponentSize.Large}
-            >
-              <Form.Element label="Description">
-                <Input
-                  placeholder="your_token_description"
-                  value={description}
-                  onChange={handleInputChange}
-                  testID="custome-api-token-input"
-                />
-              </Form.Element>
-            </FlexBox>
-          </Form>
+        <Form>
+          <FlexBox
+            alignItems={AlignItems.Center}
+            direction={FlexDirection.Column}
+            margin={ComponentSize.Large}
+          >
+            <Form.Element label="Description">
+              <Input
+                placeholder="your_token_description"
+                value={description}
+                onChange={handleInputChange}
+                testID="custome-api-token-input"
+              />
+            </Form.Element>
+          </FlexBox>
+        </Form>
       </Overlay.Body>
     </Overlay.Container>
   )

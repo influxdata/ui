@@ -1,7 +1,6 @@
 import {AppState} from 'src/types'
 import {FlagMap} from 'src/shared/actions/flags'
 import {CLOUD, CLOUD_BILLING_VISIBLE} from 'src/shared/constants'
-import { localState } from 'src/mockState'
 
 export const OSS_FLAGS = {
   cursorAtEOF: false,

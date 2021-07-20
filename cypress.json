@@ -5,7 +5,6 @@
   },
   "numTestsKeptInMemory": 25,
   "integrationFolder": "cypress/e2e",
-  "ignoreTestFiles": ["annotations.*"],
   "defaultCommandTimeout": 10000,
   "videoUploadOnPasses": false,
   "chromeWebSecurity": false,

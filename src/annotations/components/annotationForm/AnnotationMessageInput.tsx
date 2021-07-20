@@ -1,12 +1,5 @@
 // Libraries
-import React, {
-  FC,
-  ChangeEvent,
-  KeyboardEvent,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import React, {FC, ChangeEvent, useEffect, useRef, useState} from 'react'
 
 // Components
 import {Form, TextArea} from '@influxdata/clockface'
@@ -14,7 +7,6 @@ import {Form, TextArea} from '@influxdata/clockface'
 interface Props {
   message: string
   onChange: (newMessage: string) => void
-  onSubmit: () => void
 }
 
 const characterLimit = 255
@@ -29,13 +21,6 @@ export const AnnotationMessageInput: FC<Props> = (props: Props) => {
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setCharacterCount(event.target.value.length)
     props.onChange(event.target.value)
-  }
-
-  const handleKeyPress = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'Enter') {
-      props.onSubmit()
-      return
-    }
   }
 
   useEffect(() => {
@@ -57,7 +42,6 @@ export const AnnotationMessageInput: FC<Props> = (props: Props) => {
         name="message"
         value={props.message}
         onChange={handleChange}
-        onKeyPress={handleKeyPress}
         style={{height: '80px', minHeight: '80px'}}
         ref={textArea}
         maxLength={characterLimit}

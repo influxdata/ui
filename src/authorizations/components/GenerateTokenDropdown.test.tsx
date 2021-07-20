@@ -11,34 +11,20 @@ jest.mock('src/shared/constants', () => ({
   CLOUD: true,
 }))
 
+
+const isFlagEnabledMock = jest.fn(() => {
+  return false
+})
+jest.mock('src/shared/utils/featureFlag', () => {
+  return {
+    isFlagEnabled: isFlagEnabledMock,
+  }
+})
+
 import GenerateTokenDropdown from 'src/authorizations/components/GenerateTokenDropdown'
 
-const testState = {
-  flags: {
-    status: RemoteDataState.Done,
-    original: {
-      tokensUIRedesign: false,
-    },
-    override: {},
-  },
-}
-
-const setup = (flagOn = false) => {
-  if (flagOn) {
-    const newState = {
-      ...testState,
-    }
-    newState.flags.original = {
-      tokensUIRedesign: true,
-    }
-    newState.flags.override = {
-      tokensUIRedesign: true,
-    }
-    return renderWithReduxAndRouter(<GenerateTokenDropdown />, () => {
-      return {flags: {original: {tokensUIRedesign: true}}}
-    })
-  }
-  return renderWithReduxAndRouter(<GenerateTokenDropdown />, () => testState)
+const setup = () => {
+  return renderWithReduxAndRouter(<GenerateTokenDropdown />)
 }
 
 describe('GenerateTokenDropdown', () => {
@@ -57,8 +43,12 @@ describe('GenerateTokenDropdown', () => {
     expect(queryByText('All Access Token')).toBeVisible()
     expect(queryByText('Custom API Token')).toBeNull()
   })
+
   it('renders the new dropdown options when the flag is on', () => {
-    const {queryByText} = setup(true)
+    isFlagEnabledMock.mockImplementationOnce(() => {
+      return true
+    })
+    const {queryByText} = setup()
 
     fireEvent.click(screen.getByTestId('dropdown-button--gen-token'))
 

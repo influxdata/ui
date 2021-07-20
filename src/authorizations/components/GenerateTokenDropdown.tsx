@@ -28,7 +28,6 @@ const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
   const customApiOption = 'Custom API Token'
 
   const isRedesigning = isFlagEnabled('tokensUIRedesign')
-  console.log("isRedesigning: ", isRedesigning, "Cloud: ", CLOUD)
 
   const handleAllAccess = () => {
     history.push(`/orgs/${org.id}/load-data/tokens/generate/all-access`)

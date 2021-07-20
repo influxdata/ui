@@ -103,7 +103,6 @@ export const activeFlags = (state: AppState): FlagMap => {
   const localState = CLOUD ? CLOUD_FLAGS : OSS_FLAGS
   const networkState = state.flags.original || {}
   const override = state.flags.override || {}
-  console.log("flags 108: ", state.flags)
 
   return {
     ...localState,

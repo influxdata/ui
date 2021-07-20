@@ -16,7 +16,6 @@ import {
   ComponentColor,
 } from '@influxdata/clockface'
 import Resources from 'src/me/components/Resources'
-import Docs from 'src/me/components/Docs'
 import GettingStarted from 'src/me/components/GettingStarted'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import AlertsActivity from 'src/me/components/AlertsActivity'
@@ -118,7 +117,6 @@ export class MePage extends PureComponent<Props> {
                       <GettingStarted />
                     </Panel.Body>
                   </Panel>
-                  <Docs />
                   {isFlagEnabled('alertsActivity') && <AlertsActivity />}
                 </FlexBox>
               </Grid.Column>

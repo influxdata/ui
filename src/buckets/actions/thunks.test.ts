@@ -57,7 +57,6 @@ describe('buckets thunks', () => {
 
       const bucks = await fetchAllBuckets('ord01')
 
-      console.log({bucks})
       expect(bucks.result).toContain('custom-id')
       expect(bucks.result).toContain('demo-bucket')
     })

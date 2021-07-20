@@ -28,12 +28,14 @@ import {getOrg} from 'src/organizations/selectors'
 
 // Types
 import {AppState, RemoteDataState} from 'src/types'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface OwnProps {
   text?: string
   icon?: IconFont
   testID?: string
   className?: string
+  handleSubmit?: (_: string) => void
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -129,10 +131,21 @@ class SubmitQueryButton extends PureComponent<Props> {
     return ComponentStatus.Default
   }
 
+  private areFunctionsEqual(f1, f2) {
+    return '' + f1 === '' + f2
+  }
+
   private handleClick = (): void => {
     event('SubmitQueryButton click')
 
-    this.props.onSubmit()
+    if (
+      isFlagEnabled('Subir') &&
+      !this.areFunctionsEqual(this.props.handleSubmit, (_: string) => {})
+    ) {
+      this.props.handleSubmit(this.props.activeQueryText)
+    } else {
+      this.props.onSubmit()
+    }
   }
 
   private handleCancelClick = (): void => {
@@ -155,7 +168,7 @@ const mstp = (state: AppState) => {
 
   const queryID = generateHashedQueryID(activeQueryText, allVars, orgID)
 
-  return {queryID, submitButtonDisabled, queryStatus}
+  return {queryID, submitButtonDisabled, queryStatus, activeQueryText}
 }
 
 const mdtp = {

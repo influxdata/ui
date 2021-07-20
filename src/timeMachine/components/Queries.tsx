@@ -39,6 +39,7 @@ import {getTimeRange} from 'src/dashboards/selectors'
 
 // Types
 import {AppState, TimeRange, AutoRefreshStatus} from 'src/types'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type RouterProps = RouteComponentProps<{
@@ -46,7 +47,11 @@ type RouterProps = RouteComponentProps<{
   dashboardID: string
   orgID: string
 }>
-type Props = ReduxProps & RouterProps
+interface OwnProps {
+  handleSubmit?: (_: string) => void
+}
+
+type Props = OwnProps & ReduxProps & RouterProps
 
 class TimeMachineQueries extends PureComponent<Props> {
   public render() {
@@ -75,7 +80,10 @@ class TimeMachineQueries extends PureComponent<Props> {
                 <TimeMachineQueriesSwitcher />
               </>
             )}
-            <SubmitQueryButton />
+            {isFlagEnabled('Subir') && (
+              <SubmitQueryButton handleSubmit={this.props.handleSubmit} />
+            )}
+            {!isFlagEnabled('Subir') && <SubmitQueryButton />}
           </FlexBox>
         </div>
         <div className="time-machine-queries--body">{this.queryEditor}</div>

@@ -17,6 +17,9 @@ import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 // Types
 import {AppState, TimeMachineTab} from 'src/types'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+import {useContext} from 'react'
+import {GlobalQueryContext} from 'src/query/context'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const INITIAL_RESIZER_HANDLE = 0.5
 
@@ -29,6 +32,8 @@ const TimeMachine: FunctionComponent<StateProps> = ({
   activeTab,
   isViewingVisOptions,
 }) => {
+  const {handleSubmit} = useContext(GlobalQueryContext)
+
   const [dragPosition, setDragPosition] = useState([INITIAL_RESIZER_HANDLE])
 
   const containerClassName = classnames('time-machine', {
@@ -38,6 +43,8 @@ const TimeMachine: FunctionComponent<StateProps> = ({
   let bottomContents: JSX.Element = null
   if (activeTab === 'alerting') {
     bottomContents = <TimeMachineAlerting />
+  } else if (activeTab === 'queries' && isFlagEnabled('Subir')) {
+    bottomContents = <TimeMachineQueries handleSubmit={handleSubmit} />
   } else if (activeTab === 'queries') {
     bottomContents = <TimeMachineQueries />
   } else if (activeTab === 'customCheckQuery') {

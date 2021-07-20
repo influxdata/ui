@@ -16,7 +16,7 @@ import {
   ComponentColor,
 } from '@influxdata/clockface'
 import Resources from 'src/me/components/Resources'
-import Docs from 'src/me/components/Docs'
+import PinnedItems from 'src/me/components/PinnedItems'
 import GettingStarted from 'src/me/components/GettingStarted'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import AlertsActivity from 'src/me/components/AlertsActivity'
@@ -40,6 +40,9 @@ import {writeLimitReached} from 'src/shared/copy/notifications'
 import {UpgradeContent} from 'src/cloud/components/RateLimitAlertContent'
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 import {CLOUD} from 'src/shared/constants'
+
+// Context
+import PinnedItemsProvider from 'src/shared/contexts/pinneditems'
 
 const QUERY_WRITE_LIMIT_HITS = 100
 
@@ -118,7 +121,9 @@ export class MePage extends PureComponent<Props> {
                       <GettingStarted />
                     </Panel.Body>
                   </Panel>
-                  <Docs />
+                  <PinnedItemsProvider>
+                    <PinnedItems />
+                  </PinnedItemsProvider>
                   {isFlagEnabled('alertsActivity') && <AlertsActivity />}
                 </FlexBox>
               </Grid.Column>

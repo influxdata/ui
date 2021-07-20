@@ -29,7 +29,14 @@ export default class ScraperRow extends PureComponent<Props> {
           inputTestID="input-field"
         />
         <ResourceCard.Meta>
-          {[<>Bucket: {scraper.bucket}</>, <>URL: {scraper.url}</>]}
+          {[
+            <React.Fragment key={scraper.bucket}>
+              Bucket: {scraper.bucket}
+            </React.Fragment>,
+            <React.Fragment key={scraper.url}>
+              URL: {scraper.url}
+            </React.Fragment>,
+          ]}
         </ResourceCard.Meta>
       </ResourceCard>
     )

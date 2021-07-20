@@ -1,6 +1,7 @@
 import {AppState} from 'src/types'
 import {FlagMap} from 'src/shared/actions/flags'
 import {CLOUD, CLOUD_BILLING_VISIBLE} from 'src/shared/constants'
+import { localState } from 'src/mockState'
 
 export const OSS_FLAGS = {
   cursorAtEOF: false,
@@ -102,6 +103,7 @@ export const activeFlags = (state: AppState): FlagMap => {
   const localState = CLOUD ? CLOUD_FLAGS : OSS_FLAGS
   const networkState = state.flags.original || {}
   const override = state.flags.override || {}
+  console.log("flags 108: ", state.flags)
 
   return {
     ...localState,

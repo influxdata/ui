@@ -1,12 +1,6 @@
 // Libraries
 import {get} from 'lodash'
-import {
-  deleteExperimentalSampledataBucketsMembers,
-  getBuckets,
-  getBucket,
-  getExperimentalSampledataBuckets,
-  postExperimentalSampledataBucketsMember,
-} from 'src/client'
+import * as api from 'src/client'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -19,7 +13,7 @@ import {bucketSchema} from 'src/schemas'
 import {NormalizedSchema} from 'normalizr'
 
 export const getDemoDataBuckets = async (): Promise<Bucket[]> => {
-  const resp = await getExperimentalSampledataBuckets({})
+  const resp = await api?.getExperimentalSampledataBuckets({})
 
   if (resp.status !== 200) {
     throw new Error(resp.data.message)
@@ -37,7 +31,9 @@ export const getDemoDataBuckets = async (): Promise<Bucket[]> => {
 
 // member's id is looked up from the session token passed with the request.
 export const getDemoDataBucketMembership = async (bucketID: string) => {
-  const response = await postExperimentalSampledataBucketsMember({bucketID})
+  const response = await api?.postExperimentalSampledataBucketsMember({
+    bucketID,
+  })
 
   if (response.status === 200) {
     // if sampledata route is not available gateway responds with 200 a correct success code is 204
@@ -51,7 +47,7 @@ export const getDemoDataBucketMembership = async (bucketID: string) => {
 
 export const deleteDemoDataBucketMembership = async (bucketID: string) => {
   try {
-    const response = await deleteExperimentalSampledataBucketsMembers({
+    const response = await api?.deleteExperimentalSampledataBucketsMembers({
       bucketID,
     })
 
@@ -85,7 +81,7 @@ export const fetchDemoDataBuckets = async (): Promise<Bucket[]> => {
       throw new Error('Could not get demodata orgID')
     }
 
-    const resp = await getBuckets({
+    const resp = await api?.getBuckets({
       query: {orgID: demodataOrgID, limit: LIMIT},
     })
 
@@ -107,7 +103,7 @@ export const fetchDemoDataBuckets = async (): Promise<Bucket[]> => {
 export const getNormalizedDemoDataBucket = async (
   bucketID: string
 ): Promise<NormalizedSchema<BucketEntities, string>> => {
-  const resp = await getBucket({bucketID})
+  const resp = await api?.getBucket({bucketID})
 
   if (resp.status !== 200) {
     throw new Error(

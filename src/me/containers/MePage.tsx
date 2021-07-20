@@ -19,7 +19,7 @@ import Resources from 'src/me/components/Resources'
 import GettingStarted from 'src/me/components/GettingStarted'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import AlertsActivity from 'src/me/components/AlertsActivity'
-
+import Docs from 'src/me/components/Docs'
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {getOrg} from 'src/organizations/selectors'
@@ -117,6 +117,7 @@ export class MePage extends PureComponent<Props> {
                       <GettingStarted />
                     </Panel.Body>
                   </Panel>
+                  {!isFlagEnabled('docSearchWidget') && <Docs />}
                   {isFlagEnabled('alertsActivity') && <AlertsActivity />}
                 </FlexBox>
               </Grid.Column>

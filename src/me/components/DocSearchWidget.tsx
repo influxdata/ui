@@ -33,7 +33,7 @@ const DocSearchWidget: FC = () => {
       <p className="WidgetHelperText">Press CTRL + h on any page to search</p>
       <div className="useful-links">
         <h4>Useful Links</h4>
-        <ul className="tutorials-list">
+        <ul className="docslinks-list">
           {supportLinks.map(({link, title}) => (
             <li key={title}>
               <a href={link} target="_blank" rel="noreferrer">

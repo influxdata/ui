@@ -9,7 +9,7 @@ import RunLogsOverlay from 'src/tasks/components/RunLogsList'
 import {FormattedDateTime} from 'src/utils/datetime/FormattedDateTime'
 
 // Actions
-import {getLogs, retryTask} from 'src/tasks/actions/thunks'
+import {getLogs, retryTask, getRuns} from 'src/tasks/actions/thunks'
 
 // Types
 import {ComponentSize, ComponentColor, Button} from '@influxdata/clockface'
@@ -87,18 +87,10 @@ class TaskRunsRow extends PureComponent<Props, State> {
   }
 
   private handleRetry = async () => {
-    const {
-      retryTask,
-      taskID,
-      run,
-      history,
-      match: {
-        params: {orgID},
-      },
-    } = this.props
+    const {retryTask, taskID, run, getRuns} = this.props
 
     await retryTask(taskID, run.id)
-    history.push(`/orgs/${orgID}/tasks/${taskID}/edit`)
+    await getRuns(taskID)
   }
 
   private get renderLogOverlay(): JSX.Element {
@@ -123,7 +115,7 @@ const mstp = (state: AppState) => {
   return {logs, timeZone}
 }
 
-const mdtp = {getLogs: getLogs, retryTask: retryTask}
+const mdtp = {getLogs: getLogs, retryTask: retryTask, getRuns}
 
 const connector = connect(mstp, mdtp)
 export default connector(withRouter(TaskRunsRow))

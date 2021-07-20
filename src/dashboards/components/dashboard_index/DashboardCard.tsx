@@ -19,13 +19,18 @@ import {
 import {resetViews} from 'src/views/actions/creators'
 
 // Types
-import {Label} from 'src/types'
+import {Label, AppState} from 'src/types'
 
 // Constants
 import {DEFAULT_DASHBOARD_NAME} from 'src/dashboards/constants'
 
 // Utilities
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
+
+import {pushPinnedItem, PinnedItemTypes} from 'src/shared/contexts/pinneditems'
+
+import {getMe} from 'src/me/selectors'
+import {getOrg} from 'src/organizations/selectors'
 
 interface OwnProps {
   id: string
@@ -95,6 +100,21 @@ class DashboardCard extends PureComponent<Props> {
     onCloneDashboard(id, name)
   }
 
+  private handlePinDashboard = async () => {
+    await pushPinnedItem({
+      orgID: this.props.org.id,
+      userID: this.props.me.id,
+      metadata: [
+        {
+          dashboardID: this.props.id,
+          name: this.props.name,
+          description: this.props.description,
+        },
+      ],
+      type: PinnedItemTypes.Dashboard,
+    })
+  }
+
   private get contextMenu(): JSX.Element {
     return (
       <Context>
@@ -113,6 +133,17 @@ class DashboardCard extends PureComponent<Props> {
             label="Clone"
             action={this.handleCloneDashboard}
             testID="clone-dashboard"
+          />
+        </Context.Menu>
+        <Context.Menu
+          icon={IconFont.Trash}
+          color={ComponentColor.Success}
+          testID="context-pin-menu"
+        >
+          <Context.Item
+            label="Pin to Homepage"
+            action={this.handlePinDashboard}
+            testID="context-delete-dashboard"
           />
         </Context.Menu>
         <Context.Menu
@@ -194,6 +225,15 @@ const mdtp = {
   onUpdateDashboard: updateDashboard,
 }
 
-const connector = connect(null, mdtp)
+const mstp = (state: AppState) => {
+  const me = getMe(state)
+  const org = getOrg(state)
+
+  return {
+    org,
+    me,
+  }
+}
+const connector = connect(mstp, mdtp)
 
 export default connector(withRouter(DashboardCard))

@@ -1,9 +1,13 @@
-import React, {FC, memo, useContext, useCallback} from 'react'
+import React, {FC, useContext, useCallback} from 'react'
 import {
   PinnedItemsContext,
   PinnedItemTypes,
   PinnedItem,
+  deletePinnedItem,
 } from 'src/shared/contexts/pinneditems'
+
+import {Context} from 'src/clockface'
+import {ComponentColor, IconFont} from '@influxdata/clockface'
 
 import './PinnedItems.scss'
 
@@ -18,8 +22,7 @@ const PinnedItems: FC = () => {
       let routeToFollow
       switch (data.type) {
         case PinnedItemTypes.Dashboard:
-          // @ts-ignore
-          routeToFollow = `/orgs/${data.orgID}/dashboards/${data.metadata.dashboardID}`
+          routeToFollow = `/orgs/${data.orgID}/dashboards/${data.metadata[0].dashboardID}`
           break
         default:
           break
@@ -35,19 +38,37 @@ const PinnedItems: FC = () => {
   )
 
   const {pinnedItems} = useContext(PinnedItemsContext)
-  console.log(pinnedItems)
+  const handleDeletePinnedItem = async (itemId: string) => {
+    await deletePinnedItem(itemId)
+  }
   return (
     <>
       <h2 className="pinned-items--header">Pinned Items</h2>
       <div className="pinned-items--container">
         {pinnedItems?.map(item => (
-          <ResourceCard key={item.id}>
+          <ResourceCard
+            key={item.id}
+            contextMenu={
+              <Context>
+                <Context.Menu
+                  icon={IconFont.Trash}
+                  color={ComponentColor.Danger}
+                >
+                  <Context.Item
+                    label="Delete"
+                    action={async () => await handleDeletePinnedItem(item.id)}
+                    testID="delete-token"
+                  />
+                </Context.Menu>
+              </Context>
+            }
+          >
             <ResourceCard.Name
-              name={item.metadata.name ?? ''}
+              name={item.metadata[0].name ?? ''}
               onClick={() => followMetadataToRoute(item)}
             />
             <ResourceCard.Description
-              description={item.metadata.description ?? ''}
+              description={item.metadata[0].description ?? ''}
             />
           </ResourceCard>
         ))}
@@ -56,4 +77,4 @@ const PinnedItems: FC = () => {
   )
 }
 
-export default memo(PinnedItems)
+export default PinnedItems

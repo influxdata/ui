@@ -55,6 +55,7 @@ export const Submit: FC = () => {
           onNotify={fakeNotify}
           queryID=""
           cancelAllRunningQueries={cancel}
+          activeQueryText=''
         />
         {status !== RemoteDataState.Loading && (
           <SquareButton

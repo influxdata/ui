@@ -5,6 +5,9 @@ import * as api from 'src/client'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
+// Constants
+import {CLOUD} from 'src/shared/constants'
+
 // Types
 import {Bucket, DemoBucket, BucketEntities} from 'src/types'
 import {LIMIT} from 'src/resources/constants'
@@ -13,6 +16,9 @@ import {bucketSchema} from 'src/schemas'
 import {NormalizedSchema} from 'normalizr'
 
 export const getDemoDataBuckets = async (): Promise<Bucket[]> => {
+  if (!CLOUD) {
+    return []
+  }
   const resp = await api?.getExperimentalSampledataBuckets({})
 
   if (resp.status !== 200) {
@@ -31,6 +37,9 @@ export const getDemoDataBuckets = async (): Promise<Bucket[]> => {
 
 // member's id is looked up from the session token passed with the request.
 export const getDemoDataBucketMembership = async (bucketID: string) => {
+  if (!CLOUD) {
+    return
+  }
   const response = await api?.postExperimentalSampledataBucketsMember({
     bucketID,
   })
@@ -46,6 +55,9 @@ export const getDemoDataBucketMembership = async (bucketID: string) => {
 }
 
 export const deleteDemoDataBucketMembership = async (bucketID: string) => {
+  if (!CLOUD) {
+    return
+  }
   try {
     const response = await api?.deleteExperimentalSampledataBucketsMembers({
       bucketID,
@@ -66,7 +78,7 @@ export const deleteDemoDataBucketMembership = async (bucketID: string) => {
 }
 
 export const fetchDemoDataBuckets = async (): Promise<Bucket[]> => {
-  if (!isFlagEnabled('demodata')) {
+  if (!isFlagEnabled('demodata') || !CLOUD) {
     return []
   }
 

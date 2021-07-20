@@ -8,6 +8,7 @@ import {prohibitedDeselect} from 'src/shared/copy/notifications'
 // API
 import {normalize} from 'normalizr'
 import {get} from 'lodash'
+import {CLOUD} from 'src/shared/constants'
 import {fetchDemoDataBuckets} from 'src/cloud/apis/demodata'
 import * as api from 'src/client'
 
@@ -239,7 +240,11 @@ export const loadBuckets = () => async (
       throw new Error(resp.data.message)
     }
 
-    const demoDataBuckets = await fetchDemoDataBuckets()
+    let demoDataBuckets = []
+
+    if (CLOUD) {
+      demoDataBuckets = await fetchDemoDataBuckets()
+    }
 
     const normalizedBuckets = normalize<Bucket, BucketEntities, string[]>(
       [...resp.data.buckets, ...demoDataBuckets],

@@ -51,6 +51,7 @@ import {
   removeBucketLabelFailed,
 } from 'src/shared/copy/notifications'
 import {BUCKET_LIMIT} from 'src/resources/constants'
+import {CLOUD} from 'src/shared/constants'
 
 type Action = BucketAction | NotifyAction
 
@@ -64,7 +65,11 @@ export const fetchAllBuckets = async (orgID: string) => {
     throw new Error(resp.data.message)
   }
 
-  const demoDataBuckets = await fetchDemoDataBuckets()
+  let demoDataBuckets = []
+
+  if (CLOUD) {
+    demoDataBuckets = await fetchDemoDataBuckets()
+  }
 
   return normalize<Bucket, BucketEntities, string[]>(
     [...resp.data.buckets, ...demoDataBuckets],

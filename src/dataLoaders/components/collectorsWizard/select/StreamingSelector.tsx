@@ -1,6 +1,7 @@
 // Libraries
-import React, {PureComponent, ChangeEvent, createElement} from 'react'
+import React, {PureComponent, ChangeEvent, createElement, Suspense} from 'react'
 import uuid from 'uuid'
+const LazySVG = React.lazy(() => import('src/perf/components/LazySVG'))
 
 // Components
 import {
@@ -20,16 +21,21 @@ import {
   BUNDLE_LOGOS,
 } from 'src/dataLoaders/constants/pluginConfigs'
 import BucketDropdown from 'src/dataLoaders/components/BucketsDropdown'
+import {
+  WRITE_DATA_TELEGRAF_PLUGINS,
+  TelegrafPlugin,
+} from 'src/writeData/constants/contentTelegrafPlugins'
 
 // Types
-import {TelegrafPlugin, BundleName} from 'src/types/dataLoaders'
 import {Bucket} from 'src/types'
 import {Columns, ComponentSize} from '@influxdata/clockface'
+import WriteDataItem from 'src/writeData/components/WriteDataItem'
+import {filter} from 'lodash'
 
 export interface Props {
   buckets: Bucket[]
   selectedBucketName: string
-  pluginBundles: BundleName[]
+  pluginBundles: TelegrafPlugin[]
   telegrafPlugins: TelegrafPlugin[]
   onTogglePluginBundle: (telegrafPlugin: string, isSelected: boolean) => void
   onSelectBucket: (bucket: Bucket) => void
@@ -38,7 +44,7 @@ export interface Props {
 interface State {
   gridSizerUpdateFlag: string
   searchTerm: string
-  recommended: string
+  recommended: TelegrafPlugin[]
 }
 
 @ErrorHandling
@@ -48,7 +54,7 @@ class StreamingSelector extends PureComponent<Props, State> {
     this.state = {
       gridSizerUpdateFlag: uuid.v4(),
       searchTerm: '',
-      recommended: 'System',
+      recommended: [{id: 'system', image: '/51c4fd1ca4.svg', name: 'System'}],
     }
   }
 
@@ -71,7 +77,6 @@ class StreamingSelector extends PureComponent<Props, State> {
     const {buckets} = this.props
     const {searchTerm, recommended} = this.state
 
-    const cardSize = `${100 / (PLUGIN_BUNDLE_OPTIONS.length + 1)}%`
     return (
       <div className="wizard-step--grid-container">
         {buckets.length ? (
@@ -93,46 +98,40 @@ class StreamingSelector extends PureComponent<Props, State> {
                     value={searchTerm}
                     onBlur={this.handleFilterBlur}
                     onChange={this.handleFilterChange}
-                    placeholder="Filter Plugins..."
+                    placeholder="Filter sources..."
                   />
                 </FormElement>
-                </Grid.Column>
+              </Grid.Column>
             </Grid.Row>
-            <h4 className="wizard-step--sub-title">Recommended for first time users</h4>
-            <SquareGrid cardSize={cardSize} gutter={ComponentSize.Small}>
-                  <SquareGrid.Card key={recommended}>
-                    <SelectableCard
-                      id={recommended}
-                      formName="telegraf-plugins"
-                      label={recommended}
-                      testID={`telegraf-plugins--${recommended}`}
-                      // selected={this.isRecommendedChecked(recommended)}
-                      onClick={this.handleToggle}
-                      icon={IconFont.Checkmark}
-                    >
-                      {createElement(BUNDLE_LOGOS[recommended])}
-                    </SelectableCard>
-                  </SquareGrid.Card>
+            <h4 className="wizard-step--sub-title">
+              Recommended for first time users
+            </h4>
+            <SquareGrid cardSize="110px" gutter={ComponentSize.Small}>
+              <WriteDataItem
+                key={recommended[0].id}
+                id={recommended[0].id}
+                name={recommended[0].name}
+                image={recommended[0].image}
+                url={`${recommended[0].id}`}
+                selected={this.isCardChecked(recommended[0].id)}
+                onClick={this.handleToggle}
+                testID={`telegraf-plugins--${recommended[0]}`}
+              />
             </SquareGrid>
             <h4 className="wizard-step--sub-title">Telegraf Plugin List</h4>
-            <SquareGrid cardSize={cardSize} gutter={ComponentSize.Small}>
-              {this.filteredBundles.map(b => {
-                return (
-                  <SquareGrid.Card key={b}>
-                    <SelectableCard
-                      id={b}
-                      formName="telegraf-plugins"
-                      label={b}
-                      testID={`telegraf-plugins--${b}`}
-                      selected={this.isCardChecked(b)}
-                      onClick={this.handleToggle}
-                      icon={IconFont.Checkmark}
-                    >
-                      {createElement(BUNDLE_LOGOS[b])}
-                    </SelectableCard>
-                  </SquareGrid.Card>
-                )
-              })}
+            <SquareGrid cardSize="110px" gutter={ComponentSize.Small}>
+              {this.filteredBundles.map(item => (
+                <WriteDataItem
+                  key={item.id}
+                  id={item.id}
+                  name={item.name}
+                  image={item.image}
+                  url={`${item.id}`}
+                  selected={this.isCardChecked(item.id)}
+                  onClick={this.handleToggle}
+                  testID={`telegraf-plugins--${item}`}
+                />
+              ))}
             </SquareGrid>
           </>
         ) : (
@@ -174,26 +173,28 @@ class StreamingSelector extends PureComponent<Props, State> {
     }
   }
 
-  private get filteredBundles(): BundleName[] {
+  private get filteredBundles(): TelegrafPlugin[] {
     const {searchTerm} = this.state
-    const removeSystem = PLUGIN_BUNDLE_OPTIONS.filter(item => item !== 'System')
+    const removeSystem = WRITE_DATA_TELEGRAF_PLUGINS.filter(
+      item => item.name !== 'System'
+    )
 
     return removeSystem.filter(b =>
-      b.toLowerCase().includes(searchTerm.toLowerCase())
+      b.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
   }
 
-  private isCardChecked(bundle: BundleName): boolean {
+  private isCardChecked(bundle): boolean {
     const {pluginBundles} = this.props
 
-    if (pluginBundles.find(b => b === bundle)) {
+    if (pluginBundles.find(b => b.name === bundle)) {
       return true
     }
     return false
   }
 
-  private handleToggle = (bundle: BundleName): void => {
-    this.props.onTogglePluginBundle(bundle, this.isCardChecked(bundle))
+  private handleToggle = (bundle): void => {
+    this.props.onTogglePluginBundle(bundle.id, this.isCardChecked(bundle.name))
   }
 
   private handleFilterChange = (e: ChangeEvent<HTMLInputElement>): void => {

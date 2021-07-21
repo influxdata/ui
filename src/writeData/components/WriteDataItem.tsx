@@ -24,9 +24,12 @@ interface Props {
   name: string
   url: string
   image?: string
+  selected? : boolean
+  onClick?: any
+  testID?: string
 }
 
-const WriteDataItem: FC<Props> = ({id, name, url, image}) => {
+const WriteDataItem: FC<Props> = ({id, name, url, image,selected,onClick, testID}) => {
   const history = useHistory()
   const org = useSelector(getOrg)
 
@@ -44,7 +47,27 @@ const WriteDataItem: FC<Props> = ({id, name, url, image}) => {
     )
   }
 
-  return (
+  if(onClick){
+    console.log(onClick)
+    {return (
+      <SquareGrid.Card key={id}>
+        <SelectableCard
+          id={id}
+          formName="load-data-cards"
+          label={name}
+          selected={selected}
+          onClick={onClick}
+          testID={testID}
+          fontSize={ComponentSize.ExtraSmall}
+          className="write-data--item"
+        >
+          <div className="write-data--item-thumb">{thumb}</div>
+        </SelectableCard>
+      </SquareGrid.Card>
+    )}
+  }
+
+  {return (
     <SquareGrid.Card key={id}>
       <SelectableCard
         id={id}
@@ -59,7 +82,7 @@ const WriteDataItem: FC<Props> = ({id, name, url, image}) => {
         <div className="write-data--item-thumb">{thumb}</div>
       </SelectableCard>
     </SquareGrid.Card>
-  )
+  )}
 }
 
 export default WriteDataItem

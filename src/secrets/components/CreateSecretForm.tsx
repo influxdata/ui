@@ -43,10 +43,10 @@ const CreateSecretForm: FC = () => {
   }
 
   const [newSecret, setNewSecret] = useState<Secret>({
-    id: "",
-    key: "",
-    value: "",
-    status: RemoteDataState.NotStarted
+    id: '',
+    key: '',
+    value: '',
+    status: RemoteDataState.NotStarted,
   })
   const history = useHistory()
   const dispatch = useDispatch()

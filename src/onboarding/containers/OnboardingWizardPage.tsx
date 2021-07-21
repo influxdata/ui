@@ -1,6 +1,6 @@
 // Libraries
 import React, {ReactElement, PureComponent} from 'react'
-import {RouteComponentProps} from 'react-router-dom'
+import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // APIs
 import {client} from 'src/utils/api'
@@ -143,4 +143,4 @@ export class OnboardingWizardPage extends PureComponent<Props, State> {
   }
 }
 
-export default OnboardingWizardPage
+export default withRouter(OnboardingWizardPage)

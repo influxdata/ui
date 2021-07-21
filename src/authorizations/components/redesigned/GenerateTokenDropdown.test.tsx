@@ -4,7 +4,7 @@ import {fireEvent, screen} from '@testing-library/react'
 
 // Fixtures
 import {renderWithReduxAndRouter} from 'src/mockState'
-import GenerateTokenDropdown from 'src/authorizations/components/GenerateTokenDropdown'
+import GenerateTokenDropdown from 'src/authorizations/components/redesigned/GenerateTokenDropdown'
 
 const setup = () => {
   return renderWithReduxAndRouter(<GenerateTokenDropdown />)
@@ -22,7 +22,7 @@ describe('GenerateTokenDropdown', () => {
 
     fireEvent.click(screen.getByTestId('dropdown-button--gen-token'))
 
-    expect(queryByText('Read/Write Token')).toBeVisible()
     expect(queryByText('All Access Token')).toBeVisible()
+    expect(queryByText('Custom API Token')).toBeVisible()
   })
 })

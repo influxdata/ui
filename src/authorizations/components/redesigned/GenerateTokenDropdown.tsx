@@ -17,23 +17,23 @@ type GenerateTokenProps = RouteComponentProps
 const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
   const org = useSelector(getOrg)
 
-  const bucketReadWriteOption = 'Read/Write Token'
-
   const allAccessOption = 'All Access Token'
+
+  const customApiOption = 'Custom API Token'
 
   const handleAllAccess = () => {
     history.push(`/orgs/${org.id}/load-data/tokens/generate/all-access`)
   }
 
-  const handleReadWrite = () => {
-    history.push(`/orgs/${org.id}/load-data/tokens/generate/buckets`)
+  const handleCustomApi = () => {
+    history.push(`/orgs/${org.id}/load-data/tokens/generate/custom-api`)
   }
 
   const handleSelect = (selection: string): void => {
     if (selection === allAccessOption) {
       handleAllAccess()
-    } else if (selection === bucketReadWriteOption) {
-      handleReadWrite()
+    } else if (selection === customApiOption) {
+      handleCustomApi()
     }
   }
 
@@ -55,15 +55,6 @@ const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
       menu={onCollapse => (
         <Dropdown.Menu onCollapse={onCollapse}>
           <Dropdown.Item
-            testID="dropdown-item generate-token--read-write"
-            id={bucketReadWriteOption}
-            key={bucketReadWriteOption}
-            value={bucketReadWriteOption}
-            onClick={handleSelect}
-          >
-            {bucketReadWriteOption}
-          </Dropdown.Item>
-          <Dropdown.Item
             testID="dropdown-item generate-token--all-access"
             id={allAccessOption}
             key={allAccessOption}
@@ -71,6 +62,15 @@ const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
             onClick={handleSelect}
           >
             {allAccessOption}
+          </Dropdown.Item>
+          <Dropdown.Item
+            testID="dropdown-item generate-token--custom-api"
+            id={customApiOption}
+            key={customApiOption}
+            value={customApiOption}
+            onClick={handleSelect}
+          >
+            {customApiOption}
           </Dropdown.Item>
         </Dropdown.Menu>
       )}

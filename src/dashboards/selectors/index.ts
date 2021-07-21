@@ -28,12 +28,39 @@ export const getTimeRange = (state: AppState): TimeRange => {
   return state.ranges[contextID] || DEFAULT_TIME_RANGE
 }
 
+/**
+ *  is the string a valid UTC time without any time zone information?
+ *  ie:  "2021-07-17T14:00:00.000Z" is valid
+ *  if it has any timezone offset, then it is not a valid UTC time string
+ *
+ * @param str
+ */
+function isUtcTime(str) {
+  const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/
+  return regex.test(str)
+}
+
+/** is the time already in utc format?  if so it does not need converting. */
+const timesNeedConverting = newTimeRange => {
+  // if the time range is *already* utc, does not need converting.  check just the first part, as
+  // they will be formatted the same
+  return !isUtcTime(newTimeRange.lower)
+}
+
+/**
+ * if the custom time is already in utc mode, don't convert it
+ * not removing the conversion clause entirely as timezone enabled flux is on the horizon
+ **/
 export const getTimeRangeWithTimezone = (state: AppState): TimeRange => {
   const timeRange = getTimeRange(state)
   const timeZone = getTimeZone(state)
 
   const newTimeRange = {...timeRange}
-  if (timeRange.type === 'custom' && timeZone === 'UTC') {
+  if (
+    timeRange.type === 'custom' &&
+    timesNeedConverting(newTimeRange) &&
+    timeZone === 'UTC'
+  ) {
     // conforms dates to account to UTC with proper offset if needed
     newTimeRange.lower = setTimeToUTC(newTimeRange.lower)
     newTimeRange.upper = setTimeToUTC(newTimeRange.upper)

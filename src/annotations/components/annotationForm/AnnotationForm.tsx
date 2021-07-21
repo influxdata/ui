@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC, FormEvent, useState} from 'react'
 import {useDispatch} from 'react-redux'
-import moment from 'moment'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -156,6 +155,10 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     props.onClose()
   }
 
+  const isTimeAfter = (time1: Date, time2: Date): boolean => {
+    return time1.getTime() > time2.getTime()
+  }
+
   /**
    * timeToCheck is either a string or a number, moment does the conversion for us.
    * at first; it's a number like:  1626185380000
@@ -164,12 +167,12 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
   const isTimeInFuture = (timeToCheck): boolean => {
     let now = null
     if (props.getNow) {
-      now = moment(props.getNow())
+      now = new Date(props.getNow())
     } else {
-      now = moment()
+      now = new Date()
     }
 
-    return moment(timeToCheck).isAfter(now)
+    return isTimeAfter(new Date(timeToCheck), now)
   }
 
   interface ValidityInfo {
@@ -204,17 +207,17 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
      * making sure they are not the same, and also that 'end' is after 'start'
      */
 
-    const start = moment(startTime)
-    const end = moment(endTime)
+    const start = new Date(startTime)
+    const end = new Date(endTime)
 
-    if (end.isSame(start)) {
+    if (end.getTime() === start.getTime()) {
       return {
         isValid: false,
         message: TIMES_ARE_SAME_MESSAGE,
       }
     }
 
-    if (!end.isAfter(start)) {
+    if (!isTimeAfter(end, start)) {
       return {isValid: false, message: WRONG_ORDER_MESSAGE}
     }
 

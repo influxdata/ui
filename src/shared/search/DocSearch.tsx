@@ -5,8 +5,6 @@ import HitComponent from './HitComponent'
 import {GLOBALSEARCH_API_KEY, GLOBALSEARCH_APP_ID} from 'src/shared/constants'
 
 import {DocSearchModal} from '@docsearch/react'
-import '@docsearch/react/style'
-
 const DocSearch: FC = () => {
   const facetFilters = useMemo(
     () => ({

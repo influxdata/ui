@@ -23,6 +23,7 @@ import {getOrg} from 'src/organizations/selectors'
 import {notify} from 'src/shared/actions/notifications'
 import {deleteAccountWarning} from 'src/shared/copy/notifications'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {CLOUD} from 'src/shared/constants'
 
 // Types
 import {getQuartzMe} from 'src/me/selectors'
@@ -54,32 +55,34 @@ const OrgProfileTab: FC = () => {
   return (
     <PageSpinner loading={status}>
       <>
-        {isFlagEnabled('selfDeletion') && quartzMe?.accountType === 'free' && (
-          <Panel.Body size={ComponentSize.ExtraSmall}>
-            <FlexBox
-              stretchToFitWidth={true}
-              alignItems={AlignItems.Center}
-              direction={FlexDirection.Row}
-              justifyContent={JustifyContent.SpaceBetween}
-            >
-              <div>
-                <h5 style={{marginBottom: '0'}}>
-                  Delete Organization {org.name}
-                </h5>
-                <p style={{marginTop: '2px'}}>
-                  Delete your Free InfluxDB Cloud account and remove any data
-                  that you have loaded.
-                </p>
-              </div>
-              <Button
-                testID="delete-org--button"
-                text="Delete"
-                icon={IconFont.Trash}
-                onClick={handleDeleteClick}
-              />
-            </FlexBox>
-          </Panel.Body>
-        )}
+        {CLOUD &&
+          isFlagEnabled('selfDeletion') &&
+          quartzMe?.accountType === 'free' && (
+            <Panel.Body size={ComponentSize.ExtraSmall}>
+              <FlexBox
+                stretchToFitWidth={true}
+                alignItems={AlignItems.Center}
+                direction={FlexDirection.Row}
+                justifyContent={JustifyContent.SpaceBetween}
+              >
+                <div>
+                  <h5 style={{marginBottom: '0'}}>
+                    Delete Organization {org.name}
+                  </h5>
+                  <p style={{marginTop: '2px'}}>
+                    Delete your Free InfluxDB Cloud account and remove any data
+                    that you have loaded.
+                  </p>
+                </div>
+                <Button
+                  testID="delete-org--button"
+                  text="Delete"
+                  icon={IconFont.Trash}
+                  onClick={handleDeleteClick}
+                />
+              </FlexBox>
+            </Panel.Body>
+          )}
       </>
     </PageSpinner>
   )

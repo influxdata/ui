@@ -83,7 +83,6 @@ const loadTagSelectorValues = (index: number) => async (
   const state = getState()
   const {buckets, tags} = getActiveQuery(state).builderConfig
   const tagsSelections = tags.slice(0, index)
-  const queryURL = state.links.query.self
 
   if (!buckets[0]) {
     return
@@ -104,7 +103,7 @@ const loadTagSelectorValues = (index: number) => async (
       .valuesSearchTerm
 
     const values = await queryBuilderFetcher.findValues(index, {
-      url: queryURL,
+      url: '/api/v2/query',
       orgID,
       bucket,
       tagsSelections,
@@ -158,7 +157,6 @@ export const loadTagSelector = (index: number) => async (
 
   const state = getState()
   const tagsSelections = tags.slice(0, index)
-  const queryURL = getState().links.query.self
 
   const bucket = buckets[0]
 
@@ -174,7 +172,7 @@ export const loadTagSelector = (index: number) => async (
       .keysSearchTerm
 
     const keys = await queryBuilderFetcher.findKeys(index, {
-      url: queryURL,
+      url: '/api/v2/query',
       orgID,
       bucket,
       tagsSelections,

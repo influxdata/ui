@@ -4,7 +4,6 @@ import {
   Cell,
   Dashboard,
   Task,
-  Links,
   ConfigurationState,
   RemoteDataState,
   Label,
@@ -33,37 +32,6 @@ import {
   Permission,
   PermissionResource,
 } from '@influxdata/influx'
-
-export const links: Links = {
-  authorizations: '/api/v2/authorizations',
-  buckets: '/api/v2/buckets',
-  dashboards: '/api/v2/dashboards',
-  external: {
-    statusFeed: 'https://www.influxdata.com/feed/json',
-  },
-  variables: '/api/v2/variables',
-  me: '/api/v2/me',
-  orgs: '/api/v2/orgs',
-  query: {
-    ast: '/api/v2/query/ast',
-    self: '/api/v2/query',
-    suggestions: '/api/v2/query/suggestions',
-  },
-  setup: '/api/v2/setup',
-  signin: '/api/v2/signin',
-  signout: '/api/v2/signout',
-  sources: '/api/v2/sources',
-  system: {
-    debug: '/debug/pprof',
-    health: '/health',
-    metrics: '/metrics',
-  },
-  tasks: '/api/v2/tasks',
-  users: '/api/v2/users',
-  views: '/api/v2/views',
-  write: '/api/v2/write',
-  defaultDashboard: '/v2/dashboards/029d13fda9c5b000',
-}
 
 export const queryConfig = {
   queries: [

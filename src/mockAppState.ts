@@ -18,13 +18,6 @@ export const mockAppState = {
       timeZone: 'Local',
     },
   },
-  links: {
-    query: {
-      ast: '/api/v2/query/ast',
-      self: '/api/v2/query',
-      suggestions: '/api/v2/query/suggestions',
-    },
-  },
   currentDashboard: {
     id: '',
   },

@@ -13,6 +13,7 @@ import {
   Grid,
   IconFont,
   Input,
+  RemoteDataState,
 } from '@influxdata/clockface'
 import {Secret} from 'src/types'
 
@@ -41,7 +42,12 @@ const CreateSecretForm: FC = () => {
     return null
   }
 
-  const [newSecret, setNewSecret] = useState<Secret>(null)
+  const [newSecret, setNewSecret] = useState<Secret>({
+    id: "",
+    key: "",
+    value: "",
+    status: RemoteDataState.NotStarted
+  })
   const history = useHistory()
   const dispatch = useDispatch()
 

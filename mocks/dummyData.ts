@@ -242,7 +242,6 @@ export const variables: Variable[] = [
 ]
 
 export const defaultOnboardingStepProps: OnboardingStepProps = {
-  links,
   currentStepIndex: 0,
   onSetCurrentStepIndex: jest.fn(),
   onIncrementCurrentStepIndex: jest.fn(),

@@ -151,6 +151,10 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
     props.onClose()
   }
 
+  const isTimeAfter = (time1: Date, time2: Date): boolean => {
+    return time1.getTime() > time2.getTime()
+  }
+
   /**
    * timeToCheck is either a string or a number, moment does the conversion for us.
    * at first; it's a number like:  1626185380000
@@ -164,7 +168,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
       now = new Date()
     }
 
-    return new Date(timeToCheck).getTime() > now.getTime()
+    return isTimeAfter(new Date(timeToCheck), now)
   }
 
   interface ValidityInfo {
@@ -209,7 +213,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
       }
     }
 
-    if (!(end.getTime() > start.getTime())) {
+    if (!isTimeAfter(end, start)) {
       return {isValid: false, message: WRONG_ORDER_MESSAGE}
     }
 

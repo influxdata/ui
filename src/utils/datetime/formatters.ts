@@ -177,6 +177,35 @@ export const createDateTimeFormatter = (
       }
     }
 
+    case 'YYYY-MM-DD': {
+      const options = {
+        ...dateTimeOptions,
+        hour12: false,
+      }
+
+      if (timeZone === 'UTC') {
+        options.timeZone = 'UTC'
+      }
+      const formatter = Intl.DateTimeFormat('en-us', options)
+
+      const formatDate = date => {
+        const parts = formatter.formatToParts(date)
+        const dateParts: any = {}
+
+        parts
+          .filter(part => part.type !== 'literal')
+          .forEach(part => {
+            dateParts[part.type] = part.value
+          })
+
+        return `${dateParts.year}-${dateParts.month}-${dateParts.day}`
+      }
+
+      return {
+        format: formatDate,
+      }
+    }
+
     case 'DD/MM/YYYY HH:mm:ss.sss': {
       const options = {
         ...dateTimeOptions,

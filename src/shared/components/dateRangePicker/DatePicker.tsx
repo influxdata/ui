@@ -38,6 +38,7 @@ const isValidRTC3339 = (d: string): boolean => {
     moment(d, 'YYYY-MM-DD HH:mm', true).isValid() ||
     moment(d, 'YYYY-MM-DD HH:mm:ss', true).isValid() ||
     moment(d, 'YYYY-MM-DD HH:mm:ss.SSS', true).isValid() ||
+    moment(d, 'YYYY-MM-DD', true).isValid() ||
     moment(d).toISOString() === d
   )
 }

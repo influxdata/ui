@@ -17,6 +17,9 @@ import {getQuartzMe} from 'src/me/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 
+// Constants
+import {CLOUD} from 'src/shared/constants'
+
 const OrgProfilePage: FC = () => {
   const quartzMe = useSelector(getQuartzMe)
 

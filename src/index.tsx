@@ -26,7 +26,7 @@ import {disablePresentationMode} from 'src/shared/actions/app'
 // Styles
 import 'src/style/chronograf.scss'
 import '@influxdata/clockface/dist/index.css'
-
+import '@docsearch/react/style'
 const rootNode = getRootNode()
 
 const SESSION_KEY = 'session'

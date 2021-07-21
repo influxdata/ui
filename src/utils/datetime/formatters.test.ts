@@ -65,16 +65,16 @@ describe('the DateTime formatter', () => {
   }
 
   describe('formatting DateTimes in UTC', () => {
-    it('formats DateTimes in the default time YYYY-MM-DD in UTC', () => {
-      const date = new Date(timestamp)
-      const formatter = createDateTimeFormatter('YYYY-MM-DD', 'UTC')
-      expect(formatter.format(date)).toBe(`1983-07-04`)
-    })
-
     it('formats DateTimes in the default time YYYY-MM-DD HH:mm:ss in UTC', () => {
       const date = new Date(timestamp)
       const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss', 'UTC')
       expect(formatter.format(date)).toBe(`1983-07-04 ${hourUTC24}:00:00`)
+    })
+
+    it('formats DateTimes in the format, YYYY-MM-DD in UTC', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('YYYY-MM-DD', 'UTC')
+      expect(formatter.format(date)).toBe(`1983-07-04`)
     })
 
     it('formats DateTimes in the format, YYYY-MM-DD hh:mm:ss a in UTC', () => {

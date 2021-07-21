@@ -8,7 +8,6 @@ import {NoteEditorState} from 'src/dashboards/reducers/notes'
 import {DataLoadingState} from 'src/dataLoaders/reducers'
 import {OnboardingState} from 'src/onboarding/reducers'
 import {
-  Links,
   Notification,
   ResourceState,
   TimeRange,
@@ -46,7 +45,6 @@ export interface AppState {
   currentExplorer: CurrentExplorerState
   dataLoading: DataLoadingState
   flags: FlagState
-  links: Links
   me: MeState
   noteEditor: NoteEditorState
   notifications: Notification[]

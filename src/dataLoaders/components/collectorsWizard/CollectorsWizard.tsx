@@ -107,7 +107,6 @@ class CollectorsWizard extends PureComponent<Props> {
 
 const mstp = (state: AppState) => {
   const {
-    links,
     dataLoading: {
       dataLoaders: {telegrafPlugins},
       steps: {currentStep, substep, bucket},
@@ -125,7 +124,6 @@ const mstp = (state: AppState) => {
   const org = getOrg(state)
 
   return {
-    links,
     telegrafPlugins,
     text: telegrafEditor.text,
     currentStepIndex: currentStep,

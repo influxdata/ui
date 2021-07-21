@@ -419,7 +419,7 @@ const mstp = (state: AppState, props: OwnProps) => {
   return {
     hasUpdatedTimeRangeInVEO: hasUpdatedTimeRangeInVEO(state),
     isCurrentPageDashboard: isCurrentPageDashboardSelector(state),
-    queryLink: state.links.query.self,
+    queryLink: '/api/v2/query',
     buckets: getAll<Bucket>(state, ResourceType.Buckets),
     variables,
   }

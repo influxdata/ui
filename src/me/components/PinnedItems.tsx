@@ -1,4 +1,5 @@
 import React, {FC, useContext, useCallback} from 'react'
+import {capitalize} from 'lodash'
 import {
   PinnedItemsContext,
   PinnedItemTypes,
@@ -43,6 +44,7 @@ const PinnedItems: FC = () => {
   )
 
   const {pinnedItems, deletePinnedItemsHelper} = useContext(PinnedItemsContext)
+
   const handleDeletePinnedItem = async (itemId: string) => {
     await deletePinnedItemsHelper(itemId)
   }
@@ -68,6 +70,7 @@ const PinnedItems: FC = () => {
               </Context>
             }
           >
+            <ResourceCard.Name name={capitalize(item.type)} />
             <ResourceCard.Name
               name={item.metadata[0].name ?? ''}
               onClick={() => followMetadataToRoute(item)}
@@ -75,8 +78,6 @@ const PinnedItems: FC = () => {
             <ResourceCard.Description
               description={item.metadata[0].description ?? ''}
             />
-
-            <ResourceCard.Name name={item.type} />
           </ResourceCard>
         ))}
       </div>

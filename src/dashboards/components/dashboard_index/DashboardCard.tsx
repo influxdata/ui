@@ -31,6 +31,7 @@ import {
   pushPinnedItem,
   deletePinnedItemByParam,
   PinnedItemTypes,
+  updatePinnedItemByParam,
 } from 'src/shared/contexts/pinneditems'
 
 import {getMe} from 'src/me/selectors'
@@ -92,10 +93,11 @@ class DashboardCard extends PureComponent<Props> {
     )
   }
 
-  private handleUpdateDashboard = (name: string) => {
+  private handleUpdateDashboard = async (name: string) => {
     const {id, onUpdateDashboard} = this.props
 
     onUpdateDashboard(id, {name})
+    await updatePinnedItemByParam(id, {name})
   }
 
   private handleCloneDashboard = () => {
@@ -190,10 +192,11 @@ class DashboardCard extends PureComponent<Props> {
     onResetViews()
   }
 
-  private handleUpdateDescription = (description: string) => {
+  private handleUpdateDescription = async (description: string) => {
     const {id, onUpdateDashboard} = this.props
 
     onUpdateDashboard(id, {description})
+    await updatePinnedItemByParam(id, {description})
   }
 
   private handleAddLabel = (label: Label) => {

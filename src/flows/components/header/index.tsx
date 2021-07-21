@@ -20,14 +20,16 @@ import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
 import {PROJECT_NAME} from 'src/flows'
 import {serialize} from 'src/flows/context/flow.list'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
+import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 
 const FULL_WIDTH = true
 
 const FlowHeader: FC = () => {
-  const {update, flow} = useContext(FlowContext)
+  const {update, flow, id} = useContext(FlowContext)
 
-  const handleRename = (name: string) => {
+  const handleRename = async (name: string) => {
     update({name})
+    await updatePinnedItemByParam(id, {name})
   }
 
   const printJSON = () => {

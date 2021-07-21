@@ -6,7 +6,6 @@ import React, {
   memo,
   useCallback,
 } from 'react'
-import {API_BASE_PATH} from 'src/shared/constants'
 
 export interface PinnedItem {
   orgID: string
@@ -70,6 +69,22 @@ const addPinnedItem = async (item: Partial<PinnedItem>) => {
   return await added.json()
 }
 
+const updatePinnedItem = async (id: string, item: Partial<PinnedItem>) => {
+  await fetch(
+    `https://twodotoh-dev-shmuellotman20210720133644.a.influxcloud.dev.local/api/v2private/pinned/${id}`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJDbG91ZDIiLCJleHAiOjE2MjY5MTE2NTYsImlzcyI6IkluZmx1eERhdGEuQ2xvdWQyIiwia2lkIjoiZGQxODAyMzItMTQwZS00MjUzLWI3NDUtYWY0MzIzNTNmMGYzIiwidXNlcl9pZCI6IjA3ZGQ0Y2ZhMzI3NzkwMDAiLCJvcmdfaWQiOiIyZGUzZDVlN2YyNGY0ZWZkIiwiY2x1c3Rlcl91cmwiOiJodHRwczovL3R3b2RvdG9oLWRldi1zaG11ZWxsb3RtYW4yMDIxMDcyMDEzMzY0NC5hLmluZmx1eGNsb3VkLmRldi5sb2NhbCIsInZlcnNpb24iOiIxLjAuMCJ9.IFTVv9A82OGAaT5-J_X6IFxyKPP4UGikv1YRFmfzOjA`,
+      },
+      body: JSON.stringify({updateItemFields: item}),
+    }
+  )
+
+  return
+}
+
 export const pushPinnedItem = async (newItem: Partial<PinnedItem>) => {
   try {
     await addPinnedItem(newItem)
@@ -102,6 +117,24 @@ export const deletePinnedItem = async (itemID: string) => {
   }
 }
 
+export const updatePinnedItemByParam = async (id: string, updateParams: {}) => {
+  try {
+    const res = await getPinnedItems()
+    const pinnedItems = await res.json()
+    const toUpdateItem = pinnedItems.find(item =>
+      Object.values(item.metadata[0]).includes(id)
+    )
+    if (toUpdateItem) {
+      await updatePinnedItem(toUpdateItem.id, {
+        metadata: [{...toUpdateItem.metadata[0], ...updateParams}],
+      })
+    }
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+// updateItemFields
 const PinnedItemsProvider: FC = ({children}) => {
   const [pinnedItems, setPinnedItems] = useState([])
 

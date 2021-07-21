@@ -7,6 +7,7 @@ import {
   pushPinnedItem,
   PinnedItemTypes,
   deletePinnedItemByParam,
+  updatePinnedItemByParam,
 } from 'src/shared/contexts/pinneditems'
 
 // Components
@@ -119,7 +120,6 @@ export class TaskCard extends PureComponent<
         {
           taskID: this.props.task.id,
           name: this.props.task.name,
-          labels: this.labels,
         },
       ],
       type: PinnedItemTypes.Task,
@@ -227,12 +227,13 @@ export class TaskCard extends PureComponent<
     history.push(`/orgs/${orgID}/tasks/${task.id}/runs`)
   }
 
-  private handleRenameTask = (name: string) => {
+  private handleRenameTask = async (name: string) => {
     const {
       onUpdate,
       task: {id},
     } = this.props
     onUpdate(name, id)
+    await updatePinnedItemByParam(id, {name})
   }
 
   private handleExport = () => {

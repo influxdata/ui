@@ -85,7 +85,7 @@ const CreateSecretForm: FC = () => {
       <Grid.Row>
         <Grid.Column>
           <Alert
-            className={'alert'}
+            className='alert'
             icon={IconFont.AlertTriangle}
             color={ComponentColor.Warning}
           >

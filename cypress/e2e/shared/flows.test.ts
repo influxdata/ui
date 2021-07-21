@@ -454,5 +454,4 @@ describe('Flows', () => {
       .should('be.visible')
     cy.getByTestID('table-cell beans').should('not.exist')
   })
-
 })

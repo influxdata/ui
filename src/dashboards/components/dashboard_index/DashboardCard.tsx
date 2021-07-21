@@ -142,7 +142,7 @@ class DashboardCard extends PureComponent<Props> {
           />
         </Context.Menu>
         <Context.Menu
-          icon={IconFont.Trash}
+          icon={IconFont.Star}
           color={ComponentColor.Success}
           testID="context-pin-menu"
         >

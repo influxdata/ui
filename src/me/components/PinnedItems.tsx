@@ -11,7 +11,7 @@ import {ComponentColor, IconFont} from '@influxdata/clockface'
 
 import './PinnedItems.scss'
 
-import {ResourceCard} from '@influxdata/clockface'
+import {ResourceCard, ResourceList} from '@influxdata/clockface'
 
 import {useHistory} from 'react-router-dom'
 
@@ -48,39 +48,45 @@ const PinnedItems: FC = () => {
   const handleDeletePinnedItem = async (itemId: string) => {
     await deletePinnedItemsHelper(itemId)
   }
+  const emptyState = <h3>Pin Resources Here.</h3>
   return (
     <>
       <h2 className="pinned-items--header">Pinned Items</h2>
-      <div className="pinned-items--container">
-        {pinnedItems?.map(item => (
-          <ResourceCard
-            key={item.id}
-            contextMenu={
-              <Context>
-                <Context.Menu
-                  icon={IconFont.Trash}
-                  color={ComponentColor.Danger}
-                >
-                  <Context.Item
-                    label="Delete"
-                    action={async () => await handleDeletePinnedItem(item.id)}
-                    testID="delete-token"
-                  />
-                </Context.Menu>
-              </Context>
-            }
-          >
-            <ResourceCard.Name name={capitalize(item.type)} />
-            <ResourceCard.Name
-              name={item.metadata[0].name ?? ''}
-              onClick={() => followMetadataToRoute(item)}
-            />
-            <ResourceCard.Description
-              description={item.metadata[0].description ?? ''}
-            />
-          </ResourceCard>
-        ))}
-      </div>
+      <ResourceList>
+        <ResourceList.Body
+          emptyState={emptyState}
+          className="pinned-items--container"
+        >
+          {pinnedItems?.map(item => (
+            <ResourceCard
+              key={item.id}
+              contextMenu={
+                <Context>
+                  <Context.Menu
+                    icon={IconFont.Trash}
+                    color={ComponentColor.Danger}
+                  >
+                    <Context.Item
+                      label="Unpin"
+                      action={async () => await handleDeletePinnedItem(item.id)}
+                      testID="delete-token"
+                    />
+                  </Context.Menu>
+                </Context>
+              }
+            >
+              <ResourceCard.Name name={capitalize(item.type)} />
+              <ResourceCard.Name
+                name={item.metadata[0].name ?? ''}
+                onClick={() => followMetadataToRoute(item)}
+              />
+              <ResourceCard.Description
+                description={item.metadata[0].description ?? ''}
+              />
+            </ResourceCard>
+          ))}
+        </ResourceList.Body>
+      </ResourceList>
     </>
   )
 }

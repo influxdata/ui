@@ -10,6 +10,10 @@ jest.mock('src/client', () => ({
   getBuckets: jest.fn(),
 }))
 
+jest.mock('src/shared/constants/index', () => ({
+  CLOUD: true,
+}))
+
 jest.mock('src/cloud/apis/demodata', () => ({
   fetchDemoDataBuckets: jest.fn(() => {
     const res: ReturnType<typeof fetchDemoDataBuckets> = Promise.resolve([

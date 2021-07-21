@@ -28,7 +28,6 @@ const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
   const handleReadWrite = () => {
     history.push(`/orgs/${org.id}/load-data/tokens/generate/buckets`)
   }
-
   const handleSelect = (selection: string): void => {
     if (selection === allAccessOption) {
       handleAllAccess()

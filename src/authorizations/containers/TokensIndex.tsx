@@ -12,7 +12,6 @@ import TokensTab from 'src/authorizations/components/TokensTab'
 import {
   AllAccessTokenOverlay,
   BucketsTokenOverlay,
-  CustomApiTokenOverlay,
 } from 'src/overlays/components'
 
 // Utils

@@ -14,9 +14,9 @@ import {
   getGeoCoordinates,
   getGeoCoordinatesFlagged,
 } from 'src/shared/utils/vis'
-import {getMapToken} from './api'
+import {getMapToken} from 'src/client/mapsdRoutes'
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from '../../../shared/utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props extends VisualizationProps {
   properties: GeoViewProperties
@@ -58,8 +58,13 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     const getToken = async () => {
       try {
         setMapServiceError(RemoteDataState.Loading)
-        const {token} = await getMapToken()
-        setMapToken(token)
+        const resp = await getMapToken({})
+
+        if (resp.status !== 200) {
+          throw new Error(resp.data.message)
+        }
+
+        setMapToken(resp.data.token)
         setMapServiceError(RemoteDataState.Done)
         event('mapplot.map_token_request.success')
       } catch (err) {

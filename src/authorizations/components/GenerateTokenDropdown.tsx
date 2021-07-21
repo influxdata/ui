@@ -75,30 +75,29 @@ const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
           </Dropdown.Item>
         </>
       )
-    } else {
-      return (
-        <>
-          <Dropdown.Item
-            testID="dropdown-item generate-token--read-write"
-            id={bucketReadWriteOption}
-            key={bucketReadWriteOption}
-            value={bucketReadWriteOption}
-            onClick={handleSelect}
-          >
-            {bucketReadWriteOption}
-          </Dropdown.Item>
-          <Dropdown.Item
-            testID="dropdown-item generate-token--all-access"
-            id={allAccessOption}
-            key={allAccessOption}
-            value={allAccessOption}
-            onClick={handleSelect}
-          >
-            {allAccessOption}
-          </Dropdown.Item>
-        </>
-      )
     }
+    return (
+      <>
+        <Dropdown.Item
+          testID="dropdown-item generate-token--read-write"
+          id={bucketReadWriteOption}
+          key={bucketReadWriteOption}
+          value={bucketReadWriteOption}
+          onClick={handleSelect}
+        >
+          {bucketReadWriteOption}
+        </Dropdown.Item>
+        <Dropdown.Item
+          testID="dropdown-item generate-token--all-access"
+          id={allAccessOption}
+          key={allAccessOption}
+          value={allAccessOption}
+          onClick={handleSelect}
+        >
+          {allAccessOption}
+        </Dropdown.Item>
+      </>
+    )
   }
 
   return (

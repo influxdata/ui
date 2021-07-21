@@ -7,7 +7,7 @@ interface OwnProps {
   onClose: () => void
 }
 
-const CustomApiTokenOverlay: FC<OwnProps> = props => {
+export const CustomApiTokenOverlay: FC<OwnProps> = props => {
   const handleDismiss = () => {
     props.onClose()
   }
@@ -20,5 +20,3 @@ const CustomApiTokenOverlay: FC<OwnProps> = props => {
     </Overlay.Container>
   )
 }
-
-export default CustomApiTokenOverlay

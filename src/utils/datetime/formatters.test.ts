@@ -91,6 +91,15 @@ describe('the DateTime formatter', () => {
       expect(formatter.format(date)).toBe(`1983-07-04 ${hourUTC24}:00`)
     })
 
+    it('formats DateTimes in the format YYYY-MM-DD HH:mm:ss.sss in UTC', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter(
+        'YYYY-MM-DD HH:mm:ss.sss',
+        'UTC'
+      )
+      expect(formatter.format(date)).toBe(`1983-07-04 ${hourUTC24}:00:00.000`)
+    })
+
     it('formats DateTimes in the format DD/MM/YYYY HH:mm:ss.sss in UTC', () => {
       const date = new Date(timestamp)
       const formatter = createDateTimeFormatter(
@@ -240,6 +249,14 @@ describe('the DateTime formatter', () => {
       const formatter = createDateTimeFormatter('YYYY-MM-DD hh:mm:ss a ZZ')
       expect(formatter.format(date)).toBe(
         `1983-07-04 ${hour}:00:00 PM ${timeZone}`
+      )
+    })
+
+    it('formats DateTimes in the format YYYY-MM-DD hh:mm:ss.sss', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('YYYY-MM-DD hh:mm:ss.sss')
+      expect(formatter.format(date)).toBe(
+        `1983-07-04 ${hour}:00:00.000`
       )
     })
 

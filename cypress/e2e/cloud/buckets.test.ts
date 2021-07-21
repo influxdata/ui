@@ -46,7 +46,7 @@ describe('Buckets', () => {
           0
         ) {
           cy.getByTestID(`bucket-card ${demoDataBucket}`).should('not.exist')
-          cy.getByTestID('Create Bucket').click()
+          cy.getByTestID('Creatblahbalh Bucket').click()
           cy.getByTestID('overlay--container').within(() => {
             cy.getByInputName('name').type(demoDataBucket)
             cy.getByTestID('retention-intervals--button').click()

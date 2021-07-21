@@ -1,7 +1,6 @@
 // Libraries
 import {get} from 'lodash'
 import {getBuckets, getBucket} from 'src/client'
-import AJAX from 'src/utils/ajax'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'

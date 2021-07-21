@@ -14,6 +14,7 @@ const timestamp = 426196800000
   YYYY-MM-DD hh:mm:ss a ZZ
   YYYY-MM-DD HH:mm:ss - UPDATED_AT_TIME_FORMAT
   YYYY-MM-DD HH:mm - TIME_RANGE_FORMAT
+  YYYY-MM-DD
 
   YYYY/MM/DD HH:mm:ss
   YYYY/MM/DD hh:mm:ss a
@@ -64,6 +65,13 @@ describe('the DateTime formatter', () => {
   }
 
   describe('formatting DateTimes in UTC', () => {
+
+    it('formats DateTimes in the default time YYYY-MM-DD in UTC', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('YYYY-MM-DD', 'UTC')
+      expect(formatter.format(date)).toBe(`1983-07-04`)
+    })
+
     it('formats DateTimes in the default time YYYY-MM-DD HH:mm:ss in UTC', () => {
       const date = new Date(timestamp)
       const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss', 'UTC')
@@ -233,6 +241,14 @@ describe('the DateTime formatter', () => {
       const date = new Date(timestamp)
       const formatter = createDateTimeFormatter('YYYY-MM-DD hh:mm:ss a')
       expect(formatter.format(date)).toBe(`1983-07-04 ${hour}:00:00 PM`)
+    })
+
+    it('formats DateTimes in the format YYYY-MM-DD', () => {
+      const date = new Date(timestamp)
+      const formatter = createDateTimeFormatter('YYYY-MM-DD')
+      expect(formatter.format(date)).toBe(
+        `1983-07-04`
+      )
     })
 
     it('formats DateTimes in the format YYYY-MM-DD hh:mm:ss a ZZ', () => {

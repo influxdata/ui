@@ -27,7 +27,11 @@ import {DEFAULT_DASHBOARD_NAME} from 'src/dashboards/constants'
 // Utilities
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
 
-import {pushPinnedItem, PinnedItemTypes} from 'src/shared/contexts/pinneditems'
+import {
+  pushPinnedItem,
+  deletePinnedItemByParam,
+  PinnedItemTypes,
+} from 'src/shared/contexts/pinneditems'
 
 import {getMe} from 'src/me/selectors'
 import {getOrg} from 'src/organizations/selectors'
@@ -161,9 +165,10 @@ class DashboardCard extends PureComponent<Props> {
     )
   }
 
-  private handleDeleteDashboard = () => {
+  private handleDeleteDashboard = async () => {
     const {id, name, onDeleteDashboard} = this.props
     onDeleteDashboard(id, name)
+    await deletePinnedItemByParam(id)
   }
 
   private handleClickDashboard = e => {

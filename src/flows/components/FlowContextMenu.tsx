@@ -3,6 +3,10 @@ import React, {FC, useContext} from 'react'
 import {useParams, useHistory} from 'react-router-dom'
 import 'src/flows/components/FlowContextMenu.scss'
 
+// Selector
+import {getMe} from 'src/me/selectors'
+import {useSelector} from 'react-redux'
+
 // Components
 import {Context} from 'src/clockface'
 import {
@@ -18,6 +22,12 @@ import {PROJECT_NAME_PLURAL} from 'src/flows'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
+import {
+  pushPinnedItem,
+  deletePinnedItemByParam,
+  PinnedItemTypes,
+} from 'src/shared/contexts/pinneditems'
+
 interface Props {
   id: string
   name: string
@@ -26,10 +36,26 @@ interface Props {
 const FlowContextMenu: FC<Props> = ({id, name}) => {
   const {remove, clone} = useContext(FlowListContext)
   const {orgID} = useParams<{orgID: string}>()
+  const me = useSelector(getMe)
   const history = useHistory()
 
-  const handleDelete = () => {
+  const handlePinFlow = async () => {
+    await pushPinnedItem({
+      orgID: orgID,
+      userID: me.id,
+      metadata: [
+        {
+          flowID: id,
+          name,
+        },
+      ],
+      type: PinnedItemTypes.Notebook,
+    })
+  }
+
+  const handleDelete = async () => {
     event('delete_notebook')
+    await deletePinnedItemByParam(id)
     remove(id)
   }
 
@@ -54,6 +80,17 @@ const FlowContextMenu: FC<Props> = ({id, name}) => {
           onClick={handleClone}
           className="flow-menu--clone"
         />
+        <Context.Menu
+          icon={IconFont.Star}
+          color={ComponentColor.Success}
+          testID="context-pin-menu"
+        >
+          <Context.Item
+            label="Pin to Homepage"
+            action={async () => await handlePinFlow()}
+            testID="context-delete-task"
+          />
+        </Context.Menu>
         <Context.Menu
           icon={IconFont.Trash}
           color={ComponentColor.Danger}

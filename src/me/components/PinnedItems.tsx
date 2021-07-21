@@ -19,10 +19,16 @@ const PinnedItems: FC = () => {
   const history = useHistory()
   const followMetadataToRoute = useCallback(
     (data: PinnedItem) => {
-      let routeToFollow
+      let routeToFollow = ''
       switch (data.type) {
         case PinnedItemTypes.Dashboard:
           routeToFollow = `/orgs/${data.orgID}/dashboards/${data.metadata[0].dashboardID}`
+          break
+        case PinnedItemTypes.Task:
+          routeToFollow = `/orgs/${data.orgID}/tasks/${data.metadata[0].taskID}/edit`
+          break
+        case PinnedItemTypes.Notebook:
+          routeToFollow = `/orgs/${data.orgID}/notebooks/${data.metadata[0].flowID}`
           break
         default:
           break
@@ -37,9 +43,10 @@ const PinnedItems: FC = () => {
     [history]
   )
 
-  const {pinnedItems} = useContext(PinnedItemsContext)
+  const {pinnedItems, setPinnedItems} = useContext(PinnedItemsContext)
   const handleDeletePinnedItem = async (itemId: string) => {
     await deletePinnedItem(itemId)
+    setPinnedItems(pinnedItems.filter(item => item.id !== itemId))
   }
   return (
     <>
@@ -70,6 +77,8 @@ const PinnedItems: FC = () => {
             <ResourceCard.Description
               description={item.metadata[0].description ?? ''}
             />
+
+            <ResourceCard.Name name={item.type} />
           </ResourceCard>
         ))}
       </div>

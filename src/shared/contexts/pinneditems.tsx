@@ -1,4 +1,4 @@
-import React, {createContext, FC, useEffect, useState} from 'react'
+import React, {createContext, FC, useEffect, useState, memo} from 'react'
 import {API_BASE_PATH} from 'src/shared/constants'
 
 export interface PinnedItem {
@@ -30,7 +30,7 @@ const getPinnedItems = async () => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJDbG91ZDIiLCJleHAiOjE2MjY4NjA1NTQsImlzcyI6IkluZmx1eERhdGEuQ2xvdWQyIiwia2lkIjoiZGQxODAyMzItMTQwZS00MjUzLWI3NDUtYWY0MzIzNTNmMGYzIiwidXNlcl9pZCI6IjA3ZGQ0Y2ZhMzI3NzkwMDAiLCJvcmdfaWQiOiIyZGUzZDVlN2YyNGY0ZWZkIiwiY2x1c3Rlcl91cmwiOiJodHRwczovL3R3b2RvdG9oLWRldi1zaG11ZWxsb3RtYW4yMDIxMDcyMDEzMzY0NC5hLmluZmx1eGNsb3VkLmRldi5sb2NhbCIsInZlcnNpb24iOiIxLjAuMCJ9.8oH2fNGfqFklSWodVVArCu5zRY90tCSjSyjO7a4xtwY`,
+        authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJDbG91ZDIiLCJleHAiOjE2MjY5MTE2NTYsImlzcyI6IkluZmx1eERhdGEuQ2xvdWQyIiwia2lkIjoiZGQxODAyMzItMTQwZS00MjUzLWI3NDUtYWY0MzIzNTNmMGYzIiwidXNlcl9pZCI6IjA3ZGQ0Y2ZhMzI3NzkwMDAiLCJvcmdfaWQiOiIyZGUzZDVlN2YyNGY0ZWZkIiwiY2x1c3Rlcl91cmwiOiJodHRwczovL3R3b2RvdG9oLWRldi1zaG11ZWxsb3RtYW4yMDIxMDcyMDEzMzY0NC5hLmluZmx1eGNsb3VkLmRldi5sb2NhbCIsInZlcnNpb24iOiIxLjAuMCJ9.IFTVv9A82OGAaT5-J_X6IFxyKPP4UGikv1YRFmfzOjA`,
       },
     }
   )
@@ -43,7 +43,7 @@ const removePinnedItem = async (id: string) => {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJDbG91ZDIiLCJleHAiOjE2MjY4NjA1NTQsImlzcyI6IkluZmx1eERhdGEuQ2xvdWQyIiwia2lkIjoiZGQxODAyMzItMTQwZS00MjUzLWI3NDUtYWY0MzIzNTNmMGYzIiwidXNlcl9pZCI6IjA3ZGQ0Y2ZhMzI3NzkwMDAiLCJvcmdfaWQiOiIyZGUzZDVlN2YyNGY0ZWZkIiwiY2x1c3Rlcl91cmwiOiJodHRwczovL3R3b2RvdG9oLWRldi1zaG11ZWxsb3RtYW4yMDIxMDcyMDEzMzY0NC5hLmluZmx1eGNsb3VkLmRldi5sb2NhbCIsInZlcnNpb24iOiIxLjAuMCJ9.8oH2fNGfqFklSWodVVArCu5zRY90tCSjSyjO7a4xtwY`,
+        authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJDbG91ZDIiLCJleHAiOjE2MjY5MTE2NTYsImlzcyI6IkluZmx1eERhdGEuQ2xvdWQyIiwia2lkIjoiZGQxODAyMzItMTQwZS00MjUzLWI3NDUtYWY0MzIzNTNmMGYzIiwidXNlcl9pZCI6IjA3ZGQ0Y2ZhMzI3NzkwMDAiLCJvcmdfaWQiOiIyZGUzZDVlN2YyNGY0ZWZkIiwiY2x1c3Rlcl91cmwiOiJodHRwczovL3R3b2RvdG9oLWRldi1zaG11ZWxsb3RtYW4yMDIxMDcyMDEzMzY0NC5hLmluZmx1eGNsb3VkLmRldi5sb2NhbCIsInZlcnNpb24iOiIxLjAuMCJ9.IFTVv9A82OGAaT5-J_X6IFxyKPP4UGikv1YRFmfzOjA`,
       },
     }
   )
@@ -55,7 +55,7 @@ const addPinnedItem = async (item: Partial<PinnedItem>) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJDbG91ZDIiLCJleHAiOjE2MjY4NjA1NTQsImlzcyI6IkluZmx1eERhdGEuQ2xvdWQyIiwia2lkIjoiZGQxODAyMzItMTQwZS00MjUzLWI3NDUtYWY0MzIzNTNmMGYzIiwidXNlcl9pZCI6IjA3ZGQ0Y2ZhMzI3NzkwMDAiLCJvcmdfaWQiOiIyZGUzZDVlN2YyNGY0ZWZkIiwiY2x1c3Rlcl91cmwiOiJodHRwczovL3R3b2RvdG9oLWRldi1zaG11ZWxsb3RtYW4yMDIxMDcyMDEzMzY0NC5hLmluZmx1eGNsb3VkLmRldi5sb2NhbCIsInZlcnNpb24iOiIxLjAuMCJ9.8oH2fNGfqFklSWodVVArCu5zRY90tCSjSyjO7a4xtwY`,
+        authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJDbG91ZDIiLCJleHAiOjE2MjY5MTE2NTYsImlzcyI6IkluZmx1eERhdGEuQ2xvdWQyIiwia2lkIjoiZGQxODAyMzItMTQwZS00MjUzLWI3NDUtYWY0MzIzNTNmMGYzIiwidXNlcl9pZCI6IjA3ZGQ0Y2ZhMzI3NzkwMDAiLCJvcmdfaWQiOiIyZGUzZDVlN2YyNGY0ZWZkIiwiY2x1c3Rlcl91cmwiOiJodHRwczovL3R3b2RvdG9oLWRldi1zaG11ZWxsb3RtYW4yMDIxMDcyMDEzMzY0NC5hLmluZmx1eGNsb3VkLmRldi5sb2NhbCIsInZlcnNpb24iOiIxLjAuMCJ9.IFTVv9A82OGAaT5-J_X6IFxyKPP4UGikv1YRFmfzOjA`,
       },
       body: JSON.stringify(item),
     }
@@ -71,6 +71,21 @@ export const pushPinnedItem = async (newItem: Partial<PinnedItem>) => {
   }
 }
 
+export const deletePinnedItemByParam = async (param: string) => {
+  try {
+    const res = await getPinnedItems()
+    const items = await res.json()
+    const toDeleteItem = items.find(item =>
+      Object.values(item.metadata[0]).includes(param)
+    )
+
+    if (toDeleteItem) {
+      await removePinnedItem(toDeleteItem.id)
+    }
+  } catch (err) {
+    console.error(err)
+  }
+}
 export const deletePinnedItem = async (itemID: string) => {
   try {
     await removePinnedItem(itemID)
@@ -81,17 +96,18 @@ export const deletePinnedItem = async (itemID: string) => {
 
 const PinnedItemsProvider: FC = ({children}) => {
   const [pinnedItems, setPinnedItems] = useState([])
+
   useEffect(() => {
     getPinnedItems()
       .then(res => res.json())
       .then(res => setPinnedItems(res))
-  }, [pinnedItems])
+  }, [])
 
   return (
-    <PinnedItemsContext.Provider value={{pinnedItems}}>
+    <PinnedItemsContext.Provider value={{pinnedItems, setPinnedItems}}>
       {children}
     </PinnedItemsContext.Provider>
   )
 }
 
-export default PinnedItemsProvider
+export default memo(PinnedItemsProvider)

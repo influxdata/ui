@@ -3,6 +3,12 @@ import React, {PureComponent, MouseEvent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
+import {
+  pushPinnedItem,
+  PinnedItemTypes,
+  deletePinnedItemByParam,
+} from 'src/shared/contexts/pinneditems'
+
 // Components
 import {
   SlideToggle,
@@ -25,10 +31,12 @@ import {TaskPage, setCurrentTasksPage} from 'src/tasks/actions/creators'
 
 // Types
 import {ComponentColor} from '@influxdata/clockface'
-import {Task, Label} from 'src/types'
+import {Task, Label, AppState} from 'src/types'
 
 // Constants
 import {DEFAULT_TASK_NAME} from 'src/dashboards/constants'
+import {getMe} from 'src/me/selectors'
+import {getOrg} from 'src/organizations/selectors'
 
 interface PassedProps {
   task: Task
@@ -103,8 +111,27 @@ export class TaskCard extends PureComponent<
     )
   }
 
+  private handlePinTask = async () => {
+    await pushPinnedItem({
+      orgID: this.props.org.id,
+      userID: this.props.me.id,
+      metadata: [
+        {
+          taskID: this.props.task.id,
+          name: this.props.task.name,
+          labels: this.labels,
+        },
+      ],
+      type: PinnedItemTypes.Task,
+    })
+  }
+
+  private handleOnDelete = async () => {
+    this.props.onDelete(this.props.task)
+    await deletePinnedItemByParam(this.props.task.id)
+  }
   private get contextMenu(): JSX.Element {
-    const {task, onClone, onDelete} = this.props
+    const {task, onClone} = this.props
 
     return (
       <Context>
@@ -128,13 +155,24 @@ export class TaskCard extends PureComponent<
           <Context.Item label="Clone" action={onClone} value={task} />
         </Context.Menu>
         <Context.Menu
+          icon={IconFont.Star}
+          color={ComponentColor.Success}
+          testID="context-pin-menu"
+        >
+          <Context.Item
+            label="Pin to Homepage"
+            action={async () => await this.handlePinTask()}
+            testID="context-delete-task"
+          />
+        </Context.Menu>
+        <Context.Menu
           icon={IconFont.Trash}
           color={ComponentColor.Danger}
           testID="context-delete-menu"
         >
           <Context.Item
             label="Delete"
-            action={onDelete}
+            action={this.handleOnDelete}
             value={task}
             testID="context-delete-task"
           />
@@ -267,6 +305,15 @@ const mdtp = {
   setCurrentTasksPage,
 }
 
-const connector = connect(null, mdtp)
+const mstp = (state: AppState) => {
+  const me = getMe(state)
+  const org = getOrg(state)
+
+  return {
+    org,
+    me,
+  }
+}
+const connector = connect(mstp, mdtp)
 
 export default connector(withRouter(TaskCard))

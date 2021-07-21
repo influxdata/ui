@@ -4,7 +4,14 @@ import {useParams} from 'react-router-dom'
 import {Renderer} from 'react-markdown'
 
 // Components
-import {Page} from '@influxdata/clockface'
+import {
+  Button,
+  Columns,
+  Dropdown,
+  Grid,
+  List,
+  Page,
+} from '@influxdata/clockface'
 import CodeSnippet, {
   Provider as TemplateProvider,
 } from 'src/shared/components/CodeSnippet'
@@ -22,10 +29,81 @@ import placeholderLogo from 'src/writeData/graphics/placeholderLogo.svg'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Styles
 import 'src/writeData/components/WriteDataDetailsView.scss'
 import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
+
+const DropdownButton = () => (
+  <Button text="Use this plugin" style={{width: '100%'}} />
+)
+
+const DropdownMenu = (onCollapse: () => void) => (
+  <Dropdown.Menu onCollapse={onCollapse}>
+    <List.Item
+      key="Create-new-configuration-telegraf-plugin"
+      value="Create a new configuration"
+      onClick={() => {}}
+      selected={false}
+    >
+      <span>Create a new configuration</span>
+    </List.Item>
+    <List.Item
+      key="Add-to-existing-configuration-telegraf-plugin"
+      value="Add to an existing configuration"
+      onClick={() => {}}
+      selected={false}
+    >
+      <span>Add to an existing configuration</span>
+    </List.Item>
+  </Dropdown.Menu>
+)
+
+interface PluginToConfigurationCTAProps {
+  thumbnail: React.DetailedHTMLProps<
+    React.ImgHTMLAttributes<HTMLImageElement>,
+    HTMLImageElement
+  >
+  pageContent: React.ReactElement
+}
+
+const PluginToConfigurationCTA: FC<PluginToConfigurationCTAProps> = ({
+  pageContent,
+  thumbnail,
+}) => (
+  <div className="write-data--details">
+    <Grid>
+      <Grid.Row>
+        <Grid.Column
+          widthXS={Columns.Twelve}
+          widthMD={Columns.Six}
+          widthLG={Columns.Three}
+        >
+          <div className="write-data--details-thumbnail">{thumbnail}</div>
+          <Dropdown
+            button={DropdownButton}
+            className="use-plugin--telegraf-configuration"
+            menu={DropdownMenu}
+            style={{width: 'auto'}}
+          />
+        </Grid.Column>
+        <Grid.Column
+          widthXS={Columns.Twelve}
+          widthMD={Columns.Six}
+          widthLG={Columns.Nine}
+        >
+          <div
+            className="write-data--details-content markdown-format"
+            data-testid="load-data-details-content"
+          >
+            {pageContent}
+          </div>
+        </Grid.Column>
+      </Grid.Row>
+    </Grid>
+  </div>
+)
 
 const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => (
   <CodeSnippet text={props.value} label={props.language} />
@@ -73,15 +151,24 @@ const TelegrafPluginsPage: FC = () => {
               <Page.Title title={name} />
             </Page.Header>
             <Page.Contents fullWidth={false} scrollable={true}>
-              <div className="write-data--details">
-                <div className="write-data--details-thumbnail">{thumbnail}</div>
-                <div
-                  className="write-data--details-content markdown-format"
-                  data-testid="load-data-details-content"
-                >
-                  {pageContent}
+              {isFlagEnabled('telegrafUiRefresh') ? (
+                <PluginToConfigurationCTA
+                  thumbnail={thumbnail}
+                  pageContent={pageContent}
+                />
+              ) : (
+                <div className="write-data--details">
+                  <div className="write-data--details-thumbnail">
+                    {thumbnail}
+                  </div>
+                  <div
+                    className="write-data--details-content markdown-format"
+                    data-testid="load-data-details-content"
+                  >
+                    {pageContent}
+                  </div>
                 </div>
-              </div>
+              )}
             </Page.Contents>
           </Page>
         </WriteDataDetailsContextProvider>

@@ -18,6 +18,7 @@ import {
 // Utils
 import {upsertSecret} from 'src/secrets/actions/thunks'
 import {getOrg} from 'src/organizations/selectors'
+import {RemoteDataState} from 'src/types'
 
 const EditSecretForm: FC = () => {
   const dispatch = useDispatch()
@@ -40,7 +41,14 @@ const EditSecretForm: FC = () => {
 
   const handleSubmit = () => {
     try {
-      dispatch(upsertSecret({key: secretName, id: secretName, value: newValue}))
+      dispatch(
+        upsertSecret({
+          key: secretName,
+          id: secretName,
+          value: newValue,
+          status: RemoteDataState.NotStarted,
+        })
+      )
     } finally {
       handleDismiss()
     }
@@ -56,7 +64,7 @@ const EditSecretForm: FC = () => {
       <Grid.Row>
         <Grid.Column>
           <Alert
-            className={'alert'}
+            className="alert"
             icon={IconFont.AlertTriangle}
             color={ComponentColor.Warning}
           >

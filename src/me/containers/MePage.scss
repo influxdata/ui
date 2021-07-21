@@ -24,6 +24,7 @@
 }
 
 .tutorials-list,
+.docslinks-list,
 .useful-links {
   padding: 0;
   list-style: none;
@@ -34,6 +35,14 @@
   background-color: $g2-kevlar;
   border-radius: $radius;
   padding: $ix-marg-c;
+  margin-bottom: $ix-marg-a;
+}
+
+.docslinks-list > li {
+  font-size: 1.25em;
+  background-color: transparent;
+  border-radius: $radius;
+  padding: 8px;
   margin-bottom: $ix-marg-a;
 }
 

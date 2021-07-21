@@ -269,7 +269,8 @@ do
 									subdirectory="oss"
 								fi
 							fi
-							output="monitor-ci/test-artifacts/results/${name}/${subdirectory}/${filename}"
+							safeName="${name//\//-}"
+							output="monitor-ci/test-artifacts/results/${safeName}/${subdirectory}/${filename}"
 							curl -L -s --request GET \
 								--output "${output}" \
 								--url "${url}" \

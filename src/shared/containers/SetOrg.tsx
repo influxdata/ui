@@ -18,6 +18,7 @@ import {
   FlowPage,
   BucketsIndex,
   TokensIndex,
+  RedesignedTokensIndex,
   TelegrafsPage,
   ScrapersIndex,
   WriteDataPage,
@@ -191,10 +192,17 @@ const SetOrg: FC = () => {
             path={`${orgPath}/${LOAD_DATA}/${TELEGRAFS}`}
             component={TelegrafsPage}
           />
-          <Route
-            path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
-            component={TokensIndex}
-          />
+          {isFlagEnabled('tokensUIRedesign') ? (
+            <Route
+              path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
+              component={RedesignedTokensIndex}
+            />
+          ) : (
+            <Route
+              path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
+              component={TokensIndex}
+            />
+          )}
           <Route
             path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
             component={BucketsIndex}

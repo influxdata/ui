@@ -16,7 +16,7 @@ import {
 } from 'src/shared/utils/vis'
 import {getMapToken} from './api'
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from '../../../shared/utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props extends VisualizationProps {
   properties: GeoViewProperties

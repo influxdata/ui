@@ -1,4 +1,11 @@
-import React, {createContext, FC, useEffect, useState, memo} from 'react'
+import React, {
+  createContext,
+  FC,
+  useEffect,
+  useState,
+  memo,
+  useCallback,
+} from 'react'
 import {API_BASE_PATH} from 'src/shared/constants'
 
 export interface PinnedItem {
@@ -86,6 +93,7 @@ export const deletePinnedItemByParam = async (param: string) => {
     console.error(err)
   }
 }
+
 export const deletePinnedItem = async (itemID: string) => {
   try {
     await removePinnedItem(itemID)
@@ -97,6 +105,14 @@ export const deletePinnedItem = async (itemID: string) => {
 const PinnedItemsProvider: FC = ({children}) => {
   const [pinnedItems, setPinnedItems] = useState([])
 
+  const deletePinnedItemsHelper = useCallback(
+    async (id: string) => {
+      await deletePinnedItem(id)
+      setPinnedItems(pinnedItems.filter(item => item.id !== id))
+    },
+    [pinnedItems]
+  )
+
   useEffect(() => {
     getPinnedItems()
       .then(res => res.json())
@@ -104,7 +120,7 @@ const PinnedItemsProvider: FC = ({children}) => {
   }, [])
 
   return (
-    <PinnedItemsContext.Provider value={{pinnedItems, setPinnedItems}}>
+    <PinnedItemsContext.Provider value={{pinnedItems, deletePinnedItemsHelper}}>
       {children}
     </PinnedItemsContext.Provider>
   )

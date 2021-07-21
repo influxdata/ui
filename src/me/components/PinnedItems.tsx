@@ -3,7 +3,6 @@ import {
   PinnedItemsContext,
   PinnedItemTypes,
   PinnedItem,
-  deletePinnedItem,
 } from 'src/shared/contexts/pinneditems'
 
 import {Context} from 'src/clockface'
@@ -43,10 +42,9 @@ const PinnedItems: FC = () => {
     [history]
   )
 
-  const {pinnedItems, setPinnedItems} = useContext(PinnedItemsContext)
+  const {pinnedItems, deletePinnedItemsHelper} = useContext(PinnedItemsContext)
   const handleDeletePinnedItem = async (itemId: string) => {
-    await deletePinnedItem(itemId)
-    setPinnedItems(pinnedItems.filter(item => item.id !== itemId))
+    await deletePinnedItemsHelper(itemId)
   }
   return (
     <>

@@ -255,9 +255,7 @@ describe('the DateTime formatter', () => {
     it('formats DateTimes in the format YYYY-MM-DD hh:mm:ss.sss', () => {
       const date = new Date(timestamp)
       const formatter = createDateTimeFormatter('YYYY-MM-DD hh:mm:ss.sss')
-      expect(formatter.format(date)).toBe(
-        `1983-07-04 ${hour}:00:00.000`
-      )
+      expect(formatter.format(date)).toBe(`1983-07-04 ${hour}:00:00.000`)
     })
 
     it('formats DateTimes in the format DD/MM/YYYY HH:mm:ss.sss', () => {

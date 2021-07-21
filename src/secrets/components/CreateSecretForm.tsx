@@ -1,19 +1,20 @@
 // Libraries
 import React, {FC, useState} from 'react'
-import {useSelector, useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
 
 // Components
 import {
+  Alert,
   Button,
   ComponentColor,
   ComponentStatus,
   Form,
   Grid,
+  IconFont,
   Input,
 } from '@influxdata/clockface'
 import {Secret} from 'src/types'
-import WarningPanel from 'src/secrets/components/WarningPanel'
 
 // Utils
 import {getAllSecrets} from 'src/resources/selectors'
@@ -40,7 +41,7 @@ const CreateSecretForm: FC = () => {
     return null
   }
 
-  const [newSecret, setNewSecret] = useState<Secret>({})
+  const [newSecret, setNewSecret] = useState<Secret>(null)
   const history = useHistory()
   const dispatch = useDispatch()
 
@@ -70,11 +71,20 @@ const CreateSecretForm: FC = () => {
     }
   }
 
+  const warningText =
+    'Make sure you know your secret value! You will be able to reference the secret in queries by key but you will not be able to see the value again.'
+
   return (
     <Grid>
       <Grid.Row>
         <Grid.Column>
-          <WarningPanel warningText="Make sure you know your secret value! You will be able to reference the secret in queries by key but you will not be able to see the value again." />
+          <Alert
+            className={'alert'}
+            icon={IconFont.AlertTriangle}
+            color={ComponentColor.Warning}
+          >
+            {warningText}
+          </Alert>
         </Grid.Column>
       </Grid.Row>
       <Grid.Row>

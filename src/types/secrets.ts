@@ -1,3 +1,10 @@
 import {Secrets as GSecrets} from 'src/client'
 
-export type Secret = GSecrets
+import {RemoteDataState} from 'src/types'
+
+export interface Secret extends GSecrets {
+  id: string
+  key: string
+  value?: string
+  status?: RemoteDataState
+}

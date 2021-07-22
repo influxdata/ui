@@ -25,7 +25,6 @@ import {
 import {getErrorMessage} from 'src/utils/api'
 import {getOrg} from 'src/organizations/selectors'
 import {getLabels, getStatus} from 'src/resources/selectors'
-import {CLOUD} from 'src/shared/constants'
 
 // Actions
 import {

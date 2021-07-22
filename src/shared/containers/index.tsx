@@ -25,6 +25,9 @@ export const BucketsIndex = lazy(() =>
 export const TokensIndex = lazy(() =>
   import('src/authorizations/containers/TokensIndex')
 )
+export const RedesignedTokensIndex = lazy(() =>
+  import('src/authorizations/containers/RedesignedTokensIndex')
+)
 export const TelegrafsPage = lazy(() =>
   import('src/telegrafs/containers/TelegrafsPage')
 )

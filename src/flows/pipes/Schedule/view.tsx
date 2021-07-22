@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useCallback, useEffect, useMemo} from 'react'
+import React, {FC, useContext, useCallback, useMemo} from 'react'
 import {
   ComponentStatus,
   Form,
@@ -12,28 +12,19 @@ import {
 } from '@influxdata/clockface'
 import {parse, format_from_js_file} from '@influxdata/flux'
 import ExportTaskButton from 'src/flows/pipes/Schedule/ExportTaskButton'
-import ExportTaskOverlay from 'src/flows/pipes/Schedule/ExportTaskOverlay'
 
 // Types
 import {PipeProp} from 'src/types/flows'
 
 import {PipeContext} from 'src/flows/context/pipe'
-import {PopupContext} from 'src/flows/context/popup'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
-import {SidebarContext} from 'src/flows/context/sidebar'
 
 import {remove} from 'src/flows/context/query'
-
-// Utils
-import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import './style.scss'
 
 const Schedule: FC<PipeProp> = ({Context}) => {
-  const {id, data, queryText, update, range} = useContext(PipeContext)
-  const {register} = useContext(SidebarContext)
-  const {launch} = useContext(PopupContext)
+  const {id, data, queryText, update} = useContext(PipeContext)
   const {simplify} = useContext(FlowQueryContext)
   let intervalError = ''
   let offsetError = ''
@@ -156,34 +147,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     return format_from_js_file(ast)
   }, [queryText, data.interval, data.offset])
 
-  useEffect(() => {
-    if (!id) {
-      return
-    }
-
-    register(id, [
-      {
-        title: 'Schedule Panel',
-        actions: [
-          {
-            title: 'Export as Task',
-            action: () => {
-              event('Export Task Clicked', {scope: 'schedule'})
-
-              launch(<ExportTaskOverlay />, {
-                properties: data.properties,
-                range: range,
-                query: generateTask(),
-              })
-            },
-          },
-        ],
-      },
-    ])
-  }, [id, data.properties, range, generateTask])
-  const persist = isFlagEnabled('flow-sidebar') ? null : (
-    <ExportTaskButton generate={generateTask} />
-  )
+  const persist = <ExportTaskButton generate={generateTask} />
 
   return (
     <Context persistentControls={persist}>

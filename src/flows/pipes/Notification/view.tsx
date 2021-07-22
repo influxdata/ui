@@ -38,12 +38,12 @@ import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const Notification: FC<PipeProp> = ({Context}) => {
-  const {id, data, queryText, update, range, results, loading} = useContext(
+  const {id, data, update, range, results, loading} = useContext(
     PipeContext
   )
   const {register} = useContext(SidebarContext)
   const {launch} = useContext(PopupContext)
-  const {simplify} = useContext(FlowQueryContext)
+  const {simplify, getPanelQueries} = useContext(FlowQueryContext)
 
   let intervalError = ''
   let offsetError = ''
@@ -64,6 +64,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
     offsetError = 'Invalid Time'
   }
 
+  const queryText = getPanelQueries(id, true).source
   const hasTaskOption = useMemo(
     () =>
       !!Object.keys(

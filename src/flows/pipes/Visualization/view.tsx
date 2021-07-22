@@ -38,10 +38,10 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {downloadTextFile} from 'src/shared/utils/download'
 
 const Visualization: FC<PipeProp> = ({Context}) => {
-  const {id, data, range, update, loading, results, queryText} = useContext(
+  const {id, data, range, update, loading, results} = useContext(
     PipeContext
   )
-  const {basic} = useContext(FlowQueryContext)
+  const {basic, getPanelQueries} = useContext(FlowQueryContext)
   const {register} = useContext(SidebarContext)
   const {launch} = useContext(PopupContext)
   const [optionsVisibility, setOptionsVisibility] = useState(false)
@@ -63,6 +63,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
 
   const dataExists = !!(results?.parsed?.table || []).length
 
+  const queryText = getPanelQueries(id, true).source
   const downloadTitle = queryText
     ? 'Download results as an annotated CSV file'
     : 'Build a query to download your results'

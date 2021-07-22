@@ -27,9 +27,10 @@
 }
 
 .column-card--name {
-  flex: 3;
+  flex: 1;
 }
 
 .column-card--vistoggle {
-  flex: 1;
+  flex: 0;
+  margin-right: 12px;
 }

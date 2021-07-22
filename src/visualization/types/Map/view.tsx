@@ -14,10 +14,15 @@ import {
   getGeoCoordinates,
   getGeoCoordinatesFlagged,
 } from 'src/shared/utils/vis'
-import {getMapToken} from 'src/client/mapsdRoutes'
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {CLOUD} from 'src/shared/constants'
 
+let getMapToken = null
+
+if (CLOUD) {
+  getMapToken = require('src/client/mapsdRoutes').getMapToken
+}
 interface Props extends VisualizationProps {
   properties: GeoViewProperties
 }
@@ -55,24 +60,26 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
   const [coordinateFieldsFlag, setCoordinateFlag] = useState<boolean>(false)
 
   useEffect(() => {
-    const getToken = async () => {
-      try {
-        setMapServiceError(RemoteDataState.Loading)
-        const resp = await getMapToken({})
+    if (CLOUD) {
+      const getToken = async () => {
+        try {
+          setMapServiceError(RemoteDataState.Loading)
+          const resp = await getMapToken({})
 
-        if (resp.status !== 200) {
-          throw new Error(resp.data.message)
+          if (resp.status !== 200) {
+            throw new Error(resp.data.message)
+          }
+
+          setMapToken(resp.data.token)
+          setMapServiceError(RemoteDataState.Done)
+          event('mapplot.map_token_request.success')
+        } catch (err) {
+          setMapServiceError(RemoteDataState.Error)
+          event('mapplot.map_token_request.failure')
         }
-
-        setMapToken(resp.data.token)
-        setMapServiceError(RemoteDataState.Done)
-        event('mapplot.map_token_request.success')
-      } catch (err) {
-        setMapServiceError(RemoteDataState.Error)
-        event('mapplot.map_token_request.failure')
       }
+      getToken()
     }
-    getToken()
   }, [])
 
   useEffect(() => {

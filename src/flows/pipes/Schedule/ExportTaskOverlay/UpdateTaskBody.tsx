@@ -2,18 +2,20 @@ import React, {FC, lazy, Suspense, useContext} from 'react'
 import {useSelector} from 'react-redux'
 
 import {
+  Alert,
   Columns,
+  ComponentColor,
   ComponentSize,
   EmptyState,
   Form,
   Grid,
+  IconFont,
   RemoteDataState,
   SpinnerContainer,
   TechnoSpinner,
 } from '@influxdata/clockface'
 
 import TaskDropdown from 'src/flows/pipes/Schedule/ExportTaskOverlay/TaskDropdown'
-import WarningPanel from 'src/flows/pipes/Schedule/ExportTaskOverlay/WarningPanel'
 import {Context} from 'src/flows/pipes/Schedule/ExportTaskOverlay/context'
 
 import {hasNoTasks as hasNoTasksSelector} from 'src/resources/selectors'
@@ -25,6 +27,8 @@ const UpdateTaskBody: FC = () => {
   const {script, selectedTask} = useContext(Context)
 
   const hasNoTasks = useSelector(hasNoTasksSelector)
+
+  const warning = 'Note: Changes made to an existing task cannot be undone'
 
   if (hasNoTasks) {
     return (
@@ -45,7 +49,13 @@ const UpdateTaskBody: FC = () => {
         </Form.Element>
       </Grid.Column>
       <Grid.Column>
-        <WarningPanel />
+        <Alert
+          className={'flow-update-task--export-warning'}
+          icon={IconFont.AlertTriangle}
+          color={ComponentColor.Warning}
+        >
+          {warning}
+        </Alert>
         <Form.Element label="Preview">
           <Suspense
             fallback={

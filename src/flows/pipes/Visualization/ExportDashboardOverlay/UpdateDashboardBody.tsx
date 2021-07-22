@@ -1,17 +1,19 @@
 import React, {ChangeEvent, FC, useContext} from 'react'
 import {useSelector} from 'react-redux'
 import {
+  Alert,
   Columns,
+  ComponentColor,
   ComponentSize,
   ComponentStatus,
   EmptyState,
   Form,
   Grid,
+  IconFont,
   Input,
 } from '@influxdata/clockface'
 import DashboardDropdown from 'src/flows/pipes/Visualization/ExportDashboardOverlay/DashboardDropdown'
 import CellsDropdown from 'src/flows/pipes/Visualization/ExportDashboardOverlay/CellsDropdown'
-import WarningPanel from 'src/flows/pipes/Visualization/ExportDashboardOverlay/WarningPanel'
 import {
   Context,
   CREATE_CELL,
@@ -29,6 +31,9 @@ const UpdateDashboardBody: FC = () => {
   } = useContext(Context)
 
   const hasNoDashboards = useSelector(hasNoDashboardsSelector)
+
+  const warning =
+    'Note: changes made to existing dashboard cells cannot be undone'
 
   if (hasNoDashboards) {
     return (
@@ -82,7 +87,13 @@ const UpdateDashboardBody: FC = () => {
       )}
       {selectedCell && selectedCell.id !== CREATE_CELL && (
         <Grid.Column widthXS={Columns.Twelve}>
-          <WarningPanel />
+          <Alert
+            className={'flow-visualization--export-warning'}
+            icon={IconFont.AlertTriangle}
+            color={ComponentColor.Warning}
+          >
+            {warning}
+          </Alert>
         </Grid.Column>
       )}
     </>

@@ -43,6 +43,7 @@ describe('Dashboards.Selector', () => {
     '04c6f3976f4b8002',
     '04c6f3976f4b8003',
     '04c6f3976f4b8004',
+    '04c6f3976f4b8005',
   ]
   const customTimeRangePST = {
     lower: '2020-05-05T10:00:00-07:00',
@@ -59,12 +60,18 @@ describe('Dashboards.Selector', () => {
     upper: '2020-05-05T11:00:00+00:00',
     type: 'custom',
   } as CustomTimeRange
+  const customTimeRangeUTC = {
+    lower: '2021-07-17T14:00:00.000Z',
+    upper: '2021-07-17T16:00:00.000Z',
+    type: 'custom',
+  } as CustomTimeRange
   const ranges: RangeState = {
     [dashboardIDs[0]]: pastFifteenMinTimeRange,
     [dashboardIDs[1]]: pastHourTimeRange,
     [dashboardIDs[2]]: customTimeRangePST,
     [dashboardIDs[3]]: customTimeRangeCET,
     [dashboardIDs[4]]: customTimeRangeGMT,
+    [dashboardIDs[5]]: customTimeRangeUTC,
   }
 
   it('should return the correct range when a matching dashboard ID is found', () => {
@@ -169,6 +176,33 @@ describe('Dashboards.Selector', () => {
     }
     // Offset for CET
     mocked(getTimezoneOffset).mockImplementation(() => -120)
+
+    expect(
+      untypedGetTimeRangeWithTimeZone({ranges, currentDashboard, app})
+    ).toEqual(expected)
+  })
+
+  it('should return the same timeRange when the time is already in UTC', () => {
+    const currentDashboard = {id: dashboardIDs[5]}
+
+    const app: AppPresentationState = {
+      ephemeral: {
+        inPresentationMode: false,
+        hasUpdatedTimeRangeInVEO: false,
+      },
+      persisted: {
+        autoRefresh: 0,
+        showTemplateControlBar: false,
+        navBarState: 'expanded',
+        timeZone: 'UTC' as TimeZone,
+        theme: 'dark',
+        versionInfo: {version: '', commit: ''},
+      },
+    }
+
+    const expected = customTimeRangeUTC
+
+    mocked(getTimezoneOffset).mockImplementation(() => 0)
 
     expect(
       untypedGetTimeRangeWithTimeZone({ranges, currentDashboard, app})

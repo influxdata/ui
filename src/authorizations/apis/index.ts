@@ -50,8 +50,9 @@ export const getAuth0Config = async (
     }
 
     let url = `${getAPIBasepath()}/api/v2private/oauth/clientConfig`
+
     if (redirectTo) {
-      url = `${getAPIBasepath()}/api/v2private/oauth/clientConfig?redirectTo=${redirectTo}`
+      url = `${url}?redirectTo=${redirectTo}`
     }
 
     const response = await fetch(url)

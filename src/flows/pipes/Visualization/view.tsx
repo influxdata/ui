@@ -99,17 +99,6 @@ const Visualization: FC<PipeProp> = ({Context}) => {
         title: 'Visualization',
         actions: [
           {
-            title: 'Options',
-            disable: !dataExists,
-            menu: (
-              <ViewOptions
-                properties={data.properties}
-                results={results.parsed}
-                update={updateProperties}
-              />
-            ),
-          },
-          {
             title: 'Download as CSV',
             disable: !dataExists,
             action: download,

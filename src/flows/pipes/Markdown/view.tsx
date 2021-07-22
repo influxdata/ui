@@ -29,26 +29,6 @@ const MarkdownPanel: FC<PipeProp> = ({Context}) => {
     update({mode: 'edit'})
   }
 
-  useEffect(() => {
-    if (!id) {
-      return
-    }
-
-    register(id, [
-      {
-        title: 'Markdown',
-        actions: [
-          {
-            title: () => (data.mode === 'edit' ? 'Preview' : 'Edit'),
-            action: () => {
-              update({mode: data.mode === 'edit' ? 'preview' : 'edit'})
-            },
-          },
-        ],
-      },
-    ])
-  }, [id, update, data])
-
   const handleChange = (text: string): void => {
     update({text})
   }
@@ -85,7 +65,7 @@ const MarkdownPanel: FC<PipeProp> = ({Context}) => {
     )
   }
 
-  const controls = isFlagEnabled('flow-sidebar') ? null : <MarkdownModeToggle />
+  const controls = <MarkdownModeToggle />
   return (
     <Context controls={controls} resizes>
       {panelContents}

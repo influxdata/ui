@@ -1,12 +1,73 @@
 @import '@influxdata/clockface/dist/variables.scss';
-.columns-panel--grid {
+@import '~src/flows/FlowVariables.scss';
+
+.flow-columns {
   width: 100%;
   display: grid;
   grid-template-columns: repeat(6, minmax(100px, 1fr));
-  grid-gap: 5px;
+  grid-gap: 4px;
   height: auto;
   background-color: $g0-obsidian;
-  padding: 5px;
+  padding: 4px;
+}
+
+.flow-columns--column {
+  display: flex;
+  padding: 16px;
+  background: $g3-castle;
+  border-radius: 4px;
+}
+
+.flow-columns--toggle {
+  flex: 0;
+  margin-right: 12px;
+}
+
+.flow-columns--input {
+  flex: 1 1;
+  font-size: 14px;
+  font-weight: $cf-font-weight--medium;
+  user-select: none;
+
+  color: $g15-platinum;
+  height: $cf-form-sm-height;
+  position: relative;
+
+  input {
+    background-color: transparent;
+    border: $cf-border solid $flow-panel--bg;
+    color: $g15-platinum;
+    font-size: 14px;
+    font-family: $cf-text-font;
+    font-weight: $cf-font-weight--medium;
+    transition: color 0.25s ease, background-color 0.25s ease,
+      border-color 0.25s ease, box-shadow 0.25s ease;
+    outline: none;
+    width: 100%;
+    height: $cf-form-sm-height;
+    border-radius: $cf-radius;
+
+    &:hover {
+      border-color: $g5-pepper;
+    }
+
+    &:hover,
+    &:focus {
+      color: $g20-white;
+    }
+
+    &:focus {
+      background-color: $cf-input-background--focused;
+      border-color: $cf-input-border--focused;
+      box-shadow: $cf-input--box-shadow;
+    }
+  }
+
+  &:hover {
+    .flow-panel--title-icon {
+      opacity: 1;
+    }
+  }
 }
 
 .column-card--content {
@@ -14,7 +75,6 @@
   height: 45px;
 }
 .column-card--content > div {
-  display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;

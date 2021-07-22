@@ -38,9 +38,7 @@ import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const Notification: FC<PipeProp> = ({Context}) => {
-  const {id, data, update, range, results, loading} = useContext(
-    PipeContext
-  )
+  const {id, data, update, range, results, loading} = useContext(PipeContext)
   const {register} = useContext(SidebarContext)
   const {launch} = useContext(PopupContext)
   const {simplify, getPanelQueries} = useContext(FlowQueryContext)

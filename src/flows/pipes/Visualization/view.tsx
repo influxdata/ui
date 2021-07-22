@@ -38,9 +38,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {downloadTextFile} from 'src/shared/utils/download'
 
 const Visualization: FC<PipeProp> = ({Context}) => {
-  const {id, data, range, update, loading, results} = useContext(
-    PipeContext
-  )
+  const {id, data, range, update, loading, results} = useContext(PipeContext)
   const {basic, getPanelQueries} = useContext(FlowQueryContext)
   const {register} = useContext(SidebarContext)
   const {launch} = useContext(PopupContext)

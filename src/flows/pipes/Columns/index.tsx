@@ -1,4 +1,13 @@
-import View, {TableColumnKey} from './view'
+import View from './view'
+
+export interface Hash<T> {
+  [column: string]: T
+}
+
+export interface Mapping {
+  name: string
+  visible: boolean
+}
 
 export default register => {
   register({
@@ -7,7 +16,7 @@ export default register => {
     component: View,
     button: 'Column Editor',
     initial: {
-      mappings: {},
+      mappings: {} as Hash<Mapping>,
     },
     generateFlux: (pipe, create, append) => {
       append(`__CURRENT_RESULT__ |> limit(n: 100)`)
@@ -16,22 +25,21 @@ export default register => {
         return
       }
 
-      const mods = Object.entries(
-        pipe.mappings
-      ).reduce((acc, [k, v]) => {
-        if (!v.visible) {
-          acc.dropped.push(`"${k}"`)
+      const mods = Object.entries(pipe.mappings as Hash<Mapping>).reduce(
+        (acc, [k, v]) => {
+          if (!v.visible) {
+            acc.dropped.push(`"${k}"`)
+            return acc
+          }
+
+          acc.renamed.push(`"${k}": "${v.name}"`)
           return acc
+        },
+        {
+          renamed: [],
+          dropped: [],
         }
-
-        acc.renamed.push(`"${k}": "${v.name}"`)
-        return acc
-      }, {
-        renamed: [],
-        dropped: []
-      })
-
-      return
+      )
 
       let query = `__PREVIOUS_RESULT__`
 

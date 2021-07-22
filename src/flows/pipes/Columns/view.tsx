@@ -1,36 +1,33 @@
-import React, {FC, useContext, useEffect, useState} from 'react'
+import React, {FC, useContext} from 'react'
 import {PipeContext} from 'src/flows/context/pipe'
-import './styles.scss'
 import {PipeProp} from 'src/types/flows'
-import {
-  Icon,
-  IconFont,
-  ResourceCard,
-  SlideToggle,
-  FlexBox,
-  FlexDirection,
-  AlignItems,
-  ComponentSize,
-} from '@influxdata/clockface'
+import {Icon, IconFont, SlideToggle} from '@influxdata/clockface'
+import {RemoteDataState} from 'src/types'
+import {Hash, Mapping} from 'src/flows/pipes/Columns'
 
-export interface TableColumnKey {
-  name: string
-  visible: boolean
-}
+import './styles.scss'
 
 const View: FC<PipeProp> = ({Context}) => {
-  const {update, data, results} = useContext(PipeContext)
+  const {update, data, results, loading} = useContext(PipeContext)
 
   const updateColumn = (key, val) => {
-    if ((data.mappings || {})[key] && val.name === key && val.visible === true) {
+    if (
+      (data.mappings || {})[key] &&
+      val.name === key &&
+      val.visible === true
+    ) {
       delete data.mappings[key]
       update({
-        mappings: {...data.mappings}
+        mappings: {...data.mappings},
       })
       return
     }
 
-    if ((data.mappings || {})[key] && data.mappings[key].name === val.name && data.mappings[key].visible === val.visible) {
+    if (
+      (data.mappings || {})[key] &&
+      data.mappings[key].name === val.name &&
+      data.mappings[key].visible === val.visible
+    ) {
       return
     }
 
@@ -40,47 +37,59 @@ const View: FC<PipeProp> = ({Context}) => {
 
     data.mappings[key] = val
     update({
-      mappings: {...data.mappings}
+      mappings: {...data.mappings},
     })
   }
 
   if (!results.parsed || !results.parsed.table) {
+    let msg = 'This cell will display columns from the previous cell'
+
+    if (loading === RemoteDataState.Loading) {
+      msg = 'Loading'
+    }
+
     return (
       <Context>
         <div className="panel-resizer">
           <div className="panel-resizer--header">
-            <Icon glyph={IconFont.Layers} className="panel-resizer--vis-toggle"/>
+            <Icon
+              glyph={IconFont.Layers}
+              className="panel-resizer--vis-toggle"
+            />
           </div>
           <div className="panel-resizer--body">
-            <div className="panel-resizer--empty">This cell will display columns from the previous cell</div>
+            <div className="panel-resizer--empty">{msg}</div>
           </div>
         </div>
       </Context>
     )
   }
 
-  const columns = Object.entries(data.mappings || {}).reduce((acc, [k, v]) => {
-    if (acc[k]) {
-      acc[k] = v
-    }
+  const columns: Hash<Mapping> = Object.entries(data.mappings || {}).reduce(
+    (acc, [k, v]) => {
+      if (acc[k]) {
+        acc[k] = v
+      }
 
-    return acc
-  }, Object.keys(results.parsed.table.columns).reduce((acc, curr) => {
-    acc[curr] = { name: curr, visible: true }
-    return acc
-  }, {}))
+      return acc
+    },
+    Object.keys(results.parsed.table.columns).reduce((acc, curr) => {
+      acc[curr] = {name: curr, visible: true}
+      return acc
+    }, {})
+  )
 
   const cards = Object.entries(columns).map(([k, v]) => {
     const updateVisibility = () => {
       updateColumn(k, {
         ...v,
-        visible: !v.visible
+        visible: !v.visible,
       })
     }
-    const updateName = (evt) => {
+    const updateName = evt => {
       updateColumn(k, {
         ...v,
-        name: evt.target.value
+        name: evt.target.value,
       })
     }
 
@@ -109,9 +118,7 @@ const View: FC<PipeProp> = ({Context}) => {
 
   return (
     <Context>
-      <div className="columns-panel--grid">
-        {cards}
-      </div>
+      <div className="flow-columns">{cards}</div>
     </Context>
   )
 }

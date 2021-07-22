@@ -57,7 +57,7 @@ interface ButtonProps {
 
 export const MenuButton: FC<ButtonProps> = ({id}) => {
   const {id: focused, show, hide, submenu} = useContext(SidebarContext)
-  const ref = useRef()
+  const ref = useRef<HTMLDivElement>()
 
   const toggleSidebar = evt => {
     evt.preventDefault()

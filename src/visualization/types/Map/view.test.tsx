@@ -3,11 +3,11 @@ import {render} from '@testing-library/react'
 import GeoPlot from './view'
 import properties from './properties'
 
-jest.mock('src/client/mapsdRoutes')
-
 jest.mock('src/shared/constants/index', () => ({
   CLOUD: true,
 }))
+
+jest.mock('src/client/mapsdRoutes')
 
 const table = {
   getColumn: jest.fn(),

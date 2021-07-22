@@ -2,6 +2,7 @@ import React from 'react'
 import {render} from '@testing-library/react'
 import GeoPlot from './view'
 import properties from './properties'
+import {DEFAULT_THRESHOLDS_GEO_COLORS} from 'src/shared/constants/thresholds'
 
 jest.mock('src/visualization/types/Map/api')
 
@@ -36,5 +37,25 @@ describe('Map component renders', () => {
     })
     const {queryByTestId} = setup()
     expect(queryByTestId('panel-resizer--error')).toEqual(null)
+  })
+})
+
+describe('Map color layers', () => {
+  it('has autofilled', () => {
+    expect(properties.layers[0].colors).toEqual(DEFAULT_THRESHOLDS_GEO_COLORS)
+  })
+  it('can be overwritten', () => {
+    expect(properties.layers[0].colors).toEqual(DEFAULT_THRESHOLDS_GEO_COLORS)
+    const newcolors = [
+      {
+        type: 'min',
+        value: '5',
+        hex: '#9394FF',
+        id: '0',
+        name: 'comet',
+      },
+    ]
+    properties.layers[0].colors = newcolors
+    expect(properties.layers[0].colors).toEqual(newcolors)
   })
 })

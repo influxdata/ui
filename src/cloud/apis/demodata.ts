@@ -1,6 +1,6 @@
 // Libraries
 import {get} from 'lodash'
-import {getBucket, getBuckets} from 'src/client'
+import {getBuckets, getBucket} from 'src/client'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -37,7 +37,6 @@ export const getDemoDataBuckets = async (): Promise<Bucket[]> => {
   if (resp.status !== 200) {
     throw new Error(resp.data.message)
   }
-
   // if sampledata endpoints are not available in a cluster
   // gateway responds with a list of links where 'buckets' field is a string
   const buckets = get(resp.data, 'buckets', null)

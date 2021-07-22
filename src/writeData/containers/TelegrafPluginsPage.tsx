@@ -48,9 +48,8 @@ const TelegrafPluginsPage: FC<Props> = props => {
     },
   } = props
   const {contentID} = useParams<ParamsType>()
-  const {name, markdown, image} = WRITE_DATA_TELEGRAF_PLUGINS.find(
-    item => item.id === contentID
-  )
+  const {name = '', markdown = '', image = ''} =
+    WRITE_DATA_TELEGRAF_PLUGINS.find(item => item.id === contentID) || {}
 
   let thumbnail = (
     <img data-testid="load-data-details-thumb" src={image || placeholderLogo} />

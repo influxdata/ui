@@ -40,7 +40,8 @@ const CloudUpgradeNavBanner: FC = () => {
               </Heading>
             </Panel.Header>
             <Panel.Footer size={ComponentSize.ExtraSmall}>
-              {isFlagEnabled('unityCheckout') ? (
+              {isFlagEnabled('unityCheckout') ||
+              isFlagEnabled('uiUnificationFlag') ? (
                 <Link
                   className="cf-button cf-button-md cf-button-primary cf-button-stretch cloud-upgrade-banner--button upgrade-payg--button__nav"
                   to="/checkout"
@@ -58,7 +59,8 @@ const CloudUpgradeNavBanner: FC = () => {
               )}
             </Panel.Footer>
           </Panel>
-          {isFlagEnabled('unityCheckout') ? (
+          {isFlagEnabled('unityCheckout') ||
+          isFlagEnabled('uiUnificationFlag') ? (
             <Link className="cloud-upgrade-banner__collapsed" to="/checkout">
               <Icon glyph={IconFont.CrownSolid} />
               <Heading element={HeadingElement.H5}>Upgrade Now</Heading>

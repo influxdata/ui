@@ -20,12 +20,10 @@ import {setSetupParams, setStepStatus, setupAdmin} from 'src/onboarding/actions'
 import {StepStatus} from 'src/clockface/constants/wizard'
 
 // Types
-import {Links} from 'src/types/links'
 import {ISetupParams} from '@influxdata/influx'
 import {AppState} from 'src/types'
 
 export interface OnboardingStepProps {
-  links: Links
   currentStepIndex: number
   onSetCurrentStepIndex: (stepNumber: number) => void
   onIncrementCurrentStepIndex: () => void
@@ -127,7 +125,6 @@ class OnboardingWizard extends PureComponent<Props> {
   private get onboardingStepProps(): OnboardingStepProps {
     const {
       stepStatuses,
-      links,
       notify,
       onCompleteSetup,
       setupParams,
@@ -148,7 +145,6 @@ class OnboardingWizard extends PureComponent<Props> {
       onIncrementCurrentStepIndex,
       onDecrementCurrentStepIndex,
       onSetStepStatus,
-      links,
       setupParams,
       handleSetSetupParams: onSetSetupParams,
       notify,
@@ -159,10 +155,8 @@ class OnboardingWizard extends PureComponent<Props> {
 }
 
 const mstp = ({
-  links,
   onboarding: {stepStatuses, setupParams, orgID, bucketID},
 }: AppState) => ({
-  links,
   stepStatuses,
   setupParams,
   orgID,

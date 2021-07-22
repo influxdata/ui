@@ -270,6 +270,7 @@ do
 								fi
 							fi
 							safeName="${name//\//-}"
+							mkdir -p "monitor-ci/test-artifacts/results/${safeName}/${subdirectory}"
 							output="monitor-ci/test-artifacts/results/${safeName}/${subdirectory}/${filename}"
 							curl -L -s --request GET \
 								--output "${output}" \

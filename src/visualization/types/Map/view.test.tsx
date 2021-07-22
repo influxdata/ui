@@ -3,8 +3,6 @@ import {render} from '@testing-library/react'
 import GeoPlot from './view'
 import properties from './properties'
 
-jest.mock('src/visualization/types/Map/api')
-
 jest.mock('src/shared/constants/index', () => ({
   CLOUD: true,
 }))

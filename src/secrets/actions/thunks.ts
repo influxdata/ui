@@ -5,7 +5,7 @@ import {normalize} from 'normalizr'
 import {
   getOrgsSecrets as apiGetSecrets,
   patchOrgsSecrets as apiUpdateSecret,
-  postOrgsSecretsDelete as apiDeleteSecret,
+  deleteOrgsSecret as apiDeleteSecret,
 } from 'src/client'
 
 // Schemas

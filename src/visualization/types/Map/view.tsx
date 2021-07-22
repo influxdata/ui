@@ -15,7 +15,7 @@ import {
   getGeoCoordinates,
   getGeoCoordinatesFlagged,
 } from 'src/shared/utils/vis'
-import {getMapToken} from 'src/client/mapsdRoutes'
+import {getMapToken} from './api'
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 

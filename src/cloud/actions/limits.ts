@@ -1,6 +1,3 @@
-// API
-import {getOrgsLimits, getOrgsLimitsStatus} from 'src/client/cloudPrivRoutes'
-
 // Actions
 import {notify} from 'src/shared/actions/notifications'
 
@@ -28,6 +25,16 @@ import {
 } from 'src/cloud/utils/limits'
 import {getOrg} from 'src/organizations/selectors'
 import {getAll} from 'src/resources/selectors'
+import {CLOUD} from 'src/shared/constants'
+
+let getOrgsLimits = null
+let getOrgsLimitsStatus = null
+
+if (CLOUD) {
+  getOrgsLimits = require('src/client/cloudPrivRoutes').getOrgsLimits
+  getOrgsLimitsStatus = require('src/client/cloudPrivRoutes')
+    .getOrgsLimitsStatus
+}
 
 export type MonitoringLimits = {
   [type in ColumnTypes]: LimitStatus['status']
@@ -216,6 +223,10 @@ export const getReadWriteCardinalityLimits = () => async (
   dispatch,
   getState: GetState
 ) => {
+  if (!CLOUD) {
+    // this endpoint is a cloud only endpoint. Any OSS user should have no limit on the number of resources allocated
+    return
+  }
   try {
     const org = getOrg(getState())
 
@@ -251,6 +262,10 @@ export const getReadWriteCardinalityLimits = () => async (
 }
 
 export const getAssetLimits = () => async (dispatch, getState: GetState) => {
+  if (!CLOUD) {
+    // this endpoint is a cloud only endpoint. Any OSS user should have no limit on the number of resources allocated
+    return
+  }
   dispatch(setLimitsStatus(RemoteDataState.Loading))
   try {
     const org = getOrg(getState())

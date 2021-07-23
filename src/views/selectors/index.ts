@@ -3,6 +3,7 @@ import {AppState, View, ResourceType, Dashboard} from 'src/types'
 
 // Selectors
 import {getByID} from 'src/resources/selectors'
+import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
 
 export const getViewsForDashboard = (
   state: AppState,
@@ -21,4 +22,22 @@ export const getViewsForDashboard = (
   )
 
   return views
+}
+
+export const getTimeFormatForView = (
+  state: AppState,
+  viewID: string
+): string => {
+  const view = getByID<View>(state, ResourceType.Views, viewID)
+
+  let timeFormat = ''
+  if ('timeFormat' in view.properties) {
+    timeFormat = view.properties.timeFormat
+  }
+
+  if (timeFormat === '') {
+    return DEFAULT_TIME_FORMAT
+  }
+
+  return timeFormat
 }

@@ -6,9 +6,9 @@ data <- data.frame(
     time = c(Sys.time(),Sys.time())
 )
 
-client$write(data, bucket = "<%= bucket %>", precision = "ms",
-             measurementCol = "name",
-             tagCols = c("sensor_id"),
-             fieldCols = c("temperature", "humidity"),
-             timeCol = "time")
+client$write(data,bucket = "<%= bucket %>", precision = "ms",
+    measurementCol = "name",
+    tagCols = c("sensor_id"),
+    fieldCols = c("temperature", "humidity"),
+    timeCol = "time")
 

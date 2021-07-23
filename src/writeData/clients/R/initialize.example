@@ -4,5 +4,5 @@ library("influxdbclient")
 token = "<%= token %>"
 
 client <- InfluxDBClient$new(url = "<%= server %>",
-                             token = token,
-                             org = "<%= org %>")
+    token = token,
+    org = "<%= org %>")

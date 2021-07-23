@@ -91,7 +91,7 @@ describe('Secrets', () => {
   it('Can perform basic CRUD via the UI', () => {
     const secretName = 'Shhhhh'
     cy.intercept('PATCH', '**/secrets').as('upsertSecret')
-    cy.intercept('POST', '**/secrets/delete').as('deleteSecret')
+    cy.intercept('DELETE', '**/secrets/**').as('deleteSecret')
     cy.getByTestID('button-add-secret')
       .first() // There's a second one in the empty state.
       .click()
@@ -132,7 +132,9 @@ describe('Secrets', () => {
                         cy.getByTestID('delete-secret-confirm--Shhhhh').should(
                           'exist'
                         )
-                        cy.getByTestID('delete-secret-confirm--Shhhhh').click()
+                        cy.getByTestID('delete-secret-confirm--Shhhhh').click({
+                          force: true,
+                        })
                         cy.wait('@deleteSecret')
                           .its('response.statusCode')
                           .should('eq', 204)

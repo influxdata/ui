@@ -88,7 +88,7 @@ const UpdateDashboardBody: FC = () => {
       {selectedCell && selectedCell.id !== CREATE_CELL && (
         <Grid.Column widthXS={Columns.Twelve}>
           <Alert
-            className={'flow-visualization--export-warning'}
+            className="flow-visualization--export-warning"
             icon={IconFont.AlertTriangle}
             color={ComponentColor.Warning}
           >

@@ -50,7 +50,7 @@ const UpdateTaskBody: FC = () => {
       </Grid.Column>
       <Grid.Column>
         <Alert
-          className={'flow-update-task--export-warning'}
+          className="flow-update-task--export-warning"
           icon={IconFont.AlertTriangle}
           color={ComponentColor.Warning}
         >

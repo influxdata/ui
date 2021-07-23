@@ -8,12 +8,11 @@ import {readLimitReached} from 'src/shared/copy/notifications'
 import {
   Bucket,
   GetState,
-  Limits,
   RemoteDataState,
   ResourceType,
   ColumnTypes,
 } from 'src/types'
-
+import {Limit as Limits, LimitStatus} from 'src/client/cloudPrivRoutes'
 // Selectors
 import {
   extractDashboardMax,
@@ -36,9 +35,9 @@ if (CLOUD) {
     .getOrgsLimitsStatus
 }
 
-export enum LimitStatus {
-  OK = 'ok',
-  EXCEEDED = 'exceeded',
+export interface Limit {
+  maxAllowed: number
+  limitStatus: LimitStatus['status']
 }
 
 export type MonitoringLimits = {
@@ -86,11 +85,11 @@ export const setLimits = (limits: Limits): SetLimits => {
 
 export interface SetDashboardLimitStatus {
   type: ActionTypes.SetDashboardLimitStatus
-  payload: {limitStatus: LimitStatus}
+  payload: {limitStatus: LimitStatus['status']}
 }
 
 export const setDashboardLimitStatus = (
-  limitStatus: LimitStatus
+  limitStatus: LimitStatus['status']
 ): SetDashboardLimitStatus => {
   return {
     type: ActionTypes.SetDashboardLimitStatus,
@@ -100,11 +99,11 @@ export const setDashboardLimitStatus = (
 
 export interface SetBucketLimitStatus {
   type: ActionTypes.SetBucketLimitStatus
-  payload: {limitStatus: LimitStatus}
+  payload: {limitStatus: LimitStatus['status']}
 }
 
 export const setBucketLimitStatus = (
-  limitStatus: LimitStatus
+  limitStatus: LimitStatus['status']
 ): SetBucketLimitStatus => {
   return {
     type: ActionTypes.SetBucketLimitStatus,
@@ -114,11 +113,11 @@ export const setBucketLimitStatus = (
 
 export interface SetTaskLimitStatus {
   type: ActionTypes.SetTaskLimitStatus
-  payload: {limitStatus: LimitStatus}
+  payload: {limitStatus: LimitStatus['status']}
 }
 
 export const setTaskLimitStatus = (
-  limitStatus: LimitStatus
+  limitStatus: LimitStatus['status']
 ): SetTaskLimitStatus => {
   return {
     type: ActionTypes.SetTaskLimitStatus,
@@ -128,11 +127,11 @@ export const setTaskLimitStatus = (
 
 export interface SetChecksLimitStatus {
   type: ActionTypes.SetChecksLimitStatus
-  payload: {limitStatus: LimitStatus}
+  payload: {limitStatus: LimitStatus['status']}
 }
 
 export const setChecksLimitStatus = (
-  limitStatus: LimitStatus
+  limitStatus: LimitStatus['status']
 ): SetChecksLimitStatus => {
   return {
     type: ActionTypes.SetChecksLimitStatus,
@@ -142,11 +141,11 @@ export const setChecksLimitStatus = (
 
 export interface SetRulesLimitStatus {
   type: ActionTypes.SetRulesLimitStatus
-  payload: {limitStatus: LimitStatus}
+  payload: {limitStatus: LimitStatus['status']}
 }
 
 export const setRulesLimitStatus = (
-  limitStatus: LimitStatus
+  limitStatus: LimitStatus['status']
 ): SetRulesLimitStatus => {
   return {
     type: ActionTypes.SetRulesLimitStatus,
@@ -156,11 +155,11 @@ export const setRulesLimitStatus = (
 
 export interface SetEndpointsLimitStatus {
   type: ActionTypes.SetEndpointsLimitStatus
-  payload: {limitStatus: LimitStatus}
+  payload: {limitStatus: LimitStatus['status']}
 }
 
 export const setEndpointsLimitStatus = (
-  limitStatus: LimitStatus
+  limitStatus: LimitStatus['status']
 ): SetEndpointsLimitStatus => {
   return {
     type: ActionTypes.SetEndpointsLimitStatus,
@@ -170,11 +169,11 @@ export const setEndpointsLimitStatus = (
 
 export interface SetReadRateLimitStatus {
   type: ActionTypes.SetReadRateLimitStatus
-  payload: {limitStatus: LimitStatus}
+  payload: {limitStatus: LimitStatus['status']}
 }
 
 export const setReadRateLimitStatus = (
-  limitStatus: LimitStatus
+  limitStatus: LimitStatus['status']
 ): SetReadRateLimitStatus => {
   return {
     type: ActionTypes.SetReadRateLimitStatus,
@@ -184,11 +183,11 @@ export const setReadRateLimitStatus = (
 
 export interface SetWriteRateLimitStatus {
   type: ActionTypes.SetWriteRateLimitStatus
-  payload: {limitStatus: LimitStatus}
+  payload: {limitStatus: LimitStatus['status']}
 }
 
 export const setWriteRateLimitStatus = (
-  limitStatus: LimitStatus
+  limitStatus: LimitStatus['status']
 ): SetWriteRateLimitStatus => {
   return {
     type: ActionTypes.SetWriteRateLimitStatus,
@@ -198,11 +197,11 @@ export const setWriteRateLimitStatus = (
 
 export interface SetCardinalityLimitStatus {
   type: ActionTypes.SetCardinalityLimitStatus
-  payload: {limitStatus: LimitStatus}
+  payload: {limitStatus: LimitStatus['status']}
 }
 
 export const setCardinalityLimitStatus = (
-  limitStatus: LimitStatus
+  limitStatus: LimitStatus['status']
 ): SetCardinalityLimitStatus => {
   return {
     type: ActionTypes.SetCardinalityLimitStatus,
@@ -236,23 +235,23 @@ export const getReadWriteCardinalityLimits = () => async (
 
     const limits = await getOrgsLimitsStatus({orgID: org.id})
 
-    if (limits.read.status === LimitStatus.EXCEEDED) {
+    if (limits.read.status === 'exceeded') {
       dispatch(notify(readLimitReached()))
-      dispatch(setReadRateLimitStatus(LimitStatus.EXCEEDED))
+      dispatch(setReadRateLimitStatus('exceeded'))
     } else {
-      dispatch(setReadRateLimitStatus(LimitStatus.OK))
+      dispatch(setReadRateLimitStatus('ok'))
     }
 
-    if (limits.write.status === LimitStatus.EXCEEDED) {
-      dispatch(setWriteRateLimitStatus(LimitStatus.EXCEEDED))
+    if (limits.write.status === 'exceeded') {
+      dispatch(setWriteRateLimitStatus('exceeded'))
     } else {
-      dispatch(setWriteRateLimitStatus(LimitStatus.OK))
+      dispatch(setWriteRateLimitStatus('ok'))
     }
 
-    if (limits.cardinality.status === LimitStatus.EXCEEDED) {
-      dispatch(setCardinalityLimitStatus(LimitStatus.EXCEEDED))
+    if (limits.cardinality.status === 'exceeded') {
+      dispatch(setCardinalityLimitStatus('exceeded'))
     } else {
-      dispatch(setCardinalityLimitStatus(LimitStatus.OK))
+      dispatch(setCardinalityLimitStatus('ok'))
     }
   } catch (error) {
     console.error(error)
@@ -288,9 +287,9 @@ export const checkDashboardLimits = () => (dispatch, getState: GetState) => {
     const dashboardsCount = resources.dashboards.allIDs.length
 
     if (dashboardsCount >= dashboardsMax) {
-      dispatch(setDashboardLimitStatus(LimitStatus.EXCEEDED))
+      dispatch(setDashboardLimitStatus('exceeded'))
     } else {
-      dispatch(setDashboardLimitStatus(LimitStatus.OK))
+      dispatch(setDashboardLimitStatus('ok'))
     }
   } catch (error) {
     console.error(error)
@@ -311,9 +310,9 @@ export const checkBucketLimits = () => (dispatch, getState: GetState) => {
     const bucketsCount = buckets.length
 
     if (bucketsCount >= bucketsMax) {
-      dispatch(setBucketLimitStatus(LimitStatus.EXCEEDED))
+      dispatch(setBucketLimitStatus('exceeded'))
     } else {
-      dispatch(setBucketLimitStatus(LimitStatus.OK))
+      dispatch(setBucketLimitStatus('ok'))
     }
   } catch (error) {
     console.error(error)
@@ -330,9 +329,9 @@ export const checkTaskLimits = () => (dispatch, getState: GetState) => {
     const tasksCount = resources.tasks.allIDs.length
 
     if (tasksCount >= tasksMax) {
-      dispatch(setTaskLimitStatus(LimitStatus.EXCEEDED))
+      dispatch(setTaskLimitStatus('exceeded'))
     } else {
-      dispatch(setTaskLimitStatus(LimitStatus.OK))
+      dispatch(setTaskLimitStatus('ok'))
     }
   } catch (error) {
     console.error(error)
@@ -349,9 +348,9 @@ export const checkChecksLimits = () => (dispatch, getState: GetState) => {
     const checksMax = extractChecksMax(limits)
     const checksCount = resources.checks.allIDs.length
     if (checksCount >= checksMax) {
-      dispatch(setChecksLimitStatus(LimitStatus.EXCEEDED))
+      dispatch(setChecksLimitStatus('exceeded'))
     } else {
-      dispatch(setChecksLimitStatus(LimitStatus.OK))
+      dispatch(setChecksLimitStatus('ok'))
     }
   } catch (error) {
     console.error(error)
@@ -369,9 +368,9 @@ export const checkRulesLimits = () => (dispatch, getState: GetState) => {
     const rulesCount = resources.rules.allIDs.length
 
     if (rulesCount >= rulesMax) {
-      dispatch(setRulesLimitStatus(LimitStatus.EXCEEDED))
+      dispatch(setRulesLimitStatus('exceeded'))
     } else {
-      dispatch(setRulesLimitStatus(LimitStatus.OK))
+      dispatch(setRulesLimitStatus('ok'))
     }
   } catch (error) {
     console.error(error)
@@ -385,9 +384,9 @@ export const checkEndpointsLimits = () => (dispatch, getState: GetState) => {
     const endpointsMax = extractEndpointsMax(state.cloud.limits)
 
     if (endpointsCount >= endpointsMax) {
-      dispatch(setEndpointsLimitStatus(LimitStatus.EXCEEDED))
+      dispatch(setEndpointsLimitStatus('exceeded'))
     } else {
-      dispatch(setEndpointsLimitStatus(LimitStatus.OK))
+      dispatch(setEndpointsLimitStatus('ok'))
     }
   } catch (error) {
     console.error(error)

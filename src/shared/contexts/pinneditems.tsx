@@ -5,6 +5,7 @@ import React, {
   useState,
   memo,
   useCallback,
+  ReactElement,
 } from 'react'
 
 export interface PinnedItem {
@@ -29,58 +30,48 @@ export enum PinnedItemTypes {
 }
 export const PinnedItemsContext = createContext(null)
 
+const token = ''
+
 const getPinnedItems = async () => {
-  return await fetch(
-    `https://twodotoh-dev-shmuellotman20210720133644.a.influxcloud.dev.local/api/v2private/pinned`,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJDbG91ZDIiLCJleHAiOjE2MjY5MTE2NTYsImlzcyI6IkluZmx1eERhdGEuQ2xvdWQyIiwia2lkIjoiZGQxODAyMzItMTQwZS00MjUzLWI3NDUtYWY0MzIzNTNmMGYzIiwidXNlcl9pZCI6IjA3ZGQ0Y2ZhMzI3NzkwMDAiLCJvcmdfaWQiOiIyZGUzZDVlN2YyNGY0ZWZkIiwiY2x1c3Rlcl91cmwiOiJodHRwczovL3R3b2RvdG9oLWRldi1zaG11ZWxsb3RtYW4yMDIxMDcyMDEzMzY0NC5hLmluZmx1eGNsb3VkLmRldi5sb2NhbCIsInZlcnNpb24iOiIxLjAuMCJ9.IFTVv9A82OGAaT5-J_X6IFxyKPP4UGikv1YRFmfzOjA`,
-      },
-    }
-  )
+  return await fetch(`/api/v2private/pinned`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      authorization: `Bearer ${token}`,
+    },
+  })
 }
 
 const removePinnedItem = async (id: string) => {
-  return await fetch(
-    `https://twodotoh-dev-shmuellotman20210720133644.a.influxcloud.dev.local/api/v2private/pinned/${id}`,
-    {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJDbG91ZDIiLCJleHAiOjE2MjY5MTE2NTYsImlzcyI6IkluZmx1eERhdGEuQ2xvdWQyIiwia2lkIjoiZGQxODAyMzItMTQwZS00MjUzLWI3NDUtYWY0MzIzNTNmMGYzIiwidXNlcl9pZCI6IjA3ZGQ0Y2ZhMzI3NzkwMDAiLCJvcmdfaWQiOiIyZGUzZDVlN2YyNGY0ZWZkIiwiY2x1c3Rlcl91cmwiOiJodHRwczovL3R3b2RvdG9oLWRldi1zaG11ZWxsb3RtYW4yMDIxMDcyMDEzMzY0NC5hLmluZmx1eGNsb3VkLmRldi5sb2NhbCIsInZlcnNpb24iOiIxLjAuMCJ9.IFTVv9A82OGAaT5-J_X6IFxyKPP4UGikv1YRFmfzOjA`,
-      },
-    }
-  )
+  return await fetch(`/api/v2private/pinned/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      authorization: `Bearer ${token}`,
+    },
+  })
 }
 const addPinnedItem = async (item: Partial<PinnedItem>) => {
-  const added = await fetch(
-    `https://twodotoh-dev-shmuellotman20210720133644.a.influxcloud.dev.local/api/v2private/pinned`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJDbG91ZDIiLCJleHAiOjE2MjY5MTE2NTYsImlzcyI6IkluZmx1eERhdGEuQ2xvdWQyIiwia2lkIjoiZGQxODAyMzItMTQwZS00MjUzLWI3NDUtYWY0MzIzNTNmMGYzIiwidXNlcl9pZCI6IjA3ZGQ0Y2ZhMzI3NzkwMDAiLCJvcmdfaWQiOiIyZGUzZDVlN2YyNGY0ZWZkIiwiY2x1c3Rlcl91cmwiOiJodHRwczovL3R3b2RvdG9oLWRldi1zaG11ZWxsb3RtYW4yMDIxMDcyMDEzMzY0NC5hLmluZmx1eGNsb3VkLmRldi5sb2NhbCIsInZlcnNpb24iOiIxLjAuMCJ9.IFTVv9A82OGAaT5-J_X6IFxyKPP4UGikv1YRFmfzOjA`,
-      },
-      body: JSON.stringify(item),
-    }
-  )
+  const added = await fetch(`/api/v2private/pinned`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(item),
+  })
   return await added.json()
 }
 
 const updatePinnedItem = async (id: string, item: Partial<PinnedItem>) => {
-  await fetch(
-    `https://twodotoh-dev-shmuellotman20210720133644.a.influxcloud.dev.local/api/v2private/pinned/${id}`,
-    {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJDbG91ZDIiLCJleHAiOjE2MjY5MTE2NTYsImlzcyI6IkluZmx1eERhdGEuQ2xvdWQyIiwia2lkIjoiZGQxODAyMzItMTQwZS00MjUzLWI3NDUtYWY0MzIzNTNmMGYzIiwidXNlcl9pZCI6IjA3ZGQ0Y2ZhMzI3NzkwMDAiLCJvcmdfaWQiOiIyZGUzZDVlN2YyNGY0ZWZkIiwiY2x1c3Rlcl91cmwiOiJodHRwczovL3R3b2RvdG9oLWRldi1zaG11ZWxsb3RtYW4yMDIxMDcyMDEzMzY0NC5hLmluZmx1eGNsb3VkLmRldi5sb2NhbCIsInZlcnNpb24iOiIxLjAuMCJ9.IFTVv9A82OGAaT5-J_X6IFxyKPP4UGikv1YRFmfzOjA`,
-      },
-      body: JSON.stringify({updateItemFields: item}),
-    }
-  )
+  await fetch(`/api/v2private/pinned/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({updateItemFields: item}),
+  })
 
   return
 }
@@ -134,8 +125,11 @@ export const updatePinnedItemByParam = async (id: string, updateParams: {}) => {
   }
 }
 
-// updateItemFields
-const PinnedItemsProvider: FC = ({children}) => {
+interface Props {
+  children: ReactElement<any>
+}
+
+const PinnedItemsProvider: FC<Props> = ({children}) => {
   const [pinnedItems, setPinnedItems] = useState([])
 
   const deletePinnedItemsHelper = useCallback(

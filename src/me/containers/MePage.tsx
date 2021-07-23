@@ -16,10 +16,7 @@ import {
   ComponentColor,
 } from '@influxdata/clockface'
 import Resources from 'src/me/components/Resources'
-<<<<<<< HEAD
 import PinnedItems from 'src/me/components/PinnedItems'
-=======
->>>>>>> master
 import GettingStarted from 'src/me/components/GettingStarted'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import AlertsActivity from 'src/me/components/AlertsActivity'

@@ -56,7 +56,7 @@ const MOCK_APP_STATE = ({
 
 describe('Views.Selectors', () => {
   describe('getTimeFormatForView', () => {
-    it("should return the default timeFormat for a cell when cell's format is the constant DEFAULT_TIME_FORMAT", () => {
+    it("should return the default time format for a cell when cell's format is the constant DEFAULT_TIME_FORMAT", () => {
       const timeFormat = getTimeFormatForView(
         MOCK_APP_STATE,
         'mock_cell_id_with_DEFAULT_TIME_FORMAT'

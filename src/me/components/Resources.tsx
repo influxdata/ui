@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, memo} from 'react'
 
 // Components
 import UsagePanel from 'src/me/components/UsagePanel'
@@ -24,14 +24,15 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import LogoutButton from 'src/me/components/LogoutButton'
 import DashboardsList from 'src/me/components/DashboardsList'
 import GetResources from 'src/resources/components/GetResources'
-import {AppState, ResourceType} from 'src/types'
+import {ResourceType} from 'src/types'
+import {CLOUD} from 'src/shared/constants'
 
-interface Props {
-  me: AppState['me']
-}
+// Selectors
+import {useSelector} from 'react-redux'
+import {getMe} from 'src/me/selectors'
 
-const ResourceLists: FC<Props> = ({me}) => {
-  const {quartzMe} = me
+const ResourceLists: FC = () => {
+  const {quartzMe} = useSelector(getMe)
   return (
     <FlexBox
       direction={FlexDirection.Column}
@@ -87,7 +88,7 @@ const ResourceLists: FC<Props> = ({me}) => {
         </>
       )}
       <Panel>
-        {isFlagEnabled('newUsagePanel') ? (
+        {isFlagEnabled('newUsagePanel') && CLOUD ? (
           <>
             <Panel.Header>
               <Heading
@@ -130,4 +131,4 @@ const ResourceLists: FC<Props> = ({me}) => {
   )
 }
 
-export default ResourceLists
+export default memo(ResourceLists)

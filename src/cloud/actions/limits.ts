@@ -1,9 +1,3 @@
-// API
-import {
-  getReadWriteCardinalityLimits as getReadWriteCardinalityLimitsAJAX,
-  getLimits as getLimitsAJAX,
-} from 'src/cloud/apis/limits'
-
 // Actions
 import {notify} from 'src/shared/actions/notifications'
 
@@ -31,6 +25,16 @@ import {
 } from 'src/cloud/utils/limits'
 import {getOrg} from 'src/organizations/selectors'
 import {getAll} from 'src/resources/selectors'
+import {CLOUD} from 'src/shared/constants'
+
+let getOrgsLimits = null
+let getOrgsLimitsStatus = null
+
+if (CLOUD) {
+  getOrgsLimits = require('src/client/cloudPrivRoutes').getOrgsLimits
+  getOrgsLimitsStatus = require('src/client/cloudPrivRoutes')
+    .getOrgsLimitsStatus
+}
 
 export enum LimitStatus {
   OK = 'ok',
@@ -224,10 +228,13 @@ export const getReadWriteCardinalityLimits = () => async (
   dispatch,
   getState: GetState
 ) => {
+  if (!CLOUD) {
+    return
+  }
   try {
     const org = getOrg(getState())
 
-    const limits = await getReadWriteCardinalityLimitsAJAX(org.id)
+    const limits = await getOrgsLimitsStatus({orgID: org.id})
 
     if (limits.read.status === LimitStatus.EXCEEDED) {
       dispatch(notify(readLimitReached()))
@@ -253,11 +260,14 @@ export const getReadWriteCardinalityLimits = () => async (
 }
 
 export const getAssetLimits = () => async (dispatch, getState: GetState) => {
+  if (!CLOUD) {
+    return
+  }
   dispatch(setLimitsStatus(RemoteDataState.Loading))
   try {
     const org = getOrg(getState())
 
-    const limits = await getLimitsAJAX(org.id)
+    const limits = await getOrgsLimits({orgID: org.id})
     dispatch(setLimits(limits))
     dispatch(setLimitsStatus(RemoteDataState.Done))
   } catch (error) {

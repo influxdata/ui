@@ -32,12 +32,8 @@ export const getTimeFormatForView = (
 
   let timeFormat = ''
   if ('timeFormat' in view.properties) {
-    timeFormat = view.properties.timeFormat
+    return view.properties.timeFormat
   }
 
-  if (timeFormat === '') {
-    return DEFAULT_TIME_FORMAT
-  }
-
-  return timeFormat
+  return DEFAULT_TIME_FORMAT
 }

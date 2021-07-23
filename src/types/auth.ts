@@ -5,10 +5,3 @@ export enum Auth0Connection {
   Microsoft = 'windowslive',
   Authentication = 'Username-Password-Authentication',
 }
-
-export type Auth0Config = {
-  clientID: string
-  domain: string
-  redirectURL: string
-  state: string
-}

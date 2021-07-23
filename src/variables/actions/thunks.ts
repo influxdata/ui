@@ -161,7 +161,7 @@ export const hydrateVariables = (
 
   const hydration = hydrateVars(usedVars, getAllVariablesFromState(state), {
     orgID: org.id,
-    url: state.links.query.self,
+    url: '/api/v2/query',
     skipCache,
     controller,
   })

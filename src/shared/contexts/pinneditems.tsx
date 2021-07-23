@@ -32,8 +32,10 @@ export const PinnedItemsContext = createContext(null)
 
 const token = ''
 
+// The routes below are placeholders until we get the implementation of the swagger-defined routes through the pipeline
+
 const getPinnedItems = async () => {
-  return await fetch(`/api/v2private/pinned`, {
+  return await fetch(``, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -43,7 +45,7 @@ const getPinnedItems = async () => {
 }
 
 const removePinnedItem = async (id: string) => {
-  return await fetch(`/api/v2private/pinned/${id}`, {
+  return await fetch(`/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -52,7 +54,7 @@ const removePinnedItem = async (id: string) => {
   })
 }
 const addPinnedItem = async (item: Partial<PinnedItem>) => {
-  const added = await fetch(`/api/v2private/pinned`, {
+  const added = await fetch(``, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -63,8 +65,8 @@ const addPinnedItem = async (item: Partial<PinnedItem>) => {
   return await added.json()
 }
 
-const updatePinnedItem = async (id: string, item: Partial<PinnedItem>) => {
-  await fetch(`/api/v2private/pinned/${id}`, {
+const updatePinnedItem = async (_id: string, item: Partial<PinnedItem>) => {
+  await fetch(``, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',

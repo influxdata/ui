@@ -4,7 +4,7 @@ import {Route, Switch} from 'react-router-dom'
 
 // Components
 import {Columns, ComponentColor, Dropdown, Grid} from '@influxdata/clockface'
-import {TelegrafPluginsNewConfigOverlay} from 'src/writeData/components/TelegrafPluginsNewConfigOverlay'
+import PluginCreateConfigurationWizard from 'src/writeData/components/PluginCreateConfigurationWizard'
 
 // Constants
 import {
@@ -101,7 +101,7 @@ export const AddPluginToConfigurationCTA: FC<AddPluginToConfigurationCTAProps> =
     <Switch>
       <Route
         path={`/${ORGS}/${ORG_ID}/load-data/${TELEGRAF_PLUGINS}/${CONTENT_ID}/new`}
-        component={TelegrafPluginsNewConfigOverlay}
+        component={PluginCreateConfigurationWizard}
       />
     </Switch>
   </>

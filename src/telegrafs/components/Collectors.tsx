@@ -200,7 +200,6 @@ export class Collectors extends PureComponent<Props, State> {
       },
     } = this.props
 
-    console.log('handleAddCollector: this.props', this.props)
     history.push(`/orgs/${orgID}/load-data/telegrafs/new`)
   }
 

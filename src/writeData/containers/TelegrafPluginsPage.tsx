@@ -1,8 +1,8 @@
 // Libraries
 import React, {FC} from 'react'
-import {RouteComponentProps, useParams} from 'react-router-dom'
 import {Renderer} from 'react-markdown'
 import {connect, ConnectedProps} from 'react-redux'
+import {RouteComponentProps, useParams} from 'react-router-dom'
 
 // Components
 import {Page} from '@influxdata/clockface'

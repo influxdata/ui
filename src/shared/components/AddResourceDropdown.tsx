@@ -25,7 +25,7 @@ interface OwnProps {
   onSelectImport: () => void
   onSelectTemplate?: () => void
   resourceName: string
-  limitStatus?: LimitStatus
+  limitStatus?: LimitStatus['status']
 }
 
 interface DefaultProps {
@@ -126,10 +126,10 @@ class AddResourceDropdown extends PureComponent<Props> {
       onSelectNew,
       onSelectImport,
       onSelectTemplate,
-      limitStatus = LimitStatus.OK,
+      limitStatus = 'ok',
     } = this.props
 
-    if (CLOUD && limitStatus === LimitStatus.EXCEEDED) {
+    if (CLOUD && limitStatus === 'exceeded') {
       this.handleLimit()
       return
     }

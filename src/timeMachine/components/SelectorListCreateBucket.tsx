@@ -25,11 +25,11 @@ import BucketOverlayForm from 'src/buckets/components/BucketOverlayForm'
 // Utils
 import {
   extractBucketMaxRetentionSeconds,
-  extractBucketLimits,
+  getBucketLimitStatus,
 } from 'src/cloud/utils/limits'
 
 // Actions
-import {checkBucketLimits, LimitStatus} from 'src/cloud/actions/limits'
+import {checkBucketLimits} from 'src/cloud/actions/limits'
 import {createBucket} from 'src/buckets/actions/thunks'
 
 // Types
@@ -66,7 +66,7 @@ const SelectorListCreateBucket: FC<Props> = ({
     reduxDispatch(checkBucketLimits())
   }, [reduxDispatch])
 
-  const limitExceeded = limitStatus === LimitStatus.EXCEEDED
+  const limitExceeded = limitStatus === 'exceeded'
 
   let titleText = 'Click to create a bucket'
   let buttonDisabled = false
@@ -159,10 +159,8 @@ const SelectorListCreateBucket: FC<Props> = ({
 
 const mstp = (state: AppState) => {
   const org = getOrg(state)
-  const isRetentionLimitEnforced = !!extractBucketMaxRetentionSeconds(
-    state.cloud.limits
-  )
-  const limitStatus = extractBucketLimits(state.cloud.limits)
+  const isRetentionLimitEnforced = !!extractBucketMaxRetentionSeconds(state)
+  const limitStatus = getBucketLimitStatus(state)
 
   return {
     org,

@@ -12,7 +12,10 @@ import {
   ResourceType,
   ColumnTypes,
 } from 'src/types'
-import {Limit as Limits, LimitStatus} from 'src/client/cloudPrivRoutes'
+import {
+  Limit as Limits,
+  LimitStatus as GenLimitStatus,
+} from 'src/client/cloudPrivRoutes'
 // Selectors
 import {
   extractDashboardMax,
@@ -35,13 +38,15 @@ if (CLOUD) {
     .getOrgsLimitsStatus
 }
 
+export interface LimitStatus extends GenLimitStatus {}
+
 export interface Limit {
   maxAllowed: number
   limitStatus: LimitStatus['status']
 }
 
 export type MonitoringLimits = {
-  [type in ColumnTypes]: LimitStatus
+  [type in ColumnTypes]: LimitStatus['status']
 }
 
 export enum ActionTypes {
@@ -278,12 +283,9 @@ export const getAssetLimits = () => async (dispatch, getState: GetState) => {
 export const checkDashboardLimits = () => (dispatch, getState: GetState) => {
   try {
     const state = getState()
-    const {
-      cloud: {limits},
-      resources,
-    } = state
+    const {resources} = state
 
-    const dashboardsMax = extractDashboardMax(limits)
+    const dashboardsMax = extractDashboardMax(state)
     const dashboardsCount = resources.dashboards.allIDs.length
 
     if (dashboardsCount >= dashboardsMax) {
@@ -299,11 +301,8 @@ export const checkDashboardLimits = () => (dispatch, getState: GetState) => {
 export const checkBucketLimits = () => (dispatch, getState: GetState) => {
   try {
     const state = getState()
-    const {
-      cloud: {limits},
-    } = state
     const allBuckets = getAll<Bucket>(state, ResourceType.Buckets)
-    const bucketsMax = extractBucketMax(limits)
+    const bucketsMax = extractBucketMax(state)
     const buckets = allBuckets.filter(bucket => {
       return bucket.type == 'user'
     })
@@ -321,11 +320,8 @@ export const checkBucketLimits = () => (dispatch, getState: GetState) => {
 
 export const checkTaskLimits = () => (dispatch, getState: GetState) => {
   try {
-    const {
-      cloud: {limits},
-      resources,
-    } = getState()
-    const tasksMax = extractTaskMax(limits)
+    const {resources} = getState()
+    const tasksMax = extractTaskMax(state)
     const tasksCount = resources.tasks.allIDs.length
 
     if (tasksCount >= tasksMax) {
@@ -340,12 +336,9 @@ export const checkTaskLimits = () => (dispatch, getState: GetState) => {
 
 export const checkChecksLimits = () => (dispatch, getState: GetState) => {
   try {
-    const {
-      resources,
-      cloud: {limits},
-    } = getState()
+    const {resources} = getState()
 
-    const checksMax = extractChecksMax(limits)
+    const checksMax = extractChecksMax(state)
     const checksCount = resources.checks.allIDs.length
     if (checksCount >= checksMax) {
       dispatch(setChecksLimitStatus('exceeded'))
@@ -359,12 +352,9 @@ export const checkChecksLimits = () => (dispatch, getState: GetState) => {
 
 export const checkRulesLimits = () => (dispatch, getState: GetState) => {
   try {
-    const {
-      resources,
-      cloud: {limits},
-    } = getState()
+    const {resources} = getState()
 
-    const rulesMax = extractRulesMax(limits)
+    const rulesMax = extractRulesMax(state)
     const rulesCount = resources.rules.allIDs.length
 
     if (rulesCount >= rulesMax) {
@@ -381,7 +371,7 @@ export const checkEndpointsLimits = () => (dispatch, getState: GetState) => {
   try {
     const state = getState()
     const endpointsCount = state.resources.endpoints.allIDs.length
-    const endpointsMax = extractEndpointsMax(state.cloud.limits)
+    const endpointsMax = extractEndpointsMax(state)
 
     if (endpointsCount >= endpointsMax) {
       dispatch(setEndpointsLimitStatus('exceeded'))

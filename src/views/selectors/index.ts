@@ -30,8 +30,10 @@ export const getTimeFormatForView = (
 ): string => {
   const view = getByID<View>(state, ResourceType.Views, viewID)
 
-  if ('timeFormat' in view.properties) {
-    return view.properties.timeFormat
+  if (view.properties && 'timeFormat' in view.properties) {
+    if (view.properties.timeFormat !== '') {
+      return view.properties.timeFormat
+    }
   }
 
   return DEFAULT_TIME_FORMAT

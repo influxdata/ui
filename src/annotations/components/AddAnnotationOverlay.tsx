@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useContext} from 'react'
-import {connect, useSelector} from 'react-redux'
+import {useSelector} from 'react-redux'
 
 // Components
 import {AnnotationForm} from 'src/annotations/components/annotationForm/AnnotationForm'

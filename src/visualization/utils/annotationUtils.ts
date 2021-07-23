@@ -73,6 +73,7 @@ const makeAnnotationClickListener = (
           createAnnotation,
           startTime: plotInteraction?.clampedValueX ?? plotInteraction.valueX,
           eventPrefix,
+          cellID,
         },
         () => {
           dismissOverlay()

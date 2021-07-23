@@ -19,6 +19,7 @@ interface Props {
   onChange: (newTime: string) => void
   onSubmit: () => void
   time: string | number
+  timeFormat: string
   name: string
   titleText?: string
   style?: CSSProperties
@@ -36,7 +37,7 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
   const {timeZone} = useContext(AppSettingContext)
 
   const momentDateWithTimezone = moment(props.time)
-  let timeFormat = ANNOTATION_TIME_FORMAT_LOCAL
+  let timeFormat = props.timeFormat
 
   if (timeZone === 'UTC') {
     momentDateWithTimezone.utc()

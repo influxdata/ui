@@ -49,6 +49,7 @@ interface Props {
   onClose: () => void
   eventPrefix: string
   getNow?: () => number
+  timeFormat?: string
 }
 export const WRONG_ORDER_MESSAGE = 'Stop Time must be after the start time'
 export const END_TIME_IN_FUTURE_MESSAGE = 'Stop Time cannot be in the future'
@@ -310,6 +311,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
               onChange={updateStartTime}
               onSubmit={handleKeyboardSubmit}
               time={startTime}
+              timeFormat= {props.timeFormat}
               name="startTime"
               onValidityCheck={setStartTimeFormatValid}
               invalidMessage={getStartTimeValidationMessage()}
@@ -322,6 +324,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
                 invalidMessage={getEndTimeValidationMessage()}
                 onValidityCheck={setEndTimeFormatValid}
                 time={endTime}
+                timeFormat= {props.timeFormat}
                 name="endTime"
                 titleText="Stop Time"
                 style={{marginLeft: 10}}

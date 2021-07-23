@@ -5,7 +5,7 @@ import properties from './properties'
 import {DEFAULT_THRESHOLDS_GEO_COLORS} from 'src/shared/constants/thresholds'
 import {CLOUD} from 'src/shared/constants'
 
-jest.mock('src/client/mapsdRoutes')
+jest.mock(CLOUD ? 'src/client/mapsdRoutes' : 'src/client')
 
 const table = {
   getColumn: jest.fn(),

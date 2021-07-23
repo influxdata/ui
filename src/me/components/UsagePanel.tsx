@@ -1,4 +1,4 @@
-import React, {FC, useEffect} from 'react'
+import React, {FC} from 'react'
 import {ProgressBar, Gradients, InfluxColors} from '@influxdata/clockface'
 import {
   BUCKET_LIMIT,
@@ -8,9 +8,6 @@ import {
 } from 'src/resources/constants'
 
 const UsagePanel: FC = () => {
-  useEffect(() => {
-    console.log('Usage Panel')
-  }, [])
   return (
     <div className="usagepanel--container">
       <ProgressBar

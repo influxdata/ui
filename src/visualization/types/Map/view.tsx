@@ -44,7 +44,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
   } = properties
   const {lat, lon} = properties.center
 
-  const isBehindFlag = isFlagEnabled('mapGeoOptions')
+  const isBehindFlag = isFlagEnabled('mapGeoOptions') && CLOUD
 
   const [mapServiceError, setMapServiceError] = useState<RemoteDataState>(
     RemoteDataState.NotStarted

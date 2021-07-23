@@ -30,10 +30,14 @@ export const getTimeFormatForView = (
 ): string => {
   const view = getByID<View>(state, ResourceType.Views, viewID)
 
-  if (view.properties && 'timeFormat' in view.properties) {
-    if (view.properties.timeFormat !== '') {
-      return view.properties.timeFormat
-    }
+  // some types in the ViewProperties union do not have the timeFormat in view.properties (ex. GaugeViewProperties)
+  // hence typescript complains, and the following complicated if-statement.
+  if (
+    view.properties &&
+    'timeFormat' in view.properties &&
+    view.properties.timeFormat !== ''
+  ) {
+    return view.properties.timeFormat
   }
 
   return DEFAULT_TIME_FORMAT

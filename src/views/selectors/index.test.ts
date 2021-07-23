@@ -39,9 +39,9 @@ const MOCK_APP_STATE = ({
           id: 'mock_cell_id_with_YYYY-MM-DD HH:mm:ss',
           name: 'dummy cell',
           status: 'Done',
-          cellID: 'mock_cell_id_with_YYYY-MM-DD HH:mm:ss',
+          cellID: 'mock_cell_id_with_YYYY-MM-DD HH:mm:ss.sss',
           properties: {
-            timeFormat: '',
+            timeFormat: 'YYYY-MM-DD HH:mm:ss.sss',
           },
           dashboardID: 'mock_dashboard_id',
         },
@@ -72,12 +72,12 @@ describe('Views.Selectors', () => {
       expect(timeFormat).toBe(DEFAULT_TIME_FORMAT)
     })
 
-    it("should return the correct time format for a cell when cell's format is YYYY-MM-DD HH:mm:ss", () => {
+    it("should return the correct time format for a cell when cell's format is YYYY-MM-DD HH:mm:ss.sss", () => {
       const timeFormat = getTimeFormatForView(
         MOCK_APP_STATE,
         'mock_cell_id_with_NO_TIME_FORMAT'
       )
-      expect(timeFormat).toBe('YYYY-MM-DD HH:mm:ss')
+      expect(timeFormat).toBe('YYYY-MM-DD HH:mm:ss.sss')
     })
   })
 })

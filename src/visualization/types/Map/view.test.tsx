@@ -35,7 +35,7 @@ const skipOss = CLOUD ? describe : describe.skip
 
 skipOss('Map component renders', () => {
   it('returns with helpful error message when map service is down', () => {
-    jest.mock('src/visualization/types/Map/api', () => {
+    jest.mock('src/client/mapsdRoutes', () => {
       throw new Error('Service Unavailable')
     })
     const {queryByTestId} = setup()

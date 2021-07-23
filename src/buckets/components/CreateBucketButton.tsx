@@ -36,7 +36,7 @@ const CreateBucketButton: FC<ReduxProps> = ({
     onShowOverlay('create-bucket', null, onDismissOverlay)
   }
 
-  if (CLOUD && limitStatus?.status === 'exceeded') {
+  if (CLOUD && limitStatus === 'exceeded') {
     return <AssetLimitButton resourceName="Bucket" />
   }
 

@@ -320,9 +320,9 @@ export const checkBucketLimits = () => (dispatch, getState: GetState) => {
 
 export const checkTaskLimits = () => (dispatch, getState: GetState) => {
   try {
-    const {resources} = getState()
+    const state = getState()
     const tasksMax = extractTaskMax(state)
-    const tasksCount = resources.tasks.allIDs.length
+    const tasksCount = state.resources.tasks.allIDs.length
 
     if (tasksCount >= tasksMax) {
       dispatch(setTaskLimitStatus('exceeded'))
@@ -336,10 +336,10 @@ export const checkTaskLimits = () => (dispatch, getState: GetState) => {
 
 export const checkChecksLimits = () => (dispatch, getState: GetState) => {
   try {
-    const {resources} = getState()
+    const state = getState()
 
     const checksMax = extractChecksMax(state)
-    const checksCount = resources.checks.allIDs.length
+    const checksCount = state.resources.checks.allIDs.length
     if (checksCount >= checksMax) {
       dispatch(setChecksLimitStatus('exceeded'))
     } else {
@@ -352,10 +352,10 @@ export const checkChecksLimits = () => (dispatch, getState: GetState) => {
 
 export const checkRulesLimits = () => (dispatch, getState: GetState) => {
   try {
-    const {resources} = getState()
+    const state = getState()
 
     const rulesMax = extractRulesMax(state)
-    const rulesCount = resources.rules.allIDs.length
+    const rulesCount = state.resources.rules.allIDs.length
 
     if (rulesCount >= rulesMax) {
       dispatch(setRulesLimitStatus('exceeded'))

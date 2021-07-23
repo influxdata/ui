@@ -52,7 +52,7 @@ const MOCK_APP_STATE = ({
           cellID: 'mock_cell_id_with_NO_PROPERTIES',
           dashboardID: 'mock_dashboard_id',
         },
-        mock_cell_id_with_EMPTY_PROPERTIES : {
+        mock_cell_id_with_EMPTY_PROPERTIES: {
           id: 'mock_cell_id_with_EMPTY_PROPERTIES',
           name: 'dummy cell',
           status: 'Done',

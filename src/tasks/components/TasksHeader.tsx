@@ -31,7 +31,7 @@ interface Props {
   setShowInactive: () => void
   showInactive: boolean
   onImportTask: () => void
-  limitStatus: LimitStatus
+  limitStatus: LimitStatus['status']
   searchTerm: string
   setSearchTerm: typeof setSearchTermAction
   sortKey: TaskSortKey

@@ -167,14 +167,10 @@ class DashboardIndex extends PureComponent<Props, State> {
 }
 
 const mstp = (state: AppState) => {
-  const {
-    cloud: {limits},
-  } = state
-
   const {sortOptions, searchTerm} = state.resources.dashboards
 
   return {
-    limitStatus: extractDashboardLimits(limits),
+    limitStatus: extractDashboardLimits(state),
     sortOptions,
     searchTerm,
   }

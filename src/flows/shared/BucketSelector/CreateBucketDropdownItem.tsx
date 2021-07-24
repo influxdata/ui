@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import {Dropdown} from '@influxdata/clockface'
 
 // Actions
-import {checkBucketLimits, LimitStatus} from 'src/cloud/actions/limits'
+import {checkBucketLimits} from 'src/cloud/actions/limits'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Utils
@@ -32,7 +32,7 @@ const CreateBucketDropdownItem: FC<Props> = ({onUpdateBucket, testID}) => {
   }, [dispatch])
 
   const handleItemClick = (): void => {
-    if (CLOUD && limitStatus === LimitStatus.EXCEEDED) {
+    if (CLOUD && limitStatus === 'exceeded') {
       dispatch(showOverlay('asset-limit', {asset: 'Buckets'}, dismissOverlay))
     } else {
       dispatch(showOverlay('create-bucket', {onUpdateBucket}, dismissOverlay))
